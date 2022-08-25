@@ -4,66 +4,37 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 698FEC28D13
-	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 11:00:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A96E2C04AA5
+	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 11:09:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 77AB53CA457
-	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 13:00:09 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id F1ADC3CA48F
+	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 13:09:08 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AAD723C144C
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 12:59:57 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 35CB61A002D1
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 12:59:56 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E8FD1345A4;
- Thu, 25 Aug 2022 10:59:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1661425195;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eRz4WnH+2Y2q+XU7OrRrwcNlJAdh3ul8KsfSwMh7xuk=;
- b=QD2pWkhuiLzi5fFxJsM1bqr4zX9uGtjFiTOodfAL1Q8b9/Pao50zBbI9pRPSI6t4JFfAPj
- wqUD5VuReue+AukEetpVhd6Ny559XYkBm5HKx1JciUY4SuKFO2iBVDChQ5H25mrB9ppDj1
- 5rK1rj0tXlEjQiDOPPNuU5WZNuaIvbY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1661425195;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eRz4WnH+2Y2q+XU7OrRrwcNlJAdh3ul8KsfSwMh7xuk=;
- b=JhbGcw8kPvp3uj3Yx+VqL2t7X92OML/E9Ci5SEY7DqK/YEpf5k0wDN2G1fHESRLD/49H7i
- DrINRSP3w69jTyCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7FC213517;
- Thu, 25 Aug 2022 10:59:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ly3fKitWB2MSbgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 25 Aug 2022 10:59:55 +0000
-Date: Thu, 25 Aug 2022 12:59:53 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-Message-ID: <YwdWKb/Imzwk5F1V@pevik>
-References: <20220824215421.90947-1-luke.nowakowskikrijger@canonical.com>
+ by picard.linux.it (Postfix) with ESMTPS id 753803C02C2
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 13:08:58 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTP id E730C1A0042A
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 13:08:56 +0200 (CEST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C56E1FB;
+ Thu, 25 Aug 2022 04:08:59 -0700 (PDT)
+Received: from e129169.arm.com (usa-sjc-imap-foss1.foss.arm.com
+ [10.121.207.14])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 516923FAF5;
+ Thu, 25 Aug 2022 04:08:54 -0700 (PDT)
+From: Tudor Cretu <tudor.cretu@arm.com>
+To: ltp@lists.linux.it
+Date: Thu, 25 Aug 2022 12:10:12 +0100
+Message-Id: <20220825111014.210185-1-tudor.cretu@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220824215421.90947-1-luke.nowakowskikrijger@canonical.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] API/cgroup: Add rdma controller
+Subject: [LTP] [PATCH v3 0/2] syscalls: Fix various syscall tests when
+ compiled with Musl
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,65 +46,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Luke,
+Hi,
 
-> There is a test reporting "TBROK: 'rdma' controller is unknown
-> to LTP" so lets add the controller.
+There were a few issues with some syscalls tests when they were compiled
+with Musl. This series attempts to improve the robustness of some syscall
+tests.
 
-Out of curiosity: which test?
+changes v2->v3:
+* This series contains only the statfs changes, as the other changes have
+  been merged.
+* Added a new patch that converts [f]statfs02 to the new API so that the
+  changes are more straightforward.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tudor Cretu (2):
+  syscalls/statfs02,fstatfs02: Convert to new API
+  syscalls/statfs02,fstatfs02: Accept segfault instead of EFAULT
 
-Kind regards,
-Petr
+ testcases/kernel/syscalls/fstatfs/fstatfs02.c | 110 ++++++------------
+ testcases/kernel/syscalls/statfs/statfs02.c   | 107 ++++++-----------
+ 2 files changed, 76 insertions(+), 141 deletions(-)
 
-> Signed-off-by: Luke Nowakowski-Krijger <luke.nowakowskikrijger@canonical.com>
-> ---
->  lib/tst_cgroup.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+-- 
+2.25.1
 
-> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-> index 1cfd79243..1da3f0a5d 100644
-> --- a/lib/tst_cgroup.c
-> +++ b/lib/tst_cgroup.c
-> @@ -93,9 +93,10 @@ enum cgroup_ctrl_indx {
->  	CTRL_BLKIO,
->  	CTRL_MISC,
->  	CTRL_PERFEVENT,
-> -	CTRL_DEBUG
-> +	CTRL_DEBUG,
-> +	CTRL_RDMA
->  };
-> -#define CTRLS_MAX CTRL_DEBUG
-> +#define CTRLS_MAX CTRL_RDMA
-
->  /* At most we can have one cgroup V1 tree for each controller and one
->   * (empty) v2 tree.
-> @@ -253,6 +254,10 @@ static const struct cgroup_file debug_ctrl_files[] = {
->  	{ }
->  };
-
-> +static const struct cgroup_file rdma_ctrl_files[] = {
-> +	{ }
-> +};
-> +
->  #define CTRL_NAME_MAX 31
->  #define CGROUP_CTRL_MEMBER(x, y)[y] = { .ctrl_name = #x, .files = \
->  	x ## _ctrl_files, .ctrl_indx = y, NULL, 0 }
-> @@ -275,6 +280,7 @@ static struct cgroup_ctrl controllers[] = {
->  	CGROUP_CTRL_MEMBER(misc, CTRL_MISC),
->  	CGROUP_CTRL_MEMBER(perf_event, CTRL_PERFEVENT),
->  	CGROUP_CTRL_MEMBER(debug, CTRL_DEBUG),
-> +	CGROUP_CTRL_MEMBER(rdma, CTRL_RDMA),
->  	{ }
->  };
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
