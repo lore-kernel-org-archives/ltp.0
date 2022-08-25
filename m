@@ -4,63 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E47F7C04AA5
-	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 12:45:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A4C4C64991
+	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 12:54:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 37A513CA486
-	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 14:45:17 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id F276C3CA405
+	for <ltp@archiver.kernel.org>; Thu, 25 Aug 2022 14:54:20 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2CE363C010E
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 14:45:06 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
+ by picard.linux.it (Postfix) with ESMTPS id EABF83C010E
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 14:54:09 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2AE461000604
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 14:45:05 +0200 (CEST)
-Received: by mail-ej1-x635.google.com with SMTP id lx1so2871225ejb.12
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 05:45:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=cc:to:subject:message-id:date:from:mime-version:from:to:cc;
- bh=0/Ipanas24TFq9elVE4ZKVYDVLeZuiUqjpMUdUnA5Cg=;
- b=QiREiYlxQ4tC8mq7oYLS19gPGBazl0yuaC/0T4kEQPdukHHlmdb2m7PgK+nS6rawGY
- 7lmaJzSNHerV92nbvawZ3RPsHH3GCngelTVdILUfjFXeUq4Wa/xn9fewTSFJavTpNnab
- NqAApDfcwX91Y9QyyeLZ14xMs4/SSLUnsLPtAwZ4+3QdtEt3ASMse8JaHDOMwRq30zvJ
- tD702pM93p0cCVs1cdLhImEu+6yU2aH/MjytU2y9jkZ0fAi6OtPobD4M84ROWx93Bk1l
- 64Jsj//IehTWCrsP8xK+V9GY+sXMoLC3Y8i8lJAX116NUrI0IkrVQqUEIH1j3seUMirq
- hIQw==
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CC2722000AF
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 14:54:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1661432047;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KKg9nuZ7ZTsHulvRR/09EWO1gfuJliAZwa+UrNqTOcA=;
+ b=NIRp75cOkTQZqW7+x0P2zFrqNbbybsfB8t5qqyGFibMHkMBEw4R1q2YCTp3BdAbizee996
+ 2kRtsdXjKN5UJPqMpk+zP1bm2ggc3RNRj1GE1pJOZ32QdY7WKbJJNJgepONgHxtrdHfI+Z
+ dmQiaZhUHRHMEuRuj8y+XQL+rCy2XHQ=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-352-Kyj68ba5P-ygE3oGotLxvw-1; Thu, 25 Aug 2022 08:54:06 -0400
+X-MC-Unique: Kyj68ba5P-ygE3oGotLxvw-1
+Received: by mail-lj1-f199.google.com with SMTP id
+ k6-20020a2ea266000000b00261c2c6b0b9so2908756ljm.11
+ for <ltp@lists.linux.it>; Thu, 25 Aug 2022 05:54:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc;
- bh=0/Ipanas24TFq9elVE4ZKVYDVLeZuiUqjpMUdUnA5Cg=;
- b=yRuqm8r0qNLPGBuMMgKHkBDIHK2mur2c1UX+N3FoQ+l1bf+DJrNinQwY6eB8DcF4XR
- sZhCYGIg0ek61nxKic6hejSEb+QmtKBhTVxwdDd09u6RkygkZ+5wTl4T0UL9lKzyZ4rw
- +vrof6pxQj/f4lUC2FymgmfDG7ugNgt+8oFHE+I1W9JWpbCHKlRx5KYBpPfQ3WLuPWke
- 19nAIX2/9RHjehW///ZjfuRu0LTaBrrXs1b4U77FGti9sUa1U5+JSHxDbdHjmSHUwdgk
- +yBloKv3Dewq2pz2O7CVo14dBivS7qC8zUkfqc4U9bVuGAuHVbkuGCYpp9ZOXcUL/LMb
- vQNQ==
-X-Gm-Message-State: ACgBeo0WjYrzzADjuxBr7TbQN3qygu35pFHfeUly96zjrZ8ISmBRpHch
- yqme4xqPSdj4eQaelQHqKA+HSAXaiXNUCcu3CQf3wQ==
-X-Google-Smtp-Source: AA6agR5Ssp4F0q9tefCq8WkXxmB/6ZNb/kPNJZEi3oyt2Vy5aGyxzDmuvOFkP7atxqjuzy3MHAlx/T1FbsEgM0odfGI=
-X-Received: by 2002:a17:907:2cd1:b0:730:a980:d593 with SMTP id
- hg17-20020a1709072cd100b00730a980d593mr2391761ejc.48.1661431504490; Thu, 25
- Aug 2022 05:45:04 -0700 (PDT)
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc;
+ bh=KKg9nuZ7ZTsHulvRR/09EWO1gfuJliAZwa+UrNqTOcA=;
+ b=JneFQ+Jg1NfxgiTL5oFq1ahO50w4kj9MbVBMov5cTtedL97NzGCZG1LrJkhejSUpIi
+ RCgMDQOotwMoFMs5lrmtyuORlZp0CUOagJcx/mWESfgD/xpjlxRJgn3Omy912E1Le3b7
+ /6qMcHSM5DezURiK6uqE48hsXeEvrnbJl9CASZye5UBI6m7WhC/vMstOKFLQzwYhHAQ7
+ 5wEFaiFtS7T+gsxJpM//rz7IvvwxvMI8N1f0mBUiMUBR5tHPLrnwos/s8ZFEtY2NDGm6
+ /p2oODTukacQX1ux9I22sEf+48Hw1ClfJI86wE0eH8l0eMjvI9wZ7RVHVwMQ70FCWvux
+ rNfw==
+X-Gm-Message-State: ACgBeo3yCnmFqMcNk7KJREPj2g01alJ4qVfoJ5373aMSK4U0DWQ+hdTS
+ RJ5LTojI8a+MuY4hTv8Mp+UEF/4NwgD6rttsHJHkrFRoKfQaD9sr7rAWeSjDg8zazkxnDFSTdLR
+ QmhYoY+XnWNKhjf8xvJciRv4adwk=
+X-Received: by 2002:a05:6512:e94:b0:492:adcd:d4a3 with SMTP id
+ bi20-20020a0565120e9400b00492adcdd4a3mr1075842lfb.18.1661432044641; 
+ Thu, 25 Aug 2022 05:54:04 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR4VS1wM1Odv4+O1fXmCblO4u5pXRs9qVBBToY91jjpIH4YAc+Ow7moQ8uEm9WQtF2h62ciA4EFmQY3NduPSdyk=
+X-Received: by 2002:a05:6512:e94:b0:492:adcd:d4a3 with SMTP id
+ bi20-20020a0565120e9400b00492adcdd4a3mr1075836lfb.18.1661432044368; Thu, 25
+ Aug 2022 05:54:04 -0700 (PDT)
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 25 Aug 2022 18:14:53 +0530
-Message-ID: <CA+G9fYsmRByWNrUwLjfeWcxRF7R32XhB9oYAB3ZBJ7Fj1iqacw@mail.gmail.com>
-To: mhi@lists.linux.dev, linux-arm-msm <linux-arm-msm@vger.kernel.org>, 
- linux-hwmon@vger.kernel.org, open list <linux-kernel@vger.kernel.org>, 
- LTP List <ltp@lists.linux.it>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20220613143826.1328830-1-amir73il@gmail.com>
+ <20220613143826.1328830-6-amir73il@gmail.com>
+ <CAASaF6wSYFOTsuZUN-B6QNrvrRxVavpujhLNXS4FBSeysDBgDQ@mail.gmail.com>
+ <CAOQ4uxj9Tq9NL2tic+6GtS6q5tBWdo-ixHPPkovKQdvU6NpHMQ@mail.gmail.com>
+ <CAASaF6w2NqMNCNY+MEgOB6sUKz19foF6a27ZCO-7qFe9dCarpQ@mail.gmail.com>
+ <CAOQ4uxiJ2kb42XzQc8P2cZ6LKdrYNK3-P9u_cLS_WHYx4LzwzA@mail.gmail.com>
+ <CAASaF6y_KPnQh_ezG5njXaVOyFxtnTWDne2gf7S5XjMDZYa=rg@mail.gmail.com>
+ <20220824152420.57scfzhhc6ufnwov@quack3>
+In-Reply-To: <20220824152420.57scfzhhc6ufnwov@quack3>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 25 Aug 2022 14:53:47 +0200
+Message-ID: <CAASaF6zZC=PM7yvAApqXAMcKeJjznusUqiJrF4h33rEMbkouBA@mail.gmail.com>
+To: Jan Kara <jack@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] db845: Unable to handle kernel NULL pointer dereference at
- virtual address 0000000000000000
+Subject: Re: [LTP] [PATCH 5/5] syscalls/fanotify10: Add test cases for
+ evictable ignore mark
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,256 +91,199 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jean Delvare <jdelvare@suse.com>, Manivannan Sadhasivam <mani@kernel.org>,
- Hemant Kumar <quic_hemantk@quicinc.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Paul Davey <paul.davey@alliedtelesis.co.nz>, Alex Elder <elder@linaro.org>,
- Richard Palethorpe <rpalethorpe@suse.com>, Guenter Roeck <linux@roeck-us.net>
+Cc: LTP List <ltp@lists.linux.it>, Matthew Bobrowski <repnop@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On arm64 Qcomm Db845c device kernel crash noticed while running LTP fs test case
- - read_all_sys read_all -d /sys -q -r 3
-with Linux mainline kernel  6.0.0-rc2. The LTP fs read_all_sys failed
-and the system
-is live and finished the rest of the test case successfully.
-This is an intermittent issue.
+On Wed, Aug 24, 2022 at 5:24 PM Jan Kara <jack@suse.cz> wrote:
+>
+> On Tue 12-07-22 10:19:19, Jan Stancek wrote:
+> > On Sat, Jul 9, 2022 at 12:09 PM Amir Goldstein <amir73il@gmail.com> wrote:
+> > >
+> > > On Thu, Jul 7, 2022 at 3:49 PM Jan Stancek <jstancek@redhat.com> wrote:
+> > > >
+> > > > On Thu, Jun 30, 2022 at 10:21 AM Amir Goldstein <amir73il@gmail.com> wrote:
+> > > > >
+> > > > > On Thu, Jun 30, 2022 at 9:27 AM Jan Stancek <jstancek@redhat.com> wrote:
+> > > > > >
+> > > > > > On Mon, Jun 13, 2022 at 4:39 PM Amir Goldstein <amir73il@gmail.com> wrote:
+> > > > > > >
+> > > > > > > Test multiple groups with evictable mark with ignore mask
+> > > > > > >
+> > > > > > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> > > > > > > ---
+> > > > > > >  .../kernel/syscalls/fanotify/fanotify10.c     | 78 +++++++++++++++++++
+> > > > > > >  1 file changed, 78 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> > > > > > > index b9a50672d..52277d0b7 100644
+> > > > > > > --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
+> > > > > > > +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> > > > > > > @@ -71,6 +71,7 @@ static char event_buf[EVENT_BUF_LEN];
+> > > > > > >  static int exec_events_unsupported;
+> > > > > > >  static int fan_report_dfid_unsupported;
+> > > > > > >  static int filesystem_mark_unsupported;
+> > > > > > > +static int evictable_mark_unsupported;
+> > > > > > >
+> > > > > > >  #define MOUNT_PATH "fs_mnt"
+> > > > > > >  #define MNT2_PATH "mntpoint"
+> > > > > > > @@ -90,6 +91,10 @@ static int filesystem_mark_unsupported;
+> > > > > > >  #define FILE_EXEC_PATH2 MNT2_PATH"/"TEST_APP
+> > > > > > >  #define FILE2_EXEC_PATH2 MNT2_PATH"/"TEST_APP2
+> > > > > > >
+> > > > > > > +#define DROP_CACHES_FILE "/proc/sys/vm/drop_caches"
+> > > > > > > +#define CACHE_PRESSURE_FILE "/proc/sys/vm/vfs_cache_pressure"
+> > > > > > > +
+> > > > > > > +static int old_cache_pressure;
+> > > > > > >  static pid_t child_pid;
+> > > > > > >  static int bind_mount_created;
+> > > > > > >  static unsigned int num_classes = NUM_CLASSES;
+> > > > > > > @@ -98,12 +103,14 @@ enum {
+> > > > > > >         FANOTIFY_INODE,
+> > > > > > >         FANOTIFY_MOUNT,
+> > > > > > >         FANOTIFY_FILESYSTEM,
+> > > > > > > +       FANOTIFY_EVICTABLE,
+> > > > > > >  };
+> > > > > > >
+> > > > > > >  static struct fanotify_mark_type fanotify_mark_types[] = {
+> > > > > > >         INIT_FANOTIFY_MARK_TYPE(INODE),
+> > > > > > >         INIT_FANOTIFY_MARK_TYPE(MOUNT),
+> > > > > > >         INIT_FANOTIFY_MARK_TYPE(FILESYSTEM),
+> > > > > > > +       INIT_FANOTIFY_MARK_TYPE(EVICTABLE),
+> > > > > > >  };
+> > > > > > >
+> > > > > > >  static struct tcase {
+> > > > > > > @@ -289,14 +296,59 @@ static struct tcase {
+> > > > > > >                 0,
+> > > > > > >                 FILE_PATH, FAN_OPEN, FAN_OPEN
+> > > > > > >         },
+> > > > > > > +       /* Evictable ignore mark test cases */
+> > > > > > > +       {
+> > > > > > > +               "don't ignore mount events created on file with evicted ignore mark",
+> > > > > > > +               MOUNT_PATH, FANOTIFY_MOUNT,
+> > > > > > > +               FILE_PATH, FANOTIFY_EVICTABLE,
+> > > > > > > +               0,
+> > > > > > > +               FILE_PATH, FAN_OPEN, FAN_OPEN
+> > > > > > > +       },
+> > > > > > > +       {
+> > > > > > > +               "don't ignore fs events created on a file with evicted ignore mark",
+> > > > > > > +               MOUNT_PATH, FANOTIFY_FILESYSTEM,
+> > > > > > > +               FILE_PATH, FANOTIFY_EVICTABLE,
+> > > > > > > +               0,
+> > > > > > > +               FILE_PATH, FAN_OPEN, FAN_OPEN
+> > > > > > > +       },
+> > > > > > > +       {
+> > > > > > > +               "don't ignore mount events created inside a parent with evicted ignore mark",
+> > > > > > > +               MOUNT_PATH, FANOTIFY_MOUNT,
+> > > > > > > +               DIR_PATH, FANOTIFY_EVICTABLE,
+> > > > > > > +               FAN_EVENT_ON_CHILD,
+> > > > > > > +               FILE_PATH, FAN_OPEN, FAN_OPEN
+> > > > > > > +       },
+> > > > > > > +       {
+> > > > > > > +               "don't ignore fs events created inside a parent with evicted ignore mark",
+> > > > > > > +               MOUNT_PATH, FANOTIFY_FILESYSTEM,
+> > > > > > > +               DIR_PATH, FANOTIFY_EVICTABLE,
+> > > > > > > +               FAN_EVENT_ON_CHILD,
+> > > > > > > +               FILE_PATH, FAN_OPEN, FAN_OPEN
+> > > > > > > +       },
+> > > > > >
+> > > > > > Hi,
+> > > > > >
+> > > > > > we are seeing some sporadic failures from this last testcase, with
+> > > > > > recent upstream kernels (v5.19-rc4-14-g941e3e791269).
+> > > > > > Has anyone also ran into it and knows if it's bug on test side or kernel?
+> > >
+> > > Hi Jan,
+> > >
+> > > I am traveling so I cannot work on solving the problem for the next week,
+> > > but I can explain the problem and offer suggestions for short term solutions
+> > > and maybe a longer term solution.
+> > >
+> > > > > >
+> > > > > > fanotify10.c:496: TINFO: Test #27: don't ignore fs events created
+> > > > > > inside a parent with evicted ignore mark
+> > > > > > fanotify10.c:338: TPASS: No fanotify inode marks as expected
+> > > > > > fanotify10.c:338: TPASS: No fanotify inode marks as expected
+> > > > > > fanotify10.c:338: TPASS: No fanotify inode marks as expected
+> > > > > > fanotify10.c:340: TFAIL: Unexpected inode mark (mflags=240,
+> > > > > > mask=8000020 ignored_mask=20)
+> > > > >
+> > > > > It is a test bug.
+> > > > > The problem is that we want to evict an inode, but there is no
+> > > > > reliable mechanism to do that.
+> > > > >
+> > > > > This is the reason for this workaround in fanotify23:
+> > > > >
+> > > > >         /* Shrinkers on other fs do not work reliably enough to
+> > > > > guarantee mark eviction on drop_caches */
+> > > > >         .dev_fs_type = "ext2",
+> > > > >
+> > > > > I did not encounter the problem with fanotify10 myself, but it should
+> > > > > be the same.
+> > > > > fanotify10 is not filesystem dependent, so if you can apply the same workaround
+> > > > > from fanotify23 and it works on your systems we can do that.
+> > > >
+> > > > Test is using default fs type, which should already be ext2.
+> > >
+> > > I see. You can try xfs on your system to see if it behaves better,
+> > > because xfs has a specialized inode shriker.
+> > >
+> > > > Here's a more complete log from failed test:
+> > > > https://s3.us-east-1.amazonaws.com/arr-cki-prod-datawarehouse-public/datawarehouse-public/2022/06/30/redhat:576928171/build_ppc64le_redhat:576928171_ppc64le/tests/1/results_0001/job.01/recipes/12221009/tasks/8/logs/syscalls.fail.log
+> > > >
+> > >
+> > > Are the failures only in the first test iteration?
+> >
+> > I think so. It runs in automated environment, where we see failures
+> > about once a week. I haven't managed to reproduce it by hand yet.
+> >
+> > >
+> > > As a long shot, I would try to remove mount_cycle() from setup().
+> > > I see that fanotify23 does not have it and it is not really needed, so
+> > > it may help
+> > > fanotify10 pass the first iteration.
+> > >
+> > > The problem is that the drop_caches knob is not a reliable way to evict inodes,
+> > > so when a test like fanotify10 needs to evict an inode, random factors are mixed
+> > > into the test run.
+> > >
+> > > As a quick band aid, I suggest to replace the TFAIL, "Unexpected inode mark"
+> > > in show_fanotify_marks() with TCONF, because the test failed to setup an
+> > > "evictable ignored mark that gets evicted", propagate a failure return
+> > > value from
+> > > create_fanotify_groups() => show_fanotify_marks() and skip the test case
+> > > instead of failing it.
+> >
+> > Thanks for suggestion.
+>
+> Is this still an issue?
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+It still rarely fails - two instances in last 3 weeks:
+6.0.0-0.rc1.13.test.eln
+https://s3.us-east-1.amazonaws.com/arr-cki-prod-datawarehouse-public/datawarehouse-public/2022/08/15/redhat:613661619/build_x86_64_redhat:613661619_x86_64/tests/3/results_0001/job.01/recipes/12445146/tasks/10/logs/syscalls.fail.log
 
-tst_test.c:1431: TINFO: Timeout per run is 0h 15m 00s
-[ 1099.320974] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000000
-[ 1099.327370] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000000
-[ 1099.329893] Mem abort info:
-[ 1099.331461] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000000
-[ 1099.331474] Mem abort info:
-[ 1099.331481]   ESR = 0x0000000096000004
-[ 1099.331492]   EC = 0x25: DABT (current EL), IL = 32 bits
-[ 1099.331502]   SET = 0, FnV = 0
-[ 1099.331510]   EA = 0, S1PTW = 0
-[ 1099.331518]   FSC = 0x04: level 0 translation fault
-[ 1099.331527] Data abort info:
-[ 1099.331535]   ISV = 0, ISS = 0x00000004
-[ 1099.331543]   CM = 0, WnR = 0
-[ 1099.331552] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000103802000
-[ 1099.331563] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
-[ 1099.331593] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[ 1099.331605] Modules linked in: nfc algif_hash snd_soc_hdmi_codec
-snd_soc_wsa881x regmap_sdw gpio_wcd934x snd_soc_wcd934x soundwire_qcom
-snd_soc_wcd_mbhc wcd934x regmap_slimbus venus_enc venus_dec
-videobuf2_dma_contig lontium_lt9611 mcp251xfd apr can_dev fastrpc
-qrtr_smd crct10dif_ce snd_soc_sdm845 snd_soc_rt5663 ath10k_snoc
-hci_uart btqca snd_soc_qcom_common qcom_camss ath10k_core btbcm
-snd_soc_rl6231 videobuf2_dma_sg ath v4l2_fwnode leds_qcom_lpg
-rtc_pm8xxx msm venus_core led_class_multicolor qcom_spmi_temp_alarm
-soundwire_bus qcom_spmi_adc5 v4l2_async v4l2_mem2mem videobuf2_memops
-bluetooth qcom_vadc_common qcom_pon videobuf2_v4l2 gpu_sched
-reset_qcom_pdc camcc_sdm845 mac80211 drm_dp_aux_bus videobuf2_common
-gpi spi_geni_qcom drm_display_helper i2c_qcom_geni i2c_qcom_cci
-qcom_rng xhci_pci qcom_q6v5_mss cfg80211 xhci_pci_renesas rfkill lmh
-qrtr icc_osm_l3 qcom_q6v5_pas qcom_wdt slim_qcom_ngd_ctrl
-qcom_pil_info qcom_q6v5 pdr_interface qcom_sysmon display_connector
-slimbus qcom_common
-[ 1099.331914]  icc_bwmon qcom_glink_smem qmi_helpers mdt_loader
-drm_kms_helper drm socinfo rmtfs_mem fuse
-[ 1099.331955] CPU: 1 PID: 5358 Comm: read_all Tainted: G        W
-     6.0.0-rc2 #1
-[ 1099.331966] Hardware name: Thundercomm Dragonboard 845c (DT)
-[ 1099.331975] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[ 1099.331984] pc : channels_show+0xdc/0x134 [soundwire_bus]
-[ 1099.332061] lr : dev_attr_show+0x2c/0x70
-[ 1099.332078] sp : ffff800017013bc0
-[ 1099.332083] x29: ffff800017013bc0 x28: 0000000000000001 x27: 0000000000400cc0
-[ 1099.332098] x26: 000000007ffff000 x25: ffff482182fce3f8 x24: ffff482182fce3e8
-[ 1099.332112] x23: ffffbc7dd90a4ca0 x22: ffffbc7dd907a230 x21: 0000000000000000
-[ 1099.332125] x20: ffff482182fa2000 x19: 0000000000000000 x18: 0000000000000000
-[ 1099.332139] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-[ 1099.332152] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
-[ 1099.332165] x11: 0000000000000000 x10: 0000000000000000 x9 : ffffbc7e2903e53c
-[ 1099.332178] x8 : ffff482182fa3000 x7 : 0000000000000000 x6 : 0000000000000001
-[ 1099.332191] x5 : 0000000000000004 x4 : 000000000000001f x3 : 0000000000000004
-[ 1099.332203] x2 : 0000000000000000 x1 : ffffbc7dd90a4ca0 x0 : ffff482182fa2000
-[ 1099.332217] Call trace:
-[ 1099.332221]  channels_show+0xdc/0x134 [soundwire_bus]
-[ 1099.332253]  dev_attr_show+0x2c/0x70
-[ 1099.332261]  sysfs_kf_seq_show+0xb8/0x130
-[ 1099.332275]  kernfs_seq_show+0x3c/0x50
-[ 1099.332283]  seq_read_iter+0x1c4/0x4c0
-[ 1099.332300]  kernfs_fop_read_iter+0x150/0x1e0
-[ 1099.332307]  vfs_read+0x204/0x2b0
-[ 1099.332319]  ksys_read+0x74/0x100
-[ 1099.332327]  __arm64_sys_read+0x28/0x34
-[ 1099.332337]  invoke_syscall+0x50/0x120
-[ 1099.332351]  el0_svc_common.constprop.0+0x68/0x124
-[ 1099.332361]  do_el0_svc+0x3c/0xd0
-[ 1099.332370]  el0_svc+0x30/0x94
-[ 1099.332383]  el0t_64_sync_handler+0xc0/0x13c
-[ 1099.332392]  el0t_64_sync+0x18c/0x190
-[ 1099.332408] Code: f9401437 8b130280 f9401ec2 aa1703e1 (b875d842)
-[ 1099.332417] ---[ end trace 0000000000000000 ]---
-[ 1099.338735] Mem abort info:
-[ 1099.338739]   ESR = 0x0000000096000004
-[ 1099.341585]   ESR = 0x0000000096000004
-[ 1099.350447]   EC = 0x25: DABT (current EL), IL = 32 bits
-[ 1099.353294]   EC = 0x25: DABT (current EL), IL = 32 bits
-[ 1099.357101]   SET = 0, FnV = 0
-[ 1099.362456]   SET = 0, FnV = 0
-[ 1099.365548]   EA = 0, S1PTW = 0
-[ 1099.365551]   FSC = 0x04: level 0 translation fault
-[ 1099.365555] Data abort info:
-[ 1099.368741]   EA = 0, S1PTW = 0
-[ 1099.373662]   ISV = 0, ISS = 0x00000004
-[ 1099.373666]   CM = 0, WnR = 0
-[ 1099.373668] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000106f53000
-[ 1099.376587]   FSC = 0x04: level 0 translation fault
-[ 1099.380457] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
-[ 1099.383476] Data abort info:
-[ 1099.389977]
-[ 1099.396829]   ISV = 0, ISS = 0x00000004
-[ 1099.402451] Internal error: Oops: 96000004 [#2] PREEMPT SMP
-[ 1099.402455] Modules linked in: nfc
-[ 1099.490108]   CM = 0, WnR = 0
-[ 1099.499565]  algif_hash snd_soc_hdmi_codec snd_soc_wsa881x
-regmap_sdw gpio_wcd934x snd_soc_wcd934x soundwire_qcom
-snd_soc_wcd_mbhc
-[ 1099.507567] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000101df2000
-[ 1099.513170]  wcd934x regmap_slimbus venus_enc venus_dec
-videobuf2_dma_contig lontium_lt9611 mcp251xfd
-[ 1099.520205] [0000000000000000] pgd=0000000000000000
-[ 1099.525648]  apr can_dev fastrpc qrtr_smd crct10dif_ce snd_soc_sdm845
-[ 1099.529617] , p4d=0000000000000000
-[ 1099.532963]  snd_soc_rt5663 ath10k_snoc hci_uart btqca snd_soc_qcom_common
-[ 1099.540163]
-[ 1099.547352]  qcom_camss ath10k_core btbcm snd_soc_rl6231
-videobuf2_dma_sg ath v4l2_fwnode leds_qcom_lpg rtc_pm8xxx msm
-venus_core led_class_multicolor qcom_spmi_temp_alarm soundwire_bus
-qcom_spmi_adc5 v4l2_async v4l2_mem2mem videobuf2_memops bluetooth
-qcom_vadc_common qcom_pon videobuf2_v4l2 gpu_sched reset_qcom_pdc
-camcc_sdm845 mac80211 drm_dp_aux_bus videobuf2_common gpi
-spi_geni_qcom drm_display_helper i2c_qcom_geni i2c_qcom_cci qcom_rng
-xhci_pci qcom_q6v5_mss cfg80211 xhci_pci_renesas rfkill lmh qrtr
-icc_osm_l3 qcom_q6v5_pas qcom_wdt slim_qcom_ngd_ctrl qcom_pil_info
-qcom_q6v5 pdr_interface qcom_sysmon display_connector slimbus
-qcom_common icc_bwmon qcom_glink_smem qmi_helpers mdt_loader
-drm_kms_helper drm socinfo rmtfs_mem fuse
-[ 1099.901294] CPU: 4 PID: 5357 Comm: read_all Tainted: G      D W
-     6.0.0-rc2 #1
-[ 1099.909780] Hardware name: Thundercomm Dragonboard 845c (DT)
-[ 1099.916074] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[ 1099.923680] pc : channels_show+0xdc/0x134 [soundwire_bus]
-[ 1099.929734] lr : dev_attr_show+0x2c/0x70
-[ 1099.934291] sp : ffff80001759bbc0
-[ 1099.938227] x29: ffff80001759bbc0 x28: 0000000000000001 x27: 0000000000400cc0
-[ 1099.946014] x26: 000000007ffff000 x25: ffff482182ffb290 x24: ffff482182ffb280
-[ 1099.953804] x23: ffffbc7dd90a4ca0 x22: ffffbc7dd907a230 x21: 0000000000000000
-[ 1099.961597] x20: ffff482184c74000 x19: 0000000000000000 x18: 0000000000000000
-[ 1099.969392] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-[ 1099.977186] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
-[ 1099.984977] x11: 0000000000000000 x10: 0000000000000000 x9 : ffffbc7e2903e53c
-[ 1099.992772] x8 : ffff482184c75000 x7 : 0000000000000000 x6 : 0000000000000001
-[ 1100.000564] x5 : 0000000000000004 x4 : 000000000000001f x3 : 0000000000000004
-[ 1100.008357] x2 : 0000000000000000 x1 : ffffbc7dd90a4ca0 x0 : ffff482184c74000
-[ 1100.016151] Call trace:
-[ 1100.019198]  channels_show+0xdc/0x134 [soundwire_bus]
-[ 1100.024888]  dev_attr_show+0x2c/0x70
-[ 1100.029094]  sysfs_kf_seq_show+0xb8/0x130
-[ 1100.033746]  kernfs_seq_show+0x3c/0x50
-[ 1100.038134]  seq_read_iter+0x1c4/0x4c0
-[ 1100.042519]  kernfs_fop_read_iter+0x150/0x1e0
-[ 1100.047502]  vfs_read+0x204/0x2b0
-[ 1100.051441]  ksys_read+0x74/0x100
-[ 1100.055376]  __arm64_sys_read+0x28/0x34
-[ 1100.059860]  invoke_syscall+0x50/0x120
-[ 1100.064250]  el0_svc_common.constprop.0+0x68/0x124
-[ 1100.069697]  do_el0_svc+0x3c/0xd0
-[ 1100.073652]  el0_svc+0x30/0x94
-[ 1100.077348]  el0t_64_sync_handler+0xc0/0x13c
-[ 1100.082265]  el0t_64_sync+0x18c/0x190
-[ 1100.086567] Code: f9401437 8b130280 f9401ec2 aa1703e1 (b875d842)
-[ 1100.093312] ---[ end trace 0000000000000000 ]---
-[ 1100.098577] Internal error: Oops: 96000004 [#3] PREEMPT SMP
-[ 1100.104823] Modules linked in: nfc algif_hash snd_soc_hdmi_codec
-snd_soc_wsa881x regmap_sdw gpio_wcd934x snd_soc_wcd934x soundwire_qcom
-snd_soc_wcd_mbhc wcd934x regmap_slimbus venus_enc venus_dec
-videobuf2_dma_contig lontium_lt9611 mcp251xfd apr can_dev fastrpc
-qrtr_smd crct10dif_ce snd_soc_sdm845 snd_soc_rt5663 ath10k_snoc
-hci_uart btqca snd_soc_qcom_common qcom_camss ath10k_core btbcm
-snd_soc_rl6231 videobuf2_dma_sg ath v4l2_fwnode leds_qcom_lpg
-rtc_pm8xxx msm venus_core led_class_multicolor qcom_spmi_temp_alarm
-soundwire_bus qcom_spmi_adc5 v4l2_async v4l2_mem2mem videobuf2_memops
-bluetooth qcom_vadc_common qcom_pon videobuf2_v4l2 gpu_sched
-reset_qcom_pdc camcc_sdm845 mac80211 drm_dp_aux_bus videobuf2_common
-gpi spi_geni_qcom drm_display_helper i2c_qcom_geni i2c_qcom_cci
-qcom_rng xhci_pci qcom_q6v5_mss cfg80211 xhci_pci_renesas rfkill lmh
-qrtr icc_osm_l3 qcom_q6v5_pas qcom_wdt slim_qcom_ngd_ctrl
-qcom_pil_info qcom_q6v5 pdr_interface qcom_sysmon display_connector
-slimbus qcom_common
-[ 1100.104934]  icc_bwmon qcom_glink_smem qmi_helpers mdt_loader
-drm_kms_helper drm socinfo rmtfs_mem fuse
-[ 1100.206234] CPU: 5 PID: 5359 Comm: read_all Tainted: G      D W
-     6.0.0-rc2 #1
-[ 1100.214849] Hardware name: Thundercomm Dragonboard 845c (DT)
-[ 1100.221306] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[ 1100.229086] pc : channels_show+0xdc/0x134 [soundwire_bus]
-[ 1100.235271] lr : dev_attr_show+0x2c/0x70
-[ 1100.239990] sp : ffff8000175cbbc0
-[ 1100.244090] x29: ffff8000175cbbc0 x28: 0000000000000001 x27: 0000000000400cc0
-[ 1100.252040] x26: 000000007ffff000 x25: ffff48218398d470 x24: ffff48218398d460
-[ 1100.259995] x23: ffffbc7dd90a4ca0 x22: ffffbc7dd907a230 x21: 0000000000000000
-[ 1100.267950] x20: ffff482183932000 x19: 0000000000000000 x18: 0000000000000000
-[ 1100.275908] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-[ 1100.283861] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
-[ 1100.291808] x11: 0000000000000000 x10: 0000000000000000 x9 : ffffbc7e2903e53c
-[ 1100.299759] x8 : ffff482183933000 x7 : 0000000000000000 x6 : 0000000000000001
-[ 1100.307704] x5 : 0000000000000004 x4 : 000000000000001f x3 : 0000000000000004
-[ 1100.315635] x2 : 0000000000000000 x1 : ffffbc7dd90a4ca0 x0 : ffff482183932000
-[ 1100.323557] Call trace:
-[ 1100.326742]  channels_show+0xdc/0x134 [soundwire_bus]
-[ 1100.332564]  dev_attr_show+0x2c/0x70
-[ 1100.336886]  sysfs_kf_seq_show+0xb8/0x130
-[ 1100.341647]  kernfs_seq_show+0x3c/0x50
-[ 1100.346138]  seq_read_iter+0x1c4/0x4c0
-[ 1100.350606]  kernfs_fop_read_iter+0x150/0x1e0
-[ 1100.355658]  vfs_read+0x204/0x2b0
-[ 1100.359642]  ksys_read+0x74/0x100
-[ 1100.363599]  __arm64_sys_read+0x28/0x34
-[ 1100.368071]  invoke_syscall+0x50/0x120
-[ 1100.372450]  el0_svc_common.constprop.0+0x68/0x124
-[ 1100.377879]  do_el0_svc+0x3c/0xd0
-[ 1100.381814]  el0_svc+0x30/0x94
-[ 1100.385487]  el0t_64_sync_handler+0xc0/0x13c
-[ 1100.390385]  el0t_64_sync+0x18c/0x190
-[ 1100.394662] Code: f9401437 8b130280 f9401ec2 aa1703e1 (b875d842)
-[ 1100.401390] ---[ end trace 0000000000000000 ]---
-Test timeouted, sending SIGKILL!
-tst_test.c:1478: TINFO: If you are running on slow machine, try
-exporting LTP_TIMEOUT_MUL > 1
-tst_test.c:1480: TBROK: Test killed! (timeout?)
+5.20.0-0.rc0.aea23e7c464b
+https://s3.us-east-1.amazonaws.com/arr-cki-prod-datawarehouse-public/datawarehouse-public/2022/08/14/redhat:613063904/build_x86_64_redhat:613063904_x86_64_debug/tests/2/results_0001/job.01/recipes/12440847/tasks/9/logs/syscalls.fail.log
 
-ref:
-https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v6.0-rc2-54-gc40e8341e3b3/testrun/11557426/suite/log-parser-test/tests/
+> I didn't see anything happening in the fanotify10
+> test upstream. If the issue still happens, maybe something like the
+> attached patch may improve the situation? Jan, do you have a chance to test
+> it?
 
-metadata:
-  artifact-location: https://builds.tuxbuild.com/2Dmj8axHFHLJ7YdTYjhOEGppduR
-  build-url: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline/-/pipelines/621141375
-  git_describe: v6.0-rc2-54-gc40e8341e3b3
-  git_ref: master
-  git_repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
-  kernel-config: https://builds.tuxbuild.com/2Dmj8axHFHLJ7YdTYjhOEGppduR/config
-  System.map: https://builds.tuxbuild.com/2Dmj8axHFHLJ7YdTYjhOEGppduR/System.map
-  vmlinux.xz: https://builds.tuxbuild.com/2Dmj8axHFHLJ7YdTYjhOEGppduR/vmlinux.xz
-  kernel_version: 6.0.0-rc2
-  ltp-fs-tests:
-  toolchain: gcc-11
+I can't reproduce failure on demand. If the patch doesn't have any
+side-effects, then let's apply it, and we'll see in couple weeks.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Regards,
+Jan
+
+>
+>                                                                 Honza
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
