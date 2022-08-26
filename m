@@ -4,63 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E293DECAAA3
-	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 05:55:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E94C1ECAAD2
+	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 06:11:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 294B43CA4A5
-	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 07:55:36 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 7A0C93CA436
+	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 08:11:40 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0A7A53C8CA7
- for <ltp@lists.linux.it>; Fri, 26 Aug 2022 07:55:26 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 798233CA3D7
+ for <ltp@lists.linux.it>; Fri, 26 Aug 2022 08:11:31 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 25223600713
- for <ltp@lists.linux.it>; Fri, 26 Aug 2022 07:55:25 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 0F22A1FA84;
- Fri, 26 Aug 2022 05:55:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1661493325;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=QKDtcB4lrJKxakujC10NykJpwzOfJm5TQBFyP6MLHA0=;
- b=eaV1Lv8CMd1mLAMRMHlq+HJhueHtSNUV4vedjpxRmrNJUmUIWTVIxi04eVlO67vMjzak2K
- ZRmigx/m9I/iej2fkVCrfagdSBN4ci4b8d5rLKPiyaM4T3CQvik4YHozNWIM+TANg0qDj2
- OwoMB/Ci8LPS4sccroLCRJ3X6hfBpOw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1661493325;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=QKDtcB4lrJKxakujC10NykJpwzOfJm5TQBFyP6MLHA0=;
- b=Uk/udboLR3NLmiUN5q5dSBi/coeIBviw8xm13y1u3hl3rfT9MLMwZkqjaCAf+p9Msix6DE
- QMtbF6qZZbhn+rCQ==
-Received: from g78 (unknown [10.163.24.226])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 57EB41400519
+ for <ltp@lists.linux.it>; Fri, 26 Aug 2022 08:11:29 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id D259C2C142;
- Fri, 26 Aug 2022 05:55:24 +0000 (UTC)
-References: <871qt42tev.fsf@suse.de>
- <1661486365-2361-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1661486365-2361-2-git-send-email-xuyang2018.jy@fujitsu.com>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Fri, 26 Aug 2022 06:54:26 +0100
-In-reply-to: <1661486365-2361-2-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <87o7w71rcj.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5A8AC336FC;
+ Fri, 26 Aug 2022 06:11:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1661494289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=pbjPMaxW9LTe1/xFwgBPlk36VUJ6V7TzwzibpQP3+LA=;
+ b=tMA3hRMYRIf1nAKbvSFfsnH712QRcXTpe3TrBOFoJ9CIAc9Qa6LdKdAMNa70LVBdhAWCGR
+ bO/i44iVS2W+sPu3oZI7vFaq0eX2JqPS3vHInZnErcqIGD5n1gT40oP3CuqUJFWeu/VB4U
+ /5JjrFvIW2SjhAKPb/foS/SpJWxWWxY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1661494289;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=pbjPMaxW9LTe1/xFwgBPlk36VUJ6V7TzwzibpQP3+LA=;
+ b=R1PpF0iuUNKWm9NBhAehhaj2hyHqdbugBvRqEhxdfXE09aWnpYFVybGlJ4W0EXV+NSw8OQ
+ +l+zwpg/EcLeiVAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5A20413A7E;
+ Fri, 26 Aug 2022 06:11:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id oklrBxBkCGMmcAAAMHmgww
+ (envelope-from <akumar@suse.de>); Fri, 26 Aug 2022 06:11:28 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Fri, 26 Aug 2022 11:41:25 +0530
+Message-ID: <2649941.mvXUDI8C0e@localhost>
+Organization: SUSE
+In-Reply-To: <87sflk1dn1.fsf@suse.de>
+References: <20220825135528.19653-1-akumar@suse.de>
+ <20220825135528.19653-2-akumar@suse.de> <87sflk1dn1.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 2/3] tst_cgroup: Add safe_cg_open and
- safe_cg_fchown functions
+Subject: Re: [LTP] [PATCH 2/2] inotify_init1_02.c: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,47 +77,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi Richie,
 
-Yang Xu <xuyang2018.jy@fujitsu.com> writes:
+On Thursday, August 25, 2022 10:06:29 PM IST Richard Palethorpe wrote:
+> Hello,
+> 
+> > -}
+> > +static struct tst_test test = {
+> > +	.test_all = run,
+> > +	.needs_tmpdir = 1
+> 
+> Both conversions look perfect, but do we need a temp dir? It doesn't
+> look like the tests use the file system.
+Yes, my bad. No need of temp dir.
+Should I send updated patch or will you update before merging?
+> 
+> 
 
-> safe_cg_open is used to open the sub controller's file ie cgroup.procs
-> and returns the opened fd number. The opened fd array is stored in
-> fds argument.
->
-> safe_cg_fchown is used to use fchownat to change file's uid and gid.
->
-> Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-> ---
->  include/tst_cgroup.h | 21 +++++++++++++++++++++
->  lib/tst_cgroup.c     | 41 +++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 62 insertions(+)
->
-> diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
-> index d06847cc6..db959380f 100644
-> --- a/include/tst_cgroup.h
-> +++ b/include/tst_cgroup.h
-> @@ -89,6 +89,9 @@ enum tst_cg_ver {
->  	TST_CG_V2 = 2,
->  };
->  
-> +/* This value is equal to ROOTS_MAX in tst_cgroup.c. */
-> +#define TST_CG_ROOTS_MAX 32
+Thanks,
+Avinesh
 
-Thanks, pushed with small change to this comment. Because
-TST_CG_ROOTS_MAX is actually greater than ROOTS_MAX.
 
--- 
-Thank you,
-Richard.
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
