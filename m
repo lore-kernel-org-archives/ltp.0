@@ -4,63 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6CF5ECAAD2
-	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 08:57:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F3CFECAAD2
+	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 09:12:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D5D73CA4D7
-	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 10:57:05 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 719C63CA49C
+	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 11:12:18 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5BF663CA03B
- for <ltp@lists.linux.it>; Fri, 26 Aug 2022 10:56:54 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id C32223CA3D7
+ for <ltp@lists.linux.it>; Fri, 26 Aug 2022 11:12:07 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8E50F200903
- for <ltp@lists.linux.it>; Fri, 26 Aug 2022 10:56:53 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id DDFC733735;
- Fri, 26 Aug 2022 08:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1661504212;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HLw0B19JwMDOReoiGstN1phfcvCwfrZXrqgh2M2PcZQ=;
- b=NIAddBs1AuUxymSVWPhMEITEAHQ9rx6D8l5TMaYsjolkrFl04tmxQC992MJ/5uhS4SGzEO
- 2CCufIisC/7kGloThWK5Ggp+xXuJU71o9L7ZwTT7SCxNdv4AzvTKufo59cP92cvPoO7oUj
- X9jOARCFZt3P+vOPJNFk/HBcL57ezRU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1661504212;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=HLw0B19JwMDOReoiGstN1phfcvCwfrZXrqgh2M2PcZQ=;
- b=y+JlBVSFZPwn2GmiHqEgYDD4YVdlrqj3pHS4I2zS9mGJrjkEozh9mp1uiJ+lMRtxeMFcMQ
- JkxPwEEU+UU35EBw==
-Received: from g78 (unknown [10.163.24.226])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 87B151A008B0
+ for <ltp@lists.linux.it>; Fri, 26 Aug 2022 11:12:06 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id A844C2C141;
- Fri, 26 Aug 2022 08:56:52 +0000 (UTC)
-References: <20220824124017.14286-1-andrea.cervesato@suse.com>
- <87bks71nwg.fsf@suse.de> <d64a2ccf-ee24-d4cf-17a7-bd32556a9570@suse.com>
- <a369a07d-9401-0437-2647-9a5f1737b732@suse.com>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Date: Fri, 26 Aug 2022 09:50:19 +0100
-In-reply-to: <a369a07d-9401-0437-2647-9a5f1737b732@suse.com>
-Message-ID: <8735dj1iy3.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9A3A81F949;
+ Fri, 26 Aug 2022 09:12:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1661505125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=xo5a+75akg0tcPrT1OoIlKJt+55iyhSh7ihW0YWsvY0=;
+ b=cTAbG/hnXHbHWJtpgPSxCzVqGo8lYj1EJ7kShXT/4ibW42JTJBigAS1btoXlGxH1WE9KTj
+ 0FJAAkcNYU/jUYYMgIf54mz/fHwhLl4J6R4eBTVIEJ7s7yXyCQpdqxCIADikf/ciuRl1QQ
+ KmffjpaDCBIs0mS75UMn7pDTdh8NTHU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71E4913421;
+ Fri, 26 Aug 2022 09:12:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id N07qGWWOCGPfOQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Fri, 26 Aug 2022 09:12:05 +0000
+To: ltp@lists.linux.it
+Date: Fri, 26 Aug 2022 11:11:14 +0200
+Message-Id: <20220826091114.3423-1-andrea.cervesato@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Rewrite process_vm01 test using new LTP API
+Subject: [LTP] [PATCH v2] Rewrite process_vm01 test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,72 +62,620 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGVsbG8sDQoNCkFuZHJlYSBDZXJ2ZXNhdG8gdmlhIGx0cCA8bHRwQGxpc3RzLmxpbnV4Lml0PiB3
-cml0ZXM6DQoNCj4gT24gOC8yNi8yMiAxMDo0MCwgQW5kcmVhIENlcnZlc2F0byB2aWEgbHRwIHdy
-b3RlOg0KPj4gSGkhDQo+Pg0KPj4gT24gOC8yNi8yMiAwOTowNCwgUmljaGFyZCBQYWxldGhvcnBl
-IHdyb3RlOg0KPj4+IEhlbGxvLA0KPj4+DQo+Pj4gQW5kcmVhIENlcnZlc2F0byB2aWEgbHRwIDxs
-dHBAbGlzdHMubGludXguaXQ+IHdyaXRlczoNCj4+Pg0KPj4+PiAtc3RhdGljIHZvaWQgY21hX3Rl
-c3RfaW52YWxpZF9wZXJtKHZvaWQpDQo+Pj4+ICtzdGF0aWMgdm9pZCB0ZXN0X2ludmFsaWRfcGVy
-bSh2b2lkKQ0KPj4+PiDCoCB7DQo+Pj4+IMKgwqDCoMKgwqAgY2hhciBub2JvZHlfdWlkW10gPSAi
-bm9ib2R5IjsNCj4+Pj4gwqDCoMKgwqDCoCBzdHJ1Y3QgcGFzc3dkICpsdHB1c2VyOw0KPj4+PiAt
-wqDCoMKgIGludCBzdGF0dXM7DQo+Pj4+IMKgwqDCoMKgwqAgc3RydWN0IHByb2Nlc3Nfdm1fcGFy
-YW1zICpwYXJhbXM7DQo+Pj4+IMKgwqDCoMKgwqAgcGlkX3QgY2hpbGRfcGlkOw0KPj4+PiDCoMKg
-wqDCoMKgIHBpZF90IHBhcmVudF9waWQ7DQo+Pj4+IC3CoMKgwqAgaW50IHJldCA9IDA7DQo+Pj4+
-ICvCoMKgwqAgaW50IHN0YXR1czsNCj4+Pj4gKw0KPj4+PiArwqDCoMKgIHRzdF9yZXMoVElORk8s
-ICJUZXN0aW5nIGludmFsaWQgcGVybWlzc2lvbnMgb24gZ2l2ZW4gUElEIik7DQo+Pj4+IMKgIC3C
-oMKgwqAgdHN0X3Jlc20oVElORk8sICJ0ZXN0X2ludmFsaWRfcGVybSIpOw0KPj4+PiDCoMKgwqDC
-oMKgIHBhcmVudF9waWQgPSBnZXRwaWQoKTsNCj4+Pj4gLcKgwqDCoCBjaGlsZF9waWQgPSBmb3Jr
-KCk7DQo+Pj4+IC3CoMKgwqAgc3dpdGNoIChjaGlsZF9waWQpIHsNCj4+Pj4gLcKgwqDCoCBjYXNl
-IC0xOg0KPj4+PiAtwqDCoMKgwqDCoMKgwqAgdHN0X2Jya20oVEJST0sgfCBURVJSTk8sIGNsZWFu
-dXAsICJmb3JrIik7DQo+Pj4+IC3CoMKgwqDCoMKgwqDCoCBicmVhazsNCj4+Pj4gLcKgwqDCoCBj
-YXNlIDA6DQo+Pj4+IC3CoMKgwqDCoMKgwqDCoCBsdHB1c2VyID0gZ2V0cHduYW0obm9ib2R5X3Vp
-ZCk7DQo+Pj4+IC3CoMKgwqDCoMKgwqDCoCBpZiAobHRwdXNlciA9PSBOVUxMKQ0KPj4+PiAtwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCB0c3RfYnJrbShUQlJPSyB8IFRFUlJOTywgTlVMTCwgImdldHB3
-bmFtIGZhaWxlZCIpOw0KPj4+PiAtwqDCoMKgwqDCoMKgwqAgU0FGRV9TRVRVSUQoTlVMTCwgbHRw
-dXNlci0+cHdfdWlkKTsNCj4+Pj4gLQ0KPj4+PiAtwqDCoMKgwqDCoMKgwqAgcGFyYW1zID0gY21h
-X2FsbG9jX3NhbmVfcGFyYW1zKCk7DQo+Pj4+ICvCoMKgwqAgY2hpbGRfcGlkID0gU0FGRV9GT1JL
-KCk7DQo+Pj4+ICvCoMKgwqAgaWYgKCFjaGlsZF9waWQpIHsNCj4+Pj4gK8KgwqDCoMKgwqDCoMKg
-IGx0cHVzZXIgPSBTQUZFX0dFVFBXTkFNKG5vYm9keV91aWQpOw0KPj4+PiArwqDCoMKgwqDCoMKg
-wqAgU0FGRV9TRVRVSUQobHRwdXNlci0+cHdfdWlkKTsNCj4+Pj4gKw0KPj4+PiArwqDCoMKgwqDC
-oMKgwqAgcGFyYW1zID0gYWxsb2NfcGFyYW1zKCk7DQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBw
-YXJhbXMtPnBpZCA9IHBhcmVudF9waWQ7DQo+Pj4+IC3CoMKgwqDCoMKgwqDCoCBjbWFfdGVzdF9w
-YXJhbXMocGFyYW1zKTsNCj4+Pj4gLcKgwqDCoMKgwqDCoMKgIHJldCB8PSBjbWFfY2hlY2tfcmV0
-KC0xLCBURVNUX1JFVFVSTik7DQo+Pj4+IC3CoMKgwqDCoMKgwqDCoCByZXQgfD0gY21hX2NoZWNr
-X2Vycm5vKEVQRVJNKTsNCj4+Pj4gLcKgwqDCoMKgwqDCoMKgIGNtYV9mcmVlX3BhcmFtcyhwYXJh
-bXMpOw0KPj4+PiAtwqDCoMKgwqDCoMKgwqAgZXhpdChyZXQpOw0KPj4+PiAtwqDCoMKgIGRlZmF1
-bHQ6DQo+Pj4+IC3CoMKgwqDCoMKgwqDCoCBTQUZFX1dBSVRQSUQoY2xlYW51cCwgY2hpbGRfcGlk
-LCAmc3RhdHVzLCAwKTsNCj4+Pj4gLcKgwqDCoMKgwqDCoMKgIGlmICghV0lGRVhJVEVEKHN0YXR1
-cykgfHwgV0VYSVRTVEFUVVMoc3RhdHVzKSAhPSAwKQ0KPj4+PiAtwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCB0c3RfcmVzbShURkFJTCwgImNoaWxkIHJldHVybnMgJWQiLCBzdGF0dXMpOw0KPj4+PiAr
-wqDCoMKgwqDCoMKgwqAgdGVzdF9wYXJhbXMocGFyYW1zKTsNCj4+Pj4gK8KgwqDCoMKgwqDCoMKg
-IFRTVF9FWFBfRVFfTEkoVFNUX1JFVCwgLTEpOw0KPj4+PiArwqDCoMKgwqDCoMKgwqAgY2hlY2tf
-ZXJybm8oRVBFUk0pOw0KPj4+PiArwqDCoMKgwqDCoMKgwqAgZnJlZV9wYXJhbXMocGFyYW1zKTsN
-Cj4+Pj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybjsNCj4+Pj4gwqDCoMKgwqDCoCB9DQo+Pj4+ICsN
-Cj4+Pj4gK8KgwqDCoCBTQUZFX1dBSVRQSUQoY2hpbGRfcGlkLCAmc3RhdHVzLCAwKTsNCj4+PiBX
-ZSB3YW50IHRvIHVzZSB0c3RfcmVhcF9jaGlsZHJlbigpIGhlcmUgd2hpY2ggd2lsbCBjaGVjayB0
-aGUgZXhpdA0KPj4+IHN0YXR1cy4NCj4+Pg0KPj4+IEluIGZhY3QsIGlmIFNBRkVfV0FJVFBJRCBp
-cyByZW1vdmVkIGFsdG9nZXRoZXIgdGhlbiB0aGUgZXhpdCBzdGF0dXMgd2lsbA0KPj4+IGJlIGNo
-ZWNrZWQgYXV0b21hdGljYWxseSBhdCB0aGUgZW5kIG9mIHRoZSB0ZXN0IHdoZW4gdGhlIGxpYiBj
-YWxscw0KPj4+IHJlYXBfY2hpbGRyZW4uDQo+Pj4NCj4+PiBPdGhlcndpc2UgTEdUTSENCj4+Pg0K
-Pj4gSXNuJ3QgdHN0X3JlYXBfY2hpbGRyZWFkKCkgYWxyZWFkeSBjYWxsZWQgYXQgdGhlIGVuZCBv
-ZiB0aGUgdGVzdF9hbGwNCj4+IGZ1bmN0aW9uPyAodHN0X3Rlc3QuYzoxMzU0KQ0KPj4NCj4+IEFu
-ZHJlYQ0KPj4NCj4+DQo+IFRoZSByZWFzb24gd2h5IEknbSB1c2luZyBTQUZFX1dBSVRQSUQgaGVy
-ZSBpcyB0aGF0IHRoZXJlIGFyZSBtYW55DQo+IG90aGVyIHRlc3QgZnVuY3Rpb25zIGFuZCB3aGVu
-IHRlc3RfaW52YWxpZF9wZXJtIGlzIGNhbGxlZCB3aXRob3V0IGl0LA0KPiB0aGUgdHN0X3JlcyBt
-ZXNzYWdlcyBtaWdodCBjb21lIG91dCBhc3luY2hyb25vdXNseSB3aXRoIHRoZSBvdGhlcg0KPiB0
-ZXN0cyBtZXNzYWdlcy4NCg0KSWYgYXN5bmNocm9ub3VzIG1lc3NhZ2VzIGFyZSBhIHByb2JsZW0g
-dGhlbiB5b3UgY2FuIGV4cGxpY2l0bHkgY2FsbA0KdHN0X3JlYXBfY2hpbGRyZW4oKSBhZnRlciBm
-b3JrLiBJZiB5b3UgdXNlIFNBRkVfV0FJVFBJRCB0aGVuIHlvdSBuZWVkIHRvDQpjaGVjayB0aGUg
-ZXhpdCBzdGF0dXMgbWFudWFsbHksIGl0IHdvbid0IGdldCBjaGVja2VkIGxhdGVyIGJ5IHRoZSBj
-YWxsDQp0byB0c3RfcmVhcF9jaGlsZHJlbiBpbiB0c3RfdGVzdC5jLiBCZWNhdXNlIHRoZSBjaGls
-ZCBwcm9jZXNzIGhhcw0KYWxyZWFkeSBiZWVuIHJlYXBlZCBieSB3YWl0cGlkLg0KDQpJIGRvbid0
-IGhhdmUgYSBzdHJvbmcgb3BpbmlvbiBvbiB3aGV0aGVyIGFzeW5jaHJvbm91cyBtZXNzYWdlcyBh
-cmUgYQ0KcHJvYmxlbS4NCg0KLS0gDQpUaGFuayB5b3UsDQpSaWNoYXJkLg0KCi0tIApNYWlsaW5n
-IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Now test is run on process_vm_writev by default and process_vm_readv can
+be selected by passing -r command line option.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ runtest/syscalls                             |   2 +-
+ testcases/kernel/syscalls/cma/process_vm01.c | 465 ++++++++-----------
+ 2 files changed, 189 insertions(+), 278 deletions(-)
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9d58e0aa1..da68d3edb 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1030,7 +1030,7 @@ profil01 profil01
+ process_vm_readv01 process_vm01 -r
+ process_vm_readv02 process_vm_readv02
+ process_vm_readv03 process_vm_readv03
+-process_vm_writev01 process_vm01 -w
++process_vm_writev01 process_vm01
+ process_vm_writev02 process_vm_writev02
+ 
+ prot_hsymlinks prot_hsymlinks
+diff --git a/testcases/kernel/syscalls/cma/process_vm01.c b/testcases/kernel/syscalls/cma/process_vm01.c
+index 16f14d66b..014fd6fff 100644
+--- a/testcases/kernel/syscalls/cma/process_vm01.c
++++ b/testcases/kernel/syscalls/cma/process_vm01.c
+@@ -1,47 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright (C) 2012 Linux Test Project, Inc.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
++ * Copyright (c) Linux Test Project, 2012
++ * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+  */
+ 
+-/*
+- * errno tests shared by process_vm_readv, process_vm_writev tests.
++/*\
++ * [Description]
++ *
++ * Test errno codes in process_vm_readv and process_vm_writev syscalls.
+  */
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/syscall.h>
+-#include <sys/uio.h>
+-#include <sys/wait.h>
+-#include <sys/mman.h>
+-#include <errno.h>
+-#include <signal.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+-#include <limits.h>
++
+ #include <pwd.h>
+-#include "config.h"
+-#include "test.h"
+-#include "safe_macros.h"
++#include <stdlib.h>
++#include "tst_test.h"
+ #include "lapi/syscalls.h"
+ 
+ struct process_vm_params {
+@@ -56,137 +27,27 @@ struct process_vm_params {
+ 	unsigned long flags;
+ };
+ 
+-static int rflag;
+-static int wflag;
+-
+-static option_t options[] = {
+-	{"r", &rflag, NULL},
+-	{"w", &wflag, NULL},
+-	{NULL, NULL, NULL}
+-};
+-
+-static char TCID_readv[] = "process_vm_readv";
+-static char TCID_writev[] = "process_vm_writev";
+-char *TCID = "cma01";
+-int TST_TOTAL = 1;
+-static void (*cma_test_params) (struct process_vm_params * params) = NULL;
+-
+-static void setup(char *argv[]);
+-static void cleanup(void);
+-static void help(void);
+-
+-static void cma_test_params_read(struct process_vm_params *params);
+-static void cma_test_params_write(struct process_vm_params *params);
+-static void cma_test_errnos(void);
+-
+-int main(int argc, char *argv[])
+-{
+-	int lc;
+-
+-	tst_parse_opts(argc, argv, options, &help);
+-
+-	setup(argv);
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-		cma_test_errnos();
+-	}
+-	cleanup();
+-	tst_exit();
+-}
+-
+-static void setup(char *argv[])
+-{
+-	tst_require_root();
+-
+-	if (rflag && wflag)
+-		tst_brkm(TBROK, NULL, "Parameters -r -w can not be used"
+-			 " at the same time.");
+-	else if (rflag) {
+-		TCID = TCID_readv;
+-		cma_test_params = cma_test_params_read;
+-	} else if (wflag) {
+-		TCID = TCID_writev;
+-		cma_test_params = cma_test_params_write;
+-	} else
+-		tst_brkm(TBROK, NULL, "Parameter missing, required -r or -w.");
+-	TEST_PAUSE;
+-}
+-
+-static void cleanup(void)
+-{
+-}
+-
+-static void help(void)
+-{
+-	printf("  -r      Use process_vm_readv\n");
+-	printf("  -w      Use process_vm_writev\n");
+-}
+-
+-static void cma_test_params_read(struct process_vm_params *params)
+-{
+-	TEST(tst_syscall(__NR_process_vm_readv,
+-			 params->pid,
+-			 params->lvec, params->liovcnt,
+-			 params->rvec, params->riovcnt,
+-			 params->flags));
+-}
+-
+-static void cma_test_params_write(struct process_vm_params *params)
+-{
+-	TEST(tst_syscall(__NR_process_vm_writev,
+-			 params->pid,
+-			 params->lvec, params->liovcnt,
+-			 params->rvec, params->riovcnt,
+-			 params->flags));
+-}
+-
+-static int cma_check_ret(long expected_ret, long act_ret)
+-{
+-	if (expected_ret == act_ret) {
+-		tst_resm(TPASS, "expected ret success - "
+-			 "returned value = %ld", act_ret);
+-	} else {
+-		tst_resm(TFAIL, "unexpected failure - "
+-			 "returned value = %ld, expected: %ld",
+-			 act_ret, expected_ret);
+-		return 1;
+-	}
+-	return 0;
+-}
+-
+-static int cma_check_errno(long expected_errno)
+-{
+-	if (TEST_ERRNO == expected_errno)
+-		tst_resm(TPASS | TTERRNO, "expected failure");
+-	else if (TEST_ERRNO == 0) {
+-		tst_resm(TFAIL, "call succeeded unexpectedly");
+-		return 1;
+-	} else {
+-		tst_resm(TFAIL | TTERRNO, "unexpected failure - "
+-			 "expected = %ld : %s, actual",
+-			 expected_errno, strerror(expected_errno));
+-		return 2;
+-	}
+-	return 0;
+-}
++static char *str_read;
++static void (*test_params)(struct process_vm_params *params);
+ 
+-static struct process_vm_params *cma_alloc_sane_params(void)
++static struct process_vm_params *alloc_params(void)
+ {
+ 	struct process_vm_params *sane_params;
+ 	int len;
+ 
+ 	len = getpagesize();
+-	sane_params = SAFE_MALLOC(NULL, sizeof(struct process_vm_params));
++
++	sane_params = SAFE_MALLOC(sizeof(struct process_vm_params));
+ 	sane_params->len = len;
+-	sane_params->ldummy = SAFE_MALLOC(NULL, len);
+-	sane_params->rdummy = SAFE_MALLOC(NULL, len);
++	sane_params->ldummy = SAFE_MALLOC(len);
++	sane_params->rdummy = SAFE_MALLOC(len);
+ 
+-	sane_params->lvec = SAFE_MALLOC(NULL, sizeof(struct iovec));
++	sane_params->lvec = SAFE_MALLOC(sizeof(struct process_vm_params));
+ 	sane_params->lvec->iov_base = sane_params->ldummy;
+ 	sane_params->lvec->iov_len = len;
+ 	sane_params->liovcnt = 1;
+ 
+-	sane_params->rvec = SAFE_MALLOC(NULL, sizeof(struct iovec));
++	sane_params->rvec = SAFE_MALLOC(sizeof(struct process_vm_params));
+ 	sane_params->rvec->iov_base = sane_params->rdummy;
+ 	sane_params->rvec->iov_len = len;
+ 	sane_params->riovcnt = 1;
+@@ -197,7 +58,7 @@ static struct process_vm_params *cma_alloc_sane_params(void)
+ 	return sane_params;
+ }
+ 
+-static void cma_free_params(struct process_vm_params *params)
++static void free_params(struct process_vm_params *params)
+ {
+ 	if (params) {
+ 		free(params->ldummy);
+@@ -208,195 +69,245 @@ static void cma_free_params(struct process_vm_params *params)
+ 	}
+ }
+ 
+-static void cma_test_sane_params(void)
++static void test_readv(struct process_vm_params *params)
++{
++	TEST(tst_syscall(__NR_process_vm_readv,
++		params->pid,
++		params->lvec, params->liovcnt,
++		params->rvec, params->riovcnt,
++		params->flags));
++}
++
++static void test_writev(struct process_vm_params *params)
++{
++	TEST(tst_syscall(__NR_process_vm_writev,
++		params->pid,
++		params->lvec, params->liovcnt,
++		params->rvec, params->riovcnt,
++		params->flags));
++}
++
++static void check_errno(long expected_errno)
++{
++	if (TST_ERR == expected_errno)
++		tst_res(TPASS | TTERRNO, "expected failure");
++	else if (TST_ERR == 0)
++		tst_res(TFAIL, "call succeeded unexpectedly");
++	else
++		tst_res(TFAIL | TTERRNO, "unexpected failure - "
++			"expected = %ld : %s, actual",
++			expected_errno, strerror(expected_errno));
++}
++
++static void test_sane_params(void)
+ {
+ 	struct process_vm_params *sane_params;
+ 
+-	sane_params = cma_alloc_sane_params();
+-	tst_resm(TINFO, "test_sane_params");
+-	cma_test_params(sane_params);
+-	cma_check_ret(sane_params->len, TEST_RETURN);
+-	cma_free_params(sane_params);
++	tst_res(TINFO, "Testing sane parameters");
++
++	sane_params = alloc_params();
++	test_params(sane_params);
++	TST_EXP_EQ_LI(TST_RET, sane_params->len);
++	free_params(sane_params);
+ }
+ 
+-static void cma_test_flags(void)
++static void test_flags(void)
+ {
+ 	struct process_vm_params *params;
+ 	long flags[] = { -INT_MAX, -1, 1, INT_MAX, 0 };
+-	int flags_size = sizeof(flags) / sizeof(flags[0]);
++	int flags_size = ARRAY_SIZE(flags) / sizeof(flags[0]);
+ 	int i;
+ 
+-	params = cma_alloc_sane_params();
++	params = alloc_params();
++
+ 	for (i = 0; i < flags_size; i++) {
+ 		params->flags = flags[i];
+-		tst_resm(TINFO, "test_flags, flags=%ld", flags[i]);
+-		cma_test_params(params);
++
++		tst_res(TINFO, "Testing flags=%ld", flags[i]);
++		test_params(params);
++
+ 		/* atm. only flags == 0 is allowed, everything else
+-		 * should fail with EINVAL */
++		 * should fail with EINVAL
++		 */
+ 		if (flags[i] != 0) {
+-			cma_check_ret(-1, TEST_RETURN);
+-			cma_check_errno(EINVAL);
++			TST_EXP_EQ_LI(TST_RET, -1);
++			check_errno(EINVAL);
+ 		} else {
+-			cma_check_ret(params->len, TEST_RETURN);
++			TST_EXP_EQ_LI(TST_RET, params->len);
+ 		}
+ 	}
+-	cma_free_params(params);
++
++	free_params(params);
+ }
+ 
+-static void cma_test_iov_len_overflow(void)
++static void test_iov_len_overflow(void)
+ {
+ 	struct process_vm_params *params;
+-	ssize_t maxlen = -1;
+-	params = cma_alloc_sane_params();
+-
+-	params->lvec->iov_len = maxlen;
+-	params->rvec->iov_len = maxlen;
+-	tst_resm(TINFO, "test_iov_len_overflow");
+-	cma_test_params(params);
+-	cma_check_ret(-1, TEST_RETURN);
+-	cma_check_errno(EINVAL);
+-	cma_free_params(params);
++
++	tst_res(TINFO, "Testing iov_len = -1");
++
++	params = alloc_params();
++	params->lvec->iov_len = -1;
++	params->rvec->iov_len = -1;
++	test_params(params);
++	TST_EXP_EQ_LI(TST_RET, -1);
++	check_errno(EINVAL);
++	free_params(params);
+ }
+ 
+-static void cma_test_iov_invalid(void)
++static void test_iov_invalid(void)
+ {
+ 	struct process_vm_params *sane_params;
+ 	struct process_vm_params params_copy;
+ 
+-	sane_params = cma_alloc_sane_params();
+-	/* make a shallow copy we can 'damage' */
++	sane_params = alloc_params();
+ 
++	tst_res(TINFO, "Testing lvec->iov_base = -1");
+ 	params_copy = *sane_params;
+-	tst_resm(TINFO, "test_iov_invalid - lvec->iov_base");
+ 	params_copy.lvec->iov_base = (void *)-1;
+-	cma_test_params(&params_copy);
+-	cma_check_ret(-1, TEST_RETURN);
+-	cma_check_errno(EFAULT);
++	test_params(&params_copy);
++	TST_EXP_EQ_LI(TST_RET, -1);
++	check_errno(EFAULT);
+ 
++	tst_res(TINFO, "Testing rvec->iov_base = -1");
+ 	params_copy = *sane_params;
+-	tst_resm(TINFO, "test_iov_invalid - rvec->iov_base");
+ 	params_copy.rvec->iov_base = (void *)-1;
+-	cma_test_params(&params_copy);
+-	cma_check_ret(-1, TEST_RETURN);
+-	cma_check_errno(EFAULT);
++	test_params(&params_copy);
++	TST_EXP_EQ_LI(TST_RET, -1);
++	check_errno(EFAULT);
+ 
++	tst_res(TINFO, "Testing lvec = -1");
+ 	params_copy = *sane_params;
+-	tst_resm(TINFO, "test_iov_invalid - lvec");
+ 	params_copy.lvec = (void *)-1;
+-	cma_test_params(&params_copy);
+-	cma_check_ret(-1, TEST_RETURN);
+-	cma_check_errno(EFAULT);
++	test_params(&params_copy);
++	TST_EXP_EQ_LI(TST_RET, -1);
++	check_errno(EFAULT);
+ 
++	tst_res(TINFO, "Testing rvec = -1");
+ 	params_copy = *sane_params;
+-	tst_resm(TINFO, "test_iov_invalid - rvec");
+ 	params_copy.rvec = (void *)-1;
+-	cma_test_params(&params_copy);
+-	cma_check_ret(-1, TEST_RETURN);
+-	cma_check_errno(EFAULT);
++	test_params(&params_copy);
++	TST_EXP_EQ_LI(TST_RET, -1);
++	check_errno(EFAULT);
+ 
+-	cma_free_params(sane_params);
++	free_params(sane_params);
+ }
+ 
+-static void cma_test_invalid_pid(void)
++static void test_invalid_pid(void)
+ {
+ 	pid_t invalid_pid = -1;
+ 	struct process_vm_params *params;
++	struct process_vm_params params_copy;
+ 
+-	params = cma_alloc_sane_params();
+-	tst_resm(TINFO, "test_invalid_pid");
+-	params->pid = invalid_pid;
+-	cma_test_params(params);
+-	cma_check_ret(-1, TEST_RETURN);
+-	cma_check_errno(ESRCH);
+-	cma_free_params(params);
+-
+-	invalid_pid = tst_get_unused_pid(cleanup);
+-
+-	params = cma_alloc_sane_params();
+-	params->pid = invalid_pid;
+-	cma_test_params(params);
+-	cma_check_ret(-1, TEST_RETURN);
+-	cma_check_errno(ESRCH);
+-	cma_free_params(params);
++	params = alloc_params();
++
++	tst_res(TINFO, "Testing invalid PID");
++	params_copy = *params;
++	params_copy.pid = invalid_pid;
++	test_params(&params_copy);
++	TST_EXP_EQ_LI(TST_RET, -1);
++	check_errno(ESRCH);
++
++	tst_res(TINFO, "Testing unused PID");
++	params_copy = *params;
++	invalid_pid = tst_get_unused_pid();
++	params_copy.pid = invalid_pid;
++	test_params(&params_copy);
++	TST_EXP_EQ_LI(TST_RET, -1);
++	check_errno(ESRCH);
++
++	free_params(params);
+ }
+ 
+-static void cma_test_invalid_perm(void)
++static void test_invalid_perm(void)
+ {
+ 	char nobody_uid[] = "nobody";
+ 	struct passwd *ltpuser;
+-	int status;
+ 	struct process_vm_params *params;
+ 	pid_t child_pid;
+ 	pid_t parent_pid;
+-	int ret = 0;
+ 
+-	tst_resm(TINFO, "test_invalid_perm");
++	tst_res(TINFO, "Testing invalid permissions on given PID");
++
+ 	parent_pid = getpid();
+-	child_pid = fork();
+-	switch (child_pid) {
+-	case -1:
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+-		break;
+-	case 0:
+-		ltpuser = getpwnam(nobody_uid);
+-		if (ltpuser == NULL)
+-			tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
+-		SAFE_SETUID(NULL, ltpuser->pw_uid);
+-
+-		params = cma_alloc_sane_params();
++	child_pid = SAFE_FORK();
++	if (!child_pid) {
++		ltpuser = SAFE_GETPWNAM(nobody_uid);
++		SAFE_SETUID(ltpuser->pw_uid);
++
++		params = alloc_params();
+ 		params->pid = parent_pid;
+-		cma_test_params(params);
+-		ret |= cma_check_ret(-1, TEST_RETURN);
+-		ret |= cma_check_errno(EPERM);
+-		cma_free_params(params);
+-		exit(ret);
+-	default:
+-		SAFE_WAITPID(cleanup, child_pid, &status, 0);
+-		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+-			tst_resm(TFAIL, "child returns %d", status);
++		test_params(params);
++		TST_EXP_EQ_LI(TST_RET, -1);
++		check_errno(EPERM);
++		free_params(params);
++		return;
+ 	}
++
++	/* collect result from child  before the next test, otherwise
++	 * TFAIL/TPASS messages will arrive asynchronously
++	 */
++	tst_reap_children();
+ }
+ 
+-static void cma_test_invalid_protection(void)
++static void test_invalid_protection(void)
+ {
+ 	struct process_vm_params *sane_params;
+ 	struct process_vm_params params_copy;
+-	void *p;
+-
+-	sane_params = cma_alloc_sane_params();
+-	/* make a shallow copy we can 'damage' */
++	void *data;
++	int len;
+ 
+-	p = mmap(NULL, getpagesize(), PROT_NONE,
+-		 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+-	if (p == MAP_FAILED)
+-		tst_brkm(TBROK | TERRNO, cleanup, "mmap");
++	len = getpagesize();
++	sane_params = alloc_params();
++	data = SAFE_MMAP(NULL, len, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+ 
++	tst_res(TINFO, "Testing data with invalid protection (lvec)");
+ 	params_copy = *sane_params;
+-	params_copy.lvec->iov_base = p;
+-	tst_resm(TINFO, "test_invalid_protection lvec");
+-	cma_test_params(&params_copy);
+-	cma_check_ret(-1, TEST_RETURN);
+-	cma_check_errno(EFAULT);
++	params_copy.lvec->iov_base = data;
++	test_params(&params_copy);
++	TST_EXP_EQ_LI(TST_RET, -1);
++	check_errno(EFAULT);
+ 
++	tst_res(TINFO, "Testing data with invalid protection (rvec)");
+ 	params_copy = *sane_params;
+-	params_copy.rvec->iov_base = p;
+-	tst_resm(TINFO, "test_invalid_protection rvec");
+-	cma_test_params(&params_copy);
+-	cma_check_ret(-1, TEST_RETURN);
+-	cma_check_errno(EFAULT);
++	params_copy.rvec->iov_base = data;
++	test_params(&params_copy);
++	TST_EXP_EQ_LI(TST_RET, -1);
++	check_errno(EFAULT);
+ 
+-	SAFE_MUNMAP(cleanup, p, getpagesize());
++	SAFE_MUNMAP(data, len);
++	free_params(sane_params);
++}
+ 
+-	cma_free_params(sane_params);
++static void run(void)
++{
++	test_sane_params();
++	test_flags();
++	test_iov_len_overflow();
++	test_iov_invalid();
++	test_invalid_pid();
++	test_invalid_perm();
++	test_invalid_protection();
+ }
+ 
+-static void cma_test_errnos(void)
++static void setup(void)
+ {
+-	cma_test_sane_params();
+-	cma_test_flags();
+-	cma_test_iov_len_overflow();
+-	cma_test_iov_invalid();
+-	cma_test_invalid_pid();
+-	cma_test_invalid_perm();
+-	cma_test_invalid_protection();
++	if (str_read) {
++		tst_res(TINFO, "Selected process_vm_readv");
++		test_params = test_readv;
++	} else {
++		tst_res(TINFO, "Selected process_vm_writev");
++		test_params = test_writev;
++	}
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.forks_child = 1,
++	.needs_root = 1,
++	.options = (struct tst_option[]) {
++		{"r", &str_read, "Use process_vm_read instead of process_vm_write"},
++		{},
++	},
++};
+-- 
+2.35.3
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
