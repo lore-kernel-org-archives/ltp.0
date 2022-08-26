@@ -4,60 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12730ECAAA3
-	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 07:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A90CCECAAD2
+	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 07:41:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 794873C8765
-	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 09:10:06 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id E91043CA49A
+	for <ltp@archiver.kernel.org>; Fri, 26 Aug 2022 09:41:47 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1B3633C8765
- for <ltp@lists.linux.it>; Fri, 26 Aug 2022 09:09:55 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id CB48E3CA070
+ for <ltp@lists.linux.it>; Fri, 26 Aug 2022 09:41:36 +0200 (CEST)
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
+ [60.248.80.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4D6B1600709
- for <ltp@lists.linux.it>; Fri, 26 Aug 2022 09:09:54 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 5748133687;
- Fri, 26 Aug 2022 07:09:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1661497793;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rPCFMFA7TxQbO747zcfQpkimqhPsI5coYJeefNzHoTk=;
- b=Pe8VxsYCnhlegYVY5Z9HH0GZYh0v+x2bDD3Q212AlarkOSNFnEbU6NeTPX37ugt0OOh9gn
- RVzXLxkvGxRkogD3o0nPqzzAX6IRUFcW+QRLsA+Gl5V73brngVQIn3SNMArtFN+HfhKmhf
- uaeDJGG/1BhxfMZ7Hc/qzlQMkWAmpQY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1661497793;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rPCFMFA7TxQbO747zcfQpkimqhPsI5coYJeefNzHoTk=;
- b=ZqnAo6yQygOyZHoT1ERXhotejjcjV6f7oT+WxwtxkqVLnsdjpbN59A94wZO04+dlWxbwXo
- xNqzdPzF4q4haHDg==
-Received: from g78 (unknown [10.163.24.226])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 239CA2C141;
- Fri, 26 Aug 2022 07:09:53 +0000 (UTC)
-References: <20220824124017.14286-1-andrea.cervesato@suse.com>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Date: Fri, 26 Aug 2022 08:04:21 +0100
-In-reply-to: <20220824124017.14286-1-andrea.cervesato@suse.com>
-Message-ID: <87bks71nwg.fsf@suse.de>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CA53460012A
+ for <ltp@lists.linux.it>; Fri, 26 Aug 2022 09:41:32 +0200 (CEST)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+ by Atcsqr.andestech.com with ESMTP id 27Q7fIQt064488;
+ Fri, 26 Aug 2022 15:41:18 +0800 (+08)
+ (envelope-from dylan@andestech.com)
+Received: from atcsi01 (10.0.15.167) by ATCPCS16.andestech.com (10.0.1.222)
+ with Microsoft SMTP Server id 14.3.498.0; Fri, 26 Aug 2022 15:41:15 +0800
+Date: Fri, 26 Aug 2022 15:41:15 +0800
+From: Dylan Jhong <dylan@andestech.com>
+To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>
+Message-ID: <Ywh5G6RQi+zitagg@atcsi01>
+References: <20220825105204.953388-1-dylan@andestech.com>
+ <87k06v1pwp.fsf@suse.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87k06v1pwp.fsf@suse.de>
+User-Agent: Mutt/2.2.1 (2022-02-19)
+X-Originating-IP: [10.0.15.167]
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 27Q7fIQt064488
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Rewrite process_vm01 test using new LTP API
+Subject: Re: [LTP] [PATCH] syscalls/semctl03: Solve kernel panic in semctl03
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,82 +56,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Cc: "Randolph Sheng-Kai Lin\(\(\(\(\(\(\(\(\(\(\)" <randolph@andestech.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>,
+ "x5710999x@gmail.com" <x5710999x@gmail.com>, "Alan
+ Quey-Liang Kao\(\(\(\(\(\(\(\(\(\(\)" <alankao@andestech.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi Richard,
 
-Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
+Thanks for your reply.
+My opinion is the same as yours, libc should do more checking and protection for incoming parameters
 
-> -static void cma_test_invalid_perm(void)
-> +static void test_invalid_perm(void)
->  {
->  	char nobody_uid[] = "nobody";
->  	struct passwd *ltpuser;
-> -	int status;
->  	struct process_vm_params *params;
->  	pid_t child_pid;
->  	pid_t parent_pid;
-> -	int ret = 0;
-> +	int status;
-> +
-> +	tst_res(TINFO, "Testing invalid permissions on given PID");
->  
-> -	tst_resm(TINFO, "test_invalid_perm");
->  	parent_pid = getpid();
-> -	child_pid = fork();
-> -	switch (child_pid) {
-> -	case -1:
-> -		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-> -		break;
-> -	case 0:
-> -		ltpuser = getpwnam(nobody_uid);
-> -		if (ltpuser == NULL)
-> -			tst_brkm(TBROK | TERRNO, NULL, "getpwnam failed");
-> -		SAFE_SETUID(NULL, ltpuser->pw_uid);
-> -
-> -		params = cma_alloc_sane_params();
-> +	child_pid = SAFE_FORK();
-> +	if (!child_pid) {
-> +		ltpuser = SAFE_GETPWNAM(nobody_uid);
-> +		SAFE_SETUID(ltpuser->pw_uid);
-> +
-> +		params = alloc_params();
->  		params->pid = parent_pid;
-> -		cma_test_params(params);
-> -		ret |= cma_check_ret(-1, TEST_RETURN);
-> -		ret |= cma_check_errno(EPERM);
-> -		cma_free_params(params);
-> -		exit(ret);
-> -	default:
-> -		SAFE_WAITPID(cleanup, child_pid, &status, 0);
-> -		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-> -			tst_resm(TFAIL, "child returns %d", status);
-> +		test_params(params);
-> +		TST_EXP_EQ_LI(TST_RET, -1);
-> +		check_errno(EPERM);
-> +		free_params(params);
-> +		return;
->  	}
-> +
-> +	SAFE_WAITPID(child_pid, &status, 0);
+In semctl03.c, the two tv->semctl() implementation functions, which are libc_semctl() and sys_semctl(),
+do not pass the 4th argument ".buf" to the next level system call.
+At present, the 4th argument of semctl() implemented in semctl03.c is hard-coded,
+I think passing parameters instead of hardcoding should be more better for this testcase.
+Should we pass all parameters to the next level semctl() system call?
 
-We want to use tst_reap_children() here which will check the exit
-status.
+Partial code of semctl03.c:
+--------------------------------------------------------
+TST_EXP_FAIL(tv->semctl(*(tc->sem_id), 0, tc->ipc_cmd, *(tc->buf)),    <--- Pass *(tc->buf) to tv->semctl()
+        tc->error, "semctl() with %s", tc->message);
 
-In fact, if SAFE_WAITPID is removed altogether then the exit status will
-be checked automatically at the end of the test when the lib calls
-reap_children.
 
-Otherwise LGTM!
+static union semun arg = {0};
+static int libc_semctl(int semid, int semnum, int cmd, ...)  
+{
+    return semctl(semid, semnum, cmd, arg);        <----- Ignore the 4th parameter and use the hard-coded "arg" directly  
+}
+--------------------------------------------------------
 
--- 
-Thank you,
-Richard.
+ref:
+    https://lists.linux.it/pipermail/ltp/2021-June/023116.html
+
+Best,
+Dylan
+
+On Fri, Aug 26, 2022 at 02:12:19PM +0800, Richard Palethorpe wrote:
+> Hello,
+> 
+> Dylan Jhong <dylan@andestech.com> writes:
+> 
+> > When using semctl() through glibc and __IPC_TIME64 is defined, glibc will
+> > call a converted semun64_to_ksemun64() function[*1]. If the parameter of
+> > this function is NULL, it will cause a NULL pointer dereference kernel
+> > panic.
+> 
+> This is a kernel bug. Generally speaking, we shouldn't be able to create
+> kernel panics from user land. The kernel should return EFAULT if we pass
+> an invalid pointer.
+> 
+> If this test causes a kernel panic then it should be kept as-is. If it
+> is not testing what it was originally intended to, then another test can
+> be created to do that.
+> 
+> >
+> > In semctl03.c, we need to ensure the element "struct semid_ds *buf" in 4th
+> > parameter "union semun" in semctl() is not NULL. But the 4th parameters of
+> > libc_semctl() and sys_semctl() are hard-coded[*2] and the element
+> > "struct semid_ds *buf" is not given an initial value. Using va_list to pass
+> > the correct parameters can solve the problem.
+> >
+> > ref:
+> >   [*1]: https://github.com/bminor/glibc/blob/f94f6d8a3572840d3ba42ab9ace3ea522c99c0c2/sysdeps/unix/sysv/linux/semctl.c#L172
+> >   [*2]: https://github.com/linux-test-project/ltp/blob/58caa8cca507133ea92bd0ea277b91add96e72af/testcases/kernel/syscalls/ipc/semctl/semctl03.c#L45
+> >
+> > Co-developed-by: Randolph <randolph@andestech.com>
+> > Signed-off-by: Dylan Jhong <dylan@andestech.com>
+> > ---
+> >  testcases/kernel/syscalls/ipc/semctl/semctl03.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl03.c b/testcases/kernel/syscalls/ipc/semctl/semctl03.c
+> > index a1a4c81ce..bb25053e2 100644
+> > --- a/testcases/kernel/syscalls/ipc/semctl/semctl03.c
+> > +++ b/testcases/kernel/syscalls/ipc/semctl/semctl03.c
+> > @@ -28,11 +28,21 @@ static union semun arg = {0};
+> >  
+> >  static int libc_semctl(int semid, int semnum, int cmd, ...)
+> >  {
+> > +	va_list ap;
+> > +
+> > +	va_start(ap, cmd);
+> > +	arg = va_arg(ap, union semun);
+> > +	va_end(ap);
+> >  	return semctl(semid, semnum, cmd, arg);
+> >  }
+> >  
+> >  static int sys_semctl(int semid, int semnum, int cmd, ...)
+> >  {
+> > +	va_list ap;
+> > +
+> > +	va_start(ap, cmd);
+> > +	arg = va_arg(ap, union semun);
+> > +	va_end(ap);
+> >  	return tst_syscall(__NR_semctl, semid, semnum, cmd, arg);
+> >  }
+> >  
+> > -- 
+> > 2.34.1
+> 
+> 
+> -- 
+> Thank you,
+> Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
