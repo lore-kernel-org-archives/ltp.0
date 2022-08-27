@@ -4,54 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 862D4ECAAD4
-	for <ltp@archiver.kernel.org>; Mon, 29 Aug 2022 09:18:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C372ECAAD2
+	for <ltp@archiver.kernel.org>; Mon, 29 Aug 2022 09:18:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5BFC13CA5F8
-	for <ltp@archiver.kernel.org>; Mon, 29 Aug 2022 11:18:38 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id B3DEE3CA5E5
+	for <ltp@archiver.kernel.org>; Mon, 29 Aug 2022 11:18:47 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1A45E3C8854
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 17:37:45 +0200 (CEST)
-Received: from esa4.mentor.iphmx.com (esa4.mentor.iphmx.com [68.232.137.252])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9863460072A
- for <ltp@lists.linux.it>; Thu, 25 Aug 2022 17:37:44 +0200 (CEST)
-X-IronPort-AV: E=Sophos;i="5.93,263,1654588800"; d="scan'208";a="81949478"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
- by esa4.mentor.iphmx.com with ESMTP; 25 Aug 2022 07:37:35 -0800
-IronPort-SDR: gqfyrLBj4obLayYIodUELOeYAABsqQvo8uOyOawchBB2Q8+w5UxlnjBrn460q3ycd6wHjJqmjd
- gh7T7w/QcDRQ6tORaMlE5kUTFcOMmSI30/IrpvCk5Qd/qmt7O9jkSwCyju+AieGSqCOkgrFf0W
- SQJu/53xgPnTrY4XPza5ZHuv1txMaVQqNKYA+Dwut3Ev6jvZD46k0K/9jtxIlvngRv31VMDc5g
- PzxQEqscK8aPSncjQkN92X4fOOyz2DX2qWOKXKw1t+6Wr0Z6OmFLRCVUkUOLkHjinfKI7N5oFW
- iBQ=
-Date: Thu, 25 Aug 2022 15:37:27 +0000
-From: Joseph Myers <joseph@codesourcery.com>
-X-X-Sender: jsm28@digraph.polyomino.org.uk
-To: David Laight <David.Laight@ACULAB.COM>
-In-Reply-To: <5e10ac07e63e41639b3113d12c264447@AcuMS.aculab.com>
-Message-ID: <alpine.DEB.2.22.394.2208251533340.108545@digraph.polyomino.org.uk>
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <20220824185505.56382-1-alx.manpages@gmail.com>
- <CAADnVQKiEVL9zRtN4WY2+cTD2b3b3buV8BQb83yQw13pWq4OGQ@mail.gmail.com>
- <c06008bc-0c13-12f1-df85-3814b74e47f9@gmail.com> <YwcPQ987poRYjfoL@kroah.com>
- <87ilmgddui.fsf@oldenburg.str.redhat.com>
- <CAHk-=whsETo4kc2Ec1Nf4HQY5vKYmRi9et243kyqN4E-=PgKJw@mail.gmail.com>
- <alpine.DEB.2.22.394.2208251435370.104368@digraph.polyomino.org.uk>
- <5e10ac07e63e41639b3113d12c264447@AcuMS.aculab.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+ by picard.linux.it (Postfix) with ESMTPS id 1FCE83C7CB4
+ for <ltp@lists.linux.it>; Sat, 27 Aug 2022 03:55:43 +0200 (CEST)
+Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com
+ [162.62.57.137])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9408E600045
+ for <ltp@lists.linux.it>; Sat, 27 Aug 2022 03:55:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+ s=s201512; t=1661565337;
+ bh=OaFKSypAAGnUZoVfV8hpUSQO8wD7rpZb51osQqRETEw=;
+ h=From:To:Cc:Subject:Date;
+ b=ZLiiZunaV4dQI79mRbtAvLzazRI2Gw82sqcZ1qOrVmsk7iYrVE2B2kP3BpC/kyOET
+ JtH16TGIe507iPr0+TllrafgwS4NgSai0B/pyboXbH1m49RB9qqUUKMQVsD8PQJzDI
+ CIwQ59eaTRnqrLwMdZoDciAUG4P1FRVPJfamA6dQ=
+Received: from localhost.localdomain ([123.52.25.162])
+ by newxmesmtplogicsvrszc10.qq.com (NewEsmtp) with SMTP
+ id DE39D4C7; Sat, 27 Aug 2022 09:55:35 +0800
+X-QQ-mid: xmsmtpt1661565335t1hg2shsf
+Message-ID: <tencent_8D749A790ABC81A17D9575610A12AD6D3D05@qq.com>
+X-QQ-XMAILINFO: MVbvI5amSZ2Ya/vrJVN7DmAiPKi7csj/DWuNYn6SKzO/LjVrKG5+RX584Z1xdw
+ p/JTxTLcddyRQkY0uv2/i6HU6iHGPR5A+PU4eAcUSFHq4SRdEz15FpNhkGGCTC/jMmYMbmnhWls8
+ iooPEhjIO/CJjzgIyBAbVDSQmq24mXZ0y1jq4sgxl+hcnfXjDxhprY3TF6H6kg6OZ53HyAfLCtLi
+ iNcnDQ/ltInWREJ0eHpr01i0plmwI0nNxhQ9LZCh2/H9j00pkx/eLDyWozMDYuuNfq6N8/o8wGXE
+ YIhidoqjxC4lUJ3MRDh+KIw3RZLJ/Grb6XmJjRWisGhxJQ+HJ4mvXdMRUd2OHEWJ8UV2pEsKDFiW
+ dpzFlSJh0pq5fohzUsMyJfVFPp9qcjF30qg26/Cym6H486vmCbORPmiPLOpIub9eOjH2nlUjjL45
+ MPG9cV4K53XseuZgB+0AjzcKublIKFzsWKBsa3C7D/oUiDnXfRj08RTzCBcdY3w8lTBhfiaruOrQ
+ 29Ogk0IQUgv8j+xi2/NZyD+P70g6/VE2a8bn3MPwsrmk3oI/dCr+X0QsYxKdOcW6/PPeFmK7zmXH
+ RI13Wh1dbP0IlRG/yisHvIfN2hueYSZbsm0wFSOlhLmEQxNgPSMDzRIw9O9nwQGykUciBJ8H3wCC
+ 7Tup5Yw4DIoN/iptt/Xl/qTTo+nvjDt9v24ssx3zzsZ23JooIV/usnxh37lwaPUdCiaXQP5snNwz
+ HJNbxFdmLLlccz4mXF3/E+udTd5jX4kzHx9a4I9nv0h19Q1yLR7+d6vR8GQx76yH+GkhJS7uzeR0
+ BO+QjDL06L4zwoNGH9WLT7Z3JZbjHdNg+YRH1DNd1g5mWgfZKxVCy8y21oAO38nNZXaIereXJRoI
+ Rv+ezCNjKIT53DsNZowHHOje4/ku60OcmPZ74Q9YBqjXTEExUDWJCuf5hLJqe9AWs11yWPKkmH
+From: huangjuniter@foxmail.com
+To: ltp@lists.linux.it
+Date: Sat, 27 Aug 2022 09:55:26 +0800
+X-OQ-MSGID: <20220827015526.2013-1-huangjuniter@foxmail.com>
+X-Mailer: git-send-email 2.37.2.windows.2
 MIME-Version: 1.0
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: svr-ies-mbx-15.mgc.mentorg.com (139.181.222.15) To
- svr-ies-mbx-10.mgc.mentorg.com (139.181.222.10)
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Mon, 29 Aug 2022 11:17:28 +0200
-Subject: Re: [LTP] [PATCH v3] Many pages: Document fixed-width types with
- ISO C naming
+Subject: [LTP] [PATCH] pm_include.sh: Fix no_of_sockets calculation error of
+ is_multi_socket() function.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,57 +68,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Alejandro Colomar <alx.manpages@gmail.com>,
- linux-man <linux-man@vger.kernel.org>, Rich Felker <dalias@libc.org>,
- Alexei Starovoitov <ast@kernel.org>, David Howells <dhowells@redhat.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- linux-arch <linux-arch@vger.kernel.org>, Zack Weinberg <zackw@panix.com>,
- Daniel Borkmann <daniel@iogearbox.net>, Alex Colomar <alx@kernel.org>,
- Michael Kerrisk <mtk.manpages@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- GCC <gcc-patches@gcc.gnu.org>, LTP List <ltp@lists.linux.it>,
- glibc <libc-alpha@sourceware.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Adhemerval Zanella <adhemerval.zanella@linaro.org>,
- Linux API <linux-api@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Jun Huang <huangjuniter@foxmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, 25 Aug 2022, David Laight wrote:
+From: Jun Huang <huangjuniter@foxmail.com>
 
-> From: Joseph Myers
-> > Sent: 25 August 2022 15:39
-> > 
-> > On Thu, 25 Aug 2022, Linus Torvalds wrote:
-> > 
-> > > That's a small detail that yes, we've tried to avoid the absolute
-> > > humongous mess that the C standard library has with their horrendous
-> > > 'PRId*' mess, but honestly, it's just a tiny detail.
-> > 
-> > I've not yet implemented it for glibc or for GCC format checking, but C23
-> > adds 'wN' format length modifiers so you will be able to e.g. use "%w64d"
-> > with printf to print an int64_t and won't need those PRI macros any more.
-> 
-> Is that meant to work regardless of whether the type is
-> int, long or long long provided the size is correct?
-> 
-> Or does it require the compiler know which type inttypes.h
-> uses for uint32_t and uint64_t?
+---
+ testcases/kernel/power_management/pm_include.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The type passed needs to be that used for the relevant stdint.h typedef, 
-not another of the same size.  (For format checking, that means the 
-compiler needs to know what the types used in stdint.h are.)
-
-It's now required that if int32_t exists, int_least32_t must have the same 
-type, so int_least32_t can also be used with that format (and there are 
-'wfN' formats for int_fastN_t / uint_fastN_t as well).
-
+diff --git a/testcases/kernel/power_management/pm_include.sh b/testcases/kernel/power_management/pm_include.sh
+index 35ff0f1e6..f3e160445 100755
+--- a/testcases/kernel/power_management/pm_include.sh
++++ b/testcases/kernel/power_management/pm_include.sh
+@@ -124,8 +124,8 @@ check_input() {
+ 
+ is_multi_socket() {
+ 	no_of_sockets=`cat \
+-		/sys/devices/system/cpu/cpu?/topology/physical_package_id \
+-		| uniq | wc -l`
++		/sys/devices/system/cpu/cpu*/topology/physical_package_id \
++		| sort -u | wc -l`
+ 	[ $no_of_sockets -gt 1 ] ; echo $?
+ }
+ 
 -- 
-Joseph S. Myers
-joseph@codesourcery.com
+2.37.2.windows.2
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
