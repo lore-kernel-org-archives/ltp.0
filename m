@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2268EECAAD4
-	for <ltp@archiver.kernel.org>; Sat, 27 Aug 2022 00:29:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D496ECAAD2
+	for <ltp@archiver.kernel.org>; Sat, 27 Aug 2022 07:32:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3C5F63CA502
-	for <ltp@archiver.kernel.org>; Sat, 27 Aug 2022 02:29:46 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 163D13CA4D8
+	for <ltp@archiver.kernel.org>; Sat, 27 Aug 2022 09:32:13 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 712EA3CA4DB
- for <ltp@lists.linux.it>; Sat, 27 Aug 2022 02:28:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 11DD83C70D9
+ for <ltp@lists.linux.it>; Sat, 27 Aug 2022 09:32:02 +0200 (CEST)
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com
+ [IPv6:2607:f8b0:4864:20::e2d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2CBA4200042
- for <ltp@lists.linux.it>; Sat, 27 Aug 2022 02:28:22 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7079533723;
- Sat, 27 Aug 2022 00:28:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1661560102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Uykqtwmkv+fLywCXyI1nNcmh4AHu6L98HBfpxVTzaP0=;
- b=PfHLWG8aA8uHGObo7YOtYpnbBL0QeAEiEecXXQ1wqIJTvpFLR/XcAdXzYKvbfkhiqAPGXn
- 4r0DplKSguS07dci4K3zto1FtnnXwGjYBTWqbFmLoUXCxDuopPuVA2nhGplYuE90CQP/17
- gSGGu2wVH2LBNKSIcKaovlmQ3VtyjVw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1661560102;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Uykqtwmkv+fLywCXyI1nNcmh4AHu6L98HBfpxVTzaP0=;
- b=9BgtU/w+GKNCIESiC8SsCKgvAN+rlMfOMmYj9Co4ATZlxHL8yyK35koTroxrhpRUcZroYD
- xw+M0CfkmFxNvqBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1E91113ADC;
- Sat, 27 Aug 2022 00:28:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id oLE+BiZlCWNQCgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Sat, 27 Aug 2022 00:28:22 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Sat, 27 Aug 2022 02:28:13 +0200
-Message-Id: <20220827002815.19116-5-pvorel@suse.cz>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220827002815.19116-1-pvorel@suse.cz>
-References: <20220827002815.19116-1-pvorel@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0E7C6600738
+ for <ltp@lists.linux.it>; Sat, 27 Aug 2022 09:32:02 +0200 (CEST)
+Received: by mail-vs1-xe2d.google.com with SMTP id w188so3640750vsb.10
+ for <ltp@lists.linux.it>; Sat, 27 Aug 2022 00:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc;
+ bh=uxlS8kPAiA+cCTrsW98ax0oL2fx+runF+1qrAdn4RlA=;
+ b=fGl4c6oE7psqtw2ov/SaeYgg1r8LMtQdGhR3qCr4AR3U6AYhKx/3OpJRX0eHXgVDfa
+ uiI2GPSwe8dcTd/NDSBqey9WHRgrzyji9kQsaW/vyzTk0Tvfy2dd5B41jTFU164ym/Hl
+ syLG8mH9CW5fb+vpkIRWDc97NWvpAenrz+cg6REvM1srenYo/Rzm+F7rvtbw1KQPv0M/
+ hBSk+lRpNkT38pUrlYmqzvV8bLFS1PvV39j8kDQy0h5+c+smaIdQ4E2Qg19T5GkT1dy7
+ r8xbce+uGvr5gthxgomd9pbbaSpAvUl9BmuB00acWneJLxRNhU7moyoatuahNM7uq6Vb
+ gGCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc;
+ bh=uxlS8kPAiA+cCTrsW98ax0oL2fx+runF+1qrAdn4RlA=;
+ b=kKHinTEt08EYDE5mvEMyfo4ESnlNY5M7uER1H9FlFaVTRinK+ssBImkrF0xTt5Xsuz
+ MZtfcC1V8YZLldKtAYFIL7J2Oj67yQVYa7RJi6z0zvrovMXpUyM6RnBTejGEsITAMTSs
+ gxAELUfl1XarqLMUAmPCq9OSEaZXB3WSKCt6O2BklGhgOiuZ54JdptuQnwQAGOrDIFCq
+ wLnqpu0U4XGMB36A0FrCfWf0vK4KuQYvgUQZ94FB2m8z83yj9x/T7o95XrCF0t7MnPWJ
+ bqi1UjVYgEyipa0L2nVCeZgQtguYzt92nge/tKN+z04kwillvaOK4pm/2EGf0nwZsc3X
+ AQvw==
+X-Gm-Message-State: ACgBeo0OgHL3CSZKKTjoRmKsVtTzps1nMb4pw93gLA50QnUnNUFjVt57
+ 70hzP9W7NCLx1/IuVueoJjOj5kHIV0C4ALZxOoo=
+X-Google-Smtp-Source: AA6agR4stRa33apOiT+xA9yxGGG2ZdRJ/8noeVceBqqL5un93gELkrCf/LS/IywJrZUpBuwIsf+Eglb2t1g/DjUE52s=
+X-Received: by 2002:a05:6102:7:b0:390:3c74:936b with SMTP id
+ j7-20020a056102000700b003903c74936bmr841003vsp.72.1661585520904; Sat, 27 Aug
+ 2022 00:32:00 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <20220825140306.7150-1-jack@suse.cz> <YwjGrvqYEv4cn+/A@pevik>
+ <20220826141933.fiy7mohz4ca6s5se@quack3>
+ <CAOQ4uxgH+Q+R=YdnjkBAytB3GLwCEZzg3MYuqpwTyAuShBnw2g@mail.gmail.com>
+ <YwlEfZ7FuU2jIPKC@pevik>
+In-Reply-To: <YwlEfZ7FuU2jIPKC@pevik>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Sat, 27 Aug 2022 10:31:49 +0300
+Message-ID: <CAOQ4uxjMo-sm060G-80ic-+p1UvwUpzFJsO3ecOKVRKyoQ_wxg@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 4/6] tst_device: Use getopts
+Subject: Re: [LTP] [PATCH] syscalls/fanotify10: Make evictable marks test
+ more reliable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,201 +77,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>,
- Joerg Vehlow <joerg.vehlow@aox-tech.de>, linux-fsdevel@vger.kernel.org,
- automated-testing@lists.yoctoproject.org
+Cc: Matthew Bobrowski <repnop@google.com>,
+ Dominique Leuenberger <dimstar@opensuse.org>, Jan Kara <jack@suse.cz>,
+ LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-size and filesystems are passed by -s and -f flags.
-That will help to pass used filesystem.
+On Sat, Aug 27, 2022 at 1:09 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> > On Fri, Aug 26, 2022 at 5:19 PM Jan Kara <jack@suse.cz> wrote:
+>
+> > > On Fri 26-08-22 15:12:14, Petr Vorel wrote:
+> > > > Hi Jan, all,
+>
+> > > > > In some setups evictable marks tests are failing because the inode with
+> > > > > evictable mark does not get evicted. Make sure we sync the filesystem
+> > > > > before we try to drop caches to increase likelyhood the inode will get
+> > > > > evicted.
+>
+> > > > Merged with minor changes to keep checkpatch.pl happy.
+>
+> > > Thanks!
+>
+> > > > Given on previous discussion the behavior on ext2 vs. xfs:
+> > > > would it make sense to transform the test to use .all_filesystems = 1 ?
+>
+> > On the contrary.
+> > We want the inode reclaim to be as predictable as possible.
+> > That is why I suggested to force the test to use ext2
+> > because xfs has some specialized inode reclaim
+>
+> Ah right! Could you please send a patch with .dev_fs_type = "ext2"
+> That should be enough I guess.
+>
 
-When it, add also -h.
+Petr, I don't think there is a need for that.
+I was only pointing out the different fs can have different inode
+reclaim behaviors.
+I had not encountered issues when testing fanotify10 on xfs myself.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/lib/tst_device.c        | 71 +++++++++++++++++++------------
- testcases/lib/tst_test.sh         |  2 +-
- testcases/misc/lvm/cleanup_lvm.sh |  2 +-
- testcases/misc/lvm/prepare_lvm.sh |  8 ++--
- 4 files changed, 49 insertions(+), 34 deletions(-)
+Jan's patch should be enough and then the test can run
+on the user's choice of filesystem, which is always better than
+unneeded restrictions.
 
-diff --git a/testcases/lib/tst_device.c b/testcases/lib/tst_device.c
-index b76abf52b..b672202e2 100644
---- a/testcases/lib/tst_device.c
-+++ b/testcases/lib/tst_device.c
-@@ -18,30 +18,18 @@ static struct tst_test test = {
- 
- static void print_help(void)
- {
--	fprintf(stderr, "\nUsage: tst_device acquire [size [filename]]\n");
--	fprintf(stderr, "   or: tst_device release /path/to/device\n\n");
-+	fprintf(stderr, "\nUsage:\n");
-+	fprintf(stderr, "tst_device [-s size [-d /path/to/device]] acquire\n");
-+	fprintf(stderr, "tst_device -d /path/to/device release\n");
-+	fprintf(stderr, "tst_device -h\n\n");
- }
- 
--static int acquire_device(int argc, char *argv[])
-+static int acquire_device(const char *device_path, unsigned int size)
- {
--	unsigned int size = 0;
- 	const char *device;
- 
--	if (argc > 4)
--		return 1;
--
--	if (argc >= 3) {
--		size = atoi(argv[2]);
--
--		if (!size) {
--			fprintf(stderr, "ERROR: Invalid device size '%s'",
--				argv[2]);
--			return 1;
--		}
--	}
--
--	if (argc >= 4)
--		device = tst_acquire_loop_device(size, argv[3]);
-+	if (device_path)
-+		device = tst_acquire_loop_device(size, device_path);
- 	else
- 		device = tst_acquire_device__(size, TST_ALL_FILESYSTEMS);
- 
-@@ -58,10 +46,12 @@ static int acquire_device(int argc, char *argv[])
- 	return 0;
- }
- 
--static int release_device(int argc, char *argv[])
-+static int release_device(const char *device_path)
- {
--	if (argc != 3)
-+	if (!device_path) {
-+		fprintf(stderr, "ERROR: Missing /path/to/device\n");
- 		return 1;
-+	}
- 
- 	/*
- 	 * tst_acquire_[loop_]device() was called in a different process.
-@@ -69,11 +59,15 @@ static int release_device(int argc, char *argv[])
- 	 * and do nothing. Call tst_detach_device() directly to bypass
- 	 * the check.
- 	 */
--	return tst_detach_device(argv[2]);
-+	return tst_detach_device(device_path);
- }
- 
- int main(int argc, char *argv[])
- {
-+	char *device_path = NULL;
-+	unsigned int size = 0;
-+	int ret;
-+
- 	/*
- 	 * Force messages to be printed from the new library i.e. tst_test.c
- 	 *
-@@ -85,17 +79,38 @@ int main(int argc, char *argv[])
- 	 */
- 	tst_test = &test;
- 
--	if (argc < 2)
-+	while ((ret = getopt(argc, argv, "d:hs:"))) {
-+		if (ret < 0)
-+			break;
-+
-+		switch (ret) {
-+		case 'd':
-+			device_path = optarg;
-+			break;
-+		case 'h':
-+			print_help();
-+			return 0;
-+		case 's':
-+			size = atoi(optarg);
-+			if (!size) {
-+				fprintf(stderr, "ERROR: Invalid device size '%s'", optarg);
-+				return 1;
-+			}
-+			break;
-+		}
-+	}
-+
-+	if (argc - optind < 1)
- 		goto help;
- 
--	if (!strcmp(argv[1], "acquire")) {
--		if (acquire_device(argc, argv))
-+	if (!strcmp(argv[optind], "acquire")) {
-+		if (acquire_device(device_path, size))
- 			goto help;
--	} else if (!strcmp(argv[1], "release")) {
--		if (release_device(argc, argv))
-+	} else if (!strcmp(argv[optind], "release")) {
-+		if (release_device(device_path))
- 			goto help;
- 	} else {
--		fprintf(stderr, "ERROR: Invalid COMMAND '%s'\n", argv[1]);
-+		fprintf(stderr, "ERROR: Invalid COMMAND '%s'\n", argv[optind]);
- 		goto help;
- 	}
- 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index b42e54ca1..7aea9ee5f 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -46,7 +46,7 @@ _tst_do_exit()
- 	fi
- 
- 	if [ "$TST_NEEDS_DEVICE" = 1 -a "$TST_DEVICE_FLAG" = 1 ]; then
--		if ! tst_device release "$TST_DEVICE"; then
-+		if ! tst_device -d "$TST_DEVICE" release; then
- 			tst_res TWARN "Failed to release device '$TST_DEVICE'"
- 		fi
- 	fi
-diff --git a/testcases/misc/lvm/cleanup_lvm.sh b/testcases/misc/lvm/cleanup_lvm.sh
-index f05289f00..c876b4bbf 100755
---- a/testcases/misc/lvm/cleanup_lvm.sh
-+++ b/testcases/misc/lvm/cleanup_lvm.sh
-@@ -24,7 +24,7 @@ cleanup_lvm()
- 	ROD vgremove -y ltp_test_vg2
- 
- 	for devname in $DEVLIST; do
--		ROD tst_device release $devname
-+		ROD tst_device -d $devname release
- 	done
- 
- 	rm -rf $LVM_DIR/ltp
-diff --git a/testcases/misc/lvm/prepare_lvm.sh b/testcases/misc/lvm/prepare_lvm.sh
-index d3ae4b23f..dbf1e3157 100755
---- a/testcases/misc/lvm/prepare_lvm.sh
-+++ b/testcases/misc/lvm/prepare_lvm.sh
-@@ -43,17 +43,17 @@ prepare_mounts()
- 	FSNAME1=$1
- 	FSNAME2=$2
- 	shift 2
--	LVM_DEV1=`tst_device acquire 1040 "$LVM_IMGDIR/lvm_pv1.img"`
-+	LVM_DEV1=`tst_device -s 1040 -d "$LVM_IMGDIR/lvm_pv1.img" acquire`
- 	error_check
--	LVM_DEV2=`tst_device acquire 1040 "$LVM_IMGDIR/lvm_pv2.img"`
-+	LVM_DEV2=`tst_device -s 1040 -d "$LVM_IMGDIR/lvm_pv2.img" acquire`
- 	error_check
- 
- 	# DEVSIZE=($# * 1GB / 2) + 16MB. The extra 16MB is for LVM physical
- 	# volume headers
- 	DEVSIZE=$(( $# * 512 + 16 ))
--	LVM_DEV3=`tst_device acquire $DEVSIZE "$LVM_IMGDIR/lvm_pv3.img"`
-+	LVM_DEV3=`tst_device -s $DEVSIZE -d "$LVM_IMGDIR/lvm_pv3.img" acquire`
- 	error_check
--	LVM_DEV4=`tst_device acquire $DEVSIZE "$LVM_IMGDIR/lvm_pv4.img"`
-+	LVM_DEV4=`tst_device -s $DEVSIZE -d "$LVM_IMGDIR/lvm_pv4.img" acquire`
- 	error_check
- 	ROD pvcreate $LVM_DEV1 $LVM_DEV2 $LVM_DEV3 $LVM_DEV4
- 	ROD vgcreate ltp_test_vg1 $LVM_DEV1 $LVM_DEV2
--- 
-2.37.2
+If we see issues on xfs we can reconsider .dev_fs_type = "ext2".
 
+Thanks,
+Amir.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
