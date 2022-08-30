@@ -4,77 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74D64ECAAA1
-	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 09:59:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56656ECAAA1
+	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 10:54:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CFBE43CA68C
-	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 11:59:55 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id BB1D13CA6AA
+	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 12:54:33 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 42B983C9B48
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 11:59:43 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 50AE33CA2B7
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 12:54:24 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7E3C81400DB3
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 11:59:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1661853581;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=47FF4rGSBX4kuONyUd6AsVdo62+FsuWul98UeUoYSak=;
- b=Ui5rQb/fdD4MTBaSuA5n0P20Y0x9X/7u2yVGkAPkTLKAsMa/PSnuvENkh/nCulbMoiQDAK
- xyPCS0fmNarwRH2FzgbMfmah3Hv1EAKfKFTuFxcaDTfpaT3hbe8Q3KoRoYhe4ix908GX3v
- XQzzyRkQ6dCyz28nVHqAj94tAX1QPIA=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-400-T__e404tO4iLt3VyWhz-Qg-1; Tue, 30 Aug 2022 05:59:39 -0400
-X-MC-Unique: T__e404tO4iLt3VyWhz-Qg-1
-Received: by mail-yw1-f197.google.com with SMTP id
- 00721157ae682-33ef3e5faeeso163459267b3.0
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 02:59:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc;
- bh=47FF4rGSBX4kuONyUd6AsVdo62+FsuWul98UeUoYSak=;
- b=xAke3wO+/1YzMk02JQAzvC23qsxHHAG4YdFUSGFtZNpCokAWMmZbVRnRJP6UbaWQhZ
- BISdmJKJxiNPZD9uokCuYAly49eDGU3wA0yuH+Iixw0SpMPNnVATaQphojRqllwzp6k2
- 8C59/Ray/NUbEgvdH6TfTSfmeamZWGDuIoLS327+qK3OLZIbGuZE59CK011QAhNu4O3+
- S6e4+0MuyY/kxfMSx+KyAMBiE+8wrte3NCo76feBpFdiI29YaYfJytaRXQ+ex2wc8KQa
- R0SIkcXjhhzimwifwfI11n4oGQntgRxdc+iR+5JiDbAJGRS/j2CMCG0IhFzhgwf3l16Y
- NUgQ==
-X-Gm-Message-State: ACgBeo095qDojviQqFfEI+XEFyaAbP45KPuCnA0NMEVECiUnESwomFZG
- 3kIkAENquWIo2XcLOYbxI8mzJmjpGd1DAVG1vwrAPAJt48H7Ws59OD37BsewlgRYyBXGZKamvy4
- fRdoHdb+mudeusRJxTB2jfGcuzgY=
-X-Received: by 2002:a25:2586:0:b0:695:9529:c9a6 with SMTP id
- l128-20020a252586000000b006959529c9a6mr11005306ybl.591.1661853578619; 
- Tue, 30 Aug 2022 02:59:38 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR6m6p8pZWix57viIWDBLdzYZMVQ4qNPPCDKJVZ4qkRvdZ9zuL8Zy8dS8ALPvphJAjaWSB3PTBque+WHudwOGsQ=
-X-Received: by 2002:a25:2586:0:b0:695:9529:c9a6 with SMTP id
- l128-20020a252586000000b006959529c9a6mr11005291ybl.591.1661853578426; Tue, 30
- Aug 2022 02:59:38 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2613B200AD6
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 12:54:22 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0075321DA6
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 10:54:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1661856862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=tjWNlm5XEHMz7sJlU940468z/vl6UuW4d4xNkIOP2pk=;
+ b=XHrsc3RHJgO6NCP59z64LVB9IfltGQsPcX5LNHLnN3b2qgPWhoR0J/8HJN1TfRBI+dxFJQ
+ Fbi17XS1n51BuP84G+OgqaN5J5lJwJi2IZoqdct6ESM/7NpbYALqgJNwH/H592j7VyyjQ0
+ 97edRx93OTbvZxDK/M3kUafvRectb8A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1661856862;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=tjWNlm5XEHMz7sJlU940468z/vl6UuW4d4xNkIOP2pk=;
+ b=WSlaoqlhtiKfUm/QqX5WMyIzu1DGxQe9ZS/0kOUL3K6/nH5MeC8SYKv/j6BTVvfmWtBt7z
+ mmkS2DFkslFuh/BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 677C613B0C
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 10:54:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id oJVSCl3sDWPyPAAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 10:54:21 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Tue, 30 Aug 2022 16:24:18 +0530
+Message-Id: <20220830105418.15966-1-akumar@suse.de>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-References: <20220727053307.3009235-1-lkml@jv-coder.de>
- <20220727053307.3009235-4-lkml@jv-coder.de>
- <YuQXnCgSjBT1mGFH@pevik> <87pmhkfm1p.fsf@suse.de>
-In-Reply-To: <87pmhkfm1p.fsf@suse.de>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 30 Aug 2022 17:59:27 +0800
-Message-ID: <CAEemH2cMxW3Z7SnMpHBR1C4945pkQ-OfJE9JDnagt21pxiNTVw@mail.gmail.com>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] configure: Integrate open posix testsuite
- configure
+Subject: [LTP] [PATCH] getsid02.c: Rewrite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,160 +72,122 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>, Joerg Vehlow <joerg.vehlow@aox.de>,
- automated-testing@lists.yoctoproject.org
-Content-Type: multipart/mixed; boundary="===============0743454514=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0743454514==
-Content-Type: multipart/alternative; boundary="00000000000036111405e77270d4"
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ testcases/kernel/syscalls/getsid/getsid02.c | 83 +++++----------------
+ 1 file changed, 17 insertions(+), 66 deletions(-)
 
---00000000000036111405e77270d4
-Content-Type: text/plain; charset="UTF-8"
-
-Hi All,
-
-On Mon, Aug 1, 2022 at 3:41 PM Richard Palethorpe <rpalethorpe@suse.de>
-wrote:
-
-> Hello,
->
-> Petr Vorel <pvorel@suse.cz> writes:
->
-> > Hi Joerg,
-> >
-> > [ Cc automated-testing@lists.yoctoproject.org ]
-> >
-> >> From: Joerg Vehlow <joerg.vehlow@aox.de>
-> >
-> >> This changes the default installation location
-> >> of the open posix testsuite from
-> >> $prefix
-> >> to
-> >> $prefix/testcases/open_posix_testsuite
-> > I need to have a deeper look on this patchset next week.
-> > But it looks to me strange, that running LTP top level configure causes
-> > installation into /opt/ltp/testcases/open_posix_testsuite/, but after
-> running
-> > ./configure in testcases/open_posix_testsuite make install goes by
-> default to
-> > /opt/openposix_testsuite.
-> >
-> > Also openposix does not use LTP API, when we're touching it, wouldn't it
-> make
-> > more sense to put it into separate git repository? IMHO that would cause
-> work
-> > for other people (clone separate git, need to fix CI and tools which are
-> using
-> > it), but openposix embedded in LTP always looked strange to me.
->
-> I wouldn't be against this based on my anecdotal experience.
->
-> I don't recall a specific time these tests found a kernel bug. They
-> sometimes find issues with glibc, but there is usually a debate as to
-> how to interpret the spec instead of a clear error on glibc's part. Most
-> often the test is broken.
->
-> So I'd say these tests are almost useless for kernel testing. I also
-> think they often misinterpret the POSIX spec or have some basic logic
-> error.
->
-
-I think so! And I don't against this patchset as well.
-
-@Petr Vorel <pvorel@suse.cz>  feel free to merge the patches, it might
-usefully to
-someone who has a strong willingness on running them.
-
-Reviewed-by: Li Wang <liwang@redhat.com>
-
+diff --git a/testcases/kernel/syscalls/getsid/getsid02.c b/testcases/kernel/syscalls/getsid/getsid02.c
+index b5ab339e2..c235af362 100644
+--- a/testcases/kernel/syscalls/getsid/getsid02.c
++++ b/testcases/kernel/syscalls/getsid/getsid02.c
+@@ -1,81 +1,32 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+  *   Copyright (c) International Business Machines  Corp., 2001
+  *   Copyright (c) 2012 Cyril Hrubis <chrubis@suse.cz>
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-#define _GNU_SOURCE 1
+-
+-#include "test.h"
+-
+-#include <errno.h>
++/*\
++ * [Description]
++ *
++ * Verify that getsid(2) fails with ESRCH errno when there is no
++ * process found with process ID pid.
++ */
+ 
+-char *TCID = "getsid02";
+-int TST_TOTAL = 1;
++#include "tst_test.h"
+ 
+ static pid_t unused_pid;
+ 
+-static void cleanup(void);
+-static void setup(void);
+-
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		TEST(getsid(unused_pid));
+-
+-		if (TEST_RETURN == 0) {
+-			tst_resm(TFAIL, "call succeed when failure expected");
+-			continue;
+-		}
+-
+-		switch (TEST_ERRNO) {
+-		case ESRCH:
+-			tst_resm(TPASS, "expected failure - errno = %d - %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-			break;
+-		default:
+-			tst_resm(TFAIL, "call failed to produce "
+-				 "expected error - errno = %d - %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-			break;
+-		}
+-	}
+-
+-	cleanup();
+-	tst_exit();
++	unused_pid = tst_get_unused_pid();
+ }
+ 
+-void setup(void)
++static void run(void)
+ {
+-	unused_pid = tst_get_unused_pid(cleanup);
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	TST_EXP_FAIL(getsid(unused_pid), ESRCH);
+ }
+ 
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = run
++};
 -- 
-Regards,
-Li Wang
-
---00000000000036111405e77270d4
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Hi All,</div></div><br><div class=3D"gmail_quote"><div dir=3D=
-"ltr" class=3D"gmail_attr">On Mon, Aug 1, 2022 at 3:41 PM Richard Palethorp=
-e &lt;<a href=3D"mailto:rpalethorpe@suse.de" target=3D"_blank">rpalethorpe@=
-suse.de</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"=
-margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-lef=
-t:1ex">Hello,<br>
-<br>
-Petr Vorel &lt;<a href=3D"mailto:pvorel@suse.cz" target=3D"_blank">pvorel@s=
-use.cz</a>&gt; writes:<br>
-<br>
-&gt; Hi Joerg,<br>
-&gt;<br>
-&gt; [ Cc <a href=3D"mailto:automated-testing@lists.yoctoproject.org" targe=
-t=3D"_blank">automated-testing@lists.yoctoproject.org</a> ]<br>
-&gt;<br>
-&gt;&gt; From: Joerg Vehlow &lt;<a href=3D"mailto:joerg.vehlow@aox.de" targ=
-et=3D"_blank">joerg.vehlow@aox.de</a>&gt;<br>
-&gt;<br>
-&gt;&gt; This changes the default installation location<br>
-&gt;&gt; of the open posix testsuite from<br>
-&gt;&gt; $prefix<br>
-&gt;&gt; to<br>
-&gt;&gt; $prefix/testcases/open_posix_testsuite<br>
-&gt; I need to have a deeper look on this patchset next week.<br>
-&gt; But it looks to me strange, that running LTP top level configure cause=
-s<br>
-&gt; installation into /opt/ltp/testcases/open_posix_testsuite/, but after =
-running<br>
-&gt; ./configure in testcases/open_posix_testsuite make install goes by def=
-ault to<br>
-&gt; /opt/openposix_testsuite.<br>
-&gt;<br>
-&gt; Also openposix does not use LTP API, when we&#39;re touching it, would=
-n&#39;t it make<br>
-&gt; more sense to put it into separate git repository? IMHO that would cau=
-se work<br>
-&gt; for other people (clone separate git, need to fix CI and tools which a=
-re using<br>
-&gt; it), but openposix embedded in LTP always looked strange to me.<br>
-<br>
-I wouldn&#39;t be against this based on my anecdotal experience.<br>
-<br>
-I don&#39;t recall a specific time these tests found a kernel bug. They<br>
-sometimes find issues with glibc, but there is usually a debate as to<br>
-how to interpret the spec instead of a clear error on glibc&#39;s part. Mos=
-t<br>
-often the test is broken.<br>
-<br>
-So I&#39;d say these tests are almost useless for kernel testing. I also<br=
->
-think they often misinterpret the POSIX spec or have some basic logic<br>
-error.<br></blockquote><div><br></div><div class=3D"gmail_default" style=3D=
-"font-size:small">I think so! And I don&#39;t against=C2=A0this patchset as=
- well.</div><div class=3D"gmail_default" style=3D"font-size:small"><br></di=
-v><div class=3D"gmail_default" style=3D"font-size:small"><a class=3D"gmail_=
-plusreply" id=3D"m_2252497587767376310plusReplyChip-0" href=3D"mailto:pvore=
-l@suse.cz" target=3D"_blank">@Petr Vorel</a>=C2=A0 feel free to merge the p=
-atches, it might usefully to<br></div><div class=3D"gmail_default" style=3D=
-"font-size:small">someone who has a strong willingness on running them.</di=
-v></div><div><br></div><div><div class=3D"gmail_default" style=3D"font-size=
-:small">Reviewed-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" targe=
-t=3D"_blank">liwang@redhat.com</a>&gt;</div><br></div>-- <br><div dir=3D"lt=
-r"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></di=
-v></div>
-
---00000000000036111405e77270d4--
-
-
---===============0743454514==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2.37.1
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0743454514==--
-
