@@ -4,63 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56656ECAAA1
-	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 10:54:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E2BCECAAA1
+	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 11:01:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BB1D13CA6AA
-	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 12:54:33 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 53D953CA69B
+	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 13:01:23 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 50AE33CA2B7
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 12:54:24 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 211603CA610
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 13:01:13 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2613B200AD6
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 12:54:22 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0075321DA6
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 10:54:22 +0000 (UTC)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C86B1200AC1
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 13:01:12 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id EE48E1F9E6;
+ Tue, 30 Aug 2022 11:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1661856862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=tjWNlm5XEHMz7sJlU940468z/vl6UuW4d4xNkIOP2pk=;
- b=XHrsc3RHJgO6NCP59z64LVB9IfltGQsPcX5LNHLnN3b2qgPWhoR0J/8HJN1TfRBI+dxFJQ
- Fbi17XS1n51BuP84G+OgqaN5J5lJwJi2IZoqdct6ESM/7NpbYALqgJNwH/H592j7VyyjQ0
- 97edRx93OTbvZxDK/M3kUafvRectb8A=
+ t=1661857271;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ljygNGZ55kywx+d9dvIhrC1re+gPEnCwdQi/9cnnop0=;
+ b=fuZH/fPdIw9tE1QW4fPUS1KPcito87zjrWGlwYze/EC7N9sajSAF0Xa+2IkY699qCVe4Iz
+ YiEubb24JTUPECGzYviiBc1CHlHMzgX/nk6PwyaRna5fGUNecKAJaDrLyU6D9AtVDnJ29a
+ b3hG7USzkn8+AEdG1HhSJIqx0DM+p14=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1661856862;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=tjWNlm5XEHMz7sJlU940468z/vl6UuW4d4xNkIOP2pk=;
- b=WSlaoqlhtiKfUm/QqX5WMyIzu1DGxQe9ZS/0kOUL3K6/nH5MeC8SYKv/j6BTVvfmWtBt7z
- mmkS2DFkslFuh/BA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ s=susede2_ed25519; t=1661857271;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ljygNGZ55kywx+d9dvIhrC1re+gPEnCwdQi/9cnnop0=;
+ b=AxP9xIF/b6uIQZFMoYUA1jxXTodR6iNICmyehP3BuESKTRmYVpi4vzRbOuEjYfezviNOQV
+ LaZCWoCH1aJjrgBQ==
+Received: from g78 (unknown [10.163.24.226])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 677C613B0C
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 10:54:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id oJVSCl3sDWPyPAAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 10:54:21 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Tue, 30 Aug 2022 16:24:18 +0530
-Message-Id: <20220830105418.15966-1-akumar@suse.de>
-X-Mailer: git-send-email 2.37.1
+ by relay2.suse.de (Postfix) with ESMTPS id 8A3082C141;
+ Tue, 30 Aug 2022 11:01:11 +0000 (UTC)
+References: <20220727053307.3009235-1-lkml@jv-coder.de>
+ <20220727053307.3009235-3-lkml@jv-coder.de>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Joerg Vehlow <lkml@jv-coder.de>
+Date: Tue, 30 Aug 2022 12:00:41 +0100
+In-reply-to: <20220727053307.3009235-3-lkml@jv-coder.de>
+Message-ID: <87y1v6j8qx.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] getsid02.c: Rewrite using new LTP API
+Subject: Re: [LTP] [PATCH v2 2/3] openposix: Setup autoconf and fix
+ installation layout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,122 +70,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: Joerg Vehlow <joerg.vehlow@aox.de>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/getsid/getsid02.c | 83 +++++----------------
- 1 file changed, 17 insertions(+), 66 deletions(-)
+Hello,
 
-diff --git a/testcases/kernel/syscalls/getsid/getsid02.c b/testcases/kernel/syscalls/getsid/getsid02.c
-index b5ab339e2..c235af362 100644
---- a/testcases/kernel/syscalls/getsid/getsid02.c
-+++ b/testcases/kernel/syscalls/getsid/getsid02.c
-@@ -1,81 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-  *   Copyright (c) International Business Machines  Corp., 2001
-  *   Copyright (c) 2012 Cyril Hrubis <chrubis@suse.cz>
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
- 
--#define _GNU_SOURCE 1
--
--#include "test.h"
--
--#include <errno.h>
-+/*\
-+ * [Description]
-+ *
-+ * Verify that getsid(2) fails with ESRCH errno when there is no
-+ * process found with process ID pid.
-+ */
- 
--char *TCID = "getsid02";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
- static pid_t unused_pid;
- 
--static void cleanup(void);
--static void setup(void);
--
--int main(int ac, char **av)
-+static void setup(void)
- {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		TEST(getsid(unused_pid));
--
--		if (TEST_RETURN == 0) {
--			tst_resm(TFAIL, "call succeed when failure expected");
--			continue;
--		}
--
--		switch (TEST_ERRNO) {
--		case ESRCH:
--			tst_resm(TPASS, "expected failure - errno = %d - %s",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--			break;
--		default:
--			tst_resm(TFAIL, "call failed to produce "
--				 "expected error - errno = %d - %s",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--			break;
--		}
--	}
--
--	cleanup();
--	tst_exit();
-+	unused_pid = tst_get_unused_pid();
- }
- 
--void setup(void)
-+static void run(void)
- {
--	unused_pid = tst_get_unused_pid(cleanup);
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	TST_EXP_FAIL(getsid(unused_pid), ESRCH);
- }
- 
--void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run
-+};
+Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+
 -- 
-2.37.1
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
