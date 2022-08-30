@@ -4,69 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B050ECAAA1
-	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 13:52:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6082DECAAA1
+	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 14:24:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 82F843CA720
-	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 15:52:03 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 5A97D3CA6DE
+	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 16:24:28 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A26E63CA6B6
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 15:50:10 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id C423E3CA5C7
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 16:24:18 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EC8F0100023A
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 15:50:09 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4803B1400431
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 16:24:17 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A65B91FA36
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 13:50:09 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 51CC321C03
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 14:24:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1661867409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=8k+S7anUB7bA3Of9SkI4JrJ2wwT4vCOElyyHZl1ywuU=;
- b=YmjYwdIZ8P4blZhcBsC1uYSrJliWIAD+mBMvJ4zATUN8uEIOJN4CgzJjwSjWH3vUhTna4R
- oH8KH4z65Yipd+aPiMGV6dCV6nMiapN8s5Yw0vKuVlsqdU1QOpK23XhOt5HOKscYBDuHs7
- 9JJ2AcKyoIuyVFNFUsVc9RsqQmEFD1s=
+ t=1661869457; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hBC96HKOAdNZ1ImQJB53j484bVg7OlMgzrRSUErMRpk=;
+ b=nvAxDfQ+gqKHw1C7V0oLhh+eBFVZk6KjpMRe7c/x5w7DmpPh8FNqEV+zF2jv9QBcVGgqhS
+ c6xe7ZfPPKKJK1HjmFHOEXnWbVdIS3j8hgk9/D3uxOs68eahj1u9Hui7Y1KWNFVmYRYDJf
+ Ym2ACHlCRRzWT/zilMY4UDON6uioi60=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1661867409;
+ s=susede2_ed25519; t=1661869457;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=8k+S7anUB7bA3Of9SkI4JrJ2wwT4vCOElyyHZl1ywuU=;
- b=gWfjojiKkbAME3X7T/NiMx9xlXaRNTuJwMwoHwed8Gbcq4FHOb4o+Akt3TiU32+uohGROS
- 8vmTLooGbEzsCbCQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=hBC96HKOAdNZ1ImQJB53j484bVg7OlMgzrRSUErMRpk=;
+ b=3tSaX0sg+XVSIG+dO8xUjejuXGQdRMc75s9OWPBqBXeZjv1VechdkhN3MePoeAJsUwFlkB
+ hq/Af/UuvujkIwCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C88013B21
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 13:50:09 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3573713ACF
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 14:24:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id IGpZIZEVDmOfDAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id Nc0BDJEdDmN2GwAAMHmgww
  (envelope-from <mdoucha@suse.cz>)
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 13:50:09 +0000
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 14:24:17 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 30 Aug 2022 15:50:05 +0200
-Message-Id: <20220830135007.16818-9-mdoucha@suse.cz>
+Date: Tue, 30 Aug 2022 16:24:15 +0200
+Message-Id: <20220830142416.3831-1-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220830135007.16818-1-mdoucha@suse.cz>
-References: <20220830135007.16818-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 08/10] readahead02: Add max_runtime
+Subject: [LTP] [PATCH 1/2] du01.sh: Fix broken directory change
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,23 +77,30 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Running `ROD cd dir` doesn't work because the command will be executed
+in a subshell. Change the directory correctly.
+
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/syscalls/readahead/readahead02.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index 4fa8cfaf8..dc96eaef4 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -406,6 +406,7 @@ static struct tst_test test = {
- 	},
- 	.test = test_readahead,
- 	.tcnt = ARRAY_SIZE(tcases),
-+	.max_runtime = 30,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "b833a3660394"},
- 		{"linux-git", "5b910bd615ba"},
+After this fix, my older tst_rod patch can be safely merged.
+
+ testcases/commands/du/du01.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/commands/du/du01.sh b/testcases/commands/du/du01.sh
+index 274e32a4e..5548d7667 100755
+--- a/testcases/commands/du/du01.sh
++++ b/testcases/commands/du/du01.sh
+@@ -14,7 +14,7 @@ TST_NEEDS_CMDS="dd du stat"
+ setup()
+ {
+ 	ROD_SILENT mkdir basedir
+-	ROD_SILENT cd basedir
++	cd basedir || tst_brk TBROK "cd basedir failed"
+ 
+ 	ROD_SILENT dd if=/dev/zero of=testfile bs=1M count=10
+ 
 -- 
 2.37.2
 
