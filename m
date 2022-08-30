@@ -4,76 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A54C0ECAAD1
-	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 06:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C36DECAAA1
+	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 07:20:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 27ABE3CA5E6
-	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 08:16:41 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id CA35B3CA65D
+	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 09:20:44 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CD9633C81E1
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 08:16:31 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7E2743CA1E0
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 09:20:33 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2CF7560086A
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 08:16:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1661840189;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wrycDknftddiSXVDjpAE/bTyBHQ1FR5LjC4slGF7lSs=;
- b=aIOtOt20NwA3qbdUVn8omYcRulwSTT4fIKgzGpthe9rkiTeGOYUTbXhvjOjJjrOWYwS++D
- gKYfWSxC1zksSlmhI1bXpzJPnxOjlU96HSV0OaSQdkZt5hjc+xs7XcgcR4e6HhvE7zcj/O
- GBcF4OLQUdML5rdey6FO+9syixg3f9U=
-Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
- [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-562-TRgjRjEVPcC-2Xtp_EEylA-1; Tue, 30 Aug 2022 02:16:26 -0400
-X-MC-Unique: TRgjRjEVPcC-2Xtp_EEylA-1
-Received: by mail-yw1-f200.google.com with SMTP id
- 00721157ae682-335420c7bfeso162091447b3.16
- for <ltp@lists.linux.it>; Mon, 29 Aug 2022 23:16:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc;
- bh=wrycDknftddiSXVDjpAE/bTyBHQ1FR5LjC4slGF7lSs=;
- b=ZhT0AMwqtL7sYZlBzkkXHvoTyLgsKQ64LFE2vBXZAjApeCYSmM817tRmyEDUAgK5YW
- QCNwKeYHtLqfVGHVErCit/xlgMMfkvJ73ARoMHqm9K010cYrhN4ribVSZh9MDbXZsaeH
- rbZd9Ey0h3nmeUkhF/8S9VPYrqrni+JokR5mwN2Nk2W9+OB5XFtQffxfn1ktX9gvk/jy
- 7UyvRHsKHmD4TTygeoJZdhtJzI/BHoygVgwmGKskO2z8ViTgQPeTglVMhwaKEYBam46K
- 5mKbPrhJthXubGF5w/uX9i3EzI02rq/Qlm+bPGY0i1P6yRl1xyCVLQpRDidIy/OPgEYu
- 45hQ==
-X-Gm-Message-State: ACgBeo2lRztmoYqQHZ8JE5p0f22SpKuhV+3d7gG/cemZTsTkJGus82Si
- bNDCSgFF6uyN/+zCfJu9XLBXHLIBrQSn7wm530OePciCV5kYugdUfrF5kFWaOI9fPQW+mi1fih0
- Vr9gAWtdaf6och3QAsWK8K/2syr4=
-X-Received: by 2002:a0d:f783:0:b0:340:cd25:fc5d with SMTP id
- h125-20020a0df783000000b00340cd25fc5dmr10112946ywf.82.1661840186424; 
- Mon, 29 Aug 2022 23:16:26 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR5kCEMyZHnEOD2btQTDJtyNaZXLzA45yJ4uNjSacahKarzX45+JWcsZ0Zs6BWPcYWRm95qnu51AA/oR0n/4Jr8=
-X-Received: by 2002:a0d:f783:0:b0:340:cd25:fc5d with SMTP id
- h125-20020a0df783000000b00340cd25fc5dmr10112939ywf.82.1661840186220; Mon, 29
- Aug 2022 23:16:26 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C5C961400C5D
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 09:20:32 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 858821F90B
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 07:20:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1661844031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+Qa0Va4jUroCoBNGD/kdkENe+9XWtzOWjlfgZScBV6A=;
+ b=maX+YlX9SJcnr9oHyGhVYfbPUCLZVM/4aYIa8wgybjmhpNtmx6y2LAizplqtfLssH1oAw6
+ 1rPH2f3xOVc57Kq9Ug3HJw8L1cOU+ZstogcpFiBT/rJbtAJKjGTOrDso1CzSkAz1uxh75D
+ yeUNfuL3/N0bBe4C47bk3elIYsFhluY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1661844031;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+Qa0Va4jUroCoBNGD/kdkENe+9XWtzOWjlfgZScBV6A=;
+ b=yUPa4bVxY+8LUc5ZjOs+qu1k/R/lVkcUH1DzaNQ5V6GuPmzx2S0cGx9B2od+rlREXaMy8k
+ 9TNiEHqUCSKrefAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0326A13ACF
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 07:20:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 5LCcLT66DWOAMgAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 07:20:30 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Tue, 30 Aug 2022 12:50:28 +0530
+Message-Id: <20220830072028.1115-1-akumar@suse.de>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-References: <20220827002815.19116-1-pvorel@suse.cz>
- <20220827002815.19116-7-pvorel@suse.cz>
-In-Reply-To: <20220827002815.19116-7-pvorel@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 30 Aug 2022 14:16:15 +0800
-Message-ID: <CAEemH2detWVD6FY3HeHB152vKDQqW+2urHHyhJdi4whb26=Wbg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 6/6] tst_test.sh: Pass used filesystem to
- tst_device
+Subject: [LTP] [PATCH] getsid01.c: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,55 +72,206 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Joerg Vehlow <joerg.vehlow@aox-tech.de>, linux-fsdevel@vger.kernel.org,
- Richard Palethorpe <rpalethorpe@suse.com>, LTP List <ltp@lists.linux.it>,
- automated-testing@lists.yoctoproject.org
-Content-Type: multipart/mixed; boundary="===============0096826363=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0096826363==
-Content-Type: multipart/alternative; boundary="000000000000f93e9405e76f51ae"
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ testcases/kernel/syscalls/getsid/getsid01.c | 164 +++-----------------
+ 1 file changed, 23 insertions(+), 141 deletions(-)
 
---000000000000f93e9405e76f51ae
-Content-Type: text/plain; charset="UTF-8"
-
-Hi Petr,
-
-Nice work on this patchset. Thanks!
-
-Reviewed-by: Li Wang <liwang@redhat.com>
-
+diff --git a/testcases/kernel/syscalls/getsid/getsid01.c b/testcases/kernel/syscalls/getsid/getsid01.c
+index 0857468f1..2bcc10e70 100644
+--- a/testcases/kernel/syscalls/getsid/getsid01.c
++++ b/testcases/kernel/syscalls/getsid/getsid01.c
+@@ -1,159 +1,41 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+  *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *		07/2001 Ported by Wayne Boyer
++ *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-/*
+- * NAME
+- *	getsid01.c
+- *
+- * DESCRIPTION
+- *	getsid01 - call getsid() and make sure it succeeds
+- *
+- * ALGORITHM
+- *	loop if that option was specified
+- *	issue the system call
+- *	check the return value
+- *	if return value == -1
+- *	  issue a FAIL message, break remaining tests and cleanup
+- *	if we are doing functional testing
+- *	  save the return value from the getsid() call - the session ID
+- *	  fork a child and get the child's session ID
+- *	  if the child's session ID == the parent's session ID
+- *	    issue a PASS message
+- *	  else
+- *	    issue a FAIL message
+- *	else issue a PASS message
+- *	call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  getsid01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
++/*\
++ * [Description]
+  *
+- * RESTRICTIONS
+- *	none
++ * Verify that session IDs returned by getsid() (with argument pid=0)
++ * are same in parent and child process.
+  */
+-#define _GNU_SOURCE 1
+ 
+-#include <errno.h>
+-#include <sys/wait.h>
+-#include <unistd.h>
+-#include "test.h"
+ 
+-void cleanup(void);
+-void setup(void);
++#include "tst_test.h"
+ 
+-char *TCID = "getsid01";
+-int TST_TOTAL = 1;
++static pid_t p_sid;
+ 
+-pid_t p_sid;
+-
+-int main(int ac, char **av)
++static void run(void)
+ {
+-	int lc;
+-	pid_t pid, c_pid, c_sid;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
++	pid_t pid, c_sid;
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
++	TEST(getsid(0));
++	p_sid = TST_RET;
+ 
+-		/* call the system call with the TEST() macro */
++	pid = SAFE_FORK();
+ 
++	if (pid == 0) {
+ 		TEST(getsid(0));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "call failed - errno = %d "
+-				 "- %s", TEST_ERRNO, strerror(TEST_ERRNO));
+-			continue;
+-		}
+-
+-		/* save the return value in a global variable */
+-		p_sid = TEST_RETURN;
+-
+-		if ((pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, cleanup, "could not fork");
+-		}
+-
+-		if (pid == 0) {	/* child */
+-			if ((c_pid = getpid()) == -1) {
+-				tst_resm(TINFO, "getpid failed in "
+-					 "functionality test");
+-				exit(1);
+-			}
+-
+-			/*
+-			 * if the session ID of the child is the
+-			 * same as the parent then things look good
+-			 */
+-
+-			if ((c_sid = getsid(0)) == -1) {
+-				tst_resm(TINFO, "getsid failed in "
+-					 "functionality test");
+-				exit(2);
+-			}
+-
+-			if (c_sid == p_sid) {
+-				tst_resm(TPASS, "session ID is "
+-					 "correct");
+-			} else {
+-				tst_resm(TFAIL, "session ID is "
+-					 "not correct");
+-			}
+-			exit(0);
+-
+-		} else {
+-			waitpid(pid, NULL, 0);
+-		}
++		c_sid = TST_RET;
++		TST_EXP_EQ_LI(p_sid, c_sid);
++	} else {
++		SAFE_WAITPID(pid, NULL, 0);
+ 	}
+-
+-	cleanup();
+-	tst_exit();
+ }
+ 
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
+-{
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-}
+-
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
+-{
+-
+-}
++static struct tst_test test = {
++	.test_all = run,
++	.forks_child = 1
++};
 -- 
-Regards,
-Li Wang
-
---000000000000f93e9405e76f51ae
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Hi Petr,</div><div class=3D"gmail_default" style=3D"font-size=
-:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small">Ni=
-ce work on this patchset. Thanks!</div><div class=3D"gmail_default" style=
-=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font-s=
-ize:small">Reviewed-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com">li=
-wang@redhat.com</a>&gt;</div></div><div><br></div>-- <br><div dir=3D"ltr" c=
-lass=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wa=
-ng<br></div></div></div></div>
-
---000000000000f93e9405e76f51ae--
-
-
---===============0096826363==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2.37.1
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0096826363==--
-
