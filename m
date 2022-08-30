@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 101A8ECAAD1
-	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 14:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CEDAECAAA1
+	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 14:47:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2EDB33CA64D
-	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 16:38:31 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 59DF03CA6D7
+	for <ltp@archiver.kernel.org>; Tue, 30 Aug 2022 16:47:18 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EA8AC3CA6A8
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 16:38:21 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 50CD73C6651
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 16:47:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4F5211400431
- for <ltp@lists.linux.it>; Tue, 30 Aug 2022 16:38:20 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 52F5710000D5
+ for <ltp@lists.linux.it>; Tue, 30 Aug 2022 16:47:07 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8D98F1FAC1;
- Tue, 30 Aug 2022 14:38:20 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 48CBB21EAF;
+ Tue, 30 Aug 2022 14:47:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1661870300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1661870827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/F5R5GpuFPnXnfvZfrijv7DtSyPwTeFWupVjdT03QvQ=;
- b=qul7+jPpfRYZsCo9SNZldkeH58ooYuTjL/6uaFh9fr6myZsKT0X9j3obRgnw9tJl+ZYgqx
- xxLraF6wVmyHpKaA6+uQ6H6QOp+TrkG492KjMEWnrPDyQrP9cmsAGqVrbwkAwLSG83ZCaw
- cuDOXOmKU4UMN8vV0sBkSdlBHgaqR2Y=
+ bh=wz0tjm7vGcd7gRn65CC5KnVa3w4Jj2NZv5TbHZtBqJI=;
+ b=jcqkWMuFWEq0RnMNQi+/KdgAgAreBHdMWvVBUmvv2dZ8xg6L2xwNvzmChuzJ/p/G/byw0l
+ c/nV6XL0xWH5ic/QSeU30rhmJV6IZGLCABm4G+KFqj2WqucLcpFW5glUOsBFEe3ZAELjy3
+ WEI0sjK5LaLL4PWJvA7VOoMKkHBJglI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1661870300;
+ s=susede2_ed25519; t=1661870827;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/F5R5GpuFPnXnfvZfrijv7DtSyPwTeFWupVjdT03QvQ=;
- b=KiYwSxz0sMguVbP1EhyE5/A/9zsL5fhQUngaM2jwW08KUOtm9//CIWegjDx7xxNSgusisD
- MFQdypCqSKnpfbAw==
+ bh=wz0tjm7vGcd7gRn65CC5KnVa3w4Jj2NZv5TbHZtBqJI=;
+ b=lyccH1LSvgnUEK4nZunNwcdqeQhvH5FjtGpYLsbc08A/7+8DaM/N+OBjZCv3D5KYEcSBPg
+ XAnL1CKJQvmAswAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6586013ACF;
- Tue, 30 Aug 2022 14:38:20 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F3D013B0C;
+ Tue, 30 Aug 2022 14:47:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id EWVgFtwgDmOoIQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 30 Aug 2022 14:38:20 +0000
-Date: Tue, 30 Aug 2022 16:40:19 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id QPyyCusiDmOSJQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 30 Aug 2022 14:47:07 +0000
+Date: Tue, 30 Aug 2022 16:49:06 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <Yw4hU5LorCOqKCld@yuki>
+Message-ID: <Yw4jYgDzNj9BAqOf@yuki>
 References: <20220830135007.16818-1-mdoucha@suse.cz>
- <20220830135007.16818-3-mdoucha@suse.cz>
+ <20220830135007.16818-4-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220830135007.16818-3-mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20220830135007.16818-4-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 02/10] cve-2017-2671: Increase max_runtime
+Subject: Re: [LTP] [PATCH 03/10] ksm: Add max_runtime to tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,7 +83,71 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Applied, thanks.
+> ksm02, ksm04 and ksm05 take 10+ seconds to finish. Set max_runtime to avoid
+> random timeout issues.
+
+I wonder if we can do better.
+
+I guess that the actual runtime does depends on the size of the RAM
+because we wait for at least two finished full scans for ksmd. I guess
+that for large enough machines we would end up with minutes of runtime.
+
+So I guess that it would make more sense to treat the max_runtime as a
+upper bound and set it to large enough number as we do for AIO testcases
+(30 minutes) and then make the wait_ksmd_full_scan() runtime avare so
+that it exits when the runtime is exhausted. With that we would get a
+clear message that we timed-out in the loop that waited for the ksmd
+scan.
+
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+>  testcases/kernel/mem/ksm/ksm02.c | 1 +
+>  testcases/kernel/mem/ksm/ksm04.c | 1 +
+>  testcases/kernel/mem/ksm/ksm05.c | 1 +
+>  3 files changed, 3 insertions(+)
+> 
+> diff --git a/testcases/kernel/mem/ksm/ksm02.c b/testcases/kernel/mem/ksm/ksm02.c
+> index 1cb7d8e73..1f5677425 100644
+> --- a/testcases/kernel/mem/ksm/ksm02.c
+> +++ b/testcases/kernel/mem/ksm/ksm02.c
+> @@ -110,6 +110,7 @@ static struct tst_test test = {
+>  	},
+>  	.test_all = verify_ksm,
+>  	.min_kver = "2.6.32",
+> +	.max_runtime = 20,
+>  	.needs_cgroup_ctrls = (const char *const []){ "cpuset", NULL },
+>  };
+>  
+> diff --git a/testcases/kernel/mem/ksm/ksm04.c b/testcases/kernel/mem/ksm/ksm04.c
+> index 39c741876..f7dc5befc 100644
+> --- a/testcases/kernel/mem/ksm/ksm04.c
+> +++ b/testcases/kernel/mem/ksm/ksm04.c
+> @@ -112,6 +112,7 @@ static struct tst_test test = {
+>  	},
+>  	.test_all = verify_ksm,
+>  	.min_kver = "2.6.32",
+> +	.max_runtime = 20,
+>  	.needs_cgroup_ctrls = (const char *const []){
+>  		"memory", "cpuset", NULL
+>  	},
+> diff --git a/testcases/kernel/mem/ksm/ksm05.c b/testcases/kernel/mem/ksm/ksm05.c
+> index 146a9a3b7..6f94c4a9c 100644
+> --- a/testcases/kernel/mem/ksm/ksm05.c
+> +++ b/testcases/kernel/mem/ksm/ksm05.c
+> @@ -88,6 +88,7 @@ static struct tst_test test = {
+>  	.forks_child = 1,
+>  	.test_all = test_ksm,
+>  	.min_kver = "2.6.32",
+> +	.max_runtime = 10,
+>  	.save_restore = (const struct tst_path_val[]) {
+>  		{"!/sys/kernel/mm/ksm/run", "1"},
+>  		{}
+> -- 
+> 2.37.2
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
