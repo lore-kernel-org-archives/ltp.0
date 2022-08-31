@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12D00ECAAD1
-	for <ltp@archiver.kernel.org>; Wed, 31 Aug 2022 12:19:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 166ECECAAD4
+	for <ltp@archiver.kernel.org>; Wed, 31 Aug 2022 12:19:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B9DFD3CA6E3
-	for <ltp@archiver.kernel.org>; Wed, 31 Aug 2022 14:19:13 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id E65AF3CA6F9
+	for <ltp@archiver.kernel.org>; Wed, 31 Aug 2022 14:19:35 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8CC143C9413
- for <ltp@lists.linux.it>; Wed, 31 Aug 2022 14:19:04 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id E4ABB3C9413
+ for <ltp@lists.linux.it>; Wed, 31 Aug 2022 14:19:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A25231A006BB
- for <ltp@lists.linux.it>; Wed, 31 Aug 2022 14:19:03 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B2CE61400974
+ for <ltp@lists.linux.it>; Wed, 31 Aug 2022 14:19:22 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 87EDF1F893;
- Wed, 31 Aug 2022 12:19:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9B33922135;
+ Wed, 31 Aug 2022 12:19:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1661948342;
+ t=1661948361;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GmROc7GxODkejqDk5Q5qatjF1NF/KK4lyGvn7pC9Gyg=;
- b=dDRLwMMABmh+0PcIT1IrGtVmoUwhiPlBOkerc1Em3SG2fmSSvJLKH5+VYEpxfoj3GvrhOQ
- 7lGrZLmPAuqN4f3UwHhP64THoYkifufk0uzqVHBsmYDrSI11ehgj2FeqUC+y/vDkUrkxNw
- XumvKYkepLokNYfDBYVDnWFQKbVHNz0=
+ bh=tuykU5H8ivn0AnlvC9ui3a+08GJ6Uoo1bVLGHwrWr9Q=;
+ b=vm9X2BjZhKRJ1MKCZFGRPVYhQGC5/2lnIk5BarL4R8TtLi6OGebQcYpU7xlz04FFS6Er4T
+ 7u9mcR044o7OA2XVpnvgfcNniPzueeSk3vbFY3b/x+AVx0SDvsTwCnFNHnAWQaqk6MOG4K
+ qMRISJ6MutLizw6HpGcSInp23YxhHCE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1661948342;
+ s=susede2_ed25519; t=1661948361;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GmROc7GxODkejqDk5Q5qatjF1NF/KK4lyGvn7pC9Gyg=;
- b=ycY24V/qUnxlPcp3KZ1lIzZPvol6M16cdGAtfrLWp82JvRU0C66+nRLn8ouFR764m6YPFo
- hWoQVgdQ8KTT4FAQ==
+ bh=tuykU5H8ivn0AnlvC9ui3a+08GJ6Uoo1bVLGHwrWr9Q=;
+ b=Khzuwii3BN9STccGBkhKaT0niMoCowYWNh/yVpQnGk+wIJjTlmVCgPcRHVg1x4G1Oc8b6+
+ Q3kyDxvnqU/KKyCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 56F5E1332D;
- Wed, 31 Aug 2022 12:19:02 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7258E1332D;
+ Wed, 31 Aug 2022 12:19:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id HvimE7ZRD2PZFgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 31 Aug 2022 12:19:02 +0000
-Date: Wed, 31 Aug 2022 14:18:59 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id laHbGclRD2MEFwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 31 Aug 2022 12:19:21 +0000
+Date: Wed, 31 Aug 2022 14:19:19 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <Yw9Rs6+EIaSRxw9D@pevik>
+Message-ID: <Yw9Rx3gULJDKJHwO@pevik>
 References: <20220830135007.16818-1-mdoucha@suse.cz>
  <20220830135007.16818-7-mdoucha@suse.cz> <Yw8aBE5SNZmY+mrd@pevik>
- <Yw8kncHPdgBl7tB1@yuki>
+ <256a2476-dff0-dfe0-8913-4cfdd38c8a6d@suse.cz>
+ <Yw8o/igtdRCALl1x@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Yw8kncHPdgBl7tB1@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <Yw8o/igtdRCALl1x@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 06/10] copy_file_range01: Add max_runtime
 X-BeenThere: ltp@lists.linux.it
@@ -85,16 +86,19 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 > Hi!
-> > LGTM (test uses all_filesystems, but 20 for all possible filesystems should be OK).
+> > > LGTM (test uses all_filesystems, but 20 for all possible filesystems should be OK).
+> > Hmm, I've missed the .all_filesystems setting here. In that case the 
+> > test should take ~2 seconds per filesystems and the patch is not needed. 
+> > Feel free to discard it then.
 
-> The runtime applies per single call of the run() function.
+> I would still vote for adding something as .max_runtime = 5 or something
+> like this so that it's obvious that the test can run for a few seconds
+> per run() call especially on slower disks.
 
-Thanks for a hint Cyril. I didn't read the sources correctly before. Now I see
-alarm(results->timeout) in fork_testrun() which is called for each filesystem.
++1
 
 Kind regards,
 Petr
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
