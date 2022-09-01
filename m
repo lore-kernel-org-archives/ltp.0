@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44D39ECAAD3
-	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 10:51:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C8C1ECAAD3
+	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 10:54:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BA5003CA8B0
-	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 12:51:30 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 375D03CA846
+	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 12:54:03 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 85EF13CA729
- for <ltp@lists.linux.it>; Thu,  1 Sep 2022 12:51:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id E422A3CA729
+ for <ltp@lists.linux.it>; Thu,  1 Sep 2022 12:53:53 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 867791400DB6
- for <ltp@lists.linux.it>; Thu,  1 Sep 2022 12:51:20 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5A4261000D06
+ for <ltp@lists.linux.it>; Thu,  1 Sep 2022 12:53:52 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id BFEC4225EB;
- Thu,  1 Sep 2022 10:51:19 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 62ADE1FAD9;
+ Thu,  1 Sep 2022 10:53:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1662029479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1662029632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nRXK/8ua0eLRMSgIZDjpLH+MwiXZGPpjw0K8EBRwqE0=;
- b=BChMpkbeZ6zNecKkriIOg4da01quG3Cf6/1PlGNyv/SwlgiDtIARexCO7VvfT+3/LeAEl8
- RpkWa6gLaVL7mr7GUw8mgsiANseX6Na+SgngQ1fisxAjFnFQh1bvhsgwwikZLOGchLSuKF
- JFtXitWKbkhLjim20uIQjkmmKW2cXPk=
+ bh=GNkb3jh3iz2WqX7asCECCcbT7IyrB1Pzy5M60U4lCY8=;
+ b=L/X5VyWqWhh07aVyo4cFR743OsKHxNPFr9lXOV3JQTsA8oktfwlxh0phT5Y8etQ0khMV2j
+ IO5g+0Xj91536LV2efbtGqqk4Hr1b1h7T86MaxWgaEPWSoFHSkfHvYB+RekZ9U1UGPHZN/
+ eIq5F3nwlI23JNbUjl/QeQZ67oGOOVQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1662029479;
+ s=susede2_ed25519; t=1662029632;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nRXK/8ua0eLRMSgIZDjpLH+MwiXZGPpjw0K8EBRwqE0=;
- b=EcckEbbODnUsavB+EaSHKquLDlNjQCtLg0ogsADpc7imuqWU9daKW6WYbPyY95VqJFuf/D
- jh3MfUeK2RnckuAg==
+ bh=GNkb3jh3iz2WqX7asCECCcbT7IyrB1Pzy5M60U4lCY8=;
+ b=EuWwZD2Xf83K2VdHAY7qdB5BFqmATCzut/1tKmdtfRdATuJ4fszMpO0aY/KpGm66A+vOrw
+ zPPw9LbBWiUyzFBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0401F13A79;
- Thu,  1 Sep 2022 10:51:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D76913A79;
+ Thu,  1 Sep 2022 10:53:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 9cyyLaaOEGPkdAAAMHmgww
- (envelope-from <akumar@suse.de>); Thu, 01 Sep 2022 10:51:18 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id JcfOEj+PEGMwdgAAMHmgww
+ (envelope-from <akumar@suse.de>); Thu, 01 Sep 2022 10:53:51 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it, Li Wang <liwang@redhat.com>
-Date: Thu, 01 Sep 2022 16:21:16 +0530
-Message-ID: <1830205.tdWV9SEqCh@localhost>
+Date: Thu, 01 Sep 2022 16:23:48 +0530
+Message-ID: <13092651.uLZWGnKmhe@localhost>
 Organization: SUSE
-In-Reply-To: <CAEemH2eLoJwm_+ORaoT7xamtqvLTekN7H7NWmU-ErXPMdK+77w@mail.gmail.com>
-References: <20220830105418.15966-1-akumar@suse.de>
- <CAEemH2eLoJwm_+ORaoT7xamtqvLTekN7H7NWmU-ErXPMdK+77w@mail.gmail.com>
+In-Reply-To: <CAEemH2fTpsMf_j3rRHw+Uy+D5nEes1tPpSbqVfKDavSWoGOk6Q@mail.gmail.com>
+References: <20220830072028.1115-1-akumar@suse.de>
+ <CAEemH2fTpsMf_j3rRHw+Uy+D5nEes1tPpSbqVfKDavSWoGOk6Q@mail.gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] getsid02.c: Rewrite using new LTP API
+Subject: Re: [LTP] [PATCH] getsid01.c: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,127 +84,32 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Li,
 
-On Wednesday, August 31, 2022 12:10:44 PM IST Li Wang wrote:
-> On Tue, Aug 30, 2022 at 6:54 PM Avinesh Kumar <akumar@suse.de> wrote:
+On Wednesday, August 31, 2022 12:05:32 PM IST Li Wang wrote:
+> Hi Avinesh,
 > 
-> > Signed-off-by: Avinesh Kumar <akumar@suse.de>
-> > ---
-> >  testcases/kernel/syscalls/getsid/getsid02.c | 83 +++++----------------
-> >  1 file changed, 17 insertions(+), 66 deletions(-)
-> >
-> > diff --git a/testcases/kernel/syscalls/getsid/getsid02.c
-> > b/testcases/kernel/syscalls/getsid/getsid02.c
-> > index b5ab339e2..c235af362 100644
-> > --- a/testcases/kernel/syscalls/getsid/getsid02.c
-> > +++ b/testcases/kernel/syscalls/getsid/getsid02.c
-> > @@ -1,81 +1,32 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> >  /*
-> > - *
-> >   *   Copyright (c) International Business Machines  Corp., 2001
-> >   *   Copyright (c) 2012 Cyril Hrubis <chrubis@suse.cz>
-> > - *
-> > - *   This program is free software;  you can redistribute it and/or modify
-> > - *   it under the terms of the GNU General Public License as published by
-> > - *   the Free Software Foundation; either version 2 of the License, or
-> > - *   (at your option) any later version.
-> > - *
-> > - *   This program is distributed in the hope that it will be useful,
-> > - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> > - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> > - *   the GNU General Public License for more details.
-> > - *
-> > - *   You should have received a copy of the GNU General Public License
-> > - *   along with this program;  if not, write to the Free Software
-> > - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> > 02110-1301 USA
-> > + *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-> >   */
-> >
-> > -#define _GNU_SOURCE 1
-> > -
-> > -#include "test.h"
-> > -
-> > -#include <errno.h>
-> > +/*\
-> > + * [Description]
-> > + *
-> > + * Verify that getsid(2) fails with ESRCH errno when there is no
-> > + * process found with process ID pid.
-> > + */
-> >
-> > -char *TCID = "getsid02";
-> > -int TST_TOTAL = 1;
-> > +#include "tst_test.h"
-> >
-> >  static pid_t unused_pid;
-> >
-> > -static void cleanup(void);
-> > -static void setup(void);
-> > -
-> > -int main(int ac, char **av)
-> > +static void setup(void)
-> >  {
-> > -       int lc;
-> > -
-> > -       tst_parse_opts(ac, av, NULL, NULL);
-> > -
-> > -       setup();
-> > -
+> Avinesh Kumar <akumar@suse.de> wrote:
+> 
+> 
 > > -       for (lc = 0; TEST_LOOPING(lc); lc++) {
+> > -               /* reset tst_count in case we are looping */
 > > -               tst_count = 0;
-> > -
-> > -               TEST(getsid(unused_pid));
-> > -
-> > -               if (TEST_RETURN == 0) {
-> > -                       tst_resm(TFAIL, "call succeed when failure
-> > expected");
-> > -                       continue;
-> > -               }
-> > -
-> > -               switch (TEST_ERRNO) {
-> > -               case ESRCH:
-> > -                       tst_resm(TPASS, "expected failure - errno = %d -
-> > %s",
-> > -                                TEST_ERRNO, strerror(TEST_ERRNO));
-> > -                       break;
-> > -               default:
-> > -                       tst_resm(TFAIL, "call failed to produce "
-> > -                                "expected error - errno = %d - %s",
-> > -                                TEST_ERRNO, strerror(TEST_ERRNO));
-> > -                       break;
-> > -               }
-> > -       }
-> > -
-> > -       cleanup();
-> > -       tst_exit();
-> > +       unused_pid = tst_get_unused_pid();
+> > +       TEST(getsid(0));
+> > +       p_sid = TST_RET;
 > >
 > 
-> We can simply move this to the main function to avoid unused PID
-> reusing again if people perform test with '-i N'.
-> 
-> How about this below:
-> 
-> #include "tst_test.h"
-> 
-> static void run(void)
-> {
->     pid_t unused_pid;
->     unused_pid = tst_get_unused_pid();
-> 
->     TST_EXP_FAIL(getsid(unused_pid), ESRCH);
-> }
-> 
-> static struct tst_test test = {
->     .test_all = run
-> };
+> We'd better examine TST_RET not equal -1, otherwise, the test can
+> still report pass with two wrong values (-1) returned. isn't it?
 > 
 > 
-Yes, I agree to your suggestion. But while testing '-i N' with this code
-also I am getting the same unused_pid which is equal to 
-/proc/sys/kernel/pid_max in my env.
+> > +               c_sid = TST_RET;
+> >
+> 
+> Here as well.
+Yes, thank you for pointing this out, sending v2.
 
+> 
+> 
+> 
 
 Regards,
 Avinesh
