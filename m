@@ -4,67 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 862EFECAAD2
-	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 07:06:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B1EEECAAD1
+	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 09:04:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 77F173CA777
-	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 09:06:18 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id EE0EE3CA81D
+	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 11:04:11 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 105C53C0C9F
- for <ltp@lists.linux.it>; Thu,  1 Sep 2022 09:06:09 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id C793F3CA070
+ for <ltp@lists.linux.it>; Thu,  1 Sep 2022 11:04:01 +0200 (CEST)
+Received: from out162-62-57-87.mail.qq.com (out162-62-57-87.mail.qq.com
+ [162.62.57.87])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 93BE01A000A3
- for <ltp@lists.linux.it>; Thu,  1 Sep 2022 09:06:08 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CAC79220B2;
- Thu,  1 Sep 2022 07:06:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662015967;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=V/u7rqWJN2HPb97lHryK9EaZeU/WHPm4mDBrJosya2g=;
- b=HCOdLFSmhRvUO1CFPcYX2tnMoPuUjTywkT5FpxuCva2c7KBJhFCxCr2KKWIj30X3EfENHa
- ZgWc7DsegssGa8rSRDnzNF3D+zY2IMH10ANAjQ7CLrecDIKfVM+v3iET8nKmV72WmJIrw+
- TvRvqdoY+wBMN4rsxpaNJBNZ0c5M+WU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662015967;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=V/u7rqWJN2HPb97lHryK9EaZeU/WHPm4mDBrJosya2g=;
- b=+oMKrNIqNg6F/s/kbbm8guW1Njbna27uOnmv8bu53OqCK5wkVdt5x1CFrUcgD7K6l15HBZ
- qkiSkV69Xr32dUCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 95284139C4;
- Thu,  1 Sep 2022 07:06:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id o+XuId9ZEGOCLgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 01 Sep 2022 07:06:07 +0000
-Date: Thu, 1 Sep 2022 09:06:05 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <YxBZ3Q3dmjKXVMfJ@pevik>
-References: <20220714160514.21062-1-akumar@suse.de>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2F00D60098F
+ for <ltp@lists.linux.it>; Thu,  1 Sep 2022 11:03:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+ s=s201512; t=1662023035;
+ bh=SUoZ//bynKPOX4pqYUZVXHRMJpkqSJjMgCcTYnkyPwM=;
+ h=From:To:Cc:Subject:Date;
+ b=Qo4IngZnU8075O578pjU7M5Tdd+XJOlmFUChSIy/xz1OPe1+itdOuQDkNyBJ7e7TI
+ 4u2QETo0vm0eqtV2MSJ1BH92LqlNKiP4bFJOM030VfwiQfbKgrSVTWhmsze+DRCUo5
+ EKsC8AJpTyvNC7/3Y6IWCo7oBXp4usDSqNdCeEgQ=
+Received: from localhost.localdomain ([123.52.25.162])
+ by newxmesmtplogicsvrsza32.qq.com (NewEsmtp) with SMTP
+ id F5A3AF9; Thu, 01 Sep 2022 17:03:53 +0800
+X-QQ-mid: xmsmtpt1662023033tk3jduxb1
+Message-ID: <tencent_357C210832AC0D20B4889919FC9761627505@qq.com>
+X-QQ-XMAILINFO: OEgU9iHXvJ5F+K8ud2AAPnhFEnvd2UrKbd7zDCs6etDOfx0IfRrj1YZmAgrADq
+ RPEho5jkegdmWiDQDSIg7plRpsTJP2DboDtxnxfothjyfrPNFfehGbH+OESRPrmzR0yvG8vcqV3w
+ U2kKDgpFi+NGASnE8OcNmQEwfawRulvcLZWppc9nyoh1+4mXOmc62rNqJs8w6SQSp1cqzR3FZDUo
+ /7im26oDYTNlGuBkKD58VZJWg9iDSC15Y2bEZmaMrIztYKXIwcVm72N1jb6aY+T+xfXcm5bt8ina
+ Q3NxHKhQbomFswORNlRIc34EgUbQnFqKTNdqcBZsRflpA1Y01sRaMoKFcnRYLCUIxVP5+3RihwpL
+ pInKgqqE28hAGT9kkR0b86JFZihsl9hfHcosHrjKppQPcv/8pzBdH236rTUxef0DVk+vqHimzzh+
+ WToPSzh0BRcXnlJdCBJ0JbkLB/H+84RTARXso/UT34zicogzHRZIdvuwbun/ptsGlkU27qXhtqwC
+ vFrFxFRLHnavm6hAR/10JjSV3KKj/7yDIcBtFqSZ7C8vpJU3jcu2KMzKRbHJhexiHE5QspWIkd+z
+ T5hsWmDtnKynKum52teoH7A8mvxx8mhw1/rMMSXC4RseUepkDa80rSFJH9SnMzlfBuUHoSitTu/b
+ WvlCzaPSMtE7Cmjnsu0gWr57u9lO1x5ypCJewoXxatnrg8Xf+1nWQY5jl9TxtJtMXzw9Rmic8Tf2
+ 02Cf1r4Cl8MOtOi7lU4bulIpCUFHH1UgvdP6yrsjWmbzh7rkEGc9+2rPDxIfNqkd7Nmf6jXEdEje
+ i+1i9sLnp6GRGJTHGLVbU3tqiFaRYsR3LVfzMSC2J/UaKpjPoAhL5/YDibxKY4V8GA3X/4adMoGj
+ yCAVBz5VmfB9kVkrWABCL4z/WXs8twyAa0sZWxfJ0/TERwi3MfL0XDEDIR4Z0jL/t+VbQt571/7n
+ 6mQSyBxIquIC+c3X9AwBa6hCvg+1ga2Ngw5uqZhz3K4qxw7mbWWj5+JgeHuPRwb4ZPMp8qF5rQd2
+ 3gF0nmb/saOLSU/ukY
+From: huangjuniter@foxmail.com
+To: ltp@lists.linux.it
+Date: Thu,  1 Sep 2022 17:03:21 +0800
+X-OQ-MSGID: <20220901090321.2437-1-huangjuniter@foxmail.com>
+X-Mailer: git-send-email 2.37.2.windows.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220714160514.21062-1-akumar@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] write04.c: use TST_EXP_FAIL() macro
+Subject: [LTP] [PATCH] pm_include.sh: Fix calculation error of no_of_sockets
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,19 +69,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Jun Huang <huangjuniter@foxmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+From: Jun Huang <huangjuniter@foxmail.com>
 
-merged, thanks!
+An error will occur when there are multiple sockets and each socket has 
+more than 10 cores, resulting in the value of no_of_sockets being 1.
 
-Kind regards,
-Petr
+Signed-off-by: Jun Huang <huangjuniter@foxmail.com>
+---
+ testcases/kernel/power_management/pm_include.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/power_management/pm_include.sh b/testcases/kernel/power_management/pm_include.sh
+index 35ff0f1e6..f3e160445 100755
+--- a/testcases/kernel/power_management/pm_include.sh
++++ b/testcases/kernel/power_management/pm_include.sh
+@@ -124,8 +124,8 @@ check_input() {
+ 
+ is_multi_socket() {
+ 	no_of_sockets=`cat \
+-		/sys/devices/system/cpu/cpu?/topology/physical_package_id \
+-		| uniq | wc -l`
++		/sys/devices/system/cpu/cpu*/topology/physical_package_id \
++		| sort -u | wc -l`
+ 	[ $no_of_sockets -gt 1 ] ; echo $?
+ }
+ 
+-- 
+2.37.2.windows.2
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
