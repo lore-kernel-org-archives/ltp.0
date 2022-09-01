@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63F16ECAAD2
-	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 06:33:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 702CEECAAD1
+	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 06:51:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 60EFE3CA84D
-	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 08:33:11 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C69403CA887
+	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 08:51:02 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 76ABE3C0EBB
- for <ltp@lists.linux.it>; Thu,  1 Sep 2022 08:33:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 611923CA729
+ for <ltp@lists.linux.it>; Thu,  1 Sep 2022 08:50:51 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5D4711000AE8
- for <ltp@lists.linux.it>; Thu,  1 Sep 2022 08:32:58 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9694F60018E
+ for <ltp@lists.linux.it>; Thu,  1 Sep 2022 08:50:49 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1F47A22252;
- Thu,  1 Sep 2022 06:32:58 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6327E1FA74;
+ Thu,  1 Sep 2022 06:50:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662013978;
+ t=1662015049;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aNdNBR7qqMegH1w1KZZdKEOVKVkIhCEfu7VPkB9TWrs=;
- b=q1pN91lvkK6cio8FIUK7IRu00iaM22JUxZSrNCXWCU2U5tw4cIAWLH7wTBtneKdZ6UCWMm
- INOYmfMwCwjpXwaMfq4/A3LQ8zFm5wFbtfDfLtg4eb2i1KZxGMajuybHnuaqCPwmtZYMFz
- xPNEzUTEyew7uCZ3rm5/sgUCPFLcZLE=
+ bh=TFyxO/5VzpMvEH4nO5FvusHR/T/L94d5+017eAGO+Gk=;
+ b=I5qacdOjafn5O9WffHqiUGn7QeNvK0tcklzyT37vXvMFBBv/q+J1inSlG6tz6xB1hz48yY
+ 0+f4DA4Yxc0T/NeO1+yCae8umJz6KnNqhAfTfeA2u29NqRcbT/94Boyn2Rsz+fdA1dB9Um
+ RMYE4EB7tHW4opGrak7SrJR6FiLbdwk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662013978;
+ s=susede2_ed25519; t=1662015049;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aNdNBR7qqMegH1w1KZZdKEOVKVkIhCEfu7VPkB9TWrs=;
- b=vh6vbKi0liDwXk+BztBpjJ2ysZTNPbQkhQlBrVdrHCZxO8nEbyoMkxrkgbnP5cwJ2Bhid0
- BlIjozK+22Ba+GCw==
+ bh=TFyxO/5VzpMvEH4nO5FvusHR/T/L94d5+017eAGO+Gk=;
+ b=1TKd/qgRZ7KkuY47H+zM+OMA4JiIpf/uGrCT7lnx1B6cPwOSsXCmb4tQc53QXKi6IFJPr4
+ Y2bT1j6PiJlkdJDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E6FE713316;
- Thu,  1 Sep 2022 06:32:57 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43F3C139C4;
+ Thu,  1 Sep 2022 06:50:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 0LSyNhlSEGNJIAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 01 Sep 2022 06:32:57 +0000
-Date: Thu, 1 Sep 2022 08:32:55 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id rn4/DklWEGMjKAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 01 Sep 2022 06:50:49 +0000
+Date: Thu, 1 Sep 2022 08:50:46 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <YxBSF1ZgU5wSlpi+@pevik>
-References: <20220714060722.18894-1-akumar@suse.de>
+Message-ID: <YxBWRndhRQRF69Cl@pevik>
+References: <20220715061548.11574-1-akumar@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220714060722.18894-1-akumar@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20220715061548.11574-1-akumar@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] open04.c: convert to new LTP API
+Subject: Re: [LTP] [PATCH] unlink07: use TST_EXP_FAIL() and turn comment
+ into docparse, reword
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,93 +86,75 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Avinesh,
 
-I suggest to merge with these fixes:
+> +++ b/testcases/kernel/syscalls/unlink/unlink07.c
+> @@ -3,15 +3,17 @@
+>   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+Maybe adding copyright?
+>   */
 
-* added free (if needed - that was in the original source)
-* fixed cleanup (don't run SAFE_CLOSE() if previous SAFE_OPEN() or SAFE_MALLOC()
-  failed)
-* use TST_EXP_FAIL() - the same result as TST_EXP_FAIL2() with shorter code
-* allocate memory needed (it's actually -2)
-* #define FNAME "open04"
+> +/*\
+> + * [Description]
+> + *
+> + * Verify that unlink() fails with
+> + * - ENOENT when file does not exist.
+> + * - ENOENT when pathname is empty.
+> + * - ENOENT when a component in pathname does not exist.
+> + * - EFAULT when pathname points outside the accessible address space.
+> + * - ENOTDIR when a component used as a directory in pathname is not,
+> + * in fact, a directory.
+> + * - ENAMETOOLONG when pathname is too long.
+I'd remove dot in the end.
+I don't like 'when', but I don't know anything better.
+>   */
 
-If it's ok, I'll merge it.
+>  #include <errno.h>
+> @@ -39,21 +41,9 @@ static void verify_unlink(unsigned int n)
+>  {
+>  	struct test_case_t *tc = &tcases[n];
+
+> -	TEST(unlink(tc->name));
+> -	if (TST_RET != -1) {
+> -		tst_res(TFAIL, "unlink(<%s>) succeeded unexpectedly",
+> -			tc->desc);
+> -		return;
+> -	}
+> -
+> -	if (TST_ERR == tc->exp_errno) {
+> -		tst_res(TPASS | TTERRNO, "unlink(<%s>) failed as expected",
+> -			tc->desc);
+> -	} else {
+> -		tst_res(TFAIL | TTERRNO,
+> -			"unlink(<%s>) failed, expected errno: %s",
+> -			tc->desc, tst_strerrno(tc->exp_errno));
+> -	}
+> +	TST_EXP_FAIL(unlink(tc->name),
+> +				tc->exp_errno,
+> +				"%s", tc->desc);
+This should be on single line.
+>  }
+
+>  static void setup(void)
+
+Other proposed changes:
+
+* PATH_MAX is in limits.h + we usually don't put comments why it's included:
+-#include <sys/param.h>	/* for PATH_MAX */
++#include <limits.h>
+
+* use size_t in setup
+ static void setup(void)
+ {
+-	unsigned int n;
++	size_t n;
+
+BTW it'd build just with #include "tst_test.h", because all 4 headers are
+included by headers which tst_test.h includes.
+
+I guess most of that it applies to your patch unlink08.c as well, could you
+please send v2?
 
 Kind regards,
 Petr
-
-diff --git testcases/kernel/syscalls/open/open04.c testcases/kernel/syscalls/open/open04.c
-index e7cb533fe..16477e459 100644
---- testcases/kernel/syscalls/open/open04.c
-+++ testcases/kernel/syscalls/open/open04.c
-@@ -1,19 +1,22 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
- 
- /*\
-  * [Description]
-  *
-- * Verify that open(2) fails with EMFILE when
-- * per-process limit on the number of open file descriptors has been reached.
-+ * Verify that open(2) fails with EMFILE when per-process limit on the number
-+ * of open file descriptors has been reached.
-  */
- 
- #include <stdio.h>
-+#include <stdlib.h>
- #include "tst_test.h"
- 
-+#define FNAME "open04"
-+
- static int fds_limit, first, i;
- static int *fds;
- static char fname[20];
-@@ -23,13 +26,13 @@ static void setup(void)
- 	int fd;
- 
- 	fds_limit = getdtablesize();
--	first = SAFE_OPEN("open04", O_RDWR | O_CREAT, 0777);
-+	first = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0777);
- 
--	fds = SAFE_MALLOC(sizeof(int) * (fds_limit - first));
-+	fds = SAFE_MALLOC(sizeof(int) * (fds_limit - first - 2));
- 	fds[0] = first;
- 
- 	for (i = first + 1; i < fds_limit; i++) {
--		sprintf(fname, "open04.%d", i);
-+		sprintf(fname, FNAME ".%d", i);
- 		fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0777);
- 		fds[i - first] = fd;
- 	}
-@@ -37,16 +40,20 @@ static void setup(void)
- 
- static void run(void)
- {
--	sprintf(fname, "open04.%d", fds_limit);
--	TST_EXP_FAIL2(open(fname, O_RDWR | O_CREAT, 0777),
--				EMFILE,
--				"open(%s, O_RDWR | O_CREAT, 0777)", fname);
-+	sprintf(fname, FNAME ".%d", fds_limit);
-+	TST_EXP_FAIL(open(fname, O_RDWR | O_CREAT, 0777), EMFILE);
- }
- 
- static void cleanup(void)
- {
-+	if (!first || !fds)
-+		return;
-+
- 	for (i = first; i < fds_limit; i++)
- 		SAFE_CLOSE(fds[i - first]);
-+
-+	if (fds)
-+		free(fds);
- }
- 
- static struct tst_test test = {
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
