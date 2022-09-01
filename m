@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 702CEECAAD1
-	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 06:51:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D4F6ECAAD1
+	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 06:54:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C69403CA887
-	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 08:51:02 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 9CB253CA7C3
+	for <ltp@archiver.kernel.org>; Thu,  1 Sep 2022 08:53:58 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 611923CA729
- for <ltp@lists.linux.it>; Thu,  1 Sep 2022 08:50:51 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id CC19B3CA729
+ for <ltp@lists.linux.it>; Thu,  1 Sep 2022 08:53:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9694F60018E
- for <ltp@lists.linux.it>; Thu,  1 Sep 2022 08:50:49 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3BD79600696
+ for <ltp@lists.linux.it>; Thu,  1 Sep 2022 08:53:47 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6327E1FA74;
- Thu,  1 Sep 2022 06:50:49 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3E4D022283;
+ Thu,  1 Sep 2022 06:53:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662015049;
+ t=1662015227;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TFyxO/5VzpMvEH4nO5FvusHR/T/L94d5+017eAGO+Gk=;
- b=I5qacdOjafn5O9WffHqiUGn7QeNvK0tcklzyT37vXvMFBBv/q+J1inSlG6tz6xB1hz48yY
- 0+f4DA4Yxc0T/NeO1+yCae8umJz6KnNqhAfTfeA2u29NqRcbT/94Boyn2Rsz+fdA1dB9Um
- RMYE4EB7tHW4opGrak7SrJR6FiLbdwk=
+ bh=Z7AwOTOUrwTqToWovnLbJmOVqsGeXfDXvz0ucWh2WjU=;
+ b=NX/RjV1Gbdb7Z3Lev0gbvcYiQnLrEvPFlFo60DU3Kq6HnDj8MQdd36TWOTi1iKz+hXSQF2
+ fV9DcuJAzUdeqtsRY9JPkV9PR3Ul3DZTY5uOaGBTJP1rL4NqpB9mVvhaSfn5H2/SB80c40
+ Pz9SNTG/VNcoUDUTXOxNCTziGVCkCdg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662015049;
+ s=susede2_ed25519; t=1662015227;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TFyxO/5VzpMvEH4nO5FvusHR/T/L94d5+017eAGO+Gk=;
- b=1TKd/qgRZ7KkuY47H+zM+OMA4JiIpf/uGrCT7lnx1B6cPwOSsXCmb4tQc53QXKi6IFJPr4
- Y2bT1j6PiJlkdJDg==
+ bh=Z7AwOTOUrwTqToWovnLbJmOVqsGeXfDXvz0ucWh2WjU=;
+ b=+Ij3QdxDPPiRbfKLWU0NmPIRdNjM9QOpEIoWErY/Eh8d3ll3ipo6FCxAO/HE/5yRX05SjA
+ AdQq5SMHJI9mtTBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43F3C139C4;
- Thu,  1 Sep 2022 06:50:49 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B53B139C4;
+ Thu,  1 Sep 2022 06:53:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id rn4/DklWEGMjKAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 01 Sep 2022 06:50:49 +0000
-Date: Thu, 1 Sep 2022 08:50:46 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id uytfAPtWEGNOKQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 01 Sep 2022 06:53:47 +0000
+Date: Thu, 1 Sep 2022 08:53:29 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <YxBWRndhRQRF69Cl@pevik>
-References: <20220715061548.11574-1-akumar@suse.de>
+Message-ID: <YxBW6dyqn/El7qWp@pevik>
+References: <20220715071216.15404-1-akumar@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220715061548.11574-1-akumar@suse.de>
+In-Reply-To: <20220715071216.15404-1-akumar@suse.de>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] unlink07: use TST_EXP_FAIL() and turn comment
+Subject: Re: [LTP] [PATCH] unlink08: use TST_EXP_FAIL() and turn comment
  into docparse, reword
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -86,72 +86,8 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Avinesh,
 
-> +++ b/testcases/kernel/syscalls/unlink/unlink07.c
-> @@ -3,15 +3,17 @@
->   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-Maybe adding copyright?
->   */
-
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that unlink() fails with
-> + * - ENOENT when file does not exist.
-> + * - ENOENT when pathname is empty.
-> + * - ENOENT when a component in pathname does not exist.
-> + * - EFAULT when pathname points outside the accessible address space.
-> + * - ENOTDIR when a component used as a directory in pathname is not,
-> + * in fact, a directory.
-> + * - ENAMETOOLONG when pathname is too long.
-I'd remove dot in the end.
-I don't like 'when', but I don't know anything better.
->   */
-
->  #include <errno.h>
-> @@ -39,21 +41,9 @@ static void verify_unlink(unsigned int n)
->  {
->  	struct test_case_t *tc = &tcases[n];
-
-> -	TEST(unlink(tc->name));
-> -	if (TST_RET != -1) {
-> -		tst_res(TFAIL, "unlink(<%s>) succeeded unexpectedly",
-> -			tc->desc);
-> -		return;
-> -	}
-> -
-> -	if (TST_ERR == tc->exp_errno) {
-> -		tst_res(TPASS | TTERRNO, "unlink(<%s>) failed as expected",
-> -			tc->desc);
-> -	} else {
-> -		tst_res(TFAIL | TTERRNO,
-> -			"unlink(<%s>) failed, expected errno: %s",
-> -			tc->desc, tst_strerrno(tc->exp_errno));
-> -	}
-> +	TST_EXP_FAIL(unlink(tc->name),
-> +				tc->exp_errno,
-> +				"%s", tc->desc);
-This should be on single line.
->  }
-
->  static void setup(void)
-
-Other proposed changes:
-
-* PATH_MAX is in limits.h + we usually don't put comments why it's included:
--#include <sys/param.h>	/* for PATH_MAX */
-+#include <limits.h>
-
-* use size_t in setup
- static void setup(void)
- {
--	unsigned int n;
-+	size_t n;
-
-BTW it'd build just with #include "tst_test.h", because all 4 headers are
-included by headers which tst_test.h includes.
-
-I guess most of that it applies to your patch unlink08.c as well, could you
-please send v2?
+most of the tips for unlink07 apply here as well
+https://lore.kernel.org/ltp/YxBWRndhRQRF69Cl@pevik/
 
 Kind regards,
 Petr
