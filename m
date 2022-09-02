@@ -4,67 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98D91C38145
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 09:34:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31CB3C38145
+	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 09:38:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C530D3CA8BB
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 11:34:23 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 808A93CA8BF
+	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 11:38:48 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A83A93CA708
- for <ltp@lists.linux.it>; Fri,  2 Sep 2022 11:34:13 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id EDAC83CA708
+ for <ltp@lists.linux.it>; Fri,  2 Sep 2022 11:38:38 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B9A3014010FD
- for <ltp@lists.linux.it>; Fri,  2 Sep 2022 11:34:11 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7ABEE20F55;
- Fri,  2 Sep 2022 09:34:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662111251;
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id ADAFB6012CF
+ for <ltp@lists.linux.it>; Fri,  2 Sep 2022 11:38:37 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id CF168342C0;
+ Fri,  2 Sep 2022 09:38:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1662111516;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=073jVDqs2gJ4E9HOSKTpy5bvF6tAeS+6Yzr+o0bVxkE=;
- b=pBHJUglfUNAQRie5yQllMTGqCf9FZyUqN5w+KKIX+o+kwhVvcxT1+g3o20jFoFTZJI4EoN
- xBbFrbs98nQmwMLQ5+ZqshAw04qEgE/qok/QlPfdjfuxEwjItdWQsZm2MHhswWq7Z1Trut
- QTeqlZE8FBzLbjmw/4+FBYtGhUx6JPw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662111251;
+ bh=L57+m5EthPTSJ/V6bcgdlHivSbiAh8feIkrj4555Rs0=;
+ b=pSbEZR7+05FJLQzMQdn2Xdhr8Fe/8LSyDdSSSg9w95kOmp+DFEv4uVb8mN58N8j1EEug6a
+ kTWU2FKUulVJUjPLVWZqr+V4hJe/ytkl73CVD72VpEEO1uocCeMe4EkhrIPUKZJPb0EiWD
+ AIhGV1eNkfcGbXX+Ll0I5BP63I8qG/I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1662111516;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=073jVDqs2gJ4E9HOSKTpy5bvF6tAeS+6Yzr+o0bVxkE=;
- b=rd6vXEe+B8RcFCoeCbtq98dNXbdFM9Cu+v+YGmNFUfHkwS6lhY4FtT552VuXWyG6lfNYoJ
- DsEFDEnB9+MYaMAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=L57+m5EthPTSJ/V6bcgdlHivSbiAh8feIkrj4555Rs0=;
+ b=LAYdSwQC47hx1ZDk19ZDnQ0QMcK3b9cMEnZvief+gh2CizFh7JY9KGMsQC9jqE0Z8/giHK
+ AASEe9DSf3uiRoBQ==
+Received: from g78 (unknown [10.163.24.226])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4CC9313328;
- Fri,  2 Sep 2022 09:34:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id JKbbEBPOEWMiFgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 02 Sep 2022 09:34:11 +0000
-Date: Fri, 2 Sep 2022 11:34:09 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <YxHOEQwMwvhmq8Mh@pevik>
+ by relay2.suse.de (Postfix) with ESMTPS id 5E9802C141;
+ Fri,  2 Sep 2022 09:38:31 +0000 (UTC)
 References: <20220804121946.19564-1-pvorel@suse.cz>
- <20220804121946.19564-2-pvorel@suse.cz> <87bkry2kv8.fsf@suse.de>
+ <20220804121946.19564-7-pvorel@suse.cz>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 02 Sep 2022 10:38:22 +0100
+In-reply-to: <20220804121946.19564-7-pvorel@suse.cz>
+Message-ID: <87tu5q15gj.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87bkry2kv8.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 01/10] tst_test.sh: Fix tst_mkfs() for tmpfs
+Subject: Re: [LTP] [PATCH v3 06/10] tst_supported_fs: Support skip list when
+ query single fs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,36 +70,99 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it, automated-testing@yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Richie,
 
-> Hello,
+Hi,
 
-> No response and seems reasonable, please merge!
+Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
 
-> Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
-Thanks a lot for your review! I suppose you mean your ack for whole patchset.
+Petr Vorel <pvorel@suse.cz> writes:
 
-If yes, I'll merge all but the last RFC commit which needs more work (i.e.
-TST_ALL_FILESYSTEMS infrastructure although nothing uses it yet).
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> New in v3
+>
+>  include/tst_fs.h                 | 10 ++++++++++
+>  lib/tst_supported_fs_types.c     | 18 ++++++++++++++++++
+>  testcases/lib/tst_supported_fs.c |  2 +-
+>  3 files changed, 29 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/tst_fs.h b/include/tst_fs.h
+> index 8159b99eb..2fe97f174 100644
+> --- a/include/tst_fs.h
+> +++ b/include/tst_fs.h
+> @@ -182,6 +182,16 @@ enum tst_fs_impl {
+>   */
+>  enum tst_fs_impl tst_fs_is_supported(const char *fs_type);
+>  
+> +/*
+> + * Check filesystem support (@see tst_fs_is_supported()), but consider also
+> + * filesystems to skip.
+> + *
+> + * @fs_type A filesystem name to check the support for.
+> + * @skiplist A NULL terminated array of filesystems to skip.
+> + */
+> +enum tst_fs_impl tst_fs_is_supported_skiplist(const char *fs_type, const char
+> +					      *const *skiplist);
+> +
+>  /*
+>   * Returns NULL-terminated array of kernel-supported filesystems.
+>   *
+> diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+> index 9726d193a..8c9379c1b 100644
+> --- a/lib/tst_supported_fs_types.c
+> +++ b/lib/tst_supported_fs_types.c
+> @@ -134,6 +134,24 @@ enum tst_fs_impl tst_fs_is_supported(const char *fs_type)
+>  	return TST_FS_UNSUPPORTED;
+>  }
+>  
+> +enum tst_fs_impl tst_fs_is_supported_skiplist(const char *fs_type, const char
+> +					      *const *skiplist)
+> +{
+> +	int ret;
+> +
+> +	ret = tst_fs_is_supported(fs_type);
+> +
+> +	if (!ret)
+> +		return ret;
+> +
+> +	if (tst_fs_in_skiplist(fs_type, skiplist)) {
+> +		tst_brk(TCONF, "%s is not supported by the test",
+> +			fs_type);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  const char **tst_get_supported_fs_types(const char *const *skiplist)
+>  {
+>  	unsigned int i, j = 0;
+> diff --git a/testcases/lib/tst_supported_fs.c b/testcases/lib/tst_supported_fs.c
+> index 87be2b759..75945c809 100644
+> --- a/testcases/lib/tst_supported_fs.c
+> +++ b/testcases/lib/tst_supported_fs.c
+> @@ -70,7 +70,7 @@ int main(int argc, char *argv[])
+>  	}
+>  
+>  	if (optind < argc)
+> -		return !tst_fs_is_supported(argv[optind]);
+> +		return !tst_fs_is_supported_skiplist(argv[optind], (const char * const*)skiplist);
+>  
+>  	filesystems = tst_get_supported_fs_types((const char * const*)skiplist);
+>  	for (i = 0; filesystems[i]; i++)
+> -- 
+> 2.37.1
 
-Merging would help me not having to rebase this work after finishing and get
-merged "Track minimal size per filesystem" [1] (originally I thought that one
-would go first, but TST_ALL_FILESYSTEMS infrastructure is ready now).
 
-I also plan to convert df01.sh and mkfs01.sh to TST_ALL_FILESYSTEMS.
-
-Kind regards,
-Petr
-
-[1] https://patchwork.ozlabs.org/project/ltp/list/?series=315621
-
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
