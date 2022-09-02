@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 837EAC54EE9
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 07:58:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55198C54EE9
+	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 08:17:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A1E813CA6DA
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 09:58:37 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 7CED43CA8C5
+	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 10:17:28 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2EA4E3CA4A1
- for <ltp@lists.linux.it>; Fri,  2 Sep 2022 09:58:26 +0200 (CEST)
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com
- [IPv6:2607:f8b0:4864:20::f30])
+ by picard.linux.it (Postfix) with ESMTPS id 4A8B73CA72B
+ for <ltp@lists.linux.it>; Fri,  2 Sep 2022 10:17:19 +0200 (CEST)
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com
+ [IPv6:2607:f8b0:4864:20::834])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9E5DD600859
- for <ltp@lists.linux.it>; Fri,  2 Sep 2022 09:58:25 +0200 (CEST)
-Received: by mail-qv1-xf30.google.com with SMTP id mn13so880854qvb.4
- for <ltp@lists.linux.it>; Fri, 02 Sep 2022 00:58:25 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3CE96600BFA
+ for <ltp@lists.linux.it>; Fri,  2 Sep 2022 10:17:18 +0200 (CEST)
+Received: by mail-qt1-x834.google.com with SMTP id e28so943805qts.1
+ for <ltp@lists.linux.it>; Fri, 02 Sep 2022 01:17:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=eU3eD6QObubwpJtMK7Y156aPS62wtUvLNXi1YVWIHVQ=;
- b=lEVo7IgLO7I6JaJv6en+fCM1nMDbLisQe/LvJhh97flMlksLKs3oYv4gg2+bJVQeql
- NvK5RgjPHRWQJBgK4GifaK2IUePx7drQ8to33czGHpwPXBjPi340PZ4YneIeCHQZ2EDA
- jrsb/iddq4PsLA0Q2iIe85jUq8sri8P13MuNbe57s/aqY5JUy/W8ZZxea2ltsKHrBfxs
- YwyUML4TRs7YPDkpJc0UP73ClG2noH573NopdqJugn6Lbjf6rE+5MVoLSD8YP5PBSPbq
- o5NidCruHLpub8RwtAYnmu5p68iy/30X8WFoFjJxxGRDVcao/3B9ae7iFP4DL69gKBwH
- DVjA==
+ bh=PvVnjFKZv++wTrfy1n1uBxpIqTxk5hr72Mojv+G1W2M=;
+ b=a94QJPIx/BDkTx+F/Wp+G/M7OrG4/KRQ2+Ftwvuvux17iqpgmwQLc1Vv0BsSbM7NE2
+ fbTXTXx+MXO7UklKGohTOvimr0GAOtOyZOP7o+vZ64Oh9C45ib71j97DVPn2UCrxumBO
+ Jg3ri2YGev3OOORG/Q2SW6HriuV/JACPM+dZHLuakgsa9+t58mXKIZ86ZtdtvxznNbgh
+ GUl9HElwjM4WYm181+/lLN+k0sQQjkWaNIoREjm0SBtwuMegHePdSkbunuKLkcefzx+h
+ cphGYkaICH8SqqQi80gGYkhpvPxN9Xty62mM0YhelHf7NsRXXoNEmoIdX/WXWAYgmkXj
+ 8rcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=eU3eD6QObubwpJtMK7Y156aPS62wtUvLNXi1YVWIHVQ=;
- b=DhYNSn8uwqz3tV4Gv6nITPV525Nl+0S2M7xhq34dMV06Qqw+v+r2JFaUInWcmVEDDu
- bmte3LY823uUlfoXUS1KQkJIJKh+O+dTV7OdupqFgxo1xFhk0F/0Zvm4k8d5RupLP3q0
- GaujNi3DPjjnd9IyWIzYswKmOW2XTqlMYO7YcJYHM7G0luFVLsGxHjzXgejjTVlRRWRg
- hGRNgSndW9xAdkZ5eYxbmaSIfLiy2Rdw6nVHxTEYWz1vHxuzF8bFxplQ6LcpUvHk9O4Y
- UDekVfsiREptXFeEpMilPyzewUdbW5DjrP+cauLo1PwAL/oFanFnPy3/rTF4kx1GRSB2
- OzWw==
-X-Gm-Message-State: ACgBeo1whHoZ4MLhlaeRqTTiLCvTGCsdrJOF9Vht/mPQvpTzy6cYouYC
- d4iJ49zndQRwtx7vFssQJRuBlB0xUKb5ew==
-X-Google-Smtp-Source: AA6agR645LZhidthUcHH4Ys5fZaQ434VFDRW0UmNonhU3s5qVeQg44n5eTC5Vhh5jPcOXyy2z340iA==
-X-Received: by 2002:ad4:5bad:0:b0:478:f7a1:bc40 with SMTP id
- 13-20020ad45bad000000b00478f7a1bc40mr28057635qvq.123.1662105503801; 
- Fri, 02 Sep 2022 00:58:23 -0700 (PDT)
+ bh=PvVnjFKZv++wTrfy1n1uBxpIqTxk5hr72Mojv+G1W2M=;
+ b=v9lm9fSFzmVlqW+kZkupM453n68BXc8of5J6OPDAJ6SZ5spkwjHFKOlFsmAgfcV4RO
+ 3LnjYtUXqsVmBb611xG/okA1A3J3rvma8kjrV6SbCSSjhkkwSom+ABv+psNqkJL+bHwA
+ SYZlOPTo+pBp0IDp4LwRa1JBagRcum6irUy2x3vGkCo8JRrYtUYXyDZEpsscec2qJIaZ
+ xqKnPkU+bdTlY8E/K22hUna1kXiWQdE28zn9ARXKHsDtbS/IrjVHWpCp0UgON5uoNYPo
+ /V/QtkrDutYyB1CfmwAldBQLSPDMrYmoZfEa4Pjv8QE04A6TAyq5y20wN5OHIISE4qY9
+ 2qPQ==
+X-Gm-Message-State: ACgBeo31guuedfPXMO5pItVbZmV8PCQeqIqoitqESKr7L12VUGKmowgp
+ TDmBf0so9r7RXukW6/IE7SRiG2xX97m2bQ==
+X-Google-Smtp-Source: AA6agR7RUtM7oC6pBnDY6ZVKUVTqvp2toGiAHpOIsA3ESHpxbO7z+61H+bm0j/EUTWb55InuNrwCNg==
+X-Received: by 2002:a05:622a:290:b0:344:85a7:82be with SMTP id
+ z16-20020a05622a029000b0034485a782bemr26980475qtw.687.1662106636651; 
+ Fri, 02 Sep 2022 01:17:16 -0700 (PDT)
 Received: from xzhouw.hosts.qa.psi.rdu2.redhat.com ([66.187.232.127])
  by smtp.gmail.com with ESMTPSA id
- s7-20020a375e07000000b006b5e1aeb777sm897130qkb.43.2022.09.02.00.58.23
+ m8-20020ac866c8000000b003445d06a622sm638689qtp.86.2022.09.02.01.17.15
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 02 Sep 2022 00:58:23 -0700 (PDT)
+ Fri, 02 Sep 2022 01:17:16 -0700 (PDT)
 From: Murphy Zhou <jencce.kernel@gmail.com>
 To: ltp@lists.linux.it
-Date: Fri,  2 Sep 2022 15:58:15 +0800
-Message-Id: <20220902075815.1776445-1-jencce.kernel@gmail.com>
+Date: Fri,  2 Sep 2022 16:17:11 +0800
+Message-Id: <20220902081711.1776943-1-jencce.kernel@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <YipkOjYIeY4NbQuh@pevik>
 References: <YipkOjYIeY4NbQuh@pevik>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] kernel/fs/fsnotify-stress: fsnotify stress test
+Subject: [LTP] [PATCH v4] kernel/fs/fsnotify-stress: fsnotify stress test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,16 +92,13 @@ or hang after a certain period of time of testing, test pass.
 
 Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
 ---
-v2 -> v3:
-	remove unnecessary comments;
-	Fix TINFO printing and no flushing;
-	Use max_runtime instead of local timeout;
-	Remove unnecessary initialization for struct tst_test
+v3 -> v4:
+	Convert comment to docparse part.
 
  runtest/fs                                    |   2 +
  testcases/kernel/fs/fsnotify-stress/Makefile  |   9 +
- .../fs/fsnotify-stress/fsnotify-stress.c      | 470 ++++++++++++++++++
- 3 files changed, 481 insertions(+)
+ .../fs/fsnotify-stress/fsnotify-stress.c      | 476 ++++++++++++++++++
+ 3 files changed, 487 insertions(+)
  create mode 100644 testcases/kernel/fs/fsnotify-stress/Makefile
  create mode 100644 testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c
 
@@ -132,12 +129,20 @@ index 000000000..451f791f1
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
 diff --git a/testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c b/testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c
 new file mode 100644
-index 000000000..638f6c6b6
+index 000000000..8130f7f12
 --- /dev/null
 +++ b/testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c
-@@ -0,0 +1,470 @@
+@@ -0,0 +1,476 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
++ * Copyright (c) 2022 Red Hat, Inc.  All Rights Reserved.
++ * Author: Murphy Zhou <jencce.kernel@gmail.com>
++ * Copyright (c) Linux Test Project, 2001-2022
++ */
++
++/*\
++ * [Description]
++ *
 + * This is an irregular stress test for Linux kernel fanotify/inotify
 + * interfaces. It calls thoese interfaces with possible best coverage
 + * arguments, in a loop. It ignores some return values in the loop to
@@ -149,8 +154,6 @@ index 000000000..638f6c6b6
 + * It detected a leak in fsnotify code which was fixed by Amir through
 + * this Linux commit:
 + *     4396a731 fsnotify: fix sb_connectors leak
-+ *
-+ * Author: Murphy Zhou <jencce.kernel@gmail.com>
 + *
 + */
 +
