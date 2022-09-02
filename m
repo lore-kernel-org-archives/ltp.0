@@ -4,140 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEBF2ECAAA1
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 07:31:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 837EAC54EE9
+	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 07:58:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 59D623CA8B5
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 09:31:40 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id A1E813CA6DA
+	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 09:58:37 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0A3E53CA48E
- for <ltp@lists.linux.it>; Fri,  2 Sep 2022 09:31:28 +0200 (CEST)
-Received: from esa12.fujitsucc.c3s2.iphmx.com (esa12.fujitsucc.c3s2.iphmx.com
- [216.71.156.125])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 2EA4E3CA4A1
+ for <ltp@lists.linux.it>; Fri,  2 Sep 2022 09:58:26 +0200 (CEST)
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com
+ [IPv6:2607:f8b0:4864:20::f30])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F1AA51000DF6
- for <ltp@lists.linux.it>; Fri,  2 Sep 2022 09:31:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1662103886; x=1693639886;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=472TmOEvEqNN4wSBaygbLMZSgqgMHlPbtYEDbEzqADs=;
- b=dwO+1a5oxTT796MVwwxxkK0Hxcay848AaSzjeAznwpZnB5aSDV643Jlk
- 4F/WfnR4f+S1MWVjrzCrQ2UWrxziVPAEgkmh3lzeN1qARheRLSCQSFO7X
- wDXJ3UUAstW7SWs0HITc0nx655AUp6a5s4HKgC6IzICThqTd1FypdVYtf
- g7GSGUe6Vw1uvtNDUxHsHfLcNlzGeLGsFvYwPWkW7PjKpBY4YmgIxiSgo
- VP/stBdKLHsxw+fgjRfJAfuzeZ4fTQUHDswy4Z+5au8wyobFA001zSCO4
- RhlOufydMmPETkZn1/SvJn/8NGjeDQ8P0lr0LZ7E3WQ/07kI4xOR6b7LJ w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10457"; a="64337721"
-X-IronPort-AV: E=Sophos;i="5.93,283,1654527600"; d="scan'208";a="64337721"
-Received: from mail-tycjpn01lp2176.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.176])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Sep 2022 16:31:23 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gHjQ7/I/fuoXbdsLpLwkXde0MhfRkEOI3GVj87zRY7et+aLgNZnpWw0p+FC3wju/W8/6sTh0/YQlWOyxvBBCOL5NoWD5PNb0jnDPwA5vQd+thdYePISYBqGGZxymaPrzD3iLBViJ5Fb/MZ3ixQs9B1E2ovFweX8uikwcrETYez3qQ3qVIVyGjBOvpqSxrlsalGB56qsBBp2GfTQh9N2zLuqL5dLs5QyYNikDipDHLpHa0cTpP/0Tm0oKndVW792GmFNRAgikJ12aGMoUn0iWZEa4YFTYL2eGOiwGSmRgV2Ty/QhP6mYKhDNl0OuWZZc5Ac3t5L5PwwvKci+Nmkjqdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=472TmOEvEqNN4wSBaygbLMZSgqgMHlPbtYEDbEzqADs=;
- b=PpuzpgttFke65u9X8uwEJnSHKV6bUe+M6ladkW8KHhCVlEzJ+pJrmKYNDasPB0mkt62g7nGzEOvWnY2D7od7s/V9skSle1qRwXSKJqskSKDCj74IfhLw0t/Ndh9qnsngeZmSdHX2tRzHXC/ecHkptTfco86EHKB7tjDlpevsX5IHzuDNxZKwYhcPvQEBST7SlwMGoTyPP0aRWRnrtb0uCkloZDv/PIl/rdlR5ljFQTuRc6OGvyjrq7SK7F7zk1tlCEAsgi4faxZer26O043YypgMXKFSoU+e20C2m5kUvLd0Mpz8FsQT9slUJZeFi5qF75xCkz0k30d7MmdRZ/QvGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by TY3PR01MB9858.jpnprd01.prod.outlook.com (2603:1096:400:229::6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.10; Fri, 2 Sep
- 2022 07:31:20 +0000
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::a9fe:6054:eadc:7ef8]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::a9fe:6054:eadc:7ef8%5]) with mapi id 15.20.5588.012; Fri, 2 Sep 2022
- 07:31:20 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Petr Vorel <pvorel@suse.cz>
-Thread-Topic: [LTP] [PATCH] README: Add missing configure in openposix step
-Thread-Index: AQHYvbbgEnYwAK0pI02c1YlGRwJGsa3KagSAgAFnlAA=
-Date: Fri, 2 Sep 2022 07:31:20 +0000
-Message-ID: <98263d58-cf08-0c70-c642-2a95a727659f@fujitsu.com>
-References: <1662008249-2227-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <YxCR7+dkGxPvCQDn@pevik>
-In-Reply-To: <YxCR7+dkGxPvCQDn@pevik>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 675afd0f-10ea-4b66-d771-08da8cb52143
-x-ms-traffictypediagnostic: TY3PR01MB9858:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nzIGGk5jQZmUm9LHc+iU8S73PL+t+hquoAILqAEhYUl/XFc1XpcfOfwl9W2SpnaS1VpcUoEHx5C2BByycHJN1tEMvMsM5fHcUFEu5IDCdDW0JXUcwqcg4qtlahIYX1RqPznUTTVsrn5UVjFz1FFiuVilGtj+d+NmEMKtCRgAcbXhB6ipY5RD76O+hS1vxt1eyfkMHtjkQNQ1YA+E+pBf6qJPyMCom5H1nNkGCfpimNt9+RCTVbdiQ1HdlDHKKo2iwa4k7FXa0LlSiXWiQIenKwXnc7E8R0K/jfBKok2galuhHfNMAqhw+/QR+36C0Vob05ter3SDJmKI0hdQQL0Oej2tKedwxrImDzdsuG/TiEo+09onTlejEhjAHp5uaf4UsJAZG9KfsrB5ATyKkAIM/giWn+Lni9f+WO+nMm8u+M4WB2cRh++Pm3a7pHWu5PzwuPNienVZVQPqoZ1gGaXD29jQfFKeVB6AwUfKWWL/1Rdb0kmRGmOrjBsZDosa3Im0K1Bm16JrNikIZLSjDacg9A/X2t7oInPxlVKDoltseqysM7madrPcuvbEejX25Zvy4nX9Y80sZbAlvDS8ModgE15NGtwcdFZlDxzeiM5OKzwvbTJ7xWOWjtS2u2BJKBN4w6c0WIooobro90CDfdj7Ew0VOZ1uK1hBlbXsuHtQM6EQT9VijiIL+Srsw+uOpGRp3YY+F7PDviZDadXzDcUFKS8g2M2BfpWGQrtHeOwWCnUFiKrajFFkhEqdO4XgI3jtT95C8ZmjCIHA/qix5nC3l5vz+Vqbx7MDeqM8Hb+ro7S6EASvmtteypUeo3AnhYPTxoByuUtZ21vLC4D7P/Hj2w==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230016)(4636009)(396003)(136003)(376002)(346002)(366004)(39860400002)(1590799006)(36756003)(85182001)(83380400001)(6916009)(54906003)(38100700002)(316002)(122000001)(1580799003)(5660300002)(2616005)(186003)(6486002)(86362001)(38070700005)(41300700001)(66946007)(76116006)(6506007)(31686004)(8936002)(31696002)(26005)(6512007)(91956017)(4326008)(8676002)(2906002)(82960400001)(478600001)(71200400001)(64756008)(66446008)(66476007)(66556008)(45980500001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cTFRd3JyK0FxRTFqd2l4d3h3bHpLNTJZWHAyY0hvZEI0bXczU28vZkpPSjlL?=
- =?utf-8?B?VDhaeWJxRVN4M1RqN3hpZ251dTZ1QkQzY0V1QTgvTDdFc2dXbE1QNHVTRkxr?=
- =?utf-8?B?RG15TXNXYXhqZ3Znb2pqUkpyT1o4OFlzZjFjczJoSUJYb2l1QzJOOWxtY3Uv?=
- =?utf-8?B?UU5FeEhZa2JHY3pkak9pR0VlSXQxMHI0MWQzRUZyL1lzdGZkM2xsMUp6eWJD?=
- =?utf-8?B?MFRlZWtRcHh5U0VTamxrcGd4ajRlSDY2TlpUZDBZcnJiT0ZLUGpaMFo0TE1V?=
- =?utf-8?B?Y3NhUDdEZm9MbUJoTEw3b3M1eFBjL20zTG1aaEJFK0ZINmZrczQ0Z3RyRkpR?=
- =?utf-8?B?RFFOczR0d2UwRkxoZEZia1NEWHp4TU9OZE03ajE5UUxURGZGMDN5bndVNzRJ?=
- =?utf-8?B?S3h2eHpBa29LaWU1dWRjSnBpYmw4MzZrY29nNkRackUrVVRIcXczSzlkRVQz?=
- =?utf-8?B?WmF0MHFIb1MxaFFnQldRZXBacUxEMVpBSmhLVDRwbGwvazZkZXZ3UHFEOUJO?=
- =?utf-8?B?UHdJdHZpazNPV0VLem03cVRZZjNJRkNoY3BzTU9KOVBmVHlZU3ZnUUJZSk9m?=
- =?utf-8?B?OFI0NHBLMjBUUEswYVloWjZTQlRLaG9kV2NEc3NCUXJGZGVuZVdKNDhJdFNI?=
- =?utf-8?B?TzNIaXJrMXpWa0gweWVGemdTV0pVd1dwWlh0dE9CL3hOUzFSUmtDMGttSk9X?=
- =?utf-8?B?RE4rK09zYkVXcFo3K29LaVJLQUQyVVlhYWxaMU9BcUhFTmxKczRyVk9iUXRK?=
- =?utf-8?B?YnBzckh3T1hQdEQ5UjZLTkEveVZnZ2E2WUJyQkJCSVZ2ZzJPSnF5S0tZNHZG?=
- =?utf-8?B?bjgwc09TdWUwYWplMWZqWUtCOW15WHBxNzFqVnR2SnQrTTVpQitjZFhsS1Ux?=
- =?utf-8?B?YklqR2FiSGxGYVcrZURVVmFiQUVmZWNTUWJ2K2FtZWV5d3dldEM5Y21ZRktT?=
- =?utf-8?B?cm1oMVZmRGg2ODhzSExtRnFyelM2UlFxRnBqUjhjb0tMaERsVHVaZzhRbkx5?=
- =?utf-8?B?NitSb3ZCbmk5V3VRMS9WZk1veWJ0NlVCaWozRDhiRGdyQm5TeDlYbGlsWmpM?=
- =?utf-8?B?REwvWWJURGVBQk95L1pubWdCNDk4V20zVEE4UU15YnQxTDNSWGk4UEFzanE0?=
- =?utf-8?B?MTRwZmhsVzdWSm14eWx3UG1KOTR5NWY5QytsRzZZdmVuWG9sRTY4ZUJLNWhN?=
- =?utf-8?B?dkFPR2FKayt6blorVmxJUkh0ZUE4UDZ4MDkyTHVnL3F2Z0lWRE82T0xTSWJq?=
- =?utf-8?B?SGhOcnU3TzVBOGtCaWhDOHAxa3RBQ0Z2Q1JIQzEwdU9PSzlaZFV4YVIxTndF?=
- =?utf-8?B?ZFBISTlLZ0pONThpSlBCU050TTV4eGVDUFpaS0JENGxadkNpMlZjdXlwUkhi?=
- =?utf-8?B?WTM4N04wRzMwR3U1VFdTTEZyR3Buc0pycVVpcjZwc3BXMkJUdmFRSnhhWG9G?=
- =?utf-8?B?VVFQQk1XSVZzVEhZOUlvS1drNExDL2JOalduQlh3Ujdhd1B5QXNxM090M2g4?=
- =?utf-8?B?ZmtQRUQxZG1Ta0lEbG9GMVM3NnpFY0xxUGg0Q0J2cmViaHZNeGM5OTVsNVBy?=
- =?utf-8?B?OFZiTzdiZCtXVTZsUzdGSGNDaytHZWUvbHFGcGRKREtkRXpDc0VZS213N0xz?=
- =?utf-8?B?Rk1pRllBOFRUUG5SUjRLVVFRN2hXL1d0a0Ewc0pxRXlvV2R6NStLMU1aNmhZ?=
- =?utf-8?B?WW94QkdSbkhqSG1KbXVvU0xxRG93UVVTVkRpbVZYN2cyYnRGanZKMW5xaGxT?=
- =?utf-8?B?Ty9OTElkU1BsZHBBb2xFQUhMVnZLZEdWWVI1d1dFTGVGRTdYUTEyTHpSNTFZ?=
- =?utf-8?B?ek5vWHgzMHl0cjA1dFdBVFhBczJnMnhXWnZITERIaU80QjN1WEJPOEgyUFlZ?=
- =?utf-8?B?TUgxdHVENytkWWoyaldGamFqYzdMb0VKcXBxVzc5L3cyNVZOTmthalgxaTJ4?=
- =?utf-8?B?aVdWQWRtT2xMSEhyRVBDdzBwMWZKSWZFa2U2TGtXYlRTLytpS2xNSXYyZEtw?=
- =?utf-8?B?eWQrNzRaSEx4YjdTY2xEWVpuQzVkNVowQmRWaEhtYTBUbXhncGpFUGhwc3hH?=
- =?utf-8?B?RkRPZnQyZkxWbjhqNTFUUk56RkYrSGYyWWRsanlKMEs3RmRhS2djQWRNdDJL?=
- =?utf-8?B?aXUyY2RMUDNkZVlnZWp4a00wbWZjbHRwYUgrSklGMXdGVE9QUjBoRFU0Uzdx?=
- =?utf-8?B?NEE9PQ==?=
-Content-ID: <B6745B795EC4314EB0C758B3A9530DE9@jpnprd01.prod.outlook.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9E5DD600859
+ for <ltp@lists.linux.it>; Fri,  2 Sep 2022 09:58:25 +0200 (CEST)
+Received: by mail-qv1-xf30.google.com with SMTP id mn13so880854qvb.4
+ for <ltp@lists.linux.it>; Fri, 02 Sep 2022 00:58:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+ bh=eU3eD6QObubwpJtMK7Y156aPS62wtUvLNXi1YVWIHVQ=;
+ b=lEVo7IgLO7I6JaJv6en+fCM1nMDbLisQe/LvJhh97flMlksLKs3oYv4gg2+bJVQeql
+ NvK5RgjPHRWQJBgK4GifaK2IUePx7drQ8to33czGHpwPXBjPi340PZ4YneIeCHQZ2EDA
+ jrsb/iddq4PsLA0Q2iIe85jUq8sri8P13MuNbe57s/aqY5JUy/W8ZZxea2ltsKHrBfxs
+ YwyUML4TRs7YPDkpJc0UP73ClG2noH573NopdqJugn6Lbjf6rE+5MVoLSD8YP5PBSPbq
+ o5NidCruHLpub8RwtAYnmu5p68iy/30X8WFoFjJxxGRDVcao/3B9ae7iFP4DL69gKBwH
+ DVjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date;
+ bh=eU3eD6QObubwpJtMK7Y156aPS62wtUvLNXi1YVWIHVQ=;
+ b=DhYNSn8uwqz3tV4Gv6nITPV525Nl+0S2M7xhq34dMV06Qqw+v+r2JFaUInWcmVEDDu
+ bmte3LY823uUlfoXUS1KQkJIJKh+O+dTV7OdupqFgxo1xFhk0F/0Zvm4k8d5RupLP3q0
+ GaujNi3DPjjnd9IyWIzYswKmOW2XTqlMYO7YcJYHM7G0luFVLsGxHjzXgejjTVlRRWRg
+ hGRNgSndW9xAdkZ5eYxbmaSIfLiy2Rdw6nVHxTEYWz1vHxuzF8bFxplQ6LcpUvHk9O4Y
+ UDekVfsiREptXFeEpMilPyzewUdbW5DjrP+cauLo1PwAL/oFanFnPy3/rTF4kx1GRSB2
+ OzWw==
+X-Gm-Message-State: ACgBeo1whHoZ4MLhlaeRqTTiLCvTGCsdrJOF9Vht/mPQvpTzy6cYouYC
+ d4iJ49zndQRwtx7vFssQJRuBlB0xUKb5ew==
+X-Google-Smtp-Source: AA6agR645LZhidthUcHH4Ys5fZaQ434VFDRW0UmNonhU3s5qVeQg44n5eTC5Vhh5jPcOXyy2z340iA==
+X-Received: by 2002:ad4:5bad:0:b0:478:f7a1:bc40 with SMTP id
+ 13-20020ad45bad000000b00478f7a1bc40mr28057635qvq.123.1662105503801; 
+ Fri, 02 Sep 2022 00:58:23 -0700 (PDT)
+Received: from xzhouw.hosts.qa.psi.rdu2.redhat.com ([66.187.232.127])
+ by smtp.gmail.com with ESMTPSA id
+ s7-20020a375e07000000b006b5e1aeb777sm897130qkb.43.2022.09.02.00.58.23
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 02 Sep 2022 00:58:23 -0700 (PDT)
+From: Murphy Zhou <jencce.kernel@gmail.com>
+To: ltp@lists.linux.it
+Date: Fri,  2 Sep 2022 15:58:15 +0800
+Message-Id: <20220902075815.1776445-1-jencce.kernel@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YipkOjYIeY4NbQuh@pevik>
+References: <YipkOjYIeY4NbQuh@pevik>
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 675afd0f-10ea-4b66-d771-08da8cb52143
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2022 07:31:20.1253 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qVF/A1Cxm7Z5dvSVJNHF8WG4swZcH7uCvamq/F9ezEALyZ/bgewa72hayV6TwNLVT69WJc+HGWX9D+th2+Tqkn1bwV7L4KnxQsATz2mqNac=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB9858
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] README: Add missing configure in openposix step
+Subject: [LTP] [PATCH v3] kernel/fs/fsnotify-stress: fsnotify stress test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -149,75 +80,535 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Joerg Vehlow <joerg.vehlow@aox.de>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr
+This is a stress test that exercises fanotify and inotify interfaces
+while IO going on. It intentionally ignores failures or return values
+of some syscalls to let the stress go on. If the kernel does not panic
+or hang after a certain period of time of testing, test pass.
 
-> Hi Xu,
-> 
-> [ Cc Joerg ]
-> 
->> Since 8071ba7("openposix: Setup autoconf and fix installation layout")
->> , we need to use configure firstly.
-> 
-> nit: there should be Fixes: below:
-> Fixes: 8071ba7 ("openposix: Setup autoconf and fix installation layout")
-> 
-> Then you can use just 8071ba7 in the text.
-> 
->> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
->> ---
->>   README.md | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
->> diff --git a/README.md b/README.md
->> index d45d1ee44..d0ca5f4d4 100644
->> --- a/README.md
->> +++ b/README.md
->> @@ -79,11 +79,13 @@ $ cd ../commands/foo
->>   $ PATH=$PATH:$PWD:$PWD/../../lib/ ./foo01.sh
->>   ```
-> 
->> -Open Posix Testsuite has it's own build system which needs Makefiles to be
->> -generated first, then compilation should work in subdirectories as well.
->> +Open Posix Testsuite has it's own configure and build system which needs
->> +Makefiles to be generated first, then compilation should work in subdirectories
->> +as well.
-> 
->>   ```
->>   $ cd testcases/open_posix_testsuite/
-> 
-> You miss:
-> $ make autotools
-> as this creates configure
-> 
->> +$ ./configure
-> But if you run make autotools && ./configure in the top level, none of these two
-> is needed to be run in open posix directory.
+Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
+---
+v2 -> v3:
+	remove unnecessary comments;
+	Fix TINFO printing and no flushing;
+	Use max_runtime instead of local timeout;
+	Remove unnecessary initialization for struct tst_test
 
-I have called them on top directory, but configure still be needed in 
-open posix directory.
+ runtest/fs                                    |   2 +
+ testcases/kernel/fs/fsnotify-stress/Makefile  |   9 +
+ .../fs/fsnotify-stress/fsnotify-stress.c      | 470 ++++++++++++++++++
+ 3 files changed, 481 insertions(+)
+ create mode 100644 testcases/kernel/fs/fsnotify-stress/Makefile
+ create mode 100644 testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c
 
-Best Regards
-Yang Xu
+diff --git a/runtest/fs b/runtest/fs
+index 1d753e0dd..beb43aae4 100644
+--- a/runtest/fs
++++ b/runtest/fs
+@@ -87,3 +87,5 @@ binfmt_misc01 binfmt_misc01.sh
+ binfmt_misc02 binfmt_misc02.sh
+ 
+ squashfs01 squashfs01
++
++fsnotify-stress fsnotify-stress
+diff --git a/testcases/kernel/fs/fsnotify-stress/Makefile b/testcases/kernel/fs/fsnotify-stress/Makefile
+new file mode 100644
+index 000000000..451f791f1
+--- /dev/null
++++ b/testcases/kernel/fs/fsnotify-stress/Makefile
+@@ -0,0 +1,9 @@
++#
++#    kernel/fs/fs-notify testcases Makefile.
++#
++
++top_srcdir	?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c b/testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c
+new file mode 100644
+index 000000000..638f6c6b6
+--- /dev/null
++++ b/testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c
+@@ -0,0 +1,470 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * This is an irregular stress test for Linux kernel fanotify/inotify
++ * interfaces. It calls thoese interfaces with possible best coverage
++ * arguments, in a loop. It ignores some return values in the loop to
++ * let the stress going on. At the same time, it initiates IO traffics
++ * by calling IO syscalls.
++ *
++ * If kernel does no panic or hang after the test, test pass.
++ *
++ * It detected a leak in fsnotify code which was fixed by Amir through
++ * this Linux commit:
++ *     4396a731 fsnotify: fix sb_connectors leak
++ *
++ * Author: Murphy Zhou <jencce.kernel@gmail.com>
++ *
++ */
++
++#define _GNU_SOURCE     /* Needed to get O_LARGEFILE definition */
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <poll.h>
++#include <sys/fanotify.h>
++#include <sys/inotify.h>
++#include <sys/time.h>
++#include <unistd.h>
++#include <string.h>
++
++#include "tst_test.h"
++#include "../../syscalls/fanotify/fanotify.h"
++#include "../../syscalls/inotify/inotify.h"
++
++static int fd0;
++
++#define TESTDIR "testdir"
++#define TESTFILE "testdir/file"
++
++static void cleanup(void)
++{
++	if (fd0 > 0) {
++		SAFE_CLOSE(fd0);
++	}
++}
++
++static void setup(void)
++{
++	SAFE_MKDIR(TESTDIR, 0777);
++	fd0 = SAFE_OPEN(TESTFILE, O_CREAT|O_RDWR, 0666);
++}
++
++static void fanotify_flushes(char *fn)
++{
++	int fd;
++
++	fd = SAFE_FANOTIFY_INIT(FAN_CLOEXEC | FAN_CLASS_CONTENT | FAN_NONBLOCK,
++					   O_RDONLY | O_LARGEFILE);
++
++	while (tst_remaining_runtime() > 10) {
++		/* As a stress test, we ignore the return values here to
++		 * proceed with the stress.
++		 */
++		fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_MOUNT,
++			  FAN_ACCESS | FAN_MODIFY | FAN_OPEN_PERM | FAN_CLOSE |
++			  FAN_OPEN | FAN_ACCESS_PERM | FAN_ONDIR |
++			  FAN_EVENT_ON_CHILD, -1, fn);
++
++		fanotify_mark(fd, FAN_MARK_FLUSH | FAN_MARK_MOUNT,
++						0, -1, fn);
++
++		fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_MOUNT,
++			  FAN_ACCESS | FAN_MODIFY | FAN_OPEN_PERM | FAN_CLOSE |
++			  FAN_OPEN | FAN_ACCESS_PERM | FAN_ONDIR |
++			  FAN_EVENT_ON_CHILD, -1, fn);
++
++		fanotify_mark(fd, FAN_MARK_FLUSH, 0, -1, fn);
++	}
++
++	close(fd);
++	exit(EXIT_SUCCESS);
++}
++
++static void fanotify_inits(char *fn)
++{
++	int fd;
++
++	while (tst_remaining_runtime() > 10) {
++		/* As a stress test, we ignore the return values here to
++		 * proceed with the stress.
++		 */
++		fd = fanotify_init(FAN_CLOEXEC | FAN_CLASS_CONTENT |
++				FAN_NONBLOCK, O_RDONLY | O_LARGEFILE);
++		fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_MOUNT,
++				FAN_ACCESS | FAN_MODIFY | FAN_OPEN_PERM |
++				FAN_CLOSE | FAN_OPEN | FAN_ACCESS_PERM |
++				FAN_ONDIR | FAN_EVENT_ON_CHILD, -1, fn);
++		close(fd);
++	}
++	exit(EXIT_SUCCESS);
++}
++
++static void add_mark(int fd, uint64_t mask, char *path)
++{
++	fanotify_mark(fd, FAN_MARK_ADD, mask, -1, path);
++}
++
++static void remove_mark(int fd, uint64_t mask, char *path)
++{
++	fanotify_mark(fd, FAN_MARK_REMOVE, mask, -1, path);
++}
++
++static void fanotify_marks(char *fn)
++{
++	int fd;
++
++	fd = SAFE_FANOTIFY_INIT(FAN_CLOEXEC | FAN_CLASS_CONTENT | FAN_NONBLOCK,
++					   O_RDONLY | O_LARGEFILE);
++	while (tst_remaining_runtime() > 10) {
++		add_mark(fd, FAN_ACCESS, fn);
++		remove_mark(fd, FAN_ACCESS, fn);
++		add_mark(fd, FAN_MODIFY, fn);
++		remove_mark(fd, FAN_MODIFY, fn);
++		add_mark(fd, FAN_OPEN_PERM, fn);
++		remove_mark(fd, FAN_OPEN_PERM, fn);
++		add_mark(fd, FAN_CLOSE, fn);
++		remove_mark(fd, FAN_CLOSE, fn);
++		add_mark(fd, FAN_OPEN, fn);
++		remove_mark(fd, FAN_OPEN, fn);
++		add_mark(fd, FAN_ACCESS_PERM, fn);
++		remove_mark(fd, FAN_ACCESS_PERM, fn);
++		add_mark(fd, FAN_ONDIR, fn);
++		remove_mark(fd, FAN_ONDIR, fn);
++		add_mark(fd, FAN_EVENT_ON_CHILD, fn);
++		remove_mark(fd, FAN_EVENT_ON_CHILD, fn);
++	}
++	close(fd);
++	exit(EXIT_SUCCESS);
++}
++
++/* Read all available fanotify events from the file descriptor 'fd' */
++static void fa_handle_events(int fd)
++{
++	const struct fanotify_event_metadata *metadata;
++	struct fanotify_event_metadata buf[200];
++	ssize_t len;
++	struct fanotify_response response;
++
++	/* Loop while events can be read from fanotify file descriptor */
++	for (;;) {
++		/* Read some events */
++		len = read(fd, (void *) &buf, sizeof(buf));
++		if (len == -1 && errno != EAGAIN)
++			tst_brk(TBROK | TERRNO, "fanotify read events failed");
++		/* Check if end of available data reached */
++		if (len <= 0)
++			break;
++		/* Point to the first event in the buffer */
++		metadata = buf;
++		/* Loop over all events in the buffer */
++		while (FAN_EVENT_OK(metadata, len)) {
++			if (metadata->vers != FANOTIFY_METADATA_VERSION) {
++				tst_brk(TBROK | TERRNO,
++				"Mismatch of fanotify metadata version.\n");
++			}
++			/* metadata->fd contains either FAN_NOFD, indicating a
++			 * queue overflow, or a file descriptor (a nonnegative
++			 * integer). Here, we simply ignore queue overflow.
++			 */
++			if (metadata->fd >= 0) {
++				/* Handle open permission event */
++				if (metadata->mask & FAN_OPEN_PERM) {
++					/* Allow file to be opened */
++					response.fd = metadata->fd;
++					response.response = FAN_ALLOW;
++					write(fd, &response,
++					    sizeof(struct fanotify_response));
++				}
++
++				/* Handle access permission event */
++				if (metadata->mask & FAN_ACCESS_PERM) {
++					/* Allow file to be accessed */
++					response.fd = metadata->fd;
++					response.response = FAN_ALLOW;
++					write(fd, &response,
++					    sizeof(struct fanotify_response));
++				}
++				/* Ignore read/write access events */
++				/* Close the file descriptor of the event */
++				close(metadata->fd);
++			}
++			/* Advance to next event */
++			metadata = FAN_EVENT_NEXT(metadata, len);
++		}
++	}
++}
++
++/* This is from fanotify(7) man page example */
++static void fanotify_watch(void)
++{
++	int fd, poll_num, ecnt = 0;
++	nfds_t nfds;
++	struct pollfd fds[2];
++
++	fd = SAFE_FANOTIFY_INIT(FAN_CLOEXEC | FAN_CLASS_CONTENT | FAN_NONBLOCK,
++					   O_RDONLY | O_LARGEFILE);
++	/* Mark the mount for:
++	 * - permission events before opening files
++	 * - notification events after closing a write-enabled file descriptor
++	 */
++	SAFE_FANOTIFY_MARK(fd, FAN_MARK_ADD | FAN_MARK_MOUNT,
++			FAN_ACCESS | FAN_MODIFY | FAN_OPEN_PERM |
++			FAN_CLOSE | FAN_OPEN | FAN_ACCESS_PERM |
++			FAN_ONDIR | FAN_EVENT_ON_CHILD, -1, "/");
++
++	nfds = 1;
++	fds[0].fd = fd;
++	fds[0].events = POLLIN;
++
++	while (tst_remaining_runtime() > 10) {
++		poll_num = poll(fds, nfds, 10);
++		if (poll_num == -1)
++			tst_brk(TBROK | TERRNO, "fanotify watch poll failed");
++		if (poll_num > 0) {
++			if (fds[0].revents & POLLIN) {
++				/* Fanotify events are available */
++				fa_handle_events(fd);
++				ecnt++;
++			}
++		}
++	}
++	tst_printf("Got %d fanotify events\n", ecnt);
++	tst_flush();
++	exit(EXIT_SUCCESS);
++}
++
++static void freadfiles(char *fn)
++{
++	char buf[BUFSIZ];
++	FILE *f;
++
++	memset(buf, 1, BUFSIZ);
++	while (tst_remaining_runtime() > 10) {
++		f = fopen(fn, "r+");
++		if (f == NULL)
++			continue;
++		fread(buf, sizeof(char), BUFSIZ, f);
++		usleep(1);
++		fclose(f);
++	}
++}
++
++static void fwritefiles(char *fn)
++{
++	char buf[BUFSIZ];
++	FILE *f;
++
++	memset(buf, 1, BUFSIZ);
++	while (tst_remaining_runtime() > 10) {
++		f = fopen(fn, "w+");
++		if (f == NULL)
++			continue;
++		fwrite(buf, sizeof(char), BUFSIZ, f);
++		usleep(1);
++		fclose(f);
++	}
++}
++
++static void readfiles(char *fn)
++{
++	int fd;
++	char buf[BUFSIZ];
++
++	memset(buf, 1, BUFSIZ);
++	while (tst_remaining_runtime() > 10) {
++		fd = open(fn, O_RDONLY);
++		if (fd == -1)
++			continue;
++		read(fd, buf, BUFSIZ);
++		usleep(1);
++		close(fd);
++	}
++}
++
++static void writefiles(char *fn)
++{
++	int fd;
++	char buf[BUFSIZ];
++
++	memset(buf, 1, BUFSIZ);
++	while (tst_remaining_runtime() > 10) {
++		fd = open(fn, O_RDWR);
++		if (fd == -1)
++			continue;
++		write(fd, buf, BUFSIZ);
++		usleep(1);
++		close(fd);
++	}
++}
++
++static void inotify_add_rm(char *fn)
++{
++	int notify_fd;
++	int wd;
++
++	notify_fd = SAFE_MYINOTIFY_INIT1(IN_CLOEXEC);
++
++	while (tst_remaining_runtime() > 10) {
++		wd = inotify_add_watch(notify_fd, fn,
++			IN_ACCESS | IN_ATTRIB | IN_CLOSE_WRITE |
++			IN_CLOSE_NOWRITE | IN_CREATE | IN_DELETE |
++			IN_DELETE_SELF | IN_MODIFY | IN_MOVE_SELF |
++			IN_MOVED_FROM | IN_MOVED_TO | IN_OPEN);
++
++		inotify_rm_watch(notify_fd, wd);
++	}
++	close(notify_fd);
++}
++
++static void inotify_inits(void)
++{
++	int notify_fd;
++
++	while (tst_remaining_runtime() > 10) {
++		notify_fd = inotify_init1(IN_CLOEXEC);
++		close(notify_fd);
++	}
++}
++
++static void inotify_add_rm_watches(char *fn)
++{
++	int fd, wd;
++
++	fd = SAFE_MYINOTIFY_INIT();
++
++	while (tst_remaining_runtime() > 10) {
++		wd = inotify_add_watch(fd, fn, IN_MODIFY);
++		inotify_rm_watch(fd, wd);
++	}
++	close(fd);
++}
++
++static void i_handle_events(int fd)
++{
++	char buf[4096]
++		__attribute__((aligned(__alignof__(struct inotify_event))));
++	ssize_t len;
++
++	/* Loop while events can be read from inotify file descriptor. */
++	for (;;) {
++		len = read(fd, buf, sizeof(buf));
++		if (len == -1 && errno != EAGAIN)
++			tst_brk(TBROK | TERRNO, "inotify read event failed");
++		/* If the nonblocking read() found no events to read, then
++		 * it returns -1 with errno set to EAGAIN. In that case,
++		 * we exit the loop.
++		 */
++		if (len <= 0)
++			break;
++	}
++}
++
++static void inotify_watch(char *fn)
++{
++	int fd, poll_num, wd, ecnt = 0;
++	nfds_t nfds;
++	struct pollfd fds[2];
++
++	fd = SAFE_MYINOTIFY_INIT1(IN_NONBLOCK);
++
++	/* Mark directories for events
++	 * - file was opened
++	 * - file was closed
++	 */
++	wd = SAFE_MYINOTIFY_ADD_WATCH(fd, fn, IN_OPEN | IN_CLOSE);
++
++	nfds = 2;
++	fds[0].fd = STDIN_FILENO;       /* Console input */
++	fds[0].events = POLLIN;
++	fds[1].fd = fd;                 /* Inotify input */
++	fds[1].events = POLLIN;
++
++	/* Wait for events and/or terminal input. */
++	while (tst_remaining_runtime() > 10) {
++		poll_num = poll(fds, nfds, 10);
++		if (poll_num == -1)
++			tst_brk(TBROK | TERRNO, "inotify watch poll failed");
++		if (poll_num > 0) {
++			if (fds[1].revents & POLLIN) {
++				/* Inotify events are available. */
++				i_handle_events(fd);
++				ecnt++;
++			}
++		}
++	}
++
++	inotify_rm_watch(fd, wd);
++	close(fd);
++	tst_printf("Got %d inotify events\n", ecnt);
++	tst_flush();
++	exit(EXIT_SUCCESS);
++}
++
++struct tcase {
++	char *desc;
++	void (*func_test)(char *fn);
++	int ondir;  /* run stress on directory */
++	int onfile;  /* run stress on file */
++};
++static struct tcase tcases[] = {
++	{"fanotify_flush stress", fanotify_flushes, 1, 1},
++	{"fanotify_init stress", fanotify_inits, 1, 1},
++	{"fanotify_mark stress", fanotify_marks, 1, 1},
++	{"fanotify watching stress", fanotify_watch, 1, 0},
++	{"fread stress", freadfiles, 0, 1},
++	{"fwrite stress", fwritefiles, 0, 1},
++	{"inotify add rm stress", inotify_add_rm, 1, 1},
++	{"inotify init stress", inotify_inits, 1, 1},
++	{"inotify add rm watch stress", inotify_add_rm_watches, 1, 1},
++	{"inotify watching stress", inotify_watch, 1, 0},
++	{"read stress", readfiles, 0, 1},
++	{"write stress", writefiles, 0, 1}
++};
++
++static void run(void)
++{
++	int tcnt = ARRAY_SIZE(tcases);
++	int i = 0;
++	const struct tst_clone_args args = {
++		.exit_signal = SIGCHLD,
++	};
++
++	tst_res(TINFO, "Starting %d stresses\n", tcnt);
++
++	while (i < tcnt) {
++		if (tcases[i].ondir && !SAFE_CLONE(&args)) {
++			tst_res(TINFO, "Starting %s on dir\n", tcases[i].desc);
++			tcases[i].func_test(TESTDIR);
++			tst_res(TINFO, "Ending %s on dir\n", tcases[i].desc);
++			tst_flush();
++			exit(EXIT_SUCCESS);
++		}
++		if (tcases[i].onfile && !SAFE_CLONE(&args)) {
++			tst_res(TINFO, "Starting %s on file\n", tcases[i].desc);
++			tcases[i].func_test(TESTFILE);
++			tst_res(TINFO, "Ending %s on file\n", tcases[i].desc);
++			exit(EXIT_SUCCESS);
++		}
++		i++;
++	}
++	tst_reap_children();
++	tst_res(TPASS, "No panic no hang, test PASS");
++}
++
++static struct tst_test test = {
++	.tcnt = 1,
++	.max_runtime = 60,
++	.forks_child = 1,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++	.test = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "4396a731 "},
++		{},
++	},
++};
+-- 
+2.31.1
 
-  Maybe document it (not sure about
-> the comments)?
-> 
-> $ [ -f ./configure ] || make autotools # not needed if run in the top level
-> $ [ -f include/mk/config.mk ] || ./configure # not needed if the top level configure is run
-> 
-> Kind regards,
-> Petr
-> 
->>   $ make generate-makefiles
->>   $ cd conformance/interfaces/foo
->>   $ make
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
