@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 162BFC38145
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 13:38:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 805EDC38145
+	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 13:38:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 107133CA8DB
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 15:38:20 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 266153CA8C0
+	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 15:38:30 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D16DB3C65EB
+ by picard.linux.it (Postfix) with ESMTPS id 63E7B3CA8A3
  for <ltp@lists.linux.it>; Fri,  2 Sep 2022 15:37:17 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 619651A0113F
- for <ltp@lists.linux.it>; Fri,  2 Sep 2022 15:37:17 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8DACB600855
+ for <ltp@lists.linux.it>; Fri,  2 Sep 2022 15:37:15 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 13DDA3469B;
- Fri,  2 Sep 2022 13:37:17 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 58E5C5BF1B;
+ Fri,  2 Sep 2022 13:37:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662125837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=7BUl6721BE9NBm/9UZqp7Lh1DWUtLOAq8KPcwNBHgLE=;
- b=KaXic8dArECGZYWRbJOLbGxb9mlJBJF4LdpSfXQzCVh4z3GHZj6sQLwoQcT566g6tfVUd2
- 38LTfLGwNhH6JAf9gRIdFJMScCPQgM8DeXkQZ+6+c/LCKJPRPyaXf8tSJ1/sIeVF1DJerD
- mmgM1n7C4fP71tCNmn1mCfsnIKdh0O4=
+ t=1662125835; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ia5+1sia3rjWJukq5mA1el2Kp5s5aetYqgR/8wiohj0=;
+ b=N3qiE3yFpBYO8TPgVSoZjel2dvSdJv1puMve5HQlz/ae1JM28BrOE1yMSdj+SlbxNDNOlA
+ BEwuZaXG0vU0tkZHgxfFdEgGqykSvDLOhF1GQ/hTZjmPxGyp+tZSVCoy+fAFH2hhKFqaPG
+ BOkNDLm5/G0CzscXjr7ieLzH9oDV4rk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662125837;
+ s=susede2_ed25519; t=1662125835;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=7BUl6721BE9NBm/9UZqp7Lh1DWUtLOAq8KPcwNBHgLE=;
- b=1B87VL03MBsga+1oWv2EXXh+9ReI9ZGWSE2ABuWPG6FH95O6OIf8ojMy9DxqsNY2LCPR1t
- ANhshwo0n3ZOJ2CA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ia5+1sia3rjWJukq5mA1el2Kp5s5aetYqgR/8wiohj0=;
+ b=XunIS5UvFiTNjvoSPeNZgYKafwkoAGBYfgXOMMWjrgT/lOLIS5keGYqet7mSTNb7eLElmR
+ ZFzEzCYFLIa6IzBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CA5D01330E;
- Fri,  2 Sep 2022 13:37:16 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0FC3C1330E;
+ Fri,  2 Sep 2022 13:37:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id sJtbMAwHEmObBgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 02 Sep 2022 13:37:16 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id hD1uAgsHEmObBgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 02 Sep 2022 13:37:15 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri,  2 Sep 2022 15:37:07 +0200
-Message-Id: <20220902133710.1785-7-pvorel@suse.cz>
+Date: Fri,  2 Sep 2022 15:37:01 +0200
+Message-Id: <20220902133710.1785-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220902133710.1785-1-pvorel@suse.cz>
-References: <20220902133710.1785-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 6/9] tst_test.sh: Introduce TST_FS_TYPE_FUSE
+Subject: [LTP] [PATCH v4 0/9] shell: df01.sh: $TST_ALL_FILESYSTEMS
+ (.all_filesystems)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,60 +77,63 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Useful if tests need to grep on mount output (there is fuseblk instead
-of expected filesystem).
+Hi,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- doc/shell-test-api.txt    |  2 ++
- testcases/lib/tst_test.sh | 14 +++++++++++++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
+Note, I'm not sure if changes in commit "tst_supported_fs: Implement
+skip list" in tst_supported_fs.c will not be heavily rewritten due
+tracking minimal filesystem usage. But if the commit looks ok, it'd be
+nice to get this merged first.
 
-diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
-index 18ed144a9..e16080061 100644
---- a/doc/shell-test-api.txt
-+++ b/doc/shell-test-api.txt
-@@ -210,6 +210,8 @@ simply by setting right '$TST_FOO'.
- | 'TST_DEVICE'             | Block device name for 'tst_mount' and 'tst_mkfs', see
-                              https://github.com/linux-test-project/ltp/wiki/Shell-Test-API#formatting-device-with-a-filesystem[Formatting device with a filesystem].
- | 'TST_FS_TYPE'            | Override the default filesystem to be used.
-+| 'TST_FS_TYPE_FUSE'       | 1 if mounted 'TST_FS_TYPE' filesystem on
-+                             'TST_DEVICE' device is FUSE.
- | 'TST_MNTPOINT'           | Holds path to mountpoint used in 'tst_mount', see
-                              https://github.com/linux-test-project/ltp/wiki/Shell-Test-API#formatting-device-with-a-filesystem[Formatting device with a filesystem].
- | 'TST_MNT_PARAMS'         | Extra mount params for 'tst_mount', see
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 2937bd80c..78dbfc1ce 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -307,6 +307,18 @@ tst_mount()
- 	if [ $ret -ne 0 ]; then
- 		tst_brk TBROK "Failed to mount device${mnt_err}: mount exit = $ret"
- 	fi
-+
-+	mnt_real="$(grep -E "$TST_MNTPOINT ($TST_FS_TYPE|fuseblk)" /proc/mounts | awk 'NR==1{print $3}')"
-+	case $mnt_real in
-+		'') tst_brk TBROK 'Failed to found filesystem type in /proc/mounts';;
-+		'fuseblk') TST_FS_TYPE_FUSE=1;;
-+		*)
-+			if [ "$mnt_real" != "$TST_FS_TYPE" ]; then
-+				tst_brk TBROK "$mnt_real: unsupported type in /proc/mounts"
-+			fi
-+			TST_FS_TYPE_FUSE=
-+		;;
-+		esac
- }
- 
- tst_umount()
-@@ -636,7 +648,7 @@ tst_run()
- 			OPTS|USAGE|PARSE_ARGS|POS_ARGS);;
- 			NEEDS_ROOT|NEEDS_TMPDIR|TMPDIR|NEEDS_DEVICE|DEVICE);;
- 			NEEDS_CMDS|NEEDS_MODULE|MODPATH|DATAROOT);;
--			NEEDS_DRIVERS|FS_TYPE|MNTPOINT|MNT_PARAMS);;
-+			NEEDS_DRIVERS|FS_TYPE|FS_TYPE_FUSE|MNTPOINT|MNT_PARAMS);;
- 			NEEDS_KCONFIGS|NEEDS_KCONFIGS_IFS);;
- 			IPV6|IPV6_FLAG|IPVER|TEST_DATA|TEST_DATA_IFS);;
- 			RETRY_FUNC|RETRY_FN_EXP_BACKOFF|TIMEOUT);;
+Kind regards,
+Petr
+
+change v3->v4:
+* dropped NFS tests change for now (plan to get to this soon, as that
+  is the motivation for whole work)
+* convert df01.sh (to at least something is using it)
+* new variable $TST_FS_TYPE_FUSE
+* rebased (some commits were merged)
+
+new commits
+worth to review
+* df01.sh: Convert to TST_ALL_FILESYSTEMS=1
+* tst_test.sh: Introduce TST_FS_TYPE_FUSE
+some minor cleanup
+* shell: Print mount command in tst_mount()
+* shell API/tests: Require root for TST_{FORMAT,MOUNT}_DEVICE
+
+Petr Vorel (9):
+  shell: Print mount command in tst_mount()
+  shell API/tests: Require root for TST_{FORMAT,MOUNT}_DEVICE
+  tst_supported_fs: Implement skip list
+  tst_supported_fs: Support skip list when query single fs
+  shell: Add $TST_SKIP_FILESYSTEMS + tests
+  tst_test.sh: Introduce TST_FS_TYPE_FUSE
+  tst_test.sh: Add $TST_ALL_FILESYSTEMS
+  shell: Add test for TST_ALL_FILESYSTEMS=1
+  df01.sh: Convert to TST_ALL_FILESYSTEMS=1
+
+ doc/shell-test-api.txt                        |  13 +-
+ include/tst_fs.h                              |  10 ++
+ lib/newlib_tests/shell/tst_all_filesystems.sh |  27 ++++
+ lib/newlib_tests/shell/tst_format_device.sh   |   1 +
+ lib/newlib_tests/shell/tst_mount_device.sh    |   1 +
+ .../shell/tst_mount_device_tmpfs.sh           |   1 +
+ .../shell/tst_skip_filesystems.sh             |  35 +++++
+ .../shell/tst_skip_filesystems_skip.sh        |  17 ++
+ lib/tst_supported_fs_types.c                  |  18 +++
+ runtest/commands                              |   8 +-
+ runtest/smoketest                             |   2 +-
+ testcases/commands/df/df01.sh                 |  32 ++--
+ testcases/lib/tst_supported_fs.c              |  56 +++++--
+ testcases/lib/tst_test.sh                     | 147 ++++++++++++------
+ testcases/misc/lvm/generate_lvm_runfile.sh    |   2 +-
+ testcases/misc/lvm/prepare_lvm.sh             |   2 +-
+ 16 files changed, 282 insertions(+), 90 deletions(-)
+ create mode 100755 lib/newlib_tests/shell/tst_all_filesystems.sh
+ create mode 100755 lib/newlib_tests/shell/tst_skip_filesystems.sh
+ create mode 100755 lib/newlib_tests/shell/tst_skip_filesystems_skip.sh
+
 -- 
 2.37.2
 
