@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15652C54EE9
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 09:08:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36527C54EE9
+	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 09:20:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 048FA3CA8CA
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 11:08:01 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id E80473CA708
+	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 11:20:39 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D20FD3CA6F1
- for <ltp@lists.linux.it>; Fri,  2 Sep 2022 11:07:50 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 304393CA2E6
+ for <ltp@lists.linux.it>; Fri,  2 Sep 2022 11:20:29 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C97BD200C2E
- for <ltp@lists.linux.it>; Fri,  2 Sep 2022 11:07:49 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E7BC3601236
+ for <ltp@lists.linux.it>; Fri,  2 Sep 2022 11:20:28 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id D048E20469;
- Fri,  2 Sep 2022 09:07:45 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 51DED20F19;
+ Fri,  2 Sep 2022 09:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1662109665;
+ t=1662110428;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lqJMJics7jOUun4axohwuEOUCVE+XamfFRxAzRSVcFg=;
- b=F3L5bN5htav6xWaSFXTfvK4owOpbpztccgjjdHnCuadE2s3o/b6GTcVeiOuGe9aC/DaMvA
- Lm5G5jJ9e6xkPhSTKw0huEIxV0HzkN37Tg5k1QZNJSTZjtAdk4mMTV0u8+ia4rNymodqIz
- LM4LBJ0ogAuxQaUBo8jO85kmturEZos=
+ bh=0VQXAEhmhBZk/h62Q4mPcxwa5QvhGofjRTy4bZLMIPM=;
+ b=vuQKaZOlTkBYBEB9lxxP/bsLroDUfDA88fNlYFYSvoMCxbHhbUOJS41fNuMDOXo1aac3uQ
+ olIHxBNFfUEKMMxjbRq8ZFlmoToqtpmPB14LdGBiXuZjWhUYK8ccuf+2Cmu4grapPvqhQJ
+ mGj0+//ULieOxMqVNEz+1dl5oyo04V4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1662109665;
+ s=susede2_ed25519; t=1662110428;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lqJMJics7jOUun4axohwuEOUCVE+XamfFRxAzRSVcFg=;
- b=/VqqF8NGyuoD/Q59gJpoZuWP7BVNnieDkFA8O4ofYxdDWF8ijzUgbukmOm0CXRLcXqSg1d
- L2Sk5vKKhwqQBcBQ==
+ bh=0VQXAEhmhBZk/h62Q4mPcxwa5QvhGofjRTy4bZLMIPM=;
+ b=rtSg7R0jX7IyrTbjniVy0YGUAINQXKC+h94hzTe5l4ZBug8KUcur28SwR8SQVG6e5WY+OC
+ NZxs47KeelUxrxCQ==
 Received: from g78 (unknown [10.163.24.226])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 7CDA62C141;
- Fri,  2 Sep 2022 09:07:40 +0000 (UTC)
-References: <20220722120501.28670-1-andrea.cervesato@suse.com>
- <20220722120501.28670-3-andrea.cervesato@suse.com>
- <87r11nw0qv.fsf@suse.de> <945eb0ee-b346-5729-3dda-4bff39bb52d9@suse.com>
+ by relay2.suse.de (Postfix) with ESMTPS id E15352C142;
+ Fri,  2 Sep 2022 09:20:22 +0000 (UTC)
+References: <20220804121946.19564-1-pvorel@suse.cz>
+ <20220804121946.19564-2-pvorel@suse.cz>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Date: Fri, 02 Sep 2022 10:05:29 +0100
-In-reply-to: <945eb0ee-b346-5729-3dda-4bff39bb52d9@suse.com>
-Message-ID: <87fsha2lge.fsf@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 02 Sep 2022 10:18:37 +0100
+In-reply-to: <20220804121946.19564-2-pvorel@suse.cz>
+Message-ID: <87bkry2kv8.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/7] Refactor mqns_01 using new LTP API
+Subject: Re: [LTP] [PATCH v3 01/10] tst_test.sh: Fix tst_mkfs() for tmpfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,7 +71,7 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Cc: ltp@lists.linux.it, automated-testing@yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -79,86 +79,69 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-Andrea Cervesato <andrea.cervesato@suse.com> writes:
+No response and seems reasonable, please merge!
 
-> Hi!
+Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+
+Petr Vorel <pvorel@suse.cz> writes:
+
+> + add test for it.
 >
-> On 8/11/22 11:53, Richard Palethorpe wrote:
->> Hello,
->>
->> Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
->>
->>> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
->>> ---
->>>   runtest/containers                         |   3 +-
->>>   testcases/kernel/containers/mqns/common.h  | 101 +++++++++++
->>>   testcases/kernel/containers/mqns/mqns_01.c | 193 +++++++--------------
->>>   3 files changed, 166 insertions(+), 131 deletions(-)
->>>   create mode 100644 testcases/kernel/containers/mqns/common.h
->>>
->>> diff --git a/runtest/containers b/runtest/containers
->>> index 2637b62fe..863a964ad 100644
->>> --- a/runtest/containers
->>> +++ b/runtest/containers
->>> @@ -16,7 +16,8 @@ pidns31 pidns31
->>>   pidns32 pidns32
->>>     mqns_01 mqns_01
->>> -mqns_01_clone mqns_01 -clone
->>> +mqns_01_clone mqns_01 -m clone
->>> +mqns_01_unshare mqns_01 -m unshare
->>>   mqns_02 mqns_02
->>>   mqns_02_clone mqns_02 -clone
->>>   mqns_03 mqns_03
->>> diff --git a/testcases/kernel/containers/mqns/common.h b/testcases/kernel/containers/mqns/common.h
->>> new file mode 100644
->>> index 000000000..92a77b566
->>> --- /dev/null
->>> +++ b/testcases/kernel/containers/mqns/common.h
->>> @@ -0,0 +1,101 @@
->>> +// SPDX-License-Identifier: GPL-2.0-or-later
->>> +/*
->>> + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
->>> + */
->>> +
->>> +#ifndef MQNS_H
->>> +#define MQNS_H
->>> +
->>> +#include <stdlib.h>
->>> +#include "lapi/namespaces_constants.h"
->>> +#include "tst_test.h"
->>> +#include "tst_safe_posix_ipc.h"
->>> +
->>> +enum {
->>> +	T_CLONE,
->>> +	T_UNSHARE,
->>> +	T_NONE,
->>> +};
->>> +
->>> +static int dummy_child1(void *v)
->>> +{
->>> +	(void)v;
->>> +	return 0;
->>> +}
->>> +
->>> +static inline void check_newipc(void)
->>> +{
->>> +	int pid, status;
->>> +
->>> +	pid = ltp_clone_quick(CLONE_NEWIPC | SIGCHLD, dummy_child1,
->>>   NULL);
->> ltp_clone_quick is still part of the old API and only uses clone2. I
->> think it should be replaced with tst_clone. This may require extending
->> tst_clone. In fact we probably need a test variant to switch between the
->> clone2 and clone3 syscalls when using tst_clone.
->>
->> I'll leave it to you whether you want to try that and rebase this patch
->> set on it.
->>
-> I see ltp_clone_quick as wrapper of ltp_clone, since it's using
-> ltp_alloc_stack without calling it explicitly all the times before
-> ltp_clone.
+> This has been broken since ever, but get more problematic when
+> $TST_FORMAT_DEVICE got introduced.
+>
+> Fixes: 7783ac3a0 ("lib/tst_test.sh: Add new shell library")
+> Fixes: 95734791c ("tst_test.sh: Add $TST_FORMAT_DEVICE and related vars")
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> New in v3
+>
+>  lib/newlib_tests/shell/tst_mount_device_tmpfs.sh | 15 +++++++++++++++
+>  testcases/lib/tst_test.sh                        |  5 +++++
+>  2 files changed, 20 insertions(+)
+>  create mode 100755 lib/newlib_tests/shell/tst_mount_device_tmpfs.sh
+>
+> diff --git a/lib/newlib_tests/shell/tst_mount_device_tmpfs.sh b/lib/newlib_tests/shell/tst_mount_device_tmpfs.sh
+> new file mode 100755
+> index 000000000..36a78bc85
+> --- /dev/null
+> +++ b/lib/newlib_tests/shell/tst_mount_device_tmpfs.sh
+> @@ -0,0 +1,15 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
+> +
+> +TST_MOUNT_DEVICE=1
+> +TST_FS_TYPE=tmpfs
+> +TST_TESTFUNC=test
+> +
+> +test()
+> +{
+> +	EXPECT_PASS "cd $TST_MNTPOINT"
+> +}
+> +
+> +. tst_test.sh
+> +tst_run
+> diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+> index a35fa2e7b..b7cf5f3d4 100644
+> --- a/testcases/lib/tst_test.sh
+> +++ b/testcases/lib/tst_test.sh
+> @@ -351,6 +351,11 @@ tst_mkfs()
+>  
+>  	opts="$@"
+>  
+> +	if [ "$fs_type" = tmpfs ]; then
+> +		tst_res TINFO "Skipping mkfs for TMPFS filesystem"
+> +		return
+> +	fi
+> +
+>  	if [ -z "$opts" ]; then
+>  		if [ "$TST_NEEDS_DEVICE" != 1 ]; then
+>  			tst_brk "Using default parameters in tst_mkfs requires TST_NEEDS_DEVICE=1"
+> -- 
+> 2.37.1
 
-ltp_clone is also part of the old API. At some point we should remove that.
 
 -- 
 Thank you,
