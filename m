@@ -4,74 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 622D3ECAAD3
-	for <ltp@archiver.kernel.org>; Mon,  5 Sep 2022 15:43:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD7BCECAAD5
+	for <ltp@archiver.kernel.org>; Mon,  5 Sep 2022 15:43:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9F9103CA950
-	for <ltp@archiver.kernel.org>; Mon,  5 Sep 2022 17:43:35 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 8D5133CA9A0
+	for <ltp@archiver.kernel.org>; Mon,  5 Sep 2022 17:43:46 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 01AAF3CA96D
- for <ltp@lists.linux.it>; Mon,  5 Sep 2022 17:42:53 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+ by picard.linux.it (Postfix) with ESMTPS id 9E6FD3CA983
+ for <ltp@lists.linux.it>; Mon,  5 Sep 2022 17:42:54 +0200 (CEST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B7E5E6009FD
- for <ltp@lists.linux.it>; Mon,  5 Sep 2022 17:42:50 +0200 (CEST)
-Received: by mail-wm1-x32f.google.com with SMTP id
- n23-20020a7bc5d7000000b003a62f19b453so8013734wmk.3
- for <ltp@lists.linux.it>; Mon, 05 Sep 2022 08:42:50 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D160E1000A55
+ for <ltp@lists.linux.it>; Mon,  5 Sep 2022 17:42:51 +0200 (CEST)
+Received: by mail-wm1-x335.google.com with SMTP id d5so5448194wms.5
+ for <ltp@lists.linux.it>; Mon, 05 Sep 2022 08:42:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=msCSPjt+VSSCHFAR3v3bLUJse4NjZPPedOz5Dbyhpi0=;
- b=dQBGQw/jy0N2LkcwdUA8yaT7ahcqeJufh6Bqiu1hrrL9JJDyDmLnZ4FY5Hr6TjiopF
- kvmrmtBBb3k18YBsdGR5lWg3qEa6dg2YfsRiedWv1RtMVTD+GoNgNAkcgANdhoAunN/0
- GTbsJoKtmU2F1xOFyNGPWymjSBGe4X8l6N41aMPveeoMY1hzIs3fi67MVGnFItHHnNBI
- cc21AvDd2ZO/ty/sdGyYOy7jMyzZ3t78gZMIklA4VPjC/TgPkx5CK+z3iq9OmYimpTUE
- 9NjjrKKZATRDEYIiCaek1ioZDQ/B2Pv+UhAy8QZvE9aZUNHwLXzG/gOoK+sL0lHiI6LO
- COPw==
+ bh=2XhFHyV28r1799jbW4a5fTrzcHMO925zWfkr8pA+66o=;
+ b=Z+//iVN6eKW8rVwF/72h103sUyk3eW7Rc3fAqj5EfgFqSvGvPqZZBUKJi2kQ/f4cRr
+ jMAMEX+uKYB/3A0UQd60hPX3IxpcqhcxIFJktAiPJfYe5AcIBqXSufZpswS5b+fVfpe7
+ C4A9htGfKIkliVtc15IKvHx0e3VMCBlIoP1stYggYeqh+BapZJvE9atK0VUpbfa6Abd4
+ 3/tQe4qppWFSra+ZRu1PbEOHm+ULQxtYesyiZxP7b8JFqPFMfBMalZlhYulM3LnMnYi1
+ +2NR28bt5aRQVb4EADzqdgyAmDAyxLzPz0Q1/YOJEzwZJ9eY9Hv87XetKB/aZILgkKcw
+ O4og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=msCSPjt+VSSCHFAR3v3bLUJse4NjZPPedOz5Dbyhpi0=;
- b=7DS38NTIiYB8jCyPBh+2wevaarsYPfFS0wy/uQBA/tLJgHF5zGOROluAkHKKPLf0Ak
- 6sXe35vhWpy9S41qOLh6FZCM9N/yGVoXd+p+xdMVGry99aut37RL684YZIa++RNo4fEv
- 6WNnfDL+8zWt9xamlbCaM4DdLbXwUYzSR1oaFLZYp76NUiW3kRAIBlw3JzcZFQwdxw7S
- /5eFluvLaZ8Dz+ENpbsX39dIupBWHaFxjKa0EuDELlgGu3g8+1cld01v+0NaJtltSRyj
- JsbSDG3PbQK28o/sLCMIqE0LcAvfobPdAA1hs2cfwXeGkmiXD65vbSe2MECqVAm/7B9Z
- 6vAg==
-X-Gm-Message-State: ACgBeo12SFXR+y/c0iK698qn8qaqZNSUutYWVE4Id1x0oBgfsmAM8fjF
- COhHvQSdmyY9YqhbEd3OUhc=
-X-Google-Smtp-Source: AA6agR4z4yHuFyDSOye7NtgnBEwhG4dMDMeGUXdh09RvhzETIVYdmG3pVYuEJ4Sb44gOpG2ZVISu/Q==
-X-Received: by 2002:a05:600c:3b1f:b0:3a5:e672:a385 with SMTP id
- m31-20020a05600c3b1f00b003a5e672a385mr11000995wms.49.1662392569966; 
- Mon, 05 Sep 2022 08:42:49 -0700 (PDT)
+ bh=2XhFHyV28r1799jbW4a5fTrzcHMO925zWfkr8pA+66o=;
+ b=1DU2uNp7Irh0Ywd8xpKtt/fmDdR0lswvQMB96FvFp36AogzfCFChhupNDEUtb6uAyC
+ 4O//w4tsywWS9XidJFZugxB5HX4zhz3C1r1iS/ieuYhhp2Z7biuWzc5bBXojQyewYSGF
+ HAPacv1GUtgs0zATWO3SMvODD+9+Au9h52obDOLPIH3A1MpO5xgZcneIEIQBTnHDDR0+
+ HJwf+rGgfWl6dkCSfPyXFPdMLMmwqVHz1qlLzlxe6xY5JOP0LPzL3smxb/NEMQshmovo
+ owg4FKK91IlBViPLoDdgzPXoo30Cbj6o5Spl69DEXjI0mUd4E4FB7MJcT+JyGGwEJRji
+ F+Ow==
+X-Gm-Message-State: ACgBeo0R5AWsZNVp/Q6O7B2mI4U6ZRrKwWsDb/Wgz5Omsvad/NdYnqkv
+ RGBUXCjqWaunYu6Z0aAWSESey+dM+OQ=
+X-Google-Smtp-Source: AA6agR7yY3e6Fe/iaDaWWbsY4RLn1YlguBgYgjTGf2keIVexrlg2abGRRzUwS2/UOwyfWq4glX7hVQ==
+X-Received: by 2002:a05:600c:3b10:b0:3a8:3b77:b5e0 with SMTP id
+ m16-20020a05600c3b1000b003a83b77b5e0mr11156431wms.129.1662392571408; 
+ Mon, 05 Sep 2022 08:42:51 -0700 (PDT)
 Received: from amir-ThinkPad-T480.ctera.local
  (bzq-166-168-31-246.red.bezeqint.net. [31.168.166.246])
  by smtp.gmail.com with ESMTPSA id
- e5-20020adfe7c5000000b0022862e037e3sm5790023wrn.38.2022.09.05.08.42.48
+ e5-20020adfe7c5000000b0022862e037e3sm5790023wrn.38.2022.09.05.08.42.50
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 05 Sep 2022 08:42:49 -0700 (PDT)
+ Mon, 05 Sep 2022 08:42:50 -0700 (PDT)
 From: Amir Goldstein <amir73il@gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Mon,  5 Sep 2022 18:42:33 +0300
-Message-Id: <20220905154239.2652169-4-amir73il@gmail.com>
+Date: Mon,  5 Sep 2022 18:42:34 +0300
+Message-Id: <20220905154239.2652169-5-amir73il@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220905154239.2652169-1-amir73il@gmail.com>
 References: <20220905154239.2652169-1-amir73il@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/9] syscalls/fanotify14: Add test cases for
- FAN_MARK_IGNORE
+Subject: [LTP] [PATCH 4/9] syscalls/fanotify10: Avoid undesired event in test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,84 +88,74 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-FAN_MARK_IGNORE is a new API so it also enforces strict rules about
-which events and flags are allowed on a non-dir inode mark.
+Open fd for syncfs before creating groups to avoid the
+FAN_OPEN event that this open generates.
 
-FAN_MARK_IGNORE requires FAN_MARK_IGNORED_SURV_MODIFY for anything
-expect a non-dir inode mark.
+This event does not break any of the existing test cases,
+but should avoid it to avoid noise in future test cases.
 
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- .../kernel/syscalls/fanotify/fanotify14.c     | 35 +++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ testcases/kernel/syscalls/fanotify/fanotify10.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify14.c b/testcases/kernel/syscalls/fanotify/fanotify14.c
-index 8419cea46..4a1953b33 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify14.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify14.c
-@@ -39,6 +39,7 @@
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+index 93340255f..b8358b489 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify10.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+@@ -66,6 +66,7 @@ static unsigned int fanotify_class[] = {
+ #define GROUPS_PER_PRIO 3
  
- static int fanotify_fd;
- static int fan_report_target_fid_unsupported;
-+static int ignore_mark_unsupported;
+ static int fd_notify[NUM_CLASSES][GROUPS_PER_PRIO];
++static int fd_syncfs;
  
- /*
-  * Each test case has been designed in a manner whereby the values defined
-@@ -107,6 +108,34 @@ static struct test_case_t {
- 		/* With FAN_REPORT_TARGET_FID, FAN_EVENT_ON_CHILD on non-dir is not valid */
- 		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET, 0, FAN_OPEN | FAN_EVENT_ON_CHILD, ENOTDIR
- 	},
-+	{
-+		/* FAN_MARK_IGNORE_SURV with FAN_DELETE on non-dir is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME, FAN_MARK_IGNORE_SURV, FAN_DELETE, ENOTDIR
-+	},
-+	{
-+		/* FAN_MARK_IGNORE_SURV with FAN_RENAME on non-dir is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME, FAN_MARK_IGNORE_SURV, FAN_RENAME, ENOTDIR
-+	},
-+	{
-+		/* FAN_MARK_IGNORE_SURV with FAN_ONDIR on non-dir is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME, FAN_MARK_IGNORE_SURV, FAN_OPEN | FAN_ONDIR, ENOTDIR
-+	},
-+	{
-+		/* FAN_MARK_IGNORE_SURV with FAN_EVENT_ON_CHILD on non-dir is not valid */
-+		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME, FAN_MARK_IGNORE_SURV, FAN_OPEN | FAN_EVENT_ON_CHILD, ENOTDIR
-+	},
-+	{
-+		/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on directory is not valid */
-+		FAN_CLASS_NOTIF, FAN_MARK_IGNORE, FAN_OPEN, EISDIR
-+	},
-+	{
-+		/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on mount mark is not valid */
-+		FAN_CLASS_NOTIF, FAN_MARK_MOUNT | FAN_MARK_IGNORE, FAN_OPEN, EINVAL
-+	},
-+	{
-+		/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on filesystem mark is not valid */
-+		FAN_CLASS_NOTIF, FAN_MARK_FILESYSTEM | FAN_MARK_IGNORE, FAN_OPEN, EINVAL
-+	},
- };
- 
- static void do_test(unsigned int number)
-@@ -120,6 +149,11 @@ static void do_test(unsigned int number)
- 		return;
+ static char event_buf[EVENT_BUF_LEN];
+ static int exec_events_unsupported;
+@@ -342,14 +343,11 @@ static void show_fanotify_marks(int fd)
  	}
+ }
  
-+	if (ignore_mark_unsupported && tc->mark_flags & FAN_MARK_IGNORE) {
-+		tst_res(TCONF, "FAN_MARK_IGNORE not supported in kernel?");
-+		return;
-+	}
+-static void drop_caches(const char *path)
++static void drop_caches()
+ {
+-	int fd = SAFE_OPEN(path, O_RDONLY);
+-
+-	if (syncfs(fd) < 0)
++	if (syncfs(fd_syncfs) < 0)
+ 		tst_brk(TBROK | TERRNO, "Unexpected error when syncing filesystem");
+ 
+-	SAFE_CLOSE(fd);
+ 	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
+ }
+ 
+@@ -364,6 +362,9 @@ static int create_fanotify_groups(unsigned int n)
+ 	mark = &fanotify_mark_types[tc->mark_type];
+ 	ignore_mark = &fanotify_mark_types[tc->ignore_mark_type];
+ 
++	/* Open fd for syncfs before creating groups to avoid the FAN_OPEN event */
++	fd_syncfs = SAFE_OPEN(MOUNT_PATH, O_RDONLY);
 +
- 	fanotify_fd = fanotify_init(tc->init_flags, O_RDONLY);
- 	if (fanotify_fd < 0) {
- 		if (errno == tc->expected_errno) {
-@@ -224,6 +258,7 @@ static void do_setup(void)
+ 	for (p = 0; p < num_classes; p++) {
+ 		for (i = 0; i < GROUPS_PER_PRIO; i++) {
+ 			fd_notify[p][i] = SAFE_FANOTIFY_INIT(fanotify_class[p] |
+@@ -413,7 +414,7 @@ add_mark:
+ 	 * drop_caches should evict inode from cache and remove evictable marks
+ 	 */
+ 	if (evictable_ignored) {
+-		drop_caches(tc->mark_path);
++		drop_caches();
+ 		for (p = 0; p < num_classes; p++) {
+ 			for (i = 0; i < GROUPS_PER_PRIO; i++) {
+ 				if (fd_notify[p][i] > 0)
+@@ -435,6 +436,8 @@ static void cleanup_fanotify_groups(void)
+ 				SAFE_CLOSE(fd_notify[p][i]);
+ 		}
+ 	}
++	if (fd_syncfs > 0)
++		SAFE_CLOSE(fd_syncfs);
+ }
  
- 	fan_report_target_fid_unsupported =
- 		fanotify_init_flags_supported_on_fs(FAN_REPORT_DFID_NAME_TARGET, MNTPOINT);
-+	ignore_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_IGNORE_SURV);
- 
- 	/* Create temporary test file to place marks on */
- 	SAFE_FILE_PRINTF(FILE1, "0");
+ /* Flush out all pending dirty inodes and destructing marks */
 -- 
 2.25.1
 
