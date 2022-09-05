@@ -4,67 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83801C6FA82
-	for <ltp@archiver.kernel.org>; Fri,  2 Sep 2022 22:15:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EDEBECAAA1
+	for <ltp@archiver.kernel.org>; Mon,  5 Sep 2022 06:18:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AE6B93CA8E3
-	for <ltp@archiver.kernel.org>; Sat,  3 Sep 2022 00:14:56 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 302733CA926
+	for <ltp@archiver.kernel.org>; Mon,  5 Sep 2022 08:18:33 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 57A5B3C01CC
- for <ltp@lists.linux.it>; Sat,  3 Sep 2022 00:14:44 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 18B303C8095
+ for <ltp@lists.linux.it>; Mon,  5 Sep 2022 08:18:18 +0200 (CEST)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E626F200CF7
- for <ltp@lists.linux.it>; Sat,  3 Sep 2022 00:14:43 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B79353512D;
- Fri,  2 Sep 2022 22:14:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662156881;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=66DdClu0EOH9ZVYa2FGQ1KlcaRzRm47GeC9E/IsnLWQ=;
- b=joU1vbaNkiee5GKY5TnXGvn1y+D/7PXm9xyb6vtNM5zoW6OT8dRvtnAYy5GuE0/HqmImeR
- TOmAggkjth2r3To8/+p4Y6YOJMIOuHZiBLRunhVd6h6oAiZZsZQysb0kDzdHKxKPRrf/nW
- Wpp1fU9cHBsqVb+fQl9xJsRREush9wM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662156881;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=66DdClu0EOH9ZVYa2FGQ1KlcaRzRm47GeC9E/IsnLWQ=;
- b=CjyVcPaDRK6RBE+65BeJFCNlWGuFbd1ucOuy0WmWO8e4nR+YPbVGZK8tWvGKMK+plcxHjo
- hZ5w9PN8ndgfqqAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7B5A71330E;
- Fri,  2 Sep 2022 22:14:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QP2YHFGAEmMROAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 02 Sep 2022 22:14:41 +0000
-Date: Sat, 3 Sep 2022 00:14:39 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <YxKAT18Z7KWiuA9U@pevik>
-References: <20220902133710.1785-1-pvorel@suse.cz>
- <20220902133710.1785-6-pvorel@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3FD08600047
+ for <ltp@lists.linux.it>; Mon,  5 Sep 2022 08:18:15 +0200 (CEST)
+Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.55])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MLdX05X6Rz1N7wZ
+ for <ltp@lists.linux.it>; Mon,  5 Sep 2022 14:14:24 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.155) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 5 Sep 2022 14:18:10 +0800
+To: <ltp@lists.linux.it>
+Date: Mon, 5 Sep 2022 14:14:25 +0800
+Message-ID: <20220905061425.22852-1-luoxiaoyu9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220902133710.1785-6-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Originating-IP: [10.67.174.155]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500024.china.huawei.com (7.185.36.10)
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 5/9] shell: Add $TST_SKIP_FILESYSTEMS + tests
+Subject: [LTP] [PATCH] pty04.c/pidfd_send_signal03.c: Drop redundant
+ tst_reap_children()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,47 +52,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+From: Luo xiaoyu via ltp <ltp@lists.linux.it>
+Reply-To: Luo xiaoyu <luoxiaoyu9@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Drop redundant calling of tst_reap_children() in cleanup() since
+it has been called in the API (run_tests()).
 
-> C API struct tst_test skip_filesystems member equivalent.
+Signed-off-by: Luo xiaoyu <luoxiaoyu9@huawei.com>
+---
+ testcases/kernel/pty/pty04.c                                    | 2 --
+ .../kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c     | 1 -
+ 2 files changed, 3 deletions(-)
 
-> Now only running on single filesystem (will be improved in the next
-> commit)
+diff --git a/testcases/kernel/pty/pty04.c b/testcases/kernel/pty/pty04.c
+index 8c7b1bf92..efd5bd364 100644
+--- a/testcases/kernel/pty/pty04.c
++++ b/testcases/kernel/pty/pty04.c
+@@ -462,8 +462,6 @@ static void cleanup(void)
+ 	if (sk >= 0)
+ 		close(sk);
+-
+-	tst_reap_children();
+ }
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
+index 20d96b118..5bc5c4d81 100644
+--- a/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
++++ b/testcases/kernel/syscalls/pidfd_send_signal/pidfd_send_signal03.c
+@@ -128,7 +128,6 @@ static void setup(void)
+ static void cleanup(void)
+ {
+-	tst_reap_children();
+ 	if (new_pidfd > 0)
+ 		SAFE_CLOSE(new_pidfd);
+ 	if (pidfd > 0)
+--
+2.17.1
 
->  doc/shell-test-api.txt                        |  2 ++
->  .../shell/tst_skip_filesystems.sh             | 35 +++++++++++++++++++
->  .../shell/tst_skip_filesystems_skip.sh        | 17 +++++++++
->  testcases/lib/tst_test.sh                     |  6 ++++
->  4 files changed, 60 insertions(+)
->  create mode 100755 lib/newlib_tests/shell/tst_skip_filesystems.sh
->  create mode 100755 lib/newlib_tests/shell/tst_skip_filesystems_skip.sh
-
-...
-> +++ b/lib/newlib_tests/shell/tst_skip_filesystems.sh
-> @@ -0,0 +1,35 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
-> +
-> +TST_MOUNT_DEVICE=1
-> +TST_NEEDS_ROOT=1
-> +TST_FS_TYPE=ext4
-> +TST_TESTFUNC=test
-> +TST_SKIP_FILESYSTEMS="btrfs,ext2,ext3,xfs,vfat,exfat,ntfs,tmpfs"
-
-I suppose I should move this commit after following commit "tst_test.sh:
-Introduce TST_FS_TYPE_FUSE" (swap them) so that I can here add "fuse" into
-TST_SKIP_FILESYSTEMS.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
