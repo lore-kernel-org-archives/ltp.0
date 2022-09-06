@@ -4,67 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB413C38145
-	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 09:27:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EA29ECAAA1
+	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 09:55:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 58C423CA956
-	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 11:27:02 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 121EC3CA765
+	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 11:55:34 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1BA323C285E
- for <ltp@lists.linux.it>; Tue,  6 Sep 2022 11:26:22 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 67A0D3C1B7E
+ for <ltp@lists.linux.it>; Tue,  6 Sep 2022 11:55:24 +0200 (CEST)
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com
+ [IPv6:2607:f8b0:4864:20::e2d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 589A4600B2D
- for <ltp@lists.linux.it>; Tue,  6 Sep 2022 11:26:21 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EA12833BB8;
- Tue,  6 Sep 2022 09:26:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662456380; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=0FvaZ9Au7YlCn1dzaaT5H5pXOK5wM2JHJ4MBDyMtvkU=;
- b=wlxXgob6qz8OWfU2CuZiKgSRaxYiCUlfRPrjS3sNuAiRVFWefyVcrAfDsbrsCxorZWgSCc
- nkH4/32tfz3PaalQ49CAlWQjLjwzRbDZDYVnmieF/rzsq30sOpggw5QE/GtOlUnv4Y/q4/
- RDgBXuQb47DRlTHDs1rZqkCk//ubnKc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662456380;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=0FvaZ9Au7YlCn1dzaaT5H5pXOK5wM2JHJ4MBDyMtvkU=;
- b=9CIvUsS0BJlTcTWIMUjmVhxNZ9ECF6OYVhaEYO1R5icaD2f8/jYiCSUyhNG/BxwaW8pl+J
- InI/cibz8nZnMeAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B979513A93;
- Tue,  6 Sep 2022 09:26:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OMS6KjwSF2NTawAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 06 Sep 2022 09:26:20 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue,  6 Sep 2022 11:26:15 +0200
-Message-Id: <20220906092615.15116-4-pvorel@suse.cz>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220906092615.15116-1-pvorel@suse.cz>
-References: <20220906092615.15116-1-pvorel@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D56606006ED
+ for <ltp@lists.linux.it>; Tue,  6 Sep 2022 11:55:23 +0200 (CEST)
+Received: by mail-vs1-xe2d.google.com with SMTP id a129so953706vsc.0
+ for <ltp@lists.linux.it>; Tue, 06 Sep 2022 02:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date;
+ bh=jhQ7XUANhAjwoVJ6KSFZPT16fT2Zsh0flkcYcZJa++M=;
+ b=Ivff6eRL0MhMm0kUwx2XxK3eZauanNhr2IHu+x09xs21GcnLiR9SWNEkhKsZ/b1uzB
+ P4vU8L+ZAuGEPKZbipp9MaQfogeXQ1ymnifTn7J01yF4jjROlsHFkwZ18FwD2ogxwKWr
+ Fycvcc4B25Sz6vtf3LOEj/XJDqm4fWsvNSGSZww/XlHkcTjcEmmfDwBrc2Kpd4MpHXZl
+ tQuHH7Dw7Gql1IvkLXG0fOnkgqIo5GH+U5YBN0GQNd3sXEbg7kgiNzcnPJnvt1olm+/A
+ YpC3C0KIeEOVil2XlYmdWvBotnvd681QyxvJQbdwn+7IPg8cpzvlxgj/upcF9qZYe482
+ z6lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date;
+ bh=jhQ7XUANhAjwoVJ6KSFZPT16fT2Zsh0flkcYcZJa++M=;
+ b=6Vz2oECG4dyskRc00+vDlGw9aNMWrmyUDEj2OWOlK9n1yArXAR2vmJJ7c/cYMAynD8
+ h9TN5jjViEZk0OGTFldFEBo1hedTWpx4AGI1IfTRDiQHqpHdJ8fAinqBzQGufk2vT7QD
+ 85RbhLwhg2iolKg9hiPCdk6zdl1xFiX7Dh0Agr/V9rZguHuKvmEUQPWWqNbnb1IsDJbv
+ Iq1Lh3SVf+yV1RrCFK8tXVxrZ3a5Er93Uc9P2kmn+dDRUHTE+c5gMMLiM3TOoajPUpAA
+ Y78I7GFiD4wlK+zMaVw06j/gMryY3sB+qldwnRpLA8K6vA1mpHvWrIdR+bf9TAO2op2z
+ a8yA==
+X-Gm-Message-State: ACgBeo2zb8GN/fEwMH0B8oPLV3vgt1keZiQKo8ApR9nmcbIPcYAS0qQx
+ ssHtbOgEuul7ShzrApt3BAOReth9HHapo5BMyNg=
+X-Google-Smtp-Source: AA6agR7pmVNJg9iAA4zSPPA9wVWAL8qWWzBA1a1kLj1HWK7tKNgxmgN21r/L9w7KxwEMI1Kzo8tgU2l+UcHyYSRwH+I=
+X-Received: by 2002:a67:a649:0:b0:390:88c5:6a91 with SMTP id
+ r9-20020a67a649000000b0039088c56a91mr15921352vsh.3.1662458122682; Tue, 06 Sep
+ 2022 02:55:22 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <20220906092615.15116-1-pvorel@suse.cz>
+ <20220906092615.15116-3-pvorel@suse.cz>
+In-Reply-To: <20220906092615.15116-3-pvorel@suse.cz>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 6 Sep 2022 12:55:11 +0300
+Message-ID: <CAOQ4uxjiAqFJajosfa5pkN-4=iDOWtiYFvNy7EU1Fd1=trRmMA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] fanotify14: Use TST_EXP_FD_ERRNO()
+Subject: Re: [LTP] [PATCH 2/3] fanotify20: Simplify code
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,183 +73,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, Matthew Bobrowski <repnop@google.com>
+Cc: Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.cz>,
+ LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-That greatly simplifies the code.
+On Tue, Sep 6, 2022 at 12:26 PM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> * replace do_test() content with TST_EXP_FD_ERRNO() macro
+> * rename variables (shorten, use LTP common names)
+> * remove tc->want_err (not needed)
+> * add macro FLAGS_DESC (stringify)
+> * don't print number of tests (not needed for just 2 tests)
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- .../kernel/syscalls/fanotify/fanotify14.c     | 118 +++++-------------
- 1 file changed, 33 insertions(+), 85 deletions(-)
+Nice cleanup.
+You may add
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify14.c b/testcases/kernel/syscalls/fanotify/fanotify14.c
-index aa4db586e..47d013c9f 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify14.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify14.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) 2018 Matthew Bobrowski. All Rights Reserved.
-+ * Copyright (c) Linux Test Project, 2020-2022
-  *
-  * Started by Matthew Bobrowski <mbobrowski@mbobrowski.org>
-  */
-@@ -48,6 +49,7 @@ static int fan_report_target_fid_unsupported;
- static struct test_case_t {
- 	unsigned int init_flags;
- 	unsigned int mark_flags;
-+	/* zero mask expects to fail on fanotify_init() */
- 	unsigned long long mask;
- 	int expected_errno;
- } test_cases[] = {
-@@ -111,7 +113,6 @@ static struct test_case_t {
- 
- static void do_test(unsigned int number)
- {
--	int ret;
- 	struct test_case_t *tc = &test_cases[number];
- 
- 	if (fan_report_target_fid_unsupported && tc->init_flags & FAN_REPORT_TARGET_FID) {
-@@ -120,101 +121,48 @@ static void do_test(unsigned int number)
- 		return;
- 	}
- 
--	fanotify_fd = fanotify_init(tc->init_flags, O_RDONLY);
--	if (fanotify_fd < 0) {
--		if (errno == tc->expected_errno) {
--			tst_res(TPASS,
--				"fanotify_fd=%d, fanotify_init(%x, O_RDONLY) "
--				"failed with error %d as expected",
--				fanotify_fd,
--				tc->init_flags, tc->expected_errno);
--			return;
--		}
--		tst_brk(TBROK | TERRNO,
--			"fanotify_fd=%d, fanotify_init(%x, O_RDONLY) failed",
--			fanotify_fd,
--			tc->init_flags);
--	}
-+	TST_EXP_FD_ERRNO(fanotify_fd = fanotify_init(tc->init_flags, O_RDONLY),
-+			 !tc->mask && tc->expected_errno ? tc->expected_errno : 0);
- 
--	/*
--	 * A test case with a mask set to zero indicate that they've been
--	 * specifically designed to test and fail on the fanotify_init()
--	 * system call.
--	 */
--	if (tc->mask == 0) {
--		tst_res(TFAIL,
--			"fanotify_fd=%d fanotify_init(%x, O_RDONLY) "
--			"unexpectedly succeeded when tests with mask 0 are "
--			"expected to fail when calling fanotify_init()",
--			fanotify_fd,
--			tc->init_flags);
-+	if (fanotify_fd < 0)
-+		return;
-+
-+	if (!tc->mask)
- 		goto out;
--	}
- 
- 	/* Set mark on non-dir only when expecting error ENOTDIR */
- 	const char *path = tc->expected_errno == ENOTDIR ? FILE1 : MNTPOINT;
- 
--	ret = fanotify_mark(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
--				tc->mask, AT_FDCWD, path);
--	if (ret < 0) {
--		if (errno == tc->expected_errno) {
--			tst_res(TPASS,
--				"ret=%d, fanotify_mark(%d, FAN_MARK_ADD | %x, "
--				"%llx, AT_FDCWD, %s) failed with error %d "
--				"as expected",
--				ret,
--				fanotify_fd,
--				tc->mark_flags,
--				tc->mask,
--				path, tc->expected_errno);
--			/*
--			 * ENOTDIR are errors for events/flags not allowed on a non-dir inode.
--			 * Try to set an inode mark on a directory and it should succeed.
--			 * Try to set directory events in filesystem mark mask on non-dir
--			 * and it should succeed.
--			 */
--			if (tc->expected_errno == ENOTDIR) {
--				SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
--						   tc->mask, AT_FDCWD, MNTPOINT);
--				tst_res(TPASS,
--					"Adding an inode mark on directory did not fail with "
--					"ENOTDIR error as on non-dir inode");
--			}
--			if (tc->expected_errno == ENOTDIR &&
--			    !(tc->mark_flags & FAN_MARK_ONLYDIR)) {
--				SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | tc->mark_flags |
--						   FAN_MARK_FILESYSTEM, tc->mask,
--						   AT_FDCWD, FILE1);
--				tst_res(TPASS,
--					"Adding a filesystem mark on non-dir did not fail with "
--					"ENOTDIR error as with an inode mark");
--			}
-+	TST_EXP_FD_ERRNO(fanotify_mark(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
-+								   tc->mask, AT_FDCWD, path),
-+					 tc->expected_errno);
- 
--			goto out;
-+	/*
-+	 * ENOTDIR are errors for events/flags not allowed on a non-dir inode.
-+	 * Try to set an inode mark on a directory and it should succeed.
-+	 * Try to set directory events in filesystem mark mask on non-dir
-+	 * and it should succeed.
-+	 */
-+	if (TST_PASS && tc->expected_errno == ENOTDIR) {
-+		SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
-+				   tc->mask, AT_FDCWD, MNTPOINT);
-+		tst_res(TPASS,
-+			"Adding an inode mark on directory did not fail with "
-+			"ENOTDIR error as on non-dir inode");
-+
-+		if (!(tc->mark_flags & FAN_MARK_ONLYDIR)) {
-+			SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | tc->mark_flags |
-+					   FAN_MARK_FILESYSTEM, tc->mask,
-+					   AT_FDCWD, FILE1);
-+			tst_res(TPASS,
-+				"Adding a filesystem mark on non-dir did not fail with "
-+				"ENOTDIR error as with an inode mark");
- 		}
--		tst_brk(TBROK | TERRNO,
--			"ret=%d, fanotify_mark(%d, FAN_MARK_ADD | %x, %llx, "
--			"AT_FDCWD, %s) failed",
--			ret,
--			fanotify_fd,
--			tc->mark_flags,
--			tc->mask,
--			FILE1);
- 	}
- 
--	tst_res(TFAIL,
--		"fanotify_fd=%d, ret=%d, fanotify_init(%x, O_RDONLY) and "
--		"fanotify_mark(%d, FAN_MARK_ADD | %x, %llx, AT_FDCWD, %s) did "
--		"not return any errors as expected",
--		fanotify_fd,
--		ret,
--		tc->init_flags,
--		fanotify_fd,
--		tc->mark_flags,
--		tc->mask,
--		FILE1);
- out:
--	SAFE_CLOSE(fanotify_fd);
-+	if (fanotify_fd > 0)
-+		SAFE_CLOSE(fanotify_fd);
- }
- 
- static void do_setup(void)
--- 
-2.37.3
+however...
 
+> ---
+>  .../kernel/syscalls/fanotify/fanotify20.c     | 81 +++++--------------
+>  1 file changed, 19 insertions(+), 62 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
+> index de0fdb782..badc4c369 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) 2021 Google. All Rights Reserved.
+> + * Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
+>   *
+>   * Started by Matthew Bobrowski <repnop@google.com>
+>   */
+> @@ -25,26 +26,21 @@
+>  #include "fanotify.h"
+>
+>  #define MOUNT_PATH     "fs_mnt"
+> +#define FLAGS_DESC(x) .flags = x, .desc = #x
+>
+> -static int fanotify_fd;
+> +static int fd;
+>
+
+What is this change for?
+It makes the code less readable.
+fd is quite an unspecific name for a global variable.
+
+Thanks,
+Amir.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
