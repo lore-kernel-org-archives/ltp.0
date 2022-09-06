@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFEEAC38145
-	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 10:13:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94E11ECAAD5
+	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 15:38:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 319D23CA911
-	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 12:13:44 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id BD4C73CA971
+	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 17:38:23 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 61F283C010E
- for <ltp@lists.linux.it>; Tue,  6 Sep 2022 12:13:34 +0200 (CEST)
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com
- [IPv6:2607:f8b0:4864:20::e2c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2731D3C071D
+ for <ltp@lists.linux.it>; Tue,  6 Sep 2022 17:38:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C5ECC200D59
- for <ltp@lists.linux.it>; Tue,  6 Sep 2022 12:13:33 +0200 (CEST)
-Received: by mail-vs1-xe2c.google.com with SMTP id k2so11133832vsk.8
- for <ltp@lists.linux.it>; Tue, 06 Sep 2022 03:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date;
- bh=XCUmrQBvbQACP412V62xMBlL0hLTcPSP+iHjqSgVtrw=;
- b=BwmPryx1JvbWQ0brPtzgIwRdAJEa8nB1Q1lT4pk42WSGa/emhelpxZNwyDEH6XkjV9
- w1SER3pMRBUjbB9VYsTR2Nv4acmcXN+uuxblqKUQmFq6s8rq9aMZsR0FNWe2Tut6jrRL
- 5lXv5qi9i40CoDgW9Y4uuzfjaOzo0bVzSq1zdHDDw/tIsGs6RZV69h91K/Lr+Ppx4VTn
- z+PPG0qyG1252HbNLjlCQi1tieklPzj3oFfYPBja0V05ZunKiDYWF0Oyck+Drbm6XpF8
- +RbgKZe504j8FO65wDCPcegDVBSbqEY5WMXZr45xUDGnDcAD8n25emqEtf6OGcxESrE2
- 2yRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=XCUmrQBvbQACP412V62xMBlL0hLTcPSP+iHjqSgVtrw=;
- b=AXmgwNZtsB6j46PoyboYhq8kpSMAH9E2xrnKX3hS+7nuQZzSac2Wf6whHMCnzy6Wde
- PMomuK/BGonI0OsnXydDZTZTmasf/K8vZsn12P1Z6N1ZUY+pZoRB4rtJj8GWpN0jpILi
- zfIL9crTRCxeX7K5xq2n9TuHTKOiVCOcEySyb1c0k7RDPxUQxoytxLXY5q2MpjbvJHPe
- zy+RvTMdqxyyfS/ZjnFl22J5XDa+5zHCCyD9pgfRrCozt9N5oGWM7I/u0njOkD/7WiDB
- QRaunw4ztT3ouK7rGdFxByyZlQet3hPUlmOGxnNBNYxGH39Y+LULQJ3GFdQgn4zNccIY
- 5lxw==
-X-Gm-Message-State: ACgBeo0I84MAWC0NgTcam/uHWd5OONHfipTL8jICrjIipUbaFsMgpmUJ
- 9SX3QDBP5hRi7dSGQSg0D25QU0N6edXXER6tCArvcPrWALU=
-X-Google-Smtp-Source: AA6agR4A7l9k6YEMWSFWp/+NUNTOLrcclgYLYDTGMj3E8alzvqgccg7aO95u73pvm492srvy63TZ757POUZ9w0jAL4o=
-X-Received: by 2002:a67:d00f:0:b0:397:f237:98f3 with SMTP id
- r15-20020a67d00f000000b00397f23798f3mr423827vsi.71.1662459212607; Tue, 06 Sep
- 2022 03:13:32 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2748210008F5
+ for <ltp@lists.linux.it>; Tue,  6 Sep 2022 17:38:13 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9B1F233946;
+ Tue,  6 Sep 2022 15:38:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1662478692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CcgTHFtfr7h7lI6BuN/DCUUij7oa7TmVujGsj3DhWZI=;
+ b=NpjAalFnE+3wKWDc+Cb6vQqh3BQnviWtgczp5+c0nz99DCdBjugqnVVKpbNHv4BwHDKZrv
+ S164GYaB1TYZq3I6V7wXix65S3FVqFP4kkiO/TtF1lPjJy1QYIE2KxoW6fNeEoAEkj38S+
+ 8YnM30B+0AVRiYgq9s307l2vioP3v+Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1662478692;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CcgTHFtfr7h7lI6BuN/DCUUij7oa7TmVujGsj3DhWZI=;
+ b=F9YS1d2V31WTGgIS31GjD2JKcpdQ08OIs8o/lZg5a5VQy6JOvuUeAZVmo8dpLZc6YieqAl
+ +0KDQhnzrw5QQaDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D57513A19;
+ Tue,  6 Sep 2022 15:38:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id /rZ5ImRpF2OaIAAAMHmgww
+ (envelope-from <jack@suse.cz>); Tue, 06 Sep 2022 15:38:12 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id 07D0EA067E; Tue,  6 Sep 2022 17:38:12 +0200 (CEST)
+Date: Tue, 6 Sep 2022 17:38:11 +0200
+From: Jan Kara <jack@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Message-ID: <20220906153811.uigc6dfxsyes5fhi@quack3>
+References: <20220905154239.2652169-1-amir73il@gmail.com>
 MIME-Version: 1.0
-References: <20220906092615.15116-1-pvorel@suse.cz>
- <20220906092615.15116-4-pvorel@suse.cz>
-In-Reply-To: <20220906092615.15116-4-pvorel@suse.cz>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 6 Sep 2022 13:13:21 +0300
-Message-ID: <CAOQ4uxitPLeqeaydDbG6=4eDU8=6wfFaSiih0bFXj0_DRdeMnA@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20220905154239.2652169-1-amir73il@gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] fanotify14: Use TST_EXP_FD_ERRNO()
+Subject: Re: [LTP] [PATCH 0/9] Fanotify tests for FAN_MARK_IGNORE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,29 +76,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Matthew Bobrowski <repnop@google.com>, Jan Kara <jack@suse.cz>,
- LTP List <ltp@lists.linux.it>
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it,
+ Matthew Bobrowski <repnop@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Sep 6, 2022 at 12:26 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> That greatly simplifies the code.
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Hi Amir!
 
-Nice cleanup.
-You may add:
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+On Mon 05-09-22 18:42:30, Amir Goldstein wrote:
+> FAN_MARK_IGNORE feature was merge in v6.0-rc1.
+> A man page draft was posted here [1].
+> 
+> Following are the tests for the new feature.
+> 
+> All new test cases are skipped on old kernels.
+> 
+> Note that fanotify10 will run ALL of its existing test cases
+> in two variants:
+> 1. Legacy FAN_MARK_IGNORED_MASK
+> 2. New FAN_MARK_IGNORE
+> 
+> On old kernels, only the first variant of the test will run.
+> 
+> In addition to the new test variant it also has some new test cases
+> that only run with new FAN_MARK_IGNORE variant.
 
-I don't think that this patch conflicts with the patch in my FAN_MARK_IGNORE
-series - if there are conflicts they should be trivial, so feel free to
-merge these cleanups either before or after merging my series.
+Thanks for the tests! They look good to me although I have to admit my head
+starts to spin with the number of combinations and variations in fanotify10
+testcase so I'm not very confident some subtle bug could not slip in. But
+hey, it's just tests and they are easy to fix if some breakage slips in. So
+feel free to add:
 
-Thanks,
-Amir.
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+ 
+> [1] https://lore.kernel.org/linux-man/20220904155113.2623371-1-amir73il@gmail.com/
+> 
+> Amir Goldstein (9):
+>   syscalls/fanotify09: Add test cases for FAN_MARK_IGNORE
+>   syscalls/fanotify14: Require FAN_REPORT_FID support for entire test
+>   syscalls/fanotify14: Add test cases for FAN_MARK_IGNORE
+>   syscalls/fanotify10: Avoid undesired event in test
+>   syscalls/fanotify10: Add more verifications and debug info
+>   syscalls/fanotify10: Use dedicated mark type for inode mark on parent
+>   syscalls/fanotify10: Run tests with two ignore mask variants
+>   syscalls/fanotify10: Test FAN_MARK_IGNORE with FAN_EVENT_ON_CHILD
+>   syscalls/fanotify10: Test FAN_MARK_IGNORE with FAN_ONDIR
+> 
+>  testcases/kernel/syscalls/fanotify/fanotify.h |  19 ++
+>  .../kernel/syscalls/fanotify/fanotify09.c     | 102 ++++++++--
+>  .../kernel/syscalls/fanotify/fanotify10.c     | 186 ++++++++++++++----
+>  .../kernel/syscalls/fanotify/fanotify14.c     |  42 +++-
+>  4 files changed, 290 insertions(+), 59 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
