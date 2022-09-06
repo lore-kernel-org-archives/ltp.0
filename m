@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EA29ECAAA1
-	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 09:55:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFEEAC38145
+	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 10:13:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 121EC3CA765
-	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 11:55:34 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 319D23CA911
+	for <ltp@archiver.kernel.org>; Tue,  6 Sep 2022 12:13:44 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 67A0D3C1B7E
- for <ltp@lists.linux.it>; Tue,  6 Sep 2022 11:55:24 +0200 (CEST)
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com
- [IPv6:2607:f8b0:4864:20::e2d])
+ by picard.linux.it (Postfix) with ESMTPS id 61F283C010E
+ for <ltp@lists.linux.it>; Tue,  6 Sep 2022 12:13:34 +0200 (CEST)
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com
+ [IPv6:2607:f8b0:4864:20::e2c])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D56606006ED
- for <ltp@lists.linux.it>; Tue,  6 Sep 2022 11:55:23 +0200 (CEST)
-Received: by mail-vs1-xe2d.google.com with SMTP id a129so953706vsc.0
- for <ltp@lists.linux.it>; Tue, 06 Sep 2022 02:55:23 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C5ECC200D59
+ for <ltp@lists.linux.it>; Tue,  6 Sep 2022 12:13:33 +0200 (CEST)
+Received: by mail-vs1-xe2c.google.com with SMTP id k2so11133832vsk.8
+ for <ltp@lists.linux.it>; Tue, 06 Sep 2022 03:13:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:from:to:cc:subject:date;
- bh=jhQ7XUANhAjwoVJ6KSFZPT16fT2Zsh0flkcYcZJa++M=;
- b=Ivff6eRL0MhMm0kUwx2XxK3eZauanNhr2IHu+x09xs21GcnLiR9SWNEkhKsZ/b1uzB
- P4vU8L+ZAuGEPKZbipp9MaQfogeXQ1ymnifTn7J01yF4jjROlsHFkwZ18FwD2ogxwKWr
- Fycvcc4B25Sz6vtf3LOEj/XJDqm4fWsvNSGSZww/XlHkcTjcEmmfDwBrc2Kpd4MpHXZl
- tQuHH7Dw7Gql1IvkLXG0fOnkgqIo5GH+U5YBN0GQNd3sXEbg7kgiNzcnPJnvt1olm+/A
- YpC3C0KIeEOVil2XlYmdWvBotnvd681QyxvJQbdwn+7IPg8cpzvlxgj/upcF9qZYe482
- z6lQ==
+ bh=XCUmrQBvbQACP412V62xMBlL0hLTcPSP+iHjqSgVtrw=;
+ b=BwmPryx1JvbWQ0brPtzgIwRdAJEa8nB1Q1lT4pk42WSGa/emhelpxZNwyDEH6XkjV9
+ w1SER3pMRBUjbB9VYsTR2Nv4acmcXN+uuxblqKUQmFq6s8rq9aMZsR0FNWe2Tut6jrRL
+ 5lXv5qi9i40CoDgW9Y4uuzfjaOzo0bVzSq1zdHDDw/tIsGs6RZV69h91K/Lr+Ppx4VTn
+ z+PPG0qyG1252HbNLjlCQi1tieklPzj3oFfYPBja0V05ZunKiDYWF0Oyck+Drbm6XpF8
+ +RbgKZe504j8FO65wDCPcegDVBSbqEY5WMXZr45xUDGnDcAD8n25emqEtf6OGcxESrE2
+ 2yRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=jhQ7XUANhAjwoVJ6KSFZPT16fT2Zsh0flkcYcZJa++M=;
- b=6Vz2oECG4dyskRc00+vDlGw9aNMWrmyUDEj2OWOlK9n1yArXAR2vmJJ7c/cYMAynD8
- h9TN5jjViEZk0OGTFldFEBo1hedTWpx4AGI1IfTRDiQHqpHdJ8fAinqBzQGufk2vT7QD
- 85RbhLwhg2iolKg9hiPCdk6zdl1xFiX7Dh0Agr/V9rZguHuKvmEUQPWWqNbnb1IsDJbv
- Iq1Lh3SVf+yV1RrCFK8tXVxrZ3a5Er93Uc9P2kmn+dDRUHTE+c5gMMLiM3TOoajPUpAA
- Y78I7GFiD4wlK+zMaVw06j/gMryY3sB+qldwnRpLA8K6vA1mpHvWrIdR+bf9TAO2op2z
- a8yA==
-X-Gm-Message-State: ACgBeo2zb8GN/fEwMH0B8oPLV3vgt1keZiQKo8ApR9nmcbIPcYAS0qQx
- ssHtbOgEuul7ShzrApt3BAOReth9HHapo5BMyNg=
-X-Google-Smtp-Source: AA6agR7pmVNJg9iAA4zSPPA9wVWAL8qWWzBA1a1kLj1HWK7tKNgxmgN21r/L9w7KxwEMI1Kzo8tgU2l+UcHyYSRwH+I=
-X-Received: by 2002:a67:a649:0:b0:390:88c5:6a91 with SMTP id
- r9-20020a67a649000000b0039088c56a91mr15921352vsh.3.1662458122682; Tue, 06 Sep
- 2022 02:55:22 -0700 (PDT)
+ bh=XCUmrQBvbQACP412V62xMBlL0hLTcPSP+iHjqSgVtrw=;
+ b=AXmgwNZtsB6j46PoyboYhq8kpSMAH9E2xrnKX3hS+7nuQZzSac2Wf6whHMCnzy6Wde
+ PMomuK/BGonI0OsnXydDZTZTmasf/K8vZsn12P1Z6N1ZUY+pZoRB4rtJj8GWpN0jpILi
+ zfIL9crTRCxeX7K5xq2n9TuHTKOiVCOcEySyb1c0k7RDPxUQxoytxLXY5q2MpjbvJHPe
+ zy+RvTMdqxyyfS/ZjnFl22J5XDa+5zHCCyD9pgfRrCozt9N5oGWM7I/u0njOkD/7WiDB
+ QRaunw4ztT3ouK7rGdFxByyZlQet3hPUlmOGxnNBNYxGH39Y+LULQJ3GFdQgn4zNccIY
+ 5lxw==
+X-Gm-Message-State: ACgBeo0I84MAWC0NgTcam/uHWd5OONHfipTL8jICrjIipUbaFsMgpmUJ
+ 9SX3QDBP5hRi7dSGQSg0D25QU0N6edXXER6tCArvcPrWALU=
+X-Google-Smtp-Source: AA6agR4A7l9k6YEMWSFWp/+NUNTOLrcclgYLYDTGMj3E8alzvqgccg7aO95u73pvm492srvy63TZ757POUZ9w0jAL4o=
+X-Received: by 2002:a67:d00f:0:b0:397:f237:98f3 with SMTP id
+ r15-20020a67d00f000000b00397f23798f3mr423827vsi.71.1662459212607; Tue, 06 Sep
+ 2022 03:13:32 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220906092615.15116-1-pvorel@suse.cz>
- <20220906092615.15116-3-pvorel@suse.cz>
-In-Reply-To: <20220906092615.15116-3-pvorel@suse.cz>
+ <20220906092615.15116-4-pvorel@suse.cz>
+In-Reply-To: <20220906092615.15116-4-pvorel@suse.cz>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 6 Sep 2022 12:55:11 +0300
-Message-ID: <CAOQ4uxjiAqFJajosfa5pkN-4=iDOWtiYFvNy7EU1Fd1=trRmMA@mail.gmail.com>
+Date: Tue, 6 Sep 2022 13:13:21 +0300
+Message-ID: <CAOQ4uxitPLeqeaydDbG6=4eDU8=6wfFaSiih0bFXj0_DRdeMnA@mail.gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] fanotify20: Simplify code
+Subject: Re: [LTP] [PATCH 3/3] fanotify14: Use TST_EXP_FD_ERRNO()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,49 +82,17 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 On Tue, Sep 6, 2022 at 12:26 PM Petr Vorel <pvorel@suse.cz> wrote:
 >
-> * replace do_test() content with TST_EXP_FD_ERRNO() macro
-> * rename variables (shorten, use LTP common names)
-> * remove tc->want_err (not needed)
-> * add macro FLAGS_DESC (stringify)
-> * don't print number of tests (not needed for just 2 tests)
+> That greatly simplifies the code.
 >
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
 Nice cleanup.
-You may add
+You may add:
 Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-however...
-
-> ---
->  .../kernel/syscalls/fanotify/fanotify20.c     | 81 +++++--------------
->  1 file changed, 19 insertions(+), 62 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> index de0fdb782..badc4c369 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
->   * Copyright (c) 2021 Google. All Rights Reserved.
-> + * Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
->   *
->   * Started by Matthew Bobrowski <repnop@google.com>
->   */
-> @@ -25,26 +26,21 @@
->  #include "fanotify.h"
->
->  #define MOUNT_PATH     "fs_mnt"
-> +#define FLAGS_DESC(x) .flags = x, .desc = #x
->
-> -static int fanotify_fd;
-> +static int fd;
->
-
-What is this change for?
-It makes the code less readable.
-fd is quite an unspecific name for a global variable.
+I don't think that this patch conflicts with the patch in my FAN_MARK_IGNORE
+series - if there are conflicts they should be trivial, so feel free to
+merge these cleanups either before or after merging my series.
 
 Thanks,
 Amir.
