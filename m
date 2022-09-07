@@ -4,68 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81B36C54EE9
-	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 08:26:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 266FAC6FA82
+	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 08:27:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 532193CACC7
-	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 10:26:22 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 551F43CA493
+	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 10:27:36 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 22C2A3CA493
- for <ltp@lists.linux.it>; Mon, 19 Sep 2022 10:26:11 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 3EF383C02C2
+ for <ltp@lists.linux.it>; Wed,  7 Sep 2022 11:00:22 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 222E6600869
- for <ltp@lists.linux.it>; Mon, 19 Sep 2022 10:26:10 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 58A291F9E3;
- Mon, 19 Sep 2022 08:26:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663575970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0VBEullX66gim8BXlwf6kUfckyjqc0Ydh3YSstLi1K0=;
- b=x58pMRONmXHbSuaH3oVec+i/uFtQIcA+k5a3FvefBnw7Hoj+H9HRxg0E5qY4BEgMB4JJVk
- Xi7nRVedt+KMTL4EehJf5DU8Xqip8Gv5mLclZaKlri3ui9fNr22PHP9qM/NqPiumsJzfDc
- yzdBTkS1s9buSu1rmkWZ4Pusre9pmJA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663575970;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0VBEullX66gim8BXlwf6kUfckyjqc0Ydh3YSstLi1K0=;
- b=pfZwj9CICIGfP9Puy2uELY3myBplVAnR90kKRxVAdPGRj74bDjCrixfNEmT+nI4TFq/OZj
- q+3T+6/3uBUHbGDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4509113ABD;
- Mon, 19 Sep 2022 08:26:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id B6DoD6InKGP0OQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 19 Sep 2022 08:26:10 +0000
-Date: Mon, 19 Sep 2022 10:28:06 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <YygoFpOWW4Cuh2BB@yuki>
-References: <010001834b528ae5-11a8d4c7-4e72-4f8d-af66-e9ec2a864017-000000@email.amazonses.com>
- <YyfeaeMsvACB5dcf@pevik>
- <CAEemH2ddod62+jkLjvxbNAwPxF8DrVGcyH3fKEJfkLrGaLZJng@mail.gmail.com>
- <CAEemH2cLKhrE5SVjfd5Got3adf9+C0dJeuP-qY_r98fDUr2gMQ@mail.gmail.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 27674601151
+ for <ltp@lists.linux.it>; Wed,  7 Sep 2022 11:00:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1662541221; x=1694077221;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=s6bddafwr0HDTF7381THv/L3QigOSTqVRVkiAB9do7w=;
+ b=XeA/eAVTyyIkhQvZtLdIpQGoK6nUll8uHUYmUj4AKavTO0zl1Ezd0avA
+ Po74Sd5XQqrY0knytXYr3/a6GhipfIBcvbIfM/KFh0JM+5+aAxWVaOusg
+ dw3aWhAzzXwh/n9xTslU/mu1eyKI7oysMnafHb8gLDPZ6LVh4rx0PH44k
+ B9dcaum83vmTpzSXUpS9eGfw4kTCnMIEeXy4G0wMJ4HQh8k/bByIDT/Dc
+ rwZGtdg9fqDHvHWB8BkzL/00RzJ1LZWgmYmWio2WwpJud/PPpdrXAzNBk
+ /YYCBEgCEqynIg3rHo645t5nbXbogilfpKLSVKW3J075YFRtYKajK8fhQ Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10462"; a="323004561"
+X-IronPort-AV: E=Sophos;i="5.93,296,1654585200"; d="scan'208";a="323004561"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Sep 2022 02:00:17 -0700
+X-IronPort-AV: E=Sophos;i="5.93,296,1654585200"; d="scan'208";a="676090073"
+Received: from jiebi-mobl1.ccr.corp.intel.com (HELO
+ jiezho4x-mobl1.ccr.corp.intel.com) ([10.255.30.104])
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Sep 2022 02:00:16 -0700
+From: Jie2x Zhou <jie2x.zhou@intel.com>
+To: jie2x.zhou@intel.com
+Date: Wed,  7 Sep 2022 16:58:41 +0800
+Message-Id: <20220907085841.59171-1-jie2x.zhou@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2cLKhrE5SVjfd5Got3adf9+C0dJeuP-qY_r98fDUr2gMQ@mail.gmail.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [REGRESSION] lkft ltp for cea142b
+X-Mailman-Approved-At: Mon, 19 Sep 2022 10:27:25 +0200
+Subject: [LTP] run "./runltp -f ltp-aiodio.part3" failed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,34 +64,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Martin Doucha <martin.doucha@suse.com>, lkft@linaro.org,
- lkft-triage@lists.linaro.org, LTP List <ltp@lists.linux.it>
+Cc: Philip Li <philip.li@intel.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > tst_pollute_memory() consume time is proportional to the amount of
-> > free RAM, it is hard to find one fixed value of max_runtime to fit all test
-> > platforms.
-> >
-> > From my experience, if you limited this test only run with small
-> > machine (e.g. RAM <= 32G), that performs well with whatever
-> > bare metal or VM, no timeout ever.
-> >
-> 
-> Btw, we did that by setting a test filter before LTP running, also we could
-> add a field .max_mem_avail to tst_test struct for achieving that, but not
-> sure if it's worth doing that at this moment.
+hi,
 
-The proper solution will be adding a separate timeouts for setup/cleanup
-and limiting the setup runtime to something sensible, but that is
-something for the next development cycle.
+The test error is caused by "No such file or directory".
+The test command is "./runltp -f ltp-aiodio.part3"
+The call sequence is following:
+runltp -> ltp-pan -> ltp-aiodio.part3
+And I find in no place create "$TMPDIR/aiodio.$$" directory.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+output:
+<<<test_start>>>
+tag=FSX034 stime=1662538554
+cmdline="fsx-linux -l 500000 -r 4096 -N 10000 $TMPDIR/aiodio.$$/junkfile"
+contacts=""
+analysis=exit
+<<<test_output>>>
+/tmp/ltp-qFoktcygy7/aiodio.435919/junkfile: No such file or directory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=91 corefile=no
+cutime=0 cstime=1
+<<<test_end>>>
+
+After I change junkfile to exist directory, the test is OK.
+diff ltp-aiodio.part3_org ltp-aiodio.part3
+4,5c4,5
+< FSX032 fsx-linux -l 500000 -r 4096 -t 4096 -w 4096 -N 10000 $TMPDIR/aiodio.$$/junkfile
+< FSX033 fsx-linux -l 500000 -r 4096 -t 2048 -w 2048 -N 10000 $TMPDIR/aiodio.$$/junkfile
+---
+> FSX032 fsx-linux -l 500000 -r 4096 -t 4096 -w 4096 -N 10000 $TMPDIR/junkfile.$$
+> FSX033 fsx-linux -l 500000 -r 4096 -t 2048 -w 2048 -N 10000 $TMPDIR/junkfile.$$
+
+test output:
+tag=FSX032 stime=1662538553
+cmdline="fsx-linux -l 500000 -r 4096 -t 4096 -w 4096 -N 10000 $TMPDIR/junkfile.$$"
+contacts=""
+analysis=exit
+<<<test_output>>>
+skipping zero size read
+truncating to largest ever: 0x2c000
+truncating to largest ever: 0x55000
+truncating to largest ever: 0x5e000
+truncating to largest ever: 0x74000
+truncating to largest ever: 0x75000
+truncating to largest ever: 0x79000
+skipping zero size read
+skipping zero size read
+skipping zero size read
+skipping zero size read
+skipping zero size read
+truncating to largest ever: 0x7a000
+skipping zero size read
+skipping zero size read
+skipping zero size read
+skipping zero size read
+All operations completed A-OK!
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=17 cstime=10
+<<<test_end>>>
+
+best regards,
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
