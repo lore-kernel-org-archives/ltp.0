@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1490C38145
-	for <ltp@archiver.kernel.org>; Wed,  7 Sep 2022 07:18:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 882EDECAAD3
+	for <ltp@archiver.kernel.org>; Wed,  7 Sep 2022 07:24:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F40AB3CA97F
-	for <ltp@archiver.kernel.org>; Wed,  7 Sep 2022 09:18:04 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 08DE63C010A
+	for <ltp@archiver.kernel.org>; Wed,  7 Sep 2022 09:24:44 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 71EBF3CA8F5
- for <ltp@lists.linux.it>; Wed,  7 Sep 2022 09:17:56 +0200 (CEST)
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com
- [IPv6:2607:f8b0:4864:20::733])
+ by picard.linux.it (Postfix) with ESMTPS id 7D2C93C0475
+ for <ltp@lists.linux.it>; Wed,  7 Sep 2022 09:24:29 +0200 (CEST)
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com
+ [IPv6:2607:f8b0:4864:20::72e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7C4391000B52
- for <ltp@lists.linux.it>; Wed,  7 Sep 2022 09:17:55 +0200 (CEST)
-Received: by mail-qk1-x733.google.com with SMTP id w18so9855689qki.8
- for <ltp@lists.linux.it>; Wed, 07 Sep 2022 00:17:55 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C9D8460090C
+ for <ltp@lists.linux.it>; Wed,  7 Sep 2022 09:24:28 +0200 (CEST)
+Received: by mail-qk1-x72e.google.com with SMTP id h27so9873175qkk.9
+ for <ltp@lists.linux.it>; Wed, 07 Sep 2022 00:24:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:from:to:cc:subject:date;
- bh=+H9/81xqq9ukWv90rh1THYxj3WBOFtyxQWRIev+F02c=;
- b=SzbjM0JDHCbCBNGQwN2vjoasU+L43MeZZV0UmuGBZu66ap16f1DSqh4FgMDdhczR2C
- 18PzyjS+uo09rg/4Fado/4ap1itM0+cCPzZ9OwbLlLaFPtesc990hL0MyNc1fg5GzMrv
- KuhCbOMXjal2tSfBZe4vDQOrNMtoCtsldzFOv9aYVNqOCo8mwSt5wCJcvUfwvIvvpaOn
- v+epH2X12NDqWZxnmsnxD4UiMcJh4DUMLxDvwK/AbbLrbyXT8t/EoNenj7H7WzmKoVo4
- z2A5dhQG8yGM9AZxcSMfNWp95acwDxCXd85dMn/uKBwyw/VRZqh9kt3+PdlAA3ejtADT
- WrGg==
+ bh=ftPAbVGMDGzvjhyFpXMVMtkRUNCc8ryag6urQ+3KelI=;
+ b=BAZ5aM/rA4YqhxReMFTf6baLsgKZeCVWv2muTDtVLQIzl66x77seYrAv5WcW54Y8dS
+ e2TCMd5EmwS66kLhdk3IPS1lne3TeGV+UTeE0hYkzt2DYCEdTL+9zwc7ZW9cdGbcWz+C
+ TMZsK0weE1/Ri05DdD1r6mi4qa9P1s25SLXwfU8yzE8VEPirRiXMS3Bd2whZWyq1gE2L
+ 6nkr3ZUSpc6ncbEhdjvTU5lK/Ho8CpvVPt6tR+d9i8n8DwHqIv5F4ekj6xAA+JLB/hFo
+ ENp0MlCFwKQvlCZfjWRqgHTBTl9dXoPNkK2zcqqUZA6vVnjIUJqkqgjoN3dsf3/4LBat
+ qHqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
- bh=+H9/81xqq9ukWv90rh1THYxj3WBOFtyxQWRIev+F02c=;
- b=YjYq3CKCf2xe0lU2LqWw/4QHg1gAn+qw4oFPRmFFT0IYvdKscUbdFFk9Y/bX6uXvf/
- 6QWC7Xkb1InfbWUkZPkFoqQR3ssyPcJTPrrVhqjrmhttjx3pZKTjj0ysM4t9JMeYo7OD
- 3ElGkUgZF7RjMIfh1m3CaTI5ynT0yTKAGwRGwfdgKGYMU5GbfFj8iznlt166BaLudIsW
- rhRtWEGHusiJG1d85uaZA45IpPDhBPSsgdBkmBLjUelYj9/2XZuu6RZqkhj5aybAe8Kh
- 6X/vJ7wj3mBQo1A1QXoEHG26vSfEXcjJTKpWYo3pQ/9VqJOzIN8UG0WokLvDdD1D4DnV
- rruQ==
-X-Gm-Message-State: ACgBeo0CAPn0x0kKrcnNZEN2rlG+fVshbZ3YumL8xDEBxyIS78H/c/ch
- ILbpucNvKZxl87veWZNxUZ3zihJvP2Oegg==
-X-Google-Smtp-Source: AA6agR4++zk0dtpmyLmcbv20XyDrwZq/nY/xvAfrRd70kULiJPuPsxE1uzfJJH8KZwh0M6h8DdmSKw==
-X-Received: by 2002:a37:912:0:b0:6bc:8244:b073 with SMTP id
- 18-20020a370912000000b006bc8244b073mr1683648qkj.37.1662535074113; 
- Wed, 07 Sep 2022 00:17:54 -0700 (PDT)
+ bh=ftPAbVGMDGzvjhyFpXMVMtkRUNCc8ryag6urQ+3KelI=;
+ b=vIBjQK774fuF8U2zRulg9SK0hVTJw0V1yE9ONfsXxpgaFj6iHYDLIP4+IqOk26Tb0D
+ +Hizv2YJaeAPuP7MSfhUAzWAUPW2b4Dw2vCN1CJgXTDWKUTSyTMXhG17dII0mez1c6bt
+ MZoKSWoBhl40/2gAf3ZOoIzc5tDguhJh3u3bnp/T2kWrCGmQJwh1FTVbxFdldwEgyxev
+ HeB9un8Sw30C0iK7ArA0RXCY8rdHA5Rhnldo7HeL4ebd1aW6DogC+0nyDPDVAANnDUpP
+ U8SwuESgWYtAJGEzlG+X0X1hM1Dv7T5jkz0XgphQmYFToZEwPj86POZ1zN2DZlE29krQ
+ OT6Q==
+X-Gm-Message-State: ACgBeo1tRt19wMtToXx79Bbmen3CrpSpAw4oe79a55t9TRL4y77Bmrck
+ gEbwvqSccXmkRxTPyqFGPGAOhg==
+X-Google-Smtp-Source: AA6agR6qOnMuVhzcfG1KRLQyK32m8tyU+zKamtf0xh1mLbRkqUH5209kUrluwxXECEdmt3a58cWGDg==
+X-Received: by 2002:a05:620a:2b04:b0:6ba:4589:1cd2 with SMTP id
+ do4-20020a05620a2b0400b006ba45891cd2mr1742361qkb.612.1662535467531; 
+ Wed, 07 Sep 2022 00:24:27 -0700 (PDT)
 Received: from google.com (123.178.145.34.bc.googleusercontent.com.
  [34.145.178.123]) by smtp.gmail.com with ESMTPSA id
- k6-20020a05620a414600b006bb78d095c5sm13983076qko.79.2022.09.07.00.17.53
+ w8-20020a05620a424800b006be8713f742sm13922088qko.38.2022.09.07.00.24.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 07 Sep 2022 00:17:53 -0700 (PDT)
-Date: Wed, 7 Sep 2022 07:17:50 +0000
+ Wed, 07 Sep 2022 00:24:27 -0700 (PDT)
+Date: Wed, 7 Sep 2022 07:24:23 +0000
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YxhFnmERyC1V381+@google.com>
+Message-ID: <YxhHJ9HaADTWzPpY@google.com>
 References: <20220906092615.15116-1-pvorel@suse.cz>
- <20220906092615.15116-4-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220906092615.15116-4-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20220906092615.15116-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] fanotify14: Use TST_EXP_FD_ERRNO()
+Subject: Re: [LTP] [PATCH 0/3] fanotify{14,20}: cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,182 +85,25 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Sep 06, 2022 at 11:26:15AM +0200, Petr Vorel wrote:
-> That greatly simplifies the code.
-
-This looks OK to me, nice work!
-
-Reviewed-by: Matthew Bobrowski <repnop@google.com>
-
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  .../kernel/syscalls/fanotify/fanotify14.c     | 118 +++++-------------
->  1 file changed, 33 insertions(+), 85 deletions(-)
+On Tue, Sep 06, 2022 at 11:26:12AM +0200, Petr Vorel wrote:
+> Hi,
 > 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify14.c b/testcases/kernel/syscalls/fanotify/fanotify14.c
-> index aa4db586e..47d013c9f 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify14.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify14.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (c) 2018 Matthew Bobrowski. All Rights Reserved.
-> + * Copyright (c) Linux Test Project, 2020-2022
->   *
->   * Started by Matthew Bobrowski <mbobrowski@mbobrowski.org>
->   */
-> @@ -48,6 +49,7 @@ static int fan_report_target_fid_unsupported;
->  static struct test_case_t {
->  	unsigned int init_flags;
->  	unsigned int mark_flags;
-> +	/* zero mask expects to fail on fanotify_init() */
->  	unsigned long long mask;
->  	int expected_errno;
->  } test_cases[] = {
-> @@ -111,7 +113,6 @@ static struct test_case_t {
->  
->  static void do_test(unsigned int number)
->  {
-> -	int ret;
->  	struct test_case_t *tc = &test_cases[number];
->  
->  	if (fan_report_target_fid_unsupported && tc->init_flags & FAN_REPORT_TARGET_FID) {
-> @@ -120,101 +121,48 @@ static void do_test(unsigned int number)
->  		return;
->  	}
->  
-> -	fanotify_fd = fanotify_init(tc->init_flags, O_RDONLY);
-> -	if (fanotify_fd < 0) {
-> -		if (errno == tc->expected_errno) {
-> -			tst_res(TPASS,
-> -				"fanotify_fd=%d, fanotify_init(%x, O_RDONLY) "
-> -				"failed with error %d as expected",
-> -				fanotify_fd,
-> -				tc->init_flags, tc->expected_errno);
-> -			return;
-> -		}
-> -		tst_brk(TBROK | TERRNO,
-> -			"fanotify_fd=%d, fanotify_init(%x, O_RDONLY) failed",
-> -			fanotify_fd,
-> -			tc->init_flags);
-> -	}
-> +	TST_EXP_FD_ERRNO(fanotify_fd = fanotify_init(tc->init_flags, O_RDONLY),
-> +			 !tc->mask && tc->expected_errno ? tc->expected_errno : 0);
->  
-> -	/*
-> -	 * A test case with a mask set to zero indicate that they've been
-> -	 * specifically designed to test and fail on the fanotify_init()
-> -	 * system call.
-> -	 */
-> -	if (tc->mask == 0) {
-> -		tst_res(TFAIL,
-> -			"fanotify_fd=%d fanotify_init(%x, O_RDONLY) "
-> -			"unexpectedly succeeded when tests with mask 0 are "
-> -			"expected to fail when calling fanotify_init()",
-> -			fanotify_fd,
-> -			tc->init_flags);
-> +	if (fanotify_fd < 0)
-> +		return;
-> +
-> +	if (!tc->mask)
->  		goto out;
-> -	}
->  
->  	/* Set mark on non-dir only when expecting error ENOTDIR */
->  	const char *path = tc->expected_errno == ENOTDIR ? FILE1 : MNTPOINT;
->  
-> -	ret = fanotify_mark(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
-> -				tc->mask, AT_FDCWD, path);
-> -	if (ret < 0) {
-> -		if (errno == tc->expected_errno) {
-> -			tst_res(TPASS,
-> -				"ret=%d, fanotify_mark(%d, FAN_MARK_ADD | %x, "
-> -				"%llx, AT_FDCWD, %s) failed with error %d "
-> -				"as expected",
-> -				ret,
-> -				fanotify_fd,
-> -				tc->mark_flags,
-> -				tc->mask,
-> -				path, tc->expected_errno);
-> -			/*
-> -			 * ENOTDIR are errors for events/flags not allowed on a non-dir inode.
-> -			 * Try to set an inode mark on a directory and it should succeed.
-> -			 * Try to set directory events in filesystem mark mask on non-dir
-> -			 * and it should succeed.
-> -			 */
-> -			if (tc->expected_errno == ENOTDIR) {
-> -				SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
-> -						   tc->mask, AT_FDCWD, MNTPOINT);
-> -				tst_res(TPASS,
-> -					"Adding an inode mark on directory did not fail with "
-> -					"ENOTDIR error as on non-dir inode");
-> -			}
-> -			if (tc->expected_errno == ENOTDIR &&
-> -			    !(tc->mark_flags & FAN_MARK_ONLYDIR)) {
-> -				SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | tc->mark_flags |
-> -						   FAN_MARK_FILESYSTEM, tc->mask,
-> -						   AT_FDCWD, FILE1);
-> -				tst_res(TPASS,
-> -					"Adding a filesystem mark on non-dir did not fail with "
-> -					"ENOTDIR error as with an inode mark");
-> -			}
-> +	TST_EXP_FD_ERRNO(fanotify_mark(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
-> +								   tc->mask, AT_FDCWD, path),
-> +					 tc->expected_errno);
->  
-> -			goto out;
-> +	/*
-> +	 * ENOTDIR are errors for events/flags not allowed on a non-dir inode.
-> +	 * Try to set an inode mark on a directory and it should succeed.
-> +	 * Try to set directory events in filesystem mark mask on non-dir
-> +	 * and it should succeed.
-> +	 */
-> +	if (TST_PASS && tc->expected_errno == ENOTDIR) {
-> +		SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
-> +				   tc->mask, AT_FDCWD, MNTPOINT);
-> +		tst_res(TPASS,
-> +			"Adding an inode mark on directory did not fail with "
-> +			"ENOTDIR error as on non-dir inode");
-> +
-> +		if (!(tc->mark_flags & FAN_MARK_ONLYDIR)) {
-> +			SAFE_FANOTIFY_MARK(fanotify_fd, FAN_MARK_ADD | tc->mark_flags |
-> +					   FAN_MARK_FILESYSTEM, tc->mask,
-> +					   AT_FDCWD, FILE1);
-> +			tst_res(TPASS,
-> +				"Adding a filesystem mark on non-dir did not fail with "
-> +				"ENOTDIR error as with an inode mark");
->  		}
-> -		tst_brk(TBROK | TERRNO,
-> -			"ret=%d, fanotify_mark(%d, FAN_MARK_ADD | %x, %llx, "
-> -			"AT_FDCWD, %s) failed",
-> -			ret,
-> -			fanotify_fd,
-> -			tc->mark_flags,
-> -			tc->mask,
-> -			FILE1);
->  	}
->  
-> -	tst_res(TFAIL,
-> -		"fanotify_fd=%d, ret=%d, fanotify_init(%x, O_RDONLY) and "
-> -		"fanotify_mark(%d, FAN_MARK_ADD | %x, %llx, AT_FDCWD, %s) did "
-> -		"not return any errors as expected",
-> -		fanotify_fd,
-> -		ret,
-> -		tc->init_flags,
-> -		fanotify_fd,
-> -		tc->mark_flags,
-> -		tc->mask,
-> -		FILE1);
->  out:
-> -	SAFE_CLOSE(fanotify_fd);
-> +	if (fanotify_fd > 0)
-> +		SAFE_CLOSE(fanotify_fd);
->  }
->  
->  static void do_setup(void)
-> -- 
-> 2.37.3
-> 
+> just an example how to further cleanup fanotify tests by using test macros
+> from include/tst_test_macros.h. This can wait till Amir's FAN_MARK_IGNORE
+> patchset [1] is merged (unless there is going to be v2).
+>
+> fanotify20 is an example what I'd address in the code, fanotify14 just
+> uses newly added TST_EXP_FD_ERRNO() (more cleanup here and actually in
+> other tests could be done).
+
+So, are you suggesting that we have a TODO list? ;)
+
+> I also admit code in include/tst_test_macros.h is a bit hard to read due
+> being macro. We should probably add some documentation to it.
+
+Documentation is always nice. A lot of time could be saved as a result
+of not having to decipher a given macro.
+
 /M
 
 -- 
