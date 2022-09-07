@@ -4,44 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38F9EECAAD3
-	for <ltp@archiver.kernel.org>; Wed,  7 Sep 2022 05:39:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85EBFECAAD3
+	for <ltp@archiver.kernel.org>; Wed,  7 Sep 2022 07:05:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8E9413CA968
-	for <ltp@archiver.kernel.org>; Wed,  7 Sep 2022 07:39:14 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 134233CA9CA
+	for <ltp@archiver.kernel.org>; Wed,  7 Sep 2022 09:05:49 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CF7A43C88EB
- for <ltp@lists.linux.it>; Wed,  7 Sep 2022 07:39:04 +0200 (CEST)
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
- [60.248.80.70])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 90EE63C0475
+ for <ltp@lists.linux.it>; Wed,  7 Sep 2022 09:05:39 +0200 (CEST)
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com
+ [IPv6:2607:f8b0:4864:20::734])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F236D1000A16
- for <ltp@lists.linux.it>; Wed,  7 Sep 2022 07:39:00 +0200 (CEST)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
- by Atcsqr.andestech.com with ESMTP id 2875cp6c002031;
- Wed, 7 Sep 2022 13:38:51 +0800 (+08)
- (envelope-from randolph@andestech.com)
-Received: from atcfdc88.andestech.com (10.0.15.120) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0;
- Wed, 7 Sep 2022 13:38:49 +0800
-From: Randolph Lin <randolph@andestech.com>
-To: <ltp@lists.linux.it>, <rpalethorpe@suse.de>
-Date: Wed, 7 Sep 2022 13:38:41 +0800
-Message-ID: <20220907053841.7923-1-randolph@andestech.com>
-X-Mailer: git-send-email 2.34.1.390.g2ae0a9cb82
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0A9261000A5B
+ for <ltp@lists.linux.it>; Wed,  7 Sep 2022 09:05:39 +0200 (CEST)
+Received: by mail-qk1-x734.google.com with SMTP id w18so9842009qki.8
+ for <ltp@lists.linux.it>; Wed, 07 Sep 2022 00:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date;
+ bh=rZKDUM1hFHWs1yJgr80UlpWrB098BSurmECVLIlNn60=;
+ b=M9RWosx871Ja6nM7aDUHgVBOce7pcLU3gX+N6BFA+iJJNu/2SlU46+9WRoMnGWhUiI
+ k7XmfSeI0uIV4JiLRCy+MLd8Ah9nZ2+bm6FXVKWHxy/N/rAJfpXgfn6UP5TAb2HfrLbn
+ wcrwtG6kmsPH0lm4YJAU2mOewmTxASIaLzodKSNE4S8gqWWLw4RMq2ZZOYyBfxjuL5/N
+ DH/fmK3UocFBncw03Qw6icx5Z/P6arflQLN3KSQ/92uMO5STbNLqa0jMk6GOWI3w7Zbm
+ UquSVgk0XPp8pCX3VoAUIzwl7FLAhwN0IY3ABgCYGH2YEDH5/45CgyoK7MyV79ulV3tp
+ 2ZlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+ bh=rZKDUM1hFHWs1yJgr80UlpWrB098BSurmECVLIlNn60=;
+ b=qWvaME49q0gCRIvyIR7F8WIEc5sgFQuuRGt8OgHZhq8YsWDl+hhksaFOP6jLvYdHwh
+ mlxNiUMi8TvZv7aKM/6wOMKF8aHs7uoF5UyXIMvtNIam17d+3StPlTOhWrT/7w0eSrqr
+ a3PzCO5d05jKF95Ru30cmPoN4M5ynG66nALaaVRmmbdzd/0+C048HCT11cbs6O/CUwu4
+ DvRU3lU3L2LQQB7QhbNCIA/VAtoYMYZFd1ffWCBapkgZNOa85aQKfaK+KCryzsZpG43y
+ RAz8OtEaw6MG3hDY15T6kYaTEmuxyQlVoMU5ktq+nnZsvwt5GGWoIiAvyYGni0ygS949
+ dVEg==
+X-Gm-Message-State: ACgBeo0R/P9tdum+FnWFjQbJgqx/kKykplwBwSLlvCGqSKRg8zwNBjS+
+ oUFo8l1HSzFCUSS6W1sHAQ+NjQ==
+X-Google-Smtp-Source: AA6agR49MawU/4O+X6OCNaeefe15DWpFgdQB40CpPqUEOazl7SHZYN1E9vsNwQDx6ARDgPwp5+TRlQ==
+X-Received: by 2002:a05:620a:1357:b0:6ba:e661:f91a with SMTP id
+ c23-20020a05620a135700b006bae661f91amr1646747qkl.744.1662534337637; 
+ Wed, 07 Sep 2022 00:05:37 -0700 (PDT)
+Received: from google.com (123.178.145.34.bc.googleusercontent.com.
+ [34.145.178.123]) by smtp.gmail.com with ESMTPSA id
+ hf9-20020a05622a608900b00342fb07944fsm10908862qtb.82.2022.09.07.00.05.37
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 07 Sep 2022 00:05:37 -0700 (PDT)
+Date: Wed, 7 Sep 2022 07:05:33 +0000
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <YxhCvWE5AaO/hve2@google.com>
+References: <20220906092615.15116-1-pvorel@suse.cz>
+ <20220906092615.15116-3-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Originating-IP: [10.0.15.120]
-X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 2875cp6c002031
+Content-Disposition: inline
+In-Reply-To: <20220906092615.15116-3-pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls: Fix tst_res() format string for 64-bit
- offset
+Subject: Re: [LTP] [PATCH 2/3] fanotify20: Simplify code
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -53,141 +78,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Mina Hui-Min Chou <minachou@andestech.com>, kester.tw@gmail.com,
- alankao@andestech.com
+From: Matthew Bobrowski via ltp <ltp@lists.linux.it>
+Reply-To: Matthew Bobrowski <repnop@google.com>
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Mina Hui-Min Chou <minachou@andestech.com>
+On Tue, Sep 06, 2022 at 11:26:14AM +0200, Petr Vorel wrote:
+> * replace do_test() content with TST_EXP_FD_ERRNO() macro
+> * rename variables (shorten, use LTP common names)
+> * remove tc->want_err (not needed)
+> * add macro FLAGS_DESC (stringify)
+> * don't print number of tests (not needed for just 2 tests)
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-When compiling as 32-bit with _FILE_OFFSET_BITS=64, the format string
-needs to be specified as 64-bit long (%lld).
-Fix format string for type block_size.
+Awesome simplification!
 
-ref:
-https://github.com/linux-test-project/ltp/commit/98e25434db561e69624bc34b0fab456ca2e501ea
+Reviewed-by: Matthew Bobrowski <repnop@google.com>
 
-Co-developed-by: Randolph <randolph@andestech.com>
-Signed-off-by: Mina <minachou@andestech.com>
----
- testcases/kernel/syscalls/lseek/lseek01.c       | 8 ++++----
- testcases/kernel/syscalls/lseek/lseek07.c       | 8 ++++----
- testcases/kernel/syscalls/lseek/lseek11.c       | 6 +++---
- testcases/kernel/syscalls/sendfile/sendfile05.c | 2 +-
- 4 files changed, 12 insertions(+), 12 deletions(-)
+> ---
+>  .../kernel/syscalls/fanotify/fanotify20.c     | 81 +++++--------------
+>  1 file changed, 19 insertions(+), 62 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify20.c b/testcases/kernel/syscalls/fanotify/fanotify20.c
+> index de0fdb782..badc4c369 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify20.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify20.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) 2021 Google. All Rights Reserved.
+> + * Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
+>   *
+>   * Started by Matthew Bobrowski <repnop@google.com>
+>   */
+> @@ -25,26 +26,21 @@
+>  #include "fanotify.h"
+>  
+>  #define MOUNT_PATH	"fs_mnt"
+> +#define FLAGS_DESC(x) .flags = x, .desc = #x
 
-diff --git a/testcases/kernel/syscalls/lseek/lseek01.c b/testcases/kernel/syscalls/lseek/lseek01.c
-index 22d9fbfd7..db973d7c4 100644
---- a/testcases/kernel/syscalls/lseek/lseek01.c
-+++ b/testcases/kernel/syscalls/lseek/lseek01.c
-@@ -46,13 +46,13 @@ static void verify_lseek(unsigned int n)
- 
- 	TEST(lseek(fd, tc->off, tc->whence));
- 	if (TST_RET == (off_t) -1) {
--		tst_res(TFAIL | TTERRNO, "lseek(%s, %ld, %s) failed", TFILE,
-+		tst_res(TFAIL | TTERRNO, "lseek(%s, %lld, %s) failed", TFILE,
- 			tc->off, tc->wname);
- 		return;
- 	}
- 
- 	if (TST_RET != tc->exp_off) {
--		tst_res(TFAIL, "lseek(%s, %ld, %s) returned %ld, expected %ld",
-+		tst_res(TFAIL, "lseek(%s, %lld, %s) returned %ld, expected %lld",
- 			TFILE, tc->off, tc->wname, TST_RET, tc->exp_off);
- 		return;
- 	}
-@@ -60,10 +60,10 @@ static void verify_lseek(unsigned int n)
- 	SAFE_READ(1, fd, read_buf, tc->exp_size);
- 
- 	if (tc->exp_data && strcmp(read_buf, tc->exp_data)) {
--		tst_res(TFAIL, "lseek(%s, %ld, %s) read incorrect data",
-+		tst_res(TFAIL, "lseek(%s, %lld, %s) read incorrect data",
- 			TFILE, tc->off, tc->wname);
- 	} else {
--		tst_res(TPASS, "lseek(%s, %ld, %s) read correct data",
-+		tst_res(TPASS, "lseek(%s, %lld, %s) read correct data",
- 			TFILE, tc->off, tc->wname);
- 	}
- }
-diff --git a/testcases/kernel/syscalls/lseek/lseek07.c b/testcases/kernel/syscalls/lseek/lseek07.c
-index ae6f48f37..e35d5c772 100644
---- a/testcases/kernel/syscalls/lseek/lseek07.c
-+++ b/testcases/kernel/syscalls/lseek/lseek07.c
-@@ -43,13 +43,13 @@ static void verify_lseek(unsigned int n)
- 
- 	TEST(lseek(*tc->fd, tc->off, SEEK_SET));
- 	if (TST_RET == (off_t) -1) {
--		tst_res(TFAIL | TTERRNO, "lseek(%s, %ld, SEEK_SET) failed",
-+		tst_res(TFAIL | TTERRNO, "lseek(%s, %lld, SEEK_SET) failed",
- 			tc->fname, tc->off);
- 		return;
- 	}
- 
- 	if (TST_RET != tc->exp_off) {
--		tst_res(TFAIL, "lseek(%s, %ld, SEEK_SET) returned %ld, expected %ld",
-+		tst_res(TFAIL, "lseek(%s, %lld, SEEK_SET) returned %ld, expected %lld",
- 			tc->fname, tc->off, TST_RET, tc->exp_off);
- 		return;
- 	}
-@@ -63,10 +63,10 @@ static void verify_lseek(unsigned int n)
- 	SAFE_READ(1, *tc->fd, read_buf, tc->exp_size);
- 
- 	if (strcmp(read_buf, tc->exp_data)) {
--		tst_res(TFAIL, "lseek(%s, %ld, SEEK_SET) wrote incorrect data %s",
-+		tst_res(TFAIL, "lseek(%s, %lld, SEEK_SET) wrote incorrect data %s",
- 			tc->fname, tc->off, read_buf);
- 	} else {
--		tst_res(TPASS, "lseek(%s, %ld, SEEK_SET) wrote correct data %s",
-+		tst_res(TPASS, "lseek(%s, %lld, SEEK_SET) wrote correct data %s",
- 			tc->fname, tc->off, read_buf);
- 	}
- }
-diff --git a/testcases/kernel/syscalls/lseek/lseek11.c b/testcases/kernel/syscalls/lseek/lseek11.c
-index 14435f617..1292ae165 100644
---- a/testcases/kernel/syscalls/lseek/lseek11.c
-+++ b/testcases/kernel/syscalls/lseek/lseek11.c
-@@ -159,7 +159,7 @@ static void setup(void)
- 	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0666);
- 
- 	get_blocksize();
--	tst_res(TINFO, "The block size is %lu", block_size);
-+	tst_res(TINFO, "The block size is %d", block_size);
- 
- 	/*
- 	 * truncate to the expected file size directly, to keep away the effect
-@@ -202,12 +202,12 @@ static void test_lseek(unsigned int n)
- 
- 	if (rc != 0) {
- 		tst_res(TFAIL,
--		        "The %uth test failed: %s from startblock %ld offset %ld, expect \'%s\' return \'%s\'",
-+		        "The %uth test failed: %s from startblock %lld offset %lld, expect \'%s\' return \'%s\'",
- 		        n, (tp->whence == SEEK_DATA) ? "SEEK_DATA" : "SEEK_HOLE",
- 		        tp->startblock, tp->offset, tp->data ? tp->data : "", buf);
- 	} else {
- 		tst_res(TPASS,
--		        "The %uth test passed: %s from startblock %ld offset %ld",
-+		        "The %uth test passed: %s from startblock %lld offset %lld",
- 		        n, (tp->whence == SEEK_DATA) ? "SEEK_DATA" : "SEEK_HOLE",
- 		        tp->startblock, tp->offset);
- 	}
-diff --git a/testcases/kernel/syscalls/sendfile/sendfile05.c b/testcases/kernel/syscalls/sendfile/sendfile05.c
-index e271a47d4..1b1dd8f00 100644
---- a/testcases/kernel/syscalls/sendfile/sendfile05.c
-+++ b/testcases/kernel/syscalls/sendfile/sendfile05.c
-@@ -39,7 +39,7 @@ static void run(void)
- 	off_t offset = -1;
- 
- 	TST_EXP_FAIL(sendfile(out_fd, in_fd, &offset, 1), EINVAL,
--		     "sendfile(out, in, &offset, ..) with offset=%ld", offset);
-+		     "sendfile(out, in, &offset, ..) with offset=%lld", offset);
- }
- 
- static struct tst_test test = {
--- 
-2.34.1
+I'm wondering whether it makes sense to move this out into fanotify.h,
+so that if the same test approach is ever used, we can simply recycle
+this macro definition.
 
+/M
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
