@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38257ECAAA1
-	for <ltp@archiver.kernel.org>; Fri,  9 Sep 2022 09:05:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2121C6FA82
+	for <ltp@archiver.kernel.org>; Fri,  9 Sep 2022 09:38:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 178873CAA6A
-	for <ltp@archiver.kernel.org>; Fri,  9 Sep 2022 11:05:05 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id AB7A43CAA1A
+	for <ltp@archiver.kernel.org>; Fri,  9 Sep 2022 11:38:38 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1D49E3C01CC
- for <ltp@lists.linux.it>; Fri,  9 Sep 2022 11:04:54 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id EE3143CA9C9
+ for <ltp@lists.linux.it>; Fri,  9 Sep 2022 11:38:27 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 340DE1401123
- for <ltp@lists.linux.it>; Fri,  9 Sep 2022 11:04:52 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C2296600F2F
+ for <ltp@lists.linux.it>; Fri,  9 Sep 2022 11:38:26 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A28D122D0B;
- Fri,  9 Sep 2022 09:04:51 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9749321E5B;
+ Fri,  9 Sep 2022 09:38:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662714291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1662716305; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VS9Tg2cOgBBFD8Gi5AkXQ2SCWybmG/CQfZ0zhS2Ao0I=;
- b=pJPiinpxTnjFmPGuhukeVlIUxpVfFKLnxShkTUO7/MoLu9JaP9pcB1FfSpFRP1X6dt8GMi
- JPbKgZo04T7+9vNMRpRrzYQF2x4xgT2AmdCm5++ryQQPvEcYWLeAkk+WbXOFBGQnDKsH05
- hrWDX4WV6uxrMCva8FXnt0UlEzkTg8U=
+ bh=tJwcTWCW2n0xhrGK02m7PwC4GhDB53ZDCIBGJBXuiH8=;
+ b=UUlXuiBkaZnFH3DgcqqpejL1RWqYIGKZ91QbdCaTxBGkdJr+2eE94O4PyjxskhrzxG3kOB
+ IZu4AzKIs342V7+GK7XU9KBcnnj7GjETeO7xqiB7xrD6OnhL6Q3uc+3REUCO8Pavd0jVFb
+ Haypq4DuQNXHqdCpQhG5VEbd1pVktlE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662714291;
+ s=susede2_ed25519; t=1662716305;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VS9Tg2cOgBBFD8Gi5AkXQ2SCWybmG/CQfZ0zhS2Ao0I=;
- b=pLq/GKiLpr4+dnZfpXZR5G8i8hvxMqEpLaYvUk1gSUZZWWLsKwpEuCRVFe42T1Pu+JVmHO
- kiy2eeKKLwHzjXBg==
+ bh=tJwcTWCW2n0xhrGK02m7PwC4GhDB53ZDCIBGJBXuiH8=;
+ b=of3kWvpmEgEOoVtZgWRQb9wzt1jZrt5OjoDtodwHThtitThXt4zaJDk8JN2buvNLVe/haV
+ QWJsMH/2HVHanzDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8824D139D5;
- Fri,  9 Sep 2022 09:04:51 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7766213A93;
+ Fri,  9 Sep 2022 09:38:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Ke8xILMBG2PUVgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 09 Sep 2022 09:04:51 +0000
-Date: Fri, 9 Sep 2022 11:06:46 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id +5ALHJEJG2PcZAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 09 Sep 2022 09:38:25 +0000
+Date: Fri, 9 Sep 2022 11:40:20 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <YxsCJi8O+HmMpefq@yuki>
-References: <20220908173947.17956-1-tsahu@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <YxsKBI2256Ldmhpn@yuki>
+References: <20220902133710.1785-1-pvorel@suse.cz>
+ <20220902133710.1785-4-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220908173947.17956-1-tsahu@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20220902133710.1785-4-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH] Hugetlb: Migrating hugetlb tests from
- libhugetlbfs
+Subject: Re: [LTP] [PATCH v4 3/9] tst_supported_fs: Implement skip list
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,210 +75,106 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, ltp@lists.linux.it,
- aneesh.kumar@linux.ibm.com
+Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+> as it will be needed for $ALL_FILESYSTEMS shell implementation in the
+> next commit. Pass tmpfs to LVM scripts (as it was required there),
+> but allow to use zram01.sh with tmpfs as it works with it.
+> 
+> Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->  runtest/hugetlb                               |   2 +
->  testcases/kernel/mem/.gitignore               |   1 +
->  .../kernel/mem/hugetlb/hugemmap/hugemmap07.c  | 106 ++++++++++++++++++
->  3 files changed, 109 insertions(+)
->  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
+> Note, I'm not sure if changes in this commit in tst_supported_fs.c will
+> not be heavily rewritten due tracking minimal filesystem usage.
 > 
-> diff --git a/runtest/hugetlb b/runtest/hugetlb
-> index f719217ab..ee02835d3 100644
-> --- a/runtest/hugetlb
-> +++ b/runtest/hugetlb
-> @@ -3,6 +3,8 @@ hugemmap02 hugemmap02
->  hugemmap04 hugemmap04
->  hugemmap05 hugemmap05
->  hugemmap06 hugemmap06
-> +hugemmap07 hugemmap07
-> +
->  hugemmap05_1 hugemmap05 -m
->  hugemmap05_2 hugemmap05 -s
->  hugemmap05_3 hugemmap05 -s -m
-> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-> index ff2910533..df5256ec8 100644
-> --- a/testcases/kernel/mem/.gitignore
-> +++ b/testcases/kernel/mem/.gitignore
-> @@ -4,6 +4,7 @@
->  /hugetlb/hugemmap/hugemmap04
->  /hugetlb/hugemmap/hugemmap05
->  /hugetlb/hugemmap/hugemmap06
-> +/hugetlb/hugemmap/hugemmap07
->  /hugetlb/hugeshmat/hugeshmat01
->  /hugetlb/hugeshmat/hugeshmat02
->  /hugetlb/hugeshmat/hugeshmat03
-> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
-> new file mode 100644
-> index 000000000..798735ed0
-> --- /dev/null
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
-> @@ -0,0 +1,106 @@
-> +/*
-> + * License/Copyright Details
-> + */
-
-There should be a SPDX licence identifier here instead.
-
-Also testcase should include a special ascii-doc formatted comment here
-that describes the purpose of the test.
-
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <sys/mount.h>
-> +#include <limits.h>
-> +#include <sys/param.h>
-> +#include <sys/types.h>
-> +
-> +#include "tst_test.h"
-> +
-> +#define P0 "ffffffff"
-> +#define IOSZ 4096
-> +char buf[IOSZ] __attribute__((aligned(IOSZ)));
-> +static int  fildes = -1, nfildes = -1;
-> +static char TEMPFILE[MAXPATHLEN];
-> +static char NTEMPFILE[MAXPATHLEN];
-
-Uppercase is reserved for macros in C.
-
-Have you run 'make check' to check for common mistakes before
-submitting?
-
-> +void test_directio(void)
-
-should be static
-
-> +{
-> +	long hpage_size;
-> +	void *p;
-> +	int ret;
-> +
-> +	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:");
-> +
-> +	fildes = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0600);
-> +	nfildes = SAFE_OPEN(NTEMPFILE, O_CREAT|O_EXCL|O_RDWR|O_DIRECT, 0600);
-
-I would say that fd and nfd in the original code was were better names,
-shorter and to the point. See also:
-
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-
-> +	p = mmap(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fildes, 0);
-> +	if (p == MAP_FAILED)
-> +		tst_brk(TFAIL | TERRNO, "mmap() Failed on %s", TEMPFILE);
-
-We do have SAFE_MMAP() as well.
-
-> +	memcpy(p, P0, 8);
-> +
-> +	/* Direct write from huge page */
-> +	ret = write(nfildes, p, IOSZ);
-> +	if (ret == -1)
-> +		tst_brk(TFAIL | TERRNO, "Direct-IO write from huge page");
-> +	if (ret != IOSZ)
-> +		tst_brk(TFAIL, "Short direct-IO write from huge page");
-> +	if (lseek(nfildes, 0, SEEK_SET) == -1)
-> +		tst_brk(TFAIL | TERRNO, "lseek");
-> +
-> +	/* Check for accuracy */
-> +	ret = read(nfildes, buf, IOSZ);
-> +	if (ret == -1)
-> +		tst_brk(TFAIL | TERRNO, "Direct-IO read to normal memory");
-> +	if (ret != IOSZ)
-> +		tst_brk(TFAIL, "Short direct-IO read to normal memory");
-> +	if (memcmp(P0, buf, 8))
-> +		tst_brk(TFAIL, "Memory mismatch after Direct-IO write");
-> +	if (lseek(nfildes, 0, SEEK_SET) == -1)
-> +		tst_brk(TFAIL | TERRNO, "lseek");
-
-And we have SAFE_WRITE(), SAFE_READ(), and SAFE_LSEEK() as well.
-
-Also tst_brk(TFAIL, "") usage is deprecated and should not be used in
-new tests.
-
-> +	/* Direct read to huge page */
-> +	memset(p, 0, IOSZ);
-> +	ret = read(nfildes, p, IOSZ);
-> +	if (ret == -1)
-> +		tst_brk(TFAIL | TERRNO, "Direct-IO read to huge page");
-> +	if (ret != IOSZ)
-> +		tst_brk(TFAIL, "Short direct-IO read to huge page");
-> +
-> +	/* Check for accuracy */
-> +	if (memcmp(p, P0, 8))
-> +		tst_brk(TFAIL, "Memory mismatch after Direct-IO read");
-> +	tst_res(TPASS, "Successfully tested Hugepage Direct I/O");
-
-You should close filedescriptors and unmap memory here, otherwise the
-test will fail with large enough -i parameter.
-
-> +}
-> +
-> +void setup(void)
-
-should be static.
-
-> +{
-> +	if (tst_hugepages == 0)
-> +		tst_brk(TCONF, "Not enough hugepages for testing.");
-> +
-> +	if (!Hopt)
-> +		Hopt = tst_get_tmpdir();
-> +	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
-> +
-> +	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", Hopt, getpid());
-
-Ideally all files created outside of the test temporary directory should
-be prefixed with "ltp_"
-
-> +	snprintf(NTEMPFILE, sizeof(NTEMPFILE), "%s/nmmapfile%d", "/home/", getpid());
-
-Please do not create any files outside of the test temporary directory,
-also as the temporary directory is unique already, there is no need to
-actually create the second tempfile name like this. All we need to do is
-to is something as:
-
-#define NTEMPFILE "tempfile"
-
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	close(fildes);
-> +	close(nfildes);
-> +	remove(TEMPFILE);
-> +	remove(NTEMPFILE);
-> +	umount2(Hopt, MNT_DETACH);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.needs_tmpdir = 1,
-> +	.options = (struct tst_option[]) {
-> +		{"H:", &Hopt,   "Location of hugetlbfs, i.e.  -H /var/hugetlbfs"},
-> +		{"s:", &nr_opt, "Set the number of the been allocated hugepages"},
-> +		{}
-> +	},
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = test_directio,
-> +	.hugepages = {2, TST_REQUEST},
-> +};
-> -- 
-> 2.31.1
+>  testcases/lib/tst_supported_fs.c           | 56 +++++++++++++++++-----
+>  testcases/misc/lvm/generate_lvm_runfile.sh |  2 +-
+>  testcases/misc/lvm/prepare_lvm.sh          |  2 +-
+>  3 files changed, 46 insertions(+), 14 deletions(-)
 > 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> diff --git a/testcases/lib/tst_supported_fs.c b/testcases/lib/tst_supported_fs.c
+> index 43eac194f..87be2b759 100644
+> --- a/testcases/lib/tst_supported_fs.c
+> +++ b/testcases/lib/tst_supported_fs.c
+> @@ -5,42 +5,74 @@
+>   */
+>  
+>  #include <stdio.h>
+> +#include <stdlib.h>
+>  #include <string.h>
+>  
+> +#define SKIP_DELIMITER ','
+> +
+>  #define TST_NO_DEFAULT_MAIN
+>  #include "tst_test.h"
+>  #include "tst_fs.h"
+>  
+>  static void usage(void)
+>  {
+> -	fprintf(stderr, "Usage: tst_supported_fs [fs_type]\n");
+> +	fprintf(stderr, "Usage: tst_supported_fs [-s skip_list] [fs_type]\n");
+>  	fprintf(stderr, "   If fs_type is supported, return 0\n");
+>  	fprintf(stderr, "   If fs_type isn't supported, return 1\n");
+>  	fprintf(stderr, "   If fs_type isn't specified, print the list of supported filesystems\n");
+>  	fprintf(stderr, "   fs_type - a specified filesystem type\n");
+> +	fprintf(stderr, "   skip_list - filesystems to skip, delimiter: '%c'\n",
+> +			SKIP_DELIMITER);
+>  }
+>  
+>  int main(int argc, char *argv[])
+>  {
+> -	const char *skiplist[] = {"tmpfs", NULL};
+>  	const char *const *filesystems;
+> -	int i;
+> +	int i, ret, cnt = 1;
+> +	char **skiplist = NULL;
+> +	char *fs;
+>  
+> -	if (argc > 2) {
+> -		fprintf(stderr, "Can't specify multiple fs_type\n");
+> -		usage();
+> -		return 2;
+> +	while ((ret = getopt(argc, argv, "hs:"))) {
+> +		if (ret < 0)
+> +			break;
+> +
+> +		switch (ret) {
+> +		case '?':
+
+No usage?
+
+> +			return 1;
+> +
+> +		case 'h':
+> +			usage();
+> +			return 0;
+> +
+> +		case 's':
+> +			fs = optarg;
+> +			for (i = 0; fs[i]; i++) {
+> +				if (optarg[i] == SKIP_DELIMITER)
+> +					cnt++;
+> +			}
+> +			skiplist = malloc(++cnt * sizeof(char *));
+> +			if (!skiplist) {
+> +				fprintf(stderr, "malloc() failed\n");
+> +				return 1;
+> +			}
+> +
+> +			fs = optarg;
+> +			for (i = 0; i < cnt; i++)
+> +				skiplist[i] = strtok_r(fs, TST_TO_STR(SKIP_DELIMITER), &fs);
+> +			break;
+
+It may be a bit cleaner to put this part into a function i.e.
+
+	skiplist = parse_skiplist(optarg);
+
 
 -- 
 Cyril Hrubis
