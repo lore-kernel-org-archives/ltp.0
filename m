@@ -4,69 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CE5CECAAD3
-	for <ltp@archiver.kernel.org>; Fri,  9 Sep 2022 11:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D59EECAAA1
+	for <ltp@archiver.kernel.org>; Fri,  9 Sep 2022 11:30:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B61F83CAA06
-	for <ltp@archiver.kernel.org>; Fri,  9 Sep 2022 13:14:36 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 10EE33CAA64
+	for <ltp@archiver.kernel.org>; Fri,  9 Sep 2022 13:30:45 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3EB953C07BD
- for <ltp@lists.linux.it>; Fri,  9 Sep 2022 13:14:27 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id C811C3C07BD
+ for <ltp@lists.linux.it>; Fri,  9 Sep 2022 13:30:35 +0200 (CEST)
+Received: from a8-81.smtp-out.amazonses.com (a8-81.smtp-out.amazonses.com
+ [54.240.8.81])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 41F1B200E1E
- for <ltp@lists.linux.it>; Fri,  9 Sep 2022 13:14:24 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2859C22DFD;
- Fri,  9 Sep 2022 11:14:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662722064; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=AV3IAtR5nHpg13Q9N1QiAUp4mQVUS/RDH9Fn2kmBfpU=;
- b=BBvuHwCV3ncGY+QgFsJsAsHjd4ikN9Ac8EzOAcZV+GBAw6Plq7fri8POqviOUwY/b3UQbd
- nDbnzHiLEgiQo7j2FKNO3DQn5ZjM1B7nkpEPKm67Oidmsy1+DFIncm+cKnKXeshV1u9+dQ
- E0BUg5iRebPP/vtHBM68MZAYgYSN3sk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662722064;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=AV3IAtR5nHpg13Q9N1QiAUp4mQVUS/RDH9Fn2kmBfpU=;
- b=wYzr91gtQkAeadCNulqzh2FiXaX7v8jYHGXBhIISA1o9tGACTy4EFIx708Ad2aKlfH7p3m
- AQqvV+UkDvhzESCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12E0F139D5;
- Fri,  9 Sep 2022 11:14:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id pMpAAxAgG2PgDAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 09 Sep 2022 11:14:24 +0000
-Date: Fri, 9 Sep 2022 13:16:19 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Yxsgg8f7vOFdXV3q@yuki>
-References: <20220902133710.1785-1-pvorel@suse.cz>
- <20220902133710.1785-5-pvorel@suse.cz> <YxsKz9j1mVHIhcfw@yuki>
- <Yxsbtrcv+FEMvBfH@pevik>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 61546600F31
+ for <ltp@lists.linux.it>; Fri,  9 Sep 2022 13:30:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1662723032;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
+ bh=5l7K8eQ2sUKyWVFInCdnWoofMJELyPdTC+FVOO0kYng=;
+ b=CfinbeQ0LGK6dIvAmXFKAxrQ/HttCSfhxBum9x/ojShdZ+vn2c68N6RBAUb2gtvt
+ AY4pouynyzdZ3C/GbPrIvCGjYWnJraHWGkQPEOZtRnDCiun/UEp0TZplS7UrzhoBF9q
+ WZCm8rtUSkZk7C9g8DTXB5vOsP6MbgWnG131S3i4=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1662723032;
+ h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
+ bh=5l7K8eQ2sUKyWVFInCdnWoofMJELyPdTC+FVOO0kYng=;
+ b=C0COK2y3bOSTY6UYO3aj83O2jytlVBXeLv2tGFbSJU5OxHj4aHLJ/L3A3R98Lxa6
+ 8Ltc+BOqjXWFh8LwF1Ml9jgusIu3RY5NgyQs6QnDGvxkgHU2owl3CGayoopnaldVRWS
+ QmDIcsWtiaJtptdjYNm6HhAk6trJOz/yTzwsseGo=
+From: lkft@linaro.org
+To: ltp@lists.linux.it
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Yxsbtrcv+FEMvBfH@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Message-ID: <01000183220405e8-4646fd9c-c0bf-4d8c-a163-b7818abd87c5-000000@email.amazonses.com>
+Date: Fri, 9 Sep 2022 11:30:32 +0000
+Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
+X-SES-Outgoing: 2022.09.09-54.240.8.81
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 4/9] tst_supported_fs: Support skip list when
- query single fs
+Subject: [LTP] lkft ltp for 17763bb
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,65 +57,86 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Cc: lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > > +++ b/lib/tst_supported_fs_types.c
-> > > @@ -134,6 +134,24 @@ enum tst_fs_impl tst_fs_is_supported(const char *fs_type)
-> > >  	return TST_FS_UNSUPPORTED;
-> > >  }
-> 
-> > > +enum tst_fs_impl tst_fs_is_supported_skiplist(const char *fs_type, const char
-> > > +					      *const *skiplist)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	ret = tst_fs_is_supported(fs_type);
-> > > +
-> > > +	if (!ret)
-> > > +		return ret;
-> > > +
-> > > +	if (tst_fs_in_skiplist(fs_type, skiplist)) {
-> > > +		tst_brk(TCONF, "%s is not supported by the test",
-> > > +			fs_type);
-> 
-> > I would expect to return TST_FS_UNSUPPORTED here. It's a bit hacky
-> > solution to exit a library call with tst_brk(TCONF, "");
-> Understand. There are 2 cases of not supported filesystems: 1) filesystem not
-> supported 2) filesystem skipped. Therefore I'd like to introduce
-> TST_FS_SKIPPED_BY_TEST (that would be 1 (therefore exit code
-> will have to be tested against the constants. That's IMHO better than
-> reinventing a wheel to detect this in testcases/lib/tst_supported_fs.c.
-> 
-> e.g.:
-> 
-> +++ b/include/tst_fs.h
-> @@ -171,7 +171,8 @@ int tst_fill_file(const char *path, char pattern, size_t bs, size_t bcount);
->  int tst_prealloc_file(const char *path, size_t bs, size_t bcount);
->  
->  enum tst_fs_impl {
-> -       TST_FS_UNSUPPORTED = 0,
-> +       TST_FS_UNSUPPORTED = -2,
-> +       TST_FS_SKIPPED_BY_TEST = -1,
+## Build
+* kernel: 5.18.19
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.18.y
+* git commit: 22a992953741ad79c07890d3f4104585e52ef26b
+* git describe: 17763bb
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/17763bb
 
-Maybe just TST_FS_SKIPPED
+## Test Regressions (compared to fef92f1)
+No test regressions found.
 
->         TST_FS_KERNEL = 1,
->         TST_FS_FUSE = 2,
->  };
+## Metric Regressions (compared to fef92f1)
+No metric regressions found.
 
-I wonder though if we really care about the difference between
-unsupported and skipped. Maybe just print TINFO message in case of the
-skipped filesystem and return zero in both cases? And maybe rename
-TST_FS_UNSUPPORTED to TST_FSNOT_USED.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+## Test Fixes (compared to fef92f1)
+* bcm2711-rpi-4-b, ltp-mm
+  - mm01
+
+* bcm2711-rpi-4-b, ltp-syscalls
+  - inotify11
+
+* qemu_arm, ltp-crypto
+  - af_alg07
+
+* qemu_i386, ltp-controllers
+  - cpuacct_100_100
+
+* qemu_x86_64, ltp-controllers
+  - cpuacct_100_100
+
+
+## Metric Fixes (compared to fef92f1)
+No metric fixes found.
+
+## Test result summary
+total: 12287, pass: 10437, fail: 155, skip: 1695, xfail: 0
+
+## Build Summary
+
+## Test suites summary
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-syscalls
+* ltp-tracing
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
