@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 063BFC6FA82
-	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 14:37:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5657ECAAD5
+	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 14:41:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 590CF3CABB4
-	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 16:37:30 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id BA9483CAADB
+	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 16:41:09 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5953E3CA599
- for <ltp@lists.linux.it>; Mon, 12 Sep 2022 16:37:19 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 82EA73CA599
+ for <ltp@lists.linux.it>; Mon, 12 Sep 2022 16:40:59 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 81DF1600677
- for <ltp@lists.linux.it>; Mon, 12 Sep 2022 16:37:18 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6F9C71A00706
+ for <ltp@lists.linux.it>; Mon, 12 Sep 2022 16:40:58 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6EA3421BAB;
- Mon, 12 Sep 2022 14:37:18 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9BBF521A44;
+ Mon, 12 Sep 2022 14:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662993438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1662993657; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bak/caXXgo0LqpzG8D+gEHgV7PeyMwVI2rpHxbs3A4I=;
- b=G/HV2yBcHrK4hG+3E2hpKnKzJl22ifg1QZi4OVyXvGvatUVK1iZZ1ztm7s3hcFfuGveL6G
- jI8vyuNoUI9QSmIA5UAgdxskrXFkp9n6bQ9C9zXyaU5z95FBCLPiusiGnXwEhSn78cYwZB
- N6lM4MDKHcGjP2cqYZXUCfpDMffdWvU=
+ bh=IEdbqqQePQttqeOi8Z58cdG83K4Hf7L0rzeXU0+qY2o=;
+ b=0U9jQrjUlzRhnaFHyo9LQ0sIcHZO5keYn1ZW6+Ym4+TGAy/Bprbau7INGrAD1INEnPsVbC
+ HpKCtum49EtT56MWyTVzD7fY83NDwOdwXu9bMwahgpuGOv2vHewixnKh4VaD7hors5QZmx
+ 7uZGISM6h1E3fsYQW1ZtnA2aYLcif5Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662993438;
+ s=susede2_ed25519; t=1662993657;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bak/caXXgo0LqpzG8D+gEHgV7PeyMwVI2rpHxbs3A4I=;
- b=iJ4zUkXIMya/tCgYKKI79jaAE2otX8AwjAjLdVA4ITAMtAXCFImt+nTkKWsc3+tJvtVrC9
- J74rJbJYUb/auCAQ==
+ bh=IEdbqqQePQttqeOi8Z58cdG83K4Hf7L0rzeXU0+qY2o=;
+ b=K2nuoc4g8OROIWB/2PNE/p9q9IdXj2ik4Tq77g5dTicpG86ABRuu2T8w+68S+ZD6vqY1Lt
+ uFcHsnVUpICzTkCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4EF2C139C8;
- Mon, 12 Sep 2022 14:37:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 81FC4139C8;
+ Mon, 12 Sep 2022 14:40:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id PZluEh5EH2OdSwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 12 Sep 2022 14:37:18 +0000
-Date: Mon, 12 Sep 2022 16:39:13 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id +WbUIPlEH2PyTAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 12 Sep 2022 14:40:57 +0000
+Date: Mon, 12 Sep 2022 16:42:51 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Yx9EkfsiiWNQZtBG@yuki>
+Message-ID: <Yx9Fa69/ukgEJylz@yuki>
 References: <20220909141840.18327-1-pvorel@suse.cz>
- <20220909141840.18327-5-pvorel@suse.cz>
+ <20220909141840.18327-4-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220909141840.18327-5-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <20220909141840.18327-4-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 04/10] tst_supported_fs: Implement skip list
+Subject: Re: [LTP] [PATCH v5 03/10] tst_supported_fs: Print TCONF if no
+ filesystem supported
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,16 +84,25 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +static char **parse_skiplist(char *fs)
-> +{
-> +	char **skiplist = NULL;
+> Although this is unlikely, it can happen.
+> This means 32 (TCONF) instead of 0 exit code when searching for all
+> filesystems and 32 instead of 1 when searching for a particular
+> filesystem.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> New in v5
+> 
+> NOTE:
+> 
+> Although this will later leads to duplicating message (see below) it's
+> IMHO better because LVM scripts and zram01.sh use this helper directly.
+> 
+> Tests added in later commits which demonstrates TCONF:
 
-There is no point in initializing variables that are not read before
-they are assigned.
-
-Other than that:
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Shouldn't we rather than this add tst_res(TCONF, "...") messages to the
+lib/tst_supported_fs_types.c so that we get consistent messages between
+C and shell?
 
 -- 
 Cyril Hrubis
