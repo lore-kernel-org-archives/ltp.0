@@ -4,74 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28B83ECAAD5
-	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 05:40:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FF3FECAAA1
+	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 08:33:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7AD723CAABA
-	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 07:40:27 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 15A813CAAF2
+	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 10:33:33 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BBE443CA6DA
- for <ltp@lists.linux.it>; Mon, 12 Sep 2022 07:40:17 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id C67A83C91EE
+ for <ltp@lists.linux.it>; Mon, 12 Sep 2022 10:33:23 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B7D6D14002C6
- for <ltp@lists.linux.it>; Mon, 12 Sep 2022 07:40:16 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4CA9E1F91D;
- Mon, 12 Sep 2022 05:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662961214;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=JqroxUjqyjSOWPdOBhE3gSmCV9vlO/xoWvJ8HBzVzLs=;
- b=vHTEPe/5ZL8ek5FtfnJAP7CduDAGQcoLXRc0Ppg7Jms/OAVvXIaVoj29fXyOJEe3D/ig4Z
- YZo/iJscZf783sm9HvSZP6CDfQFhWvIBqLiYPLMpDeB6X/0SzNB+JObWgi5uw2ublJ2fsI
- /PwxG1KK6YqN/r74cs1LhzAXLBXmbEg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662961214;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=JqroxUjqyjSOWPdOBhE3gSmCV9vlO/xoWvJ8HBzVzLs=;
- b=G165kY40yi6ereoub3zXM2uAv/brXw5sBEhRG+wxcEcWgl1ud3EYU0ZnpJhrOjlp4dYxj9
- 9wCE01ajNghj+vBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0137D139C8;
- Mon, 12 Sep 2022 05:40:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id jBgtOj3GHmNBZwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 12 Sep 2022 05:40:13 +0000
-Date: Mon, 12 Sep 2022 07:40:12 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <Yx7GPOsudkoRn5Nd@pevik>
-References: <20220902133710.1785-5-pvorel@suse.cz> <YxsKz9j1mVHIhcfw@yuki>
- <Yxsbtrcv+FEMvBfH@pevik> <Yxsgg8f7vOFdXV3q@yuki>
- <YxskoojodIaNuI6G@pevik>
- <70df29e7-0097-c698-b6ba-e3f87da3893f@suse.cz>
- <YxtMFw25BfJaEsji@pevik>
- <5e01e854-7cc6-7b08-d1f8-7f0709fbc07d@suse.cz>
- <YxtR/1NJIabAqd5V@pevik>
- <5aae1278-8c6c-febf-7ee3-fe5e508ffdd1@suse.cz>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 19CE410006C5
+ for <ltp@lists.linux.it>; Mon, 12 Sep 2022 10:33:21 +0200 (CEST)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28C6pUbF030337;
+ Mon, 12 Sep 2022 08:33:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : content-transfer-encoding : mime-version; s=pp1;
+ bh=EjE9zfjlnKovnDP6IZKDJlDIT/54CIuxhpam2s6FIVg=;
+ b=ma0YAO+qizluQ+Meg2d3HpZXa6eNz6hS4xQyPuNBL5c2G5XueBcBMuueBHLihwnAE6Md
+ 68xxna8e8TW6GT7wdXR79OvRhQs6lBAb/uia88VHvhKSVesWCGIG4Ep+Bk3lVB2fvOy4
+ fUvycYcnQfLqOmbvbdXl93dEGs/FZKBkJiOJ90Qw1GAMVzGzGFNPW8COld3zatF7oSSm
+ 0d8lroNrn/mjONbbYoWboInbv5qZYXeY6KnFJ+HqXJ40aR/604nKppDmV8Q6clfNCBCn
+ UpkjoJikqsXmiPeTtFK0PA0doarNsa1J9OHrgeH/y3kDtHGPJob2nMOgUCa/5CV0ls3u hw== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.99])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3jhyv82xwq-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 12 Sep 2022 08:33:17 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+ by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 28C86Tm8003747;
+ Mon, 12 Sep 2022 08:33:15 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com
+ (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+ by ppma04ams.nl.ibm.com with ESMTP id 3jgj79t35y-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 12 Sep 2022 08:33:15 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com
+ [9.149.105.232])
+ by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 28C8XDDk33685950
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 12 Sep 2022 08:33:13 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 5414252052;
+ Mon, 12 Sep 2022 08:33:13 +0000 (GMT)
+Received: from tarunpc (unknown [9.43.18.53])
+ by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id B14935204E;
+ Mon, 12 Sep 2022 08:33:11 +0000 (GMT)
+Message-ID: <2412537e2e07ebf62fe95971a3022336cde9833a.camel@linux.ibm.com>
+From: Tarun Sahu <tsahu@linux.ibm.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 12 Sep 2022 14:03:10 +0530
+In-Reply-To: <YxsCJi8O+HmMpefq@yuki>
+References: <20220908173947.17956-1-tsahu@linux.ibm.com>
+ <YxsCJi8O+HmMpefq@yuki>
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: evC1WQmHcygrKYDCWv4Qf0DyQYPjYVSm
+X-Proofpoint-GUID: evC1WQmHcygrKYDCWv4Qf0DyQYPjYVSm
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5aae1278-8c6c-febf-7ee3-fe5e508ffdd1@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-09-12_04,2022-09-09_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 spamscore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=999 lowpriorityscore=0
+ bulkscore=0 mlxscore=0 impostorscore=0 suspectscore=0 clxscore=1011
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2207270000 definitions=main-2209120028
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 4/9] tst_supported_fs: Support skip list when
- query single fs
+Subject: Re: [LTP] [RFC PATCH] Hugetlb: Migrating hugetlb tests from
+ libhugetlbfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,49 +97,269 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, Richard Palethorpe <rpalethorpe@suse.com>
+Reply-To: tsahu@linux.ibm.com
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, ltp@lists.linux.it,
+ aneesh.kumar@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On 09. 09. 22 16:47, Petr Vorel wrote:
-> > > One more thing, the skiplist check should be done before availability check.
-> > > It's faster and it'll save you work when you're trying to fix tests that
-> > > shouldn't be skipped.
-> > Good point. I guess you mean just to reverse order in
-> > tst_fs_is_supported_skiplist(), right?
+Hi Cyril, Thanks for reviewing the patch.
+Below I have added my
+comments. Will update changes in V2.
 
-> Exactly.
-+1
+On Fri, 2022-09-09 at 11:06 +0200,
+Cyril Hrubis wrote:
+> Hi!
+> > Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+> > ---
+> >  runtest/hugetlb                               |   2 +
+> >  testcases/kernel/mem/.gitignore               |   1 +
+> >  .../kernel/mem/hugetlb/hugemmap/hugemmap07.c  | 106
+> > ++++++++++++++++++
+> >  3 files changed, 109 insertions(+)
+> >  create mode 100644
+> > testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
+> > 
+> > diff --git a/runtest/hugetlb b/runtest/hugetlb
+> > index f719217ab..ee02835d3 100644
+> > --- a/runtest/hugetlb
+> > +++ b/runtest/hugetlb
+> > @@ -3,6 +3,8 @@ hugemmap02 hugemmap02
+> >  hugemmap04 hugemmap04
+> >  hugemmap05 hugemmap05
+> >  hugemmap06 hugemmap06
+> > +hugemmap07 hugemmap07
+> > +
+> >  hugemmap05_1 hugemmap05 -m
+> >  hugemmap05_2 hugemmap05 -s
+> >  hugemmap05_3 hugemmap05 -s -m
+> > diff --git a/testcases/kernel/mem/.gitignore
+> > b/testcases/kernel/mem/.gitignore
+> > index ff2910533..df5256ec8 100644
+> > --- a/testcases/kernel/mem/.gitignore
+> > +++ b/testcases/kernel/mem/.gitignore
+> > @@ -4,6 +4,7 @@
+> >  /hugetlb/hugemmap/hugemmap04
+> >  /hugetlb/hugemmap/hugemmap05
+> >  /hugetlb/hugemmap/hugemmap06
+> > +/hugetlb/hugemmap/hugemmap07
+> >  /hugetlb/hugeshmat/hugeshmat01
+> >  /hugetlb/hugeshmat/hugeshmat02
+> >  /hugetlb/hugeshmat/hugeshmat03
+> > diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
+> > b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
+> > new file mode 100644
+> > index 000000000..798735ed0
+> > --- /dev/null
+> > +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
+> > @@ -0,0 +1,106 @@
+> > +/*
+> > + * License/Copyright Details
+> > + */
+> 
+> There should be a SPDX licence identifier here instead.
+> 
+> Also testcase should include a special ascii-doc formatted comment
+> here
+> that describes the purpose of the test.
+As mentioned in the patch description, there is a conflict in license,
+That is why, I have avoided to put any of them in the header. Once
+confirmed within the community, I can add the original license here.
+(GPL2.1+) as 
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+this says only to add code with GPL2.0+.
 
-> > +++ lib/tst_supported_fs_types.c
-> > @@ -137,17 +137,10 @@ enum tst_fs_impl tst_fs_is_supported(const char *fs_type)
-> >   enum tst_fs_impl tst_fs_is_supported_skiplist(const char *fs_type, const char
-> >   					      *const *skiplist)
-> >   {
-> > -	int ret;
-> > -
-> > -	ret = tst_fs_is_supported(fs_type);
-> > -
-> > -	if (!ret)
-> > -		return ret;
-> > -
-> >   	if (tst_fs_in_skiplist(fs_type, skiplist))
-> >   		return TST_FS_UNSUPPORTED;
-> > -	return ret;
-> > +	return tst_fs_is_supported(fs_type);
-> >   }
-> >   const char **tst_get_supported_fs_types(const char *const *skiplist)
+> 
+> > +#define _GNU_SOURCE
+> > +#include <stdio.h>
+> > +#include <sys/mount.h>
+> > +#include <limits.h>
+> > +#include <sys/param.h>
+> > +#include <sys/types.h>
+> > +
+> > +#include "tst_test.h"
+> > +
+> > +#define P0 "ffffffff"
+> > +#define IOSZ 4096
+> > +char buf[IOSZ] __attribute__((aligned(IOSZ)));
+> > +static int  fildes = -1, nfildes = -1;
+> > +static char TEMPFILE[MAXPATHLEN];
+> > +static char NTEMPFILE[MAXPATHLEN];
+> 
+> Uppercase is reserved for macros in C.
+> 
+> Have you run 'make check' to check for common mistakes before
+> submitting?
 
-FYI if anybody wants to test v5 with this fix, it's in my fork in branch
-shell/all_filesystems.v5.fixes
+> 
+> > +void test_directio(void)
+> 
+> should be static
+Ok Will update in V2.
+> 
+> > +{
+> > +	long hpage_size;
+> > +	void *p;
+> > +	int ret;
+> > +
+> > +	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:");
+> > +
+> > +	fildes = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0600);
+> > +	nfildes = SAFE_OPEN(NTEMPFILE, O_CREAT|O_EXCL|O_RDWR|O_DIRECT,
+> > 0600);
+> 
+> I would say that fd and nfd in the original code was were better
+> names,
+> shorter and to the point. See also:
+> 
+> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
 
-https://github.com/pevik/ltp/commits/shell/all_filesystems.v5.fixes
+I agree, I tried to follow what was in hugemmap01..06 test cases to
+keep things similar all across the tests. I will update it in v2.
+> 
+> > +	p = mmap(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE,
+> > fildes, 0);
+> > +	if (p == MAP_FAILED)
+> > +		tst_brk(TFAIL | TERRNO, "mmap() Failed on %s",
+> > TEMPFILE);
+> 
+> We do have SAFE_MMAP() as well.
+Yeah, I will update them in v2.
 
-Kind regards,
-Petr
+> 
+> > +	memcpy(p, P0, 8);
+> > +
+> > +	/* Direct write from huge page */
+> > +	ret = write(nfildes, p, IOSZ);
+> > +	if (ret == -1)
+> > +		tst_brk(TFAIL | TERRNO, "Direct-IO write from huge
+> > page");
+> > +	if (ret != IOSZ)
+> > +		tst_brk(TFAIL, "Short direct-IO write from huge page");
+> > +	if (lseek(nfildes, 0, SEEK_SET) == -1)
+> > +		tst_brk(TFAIL | TERRNO, "lseek");
+> > +
+> > +	/* Check for accuracy */
+> > +	ret = read(nfildes, buf, IOSZ);
+> > +	if (ret == -1)
+> > +		tst_brk(TFAIL | TERRNO, "Direct-IO read to normal
+> > memory");
+> > +	if (ret != IOSZ)
+> > +		tst_brk(TFAIL, "Short direct-IO read to normal
+> > memory");
+> > +	if (memcmp(P0, buf, 8))
+> > +		tst_brk(TFAIL, "Memory mismatch after Direct-IO
+> > write");
+> > +	if (lseek(nfildes, 0, SEEK_SET) == -1)
+> > +		tst_brk(TFAIL | TERRNO, "lseek");
+> 
+> And we have SAFE_WRITE(), SAFE_READ(), and SAFE_LSEEK() as well.
+ok Will update these too in v2.
+
+> 
+> Also tst_brk(TFAIL, "") usage is deprecated and should not be used in
+> new tests.
+
+Ok, Will update it to tst_res.
+
+> 
+> > +	/* Direct read to huge page */
+> > +	memset(p, 0, IOSZ);
+> > +	ret = read(nfildes, p, IOSZ);
+> > +	if (ret == -1)
+> > +		tst_brk(TFAIL | TERRNO, "Direct-IO read to huge page");
+> > +	if (ret != IOSZ)
+> > +		tst_brk(TFAIL, "Short direct-IO read to huge page");
+> > +
+> > +	/* Check for accuracy */
+> > +	if (memcmp(p, P0, 8))
+> > +		tst_brk(TFAIL, "Memory mismatch after Direct-IO read");
+> > +	tst_res(TPASS, "Successfully tested Hugepage Direct I/O");
+> 
+> You should close filedescriptors and unmap memory here, otherwise the
+> test will fail with large enough -i parameter.
+
+Ok, I will update it too in v2. 
+
+> 
+> > +}
+> > +
+> > +void setup(void)
+> 
+> should be static.
+
+Ok Will update it in V2.
+> 
+> > +{
+> > +	if (tst_hugepages == 0)
+> > +		tst_brk(TCONF, "Not enough hugepages for testing.");
+> > +
+> > +	if (!Hopt)
+> > +		Hopt = tst_get_tmpdir();
+> > +	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
+> > +
+> > +	snprintf(TEMPFILE, sizeof(TEMPFILE), "%s/mmapfile%d", Hopt,
+> > getpid());
+> 
+> Ideally all files created outside of the test temporary directory
+> should
+> be prefixed with "ltp_"
+
+ok, Will update it in V2.
+> 
+> > +	snprintf(NTEMPFILE, sizeof(NTEMPFILE), "%s/nmmapfile%d",
+> > "/home/", getpid());
+> 
+> Please do not create any files outside of the test temporary
+> directory,
+> also as the temporary directory is unique already, there is no need
+> to
+> actually create the second tempfile name like this. All we need to do
+> is
+> to is something as:
+> 
+> #define NTEMPFILE "tempfile"
+> 
+
+Ok Will update it in V2.
+> > +}
+> > +
+> > +void cleanup(void)
+> > +{
+> > +	close(fildes);
+> > +	close(nfildes);
+> > +	remove(TEMPFILE);
+> > +	remove(NTEMPFILE);
+> > +	umount2(Hopt, MNT_DETACH);
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.needs_root = 1,
+> > +	.needs_tmpdir = 1,
+> > +	.options = (struct tst_option[]) {
+> > +		{"H:", &Hopt,   "Location of hugetlbfs, i.e.  -H
+> > /var/hugetlbfs"},
+> > +		{"s:", &nr_opt, "Set the number of the been allocated
+> > hugepages"},
+> > +		{}
+> > +	},
+> > +	.setup = setup,
+> > +	.cleanup = cleanup,
+> > +	.test_all = test_directio,
+> > +	.hugepages = {2, TST_REQUEST},
+> > +};
+> > -- 
+> > 2.31.1
+> > 
+> > 
+> > -- 
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
