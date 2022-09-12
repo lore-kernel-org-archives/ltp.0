@@ -4,68 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDCD0ECAAA1
-	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 10:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0321ECAAA1
+	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 10:06:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD3273CAADF
-	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 12:02:14 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 199393CAABD
+	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 12:06:18 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 018E23C941D
- for <ltp@lists.linux.it>; Mon, 12 Sep 2022 12:02:05 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id E9E4E3CAAA7
+ for <ltp@lists.linux.it>; Mon, 12 Sep 2022 12:06:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 89AE21000234
- for <ltp@lists.linux.it>; Mon, 12 Sep 2022 12:02:04 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0CBC0600152
+ for <ltp@lists.linux.it>; Mon, 12 Sep 2022 12:06:07 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A56741FF29;
- Mon, 12 Sep 2022 10:02:03 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4F89922062;
+ Mon, 12 Sep 2022 10:06:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1662976923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uvO1dukhlJrHdJIsQbsLk+w0DyCy+es8zfWjHeOG6Fw=;
- b=hsY9sCxxsrCuVA9RopJ/Ua1FdfZ5J7C9TIz6ca1NDjbdBw/bp9BgU0e2GdczJl3cX6jjBR
- hc4FD7S2Vy9fE7/a034Mytr+rbA3R1Pfj+g4EgoQs1gMQn1bW6XgyVkhmzsO8yXuf5fFjm
- g3LlZJzvGrnWwMDuFZaB9N0BcMXATlQ=
+ t=1662977167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=sWNMmCZPpdxh1xNGN4E1Uf2OlU1pH/1zApe3Xtjo6GU=;
+ b=gq3rkA1brW9FO6TI1a99wNT9Y1D5HjDX/479ygB1qqTdaRWTPTaGDBwkfsi9AjJf57s1Ly
+ 9mKyDa+jY0pzhwQ5SzDrj1ExrXvk2KBMI5QOBQOzWzanaJVtIia9pulBrZqBhMH8eYAc0Q
+ QePnldlFL3KSDdcrwVtUQOmfcCDBEuI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1662976923;
+ s=susede2_ed25519; t=1662977167;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uvO1dukhlJrHdJIsQbsLk+w0DyCy+es8zfWjHeOG6Fw=;
- b=u47wxKraqxddq5vWNjBOANZJ8V2Y2GhWDiHg+xlSj0kZE6NseeJUgSXG7s9yDcU708NMWj
- iB7hAA1+4+38N7CA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=sWNMmCZPpdxh1xNGN4E1Uf2OlU1pH/1zApe3Xtjo6GU=;
+ b=NcwcELY4/S2A39o/nvoH3nDpzz4lBXZOAN9QsPQ1/bgIvRz2ohfFxIth/koCJSipxR4Wbz
+ L399gkOP4zj+upBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E34B139C8;
- Mon, 12 Sep 2022 10:02:03 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0DE82139C8;
+ Mon, 12 Sep 2022 10:06:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Tm2LIZsDH2PjVAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 12 Sep 2022 10:02:03 +0000
-Date: Mon, 12 Sep 2022 12:03:58 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Yx8EDrF0P9fhbC3O@yuki>
-References: <20220909141840.18327-1-pvorel@suse.cz>
- <20220909141840.18327-3-pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id bGzbAY8EH2NqVgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 12 Sep 2022 10:06:07 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 12 Sep 2022 12:06:03 +0200
+Message-Id: <20220912100603.1551-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220909141840.18327-3-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 02/10] shell API/tests: Require root for
- format/mount tests
+Subject: [LTP] [PATCH 1/1] tst_test.sh: Print Summary into stderr
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,81 +70,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Although the warning is quite obvious:
-> tst_device.c:101: TINFO: Not allowed to open /dev/loop-control. Are you root?: EACCES (13)
-> tst_device.c:140: TINFO: No free devices found
-> TBROK: Failed to acquire device
-> 
-> It's safer to expect root to get valid result.
+To follow the pattern in C API, where it was changed in
+8f560e5dc ("lib: Print everything to stderr").
 
-Another option would actually be to make the TST_NEED_DEVICE flag imply
-TST_NEEDS_ROOT flag, but I do not think that we have that for the C
-library either.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+NOTE: applied on the top of patchset "v5 shell: df01.sh:
+$TST_ALL_FILESYSTEMS (.all_filesystems)"
 
-Either way this is fine as well:
+https://lore.kernel.org/ltp/20220909141840.18327-1-pvorel@suse.cz/
+https://patchwork.ozlabs.org/project/ltp/list/?series=317639&state=*
 
-Reviwed-by: Cyril Hrubis <chrubis@suse.cz>
+Kind regards,
+Petr
 
-> Reviewed-by: Li Wang <liwang@redhat.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> The same as in v4
-> 
->  lib/newlib_tests/shell/tst_format_device.sh      | 1 +
->  lib/newlib_tests/shell/tst_mount_device.sh       | 1 +
->  lib/newlib_tests/shell/tst_mount_device_tmpfs.sh | 1 +
->  3 files changed, 3 insertions(+)
-> 
-> diff --git a/lib/newlib_tests/shell/tst_format_device.sh b/lib/newlib_tests/shell/tst_format_device.sh
-> index 73a919086..dbe4ea9e7 100755
-> --- a/lib/newlib_tests/shell/tst_format_device.sh
-> +++ b/lib/newlib_tests/shell/tst_format_device.sh
-> @@ -3,6 +3,7 @@
->  # Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
->  
->  TST_FORMAT_DEVICE=1
-> +TST_NEEDS_ROOT=1
->  TST_TESTFUNC=test
->  TST_CNT=2
->  TST_DEV_FS_OPTS="-b 1024"
-> diff --git a/lib/newlib_tests/shell/tst_mount_device.sh b/lib/newlib_tests/shell/tst_mount_device.sh
-> index 561f878d2..70f80f84a 100755
-> --- a/lib/newlib_tests/shell/tst_mount_device.sh
-> +++ b/lib/newlib_tests/shell/tst_mount_device.sh
-> @@ -3,6 +3,7 @@
->  # Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
->  
->  TST_MOUNT_DEVICE=1
-> +TST_NEEDS_ROOT=1
->  TST_FS_TYPE=ext4
->  TST_TESTFUNC=test
->  TST_CNT=3
-> diff --git a/lib/newlib_tests/shell/tst_mount_device_tmpfs.sh b/lib/newlib_tests/shell/tst_mount_device_tmpfs.sh
-> index 36a78bc85..ed2ba8c50 100755
-> --- a/lib/newlib_tests/shell/tst_mount_device_tmpfs.sh
-> +++ b/lib/newlib_tests/shell/tst_mount_device_tmpfs.sh
-> @@ -3,6 +3,7 @@
->  # Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
->  
->  TST_MOUNT_DEVICE=1
-> +TST_NEEDS_ROOT=1
->  TST_FS_TYPE=tmpfs
->  TST_TESTFUNC=test
->  
-> -- 
-> 2.37.3
-> 
+ testcases/lib/tst_test.sh | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index de4599625..84f29af5b 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -69,13 +69,15 @@ _tst_do_exit()
+ 		_tst_check_security_modules
+ 	fi
+ 
+-	echo
+-	echo "Summary:"
+-	echo "passed   $TST_PASS"
+-	echo "failed   $TST_FAIL"
+-	echo "broken   $TST_BROK"
+-	echo "skipped  $TST_CONF"
+-	echo "warnings $TST_WARN"
++	cat >&2 << EOF
++
++Summary:
++passed   $TST_PASS
++failed   $TST_FAIL
++broken   $TST_BROK
++skipped  $TST_CONF
++warnings $TST_WARN
++EOF
+ 
+ 	exit $ret
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.37.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
