@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2990FC6FA82
-	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 20:38:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1574C6FA83
+	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 20:43:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5D8D73CAADD
-	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 22:38:27 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 8BDFE3CAADF
+	for <ltp@archiver.kernel.org>; Mon, 12 Sep 2022 22:43:22 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 977C03CAA99
- for <ltp@lists.linux.it>; Mon, 12 Sep 2022 22:38:16 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id A085A3C0475
+ for <ltp@lists.linux.it>; Mon, 12 Sep 2022 22:43:13 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 61F7E1A005E8
- for <ltp@lists.linux.it>; Mon, 12 Sep 2022 22:38:15 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 10608600847
+ for <ltp@lists.linux.it>; Mon, 12 Sep 2022 22:43:12 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 117FC33EDE;
- Mon, 12 Sep 2022 20:38:15 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4171C20C36;
+ Mon, 12 Sep 2022 20:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663015095;
+ t=1663015392;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zf85nF+raYyfagV6W+jEP2JMCH5IzrhHQv1KaVYGyN8=;
- b=EBVFafM6MI/rGsVs9HjTFS0vQMu5hrz9XvpW5g1PgOP75BH+bD86dCTmektqRGALY0qCg9
- D4IRytinIhOLv5/Ld1RlzG53ByV1xS9ESy9OSN8rE4DkaV4CgbBBFL3HMkJ9geHNO4iZeM
- Wn9sb/o4GlSk7wLBTDYrNbVLE//aZyI=
+ bh=z4zDy2IPgtyURDU/Jgx6iyaccdfpM9uJpp9VwTWwPD8=;
+ b=RFawNE3Q1rAjywOXaSRT4rw2HxEPjjZnV+hjQqH4uxhDylfbX4r1PHuvzVkFlmeYQYe21o
+ DdWpZ/7JARSEmwrsYFDXH8PfaPibbtOvoiE5El6DfNQ0JqM9fKeJbZkY2BF6+7MZAEi4h2
+ FTHR0hrkL7BuVUCJyJkuSe1PxPvQF2I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663015095;
+ s=susede2_ed25519; t=1663015392;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zf85nF+raYyfagV6W+jEP2JMCH5IzrhHQv1KaVYGyN8=;
- b=27MhcbvALoNrLHuRZSnDnhnvqg3asD+nRJqby3p9DbTzwDZodksNluA8Oi8l/k0gMubsfU
- g4EGpYHxHW7g47CQ==
+ bh=z4zDy2IPgtyURDU/Jgx6iyaccdfpM9uJpp9VwTWwPD8=;
+ b=+TCeH8Q6k7+iWmAncG4Yf1SXuPwzOYCl29c1eahYwVzn25ACSA9ixsxeL9Ah85w7EWpRjU
+ n4q9TPkdm3M305Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C4BB9139E0;
- Mon, 12 Sep 2022 20:38:14 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE149139E0;
+ Mon, 12 Sep 2022 20:43:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kNtoLraYH2NkRAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 12 Sep 2022 20:38:14 +0000
-Date: Mon, 12 Sep 2022 22:38:12 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id zGsUON+ZH2OrRQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 12 Sep 2022 20:43:11 +0000
+Date: Mon, 12 Sep 2022 22:43:10 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <Yx+YtBZOKje6FbWS@pevik>
+Message-ID: <Yx+Z3sHxj0h5vGgO@pevik>
 References: <20220909141840.18327-1-pvorel@suse.cz>
- <20220909141840.18327-6-pvorel@suse.cz> <Yx9JPQimBEpXFa4+@yuki>
+ <20220909141840.18327-7-pvorel@suse.cz> <Yx9L3SfGpS9LlcEi@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Yx9JPQimBEpXFa4+@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <Yx9L3SfGpS9LlcEi@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 05/10] tst_supported_fs: Support skip list when
- query single fs
+Subject: Re: [LTP] [PATCH v5 06/10] shell: Add $TST_SKIP_FILESYSTEMS + tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,26 +83,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> Shouldn't this one go before the addition of the functionality to the wrapper used by shell?
-Do you mean to put this ("tst_supported_fs: Support skip list when query single
-fs") before the previous ("tst_supported_fs: Implement skip list")?
+...
+> > +++ b/testcases/lib/tst_test.sh
+> > @@ -626,6 +626,7 @@ tst_run()
+> >  	local _tst_max
+> >  	local _tst_name
+> >  	local _tst_pattern='[='\''"} \t\/:`$\;].*'
+> > +	local ret
 
-Originally I had these 2 commits in squashed in single commit. But it was quite
-big, thus I implemented skip list just for all filesystems and then for
-particular filesystem.
+> >  	if [ -n "$TST_TEST_PATH" ]; then
+> >  		for _tst_i in $(grep '^[^#]*\bTST_' "$TST_TEST_PATH" | sed "s/.*TST_//; s/$_tst_pattern//"); do
+> > @@ -644,6 +645,7 @@ tst_run()
+> >  			CHECKPOINT_WAIT|CHECKPOINT_WAKE);;
+> >  			CHECKPOINT_WAKE2|CHECKPOINT_WAKE_AND_WAIT);;
+> >  			DEV_EXTRA_OPTS|DEV_FS_OPTS|FORMAT_DEVICE|MOUNT_DEVICE);;
+> > +			SKIP_FILESYSTEMS);;
+> >  			*) tst_res TWARN "Reserved variable TST_$_tst_i used!";;
+> >  			esac
+> >  		done
+> > @@ -675,6 +677,10 @@ tst_run()
+> >  			tst_brk TCONF "test requires kernel $TST_MIN_KVER+"
+> >  	fi
 
-Maybe "tst_supported_fs: Implement skip list" should be "tst_supported_fs:
-Implement skip list for all fs".
+> > +	tst_supported_fs -s "$TST_SKIP_FILESYSTEMS" $TST_FS_TYPE
+> > +	ret=$?
+> > +	[ $ret -ne 0 ] && return $ret
 
-Or did you mean something else?
+> So we actually depend here on the tst_supported_fs return value. So at
+> least we have to do return TCONF in the helper binary even if ve move
+> the messages into the library.
+
+Yes. This is the equivalent of code in do_test_setup() (i.e. handling skipped
+filesystems when testing single filesystem - *not* doing all filesystems loop).
+
+Again, have C API function for looping filesystems and for single
+filesystem would help avoiding duplicity, but not sure how to keep things simple
+and readable. I'll try to think about it, but hints are welcome :).
 
 Kind regards,
 Petr
 
-> Other than that:
+> >  	_tst_setup_timer
 
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> >  	[ "$TST_MOUNT_DEVICE" = 1 ] && TST_FORMAT_DEVICE=1
+> > -- 
+> > 2.37.3
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
