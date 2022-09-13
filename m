@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95E58C6FA82
-	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 08:35:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B37E6C6FA82
+	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 08:38:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6715A3CABBF
-	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 10:35:38 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 5D4393CAB98
+	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 10:38:12 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C76333CAA8E
- for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:35:28 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 3043E3CAA8E
+ for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:38:02 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8836F1A010DE
- for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:35:27 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 899B5600C60
+ for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:38:01 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DD3DA34993;
- Tue, 13 Sep 2022 08:35:26 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EDDC734998;
+ Tue, 13 Sep 2022 08:38:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663058126;
+ t=1663058280;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1bsNaxwMBDAPAzIyTalRDt6F2pNlZwCGLYRQJA3TK08=;
- b=SDvnxiNC39yNmvb0Hd4Mfy/cEWngJy6G9vMNE+kFU4khjcEJ1busBeS/ImnV19MRvuYwru
- w+A1OT4wwmhkV7xl7R1hKFY9TKUS2/+waFeJOJSnq8yW/Q4lxRMSwZvnjfd4sF/CGbRtxi
- PullcvZxUwwuehLp2LkDkL5k9ZlDHDs=
+ bh=iniaS+yETXmGRbGOxnW8SdeFJmRLhOvB6cSBPFNNXSA=;
+ b=ylei4zPzUwDXUZDl6cPnH431SkjmsqDqB1fVghJ1ArnX5OcEk+o1gLvuaGcRySdqq5RZtV
+ mqzCyYdcrZmSMaYJBiu0lxgkt5eDbzegUxSCFEcq7jo4VNsXrIjT6hbZpQF2D5arQlq9PC
+ BEh77Pq0hRPDlu5oneQxjJJkcch0s/c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663058126;
+ s=susede2_ed25519; t=1663058280;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1bsNaxwMBDAPAzIyTalRDt6F2pNlZwCGLYRQJA3TK08=;
- b=a4qu1w0mFkI7unCQdeDLqUtwPVlvgEx+dXZWc/92zoLnccwrSTIukZLh5JbLCS/mF4uemw
- D1Q6nflXEdEOJ3CA==
+ bh=iniaS+yETXmGRbGOxnW8SdeFJmRLhOvB6cSBPFNNXSA=;
+ b=pUG6xBzlaHFY15Ev6i2KwoIIrkOLPnb4xNMJbX0Q58YVSv1TqF++/O4ZAuUAiWoUrMwaD0
+ /Za45qq0qv4tutCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9FC43139B3;
- Tue, 13 Sep 2022 08:35:26 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40715139B3;
+ Tue, 13 Sep 2022 08:38:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id E9ekJc5AIGOhGwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 13 Sep 2022 08:35:26 +0000
-Date: Tue, 13 Sep 2022 10:35:24 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id OodLB2hBIGOGHAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 13 Sep 2022 08:38:00 +0000
+Date: Tue, 13 Sep 2022 10:37:57 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YyBAzH/NOwMhEJsH@pevik>
-References: <20220910170518.17006-1-pvorel@suse.cz>
- <YyA+hyLQ5hy0UdZA@yuki>
+Message-ID: <YyBBZSRXHdOG4shY@pevik>
+References: <20220909141840.18327-1-pvorel@suse.cz>
+ <20220909141840.18327-8-pvorel@suse.cz> <Yx9QFWuRMjDUAafp@yuki>
+ <Yx+Q0+fUokI7jlhT@pevik> <YyA8JQXmeTBQVbgY@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YyA+hyLQ5hy0UdZA@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <YyA8JQXmeTBQVbgY@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] Add .mailmap
+Subject: Re: [LTP] [PATCH v5 07/10] tst_test.sh: Introduce TST_FS_TYPE_FUSE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,39 +78,21 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Jiri Jaburek <jjaburek@redhat.com>,
- Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 > Hi!
-> > although I prefer to keep signing non-SUSE work ("after work hacking")
-> > with my private gmail mail, for release counting purposes it's better to
-> > keep only SUSE mail.
+> > > Also maybe it would be a better as a function so that the code does not
+> > > run unconditionally on each tst_mount() call?
+> > Do you mean e.g. tst_is_fuse() and df01.sh would call it?
 
-> I usually fix the duplicates by hand, we even have typos there so some
-> post processing is needed anyways. And it takes less than 5 minutes
-> too.
-
-> On the other hand there is no reason not to add this.
-
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-Thanks! I'll merge it later today or tomorrow if nobody objects.
-
-> > I suppose others want to update their mail. I didn't dare to add these,
-> > feel free to send patch with your setup:
-
-> > Andrea Cervesato <andrea.cervesato@suse.com> <andrea.cervesato@suse.de>
-> > Jiri Jaburek <jjaburek@redhat.com> <jjaburek@users.noreply.github.com>
-> > Richard Palethorpe <rpalethorpe@suse.com> <rpalethorpe@suse.com>
-> > Yang Xu <xuyang2018.jy@fujitsu.com> <yangx.jy@cn.fujitsu.com>
-
-> I guess that everyone should add their aliases if they want to.
-
-Fully agree. The above is just a hint for them.
+> Yes that looks slightly cleaner than adding another variable.
+OK, I'll fix it in v7. I put it into tst_test.sh, but if you prefer to have this
+function just in df01.sh (called as is_fuse) until anything else needs it that
+would work for me as well.
 
 Kind regards,
 Petr
