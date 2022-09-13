@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FB26C6FA82
-	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 08:12:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A8C7C6FA82
+	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 08:13:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 82C1F3CAAF6
-	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 10:12:50 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id AFA543CAAF3
+	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 10:13:48 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9AD3D3C01CC
- for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:12:40 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 0FA933C01CC
+ for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:13:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 33304601323
- for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:12:39 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 8F6491A00E20
+ for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:13:37 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 713525BFA9;
- Tue, 13 Sep 2022 08:12:39 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 638F55BFB7;
+ Tue, 13 Sep 2022 08:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663056759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1663056817; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zIBuabKt+ZcaTlByUF76lg1u2DZWf/aXJljzy+h4ye8=;
- b=AQdVDNxXfyWeBDdYnbZA5xZs2sMAi2FOmDyNaZ4d27TMa+54OAlgFIS1MU4qc9RbqY2ou6
- VGTQVr604/R88CQsWBrER1kep47RxMeNueHnxoH8JBx/rY2hM0gC2GQQ6j6y56wrkYruPl
- 8OFBxYUoKbk/tZIB9p55gwGfA4MlJEw=
+ bh=kpfuKYfc0pKzwqYyzzuhfLItPOrCjePoy3LDZI+TYDk=;
+ b=qlvCmqZXz5xmkAJ/VDNYudKjRQBQZhXhVIL1J/BjrXK32MgpZ8ogTkJfVeYQ8AEcmEb7gO
+ d4fWVZnBgpFR5fJeel6IcIyqVtf6ByQ6fpxbSNdNDxuTQLXmIs2jCmMxnNYtnQiTk64FgA
+ QJpVAlhacdbCc0jblFMsFbtf9T0ckrw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663056759;
+ s=susede2_ed25519; t=1663056817;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zIBuabKt+ZcaTlByUF76lg1u2DZWf/aXJljzy+h4ye8=;
- b=+oEvAANwnsnFFpQD8Zq3oOQ8oSAkhUyIle2UBcdzNnLp8Y2Emy8zNmpij/BUKRwGxa8Fne
- Orp5+wJRdRTMlTAA==
+ bh=kpfuKYfc0pKzwqYyzzuhfLItPOrCjePoy3LDZI+TYDk=;
+ b=DQtNXG4ENA/VZeHTKcH8Wg9vh3wNoCDKTq3NRoj+SmLX1V7nTyZHR9tQdei3H2F55OoDmc
+ K+2hxVmAppLEPOBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E47F13AB5;
- Tue, 13 Sep 2022 08:12:39 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5106013AB5;
+ Tue, 13 Sep 2022 08:13:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Sci7FXc7IGN0EgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 13 Sep 2022 08:12:39 +0000
-Date: Tue, 13 Sep 2022 10:14:35 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 68WfErE7IGPAEgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 13 Sep 2022 08:13:37 +0000
+Date: Tue, 13 Sep 2022 10:15:33 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YyA763/Rx1Do8DHx@yuki>
+Message-ID: <YyA8JQXmeTBQVbgY@yuki>
 References: <20220909141840.18327-1-pvorel@suse.cz>
- <20220909141840.18327-6-pvorel@suse.cz> <Yx9JPQimBEpXFa4+@yuki>
- <Yx+YtBZOKje6FbWS@pevik>
+ <20220909141840.18327-8-pvorel@suse.cz> <Yx9QFWuRMjDUAafp@yuki>
+ <Yx+Q0+fUokI7jlhT@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Yx+YtBZOKje6FbWS@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <Yx+Q0+fUokI7jlhT@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 05/10] tst_supported_fs: Support skip list when
- query single fs
+Subject: Re: [LTP] [PATCH v5 07/10] tst_test.sh: Introduce TST_FS_TYPE_FUSE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,12 +84,11 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > Shouldn't this one go before the addition of the functionality to the wrapper used by shell?
-> Do you mean to put this ("tst_supported_fs: Support skip list when query single
-> fs") before the previous ("tst_supported_fs: Implement skip list")?
+> > Also maybe it would be a better as a function so that the code does not
+> > run unconditionally on each tst_mount() call?
+> Do you mean e.g. tst_is_fuse() and df01.sh would call it?
 
-Yes, as far as I can tell this commit implement function that is called
-from the previous patch.
+Yes that looks slightly cleaner than adding another variable.
 
 -- 
 Cyril Hrubis
