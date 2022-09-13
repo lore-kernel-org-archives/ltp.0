@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 594D4C6FA82
-	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 09:29:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E062C6FA82
+	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 09:36:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CB8D63CABA6
-	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 11:29:40 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 410003CAAF5
+	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 11:36:19 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BA8473CA6CB
- for <ltp@lists.linux.it>; Tue, 13 Sep 2022 11:29:30 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id E9C173CA6CB
+ for <ltp@lists.linux.it>; Tue, 13 Sep 2022 11:36:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 24377600CF8
- for <ltp@lists.linux.it>; Tue, 13 Sep 2022 11:29:29 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CD9B7600326
+ for <ltp@lists.linux.it>; Tue, 13 Sep 2022 11:36:07 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5842A5C0E5;
- Tue, 13 Sep 2022 09:29:29 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9FBC622062;
+ Tue, 13 Sep 2022 09:36:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663061369;
+ t=1663061766;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GkdvQxnQWe57+4NTooe/1Gqz4CVABQbCuKcmRUG+pK4=;
- b=gFRdk5cqIBchAbCXDBhbUw0yqZZBC56Nx5T4NfFODdVoh6PCGXkGsNSYMOR4pwNIS1EV+i
- /T5SJv+mHrZHbd6hrOezv1yfR0tP2jw7iYUL/HdNc1TQ354+v+FprfDTIY/oEmuamvL2oj
- 9vX4ZyH3DWoR6C0zn6uqndK9AH4391w=
+ bh=vDJ7XZAr+nsEp9Oy+iO0c2x6HaFh9qkapw8DrquuEcY=;
+ b=d06aodrsx8YfQK5QLt6fUALAfVpve9kF48suK+UhBzgIAAF8yZph7Q+pVIBlylGdo9POFe
+ +1SgduxgSYxUsrKRCB40QRMgK8gFj3zZo2JlWLDSz6u/Fjx2wgvl60hzOFsPaUXN64+Crr
+ YRjYi6yyKiy46d50D00aW1QAUFWEmRY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663061369;
+ s=susede2_ed25519; t=1663061766;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GkdvQxnQWe57+4NTooe/1Gqz4CVABQbCuKcmRUG+pK4=;
- b=TIH3zdqqD9wGtqCvptlAb4K+8HHh4xcbHy9D9FdILNd26z9Dntm/BwZ70lfzL3czSDVvA3
- jfGVeqtKNtBqFPAw==
+ bh=vDJ7XZAr+nsEp9Oy+iO0c2x6HaFh9qkapw8DrquuEcY=;
+ b=v7qH7cgWC2K0H6A0gFllllpAN+Pfl3nI1/+rw7xjORC9vV92Ld0q8Ax6dqzM+0FFwAeo3G
+ 4PmXaK6eU6ywuhCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16AA113AB5;
- Tue, 13 Sep 2022 09:29:29 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E3F813AB5;
+ Tue, 13 Sep 2022 09:36:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id UKMjA3lNIGMCMgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 13 Sep 2022 09:29:29 +0000
-Date: Tue, 13 Sep 2022 11:29:26 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 4YxZFQZPIGO4NAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 13 Sep 2022 09:36:06 +0000
+Date: Tue, 13 Sep 2022 11:36:04 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YyBNdpiOGeNjVFWs@pevik>
+Message-ID: <YyBPBLi9l+q1KJXr@pevik>
 References: <20220909141840.18327-1-pvorel@suse.cz>
- <20220909141840.18327-4-pvorel@suse.cz> <Yx9Fa69/ukgEJylz@yuki>
- <Yx+WwsY6xXV8t+62@pevik> <YyA7P/eci29BIMI5@yuki>
+ <20220909141840.18327-6-pvorel@suse.cz> <Yx9JPQimBEpXFa4+@yuki>
+ <Yx+YtBZOKje6FbWS@pevik> <YyA763/Rx1Do8DHx@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YyA7P/eci29BIMI5@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <YyA763/Rx1Do8DHx@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 03/10] tst_supported_fs: Print TCONF if no
- filesystem supported
+Subject: Re: [LTP] [PATCH v5 05/10] tst_supported_fs: Support skip list when
+ query single fs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,36 +86,17 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 > Hi!
-> > > Shouldn't we rather than this add tst_res(TCONF, "...") messages to the
-> > > lib/tst_supported_fs_types.c so that we get consistent messages between
-> > > C and shell?
+> > > Shouldn't this one go before the addition of the functionality to the wrapper used by shell?
+> > Do you mean to put this ("tst_supported_fs: Support skip list when query single
+> > fs") before the previous ("tst_supported_fs: Implement skip list")?
 
-> > Well, in v4 I add TCONF in tst_fs_is_supported_skiplist()
-> > (lib/tst_supported_fs_types.c), but you asked for TST_FS_UNSUPPORTED [1].
+> Yes, as far as I can tell this commit implement function that is called
+> from the previous patch.
+I'm really slow on this. Which function do you mean please?
 
-> I guess that we misunderstand each other. I'm fine with the library
-> printing messages, what I didn't like was the tst_brk() which made the
-> whole program execution flow obscured.
-
-OK, instead of this from v4:
-> +	if (tst_fs_in_skiplist(fs_type, skiplist)) {
-> +		tst_brk(TCONF, "%s is not supported by the test",
-> +			fs_type);
-
-I'll add in v6:
-> +	if (tst_fs_in_skiplist(fs_type, skiplist)) {
-> +		tst_res(TCONF, "%s is not supported by the test",
-> +			fs_type);
-> +		return TST_FS_UNSUPPORTED;
-> +	}
-
-I'll add tst_res(TINFO, "%s is supported by the test", fs_name);
-from do_test_setup() tst_fs_is_supported_skiplist() and call
-tst_fs_is_supported_skiplist() in do_test_setup().
-
-But not sure if there can be a cleanup of duplicity of:
-if (!filesystems[0])
-	tst_brk(TCONF, "There are no supported filesystems")
+"[v5,05/10] tst_supported_fs: Support skip list when query single fs" implements
+just tst_fs_is_supported_skiplist() which is not used in "[v5,04/10]
+tst_supported_fs: Implement skip list".
 
 Kind regards,
 Petr
