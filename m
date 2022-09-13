@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10EC4C54EE9
-	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 08:24:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 352F3C6FA82
+	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 08:29:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD2733CAB4E
-	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 10:23:58 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id EA6CF3CAAF5
+	for <ltp@archiver.kernel.org>; Tue, 13 Sep 2022 10:29:32 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1ED753CA900
- for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:23:49 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 16F823CA900
+ for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:29:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4BEFE6001F4
- for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:23:47 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 75FD41A00F32
+ for <ltp@lists.linux.it>; Tue, 13 Sep 2022 10:29:22 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7F3303495C;
- Tue, 13 Sep 2022 08:23:47 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 73EFD5BFED;
+ Tue, 13 Sep 2022 08:29:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663057427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1663057762;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+VLix4rhuwqrKW2N7mLdMWo87DL18rWtxcRjtWbK8TI=;
- b=MLJiGpMwXSTH/VSXlD8O3s9PSC/x6GwBcdE9O4HaTO4MTP7Rl1ojROt7tgNhtjrZIdMgfy
- qx7t+CegrD0RuyVMvveHvbuCNoQ4Bxn7DGSAGT2hm82ZP0Ezsh0cG8ZG+tl2gnv9xBC1Hm
- 2fjY2TThy0jp/a6N9V1KWyvL6fRKRfE=
+ bh=WQKE6VatuS/gQxhAq7naOC2hIqjwNKuL9WjlPkBOpQI=;
+ b=ofkaPU4WvSmP3bY4XkjigU49ImDLFSY+7TeqmViDrBpw47HWltSTMV0z9fFlKTH/nsmCxp
+ IfFsw9A7+3hkgW2IVlocQqFFcxTVzhRIk/c4jaAFrFslMSTfTFgpN018yPZ1Rq0bB+j7Yp
+ Aw4GjNCjDB4Nx0pz2has4tmEaVfo+pw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663057427;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1663057762;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+VLix4rhuwqrKW2N7mLdMWo87DL18rWtxcRjtWbK8TI=;
- b=3tJHs+/+nQ/+kqnaWFjM8XFE7wLykzQOg88r6xklZyVcsg3kdda57qLuvIw/nP98Ve/hXT
- osEwOCYFS+X3/oCw==
+ bh=WQKE6VatuS/gQxhAq7naOC2hIqjwNKuL9WjlPkBOpQI=;
+ b=5jbmQATLXvSGD7m9lS6+T8OLnypEFwuh4DgHOcyAUrtZRjj662fqcRjm9sq862kwIaJNcQ
+ ijwPkPXjNAiOveAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 56C6E139B3;
- Tue, 13 Sep 2022 08:23:47 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B3F0139B3;
+ Tue, 13 Sep 2022 08:29:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id n5qtFBM+IGPyFgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 13 Sep 2022 08:23:47 +0000
-Date: Tue, 13 Sep 2022 10:25:43 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YyA+hyLQ5hy0UdZA@yuki>
-References: <20220910170518.17006-1-pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id S64gEWI/IGMOGQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 13 Sep 2022 08:29:22 +0000
+Date: Tue, 13 Sep 2022 10:29:20 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <YyA/YJqivJ+UmT8l@pevik>
+References: <20220905061425.22852-1-luoxiaoyu9@huawei.com>
+ <YyAmPYZ2iaraxraN@pevik>
+ <CAEemH2cZ2gkYxiTyPzmzaDmbqcnvxy3uQzunAzj0jRR7CjqAtg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220910170518.17006-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <CAEemH2cZ2gkYxiTyPzmzaDmbqcnvxy3uQzunAzj0jRR7CjqAtg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] Add .mailmap
+Subject: Re: [LTP] [PATCH] pty04.c/pidfd_send_signal03.c: Drop redundant
+ tst_reap_children()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,39 +78,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jiri Jaburek <jjaburek@redhat.com>,
- Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> although I prefer to keep signing non-SUSE work ("after work hacking")
-> with my private gmail mail, for release counting purposes it's better to
-> keep only SUSE mail.
+> On Tue, Sep 13, 2022 at 2:42 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-I usually fix the duplicates by hand, we even have typos there so some
-post processing is needed anyways. And it takes less than 5 minutes
-too.
+> > Hi Luo,
 
-On the other hand there is no reason not to add this.
+> > > Drop redundant calling of tst_reap_children() in cleanup() since
+> > > it has been called in the API (run_tests()).
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> > LGTM, I suppose that was a mistake.
 
-> I suppose others want to update their mail. I didn't dare to add these,
-> feel free to send patch with your setup:
-> 
-> Andrea Cervesato <andrea.cervesato@suse.com> <andrea.cervesato@suse.de>
-> Jiri Jaburek <jjaburek@redhat.com> <jjaburek@users.noreply.github.com>
-> Richard Palethorpe <rpalethorpe@suse.com> <rpalethorpe@suse.com>
-> Yang Xu <xuyang2018.jy@fujitsu.com> <yangx.jy@cn.fujitsu.com>
 
-I guess that everyone should add their aliases if they want to.
+> Hmm, I slightly think that reflact a cautious thought from the author,
+> in case of test hit tst_brk unexpectly with invoke cleanup it can also
+> do reap children.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> So, it's probably no harmful to keep tst_reap_children there.
+Ah, thx for info. I set status rejected in patchwork.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
