@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEF5FC6FA82
-	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 16:19:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 125D3ECAAD3
+	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 16:20:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5E6093CABF0
-	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 18:19:55 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id F16B93CAC03
+	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 18:20:06 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ACC2B3CABB3
+ by picard.linux.it (Postfix) with ESMTPS id B00943CABD0
  for <ltp@lists.linux.it>; Wed, 14 Sep 2022 18:19:32 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 28C3B1000F62
- for <ltp@lists.linux.it>; Wed, 14 Sep 2022 18:19:31 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1B9991000F52
+ for <ltp@lists.linux.it>; Wed, 14 Sep 2022 18:19:32 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 77DC733B6B
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CBF5C33B91
  for <ltp@lists.linux.it>; Wed, 14 Sep 2022 16:19:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1663172371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=S6QDvgA9MxqwUsG8jTx9MZlZZ1wmSLwPiV9HKhJMwSQ=;
- b=tKpfLbZQ7ZT14pdshYKN9eDAAxWTmhko2jmopLxT7OFkEyLKybzXoPpfz3AWCM8UQfR5uw
- 0BG2cHc2NAi/B4pnOpbxMn9OfGA0g+T+Tkh7RKVxsROEMxSl+VE17Ff6yMHDdPZ6SfMWT6
- S8r6TQyVK0ItPo6u7rAgadl/m7E6M+4=
+ bh=7bmXSaFEG0ZUIEsR1mXGaWvVMZlDDTE7mADi/1hrZc4=;
+ b=05BCBfiWF+pnP/hqQFMAbNDW0BxJW2BYkG4f6BjwZzVUBIz9RB7CKwrl/RHoBm+Iy2G7bb
+ G174qOMNzgRls1l8menYEQCdUGjXHBKg6bZgUnswkist+dOTzirwmSJACYfWtBs0puULTt
+ eqlrM9kIRTdJe6iwwJCPFrRqjOFG1MU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1663172371;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=S6QDvgA9MxqwUsG8jTx9MZlZZ1wmSLwPiV9HKhJMwSQ=;
- b=Zf0DvnV2JmyIkDr9j+O/zCUFno8BStCAhcCCFW3fFDDPJZ/qn/7trNtTt0IRyegzWPVGGa
- XekL5a4rotAL30DA==
+ bh=7bmXSaFEG0ZUIEsR1mXGaWvVMZlDDTE7mADi/1hrZc4=;
+ b=yqZbvIx31VrC0VaFfrectj5vTitolJyikaJB46BU/TAoGR2wSh3GVNEtLz2y3qTr44458B
+ k/KSe923kwS6cUBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5C2E813A90
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B3021134B3
  for <ltp@lists.linux.it>; Wed, 14 Sep 2022 16:19:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id WMaeFRP/IWMwYgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id UPXGKhP/IWMwYgAAMHmgww
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Wed, 14 Sep 2022 16:19:31 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 14 Sep 2022 18:19:27 +0200
-Message-Id: <20220914161930.27681-3-mdoucha@suse.cz>
+Date: Wed, 14 Sep 2022 18:19:30 +0200
+Message-Id: <20220914161930.27681-6-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220914161930.27681-1-mdoucha@suse.cz>
 References: <20220914161930.27681-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/5] copy_file_range01: Add max_runtime
+Subject: [LTP] [PATCH v2 5/5] sendfile09: Add max_runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,21 +87,23 @@ Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
 Changes since v1:
-- Changed max_runtime from 20s to 5s
+- Changed max_runtime from 20 to 120
 
- testcases/kernel/syscalls/copy_file_range/copy_file_range01.c | 1 +
+ testcases/kernel/syscalls/sendfile/sendfile09.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-index 7d27007a3..bbcb0ca3b 100644
---- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-+++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-@@ -232,4 +232,5 @@ static struct tst_test test = {
- 	.all_filesystems = 1,
- 	.test = copy_file_range_verify,
- 	.test_variants = TEST_VARIANTS,
-+	.max_runtime = 5
- };
+diff --git a/testcases/kernel/syscalls/sendfile/sendfile09.c b/testcases/kernel/syscalls/sendfile/sendfile09.c
+index 320649dcd..07c43eb59 100644
+--- a/testcases/kernel/syscalls/sendfile/sendfile09.c
++++ b/testcases/kernel/syscalls/sendfile/sendfile09.c
+@@ -97,6 +97,7 @@ static struct tst_test test = {
+ 	.test = run,
+ 	.tcnt = ARRAY_SIZE(tc),
+ 	.min_kver = "2.6.33",
++	.max_runtime = 120,
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "5d73320a96fcc"},
+ 		{}
 -- 
 2.37.3
 
