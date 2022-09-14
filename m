@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B64AECAAD3
-	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 13:44:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C065ECAAD3
+	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 13:51:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 458CE3CABF3
-	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 15:44:20 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 16A0B3CAC33
+	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 15:50:59 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 91EC33CAC05
- for <ltp@lists.linux.it>; Wed, 14 Sep 2022 15:43:35 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 8549E3CAA07
+ for <ltp@lists.linux.it>; Wed, 14 Sep 2022 15:50:49 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 41F4E2003A2
- for <ltp@lists.linux.it>; Wed, 14 Sep 2022 15:43:34 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1603E14012D7
+ for <ltp@lists.linux.it>; Wed, 14 Sep 2022 15:50:48 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 901931F8C4
- for <ltp@lists.linux.it>; Wed, 14 Sep 2022 13:43:34 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DD01C1FABF;
+ Wed, 14 Sep 2022 13:50:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663163014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1663163447;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lc/T5tRQKSfsaFHCXCUhfnudzy+GpjWxD3h6jrZ6MuA=;
- b=t0ZYbjzK07C7/ktue38k72TRMJfkYipXNLqO8TbTbqMcXcbeTm7hEmfT6HhrQv+YIRAQA7
- 3UqVd+ru5MIv5mEMOTiE1TpyxPuGiTa96OLBLAuMw4LCiTEYeY9bm0U8GoH3JJv4s5WgWm
- t+IYtZ7VlmRy60l46aIiHjOCHCp6vGI=
+ bh=1ES6K+T0KC1Rk0V3cW6ABssF7CFpiTrv8NsG4/PTZ6o=;
+ b=rFJuqhMXR8Lh2kTq/Nolecr7yYA8tLrOdxW+CcxWrY+m/jT/cter0FnOwlaxyhPXe+Zf/3
+ 9UewqO7N46z2kLo4ALTfCu1lgqc4Ev2dpqGKodC8bGEyaqOHFEysZjicmQO8XmBs5VJvi+
+ N6zlYnP7p/zO0yc0DXXbC9Rt/Ko19TQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663163014;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1663163447;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lc/T5tRQKSfsaFHCXCUhfnudzy+GpjWxD3h6jrZ6MuA=;
- b=Z/54CxGyRDvMRwK/H0HKjhUNpVOP40/4qeLW0+44Z9E78Vvtu11jcCKMJLhVfn3zUlabqf
- m5oq5GPeeipgQpBw==
+ bh=1ES6K+T0KC1Rk0V3cW6ABssF7CFpiTrv8NsG4/PTZ6o=;
+ b=B5Z35K9NBpjgPMrstDxsHcbAQUbIpkc6ZPjbFfjzycZzlvoR9QxtA9eclpvgYgeRN/WMhB
+ ZNrmjNn0bYwjbkAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7B39C13A90
- for <ltp@lists.linux.it>; Wed, 14 Sep 2022 13:43:34 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A55B413494;
+ Wed, 14 Sep 2022 13:50:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id SNc7HYbaIWN1IgAAMHmgww
- (envelope-from <mdoucha@suse.cz>)
- for <ltp@lists.linux.it>; Wed, 14 Sep 2022 13:43:34 +0000
-From: Martin Doucha <mdoucha@suse.cz>
-To: ltp@lists.linux.it
-Date: Wed, 14 Sep 2022 15:43:31 +0200
-Message-Id: <20220914134333.13562-2-mdoucha@suse.cz>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220914134333.13562-1-mdoucha@suse.cz>
-References: <20220914134333.13562-1-mdoucha@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 5iqGJjfcIWPjJQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 14 Sep 2022 13:50:47 +0000
+Date: Wed, 14 Sep 2022 15:50:45 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>, kernel-team@android.com,
+ ltp@lists.linux.it, Edward Liaw <edliaw@google.com>
+Message-ID: <YyHcNcTUNG+gU3rq@pevik>
+References: <20220913202839.1807979-1-edliaw@google.com>
+ <YyGisrbDIgVa/0QA@yuki> <YyHYvCr0PISg6ISY@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <YyHYvCr0PISg6ISY@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/3] Add tst_validate_children() helper function
+Subject: Re: [LTP] [PATCH v1] minmax: fix type warnings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,75 +78,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The function waits for given number of child processes and validates
-that they have all exited without error.
+Hi Edward, Cyril,
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+Merged with requested fixes + update printf format (SAFE_FILE_SCANF) to %zi.
 
-Changes since v1:
-- Moved tst_validate_children_() to lib/tst_status.c
-- Simplified the code using tst_strstatus()
-
- include/tst_test.h |  8 ++++++++
- lib/tst_status.c   | 20 ++++++++++++++++++++
- 2 files changed, 28 insertions(+)
-
-diff --git a/include/tst_test.h b/include/tst_test.h
-index ac52f268c..69e649651 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -362,6 +362,14 @@ void tst_set_max_runtime(int max_runtime);
-  */
- char *tst_get_tmpdir(void);
- 
-+/*
-+ * Validates exit status of child processes
-+ */
-+int tst_validate_children_(const char *file, const int lineno,
-+	unsigned int count);
-+#define tst_validate_children(child_count) \
-+	tst_validate_children_(__FILE__, __LINE__, (child_count))
-+
- #ifndef TST_NO_DEFAULT_MAIN
- 
- static struct tst_test test;
-diff --git a/lib/tst_status.c b/lib/tst_status.c
-index 9124faaa3..5d03871f3 100644
---- a/lib/tst_status.c
-+++ b/lib/tst_status.c
-@@ -49,3 +49,23 @@ const char *tst_strstatus(int status)
- 
- 	return invalid(status);
- }
-+
-+int tst_validate_children_(const char *file, const int lineno,
-+	unsigned int count)
-+{
-+	unsigned int i;
-+	int status;
-+	pid_t pid;
-+
-+	for (i = 0; i < count; i++) {
-+		pid = SAFE_WAITPID(-1, &status, 0);
-+
-+		if (!WIFEXITED(status) || WEXITSTATUS(status)) {
-+			tst_res_(file, lineno, TFAIL, "Child %d: %s", pid,
-+				tst_strstatus(status));
-+			return 1;
-+		}
-+	}
-+
-+	return 0;
-+}
--- 
-2.37.3
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
