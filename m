@@ -4,69 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39BCEC6FA82
-	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 16:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD08FECAAD3
+	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 16:20:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9F8963CAC0C
-	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 18:20:30 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 1F6EF3CAC2B
+	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 18:20:44 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C0C223CABE4
+ by picard.linux.it (Postfix) with ESMTPS id 28A253CABB3
  for <ltp@lists.linux.it>; Wed, 14 Sep 2022 18:19:32 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5EBB614012D1
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 232F2601F7F
  for <ltp@lists.linux.it>; Wed, 14 Sep 2022 18:19:31 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5923E33B6A
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 42D3B20334
  for <ltp@lists.linux.it>; Wed, 14 Sep 2022 16:19:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1663172371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DDj1oUd89DXe/H+1LUvebJEKWrzR9zuGjiuhhhu70FE=;
- b=jEJAN2hqTgOKTHey97l50SfNcHOoa5I2oMjXDWwGjO7TBfHe85/3Kzfke/nzuHlYWzAKGe
- XD+zuJRcfHbW12n8P5j2C3l19bf3Tc5pa5P05kawYIq1U6g5hXV63OI1gKxajSToLwjFMA
- 48IVe/miRIv6RIysMSz3b1rw3Wi0pto=
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=VzsygHjVQGdu4kz1SzgLBHjArGNQGNrJrzwL9VQZQEo=;
+ b=ET/2QdJSgO80hWIY7M1XBirw2XFj9+QACZATq6LJmtHyWXOF1V7qEhFVaH2UjKNDGINORZ
+ awwR3YONtm2om8/3pIB/eVUzMW98Eynj2Rj11r+f2OvMxf4ERXqHmcerHne9cYHzkFup4G
+ hJTOgq5katVhP4oCquYN9zLot2Ek5YQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1663172371;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DDj1oUd89DXe/H+1LUvebJEKWrzR9zuGjiuhhhu70FE=;
- b=e7T3hxQAjFLdaOswuDp5d5j7L5fyXME7/i2GNELf3uQY2wEuSA+pRnGmcdCKVdOhcw5tRy
- du+M6O9eq2DaxECg==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=VzsygHjVQGdu4kz1SzgLBHjArGNQGNrJrzwL9VQZQEo=;
+ b=LtcTvUIwP4k4NvpuzXMH5491CkLhLjJ+Q+x+X4WjhrY6/3dt2yVTZGeLUc/2NFKkOd2eXB
+ UMMs7zEc5ratofAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 478AA134B3
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 283C7134B3
  for <ltp@lists.linux.it>; Wed, 14 Sep 2022 16:19:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id uACHEBP/IWMwYgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id KLHaCBP/IWMwYgAAMHmgww
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Wed, 14 Sep 2022 16:19:31 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 14 Sep 2022 18:19:26 +0200
-Message-Id: <20220914161930.27681-2-mdoucha@suse.cz>
+Date: Wed, 14 Sep 2022 18:19:25 +0200
+Message-Id: <20220914161930.27681-1-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220914161930.27681-1-mdoucha@suse.cz>
-References: <20220914161930.27681-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/5] ioctl_sg01: Add max_runtime
+Subject: [LTP] [PATCH v2 0/5] Max_runtime timeout fixes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,33 +76,26 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test setup can take very long time depending on the amount of free RAM.
-Set high max_runtime to avoid timeout issues.
+The introduction of max_runtime system shortly before the latest LTP release
+has caused some random timeout issues, particularly for sendfile09 and
+ioctl_sg01. This patchset fixes those issues.
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+All of these patches are independent and can be merged out of order.
 
-Changes since v1:
-- Changed max_runtime from unlimited to 1 hour
+Martin Doucha (5):
+  ioctl_sg01: Add max_runtime
+  copy_file_range01: Add max_runtime
+  perf_event_open02: Add max_runtime
+  readahead02: Add max_runtime
+  sendfile09: Add max_runtime
 
-We'll add .max_setup_runtime after the release to not break even more things.
-Let's use this as a temporary fix.
+ .../kernel/syscalls/copy_file_range/copy_file_range01.c  | 1 +
+ testcases/kernel/syscalls/ioctl/ioctl_sg01.c             | 1 +
+ .../kernel/syscalls/perf_event_open/perf_event_open02.c  | 1 +
+ testcases/kernel/syscalls/readahead/readahead02.c        | 9 +++++++--
+ testcases/kernel/syscalls/sendfile/sendfile09.c          | 1 +
+ 5 files changed, 11 insertions(+), 2 deletions(-)
 
- testcases/kernel/syscalls/ioctl/ioctl_sg01.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-index 94b30dc6b..dfbba399d 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_sg01.c
-@@ -126,6 +126,7 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.setup = setup,
- 	.cleanup = cleanup,
-+	.max_runtime = 3600,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "a45b599ad808"},
- 		{"CVE", "2018-1000204"},
 -- 
 2.37.3
 
