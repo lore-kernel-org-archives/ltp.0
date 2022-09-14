@@ -4,47 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CC40ECAAD3
-	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 11:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63F3CECAAD8
+	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 13:21:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A99EE3CABFC
-	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 13:31:09 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 735B13CAC38
+	for <ltp@archiver.kernel.org>; Wed, 14 Sep 2022 15:21:45 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 68A933CAAD0
- for <ltp@lists.linux.it>; Wed, 14 Sep 2022 13:30:59 +0200 (CEST)
-Received: from a48-37.smtp-out.amazonses.com (a48-37.smtp-out.amazonses.com
- [54.240.48.37])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 0AB403CA900
+ for <ltp@lists.linux.it>; Wed, 14 Sep 2022 15:21:34 +0200 (CEST)
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
+ [60.248.80.70])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 72E821A0021E
- for <ltp@lists.linux.it>; Wed, 14 Sep 2022 13:30:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1663155056;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=VmFIhcCBq+o5VNjqRdARHQ/N/UXurSel8YKTRn4cXEE=;
- b=FkwBGuf6+SP/QJyxh8EGnY3m1De50xokbx8Ez2Up0/MFh/ziL1UnpHmbahWJqeNw
- geKP4yk9jjuOK7IcyNfajg5FVgXbgcyKMKQZTk02O/hwqz0cv/qbY0NQU0oxOGNdbGA
- KpjFr4az097INdg+DOcFAzfPDVkUlX2MOa6W7/3I=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1663155056;
- h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=VmFIhcCBq+o5VNjqRdARHQ/N/UXurSel8YKTRn4cXEE=;
- b=FTp2mkGUG1H9C25XUbJPUltVM2VA47cVgMhJnwF+Q3TvzoPnxnoFtEJG8LY4zBrB
- YhHYMojOlMDBNxxQEfZwBO9yEMQCMQG3XdR/oHVc4eWWwvxM948VWDSlIoaGDL+kNnX
- gXNSaq7yMIP7jB/d5wS09XTOC/HWtbFBeE36w01U=
-From: lkft@linaro.org
-To: ltp@lists.linux.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 23C9714012C8
+ for <ltp@lists.linux.it>; Wed, 14 Sep 2022 15:21:30 +0200 (CEST)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+ by Atcsqr.andestech.com with ESMTP id 28EDLJCa012872;
+ Wed, 14 Sep 2022 21:21:19 +0800 (+08)
+ (envelope-from dylan@andestech.com)
+Received: from atctrx.andestech.com (10.0.12.119) by ATCPCS16.andestech.com
+ (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Wed, 14 Sep 2022
+ 21:21:18 +0800
+From: Dylan Jhong <dylan@andestech.com>
+To: <ltp@lists.linux.it>
+Date: Wed, 14 Sep 2022 21:19:50 +0800
+Message-ID: <20220914131950.1783054-1-dylan@andestech.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Message-ID: <010001833bc43066-a4966c03-28d5-4c2f-a5a5-74dd2195f287-000000@email.amazonses.com>
-Date: Wed, 14 Sep 2022 11:30:56 +0000
-Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.09.14-54.240.48.37
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Originating-IP: [10.0.12.119]
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 28EDLJCa012872
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for 2a7734f
+Subject: [LTP] [PATCH] kernel/uevent: Adjust the number of uevents
+ dynamically in uevent02
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,82 +54,197 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org
+Cc: alankao@andestech.com, minachou@andestech.com, dminus@andestech.com,
+ x5710999x@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-## Build
-* kernel: 5.18.19
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.18.y
-* git commit: 22a992953741ad79c07890d3f4104585e52ef26b
-* git describe: 2a7734f
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/2a7734f
+When CONFIG_SMP is not selected, CONFIG_RPS will not be enabled. Causes the
+kernel to not create rx queues in sysfs[*1] when creating tun devices.
+uevent02 will check if the rx queue exists, so we have to dynamically adjust
+the number of uevents to pass this testcase.
 
-## Test Regressions (compared to fe31bfc)
-* qemu_i386, ltp-controllers
-  - cpuacct_100_100
+[*1]: https://github.com/torvalds/linux/blob/3245cb65fd91cd514801bf91f5a3066d562f0ac4/net/core/net-sysfs.c#L1109
 
-* qemu_i386, ltp-cve
-  - cve-2018-1000204
+Signed-off-by: Dylan Jhong <dylan@andestech.com>
+---
+ testcases/kernel/uevents/uevent02.c | 146 ++++++++++++++--------------
+ 1 file changed, 73 insertions(+), 73 deletions(-)
 
+diff --git a/testcases/kernel/uevents/uevent02.c b/testcases/kernel/uevents/uevent02.c
+index ce0cf757d..059320f1c 100644
+--- a/testcases/kernel/uevents/uevent02.c
++++ b/testcases/kernel/uevents/uevent02.c
+@@ -19,11 +19,71 @@
+ #include <linux/if_tun.h>
+ 
+ #include "tst_test.h"
++#include "tst_private.h"
+ 
+ #include "uevent.h"
+ 
+ #define TUN_PATH "/dev/net/tun"
+ 
++#define MAX_UEVENT 7
++
++struct uevent_desc add = {
++	.msg = "add@/devices/virtual/net/ltp-tun0",
++	.value_cnt = 4,
++	.values = (const char*[]) {
++		"ACTION=add",
++		"DEVPATH=/devices/virtual/net/ltp-tun0",
++		"SUBSYSTEM=net",
++		"INTERFACE=ltp-tun0",
++	}
++};
++struct uevent_desc add_rx = {
++	.msg = "add@/devices/virtual/net/ltp-tun0/queues/rx-0",
++	.value_cnt = 3,
++	.values = (const char*[]) {
++		"ACTION=add",
++		"DEVPATH=/devices/virtual/net/ltp-tun0/queues/rx-0",
++		"SUBSYSTEM=queues",
++	}
++};
++struct uevent_desc add_tx = {
++	.msg = "add@/devices/virtual/net/ltp-tun0/queues/tx-0",
++	.value_cnt = 3,
++	.values = (const char*[]) {
++		"ACTION=add",
++		"DEVPATH=/devices/virtual/net/ltp-tun0/queues/tx-0",
++		"SUBSYSTEM=queues",
++	}
++};
++struct uevent_desc rem_rx = {
++	.msg = "remove@/devices/virtual/net/ltp-tun0/queues/rx-0",
++	.value_cnt = 3,
++	.values = (const char*[]) {
++		"ACTION=remove",
++		"DEVPATH=/devices/virtual/net/ltp-tun0/queues/rx-0",
++		"SUBSYSTEM=queues",
++	}
++};
++struct uevent_desc rem_tx = {
++	.msg = "remove@/devices/virtual/net/ltp-tun0/queues/tx-0",
++	.value_cnt = 3,
++	.values = (const char*[]) {
++		"ACTION=remove",
++		"DEVPATH=/devices/virtual/net/ltp-tun0/queues/tx-0",
++		"SUBSYSTEM=queues",
++	}
++};
++struct uevent_desc rem = {
++	.msg = "remove@/devices/virtual/net/ltp-tun0",
++	.value_cnt = 4,
++	.values = (const char*[]) {
++		"ACTION=remove",
++		"DEVPATH=/devices/virtual/net/ltp-tun0",
++		"SUBSYSTEM=net",
++		"INTERFACE=ltp-tun0",
++	}
++};
++
+ static void generate_tun_uevents(void)
+ {
+ 	int fd = SAFE_OPEN(TUN_PATH, O_RDWR);
+@@ -42,79 +102,19 @@ static void generate_tun_uevents(void)
+ 
+ static void verify_uevent(void)
+ {
+-	int pid, fd;
+-
+-	struct uevent_desc add = {
+-		.msg = "add@/devices/virtual/net/ltp-tun0",
+-		.value_cnt = 4,
+-		.values = (const char*[]) {
+-			"ACTION=add",
+-			"DEVPATH=/devices/virtual/net/ltp-tun0",
+-			"SUBSYSTEM=net",
+-			"INTERFACE=ltp-tun0",
+-		}
+-	};
+-
+-	struct uevent_desc add_rx = {
+-		.msg = "add@/devices/virtual/net/ltp-tun0/queues/rx-0",
+-		.value_cnt = 3,
+-		.values = (const char*[]) {
+-			"ACTION=add",
+-			"DEVPATH=/devices/virtual/net/ltp-tun0/queues/rx-0",
+-			"SUBSYSTEM=queues",
+-		}
+-	};
+-
+-	struct uevent_desc add_tx = {
+-		.msg = "add@/devices/virtual/net/ltp-tun0/queues/tx-0",
+-		.value_cnt = 3,
+-		.values = (const char*[]) {
+-			"ACTION=add",
+-			"DEVPATH=/devices/virtual/net/ltp-tun0/queues/tx-0",
+-			"SUBSYSTEM=queues",
+-		}
+-	};
+-
+-	struct uevent_desc rem_rx = {
+-		.msg = "remove@/devices/virtual/net/ltp-tun0/queues/rx-0",
+-		.value_cnt = 3,
+-		.values = (const char*[]) {
+-			"ACTION=remove",
+-			"DEVPATH=/devices/virtual/net/ltp-tun0/queues/rx-0",
+-			"SUBSYSTEM=queues",
+-		}
+-	};
+-
+-	struct uevent_desc rem_tx = {
+-		.msg = "remove@/devices/virtual/net/ltp-tun0/queues/tx-0",
+-		.value_cnt = 3,
+-		.values = (const char*[]) {
+-			"ACTION=remove",
+-			"DEVPATH=/devices/virtual/net/ltp-tun0/queues/tx-0",
+-			"SUBSYSTEM=queues",
+-		}
+-	};
+-
+-	struct uevent_desc rem = {
+-		.msg = "remove@/devices/virtual/net/ltp-tun0",
+-		.value_cnt = 4,
+-		.values = (const char*[]) {
+-			"ACTION=remove",
+-			"DEVPATH=/devices/virtual/net/ltp-tun0",
+-			"SUBSYSTEM=net",
+-			"INTERFACE=ltp-tun0",
+-		}
+-	};
+-
+-	const struct uevent_desc *const uevents[] = {
+-		&add,
+-		&add_rx,
+-		&add_tx,
+-		&rem_rx,
+-		&rem_tx,
+-		&rem,
+-		NULL
+-	};
++	const struct uevent_desc *uevents[MAX_UEVENT];
++	int pid, fd, i = 0;
++	int has_RPS = tst_kconfig_get("CONFIG_RPS");
++
++	uevents[i++] = &add;
++	if (has_RPS)
++		uevents[i++] = &add_rx;
++	uevents[i++] = &add_tx;
++	if (has_RPS)
++		uevents[i++] = &rem_rx;
++	uevents[i++] = &rem_tx;
++	uevents[i++] = &rem;
++	uevents[i++] = NULL;
+ 
+ 	pid = SAFE_FORK();
+ 	if (!pid) {
+-- 
+2.34.1
 
-## Metric Regressions (compared to fe31bfc)
-No metric regressions found.
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-
-## Test Fixes (compared to fe31bfc)
-* bcm2711-rpi-4-b, ltp-syscalls
-  - inotify11
-
-* qemu_x86_64, ltp-controllers
-  - cpuacct_100_100
-
-
-## Metric Fixes (compared to fe31bfc)
-No metric fixes found.
-
-## Test result summary
-total: 12287, pass: 10436, fail: 157, skip: 1694, xfail: 0
-
-## Build Summary
-
-## Test suites summary
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-syscalls
-* ltp-tracing
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
