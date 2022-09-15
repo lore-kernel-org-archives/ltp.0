@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D12FECAAA1
-	for <ltp@archiver.kernel.org>; Thu, 15 Sep 2022 14:19:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6A1AC6FA8D
+	for <ltp@archiver.kernel.org>; Thu, 15 Sep 2022 15:04:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1DE133CAC60
-	for <ltp@archiver.kernel.org>; Thu, 15 Sep 2022 16:19:41 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id AF2E13CAC1D
+	for <ltp@archiver.kernel.org>; Thu, 15 Sep 2022 17:03:57 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 48CC43CA900
- for <ltp@lists.linux.it>; Thu, 15 Sep 2022 16:19:31 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 17F2D3C972D
+ for <ltp@lists.linux.it>; Thu, 15 Sep 2022 17:03:47 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D57FE600207
- for <ltp@lists.linux.it>; Thu, 15 Sep 2022 16:19:29 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7200F602572
+ for <ltp@lists.linux.it>; Thu, 15 Sep 2022 17:03:46 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F01D01F891;
- Thu, 15 Sep 2022 14:19:28 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6C8A121888;
+ Thu, 15 Sep 2022 15:03:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663251568; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1663254226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ih93cxpx9TGGy73/6TS2NWW56OhRiKWSJrUK3qXLEZM=;
- b=XUqXHB6BQMj7YNYeOZZ7u3xWVBRtu5kiwpIX1mGTJxpAtqqPTt2b9cMRhCfN1OWVnnH3Om
- ijyMXhyUB+exnWa1p8Bjc9rSvkzp6fITrshxcW8jJgcdaMtIQmQLF/p4/DKqd2eHd73qsj
- q8/jfnjH5FGi38kSpnMnFy5KfXG3yMk=
+ bh=62mFK3Jg9k2HD8wFv43f9O+DDslvI5Ec1eHH58z9psk=;
+ b=t4PPmXaTpJkBXjus+IKkAcS7Mul0ZqiTpqkwZC4NjUk5uqSL7T+634Og2UZAmbPkWMNLPf
+ lBSdTAlq4ZQql3hfnol3QSeVOFT7ILfesBCJrYNaD50hoyZeazLoj7Mz59JslOPNlwaYJQ
+ XRGxQnzWerHoDliYxC8lvpXOvykDwVk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663251568;
+ s=susede2_ed25519; t=1663254226;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ih93cxpx9TGGy73/6TS2NWW56OhRiKWSJrUK3qXLEZM=;
- b=eeRzxayt3W91kgcxU2Z/mRRWl/fUldxuyKnFYw4hDqbX68Vn5qMZz9zrLIBYIUyFNxVyWd
- dQMLwiT6V9u6viDw==
+ bh=62mFK3Jg9k2HD8wFv43f9O+DDslvI5Ec1eHH58z9psk=;
+ b=nFnsk+vOJXUhXzEb978XTO2uOnFTMRKdDj/RS6cuX2fdMjZm0B2cq29WkAfHOsGugd5szG
+ eQ8QeecWomGQbqBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D812B133B6;
- Thu, 15 Sep 2022 14:19:28 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 47E45133B6;
+ Thu, 15 Sep 2022 15:03:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id dP/TMnA0I2MudQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 15 Sep 2022 14:19:28 +0000
-Date: Thu, 15 Sep 2022 16:21:26 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id WJ1dD9I+I2MiCQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 15 Sep 2022 15:03:46 +0000
+Date: Thu, 15 Sep 2022 17:05:43 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YyM05nwf1+0eCd3w@yuki>
-References: <20220915031020.2633347-1-liwang@redhat.com>
- <YyMgBQu+phGCulxV@pevik>
+To: Jan Stancek <jstancek@redhat.com>
+Message-ID: <YyM/R3TuHGBsUDQY@yuki>
+References: <19d19a5d6bbf5b19940a936b62db6dfdd29a085f.1658313770.git.jstancek@redhat.com>
+ <YtftUlDCvP5uchp9@rei> <YyI+gHa7zCBIyjcg@pevik>
+ <CAASaF6xX=gBBjOVEnp6U4HpjfuzBVpbkyD1i0keW+iVjSCJZWg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YyMgBQu+phGCulxV@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <CAASaF6xX=gBBjOVEnp6U4HpjfuzBVpbkyD1i0keW+iVjSCJZWg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] open04: add EMFILE check
+Subject: Re: [LTP] [PATCH] syscalls/fsync02: restore runtime to 5m
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,37 +76,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > diff --git a/testcases/kernel/syscalls/open/open04.c b/testcases/kernel/syscalls/open/open04.c
-> > index d452405d4..01a8b12d6 100644
-> > --- a/testcases/kernel/syscalls/open/open04.c
-> > +++ b/testcases/kernel/syscalls/open/open04.c
-> > @@ -33,7 +33,12 @@ static void setup(void)
-> 
-> >  	for (i = first + 1; i < fds_limit; i++) {
-> >  		sprintf(fname, FNAME ".%d", i);
-> > -		fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0777);
-> > +		fd = open(fname, O_RDWR | O_CREAT, 0777);
-> > +		if (fd == -1) {
-> > +			if (errno != EMFILE)
-> > +				tst_brk(TBROK, "Expected EMFILE but got %d", errno);
-> > +			break;
-> > +		}
-> >  		fds[i - first] = fd;
-> >  	}
-> >  }
-> 
-> LGTM.
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> I put it at todo list, but haven't dived into it yet. For release, I'd
+> go with timelimit
+> extension as that can't cause any regressions.
 
-I faintly remmeber a similar patch where we decided not to work around
-for a test harness leaking filedescriptors into testcases.
+Let's go with that then.
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
