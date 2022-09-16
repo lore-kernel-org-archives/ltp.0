@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A27EECAAD8
-	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 20:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEDD8ECAAA1
+	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 20:39:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AEDAD3CAC9B
-	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 22:27:50 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 951053CACB3
+	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 22:39:40 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 509D63CAC18
- for <ltp@lists.linux.it>; Fri, 16 Sep 2022 22:27:39 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id C8EF03CAC64
+ for <ltp@lists.linux.it>; Fri, 16 Sep 2022 22:39:30 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 13CAD1A01A78
- for <ltp@lists.linux.it>; Fri, 16 Sep 2022 22:27:38 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2768C60067E
+ for <ltp@lists.linux.it>; Fri, 16 Sep 2022 22:39:29 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6881B20BBE;
- Fri, 16 Sep 2022 20:27:37 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9E10D1F9FD;
+ Fri, 16 Sep 2022 20:39:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663360057;
+ t=1663360768;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3QVOu08HCqGf5Hetbuk6GRADQVufWpNmVH6XxjSqw60=;
- b=inlcNuCyjR84DJTnZhVkTtGFYTvpIeSVh7Mc+c1agxllB2MEhcWVko3S9aqhMnCl2IDEEC
- /XuDsR2HwI7R/QhmXe8dze/6iiHhUiF8eJBjg2OriaYNqaMfRlfVPJCGfxfbF9P2+HFW3v
- X3hpe9+pUmjzjFFIq7MApCMPHpjf78k=
+ bh=hJKDd3bQ+ovWBZ9GGzi00ow4aELP6Vwmnb1A4iyJDzM=;
+ b=B5/dEZvJTpLgGlRizVE/oVpwXG7eiT3JINyvMJkGQ76Pdu+4sLIexVJEAf5UHcii2I+hS2
+ 0S85S53u1glAtzgbVOeJYfZyL0IT3CdWQHoO+9N7HuHzpX3sJph0ZVikfKD+YNLeiB4ZB3
+ cE5sUALelCvqr1Aax4aAatl4qBf5WP4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663360057;
+ s=susede2_ed25519; t=1663360768;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3QVOu08HCqGf5Hetbuk6GRADQVufWpNmVH6XxjSqw60=;
- b=ZJXDcstEwEhXZp37mGBWihJTIjk+puXQsgVSKuwhbGispdgUgsg8bIyUwnAbrvG7Gsz/Z8
- YktQP1EDwpTsznDw==
+ bh=hJKDd3bQ+ovWBZ9GGzi00ow4aELP6Vwmnb1A4iyJDzM=;
+ b=DgeUKEdDH+s++9/3sM5iH6La7/eP/gKNmFWU1XfajrIXW4lhA+/c8RNSruFzCHd0rWKz0n
+ fNOSs49YfUrK3TAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9EE471346B;
- Fri, 16 Sep 2022 20:27:36 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6FF771346B;
+ Fri, 16 Sep 2022 20:39:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id gmc+JDjcJGN5TwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 16 Sep 2022 20:27:36 +0000
-Date: Fri, 16 Sep 2022 22:27:34 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id lE5qGQDfJGMOUwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 16 Sep 2022 20:39:28 +0000
+Date: Fri, 16 Sep 2022 22:39:26 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YyTcNlcwetdsXQgA@pevik>
+Message-ID: <YyTe/mgwXiPTFDBk@pevik>
 References: <20220915093639.2261-1-pvorel@suse.cz>
- <20220915093639.2261-6-pvorel@suse.cz> <YyRv8WmjRKLQrAw3@yuki>
- <YyR1j825ty3gIz/s@pevik> <YyR3apctP+uns07p@yuki>
+ <20220915093639.2261-9-pvorel@suse.cz> <YyR1xD+Ks8ZntZxZ@yuki>
+ <YyR1+tIX++0gnhr5@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YyR3apctP+uns07p@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <YyR1+tIX++0gnhr5@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 5/8] tst_test.sh: Add $TST_ALL_FILESYSTEMS
+Subject: Re: [LTP] [PATCH v6 8/8] df01.sh: Convert to TST_ALL_FILESYSTEMS=1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,64 +85,30 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 > Hi!
-> > > Whatever the API ends up I guess that we should check the support and
-> > > mkfs here as well in order to TCONF early before we create a device and
-> > > attempt to format/mount it.
-> > I was worried to add mkfs.foo dependency unless there is a requirement for it
-> > (i.e. TST_NEEDS_DEVICE=1). Do you really want to add this dependency for *all*
-> > tests? (I'd prefer no, i.e. to keep here check only for test not being skipped,
-> > because check for mkfs.foo is in tst_mkfs which does the job, thus not only we'd
-> > add an extra unneeded dependency but also duplicity in the check).
+> > > +TST_ALL_FILESYSTEMS=1
+> > >  TST_CNT=12
+> > >  TST_SETUP=setup
+> > >  TST_TESTFUNC=test
+> > > -TST_OPTS="f:"
+> > > -TST_USAGE=usage
+> > > -TST_PARSE_ARGS=parse_args
+> > >  TST_NEEDS_ROOT=1
+> > > -TST_MOUNT_DEVICE=1
 
-> Isn't this mostly theoretical problem? I mean how common it would be to
-> have test that tests different filesystem but does not need
-> corresponding mkfs?
-
-Have you noticed !=, i.e.:
-if [ "$TST_ALL_FILESYSTEMS" != 1 ]; then
-The check here is for single filesystem testing, just with disabled on some
-filesystems (i.e. skip on tmpfs). Equivalent of fcntl33.c (skips on tmpfs,
-ramfs - BTW not in fs_type_whitelist, thus not being checked, nfs; but not using
-.all_filesystems).
-
-That's why I'm not going to add check for kernel support and mkfs.foo (hope I
-was correct you overlooked !=, or did I miss something?)
-
-For testing on all filesystems (TST_ALL_FILESYSTEMS=1) there is obviously check
-for kernel and mkfs support in testcases/lib/tst_supported_fs.c.
-
-> > But if you want it, i.e. if we require mkfs.$TST_FS_TYPE (unless tmpfs of
-> > course, which is handled properly) here, then we don't need to separate checks
-> > for mkfs.foo and skip list in testcases/lib/tst_supported_fs.c.
-
-> I would go that way for now.
-I dare to merge this approach:
-
-* all filesystems
-tst_supported_fs [-s skip_list]
-   print the list of supported filesystems
-   if fs_type is supported and not in skip_list (optional),
-   print list of supported filesystems and return 0
-   if fs_type isn't supported or in skip_list, return 1
-
-* single filesystem
-tst_supported_fs fs_type
-   if fs_type is supported, return 0 otherwise return 1
-
-tst_supported_fs -s skip_list fs_type
-   if fs_type is in skip_list, return 1 otherwise return 0
-
-
-> I guess that the cleanest solution would be keeping the funcionality
-> really orthogonal, i.e. separating the kernel and mkfs checks so that we
-> would have -m to enable mkfs check -k to enable kernel check and -s to
-> enable skiplist. But that is something that can and should be done after
-> the relase.
-
-If really needed, sure.
+> > Just looking at this made me realize that for C API ALL_FILESYTEMST does
+> > not imply TST_MOUNT_DEVICE since these functionalities are orthogonal. I
+> > think that it would be better if we had the C API and shell API as close
+> > as possible, hence ALL_FILESYSTEMS should imply only NEEDS_DEVICE and
+> > the MOUNT_DEVICE would stay here.
+Good point, thanks! Another reason is that With ALL_FILESYSTEMS implying
+TST_MOUNT_DEVICE mkfs01.sh could not use ALL_FILESYSTEMS=1.
 
 Kind regards,
 Petr
+
+> Also with that change:
+
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
