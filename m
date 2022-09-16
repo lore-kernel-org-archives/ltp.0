@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 932D3ECAAD8
-	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 19:04:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A27EECAAD8
+	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 20:27:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 755093CACB9
-	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 21:04:54 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id AEDAD3CAC9B
+	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 22:27:50 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 295253CAC18
- for <ltp@lists.linux.it>; Fri, 16 Sep 2022 21:04:39 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 509D63CAC18
+ for <ltp@lists.linux.it>; Fri, 16 Sep 2022 22:27:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3372910005BB
- for <ltp@lists.linux.it>; Fri, 16 Sep 2022 21:04:38 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 13CAD1A01A78
+ for <ltp@lists.linux.it>; Fri, 16 Sep 2022 22:27:38 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0650233BF8;
- Fri, 16 Sep 2022 19:04:38 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6881B20BBE;
+ Fri, 16 Sep 2022 20:27:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663355078;
+ t=1663360057;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PDCuwY34+2cjc7Q8DrMuhwnndfhc8G8OwFV5/7Tubk0=;
- b=hIBB0gmJkIAjnbg01f3nL2NTY5r2vjL3Lu8xRJm2BZS6DZKvbpNCHn9y6id18KOAorfDop
- wzRTBoNDXnFIpQRAT4YESkk5TMb1PF0HKJ47WLQEg0B99o3iC/ALFDpZ/cH1PEpkvntc6O
- l75oJJ3o8TRTktHyKMhphtD+nqD7lvU=
+ bh=3QVOu08HCqGf5Hetbuk6GRADQVufWpNmVH6XxjSqw60=;
+ b=inlcNuCyjR84DJTnZhVkTtGFYTvpIeSVh7Mc+c1agxllB2MEhcWVko3S9aqhMnCl2IDEEC
+ /XuDsR2HwI7R/QhmXe8dze/6iiHhUiF8eJBjg2OriaYNqaMfRlfVPJCGfxfbF9P2+HFW3v
+ X3hpe9+pUmjzjFFIq7MApCMPHpjf78k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663355078;
+ s=susede2_ed25519; t=1663360057;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PDCuwY34+2cjc7Q8DrMuhwnndfhc8G8OwFV5/7Tubk0=;
- b=H21lHtUjguKHea8iQPWNA+AwoZKWLUuSWV2BPZTl9G5YnERFh2SSpDXB1Bb1QD5bl4hoDS
- buI4GnmUTz8fgRAg==
+ bh=3QVOu08HCqGf5Hetbuk6GRADQVufWpNmVH6XxjSqw60=;
+ b=ZJXDcstEwEhXZp37mGBWihJTIjk+puXQsgVSKuwhbGispdgUgsg8bIyUwnAbrvG7Gsz/Z8
+ YktQP1EDwpTsznDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 00C561332E;
- Fri, 16 Sep 2022 19:04:36 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9EE471346B;
+ Fri, 16 Sep 2022 20:27:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +IYaNcTIJGMhNgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 16 Sep 2022 19:04:36 +0000
-Date: Fri, 16 Sep 2022 21:04:28 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id gmc+JDjcJGN5TwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 16 Sep 2022 20:27:36 +0000
+Date: Fri, 16 Sep 2022 22:27:34 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YyTIvPWfkkEoUflB@pevik>
-References: <20220906054612.9790-1-pvorel@suse.cz>
- <YySDWP9I46TDIgEK@yuki>
+Message-ID: <YyTcNlcwetdsXQgA@pevik>
+References: <20220915093639.2261-1-pvorel@suse.cz>
+ <20220915093639.2261-6-pvorel@suse.cz> <YyRv8WmjRKLQrAw3@yuki>
+ <YyR1j825ty3gIz/s@pevik> <YyR3apctP+uns07p@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YySDWP9I46TDIgEK@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <YyR3apctP+uns07p@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] checkpatch: Ignore warnings irrelevant in
- userspace
+Subject: Re: [LTP] [PATCH v6 5/8] tst_test.sh: Add $TST_ALL_FILESYSTEMS
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,39 +85,61 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 > Hi!
-> > * EMBEDDED_FILENAME
-> > fanotify.h:15: WARNING: It's generally not useful to have the filename in the file
-> > on #include <sys/fanotify.h> in fanotify.h
+> > > Whatever the API ends up I guess that we should check the support and
+> > > mkfs here as well in order to TCONF early before we create a device and
+> > > attempt to format/mount it.
+> > I was worried to add mkfs.foo dependency unless there is a requirement for it
+> > (i.e. TST_NEEDS_DEVICE=1). Do you really want to add this dependency for *all*
+> > tests? (I'd prefer no, i.e. to keep here check only for test not being skipped,
+> > because check for mkfs.foo is in tst_mkfs which does the job, thus not only we'd
+> > add an extra unneeded dependency but also duplicity in the check).
 
-> > * ENOSYS
-> > fanotify.h:26: WARNING: ENOSYS means 'invalid syscall nr' and nothing else
-> > on if (errno == ENOSYS)
+> Isn't this mostly theoretical problem? I mean how common it would be to
+> have test that tests different filesystem but does not need
+> corresponding mkfs?
 
-> > * NEW_TYPEDEFS
-> > fanotify.h:180: WARNING: do not add new typedefs
-> > on typedef struct {
+Have you noticed !=, i.e.:
+if [ "$TST_ALL_FILESYSTEMS" != 1 ]; then
+The check here is for single filesystem testing, just with disabled on some
+filesystems (i.e. skip on tmpfs). Equivalent of fcntl33.c (skips on tmpfs,
+ramfs - BTW not in fs_type_whitelist, thus not being checked, nfs; but not using
+.all_filesystems).
 
-> I'm not 100% sure about the NEW_TYPEDEFS check, that one is mostly
-> right. The later two are fine.
+That's why I'm not going to add check for kernel support and mkfs.foo (hope I
+was correct you overlooked !=, or did I miss something?)
 
-FYI the error is from fanotify.h (kind of lapi file for fanotify:
+For testing on all filesystems (TST_ALL_FILESYSTEMS=1) there is obviously check
+for kernel and mkfs support in testcases/lib/tst_supported_fs.c.
 
-#ifndef __kernel_fsid_t
-typedef struct {
-	int	val[2];
-} lapi_fsid_t;
-#define __kernel_fsid_t lapi_fsid_t
-#endif /* __kernel_fsid_t */
+> > But if you want it, i.e. if we require mkfs.$TST_FS_TYPE (unless tmpfs of
+> > course, which is handled properly) here, then we don't need to separate checks
+> > for mkfs.foo and skip list in testcases/lib/tst_supported_fs.c.
 
-which we added in b8aebc835 ("fanotify: Fix missing __kernel_fsid_t definition")
-"Instead of including <asm/posix_types.h> where it's defined we just
-define the missing bit." (fix for musl).
+> I would go that way for now.
+I dare to merge this approach:
 
-But if you prefer to keep this check, I'm ok to merge it without it.
+* all filesystems
+tst_supported_fs [-s skip_list]
+   print the list of supported filesystems
+   if fs_type is supported and not in skip_list (optional),
+   print list of supported filesystems and return 0
+   if fs_type isn't supported or in skip_list, return 1
 
-The long term solution could be to add variable to Makefile to pass extra
-parameters, e.g.:
-check_fanotify.h: CHECKPATCH_IGNORE += NEW_TYPEDEFS
+* single filesystem
+tst_supported_fs fs_type
+   if fs_type is supported, return 0 otherwise return 1
+
+tst_supported_fs -s skip_list fs_type
+   if fs_type is in skip_list, return 1 otherwise return 0
+
+
+> I guess that the cleanest solution would be keeping the funcionality
+> really orthogonal, i.e. separating the kernel and mkfs checks so that we
+> would have -m to enable mkfs check -k to enable kernel check and -s to
+> enable skiplist. But that is something that can and should be done after
+> the relase.
+
+If really needed, sure.
 
 Kind regards,
 Petr
