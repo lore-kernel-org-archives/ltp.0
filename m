@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 782C2ECAAD8
-	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 10:25:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1304BECAAD8
+	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 11:25:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A712A3CAC78
-	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 12:25:00 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id CD9253CAC6F
+	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 13:25:01 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 966AA3C1BAD
- for <ltp@lists.linux.it>; Fri, 16 Sep 2022 12:24:50 +0200 (CEST)
-Received: from a8-97.smtp-out.amazonses.com (a8-97.smtp-out.amazonses.com
- [54.240.8.97])
+ by picard.linux.it (Postfix) with ESMTPS id 248CE3CAC39
+ for <ltp@lists.linux.it>; Fri, 16 Sep 2022 13:24:50 +0200 (CEST)
+Received: from a8-29.smtp-out.amazonses.com (a8-29.smtp-out.amazonses.com
+ [54.240.8.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5049B603240
- for <ltp@lists.linux.it>; Fri, 16 Sep 2022 12:24:49 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EAB4F20119E
+ for <ltp@lists.linux.it>; Fri, 16 Sep 2022 13:24:49 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1663323887;
+ s=r5f3hr7pzmhv6xwu5spgpns3mj2fddpz; d=linaro.org; t=1663327488;
  h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date;
- bh=3jNYp8QvAsAfuCiG4PXMkxLJQV/H1Br68uGIGqW9L8Q=;
- b=VjIm3AcPzDyiPva+gT1Qgjw1CenTPBUHtgmDd9aRrkjmAu2iX2UbRpwx7hatcHnv
- NAoDMAkKrLg30Fsn6Lu82MD+nMzlqFNnT390SeoyOW9Xoh6aBmrDonB0xF88ikhAKtg
- PVw/vqVM/hyI6UfLjxLpGDv0AcLBiadDOMUruCng=
+ bh=Hk+KR2SK0Yl8/dFrNO5Dpn4sDHWtIQ+vMKhic5lTrjo=;
+ b=JfsqWgpBr4lSqwjg6yeKTum4e6lMwUlutwF3pTx74/UJ1TMzLGVh4djrOvq6KamU
+ OjbpUEp1h8ETtmznuDCi35zoySyvvWDNC4+mBtoeTm1XMut15kCq0o+NHXSM/P0SKUc
+ Dayx+7dhucGqKVOAisWkDWiq6O+JvK6R+X3V5ajE=
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1663323887;
+ s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1663327488;
  h=From:To:Cc:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Date:Feedback-ID;
- bh=3jNYp8QvAsAfuCiG4PXMkxLJQV/H1Br68uGIGqW9L8Q=;
- b=T8gnHW2BodmhqbWFRWIEBYTESWhCSlfv/0UJc+lCNzdf2GHanY7qSQE9+6V+CAII
- jW3K+Dkbq6RYbGNYLFxXrb1YOOIjiDo9sEk2RtxkGk21rS+AosqzkXxLyd/rvFOFMip
- G8aKbWjPG/wFWIR+BophihWa4SEBxBLSBhW+SKbg=
+ bh=Hk+KR2SK0Yl8/dFrNO5Dpn4sDHWtIQ+vMKhic5lTrjo=;
+ b=jenz2U+z2Ulhkh18mLrT0wlzVbGbQ58ASZwq3Ni9ql5bR4gZhIRDz81qotTKMDJ4
+ PCC6hJw2Ul+qLeMVfI8CwNvgGM7EEGZPwiEh8c43yKGEx/3bHkoWgCYJHqGVDFdOYdG
+ 0xUMafTuzaKXzvxqfWmWwMGU2/qc9r4mr0+BtwzI=
 From: lkft@linaro.org
 To: ltp@lists.linux.it
 MIME-Version: 1.0
-Message-ID: <0100018345d45818-3034a965-63ae-4256-9d7f-8347c57c281c-000000@email.amazonses.com>
-Date: Fri, 16 Sep 2022 10:24:47 +0000
+Message-ID: <01000183460b4944-c8ebffe6-ed71-4c71-963c-aa5a3929d00e-000000@email.amazonses.com>
+Date: Fri, 16 Sep 2022 11:24:48 +0000
 Feedback-ID: 1.us-east-1.MCLpz+6YeXzvh9aTd6J8upg22bI0XPzIkR2gghvgyqQ=:AmazonSES
-X-SES-Outgoing: 2022.09.16-54.240.8.97
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-SES-Outgoing: 2022.09.16-54.240.8.29
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [REGRESSION] lkft ltp for cd1fe28
+Subject: [LTP] lkft ltp for 98140f3
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,47 +68,22 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 * git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
 * git branch: linux-5.18.y
 * git commit: 22a992953741ad79c07890d3f4104585e52ef26b
-* git describe: cd1fe28
-* test details: https://qa-reports.linaro.org/lkft/ltp/build/cd1fe28
+* git describe: 98140f3
+* test details: https://qa-reports.linaro.org/lkft/ltp/build/98140f3
 
 ## Test Regressions (compared to fea3c47)
-* bcm2711-rpi-4-b, ltp-controllers
-  - cgroup_fj_function_memory
-  - cgroup_fj_stress_memory_10_3_each
-  - cgroup_fj_stress_memory_10_3_none
-  - cgroup_fj_stress_memory_10_3_one
-  - cgroup_fj_stress_memory_1_200_each
-  - cgroup_fj_stress_memory_1_200_none
-  - cgroup_fj_stress_memory_1_200_one
-  - cgroup_fj_stress_memory_200_1_each
-  - cgroup_fj_stress_memory_200_1_none
-  - cgroup_fj_stress_memory_200_1_one
-  - cgroup_fj_stress_memory_2_2_each
-  - cgroup_fj_stress_memory_2_2_none
-  - cgroup_fj_stress_memory_2_2_one
-  - cgroup_fj_stress_memory_2_9_each
-  - cgroup_fj_stress_memory_2_9_none
-  - cgroup_fj_stress_memory_2_9_one
-  - cgroup_fj_stress_memory_3_3_each
-  - cgroup_fj_stress_memory_3_3_none
-  - cgroup_fj_stress_memory_3_3_one
-  - cgroup_fj_stress_memory_4_4_each
-  - cgroup_fj_stress_memory_4_4_none
-  - cgroup_fj_stress_memory_4_4_one
-  - memcg_test_3
-
-* qemu_arm, ltp-mm
-  - ksm03
-  - ksm03_1
-
+No test regressions found.
 
 ## Metric Regressions (compared to fea3c47)
 No metric regressions found.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
 
 ## Test Fixes (compared to fea3c47)
+* qemu_i386, ltp-controllers
+  - cpuacct_100_100
+
 * qemu_x86_64, ltp-controllers
   - cpuacct_100_100
 
@@ -117,7 +92,7 @@ Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 No metric fixes found.
 
 ## Test result summary
-total: 12630, pass: 10713, fail: 187, skip: 1730, xfail: 0
+total: 12630, pass: 10740, fail: 160, skip: 1730, xfail: 0
 
 ## Build Summary
 
