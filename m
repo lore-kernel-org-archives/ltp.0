@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A353ECAAD8
-	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 09:11:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58A92ECAAD8
+	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 09:34:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F10093CAC7B
-	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 11:11:48 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D32313CAC67
+	for <ltp@archiver.kernel.org>; Fri, 16 Sep 2022 11:34:25 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 11A303CAC39
- for <ltp@lists.linux.it>; Fri, 16 Sep 2022 11:11:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id BA2443CAC58
+ for <ltp@lists.linux.it>; Fri, 16 Sep 2022 11:34:16 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CFBFB1A002EA
- for <ltp@lists.linux.it>; Fri, 16 Sep 2022 11:11:37 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ABDFE1A0198E
+ for <ltp@lists.linux.it>; Fri, 16 Sep 2022 11:34:15 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 16DD41FE5D;
- Fri, 16 Sep 2022 09:11:37 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EDDBD33688;
+ Fri, 16 Sep 2022 09:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663319497; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1663320854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MthW9bXDwGyrPnEUBzGTIdAQ8mLp+2sDLt0+wI15SE0=;
- b=QNbRkbxS6yw5C4nUQEvuFOzEZARqBAAS91JVeD3FD/36ips5b3+QS+0CsZ8MuPijgepkXN
- FGy53MMANIt/sSdFXPXhHPUcpAUkK7bDwxYZ0bcIC00+9o3bsOMAJIgyffZikPyulWx3y8
- EJ+0/yIybzgidFYhgpATF6gjRqwNJ/c=
+ bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
+ b=SD76iIM4lyXr83WRXDGv5TwgIwfIo/z3ReLLtalaJLilRbzWBHs6bIHSeJrp7lhFtMeA0X
+ UpnAl3I9A6eLLfUlkT7lowa3JMMaEduoRRRcBJF1bM9YJ41Lxfyxcdq7+1g4zeo5SEyARz
+ NY7Hu9/LB/AM2z0a1IHP+Av9/7/tk74=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663319497;
+ s=susede2_ed25519; t=1663320854;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MthW9bXDwGyrPnEUBzGTIdAQ8mLp+2sDLt0+wI15SE0=;
- b=J0ng0hRWu375c2+tTy+nYXSPEbv3hQCdAxfqFJb4C5ybTb2BdolSuxDQ1SPeFPWrk/yrcJ
- caQMY1mOvjKuKSAg==
+ bh=vuTer6G5eQKhQwYstR2ij54S+CYfAJyS5seBokSjqJM=;
+ b=wteHwWTFmILy/KiR/z8kyO1aRkqp63CUrLf0GamSXE1KnDY894Zhtv8pK0EWjGSn3G6XFO
+ k3hhpAt+xmmVzACQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 04F261346B;
- Fri, 16 Sep 2022 09:11:37 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D03DA1332E;
+ Fri, 16 Sep 2022 09:34:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id gN5EAMk9JGPkUwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 16 Sep 2022 09:11:37 +0000
-Date: Fri, 16 Sep 2022 11:13:34 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id mB1OMRZDJGOFXAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 16 Sep 2022 09:34:14 +0000
+Date: Fri, 16 Sep 2022 11:36:12 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Edward Liaw <edliaw@google.com>
-Message-ID: <YyQ+PiN0JBy6PLJI@yuki>
-References: <20220913202839.1807979-1-edliaw@google.com>
- <YyGisrbDIgVa/0QA@yuki> <YyHYvCr0PISg6ISY@pevik>
- <YyHcNcTUNG+gU3rq@pevik>
- <CAG4es9Wi8oGf1OmNUqg41wv51Qmb9gewZrifUQW-wOPL0ZKNhA@mail.gmail.com>
+To: Zhao Gongyi <zhaogongyi@huawei.com>
+Message-ID: <YyRDjBe26Pgny4gN@yuki>
+References: <20220916015948.156798-1-zhaogongyi@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAG4es9Wi8oGf1OmNUqg41wv51Qmb9gewZrifUQW-wOPL0ZKNhA@mail.gmail.com>
+In-Reply-To: <20220916015948.156798-1-zhaogongyi@huawei.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] minmax: fix type warnings
+Subject: Re: [LTP] [PATCH] lapi/io_uring.h: Optimization
+ io_uring_setup_supported_by_kernel()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,17 +75,14 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: kernel-team@android.com, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Ideally when you are touching that code it should be cleaned up first
-and ported to the new test API. The code wasn't properly ported to LTP
-to begin with and there are hacks and wrappers around LTP API functions
-that should be removed as well.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
