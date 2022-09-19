@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6522ECAAD3
-	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 07:41:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3EA4ECAAD3
+	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 07:45:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 43E833CACD3
-	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 09:41:19 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 659DC3CACBD
+	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 09:45:36 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B60203C1BC5
- for <ltp@lists.linux.it>; Mon, 19 Sep 2022 09:41:09 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 47C433C0204
+ for <ltp@lists.linux.it>; Mon, 19 Sep 2022 09:45:27 +0200 (CEST)
 Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
  [60.248.80.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0F31510005F1
- for <ltp@lists.linux.it>; Mon, 19 Sep 2022 09:41:05 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 33467140007F
+ for <ltp@lists.linux.it>; Mon, 19 Sep 2022 09:45:25 +0200 (CEST)
 Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
- by Atcsqr.andestech.com with ESMTP id 28J7erk6090647;
- Mon, 19 Sep 2022 15:40:53 +0800 (+08)
+ by Atcsqr.andestech.com with ESMTP id 28J7j7q6092105;
+ Mon, 19 Sep 2022 15:45:07 +0800 (+08)
  (envelope-from dylan@andestech.com)
 Received: from atctrx.andestech.com (10.0.12.119) by ATCPCS16.andestech.com
  (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Sep 2022
- 15:40:53 +0800
+ 15:45:04 +0800
 From: Dylan Jhong <dylan@andestech.com>
 To: <ltp@lists.linux.it>, <chrubis@suse.cz>
-Date: Mon, 19 Sep 2022 15:39:15 +0800
-Message-ID: <20220919073915.716432-1-dylan@andestech.com>
+Date: Mon, 19 Sep 2022 15:43:24 +0800
+Message-ID: <20220919074324.722547-1-dylan@andestech.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-Originating-IP: [10.0.12.119]
 X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 28J7erk6090647
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-MAIL: Atcsqr.andestech.com 28J7j7q6092105
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] kernel/uevent: Adjust the number of uevents
+Subject: [LTP] [PATCH v4] kernel/uevent: Adjust the number of uevents
  dynamically in uevent02
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -73,7 +73,7 @@ Signed-off-by: Dylan Jhong <dylan@andestech.com>
  1 file changed, 88 insertions(+), 72 deletions(-)
 
 diff --git a/testcases/kernel/uevents/uevent02.c b/testcases/kernel/uevents/uevent02.c
-index ce0cf757d..93336742e 100644
+index ce0cf757d..4355cd8db 100644
 --- a/testcases/kernel/uevents/uevent02.c
 +++ b/testcases/kernel/uevents/uevent02.c
 @@ -18,11 +18,77 @@
@@ -150,7 +150,7 @@ index ce0cf757d..93336742e 100644
 +		"INTERFACE=ltp-tun0",
 +	}
 +};
-+const struct uevent_desc *uevents[MAX_UEVENTS];
++static const struct uevent_desc *uevents[MAX_UEVENTS];
  
  static void generate_tun_uevents(void)
  {
