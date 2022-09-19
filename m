@@ -4,68 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7946DECAAD3
-	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 12:58:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FD0CC54EE9
+	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 14:16:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 557E43CACCD
-	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 14:58:05 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id BA1683CACFF
+	for <ltp@archiver.kernel.org>; Mon, 19 Sep 2022 16:16:53 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 077A63CAAF4
- for <ltp@lists.linux.it>; Mon, 19 Sep 2022 14:57:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 4478A3C8D45
+ for <ltp@lists.linux.it>; Mon, 19 Sep 2022 16:16:44 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 407F2600642
- for <ltp@lists.linux.it>; Mon, 19 Sep 2022 14:57:54 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6CD63600642
+ for <ltp@lists.linux.it>; Mon, 19 Sep 2022 16:16:42 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C07251F8CD;
- Mon, 19 Sep 2022 12:57:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6FCD7220F9;
+ Mon, 19 Sep 2022 14:16:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663592273;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1663597002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Glz6guizUgbBVN0UNOdg0oYNTze/OGKhc5lnn+P5fL0=;
- b=WcAg2Sy1CKOiqyx5RSDxYNIZFhu3mniSPBOxAx8zRpEnNvaTwaiPlj4cOhnuEGGPCKil7D
- fRsxuH3z7xRaBlMbCM2NnHczRlYFuHiEpUpiqif7XZerNugaePbckVc4jk9FCpPacWG0QP
- wdRkpjU/kPJ2eW41kXv+OH0QKNTw4ZU=
+ bh=ZyS1OAEGvr8pbkfK8uYy+aNbuqlI/u2E+OgR5evoMFI=;
+ b=a4+sWV/cSs0p9eg885UoSMBFyEFmBX4tLzll+aveMYjU4+1wuEbw5mcgijPqcsQFGntab9
+ aZKgGK4F5nvGHRYHOCiyjM8yf6T9eVStu2S4206zX6bpdqjEzepNRjfcDNXvnUC02sek7N
+ f0x/AJe3KAMjFt8cxR6Th9szDz7UG6E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663592273;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1663597002;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Glz6guizUgbBVN0UNOdg0oYNTze/OGKhc5lnn+P5fL0=;
- b=fOoOurHDRwEsfs/A0Y60c5ktjNoYj4OQZzApMI8U7fRvjREM31YMgB/IgNzDCDu7lzkmEs
- GuZ4I7RbJiKGTVBw==
+ bh=ZyS1OAEGvr8pbkfK8uYy+aNbuqlI/u2E+OgR5evoMFI=;
+ b=AHoTAdI3hike4JIMoj9HUOswimduZaPj65iJw2/NIZthVhjTrmzO5Nii+uKQgTmvkQI5TH
+ 2uTiXVSXQUlazFBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 971BB13A96;
- Mon, 19 Sep 2022 12:57:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 58FC313ABD;
+ Mon, 19 Sep 2022 14:16:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id lWH9IlFnKGO6NwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 19 Sep 2022 12:57:53 +0000
-Date: Mon, 19 Sep 2022 14:57:50 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <YyhnTtDE5Mh3w04k@pevik>
-References: <010001834b528ae5-11a8d4c7-4e72-4f8d-af66-e9ec2a864017-000000@email.amazonses.com>
- <YyfeaeMsvACB5dcf@pevik>
- <207b6fed-27df-6d1d-113c-6f9c771cabe5@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8NReFMp5KGNPXAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Mon, 19 Sep 2022 14:16:42 +0000
+Message-ID: <0304d088-900d-9224-28c2-df4e4fde12b5@suse.cz>
+Date: Mon, 19 Sep 2022 16:16:41 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <207b6fed-27df-6d1d-113c-6f9c771cabe5@suse.cz>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Content-Language: en-US
+To: lkft@linaro.org, ltp@lists.linux.it
+References: <0100018355b1edc0-de081137-73fa-4649-80be-4c68e9432534-000000@email.amazonses.com>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <0100018355b1edc0-de081137-73fa-4649-80be-4c68e9432534-000000@email.amazonses.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [REGRESSION] lkft ltp for cea142b
+Subject: Re: [LTP] [REGRESSION] lkft ltp for 8ff3f5f
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,52 +79,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Martin Doucha <martin.doucha@suse.com>, lkft@linaro.org,
- lkft-triage@lists.linaro.org, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+Cc: lkft-triage@lists.linaro.org
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On 19. 09. 22 5:13, Petr Vorel wrote:
-> > Hi all,
+On 19. 09. 22 14:21, lkft@linaro.org wrote:
+> ## Build
+> * kernel: 5.18.19
+> * git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+> * git branch: linux-5.18.y
+> * git commit: 22a992953741ad79c07890d3f4104585e52ef26b
+> * git describe: 8ff3f5f
+> * test details: https://qa-reports.linaro.org/lkft/ltp/build/8ff3f5f
 
-> > > ## Build
-> > > * kernel: 5.18.19
-> > > * git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-> > > * git branch: linux-5.18.y
-> > > * git commit: 22a992953741ad79c07890d3f4104585e52ef26b
-> > > * git describe: cea142b
-FYI talking below about this line.
+Looking at the syscalls log through test details link above, it appears 
+that the test is running the latest stable release (20220527) instead of 
+the commit reported by git describe (8ff3f5f).
 
-> > > * test details: https://qa-reports.linaro.org/lkft/ltp/build/cea142b
+- commit beedc4211b2afddabf2469668b4f32f06a91f12c is clearly present 
+because preadv203 timeout is 2m30s (LTP_TIMEOUT_MUL=3)
+- commit e0c6fbec7f4d5e8df7ef2c3d86cf5ab8a9de6fe5 is missing because 
+there's not mention of mount_setattr01 in the syscalls log.
 
-> > > ## Test Regressions (compared to 98140f3)
-> > > * qemu_i386, ltp-controllers
-> > >    - cpuacct_100_100
+https://qa-reports.linaro.org/lkft/ltp/build/8ff3f5f/testrun/11965314/suite/ltp-syscalls/test/mq_timedreceive01/log
 
-> > > * qemu_x86_64, ltp-cve
-> > >    - cve-2018-1000204
-> > OK, 3252ea38d ("ioctl_sg01: Add max_runtime") didn't help.
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
-> > looking at the log [1] I don't see anything obvious why test timeouts:
-
-> > tst_test.c:1524: TINFO: Timeout per run is 0h 00m 30s
-
-> I do. The line above is supposed to say "Timeout per run is 1h 00m 30s"
-> instead. Whatever LTP version this was, it did not have the ioctl_sg01
-> max_runtime patch applied.
-
-Hi Martin,
-
-thanks for info. I expected the line above document LTP version, i.e.
-cea142b73 ("df01.sh: Convert to TST_ALL_FILESYSTEMS=1")
-which contains .max_runtime = 3600 (i.e. 1 hour runtime + 30 sec for basic
-cleanup). Although "git describe" could mean any git repository.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
