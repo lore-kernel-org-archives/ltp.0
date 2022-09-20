@@ -4,114 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84024C54EE9
-	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 05:24:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95687ECAAD8
+	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 05:54:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 994DF3CAD10
-	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 07:24:12 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 0911E3CAD2A
+	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 07:54:19 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D69BC3CACC9
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 07:24:00 +0200 (CEST)
-Received: from IND01-BMX-obe.outbound.protection.outlook.com
- (mail-bmxind01on2128.outbound.protection.outlook.com [40.107.239.128])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 1F2153CA00A
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 07:54:08 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D352B200759
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 07:23:59 +0200 (CEST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hm9X4iVEQllWhCbjV3DSV7N864H538SKfSvkpHX8aqBnYq7g0t7eU+Oza75BvXIwUZMQvi+L61p/9ZxtIpkQHQKB2/gbc0goc10vqvdrs2V4gfHjIPMtTjT/yPsBcL11mk5cNzo41Vav8ZRL6WSeJsRkZD2ogeIdCxWFMhHUCubJIqU4UBjE6qne/Hi+DkiWeALU5C2Nl5TmLOmBaPLXZmrM+xhsKjfLRWFo3KqAE/sLC4cnYS2osFi/WuSwUGw1RzYPTnD/meNbjvmOHo2vinYxcQg7PsatGGcmGSQ72yMySrjPAL++dXmza5K4p/Zu5cQ9myTcuUP26vAsegQg4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=819qPzEiv4YpU6/CptMop4VlYAXR9dHbs/MgJ+hQriM=;
- b=oPj0TR3zEwOxhPoPVerlLFGgCdGakjQ9jxKcVYgtdlU8SzDMaBRMgHC9Side0VzM0LvAi7q0fGsg0pPuu/pAfZedSSb0Iuz7KlR2zndDFgE/qFREcqajehabEleJVYNPHjOqbVxT7noxzq+YPSKQrk46w6qpRO3WtyqhmfMv5K+GsgSLSm1fJ00APOLEMJ2TGcu78dc5QklrVcKqLLUJReXWY95gqhcsDszqOQxE+NnsDbHBxdA10da2u9Pm7S/fj2BorOkbEA/MBodiQsF2RVEYpdU0Q2yisTs+PUdY4VRgnCxSEhvhqeIhUnbevy7NfgBMn6hYYnoa0ibC0OSIUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=exaleapsemi.com; dmarc=pass action=none
- header.from=exaleapsemi.com; dkim=pass header.d=exaleapsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=exaleapsemi.onmicrosoft.com; s=selector2-exaleapsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=819qPzEiv4YpU6/CptMop4VlYAXR9dHbs/MgJ+hQriM=;
- b=m/E/TseHlmuUKCHbio3fBuB577XOV3wO8hpwrMWuVf/1QUMSqe5QGHVX7HfOf3XWUagWxuwF9BOuv4Jxm6XuWxmaDMAazf7aUk7v9+otFDdpoiuCUSnS4WJiDvdDPljSTBNBJUo2kazTGPq6GU12K8qqvPR0l8+vgDyuUiretGU=
-Received: from PNZPR01MB8108.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:3b::6)
- by MAZPR01MB5441.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:68::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.17; Tue, 20 Sep
- 2022 05:23:57 +0000
-Received: from PNZPR01MB8108.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::f064:8fc3:a20d:6f2f]) by PNZPR01MB8108.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::f064:8fc3:a20d:6f2f%6]) with mapi id 15.20.5632.021; Tue, 20 Sep 2022
- 05:23:57 +0000
-From: "Ankita Anil  Kulkarni" <Ankita.AN@exaleapsemi.com>
-To: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Thread-Topic: Kernel Configurations 
-Thread-Index: AQHYzLCyAtxY/QG5JEygrGMAwtzyNg==
-Date: Tue, 20 Sep 2022 05:23:57 +0000
-Message-ID: <PNZPR01MB810830AC76882E62E6D756A2FA4C9@PNZPR01MB8108.INDPRD01.PROD.OUTLOOK.COM>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=exaleapsemi.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PNZPR01MB8108:EE_|MAZPR01MB5441:EE_
-x-ms-office365-filtering-correlation-id: 4a9eca22-bce3-4489-8d94-08da9ac85138
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cvZPeq39TOFRZnwtVxr8Ik4qAs3zDojQKLjAPtdM3JuKcCNdezy1nzRdyRSYptOkBAyGGYTtX1LKiA+jpbpGLgo+ti8xV4lZAioWaVOFSP6adEnV68e+6HKkw2WqrAAR7qz98tYXeAbdQhcsXv/Bh1n+4DedmEnVTTsT/pMPuf5q+wVk0hxpcAdHHc0KA6tRbIqnSl6YoLAIGaxbLvkadiXfqm3hqUewvFI+zlZL+gSrDVRZPr1N876WVSM2WkkWlOcfmtc9ypy5/XpWyPylUE6Gsx6sebJN/4NmlMZlZebK2ZRRAwg1HunI+0KpAkokZk2OQFylkpPV3tpWpFSVdHZMseO1P+GaBJ2WJHCFcq9MZPG/NPBFIPIDn6x/+JZ/W0hWgkoCpLZ+Lmykquxb+ZlrQxcO5hH1WxW1AKdte0OTFOrIy3vfud/9Df2Rv21ggjTs9yIBMq+7L9k0qS3wquh6f4b+3498Er63+5NW/YWiE5iMX4Zzjy5JsAXKk13u1mXMBN7stDtcY9tNC9ous1hZnyu3p8sdV+r+GFp9IAElagpRtiD9KfmkkpIUPpoKc1bO6uuqHJliYNB4jRBkhzg858CdlsRz7Z+42ISwtnBTXeB9zX1q7nChfHP5ABTqbsAINsRv3TvL2nqPBiXpPnBmNh1ZZPblcAjfNOjiDClAwSis+LGBewFoYdDYnlfdxBT0fWtaUXXB+5/P+xdm6VD96DRWD17+yxmmUSNJbv7PQ2SwHo4aIRnd/UfzLJXkbrZWyaj5+cyjZPQhibhDEg==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:PNZPR01MB8108.INDPRD01.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
- SFS:(13230022)(136003)(366004)(396003)(346002)(376002)(39830400003)(451199015)(5660300002)(7116003)(66946007)(64756008)(66476007)(66556008)(4326008)(66446008)(76116006)(8936002)(86362001)(6916009)(3480700007)(316002)(122000001)(38100700002)(8676002)(558084003)(52536014)(33656002)(107886003)(71200400001)(55236004)(7696005)(41300700001)(6506007)(478600001)(186003)(4743002)(9686003)(26005)(38070700005)(55016003)(19627405001)(2906002);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?lysxYj7JuZ7OC4NTfmmCYgXtyTbCMnKo5VCVHLyBvzxCFZ+vpzC1W7T5Es?=
- =?iso-8859-1?Q?sTTf/xO5VWeKGKhH4ngSOxUymjw3v5zsr8Vl4Bo7ICk3YxAcPNM3NFluzA?=
- =?iso-8859-1?Q?yf8WXpWphmXCS0+LhYLl9mGj5GTFNtCj0It0pva8IldydT+ZNOT/9nYt58?=
- =?iso-8859-1?Q?fM6LkYInVM2f28Zc97PBoRx89stJoD+YjlPzpNXQKmjdXY4sneSicNVM/s?=
- =?iso-8859-1?Q?O34x7KwJrj7WtSeqm7ztxRu7dIUd5o6Hl5bxIZbBrX3xTNiFv2zfVjEcCJ?=
- =?iso-8859-1?Q?SDEb3X4npJZEB3ua1hWN5OqJqMquIESWzo2dDfAznlJ2cenvJbMfQ9W96z?=
- =?iso-8859-1?Q?tzj37PD+fYYUKbD9nYY5Cj6OuBH/Z1soB8dCVrNZ9OCgAhLOOLWK59oCoV?=
- =?iso-8859-1?Q?dy2vQibmSSe5z/aGJvgz5xTDoz5bWmhA79gU4pnJzOL8rc67U0ezsc3tX6?=
- =?iso-8859-1?Q?zKS7XQShZW2Mg0D3h4M0+z1QmMBYSSbeNew7fz+vcyQGdiK4ZEyuMOHhCq?=
- =?iso-8859-1?Q?4FjSLjWKX1IIYh/DwxkGYf2wx3GteDCeiM9O2LW19cHL3gij/szO8aKl2K?=
- =?iso-8859-1?Q?KnqShavF/eRHu4ad+l9LeqSwdAF8dOFFhCmjGJeJHcWwg9tsWPEEIYgJbz?=
- =?iso-8859-1?Q?w+Jsjjsus5OTEW2o47gwANDUv2/u5v5MzYzA95vUUAaAs12HXuZgf0mOsb?=
- =?iso-8859-1?Q?CCeLItPGf2nxYKO1EVzaAp9DfcDe1SFgyj2Xd6vymR4sYih0aJFwxZqrfR?=
- =?iso-8859-1?Q?lcrXvZZUb4EYxtNDWtMHc2FfhNeVRicYHka6llrNhc1VCTuvaSUDVJLjmK?=
- =?iso-8859-1?Q?tHTDkc2JUefJWIM83JsHKY0sSySlorSATE83bHnUMqSXj2sdnJum77ecUQ?=
- =?iso-8859-1?Q?maAKtmJCT52vt9TbqtW/ze6eJYmmYrlRcFm2nQq6fRFvUpiyoTs12uiA02?=
- =?iso-8859-1?Q?y3oYXWwRweUN32kV06am9HXJQpeleNnwzmpYu9fbEJaky9MqR3hZt4oAWH?=
- =?iso-8859-1?Q?RaxKXTnKpqaSmR6hTWPBCfU029LJQnAVRnYncavNu2qkrPeSwrvaLjIUHv?=
- =?iso-8859-1?Q?UJvZdBTNY1IWVz3dWwZaG7sJh0ETFac+TeOHqrO45g+u4lNSPVuiFSXIiD?=
- =?iso-8859-1?Q?3pCT1hB60LXAdxBLRMZRkIU3675urELluL/VgUXkVFPBAEoMI9eu+ZznJC?=
- =?iso-8859-1?Q?vy+C8z9L4F9GROYudcDam0AUUUP++AOWj3k67xiGKymLolceUm8JfxbL8+?=
- =?iso-8859-1?Q?fOgPCFgbx6PonrBqGlNRlygD3es8Ce+SzEG71VSqOZAiUBvYK5rwf4pACw?=
- =?iso-8859-1?Q?WpIiLlrI7UW7RSVm1V2gpM/mH97/D/3AHsu7M9mm9SXKygmoXLJnJu3BpF?=
- =?iso-8859-1?Q?QWI2cP7GMUCiKPblkNxHjxzHAE0Oa16GdCYjNFwOMvCMn1gVAh9B4oXMAE?=
- =?iso-8859-1?Q?wMAlujBa5G+zG5EztYdAp/kt8BnVp+ZDpc4zduTyDXVx9fZPN9yo+rCpuY?=
- =?iso-8859-1?Q?3lVWS6bw9OTLhcMdL5x3PxRV4vcmwsw9rZ5R1Nb5ZVNuQimT+RoCIuNcsO?=
- =?iso-8859-1?Q?c3FPnDAZc8gf2G+SdyaD552/KG2+2gBD4maX0ILFzPokO+JtH6Fqy3lEtu?=
- =?iso-8859-1?Q?ytmR43q4aw8qqGhZ+QSGZtnLWuIaMbs8qw?=
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7BECD600954
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 07:54:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1663653245;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=eRF9lFo0vy3dOEqFUMP3PFDtyayewhKQ/HutwATF4pw=;
+ b=NpjA3Cd2pjgrYGurS2UPjYJ+prbsxwYT/5KS1b0ZZ1uqeTFMGvkURKbGEELP8Wo3dgcR6T
+ KKy0vDhtbhIVIpnJJS6GQz46dx3jt24UxnMvthycB7wDKI4YXiDr24JqWIdeeSG4Yq2Shh
+ TvyJDMo9yCimTLwoDWBteXiS6GG1gLo=
+Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
+ [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-486-rQfWLwxGOiOlntKf7a4iaA-1; Tue, 20 Sep 2022 01:54:03 -0400
+X-MC-Unique: rQfWLwxGOiOlntKf7a4iaA-1
+Received: by mail-ua1-f72.google.com with SMTP id
+ y10-20020ab0560a000000b003af33bfa8c4so501254uaa.21
+ for <ltp@lists.linux.it>; Mon, 19 Sep 2022 22:54:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date;
+ bh=eRF9lFo0vy3dOEqFUMP3PFDtyayewhKQ/HutwATF4pw=;
+ b=PqlIplZnM/Mwka1si5BcKLevHkAvozYvQB8hXWIxWuCOOh1F8RYWftoaknA156VhNa
+ +UhL58YTiRvIWyTvOJq0s3HFy9FKaCzysU4YDrG7p6N22yD/AnGUQDrNwZ/IKs6NGSl3
+ oAoHCwGS7maUbiyDoaQW234zf4o5ipOfBMwOWGQZz648Dl/6y9TPdOL8WH2q3Sft2GBc
+ QUEgTRMZUv2PaebEYinnxHOIyJqcKC2BQfEBJmBDELTBANW7e4cg92y1VU1QB2/05M67
+ 9DRdy6KmevXoyCY9LHsSktBT27GYOMd+9bUJUMi20u88dlCaZRfwyShLUcXVYZBaOwXV
+ 9/rw==
+X-Gm-Message-State: ACrzQf332l3iLG7QM6K7CiBxAf7Qjkb8OCPhs6wtATBt5xR6oUxtiJnO
+ 6UuUX5SMkhWxW4Kn6tnrv01wHJCq/LR7JXveBvdCeJoo/yzbOHnKbemph1YJRDz5TqQuV9q/jd4
+ e9kMrvMhe24nI0SIpETILnOcXMzA=
+X-Received: by 2002:a05:6102:23f7:b0:398:bce4:ead with SMTP id
+ p23-20020a05610223f700b00398bce40eadmr7240070vsc.41.1663653243197; 
+ Mon, 19 Sep 2022 22:54:03 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM6xyukJOir82oSMt88HDIjL5ppqUgyUIXWfCSReJb9x0A256ph+Bvtttto5RxDVH4kbDylP4xOPQazSj1p1tkI=
+X-Received: by 2002:a05:6102:23f7:b0:398:bce4:ead with SMTP id
+ p23-20020a05610223f700b00398bce40eadmr7240058vsc.41.1663653242831; Mon, 19
+ Sep 2022 22:54:02 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: exaleapsemi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PNZPR01MB8108.INDPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a9eca22-bce3-4489-8d94-08da9ac85138
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2022 05:23:57.2987 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 34df156e-9bc4-4450-9e80-487c0e7f9471
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HBejRhaqiNszgPMRFY5v38MWg2MIMBtAiamfQNYbRCtL7ZwxzpcJpAxYDbMkuik5/0j0qfViQiYJ1YnojqlZzkc5kDrUxykqN6fXH43EB0w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MAZPR01MB5441
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <20220915031020.2633347-1-liwang@redhat.com>
+ <YyMgBQu+phGCulxV@pevik> <YyM05nwf1+0eCd3w@yuki>
+ <CAEemH2d_ckW9Zm77wRcoejiY0rCDB1Tpgs7c3LB=WNwYYLF7Hg@mail.gmail.com>
+ <YyRER2kntqxXG7tl@yuki>
+ <CAEemH2eDc0qfdkaOxrbEPsmOmZp7MA=exHRkjQPgxaJAh7HP2w@mail.gmail.com>
+In-Reply-To: <CAEemH2eDc0qfdkaOxrbEPsmOmZp7MA=exHRkjQPgxaJAh7HP2w@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 20 Sep 2022 13:53:51 +0800
+Message-ID: <CAEemH2c1m7H581fn0VDq0nsjV6DN=+NwtmAegm0_WEqT0OmgiA@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] Kernel Configurations
+Subject: Re: [LTP] [PATCH] open04: add EMFILE check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -123,71 +88,101 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Indumathi Raju <Indumathi.r@exaleapsemi.com>
-Content-Type: multipart/mixed; boundary="===============1622438656=="
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0215397667=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1622438656==
-Content-Language: en-GB
-Content-Type: multipart/alternative;
-	boundary="_000_PNZPR01MB810830AC76882E62E6D756A2FA4C9PNZPR01MB8108INDP_"
+--===============0215397667==
+Content-Type: multipart/alternative; boundary="000000000000919c8705e91574b4"
 
---_000_PNZPR01MB810830AC76882E62E6D756A2FA4C9PNZPR01MB8108INDP_
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+--000000000000919c8705e91574b4
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
-Which are the required kernel configurations to execute LTP tests? Probably=
- we are missing some in our distro.
-Could you please help with the list of kernel configs?
+On Mon, Sep 19, 2022 at 8:12 PM Li Wang <liwang@redhat.com> wrote:
 
+> Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+> Hi!
+>> > > I faintly remmeber a similar patch where we decided not to work around
+>> > > for a test harness leaking filedescriptors into testcases.
+>> > >
+>> >
+>> > This also should be a solution, I searched the mailing list and got a
+>> > patch[1].
+>> > Do you mean adding that close-on-exec flag when opening fd in harness?
+>>
+>> Yes, that way you can be sure that no file descriptors are leaked to the
+>> tests.
+>>
+>
+> Ok, should I send patch v2 like this below?
+>
+> Note: the automation test open04 got passed but I'm not sure
+> if this has a side effect on logs. But from my observation, some
+> tests (with old-API) log can't be collected anymore.
+>
 
+Seems we shouldn't fix by adding 'close-on-exec' flag simply,
+it brings more issues to some old-API tests, I'm still looking into
+the problems which look like caused by ltp-pan designed.
+
+So can we just merge the patch as the original?
+
+-- 
 Regards,
-Ankita
+Li Wang
 
---_000_PNZPR01MB810830AC76882E62E6D756A2FA4C9PNZPR01MB8108INDP_
-Content-Type: text/html; charset="iso-8859-1"
+--000000000000919c8705e91574b4
+Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-<html>
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
-1">
-<style type=3D"text/css" style=3D"display:none;"> P {margin-top:0;margin-bo=
-ttom:0;} </style>
-</head>
-<body dir=3D"ltr">
-<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
-: 12pt; color: rgb(0, 0, 0);" class=3D"elementToProof">
-Hi,</div>
-<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
-: 12pt; color: rgb(0, 0, 0);" class=3D"elementToProof">
-Which are the required kernel configurations to execute LTP tests? Probably=
- we are missing some in our distro.</div>
-<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
-: 12pt; color: rgb(0, 0, 0);" class=3D"elementToProof">
-Could you please help with the list of kernel configs?</div>
-<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
-: 12pt; color: rgb(0, 0, 0);" class=3D"elementToProof">
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Mon, Sep 19, 2022 at 8:12 PM Li Wang &lt;<a href=
+=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt; wrote:<br></div><bl=
+ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
+t:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div dir=3D=
+"ltr"><div style=3D"font-size:small">Cyril Hrubis &lt;<a href=3D"mailto:chr=
+ubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a>&gt; wrote:<br></div><di=
+v style=3D"font-size:small"><br></div></div><div class=3D"gmail_quote"><blo=
+ckquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left=
+:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
+&gt; &gt; I faintly remmeber a similar patch where we decided not to work a=
+round<br>
+&gt; &gt; for a test harness leaking filedescriptors into testcases.<br>
+&gt; &gt;<br>
+&gt; <br>
+&gt; This also should be a solution, I searched the mailing list and got a<=
+br>
+&gt; patch[1].<br>
+&gt; Do you mean adding that close-on-exec flag when opening fd in harness?=
 <br>
-</div>
-<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
-: 12pt; color: rgb(0, 0, 0);" class=3D"elementToProof">
 <br>
-</div>
-<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
-: 12pt; color: rgb(0, 0, 0);" class=3D"elementToProof">
-Regards,</div>
-<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
-: 12pt; color: rgb(0, 0, 0);" class=3D"elementToProof">
-Ankita</div>
-</body>
-</html>
+Yes, that way you can be sure that no file descriptors are leaked to the<br=
+>
+tests.<br></blockquote><div><br></div><div><div style=3D"font-size:small">O=
+k, should I send patch v2 like this below?</div><div style=3D"font-size:sma=
+ll"><br></div><div style=3D"font-size:small">Note: the automation test open=
+04 got passed but I&#39;m not sure</div><div style=3D"font-size:small">if t=
+his has a side effect on logs. But from my observation, some=C2=A0</div><di=
+v style=3D"font-size:small">tests (with old-API) log can&#39;t be collected=
+ anymore.</div></div></div></div></blockquote><div><br></div><div class=3D"=
+gmail_default" style=3D"font-size:small">Seems we shouldn&#39;t fix by addi=
+ng=C2=A0&#39;close-on-exec&#39; flag simply,</div><div class=3D"gmail_defau=
+lt" style=3D"font-size:small">it brings more issues to some old-API tests, =
+I&#39;m still looking into</div><div class=3D"gmail_default" style=3D"font-=
+size:small">the problems which look like caused by=C2=A0ltp-pan designed.</=
+div><div class=3D"gmail_default" style=3D"font-size:small"><br></div><div c=
+lass=3D"gmail_default" style=3D"font-size:small">So can we just merge the=
+=C2=A0patch as the original?</div></div><div><br></div>-- <br><div dir=3D"l=
+tr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>=
+Li Wang<br></div></div></div></div>
 
---_000_PNZPR01MB810830AC76882E62E6D756A2FA4C9PNZPR01MB8108INDP_--
+--000000000000919c8705e91574b4--
 
---===============1622438656==
+
+--===============0215397667==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -197,4 +192,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============1622438656==--
+--===============0215397667==--
+
