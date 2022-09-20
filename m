@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27F4BC54EE9
-	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 18:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5583CC54EE9
+	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 18:50:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7D27F3CAD53
-	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 20:36:01 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id E51B83CAD41
+	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 20:50:01 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 022FF3C008C
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 20:35:51 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id B7FF73CA8A3
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 20:49:51 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1C90C200BD2
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 20:35:50 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E48191A00E38
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 20:49:50 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CD3F621B5D;
- Tue, 20 Sep 2022 18:35:49 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D14C421B81;
+ Tue, 20 Sep 2022 18:49:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663698949;
+ t=1663699789;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=e2bSm2HLxYP4DB2Ks+PZBc9cVPKsBL928BMTsaqCopI=;
- b=Mn+JoNJhj8rfSsavqkBJBz78BTNQkUQsN7liiDEOLMYSKE6p7fDOWewLcYIAjnsETMrJXR
- IhiHXo00hT9NP1CGTiEU3Z/C6gyb3B+vxYTlGZcBtEZcFGRKu26PDsq0RoVMPcSCl47HuL
- 2DtFHr0apHkXySnC7Emd+fMPsZhy0xw=
+ bh=Ykd2rBfi+oI6tu85F8gYh3rur2OBbfJP2tTLayWo3Oo=;
+ b=A0xFrrhO2epNyvpW6DqyDdk6Ev0KNK0kKVqLJdT9Kny1Rkn4yT5Bj5+kljD2u9AfJwuq3N
+ WXyL+k8cgdNVyI/GNmqIU20pVk8aEwIhFAnTC8hd5keAXSwHuANtxL31akqimaTf11n65y
+ OaGt8kk8r0ITq9R2NSHxQxtJB+02X3s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663698949;
+ s=susede2_ed25519; t=1663699789;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=e2bSm2HLxYP4DB2Ks+PZBc9cVPKsBL928BMTsaqCopI=;
- b=AkZXYT83rFhEO9imxWhPOmo9U22MKtrJwgPVqHHmE+fjAy5is1n/fHJJoiVjsN1CO+G75+
- yeLz7Wy75gH21xAg==
+ bh=Ykd2rBfi+oI6tu85F8gYh3rur2OBbfJP2tTLayWo3Oo=;
+ b=7pXjWmP7DzmiEDYNThsdIb76PnTH71w9kVLNFVGKhqvr+kzBU3DNINAiHmZBj27HAObbQU
+ 4g8iYmd49+nbhCCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9EF351346B;
- Tue, 20 Sep 2022 18:35:49 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F7CB1346B;
+ Tue, 20 Sep 2022 18:49:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id XcY/JAUIKmNLfgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 20 Sep 2022 18:35:49 +0000
-Date: Tue, 20 Sep 2022 20:35:47 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id NUBADE0LKmOrBAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 20 Sep 2022 18:49:49 +0000
+Date: Tue, 20 Sep 2022 20:49:47 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <YyoIA59q6K6mIJk4@pevik>
-References: <20220919144154.20623-1-andrea.cervesato@suse.com>
+To: Randolph Lin <randolph@andestech.com>
+Message-ID: <YyoLS/lLgCGRlmKg@pevik>
+References: <20220920114358.2259862-1-randolph@andestech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220919144154.20623-1-andrea.cervesato@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+In-Reply-To: <20220920114358.2259862-1-randolph@andestech.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Remove obsolete LTPROOT usage in math runtest
- file
+Subject: Re: [LTP] [PATCH v2] syscalls: Fix tst_res() format string for
+ 64-bit offset
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,29 +78,39 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: alankao@andestech.com, Mina <minachou@andestech.com>, kester.tw@gmail.com,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi Randolph,
 
-thanks, merged!
+> When compiling format string contains off_t type, to print off_t
+> correctly is cast it to (long long int) type and change the format
+> string to %lli.
+LGTM, I'd just use %lld instead of %lli (it's exactly the same, but %lld is IMHO
+more common.
 
-> -float_bessel cd $LTPROOT/testcases/bin; float_bessel -v
-> -float_exp_log cd $LTPROOT/testcases/bin; float_exp_log -v
-> -float_iperb cd $LTPROOT/testcases/bin; float_iperb -v
-> -float_power cd $LTPROOT/testcases/bin; float_power -v
-> -float_trigo cd $LTPROOT/testcases/bin; float_trigo -v
-> +float_bessel float_bessel -v
-> +float_exp_log float_exp_log -v
-> +float_iperb float_iperb -v
-> +float_power float_power -v
-> +float_trigo float_trigo -v
+Kind regards,
+Petr
 
-FYI I was thinking about removing -v, but in the end I kept it as the tests
-needs to be migrated to new API anyway.
+...
+> +++ b/testcases/kernel/syscalls/lseek/lseek11.c
+> @@ -159,7 +159,7 @@ static void setup(void)
+>  	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0666);
+
+>  	get_blocksize();
+> -	tst_res(TINFO, "The block size is %lu", block_size);
+> +	tst_res(TINFO, "The block size is %d", block_size);
+This is wrong. While blksize_t is on aarch64 and riscv64 int, on 
+most archs is long, thus this needs to have the same approach as the rest
+(%lld and (long long int) cast.
+
+with these 2 changes:
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
