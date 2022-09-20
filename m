@@ -4,79 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95687ECAAD8
-	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 05:54:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8841EC54EE9
+	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 08:29:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0911E3CAD2A
-	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 07:54:19 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 3A8B43CAD0D
+	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 10:29:16 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1F2153CA00A
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 07:54:08 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 859883CAAE5
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 10:29:05 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7BECD600954
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 07:54:06 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D49AC1000AF5
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 10:29:04 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1663653245;
+ s=mimecast20190719; t=1663662543;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eRF9lFo0vy3dOEqFUMP3PFDtyayewhKQ/HutwATF4pw=;
- b=NpjA3Cd2pjgrYGurS2UPjYJ+prbsxwYT/5KS1b0ZZ1uqeTFMGvkURKbGEELP8Wo3dgcR6T
- KKy0vDhtbhIVIpnJJS6GQz46dx3jt24UxnMvthycB7wDKI4YXiDr24JqWIdeeSG4Yq2Shh
- TvyJDMo9yCimTLwoDWBteXiS6GG1gLo=
-Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
- [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-486-rQfWLwxGOiOlntKf7a4iaA-1; Tue, 20 Sep 2022 01:54:03 -0400
-X-MC-Unique: rQfWLwxGOiOlntKf7a4iaA-1
-Received: by mail-ua1-f72.google.com with SMTP id
- y10-20020ab0560a000000b003af33bfa8c4so501254uaa.21
- for <ltp@lists.linux.it>; Mon, 19 Sep 2022 22:54:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=eRF9lFo0vy3dOEqFUMP3PFDtyayewhKQ/HutwATF4pw=;
- b=PqlIplZnM/Mwka1si5BcKLevHkAvozYvQB8hXWIxWuCOOh1F8RYWftoaknA156VhNa
- +UhL58YTiRvIWyTvOJq0s3HFy9FKaCzysU4YDrG7p6N22yD/AnGUQDrNwZ/IKs6NGSl3
- oAoHCwGS7maUbiyDoaQW234zf4o5ipOfBMwOWGQZz648Dl/6y9TPdOL8WH2q3Sft2GBc
- QUEgTRMZUv2PaebEYinnxHOIyJqcKC2BQfEBJmBDELTBANW7e4cg92y1VU1QB2/05M67
- 9DRdy6KmevXoyCY9LHsSktBT27GYOMd+9bUJUMi20u88dlCaZRfwyShLUcXVYZBaOwXV
- 9/rw==
-X-Gm-Message-State: ACrzQf332l3iLG7QM6K7CiBxAf7Qjkb8OCPhs6wtATBt5xR6oUxtiJnO
- 6UuUX5SMkhWxW4Kn6tnrv01wHJCq/LR7JXveBvdCeJoo/yzbOHnKbemph1YJRDz5TqQuV9q/jd4
- e9kMrvMhe24nI0SIpETILnOcXMzA=
-X-Received: by 2002:a05:6102:23f7:b0:398:bce4:ead with SMTP id
- p23-20020a05610223f700b00398bce40eadmr7240070vsc.41.1663653243197; 
- Mon, 19 Sep 2022 22:54:03 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM6xyukJOir82oSMt88HDIjL5ppqUgyUIXWfCSReJb9x0A256ph+Bvtttto5RxDVH4kbDylP4xOPQazSj1p1tkI=
-X-Received: by 2002:a05:6102:23f7:b0:398:bce4:ead with SMTP id
- p23-20020a05610223f700b00398bce40eadmr7240058vsc.41.1663653242831; Mon, 19
- Sep 2022 22:54:02 -0700 (PDT)
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=IPKbxv9uvnot9JV1udTKWixORHHAO87DMkR+EKH/xBY=;
+ b=R84DReSG06l0Kh2e/WWlEBqBrLhUggICB+UUuGDyAD+ThPYwS5tXqgFbDuSz8Y1R2GKhwW
+ eMRRNF3eXM1A0ma/LKxw/L1V959xGoiRWXQm19NZKSd3lgfuYck3TMNqTwvDPwFz4LUsez
+ TFcJIUk36XzlXmK29tqxLJ7BviB3Fq0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-570-hr4hdzzUOWqaQkcR8MYZRw-1; Tue, 20 Sep 2022 04:29:01 -0400
+X-MC-Unique: hr4hdzzUOWqaQkcR8MYZRw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.3])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9DCB185A5B6
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 08:29:01 +0000 (UTC)
+Received: from janakin.usersys.redhat.com (unknown [10.40.193.28])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 1A0201121314
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 08:29:00 +0000 (UTC)
+From: Jan Stancek <jstancek@redhat.com>
+To: ltp@lists.linux.it
+Date: Tue, 20 Sep 2022 10:28:57 +0200
+Message-Id: <6bac7035adc2cfc8ab3800fe1d2d03223ec57ff5.1663662348.git.jstancek@redhat.com>
 MIME-Version: 1.0
-References: <20220915031020.2633347-1-liwang@redhat.com>
- <YyMgBQu+phGCulxV@pevik> <YyM05nwf1+0eCd3w@yuki>
- <CAEemH2d_ckW9Zm77wRcoejiY0rCDB1Tpgs7c3LB=WNwYYLF7Hg@mail.gmail.com>
- <YyRER2kntqxXG7tl@yuki>
- <CAEemH2eDc0qfdkaOxrbEPsmOmZp7MA=exHRkjQPgxaJAh7HP2w@mail.gmail.com>
-In-Reply-To: <CAEemH2eDc0qfdkaOxrbEPsmOmZp7MA=exHRkjQPgxaJAh7HP2w@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 20 Sep 2022 13:53:51 +0800
-Message-ID: <CAEemH2c1m7H581fn0VDq0nsjV6DN=+NwtmAegm0_WEqT0OmgiA@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] open04: add EMFILE check
+Subject: [LTP] [PATCH] syscalls/futex_waitv02: replace TST_THREAD_STATE_WAIT
+ with repeated wake
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,109 +68,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0215397667=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0215397667==
-Content-Type: multipart/alternative; boundary="000000000000919c8705e91574b4"
+Same patch as for futex_waitv03. TST_THREAD_STATE_WAIT isn't reliable to
+tell that it's safe to call futex_wake(). futex_wake() can be called
+prematurely and return 0, which leaves other thread timing out.
 
---000000000000919c8705e91574b4
-Content-Type: text/plain; charset="UTF-8"
+Replace it with repeated futex_wake() until it fails or wakes at least 1 waiter.
+Also extend timeout to 5 seconds to avoid false positives from systems with
+high steal time (e.g. overloaded s390x host).
 
-On Mon, Sep 19, 2022 at 8:12 PM Li Wang <liwang@redhat.com> wrote:
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../kernel/syscalls/futex/futex_waitv02.c     | 26 +++++++++----------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
-> Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
->> > > I faintly remmeber a similar patch where we decided not to work around
->> > > for a test harness leaking filedescriptors into testcases.
->> > >
->> >
->> > This also should be a solution, I searched the mailing list and got a
->> > patch[1].
->> > Do you mean adding that close-on-exec flag when opening fd in harness?
->>
->> Yes, that way you can be sure that no file descriptors are leaked to the
->> tests.
->>
->
-> Ok, should I send patch v2 like this below?
->
-> Note: the automation test open04 got passed but I'm not sure
-> if this has a side effect on logs. But from my observation, some
-> tests (with old-API) log can't be collected anymore.
->
-
-Seems we shouldn't fix by adding 'close-on-exec' flag simply,
-it brings more issues to some old-API tests, I'm still looking into
-the problems which look like caused by ltp-pan designed.
-
-So can we just merge the patch as the original?
-
+diff --git a/testcases/kernel/syscalls/futex/futex_waitv02.c b/testcases/kernel/syscalls/futex/futex_waitv02.c
+index 0a0e2b62075c..00cf0960808a 100644
+--- a/testcases/kernel/syscalls/futex/futex_waitv02.c
++++ b/testcases/kernel/syscalls/futex/futex_waitv02.c
+@@ -50,19 +50,20 @@ static void setup(void)
+ 	}
+ }
+ 
+-static void *threaded(void *arg)
++static void *threaded(LTP_ATTRIBUTE_UNUSED void *arg)
+ {
+ 	struct futex_test_variants tv = futex_variant();
+-	int tid = *(int *)arg;
+ 
+-	TST_THREAD_STATE_WAIT(tid, 'S', 0);
+-
+-	TEST(futex_wake(tv.fntype, (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
++	do {
++		TEST(futex_wake(tv.fntype,
++			(void *)(uintptr_t)waitv[numfutex - 1].uaddr,
+ 			1, FUTEX_PRIVATE_FLAG));
+-	if (TST_RET < 0) {
+-		tst_brk(TBROK | TTERRNO,
+-			"futex_wake private returned: %ld", TST_RET);
+-	}
++		if (TST_RET < 0) {
++			tst_brk(TBROK | TTERRNO,
++				"futex_wake private returned: %ld", TST_RET);
++		}
++		usleep(1000);
++	} while (TST_RET < 1);
+ 
+ 	return NULL;
+ }
+@@ -70,16 +71,13 @@ static void *threaded(void *arg)
+ static void run(void)
+ {
+ 	struct timespec to;
+-	int tid;
+ 	pthread_t t;
+ 
+-	tid = tst_syscall(__NR_gettid);
+-
+-	SAFE_PTHREAD_CREATE(&t, NULL, threaded, (void *)&tid);
++	SAFE_PTHREAD_CREATE(&t, NULL, threaded, NULL);
+ 
+ 	/* setting absolute timeout for futex2 */
+ 	SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, &to);
+-	to.tv_sec++;
++	to.tv_sec += 5;
+ 
+ 	TEST(futex_waitv(waitv, numfutex, 0, &to, CLOCK_MONOTONIC));
+ 	if (TST_RET < 0) {
 -- 
-Regards,
-Li Wang
-
---000000000000919c8705e91574b4
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Mon, Sep 19, 2022 at 8:12 PM Li Wang &lt;<a href=
-=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt; wrote:<br></div><bl=
-ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
-t:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div dir=3D=
-"ltr"><div style=3D"font-size:small">Cyril Hrubis &lt;<a href=3D"mailto:chr=
-ubis@suse.cz" target=3D"_blank">chrubis@suse.cz</a>&gt; wrote:<br></div><di=
-v style=3D"font-size:small"><br></div></div><div class=3D"gmail_quote"><blo=
-ckquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left=
-:1px solid rgb(204,204,204);padding-left:1ex">Hi!<br>
-&gt; &gt; I faintly remmeber a similar patch where we decided not to work a=
-round<br>
-&gt; &gt; for a test harness leaking filedescriptors into testcases.<br>
-&gt; &gt;<br>
-&gt; <br>
-&gt; This also should be a solution, I searched the mailing list and got a<=
-br>
-&gt; patch[1].<br>
-&gt; Do you mean adding that close-on-exec flag when opening fd in harness?=
-<br>
-<br>
-Yes, that way you can be sure that no file descriptors are leaked to the<br=
->
-tests.<br></blockquote><div><br></div><div><div style=3D"font-size:small">O=
-k, should I send patch v2 like this below?</div><div style=3D"font-size:sma=
-ll"><br></div><div style=3D"font-size:small">Note: the automation test open=
-04 got passed but I&#39;m not sure</div><div style=3D"font-size:small">if t=
-his has a side effect on logs. But from my observation, some=C2=A0</div><di=
-v style=3D"font-size:small">tests (with old-API) log can&#39;t be collected=
- anymore.</div></div></div></div></blockquote><div><br></div><div class=3D"=
-gmail_default" style=3D"font-size:small">Seems we shouldn&#39;t fix by addi=
-ng=C2=A0&#39;close-on-exec&#39; flag simply,</div><div class=3D"gmail_defau=
-lt" style=3D"font-size:small">it brings more issues to some old-API tests, =
-I&#39;m still looking into</div><div class=3D"gmail_default" style=3D"font-=
-size:small">the problems which look like caused by=C2=A0ltp-pan designed.</=
-div><div class=3D"gmail_default" style=3D"font-size:small"><br></div><div c=
-lass=3D"gmail_default" style=3D"font-size:small">So can we just merge the=
-=C2=A0patch as the original?</div></div><div><br></div>-- <br><div dir=3D"l=
-tr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>=
-Li Wang<br></div></div></div></div>
-
---000000000000919c8705e91574b4--
-
-
---===============0215397667==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2.27.0
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0215397667==--
-
