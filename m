@@ -4,78 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EE89C54EE9
-	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 12:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1C9EC54EE9
+	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 12:54:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 490AC3CAD5A
-	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 14:44:55 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id A67613CAD20
+	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 14:54:15 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D384C3CABD0
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 14:44:45 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id EEE0F3CABD0
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 14:54:03 +0200 (CEST)
+Received: from IND01-MAX-obe.outbound.protection.outlook.com
+ (mail-maxind01on2120.outbound.protection.outlook.com [40.107.222.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D9AFC1A00A21
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 14:44:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1663677883;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RolleQR/tIi3f6Oy9HLm1hzH20L6vSY/uhgr76McPnI=;
- b=TVNLm93I4rrQewCc832ec9vVB6C2ztgzfpo+D9mfGIGkMnk9299e8bv5zLVTDlgojnyeVq
- LtlRuptgJIbalgLqCkQv2BOQ0jT/HJVC3BtLDjqN+HLanKd7Xv0BRtXUFYEiOiQw8i63eD
- MktclkMfNAfl0Psk+Puot6boPyTd2lE=
-Received: from mail-vs1-f70.google.com (mail-vs1-f70.google.com
- [209.85.217.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-325-DKnZqpzSNZuuUTJ89VYTNw-1; Tue, 20 Sep 2022 08:44:41 -0400
-X-MC-Unique: DKnZqpzSNZuuUTJ89VYTNw-1
-Received: by mail-vs1-f70.google.com with SMTP id
- 124-20020a670882000000b00388cd45f433so577897vsi.8
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 05:44:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=RolleQR/tIi3f6Oy9HLm1hzH20L6vSY/uhgr76McPnI=;
- b=u311tENbaJvTtbbPhAemM3/4Cz0Ixu6+WrY4pj+eUvARmsVOYdR6vtLUAQr0QBnXH0
- So57jEWgGTYVZW3iFdUzac5bqN1QRHJVbfPUtYEgVAs0xAr3Bd6SpUQnhlK9VP3MUEB4
- JFGu//H5x/Up9H2Ki+cl2y04sShUwcZEN63GNtztzO/N1Z/LEA8SSLo9f88VtaAmRb9R
- XOt0O6SWhRfThguenkuz7Yntc0iyFSs8ohbtJS0r4WW9EIRdJe2ebjhvUsqyTnrcKoid
- WVUL8xLF/s1xiOX9Uk4IyCxRJ4D9rCSrKV1RagyH9AopFKzMjFapfVrhG8NqsDLPRyIf
- xeZA==
-X-Gm-Message-State: ACrzQf1DbAKmf0JCpwU6dgyJDokOZttcGUgK5yridVuim1r1Fo1O8g8F
- HyRf6PD0rgDhdfABpszyLEiCHpkqQLA072cfGd1wDXRyG5lxx0Mi5xCaIzHZIRrDvD7evzxLbS3
- 96v0324u/deK3R54fBxVe5aNO7No=
-X-Received: by 2002:a67:d896:0:b0:398:2fa4:2080 with SMTP id
- f22-20020a67d896000000b003982fa42080mr7939149vsj.72.1663677879894; 
- Tue, 20 Sep 2022 05:44:39 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM6UXbShG0niPbSFYp0GbnWrZBXu+jQQcjtIO3vH/77sNOz8cZQgVRbPONT7tlJ6Helk5IhkR52Uh8z0zTzHE84=
-X-Received: by 2002:a67:d896:0:b0:398:2fa4:2080 with SMTP id
- f22-20020a67d896000000b003982fa42080mr7939142vsj.72.1663677879593; Tue, 20
- Sep 2022 05:44:39 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F4056600833
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 14:54:02 +0200 (CEST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eT61oVsTroUiC0BPB6xfEwITYJbXXsksNDVkPqo/Nni2PxvRcENbEg9N/rVjBH9te2HGTIYFhu/+yrdiA/Xfgt3TH1j/omWd9R2SZhVuOsLQEOzfcH/sMC1TF4cFapp6/WJgIU8OlPf2OGkdkvre1gZOawE/lISx5zS5EwRXlUPHyXC1/IUAciDplks0N8DKN2lfCMxPJoXmern6sM93qGDHDUwAFlhnTtEqdKZSNlQPIHcO7l5shVqu/bzyj+0AYbZItISB336s5iubjXJlH61JxDKd4dMvYqBgManq8ohY4gioYwphXLKnr2+9qXb8ofNnZl1bYM0YvjcGHELDmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZZq8skaGAkO7SfFn08cIwm2KqS7KtWNVxwANr+Jj0W0=;
+ b=ZfYLbiugIvuwi4b6mzacw7TIbsSWblDHKSKqpgf0xo5Y+D+Fyk5MeZTuelP7+Fnj2b/JEsNk2hTMc1CkID3ojb4U+kmcE6YEPZ67gLP4Q83uN3nHv7K3f06vevTfJEqxy+/W4vylVxvrnOVe9aOXVOMtv4nhOs81u3beUALSWVUDJw6Q0iYbZaMTxtPK3RFsDDCEhXAHYKp4A8eNig3cgWdJ1A2QN50ec8FVt2jbipDTt1Biq61+/AM450EizDIShONtMillaEZ+U+TBkdoL/OGOA3/bL3AL2Z/f0Aj1o71e4e0Yu2Mw4+a2qo/WGT5TM3PikultDQ5+V6fRg1aZzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=exaleapsemi.com; dmarc=pass action=none
+ header.from=exaleapsemi.com; dkim=pass header.d=exaleapsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=exaleapsemi.onmicrosoft.com; s=selector2-exaleapsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZZq8skaGAkO7SfFn08cIwm2KqS7KtWNVxwANr+Jj0W0=;
+ b=08cMfQE980FDE6q1WGYdtmcJyOdIPoUulMWIGfD1N9XWfOSTBlYElTVFXyKe2InuCxZqZuTd5PQYY4wFXFnbAKx2wxCXo9lQAGWqXVGlSNAREFePXnVezUiNS4gvg0zy9lFnnWfhyH5asI3fgd+EsbItzHZfaGtkyNBQomBrgM8=
+Received: from PNZPR01MB4448.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:1b::8)
+ by PN2PR01MB4300.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:14::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.16; Tue, 20 Sep
+ 2022 12:53:59 +0000
+Received: from PNZPR01MB4448.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::cd33:1cbb:b205:bf70]) by PNZPR01MB4448.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::cd33:1cbb:b205:bf70%2]) with mapi id 15.20.5632.021; Tue, 20 Sep 2022
+ 12:53:59 +0000
+From: Indumathi Raju <Indumathi.r@exaleapsemi.com>
+To: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: Kernel configuration 
+Thread-Index: AQHYzO7RM/ZDZuS0qkqTVIuzuvjG8g==
+Date: Tue, 20 Sep 2022 12:53:58 +0000
+Message-ID: <PNZPR01MB44487CAE043EF38F333E9589F04C9@PNZPR01MB4448.INDPRD01.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=exaleapsemi.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PNZPR01MB4448:EE_|PN2PR01MB4300:EE_
+x-ms-office365-filtering-correlation-id: 453a42de-aca4-4702-6b45-08da9b072f7f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 54auqFSidlv4TnlH9EeP4VOQsTn5bgdW2jp8Q/+DOtPvdDPX5G256lQe2dmn6bzqP9yN/60cpXIBxeD+KQCMqkG485RcD2YG0udSZ7xDYoHkRLRR6SWEUKWDT3KoO7uJsJ6yzghPu+Zmb71F9L1Ch0YlvBwgHj+umpGxZCcmT4YCab2ywYFfA1G4hILuM33HNgAOs/3mV98jJ8BKiCmyE3q6XokxQkUAB7OAd2vYMV7XR10OLUpYuE/oPBTjsaEtS7Qs/x90oCRgtbHokIblRLOL1E4b5bHi2NZUfv0aKWs3J6Z/lIUhhHnXmEgInBGpdIijO4edcWfPHW6K6GPZtqXBzdit41U1P877QBIWZSwqHdyT72NXX7z4fp+QCOd0RyS9iacujWYCus0h+IWGovvLjQAbC8U8aUzB4UEDuW4k4EftQOmGTcZM9Mt5zarsXsTnSIWRCnTb/PPw6CLaXJvRcvZGE3/+I4poTOmm/pFFHBrY/yz3Sf017Gx0c/IpF/DPEKinEzqwJLk5evZi3CjZpDauVDa8ElHYJIb6d94tJy23YAHV9KD+TcaOr41PmaJen5VKSsN2pPfrNVZmyFHCFYiSq++DQmVbghwNBTDo/VlST6zhw208ACaLvjNBP45ibuNuABB8uTWo8v/dkVKT6bh3BPmVp1AOSFqb4Jx5mVavGA09XiwdPWmg/3kQuUHL+nZFlpBhw7QWWu6nLuxH6971wQC2E+mhNSAr0zciYJScwdX/qdfaXE8qsQ+9id1Nz0Vtbeygo7oqA7sR9g==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PNZPR01MB4448.INDPRD01.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
+ SFS:(13230022)(39830400003)(346002)(366004)(396003)(376002)(136003)(451199015)(19627405001)(55016003)(2906002)(33656002)(3480700007)(122000001)(316002)(8676002)(38100700002)(558084003)(66476007)(7116003)(66446008)(76116006)(5660300002)(66556008)(64756008)(66946007)(6916009)(8936002)(86362001)(186003)(478600001)(38070700005)(9686003)(4743002)(26005)(41300700001)(6506007)(52536014)(71200400001)(55236004)(7696005);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?KVPL9pLj7RVPEqfIqkTKjl4vdeu8SNZ0bDZjmWTv5SZpn55YwO4WsA/ZC9?=
+ =?iso-8859-1?Q?VtciZIeBTwVPv3KIIwB0NbV88TkhAEyuecyGFGF8huSjK0ImlNegCcf8vA?=
+ =?iso-8859-1?Q?1dF/FIx0GSUtkDw07E0Z2/5nSl60tzR3I50oNG6aEXMTa3D57GBx0EGDtD?=
+ =?iso-8859-1?Q?0VD+Ewcu12CfV0ZO31uZCxEA0WNUoX5Ko24YZamIV8o/Yt2grrO5N1eOog?=
+ =?iso-8859-1?Q?u6kA9sK3wUgM1csZCt2RvLJDLoBWgrzaVfnjNvZmMBYxKVFFUXIryaV/Us?=
+ =?iso-8859-1?Q?ggMlSPmoQ/4FdA9aGjCKR+ITEqO7JVOTF+KCPLxn1z1BWdltGT+9vRJFHW?=
+ =?iso-8859-1?Q?4BZMci7ysp4cvFGlNhqOvZ1EjU3UxOj1Qy5snmTczLFjSEaybXm2qz4au3?=
+ =?iso-8859-1?Q?+0fA4xUf7uu4OTCOlBRnLddgpHpn/7SNEohnj2FrB0FsUzWF9JPYeho0Fr?=
+ =?iso-8859-1?Q?hGClUn2GjndC6hnHstIypAu5g2RXDdz9vCqEbxtOYfzs4pGPCMED6tpLwG?=
+ =?iso-8859-1?Q?xQFIXP3Y1ZNE9d65Ub45oi7CtK8YZ+166xFgYqWqsEPpe7rQNUp/TMufWP?=
+ =?iso-8859-1?Q?NojlfEhLiVFRfQpVjj6OokzEX9zHReQX+S6s7NCXiTr/uFCENtnxk0K8ob?=
+ =?iso-8859-1?Q?+bXjh9pRcw+FmJRMk8Oy1tGRCgDcun+4SUs76GJTwHJzka85ExkuGm6I3x?=
+ =?iso-8859-1?Q?nq3O1T1TJMEzmypBVLoWd+JBiH8L0aqaPsjDUejJZb52zdaWJtGPBGU9hn?=
+ =?iso-8859-1?Q?MvXKi3p9yiZKmHLCWfkN+Wc+Lmakk+9EQIXz3ketptNLQ9TEvmKMJ0cdal?=
+ =?iso-8859-1?Q?pVNVjcqEvNFIjOCy56IRleeEwvKcPHgV8rrVlidbQcvoWDtHsiJu4WRy8j?=
+ =?iso-8859-1?Q?t59aSoLQS32NcRwh9+eeP0meJtp72b4LDv4bUv0WGjlWXyaOugpKYQOQaB?=
+ =?iso-8859-1?Q?JLVUeey6GEl7fSKle9O93U8AZz2CD0gHgNvmQdtfIZ4xLKaDHm17qUlwE9?=
+ =?iso-8859-1?Q?syJSjZIC3UgZQD4bcZ2VS7SBGL9ER/7YJzzCeGvaHu3BTe+hNMjswKbk+e?=
+ =?iso-8859-1?Q?wA4X+h9mE0W2g9rT+V2skW9P5mBiRutGSNJEZJVDeQblVI5IdV66a5Ra/q?=
+ =?iso-8859-1?Q?CbHJ8EDIv4kmfpvirG8qhcwKzMMe6CiSlV44kaMHYwyAyd+AAFOdIK5t9r?=
+ =?iso-8859-1?Q?GWVcOBlNXkeUzPNiV5aKRNxGRGQGtTQm3rbFIwvX83K88lPq6GLvQnxGTh?=
+ =?iso-8859-1?Q?u/JrqlpREHdjmYEzM8ZmCLLTkn9ZwNKeVeBYwc5xy7606wzPa2x55P1oNQ?=
+ =?iso-8859-1?Q?cYJJxgReNBPNX4fKVLGKduLrfDjSfGRFuQQZAO6uWvYjGuMvMrYYYYt0ZG?=
+ =?iso-8859-1?Q?hjU+mvjAtEhquR11KuO6yXWIhWJvashecw/1Sa9fKd/sRv+yK6GPr7z0O5?=
+ =?iso-8859-1?Q?/I8qYq5p1PFKXuP5pAyfetdHzplWDChMTeB0aTiiQpeAg950cZ2GaM0pMs?=
+ =?iso-8859-1?Q?IPohDjSWELPI8sVJZOeis1F5dKX/1dJE22dRqCvrpRN9KGueThQo9lyvvd?=
+ =?iso-8859-1?Q?p0ODKOTTCXmAbQp1DwJi1o164dtiMai2zSrmDddCYZA7VjOi4cbuJZkMy3?=
+ =?iso-8859-1?Q?ZXtPQLLzPN/2LdJOE4GQgfrgbDSpLirlnRmYIRQjqDcEroQEGBOIGflg?=
+ =?iso-8859-1?Q?=3D=3D?=
 MIME-Version: 1.0
-References: <6bac7035adc2cfc8ab3800fe1d2d03223ec57ff5.1663662348.git.jstancek@redhat.com>
- <6c5b161bc3bcf753cbda92954ca3f47cb268c68f.1663665637.git.jstancek@redhat.com>
- <6470a099-8b3a-ca9f-f521-181a33b5a28a@suse.com>
-In-Reply-To: <6470a099-8b3a-ca9f-f521-181a33b5a28a@suse.com>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 20 Sep 2022 14:44:24 +0200
-Message-ID: <CAASaF6wFc0z+cec6y2T0ygWKY==LwkFv21CT2VG0Waqk+0SSkw@mail.gmail.com>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-OriginatorOrg: exaleapsemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PNZPR01MB4448.INDPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 453a42de-aca4-4702-6b45-08da9b072f7f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2022 12:53:58.9833 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 34df156e-9bc4-4450-9e80-487c0e7f9471
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SxBt0ZNYUlrx4/iDcK//vylb/uw8cTT+5tWcy3IRDVOdysx6xXRaMB14ZUzS1MOiIhRvbG65b/DryoXvBMqeYBt9rn9YO8qIzuimdjKjTzI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN2PR01MB4300
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/futex_waitv0[23]: replace
- TST_THREAD_STATE_WAIT with repeated wake
+Subject: [LTP] Kernel configuration
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,152 +124,96 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0563289071=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Sep 20, 2022 at 11:55 AM Andrea Cervesato
-<andrea.cervesato@suse.com> wrote:
->
-> Hi!
->
-> On 9/20/22 11:21, Jan Stancek wrote:
-> > TST_THREAD_STATE_WAIT isn't reliable to tell that it's safe to
-> > call futex_wake(). futex_wake() can be called prematurely and
-> > return 0, which leaves other thread timing out.
-> >
-> > Replace it with repeated futex_wake() until it fails or wakes at least 1 waiter.
-> > Also extend timeout to 5 seconds to avoid false positives from systems with
-> > high steal time (e.g. overloaded s390x host).
-> >
-> > For futex_waitv03 this replaces while loop with TST_RETRY_FUNC.
-> >
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ---
-> >   .../kernel/syscalls/futex/futex_waitv02.c     | 21 ++++++-------------
-> >   .../kernel/syscalls/futex/futex_waitv03.c     | 12 +++--------
-> >   testcases/kernel/syscalls/futex/futextest.h   | 15 +++++++++++++
-> >   3 files changed, 24 insertions(+), 24 deletions(-)
-> >
-> > diff --git a/testcases/kernel/syscalls/futex/futex_waitv02.c b/testcases/kernel/syscalls/futex/futex_waitv02.c
-> > index 0a0e2b62075c..ccea5eb5e745 100644
-> > --- a/testcases/kernel/syscalls/futex/futex_waitv02.c
-> > +++ b/testcases/kernel/syscalls/futex/futex_waitv02.c
-> > @@ -50,19 +50,13 @@ static void setup(void)
-> >       }
-> >   }
-> >
-> > -static void *threaded(void *arg)
-> > +static void *threaded(LTP_ATTRIBUTE_UNUSED void *arg)
-> >   {
-> >       struct futex_test_variants tv = futex_variant();
-> > -     int tid = *(int *)arg;
-> >
-> > -     TST_THREAD_STATE_WAIT(tid, 'S', 0);
-> > -
-> > -     TEST(futex_wake(tv.fntype, (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
-> > -                     1, FUTEX_PRIVATE_FLAG));
-> > -     if (TST_RET < 0) {
-> > -             tst_brk(TBROK | TTERRNO,
-> > -                     "futex_wake private returned: %ld", TST_RET);
-> > -     }
-> > +     TST_RETRY_FUNC(futex_wake(tv.fntype,
-> > +             (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
-> > +             1, FUTEX_PRIVATE_FLAG), futex_waked_someone);
->
-> Correct way of using TST_RETRY_FUNC is the following:
->
->      ret = TST_RETRY_FUNC(futex_wake(tv.fntype, (void
-> *)(uintptr_t)waitv[numfutex - 1].uaddr, 1, FUTEX_PRIVATE_FLAG),
-> TST_RETVAL_GE0);
->
->      if (ret < 0)
->          tst_brk(TBROK | TTERRNO, "futex_wake private returned: %ld", ret);
+--===============0563289071==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_PNZPR01MB44487CAE043EF38F333E9589F04C9PNZPR01MB4448INDP_"
 
-This has couple problems:
-TST_RETVAL_GE0 aborts retry on futex_wake returning 0.
-It won't report a failure (-1), followed by successful call later.
-And if the failure (-1) is persistent, it would waste time retrying.
+--_000_PNZPR01MB44487CAE043EF38F333E9589F04C9PNZPR01MB4448INDP_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
->
-> >
-> >       return NULL;
-> >   }
-> > @@ -70,16 +64,13 @@ static void *threaded(void *arg)
-> >   static void run(void)
-> >   {
-> >       struct timespec to;
-> > -     int tid;
-> >       pthread_t t;
-> >
-> > -     tid = tst_syscall(__NR_gettid);
-> > -
-> > -     SAFE_PTHREAD_CREATE(&t, NULL, threaded, (void *)&tid);
-> > +     SAFE_PTHREAD_CREATE(&t, NULL, threaded, NULL);
-> >
-> >       /* setting absolute timeout for futex2 */
-> >       SAFE_CLOCK_GETTIME(CLOCK_MONOTONIC, &to);
-> > -     to.tv_sec++;
-> > +     to.tv_sec += 5;
-> >
-> >       TEST(futex_waitv(waitv, numfutex, 0, &to, CLOCK_MONOTONIC));
-> >       if (TST_RET < 0) {
-> > diff --git a/testcases/kernel/syscalls/futex/futex_waitv03.c b/testcases/kernel/syscalls/futex/futex_waitv03.c
-> > index ee79728474ee..c674f52d8d4c 100644
-> > --- a/testcases/kernel/syscalls/futex/futex_waitv03.c
-> > +++ b/testcases/kernel/syscalls/futex/futex_waitv03.c
-> > @@ -74,15 +74,9 @@ static void *threaded(LTP_ATTRIBUTE_UNUSED void *arg)
-> >   {
-> >       struct futex_test_variants tv = futex_variant();
-> >
-> > -     do {
-> > -             TEST(futex_wake(tv.fntype, (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
-> > -                     1, 0));
-> > -             if (TST_RET < 0) {
-> > -                     tst_brk(TBROK | TTERRNO,
-> > -                             "futex_wake private returned: %ld", TST_RET);
-> > -             }
-> > -             usleep(1000);
-> > -     } while (TST_RET < 1);
-> > +     TST_RETRY_FUNC(futex_wake(tv.fntype,
-> > +             (void *)(uintptr_t)waitv[numfutex - 1].uaddr,
-> > +             1, 0), futex_waked_someone);
-> >
-> >       return NULL;
-> >   }
-> > diff --git a/testcases/kernel/syscalls/futex/futextest.h b/testcases/kernel/syscalls/futex/futextest.h
-> > index fd10885f3205..515b5102d4fc 100644
-> > --- a/testcases/kernel/syscalls/futex/futextest.h
-> > +++ b/testcases/kernel/syscalls/futex/futextest.h
-> > @@ -277,4 +277,19 @@ futex_set(futex_t *uaddr, u_int32_t newval)
-> >       return newval;
-> >   }
-> >
-> > +/**
-> > + * futex_waked_someone() - ECHCK func for TST_RETRY_FUNC
-> > + * @ret:     return value of futex_wake
-> > + *
-> > + * Return value drives TST_RETRY_FUNC macro.
-> > + */
-> > +static inline int
-> > +futex_waked_someone(int ret)
-> > +{
-> > +     if (ret < 0)
-> > +             tst_brk(TBROK | TERRNO, "futex_wake returned: %d", ret);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> >   #endif /* _FUTEXTEST_H */
->
-> --
->
-> Regards,
-> Andrea Cervesato
->
+Hi,
+
+We built own Riscv64 distro with selective configuration for soc board, on =
+that I want to execute LTP for that I want to know Which are the required k=
+ernel configurations to execute LTP tests?
+Could you please help with the list of kernel configs?
+
+Regards
+Indumathi R
+
+--_000_PNZPR01MB44487CAE043EF38F333E9589F04C9PNZPR01MB4448INDP_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+<style type=3D"text/css" style=3D"display:none;"> P {margin-top:0;margin-bo=
+ttom:0;} </style>
+</head>
+<body dir=3D"ltr">
+<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
+: 12pt; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);" class=
+=3D"elementToProof">
+<span style=3D"color: black; font-size: 12pt;" class=3D"elementToProof">Hi,=
+</span></div>
+<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
+: 12pt; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);" class=
+=3D"elementToProof">
+<span style=3D"color: black; font-size: 12pt;"><br>
+</span></div>
+<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
+: 12pt; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);" class=
+=3D"elementToProof">
+<span style=3D"color: black; font-size: 12pt;"><span style=3D"color: black;=
+ font-size: 12pt;">We built own Riscv64 distro with selective configuration
+<span style=3D"color: black; font-size: 12pt;">for soc board</span>, on tha=
+t</span> I want to execute LTP for that I want to know Which are the requir=
+ed kernel configurations to execute LTP tests?</span><br>
+</div>
+<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
+: 12pt; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);" class=
+=3D"elementToProof">
+<span style=3D"color: black; font-size: 12pt;">Could you please help with t=
+he list of kernel configs?</span><br>
+</div>
+<div>
+<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
+: 12pt; color: rgb(0, 0, 0);">
+<br>
+</div>
+<div id=3D"Signature">
+<div>
+<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
+: 12pt; color: rgb(0, 0, 0);">
+Regards</div>
+<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=
+: 12pt; color: rgb(0, 0, 0);">
+Indumathi R<br>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
+
+--_000_PNZPR01MB44487CAE043EF38F333E9589F04C9PNZPR01MB4448INDP_--
+
+--===============0563289071==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0563289071==--
