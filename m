@@ -4,61 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E8F5C54EE9
-	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 21:43:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EA28C54EE9
+	for <ltp@archiver.kernel.org>; Wed, 21 Sep 2022 02:08:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0F56D3CAD46
-	for <ltp@archiver.kernel.org>; Tue, 20 Sep 2022 23:43:17 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 77E2F3CAD41
+	for <ltp@archiver.kernel.org>; Wed, 21 Sep 2022 04:08:54 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7B6D83CA9D2
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 23:43:07 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A770A3CAA99
+ for <ltp@lists.linux.it>; Wed, 21 Sep 2022 04:08:43 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 117BC1A003C0
- for <ltp@lists.linux.it>; Tue, 20 Sep 2022 23:43:06 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id F273521AC8;
- Tue, 20 Sep 2022 21:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663710185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=6Ozc6HZoy45r5QSLMBA+BmM/Ae2X68BhLUogOIBfY3M=;
- b=W+RGk8/09OuGEnNbJtUObi8QQYh5OocSNGsjpan9ahrV+Niy0zQkbtgW7Z9CecDnX9tclD
- +uBiOMdbDUph/enrUY3fVio0T/yXYhoe2LJQNj+upya28mV8SnR1jcDd2UVESdLVP/Qok6
- 1K3WH9b/1D7mYdQfI2tjWC7LN7USwXo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663710185;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=6Ozc6HZoy45r5QSLMBA+BmM/Ae2X68BhLUogOIBfY3M=;
- b=29WTA0yeB6nL/YpeolREOX/NV9ZT/bFJWowx4C9iptb7HN14sgp28CwTixCkOx5LPzMAzn
- 6IeeVYH0ldrmwHBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B0D2F13ABB;
- Tue, 20 Sep 2022 21:43:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id vyNaKekzKmPdPwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 20 Sep 2022 21:43:05 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue, 20 Sep 2022 23:43:01 +0200
-Message-Id: <20220920214301.12828-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.37.3
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ADFDD1400FB3
+ for <ltp@lists.linux.it>; Wed, 21 Sep 2022 04:08:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1663726121;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BslsDAWiWAX+gOUMo99B4cXaJgZ05gKP3UjSiL44vvw=;
+ b=b9ahwmnUk2OLxEVM64CO67DZPlNdqrsFmJ9Dn5erP0y+tomUt7T9D/KLoV+9SWemgphBoS
+ Wq/or4/vqRc32BmJTwupmbz5oYKm+iP8pyYVirAt0q1Uu2gBRW2fmpyiwUqOJ+JffjqfJP
+ epMCraJPksuvXv0Yt9sWiCtVtBk0tvc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-354-YqWd2Z65OzG9JfnU07g6MQ-1; Tue, 20 Sep 2022 22:08:37 -0400
+X-MC-Unique: YqWd2Z65OzG9JfnU07g6MQ-1
+Received: by mail-wm1-f71.google.com with SMTP id
+ 84-20020a1c0257000000b003b4be28d7e3so556520wmc.0
+ for <ltp@lists.linux.it>; Tue, 20 Sep 2022 19:08:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date;
+ bh=BslsDAWiWAX+gOUMo99B4cXaJgZ05gKP3UjSiL44vvw=;
+ b=DsIeZdYSBqhkhlyeYDOF9Swy9FvflxsZJ40kIDNIFpyLGl7H4qwhPMFTTuSLlwtcnt
+ Mk9PIvTear82mkDpzvSlBSLb9T04awPtKbPOKVDj9SVVWZAgWFKS4LBN/g6je/FrIvRh
+ ac6AY+EwmKAVOXmKKsfkJ3wq02VxF+bkdPc0Euefay6JdMfd7rU7M91PIKja7uIxUH+W
+ 5/G3RrS7RZS4bKyMsirSnT2ZAJYMjHseuH4JuWqnazjvXjCqVOm/uQaS9qjVTjcPhG6Y
+ SSUBX8OHhnMRv4Qb18iE9mVNilqgCblTHwV8mSU67EHVdYE75Y2SVeQIx2AfSr9vbFnZ
+ Mf+Q==
+X-Gm-Message-State: ACrzQf1e8NnejOOORYTNzExxMkDAv8xirE0KLlFId7WZYFvWPw3h0OXb
+ Whmwfsu0PeTqLPvhMQhMRGOkfB+M9/iU4Pg5L1wbeQ01FB5L78REIXgHUVHtt+r+y+IUYCMIjRa
+ cDQqaP2lREN6FJtQrYkzld3bWXsM=
+X-Received: by 2002:a05:6000:22b:b0:226:d378:50f1 with SMTP id
+ l11-20020a056000022b00b00226d37850f1mr15853190wrz.316.1663726115525; 
+ Tue, 20 Sep 2022 19:08:35 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4Kry/Qvjo7Hle7vmzLD2IGQKJsf3FtaeCjqqOSYUCXKJC5eVtg5GpGuSSE8jmMrUub5q3fdlYwHcDJBbShpQo=
+X-Received: by 2002:a05:6000:22b:b0:226:d378:50f1 with SMTP id
+ l11-20020a056000022b00b00226d37850f1mr15853181wrz.316.1663726115357; Tue, 20
+ Sep 2022 19:08:35 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+References: <20220920214301.12828-1-pvorel@suse.cz>
+In-Reply-To: <20220920214301.12828-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 21 Sep 2022 10:08:23 +0800
+Message-ID: <CAEemH2cgaonz0YqySVBEX-QxbOFMZVjphPmmMXU1SSV3e9vnQg@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] ima_setup.sh: Fix loop device workaround
+Subject: Re: [LTP] [PATCH 1/1] ima_setup.sh: Fix loop device workaround
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,55 +84,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1796202867=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since 1f6bd6e66 ("tst_test.sh: Add $TST_ALL_FILESYSTEMS") ima_keys.sh
-and other following tests fail on systems with tmpfs on $TMPDIR:
+--===============1796202867==
+Content-Type: multipart/alternative; boundary="0000000000001c1fa005e9266cef"
 
-    ima_keys 1 TCONF: IMA policy does not specify '^measure.*func=KEY_CHECK'
-    tst_device.c:255: TWARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for too long
+--0000000000001c1fa005e9266cef
+Content-Type: text/plain; charset="UTF-8"
 
-    Usage:
-    tst_device acquire [size [filename]]
-    tst_device release /path/to/device
-    tst_device clear /path/to/device
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-    ima_keys 1 TWARN: Failed to release device '/dev/loop0'
-    rm: cannot remove '/tmp/LTP_ima_keys.YArl935DCg/mntpoint': Device or resource busy
 
-unset TST_NEEDS_DEVICE should have been done before loading tst_test.sh,
-as it's not a good idea to modify TST_* variables after loading tst_test.sh
-(It worked before just by change).
-
-Fixes: 04021637f ("tst_test.sh: Cleanup getopts usage")
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/security/integrity/ima/tests/ima_setup.sh | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index a626aae44..4b6690ce6 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -348,10 +348,9 @@ require_evmctl()
- 	fi
- }
- 
--. tst_test.sh
--
- # loop device is needed to use only for tmpfs
- TMPDIR="${TMPDIR:-/tmp}"
- if [ "$(df -T $TMPDIR | tail -1 | awk '{print $2}')" != "tmpfs" -a -n "$TST_NEEDS_DEVICE" ]; then
- 	unset TST_NEEDS_DEVICE
- fi
-+. tst_test.sh
 -- 
-2.37.3
+Regards,
+Li Wang
+
+--0000000000001c1fa005e9266cef
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><div class=3D"gmail_quote"><div dir=3D"ltr" c=
+lass=3D"gmail_attr"><div class=3D"gmail_default" style=3D"font-size:small">=
+Reviewed-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com">liwang@redhat=
+.com</a>&gt;</div><br></div></div><div><br></div>-- <br><div dir=3D"ltr" cl=
+ass=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wan=
+g<br></div></div></div></div>
+
+--0000000000001c1fa005e9266cef--
+
+
+--===============1796202867==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1796202867==--
+
