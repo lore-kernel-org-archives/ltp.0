@@ -4,70 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8718DECAAD8
-	for <ltp@archiver.kernel.org>; Wed, 21 Sep 2022 11:26:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E76A7C32771
+	for <ltp@archiver.kernel.org>; Wed, 21 Sep 2022 12:53:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4E0903CAC61
-	for <ltp@archiver.kernel.org>; Wed, 21 Sep 2022 13:26:19 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 4A7693CAD4B
+	for <ltp@archiver.kernel.org>; Wed, 21 Sep 2022 14:53:23 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CCEF03CAC4B
- for <ltp@lists.linux.it>; Wed, 21 Sep 2022 13:26:08 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 179F23CAC3E
+ for <ltp@lists.linux.it>; Wed, 21 Sep 2022 14:53:12 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7F6B66011B7
- for <ltp@lists.linux.it>; Wed, 21 Sep 2022 13:26:07 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 272382009F4
+ for <ltp@lists.linux.it>; Wed, 21 Sep 2022 14:53:10 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D758D1F747;
- Wed, 21 Sep 2022 11:26:06 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7BA5A21AA8;
+ Wed, 21 Sep 2022 12:53:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663759566;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1663764789; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bYNiPSpCkfBqJ1HoT0fNHoIpL8Qr+Kd2PtmNIrfKCnE=;
- b=xCC/i4OSVQjMBxfM2PzRi0CXK5Rz5wad/LxLUkHuvEUjJZ6sJnpdK7DhFBXQLJJZ9cV84a
- XZnU6O2jvsaEqR51YbdLjJZcfEKTE6smRbtnuxmdSsNhiuR9eOzxw+gWqOcs7blHoYBbj0
- 1LHVu5hEjWv8jqOwy3GVYdrQzZrtSL4=
+ bh=BwS0MfvkGQUGMLoN7P+vFJeFEHyDmpV1esCnHJr6cB8=;
+ b=LW5/Q/OCcR/qZQGJXRG9M6a4hLFP4iBqH0rd67HUbKdqmv+YF6FYFwi10RyG22wYCtjtlg
+ ob/hhwY9io6u93QsRzdV+2om/rmb1fjEZj9u4K+iy+5HtDsXB5DSkZsLA03oYydu1vXOpX
+ 5HkcY9teUeoIjTA/ihVqzKb3N8AZbgo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663759566;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1663764789;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bYNiPSpCkfBqJ1HoT0fNHoIpL8Qr+Kd2PtmNIrfKCnE=;
- b=jjZXfN6YCm/wuATg1u58RYJBrMdipmoW6jOyun1xByGTnbX9DECuz6PHsW0pnCsvXHOt8K
- LSvlKe9GojaM70Dw==
+ bh=BwS0MfvkGQUGMLoN7P+vFJeFEHyDmpV1esCnHJr6cB8=;
+ b=ZH/MxAx1pircRgnnx6Xn8ippJxqgQW7YYmxhrIpYbluF+Hd3gUR+Hd75eAfiSjzcQuRh7V
+ uYQfYfmWWuC8XyCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65FFB13A89;
- Wed, 21 Sep 2022 11:26:06 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5C52813A89;
+ Wed, 21 Sep 2022 12:53:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kRjOFc70KmNJAQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 21 Sep 2022 11:26:06 +0000
-Date: Wed, 21 Sep 2022 13:26:04 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Message-ID: <Yyr0zCD3iJqALkoP@pevik>
-References: <1662008249-2227-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <YxCR7+dkGxPvCQDn@pevik>
- <98263d58-cf08-0c70-c642-2a95a727659f@fujitsu.com>
- <313ec802-8e48-667b-6327-071e25acb8b5@jv-coder.de>
- <d7639dba-7157-461e-dedc-fd800600370b@fujitsu.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id oyX/FDUJK2OPKwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 21 Sep 2022 12:53:09 +0000
+Date: Wed, 21 Sep 2022 14:55:06 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Tudor Cretu <tudor.cretu@arm.com>
+Message-ID: <YysJqtHzakYDOW50@yuki>
+References: <20220825143819.311023-1-tudor.cretu@arm.com>
+ <20220825143819.311023-2-tudor.cretu@arm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <d7639dba-7157-461e-dedc-fd800600370b@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20220825143819.311023-2-tudor.cretu@arm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] README: Add missing configure in openposix step
+Subject: Re: [LTP] [PATCH v4 1/2] syscalls/statfs02,
+ fstatfs02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,104 +76,455 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>,
- "Joerg.Vehlow@aox.de" <Joerg.Vehlow@aox.de>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Joerg
+Hi!
+> Refactor statfs02 and fstatfs02 to the new LTP API.
 
-> > Hi,
+Give that we are getting close to release I did fix the remaning
+problems and pushed the patches, thanks. See below for details.
 
-> > sorry for the late reply, I was on vacation.
+> Signed-off-by: Tudor Cretu <tudor.cretu@arm.com>
+> ---
+>  testcases/kernel/syscalls/fstatfs/fstatfs02.c | 102 +++++-------------
+>  testcases/kernel/syscalls/statfs/statfs02.c   |  97 ++++-------------
+>  2 files changed, 47 insertions(+), 152 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fstatfs/fstatfs02.c b/testcases/kernel/syscalls/fstatfs/fstatfs02.c
+> index db2230f82..4267bd02b 100644
+> --- a/testcases/kernel/syscalls/fstatfs/fstatfs02.c
+> +++ b/testcases/kernel/syscalls/fstatfs/fstatfs02.c
+> @@ -1,37 +1,19 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - * This program is free software;  you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation; either version 2 of the License, or
+> - * (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - * the GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program;  if not, write to the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>   */
+>  
+>  /*
+> - * DESCRIPTION
+> + * [Description]
+>   *	Testcase to check fstatfs() sets errno correctly.
+>   */
 
-> > Am 9/2/2022 um 9:31 AM schrieb xuyang2018.jy@fujitsu.com:
-> >> Hi Petr
+This is not proper documentation comment. Documentation comment has to
+start with /*\ and the content is asciidoc formatted.
 
-> >>> Hi Xu,
+> -#include <sys/vfs.h>
+> +#include <errno.h>
+>  #include <sys/types.h>
+>  #include <sys/statfs.h>
+> -#include <errno.h>
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -
+> -static void setup(void);
+> -static void cleanup(void);
+> -
+> -char *TCID = "fstatfs02";
+> +#include <sys/wait.h>
+> +#include "tst_test.h"
+> +#include "tst_safe_macros.h"
+>  
+>  static struct statfs buf;
+>  
+> @@ -39,76 +21,40 @@ static struct test_case_t {
+>  	int fd;
+>  	struct statfs *sbuf;
+>  	int error;
+> -} TC[] = {
+> +} tests[] = {
+>  	/* EBADF - fd is invalid */
+> -	{
+> -	-1, &buf, EBADF},
+> +	{-1, &buf, EBADF},
+>  #ifndef UCLINUX
+> -	    /* Skip since uClinux does not implement memory protection */
+> -	    /* EFAULT - address for buf is invalid */
+> -	{
+> -	-1, (void *)-1, EFAULT}
+> +	/* Skip since uClinux does not implement memory protection */
+> +	/* EFAULT - address for buf is invalid */
+> +	{-1, (void *)-1, EFAULT},
+>  #endif
 
-> >>> [ Cc Joerg ]
+UCLINUX does not exists anymore so we are removing all UCLINUX ifdefs
+when cleaning up tests.
 
-> >>>> Since 8071ba7("openposix: Setup autoconf and fix installation layout")
-> >>>> , we need to use configure firstly.
+>  };
+>  
+> -int TST_TOTAL = ARRAY_SIZE(TC);
+> -
+> -int main(int ac, char **av)
+> +static void fstatfs_verify(unsigned int n)
+>  {
+> -	int lc;
+> -	int i;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -
+> -		for (i = 0; i < TST_TOTAL; i++) {
+> -
+> -			TEST(fstatfs(TC[i].fd, TC[i].sbuf));
+> -
+> -			if (TEST_RETURN != -1) {
+> -				tst_resm(TFAIL, "call succeeded unexpectedly");
+> -				continue;
+> -			}
+> -
+> -			if (TEST_ERRNO == TC[i].error) {
+> -				tst_resm(TPASS, "expected failure - "
+> -					 "errno = %d : %s", TEST_ERRNO,
+> -					 strerror(TEST_ERRNO));
+> -			} else {
+> -				tst_resm(TFAIL, "unexpected error - %d : %s - "
+> -					 "expected %d", TEST_ERRNO,
+> -					 strerror(TEST_ERRNO), TC[i].error);
+> -			}
+> -		}
+> -	}
+> -	cleanup();
+> -
+> -	tst_exit();
+> +	TST_EXP_FAIL(fstatfs(tests[n].fd, tests[n].sbuf), tests[n].error, "fstatfs()");
+>  }
+>  
+>  static void setup(void)
+>  {
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	tst_tmpdir();
+>  #ifndef UCLINUX
+> -	TC[1].fd = SAFE_OPEN(cleanup, "tempfile", O_RDWR | O_CREAT, 0700);
+> +	tests[1].fd = SAFE_OPEN("tempfile", O_RDWR | O_CREAT, 0700);
+>  #endif
 
-> >>> nit: there should be Fixes: below:
-> >>> Fixes: 8071ba7 ("openposix: Setup autoconf and fix installation layout")
+Indexing the the tests array like this is frowned upon, we usually use
+pointers in the test structure instead.
 
-> >>> Then you can use just 8071ba7 in the text.
+>  }
+>  
+>  static void cleanup(void)
+>  {
+>  #ifndef UCLINUX
+> -	if (TC[1].fd > 0 && close(TC[1].fd))
+> -		tst_resm(TWARN | TERRNO, "Failed to close fd");
+> +	if (tests[1].fd > 0 && close(tests[1].fd))
+> +		tst_res(TWARN | TERRNO, "Failed to close fd");
 
-> >>>> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-> >>>> ---
-> >>>>    README.md | 6 ++++--
-> >>>>    1 file changed, 4 insertions(+), 2 deletions(-)
+This should be just:
 
-> >>>> diff --git a/README.md b/README.md
-> >>>> index d45d1ee44..d0ca5f4d4 100644
-> >>>> --- a/README.md
-> >>>> +++ b/README.md
-> >>>> @@ -79,11 +79,13 @@ $ cd ../commands/foo
-> >>>>    $ PATH=$PATH:$PWD:$PWD/../../lib/ ./foo01.sh
-> >>>>    ```
+	if (fd > 0)
+		SAFE_CLOSE();
 
-> >>>> -Open Posix Testsuite has it's own build system which needs Makefiles to be
-> >>>> -generated first, then compilation should work in subdirectories as well.
-> >>>> +Open Posix Testsuite has it's own configure and build system which needs
-> >>>> +Makefiles to be generated first, then compilation should work in subdirectories
-> >>>> +as well.
-
-> >>>>    ```
-> >>>>    $ cd testcases/open_posix_testsuite/
-
-> >>> You miss:
-> >>> $ make autotools
-> >>> as this creates configure
-
-> >>>> +$ ./configure
-> >>> But if you run make autotools && ./configure in the top level, none of these two
-> >>> is needed to be run in open posix directory.
-
-> >> I have called them on top directory, but configure still be needed in
-> >> open posix directory.
-> > Did you run configure with --with-open-posix-testsuite? Otherwise
-> > configure is not executed in the open posix directory.
-
-> Oh,  yes, I don't use this option. I only see the documentation said we 
-> can use ./configure and make instead of make all in the openposix 
-> direcotry. But miss this  --with-open-posix-testsuite option .
-
-
-> I think we should mention this option in README ie
-
-
-> ./configure --with-open-posix-testsuite --with-realtime-testsuite
-> diff --git a/README.md b/README.md
-> index d45d1ee44..7da393e37 100644
-> --- a/README.md
-> +++ b/README.md
-> @@ -51,6 +51,13 @@ $ make autotools
->   $ ./configure
->   ```
-
-> +If you want to include open posix testsuite or realtime testsuite, the 
-> chances are
-> +the following will work:
+>  #endif
+> -
+> -	tst_rmdir();
+>  }
 > +
-> +```
-> +$ ./configure --with-open-posix-testsuite --with-realtime-testsuite
-> +```
-> +
->   Now you can continue either with compiling and r
+> +static struct tst_test test = {
+> +	.test = fstatfs_verify,
+> +	.tcnt = ARRAY_SIZE(tests),
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_tmpdir = 1,
+> +};
+> diff --git a/testcases/kernel/syscalls/statfs/statfs02.c b/testcases/kernel/syscalls/statfs/statfs02.c
+> index 279665f86..f906c84ff 100644
+> --- a/testcases/kernel/syscalls/statfs/statfs02.c
+> +++ b/testcases/kernel/syscalls/statfs/statfs02.c
+> @@ -1,24 +1,12 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) International Business Machines  Corp., 2001
+>   *	07/2001 Ported by Wayne Boyer
+>   *
+> - * This program is free software;  you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation; either version 2 of the License, or
+> - * (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - * the GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program;  if not, write to the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>   */
+>  
+>  /*
+> - * DESCRIPTION
+> + * [Description]
+>   *	1.	Use a component of the pathname, which is not a directory
+>   *		in the "path" parameter to statfs(). Expect ENOTDIR
+>   *	2.	Pass a filename which doesn't exist, and expect ENOENT.
+> @@ -32,25 +20,19 @@
+>   *		ELOOP.
+>   */
 
-I guess all people who has been using open posix by now knows
---with-open-posix-testsuite is needed. I mean, it does not harm to document it,
-but there are other options. I suppose people run ./configure --help on project
-they don't know.
+Here as well, it has to start with /*\ and asciidoc formatted
 
-Kind regards,
-Petr
+> -#include <sys/types.h>
+> -#include <sys/statfs.h>
+> -#include <sys/stat.h>
+> -#include <fcntl.h>
+> -#include <sys/vfs.h>
+> -#include <sys/mman.h>
+>  #include <errno.h>
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -
+> -char *TCID = "statfs02";
+> -
+> -static int fd;
+> +#include <fcntl.h>
+> +#include <sys/statfs.h>
+> +#include <sys/wait.h>
+> +#include "tst_test.h"
+> +#include "tst_safe_macros.h"
+>  
+>  #define TEST_FILE		"statfs_file"
+>  #define TEST_FILE1		TEST_FILE"/statfs_file1"
+>  #define TEST_NOEXIST		"statfs_noexist"
+>  #define TEST_SYMLINK		"statfs_symlink"
+>  
+> +static int fd;
+>  static char test_toolong[PATH_MAX+2];
+>  static struct statfs buf;
+>  
+> @@ -58,7 +40,7 @@ static struct test_case_t {
+>  	char *path;
+>  	struct statfs *buf;
+>  	int exp_error;
+> -} TC[] = {
+> +} tests[] = {
+>  	{TEST_FILE1, &buf, ENOTDIR},
+>  	{TEST_NOEXIST, &buf, ENOENT},
+>  	{test_toolong, &buf, ENAMETOOLONG},
+> @@ -69,72 +51,39 @@ static struct test_case_t {
+>  	{TEST_SYMLINK, &buf, ELOOP},
+>  };
+>  
+> -int TST_TOTAL = ARRAY_SIZE(TC);
+>  static void setup(void);
+>  static void cleanup(void);
+
+These two are useless now.
+
+> -static void statfs_verify(const struct test_case_t *);
+>
+> -int main(int ac, char **av)
+> +static void statfs_verify(unsigned int n)
+>  {
+> -	int lc;
+> -	int i;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -		for (i = 0; i < TST_TOTAL; i++)
+> -			statfs_verify(&TC[i]);
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> +	TST_EXP_FAIL(statfs(tests[n].path, tests[n].buf), tests[n].exp_error, "statfs()");
+>  }
+>  
+>  static void setup(void)
+>  {
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	tst_tmpdir();
+> -
+> -	fd = SAFE_CREAT(cleanup, TEST_FILE, 0444);
+> +	fd = SAFE_CREAT(TEST_FILE, 0444);
+>  
+>  	memset(test_toolong, 'a', PATH_MAX+1);
+>  
+>  #if !defined(UCLINUX)
+> -	TC[3].path = SAFE_MMAP(cleanup, 0, 1, PROT_NONE,
+> +	tests[3].path = SAFE_MMAP(0, 1, PROT_NONE,
+>  			       MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+>  #endif
+
+And here as well.
+
+Full diff:
+
+diff --git a/testcases/kernel/syscalls/fstatfs/fstatfs02.c b/testcases/kernel/syscalls/fstatfs/fstatfs02.c
+index 4267bd02b..7f8fb760f 100644
+--- a/testcases/kernel/syscalls/fstatfs/fstatfs02.c
++++ b/testcases/kernel/syscalls/fstatfs/fstatfs02.c
+@@ -3,9 +3,10 @@
+  * Copyright (c) International Business Machines  Corp., 2001
+  */
+ 
+-/*
++/*\
+  * [Description]
+- *	Testcase to check fstatfs() sets errno correctly.
++ *
++ * Testcase to check if fstatfs() sets errno correctly.
+  */
+ 
+ #include <errno.h>
+@@ -17,38 +18,32 @@
+ 
+ static struct statfs buf;
+ 
++static int fd;
++static int bad_fd = -1;
++
+ static struct test_case_t {
+-	int fd;
++	int *fd;
+ 	struct statfs *sbuf;
+ 	int error;
+ } tests[] = {
+-	/* EBADF - fd is invalid */
+-	{-1, &buf, EBADF},
+-#ifndef UCLINUX
+-	/* Skip since uClinux does not implement memory protection */
+-	/* EFAULT - address for buf is invalid */
+-	{-1, (void *)-1, EFAULT},
+-#endif
++	{&bad_fd, &buf, EBADF},
++	{&fd, (void *)-1, EFAULT},
+ };
+ 
+ static void fstatfs_verify(unsigned int n)
+ {
+-	TST_EXP_FAIL(fstatfs(tests[n].fd, tests[n].sbuf), tests[n].error, "fstatfs()");
++	TST_EXP_FAIL(fstatfs(*tests[n].fd, tests[n].sbuf), tests[n].error, "fstatfs()");
+ }
+ 
+ static void setup(void)
+ {
+-#ifndef UCLINUX
+-	tests[1].fd = SAFE_OPEN("tempfile", O_RDWR | O_CREAT, 0700);
+-#endif
++	fd = SAFE_OPEN("tempfile", O_RDWR | O_CREAT, 0700);
+ }
+ 
+ static void cleanup(void)
+ {
+-#ifndef UCLINUX
+-	if (tests[1].fd > 0 && close(tests[1].fd))
+-		tst_res(TWARN | TERRNO, "Failed to close fd");
+-#endif
++	if (fd > 0)
++		SAFE_CLOSE(fd);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/statfs/statfs02.c b/testcases/kernel/syscalls/statfs/statfs02.c
+index f906c84ff..143063f19 100644
+--- a/testcases/kernel/syscalls/statfs/statfs02.c
++++ b/testcases/kernel/syscalls/statfs/statfs02.c
+@@ -5,19 +5,15 @@
+  *
+  */
+ 
+-/*
++/*\
+  * [Description]
+- *	1.	Use a component of the pathname, which is not a directory
+- *		in the "path" parameter to statfs(). Expect ENOTDIR
+- *	2.	Pass a filename which doesn't exist, and expect ENOENT.
+- *	3.	Pass a pathname which is more than MAXNAMLEN, and expect
+- *		ENAMETOOLONG.
+- *	4.	Pass a pointer to the pathname outside the address space of
+- *		the process, and expect EFAULT.
+- *	5.	Pass a pointer to the buf paramter outside the address space
+- *		of the process, and expect EFAULT.
+- *	6.	Pass a filename which has too many symbolic links, and expect
+- *		ELOOP.
++ *
++ * - ENOTDIR A component of the pathname, which is not a directory.
++ * - ENOENT A filename which doesn't exist.
++ * - ENAMETOOLONG A pathname which is longer than MAXNAMLEN.
++ * - EFAULT A pathname pointer outside the address space of the process.
++ * - EFAULT A buf pointer outside the address space of the process.
++ * - ELOOP A filename which has too many symbolic links.
+  */
+ 
+ #include <errno.h>
+@@ -44,16 +40,11 @@ static struct test_case_t {
+ 	{TEST_FILE1, &buf, ENOTDIR},
+ 	{TEST_NOEXIST, &buf, ENOENT},
+ 	{test_toolong, &buf, ENAMETOOLONG},
+-#ifndef UCLINUX
+ 	{(char *)-1, &buf, EFAULT},
+ 	{TEST_FILE, (struct statfs *)-1, EFAULT},
+-#endif
+ 	{TEST_SYMLINK, &buf, ELOOP},
+ };
+ 
+-static void setup(void);
+-static void cleanup(void);
+-
+ static void statfs_verify(unsigned int n)
+ {
+ 	TST_EXP_FAIL(statfs(tests[n].path, tests[n].buf), tests[n].exp_error, "statfs()");
+@@ -61,14 +52,16 @@ static void statfs_verify(unsigned int n)
+ 
+ static void setup(void)
+ {
++	unsigned int i;
++
+ 	fd = SAFE_CREAT(TEST_FILE, 0444);
+ 
+ 	memset(test_toolong, 'a', PATH_MAX+1);
+ 
+-#if !defined(UCLINUX)
+-	tests[3].path = SAFE_MMAP(0, 1, PROT_NONE,
+-			       MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+-#endif
++	for (i = 0; i < ARRAY_SIZE(tests); i++) {
++		if (tests[i].path == (char *)-1)
++			tests[i].path = tst_get_bad_addr(NULL);
++	}
+ 
+ 	SAFE_SYMLINK(TEST_SYMLINK, "statfs_symlink_2");
+ 	SAFE_SYMLINK("statfs_symlink_2", TEST_SYMLINK);
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
