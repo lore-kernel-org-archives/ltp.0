@@ -4,55 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E319ECAAD8
-	for <ltp@archiver.kernel.org>; Wed, 21 Sep 2022 15:40:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EC7CC6FA82
+	for <ltp@archiver.kernel.org>; Wed, 21 Sep 2022 15:50:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E3C5F3CAD3B
-	for <ltp@archiver.kernel.org>; Wed, 21 Sep 2022 17:40:45 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 577AD3CAD59
+	for <ltp@archiver.kernel.org>; Wed, 21 Sep 2022 17:50:18 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C23013C93EF
- for <ltp@lists.linux.it>; Wed, 21 Sep 2022 17:40:34 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id E85253CAA99
+ for <ltp@lists.linux.it>; Wed, 21 Sep 2022 17:50:08 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A21661A01182
- for <ltp@lists.linux.it>; Wed, 21 Sep 2022 17:40:33 +0200 (CEST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E24FF2001A6
+ for <ltp@lists.linux.it>; Wed, 21 Sep 2022 17:50:07 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C171862C71;
- Wed, 21 Sep 2022 15:40:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88621C433B5;
- Wed, 21 Sep 2022 15:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663774829;
- bh=688IZWc7fGLBzJtdorVtdxJD93CcGZk9lM7ZFPlt9eg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=eNRouAEA1yeHVP81COFtLtWFLVLrNaCadqivMehUGFipJMAanOE8589MTAAokBwtI
- MVplWZSyTzME6favrVm9rf0wJNug/AXSlxPhKvfklPeWi3kXhnE2gftYAao8gzVhmi
- LROlwSdzUTvcDLJSXQcfoZvfQrwIT4gerDcket7bIRPLpyreb8wvJqrj/JuGEUdunD
- 6oEqyE8qNHHqKyK2ZAAJrG3aER6TIFWdIyjI4pp4wtHPQk7PXmkNwEeqIwXXDabG2K
- c2iR4cvkdqjiwjFWhXZ28ZZg/y+VAR+l/PktLn66r6ytXykmSRbMHkIMp60PzTJq+8
- RNftg5gt3EJkw==
-Date: Wed, 21 Sep 2022 17:40:25 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20220921154025.kek7drx67sx2mpub@wittgenstein>
-References: <1663143142-2283-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <YyG61JHO7iDAfJ1N@yuki>
- <bd50a9da-0b32-2318-31ec-67a78155cc25@fujitsu.com>
- <12eff5a1-bf6b-59bf-bfca-7a1d4f3ca009@fujitsu.com>
- <YysX7FVAHO6HkLLZ@yuki>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 199AD219B7;
+ Wed, 21 Sep 2022 15:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1663775407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=7Y/O3ek55i59DCZ/vJRMHphS/eErN3dSR7MBp97Bqr8=;
+ b=y+41c1VC9+M6YbcXuSd/axE97D2ihxIg9mAVUPn+H4I8qN69bVtbn8KOyM9JTzNnREUkK1
+ Si4SGvpwBoiwFy10UslQb+MPGAeZvPNABCaY3RCjXxe0hUTk6trQZhaAqk/E5Yw3XsrG+O
+ daPLkEuhsZelyk0LmZk+oTb4jDkrSrI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1663775407;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=7Y/O3ek55i59DCZ/vJRMHphS/eErN3dSR7MBp97Bqr8=;
+ b=OpeEsnczFO/Rh0sRiCZ+LV1uB5QQNfDfwPtGpc/99JRp54G2WEtyLnaT9y8pScnoTTkNit
+ XfFSca87SjDhu5Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0179013A00;
+ Wed, 21 Sep 2022 15:50:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id z18EO64yK2OpeAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Wed, 21 Sep 2022 15:50:06 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: pvorel@suse.cz,
+	ltp@lists.linux.it
+Date: Wed, 21 Sep 2022 17:50:06 +0200
+Message-Id: <20220921155006.13360-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YysX7FVAHO6HkLLZ@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 1/3] syscalls/creat09: Add umask test condition
+Subject: [LTP] [PATCH] tst_supported_fs: Implement checking paths against
+ skiplist
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,52 +73,126 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Sep 21, 2022 at 03:55:56PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > > Yes.  Please apply it with fix the messages. Thanks.
-> > 
-> > I guess you miss this patchset. so ping again.
-> 
-> Sorry for the delay.
-> 
-> I just did quick test and I got failures on XFS on kernel 5.19, wasn't
-> this supposed to be fixed in 5.19?
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-No, this is fixed starting with v6.0-rc1 :)
+Implement tst_supported_fs feature suggested by pvorel in his patch:
+tst_test.sh: Fix filesystem support detection
 
-> 
-> ...
-> creat09.c:106: TPASS: mntpoint/testdir/creat.tmp: Owned by correct group
-> creat09.c:112: TPASS: mntpoint/testdir/creat.tmp: Setgid bit not set
-> creat09.c:106: TPASS: mntpoint/testdir/open.tmp: Owned by correct group
-> creat09.c:112: TPASS: mntpoint/testdir/open.tmp: Setgid bit not set
-> creat09.c:120: TINFO: File created with umask(S_IXGRP)
-> creat09.c:106: TPASS: mntpoint/testdir/creat.tmp: Owned by correct group
-> creat09.c:110: TFAIL: mntpoint/testdir/creat.tmp: Setgid bit is set
-> creat09.c:106: TPASS: mntpoint/testdir/open.tmp: Owned by correct group
-> creat09.c:110: TFAIL: mntpoint/testdir/open.tmp: Setgid bit is set
-> ...
-> 
-> $ uname -r
-> 5.19.0
-> 
-> $ git describe 1639a49ccdce
-> v5.19-rc7-3-g1639a49ccdce
-> 
-> 
-> Is there any in-flight patch for v6.0 that fixes this for XFS?
+Although the tst_fs_type_name() functions could use some improvements,
+e.g. ext4 must be specified in skiplist as "ext2/ext3/ext4" to get properly
+skipped and vfat is missing from the list of known filesystems.
 
-You're looking for
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=426b4ca2d6a5ab51f6b6175d06e4f8ddea434cdf
+ testcases/lib/tst_supported_fs.c | 49 ++++++++++++++++++++++++++------
+ 1 file changed, 41 insertions(+), 8 deletions(-)
 
-Hope this helps!
-Christian
+diff --git a/testcases/lib/tst_supported_fs.c b/testcases/lib/tst_supported_fs.c
+index 70d4d38c7..5873d0ba1 100644
+--- a/testcases/lib/tst_supported_fs.c
++++ b/testcases/lib/tst_supported_fs.c
+@@ -32,9 +32,13 @@ static void usage(void)
+ 	fprintf(stderr, "tst_supported_fs -s skip_list fs_type\n");
+ 	fprintf(stderr, "   if fs_type is in skip_list, return 1 otherwise return 0\n\n");
+ 
++	fprintf(stderr, "tst_supported_fs -s skip_list -d path\n");
++	fprintf(stderr, "   if filesystem mounted on path is in skip_list, return 1 otherwise return 0\n\n");
++
+ 	fprintf(stderr, "fs_type - a specified filesystem type\n");
+ 	fprintf(stderr, "skip_list - filesystems to skip, delimiter: '%c'\n",
+ 			SKIP_DELIMITER);
++	fprintf(stderr, "path - any valid file or directory\n");
+ }
+ 
+ static char **parse_skiplist(char *fs)
+@@ -62,10 +66,11 @@ static char **parse_skiplist(char *fs)
+ int main(int argc, char *argv[])
+ {
+ 	const char *const *filesystems;
++	const char *fsname = NULL;
+ 	int i, ret;
+ 	char **skiplist = NULL;
+ 
+-	while ((ret = getopt(argc, argv, "hs:"))) {
++	while ((ret = getopt(argc, argv, "hs:d:"))) {
+ 		if (ret < 0)
+ 			break;
+ 
+@@ -83,9 +88,26 @@ int main(int argc, char *argv[])
+ 			if (!skiplist)
+ 				return 1;
+ 			break;
++
++		case 'd':
++			if (fsname) {
++				fprintf(stderr,
++					"Can't specify multiple paths\n");
++				usage();
++				return 2;
++			}
++
++			fsname = tst_fs_type_name(tst_fs_type(optarg));
++			break;
+ 		}
+ 	}
+ 
++	if (fsname && !skiplist) {
++		fprintf(stderr, "Parameter -d requires skiplist\n");
++		usage();
++		return 2;
++	}
++
+ 	if (argc - optind > 1) {
+ 		fprintf(stderr, "Can't specify multiple fs_type\n");
+ 		usage();
+@@ -94,22 +116,33 @@ int main(int argc, char *argv[])
+ 
+ 	/* fs_type */
+ 	if (optind < argc) {
+-		if (argv[optind][0] == '\0')
++		if (fsname) {
++			fprintf(stderr, "Can't specify fs_type and -d together\n");
++			usage();
++			return 2;
++
++		}
++
++		fsname = argv[optind];
++	}
++
++	if (fsname) {
++		if (fsname[0] == '\0')
+ 			tst_brk(TCONF, "fs_type is empty");
+ 
+ 		if (skiplist) {
+-			if (tst_fs_in_skiplist(argv[optind], (const char * const*)skiplist))
+-				tst_brk(TCONF, "%s is skipped", argv[optind]);
++			if (tst_fs_in_skiplist(fsname, (const char * const*)skiplist))
++				tst_brk(TCONF, "%s is skipped", fsname);
+ 			else
+-				tst_res(TINFO, "%s is not skipped", argv[optind]);
++				tst_res(TINFO, "%s is not skipped", fsname);
+ 
+ 			return 0;
+ 		}
+ 
+-		if (tst_fs_is_supported(argv[optind]) == TST_FS_UNSUPPORTED)
+-			tst_brk(TCONF, "%s is not supported", argv[optind]);
++		if (tst_fs_is_supported(fsname) == TST_FS_UNSUPPORTED)
++			tst_brk(TCONF, "%s is not supported", fsname);
+ 		else
+-			tst_res(TINFO, "%s is supported", argv[optind]);
++			tst_res(TINFO, "%s is supported", fsname);
+ 
+ 		return 0;
+ 	}
+-- 
+2.37.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
