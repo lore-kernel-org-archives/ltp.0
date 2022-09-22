@@ -4,156 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10E5CC6FA82
-	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 10:03:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56D28C6FA86
+	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 10:40:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C36033CAD4E
-	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 12:03:10 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 39EDC3CAD84
+	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 12:40:48 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DB6DA3C1B85
- for <ltp@lists.linux.it>; Thu, 22 Sep 2022 12:03:00 +0200 (CEST)
-Received: from esa13.fujitsucc.c3s2.iphmx.com (esa13.fujitsucc.c3s2.iphmx.com
- [68.232.156.96])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 1077B3CAD4F
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 12:40:38 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5FE9B14011BC
- for <ltp@lists.linux.it>; Thu, 22 Sep 2022 12:02:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1663840979; x=1695376979;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-transfer-encoding:mime-version;
- bh=kfU2Iq9hey3kuJXAgEnx3JH5PJfa0WQi86NHisaQles=;
- b=Wx9w0HlN0K2iD2xAA2+2NBYt0hcodoytfR6GSz5cx74Le9G768U7Cegl
- 8jx/xEIOo56vT2z4WvbWOV1y7jH7DPp70EehIMlLWcY38vpyO7i1B8c0K
- DUW6oeNybdrYDWyfSLpXCnDBMxCWbUVhwyNs+3axgak0bLqSmDVPIqhRb
- FNHNJvR8ZvQSW0gRvL/4zidtTvelJ2OqiTMbj4YCZ/TwWvDxGjYU/ioX3
- 4uvck56TU/zo/SatWjJaxQ+FOEya8fJdx3qDhSzsBDrc77jvtmw0nJJDC
- nO3jHEC7NQ1F9sQWtgUehg+al2s+sWW842bMnqXjIScYYn8Mqj6gfOrAc Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10477"; a="65568904"
-X-IronPort-AV: E=Sophos;i="5.93,335,1654527600"; d="scan'208";a="65568904"
-Received: from mail-tycjpn01lp2177.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.177])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Sep 2022 19:02:57 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ipY8l+nSnDgtzJVy9qHrGgSFyi9HRLECWjdaBtBvdfN52tN6hgf/O4LO1cn7yfsFlErVRLR/WccsKJfk6J2dUKY1h+mx7c7/TgfCCHPGOryw5BJX7gHhCDxl9t8eXQi/HNKf1rnEmhw7y6nDb2lcn+5DzH7okqFXPR+m2eiqXP3Jqj3tgbjmuYeoivhiFcnYn/NAbCfoD/wXNBOiwti+6zfhsFJa9RjvD1o6x0TZVqYbCdupQyXJ37TNqc2RPiiZcIbfGppg4e4TsecZiz6fAkoz/pC4Vph4lK3r2f//CO3mFMRPhueo442jbc22++CPzf0yH63OFpOD2MQdHM+F8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kfU2Iq9hey3kuJXAgEnx3JH5PJfa0WQi86NHisaQles=;
- b=HXZKStqq+zQ+c/mp20vAHthSBrNaTs1FZp9cusW37VEvEti5dHC4jUja9PGJ3O7eZP2u4f+cvnJ6sd0yejLLxpbJyH8bMp2avCaqANVoy/wbWDp5JhyILYANlw2i2GbqLtxNlxXG8APGvqiYmNAx6qa8Mt+YnMToEdeGqUM0wiF+DeT9FdKmFhD8MZKomfbwnXU5msuYHWKZdtdwdXamDWb9alGcmTwUT8hWRshuK7HMqpIhhLFdhutx+sNSjhXIbF04K1feSCxlRszFGjK6xRSFDW84TnjSU5TFqq6iqhD4Yi6+HiEbrghXare/OHnQUsz7BRf+bD5DnbOyhkZ3Vw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by TY3PR01MB10517.jpnprd01.prod.outlook.com (2603:1096:400:315::9)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.18; Thu, 22 Sep
- 2022 10:02:54 +0000
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::c4fe:de8c:66e8:5c93]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::c4fe:de8c:66e8:5c93%6]) with mapi id 15.20.5654.017; Thu, 22 Sep 2022
- 10:02:54 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Cyril Hrubis <chrubis@suse.cz>, "brauner@kernel.org" <brauner@kernel.org>
-Thread-Topic: [PATCH v4 3/3] syscalls/openat: Add new regression test when
- using open(O_TMPFILE) under umask
-Thread-Index: AQHYyAlViPga5eQsB0uSM8Tbg4syU63rMVSAgAAUR/D///V0gIAAFm1Q
-Date: Thu, 22 Sep 2022 10:02:54 +0000
-Message-ID: <TY2PR01MB4427C3E253A3BDACFE094BBDFD4E9@TY2PR01MB4427.jpnprd01.prod.outlook.com>
-References: <1663143142-2283-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1663143142-2283-3-git-send-email-xuyang2018.jy@fujitsu.com>
- <YywiZckfyJIk1/Pf@yuki>
- <TY2PR01MB442734C41B2B574CF05B8AE1FD4E9@TY2PR01MB4427.jpnprd01.prod.outlook.com>
- <Yywqj0orkajkDZt5@rei>
-In-Reply-To: <Yywqj0orkajkDZt5@rei>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: =?utf-8?B?TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2Uw?=
- =?utf-8?B?NTBfQWN0aW9uSWQ9MGMzNWQxZTUtNWJhZi00MTQ4LTk0MWMtNDYxMGRjMzA4?=
- =?utf-8?B?ZWVhO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
- =?utf-8?B?ZWNlMDUwX0NvbnRlbnRCaXRzPTA7TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5?=
- =?utf-8?B?LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfRW5hYmxlZD10cnVlO01TSVBfTGFi?=
- =?utf-8?B?ZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRmZWNlMDUwX01ldGhv?=
- =?utf-8?B?ZD1TdGFuZGFyZDtNU0lQX0xhYmVsX2E3Mjk1Y2MxLWQyNzktNDJhYy1hYjRk?=
- =?utf-8?B?LTNiMGY0ZmVjZTA1MF9OYW1lPUZVSklUU1UtUkVTVFJJQ1RFRO+/ou++gA==?=
- =?utf-8?B?776LO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
- =?utf-8?B?ZWNlMDUwX1NldERhdGU9MjAyMi0wOS0yMlQxMDo0Nzo1OFo7TVNJUF9MYWJl?=
- =?utf-8?B?bF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfU2l0ZUlk?=
- =?utf-8?Q?=3Da19f121d-81e1-4858-a9d8-736e267fd4c7;?=
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TY2PR01MB4427:EE_|TY3PR01MB10517:EE_
-x-ms-office365-filtering-correlation-id: a62fba03-222d-4be5-0561-08da9c819e3f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Rx5PCWUIRVCav+Qy2lUHtfGR8RJrcMIxK/Tl4UA9ibRgDFA4QnzlZ8ZcHDQHkewQDuYdEW08FQpbdRj8ueYpdwVZBPGSrTPXtK81I+bDQOq/gYP6QycHP4I+VFegjbVuaVvE5vloC+wOHnYSYrfy11ldTDNQTlGvakWM/oHiS5nmm8A16jv6lPR+kl3BdrzThGGeIoS35qL5da6sB/rDGJwOtGj8e2Yu0K2XfAUFiR5PEJfijjUI5vRhXapIEhlUeDeFt70wJgacKwxen5cvYpYOvxd39NBEyMkqGJykFDF7lmXhN0EdiHzNDBxVAT0xserWCFLNvL2O5hzz0oj64vgtPQ8rQQOIT2YSVDvQOHzEIFKebH1B4/F4u0GVW1Na2psFlWIutU1neIP+Rhoizab0LZIs2OsPJiHLoF/7RSFMmk3WQnkeQHvnnfa5bm79DyN5LBVcjP9pxrgiY3Rw6WqvDyHOzT9eOn2yOFTOMqEMK0YSkBLdovN1tpJNNFUPkiCCZAZzbmoIU3aqxtSRmYZBsiV/9jw+zG4ga8+b2m7Z5bEqVnFDYMqH2Jd5d991zBSeiv5z+CI/pCgXUPfDXyrRfHCAzUdNjPK2pyoZXZpdLd5xg4givG70C+Bvs7gjCuQZRiYzcEgBmNkw4ZsKtaZBgHT4a5HnRv6Ta56FIeawumGkBvVW0qX4oXegrbe0rTYaCsBI7TfG6JtezsXxxVJQleFp/RYZpuxx2UwDUBuD9zldZlXh2CHyiMnO8CJDGC5mOJcXTbI064t3aJbdwWB02DBJ0zla2eQiXWIRKrU=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230022)(4636009)(396003)(376002)(366004)(136003)(346002)(39860400002)(84040400005)(451199015)(1590799012)(38100700002)(186003)(6506007)(26005)(41300700001)(7696005)(9686003)(52536014)(2906002)(4744005)(8936002)(316002)(55016003)(110136005)(71200400001)(4326008)(66556008)(64756008)(478600001)(66476007)(76116006)(66946007)(5660300002)(8676002)(66446008)(1580799009)(38070700005)(86362001)(122000001)(82960400001)(85182001)(33656002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SEYzR1MzR1JVbTBrY0F3dEloOU9mSnpLb1A0SXBSQ3NaaTYvK2xjdHhqSlha?=
- =?utf-8?B?bjdXMUVqR1FrL1o4NEM2Y1RBQkRUMzZqbUJ5RWNrb1QyMndpVDd4ek1NRVFI?=
- =?utf-8?B?OEZ5Unc5a2w3MUlsWnlpMUNGR21nWnNBa2kyTXc0SkFkby9qRllTMWx2MFg3?=
- =?utf-8?B?UXN1dnRWanc3OWs2WEE5YXhXTEpEb09YYlkrd3A2OHRtdSs0Mm16NUxrU1VD?=
- =?utf-8?B?ODBSREo3TDNKNjRZcUI1STNpNlMrdHQxWEdZUDQzcGZrL1RtdjJvWlRiUlZK?=
- =?utf-8?B?VWk2ZFExZFIxdWRQOC9DUHJpS2Z6eUo4eHhmcVBkQ0dYeGZWTGI0QXZuUGFL?=
- =?utf-8?B?Z2RaTENsR1V2MFVQRmphUjUyTTlCTWxRdHorN2Q5RHFmbnA2QmJZMmtYZEdq?=
- =?utf-8?B?dXpWRERtTHdpTVZSQklZQmhXYWg0NE13dWlzWXV3Z3ZHM1F0V0pQL3BzQ1c0?=
- =?utf-8?B?bkZsdnJaQzA5SUN0OWNuSENCS0w5N0ZGYlVkZVF0MlgvTjVXU3VjZEVqODc5?=
- =?utf-8?B?SDVjUTR1N3N2Njl4bVA4K0VmMmlzVWZpVDNiSGVwSDlsTFliakltUlp5WkFp?=
- =?utf-8?B?UDIyVjgwUVdhd3VSSEtSZllZZytnb1dXN1U4d1NBR1Z5dnZCVWFleWFja2dr?=
- =?utf-8?B?bStGZkJpOGlGS3gwNVB2Q3dmMFRnUTZySkFzOVpKZ0RKdmozdVVkY1BnOEFT?=
- =?utf-8?B?VkE4S0JKa09taytOODgzWVNYOThReElJTGVwZ3lYTDdPenZMVU02dm5SaVhW?=
- =?utf-8?B?bVd1cjNPb0hTR0RGSWNYS245NVJ1YWdCaGNKbENVZDJsYllYZ1p2cGpkblM4?=
- =?utf-8?B?V0xUNlVLamxQc2hWZVpSanpyRlZpMkl3dWhlYXBpT2wxZENwdFM2M09YZW8v?=
- =?utf-8?B?WGZYZUF5RWtINXVZM05idXgzaXhTTklSS2V4RmdGTWR0d0w3OStlemUwUGVO?=
- =?utf-8?B?QnpHYTBUYStwbDRYZGdCak9LeUlwRHdzcUpTQVlTMUcyd0VPeThyWkI1NXo0?=
- =?utf-8?B?NHN0R3ZvTHBma0N2a1hHK3ZGaVNuQTI5MmlST3RYU0hZS3ZwTm5UdUJkKzZS?=
- =?utf-8?B?WXlkS01wR29rQ255VGJ6SDM1azJ6ZGdVTWZxbHBPbHRwQnNqUG9GWHRYK25q?=
- =?utf-8?B?eXNIa2FyU2ZYTndySkwyRGgyMHNIcE1HcEJlVFJ6TTM2c0FZaFV4am0wMHdw?=
- =?utf-8?B?WmJsa2h5Ym5MRG1zOThtMXkwZ1RQS2pWN0JPZnhqK3VrdUNaMXVLUXZpaTVh?=
- =?utf-8?B?dzFuS3VsbmRFQXZnUzNBWHFjS25kQkZiWittcjJtT1Q3MzQvc3VJcVNSUlkw?=
- =?utf-8?B?NjRRUkYwbjFLOTVjK3lHL2lucmV2NC9XNTQyOHE3T3p6bVFRckkwQWk4KzZH?=
- =?utf-8?B?WXVvQkdJbi9uYy9yOTlNY1Z5d2tHSUhvUmM3N20xRWJpaGNTT3RLcU5tNjV1?=
- =?utf-8?B?QUFiN08xeDRMSnZiemtMV0dTb2tldFJmRW1TU0oxeWl3eXViaGZBUldXRnN5?=
- =?utf-8?B?dWNmWlpPNnRLVEp6ZjJrTWExK3RyUmJsd2d1YXZuelQzelM1N0hSSFZHTkpv?=
- =?utf-8?B?NGJlbDdCeUx6WU9IUmRQaWRvV2crbkZHdGVGeGlqVlVaQStMZ3hUak0vMyt0?=
- =?utf-8?B?UVkrc0l5V1preWFBVkVFMXFpQlUxazNwWVFJR1Zpbk9DMXhIS1RHdnJQWW85?=
- =?utf-8?B?NXRLNXNpYjNDL1ZMcVN4eWFxd215bVViTnJGc2gwTkhOQzE2L1hOc1ZSZXhu?=
- =?utf-8?B?QUZxMDIxQVM1UlY4VzBNbWh2VGpOSFBRU1dtQVZYQll1UkgybUlxMTdySlhF?=
- =?utf-8?B?MzBOWUJlL1E1WjAvcnpzdDBMeHVKSlN4R0cvaG1jRjI4LzRMSGUxN1dlV0R3?=
- =?utf-8?B?YmRaYlpka3U2MG8yR1g5alZBTitLWkc5Rkd2K3RON2Uya21hRnB0OTNSWDRp?=
- =?utf-8?B?Y1RlTHVxbS9UY3N2NnRlNFVWSll0bXFVWXQ2K1dkbHZNTm55Sit1eTZpcThW?=
- =?utf-8?B?djZKa3oweHM1VzBIZjJGTkg5RFd3NTg4WU4ybFptL0VvRHBtNmE5R0drWFRV?=
- =?utf-8?B?R0ZOb01HUysvWGRRdjQrNGd2bys4akRtYjJWd0Zxc2FERkNVd2k1SlZLM3Np?=
- =?utf-8?B?V1hCbDRMRGdvT2pVL3o3Q3hvV2JkdFU4NUl2VEtHa2tNUEpxK2ZVOW1RMWRB?=
- =?utf-8?B?Ync9PQ==?=
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6630D602451
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 12:40:37 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 867F3219E0;
+ Thu, 22 Sep 2022 10:40:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1663843237;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Rm7c6xAh/KckVoY521xv4ofyjEc4Kj0Of/DEGFOhuvE=;
+ b=OwE9EYIn3nzNmtQ59HsrBGvcxUkFMA0mtZWBojNHELt/ruY4L3b8fDafApaKcrK6v0SL6A
+ 3vpvdRdp9WLXNd01JCwQrluGiDTMhPANcWsqbJFEAnr3moNsfYl5um2r+XuY9GcxmDxBQu
+ j3no4H9dHmfH7iHaqWImXBexBozoRxg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1663843237;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Rm7c6xAh/KckVoY521xv4ofyjEc4Kj0Of/DEGFOhuvE=;
+ b=cxk/pR+QU9RtjavQb3N6t5r+HRVk0kXBlnRASrfF6hSorD3IZM2ERRz48SHizU2Cgz/66W
+ GjEubnNYQt7+ePCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1865F1346B;
+ Thu, 22 Sep 2022 10:40:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id g7LCAqU7LGNFIwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 22 Sep 2022 10:40:37 +0000
+Date: Thu, 22 Sep 2022 12:40:34 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Yyw7osX47bnvNFr2@pevik>
+References: <20220921155006.13360-1-mdoucha@suse.cz>
+ <CAEemH2eoxjDha9Ldu9shqO6MUUFfvT3dkFExAHGyH-38E5drVg@mail.gmail.com>
+ <YywknXj4nL48PaR6@pevik>
+ <CAEemH2fy8zK1ABe5PrqFM=0J6s6oyPPva8pN9MF=2OrXEPcT2A@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a62fba03-222d-4be5-0561-08da9c819e3f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2022 10:02:54.5522 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IYkq69V6zyJ5psGUIKZ3L+X1m04FomMeDEjEBwdUiqlkd5gfPYm4IugNpIVkLMTkD9Kh3dy3ISiMhAqyAX81+XJbJAAHXoSMYCifxQgDyaM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB10517
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2fy8zK1ABe5PrqFM=0J6s6oyPPva8pN9MF=2OrXEPcT2A@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/3] syscalls/openat: Add new regression test
- when using open(O_TMPFILE) under umask
+Subject: Re: [LTP] [PATCH] tst_supported_fs: Implement checking paths
+ against skiplist
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -165,31 +80,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi  Cyril
+> On Thu, Sep 22, 2022 at 5:03 PM Petr Vorel <pvorel@suse.cz> wrote:
 
->> > And this one is probably missing some kernel commit tags too, since the only that that is attached is supposedly in 5.19 but the test still fails.
->>> 
->> > I supposed that we should add the 426b4ca2d6a5 to the test tags here as well, right?
->>>
->> Yes, BTW,  I usually use git tag --contains command, so I know this kernel fix is belong to 6.0.
->> 
->> git tag --contains ac6800e27
->> v6.0-rc1
->> v6.0-rc2
+> > Hi all,
 
->Now I'm confused, if I do git describe ac6800e27 it says that it's a second commit on the top of 5.19-rc7. So shouldn't the the git tag --contains report 5.19-rc8 and newer? What do I miss?
+> > > > Although the tst_fs_type_name() functions could use some improvements,
+> > > > e.g. ext4 must be specified in skiplist as "ext2/ext3/ext4" to get
+> > properly
 
-I don't know about this. It is a detail in kernel community collaborative work .
-But kernel subsystem maintainer should be aware of this. @ Christian Brauner  Can you help Cyril settle this confuse ?
+> > > Yes, that's true, we need to make it keep consistent with two
+> > > skipping ways. Otherwise below test output "ext2/ext3/ext4"
+> > > looks like a bit mess to remember.
 
-Best Regards
-Yang Xu
+> > > Better going with a single FS for matching (i.e. "ext4" for both fs_type
+> > > and '-d path').
+> > > But we can solve this in a separate patch later.
+
+> > > $ df -T . | tail -1 | awk '{print $2}'
+> > > ext4
+
+> > > $ ./tst_supported_fs -s "ext4" ext4
+> > > tst_supported_fs.c:135: TCONF: ext4 is skipped
+> > > $ echo $?
+> > > 32
+
+> > > $ ./tst_supported_fs -s "ext4" -d .
+> > > tst_supported_fs.c:137: TINFO: ext2/ext3/ext4 is not skipped
+> > > $ echo $?
+> > > 0
+
+> > > $ ./tst_supported_fs -s "ext2/ext3/ext4" -d .
+> > > tst_supported_fs.c:135: TCONF: ext2/ext3/ext4 is skipped
+> > > $ echo $?
+> > > 32
+
+> > The same problem is for .skip_filesystems on tests which does not use
+> > .all_filesystems. We only haven't noticed, because there was no reason to
+> > skip
+> > ext[234] so far. I'm looking into this.
+
+
+> This seems a bit tricky to distinguish EXT2,3,4, from what I know,
+> they use the same magic number. It will be difficult to get the
+> FS block and extract smaller granularity of feature without
+> using fs helper tools.
+
+Yep, magic is the same: 0xef53 (not count the old ext2: 0xef51).
+I thought that I'd map ext[235] to "ext2/ext3/ext4".
+But maybe it's not a good idea.
+
+OTOH df (coreutils) manages to distinguish them, stat can't.
+I looked into df sources, it looks read_file_system_list() from gnulib which
+it uses, reads /proc/self/mountinfo. Wouldn't be better to follow this approach
+in tst_fs_type_() instead of using statfs()? (using st_dev - major:minor from
+stat to match). I guess we always read mounted filesystem, thus it'd be a
+drop-in replacement, we'd not need tst_fs_type_name() any more.
+
+Kind regards,
+Petr
+
+
+> > BTW .skip_filesystems without .all_filesystems have other problems, e.g.
+> > using
+> > filesystems which aren't in fs_type_whitelist[] array (e.g. ramfs, nfs).
+> > That'd be nice to fix after the release.
+
+
+> +1
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
