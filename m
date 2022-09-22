@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F9CBC54EE9
-	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 04:17:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46CABECAAD8
+	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 04:32:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B31E03CAD53
-	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 06:17:25 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 849FF3CAD64
+	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 06:32:56 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B07F13C8942
- for <ltp@lists.linux.it>; Thu, 22 Sep 2022 06:17:10 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 9D0E63C8942
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 06:32:44 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3BF741A0117B
- for <ltp@lists.linux.it>; Thu, 22 Sep 2022 06:17:08 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1BD6C600830
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 06:32:43 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1663820227;
+ s=mimecast20190719; t=1663821162;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=I8xWVR9N0Oq4VxQS8aJ9RHzB5VWk4wrPOwOVMwvxjxU=;
- b=Z0fsVV/UYMfI0mf3mJkwo2U1a4uMjlEP1+yiY5LIvkw7fiS24bTdyrLTPzBHiMMrDPZCPj
- CINvud21oILgrx+B2ZCZGqCBDvAzDD15RKwLZ2Zpcflu7SgyVYzW8ACX0iZ+iBvz/8UmIy
- tlhoMoJ5tkkS8CHWLE8vTi5lTsttpq0=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=HK2BCYhseGQtm3eEyfiD1tDtPz5cCB6O5sFt8AZbeZ0=;
+ b=Du29JL7T+TR3xaE48DHAIFYX2CIqDlKQPq9rNXKCJqN+aMyjIFki6bSdGPcpWjwkpgl8Q7
+ /oAsgjKynZ+h+FjTz6ozGzxXirJKYHVL+96D8jkGcQgHqEEKhcx+paeaROmY2zCTVF3lYM
+ zWIsLADN4LbXH1TE0kM7XGKTUCp5/+c=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-126-2kyd74zzPAGvN9ZJxIbPkg-1; Thu, 22 Sep 2022 00:17:06 -0400
-X-MC-Unique: 2kyd74zzPAGvN9ZJxIbPkg-1
-Received: by mail-wm1-f69.google.com with SMTP id
- 5-20020a05600c028500b003b4d2247d3eso2236763wmk.0
- for <ltp@lists.linux.it>; Wed, 21 Sep 2022 21:17:05 -0700 (PDT)
+ us-mta-660-C-QBscUeMSOTwHqs1lQDqQ-1; Thu, 22 Sep 2022 00:32:40 -0400
+X-MC-Unique: C-QBscUeMSOTwHqs1lQDqQ-1
+Received: by mail-wr1-f69.google.com with SMTP id
+ t12-20020adfa2cc000000b0022adcbb248bso2892466wra.1
+ for <ltp@lists.linux.it>; Wed, 21 Sep 2022 21:32:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=I8xWVR9N0Oq4VxQS8aJ9RHzB5VWk4wrPOwOVMwvxjxU=;
- b=THWgybkTPVjx7b6RVmc933QSu88/odEKvbDDc0PJx2OyfCZL8XS/Rpwj6/yqinmMPm
- JxFQuMfWgPrsYEjx8bU/V/Rk0aec+z1xFvYUVHGj3F7APOmNuD76uclXcuzK4JV0yUrD
- 6NoaBrQw78628h/IoLIfYk1T3lap2UQ34Lu4lQoZSw7ABOWPuGO9heuhGvj6tA/o2pnR
- NcOknaqUNFtxf+mTN7Oe38gT9Rrb05NNqCJYV7iJ1Zu04vabd00ussvrGTLf/4Xas1hZ
- SZLeUw0x7bwt6xwJGaMv61hjlSx0Bgqnpx6kiay06umfvkbnadIpKxgHpjbRRG7e1mW8
- K59g==
-X-Gm-Message-State: ACrzQf2SzOxWQf8g8yj1CVJlTwYsV4XQmbR9Ec39i3emb+selfW9O55P
- h53iYFM2l3ViXXBgV8QpBpAP2mr+Mb7y3UT6Rja3BX7iy0d8EbBVNBVxY7NyJO3bZ9N5rHaCuXG
- pzCNnFFx2SMgkkO8JI5q2q5x/MXQ=
+ bh=HK2BCYhseGQtm3eEyfiD1tDtPz5cCB6O5sFt8AZbeZ0=;
+ b=kvtiStVPE3jN4tI7lS1f5vF8zREBeC10vPLjXvZCQ+tYqLh4Wv7P41MmHh1FgKKNN7
+ YugIEBl1DGJfzxFT717tpOuOX4dk21vhJdKut96bpTBmXIJ+7lcNYTdP3uj2yEHLpTAT
+ FLGHVLs91Xnx/83+7SVv9/YQ1/PDHqq5j30NJVJ5jEPcc7BuI3KehH1RpwKBWwPZ++8w
+ L8u0106kSPstOqrXsEzoBw3mimVHc+0vGq/4GgDJmrDeg5IdtQY2c1BJMRg63pSmTAOT
+ G0UKvtmwlkjDXcIzTtjaHNWDD/9LkuPArFTAqi4NctxGWYhgxcanjqnf/tV+uVZrkt3M
+ ZO1A==
+X-Gm-Message-State: ACrzQf0TtaW2HttClu59NTuAXIjKkcwmF02iBXbOelctluF54CAtj+dE
+ YeAlhHMKfvVHG0uasWAhvv6IvmA9D3++VAl8Pj0uEo8zhnRlSFH0WGyFbTKsJRmd7Ux4LKYIo0F
+ HwEy7QsmzR2w9kST07VxAG8A6n4w=
 X-Received: by 2002:a7b:c848:0:b0:3b4:73f4:2320 with SMTP id
- c8-20020a7bc848000000b003b473f42320mr824585wml.124.1663820224111; 
- Wed, 21 Sep 2022 21:17:04 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM7C2CbwxjTGvIzgvPDPRTFseBNDLwddpDCDd90nd7uZuWMKjx33qJtxh/UHWQtz7fSGlSavfZxbqC50YGgycog=
+ c8-20020a7bc848000000b003b473f42320mr848774wml.124.1663821159163; 
+ Wed, 21 Sep 2022 21:32:39 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4jgrL6zOdGaPo8iYA7AqNC4whK94IE1L9eOt/kyX81//3IcCFzuPe3bKc3uMXH2FSS1d00NlDob7uszimZbHs=
 X-Received: by 2002:a7b:c848:0:b0:3b4:73f4:2320 with SMTP id
- c8-20020a7bc848000000b003b473f42320mr824580wml.124.1663820223894; Wed, 21 Sep
- 2022 21:17:03 -0700 (PDT)
+ c8-20020a7bc848000000b003b473f42320mr848765wml.124.1663821158991; Wed, 21 Sep
+ 2022 21:32:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220921155006.13360-1-mdoucha@suse.cz>
-In-Reply-To: <20220921155006.13360-1-mdoucha@suse.cz>
+References: <20220921102655.31156-1-pvorel@suse.cz>
+In-Reply-To: <20220921102655.31156-1-pvorel@suse.cz>
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 22 Sep 2022 12:16:52 +0800
-Message-ID: <CAEemH2eoxjDha9Ldu9shqO6MUUFfvT3dkFExAHGyH-38E5drVg@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
+Date: Thu, 22 Sep 2022 12:32:27 +0800
+Message-ID: <CAEemH2fWzcXuOC8-=n9H0p1OAvJhOfB33EAJT0yC06=vS=_7DA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] tst_supported_fs: Implement checking paths
- against skiplist
+Subject: Re: [LTP] [RFC PATCH 1/1] tst_test.sh: Fix filesystem support
+ detection
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,433 +86,133 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: LTP List <ltp@lists.linux.it>
-Content-Type: multipart/mixed; boundary="===============0202663496=="
+Content-Type: multipart/mixed; boundary="===============1817116210=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0202663496==
-Content-Type: multipart/alternative; boundary="0000000000006a6ea905e93c55c4"
+--===============1817116210==
+Content-Type: multipart/alternative; boundary="00000000000026e4a305e93c8d6b"
 
---0000000000006a6ea905e93c55c4
+--00000000000026e4a305e93c8d6b
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Sep 21, 2022 at 11:50 PM Martin Doucha <mdoucha@suse.cz> wrote:
+On Wed, Sep 21, 2022 at 6:27 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> Filesystem detection of locally used filesystem was broken on tests
+> which did not use TST_ALL_FILESYSTEMS as it 1) expected used filesystem
+> is $TST_FS_TYPE 2) this variable was not yet set.
+>
+> Also this check makes sense only if test defines TST_SKIP_FILESYSTEMS
+> (to align with the condition in do_test_setup() in C API).
+>
+> Move filesystem check after (optional) cd "$TST_TMPDIR" (TMPDIR can have
+> different filesystem).
+>
+> Not printing extra TINFO "$_tst_fs is supported by the test" (which is
+> printed in C API) when test is supported, because there is already
+> similar TINFO from testcases/lib/tst_supported_fs.c:
+> tst_supported_fs.c:104: TINFO: btrfs is not skipped
+>
+> Fixes: 1f6bd6e66 ("tst_test.sh: Add $TST_ALL_FILESYSTEMS")
+>
+> Reported-by: Martin Doucha <mdoucha@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
+> First, sorry for introducing a regression.
 >
-> Implement tst_supported_fs feature suggested by pvorel in his patch:
-> tst_test.sh: Fix filesystem support detection
+> I don't like df and tail dependency. Also df output is stable (even on
+> busybox), but I'd prefer to use code from do_test_setup() in
+> lib/tst_test.c:
 >
-> Although the tst_fs_type_name() functions could use some improvements,
-> e.g. ext4 must be specified in skiplist as "ext2/ext3/ext4" to get properly
+>         long fs_type = tst_fs_type(".");
+>         const char *fs_name = tst_fs_type_name(fs_type);
 >
-
-Yes, that's true, we need to make it keep consistent with two
-skipping ways. Otherwise below test output "ext2/ext3/ext4"
-looks like a bit mess to remember.
-
-Better going with a single FS for matching (i.e. "ext4" for both fs_type
-and '-d path').
-But we can solve this in a separate patch later.
-
-$ df -T . | tail -1 | awk '{print $2}'
-ext4
-
-$ ./tst_supported_fs -s "ext4" ext4
-tst_supported_fs.c:135: TCONF: ext4 is skipped
-$ echo $?
-32
-
-$ ./tst_supported_fs -s "ext4" -d .
-tst_supported_fs.c:137: TINFO: ext2/ext3/ext4 is not skipped
-$ echo $?
-0
-
-$ ./tst_supported_fs -s "ext2/ext3/ext4" -d .
-tst_supported_fs.c:135: TCONF: ext2/ext3/ext4 is skipped
-$ echo $?
-32
-
-
-
-> skipped and vfat is missing from the list of known filesystems.
+> Instead adding yet another binary, I wonder if we could add extra getopt
+> parameter to ask for current filesystem.
 >
->  testcases/lib/tst_supported_fs.c | 49 ++++++++++++++++++++++++++------
->  1 file changed, 41 insertions(+), 8 deletions(-)
->
-> diff --git a/testcases/lib/tst_supported_fs.c
-> b/testcases/lib/tst_supported_fs.c
-> index 70d4d38c7..5873d0ba1 100644
-> --- a/testcases/lib/tst_supported_fs.c
-> +++ b/testcases/lib/tst_supported_fs.c
-> @@ -32,9 +32,13 @@ static void usage(void)
->         fprintf(stderr, "tst_supported_fs -s skip_list fs_type\n");
->         fprintf(stderr, "   if fs_type is in skip_list, return 1 otherwise
-> return 0\n\n");
->
-> +       fprintf(stderr, "tst_supported_fs -s skip_list -d path\n");
-> +       fprintf(stderr, "   if filesystem mounted on path is in skip_list,
-> return 1 otherwise return 0\n\n");
-
-+
->         fprintf(stderr, "fs_type - a specified filesystem type\n");
->         fprintf(stderr, "skip_list - filesystems to skip, delimiter:
-> '%c'\n",
->                         SKIP_DELIMITER);
-> +       fprintf(stderr, "path - any valid file or directory\n");
->  }
->
->  static char **parse_skiplist(char *fs)
-> @@ -62,10 +66,11 @@ static char **parse_skiplist(char *fs)
->  int main(int argc, char *argv[])
->  {
->         const char *const *filesystems;
-> +       const char *fsname = NULL;
->         int i, ret;
->         char **skiplist = NULL;
->
-> -       while ((ret = getopt(argc, argv, "hs:"))) {
-> +       while ((ret = getopt(argc, argv, "hs:d:"))) {
->                 if (ret < 0)
->                         break;
->
-> @@ -83,9 +88,26 @@ int main(int argc, char *argv[])
->                         if (!skiplist)
->                                 return 1;
->                         break;
-> +
-> +               case 'd':
-> +                       if (fsname) {
-> +                               fprintf(stderr,
-> +                                       "Can't specify multiple paths\n");
-> +                               usage();
-> +                               return 2;
-> +                       }
-> +
-> +                       fsname = tst_fs_type_name(tst_fs_type(optarg));
-> +                       break;
->                 }
->         }
->
-> +       if (fsname && !skiplist) {
-> +               fprintf(stderr, "Parameter -d requires skiplist\n");
-> +               usage();
-> +               return 2;
-> +       }
-> +
->         if (argc - optind > 1) {
->                 fprintf(stderr, "Can't specify multiple fs_type\n");
->                 usage();
-> @@ -94,22 +116,33 @@ int main(int argc, char *argv[])
->
->         /* fs_type */
->         if (optind < argc) {
-> -               if (argv[optind][0] == '\0')
-> +               if (fsname) {
-> +                       fprintf(stderr, "Can't specify fs_type and -d
-> together\n");
-> +                       usage();
-> +                       return 2;
-> +
-> +               }
-> +
-> +               fsname = argv[optind];
-> +       }
-> +
-> +       if (fsname) {
-> +               if (fsname[0] == '\0')
->                         tst_brk(TCONF, "fs_type is empty");
->
->                 if (skiplist) {
-> -                       if (tst_fs_in_skiplist(argv[optind], (const char *
-> const*)skiplist))
-> -                               tst_brk(TCONF, "%s is skipped",
-> argv[optind]);
-> +                       if (tst_fs_in_skiplist(fsname, (const char *
-> const*)skiplist))
-> +                               tst_brk(TCONF, "%s is skipped", fsname);
+> i.e. to replace:
+> -tst_supported_fs -s skip_list fs_type
+> +tst_supported_fs -s skip_list -d DIR
 >
 
-TCONF does not means return 1, we might need explicitly 'return 1' here.
++1, and Martin already sent out the achievement patch,
+you can rebase this patch on that.
 
+And I'd like to vote for merging your both patches for
+adding to the new release.
 
-                        else
-> -                               tst_res(TINFO, "%s is not skipped",
-> argv[optind]);
-> +                               tst_res(TINFO, "%s is not skipped",
-> fsname);
->
->                         return 0;
->                 }
->
-> -               if (tst_fs_is_supported(argv[optind]) ==
-> TST_FS_UNSUPPORTED)
-> -                       tst_brk(TCONF, "%s is not supported",
-> argv[optind]);
-> +               if (tst_fs_is_supported(fsname) == TST_FS_UNSUPPORTED)
-> +                       tst_brk(TCONF, "%s is not supported", fsname);
->
-
-Same here.
-
-
-
->                 else
-> -                       tst_res(TINFO, "%s is supported", argv[optind]);
-> +                       tst_res(TINFO, "%s is supported", fsname);
->
->                 return 0;
->         }
-> --
-> 2.37.3
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
->
 
 -- 
 Regards,
 Li Wang
 
---0000000000006a6ea905e93c55c4
+--00000000000026e4a305e93c8d6b
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 <div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
 t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Wed, Sep 21, 2022 at 11:50 PM Martin Doucha &lt;=
-<a href=3D"mailto:mdoucha@suse.cz" target=3D"_blank">mdoucha@suse.cz</a>&gt=
-; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px=
- 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Signed-=
-off-by: Martin Doucha &lt;<a href=3D"mailto:mdoucha@suse.cz" target=3D"_bla=
-nk">mdoucha@suse.cz</a>&gt;<br>
+r" class=3D"gmail_attr">On Wed, Sep 21, 2022 at 6:27 PM Petr Vorel &lt;<a h=
+ref=3D"mailto:pvorel@suse.cz">pvorel@suse.cz</a>&gt; wrote:<br></div><block=
+quote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1=
+px solid rgb(204,204,204);padding-left:1ex">Filesystem detection of locally=
+ used filesystem was broken on tests<br>
+which did not use TST_ALL_FILESYSTEMS as it 1) expected used filesystem<br>
+is $TST_FS_TYPE 2) this variable was not yet set.<br>
+<br>
+Also this check makes sense only if test defines TST_SKIP_FILESYSTEMS<br>
+(to align with the condition in do_test_setup() in C API).<br>
+<br>
+Move filesystem check after (optional) cd &quot;$TST_TMPDIR&quot; (TMPDIR c=
+an have<br>
+different filesystem).<br>
+<br>
+Not printing extra TINFO &quot;$_tst_fs is supported by the test&quot; (whi=
+ch is<br>
+printed in C API) when test is supported, because there is already<br>
+similar TINFO from testcases/lib/tst_supported_fs.c:<br>
+tst_supported_fs.c:104: TINFO: btrfs is not skipped<br>
+<br>
+Fixes: 1f6bd6e66 (&quot;tst_test.sh: Add $TST_ALL_FILESYSTEMS&quot;)<br>
+<br>
+Reported-by: Martin Doucha &lt;<a href=3D"mailto:mdoucha@suse.cz" target=3D=
+"_blank">mdoucha@suse.cz</a>&gt;<br>
+Signed-off-by: Petr Vorel &lt;<a href=3D"mailto:pvorel@suse.cz" target=3D"_=
+blank">pvorel@suse.cz</a>&gt;<br>
 ---<br>
+First, sorry for introducing a regression.<br>
 <br>
-Implement tst_supported_fs feature suggested by pvorel in his patch:<br>
-tst_test.sh: Fix filesystem support detection<br>
+I don&#39;t like df and tail dependency. Also df output is stable (even on<=
+br>
+busybox), but I&#39;d prefer to use code from do_test_setup() in lib/tst_te=
+st.c:<br>
 <br>
-Although the tst_fs_type_name() functions could use some improvements,<br>
-e.g. ext4 must be specified in skiplist as &quot;ext2/ext3/ext4&quot; to ge=
-t properly<br></blockquote><div><br></div><div><div class=3D"gmail_default"=
- style=3D"font-size:small">Yes, that&#39;s true, we need to make it keep co=
-nsistent with two</div><div class=3D"gmail_default" style=3D"font-size:smal=
-l">skipping=C2=A0ways. Otherwise=C2=A0below test output &quot;ext2/ext3/ext=
-4&quot;</div><div class=3D"gmail_default" style=3D"font-size:small">looks l=
-ike a bit mess to remember.</div><div class=3D"gmail_default" style=3D"font=
--size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:smal=
-l">Better going with a single FS for matching (i.e. &quot;ext4&quot; for bo=
-th fs_type and &#39;-d path&#39;).</div><div class=3D"gmail_default" style=
-=3D"font-size:small">But we can solve this in a separate patch later.<br></=
-div><div class=3D"gmail_default" style=3D"font-size:small"><br></div><div c=
-lass=3D"gmail_default" style=3D"font-size:small">$ df -T . | tail -1 | awk =
-&#39;{print $2}&#39;<br>ext4<br></div><div class=3D"gmail_default" style=3D=
-"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size=
-:small">$ ./tst_supported_fs -s &quot;ext4&quot; ext4<br>tst_supported_fs.c=
-:135: TCONF: ext4 is skipped<br>$ echo $?<br>32<br><br></div><div class=3D"=
-gmail_default" style=3D"font-size:small">$ ./tst_supported_fs -s &quot;ext4=
-&quot; -d .<br>tst_supported_fs.c:137: TINFO: ext2/ext3/ext4 is not skipped=
-</div><div class=3D"gmail_default" style=3D"font-size:small">$ echo $?<br>0=
-<br></div><div class=3D"gmail_default" style=3D"font-size:small"><br></div>=
-<div class=3D"gmail_default" style=3D"font-size:small">$ ./tst_supported_fs=
- -s &quot;ext2/ext3/ext4&quot; -d .<br>tst_supported_fs.c:135: TCONF: ext2/=
-ext3/ext4 is skipped<br></div><div class=3D"gmail_default" style=3D"font-si=
-ze:small">$ echo $?</div>32<br><div class=3D"gmail_default" style=3D"font-s=
-ize:small"></div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_quot=
-e" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204)=
-;padding-left:1ex">
-skipped and vfat is missing from the list of known filesystems.<br>
-<br>
-=C2=A0testcases/lib/tst_supported_fs.c | 49 ++++++++++++++++++++++++++-----=
--<br>
-=C2=A01 file changed, 41 insertions(+), 8 deletions(-)<br>
-<br>
-diff --git a/testcases/lib/tst_supported_fs.c b/testcases/lib/tst_supported=
-_fs.c<br>
-index 70d4d38c7..5873d0ba1 100644<br>
---- a/testcases/lib/tst_supported_fs.c<br>
-+++ b/testcases/lib/tst_supported_fs.c<br>
-@@ -32,9 +32,13 @@ static void usage(void)<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 fprintf(stderr, &quot;tst_supported_fs -s skip_=
-list fs_type\n&quot;);<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 fprintf(stderr, &quot;=C2=A0 =C2=A0if fs_type i=
-s in skip_list, return 1 otherwise return 0\n\n&quot;);<br>
-<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0fprintf(stderr, &quot;tst_supported_fs -s skip_=
-list -d path\n&quot;);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0fprintf(stderr, &quot;=C2=A0 =C2=A0if filesyste=
-m mounted on path is in skip_list, return 1 otherwise return 0\n\n&quot;);<=
-/blockquote><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0=
-.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
-+<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 fprintf(stderr, &quot;fs_type - a specified fil=
-esystem type\n&quot;);<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 fprintf(stderr, &quot;skip_list - filesystems t=
-o skip, delimiter: &#39;%c&#39;\n&quot;,<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 SKIP_DELIMITER);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0fprintf(stderr, &quot;path - any valid file or =
-directory\n&quot;);<br>
-=C2=A0}<br>
-<br>
-=C2=A0static char **parse_skiplist(char *fs)<br>
-@@ -62,10 +66,11 @@ static char **parse_skiplist(char *fs)<br>
-=C2=A0int main(int argc, char *argv[])<br>
-=C2=A0{<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 const char *const *filesystems;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0const char *fsname =3D NULL;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 int i, ret;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 char **skiplist =3D NULL;<br>
-<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0while ((ret =3D getopt(argc, argv, &quot;hs:&qu=
-ot;))) {<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0while ((ret =3D getopt(argc, argv, &quot;hs:d:&=
-quot;))) {<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (ret &lt; 0)<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 break;<br>
-<br>
-@@ -83,9 +88,26 @@ int main(int argc, char *argv[])<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 if (!skiplist)<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return 1;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 break;<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0case &#39;d&#39;:<b=
-r>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0if (fsname) {<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0fprintf(stderr,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;Can=
-&#39;t specify multiple paths\n&quot;);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0usage();<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return 2;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0}<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0fsname =3D tst_fs_type_name(tst_fs_type(optarg));<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0break;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 }<br>
-<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (fsname &amp;&amp; !skiplist) {<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0fprintf(stderr, &qu=
-ot;Parameter -d requires skiplist\n&quot;);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0usage();<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return 2;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>
-+<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (argc - optind &gt; 1) {<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 fprintf(stderr, &qu=
-ot;Can&#39;t specify multiple fs_type\n&quot;);<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 usage();<br>
-@@ -94,22 +116,33 @@ int main(int argc, char *argv[])<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 /* fs_type */<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (optind &lt; argc) {<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (argv[optind][0]=
- =3D=3D &#39;\0&#39;)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (fsname) {<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0fprintf(stderr, &quot;Can&#39;t specify fs_type and -d together\n=
-&quot;);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0usage();<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0return 2;<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0fsname =3D argv[opt=
-ind];<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (fsname) {<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (fsname[0] =3D=
-=3D &#39;\0&#39;)<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 tst_brk(TCONF, &quot;fs_type is empty&quot;);<br>
-<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (skiplist) {<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0if (tst_fs_in_skiplist(argv[optind], (const char * const*)skiplis=
-t))<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TCONF, &quot;%s is skipped&qu=
-ot;, argv[optind]);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0if (tst_fs_in_skiplist(fsname, (const char * const*)skiplist))<br=
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 long fs_type =3D tst_fs_type(&quot;.&quot;);<br=
 >
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TCONF, &quot;%s is skipped&qu=
-ot;, fsname);<br></blockquote><div><br></div><div class=3D"gmail_default" s=
-tyle=3D"font-size:small">TCONF does not means return 1, we might need expli=
-citly &#39;return 1&#39; here.</div><div></div><div class=3D"gmail_default"=
- style=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"=
-font-size:small"><br></div><blockquote class=3D"gmail_quote" style=3D"margi=
-n:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex=
-">
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 else<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quot;%s is not skippe=
-d&quot;, argv[optind]);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quot;%s is not skippe=
-d&quot;, fsname);<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 const char *fs_name =3D tst_fs_type_name(fs_typ=
+e);<br>
 <br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 return 0;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }<br>
-<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (tst_fs_is_suppo=
-rted(argv[optind]) =3D=3D TST_FS_UNSUPPORTED)<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0tst_brk(TCONF, &quot;%s is not supported&quot;, argv[optind]);<br=
+Instead adding yet another binary, I wonder if we could add extra getopt<br=
 >
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (tst_fs_is_suppo=
-rted(fsname) =3D=3D TST_FS_UNSUPPORTED)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0tst_brk(TCONF, &quot;%s is not supported&quot;, fsname);<br></blo=
-ckquote><div><br></div><div><div class=3D"gmail_default" style=3D"font-size=
-:small">Same here.</div><div class=3D"gmail_default" style=3D"font-size:sma=
-ll"><br></div><div class=3D"gmail_default" style=3D"font-size:small">=C2=A0=
-<br></div></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
-px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 else<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0tst_res(TINFO, &quot;%s is supported&quot;, argv[optind]);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0tst_res(TINFO, &quot;%s is supported&quot;, fsname);<br>
+parameter to ask for current filesystem.<br>
 <br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return 0;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 }<br>
--- <br>
-2.37.3<br>
-<br>
-<br>
--- <br>
-Mailing list info: <a href=3D"https://lists.linux.it/listinfo/ltp" rel=3D"n=
-oreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><br>
-<br>
-</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
-><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div>=
-</div>
+i.e. to replace:<br>
+-tst_supported_fs -s skip_list fs_type<br>
++tst_supported_fs -s skip_list -d DIR<br></blockquote><div><br></div><div><=
+div class=3D"gmail_default" style=3D"font-size:small">+1, and Martin alread=
+y sent out the achievement patch,</div><div class=3D"gmail_default" style=
+=3D"font-size:small">you can rebase this patch on that.</div><br></div><div=
+><div class=3D"gmail_default" style=3D"font-size:small">And I&#39;d like to=
+ vote for merging your both patches for</div><div class=3D"gmail_default" s=
+tyle=3D"font-size:small">adding to the new release.</div></div><div><br></d=
+iv></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signature"><=
+div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div></=
+div>
 
---0000000000006a6ea905e93c55c4--
+--00000000000026e4a305e93c8d6b--
 
 
---===============0202663496==
+--===============1817116210==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -521,5 +222,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============0202663496==--
+--===============1817116210==--
 
