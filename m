@@ -4,154 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E421C6FA82
-	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 09:07:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DB0CC6FA82
+	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 09:09:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1595D3CAD4A
-	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 11:07:13 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id DA10B3CAD53
+	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 11:09:08 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CB8273C91A6
- for <ltp@lists.linux.it>; Thu, 22 Sep 2022 11:07:02 +0200 (CEST)
-Received: from esa12.fujitsucc.c3s2.iphmx.com (esa12.fujitsucc.c3s2.iphmx.com
- [216.71.156.125])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id CFAC93C91A6
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 11:08:57 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A562910011B9
- for <ltp@lists.linux.it>; Thu, 22 Sep 2022 11:06:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1663837620; x=1695373620;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-transfer-encoding:mime-version;
- bh=qxTSGAn/MshYYx+acX/jsDl2zDtjnCI4KM6Zde8uL6Q=;
- b=flmw++fDeVfVPErA+NH7VSvWhoNXTeviLSLKYK6i7OAt3MNE6sViBZ1m
- FjH0P+z0DpG2rldbL6GCemAT2iP2E9B0KWN1qbuncCEeDxawnincGtxzF
- T7OtzT9bsbr6YqObmxK5HPxJD0CbzBbCdRXP49slSU02m3NXcU8d6Ei7k
- hxr/5sV5P0dSnuWFGiPTWFWfnKNFDHyBiXDv2N8cqi9wTh0lGN4swBSLO
- X4bBy0yEfIVgqzjL2pHB0BVVO+zA/Q+c1u7SoGSjkcl8xtFXF/AyY8N5x
- NFF6qRpZjUBlO+OrUk3H77KoHKUTYnlKeoQkJ+th2H7/bBfHZT7XRJr7T A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10477"; a="65952813"
-X-IronPort-AV: E=Sophos;i="5.93,335,1654527600"; d="scan'208";a="65952813"
-Received: from mail-os0jpn01lp2111.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.111])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Sep 2022 18:06:58 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gS8d3c5b8EKP8wg0aBevw0v3HOYZMFZs1aqMv5lqM8CXj3c9GejjtOVycsUDWwd7H4DUFEZDZtc3FRRBC55bqVqf+StBf3ZKDoStMqj/neA1kS8ClS57LR0dImbjYKE7GtndRW588cHrqNXzG7Ol8qCN4bujCiH+cz4KvS2EolwDa2XXeKHOoIKoyHwo6Mn7G0NNztZMzBGcyOja5Oqgi+xVK8ymrYK2aVNcVR4hmuzyLQB/ReVAnpIaondNAbORGmiceBZzsHySFkRGYguv47fXwEcwxXxpy5dAr8SwvUkkXHUd1mYSqpmsP5KqnrOOduaaFT38EnuAKTh2nmkdZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qxTSGAn/MshYYx+acX/jsDl2zDtjnCI4KM6Zde8uL6Q=;
- b=asl0scKzdupG2/zhZJjNvqw7mELJxp6c3Sr7IJ+6Dvq/SZKMMiy8m7W26mhX+Ds95KXKE4SOYq1LfTMT7NbzgkiW0oT6Lht1RfOJC4nlXlLqH9EQaScO/u/szuitekXO2cKMYoE2I360M5K892b1G7FNNlyVR7zbaDy52kW9FS514B7w54OaEOyMhvQ+KmlFNU1vYp+kH4mvetlBr9P/nY1X1nf+3MQkGzP6u7ROr+xJ5IqK9ngWKBmiGxPZ5jc1xeqT13zNru1F42PZ9Dl46UyB5VJlRNsqR85L5d4Yx6/og+UG2iV6B7CqV8RMeH5cgPcZzdDf/4P1vPT9aPpHQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by OS3PR01MB8041.jpnprd01.prod.outlook.com (2603:1096:604:1be::12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.18; Thu, 22 Sep
- 2022 09:06:54 +0000
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::c4fe:de8c:66e8:5c93]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::c4fe:de8c:66e8:5c93%6]) with mapi id 15.20.5654.017; Thu, 22 Sep 2022
- 09:06:54 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [PATCH v4 3/3] syscalls/openat: Add new regression test when
- using open(O_TMPFILE) under umask
-Thread-Index: AQHYyAlViPga5eQsB0uSM8Tbg4syU63rMVSAgAAUR/A=
-Date: Thu, 22 Sep 2022 09:06:54 +0000
-Message-ID: <TY2PR01MB442734C41B2B574CF05B8AE1FD4E9@TY2PR01MB4427.jpnprd01.prod.outlook.com>
-References: <1663143142-2283-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1663143142-2283-3-git-send-email-xuyang2018.jy@fujitsu.com>
- <YywiZckfyJIk1/Pf@yuki>
-In-Reply-To: <YywiZckfyJIk1/Pf@yuki>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: =?utf-8?B?TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2Uw?=
- =?utf-8?B?NTBfQWN0aW9uSWQ9NzM5ZTVkM2UtYmJlOC00ODk2LTg5ZGMtOWFlODZlZTZj?=
- =?utf-8?B?NmI0O01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
- =?utf-8?B?ZWNlMDUwX0NvbnRlbnRCaXRzPTA7TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5?=
- =?utf-8?B?LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfRW5hYmxlZD10cnVlO01TSVBfTGFi?=
- =?utf-8?B?ZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRmZWNlMDUwX01ldGhv?=
- =?utf-8?B?ZD1TdGFuZGFyZDtNU0lQX0xhYmVsX2E3Mjk1Y2MxLWQyNzktNDJhYy1hYjRk?=
- =?utf-8?B?LTNiMGY0ZmVjZTA1MF9OYW1lPUZVSklUU1UtUkVTVFJJQ1RFRO+/ou++gA==?=
- =?utf-8?B?776LO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
- =?utf-8?B?ZWNlMDUwX1NldERhdGU9MjAyMi0wOS0yMlQxMDowNToyN1o7TVNJUF9MYWJl?=
- =?utf-8?B?bF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfU2l0ZUlk?=
- =?utf-8?Q?=3Da19f121d-81e1-4858-a9d8-736e267fd4c7;?=
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TY2PR01MB4427:EE_|OS3PR01MB8041:EE_
-x-ms-office365-filtering-correlation-id: b39b012a-b512-4b18-dee4-08da9c79cb60
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vO7tSRF/DqW1HIm14HgpV4KmxTeW33wg/IwiAtx+y34hNTcRKlVUTnaktSli0oqn7vav4Gwsv9O6bNtU1zef+sNqMS8+JTa7Bn8oIFdIq3Q9NMGi+iOO8BW3lY1caD30mjcVzszzFsqFCoZSuKfLqLVbJFzJiEfFMuX6hYXQExTwrQfNEcSkI7TflkSNhwnl+692ZL3aywnRu3C7dP/UgvEh73/uVMjz4HXkO4lAdnnhV6ypchwUYZn6P3pd5yfFzsO9pe6hbDNQHUu2+nFkfKR/WMDgSfx6AlWbx3qFpOmw5TVFetNYrhtM1FO06nE60+jcdqf5VrCyHeZJ/co1hIM1PbKuGaSNU/cJwNrSgn5wH9uFQAmrXfJk4LT4P/NbFBFX4Ps44LKxHQ2p7Ss0xu8P8zxIxavq8fjYEpVo4XIw1li75I0z+TBCI4bGWtP48peVJZwlX/aapz5xmrIWAKaAgxocJoGPTEiyD3jRdr/E11azQIzlwWdt5tQeJ+MBdLfmFVPvna/UkX0UzJ6zlVh0Tn01g7nhgDMsR442OF6U37dWDRNZ739b5RP7uvPN+M5m6OvUdLJa54rkZyZl6YjSPMhPnRIQ+2CYdScQED8/Z8VdNRx4/Abe4S9BQvy+xSINl0kTVJj+IKqlp3NNPb0ts77/OZ9s3kFbCwsnxVMzwhGSVWIRfuCdc+Mtz3iSsFvEscEdxu02tbxtaPUUGwexFGfA+wQeMTb5i4T2mIET9xDjKNCHb9AEk6zOlUa6w3SPBXAixiQoefpkmo1oa77il9OZNMb+bLQxZW/nA3U=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230022)(4636009)(376002)(346002)(136003)(396003)(366004)(39860400002)(1590799012)(451199015)(9686003)(26005)(4326008)(6916009)(54906003)(52536014)(186003)(71200400001)(316002)(2906002)(7696005)(478600001)(85182001)(8676002)(64756008)(66946007)(66476007)(66446008)(76116006)(66556008)(41300700001)(38070700005)(86362001)(6506007)(55016003)(33656002)(1580799009)(4744005)(38100700002)(122000001)(5660300002)(8936002)(82960400001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?N1NISDdUU0dEOE5yTnV6NU4xQ2FUSXFVS1ZMSkoyVXlLUlBseEFVZnFYQlZX?=
- =?utf-8?B?N29hVStvYXdYSUE1SkVURnNQVzFKSVhGcjhPNy9SSW5uTlRBYnhqQXJSb3lV?=
- =?utf-8?B?Q0xPeVNxTmV0V1lkZWRNU2FEWEI1OXVnU3VMTm9oUlF1dUY0RVo1bDFZY0dD?=
- =?utf-8?B?MndzYnVKditnZ3FFT0luTEcyUzJ0NmpsL201RVNnZ3hhcEQzMlJ5ZkY4M0xw?=
- =?utf-8?B?ZWZXM3lXNWk4OFhuOFhCRjFkNy9Jb2hXNk1sOWdSZVBkYUJSODhiSVZ2ZmV2?=
- =?utf-8?B?bExheG9RVzlPUkJQQTBsRDNEZTV6b1FBczBZNXVRbEF0RjVGV2hjTWV3SmFX?=
- =?utf-8?B?MEVBc1JkSGpTVlRPVG1VMlZCaldWckhRSStyZjhGdWJha1puRmFab0ZHTEJI?=
- =?utf-8?B?OVdIRDZpUjNzQ2RiRkl1RjF3d2dzUkgzYXR6ZVRsNUlSazJ5UDl3U1J1eDNn?=
- =?utf-8?B?L1FpRms0VWEvcTgvNlVGK1ZjKy9nWmJUUTZBTE9OenYxMEYzVmFWazFPRDZz?=
- =?utf-8?B?N3VzY0dQczNLUlAwdy9lUXY1Q1hDVDh3bWRTN20xZGx1d2pSN3lPOU1wdkFt?=
- =?utf-8?B?WFIzZUVJOCt3UTdqY3p2TC9iRUNGWVA4RzNqVGljYTkzQ0RkY1hCN1MzTGdo?=
- =?utf-8?B?R2FXcHFaSTQ4YVFtcjJmdG1BYzU3Z09PQStDMVVMYStFRS9SZ0krSWZncVpR?=
- =?utf-8?B?dGF5SXc3NzZWY09obURYcXM5bTc1Z0gvWTlQblYxR2FSUU8wb1B6WllLdmky?=
- =?utf-8?B?eUlDMGVQWGlEMFZsSmFVMHBFSldpT0ZJY2xkbWwyeXIvTTVTUzVaaHJSQ3Vq?=
- =?utf-8?B?d3RjeGxFVURjZnBPU1dEQjhkUnFDUktCb1VTKzBrZjMrNjl0MGlBakM2RUJz?=
- =?utf-8?B?K0lkbTh3NTdtTWtlcVlWUWdkY0p0amZxWFJZR0VMeFFybHBCdStsMFBsMjA2?=
- =?utf-8?B?c05tMWxwOEJNVzdQMGk4WEJDeFJXTG9UV1Q1emNJdkg1YVhIWDRKN3dVMGhQ?=
- =?utf-8?B?NzFSaHQxWm9Ya2dqTXo1amtvWUhaTWQ0MlBXQnhQVjhhK085WXBQalRxM1Aw?=
- =?utf-8?B?VkQyMGtqcXNFT3kxYUgwSC9QdG9mVXZlV1NsMXo1UGJFT3Y0MnJhbEF0M215?=
- =?utf-8?B?eStFcnFRZXIyR1FJSkd0dXJxL3Y2R01XRUYvaU5yWWFHRmpCbVBGdzVUd2c0?=
- =?utf-8?B?Z0NNZ2h2K01WRE5YK042NjJVTUY1Sm1HdW9abno4ZXIxK3YvWjNDTXdUcUZv?=
- =?utf-8?B?KzZVRzZXandjUjBDbTNVRzVnL28yYjdpekphWGR1Y215QTkvb2FMWWtEZk9B?=
- =?utf-8?B?aGlCNjNaNDd1WHUrRG9ua2JXRHJQS0RSYXV5OEIwOXA2NnJseTFGUlFuT3NI?=
- =?utf-8?B?TE1UckN0RUx2a0lSRURrVmlpblFMRCtQNW4zQ2oza0ZXWlBjU2x0NkVoUGNZ?=
- =?utf-8?B?ZVFxMi96MEY0VXpmN1RNNENTM2dHNHRTMmJCMjR5bzFucGpEM0xROGJmRzdm?=
- =?utf-8?B?S0N4azBZKytiRTVJRXZ6M3EyR2hEUzJ5N1prWVlhUE9ndmRPbnFKYnVkRGV6?=
- =?utf-8?B?NTh3NnpJNXFkN1dLeXRJYVZySCtGV25mdkV0TWdha2tDWUZiOEljQjc0QzZM?=
- =?utf-8?B?dUFvV04zMGYvbUNNajRoWGdUU0tIVER2SmhFT0UvZVpvWjczWGR0T0xUeU5V?=
- =?utf-8?B?Q0dDbDMzZjVDcGtBMkN3THZ1RFJqZndUbjA3YlUzMGxiaE1VQko1R1ZySm5m?=
- =?utf-8?B?UTh1YzVZdXpmcGF0d3VVdjhuanJVOTlhMWVWeThkeFF0WlZPNkk5enU5Qngy?=
- =?utf-8?B?UWFTK0pVVjJPb3JDYjdpdlZMZ2hTZTF1dVRpdXBYZmJlVFFtWkJLc0E2cVpj?=
- =?utf-8?B?NlE5TjhOTENBZStiamxaTy8yWURKdVVTT3pnZVpTVWliMXhXQmMxaEVQOFE3?=
- =?utf-8?B?cEdwZU81ejEvRlZ3WkdXN0RZcjc2dGF5M2NZVjdlM0NHUzA3N0FaVmtIVy82?=
- =?utf-8?B?RkFDeVZGRytxOWIzaWpZYlRscHdYOGw1M2hyM3BQNkVHQkVuUkpYNDltU0Fu?=
- =?utf-8?B?TytETG9DK0lKenRVTHVNOTVCcWtoTlh1cjYrcHY2Q2pJWDk5WWZHeWhkdEVw?=
- =?utf-8?B?WEVnMGhrNzMvQVNTWGlIeUFtTHZKL2c0YnZncXR3NlZqTi8xQ2ZZZk9xVHZr?=
- =?utf-8?B?T1E9PQ==?=
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 39976602461
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 11:08:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1663837735;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=X0ueKc0FoCdxUiB0LMzuVt/JCSrAHbB2wjRbGt1VZ24=;
+ b=JocGZg4cbXU7S1nca1ckeM6ymRmjr7A9gOSwE3wqKiwSQjfSPwu8xqreJfJ560er1Rdw82
+ Sh656rRi8rEPQPdluLVsEL1zXYwhxUbAyuMzpazLdGmldm/iJg4pJN8hRVfj6jO1WcCmOZ
+ uDgwaCe0Sy6MwgL9Fw3Gn6wTv+z71B4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-389-6_q1g1UXNMOraat8i7qpmQ-1; Thu, 22 Sep 2022 05:08:54 -0400
+X-MC-Unique: 6_q1g1UXNMOraat8i7qpmQ-1
+Received: by mail-wm1-f70.google.com with SMTP id
+ y15-20020a1c4b0f000000b003b47578405aso514227wma.5
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 02:08:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date;
+ bh=X0ueKc0FoCdxUiB0LMzuVt/JCSrAHbB2wjRbGt1VZ24=;
+ b=eVkfdQgp77bN9uWtrpRV7J+qR9gmpAZ0lbikj3iYzxcjssMzOuQtGQ/DRv38CamBu9
+ X8Ub/SAG/9pQOVxuuKyKgk8KE5swO07idOo4xRxFx9lJgDd3mg17p33RtOQClYBbHph7
+ mXw1UPrkgqF8/tNvfhCRWSzLtld8ot/wsgEUlXd5xTPp/+WMjUc9r6OdeCgnoKhwpB4D
+ 0OwVt5pebU+SKw8MR6lNJGYS1Tzbn6QewpAS8Y3jXAR5xzmjonGG7SAk5TOb7N8kJ6M1
+ Dy/TIca6xGs1K0ohX1hb6vAZ3cjb7xZImA74uFnjXViDCB3FC8pibnsF8ku+A7rL2fCE
+ tZng==
+X-Gm-Message-State: ACrzQf0MnsYqa0OaxEno93+NKY9AA74jhVfCHCjWS0NIuiXHbB8uiyaU
+ ybN6Tx6OFP2vXSHf5Nyw/eLfiLG1tqNLhHuU2thRMsBg3eP2lh2LctRVqAN09nESBXfQwI8yvCv
+ N0WHU8pbmfijE6TZJbYB4zWs3jgw=
+X-Received: by 2002:a5d:5a01:0:b0:229:3d5f:322f with SMTP id
+ bq1-20020a5d5a01000000b002293d5f322fmr1311100wrb.707.1663837732836; 
+ Thu, 22 Sep 2022 02:08:52 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM5zlgcDeeZVNcAmt73p+xzlzyOqjWpnncbfSa0cu/YJjiFl3cu40UQE52YzvMqUFKU7qNoFCJTrs8Spp82pXt8=
+X-Received: by 2002:a5d:5a01:0:b0:229:3d5f:322f with SMTP id
+ bq1-20020a5d5a01000000b002293d5f322fmr1311090wrb.707.1663837732625; Thu, 22
+ Sep 2022 02:08:52 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b39b012a-b512-4b18-dee4-08da9c79cb60
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2022 09:06:54.2977 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: M5uvSPi7AjTlWPhN83weoAuj9ddGJQXj/drNeZFncnzUDemuPVmY6Cz9lcxKkPNlDJyDdi0ALeuUed0rerTDMoxI2yGTB5sMhmnzdO3ANE4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB8041
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20220921155006.13360-1-mdoucha@suse.cz>
+ <CAEemH2eoxjDha9Ldu9shqO6MUUFfvT3dkFExAHGyH-38E5drVg@mail.gmail.com>
+ <b1a19673-de0b-d6e0-0434-3eb457aaf69d@suse.cz> <YywgNSfv58iIvFbq@pevik>
+In-Reply-To: <YywgNSfv58iIvFbq@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 22 Sep 2022 17:08:40 +0800
+Message-ID: <CAEemH2dcmX4uPHWUABO-UfYXP9rbQ4FT+CQzKFksnn0xQZ71ow@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/3] syscalls/openat: Add new regression test
- when using open(O_TMPFILE) under umask
+Subject: Re: [LTP] [PATCH] tst_supported_fs: Implement checking paths
+ against skiplist
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -163,28 +86,153 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "brauner@kernel.org" <brauner@kernel.org>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: LTP List <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============1123877174=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril
+--===============1123877174==
+Content-Type: multipart/alternative; boundary="000000000000047a6805e940695e"
 
->Hi!
-> And this one is probably missing some kernel commit tags too, since the only that that is attached is supposedly in 5.19 but the test still fails.
+--000000000000047a6805e940695e
+Content-Type: text/plain; charset="UTF-8"
 
-> I supposed that we should add the 426b4ca2d6a5 to the test tags here as well, right?
+On Thu, Sep 22, 2022 at 4:44 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-Yes, BTW,  I usually use git tag --contains command, so I know this kernel fix is belong to 6.0.
+> > On 22. 09. 22 6:16, Li Wang wrote:
+> > >                      if (skiplist) {
+> > >     -                       if (tst_fs_in_skiplist(argv[optind],
+> (const char * const*)skiplist))
+> > >     -                               tst_brk(TCONF, "%s is skipped",
+> argv[optind]);
+> > >     +                       if (tst_fs_in_skiplist(fsname, (const char
+> * const*)skiplist))
+> > >     +                               tst_brk(TCONF, "%s is skipped",
+> fsname);
+>
+>
+> > > TCONF does not means return 1, we might need explicitly 'return 1'
+> here.
+>
+> > Yes, but that's a problem which already existed before my patch and
+> affects
+> > the other single-FS checks as well. The fix should go into a separate
+> patch
+> > after release.
+>
+> Yes, that's not related. I changed it in eb47b4497 ("tst_supported_fs:
+> Support
+> skip list when query single fs") as with 32 one can detect it's TCONF.
+> As long as 0 is success, non-zero for failure.
+>
 
-git tag --contains ac6800e27
-v6.0-rc1
-v6.0-rc2
+Looks like there is no difference to use whatever 32 or 1, as long as
+it's a non-zero, it will work well in the shell.
 
-Best  Regards
-Yang Xu
+Ok, I agree to update the doc (also usage() should be updated) later.
+
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+
+
+> But I forget to update doc.
+>
+> Thus I'll wait for feedback from others whether we should get back to 1 as
+> error
+> (thus use TINFO) or update doc to mention to exit 32 (or more generally
+> non-zero
+> exit).
+> very nit: I'd use exit instead of return in docs.
+>
+> Kind regards,
+> Petr
+>
+>
+
+-- 
+Regards,
+Li Wang
+
+--000000000000047a6805e940695e
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Thu, Sep 22, 2022 at 4:44 PM Petr Vorel &lt;<a h=
+ref=3D"mailto:pvorel@suse.cz" target=3D"_blank">pvorel@suse.cz</a>&gt; wrot=
+e:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0=
+.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">&gt; On 22. 0=
+9. 22 6:16, Li Wang wrote:<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 if (skiplist) {<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (tst_fs_in_skiplist(argv[optind], =
+(const char * const*)skiplist))<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(T=
+CONF, &quot;%s is skipped&quot;, argv[optind]);<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (tst_fs_in_skiplist(fsname, (const=
+ char * const*)skiplist))<br>
+&gt; &gt;=C2=A0 =C2=A0 =C2=A0+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(T=
+CONF, &quot;%s is skipped&quot;, fsname);<br>
+<br>
+<br>
+&gt; &gt; TCONF does not means return 1, we might need explicitly &#39;retu=
+rn 1&#39; here.<br>
+<br>
+&gt; Yes, but that&#39;s a problem which already existed before my patch an=
+d affects<br>
+&gt; the other single-FS checks as well. The fix should go into a separate =
+patch<br>
+&gt; after release.<br>
+<br>
+Yes, that&#39;s not related. I changed it in eb47b4497 (&quot;tst_supported=
+_fs: Support<br>
+skip list when query single fs&quot;) as with 32 one can detect it&#39;s TC=
+ONF.<br>
+As long as 0 is success, non-zero for failure.<br></blockquote><div><br></d=
+iv><div><div class=3D"gmail_default" style=3D"font-size:small">Looks like t=
+here is no difference to use whatever 32 or 1, as long as</div><div class=
+=3D"gmail_default" style=3D"font-size:small">it&#39;s a non-zero, it will w=
+ork well in the shell.</div><div class=3D"gmail_default" style=3D"font-size=
+:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small">Ok=
+, I agree=C2=A0to update the doc (also usage() should be updated) later.</d=
+iv><br></div><div><div class=3D"gmail_default" style=3D"font-size:small">Re=
+viewed-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_blan=
+k">liwang@redhat.com</a>&gt;</div><br></div><div>=C2=A0</div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex">
+But I forget to update doc.<br>
+<br>
+Thus I&#39;ll wait for feedback from others whether we should get back to 1=
+ as error<br>
+(thus use TINFO) or update doc to mention to exit 32 (or more generally non=
+-zero<br>
+exit).<br>
+very nit: I&#39;d use exit instead of return in docs.<br>
+<br>
+Kind regards,<br>
+Petr<br>
+<br>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></div>=
+</div>
+
+--000000000000047a6805e940695e--
+
+
+--===============1123877174==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1123877174==--
+
