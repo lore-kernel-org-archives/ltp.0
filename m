@@ -4,69 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C69B5C6FA82
-	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 09:27:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AAC4C6FA82
+	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 09:45:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 40B903CAD65
-	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 11:27:13 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 64D9B3CAD55
+	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 11:45:49 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 512313C008C
- for <ltp@lists.linux.it>; Thu, 22 Sep 2022 11:27:02 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6EF353C0895
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 11:45:40 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C8A6B100095E
- for <ltp@lists.linux.it>; Thu, 22 Sep 2022 11:27:01 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9F062219E9;
- Thu, 22 Sep 2022 09:27:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663838820; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C83FE601097
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 11:45:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1663839938;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uB7eKX+Igyekb9ukqJDDjZIl8eLx4tL0SpO2xkamnK4=;
- b=MLHOB0pY7mZuGAiKixQHmZ782ipOCNWv8vdX2TwK09QMrs0mZH7FJkkQlwwmHNM+ffO5K1
- L3YStgA5XlWzRUArT6zH67qR2RsyUfCB2azJd+Rp9F+iY0oS8ixcYnFsBB3WX4vqJA/MVO
- vYC2FGDeHCUtQYz/75nBUvhfHVG48zw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663838820;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uB7eKX+Igyekb9ukqJDDjZIl8eLx4tL0SpO2xkamnK4=;
- b=u301Ez6UKpLMFjxngobIceRy0ipuzy5b6uxwUmPxuJFkvnQgCwcTfVSzI3TCusUCe7HwMh
- 5zd/UCGOBopM41Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D4201346B;
- Thu, 22 Sep 2022 09:27:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wwz7IGQqLGPYfgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 22 Sep 2022 09:27:00 +0000
-Date: Thu, 22 Sep 2022 11:27:43 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Message-ID: <Yywqj0orkajkDZt5@rei>
-References: <1663143142-2283-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1663143142-2283-3-git-send-email-xuyang2018.jy@fujitsu.com>
- <YywiZckfyJIk1/Pf@yuki>
- <TY2PR01MB442734C41B2B574CF05B8AE1FD4E9@TY2PR01MB4427.jpnprd01.prod.outlook.com>
+ bh=ZinaONWTGxgX+YAxoD7OsD4JR/0cEfXbriKer1Rr77M=;
+ b=Vuc+1S2cIqwh6qN+ll0DKb5d7DeG/EB4Nwxm+2Jxainu1Tcci/t42BkJn9i497uXdQ8Ujp
+ 2msWacP6LIFzahbL2QBSFTj3t7rBrAQm6CTuvo5BCU2bO1hBsbuzEogTg1Q07HCLv2iXVW
+ cR9Xot5eNbIvuRvSbUwFhEiByiFCUKM=
+Received: from mail-vs1-f70.google.com (mail-vs1-f70.google.com
+ [209.85.217.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-392-BaKOuGHsPVC-qO4xyeemjQ-1; Thu, 22 Sep 2022 05:45:36 -0400
+X-MC-Unique: BaKOuGHsPVC-qO4xyeemjQ-1
+Received: by mail-vs1-f70.google.com with SMTP id
+ m186-20020a6726c3000000b0039b2e2e040dso1555720vsm.9
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 02:45:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date;
+ bh=ZinaONWTGxgX+YAxoD7OsD4JR/0cEfXbriKer1Rr77M=;
+ b=kLDM35HmNZI1oV9+vSvQ5rb0EGJ1k4qT5crEl5hdE+9DURfoS0OMlmFXIdIy5B2eIs
+ qV2b4fehsSj3v6MXUHEzFVSbOFb0IV85URoro5dD1YKWN/+DutvUY6eOEHMmVMHnXcmb
+ ea9X5y5bwGMuoQ4252SKR9N/6alc5xyw46392ax++2j3CUhHM5bsJ4vuqXO94PvfBp0m
+ 2a0Xd4iuOYEncv6CxVtLXs+Zdfvj+pPxJd59eUlUTV3fem2ymkokVI9yUVEFSfey2fUg
+ mWhb6PXhBHGYzVilSS0DXIV6BMEXcB3hGPEzI/UBT/KkU8Uwgv1eZZS3n4ZELTRQN37v
+ 5DFA==
+X-Gm-Message-State: ACrzQf0RlLxyY8B9niaXk9M1pSq2r/mbGckKdTvtI/DqOIN9xAz38Ssb
+ JE69eVTX+1Zp+afal6PHU/EqnroKbRaidQdUAMxM4meVnV7GlHLKSTGshWBWWWPDbvEslYHhfUO
+ sRB+IiskZpgifojL0jJnPKE2hYA0=
+X-Received: by 2002:ab0:7789:0:b0:3be:fd5f:768f with SMTP id
+ x9-20020ab07789000000b003befd5f768fmr881417uar.109.1663839935948; 
+ Thu, 22 Sep 2022 02:45:35 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM6WPn7GItdv0zVEV14KLISlvaixvnIjP74TLL2xhSbm2MwLdOEdSlcREPfw9Yyxy8uxKEPGoON281OQgJzK1oI=
+X-Received: by 2002:ab0:7789:0:b0:3be:fd5f:768f with SMTP id
+ x9-20020ab07789000000b003befd5f768fmr881412uar.109.1663839935739; Thu, 22 Sep
+ 2022 02:45:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <TY2PR01MB442734C41B2B574CF05B8AE1FD4E9@TY2PR01MB4427.jpnprd01.prod.outlook.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <6bac7035adc2cfc8ab3800fe1d2d03223ec57ff5.1663662348.git.jstancek@redhat.com>
+ <6c5b161bc3bcf753cbda92954ca3f47cb268c68f.1663665637.git.jstancek@redhat.com>
+ <6470a099-8b3a-ca9f-f521-181a33b5a28a@suse.com>
+ <CAASaF6wFc0z+cec6y2T0ygWKY==LwkFv21CT2VG0Waqk+0SSkw@mail.gmail.com>
+ <YyosAWUf7pbVMpBt@pevik>
+In-Reply-To: <YyosAWUf7pbVMpBt@pevik>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 22 Sep 2022 11:45:19 +0200
+Message-ID: <CAASaF6x=5SDfS7Z+PauaLKXaKpaBagjgL3ogxKXBF6a-6Zs9xA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/3] syscalls/openat: Add new regression test
- when using open(O_TMPFILE) under umask
+Subject: Re: [LTP] [PATCH v2] syscalls/futex_waitv0[23]: replace
+ TST_THREAD_STATE_WAIT with repeated wake
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,31 +88,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "brauner@kernel.org" <brauner@kernel.org>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > And this one is probably missing some kernel commit tags too, since the only that that is attached is supposedly in 5.19 but the test still fails.
-> 
-> > I supposed that we should add the 426b4ca2d6a5 to the test tags here as well, right?
-> 
-> Yes, BTW,  I usually use git tag --contains command, so I know this kernel fix is belong to 6.0.
-> 
-> git tag --contains ac6800e27
-> v6.0-rc1
-> v6.0-rc2
+On Tue, Sep 20, 2022 at 11:09 PM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Jan,
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Now I'm confused, if I do git describe ac6800e27 it says that it's a
-second commit on the top of 5.19-rc7. So shouldn't the the git tag
---contains report 5.19-rc8 and newer? What do I miss?
+Thanks, any concerns pushing this before release? It's race, but not
+very frequent one, so it could wait.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>
+> Kind regards,
+> Petr
+>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
