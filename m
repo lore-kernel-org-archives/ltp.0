@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AA45ECAAD8
-	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 20:26:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 907C9ECAAD8
+	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 21:09:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8CDE33CAD7B
-	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 22:26:31 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id DE9B43CAD86
+	for <ltp@archiver.kernel.org>; Thu, 22 Sep 2022 23:09:51 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9FF513CAD58
- for <ltp@lists.linux.it>; Thu, 22 Sep 2022 22:26:22 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 20C2A3C93EF
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 23:09:41 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9BB932002DD
- for <ltp@lists.linux.it>; Thu, 22 Sep 2022 22:26:20 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6DDB7200C88
+ for <ltp@lists.linux.it>; Thu, 22 Sep 2022 23:09:41 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 055DF219D2;
- Thu, 22 Sep 2022 20:26:20 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A5D331F86A;
+ Thu, 22 Sep 2022 21:09:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663878380;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1663880980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2LjY57pmBv7fvv2RgdmYBqs6CmDIRz3iSOfYpBaz7KA=;
- b=PZv/MhNIwnDR1pGTrumLyjLqDKL6OWuOfV6+ezsoD65kFXnKSig7R+SPs0Vf6aYZFWqTdh
- dRaKT4xD/1TWoD7AoMp1plaG4fWD8c/HfVR/l4d27+w8f5boOjl3I5YXFuK5Mnir6G5zXr
- BtcGSFYnRYM50eqpijQcTotJSw1u630=
+ bh=SJRMDrcz5ZXJjyzoi0tLVgHtc1uZ5VANQAhZInIGe7M=;
+ b=JwtwLCff5ADV2tj9mDccWAhlZxK2qe52sQHp2RBDu98p0zj43XrfMs+pmFuBB81q49yLzj
+ HywqkYL/H+waMszKOwU+fUIWSqtfvlP5ptRgyxlW3jZsb7EKlhc0g/s2MK55B0E7PN6ZJ9
+ CQuWxSeNvDV4UOfLfDz5VgT6Wj8KqCo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663878380;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1663880980;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2LjY57pmBv7fvv2RgdmYBqs6CmDIRz3iSOfYpBaz7KA=;
- b=1Azih8M69YP4CI5232hYkTuLCwglX5RXbd3wHArVj1tRQNrlSfvj3xoYqGa7ZncxuD4oTL
- 2MECQl3qPwMN1yBg==
+ bh=SJRMDrcz5ZXJjyzoi0tLVgHtc1uZ5VANQAhZInIGe7M=;
+ b=L/hGVuvZbrZV3t+n6Q55GqMIYxGp1DrYXhvjtE09ZCsS5u1/BF0UpZSPAkxcOE483+dVYY
+ K6ySxF/5q5Hx7FAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F66D13AA5;
- Thu, 22 Sep 2022 20:26:19 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EF241346B;
+ Thu, 22 Sep 2022 21:09:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id hs6SHOvELGPdGgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 22 Sep 2022 20:26:19 +0000
-Date: Thu, 22 Sep 2022 22:26:14 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id gIfAGRTPLGMYKQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 22 Sep 2022 21:09:40 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <YyzE5veC2ifakpT2@pevik>
-References: <20220921155006.13360-1-mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu, 22 Sep 2022 23:09:31 +0200
+Message-Id: <20220922210931.23982-4-pvorel@suse.cz>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20220922210931.23982-1-pvorel@suse.cz>
+References: <20220922210931.23982-1-pvorel@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220921155006.13360-1-mdoucha@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] tst_supported_fs: Implement checking paths
- against skiplist
+Subject: [LTP] [PATCH 3/3 v2] tst_test.sh: Fix filesystem support detection
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,34 +77,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Filesystem detection of locally used filesystem was broken on tests
+which did not use TST_ALL_FILESYSTEMS as it 1) expected used filesystem
+is $TST_FS_TYPE 2) this variable was not yet set.
 
-> +++ b/testcases/lib/tst_supported_fs.c
-...
->  	/* fs_type */
->  	if (optind < argc) {
-> -		if (argv[optind][0] == '\0')
-> +		if (fsname) {
-> +			fprintf(stderr, "Can't specify fs_type and -d together\n");
-> +			usage();
-> +			return 2;
-> +
-nit: remove this extra line before merging.
-> +		}
-> +
-> +		fsname = argv[optind];
-> +	}
-...
+Also this check makes sense only if test defines TST_SKIP_FILESYSTEMS
+(to align with the condition in do_test_setup() in C API).
 
-Kind regards,
-Petr
+Move filesystem check after (optional) cd "$TST_TMPDIR" (TMPDIR can have
+different filesystem).
+
+Remove tst_skip_filesystems_skip.sh test, as filesystem on tmpfs would
+have to be detected before.
+
+Fixes: 1f6bd6e66 ("tst_test.sh: Add $TST_ALL_FILESYSTEMS")
+
+Reported-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ .../shell/tst_skip_filesystems_skip.sh          | 17 -----------------
+ testcases/lib/tst_test.sh                       | 14 ++++++++------
+ 2 files changed, 8 insertions(+), 23 deletions(-)
+ delete mode 100755 lib/newlib_tests/shell/tst_skip_filesystems_skip.sh
+
+diff --git a/lib/newlib_tests/shell/tst_skip_filesystems_skip.sh b/lib/newlib_tests/shell/tst_skip_filesystems_skip.sh
+deleted file mode 100755
+index 6748d021d..000000000
+--- a/lib/newlib_tests/shell/tst_skip_filesystems_skip.sh
++++ /dev/null
+@@ -1,17 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0-or-later
+-# Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
+-
+-TST_MOUNT_DEVICE=1
+-TST_NEEDS_ROOT=1
+-TST_FS_TYPE=ext4
+-TST_TESTFUNC=test
+-TST_SKIP_FILESYSTEMS="ext4"
+-
+-test()
+-{
+-	tst_res TFAIL "test should be skipped with TCONF"
+-}
+-
+-. tst_test.sh
+-tst_run
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index 33aadea91..01c01b79b 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -702,12 +702,6 @@ tst_run()
+ 	[ "$TST_FORMAT_DEVICE" = 1 -o "$TST_ALL_FILESYSTEMS" = 1 ] && TST_NEEDS_DEVICE=1
+ 	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_NEEDS_TMPDIR=1
+ 
+-	if [ "$TST_ALL_FILESYSTEMS" != 1 ]; then
+-		if ! tst_supported_fs -s "$TST_SKIP_FILESYSTEMS" $TST_FS_TYPE > /dev/null; then
+-			tst_brk TCONF "$TST_FS_TYPE is skipped by the test"
+-		fi
+-	fi
+-
+ 	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
+ 		TST_DEVICE=$(tst_device acquire)
+ 
+@@ -735,6 +729,14 @@ tst_run()
+ 		cd "$TST_TMPDIR"
+ 	fi
+ 
++	if [ "$TST_ALL_FILESYSTEMS" != 1 -a "$TST_SKIP_FILESYSTEMS" ]; then
++		if ! tst_supported_fs -s "$TST_SKIP_FILESYSTEMS" -d . > /dev/null; then
++			tst_brk TCONF "filesystem is not supported by the test"
++		fi
++
++		tst_res TINFO "filesystem is supported by the test"
++	fi
++
+ 	[ -n "$TST_NEEDS_CHECKPOINTS" ] && _tst_init_checkpoints
+ 
+ 	TST_MNTPOINT="${TST_MNTPOINT:-$PWD/mntpoint}"
+-- 
+2.37.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
