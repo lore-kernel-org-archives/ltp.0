@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E86DC6FA82
-	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 15:27:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 526CEC6FA82
+	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 16:31:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2EFFF3CADBB
-	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 17:27:47 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 93C5F3CADCC
+	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 18:31:40 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A4EFD3CA756
- for <ltp@lists.linux.it>; Fri, 23 Sep 2022 17:27:37 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 1A04F3CAA78
+ for <ltp@lists.linux.it>; Fri, 23 Sep 2022 18:31:30 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2086A602A1D
- for <ltp@lists.linux.it>; Fri, 23 Sep 2022 17:27:36 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4534B10013BA
+ for <ltp@lists.linux.it>; Fri, 23 Sep 2022 18:31:29 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4D7BF1F8E2;
- Fri, 23 Sep 2022 15:27:36 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6685F1F88D;
+ Fri, 23 Sep 2022 16:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663946856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1663950688;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5c4DhEjbS4XqpvXGW0oAqYMOmfVn1DiZVqpmViPXck8=;
- b=iB038t2zxKMLUMxQG7hwz6hggkEwd7wv8EsakqMYAJC535zCPoqqpsOj5yRwdV10OP1jsC
- YZjy8FEaOOzG4yA3Lj/iiYd5s9+YznmL+fUbmaRKro66E3zeZVep7xhsI/6/PfjsvEnISa
- xuwiajqzMwezNd2TsldwCJO429IiPTQ=
+ bh=RWJ6tMlapgC+LI4PcNkjBVj0JAHRbKOk5NUdcizLo9I=;
+ b=nc1MR62Q37jO2Hx3JHhYMAkTTlsYBLDjLfpYG5EwhRg7T07lhCbdVOLH2t5oIHMMEbHB0X
+ CoSTt46/bf6ikrmII+Kko5viumB8BwYYik035VDVyKowN0WnYlWXauKsvNhEYCjpj0jmay
+ K551PS8F5UJqBx6yQU5tvMKTl7YwyIM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663946856;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1663950688;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=5c4DhEjbS4XqpvXGW0oAqYMOmfVn1DiZVqpmViPXck8=;
- b=BgZs+JhDH+8s5QIAFmnAw+X9YNAwEuleXb09SVkVs4wdGfbzg4hUNAXCCFYo7JZCtwhttK
- AddkjjBQb6+ciIBg==
+ bh=RWJ6tMlapgC+LI4PcNkjBVj0JAHRbKOk5NUdcizLo9I=;
+ b=AFxPK4prqgKP8b90Uf/BeLGNFnCud2EIqaR0YsOPoBUd619+I6P/4FtIB0MHhRQUvJqDMF
+ 0xz3SFD5bCx8+LDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3CA3B13AA5;
- Fri, 23 Sep 2022 15:27:36 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D02613A00;
+ Fri, 23 Sep 2022 16:31:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 7Lh/DWjQLWNXPAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 23 Sep 2022 15:27:36 +0000
-Date: Fri, 23 Sep 2022 17:29:18 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Yy3QzoD5kRFdVzVR@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id MxRGCWDfLWOxUwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 23 Sep 2022 16:31:28 +0000
+Date: Fri, 23 Sep 2022 18:31:26 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <Yy3fXtq8NZEs9tl/@pevik>
 References: <20220922210931.23982-1-pvorel@suse.cz>
- <20220922210931.23982-4-pvorel@suse.cz>
+ <20220922210931.23982-2-pvorel@suse.cz> <Yy3PVQCjVuVJjqwt@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220922210931.23982-4-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <Yy3PVQCjVuVJjqwt@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3 v2] tst_test.sh: Fix filesystem support
- detection
+Subject: Re: [LTP] [PATCH 1/3 v2] tst_supported_fs: Unify messaging
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,27 +77,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Fixes: 1f6bd6e66 ("tst_test.sh: Add $TST_ALL_FILESYSTEMS")
->
-> Reported-by: Martin Doucha <mdoucha@suse.cz>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> Hi!
+> > +#define err(...) ({ \
+> > +	fprintf(stderr, __VA_ARGS__); \
+> > +	fprintf(stderr, "\n"); \
+> > +	usage(); \
+> > +	return 2; })
+>            ^
+> This should rather be exit(2);
 
-Looks like this is the only real fix in the series, right?
+Thanks! I thought that just after sending that.
 
-The actual change looks good, but I do wonder what exactly has been
-broken, git grpe TST_SKIP_FILESYSTEMS does not show any real tests
-that would use that variable.
+> It's only matter of time until someone uses that in a function outside
+> of main.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> > +#define fail(...) ({ \
+> > +	fprintf(stderr, __VA_ARGS__); \
+> > +	fprintf(stderr, "\n"); \
+> > +	return 1; })
+
+> Here as well.
+
+> > +#define info(...) ({ \
+> > +	fprintf(stderr, __VA_ARGS__); \
+> > +	fprintf(stderr, "\n"); \
+> > +	return 0; })
+
+> The naming here is a bit of strange, I wouldn't expect that function
+> called info() would exit the process.
+
+> Maybe these three should include exit in the function name such as
+> info_exit(), err_exit() and fail_exit().
++1
+
+I'll fix it in another version or fix it before merge (if all changes are
+trivial).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
