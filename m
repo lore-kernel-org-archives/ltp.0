@@ -4,68 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14908C6FA82
-	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 10:00:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59D52ECAAD8
+	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 10:28:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 352533CAD73
-	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 12:00:33 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6DB203CAD69
+	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 12:28:11 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D3E783CAD4C
- for <ltp@lists.linux.it>; Fri, 23 Sep 2022 12:00:22 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 526FA3CAD4C
+ for <ltp@lists.linux.it>; Fri, 23 Sep 2022 12:28:02 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EE31C6011E1
- for <ltp@lists.linux.it>; Fri, 23 Sep 2022 12:00:21 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3A459100136B
+ for <ltp@lists.linux.it>; Fri, 23 Sep 2022 12:28:00 +0200 (CEST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D616221A95;
- Fri, 23 Sep 2022 10:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663927218;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=N1RlR/JAWdZ+k53BIayAm8s75PXeOfyKhOGxrszhfBc=;
- b=np5PEnPtq8+n+SjDjFw6B4Rogsm0Rs5B+pEh9AWV3zk9YOku13ueyXA19WyWDUOAtKTzlO
- HaShxI7Do3kQfWZSypg34c+TuFNfiZk4NAa6O7CIWux2YiqbkahiTx5zfqroXqm9tnkVv8
- i7A8wJTB1NbvznhDsPuTuBL1yOhcawI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663927218;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=N1RlR/JAWdZ+k53BIayAm8s75PXeOfyKhOGxrszhfBc=;
- b=CEJN5sZalzZmKW+G550VlUqgQL+R3WZwUrIrxtr+cPtvdBm14zqLa28x0fViWD5ynMj05S
- NalQ3KuP7Tu5m9CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B029713A00;
- Fri, 23 Sep 2022 10:00:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id fPFrKbKDLWMgMwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 23 Sep 2022 10:00:18 +0000
-Date: Fri, 23 Sep 2022 12:00:16 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <Yy2DsPHqapfu649o@pevik>
-References: <20220921155006.13360-1-mdoucha@suse.cz>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 908C861177;
+ Fri, 23 Sep 2022 10:27:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D651C433D7;
+ Fri, 23 Sep 2022 10:27:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1663928878;
+ bh=iHwiSOEbv/xrD1FIxY4311byEWh77P3rXLFSGcj4gAI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=oAJq+AwBBW4pb6ZC0SwlcVepPhqve9YTVHSSGDsdw1iLnNbhejMMf02ZKUp3y36s8
+ dZji0JWcDk0vf+NBbdWG28b+cWZa441LxVpNN3ZYcMTWhh++nnpR0un/b6FQMswwsx
+ JMvKAKt259zTJKIpVZVyxqTOi8s5LzjeSTXI5rUBzG5O9Mtn6dNdqff5Vsfmmq0Vho
+ OQS1MYVe/vN4lZF57cASx8xIC+zKcliYAhpE+i7SEFMuqUjygX69WBftcZH+6rP7Ov
+ jruBgieuwvs8hfAy7ApC0NbX/qESbrqYvHUB2EdPtYO+DOAXuSsFZolDfpvDQH+zhv
+ nh6f/cJahpFRA==
+Date: Fri, 23 Sep 2022 12:27:53 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20220923102753.4vu6id33obfi34qa@wittgenstein>
+References: <1663143142-2283-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1663143142-2283-3-git-send-email-xuyang2018.jy@fujitsu.com>
+ <YywiZckfyJIk1/Pf@yuki>
+ <TY2PR01MB442734C41B2B574CF05B8AE1FD4E9@TY2PR01MB4427.jpnprd01.prod.outlook.com>
+ <Yywqj0orkajkDZt5@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220921155006.13360-1-mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <Yywqj0orkajkDZt5@rei>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] tst_supported_fs: Implement checking paths
- against skiplist
+Subject: Re: [LTP] [PATCH v4 3/3] syscalls/openat: Add new regression test
+ when using open(O_TMPFILE) under umask
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,35 +65,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+On Thu, Sep 22, 2022 at 11:27:43AM +0200, Cyril Hrubis wrote:
+> Hi!
+> > > And this one is probably missing some kernel commit tags too, since the only that that is attached is supposedly in 5.19 but the test still fails.
+> > 
+> > > I supposed that we should add the 426b4ca2d6a5 to the test tags here as well, right?
+> > 
+> > Yes, BTW,  I usually use git tag --contains command, so I know this kernel fix is belong to 6.0.
+> > 
+> > git tag --contains ac6800e27
+> > v6.0-rc1
+> > v6.0-rc2
+> 
+> Now I'm confused, if I do git describe ac6800e27 it says that it's a
+> second commit on the top of 5.19-rc7. So shouldn't the the git tag
+> --contains report 5.19-rc8 and newer? What do I miss?
 
-> Implement tst_supported_fs feature suggested by pvorel in his patch:
-> tst_test.sh: Fix filesystem support detection
-FYI there is still be need to detect filesystem in particular directory in
-ima_setup.sh [1] to avoid df dependency:
-
-if [ "$(df -T $TMPDIR | tail -1 | awk '{print $2}')" != "tmpfs" -a -n "$TST_NEEDS_DEVICE" ]; then
-	unset TST_NEEDS_DEVICE
-fi
-
-But I guess I'll just reuse the exit code of: ./tst_supported_fs -d $TMPDIR -s "tmpfs"
-
-Kind regards,
-Petr
-
-[1] https://github.com/linux-test-project/ltp/blob/74e4a5c6fb42a1231c149c57efbca345aa93777d/testcases/kernel/security/integrity/ima/tests/ima_setup.sh#L355
-
-> Although the tst_fs_type_name() functions could use some improvements,
-> e.g. ext4 must be specified in skiplist as "ext2/ext3/ext4" to get properly
-> skipped and vfat is missing from the list of known filesystems.
-
+So, ac6800e279a2 ("fs: Add missing umask strip in vfs_tmpfile") has been
+backported to kernels since before the dawn of time. But the the all the
+pieces that move setgid handling out of individual filesystems and into
+the vfs proper are only >= v6.0-rc1.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
