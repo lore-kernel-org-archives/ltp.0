@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22EA6C6FA91
-	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 15:21:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E86DC6FA82
+	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 15:27:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 11AAC3CAD92
-	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 17:21:15 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 2EFFF3CADBB
+	for <ltp@archiver.kernel.org>; Fri, 23 Sep 2022 17:27:47 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 043E93CAAA6
- for <ltp@lists.linux.it>; Fri, 23 Sep 2022 17:21:05 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id A4EFD3CA756
+ for <ltp@lists.linux.it>; Fri, 23 Sep 2022 17:27:37 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CF8A86024B1
- for <ltp@lists.linux.it>; Fri, 23 Sep 2022 17:21:04 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2086A602A1D
+ for <ltp@lists.linux.it>; Fri, 23 Sep 2022 17:27:36 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 0CB2C1F895;
- Fri, 23 Sep 2022 15:21:04 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4D7BF1F8E2;
+ Fri, 23 Sep 2022 15:27:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1663946464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1663946856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Bn2jIsOtFsaU3NVg73kTM7vcgbNmy8VWPU8mGlLCaBw=;
- b=aXEQ+eLLYdTWE8WK8xpAHJTU2KtuRY1PWBkW87QHjLlxA4VfD81JnsZDDsrsaA42GPYUhB
- OrkemufUQ/COY9ZiTXJ3eKEm+x2BLM6A3qk6308dxizrAlqk4Y/eI0W1C9S6xVn1y4hr+o
- HW4zpjzlFGCeY5N8Oroya2oKNXTR9e4=
+ bh=5c4DhEjbS4XqpvXGW0oAqYMOmfVn1DiZVqpmViPXck8=;
+ b=iB038t2zxKMLUMxQG7hwz6hggkEwd7wv8EsakqMYAJC535zCPoqqpsOj5yRwdV10OP1jsC
+ YZjy8FEaOOzG4yA3Lj/iiYd5s9+YznmL+fUbmaRKro66E3zeZVep7xhsI/6/PfjsvEnISa
+ xuwiajqzMwezNd2TsldwCJO429IiPTQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1663946464;
+ s=susede2_ed25519; t=1663946856;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Bn2jIsOtFsaU3NVg73kTM7vcgbNmy8VWPU8mGlLCaBw=;
- b=Hr68TOvpS7IQMh5dnsDJqOVfZxtCtFFRUOHB2mcuHHCGmFDyE8aNQaEpr40A/Zk+mWfJD7
- R8PwNRwxfAOITICg==
+ bh=5c4DhEjbS4XqpvXGW0oAqYMOmfVn1DiZVqpmViPXck8=;
+ b=BgZs+JhDH+8s5QIAFmnAw+X9YNAwEuleXb09SVkVs4wdGfbzg4hUNAXCCFYo7JZCtwhttK
+ AddkjjBQb6+ciIBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EBD3813AA5;
- Fri, 23 Sep 2022 15:21:03 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3CA3B13AA5;
+ Fri, 23 Sep 2022 15:27:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id EDueON/OLWMIOgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 23 Sep 2022 15:21:03 +0000
-Date: Fri, 23 Sep 2022 17:23:01 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 7Lh/DWjQLWNXPAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 23 Sep 2022 15:27:36 +0000
+Date: Fri, 23 Sep 2022 17:29:18 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Yy3PVQCjVuVJjqwt@yuki>
+Message-ID: <Yy3QzoD5kRFdVzVR@yuki>
 References: <20220922210931.23982-1-pvorel@suse.cz>
- <20220922210931.23982-2-pvorel@suse.cz>
+ <20220922210931.23982-4-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220922210931.23982-2-pvorel@suse.cz>
+In-Reply-To: <20220922210931.23982-4-pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3 v2] tst_supported_fs: Unify messaging
+Subject: Re: [LTP] [PATCH 3/3 v2] tst_test.sh: Fix filesystem support
+ detection
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,123 +83,16 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +#define err(...) ({ \
-> +	fprintf(stderr, __VA_ARGS__); \
-> +	fprintf(stderr, "\n"); \
-> +	usage(); \
-> +	return 2; })
-           ^
-This should rather be exit(2);
+> Fixes: 1f6bd6e66 ("tst_test.sh: Add $TST_ALL_FILESYSTEMS")
+>
+> Reported-by: Martin Doucha <mdoucha@suse.cz>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-It's only matter of time until someone uses that in a function outside
-of main.
+Looks like this is the only real fix in the series, right?
 
-> +#define fail(...) ({ \
-> +	fprintf(stderr, __VA_ARGS__); \
-> +	fprintf(stderr, "\n"); \
-> +	return 1; })
-
-Here as well.
-
-> +#define info(...) ({ \
-> +	fprintf(stderr, __VA_ARGS__); \
-> +	fprintf(stderr, "\n"); \
-> +	return 0; })
-
-The naming here is a bit of strange, I wouldn't expect that function
-called info() would exit the process.
-
-Maybe these three should include exit in the function name such as
-info_exit(), err_exit() and fail_exit().
-
->  static void usage(void)
->  {
->  	fprintf(stderr, "Usage:\n");
-> @@ -90,67 +106,50 @@ int main(int argc, char *argv[])
->  			break;
->  
->  		case 'd':
-> -			if (fsname) {
-> -				fprintf(stderr,
-> -					"Can't specify multiple paths\n");
-> -				usage();
-> -				return 2;
-> -			}
-> +			if (fsname)
-> +				err("Can't specify multiple paths");
->  
->  			fsname = tst_fs_type_name(tst_fs_type(optarg));
->  			break;
->  		}
->  	}
->  
-> -	if (fsname && !skiplist) {
-> -		fprintf(stderr, "Parameter -d requires skiplist\n");
-> -		usage();
-> -		return 2;
-> -	}
-> +	if (fsname && !skiplist)
-> +		err("Parameter -d requires skiplist");
->  
-> -	if (argc - optind > 1) {
-> -		fprintf(stderr, "Can't specify multiple fs_type\n");
-> -		usage();
-> -		return 2;
-> -	}
-> +	if (argc - optind > 1)
-> +		err("Can't specify multiple fs_type");
->  
->  	/* fs_type */
->  	if (optind < argc) {
-> -		if (fsname) {
-> -			fprintf(stderr, "Can't specify fs_type and -d together\n");
-> -			usage();
-> -			return 2;
-> -		}
-> +		if (fsname)
-> +			err("Can't specify fs_type and -d together");
->  
->  		fsname = argv[optind];
->  	}
->  
->  	if (fsname) {
->  		if (fsname[0] == '\0')
-> -			tst_brk(TCONF, "fs_type is empty");
-> +			err("fs_type is empty");
->  
->  		if (skiplist) {
->  			if (tst_fs_in_skiplist(fsname, (const char * const*)skiplist))
-> -				tst_brk(TCONF, "%s is skipped", fsname);
-> -			else
-> -				tst_res(TINFO, "%s is not skipped", fsname);
-> +				fail("%s is skipped", fsname);
->  
-> -			return 0;
-> +			info("%s is not skipped", fsname);
->  		}
->  
->  		if (tst_fs_is_supported(fsname) == TST_FS_UNSUPPORTED)
-> -			tst_brk(TCONF, "%s is not supported", fsname);
-> -		else
-> -			tst_res(TINFO, "%s is supported", fsname);
-> +			fail("%s is not supported", fsname);
->  
-> -		return 0;
-> +		info("%s is supported", fsname);
->  	}
->  
->  	/* all filesystems */
->  	filesystems = tst_get_supported_fs_types((const char * const*)skiplist);
->  
->  	if (!filesystems[0])
-> -		tst_brk(TCONF, "There are no supported filesystems or all skipped");
-> +		fail("There are no supported filesystems or all skipped");
->  
->  	for (i = 0; filesystems[i]; i++)
->  		printf("%s\n", filesystems[i]);
-> -- 
-> 2.37.3
-> 
+The actual change looks good, but I do wonder what exactly has been
+broken, git grpe TST_SKIP_FILESYSTEMS does not show any real tests
+that would use that variable.
 
 -- 
 Cyril Hrubis
