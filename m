@@ -4,69 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B5A8C54EE9
-	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 13:10:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82B57C07E9D
+	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 16:14:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A75233C920E
-	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 15:10:24 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id DB8AE3C899B
+	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 18:14:31 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A81D33C1B40
- for <ltp@lists.linux.it>; Tue, 27 Sep 2022 15:10:13 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 31ED73C0FA6
+ for <ltp@lists.linux.it>; Tue, 27 Sep 2022 18:14:20 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CE33D200B37
- for <ltp@lists.linux.it>; Tue, 27 Sep 2022 15:10:08 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B53221FCE6;
- Tue, 27 Sep 2022 13:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664284207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DR6pcs6IO3E83ZAvovVgeU+wG5HHupA3pMVfZm/ILB4=;
- b=fQA4w6jTUVF4Gx3Lrzk3wfNEQdCyWo1UxJBj7UpedUlOlka8RF1dHIa4vbdrP4VbhNb6Jh
- 6MKkkmKJEvm2zo5AKuPIcNiSzv3+ueVZnZ0tHzHyUktOQIXNe4QwyjLzHHmvTS0feJT1LX
- x5bedasKh6IOygmXGgqnwmCZvRIIxf4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664284207;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DR6pcs6IO3E83ZAvovVgeU+wG5HHupA3pMVfZm/ILB4=;
- b=7VaVyiMKxcZF/f6X4ZqtAQ3Pk/q7uGh+e5l1+oD0sckKNKAnJlIqVXo8TGzermf8ZEnLYe
- ypeQz2G5xy5foPDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8ED16139BE;
- Tue, 27 Sep 2022 13:10:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 7ZniFS72MmMDHQAAMHmgww
- (envelope-from <mpdesouza@suse.de>); Tue, 27 Sep 2022 13:10:06 +0000
-Date: Tue, 27 Sep 2022 10:10:03 -0300
-From: Marcos Paulo de Souza <mpdesouza@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <20220927131003.zhhct3c37p35tlax@daedalus>
-References: <20220926165949.23407-1-mpdesouza@suse.com>
- <YzH86TOjFZj3cUwq@pevik> <20220926221732.xj7mcxswq4dixzcd@daedalus>
- <YzKhupSYwltx6P3N@pevik>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7F0E76008C2
+ for <ltp@lists.linux.it>; Tue, 27 Sep 2022 18:14:18 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 70E151F8CF;
+ Tue, 27 Sep 2022 16:14:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1664295258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=gMY2NJofqNdVf0h4d63nnTyBhkZXH/BPE9aSeGcu6vQ=;
+ b=WI9oWf6lhOaUaWQYmHxwRtyOL/Gxi1jZxcKsmr2p69sT3eXGbAknGmyby8GfZcILbFkpUM
+ HZpEyWWoHu/uKhiAQ3pn5y+hC2kU+DFOAxTTj6D4vA8YsD4H4sawV6DEA8MBq1bWyt/h8j
+ 1HMpmpoEZ3NVG5zICrF+KjqLH3b6X7k=
+Received: from g78.suse.de (unknown [10.163.24.90])
+ by relay2.suse.de (Postfix) with ESMTP id C37202C16B;
+ Tue, 27 Sep 2022 16:14:17 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Tue, 27 Sep 2022 17:14:02 +0100
+Message-Id: <20220927161408.23743-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YzKhupSYwltx6P3N@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] configure.ac: Fix redefinition of mount_attr by
- checking sys/mount.h
+Subject: [LTP] [PATCH 0/6] Locally distributed work API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,149 +54,75 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Sep 27, 2022 at 09:09:46AM +0200, Petr Vorel wrote:
-> Hi Marcos,
-> 
-> ...
-> > > > +++ b/configure.ac
-> > > > @@ -71,6 +71,7 @@ AC_CHECK_HEADERS_ONCE([ \
-> > > >      sys/epoll.h \
-> > > >      sys/fanotify.h \
-> > > >      sys/inotify.h \
-> > > > +    sys/mount.h \
-> 
-> > > Well, we don't add check for this, as sys/mount.h has been here since "ever", so
-> > > it'd just make configure little bit slower for no gain.
-> 
-> > > But you'd have to use somewhere compiler macro #ifdef HAVE_SYS_MOUNT_H, as this
-> > > macro is generated by configure script. Adding header to the list does nothing.
-> 
-> > It wasn't needed in my case, let me explain better below.
-> Interesting, maybe I'm missing something.
-> 
-> > > You obviously wanted to fix something, could you post the problem you're trying
-> > > to solve + steps you did to ML?
-> 
-> > I was seeing redefinition problems:
-> 
-> > In file included from fsconfig01.c:9:
-> > ../../../../include/lapi/fsmount.h:55:8: error: redefinition of 'struct mount_attr'
-> >    55 | struct mount_attr {
-> >       |        ^~~~~~~~~~
-> > In file included from /usr/include/sys/mount.h:32,
-> >                  from ../../../../include/lapi/fsmount.h:14:
-> > /usr/include/linux/mount.h:129:8: note: originally defined here
-> >   129 | struct mount_attr {
-> >       |        ^~~~~~~~~~
-> > ../../../../include/lapi/fsmount.h:110:19: error: conflicting types for 'mount_setattr'; have 'int(int,  const char *, unsigned int,  struct mount_attr *, size_t)' {aka 'int(int,  const char *, unsigned int,  struct mount_attr *, long unsigned int)'}
-> >   110 | static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned int flags,
-> >       |                   ^~~~~~~~~~~~~
-> > In file included from fsconfig02.c:8:
-> > ../../../../include/lapi/fsmount.h:55:8: error: redefinition of 'struct mount_attr'
-> >    55 | struct mount_attr {
-> >       |        ^~~~~~~~~~
-> > /usr/include/sys/mount.h:316:12: note: previous declaration of 'mount_setattr' with type 'int(int,  const char *, unsigned int,  struct mount_attr *, size_t)' {aka 'int(int,  const char *, unsigned int,  struct mount_attr *, long unsigned int)'}
-> >   316 | extern int mount_setattr (int __dfd, const char *__path, unsigned int __flags,
-> >       |            ^~~~~~~~~~~~~
-> > In file included from /usr/include/sys/mount.h:32,
-> >                  from ../../../../include/lapi/fsmount.h:14:
-> > /usr/include/linux/mount.h:129:8: note: originally defined here
-> >   129 | struct mount_attr {
-> >       |        ^~~~~~~~~~
-> > ../../../../include/lapi/fsmount.h:110:19: error: conflicting types for 'mount_setattr'; have 'int(int,  const char *, unsigned int,  struct mount_attr *, size_t)' {aka 'int(int,  const char *, unsigned int,  struct mount_attr *, long unsigned int)'}
-> >   110 | static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned int flags,
-> >       |                   ^~~~~~~~~~~~~
-> > /usr/include/sys/mount.h:316:12: note: previous declaration of 'mount_setattr' with type 'int(int,  const char *, unsigned int,  struct mount_attr *, size_t)' {aka 'int(int,  const char *, unsigned int,  struct mount_attr *, long unsigned int)'}
-> >   316 | extern int mount_setattr (int __dfd, const char *__path, unsigned int __flags,
-> >       |            ^~~~~~~~~~~~~
-> > make[4]: *** [../../../../include/mk/rules.mk:45: fsconfig01] Error 1
-> > make[4]: *** Waiting for unfinished jobs....
-> > make[4]: *** [../../../../include/mk/rules.mk:45: fsconfig02] Error 1
-> > make[3]: *** [../../../include/mk/generic_trunk_target.inc:108: all] Error 2
-> > make[2]: *** [../../include/mk/generic_trunk_target.inc:108: all] Error 2
-> > make[1]: *** [../include/mk/generic_trunk_target.inc:108: all] Error 2
-> > make[1]: Leaving directory '/home/mpdesouza/git/ltp/testcases'
-> > make: *** [Makefile:106: testcases-all] Error 2
-> 
-> > In my TW system I found that the struct mount_attr was being defined in
-> > sys/mount.h. Checking include/lapi/fsmount.h I found some ifdefs:
-> 
-> > ...
-> > #ifndef HAVE_STRUCT_MOUNT_ATTR
-> > /*
-> >  * mount_setattr()
-> >  */
-> > struct mount_attr {
-> >         uint64_t attr_set;
-> >         uint64_t attr_clr;
-> >         uint64_t propagation;
-> >         uint64_t userns_fd;
-> > };
-> > #endif
-> > ...
-> 
-> > #ifndef HAVE_MOUNT_SETATTR
-> > static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned int flags,
-> >                                 struct mount_attr *attr, size_t size)
-> > {
-> >         return tst_syscall(__NR_mount_setattr, dirfd, from_pathname, flags,
-> >                            attr, size);
-> > }
-> > #endif /* HAVE_MOUNT_SETATTR */
-> 
-> > So, only adding the sys/mount.h entry to the headers list is enough to make
-> > autoconf to find that sys/mount.h defines the same struct and function, fixing
-> > the issue.
-> Hm, I'm likely missing something :).
-> 
-> $ rpm -q glibc
-> glibc-2.36-5.1.x86_64
-> 
-> $ grep -B2 '^struct mount_attr' /usr/include/sys/mount.h
-> #ifndef MOUNT_ATTR_SIZE_VER0
-> /* For mount_setattr.  */
-> struct mount_attr
-> 
-> => I'm not sure who/where is supposed to define MOUNT_ATTR_SIZE_VER0.
-> Is it in your config?
-> Do you have different config than mine?
-> 
-> grep MOUNT include/config.h
-> #define HAVE_FSMOUNT 1
-> #define HAVE_LINUX_MOUNT_H 1
-> #define HAVE_MOUNT_SETATTR 1
-> #define HAVE_MOVE_MOUNT 1
-> #define HAVE_STRUCT_MOUNT_ATTR 1
-> (i.e. HAVE_STRUCT_MOUNT_ATTR found with code in current master)
-> 
-> I also tested fedora rawhide (glibc 2.36.9000), which we don't have in our CI:
-> https://github.com/pevik/ltp/actions/runs/3133529596
-> Works well.
-> 
-> > > BTW I have no problem to build locally on the latest Tumbleweed. Also LTP
-> > > package build for Tumbleweed is also fine:
-> > > https://build.opensuse.org/package/binaries/benchmark:ltp:devel/ltp/openSUSE_Factory
-> > > https://build.opensuse.org/package/binaries/benchmark:ltp:devel/ltp/openSUSE_Tumbleweed
-> 
-> > Interesting... so is there anything wrong with my setup? Am I missing something?
-> 
-> Hard to tell. Could you share your commands?
-> I suppose it's the usual: use gcc and in the root directory:
-> make autotools && ./configure && make -j`nproc`
+Hello,
 
-My bad. I had this repository for some months already, I might have forgotten to
-run "make autotools"... it now build as expected. Thanks and sorry about the
-noise.
+Sorry for such a large complicated patch-set. This is essentially an
+RFC, but I haven't marked it as such because some parts of it may be
+ready to merge.
 
-> 
-> Kind regards,
-> Petr
+This is motivated by patterns I noticed both in the read_all test and
+work we have been doing on the LTP parallel test executor
+(LTX). Currently LTX exists outside the main LTP tree and doesn't use
+the LTP library. However it would be nice to share code between some
+types of test and LTX.
+
+We have various ways of communicating and synchronising between
+processes. This adds another which is particularly suited to
+distributing work across multiple processes. Including work that
+completes unevenly and is likely to fail.
+
+Currently these are local processes, but LTX runs as a remote process
+on a SUT. It takes commands from and returns results to a test
+schedular on another machine. The interface should be relatively easy
+to extend to support this scenario.
+
+Still TODO:
+* Documenation (other than commit messages)
+* Integrate LTX into LTP API
+* Implement variations on the read_all test (e.g. splice_all)
+
+Richard Palethorpe (6):
+  api/epoll: Add safe epoll functions
+  api/evloop: Add helpers for creating an event loop
+  api/state_machine: Add validating state machines
+  api/channel: Add channel abstraction for message passing
+  api/worker: Add library for distributing work over multiple procs
+  read_all: Migrate to the worker lib
+
+ include/tst_channel.h                   |  97 ++++
+ include/tst_epoll.h                     |  36 ++
+ include/tst_evloop.h                    |  32 ++
+ include/tst_state_machine.h             |  50 ++
+ include/tst_worker.h                    |  62 +++
+ lib/tst_channel.c                       | 410 +++++++++++++++++
+ lib/tst_epoll.c                         |  81 ++++
+ lib/tst_evloop.c                        | 102 ++++
+ lib/tst_state_machine.c                 |  98 ++++
+ lib/tst_worker.c                        | 285 ++++++++++++
+ testcases/kernel/fs/read_all/read_all.c | 588 +++++++-----------------
+ 11 files changed, 1424 insertions(+), 417 deletions(-)
+ create mode 100644 include/tst_channel.h
+ create mode 100644 include/tst_epoll.h
+ create mode 100644 include/tst_evloop.h
+ create mode 100644 include/tst_state_machine.h
+ create mode 100644 include/tst_worker.h
+ create mode 100644 lib/tst_channel.c
+ create mode 100644 lib/tst_epoll.c
+ create mode 100644 lib/tst_evloop.c
+ create mode 100644 lib/tst_state_machine.c
+ create mode 100644 lib/tst_worker.c
+
+-- 
+2.36.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
