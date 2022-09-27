@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BBC1C54EE9
-	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 09:05:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B5A8C54EE9
+	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 13:10:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 676973CAE22
-	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 11:05:15 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id A75233C920E
+	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 15:10:24 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 13E6E3C7319
- for <ltp@lists.linux.it>; Tue, 27 Sep 2022 11:05:03 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id A81D33C1B40
+ for <ltp@lists.linux.it>; Tue, 27 Sep 2022 15:10:13 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 59F5B1000A57
- for <ltp@lists.linux.it>; Tue, 27 Sep 2022 11:05:03 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CE33D200B37
+ for <ltp@lists.linux.it>; Tue, 27 Sep 2022 15:10:08 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B813F1F999;
- Tue, 27 Sep 2022 09:05:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1664269502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B53221FCE6;
+ Tue, 27 Sep 2022 13:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1664284207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1eS3TuKpwLXo25AmLK3UPOQM0Ev4hSXXgjthBDaiOPs=;
- b=fhkB2hTrjpOAyicxmH2KBEV/2TyFYyWALND8Oe+6vKIOnyouRIjMNBzBfI56CCmK3z429w
- lOSlD+RhXqcY1yh6YvjBUYuz2TBcvvfbpVUJDFBHnJA8rJVe15xv9MuOlr3AgE+VT3lOwf
- 6HlUEf3D6x5qGYj7ncQ0KTU6nnjbrjA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1664269502;
+ bh=DR6pcs6IO3E83ZAvovVgeU+wG5HHupA3pMVfZm/ILB4=;
+ b=fQA4w6jTUVF4Gx3Lrzk3wfNEQdCyWo1UxJBj7UpedUlOlka8RF1dHIa4vbdrP4VbhNb6Jh
+ 6MKkkmKJEvm2zo5AKuPIcNiSzv3+ueVZnZ0tHzHyUktOQIXNe4QwyjLzHHmvTS0feJT1LX
+ x5bedasKh6IOygmXGgqnwmCZvRIIxf4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1664284207;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1eS3TuKpwLXo25AmLK3UPOQM0Ev4hSXXgjthBDaiOPs=;
- b=+OUf6ej2TsPgBJvxgoglPSwmMalsoyGa9W/Kwt79s/amJYKweHRAHywmzswtsdr9+hn6DM
- PFO+YIYmgZSUQPCw==
+ bh=DR6pcs6IO3E83ZAvovVgeU+wG5HHupA3pMVfZm/ILB4=;
+ b=7VaVyiMKxcZF/f6X4ZqtAQ3Pk/q7uGh+e5l1+oD0sckKNKAnJlIqVXo8TGzermf8ZEnLYe
+ ypeQz2G5xy5foPDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A4FF8139BE;
- Tue, 27 Sep 2022 09:05:02 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8ED16139BE;
+ Tue, 27 Sep 2022 13:10:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id KkMtJ768MmPAKQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 27 Sep 2022 09:05:02 +0000
-Date: Tue, 27 Sep 2022 11:06:56 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Edward Liaw <edliaw@google.com>
-Message-ID: <YzK9MHWocKPypj8B@yuki>
-References: <20220913202839.1807979-1-edliaw@google.com>
- <YyGisrbDIgVa/0QA@yuki> <YyHYvCr0PISg6ISY@pevik>
- <YyHcNcTUNG+gU3rq@pevik>
- <CAG4es9Wi8oGf1OmNUqg41wv51Qmb9gewZrifUQW-wOPL0ZKNhA@mail.gmail.com>
- <YyQ+PiN0JBy6PLJI@yuki>
- <CAG4es9VB6AydFCRkBvPm=cyozOiqCBN8vxEo68_yvm-as+9FeA@mail.gmail.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 7ZniFS72MmMDHQAAMHmgww
+ (envelope-from <mpdesouza@suse.de>); Tue, 27 Sep 2022 13:10:06 +0000
+Date: Tue, 27 Sep 2022 10:10:03 -0300
+From: Marcos Paulo de Souza <mpdesouza@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <20220927131003.zhhct3c37p35tlax@daedalus>
+References: <20220926165949.23407-1-mpdesouza@suse.com>
+ <YzH86TOjFZj3cUwq@pevik> <20220926221732.xj7mcxswq4dixzcd@daedalus>
+ <YzKhupSYwltx6P3N@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAG4es9VB6AydFCRkBvPm=cyozOiqCBN8vxEo68_yvm-as+9FeA@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <YzKhupSYwltx6P3N@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] minmax: fix type warnings
+Subject: Re: [LTP] [PATCH] configure.ac: Fix redefinition of mount_attr by
+ checking sys/mount.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,23 +78,149 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: kernel-team@android.com, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Sure thing, I've made an attempt to port mmapstress01, will send that for
-> feedback before tackling the others.
+On Tue, Sep 27, 2022 at 09:09:46AM +0200, Petr Vorel wrote:
+> Hi Marcos,
+> 
+> ...
+> > > > +++ b/configure.ac
+> > > > @@ -71,6 +71,7 @@ AC_CHECK_HEADERS_ONCE([ \
+> > > >      sys/epoll.h \
+> > > >      sys/fanotify.h \
+> > > >      sys/inotify.h \
+> > > > +    sys/mount.h \
+> 
+> > > Well, we don't add check for this, as sys/mount.h has been here since "ever", so
+> > > it'd just make configure little bit slower for no gain.
+> 
+> > > But you'd have to use somewhere compiler macro #ifdef HAVE_SYS_MOUNT_H, as this
+> > > macro is generated by configure script. Adding header to the list does nothing.
+> 
+> > It wasn't needed in my case, let me explain better below.
+> Interesting, maybe I'm missing something.
+> 
+> > > You obviously wanted to fix something, could you post the problem you're trying
+> > > to solve + steps you did to ML?
+> 
+> > I was seeing redefinition problems:
+> 
+> > In file included from fsconfig01.c:9:
+> > ../../../../include/lapi/fsmount.h:55:8: error: redefinition of 'struct mount_attr'
+> >    55 | struct mount_attr {
+> >       |        ^~~~~~~~~~
+> > In file included from /usr/include/sys/mount.h:32,
+> >                  from ../../../../include/lapi/fsmount.h:14:
+> > /usr/include/linux/mount.h:129:8: note: originally defined here
+> >   129 | struct mount_attr {
+> >       |        ^~~~~~~~~~
+> > ../../../../include/lapi/fsmount.h:110:19: error: conflicting types for 'mount_setattr'; have 'int(int,  const char *, unsigned int,  struct mount_attr *, size_t)' {aka 'int(int,  const char *, unsigned int,  struct mount_attr *, long unsigned int)'}
+> >   110 | static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned int flags,
+> >       |                   ^~~~~~~~~~~~~
+> > In file included from fsconfig02.c:8:
+> > ../../../../include/lapi/fsmount.h:55:8: error: redefinition of 'struct mount_attr'
+> >    55 | struct mount_attr {
+> >       |        ^~~~~~~~~~
+> > /usr/include/sys/mount.h:316:12: note: previous declaration of 'mount_setattr' with type 'int(int,  const char *, unsigned int,  struct mount_attr *, size_t)' {aka 'int(int,  const char *, unsigned int,  struct mount_attr *, long unsigned int)'}
+> >   316 | extern int mount_setattr (int __dfd, const char *__path, unsigned int __flags,
+> >       |            ^~~~~~~~~~~~~
+> > In file included from /usr/include/sys/mount.h:32,
+> >                  from ../../../../include/lapi/fsmount.h:14:
+> > /usr/include/linux/mount.h:129:8: note: originally defined here
+> >   129 | struct mount_attr {
+> >       |        ^~~~~~~~~~
+> > ../../../../include/lapi/fsmount.h:110:19: error: conflicting types for 'mount_setattr'; have 'int(int,  const char *, unsigned int,  struct mount_attr *, size_t)' {aka 'int(int,  const char *, unsigned int,  struct mount_attr *, long unsigned int)'}
+> >   110 | static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned int flags,
+> >       |                   ^~~~~~~~~~~~~
+> > /usr/include/sys/mount.h:316:12: note: previous declaration of 'mount_setattr' with type 'int(int,  const char *, unsigned int,  struct mount_attr *, size_t)' {aka 'int(int,  const char *, unsigned int,  struct mount_attr *, long unsigned int)'}
+> >   316 | extern int mount_setattr (int __dfd, const char *__path, unsigned int __flags,
+> >       |            ^~~~~~~~~~~~~
+> > make[4]: *** [../../../../include/mk/rules.mk:45: fsconfig01] Error 1
+> > make[4]: *** Waiting for unfinished jobs....
+> > make[4]: *** [../../../../include/mk/rules.mk:45: fsconfig02] Error 1
+> > make[3]: *** [../../../include/mk/generic_trunk_target.inc:108: all] Error 2
+> > make[2]: *** [../../include/mk/generic_trunk_target.inc:108: all] Error 2
+> > make[1]: *** [../include/mk/generic_trunk_target.inc:108: all] Error 2
+> > make[1]: Leaving directory '/home/mpdesouza/git/ltp/testcases'
+> > make: *** [Makefile:106: testcases-all] Error 2
+> 
+> > In my TW system I found that the struct mount_attr was being defined in
+> > sys/mount.h. Checking include/lapi/fsmount.h I found some ifdefs:
+> 
+> > ...
+> > #ifndef HAVE_STRUCT_MOUNT_ATTR
+> > /*
+> >  * mount_setattr()
+> >  */
+> > struct mount_attr {
+> >         uint64_t attr_set;
+> >         uint64_t attr_clr;
+> >         uint64_t propagation;
+> >         uint64_t userns_fd;
+> > };
+> > #endif
+> > ...
+> 
+> > #ifndef HAVE_MOUNT_SETATTR
+> > static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned int flags,
+> >                                 struct mount_attr *attr, size_t size)
+> > {
+> >         return tst_syscall(__NR_mount_setattr, dirfd, from_pathname, flags,
+> >                            attr, size);
+> > }
+> > #endif /* HAVE_MOUNT_SETATTR */
+> 
+> > So, only adding the sys/mount.h entry to the headers list is enough to make
+> > autoconf to find that sys/mount.h defines the same struct and function, fixing
+> > the issue.
+> Hm, I'm likely missing something :).
+> 
+> $ rpm -q glibc
+> glibc-2.36-5.1.x86_64
+> 
+> $ grep -B2 '^struct mount_attr' /usr/include/sys/mount.h
+> #ifndef MOUNT_ATTR_SIZE_VER0
+> /* For mount_setattr.  */
+> struct mount_attr
+> 
+> => I'm not sure who/where is supposed to define MOUNT_ATTR_SIZE_VER0.
+> Is it in your config?
+> Do you have different config than mine?
+> 
+> grep MOUNT include/config.h
+> #define HAVE_FSMOUNT 1
+> #define HAVE_LINUX_MOUNT_H 1
+> #define HAVE_MOUNT_SETATTR 1
+> #define HAVE_MOVE_MOUNT 1
+> #define HAVE_STRUCT_MOUNT_ATTR 1
+> (i.e. HAVE_STRUCT_MOUNT_ATTR found with code in current master)
+> 
+> I also tested fedora rawhide (glibc 2.36.9000), which we don't have in our CI:
+> https://github.com/pevik/ltp/actions/runs/3133529596
+> Works well.
+> 
+> > > BTW I have no problem to build locally on the latest Tumbleweed. Also LTP
+> > > package build for Tumbleweed is also fine:
+> > > https://build.opensuse.org/package/binaries/benchmark:ltp:devel/ltp/openSUSE_Factory
+> > > https://build.opensuse.org/package/binaries/benchmark:ltp:devel/ltp/openSUSE_Tumbleweed
+> 
+> > Interesting... so is there anything wrong with my setup? Am I missing something?
+> 
+> Hard to tell. Could you share your commands?
+> I suppose it's the usual: use gcc and in the root directory:
+> make autotools && ./configure && make -j`nproc`
 
-We are finalizing a LTP release right now, I will have a look once I
-have a bit of time, however it probably wouldn't be sooner than next
-week.
+My bad. I had this repository for some months already, I might have forgotten to
+run "make autotools"... it now build as expected. Thanks and sorry about the
+noise.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
