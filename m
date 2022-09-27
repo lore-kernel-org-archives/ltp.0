@@ -4,49 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23390C54EE9
-	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 16:14:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8CD6C54EE9
+	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 16:14:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 561C13C9221
-	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 18:14:42 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 54E963C8904
+	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 18:14:54 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9781F3C0FA6
- for <ltp@lists.linux.it>; Tue, 27 Sep 2022 18:14:20 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 1C6753C67D6
+ for <ltp@lists.linux.it>; Tue, 27 Sep 2022 18:14:22 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D09801A00912
- for <ltp@lists.linux.it>; Tue, 27 Sep 2022 18:14:19 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6D0C6600293
+ for <ltp@lists.linux.it>; Tue, 27 Sep 2022 18:14:21 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 6F1461F8A6;
- Tue, 27 Sep 2022 16:14:19 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id C33521F8A6;
+ Tue, 27 Sep 2022 16:14:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1664295259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1664295260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=O82NFjYBB7a4AZJbmjCjcsDHefq1jbZVhOm2bCpTTTE=;
- b=ibP95rqa2LGhke9tlEDlKbjQ5AE2fO+DtSBo15tWc8p+CkujcozERqKJw8IjihQ/WUSg9O
- Z9Tu5z0gbgvWIVIt8+p2POsAtjyvV3ztGgUA3ri0pQEdC4vBwbhESFwjnbXNxrsLh9g5GY
- I8jRJlT3IkeOJ0AlQ1XgIX7xzi/EAAY=
+ bh=3TX8XZ3AV+MhGwrpenWey2hHRYTnvWKaHNtamChkoek=;
+ b=mEta0ag4J744HvFvYH/PuqSBDER/BG05RnVLGzsPaLBtQlILfLgAo1PR6btsWvrupFkgDZ
+ ArQHQLhWE1UWRhIoCE2yJ/B5j6SulFl/cin1tQZ7U/NVoZHNRjQNPLGNfuwlMwV75eZLGx
+ ndUOZ4IXOtYTOlFlNARk+xCXRK9WyiA=
 Received: from g78.suse.de (unknown [10.163.24.90])
- by relay2.suse.de (Postfix) with ESMTP id B8BAC2C172;
- Tue, 27 Sep 2022 16:14:18 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 3D1E02C16B;
+ Tue, 27 Sep 2022 16:14:20 +0000 (UTC)
 To: ltp@lists.linux.it
-Date: Tue, 27 Sep 2022 17:14:03 +0100
-Message-Id: <20220927161408.23743-2-rpalethorpe@suse.com>
+Date: Tue, 27 Sep 2022 17:14:05 +0100
+Message-Id: <20220927161408.23743-4-rpalethorpe@suse.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220927161408.23743-1-rpalethorpe@suse.com>
 References: <20220927161408.23743-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/6] api/epoll: Add safe epoll functions
+Subject: [LTP] [PATCH 3/6] api/state_machine: Add validating state machines
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,145 +65,184 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Probably safe to use it over (p)select/(p)poll now.
+Allows creating state machines where the state transitions are
+validated. Also one can assert which states a line of code expects to
+be executed in.
+
+This is useful for verifying implicit or explicit state machines used
+to process I/O events or data.
+
+When a state violation is found a trace of previous state transitions
+is printed.
 
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- include/tst_epoll.h | 36 ++++++++++++++++++++
- lib/tst_epoll.c     | 81 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 117 insertions(+)
- create mode 100644 include/tst_epoll.h
- create mode 100644 lib/tst_epoll.c
+ include/tst_state_machine.h | 50 +++++++++++++++++++
+ lib/tst_state_machine.c     | 98 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 148 insertions(+)
+ create mode 100644 include/tst_state_machine.h
+ create mode 100644 lib/tst_state_machine.c
 
-diff --git a/include/tst_epoll.h b/include/tst_epoll.h
+diff --git a/include/tst_state_machine.h b/include/tst_state_machine.h
 new file mode 100644
-index 000000000..c5ffc07e3
+index 000000000..2e86535c6
 --- /dev/null
-+++ b/include/tst_epoll.h
-@@ -0,0 +1,36 @@
++++ b/include/tst_state_machine.h
+@@ -0,0 +1,50 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2022 SUSE LLC <rpalethorpe@suse.com>
 + */
 +
-+#include <sys/epoll.h>
++#include "inttypes.h"
 +
-+#ifndef TST_EPOLL_H
-+#define TST_EPOLL_H
++#ifndef TST_STATE_MACHINE_H
++#define TST_STATE_MACHINE_H
 +
-+typedef int (*tst_on_epoll_fn)(void *, uint32_t);
-+struct tst_epoll_event_data {
-+	tst_on_epoll_fn on_epoll;
-+	void *self;
++#define TST_STATE_ANY (~(uint64_t)0)
++
++struct tst_state_matrix {
++	char *names[64];
++	uint64_t states[64];
 +};
 +
-+int safe_epoll_create1(const char *const file, const int lineno,
-+		       const int flags);
++struct tst_state_trace {
++	const char *file;
++	int line;
++	unsigned from;
++	unsigned to;
++};
 +
-+#define SAFE_EPOLL_CREATE1(flags) \
-+	safe_epoll_create1(__FILE__, __LINE__, (flags))
++struct tst_state_mach {
++	const struct tst_state_matrix *mat;
 +
-+int safe_epoll_ctl(const char *const file, const int lineno,
-+		   int epfd, int op, int fd, struct epoll_event *ev);
++	unsigned top;
++	struct tst_state_trace ring[8];
++};
 +
-+#define SAFE_EPOLL_CTL(epfd, op, fd, ev) \
-+	safe_epoll_ctl(__FILE__, __LINE__, epfd, op, fd, ev)
++#define TST_STATE_SET(mach, to) \
++	tst_state_set(__FILE__, __LINE__, mach, to)
 +
-+int safe_epoll_wait(const char *const file, const int lineno,
-+		    int epfd, struct epoll_event *events,
-+		    int maxevents, int timeout);
++void tst_state_set(const char *const file, const int lineno,
++		  struct tst_state_mach *mach, unsigned to);
 +
-+#define SAFE_EPOLL_WAIT(epfd, events, maxevents, timeout)\
-+	safe_epoll_wait(__FILE__, __LINE__, epfd, events, maxevents, timeout)
++#define TST_STATE_EXP(mach, mask) \
++	tst_state_exp(__FILE__, __LINE__, mach, mask)
++
++void tst_state_exp(const char *const file, const int lineno,
++		   struct tst_state_mach *mach, uint64_t mask);
++
++#define TST_STATE_GET(mach, mask) \
++	tst_state_get(__FILE__, __LINE__, mach, mask)
++
++unsigned tst_state_get(const char *const file, const int lineno,
++		       struct tst_state_mach *mach, uint64_t mask);
 +
 +#endif
-diff --git a/lib/tst_epoll.c b/lib/tst_epoll.c
+diff --git a/lib/tst_state_machine.c b/lib/tst_state_machine.c
 new file mode 100644
-index 000000000..556b3bdab
+index 000000000..cb8ed79c4
 --- /dev/null
-+++ b/lib/tst_epoll.c
-@@ -0,0 +1,81 @@
++++ b/lib/tst_state_machine.c
+@@ -0,0 +1,98 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2022 SUSE LLC <rpalethorpe@suse.com>
 + */
++
 +#define _GNU_SOURCE
 +#define TST_NO_DEFAULT_MAIN
 +
++#include <unistd.h>
++#include "stdio.h"
++
 +#include "tst_test.h"
-+#include "tst_epoll.h"
++#include "tst_state_machine.h"
 +
-+int safe_epoll_create1(const char *const file, const int lineno,
-+		       const int flags)
++static const char *state_trace(struct tst_state_mach *mach)
 +{
-+	const char *flags_str;
-+	int ret = epoll_create1(flags);
++	static char buf[4096];
++	char *const *const names = mach->mat->names;
++	size_t off = 1;
++	unsigned c = 0, i;
 +
-+	switch (flags) {
-+	case EPOLL_CLOEXEC:
-+		flags_str = "EPOLL_CLOEXEC";
-+		break;
-+	case 0:
-+		flags_str = "";
-+		break;
-+	default:
-+		flags_str = "???";
++	buf[0] = '\n';
++
++	for (i = mach->top; c < 8; c++) {
++		const struct tst_state_trace *t = mach->ring + i;
++
++		if (!t->file)
++			break;
++
++		if (off >= sizeof(buf))
++			break;
++
++		off += snprintf(buf + off,
++				sizeof(buf) - off - 1,
++				"\t%s:%d %s (%u) -> %s (%u)\n",
++				t->file, t->line,
++				names[t->from], t->from,
++				names[t->to], t->to);
++
++		if (!i)
++			i = 7;
++		else
++			i--;
 +	}
 +
-+	if (ret == -1) {
-+		tst_brk_(file, lineno,
-+			 TBROK | TERRNO, "epoll_create1(%s)", flags_str);
-+	}
-+
-+	return ret;
++	return buf;
 +}
 +
-+int safe_epoll_ctl(const char *const file, const int lineno,
-+		   int epfd, int op, int fd, struct epoll_event *ev)
++static void state_trace_set(const char *const file, const int lineno,
++			    struct tst_state_trace *trace, unsigned from, unsigned to)
 +{
-+	const char *op_str;
-+	int ret;
-+
-+	switch (op) {
-+	case EPOLL_CTL_ADD:
-+		op_str = "EPOLL_CTL_ADD";
-+		break;
-+	case EPOLL_CTL_DEL:
-+		op_str = "EPOLL_CTL_DEL";
-+		break;
-+	case EPOLL_CTL_MOD:
-+		op_str = "EPOLL_CTL_MOD";
-+		break;
-+	default:
-+		op_str = "???";
-+	}
-+
-+	ret = epoll_ctl(epfd, op, fd, ev);
-+
-+	if (ret == -1) {
-+		tst_brk_(file, lineno,
-+			 TBROK | TERRNO,
-+			 "epoll_ctl(%d, %s, %d, ...", epfd, op_str, fd);
-+	}
-+
-+	return ret;
++	trace->file = file;
++	trace->line = lineno;
++	trace->from = from;
++	trace->to = to;
 +}
 +
-+int safe_epoll_wait(const char *const file, const int lineno,
-+		    int epfd, struct epoll_event *events,
-+		    int maxevents, int timeout)
++void tst_state_set(const char *const file, const int lineno,
++		   struct tst_state_mach *mach, unsigned to)
 +{
-+	int ret = epoll_wait(epfd, events, maxevents, timeout);
++	char *const *const names = mach->mat->names;
++	const unsigned cur = mach->ring[mach->top].to;
 +
-+	if (ret == -1) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			 "epoll_wait(%d, ..., %d, %d)",
-+			 epfd, maxevents, timeout);
-+	}
++	if (cur > 63)
++		tst_brk_(file, lineno, TBROK, "Attempting to transition from an invalid state: %u: %s", cur, state_trace(mach));
 +
-+	return ret;
++	if (to > 63)
++		tst_brk_(file, lineno, TBROK, "Attempting to transition to invalid state: %u: %s", to, state_trace(mach));
++
++	if (!(mach->mat->states[cur] & (1 << to)))
++		tst_brk_(file, lineno, TBROK, "Invalid transition: %s (%u) -> %s (%u): %s", names[cur], cur, names[to], to, state_trace(mach));
++
++	if (++(mach->top) == 8)
++		mach->top = 0;
++
++	state_trace_set(file, lineno, &mach->ring[mach->top], cur, to);
 +}
 +
++unsigned tst_state_get(const char *const file, const int lineno,
++		       struct tst_state_mach *mach, uint64_t mask)
++{
++	char *const *const names = mach->mat->names;
++	const unsigned cur = mach->ring[mach->top].to;
++
++	if (mask & (1 << cur))
++		return cur;
++
++	tst_brk_(file, lineno, TBROK, "Should not reach here while in state: %s (%u): %s",
++		 names[cur], cur, state_trace(mach));
++
++	return cur;
++}
++
++void tst_state_exp(const char *const file, const int lineno,
++		   struct tst_state_mach *mach, uint64_t mask)
++{
++	tst_state_get(file, lineno, mach, mask);
++}
 -- 
 2.36.1
 
