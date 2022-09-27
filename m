@@ -4,48 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A221C07E9D
-	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 16:15:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46A90C6FA82
+	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 20:09:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8A27E3C868B
-	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 18:15:45 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 89C8C3C8772
+	for <ltp@archiver.kernel.org>; Tue, 27 Sep 2022 22:09:05 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4123E3C87C9
- for <ltp@lists.linux.it>; Tue, 27 Sep 2022 18:14:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4DD503C1BBA
+ for <ltp@lists.linux.it>; Tue, 27 Sep 2022 22:08:52 +0200 (CEST)
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com
+ [IPv6:2607:f8b0:4864:20::102f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A0EEC1000D43
- for <ltp@lists.linux.it>; Tue, 27 Sep 2022 18:14:20 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 1AA6E21E95;
- Tue, 27 Sep 2022 16:14:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1664295260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Fd47GhO37EQRQPpWoTsMwGW1kEsvyFVi73M5E7RB3A8=;
- b=AruJhxjxeoHKUVBNvRuzjUhkAVy4wgq0KLxEN3rPhITiN5oAo5uEK0CvRV65m/Vz7/mnI/
- GJFsxkj4GD06PQD2Tt6j28VbFTWUTIsWXqRytWdczJAQf/ExH98/KwhIT0PhwTHWAfdLdI
- UA3NPJIEGJUdXqRncp7BrcyXaU4mL74=
-Received: from g78.suse.de (unknown [10.163.24.90])
- by relay2.suse.de (Postfix) with ESMTP id B47772C16D;
- Tue, 27 Sep 2022 16:14:19 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue, 27 Sep 2022 17:14:04 +0100
-Message-Id: <20220927161408.23743-3-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220927161408.23743-1-rpalethorpe@suse.com>
-References: <20220927161408.23743-1-rpalethorpe@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A84651A009BB
+ for <ltp@lists.linux.it>; Tue, 27 Sep 2022 22:08:51 +0200 (CEST)
+Received: by mail-pj1-x102f.google.com with SMTP id cp18so1595330pjb.2
+ for <ltp@lists.linux.it>; Tue, 27 Sep 2022 13:08:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date;
+ bh=dyypxq8VM87sUimClP3YKbnshyjwztOj+Zla/7QZz6Q=;
+ b=CKBmQNClt5gjCSygOVYirGeyRsDAr82iWFmgk6X8Oaijz/I6JKRYoup4kRgr7vMSH6
+ 2s/8GlCa/qrFCCtgormXfDZrLMJ+0iVRCKPmzoZkUwBPyAiJF1g8iSAna2QVS60i/6cf
+ yBrqRNjZrzifky9+LYmoGWA68PbbQ9A2AqS+8XytvuADFKILMSn+2iPEOKp4GYvjJMcx
+ hs57sODVxT+j+7YQDtDyflguW5wBzgUYZiU0ZpK6apo4WN1an8vF2utN32mxm9m2x/GT
+ XvBSFQSDrQgfsBiiyCA2u89O+9FVdGG7sfqg/97IThWSF8CAiw0hywmPJNS7+HuNFfBv
+ a3TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date;
+ bh=dyypxq8VM87sUimClP3YKbnshyjwztOj+Zla/7QZz6Q=;
+ b=DeAg3XyDtWFwvdkidXBCUbbPUEMAo4i+qOc49v4WeP8wkBIuy2/kkEkBfqS9rwZkyN
+ u6tu2Qv+compZdRlhoM0X0Ag72AdnGh1JdOTuRniEBgs3LxchcEjEolvFDmT/OK30j1X
+ VU9uuuyrEBh2g7Q2KY5UU8FAxITUiWnEJec3eiPABFdhTOdEnpYRAlMPsTQ2bk0KtWQW
+ B2Dy+Ptlg09IOESZASuzjypBvk1Te2iWRNzq3EtoeIOeLWLEVy+M7jFVg0LlkucZ5U2n
+ gZ/svPHts5CLFrH5/3LU6Aj1VEyO2FUmtBBnuZ4f5U7vPQTH81N1F3GmGZBrB85+Bkoe
+ SGbQ==
+X-Gm-Message-State: ACrzQf1Pl+NZOVZ0jMMzoW3E1ydBb5d+PHT2N/AnYPtMoIiwkRQMYhdf
+ 0a5waVkIp3bgbXwLaED56+Fh6DZqb08Qb1KHavs=
+X-Google-Smtp-Source: AMsMyM7XxQmDTPT7VXbS0bRhBFNCupee65b5QnC3NLzSF7tnZWFvnoC3CwnNQPX4pHsAIzHrEc0eolZg1tb1UDx0pVE=
+X-Received: by 2002:a17:903:18b:b0:176:afb8:b4ab with SMTP id
+ z11-20020a170903018b00b00176afb8b4abmr29209593plg.80.1664309329926; Tue, 27
+ Sep 2022 13:08:49 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+References: <20220926165949.23407-1-mpdesouza@suse.com>
+ <YzH86TOjFZj3cUwq@pevik>
+ <20220926221732.xj7mcxswq4dixzcd@daedalus> <YzKhupSYwltx6P3N@pevik>
+ <20220927131003.zhhct3c37p35tlax@daedalus>
+In-Reply-To: <20220927131003.zhhct3c37p35tlax@daedalus>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Tue, 27 Sep 2022 22:08:38 +0200
+Message-ID: <CAB1t1Cxw0g8LfTn=Ym0vbthXn2W=XCSnoEKZUQiArx4c0BWHcQ@mail.gmail.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/6] api/evloop: Add helpers for creating an event loop
+Subject: Re: [LTP] [PATCH] configure.ac: Fix redefinition of mount_attr by
+ checking sys/mount.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,185 +77,327 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============1250666328=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Puts some of the boiler plate for creating an "event loop", into an
-API. Useful for asynchronous or evented I/O.
+--===============1250666328==
+Content-Type: multipart/alternative; boundary="000000000000681d6105e9ae366b"
 
-This uses epoll and signalfd which are very widely supported on
-Linux. I also think epoll is a better interface than ppoll and
-pselect.
+--000000000000681d6105e9ae366b
+Content-Type: text/plain; charset="UTF-8"
 
-The tst_epoll_event_data struct (added in the previous commit) can be
-used to add callbacks on particular FD events.
+Hi Marcos,
 
-There is also a special callback for the signlfd and on_cont which is
-called at the end of each loop. Returning 0 from these will cause the
-loop to exit.
+>
+> My bad. I had this repository for some months already, I might have
+> forgotten to
+> run "make autotools"... it now build as expected. Thanks and sorry about
+> the
+> noise.
+>
+> No problem. But Buildroot CI reports similar problem, I wonder if I find
+some time in my after work time to look into it
+http://autobuild.buildroot.net/results/ef429f764d7b017b37e4a1216a2b7b325bc1ea73/build-end.log
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- include/tst_evloop.h |  32 ++++++++++++++
- lib/tst_evloop.c     | 102 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 134 insertions(+)
- create mode 100644 include/tst_evloop.h
- create mode 100644 lib/tst_evloop.c
+Petr
 
-diff --git a/include/tst_evloop.h b/include/tst_evloop.h
-new file mode 100644
-index 000000000..bdab2d6f7
---- /dev/null
-+++ b/include/tst_evloop.h
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 SUSE LLC <rpalethorpe@suse.com>
-+ */
-+
-+#include "inttypes.h"
-+#include "sys/signalfd.h"
-+
-+#include "tst_epoll.h"
-+
-+#ifndef TST_EVLOOP_H
-+#define TST_EVLOOP_H
-+
-+struct tst_evloop {
-+	int epollfd;
-+	int signalfd;
-+	struct tst_epoll_event_data signalfd_evdata;
-+	int timeout;
-+
-+	void *priv;
-+	int (*on_cont)(struct tst_evloop *self);
-+	int (*on_signal)(struct tst_evloop *self, struct signalfd_siginfo *si);
-+};
-+
-+void tst_evloop_setup(struct tst_evloop *self);
-+void tst_evloop_run(struct tst_evloop *self);
-+void tst_evloop_add(struct tst_evloop *self,
-+		    struct tst_epoll_event_data *evdata,
-+		    int fd, uint32_t events);
-+void tst_evloop_cleanup(struct tst_evloop *self);
-+
-+#endif
-diff --git a/lib/tst_evloop.c b/lib/tst_evloop.c
-new file mode 100644
-index 000000000..66d74ce58
---- /dev/null
-+++ b/lib/tst_evloop.c
-@@ -0,0 +1,102 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 SUSE LLC <rpalethorpe@suse.com>
-+ */
-+#define _GNU_SOURCE
-+#define TST_NO_DEFAULT_MAIN
-+
-+#include "tst_test.h"
-+#include "tst_evloop.h"
-+
-+static void handle_epoll_event(struct epoll_event *event)
-+{
-+	struct tst_epoll_event_data *data = event->data.ptr;
-+
-+	data->on_epoll(data->self, event->events);
-+}
-+
-+static int evloop_on_signal(struct tst_evloop *self, uint32_t events)
-+{
-+	int i, n;
-+	struct signalfd_siginfo si[16];
-+
-+	if (events ^ EPOLLIN) {
-+		tst_brk(TBROK, "Unexpected event on signalfd");
-+		return 1;
-+	}
-+
-+	n = SAFE_READ(0, self->signalfd, si, sizeof(si));
-+
-+	if (!n)
-+		tst_brk(TBROK, "Got EPOLLIN on signalfd, but no signal read from fd");
-+
-+	for (i = 0; i < n/(int)sizeof(si[0]); i++) {
-+		if (!self->on_signal(self, si + i))
-+			return 0;
-+	}
-+
-+	return 1;
-+}
-+
-+void tst_evloop_add(struct tst_evloop *self,
-+		       struct tst_epoll_event_data *evdata,
-+		       int fd, uint32_t events)
-+{
-+	struct epoll_event ev = {
-+		.events = events,
-+		.data.ptr = evdata,
-+	};
-+
-+	SAFE_EPOLL_CTL(self->epollfd, EPOLL_CTL_ADD, fd, &ev);
-+}
-+
-+void tst_evloop_setup(struct tst_evloop *self)
-+{
-+
-+	sigset_t mask;
-+
-+	self->epollfd = SAFE_EPOLL_CREATE1(EPOLL_CLOEXEC);
-+
-+	sigfillset(&mask);
-+	SAFE_SIGPROCMASK(SIG_BLOCK, &mask, NULL);
-+	self->signalfd = signalfd(-1, &mask, SFD_CLOEXEC);
-+
-+	self->signalfd_evdata.self = self;
-+	self->signalfd_evdata.on_epoll = (tst_on_epoll_fn)evloop_on_signal;
-+
-+	tst_evloop_add(self, &self->signalfd_evdata, self->signalfd, EPOLLIN);
-+}
-+
-+void tst_evloop_run(struct tst_evloop *self)
-+{
-+	static int saturated_warn;
-+	const int maxevents = 128;
-+	struct epoll_event events[maxevents];
-+
-+	for (;;) {
-+		const int ev_num = SAFE_EPOLL_WAIT(self->epollfd, events,
-+						   maxevents, self->timeout);
-+
-+		for (int i = 0; i < ev_num; i++)
-+			handle_epoll_event(events + i);
-+
-+		if (ev_num == maxevents) {
-+			if (!saturated_warn)
-+				tst_res(TINFO, "Event loop saturated");
-+
-+			saturated_warn = 1;
-+			continue;
-+		}
-+
-+		if (!self->on_cont(self))
-+			break;
-+	}
-+}
-+
-+void tst_evloop_cleanup(struct tst_evloop *self)
-+{
-+	if (self->epollfd > 0)
-+		SAFE_CLOSE(self->epollfd);
-+	if (self->signalfd > 0)
-+		SAFE_CLOSE(self->signalfd);
-+}
--- 
-2.36.1
+In file included from
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/fs.h:19,
+                 from ../../../../include/lapi/fs.h:10,
+                 from statx09.c:24:
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:95:6:
+error: redeclaration of 'enum fsconfig_command'
+   95 | enum fsconfig_command {
+      |      ^~~~~~~~~~~~~~~~
+In file included from statx09.c:21:
+/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:249:6:
+note: originally defined here
+  249 | enum fsconfig_command
+      |      ^~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:96:9:
+error: redeclaration of enumerator 'FSCONFIG_SET_FLAG'
+   96 |         FSCONFIG_SET_FLAG       = 0,    /* Set parameter, supplying
+no value */
+      |         ^~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:251:3:
+note: previous definition of 'FSCONFIG_SET_FLAG' with type 'enum
+fsconfig_command'
+  251 |   FSCONFIG_SET_FLAG       = 0,    /* Set parameter, supplying no
+value */
+      |   ^~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:97:9:
+error: redeclaration of enumerator 'FSCONFIG_SET_STRING'
+   97 |         FSCONFIG_SET_STRING     = 1,    /* Set parameter, supplying
+a string value */
+      |         ^~~~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:253:3:
+note: previous definition of 'FSCONFIG_SET_STRING' with type 'enum
+fsconfig_command'
+  253 |   FSCONFIG_SET_STRING     = 1,    /* Set parameter, supplying a
+string value */
+      |   ^~~~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:98:9:
+error: redeclaration of enumerator 'FSCONFIG_SET_BINARY'
+   98 |         FSCONFIG_SET_BINARY     = 2,    /* Set parameter, supplying
+a binary blob value */
+      |         ^~~~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:255:3:
+note: previous definition of 'FSCONFIG_SET_BINARY' with type 'enum
+fsconfig_command'
+  255 |   FSCONFIG_SET_BINARY     = 2,    /* Set parameter, supplying a
+binary blob value */
+      |   ^~~~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:99:9:
+error: redeclaration of enumerator 'FSCONFIG_SET_PATH'
+   99 |         FSCONFIG_SET_PATH       = 3,    /* Set parameter, supplying
+an object by path */
+      |         ^~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:257:3:
+note: previous definition of 'FSCONFIG_SET_PATH' with type 'enum
+fsconfig_command'
+  257 |   FSCONFIG_SET_PATH       = 3,    /* Set parameter, supplying an
+object by path */
+      |   ^~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:100:9:
+error: redeclaration of enumerator 'FSCONFIG_SET_PATH_EMPTY'
+  100 |         FSCONFIG_SET_PATH_EMPTY = 4,    /* Set parameter, supplying
+an object by (empty) path */
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:259:3:
+note: previous definition of 'FSCONFIG_SET_PATH_EMPTY' with type 'enum
+fsconfig_command'
+  259 |   FSCONFIG_SET_PATH_EMPTY = 4,    /* Set parameter, supplying an
+object by (empty) path */
+      |   ^~~~~~~~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:101:9:
+error: redeclaration of enumerator 'FSCONFIG_SET_FD'
+  101 |         FSCONFIG_SET_FD         = 5,    /* Set parameter, supplying
+an object by fd */
+      |         ^~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:261:3:
+note: previous definition of 'FSCONFIG_SET_FD' with type 'enum
+fsconfig_command'
+  261 |   FSCONFIG_SET_FD         = 5,    /* Set parameter, supplying an
+object by fd */
+      |   ^~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:102:9:
+error: redeclaration of enumerator 'FSCONFIG_CMD_CREATE'
+  102 |         FSCONFIG_CMD_CREATE     = 6,    /* Invoke superblock
+creation */
+      |         ^~~~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:263:3:
+note: previous definition of 'FSCONFIG_CMD_CREATE' with type 'enum
+fsconfig_command'
+  263 |   FSCONFIG_CMD_CREATE     = 6,    /* Invoke superblock creation */
+      |   ^~~~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:103:9:
+error: redeclaration of enumerator 'FSCONFIG_CMD_RECONFIGURE'
+  103 |         FSCONFIG_CMD_RECONFIGURE = 7,   /* Invoke superblock
+reconfiguration */
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~
+/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:265:3:
+note: previous definition of 'FSCONFIG_CMD_RECONFIGURE' with type 'enum
+fsconfig_command'
+  265 |   FSCONFIG_CMD_RECONFIGURE = 7,   /* Invoke superblock
+reconfiguration */
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/fs.h:19,
+                 from ../../../../include/lapi/fs.h:10,
+                 from statx09.c:24:
+/home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:129:8:
+error: redefinition of 'struct mount_attr'
+  129 | struct mount_attr {
+      |        ^~~~~~~~~~
+In file included from statx09.c:21:
+/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:219:8:
+note: originally defined here
+  219 | struct mount_attr
+      |        ^~~~~~~~~~
+../../../../include/mk/rules.mk:45: recipe for target 'statx09' failed
+make[5]: *** [statx09] Error 1
+../../../include/mk/generic_trunk_target.inc:108: recipe for target 'all'
+failed
+make[4]: *** [all] Error 2
+../../include/mk/generic_trunk_target.inc:108: recipe for target 'all'
+failed
+make[3]: *** [all] Error 2
+../include/mk/generic_trunk_target.inc:108: recipe for target 'all' failed
+make[2]: *** [all] Error 2
+make[2]: Leaving directory
+'/home/buildroot/autobuild/instance-0/output-1/build/ltp-testsuite-20220527/testcases'
+Makefile:106: recipe for target 'testcases-all' failed
+make[1]: *** [testcases-all] Error 2
+make[1]: Leaving directory
+'/home/buildroot/autobuild/instance-0/output-1/build/ltp-testsuite-20220527'
+package/pkg-generic.mk:290: recipe for target
+'/home/buildroot/autobuild/instance-0/output-1/build/ltp-testsuite-20220527/.stamp_built'
+failed
+make: ***
+[/home/buildroot/autobuild/instance-0/output-1/build/ltp-testsuite-20220527/.stamp_built]
+Error 2
+make: Leaving directory '/home/buildroot/autobuild/instance-0/buildroot'
+
+--000000000000681d6105e9ae366b
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_quote"><div>Hi Marcos,=C2=A0</div><blo=
+ckquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left=
+:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+My bad. I had this repository for some months already, I might have forgott=
+en to<br>
+run &quot;make autotools&quot;... it now build as expected. Thanks and sorr=
+y about the<br>
+noise.<br>
+<br></blockquote><div>No problem. But Buildroot CI reports similar problem,=
+ I wonder if I find some time in my after work time to look into it</div><d=
+iv><a href=3D"http://autobuild.buildroot.net/results/ef429f764d7b017b37e4a1=
+216a2b7b325bc1ea73/build-end.log">http://autobuild.buildroot.net/results/ef=
+429f764d7b017b37e4a1216a2b7b325bc1ea73/build-end.log</a><br></div><div><br>=
+</div><div>Petr</div><div><br></div><div>In file included from /home/buildr=
+oot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/=
+usr/include/linux/fs.h:19,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0from ../../../../include/lapi/fs.h:10,<br>=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0from statx09.c:24:<br>/home=
+/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/s=
+ysroot/usr/include/linux/mount.h:95:6: error: redeclaration of &#39;enum fs=
+config_command&#39;<br>=C2=A0 =C2=A095 | enum fsconfig_command {<br>=C2=A0 =
+=C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0^~~~~~~~~~~~~~~~<br>In file included fr=
+om statx09.c:21:<br>/home/buildroot/autobuild/instance-0/output-1/host/lib/=
+gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:249:6: not=
+e: originally defined here<br>=C2=A0 249 | enum fsconfig_command<br>=C2=A0 =
+=C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0^~~~~~~~~~~~~~~~<br>/home/buildroot/aut=
+obuild/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/inc=
+lude/linux/mount.h:96:9: error: redeclaration of enumerator &#39;FSCONFIG_S=
+ET_FLAG&#39;<br>=C2=A0 =C2=A096 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 FSCONFIG_SET_=
+FLAG =C2=A0 =C2=A0 =C2=A0 =3D 0, =C2=A0 =C2=A0/* Set parameter, supplying n=
+o value */<br>=C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 ^~~~~~~~~~=
+~~~~~~~<br>/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch=
+64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:251:3: note: previo=
+us definition of &#39;FSCONFIG_SET_FLAG&#39; with type &#39;enum fsconfig_c=
+ommand&#39;<br>=C2=A0 251 | =C2=A0 FSCONFIG_SET_FLAG =C2=A0 =C2=A0 =C2=A0 =
+=3D 0, =C2=A0 =C2=A0/* Set parameter, supplying no value */<br>=C2=A0 =C2=
+=A0 =C2=A0 | =C2=A0 ^~~~~~~~~~~~~~~~~<br>/home/buildroot/autobuild/instance=
+-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/moun=
+t.h:97:9: error: redeclaration of enumerator &#39;FSCONFIG_SET_STRING&#39;<=
+br>=C2=A0 =C2=A097 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 FSCONFIG_SET_STRING =C2=A0=
+ =C2=A0 =3D 1, =C2=A0 =C2=A0/* Set parameter, supplying a string value */<b=
+r>=C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 ^~~~~~~~~~~~~~~~~~~<br=
+>/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildro=
+ot-linux-gnu/11.3.0/include-fixed/sys/mount.h:253:3: note: previous definit=
+ion of &#39;FSCONFIG_SET_STRING&#39; with type &#39;enum fsconfig_command&#=
+39;<br>=C2=A0 253 | =C2=A0 FSCONFIG_SET_STRING =C2=A0 =C2=A0 =3D 1, =C2=A0 =
+=C2=A0/* Set parameter, supplying a string value */<br>=C2=A0 =C2=A0 =C2=A0=
+ | =C2=A0 ^~~~~~~~~~~~~~~~~~~<br>/home/buildroot/autobuild/instance-0/outpu=
+t-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:98:9=
+: error: redeclaration of enumerator &#39;FSCONFIG_SET_BINARY&#39;<br>=C2=
+=A0 =C2=A098 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 FSCONFIG_SET_BINARY =C2=A0 =C2=
+=A0 =3D 2, =C2=A0 =C2=A0/* Set parameter, supplying a binary blob value */<=
+br>=C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 ^~~~~~~~~~~~~~~~~~~<b=
+r>/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildr=
+oot-linux-gnu/11.3.0/include-fixed/sys/mount.h:255:3: note: previous defini=
+tion of &#39;FSCONFIG_SET_BINARY&#39; with type &#39;enum fsconfig_command&=
+#39;<br>=C2=A0 255 | =C2=A0 FSCONFIG_SET_BINARY =C2=A0 =C2=A0 =3D 2, =C2=A0=
+ =C2=A0/* Set parameter, supplying a binary blob value */<br>=C2=A0 =C2=A0 =
+=C2=A0 | =C2=A0 ^~~~~~~~~~~~~~~~~~~<br>/home/buildroot/autobuild/instance-0=
+/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/mount.=
+h:99:9: error: redeclaration of enumerator &#39;FSCONFIG_SET_PATH&#39;<br>=
+=C2=A0 =C2=A099 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 FSCONFIG_SET_PATH =C2=A0 =C2=
+=A0 =C2=A0 =3D 3, =C2=A0 =C2=A0/* Set parameter, supplying an object by pat=
+h */<br>=C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 ^~~~~~~~~~~~~~~~=
+~<br>/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-bui=
+ldroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:257:3: note: previous def=
+inition of &#39;FSCONFIG_SET_PATH&#39; with type &#39;enum fsconfig_command=
+&#39;<br>=C2=A0 257 | =C2=A0 FSCONFIG_SET_PATH =C2=A0 =C2=A0 =C2=A0 =3D 3, =
+=C2=A0 =C2=A0/* Set parameter, supplying an object by path */<br>=C2=A0 =C2=
+=A0 =C2=A0 | =C2=A0 ^~~~~~~~~~~~~~~~~<br>/home/buildroot/autobuild/instance=
+-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/linux/moun=
+t.h:100:9: error: redeclaration of enumerator &#39;FSCONFIG_SET_PATH_EMPTY&=
+#39;<br>=C2=A0 100 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 FSCONFIG_SET_PATH_EMPTY =
+=3D 4, =C2=A0 =C2=A0/* Set parameter, supplying an object by (empty) path *=
+/<br>=C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 ^~~~~~~~~~~~~~~~~~~=
+~~~~<br>/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-=
+buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:259:3: note: previous =
+definition of &#39;FSCONFIG_SET_PATH_EMPTY&#39; with type &#39;enum fsconfi=
+g_command&#39;<br>=C2=A0 259 | =C2=A0 FSCONFIG_SET_PATH_EMPTY =3D 4, =C2=A0=
+ =C2=A0/* Set parameter, supplying an object by (empty) path */<br>=C2=A0 =
+=C2=A0 =C2=A0 | =C2=A0 ^~~~~~~~~~~~~~~~~~~~~~~<br>/home/buildroot/autobuild=
+/instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/l=
+inux/mount.h:101:9: error: redeclaration of enumerator &#39;FSCONFIG_SET_FD=
+&#39;<br>=C2=A0 101 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 FSCONFIG_SET_FD =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =3D 5, =C2=A0 =C2=A0/* Set parameter, supplying an obj=
+ect by fd */<br>=C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 ^~~~~~~~=
+~~~~~~~<br>/home/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch=
+64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:261:3: note: previo=
+us definition of &#39;FSCONFIG_SET_FD&#39; with type &#39;enum fsconfig_com=
+mand&#39;<br>=C2=A0 261 | =C2=A0 FSCONFIG_SET_FD =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =3D 5, =C2=A0 =C2=A0/* Set parameter, supplying an object by fd */<br>=
+=C2=A0 =C2=A0 =C2=A0 | =C2=A0 ^~~~~~~~~~~~~~~<br>/home/buildroot/autobuild/=
+instance-0/output-1/host/aarch64-buildroot-linux-gnu/sysroot/usr/include/li=
+nux/mount.h:102:9: error: redeclaration of enumerator &#39;FSCONFIG_CMD_CRE=
+ATE&#39;<br>=C2=A0 102 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 FSCONFIG_CMD_CREATE =
+=C2=A0 =C2=A0 =3D 6, =C2=A0 =C2=A0/* Invoke superblock creation */<br>=C2=
+=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0 =C2=A0 ^~~~~~~~~~~~~~~~~~~<br>/hom=
+e/buildroot/autobuild/instance-0/output-1/host/lib/gcc/aarch64-buildroot-li=
+nux-gnu/11.3.0/include-fixed/sys/mount.h:263:3: note: previous definition o=
+f &#39;FSCONFIG_CMD_CREATE&#39; with type &#39;enum fsconfig_command&#39;<b=
+r>=C2=A0 263 | =C2=A0 FSCONFIG_CMD_CREATE =C2=A0 =C2=A0 =3D 6, =C2=A0 =C2=
+=A0/* Invoke superblock creation */<br>=C2=A0 =C2=A0 =C2=A0 | =C2=A0 ^~~~~~=
+~~~~~~~~~~~~~<br>/home/buildroot/autobuild/instance-0/output-1/host/aarch64=
+-buildroot-linux-gnu/sysroot/usr/include/linux/mount.h:103:9: error: redecl=
+aration of enumerator &#39;FSCONFIG_CMD_RECONFIGURE&#39;<br>=C2=A0 103 | =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 FSCONFIG_CMD_RECONFIGURE =3D 7, =C2=A0 /* Invok=
+e superblock reconfiguration */<br>=C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 ^~~~~~~~~~~~~~~~~~~~~~~~<br>/home/buildroot/autobuild/instance-0=
+/output-1/host/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys=
+/mount.h:265:3: note: previous definition of &#39;FSCONFIG_CMD_RECONFIGURE&=
+#39; with type &#39;enum fsconfig_command&#39;<br>=C2=A0 265 | =C2=A0 FSCON=
+FIG_CMD_RECONFIGURE =3D 7, =C2=A0 /* Invoke superblock reconfiguration */<b=
+r>=C2=A0 =C2=A0 =C2=A0 | =C2=A0 ^~~~~~~~~~~~~~~~~~~~~~~~<br>In file include=
+d from /home/buildroot/autobuild/instance-0/output-1/host/aarch64-buildroot=
+-linux-gnu/sysroot/usr/include/linux/fs.h:19,<br>=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0from ../../../../include/lapi/fs.h:10=
+,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0from sta=
+tx09.c:24:<br>/home/buildroot/autobuild/instance-0/output-1/host/aarch64-bu=
+ildroot-linux-gnu/sysroot/usr/include/linux/mount.h:129:8: error: redefinit=
+ion of &#39;struct mount_attr&#39;<br>=C2=A0 129 | struct mount_attr {<br>=
+=C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0 =C2=A0^~~~~~~~~~<br>In file inc=
+luded from statx09.c:21:<br>/home/buildroot/autobuild/instance-0/output-1/h=
+ost/lib/gcc/aarch64-buildroot-linux-gnu/11.3.0/include-fixed/sys/mount.h:21=
+9:8: note: originally defined here<br>=C2=A0 219 | struct mount_attr<br>=C2=
+=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A0 =C2=A0 =C2=A0^~~~~~~~~~<br>../../../../in=
+clude/mk/<a href=3D"http://rules.mk:45">rules.mk:45</a>: recipe for target =
+&#39;statx09&#39; failed<br>make[5]: *** [statx09] Error 1<br>../../../incl=
+ude/mk/generic_trunk_target.inc:108: recipe for target &#39;all&#39; failed=
+<br>make[4]: *** [all] Error 2<br>../../include/mk/generic_trunk_target.inc=
+:108: recipe for target &#39;all&#39; failed<br>make[3]: *** [all] Error 2<=
+br>../include/mk/generic_trunk_target.inc:108: recipe for target &#39;all&#=
+39; failed<br>make[2]: *** [all] Error 2<br>make[2]: Leaving directory &#39=
+;/home/buildroot/autobuild/instance-0/output-1/build/ltp-testsuite-20220527=
+/testcases&#39;<br>Makefile:106: recipe for target &#39;testcases-all&#39; =
+failed<br>make[1]: *** [testcases-all] Error 2<br>make[1]: Leaving director=
+y &#39;/home/buildroot/autobuild/instance-0/output-1/build/ltp-testsuite-20=
+220527&#39;<br>package/<a href=3D"http://pkg-generic.mk:290">pkg-generic.mk=
+:290</a>: recipe for target &#39;/home/buildroot/autobuild/instance-0/outpu=
+t-1/build/ltp-testsuite-20220527/.stamp_built&#39; failed<br>make: *** [/ho=
+me/buildroot/autobuild/instance-0/output-1/build/ltp-testsuite-20220527/.st=
+amp_built] Error 2<br>make: Leaving directory &#39;/home/buildroot/autobuil=
+d/instance-0/buildroot&#39;<br></div></div></div>
+
+--000000000000681d6105e9ae366b--
+
+--===============1250666328==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1250666328==--
