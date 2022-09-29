@@ -4,57 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12C54C32771
-	for <ltp@archiver.kernel.org>; Thu, 29 Sep 2022 02:30:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2238AC433FE
+	for <ltp@archiver.kernel.org>; Thu, 29 Sep 2022 19:21:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AC7423CA2E9
-	for <ltp@archiver.kernel.org>; Thu, 29 Sep 2022 04:30:35 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9C4193CA72A
+	for <ltp@archiver.kernel.org>; Thu, 29 Sep 2022 21:21:07 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 66A323C0FA6
- for <ltp@lists.linux.it>; Thu, 29 Sep 2022 04:30:24 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id E672C3C9481
+ for <ltp@lists.linux.it>; Thu, 29 Sep 2022 21:20:56 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DCB031000954
- for <ltp@lists.linux.it>; Thu, 29 Sep 2022 04:30:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1664418623; x=1695954623;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=uKVfsxljMmDkqKWmxeA51IFFzQoxWCmK/izTFh3ANwc=;
- b=OKFs/X0Q9j9mm/QX+05udcL9GY6/fz0xpgY5Rv+lhQZWQm4NwoyWlySp
- TDm3kBVY7Z2oMrXNnDsqQhwLTkDujKi8t7UnjjHWCzFi32GjhqgBQlTft
- uUsDpMjx7AfIMM1zqN5CYLPtrN3cxLGO22CHFsTCTklmUt3dvyftgf0++
- zhVy5O53UpnnDiCjswmqUQMvr55nUktqXAu14onvgzx9snVoDAePUj0Hy
- sNbqvNT4PdRy8Sy2Pp2takNqYlidGb5r+yu5H3R2sRSHZDDnjKCxjKGQ6
- 0mlcatJUoIJzxsbSCd0TtfHltR+WPxf7DZGQznEAoRrYWrwWbaZsQh1ik Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10484"; a="281487929"
-X-IronPort-AV: E=Sophos;i="5.93,353,1654585200"; d="scan'208";a="281487929"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Sep 2022 19:30:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10484"; a="622164661"
-X-IronPort-AV: E=Sophos;i="5.93,353,1654585200"; d="scan'208";a="622164661"
-Received: from xpf.sh.intel.com ([10.239.182.112])
- by orsmga002.jf.intel.com with ESMTP; 28 Sep 2022 19:30:18 -0700
-From: Pengfei Xu <pengfei.xu@intel.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CF15C1401254
+ for <ltp@lists.linux.it>; Thu, 29 Sep 2022 21:20:55 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 980981F88B;
+ Thu, 29 Sep 2022 19:20:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1664479254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=kN5MsqmOgjgLsq2aJgbdnalDEsTnx/vGZVhxTEqoXm4=;
+ b=pe4yxz0ObF7VSCX0deg0CPvPJgce9a31qDqgfew1UmraZJt35x7/3AeYiskEkAUkKTIo78
+ 5usLFqChr4TxUyVo3ja0qYey4qf9RRt+3/IG+ZJAWa5xEwMfhqp3n9Thql+CbA+EyV1TgG
+ LN6NCQ2xcOvmUl14TqHZrwUCyHyp5co=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1664479254;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=kN5MsqmOgjgLsq2aJgbdnalDEsTnx/vGZVhxTEqoXm4=;
+ b=RAUWMgCFonFgL5fptLlf6vOU02UurkMHZtwkhd6LhjEMkOb5FLY+29w6pNE9Gb0nXhUCiA
+ nj1s2KMbnilbx3BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9ECF113A71;
+ Thu, 29 Sep 2022 19:20:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id j/ajARXwNWPDMgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 29 Sep 2022 19:20:53 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 29 Sep 2022 10:30:20 +0800
-Message-Id: <466821336a63ab9b6c236a0a1c4dbe056b7a5ac3.1664418361.git.pengfei.xu@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1664418361.git.pengfei.xu@intel.com>
-References: <cover.1664418361.git.pengfei.xu@intel.com>
+Date: Thu, 29 Sep 2022 21:20:47 +0200
+Message-Id: <20220929192047.22125-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/1] ptrace07: should not use a hard-coded xstate
- size and use CPUID specified instead
+Subject: [LTP] [PATCH 1/1] zram01.sh: Fix minimal size for XFS on kernel 5.19
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,124 +70,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: chang.seok.bae@intel.com, eric.devolder@oracle.com,
- Heng Su <heng.su@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Should not use a hard-coded xstate size(512 * 8 = 4096 bytes) which is
-wrong, should use maximum XSAVE size specified by CPUID.(EAX=0DH, ECX=0H):EBX.
-If the CPU's maximum XSAVE size exceeds the hard-coded xstate size 4096 bytes,
-it will cause the ptrace07 case to fail as below:
-"
-./ptrace07
-tst_test.c:1528: TINFO: Timeout per run is 0h 00m 30s
-ptrace07.c:142: TBROK: PTRACE_SETREGSET failed with unexpected error: EFAULT (14)
-tst_test.c:1571: TINFO: Killed the leftover descendant processes
+mkfs.xfs for kernel 5.19 bumps minimum filesystems 300 MB. Due this we
+already updated minimal filesystem size for all_filesystems /
+$TST_ALL_FILESYSTEMS in 66e05c841. But zram01.sh does not use the API,
+thus update it now.
 
-Summary:
-passed   0
-failed   0
-broken   1
-skipped  0
-warnings 0
-"
+Check for RAM size was added for f18c8fd3a for Btrfs on ppc64le due to
+larger page size. Hopefully this is not needed.
 
-Reported-by: Eric DeVolder <eric.devolder@oracle.com>
-Reviewed-by: Chang S. Bae <chang.seok.bae@intel.com>
-Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/ptrace/ptrace07.c | 25 +++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+Hi Cyril, Li,
 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace07.c b/testcases/kernel/syscalls/ptrace/ptrace07.c
-index da62cadb0..0accaceb5 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace07.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace07.c
-@@ -35,6 +35,7 @@
- #include "config.h"
- #include "ptrace.h"
- #include "tst_test.h"
-+#include "ltp_cpuid.h"
- 
- #ifndef PTRACE_GETREGSET
- # define PTRACE_GETREGSET 0x4204
-@@ -48,6 +49,8 @@
- # define NT_X86_XSTATE 0x202
- #endif
- 
-+#define CPUID_LEAF_XSTATE 0xd
+sorry for putting this patch so late (tomorrow we want to release LTP).
+Not really sure if RAM check is needed for XFS on ppc64le, any idea?
+
+Kind regards,
+Petr
+
+ testcases/kernel/device-drivers/zram/zram01.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
+index 8b92b699f..d126663b6 100755
+--- a/testcases/kernel/device-drivers/zram/zram01.sh
++++ b/testcases/kernel/device-drivers/zram/zram01.sh
+@@ -41,10 +41,14 @@ initialize_vars()
+ 	for fs in $(tst_supported_fs -s tmpfs); do
+ 		size="26214400"
+ 		limit="25M"
 +
- static void check_regs_loop(uint32_t initval)
- {
- 	const unsigned long num_iters = 1000000000;
-@@ -83,8 +86,15 @@ static void do_test(void)
- 	int i;
- 	int num_cpus = tst_ncpus();
- 	pid_t pid;
--	uint64_t xstate[512];
--	struct iovec iov = { .iov_base = xstate, .iov_len = sizeof(xstate) };
-+	uint32_t eax, ebx, ecx = 0, edx;
-+	uint64_t *xstate;
-+	/*
-+	 * CPUID.(EAX=0DH, ECX=0H):EBX: maximum size (bytes, from the beginning
-+	 * of the XSAVE/XRSTOR save area) required by enabled features in XCR0.
-+	 */
-+	cpuid(CPUID_LEAF_XSTATE, &eax, &ebx, &ecx, &edx);
-+	xstate = aligned_alloc(64, ebx);
-+	struct iovec iov = { .iov_base = xstate, .iov_len = ebx };
- 	int status;
- 	bool okay;
+ 		if [ "$fs" = "btrfs" ]; then
+-			check_space_for_btrfs || continue
++			check_space_for_btrfs "$fs" || continue
+ 			size="402653184"
+ 			limit="$((size/1024/1024))M"
++		elif [ "$fs" = "xfs" ]; then
++			size=314572800
++			limit="$((size/1024/1024))M"
+ 		fi
  
-@@ -102,12 +112,15 @@ static void do_test(void)
- 	sched_yield();
- 
- 	TEST(ptrace(PTRACE_ATTACH, pid, 0, 0));
--	if (TST_RET != 0)
-+	if (TST_RET != 0) {
-+		free(xstate);
- 		tst_brk(TBROK | TTERRNO, "PTRACE_ATTACH failed");
-+	}
- 
- 	SAFE_WAITPID(pid, NULL, 0);
- 	TEST(ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov));
- 	if (TST_RET != 0) {
-+		free(xstate);
- 		if (TST_ERR == EIO)
- 			tst_brk(TCONF, "GETREGSET/SETREGSET is unsupported");
- 
-@@ -138,6 +151,7 @@ static void do_test(void)
- 		tst_res(TINFO,
- 			"PTRACE_SETREGSET with reserved bits failed with EINVAL");
- 	} else {
-+		free(xstate);
- 		tst_brk(TBROK | TTERRNO,
- 			"PTRACE_SETREGSET failed with unexpected error");
- 	}
-@@ -152,8 +166,10 @@ static void do_test(void)
- 	 * worry about potential stops after this point.
- 	 */
- 	TEST(ptrace(PTRACE_DETACH, pid, 0, 0));
--	if (TST_RET != 0)
-+	if (TST_RET != 0) {
-+		free(xstate);
- 		tst_brk(TBROK | TTERRNO, "PTRACE_DETACH failed");
-+	}
- 
- 	/* If child 'pid' crashes, only report it as info. */
- 	SAFE_WAITPID(pid, &status, 0);
-@@ -173,6 +189,7 @@ static void do_test(void)
- 	}
- 	if (okay)
- 		tst_res(TPASS, "wasn't able to set invalid FPU state");
-+	free(xstate);
- }
- 
- static struct tst_test test = {
+ 		stream=$((stream+3))
 -- 
-2.31.1
+2.37.3
 
 
 -- 
