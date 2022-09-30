@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86F13C433F5
-	for <ltp@archiver.kernel.org>; Fri, 30 Sep 2022 12:05:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CACFBC433FE
+	for <ltp@archiver.kernel.org>; Fri, 30 Sep 2022 13:31:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0DA513CA8CB
-	for <ltp@archiver.kernel.org>; Fri, 30 Sep 2022 14:05:35 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 5C7B73C958A
+	for <ltp@archiver.kernel.org>; Fri, 30 Sep 2022 15:31:00 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4226D3C0895
- for <ltp@lists.linux.it>; Fri, 30 Sep 2022 14:05:25 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 4C4113C958A
+ for <ltp@lists.linux.it>; Fri, 30 Sep 2022 15:30:47 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6DA8F1401356
- for <ltp@lists.linux.it>; Fri, 30 Sep 2022 14:05:24 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C0843140143F
+ for <ltp@lists.linux.it>; Fri, 30 Sep 2022 15:30:46 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 252EA1F8C5;
- Fri, 30 Sep 2022 12:05:24 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0BF2321880;
+ Fri, 30 Sep 2022 13:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1664539524;
+ t=1664544646;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=//mi48wMjfG5HqTCsqWUvtwK3I/H2PFTqgBwR8Usahg=;
- b=M2oHOFXjgR3ne0ED9ZGmhtrlp7GSwDmBGO1pqPdLi2CTj+U5Z0g+UI1pQCNan3uB0g9XZK
- +BNZfIqWymMlgkzoYQyrTDBWXKXLL5gd0LYQQiHtugOF0/tnecIQXeCnj8cSoKx828xEs+
- DoYH+qGIpNlBAVY6Zes4Wi6jmfunBNM=
+ bh=i+01rYxtE4E7A9oESZ7WG+q5DCwZJdUjnjWlJ/AtRzE=;
+ b=m5G37TZnvtUwQ9lrgxof1Zaw6TzWlsDwa0ii3ik5lTDY5mhthFmDMmcwvav8Ctw27UFlaF
+ Yg14P255+Jd8f929vmcoO9rgFi/U2WpKICrU8vOmgarDzgMdn/kI+GBpiITDN1AA8tRkAi
+ g+hFNGdxr1gik46paKJoDB9HjVSgqMg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1664539524;
+ s=susede2_ed25519; t=1664544646;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=//mi48wMjfG5HqTCsqWUvtwK3I/H2PFTqgBwR8Usahg=;
- b=V7Tcyo/+TwVUKcYv3zYpmJ9kBLn+3jVU/w4i9ldeuS0GxUJxPoZTqMm5fdDHGoDAsrQqDB
- wmy5LFd4la3KjwAw==
+ bh=i+01rYxtE4E7A9oESZ7WG+q5DCwZJdUjnjWlJ/AtRzE=;
+ b=NT9+UwWdpLJBEQyXE8Ln3JISBzJya7vzBc9EhcFlxwQzXbVAY50QuoL5nbhIU0la4D/g+6
+ lUuzhxui+VlAeyDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EA65913677;
- Fri, 30 Sep 2022 12:05:23 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C70A513776;
+ Fri, 30 Sep 2022 13:30:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id rP6vN4PbNmNSHgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 30 Sep 2022 12:05:23 +0000
-Date: Fri, 30 Sep 2022 14:05:21 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id T2TBLoXvNmNsQgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 30 Sep 2022 13:30:45 +0000
+Date: Fri, 30 Sep 2022 15:30:43 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <YzbbgS6O0vBPUXbp@pevik>
-References: <20220930112434.13038-1-pvorel@suse.cz>
- <YzbV5JFPNNoVmqth@yuki>
+Message-ID: <Yzbvg36XX5pVCFkB@pevik>
+References: <20220930091208.5688-1-pvorel@suse.cz> <Yza1B8t2LOueCVUC@yuki>
+ <Yza2jwpow0uhaLHu@pevik> <Yza4a2Icm+M9cTiK@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YzbV5JFPNNoVmqth@yuki>
+In-Reply-To: <Yza4a2Icm+M9cTiK@yuki>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] tst_test.sh: Fix missing cleanup run from
- setup
+Subject: Re: [LTP] [PATCH v2 1/1] zram01.sh: Fix minimal size for XFS on
+ kernel 5.19
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,26 +85,10 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi all,
 
-> Hi!
-> Looks like an obvious regression that should be fixed.
-+1
-
-> But we should at least re-run all shell tests to make sure that this
-> does not break anything. I would vote for this to go in before the
-> release but after you did enough testing.
-
-I'm testing with these 2 patches (this and zram01.sh) in my fork:
-https://github.com/pevik/ltp/commits/ltp-202209.2022-09-30.pre-release
-
-I rerun whole LTP tests on 3 SLES versions, most of the shell tests on
-Tumbleweed, I'll also try some shell tests on some Debian version.
-Also CI passed (which runs make test-shell), + I run make test-shell manually
-(covers more than CI), but that's not that relevant as we don't cover much.
-
-> And also it would be better if anyone else had a look.
-That'd be great, but not sure if anybody jumps in.
+Tested on affected 5.19 kernel and various older SLES kernels.
+Therefore merged.
 
 Kind regards,
 Petr
