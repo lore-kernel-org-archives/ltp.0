@@ -4,63 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A5EBC433F5
-	for <ltp@archiver.kernel.org>; Mon,  3 Oct 2022 12:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3455BC433FE
+	for <ltp@archiver.kernel.org>; Mon,  3 Oct 2022 13:15:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 53C533C9586
-	for <ltp@archiver.kernel.org>; Mon,  3 Oct 2022 14:49:32 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 1AE713C8779
+	for <ltp@archiver.kernel.org>; Mon,  3 Oct 2022 15:15:03 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 925893C4F4A
- for <ltp@lists.linux.it>; Mon,  3 Oct 2022 14:49:01 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1E4C03C55EE
+ for <ltp@lists.linux.it>; Mon,  3 Oct 2022 15:14:54 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0DB911A010FF
- for <ltp@lists.linux.it>; Mon,  3 Oct 2022 14:49:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1664801339;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=QKDsAGIClEBQAvkuNpZ/QzugW3Ttj9kw5QqSSwKcnes=;
- b=PYnLa9bNn49QDAmCFLYq9ePWH+n4ARa+enbDQOMybelB4QbDN3OGbqtJUc69KiYSGN5kQD
- qx8vNoNp5o0obOtF7EJgsy8z9kwqGutcFfVK4vtbCujOOzRVbq3TlXTyfb0fMAJylCAzgV
- LqHjHvunjaerg7/gIFZxNITlAnDbOY8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-623-TY0uvsWvOl-EDy6vrGJajw-1; Mon, 03 Oct 2022 08:48:58 -0400
-X-MC-Unique: TY0uvsWvOl-EDy6vrGJajw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
- [10.11.54.10])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 48B71200258
+ for <ltp@lists.linux.it>; Mon,  3 Oct 2022 15:14:52 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 29FA11019C89
- for <ltp@lists.linux.it>; Mon,  3 Oct 2022 12:48:58 +0000 (UTC)
-Received: from janakin.usersys.redhat.com (unknown [10.40.193.28])
- by smtp.corp.redhat.com (Postfix) with ESMTP id A9882492B04
- for <ltp@lists.linux.it>; Mon,  3 Oct 2022 12:48:57 +0000 (UTC)
-From: Jan Stancek <jstancek@redhat.com>
-To: ltp@lists.linux.it
-Date: Mon,  3 Oct 2022 14:48:48 +0200
-Message-Id: <7627543d016c078db2bf4e7df7f242dca99843ed.1664801307.git.jstancek@redhat.com>
-In-Reply-To: <43d65409eb3290b09e1c3a21cb0dc079c5f4849c.1664801307.git.jstancek@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 10C4D1F93B;
+ Mon,  3 Oct 2022 13:14:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1664802891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DZLCybC/rXaM9foBnFXsZHfvJBL9Uf3V8nC7smrJ9Tg=;
+ b=A2i0s02BMj0UX2prlAdvHzbpO7AjWM2pLZmyZ6FsYQh4XVsBkdl7VAX1DBSGXbdDLm5B7s
+ 5Tx3f99z70TLSz4o+Afj+bFnJMvhapVnO4aW0uvW9lrHBBqC9YG3LrcCBbnzbM7aWEhqXC
+ mzboq4c9htyivfuu8rbsCQtrUOxIVGc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1664802891;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DZLCybC/rXaM9foBnFXsZHfvJBL9Uf3V8nC7smrJ9Tg=;
+ b=tww4nd266qiyNW4Xupzj1uTH6YLoNSnUNK+sWruB3VD61N4gYszOohD6/grjKrnbheEaUL
+ 8keU3oYMWLBc4MAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F09731332F;
+ Mon,  3 Oct 2022 13:14:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id R2mXOUrgOmMaTQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 03 Oct 2022 13:14:50 +0000
+Date: Mon, 3 Oct 2022 15:16:41 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Jan Stancek <jstancek@redhat.com>
+Message-ID: <YzrguY3J3YLJhU//@yuki>
 References: <43d65409eb3290b09e1c3a21cb0dc079c5f4849c.1664801307.git.jstancek@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <43d65409eb3290b09e1c3a21cb0dc079c5f4849c.1664801307.git.jstancek@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] mmapstress04: use SAFE_WRITE_FULLY from LTP
- library
+Subject: Re: [LTP] [PATCH 1/3] lib: introduce safe_write_fully()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,50 +74,94 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/mem/mmapstress/mmapstress04.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+Hi!
+> In case there is a short (but otherwise successful) write(),
+> safe_write_fully() repeats write() and attempts to resume
+> with the remainder of the buffer.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  include/tst_safe_macros.h |  5 +++++
+>  lib/tst_safe_macros.c     | 19 +++++++++++++++++++
+>  2 files changed, 24 insertions(+)
+> 
+> diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+> index 81c4b0844267..caee0e9cf842 100644
+> --- a/include/tst_safe_macros.h
+> +++ b/include/tst_safe_macros.h
+> @@ -645,4 +645,9 @@ int safe_sysinfo(const char *file, const int lineno, struct sysinfo *info);
+>  #define SAFE_SYSINFO(info) \
+>  	safe_sysinfo(__FILE__, __LINE__, (info))
+>  
+> +ssize_t safe_write_fully(const char *file, const int lineno,
+> +	int fildes, const void *buf, size_t nbyte);
+> +#define SAFE_WRITE_FULLY(fildes, buf, nbyte) \
+> +	safe_write_fully(__FILE__, __LINE__, (fildes), (buf), (nbyte))
 
-diff --git a/testcases/kernel/mem/mmapstress/mmapstress04.c b/testcases/kernel/mem/mmapstress/mmapstress04.c
-index ceede7eaa860..2b421890a461 100644
---- a/testcases/kernel/mem/mmapstress/mmapstress04.c
-+++ b/testcases/kernel/mem/mmapstress/mmapstress04.c
-@@ -32,17 +32,6 @@ static void setup(void)
- 		MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
- }
- 
--static void write_fully(int fd, void *buf, int len)
--{
--	int ret;
--
--	do {
--		ret = SAFE_WRITE(0, fd, buf, len);
--		buf += ret;
--		len -= ret;
--	} while (len > 0);
--}
--
- static void mmapstress04(void)
- {
- 	int i, j, rofd, rwfd;
-@@ -85,7 +74,7 @@ static void mmapstress04(void)
- 	buf = SAFE_MALLOC(page_size);
- 	memset(buf, 'a', page_size);
- 	for (i = 0; i < 6 * 64; i++)
--		write_fully(rwfd, buf, page_size);
-+		SAFE_WRITE_FULLY(rwfd, buf, page_size);
- 	free(buf);
- 	SAFE_CLOSE(rwfd);
- 
+We already have a flag for SAFE_WRITE() to fail/not-fail on partial
+write, what about turning that into three way switch?
+
+Something as:
+
+enum safe_write_opts {
+	SAFE_WRITE_PARTIAL = 0,
+	SAFE_WRITE_FULL = 1,
+	SAFE_WRITE_RETRY = 2,
+};
+
+Or maybe just rename the SAFE_WRITE_FULLY() to SAFE_WRITE_RETRY().
+
+>  #endif /* SAFE_MACROS_H__ */
+> diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
+> index c4cdc87e7346..e4d4ef4269a4 100644
+> --- a/lib/tst_safe_macros.c
+> +++ b/lib/tst_safe_macros.c
+> @@ -591,3 +591,22 @@ void safe_cmd(const char *file, const int lineno, const char *const argv[],
+>  		tst_brk_(file, lineno, TBROK, "%s failed (%d)", argv[0], rval);
+>  	}
+>  }
+> +
+> +ssize_t safe_write_fully(const char *file, const int lineno,
+> +	int fildes, const void *buf, size_t nbyte)
+> +{
+> +	ssize_t rval;
+> +	size_t len = nbyte;
+> +
+> +	do {
+> +		rval = write(fildes, buf, len);
+> +		if (rval == -1) {
+> +			tst_brk_(file, lineno, TBROK | TERRNO,
+> +				"write(%d,%p,%zu) failed", fildes, buf, len);
+
+I guess that we may print potentionally confusing output here since we
+modify the buf and len in the loop. I guess that we should store the buf
+pointer at the start just for a case of this message and use the nbyte
+and possibly write how many bytes we have managed to write before the
+failure.
+
+> +		}
+> +		buf += rval;
+> +		len -= rval;
+> +	} while (len > 0);
+> +
+> +	return nbyte;
+> +}
+> -- 
+> 2.27.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.27.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
