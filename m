@@ -4,61 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6523AC433FE
-	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 09:08:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B271C433FE
+	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 12:07:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0AE163CA74A
-	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 11:08:27 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 2300F3CA47E
+	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 14:07:09 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4D3AD3C562F
- for <ltp@lists.linux.it>; Tue,  4 Oct 2022 11:08:16 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 0856F3C80B3
+ for <ltp@lists.linux.it>; Tue,  4 Oct 2022 14:06:58 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 966AD140114C
- for <ltp@lists.linux.it>; Tue,  4 Oct 2022 11:08:15 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4A14520007A
+ for <ltp@lists.linux.it>; Tue,  4 Oct 2022 14:06:57 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 721661F924;
- Tue,  4 Oct 2022 09:08:14 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 503C2218E9;
+ Tue,  4 Oct 2022 12:06:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1664874494; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=2wpyR+0qEXxMn7qQo8QR1ddjXDdjrlL7Xnz9La7C3nM=;
- b=PDfC+VI8ZxWnKPk0WbGClPxWtvhS5EPcm0YwLBlEajhJYVqMlLMvy+xMmVuUgRz7BnGXjQ
- 6YpLG1SQDEyNfPT1NLI+JvB2zJlG/7W8yhw1s3J0awRBK282nK8nGLWms7ZXUwmjaqpylq
- +wcq4hlavpz+Qfcc/PEC5XEeGDeLMuc=
+ t=1664885217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Vm0kt+Rh3+ir+NYsA0gQB6onv0BzxIzUmyqFOMx2RBU=;
+ b=qSqagbCKkhyG3A7Xn6hH4PSjpoCw175SQh8t69zAXMxUfJAhLK4HzVOpCHg2ryWeJEZQ2d
+ ll3zyWE3YGE/Zg6PtF27/u5hMP5F3Efg5721tWtnuNa0saysq/4lG7HnslOBkHBHJFD3cY
+ C8QfHIiPJ8scBwPtTCEQujObzN0u5Ms=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1664874494;
+ s=susede2_ed25519; t=1664885217;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=2wpyR+0qEXxMn7qQo8QR1ddjXDdjrlL7Xnz9La7C3nM=;
- b=mQj1wvdfdFBtbPjMqa+OkC3xT2aqbuqyduQyp1Olgumjp9zeQi+barK6qA6DcRXquSObnE
- X1LxrsVvmu4+MLCw==
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Vm0kt+Rh3+ir+NYsA0gQB6onv0BzxIzUmyqFOMx2RBU=;
+ b=2IFoY9uW8juH17fHQn6PZZ14QIEZl//SOqXgmhGr2WbtxtQy3PFaBVNPfCAzRDEyKmPJbl
+ PCuP7phrugMtfgAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 30290139D2;
- Tue,  4 Oct 2022 09:08:14 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C3BD139EF;
+ Tue,  4 Oct 2022 12:06:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Xe3xCf73O2MUYwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 04 Oct 2022 09:08:14 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id wRMzCeEhPGPLNQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 04 Oct 2022 12:06:57 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue,  4 Oct 2022 11:08:10 +0200
-Message-Id: <20221004090810.9023-1-pvorel@suse.cz>
+Date: Tue,  4 Oct 2022 14:06:53 +0200
+Message-Id: <20221004120653.23237-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] df01.sh: Use own fsfreeze implementation for XFS
+Subject: [LTP] [PATCH 1/1] doc: LTP C And Shell Test API Comparison
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,140 +73,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-xfs@vger.kernel.org, Eric Sandeen <sandeen@redhat.com>,
- "Darrick J . Wong" <djwong@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-df01.sh started to fail on XFS on certain configuration since mkfs.xfs
-and kernel 5.19. Implement fsfreeze instead of introducing external
-dependency. NOTE: implementation could fail on other filesystems
-(EOPNOTSUPP on exfat, ntfs, vfat).
-
-Suggested-by: Darrick J. Wong <djwong@kernel.org>
-Suggested-by: Eric Sandeen <sandeen@redhat.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
-
-FYI the background of this issue:
-https://lore.kernel.org/ltp/Yv5oaxsX6z2qxxF3@magnolia/
-https://lore.kernel.org/ltp/974cc110-d47e-5fae-af5f-e2e610720e2d@redhat.com/
-
-@LTP developers: not sure if the consensus is to avoid LTP API
-completely (even use it just with TST_NO_DEFAULT_MAIN), if required I
-can rewrite to use it just to get SAFE_*() macros (like
-testcases/lib/tst_checkpoint.c) or even with tst_test workarounds
-(testcases/lib/tst_get_free_pids.c).
-
-Kind regards,
-Petr
-
- testcases/commands/df/Makefile        |  4 +-
- testcases/commands/df/df01.sh         |  3 ++
- testcases/commands/df/df01_fsfreeze.c | 55 +++++++++++++++++++++++++++
- 3 files changed, 61 insertions(+), 1 deletion(-)
- create mode 100644 testcases/commands/df/df01_fsfreeze.c
-
-diff --git a/testcases/commands/df/Makefile b/testcases/commands/df/Makefile
-index 2787bb43a..1e0b4283a 100644
---- a/testcases/commands/df/Makefile
-+++ b/testcases/commands/df/Makefile
-@@ -1,11 +1,13 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) Linux Test Project, 2021-2022
- # Copyright (c) 2015 Fujitsu Ltd.
--# Author:Zhang Jin <jy_zhangjin@cn.fujitsu.com>
-+# Author: Zhang Jin <jy_zhangjin@cn.fujitsu.com>
- 
- top_srcdir		?= ../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
- INSTALL_TARGETS		:= df01.sh
-+MAKE_TARGETS			:= df01_fsfreeze
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-index ae0449c3c..c59d2a01d 100755
---- a/testcases/commands/df/df01.sh
-+++ b/testcases/commands/df/df01.sh
-@@ -46,6 +46,9 @@ df_test()
- 
- 	ROD_SILENT rm -rf $TST_MNTPOINT/testimg
- 
-+	# ensure free space change can be seen by statfs
-+	[ "$fs" = "xfs" ] && ROD_SILENT df01_fsfreeze $TST_MNTPOINT
-+
- 	# flush file system buffers, then we can get the actual sizes.
- 	sync
- }
-diff --git a/testcases/commands/df/df01_fsfreeze.c b/testcases/commands/df/df01_fsfreeze.c
-new file mode 100644
-index 000000000..d47e1b01a
---- /dev/null
-+++ b/testcases/commands/df/df01_fsfreeze.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2010 Hajime Taira <htaira@redhat.com>
-+ * Copyright (c) 2010 Masatake Yamato <yamato@redhat.com>
-+ * Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
-+ */
-+
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <linux/fs.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+
-+#define err_exit(...) ({ \
-+	fprintf(stderr, __VA_ARGS__); \
-+	if (errno) \
-+		fprintf(stderr, ": %s (%d)", strerror(errno), errno); \
-+	fprintf(stderr, "\n"); \
-+	exit(EXIT_FAILURE); \
-+})
-+
-+int main(int argc, char *argv[])
-+{
-+	int fd;
-+	struct stat sb;
-+
-+	if (argc < 2)
-+		err_exit("USAGE: df01_fsfreeze <mountpoint>");
-+
-+	fd = open(argv[1], O_RDONLY);
-+	if (fd < 0)
-+		err_exit("open '%s' failed", argv[1]);
-+
-+	if (fstat(fd, &sb) == -1)
-+		err_exit("stat of '%s' failed", argv[1]);
-+
-+	if (!S_ISDIR(sb.st_mode))
-+		err_exit("%s: is not a directory", argv[1]);
-+
-+	if (ioctl(fd, FIFREEZE, 0) < 0)
-+		err_exit("ioctl FIFREEZE on '%s' failed", argv[1]);
-+
-+	usleep(100);
-+
-+	if (ioctl(fd, FITHAW, 0) < 0)
-+		err_exit("ioctl FITHAW on '%s' failed", argv[1]);
-+
-+	close(fd);
-+
-+	return EXIT_SUCCESS;
-+}
--- 
-2.37.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+RGVsaWJlcmF0ZWx5IHB1dCBuZGFzaCAo4oCTKSBpbnN0ZWFkIG9mIFRPRE8gb24gbWlzc2luZyBm
+ZWF0dXJlcywKYmVjYXVzZSBub3QgZXZlcnl0aGluZyBuZWVkcyB0byBiZSBpbXBsZW1lbnRlZC4K
+ClNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PgotLS0KRG8geW91IGNv
+bnNpZGVyIHRoaXMgdXNlZnVsPwpJZiB5ZXMsIHNob3VsZCB0aGVyZSBiZSBsaW5rcyB0byB0aGUg
+ZG9jIHNlY3Rpb24/CgpLaW5kIHJlZ2FyZHMsClBldHIKCiBkb2MvdGVzdC13cml0aW5nLWd1aWRl
+bGluZXMudHh0IHwgNjQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCiAxIGZpbGUg
+Y2hhbmdlZCwgNjQgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL2RvYy90ZXN0LXdyaXRpbmct
+Z3VpZGVsaW5lcy50eHQgYi9kb2MvdGVzdC13cml0aW5nLWd1aWRlbGluZXMudHh0CmluZGV4IDQy
+MGFlOWM0My4uNzA0M2MzOTAyIDEwMDY0NAotLS0gYS9kb2MvdGVzdC13cml0aW5nLWd1aWRlbGlu
+ZXMudHh0CisrKyBiL2RvYy90ZXN0LXdyaXRpbmctZ3VpZGVsaW5lcy50eHQKQEAgLTM0NCwzICsz
+NDQsNjcgQEAgb2YgdGhlIHN0YWJsZSBrZXJuZWwgQUJJIHRoZSBhc3NvY2lhdGVkIHRlc3QgbXVz
+dCBiZSBtb3ZlZCBvdXQgb2Ygc3RhZ2luZy4KIAogVGhpcyBpcyBwcmltYXJpbHkgdG8gaGVscCB0
+ZXN0IGtlcm5lbCBSQ3MgYnkgYXZvaWRpbmcgdGhlIG5lZWQgdG8gZG93bmxvYWQKIHNlcGFyYXRl
+IExUUCBwYXRjaHNldHMuCisKKzggTFRQIEMgQW5kIFNoZWxsIFRlc3QgQVBJIENvbXBhcmlzb24K
+Ky0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KKworQ29tcGFyaXNvbiBvZgor
+aHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9sdHAvd2lraS9DLVRlc3QtQVBJ
+W0MgVGVzdCBBUEldIGFuZAoraHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9s
+dHAvd2lraS9TaGVsbC1UZXN0LUFQSVtTaGVsbCBUZXN0IEFQSV0uCisKK1tvcHRpb25zPSJoZWFk
+ZXIiXQorfD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cit8ICBDIEFQSSAoJ3N0cnVjdCB0c3RfdGVz
+dCcgbWVtYmVycykgfCBzaGVsbCBBUEkgKCckVFNUXyonIGVudmlyb25tZW50IHZhcmlhYmxlcykK
+K3wgJy5hbGxfZmlsZXN5c3RlbXMnIHwgJ1RTVF9BTExfRklMRVNZU1RFTVMnCit8ICcuYnVmcycg
+fCDigJMKK3wgJy5jYXBzJyB8IOKAkworfCAnLmNoaWxkX25lZWRzX3JlaW5pdCcgfCBub3QgYXBw
+bGljYWJsZQorfCAnLmNsZWFudXAnIHwgJ1RTVF9DTEVBTlVQJworfCAnLmRldl9leHRyYV9vcHRz
+JyB8ICdUU1RfREVWX0VYVFJBX09QVFMnCit8ICcuZGV2X2ZzX29wdHMnIHwgJ1RTVF9ERVZfRlNf
+T1BUUycKK3wgJy5kZXZfZnNfdHlwZScgfCAnVFNUX0ZTX1RZUEUnCit8ICcuZGV2X21pbl9zaXpl
+JyB8IG5vdCBhcHBsaWNhYmxlCit8ICcuZm9ybWF0X2RldmljZScgfCAnVFNUX0ZPUk1BVF9ERVZJ
+Q0UnCit8ICcubWF4X3J1bnRpbWUnIHwg4oCTCit8ICcubWluX2NwdXMnIHwgbm90IGFwcGxpY2Fi
+bGUKK3wgJy5taW5fa3ZlcicgfCAnVFNUX01JTl9LVkVSJworfCAnLm1pbl9tZW1fYXZhaWwnIHwg
+bm90IGFwcGxpY2FibGUKK3wgJy5tbnRfZmxhZ3MnIHwgJ1RTVF9NTlRfUEFSQU1TJworfCAnLm1u
+dHBvaW50JywgJy5tbnRfZGF0YScgfCAnVFNUX01OVFBPSU5UJworfCAnLm1vdW50X2RldmljZScg
+fCAnVFNUX01PVU5UX0RFVklDRScKK3wgJy5uZWVkc19jZ3JvdXBfY3RybHMnIHwg4oCTCit8ICcu
+bmVlZHNfY2hlY2twb2ludHMnIHwgJ05FRURTX0NIRUNLUE9JTlRTJworfCAnLm5lZWRzX2NtZHMn
+IHwgJ1RTVF9ORUVEU19DTURTJworfCAnLm5lZWRzX2RldmZzJyB8IOKAkworfCAnLm5lZWRzX2Rl
+dmljZScgfCAnVFNUX05FRURTX0RFVklDRScKK3wgJy5uZWVkc19kcml2ZXJzJyB8ICdUU1RfTkVF
+RFNfRFJJVkVSUycKK3wgJy5uZWVkc19rY29uZmlncycgfCAnVFNUX05FRURTX0tDT05GSUdTJwor
+fCAnLm5lZWRzX292ZXJsYXknIHwKK3wgJy5uZWVkc19yb2ZzJyB8IOKAkworfCAnLm5lZWRzX3Jv
+b3QnIHwgJ1RTVF9ORUVEU19ST09UJworfCAnLm5lZWRzX3RtcGRpcicgfCAnVFNUX05FRURTX1RN
+UERJUicKK3wgJy5vcHRpb25zJyB8ICdUU1RfUEFSU0VfQVJHUycsICdUU1RfT1BUUycKK3wgJy5y
+ZXNvdXJjZV9maWxlcycgfCDigJMKK3wgJy5yZXN0b3JlX3dhbGxjbG9jaycgfCBub3QgYXBwbGlj
+YWJsZQorfCAnLnNhbXBsZScgfCDigJMKK3wgJy5zYXZlX3Jlc3RvcmUnIHwg4oCTCit8ICcuc2Nh
+bGwnIHwgbm90IGFwcGxpY2FibGUKK3wgJy5zZXR1cCcgfCAnVFNUX1NFVFVQJworfCAnLnNraXBf
+ZmlsZXN5c3RlbXMnIHwgJ1RTVF9TS0lQX0ZJTEVTWVNURU1TJworfCAnLnNraXBfaW5fY29tcGF0
+JyB8IOKAkworfCAnLnNraXBfaW5fbG9ja2Rvd24nIHwg4oCTCit8ICcuc3VwcG9ydGVkX2FyY2hz
+JyB8IG5vdCBhcHBsaWNhYmxlCit8ICcudGFncycgfCDigJMKK3wgJy50YWludF9jaGVjaycgfCDi
+gJMKK3wgJy50Y250JyB8ICdUU1RfQ05UJworfCAnLnRjb25mX21zZycgfCBub3QgYXBwbGljYWJs
+ZQorfCAnLnRlc3QnLCAnLnRlc3RfYWxsJyB8ICdUU1RfVEVTVEZVTkMnCit8ICcudGVzdF92YXJp
+YW50cycgfCDigJMKK3wgJy50aW1lb3V0JyB8ICdUU1RfVElNRU9VVCcKK3wgJy50c3RfaHVnZXBh
+Z2UnIHwgbm90IGFwcGxpY2FibGUKK3wgLmZvcm1hdF9kZXZpY2UgfCAnVFNUX0RFVklDRScKK3wg
+bm90IGFwcGxpY2FibGUgfCAnVFNUX05FRURTX0tDT05GSUdTX0lGUycKK3wgbm90IGFwcGxpY2Fi
+bGUgfCAnVFNUX05FRURTX01PRFVMRScKK3wgbm90IGFwcGxpY2FibGUgfCAnVFNUX1BPU19BUkdT
+JworfCBub3QgYXBwbGljYWJsZSB8ICdUU1RfVVNBR0UnCit8PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT0KLS0gCjIuMzcuMwoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
+eC5pdC9saXN0aW5mby9sdHAK
