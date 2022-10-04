@@ -4,52 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10503C433FE
-	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 16:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C0F8C433F5
+	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 18:21:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 57F6E3CAE0E
-	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 18:13:22 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 1D3DD3CA47E
+	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 20:21:29 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 803E13C9605
- for <ltp@lists.linux.it>; Tue,  4 Oct 2022 18:13:12 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id C24AE3C31D2
+ for <ltp@lists.linux.it>; Tue,  4 Oct 2022 20:21:14 +0200 (CEST)
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com
+ [IPv6:2607:f8b0:4864:20::104a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 18BA2140007D
- for <ltp@lists.linux.it>; Tue,  4 Oct 2022 18:13:10 +0200 (CEST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0C445614A7;
- Tue,  4 Oct 2022 16:13:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CB38C433C1;
- Tue,  4 Oct 2022 16:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664899988;
- bh=hWmdNenGYwkJ5nm6qAEqQIe8T2NHeSqGqdRiN3MoH04=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=qbf2sPJI11nLeoOtTQEhq8Hw9uvLIyR+sarLsLMKK4ci5LrnUhadfTPeifsNo3QyH
- 1fx2nb7ZRYYHit7gBKEXxKmNJyiLH5u+xjgNDVZUSsHKchKDfaLgVgYwaPEOQSRNnG
- ddA5aHlysgV8w1u8W86rPurXrfT34JVWEL0rZxwOiCpAgeKoH+0FJwLJrUvPED8K0n
- bekHBwkPsF/DunBbNxdMPFtntriNr2DFjW81fPRvx/jF8QRMFVsMMGNu0Cdmp3AgAE
- kaoxFwGlUGCOAN2ceam/V7cMB/hKFm0X6HCl32biozktA6kSuUEC3A44WodqzvDRIU
- hX0leBL4NcSFA==
-Date: Tue, 4 Oct 2022 09:13:07 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <YzxbkyJlcxKgs/Fd@magnolia>
-References: <20221004090810.9023-1-pvorel@suse.cz>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221004090810.9023-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CAC506009F3
+ for <ltp@lists.linux.it>; Tue,  4 Oct 2022 20:21:13 +0200 (CEST)
+Received: by mail-pj1-x104a.google.com with SMTP id
+ o15-20020a17090a0a0f00b0020ae208febfso636622pjo.5
+ for <ltp@lists.linux.it>; Tue, 04 Oct 2022 11:21:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date; bh=iW4pO2cdRIEuqjuFF4GtYNyCHikwT2nCUw/Zr1kwBOU=;
+ b=meSyGXe8cO9zID4crCfi8TFEq0K1dgLs9Voc68xNE5W+M+RBUZvOSjF5IKwI2399Am
+ AMp7UFtawxoqwqQsg0jHgcjYSexTV1XcJ5Q7JDe15V2ziJbEk6aFwT/ThXBouORQzez3
+ lIpyFtdMrp6ut3i5twJ2uVaek8hxLi4x2t5ORZFg/HKlj+kBH18WSIQA1IFEi6RGbZwa
+ 7IlCf8AE16bHF3dlYP5pEK25zPSWRykn7SgHZe7UrTNJmqaUYp1ARp5hZUk8ot5ZjKdp
+ DuBsPPmoAAnTfZYvVYt+Ew/60Igxy+dSQJpxYUy/v0kDKS5u7b6UnrEAPLssTkznwV6M
+ LuLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date;
+ bh=iW4pO2cdRIEuqjuFF4GtYNyCHikwT2nCUw/Zr1kwBOU=;
+ b=vPwgWQ39NIkCHtCBa9dE61LkvPivBeAIeTncsSSk0qB9bmxZCgVqFUZ+rOIE+vsVoJ
+ 5pKNG/M5sk4pJx6HQF5HXw+JBQOo2J35F9NXP0Gq+WRssmXLMiVHwrlS5Vqv18O7stb0
+ lee7PLMSXJBfL39DMaDRHJbfCJ01KBkoYJh7B69Hd7HRZm1XK3/e/8OYABA0IA5fpif/
+ YtIKpAXFKpdDsYBApRfKjB8LUbyZ+JOhDgKkJTWGZuRxBl6NLpYo4cwEemzsYtwoKovM
+ 0HdvU0Wgj4fxG32bgOpODxz8RVky19wGIgCj4HaVJS2931pR8QlA9DrdP83vxaorVYhh
+ Fkbg==
+X-Gm-Message-State: ACrzQf3EXgLV8g4QbHUAQfA7NyEHI+9zmuHPUVOgeX9BpC2GdG3qAJy7
+ TG9sOjbexyea5oT9mvxXv3pFXYO/GSGY7M+sy7O3QS+tvpaQJWhXJwNuRLVCGoaiASV96eny9b6
+ GMFKLFkKXLdfbvcmXHKBVmO/jmxzJIpGRifA0CTcwxMkJe240zAD0X6sF
+X-Google-Smtp-Source: AMsMyM4cdMfb5vE6F9a/6gboXOapmmlImdoaNNrhifcBBa4XrAPM0HdBbWd9ipS1Gn441Cc5S5fnXOJcCYg=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a62:584:0:b0:55a:a7a5:b597 with SMTP id
+ 126-20020a620584000000b0055aa7a5b597mr28734345pff.71.1664907671958; Tue, 04
+ Oct 2022 11:21:11 -0700 (PDT)
+Date: Tue,  4 Oct 2022 18:20:31 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
+Message-ID: <20221004182040.1859774-1-edliaw@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] df01.sh: Use own fsfreeze implementation for
- XFS
+Subject: [LTP] [PATCH v3 0/9] mmapstress01: refactor to ltp framework
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -61,158 +73,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-xfs@vger.kernel.org, Eric Sandeen <sandeen@redhat.com>,
- ltp@lists.linux.it
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team@android.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue, Oct 04, 2022 at 11:08:10AM +0200, Petr Vorel wrote:
-> df01.sh started to fail on XFS on certain configuration since mkfs.xfs
-> and kernel 5.19. Implement fsfreeze instead of introducing external
+Attempt to refactor mmapstress01 to use the ltp framework.
 
-...since the introduction of background garbage collection on XFS in
-kernel 5.19. ;)
+v2->v3:
+* apply make check lint suggestions
+* refactor cleanup
+* use SAFE_FORK
+* update license
 
-> dependency. NOTE: implementation could fail on other filesystems
-> (EOPNOTSUPP on exfat, ntfs, vfat).
-> 
-> Suggested-by: Darrick J. Wong <djwong@kernel.org>
-> Suggested-by: Eric Sandeen <sandeen@redhat.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi,
-> 
-> FYI the background of this issue:
-> https://lore.kernel.org/ltp/Yv5oaxsX6z2qxxF3@magnolia/
-> https://lore.kernel.org/ltp/974cc110-d47e-5fae-af5f-e2e610720e2d@redhat.com/
-> 
-> @LTP developers: not sure if the consensus is to avoid LTP API
-> completely (even use it just with TST_NO_DEFAULT_MAIN), if required I
-> can rewrite to use it just to get SAFE_*() macros (like
-> testcases/lib/tst_checkpoint.c) or even with tst_test workarounds
-> (testcases/lib/tst_get_free_pids.c).
-> 
-> Kind regards,
-> Petr
-> 
->  testcases/commands/df/Makefile        |  4 +-
->  testcases/commands/df/df01.sh         |  3 ++
->  testcases/commands/df/df01_fsfreeze.c | 55 +++++++++++++++++++++++++++
->  3 files changed, 61 insertions(+), 1 deletion(-)
->  create mode 100644 testcases/commands/df/df01_fsfreeze.c
-> 
-> diff --git a/testcases/commands/df/Makefile b/testcases/commands/df/Makefile
-> index 2787bb43a..1e0b4283a 100644
-> --- a/testcases/commands/df/Makefile
-> +++ b/testcases/commands/df/Makefile
-> @@ -1,11 +1,13 @@
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) Linux Test Project, 2021-2022
->  # Copyright (c) 2015 Fujitsu Ltd.
-> -# Author:Zhang Jin <jy_zhangjin@cn.fujitsu.com>
-> +# Author: Zhang Jin <jy_zhangjin@cn.fujitsu.com>
->  
->  top_srcdir		?= ../../..
->  
->  include $(top_srcdir)/include/mk/env_pre.mk
->  
->  INSTALL_TARGETS		:= df01.sh
-> +MAKE_TARGETS			:= df01_fsfreeze
->  
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-> index ae0449c3c..c59d2a01d 100755
-> --- a/testcases/commands/df/df01.sh
-> +++ b/testcases/commands/df/df01.sh
-> @@ -46,6 +46,9 @@ df_test()
->  
->  	ROD_SILENT rm -rf $TST_MNTPOINT/testimg
->  
-> +	# ensure free space change can be seen by statfs
-> +	[ "$fs" = "xfs" ] && ROD_SILENT df01_fsfreeze $TST_MNTPOINT
-> +
->  	# flush file system buffers, then we can get the actual sizes.
->  	sync
->  }
-> diff --git a/testcases/commands/df/df01_fsfreeze.c b/testcases/commands/df/df01_fsfreeze.c
-> new file mode 100644
-> index 000000000..d47e1b01a
-> --- /dev/null
-> +++ b/testcases/commands/df/df01_fsfreeze.c
-> @@ -0,0 +1,55 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2010 Hajime Taira <htaira@redhat.com>
-> + * Copyright (c) 2010 Masatake Yamato <yamato@redhat.com>
-> + * Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
-> + */
-> +
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <linux/fs.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <sys/ioctl.h>
-> +#include <sys/stat.h>
-> +#include <unistd.h>
-> +
-> +#define err_exit(...) ({ \
-> +	fprintf(stderr, __VA_ARGS__); \
-> +	if (errno) \
-> +		fprintf(stderr, ": %s (%d)", strerror(errno), errno); \
-> +	fprintf(stderr, "\n"); \
-> +	exit(EXIT_FAILURE); \
-> +})
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int fd;
-> +	struct stat sb;
-> +
-> +	if (argc < 2)
-> +		err_exit("USAGE: df01_fsfreeze <mountpoint>");
-> +
-> +	fd = open(argv[1], O_RDONLY);
-> +	if (fd < 0)
-> +		err_exit("open '%s' failed", argv[1]);
-> +
-> +	if (fstat(fd, &sb) == -1)
-> +		err_exit("stat of '%s' failed", argv[1]);
-> +
-> +	if (!S_ISDIR(sb.st_mode))
+v1->v2:
+* clean up formatting
+* remove accidental change to header comment
+* use SAFE_MMAP
 
-Note that XFS is perfectly happy to let you call FIFREEZE on a
-nondirectory.
+Edward Liaw (9):
+  mmapstress01: refactor to tst_test framework
+  mmapstress01: apply make check suggestions
+  mmapstress01: refactor options
+  mmapstress01: use FILE_OFFSET_BITS=64
+  mmapstress01: use safe macros
+  mmapstress01: refactor cleanup and drop leavefile option
+  mmapstress01: use SAFE_FORK
+  mmapstress01: update license
+  mmapstress01: reorder vars and functions
 
-> +		err_exit("%s: is not a directory", argv[1]);
-> +
-> +	if (ioctl(fd, FIFREEZE, 0) < 0)
-> +		err_exit("ioctl FIFREEZE on '%s' failed", argv[1]);
-> +
-> +	usleep(100);
+ testcases/kernel/mem/mmapstress/Makefile      |   2 +
+ .../kernel/mem/mmapstress/mmapstress01.c      | 845 ++++++------------
+ 2 files changed, 289 insertions(+), 558 deletions(-)
 
-The usleep shouldn't be necessary here.  All the work necessary
-(background gc flushing, log quiescing, etc.) to stabilize the free
-space counters are performed synchronously before the FIFREEZE ioctl
-returns.
+-- 
+2.38.0.rc1.362.ged0d419d3c-goog
 
-If that's not been your experience, please let us know.
-
---D
-
-> +	if (ioctl(fd, FITHAW, 0) < 0)
-> +		err_exit("ioctl FITHAW on '%s' failed", argv[1]);
-> +
-> +	close(fd);
-> +
-> +	return EXIT_SUCCESS;
-> +}
-> -- 
-> 2.37.3
-> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
