@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B271C433FE
-	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 12:07:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E10C6C433F5
+	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 12:20:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2300F3CA47E
-	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 14:07:09 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 68D8B3C80B3
+	for <ltp@archiver.kernel.org>; Tue,  4 Oct 2022 14:20:41 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0856F3C80B3
- for <ltp@lists.linux.it>; Tue,  4 Oct 2022 14:06:58 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 9486C3C80B3
+ for <ltp@lists.linux.it>; Tue,  4 Oct 2022 14:20:26 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4A14520007A
- for <ltp@lists.linux.it>; Tue,  4 Oct 2022 14:06:57 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8E83F200FCD
+ for <ltp@lists.linux.it>; Tue,  4 Oct 2022 14:20:24 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 503C2218E9;
- Tue,  4 Oct 2022 12:06:57 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AFB87218EC;
+ Tue,  4 Oct 2022 12:20:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1664885217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=Vm0kt+Rh3+ir+NYsA0gQB6onv0BzxIzUmyqFOMx2RBU=;
- b=qSqagbCKkhyG3A7Xn6hH4PSjpoCw175SQh8t69zAXMxUfJAhLK4HzVOpCHg2ryWeJEZQ2d
- ll3zyWE3YGE/Zg6PtF27/u5hMP5F3Efg5721tWtnuNa0saysq/4lG7HnslOBkHBHJFD3cY
- C8QfHIiPJ8scBwPtTCEQujObzN0u5Ms=
+ t=1664886022;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=R6oBoHbWoXgIlt6kp784VuMl4uEi9i8P+38rfgXi0ck=;
+ b=qWgEJfFs2UOd+FI7+mH29GIz0oB0ZbYGzFeR9+oB1CHO9bZ+YVRDFNMdfbn/TItyTI3vUp
+ e39SKLaQnJyg3dUkBMUofRPjRnMd/9987ruNCIYUeR+a11duU5ktNE/UrmZplgxCjHJDyP
+ rc9OCihog2sWeIeFGe0Mz9my/9WSRAU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1664885217;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=Vm0kt+Rh3+ir+NYsA0gQB6onv0BzxIzUmyqFOMx2RBU=;
- b=2IFoY9uW8juH17fHQn6PZZ14QIEZl//SOqXgmhGr2WbtxtQy3PFaBVNPfCAzRDEyKmPJbl
- PCuP7phrugMtfgAA==
+ s=susede2_ed25519; t=1664886022;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=R6oBoHbWoXgIlt6kp784VuMl4uEi9i8P+38rfgXi0ck=;
+ b=eh15FUcBoEQrS0OOewVamf6fOiOWc9ESOr58iqeYmBMB1MCEt3pNkzrMicJGbq5fxE3bVZ
+ 75DgRa+ChyD+EGCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C3BD139EF;
- Tue,  4 Oct 2022 12:06:57 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 83928139EF;
+ Tue,  4 Oct 2022 12:20:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wRMzCeEhPGPLNQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 04 Oct 2022 12:06:57 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id XKtyHgYlPGO4PAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 04 Oct 2022 12:20:22 +0000
+Date: Tue, 4 Oct 2022 14:20:20 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue,  4 Oct 2022 14:06:53 +0200
-Message-Id: <20221004120653.23237-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.37.3
+To: Jan Stancek <jstancek@redhat.com>
+Message-ID: <YzwlBEyDZHEvkMBy@pevik>
+References: <43d65409eb3290b09e1c3a21cb0dc079c5f4849c.1664801307.git.jstancek@redhat.com>
+ <938c864ee6bb82ffdee9371bd802642ffedc606c.1664872194.git.jstancek@redhat.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <938c864ee6bb82ffdee9371bd802642ffedc606c.1664872194.git.jstancek@redhat.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] doc: LTP C And Shell Test API Comparison
+Subject: Re: [LTP] [PATCH v2] lib: introduce safe_write() retry
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,63 +76,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-RGVsaWJlcmF0ZWx5IHB1dCBuZGFzaCAo4oCTKSBpbnN0ZWFkIG9mIFRPRE8gb24gbWlzc2luZyBm
-ZWF0dXJlcywKYmVjYXVzZSBub3QgZXZlcnl0aGluZyBuZWVkcyB0byBiZSBpbXBsZW1lbnRlZC4K
-ClNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PgotLS0KRG8geW91IGNv
-bnNpZGVyIHRoaXMgdXNlZnVsPwpJZiB5ZXMsIHNob3VsZCB0aGVyZSBiZSBsaW5rcyB0byB0aGUg
-ZG9jIHNlY3Rpb24/CgpLaW5kIHJlZ2FyZHMsClBldHIKCiBkb2MvdGVzdC13cml0aW5nLWd1aWRl
-bGluZXMudHh0IHwgNjQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCiAxIGZpbGUg
-Y2hhbmdlZCwgNjQgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL2RvYy90ZXN0LXdyaXRpbmct
-Z3VpZGVsaW5lcy50eHQgYi9kb2MvdGVzdC13cml0aW5nLWd1aWRlbGluZXMudHh0CmluZGV4IDQy
-MGFlOWM0My4uNzA0M2MzOTAyIDEwMDY0NAotLS0gYS9kb2MvdGVzdC13cml0aW5nLWd1aWRlbGlu
-ZXMudHh0CisrKyBiL2RvYy90ZXN0LXdyaXRpbmctZ3VpZGVsaW5lcy50eHQKQEAgLTM0NCwzICsz
-NDQsNjcgQEAgb2YgdGhlIHN0YWJsZSBrZXJuZWwgQUJJIHRoZSBhc3NvY2lhdGVkIHRlc3QgbXVz
-dCBiZSBtb3ZlZCBvdXQgb2Ygc3RhZ2luZy4KIAogVGhpcyBpcyBwcmltYXJpbHkgdG8gaGVscCB0
-ZXN0IGtlcm5lbCBSQ3MgYnkgYXZvaWRpbmcgdGhlIG5lZWQgdG8gZG93bmxvYWQKIHNlcGFyYXRl
-IExUUCBwYXRjaHNldHMuCisKKzggTFRQIEMgQW5kIFNoZWxsIFRlc3QgQVBJIENvbXBhcmlzb24K
-Ky0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KKworQ29tcGFyaXNvbiBvZgor
-aHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9sdHAvd2lraS9DLVRlc3QtQVBJ
-W0MgVGVzdCBBUEldIGFuZAoraHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9s
-dHAvd2lraS9TaGVsbC1UZXN0LUFQSVtTaGVsbCBUZXN0IEFQSV0uCisKK1tvcHRpb25zPSJoZWFk
-ZXIiXQorfD09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cit8ICBDIEFQSSAoJ3N0cnVjdCB0c3RfdGVz
-dCcgbWVtYmVycykgfCBzaGVsbCBBUEkgKCckVFNUXyonIGVudmlyb25tZW50IHZhcmlhYmxlcykK
-K3wgJy5hbGxfZmlsZXN5c3RlbXMnIHwgJ1RTVF9BTExfRklMRVNZU1RFTVMnCit8ICcuYnVmcycg
-fCDigJMKK3wgJy5jYXBzJyB8IOKAkworfCAnLmNoaWxkX25lZWRzX3JlaW5pdCcgfCBub3QgYXBw
-bGljYWJsZQorfCAnLmNsZWFudXAnIHwgJ1RTVF9DTEVBTlVQJworfCAnLmRldl9leHRyYV9vcHRz
-JyB8ICdUU1RfREVWX0VYVFJBX09QVFMnCit8ICcuZGV2X2ZzX29wdHMnIHwgJ1RTVF9ERVZfRlNf
-T1BUUycKK3wgJy5kZXZfZnNfdHlwZScgfCAnVFNUX0ZTX1RZUEUnCit8ICcuZGV2X21pbl9zaXpl
-JyB8IG5vdCBhcHBsaWNhYmxlCit8ICcuZm9ybWF0X2RldmljZScgfCAnVFNUX0ZPUk1BVF9ERVZJ
-Q0UnCit8ICcubWF4X3J1bnRpbWUnIHwg4oCTCit8ICcubWluX2NwdXMnIHwgbm90IGFwcGxpY2Fi
-bGUKK3wgJy5taW5fa3ZlcicgfCAnVFNUX01JTl9LVkVSJworfCAnLm1pbl9tZW1fYXZhaWwnIHwg
-bm90IGFwcGxpY2FibGUKK3wgJy5tbnRfZmxhZ3MnIHwgJ1RTVF9NTlRfUEFSQU1TJworfCAnLm1u
-dHBvaW50JywgJy5tbnRfZGF0YScgfCAnVFNUX01OVFBPSU5UJworfCAnLm1vdW50X2RldmljZScg
-fCAnVFNUX01PVU5UX0RFVklDRScKK3wgJy5uZWVkc19jZ3JvdXBfY3RybHMnIHwg4oCTCit8ICcu
-bmVlZHNfY2hlY2twb2ludHMnIHwgJ05FRURTX0NIRUNLUE9JTlRTJworfCAnLm5lZWRzX2NtZHMn
-IHwgJ1RTVF9ORUVEU19DTURTJworfCAnLm5lZWRzX2RldmZzJyB8IOKAkworfCAnLm5lZWRzX2Rl
-dmljZScgfCAnVFNUX05FRURTX0RFVklDRScKK3wgJy5uZWVkc19kcml2ZXJzJyB8ICdUU1RfTkVF
-RFNfRFJJVkVSUycKK3wgJy5uZWVkc19rY29uZmlncycgfCAnVFNUX05FRURTX0tDT05GSUdTJwor
-fCAnLm5lZWRzX292ZXJsYXknIHwKK3wgJy5uZWVkc19yb2ZzJyB8IOKAkworfCAnLm5lZWRzX3Jv
-b3QnIHwgJ1RTVF9ORUVEU19ST09UJworfCAnLm5lZWRzX3RtcGRpcicgfCAnVFNUX05FRURTX1RN
-UERJUicKK3wgJy5vcHRpb25zJyB8ICdUU1RfUEFSU0VfQVJHUycsICdUU1RfT1BUUycKK3wgJy5y
-ZXNvdXJjZV9maWxlcycgfCDigJMKK3wgJy5yZXN0b3JlX3dhbGxjbG9jaycgfCBub3QgYXBwbGlj
-YWJsZQorfCAnLnNhbXBsZScgfCDigJMKK3wgJy5zYXZlX3Jlc3RvcmUnIHwg4oCTCit8ICcuc2Nh
-bGwnIHwgbm90IGFwcGxpY2FibGUKK3wgJy5zZXR1cCcgfCAnVFNUX1NFVFVQJworfCAnLnNraXBf
-ZmlsZXN5c3RlbXMnIHwgJ1RTVF9TS0lQX0ZJTEVTWVNURU1TJworfCAnLnNraXBfaW5fY29tcGF0
-JyB8IOKAkworfCAnLnNraXBfaW5fbG9ja2Rvd24nIHwg4oCTCit8ICcuc3VwcG9ydGVkX2FyY2hz
-JyB8IG5vdCBhcHBsaWNhYmxlCit8ICcudGFncycgfCDigJMKK3wgJy50YWludF9jaGVjaycgfCDi
-gJMKK3wgJy50Y250JyB8ICdUU1RfQ05UJworfCAnLnRjb25mX21zZycgfCBub3QgYXBwbGljYWJs
-ZQorfCAnLnRlc3QnLCAnLnRlc3RfYWxsJyB8ICdUU1RfVEVTVEZVTkMnCit8ICcudGVzdF92YXJp
-YW50cycgfCDigJMKK3wgJy50aW1lb3V0JyB8ICdUU1RfVElNRU9VVCcKK3wgJy50c3RfaHVnZXBh
-Z2UnIHwgbm90IGFwcGxpY2FibGUKK3wgLmZvcm1hdF9kZXZpY2UgfCAnVFNUX0RFVklDRScKK3wg
-bm90IGFwcGxpY2FibGUgfCAnVFNUX05FRURTX0tDT05GSUdTX0lGUycKK3wgbm90IGFwcGxpY2Fi
-bGUgfCAnVFNUX05FRURTX01PRFVMRScKK3wgbm90IGFwcGxpY2FibGUgfCAnVFNUX1BPU19BUkdT
-JworfCBub3QgYXBwbGljYWJsZSB8ICdUU1RfVVNBR0UnCit8PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT0KLS0gCjIuMzcuMwoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
-eC5pdC9saXN0aW5mby9sdHAK
+Hi Jan,
+
+> Turn safe_write() len_strict parameter into 3-way switch, introducing
+> one additional mode of operation "retry". On short writes, this
+> resumes write() with remainder of the buffer.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> ---
+>  include/safe_macros_fn.h    | 11 ++++++++--
+>  lib/safe_macros.c           | 42 ++++++++++++++++++++++++++++---------
+>  lib/tests/tst_safe_macros.c |  6 +++---
+>  3 files changed, 44 insertions(+), 15 deletions(-)
+
+LGTM. I just wonder if we need to add it to lib/safe_macros.c,
+which implements it for the old API. Would it work to add it only to
+tst_safe_macros.c and tst_safe_macros.h (instead of safe_macros_fn.h)?
+Not a requirement, just if it makes sense to you.
+
+...
+> +++ b/include/safe_macros_fn.h
+> @@ -24,6 +24,13 @@
+>  #include <unistd.h>
+>  #include <dirent.h>
+
+> +/* supported values for safe_write() len_strict parameter */
+> +enum safe_write_opts {
+> +        SAFE_WRITE_ANY = 0,	// no length strictness, short writes are ok
+> +        SAFE_WRITE_ALL = 1,	// strict length, short writes raise TBROK
+> +        SAFE_WRITE_RETRY = 2,	// retry/resume after short write
+> +};
+
+Maybe use /* */ and for readability, maybe put into it's own line?
+
+enum safe_write_opts {
+	/* no length strictness, short writes are ok */
+	SAFE_WRITE_ANY = 0,
+
+	/* strict length, short writes raise TBROK */
+	SAFE_WRITE_ALL = 1,
+
+	/* retry/resume after short write */
+	SAFE_WRITE_RETRY = 2,	// 
+};
+
+Also checkpatch.pl complains:
+
+safe_macros_fn.h:29: ERROR: code indent should use tabs where possible
+safe_macros_fn.h:29: WARNING: please, no spaces at the start of a line
+safe_macros_fn.h:30: ERROR: code indent should use tabs where possible
+safe_macros_fn.h:30: WARNING: please, no spaces at the start of a line
+safe_macros_fn.h:31: ERROR: code indent should use tabs where possible
+safe_macros_fn.h:31: WARNING: please, no spaces at the start of a line
+
+Kind regards,
+Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
