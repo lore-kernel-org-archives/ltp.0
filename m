@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1727BC433F5
-	for <ltp@archiver.kernel.org>; Wed,  5 Oct 2022 09:31:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E82FCC433F5
+	for <ltp@archiver.kernel.org>; Wed,  5 Oct 2022 10:19:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7C55E3CACF1
-	for <ltp@archiver.kernel.org>; Wed,  5 Oct 2022 11:31:09 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 3C8EB3CADE6
+	for <ltp@archiver.kernel.org>; Wed,  5 Oct 2022 12:19:48 +0200 (CEST)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 992753C0726
- for <ltp@lists.linux.it>; Wed,  5 Oct 2022 11:30:59 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 80AC03C2FD5
+ for <ltp@lists.linux.it>; Wed,  5 Oct 2022 12:19:38 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0C5EF20076A
- for <ltp@lists.linux.it>; Wed,  5 Oct 2022 11:30:58 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EE39E200119
+ for <ltp@lists.linux.it>; Wed,  5 Oct 2022 12:19:37 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 19078219A7;
- Wed,  5 Oct 2022 09:30:58 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A38BC1F88F;
+ Wed,  5 Oct 2022 10:19:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1664962258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1664965176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=xuJeGPIIzNAFFV4dxFYgRKTjpNhK0JlBpkin2dEubTEWZOOsM5MMO9Kj1r8oQ01AsTWnGa
- LuN50tLzLGIPyN+vICcFVHojskDx8UgbK7CTusvJbOZCusixxDMHY7kfHXSedP8l3+l8PI
- sIOH+WlFwoRfQCSwkM4IRdiUljc0VMU=
+ bh=Zj1HsB6TU6ek+9n9RUMENN/rDGL8WhfgQwDRWeaGSRg=;
+ b=wGdpdt6T5742HgWsRletm6nP0QSl4VTlyb9gu6ahqTmhG/OAcK9yuWAkcksOa1cVnX9xPs
+ EFSZtIjpstXBO4e4l44G6pNPBcuhQVne26y6bVdLTGvCljeGkbsM0mfn/PboHwvcbuc1z+
+ VQzP4TrpbYAiH2jYjNtFpgTP8Z1qzvU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1664962258;
+ s=susede2_ed25519; t=1664965176;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=0s3az0U7c80Wvr2Li39WprwQvpCXn0VAmlEgRk58bC1qw2386SHdffxztZYzoKHV3CxZUN
- tk1BDeHXZExYziAQ==
+ bh=Zj1HsB6TU6ek+9n9RUMENN/rDGL8WhfgQwDRWeaGSRg=;
+ b=/ZWcj1kQHJC8ndY1+1jz9hEIz1yJ/EkzkLcCZCfkkAuYDxn4ULjIEtbBbawmK+qFuG/F0L
+ ZRwNeZiVKDVkr1CQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2F3913345;
- Wed,  5 Oct 2022 09:30:57 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F97F13ABD;
+ Wed,  5 Oct 2022 10:19:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 1psrO9FOPWOcGgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 05 Oct 2022 09:30:57 +0000
-Date: Wed, 5 Oct 2022 11:32:48 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id hYzjIjhaPWOALgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 05 Oct 2022 10:19:36 +0000
+Date: Wed, 5 Oct 2022 12:21:27 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <Yz1PQEvpLBQg3313@yuki>
-References: <43d65409eb3290b09e1c3a21cb0dc079c5f4849c.1664801307.git.jstancek@redhat.com>
- <938c864ee6bb82ffdee9371bd802642ffedc606c.1664872194.git.jstancek@redhat.com>
+To: Edward Liaw <edliaw@google.com>
+Message-ID: <Yz1apwbYCuUkLotX@yuki>
+References: <20221004182040.1859774-1-edliaw@google.com>
+ <20221004182040.1859774-10-edliaw@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <938c864ee6bb82ffdee9371bd802642ffedc606c.1664872194.git.jstancek@redhat.com>
+In-Reply-To: <20221004182040.1859774-10-edliaw@google.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] lib: introduce safe_write() retry
+Subject: Re: [LTP] [PATCH v3 9/9] mmapstress01: reorder vars and functions
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,14 +75,28 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: kernel-team@android.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
+> index 9eced3526..f68193706 100644
+> --- a/testcases/kernel/mem/mmapstress/mmapstress01.c
+> +++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
+> @@ -72,26 +72,27 @@
+>  #define roundup(x, y)	((((x)+((y)-1))/(y))*(y))
+>  
+>  static unsigned int initrand(void);
+> -static void finish(int sig);
+>  static void child_mapper(char *file, unsigned int procno, unsigned int nprocs);
+>  static void fileokay(char *file, unsigned char *expbuf);
+> +static void sighandler(int sig);
+
+Most of these can be dropped now. The only that needs to stay is
+initrand().
 
 -- 
 Cyril Hrubis
