@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E82FCC433F5
-	for <ltp@archiver.kernel.org>; Wed,  5 Oct 2022 10:19:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC9E0C433FE
+	for <ltp@archiver.kernel.org>; Wed,  5 Oct 2022 10:29:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3C8EB3CADE6
-	for <ltp@archiver.kernel.org>; Wed,  5 Oct 2022 12:19:48 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 61A1F3CADE7
+	for <ltp@archiver.kernel.org>; Wed,  5 Oct 2022 12:29:34 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 80AC03C2FD5
- for <ltp@lists.linux.it>; Wed,  5 Oct 2022 12:19:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 6A4D53C93EE
+ for <ltp@lists.linux.it>; Wed,  5 Oct 2022 12:29:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EE39E200119
- for <ltp@lists.linux.it>; Wed,  5 Oct 2022 12:19:37 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7B12E200966
+ for <ltp@lists.linux.it>; Wed,  5 Oct 2022 12:29:23 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A38BC1F88F;
- Wed,  5 Oct 2022 10:19:36 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C375C1F894;
+ Wed,  5 Oct 2022 10:29:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1664965176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1664965762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Zj1HsB6TU6ek+9n9RUMENN/rDGL8WhfgQwDRWeaGSRg=;
- b=wGdpdt6T5742HgWsRletm6nP0QSl4VTlyb9gu6ahqTmhG/OAcK9yuWAkcksOa1cVnX9xPs
- EFSZtIjpstXBO4e4l44G6pNPBcuhQVne26y6bVdLTGvCljeGkbsM0mfn/PboHwvcbuc1z+
- VQzP4TrpbYAiH2jYjNtFpgTP8Z1qzvU=
+ bh=498WRXC6md+TUXdByv0hOL2+z9PkBYXoO/N2kVVxAto=;
+ b=r43Mxg6GolJr6GedVOQBv89A6ASzpZprtFz9LTkkk7yGnTeYylxjLeXTE8HUCaeGPW08JK
+ tkXFBRO6oKH91MpAU5hOhrOS96Cy+NAvwflPzxl4BBYVIaEmXgUVC5WtGl0c9MHBavD7pA
+ EzbEDw6oG/j5DM2mLtmsnmj8tPLh8CI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1664965176;
+ s=susede2_ed25519; t=1664965762;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Zj1HsB6TU6ek+9n9RUMENN/rDGL8WhfgQwDRWeaGSRg=;
- b=/ZWcj1kQHJC8ndY1+1jz9hEIz1yJ/EkzkLcCZCfkkAuYDxn4ULjIEtbBbawmK+qFuG/F0L
- ZRwNeZiVKDVkr1CQ==
+ bh=498WRXC6md+TUXdByv0hOL2+z9PkBYXoO/N2kVVxAto=;
+ b=y1nqe50J9t6aj4idbup8OZJpoN++ClaTQbZCE0V5jgh7JHf31XIGd1fsRhwKD954nWP5v7
+ r5wG6wWkEHSD+ICg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F97F13ABD;
- Wed,  5 Oct 2022 10:19:36 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B010B13ABD;
+ Wed,  5 Oct 2022 10:29:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id hYzjIjhaPWOALgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 05 Oct 2022 10:19:36 +0000
-Date: Wed, 5 Oct 2022 12:21:27 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 1QJlKoJcPWO7MgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 05 Oct 2022 10:29:22 +0000
+Date: Wed, 5 Oct 2022 12:31:13 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Edward Liaw <edliaw@google.com>
-Message-ID: <Yz1apwbYCuUkLotX@yuki>
+Message-ID: <Yz1c8XAKPmNkaFYn@yuki>
 References: <20221004182040.1859774-1-edliaw@google.com>
- <20221004182040.1859774-10-edliaw@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221004182040.1859774-10-edliaw@google.com>
+In-Reply-To: <20221004182040.1859774-1-edliaw@google.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 9/9] mmapstress01: reorder vars and functions
+Subject: Re: [LTP] [PATCH v3 0/9] mmapstress01: refactor to ltp framework
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,21 +82,22 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
-> index 9eced3526..f68193706 100644
-> --- a/testcases/kernel/mem/mmapstress/mmapstress01.c
-> +++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
-> @@ -72,26 +72,27 @@
->  #define roundup(x, y)	((((x)+((y)-1))/(y))*(y))
->  
->  static unsigned int initrand(void);
-> -static void finish(int sig);
->  static void child_mapper(char *file, unsigned int procno, unsigned int nprocs);
->  static void fileokay(char *file, unsigned char *expbuf);
-> +static void sighandler(int sig);
+The code is heading into the right direction but there are couple of
+things to do (can be done in an incremental manner too):
 
-Most of these can be dropped now. The only that needs to stay is
-initrand().
+* Most of the remaning tst_brk(TFAIL, "..") should actually be
+  tst_brk(TBROK, "..") at least all the cases where we call
+  a syscall and it fails. And we should include the TERRNO flag
+  as well to get the actual error printed.
+
+* The test should make use of runtime instead of the alarm()
+  for test duration. That would mean getting rid of the -t option and
+  using the -I option instead. Also the test should set up some
+  .test_runtime for a default run duration in the tst_test structure.
+
+* The top level comment has to be updated for the changes in the test
+  since the options structure describes the command line parameters
+  quite well I would just remove that part from the comment
 
 -- 
 Cyril Hrubis
