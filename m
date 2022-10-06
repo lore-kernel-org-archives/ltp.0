@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89249C433F5
-	for <ltp@archiver.kernel.org>; Thu,  6 Oct 2022 18:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB9DAC433F5
+	for <ltp@archiver.kernel.org>; Thu,  6 Oct 2022 21:02:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A416B3CAD3F
-	for <ltp@archiver.kernel.org>; Thu,  6 Oct 2022 20:43:32 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id EFC653CAE0A
+	for <ltp@archiver.kernel.org>; Thu,  6 Oct 2022 23:02:35 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E7A483CAE21
- for <ltp@lists.linux.it>; Thu,  6 Oct 2022 20:42:41 +0200 (CEST)
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com
- [IPv6:2607:f8b0:4864:20::104a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DDE213CAA2E
+ for <ltp@lists.linux.it>; Thu,  6 Oct 2022 23:02:24 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 58578601201
- for <ltp@lists.linux.it>; Thu,  6 Oct 2022 20:42:41 +0200 (CEST)
-Received: by mail-pj1-x104a.google.com with SMTP id
- o11-20020a17090aac0b00b0020625062cbaso3370372pjq.2
- for <ltp@lists.linux.it>; Thu, 06 Oct 2022 11:42:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:from:to:cc:subject:date:message-id:reply-to;
- bh=lzbtN5IJ5KoF+wGT2IvqHAYOyvrIRJJRFXr05hAHiVw=;
- b=tO9MYFtZuDaQrmcIKRZPZLbJFHfxClWPmSGpzt3XRCQ+8sMd65+6uFhG9b6lS38Jnw
- iTKPUb85u1Vo0YfOQY/gwc6QfVdVPc1Smk5q9M1gCBgaLScsuAOhtFufGbNXOpObsAzn
- 5+byF2TbkywNZpJ5LRP3A2VV6OnCOrbV9jAcA+gtVRoJR1RM9iKC9VK2gV7+wNYrierB
- vl+h3VfX5de3i+5v0BAyxqEWi2QN5J7iB0sBsYAPN9Ywgi5+bZyQTDw+AP99xUASO+HV
- 5j9n17gWu0FXybXNEXmtnjNBNE3DbQu/aWFcUivSTgwycCfJhVdaWXIaBfS1hTWDWikb
- 1uug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=lzbtN5IJ5KoF+wGT2IvqHAYOyvrIRJJRFXr05hAHiVw=;
- b=X4KZaNEbzmRpCJgdM23PcgPUzY6xf1NcfRtnl0aJ4SvAXZKkYbhP/yZPhYbtv/Bgrb
- VtR0JOpdT3nLCXzUAbS6XXcABJCMSy0lQmYFk0YpIeE0y3lkfbGsY0bLA8mKcCemlRk/
- 0uJT9tXhcnJyBmswM2yG19aH7fctsGeQn8sKudRP85kZ/11pvCboDP5+IFR9tzMnD5E9
- f49LBZXfs5ec71eICUCPF1BzlMS5S0aLoQJpuvjcHvugC0bbJcJZ4v7RpEXKdWeJLh36
- s5jIuPmx3+IulLp43JSNSXv8E+oLlTeKPj7QJ87jV2LXEqwvMRryOPZ4U50cNwEEx8/7
- 4Nlg==
-X-Gm-Message-State: ACrzQf2n+xjN4G9HwxzcU8Yvxm1rjLnA0dkIOdhFHOIJENp+K+lVBjWa
- rLAj2Ynks48UguooePLcAnkNVRgrGMRh4XEWS/75UwAdjWegVzYUxzmYjE2lc4oYL2sr760jV7E
- gQnjLKCWxha4Oi2ECeojsC/zwdaMkkyYHRGfg9i4zuH4oXPkp8KWVatpI
-X-Google-Smtp-Source: AMsMyM6zrCqJwjG3Pd8bNhmRSLKCS/zbovOtee9Bkrcr+hlep4iOX0CS8ZjM/ETqWMyqg4pAtk3M6bz5nlA=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a17:90a:cd06:b0:203:ae0e:6a21 with SMTP id
- d6-20020a17090acd0600b00203ae0e6a21mr445328pju.0.1665081759214; Thu, 06 Oct
- 2022 11:42:39 -0700 (PDT)
-Date: Thu,  6 Oct 2022 18:42:28 +0000
-In-Reply-To: <20221006184228.3281392-1-edliaw@google.com>
-Mime-Version: 1.0
-References: <20221006184228.3281392-1-edliaw@google.com>
-X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
-Message-ID: <20221006184228.3281392-5-edliaw@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2DD0814016FB
+ for <ltp@lists.linux.it>; Thu,  6 Oct 2022 23:02:23 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A4BBB1F8AB;
+ Thu,  6 Oct 2022 21:02:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1665090141;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=tqJaKJxRsur4AiQXbdrnBdMsy84tCF7PKfz8qyfkzQA=;
+ b=TalVfN0hcl2jRQomKAGm2H0VMJj0vO2yjMNui1W6AQgOYh3LjxwD8hGrxlLlMau8RW8i9S
+ IZYUnDyG1cMkpxP+OOz8V1X0PBfGclG/00RkWdw1IC1m2lDmvem4lN17V7JvMlrC913GCS
+ 16z/k83FlM+g8C4P1OBjNJKx4Khd37E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1665090141;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=tqJaKJxRsur4AiQXbdrnBdMsy84tCF7PKfz8qyfkzQA=;
+ b=s2A7zASfYnTQNuXD9o7/b4r7XhxtKtg77VvuqjX3v/P/MySWB3CBNkPlmzTrh4L13/iPbS
+ wAunkiCmxXHZCrAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 72A861376E;
+ Thu,  6 Oct 2022 21:02:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id FjFcGV1CP2OcDAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 06 Oct 2022 21:02:21 +0000
+Date: Thu, 6 Oct 2022 23:02:19 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Mimi Zohar <zohar@linux.ibm.com>
+Message-ID: <Yz9CW5vXCuztOTOl@pevik>
+References: <20221006164342.68763-1-zohar@linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221006164342.68763-1-zohar@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 4/4] mmapstress01: use max_runtime
+Subject: Re: [LTP] [PATCH] security/ima: limit the scope of the LTP policy
+ rules based on the UUID
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,110 +76,134 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team@android.com
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Edward Liaw <edliaw@google.com>
----
- .../kernel/mem/mmapstress/mmapstress01.c      | 24 +++++--------------
- 1 file changed, 6 insertions(+), 18 deletions(-)
+Hi Mimi,
 
-diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
-index 9a18587cf..83d3f387d 100644
---- a/testcases/kernel/mem/mmapstress/mmapstress01.c
-+++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
-@@ -48,7 +48,6 @@ static unsigned int initrand(void);
- static char *debug;
- static char *do_sync;
- static char *do_offset;
--static char *opt_alarmtime;
- static char *opt_filesize;
- static char *opt_nprocs;
- static char *opt_sparseoffset;
-@@ -57,7 +56,6 @@ static char *randloops;
- static int fd;
- static int finished;
- static int nprocs = 20;
--static float alarmtime;
- static long long filesize = 4096;
- static long long sparseoffset;
- static size_t pagesize;
-@@ -77,7 +75,6 @@ static struct tst_option options[] = {
- 	 "When non-zero, causes the sparse area to be left before the data, "
- 	 "so that the actual initial filesize is sparseoffset + filesize "
- 	 "(default 0)"},
--	{"t:", &opt_alarmtime, "Number of minutes to run (default 0)"},
- 	{},
- };
- 
-@@ -105,18 +102,10 @@ static void setup(void)
- 		tst_brk(TBROK, "invalid number of mapping children '%s'",
- 			opt_nprocs);
- 
--	if (tst_parse_float(opt_alarmtime, &alarmtime, 0, FLT_MAX / 60))
--		tst_brk(TBROK, "invalid minutes to run '%s'", opt_alarmtime);
+> The LTP policy rules either replace or extend the global IMA policy. As a
+> result, the ordering of the LTP IMA tests is important and affects the
+> ability of re-running the tests.  For example, ima_conditionals.sh
+> defines a rule to measure user files, while ima_measuremnets.sh verifies
+> not measuring user files.  Not limiting the LTP IMA policy scope could
+> also affect the running system.
+
+> To allow the LTP tests to be re-run without rebooting the system, limit the
+> scope of the LTP policy rules to the loopback mounted filesystem based on
+> the UUID.
+Thanks a lot for this, that'll be a great simplification for IMA testing.
+I'll have a deeper look tomorrow, but what we need is to ima_setup.sh is to
+always have loopback device. ATM it's just only if TMPDIR is tmpfs.
+See patch below (untested, I'll test it tomorrow).
+
+Also is the kernel code path very different to use UUID from the current code?
+If yes, we might want also to keep the old behavior enabled with some environment
+variable (the default would be to use UUID). Or not worth of keeping it?
+
+I'd also wish to have simple C implementation instead requesting blkid
+(although util-linux is very common, it's an extra dependency).
+I might write simple C code which finds which UUID in /dev/disk/by-uuid/ is for
+loop device should be pretty simple code. But for now it's ok to use blkid,
+although it should be added into TST_NEEDS_CMDS.
+
+...
+> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh b/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
+> index 0d50db906..d5c5f3ebe 100755
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
+> @@ -28,7 +28,7 @@ verify_measurement()
+>  	ROD rm -f $test_file
+
+>  	tst_res TINFO "verify measuring user files when requested via $request"
+> -	ROD echo "measure $request=$value" \> $IMA_POLICY
+> +	ROD echo "measure $FSUUID $request=$value" \> $IMA_POLICY
+>  	ROD echo "$(cat /proc/uptime) $request test" \> $test_file
+
+>  	case "$request" in
+> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+> index af1fb0028..95e7331a4 100755
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+> @@ -27,7 +27,12 @@ load_policy()
+>  	exec 2>/dev/null 4>$IMA_POLICY
+>  	[ $? -eq 0 ] || exit 1
+
+> -	cat $1 >&4 2> /dev/null
+> +	if [ -n "$FSUUID" ]; then
+Interesting, would it be correct if there is no UUID with my changes below (i.e.
+always use the loop device)? Actually, do we also want to have way to disable
+loop device (obviously only on TMPDIR not being tmpfs).
+> +		sed "s/measure /measure $FSUUID /" $1 >&4 2> /dev/null
+> +	else
+> +		cat $1 >&4 2> /dev/null
+> +	fi
+> +
+>  	ret=$?
+>  	exec 4>&-
+
+> diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> index df3fc5603..016a68cb2 100644
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> @@ -178,6 +178,10 @@ ima_setup()
+>  	if [ "$TST_MOUNT_DEVICE" = 1 ]; then
+>  		tst_res TINFO "\$TMPDIR is on tmpfs => run on loop device"
+>  		cd "$TST_MNTPOINT"
+> +
+> +		loopdev=$(mount | grep $TST_MNTPOINT | cut -f1 -d' ')
+We have $TST_DEVICE for this.
+
+> +		FSUUID="fsuuid=$(blkid | grep $loopdev | cut -f2 -d'"')"
+> +		tst_res TINFO "LTP IMA policy rules based on $FSUUID"
+>  	fi
+
+>  	[ -n "$TST_SETUP_CALLER" ] && $TST_SETUP_CALLER
+
+Proposed (not yet tested) changes.
+
+Kind regards,
+Petr
+
+diff --git testcases/kernel/security/integrity/ima/tests/ima_setup.sh testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 016a68cb2..dd88fbc71 100644
+--- testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -11,9 +11,7 @@ TST_CLEANUP_CALLER="$TST_CLEANUP"
+ TST_CLEANUP="ima_cleanup"
+ TST_NEEDS_ROOT=1
+ TST_MOUNT_DEVICE=1
 -
- 	if (debug) {
- 		tst_res(TINFO, "creating file <%s> with %lld bytes, pattern %d",
- 			TEST_FILE, filesize, pattern);
--		if (alarmtime)
--			tst_res(TINFO, "running for %f minutes", alarmtime);
--		else
--			tst_res(TINFO, "running with no time limit");
- 	}
--	alarmtime *= 60;
+-# TST_MOUNT_DEVICE can be unset, therefore specify explicitly
+-TST_NEEDS_TMPDIR=1
++TST_NEEDS_CMDS="$TST_NEEDS_CMDS blkid"
+ 
+ SYSFS="/sys"
+ UMOUNT=
+@@ -179,8 +177,7 @@ ima_setup()
+ 		tst_res TINFO "\$TMPDIR is on tmpfs => run on loop device"
+ 		cd "$TST_MNTPOINT"
+ 
+-		loopdev=$(mount | grep $TST_MNTPOINT | cut -f1 -d' ')
+-		FSUUID="fsuuid=$(blkid | grep $loopdev | cut -f2 -d'"')"
++		FSUUID="fsuuid=$(blkid | grep $TST_DEVICE | cut -f2 -d'"')"
+ 		tst_res TINFO "LTP IMA policy rules based on $FSUUID"
+ 	fi
+ 
+@@ -339,10 +336,4 @@ require_evmctl()
+ 	fi
  }
  
- static void cleanup(void)
-@@ -312,8 +301,7 @@ static void run(void)
- 	pattern = seed & 0xff;
- 
- 	/*
--	 *  Plan for death by signal.  User may have specified
--	 *  a time limit, in which set an alarm and catch SIGALRM.
-+	 *  Plan for death by signal or alarm.
- 	 *  Also catch and cleanup with SIGINT.
- 	 */
- 	sa.sa_handler = sighandler;
-@@ -323,10 +311,9 @@ static void run(void)
- 	SAFE_SIGACTION(SIGQUIT, &sa, 0);
- 	SAFE_SIGACTION(SIGTERM, &sa, 0);
- 
--	if (alarmtime) {
--		SAFE_SIGACTION(SIGALRM, &sa, 0);
--		(void)alarm(alarmtime);
--	}
-+	SAFE_SIGACTION(SIGALRM, &sa, 0);
-+	alarm(tst_remaining_runtime());
-+
- 	fd = SAFE_OPEN(TEST_FILE, O_CREAT | O_TRUNC | O_RDWR, 0664);
- 
- 	buf = SAFE_MALLOC(pagesize);
-@@ -415,7 +402,7 @@ static void run(void)
- 	SAFE_SIGEMPTYSET(&set_mask);
- 	SAFE_SIGADDSET(&set_mask, SIGALRM);
- 	SAFE_SIGPROCMASK(SIG_BLOCK, &set_mask, NULL);
--	(void)alarm(0);
-+	alarm(0);
- 
- 	/*
- 	 *  Finished!  Check the file for sanity.
-@@ -429,6 +416,7 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.options = options,
- 	.cleanup = cleanup,
-+	.max_runtime = 12,
- 	.needs_tmpdir = 1,
- 	.forks_child = 1,
- };
--- 
-2.38.0.rc1.362.ged0d419d3c-goog
-
+-# loop device is needed to use only for tmpfs
+-TMPDIR="${TMPDIR:-/tmp}"
+-if tst_supported_fs -d $TMPDIR -s "tmpfs"; then
+-	unset TST_MOUNT_DEVICE
+-fi
+-
+ . tst_test.sh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
