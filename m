@@ -4,85 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1953DC433F5
-	for <ltp@archiver.kernel.org>; Thu,  6 Oct 2022 16:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C04B8C433F5
+	for <ltp@archiver.kernel.org>; Thu,  6 Oct 2022 18:42:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BAD0E3CAE18
-	for <ltp@archiver.kernel.org>; Thu,  6 Oct 2022 18:44:05 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3714A3CAE21
+	for <ltp@archiver.kernel.org>; Thu,  6 Oct 2022 20:42:44 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 60FAC3C2C26
- for <ltp@lists.linux.it>; Thu,  6 Oct 2022 18:43:55 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id A2B8B3C2830
+ for <ltp@lists.linux.it>; Thu,  6 Oct 2022 20:42:34 +0200 (CEST)
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com
+ [IPv6:2607:f8b0:4864:20::649])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A822520115F
- for <ltp@lists.linux.it>; Thu,  6 Oct 2022 18:43:53 +0200 (CEST)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 296GfcPd018045;
- Thu, 6 Oct 2022 16:43:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=XB6yEocB1ng5TP7tzrFAgDEQvK8b3uR3GOA3XeFUW2s=;
- b=R/mznhOVpLyKnuzLzpLX0xUj8JbaJznhLbeHxs5x2+RrXf4jihNS82Shwh/yMjcgdR8S
- 58PWszE7sUIJcZ0h8vshR98KrBbIKiHI7bW1voBcx4f2gMDPjRHGoQHE6ckUYnW2MHyc
- oVzY1PwauLjZDGHtbWjyqm9/RTIcDbtgyAenkv/C73hPWvLdS1XkibIrv19HE1Zc30mX
- NqYU6uha9roU7+FTJSg1h7NeiahBW8D0EKEsJTo+DHUnKxZkB60gKcqSTKLQLJ3p8UQn
- Hgmuaczfwe8kaRAOKVx4oH0HGIXirLWnC26G9j+A1aPu1v/w659WPv8ogQXrc2gD25q7 XQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.98])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k22rvr1ws-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 06 Oct 2022 16:43:51 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
- by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 296GagSm007804;
- Thu, 6 Oct 2022 16:43:49 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com
- (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
- by ppma03ams.nl.ibm.com with ESMTP id 3jxd697da8-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 06 Oct 2022 16:43:49 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
- by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
- id 296GiGJR42336522
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 6 Oct 2022 16:44:16 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 20C0042041;
- Thu,  6 Oct 2022 16:43:46 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 84C3E4203F;
- Thu,  6 Oct 2022 16:43:45 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown
- [9.77.159.79]) by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Thu,  6 Oct 2022 16:43:45 +0000 (GMT)
-From: Mimi Zohar <zohar@linux.ibm.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0A3C11001431
+ for <ltp@lists.linux.it>; Thu,  6 Oct 2022 20:42:33 +0200 (CEST)
+Received: by mail-pl1-x649.google.com with SMTP id
+ m10-20020a170902db0a00b001789bd49db9so1789722plx.23
+ for <ltp@lists.linux.it>; Thu, 06 Oct 2022 11:42:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=xfcChaNwETuOoWrZnrUtGQgXqwQ6IqVoK55+mgCDDrI=;
+ b=Vbvh+iUvj0VtEXhNxx4e1wkCepc7OlahhhwihSVqIvoR1rABOABviW35uci0RKMRUE
+ HwfaZf3TPZgQidfqkaKTgUOAN2gKTYmevEBiake31WGHHY3JtLrQikaS91rk3RFOUpCj
+ g6mLZKqHVZa3i7FbCOElaN9AbgrEub3JmC0ycoN+3+nmlLQ6O5zNak0QlrRrVlYzf0Z+
+ v2WQe+TPBHV7hgPF9CcgER5dbeAPVf4Of/thPX4Cq1asjukrTQ8hynbSoJz/yYI1NLZD
+ qX/7Hfi5PlE7IqiFRWEtMPy2RsB3iAAR5SW7/u3faRzMU4xSEcuPMEAx2MRK5BdKEVbC
+ lC7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=xfcChaNwETuOoWrZnrUtGQgXqwQ6IqVoK55+mgCDDrI=;
+ b=sMzVO4fZEQb6A4ltY5tY6EUCy5Up5vplk4V/J84AljbGzkI+CBgLoNvZTtl8Zp3MuG
+ conmVLEUwYTEq1Os8LdYwRj8NRvSrnrdbC0xerdE6w9Pl1FAWMPVgjYzqoEvTzYr0htI
+ TPDXocI3/GjWFl8u4lc9e7CY71XGPcKSSCscMCgRXvmY8zsq93KzTBxqlYBtdVojF45z
+ d9fkcZEvujI2qp30aoZASHrSRPR1JdUGQbjEfv4LJBPP6r8W0KZ1GyuY0aZTaopOLy0e
+ o5WJLH9kertH7HG636yD9m8C6Wy8NPPra6axF9QeorSAjWu66tF5tyR704MC9aQcn/70
+ i8Kw==
+X-Gm-Message-State: ACrzQf1k6dUd3sXkgIRAjlrPrTsOejNntj8ZnxPfvTZUTYwqjRepLz0J
+ Iost23fzzIZ6faRpQvVjcwD6rHiqZJBrE7yUcDR/+2Fb9n/SZSGa37v7rBctzcXcqM8hVlXQTte
+ N+i1m3hGi22IuHVRyk5OpbbBvOCpYhfYCWrNBr+vODfALPicDeJgyilw+
+X-Google-Smtp-Source: AMsMyM7SVfvw7ysssu0QrXkjD266iPUe9pdeFHO0owQa16UJxM1M58+2LomGo5HA43sOoMMOabhWwiqp4TU=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a17:903:32d2:b0:17a:e62:16e2 with SMTP id
+ i18-20020a17090332d200b0017a0e6216e2mr1149517plr.93.1665081752143; Thu, 06
+ Oct 2022 11:42:32 -0700 (PDT)
+Date: Thu,  6 Oct 2022 18:42:24 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
+Message-ID: <20221006184228.3281392-1-edliaw@google.com>
 To: ltp@lists.linux.it
-Date: Thu,  6 Oct 2022 12:43:42 -0400
-Message-Id: <20221006164342.68763-1-zohar@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: SDk94uv2NH4p2J6IsMDgZUELkkH_knTz
-X-Proofpoint-ORIG-GUID: SDk94uv2NH4p2J6IsMDgZUELkkH_knTz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-10-06_04,2022-10-06_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0
- phishscore=0 impostorscore=0 priorityscore=1501 mlxscore=0 bulkscore=0
- malwarescore=0 spamscore=0 adultscore=0 clxscore=1011 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210060095
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] security/ima: limit the scope of the LTP policy rules
- based on the UUID
+Subject: [LTP] [PATCH v4 0/4] mmapstress01: refactor to ltp framework
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,77 +73,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team@android.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The LTP policy rules either replace or extend the global IMA policy. As a
-result, the ordering of the LTP IMA tests is important and affects the
-ability of re-running the tests.  For example, ima_conditionals.sh
-defines a rule to measure user files, while ima_measuremnets.sh verifies
-not measuring user files.  Not limiting the LTP IMA policy scope could
-also affect the running system.
+v3->v4:
+* squash previous changes
+* set defaults of nprocs=20 and max_runtime=12
+* clean up comments
+* return TBROK instead of TFAIL for unexpected failures
 
-To allow the LTP tests to be re-run without rebooting the system, limit the
-scope of the LTP policy rules to the loopback mounted filesystem based on
-the UUID.
+v2->v3:
+* apply make check lint suggestions
+* refactor cleanup
+* use SAFE_FORK
+* update license
 
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
----
- .../security/integrity/ima/tests/ima_conditionals.sh       | 2 +-
- .../kernel/security/integrity/ima/tests/ima_policy.sh      | 7 ++++++-
- testcases/kernel/security/integrity/ima/tests/ima_setup.sh | 4 ++++
- 3 files changed, 11 insertions(+), 2 deletions(-)
+v1->v2:
+* clean up formatting
+* remove accidental change to header comment
+* use SAFE_MMAP
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh b/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-index 0d50db906..d5c5f3ebe 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_conditionals.sh
-@@ -28,7 +28,7 @@ verify_measurement()
- 	ROD rm -f $test_file
- 
- 	tst_res TINFO "verify measuring user files when requested via $request"
--	ROD echo "measure $request=$value" \> $IMA_POLICY
-+	ROD echo "measure $FSUUID $request=$value" \> $IMA_POLICY
- 	ROD echo "$(cat /proc/uptime) $request test" \> $test_file
- 
- 	case "$request" in
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-index af1fb0028..95e7331a4 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-@@ -27,7 +27,12 @@ load_policy()
- 	exec 2>/dev/null 4>$IMA_POLICY
- 	[ $? -eq 0 ] || exit 1
- 
--	cat $1 >&4 2> /dev/null
-+	if [ -n "$FSUUID" ]; then
-+		sed "s/measure /measure $FSUUID /" $1 >&4 2> /dev/null
-+	else
-+		cat $1 >&4 2> /dev/null
-+	fi
-+
- 	ret=$?
- 	exec 4>&-
- 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index df3fc5603..016a68cb2 100644
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -178,6 +178,10 @@ ima_setup()
- 	if [ "$TST_MOUNT_DEVICE" = 1 ]; then
- 		tst_res TINFO "\$TMPDIR is on tmpfs => run on loop device"
- 		cd "$TST_MNTPOINT"
-+
-+		loopdev=$(mount | grep $TST_MNTPOINT | cut -f1 -d' ')
-+		FSUUID="fsuuid=$(blkid | grep $loopdev | cut -f2 -d'"')"
-+		tst_res TINFO "LTP IMA policy rules based on $FSUUID"
- 	fi
- 
- 	[ -n "$TST_SETUP_CALLER" ] && $TST_SETUP_CALLER
+v0->v1:
+* use tst_test framework
+* use FILE_OFFSET_BITS=64 instead of LARGE_FILE
+* use safe macros
+
+Edward Liaw (4):
+  mmapstress01: refactor to tst_test framework
+  mmapstress01: default nprocs 20 and cleanup
+  mmapstress01: return TBROK for unexpected failures and TERRNO if
+    syscall fails
+  mmapstress01: use max_runtime
+
+ testcases/kernel/mem/mmapstress/Makefile      |   2 +
+ .../kernel/mem/mmapstress/mmapstress01.c      | 864 ++++++------------
+ 2 files changed, 276 insertions(+), 590 deletions(-)
+
 -- 
-2.31.1
+2.38.0.rc1.362.ged0d419d3c-goog
 
 
 -- 
