@@ -4,35 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD185C433F5
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 12:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01D34C433FE
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 12:25:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B6C2C3CAE77
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 14:25:42 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 384373CAE8E
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 14:25:53 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AFB0D3C0726
- for <ltp@lists.linux.it>; Thu,  6 Oct 2022 10:17:15 +0200 (CEST)
-Received: from mail.steuer-voss.de (mail.steuer-voss.de [85.183.69.95])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 11BEF3C3030
+ for <ltp@lists.linux.it>; Fri,  7 Oct 2022 12:57:40 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7BF132001B4
- for <ltp@lists.linux.it>; Thu,  6 Oct 2022 10:17:14 +0200 (CEST)
-Received: by mail.steuer-voss.de (Postfix, from userid 1000)
- id 92303897; Thu,  6 Oct 2022 10:17:09 +0200 (CEST)
-From: Nikolaus Voss <nv@vosn.de>
-To: Yael Tzur <yaelt@google.com>, Cyril Hrubis <chrubis@suse.cz>,
- Mimi Zohar <zohar@linux.ibm.com>, Jarkko Sakkinen <jarkko@kernel.org>
-Date: Thu, 6 Oct 2022 08:15:55 +0200
-Message-Id: <20221006081709.92303897@mail.steuer-voss.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6000F1A01939
+ for <ltp@lists.linux.it>; Fri,  7 Oct 2022 12:57:38 +0200 (CEST)
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2979ktTH019481
+ for <ltp@lists.linux.it>; Fri, 7 Oct 2022 10:57:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=jkpniCGsbK7xFy0d9pMDeRUZFAZN5CvTcO1B9YzC0Ik=;
+ b=ppTkL1d88sHj9ZmcU34Sc83fPOPVH5h3bGAw9LrxlHjuIyvidFZNHV08QNRHfqsAt3dV
+ y1M/aLScWmZg+c4M/jvdKvHBzQRXTVOfJMje9M9orMl2U4+9wqb2AMQwPNz3+kwb4dKX
+ 1y8gWl313Q1thSKAbR60JXi2nnveLhG8diMsQUu+5Y3bZsgnKb2WiPJq52rrLsixCHIc
+ 1FF0PByLrPwuUuByXRv0aKbsFJFM5h1QTb35CZjuu40m8uIgz9Si/P2elnupJCm5JYSQ
+ eRoQENUX1cB1prznUxPOMbM+hIzEBIRpWLT4qZrLvFO7y3Ol2aUz/fxsbjRgOowEroxt yw== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.99])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k2hsja1hk-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Fri, 07 Oct 2022 10:57:36 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+ by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 297AocUZ031614
+ for <ltp@lists.linux.it>; Fri, 7 Oct 2022 10:57:35 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com
+ (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+ by ppma04ams.nl.ibm.com with ESMTP id 3jxd698g9s-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Fri, 07 Oct 2022 10:57:35 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com
+ [9.149.105.62])
+ by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 297AvWRK8651422
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Fri, 7 Oct 2022 10:57:32 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id C77D2AE04D
+ for <ltp@lists.linux.it>; Fri,  7 Oct 2022 10:57:32 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id B6203AE045
+ for <ltp@lists.linux.it>; Fri,  7 Oct 2022 10:57:32 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+ by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS
+ for <ltp@lists.linux.it>; Fri,  7 Oct 2022 10:57:32 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
+ id 51D02E0256; Fri,  7 Oct 2022 12:57:32 +0200 (CEST)
+From: Sven Schnelle <svens@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Fri,  7 Oct 2022 12:57:27 +0200
+Message-Id: <20221007105727.2303349-1-svens@linux.ibm.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 8cL2mFK46KBxA_6j5IX5FtVREbBOVd4r
+X-Proofpoint-GUID: 8cL2mFK46KBxA_6j5IX5FtVREbBOVd4r
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-10-06_05,2022-10-07_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 adultscore=0
+ impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2209130000 definitions=main-2210070064
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Mon, 10 Oct 2022 14:25:33 +0200
-Subject: [LTP] [PATCH] syscalls/keyctl/keyctl09.c: fix test encrypted key
+Subject: [LTP] [PATCH] syscalls/ioctl03: add IFF_NO_CARRIER flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -44,99 +97,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This commit fixes the test for adding encrypted keys with unencrypted data.
-Unencryted data must be provided hex-ascii encoding. Due to a kernel
-bug, the unencypted data was not decoded to binary thus the length of
-the key was only half the specified key size. This patch doubles the key
-size and adds a test with a wrong key size to trigger a corresponding
-error.
+since linux kernel commit 195624d9c26b
+("tun: support not enabling carrier in TUNSETIFF") IFF_NO_CARRIER
+is a valid flag. Therefore add it to the list.
 
-This patch must be used with the kernel fix
-https://lore.kernel.org/lkml/20220919072317.E41421357@mail.steuer-voss.de
-
-test output:
-~ # ./keyctl09
-tst_kconfig.c:82: TINFO: Parsing kernel config '/proc/config.gz'
-tst_test.c:1526: TINFO: Timeout per run is 0h 00m 30s
-keyctl09.c:28: TPASS: add_key("user", "user:masterkey", "foo", 3, KEY_SPEC_PROCESS_KEYRING) returned 837616982
-keyctl09.c:34: TPASS: add_key("encrypted", "ltptestkey1", ENCRYPTED_KEY_PREAMBLE HEXASCII_UNENCRYPTED_DATA, strlen(ENCRYPTED_KEY_PREAMBLE HEXASCII_UNENCRYPTED_DATA), KEY_SPEC_PROCESS_KEYRING) returned 449585633
-keyctl09.c:44: TPASS: keyctl(KEYCTL_READ, TST_RET, buffer, sizeof(buffer)) returned 186
-[ 3031.280283] trusted_key: encrypted key: decrypted data provided must contain only hexadecimal characters
-keyctl09.c:50: TPASS: add_key("encrypted", "ltptestkey2", ENCRYPTED_KEY_PREAMBLE ASCII_UNENCRYPTED_DATA, strlen(ENCRYPTED_KEY_PREAMBLE ASCII_UNENCRYPTED_DATA), KEY_SPEC_PROCESS_KEYRING) : EINVAL (22)
-[ 3031.284871] trusted_key: encrypted key: decrypted data provided does not match decrypted data length provided
-keyctl09.c:58: TPASS: add_key("encrypted", "ltptestkey3", ENCRYPTED_KEY_PREAMBLE SHORT_HEXASC_UNENCRYPTED_DATA, strlen(ENCRYPTED_KEY_PREAMBLE SHORT_HEXASC_UNENCRYPTED_DATA), KEY_SPEC_PROCESS_KEYRING) : EINVAL (22)
-
-Fixes: 342e7a0dd ("syscalls/keyctl09: test encrypted keys with provided decrypted data.")
-Signed-off-by: Nikolaus Voss <nikolaus.voss@haag-streit.com>
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
 ---
- testcases/kernel/syscalls/keyctl/keyctl09.c | 30 +++++++++++++++++----
- 1 file changed, 25 insertions(+), 5 deletions(-)
+ testcases/kernel/syscalls/ioctl/ioctl03.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl09.c b/testcases/kernel/syscalls/keyctl/keyctl09.c
-index c88c481b9..c5165a280 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl09.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl09.c
-@@ -13,8 +13,13 @@
- #include "tst_test.h"
- #include "lapi/keyctl.h"
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl03.c b/testcases/kernel/syscalls/ioctl/ioctl03.c
+index 3d4ac3e24..5a7a0a6a2 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl03.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl03.c
+@@ -40,6 +40,10 @@
+ #define IFF_NAPI_FRAGS	0x0020
+ #endif
  
--#define ENCRYPTED_KEY_VALID_PAYLOAD	"new enc32 user:masterkey 32 abcdefABCDEF1234567890aaaaaaaaaa"
--#define ENCRYPTED_KEY_INVALID_PAYLOAD	"new enc32 user:masterkey 32 plaintext123@123!123@123!123@123"
-+#define ENCRYPTED_KEY_PREAMBLE		"new enc32 user:masterkey 32 "
-+#define SHORT_HEXASC_UNENCRYPTED_DATA	"abcdefABCDEF1234567890aaaaaaaaaa"
-+#define HEXASCII_UNENCRYPTED_DATA	SHORT_HEXASC_UNENCRYPTED_DATA \
-+					SHORT_HEXASC_UNENCRYPTED_DATA
-+#define SHORT_ASCII_UNENCRYPTED_DATA	"plaintext123@123!123@123!123@123"
-+#define ASCII_UNENCRYPTED_DATA		SHORT_ASCII_UNENCRYPTED_DATA \
-+					SHORT_ASCII_UNENCRYPTED_DATA
- 
- static void do_test(void)
- {
-@@ -27,8 +32,11 @@ static void do_test(void)
- 		return;
- 
- 	TST_EXP_POSITIVE(add_key("encrypted", "ltptestkey1",
--			    ENCRYPTED_KEY_VALID_PAYLOAD,
--			    60, KEY_SPEC_PROCESS_KEYRING));
-+			    ENCRYPTED_KEY_PREAMBLE
-+			    HEXASCII_UNENCRYPTED_DATA,
-+			    strlen(ENCRYPTED_KEY_PREAMBLE
-+				   HEXASCII_UNENCRYPTED_DATA),
-+			    KEY_SPEC_PROCESS_KEYRING));
- 
- 	if (!TST_PASS)
- 		return;
-@@ -38,8 +46,20 @@ static void do_test(void)
- 	if (!TST_PASS)
- 		return;
- 
-+	/* key not hex-ascii encoded */
- 	TST_EXP_FAIL2(add_key("encrypted", "ltptestkey2",
--			    ENCRYPTED_KEY_INVALID_PAYLOAD, 60,
-+			    ENCRYPTED_KEY_PREAMBLE
-+			    ASCII_UNENCRYPTED_DATA,
-+			    strlen(ENCRYPTED_KEY_PREAMBLE
-+				   ASCII_UNENCRYPTED_DATA),
-+			    KEY_SPEC_PROCESS_KEYRING), EINVAL);
++#ifndef IFF_NO_CARRIER
++#define IFF_NO_CARRIER	0x0040
++#endif
 +
-+	/* key size mismatch */
-+	TST_EXP_FAIL2(add_key("encrypted", "ltptestkey3",
-+			    ENCRYPTED_KEY_PREAMBLE
-+			    SHORT_HEXASC_UNENCRYPTED_DATA,
-+			    strlen(ENCRYPTED_KEY_PREAMBLE
-+				   SHORT_HEXASC_UNENCRYPTED_DATA),
- 			    KEY_SPEC_PROCESS_KEYRING), EINVAL);
+ static struct {
+ 	unsigned int flag;
+ 	const char *name;
+@@ -51,7 +55,8 @@ static struct {
+ 	{IFF_VNET_HDR, "VNET_HDR"},
+ 	{IFF_MULTI_QUEUE, "MULTI_QUEUE"},
+ 	{IFF_NAPI, "IFF_NAPI"},
+-	{IFF_NAPI_FRAGS, "IFF_NAPI_FRAGS"}
++	{IFF_NAPI_FRAGS, "IFF_NAPI_FRAGS"},
++	{IFF_NO_CARRIER, "IFF_NO_CARRIER"}
+ };
  
- 	keyctl(KEYCTL_CLEAR, KEY_SPEC_PROCESS_KEYRING);
+ static void verify_features(void)
 -- 
-2.34.1
+2.37.3
 
 
 -- 
