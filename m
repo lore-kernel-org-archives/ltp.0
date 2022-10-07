@@ -4,89 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68B9AC4332F
-	for <ltp@archiver.kernel.org>; Fri,  7 Oct 2022 12:56:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAD7EC433FE
+	for <ltp@archiver.kernel.org>; Fri,  7 Oct 2022 14:04:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A58B3CAE44
-	for <ltp@archiver.kernel.org>; Fri,  7 Oct 2022 14:56:21 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id AB5553CAE26
+	for <ltp@archiver.kernel.org>; Fri,  7 Oct 2022 16:04:52 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 39DF13CAC05
- for <ltp@lists.linux.it>; Fri,  7 Oct 2022 14:56:11 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 0396E3CAE17
+ for <ltp@lists.linux.it>; Fri,  7 Oct 2022 16:04:41 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 090A51A01941
- for <ltp@lists.linux.it>; Fri,  7 Oct 2022 14:56:09 +0200 (CEST)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 297CXSva004012;
- Fri, 7 Oct 2022 12:56:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=l8+kClQJtiVn/mNi2rH/JUTSCUPrQeD5wpHg9kDapvc=;
- b=LzEhnJKzE2uBoKajIr6MRP6+PW9C31FnYTA1CPxaj5R73/ZziwafHvpNji5HmUxpdofe
- N8PlulEk/iVp2I7VIHANEXQID/ofiw1trNB/gQGMCsR93evQ1gjHWcGefOUcdevkbQFP
- hkh51Df4VE4m71zYzKnCXOhkfOEl+QYnvy+XBlInjKrEjsQlYgEIOOqhA4wwPjzDNPdx
- vjPoLv6e83wOGHigrZ5Uy9gmvWgA4EbhSF4/XSqe08IySAKv7si4SQSSXRCoe1BXAjZw
- qbdqxEjkk9+xnXQJiO8ItxtSLQ13Qoxbs9M+uu27TYWL6/cXlQCq+516s9cOTA8/mqmf Vw== 
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com
- [169.63.121.186])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k2m7m0qaa-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 07 Oct 2022 12:56:08 +0000
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
- by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 297CpHSs030125;
- Fri, 7 Oct 2022 12:56:07 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com
- [9.57.198.24]) by ppma03wdc.us.ibm.com with ESMTP id 3jxd6a0vsd-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 07 Oct 2022 12:56:07 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com ([9.208.128.114])
- by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 297Cu6FV18678316
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 7 Oct 2022 12:56:06 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3C5145805B;
- Fri,  7 Oct 2022 12:56:06 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id CF72E58058;
- Fri,  7 Oct 2022 12:56:05 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown
- [9.160.33.126]) by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
- Fri,  7 Oct 2022 12:56:05 +0000 (GMT)
-Message-ID: <9aee3c94e8816196b9449981f3559e1c149d1c49.camel@linux.ibm.com>
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 07 Oct 2022 08:56:05 -0400
-In-Reply-To: <Yz+4xepB6HlyFSNJ@pevik>
-References: <20221006164342.68763-1-zohar@linux.ibm.com>
- <Yz9CW5vXCuztOTOl@pevik>
- <42eb7aef99a50e09d28f0b9c16ad64cb2caabe91.camel@linux.ibm.com>
- <Yz+4xepB6HlyFSNJ@pevik>
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: kl34-ljEcVQx6UbQjZ_Cv5xZv9hNMrP-
-X-Proofpoint-ORIG-GUID: kl34-ljEcVQx6UbQjZ_Cv5xZv9hNMrP-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-10-06_05,2022-10-07_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0
- malwarescore=0 priorityscore=1501 adultscore=0 mlxlogscore=604 spamscore=0
- impostorscore=0 mlxscore=0 phishscore=0 bulkscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210070075
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 81CB51A01956
+ for <ltp@lists.linux.it>; Fri,  7 Oct 2022 16:04:40 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9A67E1F8B8;
+ Fri,  7 Oct 2022 14:04:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1665151479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ftioq9uSNBRaGf6333YRcx+hlnvBATNfuFVm2nofjPA=;
+ b=zbLL0yojiUkY1EkklA8jLGZ8zko3Vo9cCuNc6qPM5zz9mc+sev2NyLdgLEbt4/FXsdd4RE
+ OlbkLfmzgYqIrQ6WI9qva3TFNQAgApsbXndUPCVCax2irTk/7Wq6OUgE0uDZgVvdRL3vXC
+ NmP69m1NHINlwLP2MmnvvsoSLg65TKY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1665151479;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ftioq9uSNBRaGf6333YRcx+hlnvBATNfuFVm2nofjPA=;
+ b=/eVS2ucVZJbYs4MpEIMgr9iFxIaIXggGf+5sO5CnsERSgcDdVj0eivww0gMmv/+X+HIPB5
+ YrbJsW9DZqrd/pDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D252E13A3D;
+ Fri,  7 Oct 2022 14:04:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ploDJPYxQGOgCgAAMHmgww
+ (envelope-from <akumar@suse.de>); Fri, 07 Oct 2022 14:04:38 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Fri, 07 Oct 2022 19:34:36 +0530
+Message-ID: <4450243.LvFx2qVVIh@localhost>
+Organization: SUSE
+In-Reply-To: <20221006102900.3246-1-pvorel@suse.cz>
+References: <20221006102900.3246-1-pvorel@suse.cz>
+MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] security/ima: limit the scope of the LTP policy
- rules based on the UUID
+Subject: Re: [LTP] [PATCH 1/1] doc: Improve .skip_filesystems documentation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,7 +77,6 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -106,72 +84,44 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Petr,
 
-On Fri, 2022-10-07 at 07:27 +0200, Petr Vorel wrote:
-
-> > > Also is the kernel code path very different to use UUID from the current code?
+On Thursday, October 6, 2022 3:59:00 PM IST Petr Vorel wrote:
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  doc/c-test-api.txt | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> > The code path is the same - either the policy rule matches or it
-> > doesn't.  Previously, however, the test files being measured could have
-> > been located on any filesystem.  With this change, the test files now
-> > have to be on the UUID filesystem.
+> diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+> index 64ee3397f..2865160cc 100644
+> --- a/doc/c-test-api.txt
+> +++ b/doc/c-test-api.txt
+> @@ -894,6 +894,15 @@ If test needs to adjust expectations based on filesystem type it's also
+>  possible to detect filesystem type at the runtime. This is preferably used
+>  when only subset of the test is not applicable for a given filesystem.
+>  
+> +NOTE: ext2, ext3 or ext4 in '.skip_filesystems' on tests which does *not* use
+> +      '.all_filesystems' needs to be defined as 'ext2/ext3/ext4'. The reason
+> +      is that is hard to detect used filesystem due overlapping the functionality.
+nit:
+s/that is/that it is
+s/due/due to
+> +      OTOH tests which use '.skip_filesystems' *with* '.all_filesystems' can skip
+> +      only filesystems which are actually used in '.all_filesystems': ext2, ext3,
+> +      ext4, xfs, btrfs, vfat, exfat, ntfs, tmpfs (defined in 'fs_type_whitelist[]').
+> +      It does not make sense to list other filesystems.
+> +
+> +
+>  [source,c]
+>  -------------------------------------------------------------------------------
+>  #include "tst_test.h"
 > 
-> Good to know. Also, we have new feature in shell API: $TST_ALL_FILESYSTEMS (it
-> has been for long time for C API as .all_filesystems, which loops the test over
-> various filesystems: ext2, ext3, ext4, xfs, btrfs, vfat, exfat, ntfs, tmpfs.
-> Test therefore takes much longer, but it's worth for tests which can behave
-> differently on various filesystems. I suppose IMA does not need it, right?
 
-Nice!  IMA code paths are different on filesystems with/without
-i_version support.   With the proposed i_version kernel
-changes, ima_measurement.sh test2 is really important.
+Reviewed-by: Avinesh Kumar <akumar@suse.de>
 
-On filesystems without i_version support, after a file has been opened
-for write, on fput IMA assumes the file has been modified.  On next
-access, the file is re-verified/re-measured.
 
-I'm not sure if ima_measurement.sh test2, which is limited to
-filesystems with i_version support, should be extended or a new test
-defined to detect whether a file is properly re-measured after it has
-been modified on all filesystems, even those without i_version support.
- 
-> 
-> > > If yes, we might want also to keep the old behavior enabled with some environment
-> > > variable (the default would be to use UUID). Or not worth of keeping it?
-> 
-> > Instead of keeping the old behavior, how about defining additional file
-> > tests that do not match the new UUID policy rule?   These files will
-> > not be measured.
-> Correct measurement outside of the loop device? I.e. something in $TST_TMPDIR?
-> (i.e. /tmp/foo - test unique working directory, $TST_MNTPOINT is mounted on
-> /tmp/foo/mntpoint, so that we still have working place outside mounted loop device).
-> Do you mean trying to measure something what expects to fail?
+Regards,
+Avinesh
 
-Yes, there shouldn't be a new measurement.
 
-> > > > diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-> > > > index af1fb0028..95e7331a4 100755
-> > > > --- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-> > > > +++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-> > > > @@ -27,7 +27,12 @@ load_policy()
-> > > >  	exec 2>/dev/null 4>$IMA_POLICY
-> > > >  	[ $? -eq 0 ] || exit 1
-> 
-> > > > -	cat $1 >&4 2> /dev/null
-> > > > +	if [ -n "$FSUUID" ]; then
-> > > Interesting, would it be correct if there is no UUID with my changes below (i.e.
-> > > always use the loop device)? Actually, do we also want to have way to disable
-> > > loop device (obviously only on TMPDIR not being tmpfs).
-> 
-> > If/when using a non loopback device, there should at least be a major
-> > warning that the global policy has been modified.
-> OK not quiting whole test with TBROK, but add TWARN (test continue, but later
-> exits with non-zero).
-
-Sounds good.
-
-thanks,
-
-Mimi
 
 
 -- 
