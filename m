@@ -4,63 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19460C433FE
-	for <ltp@archiver.kernel.org>; Sun,  9 Oct 2022 06:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F4167C4332F
+	for <ltp@archiver.kernel.org>; Sun,  9 Oct 2022 06:55:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CF3553CAE4E
-	for <ltp@archiver.kernel.org>; Sun,  9 Oct 2022 08:55:39 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 887EE3CAE67
+	for <ltp@archiver.kernel.org>; Sun,  9 Oct 2022 08:55:52 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 139943C4EB7
- for <ltp@lists.linux.it>; Sun,  9 Oct 2022 08:55:28 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id B44C13CAE60
+ for <ltp@lists.linux.it>; Sun,  9 Oct 2022 08:55:27 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C21742009AA
- for <ltp@lists.linux.it>; Sun,  9 Oct 2022 08:55:27 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id ECFF26005E4
+ for <ltp@lists.linux.it>; Sun,  9 Oct 2022 08:55:26 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1665298526;
+ s=mimecast20190719; t=1665298525;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=+vDRq6eZQtDDzjBeTEuywum69Rqu59oS1S5ZdGJETUg=;
- b=E+GXHO4Oz8oM5Qixg7TKYk02pvphT0bManZLrAk/TXw22X94UpFqPFoV9RdA+lO/N8kLh0
- SUma7lLy4/0YGpOJDY1c2mOW9XMQrl3udX7m6CZwMyHWQulZnfYp4oigdpXMRpYzwP7E9b
- 8o9rSb/s5tejjnd8bCURKjhdtN7udiI=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ content-transfer-encoding:content-transfer-encoding;
+ bh=sVVyrUAHo1YlNp7FGSYU6HtQJmSfN+Nkac8xYHRA3CM=;
+ b=hoAKnCcYwc+DyHtJjW4NQ98d3TTtRG99HHsnaKd0rBnUQhPkAh4PLLTlA3YOG0xGYu1kHp
+ 4AtsGBwKW3YTij/Zxh7Y/ETdzA43YkzsXaDLZvGFW5zHz5ejrvxn9YFQXsB7QnlJy1A2V8
+ DWBRVPPeA64qBlKtWrNP7xQvwAzaZEY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-195-6gG71vbuMLiaUrGSYawdkQ-1; Sun, 09 Oct 2022 02:55:25 -0400
-X-MC-Unique: 6gG71vbuMLiaUrGSYawdkQ-1
+ us-mta-350-fdlZuuhCOtOKbpNHVAlcVg-1; Sun, 09 Oct 2022 02:55:23 -0400
+X-MC-Unique: fdlZuuhCOtOKbpNHVAlcVg-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com
  [10.11.54.2])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F073A3C01DE5
- for <ltp@lists.linux.it>; Sun,  9 Oct 2022 06:55:24 +0000 (UTC)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5EC9185A583
+ for <ltp@lists.linux.it>; Sun,  9 Oct 2022 06:55:23 +0000 (UTC)
 Received: from liwang-workstation.nay.redhat.com
  (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 047F140C9559
- for <ltp@lists.linux.it>; Sun,  9 Oct 2022 06:55:23 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 67C1A40C9559
+ for <ltp@lists.linux.it>; Sun,  9 Oct 2022 06:55:22 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
-Date: Sun,  9 Oct 2022 14:55:20 +0800
-Message-Id: <20221009065520.3236525-2-liwang@redhat.com>
-In-Reply-To: <20221009065520.3236525-1-liwang@redhat.com>
-References: <20221009065520.3236525-1-liwang@redhat.com>
+Date: Sun,  9 Oct 2022 14:55:19 +0800
+Message-Id: <20221009065520.3236525-1-liwang@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] setitimer03: convert to new API
+Subject: [LTP] [PATCH 1/2] getitimer02: add ITIMER_VIRTUAL timer error check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,259 +74,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Combine this EINVAL test into setitimer02 and add one additional
-ITIMER_VIRTUAL verification.
-
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- runtest/syscalls                              |   1 -
- .../kernel/syscalls/setitimer/.gitignore      |   1 -
- .../kernel/syscalls/setitimer/setitimer02.c   |  30 +++-
- .../kernel/syscalls/setitimer/setitimer03.c   | 158 ------------------
- 4 files changed, 24 insertions(+), 166 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/setitimer/setitimer03.c
+ testcases/kernel/syscalls/getitimer/getitimer02.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 61a7b7677..2d673836d 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1325,7 +1325,6 @@ sethostname03 sethostname03
- 
- setitimer01 setitimer01
- setitimer02 setitimer02
--setitimer03 setitimer03
- 
- setns01 setns01
- setns02 setns02
-diff --git a/testcases/kernel/syscalls/setitimer/.gitignore b/testcases/kernel/syscalls/setitimer/.gitignore
-index 048db9b31..35779a32c 100644
---- a/testcases/kernel/syscalls/setitimer/.gitignore
-+++ b/testcases/kernel/syscalls/setitimer/.gitignore
-@@ -1,3 +1,2 @@
- /setitimer01
- /setitimer02
--/setitimer03
-diff --git a/testcases/kernel/syscalls/setitimer/setitimer02.c b/testcases/kernel/syscalls/setitimer/setitimer02.c
-index 9ac9ce1fa..ccba231c9 100644
---- a/testcases/kernel/syscalls/setitimer/setitimer02.c
-+++ b/testcases/kernel/syscalls/setitimer/setitimer02.c
-@@ -18,17 +18,33 @@
- #include "tst_test.h"
- #include "lapi/syscalls.h"
- 
--static struct itimerval *value;
-+static struct itimerval *value, *ovalue;
-+
-+static struct tcase {
-+       int which;
-+       struct itimerval **val;
-+       struct itimerval **oval;
-+       int exp_errno;
-+} tcases[] = {
-+       {ITIMER_REAL,    &value, &ovalue, EFAULT},
-+       {ITIMER_VIRTUAL, &value, &ovalue, EFAULT},
-+       {-ITIMER_PROF,   &value, &ovalue, EINVAL},
-+};
- 
- static int sys_setitimer(int which, void *new_value, void *old_value)
- {
- 	return tst_syscall(__NR_setitimer, which, new_value, old_value);
- }
- 
--static void verify_setitimer(void)
-+static void verify_setitimer(unsigned int i)
- {
--	TST_EXP_FAIL(sys_setitimer(ITIMER_REAL, value, (struct itimerval *)-1),
--	             EFAULT);
-+        struct tcase *tc = &tcases[i];
-+
-+	if (tc->exp_errno == EFAULT)
-+		*(tc->oval) = (struct itimerval *)-1;
-+
-+	TST_EXP_FAIL(sys_setitimer(tc->which, *(tc->val), *(tc->oval)),
-+			tc->exp_errno);
- }
- 
- static void setup(void)
-@@ -40,10 +56,12 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
--	.test_all = verify_setitimer,
-+        .tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_setitimer,
- 	.setup = setup,
- 	.bufs = (struct tst_buffers[]) {
--		{&value, .size = sizeof(struct itimerval)},
-+		{&value,  .size = sizeof(struct itimerval)},
-+		{&ovalue, .size = sizeof(struct itimerval)},
- 		{}
- 	}
+diff --git a/testcases/kernel/syscalls/getitimer/getitimer02.c b/testcases/kernel/syscalls/getitimer/getitimer02.c
+index 863e8e0a8..cd98dcce8 100644
+--- a/testcases/kernel/syscalls/getitimer/getitimer02.c
++++ b/testcases/kernel/syscalls/getitimer/getitimer02.c
+@@ -27,8 +27,9 @@ static struct tcase {
+        struct itimerval **val;
+        int exp_errno;
+ } tcases[] = {
+-       {ITIMER_REAL, &invalid, EFAULT},
+-       {-ITIMER_PROF, &value, EINVAL},
++       {ITIMER_REAL,    &invalid, EFAULT},
++       {ITIMER_VIRTUAL, &invalid, EFAULT},
++       {-ITIMER_PROF,   &value,   EINVAL},
  };
-diff --git a/testcases/kernel/syscalls/setitimer/setitimer03.c b/testcases/kernel/syscalls/setitimer/setitimer03.c
-deleted file mode 100644
-index 418ec71f0..000000000
---- a/testcases/kernel/syscalls/setitimer/setitimer03.c
-+++ /dev/null
-@@ -1,158 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * NAME
-- *	setitimer03.c
-- *
-- * DESCRIPTION
-- *	setitimer03 - check that a setitimer() call fails as expected
-- *		      with incorrect values.
-- *
-- * ALGORITHM
-- *	loop if that option was specified
-- *	allocate needed space and set up needed values
-- *	issue the system call
-- *	check the errno value
-- *	  issue a PASS message if we get EINVAL
-- *	otherwise, the tests fails
-- *	  issue a FAIL message
-- *	  break any remaining tests
-- *	  call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  setitimer03 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	none
-- */
--
--#include "test.h"
--
--#include <errno.h>
--#include <sys/time.h>
--
--void cleanup(void);
--void setup(void);
--
--char *TCID = "setitimer03";
--int TST_TOTAL = 1;
--
--int main(int ac, char **av)
--{
--	int lc;
--	struct itimerval *value, *ovalue;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();		/* global setup */
--
--	/* The following loop checks looping state if -i option given */
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		/* allocate some space for timer structures */
--
--		if ((value = malloc((size_t)sizeof(struct itimerval))) ==
--		    NULL) {
--			tst_brkm(TBROK, cleanup, "value malloc failed");
--		}
--
--		if ((ovalue = malloc((size_t)sizeof(struct itimerval))) ==
--		    NULL) {
--			tst_brkm(TBROK, cleanup, "value malloc failed");
--		}
--
--		/* set up some reasonable values */
--
--		value->it_value.tv_sec = 30;
--		value->it_value.tv_usec = 0;
--		value->it_interval.tv_sec = 0;
--		value->it_interval.tv_usec = 0;
--
--		/*
--		 * issue the system call with the TEST() macro
--		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
--		 */
--
--		/* make the first value negative to get a failure */
--		TEST(setitimer(-ITIMER_PROF, value, ovalue));
--
--		if (TEST_RETURN == 0) {
--			tst_resm(TFAIL, "call failed to produce expected error "
--				 "- errno = %d - %s", TEST_ERRNO,
--				 strerror(TEST_ERRNO));
--			continue;
--		}
--
--		switch (TEST_ERRNO) {
--		case EINVAL:
--			tst_resm(TPASS, "expected failure - errno = %d - %s",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--			break;
--		default:
--			tst_resm(TFAIL, "call failed to produce expected error "
--				 "- errno = %d - %s", TEST_ERRNO,
--				 strerror(TEST_ERRNO));
--		}
--
--		/*
--		 * clean up things in case we are looping
--		 */
--		free(value);
--		free(ovalue);
--		value = NULL;
--		ovalue = NULL;
--	}
--
--	cleanup();
--	tst_exit();
--
--}
--
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--}
--
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * 	       or premature exit.
-- */
--void cleanup(void)
--{
--
--}
+ 
+ static int sys_getitimer(int which, void *curr_value)
 -- 
 2.35.3
 
