@@ -4,43 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFDB9C433F5
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 03:11:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1DAAC433F5
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 06:20:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 953CA3CAE73
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 05:11:53 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 4A4C63CAE86
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 08:20:47 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E7BEE3C1B92
- for <ltp@lists.linux.it>; Mon, 10 Oct 2022 05:11:43 +0200 (CEST)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id A95693C1B92
+ for <ltp@lists.linux.it>; Mon, 10 Oct 2022 08:20:28 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2CDA51A002C9
- for <ltp@lists.linux.it>; Mon, 10 Oct 2022 05:11:40 +0200 (CEST)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Mm3jh6VYHz1P6nP
- for <ltp@lists.linux.it>; Mon, 10 Oct 2022 11:07:04 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.63) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 10 Oct 2022 11:11:36 +0800
-To: <ltp@lists.linux.it>
-Date: Mon, 10 Oct 2022 11:07:59 +0800
-Message-ID: <20221010030759.248442-1-zhaogongyi@huawei.com>
-X-Mailer: git-send-email 2.17.1
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C81E71400B7C
+ for <ltp@lists.linux.it>; Mon, 10 Oct 2022 08:20:27 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E65E6218EE;
+ Mon, 10 Oct 2022 06:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1665382826;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gQP8NgxiOJ435WACefmMcvpeTpZErmGvhIkuumS+YVs=;
+ b=Wy4ufoWa7PhSK50Kj/r92Pg5oL8jKZVg6Td+gvt3O92uXq83/KXquO9xe6OICHq64GU5lr
+ VB/ff7zwW7FMuyRk7u1GJ/Ygechtk/KJ4bzTip+q7bDXpPt4eMFmqT8DmGPHoZi9yyNOgW
+ C/6dopD4HwTdV7SuCMJLnB+Y0nwCyRI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1665382826;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gQP8NgxiOJ435WACefmMcvpeTpZErmGvhIkuumS+YVs=;
+ b=X3cb4RNZ4f+1F6But9JMswoH4uFnCWsSvgw/l6NhL6os4mQ4KoHIOZNVYPtDBEyuC8HBLt
+ SqGQwuWxwprAM5AA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BC80A13479;
+ Mon, 10 Oct 2022 06:20:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3DY/LKq5Q2POOgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 10 Oct 2022 06:20:26 +0000
+Date: Mon, 10 Oct 2022 08:20:25 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Y0O5qUOsKZsUDauG@pevik>
+References: <20220930091208.5688-1-pvorel@suse.cz> <Yza1B8t2LOueCVUC@yuki>
+ <Yza2jwpow0uhaLHu@pevik> <Yza4a2Icm+M9cTiK@yuki>
+ <Yzbvg36XX5pVCFkB@pevik>
+ <CAEemH2d7B5wXbvj71zN-=VHpRxjO-67_oH_5-87HZrTEfPwypg@mail.gmail.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.63]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2d7B5wXbvj71zN-=VHpRxjO-67_oH_5-87HZrTEfPwypg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/madvise11: new test for
- madvise(MADV_DONTNEED)
+Subject: Re: [LTP] [PATCH v2 1/1] zram01.sh: Fix minimal size for XFS on
+ kernel 5.19
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -52,143 +80,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Zhao Gongyi via ltp <ltp@lists.linux.it>
-Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test cases for madvise(2) system call, advise value as "MADV_MADV_DONTNEED":
-1. After a successful MADV_DONTNEED operation, it will result in
-zero-fill-on-demand pages for anonymous private mappings
-2. MADV_DONTNEED cannot be applied to Huge TLB pages
+Hi Li,
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/madvise/.gitignore  |  1 +
- testcases/kernel/syscalls/madvise/madvise11.c | 87 +++++++++++++++++++
- 3 files changed, 89 insertions(+)
- create mode 100644 testcases/kernel/syscalls/madvise/madvise11.c
+> Hi Petr, Cyril,
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 61a7b7677..a8ed9d65e 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -946,6 +946,7 @@ madvise07 madvise07
- madvise08 madvise08
- madvise09 madvise09
- madvise10 madvise10
-+madvise11 madvise11
+> Thanks for moving on this, and good to see the new released.
+> I had to suspend work and deal with some family matters last week,
+> so sorry for the later reply.
+No problem, understand, hope everything is OK on your side.
+And thank you for your work, you're one of the most active reviewers.
 
- newuname01 newuname01
+Kind regards,
+Petr
 
-diff --git a/testcases/kernel/syscalls/madvise/.gitignore b/testcases/kernel/syscalls/madvise/.gitignore
-index 002d8e5d9..6e5b92ab7 100644
---- a/testcases/kernel/syscalls/madvise/.gitignore
-+++ b/testcases/kernel/syscalls/madvise/.gitignore
-@@ -6,3 +6,4 @@
- /madvise08
- /madvise09
- /madvise10
-+/madvise11
-diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
-new file mode 100644
-index 000000000..358c07d3a
---- /dev/null
-+++ b/testcases/kernel/syscalls/madvise/madvise11.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
-+ * Author: Zhao Gongyi <zhaogongyi@huawei.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Test cases for madvise(2) system call, advise value as "MADV_MADV_DONTNEED":
-+ * 1. After a successful MADV_DONTNEED operation, it will result in
-+ *    zero-fill-on-demand pages for anonymous private mappings
-+ * 2. MADV_DONTNEED cannot be applied to Huge TLB pages
-+ */
-+
-+#include "tst_test.h"
-+
-+#define MAP_SIZE (8 * 1024)
-+
-+static char *addr;
-+
-+static void test_madvise01(void)
-+{
-+	int i;
-+
-+	addr = SAFE_MMAP(NULL, MAP_SIZE,
-+			PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS,
-+			-1, 0);
-+	memset(addr, 1, MAP_SIZE);
-+
-+	TEST(madvise(addr, MAP_SIZE, MADV_DONTNEED));
-+	if (TST_RET == -1) {
-+		tst_brk(TBROK | TTERRNO, "madvise(%p, %d, 0x%x) failed",
-+			addr, MAP_SIZE, MADV_DONTNEED);
-+	}
-+
-+	for (i = 0; i < MAP_SIZE; i++) {
-+		if (addr[i]) {
-+			tst_res(TFAIL,
-+				"There are no zero-fill-on-demand pages "
-+				"for anonymous private mappings");
-+			break;
-+		}
-+	}
-+
-+	if (i == MAP_SIZE) {
-+		tst_res(TPASS,
-+			"There are zero-fill-on-demand pages "
-+			"for anonymous private mappings");
-+	}
-+
-+	SAFE_MUNMAP(addr, MAP_SIZE);
-+}
-+
-+static void test_madvise02(void)
-+{
-+	int mapsz = tst_get_hugepage_size();
-+
-+	addr = SAFE_MMAP(NULL, mapsz,
-+			PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-+			-1, 0);
-+
-+	TEST(madvise(addr, mapsz, MADV_DONTNEED));
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "madvise(%p, %d, 0x%x) succeed unexpectedly",
-+			addr, mapsz, MADV_DONTNEED);
-+	} else {
-+		tst_res(TPASS, "madvise test for 'MADV_DONTNEED' passed");
-+	}
-+
-+	SAFE_MUNMAP(addr, mapsz);
-+}
-+
-+static void test_madvise(void)
-+{
-+	test_madvise01();
-+	test_madvise02();
-+}
-+
-+static struct tst_test test = {
-+	.test_all = test_madvise,
-+	.needs_root = 1,
-+	.hugepages = {1, TST_NEEDS},
-+};
-+
---
-2.17.1
+> On Fri, Sep 30, 2022 at 9:30 PM Petr Vorel <pvorel@suse.cz> wrote:
 
+> > Hi all,
+
+> > Tested on affected 5.19 kernel and various older SLES kernels.
+> > Therefore merged.
+
+> > Kind regards,
+> > Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
