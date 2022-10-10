@@ -4,71 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01E73C433F5
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 10:42:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04270C433F5
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 10:59:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0E3B53CAE72
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 12:42:02 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 6AC3C3CAE81
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 12:59:11 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2FCE33C28F3
- for <ltp@lists.linux.it>; Mon, 10 Oct 2022 12:41:51 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 90AB43C28F3
+ for <ltp@lists.linux.it>; Mon, 10 Oct 2022 12:59:02 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 79D496002F9
- for <ltp@lists.linux.it>; Mon, 10 Oct 2022 12:41:50 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 568082191E;
- Mon, 10 Oct 2022 10:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1665398510;
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DBE2D1400548
+ for <ltp@lists.linux.it>; Mon, 10 Oct 2022 12:59:01 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id D7EB72198C;
+ Mon, 10 Oct 2022 10:59:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1665399540;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4UOaFnGVMN7iXrqEZquHHe/Q+B0m/euy50uZVwxGjgk=;
- b=bx8vZ8vFIKZSpikP4klzlCw7acDFkoOhg5WFIbUUNdwjzcD7Pm5S/XWLYkSM4ImwwD+bwI
- /NegrmTqFWwdsMRfjEgmNiaR4HvsACITuO661ntQqDFGyGEAU7pkBwsooX4m2bp/agtSSk
- beZEwjSLDbaVgDeRYbYMK4XphMhEV3Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1665398510;
+ bh=/aPgwFbJpxt8teSjcFrgakH1+CTtFRKHIHPgStqS95s=;
+ b=r50AnDtbkNSzfNmvaKCfjKBU34kB5k7RO4XrgH1gZkKk2CzmY4QJUCX+UGUsMExmJ7Hlek
+ wATBiEXzioC3ajJOIWBe26sVzIH871an5JmT7mfEBKvf1KwasAXjFOfUqIC87efwNKOE4E
+ y9zd4P+qvg5ivOvHP3RcguxP+dDIykk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1665399540;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4UOaFnGVMN7iXrqEZquHHe/Q+B0m/euy50uZVwxGjgk=;
- b=VNCLCPTQA1b8cJyQdBv2zXVSiFqXLI/1wjebsFxtSr58vHzyjDmVxAXStyREOjVKJqhUuR
- oORIh0K45KhVG3AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=/aPgwFbJpxt8teSjcFrgakH1+CTtFRKHIHPgStqS95s=;
+ b=3By5R3k7vbjJ+8pDh7UAu6+zLzYsdcRUJF1mttLkv++g4tturf6ekjROkaciDXolxMIwEX
+ HxzeKSmY04oWZqCw==
+Received: from g78 (unknown [10.100.228.202])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 36CE713ACA;
- Mon, 10 Oct 2022 10:41:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id hkR+C+72Q2OhMAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 10 Oct 2022 10:41:50 +0000
-Date: Mon, 10 Oct 2022 12:41:48 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Mimi Zohar <zohar@linux.ibm.com>
-Message-ID: <Y0P27II+FbjqAIz8@pevik>
-References: <20221006164342.68763-1-zohar@linux.ibm.com>
- <Yz9CW5vXCuztOTOl@pevik>
- <42eb7aef99a50e09d28f0b9c16ad64cb2caabe91.camel@linux.ibm.com>
- <Yz+4xepB6HlyFSNJ@pevik>
- <9aee3c94e8816196b9449981f3559e1c149d1c49.camel@linux.ibm.com>
+ by relay2.suse.de (Postfix) with ESMTPS id F414C2C141;
+ Mon, 10 Oct 2022 10:58:59 +0000 (UTC)
+References: <20220411094048.1143292-1-liwang@redhat.com>
+ <20220411094048.1143292-2-liwang@redhat.com>
+ <CAASaF6wZSGKi+ePOcYYiuvQ=RNhu5mPTrY-FFiRMA0UhMaO1Zw@mail.gmail.com>
+ <CAEemH2djWZ5ZPj8uYWESy+CGLo7zFD_V==1ROMRLZW78itY51A@mail.gmail.com>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Li Wang <liwang@redhat.com>
+Date: Mon, 10 Oct 2022 11:45:28 +0100
+In-reply-to: <CAEemH2djWZ5ZPj8uYWESy+CGLo7zFD_V==1ROMRLZW78itY51A@mail.gmail.com>
+Message-ID: <87mta49c7k.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <9aee3c94e8816196b9449981f3559e1c149d1c49.camel@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] security/ima: limit the scope of the LTP policy
- rules based on the UUID
+Subject: Re: [LTP] [PATCH 2/2] pkey: correct the PKEY_DISABLE_ACCESS
+ definitions on PowerPC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,92 +72,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Reply-To: rpalethorpe@suse.de
+Cc: Ram Pai <linuxram@us.ibm.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Petr,
+Hello,
 
-> On Fri, 2022-10-07 at 07:27 +0200, Petr Vorel wrote:
+Li Wang <liwang@redhat.com> writes:
 
-> > > > Also is the kernel code path very different to use UUID from the current code?
+> On Mon, Apr 11, 2022 at 6:57 PM Jan Stancek <jstancek@redhat.com> wrote:
+>
+>  On Mon, Apr 11, 2022 at 11:41 AM Li Wang <liwang@redhat.com> wrote:
+>  >
+>  > Reference: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e9506394a159
+>  >
+>  > Signed-off-by: Li Wang <liwang@redhat.com>
+>  > ---
+>  >  testcases/kernel/syscalls/pkeys/pkey.h | 7 +++++++
+>  >  1 file changed, 7 insertions(+)
+>  >
+>  > diff --git a/testcases/kernel/syscalls/pkeys/pkey.h b/testcases/kernel/syscalls/pkeys/pkey.h
+>  > index 6e32326b6..6cda88ff1 100644
+>  > --- a/testcases/kernel/syscalls/pkeys/pkey.h
+>  > +++ b/testcases/kernel/syscalls/pkeys/pkey.h
+>  > @@ -11,6 +11,13 @@
+>  >  #include "lapi/syscalls.h"
+>  >  #include "lapi/mmap.h"
+>  >
+>  > +#if defined(__powerpc__) || defined(__ppc__)
+>  > +# undef PKEY_DISABLE_ACCESS
+>  > +# define PKEY_DISABLE_ACCESS 0x3
+>
+>  Where does powerpc define PKEY_DISABLE_ACCESS as 0x3?
+>
+> Good question, I previously thought that was officially defined as 0x3 on PowerPC (per Ram's patch).
+>
+> But after looking at 'powerpc/include/uapi/asm/mman.h' it still includes
+> header which define PKEY_DISABLE_ACCESS as 0x1. 
+>     #include <asm-generic/mman-common.h>
+>
+> @Ram Pai, could you explain why you're using 0x3 in kselftest?
+> Did I miss anything?
 
-> > > The code path is the same - either the policy rule matches or it
-> > > doesn't.  Previously, however, the test files being measured could have
-> > > been located on any filesystem.  With this change, the test files now
-> > > have to be on the UUID filesystem.
+No response and I guess pkey01 would fail on some systems if it weren't
+0x1. So I'll mark this as rejected in patchwork.
 
-> > Good to know. Also, we have new feature in shell API: $TST_ALL_FILESYSTEMS (it
-> > has been for long time for C API as .all_filesystems, which loops the test over
-> > various filesystems: ext2, ext3, ext4, xfs, btrfs, vfat, exfat, ntfs, tmpfs.
-> > Test therefore takes much longer, but it's worth for tests which can behave
-> > differently on various filesystems. I suppose IMA does not need it, right?
-
-> Nice!  IMA code paths are different on filesystems with/without
-> i_version support.   With the proposed i_version kernel
-> changes, ima_measurement.sh test2 is really important.
-
-> On filesystems without i_version support, after a file has been opened
-> for write, on fput IMA assumes the file has been modified.  On next
-> access, the file is re-verified/re-measured.
-
-> I'm not sure if ima_measurement.sh test2, which is limited to
-> filesystems with i_version support, should be extended or a new test
-> defined to detect whether a file is properly re-measured after it has
-> been modified on all filesystems, even those without i_version support.
-
-
-> > > > If yes, we might want also to keep the old behavior enabled with some environment
-> > > > variable (the default would be to use UUID). Or not worth of keeping it?
-
-> > > Instead of keeping the old behavior, how about defining additional file
-> > > tests that do not match the new UUID policy rule?   These files will
-> > > not be measured.
-> > Correct measurement outside of the loop device? I.e. something in $TST_TMPDIR?
-> > (i.e. /tmp/foo - test unique working directory, $TST_MNTPOINT is mounted on
-> > /tmp/foo/mntpoint, so that we still have working place outside mounted loop device).
-> > Do you mean trying to measure something what expects to fail?
-
-> Yes, there shouldn't be a new measurement.
-
-> > > > > diff --git a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-> > > > > index af1fb0028..95e7331a4 100755
-> > > > > --- a/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-> > > > > +++ b/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-> > > > > @@ -27,7 +27,12 @@ load_policy()
-> > > > >  	exec 2>/dev/null 4>$IMA_POLICY
-> > > > >  	[ $? -eq 0 ] || exit 1
-
-> > > > > -	cat $1 >&4 2> /dev/null
-> > > > > +	if [ -n "$FSUUID" ]; then
-> > > > Interesting, would it be correct if there is no UUID with my changes below (i.e.
-> > > > always use the loop device)? Actually, do we also want to have way to disable
-> > > > loop device (obviously only on TMPDIR not being tmpfs).
-
-BTW using fsuuid= depends on v3.9, on commit:
-85865c1fa189 ("ima: add policy support for file system uuid")
-
-v3.9 is quite old, it shouldn't be a problem, but it'd be better to add TST_MIN_KVER="3.9"
-
-I'll send v2, just for you to check the changes.
-
-Kind regards,
-Petr
-
-> > > If/when using a non loopback device, there should at least be a major
-> > > warning that the global policy has been modified.
-> > OK not quiting whole test with TBROK, but add TWARN (test continue, but later
-> > exits with non-zero).
-
-> Sounds good.
-
-> thanks,
-
-> Mimi
-
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
