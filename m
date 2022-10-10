@@ -4,62 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2E5CC433FE
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 09:00:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 813FEC433FE
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 09:11:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E80073CAE8D
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 11:00:02 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9C89C3CA9F4
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 11:10:58 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 965403C0FBC
- for <ltp@lists.linux.it>; Mon, 10 Oct 2022 10:59:53 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id F2EBC3C28F3
+ for <ltp@lists.linux.it>; Mon, 10 Oct 2022 11:10:47 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 02DAA600670
- for <ltp@lists.linux.it>; Mon, 10 Oct 2022 10:59:52 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6FF771400336
+ for <ltp@lists.linux.it>; Mon, 10 Oct 2022 11:10:46 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A2C84218D5;
- Mon, 10 Oct 2022 08:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1665392390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5427D218EE;
+ Mon, 10 Oct 2022 09:10:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1665393046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=368aSTC7/50N6sJ7VJ5/tzE4ryg0nGQCMEhKdTsWaI4=;
- b=T1Fw9rgeU/vdUlKD3zS3PGe5fevcZ3thxCl9Q/E9aKup0sMheu3Wb0qMkTzW3Jnhq34U/r
- nnpOlIY/FGr7dHssPly2zM/fzvcK4KXneulTYs4cWHRshAnavujkv3WRnG4VdFq1qrE56N
- 0J0liCaoPNkrqJq574dqG+RQSHkac3w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1665392390;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=368aSTC7/50N6sJ7VJ5/tzE4ryg0nGQCMEhKdTsWaI4=;
- b=5RbXcjwo+dJOBmaDAcQQIHmJ9PnDTBhNravZYdFxPveMo2Xd9t3w4i7lwekthoFJJc2znz
- j4DMYDuM3ZW3eLAA==
+ bh=HZYulLNACdiLIGJLTm7SMr+b03vfNq3JqAblDlmLkSk=;
+ b=A810Cu4KyTz7GaUneVLJvg9pVTWc12moC1NAJeLb4koRnTc+e5myRzEar7t94CLiwGVQA6
+ gqR8KvSViBlIBhtY+mgMSK4KcPhC3JKyNxi9zYb16h69L2RJpx67dWBX3Od3cIhXdi9TzW
+ 27WpFDDzmT5HEBUnZ3R9k7JjSq2Xin0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 67FBF13479;
- Mon, 10 Oct 2022 08:59:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0C84313479;
+ Mon, 10 Oct 2022 09:10:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 5gNNFwbfQ2O2fQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 10 Oct 2022 08:59:50 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 0gXwAJbhQ2MFBAAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Mon, 10 Oct 2022 09:10:46 +0000
 To: ltp@lists.linux.it
-Date: Mon, 10 Oct 2022 10:59:44 +0200
-Message-Id: <20221010085944.26814-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.37.3
+Date: Mon, 10 Oct 2022 11:09:32 +0200
+Message-Id: <20221010090932.29417-1-andrea.cervesato@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] tst_test.sh: Create (again) loop device in
- $TST_TMPDIR
+Subject: [LTP] [PATCH v2] Add epoll_ctl06 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,82 +62,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Before 1f6bd6e66 loop device for testing test_dev.img was created in
-shell API after cd to $TST_TMPDIR, therefore automatically removed
-during the cleanup in _tst_do_exit(). This got broken in 1f6bd6e66,
-fix it.
+The epoll_ctl06 test verifies that EPOLLRDHUP event is correctly
+recognised by epoll.
 
-Although it'd be good not relying on this order (full path could be kept
-and then pass to rm), it's better to have all LTP temporary files under
-$TST_TMPDIR, thus just restore the order.
-
-Fixes: 1f6bd6e66 ("tst_test.sh: Add $TST_ALL_FILESYSTEMS")
-
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Hi,
+ .../kernel/syscalls/epoll_ctl/.gitignore      |  1 +
+ .../kernel/syscalls/epoll_ctl/epoll_ctl06.c   | 73 +++++++++++++++++++
+ 2 files changed, 74 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
 
-I'm sorry for introducing yet another regression in
-$TST_ALL_FILESYSTEMS.
-
-Kind regards,
-Petr
-
- testcases/lib/tst_test.sh | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
-
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index 033491b08..5af345938 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -716,6 +716,20 @@ tst_run()
- 	[ "$TST_FORMAT_DEVICE" = 1 -o "$TST_ALL_FILESYSTEMS" = 1 ] && TST_NEEDS_DEVICE=1
- 	[ "$TST_NEEDS_DEVICE" = 1 ] && TST_NEEDS_TMPDIR=1
- 
-+	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
-+		if [ -z "$TMPDIR" ]; then
-+			export TMPDIR="/tmp"
-+		fi
+diff --git a/testcases/kernel/syscalls/epoll_ctl/.gitignore b/testcases/kernel/syscalls/epoll_ctl/.gitignore
+index 3e05f2e1f..9c555f41b 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/.gitignore
++++ b/testcases/kernel/syscalls/epoll_ctl/.gitignore
+@@ -3,3 +3,4 @@ epoll_ctl02
+ epoll_ctl03
+ epoll_ctl04
+ epoll_ctl05
++epoll_ctl06
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
+new file mode 100644
+index 000000000..bd08fd7f9
+--- /dev/null
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl06.c
+@@ -0,0 +1,73 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
 +
-+		TST_TMPDIR=$(mktemp -d "$TMPDIR/LTP_$TST_ID.XXXXXXXXXX")
++/*\
++ * [Description]
++ *
++ * Verify that epoll receives EPOLLRDHUP event when we hang a reading
++ * half-socket we are polling on.
++ */
 +
-+		chmod 777 "$TST_TMPDIR"
++#include <poll.h>
++#include <sys/epoll.h>
++#include "tst_test.h"
 +
-+		TST_STARTWD=$(pwd)
-+		cd "$TST_TMPDIR"
-+	fi
++static int sockfd;
++static int epfd;
 +
-+	# needs to be after cd $TST_TMPDIR to keep test_dev.img under $TST_TMPDIR
- 	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
- 		TST_DEVICE=$(tst_device acquire)
- 
-@@ -730,19 +744,6 @@ tst_run()
- 		fi
- 	fi
- 
--	if [ "$TST_NEEDS_TMPDIR" = 1 ]; then
--		if [ -z "$TMPDIR" ]; then
--			export TMPDIR="/tmp"
--		fi
--
--		TST_TMPDIR=$(mktemp -d "$TMPDIR/LTP_$TST_ID.XXXXXXXXXX")
--
--		chmod 777 "$TST_TMPDIR"
--
--		TST_STARTWD=$(pwd)
--		cd "$TST_TMPDIR"
--	fi
--
- 	if [ "$TST_ALL_FILESYSTEMS" != 1 -a "$TST_SKIP_FILESYSTEMS" ]; then
- 		if ! tst_supported_fs -s "$TST_SKIP_FILESYSTEMS" -d . > /dev/null; then
- 			tst_brk TCONF "filesystem is not supported by the test"
++static void setup(void)
++{
++	sockfd = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
++}
++
++static void cleanup(void)
++{
++	if (epfd > 0)
++		SAFE_CLOSE(epfd);
++
++	if (sockfd > 0)
++		SAFE_CLOSE(sockfd);
++}
++
++static void run(void)
++{
++	int res;
++	struct epoll_event evt_req;
++	struct epoll_event evt_rec;
++
++	epfd = epoll_create1(0);
++	if (epfd == -1)
++		tst_brk(TBROK | TERRNO, "fail to create epoll instance");
++
++	tst_res(TINFO, "Looking at EPOLLRDHUP events");
++
++	evt_req.events = EPOLLRDHUP;
++	res = epoll_ctl(epfd, EPOLL_CTL_ADD, sockfd, &evt_req);
++	if (res == -1)
++		tst_brk(TBROK | TERRNO, "epoll_ctl failure");
++
++	tst_res(TINFO, "Hang reading half-socket");
++	shutdown(sockfd, SHUT_RD);
++
++	res = epoll_wait(epfd, &evt_rec, 1, 2000);
++	if (res <= 0) {
++		tst_res(TFAIL | TERRNO, "epoll_wait() returned %i", res);
++		return;
++	}
++
++	if (evt_rec.events & evt_req.events)
++		tst_res(TPASS, "Received EPOLLRDHUP");
++	else
++		tst_res(TFAIL, "EPOLLRDHUP has not been received");
++
++	SAFE_CLOSE(epfd);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.forks_child = 1,
++};
 -- 
-2.37.3
+2.35.3
 
 
 -- 
