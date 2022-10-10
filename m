@@ -4,88 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01D34C433FE
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 12:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ACEFC433F5
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 12:47:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 384373CAE8E
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 14:25:53 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 728F23CAE6C
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 14:47:09 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 11BEF3C3030
- for <ltp@lists.linux.it>; Fri,  7 Oct 2022 12:57:40 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id 5A52E3CAE28
+ for <ltp@lists.linux.it>; Mon, 10 Oct 2022 14:46:55 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A95F32005FD
+ for <ltp@lists.linux.it>; Mon, 10 Oct 2022 14:46:54 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id AC4501F8EC;
+ Mon, 10 Oct 2022 12:46:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1665406013;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=j1rXqbZIA4I21HtDHeKt57wEV42vJFFUyKQkkjY6Ge4=;
+ b=zJJ4k+ZcMcRfqVd6IF+BbZByVV/3VfXdm3pcmHJJ3UmCiYH/48uf0O0ejcGjdeE6Z5hena
+ uaA/BTPslhtuhR3VVHRq17TEIVYkMakuEUMsB8RyH8wrp1sS1+9npQe8oaC25WkQXia8Xm
+ qF94mUjEdwVbHvc4xpHGBuMpIC9IvOc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1665406013;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=j1rXqbZIA4I21HtDHeKt57wEV42vJFFUyKQkkjY6Ge4=;
+ b=FPOtzC79+m9E8gmAuI6MXYT5lfzpP9pcC+Z3IaqaVCkZl2ac19ogYZ0TaMaPGaz+CcqEu1
+ eqLe+34z8oz82wBQ==
+Received: from g78 (unknown [10.100.228.202])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6000F1A01939
- for <ltp@lists.linux.it>; Fri,  7 Oct 2022 12:57:38 +0200 (CEST)
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2979ktTH019481
- for <ltp@lists.linux.it>; Fri, 7 Oct 2022 10:57:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : subject :
- date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=jkpniCGsbK7xFy0d9pMDeRUZFAZN5CvTcO1B9YzC0Ik=;
- b=ppTkL1d88sHj9ZmcU34Sc83fPOPVH5h3bGAw9LrxlHjuIyvidFZNHV08QNRHfqsAt3dV
- y1M/aLScWmZg+c4M/jvdKvHBzQRXTVOfJMje9M9orMl2U4+9wqb2AMQwPNz3+kwb4dKX
- 1y8gWl313Q1thSKAbR60JXi2nnveLhG8diMsQUu+5Y3bZsgnKb2WiPJq52rrLsixCHIc
- 1FF0PByLrPwuUuByXRv0aKbsFJFM5h1QTb35CZjuu40m8uIgz9Si/P2elnupJCm5JYSQ
- eRoQENUX1cB1prznUxPOMbM+hIzEBIRpWLT4qZrLvFO7y3Ol2aUz/fxsbjRgOowEroxt yw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k2hsja1hk-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Fri, 07 Oct 2022 10:57:36 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 297AocUZ031614
- for <ltp@lists.linux.it>; Fri, 7 Oct 2022 10:57:35 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com
- (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
- by ppma04ams.nl.ibm.com with ESMTP id 3jxd698g9s-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Fri, 07 Oct 2022 10:57:35 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com
- [9.149.105.62])
- by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 297AvWRK8651422
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <ltp@lists.linux.it>; Fri, 7 Oct 2022 10:57:32 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C77D2AE04D
- for <ltp@lists.linux.it>; Fri,  7 Oct 2022 10:57:32 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id B6203AE045
- for <ltp@lists.linux.it>; Fri,  7 Oct 2022 10:57:32 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
- by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS
- for <ltp@lists.linux.it>; Fri,  7 Oct 2022 10:57:32 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
- id 51D02E0256; Fri,  7 Oct 2022 12:57:32 +0200 (CEST)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Fri,  7 Oct 2022 12:57:27 +0200
-Message-Id: <20221007105727.2303349-1-svens@linux.ibm.com>
-X-Mailer: git-send-email 2.34.1
+ by relay2.suse.de (Postfix) with ESMTPS id 06D782C141;
+ Mon, 10 Oct 2022 12:46:52 +0000 (UTC)
+References: <1657106160-2126-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <42ff1e30-71c9-ee71-2333-48c8cce74f0f@fujitsu.com>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Date: Mon, 10 Oct 2022 13:11:19 +0100
+In-reply-to: <42ff1e30-71c9-ee71-2333-48c8cce74f0f@fujitsu.com>
+Message-ID: <87a663als4.fsf@suse.de>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 8cL2mFK46KBxA_6j5IX5FtVREbBOVd4r
-X-Proofpoint-GUID: 8cL2mFK46KBxA_6j5IX5FtVREbBOVd4r
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-10-06_05,2022-10-07_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 adultscore=0
- impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2209130000 definitions=main-2210070064
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 10 Oct 2022 14:25:33 +0200
-Subject: [LTP] [PATCH] syscalls/ioctl03: add IFF_NO_CARRIER flag
+Subject: Re: [LTP] [PATCH] syscalls/prctl10: Add basic test for
+ PR_SET/GET_TSC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,48 +70,213 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-since linux kernel commit 195624d9c26b
-("tun: support not enabling carrier in TUNSETIFF") IFF_NO_CARRIER
-is a valid flag. Therefore add it to the list.
+Hello,
 
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
----
- testcases/kernel/syscalls/ioctl/ioctl03.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+"xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com> writes:
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl03.c b/testcases/kernel/syscalls/ioctl/ioctl03.c
-index 3d4ac3e24..5a7a0a6a2 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl03.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl03.c
-@@ -40,6 +40,10 @@
- #define IFF_NAPI_FRAGS	0x0020
- #endif
- 
-+#ifndef IFF_NO_CARRIER
-+#define IFF_NO_CARRIER	0x0040
-+#endif
-+
- static struct {
- 	unsigned int flag;
- 	const char *name;
-@@ -51,7 +55,8 @@ static struct {
- 	{IFF_VNET_HDR, "VNET_HDR"},
- 	{IFF_MULTI_QUEUE, "MULTI_QUEUE"},
- 	{IFF_NAPI, "IFF_NAPI"},
--	{IFF_NAPI_FRAGS, "IFF_NAPI_FRAGS"}
-+	{IFF_NAPI_FRAGS, "IFF_NAPI_FRAGS"},
-+	{IFF_NO_CARRIER, "IFF_NO_CARRIER"}
- };
- 
- static void verify_features(void)
+> Hi All
+>
+> Any comment?
+
+Ah, yes, better late than never.
+
+>
+> Best Regards
+> Yang Xu
+>> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+>> ---
+>>   include/lapi/prctl.h                       |   7 ++
+>>   runtest/syscalls                           |   1 +
+>>   testcases/kernel/syscalls/prctl/.gitignore |   1 +
+>>   testcases/kernel/syscalls/prctl/prctl10.c  | 112 +++++++++++++++++++++
+>>   4 files changed, 121 insertions(+)
+>>   create mode 100644 testcases/kernel/syscalls/prctl/prctl10.c
+>> 
+>> diff --git a/include/lapi/prctl.h b/include/lapi/prctl.h
+>> index fa5922231..8d3ef5c32 100644
+>> --- a/include/lapi/prctl.h
+>> +++ b/include/lapi/prctl.h
+>> @@ -19,6 +19,13 @@
+>>   # define PR_SET_SECCOMP  22
+>>   #endif
+>>   
+>> +#ifndef PR_SET_TSC
+>> +# define PR_GET_TSC 25
+>> +# define PR_SET_TSC 26
+>> +# define PR_TSC_ENABLE  1
+>> +# define PR_TSC_SIGSEGV 2
+>> +#endif
+>> +
+>>   #ifndef PR_SET_TIMERSLACK
+>>   # define PR_SET_TIMERSLACK 29
+>>   # define PR_GET_TIMERSLACK 30
+>> diff --git a/runtest/syscalls b/runtest/syscalls
+>> index 36fc50aeb..a0935821a 100644
+>> --- a/runtest/syscalls
+>> +++ b/runtest/syscalls
+>> @@ -1004,6 +1004,7 @@ prctl06 prctl06
+>>   prctl07 prctl07
+>>   prctl08 prctl08
+>>   prctl09 prctl09
+>> +prctl10 prctl10
+>>   
+>>   pread01 pread01
+>>   pread01_64 pread01_64
+>> diff --git a/testcases/kernel/syscalls/prctl/.gitignore b/testcases/kernel/syscalls/prctl/.gitignore
+>> index 0f2c9b194..50ee4bf60 100644
+>> --- a/testcases/kernel/syscalls/prctl/.gitignore
+>> +++ b/testcases/kernel/syscalls/prctl/.gitignore
+>> @@ -8,3 +8,4 @@
+>>   /prctl07
+>>   /prctl08
+>>   /prctl09
+>> +/prctl10
+>> diff --git a/testcases/kernel/syscalls/prctl/prctl10.c b/testcases/kernel/syscalls/prctl/prctl10.c
+>> new file mode 100644
+>> index 000000000..1b6791679
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/prctl/prctl10.c
+>> @@ -0,0 +1,112 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (c) 2022 FUJITSU LIMITED. All rights reserved.
+>> + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
+>> + */
+>> +
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * Basic test to test behaviour of PR_GET_TSC and PR_SET_TSC.
+>> + *
+>> + * Set the state of the flag determining whether the timestamp counter can
+>> + * be read by the process.
+>> + *
+>> + * - Pass PR_TSC_ENABLE to arg2 to allow it to be read.
+>> + * - Pass PR_TSC_SIGSEGV to arg2 to generate a SIGSEGV when reading TSC.
+>> + */
+>> +
+>> +#include <sys/prctl.h>
+>> +#include <string.h>
+>> +#include <stdio.h>
+>> +#include <setjmp.h>
+>> +#include "tst_test.h"
+>> +#include "lapi/prctl.h"
+>> +
+>> +#define TCASE_ENTRY(tsc_read_stat) { .name = #tsc_read_stat, .read_stat = tsc_read_stat}
+>> +
+>> +static int pass;
+>> +static sigjmp_buf env;
+>> +
+>> +static const char *tsc_read_stat_names[] = {
+>> +	[0] = "[not set]",
+>> +	[PR_TSC_ENABLE] = "PR_TSC_ENABLE",
+>> +	[PR_TSC_SIGSEGV] = "PR_TSC_SIGSEGV",
+>> +};
+>> +
+>> +static struct tcase {
+>> +	char *name;
+>> +	int read_stat;
+>> +} tcases[] = {
+>> +	TCASE_ENTRY(PR_TSC_ENABLE),
+>> +	TCASE_ENTRY(PR_TSC_SIGSEGV)
+>> +};
+>> +
+>> +static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+>> +{
+>> +	pass = 1;
+>> +	TST_EXP_PASS_SILENT(prctl(PR_SET_TSC, PR_TSC_ENABLE));
+>> +	siglongjmp(env, 1);
+>> +}
+>> +
+>> +static uint64_t rdtsc(void)
+>> +{
+>> +	uint32_t lo, hi;
+>> +	/* We cannot use "=A", since this would use %rax on x86_64 */
+>> +	__asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+>> +	return (uint64_t)hi << 32 | lo;
+>> +}
+>> +
+>> +static void verify_prctl(unsigned int n)
+>> +{
+>> +	struct tcase *tc = &tcases[n];
+>> +	unsigned long long time1, time2;
+>> +	int tsc_val = 0;
+>> +
+>> +	TST_EXP_PASS_SILENT(prctl(PR_SET_TSC, tc->read_stat));
+>> +	TST_EXP_PASS_SILENT(prctl(PR_GET_TSC, &tsc_val));
+>> +	if (tsc_val == tc->read_stat)
+>> +		tst_res(TPASS, "current state is %s(%d)",
+>> +				tc->name, tc->read_stat);
+>> +	else
+>> +		tst_res(TFAIL, "current state is %s(%d), expect %s(%d)",
+>> +				tsc_read_stat_names[tsc_val], tsc_val, tc->name, tc->read_stat);
+>> +
+>> +	if (tc->read_stat == PR_TSC_SIGSEGV) {
+>> +		if (sigsetjmp(env, 1) == 0)
+>> +			rdtsc();
+
+I think that because rdtsc is volatile, the load of 'pass' won't be
+moved before it by the compiler. OTOH pass itself is not marked volatile and we
+are relying on the compiler infering that it is volatile from the signal
+handler instead of assuming it is 0.
+
+To be on the safe side we could mark pass as volatile or use the atomic
+functions. However see below.
+
+>> +
+>> +		if (pass)
+>> +			tst_res(TPASS,
+>> +				"get SIGSEGV signal under PR_TSC_SIGSEGV situation");
+>> +		else
+>> +			tst_res(TFAIL,
+>> +				"don't get SIGSEGV signal under PR_TSC_SIGSEGV situation");
+>> +		pass = 0;
+>> +	}
+>> +
+>> +	time1 = rdtsc();
+>> +	time2 = rdtsc();
+>> +	if (time2 > time1)
+>> +		tst_res(TPASS, "rdtsc works correctly, %lld ->%lld",
+>> +			time1, time2);
+>> +	else
+>> +		tst_res(TFAIL, "rdtsc works incorrectly, %lld ->%lld",
+>> +			time1, time2);
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	SAFE_SIGNAL(SIGSEGV, sighandler);
+
+So if we segfault for any other reason some wierd stuff could
+happen. Wouldn't it be easier to fork a child process and check if it is
+killed by SIGSEGV?
+
+It would be easier for me to reason about at least.
+
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.setup = setup,
+>> +	.test = verify_prctl,
+>> +	.tcnt = ARRAY_SIZE(tcases),
+>> +	.supported_archs = (const char *const []) {
+>> +		"x86",
+>> +		"x86_64",
+>> +		NULL
+>> +	},
+>> +};
+
+
 -- 
-2.37.3
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
