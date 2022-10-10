@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA889C433F5
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 13:13:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BB36C433FE
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 13:18:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D5E103CAE8C
-	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 15:13:05 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 711F43CAE82
+	for <ltp@archiver.kernel.org>; Mon, 10 Oct 2022 15:18:16 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 516F73C00D5
- for <ltp@lists.linux.it>; Mon, 10 Oct 2022 15:12:56 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 6D4873CAE54
+ for <ltp@lists.linux.it>; Mon, 10 Oct 2022 15:18:06 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7B31B14002B6
- for <ltp@lists.linux.it>; Mon, 10 Oct 2022 15:12:55 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id E61B2219A6;
- Mon, 10 Oct 2022 13:12:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1665407574;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OSHBFwMAv/9NubotoMediHmVjoHhqK1Nn1NWc1gYHXw=;
- b=AHWQv91CDxR/TVTRubeEPPSRROkjnBBeRaHKPrgP3qzydH21QSYcxp8oubOpkomU9UMCYb
- yoyZq6lNBaiLL4rLc74dVmHTuFvNa3zo3N3DAHeiqpKDjF3DPLlHwTmFQkUYKrzTGzG1Yz
- mpd4v+fiuL/abJnCO3oPUjQjXxEIIu8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1665407574;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OSHBFwMAv/9NubotoMediHmVjoHhqK1Nn1NWc1gYHXw=;
- b=X8O3h650npmjF+H1Hu2NozQ9cv3WX4znIFJW7y4h6jRYmh6uLoUqij7mYzmKpr9YidQYBc
- 8bg87Ps4ntFk2+Bw==
-Received: from g78 (unknown [10.100.228.202])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C916360081D
+ for <ltp@lists.linux.it>; Mon, 10 Oct 2022 15:18:05 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 3B3F92C141;
- Mon, 10 Oct 2022 13:12:54 +0000 (UTC)
-References: <b30a6712179ead9c8a5556d82a4ac386904c9b4d.1657265564.git.jstancek@redhat.com>
- <87fsj7onim.fsf@suse.de>
- <CAASaF6yQTmak7p5JZJFvBd-+qLsHNvimg7HvRQQQH9vjWGOMXg@mail.gmail.com>
- <87bktvokfl.fsf@suse.de>
- <CAASaF6yxNF9fuOrjDcB4qngpgeBJ3LthdoW3HSzTdSCALGjnoQ@mail.gmail.com>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 10 Oct 2022 13:51:52 +0100
-In-reply-to: <CAASaF6yxNF9fuOrjDcB4qngpgeBJ3LthdoW3HSzTdSCALGjnoQ@mail.gmail.com>
-Message-ID: <875ygrakkr.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 933211F8E8;
+ Mon, 10 Oct 2022 13:18:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1665407884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DLCe0MS0+nK9CZhcX4+UtnRfDKBSU0f51PYyxPNWMMU=;
+ b=dbjz8/5CsYAQi9ldSWBurDcodGHiJIJAw0hiWxJJw2Z/N7Bm3KknX8EwIsIs+uYX+m6No1
+ YPhshCIQorCc51kcFT8Exvsl9/+Bv4RHinlTBUFnArVCoGKpntwicEM2fx8MwNvIZExC5I
+ rBnT/dLHaPk6J8UelBjFEOS7pwIShKg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1665407884;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DLCe0MS0+nK9CZhcX4+UtnRfDKBSU0f51PYyxPNWMMU=;
+ b=kQVNLu2XGw++jJAXaKU5D61gkOaCRsQ9rkXkvWOBoGTfg4d05OIsI5IzhYqHekAF99OAZ6
+ JIEaRAH21L8Pz3Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74D5513ACA;
+ Mon, 10 Oct 2022 13:18:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6d7oG4wbRGN4egAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 10 Oct 2022 13:18:04 +0000
+Date: Mon, 10 Oct 2022 15:19:51 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Zhao Gongyi <zhaogongyi@huawei.com>
+Message-ID: <Y0Qb9we0RmN4emPt@yuki>
+References: <20221010030759.248442-1-zhaogongyi@huawei.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20221010030759.248442-1-zhaogongyi@huawei.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] tst_find_backing_dev: fix logic in matching mount
- point
+Subject: Re: [LTP] [PATCH] syscalls/madvise11: new test for
+ madvise(MADV_DONTNEED)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,161 +76,169 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: LTP List <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi!
+> Test cases for madvise(2) system call, advise value as "MADV_MADV_DONTNEED":
+> 1. After a successful MADV_DONTNEED operation, it will result in
+> zero-fill-on-demand pages for anonymous private mappings
+> 2. MADV_DONTNEED cannot be applied to Huge TLB pages
+> 
+> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+> ---
+>  runtest/syscalls                              |  1 +
+>  testcases/kernel/syscalls/madvise/.gitignore  |  1 +
+>  testcases/kernel/syscalls/madvise/madvise11.c | 87 +++++++++++++++++++
 
-Jan Stancek <jstancek@redhat.com> writes:
+At the moment we do not have madvise03.c and madvise04.c, why don't we
+use them first?
 
-> On Mon, Jul 11, 2022 at 3:21 PM Richard Palethorpe <rpalethorpe@suse.de> wrote:
->>
->> Hello,
->>
->> Jan Stancek <jstancek@redhat.com> writes:
->>
->> > On Mon, Jul 11, 2022 at 2:13 PM Richard Palethorpe <rpalethorpe@suse.de> wrote:
->> >>
->> >> Hello,
->> >>
->> >> Jan Stancek <jstancek@redhat.com> writes:
->> >>
->> >> > If backing dev is btrfs root device, then starting best_match_len
->> >> > from 1 creates an issue, because root (/) is never matched.
->> >> > Also we should check that entire mount point string is present in
->> >> > path we are matching against.
->> >> >
->> >> > In case there's error also dump /proc/self/mountinfo before tst_brk.
->> >> >
->> >> > This fixes test with following partition layout (TMPDIR is on /):
->> >> >   # cat /proc/self/mountinfo  | grep btrfs
->> >> >   59 1 0:29 /root / rw,relatime shared:1 - btrfs /dev/dasda2 rw,seclabel,compress=zstd:1,ssd,space_cache=v2,subvolid=257,subvol=/root
->> >> >   93 59 0:29 /home /home rw,relatime shared:47 - btrfs /dev/dasda2 rw,seclabel,compress=zstd:1,ssd,space_cache=v2,subvolid=256,subvol=/home
->> >> >
->> >> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
->> >> > ---
->> >> >  lib/tst_device.c | 17 ++++++++++++-----
->> >> >  1 file changed, 12 insertions(+), 5 deletions(-)
->> >> >
->> >> > diff --git a/lib/tst_device.c b/lib/tst_device.c
->> >> > index c34cbe6d1f56..414bf0eea816 100644
->> >> > --- a/lib/tst_device.c
->> >> > +++ b/lib/tst_device.c
->> >> > @@ -506,12 +506,17 @@ unsigned long tst_dev_bytes_written(const char *dev)
->> >> >       return dev_bytes_written;
->> >> >  }
->> >> >
->> >> > -static int count_match_len(const char *first, const char *second)
->> >> > +static int str_starts_with(const char *str, const char *prefix)
->> >> >  {
->> >> >       int len = 0;
->> >> >
->> >> > -     while (*first && *first++ == *second++)
->> >> > +     while (*prefix) {
->> >> > +             if (!*str)
->> >> > +                     return 0;
->> >> > +             if (*str++ != *prefix++)
->> >> > +                     return 0;
->> >> >               len++;
->> >> > +     }
->> >>
->> >> I'm not sure this is better than the original. It's a seperate cleanup
->> >> in any case.
->> >
->> > The difference is that partial matches now returns 0. Previously it did not,
->> > it only counted number of matching characters. So for example ("/foobar" "/foo")
->> > appeared as better match than ("/foobar", "/")
->>
->> Ah, sorry.
->>
->> >
->> >>
->> >> >
->> >> >       return len;
->> >> >  }
->> >> > @@ -524,7 +529,7 @@ void tst_find_backing_dev(const char *path, char *dev)
->> >> >       char *pre = NULL;
->> >> >       char *next = NULL;
->> >> >       unsigned int dev_major, dev_minor, line_mjr, line_mnr;
->> >> > -     unsigned int len, best_match_len = 1;
->> >> > +     unsigned int len, best_match_len = 0;
->> >> >       char mnt_point[PATH_MAX];
->> >> >
->> >> >       if (stat(path, &buf) < 0)
->> >> > @@ -550,7 +555,7 @@ void tst_find_backing_dev(const char *path, char *dev)
->> >> >                       break;
->> >> >               }
->> >> >
->> >> > -             len = count_match_len(path, mnt_point);
->> >> > +             len = str_starts_with(path, mnt_point);
->> >> >               if (len > best_match_len) {
->> >> >                       strcpy(dev, pre);
->> >> >                       best_match_len = len;
->> >> > @@ -559,8 +564,10 @@ void tst_find_backing_dev(const char *path, char *dev)
->> >> >
->> >> >       SAFE_FCLOSE(NULL, file);
->> >> >
->> >> > -     if (!*dev)
->> >> > +     if (!*dev) {
->> >> > +             tst_system("cat /proc/self/mountinfo");
->> >> >               tst_brkm(TBROK, NULL, "Cannot find block device for %s", path);
->> >> > +     }
->> >> >
->> >> >       if (stat(dev, &buf) < 0)
->> >> >               tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
->> >> > --
->> >> > 2.27.0
->> >>
->> >> Makes sense. However I suspect this function can be replaced with the
->> >> standard library method used in tst_stat_mount_dev. I didn't try this
->> >> before because I'm not sure why it scans mountinfo instead of mounts.
->> >
->> > /proc/self/mounts doesn't contain major/minor numbers, which is primarily what
->> > tst_find_backing_dev is using.
->>
->> Does anyone know a situation where checking the mount path doesn't work?
->
-> You could mount multiple times to same mount path, which would make it harder
-> to find the right one.
->
->> It seems like we are just checking the device numbers first for
->> historical reasons and not because it is necessary.
->
-> Device numbers seem slightly less ambiguous.
+>  3 files changed, 89 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/madvise/madvise11.c
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 61a7b7677..a8ed9d65e 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -946,6 +946,7 @@ madvise07 madvise07
+>  madvise08 madvise08
+>  madvise09 madvise09
+>  madvise10 madvise10
+> +madvise11 madvise11
+> 
+>  newuname01 newuname01
+> 
+> diff --git a/testcases/kernel/syscalls/madvise/.gitignore b/testcases/kernel/syscalls/madvise/.gitignore
+> index 002d8e5d9..6e5b92ab7 100644
+> --- a/testcases/kernel/syscalls/madvise/.gitignore
+> +++ b/testcases/kernel/syscalls/madvise/.gitignore
+> @@ -6,3 +6,4 @@
+>  /madvise08
+>  /madvise09
+>  /madvise10
+> +/madvise11
+> diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
+> new file mode 100644
+> index 000000000..358c07d3a
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/madvise/madvise11.c
+> @@ -0,0 +1,87 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+> + * Author: Zhao Gongyi <zhaogongyi@huawei.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Test cases for madvise(2) system call, advise value as "MADV_MADV_DONTNEED":
+> + * 1. After a successful MADV_DONTNEED operation, it will result in
+> + *    zero-fill-on-demand pages for anonymous private mappings
+> + * 2. MADV_DONTNEED cannot be applied to Huge TLB pages
+> + */
+> +
+> +#include "tst_test.h"
+> +
+> +#define MAP_SIZE (8 * 1024)
+> +
+> +static char *addr;
 
-I'm still not entirely sure about this, but if you want to merge then
-please go ahead.
+There is no need for this to be a global variable.
 
-Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+> +static void test_madvise01(void)
+> +{
+> +	int i;
+> +
+> +	addr = SAFE_MMAP(NULL, MAP_SIZE,
+> +			PROT_READ | PROT_WRITE,
+> +			MAP_PRIVATE | MAP_ANONYMOUS,
+> +			-1, 0);
+> +	memset(addr, 1, MAP_SIZE);
+> +
+> +	TEST(madvise(addr, MAP_SIZE, MADV_DONTNEED));
+> +	if (TST_RET == -1) {
+> +		tst_brk(TBROK | TTERRNO, "madvise(%p, %d, 0x%x) failed",
+> +			addr, MAP_SIZE, MADV_DONTNEED);
+> +	}
+> +
+> +	for (i = 0; i < MAP_SIZE; i++) {
+> +		if (addr[i]) {
+> +			tst_res(TFAIL,
+> +				"There are no zero-fill-on-demand pages "
+> +				"for anonymous private mappings");
+> +			break;
 
->
->>
->> I haven't seen any failure reports for io_control01 which only checks
->> the path with tst_stat_mount_dev. However this test only runs if you
->> have CG v2 enabled by default.
->>
->> >
->> >>
->> >>
->> >> --
->> >> Thank you,
->> >> Richard.
->> >>
->>
->>
->> --
->> Thank you,
->> Richard.
->>
+I would do goto ret; here insetad and point ret just before the unmap at
+the end, that way there would be no reason to add the if (i == MAP_SIZE)
+before the TPASS message.
 
+> +		}
+> +	}
+> +
+> +	if (i == MAP_SIZE) {
+> +		tst_res(TPASS,
+> +			"There are zero-fill-on-demand pages "
+> +			"for anonymous private mappings");
+> +	}
+> +
+> +	SAFE_MUNMAP(addr, MAP_SIZE);
+> +}
+> +
+> +static void test_madvise02(void)
+> +{
+> +	int mapsz = tst_get_hugepage_size();
+> +
+> +	addr = SAFE_MMAP(NULL, mapsz,
+> +			PROT_READ | PROT_WRITE,
+> +			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
+> +			-1, 0);
+> +
+> +	TEST(madvise(addr, mapsz, MADV_DONTNEED));
+> +	if (TST_RET != -1) {
+> +		tst_res(TFAIL, "madvise(%p, %d, 0x%x) succeed unexpectedly",
+> +			addr, mapsz, MADV_DONTNEED);
+> +	} else {
+> +		tst_res(TPASS, "madvise test for 'MADV_DONTNEED' passed");
+> +	}
+
+Please make use of TST_EXP_FAIL()
+
+> +	SAFE_MUNMAP(addr, mapsz);
+> +}
+> +
+> +static void test_madvise(void)
+> +{
+> +	test_madvise01();
+> +	test_madvise02();
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = test_madvise,
+> +	.needs_root = 1,
+> +	.hugepages = {1, TST_NEEDS},
+
+This would mean that the first case would be skipped in case where
+hugepages are not supported or if the allocation failed. The best option
+here would be splitting the test into two so that the functional test is
+not disabled when hugepages are not supported.
+
+> +};
+> +
+> --
+> 2.17.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
