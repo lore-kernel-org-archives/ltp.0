@@ -4,59 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ADB7C433F5
-	for <ltp@archiver.kernel.org>; Tue, 11 Oct 2022 12:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94BCFC433FE
+	for <ltp@archiver.kernel.org>; Tue, 11 Oct 2022 12:50:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 19FAC3CAEB1
-	for <ltp@archiver.kernel.org>; Tue, 11 Oct 2022 14:38:30 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id EF1093CAE9D
+	for <ltp@archiver.kernel.org>; Tue, 11 Oct 2022 14:50:23 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 026EB3C1769
- for <ltp@lists.linux.it>; Tue, 11 Oct 2022 14:38:19 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id A2E373C010A
+ for <ltp@lists.linux.it>; Tue, 11 Oct 2022 14:50:13 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3236B6002B6
- for <ltp@lists.linux.it>; Tue, 11 Oct 2022 14:38:18 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 287941F8D2
- for <ltp@lists.linux.it>; Tue, 11 Oct 2022 12:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1665491898;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Gzfk6U61h8oe2hnJpDavzk2ciX20AEj0RvDbeh7Rkc0=;
- b=f1agzWSyNwNQafqwiT31c0wDWctlAP3b44TCT4gTM5F5MuA6kGLq6s0P7flV9xAh565SF3
- 7ADfk7HWvqd/WAn03CUd09umkjv3AcfS91RDwN9YDZcnmQz/jqZsvYBwAO/VpwSezT4GC6
- uYk5vb2YqxtKnIEHZcukS03NP/IJygU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1665491898;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Gzfk6U61h8oe2hnJpDavzk2ciX20AEj0RvDbeh7Rkc0=;
- b=mdP2zIQhuLcNKXGlkIP72JwYONg43cs7/a4aqFL95RGIzUzoKWa/O0JETdpK9GdsliqcMF
- c8CX2gi1B6tO1vDg==
-Received: from g78 (unknown [10.100.228.202])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id C779A2C141;
- Tue, 11 Oct 2022 12:38:17 +0000 (UTC)
-References: <20220816074449.30861-2-akumar@suse.de>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Avinesh Kumar <akumar@suse.de>
-Date: Tue, 11 Oct 2022 13:38:00 +0100
-In-reply-to: <20220816074449.30861-2-akumar@suse.de>
-Message-ID: <87wn965ydj.fsf@suse.de>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 23A451000B26
+ for <ltp@lists.linux.it>; Tue, 11 Oct 2022 14:50:10 +0200 (CEST)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MmwV95GtNzHtpp;
+ Tue, 11 Oct 2022 20:45:05 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.63) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 11 Oct 2022 20:50:04 +0800
+To: <ltp@lists.linux.it>
+Date: Tue, 11 Oct 2022 20:46:30 +0800
+Message-ID: <20221011124630.62647-1-zhaogongyi@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Originating-IP: [10.67.174.63]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] stat03: cleanup, use TST_EXP_FAIL macro
+Subject: [LTP] [PATCH v2] syscalls/add_key05: Add userdel and groupdel
+ before useradd
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,20 +51,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+From: Zhao Gongyi via ltp <ltp@lists.linux.it>
+Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+If the test exit abnormal, some user/group will be left, and the
+next running of the test will fail and report:
 
-Merged!
+  tst_buffers.c:55: TINFO: Test is using guarded buffers
+  tst_test.c:1526: TINFO: Timeout per run is 0h 00m 30s
+  useradd: group ltp_add_key05_0 exists - if you want to add this user to that group, use -g.
+  add_key05.c:41: TBROK: useradd failed (9)
+  userdel: user 'ltp_add_key05_0' does not exist
+  add_key05.c:56: TWARN: 'userdel -r ltp_add_key05_0' failed: ENOENT (2)
 
--- 
-Thank you,
-Richard.
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+ testcases/kernel/syscalls/add_key/add_key05.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/add_key/add_key05.c b/testcases/kernel/syscalls/add_key/add_key05.c
+index 71a88d1a8..e8d249040 100644
+--- a/testcases/kernel/syscalls/add_key/add_key05.c
++++ b/testcases/kernel/syscalls/add_key/add_key05.c
+@@ -34,10 +34,15 @@ static void add_user(char n)
+ {
+ 	char username[] = "ltp_add_key05_n";
+ 	const char *const cmd_useradd[] = {"useradd", username, NULL};
++	const char *const cmd_userdel[] = {"userdel", "-r", username, NULL};
++	const char *const cmd_groupdel[] = {"groupdel", username, NULL};
+ 	struct passwd *pw;
+
+ 	username[sizeof(username) - 2] = '0' + n;
+
++	tst_cmd(cmd_userdel, NULL, "/dev/null", TST_CMD_PASS_RETVAL);
++	tst_cmd(cmd_groupdel, NULL, "/dev/null", TST_CMD_PASS_RETVAL);
++
+ 	SAFE_CMD(cmd_useradd, NULL, NULL);
+ 	pw = SAFE_GETPWNAM(username);
+ 	ltpuser[(unsigned int)n] = pw->pw_uid;
+--
+2.17.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
