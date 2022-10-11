@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4053EC433F5
-	for <ltp@archiver.kernel.org>; Tue, 11 Oct 2022 11:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AFFDC433F5
+	for <ltp@archiver.kernel.org>; Tue, 11 Oct 2022 11:09:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BA45B3CAE9C
-	for <ltp@archiver.kernel.org>; Tue, 11 Oct 2022 13:04:53 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 4FFC33CAEA4
+	for <ltp@archiver.kernel.org>; Tue, 11 Oct 2022 13:09:18 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 42AF33C7319
- for <ltp@lists.linux.it>; Tue, 11 Oct 2022 13:04:42 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 3C1BC3C7319
+ for <ltp@lists.linux.it>; Tue, 11 Oct 2022 13:09:07 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 395621000A22
- for <ltp@lists.linux.it>; Tue, 11 Oct 2022 13:04:41 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6D78021E4E
- for <ltp@lists.linux.it>; Tue, 11 Oct 2022 11:04:40 +0000 (UTC)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EF3F61A008A8
+ for <ltp@lists.linux.it>; Tue, 11 Oct 2022 13:09:06 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 69C9B21E4E;
+ Tue, 11 Oct 2022 11:09:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1665486280; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=fBQYsoFmdB/0fO2TauTg+W83/AttrnCUFg+wrmDLf6Q=;
- b=RAZv0C2lUcDkQHIa/zyIPrpPi5504aOOCb3OuvO1ryugMxVJHdKr9MBktt3ojCja2+EG6r
- T5fs6O6u4MSwdSF2Yb7A1Yl3etxM7tnSlI284gEDANqN/V3eBDtsvXEPzuxDhEGWfPBxS/
- By1OvWt6koNsyyg3WWUwguY2HFX+mHw=
+ t=1665486546;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Chl/VfWgoIyjUIoDdNC+aTKC3DU+FUGUeCNSpgFrShs=;
+ b=RJiWwMS0t5PoVjYHihwWx1j5I+iZJ3y26saU1YpBKGXDUAHWPZaOAojDx9M62+PCoe6VDe
+ 1Jj4XerhXkkDGLPkXrENenrnyT53511LKRI7AKbudeDf4Y9lDPJ2+daC4Urm9K2qBaZ5B6
+ AzrglqRfcdv3dniDHHDcZ7iTQ6cX+jY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1665486280;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=fBQYsoFmdB/0fO2TauTg+W83/AttrnCUFg+wrmDLf6Q=;
- b=R3vCei31ZRNk6/hoN6fSU+oJ+o15AqHqrnHayONz5ec+EdKHg7Q7PhuQmkKwvHvdC/z+Bz
- 1cqmbggdDph15kAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ s=susede2_ed25519; t=1665486546;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Chl/VfWgoIyjUIoDdNC+aTKC3DU+FUGUeCNSpgFrShs=;
+ b=oi4zJcgmKevHntsOiGw3BZ7IrOzLhKhkSPTMeKtmuIkV6L7n/HLBLwaVbFwnt3pT1NWxF/
+ TVGaUgAEi60Fa8CQ==
+Received: from g78 (unknown [10.100.228.202])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E0B2613AAC
- for <ltp@lists.linux.it>; Tue, 11 Oct 2022 11:04:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id awl9KMdNRWNgKAAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Tue, 11 Oct 2022 11:04:39 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Tue, 11 Oct 2022 16:34:37 +0530
-Message-Id: <20221011110437.21572-1-akumar@suse.de>
-X-Mailer: git-send-email 2.37.3
+ by relay2.suse.de (Postfix) with ESMTPS id 0550D2C141;
+ Tue, 11 Oct 2022 11:09:05 +0000 (UTC)
+References: <20220722120501.28670-1-andrea.cervesato@suse.com>
+ <20220722120501.28670-3-andrea.cervesato@suse.com>
+ <87r11nw0qv.fsf@suse.de> <945eb0ee-b346-5729-3dda-4bff39bb52d9@suse.com>
+ <87fsha2lge.fsf@suse.de> <87czay90fl.fsf@suse.de>
+ <f072f40a-476d-f07c-a79f-d453a2436bc6@suse.com>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Date: Tue, 11 Oct 2022 11:49:52 +0100
+In-reply-to: <f072f40a-476d-f07c-a79f-d453a2436bc6@suse.com>
+Message-ID: <87edve7h2m.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] setitimer03: Rewrite using new LTP API
+Subject: Re: [LTP] [PATCH v3 2/7] Refactor mqns_01 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,207 +73,132 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- .../kernel/syscalls/setitimer/setitimer03.c   | 168 +++---------------
- 1 file changed, 25 insertions(+), 143 deletions(-)
+Hello,
 
-diff --git a/testcases/kernel/syscalls/setitimer/setitimer03.c b/testcases/kernel/syscalls/setitimer/setitimer03.c
-index 418ec71f0..659eac9a3 100644
---- a/testcases/kernel/syscalls/setitimer/setitimer03.c
-+++ b/testcases/kernel/syscalls/setitimer/setitimer03.c
-@@ -1,158 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-  *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *		03/2001 - Written by Wayne Boyer
-+ *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
- 
--/*
-- * NAME
-- *	setitimer03.c
-+/*\
-+ * [Description]
-  *
-- * DESCRIPTION
-- *	setitimer03 - check that a setitimer() call fails as expected
-- *		      with incorrect values.
-- *
-- * ALGORITHM
-- *	loop if that option was specified
-- *	allocate needed space and set up needed values
-- *	issue the system call
-- *	check the errno value
-- *	  issue a PASS message if we get EINVAL
-- *	otherwise, the tests fails
-- *	  issue a FAIL message
-- *	  break any remaining tests
-- *	  call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  setitimer03 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	none
-+ * Verify that setitimer(2) syscall fails with EINVAL when given
-+ * an invalid timer.
-  */
- 
--#include "test.h"
--
--#include <errno.h>
--#include <sys/time.h>
-+#include "tst_test.h"
- 
--void cleanup(void);
--void setup(void);
-+static struct itimerval *new_value, *old_value;
- 
--char *TCID = "setitimer03";
--int TST_TOTAL = 1;
--
--int main(int ac, char **av)
-+static void setup(void)
- {
--	int lc;
--	struct itimerval *value, *ovalue;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();		/* global setup */
--
--	/* The following loop checks looping state if -i option given */
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		/* allocate some space for timer structures */
--
--		if ((value = malloc((size_t)sizeof(struct itimerval))) ==
--		    NULL) {
--			tst_brkm(TBROK, cleanup, "value malloc failed");
--		}
--
--		if ((ovalue = malloc((size_t)sizeof(struct itimerval))) ==
--		    NULL) {
--			tst_brkm(TBROK, cleanup, "value malloc failed");
--		}
--
--		/* set up some reasonable values */
--
--		value->it_value.tv_sec = 30;
--		value->it_value.tv_usec = 0;
--		value->it_interval.tv_sec = 0;
--		value->it_interval.tv_usec = 0;
--
--		/*
--		 * issue the system call with the TEST() macro
--		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
--		 */
--
--		/* make the first value negative to get a failure */
--		TEST(setitimer(-ITIMER_PROF, value, ovalue));
--
--		if (TEST_RETURN == 0) {
--			tst_resm(TFAIL, "call failed to produce expected error "
--				 "- errno = %d - %s", TEST_ERRNO,
--				 strerror(TEST_ERRNO));
--			continue;
--		}
--
--		switch (TEST_ERRNO) {
--		case EINVAL:
--			tst_resm(TPASS, "expected failure - errno = %d - %s",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--			break;
--		default:
--			tst_resm(TFAIL, "call failed to produce expected error "
--				 "- errno = %d - %s", TEST_ERRNO,
--				 strerror(TEST_ERRNO));
--		}
--
--		/*
--		 * clean up things in case we are looping
--		 */
--		free(value);
--		free(ovalue);
--		value = NULL;
--		ovalue = NULL;
--	}
--
--	cleanup();
--	tst_exit();
--
-+	new_value->it_value.tv_sec = 30;
-+	new_value->it_value.tv_usec = 0;
-+	new_value->it_interval.tv_sec = 0;
-+	new_value->it_interval.tv_usec = 0;
- }
- 
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
--void setup(void)
-+static void run(void)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	TST_EXP_FAIL(setitimer(-ITIMER_PROF, new_value, old_value), EINVAL);
- }
- 
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * 	       or premature exit.
-- */
--void cleanup(void)
--{
--
--}
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.bufs = (struct tst_buffers[]) {
-+		{&new_value, .size = sizeof(struct itimerval)},
-+		{&old_value, .size = sizeof(struct itimerval)},
-+		{}
-+	}
-+};
+Andrea Cervesato <andrea.cervesato@suse.com> writes:
+
+> Hi
+>
+> Are we sure that we don't need this modification before adding
+> tst_clone? We can add the patch and then starting to think how to
+> replace tst_clone_quick with tst_clone in all tests.
+
+You're not the first person to use this argument. So it's actually
+important for precisely the reason you don't want to do it. The next
+person wont' want to do it either and we'll sleep walk into never
+replacing it.
+
+Meanwhile there are solid reasons why clone3 exists and why we should
+test it. That's possibly more important than the API conversion.
+
+BTW I could take over one of these patches and do the work on
+tst_clone? I'm pretty familiar with it.
+
+>
+> Andrea
+>
+> On 10/11/22 11:17, Richard Palethorpe wrote:
+>> Hello,
+>>
+>> Richard Palethorpe <rpalethorpe@suse.de> writes:
+>>
+>>> Hello,
+>>>
+>>> Andrea Cervesato <andrea.cervesato@suse.com> writes:
+>>>
+>>>> Hi!
+>>>>
+>>>> On 8/11/22 11:53, Richard Palethorpe wrote:
+>>>>> Hello,
+>>>>>
+>>>>> Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
+>>>>>
+>>>>>> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+>>>>>> ---
+>>>>>>    runtest/containers                         |   3 +-
+>>>>>>    testcases/kernel/containers/mqns/common.h  | 101 +++++++++++
+>>>>>>    testcases/kernel/containers/mqns/mqns_01.c | 193 +++++++--------------
+>>>>>>    3 files changed, 166 insertions(+), 131 deletions(-)
+>>>>>>    create mode 100644 testcases/kernel/containers/mqns/common.h
+>>>>>>
+>>>>>> diff --git a/runtest/containers b/runtest/containers
+>>>>>> index 2637b62fe..863a964ad 100644
+>>>>>> --- a/runtest/containers
+>>>>>> +++ b/runtest/containers
+>>>>>> @@ -16,7 +16,8 @@ pidns31 pidns31
+>>>>>>    pidns32 pidns32
+>>>>>>      mqns_01 mqns_01
+>>>>>> -mqns_01_clone mqns_01 -clone
+>>>>>> +mqns_01_clone mqns_01 -m clone
+>>>>>> +mqns_01_unshare mqns_01 -m unshare
+>>>>>>    mqns_02 mqns_02
+>>>>>>    mqns_02_clone mqns_02 -clone
+>>>>>>    mqns_03 mqns_03
+>>>>>> diff --git a/testcases/kernel/containers/mqns/common.h b/testcases/kernel/containers/mqns/common.h
+>>>>>> new file mode 100644
+>>>>>> index 000000000..92a77b566
+>>>>>> --- /dev/null
+>>>>>> +++ b/testcases/kernel/containers/mqns/common.h
+>>>>>> @@ -0,0 +1,101 @@
+>>>>>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>>>>>> +/*
+>>>>>> + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+>>>>>> + */
+>>>>>> +
+>>>>>> +#ifndef MQNS_H
+>>>>>> +#define MQNS_H
+>>>>>> +
+>>>>>> +#include <stdlib.h>
+>>>>>> +#include "lapi/namespaces_constants.h"
+>>>>>> +#include "tst_test.h"
+>>>>>> +#include "tst_safe_posix_ipc.h"
+>>>>>> +
+>>>>>> +enum {
+>>>>>> +	T_CLONE,
+>>>>>> +	T_UNSHARE,
+>>>>>> +	T_NONE,
+>>>>>> +};
+>>>>>> +
+>>>>>> +static int dummy_child1(void *v)
+>>>>>> +{
+>>>>>> +	(void)v;
+>>>>>> +	return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static inline void check_newipc(void)
+>>>>>> +{
+>>>>>> +	int pid, status;
+>>>>>> +
+>>>>>> +	pid = ltp_clone_quick(CLONE_NEWIPC | SIGCHLD, dummy_child1,
+>>>>>>    NULL);
+>>>>> ltp_clone_quick is still part of the old API and only uses clone2. I
+>>>>> think it should be replaced with tst_clone. This may require extending
+>>>>> tst_clone. In fact we probably need a test variant to switch between the
+>>>>> clone2 and clone3 syscalls when using tst_clone.
+>>>>>
+>>>>> I'll leave it to you whether you want to try that and rebase this patch
+>>>>> set on it.
+>>>>>
+>>>> I see ltp_clone_quick as wrapper of ltp_clone, since it's using
+>>>> ltp_alloc_stack without calling it explicitly all the times before
+>>>> ltp_clone.
+>>> ltp_clone is also part of the old API. At some point we should remove
+>>> that.
+>> I'm marking this as changes requested. tst_clone should be made to
+>> support this scenario.
+>>
+
+
 -- 
-2.37.3
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
