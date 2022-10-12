@@ -4,73 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E870C43217
-	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 11:54:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30C9CC433FE
+	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 12:48:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D4553CAEAB
-	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 13:54:51 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 792E33CAED7
+	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 14:48:55 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF8903CADF8
- for <ltp@lists.linux.it>; Wed, 12 Oct 2022 13:54:40 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id E532D3CAE21
+ for <ltp@lists.linux.it>; Wed, 12 Oct 2022 14:48:44 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AB72610006CC
- for <ltp@lists.linux.it>; Wed, 12 Oct 2022 13:54:38 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8AE4C1F388;
- Wed, 12 Oct 2022 11:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1665575678;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ca3ncexORfoGm3ZLEzAiJtEGKiuOWz2y7SF5kC/OWAA=;
- b=xAXvTp9eSbSSCiGnTs4sq5G84hqk4/x9OwwpHtw2WIsjI6DTSWQh8Vj5mmE6h6ysToEyrd
- JspJEk9trC8Il4NVyLHe7O7dkOvq8FQk0Zt/MC07xzDEKpm4mhxYpBWLg0TtE/sDlwvUAx
- lCcyDIWsRQnlKml/nicCPdSP0brBAKY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1665575678;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ca3ncexORfoGm3ZLEzAiJtEGKiuOWz2y7SF5kC/OWAA=;
- b=fZMoRd6Wc2bzD5rEBAtGpfJOOJSXbAFVGkEpZDBKT5hr2OaagfkUH8+q1WfFXxvdIQiLDw
- +wFdmC8p3THy1JCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5C5A713A5C;
- Wed, 12 Oct 2022 11:54:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ruGjFP6qRmNVQwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 12 Oct 2022 11:54:38 +0000
-Date: Wed, 12 Oct 2022 13:54:36 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Mimi Zohar <zohar@linux.ibm.com>
-Message-ID: <Y0aq/Oar7Swmqzhj@pevik>
-References: <20221006164342.68763-1-zohar@linux.ibm.com>
- <Yz9CW5vXCuztOTOl@pevik>
- <42eb7aef99a50e09d28f0b9c16ad64cb2caabe91.camel@linux.ibm.com>
- <Yz+4xepB6HlyFSNJ@pevik>
- <9aee3c94e8816196b9449981f3559e1c149d1c49.camel@linux.ibm.com>
- <Y0QFSiMTx3XlvAHJ@pevik>
- <a7b9b60182d13d92d6e0c5d2c588644027c72b41.camel@linux.ibm.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DB33E14004F3
+ for <ltp@lists.linux.it>; Wed, 12 Oct 2022 14:48:43 +0200 (CEST)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29CCflSd002558;
+ Wed, 12 Oct 2022 12:48:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=W+YOwRi5zTOzvSK07eBasoRRmnOHVlE7AM0BF3BC1UE=;
+ b=jiFTTcvz+3RHcXeATZZ6ig6Ev1D53VTpeIf+zfo07verrEYhtEqo46C6gFxZ7tsRQehS
+ zz+V/eCGr6k5kdICuN77V9Jffeo3paZRuepvIW6gJ4KSODqhMvy+Ja38nycwfajGq2Q5
+ qY5Sca5hPvss/Zy2lVPYMPjlzsSVyUFNbyB7i7LvTGev+uF7i7rKmApuNZhf69sWPHpN
+ 8IB/t+yVNwTgB07axCvSkpMFf1Bs2+4LQaPiLmiBt0VKdsW9QTDVXRUShFJRXS+7WDi+
+ fVouNww6HoX17I/tl0GmdXD/1df7pAzJfoteAeUfoKotjrxwRiGT1baCH1eZBtCs6Day uA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k5vp2t3jk-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 12 Oct 2022 12:48:39 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 29CCgaIZ005704;
+ Wed, 12 Oct 2022 12:48:38 GMT
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com
+ [169.62.189.10])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k5vp2t3j0-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 12 Oct 2022 12:48:38 +0000
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+ by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29CCZwU1000315;
+ Wed, 12 Oct 2022 12:48:37 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com
+ [9.57.198.26]) by ppma02dal.us.ibm.com with ESMTP id 3k30ua7k9k-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 12 Oct 2022 12:48:37 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com ([9.208.128.115])
+ by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 29CCmafV16581500
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 12 Oct 2022 12:48:37 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 36EBD5804E;
+ Wed, 12 Oct 2022 12:48:36 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 75EC35803F;
+ Wed, 12 Oct 2022 12:48:35 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown
+ [9.160.31.46]) by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+ Wed, 12 Oct 2022 12:48:35 +0000 (GMT)
+Message-ID: <dc5e3e41cf1465ddc70cbac0d77c4f2deff0213f.camel@linux.ibm.com>
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Nikolaus Voss <nv@vosn.de>, Yael Tzur <yaelt@google.com>, Cyril Hrubis
+ <chrubis@suse.cz>, Jarkko Sakkinen <jarkko@kernel.org>
+Date: Wed, 12 Oct 2022 08:48:35 -0400
+In-Reply-To: <20221006081709.92303897@mail.steuer-voss.de>
+References: <20221006081709.92303897@mail.steuer-voss.de>
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: OLVEbYe6L6Du3cbks-HWCKKRA8YyXuhI
+X-Proofpoint-GUID: NgtI61N6oFUhkFuka1uObCciRlaVt3EG
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <a7b9b60182d13d92d6e0c5d2c588644027c72b41.camel@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-12_06,2022-10-12_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxlogscore=999
+ suspectscore=0 phishscore=0 clxscore=1015 impostorscore=0 spamscore=0
+ lowpriorityscore=0 adultscore=0 mlxscore=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2210120082
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] security/ima: limit the scope of the LTP policy
- rules based on the UUID
+Subject: Re: [LTP] [PATCH] syscalls/keyctl/keyctl09.c: fix test encrypted key
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,118 +103,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Mimi,
+Hi Nikolaus,
 
-> On Mon, 2022-10-10 at 13:43 +0200, Petr Vorel wrote:
-> > Hi Mimi,
+On Thu, 2022-10-06 at 08:15 +0200, Nikolaus Voss wrote:
+> This commit fixes the test for adding encrypted keys with unencrypted data.
+> Unencryted data must be provided hex-ascii encoding. Due to a kernel
+> bug, the unencypted data was not decoded to binary thus the length of
+> the key was only half the specified key size. This patch doubles the key
+> size and adds a test with a wrong key size to trigger a corresponding
+> error.
+> 
+> This patch must be used with the kernel fix
+> https://lore.kernel.org/lkml/20220919072317.E41421357@mail.steuer-voss.de
 
-> > FYI I have problems with ima_violations.sh, when run whole runtest/ima:
+Petr, please correct me if I'm wrong.  Changing an existing LTP test so
+that it only works on kernels with the kernel patch applied, doesn't
+sound right.  The test should emit a warning if the original "valid
+payload" successfully loads.
 
-> > tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
-> > ima_violations 1 TINFO: Formatting ext3 with opts='/dev/loop0'
-> > ima_violations 1 TINFO: Mounting device: mount -t ext3 /dev/loop0 /tmp/LTP_ima_violations.Og149san78/mntpoint
-> > ima_violations 1 TINFO: timeout per run is 0h 5m 0s
-> > ima_violations 1 TINFO: IMA kernel config:
-> > ima_violations 1 TINFO: CONFIG_IMA=y
-> > ima_violations 1 TINFO: CONFIG_IMA_MEASURE_PCR_IDX=10
-> > ima_violations 1 TINFO: CONFIG_IMA_LSM_RULES=y
-> > ima_violations 1 TINFO: CONFIG_IMA_NG_TEMPLATE=y
-> > ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_TEMPLATE="ima-ng"
-> > ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH_SHA256=y
-> > ima_violations 1 TINFO: CONFIG_IMA_DEFAULT_HASH="sha256"
-> > ima_violations 1 TINFO: CONFIG_IMA_READ_POLICY=y
-> > ima_violations 1 TINFO: CONFIG_IMA_APPRAISE=y
-> > ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_BOOTPARAM=y
-> > ima_violations 1 TINFO: CONFIG_IMA_APPRAISE_MODSIG=y
-> > ima_violations 1 TINFO: CONFIG_IMA_TRUSTED_KEYRING=y
-> > ima_violations 1 TINFO: CONFIG_IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY=y
-> > ima_violations 1 TINFO: CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=y
-> > ima_violations 1 TINFO: CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS=y
+As previously suggested, instead of replacing the existing valid
+payload, define a new valid payload as the hex-ascii representation of
+the existing one.  The kernel decrypted data would then be the same on
+systems with and without the patch.
 
-> > ima_violations 1 TINFO: /proc/cmdline: BOOT_IMAGE=/boot/vmlinuz-
-> > 5.19.12-1-default root=UUID=6de93d21-b5ed-4aa4-a9e4-00a7ab77c6d9
-> > splash=silent video=1024x768 plymouth.ignore-serial-consoles
-> > console=ttyS0 console=tty kernel.softlockup_panic=1
-> > resume=/dev/disk/by-uuid/570474ff-969e-41e6-883e-ecff2fd15015
-> > security=apparmor mitigations=auto ignore_loglevel lsm=integrity
-> > ima_policy=tcb
+ #define ENCRYPTED_KEY_VALID_PAYLOAD    "new enc32 user:masterkey 32 abcdefABCDE
+F1234567890aaaaaaaaaa"
++#define ENCRYPTED_KEY_VALID_PAYLOAD_NEW   "new enc32 user:masterkey 32 b61626364656
+64142434445463132333435363738393061616161616161616161"
 
-> I would use either use the original "security=" or the new "lsm=" boot
-> command line option.
-FYI lsm= ima_policy=tcb would break booting, although on 5.19 I don't se the
-warning lsm asking to have integrity among the values. That's the old problem,
-it'd be good to move integrity off the security hook as you suggested [2].
-Therefore only "security=" or without both "lsm" or "security" kernel boots.
+-- 
+thanks,
 
-BTW security=apparmor is in the result of the setup from openSUSE installer. It
-got back to using security, due previously mentioned problem with boot..
-
-Although "security=apparmor lsm=integrity ima_policy=tcb" might not be a good
-idea, it does not cause ima_violations.sh. Actually with all of these fails
-ima_violations.sh fails:
-* lsm=integrity ima_policy=tcb (without security=apparmor)
-* security= ima_policy=tcb
-* ima_policy=tcb
-
-For some reason ima_violations.sh works, when run as the first test after boot
-(at least with only "ima_policy=tcb" setup), but not when whole ima runtest file
-is run (as there are tests run before it).  I'm still trying to figure out
-what's wrong.  What do you use for running LTP IMA tests? And do you run whole
-runtest file?
-
-Questions:
-* which kernel cmdline options (IMA related) makes sense to use on testing IMA?
-* is it feasible to have cmdline setup which which would be suitable
-for all tests (running ima runtest file) + any of these tests? At least have a
-detection and TCONF instead of failure.
-
-> > ima_violations 1 TINFO: $TMPDIR is on tmpfs => run on loop device
-> > ima_violations 1 TINFO: LTP IMA policy rules based on fsuuid=7ab2cd65-3060-4dbc-b786-72703604a33e
-> > ima_violations 1 TINFO: using log /var/log/audit/audit.log
-> > ima_violations 1 TINFO: verify open writers violation
-> > ima_violations 1 TFAIL: open_writers violation not added
-> > ima_violations 2 TINFO: verify ToMToU violation
-> > ima_violations 2 TFAIL: ToMToU violation not added
-> > ima_violations 3 TINFO: verify open_writers using mmapped files
-> > tst_test.c:1526: TINFO: Timeout per run is 0h 00m 30s
-> > ima_mmap.c:38: TINFO: sleep 3s
-> > ima_violations 3 TFAIL: open_writers violation not added
-> > ima_mmap.c:41: TPASS: test completed
-
-> > My fix [1] does not help. Problems are with my changes or just with your
-> > original patch. Continue debugging.
-> > Kind regards,
-> > Petr
-
-> > [1] https://patchwork.ozlabs.org/project/ltp/patch/20221010085944.26814-1-pvorel@suse.cz/
-
-> Only the ima_conditionals.sh and ima_policy.sh tests define policy
-> rules based on fsuuid.  The other tests are still based on the builtin
-> "ima_policy=tcb" rules.
-Ah, correct. What was the reason not to transform the rest?
-Maybe my following patch which uses loop device for all tests wasn't a good
-idea.
-
-> Without seeing the output of "cat /sys/kernel/security/ima/policy" it's
-> hard to understand what's causing these errors.
-It's empty. with fsuuid based setup I'll try to use policy examples, so that it
-won't TCONF, but that's a next step after we solve this.
-
-Kind regards,
-Petr
-
-[2] https://lore.kernel.org/linux-integrity/cacde31235f08eeec698c63025a0eef81e10fe71.camel@linux.ibm.com/
-
-> thanks,
-
-> Mimi
+Mimi
 
 
 -- 
