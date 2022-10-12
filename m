@@ -4,50 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C625DC4332F
-	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 08:59:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABA12C4332F
+	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 09:19:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1024C3CAEBF
-	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 10:59:26 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id BB11A3CAEB8
+	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 11:19:17 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 445AF3C9481
- for <ltp@lists.linux.it>; Wed, 12 Oct 2022 10:59:16 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ by picard.linux.it (Postfix) with ESMTPS id 22E413C075E
+ for <ltp@lists.linux.it>; Wed, 12 Oct 2022 11:19:05 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 58F4C600769
- for <ltp@lists.linux.it>; Wed, 12 Oct 2022 10:59:15 +0200 (CEST)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MnRKJ6PkXzHv1R
- for <ltp@lists.linux.it>; Wed, 12 Oct 2022 16:54:12 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (7.192.104.229) by
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D6C891401108
+ for <ltp@lists.linux.it>; Wed, 12 Oct 2022 11:19:03 +0200 (CEST)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.57])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MnRpF3JWBzpVTF
+ for <ltp@lists.linux.it>; Wed, 12 Oct 2022 17:15:49 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.63) by
  canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 12 Oct 2022 16:59:12 +0800
-Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
- canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
- Wed, 12 Oct 2022 16:59:12 +0800
-To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [LTP][PATCH v3] syscalls/madvise04: new test for
- madvise(MADV_DONTNEED)
-Thread-Index: AdjeGORd9Jj3+h+Ik0GmauvmU4WpfQ==
-Date: Wed, 12 Oct 2022 08:59:12 +0000
-Message-ID: <a27d548c0a8f4186bdfb55b517eb7253@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.110.209]
+ 15.1.2375.31; Wed, 12 Oct 2022 17:19:00 +0800
+To: <ltp@lists.linux.it>
+Date: Wed, 12 Oct 2022 17:15:24 +0800
+Message-ID: <20221012091526.35373-1-zhaogongyi@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+X-Originating-IP: [10.67.174.63]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500005.china.huawei.com (7.192.104.229)
 X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] syscalls/madvise04: new test for
- madvise(MADV_DONTNEED)
+Subject: [LTP] [PATCH 0/2] Optimization reference to needs_root
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -59,96 +51,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: zhaogongyi via ltp <ltp@lists.linux.it>
-Reply-To: zhaogongyi <zhaogongyi@huawei.com>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+From: Zhao Gongyi via ltp <ltp@lists.linux.it>
+Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+1. Add checking of needs_root on the phase of do_setup.
+2. Add setting of needs_root for tests that reference to /dev
+   or /proc/.
 
-> 
-> Hi!
-> > Test cases for madvise(2) system call, verify that MADV_DONTNEED can
-> > be applied to Huge TLB pages after kernel version 5.18.
-> >
-> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> > ---
-> >  runtest/syscalls                              |  1 +
-> >  testcases/kernel/syscalls/madvise/.gitignore  |  1 +
-> > testcases/kernel/syscalls/madvise/madvise04.c | 49
-> +++++++++++++++++++
-> >  3 files changed, 51 insertions(+)
-> >  create mode 100644 testcases/kernel/syscalls/madvise/madvise04.c
-> >
-> > diff --git a/runtest/syscalls b/runtest/syscalls index
-> > c81764df4..eb1910cec 100644
-> > --- a/runtest/syscalls
-> > +++ b/runtest/syscalls
-> > @@ -941,6 +941,7 @@ mincore04 mincore04
-> >  madvise01 madvise01
-> >  madvise02 madvise02
-> >  madvise03 madvise03
-> > +madvise04 madvise04
-> >  madvise05 madvise05
-> >  madvise06 madvise06
-> >  madvise07 madvise07
-> > diff --git a/testcases/kernel/syscalls/madvise/.gitignore
-> > b/testcases/kernel/syscalls/madvise/.gitignore
-> > index f4bfdfefe..db8ce47c1 100644
-> > --- a/testcases/kernel/syscalls/madvise/.gitignore
-> > +++ b/testcases/kernel/syscalls/madvise/.gitignore
-> > @@ -1,6 +1,7 @@
-> >  /madvise01
-> >  /madvise02
-> >  /madvise03
-> > +/madvise04
-> >  /madvise05
-> >  /madvise06
-> >  /madvise07
-> > diff --git a/testcases/kernel/syscalls/madvise/madvise04.c
-> > b/testcases/kernel/syscalls/madvise/madvise04.c
-> > new file mode 100644
-> > index 000000000..ba15de092
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/madvise/madvise04.c
-> > @@ -0,0 +1,49 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
-> > + * Author: Zhao Gongyi <zhaogongyi@huawei.com>  */
-> > +
-> > +/*\
-> > + * [Description]
-> > + *
-> > + * Test cases for madvise(2) system call, advise value as
-> "MADV_MADV_DONTNEED":
-> > + *   MADV_DONTNEED can be applied to Huge TLB pages after kernel
-> version 5.18.
-> > + */
-> > +
-> > +#include "tst_test.h"
-> > +
-> > +#define MAP_SIZE (8 * 1024)
-> > +
-> > +static char *addr;
-> > +static int mapsz;
-> > +
-> > +static void run(void)
-> > +{
-> > +	TST_EXP_PASS(madvise(addr, mapsz, MADV_DONTNEED));
-> >
-> 
-> Should we check that the pages have been zero filled like in the previous
-> case?
-> 
+Zhao Gongyi (2):
+  lib: Add checking of needs_root
+  needs_root: Add setting of needs_root
 
-It looks good to add the checking.
+ lib/tst_test.c                                               | 5 +++++
+ testcases/kernel/syscalls/bind/bind06.c                      | 1 +
+ testcases/kernel/syscalls/cma/process_vm_readv02.c           | 1 +
+ testcases/kernel/syscalls/cma/process_vm_readv03.c           | 1 +
+ testcases/kernel/syscalls/cma/process_vm_writev02.c          | 1 +
+ .../kernel/syscalls/copy_file_range/copy_file_range01.c      | 1 +
+ testcases/kernel/syscalls/ipc/msgget/msgget03.c              | 1 +
+ testcases/kernel/syscalls/preadv/preadv03.c                  | 1 +
+ testcases/kernel/syscalls/pwritev/pwritev03.c                | 1 +
+ testcases/kernel/syscalls/sendto/sendto03.c                  | 1 +
+ testcases/kernel/syscalls/setsockopt/setsockopt05.c          | 1 +
+ testcases/kernel/syscalls/setsockopt/setsockopt06.c          | 1 +
+ testcases/kernel/syscalls/setsockopt/setsockopt07.c          | 1 +
+ testcases/kernel/syscalls/setsockopt/setsockopt08.c          | 1 +
+ testcases/kernel/syscalls/setsockopt/setsockopt09.c          | 1 +
+ testcases/kernel/syscalls/swapon/swapon01.c                  | 1 +
+ 16 files changed, 20 insertions(+)
 
-Regards,
-Gongyi
+--
+2.17.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
