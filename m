@@ -4,93 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96950C433FE
-	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 13:02:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C410AC433FE
+	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 13:30:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 109C93CAEB3
-	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 15:02:33 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 0FB873CAEE2
+	for <ltp@archiver.kernel.org>; Wed, 12 Oct 2022 15:30:15 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A88163C9481
- for <ltp@lists.linux.it>; Wed, 12 Oct 2022 15:02:23 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id B3B0F3C9590
+ for <ltp@lists.linux.it>; Wed, 12 Oct 2022 15:30:05 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D7E581400BCA
- for <ltp@lists.linux.it>; Wed, 12 Oct 2022 15:02:22 +0200 (CEST)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29CB0RYs025805;
- Wed, 12 Oct 2022 13:02:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=7cS8VAs9EpgKsE78ArHY87I+rMXHawx+k3s4u0etSEg=;
- b=OSBZ6hzMCXJqPu5xOtgfejrIx3UbWMH8dyDYg5LSa6Umjo3L4/8rYnNJ11sH5Byuw5mZ
- VXYpyupID/NmuTIOQ/kC7DZNYwnMXoRsv/TSasShzdbMJLayJWkcgz4IzuWu82wbMaDE
- INtP1iMGBxp3+6/0x3z0IZHIH9lilUFFck68gBrNSDxM5YjlErEqxFrfmYbx2WIlDAxY
- uvNAgVa36U11K2LOv01TymtIoOHP9DQz1GPPAqOVIm95nJJpTTPseOY3h4a1w1x1FJ28
- sQB96yUoMRirJ1necToL6Oyv/mlRInP/O6lxvOyuxB6FazDfvq5s50CzHkOfNGRqrMr3 bA== 
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com
- [169.47.144.26])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k5vb2be7q-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 12 Oct 2022 13:02:20 +0000
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
- by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29CCpKvK010070;
- Wed, 12 Oct 2022 13:02:18 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com
- [9.57.198.26]) by ppma04wdc.us.ibm.com with ESMTP id 3k30ua9cyf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 12 Oct 2022 13:02:18 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com ([9.208.128.114])
- by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 29CD2Hnd13369852
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 12 Oct 2022 13:02:18 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id A00BF58059;
- Wed, 12 Oct 2022 13:02:17 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 2F0D75805C;
- Wed, 12 Oct 2022 13:02:17 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown
- [9.160.31.46]) by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 12 Oct 2022 13:02:17 +0000 (GMT)
-Message-ID: <39e9f8468b43b7d7a916e2b3e643aa233d161a81.camel@linux.ibm.com>
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 12 Oct 2022 09:02:16 -0400
-In-Reply-To: <Y0aq/Oar7Swmqzhj@pevik>
-References: <20221006164342.68763-1-zohar@linux.ibm.com>
- <Yz9CW5vXCuztOTOl@pevik>
- <42eb7aef99a50e09d28f0b9c16ad64cb2caabe91.camel@linux.ibm.com>
- <Yz+4xepB6HlyFSNJ@pevik>
- <9aee3c94e8816196b9449981f3559e1c149d1c49.camel@linux.ibm.com>
- <Y0QFSiMTx3XlvAHJ@pevik>
- <a7b9b60182d13d92d6e0c5d2c588644027c72b41.camel@linux.ibm.com>
- <Y0aq/Oar7Swmqzhj@pevik>
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vwXzwYIhfjh2QA0ZvR9fteLlrX70k7lM
-X-Proofpoint-GUID: vwXzwYIhfjh2QA0ZvR9fteLlrX70k7lM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-12_06,2022-10-12_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 phishscore=0
- spamscore=0 mlxlogscore=979 clxscore=1015 mlxscore=0 impostorscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210120086
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 278F520035B
+ for <ltp@lists.linux.it>; Wed, 12 Oct 2022 15:30:04 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6BEA121C46;
+ Wed, 12 Oct 2022 13:30:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1665581404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ojwlmLzaUpGFh1qCAq4pNXzzA+dWd9DnnCDd2j3ajKo=;
+ b=haZBLSVEHQC0nkg5K/mVp+8vmqsD8BhxPjBBdPh2zYUys+aC5VHwJ4sWumykJtHtofHjtI
+ zXrXVdHKql0RuKUi+eDzuQKs7bXqojSHHgzWqGiJO0qD59V4jB26cRqgAhJtDQYNqDM5bo
+ KnI3005WAuzoodUPKC2HD9jU1nD3fZs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1665581404;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ojwlmLzaUpGFh1qCAq4pNXzzA+dWd9DnnCDd2j3ajKo=;
+ b=I/+EpQgjlHgdAzF1PM6mKr2YlHjXDjvqNlw+xhxVzcnYqUpd9t9xkOoC16w2+Dv8AkWlu1
+ 70EJi0zerEhlM+Cw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4ED5013ACD;
+ Wed, 12 Oct 2022 13:30:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id eJ82E1zBRmM4fQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 12 Oct 2022 13:30:04 +0000
+Date: Wed, 12 Oct 2022 15:31:50 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Mimi Zohar <zohar@linux.ibm.com>
+Message-ID: <Y0bBxv0569P/a3kW@yuki>
+References: <20221006081709.92303897@mail.steuer-voss.de>
+ <dc5e3e41cf1465ddc70cbac0d77c4f2deff0213f.camel@linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <dc5e3e41cf1465ddc70cbac0d77c4f2deff0213f.camel@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] security/ima: limit the scope of the LTP policy
- rules based on the UUID
+Subject: Re: [LTP] [PATCH] syscalls/keyctl/keyctl09.c: fix test encrypted key
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,30 +75,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Jarkko Sakkinen <jarkko@kernel.org>, Yael Tzur <yaelt@google.com>,
+ ltp@lists.linux.it, Nikolaus Voss <nv@vosn.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+Hi!
+> > This commit fixes the test for adding encrypted keys with unencrypted data.
+> > Unencryted data must be provided hex-ascii encoding. Due to a kernel
+> > bug, the unencypted data was not decoded to binary thus the length of
+> > the key was only half the specified key size. This patch doubles the key
+> > size and adds a test with a wrong key size to trigger a corresponding
+> > error.
+> > 
+> > This patch must be used with the kernel fix
+> > https://lore.kernel.org/lkml/20220919072317.E41421357@mail.steuer-voss.de
+> 
+> Petr, please correct me if I'm wrong.  Changing an existing LTP test so
+> that it only works on kernels with the kernel patch applied, doesn't
+> sound right.  The test should emit a warning if the original "valid
+> payload" successfully loads.
 
-On Wed, 2022-10-12 at 13:54 +0200, Petr Vorel wrote:
-
-> For some reason ima_violations.sh works, when run as the first test after boot
-> (at least with only "ima_policy=tcb" setup), but not when whole ima runtest file
-> is run (as there are tests run before it).  I'm still trying to figure out
-> what's wrong.
-
-Sounds like initially the tests are run with the builtin "tcb" policy. 
-Loading any IMA policy rules replaces the existing builtin policy with
-the new custom policy.
+We also have a policy not to work around any kernel bugs. So if this
+really fixes a kernel bug it's okay that the test will fail on older
+kernels without this fix and the patch that fixes kernel should be added
+as a tag to the test.
 
 -- 
-thanks,
-
-Mimi
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
