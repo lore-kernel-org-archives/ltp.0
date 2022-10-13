@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72FF1C43217
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 11:28:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE13BC433FE
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 11:42:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5ADC53CAEF9
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 13:28:27 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D933D3CAEFE
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 13:42:37 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA1193CAE31
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 13:28:16 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 714DF3CAE31
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 13:42:27 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 04D996005F7
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 13:28:15 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3A8711F38A
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 11:28:15 +0000 (UTC)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B2D58601A31
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 13:42:26 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 25C7F21CBF;
+ Thu, 13 Oct 2022 11:42:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1665660495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Cd7IDCcgLzj66SDT+JBJPIsLqYRP+viMM+Hxask4XQ8=;
- b=H3Zu/9VXXvWNB6kZcpRMtvEEr5awq91zU+UbRHGteMjpnsbZANZga+pVR/NcEFtnKHQVug
- 8WS0wMbpdJg3+rMneAtq8coFpSk6MNtB2y/USv5h8m+kDxeSnDnTnlIveuydo2CEpZM8bp
- 3Kjqcjzt2JiTF4PZC/CE16LZH6/PZw8=
+ t=1665661346;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=RO0Fq616jtimmt38tdXmSQI5YEnu7c3zH0lolrmSSNo=;
+ b=uR2FDCtT+7Z8w4cV/Cxp2STEmO4V62zQcvlb9peuUVO+HW6XsSwMj/EpEXVzDhyT1RmDk8
+ 8Fn2dHoSYjP7NfV8k6JCLS8Vf/6ZAms5/98LYQjhVYxDaX6ESRkhTC7f5Yd+O8jrpkGVm0
+ lkc2zKBlLF4YS8T31i8RL+Lzk1HvC08=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1665660495;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Cd7IDCcgLzj66SDT+JBJPIsLqYRP+viMM+Hxask4XQ8=;
- b=9wRkKWIMCrM8xovHCwtb3ERYpqycgXIbkSqVfqm8m+ShpFSlToR8KwfOHdMFOe51r1qon6
- gMDTazdNsg7cKTBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ s=susede2_ed25519; t=1665661346;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=RO0Fq616jtimmt38tdXmSQI5YEnu7c3zH0lolrmSSNo=;
+ b=X5eImaiMLUmSzU76UYCRV4eI/GriMU02avtQqg2ilia7qKWO6E8rwmBsYcfnjKTUNObRMI
+ b0Er3P2J1k1AEwAw==
+Received: from g78 (unknown [10.100.228.202])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D78C13AFF
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 11:28:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id FpC3F072R2OQXwAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 11:28:14 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Thu, 13 Oct 2022 16:58:11 +0530
-Message-Id: <20221013112811.10639-1-akumar@suse.de>
-X-Mailer: git-send-email 2.37.3
+ by relay2.suse.de (Postfix) with ESMTPS id 4DD8C2C141;
+ Thu, 13 Oct 2022 11:42:25 +0000 (UTC)
+References: <20220822155413.24814-1-pvorel@suse.cz> <YwO3qbIO32hvryjw@pevik>
+ <bc8d2cb9-e5d9-3284-13e2-acfea09725c2@fujitsu.com>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+Date: Thu, 13 Oct 2022 12:31:25 +0100
+In-reply-to: <bc8d2cb9-e5d9-3284-13e2-acfea09725c2@fujitsu.com>
+Message-ID: <87y1tkx84j.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] setpgid02: Convert to new LTP API
+Subject: Re: [LTP] [PATCH v4 1/1] mount03: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,214 +69,129 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
- - Rewrite using new API
- - Use parent pid to validate ESRCH errno
- - Use pgid of init as a process group from a
-   different session for EPERM errno test
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/setpgid/setpgid02.c | 161 ++++--------------
- 1 file changed, 37 insertions(+), 124 deletions(-)
+"xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com> writes:
 
-diff --git a/testcases/kernel/syscalls/setpgid/setpgid02.c b/testcases/kernel/syscalls/setpgid/setpgid02.c
-index 73e88d066..de13a1c4e 100644
---- a/testcases/kernel/syscalls/setpgid/setpgid02.c
-+++ b/testcases/kernel/syscalls/setpgid/setpgid02.c
-@@ -1,148 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-  *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *		07/2001 Ported by Wayne Boyer
-+ *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
+> Hi Petr
+>
+>> Hi all,
+>> 
+>> when running in loop, I sometimes still get error:
+>> 
+>> i=0; while true; do i=$((i+1)); echo "== $i =="; ./mount03  || break; done
+>> ...
+>> === 100 ===
+>> ...
+>> tst_device.c:434: TINFO: No device is mounted at mntpoint
+>> tst_test.c:1599: TINFO: Testing on ext4
+>> tst_test.c:1065: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+>> mke2fs 1.46.5 (30-Dec-2021)
+>> mount03.c:150: TINFO: Testing flag MS_RDONLY
+>> mount03.c:48: TPASS: otfd = open(file, O_CREAT | O_RDWR, 0700) : EROFS (30)
+>> mount03.c:150: TINFO: Testing flag MS_NODEV
+>> mount03.c:153: TFAIL: mount(tst_device->dev, MNTPOINT, tst_device->fs_type, tc->flag, NULL) failed: EINVAL (22)
+>> mount03.c:150: TINFO: Testing flag MS_NOEXEC
+>> mount03.c:153: TFAIL: mount(tst_device->dev, MNTPOINT, tst_device->fs_type, tc->flag, NULL) failed: EINVAL (22)
+>> mount03.c:150: TINFO: Testing flag MS_RDONLY
+>> mount03.c:153: TFAIL: mount(tst_device->dev, MNTPOINT, tst_device->fs_type, tc->flag, NULL) failed: EINVAL (22)
+>> mount03.c:150: TINFO: Testing flag MS_NOSUID
+>> mount03.c:153: TFAIL: mount(tst_device->dev, MNTPOINT, tst_device->fs_type, tc->flag, NULL) failed: EINVAL (22)
+>> mount03.c:150: TINFO: Testing flag MS_NOATIME
+>> mount03.c:111: TPASS: st.st_atime == atime (1661183501)
+>
+> I also meet nosuid work not as expected.
+>
+> st_test.c:1599: TINFO: Testing on ext4
+> tst_test.c:1064: TINFO: Formatting /dev/loop0 with ext4 opts='' extra 
+> opts=''
+> mke2fs 1.46.5 (30-Dec-2021)
+> mount03.c:151: TINFO: Testing flag MS_RDONLY
+> mount03.c:48: TPASS: otfd = open(file, O_CREAT | O_RDWR, 0700) : EROFS (30)
+> mount03.c:151: TINFO: Testing flag MS_NODEV
+> mount03.c:55: TPASS: otfd = open(file, O_RDWR, 0700) : EACCES (13)
+> mount03.c:151: TINFO: Testing flag MS_NOEXEC
+> mount03.c:63: TPASS: execlp(file, basename(file), NULL) : EACCES (13)
+> mount03.c:151: TINFO: Testing flag MS_RDONLY
+> mount03.c:70: TPASS: otfd = open(file, O_CREAT | O_RDWR, 0700) returned fd 3
+> mount03.c:151: TINFO: Testing flag MS_NOSUID
+> mount03_suid_child.c:22: TFAIL: setreuid(getuid(), 0) succeeded
+> mount03.c:151: TINFO: Testing flag MS_NOATIME
+> mount03.c:112: TPASS: st.st_atime == atime (1661280863)
+> tst_device.c:434: TINFO: No device is mounted at mntpoint
+>
+
+I added some more debug info:
+
+@@ -86,7 +89,20 @@ static void test_nosuid(void)
+ 		if (st.st_mode != SUID_MODE)
+ 			SAFE_CHMOD(BIN_PATH, SUID_MODE);
  
--/*
-- * NAME
-- * 	setpgid02.c
-- *
-- * DESCRIPTION
-- *	Testcase to check that setpgid() sets errno correctly.
-- *
-- * CALLS
-- * 	setpgid
-- *
-- * ALGORITHM
-- * 	Checks that setpgid returns the correct errno values in case of
-- * 	negative testing.
-- * 	test 1: EINVAL - Pass '-1' as the pgid parameter to setpgid
-- * 	test 2: ESRCH - Pass '-1' as the pid parameter to setpgid
-- *	test 3: EPERM - Pass an invalid pgid parameter to setpgid
-- *
-- * USAGE:  <for command-line>
-- *  setpgid02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-+/*\
-+ * [Description]
-  *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-+ * Verify that setpgid(2) syscall fails with:
-  *
-- * RESTRICTIONS
-- * 	None
-+ * - EINVAL when given pgid is less than 0.
-+ * - ESRCH when pid is not the calling process and not a child of
-+ * the calling process.
-+ * - EPERM when an attempt was made to move a process into a process
-+ * group in a different session.
-  */
--#include <errno.h>
--#include <unistd.h>
--#include <sys/wait.h>
--#include "test.h"
- 
--static void setup(void);
--static void cleanup(void);
-+#include "tst_test.h"
- 
--char *TCID = "setpgid02";
--int TST_TOTAL = 3;
-+static pid_t pgid, pid, ppid;
-+static pid_t init_pgid;
-+static pid_t negative_pid = -1;
- 
--static pid_t pgid, pid;
--static pid_t bad_pid = -1;
--static pid_t zero_pid;
--static pid_t unused_pid;
--static pid_t inval_pid = 99999;
--
--struct test_case_t {
-+static struct tcase {
- 	pid_t *pid;
- 	pid_t *pgid;
- 	int error;
--} TC[] = {
--	/* pgid is less than zero - EINVAL */
--	{
--	&pid, &bad_pid, EINVAL},
--	    /* pid doesn't match any process - ESRCH */
--	{
--	&unused_pid, &pgid, ESRCH},
--	    /* pgid doesn't exist - EPERM */
--	{
--	&zero_pid, &inval_pid, EPERM}
-+} tcases[] = {
-+	{&pid, &negative_pid, EINVAL},
-+	{&ppid, &pgid, ESRCH},
-+	{&pid, &init_pgid, EPERM}
- };
- 
--int main(int ac, char **av)
--{
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		/* loop through the test cases */
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			TEST(setpgid(*TC[i].pid, *TC[i].pgid));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == TC[i].error) {
--				tst_resm(TPASS, "expected failure - "
--					 "errno = %d : %s", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL, "unexpected error - %d : %s - "
--					 "expected %d", TEST_ERRNO,
--					 strerror(TEST_ERRNO), TC[i].error);
--			}
--		}
--	}
--	cleanup();
--
--	tst_exit();
--}
--
--/*
-- * setup - performs all ONE TIME setup for this test
-- */
- static void setup(void)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	pgid = getpgrp();
- 	pid = getpid();
-+	ppid = getppid();
-+	pgid = getpgrp();
- 
--	unused_pid = tst_get_unused_pid(cleanup);
-+	/*
-+	 * Getting pgid of init/systemd process to use it as a
-+	 * process group from a different session for EPERM test
-+	 */
-+	init_pgid = SAFE_GETPGID(1);
- }
- 
--/*
-- * cleanup - Performs all ONE TIME cleanup for this test at completion or
-- * 	     premature exit
-- */
--static void cleanup(void)
-+static void run(unsigned int n)
- {
-+	struct tcase *tc = &tcases[n];
- 
-+	TST_EXP_FAIL(setpgid(*tc->pid, *tc->pgid), tc->error,
-+				"setpgid(%d, %d)", *tc->pid, *tc->pgid);
- }
+-		SAFE_SETREUID(nobody_uid, nobody_uid);
++		tst_res(TINFO, "dev %d:%d, rdev: %d:%d",
++			major(st.st_dev), minor(st.st_dev), major(st.st_rdev), minor(st.st_rdev));
++		SAFE_SETRESGID(nobody_gid, nobody_gid, nobody_gid);
++		SAFE_SETRESUID(nobody_uid, nobody_uid, nobody_uid);
 +
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases)
-+};
--- 
-2.37.3
++		uid_t uid, gid, euid, egid, suid, sgid;
++
++		getresuid(&uid, &euid, &suid);
++		getresgid(&gid, &egid, &sgid);
++		tst_res(TINFO, "uid: %d, gid: %d, euid: %d, egid: %d, suid: %d, sgid: %d",
++			uid, gid, euid, egid, suid, sgid);
++
++		tst_system("pwd");
++		tst_system("ls -l " MNTPOINT);
+ 		SAFE_EXECL(BIN_PATH, BIN_PATH, NULL);
+ 		tst_brk(TFAIL | TTERRNO, "Failed to execute %s", BIN_PATH);
 
+and in the child
+
+ int main(void)
+ {
++	uid_t uid, gid, euid, egid, suid, sgid;
+ 	tst_reinit();
+ 
++	getresuid(&uid, &euid, &suid);
++	getresgid(&gid, &egid, &sgid);
++	tst_res(TINFO, "uid: %d, gid: %d, euid: %d, egid: %d, suid: %d, sgid: %d",
++		uid, gid, euid, egid, suid, sgid);
++
+ 	TST_EXP_FAIL(setreuid(getuid(), 0), EPERM);
+ 
+
+This shows that BIN_PATH is being accessed from the wrong device AFAICT
+
+mount03.c:166: TINFO: Testing flag MS_NOSUID
+
+...
+
+30 1 0:26 / /tmp rw,relatime - tmpfs ltp rw,size=512000k,inode64
+31 30 0:27 / /tmp/mouLkSN2v/mntpoint rw,nosuid,relatime - tmpfs /dev/loop0 rw,inode64
+mount03.c:92: TINFO: dev 0:26, rdev: 0:0
+mount03.c:101: TINFO: uid: 65534, gid: 65534, euid: 65534, egid: 65534, suid: 65534, sgid: 65534
+/tmp/mouLkSN2v
+total 688
+-r-s--x--x 1 root 0 702952 Oct 13 11:29 mount03_suid_child
+mount03_suid_child.c:25: TINFO: uid: 65534, gid: 65534, euid: 0, egid: 65534, suid: 0, sgid: 65534
+mount03_suid_child.c:28: TFAIL: setreuid(getuid(), 0) succeeded
+
+The device should be 0:27 not 0:26.
+
+Indeed if I remove SAFE_CHMOD then the euid and suid are set to
+nobody. Also if I mount /tmp as nosuid then the test passes. Possibly we
+need to use absoute paths to ensure we are going through the mount
+point.
+
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
