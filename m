@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2E44C433FE
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 07:38:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CD44C433FE
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 07:41:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6570C3CAEE2
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 09:38:54 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 851C83CAED2
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 09:41:49 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3E0B33CA9C7
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 09:38:44 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id EF6D83CA9C7
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 09:41:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 93458140112B
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 09:38:42 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 83F54600D21
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 09:41:39 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0376D225C5;
- Thu, 13 Oct 2022 07:38:42 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BDE521F38A;
+ Thu, 13 Oct 2022 07:41:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1665646722;
+ t=1665646898;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=U9UC2Yy1y+1PU/yG1LhSEFkFvVIJLAvev07G/MsKiGo=;
- b=ZSRzhkVpZaXEnnikCZOBIk8T18Wvjt+2lp5+bi0ugDdhoY87FZyveXrdhzEpX5PLD6Wbg0
- GhvAIMHl4bX8OHze2BZVERRTD/rHhsS6xzWoYFo4m9k7Lu2mhtu+BZihoSemnv3baWhy42
- m4IHG3sii+mJTkp6z8pm2zGIyhltOlA=
+ bh=kt548TUKVXVMb/Ob5Gm8YteplvYMwfIcRq8yJDxckEg=;
+ b=JQJ5c0eK4uMce8fk5ciR9QccGuxP8iZi1xW/0WS4WjuKtCHI5FeJenFxgautBU0HY6+GlI
+ 7AKnEmnCagGgsHoXRgFYRm0zX++GUV/sgqMH2KdeucGH1da2f8sfsLlobKcBWWiuaOM+pE
+ jruKKy/6Mxw52B66juzuTUdlpwNHpUg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1665646722;
+ s=susede2_ed25519; t=1665646898;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=U9UC2Yy1y+1PU/yG1LhSEFkFvVIJLAvev07G/MsKiGo=;
- b=tdKrpQ/UlqerJQn6w8XsLI3a8MQ0k9a0XgL+3ZDkEHUgIDHktvMBuseLQKl6y8pNVTbkOG
- cOyDiKnddBF571Dw==
+ bh=kt548TUKVXVMb/Ob5Gm8YteplvYMwfIcRq8yJDxckEg=;
+ b=nXRf8Eu2jTaAwAvaeTyAGIC/n4O4LVTkF0BbXNXTQmWdNf6SBOMWgsXvNmEA9A41D9PGzh
+ hDb8CmPq2FkB0TAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5441139F3;
- Thu, 13 Oct 2022 07:38:41 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 857CE139F3;
+ Thu, 13 Oct 2022 07:41:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wA83LoHAR2M9TAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 13 Oct 2022 07:38:41 +0000
-Date: Thu, 13 Oct 2022 09:38:40 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id e9eYHjLBR2MkTgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 13 Oct 2022 07:41:38 +0000
+Date: Thu, 13 Oct 2022 09:41:36 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: zhaogongyi <zhaogongyi@huawei.com>
-Message-ID: <Y0fAgGH6R8uEbcqh@pevik>
-References: <60876907d240408a9496aebde2a7a968@huawei.com>
+To: Zhao Gongyi <zhaogongyi@huawei.com>
+Message-ID: <Y0fBMGxUQpZhz0AE@pevik>
+References: <20221012091526.35373-1-zhaogongyi@huawei.com>
+ <20221012091526.35373-3-zhaogongyi@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <60876907d240408a9496aebde2a7a968@huawei.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <20221012091526.35373-3-zhaogongyi@huawei.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] lib: Add checking of needs_root
+Subject: Re: [LTP] [PATCH 2/2] needs_root: Add setting of needs_root
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,85 +78,61 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi,
+Hi Zhao,
 
-> If we neeed to run the test as a non-root user, the non-root user would belong to the root group.
+> Add setting of  needs_root, otherwise run the test without root
+> will fail and report EACCESS or EPERM.
+...
+>  testcases/kernel/syscalls/bind/bind06.c                       | 1 +
+>  testcases/kernel/syscalls/cma/process_vm_readv02.c            | 1 +
+>  testcases/kernel/syscalls/cma/process_vm_readv03.c            | 1 +
+>  testcases/kernel/syscalls/cma/process_vm_writev02.c           | 1 +
+>  testcases/kernel/syscalls/copy_file_range/copy_file_range01.c | 1 +
+>  testcases/kernel/syscalls/ipc/msgget/msgget03.c               | 1 +
+>  testcases/kernel/syscalls/preadv/preadv03.c                   | 1 +
+>  testcases/kernel/syscalls/pwritev/pwritev03.c                 | 1 +
+>  testcases/kernel/syscalls/sendto/sendto03.c                   | 1 +
+>  testcases/kernel/syscalls/setsockopt/setsockopt05.c           | 1 +
+>  testcases/kernel/syscalls/setsockopt/setsockopt06.c           | 1 +
+>  testcases/kernel/syscalls/setsockopt/setsockopt07.c           | 1 +
+>  testcases/kernel/syscalls/setsockopt/setsockopt08.c           | 1 +
+>  testcases/kernel/syscalls/setsockopt/setsockopt09.c           | 1 +
+>  testcases/kernel/syscalls/swapon/swapon01.c                   | 1 +
+>  15 files changed, 15 insertions(+)
+...
+> +++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+> @@ -72,6 +72,7 @@ static void cleanup(void)
 
-> Shall we add a checking of needs_root and needs_rootgroup?
+>  static struct tst_test test = {
+>  	.needs_tmpdir = 1,
+> +	.needs_root = 1,
+>  	.setup = setup,
+>  	.cleanup = cleanup,
+>  	.test_all = verify_msgget,
 
-How many of these tests we have? I wonder if it's worth to add this.
+At least this one is working without root:
+
+$ ./testcases/kernel/syscalls/ipc/msgget/msgget03
+tst_test.c:1526: TINFO: Timeout per run is 0h 00m 30s
+msgget03.c:41: TINFO: Current environment 0 message queues are already in use
+msgget03.c:55: TINFO: The maximum number of message queues (32000) reached
+msgget03.c:30: TPASS: msgget(1629588886, 1536) : ENOSPC (28)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
 
 Kind regards,
 Petr
-
-> Regards,
-> Gongyi
-
-
-
-> > > > -----Original Message-----
-> > > > From: ltp <ltp-bounces+tim.bird=sony.com@lists.linux.it> On Behalf
-> > > > Of Petr Vorel
-
-> > > > Hi all,
-
-> > > > The subject "lib: Add checking of needs_root" is a bit misleading as
-> > > > it does not mention at all that it's for the loop device.
-
-> > > > > We need to check needs_root is set when tst_test->needs_device
-> > or
-> > > > > tst_test->mount_device is set since access the /dev/* need a
-> > > > > privilege.
-
-> > > > FYI we had some discussion about it, quoting Cyril [1]:
-
-> > > > 	Well technically you can be added into whatever group is set to
-> > > > 	/dev/loop-control e.g. disk group and then you can create devices
-> > > > 	without a need to be a root.
-
-> > > > 	So the most correct solution would be checking if we can access
-> > > > 	/dev/loop-control if tst_test.needs_device is set and if not we would
-> > > > 	imply needs_root. However this would need to be rethinked properly
-> > so
-> > > > 	that we do not end up creating something complex and not really
-> > > > 	required.
-
-> > > > There is also possibility to add custom device via $LTP_DEV. That
-> > > > might allow to add permissions which allow to test without root.
-
-> > > > I'll write to automated-testing ML (and maybe to LKML ML) to see if
-> > > > people prefers to test without non-root.
-
-> > > I took a quick look at this, and don't like the change.
-
-> > > I didn't investigate all the affected tests, and what device exactly is being
-> > protected.
-> > > But the overall sense of the change takes makes the authorization
-> > > checking for tests less granular.
-
-> > > Fuego often runs tests as 'root', but it is also fairly common in
-> > > Fuego to have a dedicated testing user account on a device under test,
-> > > that has permissions for things like mounting, access to device nodes,
-> > > etc.  This change would cause tests to break for that account.
-
-> > Hi Tim,
-
-> > thanks a lot for confirming that people are using non-root users for testing.
-> > I'm not sure if we ever implement complex checks, but at least we should
-> > not merge this patchset.
-
-> > Kind regards,
-> > Petr
-
-> > > That's my 2 cents.
-> > >  -- Tim
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
