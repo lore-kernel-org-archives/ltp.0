@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E88F9C433FE
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 21:36:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CB03C433FE
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 22:08:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 230703CAF2A
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 23:36:44 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id D29B33CAF0D
+	for <ltp@archiver.kernel.org>; Fri, 14 Oct 2022 00:08:14 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 80D563CAEC7
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 23:36:33 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 04C8B3C2E4F
+ for <ltp@lists.linux.it>; Fri, 14 Oct 2022 00:08:03 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A34EC600D2B
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 23:36:31 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4AFC91A0049E
+ for <ltp@lists.linux.it>; Fri, 14 Oct 2022 00:08:02 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 46F161F8BB;
- Thu, 13 Oct 2022 21:36:31 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 13BDE21B60;
+ Thu, 13 Oct 2022 22:08:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1665696991;
+ t=1665698882;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=g/xx2bG5TSGyO67nDNWC71XDnaTueSppUPwh3Qr0L0A=;
- b=ciLsGOXPhbkDb8EqT3FALtQpcLAILsvxTZGVApwLJyQxWJWvFx2tYDOmuseO4LLeNakT4D
- 4CALbQfL51NrBq5Z6avzj8EvQij/UPsG10B7RC4YnjLwvVHspoTveOdxLk0sALdM1xfxDZ
- 5SJefDNj4Qp2bEnQGtF6cxI9Ss2o8hc=
+ bh=S0vSmMOIK+R1GWDc6LJ/bfg2NINxLU3WRHuF0+fMcS4=;
+ b=r1ig58YQotm47mkSBt4dlOlU5JmY2M+gIx/JNcxHh1WtZvexhatCdtUGQ3R3wxB4CK/J8f
+ igZLTmjPTWNRshwGZsmrvzdbsuaABw1CwQm1uQqAjGdAtZUN0GLHAqJU4aGw9z0oYKYPUS
+ IS5yLHJlIdD2UVQoxYxf9PsbbUwbhFA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1665696991;
+ s=susede2_ed25519; t=1665698882;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=g/xx2bG5TSGyO67nDNWC71XDnaTueSppUPwh3Qr0L0A=;
- b=A5sSaEdf0oWvDNwrSYVxtpfRjDp7cm5YENeE78rZZEX0hkil5lmoqUjna3MhAYxyDpdEZh
- 41D/MgAvX281KVCQ==
+ bh=S0vSmMOIK+R1GWDc6LJ/bfg2NINxLU3WRHuF0+fMcS4=;
+ b=o7ntdyZyxqGvgotxRgAzQgZQNEKBKAwanoY5Ag2ainuIQal/eL0AwiAwIl2bH1ifWANc8g
+ 2eiFKAPf60cornCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 11835139F3;
- Thu, 13 Oct 2022 21:36:31 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA42D139F3;
+ Thu, 13 Oct 2022 22:08:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id giKwAt+ESGNtTwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 13 Oct 2022 21:36:31 +0000
-Date: Thu, 13 Oct 2022 23:36:29 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id qHF9MkGMSGP9XAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 13 Oct 2022 22:08:01 +0000
+Date: Fri, 14 Oct 2022 00:08:00 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <Y0iE3bfMBC56Hi8r@pevik>
+Message-ID: <Y0iMQEXsQbkNMwWf@pevik>
 References: <20221013154935.20461-1-mdoucha@suse.cz>
- <20221013154935.20461-2-mdoucha@suse.cz>
+ <20221013154935.20461-3-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221013154935.20461-2-mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <20221013154935.20461-3-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/4] fanotify14: Print human-readable test case
- flags
+Subject: Re: [LTP] [PATCH 2/4] Move fanotify fallback constants and structs
+ to LAPI header
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,267 +86,23 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Martin,
 
-> It's hard to tell which test case is failing from the current fanotify14
-> output. Print test case flags to make failure analysis easier.
+although it will be used only by tests in testcases/kernel/syscalls/fanotify/,
+it's cleaner to follow LTP approach.
 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
->  .../kernel/syscalls/fanotify/fanotify14.c     | 194 ++++++++++--------
->  1 file changed, 108 insertions(+), 86 deletions(-)
+Reviewed-by: Petr Vorel <petr.vorel@gmail.com>
 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify14.c b/testcases/kernel/syscalls/fanotify/fanotify14.c
-> index 594259ccf..ee42aaf68 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify14.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify14.c
-> @@ -38,6 +38,8 @@
->  #define INODE_EVENTS (FAN_ATTRIB | FAN_CREATE | FAN_DELETE | FAN_MOVE | \
->  		      FAN_DELETE_SELF | FAN_MOVE_SELF)
-
-> +#define FLAGS_DESC(flags) (flags), (#flags)
-+1 for add ing description. But macro like this gets false positive in make
-check:
-
-fanotify14.c:41: ERROR: Macros with complex values should be enclosed in parentheses
-
-Also quite recently, in dbb9db6ec ("syscalls/fanotify09: Make test case
-definitions more readable") was single test migrated to use
-.foo = value, .bar = value struct setup. This is about source code readability,
-you aim for test output readability, IMHO both is important.
-
-
->  static int fanotify_fd;
->  static int fan_report_target_fid_unsupported;
->  static int ignore_mark_unsupported;
-> @@ -49,101 +51,113 @@ static int ignore_mark_unsupported;
->   */
->  static struct test_case_t {
->  	unsigned int init_flags;
-> +	const char *init_desc;
->  	unsigned int mark_flags;
-> +	const char *mark_desc;
->  	/* zero mask expects to fail on fanotify_init() */
->  	unsigned long long mask;
-> +	const char *mask_desc;
->  	int expected_errno;
->  } test_cases[] = {
-> -	{
-> -		/* FAN_REPORT_FID without class FAN_CLASS_NOTIF is not valid */
-> -		FAN_CLASS_CONTENT | FAN_REPORT_FID, 0, 0, EINVAL
-> -	},
-> -	{
-> -		/* FAN_REPORT_FID without class FAN_CLASS_NOTIF is not valid */
-> -		FAN_CLASS_PRE_CONTENT | FAN_REPORT_FID, 0, 0, EINVAL
-> -	},
-> -	{
-> -		/* INODE_EVENTS in mask without class FAN_REPORT_FID are not valid */
-> -		FAN_CLASS_NOTIF, 0, INODE_EVENTS, EINVAL
-> -	},
-> -	{
-> -		/* INODE_EVENTS in mask with FAN_MARK_MOUNT are not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_FID, FAN_MARK_MOUNT, INODE_EVENTS, EINVAL
-> -	},
-> -	{
-> -		/* FAN_REPORT_NAME without FAN_REPORT_DIR_FID is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_NAME, 0, 0, EINVAL
-> -	},
-> -	{
-> -		/* FAN_REPORT_NAME without FAN_REPORT_DIR_FID is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_FID | FAN_REPORT_NAME, 0, 0, EINVAL
-> -	},
-> -	{
-> -		/* FAN_REPORT_TARGET_FID without FAN_REPORT_FID is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_TARGET_FID | FAN_REPORT_DFID_NAME, 0, 0, EINVAL
-> -	},
-> -	{
-> -		/* FAN_REPORT_TARGET_FID without FAN_REPORT_NAME is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_TARGET_FID | FAN_REPORT_DFID_FID, 0, 0, EINVAL
-> -	},
-> -	{
-> -		/* FAN_RENAME without FAN_REPORT_NAME is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_DFID_FID, 0, FAN_RENAME, EINVAL
-> -	},
-> -	{
-> -		/* With FAN_MARK_ONLYDIR on non-dir is not valid */
-> -		FAN_CLASS_NOTIF, FAN_MARK_ONLYDIR, FAN_OPEN, ENOTDIR
-> -	},
-> -	{
-> -		/* With FAN_REPORT_TARGET_FID, FAN_DELETE on non-dir is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET, 0, FAN_DELETE, ENOTDIR
-> -	},
-> -	{
-> -		/* With FAN_REPORT_TARGET_FID, FAN_RENAME on non-dir is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET, 0, FAN_RENAME, ENOTDIR
-> -	},
-> -	{
-> -		/* With FAN_REPORT_TARGET_FID, FAN_ONDIR on non-dir is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET, 0, FAN_OPEN | FAN_ONDIR, ENOTDIR
-> -	},
-> -	{
-> -		/* With FAN_REPORT_TARGET_FID, FAN_EVENT_ON_CHILD on non-dir is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET, 0, FAN_OPEN | FAN_EVENT_ON_CHILD, ENOTDIR
-> -	},
-> -	{
-> -		/* FAN_MARK_IGNORE_SURV with FAN_DELETE on non-dir is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME, FAN_MARK_IGNORE_SURV, FAN_DELETE, ENOTDIR
-> -	},
-> -	{
-> -		/* FAN_MARK_IGNORE_SURV with FAN_RENAME on non-dir is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME, FAN_MARK_IGNORE_SURV, FAN_RENAME, ENOTDIR
-> -	},
-> -	{
-> -		/* FAN_MARK_IGNORE_SURV with FAN_ONDIR on non-dir is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME, FAN_MARK_IGNORE_SURV, FAN_OPEN | FAN_ONDIR, ENOTDIR
-> -	},
-> -	{
-> -		/* FAN_MARK_IGNORE_SURV with FAN_EVENT_ON_CHILD on non-dir is not valid */
-> -		FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME, FAN_MARK_IGNORE_SURV, FAN_OPEN | FAN_EVENT_ON_CHILD, ENOTDIR
-> -	},
-> -	{
-> -		/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on directory is not valid */
-> -		FAN_CLASS_NOTIF, FAN_MARK_IGNORE, FAN_OPEN, EISDIR
-> -	},
-> -	{
-> -		/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on mount mark is not valid */
-> -		FAN_CLASS_NOTIF, FAN_MARK_MOUNT | FAN_MARK_IGNORE, FAN_OPEN, EINVAL
-> -	},
-> -	{
-> -		/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on filesystem mark is not valid */
-> -		FAN_CLASS_NOTIF, FAN_MARK_FILESYSTEM | FAN_MARK_IGNORE, FAN_OPEN, EINVAL
-> -	},
-> +	/* FAN_REPORT_FID without class FAN_CLASS_NOTIF is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_CONTENT | FAN_REPORT_FID), 0, NULL, 0, NULL,
-> +		EINVAL},
-> +
-> +	/* FAN_REPORT_FID without class FAN_CLASS_NOTIF is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_PRE_CONTENT | FAN_REPORT_FID), 0, NULL, 0, NULL,
-> +		EINVAL},
-> +
-> +	/* INODE_EVENTS in mask without class FAN_REPORT_FID are not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF), FLAGS_DESC(0), FLAGS_DESC(INODE_EVENTS),
-> +		EINVAL},
-> +
-> +	/* INODE_EVENTS in mask with FAN_MARK_MOUNT are not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_FID),
-> +		FLAGS_DESC(FAN_MARK_MOUNT), FLAGS_DESC(INODE_EVENTS), EINVAL},
-> +
-> +	/* FAN_REPORT_NAME without FAN_REPORT_DIR_FID is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_NAME), 0, NULL, 0, NULL,
-> +		EINVAL},
-> +
-> +	/* FAN_REPORT_NAME without FAN_REPORT_DIR_FID is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_FID | FAN_REPORT_NAME), 0,
-> +		NULL, 0, NULL, EINVAL},
-> +
-> +	/* FAN_REPORT_TARGET_FID without FAN_REPORT_FID is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_TARGET_FID | FAN_REPORT_DFID_NAME),
-> +		0, NULL, 0, NULL, EINVAL},
-> +
-> +	/* FAN_REPORT_TARGET_FID without FAN_REPORT_NAME is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_TARGET_FID | FAN_REPORT_DFID_FID),
-> +		0, NULL, 0, NULL, EINVAL},
-> +
-> +	/* FAN_RENAME without FAN_REPORT_NAME is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_FID), FLAGS_DESC(0),
-> +		FLAGS_DESC(FAN_RENAME), EINVAL},
-> +
-> +	/* With FAN_MARK_ONLYDIR on non-dir is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF), FLAGS_DESC(FAN_MARK_ONLYDIR),
-> +		FLAGS_DESC(FAN_OPEN), ENOTDIR},
-> +
-> +	/* With FAN_REPORT_TARGET_FID, FAN_DELETE on non-dir is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
-> +		FLAGS_DESC(0), FLAGS_DESC(FAN_DELETE), ENOTDIR},
-> +
-> +	/* With FAN_REPORT_TARGET_FID, FAN_RENAME on non-dir is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
-> +		FLAGS_DESC(0), FLAGS_DESC(FAN_RENAME), ENOTDIR},
-> +
-> +	/* With FAN_REPORT_TARGET_FID, FAN_ONDIR on non-dir is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
-> +		FLAGS_DESC(0), FLAGS_DESC(FAN_OPEN | FAN_ONDIR), ENOTDIR},
-> +
-> +	/* With FAN_REPORT_TARGET_FID, FAN_EVENT_ON_CHILD on non-dir is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
-> +		FLAGS_DESC(0), FLAGS_DESC(FAN_OPEN | FAN_EVENT_ON_CHILD),
-> +		ENOTDIR},
-> +
-> +	/* FAN_MARK_IGNORE_SURV with FAN_DELETE on non-dir is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
-> +		FLAGS_DESC(FAN_MARK_IGNORE_SURV), FLAGS_DESC(FAN_DELETE),
-> +		ENOTDIR},
-> +
-> +	/* FAN_MARK_IGNORE_SURV with FAN_RENAME on non-dir is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
-> +		FLAGS_DESC(FAN_MARK_IGNORE_SURV), FLAGS_DESC(FAN_RENAME),
-> +		ENOTDIR},
-> +
-> +	/* FAN_MARK_IGNORE_SURV with FAN_ONDIR on non-dir is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
-> +		FLAGS_DESC(FAN_MARK_IGNORE_SURV),
-> +		FLAGS_DESC(FAN_OPEN | FAN_ONDIR), ENOTDIR},
-> +
-> +	/* FAN_MARK_IGNORE_SURV with FAN_EVENT_ON_CHILD on non-dir is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
-> +		FLAGS_DESC(FAN_MARK_IGNORE_SURV),
-> +		FLAGS_DESC(FAN_OPEN | FAN_EVENT_ON_CHILD), ENOTDIR},
-> +
-> +	/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on directory is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF), FLAGS_DESC(FAN_MARK_IGNORE),
-> +		FLAGS_DESC(FAN_OPEN), EISDIR},
-> +
-> +	/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on mount mark is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF),
-> +		FLAGS_DESC(FAN_MARK_MOUNT | FAN_MARK_IGNORE),
-> +		FLAGS_DESC(FAN_OPEN), EINVAL},
-> +
-> +	/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on filesystem mark is not valid */
-> +	{FLAGS_DESC(FAN_CLASS_NOTIF),
-> +		FLAGS_DESC(FAN_MARK_FILESYSTEM | FAN_MARK_IGNORE),
-> +		FLAGS_DESC(FAN_OPEN), EINVAL},
->  };
-
->  static void do_test(unsigned int number)
->  {
->  	struct test_case_t *tc = &test_cases[number];
-
-> +	tst_res(TINFO, "Test case %d: fanotify_init(%s, O_RDONLY)", number,
-> +		tc->init_desc);
-> +
->  	if (fan_report_target_fid_unsupported && tc->init_flags & FAN_REPORT_TARGET_FID) {
->  		FANOTIFY_INIT_FLAGS_ERR_MSG(FAN_REPORT_TARGET_FID,
->  					    fan_report_target_fid_unsupported);
-> @@ -155,8 +169,14 @@ static void do_test(unsigned int number)
->  		return;
->  	}
-
-> -	TST_EXP_FD_OR_FAIL(fanotify_fd = fanotify_init(tc->init_flags, O_RDONLY),
-> -			   !tc->mask && tc->expected_errno ? tc->expected_errno : 0);
-TST_EXP_FD_OR_FAIL was added only to be used by fanotify tests.
-What's wrong with it?
+...
+> --- /dev/null
+> +++ b/include/lapi/fanotify.h
+> @@ -0,0 +1,210 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +/*
+> + * Copyright (c) 2012-2020 Linux Test Project.  All Rights Reserved.
+FAN_FS_ERROR has been added in 3db153665 ("syscalls/fanotify22: Introduce FAN_FS_ERROR test")
+which is 2022. Can be changed before merge.
 
 Kind regards,
 Petr
-
-> +	if (!tc->mask && tc->expected_errno) {
-> +		TST_EXP_FAIL(fanotify_init(tc->init_flags, O_RDONLY),
-> +			tc->expected_errno);
-> +	} else {
-> +		TST_EXP_FD(fanotify_init(tc->init_flags, O_RDONLY));
-> +	}
-> +
-> +	fanotify_fd = TST_RET;
-
->  	if (fanotify_fd < 0)
->  		return;
-> @@ -167,6 +187,8 @@ static void do_test(unsigned int number)
->  	/* Set mark on non-dir only when expecting error ENOTDIR */
->  	const char *path = tc->expected_errno == ENOTDIR ? FILE1 : MNTPOINT;
-
-> +	tst_res(TINFO, "Testing fanotify_mark(FAN_MARK_ADD | %s, %s)",
-> +		tc->mark_desc, tc->mask_desc);
->  	TST_EXP_FD_OR_FAIL(fanotify_mark(fanotify_fd, FAN_MARK_ADD | tc->mark_flags,
->  					 tc->mask, AT_FDCWD, path),
->  					 tc->expected_errno);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
