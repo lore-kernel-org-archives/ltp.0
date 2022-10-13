@@ -4,66 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3756AC433FE
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 09:26:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72FF1C43217
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 11:28:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 89A303CAEEA
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 11:26:23 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 5ADC53CAEF9
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 13:28:27 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0BDF13CAE64
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 11:26:12 +0200 (CEST)
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com
- [IPv6:2607:f8b0:4864:20::e33])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DA1193CAE31
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 13:28:16 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 000681A0113E
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 11:26:11 +0200 (CEST)
-Received: by mail-vs1-xe33.google.com with SMTP id 126so1128451vsi.10
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 02:26:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=XrYswPlODI1CjKbJaEGUZLsS5g5Qc3N0STHPFXkT4Y0=;
- b=U/D1J9GUdTcaqnHKroh6qiofLgcQmOfFScr8VN1b0gJ3+tz7LHeyrGiPaoHoFdE4Bt
- NjWVBzTrHps3DukV3N4kargIrCYvrEiY2NiW7L/+4slpAKUm3fJXadYYsAovfhJM2cYG
- R0A7Xdm2MbYAcFs5JC+9xRxBMSlsdSqpkPiDq7gykfk4gBQdgKqHWR2xVACYNMgB4mRY
- NrG3iIYtm5blpv/V8ZOD/wTEJnu8cWFawcsd5egXr9EoWJsHtVhDsnPHNcGx4tiwjJ+f
- peBTS0q4SIbvxAvCcIR2d98wsYb44fyJNrYFAyu6GdIKGu0n+vjFJOQznFtSwkIyApbH
- R1EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=XrYswPlODI1CjKbJaEGUZLsS5g5Qc3N0STHPFXkT4Y0=;
- b=Np2BRrUpoRIyte1fF5ijxZZe2Ej2aPCW0LKu0vYo60557jU3VYIPrt4c64tyMmrydO
- ZxBatmFUQejqn9iyUa7Yf4RmsmbHenb8oP2gbfUBCjkx/heULJQ04fqaweyZP5IQgtRF
- nD3TSoglPDgK1C1ciNR4obxPOHlVt9AtU72j2raw08a5ShWmfq3u1qGQJh/W6V6sm3Sg
- 35QgeOBNl2tq7QWQUcbcxA66KS7kxvVMww0S0DiNyhZlGXgeUyi4l9S5BCz7bM6EMzkm
- CXu+EdvTMlDBYhXzo1dZ2dnjOyb7jC9I1YylqVYdH53y5AaeEZFQ5rva/C45da0fI+7G
- kkDw==
-X-Gm-Message-State: ACrzQf1VUQVxrOpR9mpp5TJpR06wyV/1hCKojoYXvD9d9zKy2tKg7Quu
- QNkJbLA1jdiePYtvDNLHVtKkE/kshQDr0unCyfM=
-X-Google-Smtp-Source: AMsMyM4iJCTUAOxWTxMab9/Z5APOZWbaW6266l54gNSQqqQCzzUwSy/1aIMY4hGJj8HhoEWWieC9bfouwgl2GtPo3Rg=
-X-Received: by 2002:a05:6102:3754:b0:3a7:92f9:a9b1 with SMTP id
- u20-20020a056102375400b003a792f9a9b1mr8023677vst.72.1665653170773; Thu, 13
- Oct 2022 02:26:10 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 04D996005F7
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 13:28:15 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3A8711F38A
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 11:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1665660495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Cd7IDCcgLzj66SDT+JBJPIsLqYRP+viMM+Hxask4XQ8=;
+ b=H3Zu/9VXXvWNB6kZcpRMtvEEr5awq91zU+UbRHGteMjpnsbZANZga+pVR/NcEFtnKHQVug
+ 8WS0wMbpdJg3+rMneAtq8coFpSk6MNtB2y/USv5h8m+kDxeSnDnTnlIveuydo2CEpZM8bp
+ 3Kjqcjzt2JiTF4PZC/CE16LZH6/PZw8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1665660495;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Cd7IDCcgLzj66SDT+JBJPIsLqYRP+viMM+Hxask4XQ8=;
+ b=9wRkKWIMCrM8xovHCwtb3ERYpqycgXIbkSqVfqm8m+ShpFSlToR8KwfOHdMFOe51r1qon6
+ gMDTazdNsg7cKTBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D78C13AFF
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 11:28:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id FpC3F072R2OQXwAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 11:28:14 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Thu, 13 Oct 2022 16:58:11 +0530
+Message-Id: <20221013112811.10639-1-akumar@suse.de>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-References: <PH0PR11MB4839BE3D63DCCDB34ACB329C9A259@PH0PR11MB4839.namprd11.prod.outlook.com>
-In-Reply-To: <PH0PR11MB4839BE3D63DCCDB34ACB329C9A259@PH0PR11MB4839.namprd11.prod.outlook.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 13 Oct 2022 12:25:59 +0300
-Message-ID: <CAOQ4uxgWnsyFbZFv0ORzhHTkZVUg_frgzKBno1Wr-KUGtNh4jQ@mail.gmail.com>
-To: "Xu, Pengfei" <pengfei.xu@intel.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Could you provide some debug method for fanotify10 case?
+Subject: [LTP] [PATCH] setpgid02: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,91 +71,214 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "jack@suse.cz" <jack@suse.cz>, LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBPY3QgMTMsIDIwMjIgYXQgMTE6MjggQU0gWHUsIFBlbmdmZWkgPHBlbmdmZWkueHVA
-aW50ZWwuY29tPiB3cm90ZToKPgo+Cj4KPiBIaSBKYW4gYW5kIEFtaXIsCj4KPgo+Cj4gR3JlZXRp
-bmchCj4KPgo+Cj4gSSBzYXcgRkFOX01BUktfRVZJQ1RBQkxFIGhhcyBiZWVuIGFkZGVkIGluIDYu
-MC1yYzUgbWFpbmxpbmUga2VybmVsIGJ5IEFtaXIuCgpGWUksIGl0IHdhcyBtZXJnZWQgaW4gdjUu
-MTkuCgo+Cj4gY29tbWl0IDdkNWUwMDVkOTgyNTI3ZTQwMjliMDEzOTgyM2QxNzk5ODZlMzRjZGMK
-Pgo+IEF1dGhvcjogQW1pciBHb2xkc3RlaW4gYW1pcjczaWxAZ21haWwuY29tCj4KPiBEYXRlOiAg
-IEZyaSBBcHIgMjIgMTU6MDM6MjUgMjAyMiArMDMwMAo+Cj4KPgo+IEFuZCBJIHNhdyB0aGUgRkFO
-X01BUktfRVZJQ1RBQkxFIGNhc2VzIGluIExUUCBhdXRob3IgaXMgYWxzbyBBbWlyLgo+Cj4KPgo+
-IENvdWxkIHlvdSBwcm92aWRlIG1lIHNvbWUgZGVidWcgbWV0aG9kIGZvciBmYW5vdGlmeTEwICBG
-QU5fTUFSS19FVklDVEFCTEUgZmFpbGVkIGNhc2VzPwo+Cj4KPgo+IFRoYW5rcyBhIGxvdCEKPgo+
-Cj4KPiBQbGF0Zm9ybTogc2VydmVyCj4KPiBLZXJuZWw6ICA2LjAgbWFpbmxpbmUga2VybmVsCj4K
-Pgo+Cj4KPgo+IFRoaXMgY2FzZSBjb3VsZCBiZSByZXByb2R1Y2VkIGFib3V0IDMwJSByYXRlLiAg
-KGNhc2Ugc3RhcnQgZnJvbSAwLCAgYW5kIHRoZXJlIGFyZSBhYm91dCAzMCUgcmVwcm9kdWNlIHJh
-dGUgZm9yIGNhc2UyNSwgMjYgYW5kIDI3KQo+Cj4gVGhlcmUgYXJlIDMxIGNhc2VzIGluIGZhbm90
-aWZ5MTAuYyAgKHN0YXJ0IGZyb20gMCwgIGVuZCB3aXRoIDMwLikKPgo+IGh0dHBzOi8vZ2l0aHVi
-LmNvbS9saW51eC10ZXN0LXByb2plY3QvbHRwL2Jsb2IvbWFzdGVyL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvZmFub3RpZnkvZmFub3RpZnkxMC5jCj4KPiBodHRwczovL2dpdGh1Yi5jb20vbGlu
-dXgtdGVzdC1wcm9qZWN0L2x0cC9ibG9iL21hc3Rlci90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L2Zhbm90aWZ5L2Zhbm90aWZ5X2NoaWxkLmMgICAoRm9yIGNoaWxkIHByb2Nlc3MpCj4KPgo+Cj4g
-Q2FzZSAyNTogICJkb24ndCBpZ25vcmUgZnMgZXZlbnRzIGNyZWF0ZWQgb24gYSBmaWxlIHdpdGgg
-ZXZpY3RlZCBpZ25vcmUgbWFyayIKPgo+IENhc2UgMjY6ICAiZG9uJ3QgaWdub3JlIG1vdW50IGV2
-ZW50cyBjcmVhdGVkIGluc2lkZSBhIHBhcmVudCB3aXRoIGV2aWN0ZWQgaWdub3JlIG1hcmsiCj4K
-PiBDYXNlIDI3OiAgImRvbid0IGlnbm9yZSBmcyBldmVudHMgY3JlYXRlZCBpbnNpZGUgYSBwYXJl
-bnQgd2l0aCBldmljdGVkIGlnbm9yZSBtYXJrIgo+Cj4gSSBjb21tZW50cyBhbGwgb3RoZXIgY2Fz
-ZSBhbmQgb25seSBsZWZ0ICBjYXNlIDI1LCAgY2FzZSAyNiBhbmQgY2FzZSAyNyAgaW4gIGZhbm90
-aWZ5MTBfMjUgIGZhbm90aWZ5MTBfMjYgIGZhbm90aWZ5MTBfMjcuCj4KClRoZSBwcm9ibGVtIGlz
-IHRoYXQgdGhlIHRlc3QgaXMgbm90IHZlcnkgcmVsaWFibGUsIGJlY2F1c2UgdGhlcmUgaXMgbm8K
-cmVsaWFibGUgQVBJCnRvIGV2aWN0IGFuIGlub2RlIGZyb20gY2FjaGUuCgpEbyB5b3UgaGF2ZSB0
-aGlzIGNvbW1pdCBpbiB0aGUgTFRQIHZlcnNpb24gdGhhdCB5b3UgYXJlIHJ1bm5pbmc/Cgpjb21t
-aXQgNDhjZmQ3YTk5NzdlNjI2OGI0YWEyNjAwNjA4Y2ViYWQ3ZTBlNDJiOApBdXRob3I6IEphbiBL
-YXJhIDxqYWNrQHN1c2UuY3o+CkRhdGU6ICAgVGh1IEF1ZyAyNSAxNjowMzowNiAyMDIyICswMjAw
-CgogICAgc3lzY2FsbHMvZmFub3RpZnkxMDogTWFrZSBldmljdGFibGUgbWFya3MgdGVzdCBtb3Jl
-IHJlbGlhYmxlCgogICAgSW4gc29tZSBzZXR1cHMgZXZpY3RhYmxlIG1hcmtzIHRlc3RzIGFyZSBm
-YWlsaW5nIGJlY2F1c2UgdGhlIGlub2RlIHdpdGgKICAgIGV2aWN0YWJsZSBtYXJrIGRvZXMgbm90
-IGdldCBldmljdGVkLiBNYWtlIHN1cmUgd2Ugc3luYyB0aGUgZmlsZXN5c3RlbQogICAgYmVmb3Jl
-IHdlIHRyeSB0byBkcm9wIGNhY2hlcyB0byBpbmNyZWFzZSBsaWtlbHlob29kIHRoZSBpbm9kZSB3
-aWxsIGdldAogICAgZXZpY3RlZC4KCgpUaGFua3MsCkFtaXIuCgo+Cj4KPiBDYXNlIDI1IGZhaWxl
-ZCBpbmZvOgo+Cj4gZmFub3RpZnkxMC5jOjU4NjogVElORk86IFRlc3QgIzI1OiBkb24ndCBpZ25v
-cmUgZnMgZXZlbnRzIGNyZWF0ZWQgb24gYSBmaWxlIHdpdGggZXZpY3RlZCBpZ25vcmUgbWFyawo+
-Cj4gZmFub3RpZnkxMC5jOjM3MDogVFBBU1M6IE5vIGZhbm90aWZ5IGlub2RlIGlnbm9yZSBtYXJr
-cyBhcyBleHBlY3RlZAo+Cj4gZmFub3RpZnkxMC5jOjM3MDogVFBBU1M6IE5vIGZhbm90aWZ5IGlu
-b2RlIGlnbm9yZSBtYXJrcyBhcyBleHBlY3RlZAo+Cj4gZmFub3RpZnkxMC5jOjM3MDogVFBBU1M6
-IE5vIGZhbm90aWZ5IGlub2RlIGlnbm9yZSBtYXJrcyBhcyBleHBlY3RlZAo+Cj4gZmFub3RpZnkx
-MC5jOjM3NDogVEZBSUw6IEZvdW5kIHVuZXhwZWN0ZWQgaW5vZGUgaWdub3JlIG1hcmsgKG1mbGFn
-cz0yNDAsIG1hc2s9MCBpZ25vcmVkX21hc2s9MjApCj4KPiBmYW5vdGlmeTEwLmM6Mzc0OiBURkFJ
-TDogRm91bmQgdW5leHBlY3RlZCBpbm9kZSBpZ25vcmUgbWFyayAobWZsYWdzPTI0MCwgbWFzaz0w
-IGlnbm9yZWRfbWFzaz0yMCkKPgo+IGZhbm90aWZ5MTAuYzozNzQ6IFRGQUlMOiBGb3VuZCB1bmV4
-cGVjdGVkIGlub2RlIGlnbm9yZSBtYXJrIChtZmxhZ3M9MjQwLCBtYXNrPTAgaWdub3JlZF9tYXNr
-PTIwKQo+Cj4gZmFub3RpZnkxMC5jOjM3NDogVEZBSUw6IEZvdW5kIHVuZXhwZWN0ZWQgaW5vZGUg
-aWdub3JlIG1hcmsgKG1mbGFncz0yNDAsIG1hc2s9MCBpZ25vcmVkX21hc2s9MjApCj4KPiBmYW5v
-dGlmeTEwLmM6Mzc0OiBURkFJTDogRm91bmQgdW5leHBlY3RlZCBpbm9kZSBpZ25vcmUgbWFyayAo
-bWZsYWdzPTI0MCwgbWFzaz0wIGlnbm9yZWRfbWFzaz0yMCkKPgo+IGZhbm90aWZ5MTAuYzozNzQ6
-IFRGQUlMOiBGb3VuZCB1bmV4cGVjdGVkIGlub2RlIGlnbm9yZSBtYXJrIChtZmxhZ3M9MjQwLCBt
-YXNrPTAgaWdub3JlZF9tYXNrPTIwKQo+Cj4gZmFub3RpZnkxMC5jOjM3NDogVEZBSUw6IEZvdW5k
-IHVuZXhwZWN0ZWQgaW5vZGUgaWdub3JlIG1hcmsgKG1mbGFncz0yNDAsIG1hc2s9MCBpZ25vcmVk
-X21hc2s9MjApCj4KPiBmYW5vdGlmeTEwLmM6Mzc0OiBURkFJTDogRm91bmQgdW5leHBlY3RlZCBp
-bm9kZSBpZ25vcmUgbWFyayAobWZsYWdzPTI0MCwgbWFzaz0wIGlnbm9yZWRfbWFzaz0yMCkKPgo+
-IGZhbm90aWZ5MTAuYzozNzQ6IFRGQUlMOiBGb3VuZCB1bmV4cGVjdGVkIGlub2RlIGlnbm9yZSBt
-YXJrIChtZmxhZ3M9MjQwLCBtYXNrPTAgaWdub3JlZF9tYXNrPTIwKQo+Cj4gZmFub3RpZnkxMC5j
-OjU0NzogVFBBU1M6IGdyb3VwIDAgKDgpIGdvdCBldmVudDogbWFzayAyMCBwaWQ9MTgzNDk0IGZk
-PTE2Cj4KPiBmYW5vdGlmeTEwLmM6NTQ3OiBUUEFTUzogZ3JvdXAgMSAoOCkgZ290IGV2ZW50OiBt
-YXNrIDIwIHBpZD0xODM0OTQgZmQ9MTYKPgo+IGZhbm90aWZ5MTAuYzo1NDc6IFRQQVNTOiBncm91
-cCAyICg4KSBnb3QgZXZlbnQ6IG1hc2sgMjAgcGlkPTE4MzQ5NCBmZD0xNgo+Cj4gZmFub3RpZnkx
-MC5jOjY0MjogVEZBSUw6IGdyb3VwIDAgKDQpIHdpdGggRkFOX01BUktfRklMRVNZU1RFTSBkaWQg
-bm90IGdldCBldmVudAo+Cj4gZmFub3RpZnkxMC5jOjY0MjogVEZBSUw6IGdyb3VwIDEgKDQpIHdp
-dGggRkFOX01BUktfRklMRVNZU1RFTSBkaWQgbm90IGdldCBldmVudAo+Cj4gZmFub3RpZnkxMC5j
-OjY0MjogVEZBSUw6IGdyb3VwIDIgKDQpIHdpdGggRkFOX01BUktfRklMRVNZU1RFTSBkaWQgbm90
-IGdldCBldmVudAo+Cj4gZmFub3RpZnkxMC5jOjY0MjogVEZBSUw6IGdyb3VwIDAgKDApIHdpdGgg
-RkFOX01BUktfRklMRVNZU1RFTSBkaWQgbm90IGdldCBldmVudAo+Cj4gZmFub3RpZnkxMC5jOjY0
-MjogVEZBSUw6IGdyb3VwIDEgKDApIHdpdGggRkFOX01BUktfRklMRVNZU1RFTSBkaWQgbm90IGdl
-dCBldmVudAo+Cj4gZmFub3RpZnkxMC5jOjY0MjogVEZBSUw6IGdyb3VwIDIgKDApIHdpdGggRkFO
-X01BUktfRklMRVNZU1RFTSBkaWQgbm90IGdldCBldmVudAo+Cj4gZmFub3RpZnkxMC5jOjY0Mjog
-VEZBSUw6IGdyb3VwIDAgKGUwMCkgd2l0aCBGQU5fTUFSS19GSUxFU1lTVEVNIGRpZCBub3QgZ2V0
-IGV2ZW50Cj4KPiBmYW5vdGlmeTEwLmM6NjQyOiBURkFJTDogZ3JvdXAgMSAoZTAwKSB3aXRoIEZB
-Tl9NQVJLX0ZJTEVTWVNURU0gZGlkIG5vdCBnZXQgZXZlbnQKPgo+IGZhbm90aWZ5MTAuYzo2NDI6
-IFRGQUlMOiBncm91cCAyIChlMDApIHdpdGggRkFOX01BUktfRklMRVNZU1RFTSBkaWQgbm90IGdl
-dCBldmVudAo+Cj4KPgo+IENhc2UgMjUgcGFzc2VkIGRtZXNnIHBhcnQgYW5kIGNhc2UgMjUgZmFp
-bGVkIGRtZXNnIHBhcnQgYXJlIGluIGF0dGFjaGVkLCAgSSBkaWRu4oCZdCBzZWUgc29tZSBhYm5v
-cm1hbCBmcm9tIGRtZXNnLgo+Cj4KPgo+Cj4KPiBDb3VsZCB5b3UgcHJvdmlkZSBtZSBzb21lIGRl
-YnVnIHdheSB0byBjaGVjayB0aGUgZmFpbGVkIGNhc2UgZnVydGhlcj8KPgo+Cj4KPgo+Cj4KPgo+
-IFRoYW5rcyEKPgo+IEJSCj4KPiBQZW5nZmVpCj4KPgo+Cj4KPgo+Cj4KPgoKLS0gCk1haWxpbmcg
-bGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+ - Rewrite using new API
+ - Use parent pid to validate ESRCH errno
+ - Use pgid of init as a process group from a
+   different session for EPERM errno test
+
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ testcases/kernel/syscalls/setpgid/setpgid02.c | 161 ++++--------------
+ 1 file changed, 37 insertions(+), 124 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid02.c b/testcases/kernel/syscalls/setpgid/setpgid02.c
+index 73e88d066..de13a1c4e 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid02.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid02.c
+@@ -1,148 +1,61 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+  *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *		07/2001 Ported by Wayne Boyer
++ *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-/*
+- * NAME
+- * 	setpgid02.c
+- *
+- * DESCRIPTION
+- *	Testcase to check that setpgid() sets errno correctly.
+- *
+- * CALLS
+- * 	setpgid
+- *
+- * ALGORITHM
+- * 	Checks that setpgid returns the correct errno values in case of
+- * 	negative testing.
+- * 	test 1: EINVAL - Pass '-1' as the pgid parameter to setpgid
+- * 	test 2: ESRCH - Pass '-1' as the pid parameter to setpgid
+- *	test 3: EPERM - Pass an invalid pgid parameter to setpgid
+- *
+- * USAGE:  <for command-line>
+- *  setpgid02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *             -i n : Execute test n times.
+- *             -I x : Execute test for x seconds.
+- *             -P x : Pause for x seconds between iterations.
+- *             -t   : Turn on syscall timing.
++/*\
++ * [Description]
+  *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
++ * Verify that setpgid(2) syscall fails with:
+  *
+- * RESTRICTIONS
+- * 	None
++ * - EINVAL when given pgid is less than 0.
++ * - ESRCH when pid is not the calling process and not a child of
++ * the calling process.
++ * - EPERM when an attempt was made to move a process into a process
++ * group in a different session.
+  */
+-#include <errno.h>
+-#include <unistd.h>
+-#include <sys/wait.h>
+-#include "test.h"
+ 
+-static void setup(void);
+-static void cleanup(void);
++#include "tst_test.h"
+ 
+-char *TCID = "setpgid02";
+-int TST_TOTAL = 3;
++static pid_t pgid, pid, ppid;
++static pid_t init_pgid;
++static pid_t negative_pid = -1;
+ 
+-static pid_t pgid, pid;
+-static pid_t bad_pid = -1;
+-static pid_t zero_pid;
+-static pid_t unused_pid;
+-static pid_t inval_pid = 99999;
+-
+-struct test_case_t {
++static struct tcase {
+ 	pid_t *pid;
+ 	pid_t *pgid;
+ 	int error;
+-} TC[] = {
+-	/* pgid is less than zero - EINVAL */
+-	{
+-	&pid, &bad_pid, EINVAL},
+-	    /* pid doesn't match any process - ESRCH */
+-	{
+-	&unused_pid, &pgid, ESRCH},
+-	    /* pgid doesn't exist - EPERM */
+-	{
+-	&zero_pid, &inval_pid, EPERM}
++} tcases[] = {
++	{&pid, &negative_pid, EINVAL},
++	{&ppid, &pgid, ESRCH},
++	{&pid, &init_pgid, EPERM}
+ };
+ 
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		/* loop through the test cases */
+-		for (i = 0; i < TST_TOTAL; i++) {
+-
+-			TEST(setpgid(*TC[i].pid, *TC[i].pgid));
+-
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "call succeeded unexpectedly");
+-				continue;
+-			}
+-
+-			if (TEST_ERRNO == TC[i].error) {
+-				tst_resm(TPASS, "expected failure - "
+-					 "errno = %d : %s", TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
+-			} else {
+-				tst_resm(TFAIL, "unexpected error - %d : %s - "
+-					 "expected %d", TEST_ERRNO,
+-					 strerror(TEST_ERRNO), TC[i].error);
+-			}
+-		}
+-	}
+-	cleanup();
+-
+-	tst_exit();
+-}
+-
+-/*
+- * setup - performs all ONE TIME setup for this test
+- */
+ static void setup(void)
+ {
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	pgid = getpgrp();
+ 	pid = getpid();
++	ppid = getppid();
++	pgid = getpgrp();
+ 
+-	unused_pid = tst_get_unused_pid(cleanup);
++	/*
++	 * Getting pgid of init/systemd process to use it as a
++	 * process group from a different session for EPERM test
++	 */
++	init_pgid = SAFE_GETPGID(1);
+ }
+ 
+-/*
+- * cleanup - Performs all ONE TIME cleanup for this test at completion or
+- * 	     premature exit
+- */
+-static void cleanup(void)
++static void run(unsigned int n)
+ {
++	struct tcase *tc = &tcases[n];
+ 
++	TST_EXP_FAIL(setpgid(*tc->pid, *tc->pgid), tc->error,
++				"setpgid(%d, %d)", *tc->pid, *tc->pgid);
+ }
++
++static struct tst_test test = {
++	.setup = setup,
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases)
++};
+-- 
+2.37.3
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
