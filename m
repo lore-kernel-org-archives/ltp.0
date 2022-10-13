@@ -4,53 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF4CAC43217
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 07:42:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1EDFC433FE
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 07:46:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 66F0B3CAEEC
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 09:42:03 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id E7B323CAECF
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 09:46:06 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EDEC53CA9C7
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 09:41:52 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 57E723CA9C7
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 09:45:56 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 53FAB1A00CD9
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 09:41:51 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 31C031F38A;
- Thu, 13 Oct 2022 07:41:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1665646911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=djcyYh8ClTYAddUUt3VJOJDP1BRr8PZb2uYHXXvHZcw=;
- b=suEU3ygR6tDzVuMaUj2vT+mZhjRGcqkdODU15o8Tp5WXsPdTGbb587aOGnQExJTF38Igfi
- oydYtyLWumTqtXZsDT97B80oBe4K+kL8AosWg+yElnuhj9JucCfz/kL8+EAxmQS8VW3Ho5
- 5qGTpgIKQvA2WohM+7YZ5qlHl6LGEHg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5567139F3;
- Thu, 13 Oct 2022 07:41:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Dr9lMD7BR2M+TgAAMHmgww
- (envelope-from <andrea.cervesato@suse.com>); Thu, 13 Oct 2022 07:41:50 +0000
-To: ltp@lists.linux.it
-Date: Thu, 13 Oct 2022 09:40:36 +0200
-Message-Id: <20221013074036.3887-1-andrea.cervesato@suse.com>
-X-Mailer: git-send-email 2.35.3
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A9DEB600713
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 09:45:54 +0200 (CEST)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.55])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mp1fc38fqzmV5w
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 15:41:12 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (7.192.104.229) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 13 Oct 2022 15:45:48 +0800
+Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
+ canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
+ Thu, 13 Oct 2022 15:45:48 +0800
+To: Petr Vorel <pvorel@suse.cz>
+Thread-Topic: [LTP] [PATCH 2/2] needs_root: Add setting of needs_root
+Thread-Index: Adje14jwnnXUZkrLTke9bcwq+JEUKQ==
+Date: Thu, 13 Oct 2022 07:45:48 +0000
+Message-ID: <04dbdaf51ae940289775353f0535c4a4@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.110.209]
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] Add epoll_wait06 test
+Subject: Re: [LTP] [PATCH 2/2] needs_root: Add setting of needs_root
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,140 +57,84 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+From: zhaogongyi via ltp <ltp@lists.linux.it>
+Reply-To: zhaogongyi <zhaogongyi@huawei.com>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test verifies EPOLLET functionality.
+Hi Petr,
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- .../kernel/syscalls/epoll_wait/.gitignore     |   1 +
- .../kernel/syscalls/epoll_wait/epoll_wait06.c | 100 ++++++++++++++++++
- 2 files changed, 101 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
+It is failed on my system:
 
-diff --git a/testcases/kernel/syscalls/epoll_wait/.gitignore b/testcases/kernel/syscalls/epoll_wait/.gitignore
-index ab5a9c010..8c5ed7c5c 100644
---- a/testcases/kernel/syscalls/epoll_wait/.gitignore
-+++ b/testcases/kernel/syscalls/epoll_wait/.gitignore
-@@ -3,3 +3,4 @@ epoll_wait02
- epoll_wait03
- epoll_wait04
- epoll_wait05
-+epoll_wait06
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
-new file mode 100644
-index 000000000..89316f6fc
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
-@@ -0,0 +1,100 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that edge triggered behavior is correctly handled by epoll
-+ * using EPOLLET.
-+ *
-+ * [Algorithm]
-+ *
-+ * 1. The file descriptor that represents the read side of a pipe (rfd) is
-+ *    registered on the epoll instance.
-+ * 2. A pipe writer writes 2 kB of data on the write side of the pipe.
-+ * 3. A call to epoll_wait(2) is done that will return rfd as a ready file
-+ *    descriptor.
-+ * 4. The pipe reader reads 1 kB of data from rfd.
-+ * 5. A call to epoll_wait(2) should hang returning 0 because there's data
-+ *    left to read.
-+ */
-+
-+#include <poll.h>
-+#include <sys/epoll.h>
-+#include "tst_test.h"
-+
-+#define WRITE_SIZE 2048
-+#define READ_SIZE (WRITE_SIZE / 2)
-+
-+static int fds[2];
-+static int epfd;
-+
-+static void cleanup(void)
-+{
-+	if (epfd > 0)
-+		SAFE_CLOSE(epfd);
-+
-+	if (fds[0] > 0)
-+		SAFE_CLOSE(fds[0]);
-+
-+	if (fds[1] > 0)
-+		SAFE_CLOSE(fds[1]);
-+}
-+
-+static void run(void)
-+{
-+	int res;
-+	char buff[WRITE_SIZE];
-+	struct epoll_event evt_receive;
-+	struct epoll_event evt_request;
-+
-+	SAFE_PIPE(fds);
-+
-+	evt_request.events = EPOLLIN | EPOLLET;
-+	evt_request.data.fd = fds[0];
-+
-+	epfd = epoll_create(2);
-+	if (epfd == -1)
-+		tst_brk(TBROK | TERRNO, "fail to create epoll instance");
-+
-+	tst_res(TINFO, "Polling channel with EPOLLET");
-+
-+	res = epoll_ctl(epfd, EPOLL_CTL_ADD, fds[0], &evt_request);
-+	if (res == -1)
-+		tst_brk(TBROK | TERRNO, "epoll_ctl failure");
-+
-+	tst_res(TINFO, "Write bytes on channel");
-+
-+	memset(buff, 'a', WRITE_SIZE);
-+	SAFE_WRITE(0, fds[1], buff, WRITE_SIZE);
-+
-+	res = epoll_wait(epfd, &evt_receive, 1, 2000);
-+	if (res <= 0) {
-+		tst_res(TFAIL | TERRNO, "epoll_wait() returned %i", res);
-+		goto close;
-+	}
-+
-+	if ((evt_receive.events & EPOLLIN) == 0) {
-+		tst_res(TFAIL, "No data received");
-+		goto close;
-+	}
-+
-+	tst_res(TINFO, "Received EPOLLIN event. Read half bytes from channel");
-+
-+	memset(buff, 0, READ_SIZE);
-+	SAFE_READ(1, evt_receive.data.fd, buff, READ_SIZE);
-+
-+	TST_EXP_EQ_LI(epoll_wait(epfd, &evt_receive, 1, 10), 0);
-+
-+close:
-+	SAFE_CLOSE(epfd);
-+	SAFE_CLOSE(fds[0]);
-+	SAFE_CLOSE(fds[1]);
-+}
-+
-+static struct tst_test test = {
-+	.cleanup = cleanup,
-+	.test_all = run,
-+};
--- 
-2.35.3
+sh-4.4$ ./msgget03
+tst_test.c:1535: TINFO: Timeout per run is 0h 00m 30s
+msgget03.c:42: TINFO: Current environment 0 message queues are already in use
+msgget03.c:45: TBROK: Failed to open FILE '/proc/sys/kernel/msgmni' for writing: EACCES (13)
 
+Summary:
+passed   0
+failed   0
+broken   1
+skipped  0
+warnings 0
+tst_sys_conf.c:118: TWARN: Failed to open FILE '/proc/sys/kernel/msgmni'
+
+> > Add setting of  needs_root, otherwise run the test without root will
+> > fail and report EACCESS or EPERM.
+> ...
+> >  testcases/kernel/syscalls/bind/bind06.c                       | 1 +
+> >  testcases/kernel/syscalls/cma/process_vm_readv02.c            | 1
+> +
+> >  testcases/kernel/syscalls/cma/process_vm_readv03.c            | 1
+> +
+> >  testcases/kernel/syscalls/cma/process_vm_writev02.c           | 1
+> +
+> >  testcases/kernel/syscalls/copy_file_range/copy_file_range01.c | 1 +
+> >  testcases/kernel/syscalls/ipc/msgget/msgget03.c               | 1 +
+> >  testcases/kernel/syscalls/preadv/preadv03.c                   | 1 +
+> >  testcases/kernel/syscalls/pwritev/pwritev03.c                 | 1 +
+> >  testcases/kernel/syscalls/sendto/sendto03.c                   | 1 +
+> >  testcases/kernel/syscalls/setsockopt/setsockopt05.c           | 1 +
+> >  testcases/kernel/syscalls/setsockopt/setsockopt06.c           | 1 +
+> >  testcases/kernel/syscalls/setsockopt/setsockopt07.c           | 1 +
+> >  testcases/kernel/syscalls/setsockopt/setsockopt08.c           | 1 +
+> >  testcases/kernel/syscalls/setsockopt/setsockopt09.c           | 1 +
+> >  testcases/kernel/syscalls/swapon/swapon01.c                   | 1
+> +
+> >  15 files changed, 15 insertions(+)
+> ...
+> > +++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+> > @@ -72,6 +72,7 @@ static void cleanup(void)
+> 
+> >  static struct tst_test test = {
+> >  	.needs_tmpdir = 1,
+> > +	.needs_root = 1,
+> >  	.setup = setup,
+> >  	.cleanup = cleanup,
+> >  	.test_all = verify_msgget,
+> 
+> At least this one is working without root:
+> 
+> $ ./testcases/kernel/syscalls/ipc/msgget/msgget03
+> tst_test.c:1526: TINFO: Timeout per run is 0h 00m 30s
+> msgget03.c:41: TINFO: Current environment 0 message queues are
+> already in use
+> msgget03.c:55: TINFO: The maximum number of message queues (32000)
+> reached
+> msgget03.c:30: TPASS: msgget(1629588886, 1536) : ENOSPC (28)
+> 
+> Summary:
+> passed   1
+> failed   0
+> broken   0
+> skipped  0
+> warnings 0
+> 
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
