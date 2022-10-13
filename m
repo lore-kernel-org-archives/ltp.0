@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70B22C4332F
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 08:23:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CDB5C4332F
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 08:23:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 159B63CAED3
-	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 10:23:37 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id DEC2B3CAEDB
+	for <ltp@archiver.kernel.org>; Thu, 13 Oct 2022 10:23:52 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DE7173CAED5
- for <ltp@lists.linux.it>; Thu, 13 Oct 2022 10:23:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id E8D1F3CAEDB
+ for <ltp@lists.linux.it>; Thu, 13 Oct 2022 10:23:05 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AA969600D2F
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8E8D31400BCF
  for <ltp@lists.linux.it>; Thu, 13 Oct 2022 10:23:02 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C752321921;
- Thu, 13 Oct 2022 08:23:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2442A21FAF;
+ Thu, 13 Oct 2022 08:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1665649381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1665649382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=dnjsdEYUVGUGjWdvH666zg2afhn/UjzEUuYC3xJhlc0=;
- b=oCQPTqOfsD5pYYwTtJQefbmhaTqY4Jigcg5lnnvshvhdytw06XkIzVUDiMmaRRcwq5XPCP
- 3+nsl4CruyHumRPV9xw6EGnH1HUi/Ugn/ycey+XQ8EB/feLyjpFhdXBF+0Z8VQG+U5Ee07
- 4Qb7nd/Wc5Bs93rFALYWrK2bmvg3790=
+ bh=Vrn3j2cG1kbQ//A2XAvr1PAv35YrPCvdFzfBNI+x6zQ=;
+ b=lEoKpAstQWMvPnPQ9H7Hj6D5OHN2FdW8iXD1uO6Mbv5iQgImu1AuQps/uoJI6K1Hid/w14
+ 3Y1X+jOhUIr9ALysq0BFmLpOyDxUmSZXOwd4P5IcBYcfIAKmpeNvqllLhUIm237tnlEsee
+ If1jqx9FWLHcgvcfhzRiu6LCqD2m1jo=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F80D13AAA;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D8FAD13AAA;
  Thu, 13 Oct 2022 08:23:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YKdyHOXKR2POZQAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id gAJVMuXKR2POZQAAMHmgww
  (envelope-from <andrea.cervesato@suse.com>); Thu, 13 Oct 2022 08:23:01 +0000
 To: ltp@lists.linux.it
-Date: Thu, 13 Oct 2022 10:21:44 +0200
-Message-Id: <20221013082146.14581-2-andrea.cervesato@suse.com>
+Date: Thu, 13 Oct 2022 10:21:45 +0200
+Message-Id: <20221013082146.14581-3-andrea.cervesato@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20221013082146.14581-1-andrea.cervesato@suse.com>
 References: <20221013082146.14581-1-andrea.cervesato@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v8] Refactor aiocp using new LTP API
+Subject: [LTP] [PATCH v8 1/2] Rewrite aio-stress test using LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,1242 +76,1656 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- runtest/ltp-aiodio.part1               | 354 +++++-------
- testcases/kernel/io/ltp-aiodio/aiocp.c | 770 +++++++++----------------
- 2 files changed, 401 insertions(+), 723 deletions(-)
+s/io/IO/g and s/aio/AIO/g inside Description.
+Changed default iteration value to 500.
 
-diff --git a/runtest/ltp-aiodio.part1 b/runtest/ltp-aiodio.part1
-index 0338e1858..dd597b7de 100644
---- a/runtest/ltp-aiodio.part1
-+++ b/runtest/ltp-aiodio.part1
-@@ -1,216 +1,142 @@
- #DESCRIPTION:ltp A-sync IO and Direct IO tests
- #
--AD001 time aiocp -b 1k -n 1 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD002 time aiocp -b 1k -n 1 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD003 time aiocp -b 1k -n 1 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD004 time aiocp -b 1k -n 2 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD005 time aiocp -b 1k -n 2 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD006 time aiocp -b 1k -n 2 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD007 time aiocp -b 1k -n 4 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD008 time aiocp -b 1k -n 4 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD009 time aiocp -b 1k -n 4 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD010 time aiocp -b 1k -n 8 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD012 time aiocp -b 1k -n 8 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD013 time aiocp -b 1k -n 8 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD014 time aiocp -b 1k -n 16 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD015 time aiocp -b 1k -n 16 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD016 time aiocp -b 1k -n 16 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD017 time aiocp -b 1k -n 32 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD018 time aiocp -b 1k -n 32 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD019 time aiocp -b 1k -n 32 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD020 time aiocp -b 1k -n 64 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD021 time aiocp -b 1k -n 64 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD022 time aiocp -b 1k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD023 time aiocp -b 2k -n 1 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD024 time aiocp -b 2k -n 1 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD025 time aiocp -b 2k -n 1 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD026 time aiocp -b 2k -n 2 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD027 time aiocp -b 2k -n 2 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD028 time aiocp -b 2k -n 2 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD029 time aiocp -b 2k -n 4 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD030 time aiocp -b 2k -n 4 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD031 time aiocp -b 2k -n 4 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD032 time aiocp -b 2k -n 8 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD033 time aiocp -b 2k -n 8 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD034 time aiocp -b 2k -n 8 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD035 time aiocp -b 2k -n 16 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD036 time aiocp -b 2k -n 16 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD037 time aiocp -b 2k -n 16 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD038 time aiocp -b 2k -n 32 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD039 time aiocp -b 2k -n 32 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD040 time aiocp -b 2k -n 32 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD041 time aiocp -b 2k -n 64 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD042 time aiocp -b 2k -n 64 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD043 time aiocp -b 2k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD044 time aiocp -b 4k -n 1 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD045 time aiocp -b 4k -n 1 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD046 time aiocp -b 4k -n 1 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD047 time aiocp -b 4k -n 2 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD048 time aiocp -b 4k -n 2 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD049 time aiocp -b 4k -n 2 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD050 time aiocp -b 4k -n 4 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD051 time aiocp -b 4k -n 4 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD052 time aiocp -b 4k -n 4 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD053 time aiocp -b 4k -n 8 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD054 time aiocp -b 4k -n 8 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD055 time aiocp -b 4k -n 8 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD056 time aiocp -b 4k -n 16 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD057 time aiocp -b 4k -n 16 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD058 time aiocp -b 4k -n 16 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD059 time aiocp -b 4k -n 32 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD060 time aiocp -b 4k -n 32 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD061 time aiocp -b 4k -n 32 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD062 time aiocp -b 4k -n 64 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD063 time aiocp -b 4k -n 64 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD064 time aiocp -b 41k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD065 time aiocp -b 8k -n 1 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD066 time aiocp -b 8k -n 1 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD067 time aiocp -b 8k -n 1 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD068 time aiocp -b 8k -n 2 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD069 time aiocp -b 8k -n 2 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD070 time aiocp -b 8k -n 2 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD071 time aiocp -b 8k -n 4 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD072 time aiocp -b 8k -n 4 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD073 time aiocp -b 8k -n 4 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD074 time aiocp -b 8k -n 8 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD075 time aiocp -b 8k -n 8 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD076 time aiocp -b 8k -n 8 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD077 time aiocp -b 8k -n 16 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD078 time aiocp -b 8k -n 16 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD079 time aiocp -b 8k -n 16 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD080 time aiocp -b 8k -n 32 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD081 time aiocp -b 8k -n 32 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD082 time aiocp -b 8k -n 32 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD083 time aiocp -b 8k -n 64 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD084 time aiocp -b 8k -n 64 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD085 time aiocp -b 8k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD086 time aiocp -b 16k -n 1 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD087 time aiocp -b 16k -n 1 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD088 time aiocp -b 16k -n 1 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD089 time aiocp -b 16k -n 2 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD090 time aiocp -b 16k -n 2 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD091 time aiocp -b 16k -n 2 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD092 time aiocp -b 16k -n 4 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD093 time aiocp -b 16k -n 4 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD094 time aiocp -b 16k -n 4 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD095 time aiocp -b 16k -n 8 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD096 time aiocp -b 16k -n 8 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD097 time aiocp -b 16k -n 8 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD098 time aiocp -b 16k -n 16 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD099 time aiocp -b 16k -n 16 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD101 time aiocp -b 16k -n 16 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD102 time aiocp -b 16k -n 32 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD103 time aiocp -b 16k -n 32 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD104 time aiocp -b 16k -n 32 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD105 time aiocp -b 16k -n 64 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD106 time aiocp -b 16k -n 64 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD107 time aiocp -b 16k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD108 time aiocp -b 32k -n 1 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD109 time aiocp -b 32k -n 1 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD110 time aiocp -b 32k -n 1 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD112 time aiocp -b 32k -n 2 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD113 time aiocp -b 32k -n 2 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD114 time aiocp -b 32k -n 2 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD115 time aiocp -b 32k -n 4 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD116 time aiocp -b 32k -n 4 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD117 time aiocp -b 32k -n 4 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD118 time aiocp -b 32k -n 8 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD119 time aiocp -b 32k -n 8 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD120 time aiocp -b 32k -n 8 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD121 time aiocp -b 32k -n 16 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD122 time aiocp -b 32k -n 16 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD123 time aiocp -b 32k -n 16 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD124 time aiocp -b 32k -n 32 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD125 time aiocp -b 32k -n 32 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD126 time aiocp -b 32k -n 32 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD127 time aiocp -b 32k -n 64 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD128 time aiocp -b 32k -n 64 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD129 time aiocp -b 32k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD130 time aiocp -b 64k -n 1 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD131 time aiocp -b 64k -n 1 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD132 time aiocp -b 64k -n 1 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD133 time aiocp -b 64k -n 2 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD134 time aiocp -b 64k -n 2 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD135 time aiocp -b 64k -n 2 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD136 time aiocp -b 64k -n 4 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD137 time aiocp -b 64k -n 4 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD138 time aiocp -b 64k -n 4 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD139 time aiocp -b 64k -n 8 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD140 time aiocp -b 64k -n 8 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD141 time aiocp -b 64k -n 8 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD142 time aiocp -b 64k -n 16 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD143 time aiocp -b 64k -n 16 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD144 time aiocp -b 64k -n 16 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD145 time aiocp -b 64k -n 32 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD146 time aiocp -b 64k -n 32 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD147 time aiocp -b 64k -n 32 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD148 time aiocp -b 64k -n 64 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD149 time aiocp -b 64k -n 64 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD150 time aiocp -b 64k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD151 time aiocp -b 128k -n 1 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD152 time aiocp -b 128k -n 1 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD153 time aiocp -b 128k -n 1 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD154 time aiocp -b 128k -n 2 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD155 time aiocp -b 128k -n 2 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD156 time aiocp -b 128k -n 2 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD157 time aiocp -b 128k -n 4 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD158 time aiocp -b 128k -n 4 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD159 time aiocp -b 128k -n 4 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD160 time aiocp -b 128k -n 8 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD161 time aiocp -b 128k -n 8 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD162 time aiocp -b 12k -n 8 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD163 time aiocp -b 128k -n 16 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD164 time aiocp -b 128k -n 16 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD165 time aiocp -b 128k -n 16 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD166 time aiocp -b 128k -n 32 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD167 time aiocp -b 128k -n 32 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD168 time aiocp -b 128k -n 32 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD169 time aiocp -b 128k -n 64 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD170 time aiocp -b 128k -n 64 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD171 time aiocp -b 128k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD172 time aiocp -b 256k -n 1 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD173 time aiocp -b 256k -n 1 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD174 time aiocp -b 256k -n 1 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD175 time aiocp -b 256k -n 2 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD176 time aiocp -b 256k -n 2 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD177 time aiocp -b 256k -n 2 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD178 time aiocp -b 256k -n 4 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD179 time aiocp -b 256k -n 4 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD180 time aiocp -b 256k -n 4 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD181 time aiocp -b 256k -n 8 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD182 time aiocp -b 256k -n 8 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD183 time aiocp -b 256k -n 8 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD184 time aiocp -b 256k -n 16 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD185 time aiocp -b 256k -n 16 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD186 time aiocp -b 256k -n 16 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD187 time aiocp -b 256k -n 32 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD188 time aiocp -b 256k -n 32 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD189 time aiocp -b 256k -n 32 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD190 time aiocp -b 256k -n 64 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD191 time aiocp -b 256k -n 64 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD192 time aiocp -b 256k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD193 time aiocp -b 512k -n 1 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD194 time aiocp -b 512k -n 1 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD195 time aiocp -b 512k -n 1 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD196 time aiocp -b 512k -n 2 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD197 time aiocp -b 512k -n 2 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD198 time aiocp -b 512k -n 2 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD199 time aiocp -b 512k -n 4 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD200 time aiocp -b 512k -n 4 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD201 time aiocp -b 512k -n 4 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD202 time aiocp -b 512k -n 8 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD203 time aiocp -b 512k -n 8 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD204 time aiocp -b 512k -n 8 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD205 time aiocp -b 512k -n 16 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD206 time aiocp -b 512k -n 16 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD207 time aiocp -b 512k -n 16 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD208 time aiocp -b 512k -n 32 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD209 time aiocp -b 512k -n 32 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD210 time aiocp -b 512k -n 32 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD211 time aiocp -b 512k -n 64 -f DIRECT $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD212 time aiocp -b 512k -n 64 -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD213 time aiocp -b 512k -n 64 -f DIRECT -f SYNC $TMPDIR/aiodio.$$/junkfile $TMPDIR/aiodio.$$/ff2
--AD301 aiocp -b 128k -n 32 -f CREAT -f DIRECT $TMPDIR/aiodio.$$/fff $TMPDIR/aiodio.$$/junkdir/fff
--AD302 aiocp -b 128k -n 32 -f CREAT -f DIRECT $TMPDIR/aiodio.$$/ff1 $TMPDIR/aiodio.$$/junkdir/ff1
--AD303 aiocp -b 128k -n 32 -f CREAT -f DIRECT $TMPDIR/aiodio.$$/ff2 $TMPDIR/aiodio.$$/junkdir/ff2
--AD304 aiocp -b 128k -n 32 -f CREAT -f DIRECT $TMPDIR/aiodio.$$/ff3 $TMPDIR/aiodio.$$/junkdir/ff3
-+AD001 aiocp -b 1k -n 1 -f DIRECT
-+AD002 aiocp -b 1k -n 1 -f SYNC
-+AD003 aiocp -b 1k -n 2 -f DIRECT
-+AD004 aiocp -b 1k -n 2 -f SYNC
-+AD005 aiocp -b 1k -n 4 -f DIRECT
-+AD006 aiocp -b 1k -n 4 -f SYNC
-+AD007 aiocp -b 1k -n 8 -f DIRECT
-+AD008 aiocp -b 1k -n 8 -f SYNC
-+AD009 aiocp -b 1k -n 16 -f DIRECT
-+AD010 aiocp -b 1k -n 16 -f SYNC
-+AD011 aiocp -b 1k -n 32 -f DIRECT
-+AD012 aiocp -b 1k -n 32 -f SYNC
-+AD013 aiocp -b 1k -n 64 -f DIRECT
-+AD014 aiocp -b 1k -n 64 -f SYNC
-+AD015 aiocp -b 2k -n 1 -f DIRECT
-+AD016 aiocp -b 2k -n 1 -f SYNC
-+AD017 aiocp -b 2k -n 2 -f DIRECT
-+AD018 aiocp -b 2k -n 2 -f SYNC
-+AD019 aiocp -b 2k -n 4 -f DIRECT
-+AD020 aiocp -b 2k -n 4 -f SYNC
-+AD021 aiocp -b 2k -n 8 -f DIRECT
-+AD022 aiocp -b 2k -n 8 -f SYNC
-+AD023 aiocp -b 2k -n 16 -f DIRECT
-+AD024 aiocp -b 2k -n 16 -f SYNC
-+AD025 aiocp -b 2k -n 32 -f DIRECT
-+AD026 aiocp -b 2k -n 32 -f SYNC
-+AD027 aiocp -b 2k -n 64 -f DIRECT
-+AD028 aiocp -b 2k -n 64 -f SYNC
-+AD029 aiocp -b 4k -n 1 -f DIRECT
-+AD030 aiocp -b 4k -n 1 -f SYNC
-+AD031 aiocp -b 4k -n 2 -f DIRECT
-+AD032 aiocp -b 4k -n 2 -f SYNC
-+AD033 aiocp -b 4k -n 4 -f DIRECT
-+AD034 aiocp -b 4k -n 4 -f SYNC
-+AD035 aiocp -b 4k -n 8 -f DIRECT
-+AD036 aiocp -b 4k -n 8 -f SYNC
-+AD037 aiocp -b 4k -n 16 -f DIRECT
-+AD038 aiocp -b 4k -n 16 -f SYNC
-+AD039 aiocp -b 4k -n 32 -f DIRECT
-+AD040 aiocp -b 4k -n 32 -f SYNC
-+AD041 aiocp -b 4k -n 64 -f DIRECT
-+AD042 aiocp -b 4k -n 64 -f SYNC
-+AD043 aiocp -b 8k -n 1 -f DIRECT
-+AD044 aiocp -b 8k -n 1 -f SYNC
-+AD045 aiocp -b 8k -n 2 -f DIRECT
-+AD046 aiocp -b 8k -n 2 -f SYNC
-+AD047 aiocp -b 8k -n 4 -f DIRECT
-+AD048 aiocp -b 8k -n 4 -f SYNC
-+AD049 aiocp -b 8k -n 8 -f DIRECT
-+AD050 aiocp -b 8k -n 8 -f SYNC
-+AD051 aiocp -b 8k -n 16 -f DIRECT
-+AD052 aiocp -b 8k -n 16 -f SYNC
-+AD053 aiocp -b 8k -n 32 -f DIRECT
-+AD054 aiocp -b 8k -n 32 -f SYNC
-+AD055 aiocp -b 8k -n 64 -f DIRECT
-+AD056 aiocp -b 8k -n 64 -f SYNC
-+AD057 aiocp -b 16k -n 1 -f DIRECT
-+AD058 aiocp -b 16k -n 1 -f SYNC
-+AD059 aiocp -b 16k -n 2 -f DIRECT
-+AD060 aiocp -b 16k -n 2 -f SYNC
-+AD061 aiocp -b 16k -n 4 -f DIRECT
-+AD062 aiocp -b 16k -n 4 -f SYNC
-+AD063 aiocp -b 16k -n 8 -f DIRECT
-+AD064 aiocp -b 16k -n 8 -f SYNC
-+AD065 aiocp -b 16k -n 16 -f DIRECT
-+AD066 aiocp -b 16k -n 16 -f SYNC
-+AD067 aiocp -b 16k -n 32 -f DIRECT
-+AD068 aiocp -b 16k -n 32 -f SYNC
-+AD069 aiocp -b 16k -n 64 -f DIRECT
-+AD070 aiocp -b 16k -n 64 -f SYNC
-+AD071 aiocp -b 32k -n 1 -f DIRECT
-+AD072 aiocp -b 32k -n 1 -f SYNC
-+AD073 aiocp -b 32k -n 2 -f DIRECT
-+AD074 aiocp -b 32k -n 2 -f SYNC
-+AD075 aiocp -b 32k -n 4 -f DIRECT
-+AD076 aiocp -b 32k -n 4 -f SYNC
-+AD077 aiocp -b 32k -n 8 -f DIRECT
-+AD078 aiocp -b 32k -n 8 -f SYNC
-+AD079 aiocp -b 32k -n 16 -f DIRECT
-+AD080 aiocp -b 32k -n 16 -f SYNC
-+AD081 aiocp -b 32k -n 32 -f DIRECT
-+AD082 aiocp -b 32k -n 32 -f SYNC
-+AD083 aiocp -b 32k -n 64 -f DIRECT
-+AD084 aiocp -b 32k -n 64 -f SYNC
-+AD085 aiocp -b 64k -n 1 -f DIRECT
-+AD086 aiocp -b 64k -n 1 -f SYNC
-+AD087 aiocp -b 64k -n 2 -f DIRECT
-+AD088 aiocp -b 64k -n 2 -f SYNC
-+AD089 aiocp -b 64k -n 4 -f DIRECT
-+AD090 aiocp -b 64k -n 4 -f SYNC
-+AD091 aiocp -b 64k -n 8 -f DIRECT
-+AD092 aiocp -b 64k -n 8 -f SYNC
-+AD093 aiocp -b 64k -n 16 -f DIRECT
-+AD094 aiocp -b 64k -n 16 -f SYNC
-+AD095 aiocp -b 64k -n 32 -f DIRECT
-+AD096 aiocp -b 64k -n 32 -f SYNC
-+AD097 aiocp -b 64k -n 64 -f DIRECT
-+AD098 aiocp -b 64k -n 64 -f SYNC
-+AD099 aiocp -b 128k -n 1 -f DIRECT
-+AD100 aiocp -b 128k -n 1 -f SYNC
-+AD101 aiocp -b 128k -n 2 -f DIRECT
-+AD102 aiocp -b 128k -n 2 -f SYNC
-+AD103 aiocp -b 128k -n 4 -f DIRECT
-+AD104 aiocp -b 128k -n 4 -f SYNC
-+AD105 aiocp -b 128k -n 8 -f DIRECT
-+AD106 aiocp -b 128k -n 8 -f SYNC
-+AD107 aiocp -b 128k -n 16 -f DIRECT
-+AD108 aiocp -b 128k -n 16 -f SYNC
-+AD109 aiocp -b 128k -n 32 -f DIRECT
-+AD110 aiocp -b 128k -n 32 -f SYNC
-+AD111 aiocp -b 128k -n 64 -f DIRECT
-+AD112 aiocp -b 128k -n 64 -f SYNC
-+AD113 aiocp -b 256k -n 1 -f DIRECT
-+AD114 aiocp -b 256k -n 1 -f SYNC
-+AD115 aiocp -b 256k -n 2 -f DIRECT
-+AD116 aiocp -b 256k -n 2 -f SYNC
-+AD117 aiocp -b 256k -n 4 -f DIRECT
-+AD118 aiocp -b 256k -n 4 -f SYNC
-+AD119 aiocp -b 256k -n 8 -f DIRECT
-+AD120 aiocp -b 256k -n 8 -f SYNC
-+AD121 aiocp -b 256k -n 16 -f DIRECT
-+AD122 aiocp -b 256k -n 16 -f SYNC
-+AD123 aiocp -b 256k -n 32 -f DIRECT
-+AD124 aiocp -b 256k -n 32 -f SYNC
-+AD125 aiocp -b 256k -n 64 -f DIRECT
-+AD126 aiocp -b 256k -n 64 -f SYNC
-+AD127 aiocp -b 512k -n 1 -f DIRECT
-+AD128 aiocp -b 512k -n 1 -f SYNC
-+AD129 aiocp -b 512k -n 2 -f DIRECT
-+AD130 aiocp -b 512k -n 2 -f SYNC
-+AD131 aiocp -b 512k -n 4 -f DIRECT
-+AD132 aiocp -b 512k -n 4 -f SYNC
-+AD133 aiocp -b 512k -n 8 -f DIRECT
-+AD134 aiocp -b 512k -n 8 -f SYNC
-+AD135 aiocp -b 512k -n 16 -f DIRECT
-+AD136 aiocp -b 512k -n 16 -f SYNC
-+AD137 aiocp -b 512k -n 32 -f DIRECT
-+AD138 aiocp -b 512k -n 32 -f SYNC
-+AD139 aiocp -b 512k -n 64 -f DIRECT
-+AD140 aiocp -b 512k -n 64 -f SYNC
-diff --git a/testcases/kernel/io/ltp-aiodio/aiocp.c b/testcases/kernel/io/ltp-aiodio/aiocp.c
-index d315353d0..3366f6bee 100644
---- a/testcases/kernel/io/ltp-aiodio/aiocp.c
-+++ b/testcases/kernel/io/ltp-aiodio/aiocp.c
-@@ -1,607 +1,359 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+runtest/ltp-aio-stress.part1                | 131 ++-
+ runtest/ltp-aio-stress.part2                |  49 +-
+ testcases/kernel/io/ltp-aiodio/aio-stress.c | 907 ++++++++------------
+ 3 files changed, 421 insertions(+), 666 deletions(-)
+
+diff --git a/runtest/ltp-aio-stress.part1 b/runtest/ltp-aio-stress.part1
+index a770a40ae..c389a039d 100644
+--- a/runtest/ltp-aio-stress.part1
++++ b/runtest/ltp-aio-stress.part1
+@@ -1,79 +1,52 @@
+-#DESCRIPTION:ltp A-sync IO Stress IO tests
+-#
+-# aio-stress [-s size] [-r size] [-a size] [-d num] [-b num]
+-#                 [-i num] [-t num] [-c num] [-C size] [-nxhlvOS ]
+-#                 file1 [file2 ...]
+-#       -a size in KB at which to align buffers
+-#       -b max number of iocbs to give io_submit at once
+-#       -c number of io contexts per file
+-#       -C offset between contexts, default 2MB
+-#       -s size in MB of the test file(s), default 1024MB
+-#       -r record size in KB used for each io, default 64KB
+-#       -d number of pending aio requests for each file, default 64
+-#       -i number of ios per file sent before switching
+-#          to the next file, default 8
+-#       -O Use O_DIRECT (not available in 2.4 kernels),
+-#       -S Use O_SYNC for writes
+-#       -o add an operation to the list: write=0, read=1,
+-#          random write=2, random read=3.
+-#          repeat -o to specify multiple ops: -o 0 -o 1 etc.
+-#       -m shm use ipc shared memory for io buffers instead of malloc
+-#       -m shmfs mmap a file in /dev/shm for io buffers
+-#       -n no fsyncs between write stage and read stage
+-#       -l print io_submit latencies after each stage
+-#       -t number of threads to run
+-#       -v verification of bytes written
+-#       -x turn off thread stonewalling
+-#       -h this message
+-#
+-ADS1000 aio-stress -I500  -o2 -S -r4   $TMPDIR/file1
+-ADS1001 aio-stress -I500  -o2 -S -r8   $TMPDIR/file1
+-ADS1002 aio-stress -I500  -o2 -S -r16  $TMPDIR/file1
+-ADS1003 aio-stress -I500  -o2 -S -r32  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1004 aio-stress -I500  -o2 -S -r64   $TMPDIR/junkfile $TMPDIR/file2
+-ADS1005 aio-stress -I500  -o3 -S -r4    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1006 aio-stress -I500  -o3 -S -r8   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1007 aio-stress -I500  -o3 -S -r16  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1008 aio-stress -I500  -o3 -S -r32  -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4
+-ADS1009 aio-stress -I500  -o3 -S -r64  -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4
+-ADS1010 aio-stress -I500  -o3 -S -r128 -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4
+-ADS1011 aio-stress -I500  -o3 -S -r256 -t8  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4 $TMPDIR/file5  $TMPDIR/file6 $TMPDIR/file7  $TMPDIR/file8
+-ADS1012 aio-stress -I500  -o3 -S -r512 -t8  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3  $TMPDIR/file4 $TMPDIR/file5  $TMPDIR/file6 $TMPDIR/file7  $TMPDIR/file8
+-ADS1013 aio-stress -I500  -o2 -O -r4    -t8  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3  $TMPDIR/file4 $TMPDIR/file5  $TMPDIR/file6 $TMPDIR/file7  $TMPDIR/file8
+-ADS1014 aio-stress -I500  -o2 -O -r8         $TMPDIR/file1 $TMPDIR/file2
+-ADS1015 aio-stress -I500  -o2 -O -r16        $TMPDIR/file1 $TMPDIR/file2
+-ADS1016 aio-stress -I500  -o2 -O -r32   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1017 aio-stress -I500  -o2 -O -r64   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1018 aio-stress -I500  -o3 -O -r4    -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1019 aio-stress -I500  -o3 -O -r8    -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1020 aio-stress -I500  -o3 -O -r16   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1021 aio-stress -I500  -o3 -O -r32   -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
+-ADS1022 aio-stress -I500  -o3 -O -r64   -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
+-ADS1023 aio-stress -I500  -o3 -O -r128  -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
+-ADS1024 aio-stress -I500  -o3 -O -r256  -t8  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file4  $TMPDIR/file3  $TMPDIR/file5  $TMPDIR/file6
+-ADS1025 aio-stress -I500  -o3 -O -r512  -t8  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1026 aio-stress -I500  -o0 -S -r4    -t8  $TMPDIR/junkfile $TMPDIR/file2       $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1027 aio-stress -I500  -o0 -S -r8           $TMPDIR/file2
+-ADS1028 aio-stress -I500  -o0 -S -r16          $TMPDIR/file2
+-ADS1029 aio-stress -I500  -o0 -S -r32   -t2    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1030 aio-stress -I500  -o0 -S -r64   -t2    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1031 aio-stress -I500  -o1 -S -r4    -t2    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1032 aio-stress -I500  -o1 -S -r8    -t2    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1033 aio-stress -I500  -o1 -S -r16   -t2    $TMPDIR/junkfile $TMPDIR/file2
+-ADS1034 aio-stress -I500  -o1 -S -r32   -t4    $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
+-ADS1035 aio-stress -I500  -o1 -S -r64   -t4    $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
+-ADS1036 aio-stress -I500  -o1 -S -r128  -t4    $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
+-ADS1037 aio-stress -I500  -o1 -S -r256  -t8  $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file4  $TMPDIR/file3  $TMPDIR/file5  $TMPDIR/file6
+-ADS1038 aio-stress -I500  -o1 -S -r512  -t8  -x $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1039 aio-stress -I500  -o1 -O -r4    -t8  -x  $TMPDIR/junkfile $TMPDIR/file2        $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1040 aio-stress -I500  -o1 -O -r8    -t2  -x $TMPDIR/junkfile $TMPDIR/file2
+-ADS1041 aio-stress -I500  -o1 -O -r16   -t2  -x  $TMPDIR/junkfile $TMPDIR/file2
+-ADS1042 aio-stress -I500  -o1 -O -r32   -t2   $TMPDIR/junkfile $TMPDIR/file2
+-ADS1043 aio-stress -I500  -o1 -O -r64   -t2   $TMPDIR/junkfile $TMPDIR/file2
+-ADS1044 aio-stress -I500  -o1 -O -r4    -t4   $TMPDIR/junkfile $TMPDIR/file2        $TMPDIR/file7  $TMPDIR/file8
+-ADS1045 aio-stress -I500  -o1 -O -r8    -t4   $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
+-ADS1046 aio-stress -I500  -o1 -O -r16   -t4   $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
+-ADS1047 aio-stress -I500  -o1 -O -r32   -t8   $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file4  $TMPDIR/file3  $TMPDIR/file5  $TMPDIR/file6
+-ADS1048 aio-stress -I500  -o1 -O -r64   -t8   $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1049 aio-stress -I500  -o1 -O -r128  -t8   $TMPDIR/junkfile $TMPDIR/file2        $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
+-ADS1050 aio-stress -I500  -o1 -O -r256  -t2   $TMPDIR/junkfile $TMPDIR/file2
++# ltp A-sync IO Stress IO tests
++ADS1000 aio-stress -o2 -r4 -f1
++ADS1001 aio-stress -o2 -r8 -f1
++ADS1002 aio-stress -o2 -r16 -f1
++ADS1003 aio-stress -o2 -r32 -t2 -f2
++ADS1004 aio-stress -o2 -r64 -f2
++ADS1005 aio-stress -o3 -r4 -f2
++ADS1006 aio-stress -o3 -r8 -f2
++ADS1007 aio-stress -o3 -r16 -f2
++ADS1008 aio-stress -o3 -r32 -f4
++ADS1009 aio-stress -o3 -r64 -t4 -f4
++ADS1010 aio-stress -o3 -r128 -t4 -f4
++ADS1011 aio-stress -o3 -r256 -t8 -f8
++ADS1012 aio-stress -o3 -r512 -t8 -f8
++ADS1013 aio-stress -o2 -O -r4 -t8 -f8
++ADS1014 aio-stress -o2 -O -r8 -f2
++ADS1015 aio-stress -o2 -O -r16 -f2
++ADS1016 aio-stress -o2 -O -r32 -t2 -f2
++ADS1017 aio-stress -o2 -O -r64 -t2 -f2
++ADS1018 aio-stress -o3 -O -r4 -t2 -f2
++ADS1019 aio-stress -o3 -O -r8 -t2 -f2
++ADS1020 aio-stress -o3 -O -r16 -t2 -f2
++ADS1021 aio-stress -o3 -O -r32 -t4 -f4
++ADS1022 aio-stress -o3 -O -r64 -t4 -f4
++ADS1023 aio-stress -o3 -O -r128 -t4 -f4
++ADS1024 aio-stress -o3 -O -r256 -t8 -f8
++ADS1025 aio-stress -o3 -O -r512 -t8 -f8
++ADS1026 aio-stress -o0 -r4 -t8 -f8
++ADS1027 aio-stress -o0 -r8 -f1
++ADS1028 aio-stress -o0 -r16 -f1
++ADS1029 aio-stress -o0 -r32 -t2 -f2
++ADS1030 aio-stress -o0 -r64 -t2 -f2
++ADS1031 aio-stress -o1 -r4 -t2 -f1
++ADS1032 aio-stress -o1 -r8 -t2 -f1
++ADS1033 aio-stress -o1 -r16 -t2 -f2
++ADS1034 aio-stress -o1 -r32 -t4 -f4
++ADS1035 aio-stress -o1 -r64 -t4 -f4
++ADS1036 aio-stress -o1 -r128 -t4 -f4
++ADS1037 aio-stress -o1 -r256 -t8 -f8
++ADS1038 aio-stress -o1 -r512 -t8 -f8
++ADS1039 aio-stress -o1 -O -r4 -t8 -f8
++ADS1040 aio-stress -o1 -O -r8 -t2 -f2
++ADS1041 aio-stress -o1 -O -r16 -t2 -f2
++ADS1042 aio-stress -o1 -O -r32 -t2 -f2
++ADS1043 aio-stress -o1 -O -r64 -t2 -f2
++ADS1044 aio-stress -o1 -O -r4 -t4 -f4
++ADS1045 aio-stress -o1 -O -r8 -t4 -f4
++ADS1046 aio-stress -o1 -O -r16 -t4 -f4
++ADS1047 aio-stress -o1 -O -r32 -t8 -f8
++ADS1048 aio-stress -o1 -O -r64 -t8 -f8
++ADS1049 aio-stress -o1 -O -r128 -t8 -f8
++ADS1050 aio-stress -o1 -O -r256 -t2 -f2
+diff --git a/runtest/ltp-aio-stress.part2 b/runtest/ltp-aio-stress.part2
+index 3a60e23e9..e8ac60743 100644
+--- a/runtest/ltp-aio-stress.part2
++++ b/runtest/ltp-aio-stress.part2
+@@ -1,38 +1,11 @@
+-#DESCRIPTION:ltp A-sync IO Stress IO tests
+-#
+-# aio-stress [-s size] [-r size] [-a size] [-d num] [-b num]
+-#                 [-i num] [-t num] [-c num] [-C size] [-nxhlvOS ]
+-#                 file1 [file2 ...]
+-#       -a size in KB at which to align buffers
+-#       -b max number of iocbs to give io_submit at once
+-#       -c number of io contexts per file
+-#       -C offset between contexts, default 2MB
+-#       -s size in MB of the test file(s), default 1024MB
+-#       -r record size in KB used for each io, default 64KB
+-#       -d number of pending aio requests for each file, default 64
+-#       -i number of ios per file sent before switching
+-#          to the next file, default 8
+-#       -O Use O_DIRECT (not available in 2.4 kernels),
+-#       -S Use O_SYNC for writes
+-#       -o add an operation to the list: write=0, read=1,
+-#          random write=2, random read=3.
+-#          repeat -o to specify multiple ops: -o 0 -o 1 etc.
+-#       -m shm use ipc shared memory for io buffers instead of malloc
+-#       -m shmfs mmap a file in /dev/shm for io buffers
+-#       -n no fsyncs between write stage and read stage
+-#       -l print io_submit latencies after each stage
+-#       -t number of threads to run
+-#       -v verification of bytes written
+-#       -x turn off thread stonewalling
+-#       -h this message
+-#
+-ADS2001 aio-stress -I500  -o2 -S -r32  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2002 aio-stress -I500  -o3 -S -r8   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2003 aio-stress -I500  -o3 -S -r16  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2004 aio-stress -I500  -o3 -S -r32  -t4  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3 $TMPDIR/file4
+-ADS2005 aio-stress -I500  -o3 -S -r64  -t4  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3 $TMPDIR/file4
+-ADS2006 aio-stress -I500  -o2 -O -r32  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2007 aio-stress -I500  -o3 -O -r8   -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2008 aio-stress -I500  -o3 -O -r16  -t2  $TMPDIR/junkfile $TMPDIR/file2
+-ADS2009 aio-stress -I500  -o3 -O -r32  -t4  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3 $TMPDIR/file4
+-ADS2010 aio-stress -I500  -o3 -O -r64  -t4  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3 $TMPDIR/file4
++# ltp A-sync IO Stress IO tests
++# ADS2001 aio-stress -o2 -r32 -t2 -f2
++ADS2002 aio-stress -o3 -r8 -t2 -f2
++ADS2003 aio-stress -o3 -r16 -t2 -f2
++ADS2004 aio-stress -o3 -r32 -t4 -f4
++# ADS2005 aio-stress -o3 -r64 -t4 -f4
++# ADS2006 aio-stress -o2 -O -r32 -t2 -f2
++# ADS2007 aio-stress -o3 -O -r8 -t2 -f2
++# ADS2008 aio-stress -o3 -O -r16 -t2 -f2
++# ADS2009 aio-stress -o3 -O -r32 -t4 -f4
++# ADS2010 aio-stress -o3 -O -r64 -t4 -f4
+diff --git a/testcases/kernel/io/ltp-aiodio/aio-stress.c b/testcases/kernel/io/ltp-aiodio/aio-stress.c
+index 348f398db..ca51b3a52 100644
+--- a/testcases/kernel/io/ltp-aiodio/aio-stress.c
++++ b/testcases/kernel/io/ltp-aiodio/aio-stress.c
+@@ -1,51 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0
  /*
-- * version of copy command using async i/o
-- * From:	Stephen Hemminger <shemminger@osdl.org>
-- * Modified by Daniel McNeil <daniel@osdl.org> for testing aio.
-- *	- added -a alignment
-- *	- added -b blksize option
-- *	_ added -s size	option
-- *	- added -f open_flag option
-- *	- added -w (no write) option (reads from source only)
-- *	- added -n (num aio) option
-- *	- added -z (zero dest) opton (writes zeros to dest only)
-- *	- added -D delay_ms option
-- *
-- * Copy file by using a async I/O state machine.
-- * 1. Start read request
-- * 2. When read completes turn it into a write request
-- * 3. When write completes decrement counter and free resources
-+ * Copyright (c) 2004 Stephen Hemminger <shemminger@osdl.org>
-+ * Copyright (c) 2004 Daniel McNeil <daniel@osdl.org>
-+ * Copyright (c) 2004 Marty Ridgeway <mridge@us.ibm.com>
+  * Copyright (c) 2004 SuSE, Inc.  All Rights Reserved.
++ *               Written by: Chris Mason <mason@suse.com>
 + * Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +
 +/*\
 + * [Description]
   *
-+ * Copy file by using an async I/O state machine.
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- *
+- * aio-stress
+- *
+- * will open or create each file on the command line, and start a series
+- * of aio to it.
+- *
+- * aio is done in a rotating loop.  first file1 gets 8 requests, then
+- * file2, then file3 etc.  As each file finishes writing, it is switched
+- * to reads
+- *
+- * io buffers are aligned in case you want to do raw io
+- *
+- * compile with gcc -Wall -laio -lpthread -o aio-stress aio-stress.c
++ * Will open or create each file on the command line, and start a series
++ * of AIO to it.
   *
-- * Usage: aiocp [-b blksize] -n [num_aio] [-w] [-z] [-s filesize]
-- *		[-f DIRECT|TRUNC|CREAT|SYNC|LARGEFILE] src dest
-+ * - Start read request
-+ * - When read completes turn it into a write request
-+ * - When write completes decrement counter and free up resources
+- * run aio-stress -h to see the options
++ * AIO is done in a rotating loop. First file1.bin gets 8 requests, then
++ * file2.bin, then file3.bin etc. As each file finishes writing, it is switched
++ * to reads.
+  *
+- * Please mail Chris Mason (mason@suse.com) with bug reports or patches
++ * IO buffers are aligned in case you want to do raw IO.
   */
++
+ #define _FILE_OFFSET_BITS 64
+-#define PROG_VERSION "0.21"
+ #define NEW_GETEVENTS
  
  #define _GNU_SOURCE
- 
--#include <unistd.h>
--#include <stdio.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/param.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <stdlib.h>
--#include <mntent.h>
--#include <sys/select.h>
--#include <sys/mount.h>
++#include "tst_test.h"
++
++#ifdef HAVE_LIBAIO
+ #include <stdio.h>
+ #include <errno.h>
+ #include <assert.h>
+@@ -60,12 +39,9 @@
+ #include <sys/mman.h>
+ #include <string.h>
+ #include <pthread.h>
 -
 -#include "config.h"
 -#include "tst_res_flags.h"
-+#include "tst_test.h"
- 
- #ifdef HAVE_LIBAIO
+-
+-#ifdef HAVE_LIBAIO
  #include <libaio.h>
-+#include <string.h>
-+#include <limits.h>
-+#include <sys/stat.h>
-+#include "common.h"
-+
-+static const char *srcname = "srcfile.bin";
-+static const char *dstname = "dstfile.bin";
-+
-+static char *str_aio_blksize;
-+static char *str_filesize;
-+static char *str_aionum;
-+static char *str_oflag;
-+
-+static long long aio_blksize = 64 * 1024;
-+static long long filesize = 1 * 1024 * 1024;
-+static long long alignment;
-+static long long leftover;
-+static int aionum = 16;
-+static int srcflags = O_RDONLY;
-+static int dstflags = O_WRONLY;
-+
-+static int srcfd;
-+static int dstfd;
-+static long long busy;
-+static long long tocopy;
-+static struct iocb **iocb_free;
-+static int iocb_free_count;
-+
-+#ifndef howmany
-+# define howmany(x, y)  (((x) + ((y) - 1)) / (y))
-+#endif
++#include "tst_safe_pthread.h"
++#include "tst_safe_sysv_ipc.h"
  
--#define AIO_BLKSIZE	(64*1024)
--#define AIO_MAXIO	32
+ #define IO_FREE 0
+ #define IO_PENDING 1
+@@ -83,52 +59,52 @@ enum {
+ #define USE_SHM 1
+ #define USE_SHMFS 2
+ 
+-/*
+- * various globals, these are effectively read only by the time the threads
+- * are started
+- */
+-long stages = 0;
+-unsigned long page_size_mask;
+-int o_direct = 0;
+-int o_sync = 0;
+-int latency_stats = 0;
+-int completion_latency_stats = 0;
+-int io_iter = 8;
+-int iterations = RUN_FOREVER;
+-int max_io_submit = 0;
+-long rec_len = 64 * 1024;
+-int depth = 64;
+-int num_threads = 1;
+-int num_contexts = 1;
+-off_t context_offset = 2 * 1024 * 1024;
+-int fsync_stages = 1;
+-int use_shm = 0;
+-int shm_id;
+-char *unaligned_buffer = NULL;
+-char *aligned_buffer = NULL;
+-int padded_reclen = 0;
+-int stonewall = 1;
+-int verify = 0;
+-char *verify_buf = NULL;
+-int unlink_files = 0;
 -
--static int aio_blksize = AIO_BLKSIZE;
--static int aio_maxio = AIO_MAXIO;
+-struct io_unit;
+-struct thread_info;
 -
--static int busy = 0;		// # of I/O's in flight
--static int tocopy = 0;		// # of blocks left to copy
--static int srcfd;		// source fd
--static int srcfd2;		// source fd - end of file non-sector
--static int dstfd = -1;		// destination file descriptor
--static int dstfd2 = -1;		// Handle end of file for non-sector size
--static const char *dstname = NULL;
--static const char *srcname = NULL;
--static int source_open_flag = O_RDONLY;	/* open flags on source file */
--static int dest_open_flag = O_WRONLY;	/* open flags on dest file */
--static int no_write;		/* do not write */
--static int zero;		/* write zero's only */
--
--static int debug;
--static int count_io_q_waits;	/* how many time io_queue_wait called */
--
--struct iocb **iocb_free;	/* array of pointers to iocb */
--int iocb_free_count;		/* current free count */
--int alignment = 512;		/* buffer alignment */
--
--struct timeval delay;		/* delay between i/o */
--
--static int dev_block_size_by_path(const char *path)
-+static void fill_with_rand_data(int fd, long long size)
+-/* pthread mutexes and other globals for keeping the threads in sync */
+-pthread_cond_t stage_cond = PTHREAD_COND_INITIALIZER;
+-pthread_mutex_t stage_mutex = PTHREAD_MUTEX_INITIALIZER;
+-int threads_ending = 0;
+-int threads_starting = 0;
+-struct timeval global_stage_start_time;
+-struct thread_info *global_thread_info;
++static char *str_num_files;
++static char *str_max_io_submit;
++static char *str_num_contexts;
++static char *str_context_offset;
++static char *str_file_size;
++static char *str_rec_len;
++static char *str_depth;
++static char *str_io_iter;
++static char *str_iterations;
++static char *str_o_flag;
++static char *str_stages;
++static char *str_use_shm;
++static char *str_num_threads;
++
++static int num_files = 1;
++static long long file_size = 1024 * 1024 * 1024;
++static long stages;
++static unsigned long page_size_mask;
++static int o_flag;
++static char *latency_stats;
++static char *completion_latency_stats;
++static int io_iter = 8;
++static int iterations = 500;
++static int max_io_submit;
++static long rec_len = 64 * 1024;
++static int depth = 64;
++static int num_threads = 1;
++static int num_contexts = 1;
++static long long context_offset = 2 * 1024 * 1024;
++static char *no_fsync_stages;
++static int use_shm;
++static int shm_id;
++static char *unaligned_buffer;
++static char *aligned_buffer;
++static int padded_reclen;
++static char *no_stonewall;
++static char *verify;
++static char *verify_buf;
++static char *unlink_files;
+ 
+ /*
+  * latencies during io_submit are measured, these are the
+  * granularities for deviations
+  */
+ #define DEVIATIONS 6
+-int deviations[DEVIATIONS] = { 100, 250, 500, 1000, 5000, 10000 };
++static int deviations[DEVIATIONS] = { 100, 250, 500, 1000, 5000, 10000 };
+ 
+ struct io_latency {
+ 	double max;
+@@ -140,7 +116,8 @@ struct io_latency {
+ 
+ /* container for a series of operations to a file */
+ struct io_oper {
+-	/* already open file descriptor, valid for whatever operation you want */
++	/* already open file descriptor, valid for whatever operation you want
++	 */
+ 	int fd;
+ 
+ 	/* starting byte of the operation */
+@@ -210,7 +187,7 @@ struct io_unit {
+ 
+ 	struct io_unit *next;
+ 
+-	struct timeval io_start_time;	/* time of io_submit */
++	struct timeval io_start_time; /* time of io_submit */
+ };
+ 
+ struct thread_info {
+@@ -255,6 +232,14 @@ struct thread_info {
+ 	struct io_latency io_completion_latency;
+ };
+ 
++/* pthread mutexes and other globals for keeping the threads in sync */
++static pthread_cond_t stage_cond = PTHREAD_COND_INITIALIZER;
++static pthread_mutex_t stage_mutex = PTHREAD_MUTEX_INITIALIZER;
++static int threads_ending;
++static int threads_starting;
++static struct timeval global_stage_start_time;
++static struct thread_info *global_thread_info;
++
+ /*
+  * return seconds between start_tv and stop_tv in double precision
+  */
+@@ -262,6 +247,7 @@ static double time_since(struct timeval *start_tv, struct timeval *stop_tv)
  {
--	FILE *f;
--	struct mntent *mnt;
--	size_t prefix_len, prefix_max = 0;
--	char dev_name[1024];
--	int fd, size;
-+	const int bufsize = 64 * 1024;
-+	const int lower = 'a';
-+	const int upper = 'z';
-+	char buf[bufsize];
-+	long long i = 0, j;
-+	long long length, towrite;
- 
--	if (!path)
--		return 0;
-+	srand(time(NULL));
- 
--	f = setmntent("/proc/mounts", "r");
--	if (!f) {
--		fprintf(stderr, "Failed to open /proc/mounts\n");
--		return 0;
--	}
--
--	while ((mnt = getmntent(f))) {
--		/* Skip pseudo fs */
--		if (mnt->mnt_fsname[0] != '/')
--			continue;
-+	for (j = 0; j < bufsize; j++)
-+		buf[j] = (rand() % (upper - lower + 1)) + lower;
- 
--		prefix_len = strlen(mnt->mnt_dir);
--
--		if (prefix_len > prefix_max &&
--		    !strncmp(path, mnt->mnt_dir, prefix_len)) {
--			prefix_max = prefix_len;
--			strncpy(dev_name, mnt->mnt_fsname, sizeof(dev_name));
--			dev_name[sizeof(dev_name)-1] = '\0';
--		}
-+	if (size <= bufsize) {
-+		SAFE_WRITE(0, fd, buf, size);
-+		return;
- 	}
- 
--	endmntent(f);
-+	while (i < size) {
-+		if (!tst_remaining_runtime())
-+			tst_brk(TCONF, "Out of runtime!");
- 
--	if (!prefix_max) {
--		fprintf(stderr, "Path '%s' not found in /proc/mounts\n", path);
--		return 0;
--	}
--
--	printf("Path '%s' is on device '%s'\n", path, dev_name);
-+		length = rand() % (bufsize / 2) + bufsize / 2;
-+		towrite = MIN(length, size - i);
- 
--	fd = open(dev_name, O_RDONLY);
--	if (!fd) {
--		fprintf(stderr, "open('%s'): %s\n", dev_name, strerror(errno));
--		return 0;
--	}
-+		i += towrite;
- 
--	if (ioctl(fd, BLKSSZGET, &size)) {
--		fprintf(stderr, "ioctl(BLKSSZGET): %s\n", strerror(errno));
--		close(fd);
--		return 0;
-+		SAFE_WRITE(1, fd, buf, towrite);
- 	}
- 
--	close(fd);
--	printf("'%s' has block size %i\n", dev_name, size);
--
--	return size;
-+	SAFE_FSYNC(fd);
+ 	double sec, usec;
+ 	double ret;
++
+ 	sec = stop_tv->tv_sec - start_tv->tv_sec;
+ 	usec = stop_tv->tv_usec - start_tv->tv_usec;
+ 	if (sec > 0 && usec < 0) {
+@@ -280,6 +266,7 @@ static double time_since(struct timeval *start_tv, struct timeval *stop_tv)
+ static double time_since_now(struct timeval *start_tv)
+ {
+ 	struct timeval stop_time;
++
+ 	gettimeofday(&stop_time, NULL);
+ 	return time_since(start_tv, &stop_time);
  }
- 
--int init_iocb(int n, int iosize)
-+static void async_init(void)
+@@ -292,6 +279,7 @@ static void calc_latency(struct timeval *start_tv, struct timeval *stop_tv,
  {
--	void *buf;
+ 	double delta;
  	int i;
-+	char *buff;
++
+ 	delta = time_since(start_tv, stop_tv);
+ 	delta = delta * 1000;
  
--	if ((iocb_free = malloc(n * sizeof(struct iocb *))) == 0) {
--		return -1;
--	}
-+	iocb_free = SAFE_MALLOC(aionum * sizeof(struct iocb *));
-+	for (i = 0; i < aionum; i++) {
-+		iocb_free[i] = SAFE_MALLOC(sizeof(struct iocb));
-+		buff = SAFE_MEMALIGN(alignment, aio_blksize);
+@@ -320,7 +308,6 @@ static void oper_list_add(struct io_oper *oper, struct io_oper **list)
+ 	oper->next = *list;
+ 	(*list)->prev->next = oper;
+ 	(*list)->prev = oper;
+-	return;
+ }
  
--	for (i = 0; i < n; i++) {
--		if (!
--		    (iocb_free[i] = malloc(sizeof(struct iocb))))
--			return -1;
--		if (posix_memalign(&buf, alignment, iosize))
--			return -1;
--		if (debug > 1) {
--			printf("buf allocated at 0x%p, align:%d\n",
--			       buf, alignment);
--		}
--		if (zero) {
--			/*
--			 * We are writing zero's to dstfd
--			 */
--			memset(buf, 0, iosize);
--		}
--		io_prep_pread(iocb_free[i], -1, buf, iosize, 0);
-+		io_prep_pread(iocb_free[i], -1, buff, aio_blksize, 0);
+ static void oper_list_del(struct io_oper *oper, struct io_oper **list)
+@@ -339,10 +326,11 @@ static void oper_list_del(struct io_oper *oper, struct io_oper **list)
+ static int check_finished_io(struct io_unit *io)
+ {
+ 	int i;
+-	if (io->res != io->buf_size) {
+ 
++	if (io->res != io->buf_size) {
+ 		struct stat s;
+-		fstat(io->io_oper->fd, &s);
++
++		SAFE_FSTAT(io->io_oper->fd, &s);
+ 
+ 		/*
+ 		 * If file size is large enough for the read, then this short
+@@ -351,32 +339,29 @@ static int check_finished_io(struct io_unit *io)
+ 		if ((io->io_oper->rw == READ || io->io_oper->rw == RREAD) &&
+ 		    s.st_size > (io->iocb.u.c.offset + io->res)) {
+ 
+-			fprintf(stderr,
+-				"io err %lu (%s) op %d, off %Lu size %d\n",
+-				io->res, strerror(-io->res),
+-				io->iocb.aio_lio_opcode, io->iocb.u.c.offset,
+-				io->buf_size);
++			tst_res(TINFO, "io err %lu (%s) op %d, off %llu size %d",
++				io->res, tst_strerrno(-io->res), io->iocb.aio_lio_opcode,
++				io->iocb.u.c.offset, io->buf_size);
+ 			io->io_oper->last_err = io->res;
+ 			io->io_oper->num_err++;
+ 			return -1;
+ 		}
  	}
 +
- 	iocb_free_count = i;
--	return 0;
- }
+ 	if (verify && io->io_oper->rw == READ) {
+ 		if (memcmp(io->buf, verify_buf, io->io_oper->reclen)) {
+-			fprintf(stderr,
+-				"verify error, file %s offset %Lu contents (offset:bad:good):\n",
++			tst_res(TINFO, "verify error, file %s offset %llu contents (offset:bad:good):",
+ 				io->io_oper->file_name, io->iocb.u.c.offset);
  
--static struct iocb *alloc_iocb(void)
-+static struct iocb *get_iocb(void)
- {
- 	if (!iocb_free_count)
- 		return 0;
-+
- 	return iocb_free[--iocb_free_count];
- }
- 
--void free_iocb(struct iocb *io)
-+static void put_iocb(struct iocb *io)
- {
- 	iocb_free[iocb_free_count++] = io;
- }
- 
--/*
-- * io_wait_run() - wait for an io_event and then call the callback.
-- */
--int io_wait_run(io_context_t ctx, struct timespec *to)
-+static void async_write_done(LTP_ATTRIBUTE_UNUSED io_context_t ctx, struct iocb *iocb, long res, long res2)
- {
--	struct io_event events[aio_maxio];
--	struct io_event *ep;
--	int ret, n;
-+	int iosize = iocb->u.c.nbytes;
- 
--	/*
--	 * get up to aio_maxio events at a time.
--	 */
--	ret = n = io_getevents(ctx, 1, aio_maxio, events, to);
-+	if (res != iosize)
-+		tst_brk(TBROK, "Write missing bytes expect %d got %ld", iosize, res);
- 
--	/*
--	 * Call the callback functions for each event.
--	 */
--	for (ep = events; n-- > 0; ep++) {
--		io_callback_t cb = (io_callback_t) ep->data;
--		struct iocb *iocb = ep->obj;
-+	if (res2 != 0)
-+		tst_brk(TBROK, "Write error: %s", tst_strerrno(-res2));
- 
--		if (debug > 1) {
--			fprintf(stderr, "ev:%p iocb:%p res:%ld res2:%ld\n",
--				ep, iocb, ep->res, ep->res2);
--		}
--		cb(ctx, iocb, ep->res, ep->res2);
--	}
--	return ret;
--}
-+	put_iocb(iocb);
- 
--/* Fatal error handler */
--static void io_error(const char *func, int rc)
--{
--	if (rc == -ENOSYS)
--		fprintf(stderr, "AIO not in this kernel\n");
--	else if (rc < 0)
--		fprintf(stderr, "%s: %s\n", func, strerror(-rc));
--	else
--		fprintf(stderr, "%s: error %d\n", func, rc);
-+	--busy;
-+	--tocopy;
- 
--	if (dstfd > 0)
--		close(dstfd);
--	if (dstname && dest_open_flag & O_CREAT)
--		unlink(dstname);
--	exit(1);
--}
-+	if (dstflags & O_DIRECT)
-+		SAFE_FSYNC(dstfd);
- 
--/*
-- * Write complete callback.
-- * Adjust counts and free resources
-- */
--static void wr_done(io_context_t ctx, struct iocb *iocb, long res, long res2)
--{
--	if (res2 != 0) {
--		io_error("aio write", res2);
--	}
--	if (res != iocb->u.c.nbytes) {
--		fprintf(stderr, "write missed bytes expect %lu got %ld\n",
--			iocb->u.c.nbytes, res);
--		exit(1);
--	}
--	--tocopy;
--	--busy;
--	free_iocb(iocb);
--	if (debug)
--		write(2, "w", 1);
-+	if (!tst_remaining_runtime())
-+		tst_brk(TCONF, "Out of runtime!");
- }
- 
--/*
-- * Read complete callback.
-- * Change read iocb into a write iocb and start it.
-- */
--static void rd_done(io_context_t ctx, struct iocb *iocb, long res, long res2)
-+static void async_copy(io_context_t ctx, struct iocb *iocb, long res, long res2)
- {
--	/* library needs accessors to look at iocb? */
- 	int iosize = iocb->u.c.nbytes;
- 	char *buf = iocb->u.c.buf;
- 	off_t offset = iocb->u.c.offset;
-+	int w;
-+
-+	if (res != iosize)
-+		tst_brk(TBROK, "Read missing bytes expect %d got %ld", iosize, res);
- 
- 	if (res2 != 0)
--		io_error("aio read", res2);
--	if (res != iosize) {
--		fprintf(stderr, "read missing bytes expect %lu got %ld\n",
--			iocb->u.c.nbytes, res);
--		exit(1);
--	}
-+		tst_brk(TBROK, "Read error: %s", tst_strerrno(-res2));
- 
--	/* turn read into write */
--	if (no_write) {
--		--tocopy;
--		--busy;
--		free_iocb(iocb);
--	} else {
--		int fd;
--		if (iocb->aio_fildes == srcfd)
--			fd = dstfd;
--		else
--			fd = dstfd2;
--		io_prep_pwrite(iocb, fd, buf, iosize, offset);
--		io_set_callback(iocb, wr_done);
--		if (1 != (res = io_submit(ctx, 1, &iocb)))
--			io_error("io_submit write", res);
--	}
--	if (debug)
--		write(2, "r", 1);
--	if (debug > 1)
--		printf("%d", iosize);
--}
-+	io_prep_pwrite(iocb, dstfd, buf, iosize, offset);
-+	io_set_callback(iocb, async_write_done);
- 
--static void usage(void)
--{
--	fprintf(stderr,
--		"Usage: aiocp [-a align] [-s size] [-b blksize] [-n num_io]"
--		" [-f open_flag] SOURCE DEST\n"
--		"This copies from SOURCE to DEST using AIO.\n\n"
--		"Usage: aiocp [options] -w SOURCE\n"
--		"This does sequential AIO reads (no writes).\n\n"
--		"Usage: aiocp [options] -z DEST\n"
--		"This does sequential AIO writes of zeros.\n");
--
--	exit(1);
--}
--
--/*
-- * Scale value by kilo, mega, or giga.
-- */
--long long scale_by_kmg(long long value, char scale)
--{
--	switch (scale) {
--	case 'g':
--	case 'G':
--		value *= 1024;
--	case 'm':
--	case 'M':
--		value *= 1024;
--	case 'k':
--	case 'K':
--		value *= 1024;
--		break;
--	case '\0':
--		break;
--	default:
--		usage();
--		break;
--	}
--	return value;
-+	w = io_submit(ctx, 1, &iocb);
-+	if (w < 0)
-+		tst_brk(TBROK, "io_submit error: %s", tst_strerrno(-w));
- }
- 
--int main(int argc, char *const *argv)
-+static void io_wait_run(io_context_t ctx, struct timespec *to)
- {
--	struct stat st;
--	off_t length = 0, offset = 0;
--	off_t leftover = 0;
--	io_context_t myctx;
--	int c;
--	extern char *optarg;
--	extern int optind, opterr, optopt;
--
--	while ((c = getopt(argc, argv, "a:b:df:n:s:wzD:")) != -1) {
--		char *endp;
--
--		switch (c) {
--		case 'a':	/* alignment of data buffer */
--			alignment = strtol(optarg, &endp, 0);
--			alignment = (long)scale_by_kmg((long long)alignment,
--						       *endp);
--			break;
--		case 'f':	/* use these open flags */
--			if (strcmp(optarg, "LARGEFILE") == 0 ||
--			    strcmp(optarg, "O_LARGEFILE") == 0) {
--				source_open_flag |= O_LARGEFILE;
--				dest_open_flag |= O_LARGEFILE;
--			} else if (strcmp(optarg, "TRUNC") == 0 ||
--				   strcmp(optarg, "O_TRUNC") == 0) {
--				dest_open_flag |= O_TRUNC;
--			} else if (strcmp(optarg, "SYNC") == 0 ||
--				   strcmp(optarg, "O_SYNC") == 0) {
--				dest_open_flag |= O_SYNC;
--			} else if (strcmp(optarg, "DIRECT") == 0 ||
--				   strcmp(optarg, "O_DIRECT") == 0) {
--				source_open_flag |= O_DIRECT;
--				dest_open_flag |= O_DIRECT;
--			} else if (strncmp(optarg, "CREAT", 5) == 0 ||
--				   strncmp(optarg, "O_CREAT", 5) == 0) {
--				dest_open_flag |= O_CREAT;
--			}
--			break;
--		case 'd':
--			debug++;
--			break;
--		case 'D':
--			delay.tv_usec = atoi(optarg);
--			break;
--		case 'b':	/* block size */
--			aio_blksize = strtol(optarg, &endp, 0);
--			aio_blksize =
--			    (long)scale_by_kmg((long long)aio_blksize, *endp);
--			break;
--
--		case 'n':	/* num io */
--			aio_maxio = strtol(optarg, &endp, 0);
--			break;
--		case 's':	/* size to transfer */
--			length = strtoll(optarg, &endp, 0);
--			length = scale_by_kmg(length, *endp);
--			break;
--		case 'w':	/* no write */
--			no_write = 1;
--			break;
--		case 'z':	/* write zero's */
--			zero = 1;
--			break;
--
--		default:
--			usage();
--		}
--	}
-+	struct io_event events[aionum];
-+	struct io_event *ep;
-+	int n;
- 
--	argc -= optind;
--	argv += optind;
-+	n = io_getevents(ctx, 1, aionum, events, to);
-+	if (n < 0)
-+		tst_brk(TBROK, "io_getevents() failed: %s", tst_strerrno(-n));
- 
--	if (argc < 1) {
--		usage();
--	}
--	if (!zero) {
--		if ((srcfd = open(srcname = *argv, source_open_flag)) < 0) {
--			perror(srcname);
--			exit(1);
--		}
--		argv++;
--		argc--;
--		if (fstat(srcfd, &st) < 0) {
--			perror("fstat");
--			exit(1);
--		}
--		if (length == 0)
--			length = st.st_size;
--	}
-+	for (ep = events; n-- > 0; ep++) {
-+		io_callback_t cb = (io_callback_t) ep->data;
-+		struct iocb *iocb = ep->obj;
- 
--	if (!no_write) {
--		/*
--		 * We are either copying or writing zeros to dstname
--		 */
--		if (argc < 1) {
--			usage();
--		}
--		if ((dstfd = open(dstname = *argv, dest_open_flag, 0666)) < 0) {
--			perror(dstname);
--			exit(1);
--		}
--		if (zero) {
--			/*
--			 * get size of dest, if we are zeroing it.
--			 * TODO: handle devices.
--			 */
--			if (fstat(dstfd, &st) < 0) {
--				perror("fstat");
--				exit(1);
--			}
--			if (length == 0)
--				length = st.st_size;
--		}
-+		cb(ctx, iocb, ep->res, ep->res2);
- 	}
--	/*
--	 * O_DIRECT cannot handle non-sector sizes
--	 */
--	if (dest_open_flag & O_DIRECT) {
--		int src_alignment = dev_block_size_by_path(srcname);
--		int dst_alignment = dev_block_size_by_path(dstname);
--
--		/*
--		 * Given we expect the block sizes to be multiple of 2 the
--		 * larger is always divideable by the smaller, so we only need
--		 * to care about maximum.
--		 */
--		if (src_alignment > dst_alignment)
--			dst_alignment = src_alignment;
--
--		if (alignment < dst_alignment) {
--			alignment = dst_alignment;
--			printf("Forcing aligment to %i\n", alignment);
--		}
-+}
- 
--		if (aio_blksize % alignment) {
--			printf("Block size is not multiple of drive block size\n");
--			printf("Skipping the test!\n");
--			exit(0);
--		}
-+static void async_run(io_context_t ctx, int fd, io_callback_t cb)
-+{
-+	long long offset = 0;
-+	int rc, i, n;
-+	int iosize;
-+	long long length;
- 
--		leftover = length % alignment;
--		if (leftover) {
--			int flag;
--
--			length -= leftover;
--			if (!zero) {
--				flag = source_open_flag & ~O_DIRECT;
--				srcfd2 = open(srcname, flag);
--				if (srcfd2 < 0) {
--					perror(srcname);
--					exit(1);
--				}
--			}
--			if (!no_write) {
--				flag = (O_SYNC | dest_open_flag) &
--				    ~(O_DIRECT | O_CREAT);
--				dstfd2 = open(dstname, flag);
--				if (dstfd2 < 0) {
--					perror(dstname);
--					exit(1);
--				}
--			}
--		}
--	}
-+	length = filesize - leftover;
- 
--	/* initialize state machine */
--	memset(&myctx, 0, sizeof(myctx));
--	io_queue_init(aio_maxio, &myctx);
- 	tocopy = howmany(length, aio_blksize);
--
--	if (init_iocb(aio_maxio, aio_blksize) < 0) {
--		fprintf(stderr, "Error allocating the i/o buffers\n");
--		exit(1);
--	}
-+	busy = 0;
- 
- 	while (tocopy > 0) {
--		int i, rc;
--		/* Submit as many reads as once as possible upto aio_maxio */
--		int n = MIN(MIN(aio_maxio - busy, aio_maxio),
--			    howmany(length - offset, aio_blksize));
-+		n = MIN(aionum - busy, tocopy);
-+
- 		if (n > 0) {
- 			struct iocb *ioq[n];
- 
- 			for (i = 0; i < n; i++) {
--				struct iocb *io = alloc_iocb();
--				int iosize = MIN(length - offset, aio_blksize);
--
--				if (zero) {
--					/*
--					 * We are writing zero's to dstfd
--					 */
--					io_prep_pwrite(io, dstfd, io->u.c.buf,
--						       iosize, offset);
--					io_set_callback(io, wr_done);
--				} else {
--					io_prep_pread(io, srcfd, io->u.c.buf,
--						      iosize, offset);
--					io_set_callback(io, rd_done);
--				}
-+				struct iocb *io = get_iocb();
-+
-+				iosize = MIN(length - offset, aio_blksize);
-+
-+				/* If we don't have any byte to write, exit */
-+				if (iosize <= 0)
-+					break;
-+
-+				io_prep_pread(io, fd, io->u.c.buf, iosize, offset);
-+				io_set_callback(io, cb);
-+
- 				ioq[i] = io;
- 				offset += iosize;
+ 			for (i = 0; i < io->io_oper->reclen; i++) {
+ 				if (io->buf[i] != verify_buf[i]) {
+-					fprintf(stderr, "%d:%c:%c ", i,
++					tst_res(TINFO, "%d:%c:%c ", i,
+ 						io->buf[i], verify_buf[i]);
+ 				}
  			}
+-			fprintf(stderr, "\n");
+ 		}
+-
+ 	}
++
+ 	return 0;
+ }
  
--			rc = io_submit(myctx, n, ioq);
-+			rc = io_submit(ctx, i, ioq);
- 			if (rc < 0)
--				io_error("io_submit", rc);
-+				tst_brk(TBROK, "io_submit write error: %s", tst_strerrno(-rc));
+@@ -392,7 +377,7 @@ static int grab_iou(struct io_unit *io, struct io_oper *oper)
+ 	return 0;
+ }
  
- 			busy += n;
--			if (debug > 1)
--				printf("io_submit(%d) busy:%d\n", n, busy);
--			if (delay.tv_usec) {
--				struct timeval t = delay;
--				(void)select(0, 0, 0, 0, &t);
--			}
+-char *stage_name(int rw)
++static char *stage_name(int rw)
+ {
+ 	switch (rw) {
+ 	case WRITE:
+@@ -409,8 +394,7 @@ char *stage_name(int rw)
+ 
+ static inline double oper_mb_trans(struct io_oper *oper)
+ {
+-	return ((double)oper->started_ios * (double)oper->reclen) /
+-	    (double)(1024 * 1024);
++	return ((double)oper->started_ios * (double)oper->reclen) / (double)(1024 * 1024);
+ }
+ 
+ static void print_time(struct io_oper *oper)
+@@ -422,38 +406,45 @@ static void print_time(struct io_oper *oper)
+ 	runtime = time_since_now(&oper->start_time);
+ 	mb = oper_mb_trans(oper);
+ 	tput = mb / runtime;
+-	fprintf(stderr, "%s on %s (%.2f MB/s) %.2f MB in %.2fs\n",
++
++	tst_res(TINFO, "%s on %s (%.2f MB/s) %.2f MB in %.2fs",
+ 		stage_name(oper->rw), oper->file_name, tput, mb, runtime);
+ }
+ 
+ static void print_lat(char *str, struct io_latency *lat)
+ {
++	char out[4 * 1024];
++	char *ptr = out;
+ 	double avg = lat->total_lat / lat->total_io;
+ 	int i;
+ 	double total_counted = 0;
+-	fprintf(stderr, "%s min %.2f avg %.2f max %.2f\n\t",
+-		str, lat->min, avg, lat->max);
++
++	tst_res(TINFO, "%s min %.2f avg %.2f max %.2f", str, lat->min, avg, lat->max);
+ 
+ 	for (i = 0; i < DEVIATIONS; i++) {
+-		fprintf(stderr, " %.0f < %d", lat->deviations[i],
+-			deviations[i]);
++		ptr += sprintf(ptr, "%.0f < %d", lat->deviations[i], deviations[i]);
+ 		total_counted += lat->deviations[i];
+ 	}
++
+ 	if (total_counted && lat->total_io - total_counted)
+-		fprintf(stderr, " < %.0f", lat->total_io - total_counted);
+-	fprintf(stderr, "\n");
++		ptr += sprintf(ptr, " < %.0f", lat->total_io - total_counted);
++
++	tst_res(TINFO, "%s", out);
++
+ 	memset(lat, 0, sizeof(*lat));
+ }
+ 
+ static void print_latency(struct thread_info *t)
+ {
+ 	struct io_latency *lat = &t->io_submit_latency;
++
+ 	print_lat("latency", lat);
+ }
+ 
+ static void print_completion_latency(struct thread_info *t)
+ {
+ 	struct io_latency *lat = &t->io_completion_latency;
++
+ 	print_lat("completion latency", lat);
+ }
+ 
+@@ -461,8 +452,8 @@ static void print_completion_latency(struct thread_info *t)
+  * updates the fields in the io operation struct that belongs to this
+  * io unit, and make the io unit reusable again
+  */
+-void finish_io(struct thread_info *t, struct io_unit *io, long result,
+-	       struct timeval *tv_now)
++static void finish_io(struct thread_info *t, struct io_unit *io, long result,
++		      struct timeval *tv_now)
+ {
+ 	struct io_oper *oper = io->io_oper;
+ 
+@@ -480,7 +471,7 @@ void finish_io(struct thread_info *t, struct io_unit *io, long result,
+ 	}
+ }
+ 
+-int read_some_events(struct thread_info *t)
++static int read_some_events(struct thread_info *t)
+ {
+ 	struct io_unit *event_io;
+ 	struct io_event *event;
+@@ -493,8 +484,7 @@ int read_some_events(struct thread_info *t)
+ 		min_nr = t->num_global_pending;
+ 
+ #ifdef NEW_GETEVENTS
+-	nr = io_getevents(t->io_ctx, min_nr, t->num_global_events, t->events,
+-			  NULL);
++	nr = io_getevents(t->io_ctx, min_nr, t->num_global_events, t->events, NULL);
+ #else
+ 	nr = io_getevents(t->io_ctx, t->num_global_events, t->events, NULL);
+ #endif
+@@ -524,7 +514,7 @@ retry:
+ 		event_io = t->free_ious;
+ 		t->free_ious = t->free_ious->next;
+ 		if (grab_iou(event_io, oper)) {
+-			fprintf(stderr, "io unit on free list but not free\n");
++			tst_res(TINFO, "io unit on free list but not free");
+ 			abort();
+ 		}
+ 		return event_io;
+@@ -533,7 +523,8 @@ retry:
+ 	if (nr > 0)
+ 		goto retry;
+ 	else
+-		fprintf(stderr, "no free ious after read_some_events\n");
++		tst_res(TINFO, "no free ious after read_some_events");
++
+ 	return NULL;
+ }
+ 
+@@ -545,22 +536,22 @@ static int io_oper_wait(struct thread_info *t, struct io_oper *oper)
+ 	struct io_event event;
+ 	struct io_unit *event_io;
+ 
+-	if (oper == NULL) {
++	if (!oper)
+ 		return 0;
+-	}
+ 
+ 	if (oper->num_pending == 0)
+ 		goto done;
+ 
+-	/* this func is not speed sensitive, no need to go wild reading
+-	 * more than one event at a time
+-	 */
++		/* this func is not speed sensitive, no need to go wild reading
++		 * more than one event at a time
++		 */
+ #ifdef NEW_GETEVENTS
+ 	while (io_getevents(t->io_ctx, 1, 1, &event, NULL) > 0) {
+ #else
+ 	while (io_getevents(t->io_ctx, 1, &event, NULL) > 0) {
+ #endif
+ 		struct timeval tv_now;
++
+ 		event_io = (struct io_unit *)((unsigned long)event.obj);
+ 
+ 		gettimeofday(&tv_now, NULL);
+@@ -570,14 +561,13 @@ static int io_oper_wait(struct thread_info *t, struct io_oper *oper)
+ 			break;
+ 	}
+ done:
+-	if (oper->num_err) {
+-		fprintf(stderr, "%u errors on oper, last %u\n",
+-			oper->num_err, oper->last_err);
+-	}
++	if (oper->num_err)
++		tst_res(TINFO, "%u errors on oper, last %u", oper->num_err, oper->last_err);
++
+ 	return 0;
+ }
+ 
+-off_t random_byte_offset(struct io_oper * oper)
++static off_t random_byte_offset(struct io_oper *oper)
+ {
+ 	off_t num;
+ 	off_t rand_byte = oper->start;
+@@ -603,9 +593,9 @@ off_t random_byte_offset(struct io_oper * oper)
+ 	num = (num + page_size_mask) & ~page_size_mask;
+ 	rand_byte += num;
+ 
+-	if (rand_byte + oper->reclen > oper->end) {
++	if (rand_byte + oper->reclen > oper->end)
+ 		rand_byte -= oper->reclen;
+-	}
++
+ 	return rand_byte;
+ }
+ 
+@@ -623,33 +613,27 @@ static struct io_unit *build_iocb(struct thread_info *t, struct io_oper *oper)
+ 	off_t rand_byte;
+ 
+ 	io = find_iou(t, oper);
+-	if (!io) {
+-		fprintf(stderr, "unable to find io unit\n");
+-		return NULL;
+-	}
++	if (!io)
++		tst_brk(TBROK, "unable to find io unit");
+ 
+ 	switch (oper->rw) {
+ 	case WRITE:
+-		io_prep_pwrite(&io->iocb, oper->fd, io->buf, oper->reclen,
+-			       oper->last_offset);
++		io_prep_pwrite(&io->iocb, oper->fd, io->buf, oper->reclen, oper->last_offset);
+ 		oper->last_offset += oper->reclen;
+ 		break;
+ 	case READ:
+-		io_prep_pread(&io->iocb, oper->fd, io->buf, oper->reclen,
+-			      oper->last_offset);
++		io_prep_pread(&io->iocb, oper->fd, io->buf, oper->reclen, oper->last_offset);
+ 		oper->last_offset += oper->reclen;
+ 		break;
+ 	case RREAD:
+ 		rand_byte = random_byte_offset(oper);
+ 		oper->last_offset = rand_byte;
+-		io_prep_pread(&io->iocb, oper->fd, io->buf, oper->reclen,
+-			      rand_byte);
++		io_prep_pread(&io->iocb, oper->fd, io->buf, oper->reclen, rand_byte);
+ 		break;
+ 	case RWRITE:
+ 		rand_byte = random_byte_offset(oper);
+ 		oper->last_offset = rand_byte;
+-		io_prep_pwrite(&io->iocb, oper->fd, io->buf, oper->reclen,
+-			       rand_byte);
++		io_prep_pwrite(&io->iocb, oper->fd, io->buf, oper->reclen, rand_byte);
+ 
+ 		break;
+ 	}
+@@ -667,10 +651,10 @@ static int finish_oper(struct thread_info *t, struct io_oper *oper)
+ 
+ 	io_oper_wait(t, oper);
+ 	last_err = oper->last_err;
+-	if (oper->num_pending > 0) {
+-		fprintf(stderr, "oper num_pending is %d\n", oper->num_pending);
+-	}
+-	close(oper->fd);
++	if (oper->num_pending > 0)
++		tst_res(TINFO, "oper num_pending is %d", oper->num_pending);
++
++	SAFE_CLOSE(oper->fd);
+ 	free(oper);
+ 	return last_err;
+ }
+@@ -680,16 +664,11 @@ static int finish_oper(struct thread_info *t, struct io_oper *oper)
+  * null on error
+  */
+ static struct io_oper *create_oper(int fd, int rw, off_t start, off_t end,
+-				   int reclen, int depth, int iter,
+-				   char *file_name)
++				   int reclen, int depth, char *file_name)
+ {
+ 	struct io_oper *oper;
+ 
+-	oper = malloc(sizeof(*oper));
+-	if (!oper) {
+-		fprintf(stderr, "unable to allocate io oper\n");
+-		return NULL;
+-	}
++	oper = SAFE_MALLOC(sizeof(*oper));
+ 	memset(oper, 0, sizeof(*oper));
+ 
+ 	oper->depth = depth;
+@@ -709,8 +688,8 @@ static struct io_oper *create_oper(int fd, int rw, off_t start, off_t end,
+  * does setup on num_ios worth of iocbs, but does not actually
+  * start any io
+  */
+-int build_oper(struct thread_info *t, struct io_oper *oper, int num_ios,
+-	       struct iocb **my_iocbs)
++static int build_oper(struct thread_info *t, struct io_oper *oper, int num_ios,
++		      struct iocb **my_iocbs)
+ {
+ 	int i;
+ 	struct io_unit *io;
+@@ -726,9 +705,9 @@ int build_oper(struct thread_info *t, struct io_oper *oper, int num_ios,
+ 
+ 	for (i = 0; i < num_ios; i++) {
+ 		io = build_iocb(t, oper);
+-		if (!io) {
++		if (!io)
+ 			return -1;
+-		}
++
+ 		my_iocbs[i] = &io->iocb;
+ 	}
+ 	return num_ios;
+@@ -738,21 +717,21 @@ int build_oper(struct thread_info *t, struct io_oper *oper, int num_ios,
+  * runs through the iocbs in the array provided and updates
+  * counters in the associated oper struct
+  */
+-static void update_iou_counters(struct iocb **my_iocbs, int nr,
+-				struct timeval *tv_now)
++static void update_iou_counters(struct iocb **my_iocbs, int nr, struct timeval *tv_now)
+ {
+ 	struct io_unit *io;
+ 	int i;
++
+ 	for (i = 0; i < nr; i++) {
+ 		io = (struct io_unit *)(my_iocbs[i]);
+ 		io->io_oper->num_pending++;
+ 		io->io_oper->started_ios++;
+-		io->io_start_time = *tv_now;	/* set time of io_submit */
++		io->io_start_time = *tv_now; /* set time of io_submit */
+ 	}
+ }
+ 
+ /* starts some io for a given file, returns zero if all went well */
+-int run_built(struct thread_info *t, int num_ios, struct iocb **my_iocbs)
++static int run_built(struct thread_info *t, int num_ios, struct iocb **my_iocbs)
+ {
+ 	int ret;
+ 	struct timeval start_time;
+@@ -778,17 +757,17 @@ resubmit:
+ 		 */
+ 		if (ret > 0 || ret == -EAGAIN) {
+ 			int old_ret = ret;
+-			if ((ret = read_some_events(t) > 0)) {
++
++			ret = read_some_events(t);
++			if (ret > 0) {
+ 				goto resubmit;
+ 			} else {
+-				fprintf(stderr, "ret was %d and now is %d\n",
+-					ret, old_ret);
++				tst_res(TINFO, "ret was %d and now is %d", ret, old_ret);
+ 				abort();
+ 			}
  		}
  
--		/*
--		 * We have submitted all the i/o requests. Wait for at least one to complete
--		 * and call the callbacks.
--		 */
--		count_io_q_waits++;
--		rc = io_wait_run(myctx, 0);
-+		io_wait_run(ctx, 0);
-+	}
-+
-+	if (leftover) {
-+		struct iocb *io = get_iocb();
-+
-+		io_prep_pread(io, srcfd, io->u.c.buf, leftover, offset);
-+		io_set_callback(io, cb);
-+
-+		rc = io_submit(ctx, 1, &io);
- 		if (rc < 0)
--			io_error("io_wait_run", rc);
-+			tst_brk(TBROK, "io_submit write error: %s", tst_strerrno(-rc));
- 
--		if (debug > 1) {
--			printf("io_wait_run: rc == %d\n", rc);
--			printf("busy:%d aio_maxio:%d tocopy:%d\n",
--			       busy, aio_maxio, tocopy);
--		}
-+		io_wait_run(ctx, 0);
+-		fprintf(stderr, "ret %d (%s) on io_submit\n", ret,
+-			strerror(-ret));
++		tst_res(TINFO, "ret %d (%s) on io_submit", ret, tst_strerrno(-ret));
+ 		return -1;
  	}
-+}
- 
--	if (leftover) {
--		/* non-sector size end of file */
--		struct iocb *io = alloc_iocb();
--		int rc;
--		if (zero) {
--			/*
--			 * We are writing zero's to dstfd2
--			 */
--			io_prep_pwrite(io, dstfd2, io->u.c.buf,
--				       leftover, offset);
--			io_set_callback(io, wr_done);
--		} else {
--			io_prep_pread(io, srcfd2, io->u.c.buf,
--				      leftover, offset);
--			io_set_callback(io, rd_done);
-+static void setup(void)
-+{
-+	struct stat sb;
-+	int maxaio;
+ 	update_iou_counters(my_iocbs, ret, &stop_time);
+@@ -803,21 +782,18 @@ resubmit:
+ static int restart_oper(struct io_oper *oper)
+ {
+ 	int new_rw = 0;
 +
-+	if (tst_parse_int(str_aionum, &aionum, 1, INT_MAX))
-+		tst_brk(TBROK, "Invalid number of I/O '%s'", str_aionum);
+ 	if (oper->last_err)
+ 		return 0;
+ 
+-	/* this switch falls through */
+-	switch (oper->rw) {
+-	case WRITE:
+-		if (stages & (1 << READ))
+-			new_rw = READ;
+-	case READ:
+-		if (!new_rw && stages & (1 << RWRITE))
+-			new_rw = RWRITE;
+-	case RWRITE:
+-		if (!new_rw && stages & (1 << RREAD))
+-			new_rw = RREAD;
+-	}
++	if (oper->rw == WRITE && (stages & (1 << READ)))
++		new_rw = READ;
++
++	if (oper->rw == READ && (!new_rw && stages & (1 << RWRITE)))
++		new_rw = RWRITE;
++
++	if (oper->rw == RWRITE && (!new_rw && stages & (1 << RREAD)))
++		new_rw = RREAD;
+ 
+ 	if (new_rw) {
+ 		oper->started_ios = 0;
+@@ -840,24 +816,21 @@ static int restart_oper(struct io_oper *oper)
+ static int oper_runnable(struct io_oper *oper)
+ {
+ 	struct stat buf;
+-	int ret;
+ 
+ 	/* first context is always runnable, if started_ios > 0, no need to
+ 	 * redo the calculations
+ 	 */
+ 	if (oper->started_ios || oper->start == 0)
+ 		return 1;
+-	/*
+-	 * only the sequential phases force delays in starting */
++
++	/* only the sequential phases force delays in starting */
+ 	if (oper->rw >= RWRITE)
+ 		return 1;
+-	ret = fstat(oper->fd, &buf);
+-	if (ret < 0) {
+-		perror("fstat");
+-		exit(1);
+-	}
++
++	SAFE_FSTAT(oper->fd, &buf);
+ 	if (S_ISREG(buf.st_mode) && buf.st_size < oper->start)
+ 		return 0;
++
+ 	return 1;
+ }
+ 
+@@ -872,8 +845,7 @@ static int oper_runnable(struct io_oper *oper)
+  * active list.  Any operations that have finished are moved onto
+  * the finished_opers list.
+  */
+-static int run_active_list(struct thread_info *t,
+-			   int io_iter, int max_io_submit)
++static int run_active_list(struct thread_info *t, int io_iter, int max_io_submit)
+ {
+ 	struct io_oper *oper;
+ 	struct io_oper *built_opers = NULL;
+@@ -903,10 +875,9 @@ static int run_active_list(struct thread_info *t,
+ 	}
+ 	if (num_built) {
+ 		ret = run_built(t, num_built, t->iocbs);
+-		if (ret < 0) {
+-			fprintf(stderr, "error %d on run_built\n", ret);
+-			exit(1);
+-		}
++		if (ret < 0)
++			tst_brk(TBROK, "error %d on run_built", ret);
++
+ 		while (built_opers) {
+ 			oper = built_opers;
+ 			oper_list_del(oper, &built_opers);
+@@ -917,46 +888,28 @@ static int run_active_list(struct thread_info *t,
+ 			}
+ 		}
+ 	}
+-	return 0;
+-}
+ 
+-void drop_shm()
+-{
+-	int ret;
+-	struct shmid_ds ds;
+-	if (use_shm != USE_SHM)
+-		return;
+-
+-	ret = shmctl(shm_id, IPC_RMID, &ds);
+-	if (ret) {
+-		perror("shmctl IPC_RMID");
+-	}
++	return 0;
+ }
+ 
+-void aio_setup(io_context_t * io_ctx, int n)
++static void aio_setup(io_context_t *io_ctx, int n)
+ {
+ 	int res = io_queue_init(n, io_ctx);
+-	if (res != 0) {
+-		fprintf(stderr, "io_queue_setup(%d) returned %d (%s)\n",
+-			n, res, strerror(-res));
+-		exit(3);
+-	}
++
++	if (res != 0)
++		tst_brk(TBROK, "io_queue_setup(%d) returned %d (%s)", n, res, tst_strerrno(-res));
+ }
+ 
+ /*
+  * allocate io operation and event arrays for a given thread
+  */
+-int setup_ious(struct thread_info *t,
+-	       int num_files, int depth, int reclen, int max_io_submit)
++static void setup_ious(struct thread_info *t, int num_files, int depth, int reclen, int max_io_submit)
+ {
+ 	int i;
+ 	size_t bytes = num_files * depth * sizeof(*t->ios);
+ 
+-	t->ios = malloc(bytes);
+-	if (!t->ios) {
+-		fprintf(stderr, "unable to allocate io units\n");
+-		return -1;
+-	}
++	t->ios = SAFE_MALLOC(bytes);
++
+ 	memset(t->ios, 0, bytes);
+ 
+ 	for (i = 0; i < depth * num_files; i++) {
+@@ -975,30 +928,14 @@ int setup_ious(struct thread_info *t,
+ 		memset(verify_buf, 'b', reclen);
+ 	}
+ 
+-	t->iocbs = malloc(sizeof(struct iocb *) * max_io_submit);
+-	if (!t->iocbs) {
+-		fprintf(stderr, "unable to allocate iocbs\n");
+-		goto free_buffers;
+-	}
+-
++	t->iocbs = SAFE_MALLOC(sizeof(struct iocb *) * max_io_submit);
+ 	memset(t->iocbs, 0, max_io_submit * sizeof(struct iocb *));
+ 
+-	t->events = malloc(sizeof(struct io_event) * depth * num_files);
+-	if (!t->events) {
+-		fprintf(stderr, "unable to allocate ram for events\n");
+-		goto free_buffers;
+-	}
++	t->events = SAFE_MALLOC(sizeof(struct io_event) * depth * num_files);
+ 	memset(t->events, 0, num_files * sizeof(struct io_event) * depth);
+ 
+ 	t->num_global_ios = num_files * depth;
+ 	t->num_global_events = t->num_global_ios;
+-	return 0;
+-
+-free_buffers:
+-	free(t->ios);
+-	free(t->iocbs);
+-	free(t->events);
+-	return -1;
+ }
+ 
+ /*
+@@ -1008,8 +945,7 @@ free_buffers:
+  * and without trying to find a special place in each thread to map the
+  * buffers to
+  */
+-int setup_shared_mem(int num_threads, int num_files, int depth,
+-		     int reclen, int max_io_submit)
++static int setup_shared_mem(int num_threads, int num_files, int depth, int reclen)
+ {
+ 	char *p = NULL;
+ 	size_t total_ram;
+@@ -1024,63 +960,40 @@ int setup_shared_mem(int num_threads, int num_files, int depth,
+ 	total_ram += page_size_mask;
+ 
+ 	if (use_shm == USE_MALLOC) {
+-		p = malloc(total_ram);
++		p = SAFE_MALLOC(total_ram);
+ 	} else if (use_shm == USE_SHM) {
+-		shm_id = shmget(IPC_PRIVATE, total_ram, IPC_CREAT | 0700);
+-		if (shm_id < 0) {
+-			perror("shmget");
+-			drop_shm();
+-			goto free_buffers;
+-		}
+-		p = shmat(shm_id, (char *)0x50000000, 0);
+-		if ((long)p == -1) {
+-			perror("shmat");
+-			goto free_buffers;
+-		}
+-		/* won't really be dropped until we shmdt */
+-		drop_shm();
++		SAFE_SHMGET(IPC_PRIVATE, total_ram, IPC_CREAT | 0700);
++		p = SAFE_SHMAT(shm_id, (char *)0x50000000, 0);
+ 	} else if (use_shm == USE_SHMFS) {
+-		char mmap_name[16];	/* /dev/shm/ + null + XXXXXX */
++		char mmap_name[16]; /* /dev/shm/ + null + XXXXXX */
+ 		int fd;
+ 
+ 		strcpy(mmap_name, "/dev/shm/XXXXXX");
+ 		fd = mkstemp(mmap_name);
+-		if (fd < 0) {
+-			perror("mkstemp");
+-			goto free_buffers;
+-		}
+-		unlink(mmap_name);
+-		ftruncate(fd, total_ram);
++		if (fd < 0)
++			tst_brk(TBROK, "mkstemp error");
++
++		SAFE_UNLINK(mmap_name);
++		SAFE_FTRUNCATE(fd, total_ram);
++
+ 		shm_id = fd;
+-		p = mmap((char *)0x50000000, total_ram,
+-			 PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+ 
+-		if (p == MAP_FAILED) {
+-			perror("mmap");
+-			goto free_buffers;
+-		}
+-	}
+-	if (!p) {
+-		fprintf(stderr, "unable to allocate buffers\n");
+-		goto free_buffers;
++		p = SAFE_MMAP((char *)0x50000000, total_ram,
++			      PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+ 	}
++
+ 	unaligned_buffer = p;
+-	p = (char *)((intptr_t) (p + page_size_mask) & ~page_size_mask);
++	p = (char *)((intptr_t)(p + page_size_mask) & ~page_size_mask);
+ 	aligned_buffer = p;
+-	return 0;
+ 
+-free_buffers:
+-	drop_shm();
+-	if (unaligned_buffer)
+-		free(unaligned_buffer);
+-	return -1;
++	return 0;
+ }
+ 
+ /*
+  * runs through all the thread_info structs and calculates a combined
+  * throughput
+  */
+-void global_thread_throughput(struct thread_info *t, char *this_stage)
++static void global_thread_throughput(struct thread_info *t, char *this_stage)
+ {
+ 	int i;
+ 	double runtime = time_since_now(&global_stage_start_time);
+@@ -1093,12 +1006,10 @@ void global_thread_throughput(struct thread_info *t, char *this_stage)
+ 			min_trans = t->stage_mb_trans;
+ 	}
+ 	if (total_mb) {
+-		fprintf(stderr, "%s throughput (%.2f MB/s) ", this_stage,
+-			total_mb / runtime);
+-		fprintf(stderr, "%.2f MB in %.2fs", total_mb, runtime);
+-		if (stonewall)
+-			fprintf(stderr, " min transfer %.2fMB", min_trans);
+-		fprintf(stderr, "\n");
++		tst_res(TINFO, "%s throughput (%.2f MB/s)", this_stage, total_mb / runtime);
++		tst_res(TINFO, "%.2f MB in %.2fs", total_mb, runtime);
++		if (no_stonewall)
++			tst_res(TINFO, "min transfer %.2fMB", min_trans);
+ 	}
+ }
+ 
+@@ -1111,7 +1022,7 @@ void global_thread_throughput(struct thread_info *t, char *this_stage)
+  * various timings are printed in between the stages, along with
+  * thread synchronization if there are more than one threads.
+  */
+-int worker(struct thread_info *t)
++static int *worker(struct thread_info *t)
+ {
+ 	struct io_oper *oper;
+ 	char *this_stage = NULL;
+@@ -1143,9 +1054,8 @@ restart:
+ 
+ 	cnt = 0;
+ 	/* first we send everything through aio */
+-	while (t->active_opers
+-	       && (cnt < iterations || iterations == RUN_FOREVER)) {
+-		if (stonewall && threads_ending) {
++	while (t->active_opers && (cnt < iterations || iterations == RUN_FOREVER)) {
++		if (!no_stonewall && threads_ending) {
+ 			oper = t->active_opers;
+ 			oper->stonewalled = 1;
+ 			oper_list_del(oper, &t->active_opers);
+@@ -1175,8 +1085,8 @@ restart:
+ 	 */
+ 	oper = t->finished_opers;
+ 	while (oper) {
+-		if (fsync_stages)
+-			fsync(oper->fd);
++		if (!no_fsync_stages)
++			SAFE_FSYNC(oper->fd);
+ 		t->stage_mb_trans += oper_mb_trans(oper);
+ 		if (restart_oper(oper)) {
+ 			oper_list_del(oper, &t->finished_opers);
+@@ -1191,11 +1101,10 @@ restart:
+ 
+ 	if (t->stage_mb_trans && t->num_files > 0) {
+ 		double seconds = time_since_now(&stage_time);
+-		fprintf(stderr,
+-			"thread %td %s totals (%.2f MB/s) %.2f MB in %.2fs\n",
++
++		tst_res(TINFO, "thread %td %s totals (%.2f MB/s) %.2f MB in %.2fs",
+ 			t - global_thread_info, this_stage,
+-			t->stage_mb_trans / seconds, t->stage_mb_trans,
+-			seconds);
++			t->stage_mb_trans / seconds, t->stage_mb_trans, seconds);
+ 	}
+ 
+ 	if (num_threads > 1) {
+@@ -1224,210 +1133,115 @@ restart:
+ 		status = finish_oper(t, oper);
+ 	}
+ 
+-	if (t->num_global_pending) {
+-		fprintf(stderr, "global num pending is %d\n",
+-			t->num_global_pending);
+-	}
++	if (t->num_global_pending)
++		tst_res(TINFO, "global num pending is %d", t->num_global_pending);
++
+ 	io_queue_release(t->io_ctx);
+ 
+-	return status;
++	return (void *)(intptr_t)status;
+ }
+ 
+-typedef void *(*start_routine) (void *);
+-int run_workers(struct thread_info *t, int num_threads)
++typedef void *(*start_routine)(void *);
++static int run_workers(struct thread_info *t, int num_threads)
+ {
+-	int ret;
++	void *retval;
++	int ret = 0;
+ 	int i;
+ 
++	for (i = 0; i < num_threads; i++)
++		SAFE_PTHREAD_CREATE(&t[i].tid, NULL, (start_routine)worker, t + i);
++
+ 	for (i = 0; i < num_threads; i++) {
+-		ret =
+-		    pthread_create(&t[i].tid, NULL, (start_routine) worker,
+-				   t + i);
+-		if (ret) {
+-			perror("pthread_create");
+-			exit(1);
+-		}
+-	}
+-	for (i = 0; i < num_threads; i++) {
+-		ret = pthread_join(t[i].tid, NULL);
+-		if (ret) {
+-			perror("pthread_join");
+-			exit(1);
+-		}
++		SAFE_PTHREAD_JOIN(t[i].tid, &retval);
++		ret = (intptr_t)retval;
+ 	}
+-	return 0;
+-}
+ 
+-off_t parse_size(char *size_arg, off_t mult)
+-{
+-	char c;
+-	int num;
+-	off_t ret;
+-	c = size_arg[strlen(size_arg) - 1];
+-	if (c > '9') {
+-		size_arg[strlen(size_arg) - 1] = '\0';
+-	}
+-	num = atoi(size_arg);
+-	switch (c) {
+-	case 'g':
+-	case 'G':
+-		mult = 1024 * 1024 * 1024;
+-		break;
+-	case 'm':
+-	case 'M':
+-		mult = 1024 * 1024;
+-		break;
+-	case 'k':
+-	case 'K':
+-		mult = 1024;
+-		break;
+-	case 'b':
+-	case 'B':
+-		mult = 1;
+-		break;
+-	}
+-	ret = mult * num;
+ 	return ret;
+ }
+ 
+-void print_usage(void)
++static void setup(void)
+ {
+-	printf
+-	    ("usage: aio-stress [-s size] [-r size] [-a size] [-d num] [-b num]\n");
+-	printf
+-	    ("                  [-i num] [-t num] [-c num] [-C size] [-nxhOS ]\n");
+-	printf("                  file1 [file2 ...]\n");
+-	printf("\t-a size in KB at which to align buffers\n");
+-	printf("\t-b max number of iocbs to give io_submit at once\n");
+-	printf("\t-c number of io contexts per file\n");
+-	printf("\t-C offset between contexts, default 2MB\n");
+-	printf("\t-s size in MB of the test file(s), default 1024MB\n");
+-	printf("\t-r record size in KB used for each io, default 64KB\n");
+-	printf
+-	    ("\t-d number of pending aio requests for each file, default 64\n");
+-	printf("\t-i number of I/O per file sent before switching\n"
+-	       "\t   to the next file, default 8\n");
+-	printf("\t-I total number of ayncs I/O the program will run, "
+-	       "default is run until Cntl-C\n");
+-	printf("\t-O Use O_DIRECT (not available in 2.4 kernels),\n");
+-	printf("\t-S Use O_SYNC for writes\n");
+-	printf("\t-o add an operation to the list: write=0, read=1,\n");
+-	printf("\t   random write=2, random read=3.\n");
+-	printf("\t   repeat -o to specify multiple ops: -o 0 -o 1 etc.\n");
+-	printf
+-	    ("\t-m shm use ipc shared memory for io buffers instead of malloc\n");
+-	printf("\t-m shmfs mmap a file in /dev/shm for io buffers\n");
+-	printf("\t-n no fsyncs between write stage and read stage\n");
+-	printf("\t-l print io_submit latencies after each stage\n");
+-	printf("\t-L print io completion latencies after each stage\n");
+-	printf("\t-t number of threads to run\n");
+-	printf("\t-u unlink files after completion\n");
+-	printf("\t-v verification of bytes written\n");
+-	printf("\t-x turn off thread stonewalling\n");
+-	printf("\t-h this message\n");
+-	printf
+-	    ("\n\t   the size options (-a -s and -r) allow modifiers -s 400{k,m,g}\n");
+-	printf("\t   translate to 400KB, 400MB and 400GB\n");
+-	printf("version %s\n", PROG_VERSION);
++	int maxaio;
++	int stages_i;
++
++	page_size_mask = tst_dev_block_size(".");
 +
 +	SAFE_FILE_SCANF("/proc/sys/fs/aio-max-nr", "%d", &maxaio);
 +	tst_res(TINFO, "Maximum AIO blocks: %d", maxaio);
 +
-+	if (aionum > maxaio)
++	if (tst_parse_int(str_num_files, &num_files, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid number of files to generate '%s'", str_num_files);
++
++	if (tst_parse_int(str_max_io_submit, &max_io_submit, 0, INT_MAX))
++		tst_brk(TBROK, "Invalid number of iocbs '%s'", str_max_io_submit);
++
++	if (max_io_submit > maxaio)
 +		tst_res(TCONF, "Number of async IO blocks passed the maximum (%d)", maxaio);
 +
-+	if (tst_parse_filesize(str_aio_blksize, &aio_blksize, 1, LLONG_MAX))
-+		tst_brk(TBROK, "Invalid write blocks size '%s'", str_aio_blksize);
++	if (tst_parse_int(str_num_contexts, &num_contexts, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid number of contexts per file '%s'", str_num_contexts);
 +
-+	SAFE_STAT(".", &sb);
-+	alignment = sb.st_blksize;
++	if (tst_parse_filesize(str_context_offset, &context_offset, 1, LLONG_MAX))
++		tst_brk(TBROK, "Invalid offset between contexts '%s'", str_context_offset);
 +
-+	if (tst_parse_filesize(str_filesize, &filesize, 1, LLONG_MAX))
-+		tst_brk(TBROK, "Invalid file size '%s'", str_filesize);
++	if (tst_parse_filesize(str_file_size, &file_size, 1, LLONG_MAX))
++		tst_brk(TBROK, "Invalid file size '%s'", str_file_size);
 +
-+	leftover = filesize % alignment;
++	if (tst_parse_long(str_rec_len, &rec_len, 1, LONG_MAX))
++		tst_brk(TBROK, "Invalid record size '%s'", str_rec_len);
 +
-+	if (str_oflag) {
-+		if (strncmp(str_oflag, "SYNC", 4) == 0) {
-+			dstflags |= O_SYNC;
-+		} else if (strncmp(str_oflag, "DIRECT", 6) == 0) {
-+			srcflags |= O_DIRECT;
-+			dstflags |= O_DIRECT;
- 		}
--		rc = io_submit(myctx, 1, &io);
--		if (rc < 0)
--			io_error("io_submit", rc);
--		count_io_q_waits++;
--		rc = io_wait_run(myctx, 0);
--		if (rc < 0)
--			io_error("io_wait_run", rc);
- 	}
- 
--	if (srcfd != -1)
--		close(srcfd);
--	if (dstfd != -1)
--		close(dstfd);
--	exit(0);
-+	tst_res(TINFO, "Fill %s with random data", srcname);
++	if (tst_parse_int(str_depth, &depth, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid number of pending aio requests '%s'", str_depth);
 +
-+	srcfd = SAFE_OPEN(srcname, srcflags | O_RDWR | O_CREAT, 0666);
-+	fill_with_rand_data(srcfd, filesize);
-+	SAFE_CLOSE(srcfd);
- }
- 
--/*
-- * Results look like:
-- * [alanm@toolbox ~/MOT3]$ ../taio -d kernel-source-2.4.8-0.4g.ppc.rpm abc
-- * rrrrrrrrrrrrrrrwwwrwrrwwrrwrwwrrwrwrwwrrwrwrrrrwwrwwwrrwrrrwwwwwwwwwwwwwwwww
-- * rrrrrrrrrrrrrrwwwrrwrwrwrwrrwwwwwwwwwwwwwwrrrrrrrrrrrrrrrrrrwwwwrwrwwrwrwrwr
-- * wrrrrrrrwwwwwwwwwwwwwrrrwrrrwrrwrwwwwwwwwwwrrrrwwrwrrrrrrrrrrrwwwwwwwwwwwrww
-- * wwwrrrrrrrrwwrrrwwrwrwrwwwrrrrrrrwwwrrwwwrrwrwwwwwwwwrrrrrrrwwwrrrrrrrwwwwww
-- * wwwwwwwrwrrrrrrrrwrrwrrwrrwrwrrrwrrrwrrrwrwwwwwwwwwwwwwwwwwwrrrwwwrrrrrrrrrr
-- * rrwrrrrrrwrrwwwwwwwwwwwwwwwwrwwwrrwrwwrrrrrrrrrrrrrrrrrrrwwwwwwwwwwwwwwwwwww
-- * rrrrrwrrwrwrwrrwrrrwwwwwwwwrrrrwrrrwrwwrwrrrwrrwrrrrwwwwwwwrwrwwwwrwwrrrwrrr
-- * rrrwwwwwwwrrrrwwrrrrrrrrrrrrwrwrrrrwwwwwwwwwwwwwwrwrrrrwwwwrwrrrrwrwwwrrrwww
-- * rwwrrrrrrrwrrrrrrrrrrrrwwwwrrrwwwrwrrwwwwwwwwwwwwwwwwwwwwwrrrrrrrwwwwwwwrw
-- */
-+static void cleanup(void)
-+{
-+	if (srcfd > 0)
-+		SAFE_CLOSE(srcfd);
- 
--#else
--int main(void)
-+	if (dstfd > 0)
-+		SAFE_CLOSE(dstfd);
-+}
++	if (tst_parse_int(str_io_iter, &io_iter, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid number of I/O per file '%s'", str_io_iter);
 +
-+static void run(void)
- {
--	fprintf(stderr, "test requires libaio and it's development packages\n");
--	return TCONF;
-+	const int buffsize = 4096;
-+	io_context_t myctx;
-+	struct stat st;
-+	char srcbuff[buffsize];
-+	char dstbuff[buffsize];
-+	int reads = 0;
-+	int i, r;
++	if (tst_parse_int(str_iterations, &iterations, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid number of total ayncs I/O '%s'", str_iterations);
 +
-+	srcfd = SAFE_OPEN(srcname, srcflags | O_RDWR | O_CREAT, 0666);
-+	dstfd = SAFE_OPEN(dstname, dstflags | O_WRONLY | O_CREAT, 0666);
++	if (iterations == INT_MAX)
++		iterations = RUN_FOREVER;
 +
-+	tst_res(TINFO, "Copy %s -> %s", srcname, dstname);
++	if (tst_parse_int(str_stages, &stages_i, 0, INT_MAX))
++		tst_brk(TBROK, "Invalid stage number '%s'", str_stages);
 +
-+	memset(&myctx, 0, sizeof(myctx));
-+	io_queue_init(aionum, &myctx);
-+
-+	async_init();
-+	async_run(myctx, srcfd, async_copy);
-+
-+	io_destroy(myctx);
-+	SAFE_CLOSE(srcfd);
-+	SAFE_CLOSE(dstfd);
-+
-+	tst_res(TINFO, "Comparing %s with %s", srcname, dstname);
-+
-+	SAFE_STAT(dstname, &st);
-+	if (st.st_size != filesize) {
-+		tst_res(TFAIL, "Expected destination file size %lld but it's %ld", filesize, st.st_size);
-+		/* no need to compare files */
-+		return;
++	if (stages_i) {
++		stages |= 1 << stages_i;
++		tst_res(TINFO, "Adding stage %s", stage_name(stages_i));
 +	}
 +
-+	srcfd = SAFE_OPEN(srcname, srcflags | O_RDONLY, 0666);
-+	dstfd = SAFE_OPEN(dstname, srcflags | O_RDONLY, 0666);
++	if (tst_parse_int(str_num_threads, &num_threads, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid number of threads '%s'", str_num_threads);
 +
-+	reads = howmany(filesize, buffsize);
++	if (str_o_flag)
++		o_flag = O_DIRECT;
++	else
++		o_flag = O_SYNC;
 +
-+	for (i = 0; i < reads; i++) {
-+		r = SAFE_READ(0, srcfd, srcbuff, buffsize);
-+		SAFE_READ(0, dstfd, dstbuff, buffsize);
-+		if (memcmp(srcbuff, dstbuff, r)) {
-+			tst_res(TFAIL, "Files are not identical");
-+			return;
++	if (str_use_shm) {
++		if (!strcmp(str_use_shm, "shm")) {
++			tst_res(TINFO, "using ipc shm");
++			use_shm = USE_SHM;
++		} else if (!strcmp(str_use_shm, "shmfs")) {
++			tst_res(TINFO, "using /dev/shm for buffers");
++			use_shm = USE_SHMFS;
++		} else {
++			tst_brk(TBROK, "Invalid shm option '%s'", str_use_shm);
 +		}
 +	}
+ }
+ 
+-int main(int ac, char **av)
++static void run(void)
+ {
+-	int rwfd;
+-	int i;
+-	int j;
+-	int c;
+-
+-	off_t file_size = 1 * 1024 * 1024 * 1024;
++	char files[num_files][265];
+ 	int first_stage = WRITE;
+ 	struct io_oper *oper;
+ 	int status = 0;
+-	int num_files = 0;
+ 	int open_fds = 0;
+ 	struct thread_info *t;
+-
+-	page_size_mask = getpagesize() - 1;
+-
+-	while (1) {
+-		c = getopt(ac, av, "a:b:c:C:m:s:r:d:i:I:o:t:lLnhOSxvu");
+-		if (c < 0)
+-			break;
+-
+-		switch (c) {
+-		case 'a':
+-			page_size_mask = parse_size(optarg, 1024);
+-			page_size_mask--;
+-			break;
+-		case 'c':
+-			num_contexts = atoi(optarg);
+-			break;
+-		case 'C':
+-			context_offset = parse_size(optarg, 1024 * 1024);
+-		case 'b':
+-			max_io_submit = atoi(optarg);
+-			break;
+-		case 's':
+-			file_size = parse_size(optarg, 1024 * 1024);
+-			break;
+-		case 'd':
+-			depth = atoi(optarg);
+-			break;
+-		case 'r':
+-			rec_len = parse_size(optarg, 1024);
+-			break;
+-		case 'i':
+-			io_iter = atoi(optarg);
+-			break;
+-		case 'I':
+-			iterations = atoi(optarg);
+-			break;
+-		case 'n':
+-			fsync_stages = 0;
+-			break;
+-		case 'l':
+-			latency_stats = 1;
+-			break;
+-		case 'L':
+-			completion_latency_stats = 1;
+-			break;
+-		case 'm':
+-			if (!strcmp(optarg, "shm")) {
+-				fprintf(stderr, "using ipc shm\n");
+-				use_shm = USE_SHM;
+-			} else if (!strcmp(optarg, "shmfs")) {
+-				fprintf(stderr, "using /dev/shm for buffers\n");
+-				use_shm = USE_SHMFS;
+-			}
+-			break;
+-		case 'o':
+-			i = atoi(optarg);
+-			stages |= 1 << i;
+-			fprintf(stderr, "adding stage %s\n", stage_name(i));
+-			break;
+-		case 'O':
+-			o_direct = O_DIRECT;
+-			break;
+-		case 'S':
+-			o_sync = O_SYNC;
+-			break;
+-		case 't':
+-			num_threads = atoi(optarg);
+-			break;
+-		case 'x':
+-			stonewall = 0;
+-			break;
+-		case 'u':
+-			unlink_files = 1;
+-			break;
+-		case 'v':
+-			verify = 1;
+-			break;
+-		case 'h':
+-		default:
+-			print_usage();
+-			exit(1);
+-		}
+-	}
++	int rwfd;
++	int i;
++	int j;
+ 
+ 	/*
+ 	 * make sure we don't try to submit more I/O than we have allocated
+@@ -1435,28 +1249,15 @@ int main(int ac, char **av)
+ 	 */
+ 	if (depth < io_iter) {
+ 		io_iter = depth;
+-		fprintf(stderr, "dropping io_iter to %d\n", io_iter);
++		tst_res(TINFO, "dropping io_iter to %d", io_iter);
+ 	}
+ 
+-	if (optind >= ac) {
+-		print_usage();
+-		exit(1);
+-	}
+-
+-	num_files = ac - optind;
+-
+ 	if (num_threads > (num_files * num_contexts)) {
+ 		num_threads = num_files * num_contexts;
+-		fprintf(stderr,
+-			"dropping thread count to the number of contexts %d\n",
+-			num_threads);
++		tst_res(TINFO, "Dropping thread count to the number of contexts %d", num_threads);
+ 	}
+ 
+-	t = malloc(num_threads * sizeof(*t));
+-	if (!t) {
+-		perror("malloc");
+-		exit(1);
+-	}
++	t = SAFE_MALLOC(num_threads * sizeof(*t));
+ 	memset(t, 0, num_threads * sizeof(*t));
+ 	global_thread_info = t;
+ 
+@@ -1471,100 +1272,108 @@ int main(int ac, char **av)
+ 	 */
+ 	if (max_io_submit < io_iter) {
+ 		io_iter = max_io_submit;
+-		fprintf(stderr, "dropping io_iter to %d\n", io_iter);
++		tst_res(TINFO, "dropping io_iter to %d", io_iter);
+ 	}
+ 
+ 	if (!stages) {
+-		stages =
+-		    (1 << WRITE) | (1 << READ) | (1 << RREAD) | (1 << RWRITE);
++		stages = (1 << WRITE) | (1 << READ) | (1 << RREAD) | (1 << RWRITE);
+ 	} else {
+ 		for (i = 0; i < LAST_STAGE; i++) {
+ 			if (stages & (1 << i)) {
+ 				first_stage = i;
+-				fprintf(stderr, "starting with %s\n",
+-					stage_name(i));
++				tst_res(TINFO, "starting with %s", stage_name(i));
+ 				break;
+ 			}
+ 		}
+ 	}
+ 
+ 	if (file_size < num_contexts * context_offset) {
+-		fprintf(stderr, "file size %ld too small for %d contexts\n",
++		tst_brk(TBROK, "file size %ld too small for %d contexts",
+ 			(long)file_size, num_contexts);
+-		exit(1);
+ 	}
+ 
+-	fprintf(stderr, "file size %ldMB, record size %ldKB, depth %d, "
+-		"I/O per iteration %d\n",
+-		(long)(file_size / (1024 * 1024)),
+-		rec_len / 1024, depth, io_iter);
+-	fprintf(stderr, "max io_submit %d, buffer alignment set to %luKB\n",
++	tst_res(TINFO, "file size %ldMB, record size %ldKB, depth %d, I/O per iteration %d",
++		(long)(file_size / (1024 * 1024)), rec_len / 1024, depth, io_iter);
++	tst_res(TINFO, "max io_submit %d, buffer alignment set to %luKB",
+ 		max_io_submit, (page_size_mask + 1) / 1024);
+-	fprintf(stderr, "threads %d files %d contexts %d context offset %ldMB "
+-		"verification %s\n", num_threads, num_files, num_contexts,
++	tst_res(TINFO, "threads %d files %d contexts %d context offset %ldMB verification %s",
++		num_threads, num_files, num_contexts,
+ 		(long)(context_offset / (1024 * 1024)), verify ? "on" : "off");
 +
-+	tst_res(TPASS, "Files are identical");
+ 	/* open all the files and do any required setup for them */
+-	for (i = optind; i < ac; i++) {
++	for (i = 0; i < num_files; i++) {
+ 		int thread_index;
 +
-+	SAFE_CLOSE(srcfd);
-+	SAFE_CLOSE(dstfd);
++		snprintf(files[i], sizeof(files[i]), "file%d.bin", i);
++
+ 		for (j = 0; j < num_contexts; j++) {
+ 			thread_index = open_fds % num_threads;
+ 			open_fds++;
+ 
+-			rwfd =
+-			    open(av[i], O_CREAT | O_RDWR | o_direct | o_sync,
+-				 0600);
+-			if (rwfd == -1) {
+-				fprintf(stderr,
+-					"error while creating file %s: %s",
+-					av[i], strerror(errno));
+-				exit(1);
+-			}
++			rwfd = SAFE_OPEN(files[i], O_CREAT | O_RDWR | o_flag, 0600);
++
++			oper = create_oper(rwfd, first_stage, j * context_offset,
++					   file_size - j * context_offset,
++					   rec_len, depth, files[i]);
++			if (!oper)
++				tst_brk(TBROK, "error in create_oper");
+ 
+-			oper =
+-			    create_oper(rwfd, first_stage, j * context_offset,
+-					file_size - j * context_offset, rec_len,
+-					depth, io_iter, av[i]);
+-			if (!oper) {
+-				fprintf(stderr, "error in create_oper\n");
+-				exit(-1);
+-			}
+ 			oper_list_add(oper, &t[thread_index].active_opers);
+ 			t[thread_index].num_files++;
+ 		}
+ 	}
+-	if (setup_shared_mem(num_threads, num_files * num_contexts,
+-			     depth, rec_len, max_io_submit)) {
+-		exit(1);
+-	}
+-	for (i = 0; i < num_threads; i++) {
+-		if (setup_ious
+-		    (&t[i], t[i].num_files, depth, rec_len, max_io_submit))
+-			exit(1);
+-	}
++
++	if (setup_shared_mem(num_threads, num_files * num_contexts, depth, rec_len))
++		tst_brk(TBROK, "error in setup_shared_mem");
++
++	for (i = 0; i < num_threads; i++)
++		setup_ious(&t[i], t[i].num_files, depth, rec_len, max_io_submit);
++
+ 	if (num_threads > 1) {
+-		printf("Running multi thread version num_threads:%d\n",
+-		       num_threads);
+-		run_workers(t, num_threads);
++		tst_res(TINFO, "Running multi thread version num_threads: %d", num_threads);
++		status = run_workers(t, num_threads);
+ 	} else {
+-		printf("Running single thread version \n");
+-		status = worker(t);
+-	}
+-	if (unlink_files) {
+-		for (i = optind; i < ac; i++) {
+-			printf("Cleaning up file %s \n", av[i]);
+-			unlink(av[i]);
+-		}
++		tst_res(TINFO, "Running single thread version");
++		status = (intptr_t)worker(t);
+ 	}
+ 
+-	if (status) {
+-		exit(1);
+-	}
+-	return status;
++	for (i = 0; i < num_files; i++)
++		SAFE_UNLINK(files[i]);
++
++	if (status)
++		tst_res(TFAIL, "Test did not pass");
++	else
++		tst_res(TPASS, "Test passed");
  }
 +
 +static struct tst_test test = {
 +	.test_all = run,
 +	.setup = setup,
-+	.cleanup = cleanup,
 +	.needs_tmpdir = 1,
-+	.max_runtime = 1800,
-+	.options = (struct tst_option[]) {
-+		{"b:", &str_aio_blksize, "Size of writing blocks (default 1K)"},
-+		{"s:", &str_filesize, "Size of file (default 10M)"},
-+		{"n:", &str_aionum, "Number of Async IO blocks (default 16)"},
-+		{"f:", &str_oflag, "Open flag: SYNC | DIRECT (default O_CREAT only)"},
++	.needs_root = 1,
++	.options = (struct tst_option[]){
++		{ "f:", &str_num_files, "Number of files to generate" },
++		{ "b:", &str_max_io_submit, "Max number of iocbs to give io_submit at once" },
++		{ "c:", &str_num_contexts, "Number of io contexts per file" },
++		{ "g:", &str_context_offset, "Offset between contexts (default 2M)" },
++		{ "s:", &str_file_size, "Size in MB of the test file(s) (default 1024M)" },
++		{ "r:", &str_rec_len, "Record size in KB used for each io (default 64K)" },
++		{ "d:", &str_depth, "Number of pending aio requests for each file (default 64)" },
++		{ "e:", &str_io_iter, "Number of I/O per file sent before switching to the next file (default 8)" },
++		{ "a:", &str_iterations, "Total number of ayncs I/O the program will run, default is run until Cntl-C (default 500)" },
++		{ "O", &str_o_flag, "Use O_DIRECT" },
++		{ "o:", &str_stages, "Add an operation to the list: write=0, read=1, random write=2, random read=3" },
++		{ "m", &str_use_shm, "SHM use ipc shared memory for io buffers instead of malloc" },
++		{ "n", &no_fsync_stages, "No fsyncs between write stage and read stage" },
++		{ "l", &latency_stats, "Print io_submit latencies after each stage" },
++		{ "L", &completion_latency_stats, "Print io completion latencies after each stage" },
++		{ "t:", &str_num_threads, "Number of threads to run" },
++		{ "u", &unlink_files, "Unlink files after completion" },
++		{ "v", &verify, "Verification of bytes written" },
++		{ "x", &no_stonewall, "Turn off thread stonewalling" },
 +		{},
 +	},
 +};
-+#else
+ #else
+-int main(void)
+-{
+-	fprintf(stderr, "test requires libaio and it's development packages\n");
+-	return TCONF;
+-}
 +TST_TEST_TCONF("test requires libaio and its development packages");
  #endif
 -- 
