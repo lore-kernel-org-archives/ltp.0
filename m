@@ -4,89 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F71AC433FE
-	for <ltp@archiver.kernel.org>; Sun, 16 Oct 2022 13:04:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C026BC4332F
+	for <ltp@archiver.kernel.org>; Sun, 16 Oct 2022 13:04:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B0D533CAFDD
-	for <ltp@archiver.kernel.org>; Sun, 16 Oct 2022 15:03:58 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 68D843CA9CF
+	for <ltp@archiver.kernel.org>; Sun, 16 Oct 2022 15:04:10 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DB173CAFAA
- for <ltp@lists.linux.it>; Sun, 16 Oct 2022 14:59:50 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 883923CAFC2
+ for <ltp@lists.linux.it>; Sun, 16 Oct 2022 14:59:53 +0200 (CEST)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F10992001A2
- for <ltp@lists.linux.it>; Sun, 16 Oct 2022 14:59:49 +0200 (CEST)
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29G9jFHt005675
- for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:48 GMT
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B677C1A00668
+ for <ltp@lists.linux.it>; Sun, 16 Oct 2022 14:59:52 +0200 (CEST)
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29G9CBUu010756
+ for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:50 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=PrQdhwzSOIECFdCoOYLJcTA48a0UAYDjW8yz8gzKigw=;
- b=jyvscLnmIvnPuA/MBiqsCK2X7R0oHXm1hMSZB8W/PZbt4NYHdDs5E2QmbyEl7xTGboLz
- WUf1kUpjT5mZ3Tgr48dYIH4YEkBb/HKsmOQHtPaL8drOYEJkR/toz1iMBPAqpY0n+GbR
- Dr7A+LGzVS4pyAKL51gL8wFl1JznFBiqsCKYPbT1+yXXdRt5S5XmjFRtvTTW82zSp7dD
- zSO6yZKgNgkZvmSJw+phK6jvInYeXuZSmdf4h0MKyjeiW67wMSpEESrC5bxNB2fGJDi7
- Zh0k7s0bjYjAAvCAVpevL1HaPUCR8HDuRguHHsWxiWSsr3mSxLzWrFLzQ5SYTxe2vjzF nA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k86shvkjc-1
+ bh=6UojW8y2UeBb5jIofLAmzCDYX8hNvIg6fqPGzkAc39I=;
+ b=TSXKqY8ZJA75C7iK1Za3YU9vBxZBbvofg78GiFdv+JpRJw3DO6hyyySOToh8RmaRM0Pi
+ uDgp+UCyWYtMNbfXyOXQOF0uPJf9U5FJQZcIgPWSeaFKN5AM/qWywNPAXEecjeoWpwjl
+ LMLGpY3idXBw0BcQiKhy36XbjBynXQYR4hBqUQGRnejwj70b8dALRkEwUQMxkkH9VSnj
+ lE46UaqDkoNAKc2G7Hs48dxOELDJkLxQR2wSAr1pGLBl1FO67ZOTPlSXizutq3bgwat/
+ TkhopdL6N4m8Y2wednDXpvEZ/4kG9gjgOuRBPbTD17LjXvIxASe0dBeMmEf2AHE8+Vk3 ZQ== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.70])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k86nsvgru-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:50 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+ by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29GCq7ZS015128
+ for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:48 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com
+ (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+ by ppma01fra.de.ibm.com with ESMTP id 3k7mg8s81s-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
  for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:47 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29GCpfbF010060
- for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:45 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com
- (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
- by ppma04ams.nl.ibm.com with ESMTP id 3k7mg91km8-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:45 +0000
 Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com
  [9.149.105.61])
- by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
- id 29GD0E4m15925508
+ by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 29GCxiCd2884316
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sun, 16 Oct 2022 13:00:14 GMT
+ Sun, 16 Oct 2022 12:59:44 GMT
 Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 4A13811C04A;
+ by IMSVA (Postfix) with ESMTP id B17F511C04C;
+ Sun, 16 Oct 2022 12:59:44 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id DECC711C04A;
  Sun, 16 Oct 2022 12:59:42 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3DA3911C058;
- Sun, 16 Oct 2022 12:59:40 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.63.52])
  by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Sun, 16 Oct 2022 12:59:39 +0000 (GMT)
+ Sun, 16 Oct 2022 12:59:42 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Sun, 16 Oct 2022 18:27:28 +0530
-Message-Id: <20221016125731.249078-27-tsahu@linux.ibm.com>
+Date: Sun, 16 Oct 2022 18:27:29 +0530
+Message-Id: <20221016125731.249078-28-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221016125731.249078-1-tsahu@linux.ibm.com>
 References: <20221016125731.249078-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LfAvia-_jL-ru3XDguqCzM_I2wd9OzKo
-X-Proofpoint-GUID: LfAvia-_jL-ru3XDguqCzM_I2wd9OzKo
+X-Proofpoint-ORIG-GUID: DvXouYG3Z5KliB3LboqJFVv4WAKFBdZN
+X-Proofpoint-GUID: DvXouYG3Z5KliB3LboqJFVv4WAKFBdZN
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-10-16_09,2022-10-14_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 adultscore=0
- priorityscore=1501 phishscore=0 impostorscore=0 lowpriorityscore=0
- malwarescore=0 mlxscore=0 spamscore=0 clxscore=1015 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210160077
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+ impostorscore=0 bulkscore=0
+ priorityscore=1501 mlxlogscore=943 suspectscore=0 clxscore=1015 mlxscore=0
+ spamscore=0 adultscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2209130000
+ definitions=main-2210160077
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 26/29] Hugetlb: Migrating libhugetlbfs
- readahead_reserve
+Subject: [LTP] [PATCH 27/29] Hugetlb: Migrating libhugetlbfs readback
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,85 +103,76 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/readahead_reserve.c test
+Migrating the libhugetlbfs/testcases/readback.c test
 
-Test Description: readahead() on some kernels can cause the reservation
-counter to get corrupted. The problem is that the patches are allocated
-for the reservation but not faulted in at the time of allocation. The
-counters do not get updated and effectively "leak". This test
-identifies whether the kernel is vulnerable to the problem or not.
-It's fixed in kernel by 'commit f2deae9d4e70
-("Remove implementation of readpage from the hugetlbfs_aops")'.
+Test Description: This test is basic test for data validation written on
+hugepages. It writes random data in chunks, read back and confirm they
+are same.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
- runtest/hugetlb                               |   1 +
- testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap30.c  | 120 ++++++++++++++++++
- 3 files changed, 122 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
+ runtest/hugetlb                               |  1 +
+ testcases/kernel/mem/.gitignore               |  1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap31.c  | 98 +++++++++++++++++++
+ 3 files changed, 100 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap31.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 906acb266..76ff1a3dd 100644
+index 76ff1a3dd..32d22dd88 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -30,6 +30,7 @@ hugemmap26 hugemmap26
- hugemmap27 hugemmap27
+@@ -31,6 +31,7 @@ hugemmap27 hugemmap27
  hugemmap28 hugemmap28
  hugemmap29 hugemmap29
-+hugemmap30 hugemmap30
+ hugemmap30 hugemmap30
++hugemmap31 hugemmap31
  hugemmap05_1 hugemmap05 -m
  hugemmap05_2 hugemmap05 -s
  hugemmap05_3 hugemmap05 -s -m
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index fef0a76d6..bb9720452 100644
+index bb9720452..8375389cd 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -29,6 +29,7 @@
- /hugetlb/hugemmap/hugemmap27
+@@ -30,6 +30,7 @@
  /hugetlb/hugemmap/hugemmap28
  /hugetlb/hugemmap/hugemmap29
-+/hugetlb/hugemmap/hugemmap30
+ /hugetlb/hugemmap/hugemmap30
++/hugetlb/hugemmap/hugemmap31
  /hugetlb/hugeshmat/hugeshmat01
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap31.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap31.c
 new file mode 100644
-index 000000000..030dbb851
+index 000000000..8d3a62e28
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
-@@ -0,0 +1,120 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap31.c
+@@ -0,0 +1,98 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
-+ * Copyright (C) 2005-2006 IBM Corporation.
++ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
 + *
-+ * Test Name: Readahead Reserve
++ * Test Name: Readback
 + *
-+ * Test Description: readahead() on some kernels can cause the reservation
-+ * counter to get corrupted. The problem is that the patches are allocated
-+ * for the reservation but not faulted in at the time of allocation. The
-+ * counters do not get updated and effectively "leak". This test
-+ * identifies whether the kernel is vulnerable to the problem or not.
-+ * It's fixed in kernel by commit f2deae9d4e70793568ef9e85d227abb7bef5b622.
++ * Test Description: This test is basic test for data validation written on
++ * hugepages. It writes random data in chunks, read back and confirm they
++ * are same.
 + *
 + * HISTORY
-+ *  Written by Mel Gorman & Eric B Munson
++ *  Written by David Gibson & Adam Litke
 + *
 + */
 +
 +#define _GNU_SOURCE
-+#include <fcntl.h>
 +#include <stdio.h>
-+#include <stdlib.h>
 +#include <sys/mount.h>
 +#include <limits.h>
 +#include <sys/param.h>
-+#include <string.h>
-+#include <unistd.h>
++#include <setjmp.h>
 +#include <sys/types.h>
 +
 +#include "hugetlb.h"
 +
++#define RANDOM_CONSTANT	0x1234ABCD
 +static char *verbose;
 +static char hfile[MAXPATHLEN];
 +static long hpage_size;
@@ -191,46 +181,29 @@ index 000000000..030dbb851
 +static void run_test(void)
 +{
 +	void *p;
-+	unsigned long initial_rsvd, map_rsvd, readahead_rsvd, end_rsvd;
++	unsigned long *q;
++	unsigned long i;
 +
-+	/* Setup */
 +	fd = SAFE_OPEN(hfile, O_RDWR | O_CREAT, 0600);
 +	SAFE_UNLINK(hfile);
 +
-+	initial_rsvd = SAFE_READ_MEMINFO("HugePages_Rsvd:");
-+	if (verbose)
-+		tst_res(TINFO, "Reserve count before map: %lu", initial_rsvd);
-+
-+	/* mmap a region and record reservations */
 +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
 +		 fd, 0);
-+	map_rsvd = SAFE_READ_MEMINFO("HugePages_Rsvd:");
-+	if (verbose)
-+		tst_res(TINFO, "Reserve count after map: %lu", map_rsvd);
 +
-+	/* readahead the region and record reservations */
-+	readahead(fd, 0, hpage_size);
-+	readahead_rsvd = SAFE_READ_MEMINFO("HugePages_Rsvd:");
-+	if (verbose)
-+		tst_res(TINFO, "Reserve count after readahead: %lu", readahead_rsvd);
++	q = p;
++	for (i = 0; i < (hpage_size / sizeof(*q)); i++)
++		q[i] = RANDOM_CONSTANT ^ i;
 +
-+	/* Write the region */
-+	memset(p, 1, hpage_size);
-+
-+	/* Free region */
++	for (i = 0; i < (hpage_size / sizeof(*q)); i++) {
++		if (q[i] != (RANDOM_CONSTANT ^ i)) {
++			tst_res(TFAIL, "Mismatch at offset 0x%lx: 0x%lx instead of 0x%lx",
++			     i, q[i], RANDOM_CONSTANT ^ i);
++			goto fail;
++		}
++	}
++	tst_res(TPASS, "Successful");
 +	SAFE_MUNMAP(p, hpage_size);
 +	SAFE_CLOSE(fd);
-+	end_rsvd = SAFE_READ_MEMINFO("HugePages_Rsvd:");
-+	if (verbose)
-+		tst_res(TINFO, "Reserve count after close(): %lu\n", end_rsvd);
-+
-+	/* Reserve count should match initial reserve count */
-+	if (end_rsvd != initial_rsvd) {
-+		tst_res(TFAIL, "Reserve leaked: %lu != %lu\n", end_rsvd, initial_rsvd);
-+		goto fail;
-+	}
-+
-+	tst_res(TPASS, "Successful");
 +	return;
 +
 +fail:
