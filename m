@@ -4,87 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43E13C433FE
-	for <ltp@archiver.kernel.org>; Sun, 16 Oct 2022 13:01:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78BEDC4332F
+	for <ltp@archiver.kernel.org>; Sun, 16 Oct 2022 13:01:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A81FC3CAFA6
-	for <ltp@archiver.kernel.org>; Sun, 16 Oct 2022 15:01:38 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 0C1A23CA2B3
+	for <ltp@archiver.kernel.org>; Sun, 16 Oct 2022 15:01:49 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B225E3CAFB4
- for <ltp@lists.linux.it>; Sun, 16 Oct 2022 14:59:13 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 441B73CAFBA
+ for <ltp@lists.linux.it>; Sun, 16 Oct 2022 14:59:16 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 819181A00668
- for <ltp@lists.linux.it>; Sun, 16 Oct 2022 14:59:11 +0200 (CEST)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29G9CmSC035709
- for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:10 GMT
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A95BE100037D
+ for <ltp@lists.linux.it>; Sun, 16 Oct 2022 14:59:14 +0200 (CEST)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29GATJT3028317
+ for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:13 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=dOifVoBORfcuo9cNnbXJFmYJDnr1OVUQZCzBKqeNfys=;
- b=FUuf9ywgOc5lELPwZmvH27X8MYVI9+F/0Le8BgwjXk8tliECn9cUbGzqdTJ54voAYAxa
- tIrOfvt0eFIS+li0BdwHXz37pCOhLXJ2t8kRBrfFXZd0r76H+vQmkomc0A7w4VnIVgHA
- u9U076574bldouDTyf/FXP9CZpVa4NM0JvDGUUCPr81KJwIbt5mlja/ZeBxuVFOxa09K
- /Tfdqz45cZXNNxfTJXC7j62svJxmy7YkUQem3D7qwmAluCXQ7GiuGKPeKdbxhc4rDB6O
- oBKrvM/EGz5kIxsKMtt4BhWevMAGdnK90LJAuZew6QwDRFdPSe/L6rKf87huMZIT9EHX kg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k86ufmd09-1
+ bh=9sT7uJhrYc+BMVEPO2NvjnvQtqNtjuaKTJfBsHyyCD8=;
+ b=Ev/s4xWHopYZliQ8pb7WvxzgZLP6m1p33cTltBN2r5PyAa/9twXV7yxFGRSXRbaGjY42
+ p3Xhlnyz2ALvC4wvCY/9/GoNwcF+nKQlehvGOT5+saJhvJ6KPYLx/PqA8L1QhiKesd0o
+ HPQyEjbpA0AevfAsL7UYKyzjTBRRP/3qK2W2IHfhlTduMMObKl+zxvDud+k+IgXi2SLj
+ gTweQrgmqSRxJaYdGkNdOPPEsQphQgRzR00mz6Dl+F0Ut7sHq4Ay0q10gQpVG1Ffh9Hk
+ zCijWD9y7rArVI+9X2ThcbMF0wl6ktoPDTx67Kx9ZQb6GCa0yFVwjmZbex+TB2Eh/cZz zA== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.72])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k86wrcb9c-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:12 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+ by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29GCpUfQ002766
+ for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:10 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com
+ (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+ by ppma06fra.de.ibm.com with ESMTP id 3k7m4j98f0-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
  for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:10 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29GCpB2R010001
- for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:07 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com
- (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
- by ppma04ams.nl.ibm.com with ESMTP id 3k7mg91kkk-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Sun, 16 Oct 2022 12:59:07 +0000
 Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com
  [9.149.105.61])
- by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 29GCx4WZ7144170
+ by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
+ id 29GCxdBW40370634
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sun, 16 Oct 2022 12:59:04 GMT
+ Sun, 16 Oct 2022 12:59:39 GMT
 Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8597A11C04C;
- Sun, 16 Oct 2022 12:59:04 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 2890911C050;
+ Sun, 16 Oct 2022 12:59:07 +0000 (GMT)
 Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 005ED11C04A;
- Sun, 16 Oct 2022 12:59:03 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 0A67F11C04A;
+ Sun, 16 Oct 2022 12:59:05 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.63.52])
  by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Sun, 16 Oct 2022 12:59:02 +0000 (GMT)
+ Sun, 16 Oct 2022 12:59:04 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Sun, 16 Oct 2022 18:27:15 +0530
-Message-Id: <20221016125731.249078-14-tsahu@linux.ibm.com>
+Date: Sun, 16 Oct 2022 18:27:16 +0530
+Message-Id: <20221016125731.249078-15-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221016125731.249078-1-tsahu@linux.ibm.com>
 References: <20221016125731.249078-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Hg9wDGG3_evFW2Pbmh_xiYHc-089yy05
-X-Proofpoint-ORIG-GUID: Hg9wDGG3_evFW2Pbmh_xiYHc-089yy05
+X-Proofpoint-GUID: fL1TbcnLbDA6RILIESZ8ikyy6GVd-RTy
+X-Proofpoint-ORIG-GUID: fL1TbcnLbDA6RILIESZ8ikyy6GVd-RTy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-10-16_09,2022-10-14_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxlogscore=999 phishscore=0
- bulkscore=0 lowpriorityscore=0 impostorscore=0 suspectscore=0 spamscore=0
- malwarescore=0 priorityscore=1501 adultscore=0 mlxscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2209130000
- definitions=main-2210160077
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+ mlxlogscore=999
+ lowpriorityscore=0 adultscore=0 impostorscore=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2210160077
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 13/29] Hugetlb: Migrating libhugetlbfs madvise_reserve
+Subject: [LTP] [PATCH 14/29] Hugetlb: Migrating libhugetlbfs
+ map_high_truncate_2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,69 +104,84 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/madvise_reserve.c test
+Migrating the libhugetlbfs/testcases/map_high_truncate_2.c test
 
-Test Description: madvise() on some kernels can cause the reservation
-counter to get corrupted. The problem is that the patches are allocated
-for the reservation but not faulted in at the time of allocation. The
-counters do not get updated and effectively "leak". This test
-identifies whether the kernel is vulnerable to the problem or not.
-It is fixed in kernel by 'commit f2deae9d4e70
-("Remove implementation of readpage from the hugetlbfs_aops")'.
+Test Description: At one stage, a misconversion of hugetlb_vmtruncate_list
+to a prio_tree meant that on 32-bit machines, certain combinations of
+mapping and truncations could truncate incorrect pages, or
+overwrite pmds from other VMAs, triggering BUG_ON()s or other
+wierdness.
+
+Test adapted from an example by Kenneth Chen <kenneth.w.chen@intel.com>
+
+WARNING: The offsets and addresses used within are specifically
+calculated to trigger the bug as it existed.  Don't mess with them
+unless you *really* know what you're doing.
+
+The kernel bug in question was fixed with
+'commit 856fc2950555 ("[PATCH] hugetlb: fix prio_tree unit")'.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
  runtest/hugetlb                               |   1 +
  testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap16.c  | 112 ++++++++++++++++++
- 3 files changed, 114 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap16.c
+ .../kernel/mem/hugetlb/hugemmap/hugemmap17.c  | 126 ++++++++++++++++++
+ 3 files changed, 128 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap17.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 0714ed34c..1691ce37d 100644
+index 1691ce37d..5fac3481c 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -17,6 +17,7 @@ hugemmap12 hugemmap12
- hugemmap13 hugemmap13
+@@ -18,6 +18,7 @@ hugemmap13 hugemmap13
  hugemmap14 hugemmap14
  hugemmap15 hugemmap15
-+hugemmap16 hugemmap16
+ hugemmap16 hugemmap16
++hugemmap17 hugemmap17
  hugemmap05_1 hugemmap05 -m
  hugemmap05_2 hugemmap05 -s
  hugemmap05_3 hugemmap05 -s -m
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index d59b60fd4..eb8e87c40 100644
+index eb8e87c40..6aa54f902 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -16,6 +16,7 @@
- /hugetlb/hugemmap/hugemmap13
+@@ -17,6 +17,7 @@
  /hugetlb/hugemmap/hugemmap14
  /hugetlb/hugemmap/hugemmap15
-+/hugetlb/hugemmap/hugemmap16
+ /hugetlb/hugemmap/hugemmap16
++/hugetlb/hugemmap/hugemmap17
  /hugetlb/hugeshmat/hugeshmat01
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap16.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap16.c
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap17.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap17.c
 new file mode 100644
-index 000000000..2b6a5e374
+index 000000000..8679dcece
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap16.c
-@@ -0,0 +1,112 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap17.c
+@@ -0,0 +1,126 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
-+ * Copyright (C) 2005-2006 IBM Corporation.
++ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
 + *
-+ * Test Name: madvise_reserve
++ * Test Name: Map High Truncate 2
 + *
-+ * Test Description: madvise() on some kernels can cause the reservation
-+ * counter to get corrupted. The problem is that the patches are allocated
-+ * for the reservation but not faulted in at the time of allocation. The
-+ * counters do not get updated and effectively "leak". This test
-+ * identifies whether the kernel is vulnerable to the problem or not.
-+ * It is fixed in kernel by commit f2deae9d4e70793568ef9e85d227abb7bef5b622
++ * Test Description: At one stage, a misconversion of hugetlb_vmtruncate_list
++ * to a prio_tree meant that on 32-bit machines, certain combinations of
++ * mapping and truncations could truncate incorrect pages, or
++ * overwrite pmds from other VMAs, triggering BUG_ON()s or other
++ * wierdness.
++ *
++ * Test adapted from an example by Kenneth Chen <kenneth.w.chen@intel.com>
++ *
++ * WARNING: The offsets and addresses used within are specifically
++ * calculated to trigger the bug as it existed.  Don't mess with them
++ * unless you *really* know what you're doing.
++ *
++ * The kernel bug in question was fixed with commit
++ * 856fc29505556cf263f3dcda2533cf3766c14ab6.
 + *
 + * HISTORY
-+ *  Written by Eric B Munson and Mel Gorman
++ *  Written by David Gibson & Adam Litke
 + *
 + */
 +
@@ -177,50 +194,51 @@ index 000000000..2b6a5e374
 +
 +#include "hugetlb.h"
 +
++#define MAP_LENGTH	(4UL * hpage_size)
++#if defined(__s390__) && __WORDSIZE == 32
++#define TRUNCATE_POINT 0x20000000UL
++#else
++#define TRUNCATE_POINT 0x60000000UL
++#endif
++#define HIGH_ADDR	0xa0000000UL
++#define FOURGIG		((off64_t)0x100000000ULL)
++
 +static char *verbose;
++static unsigned long hpage_size;
 +static int  fd = -1;
 +static char hfile[MAXPATHLEN];
-+static long hpage_size;
 +
-+static void test_directio(void)
++static void run_test(void)
 +{
-+	void *p;
-+	unsigned long initial_rsvd, map_rsvd, madvise_rsvd, end_rsvd;
++	char *p, *q;
++	unsigned long i;
 +
 +	fd = SAFE_OPEN(hfile, O_RDWR | O_CREAT, 0600);
 +	SAFE_UNLINK(hfile);
-+	initial_rsvd = SAFE_READ_MEMINFO("HugePages_Rsvd:");
++	/* First mapping */
++	p = SAFE_MMAP(0, MAP_LENGTH + TRUNCATE_POINT, PROT_READ | PROT_WRITE,
++		 MAP_PRIVATE | MAP_NORESERVE, fd, 0);
 +
++	SAFE_MUNMAP(p, 4*hpage_size + TRUNCATE_POINT);
++
++	q = SAFE_MMAP((void *)HIGH_ADDR, MAP_LENGTH, PROT_READ | PROT_WRITE,
++		 MAP_PRIVATE, fd, 0);
 +	if (verbose)
-+		tst_res(TINFO, "Reserve count before map: %lu", initial_rsvd);
++		tst_res(TINFO, "High map at %p\n", q);
 +
-+	/* mmap a region and record reservations */
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+		 fd, 0);
-+	map_rsvd = SAFE_READ_MEMINFO("HugePages_Rsvd:");
-+	if (verbose)
-+		tst_res(TINFO, "Reserve count after map: %lu", map_rsvd);
++	for (i = 0; i < MAP_LENGTH; i += hpage_size)
++		q[i] = 1;
 +
-+	/* madvise the region and record reservations */
-+	if (madvise(p, hpage_size, MADV_WILLNEED) == -1)
-+		tst_brk(TBROK|TERRNO, "madvise()");
-+	madvise_rsvd = SAFE_READ_MEMINFO("HugePages_Rsvd:");
-+	if (verbose)
-+		tst_res(TINFO, "Reserve count after madvise: %lu", madvise_rsvd);
++	SAFE_FTRUNCATE(fd, TRUNCATE_POINT);
 +
-+	/* Free region */
-+	SAFE_MUNMAP(p, hpage_size);
-+	SAFE_CLOSE(fd);
-+	end_rsvd = SAFE_READ_MEMINFO("HugePages_Rsvd:");
-+	if (verbose)
-+		tst_res(TINFO, "Reserve count after close(): %lu", end_rsvd);
-+
-+	/* Reserve count should match initial reserve count */
-+	if (end_rsvd != initial_rsvd) {
-+		tst_res(TFAIL, "Reserve leaked: %lu != %lu", end_rsvd, initial_rsvd);
++	if (q[0] != 1) {
++		tst_res(TFAIL, "data mismatch");
 +		goto fail;
 +	}
++
 +	tst_res(TPASS, "Successful");
++	SAFE_MUNMAP(p, MAP_LENGTH + TRUNCATE_POINT);
++	SAFE_MUNMAP(q, MAP_LENGTH);
 +	return;
 +fail:
 +	tst_brk(TBROK, "Once failed, No point in continuing to next iteration");
@@ -228,7 +246,7 @@ index 000000000..2b6a5e374
 +
 +static void setup(void)
 +{
-+	if (tst_hugepages < 1)
++	if (tst_hugepages < 4)
 +		tst_brk(TCONF, "Not enough hugepages for testing.");
 +
 +	if (!Hopt)
@@ -239,6 +257,11 @@ index 000000000..2b6a5e374
 +
 +	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
 +
++	if (hpage_size > TRUNCATE_POINT)
++		tst_brk(TCONF, "Huge page size is too large");
++
++	if (TRUNCATE_POINT % hpage_size)
++		tst_brk(TCONF, "Truncation point is not aligned to huge page size");
 +}
 +
 +static void cleanup(void)
@@ -259,8 +282,8 @@ index 000000000..2b6a5e374
 +	},
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = test_directio,
-+	.hugepages = {1, TST_REQUEST},
++	.test_all = run_test,
++	.hugepages = {4, TST_REQUEST},
 +};
 -- 
 2.31.1
