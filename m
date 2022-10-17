@@ -4,77 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE8B8C433FE
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 10:20:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC631C433FE
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 10:40:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A015D3CAFE5
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 12:20:44 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 7CC213CAFEB
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 12:39:59 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 036DD3C8CAF
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 12:20:32 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D43523CA2B3
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 12:39:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 717071400349
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 12:20:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1666002029;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A5BAD600750
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 12:39:47 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id A418633A5B;
+ Mon, 17 Oct 2022 10:39:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1666003186;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=JlS3zhHCoHrPQAfQ45TGJf564YUJc7X5zMPicKK5vEE=;
- b=Dg2+qSz02zydjtqTUxHD+zdr2+XM3wYMwUmCvxN38h4qAjUkK8jSvuvxqUQMC5kd5ZZCFB
- IIN8Bs+lkZo7kLacPK9GbcOye4OU5vEYY6L9xNNFLprdPgyghnVwKeR3g6s7gbXS0Dyy83
- KE5jJfD8SiQ9IvA8pZQ7Br3dzlHhtOA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-423-Gh4jzR_FOS6kYgtNm3PH5g-1; Mon, 17 Oct 2022 06:20:28 -0400
-X-MC-Unique: Gh4jzR_FOS6kYgtNm3PH5g-1
-Received: by mail-wr1-f72.google.com with SMTP id
- g4-20020adfbc84000000b0022fc417f87cso3556858wrh.12
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 03:20:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=JlS3zhHCoHrPQAfQ45TGJf564YUJc7X5zMPicKK5vEE=;
- b=jBshb/ubaKgEGsTX/99+JCxbe6oFkPOVAvHmfsOGWMAMyRTK52xXL+E/gKXlt0yEoi
- BDUiaanytRtuTpH5+Dx/Le66S5EJEHgUEjcEdu3GtFlVCtYvPO/Kz3iHpUzPvQiyM8YO
- vl0CSPT9vNtsCrpjbPD4znY8vRTbFMmybe351I6WQ4/VucpOKlKo6b58bAOXAK3RvzDT
- xRP4eR8IC/4FNcrRtLZ9Ra43KMk6rDxOQUkPPqunfPBvnRFMjJMSmZPlVO5wkuyIkjoP
- QvOEwptitM66psAldiXT7BvK63Y+ZqLpniDAyyJSuWvBSRUP/ADZQHQBJRYt7wJ50fcd
- qr1Q==
-X-Gm-Message-State: ACrzQf2GRT+35rsu9aDZEeVSCPn01+latgOzNPalIo6CHYdjov5NN5K1
- US70CKb+oAxGVSUwk9nJN+gldGthbg/XLCiTKNWg8aO3Yv4VfUTJNnjPSLS4hofxbqL7Ch+3CGY
- ouCgf3VnLsTHpH1bLdvhMaOdSg/s=
-X-Received: by 2002:a5d:6483:0:b0:22e:4804:8be4 with SMTP id
- o3-20020a5d6483000000b0022e48048be4mr5535318wri.528.1666002026850; 
- Mon, 17 Oct 2022 03:20:26 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM6VCZ6UtW9B5c0l1Wu9Y8FxZprsvnyNx9tqTCv9VRziS1TFjliWCMJblNz2LwfyOvJFG50pa3M+S43/maBQVAU=
-X-Received: by 2002:a5d:6483:0:b0:22e:4804:8be4 with SMTP id
- o3-20020a5d6483000000b0022e48048be4mr5535312wri.528.1666002026634; Mon, 17
- Oct 2022 03:20:26 -0700 (PDT)
+ bh=foPSg1U9AWv8QAJOI1Dn1Y353yxgpXXRb6G9blU9ETU=;
+ b=Ary5MzH8457sxITpa7CREZ93Ei2nDHapYbjWvFjuZXZIA2gkZVC0WccfhbmnGxhqTTKCZM
+ W0kJyEC7SO1hxBEgXitmLdIo9SE9uLOLYV83qEpcPv6lXxws1d6/spo8Z9yLRnaMaH6oIf
+ 84vL4Zk8FEq7g6CTmjqF3qa8wizYC8c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1666003186;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=foPSg1U9AWv8QAJOI1Dn1Y353yxgpXXRb6G9blU9ETU=;
+ b=8Ey6fvE9G9mQd+1JyjMa2QXw9nDvMa5o/qC2Qz/NGhFQ4pwnbnO8kYsKvfT0+H43uh6ZrK
+ vDGu4m8Hoxc4FRAQ==
+Received: from g78 (unknown [10.100.228.202])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 31FCA2C141;
+ Mon, 17 Oct 2022 10:39:46 +0000 (UTC)
+References: <YipkOjYIeY4NbQuh@pevik>
+ <20220902081711.1776943-1-jencce.kernel@gmail.com>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Murphy Zhou <jencce.kernel@gmail.com>
+Date: Mon, 17 Oct 2022 10:40:38 +0100
+In-reply-to: <20220902081711.1776943-1-jencce.kernel@gmail.com>
+Message-ID: <87pmeqohsh.fsf@suse.de>
 MIME-Version: 1.0
-References: <20221016125731.249078-1-tsahu@linux.ibm.com>
- <20221016125731.249078-2-tsahu@linux.ibm.com>
-In-Reply-To: <20221016125731.249078-2-tsahu@linux.ibm.com>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 17 Oct 2022 18:20:15 +0800
-Message-ID: <CAEemH2d_pdFqN-P=Ab00gpHypYW2z6Y2m9P6vLenRz+tFNvndw@mail.gmail.com>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 01/29] Hugetlb: Migrating libhugetlbfs
- brk_near_huge
+Subject: Re: [LTP] [PATCH v4] kernel/fs/fsnotify-stress: fsnotify stress test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,194 +70,194 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: aneesh.kumar@linux.ibm.com, sbhat@linux.ibm.com, ltp@lists.linux.it,
- vaibhav@linux.ibm.com
-Content-Type: multipart/mixed; boundary="===============1433358463=="
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1433358463==
-Content-Type: multipart/alternative; boundary="000000000000fe38ca05eb38524a"
+Hello,
 
---000000000000fe38ca05eb38524a
-Content-Type: text/plain; charset="UTF-8"
+Murphy Zhou <jencce.kernel@gmail.com> writes:
 
-Tarun Sahu <tsahu@linux.ibm.com> wrote:
-
-
-
-> +
-> +static void setup(void)
-> +{
-> +       if (tst_hugepages < 1)
-> +               tst_brk(TCONF, "Not enough hugepages for testing.");
+> This is a stress test that exercises fanotify and inotify interfaces
+> while IO going on. It intentionally ignores failures or return values
+> of some syscalls to let the stress go on. If the kernel does not panic
+> or hang after a certain period of time of testing, test pass.
 >
-
-
-If we needs at least 1 huge page for testing, the TST_NEEDS will
-be more useful than TST_REQUEST, and do not need to double
-check the hpage numbers anymore.
-
-
-TST_REQUEST:
-  It will try the best to reserve available huge pages and return the number
-  of available hugepages in tst_hugepages, which may be 0 if hugepages are
-  not supported at all.
-
-TST_NEEDS:
-  This is an enforced requirement, LTP should strictly do hpages applying
-and
-  guarantee the 'HugePages_Free' no less than pages which makes that test
-can
-  use these specified numbers correctly. Otherwise, test exits with TCONF if
-  the attempt to reserve hugepages fails or reserves less than requested.
-
-See:
-https://github.com/linux-test-project/ltp/blob/master/doc/c-test-api.txt#L2009
-
-
-
+> Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
+> ---
+> v3 -> v4:
+> 	Convert comment to docparse part.
+>
+>  runtest/fs                                    |   2 +
+>  testcases/kernel/fs/fsnotify-stress/Makefile  |   9 +
+>  .../fs/fsnotify-stress/fsnotify-stress.c      | 476 ++++++++++++++++++
+>  3 files changed, 487 insertions(+)
+>  create mode 100644 testcases/kernel/fs/fsnotify-stress/Makefile
+>  create mode 100644 testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c
+>
+> diff --git a/runtest/fs b/runtest/fs
+> index 1d753e0dd..beb43aae4 100644
+> --- a/runtest/fs
+> +++ b/runtest/fs
+> @@ -87,3 +87,5 @@ binfmt_misc01 binfmt_misc01.sh
+>  binfmt_misc02 binfmt_misc02.sh
+>  
+>  squashfs01 squashfs01
 > +
-> +       if (!Hopt)
-> +               Hopt = tst_get_tmpdir();
-> +       SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
+> +fsnotify-stress fsnotify-stress
+> diff --git a/testcases/kernel/fs/fsnotify-stress/Makefile b/testcases/kernel/fs/fsnotify-stress/Makefile
+> new file mode 100644
+> index 000000000..451f791f1
+> --- /dev/null
+> +++ b/testcases/kernel/fs/fsnotify-stress/Makefile
+> @@ -0,0 +1,9 @@
+> +#
+> +#    kernel/fs/fs-notify testcases Makefile.
+> +#
 > +
-> +       snprintf(hfile, sizeof(hfile), "%s/ltp_hugetlbfile%d", Hopt,
-> getpid());
-> +       hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
-> +}
+> +top_srcdir	?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c b/testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c
+> new file mode 100644
+> index 000000000..8130f7f12
+> --- /dev/null
+> +++ b/testcases/kernel/fs/fsnotify-stress/fsnotify-stress.c
+> @@ -0,0 +1,476 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2022 Red Hat, Inc.  All Rights Reserved.
+> + * Author: Murphy Zhou <jencce.kernel@gmail.com>
+> + * Copyright (c) Linux Test Project, 2001-2022
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * This is an irregular stress test for Linux kernel fanotify/inotify
+> + * interfaces. It calls thoese interfaces with possible best coverage
+> + * arguments, in a loop. It ignores some return values in the loop to
+> + * let the stress going on. At the same time, it initiates IO traffics
+> + * by calling IO syscalls.
+> + *
+> + * If kernel does no panic or hang after the test, test pass.
+> + *
+> + * It detected a leak in fsnotify code which was fixed by Amir through
+> + * this Linux commit:
+> + *     4396a731 fsnotify: fix sb_connectors leak
+
+The problem with stress tests is that they are expensive to run. If they
+do fail then it's often difficult to reproduce the errors. Eventually
+they just get added to a skip list.
+
+Why not make a reproducer for this bug which executes in the minimum
+time necessary?
+
+As well as saving CPU time and avoiding random timeouts this helps
+create a better understanding of what really matters in the test.
+
+> + *
+> + */
+> +
+> +#define _GNU_SOURCE     /* Needed to get O_LARGEFILE definition */
+> +
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include <errno.h>
+> +#include <fcntl.h>
+> +#include <limits.h>
+> +#include <poll.h>
+> +#include <sys/fanotify.h>
+> +#include <sys/inotify.h>
+> +#include <sys/time.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +
+> +#include "tst_test.h"
+> +#include "../../syscalls/fanotify/fanotify.h"
+> +#include "../../syscalls/inotify/inotify.h"
+> +
+> +static int fd0;
+> +
+> +#define TESTDIR "testdir"
+> +#define TESTFILE "testdir/file"
 > +
 > +static void cleanup(void)
 > +{
-> +       if (fd >= 0)
-> +               SAFE_CLOSE(fd);
-> +       umount2(Hopt, MNT_DETACH);
+> +	if (fd0 > 0) {
+> +		SAFE_CLOSE(fd0);
+> +	}
 > +}
 > +
+> +static void setup(void)
+> +{
+> +	SAFE_MKDIR(TESTDIR, 0777);
+> +	fd0 = SAFE_OPEN(TESTFILE, O_CREAT|O_RDWR, 0666);
+> +}
+> +
+> +static void fanotify_flushes(char *fn)
+> +{
+> +	int fd;
+> +
+> +	fd = SAFE_FANOTIFY_INIT(FAN_CLOEXEC | FAN_CLASS_CONTENT | FAN_NONBLOCK,
+> +					   O_RDONLY | O_LARGEFILE);
+> +
+> +	while (tst_remaining_runtime() > 10) {
+> +		/* As a stress test, we ignore the return values here to
+> +		 * proceed with the stress.
+> +		 */
+
+The LTP style guide forbids inline comments unless they are explaining
+something that would be very difficult to understand without them. There
+are lots of comments like this in the test.
+
+> +		fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_MOUNT,
+> +			  FAN_ACCESS | FAN_MODIFY | FAN_OPEN_PERM | FAN_CLOSE |
+> +			  FAN_OPEN | FAN_ACCESS_PERM | FAN_ONDIR |
+> +			  FAN_EVENT_ON_CHILD, -1, fn);
+> +
+
+...
+
+> +static void readfiles(char *fn)
+> +{
+> +	int fd;
+> +	char buf[BUFSIZ];
+> +
+> +	memset(buf, 1, BUFSIZ);
+> +	while (tst_remaining_runtime() > 10) {
+> +		fd = open(fn, O_RDONLY);
+
+If this fails then what are we stressing? We could just be testing
+spinning in a loop.
+
+> +		if (fd == -1)
+> +			continue;
+> +		read(fd, buf, BUFSIZ);
+
+Also ignoring the result of read results in compiler warnings.
+
+> +
 > +static struct tst_test test = {
-> +       .needs_root = 1,
-> +       .needs_tmpdir = 1,
-> +       .options = (struct tst_option[]) {
-> +               {"v", &verbose, "Turns on verbose mode"},
-> +               {"H:", &Hopt,   "Location of hugetlbfs, i.e.  -H
-> /var/hugetlbfs"},
-> +               {"s:", &nr_opt, "Set the number of the been allocated
-> hugepages"},
-> +               {}
-> +       },
-> +       .setup = setup,
-> +       .cleanup = cleanup,
-> +       .test_all = run_test,
-> +       .hugepages = {1, TST_REQUEST},
->
+> +	.tcnt = 1,
+> +	.max_runtime = 60,
 
-^ TST_NEEDS
+Does it need 60 seconds to reproduce the bug?
+Why does it need this long to achieve the desired coverage?
 
+Without further evidence I'd assume that full coverage (ignoring setup)
+is approached after <1 second on a reasonable system.
 
-
-> +};
->
-
-
+Also we should limit the number of iterations.
 
 -- 
-Regards,
-Li Wang
-
---000000000000fe38ca05eb38524a
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Tarun Sahu &lt;<a href=3D"mailto:tsahu@linux.ibm.com">tsahu@l=
-inux.ibm.com</a>&gt; wrote:<br></div></div><div class=3D"gmail_quote"><div>=
-<br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margi=
-n:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex=
-">
-+<br>
-+static void setup(void)<br>
-+{<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (tst_hugepages &lt; 1)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TCONF, &quo=
-t;Not enough hugepages for testing.&quot;);<br></blockquote><div><br></div>=
-<div><br></div><div><div class=3D"gmail_default" style=3D"font-size:small">=
-If we needs at least 1 huge page for testing, the TST_NEEDS will</div><div =
-class=3D"gmail_default" style=3D"font-size:small">be more useful than TST_R=
-EQUEST, and do not need to double</div><div class=3D"gmail_default" style=
-=3D"font-size:small">check the hpage numbers anymore.</div><br></div><div><=
-br></div><div><div class=3D"gmail_default" style=3D"font-size:small">TST_RE=
-QUEST:</div>=C2=A0 It will try the best to reserve available huge pages and=
- return the number<br>=C2=A0 of available hugepages in tst_hugepages, which=
- may be 0 if hugepages are<br>=C2=A0 not supported at all.<br><br>TST_NEEDS=
-:<br>=C2=A0 This is an enforced requirement, LTP should strictly do hpages =
-applying and<br>=C2=A0 guarantee the &#39;HugePages_Free&#39; no less than =
-pages which makes that test can<br>=C2=A0 use these specified numbers corre=
-ctly. Otherwise, test exits with TCONF if<br>=C2=A0 the attempt to reserve =
-hugepages fails or reserves less than requested.<br><div class=3D"gmail_def=
-ault" style=3D"font-size:small"></div><div class=3D"gmail_default" style=3D=
-"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size=
-:small">See: <a href=3D"https://github.com/linux-test-project/ltp/blob/mast=
-er/doc/c-test-api.txt#L2009">https://github.com/linux-test-project/ltp/blob=
-/master/doc/c-test-api.txt#L2009</a></div><br></div><div>=C2=A0</div><block=
-quote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1=
-px solid rgb(204,204,204);padding-left:1ex">
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (!Hopt)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hopt =3D tst_get_tm=
-pdir();<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SAFE_MOUNT(&quot;none&quot;, Hopt, &quot;hugetl=
-bfs&quot;, 0, NULL);<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0snprintf(hfile, sizeof(hfile), &quot;%s/ltp_hug=
-etlbfile%d&quot;, Hopt, getpid());<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0hpage_size =3D SAFE_READ_MEMINFO(&quot;Hugepage=
-size:&quot;)*1024;<br>
-+}<br>
-+<br>
-+static void cleanup(void)<br>
-+{<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (fd &gt;=3D 0)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0SAFE_CLOSE(fd);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0umount2(Hopt, MNT_DETACH);<br>
-+}<br>
-+<br>
-+static struct tst_test test =3D {<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0.needs_root =3D 1,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0.needs_tmpdir =3D 1,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0.options =3D (struct tst_option[]) {<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;v&quot;, &am=
-p;verbose, &quot;Turns on verbose mode&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;H:&quot;, &a=
-mp;Hopt,=C2=A0 =C2=A0&quot;Location of hugetlbfs, i.e.=C2=A0 -H /var/hugetl=
-bfs&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0{&quot;s:&quot;, &a=
-mp;nr_opt, &quot;Set the number of the been allocated hugepages&quot;},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0{}<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0.setup =3D setup,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0.cleanup =3D cleanup,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0.test_all =3D run_test,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0.hugepages =3D {1, TST_REQUEST},<br></blockquot=
-e><div><br></div><div><div class=3D"gmail_default" style=3D"font-size:small=
-">^ TST_NEEDS</div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_qu=
-ote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,20=
-4);padding-left:1ex">
-+};<br></blockquote><div><br></div><div>=C2=A0</div></div><div><br></div>--=
- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regar=
-ds,<br></div><div>Li Wang<br></div></div></div></div>
-
---000000000000fe38ca05eb38524a--
-
-
---===============1433358463==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1433358463==--
-
