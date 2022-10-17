@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C116C433FE
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 11:10:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DE9AC4332F
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 11:44:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 531C23CAFD1
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 13:10:09 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id D38D03CAF9F
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 13:44:31 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4D1873CAFC3
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 13:09:57 +0200 (CEST)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
- [IPv6:2a00:1450:4864:20::632])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1E83F3CAF9F
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 13:44:21 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9426F60047F
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 13:09:57 +0200 (CEST)
-Received: by mail-ej1-x632.google.com with SMTP id a26so24070250ejc.4
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 04:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-disposition:mime-version:message-id:subject:to:from:date
- :from:to:cc:subject:date:message-id:reply-to;
- bh=QM9KJohxcxqiRIkBW+GT3SMbWrmzYoa19OC5P56R4zY=;
- b=GbN5A/YQdR85aNps3MRTUAt+CR3ddjev9qKTRQuThFqwXi4uO4756vUSO5LwIbmcOK
- UFk5zibeIBbDONxEWiaqylnQlTQPZ7RvJql8yh0FrNUrOJsFiDLNreM0Ke6YH19XpZoe
- Ld6STeu65slwMCsUfXpNnwMVV9D5oUYN/9d5OaJz3r2xPfLsejfaTkJPat/KxdqQwx+Y
- 61iPDpTN0SIUBxgMNbuYmtwCOVMeH4qYbukog46/uMxesftSy7Exs4pRwzbwbtUinuFz
- jdjCxympdw782q/5J5jfMkulob4YrZfk4tlABHtZzOsRaQSgMhPeDkv4ZRamnyp+VDLe
- iXxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-disposition:mime-version:message-id:subject:to:from:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=QM9KJohxcxqiRIkBW+GT3SMbWrmzYoa19OC5P56R4zY=;
- b=0N0E2uiR/JXm0I2gfoplv5V21F+hUee9fCMNLSD9ecsMzK5KTGqLq4GSrH/yv6Nwoy
- SODB22uAGiWs9IYxENII1FDzIJYm0A4AxvTtrNC7spIVldGOPmG/aua2jYTqMujOeN1P
- UTwwGcFWx2SdOehUXnGRtMHTJy74LDNiF5sEPsQOpKX1OI8j8z4spV2l486VYjxfNlNK
- ctiKTheaaUw4ReHXqNhGnCiiA77uouaBMdo7aqs6D5e/ifDMKh6Q6BlKzLERAHC/MjdU
- Iil3BaqsBE/QwHmD/gzb6YYTco2p9nBboZF+TtN/m5Wrrcuu9I0DV3vR+X7gwMFuBeES
- R6Zw==
-X-Gm-Message-State: ACrzQf0p2oWgTuGzIRUYPDPyLGJimSCAtUD3bZVQHhwE1EIwkqx9V6pQ
- Jh5eNZbCEGcd0OxP4J7HX0LE8pcqcdk=
-X-Google-Smtp-Source: AMsMyM5DcHyv04BZlMW6KUaY5CEB7GmcL6P9qoHOexCxP0EuF/bYW8vW7bWNprKDujklqqZI4ncESQ==
-X-Received: by 2002:a17:907:75dc:b0:78b:339:63c7 with SMTP id
- jl28-20020a17090775dc00b0078b033963c7mr8359370ejc.480.1666004996742; 
- Mon, 17 Oct 2022 04:09:56 -0700 (PDT)
-Received: from lab.hqhome163.com ([194.183.10.152])
- by smtp.gmail.com with ESMTPSA id
- o3-20020a170906288300b007826c0a05ecsm5766535ejd.209.2022.10.17.04.09.55
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 17 Oct 2022 04:09:56 -0700 (PDT)
-Date: Mon, 17 Oct 2022 11:05:00 +0000
-From: Alessandro Carminati <alessandro.carminati@gmail.com>
-To: ltp@lists.linux.it
-Message-ID: <Y0023HcAOlhfAcJw@lab.hqhome163.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2C93860008E
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 13:44:20 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2A96933A87;
+ Mon, 17 Oct 2022 11:44:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1666007060; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3ujxwgU9XoA3BjO2hM+699gVjd9KAwFveXK92S7FvMQ=;
+ b=yP2SSdtZ5HY73KsDJBTYVJsLau3pUu6PYLZMu335xBGWe9NOE7sXUlGJe9Bue/uoTKg+bY
+ h1JJDm1NQe5+PfNsRduEPZQQ+JedheBB789OTFoluxJzDaVUWQa2ahKNYqtephkwOojUOB
+ 1eFtqd0K+AXB+cNnFdU+a7gqDD941NY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1666007060;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3ujxwgU9XoA3BjO2hM+699gVjd9KAwFveXK92S7FvMQ=;
+ b=ELRVa8tA2+iHfGTGa7iovKFMLI4ji/wZXp3terJUFdzsxZrJdu/ZBPSghCuFlq9pjhcG6C
+ EmRkF3NPK+fhpvBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BFF0413398;
+ Mon, 17 Oct 2022 11:44:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ME0hLhNATWPcGAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 17 Oct 2022 11:44:19 +0000
+Date: Mon, 17 Oct 2022 13:46:02 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Tarun Sahu <tsahu@linux.ibm.com>
+Message-ID: <Y01AeqaHiTIzAquv@yuki>
+References: <20221016125731.249078-1-tsahu@linux.ibm.com>
+ <20221016125731.249078-4-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <20221016125731.249078-4-tsahu@linux.ibm.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Fix tst_find_backing_dev when no initramfs
+Subject: Re: [LTP] [PATCH 03/29] Hugetlb: Migrating libhugetlbfs
+ corrupt-by-cow-opt
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,68 +76,196 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: aneesh.kumar@linux.ibm.com, sbhat@linux.ibm.com, ltp@lists.linux.it,
+ vaibhav@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-mount_root() is the kernel function responsible for mounting the primary
-rootfs.
-A dynamic there, prevents the /dev/root device node in the not yet mounted
-files system. For this reason, in the embedded system that starts without
-an initramfs, or however a proper initscript, the /dev/root device appears
-into the mount table in the / line.
-The test tries to open this /dev/root and fails with a warning.
-This patch aims to fix this situation.
+Hi!
+> Migrating the libhugetlbfs/testcases/corrupt-by-cow-opt.c test
+> 
+> Test Description: Test sanity of cow optimization on page cache. If a page
+> in page cache has only 1 ref count, it is mapped for a private mapping
+> directly and is overwritten freely, so next time we access the page, we
+> can see corrupt data.
+> 
+> Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+> ---
+>  runtest/hugetlb                               |   1 +
+>  testcases/kernel/mem/.gitignore               |   1 +
+>  .../kernel/mem/hugetlb/hugemmap/hugemmap09.c  | 102 ++++++++++++++++++
+>  3 files changed, 104 insertions(+)
+>  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
+> 
+> diff --git a/runtest/hugetlb b/runtest/hugetlb
+> index 664f18827..e2ada7a97 100644
+> --- a/runtest/hugetlb
+> +++ b/runtest/hugetlb
+> @@ -5,6 +5,7 @@ hugemmap05 hugemmap05
+>  hugemmap06 hugemmap06
+>  hugemmap07 hugemmap07
+>  hugemmap08 hugemmap08
+> +hugemmap09 hugemmap09
+>  hugemmap05_1 hugemmap05 -m
+>  hugemmap05_2 hugemmap05 -s
+>  hugemmap05_3 hugemmap05 -s -m
+> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+> index 003ce422b..1a242ffe0 100644
+> --- a/testcases/kernel/mem/.gitignore
+> +++ b/testcases/kernel/mem/.gitignore
+> @@ -6,6 +6,7 @@
+>  /hugetlb/hugemmap/hugemmap06
+>  /hugetlb/hugemmap/hugemmap07
+>  /hugetlb/hugemmap/hugemmap08
+> +/hugetlb/hugemmap/hugemmap09
+>  /hugetlb/hugeshmat/hugeshmat01
+>  /hugetlb/hugeshmat/hugeshmat02
+>  /hugetlb/hugeshmat/hugeshmat03
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
+> new file mode 100644
+> index 000000000..eeacf68a2
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
+> @@ -0,0 +1,102 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2013 Joonsoo Kim, LG Electronics.
+> + *
+> + * Test Name: Corrupt by COW optimization
+> + *
+> + * Test Description: Test sanity of cow optimization on page cache. If a page
+> + * in page cache has only 1 ref count, it is mapped for a private mapping
+> + * directly and is overwritten freely, so next time we access the page, we
+> + * can see corrupt data.
 
-Signed-off-by: Alessandro Carminati <alessandro.carminati@gmail.com>
+Here as well.
 
-typo fixes
----
- lib/tst_device.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+> + * HISTORY
+> + *  Written by Joonsoo Kim
+> + *
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include <sys/mount.h>
+> +#include <limits.h>
+> +#include <sys/param.h>
+> +#include <sys/types.h>
+> +
+> +#include "hugetlb.h"
+> +
+> +static char *verbose;
+> +static int  fd = -1;
+> +static char hfile[MAXPATHLEN];
+> +static long hpage_size;
+> +
+> +static void run_test(void)
+> +{
+> +	char *p;
+> +	char c;
+> +
+> +	fd = SAFE_OPEN(hfile, O_RDWR | O_CREAT, 0600);
+> +	SAFE_UNLINK(hfile);
 
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 8419b80c3..c3427eb31 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -526,6 +526,8 @@ void tst_find_backing_dev(const char *path, char *dev)
- 	unsigned int dev_major, dev_minor, line_mjr, line_mnr;
- 	unsigned int len, best_match_len = 1;
- 	char mnt_point[PATH_MAX];
-+	char tmpbuf1[PATH_MAX];
-+	char tmpbuf2[PATH_MAX];
- 
- 	if (stat(path, &buf) < 0)
- 		tst_brkm(TWARN | TERRNO, NULL, "stat() failed");
-@@ -562,6 +564,24 @@ void tst_find_backing_dev(const char *path, char *dev)
- 	if (!*dev)
- 		tst_brkm(TBROK, NULL, "Cannot find block device for %s", path);
- 
-+	if (stat(dev, &buf) < 0) {
-+		if (strcmp("/dev/root", dev) != 0) {
-+			tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
-+		} else {
-+			sprintf(tmpbuf1, "/sys/dev/block/%d:%d/uevent", dev_major, dev_minor);
-+			file = SAFE_FOPEN(NULL, tmpbuf1, "r");
-+			while (fgets(line, sizeof(line), file)) {
-+				if (sscanf(line, "%[^=]=%s", tmpbuf1, tmpbuf2) != 2)
-+					continue;
-+				if (strcmp("DEVNAME", tmpbuf1) == 0) {
-+					sprintf(dev, "/dev/%s", tmpbuf2);
-+					break;
-+				}
-+			}
-+			SAFE_FCLOSE(NULL, file);
-+		}
-+	}
-+
- 	if (stat(dev, &buf) < 0)
- 		tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
- 
+This SAFE_OPEN() and SAFE_UNLINK() should be in setup()
+
+> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+> +	*p = 's';
+> +	if (verbose)
+> +		tst_res(TINFO, "Write %c to %p via shared mapping", *p, p);
+> +	SAFE_MUNMAP(p, hpage_size);
+> +
+> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
+> +	*p = 'p';
+> +	if (verbose)
+> +		tst_res(TINFO, "Write %c to %p via private mapping", *p, p);
+> +	SAFE_MUNMAP(p, hpage_size);
+> +
+> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+> +	c = *p;
+> +	if (verbose)
+> +		tst_res(TINFO, "Read %c from %p via shared mapping", *p, p);
+> +	SAFE_MUNMAP(p, hpage_size);
+
+Also I'm not keen on the verbose flag, I would just print these messages
+by default. It does not make sense to have verbose flag because in
+practice it's not enabled on production testing and these days we got
+reports from various automated systems so we better include anything
+useful by default.
+
+> +	/* Direct write from huge page */
+> +	if (c != 's') {
+> +		tst_res(TFAIL, "Data got corrupted.");
+> +		goto fail;
+> +	}
+> +	tst_res(TPASS, "Successful");
+
+Here the cleanest code would just be:
+
+	if (c != 's')
+		tst_res(TFAIL, "Data are corrupted");
+	else
+		tst_res(TPASS, "Data are correct");
+
+> +	SAFE_CLOSE(fd);
+
+And this SAFE_CLOSE() is already in cleanup() so we just need to move
+the SAFE_OPEN() into the setup() and remove this one.
+
+> +	return;
+> +fail:
+> +	tst_brk(TBROK, "Once failed, No point in continuing the test");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if (tst_hugepages < 2)
+> +		tst_brk(TCONF, "Not enough hugepages for testing.");
+> +
+> +	if (!Hopt)
+> +		Hopt = tst_get_tmpdir();
+> +	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
+> +
+> +	snprintf(hfile, sizeof(hfile), "%s/ltp_hugetlbfile%d", Hopt, getpid());
+> +	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd >= 0)
+> +		SAFE_CLOSE(fd);
+> +	umount2(Hopt, MNT_DETACH);
+
+Here as well, umount only what was mounted.
+
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.options = (struct tst_option[]) {
+> +		{"v", &verbose, "Turns on verbose mode"},
+> +		{"H:", &Hopt,   "Location of hugetlbfs, i.e.  -H /var/hugetlbfs"},
+> +		{"s:", &nr_opt, "Set the number of the been allocated hugepages"},
+> +		{}
+> +	},
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run_test,
+> +	.hugepages = {2, TST_REQUEST},
+> +};
+> -- 
+> 2.31.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.34.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
