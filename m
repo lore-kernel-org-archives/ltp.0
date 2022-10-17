@@ -4,62 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 703C8C433FE
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 10:41:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24C5AC433FE
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 10:49:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 80E723CAFED
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 12:41:48 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 3175F3CAFEA
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 12:49:30 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CE8D73CAD6A
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 12:41:37 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id BA49D3CAD6A
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 12:49:19 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 70F25600637
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 12:41:37 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id B30D533A5B
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 10:41:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666003296;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a2zJEiteC64aFs2sAMJGIX6Zbs/CH2y9Axei6O6/+fw=;
- b=ldZlOisFZdvSlOil2VVDkGiQMwDgbPZLrSiVyZvtkomKOi5dtgKev0vzRgvK8WTj7VqVCq
- PyzUJ3OOSBxsilVd0DGguZkF/2/f3XpUZV1G8DHxP00i2dp0piHMSNI6udjTCORe0u8YE1
- WcIPqVLf5Mkv4Bt1Mx7w9YBkKnRieGw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666003296;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=a2zJEiteC64aFs2sAMJGIX6Zbs/CH2y9Axei6O6/+fw=;
- b=laD0Mi2pkpywPYa0WIMxy046vzVrlaaBu/gZXXguyjKKHAhIlTyDHI5HTWMqGHG7ffwkUg
- OBKD39838wR3kdDg==
-Received: from g78 (unknown [10.100.228.202])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5D9986006F5
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 12:49:17 +0200 (CEST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 4F1792C141;
- Mon, 17 Oct 2022 10:41:36 +0000 (UTC)
-References: <20220906054612.9790-1-pvorel@suse.cz> <YySDWP9I46TDIgEK@yuki>
- <YyTIvPWfkkEoUflB@pevik> <YygfGEU8YRftJ1fj@yuki> <Yyrz7jFTo168rjzl@pevik>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 17 Oct 2022 11:41:01 +0100
-In-reply-to: <Yyrz7jFTo168rjzl@pevik>
-Message-ID: <87lepeohpc.fsf@suse.de>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 13F0F6102D;
+ Mon, 17 Oct 2022 10:49:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EBF9C433C1;
+ Mon, 17 Oct 2022 10:49:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1666003754;
+ bh=hE1O72YfBfVtyXUSVk937ndAupFCSM8WNCJ0WPRvyV4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=FReNFLZRWqyKX/BECMf5L8XNmowYwy9LcR6zYNEK8YYio8g+ul+eS2cydom0UhZ96
+ rumlEyELzsxhd5EP8qM2or8hy9bSMFP7TtjuNX4C3xuvrNbANgCprNx7zBluw9DEzZ
+ 8FdWibrjEaP3SLpxmyBPrUK/DGjVoW4YRm6m5+n/zllnPXw6y4s5haAIPdHBgSGw7U
+ LFN4oV16kk9aaP8pAldZilZf/7GFpRoDYkZLUFJPEdocBeacE8j3i2uoKnJW//owUN
+ E6WxhSA/GAXW2QN3GScplft7ocRrUngWUD+fff6dJ+qDlVMByB/fy13zHVEiHETyc8
+ +hv+Pf+XT5SFA==
+Date: Mon, 17 Oct 2022 12:49:10 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Message-ID: <20221017104910.owc6adviigultcmg@wittgenstein>
+References: <1665996599-6420-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1665996599-6420-2-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <1665996599-6420-2-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] checkpatch: Ignore warnings irrelevant in
- userspace
+Subject: Re: [LTP] [PATCH v5 2/2] syscalls/openat: Add new regression test
+ when using open(O_TMPFILE) under umask
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,54 +63,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+On Mon, Oct 17, 2022 at 04:49:59PM +0800, Yang Xu wrote:
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
 
-Petr Vorel <pvorel@suse.cz> writes:
+The test logic looks good to me,
+Reviewed-by: Christian Brauner (Microsoft) <brauner@kernel.org>
 
->> Hi!
->> > FYI the error is from fanotify.h (kind of lapi file for fanotify:
->> <
->> > #ifndef __kernel_fsid_t
->> > typedef struct {
->> > 	int	val[2];
->> > } lapi_fsid_t;
->> > #define __kernel_fsid_t lapi_fsid_t
->> > #endif /* __kernel_fsid_t */
->
->> > which we added in b8aebc835 ("fanotify: Fix missing __kernel_fsid_t definition")
->> > "Instead of including <asm/posix_types.h> where it's defined we just
->> > define the missing bit." (fix for musl).
->
->> I'm aware of that, and while typedef is mostly wrong there are a few
->> places where it's required.
->
->> > But if you prefer to keep this check, I'm ok to merge it without it.
->
->> > The long term solution could be to add variable to Makefile to pass extra
->> > parameters, e.g.:
->> > check_fanotify.h: CHECKPATCH_IGNORE += NEW_TYPEDEFS
->
->> Case by case decisions like this for typedef sounds better to me.
-> +1 (TODO after the release).
-> Thanks for your time!
-
-Don't forget this, I'm setting it changes requested in patchwork
-
->
-> Kind regards,
-> Petr
-
-
--- 
-Thank you,
-Richard.
+Thanks for writing all these tests, Yang.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
