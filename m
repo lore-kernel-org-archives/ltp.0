@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A5ADC4332F
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 08:13:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FA30C4332F
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 08:49:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 974523CAFED
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 10:13:44 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id D122C3CAFC9
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 10:49:32 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 069643CAD6A
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 10:13:34 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id CA9083C80B3
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 10:49:21 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F0B0B200900
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 10:13:33 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D676B1A002C4
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 10:49:20 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 48DCE20299;
- Mon, 17 Oct 2022 08:13:33 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 2AFB3201AB;
+ Mon, 17 Oct 2022 08:49:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1665994413;
+ t=1665996560;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=E7/mSlthXGMj1ppagXk2kNiDH3nYr0r2EdNw7xnkJOg=;
- b=w/Y4cnaXPp0C9S3spokHW+/fQrDtt/daSPnIJOzZmrQbnMNiweXSUwZToRpxR8WJ7t6L+a
- ORv6eSc7a5PChhNwW5XvMx/YIjkb23n55YbWtNnQvPMmBHI1s3PxEBrxrsLHWd4kL5ZKFo
- +a+VnM3cHuVYtKIx5fdl6/flG5P9cqU=
+ bh=6elTHpm2hHiLbuK92C+XYCEKC1H94TmkJC1/YU4KdKM=;
+ b=Fmd6bB4CmO82W+SQxJYADUWl+UlwrObO4CBo+Y2N9roaPzDJWAud+hTYaJ5lvTHzYkFJ+R
+ ZT/3Yo6JILXe/XavjESd4WS/t+JoIQWC4XqFAt50ICKTsszDKbuYGSd+yyQSakheKvsCQm
+ KI12XyJbHkaANZrE6GXOusrH3MHaZsE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1665994413;
+ s=susede2_ed25519; t=1665996560;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=E7/mSlthXGMj1ppagXk2kNiDH3nYr0r2EdNw7xnkJOg=;
- b=as/LiSR91hsTkRovo3aBGltkXCPqqh5ATXoTittkOpuL3jN74ytz2lyAEa44MprEYoMfbK
- 8ZCawMV1b+pgvjDQ==
+ bh=6elTHpm2hHiLbuK92C+XYCEKC1H94TmkJC1/YU4KdKM=;
+ b=HFPfvIx7dv291xx8nXIZlFDseEiEK6Q/G1YmjUWu/wQJ6KhIeiZw0erxIcWQF7/40VIgBy
+ oZz1LDfiXzaUksAQ==
 Received: from g78 (unknown [10.100.228.202])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id EB1B52C141;
- Mon, 17 Oct 2022 08:13:32 +0000 (UTC)
-References: <20220824080638.23012-1-andrea.cervesato@suse.com>
+ by relay2.suse.de (Postfix) with ESMTPS id B99212C141;
+ Mon, 17 Oct 2022 08:49:19 +0000 (UTC)
+References: <1661329049-14309-1-git-send-email-liaohj.jy@fujitsu.com>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Date: Mon, 17 Oct 2022 09:13:24 +0100
-In-reply-to: <20220824080638.23012-1-andrea.cervesato@suse.com>
-Message-ID: <87a65uq34j.fsf@suse.de>
+To: Liao Huangjie <liaohj.jy@fujitsu.com>
+Date: Mon, 17 Oct 2022 09:28:13 +0100
+In-reply-to: <1661329049-14309-1-git-send-email-liaohj.jy@fujitsu.com>
+Message-ID: <875ygiq1gx.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Add more madvise testcases in madvise01
+Subject: Re: [LTP] [PATCH] syscalls/read04:add multiple read size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,53 +75,140 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Merged, thanks!
+Hello,
 
-Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
+Liao Huangjie <liaohj.jy@fujitsu.com> writes:
 
-> Added MADV_COLD and MADV_PAGEOUT madvise modes and created two new
-> testcases in madvise01 for them. Supported by kernel >= 5.4.
+> From: Huangjie Liao <liaohj.jy@fujitsu.com>
 >
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> Signed-off-by: Huangjie Liao <liaohj.jy@fujitsu.com>
 > ---
->  include/lapi/mmap.h                           | 8 ++++++++
->  testcases/kernel/syscalls/madvise/madvise01.c | 2 ++
->  2 files changed, 10 insertions(+)
+>  testcases/kernel/syscalls/read/read04.c | 59 ++++++++++++++++++++++++---------
+>  1 file changed, 43 insertions(+), 16 deletions(-)
 >
-> diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
-> index 12845b76e..49108338b 100644
-> --- a/include/lapi/mmap.h
-> +++ b/include/lapi/mmap.h
-> @@ -66,6 +66,14 @@
->  # define MADV_KEEPONFORK 19
->  #endif
+> diff --git a/testcases/kernel/syscalls/read/read04.c b/testcases/kernel/syscalls/read/read04.c
+> index 47875c0..37c670f 100644
+> --- a/testcases/kernel/syscalls/read/read04.c
+> +++ b/testcases/kernel/syscalls/read/read04.c
+> @@ -6,36 +6,49 @@
+>  /*\
+>   * [Description]
+>   *
+> - * Testcase to check if read() returns the number of bytes read correctly.
+> + * Testcase to check if read() returns the correct number of bytes
+
+Trailing whitespace at the end of this line
+
+> + * when using multip sizes [0, 1/2*page_size, 3/2*page_size, 2*page_size].
+>   */
 >  
-> +#ifndef MADV_COLD
-> +# define MADV_COLD	20
-> +#endif
+>  #include <sys/types.h>
+>  #include <sys/stat.h>
+>  #include <stdio.h>
+>  #include <fcntl.h>
+> +#include <unistd.h>
+>  #include "tst_test.h"
+>  
+> +#define MNT_POINT "mntpoint"
+> +static int page_size;
+>  static const char *fname = "test_file";
+> -static const char palfa[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+> -#define PALFA_LEN (sizeof(palfa)-1)
+> +static char *write_buf[2], *read_buf;
+>  
+> -static void verify_read(void)
+> +static void verify_read(unsigned int n)
+>  {
+>  	int fd;
+> -	char prbuf[BUFSIZ];
+> -
+> +	int size = n * page_size / 2;
+
+Usually interesting things happen around page boundaries. It would be
+better to read (page_size - 1), page_size and (page_size + 1). And also
+use an offset starting at (page_size - 1), pages_size etc.
+
+>  	fd = SAFE_OPEN(fname, O_RDONLY);
+> -	TEST(read(fd, prbuf, BUFSIZ));
+> +	TEST(read(fd, read_buf, size));
+>  
+> -	if (TST_RET != PALFA_LEN) {
+> -		tst_res(TFAIL, "Bad read count - got %ld - expected %zu",
+> -				TST_RET, PALFA_LEN);
+> +	if (TST_RET != size) {
+> +		tst_res(TFAIL, "Bad read count - got %ld - expected %d",
+> +				TST_RET, size);
+
+There is no requirement for read to return size bytes in a single
+call. A loop is required.
+
+The test presently passes because the buffer is small and the process is
+unlikely to be interrupted. However if you start to read one page at a
+time and use all filesystems it's much more likely to fail.
+
+>  		goto out;
+>  	}
+>  
+> -	if (memcmp(palfa, prbuf, PALFA_LEN)) {
+> -		tst_res(TFAIL, "read buffer not equal to write buffer");
+> -		goto out;
+> +	if (n <= 2) {
+> +		if (memcmp(read_buf, write_buf[0], size)) {
+> +			tst_res(TFAIL, "read buffer not equal to write buffer1");
+> +			goto out;
+> +		}
+> +	} else {
+> +		if (memcmp(read_buf, write_buf[0], page_size)) {
+> +			tst_res(TFAIL, "read buffer not equal to write buffer2");
+> +			goto out;
+> +		}
+> +		if (memcmp(read_buf + page_size, write_buf[1], size - page_size)) {
+> +			tst_res(TFAIL, "read buffer not equal to write buffer3");
+> +			goto out;
+> +		}
+>  	}
+>  
+>  	tst_res(TPASS, "read() data correctly");
+> @@ -48,13 +61,27 @@ static void setup(void)
+>  {
+>  	int fd;
+>  
+> +	page_size = getpagesize();
+> +	write_buf[0] = tst_alloc(page_size);
+> +	write_buf[1] = tst_alloc(page_size);
+> +	read_buf = tst_alloc(2 * page_size);
 > +
-> +#ifndef MADV_PAGEOUT
-> +# define MADV_PAGEOUT	21
-> +#endif
+> +	memset(write_buf[0], 'A', page_size);
+> +	memset(write_buf[1], 'B', page_size);
+> +	memset(read_buf, 0, 2 * page_size);
 > +
->  #ifndef MAP_FIXED_NOREPLACE
+>  	fd = SAFE_CREAT(fname, 0777);
+> -	SAFE_WRITE(1, fd, palfa, PALFA_LEN);
+> +	SAFE_WRITE(1, fd, write_buf[0], page_size);
+> +	SAFE_WRITE(1, fd, write_buf[1], page_size);
+
+This patch fails to apply now because this was changed to use
+SAFE_WRITE_ALL.
+
+>  	SAFE_CLOSE(fd);
+> +
+
+More trailing whitespace.
+
+>  }
 >  
->  #ifdef __alpha__
-> diff --git a/testcases/kernel/syscalls/madvise/madvise01.c b/testcases/kernel/syscalls/madvise/madvise01.c
-> index de5daf34a..ec64a1db3 100644
-> --- a/testcases/kernel/syscalls/madvise/madvise01.c
-> +++ b/testcases/kernel/syscalls/madvise/madvise01.c
-> @@ -55,6 +55,8 @@ static struct tcase {
->  	{MADV_FREE,        "MADV_FREE",        &amem},  /* since Linux 4.5 */
->  	{MADV_WIPEONFORK,  "MADV_WIPEONFORK",  &amem},  /* since Linux 4.14 */
->  	{MADV_KEEPONFORK,  "MADV_KEEPONFORK",  &amem},  /* since Linux 4.14 */
-> +	{MADV_COLD,        "MADV_COLD",        &amem},  /* since Linux 5.4 */
-> +	{MADV_PAGEOUT,     "MADV_PAGEOUT",     &amem},  /* since Linux 5.4 */
->  
+>  static struct tst_test test = {
+> -	.needs_tmpdir = 1,
+>  	.setup = setup,
+> -	.test_all = verify_read,
+> +	.test = verify_read,
+> +	.tcnt = 5,
+> +	.mount_device = 1,
+> +	.mntpoint = MNT_POINT,
+> +	.all_filesystems = 1,
 >  };
->  
 > -- 
-> 2.35.3
+> 1.8.3.1
 
 
 -- 
