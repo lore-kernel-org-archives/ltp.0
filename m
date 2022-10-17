@@ -4,60 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53B17C4332F
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 13:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63210C433FE
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 13:43:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EB9683CB017
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 15:23:06 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id ED0FC3CAFC9
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 15:43:33 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D44F03CAFC7
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 15:22:56 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id F14C63CAFC9
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 15:43:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 05F2A1A001EC
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 15:22:55 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5A37B20767
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 13:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666012975;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xS5sDT1Hoc/1XtvtXCgrdr4IEwN5qdwoZH3sO84HLpM=;
- b=oIRwW8ACl2qgpOygtltaT4JJGjvGx1TZb26kH5SVeTdeVj7Z/vZqNw7hH/Ic+SnmTHLiHi
- W2HEsbgu7jrD/zVRfrekzvFNHbkJjONlS/XwDA6FIRIHcl34ygW8cILXvHdSBkJXplnkvI
- yfXVnmuwh6bip41W7RN3pehZloWX8x8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666012975;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xS5sDT1Hoc/1XtvtXCgrdr4IEwN5qdwoZH3sO84HLpM=;
- b=KI3e01Vagn5KHGWq2YRxk5aYb46pKb8goG5QWQCWotjcqnD7De8FVHprqsayFAyoXp1B/T
- eHRgVlg3uh9cD5AA==
-Received: from g78 (unknown [10.100.228.202])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DA99A2005D2
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 15:43:22 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id D51B22C141;
- Mon, 17 Oct 2022 13:22:54 +0000 (UTC)
-References: <20220923132936.7602-1-akumar@suse.de>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Avinesh Kumar <akumar@suse.de>
-Date: Mon, 17 Oct 2022 14:17:39 +0100
-In-reply-to: <20220923132936.7602-1-akumar@suse.de>
-Message-ID: <878rleoa8i.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C42B034104;
+ Mon, 17 Oct 2022 13:43:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1666014201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8qCEFZDHJuAapWtL/D5h9oGLMe2gEpPlN2Bx8PRN6+s=;
+ b=Cxt49r27cj060t2uLtnWTIopWOFCBnpelr8TdolJZq/g33FlXX1Eikp4gBezFLXLzqAgIn
+ acECkIsut8TOT+SZDSMRLZCYMTAoA0Jt39kz13xWG3mGmO+hugcZ4o3ZN2H6Ki+iOK/e92
+ cXw5BDHg4TNimnlOxMSjhUp1bw90zDg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1666014201;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8qCEFZDHJuAapWtL/D5h9oGLMe2gEpPlN2Bx8PRN6+s=;
+ b=TqCqus+gecNP0n5CsQaJbbZzSG4uocbjPWkZ6gu6T8SLu4UV6nUclmdeb8wW/DGGz5wD0V
+ 1qe6USG+SvfUYLBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1949513398;
+ Mon, 17 Oct 2022 13:43:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id UCUABflbTWOmYAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 17 Oct 2022 13:43:21 +0000
+Date: Mon, 17 Oct 2022 15:45:03 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Tarun Sahu <tsahu@linux.ibm.com>
+Message-ID: <Y01cX7O/XiSNzAqa@yuki>
+References: <20221016125731.249078-1-tsahu@linux.ibm.com>
+ <20221016125731.249078-10-tsahu@linux.ibm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20221016125731.249078-10-tsahu@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] setitimer01: Rewrite using new LTP API
+Subject: Re: [LTP] [PATCH 09/29] Hugetlb: Migrating libhugetlbfs fork-cow
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,230 +75,336 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Cc: aneesh.kumar@linux.ibm.com, sbhat@linux.ibm.com, ltp@lists.linux.it,
+ vaibhav@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
-
-Avinesh Kumar <akumar@suse.de> writes:
-
-> Signed-off-by: Avinesh Kumar <akumar@suse.de>
+Hi!
+> Migrating the libhugetlbfs/testcases/fork-cow.c test
+> 
+> Test Description: This checks copy-on-write semantics, specifically the
+> semantics of a MAP_PRIVATE mapping across a fork().  Some versions of the
+> powerpc kernel had a bug in huge_ptep_set_wrprotect() which would fail to
+> flush the hash table after setting the write protect bit in the parent's
+> page tables, thus allowing the parent to pollute the child's mapping.
+> 
+> Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 > ---
->  .../kernel/syscalls/setitimer/setitimer01.c   | 162 +++---------------
->  1 file changed, 27 insertions(+), 135 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testcases/kernel/syscalls/setitimer/setitimer01.c
-> index 6874b94ad..ff443c532 100644
->n --- a/testcases/kernel/syscalls/setitimer/setitimer01.c
-> +++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
-> @@ -1,157 +1,49 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - *
->   *   Copyright (c) International Business Machines  Corp., 2001
-> - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + *		03/2001 - Written by Wayne Boyer
-> + *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
->   */
+>  runtest/hugetlb                               |   2 +
+>  testcases/kernel/mem/.gitignore               |   1 +
+>  .../kernel/mem/hugetlb/hugefork/Makefile      |  10 +
+>  .../kernel/mem/hugetlb/hugefork/hugefork01.c  | 220 ++++++++++++++++++
+>  4 files changed, 233 insertions(+)
+>  create mode 100644 testcases/kernel/mem/hugetlb/hugefork/Makefile
+>  create mode 100644 testcases/kernel/mem/hugetlb/hugefork/hugefork01.c
+> 
+> diff --git a/runtest/hugetlb b/runtest/hugetlb
+> index ec1fc2515..4c16e1e7c 100644
+> --- a/runtest/hugetlb
+> +++ b/runtest/hugetlb
+> @@ -1,6 +1,8 @@
+>  hugefallocate01 hugefallocate01
+>  hugefallocate02 hugefallocate02
 >  
-> -/*
-> - * NAME
-> - *	setitimer01.c
-> - *
-> - * DESCRIPTION
-> - *	setitimer01 - check that a resonable setitimer() call succeeds.
-> - *
-> - * ALGORITHM
-> - *	loop if that option was specified
-> - *	allocate needed space and set up needed values
-> - *	issue the system call
-> - *	check the errno value
-> - *	  issue a PASS message if we get zero
-> - *	otherwise, the tests fails
-> - *	  issue a FAIL message
-> - *	  break any remaining tests
-> - *	  call cleanup
-> - *
-> - * USAGE:  <for command-line>
-> - *  setitimer01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-> - *     where,  -c n : Run n copies concurrently.
-> - *             -f   : Turn off functionality Testing.
-> - *	       -i n : Execute test n times.
-> - *	       -I x : Execute test for x seconds.
-> - *	       -P x : Pause for x seconds between iterations.
-> - *	       -t   : Turn on syscall timing.
-> - *
-> - * HISTORY
-> - *	03/2001 - Written by Wayne Boyer
-> +/*\
-> + * [Description]
->   *
-> - * RESTRICTIONS
-> - *	none
-> + * Verify that setitimer(2) successfully sets the specified timer to
-> + * the value provided in new_value argument.
->   */
->  
-> -#include "test.h"
-> -
-> -#include <errno.h>
->  #include <sys/time.h>
-> -
-> -void cleanup(void);
-> -void setup(void);
-> -
-> -char *TCID = "setitimer01";
-> -int TST_TOTAL = 1;
-> +#include "tst_test.h"
->  
->  #define SEC0	0
->  #define SEC1	20
->  #define SEC2	40
->  
-> -int main(int ac, char **av)
-> +static void run(void)
->  {
-> -	int lc;
-> -	struct itimerval *value, *ovalue;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();		/* global setup */
-> -
-> -	/* The following loop checks looping state if -i option given */
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		/* reset tst_count in case we are looping */
-> -		tst_count = 0;
-> -
-> -		/* allocate some space for the timer structures */
-> +	struct itimerval *new_value, *old_value;
->  
-> -		if ((value = malloc((size_t)sizeof(struct itimerval))) ==
-> -		    NULL) {
-> -			tst_brkm(TBROK, cleanup, "value malloc failed");
-> -		}
-> +	new_value = SAFE_MALLOC(sizeof(struct itimerval));
-> +	old_value = SAFE_MALLOC(sizeof(struct itimerval));
+> +hugefork01 hugefork01
+> +
+>  hugemmap01 hugemmap01
+>  hugemmap02 hugemmap02
+>  hugemmap04 hugemmap04
+> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+> index c0906f3d3..adea760c7 100644
+> --- a/testcases/kernel/mem/.gitignore
+> +++ b/testcases/kernel/mem/.gitignore
+> @@ -1,6 +1,7 @@
+>  /cpuset/cpuset01
+>  /hugetlb/hugefallocate/hugefallocate01
+>  /hugetlb/hugefallocate/hugefallocate02
+> +/hugetlb/hugefork/hugefork01
+>  /hugetlb/hugemmap/hugemmap01
+>  /hugetlb/hugemmap/hugemmap02
+>  /hugetlb/hugemmap/hugemmap04
+> diff --git a/testcases/kernel/mem/hugetlb/hugefork/Makefile b/testcases/kernel/mem/hugetlb/hugefork/Makefile
+> new file mode 100644
+> index 000000000..77ebb0aef
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugefork/Makefile
+> @@ -0,0 +1,10 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (C) 2009, Cisco Systems Inc.
+> +# Ngie Cooper, July 2009
+> +
+> +top_srcdir		?= ../../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +include $(abs_srcdir)/../Makefile.inc
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +
+> diff --git a/testcases/kernel/mem/hugetlb/hugefork/hugefork01.c b/testcases/kernel/mem/hugetlb/hugefork/hugefork01.c
+> new file mode 100644
+> index 000000000..096ff0c4d
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugefork/hugefork01.c
+> @@ -0,0 +1,220 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +/*
+> + * Copyright (C) 2008 David Gibson, IBM Corporation.
+> + *
+> + * Test Name: fork COW
+> + *
+> + * Test Description: This checks copy-on-write semantics, specifically the
+> + * semantics of a MAP_PRIVATE mapping across a fork().  Some versions of the
+> + * powerpc kernel had a bug in huge_ptep_set_wrprotect() which would fail to
+> + * flush the hash table after setting the write protect bit in the parent's
+> + * page tables, thus allowing the parent to pollute the child's mapping.
+> + *
+> + * HISTORY
+> + *  Written by David Gibson
+> + *
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +
+> +#include <sys/shm.h>
+> +#include <sys/wait.h>
+> +#include <sys/mman.h>
+> +#include <errno.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <unistd.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +#include <sys/mount.h>
+> +#include <limits.h>
+> +#include <sys/param.h>
+> +#include <sys/types.h>
+> +
+> +#include "hugetlb.h"
+> +
+> +#define RANDOM_CONSTANT		0x1234ABCD
+> +#define OTHER_CONSTANT		0xfeef5678
+> +
+> +static int  fd = -1;
+> +static char hfile[MAXPATHLEN];
+> +static long hpage_size;
+> +static char *verbose;
+> +
+> +/*
+> + * The parent uses this to check if the child terminated badly.
+> + */
+> +static void sigchld_handler(int signum, siginfo_t *si, void *uc)
+> +{
+> +	(void)signum;
+> +	(void)uc;
+> +	if (WEXITSTATUS(si->si_status) != 0) {
+> +		tst_res(TFAIL, "Child failed: %d", WEXITSTATUS(si->si_status));
+> +		goto fail;
+> +	}
+> +	if (WIFSIGNALED(si->si_status)) {
+> +		tst_res(TFAIL, "Child recived signal %s",
+> +				strsignal(WTERMSIG(si->si_status)));
+> +		goto fail;
+> +	}
+> +	return;
+> +fail:
+> +	tst_brk(TBROK, "Once failed, No point in continuing the test");
 
-Why (continue to) use malloc?
+You cannot call tst_* functions from a signal handler, these are not
+async-signal-safe.
 
-Ideally this can be changed to guarded buffers, but stack variables
-would also be fine.
+The only sensible thing to use the value filled in by the waitpid() call
+instead.
 
->  
-> -		if ((ovalue = malloc((size_t)sizeof(struct itimerval))) ==
-> -		    NULL) {
-> -			tst_brkm(TBROK, cleanup, "ovalue malloc failed");
-> -		}
-> +	new_value->it_value.tv_sec = SEC1;
-> +	new_value->it_value.tv_usec = SEC0;
-> +	new_value->it_interval.tv_sec = 0;
-> +	new_value->it_interval.tv_usec = 0;
->  
-> -		/* set up some reasonable values */
-> +	TST_EXP_PASS(setitimer(ITIMER_REAL, new_value, old_value));
->  
-> -		value->it_value.tv_sec = SEC1;
-> -		value->it_value.tv_usec = SEC0;
-> -		value->it_interval.tv_sec = 0;
-> -		value->it_interval.tv_usec = 0;
-> -		/*
-> -		 * issue the system call with the TEST() macro
-> -		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
-> -		 */
-> +	new_value->it_value.tv_sec = SEC2;
-> +	new_value->it_value.tv_usec = SEC0;
->  
-> -		TEST(setitimer(ITIMER_REAL, value, ovalue));
-> +	TST_EXP_PASS_SILENT(setitimer(ITIMER_REAL, new_value, old_value));
->  
-> -		if (TEST_RETURN != 0) {
-> -			tst_resm(TFAIL, "call failed - errno = %d - %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -			continue;
-> -		}
-> -
-> -		/*
-> -		 * call setitimer again with new values.
-> -		 * the old values should be stored in ovalue
-> -		 */
-> -		value->it_value.tv_sec = SEC2;
-> -		value->it_value.tv_usec = SEC0;
-> -
-> -		if ((setitimer(ITIMER_REAL, value, ovalue)) == -1) {
-> -			tst_brkm(TBROK, cleanup, "second setitimer "
-> -				 "call failed");
-> -		}
-> -
-> -		if (ovalue->it_value.tv_sec <= SEC1) {
-> -			tst_resm(TPASS, "functionality is correct");
-> -		} else {
-> -			tst_brkm(TFAIL, cleanup, "old timer value is "
-> -				 "not equal to expected value");
-> -		}
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -}
-> -
-> -/*
-> - * setup() - performs all the ONE TIME setup for this test.
-> - */
-> -void setup(void)
-> -{
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> +	if ((old_value->it_value.tv_sec <= SEC1) && (old_value->it_value.tv_sec > SEC1 - 5))
-> +		tst_res(TPASS, "old_value correctly updated with previous timer value");
-> +	else
-> +		tst_res(TFAIL, "old_value is not correctly updated with
-> previous timer value");
+> +}
+> +
+> +static void run_test(void)
+> +{
+> +	int status;
+> +	void *syncarea;
+> +	volatile unsigned int *p;
+> +	volatile unsigned int *trigger, *child_readback;
+> +	int parent_readback;
+> +	pid_t pid;
+> +	struct sigaction sa = {
+> +		.sa_sigaction = sigchld_handler,
+> +		.sa_flags = SA_SIGINFO,
+> +	};
+> +
+> +	/* Get a shared normal page for synchronization */
+> +	if (verbose)
+> +		tst_res(TINFO, "Mapping synchronization area..");
+> +	syncarea = SAFE_MMAP(NULL, getpagesize(), PROT_READ|PROT_WRITE,
+> +			MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+> +	if (verbose)
+> +		tst_res(TINFO, "done");
+> +
+> +	trigger = syncarea;
+> +	*trigger = 0;
+> +
+> +	child_readback = trigger + 1;
+> +	*child_readback = 0;
+> +
+> +	fd = SAFE_OPEN(hfile, O_RDWR | O_CREAT, 0600);
+> +	SAFE_UNLINK(hfile);
+> +
+> +	if (verbose)
+> +		tst_res(TINFO, "Mapping hugepage area...");
+> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
+> +	if (verbose)
+> +		tst_res(TINFO, "mapped at %p", p);
+> +	/* Touch the page for write in parent */
+> +	if (verbose)
+> +		tst_res(TINFO, "Parent writes pre-fork...");
+> +	*p = RANDOM_CONSTANT;
+> +	if (verbose)
+> +		tst_res(TINFO, "%x", RANDOM_CONSTANT);
+> +
+> +	SAFE_SIGACTION(SIGCHLD, &sa, NULL);
+> +
+> +	pid = SAFE_FORK();
+> +
+> +	if (pid != 0) {
+> +		/* Parent */
 
-The itimerval memory is leaked here if we use -i.
+Useless comment again.
 
->  }
->  
-> -/*
-> - * cleanup() - performs all the ONE TIME cleanup for this test at completion
-> - * 	       or premature exit.
-> - */
-> -void cleanup(void)
-> -{
-> -
-> -}
+> +		if (verbose)
+> +			tst_res(TINFO, "Parent writes post-fork...");
+> +		*p = ~RANDOM_CONSTANT;
+> +		if (verbose)
+> +			tst_res(TINFO, "~RANDOM_CONSTANT: %x", ~RANDOM_CONSTANT);
+> +		*trigger = 1;
+
+We do have checkpoint library exactly for synchronization between parent
+and child make use of them, see TST_CHECKPOINT_*.
+
+> +		while (*trigger != 2)
+> +			;
+> +
+> +		if (verbose)
+> +			tst_res(TINFO, "Parent reads..");
+
+I would be inclined to remove these "Parent does xyz" and "Child does abc"
+messages from test once we make use of the CHECKPOINTs the
+synchronization is guaranteed to be right.
+
+> +		parent_readback = *p;
+> +		if (verbose)
+> +			tst_res(TINFO, "Parent readback: %x", parent_readback);
+> +		*trigger = 3;
+> +	} else {
+> +		/* Child */
+
+Here as well.
+
+> +		if (verbose)
+> +			tst_res(TINFO, "Child starts..");
+> +		while (*trigger != 1)
+> +			;
+> +
+> +		if (verbose)
+> +			tst_res(TINFO, "Child reads...");
+> +		*child_readback = *p;
+> +		if (verbose) {
+> +			tst_res(TINFO, "child readback: %x", *child_readback);
+> +			tst_res(TINFO, "Child writes...");
+> +		}
+> +		*p = OTHER_CONSTANT;
+> +		if (verbose)
+> +			tst_res(TINFO, "OTHER_CONSTANT: %x", OTHER_CONSTANT);
+> +
+> +		*trigger = 2;
+> +
+> +		while (*trigger != 3)
+> +			;
+> +		if (verbose)
+> +			tst_res(TINFO, "Child exits...");
+> +		exit(0);
+> +	}
+> +
+> +	if (verbose)
+> +		tst_res(TINFO, "child_readback = 0x%x, parent_readback = 0x%x\n",
+> +		       *child_readback, parent_readback);
+> +
+> +	if (*child_readback != RANDOM_CONSTANT) {
+> +		tst_res(TFAIL, "Child read back 0x%x instead of 0x%x",
+> +		     *child_readback, RANDOM_CONSTANT);
+> +		goto fail;
+> +	}
+> +	if (parent_readback != ~RANDOM_CONSTANT) {
+> +		tst_res(TFAIL, "Parent read back 0x%x instead of 0x%x",
+> +		     parent_readback, RANDOM_CONSTANT);
+> +		goto fail;
+> +	}
+> +
+> +	SAFE_WAITPID(pid, &status, 0);
+> +
+> +	tst_res(TPASS, "Successful");
+> +	SAFE_MUNMAP((void *)p, hpage_size);
+> +	SAFE_MUNMAP(syncarea, getpagesize());
+> +	SAFE_CLOSE(fd);
+> +	return;
+> +fail:
+> +	tst_brk(TBROK, "Once failed, No point in continuing the test");
+
+Here as well.
+
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	int free_pages = SAFE_READ_MEMINFO("HugePages_Free:");
+> +
+> +	if (tst_hugepages < 2 || free_pages < 2)
+> +		tst_brk(TCONF, "Not enough hugepages for testing.");
+> +
+> +	if (!Hopt)
+> +		Hopt = tst_get_tmpdir();
+> +	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
+> +
+> +	snprintf(hfile, sizeof(hfile), "%s/ltp_hugetlbfile%d", Hopt, getpid());
+> +	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd >= 0)
+> +		SAFE_CLOSE(fd);
+> +	umount2(Hopt, MNT_DETACH);
+
+Here as well.
+
+> +}
+> +
 > +static struct tst_test test = {
-> +	.test_all = run
+> +	.needs_root = 1,
+> +	.needs_tmpdir = 1,
+> +	.options = (struct tst_option[]) {
+> +		{"v", &verbose, "Turns on verbose mode"},
+> +		{"H:", &Hopt,   "Location of hugetlbfs, i.e.  -H /var/hugetlbfs"},
+> +		{"s:", &nr_opt, "Set the number of the been allocated hugepages"},
+> +		{}
+> +	},
+> +	.forks_child = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run_test,
+> +	.hugepages = {2, TST_REQUEST},
 > +};
 > -- 
-> 2.37.3
-
-Otherwise looks good.
-
+> 2.31.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
