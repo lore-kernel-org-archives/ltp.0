@@ -4,60 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B89FC4332F
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 14:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B246DC4332F
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 14:45:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8F2D63CAFEF
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 16:22:56 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id AE0793CAFFB
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 16:45:12 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6463F3CAFC3
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 16:22:45 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id CDBAF3CAEA8
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 16:45:01 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 985E4600652
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 16:22:43 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6FB5D33AD5;
- Mon, 17 Oct 2022 14:22:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666016563;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ieLim755GWnQk3Uq8uQOv2Bg2ABrJnBUn7nfnhMCG+0=;
- b=uYpBfILjO9k6DThCTUyubK/Xvz37uzySa2FD2JcW9Hk5bF2zErxtPjrukv3ML1FB0NHydI
- wP6rxFW0rJFnm/lEWOVNNW0XGuAsyIgP+lTEaO8+auYS6ZguIfeonTxpQ+86CBnwv1VVBy
- yUGdPDuALon5knsFiQSuuv9IYr7ZvOo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666016563;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ieLim755GWnQk3Uq8uQOv2Bg2ABrJnBUn7nfnhMCG+0=;
- b=fGtQoxHvDipSiuQUnFXBCko9slpPnF3CjMVmL+UI0DHVO/lxEOFRZCJ36yehcDDdKbfTTo
- V/414DvgpeZNCdBA==
-Received: from g78 (unknown [10.100.228.202])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id ABA77600186
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 16:44:59 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 606F82C141;
- Mon, 17 Oct 2022 14:22:42 +0000 (UTC)
-References: <20221004090810.9023-1-pvorel@suse.cz>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 17 Oct 2022 15:20:05 +0100
-In-reply-to: <20221004090810.9023-1-pvorel@suse.cz>
-Message-ID: <87sfjmmswf.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 855CF204E2;
+ Mon, 17 Oct 2022 14:44:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1666017899; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=knbQiegi0DP5egdvTEy+Pchi1pFGkwz2oeCQWP6hJEc=;
+ b=hA3Lo0VH0OyY1lgCkMQVDwPxyukOTjsR632EZFoaqffkgLdulEwYyb6tnyy9Ey52HdCPme
+ h55SkHbrk4QUQSbfiW7KrFia8wiOQnuueaUNSNPexP70hrFmiWKYtaQ0e3YBkGRhN6ATl5
+ L0cCdECe+NxxJQIpu1T5oRbwyxIuP1Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1666017899;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=knbQiegi0DP5egdvTEy+Pchi1pFGkwz2oeCQWP6hJEc=;
+ b=IZNZ+WVzPBwazLH3+k7CO8pW986QyxclFC0mOR9ov4OIgDnhZfCCPc4rx8OgtSaQEhsGDh
+ +f5Ry+T3Ke1D2dCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 639FD13398;
+ Mon, 17 Oct 2022 14:44:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id JSNJGGtqTWN9CAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 17 Oct 2022 14:44:59 +0000
+Date: Mon, 17 Oct 2022 16:46:41 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Tarun Sahu <tsahu@linux.ibm.com>
+Message-ID: <Y01q0V36fLlnMAIB@yuki>
+References: <20221016125731.249078-1-tsahu@linux.ibm.com>
+ <20221016125731.249078-11-tsahu@linux.ibm.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221016125731.249078-11-tsahu@linux.ibm.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] df01.sh: Use own fsfreeze implementation for
- XFS
+Subject: Re: [LTP] [PATCH 10/29] Hugetlb: Migrating libhugetlbfs
+ huge_at_4GB_normal_below
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,155 +77,193 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: linux-xfs@vger.kernel.org, Eric Sandeen <sandeen@redhat.com>,
- ltp@lists.linux.it, "Darrick J . Wong" <djwong@kernel.org>
+Cc: aneesh.kumar@linux.ibm.com, sbhat@linux.ibm.com, ltp@lists.linux.it,
+ vaibhav@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
 
-Petr Vorel <pvorel@suse.cz> writes:
-
-> df01.sh started to fail on XFS on certain configuration since mkfs.xfs
-> and kernel 5.19. Implement fsfreeze instead of introducing external
-> dependency. NOTE: implementation could fail on other filesystems
-> (EOPNOTSUPP on exfat, ntfs, vfat).
->
-> Suggested-by: Darrick J. Wong <djwong@kernel.org>
-> Suggested-by: Eric Sandeen <sandeen@redhat.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> Migrating the libhugetlbfs/testcases/huge_at_4GB_normal_below.c test
+> 
+> Test Description: Designed to pick up a bug on ppc64 where
+> touches_hugepage_high_range() falsely reported true for ranges reaching
+> below 4GB
+> 
+> Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 > ---
-> Hi,
->
-> FYI the background of this issue:
-> https://lore.kernel.org/ltp/Yv5oaxsX6z2qxxF3@magnolia/
-> https://lore.kernel.org/ltp/974cc110-d47e-5fae-af5f-e2e610720e2d@redhat.com/
->
-> @LTP developers: not sure if the consensus is to avoid LTP API
-> completely (even use it just with TST_NO_DEFAULT_MAIN), if required I
-
-Why would that be the consensus? :-)
-
-> can rewrite to use it just to get SAFE_*() macros (like
-> testcases/lib/tst_checkpoint.c) or even with tst_test workarounds
-> (testcases/lib/tst_get_free_pids.c).
-
-Yes, it should work fine with TST_NO_DEFAULT_MAIN
-
->
-> Kind regards,
-> Petr
->
->  testcases/commands/df/Makefile        |  4 +-
->  testcases/commands/df/df01.sh         |  3 ++
->  testcases/commands/df/df01_fsfreeze.c | 55 +++++++++++++++++++++++++++
->  3 files changed, 61 insertions(+), 1 deletion(-)
->  create mode 100644 testcases/commands/df/df01_fsfreeze.c
->
-> diff --git a/testcases/commands/df/Makefile b/testcases/commands/df/Makefile
-> index 2787bb43a..1e0b4283a 100644
-> --- a/testcases/commands/df/Makefile
-> +++ b/testcases/commands/df/Makefile
-> @@ -1,11 +1,13 @@
->  # SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) Linux Test Project, 2021-2022
->  # Copyright (c) 2015 Fujitsu Ltd.
-> -# Author:Zhang Jin <jy_zhangjin@cn.fujitsu.com>
-> +# Author: Zhang Jin <jy_zhangjin@cn.fujitsu.com>
->  
->  top_srcdir		?= ../../..
->  
->  include $(top_srcdir)/include/mk/env_pre.mk
->  
->  INSTALL_TARGETS		:= df01.sh
-> +MAKE_TARGETS			:= df01_fsfreeze
->  
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-> index ae0449c3c..c59d2a01d 100755
-> --- a/testcases/commands/df/df01.sh
-> +++ b/testcases/commands/df/df01.sh
-> @@ -46,6 +46,9 @@ df_test()
->  
->  	ROD_SILENT rm -rf $TST_MNTPOINT/testimg
->  
-> +	# ensure free space change can be seen by statfs
-> +	[ "$fs" = "xfs" ] && ROD_SILENT df01_fsfreeze $TST_MNTPOINT
-> +
->  	# flush file system buffers, then we can get the actual sizes.
->  	sync
->  }
-> diff --git a/testcases/commands/df/df01_fsfreeze.c b/testcases/commands/df/df01_fsfreeze.c
+>  runtest/hugetlb                               |   1 +
+>  testcases/kernel/mem/.gitignore               |   1 +
+>  .../kernel/mem/hugetlb/hugemmap/hugemmap13.c  | 160 ++++++++++++++++++
+>  3 files changed, 162 insertions(+)
+>  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
+> 
+> diff --git a/runtest/hugetlb b/runtest/hugetlb
+> index 4c16e1e7c..2029ee4b3 100644
+> --- a/runtest/hugetlb
+> +++ b/runtest/hugetlb
+> @@ -14,6 +14,7 @@ hugemmap09 hugemmap09
+>  hugemmap10 hugemmap10
+>  hugemmap11 hugemmap11
+>  hugemmap12 hugemmap12
+> +hugemmap13 hugemmap13
+>  hugemmap05_1 hugemmap05 -m
+>  hugemmap05_2 hugemmap05 -s
+>  hugemmap05_3 hugemmap05 -s -m
+> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+> index adea760c7..5955ed613 100644
+> --- a/testcases/kernel/mem/.gitignore
+> +++ b/testcases/kernel/mem/.gitignore
+> @@ -13,6 +13,7 @@
+>  /hugetlb/hugemmap/hugemmap10
+>  /hugetlb/hugemmap/hugemmap11
+>  /hugetlb/hugemmap/hugemmap12
+> +/hugetlb/hugemmap/hugemmap13
+>  /hugetlb/hugeshmat/hugeshmat01
+>  /hugetlb/hugeshmat/hugeshmat02
+>  /hugetlb/hugeshmat/hugeshmat03
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
 > new file mode 100644
-> index 000000000..d47e1b01a
+> index 000000000..0eae937ab
 > --- /dev/null
-> +++ b/testcases/commands/df/df01_fsfreeze.c
-> @@ -0,0 +1,55 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
+> @@ -0,0 +1,160 @@
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
 > +/*
-> + * Copyright (c) 2010 Hajime Taira <htaira@redhat.com>
-> + * Copyright (c) 2010 Masatake Yamato <yamato@redhat.com>
-> + * Copyright (c) 2022 Petr Vorel <pvorel@suse.cz>
+> + * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
+> + *
+> + * Test Name: Huge at 4GB normal below
+> + *
+> + * Test Description: Designed to pick up a bug on ppc64 where
+> + * touches_hugepage_high_range() falsely reported true for ranges reaching
+> + * below 4GB
+> + *
+> + * WARNING: The offsets and addresses used within are specifically
+> + * calculated to trigger the bug as it existed.  Don't mess with them
+> + * unless you *really* know what you're doing.
+> + *
+> + * HISTORY
+> + *  Written by David Gibson & Adam Litke
+> + *
 > + */
 > +
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <linux/fs.h>
+> +#define _GNU_SOURCE
 > +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <sys/ioctl.h>
-> +#include <sys/stat.h>
-> +#include <unistd.h>
+> +#include <sys/mount.h>
+> +#include <limits.h>
+> +#include <sys/param.h>
+> +#include <sys/types.h>
 > +
-> +#define err_exit(...) ({ \
-> +	fprintf(stderr, __VA_ARGS__); \
-> +	if (errno) \
-> +		fprintf(stderr, ": %s (%d)", strerror(errno), errno); \
-> +	fprintf(stderr, "\n"); \
-> +	exit(EXIT_FAILURE); \
-> +})
+> +#include "hugetlb.h"
 > +
-> +int main(int argc, char *argv[])
+> +#define FOURGB (1UL << 32)
+> +
+> +static int  fd = -1;
+> +static char hfile[MAXPATHLEN];
+> +static unsigned long hpage_size;
+> +static char *verbose;
+> +
+> +static void run_test(void)
 > +{
+> +	int page_size;
 > +	int fd;
-> +	struct stat sb;
+> +	void *p, *q;
+> +	unsigned long lowaddr;
+> +	int err;
 > +
-> +	if (argc < 2)
-> +		err_exit("USAGE: df01_fsfreeze <mountpoint>");
+> +	page_size = getpagesize();
 > +
-> +	fd = open(argv[1], O_RDONLY);
-> +	if (fd < 0)
-> +		err_exit("open '%s' failed", argv[1]);
+> +	fd = SAFE_OPEN(hfile, O_RDWR | O_CREAT, 0600);
+> +	SAFE_UNLINK(hfile);
 > +
-> +	if (fstat(fd, &sb) == -1)
-> +		err_exit("stat of '%s' failed", argv[1]);
+> +	p = mmap((void *)FOURGB, hpage_size, PROT_READ|PROT_WRITE,
+> +		 MAP_SHARED | MAP_FIXED, fd, 0);
+> +	if (p == MAP_FAILED) {
+> +		/* slice 0 (high) spans from 4G-1T */
+> +		unsigned long below_start = FOURGB;
+> +		unsigned long above_end = 1024L*1024*1024*1024;
 > +
-> +	if (!S_ISDIR(sb.st_mode))
-> +		err_exit("%s: is not a directory", argv[1]);
-> +
-> +	if (ioctl(fd, FIFREEZE, 0) < 0)
-> +		err_exit("ioctl FIFREEZE on '%s' failed", argv[1]);
-> +
-> +	usleep(100);
-> +
-> +	if (ioctl(fd, FITHAW, 0) < 0)
-> +		err_exit("ioctl FITHAW on '%s' failed", argv[1]);
-> +
-> +	close(fd);
-> +
-> +	return EXIT_SUCCESS;
-> +}
-> -- 
-> 2.37.3
+> +		if (range_is_mapped(below_start, above_end) == 1) {
+> +			if (verbose) {
+> +				tst_res(TINFO, "region 4G-IT is not free");
+> +				tst_res(TINFO|TERRNO, "mmap() failed");
 
+This should be single TINFO message.
+
+> +			}
+> +			tst_res(TPASS, "Successful but inconclusive");
+> +			SAFE_CLOSE(fd);
+> +			return;
+> +		}
+> +		tst_res(TFAIL|TERRNO, "mmap() huge");
+> +		goto fail;
+> +	}
+> +	if (p != (void *)FOURGB) {
+> +		tst_res(TFAIL, "Wrong address with MAP_FIXED huge");
+> +		goto fail;
+> +	}
+> +
+> +	if (verbose)
+> +		tst_res(TINFO, "Mapped hugetlb at %p", p);
+> +
+> +	memset(p, 0, hpage_size);
+> +
+> +	err = test_addr_huge(p);
+> +	if (err != 1) {
+> +		tst_res(TFAIL, "Mapped address is not hugepage");
+> +		goto fail;
+> +	}
+
+Again I fail to see how this is useful. This check looks to me like a
+circular definition at best. We create file on hugetlbfs, stat() it and
+check that the magic matches.
+
+> +	/* Test just below 4GB to check for off-by-one errors */
+> +	lowaddr = FOURGB - page_size;
+> +	q = mmap((void *)lowaddr, page_size, PROT_READ|PROT_WRITE,
+> +		 MAP_SHARED|MAP_FIXED|MAP_ANONYMOUS, 0, 0);
+> +	if (p == MAP_FAILED) {
+> +		unsigned long below_start = FOURGB - page_size;
+> +		unsigned long above_end = FOURGB;
+> +
+> +		if (range_is_mapped(below_start, above_end) == 1) {
+> +			if (verbose) {
+> +				tst_res(TINFO, "region (4G-page)-4G is not free\n");
+> +				tst_res(TINFO|TERRNO, "mmap() failed");
+
+Here as well, single message.
+
+> +			}
+> +			tst_res(TPASS, "Successful but inconclusive");
+> +			SAFE_MUNMAP(p, hpage_size);
+> +			SAFE_CLOSE(fd);
+> +			return;
+> +		}
+> +		tst_res(TFAIL|TERRNO, "mmap() normal");
+> +		goto fail;
+> +	}
+> +	if (q != (void *)lowaddr) {
+> +		tst_res(TFAIL, "Wrong address with MAP_FIXED normal");
+> +		goto fail;
+> +	}
+> +
+> +	memset(q, 0, page_size);
+> +
+> +	tst_res(TPASS, "Successful");
+> +	SAFE_MUNMAP(p, hpage_size);
+> +	SAFE_MUNMAP(q, page_size);
+> +	SAFE_CLOSE(fd);
+> +	return;
+> +fail:
+> +	tst_brk(TBROK, "Once failed, No point in continuing the test");
+> +}
+
+And the usuall comments apply as well.
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
