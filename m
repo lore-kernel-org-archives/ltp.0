@@ -4,66 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63210C433FE
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 13:43:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5D69C433FE
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 14:13:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ED0FC3CAFC9
-	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 15:43:33 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 7945B3CAFF0
+	for <ltp@archiver.kernel.org>; Mon, 17 Oct 2022 16:13:05 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F14C63CAFC9
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 15:43:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 055533CAFC3
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 16:12:54 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DA99A2005D2
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 15:43:22 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C42B034104;
- Mon, 17 Oct 2022 13:43:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1666014201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 207601400450
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 16:12:53 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 5A14233E5B;
+ Mon, 17 Oct 2022 14:12:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1666015973;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8qCEFZDHJuAapWtL/D5h9oGLMe2gEpPlN2Bx8PRN6+s=;
- b=Cxt49r27cj060t2uLtnWTIopWOFCBnpelr8TdolJZq/g33FlXX1Eikp4gBezFLXLzqAgIn
- acECkIsut8TOT+SZDSMRLZCYMTAoA0Jt39kz13xWG3mGmO+hugcZ4o3ZN2H6Ki+iOK/e92
- cXw5BDHg4TNimnlOxMSjhUp1bw90zDg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1666014201;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ bh=TDFQfg7JSR2DDPCdA+yF4zd0oGN6bbTYfxwaxw1OV3E=;
+ b=NwsNBd/BFZTpY6ExgZ7PNIoZfNxf8tJ2fo6cH1dPc66OwsxeuPSlx7F97cYvDf7aVoih09
+ RiE5SUOI+PaIRi3+Frwb4MZgTrQ+wZiJ/ACzmsob6gm+LqREh073EvD07WKiBSu9OVFCnX
+ H/3wRmyQeAXwd12trOViabpAKe84+4E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1666015973;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8qCEFZDHJuAapWtL/D5h9oGLMe2gEpPlN2Bx8PRN6+s=;
- b=TqCqus+gecNP0n5CsQaJbbZzSG4uocbjPWkZ6gu6T8SLu4UV6nUclmdeb8wW/DGGz5wD0V
- 1qe6USG+SvfUYLBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=TDFQfg7JSR2DDPCdA+yF4zd0oGN6bbTYfxwaxw1OV3E=;
+ b=7rulyvs+z265ZC28oD5SHnesDp/5TNq4XZQD/WxMpYoGYMaLd1xkm+thFulFvy1fswJ+vo
+ PmkEgeXm50in4JCQ==
+Received: from g78 (unknown [10.100.228.202])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1949513398;
- Mon, 17 Oct 2022 13:43:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id UCUABflbTWOmYAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 17 Oct 2022 13:43:21 +0000
-Date: Mon, 17 Oct 2022 15:45:03 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <Y01cX7O/XiSNzAqa@yuki>
-References: <20221016125731.249078-1-tsahu@linux.ibm.com>
- <20221016125731.249078-10-tsahu@linux.ibm.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 2CE3B2C141;
+ Mon, 17 Oct 2022 14:12:52 +0000 (UTC)
+References: <cover.1664418361.git.pengfei.xu@intel.com>
+ <466821336a63ab9b6c236a0a1c4dbe056b7a5ac3.1664418361.git.pengfei.xu@intel.com>
+ <Y0kD/eENxCPGYjOg@xpf.sh.intel.com>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Pengfei Xu <pengfei.xu@intel.com>
+Date: Mon, 17 Oct 2022 14:55:29 +0100
+In-reply-to: <Y0kD/eENxCPGYjOg@xpf.sh.intel.com>
+Message-ID: <871qr6o7xc.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221016125731.249078-10-tsahu@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 09/29] Hugetlb: Migrating libhugetlbfs fork-cow
+Subject: Re: [LTP] [PATCH v2 1/1] ptrace07: should not use a hard-coded
+ xstate size and use CPUID specified instead
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,336 +72,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: aneesh.kumar@linux.ibm.com, sbhat@linux.ibm.com, ltp@lists.linux.it,
- vaibhav@linux.ibm.com
+Reply-To: rpalethorpe@suse.de
+Cc: Heng Su <heng.su@intel.com>, eric.devolder@oracle.com,
+ chang.seok.bae@intel.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Migrating the libhugetlbfs/testcases/fork-cow.c test
-> 
-> Test Description: This checks copy-on-write semantics, specifically the
-> semantics of a MAP_PRIVATE mapping across a fork().  Some versions of the
-> powerpc kernel had a bug in huge_ptep_set_wrprotect() which would fail to
-> flush the hash table after setting the write protect bit in the parent's
-> page tables, thus allowing the parent to pollute the child's mapping.
-> 
-> Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
-> ---
->  runtest/hugetlb                               |   2 +
->  testcases/kernel/mem/.gitignore               |   1 +
->  .../kernel/mem/hugetlb/hugefork/Makefile      |  10 +
->  .../kernel/mem/hugetlb/hugefork/hugefork01.c  | 220 ++++++++++++++++++
->  4 files changed, 233 insertions(+)
->  create mode 100644 testcases/kernel/mem/hugetlb/hugefork/Makefile
->  create mode 100644 testcases/kernel/mem/hugetlb/hugefork/hugefork01.c
-> 
-> diff --git a/runtest/hugetlb b/runtest/hugetlb
-> index ec1fc2515..4c16e1e7c 100644
-> --- a/runtest/hugetlb
-> +++ b/runtest/hugetlb
-> @@ -1,6 +1,8 @@
->  hugefallocate01 hugefallocate01
->  hugefallocate02 hugefallocate02
->  
-> +hugefork01 hugefork01
-> +
->  hugemmap01 hugemmap01
->  hugemmap02 hugemmap02
->  hugemmap04 hugemmap04
-> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-> index c0906f3d3..adea760c7 100644
-> --- a/testcases/kernel/mem/.gitignore
-> +++ b/testcases/kernel/mem/.gitignore
-> @@ -1,6 +1,7 @@
->  /cpuset/cpuset01
->  /hugetlb/hugefallocate/hugefallocate01
->  /hugetlb/hugefallocate/hugefallocate02
-> +/hugetlb/hugefork/hugefork01
->  /hugetlb/hugemmap/hugemmap01
->  /hugetlb/hugemmap/hugemmap02
->  /hugetlb/hugemmap/hugemmap04
-> diff --git a/testcases/kernel/mem/hugetlb/hugefork/Makefile b/testcases/kernel/mem/hugetlb/hugefork/Makefile
-> new file mode 100644
-> index 000000000..77ebb0aef
-> --- /dev/null
-> +++ b/testcases/kernel/mem/hugetlb/hugefork/Makefile
-> @@ -0,0 +1,10 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (C) 2009, Cisco Systems Inc.
-> +# Ngie Cooper, July 2009
-> +
-> +top_srcdir		?= ../../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(abs_srcdir)/../Makefile.inc
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +
-> diff --git a/testcases/kernel/mem/hugetlb/hugefork/hugefork01.c b/testcases/kernel/mem/hugetlb/hugefork/hugefork01.c
-> new file mode 100644
-> index 000000000..096ff0c4d
-> --- /dev/null
-> +++ b/testcases/kernel/mem/hugetlb/hugefork/hugefork01.c
-> @@ -0,0 +1,220 @@
-> +// SPDX-License-Identifier: LGPL-2.1-or-later
-> +/*
-> + * Copyright (C) 2008 David Gibson, IBM Corporation.
-> + *
-> + * Test Name: fork COW
-> + *
-> + * Test Description: This checks copy-on-write semantics, specifically the
-> + * semantics of a MAP_PRIVATE mapping across a fork().  Some versions of the
-> + * powerpc kernel had a bug in huge_ptep_set_wrprotect() which would fail to
-> + * flush the hash table after setting the write protect bit in the parent's
-> + * page tables, thus allowing the parent to pollute the child's mapping.
-> + *
-> + * HISTORY
-> + *  Written by David Gibson
-> + *
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +
-> +#include <sys/shm.h>
-> +#include <sys/wait.h>
-> +#include <sys/mman.h>
-> +#include <errno.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
-> +#include <sys/mount.h>
-> +#include <limits.h>
-> +#include <sys/param.h>
-> +#include <sys/types.h>
-> +
-> +#include "hugetlb.h"
-> +
-> +#define RANDOM_CONSTANT		0x1234ABCD
-> +#define OTHER_CONSTANT		0xfeef5678
-> +
-> +static int  fd = -1;
-> +static char hfile[MAXPATHLEN];
-> +static long hpage_size;
-> +static char *verbose;
-> +
-> +/*
-> + * The parent uses this to check if the child terminated badly.
-> + */
-> +static void sigchld_handler(int signum, siginfo_t *si, void *uc)
-> +{
-> +	(void)signum;
-> +	(void)uc;
-> +	if (WEXITSTATUS(si->si_status) != 0) {
-> +		tst_res(TFAIL, "Child failed: %d", WEXITSTATUS(si->si_status));
-> +		goto fail;
-> +	}
-> +	if (WIFSIGNALED(si->si_status)) {
-> +		tst_res(TFAIL, "Child recived signal %s",
-> +				strsignal(WTERMSIG(si->si_status)));
-> +		goto fail;
-> +	}
-> +	return;
-> +fail:
-> +	tst_brk(TBROK, "Once failed, No point in continuing the test");
+Hello,
 
-You cannot call tst_* functions from a signal handler, these are not
-async-signal-safe.
+Pengfei Xu <pengfei.xu@intel.com> writes:
 
-The only sensible thing to use the value filled in by the waitpid() call
-instead.
+> Hi,
+>
+> This patch fixes ptrace07 spurious failures when the platform xstate maxium
+> size is bigger than 4096bytes(512*8 bytes).
+>
+> Thanks for comments!
 
-> +}
-> +
-> +static void run_test(void)
-> +{
-> +	int status;
-> +	void *syncarea;
-> +	volatile unsigned int *p;
-> +	volatile unsigned int *trigger, *child_readback;
-> +	int parent_readback;
-> +	pid_t pid;
-> +	struct sigaction sa = {
-> +		.sa_sigaction = sigchld_handler,
-> +		.sa_flags = SA_SIGINFO,
-> +	};
-> +
-> +	/* Get a shared normal page for synchronization */
-> +	if (verbose)
-> +		tst_res(TINFO, "Mapping synchronization area..");
-> +	syncarea = SAFE_MMAP(NULL, getpagesize(), PROT_READ|PROT_WRITE,
-> +			MAP_SHARED|MAP_ANONYMOUS, -1, 0);
-> +	if (verbose)
-> +		tst_res(TINFO, "done");
-> +
-> +	trigger = syncarea;
-> +	*trigger = 0;
-> +
-> +	child_readback = trigger + 1;
-> +	*child_readback = 0;
-> +
-> +	fd = SAFE_OPEN(hfile, O_RDWR | O_CREAT, 0600);
-> +	SAFE_UNLINK(hfile);
-> +
-> +	if (verbose)
-> +		tst_res(TINFO, "Mapping hugepage area...");
-> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
-> +	if (verbose)
-> +		tst_res(TINFO, "mapped at %p", p);
-> +	/* Touch the page for write in parent */
-> +	if (verbose)
-> +		tst_res(TINFO, "Parent writes pre-fork...");
-> +	*p = RANDOM_CONSTANT;
-> +	if (verbose)
-> +		tst_res(TINFO, "%x", RANDOM_CONSTANT);
-> +
-> +	SAFE_SIGACTION(SIGCHLD, &sa, NULL);
-> +
-> +	pid = SAFE_FORK();
-> +
-> +	if (pid != 0) {
-> +		/* Parent */
+This patch causes the test to fail on my Xeon workstation. The problem
+seems to be the cpuid function which just fills the args with zeros.
 
-Useless comment again.
+>
+> BR.
+>
+> On 2022-09-29 at 10:30:20 +0800, Pengfei Xu wrote:
+>> Should not use a hard-coded xstate size(512 * 8 = 4096 bytes) which is
+>> wrong, should use maximum XSAVE size specified by CPUID.(EAX=0DH, ECX=0H):EBX.
+>> If the CPU's maximum XSAVE size exceeds the hard-coded xstate size 4096 bytes,
+>> it will cause the ptrace07 case to fail as below:
+>> "
+>> ./ptrace07
+>> tst_test.c:1528: TINFO: Timeout per run is 0h 00m 30s
+>> ptrace07.c:142: TBROK: PTRACE_SETREGSET failed with unexpected error: EFAULT (14)
+>> tst_test.c:1571: TINFO: Killed the leftover descendant processes
+>> 
+>> Summary:
+>> passed   0
+>> failed   0
+>> broken   1
+>> skipped  0
+>> warnings 0
+>> "
+>> 
+>> Reported-by: Eric DeVolder <eric.devolder@oracle.com>
+>> Reviewed-by: Chang S. Bae <chang.seok.bae@intel.com>
+>> Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
+>> ---
+>>  testcases/kernel/syscalls/ptrace/ptrace07.c | 25 +++++++++++++++++----
+>>  1 file changed, 21 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/testcases/kernel/syscalls/ptrace/ptrace07.c b/testcases/kernel/syscalls/ptrace/ptrace07.c
+>> index da62cadb0..0accaceb5 100644
+>> --- a/testcases/kernel/syscalls/ptrace/ptrace07.c
+>> +++ b/testcases/kernel/syscalls/ptrace/ptrace07.c
+>> @@ -35,6 +35,7 @@
+>>  #include "config.h"
+>>  #include "ptrace.h"
+>>  #include "tst_test.h"
+>> +#include "ltp_cpuid.h"
 
-> +		if (verbose)
-> +			tst_res(TINFO, "Parent writes post-fork...");
-> +		*p = ~RANDOM_CONSTANT;
-> +		if (verbose)
-> +			tst_res(TINFO, "~RANDOM_CONSTANT: %x", ~RANDOM_CONSTANT);
-> +		*trigger = 1;
+This is from the old API (starts with ltp_) so we shouldn't use it
+anymore. If it is being used at all, then it's being used in a way that
+would allow it to silently fail AFAICT.
 
-We do have checkpoint library exactly for synchronization between parent
-and child make use of them, see TST_CHECKPOINT_*.
+>>  
+>>  #ifndef PTRACE_GETREGSET
+>>  # define PTRACE_GETREGSET 0x4204
+>> @@ -48,6 +49,8 @@
+>>  # define NT_X86_XSTATE 0x202
+>>  #endif
+>>  
+>> +#define CPUID_LEAF_XSTATE 0xd
+>> +
+>>  static void check_regs_loop(uint32_t initval)
+>>  {
+>>  	const unsigned long num_iters = 1000000000;
+>> @@ -83,8 +86,15 @@ static void do_test(void)
+>>  	int i;
+>>  	int num_cpus = tst_ncpus();
+>>  	pid_t pid;
+>> -	uint64_t xstate[512];
+>> -	struct iovec iov = { .iov_base = xstate, .iov_len = sizeof(xstate) };
+>> +	uint32_t eax, ebx, ecx = 0, edx;
+>> +	uint64_t *xstate;
+>> +	/*
+>> +	 * CPUID.(EAX=0DH, ECX=0H):EBX: maximum size (bytes, from the beginning
+>> +	 * of the XSAVE/XRSTOR save area) required by enabled features in XCR0.
+>> +	 */
+>> +	cpuid(CPUID_LEAF_XSTATE, &eax, &ebx, &ecx, &edx);
+>> +	xstate = aligned_alloc(64, ebx);
+>> +	struct iovec iov = { .iov_base = xstate, .iov_len = ebx };
+>>  	int status;
+>>  	bool okay;
 
-> +		while (*trigger != 2)
-> +			;
-> +
-> +		if (verbose)
-> +			tst_res(TINFO, "Parent reads..");
+Adding:
 
-I would be inclined to remove these "Parent does xyz" and "Child does abc"
-messages from test once we make use of the CHECKPOINTs the
-synchronization is guaranteed to be right.
+tst_res(TINFO, "EAX=%u, ECX=%u, EBX=%u", eax, ecx, ebx);
 
-> +		parent_readback = *p;
-> +		if (verbose)
-> +			tst_res(TINFO, "Parent readback: %x", parent_readback);
-> +		*trigger = 3;
-> +	} else {
-> +		/* Child */
+prints:
 
-Here as well.
+ptrace07.c:101: TINFO: EAX=0, ECX=0, EBX=0
 
-> +		if (verbose)
-> +			tst_res(TINFO, "Child starts..");
-> +		while (*trigger != 1)
-> +			;
-> +
-> +		if (verbose)
-> +			tst_res(TINFO, "Child reads...");
-> +		*child_readback = *p;
-> +		if (verbose) {
-> +			tst_res(TINFO, "child readback: %x", *child_readback);
-> +			tst_res(TINFO, "Child writes...");
-> +		}
-> +		*p = OTHER_CONSTANT;
-> +		if (verbose)
-> +			tst_res(TINFO, "OTHER_CONSTANT: %x", OTHER_CONSTANT);
-> +
-> +		*trigger = 2;
-> +
-> +		while (*trigger != 3)
-> +			;
-> +		if (verbose)
-> +			tst_res(TINFO, "Child exits...");
-> +		exit(0);
-> +	}
-> +
-> +	if (verbose)
-> +		tst_res(TINFO, "child_readback = 0x%x, parent_readback = 0x%x\n",
-> +		       *child_readback, parent_readback);
-> +
-> +	if (*child_readback != RANDOM_CONSTANT) {
-> +		tst_res(TFAIL, "Child read back 0x%x instead of 0x%x",
-> +		     *child_readback, RANDOM_CONSTANT);
-> +		goto fail;
-> +	}
-> +	if (parent_readback != ~RANDOM_CONSTANT) {
-> +		tst_res(TFAIL, "Parent read back 0x%x instead of 0x%x",
-> +		     parent_readback, RANDOM_CONSTANT);
-> +		goto fail;
-> +	}
-> +
-> +	SAFE_WAITPID(pid, &status, 0);
-> +
-> +	tst_res(TPASS, "Successful");
-> +	SAFE_MUNMAP((void *)p, hpage_size);
-> +	SAFE_MUNMAP(syncarea, getpagesize());
-> +	SAFE_CLOSE(fd);
-> +	return;
-> +fail:
-> +	tst_brk(TBROK, "Once failed, No point in continuing the test");
-
-Here as well.
-
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int free_pages = SAFE_READ_MEMINFO("HugePages_Free:");
-> +
-> +	if (tst_hugepages < 2 || free_pages < 2)
-> +		tst_brk(TCONF, "Not enough hugepages for testing.");
-> +
-> +	if (!Hopt)
-> +		Hopt = tst_get_tmpdir();
-> +	SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
-> +
-> +	snprintf(hfile, sizeof(hfile), "%s/ltp_hugetlbfile%d", Hopt, getpid());
-> +	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd >= 0)
-> +		SAFE_CLOSE(fd);
-> +	umount2(Hopt, MNT_DETACH);
-
-Here as well.
-
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.needs_tmpdir = 1,
-> +	.options = (struct tst_option[]) {
-> +		{"v", &verbose, "Turns on verbose mode"},
-> +		{"H:", &Hopt,   "Location of hugetlbfs, i.e.  -H /var/hugetlbfs"},
-> +		{"s:", &nr_opt, "Set the number of the been allocated hugepages"},
-> +		{}
-> +	},
-> +	.forks_child = 1,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +	.hugepages = {2, TST_REQUEST},
-> +};
-> -- 
-> 2.31.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
