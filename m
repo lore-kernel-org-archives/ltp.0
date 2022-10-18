@@ -4,77 +4,138 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 153D9C4332F
-	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 06:57:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F1B2C4332F
+	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 07:20:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E113C3CB05B
-	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 08:57:09 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 21C203CB050
+	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 09:19:59 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E3D153C1BC0
- for <ltp@lists.linux.it>; Tue, 18 Oct 2022 08:56:59 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 48A793CA06D
+ for <ltp@lists.linux.it>; Tue, 18 Oct 2022 09:19:49 +0200 (CEST)
+Received: from esa3.fujitsucc.c3s2.iphmx.com (esa3.fujitsucc.c3s2.iphmx.com
+ [68.232.151.212])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1F7F41A00913
- for <ltp@lists.linux.it>; Tue, 18 Oct 2022 08:56:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1666076217;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8ldNvpimHP7KenpuA3O5jQglQ5WTSRWU9KVRXmoki3A=;
- b=R4Lm999WCFzJexom1BwVWhnsEXQ5vUNqguh27nQm1GPQjMSKxe4Al5EbXuwY5JJF/HcbKB
- XVt0UsSn9ywg6aCrDEVEMgHaHGs3WKYMwIPoo66cnrGaL91dYQT5D5CnJQgWXTd5yRy9tF
- v+CraWrHfNaS/gSz6sqWzQAQ6+9ocB4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-495-HhErPElxO0KOWOcRgpE3gQ-1; Tue, 18 Oct 2022 02:56:56 -0400
-X-MC-Unique: HhErPElxO0KOWOcRgpE3gQ-1
-Received: by mail-wr1-f71.google.com with SMTP id
- e14-20020adf9bce000000b0022d18139c79so4223654wrc.5
- for <ltp@lists.linux.it>; Mon, 17 Oct 2022 23:56:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=8ldNvpimHP7KenpuA3O5jQglQ5WTSRWU9KVRXmoki3A=;
- b=I9p9hT63CZTU8os1irM9zI3fB/CzLHbHreI8cGB9Tj3ZaPIZpJAyY+IsqZ0RasTW3j
- hiWA7+ladtu4NJTSPO207HyflAaYsMKERYvVUWZ2/HFCmKwZZ4P8tD8aZut3NCkclQJO
- hJMI9+auuK9jd0Ug92RK5ledl8446tRxlFkAtbhrn2kjfHk0iZdNCv7wL4A6KuLyvL/i
- C+dC+d/ILZatlYZf9sB4khkll80JDB5o6WFZ/kLt70Zwzpqg87RkT27oUkaJeVPDKJMO
- bXKo+JTHVNpwtkYCtgQN7S9KmXyPgg1Tx+QBGAMqVaHJxoYsibByymM9ao8jLfK4oJan
- FKkQ==
-X-Gm-Message-State: ACrzQf3H0CI1UkQ637FQ83/3Lok5rHIYXmypb7ybXIklQmIk9IDOr0E3
- bPkqxTWVlnF0gdbNEPxy9ylYJLO9ZIIDlOsgrD4fLAHwLVCLxpKY71KZLVTzswrJnZQxzf+sKwG
- HlwlXhOcEPZ3FCn4zZTZzIsyUSRE=
-X-Received: by 2002:a5d:64e2:0:b0:22e:7060:b4a7 with SMTP id
- g2-20020a5d64e2000000b0022e7060b4a7mr789690wri.129.1666076214941; 
- Mon, 17 Oct 2022 23:56:54 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM5JmiLAb7DKLv4J6aneGF6Zt5ZFtMmnpafa1GwQXPb5C5x09mU/EGjpQY191ECzUxqtwC20OvTw88SxjbXzZ5g=
-X-Received: by 2002:a5d:64e2:0:b0:22e:7060:b4a7 with SMTP id
- g2-20020a5d64e2000000b0022e7060b4a7mr789681wri.129.1666076214731; Mon, 17 Oct
- 2022 23:56:54 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6DE62600802
+ for <ltp@lists.linux.it>; Tue, 18 Oct 2022 09:19:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1666077588; x=1697613588;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=JQ2HDkORxpOhqhV1FuKC41xnDS9wrVA6Q+jH2DKUOF0=;
+ b=b6RoZ/SRGbyj6ptAQK9zkqnOQzNCaML7ymrZN5HY0q80xOh/+g3DSkyR
+ 4iA5J++7sKIONmSfzZCr/vLbzNNe1KuWrQ4A2NFzKmxgSts4XA/mUWTtn
+ YHelcPpntzD/tHmNQDF/6d7wr9qRCwOSWlGnXarUfAYHheGXmruV6d8Zu
+ 8zhWJEySyhApN9aQ3LSsLn9dSsi5z3P6Nut3oWYI4j6XYful9W2QhdXI7
+ 7hxn9yNELNj3s9wrtlVcAVzDVgOVhjqGtSLLNFHm9mqDNQ+b9otDaSTJX
+ r2Hy+m0DvfuhQSfH6UYRSgPtrFtca7EbQJTWD0X35QScZlXFdjFjPQeBm A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="75856514"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661785200"; d="scan'208";a="75856514"
+Received: from mail-os0jpn01lp2111.outbound.protection.outlook.com (HELO
+ JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.111])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Oct 2022 16:19:45 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SLtyiy3Mlj8fCSjgHvVvnd89EFjzcZdFynuRbV9WGw9AwgH1p5ieINEgUOewaQx8eqqy5kXCV2ATU8lQip2HHQ9WXAM9ebsYBbqc6e+eSkm3GIPT4wH01T+gaKVgKSGKMvlzrYq2kwMV6dM6ML7X4rr3LL/yi1SKNdcYpVBaqL3F72c6Pygary3dUgIw0kCLtf3ulJYe2C1HL33/6NzcLwOP8WNYVKQyEg6Tuh3pNywZTlx0YEn1IzoGRI1tkvFg3JOp5A6AsFPL62FF2dLT7YygK7FTYDFViFMuOFVozDwRr3e+U0MGcHNJ0hd9MXi3eokCveml19LIijYt9uiTJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JQ2HDkORxpOhqhV1FuKC41xnDS9wrVA6Q+jH2DKUOF0=;
+ b=iEj6OGm/Ak+Xjv/2XRhWZcoY/PpAxcW+GYRCSDwjbXCmE9fG7178QYqsw5ESrWF7LgqPLBp5qZVW3K+2m+GKYbfgUcvbqa7PxnI60JJ0TNySWXs3GErrMczhQJ090+pNyRvb8Y0302UFanXClKoU7WvSzGUIat24NXA3saw91C/E3smhc5ZK2iF7z8nOeKgLLLR23IeXTEdJgvXtFSzpgC0pKJ5xsiuhzQIlHaJF4G9nE/97pesIbkjcEJnYLwxLvhQeCyH+mqW7fuWb6l74WznuNhH7H5i95OuCbbK59cBcEhStu0qPYcjysPk8pW8O6eE0ihip3IpXTOyIW8uytA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
+ by OS3PR01MB10389.jpnprd01.prod.outlook.com (2603:1096:604:1fa::12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.30; Tue, 18 Oct
+ 2022 07:19:43 +0000
+Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
+ ([fe80::c4fe:de8c:66e8:5c93]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
+ ([fe80::c4fe:de8c:66e8:5c93%6]) with mapi id 15.20.5723.033; Tue, 18 Oct 2022
+ 07:19:42 +0000
+From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+To: Petr Vorel <pvorel@suse.cz>, "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: [PATCH v4 1/1] mount03: Convert to new API
+Thread-Index: AQHYtj9y+F1qJUpJGk2excUnb5K47K27JqOAgFkBxIA=
+Date: Tue, 18 Oct 2022 07:19:42 +0000
+Message-ID: <7cd60563-e0a4-d51e-3339-5f79b10c2044@fujitsu.com>
+References: <20220822155413.24814-1-pvorel@suse.cz> <YwO3qbIO32hvryjw@pevik>
+In-Reply-To: <YwO3qbIO32hvryjw@pevik>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY2PR01MB4427:EE_|OS3PR01MB10389:EE_
+x-ms-office365-filtering-correlation-id: fc5051a9-b1fb-4693-51b0-08dab0d9209e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 60U66hILJuV9GPWss43QFcaZB4HTFlQD9KimS1aY2+gMflH3QmoloUiGcOM/Pg07BVJIKTOwntw8Rv8jS9dsPjIX3ZkP4OziBYExh5fz9pglLIjJwh0Z4yu/9uu5Mv2hhHZI7dJxtQlxxuRGVZyBHhJRTr9TlMEcfAWRNK0YNBjaPfGAW3gHn6Q1qmlSrYEE56oKWkjZOxTvZA3moP43TlQSP21x7sKsAyHRhR6cKWwvihou+CDYVbdbGTdBa9v847L9c5g4t4CGzou4tN2PWVow3H94Ep0vVuRMISd9G2KX95zmicg2rX47mQCakyZea+RFupA5SaL9XbN6AJ57UVkW+QRSAe7axRejKmA5UZrX114kwQSIuPQj9LfRUIW+X30HrtE+QN0OMQshg+mbrzCfWmg65xXKIY8vPZw+u7IYIbjtCrFWtLMM3mNbjdyc1Uq3FTWfFYsyTCW91yYvMe2Ci4pN/SSF6XkDnoGNPlrasCellgEKTcXqInYHFkop6RtF2kruT75TuVds/VYXnRash9RkFdOUmbiR94E9i00CrcoZPpnBx+2XFXqZpgxvF/0qY4B9omKbD/CfU0UnTYuXO4Nt+TTYcHk8gQhP2Mhlc97qMtJMfb92deHlDxkGQNsstZRVtOETJZ0W19T5r1pEVxs6hRNvNPTMiY9AijZnBv9coxh5IzjNLOWnH+azI6hsgkOglA9fKV/vVIkHBWDpyntCFNH1i5bExXfjbshFtohk/VhtUfNqSa7wTic2FWWWNO4UUy+xbPp3VO7d4XR49tRjs/0e9JpSx5IGYp6Nyhy0r6+zQtJHI7cc7MjlVD7+UAoB8/B1Oa+RmHPhGQ==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230022)(4636009)(346002)(136003)(376002)(396003)(366004)(39860400002)(451199015)(1590799012)(83380400001)(31696002)(38070700005)(86362001)(38100700002)(82960400001)(122000001)(8936002)(5660300002)(110136005)(66556008)(41300700001)(66446008)(8676002)(66946007)(91956017)(2906002)(76116006)(66476007)(6506007)(186003)(2616005)(26005)(54906003)(64756008)(6486002)(6512007)(316002)(478600001)(4326008)(71200400001)(36756003)(1580799009)(85182001)(31686004)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T1hBanlyVFN4UGFidk1vQ0o2MnhkZitrVC9MNEU4VU16M3FuTllJN1Q1dUky?=
+ =?utf-8?B?QTJiRjNXbWVwU25OS1RHLy93bzZnWXZ5dlN5L0FzM2hOaUZNc014TFAwQmE1?=
+ =?utf-8?B?N0N3Y2gxbEg0L1h0NHE3TXl2NlJ3djM3aVBHSUdDMDUydVZhWlBKR3dZK0FI?=
+ =?utf-8?B?R3UwZWRYSTROWTVHajExZlRFckdWZHQwTjBLbUNQczU4dERUcmhxNkdmSnov?=
+ =?utf-8?B?cHNkNmlwcGFTQ29lY0ZqZk1VajhUOE1EVm9xZituWk56aFF1TE1SOXM4d2VY?=
+ =?utf-8?B?eFZhK1ZmRGJZVVBMaDhRTDgrdW9JbWdLc1o1RzlwZFY5TFdSNThndFVEbVhm?=
+ =?utf-8?B?K3BDeHEweHlZZnBwenZyTC9tRkxzNDhNNXlLOVNFbHUrVWdnWFlsUzIzMTQv?=
+ =?utf-8?B?TEdTanZoVEsra0w4RDg3QUIzeVRrZHN5WGl4WEdvbk8zWVFhME0vR0lQY3RR?=
+ =?utf-8?B?R0V4RWJ3TUxMbWNQaXE0R2VRazZabDEvTFRNTFhXUG1VYmU0R2Nab3ZVQjQy?=
+ =?utf-8?B?cmxwQW9zZzM5SjVaZUxHdFlNeVB4dDkvSkdWT1BhUlBjQmRGNUlFZ3YwWG9L?=
+ =?utf-8?B?ek9Td2p6RjFLTDFocFo4dmM3WEtNeUd4RFB6b3kvbnN2NGROSXdTMDBzaUpm?=
+ =?utf-8?B?dkRjY1dRSXBRMVgxOGFRZmg1RkxoRU16aTFkT29oU29ac3RJTmFxSjdJRVZt?=
+ =?utf-8?B?Y0ZLT2R6WWNoYjlMTVI1cDA2ajhuY21DVTFnL0ZYZFVYWmNPV0dEUXVHOSs5?=
+ =?utf-8?B?RHhsWkxmVjdpTFh5dnhSV1ZQNXZjWlB5WHFFUmN3SmpObTdLclQ0Q2NEYUJD?=
+ =?utf-8?B?Nk91NkxzaXZNQUY3SnRHRGhZS3NodkY4NlM5YnppdCtqb0RvUHg2dzhWY0Qw?=
+ =?utf-8?B?cUhZNUhrc0xCRGExZGEzWXFLRjZXeTFxd2Erby9mQWpXRk5yVkdpUlFwWkVz?=
+ =?utf-8?B?L3M4ZWU1YnhrQm5YQ0NlUC9pRWZFeGdLeXRhYzdIM0tUbUZuVnIvOW5IUDlh?=
+ =?utf-8?B?UHBIdlNvZ0VIUk4xcEpCT0w3enc0c1UzRUs1bzJnWXdRUHVvdTh0VzE1MThK?=
+ =?utf-8?B?NFdJTW5VTFhUN1NiZUtjZDR5QVZNbm1GU1VsVjdtakJHbGVMbVFnMnAwUFpv?=
+ =?utf-8?B?YXpKTEpSNjJMU2ZZbFFYMEtyNnI2MzNQcFJRakNKd0JDQ1BRbHFNbHFxRit6?=
+ =?utf-8?B?UG5kOWNvVU83UmJmV00yTTliOHFxOUpzMm1iN2FoYk1vZlpGSVcxS21ZcG9S?=
+ =?utf-8?B?aXpFYWdwYlJCTXJtNjJzUXFVMWpEN3RSTnc2b29yMUxRaFJEWEJxY05nWWFj?=
+ =?utf-8?B?ZjRlZEUyeFVqSXdPZ0JkZTV0TStoU3pGaUpVRFZjbWdCN2U0cDlTdDd2TFov?=
+ =?utf-8?B?YU80cUY0YU1JczQ1RFY2YzZHQldvVkd1VmNUUlowNDBnU2VERDB0OEQ4YzFp?=
+ =?utf-8?B?eWJHTWZzb25aUm1ZMXBsdTM3TWhHRWRSSS9abzZDeFpkSkcrTTFBV2FEUHBx?=
+ =?utf-8?B?ZUNHZXZlOU4xTE4zVW5paWVSYk1CaWxWUVBFZjVJcFprQVAyS0RSNWluOGlN?=
+ =?utf-8?B?dlBVSmpDMEFib3dLWUU0emRTMit4ZmV5Y2ExRlNVUTFiNWdVdUc3cFlzUVlj?=
+ =?utf-8?B?ZjR1RS8xemFQWTZpNVY5cU1FazRPNWhFblVQQWZ2UTBmdGxEb3BMMktMb3V4?=
+ =?utf-8?B?ZzhzYXcvTGYrYzBFMlNCSzNiL2JPanpxdWVKTDBDbVhLME1nNVhoVVBpdjhY?=
+ =?utf-8?B?eHE1MXREV0Z3bzEzeTZLd3daRy9wK3MrdHJRd1JYc3ZPSzhoQ3Z2cnRMLzlL?=
+ =?utf-8?B?MG9HWW1saUwxWG9ySE55dTRrRXdSV1I4eklPU1BNQkhIdTcrRyt0OW5qdkVa?=
+ =?utf-8?B?V0RVcjZ3d3RvaS9LRnQvRVJCT3Y1aDQ5b29qVkh2S3F1OU9tNnpFTUhPaWpT?=
+ =?utf-8?B?RTZocTRMQk5JSmVMYTRVaDljZ2w5cko3OEwralFsTngrNWpFQ0FSbjdTZDdz?=
+ =?utf-8?B?cVRTQVhyUTdRNlpIRTc3MHNvV0c5UlUzblN3UHFVU0kwOVZMdXdyN3FpTG5H?=
+ =?utf-8?B?ODFWYklvTXdCdXcycXhrbFhvcW9idlh4UUFJcHozN1hOR0I5NEpiaEpPcFBN?=
+ =?utf-8?B?dHVrQjRLVFN4ZVcvR250QVRxeTRkWDBtS0wydFNlTHZrdTZyQUdLbWRwK1hq?=
+ =?utf-8?B?Q2c9PQ==?=
+Content-ID: <AB9DF14417256E48A2632A6CDB9ACA4B@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <20221016125731.249078-1-tsahu@linux.ibm.com>
- <20221016125731.249078-10-tsahu@linux.ibm.com>
-In-Reply-To: <20221016125731.249078-10-tsahu@linux.ibm.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 18 Oct 2022 14:56:43 +0800
-Message-ID: <CAEemH2fqJaA87-N4MMQCHRmN=ZG7+x8cu_4V9-nnuNg4mfNKzA@mail.gmail.com>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc5051a9-b1fb-4693-51b0-08dab0d9209e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2022 07:19:42.7828 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q38Bx4LQVvaYZGrH3PTvxliU7P4F5jSCXDugd5hXETHeTZBM5FYO7wNHxQRsxC/7+q311YSbgmsxai+djENa41CG4KMW2Lf6MpG7g16YhJI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB10389
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 09/29] Hugetlb: Migrating libhugetlbfs fork-cow
+Subject: Re: [LTP] [PATCH v4 1/1] mount03: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,216 +147,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: aneesh.kumar@linux.ibm.com, sbhat@linux.ibm.com, ltp@lists.linux.it,
- vaibhav@linux.ibm.com
-Content-Type: multipart/mixed; boundary="===============0361595949=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0361595949==
-Content-Type: multipart/alternative; boundary="000000000000f2be9005eb4998aa"
 
---000000000000f2be9005eb4998aa
-Content-Type: text/plain; charset="UTF-8"
+Hi Petr
 
-Tarun Sahu <tsahu@linux.ibm.com> wrote:
+> Hi all,
+> 
+> when running in loop, I sometimes still get error:
+> 
+> i=0; while true; do i=$((i+1)); echo "== $i =="; ./mount03  || break; done
+> ...
+> === 100 ===
+> ...
+> tst_device.c:434: TINFO: No device is mounted at mntpoint
+> tst_test.c:1599: TINFO: Testing on ext4
+> tst_test.c:1065: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+> mke2fs 1.46.5 (30-Dec-2021)
+> mount03.c:150: TINFO: Testing flag MS_RDONLY
+> mount03.c:48: TPASS: otfd = open(file, O_CREAT | O_RDWR, 0700) : EROFS (30)
+> mount03.c:150: TINFO: Testing flag MS_NODEV
+> mount03.c:153: TFAIL: mount(tst_device->dev, MNTPOINT, tst_device->fs_type, tc->flag, NULL) failed: EINVAL (22)
+> mount03.c:150: TINFO: Testing flag MS_NOEXEC
+> mount03.c:153: TFAIL: mount(tst_device->dev, MNTPOINT, tst_device->fs_type, tc->flag, NULL) failed: EINVAL (22)
+> mount03.c:150: TINFO: Testing flag MS_RDONLY
+> mount03.c:153: TFAIL: mount(tst_device->dev, MNTPOINT, tst_device->fs_type, tc->flag, NULL) failed: EINVAL (22)
+> mount03.c:150: TINFO: Testing flag MS_NOSUID
+> mount03.c:153: TFAIL: mount(tst_device->dev, MNTPOINT, tst_device->fs_type, tc->flag, NULL) failed: EINVAL (22)
+> mount03.c:150: TINFO: Testing flag MS_NOATIME
+> mount03.c:111: TPASS: st.st_atime == atime (1661183501)
+> ...
+> Summary:
+> passed   32
+> failed   4
+> broken   0
+> skipped  0
+> warnings 0
+> 
+> Any idea what can be wrong?
 
+Even I test 100 times as your script on my primary machine instead of 
+vm,  I still can't hit this problem.
 
+Maybe filesystem based on loop has been corrupted?  Now, the info isn't 
+enough. Does dmesg provide some useful log?
 
-> +static void run_test(void)
-> +{
-> +       int status;
-> +       void *syncarea;
-> +       volatile unsigned int *p;
-> +       volatile unsigned int *trigger, *child_readback;
-> +       int parent_readback;
-> +       pid_t pid;
-> +       struct sigaction sa = {
-> +               .sa_sigaction = sigchld_handler,
-> +               .sa_flags = SA_SIGINFO,
-> +       };
-> +
-> +       /* Get a shared normal page for synchronization */
-> +       if (verbose)
-> +               tst_res(TINFO, "Mapping synchronization area..");
-> +       syncarea = SAFE_MMAP(NULL, getpagesize(), PROT_READ|PROT_WRITE,
-> +                       MAP_SHARED|MAP_ANONYMOUS, -1, 0);
-> +       if (verbose)
-> +               tst_res(TINFO, "done");
-> +
-> +       trigger = syncarea;
-> +       *trigger = 0;
-> +
-> +       child_readback = trigger + 1;
-> +       *child_readback = 0;
-> +
-> +       fd = SAFE_OPEN(hfile, O_RDWR | O_CREAT, 0600);
-> +       SAFE_UNLINK(hfile);
-> +
-> +       if (verbose)
-> +               tst_res(TINFO, "Mapping hugepage area...");
-> +       p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE,
-> fd, 0);
->
-
-
-After roughly looking at those hpage testcases, almost each one
-requests the huge memory via mapping a file on hugetlbfs, which
-can work but quite don't have to.
-
-We can absolutely simplify them via `MAP_HUGETLB` to get expected
-size of huge memory for use.
-
-Reference how hugemamp06.c does:
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c#L71
+IMO, we can merge this patch firstly, then we can listen whether other 
+people also meet this problem. What do you think about it?
 
 
-+static void setup(void)
-> +{
-> +       int free_pages = SAFE_READ_MEMINFO("HugePages_Free:");
-> +
-> +       if (tst_hugepages < 2 || free_pages < 2)
-> +               tst_brk(TCONF, "Not enough hugepages for testing.");
->
-
-
-
-> +
-> +       if (!Hopt)
-> +               Hopt = tst_get_tmpdir();
-> +       SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
-> +
-> +       snprintf(hfile, sizeof(hfile), "%s/ltp_hugetlbfile%d", Hopt,
-> getpid());
->
-
-If we go using MAP_HUGETLB above, those lines can be removed.
-
-
-
-> +       hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
-> +}
->
-
-
-
--- 
-Regards,
-Li Wang
-
---000000000000f2be9005eb4998aa
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Tarun Sahu &lt;<a href=3D"mailto:tsahu@linux.ibm.com">tsahu@l=
-inux.ibm.com</a>&gt; wrote:<br></div></div><div class=3D"gmail_quote"><div>=
-<br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margi=
-n:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex=
-">
-+static void run_test(void)<br>
-+{<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0int status;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0void *syncarea;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0volatile unsigned int *p;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0volatile unsigned int *trigger, *child_readback=
-;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0int parent_readback;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0pid_t pid;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0struct sigaction sa =3D {<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0.sa_sigaction =3D s=
-igchld_handler,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0.sa_flags =3D SA_SI=
-GINFO,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0};<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0/* Get a shared normal page for synchronization=
- */<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (verbose)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quo=
-t;Mapping synchronization area..&quot;);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0syncarea =3D SAFE_MMAP(NULL, getpagesize(), PRO=
-T_READ|PROT_WRITE,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0MAP_SHARED|MAP_ANONYMOUS, -1, 0);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (verbose)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quo=
-t;done&quot;);<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0trigger =3D syncarea;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0*trigger =3D 0;<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0child_readback =3D trigger + 1;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0*child_readback =3D 0;<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0fd =3D SAFE_OPEN(hfile, O_RDWR | O_CREAT, 0600)=
-;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SAFE_UNLINK(hfile);<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (verbose)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quo=
-t;Mapping hugepage area...&quot;);<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0p =3D SAFE_MMAP(NULL, hpage_size, PROT_READ|PRO=
-T_WRITE, MAP_PRIVATE, fd, 0);<br></blockquote><div><br></div><div><br></div=
-><div><div class=3D"gmail_default" style=3D"font-size:small">After=C2=A0rou=
-ghly looking at those hpage testcases, almost each one</div><div class=3D"g=
-mail_default" style=3D"font-size:small">requests the huge memory via mappin=
-g a file on hugetlbfs, which</div><div class=3D"gmail_default" style=3D"fon=
-t-size:small">can work but quite don&#39;t have to.</div><div class=3D"gmai=
-l_default" style=3D"font-size:small"><br></div><div class=3D"gmail_default"=
- style=3D"font-size:small">We can absolutely simplify them via `MAP_HUGETLB=
-` to get expected</div><div class=3D"gmail_default" style=3D"font-size:smal=
-l">size of huge memory for use.</div><div class=3D"gmail_default" style=3D"=
-font-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:=
-small">Reference how hugemamp06.c does:</div><div class=3D"gmail_default" s=
-tyle=3D"font-size:small"><a href=3D"https://github.com/linux-test-project/l=
-tp/blob/master/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c#L71">http=
-s://github.com/linux-test-project/ltp/blob/master/testcases/kernel/mem/huge=
-tlb/hugemmap/hugemmap06.c#L71<br></a></div><br></div><div><br></div><blockq=
-uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
-x solid rgb(204,204,204);padding-left:1ex">
-+static void setup(void)<br>
-+{<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0int free_pages =3D SAFE_READ_MEMINFO(&quot;Huge=
-Pages_Free:&quot;);<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (tst_hugepages &lt; 2 || free_pages &lt; 2)<=
-br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TCONF, &quo=
-t;Not enough hugepages for testing.&quot;);<br></blockquote><div><br></div>=
-<div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
-0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (!Hopt)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hopt =3D tst_get_tm=
-pdir();<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0SAFE_MOUNT(&quot;none&quot;, Hopt, &quot;hugetl=
-bfs&quot;, 0, NULL);<br>
-+<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0snprintf(hfile, sizeof(hfile), &quot;%s/ltp_hug=
-etlbfile%d&quot;, Hopt, getpid());<br></blockquote><div><br></div><div><div=
- class=3D"gmail_default" style=3D"font-size:small">If we go using MAP_HUGET=
-LB above, those lines can be removed.</div><br></div><div>=C2=A0</div><bloc=
-kquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:=
-1px solid rgb(204,204,204);padding-left:1ex">
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0hpage_size =3D SAFE_READ_MEMINFO(&quot;Hugepage=
-size:&quot;)*1024;<br>
-+}<br></blockquote><div><br></div><div>=C2=A0</div></div><div><br></div>-- =
-<br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regard=
-s,<br></div><div>Li Wang<br></div></div></div></div>
-
---000000000000f2be9005eb4998aa--
-
-
---===============0361595949==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Best Regards
+Yang Xu
+> 
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0361595949==--
-
