@@ -4,141 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1000C4332F
-	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 06:39:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 153D9C4332F
+	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 06:57:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BAA8E3CB049
-	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 08:39:51 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id E113C3CB05B
+	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 08:57:09 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7EFF23C1BC0
- for <ltp@lists.linux.it>; Tue, 18 Oct 2022 08:39:41 +0200 (CEST)
-Received: from esa13.fujitsucc.c3s2.iphmx.com (esa13.fujitsucc.c3s2.iphmx.com
- [68.232.156.96])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id E3D153C1BC0
+ for <ltp@lists.linux.it>; Tue, 18 Oct 2022 08:56:59 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B0C086008DE
- for <ltp@lists.linux.it>; Tue, 18 Oct 2022 08:39:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1666075182; x=1697611182;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=909aFkvdkLJuDySC+j6206a8Ijaj4qQ6kLwKljtGQpk=;
- b=cHKrH3dFZ9YcuAJtGP6XiFTG7S9wTPEULS+a+vM8Jnmo1+LOcKLZLQiO
- x/vpaDBMKGz9EnFwPmdTyBTs5w8bDZr22g8BA/iZHAKP/qhTtb4uFAHMX
- 1ifC/3B1QfsqW5x4z7e6kV3L+RBXXPS4sHQtEV0OV0+mspF9DjDOwpdac
- qanZ7sqqvRXgyj531wVmBF+pWcABCQNdFQ2ZFFI8JegnBZQUvGKrJ+EPE
- DboPbdhHfsxih6eHdo9319f4FkCXmYaRlY5pfTd5dTK1w+cgcxBGLLN+T
- gvCLiUkjuDJCZZxXTZDubAEN/c5OObb9AJCOOMPqEFQTfpYxrvD1Y9Fs/ Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="67529827"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661785200"; d="scan'208";a="67529827"
-Received: from mail-os0jpn01lp2112.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.112])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 15:39:39 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lIL6ETzC3rZw0Nhitcyg3BopXZnhKO5jVgP1VLm/STJT4cYJr0Gh40WCIRV9kKGyZwElg0kxUeqIy5XAwq2hSvoH55/gP5qGnH2TfpzDmEJ9MFVsZhBo3izmIy35suqMjbEW2dy74GvZLALg+6WTlwPPiAjTzEcSuvDKlzOspqpI1eJhWSmA8Xg3TXR8/KUDCmFLZ06mztqX9dHVWZuq35YE0D1Tqu8M629+4EUC19wMXoYN/rkxlDRryxUQTYU3/UdURSF4CDFyOt9ziMvr0t7ec/1axvevUcCiGA8swELKcK29pTU1m8zhkaLYELJB+9qpG6daJXOpwORya+xbaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=909aFkvdkLJuDySC+j6206a8Ijaj4qQ6kLwKljtGQpk=;
- b=LnQmSzTR2tSxLZ+8Rg2mWoVQjOUQgt6xfnMJM/wug1Pt3R16Q/UP0puYxDntLL7o/3mXwcXoYGAQ7pFLTJ+1dCsWLSyWfL470jdZcuZhJ6FdppEY6kO6W/ctJXz5R25Bk5keShZ+/Xl4egYvGKFnEdNRjOUemSjy1YngorxkougFmRoOpsI0UufkINoWJioZOqz1xQe6Xyid02u6ct57QShUd1x6R/eb+0L7X5MkS2xJCI6nJVTgNlfgL6KxUYo19d9swUNYny3jnM6ZafOJHqy2us2NazRiFMTs7OrVLZfBFn38RaNhbg8YTu/zKnGx4uoCG8BBSKo2CNjXcGkHew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com (2603:1096:404:10d::20)
- by OS0PR01MB5747.jpnprd01.prod.outlook.com (2603:1096:604:b9::11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.30; Tue, 18 Oct
- 2022 06:39:34 +0000
-Received: from TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::c4fe:de8c:66e8:5c93]) by TY2PR01MB4427.jpnprd01.prod.outlook.com
- ([fe80::c4fe:de8c:66e8:5c93%6]) with mapi id 15.20.5723.033; Tue, 18 Oct 2022
- 06:39:34 +0000
-From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>, "liaohj.jy@fujitsu.com"
- <liaohj.jy@fujitsu.com>
-Thread-Topic: [LTP] [PATCH] syscalls/fork01:Convert into new api
-Thread-Index: AQHYyKGYJM0nrGSpAU++Pi+bIplfPa4SsPkAgAFHbwA=
-Date: Tue, 18 Oct 2022 06:39:34 +0000
-Message-ID: <667dc5ef-1e19-fcb3-64cd-38eee906e98d@fujitsu.com>
-References: <1663204902-4185-1-git-send-email-liaohj.jy@fujitsu.com>
- <87h702oce4.fsf@suse.de>
-In-Reply-To: <87h702oce4.fsf@suse.de>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TY2PR01MB4427:EE_|OS0PR01MB5747:EE_
-x-ms-office365-filtering-correlation-id: e3782d02-d8b5-4c73-403a-08dab0d3854f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TbSnrWkiUmNBJTODY3hCzweio3BThsHNqWgYTPSbhVgvQWKGEtFaMWrAEmb7J4qViBOfqI1MB6syED5ptOVYLTgE4nJuVxuIMuH1c1ZgzwnA6nqpCphJaIM5Z5yK7s9HqCgOd3vs+FDFOmT+wCzq+DcRWV7JnTEvldcV/DB0Crcf7aaaJxjA+m0hR08wgUujA7oSNgpis6GXRNpaKDOoNl9tcvDrvH2JXsZ0L5CT2LatB2Y1iTNqZFjUtddKF7q60g2k+bvL3MsbXslPuTwgAJgMjyNtKT/NK2rMoQapOZe0uXweXpU4EObaDvJuvRT5i0nPki4ja3LyP1kahkktNAWqF+lZMshYkSuB8L9lRNhOLvg+9sDhJL8D1TVLzA9v6ZVlrdvN7MLaggKSiSf+TXaBYaO8tUS9oCAo9RoWh6A8l1jUWL3DHJkVW037j7oxUQ1hVf8cxBbFbDS+Up7yNw4fqA1WIsKSFgioZyPNkggg2kg6uwKGVOgoYjiQjhwsbZONXsp8CXYNdqWnKoVLEvFbX5u9KKXDs2dDZzA3bPh+a4kRfhQUMIfiggO7kywpqVLGs44Cez++UoLibx6jFlboYqWWDHCZFGrIKhJbKh/xfbaWvX0HB7QASTXZhd4L4HCtE6tGoXhaoWkKmMw2YSSWGAOR1NwiuZocqKxwReDEhS6D9ZFMVgd3qAO5huHhJTJtxDguU1ZLFf6tAMz1gTicaCch+xkEtGrbdhuG827MoCv553SP0PXcUdRgnjh3UX9G5xjkIYAPXmsg6eFJCsx6TgOEmELS0nN+iV/oHtGSzBFgOeNDMKZ2j0O6LPlq4FEwBw5TtOJSMuJbVMuzwgAmK5OD5hOYZsCq/Gp5RlRku4/wCqof+790hLFr9uA6
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TY2PR01MB4427.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230022)(4636009)(376002)(136003)(346002)(366004)(396003)(39860400002)(1590799012)(451199015)(6486002)(71200400001)(2616005)(186003)(38070700005)(83380400001)(41300700001)(86362001)(31696002)(82960400001)(122000001)(38100700002)(5660300002)(2906002)(4326008)(8676002)(64756008)(6512007)(478600001)(110136005)(26005)(966005)(6506007)(316002)(66556008)(66476007)(66946007)(76116006)(8936002)(91956017)(66446008)(6636002)(31686004)(36756003)(85182001)(1580799009)(2004002)(45980500001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?R3IvMzk5c3BjNFgxUHhiNkNCdGVDblVRYVJYdis1ZXlqanA2dVJLSVM1YkZn?=
- =?utf-8?B?M1ZlQjhuYmFnR3JJMnBMOXlGS1Y3MzUwQ2tmNUo5WjF4TTdDalJFTDZhalZi?=
- =?utf-8?B?UnJOQldzeXVJUnBsVVFqamZaazVqc2IxRWVpeWJJeUpDak5aakVicENZNCtn?=
- =?utf-8?B?KzdWaXdadTE3TlBEYXlraWtsa2F4QVI1NzlLKzc5WHFvc3ZBQWFpT1Z0Tnl0?=
- =?utf-8?B?SlFZWVpSTU12Tk1iRVNWWEhXdDlLbFV4MFA3MGxaYWJUVXJibUtUYU5CVExy?=
- =?utf-8?B?RHk1cW80VWkwemRDSHBaNXRuUFhJeVgwMzJ5cmlPaElLVjN2YjlmaFY4T3cz?=
- =?utf-8?B?MFNKMTlqdUREVm1nQlFoN2RVdnBWTWFCRmV0ZnJSZkJiWXhHUUx1dW12bjhv?=
- =?utf-8?B?bzRra1Z2ZTZIQVpxd1dlSDA0bzR3UnlEMjNlZ3FmTGNmK1N1ejVsNjVDMDJF?=
- =?utf-8?B?dHVad2tuS3p1RFNnVVQwYklnbTRid3dzTG1BT0pkaXE0R0x2ZnVEb2JrSHR2?=
- =?utf-8?B?MzRybHJLM1E0NDd1SlZuS291WTNzVG5xS0hENFpoUXdOOXgweG82TUw5eFcz?=
- =?utf-8?B?bU5mWkxkalVreHN6UVovYnc2c2ZFMXFVSWN2TkY0Y2lGeFpNWE5WZXQzOXRK?=
- =?utf-8?B?Q3NLN0ZnbmpaYkJZaWJpL2hkY1YvTmdSWVFKMWdidEFRWmNSWVMwY3pTNUd0?=
- =?utf-8?B?U1o1Y3RLN2NESWFxaWJKcGVwK2dqT3lROFpYNWhvd3hINk5DaGtPNlljWFJK?=
- =?utf-8?B?RlRiUW82Y3ZBRlFmU0ZpUXVqWEk0UmFvVUVGdVlUZ2ZVczRBVmswREoyZjBP?=
- =?utf-8?B?VlRNU1dJZENFT3UzTGF1K3d6Z2JoeUhETFc4RXBKOFBsNVpiWWsxODJvZEVm?=
- =?utf-8?B?dEZjdG9UWll3TC9KRkcySDhPeCsvUXUxT05Wdmg2SkU0ZW8xVEpNOG55Z2t0?=
- =?utf-8?B?NmIvWVpKQ0dLZ2poeXRPUkt6VWp2Y013NDI3ZU5hSjZWUjRIYjBkcjZGWDRB?=
- =?utf-8?B?QThYSkh1VkI5ajdYTXhPbWhnaHhBNTMzSDZkWUw2dzhVWjMzNW43NWpkMGZ2?=
- =?utf-8?B?UzZ1bUVSWVJZMzZLYkFBc2s1NVB5ckJaaU1HdjVIUzBJbmUzcHdDV0poSDQ2?=
- =?utf-8?B?aDUwTWR3RDJibHlWdExleHpQajB5bWZiM3pDbDN4b1dqSmVuRTZiajlTSDRu?=
- =?utf-8?B?TGtOT3hIL05Jc1VReDF6M1l2SEcrZW1FbFM3MnRvTTAzUU1WSkdzUXpGNnZj?=
- =?utf-8?B?eVZya2orZW9HeTYyTDROdUxHNDhUSnNndWFqeDRhTXM5T09vVFlTaGRLL2lB?=
- =?utf-8?B?YWlocEo3Mk9EZU9ROEdDOHhVUm0yZzduY2xqYkhLRldFUXg2N3pZM3Z4cHdR?=
- =?utf-8?B?SlgyMWc5K0dlTklETzhMRFd5TEFKVDNpWXVkRXFKbW5Lb3NQV1VPUVcrZFdU?=
- =?utf-8?B?cWovT2xwNlgzaTB5aWxGVnFHS1g4d0luUzhzNWU0a0kvdDBBSE9pa0p1cXJn?=
- =?utf-8?B?aitMbnZXQnBEUEdmMFBmZEV0RkxIQ29BMmVzOEZhbVpaUWVDT05IVUJQcXNt?=
- =?utf-8?B?YWk0VkNQWkNIR29nb0ZzM3c4ckVjc2lBUnpxYm41OHIwSm5SZ0hsTERCSG80?=
- =?utf-8?B?d3psY2pSWmlTaysrdjc1VEtYWVhrcTZwazVUL3Z2NW1KMzhnanp5OG1lUGJE?=
- =?utf-8?B?U0twNzN2RWYwb05NajdvYTR2UFY4NSs4L0poTzdaNnZMeFp2RXljRi92Wk51?=
- =?utf-8?B?WXU4S0Q2UHdiTkpadG1SVVN6Z2E1VDBSOFMvcUhYMWVVbk5wMExqSDhCQmhL?=
- =?utf-8?B?TWdBU2lIT1NlVjJrZXR3QVNSVWpKSVZPYllWeTZKNm9uekVrR0YyMExud0dT?=
- =?utf-8?B?U3RoSkxoV0Nkd3l2aVA1Nkt1bktLeWo0b3pqZlkrazQ3RUNjWmJOM2l4QzNI?=
- =?utf-8?B?WDBSRWRSM1pCbWxiVjFrYnVjUWhtQmR0NktYaFlmVTJTVm1ERUpOWGw2dU10?=
- =?utf-8?B?MTFTYXo4VzhHci9CU0dYNzErNldhSC9ZYS9aVktCWmJSRy95Q3RtZGM3NFNv?=
- =?utf-8?B?SUM5OHB6cUdmSFU2R1MvL1NuMVJlTis3QmRDL2V2TzBYSkdaRzVydDRVcCtz?=
- =?utf-8?B?QXorVVhheHlCaUJMN0E1ckduT0ZCSjJKc2k2RWZNMkZ5VHlDSUYrUFNGTWw2?=
- =?utf-8?B?ZVE9PQ==?=
-Content-ID: <E3E960DD44B10743B2B2A64A42CE8290@jpnprd01.prod.outlook.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1F7F41A00913
+ for <ltp@lists.linux.it>; Tue, 18 Oct 2022 08:56:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1666076217;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8ldNvpimHP7KenpuA3O5jQglQ5WTSRWU9KVRXmoki3A=;
+ b=R4Lm999WCFzJexom1BwVWhnsEXQ5vUNqguh27nQm1GPQjMSKxe4Al5EbXuwY5JJF/HcbKB
+ XVt0UsSn9ywg6aCrDEVEMgHaHGs3WKYMwIPoo66cnrGaL91dYQT5D5CnJQgWXTd5yRy9tF
+ v+CraWrHfNaS/gSz6sqWzQAQ6+9ocB4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-495-HhErPElxO0KOWOcRgpE3gQ-1; Tue, 18 Oct 2022 02:56:56 -0400
+X-MC-Unique: HhErPElxO0KOWOcRgpE3gQ-1
+Received: by mail-wr1-f71.google.com with SMTP id
+ e14-20020adf9bce000000b0022d18139c79so4223654wrc.5
+ for <ltp@lists.linux.it>; Mon, 17 Oct 2022 23:56:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=8ldNvpimHP7KenpuA3O5jQglQ5WTSRWU9KVRXmoki3A=;
+ b=I9p9hT63CZTU8os1irM9zI3fB/CzLHbHreI8cGB9Tj3ZaPIZpJAyY+IsqZ0RasTW3j
+ hiWA7+ladtu4NJTSPO207HyflAaYsMKERYvVUWZ2/HFCmKwZZ4P8tD8aZut3NCkclQJO
+ hJMI9+auuK9jd0Ug92RK5ledl8446tRxlFkAtbhrn2kjfHk0iZdNCv7wL4A6KuLyvL/i
+ C+dC+d/ILZatlYZf9sB4khkll80JDB5o6WFZ/kLt70Zwzpqg87RkT27oUkaJeVPDKJMO
+ bXKo+JTHVNpwtkYCtgQN7S9KmXyPgg1Tx+QBGAMqVaHJxoYsibByymM9ao8jLfK4oJan
+ FKkQ==
+X-Gm-Message-State: ACrzQf3H0CI1UkQ637FQ83/3Lok5rHIYXmypb7ybXIklQmIk9IDOr0E3
+ bPkqxTWVlnF0gdbNEPxy9ylYJLO9ZIIDlOsgrD4fLAHwLVCLxpKY71KZLVTzswrJnZQxzf+sKwG
+ HlwlXhOcEPZ3FCn4zZTZzIsyUSRE=
+X-Received: by 2002:a5d:64e2:0:b0:22e:7060:b4a7 with SMTP id
+ g2-20020a5d64e2000000b0022e7060b4a7mr789690wri.129.1666076214941; 
+ Mon, 17 Oct 2022 23:56:54 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM5JmiLAb7DKLv4J6aneGF6Zt5ZFtMmnpafa1GwQXPb5C5x09mU/EGjpQY191ECzUxqtwC20OvTw88SxjbXzZ5g=
+X-Received: by 2002:a5d:64e2:0:b0:22e:7060:b4a7 with SMTP id
+ g2-20020a5d64e2000000b0022e7060b4a7mr789681wri.129.1666076214731; Mon, 17 Oct
+ 2022 23:56:54 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4427.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e3782d02-d8b5-4c73-403a-08dab0d3854f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2022 06:39:34.6873 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XmjJDQNMJ3ZSd7qjUZrlP/MVE2IxQWHuCnz4tuNhzOZslVZPJ4tFtS/CUt65lYOYNr//Y0DQSYh95szYuaHl1KSNYJrn3ADjskvEarlf7ZI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5747
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <20221016125731.249078-1-tsahu@linux.ibm.com>
+ <20221016125731.249078-10-tsahu@linux.ibm.com>
+In-Reply-To: <20221016125731.249078-10-tsahu@linux.ibm.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 18 Oct 2022 14:56:43 +0800
+Message-ID: <CAEemH2fqJaA87-N4MMQCHRmN=ZG7+x8cu_4V9-nnuNg4mfNKzA@mail.gmail.com>
+To: Tarun Sahu <tsahu@linux.ibm.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/fork01:Convert into new api
+Subject: Re: [LTP] [PATCH 09/29] Hugetlb: Migrating libhugetlbfs fork-cow
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -150,370 +86,216 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: aneesh.kumar@linux.ibm.com, sbhat@linux.ibm.com, ltp@lists.linux.it,
+ vaibhav@linux.ibm.com
+Content-Type: multipart/mixed; boundary="===============0361595949=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Richard
+--===============0361595949==
+Content-Type: multipart/alternative; boundary="000000000000f2be9005eb4998aa"
 
-Since Liao has did other work,  I will continue to do these cleanup works.
+--000000000000f2be9005eb4998aa
+Content-Type: text/plain; charset="UTF-8"
 
-> Hello,
-> 
-> Liao Huangjie <liaohj.jy@fujitsu.com> writes:
-> 
->> From: Huangjie Liao <liaohj.jy@fujitsu.com>
->>
->> Signed-off-by: Huangjie Liao <liaohj.jy@fujitsu.com>
->> ---
->>   testcases/kernel/syscalls/fork/fork01.c | 253 ++++++------------------
->>   1 file changed, 55 insertions(+), 198 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/fork/fork01.c b/testcases/kernel/syscalls/fork/fork01.c
->> index 00d7c45c4..8ba712805 100644
->> --- a/testcases/kernel/syscalls/fork/fork01.c
->> +++ b/testcases/kernel/syscalls/fork/fork01.c
->> @@ -1,91 +1,17 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->>   /*
->>    * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
->> + * Author: Kathy Olmsted
->> + * Co-Pilot: Steve Shaw
->> + */
->> +
->> +/*\
->> + *[Description]
->>    *
->> - * This program is free software; you can redistribute it and/or modify it
->> - * under the terms of version 2 of the GNU General Public License as
->> - * published by the Free Software Foundation.
->> - *
->> - * This program is distributed in the hope that it would be useful, but
->> - * WITHOUT ANY WARRANTY; without even the implied warranty of
->> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
->> - *
->> - * Further, this software is distributed without any warranty that it is
->> - * free of the rightful claim of any third person regarding infringement
->> - * or the like.  Any license provided herein, whether implied or
->> - * otherwise, applies only to this software file.  Patent licenses, if
->> - * any, provided herein do not apply to combinations of this program with
->> - * other software, or any other product whatsoever.
->> - *
->> - * You should have received a copy of the GNU General Public License along
->> - * with this program; if not, write the Free Software Foundation, Inc.,
->> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
->> - *
->> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
->> - * Mountain View, CA  94043, or:
->> - *
->> - * http://www.sgi.com
->> - *
->> - * For further information regarding this notice, see:
->> - *
->> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
->> - *
->> - *
->> - *    OS Test - Silicon Graphics, Inc.
->> - *    TEST IDENTIFIER	: fork01
->> - *    EXECUTED BY	: anyone
->> - *    TEST TITLE	: Basic test for fork(2)
->> - *    PARENT DOCUMENT	: frktds02
->> - *    TEST CASE TOTAL	: 2
->> - *    WALL CLOCK TIME	: 1
->> - *    CPU TYPES		: ALL
->> - *    AUTHOR		: Kathy Olmsted
->> - *    CO-PILOT		: Steve Shaw
->> - *    DATE STARTED	: 06/17/92
->> - *    INITIAL RELEASE	: UNICOS 7.0
->> - *    TEST CASES
->> - *	1.) fork returns without error
->> - *	2.) fork returns the pid of the child
->> - *    INPUT SPECIFICATIONS
->> - *	The standard options for system call tests are accepted.
->> - *	(See the parse_opts(3) man page).
->> - *    OUTPUT SPECIFICATIONS
->> - *    DURATION
->> - *	Terminates - with frequency and infinite modes.
->> - *    SIGNALS
->> - *	Uses SIGUSR1 to pause before test if option set.
->> - *	(See the parse_opts(3) man page).
->> - *    RESOURCES
->> - *	None
->> - *    ENVIRONMENTAL NEEDS
->> - *      No run-time environmental needs.
->> - *    SPECIAL PROCEDURAL REQUIREMENTS
->> - *	None
->> - *    INTERCASE DEPENDENCIES
->> - *	None
->> - *    DETAILED DESCRIPTION
->> - *	Setup:
->> - *	Setup signal handling.
->> - *	  Pause for SIGUSR1 if option specified.
->> - *	Test:
->> - *	 Loop if the proper options are given.
->> - *        fork()
->> - *	  Check return code, if system call failed (return=-1)
->> - *		Log the errno and Issue a FAIL message.
->> - *	  Otherwise, Issue a PASS message.
->> - *        CHILD:
->> - *           determine PID
->> - *           write to PID to a file and close the file
->> - *           exit
->> - *        PARENT:
->> - *           wait for child to exit
->> - *           read child PID from file
->> - *           compare child PID to fork() return code and report
->> - *           results
->> - *
->> - *	  Cleanup:
->> - *           Print errno log and/or timing stats if options given
->> + * This case tests fork()'s basic function.
-> 
-> The original descrption had more info than this. In particular:
-> 
->> - *	1.) fork returns without error
->> - *	2.) fork returns the pid of the child
+Tarun Sahu <tsahu@linux.ibm.com> wrote:
 
-Ok, will keep it.
-> 
-> 
->>    */
->>   
->> +#define _GNU_SOURCE
->>   #include <errno.h>
->>   #include <string.h>
->>   #include <signal.h>
->> @@ -93,142 +19,73 @@
->>   #include <stdlib.h>
->>   #include <sys/types.h>
->>   #include <sys/wait.h>
->> -#include "test.h"
->> +#include <unistd.h>
->> +#include <stdio.h>
->> +#include "tst_test.h"
->>   
->>   #define	KIDEXIT	42
->> -static void setup();
->> -static void cleanup();
->> -
->>   #define LINE_SZ	20
->>   #define FILENAME "childpid"
->>   
->> -char *TCID = "fork01";
->> -int TST_TOTAL = 2;
->> +static char buf[LINE_SZ];
-> 
-> This doesn't need to be a global var. In fact we don't need it at all
-> (see below).
-> 
->>   
->> -/*
->> - * child_pid - the child side of the test
->> - *             determine the PID and write to a file
->> - */
->> -static void child_pid(void)
->> +static void do_child(void)
->>   {
->> +	int fd;
->>   
->> -	int fildes;
->> -	char tmp_line[LINE_SZ];
->> -
->> -	fildes = creat(FILENAME, 0700);
->> -	sprintf(tmp_line, "%d\n", getpid());
->> -	write(fildes, tmp_line, LINE_SZ);
->> -	close(fildes);
->> -
->> +	fd = creat(FILENAME, 0700);
->> +	sprintf(buf, "%d\n", getpid());
->> +	SAFE_WRITE(1, fd, buf, LINE_SZ);
->> +	SAFE_CLOSE(fd);
->>   }
-> 
-> This whole function can be replaced with SAFE_FILE_PRINTF i.e
-> SAFE_FILE_PRINTF(FILENAME, "%d", getpid());
-> 
 
-Yes.
 
->>   
->> -/*
->> - * parent_pid - the parent side of the test
->> - *              read the value determined by the child
->> - *              compare and report results
->> - */
->> -static void parent_pid(void)
->> +static void check_child_pid(int pid)
->>   {
->> +	int fd;
->> +	pid_t child_pid;
->>   
->> -	int fildes;
->> -	char tmp_line[LINE_SZ];
->> -	pid_t child_id;
->> +	fd = SAFE_OPEN(FILENAME, O_RDWR);
->> +	SAFE_READ(1, fd, buf, LINE_SZ);
-> 
-> This can be replaced with SAFE_FILE_SCANF(FILENAME, "%d", &child_pid);
+> +static void run_test(void)
+> +{
+> +       int status;
+> +       void *syncarea;
+> +       volatile unsigned int *p;
+> +       volatile unsigned int *trigger, *child_readback;
+> +       int parent_readback;
+> +       pid_t pid;
+> +       struct sigaction sa = {
+> +               .sa_sigaction = sigchld_handler,
+> +               .sa_flags = SA_SIGINFO,
+> +       };
+> +
+> +       /* Get a shared normal page for synchronization */
+> +       if (verbose)
+> +               tst_res(TINFO, "Mapping synchronization area..");
+> +       syncarea = SAFE_MMAP(NULL, getpagesize(), PROT_READ|PROT_WRITE,
+> +                       MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+> +       if (verbose)
+> +               tst_res(TINFO, "done");
+> +
+> +       trigger = syncarea;
+> +       *trigger = 0;
+> +
+> +       child_readback = trigger + 1;
+> +       *child_readback = 0;
+> +
+> +       fd = SAFE_OPEN(hfile, O_RDWR | O_CREAT, 0600);
+> +       SAFE_UNLINK(hfile);
+> +
+> +       if (verbose)
+> +               tst_res(TINFO, "Mapping hugepage area...");
+> +       p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE,
+> fd, 0);
+>
 
-Yes.
-> 
->>   
->> -	fildes = open(FILENAME, O_RDWR);
->> -	if (fildes == -1) {
->> -		tst_brkm(TBROK, cleanup,
->> -			 "parent open failed. errno: %d (%s)\n",
->> -			 errno, strerror(errno));
->> +	child_pid = atoi(buf);
->> +	if (child_pid != pid) {
->> +		tst_res(TFAIL, "child reported a pid of %d. parent received %d from fork()",
->> +				child_pid, pid);
-> 
-> This can be replaced with TST_EXP_EQ_LI(child_pid, pid).
 
-Will do.
-> 
->>   	} else {
->> -		if (read(fildes, tmp_line, LINE_SZ) == 0) {
->> -			tst_brkm(TBROK, cleanup,
->> -				 "fork(): parent failed to read PID from file errno: %d (%s)",
->> -				 errno, strerror(errno));
->> -		} else {
->> -			child_id = atoi(tmp_line);
->> -			if (TEST_RETURN != child_id) {
->> -				tst_resm(TFAIL,
->> -					 "child reported a pid of %d. parent received %ld from fork()",
->> -					 child_id, TEST_RETURN);
->> -			} else {
->> -				tst_resm(TPASS,
->> -					 "child pid and fork() return agree: %d",
->> -					 child_id);
->> -			}
->> -		}
->> -		close(fildes);
->> -	}
->> -}
->> -
->> -int main(int ac, char **av)
->> -{
->> -	int lc;
->> -	int fails;
->> -	int kid_status, wait_status;
->> -
->> -	tst_parse_opts(ac, av, NULL, NULL);
->> -
->> -	setup();
->> -
->> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
->> -		tst_count = 0;
->> -		fails = 0;
->> -
->> -		TEST(fork());
->> -		if (TEST_RETURN == -1) {
->> -			tst_resm(TFAIL, "fork() Failed, errno=%d : %s",
->> -				 TEST_ERRNO, strerror(TEST_ERRNO));
->> -			tst_resm(TBROK, "unable to continue");
->> -		}
->> -		if (TEST_RETURN == 0) {
->> -			/* child */
->> -			child_pid();
->> -			exit(KIDEXIT);
->> -		} else {
->> -			/* parent */
->> -			tst_resm(TPASS, "fork() returned %ld",
->> -				 TEST_RETURN);
->> -			/* wait for the child to complete */
->> -			wait_status = waitpid(TEST_RETURN, &kid_status, 0);
->> -
->> -			if (wait_status == TEST_RETURN) {
->> -				if (kid_status != KIDEXIT << 8) {
->> -					tst_resm(TBROK,
->> -						 "incorrect child status returned on wait(): %d",
->> -						 kid_status);
->> -					fails++;
->> -				}
->> -			} else {
->> -				tst_resm(TBROK,
->> -					 "wait() for child status failed with %d errno: %d : %s",
->> -					 wait_status, errno,
->> -					 strerror(errno));
->> -				fails++;
->> -			}
->> -			if (fails == 0) {
->> -				/* verification tests */
->> -				parent_pid();
->> -			}
->> -		}		/* TEST_RETURN */
->> +		tst_res(TPASS, "child pid and fork() return agree: %d", pid);
->>   	}
->>   
->> -	cleanup();
->> -	tst_exit();
->> +	SAFE_CLOSE(fd);
->>   }
->>   
->> -static void setup(void)
->> +static void verify_fork(void)
->>   {
->> +	int kid_status, term_pid, pid;
->>   
->> -	tst_sig(FORK, DEF_HANDLER, cleanup);
->> -
->> -	TEST_PAUSE;
->> -
->> -	tst_tmpdir();
->> -}
->> +	pid = SAFE_FORK();
->> +	if (!pid) {
->> +		do_child();
->> +		exit(KIDEXIT);
->> +	}
->>   
->> -static void cleanup(void)
->> -{
->> +	term_pid = SAFE_WAITPID(pid, &kid_status, 0);
->> +	if (term_pid == pid) {
->> +		if (kid_status != KIDEXIT << 8)
->> +			tst_res(TFAIL, "incorrect child status returned %d", kid_status);
->> +		else
->> +			tst_res(TPASS, "correct child status returned
->> %d", kid_status);
-> 
-> The original test is not strictly correct. We should check if the child
-> exited with WIFEXITED and use the WEXITSTATUS macro to get the exit
-> status.
+After roughly looking at those hpage testcases, almost each one
+requests the huge memory via mapping a file on hugetlbfs, which
+can work but quite don't have to.
 
-OK.
-> 
->>   
->> -	tst_rmdir();
->> +		check_child_pid(pid);
->> +	} else {
->> +		tst_res(TFAIL, "waitpid() returns %d instead of  expected pid %d", term_pid, pid);
->> +	}
->>   
->> +	tst_reap_children();
->>   }
->> +
->> +static struct tst_test test = {
->> +	.needs_tmpdir = 1,
->> +	.needs_root = 1,
-> 
-> It doesn't need root.
-Yes.
+We can absolutely simplify them via `MAP_HUGETLB` to get expected
+size of huge memory for use.
 
-Best Regards
-Yang Xu
-> 
->> +	.forks_child = 1,
->> +	.test_all = verify_fork,
->> +};
->> -- 
->> 2.27.0
-> 
-> 
+Reference how hugemamp06.c does:
+https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c#L71
+
+
++static void setup(void)
+> +{
+> +       int free_pages = SAFE_READ_MEMINFO("HugePages_Free:");
+> +
+> +       if (tst_hugepages < 2 || free_pages < 2)
+> +               tst_brk(TCONF, "Not enough hugepages for testing.");
+>
+
+
+
+> +
+> +       if (!Hopt)
+> +               Hopt = tst_get_tmpdir();
+> +       SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
+> +
+> +       snprintf(hfile, sizeof(hfile), "%s/ltp_hugetlbfile%d", Hopt,
+> getpid());
+>
+
+If we go using MAP_HUGETLB above, those lines can be removed.
+
+
+
+> +       hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
+> +}
+>
+
+
+
+-- 
+Regards,
+Li Wang
+
+--000000000000f2be9005eb4998aa
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Tarun Sahu &lt;<a href=3D"mailto:tsahu@linux.ibm.com">tsahu@l=
+inux.ibm.com</a>&gt; wrote:<br></div></div><div class=3D"gmail_quote"><div>=
+<br></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margi=
+n:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex=
+">
++static void run_test(void)<br>
++{<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0int status;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0void *syncarea;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0volatile unsigned int *p;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0volatile unsigned int *trigger, *child_readback=
+;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0int parent_readback;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0pid_t pid;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0struct sigaction sa =3D {<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0.sa_sigaction =3D s=
+igchld_handler,<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0.sa_flags =3D SA_SI=
+GINFO,<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0};<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0/* Get a shared normal page for synchronization=
+ */<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0if (verbose)<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quo=
+t;Mapping synchronization area..&quot;);<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0syncarea =3D SAFE_MMAP(NULL, getpagesize(), PRO=
+T_READ|PROT_WRITE,<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0MAP_SHARED|MAP_ANONYMOUS, -1, 0);<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0if (verbose)<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quo=
+t;done&quot;);<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0trigger =3D syncarea;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0*trigger =3D 0;<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0child_readback =3D trigger + 1;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0*child_readback =3D 0;<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0fd =3D SAFE_OPEN(hfile, O_RDWR | O_CREAT, 0600)=
+;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0SAFE_UNLINK(hfile);<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0if (verbose)<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quo=
+t;Mapping hugepage area...&quot;);<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0p =3D SAFE_MMAP(NULL, hpage_size, PROT_READ|PRO=
+T_WRITE, MAP_PRIVATE, fd, 0);<br></blockquote><div><br></div><div><br></div=
+><div><div class=3D"gmail_default" style=3D"font-size:small">After=C2=A0rou=
+ghly looking at those hpage testcases, almost each one</div><div class=3D"g=
+mail_default" style=3D"font-size:small">requests the huge memory via mappin=
+g a file on hugetlbfs, which</div><div class=3D"gmail_default" style=3D"fon=
+t-size:small">can work but quite don&#39;t have to.</div><div class=3D"gmai=
+l_default" style=3D"font-size:small"><br></div><div class=3D"gmail_default"=
+ style=3D"font-size:small">We can absolutely simplify them via `MAP_HUGETLB=
+` to get expected</div><div class=3D"gmail_default" style=3D"font-size:smal=
+l">size of huge memory for use.</div><div class=3D"gmail_default" style=3D"=
+font-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:=
+small">Reference how hugemamp06.c does:</div><div class=3D"gmail_default" s=
+tyle=3D"font-size:small"><a href=3D"https://github.com/linux-test-project/l=
+tp/blob/master/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c#L71">http=
+s://github.com/linux-test-project/ltp/blob/master/testcases/kernel/mem/huge=
+tlb/hugemmap/hugemmap06.c#L71<br></a></div><br></div><div><br></div><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex">
++static void setup(void)<br>
++{<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0int free_pages =3D SAFE_READ_MEMINFO(&quot;Huge=
+Pages_Free:&quot;);<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0if (tst_hugepages &lt; 2 || free_pages &lt; 2)<=
+br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brk(TCONF, &quo=
+t;Not enough hugepages for testing.&quot;);<br></blockquote><div><br></div>=
+<div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
+0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0if (!Hopt)<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Hopt =3D tst_get_tm=
+pdir();<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0SAFE_MOUNT(&quot;none&quot;, Hopt, &quot;hugetl=
+bfs&quot;, 0, NULL);<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0snprintf(hfile, sizeof(hfile), &quot;%s/ltp_hug=
+etlbfile%d&quot;, Hopt, getpid());<br></blockquote><div><br></div><div><div=
+ class=3D"gmail_default" style=3D"font-size:small">If we go using MAP_HUGET=
+LB above, those lines can be removed.</div><br></div><div>=C2=A0</div><bloc=
+kquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:=
+1px solid rgb(204,204,204);padding-left:1ex">
++=C2=A0 =C2=A0 =C2=A0 =C2=A0hpage_size =3D SAFE_READ_MEMINFO(&quot;Hugepage=
+size:&quot;)*1024;<br>
++}<br></blockquote><div><br></div><div>=C2=A0</div></div><div><br></div>-- =
+<br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regard=
+s,<br></div><div>Li Wang<br></div></div></div></div>
+
+--000000000000f2be9005eb4998aa--
+
+
+--===============0361595949==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0361595949==--
+
