@@ -4,60 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8679C433FE
-	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 12:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79729C4332F
+	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 12:45:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3FBC93CB05B
-	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 14:26:27 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 9D9F23CB072
+	for <ltp@archiver.kernel.org>; Tue, 18 Oct 2022 14:45:20 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8EEDE3C2CAE
- for <ltp@lists.linux.it>; Tue, 18 Oct 2022 14:26:17 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 229533CA7C2
+ for <ltp@lists.linux.it>; Tue, 18 Oct 2022 14:45:09 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 07AE12009C6
- for <ltp@lists.linux.it>; Tue, 18 Oct 2022 14:26:16 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 3843A205E2;
- Tue, 18 Oct 2022 12:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666095976;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=dKtvo/8px3O2OAOTNUzo+2+dSbdJypskQ+JDcY4pRnI=;
- b=dnuTDowCCS0ltu5mDbecclE8JRzEJKkr0V4kRzP2W8QhAav7cDszQdi6TeqIU74/KVV6ix
- 7LnRVbfdab4an5/SetKeuMXTAW78KZYTrxwJIUkhWKIomtYrV0Olb3OSTlqMsqq/Hv8b7B
- 2uSnnjCLEttx9XXpx9DC61jxDazGjkM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666095976;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=dKtvo/8px3O2OAOTNUzo+2+dSbdJypskQ+JDcY4pRnI=;
- b=hiu6Yx4dQ+8fK9Cxy94cI4+Jye/kFMc/hErbTvLRZoCwJHP7SQ48IBTmLGgAacYQZQ2Crk
- Rv5lIIu4CdMidrDQ==
-Received: from g78 (unknown [10.100.228.202])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6ABD31000944
+ for <ltp@lists.linux.it>; Tue, 18 Oct 2022 14:45:08 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 860FE2C141;
- Tue, 18 Oct 2022 12:26:15 +0000 (UTC)
-References: <20221006110642.12410-1-andrea.cervesato@suse.com>
- <20221006110642.12410-4-andrea.cervesato@suse.com>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Date: Tue, 18 Oct 2022 13:24:18 +0100
-In-reply-to: <20221006110642.12410-4-andrea.cervesato@suse.com>
-Message-ID: <87a65tjp22.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 23AB5205DC;
+ Tue, 18 Oct 2022 12:45:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1666097108;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aK4CScra7xcTe4Lnue49fjUzOgQd1DrOxHN9d+C6jkM=;
+ b=2JEOIpnUPlWjq7zKBi4+Ej72fwunNesJVTWcE405fTQNdlYJAvqQ0UCfj8FegRrJqyRD8A
+ AqBrV8HEnp6DbiIsXPXbRU7oW+bgxocDLSMPSDyHsBsQYPR8tvpIPKNu40byExmQtzF7yq
+ gs4bqv7wbufQb2yHEKAbpnwijkTKsEo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1666097108;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aK4CScra7xcTe4Lnue49fjUzOgQd1DrOxHN9d+C6jkM=;
+ b=2TcMn49X6hmUTJSygfeC3g8tnE4bL3CbwCJ4D+xv4zlzLiHZmoKgdGbwCE6/YJDQbiu1bU
+ CrOv9tqPlqBq1sBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C0E4C139D2;
+ Tue, 18 Oct 2022 12:45:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id oXRkKNOfTmODfAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 18 Oct 2022 12:45:07 +0000
+Date: Tue, 18 Oct 2022 14:45:05 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <Y06f0WK4CeabqTIi@pevik>
+References: <20221018032203.3429895-1-liwang@redhat.com>
+ <87bkq9mryj.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87bkq9mryj.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 2/3] Add process_madvise02 test
+Subject: Re: [LTP] [PATCH] pthread_barrier_init: remove the restrict limit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,181 +76,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi,
 
-Looks like largely the same problems as with the previous test. Let's
-get that one merged then lessons learned from that can be applied to
-this.
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
-Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
+> Hello,
 
-> Test for checking MADV_PAGEOUT functionality over anonymous memory in
-> process_madvise syscall.
->
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  testcases/kernel/syscalls/cma/.gitignore      |   1 +
->  .../kernel/syscalls/cma/process_madvise02.c   | 128 ++++++++++++++++++
->  2 files changed, 129 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/cma/process_madvise02.c
->
-> diff --git a/testcases/kernel/syscalls/cma/.gitignore b/testcases/kernel/syscalls/cma/.gitignore
-> index 846704294..47ae3e445 100644
-> --- a/testcases/kernel/syscalls/cma/.gitignore
-> +++ b/testcases/kernel/syscalls/cma/.gitignore
-> @@ -3,3 +3,4 @@
->  /process_vm_readv03
->  /process_vm_writev02
->  /process_madvise01
-> +/process_madvise02
-> diff --git a/testcases/kernel/syscalls/cma/process_madvise02.c b/testcases/kernel/syscalls/cma/process_madvise02.c
-> new file mode 100644
-> index 000000000..9f42dd48a
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/cma/process_madvise02.c
-> @@ -0,0 +1,128 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Spawn child inside cgroup and set max memory. Allocate anonymous memory
-> + * pages inside child and reclaim it with MADV_PAGEOUT. Then check if memory
-> + * pages have been swapped out.
-> + *
-> + * The advice might be ignored for some pages in the range when it is
-> + * not applicable, so test passes if swap memory increases after
-> + * reclaiming memory with MADV_PAGEOUT.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <sys/mman.h>
-> +#include "tst_test.h"
-> +#include "lapi/mmap.h"
-> +#include "lapi/syscalls.h"
-> +#include "cma.h"
-> +
-> +#define MEM_CHILD	(10 * 1024 * 1024)
-> +
-> +static void **data_ptr;
-> +
-> +static void child_alloc(void)
-> +{
-> +	char *ptr;
-> +	int freed = 1;
-> +	struct addr_mapping map_before;
-> +	struct addr_mapping map_after;
-> +
-> +	tst_res(TINFO, "Allocate memory");
-> +
-> +	*data_ptr = SAFE_MMAP(NULL, MEM_CHILD,
-> +			PROT_READ | PROT_WRITE,
-> +			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-> +	memset(*data_ptr, 'a', MEM_CHILD);
-> +
-> +	read_address_mapping((unsigned long)*data_ptr, &map_before);
-> +
-> +	TST_CHECKPOINT_WAKE_AND_WAIT(0);
-> +
-> +	for (ptr = *data_ptr; *ptr != '\0'; ptr++) {
-> +		if (*ptr == 'a') {
-> +			freed = 0;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (freed) {
-> +		tst_res(TFAIL, "Memory has been freed");
-> +		return;
-> +	}
-> +
-> +	read_address_mapping((unsigned long)*data_ptr, &map_after);
-> +
-> +	SAFE_MUNMAP(*data_ptr, MEM_CHILD);
-> +	*data_ptr = NULL;
-> +
-> +	if (map_before.swap < map_after.swap)
-> +		tst_res(TPASS, "Memory has been swapped out");
-> +	else
-> +		tst_res(TFAIL, "Swap memory has decreased");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	data_ptr = SAFE_MMAP(NULL, sizeof(void *),
-> +			PROT_READ | PROT_WRITE,
-> +			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (*data_ptr)
-> +		SAFE_MUNMAP(*data_ptr, MEM_CHILD);
-> +
-> +	if (data_ptr)
-> +		SAFE_MUNMAP(data_ptr, sizeof(void *));
-> +}
-> +
-> +static void run(void)
-> +{
-> +	int ret;
-> +	int pidfd;
-> +	pid_t pid_alloc;
-> +	struct iovec vec;
-> +
-> +	pid_alloc = SAFE_FORK();
-> +	if (!pid_alloc) {
-> +		child_alloc();
-> +		return;
-> +	}
-> +
-> +	TST_CHECKPOINT_WAIT(0);
-> +
-> +	tst_res(TINFO, "Apply MADV_PAGEOUT advise rule");
-> +
-> +	pidfd = SAFE_PIDFD_OPEN(pid_alloc, 0);
-> +
-> +	vec.iov_base = *data_ptr;
-> +	vec.iov_len = MEM_CHILD;
-> +
-> +	ret = tst_syscall(__NR_process_madvise, pidfd, &vec, 1UL,
-> +			MADV_PAGEOUT, 0UL);
-> +
-> +	if (ret == -1)
-> +		tst_brk(TBROK | TERRNO, "process_madvise failed");
-> +
-> +	if (ret != MEM_CHILD)
-> +		tst_brk(TBROK, "process_madvise reclaimed only %d bytes", ret);
-> +
-> +	TST_CHECKPOINT_WAKE(0);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run,
-> +	.forks_child = 1,
-> +	.min_kver = "5.10",
-> +	.needs_checkpoints = 1,
-> +};
-> -- 
-> 2.35.3
+> Li Wang <liwang@redhat.com> writes:
 
+> > The restrict keyword tells the compiler that a given pointer
+> > does not alias any other pointer in the same context. But this
+> > is only supported by C99.
 
--- 
-Thank you,
-Richard.
+> > To make older platforms compilinng LTP successful, we have to cancel
+> > that limitation in function definition.
+
+> > Fix error: https://github.com/linux-test-project/ltp/actions/runs/3263823142/jobs/5363481739
+
+Fixes: f55cb14ca ("syscalls/nice05: Add testcase for nice() syscall")
+
+...
+> > Notes:
+> >       I also considering adding "-std=gun99" for compiling the whole library,
+> >       but not sure if this could bring a bigger potential impact on
+> > LTP.
+
+> It would be nice to at least use C99, but I guess we can wait a bit
+> longer until centos7 is EOL.
+
+Exactly.
+Also LTP is used by others on embedded, which might still have old toolchain
+(although C99 as the default is since gcc 5.x [1], I'm not sure if anybody
+really uses gcc 4.9.x [2], we could ask on automated-testing ML after 2024-06 -
+CentOS 7 EOL).
+
+Kind regards,
+Petr
+
+[1] https://gcc.gnu.org/onlinedocs/gcc-5.5.0/gcc/Standards.html
+[2] https://gcc.gnu.org/onlinedocs/gcc-4.9.4/gcc/Standards.html
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
