@@ -4,68 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7449C4332F
-	for <ltp@archiver.kernel.org>; Wed, 19 Oct 2022 07:53:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2433C43217
+	for <ltp@archiver.kernel.org>; Wed, 19 Oct 2022 09:30:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 99B9C3CB101
-	for <ltp@archiver.kernel.org>; Wed, 19 Oct 2022 09:53:51 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 7553D3CB0F8
+	for <ltp@archiver.kernel.org>; Wed, 19 Oct 2022 11:30:45 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 507373CAFE9
- for <ltp@lists.linux.it>; Wed, 19 Oct 2022 09:53:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id E4EE63CB0C5
+ for <ltp@lists.linux.it>; Wed, 19 Oct 2022 11:30:30 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7C2141400B78
- for <ltp@lists.linux.it>; Wed, 19 Oct 2022 09:53:39 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A17141A00CD3
+ for <ltp@lists.linux.it>; Wed, 19 Oct 2022 11:30:29 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5C7E43398E;
- Wed, 19 Oct 2022 07:53:39 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E8419339E2;
+ Wed, 19 Oct 2022 09:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1666166019;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1666171828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fx7/+pWFkyczeOmjRTicDcJp7cgRU2eLbbKbrWnQZLs=;
- b=XuHOSBigW1skDNGe1HgH2cpEbehOWbWQiEbsiblmqWMUE8L8vEwpczVZoXISsQCyS1lVQz
- tx+apAV8xl+ddBu6J0PIWLSlQvMuu2tHAFY9MsV1widN/QeUoSt3pQMT/RK6LdXd+Yp6yB
- yzxCpvv1TfxYJz8V/FEfxJi7HmM1w7s=
+ bh=JUhFQ8hzxWMu6jRXQjl7f1nqBdc0xyG43BBogh7ifsQ=;
+ b=l+6emPaj6z+3Xo5yrqb3uhCVJVx1EfioZ75xfNe+IA9Aop91GiSSpOyMgkI6UJ6LYFKUS6
+ +jqWbsOjzEPlfcpeOtu0EKSNBpsASubDhgWOzMCNJMwZiyTNPT/DmTIAKDST2PoITPsfnX
+ opHMA6XBCzqpqXdjwK+nBwwIa5nW+/o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1666166019;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1666171828;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fx7/+pWFkyczeOmjRTicDcJp7cgRU2eLbbKbrWnQZLs=;
- b=WIsFJ2R0DBpTzDFWc0aVcdyCvDU26X+mOtEJUbsPPADFOcvLg6PXG5Xn3uLlCpxrEcWOSh
- b32S61qELvwI2gAg==
+ bh=JUhFQ8hzxWMu6jRXQjl7f1nqBdc0xyG43BBogh7ifsQ=;
+ b=oIqjLmtk82wpcd0r3m9B5Wwjdu64PcmugHmqfOhr1OrfWdV/82UkK9rnrtJqNpGhNfdPTh
+ 5BT8Jscc4xqut+DA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CC6813A36;
- Wed, 19 Oct 2022 07:53:39 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D615713A36;
+ Wed, 19 Oct 2022 09:30:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id X1lvCQOtT2MTSwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 19 Oct 2022 07:53:39 +0000
-Date: Wed, 19 Oct 2022 09:53:37 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <Y0+tAYbSdXod1tfY@pevik>
-References: <1663208146-5239-1-git-send-email-liaohj.jy@fujitsu.com>
- <87czaqob6v.fsf@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id Jr9WM7TDT2O6BAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Wed, 19 Oct 2022 09:30:28 +0000
+Message-ID: <f15cfed9-b389-b176-9d7d-8f2fcc8aaff0@suse.cz>
+Date: Wed, 19 Oct 2022 11:30:28 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87czaqob6v.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+To: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+References: <20221018152527.4636-1-rpalethorpe@suse.com>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20221018152527.4636-1-rpalethorpe@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/fork02: Remove it
+Subject: Re: [LTP] [PATCH 1/2] ptrace07: Fix compilation when not on x86
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,29 +79,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Liao, Richie,
+On 18. 10. 22 17:25, Richard Palethorpe via ltp wrote:
+> Strictly cpuid.h should not be included on non-x86, but this means
+> each test author has to remember not to include it. Instead we can set
+> a blank macro to allow compilation.
+> 
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
 
-> > ---
-> >  testcases/kernel/syscalls/fork/fork02.c | 99 -------------------------
-> >  1 file changed, 99 deletions(-)
-> >  delete mode 100644 testcases/kernel/syscalls/fork/fork02.c
+Hi,
+defining an empty macro is a bad idea because it'll allow a broken test 
+to be compiled and then it'll behave erratically for no apparent reason. 
+It's better to get a build failure.
 
-fork02 entry was left in runtest/syscalls and
-testcases/kernel/syscalls/fork/.gitignore.
+Reverting 1df4de06206b079f24dde7157d037b48727c743d is the best solution 
+here. Building ptrace07 and similar arch-specific tests without a key 
+piece of code does not make sense. The preprocessor arch checks should 
+wrap around the whole file, not just a small non-portable bit that's 
+crucial for the test to work.
 
-Not a big deal, I fixed it in 747cd665d. FYI you can use this checklist
-(not just reviewers, but also patch authors):
-https://github.com/linux-test-project/ltp/wiki/Maintainer-Patch-Review-Checklist
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
