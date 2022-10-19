@@ -4,88 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19A69C433FE
-	for <ltp@archiver.kernel.org>; Wed, 19 Oct 2022 05:12:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BFCBC4332F
+	for <ltp@archiver.kernel.org>; Wed, 19 Oct 2022 07:17:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9A9003CB0F9
-	for <ltp@archiver.kernel.org>; Wed, 19 Oct 2022 07:12:23 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 4A6133CB0EE
+	for <ltp@archiver.kernel.org>; Wed, 19 Oct 2022 09:17:23 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 430BF3C010A
- for <ltp@lists.linux.it>; Wed, 19 Oct 2022 07:12:13 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 819613CB0E5
+ for <ltp@lists.linux.it>; Wed, 19 Oct 2022 09:17:12 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ADE451A00CC4
- for <ltp@lists.linux.it>; Wed, 19 Oct 2022 07:12:11 +0200 (CEST)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29J5C3AL012440;
- Wed, 19 Oct 2022 05:12:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=k/s5iX0L4yafAjR+ynnmF0fpygAr16mGdXJ+VMTse48=;
- b=PR5H5ZyYttVnQLsmfBLRxEG23t/vdnEiz3l6FNxiQJ1vq/eCw9/rnpNJgmwQnrs8N4o8
- XxGltCACE/Ylkazqh50AcxTwE9mslXKH7JZApGPsB+hCJYOZ3RBcAh6FwzHAdIrCW9gs
- QkCVNwIC+l9FSp6ddLIyJVI0CWtW3ebFBzya825edGrdwLB1/sWGaaZWa3pphtLLpbzD
- HMCAlXDElVZBOcYpibaNqgWQ7epJA82NBnLOhamngD3+uBPUTmg0rv7lXJxONEyDp98u
- jtokpvvIxuPSEW6a8F8+GbAsO2c7JH6BioAKbrzBLsZ/9ukpvgwqDkMIbxxDQDObgJ1d dQ== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.102])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kaavhg04y-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 19 Oct 2022 05:12:08 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
- by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29J56ulV001857;
- Wed, 19 Oct 2022 05:12:06 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com
- (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
- by ppma06ams.nl.ibm.com with ESMTP id 3k7m4jpeyf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 19 Oct 2022 05:12:06 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com
- [9.149.105.62])
- by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 29J5C3Ql29032724
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 19 Oct 2022 05:12:03 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 42F75AE051;
- Wed, 19 Oct 2022 05:12:03 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id DC4EBAE045;
- Wed, 19 Oct 2022 05:12:00 +0000 (GMT)
-Received: from tarunpc (unknown [9.43.98.97])
- by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Wed, 19 Oct 2022 05:12:00 +0000 (GMT)
-Message-ID: <dc7d25a51e20a186048e4fa26ba2c69cc3cb21dd.camel@linux.ibm.com>
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: rpalethorpe@suse.de
-Date: Wed, 19 Oct 2022 10:41:59 +0530
-In-Reply-To: <87wn8xi61v.fsf@suse.de>
-References: <20221016125731.249078-1-tsahu@linux.ibm.com>
- <87wn8xi61v.fsf@suse.de>
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: b2FR_6tuaLLwfE425TBWBwqpC5gCi1a4
-X-Proofpoint-GUID: b2FR_6tuaLLwfE425TBWBwqpC5gCi1a4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-19_02,2022-10-18_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0
- mlxlogscore=773 mlxscore=0 spamscore=0 clxscore=1011 phishscore=0
- adultscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210190027
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C38D1200B63
+ for <ltp@lists.linux.it>; Wed, 19 Oct 2022 09:17:11 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A304622CBF
+ for <ltp@lists.linux.it>; Wed, 19 Oct 2022 07:17:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1666163829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Reo70exN0ohszAgIM7M0+8EXf860esIIZyAfBzB0DyY=;
+ b=NcHADdUVoBripTUWlic3D5dHhgCxUd0tqsvmgVCGIlCO5rQ7RCQqykCRfQ9xtad9cvuZYm
+ rFJOXEPbe2Sj5V0FBz2ZzFlVsYYdEViLlmMuhES65+QBR0f6e2b6Iy1/XVJ0lt3OzkZ2G2
+ n75Ofe2A3LCOUbnDC/UbHRYmk7oACqA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1666163829;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Reo70exN0ohszAgIM7M0+8EXf860esIIZyAfBzB0DyY=;
+ b=hQE8obuLLxwv1V976i0erVysHbo9PUmpWbeX2CCWU7A4EcNcYmbQyVE3sKUyh0pgDvqXf3
+ 4NnEL/vURxfm1yBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1EC9E13A36
+ for <ltp@lists.linux.it>; Wed, 19 Oct 2022 07:17:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id gF+rM3SkT2OeNgAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Wed, 19 Oct 2022 07:17:08 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Wed, 19 Oct 2022 12:47:06 +0530
+Message-Id: <20221019071706.25416-1-akumar@suse.de>
+X-Mailer: git-send-email 2.37.3
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 00/29] Hugetlb: Migrating libhugetlbfs tests
+Subject: [LTP] [PATCH] setfsuid02: Rewrite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,58 +71,138 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: tsahu@linux.ibm.com
-Cc: aneesh.kumar@linux.ibm.com, ltp@lists.linux.it, sbhat@linux.ibm.com,
- vaibhav@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Rewrite using new API and add setfsuid(-1) call to verify that preceding
+setfsuid() call with an invalid fsuid had failed.
 
-Hi Richard, 
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ .../kernel/syscalls/setfsuid/setfsuid02.c     | 96 ++++---------------
+ 1 file changed, 21 insertions(+), 75 deletions(-)
 
-Understood, I will repost the patch, with first 2/3 in the series.
-
-Thanks,
-
-On Tue, 2022-10-18 at 14:51 +0100, Richard Palethorpe wrote:
-> Hello,
-> 
-> Tarun Sahu <tsahu@linux.ibm.com> writes:
-> 
-> > Hi,
-> > Libhugetlbfs is not being maintained actively, and some distro is
-> > dropping
-> > support for it. There are some tests that are good for testing
-> > hugetlb
-> > functionality in kernel.
-> > 
-> > As per previous dicussion in RFC[1], Here, this patch series
-> > consists
-> > of hugetlb tests taken from libhugetlbfs modified to work in ltp
-> > environment. This series do not include all the tests, I
-> > will post another series for the remaining tests soon.
-> 
-> Perhaps Cyril already said this, but I suggest just getting one or
-> two
-> of the tests merged first then working through the rest.
-> 
-> This reduces the iteration time and batch size.
-> 
-> At least in terms of what you submit to the mailing list. Perhaps if
-> it
-> gets to the point where most tests pass review first time, you can
-> submit everything remaining.
-> 
-> Also note that submitting this many new tests, once they are merged
-> we
-> will probably get failure reports (including compilation failures).
-> It
-> will make life easier to stagger that.
-> 
-> I'm going to mark this patch-set as changes requested in patchwork.
-> 
+diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid02.c b/testcases/kernel/syscalls/setfsuid/setfsuid02.c
+index 5807bb6c0..84f9fb504 100644
+--- a/testcases/kernel/syscalls/setfsuid/setfsuid02.c
++++ b/testcases/kernel/syscalls/setfsuid/setfsuid02.c
+@@ -1,91 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (C) International Business Machines  Corp., 2001
+  * Ported by Wayne Boyer
+  * Adapted by Dustin Kirkland (k1rkland@us.ibm.com)
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-/*
+- * Testcase to test the basic functionality of the setfsuid(2) system
+- * call to fail on invalid uid.
++/*\
++ * [Description]
++ *
++ * Verify that setfsuid() syscall fails if an invalid fsuid is given.
+  */
+ 
+-#include <stdio.h>
+-#include <unistd.h>
+ #include <pwd.h>
+-#include <sys/types.h>
+-#include <errno.h>
+-
+-#include "test.h"
+-#include "compat_16.h"
++#include "tst_test.h"
++#include "compat_tst_16.h"
+ 
+-static void setup(void);
+-static void cleanup(void);
+-
+-TCID_DEFINE(setfsuid02);
+-int TST_TOTAL = 1;
+-
+-int main(int ac, char **av)
++static void run(void)
+ {
+-	int lc;
+-
+-	uid_t uid;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
++	uid_t invalid_uid, current_uid;
+ 
+-	uid = 1;
+-	while (getpwuid(uid))
+-		uid++;
++	current_uid = geteuid();
++	invalid_uid = 1;
++	while (getpwuid(invalid_uid))
++		invalid_uid++;
+ 
+-	UID16_CHECK(uid, setfsuid, cleanup);
++	UID16_CHECK(invalid_uid, setfsuid);
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		TEST(SETFSUID(cleanup, uid));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO,
+-				"setfsuid() failed unexpectedly");
+-			continue;
+-		}
+-
+-		if (TEST_RETURN == uid) {
+-			tst_resm(TFAIL, "setfsuid() returned %ld, expected %d",
+-				 TEST_RETURN, uid);
+-		} else {
+-			tst_resm(TPASS, "setfsuid() returned expected value : "
+-				 "%ld", TEST_RETURN);
+-		}
+-	}
+-
+-	cleanup();
+-	tst_exit();
++	TST_EXP_VAL_SILENT(setfsuid(invalid_uid), current_uid);
++	TST_EXP_VAL(setfsuid(-1), current_uid,
++				"setfsuid(invalid_fsuid) test for expected failure:");
+ }
+ 
+-static void setup(void)
+-{
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-}
+-
+-static void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.test_all = run
++};
+-- 
+2.37.3
 
 
 -- 
