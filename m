@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80C02C433FE
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 12:08:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4687BC433FE
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 12:08:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 06AFD3CB1A6
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 14:08:29 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id A52EF3CB1B2
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 14:08:39 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DF18C3CB18F
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 14:08:03 +0200 (CEST)
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com
- [IPv6:2607:f8b0:4864:20::62b])
+ by picard.linux.it (Postfix) with ESMTPS id 3E1783CB185
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 14:08:06 +0200 (CEST)
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com
+ [IPv6:2607:f8b0:4864:20::52b])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7A06E1401168
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 14:08:03 +0200 (CEST)
-Received: by mail-pl1-x62b.google.com with SMTP id y4so1252220plb.2
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 05:08:03 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9663A10004AB
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 14:08:05 +0200 (CEST)
+Received: by mail-pg1-x52b.google.com with SMTP id r18so19005636pgr.12
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 05:08:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=daynix-com.20210112.gappssmtp.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=HSamzQMU691u272t9U0zFVAP6iXLXRYXU+Hewd9Tbbo=;
- b=yPpn5W4I8DrXVY14Zbeo3fkP+08/44sTaJSmm6VfOTpznVbTxu/TDRYxiOfF4l8YdL
- DQTmzutBz+w39qWhYT+dW88kdhfuoSOIKMPr+FE2JlVPG98IX6yMh1EaFVU6hH4SmUhW
- EfrsBW4jx3xVq4z4qLlxcaJqVzUxUkA3fUSc5CsGXEstCvBsDLCR4JXZBxERVypt8/wF
- pXmqfAwntv5szCeDXeMfRpAT0CUe3vfkgvPOUG0dgkW9fHyda480L9p4UDeISN5xJ3d5
- MD3tiWMyH+UgoMazNxbP9dZ9b1oe0PxgdXxduR1vPWkEcBtnpxtYQU/lBVE8GWgGxjSq
- nj8Q==
+ bh=I832/Ksv30ChGn1YhfdsdHZhlGeEoBtGR1Ci27xR+l0=;
+ b=Msxse3TtM6u8R/qAQT+VykQl38cT5XqL8baRvSlUNZ5a1ddop9ozcXvp3rPsbeDOna
+ R+w5rMBoj7gYHVrR+6aVUZcFZ23Kwe8UpngHcUR6fLz/WhJImLamW912yepcHC4pqUTr
+ qW7UZsdQN6jUCuwieKS8ROoiK+7pNiPhFVdlqU3HgppmgcGLO6EAWhCYejrlFMyrFBfK
+ sFYHtRkmK6QvOQ/qK9gIFpriNXH98HfwrygZkAZygEuWdktM6FR1TZEo18agDhBwnX28
+ 9h8KdvlK+/7ajM6KLpcRvzVtHJTpbKxMv3tHuT7j3H7GsM87nQtcdu/vB0KWqymqLN6R
+ 3ZNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=HSamzQMU691u272t9U0zFVAP6iXLXRYXU+Hewd9Tbbo=;
- b=i2rhGki6laGreP+IV9o+pl113If/aplmkGlnt1yHTOVx6i9iBlxKA2BFPxcSA9iaFP
- b9cYhcp1agCHdThQCZ88UJ7Tmd1L53w//tbhPdKMcot11x1Q6JoNWl2gqSxdDxIVNW7i
- lGgDQUGxuEtDC1QuIgAw7y/GL1MLVz/5jy8oTUl6/U3KVRSAH1dRFAV72JyN4v/9FGXA
- /EoYZ60pW2Ya8AMtixaRmrZGS4pQsF6XE8KKvQGXfLVCWeTyAMAmL2mk3IeKybi5tssJ
- JuNh+CvQ4dWpbBwasm+RQR+L2oeYT6COaVpdhCRlwI0jlJSC1ggklfHht6Z45m0GXnKK
- 3uqQ==
-X-Gm-Message-State: ACrzQf3KPRJipT7UWPVGke+dj6PhO0Eg2jYWu2F1SMK3GK7hYl/VtMcZ
- w7lKH5QMkX4fY1Y/rOd+RJmyV1wHnXpqWcEg
-X-Google-Smtp-Source: AMsMyM5GIEqw9nPb2cJBVeVKsMS/4YRwOIVboU0447edCMi3t67bRzTM+JFlqnkZeX5QAr/tTheHVg==
-X-Received: by 2002:a17:90b:4a84:b0:20a:f497:6f5d with SMTP id
- lp4-20020a17090b4a8400b0020af4976f5dmr15407582pjb.213.1666267682040; 
- Thu, 20 Oct 2022 05:08:02 -0700 (PDT)
+ bh=I832/Ksv30ChGn1YhfdsdHZhlGeEoBtGR1Ci27xR+l0=;
+ b=Rybc4Lzsr4Sdq6rZBgc8Ls/4qun5BWcaJLmoNxosLTMHbKAzgaliJvDMVYEC7kpt2U
+ BE8h3k1+FgRyEUpojCdiVS58mEPwH80QRAneju6BXLS/V+BlilCFj7LJO8y/1WzS0LJ7
+ /NgMaipQzIlsRT+B0hllwu1/g0utnM5FHIodlGmbTdBsxbwRE+lU1WUh6XbVhtMQYTJE
+ I4qWbbMFiQoBwWlg5Oyr0PGexnz2q/+9+ln0w/28OOIG4M6jMmRjsG/LGEHC/7UAU4Cw
+ tyPsqTJGCgiC3TNDtiJwFCujbnFORGEO0gev/pCy2EPJWpl1Uckqevq+ejJSVawKROxn
+ SGIA==
+X-Gm-Message-State: ACrzQf2LekN6sryqSaVEQeDaOwkXbrMwPP/I88ZePwKRFjdStnN4xiF+
+ cPMNUpFi4ZwBPgdtobqZrvHfjw==
+X-Google-Smtp-Source: AMsMyM62PR0rmdMSwT09lS/2a2CFDIKtD8FYxwZZ0ih5zJ+mbvG9uCeYAnhl+ZcFhRKoV2aOCrMX7w==
+X-Received: by 2002:a63:a06:0:b0:458:2853:45e4 with SMTP id
+ 6-20020a630a06000000b00458285345e4mr11218127pgk.20.1666267684157; 
+ Thu, 20 Oct 2022 05:08:04 -0700 (PDT)
 Received: from fedora.flets-east.jp ([2400:4050:c360:8200:8ae8:3c4:c0da:7419])
  by smtp.gmail.com with ESMTPSA id
- r27-20020aa79edb000000b005403b8f4bacsm13078947pfq.137.2022.10.20.05.07.59
+ r27-20020aa79edb000000b005403b8f4bacsm13078947pfq.137.2022.10.20.05.08.02
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 20 Oct 2022 05:08:01 -0700 (PDT)
+ Thu, 20 Oct 2022 05:08:03 -0700 (PDT)
 From: Akihiko Odaki <akihiko.odaki@daynix.com>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 20 Oct 2022 21:07:39 +0900
-Message-Id: <20221020120741.212671-4-akihiko.odaki@daynix.com>
+Date: Thu, 20 Oct 2022 21:07:40 +0900
+Message-Id: <20221020120741.212671-5-akihiko.odaki@daynix.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221020120741.212671-1-akihiko.odaki@daynix.com>
 References: <20221020120741.212671-1-akihiko.odaki@daynix.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 4/6] ftp/ftp01: Remove sleep option
+Subject: [LTP] [PATCH 5/6] ftp/ftp01: Make variables local
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,26 +91,45 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 Suggested-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
 ---
- testcases/network/tcp_cmds/ftp/ftp01.sh | 2 --
- 1 file changed, 2 deletions(-)
+ testcases/network/tcp_cmds/ftp/ftp01.sh | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/testcases/network/tcp_cmds/ftp/ftp01.sh b/testcases/network/tcp_cmds/ftp/ftp01.sh
-index f8a3c98e8..10b35c384 100755
+index 10b35c384..8c0cffdea 100755
 --- a/testcases/network/tcp_cmds/ftp/ftp01.sh
 +++ b/testcases/network/tcp_cmds/ftp/ftp01.sh
-@@ -49,7 +49,6 @@ do_setup()
+@@ -58,6 +58,7 @@ do_setup()
+ 
+ do_test()
  {
++    local sum1 sum2
  
-     TC=ftp
--    SLEEPTIME=${SLEEPTIME:-0}
-     ASCII_FILES=${ASCII_FILES:-"ascii.sm ascii.med ascii.lg ascii.jmb"}
-     BIN_FILES=${BIN_FILES:-"bin.sm bin.med bin.lg bin.jmb"}
+     for i in binary ascii; do
  
-@@ -97,7 +96,6 @@ do_test()
+@@ -78,8 +79,8 @@ do_test()
+                         echo $a $j
+                         echo quit
+                     } | ftp -nv $RHOST
+-                    SUM1="$(ls -l $j  | awk '{print $5}')"
+-                    SUM2="$(ls -l $TST_NET_DATAROOT/$j | awk '{print $5}')"
++                    sum1="$(ls -l $j  | awk '{print $5}')"
++                    sum2="$(ls -l $TST_NET_DATAROOT/$j | awk '{print $5}')"
+                     rm -f $j
+                 else
+                     {
+@@ -90,12 +91,12 @@ do_test()
+                         echo $a $j
+                         echo quit
+                     } | ftp -nv $RHOST
+-                    SUM1="$(tst_rhost_run -c "sum $TST_TMPDIR/$j" -s | awk '{print $1}')"
+-                    SUM2="$(sum $TST_NET_DATAROOT/$j | awk '{print $1}')"
++                    sum1="$(tst_rhost_run -c "sum $TST_TMPDIR/$j" -s | awk '{print $1}')"
++                    sum2="$(sum $TST_NET_DATAROOT/$j | awk '{print $1}')"
+                     tst_rhost_run -c "rm -f $TST_TMPDIR/$j"
                  fi
  
-                 EXPECT_PASS "[ '$SUM1' = '$SUM2' ]"
--                sleep $SLEEPTIME
+-                EXPECT_PASS "[ '$SUM1' = '$SUM2' ]"
++                EXPECT_PASS "[ '$sum1' = '$sum2' ]"
              done
          done
      done
