@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D47AC4332F
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 10:54:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1010C4332F
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 10:57:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E75E13CB167
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 12:53:57 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 832263CB17A
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 12:57:33 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 10EF83C9179
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 12:53:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id CA3EC3C9179
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 12:57:22 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4DC9520021D
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 12:53:46 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5BAAE600A0E
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 12:57:22 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 628D71FB21;
- Thu, 20 Oct 2022 10:53:46 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id C7AC421D5A;
+ Thu, 20 Oct 2022 10:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666263226;
+ t=1666263441;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aPKlBXZA5OjyVuyJlvCPl45ZnN+RNVU4Neal3UO/3S4=;
- b=PpAnfHTcCwVGtUbi8p+4avazDSWmqhYBjU1nXrm+ZbWQsj9YCnky3qm4dPAFHvuMKGTJX/
- N9GuSxSsijZ91E0y/qI3y7vGDjIHn/SILPeCMc2F4dLS7nzyHn75hGUSKxajmVZ2ND9A8i
- ALO0T+BS1s/oar5di2Wa6zBAvFDXxYA=
+ bh=xfxCCIXhj6AYDRUhYvjBioVU6rs3OuoN/+xImksT3Xc=;
+ b=EHbDQiXvY6dblyhLZMmnN3B48/uA51oxe4URjXHN6pyTkLAbK/HsdtzJK8K6rymc9WYbge
+ 8ymZXh17eNPXBS0LFHIalrAGMcZ80Z3SGl74x+VL7wbqqEwjAVvwI5zG+0Nblep8XunaZ7
+ 8t5l3KwGcErFsn9jv/qZH+ivW8IVUvA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666263226;
+ s=susede2_ed25519; t=1666263441;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aPKlBXZA5OjyVuyJlvCPl45ZnN+RNVU4Neal3UO/3S4=;
- b=gJR/OxdraK0J8KMu7ny+FnyyXkNJadOsol7JbOvebF/SP4KTc1jpzg+rpS5tJYDVoV+Rro
- LL/xhyPUQMA91uCQ==
+ bh=xfxCCIXhj6AYDRUhYvjBioVU6rs3OuoN/+xImksT3Xc=;
+ b=GTOSFo4JTJakgJ2szWdLO39sHGCjvud1stZWN/w0+Og1SkDl7SmqWUUZ5lWWrQk6kuc2yv
+ pyaknKILBvYYnjCA==
 Received: from g78 (unknown [10.100.228.202])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 590542C141;
- Thu, 20 Oct 2022 10:53:45 +0000 (UTC)
-References: <20221010145534.4857-1-andrea.cervesato@suse.com>
- <Y0bwCz3wCdo9dY2g@yuki>
+ by relay2.suse.de (Postfix) with ESMTPS id 3604D2C141;
+ Thu, 20 Oct 2022 10:57:21 +0000 (UTC)
+References: <20221011110437.21572-1-akumar@suse.de>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 20 Oct 2022 11:44:06 +0100
-In-reply-to: <Y0bwCz3wCdo9dY2g@yuki>
-Message-ID: <878rlavk94.fsf@suse.de>
+To: Avinesh Kumar <akumar@suse.de>
+Date: Thu, 20 Oct 2022 11:56:04 +0100
+In-reply-to: <20221011110437.21572-1-akumar@suse.de>
+Message-ID: <874jvyvk33.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Add epoll_wait06 test
+Subject: Re: [LTP] [PATCH] setitimer03: Rewrite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,162 +78,207 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+As you probably know alread, we have another patch in flight which
+merges this into setitimer02 by Li Wang. So I will mark this one as
+rejected.
 
-> Hi!
->> This test verifies EPOLLET functionality.
->> 
->> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
->> ---
->>  .../kernel/syscalls/epoll_wait/.gitignore     |  1 +
->>  .../kernel/syscalls/epoll_wait/epoll_wait06.c | 97 +++++++++++++++++++
->>  2 files changed, 98 insertions(+)
->>  create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
->> 
->> diff --git a/testcases/kernel/syscalls/epoll_wait/.gitignore b/testcases/kernel/syscalls/epoll_wait/.gitignore
->> index ab5a9c010..8c5ed7c5c 100644
->> --- a/testcases/kernel/syscalls/epoll_wait/.gitignore
->> +++ b/testcases/kernel/syscalls/epoll_wait/.gitignore
->> @@ -3,3 +3,4 @@ epoll_wait02
->>  epoll_wait03
->>  epoll_wait04
->>  epoll_wait05
->> +epoll_wait06
->> diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
->> new file mode 100644
->> index 000000000..20f6233c9
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait06.c
->> @@ -0,0 +1,97 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
->> + */
->> +
->> +/*\
->> + * [Description]
->> + *
->> + * Verify that edge triggered behavior is correctly handled by epoll.
->> + *
->> + * [Algorithm]
->> + *
->> + * 1. The file descriptor that represents the read side of a pipe (rfd) is
->> + *    registered on the epoll instance.
->> + * 2. A pipe writer writes 2 kB of data on the write side of the pipe.
->> + * 3. A call to epoll_wait(2) is done that will return rfd as a ready file
->> + *    descriptor.
->> + * 4. The pipe reader reads 1 kB of data from rfd.
->> + * 5. A call to epoll_wait(2) should fail because there's data left to read.
->> + */
->
-> I do not like this description that much. First of all the the flag we
-> are testing is not mentioned there at all, the EPOLLET should be
-> mentioned in the [Description].
->
-> The second call to epoll_wait() does not fail, failure for syscall means
-> that -1 is returned and errno is set. It does not report any data ready
-> on the file descriptor, that is not failure at all, that is how the
-> EPOLLET flag is supposed to work.
+Avinesh Kumar <akumar@suse.de> writes:
 
-I'll add to this that testing EPOLLET makes most sense with EPOLLOUT
-first. Usually it is used to detect when writing becomes possible again
-after a transport becomes full. Without it then epoll_wait would
-instantly return whenever writing is possible which is most of the
-time.
-
+> Signed-off-by: Avinesh Kumar <akumar@suse.de>
+> ---
+>  .../kernel/syscalls/setitimer/setitimer03.c   | 168 +++---------------
+>  1 file changed, 25 insertions(+), 143 deletions(-)
 >
->> +#include <poll.h>
->> +#include <sys/epoll.h>
->> +#include "tst_test.h"
->> +
->> +#define WRITE_SIZE 2048
->> +#define READ_SIZE (WRITE_SIZE / 2)
->> +
->> +static int fds[2];
->> +static int epfd;
->> +
->> +static void cleanup(void)
->> +{
->> +	if (epfd > 0)
->> +		SAFE_CLOSE(epfd);
->> +
->> +	if (fds[0] > 0)
->> +		SAFE_CLOSE(fds[0]);
->> +
->> +	if (fds[1] > 0)
->> +		SAFE_CLOSE(fds[1]);
->> +}
->> +
->> +static void run(void)
->> +{
->> +	int res;
->> +	char buff[WRITE_SIZE];
->> +	struct epoll_event evt_receive;
->> +	struct epoll_event evt_request;
->> +
->> +	SAFE_PIPE(fds);
->> +
->> +	evt_request.events = EPOLLIN | EPOLLET;
->> +	evt_request.data.fd = fds[0];
->> +
->> +	epfd = epoll_create(2);
-
-Also again, please use the SAFE_* macros I just merged.
-
->> +	if (epfd == -1)
->> +		tst_brk(TBROK | TERRNO, "fail to create epoll instance");
->> +
->> +	tst_res(TINFO, "Polling channel with EPOLLET");
->> +
->> +	res = epoll_ctl(epfd, EPOLL_CTL_ADD, fds[0], &evt_request);
->> +	if (res == -1)
->> +		tst_brk(TBROK | TERRNO, "epoll_ctl failure");
->> +
->> +	tst_res(TINFO, "Write bytes on channel");
->> +
->> +	memset(buff, 'a', WRITE_SIZE);
->> +	SAFE_WRITE(0, fds[1], buff, WRITE_SIZE);
->> +
->> +	res = epoll_wait(epfd, &evt_receive, 1, 2000);
->> +	if (res <= 0) {
->> +		tst_res(TFAIL | TERRNO, "epoll_wait() returned %i", res);
->> +		goto close;
->> +	}
->> +
->> +	if ((evt_receive.events & EPOLLIN) == 0) {
->> +		tst_res(TFAIL, "No data received");
->> +		goto close;
->> +	}
->> +
->> +	tst_res(TINFO, "Received EPOLLIN event. Read half bytes from channel");
->> +
->> +	memset(buff, 0, READ_SIZE);
->> +	SAFE_READ(1, evt_receive.data.fd, buff, READ_SIZE);
->> +
->> +	TST_EXP_EQ_LI(epoll_wait(epfd, &evt_receive, 1, 10), 0);
->> +
->> +close:
->
-> 	SAFE_CLOSE(epfd) ?
->
->> +	SAFE_CLOSE(fds[0]);
->> +	SAFE_CLOSE(fds[1]);
->> +}
->> +
->> +static struct tst_test test = {
->> +	.cleanup = cleanup,
->> +	.test_all = run,
->> +};
->> -- 
->> 2.35.3
->> 
->> 
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->
+> diff --git a/testcases/kernel/syscalls/setitimer/setitimer03.c b/testcases/kernel/syscalls/setitimer/setitimer03.c
+> index 418ec71f0..659eac9a3 100644
+> --- a/testcases/kernel/syscalls/setitimer/setitimer03.c
+> +++ b/testcases/kernel/syscalls/setitimer/setitimer03.c
+> @@ -1,158 +1,40 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+> - *
+>   *   Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + *		03/2001 - Written by Wayne Boyer
+> + *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+>   */
+>  
+> -/*
+> - * NAME
+> - *	setitimer03.c
+> +/*\
+> + * [Description]
+>   *
+> - * DESCRIPTION
+> - *	setitimer03 - check that a setitimer() call fails as expected
+> - *		      with incorrect values.
+> - *
+> - * ALGORITHM
+> - *	loop if that option was specified
+> - *	allocate needed space and set up needed values
+> - *	issue the system call
+> - *	check the errno value
+> - *	  issue a PASS message if we get EINVAL
+> - *	otherwise, the tests fails
+> - *	  issue a FAIL message
+> - *	  break any remaining tests
+> - *	  call cleanup
+> - *
+> - * USAGE:  <for command-line>
+> - *  setitimer03 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
+> - *     where,  -c n : Run n copies concurrently.
+> - *             -e   : Turn on errno logging.
+> - *	       -i n : Execute test n times.
+> - *	       -I x : Execute test for x seconds.
+> - *	       -P x : Pause for x seconds between iterations.
+> - *	       -t   : Turn on syscall timing.
+> - *
+> - * HISTORY
+> - *	03/2001 - Written by Wayne Boyer
+> - *
+> - * RESTRICTIONS
+> - *	none
+> + * Verify that setitimer(2) syscall fails with EINVAL when given
+> + * an invalid timer.
+>   */
+>  
+> -#include "test.h"
+> -
+> -#include <errno.h>
+> -#include <sys/time.h>
+> +#include "tst_test.h"
+>  
+> -void cleanup(void);
+> -void setup(void);
+> +static struct itimerval *new_value, *old_value;
+>  
+> -char *TCID = "setitimer03";
+> -int TST_TOTAL = 1;
+> -
+> -int main(int ac, char **av)
+> +static void setup(void)
+>  {
+> -	int lc;
+> -	struct itimerval *value, *ovalue;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();		/* global setup */
+> -
+> -	/* The following loop checks looping state if -i option given */
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		/* reset tst_count in case we are looping */
+> -		tst_count = 0;
+> -
+> -		/* allocate some space for timer structures */
+> -
+> -		if ((value = malloc((size_t)sizeof(struct itimerval))) ==
+> -		    NULL) {
+> -			tst_brkm(TBROK, cleanup, "value malloc failed");
+> -		}
+> -
+> -		if ((ovalue = malloc((size_t)sizeof(struct itimerval))) ==
+> -		    NULL) {
+> -			tst_brkm(TBROK, cleanup, "value malloc failed");
+> -		}
+> -
+> -		/* set up some reasonable values */
+> -
+> -		value->it_value.tv_sec = 30;
+> -		value->it_value.tv_usec = 0;
+> -		value->it_interval.tv_sec = 0;
+> -		value->it_interval.tv_usec = 0;
+> -
+> -		/*
+> -		 * issue the system call with the TEST() macro
+> -		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
+> -		 */
+> -
+> -		/* make the first value negative to get a failure */
+> -		TEST(setitimer(-ITIMER_PROF, value, ovalue));
+> -
+> -		if (TEST_RETURN == 0) {
+> -			tst_resm(TFAIL, "call failed to produce expected error "
+> -				 "- errno = %d - %s", TEST_ERRNO,
+> -				 strerror(TEST_ERRNO));
+> -			continue;
+> -		}
+> -
+> -		switch (TEST_ERRNO) {
+> -		case EINVAL:
+> -			tst_resm(TPASS, "expected failure - errno = %d - %s",
+> -				 TEST_ERRNO, strerror(TEST_ERRNO));
+> -			break;
+> -		default:
+> -			tst_resm(TFAIL, "call failed to produce expected error "
+> -				 "- errno = %d - %s", TEST_ERRNO,
+> -				 strerror(TEST_ERRNO));
+> -		}
+> -
+> -		/*
+> -		 * clean up things in case we are looping
+> -		 */
+> -		free(value);
+> -		free(ovalue);
+> -		value = NULL;
+> -		ovalue = NULL;
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> -
+> +	new_value->it_value.tv_sec = 30;
+> +	new_value->it_value.tv_usec = 0;
+> +	new_value->it_interval.tv_sec = 0;
+> +	new_value->it_interval.tv_usec = 0;
+>  }
+>  
+> -/*
+> - * setup() - performs all the ONE TIME setup for this test.
+> - */
+> -void setup(void)
+> +static void run(void)
+>  {
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> +	TST_EXP_FAIL(setitimer(-ITIMER_PROF, new_value, old_value), EINVAL);
+>  }
+>  
+> -/*
+> - * cleanup() - performs all the ONE TIME cleanup for this test at completion
+> - * 	       or premature exit.
+> - */
+> -void cleanup(void)
+> -{
+> -
+> -}
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.bufs = (struct tst_buffers[]) {
+> +		{&new_value, .size = sizeof(struct itimerval)},
+> +		{&old_value, .size = sizeof(struct itimerval)},
+> +		{}
+> +	}
+> +};
 > -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+> 2.37.3
 
 
 -- 
