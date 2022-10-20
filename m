@@ -4,60 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1010C4332F
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 10:57:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D59CC4332F
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 11:09:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 832263CB17A
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 12:57:33 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id B532A3CB18F
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 13:09:16 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA3EC3C9179
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 12:57:22 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 17C1E3CB0B9
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 13:09:06 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5BAAE600A0E
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 12:57:22 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 390FD60045F
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 13:09:05 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id C7AC421D5A;
- Thu, 20 Oct 2022 10:57:21 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 7E2A322B53;
+ Thu, 20 Oct 2022 11:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666263441;
+ t=1666264145;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xfxCCIXhj6AYDRUhYvjBioVU6rs3OuoN/+xImksT3Xc=;
- b=EHbDQiXvY6dblyhLZMmnN3B48/uA51oxe4URjXHN6pyTkLAbK/HsdtzJK8K6rymc9WYbge
- 8ymZXh17eNPXBS0LFHIalrAGMcZ80Z3SGl74x+VL7wbqqEwjAVvwI5zG+0Nblep8XunaZ7
- 8t5l3KwGcErFsn9jv/qZH+ivW8IVUvA=
+ bh=HBzyM60u/i9HXVQ/sHDLWt8JTq5sogTbRJq3yuPieS0=;
+ b=xlp3sSTB/5oBaYwFB9L6cX6cz6fcNuIzPUbSRegghm1HQzbkEACCVWwsQ/r/P4T7TEADs/
+ UEjT1y/XHpHDMMvC2fCeXhjpq9lylS8qbGq5jkkzKxjaQm/rBuBrK3pf9Gum4IBq15TywY
+ eLM40fd7NPHwGyNJKt8VhO4w+a/uBq4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666263441;
+ s=susede2_ed25519; t=1666264145;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xfxCCIXhj6AYDRUhYvjBioVU6rs3OuoN/+xImksT3Xc=;
- b=GTOSFo4JTJakgJ2szWdLO39sHGCjvud1stZWN/w0+Og1SkDl7SmqWUUZ5lWWrQk6kuc2yv
- pyaknKILBvYYnjCA==
+ bh=HBzyM60u/i9HXVQ/sHDLWt8JTq5sogTbRJq3yuPieS0=;
+ b=6W4t1MwZK98Af88wXI044YX/1L35Nat7B7J+FPKqKpQiZZO47OH950ToKGnG/zTgU3jY8q
+ D7oSVAao3U40lVDQ==
 Received: from g78 (unknown [10.100.228.202])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 3604D2C141;
- Thu, 20 Oct 2022 10:57:21 +0000 (UTC)
-References: <20221011110437.21572-1-akumar@suse.de>
+ by relay2.suse.de (Postfix) with ESMTPS id 109842C141;
+ Thu, 20 Oct 2022 11:09:04 +0000 (UTC)
+References: <20221018152527.4636-1-rpalethorpe@suse.com>
+ <f15cfed9-b389-b176-9d7d-8f2fcc8aaff0@suse.cz>
+ <CAEemH2fVhxhZNsMx0_CU8am_MRoOxnJ1fgu=qJTRag5z1=o0Yw@mail.gmail.com>
+ <d4d411f1-8f07-1fc9-8762-3ab7faa75f24@suse.cz>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Avinesh Kumar <akumar@suse.de>
-Date: Thu, 20 Oct 2022 11:56:04 +0100
-In-reply-to: <20221011110437.21572-1-akumar@suse.de>
-Message-ID: <874jvyvk33.fsf@suse.de>
+To: Martin Doucha <mdoucha@suse.cz>
+Date: Thu, 20 Oct 2022 11:59:10 +0100
+In-reply-to: <d4d411f1-8f07-1fc9-8762-3ab7faa75f24@suse.cz>
+Message-ID: <87zgdqu4z3.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] setitimer03: Rewrite using new LTP API
+Subject: Re: [LTP] [PATCH 1/2] ptrace07: Fix compilation when not on x86
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,219 +76,52 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
-
-As you probably know alread, we have another patch in flight which
-merges this into setitimer02 by Li Wang. So I will mark this one as
-rejected.
-
-Avinesh Kumar <akumar@suse.de> writes:
-
-> Signed-off-by: Avinesh Kumar <akumar@suse.de>
-> ---
->  .../kernel/syscalls/setitimer/setitimer03.c   | 168 +++---------------
->  1 file changed, 25 insertions(+), 143 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/setitimer/setitimer03.c b/testcases/kernel/syscalls/setitimer/setitimer03.c
-> index 418ec71f0..659eac9a3 100644
-> --- a/testcases/kernel/syscalls/setitimer/setitimer03.c
-> +++ b/testcases/kernel/syscalls/setitimer/setitimer03.c
-> @@ -1,158 +1,40 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - *
->   *   Copyright (c) International Business Machines  Corp., 2001
-> - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + *		03/2001 - Written by Wayne Boyer
-> + *   Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
->   */
->  
-> -/*
-> - * NAME
-> - *	setitimer03.c
-> +/*\
-> + * [Description]
->   *
-> - * DESCRIPTION
-> - *	setitimer03 - check that a setitimer() call fails as expected
-> - *		      with incorrect values.
-> - *
-> - * ALGORITHM
-> - *	loop if that option was specified
-> - *	allocate needed space and set up needed values
-> - *	issue the system call
-> - *	check the errno value
-> - *	  issue a PASS message if we get EINVAL
-> - *	otherwise, the tests fails
-> - *	  issue a FAIL message
-> - *	  break any remaining tests
-> - *	  call cleanup
-> - *
-> - * USAGE:  <for command-line>
-> - *  setitimer03 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
-> - *     where,  -c n : Run n copies concurrently.
-> - *             -e   : Turn on errno logging.
-> - *	       -i n : Execute test n times.
-> - *	       -I x : Execute test for x seconds.
-> - *	       -P x : Pause for x seconds between iterations.
-> - *	       -t   : Turn on syscall timing.
-> - *
-> - * HISTORY
-> - *	03/2001 - Written by Wayne Boyer
-> - *
-> - * RESTRICTIONS
-> - *	none
-> + * Verify that setitimer(2) syscall fails with EINVAL when given
-> + * an invalid timer.
->   */
->  
-> -#include "test.h"
-> -
-> -#include <errno.h>
-> -#include <sys/time.h>
-> +#include "tst_test.h"
->  
-> -void cleanup(void);
-> -void setup(void);
-> +static struct itimerval *new_value, *old_value;
->  
-> -char *TCID = "setitimer03";
-> -int TST_TOTAL = 1;
-> -
-> -int main(int ac, char **av)
-> +static void setup(void)
->  {
-> -	int lc;
-> -	struct itimerval *value, *ovalue;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();		/* global setup */
-> -
-> -	/* The following loop checks looping state if -i option given */
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		/* reset tst_count in case we are looping */
-> -		tst_count = 0;
-> -
-> -		/* allocate some space for timer structures */
-> -
-> -		if ((value = malloc((size_t)sizeof(struct itimerval))) ==
-> -		    NULL) {
-> -			tst_brkm(TBROK, cleanup, "value malloc failed");
-> -		}
-> -
-> -		if ((ovalue = malloc((size_t)sizeof(struct itimerval))) ==
-> -		    NULL) {
-> -			tst_brkm(TBROK, cleanup, "value malloc failed");
-> -		}
-> -
-> -		/* set up some reasonable values */
-> -
-> -		value->it_value.tv_sec = 30;
-> -		value->it_value.tv_usec = 0;
-> -		value->it_interval.tv_sec = 0;
-> -		value->it_interval.tv_usec = 0;
-> -
-> -		/*
-> -		 * issue the system call with the TEST() macro
-> -		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
-> -		 */
-> -
-> -		/* make the first value negative to get a failure */
-> -		TEST(setitimer(-ITIMER_PROF, value, ovalue));
-> -
-> -		if (TEST_RETURN == 0) {
-> -			tst_resm(TFAIL, "call failed to produce expected error "
-> -				 "- errno = %d - %s", TEST_ERRNO,
-> -				 strerror(TEST_ERRNO));
-> -			continue;
-> -		}
-> -
-> -		switch (TEST_ERRNO) {
-> -		case EINVAL:
-> -			tst_resm(TPASS, "expected failure - errno = %d - %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -			break;
-> -		default:
-> -			tst_resm(TFAIL, "call failed to produce expected error "
-> -				 "- errno = %d - %s", TEST_ERRNO,
-> -				 strerror(TEST_ERRNO));
-> -		}
-> -
-> -		/*
-> -		 * clean up things in case we are looping
-> -		 */
-> -		free(value);
-> -		free(ovalue);
-> -		value = NULL;
-> -		ovalue = NULL;
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -
-> +	new_value->it_value.tv_sec = 30;
-> +	new_value->it_value.tv_usec = 0;
-> +	new_value->it_interval.tv_sec = 0;
-> +	new_value->it_interval.tv_usec = 0;
->  }
->  
-> -/*
-> - * setup() - performs all the ONE TIME setup for this test.
-> - */
-> -void setup(void)
-> +static void run(void)
->  {
-> -
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> +	TST_EXP_FAIL(setitimer(-ITIMER_PROF, new_value, old_value), EINVAL);
->  }
->  
-> -/*
-> - * cleanup() - performs all the ONE TIME cleanup for this test at completion
-> - * 	       or premature exit.
-> - */
-> -void cleanup(void)
-> -{
-> -
-> -}
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.bufs = (struct tst_buffers[]) {
-> +		{&new_value, .size = sizeof(struct itimerval)},
-> +		{&old_value, .size = sizeof(struct itimerval)},
-> +		{}
-> +	}
-> +};
-> -- 
-> 2.37.3
-
-
--- 
-Thank you,
-Richard.
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGVsbG8sCgpNYXJ0aW4gRG91Y2hhIDxtZG91Y2hhQHN1c2UuY3o+IHdyaXRlczoKCj4gT24gMjAu
+IDEwLiAyMiA1OjUzLCBMaSBXYW5nIHdyb3RlOgo+PiBPbiBXZWQsIE9jdCAxOSwgMjAyMiBhdCA1
+OjMwIFBNIE1hcnRpbiBEb3VjaGEgPG1kb3VjaGFAc3VzZS5jego+PiA8bWFpbHRvOm1kb3VjaGFA
+c3VzZS5jej4+IHdyb3RlOgo+PiAgICAgUmV2ZXJ0aW5nIDFkZjRkZTA2MjA2YjA3OWYyNGRkZTcx
+NTdkMDM3YjQ4NzI3Yzc0M2QgaXMgdGhlIGJlc3Qgc29sdXRpb24KPj4gICAgIGhlcmUuIEJ1aWxk
+aW5nIHB0cmFjZTA3IGFuZCBzaW1pbGFyIGFyY2gtc3BlY2lmaWMgdGVzdHMgd2l0aG91dCBhIGtl
+eQo+PiAgICAgcGllY2Ugb2YgY29kZSBkb2VzIG5vdCBtYWtlIHNlbnNlLiBUaGUgcHJlcHJvY2Vz
+c29yIGFyY2ggY2hlY2tzIHNob3VsZAo+PiAgICAgd3JhcCBhcm91bmQgdGhlIHdob2xlIGZpbGUs
+IG5vdCBqdXN0IGEgc21hbGwgbm9uLXBvcnRhYmxlIGJpdCB0aGF0J3MKPj4gICAgIGNydWNpYWwg
+Zm9yIHRoZSB0ZXN0IHRvIHdvcmsuCj4+ICBGcm9tIHdoYXQgSSBrbm93LCBvbmUgb2YgdGhlIHVz
+ZXMgb2YgImVtcHR5IG1hY3JvIiBpcyB0bwo+PiBjb25kaXRpb25hbGx5Cj4+IGluY2x1ZGUgY2Vy
+dGFpbiBwb3J0aW9ucyBvZiBhIHByb2dyYW0uIEluIHB0cmFjZTA3LCBpdCBpbnZva2VzIHRoYXQg
+dXNlbGVzcwo+PiBtYWNybyBmb3IgY29tcGlsaW5nIHBhc3Mgb24gbm9uLXg4NiBhcmNoIGJ1dCBk
+b2VzIG5vdCBhbGxvdyBleGVjdXRlIGl0Lgo+PiBJIGRvbid0IHNlZSB3aHkgdGhhdCdzIGNydWNp
+YWwgZm9yIGEgdGVzdCwgaWYgd2Ugd3JhcCBhcm91bmQgdGhlCj4+IHdob2xlIGZpbGUgYW5kCj4+
+IGF2b2lkIGl0IGNvbXBpbGluZyBvbiBub24teDg2LCBpc24ndCB0aGlzIGVzc2VudGlhbGx5IHNh
+bWUgYXMgdGhhdD8KPj4gVGhlIG9ubHkgZGlzdGluY3Rpb27CoGJldHdlZW4gdGhlbSBpcyBwYXJ0
+bHkgb3Igd2hvbGx5IHNraXBwaW5nIHRoZQo+PiBrZXkKPj4gY29kZSBjb21waWxhdGlvbi4gb3Ig
+bWF5YmUgSSBjb21wbGV0ZWx5IG1pc3VuZGVyc3Rvb2QgdGhpcyBwYXJ0Lgo+Cj4gVGhlIGNvZGUg
+dGhhdCB3b3VsZCBiZSBnZW5lcmF0ZWQgYnkgdGhlIG5vbi1lbXB0eSB2ZXJzaW9uIG9mIHRoZSBt
+YWNybwo+IGlzIGNydWNpYWwgZm9yIHJlc3Qgb2YgdGhlIHByb2dyYW0gdG8gd29yay4gUHV0dGlu
+ZyBjb25kaXRpb25hbCBidWlsZAo+IGRpcmVjdGl2ZXMgb25seSBhcm91bmQgYSBmZXcgbGluZXMg
+b2YgY29kZSBjYW4gY2F1c2UgYm9ndXMgd2FybmluZ3MKPiBhYm91dCB1bmluaXRpYWxpemVkIHZh
+cmlhYmxlcyBhbmQgbWFrZSBpdCBkaWZmaWN1bHQgdG8gYWRkIG1vcmUKPiBhcmNoLXNwZWNpZmlj
+IGNvZGUgbGlrZSB0aGUgY3B1aWRfY291bnQoKSBtYWNyby4gVGhlcmUncyBub3RoaW5nIHdyb25n
+Cj4gd2l0aCB3cml0aW5nIHRlc3RzIGxpa2UgdGhpczoKPgo+ICNpbmNsdWRlICJ0c3RfdGVzdC5o
+Igo+Cj4gI2lmZGVmIF9feDg2XzY0X18KPiAjaW5jbHVkZSAibGFwaS9jcHVpZC5oIgo+Cj4gdm9p
+ZCBzZXR1cCh2b2lkKQo+IHsKPiAJLi4uCj4gfQo+Cj4gdm9pZCBydW4odm9pZCkKPiB7Cj4gCS4u
+Lgo+IH0KPgo+IHZvaWQgY2xlYW51cCh2b2lkKQo+IHsKPiAJLi4uCj4gfQo+Cj4gc3RhdGljIHN0
+cnVjdCB0c3RfdGVzdCB0ZXN0ID0gewo+IAkuLi4KPiAJLnN1cHBvcnRlZF9hcmNocyA9IChjb25z
+dCBjaGFyICpjb25zdCBbXSkgewo+IAkJIng4Nl82NCIsCj4gCQlOVUxMCj4gCX0sCj4gfTsKPgo+
+ICNlbHNlIC8qIF9feDg2XzY0X18gKi8KPiAjZGVmaW5lIFRTVF9URVNUX1RDT05GKCJ0aGlzIHRl
+c3QgaXMgb25seSBzdXBwb3J0ZWQgb24geDg2XzY0IikKPiAjZW5kaWYgLyogX194ODZfNjRfXyAq
+Lwo+Cj4KPiBJSVVDLCB0aGUgbWV0YWRhdGEgcGFyc2VyIHdpbGwgc3RpbGwgcmVhZCAuc3VwcG9y
+dGVkX2FyY2hzIHJlZ2FyZGxlc3MKPiBvZiBjb25kaXRpb25hbCBidWlsZCBkaXJlY3RpdmVzLiBB
+bmQgaXQnbGwgcHJldmVudCBlcnJhdGljIHRlc3QKPiBiZWhhdmlvciBpbiBlZGdlIGNhc2VzIHdo
+ZXJlIHRoZSBMVFAgbGlicmFyeSBiZWxpZXZlcyB0aGUgY29kZSB3YXMKPiBjb21waWxlZCBmb3Ig
+dGhlIHJpZ2h0IGFyY2hpdGVjdHVyZSBidXQgdGhlIEdDQyBwcmVwcm9jZXNzb3IKPiBkaXNhZ3Jl
+ZXMuCgpZZXMsIHRoaXMgc291bmRzIHJlYXNvbmFibGUgYW5kIEkgd2lsbCBzdWJtaXQgYSBwYXRj
+aCBmb3IgaXQgKG9uIE1vbmRheQp0aG91Z2gpLgoKTXkgcmVtYWluaW5nIGNvbmNlcm4gaXMgdGhh
+dCBwZW9wbGUgd2lsbCBpbmNsdWRlIGxhcGkvY3B1aWQuaCAob3IKc2ltaWxhcikgb3V0c2lkZSBv
+ZiB0aGUgaWZkZWYgYW5kIGl0IHdpbGwgbm90IGJlIGNhdWdodCB1bnRpbCBpdCdzCm1lcmdlZCBp
+bnRvIG1hc3Rlci4KCi0tIApUaGFuayB5b3UsClJpY2hhcmQuCgotLSAKTWFpbGluZyBsaXN0IGlu
+Zm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
