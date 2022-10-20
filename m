@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24548C433FE
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 08:25:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6A6BC4332F
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 08:54:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 972E93CB180
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 10:25:55 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id E2E923CB18F
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 10:54:09 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 132D63CB0DB
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 10:25:43 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id C96B73C1769
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 10:53:58 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E0113600C7D
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 10:25:42 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 81D39200B98
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 10:53:57 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 1B3141F38D;
- Thu, 20 Oct 2022 08:25:42 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id B34AC226EA;
+ Thu, 20 Oct 2022 08:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666254342;
+ t=1666256036;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GcSa5SpEAfVWXkPx8rytEYWViSSTsD4VLprTKevxHD8=;
- b=kFXzLZYsmu5ShhO3VhgCB1hdADvExvQwCiGi9jRB2lKSXd6f6LtsXbAWg0Ph8hLKjYTOFB
- m7VkU5uvnmDOYM0Rv/t9RrPqTXvtgMqaCJBtiMmmC3r3dj7kdOiifre0UeZwC+Rya6lngI
- OJAUUZcZeM/hkK3VszYiNerjo84i8ow=
+ bh=uwcTR8uVhdx3baNkDzZ+3hRGFI2abgVsW14tB4goDuo=;
+ b=otV1QoV/rtnDO4FM48/N4h+dchHPjSHEbYcIfuO0SsbV1OwwlQI02MEzoHZ+R4/Y7UtFnB
+ HGVxjzVAyKhjSt+YXBGWoWhgd09Ul61VFNBZFD7xUQJYDStisrMk+VfJSmfhjX1JeKhkNN
+ 3LpbLMQMQhvt/fHTZuIeuUw12T26Y0k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666254342;
+ s=susede2_ed25519; t=1666256036;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GcSa5SpEAfVWXkPx8rytEYWViSSTsD4VLprTKevxHD8=;
- b=ATjOwonr1OnwsRxXZXIn3yXfe48M/1kGF480Dfi1JLbioDdKEnw5A44ddUK66qJ6B3/xrR
- T6RTv8+tXpUtPIAg==
+ bh=uwcTR8uVhdx3baNkDzZ+3hRGFI2abgVsW14tB4goDuo=;
+ b=RkDKj8B5jenEweh/TwDhpENhiYpq1ZOk3c8zGBXr0NcXzP6HC3S9jZ8fsdRMbFXgRjKtpR
+ tKsRYFGqUfHperAQ==
 Received: from g78 (unknown [10.100.228.202])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id B098D2C141;
- Thu, 20 Oct 2022 08:25:41 +0000 (UTC)
-References: <20221009065520.3236525-1-liwang@redhat.com>
- <20221009065520.3236525-2-liwang@redhat.com>
+ by relay2.suse.de (Postfix) with ESMTPS id E143D2C191;
+ Thu, 20 Oct 2022 08:53:55 +0000 (UTC)
+References: <20221009085745.3239893-1-liwang@redhat.com>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Li Wang <liwang@redhat.com>
-Date: Thu, 20 Oct 2022 09:17:00 +0100
-In-reply-to: <20221009065520.3236525-2-liwang@redhat.com>
-Message-ID: <875ygex5ob.fsf@suse.de>
+Date: Thu, 20 Oct 2022 09:42:29 +0100
+In-reply-to: <20221009085745.3239893-1-liwang@redhat.com>
+Message-ID: <871qr2x4da.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] setitimer03: convert to new API
+Subject: Re: [LTP] [PATCH] setitimer01: rewrite using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,85 +80,218 @@ Hello,
 
 Li Wang <liwang@redhat.com> writes:
 
-> Combine this EINVAL test into setitimer02 and add one additional
-> ITIMER_VIRTUAL verification.
-
-EINVAL is not mentioned in the test description.
-
+> Also add signal checking when the timer take effection.
 >
 > Signed-off-by: Li Wang <liwang@redhat.com>
 > ---
->  runtest/syscalls                              |   1 -
->  .../kernel/syscalls/setitimer/.gitignore      |   1 -
->  .../kernel/syscalls/setitimer/setitimer02.c   |  30 +++-
->  .../kernel/syscalls/setitimer/setitimer03.c   | 158 ------------------
->  4 files changed, 24 insertions(+), 166 deletions(-)
->  delete mode 100644 testcases/kernel/syscalls/setitimer/setitimer03.c
+>  .../kernel/syscalls/setitimer/setitimer01.c   | 230 ++++++++----------
+>  1 file changed, 99 insertions(+), 131 deletions(-)
 >
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 61a7b7677..2d673836d 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1325,7 +1325,6 @@ sethostname03 sethostname03
+> diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testcases/kernel/syscalls/setitimer/setitimer01.c
+> index 6874b94ad..def559db8 100644
+> --- a/testcases/kernel/syscalls/setitimer/setitimer01.c
+> +++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+> @@ -1,157 +1,125 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+> + * Copyright (c) International Business Machines  Corp., 2001
+> + * 03/2001 - Written by Wayne Boyer
+>   *
+> - *   Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>   */
 >  
->  setitimer01 setitimer01
->  setitimer02 setitimer02
-> -setitimer03 setitimer03
+> -/*
+> - * NAME
+> - *	setitimer01.c
+> - *
+> - * DESCRIPTION
+> - *	setitimer01 - check that a resonable setitimer() call succeeds.
+> +/*\
+> + * [Description]
+>   *
+> - * ALGORITHM
+> - *	loop if that option was specified
+> - *	allocate needed space and set up needed values
+> - *	issue the system call
+> - *	check the errno value
+> - *	  issue a PASS message if we get zero
+> - *	otherwise, the tests fails
+> - *	  issue a FAIL message
+> - *	  break any remaining tests
+> - *	  call cleanup
+> - *
+> - * USAGE:  <for command-line>
+> - *  setitimer01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+> - *     where,  -c n : Run n copies concurrently.
+> - *             -f   : Turn off functionality Testing.
+> - *	       -i n : Execute test n times.
+> - *	       -I x : Execute test for x seconds.
+> - *	       -P x : Pause for x seconds between iterations.
+> - *	       -t   : Turn on syscall timing.
+> - *
+> - * HISTORY
+> - *	03/2001 - Written by Wayne Boyer
+> - *
+> - * RESTRICTIONS
+> - *	none
+> + * Check that a setitimer() call pass with timer seting.
+> + * Check if signal is generated correctly when when timer expiration.
+>   */
 >  
->  setns01 setns01
->  setns02 setns02
-> diff --git a/testcases/kernel/syscalls/setitimer/.gitignore b/testcases/kernel/syscalls/setitimer/.gitignore
-> index 048db9b31..35779a32c 100644
-> --- a/testcases/kernel/syscalls/setitimer/.gitignore
-> +++ b/testcases/kernel/syscalls/setitimer/.gitignore
-> @@ -1,3 +1,2 @@
->  /setitimer01
->  /setitimer02
-> -/setitimer03
-> diff --git a/testcases/kernel/syscalls/setitimer/setitimer02.c b/testcases/kernel/syscalls/setitimer/setitimer02.c
-> index 9ac9ce1fa..ccba231c9 100644
-> --- a/testcases/kernel/syscalls/setitimer/setitimer02.c
-> +++ b/testcases/kernel/syscalls/setitimer/setitimer02.c
-> @@ -18,17 +18,33 @@
->  #include "tst_test.h"
->  #include "lapi/syscalls.h"
+> -#include "test.h"
+> -
+>  #include <errno.h>
+>  #include <sys/time.h>
+> -
+> -void cleanup(void);
+> -void setup(void);
+> -
+> -char *TCID = "setitimer01";
+> -int TST_TOTAL = 1;
+> +#include <stdlib.h>
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
 >  
-> -static struct itimerval *value;
+>  #define SEC0	0
+> -#define SEC1	20
+> -#define SEC2	40
+> -
+> -int main(int ac, char **av)
+> +#define SEC1	3
+> +#define SEC2	5
+> +
+> +static volatile int si_flag;
 > +static struct itimerval *value, *ovalue;
 > +
 > +static struct tcase {
 > +       int which;
 > +       struct itimerval **val;
 > +       struct itimerval **oval;
-> +       int exp_errno;
-
-There is a whitespace error here (see checkpatch/make check)
-
+> +       int signo;
 > +} tcases[] = {
-> +       {ITIMER_REAL,    &value, &ovalue, EFAULT},
-> +       {ITIMER_VIRTUAL, &value, &ovalue, EFAULT},
-> +       {-ITIMER_PROF,   &value, &ovalue, EINVAL},
+> +       {ITIMER_REAL,    &value, &ovalue, SIGALRM},
+> +       {ITIMER_VIRTUAL, &value, &ovalue, SIGVTALRM},
+> +       {ITIMER_PROF,    &value, &ovalue, SIGPROF},
+
+Same issue here as in other itimer test.
+
 > +};
-
-Why do we need value and ovalue in the struct?
-
->  
->  static int sys_setitimer(int which, void *new_value, void *old_value)
->  {
->  	return tst_syscall(__NR_setitimer, which, new_value, old_value);
->  }
->  
-> -static void verify_setitimer(void)
-> +static void verify_setitimer(unsigned int i)
->  {
-> -	TST_EXP_FAIL(sys_setitimer(ITIMER_REAL, value, (struct itimerval *)-1),
-> -	             EFAULT);
-> +        struct tcase *tc = &tcases[i];
 > +
-> +	if (tc->exp_errno == EFAULT)
-> +		*(tc->oval) = (struct itimerval *)-1;
+> +static int sys_setitimer(int which, void *new_value, void *old_value)
+>  {
+> -	int lc;
+> -	struct itimerval *value, *ovalue;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();		/* global setup */
+> -
+> -	/* The following loop checks looping state if -i option given */
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		/* reset tst_count in case we are looping */
+> -		tst_count = 0;
+> -
+> -		/* allocate some space for the timer structures */
+> -
+> -		if ((value = malloc((size_t)sizeof(struct itimerval))) ==
+> -		    NULL) {
+> -			tst_brkm(TBROK, cleanup, "value malloc failed");
+> -		}
+> -
+> -		if ((ovalue = malloc((size_t)sizeof(struct itimerval))) ==
+> -		    NULL) {
+> -			tst_brkm(TBROK, cleanup, "ovalue malloc failed");
+> -		}
+> -
+> -		/* set up some reasonable values */
+> -
+> -		value->it_value.tv_sec = SEC1;
+> -		value->it_value.tv_usec = SEC0;
+> -		value->it_interval.tv_sec = 0;
+> -		value->it_interval.tv_usec = 0;
+> -		/*
+> -		 * issue the system call with the TEST() macro
+> -		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
+> -		 */
+> +	return tst_syscall(__NR_setitimer, which, new_value, old_value);
+> +}
+>  
+> -		TEST(setitimer(ITIMER_REAL, value, ovalue));
+> +static void sig_routine(int signo)
+> +{
+> +	switch(signo){
+> +	case SIGALRM:
+> +		si_flag = 1;
+> +		break;
+> +	case SIGVTALRM:
+> +		si_flag = 2;
+> +		break;
+> +	case SIGPROF:
+> +		si_flag = 3;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +}
+>  
+> -		if (TEST_RETURN != 0) {
+> -			tst_resm(TFAIL, "call failed - errno = %d - %s",
+> -				 TEST_ERRNO, strerror(TEST_ERRNO));
+> -			continue;
+> +static void verify_setitimer(unsigned int i)
+> +{
+> +	struct tcase *tc = &tcases[i];
+> +
+> +	si_flag = 0;
+> +	value->it_value.tv_sec = SEC1;
+> +	value->it_value.tv_usec = SEC0;
 
-Or, why do we use an if statement here instead of defining it in the struct?
+Why not test usecs instead?
+
+> +	value->it_interval.tv_sec = SEC0;
+> +	value->it_interval.tv_usec = SEC0;
+> +
+> +	TST_EXP_PASS(sys_setitimer(tc->which, *(tc->val), *(tc->oval)));
+> +
+> +	/*
+> +	 * call setitimer again with new values.
+> +	 * the old values should be stored in ovalue
+> +	 */
+
+We should probably set ovalue to some value > SEC1 here. Otherwise it
+could just be zero or some previous value that is still valid.
+
+> +	value->it_value.tv_sec = SEC2;
+> +	value->it_value.tv_usec = SEC0;
+> +
+> +	TST_EXP_PASS(sys_setitimer(tc->which, *(tc->val), *(tc->oval)));
+> +
+> +	if (ovalue->it_value.tv_sec <= SEC1)
+> +		tst_res(TPASS, "setitimer functionality is correct");
+> +	else
+> +		tst_brk(TFAIL, "old timer value is not equal to expected value");
+> +
+> +	for (;;) {
+
+Could we use sigwait here instead?
+
+We seem to be burning CPU cycles for no reason and if we get a spurious
+signal the test will still pass if we get the correct one afterwards.
 
 -- 
 Thank you,
