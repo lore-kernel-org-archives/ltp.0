@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25F8CC4332F
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 15:37:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01CC9C433FE
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 17:30:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EDE7D3CB1AE
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 17:37:14 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 40AD53CB1B8
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 19:30:52 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8CD193CB05B
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 17:37:05 +0200 (CEST)
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com
- [IPv6:2607:f8b0:4864:20::931])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 29B803C1769
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 19:30:42 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A8084601477
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 17:37:04 +0200 (CEST)
-Received: by mail-ua1-x931.google.com with SMTP id t26so9735697uaj.9
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 08:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=6YCq+59zHSmhbtQiRat8ITFxx2KYaG5XnXUutVYXGOs=;
- b=qhjiN5r1oVSnX2vOsRb3QRcEr7u3WzrkBEuaflOlDad/ndzC3hhY2U/SuqGr1kKUFk
- CP5rarG8VQAsuXulBQpN9WhFqXbV7vGIv5JcQd19B/FUcgNXPbYOVAoRFix352ZINxm3
- 2c1XgY6xz5MGHc6ULklJRRUNd4T3oU4bYnMXOY7Wh8GcYEbFBfoNixWBFPzcaGfUHpIU
- 8Jjs7aGeU44s1qTEqPXoA1LnjqGbTaUtoc7gz1C9aXxfND4UqK0hB3YegCBc2jGlDEKC
- RtqCkI4WMej01+IlJkNj3EyKWxbbty2yDoUSw5S7AGQtDTu8d727HN+JUR0yY/QiC4hS
- ur5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=6YCq+59zHSmhbtQiRat8ITFxx2KYaG5XnXUutVYXGOs=;
- b=0rr5286//W4IRSeAsu3JfnT675vGJHi1rHl96WAOezJMQ7TI9s7NLYb4GCBEvEHHA2
- MXfLJoAZLj+emjpoXkLHQ5BD5GEPq1Dpp6OGcRyf8oDhHQDCl+Lle9lopt7A/vGyo2YF
- 9HnbC+Qx+HyTrP8zWMB/BrB2tGCauxXIs5Wd+NolKyp9JZHhUEeHPdosJS/2vYi0f7wi
- aTid+xcyX81ZSBS2sBi8ysOgJmgmmAsWri7bv2+W+YwpROjE6N8W4IoefDcS8bdINOLl
- R0dLFOFpIqxA48Mtp/a+NT0ctMLaME0VRS8XyiSpmq299S5PgRnbrcvUJ8VEUvymDYNs
- 42rA==
-X-Gm-Message-State: ACrzQf29lAwum6hD8uy5om6iUGEmzwRQf/xFd0q+oFBOajJ5aQTJCye+
- 2IWIMFiExz/aUzD3db3J9TYy7LTkF2KTJGkmJo/26nSy
-X-Google-Smtp-Source: AMsMyM4VGaLefwpRCxKODDHAxXAVGqaGp2GJDaNjQJz3i4xIg9wIwhhlz47u7FF/3EF+XHTlTjxSDIZxVKu6Ib/6iLs=
-X-Received: by 2002:ab0:6413:0:b0:3e1:b113:2dfa with SMTP id
- x19-20020ab06413000000b003e1b1132dfamr8350461uao.102.1666280223411; Thu, 20
- Oct 2022 08:37:03 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 838E114004E8
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 19:30:40 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AEFBD22BA8;
+ Thu, 20 Oct 2022 17:30:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1666287039;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=GXM/YFKBMUTUJEdWT8lGFAGYYQEiLZeJIRPP7vJXy3Q=;
+ b=SWlnzIsdZh548NRp8KOBeeruk/a+Ri7vF2zTcgS1U+NVq3yXknr/P119SdS6DJAava2RcN
+ eNAqbiDLXWUsbF3dqXFv4EkDWgY8M9gdoh18CFLn+CI0UnxFeePTR0eVturYN8fGeUD5VE
+ lrJNfKZdPNfcc9BjR770+UTnisPQrek=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1666287039;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=GXM/YFKBMUTUJEdWT8lGFAGYYQEiLZeJIRPP7vJXy3Q=;
+ b=TFiSMSwzrYDp6rLC8tPNOF+C62SEyowWN3Pn0T2zCu6BKydBvxOY30/T5pvqaB3sMavYL+
+ x5SViq/2anA+ytAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6DC6613AF5;
+ Thu, 20 Oct 2022 17:30:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id aKAlGL+FUWMLQgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 20 Oct 2022 17:30:39 +0000
+Date: Thu, 20 Oct 2022 19:30:37 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Akihiko Odaki <akihiko.odaki@daynix.com>
+Message-ID: <Y1GFvU/ixieqDSq6@pevik>
+References: <20221020133715.256521-1-akihiko.odaki@daynix.com>
 MIME-Version: 1.0
-References: <20221020130843.15147-1-mdoucha@suse.cz>
- <20221020130843.15147-3-mdoucha@suse.cz>
-In-Reply-To: <20221020130843.15147-3-mdoucha@suse.cz>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 20 Oct 2022 18:36:51 +0300
-Message-ID: <CAOQ4uxi=3aS+ROZ_kcQbVK9C4qiW76M1junEz2J+fdai5xjnAQ@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20221020133715.256521-1-akihiko.odaki@daynix.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] Add fanotify_get_supported_init_flags()
- helper function
+Subject: Re: [LTP] [PATCH v3] tst_test.sh: Normalize the locale
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,78 +77,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Yan Vugenfirer <yan@daynix.com>,
+ Yuri Benditovich <yuri.benditovich@daynix.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Oct 20, 2022 at 4:08 PM Martin Doucha <mdoucha@suse.cz> wrote:
->
-> Since FAN_ALL_INIT_FLAGS constant is deprecated, the kernel has added
-> new fanotify feature flags and there is no other way to check
-> for their support, we need to manually check which init flags needed
-> by our tests are available.
->
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
->
-> Changes since v1:
-> - Fixed check for FAN_REPORT_NAME
-> - Added longer patch description
->
-> Thanks for pointing out the flag dependency between FAN_REPORT_NAME and
-> FAN_REPORT_DIR_FID. I must have misread the documentation on that one.
-> Since this appears to be the only flag with a dependency for now, let's
-> keep the special handling simple. If the kernel adds more flags that are
-> invalid on their own, we should handle that using a table.
->
-> These flag support checks will be needed in multiple tests so it's better
-> to have one common function that'll do them in one call than to copy-paste
-> multiple setup steps from one test to another.
->
-> Though it'd be great if kernel itself would provide a syscall that returns
-> all supported fanotify init, mark or mask flags in one call.
->
->  testcases/kernel/syscalls/fanotify/fanotify.h | 26 +++++++++++++++++++
->  1 file changed, 26 insertions(+)
->
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-> index 51078103e..f3ac1630f 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify.h
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-> @@ -213,6 +213,32 @@ static inline int fanotify_init_flags_supported_by_kernel(unsigned int flags)
->         return fanotify_init_flags_supported_on_fs(flags, NULL);
->  }
->
-> +/*
-> + * Check support of given init flags one by one and return those which are
-> + * supported.
-> + */
-> +static inline unsigned int fanotify_get_supported_init_flags(unsigned int flags,
-> +       const char *fname)
-> +{
-> +       unsigned int flg, arg, ret = 0;
-> +
-> +       for (flg = 1; flg; flg <<= 1) {
-> +               if (!(flags & flg))
-> +                       continue;
-> +
-> +               arg = flg;
-> +
-> +               // FAN_REPORT_NAME is invalid without FAN_REPORT_DIR_FID
-> +               if (flg == FAN_REPORT_NAME)
-> +                       arg |= FAN_REPORT_DIR_FID;
-> +
-
-NACK
-this is not the only dependency
-this is not a valid generic function.
-
-I only gave a recipe in v1 review how I think the checks should be done.
-
-Thanks,
-Amir.
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgYWxsLAoKCj4gbmV0d29yay90Y3BfY21kcy90cmFjZXBhdGgvdHJhY2VwYXRoMDEuc2ggZmFp
+bHMgd2l0aCBMQU5HPWphX0pQLlVURi04Cj4gYmVjYXVzZSBpdCBwYXJzZXMgbG9jYWxpemVkIG91
+dHB1dC4gVGhlIGJlbG93IGlzIGFuIGV4YW1wbGUgb2Ygc3VjaAo+IG91dHB1dDoKPiAkIHRyYWNl
+cGF0aCBsb2NhbGhvc3QKPiAgMT86IFtMT0NBTEhPU1RdICAgICAgICAgICAgICAgICAgICAgICAg
+MC4wNDDjg5/jg6rnp5IgcG10dSA2NTUzNgo+ICAxOiAgbG9jYWxob3N0ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMC4yNzTjg5/jg6rnp5Ig5Yiw6YGU44GX44G+
+44GX44GfCj4gIDE6ICBsb2NhbGhvc3QgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAwLjI2MeODn+ODquenkiDliLDpgZTjgZfjgb7jgZfjgZ8KPiAgICAgIOimgee0
+hDogcG10dSA2NTUzNiDjg5vjg4Pjg5fmlbAgMSDmiLvjgorjg5vjg4Pjg5fmlbAgMQoKPiBJdCBp
+cyBuZWNlc3NhcnkgdG8gbm9ybWFsaXplIHRoZSBsb2NhbGUgdG8gYXZvaWQgc3VjaCBhIHByb2Js
+ZW0uCj4gVGhlcmUgYXJlIHNvbWUgdGVzdHMgZG8gdGhlIG5vcm1hbGl6YXRpb24sIGJ1dCB0aGF0
+IGlzIG5vdAo+IGNvbXByZWhlbnNpdmUuIEFkZCBjb2RlIHRvIG5vcm1hbGl6ZSB0aGUgbG9jYWxl
+IHRvIHRzdF90ZXN0LnNoIHNvCj4gdGhhdCBpdCBjYW4gY292ZXIgbW9yZSB0ZXN0cy4KCj4gVGhl
+IGFkZGVkIGNvZGUgZG9lcyB0aGUgbm9ybWFsaXphdGlvbiBieSBzZXR0aW5nIExDX0FMTCwgd2hp
+Y2gKPiB0YWtlcyBwcmVjZWRlbmNlIHRvIHRoZSBvdGhlciBsb2NhbGUtcmVsYXRlZCBlbnZpcm9u
+bWVudCB2YXJpYWJsZXMKPiBhbmQgZG9lcyBub3QgcmVxdWlyZSB0aGF0ICJsb2NhbGUiIGNvbW1h
+bmQgZXhpc3RzLgoKPiBTaWduZWQtb2ZmLWJ5OiBBa2loaWtvIE9kYWtpIDxha2loaWtvLm9kYWtp
+QGRheW5peC5jb20+Cj4gLS0tCj4gIHRlc3RjYXNlcy9saWIvdHN0X3Rlc3Quc2ggfCAyICsrCj4g
+IDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9saWIvdHN0X3Rlc3Quc2ggYi90ZXN0Y2FzZXMvbGliL3RzdF90ZXN0LnNoCj4gaW5kZXggMjhi
+N2QxMmJhLi41ZWJiZTFkMjUgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2xpYi90c3RfdGVzdC5z
+aAo+ICsrKyBiL3Rlc3RjYXNlcy9saWIvdHN0X3Rlc3Quc2gKPiBAQCAtODMxLDMgKzgzMSw1IEBA
+IGlmIFsgLXogIiRUU1RfTk9fREVGQVVMVF9SVU4iIF07IHRoZW4KPiAgCQlmaQo+ICAJZmkKPiAg
+ZmkKPiArCj4gK2V4cG9ydCBMQ19BTEw9QwoKVGhpbmtpbmcgYWJvdXQgaXQgdHdpY2UgdGhpcyBt
+aWdodCBoYXZlIGltcGFjdCBvbiBvdGhlciB0ZXN0cy4KTGksIEN5cmlsLCBhbnkgaWRlYSBhYm91
+dCBpdD8KCk90aGVyIG9wdGlvbiB3b3VsZCBiZSB0byBwdXQgdGhpcyBjaGFuZ2UganVzdCB0byB0
+cmFjZXBhdGgwMS5zaC4KQW5kIGlmIHdlIHdhbnQgdG8gdGVzdCBqdXN0IEMgbG9jYWxlIChJJ20g
+cmVhbGx5IG5vdCBzdXJlLCBzaG91bGRuJ3QKaXQgYmUgYWxzbyBpbiBDIEFQST8KCktpbmQgcmVn
+YXJkcywKUGV0cgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0
+L2xpc3RpbmZvL2x0cAo=
