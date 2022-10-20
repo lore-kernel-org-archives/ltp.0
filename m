@@ -4,43 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA224C433FE
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 13:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F40FAC433FE
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 13:08:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E6D393CB1D4
-	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 15:01:53 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id CCDAA3CB19F
+	for <ltp@archiver.kernel.org>; Thu, 20 Oct 2022 15:08:56 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 547333CB17D
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 15:01:24 +0200 (CEST)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 9E8F13CAFB4
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 15:08:46 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 731D3601390
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 15:01:23 +0200 (CEST)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.55])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MtSMg47sLzJn3N
- for <ltp@lists.linux.it>; Thu, 20 Oct 2022 20:58:39 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.63) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 20 Oct 2022 21:01:19 +0800
-To: <ltp@lists.linux.it>
-Date: Thu, 20 Oct 2022 20:57:47 +0800
-Message-ID: <20221020125747.231509-3-zhaogongyi@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20221020125747.231509-1-zhaogongyi@huawei.com>
-References: <20221020125747.231509-1-zhaogongyi@huawei.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1348B601392
+ for <ltp@lists.linux.it>; Thu, 20 Oct 2022 15:08:45 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8B3DF225A3;
+ Thu, 20 Oct 2022 13:08:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1666271324; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sDypSQedbS8aWtiA2vxzr1cfMlMxgijsogZWd/77lm0=;
+ b=vi+dgfO4mPxaN2MO+OzMwWB85toH0EYbWIoXOfuryqYjHfZqE8s6i/UQBSYXqwze4dgZdW
+ wYYMaEX3IE8jQ/He5lq8JwjepLUXLdZ9uYWc6V3fU7vWLvvwXoUr4rZD/WEeU10fOflDzN
+ rKdWLESUi1R1CPPorVFgsjx5dgLtwEw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1666271324;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sDypSQedbS8aWtiA2vxzr1cfMlMxgijsogZWd/77lm0=;
+ b=L51ioMKwfbbJK+OX4ov37enixou5NspG+Vu6vnC8uB9BYZc9Mk34sTHIP9zugL6kadPq6H
+ VhC2Y+nkgGFMhdBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7A6E313AF5;
+ Thu, 20 Oct 2022 13:08:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id oCI0HVxIUWNLOgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 20 Oct 2022 13:08:44 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: amir73il@gmail.com,
+	ltp@lists.linux.it
+Date: Thu, 20 Oct 2022 15:08:42 +0200
+Message-Id: <20221020130843.15147-3-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20221020130843.15147-1-mdoucha@suse.cz>
+References: <20221020130843.15147-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.63]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] syscalls/nice07: new test for nice()
+Subject: [LTP] [PATCH v2 2/3] Add fanotify_get_supported_init_flags() helper
+ function
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -52,99 +79,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Zhao Gongyi via ltp <ltp@lists.linux.it>
-Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Verify that the errno is zero when callling of nice
-legitimately return -1.
+Since FAN_ALL_INIT_FLAGS constant is deprecated, the kernel has added
+new fanotify feature flags and there is no other way to check
+for their support, we need to manually check which init flags needed
+by our tests are available.
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- runtest/syscalls                          |  1 +
- testcases/kernel/syscalls/nice/.gitignore |  1 +
- testcases/kernel/syscalls/nice/nice07.c   | 46 +++++++++++++++++++++++
- 3 files changed, 48 insertions(+)
- create mode 100644 testcases/kernel/syscalls/nice/nice07.c
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 557c946ec..7a425439a 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -903,6 +903,7 @@ nice03 nice03
- nice04 nice04
- nice05 nice05
- nice06 nice06
-+nice07 nice07
+Changes since v1:
+- Fixed check for FAN_REPORT_NAME
+- Added longer patch description
 
- open01 open01
- open01A symlink01 -T open01
-diff --git a/testcases/kernel/syscalls/nice/.gitignore b/testcases/kernel/syscalls/nice/.gitignore
-index c96064cdf..a92595f2a 100644
---- a/testcases/kernel/syscalls/nice/.gitignore
-+++ b/testcases/kernel/syscalls/nice/.gitignore
-@@ -4,3 +4,4 @@
- /nice04
- /nice05
- /nice06
-+/nice07
-diff --git a/testcases/kernel/syscalls/nice/nice07.c b/testcases/kernel/syscalls/nice/nice07.c
-new file mode 100644
-index 000000000..8d098de60
---- /dev/null
-+++ b/testcases/kernel/syscalls/nice/nice07.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+Thanks for pointing out the flag dependency between FAN_REPORT_NAME and
+FAN_REPORT_DIR_FID. I must have misread the documentation on that one.
+Since this appears to be the only flag with a dependency for now, let's
+keep the special handling simple. If the kernel adds more flags that are
+invalid on their own, we should handle that using a table.
+
+These flag support checks will be needed in multiple tests so it's better
+to have one common function that'll do them in one call than to copy-paste
+multiple setup steps from one test to another.
+
+Though it'd be great if kernel itself would provide a syscall that returns
+all supported fanotify init, mark or mask flags in one call.
+
+ testcases/kernel/syscalls/fanotify/fanotify.h | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+index 51078103e..f3ac1630f 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ b/testcases/kernel/syscalls/fanotify/fanotify.h
+@@ -213,6 +213,32 @@ static inline int fanotify_init_flags_supported_by_kernel(unsigned int flags)
+ 	return fanotify_init_flags_supported_on_fs(flags, NULL);
+ }
+ 
 +/*
-+ * Copyright(c) 2022 Huawei Technologies Co., Ltd
-+ * Author: Zhao Gongyi <zhaogongyi@huawei.com>
++ * Check support of given init flags one by one and return those which are
++ * supported.
 + */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that the errno is zero when callling of nice
-+ * legitimately return -1.
-+ */
-+#include <unistd.h>
-+#include "tst_test.h"
-+
-+static void verify_nice(void)
++static inline unsigned int fanotify_get_supported_init_flags(unsigned int flags,
++	const char *fname)
 +{
-+	int orig_nice;
-+	int niceinc;
++	unsigned int flg, arg, ret = 0;
 +
-+	orig_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
-+	niceinc = -1 - orig_nice;
++	for (flg = 1; flg; flg <<= 1) {
++		if (!(flags & flg))
++			continue;
 +
-+	TEST(nice(niceinc));
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL | TTERRNO,
-+				"nice(%d) returned %ld", niceinc, TST_RET);
-+		return;
++		arg = flg;
++
++		// FAN_REPORT_NAME is invalid without FAN_REPORT_DIR_FID
++		if (flg == FAN_REPORT_NAME)
++			arg |= FAN_REPORT_DIR_FID;
++
++		if (!fanotify_init_flags_supported_on_fs(arg, fname))
++			ret |= flg;
 +	}
 +
-+	if (TST_ERR) {
-+		tst_res(TFAIL | TTERRNO, "nice(%d) failed", niceinc);
-+		return;
-+	}
-+
-+	tst_res(TPASS, "nice(%d) passed", niceinc);
-+
-+	TEST(nice(-niceinc));
-+	if (TST_ERR)
-+		tst_brk(TBROK | TTERRNO, "nice(%d) failed", -niceinc);
++	return ret;
 +}
 +
-+static struct tst_test test = {
-+	.test_all = verify_nice,
-+	.needs_root = 1,
-+};
---
-2.17.1
+ typedef void (*tst_res_func_t)(const char *file, const int lineno,
+ 			       int ttype, const char *fmt, ...);
+ 
+-- 
+2.37.3
 
 
 -- 
