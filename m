@@ -4,41 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44ADDC433FE
-	for <ltp@archiver.kernel.org>; Fri, 21 Oct 2022 06:54:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2775C433FE
+	for <ltp@archiver.kernel.org>; Fri, 21 Oct 2022 08:57:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 86A713CB1BD
-	for <ltp@archiver.kernel.org>; Fri, 21 Oct 2022 08:54:19 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 6152F3CB228
+	for <ltp@archiver.kernel.org>; Fri, 21 Oct 2022 10:57:11 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5F06F3C93AA
- for <ltp@lists.linux.it>; Fri, 21 Oct 2022 08:54:08 +0200 (CEST)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id E42AD3C1351
+ for <ltp@lists.linux.it>; Fri, 21 Oct 2022 10:57:00 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4781E1A011DC
- for <ltp@lists.linux.it>; Fri, 21 Oct 2022 08:54:06 +0200 (CEST)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mtw8c3DFNzpVmJ
- for <ltp@lists.linux.it>; Fri, 21 Oct 2022 14:50:40 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.63) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 21 Oct 2022 14:54:00 +0800
-To: <ltp@lists.linux.it>
-Date: Fri, 21 Oct 2022 14:50:32 +0800
-Message-ID: <20221021065032.139738-1-zhaogongyi@huawei.com>
-X-Mailer: git-send-email 2.17.1
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 07F83600F43
+ for <ltp@lists.linux.it>; Fri, 21 Oct 2022 10:56:59 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 78EB71F8B4;
+ Fri, 21 Oct 2022 08:56:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1666342618; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=f8tMuxHSe4d/IHaSSZ9OpJx8uUsBCo4To5EopgEG4Rc=;
+ b=bGPBbvyJH8AwJ1woz5Xin6i+Rlu1CsQ/8FBF2lC7UgAnpQ0Cy0APo4LuDDn1G8Q3y+9YF1
+ mXYYsT5uJaxgGOie6aHWWL8I/LiBDfm2aeJmoLk23LGGdxmg+TgA8M1oXeOcTd3hywXrFc
+ MyqGcXew0+2bytWYZB+Dp9ruyxgI4bA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1666342618;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=f8tMuxHSe4d/IHaSSZ9OpJx8uUsBCo4To5EopgEG4Rc=;
+ b=CNCvjuKNtjBcHEophIj2XEAmZ8OLdG4u45kwbFQbPc1Zr03mXnQUm8BC0HI48GAVMrnYmO
+ 77L1HQYgGEvH6SCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5BFDA1331A;
+ Fri, 21 Oct 2022 08:56:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id VvVLFdpeUmMbZgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 21 Oct 2022 08:56:58 +0000
+Date: Fri, 21 Oct 2022 10:58:39 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Tarun Sahu <tsahu@linux.ibm.com>
+Message-ID: <Y1JfP6TMo2BdMr5Y@yuki>
+References: <20221016125731.249078-1-tsahu@linux.ibm.com>
+ <20221016125731.249078-2-tsahu@linux.ibm.com>
+ <Y00g0NZYO8pVvC6M@yuki>
+ <8ae7d26f5635cc858a657e78b0b806b576a98241.camel@linux.ibm.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.63]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <8ae7d26f5635cc858a657e78b0b806b576a98241.camel@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/fork02: new test for fork()
+Subject: Re: [LTP] [PATCH 01/29] Hugetlb: Migrating libhugetlbfs
+ brk_near_huge
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -50,105 +79,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Zhao Gongyi via ltp <ltp@lists.linux.it>
-Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
+Cc: aneesh.kumar@linux.ibm.com, sbhat@linux.ibm.com, ltp@lists.linux.it,
+ vaibhav@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Verify that current workdir correctly inherited by child.
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- runtest/syscalls                          |  1 +
- testcases/kernel/syscalls/fork/.gitignore |  1 +
- testcases/kernel/syscalls/fork/fork02.c   | 51 +++++++++++++++++++++++
- 3 files changed, 53 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fork/fork02.c
+> -- skip
+> > > +	p = SAFE_MMAP(hugemap_addr, hpage_size, PROT_READ|PROT_WRITE,
+> > > +			MAP_PRIVATE|MAP_FIXED, fd, 0);
+> > > +	if (p != hugemap_addr) {
+> > > +		tst_res(TFAIL, "mmap() at unexpected address %p instead
+> > > of %p\n", p,
+> > > +		     hugemap_addr);
+> > > +		goto fail;
+> > 
+> > Can we just do return here instead. The failure has been reported
+> > there
+> > is no point in calling tst_brk(TBROK, ...) as well.
+> When we run one iteration only, tst_brk does not make sense, I agree.
+> But if we are running more than one iteration (i >= 2), test
+> should not continue to next iteration if the current iteration fails.
+> Only way I could find is to use tst_brk(TBROK,... , as tst_brk(TFAIl...
+> is deprecated.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 7a425439a..39b7f21f6 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -364,6 +364,7 @@ flock06 flock06
- fmtmsg01 fmtmsg01
+I do not see why we should abort on first failure as long as it's not
+unrecoverable error. The TBROK status is only for cases where something
+went really wrong and we cannot continue.
 
- fork01 fork01
-+fork02 fork02
- fork03 fork03
- fork04 fork04
- fork05 fork05
-diff --git a/testcases/kernel/syscalls/fork/.gitignore b/testcases/kernel/syscalls/fork/.gitignore
-index b817e9c05..8a08c586b 100644
---- a/testcases/kernel/syscalls/fork/.gitignore
-+++ b/testcases/kernel/syscalls/fork/.gitignore
-@@ -1,4 +1,5 @@
- /fork01
-+/fork02
- /fork03
- /fork04
- /fork05
-diff --git a/testcases/kernel/syscalls/fork/fork02.c b/testcases/kernel/syscalls/fork/fork02.c
-new file mode 100644
-index 000000000..54ad50712
---- /dev/null
-+++ b/testcases/kernel/syscalls/fork/fork02.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright(c) 2022 Huawei Technologies Co., Ltd
-+ * Author: Zhao Gongyi <zhaogongyi@huawei.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that current workdir correctly inherited by child.
-+ */
-+
-+#include "tst_test.h"
-+
-+#define NEW_DIR "new_dir"
-+
-+static char parent_cwd[PATH_MAX];
-+static char child_cwd[PATH_MAX];
-+
-+static void run(void)
-+{
-+	pid_t pid = SAFE_FORK();
-+
-+	if (!pid) {
-+		SAFE_GETCWD(child_cwd, sizeof(child_cwd));
-+		if (strcmp(child_cwd, parent_cwd)) {
-+			tst_res(TFAIL, "checking of cwd failed: "
-+					"child_cwd %s parent_cwd %s ",
-+					child_cwd, parent_cwd);
-+		} else
-+			tst_res(TPASS, "Checking of cwd passed");
-+		return;
-+	}
-+
-+	SAFE_WAITPID(pid, NULL, 0);
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_MKDIR(NEW_DIR, 00770);
-+	SAFE_CHDIR(NEW_DIR);
-+	SAFE_GETCWD(parent_cwd, sizeof(parent_cwd));
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+};
-+
---
-2.17.1
+> > > +static void cleanup(void)
+> > > +{
+> > > +	if (fd >= 0)
+> > > +		SAFE_CLOSE(fd);
+> > > +	umount2(Hopt, MNT_DETACH);
+> > 
+> > We whould umount here only if we actually have mounted something.
+> umount only, will require explicit unmap when test fails or break.
+> For
+> that, all the local variable for address mapping will have to be
+> static defined so that they can be accessed in cleanup() function.
+> 
+> I tried to avoid it by using umount2 which eventually umount when
+> process unmaps all the mappings after it finishes.
 
+That's not what I meant, as long as you pass Hopt on a commandline
+the test shoud not attempt to umount it at all.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
