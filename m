@@ -4,62 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 249DCC3A59D
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 07:06:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0892FC3A59D
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 07:16:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DA1F43C3099
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 09:06:49 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id A47A63C922F
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 09:16:37 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 24E333C0367
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 09:06:37 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CE2203C04D1
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 09:16:26 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D235A600749
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 09:06:36 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 8A17E1F88B;
- Mon, 24 Oct 2022 07:06:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666595195;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EF1AD1000676
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 09:16:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1666595783;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=0UXyF9DX7UwlYJvwSUhH/5L4j0PoO0YkSoqwFRpKZWA=;
- b=BpLOXy01oedbDN+83i5yD/KgMulflakUwhouc/YWz2oY4OgnrBp4oIR/aMQgnVxLewqcxs
- oTPZT69WSK9cIYBQClbuXuKTH7OtuJicMFyQKB6YuMcZgAtVkOnlg0bUNTQlRTKz9myR8F
- 8T7aULtBS82ckaygDUcVBQCBmUMzfkk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666595195;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0UXyF9DX7UwlYJvwSUhH/5L4j0PoO0YkSoqwFRpKZWA=;
- b=e/sfAiLdhVt7Ult6lz6Zg+/AeGPUd2H/1d2c2bPtbogsY1ZzPf+Yn+WUTszG2jk20tSkYY
- TQNJ4JTESAXPLmBg==
-Received: from g78 (unknown [10.100.228.202])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 10D172C141;
- Mon, 24 Oct 2022 07:06:34 +0000 (UTC)
-References: <20221009085745.3239893-1-liwang@redhat.com>
- <20221024024009.3553633-1-liwang@redhat.com>
- <20221024024009.3553633-2-liwang@redhat.com>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Li Wang <liwang@redhat.com>
-Date: Mon, 24 Oct 2022 07:58:44 +0100
-In-reply-to: <20221024024009.3553633-2-liwang@redhat.com>
-Message-ID: <87edux1z0l.fsf@suse.de>
+ bh=0/40Laem9BoF0jlWINqfUeVO09P/GkhooXVR255aNMc=;
+ b=bx4oj80vOV31Qv6gGFJ3HJvcg9hma+KGs0MPN2IHuif3HF6v1lK4iaHx6mREXJDqW0/Kj6
+ JNqo9Gki+4use4l03DJ9Dukay9DAeUXKrNUGetXuKTPh3NST4Wz2guOUwQzqAqWqS0qvzp
+ CylUB3RKbC0sJXmycFDs1Ro4N2BplTw=
+Received: from mail-vk1-f198.google.com (mail-vk1-f198.google.com
+ [209.85.221.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-562-Q9hut7VhMCmykUIki82bjw-1; Mon, 24 Oct 2022 03:16:21 -0400
+X-MC-Unique: Q9hut7VhMCmykUIki82bjw-1
+Received: by mail-vk1-f198.google.com with SMTP id
+ t77-20020a1faa50000000b003b77493b034so60330vke.5
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 00:16:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=0/40Laem9BoF0jlWINqfUeVO09P/GkhooXVR255aNMc=;
+ b=BUskt6Bjqbk02uOVGuymFbiyTybGQbd7BxFi9qYBRpcbpTMrzq22DYt9UgPtDqksbd
+ lI6FmPzgsHZJB6tqcPjRnUoPSEr4nbUJcLn2u6ndhX9FMdPwkEX/yEiqJcHZquyTnD24
+ pyc2RWnCp5tP/QTBNZLR+f43Os11aaYSZeKaAfQM4STrMfLW2d8ftJfzdVSzFOEC9mFg
+ BnOgpYrErUjzKT3jzB4m+pXuWKcTFJbRZdikSs6fMSGDlr0cpUkEnrmaW2F9k6MXMde4
+ MlrdRaYJhiYH7W7UdJyI/6nhLFTqyrLnMBmiqDwx3FTbmwKnGYSaVN80hiDfd0z0Y/fy
+ NAXA==
+X-Gm-Message-State: ACrzQf2roqB2JVECbjNJr+Q/HXI2j4KxIE2LHqmOeY+iqJ4pNqPYjnj1
+ xjQvLAgZm/VBFH/A0EvjYMkazUIX7UzKw3fRJthu0zu4LrmuwWcIUzfxK7XUwAmmhEyOo2OPTJh
+ IXxkttyPGURxO+l+hOdbYuFrZ8r0=
+X-Received: by 2002:a1f:9f16:0:b0:3af:1cc7:5096 with SMTP id
+ i22-20020a1f9f16000000b003af1cc75096mr17768536vke.8.1666595781240; 
+ Mon, 24 Oct 2022 00:16:21 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4CLxGqpu3obhc2ZObvgjQX1uOaGhGQFR/emKbGIBeCOipBhIFtVvTmxxB/I+CubNtZ6DXtw05UtXmOZCwWiEs=
+X-Received: by 2002:a1f:9f16:0:b0:3af:1cc7:5096 with SMTP id
+ i22-20020a1f9f16000000b003af1cc75096mr17768527vke.8.1666595780877; Mon, 24
+ Oct 2022 00:16:20 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20221021155740.8339-1-mdoucha@suse.cz> <Y1MCbP1yjLOuoPLb@pevik>
+In-Reply-To: <Y1MCbP1yjLOuoPLb@pevik>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 24 Oct 2022 09:16:03 +0200
+Message-ID: <CAASaF6ySEcVE=b-7nGy+FeLyg_6dNMjL6J_bivjZ6JYzSx5b=w@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/2] setitimer01: rewrite using new API
+Subject: Re: [LTP] [PATCH] save_restore: Check whether path is writable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,215 +85,151 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+On Fri, Oct 21, 2022 at 10:35 PM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi Martin,
+>
+> [ Cc Jan, who implemented the original behavior ]
+>
+> > Tests using the .save_restore functionality currently cannot run
+> > without root privileges at all because the test will write
+> > into the path at least at the end and trigger error, even when
+> > the config paths are flagged as optional.
 
-Li Wang <liwang@redhat.com> writes:
+Problem description makes it sound like this issue affects all 3 types
+of config options. Isn't the problem affecting only optional config paths?
 
->  
-> -#include "test.h"
-> -
->  #include <errno.h>
->  #include <sys/time.h>
-> +#include <stdlib.h>
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +
-> +#define USEC1	10000
-> +#define USEC2	20000
-> +
-> +static struct itimerval *value, *ovalue;
-> +
-> +static struct tcase {
-> +	int which;
-> +	char *des;
-> +	int signo;
-> +} tcases[] = {
-> +	{ITIMER_REAL,    "ITIMER_REAL",    SIGALRM},
-> +	{ITIMER_VIRTUAL, "ITIMER_VIRTUAL", SIGVTALRM},
-> +	{ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
-> +};
-> +
-> +static int sys_setitimer(int which, void *new_value, void *old_value)
-> +{
-> +	return tst_syscall(__NR_setitimer, which, new_value, old_value);
-> +}
-> +
-> +static void set_setitimer_value(int usec, int o_usec)
-> +{
-> +	value->it_value.tv_sec = 0;
-> +	value->it_value.tv_usec = usec;
-> +	value->it_interval.tv_sec = 0;
-> +	value->it_interval.tv_usec = 0;
-> +
-> +	ovalue->it_value.tv_sec = o_usec;
-> +	ovalue->it_value.tv_usec = o_usec;
-> +	ovalue->it_interval.tv_sec = 0;
-> +	ovalue->it_interval.tv_usec = 0;
-> +}
->  
-> -void cleanup(void);
-> -void setup(void);
-> +static void verify_setitimer(unsigned int i)
-> +{
-> +	pid_t pid;
-> +	int status;
-> +	struct tcase *tc = &tcases[i];
->  
-> -char *TCID = "setitimer01";
-> -int TST_TOTAL = 1;
-> +	pid = SAFE_FORK();
->  
-> -#define SEC0	0
-> -#define SEC1	20
-> -#define SEC2	40
-> +	if (pid == 0) {
-> +		tst_res(TINFO, "tc->which = %s", tc->des);
->  
-> -int main(int ac, char **av)
-> -{
-> -	int lc;
-> -	struct itimerval *value, *ovalue;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();		/* global setup */
-> -
-> -	/* The following loop checks looping state if -i option given */
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		/* reset tst_count in case we are looping */
-> -		tst_count = 0;
-> -
-> -		/* allocate some space for the timer structures */
-> -
-> -		if ((value = malloc((size_t)sizeof(struct itimerval))) ==
-> -		    NULL) {
-> -			tst_brkm(TBROK, cleanup, "value malloc failed");
-> -		}
-> -
-> -		if ((ovalue = malloc((size_t)sizeof(struct itimerval))) ==
-> -		    NULL) {
-> -			tst_brkm(TBROK, cleanup, "ovalue malloc failed");
-> -		}
-> -
-> -		/* set up some reasonable values */
-> -
-> -		value->it_value.tv_sec = SEC1;
-> -		value->it_value.tv_usec = SEC0;
-> -		value->it_interval.tv_sec = 0;
-> -		value->it_interval.tv_usec = 0;
-> -		/*
-> -		 * issue the system call with the TEST() macro
-> -		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
-> -		 */
-> -
-> -		TEST(setitimer(ITIMER_REAL, value, ovalue));
-> -
-> -		if (TEST_RETURN != 0) {
-> -			tst_resm(TFAIL, "call failed - errno = %d - %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -			continue;
-> -		}
-> -
-> -		/*
-> -		 * call setitimer again with new values.
-> -		 * the old values should be stored in ovalue
-> -		 */
-> -		value->it_value.tv_sec = SEC2;
-> -		value->it_value.tv_usec = SEC0;
-> -
-> -		if ((setitimer(ITIMER_REAL, value, ovalue)) == -1) {
-> -			tst_brkm(TBROK, cleanup, "second setitimer "
-> -				 "call failed");
-> -		}
-> -
-> -		if (ovalue->it_value.tv_sec <= SEC1) {
-> -			tst_resm(TPASS, "functionality is correct");
-> -		} else {
-> -			tst_brkm(TFAIL, cleanup, "old timer value is "
-> -				 "not equal to expected value");
-> -		}
-> -	}
-> +		tst_no_corefile(0);
->  
-> -	cleanup();
-> -	tst_exit();
-> -}
-> +		set_setitimer_value(USEC1, 0);
-> +		TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
->  
-> -/*
-> - * setup() - performs all the ONE TIME setup for this test.
-> - */
-> -void setup(void)
-> -{
-> +		set_setitimer_value(USEC2, USEC2);
-> +		TST_EXP_PASS(sys_setitimer(tc->which, value, ovalue));
->  
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +		if (ovalue->it_value.tv_sec != 0 || ovalue->it_value.tv_usec >= USEC2)
-> +			tst_brk(TFAIL, "old timer value is not within
-> the expected range");
+Having entry with "(no prefix)" or "!" in save_restore implies that
+test wants to write to that path - if we TCONF on root privileges or
+read/write access probably doesn't make much difference - we can't
+continue.
 
-Maybe we could split testing the return value and ovalue from testing
-the signal is delivered?
+For "?" prefix, I agree that since its optional, test should be able
+to run cleanly without root privileges.
 
-When testing the return value and ovalue; a very long timeout can be
-used (which is never hit). When testing the signal a very short one can
-be used.
+> Check whether .save_restore
+> > paths are writable and handle negative result the same way as if
+> > the path does not exist.
 
-This way, the test is not racing with the signal and the loop below
-won't be executed much.
+Do you mean for "?" prefix only?
 
-In any case LGTM
+>
+> > Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> > ---
+>
+> > This is the first part of sysfile handling fixes to allow running some
+> > tests without root privileges again. I think this is a good enough solution
+> > for the save_restore part but we should discuss a few open questions first:
+>
+> > 1) Is it OK to fail early during sysfile save when the test would otherwise
+> >    run fine but throw TWARN at the end because the sysfile is read-only?
+> I don't think that would be a good change.
 
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+For optional path, if test can't read/write it (b/o of no root privileges),
+I think library shouldn't try to save it - then that would also skip
+attempt to restore it.
 
->  
-> -	TEST_PAUSE;
-> -}
-> +		for (;;)
-> +			;
-> +	}
->  
-> -/*
-> - * cleanup() - performs all the ONE TIME cleanup for this test at completion
-> - * 	       or premature exit.
-> - */
-> -void cleanup(void)
-> -{
-> +	SAFE_WAITPID(pid, &status, 0);
->  
-> +	if (WIFSIGNALED(status) && WTERMSIG(status) == tc->signo)
-> +		tst_res(TPASS, "Child received signal: %s", tst_strsig(tc->signo));
-> +	else
-> +		tst_res(TFAIL, "Child: %s", tst_strstatus(status));
->  }
-> +
-> +static struct tst_test test = {
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.forks_child = 1,
-> +	.test = verify_setitimer,
-> +	.bufs = (struct tst_buffers[]) {
-> +		{&value,  .size = sizeof(struct itimerval)},
-> +		{&ovalue, .size = sizeof(struct itimerval)},
-> +		{}
-> +	}
-> +};
-> -- 
-> 2.35.3
+>
+> > 2) Should the '?' flag skip read-only files as if they don't exist?
+I think yes. If we can't restore those files, that means test shouldn't
+be able to change those and we don't need to worry about saving them.
 
+> >    Alternatively, we could still let the '?' flag fail trying to write
+> >    into read-only sysfiles and instead introduce a new flag for cases where
+> >    read-only file should be skipped.
+> Looking at files which use '?', some of them (mostly network related, I guess
+> written/rewritten by Martin) use SAFE_TRY_FILE_PRINTF() on
+> /proc/sys/user/max_user_namespaces. It looks to me these need to to skip
+> read-only files, i.e. define new flag with this behavior.
+>
+>
+> Kind regards,
+> Petr
+>
+> >  doc/c-test-api.txt | 11 +++++------
+> >  lib/tst_sys_conf.c | 32 ++++++++++++++++++++++----------
+> >  2 files changed, 27 insertions(+), 16 deletions(-)
+>
+> > diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+> > index 64ee3397f..0f36b5a67 100644
+> > --- a/doc/c-test-api.txt
+> > +++ b/doc/c-test-api.txt
+> > @@ -1601,13 +1601,12 @@ If non-NULL value is passed it is written to the respective file at
+> >  the beginning of the test. Only the first line of a specified file
+> >  is saved and restored.
+>
+> > -Pathnames can be optionally prefixed to specify how strictly (during
+> > -'store') are handled errors:
+> > +Pathnames can be optionally prefixed to specify how to handle missing or
+> > +read-only files:
+>
+> > -* (no prefix) - test ends with 'TCONF', if file doesn't exist
+> > -* '?'         - test prints info message and continues,
+> > -                if file doesn't exist or open/read fails
+> > -* '!'         - test ends with 'TBROK', if file doesn't exist
+> > +* (no prefix) - test ends with 'TCONF'
+> > +* '?'         - test prints info message and continues, even on read error
+> > +* '!'         - test ends with 'TBROK'
+>
+> >  'restore' is always strict and will TWARN if it encounters any error.
+>
+> > diff --git a/lib/tst_sys_conf.c b/lib/tst_sys_conf.c
+> > index 003698825..1e381a249 100644
+> > --- a/lib/tst_sys_conf.c
+> > +++ b/lib/tst_sys_conf.c
+> > @@ -20,6 +20,22 @@ struct tst_sys_conf {
+>
+> >  static struct tst_sys_conf *save_restore_data;
+>
+> > +static void print_access_error(char flag, const char *err, const char *path)
+> > +{
+> > +     switch (flag) {
+> > +     case '?':
+> > +             tst_res(TINFO, "%s: '%s'", err, path);
+> > +             break;
+> > +
+> > +     case '!':
+> > +             tst_brk(TBROK|TERRNO, "%s: '%s'", err, path);
+> > +             break;
+> > +
+> > +     default:
+> > +             tst_brk(TCONF|TERRNO, "%s: '%s'", err, path);
+> > +     }
+> > +}
+> > +
+> >  void tst_sys_conf_dump(void)
+> >  {
+> >       struct tst_sys_conf *i;
+> > @@ -59,16 +75,12 @@ int tst_sys_conf_save(const char *path)
+> >               path++;
+>
+> >       if (access(path, F_OK) != 0) {
+> > -             switch (flag) {
+> > -             case '?':
+> > -                     tst_res(TINFO, "Path not found: '%s'", path);
+> > -                     break;
+> > -             case '!':
+> > -                     tst_brk(TBROK|TERRNO, "Path not found: '%s'", path);
+> > -                     break;
+> > -             default:
+> > -                     tst_brk(TCONF|TERRNO, "Path not found: '%s'", path);
+> > -             }
+> > +             print_access_error(flag, "Path not found", path);
+> > +             return 1;
+> > +     }
+> > +
+> > +     if (access(path, W_OK) != 0) {
+> > +             print_access_error(flag, "Path is not writable", path);
+> >               return 1;
+> >       }
+>
 
--- 
-Thank you,
-Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
