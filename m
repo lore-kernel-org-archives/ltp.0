@@ -4,55 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC902C38A2D
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 16:18:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A55E5ECAAA1
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 16:31:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 381EE3C9882
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 18:18:43 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 73DFA3CA15C
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 18:31:17 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5C6463C8F82
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 18:18:33 +0200 (CEST)
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com
- [IPv6:2607:f8b0:4864:20::e2f])
+ by picard.linux.it (Postfix) with ESMTPS id 9A7033C4D7B
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 18:31:07 +0200 (CEST)
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com
+ [IPv6:2607:f8b0:4864:20::e33])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9651F1400986
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 18:18:32 +0200 (CEST)
-Received: by mail-vs1-xe2f.google.com with SMTP id d187so8364836vsd.6
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 09:18:32 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 257B2140098D
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 18:31:07 +0200 (CEST)
+Received: by mail-vs1-xe33.google.com with SMTP id q127so3520726vsa.7
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 09:31:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=34TUr32o/rOxqqT0t8ohaTBkyr/4yOnoxp6YIqrPceA=;
- b=ib92OkzJ2ctfnaOXKBCzS9tWyMzmgjcY1mqVb6xcB1jsym4jgtjGOfxQz+qfWQJvDv
- lhyLS6z4ggS8rJxb+D56Wy3/UWoqXBuloXDX2rZc+83VCP/Mxw2SjhiF+jsFJDAE1QRP
- kxT26yjiFXByEsxI4L4b1T4filZZi+UYQ/xoaZXyVmuT2PNUFUnVCec3UoWLclOCs/gr
- CK/DB6h2M+SMohkYcOuxSb8orrzhsuyFJFX1QexgCX2ZEhSpHQd7yWtRtYAaO2KCW1F0
- 81XV0nvWcaZis6UbpJb7T5zrYbSP7wiY5miPREb/24duxbDQj37sK5DEM3sqXi5Ry79R
- 07Pg==
+ bh=kNuBpC5OQJn05F5D1MBTU0zkGVwj91545QeBDqWnUuQ=;
+ b=NnKAXq/guC8bUVWCpiWAjQYzAFs32lCQpG/jE/CePUa7SpQV8SKanhOhpu/qMcykqE
+ PLH6l0NAn/2woSBm+/EFv44cZqZdA3+un3GeLa94sUDBtum4G4QlDcDRA0NkzdCraFMN
+ qB3bA1FprxRi0hDCahbwupLLKepJR9psx7986RX9+NWI5uFYyPc0DcUIFmU4uRl43SUk
+ fZRB8zaDz4Bmcrrk8qRvHDT54nwChSVL190m9XC/T244JTOTY0PIXquHKkykzQvLnahA
+ m5DJWmPiAmgNC+uHn6rcH9HXltOIpOutHYMdhoR1ShMPAFRr+ludkJR5g4vtpDGPKpTJ
+ Vagw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=34TUr32o/rOxqqT0t8ohaTBkyr/4yOnoxp6YIqrPceA=;
- b=HnBTkDu92vgxyN2JUfdzmflsYBnsVCFIeUhlaHjOff3ZF+KMMes+xWxPeuUq454egi
- td0wAgdUNp91qk3bKSsbkkMTBL+7c7IGqIgHopSnKt1dhbdAysMK00yweYCI6sibhGue
- Bw9CZil3Io/d1fxWsn+16ykVnf+/lni1lM+MmOgF06JCJVP2h9HtQ6//aYTXlXpxp68X
- CXCE6tptxP3Z7lulLa1z/WreoUaN8WNFU4pPcE+q9ER9CdCvHxZO5r9oIU2tbRG5EjO9
- QZb4kQy3d87F0xc4JxfCx5cTXk6xtYeTuhIs3tlRz0BIZlHeV6RpuZzhMH+L5P0KDm60
- f5zQ==
-X-Gm-Message-State: ACrzQf0d9MTf3mCvdnRUIpFTtEShBZc6iNAKXEv8Kv+mxi7vnfh6/U7i
- wbEQbtUcXS3W5qQbxo0L60JJxKjuGCEOO4p/60Y=
-X-Google-Smtp-Source: AMsMyM5sjeI4uc0xypnE/SI+z5WvSEj/d6+iu5LNLuZQY4Qq6duXnxopvVpDcPAQDjRLER/KLNwIeTB4Xe9K47lBSRQ=
-X-Received: by 2002:a67:c099:0:b0:39b:342:3c0d with SMTP id
- x25-20020a67c099000000b0039b03423c0dmr19903169vsi.3.1666628309120; Mon, 24
- Oct 2022 09:18:29 -0700 (PDT)
+ bh=kNuBpC5OQJn05F5D1MBTU0zkGVwj91545QeBDqWnUuQ=;
+ b=Ekg/qPDl5bL0+JHGRknJhmcFNl9TgkFRbMGn98HjfuO96nuUorfW6vfj8crc/ZNNRe
+ HHmvfCRaoZoXvhdiKiAlxUSgSnAgvH+pXARvuMBebMmU5nBol5q+WPf+9YZkuyv10QVb
+ t9mNoOdTX8RmPNBYc13x/dlJE6SZKctTk9zvVbZ6SN4kXxGOwTalR9BWRTmK9Bf6kyNS
+ J3wEwwIbKnsYb6Dz4wV7p8p9L0w7xmeWHWcHJkqKVaYQkn8wXVuR+PhN8M8nXiS+C0/b
+ dZsGMfrKH2uuKOFtYlO5uzeQy9eA/CLbi+akT9EHDlCebTvvhLnXestROcYLn3ZbI/SR
+ cvwA==
+X-Gm-Message-State: ACrzQf1h8eufnfVnDRG79bnU98gu03c7W88pQfclhC6vqljk3Dx70LNK
+ 2PqbhQWMYRZ9nzKitcXwV/4Z9ThaYtjTvLtmM/s=
+X-Google-Smtp-Source: AMsMyM7Re37dXC3/AtuGjkD0mkW5PgnICG4ceKRdIOV0sm2oE+Bu9rzaJATbDoToy99XNUj6bqNaEj7KKq21YCl4JT0=
+X-Received: by 2002:a05:6102:3754:b0:3a7:92f9:a9b1 with SMTP id
+ u20-20020a056102375400b003a792f9a9b1mr17702182vst.72.1666629065882; Mon, 24
+ Oct 2022 09:31:05 -0700 (PDT)
 MIME-Version: 1.0
 References: <20221020130843.15147-1-mdoucha@suse.cz>
  <20221020130843.15147-3-mdoucha@suse.cz>
@@ -63,12 +62,12 @@ References: <20221020130843.15147-1-mdoucha@suse.cz>
  <CAOQ4uxizXrthqR7G8Tx7kq+bz6kPTUxTSYs1BfireEXRpiNw4w@mail.gmail.com>
  <ea4fd7d6-0985-2983-d0ce-489a32a2f6dc@suse.cz>
  <CAOQ4uxib_vxncQa3RiObKYwQg0CQvPXLH+nyRckO9FVg=ihERQ@mail.gmail.com>
- <d80e2e12-899d-f0d2-27c2-f4a92f1b2be4@suse.cz>
-In-Reply-To: <d80e2e12-899d-f0d2-27c2-f4a92f1b2be4@suse.cz>
+ <d80e2e12-899d-f0d2-27c2-f4a92f1b2be4@suse.cz> <Y1a6NXkayyy7esM+@pevik>
+In-Reply-To: <Y1a6NXkayyy7esM+@pevik>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Mon, 24 Oct 2022 19:18:17 +0300
-Message-ID: <CAOQ4uxgUXZS4D1VDToGLqXV2nDuPFqUHWqwoY8V=u=iUcQFruw@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
+Date: Mon, 24 Oct 2022 19:30:54 +0300
+Message-ID: <CAOQ4uxjGGxaa=snebi0wPnPWuFHgQ-9Mt9hPBr3wBAghGQQEJA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 2/3] Add fanotify_get_supported_init_flags()
@@ -84,51 +83,65 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, LTP List <ltp@lists.linux.it>,
- Matthew Bobrowski <repnop@google.com>
+Cc: Jan Kara <jack@suse.cz>, LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Oct 24, 2022 at 5:58 PM Martin Doucha <mdoucha@suse.cz> wrote:
+On Mon, Oct 24, 2022 at 7:15 PM Petr Vorel <pvorel@suse.cz> wrote:
 >
-> On 24. 10. 22 16:34, Amir Goldstein wrote:
-> > This is how I would fix the problem:
-> >
-> > <snip>
-> >
-> > Give or take using more macros and your nicer flag prints.
-> > There is no need for auto-detection of the unsupported kernel flags.
-> >
-> > If the test case is expected to get to fanotify_mark() (i.e. non-zero tc->mask)
-> > EINVAL from fanotify_init() always means "unsupported".
+> Hi all,
 >
-> This would be a good approach if fanotify_init() returned distinct error
-> code for "flag not implemented", like ENOTSUP. But when EINVAL is
-> returned for both "not implemented" and "wrong use", this has a risk of
-> hiding real bugs.
+> > On 24. 10. 22 16:34, Amir Goldstein wrote:
+> > > This is how I would fix the problem:
+>
+> > > <snip>
+>
+> > > Give or take using more macros and your nicer flag prints.
+> > > There is no need for auto-detection of the unsupported kernel flags.
+>
+> > > If the test case is expected to get to fanotify_mark() (i.e. non-zero tc->mask)
+> > > EINVAL from fanotify_init() always means "unsupported".
+>
+> > This would be a good approach if fanotify_init() returned distinct error
+> > code for "flag not implemented", like ENOTSUP. But when EINVAL is returned
+> > for both "not implemented" and "wrong use", this has a risk of hiding real
+> > bugs. That's why I'm trying to detect the actual set of flags implemented in
+> > the running kernel before running the real tests.
+> Indeed, that's quite surprising (not really, it was added in 2.6.36 and remember
+> Jan Kara's talk about dnotify/inotify/fanotify history). I wonder if it's
+> possible to fix (backward compatibility would suffer).
+>
 
-Show me how this could hide a real bug.
-Give an example.
-It does not need to be a specific kernel
-use an example with imaginary kernel with a backported feature if you like.
+The kernel UAPI is not very consistent about ENOTSUP vs. EINVAL
+renameat(2), unlink(2), link(2) and other return EINVAL for unsupported flags
+fallocate(2), ioctl(2) and others return ENOTSUP for unsupported commands.
+It's not a clear cut, but ENOTSUP is generally for unsupported fs methods,
+not for unsupported options.
 
-fanotify14 is not about making sure that flag combinations are allowed
-it is about making sure that flag combinations are not allowed.
+> > And since some flags may be backported to older kernels, generating feature
+> > sets based on kernel version is not a solution.
+> I guess even some not-important fix was not backported. I guess features aren't
+> backported to the stable kernel maybe to enterprise kernels (SLES, RHEL), but
+> even there I'd guess there are related patches backported, not features. But
+> maybe I'm wrong. Jan and Amir?
+>
 
-If the test case is testing illegal init flags, the outcome must be
-fanotify_init
-EINVAL.
+I am fine with writing tests that are friendly to distros that want to backport
+features, that is not what my complaint is about.
+As I wrote to Martin, I will accept any imaginary kernel as an example
+for why the test is wrong for that kernel, but I don't see the bug.
 
-If the test case is testing illegal mark flags, the outcome of fanotify_init
-may be EINVAL meaning that this test case will be skipped.
-It does not matter which specific init flag or init flag combination
-causes this EINVAL.
+The desire to distinguish between "this kernel should support
+these init flags but failed" and "this kernel does not support those init flags"
+is not realistic, given that fanotify_init() return codes do not
+distinguish between those two cases.
 
-I am ready to be proven wrong, but with examples,
-like the one you provided with test case #8 and kernel 5.3.
-hand waving and talking about vague "real bugs" won't convince me.
+The suggested logic to work this out by testing flag by flags is faulty
+because of current and future flag dependencies.
+
+So show me a real bug, as Martin did, and we will fix it.
 
 Thanks,
 Amir.
