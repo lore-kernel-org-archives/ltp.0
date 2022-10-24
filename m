@@ -4,75 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7426FC38A2D
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 09:03:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7346CFA373E
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 09:30:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF7FA3C945D
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 11:03:30 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 7FADA3C95F4
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 11:30:00 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA7CB3C0727
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 11:03:21 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id AF28A3C0727
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 11:29:49 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4B489600681
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 11:03:20 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6AE101FA95;
- Mon, 24 Oct 2022 09:03:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1666602200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LKD7W8xMrOcd6/zLL+2D/+bowipK3eXNCC/TH/XNNG0=;
- b=NSyEEVZ4R4MxKNzNNxLXAk60Gl+tA9WYDbpbVA36ZoV/9Nfa7Prk63RQUJHly+Dp6OkfDj
- BGY8ZLFCRIzHPrp2NdFWgBzNs0o6kbW1TTbdqwPAEcUXiKKuoHoQCDuVXfLgLGAVmYchB/
- JopQnhSwL6t36IxlYpqqNB90IcYPKs8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1666602200;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=LKD7W8xMrOcd6/zLL+2D/+bowipK3eXNCC/TH/XNNG0=;
- b=KDAxUNTKKz7EIAwEkep0STqIwDltY1SgMy/6yA8bGY39dpVEFfTeLTLwi1RyV0FIfuG6zj
- teDllTdDTWemtOCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 54D1313357;
- Mon, 24 Oct 2022 09:03:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id reTHE9hUVmN/YgAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Mon, 24 Oct 2022 09:03:20 +0000
-Message-ID: <9b1164dd-68fa-0335-0b38-f820e3d303be@suse.cz>
-Date: Mon, 24 Oct 2022 11:03:20 +0200
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 19B501A00215
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 11:29:46 +0200 (CEST)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MwqRF41bszVj0K
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 17:24:57 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (7.192.104.229) by
+ canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 24 Oct 2022 17:29:41 +0800
+Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
+ canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
+ Mon, 24 Oct 2022 17:29:41 +0800
+To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>
+Thread-Topic: [LTP] [PATCH v4 1/4] syscalls/madvise04: new test for
+ madvise(MADV_DONTNEED)
+Thread-Index: AdjnifRFpmmPpHyTQcGSN5UckkMwQg==
+Date: Mon, 24 Oct 2022 09:29:41 +0000
+Message-ID: <1a91d01c73444fdc94af4b04c12739ee@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.110.209]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-To: Amir Goldstein <amir73il@gmail.com>
-References: <20221020130843.15147-1-mdoucha@suse.cz>
- <20221020130843.15147-3-mdoucha@suse.cz>
- <CAOQ4uxi=3aS+ROZ_kcQbVK9C4qiW76M1junEz2J+fdai5xjnAQ@mail.gmail.com>
- <b3443f46-37fc-3c15-76d6-0985e6da0535@suse.cz>
- <CAOQ4uxianp4e7gykk_N-yPKPPsK4xYu2HnH5d=N93+gAM60c=Q@mail.gmail.com>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <CAOQ4uxianp4e7gykk_N-yPKPPsK4xYu2HnH5d=N93+gAM60c=Q@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] Add fanotify_get_supported_init_flags()
- helper function
+Subject: Re: [LTP] [PATCH v4 1/4] syscalls/madvise04: new test for
+ madvise(MADV_DONTNEED)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,50 +58,147 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+From: zhaogongyi via ltp <ltp@lists.linux.it>
+Reply-To: zhaogongyi <zhaogongyi@huawei.com>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 21. 10. 22 21:03, Amir Goldstein wrote:
-> I don't have a vision of what you are proposing.
-> Make a proposal and I will see if it is correct.
+Hi,
+
 > 
-> I must say I don't understand what it is that you are trying to improve.
-> All the test needs to know is if the specific combinations of flags that
-> the test uses are supported by the kernel/fs.
+> Hello,
 > 
-> Trying to figure out which of the bits from a specific combination is
-> not supported? how does that help users?
-> Maybe in kernel 5.10 flag X is supported and in kernel 5.11 flag
-> Y is also supported, but only in kernel 5.12 the combination X | Y
-> is supported? Do you see why your generic function doesn't make
-> much sense? or is just too complex to be worth the trouble
-> for an informational print?
+> Zhao Gongyi via ltp <ltp@lists.linux.it> writes:
+> 
+> > Check that madvise(2) MADV_DONTNEED operation applied to Huge TLB
+> > pages successfully after kernel version 5.18, and will result in
+> > zero-fill-on-demand pages for anonymous private mappings.
+> >
+> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+> > ---
+> >  runtest/syscalls                              |  1 +
+> >  testcases/kernel/syscalls/madvise/.gitignore  |  1 +
+> > testcases/kernel/syscalls/madvise/madvise04.c | 62
+> +++++++++++++++++++
+> >  3 files changed, 64 insertions(+)
+> >  create mode 100644 testcases/kernel/syscalls/madvise/madvise04.c
+> >
+> > diff --git a/runtest/syscalls b/runtest/syscalls index
+> > c81764df4..eb1910cec 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -941,6 +941,7 @@ mincore04 mincore04
+> >  madvise01 madvise01
+> >  madvise02 madvise02
+> >  madvise03 madvise03
+> > +madvise04 madvise04
+> >  madvise05 madvise05
+> >  madvise06 madvise06
+> >  madvise07 madvise07
+> > diff --git a/testcases/kernel/syscalls/madvise/.gitignore
+> > b/testcases/kernel/syscalls/madvise/.gitignore
+> > index f4bfdfefe..db8ce47c1 100644
+> > --- a/testcases/kernel/syscalls/madvise/.gitignore
+> > +++ b/testcases/kernel/syscalls/madvise/.gitignore
+> > @@ -1,6 +1,7 @@
+> >  /madvise01
+> >  /madvise02
+> >  /madvise03
+> > +/madvise04
+> >  /madvise05
+> >  /madvise06
+> >  /madvise07
+> > diff --git a/testcases/kernel/syscalls/madvise/madvise04.c
+> > b/testcases/kernel/syscalls/madvise/madvise04.c
+> > new file mode 100644
+> > index 000000000..a970fb33e
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/madvise/madvise04.c
+> > @@ -0,0 +1,62 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+> > + * Author: Zhao Gongyi <zhaogongyi@huawei.com>  */
+> > +
+> > +/*\
+> > + * [Description]
+> > + *
+> > + * Check that madvise(2) MADV_DONTNEED operation applied to Huge
+> TLB
+> > +pages
+> > + * successfully after kernel version 5.18, and will result in
+> > + * zero-fill-on-demand pages for anonymous private mappings.
+> > + */
+> > +
+> > +#include "tst_test.h"
+> > +
+> > +#define MAP_SIZE (8 * 1024)
+> > +
+> > +static char *addr;
+> > +static int mapsz;
+> > +
+> > +static void run(void)
+> > +{
+> > +	TST_EXP_PASS(madvise(addr, mapsz, MADV_DONTNEED));
+> > +	for (int i = 0; i < mapsz; i++) {
+> > +		if (addr[i]) {
+> > +			tst_res(TFAIL,
+> > +				"There are no zero-fill-on-demand pages "
+> > +				"for anonymous private mappings");
+> > +			return;
+> > +		}
+> > +	}
+> > +
+> > +	tst_res(TPASS, "There are zero-fill-on-demand pages "
+> > +		       "for anonymous private mappings"); }
+> > +
+> > +static void setup(void)
+> > +{
+> > +	mapsz = tst_get_hugepage_size();
+> > +	addr = SAFE_MMAP(NULL, mapsz,
+> > +			PROT_READ | PROT_WRITE,
+> > +			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
+> > +			-1, 0);
+> > +	memset(addr, 1, mapsz);
+> 
+> If we only do memset here then we are only testing the zero-fill feature on
+> the first iteration.
 
-The function I'm trying to write is supposed to check whether a 
-particular flag is implemented by the kernel. Whether a particular 
-combination of implemented flags is also *allowed* is out of scope.
+Yes, thanks. It need to move to run().
 
-Note that the test I'm writing this for is fanotify14, which checks that 
-various invalid combinations of flags will correctly return error. But 
-since the error code for "this flag is not implemented" and "this flag 
-was used incorrectly" is the same, I need to somehow get the fanotify 
-feature set so that I can skip test cases which are not compatible with 
-the running kernel. I don't really care about which specific flag is not 
-implemented, comparing flags against a bitmask is just a quick and 
-convenient way to check that running the test case makes sense.
+> 
+> > +}
+> > +
+> > +static void cleanup(void)
+> > +{
+> > +	if (addr)
+> > +		SAFE_MUNMAP(addr, mapsz);
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.test_all = run,
+> > +	.setup = setup,
+> > +	.cleanup = cleanup,
+> > +	.min_kver = "5.18",
+> 
+> What happens before 5.18? Could we try applying MADV_DONTNEED and
+> return TCONF instead?
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+MADV_DONTNEED is not supported before 5.18. 
+Try applying MADV_DONTNEED and return TCONF seems more better, thanks.
 
+> 
+> > +	.needs_root = 1,
+> 
+> Why does this need root?
+
+When we get or set hugepages, we need to read or write '/proc/sys/vm/nr_hugepages', so we need to set needs_root here.
+
+Regards,
+Gongyi
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
