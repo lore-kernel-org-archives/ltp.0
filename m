@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81C60C3A59D
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 07:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9957C3A59D
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 08:04:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 085FE3C3099
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 09:45:08 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 09FB33C91B5
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 10:04:26 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1BE043C0763
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 09:44:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 2DEB83C1AE9
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 10:04:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5EF6D600625
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 09:44:54 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 57AD514002B5
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 10:04:13 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 7290C1F85D;
- Mon, 24 Oct 2022 07:44:54 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 9138021BA9;
+ Mon, 24 Oct 2022 08:04:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666597494;
+ t=1666598653;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CSzkxOE5Oga1jAl/d8S7hh8KM9SzVZ76cYSLNUGOEzw=;
- b=QoL2Enh1B0p4vSHQD7v+jKevDODKba4W8s4kiaE3d5ftpM+TmwEHYrs3CvzymClubc7MBF
- I0FnvU/EDcgY2UmMCvR19KRuw4TVDPwCuRDils9rR/g/kcwfuwlsD1frMD6LVbOnjSDdxk
- 4MF7T5eTuY+3LkOdoaAFFZRrA55lXu8=
+ bh=bbh5T07HVuUQIbQFUIAKXNxXKAW0ExgyMusEXCvSOHI=;
+ b=uUxDZv/PQHs/HCxIi+E7IYlNvU3THMjLRcTKwa1vehoxvZkLKrHPEm/ZUHWSSuJN2ZvcWw
+ uoI9SJlfrBoImGhfa0Svor/icbdA/MO32k8COb+2e4GL0lf5kZdWs0sLN0ReTMJrW4GrZf
+ CwkB0orMmuqrxa5euqqOQ/eo8XQHE0Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666597494;
+ s=susede2_ed25519; t=1666598653;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CSzkxOE5Oga1jAl/d8S7hh8KM9SzVZ76cYSLNUGOEzw=;
- b=liYn3hM1XU6vTaX5EmtegFjAjRxOvyIoMbQKhdY2dtuabUI0BPU8yrhaCjrc4B0cQY5FnX
- VgaR0YOOYdrkzGAg==
+ bh=bbh5T07HVuUQIbQFUIAKXNxXKAW0ExgyMusEXCvSOHI=;
+ b=UYjRXqHT6AsspE5hRBa7VzEOS3pR6qts2hfrBp6+IwI+KoIBnu1kVm8z8mEHs5c6cxSk9+
+ ygUcoFfZ70gABpDA==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 366322C141;
- Mon, 24 Oct 2022 07:44:54 +0000 (UTC)
-References: <20221013082146.14581-1-andrea.cervesato@suse.com>
- <20221013082146.14581-2-andrea.cervesato@suse.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 113752C141;
+ Mon, 24 Oct 2022 08:04:13 +0000 (UTC)
+References: <20221013134728.49609-1-zhaogongyi@huawei.com>
+ <20221013134728.49609-3-zhaogongyi@huawei.com>
 User-agent: mu4e 1.6.10; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Date: Mon, 24 Oct 2022 08:27:00 +0100
-In-reply-to: <20221013082146.14581-2-andrea.cervesato@suse.com>
-Message-ID: <874jvt1x8q.fsf@suse.de>
+To: Zhao Gongyi <zhaogongyi@huawei.com>
+Date: Mon, 24 Oct 2022 08:58:36 +0100
+In-reply-to: <20221013134728.49609-3-zhaogongyi@huawei.com>
+Message-ID: <87zgdlzlz7.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8] Refactor aiocp using new LTP API
+Subject: Re: [LTP] [PATCH v4 1/4] syscalls/madvise04: new test for
+ madvise(MADV_DONTNEED)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,39 +79,126 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-I can crash the test with the following:
+Zhao Gongyi via ltp <ltp@lists.linux.it> writes:
 
-./aiocp -b 256 -s 1024 -n 8 -i 10
-tst_test.c:1526: TINFO: Timeout per run is 0h 30m 30s
-aiocp.c:248: TINFO: Maximum AIO blocks: 65536
-aiocp.c:273: TINFO: Fill srcfile.bin with random data
-aiocp.c:302: TINFO: Copy srcfile.bin -> dstfile.bin
-aiocp.c:314: TINFO: Comparing srcfile.bin with dstfile.bin
-aiocp.c:337: TPASS: Files are identical
-aiocp.c:302: TINFO: Copy srcfile.bin -> dstfile.bin
-aiocp.c:314: TINFO: Comparing srcfile.bin with dstfile.bin
-aiocp.c:337: TPASS: Files are identical
-aiocp.c:302: TINFO: Copy srcfile.bin -> dstfile.bin
-aiocp.c:314: TINFO: Comparing srcfile.bin with dstfile.bin
-aiocp.c:337: TPASS: Files are identical
-aiocp.c:302: TINFO: Copy srcfile.bin -> dstfile.bin
-aiocp.c:314: TINFO: Comparing srcfile.bin with dstfile.bin
-aiocp.c:337: TPASS: Files are identical
-aiocp.c:302: TINFO: Copy srcfile.bin -> dstfile.bin
-malloc(): corrupted top size
-tst_test.c:1583: TBROK: Test killed by SIGIOT/SIGABRT!
+> Check that madvise(2) MADV_DONTNEED operation applied to Huge
+> TLB pages successfully after kernel version 5.18, and will result
+> in zero-fill-on-demand pages for anonymous private mappings.
+>
+> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+> ---
+>  runtest/syscalls                              |  1 +
+>  testcases/kernel/syscalls/madvise/.gitignore  |  1 +
+>  testcases/kernel/syscalls/madvise/madvise04.c | 62 +++++++++++++++++++
+>  3 files changed, 64 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/madvise/madvise04.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index c81764df4..eb1910cec 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -941,6 +941,7 @@ mincore04 mincore04
+>  madvise01 madvise01
+>  madvise02 madvise02
+>  madvise03 madvise03
+> +madvise04 madvise04
+>  madvise05 madvise05
+>  madvise06 madvise06
+>  madvise07 madvise07
+> diff --git a/testcases/kernel/syscalls/madvise/.gitignore b/testcases/kernel/syscalls/madvise/.gitignore
+> index f4bfdfefe..db8ce47c1 100644
+> --- a/testcases/kernel/syscalls/madvise/.gitignore
+> +++ b/testcases/kernel/syscalls/madvise/.gitignore
+> @@ -1,6 +1,7 @@
+>  /madvise01
+>  /madvise02
+>  /madvise03
+> +/madvise04
+>  /madvise05
+>  /madvise06
+>  /madvise07
+> diff --git a/testcases/kernel/syscalls/madvise/madvise04.c b/testcases/kernel/syscalls/madvise/madvise04.c
+> new file mode 100644
+> index 000000000..a970fb33e
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/madvise/madvise04.c
+> @@ -0,0 +1,62 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+> + * Author: Zhao Gongyi <zhaogongyi@huawei.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Check that madvise(2) MADV_DONTNEED operation applied to Huge TLB pages
+> + * successfully after kernel version 5.18, and will result in
+> + * zero-fill-on-demand pages for anonymous private mappings.
+> + */
+> +
+> +#include "tst_test.h"
+> +
+> +#define MAP_SIZE (8 * 1024)
+> +
+> +static char *addr;
+> +static int mapsz;
+> +
+> +static void run(void)
+> +{
+> +	TST_EXP_PASS(madvise(addr, mapsz, MADV_DONTNEED));
+> +	for (int i = 0; i < mapsz; i++) {
+> +		if (addr[i]) {
+> +			tst_res(TFAIL,
+> +				"There are no zero-fill-on-demand pages "
+> +				"for anonymous private mappings");
+> +			return;
+> +		}
+> +	}
+> +
+> +	tst_res(TPASS, "There are zero-fill-on-demand pages "
+> +		       "for anonymous private mappings");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	mapsz = tst_get_hugepage_size();
+> +	addr = SAFE_MMAP(NULL, mapsz,
+> +			PROT_READ | PROT_WRITE,
+> +			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
+> +			-1, 0);
+> +	memset(addr, 1, mapsz);
 
-Summary:
-passed   4
-failed   0
-broken   1
-skipped  0
-warnings 0
+If we only do memset here then we are only testing the zero-fill feature
+on the first iteration.
 
-I haven't looked into what might be causing that, but you could try
-compiling and running it with the address sanitizer.
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (addr)
+> +		SAFE_MUNMAP(addr, mapsz);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.min_kver = "5.18",
 
-Also if I pass -f DIRECT it fails with EINVAL.
+What happens before 5.18? Could we try applying MADV_DONTNEED and return
+TCONF instead?
+
+> +	.needs_root = 1,
+
+Why does this need root?
+
+> +	.hugepages = {1, TST_NEEDS},
+> +};
+> +
+> --
+> 2.17.1
+
 
 -- 
 Thank you,
