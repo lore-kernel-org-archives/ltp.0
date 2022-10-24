@@ -4,62 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEC38FA373E
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 14:51:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B4FBC38A2D
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 14:58:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1BB033C98BA
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 16:51:00 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id B49133C9808
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 16:58:22 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8C69D3C8F91
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 16:50:50 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 532A63C8867
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 16:58:13 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D9AD81A00818
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 16:50:49 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id CBCA51FD8F;
- Mon, 24 Oct 2022 14:50:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666623048;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/a0tOC47edLlhtGyTE1G4Sz8yRjahcNLicqiTBWkZUU=;
- b=an29Nh5dYCpv45BmTD8FC4+BIftmls1ijEolo+gBFhsplc694s9yI/bvSG08xFUcYUBf6c
- Ec1LtZEEIxXLhAjkUU3q3BrPsuvcHSBf45gcQI4YLvtasEpL92VxycNRaX/m/ZS/T7hxTc
- HiksKo4yBzRiEzJg//1//7SA6x0UdZ8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666623048;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/a0tOC47edLlhtGyTE1G4Sz8yRjahcNLicqiTBWkZUU=;
- b=NxgjtZoGDrpZRRbOYyysZNhcAsYXW2qV5wBw09C2TaNF2boR1muJbVACswp0uDFU+2uDL1
- EpMwxT5TPmTUUzCA==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C1FE210008F4
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 16:58:12 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 29B002C141;
- Mon, 24 Oct 2022 14:50:48 +0000 (UTC)
-References: <1666091413-7732-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <Y1MZnwFidi1eZoct@pevik>
- <d4483cf3-d1f9-5314-5e87-3b1edf2820e0@fujitsu.com>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Date: Mon, 24 Oct 2022 15:49:36 +0100
-In-reply-to: <d4483cf3-d1f9-5314-5e87-3b1edf2820e0@fujitsu.com>
-Message-ID: <87fsfdxol5.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E3F3321C1A;
+ Mon, 24 Oct 2022 14:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1666623491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=LwuLLF6iCsEqjnLuoZd0rMReysI92KrqX+R184WQlbU=;
+ b=zOwoTvv6YqTRMz84KZBoEFmB6PGr0QQmHrFRIJJ6CGZ5KEVJk78UvJOzJ8yNJi/I7Xcq/d
+ 65nR0nJXTUY+RyRW9nnus9j2WzJK3n04e6s33eVfkc8jXHmuKAZGjvDzUM0mjrrdOvz2N2
+ W6gawcYJcaGmnkbMWn5lTR611bhFXyU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1666623491;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=LwuLLF6iCsEqjnLuoZd0rMReysI92KrqX+R184WQlbU=;
+ b=Al25fMbWczD1jT+3xEqY3lAbLMdn9c3EGsVCOuduNL055UyTCc+qpXl59dV13M9uDfrHZN
+ zhpRKcqSNn3ur3CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CA44E13A79;
+ Mon, 24 Oct 2022 14:58:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id NXFqMAOoVmOnMwAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Mon, 24 Oct 2022 14:58:11 +0000
+Message-ID: <d80e2e12-899d-f0d2-27c2-f4a92f1b2be4@suse.cz>
+Date: Mon, 24 Oct 2022 16:58:11 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Content-Language: en-US
+To: Amir Goldstein <amir73il@gmail.com>
+References: <20221020130843.15147-1-mdoucha@suse.cz>
+ <20221020130843.15147-3-mdoucha@suse.cz>
+ <CAOQ4uxi=3aS+ROZ_kcQbVK9C4qiW76M1junEz2J+fdai5xjnAQ@mail.gmail.com>
+ <b3443f46-37fc-3c15-76d6-0985e6da0535@suse.cz>
+ <CAOQ4uxianp4e7gykk_N-yPKPPsK4xYu2HnH5d=N93+gAM60c=Q@mail.gmail.com>
+ <9b1164dd-68fa-0335-0b38-f820e3d303be@suse.cz>
+ <CAOQ4uxizXrthqR7G8Tx7kq+bz6kPTUxTSYs1BfireEXRpiNw4w@mail.gmail.com>
+ <ea4fd7d6-0985-2983-d0ce-489a32a2f6dc@suse.cz>
+ <CAOQ4uxib_vxncQa3RiObKYwQg0CQvPXLH+nyRckO9FVg=ihERQ@mail.gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <CAOQ4uxib_vxncQa3RiObKYwQg0CQvPXLH+nyRckO9FVg=ihERQ@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/mount03: Add statfs f_flags member check
+Subject: Re: [LTP] [PATCH v2 2/3] Add fanotify_get_supported_init_flags()
+ helper function
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,50 +88,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+Cc: Jan Kara <jack@suse.cz>, LTP List <ltp@lists.linux.it>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+On 24. 10. 22 16:34, Amir Goldstein wrote:
+> This is how I would fix the problem:
+> 
+> <snip>
+> 
+> Give or take using more macros and your nicer flag prints.
+> There is no need for auto-detection of the unsupported kernel flags.
+> 
+> If the test case is expected to get to fanotify_mark() (i.e. non-zero tc->mask)
+> EINVAL from fanotify_init() always means "unsupported".
 
-"xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com> writes:
+This would be a good approach if fanotify_init() returned distinct error 
+code for "flag not implemented", like ENOTSUP. But when EINVAL is 
+returned for both "not implemented" and "wrong use", this has a risk of 
+hiding real bugs. That's why I'm trying to detect the actual set of 
+flags implemented in the running kernel before running the real tests.
 
-> Hi Petr
->
->> Hi Xu,
->> 
->> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->> 
->>>   static void run(unsigned int n)
->>>   {
->>>   	struct tcase *tc = &tcases[n];
->>> +	struct statfs stfs;
->> 
->>>   	tst_res(TINFO, "Testing flag %s", tc->desc);
->> 
->>> @@ -159,6 +160,11 @@ static void run(unsigned int n)
->>>   	if (tc->test)
->>>   		tc->test();
->> 
->>> +	SAFE_STATFS(MNTPOINT, &stfs);
->>> +	if (stfs.f_flags & (n == 3 ? MS_REMOUNT : tc->flag))
->> Wouldn't it be better to add another struct member for this check?
->
-> Of course, it seems better.
->
-> Best Regards
-> Yang Xu
-
-OK... Petr are you going to merge this with your changes?
-
-Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+And since some flags may be backported to older kernels, generating 
+feature sets based on kernel version is not a solution.
 
 -- 
-Thank you,
-Richard.
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
