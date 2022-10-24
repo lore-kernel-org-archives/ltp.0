@@ -4,49 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7346CFA373E
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 09:30:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09783ECAAA1
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 09:46:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7FADA3C95F4
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 11:30:00 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 62E2D3C98C8
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 11:46:26 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AF28A3C0727
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 11:29:49 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 297AD3C0475
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 11:46:15 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 19B501A00215
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 11:29:46 +0200 (CEST)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MwqRF41bszVj0K
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 17:24:57 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (7.192.104.229) by
- canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 24 Oct 2022 17:29:41 +0800
-Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
- canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
- Mon, 24 Oct 2022 17:29:41 +0800
-To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>
-Thread-Topic: [LTP] [PATCH v4 1/4] syscalls/madvise04: new test for
- madvise(MADV_DONTNEED)
-Thread-Index: AdjnifRFpmmPpHyTQcGSN5UckkMwQg==
-Date: Mon, 24 Oct 2022 09:29:41 +0000
-Message-ID: <1a91d01c73444fdc94af4b04c12739ee@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.110.209]
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 353B2680E42
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 11:46:13 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3B0781FD10;
+ Mon, 24 Oct 2022 09:46:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1666604773;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=A+6FO462wmepJ2syPTeFTxLQbdjavLbH9dQ+pMDZAis=;
+ b=y8Yus2vNoM3Bx8bgJFI5BoRErnXi65kqn9ZUN+zgHlO+ZOTt3gmLcnMaGWvKQDdv0i2Cf+
+ ZwzWsgu26PiB+wvcJEu9EAAcUXXuY+BY4LnX8OSyOpJDV4bIWGuuIYjYgUONlrbQciL2e/
+ tXIfCmyVX5MOCRHlMdG2pz1P2wxiLJM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1666604773;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=A+6FO462wmepJ2syPTeFTxLQbdjavLbH9dQ+pMDZAis=;
+ b=zKKZDXpLQDCAaaKyqr02nBsTmzu3D0AfW16D9WhRO4J1ehGFiP39ZLRI3vMHs2zmKL2q7e
+ GYPKbmTzBdwH3yCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08C1513A79;
+ Mon, 24 Oct 2022 09:46:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id PHliAOVeVmNsegAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 24 Oct 2022 09:46:13 +0000
+Date: Mon, 24 Oct 2022 11:46:11 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Akihiko Odaki <akihiko.odaki@daynix.com>
+Message-ID: <Y1Ze470vch74uGNg@pevik>
+References: <20221020120741.212671-1-akihiko.odaki@daynix.com>
+ <Y1GWOPpb+Z8hwhQd@pevik> <Y1I6u1a7RAS1wmZL@pevik>
+ <34c0ff56-bed3-ade3-4936-6c96ecb8501d@daynix.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <34c0ff56-bed3-ade3-4936-6c96ecb8501d@daynix.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 1/4] syscalls/madvise04: new test for
- madvise(MADV_DONTNEED)
+Subject: Re: [LTP] [PATCH 1/6] ftp/ftp01: Use tst_net.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,147 +78,82 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: zhaogongyi via ltp <ltp@lists.linux.it>
-Reply-To: zhaogongyi <zhaogongyi@huawei.com>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Yan Vugenfirer <yan@daynix.com>,
+ Yuri Benditovich <yuri.benditovich@daynix.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi Akihiko,
 
-> 
-> Hello,
-> 
-> Zhao Gongyi via ltp <ltp@lists.linux.it> writes:
-> 
-> > Check that madvise(2) MADV_DONTNEED operation applied to Huge TLB
-> > pages successfully after kernel version 5.18, and will result in
-> > zero-fill-on-demand pages for anonymous private mappings.
-> >
-> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> > ---
-> >  runtest/syscalls                              |  1 +
-> >  testcases/kernel/syscalls/madvise/.gitignore  |  1 +
-> > testcases/kernel/syscalls/madvise/madvise04.c | 62
-> +++++++++++++++++++
-> >  3 files changed, 64 insertions(+)
-> >  create mode 100644 testcases/kernel/syscalls/madvise/madvise04.c
-> >
-> > diff --git a/runtest/syscalls b/runtest/syscalls index
-> > c81764df4..eb1910cec 100644
-> > --- a/runtest/syscalls
-> > +++ b/runtest/syscalls
-> > @@ -941,6 +941,7 @@ mincore04 mincore04
-> >  madvise01 madvise01
-> >  madvise02 madvise02
-> >  madvise03 madvise03
-> > +madvise04 madvise04
-> >  madvise05 madvise05
-> >  madvise06 madvise06
-> >  madvise07 madvise07
-> > diff --git a/testcases/kernel/syscalls/madvise/.gitignore
-> > b/testcases/kernel/syscalls/madvise/.gitignore
-> > index f4bfdfefe..db8ce47c1 100644
-> > --- a/testcases/kernel/syscalls/madvise/.gitignore
-> > +++ b/testcases/kernel/syscalls/madvise/.gitignore
-> > @@ -1,6 +1,7 @@
-> >  /madvise01
-> >  /madvise02
-> >  /madvise03
-> > +/madvise04
-> >  /madvise05
-> >  /madvise06
-> >  /madvise07
-> > diff --git a/testcases/kernel/syscalls/madvise/madvise04.c
-> > b/testcases/kernel/syscalls/madvise/madvise04.c
-> > new file mode 100644
-> > index 000000000..a970fb33e
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/madvise/madvise04.c
-> > @@ -0,0 +1,62 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
-> > + * Author: Zhao Gongyi <zhaogongyi@huawei.com>  */
-> > +
-> > +/*\
-> > + * [Description]
-> > + *
-> > + * Check that madvise(2) MADV_DONTNEED operation applied to Huge
-> TLB
-> > +pages
-> > + * successfully after kernel version 5.18, and will result in
-> > + * zero-fill-on-demand pages for anonymous private mappings.
-> > + */
-> > +
-> > +#include "tst_test.h"
-> > +
-> > +#define MAP_SIZE (8 * 1024)
-> > +
-> > +static char *addr;
-> > +static int mapsz;
-> > +
-> > +static void run(void)
-> > +{
-> > +	TST_EXP_PASS(madvise(addr, mapsz, MADV_DONTNEED));
-> > +	for (int i = 0; i < mapsz; i++) {
-> > +		if (addr[i]) {
-> > +			tst_res(TFAIL,
-> > +				"There are no zero-fill-on-demand pages "
-> > +				"for anonymous private mappings");
-> > +			return;
-> > +		}
-> > +	}
-> > +
-> > +	tst_res(TPASS, "There are zero-fill-on-demand pages "
-> > +		       "for anonymous private mappings"); }
-> > +
-> > +static void setup(void)
-> > +{
-> > +	mapsz = tst_get_hugepage_size();
-> > +	addr = SAFE_MMAP(NULL, mapsz,
-> > +			PROT_READ | PROT_WRITE,
-> > +			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-> > +			-1, 0);
-> > +	memset(addr, 1, mapsz);
-> 
-> If we only do memset here then we are only testing the zero-fill feature on
-> the first iteration.
+> Hi Petr,
 
-Yes, thanks. It need to move to run().
+> On 2022/10/21 15:22, Petr Vorel wrote:
+> > Hi Akihiko,
 
-> 
-> > +}
-> > +
-> > +static void cleanup(void)
-> > +{
-> > +	if (addr)
-> > +		SAFE_MUNMAP(addr, mapsz);
-> > +}
-> > +
-> > +static struct tst_test test = {
-> > +	.test_all = run,
-> > +	.setup = setup,
-> > +	.cleanup = cleanup,
-> > +	.min_kver = "5.18",
-> 
-> What happens before 5.18? Could we try applying MADV_DONTNEED and
-> return TCONF instead?
+> > I'm sorry I overlooked your message at v1
+> > https://lore.kernel.org/ltp/9894db50-6319-a818-c995-3ba9ab102c4b@daynix.com/
 
-MADV_DONTNEED is not supported before 5.18. 
-Try applying MADV_DONTNEED and return TCONF seems more better, thanks.
+> > I guess script expects $PASSWD to be set.
+> > Also trying to follow the instruction, none of them (allowing root in
+> > /etc/ftpusers or filling /root/.netrc with machine localhost) work for me:
+> > https://github.com/linux-test-project/ltp/tree/master/testcases/network#ftp-and-telnet-setup
 
-> 
-> > +	.needs_root = 1,
-> 
-> Why does this need root?
+> > I suppose any ftpd implementation must be run on the remote server (localhost,
+> > if tst_net.sh uses netns - the default or on remote host, if ssh is used).
+> > Otherwise ftp command "user $RUSER $PASSWD" cannot work, right?
 
-When we get or set hugepages, we need to read or write '/proc/sys/vm/nr_hugepages', so we need to set needs_root here.
+> > Although it should behave the same regardless netns or ssh is used,
+> > how do you test v3, with ssh or with netns (the default)? Or both?
 
-Regards,
-Gongyi
+> Thanks for sharing your fork. I tried it with SSH, and I had to make the
+> following modifications to run it correctly:
+> - I had to restore commented out "cd $TST_NET_DATAROOT".
+Ack, this is correct.
+> - I had to change the arguments of test_get and test_put back to "binary"
+> and "ascii".
+>   It is used to set the transfer mode (search for "echo $1").
+Ah, I'm sorry I overlooked this. This could be solved with passing it as a first
+parameter and shift, but I'll stop to be picky on an implementation detail.
+
+> > It'd be nice if there was connection detection in the setup and tst_brk TCONF if
+> > login does not work. The best would be to have configuration in the setup() +
+> > cleanup in the cleanup()).
+
+> > There are tests, which do vsftpd configuration: ftp-download-stress.sh,
+> > ftp-upload-stress.sh.
+
+> > BTW in the past we seriously considered to delete these highlevel smoke tests.
+> > LTP is concentrated to test kernel API and internals, thus we didn't see much
+> > value with smoke tests like this (that's why they haven't been rewritten to use
+> > new API), specially if they require complex setup and get false positives when
+> > SUT not configured properly. That's why it'd be nice to at least TCONF (if not
+> > doing whole setup).
+
+> I just modified this test because it is annoying to set up rsh just to fix
+> this test so I would rather not put more effort for further improvement.
+Understand, ack. Thanks for your work!
+
+> Personally I don't object to remove this test either.
+The fastest solution is to merge your fixed version.
+But there should be even more modifications:
+RHOST is obsolete, instead $(tst_ipaddr rhost) should be used.
+
+Therefore we should decide if this smoke test (and other FTP tests in LTP) is
+worth effort. If yes, I should force myself to create ftp_lib.sh and migrate
+everything to work similar way as ftp-upload-stress.sh.
+
+Kind regards,
+Petr
+
+> Regards,
+> Akihiko Odaki
+
+
+> > Kind regards,
+> > Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
