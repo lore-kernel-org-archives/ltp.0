@@ -4,64 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79779C3A59D
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 02:40:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A15A1C3A59D
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 02:53:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 70C393C8FC1
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 04:40:40 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 9153B3C91F0
+	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 04:53:43 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 41A733C0763
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 04:40:17 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id C93A23C0763
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 04:53:32 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5F8691A006F3
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 04:40:16 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ACB7C1A00244
+ for <ltp@lists.linux.it>; Mon, 24 Oct 2022 04:53:31 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1666579215;
+ s=mimecast20190719; t=1666580010;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gZ7aKzFD3CmISaCgkZDUyRwA9lBgb+bFOoUHJmV2obs=;
- b=IjqF+vtP6Qybuyn3XwSSiSG5hZOVdlPQyarmkqVXgLQZ/zBE/qvVKXMQTiWNym+l2LHLM2
- lFqjrC085h/4vP+/nRBTv+KrCrtZb44PxT0AoXt28W+AV19xO1wgLWFHGcpg5CiOAYUDHm
- 8PJJm+YbchQq7L2yAy3JDVn+Z5WJ4eY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-269-CACoXt2iMIetQBNXCv2mtQ-1; Sun, 23 Oct 2022 22:40:13 -0400
-X-MC-Unique: CACoXt2iMIetQBNXCv2mtQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com
- [10.11.54.5])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8B9A385A583
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 02:40:13 +0000 (UTC)
-Received: from liwang-workstation.nay.redhat.com
- (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 963447AE5
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 02:40:12 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Mon, 24 Oct 2022 10:40:09 +0800
-Message-Id: <20221024024009.3553633-2-liwang@redhat.com>
-In-Reply-To: <20221024024009.3553633-1-liwang@redhat.com>
-References: <20221009085745.3239893-1-liwang@redhat.com>
- <20221024024009.3553633-1-liwang@redhat.com>
+ bh=PeNspOZ9cSCEPiGWGMixEvyk58626kjrWkKmHXOF+i8=;
+ b=d6/02vQj0znpOjjIKXxaPu+dGSY1bKZOpdreMu6UgjN5j/sO8ogelJh9nGhlXNYbHNJQyE
+ 2ejLuLLAo8dlMLiV3+kTCyMN/odgYlqY50cN1kX9/K3bG/CeQVMJW1hBrtluXhuhE6GNGM
+ XUhgCA8xpA+Gl/aCR177lsvDe2Syf/s=
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
+ [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-93--xPZp7I6PvOGAi7ozfEznA-1; Sun, 23 Oct 2022 22:53:28 -0400
+X-MC-Unique: -xPZp7I6PvOGAi7ozfEznA-1
+Received: by mail-oa1-f69.google.com with SMTP id
+ 586e51a60fabf-13b6f7d8bf4so1926760fac.7
+ for <ltp@lists.linux.it>; Sun, 23 Oct 2022 19:53:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=PeNspOZ9cSCEPiGWGMixEvyk58626kjrWkKmHXOF+i8=;
+ b=3FggH3fyQWOWiYVUbdj1qk7D6xYXYRwTwhOO291WgrQaSVl7R+bKe6ynpHuP4/GOZQ
+ DX+iZ5gEsHbMqJ+esdVcF2WzmCDRUzWDPr+W8ZZA0UHDibkrn9XZBrw9uV4hr/MfDVN/
+ Mg08OHwqXoZDbLlI/SywJDaPQ4RKwburuf9aQLD8w7Yxt2Bsb1YhW6zc1zblhtgs7mfR
+ NdN6gElT1B5N3Qqhy8BymsFaufPg9g23baw6wqN2hACNXC4GzjcgqHoFBv0bK28uPpCk
+ pXzd0nU68nqc7ilH178m/eSZwcX9D2iitEyylWupu9docgChCQV1m3ZDeoV4j9lmVKVP
+ im5Q==
+X-Gm-Message-State: ACrzQf2e3H3MlLaFCqr0pc0JSnE/4natALuSsxdeSSSrCJymIgzcEx8e
+ ChTX/nWWidL4Rje2lQ1AyODuDpQm3rgsknt8oVDVhDGWT6UyEoNFDGkhs+pinPXvZdljocEyv4I
+ elB3bLh9guE21BZBLCUP3xZwSSIk=
+X-Received: by 2002:a9d:12a6:0:b0:661:d26c:708c with SMTP id
+ g35-20020a9d12a6000000b00661d26c708cmr15414374otg.160.1666580007516; 
+ Sun, 23 Oct 2022 19:53:27 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM7dczM0LzL6PN4IrLMAYdP38bcPEgkWK+FzMc0lasCFYHsrb5MEc114Mknk7z7aYZ9XmKLTjkMrhHCOkDpBLZg=
+X-Received: by 2002:a9d:12a6:0:b0:661:d26c:708c with SMTP id
+ g35-20020a9d12a6000000b00661d26c708cmr15414367otg.160.1666580007314; Sun, 23
+ Oct 2022 19:53:27 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+References: <20221020034140.3472638-1-liwang@redhat.com>
+ <7f283a53-2710-d721-dc11-5ca1c5d1aa06@fujitsu.com>
+ <CAEemH2fru9haqdSa++jcMU7U3XwgBsvjHpcTQ3mksnsn7=igwA@mail.gmail.com>
+ <Y1J/0uRjOgZYKIGi@pevik>
+In-Reply-To: <Y1J/0uRjOgZYKIGi@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 24 Oct 2022 10:53:15 +0800
+Message-ID: <CAEemH2esYJ7GzxMDDmTAyQMcHMqRQLvQM-RLZQrS2T0TbuuY+w@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] setitimer01: rewrite using new API
+Subject: Re: [LTP] [PATCH] kconfig: adding new config path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,260 +88,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Brian Grech <bgrech@redhat.com>, "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: multipart/mixed; boundary="===============0185655394=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Also add signal checking when the timer take effection.
+--===============0185655394==
+Content-Type: multipart/alternative; boundary="00000000000053870705ebbee55b"
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- .../kernel/syscalls/setitimer/setitimer01.c   | 214 +++++++-----------
- 1 file changed, 77 insertions(+), 137 deletions(-)
+--00000000000053870705ebbee55b
+Content-Type: text/plain; charset="UTF-8"
 
-diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testcases/kernel/syscalls/setitimer/setitimer01.c
-index 6874b94ad..f04cb5a69 100644
---- a/testcases/kernel/syscalls/setitimer/setitimer01.c
-+++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
-@@ -1,157 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * 03/2001 - Written by Wayne Boyer
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
--/*
-- * NAME
-- *	setitimer01.c
-- *
-- * DESCRIPTION
-- *	setitimer01 - check that a resonable setitimer() call succeeds.
-- *
-- * ALGORITHM
-- *	loop if that option was specified
-- *	allocate needed space and set up needed values
-- *	issue the system call
-- *	check the errno value
-- *	  issue a PASS message if we get zero
-- *	otherwise, the tests fails
-- *	  issue a FAIL message
-- *	  break any remaining tests
-- *	  call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  setitimer01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-+/*\
-+ * [Description]
-  *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	none
-+ * Check that a setitimer() call pass with timer seting.
-+ * Check if signal is generated correctly when timer expiration.
-  */
- 
--#include "test.h"
--
- #include <errno.h>
- #include <sys/time.h>
-+#include <stdlib.h>
-+#include "tst_test.h"
-+#include "lapi/syscalls.h"
-+
-+#define USEC1	10000
-+#define USEC2	20000
-+
-+static struct itimerval *value, *ovalue;
-+
-+static struct tcase {
-+	int which;
-+	char *des;
-+	int signo;
-+} tcases[] = {
-+	{ITIMER_REAL,    "ITIMER_REAL",    SIGALRM},
-+	{ITIMER_VIRTUAL, "ITIMER_VIRTUAL", SIGVTALRM},
-+	{ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
-+};
-+
-+static int sys_setitimer(int which, void *new_value, void *old_value)
-+{
-+	return tst_syscall(__NR_setitimer, which, new_value, old_value);
-+}
-+
-+static void set_setitimer_value(int usec, int o_usec)
-+{
-+	value->it_value.tv_sec = 0;
-+	value->it_value.tv_usec = usec;
-+	value->it_interval.tv_sec = 0;
-+	value->it_interval.tv_usec = 0;
-+
-+	ovalue->it_value.tv_sec = o_usec;
-+	ovalue->it_value.tv_usec = o_usec;
-+	ovalue->it_interval.tv_sec = 0;
-+	ovalue->it_interval.tv_usec = 0;
-+}
- 
--void cleanup(void);
--void setup(void);
-+static void verify_setitimer(unsigned int i)
-+{
-+	pid_t pid;
-+	int status;
-+	struct tcase *tc = &tcases[i];
- 
--char *TCID = "setitimer01";
--int TST_TOTAL = 1;
-+	pid = SAFE_FORK();
- 
--#define SEC0	0
--#define SEC1	20
--#define SEC2	40
-+	if (pid == 0) {
-+		tst_res(TINFO, "tc->which = %s", tc->des);
- 
--int main(int ac, char **av)
--{
--	int lc;
--	struct itimerval *value, *ovalue;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();		/* global setup */
--
--	/* The following loop checks looping state if -i option given */
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		/* allocate some space for the timer structures */
--
--		if ((value = malloc((size_t)sizeof(struct itimerval))) ==
--		    NULL) {
--			tst_brkm(TBROK, cleanup, "value malloc failed");
--		}
--
--		if ((ovalue = malloc((size_t)sizeof(struct itimerval))) ==
--		    NULL) {
--			tst_brkm(TBROK, cleanup, "ovalue malloc failed");
--		}
--
--		/* set up some reasonable values */
--
--		value->it_value.tv_sec = SEC1;
--		value->it_value.tv_usec = SEC0;
--		value->it_interval.tv_sec = 0;
--		value->it_interval.tv_usec = 0;
--		/*
--		 * issue the system call with the TEST() macro
--		 * ITIMER_REAL = 0, ITIMER_VIRTUAL = 1 and ITIMER_PROF = 2
--		 */
--
--		TEST(setitimer(ITIMER_REAL, value, ovalue));
--
--		if (TEST_RETURN != 0) {
--			tst_resm(TFAIL, "call failed - errno = %d - %s",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--			continue;
--		}
--
--		/*
--		 * call setitimer again with new values.
--		 * the old values should be stored in ovalue
--		 */
--		value->it_value.tv_sec = SEC2;
--		value->it_value.tv_usec = SEC0;
--
--		if ((setitimer(ITIMER_REAL, value, ovalue)) == -1) {
--			tst_brkm(TBROK, cleanup, "second setitimer "
--				 "call failed");
--		}
--
--		if (ovalue->it_value.tv_sec <= SEC1) {
--			tst_resm(TPASS, "functionality is correct");
--		} else {
--			tst_brkm(TFAIL, cleanup, "old timer value is "
--				 "not equal to expected value");
--		}
--	}
-+		tst_no_corefile(0);
- 
--	cleanup();
--	tst_exit();
--}
-+		set_setitimer_value(USEC1, 0);
-+		TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
- 
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
--void setup(void)
--{
-+		set_setitimer_value(USEC2, USEC2);
-+		TST_EXP_PASS(sys_setitimer(tc->which, value, ovalue));
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+		if (ovalue->it_value.tv_sec != 0 || ovalue->it_value.tv_usec >= USEC2)
-+			tst_brk(TFAIL, "old timer value is not within the expected range");
- 
--	TEST_PAUSE;
--}
-+		for (;;)
-+			;
-+	}
- 
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * 	       or premature exit.
-- */
--void cleanup(void)
--{
-+	SAFE_WAITPID(pid, &status, 0);
- 
-+	if (WIFSIGNALED(status) && WTERMSIG(status) == tc->signo)
-+		tst_res(TPASS, "Child received signal: %s", tst_strsig(tc->signo));
-+	else
-+		tst_res(TFAIL, "Child: %s", tst_strstatus(status));
- }
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.forks_child = 1,
-+	.test = verify_setitimer,
-+	.bufs = (struct tst_buffers[]) {
-+		{&value,  .size = sizeof(struct itimerval)},
-+		{&ovalue, .size = sizeof(struct itimerval)},
-+		{}
-+	}
-+};
+Petr Vorel <pvorel@suse.cz> wrote:
+
+
+> FYI openSUSE Tumbleweed also moved config to this path, I'd remove the
+> comment
+> and mentioned also openSUSE Tumbleweed. In the end we add also symlinks to
+> /boot
+> (the usual place) so that Tumbleweed works without this patch, but I guess
+> it's
+> better to mention that it's not just RHIVOS specific.
+
+
+Thanks for the info, very useful!
+Modified and pushed.
+
 -- 
-2.35.3
+Regards,
+Li Wang
+
+--00000000000053870705ebbee55b
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Petr Vorel &lt;<a href=3D"mailto:pvorel@suse.cz">pvorel@suse.=
+cz</a>&gt; wrote:<br></div></div><div class=3D"gmail_quote"><div>=C2=A0=C2=
+=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8e=
+x;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+FYI openSUSE Tumbleweed also moved config to this path, I&#39;d remove the =
+comment<br>
+and mentioned also openSUSE Tumbleweed. In the end we add also symlinks to =
+/boot<br>
+(the usual place) so that Tumbleweed works without this patch, but I guess =
+it&#39;s<br>
+better to mention that it&#39;s not just RHIVOS specific.<span class=3D"gma=
+il_default" style=3D"font-size:small"></span></blockquote><div><br></div><d=
+iv><div class=3D"gmail_default" style=3D"font-size:small">Thanks for the in=
+fo, very useful!</div><div class=3D"gmail_default" style=3D"font-size:small=
+">Modified and pushed.</div></div></div><div><br></div>-- <br><div dir=3D"l=
+tr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>=
+Li Wang<br></div></div></div></div>
+
+--00000000000053870705ebbee55b--
+
+
+--===============0185655394==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0185655394==--
+
