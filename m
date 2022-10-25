@@ -4,61 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89C86C04A95
-	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 11:18:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7E4BC38A2D
+	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 12:19:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 98BB93CA461
-	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 13:17:59 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id B58603CA441
+	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 14:19:22 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7D9243C0367
- for <ltp@lists.linux.it>; Tue, 25 Oct 2022 13:17:49 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 575F63C0134
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 14:19:11 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id ECCE0680E54
- for <ltp@lists.linux.it>; Tue, 25 Oct 2022 13:17:48 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 3D4DA22061;
- Tue, 25 Oct 2022 11:17:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666696668;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zixxmICs8duTYZMQGM8rxgzQIZQtngodaGkmTJjNsv0=;
- b=PKnL05ftUGJ7T2waAVnWd5eojgkpJyqKF4DDDYETjAtJ8gQKSP9jQHXtW8dG1vrWyKqpFF
- /au9wlRGaAVuYVKHiYYwsXRDdrx4G42nz9NyNw3AaUQHOySYGywAAojJDjadObH9SA45K7
- i0smLoecUpddA8CxjpjoKGLheOQwUmI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666696668;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=zixxmICs8duTYZMQGM8rxgzQIZQtngodaGkmTJjNsv0=;
- b=AgcgYQDqD5KBHSc0mjbcs7X8YWQ2pT+B0aaiJYpJE2PxdeWtLkHWaWSM68IwclDUkgX5z4
- gWRHTLdeQR7k/gDg==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C61E86002EC
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 14:19:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1666700349;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=4gjALZ7jpKfCj7hC7PxTU5WNQtTjMTdyebbq+UlSKbA=;
+ b=WRAPgWvOJFJ1DYxCFA1O6ThtuHO8pwfzXhw8WGPJ5Ii8VKbvlHT0wwDsFpUyU62MR+DfIT
+ wfxb3/PVo9pdgo1tAFrn+g1KoUAtyQSHPK1HT8F3tafO+QgL0d2P3+O5fDiFquij9sKcb5
+ wsOz9z/bcMjiYwfD3Z5O/qrubshkZkM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-644-fdTUj_8XMEOLK4PEKnq5wA-1; Tue, 25 Oct 2022 08:19:07 -0400
+X-MC-Unique: fdTUj_8XMEOLK4PEKnq5wA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.8])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 4CCF92C141;
- Tue, 25 Oct 2022 11:17:47 +0000 (UTC)
-References: <20221019184846.89318-1-tsahu@linux.ibm.com>
- <20221019184846.89318-4-tsahu@linux.ibm.com>
-User-agent: mu4e 1.6.10; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Date: Tue, 25 Oct 2022 12:04:27 +0100
-In-reply-to: <20221019184846.89318-4-tsahu@linux.ibm.com>
-Message-ID: <8735bcxicr.fsf@suse.de>
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 96082833AEF
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 12:19:01 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com
+ (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id A7C18C15BAB
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 12:18:57 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Tue, 25 Oct 2022 20:18:52 +0800
+Message-Id: <20221025121853.3590372-1-liwang@redhat.com>
 MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/3] Hugetlb: Migrating libhugetlbfs
- corrupt-by-cow-opt
+Subject: [LTP] [PATCH 1/2] setitimer01: add interval timer test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,55 +68,119 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: aneesh.kumar@linux.ibm.com, ltp@lists.linux.it, sbhat@linux.ibm.com,
- vaibhav@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+First, split checking the return ovalue from testing the
+signal is delivered. The benefit is that we could use a
+long timeout value for verifying.
 
-Tarun Sahu <tsahu@linux.ibm.com> writes:
+Second, add an interval timer test by handling the signal
+at least 10 times. After that recover the signal behavior
+to default and do deliver-signal checking.
 
-> Migrating the libhugetlbfs/testcases/corrupt-by-cow-opt.c test
->
-> Test Description: Test sanity of cow optimization on page cache. If a page
-> in page cache has only 1 ref count, it is mapped for a private mapping
-> directly and is overwritten freely, so next time we access the page, we
-> can see corrupt data.
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ .../kernel/syscalls/setitimer/setitimer01.c   | 56 ++++++++++++-------
+ 1 file changed, 36 insertions(+), 20 deletions(-)
 
-Seems like this and 2/3 follow the same pattern. The setups are
-reasonably similar and could be encapsulated in tst_hugepage.
-
-> +
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.needs_tmpdir = 1,
-> +	.options = (struct tst_option[]) {
-> +		{"H:", &Hopt,   "Location of hugetlbfs, i.e.  -H /var/hugetlbfs"},
-> +		{"s:", &nr_opt, "Set the number of the been allocated
-> hugepages"},
-
-nr_opt also seems suspicious. The test only ever allocates one page at a
-time regardless of what this is set to. Changing it will just change how
-much free memory we check for unless I am mistaken.
-
-> +		{}
-> +	},
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +	.hugepages = {2, TST_NEEDS},
-> +};
-> -- 
-> 2.31.1
-
-
+diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testcases/kernel/syscalls/setitimer/setitimer01.c
+index f04cb5a69..a59a9af1b 100644
+--- a/testcases/kernel/syscalls/setitimer/setitimer01.c
++++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+@@ -18,9 +18,11 @@
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
+ 
+-#define USEC1	10000
+-#define USEC2	20000
++#define SEC1	300
++#define SEC2	600
++#define USEC	100
+ 
++static volatile unsigned long sigcnt;
+ static struct itimerval *value, *ovalue;
+ 
+ static struct tcase {
+@@ -38,17 +40,17 @@ static int sys_setitimer(int which, void *new_value, void *old_value)
+ 	return tst_syscall(__NR_setitimer, which, new_value, old_value);
+ }
+ 
+-static void set_setitimer_value(int usec, int o_usec)
++static void sig_routine(int signo LTP_ATTRIBUTE_UNUSED)
+ {
+-	value->it_value.tv_sec = 0;
+-	value->it_value.tv_usec = usec;
+-	value->it_interval.tv_sec = 0;
+-	value->it_interval.tv_usec = 0;
++	sigcnt++;
++}
+ 
+-	ovalue->it_value.tv_sec = o_usec;
+-	ovalue->it_value.tv_usec = o_usec;
+-	ovalue->it_interval.tv_sec = 0;
+-	ovalue->it_interval.tv_usec = 0;
++static void set_setitimer_value(int sec, int usec)
++{
++	value->it_value.tv_sec = sec;
++	value->it_value.tv_usec = usec;
++	value->it_interval.tv_sec = sec;
++	value->it_interval.tv_usec = usec;
+ }
+ 
+ static void verify_setitimer(unsigned int i)
+@@ -57,23 +59,37 @@ static void verify_setitimer(unsigned int i)
+ 	int status;
+ 	struct tcase *tc = &tcases[i];
+ 
+-	pid = SAFE_FORK();
++	tst_res(TINFO, "tc->which = %s", tc->des);
+ 
+-	if (pid == 0) {
+-		tst_res(TINFO, "tc->which = %s", tc->des);
++	set_setitimer_value(SEC1, USEC);
++	TST_EXP_PASS_SILENT(sys_setitimer(tc->which, value, NULL));
++
++	set_setitimer_value(SEC2, USEC);
++	TST_EXP_PASS_SILENT(sys_setitimer(tc->which, value, ovalue));
+ 
++	TST_EXP_EQ_LI(ovalue->it_interval.tv_sec, SEC1);
++	TST_EXP_EQ_LI(ovalue->it_interval.tv_usec, USEC);
++
++	if (ovalue->it_value.tv_sec + ovalue->it_value.tv_usec/1000000 <= SEC1)
++		tst_res(TPASS, "old timer value is within the expected range");
++	else
++		tst_res(TFAIL, "old timer value is not within the expected range");
++
++	pid = SAFE_FORK();
++	if (pid == 0) {
+ 		tst_no_corefile(0);
+ 
+-		set_setitimer_value(USEC1, 0);
++		SAFE_SIGNAL(tc->signo, sig_routine);
++
++		set_setitimer_value(0, USEC);
+ 		TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
+ 
+-		set_setitimer_value(USEC2, USEC2);
+-		TST_EXP_PASS(sys_setitimer(tc->which, value, ovalue));
++		while (sigcnt <= 10UL)
++			;
+ 
+-		if (ovalue->it_value.tv_sec != 0 || ovalue->it_value.tv_usec >= USEC2)
+-			tst_brk(TFAIL, "old timer value is not within the expected range");
++		SAFE_SIGNAL(tc->signo, SIG_DFL);
+ 
+-		for (;;)
++		while (1)
+ 			;
+ 	}
+ 
 -- 
-Thank you,
-Richard.
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
