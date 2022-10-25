@@ -4,67 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC388C38A2D
-	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 06:37:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E32D5C04A95
+	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 08:26:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2F4AB3CA1A2
-	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 08:37:45 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 4ABAC3CA32A
+	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 10:26:21 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9EFCF3C00D1
- for <ltp@lists.linux.it>; Tue, 25 Oct 2022 08:37:34 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id DB7C83C04BF
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 10:26:10 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D837C6008B3
- for <ltp@lists.linux.it>; Tue, 25 Oct 2022 08:37:33 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E63471FD74;
- Tue, 25 Oct 2022 06:37:32 +0000 (UTC)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 61CB260083F
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 10:26:09 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id C5C211F74A
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 08:26:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666679852; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ t=1666686368;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aAnrRh+oj6ZJWk+pjFyv2yPd8OMTTPLT5fYZb9mt4lY=;
- b=yKjKXSZwibkDn5kOCtvvBUuNA1LjBPXbtVlzjc9c09xpIUL5u/Quix2tHfgSnzt72htkLP
- ly1C6VHj9GbNmlZUT1Gr6/WMyhI0rDzem1WqCqc9TEdeH568fyzbfV/F03ETAAlpB79fIL
- IaGL1vDZJl8r+cp9nFHK9yJcX/xBeuA=
+ bh=sNgs9QqaaESpCZBRwJjKcsT3NNgNTds18gjo+XwjQlQ=;
+ b=pFcHOVdloS38XMP9KwZT+TMz2Pyz1V0f0ocVTZMQ48FzQBZ9v0U1OPSXUvyOapNBYosyDa
+ A+fxb0KJ5NKAfaTpt7TVItVPoarv5TnvRTWc6kh8+FvTaKZ8iMoU+LMM69iLI6KQOMKPc3
+ V7uyN58VuNzVlLRdZ/tSzyB+6lGYWSA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666679852;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1666686368;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aAnrRh+oj6ZJWk+pjFyv2yPd8OMTTPLT5fYZb9mt4lY=;
- b=IPqS113UbXEmG8uYHOmr4BlaJfXpc5Oq+7nrI/MvOPdx7wPbogVCYkW0U7PXTbvbP6NJa8
- zaf+YN8J9226awDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=sNgs9QqaaESpCZBRwJjKcsT3NNgNTds18gjo+XwjQlQ=;
+ b=He30DHR5MDc6b0MytmQ3FVsuhZ6IZs72QVt0lLOm2HlAf1yJofFJhTRWwvrPTEAGFanWs4
+ +qlMAXV4RHYK6yCQ==
+Received: from g78 (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CFDD134CA;
- Tue, 25 Oct 2022 06:37:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kSr6NyuEV2N8ZQAAMHmgww
- (envelope-from <akumar@suse.de>); Tue, 25 Oct 2022 06:37:31 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 25 Oct 2022 12:07:29 +0530
-Message-ID: <2663736.mvXUDI8C0e@localhost>
-Organization: SUSE
-In-Reply-To: <Y1MkHzCOXZYzomH/@pevik>
-References: <20221012064929.4725-1-akumar@suse.de> <Y1MkHzCOXZYzomH/@pevik>
+ by relay2.suse.de (Postfix) with ESMTPS id 436BD2C141;
+ Tue, 25 Oct 2022 08:26:08 +0000 (UTC)
+References: <20221019071706.25416-1-akumar@suse.de>
+User-agent: mu4e 1.6.10; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Avinesh Kumar <akumar@suse.de>
+Date: Tue, 25 Oct 2022 08:59:36 +0100
+In-reply-to: <20221019071706.25416-1-akumar@suse.de>
+Message-ID: <87bkq0xqas.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] setfsgid01: Rewrite using new LTP API
+Subject: Re: [LTP] [PATCH] setfsuid02: Rewrite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,69 +69,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr,
+hello,
 
-On Saturday, October 22, 2022 4:28:39 AM IST Petr Vorel wrote:
-> Hi Avinesh,
-> 
-> > Rewrite using new API and add test setfsgid(-1) which will always
-> > fail but will determine if the preceding setfsgid() call changed
-> > the filesystem group ID as expected.
-> +1
-> 
-> Thanks, merged with fix below.
-> 
-> > -		gid = getegid();
-> > -		GID16_CHECK(gid, setfsgid, cleanup);
-> > -
-> > -		TEST(SETFSGID(cleanup, gid));
-> > -
-> > -		if (TEST_RETURN == -1) {
-> > -			tst_resm(TFAIL | TTERRNO,
-> > -				"setfsgid() failed unexpectedly");
-> > -			continue;
-> > -		}
-> > -
-> > -		if (TEST_RETURN != gid) {
-> > -			tst_resm(TFAIL, "setfsgid() returned %ld, expected %d",
-> > -				 TEST_RETURN, gid);
-> > -		} else {
-> > -			tst_resm(TPASS,
-> > -				"setfsgid() returned expected value : %ld",
-> > -				TEST_RETURN);
-> > -		}
-> > -	}
-> ...
-> > +	gid = getegid();
-> > +	GID16_CHECK(gid, setfsgid);
-> 
-> > -static void cleanup(void)
-> > -{
-> > +	SAFE_SETEUID(0);
-> > +	TST_EXP_VAL(setfsgid(nobody_gid), gid);
-> > +	TST_EXP_VAL(setfsgid(-1), nobody_gid);
-> > +	TST_EXP_VAL_SILENT(setfsgid(gid), nobody_gid);
-> 
-> NOTE: all of these needed to be SETFSGID(), otherwise setfsgid01_16 would
-> happily test 32-bit version instead of 16-bit version.
-Thank you for this correction, will keep 16-bit thing in mind.
+Avinesh Kumar <akumar@suse.de> writes:
 
-> 
-> Kind regards,
-> Petr
-> 
+> Rewrite using new API and add setfsuid(-1) call to verify that preceding
+> setfsuid() call with an invalid fsuid had failed.
 
-Regards,
-Avinesh
+Merged with a couple of changes.
+
+> +	TST_EXP_VAL_SILENT(setfsuid(invalid_uid), current_uid);
+
+Need to use the SETFSUID macro for 16-bit (as pvorel said).
+
+> +	TST_EXP_VAL(setfsuid(-1), current_uid,
+> +				"setfsuid(invalid_fsuid) test for
+> expected failure:");
+
+Substituted invalid_uid for -1 because -1 (UINT_MAX or USHORT_MAX) could
+be a valid UID AFAICT.
+
+>  }
+>  
+> -static void setup(void)
+> -{
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -}
+> -
+> -static void cleanup(void)
+> -{
+> -}
+> +static struct tst_test test = {
+> +	.test_all = run
+> +};
+> -- 
+> 2.37.3
 
 
-
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
