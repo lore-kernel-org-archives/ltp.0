@@ -4,77 +4,141 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 196C1FA373F
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 17:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D067C38A2D
+	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 02:14:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 501DC3CA154
-	for <ltp@archiver.kernel.org>; Mon, 24 Oct 2022 19:03:34 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 930783CA285
+	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 04:14:16 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 26D553C04BF
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 19:03:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id EEFAE3C039E
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 04:14:04 +0200 (CEST)
+Received: from esa5.fujitsucc.c3s2.iphmx.com (esa5.fujitsucc.c3s2.iphmx.com
+ [68.232.159.76])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F0454200345
- for <ltp@lists.linux.it>; Mon, 24 Oct 2022 19:03:22 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B2D6E21A21;
- Mon, 24 Oct 2022 17:03:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1666631001;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BqpA7qGtKH2ifv5wjlrzlzBVqmzATYEJXDN8BRh+3Bw=;
- b=MaHzbcrw3SZNdL7Wq8ZEkxEbE4TaoTuspQDLYeEdvaWL/Cw2eEySc71cBIlA18lswdq/EC
- 1gkYS6WwuYTQAuodarNedAGtL3kSqNDrzofV/wk3GTPCiwbIyTCrNCEVl6kMekqc6NG0Ek
- INGRCGQ0Yie5owCOyA4Yl6FPsG0Oe9Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1666631001;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=BqpA7qGtKH2ifv5wjlrzlzBVqmzATYEJXDN8BRh+3Bw=;
- b=C63ck1uln5Q97Xm6cr8psd5gPuZleUzSfi9ZLyqTuK/f1LTihkbBJl9YfiAOF1AcNfZZaC
- XqRV4wJYI+VkszCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6143E13A79;
- Mon, 24 Oct 2022 17:03:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id UZ8DFVnFVmNIdgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 24 Oct 2022 17:03:21 +0000
-Date: Mon, 24 Oct 2022 19:03:20 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <Y1bFWLQNBWG9zsdZ@pevik>
-References: <CAOQ4uxi=3aS+ROZ_kcQbVK9C4qiW76M1junEz2J+fdai5xjnAQ@mail.gmail.com>
- <b3443f46-37fc-3c15-76d6-0985e6da0535@suse.cz>
- <CAOQ4uxianp4e7gykk_N-yPKPPsK4xYu2HnH5d=N93+gAM60c=Q@mail.gmail.com>
- <9b1164dd-68fa-0335-0b38-f820e3d303be@suse.cz>
- <CAOQ4uxizXrthqR7G8Tx7kq+bz6kPTUxTSYs1BfireEXRpiNw4w@mail.gmail.com>
- <ea4fd7d6-0985-2983-d0ce-489a32a2f6dc@suse.cz>
- <CAOQ4uxib_vxncQa3RiObKYwQg0CQvPXLH+nyRckO9FVg=ihERQ@mail.gmail.com>
- <d80e2e12-899d-f0d2-27c2-f4a92f1b2be4@suse.cz>
- <Y1a6NXkayyy7esM+@pevik>
- <CAOQ4uxjGGxaa=snebi0wPnPWuFHgQ-9Mt9hPBr3wBAghGQQEJA@mail.gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8CB7A1400B84
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 04:14:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1666664043; x=1698200043;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=bo/gsNP/IysDl37sUC8+hX0MqOjO9XQy7h2ZIKi34Xo=;
+ b=YciXgW9wivq49JgsxsWcMYr4v4BbkXPl5jmeHKMRw8DA8rNy/RQMrvcy
+ +Kh315XJIrh8+m9bhXxOWnzzGZw87y3ROVl8TroDikkV0/Vg2mQ3WDliB
+ +HrmSBqzkAsPjasL7Wmqr2tSg7mkcNVfH1D2VyYPrgOyhCWR7d98oqfoU
+ CkBiUx0doln5GlfKp4/nnfx0rcTXV03cZjacqwMDteNTTNjA+xlEaYrzV
+ TsMYUnvL6y0tD1RFIURjZgUH/zHu1maEx1ZZ/7TTfxF7lPJ1Pb6ZdlmIY
+ rlxjDDNPDeimJTK4MxStPTvvLds5JOCZ2kEZb9uI2wWeXLjF5fzo8YVYQ g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="68492538"
+X-IronPort-AV: E=Sophos;i="5.95,210,1661785200"; d="scan'208";a="68492538"
+Received: from mail-tycjpn01lp2169.outbound.protection.outlook.com (HELO
+ JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.169])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Oct 2022 11:14:00 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ARv+da5O+SByEdTJwHgnqKu41UdXyhk45ykMNUCdHOL86TwBkDs3S/AjJEZtn8AOSkPu+3pJ5CVfFGo7vbYYBLq+NK4ZFwonJr8A+ekxFOV/RqfZsJTW9R04Fo3iGxTK6+YA9Cr7giO/mMDvNlyFDa7tuNL8eCKdmveb7Up+ulzt+lyjZKngYedKUucU7OLj0I9NVZgluNmWlsFacJowP0Fl+1zW09OrLWE3D4ClcLMMcX6t/4wzkUkO0a5EiGwRv/xy+LEwy+4WPFb4/DEfAUqODFUJfEkI2cbTnwwQYWpPzaw1owoyX0ivWzD3TUsWJyQJWNkv0vn25iif27Y+Ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bo/gsNP/IysDl37sUC8+hX0MqOjO9XQy7h2ZIKi34Xo=;
+ b=HuhZlOb6pdDWNVhZONZyR0TFVk+8/r4tGpIL68Zu2BPqfZ2Q2YcbuRYcLxCaDZSEZQeL3KYDl5q7XVLLw13AJyPypZOSbmHVI6dPsLtZLAkzm1UH+GdnUC29xpModpaVWPB1dHU+tG/sneYfZ1DV7l+etjoJjbBFwp6PcUNbYFpVLd6eSrxWrnJXJaD/yNYVGMM+UFbyuih8pp44Vau07v5vju/T19N9FjWxL1w6WdOQbwWmp3BTdMK/oape4nNo546JTEz13MKa9y28f+ZoDv4hj4sHHmbTsqKK0kM7uUIv7jRMfE5mRZK+NErYOLWGtDYERCvu1XMkNCZWXzKiHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from OSAPR01MB4419.jpnprd01.prod.outlook.com (2603:1096:604:62::18)
+ by TYBPR01MB5358.jpnprd01.prod.outlook.com (2603:1096:404:8025::16)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.28; Tue, 25 Oct
+ 2022 02:13:57 +0000
+Received: from OSAPR01MB4419.jpnprd01.prod.outlook.com
+ ([fe80::fac7:e474:bccf:92b5]) by OSAPR01MB4419.jpnprd01.prod.outlook.com
+ ([fe80::fac7:e474:bccf:92b5%5]) with mapi id 15.20.5746.028; Tue, 25 Oct 2022
+ 02:13:57 +0000
+From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>
+Thread-Topic: [LTP] [PATCH] syscalls/mount03: Add statfs f_flags member check
+Thread-Index: AQHY4tnOJqfO5PH5OUegkRUQ1i3TDK4ZbxiAgANpsoCAANEuAIAA0CsA
+Date: Tue, 25 Oct 2022 02:13:57 +0000
+Message-ID: <c875bc23-b512-b731-ee16-a2425fb837fe@fujitsu.com>
+References: <1666091413-7732-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <Y1MZnwFidi1eZoct@pevik> <d4483cf3-d1f9-5314-5e87-3b1edf2820e0@fujitsu.com>
+ <87fsfdxol5.fsf@suse.de>
+In-Reply-To: <87fsfdxol5.fsf@suse.de>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OSAPR01MB4419:EE_|TYBPR01MB5358:EE_
+x-ms-office365-filtering-correlation-id: 7db852f3-6f60-4a5e-f0a7-08dab62e92d7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vXmA7k0C1D/ImgKre49F2dIaG/ZHEbxL3XsxKbqxHdMPzGEyb2h8u/Hb/W8b3WXn63fBRSdnFr+t6aiI6JxJc/tAvFhLjalkT1MgEqcP3pxjhvYp8YGBI1FXCi53Vi/Ax180slV0xXD1mAu5Qw9ykg62fPB8Bkau0qRg6gXwbWD93NkIzvaldGrdPYbZCwhjhocmYhVJZ5dJ5873ClQpprZT+KYycvXEXqq3gdh7FMi9LX8LxMv77l6xkhZiwcvT+z/yskY9VVk3Uynw6LaG90boZtYB1+TBZYcCnc0aCV6ZdZ6pfrEtel0I4Sg/3gY21gqvA4ZwrdONMtc4iw5PljLRk4pzAd5lYm1iGdn9F0T9rREEDGxARxvnZQyqhHCo+JnPbFkTA54CEtgVUJWyhDYucYM54oTS9fA7v2c0BkxlkghrlwB+eDBd1OhPznNUD4W+Wc3xlqnkvBZ5HquOtoC8Co9WOKlD/MDFvy+MyDJ4+8CxzpbuK34TuGoxccbSMzs4mC9OopWanPZ5AqmpaDcYYCCvqnWvR8n85Z6+v7iaBjZWPRFz6E5roatQ4B0F8a7FLr2s4Ne0mYpdf/9aer6C66L+0X3e0GQc29dIlIWZWDGIo8Zx4KyTAVOzZgA//zZ7Kefy4hIJA4dWZoKqezE+hNuMaoMcdh6NMvwX+g+qeZivz+QMvqVQWFgA+pI0iKGKoC4Lzlc29xxRMap6TclRSUIPKnOM1MFbFP8ShJUhHcOj5c/eoWfq9isvFHG5oFUzY4lZrB/Idz3dh9uJAUVOky1yCwoapga75ue8e2XxPUp/GvCfbwdPlvEMFcVBfXUKy+KTs2D+9ascGl6mjQ==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:OSAPR01MB4419.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230022)(4636009)(396003)(366004)(346002)(39860400002)(376002)(136003)(451199015)(1590799012)(36756003)(6506007)(4744005)(2906002)(26005)(6512007)(85182001)(66946007)(66556008)(66476007)(66446008)(8676002)(4326008)(64756008)(31696002)(41300700001)(76116006)(86362001)(38070700005)(316002)(6916009)(54906003)(478600001)(5660300002)(8936002)(6486002)(122000001)(91956017)(82960400001)(38100700002)(71200400001)(2616005)(1580799009)(31686004)(186003)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dVF2VG12U2FyZlR2RktRWnJVT3JGMkZUVDhHSW1HWlBPSS9vZEVSODhhcTdp?=
+ =?utf-8?B?Qm1hZVJ0MkQ2VU9tbFBoZ21tYzVET3UrMDBtakwrK2FRaGkxTDdwWW00MW5Y?=
+ =?utf-8?B?QThOQmVocUxyaStxUExOYUxzdjU1V3BMRnI4ZlRuZmdkcmFWeWIxbFVtVWNJ?=
+ =?utf-8?B?Yzc3bkdrMEc2K3pLdEoyY3RIUW9ZSEhsYXlnMEJlU2s3Qk5ubmdYeG8yTWtG?=
+ =?utf-8?B?aE5mYnZPWHphNWZzbFFiYWtmUXYzQlpLZkNyMTBjU2o1NDZDTnNxNVVtVkNj?=
+ =?utf-8?B?VFVSQmV4aTJEbmgzUDQrRDhVR21BMzJLZXoxUm1CWnkvdVZ4OTVST2ZsS2VC?=
+ =?utf-8?B?cE9lVURuU1dkL2ZJWGFYUXFYS0cvODYreUJHSmFiTG1uZm5QcTNHYUxUSFJo?=
+ =?utf-8?B?YjlSZG1ydXIvUkQvYTJ0bUx5R0FzUnhlTEM2aVFQSWU5VFFQaDNCbEZGOUMz?=
+ =?utf-8?B?MWdZRWJKMy9qbkVla0tTOWRnN1l1bEJEVW93UGx1ZGNvc3dES2JZUW02MFl6?=
+ =?utf-8?B?VmloUEZCZGl2K25lUHdkR2RxbkNMak9TVjBiZzFRcWlFSGRicVpPcTlsTmU0?=
+ =?utf-8?B?MjBaSElhQmd2YklhS0RDTU4xSGM0RCtEZ0REalNxS0NUTSsyZHQ5dk5HQUps?=
+ =?utf-8?B?dTYxMldJZ1dhZ2JpMWFSc2Y5TGF0WVd2S0p4RS90elVxbVU5YTB4SHdSOS9L?=
+ =?utf-8?B?ZmJ5NGNKSzdxSEtBYVRwanVUNkVPSDV3dlRQSzZ4c0NQTGRTUzJaeHlobVgy?=
+ =?utf-8?B?WXJIbU96cU9Ld3M5K1hhTlhnTnkzTHN6bUE0ZDBrYUsrQTVKczJnQjJEODZH?=
+ =?utf-8?B?SVp3REFVTVp6aGlUYjVhcUwrYk05eGpaZUt4U3V1NS90WVl3V3M1MG4xazY3?=
+ =?utf-8?B?RG1Ua2pRaTk5NXJ2SXJuM0lGeVhVbW56YWR6S1llaWNRUythQWRrUGRVKytz?=
+ =?utf-8?B?RG82REpvUlIyY0YrdDJSR0owbVZmSE1mcXlZVXR1azFCcjV4RW82dXJsSkE3?=
+ =?utf-8?B?OXZwSzhzMXFPR3BteUVzQnU2QjBsa281NXB0R0tqWE5tK0VHem9DYkladkpV?=
+ =?utf-8?B?SnBlK0FLUklVVkk1TUtYT3BpakJTQW95Ym1aTGlTN2xjaE5KUlVhMEUvM2Qw?=
+ =?utf-8?B?aVhObDI1UCtFa3Zad0NWQjh3WVE4eWN6akthT3ZmSC8yR1Mzajc3cmlCNEFG?=
+ =?utf-8?B?UHR1NzBkbHVZN09hU1hQSFRUaTVvdU9zWnRBZytPWGl6b1hjT3FBVDQ1cHdT?=
+ =?utf-8?B?U2Q3bVQxSFBhSzlXK004QTNiR1J2d0dxaW8vcnZ3dGtxb3BSZFkzaFNSZnd5?=
+ =?utf-8?B?OUxveWlqYU0rQTJJTDZwenk0eXU2K0ZjNmVaYkhCcGI0ZHZ5VG5GTUI2Skwz?=
+ =?utf-8?B?eCtyd2ZqdzQ1aDBaZU1iQnJJZnB1cHZ1NjZMVmJNZmVTVWFBSzVvbUVuVDZ4?=
+ =?utf-8?B?SFlta3R0ZHROT2I1UWRlNVZWanhKWWVkZmVSdVFPTnRXbUoxNFJGUXpPZk53?=
+ =?utf-8?B?YWRKaWo1dTMzbVJ1c1JKdVUvR0ZFeUcyU3htaFc0dmhpaGxmbC9ZMmNuL2NI?=
+ =?utf-8?B?VHp0V2FzQTBtaWY2ZnNGaDNFSGw0VXNpL1gyNlVLL2s2QXNkbXJ2Y3RYSm55?=
+ =?utf-8?B?eUluK0FHNVZUdFJkejZITVk3SlFnbUQ1OUt6WWhrU2poNVpHeUNSV1FVUDZ6?=
+ =?utf-8?B?ZG00Z1RMSGdXMlFmdWRvZSt1ZkxRZCtiOWUvcFoxZVVrSzJnbVFFTWFsQXQ3?=
+ =?utf-8?B?OGpvVW1ONUdCZFZRRHp0RlN6OUYrRzlDM3pTb3R0bkN2UTVQQnFrQUsyVU5r?=
+ =?utf-8?B?MjBRd2JvRE1sV25ZTldHWHBpaGJCVGZib00rbUt0VTJOZ2U0dDlGTm43c3dy?=
+ =?utf-8?B?OG8wdGRNanFPanExaFZIWk5jeTVCbHNxM0NxSXE0ck02eTNFQnRzM1hFK3k4?=
+ =?utf-8?B?cjlNNGdzTDZ6eUdsYjduZFVCV28xNk11cVVpK2Y2Z3RseENaRi9Oay9tUWp6?=
+ =?utf-8?B?dXozSVB4QWQrcnlOUDdnVmZieVRUZVlhdUU1dGYwd0Y5VEw2K0FrNWdUaS9r?=
+ =?utf-8?B?RWx4VE1yOUkwN1REbGNzU0JoUEhXcU0vaUxGRWJsVmdJSi8yME9rZzVncU5U?=
+ =?utf-8?B?M3VkNlM3VFdVa2Q3aml4MUlUNVdqbmV0Q24rTEg4dXZCYmIxeFRqR0grczdC?=
+ =?utf-8?B?Znc9PQ==?=
+Content-ID: <16CFF85FF34742478F925FA73708F6CD@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjGGxaa=snebi0wPnPWuFHgQ-9Mt9hPBr3wBAghGQQEJA@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB4419.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7db852f3-6f60-4a5e-f0a7-08dab62e92d7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2022 02:13:57.4566 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wL3OqwwRaaqyDuVwABOc+rOg6W7i3Z2q5bICXCQAyRvixQo0ID3LVV5gcJ+0RPj6Q5MYm1KH584GfaPkCkB+TQS6xoDKYI30QsjRYq/dZ0g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYBPR01MB5358
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] Add fanotify_get_supported_init_flags()
- helper function
+Subject: Re: [LTP] [PATCH] syscalls/mount03: Add statfs f_flags member check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,78 +150,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Jan Kara <jack@suse.cz>, LTP List <ltp@lists.linux.it>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Mon, Oct 24, 2022 at 7:15 PM Petr Vorel <pvorel@suse.cz> wrote:
-
-> > Hi all,
-
-> > > On 24. 10. 22 16:34, Amir Goldstein wrote:
-> > > > This is how I would fix the problem:
-
-> > > > <snip>
-
-> > > > Give or take using more macros and your nicer flag prints.
-> > > > There is no need for auto-detection of the unsupported kernel flags.
-
-> > > > If the test case is expected to get to fanotify_mark() (i.e. non-zero tc->mask)
-> > > > EINVAL from fanotify_init() always means "unsupported".
-
-> > > This would be a good approach if fanotify_init() returned distinct error
-> > > code for "flag not implemented", like ENOTSUP. But when EINVAL is returned
-> > > for both "not implemented" and "wrong use", this has a risk of hiding real
-> > > bugs. That's why I'm trying to detect the actual set of flags implemented in
-> > > the running kernel before running the real tests.
-> > Indeed, that's quite surprising (not really, it was added in 2.6.36 and remember
-> > Jan Kara's talk about dnotify/inotify/fanotify history). I wonder if it's
-> > possible to fix (backward compatibility would suffer).
-
-Hi Amir,
-
-> The kernel UAPI is not very consistent about ENOTSUP vs. EINVAL
-> renameat(2), unlink(2), link(2) and other return EINVAL for unsupported flags
-> fallocate(2), ioctl(2) and others return ENOTSUP for unsupported commands.
-> It's not a clear cut, but ENOTSUP is generally for unsupported fs methods,
-> not for unsupported options.
-
-thanks for info, I didn't know that. Otherwise Martin's note to use ENOTSUP
-would help.
-
-> > > And since some flags may be backported to older kernels, generating feature
-> > > sets based on kernel version is not a solution.
-> > I guess even some not-important fix was not backported. I guess features aren't
-> > backported to the stable kernel maybe to enterprise kernels (SLES, RHEL), but
-> > even there I'd guess there are related patches backported, not features. But
-> > maybe I'm wrong. Jan and Amir?
+Hi Richard, Petr
 
 
-> I am fine with writing tests that are friendly to distros that want to backport
-> features, that is not what my complaint is about.
-> As I wrote to Martin, I will accept any imaginary kernel as an example
-> for why the test is wrong for that kernel, but I don't see the bug.
+> Hello,
+> 
+> "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com> writes:
+> 
+>> Hi Petr
+>>
+>>> Hi Xu,
+>>>
+>>> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>>>
+>>>>    static void run(unsigned int n)
+>>>>    {
+>>>>    	struct tcase *tc = &tcases[n];
+>>>> +	struct statfs stfs;
+>>>
+>>>>    	tst_res(TINFO, "Testing flag %s", tc->desc);
+>>>
+>>>> @@ -159,6 +160,11 @@ static void run(unsigned int n)
+>>>>    	if (tc->test)
+>>>>    		tc->test();
+>>>
+>>>> +	SAFE_STATFS(MNTPOINT, &stfs);
+>>>> +	if (stfs.f_flags & (n == 3 ? MS_REMOUNT : tc->flag))
+>>> Wouldn't it be better to add another struct member for this check?
+>>
+>> Of course, it seems better.
+>>
+>> Best Regards
+>> Yang Xu
+> 
+> OK... Petr are you going to merge this with your changes?
 
-> The desire to distinguish between "this kernel should support
-> these init flags but failed" and "this kernel does not support those init flags"
-> is not realistic, given that fanotify_init() return codes do not
-> distinguish between those two cases.
+Thanks for your review, I merged this patch with petr's changes.
 
-> The suggested logic to work this out by testing flag by flags is faulty
-> because of current and future flag dependencies.
 
-> So show me a real bug, as Martin did, and we will fix it.
-thanks for info. Fortunately there is no other bug, besides the one Martin
-reported and is trying to fix.
-
-Kind regards,
-Petr
-
-> Thanks,
-> Amir.
+Best Regards
+Yang Xu
+> 
+> Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
