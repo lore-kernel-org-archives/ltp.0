@@ -4,80 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C71DC38A2D
-	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 08:51:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 427E6C38A2D
+	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 09:16:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 53CB93CA2EA
-	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 10:51:13 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 438F93CA3B0
+	for <ltp@archiver.kernel.org>; Tue, 25 Oct 2022 11:16:14 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E38403C04BF
- for <ltp@lists.linux.it>; Tue, 25 Oct 2022 10:51:03 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C55733C4D65
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 11:16:03 +0200 (CEST)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
+ [IPv6:2a00:1450:4864:20::52c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5E20A1A006E1
- for <ltp@lists.linux.it>; Tue, 25 Oct 2022 10:51:02 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1DB502207F;
- Tue, 25 Oct 2022 08:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1666687862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=j72ytjjIFAc42MM57g/6V0bMxEaXhnzjuDBHvndymYY=;
- b=w9JEB9wDd3Cjvhznh+mIBeNrFYHg3CUtZWJ4HyLbjTX0OkDPlopGRTpYjnJdL2mvWs/l8P
- XE8A1q+4U3BTdlMJU8UCd7Oehw4OPX9id9//Fr4p3EFXrc+m2p/A7FvmuxEJ0Wnc+kqBIX
- Mo6BppN9Mpbph2YVjks5N9+Y3osJ7eQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1666687862;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=j72ytjjIFAc42MM57g/6V0bMxEaXhnzjuDBHvndymYY=;
- b=xPdAXrkdYlKOzBcnDwbCe9YDqIxnbFHwF3i2x1Bicl+tjF/obrRpFedCs6ec0n9rwic6Qs
- XuuCDUjxg09w69Aw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E6889134CA;
- Tue, 25 Oct 2022 08:51:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id gKV4N3WjV2PWKwAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Tue, 25 Oct 2022 08:51:01 +0000
-Message-ID: <ab0f73ef-9e6d-5e7e-4ee1-8aa31ef2802e@suse.cz>
-Date: Tue, 25 Oct 2022 10:51:01 +0200
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 353571A0092B
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 11:16:03 +0200 (CEST)
+Received: by mail-ed1-x52c.google.com with SMTP id t15so559859edd.4
+ for <ltp@lists.linux.it>; Tue, 25 Oct 2022 02:16:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=oym61uOuT8q1PQ7OFWe0w5zcYjdIaRuuEemzohU6pfU=;
+ b=oQvLYrizmJ7oxAqgWsBo6ts2rGt58flfMvcghdQLeNF3VJYC6gtU+WOYNXlLDBbWxg
+ C89gzXMowWnXeFzFZ7gIjUOhEoyvuU7CULvzX4lSXJcua/IqtMG58u7tr3v+rOAQgNtq
+ 0S31h8NYTPiux8pclFyOiqDeKGFfMbTMc8P/8CDxfHP/GUv+25UtpgnB4W0EFUMroosn
+ jynKquISyS8VBwZnM5tfghmsJYCl8EL9OXVIe/YEbVF7Uv8W4M5H5K9gmIi925oFXtcv
+ D5WJMVlIBOZOPnZox5jy33gbtsq3L2L+pablDTgh0a69K2gGx346d3K9aFiusjSh8Wna
+ K2ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=oym61uOuT8q1PQ7OFWe0w5zcYjdIaRuuEemzohU6pfU=;
+ b=m1sTw7Y0/15KgtoDQhv84GKxVFyvIMzTDd6yON315sZanuxlnbOTih7B8eR5xvVjSB
+ +wZ2WQzW2L9DYwX/EEqyThqPvjY0mzz3qo9T+u6q3cLzOjLMCa0rvIHjXGSdd8bgmIZ2
+ oh5tmjlWvBhgHfOPs+whP6riBlUezcDBDXm0MvNA4QClCoZ9DqX0WtK+CuHw+e3eUO+I
+ ThfPBkyJbAWP+4KG5jGOigqHlIyEX8q8pyjQclWed/VCWLnYbFBpehBUbnKp9go8Rg33
+ MRTyAqaRowUn0w6trY601+FpJirHArOzPaxR0XyrZh3HxY1hhSKXlN5hipLTMDDDxXyo
+ sqYQ==
+X-Gm-Message-State: ACrzQf01X9HSVOluD0JjzdKdfgWlR2vSSSurkxi9AVnmorN00+aFKLap
+ XvMMd1ybYDtvIihQJ5t/0PYmWQG+Yw4=
+X-Google-Smtp-Source: AMsMyM7AIl+yua42Yh89OXxyuiiCb7DO/nZcqXkcb7yZlhs6JVo4WItRma5jBGR3fjeHuj4Osnas/w==
+X-Received: by 2002:a05:6402:2073:b0:461:5462:9dc9 with SMTP id
+ bd19-20020a056402207300b0046154629dc9mr19504792edb.52.1666689362570; 
+ Tue, 25 Oct 2022 02:16:02 -0700 (PDT)
+Received: from lab.hqhome163.com ([194.183.10.152])
+ by smtp.gmail.com with ESMTPSA id
+ h20-20020a1709070b1400b0078d85934cf8sm1070987ejl.111.2022.10.25.02.16.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 25 Oct 2022 02:16:01 -0700 (PDT)
+Date: Tue, 25 Oct 2022 09:11:02 +0000
+From: Alessandro Carminati <alessandro.carminati@gmail.com>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <Y1eoJpgzrOWuX5Op@lab.hqhome163.com>
+References: <Y0023HcAOlhfAcJw@lab.hqhome163.com>
+ <87o7u1xpz1.fsf@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Content-Language: en-US
-To: Amir Goldstein <amir73il@gmail.com>
-References: <20221020130843.15147-1-mdoucha@suse.cz>
- <20221020130843.15147-3-mdoucha@suse.cz>
- <CAOQ4uxi=3aS+ROZ_kcQbVK9C4qiW76M1junEz2J+fdai5xjnAQ@mail.gmail.com>
- <b3443f46-37fc-3c15-76d6-0985e6da0535@suse.cz>
- <CAOQ4uxianp4e7gykk_N-yPKPPsK4xYu2HnH5d=N93+gAM60c=Q@mail.gmail.com>
- <9b1164dd-68fa-0335-0b38-f820e3d303be@suse.cz>
- <CAOQ4uxizXrthqR7G8Tx7kq+bz6kPTUxTSYs1BfireEXRpiNw4w@mail.gmail.com>
- <ea4fd7d6-0985-2983-d0ce-489a32a2f6dc@suse.cz>
- <CAOQ4uxib_vxncQa3RiObKYwQg0CQvPXLH+nyRckO9FVg=ihERQ@mail.gmail.com>
- <d80e2e12-899d-f0d2-27c2-f4a92f1b2be4@suse.cz>
- <CAOQ4uxgUXZS4D1VDToGLqXV2nDuPFqUHWqwoY8V=u=iUcQFruw@mail.gmail.com>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <CAOQ4uxgUXZS4D1VDToGLqXV2nDuPFqUHWqwoY8V=u=iUcQFruw@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <87o7u1xpz1.fsf@suse.de>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] Add fanotify_get_supported_init_flags()
- helper function
+Subject: Re: [LTP] [PATCH] Fix tst_find_backing_dev when no initramfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,59 +80,147 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, LTP List <ltp@lists.linux.it>,
- Matthew Bobrowski <repnop@google.com>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 24. 10. 22 18:18, Amir Goldstein wrote:
-> Show me how this could hide a real bug.
-> Give an example.
-> It does not need to be a specific kernel
-> use an example with imaginary kernel with a backported feature if you like.
-> 
-> fanotify14 is not about making sure that flag combinations are allowed
-> it is about making sure that flag combinations are not allowed.
-> 
-> If the test case is testing illegal init flags, the outcome must be
-> fanotify_init
-> EINVAL.
-> 
-> If the test case is testing illegal mark flags, the outcome of fanotify_init
-> may be EINVAL meaning that this test case will be skipped.
-> It does not matter which specific init flag or init flag combination
-> causes this EINVAL.
-> 
-> I am ready to be proven wrong, but with examples,
-> like the one you provided with test case #8 and kernel 5.3.
-> hand waving and talking about vague "real bugs" won't convince me.
+mount_root() is the kernel function responsible for mounting the primary
+rootfs.
+A dynamic there, prevents the /dev/root device node in the not yet mounted
+files system. For this reason, in the embedded system that starts without
+an initramfs, or however a proper initscript, the /dev/root device appears
+into the mount table in the / line.
+The test ioctl_loop05 tries to open this /dev/root and fails with a warning.
+This patch aims to fix this situation.
 
-Imagine two init flags, A and B (doesn't matter which ones) that are not 
-supposed to conflict in any way according to documentation. And we'll 
-add 3 fanotify14 test cases with the following init calls:
-- fanotify_init(A)
-- fanotify_init(B)
-- fanotify_init(A|B)
+Signed-off-by: Alessandro Carminati <alessandro.carminati@gmail.com>
+---
+ lib/tst_device.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-All 3 init calls are supposed to pass and then fanotify_mark() is 
-supposed to fail. Now imagine that we have a buggy kernel where both 
-flags are implemented but fanotify_init(A|B) hits a weird corner case 
-and returns EINVAL. In your version of the code, the test will assume 
-that it's due to a missing feature and report the test case as skipped. 
-In my version of the code, the test will report a bug because it knows 
-that all the required features are present.
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 8419b80c3..c67328db3 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -526,6 +526,8 @@ void tst_find_backing_dev(const char *path, char *dev)
+        unsigned int dev_major, dev_minor, line_mjr, line_mnr;
+        unsigned int len, best_match_len = 1;
+        char mnt_point[PATH_MAX];
++       char devnum_info_fn[PATH_MAX];
++       char new_dev_fn_buf[PATH_MAX];
 
--- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+        if (stat(path, &buf) < 0)
+                tst_brkm(TWARN | TERRNO, NULL, "stat() failed");
+@@ -562,6 +564,20 @@ void tst_find_backing_dev(const char *path, char *dev)
+        if (!*dev)
+                tst_brkm(TBROK, NULL, "Cannot find block device for %s", path);
 
++       if (stat(dev, &buf) < 0) && (strcmp("/dev/root", dev)==0) {
++               sprintf(devnum_info_fn, "/sys/dev/block/%d:%d/uevent", dev_major, dev_minor);
++               file = SAFE_FOPEN(NULL, devnum_info_fn, "r");
++               while (fgets(line, sizeof(line), file)) {
++                       if (sscanf(line, "%[^=]=%s", devnum_info_fn, new_dev_fn_buf) != 2)
++                               continue;
++                       if (strcmp("DEVNAME", devnum_info_fn) == 0) {
++                               sprintf(dev, "/dev/%s", new_dev_fn_buf);
++                               break;
++                       }
++               }
++               SAFE_FCLOSE(NULL, file);
++       }
++
+        if (stat(dev, &buf) < 0)
+                tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
+
+--
+2.34.1
+
+On Mon, Oct 24, 2022 at 02:49:32PM +0100, Richard Palethorpe wrote:
+> Hello,
+> 
+> Alessandro Carminati <alessandro.carminati@gmail.com> writes:
+> 
+> > mount_root() is the kernel function responsible for mounting the primary
+> > rootfs.
+> > A dynamic there, prevents the /dev/root device node in the not yet mounted
+> > files system. For this reason, in the embedded system that starts without
+> > an initramfs, or however a proper initscript, the /dev/root device appears
+> > into the mount table in the / line.
+> > The test tries to open this /dev/root and fails with a warning.
+> > This patch aims to fix this situation.
+> 
+> Thanks I probably would have hit this issue sooner or later.
+> 
+> >
+> > Signed-off-by: Alessandro Carminati <alessandro.carminati@gmail.com>
+> >
+> > typo fixes
+> > ---
+> >  lib/tst_device.c | 20 ++++++++++++++++++++
+> >  1 file changed, 20 insertions(+)
+> >
+> > diff --git a/lib/tst_device.c b/lib/tst_device.c
+> > index 8419b80c3..c3427eb31 100644
+> > --- a/lib/tst_device.c
+> > +++ b/lib/tst_device.c
+> > @@ -526,6 +526,8 @@ void tst_find_backing_dev(const char *path, char *dev)
+> >  	unsigned int dev_major, dev_minor, line_mjr, line_mnr;
+> >  	unsigned int len, best_match_len = 1;
+> >  	char mnt_point[PATH_MAX];
+> > +	char tmpbuf1[PATH_MAX];
+> > +	char tmpbuf2[PATH_MAX];
+> 
+> It would be more readable to use three buffers and give them meaningful names.
+> 
+> >  
+> >  	if (stat(path, &buf) < 0)
+> >  		tst_brkm(TWARN | TERRNO, NULL, "stat() failed");
+> > @@ -562,6 +564,24 @@ void tst_find_backing_dev(const char *path, char *dev)
+> >  	if (!*dev)
+> >  		tst_brkm(TBROK, NULL, "Cannot find block device for %s", path);
+> >  
+> > +	if (stat(dev, &buf) < 0) {
+> 
+> As there is no harm in calling stat twice; could just do
+> 
+> if (stat(dev, &buf) < 0) && strcmp("/dev/root", dev) == 0) {
+> 
+> Or even replace with strcmp with errno == ENOENT and use this as a
+> general fallback.
+> 
+> > +		if (strcmp("/dev/root", dev) != 0) {
+> > +			tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
+> > +		} else {
+> 
+> Then remove this if statement
+> 
+> > +			sprintf(tmpbuf1, "/sys/dev/block/%d:%d/uevent",
+> > dev_major, dev_minor);
+> > +			file = SAFE_FOPEN(NULL, tmpbuf1, "r");
+> > +			while (fgets(line, sizeof(line), file)) {
+> > +				if (sscanf(line, "%[^=]=%s", tmpbuf1, tmpbuf2) != 2)
+> > +					continue;
+> > +				if (strcmp("DEVNAME", tmpbuf1) == 0) {
+> > +					sprintf(dev, "/dev/%s", tmpbuf2);
+> > +					break;
+> > +				}
+> > +			}
+> > +			SAFE_FCLOSE(NULL, file);
+> > +		}
+> > +	}
+> > +
+> >  	if (stat(dev, &buf) < 0)
+> >  		tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
+> >  
+> > -- 
+> > 2.34.1
+> 
+> 
+> -- 
+> Thank you,
+> Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
