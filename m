@@ -4,73 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 316F6C433FE
-	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 14:10:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CB6DC38A2D
+	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 14:34:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0353D3CA55F
-	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 16:10:37 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 694AC3CA7F0
+	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 16:34:54 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DEFDF3CA7E1
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 16:10:13 +0200 (CEST)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7129E3C0282
+ for <ltp@lists.linux.it>; Wed, 26 Oct 2022 16:34:44 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 15FD4100047A
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 16:10:13 +0200 (CEST)
-Received: by mail-ej1-x633.google.com with SMTP id n12so16215414eja.11
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 07:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=Cqe9Qa8vaEwEDFgZrndu1D/jpfVK1M1LtWR1Zo0pEtU=;
- b=QLEZhAJgIJFtyf5czIhmtSRn0CHlP1j1GH8a5GHghWIjAMxb7hP0kPC4lYHLdxTyMT
- uks87TFCCMbO86o7kxoXixyIA9lbxgj8mz+nGoRPa1wfz+XfyLbDZlV52IwFHBvFAY5L
- 5KU0AppcoX2I8loCSfqoCHVgYouhc6U3pPAIyb6zD6iSc6ur4YQFQ901NO8QjVcaPXT3
- xOuGOfbroo4TIL5K9WOUOUbDv7o9asgA7GzNgZTxtbdCH+jprl+wg+dGzXWNrfX2pShn
- rRXhPZHcMQ6ZP8nIWzoJeGzUcFB7fjpZOC2xQJufHokAKsl7NmHgPK8sflB18h6PMdc7
- /yrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=Cqe9Qa8vaEwEDFgZrndu1D/jpfVK1M1LtWR1Zo0pEtU=;
- b=egqusxH1Lta213+NJlk3PlcZQ0CSMLRZN8fKs14QJvVzWB0CWZgkXe/3NFAlQB4s77
- hOgQsXES05tRzYy4/CN2OSAO/HrSkqTf7YtswPcjm0ket23ASYdOhscnIk7FtrOuNby0
- tlmCIbXc0g7mhPUuLWAwOwDEELU2QkgEhUiZJbPWe0mTgA5tODCitbn4bn49g+jz0VyZ
- vS0JIfgaemmjDpK51kS//r1ENYk9zm5B9WWOnCjfJRj2+IXYgiKKXzs0di/sSAbNWbP+
- /C/MxWzbdd0KM54wnFs/E3NdpgDr4bdS3DLot0EIkUkzRA7tPtgNoRmxCpVep6s3KD9E
- FMOQ==
-X-Gm-Message-State: ACrzQf0bFPAW87bpM39z38FzOPuyq9SygV4+Gs0tgJ5dbTKW/d6Q4XOH
- jIC6RT4sTpeQWRCGYzVHX5bY1OOl9UpTLQ==
-X-Google-Smtp-Source: AMsMyM7tcnxbaPXvqTiSMe8oN2GCJPPjOkgqFG5mFRcv26kZIg0MyCDUvABgc5sowzNDS23vGPpmQw==
-X-Received: by 2002:a17:906:8a48:b0:7a5:a8f5:b870 with SMTP id
- gx8-20020a1709068a4800b007a5a8f5b870mr16221020ejc.458.1666793411906; 
- Wed, 26 Oct 2022 07:10:11 -0700 (PDT)
-Received: from lab.hqhome163.com ([194.183.10.152])
- by smtp.googlemail.com with ESMTPSA id
- ka3-20020a170907990300b0073cd7cc2c81sm3022156ejc.181.2022.10.26.07.10.10
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 26 Oct 2022 07:10:11 -0700 (PDT)
-From: Alessandro Carminati <alessandro.carminati@gmail.com>
-To: ltp@lists.linux.it
-Date: Wed, 26 Oct 2022 14:04:08 +0000
-Message-Id: <20221026140408.471609-3-alessandro.carminati@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221026140408.471609-1-alessandro.carminati@gmail.com>
-References: <[LTP] [PATCH] Fix tst_find_backing_dev when no initramfs>
- <20221026140408.471609-1-alessandro.carminati@gmail.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 77FBF200AF2
+ for <ltp@lists.linux.it>; Wed, 26 Oct 2022 16:34:42 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 91E6921FEC;
+ Wed, 26 Oct 2022 14:34:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1666794882; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=YrVALiDraGBseRIadwXtjqLjBeGT22GqQ1Ei1cARL7U=;
+ b=X42hxT9h1F0KxztDxubtQtGY1+aGXkbuv7rQbKt5FXydfWU/c0ASCe7xPoW1Hcp44ETxIu
+ 0FYGcrrt6O3WVBfUE4PCGdmmtVdWUDn+yj+KW7ls7asVlai9Ae7gIkPKzf/u9kZGlcpip+
+ 1KkwYcrm766tG/8TCtq8N9DCDIHmXZE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1666794882;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=YrVALiDraGBseRIadwXtjqLjBeGT22GqQ1Ei1cARL7U=;
+ b=2WOuSVeukswFEVd9TiSm/rtgnMwI4MWv539Ol01oJnm5flhWw3OfOrvfOGYx1OuC6qauaK
+ lOQLOnFKiyvAlPCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7421313A77;
+ Wed, 26 Oct 2022 14:34:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id STB3G4JFWWOyBgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Wed, 26 Oct 2022 14:34:42 +0000
+Message-ID: <7d316fe8-96ac-86db-485c-dd4d5957085c@suse.cz>
+Date: Wed, 26 Oct 2022 16:34:42 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Content-Language: en-US
+To: Amir Goldstein <amir73il@gmail.com>
+References: <CAOQ4uxi=3aS+ROZ_kcQbVK9C4qiW76M1junEz2J+fdai5xjnAQ@mail.gmail.com>
+ <b3443f46-37fc-3c15-76d6-0985e6da0535@suse.cz>
+ <CAOQ4uxianp4e7gykk_N-yPKPPsK4xYu2HnH5d=N93+gAM60c=Q@mail.gmail.com>
+ <9b1164dd-68fa-0335-0b38-f820e3d303be@suse.cz>
+ <CAOQ4uxizXrthqR7G8Tx7kq+bz6kPTUxTSYs1BfireEXRpiNw4w@mail.gmail.com>
+ <ea4fd7d6-0985-2983-d0ce-489a32a2f6dc@suse.cz>
+ <CAOQ4uxib_vxncQa3RiObKYwQg0CQvPXLH+nyRckO9FVg=ihERQ@mail.gmail.com>
+ <d80e2e12-899d-f0d2-27c2-f4a92f1b2be4@suse.cz>
+ <CAOQ4uxgUXZS4D1VDToGLqXV2nDuPFqUHWqwoY8V=u=iUcQFruw@mail.gmail.com>
+ <ab0f73ef-9e6d-5e7e-4ee1-8aa31ef2802e@suse.cz>
+ <20221025094810.pakqhh6yoxfy3h7x@quack3>
+ <ac20968f-ce12-27fb-8451-7e01d7cde229@suse.cz>
+ <CAOQ4uxjiduWkp9bhV4Svs5GzoA6ac4TKmeDm8rUOsNOo5b1NYQ@mail.gmail.com>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <CAOQ4uxjiduWkp9bhV4Svs5GzoA6ac4TKmeDm8rUOsNOo5b1NYQ@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] c-test-api: Documentation updated
+Subject: Re: [LTP] [PATCH v2 2/3] Add fanotify_get_supported_init_flags()
+ helper function
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,43 +91,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Alessandro Carminati <alessandro.carminati@gmail.com>, rpalethorpe@suse.com,
- acarmina@redhat.com
-Content-Type: text/plain; charset="us-ascii"
+Cc: Jan Kara <jack@suse.cz>, LTP List <ltp@lists.linux.it>,
+ Matthew Bobrowski <repnop@google.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since the tst_find_backing_dev logic is changed, the doc is updated
-accordingly.
+On 25. 10. 22 18:53, Amir Goldstein wrote:
+> All right.
+> 
+> Let's see which flag combinations we have in the relevant tests in fanotify14:
+> 
+> FAN_REPORT_DFID_FID,
+> FAN_REPORT_DFID_NAME,
+> FAN_REPORT_DFID_NAME_TARGET,
+> 
+> That's all.
+> 
+> Support for FAN_REPORT_FID is a requirement for the entire test.
+> 
+> FAN_REPORT_TARGET_FID depends on all the rest of the flags
+> and support for it is already checked explicitly to skip test cases.
+> 
+> FAN_REPORT_NAME depends on FAN_REPORT_DIR_FID.
+> 
+> So effectively fanotify_get_supported_init_flags() only checks
+> FAN_REPORT_DIR_FID separately from the combination
+> FAN_REPORT_DFID_FID.
+> 
+> fanotify16, which tests *legal* combinations of these flags
+> already checks the separate flag FAN_REPORT_DIR_FID
+> so fanotify test cases with FAN_REPORT_DFID_FID would
+> fail if a kernel that supports FAN_REPORT_DIR_FID does not
+> support the combination FAN_REPORT_DFID_FID.
+> 
+> Bottom line:
+> fanotify_get_supported_init_flags() did not add any test coverage.
+> 
+> This is why it is a slippery slope to suggest fixes without
+> proving that there is a bug.
 
-Signed-off-by: Alessandro Carminati <alessandro.carminati@gmail.com>
----
- doc/c-test-api.txt | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+If this is a slippery slope, then we're already sliding down since 
+commit fe31bfca which broke test case #8 because it's painfully hard to 
+maintain multiple separate feature checks in setup() as you insist. I 
+want to fix this mess with one simple helper function that will be 
+reusable in all fanotify tests. The helper function is an up-to-date 
+replacement for the old deprecated FAN_ALL_INIT_FLAGS macro. Nothing 
+more, nothing less.
 
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index 64ee3397f..b579e85ee 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -1067,12 +1067,11 @@ is created for that intention.
- -------------------------------------------------------------------------------
- #include "tst_test.h"
- 
--voud tst_find_backing_dev(const char *path, char *dev);
-+void tst_find_backing_dev(const char *path, char *dev);
- -------------------------------------------------------------------------------
- 
--This function finds the block dev that this path belongs to, it uses stat function
--to get the major/minor number of the path. Then scan them in '/proc/self/mountinfo'
--and list 2th column value after ' - ' string as its block dev if match succeeds.
-+This function finds the block dev that this path belongs to, it uses the unevent 
-+file in sysfs to find the device name from the major and minor numbers. 
- 
- [source,c]
- -------------------------------------------------------------------------------
 -- 
-2.34.1
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 
 -- 
