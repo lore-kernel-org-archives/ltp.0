@@ -4,38 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB39AC433FE
-	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 08:54:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA536C38A2D
+	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 09:20:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9C7983CA72B
-	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 10:54:55 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 7D2E73CA56D
+	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 11:20:05 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 216463C0294
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 10:54:44 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 2AF2A3C0294
+ for <ltp@lists.linux.it>; Wed, 26 Oct 2022 11:19:53 +0200 (CEST)
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9E02A1400DBD
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 10:54:42 +0200 (CEST)
-Received: from canpemm500008.china.huawei.com (unknown [172.30.72.56])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4My2bP4k7TzpW0W
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 16:51:13 +0800 (CST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9209A10000C8
+ for <ltp@lists.linux.it>; Wed, 26 Oct 2022 11:19:51 +0200 (CEST)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4My38P245mzpVtR
+ for <ltp@lists.linux.it>; Wed, 26 Oct 2022 17:16:21 +0800 (CST)
 Received: from canpemm500005.china.huawei.com (7.192.104.229) by
- canpemm500008.china.huawei.com (7.192.105.151) with Microsoft SMTP Server
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 26 Oct 2022 16:54:39 +0800
+ 15.1.2375.31; Wed, 26 Oct 2022 17:19:46 +0800
 Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
  canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
- Wed, 26 Oct 2022 16:54:39 +0800
+ Wed, 26 Oct 2022 17:19:46 +0800
 To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>
-Thread-Topic: [LTP] [PATCH 1/2] syscalls/nice05: new test for nice()
-Thread-Index: AdjpFbStm5foqevKRHyK7TYpHe8STA==
-Date: Wed, 26 Oct 2022 08:54:39 +0000
-Message-ID: <d742a149a2d4476ab493abf80a37b069@huawei.com>
+Thread-Topic: [LTP] [PATCH v4 2/4] syscalls/madvise11: new test for
+ madvise(MADV_DONTNEED)
+Thread-Index: AdjpGPA6dlYZfyMVSImQw7o/cF6YFw==
+Date: Wed, 26 Oct 2022 09:19:46 +0000
+Message-ID: <0b6a0bfa948b46de9f958b694d68fda7@huawei.com>
 Accept-Language: zh-CN, en-US
 Content-Language: zh-CN
 X-MS-Has-Attach: 
@@ -43,9 +44,10 @@ X-MS-TNEF-Correlator:
 x-originating-ip: [10.67.110.209]
 MIME-Version: 1.0
 X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] syscalls/nice05: new test for nice()
+Subject: Re: [LTP] [PATCH v4 2/4] syscalls/madvise11: new test for
+ madvise(MADV_DONTNEED)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,114 +74,126 @@ Hi,
 > 
 > Zhao Gongyi via ltp <ltp@lists.linux.it> writes:
 > 
-> > Verify that user of root can decrease the nice value of the process
-> > successfully by passing a lower increment value (< min. applicable
-> > limits) to nice() system call.
+> > Check that madvise(2) MADV_DONTNEED applied to shared mappings
+> will
+> > lead to the resident set size(RSS) of the calling process reduced
+> immediately.
 > >
 > > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 > > ---
-> >  runtest/syscalls                          |  1 +
-> >  testcases/kernel/syscalls/nice/.gitignore |  1 +
-> >  testcases/kernel/syscalls/nice/nice05.c   | 54
-> +++++++++++++++++++++++
-> >  3 files changed, 56 insertions(+)
-> >  create mode 100644 testcases/kernel/syscalls/nice/nice05.c
+> >  runtest/syscalls                              |  1 +
+> >  testcases/kernel/syscalls/madvise/.gitignore  |  1 +
+> > testcases/kernel/syscalls/madvise/madvise11.c | 82
+> +++++++++++++++++++
+> >  3 files changed, 84 insertions(+)
+> >  create mode 100644 testcases/kernel/syscalls/madvise/madvise11.c
 > >
 > > diff --git a/runtest/syscalls b/runtest/syscalls index
-> > bd74373a4..7db399375 100644
+> > eb1910cec..296af9f9d 100644
 > > --- a/runtest/syscalls
 > > +++ b/runtest/syscalls
-> > @@ -902,6 +902,7 @@ nice01 nice01
-> >  nice02 nice02
-> >  nice03 nice03
-> >  nice04 nice04
-> > +nice05 nice05
-> 
-> 05 has already been taken. Also this test is very similar to nice01. Maybe it
-> could be added to that?
-
-It seems better that move to nice01, thanks!
-
-> 
+> > @@ -948,6 +948,7 @@ madvise07 madvise07
+> >  madvise08 madvise08
+> >  madvise09 madvise09
+> >  madvise10 madvise10
+> > +madvise11 madvise11
 > >
-> >  open01 open01
-> >  open01A symlink01 -T open01
-> > diff --git a/testcases/kernel/syscalls/nice/.gitignore
-> > b/testcases/kernel/syscalls/nice/.gitignore
-> > index 9d7a1bb43..58d64779e 100644
-> > --- a/testcases/kernel/syscalls/nice/.gitignore
-> > +++ b/testcases/kernel/syscalls/nice/.gitignore
-> > @@ -2,3 +2,4 @@
-> >  /nice02
-> >  /nice03
-> >  /nice04
-> > +/nice05
-> > diff --git a/testcases/kernel/syscalls/nice/nice05.c
-> > b/testcases/kernel/syscalls/nice/nice05.c
+> >  newuname01 newuname01
+> >
+> > diff --git a/testcases/kernel/syscalls/madvise/.gitignore
+> > b/testcases/kernel/syscalls/madvise/.gitignore
+> > index db8ce47c1..ffd8823d1 100644
+> > --- a/testcases/kernel/syscalls/madvise/.gitignore
+> > +++ b/testcases/kernel/syscalls/madvise/.gitignore
+> > @@ -8,3 +8,4 @@
+> >  /madvise08
+> >  /madvise09
+> >  /madvise10
+> > +/madvise11
+> > diff --git a/testcases/kernel/syscalls/madvise/madvise11.c
+> > b/testcases/kernel/syscalls/madvise/madvise11.c
 > > new file mode 100644
-> > index 000000000..85f10fadf
+> > index 000000000..0132c091c
 > > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/nice/nice05.c
-> > @@ -0,0 +1,54 @@
+> > +++ b/testcases/kernel/syscalls/madvise/madvise11.c
+> > @@ -0,0 +1,82 @@
 > > +// SPDX-License-Identifier: GPL-2.0-or-later
 > > +/*
-> > + * Copyright(c) 2022 Huawei Technologies Co., Ltd
+> > + * Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
 > > + * Author: Zhao Gongyi <zhaogongyi@huawei.com>  */
 > > +
 > > +/*\
 > > + * [Description]
 > > + *
-> > + * Verify that user of root can decrease the nice value of
-> > + * the process successfully by passing a lower increment
-> > + * value (< min. applicable limits) to nice() system call.
+> > + * Check that madvise(2) MADV_DONTNEED applied to shared
+> mappings
+> > +will lead to
+> > + * the resident set size(RSS) of the calling process reduced immediately.
 > > + */
-> > +#include <unistd.h>
+> > +
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
 > > +#include "tst_test.h"
 > > +
-> > +#define	NICEINC -50
-> > +#define MIN_PRIO  -20
-> > +#define DEFAULT_PRIO 0
+> > +#define MAP_SIZE (8 * 1024)
+> > +#define BUF_SIZE 1024
 > > +
-> > +static void verify_nice(void)
+> > +static FILE *fp;
+> > +static char *addr;
+> > +
+> > +static void run(void)
 > > +{
-> > +	int new_nice;
+> > +	char cmd[BUF_SIZE];
+> > +	char line[BUF_SIZE];
+> > +	char vm_area_addr[128];
 > > +
-> > +	TEST(nice(NICEINC));
-> 
-> Why not use one of the TST_EXP* macros?
-
-The errno seems difficult to check in TST_EXP*, TST_EXP_PASS have no checking of errno.
-
-> 
+> > +	TEST(madvise(addr, MAP_SIZE, MADV_DONTNEED));
 > > +	if (TST_RET == -1) {
-> > +		tst_res(TFAIL | TTERRNO, "nice(%d) returned -1", NICEINC);
-> > +		return;
+> > +		tst_brk(TBROK | TTERRNO, "madvise(%p, %d, 0x%x) failed",
+> > +			addr, MAP_SIZE, MADV_DONTNEED);
 > > +	}
-> > +
-> > +	if (TST_ERR) {
-> > +		tst_res(TFAIL | TTERRNO, "nice(%d) failed", NICEINC);
-> > +		return;
-> > +	}
-> > +
-> > +	new_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
-> > +
-> > +	if (new_nice != MIN_PRIO) {
-> > +		tst_res(TFAIL,
-> > +			"Process priority %i, expected %i", new_nice, MIN_PRIO);
-> > +		return;
-> > +	}
-> > +
-> > +	tst_res(TPASS, "nice(%d) passed", NICEINC);
-> > +
-> > +	TEST(nice(DEFAULT_PRIO));
-> > +	if (TST_ERR)
-> > +		tst_brk(TBROK | TTERRNO, "nice(%d) failed",
-> > DEFAULT_PRIO);
 > 
-> Again, could use TST_EXP* macro. Also just checking TST_ERR is not strictly
-> correct.
+> You have a lot of madvise patches, so why not create SAFE_MADVISE?
 
-Similialy, TST_EXP_PASS has no checking of errno also, and it seems that check the return value is enough since the return value is not -1.
+Yes, it seems more better, thanks!
+
+
+> 
+> Or there are the TST_EXP_* macros.
+> 
+> > +
+> > +	sprintf(vm_area_addr, "%p", addr);
+> > +	sprintf(cmd, "cat /proc/%d/smaps", getpid());
+> > +	fp = popen(cmd, "r");
+> > +
+> > +	/* Find the vm area */
+> > +	while (fgets(line, sizeof(line), fp) != NULL) {
+> > +		if (strstr(line, &(vm_area_addr[2])))
+> 
+> AFAICT this could match more than one line by matching the end of the
+> preceding range.
+
+Is it only one vma that inlucde the address?
+
+> 
+> I think that in general it's better to avoid strstr if memcmp can be easily
+> used instead.
+> 
+> > +			break;
+> > +	}
+> > +
+> > +	/* Find Rss size of the vm area */
+> > +	while (fgets(line, sizeof(line), fp) != NULL) {
+> > +		if (strstr(line, "Rss:")) {
+> 
+> Same here although Rss: seems to be unique. Then again it could be added
+> to another field in new kernel.
+> 
+> Perhaps sscanf would be better?
+
+Maybe it will encounter the same problem with sscanf when the field changed?
+
+It seems there is only one way to get the RSS.
 
 Regards,
 Gongyi
