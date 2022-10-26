@@ -4,72 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE30BC38A2D
-	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 12:43:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81558C433FE
+	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 13:06:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C164D3CA788
-	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 14:43:13 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 61B2E3CA756
+	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 15:06:32 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 491823C2297
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 14:43:03 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id EBF3F3C4FA0
+ for <ltp@lists.linux.it>; Wed, 26 Oct 2022 15:06:21 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B928E6009E5
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 14:43:02 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1A8BC1000A66
+ for <ltp@lists.linux.it>; Wed, 26 Oct 2022 15:06:20 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id ACEE321FE1;
- Wed, 26 Oct 2022 12:43:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1E0F72205B;
+ Wed, 26 Oct 2022 13:06:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1666788181; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1666789580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xi4ASynzZNFu8M+mrm3c/bhMycVurhVbuuV17pqfLlI=;
- b=G8Jgxffg0oEx54AD/DBahTbpmgMk+BASTSDzU4t/pFYFmIFzgN1u0PebdIsSN69WmHlzP1
- qpPNlDwrXigPcfJnRb8K/QiuDmPLDlY7gr9bmd2nRCOvAqFkdXMER2ldLfh+cRTiAZ0XxO
- 4BA3ZGhQZsq7eDL4P7+P4N+6mA9Q4g0=
+ bh=l5YFxhw0534MTHkNJVEwQC8q0h0acpKZLSmKzkBNIcI=;
+ b=DTYyN8jgSkM0V3ivwjTgPp+FR5SXM9V7RfpNnHUYojmA/yFxeqYtjgNXUsll+nYhPWouAi
+ PTV7xzEfjdfb5rXCgeXZgXqegijI7a9e2d5pCuO4jVCAFxKEtD77TelVHESu+a0SBb31+t
+ CVYERLZ35mCAXi1osvC0hozfbqIs364=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1666788181;
+ s=susede2_ed25519; t=1666789580;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xi4ASynzZNFu8M+mrm3c/bhMycVurhVbuuV17pqfLlI=;
- b=QHMQh288W0r+zW0mu9TIlxZdyi1go+cu+B43eOAJHXryH3lOmyjBu2V2cipIRudQxa5lW1
- zMLCLNt2eqdPaFBQ==
+ bh=l5YFxhw0534MTHkNJVEwQC8q0h0acpKZLSmKzkBNIcI=;
+ b=xRJW5RtVFnBhfXtnU4kK4hhTqazEhbVXPPPpIS+4twmiZY2MfTCaalk9Y26mOQFyzc1/wD
+ 3esewr+8ZwYXkcCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 92E7313A77;
- Wed, 26 Oct 2022 12:43:01 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0287813A77;
+ Wed, 26 Oct 2022 13:06:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id L9GxIlUrWWMrSgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 26 Oct 2022 12:43:01 +0000
-Date: Wed, 26 Oct 2022 14:44:42 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id zt6BO8swWWPwVgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 26 Oct 2022 13:06:19 +0000
+Date: Wed, 26 Oct 2022 15:08:00 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <Y1kruiJsqAQGUQKZ@yuki>
-References: <20221016125731.249078-1-tsahu@linux.ibm.com>
- <20221016125731.249078-2-tsahu@linux.ibm.com>
- <Y00g0NZYO8pVvC6M@yuki>
- <8ae7d26f5635cc858a657e78b0b806b576a98241.camel@linux.ibm.com>
- <Y1JfP6TMo2BdMr5Y@yuki>
- <ebb30e16cd63fdbff8520c68388f572fc6f5b9e0.camel@linux.ibm.com>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <Y1kxMHBpEhb4SvUb@yuki>
+References: <20221021155740.8339-1-mdoucha@suse.cz> <Y1MCbP1yjLOuoPLb@pevik>
+ <CAASaF6ySEcVE=b-7nGy+FeLyg_6dNMjL6J_bivjZ6JYzSx5b=w@mail.gmail.com>
+ <3f3dca4e-79d9-9e5b-293f-f27c6644dec8@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ebb30e16cd63fdbff8520c68388f572fc6f5b9e0.camel@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <3f3dca4e-79d9-9e5b-293f-f27c6644dec8@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 01/29] Hugetlb: Migrating libhugetlbfs
- brk_near_huge
+Subject: Re: [LTP] [PATCH] save_restore: Check whether path is writable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,35 +77,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: aneesh.kumar@linux.ibm.com, sbhat@linux.ibm.com, ltp@lists.linux.it,
- vaibhav@linux.ibm.com
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Hopt is supposed to be the location which test will use to mount/umount
-> the hugetlbfs fs. If Hopt is not provided, it will create a temp
-> location. It is only to avoid creating any temporary locations outside
-> user concerned test environment.
+> > For optional path, if test can't read/write it (b/o of no root privileges),
+> > I think library shouldn't try to save it - then that would also skip
+> > attempt to restore it.
 > 
->      if(!Hopt)
-> 	Hopt = tst_get_tmpdir();
->      SAFE_MOUNT("none", Hopt, "hugetlbfs", 0, NULL);
-> 
-> It is not expecting any already mounted hugetlbfs.
+> There are be two different kinds of optional paths, though:
+> 1) paths that sometimes don't exist but must be written to if they do
+> 2) paths that may be left alone if they exist and already contain the 
+> right value (otherwise TCONF)
 
-Ah right, this has been changed long ago in:
+Alternatively we can cleanup the interface, we moved from a single
+string to a structure so we can add more fields, what about adding flags
+that would describe one single attribute of the file instead of
+clobbering several different characteristics of the file into a single
+character?
 
-    7420ed0 hugemmap04: auto mount the temporary dir for testing
-    c4dd870 hugemmap03: auto mount the temporary dir for testing
-    9b4865f hugemmap02: auto mount the temporary dir for testing
-    d8728dc hugemmap01: auto mount the temporary dir for testing
+We can then do something as:
 
-Before that the path had to point to already mounted hugetlbfs. At this
-point this option is useless. So I would not add it to new tests at all
-and just use the tmpdir unconditionally.
+struct tst_save_restore {
+	const char *path;
+	const char *val;
+	/* the test needs the file to exist -> TCONF on missing */
+	int required:1;
+	/* write the value even if the file already contains it */
+	int rewrite:1;
+	...
+};
+
+This makes the inteface orthogonal and much easier to reason about.
 
 -- 
 Cyril Hrubis
