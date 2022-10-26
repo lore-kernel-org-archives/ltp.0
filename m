@@ -4,37 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FF60C433FE
-	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 08:21:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB39AC433FE
+	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 08:54:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D70CD3CA729
-	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 10:21:17 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 9C7983CA72B
+	for <ltp@archiver.kernel.org>; Wed, 26 Oct 2022 10:54:55 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C99663C0294
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 10:21:06 +0200 (CEST)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+ by picard.linux.it (Postfix) with ESMTPS id 216463C0294
+ for <ltp@lists.linux.it>; Wed, 26 Oct 2022 10:54:44 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 65F161000A31
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 10:21:03 +0200 (CEST)
-Received: from canpemm100005.china.huawei.com (unknown [172.30.72.57])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4My1sL3RpgzJnFV
- for <ltp@lists.linux.it>; Wed, 26 Oct 2022 16:18:14 +0800 (CST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9E02A1400DBD
+ for <ltp@lists.linux.it>; Wed, 26 Oct 2022 10:54:42 +0200 (CEST)
+Received: from canpemm500008.china.huawei.com (unknown [172.30.72.56])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4My2bP4k7TzpW0W
+ for <ltp@lists.linux.it>; Wed, 26 Oct 2022 16:51:13 +0800 (CST)
 Received: from canpemm500005.china.huawei.com (7.192.104.229) by
- canpemm100005.china.huawei.com (7.192.105.21) with Microsoft SMTP Server
+ canpemm500008.china.huawei.com (7.192.105.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 26 Oct 2022 16:21:00 +0800
+ 15.1.2375.31; Wed, 26 Oct 2022 16:54:39 +0800
 Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
  canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
- Wed, 26 Oct 2022 16:21:00 +0800
+ Wed, 26 Oct 2022 16:54:39 +0800
 To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>
-Thread-Topic: [LTP] [PATCH 2/2] syscalls/nice06: new test for nice()
-Thread-Index: AdjpEgfrXdcJCepdSPGY4olv+BU0lg==
-Date: Wed, 26 Oct 2022 08:21:00 +0000
-Message-ID: <910b68cd082a4a8cb5d23db7fd90a8d7@huawei.com>
+Thread-Topic: [LTP] [PATCH 1/2] syscalls/nice05: new test for nice()
+Thread-Index: AdjpFbStm5foqevKRHyK7TYpHe8STA==
+Date: Wed, 26 Oct 2022 08:54:39 +0000
+Message-ID: <d742a149a2d4476ab493abf80a37b069@huawei.com>
 Accept-Language: zh-CN, en-US
 Content-Language: zh-CN
 X-MS-Has-Attach: 
@@ -42,9 +43,9 @@ X-MS-TNEF-Correlator:
 x-originating-ip: [10.67.110.209]
 MIME-Version: 1.0
 X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] syscalls/nice06: new test for nice()
+Subject: Re: [LTP] [PATCH 1/2] syscalls/nice05: new test for nice()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,16 +72,114 @@ Hi,
 > 
 > Zhao Gongyi via ltp <ltp@lists.linux.it> writes:
 > 
-> > Verify that the errno is nonzero when callling of nice legitimately
-> > return -1.
+> > Verify that user of root can decrease the nice value of the process
+> > successfully by passing a lower increment value (< min. applicable
+> > limits) to nice() system call.
+> >
+> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+> > ---
+> >  runtest/syscalls                          |  1 +
+> >  testcases/kernel/syscalls/nice/.gitignore |  1 +
+> >  testcases/kernel/syscalls/nice/nice05.c   | 54
+> +++++++++++++++++++++++
+> >  3 files changed, 56 insertions(+)
+> >  create mode 100644 testcases/kernel/syscalls/nice/nice05.c
+> >
+> > diff --git a/runtest/syscalls b/runtest/syscalls index
+> > bd74373a4..7db399375 100644
+> > --- a/runtest/syscalls
+> > +++ b/runtest/syscalls
+> > @@ -902,6 +902,7 @@ nice01 nice01
+> >  nice02 nice02
+> >  nice03 nice03
+> >  nice04 nice04
+> > +nice05 nice05
 > 
-> This does not require a separate test and EPERM is the only errno that is
-> listed in the man page.
+> 05 has already been taken. Also this test is very similar to nice01. Maybe it
+> could be added to that?
+
+It seems better that move to nice01, thanks!
+
 > 
+> >
+> >  open01 open01
+> >  open01A symlink01 -T open01
+> > diff --git a/testcases/kernel/syscalls/nice/.gitignore
+> > b/testcases/kernel/syscalls/nice/.gitignore
+> > index 9d7a1bb43..58d64779e 100644
+> > --- a/testcases/kernel/syscalls/nice/.gitignore
+> > +++ b/testcases/kernel/syscalls/nice/.gitignore
+> > @@ -2,3 +2,4 @@
+> >  /nice02
+> >  /nice03
+> >  /nice04
+> > +/nice05
+> > diff --git a/testcases/kernel/syscalls/nice/nice05.c
+> > b/testcases/kernel/syscalls/nice/nice05.c
+> > new file mode 100644
+> > index 000000000..85f10fadf
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/nice/nice05.c
+> > @@ -0,0 +1,54 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright(c) 2022 Huawei Technologies Co., Ltd
+> > + * Author: Zhao Gongyi <zhaogongyi@huawei.com>  */
+> > +
+> > +/*\
+> > + * [Description]
+> > + *
+> > + * Verify that user of root can decrease the nice value of
+> > + * the process successfully by passing a lower increment
+> > + * value (< min. applicable limits) to nice() system call.
+> > + */
+> > +#include <unistd.h>
+> > +#include "tst_test.h"
+> > +
+> > +#define	NICEINC -50
+> > +#define MIN_PRIO  -20
+> > +#define DEFAULT_PRIO 0
+> > +
+> > +static void verify_nice(void)
+> > +{
+> > +	int new_nice;
+> > +
+> > +	TEST(nice(NICEINC));
+> 
+> Why not use one of the TST_EXP* macros?
 
-This testcase is intentionally designed to test the errno is zero when callling of nice legitimately return -1,
+The errno seems difficult to check in TST_EXP*, TST_EXP_PASS have no checking of errno.
 
-For the other testcases of nice, return -1 will report TBROK, shall we need to add a test to check it ? 
+> 
+> > +	if (TST_RET == -1) {
+> > +		tst_res(TFAIL | TTERRNO, "nice(%d) returned -1", NICEINC);
+> > +		return;
+> > +	}
+> > +
+> > +	if (TST_ERR) {
+> > +		tst_res(TFAIL | TTERRNO, "nice(%d) failed", NICEINC);
+> > +		return;
+> > +	}
+> > +
+> > +	new_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
+> > +
+> > +	if (new_nice != MIN_PRIO) {
+> > +		tst_res(TFAIL,
+> > +			"Process priority %i, expected %i", new_nice, MIN_PRIO);
+> > +		return;
+> > +	}
+> > +
+> > +	tst_res(TPASS, "nice(%d) passed", NICEINC);
+> > +
+> > +	TEST(nice(DEFAULT_PRIO));
+> > +	if (TST_ERR)
+> > +		tst_brk(TBROK | TTERRNO, "nice(%d) failed",
+> > DEFAULT_PRIO);
+> 
+> Again, could use TST_EXP* macro. Also just checking TST_ERR is not strictly
+> correct.
+
+Similialy, TST_EXP_PASS has no checking of errno also, and it seems that check the return value is enough since the return value is not -1.
 
 Regards,
 Gongyi
