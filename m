@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBA24FA3740
-	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 21:58:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67169FA3740
+	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 21:58:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BE7493CA94F
-	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 23:58:23 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9CF2D3CA8C7
+	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 23:58:37 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DB6753CA88D
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 23:58:13 +0200 (CEST)
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com
- [IPv6:2607:f8b0:4864:20::104a])
+ by picard.linux.it (Postfix) with ESMTPS id 190283CA932
+ for <ltp@lists.linux.it>; Thu, 27 Oct 2022 23:58:16 +0200 (CEST)
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com
+ [IPv6:2607:f8b0:4864:20::1049])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5D9B0600D27
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 23:58:13 +0200 (CEST)
-Received: by mail-pj1-x104a.google.com with SMTP id
- c91-20020a17090a496400b00212eb50e75cso1557696pjh.6
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 14:58:13 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6CCBA600A60
+ for <ltp@lists.linux.it>; Thu, 27 Oct 2022 23:58:15 +0200 (CEST)
+Received: by mail-pj1-x1049.google.com with SMTP id
+ my9-20020a17090b4c8900b002130d29fd7cso4417891pjb.7
+ for <ltp@lists.linux.it>; Thu, 27 Oct 2022 14:58:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=dQEf8kncBwknQcK0o4nJCA0XnTYtwqbCS78yzlt3EZk=;
- b=F31ru6bdyQIyZuS05wxiUypQ9mxWF+3VFRmu9D1Z1KnIP0LgYtLSMQQ5lotT6zA2iv
- sOaA3gpf5dOhdnX+cIIBlQ/nSPicQt2jJcCBz6k5sZimqjRsCFUsUkvvGyGw899/qyMB
- KO4WsJKBVL0sRNSh+scLtDnBM2aDLJWSkYWtpisOpvkKeYbkUnYEgQD8c7ELilxJQMFa
- TnBzoLJtvtzFZGL8Fn73ZnJBxfUixmgasGK/LM9Ez5THwaGtPibJ3GWpX20QEmCT+Lk0
- SGIf7kQg1LSa8fsz5qrKd8fOts4qq5Fool6dw78J3StEmjyFH0GjiB/+wBDrjdNSE2Ug
- zOig==
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:from:to:cc:subject:date:message-id:reply-to;
+ bh=N0bse3LbuSsRmQ+y0pqESZ12eWpikMJCnaMh+g7tv2s=;
+ b=dzMxD+dmJ238N+3s0Y+p2tkxu9VKJnzoqNtaA/haczYQ97/urD20FVD9oVtjK02XTc
+ bUOCNw4Nqf9eQSes1Tb3WgUwSCjxHhPi0AXTguzuJ4lpnPWWZpLacHaURlF6cRhE9Riy
+ wMWnPhKKmR4PPGdqo7QUE7YVVoAfUXn00tO/XqvJHndo6KKMOS+4OVV+3OduGjIm++B/
+ kCATmeYO/zbcZXG54wctDMoxMCBtu0SGzVb9IorIGqNA7vlMqrIpJFAXv4FwlSxyJsiR
+ fDjgKK+YFL8zuGEDJFWswhHE/6LcAlYU3ab07viYer/KO0xJTPBQh4VhaujY8P/9x4Mk
+ MguQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=dQEf8kncBwknQcK0o4nJCA0XnTYtwqbCS78yzlt3EZk=;
- b=6rJcqLwqjIYEuX7EOfIGkV+Gp4cd0iJ5RBiXtDOuug90aPrAwBpDI1ZV0JmeJO1lH1
- DJ3Uti2dFEinCcO/3vz6OnCbqI+jejZkKrdQKDvN94ScZTl5YUsyAv/77Xi91yGZv0OZ
- yw3+aHrdxmhwTanwf2EJANU9LG17luqUwOPnIB80OJXY6Rdln8PW8wE9XptvyRWrNWh3
- VBynJkNcsEIUKY1I6Ff+I0Pdi9PiKUxIgU7X72NWwF+vAgqekPq0sbvKGZZnO9OIDHfj
- Ek47yp+8HgmIyT109GKupqd8huPM/YIiIkyTzVsT1cqPVeooEnLfJ+poqY+piQl4l83m
- 96Lw==
-X-Gm-Message-State: ACrzQf2azPBWS9BrNA3R9EPBRJNCMQ7UUCwVoHDKGfxqIiPdaWHVtgRF
- 6A3o+NGSgiTvup1A8swfKBfxxe5vuvd2oo7LBrAAQ0Js0ZtsDrSKj7ki3sNBG6q5r2nUSGsWznX
- EV1wQbR3C4OxtjWeYMpD/VfS2oTilFtbzhbwnJWdb8OpjeZ0i4Iw2b9oV
-X-Google-Smtp-Source: AMsMyM7c2FpuyX6vtM2LpDVO62tWro92CSheo2BD+VmZB6GWdMU/SI7AaOAfjvHHxorBxniV9MV9zHkVECQ=
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=N0bse3LbuSsRmQ+y0pqESZ12eWpikMJCnaMh+g7tv2s=;
+ b=KJcBVK7a3UEGd3Dc65jLK6VK8F9xTnVchCdl/EBF/0y3fcN482X9DaK1LAvwWMzqPy
+ n1tR8GM+KxO9GDtt9jBf+YrM0I0xgrQvX18Yens+Gc4+w7zefgHh83ZTS4XoLDASvF7n
+ GMz9dhmYKdmuiXp8aOouv8x4t4syWtjawRmTzNWP6smeLYc6ICYNLv/Y6yEDCeBeM4ZM
+ 2VDVvMRIEFMJgqlgChcLVqRz4sfOBn2lBKbVj5AOql586KT8da5uOLNyf6LV7+dPR58k
+ RUf2YhvCUB9mMKFjqtmV7miY8+j7z9aElKllEC+nE4F3pmvNzjsMc8MzMaoimIXTqBEm
+ Warw==
+X-Gm-Message-State: ACrzQf0sHCbKPoN7SH9XN0nxH/RWmYjHddkxeYwGvolNGTjz8g4zo2sC
+ hOg8hqpyrkCn1pkYPN//AQfUwADWsWeCzjvcipVdw5djbsc4T2m+43blA/ZcCPrfB/FGx2sRC39
+ 9sWzE/cKVweBcwgviR4kiawr/FpMoYEawL1ucD62M4ayxZXzju1JZlTrP
+X-Google-Smtp-Source: AMsMyM7/Y3aBWsHj8iq235r6T1axhl06icjRFwvBLAYQ4Qr4qzi7NGjjmgZqyrdS8Uevct3Cc7kCXLLV6Tw=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a63:5617:0:b0:43c:9a42:fe95 with SMTP id
- k23-20020a635617000000b0043c9a42fe95mr43411700pgb.446.1666907891436; Thu, 27
- Oct 2022 14:58:11 -0700 (PDT)
-Date: Thu, 27 Oct 2022 21:58:07 +0000
+ (user=edliaw job=sendgmr) by 2002:a17:90a:8988:b0:212:e1b9:e8fd with SMTP id
+ v8-20020a17090a898800b00212e1b9e8fdmr12285373pjn.148.1666907893891; Thu, 27
+ Oct 2022 14:58:13 -0700 (PDT)
+Date: Thu, 27 Oct 2022 21:58:08 +0000
+In-Reply-To: <20221027215808.4126148-1-edliaw@google.com>
 Mime-Version: 1.0
+References: <20221027215808.4126148-1-edliaw@google.com>
 X-Mailer: git-send-email 2.38.1.273.g43a17bfeac-goog
-Message-ID: <20221027215808.4126148-1-edliaw@google.com>
+Message-ID: <20221027215808.4126148-2-edliaw@google.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v7 0/1] mmapstress01: refactor to ltp framework
+Subject: [LTP] [PATCH v7 1/1] mmapstress01: refactor to tst_test framework
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,54 +83,1023 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-v6->v7:
-* clean up pattern option
-* always print configuration info message
+Use ltp framework and apply make check corrections.  Reorder functions
+and variables.  Use safe macros.
+Drop leavefile option.
+Build tests with FILE_OFFSET_BITS=64 instead of doing LARGE_FILE checks
+to switch between 32 and 64 bit types and syscalls.
+Define fsize bounds by file offset bits.
+Move sighandler to setup and remove sig blocks.
+Add option to specify pattern.
+Set default nprocs to ncpus with min of 1 and max of 20.
 
-v5->v6:
-* revert pidarray removal because children use the array index to
-determine read/write locations
-* add option to specify pattern for reproducibility
-* set default nprocs to ncpus with range between 1-20
-* remove more comments
-
-v4->v5:
-* reformat top level comment to docparse format
-* reduce amount of verbose comments
-* clean up file size bounds definitions
-* make finished variable volatile for >1 retries
-* remove unnecessary pidarray because offloaded to test harness
-* remove unnecessary sig blocks
-
-v3->v4:
-* squash previous changes
-* set defaults of nprocs=20 and max_runtime=12
-* clean up comments
-* return TBROK instead of TFAIL for unexpected failures
-
-v2->v3:
-* apply make check lint suggestions
-* refactor cleanup
-* use SAFE_FORK
-* update license
-
-v1->v2:
-* clean up formatting
-* remove accidental change to header comment
-* use SAFE_MMAP
-
-v0->v1:
-* use tst_test framework
-* use FILE_OFFSET_BITS=64 instead of LARGE_FILE
-* use safe macros
-
-Edward Liaw (1):
-  mmapstress01: refactor to tst_test framework
-
+Signed-off-by: Edward Liaw <edliaw@google.com>
+---
  testcases/kernel/mem/mmapstress/Makefile      |   2 +
  .../kernel/mem/mmapstress/mmapstress01.c      | 886 +++++-------------
  2 files changed, 261 insertions(+), 627 deletions(-)
 
+diff --git a/testcases/kernel/mem/mmapstress/Makefile b/testcases/kernel/mem/mmapstress/Makefile
+index 744f099d8..b30bd34b8 100644
+--- a/testcases/kernel/mem/mmapstress/Makefile
++++ b/testcases/kernel/mem/mmapstress/Makefile
+@@ -5,3 +5,5 @@ top_srcdir              ?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
++mmapstress01: CFLAGS += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
+index f425c223d..ac1b77387 100644
+--- a/testcases/kernel/mem/mmapstress/mmapstress01.c
++++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
+@@ -1,23 +1,24 @@
+-/* IBM Corporation */
+-/* 01/02/2003	Port to LTP avenkat@us.ibm.com */
+-/* 06/30/2001	Port to Linux	nsharoff@us.ibm.com */
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *   Copyright (c) International Business Machines  Corp., 2003
+- *
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
++ * Copyright (c) International Business Machines  Corp., 2003
++ * 01/02/2003	Port to LTP avenkat@us.ibm.com
++ * 06/30/2001	Port to Linux	nsharoff@us.ibm.com
++ * 10/03/2022	Refactor to LTP framework	edliaw@google.com
++ */
++/*\
++ * [Description]
++ * This test stresses mmaps, without dealing with fragments or anything!
++ * It forks a specified number of children,
++ * all of whom mmap the same file, make a given number of accesses
++ * to random pages in the map (reading & writing and comparing data).
++ * Then the child exits and the parent forks another to take its place.
++ * Each time a child is forked, it stats the file and maps the full
++ * length of the file.
+  *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * This program continues to run until it either receives a SIGINT,
++ * or times out (if a timeout value is specified).  When either of
++ * these things happens, it cleans up its kids, then checks the
++ * file to make sure it has the correct data.
+  */
+ 
+ #define _GNU_SOURCE 1
+@@ -32,517 +33,159 @@
+ #include <errno.h>
+ #include <sys/types.h>
+ #include <limits.h>
+-/*****  LTP Port        *****/
+-#include "test.h"
+-#define FAILED 0
+-#define PASSED 1
+-
+-int local_flag = PASSED;
+-char *TCID = "mmapstress01";	//tmnoextend
+-FILE *temp;
+-int TST_TOTAL = 1;
+-
+-int anyfail();
+-void ok_exit();
+-/*****  **      **      *****/
+-
+-/*
+- *  This test stresses mmaps, without dealing with fragments or anything!
+- *  It forks a specified number of children,
+- *  all of whom mmap the same file, make a given number of accesses
+- *  to random pages in the map (reading & writing and comparing data).
+- *  Then the child exits and the parent forks another to take its place.
+- *  Each time a child is forked, it stats the file and maps the full
+- *  length of the file.
+- *
+- *  This program continues to run until it either receives a SIGINT,
+- *  or times out (if a timeout value is specified).  When either of
+- *  these things happens, it cleans up its kids, then checks the
+- *  file to make sure it has the correct data.
+- *
+- *  usage:
+- *	tmnoextend -p nprocs [-t minutes -f filesize -S sparseoffset
+- *			      -r -o -m -l -d]
+- *  where:
+- *	-p nprocs	- specifies the number of mapping children
+- *			  to create.  (nprocs + 1 children actually
+- *			  get created, since one is the writer child)
+- *	-t minutes	- specifies minutes to run.  If not specified,
+- *			  default is to run forever until a SIGINT
+- *			  is received.
+- *	-f filesize	- initial filesize (defaults to FILESIZE)
+- *	-S sparseoffset - when non-zero, causes a sparse area to
+- *			  be left before the data, meaning that the
+- *			  actual initial file size is sparseoffset +
+- *			  filesize.  Useful for testing large files.
+- *			  (default is 0).
+- *	-r		- randomize number of pages map children check.
+- *			  (random % MAXLOOPS).  If not specified, each
+- *			  child checks MAXLOOPS pages.
+- *	-o		- randomize offset of file to map. (default is 0)
+- *	-m		- do random msync/fsyncs as well
+- *	-l		- if set, the output file is not removed on
+- *			  program exit.
+- *	-d		- enable debug output
+- *
+- *  Compile with -DLARGE_FILE to enable file sizes > 2 GB.
+- */
+-
++#include <float.h>
++#include "tst_test.h"
++
++#if _FILE_OFFSET_BITS == 64
++# define FSIZE_MIN LONG_MIN
++# define FSIZE_MAX LONG_MAX
++#else
++# define FSIZE_MIN INT_MIN
++# define FSIZE_MAX INT_MAX
++#endif
+ #define MAXLOOPS	500	/* max pages for map children to write */
+-#define	FILESIZE	4096	/* initial filesize set up by parent */
++#define TEST_FILE	"mmapstress01.out"
+ 
+ #ifdef roundup
+ #undef roundup
+ #endif
+ #define roundup(x, y)	((((x)+((y)-1))/(y))*(y))
+ 
+-extern time_t time(time_t *);
+-extern char *ctime(const time_t *);
+-extern void *malloc(size_t);
+-extern long lrand48(void);
+-extern void srand(unsigned);
+-extern void srand48(long);
+-extern int rand(void);
+-extern int atoi(const char *);
+-
+-char *usage =
+-    "-p nprocs [-t minutes -f filesize -S sparseoffset -r -o -m -l -d]";
+-
+-typedef unsigned char uchar_t;
+-#define SIZE_MAX UINT_MAX
+-
+-unsigned int initrand(void);
+-void finish(int sig);
+-void child_mapper(char *file, unsigned procno, unsigned nprocs);
+-int fileokay(char *file, uchar_t * expbuf);
+-int finished = 0;
+-int leavefile = 0;
+-
+-int debug = 0;
+-#ifdef LARGE_FILE
+-off64_t filesize = FILESIZE;
+-off64_t sparseoffset = 0;
+-#else /* LARGE_FILE */
+-off_t filesize = FILESIZE;
+-off_t sparseoffset = 0;
+-#endif /* LARGE_FILE */
+-unsigned randloops = 0;
+-unsigned dosync = 0;
+-unsigned do_offset = 0;
+-unsigned pattern = 0;
+-
+-int main(int argc, char *argv[])
++static unsigned int initrand(void);
++static void sighandler(int);
++
++static char *debug;
++static char *do_sync;
++static char *do_offset;
++static char *opt_filesize;
++static char *opt_nprocs;
++static char *opt_pattern;
++static char *opt_sparseoffset;
++static char *randloops;
++
++static int fd;
++static volatile int finished;
++static int nprocs;
++static long long filesize = 4096;
++static long long sparseoffset;
++static size_t pagesize;
++static int pattern;
++
++static struct tst_option options[] = {
++	{"d", &debug, "Enable debug output"},
++	{"f:", &opt_filesize, "Initial filesize (default 4096)"},
++	{"m", &do_sync, "Do random msync/fsyncs as well"},
++	{"o", &do_offset, "Randomize the offset of file to map"},
++	{"p:", &opt_nprocs,
++	 "Number of mapping children to create (default 1 < ncpus < 20)"},
++	{"P:", &opt_pattern,
++	 "Use a fixed pattern (default random)"},
++	{"r", &randloops,
++	 "Randomize number of pages map children check (random % 500), "
++	 "otherwise each child checks 500 pages"},
++	{"S:", &opt_sparseoffset,
++	 "When non-zero, causes the sparse area to be left before the data, "
++	 "so that the actual initial filesize is sparseoffset + filesize "
++	 "(default 0)"},
++	{},
++};
++
++static void setup(void)
+ {
+-	char *progname;
+-	int fd;
+-	int c;
+-	extern char *optarg;
+-	unsigned nprocs = 0;
+-	unsigned procno;
+-	pid_t *pidarray = NULL;
+-	pid_t pid;
+-	uchar_t *buf = NULL;
+-	unsigned int seed;
+-	int pagesize = sysconf(_SC_PAGE_SIZE);
+-	float alarmtime = 0;
+ 	struct sigaction sa;
+-	unsigned i;
+-	int write_cnt;
+-	uchar_t data;
+-	int no_prob = 0;
+-	int wait_stat;
+-	time_t t;
+-#ifdef LARGE_FILE
+-	off64_t bytes_left;
+-#else /* LARGE_FILE */
+-	off_t bytes_left;
+-#endif /* LARGE_FILE */
+-	const char *filename = "mmapstress01.out";
+-
+-	progname = *argv;
+-	tst_tmpdir();
+-	if (argc < 2) {
+-		tst_brkm(TBROK, NULL, "usage: %s %s", progname, usage);
+-	}
+-
+-	while ((c = getopt(argc, argv, "S:omdlrf:p:t:")) != -1) {
+-		switch (c) {
+-		case 'd':
+-			debug = 1;
+-			break;
+-		case 't':
+-			alarmtime = atof(optarg) * 60;
+-			break;
+-		case 'p':
+-			nprocs = atoi(optarg);
+-			break;
+-		case 'l':
+-			leavefile = 1;
+-			break;
+-		case 'f':
+-#ifdef LARGE_FILE
+-			filesize = atoll(optarg);
+-#else /* LARGE_FILE */
+-			filesize = atoi(optarg);
+-#endif /* LARGE_FILE */
+-			if (filesize < 0) {
+-				(void)fprintf(stderr, "error: negative "
+-					      "filesize\n");
+-				anyfail();
+-			}
+-			break;
+-		case 'r':
+-			randloops = 1;
+-			break;
+-		case 'm':
+-			dosync = 1;
+-			break;
+-		case 'o':
+-			do_offset = 1;
+-			break;
+-		case 'S':
+-#ifdef LARGE_FILE
+-			sparseoffset = atoll(optarg);
+-#else /* LARGE_FILE */
+-			sparseoffset = atoi(optarg);
+-#endif /* LARGE_FILE */
+-			if (sparseoffset % pagesize != 0) {
+-				fprintf(stderr,
+-					"sparseoffset must be pagesize multiple\n");
+-				anyfail();
+-			}
+-			break;
+-		default:
+-			(void)fprintf(stderr, "usage: %s %s\n", progname,
+-				      usage);
+-			tst_exit();
+-		}
+-	}
+-
+-	/* nprocs is >= 0 since it's unsigned */
+-	if (nprocs > 255) {
+-		(void)fprintf(stderr, "invalid nprocs %d - (range 0-255)\n",
+-			      nprocs);
+-		anyfail();
+-	}
+-
+-	(void)time(&t);
+-
+-	seed = initrand();
+-	pattern = seed & 0xff;
+-
+-	if (debug) {
+-#ifdef LARGE_FILE
+-		(void)printf("creating file <%s> with %Ld bytes, pattern %d\n",
+-			     filename, filesize, pattern);
+-#else /* LARGE_FILE */
+-		(void)printf("creating file <%s> with %ld bytes, pattern %d\n",
+-			     filename, filesize, pattern);
+-#endif /* LARGE_FILE */
+-		if (alarmtime)
+-			(void)printf("running for %f minutes\n",
+-				     alarmtime / 60);
+-		else
+-			(void)printf("running with no time limit\n");
+-	}
+ 
+-	/*
+-	 *  Plan for death by signal.  User may have specified
+-	 *  a time limit, in which set an alarm and catch SIGALRM.
+-	 *  Also catch and cleanup with SIGINT.
+-	 */
+-	sa.sa_handler = finish;
++	sa.sa_handler = sighandler;
+ 	sa.sa_flags = 0;
+-	if (sigemptyset(&sa.sa_mask)) {
+-		perror("sigemptyset error");
+-		goto cleanup;
+-	}
+-
+-	if (sigaction(SIGINT, &sa, 0) == -1) {
+-		perror("sigaction error SIGINT");
+-		goto cleanup;
+-	}
+-	if (sigaction(SIGQUIT, &sa, 0) == -1) {
+-		perror("sigaction error SIGQUIT");
+-		goto cleanup;
+-	}
+-	if (sigaction(SIGTERM, &sa, 0) == -1) {
+-		perror("sigaction error SIGTERM");
+-		goto cleanup;
+-	}
+-
+-	if (alarmtime) {
+-		if (sigaction(SIGALRM, &sa, 0) == -1) {
+-			perror("sigaction error");
+-			goto cleanup;
+-		}
+-		(void)alarm(alarmtime);
+-	}
+-#ifdef LARGE_FILE
+-	if ((fd = open64(filename, O_CREAT | O_TRUNC | O_RDWR, 0664)) == -1) {
+-#else /* LARGE_FILE */
+-	if ((fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0664)) == -1) {
+-#endif /* LARGE_FILE */
+-		perror("open error");
+-		anyfail();
+-	}
+-
+-	if ((buf = malloc(pagesize)) == NULL
+-	    || (pidarray = malloc(nprocs * sizeof(pid_t))) == NULL) {
+-		perror("malloc error");
+-		anyfail();
+-	}
+-
+-	for (i = 0; i < nprocs; i++)
+-		*(pidarray + i) = 0;
+-
+-	for (i = 0, data = 0; i < pagesize; i++) {
+-		*(buf + i) = (data + pattern) & 0xff;
+-		if (++data == nprocs)
+-			data = 0;
+-	}
+-#ifdef LARGE_FILE
+-	if (lseek64(fd, sparseoffset, SEEK_SET) < 0) {
+-#else /* LARGE_FILE */
+-	if (lseek(fd, sparseoffset, SEEK_SET) < 0) {
+-#endif /* LARGE_FILE */
+-		perror("lseek");
+-		anyfail();
+-	}
+-	for (bytes_left = filesize; bytes_left; bytes_left -= c) {
+-		write_cnt = MIN(pagesize, (int)bytes_left);
+-		if ((c = write(fd, buf, write_cnt)) != write_cnt) {
+-			if (c == -1) {
+-				perror("write error");
+-			} else {
+-				(void)fprintf(stderr, "write: wrote %d of %d "
+-					      "bytes\n", c, write_cnt);
+-			}
+-			(void)close(fd);
+-			(void)unlink(filename);
+-			anyfail();
+-		}
+-	}
+-
+-	(void)close(fd);
+-
+-	/*
+-	 *  Fork off mmap children.
+-	 */
+-	for (procno = 0; procno < nprocs; procno++) {
+-		switch (pid = fork()) {
+-
+-		case -1:
+-			perror("fork error");
+-			goto cleanup;
+-
+-		case 0:
+-			child_mapper(filename, procno, nprocs);
+-			exit(0);
+-
+-		default:
+-			pidarray[procno] = pid;
+-		}
+-	}
+-
+-	/*
+-	 *  Now wait for children and refork them as needed.
+-	 */
+-
+-	while (!finished) {
+-		pid = wait(&wait_stat);
+-		/*
+-		 *  Block signals while processing child exit.
+-		 */
+-
+-		if (sighold(SIGALRM) || sighold(SIGINT)) {
+-			perror("sighold error");
+-			goto cleanup;
+-		}
+-
+-		if (pid != -1) {
+-			/*
+-			 *  Check exit status, then refork with the
+-			 *  appropriate procno.
+-			 */
+-			if (!WIFEXITED(wait_stat)
+-			    || WEXITSTATUS(wait_stat) != 0) {
+-				(void)fprintf(stderr, "child exit with err "
+-					      "<x%x>\n", wait_stat);
+-				goto cleanup;
+-			}
+-			for (i = 0; i < nprocs; i++)
+-				if (pid == pidarray[i])
+-					break;
+-			if (i == nprocs) {
+-				(void)fprintf(stderr, "unknown child pid %d, "
+-					      "<x%x>\n", pid, wait_stat);
+-				goto cleanup;
+-			}
+-
+-			if ((pid = fork()) == -1) {
+-				perror("fork error");
+-				pidarray[i] = 0;
+-				goto cleanup;
+-			} else if (pid == 0) {	/* child */
+-				child_mapper(filename, i, nprocs);
+-				exit(0);
+-			} else
+-				pidarray[i] = pid;
+-		} else {
+-			/*
+-			 *  wait returned an error.  If EINTR, then
+-			 *  normal finish, else it's an unexpected
+-			 *  error...
+-			 */
+-			if (errno != EINTR || !finished) {
+-				perror("unexpected wait error");
+-				goto cleanup;
+-			}
+-		}
+-		if (sigrelse(SIGALRM) || sigrelse(SIGINT)) {
+-			perror("sigrelse error");
+-			goto cleanup;
+-		}
+-	}
+-
+-	/*
+-	 *  Finished!  Check the file for sanity, then kill all
+-	 *  the children and done!.
+-	 */
+-
+-	if (sighold(SIGALRM)) {
+-		perror("sighold error");
+-		goto cleanup;
+-	}
+-	(void)alarm(0);
+-	no_prob = 1;
+-
+-cleanup:
+-	for (i = 0; i < nprocs; i++)
+-		(void)kill(pidarray[i], SIGKILL);
+-
+-	while (wait(&wait_stat) != -1 || errno != ECHILD)
+-		continue;
+-
+-	if (no_prob) {		/* only check file if no errors */
+-		if (!fileokay(filename, buf)) {
+-			(void)fprintf(stderr, "file data incorrect!\n");
+-			(void)printf("  leaving file <%s>\n", filename);
+-			/***** LTP Port *****/
+-			local_flag = FAILED;
+-			anyfail();
+-			/*****	**	*****/
+-		} else {
+-			(void)printf("file data okay\n");
+-			if (!leavefile)
+-				(void)unlink(filename);
+-		}
+-	} else
+-		(void)printf("  leaving file <%s>\n", filename);
++	SAFE_SIGEMPTYSET(&sa.sa_mask);
++	SAFE_SIGACTION(SIGINT, &sa, 0);
++	SAFE_SIGACTION(SIGQUIT, &sa, 0);
++	SAFE_SIGACTION(SIGTERM, &sa, 0);
++	SAFE_SIGACTION(SIGALRM, &sa, 0);
++
++	pagesize = sysconf(_SC_PAGE_SIZE);
++
++	if (tst_parse_filesize(opt_filesize, &filesize, 0, FSIZE_MAX))
++		tst_brk(TBROK, "invalid initial filesize '%s'", opt_filesize);
++
++	if (tst_parse_filesize(opt_sparseoffset, &sparseoffset, FSIZE_MIN, FSIZE_MAX))
++		tst_brk(TBROK, "invalid sparse offset '%s'", opt_sparseoffset);
++	if (sparseoffset % pagesize != 0)
++		tst_brk(TBROK, "sparseoffset must be pagesize multiple");
++
++	if (tst_parse_int(opt_nprocs, &nprocs, 0, 255))
++		tst_brk(TBROK, "invalid number of mapping children '%s'",
++			opt_nprocs);
++	if (!opt_nprocs)
++		nprocs = MAX(MIN(tst_ncpus() - 1L, 20L), 1L);
++
++	if (tst_parse_int(opt_pattern, &pattern, 0, 255))
++		tst_brk(TBROK, "invalid pattern '%s'", opt_pattern);
++	if (!opt_pattern)
++		pattern = initrand() & 0xff;
++
++	tst_res(TINFO, "creating file <%s> with %lld bytes, pattern %d",
++		TEST_FILE, filesize, pattern);
++}
+ 
+-	(void)time(&t);
+-	//(void)printf("%s: Finished %s", argv[0], ctime(&t)); LTP Port
+-	ok_exit();
+-	tst_exit();
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
+ }
+ 
+ /*
+- *  Child process that reads/writes map.  The child stats the file
+- *  to determine the size, maps the size of the file, then reads/writes
+- *  its own locations on random pages of the map (its locations being
+- *  determined based on nprocs & procno).  After a specific number of
+- *  iterations, it exits.
++ * Child process that reads/writes map.  The child stats the file
++ * to determine the size, maps the size of the file, then reads/writes
++ * its own locations on random pages of the map (its locations being
++ * determined based on nprocs & procno).  After a specific number of
++ * iterations, it exits.
+  */
+-void child_mapper(char *file, unsigned procno, unsigned nprocs)
++static void child_mapper(char *file, unsigned int procno, unsigned int nprocs)
+ {
+-#ifdef LARGE_FILE
+-	struct stat64 statbuf;
+-	off64_t filesize;
+-	off64_t offset;
+-#else /* LARGE_FILE */
+ 	struct stat statbuf;
+ 	off_t filesize;
+ 	off_t offset;
+-#endif /* LARGE_FILE */
+ 	size_t validsize;
+ 	size_t mapsize;
+ 	char *maddr = NULL, *paddr;
+-	int fd;
+-	size_t pagesize = sysconf(_SC_PAGE_SIZE);
+-	unsigned randpage;
++	unsigned int randpage;
+ 	unsigned int seed;
+-	unsigned loopcnt;
+-	unsigned nloops;
+-	unsigned mappages;
+-	unsigned i;
+-
+-	seed = initrand();	/* initialize random seed */
+-
+-#ifdef LARGE_FILE
+-	if (stat64(file, &statbuf) == -1) {
+-#else /* LARGE_FILE */
+-	if (stat(file, &statbuf) == -1) {
+-#endif /* LARGE_FILE */
+-		perror("stat error");
+-		anyfail();
+-	}
++	unsigned int loopcnt;
++	unsigned int nloops;
++	unsigned int mappages;
++	unsigned int i;
++
++	seed = initrand();
++
++	SAFE_STAT(file, &statbuf);
+ 	filesize = statbuf.st_size;
+ 
+-#ifdef LARGE_FILE
+-	if ((fd = open64(file, O_RDWR)) == -1) {
+-#else /* LARGE_FILE */
+-	if ((fd = open(file, O_RDWR)) == -1) {
+-#endif /* LARGE_FILE */
+-		perror("open error");
+-		anyfail();
+-	}
++	fd = SAFE_OPEN(file, O_RDWR);
+ 
+-	if (statbuf.st_size - sparseoffset > SIZE_MAX) {
+-		fprintf(stderr, "size_t overflow when setting up map\n");
+-		anyfail();
+-	}
++	if (statbuf.st_size - sparseoffset > UINT_MAX)
++		tst_brk(TBROK, "size_t overflow when setting up map");
+ 	mapsize = (size_t) (statbuf.st_size - sparseoffset);
+ 	mappages = roundup(mapsize, pagesize) / pagesize;
+ 	offset = sparseoffset;
+ 	if (do_offset) {
+ 		int pageoffset = lrand48() % mappages;
+ 		int byteoffset = pageoffset * pagesize;
++
+ 		offset += byteoffset;
+ 		mapsize -= byteoffset;
+ 		mappages -= pageoffset;
+ 	}
+ 	nloops = (randloops) ? (lrand48() % MAXLOOPS) : MAXLOOPS;
+ 
+-	if (debug) {
+-#ifdef LARGE_FILE
+-		(void)printf("child %d (pid %ld): seed %d, fsize %Ld, "
+-			     "mapsize %d, off %Ld, loop %d\n",
+-			     procno, getpid(), seed, filesize, mapsize,
+-			     offset / pagesize, nloops);
+-#else /* LARGE_FILE */
+-		(void)printf("child %d (pid %d): seed %d, fsize %ld, "
+-			     "mapsize %ld, off %ld, loop %d\n",
+-			     procno, getpid(), seed, filesize, (long)mapsize,
+-			     offset / pagesize, nloops);
+-#endif /* LARGE_FILE */
+-	}
+-#ifdef LARGE_FILE
+-	if ((maddr = mmap64(0, mapsize, PROT_READ | PROT_WRITE, MAP_SHARED,
+-			    fd, offset)) == (caddr_t) - 1) {
+-#else /* LARGE_FILE */
+-	if ((maddr = mmap(0, mapsize, PROT_READ | PROT_WRITE, MAP_SHARED,
+-			  fd, offset)) == (caddr_t) - 1) {
+-#endif /* LARGE_FILE */
+-		perror("mmap error");
+-		anyfail();
+-	}
++	if (debug)
++		tst_res(TINFO, "child %d (pid %d): seed %d, fsize %lld, mapsize %ld, off %lld, loop %d",
++			procno, getpid(), seed, (long long)filesize,
++			(long)mapsize, (long long)offset / pagesize, nloops);
+ 
+-	(void)close(fd);
++	maddr = SAFE_MMAP(0, mapsize, PROT_READ | PROT_WRITE, MAP_SHARED, fd,
++			  offset);
++	SAFE_CLOSE(fd);
+ 
+-	/*
+-	 *  Now loop read/writing random pages.
+-	 */
+ 	for (loopcnt = 0; loopcnt < nloops; loopcnt++) {
+ 		randpage = lrand48() % mappages;
+ 		paddr = maddr + (randpage * pagesize);	/* page address */
+@@ -554,185 +197,174 @@ void child_mapper(char *file, unsigned procno, unsigned nprocs)
+ 
+ 		for (i = procno; i < validsize; i += nprocs) {
+ 			if (*((unsigned char *)(paddr + i))
+-			    != ((procno + pattern) & 0xff)) {
+-				(void)fprintf(stderr, "child %d: invalid data "
+-					      "<x%x>", procno,
+-					      *((unsigned char *)(paddr + i)));
+-				(void)fprintf(stderr, " at pg %d off %d, exp "
+-					      "<x%x>\n", randpage, i,
+-					      (procno + pattern) & 0xff);
+-				anyfail();
+-			}
++			    != ((procno + pattern) & 0xff))
++				tst_brk(TFAIL, "child %d: invalid data <x%x>\n"
++					" at pg %d off %d, exp <x%x>", procno,
++					*((unsigned char *)(paddr + i)),
++					randpage, i, (procno + pattern) & 0xff);
+ 
+-			/*
+-			 *  Now write it.
+-			 */
+ 			*(paddr + i) = (procno + pattern) & 0xff;
+ 		}
+ 	}
+-	if (dosync) {
+-		/*
+-		 * Exercise msync() as well!
+-		 */
++	if (do_sync) {
+ 		randpage = lrand48() % mappages;
+ 		paddr = maddr + (randpage * pagesize);	/* page address */
+ 		if (msync(paddr, (mappages - randpage) * pagesize,
+-			  MS_SYNC) == -1) {
+-			anyfail();
+-		}
+-	}
+-	if (munmap(maddr, mapsize) == -1) {
+-		perror("munmap failed");
+-		local_flag = FAILED;
+-		anyfail();
++			  MS_SYNC) == -1)
++			tst_brk(TBROK | TERRNO, "msync failed");
+ 	}
++	SAFE_MUNMAP(maddr, mapsize);
+ 	exit(0);
+ }
+ 
+-/*
+- *  Make sure file has all the correct data.
+- */
+-int fileokay(char *file, uchar_t * expbuf)
++/* Make sure file has all the correct data. */
++static void fileokay(char *file, unsigned char *expbuf)
+ {
+-#ifdef LARGE_FILE
+-	struct stat64 statbuf;
+-#else /* LARGE_FILE */
+-	struct stat statbuf;
+-#endif /* LARGE_FILE */
+-	size_t mapsize;
+-	unsigned mappages;
+-	unsigned pagesize = sysconf(_SC_PAGE_SIZE);
+-	uchar_t readbuf[pagesize];
+-	int fd;
+ 	int cnt;
+-	unsigned i, j;
+-
+-#ifdef LARGE_FILE
+-	if ((fd = open64(file, O_RDONLY)) == -1) {
+-#else /* LARGE_FILE */
+-	if ((fd = open(file, O_RDONLY)) == -1) {
+-#endif /* LARGE_FILE */
+-		perror("open error");
+-		/***** LTP Port *****/
+-		local_flag = FAILED;
+-		anyfail();
+-		/*****	**	*****/
+-		return 0;
+-	}
+-#ifdef LARGE_FILE
+-	if (fstat64(fd, &statbuf) == -1) {
+-#else /* LARGE_FILE */
+-	if (fstat(fd, &statbuf) == -1) {
+-#endif /* LARGE_FILE */
+-		perror("stat error");
+-		/***** LTP Port *****/
+-		local_flag = FAILED;
+-		anyfail();
+-		/*****	**	*****/
+-		return 0;
+-	}
+-#ifdef LARGE_FILE
+-	if (lseek64(fd, sparseoffset, SEEK_SET) < 0) {
+-#else /* LARGE_FILE */
+-	if (lseek(fd, sparseoffset, SEEK_SET) < 0) {
+-#endif /* LARGE_FILE */
+-		perror("lseek");
+-		anyfail();
+-	}
++	size_t mapsize;
++	struct stat statbuf;
++	unsigned char readbuf[pagesize];
++	unsigned int i, j;
++	unsigned int mappages;
+ 
+-	if (statbuf.st_size - sparseoffset > SIZE_MAX) {
+-		fprintf(stderr, "size_t overflow when setting up map\n");
+-		anyfail();
+-	}
++	fd = SAFE_OPEN(file, O_RDONLY);
++
++	SAFE_FSTAT(fd, &statbuf);
++	SAFE_LSEEK(fd, sparseoffset, SEEK_SET);
++
++	if (statbuf.st_size - sparseoffset > UINT_MAX)
++		tst_brk(TBROK, "size_t overflow when setting up map");
+ 	mapsize = (size_t) (statbuf.st_size - sparseoffset);
+ 
+ 	mappages = roundup(mapsize, pagesize) / pagesize;
+ 
+ 	for (i = 0; i < mappages; i++) {
+-		cnt = read(fd, readbuf, pagesize);
+-		if (cnt == -1) {
+-			perror("read error");
+-			/***** LTP Port *****/
+-			local_flag = FAILED;
+-			anyfail();
+-			/*****	**	*****/
+-			return 0;
+-		} else if (cnt != pagesize) {
+-			/*
+-			 *  Okay if at last page in file...
+-			 */
+-			if ((i * pagesize) + cnt != mapsize) {
+-				(void)fprintf(stderr, "read %d of %ld bytes\n",
+-					      (i * pagesize) + cnt,
+-					      (long)mapsize);
+-				close(fd);
+-				return 0;
+-			}
++		cnt = SAFE_READ(0, fd, readbuf, pagesize);
++		if ((unsigned int)cnt != pagesize) {
++			/* Okay if at last page in file... */
++			if ((i * pagesize) + cnt != mapsize)
++				tst_brk(TFAIL, "missing data: read %lu of %ld bytes",
++					(i * pagesize) + cnt, (long)mapsize);
+ 		}
+-		/*
+-		 *  Compare read bytes of data.
+-		 */
+-		for (j = 0; j < cnt; j++) {
+-			if (expbuf[j] != readbuf[j]) {
+-				(void)fprintf(stderr,
+-					      "read bad data: exp %c got %c)",
+-					      expbuf[j], readbuf[j]);
+-#ifdef LARGE_FILE
+-				(void)fprintf(stderr, ", pg %d off %d, "
+-					      "(fsize %Ld)\n", i, j,
+-					      statbuf.st_size);
+-#else /* LARGE_FILE */
+-				(void)fprintf(stderr, ", pg %d off %d, "
+-					      "(fsize %ld)\n", i, j,
+-					      statbuf.st_size);
+-#endif /* LARGE_FILE */
+-				close(fd);
+-				return 0;
+-			}
++		/* Compare read bytes of data. */
++		for (j = 0; j < (unsigned int)cnt; j++) {
++			if (expbuf[j] != readbuf[j])
++				tst_brk(TFAIL,
++					"read bad data: exp %c got %c, pg %d off %d, (fsize %lld)",
++					expbuf[j], readbuf[j], i, j,
++					(long long)statbuf.st_size);
+ 		}
+ 	}
+-	close(fd);
+-
+-	return 1;
++	SAFE_CLOSE(fd);
+ }
+ 
+- /*ARGSUSED*/ void finish(int sig)
++static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+ {
+ 	finished++;
+-	return;
+ }
+ 
+-unsigned int initrand(void)
++static unsigned int initrand(void)
+ {
+ 	unsigned int seed;
+ 
+ 	/*
+-	 *  Initialize random seed...  Got this from a test written
+-	 *  by scooter:
+-	 *      Use srand/rand to diffuse the information from the
+-	 *      time and pid.  If you start several processes, then
+-	 *      the time and pid information don't provide much
+-	 *      variation.
++	 * Use srand/rand to diffuse the information from the
++	 * time and pid.  If you start several processes, then
++	 * the time and pid information don't provide much
++	 * variation.
+ 	 */
+ 	srand((unsigned int)getpid());
+ 	seed = rand();
+ 	srand((unsigned int)time(NULL));
+ 	seed = (seed ^ rand()) % 100000;
+-	srand48((long int)seed);
+-	return (seed);
++	srand48((long)seed);
++	return seed;
+ }
+ 
+-/*****  LTP Port        *****/
+-void ok_exit(void)
++static void run(void)
+ {
+-	tst_resm(TPASS, "Test passed");
+-	tst_rmdir();
+-	tst_exit();
+-}
++	int c;
++	int i;
++	int wait_stat;
++	off_t bytes_left;
++	pid_t pid;
++	pid_t *pidarray;
++	size_t write_cnt;
++	unsigned char data;
++	unsigned char *buf;
+ 
+-int anyfail(void)
+-{
+-	tst_brkm(TFAIL, tst_rmdir, "Test failed");
++	alarm(tst_remaining_runtime());
++
++	finished = 0;
++	fd = SAFE_OPEN(TEST_FILE, O_CREAT | O_TRUNC | O_RDWR, 0664);
++	buf = SAFE_MALLOC(pagesize);
++	pidarray = SAFE_MALLOC(nprocs * sizeof(pid_t));
++
++	for (i = 0; i < nprocs; i++)
++		*(pidarray + i) = 0;
++
++	for (i = 0, data = 0; i < (int)pagesize; i++) {
++		*(buf + i) = (data + pattern) & 0xff;
++		if (++data == nprocs)
++			data = 0;
++	}
++	SAFE_LSEEK(fd, (off_t)sparseoffset, SEEK_SET);
++	for (bytes_left = filesize; bytes_left; bytes_left -= c) {
++		write_cnt = MIN((long long)pagesize, (long long)bytes_left);
++		c = SAFE_WRITE(1, fd, buf, write_cnt);
++	}
++	SAFE_CLOSE(fd);
++
++	for (i = 0; i < nprocs; i++) {
++		pid = SAFE_FORK();
++
++		if (pid == 0) {
++			child_mapper(TEST_FILE, (unsigned int)i, (unsigned int)nprocs);
++			exit(0);
++		} else {
++			pidarray[i] = pid;
++		}
++	}
++
++	while (!finished) {
++		pid = wait(&wait_stat);
++		if (pid != -1) {
++			if (!WIFEXITED(wait_stat)
++			    || WEXITSTATUS(wait_stat) != 0)
++				tst_brk(TBROK, "child exit with err <x%x>",
++					wait_stat);
++			for (i = 0; i < nprocs; i++)
++				if (pid == pidarray[i])
++					break;
++			if (i == nprocs)
++				tst_brk(TBROK, "unknown child pid %d, <x%x>",
++					pid, wait_stat);
++
++			pid = SAFE_FORK();
++			if (pid == 0) {
++				child_mapper(TEST_FILE, (unsigned int)i, (unsigned int)nprocs);
++				exit(0);
++			} else {
++				pidarray[i] = pid;
++			}
++		} else {
++			if (errno != EINTR || !finished)
++				tst_brk(TBROK | TERRNO,
++					"unexpected wait error");
++		}
++	}
++	alarm(0);
++
++	fileokay(TEST_FILE, buf);
++	tst_res(TPASS, "file has expected data");
+ }
+ 
+-/*****  **      **      *****/
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.options = options,
++	.cleanup = cleanup,
++	.max_runtime = 12,
++	.needs_tmpdir = 1,
++	.forks_child = 1,
++};
 -- 
 2.38.1.273.g43a17bfeac-goog
 
