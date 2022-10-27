@@ -4,63 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 792D9ECAAA1
-	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 14:10:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA479FA3740
+	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 16:38:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A8303CA96F
-	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 16:10:11 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 2EE3F3CA918
+	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 18:38:31 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C3BEA3C0895
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 16:10:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8D1B6600C75
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 16:09:58 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 81A5721C97
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 14:09:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666879797; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=FeqUqVwCvoAHmIeQk0iNPc+qAZnE9+4Ii6DLXG+ObD4=;
- b=yjfMUkoJ/xfNZG2lupJS9+5EJL8ixTagTIXHpnEtDGBtOot8KZvKO70QPjLj87ejHVVo2y
- g9rq0ZrV5Qtd2ZvwBwYBzFt6hXfSnJ0Ww/DFc3ZAFQ4SwyNWpiFcvXT88qddnN5thKBBhD
- 0awnL+qvOATt7gPt2ovLjaf2MyzvJY0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666879797;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=FeqUqVwCvoAHmIeQk0iNPc+qAZnE9+4Ii6DLXG+ObD4=;
- b=WYu0DBPasljWoJWWn1V/1v38aBUQ+KYV50KrHoBN+ZqyP63E4WV/b87pZf6VyoAz0ztb6c
- Xn7Z3GGbYRbv/AAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0439313357
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 14:09:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id sEccLjSRWmNEBgAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 14:09:56 +0000
-From: Avinesh Kumar <akumar@suse.de>
+ by picard.linux.it (Postfix) with ESMTPS id 9A7623CA7E1
+ for <ltp@lists.linux.it>; Thu, 27 Oct 2022 18:38:20 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTP id 040DF1401106
+ for <ltp@lists.linux.it>; Thu, 27 Oct 2022 18:38:18 +0200 (CEST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33AC623A
+ for <ltp@lists.linux.it>; Thu, 27 Oct 2022 09:38:23 -0700 (PDT)
+Received: from e126380.arm.com (unknown [10.57.4.207])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4DC783F7B4
+ for <ltp@lists.linux.it>; Thu, 27 Oct 2022 09:38:16 -0700 (PDT)
+From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
 To: ltp@lists.linux.it
-Date: Thu, 27 Oct 2022 19:39:54 +0530
-Message-Id: <20221027140954.4094-1-akumar@suse.de>
-X-Mailer: git-send-email 2.38.0
+Date: Thu, 27 Oct 2022 17:36:53 +0100
+Message-Id: <20221027163654.414017-1-teo.coupriediaz@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] setfsuid02: using -1 as invalid fsuid for setfsuid()
+Subject: [LTP] [RFC PATCH 0/1] Change return type of tst_syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,40 +45,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-a uid which does not have an entry in the /etc/passwd
-file is not really an invalid fsuid for setfsuid(), so changing
-the test to use -1 as an invalid fsuid.
-And second setfsuid(-1) call is to verify that preceding call has
-actually failed and there is no change in the fsuid.
-
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/setfsuid/setfsuid02.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid02.c b/testcases/kernel/syscalls/setfsuid/setfsuid02.c
-index 850f17834..f5aa1c004 100644
---- a/testcases/kernel/syscalls/setfsuid/setfsuid02.c
-+++ b/testcases/kernel/syscalls/setfsuid/setfsuid02.c
-@@ -21,9 +21,7 @@ static void run(void)
- 	uid_t invalid_uid, current_uid;
- 
- 	current_uid = geteuid();
--	invalid_uid = 1;
--	while (getpwuid(invalid_uid))
--		invalid_uid++;
-+	invalid_uid = -1;
- 
- 	UID16_CHECK(invalid_uid, setfsuid);
- 
--- 
-2.38.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGVsbG8gTFRQIG1haW50YWluZXJzLAoKVGhlIGdvYWwgb2YgdGhpcyBwYXRjaCBpcyB0byBjaGVj
+ayB0aGF0IHRoZSBjaGFuZ2UgbWFrZXMgc2Vuc2UsIHRoYXQgSQpoYXZlbid0IG1pc3NlZCBhbnl0
+aGluZyBpbiBteSB0ZXN0aW5nIGFuZCB0aGF0IGl0IGRvZXNuJ3QgYnJlYWsgc29tZQphc3N1bXB0
+aW9ucyB0aGF0IExUUCBtaWdodCBtYWtlLgoKQ3VycmVudGx5LCB0c3Rfc3lzY2FsbCBzdG9yZXMg
+dGhlIHJldHVybiB2YWx1ZSBvZiB0aGUgc3lzY2FsbCBpbiBhbiBpbnQsCndoaWNoIGlzIGZpbmUg
+bW9zdCBvZiB0aGUgdGltZSBidXQgc29tZSBzeXNjYWxscyBjYW4gcmV0dXJuIHZhbHVlcyBsYXJn
+ZXIKdGhhbiBhbiBpbnQuCkZvciBleGFtcGxlIGB3cml0ZWAgcmV0dXJucyBhIGxvbmcgYW5kIGBt
+bWFwYCByZXR1cm5zIGEgcG9pbnRlci4gX01vc3RfIG9mCnRoZSB0aW1lIGl0IHdvdWxkIGJlIGZp
+bmUsIGJ1dCBpdCBtZWFucyB0aGF0IGEgdGVzdCB1c2luZyBzdWNoIGEgc3lzY2FsbAp3cml0dGVu
+IHdpdGggdHN0X3N5c2NhbGwgd291bGQgYmUgaW5jb3JyZWN0LCBhcyBpdHMgcmV0dXJuIHZhbHVl
+IHdvdWxkIGJlCnRydW5jYXRlZC4KVGhpcyB3YXMgZGlzY292ZXJlZCB3aGlsZSB3b3JraW5nIG9u
+IGEgcGF0Y2ggdGVzdGluZyBgYnJrYCBkaXJlY3RseSwKd2l0aG91dCBnb2luZyB0aHJvdWdoIHRo
+ZSBsaWJjLCBhcyBgYnJrYCByZXR1cm5zIGFuIHVuc2lnbmVkIGxvbmcuCgpUaGlzIHBhdGNoZSBm
+aXhlcyB0aGUgdHlwZSBieSB1c2luZyBgaW50cHRyX3RgIHRvIGtlZXAgaXQgc2lnbmVkLAphbmQg
+YmVjYXVzZSBpdCBndWFyYW50ZWVzIHRoYXQgaXQgY2FuIGJlIGNhc3QgdG8gYW5kIGZyb20gYSBw
+b2ludGVyIHR5cGUsCndoaWNoIGlzIG9uZSBvZiB0aGUgcHJpbWFyeSB1c2UgY2FzZXMgaGVyZS4K
+QXMgc3VjaCwgaXQgYWxzbyB3b3VsZCB3b3JrIG9uIGFyY2hpdGVjdHVyZXMgdGhhdCBoYXZlIHBv
+aW50ZXJzIGJpZ2dlcgp0aGFuIGxvbmcsIHN1Y2ggYXMgQ0hFUklbMF0gb3IgTW9yZWxsb1sxXS4K
+ClRvIG1ha2Ugc3VyZSB0aGF0IHRoZSBjaGFuZ2UgZGlkbid0IGltcGFjdCBhbHJlYWR5IHdyaXR0
+ZW4gdGVzdHMsIEkKZ2VuZXJhdGVkIGEgbGlzdCBmcm9tIHRoZSBzb3VyY2UgZmlsZXMgdGhhdCB1
+c2UgYHRzdF9zeXNjYWxsYCBhbmQgcmFuCnRoZW0gYWxsLgpIb3BlZnVsbHkgSSBkaWRuJ3QgbWlz
+cyBhbnl0aGluZyBoZXJlOiB0aGUgbGlzdCBpcyBwcm92aWRlZCBpbiB0aGUKcGF0Y2ggZm9yIHlv
+dXIgdGVzdGluZyBwdXJwb3NlcyBidXQgd291bGQgcHJvYmFibHkgbm90IG1ha2Ugc2Vuc2UKdG8g
+bWVyZ2UuCkkgdGVzdGVkIHRoZSBwYXRjaCBvbiB4ODZfNjQtbXVzbCBhbmQgQWFyY2g2NC1tdXNs
+IChRRU1VIGFuZCBBcm0gRlZQKQp3aXRoIHRoaXMgbGlzdCBvZiB0ZXN0cywgd2l0aG91dCByZWdy
+ZXNzaW9ucy4KClRoZSBidWlsZCBDSSBvbiBHaXRodWIgaXMgYWxsIGdyZWVuIGFzIHdlbGwgOgpo
+dHRwczovL2dpdGh1Yi5jb20vVGVvLUNEL2x0cC9hY3Rpb25zL3J1bnMvMzMzNzk1NzIwOQoKCkkg
+aG9wZSB0aGF0IHRoaXMgYWxsIG1ha2VzIHNlbnNlIGFuZCBjYW4gYmUgdXNlZnVsIGZvciBMVFAu
+IEkgd291bGQgYmUKZ2xhZCB0byBrbm93IGlmIHRoaXMgaGFzIGNvbnNlcXVlbmNlcyBJIGRvbid0
+IHNlZSBvciBpZiBJJ20gd3JvbmcgaW4gbXkKcmVhc29uaW5nICEKCkJlc3QgcmVnYXJkcywKVMOp
+byBDb3VwcmllIERpYXoKClswXTogaHR0cHM6Ly93d3cuY2wuY2FtLmFjLnVrL3Jlc2VhcmNoL3Nl
+Y3VyaXR5L2N0c3JkL2NoZXJpLwpbMV06IGh0dHBzOi8vd3d3Lm1vcmVsbG8tcHJvamVjdC5vcmcv
+CgpUZW8gQ291cHJpZSBEaWF6ICgxKToKICByZWdlbi5zaDogVXNlIGludHB0cl90IGZvciB0c3Rf
+c3lzY2FsbCByZXR1cm4KCiBpbmNsdWRlL2xhcGkvc3lzY2FsbHMvcmVnZW4uc2ggfCAgIDIgKy0K
+IHJ1bnRlc3QvY2hlY2tfdHN0X3N5c2NhbGwgICAgICB8IDE5MCArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysKIDIgZmlsZXMgY2hhbmdlZCwgMTkxIGluc2VydGlvbnMoKyksIDEgZGVs
+ZXRpb24oLSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBydW50ZXN0L2NoZWNrX3RzdF9zeXNjYWxsCgoK
+YmFzZS1jb21taXQ6IDhjZDNiZjMxNDljNGE4Y2I2ZjZjODVkYzc2YTM2ZDdmNmRkODdmNzYKLS0g
+CjIuMjUuMQoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9s
+aXN0aW5mby9sdHAK
