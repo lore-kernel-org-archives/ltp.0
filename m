@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71C47FA3740
-	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 18:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6A20FA3740
+	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 21:00:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DDB983CA8A6
-	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 20:59:23 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id A288D3CA931
+	for <ltp@archiver.kernel.org>; Thu, 27 Oct 2022 23:00:17 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC3A23C04BF
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 20:59:11 +0200 (CEST)
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com
- [IPv6:2607:f8b0:4864:20::d35])
+ by picard.linux.it (Postfix) with ESMTPS id 8B6863CA8C7
+ for <ltp@lists.linux.it>; Thu, 27 Oct 2022 23:00:02 +0200 (CEST)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com
+ [IPv6:2607:f8b0:4864:20::1149])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5E87A60135B
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 20:59:10 +0200 (CEST)
-Received: by mail-io1-xd35.google.com with SMTP id z3so2487111iof.3
- for <ltp@lists.linux.it>; Thu, 27 Oct 2022 11:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=tZTDMFXG6tj5RKeLFPmJdErGaF4iLWn+KZY4qFkIgYE=;
- b=Jd7Ti6xVh7ZE3ogjS7qdLB0OG4vHDqTNyKAxp1yjwOfZFF5KKnsHOueXVqZ+rL0kU8
- hygDlT+POQM76HAWzCfBK4TTBGnOucfqElPt03PPf4LW+86jkYkoOSUlJdjafhewFbqQ
- qNDYwlByYbouzwp37qKcVJDi5k0hFHZG7f1SCrftsFM7IrOPiLZ/tYPh2DAymkoZ3IkF
- Y7u60wCmT+EkasSB+9oJ8zWDyclfZL5J0vfb2TLSpFi7L2B1VLyQwTPbuzthBA8yI4b7
- ogC2z2+iVLGdIn9TqYKPvsBmpEsoUoFHt8GClAYyZuuNmREJdxmocwTB+1YArwo/6xVk
- RTuw==
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5E18F1400962
+ for <ltp@lists.linux.it>; Thu, 27 Oct 2022 23:00:00 +0200 (CEST)
+Received: by mail-yw1-x1149.google.com with SMTP id
+ 00721157ae682-368e6c449f2so25105357b3.5
+ for <ltp@lists.linux.it>; Thu, 27 Oct 2022 14:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:from:to:cc:subject:date:message-id:reply-to;
+ bh=LLXlJdvIEH0Bg5Vtjaod4eeaGH1EOXdQiSitLCwLcn0=;
+ b=jWvKYb8qVAzoTcoNoGKDHmAqahTMCcJncXg/4PmMS9SE1ZUsdwDCMKXFCArrFnQIe4
+ PVsOBs72dMvbX6RzD5miGJ7La024Ur3HeAVDmmORM21vo8GY9SEaQsv9ZXz4qnwYzw3u
+ rlmFLTxeymLebw/2jDc1fgqVookWFUzbzDen+xnj8B6mmhVfy8ifu96nJ/YevbXXVQfM
+ 6RdSrythxY51gzo9P3Zuanjzy0dpR3o/xWCoGy0gLS4P/YEGfviF2etdrltgngeNHJgz
+ S1Zq0Sx05DZhh9k6WY2l5XTaoHVr9sYps32S9HkSb++JRoIe705DMw64/ZehqY5u61rT
+ pRbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=tZTDMFXG6tj5RKeLFPmJdErGaF4iLWn+KZY4qFkIgYE=;
- b=OBACIl1t2hMGBeguggDvAwYcbwbFXtmxveDqCPiyW7a5xvo7pc0juFONeQPjdpcR/B
- 3RY50hbc64o7b7YheVcoioyxiOZf4S9ri81Hp+nUgO2fR7+evhWgDUgWQ3cMTDKTj/Hd
- JGuUUyTmDis9VcfmrNv8XEIlNCuvSjxYcLDzrc7ewTQZtL7EkUTKE69MJbhZzU9RRZ4l
- JrBYeagUZ9s1usHs8TdFzh6d6dOknvDoY1XC8W0Q73DrXet+ULMQ5AbXKhqDeOkYT498
- HSO5En+tCxqmIkye/ay645+UN6ojSjegdE/CMq1Knxv94GA4KsWDxY9Vg8XZWLnv7nNj
- IBdQ==
-X-Gm-Message-State: ACrzQf2RaITq5SxSU1cPlGQo465HqJZ6QNiPc8Xxha26uS44MirIDtwj
- yjm5z2QA0TRbMogCt6AQVbnXd9+o4AGKxnHTGfA=
-X-Google-Smtp-Source: AMsMyM6bqou8WhVuSWA0MkpOLoASvHfdhGwu2k4j38kLUpmkous3fnQZKCXazOCWgBKGWAihFbtIXPnqDdkfRO9UuC4=
-X-Received: by 2002:a02:a0ca:0:b0:363:4661:c7e0 with SMTP id
- i10-20020a02a0ca000000b003634661c7e0mr31622802jah.214.1666897148637; Thu, 27
- Oct 2022 11:59:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221026140408.471609-1-alessandro.carminati@gmail.com>
- <20221026140408.471609-2-alessandro.carminati@gmail.com>
- <87fsf9sk2e.fsf@suse.de>
-In-Reply-To: <87fsf9sk2e.fsf@suse.de>
-From: Alessandro Carminati <alessandro.carminati@gmail.com>
-Date: Thu, 27 Oct 2022 20:58:31 +0200
-Message-ID: <CAPp5cGQ++39EMSV3MrMTTKrTyn5WWRou=yP7f4jbBQ7p-F+cyA@mail.gmail.com>
-To: rpalethorpe@suse.de
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=LLXlJdvIEH0Bg5Vtjaod4eeaGH1EOXdQiSitLCwLcn0=;
+ b=mo1W0kZ0wG1tfdIpy2ZEqgjEAdp22mLLwXXoCPrsQG0QbRtCFJ9Jw2C6jhUOIgNnq8
+ c4NwgDRz/SeTRwrldPP8kX8TVCgEzGGkTYTJ6Hzd6Tudx+CapmorDBU2YgpQx5+J2miT
+ kI/f/cbfoVWlg0eYXDhBbFaDiGu6LkJoyqrh+xdyDtBILNfBfcZoidXlJaEQL/laeX1y
+ gB9UYcaG6X93hcXKZzpDWX/ils7cqlSDl7ZsDvZA1/uLUNMdXBJX4FNtvIs7pcKnf7Zd
+ VOGppbcFDuGTln9RKKQwQiwx/wX/KL+LG40jFgi4j857apHRNve50aqCfp5FMtnYiHc3
+ RovA==
+X-Gm-Message-State: ACrzQf33ssQf1zp+rSOskZiHwLEEwQ9KcAit0S/yDl+WwnoaU2z4XHU2
+ VVT3GYpWvgzCC5YlSAQJw6SLPK04JGKD4d9U4co68OmM+QMk1IGFPhngvhCW1RoLPJA8+yFHQ7i
+ JJd0G6oSVak5+X5l5Bdcn1VmToClTLBWLyB/4cNKq+Ich/TF0rVb5vlBL
+X-Google-Smtp-Source: AMsMyM63Ai6jYwLDfBeZpqJ0ljJFDkVDgxMUmCgKMmi7WgiFeh7Tx+D+LW5NqgdeBdYyeEBgVqptgcZWSU4=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a25:2d5e:0:b0:6cb:4d05:5008 with SMTP id
+ s30-20020a252d5e000000b006cb4d055008mr17633559ybe.606.1666904399103; Thu, 27
+ Oct 2022 13:59:59 -0700 (PDT)
+Date: Thu, 27 Oct 2022 20:59:48 +0000
+In-Reply-To: <20221027205948.3718466-1-edliaw@google.com>
+Mime-Version: 1.0
+References: <20221027205948.3718466-1-edliaw@google.com>
+X-Mailer: git-send-email 2.38.1.273.g43a17bfeac-goog
+Message-ID: <20221027205948.3718466-2-edliaw@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] tst_find_backing_dev: Get dev name from
- /sys/dev/block/*/uevent
+Subject: [LTP] [PATCH v6 1/1] mmapstress01: refactor to tst_test framework
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,661 +76,1038 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: acarmina@redhat.com, ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============0188338312=="
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team@android.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0188338312==
-Content-Type: multipart/alternative; boundary="0000000000006bf99f05ec08bc5f"
+Use ltp framework and apply make check corrections.  Reorder functions
+and variables.  Use safe macros.
+Drop leavefile option.
+Build tests with FILE_OFFSET_BITS=64 instead of doing LARGE_FILE checks
+to switch between 32 and 64 bit types and syscalls.
+Define fsize bounds by file offset bits.
+Move sighandler to setup and remove sig blocks.
+Add option to specify pattern.
+Set default nprocs to ncpus with min of 1 and max of 20.
 
---0000000000006bf99f05ec08bc5f
-Content-Type: text/plain; charset="UTF-8"
+Signed-off-by: Edward Liaw <edliaw@google.com>
+---
+ testcases/kernel/mem/mmapstress/Makefile      |   2 +
+ .../kernel/mem/mmapstress/mmapstress01.c      | 890 ++++++------------
+ 2 files changed, 265 insertions(+), 627 deletions(-)
 
-Hello Richard,
-
-
-
-
-
-Il giorno gio 27 ott 2022 alle ore 11:16 Richard Palethorpe <
-rpalethorpe@suse.de> ha scritto:
-
-> Hello,
->
-> Alessandro Carminati <alessandro.carminati@gmail.com> writes:
->
-> > In some minimal Linux the /dev/root can be missing. The consequence for
-> this
-> > is that mountinfo doesn't contain the correct information.
-> >
-> > The unevent file in sysfs is another method to retrieve device info
-> given
-> > a major/minor.
-> >
-> > btrfs subvolumes can be an exception to this rule, but they are not
-> expected
-> > to be used in the current usecase.
->
-> Unfortunately this is not true. If you mount /tmp on BTRFS (or set
-> TMPDIR to some BTRFS mount), then we hit this issue.
->
-
-This is also true if you use the mountinfo strategy.
-I ran a few tests on my test environment, and I could see that the
-ioctl_loop05
-on btrfs filesystem doesn't work either with the mountinfo strategy.
-
-Here is a sample running the original (with a few additional debug output)
-test
-using the mountinfo strategy on ext3:
-
-VFS: Mounted root (ext2 filesystem) on device 8:0.
-devtmpfs: mounted
-Freeing unused kernel image (initmem) memory: 956K
-Write protecting the kernel read-only data: 14336k
-Freeing unused kernel image (text/rodata gap) memory: 2044K
-Freeing unused kernel image (rodata/data gap) memory: 48K
-Run /sbin/init as init process
-random: fast init done
-EXT4-fs (sda): re-mounted. Opts: (null). Quota mode: disabled.
-Starting syslogd: OK
-Starting klogd: OK
-Running sysctl: OK
-Saving random seed: random: dd: uninitialized urandom read (512 bytes read)
-OK
-Starting network: Waiting for interface eth0 to appear...............
-timeout!
-run-parts: /etc/network/if-pre-up.d/wait_iface: exit status 1
-FAIL
-
-Welcome to Buildroot
-buildroot login: root
-# /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05
-tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s
-tst_test.c:1115: TINFO: ext2/ext3/ext4 is supported by the test
-tst_device.c:88: TINFO: Found free device 0 '/dev/loop0'
-loop0: detected capacity change from 0 to 2048
-tst_device.c:522: TINFO: Debug: Device numbers: 8/0
-tst_device.c:527: TINFO: Debug: 14 1 8:0 / / rw,relatime - ext2 /dev/root rw
-tst_device.c:543: TINFO: Debug: devneme=/dev/root
-tst_device.c:548: TWARN: stat(/dev/root) failed: ENOENT (2)
-
-Summary:
-passed   0
-failed   0
-broken   0
-skipped  0
-warnings 1
-# ln -s /dev/sda /dev/root
-# /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05
-tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s
-tst_test.c:1115: TINFO: ext2/ext3/ext4 is supported by the test
-tst_device.c:88: TINFO: Found free device 0 '/dev/loop0'
-loop0: detected capacity change from 0 to 2048
-tst_device.c:522: TINFO: Debug: Device numbers: 8/0
-tst_device.c:527: TINFO: Debug: 14 1 8:0 / / rw,relatime - ext2 /dev/root rw
-tst_device.c:543: TINFO: Debug: devneme=/dev/root
-ioctl_loop05.c:126: TINFO: backing dev(/dev/root) logical_block_size is 512
-ioctl_loop05.c:62: TINFO: Without setting lo_offset or sizelimit
-ioctl_loop05.c:45: TINFO: In dio mode
-ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
-ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 1
-ioctl_loop05.c:45: TINFO: In non dio mode
-ioctl_loop05.c:50: TPASS: lo_flags doesn't have LO_FLAGS_DIRECT_IO flag
-ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 0
-ioctl_loop05.c:69: TINFO: With offset equal to logical_block_size
-loop0: detected capacity change from 2048 to 2047
-ioctl_loop05.c:74: TPASS: LOOP_SET_DIRECT_IO succeeded
-ioctl_loop05.c:45: TINFO: In dio mode
-ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
-ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 1
-ioctl_loop05.c:81: TINFO: With nonzero offset less than logical_block_size
-ioctl_loop05.c:92: TPASS: LOOP_SET_DIRECT_IO failed as expected: EINVAL (22)
-
-Summary:
-passed   8
-failed   0
-broken   0
-skipped  0
-warnings 0
-
-here the same system on a btrfs
-
-VFS: Mounted root (btrfs filesystem) on device 0:13.
-random: fast init done
-devtmpfs: mounted
-Freeing unused kernel image (initmem) memory: 956K
-Write protecting the kernel read-only data: 14336k
-Freeing unused kernel image (text/rodata gap) memory: 2044K
-Freeing unused kernel image (rodata/data gap) memory: 48K
-Run /sbin/init as init process
-BTRFS info (device sda): disk space caching is enabled
-Starting syslogd: OK
-Starting klogd: OK
-Running sysctl: OK
-Saving random seed: random: dd: uninitialized urandom read (512 bytes read)
-OK
-Starting network: Waiting for interface eth0 to appear...............
-timeout!
-run-parts: /etc/network/if-pre-up.d/wait_iface: exit status 1
-FAIL
-
-Welcome to Buildroot
-buildroot login: root
-# kill 71
-# umount /tmp
-# umount /run
-# /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05
-tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s
-tst_test.c:1115: TINFO: btrfs is supported by the test
-tst_device.c:88: TINFO: Found free device 0 '/dev/loop0'
-loop0: detected capacity change from 0 to 2048
-tst_device.c:522: TINFO: Debug: Device numbers: 0/14
-tst_device.c:527: TINFO: Debug: 15 1 0:13 / / rw,relatime - btrfs /dev/root
-rw,space_cache,subvolid=5,subvol=/
-tst_device.c:527: TINFO: Debug: 16 15 0:5 / /dev rw,relatime - devtmpfs
-devtmpfs rw,size=505416k,nr_inodes=126354,mode=755
-tst_device.c:527: TINFO: Debug: 14 15 0:15 / /proc rw,relatime - proc proc
-rw
-tst_device.c:527: TINFO: Debug: 17 16 0:16 / /dev/pts rw,relatime - devpts
-devpts rw,gid=5,mode=620,ptmxmode=666
-tst_device.c:527: TINFO: Debug: 18 16 0:17 / /dev/shm rw,relatime - tmpfs
-tmpfs rw,mode=777
-tst_device.c:527: TINFO: Debug: 21 15 0:20 / /sys rw,relatime - sysfs sysfs
-rw
-tst_device.c:543: TINFO: Debug: devneme=
-tst_device.c:545: TBROK: Cannot find block device for
-/tmp/iocz4RUVG/test.img
-
-Summary:
-passed   0
-failed   0
-broken   1
-skipped  0
-warnings 0
-# ln -s /dev/sda /dev/root
-# /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05
-tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s
-tst_test.c:1115: TINFO: btrfs is supported by the test
-tst_device.c:88: TINFO: Found free device 0 '/dev/loop0'
-loop0: detected capacity change from 0 to 2048
-tst_device.c:522: TINFO: Debug: Device numbers: 0/14
-tst_device.c:527: TINFO: Debug: 15 1 0:13 / / rw,relatime - btrfs /dev/root
-rw,space_cache,subvolid=5,subvol=/
-tst_device.c:527: TINFO: Debug: 16 15 0:5 / /dev rw,relatime - devtmpfs
-devtmpfs rw,size=505416k,nr_inodes=126354,mode=755
-tst_device.c:527: TINFO: Debug: 14 15 0:15 / /proc rw,relatime - proc proc
-rw
-tst_device.c:527: TINFO: Debug: 17 16 0:16 / /dev/pts rw,relatime - devpts
-devpts rw,gid=5,mode=620,ptmxmode=666
-tst_device.c:527: TINFO: Debug: 18 16 0:17 / /dev/shm rw,relatime - tmpfs
-tmpfs rw,mode=777
-tst_device.c:527: TINFO: Debug: 21 15 0:20 / /sys rw,relatime - sysfs sysfs
-rw
-tst_device.c:543: TINFO: Debug: devneme=
-tst_device.c:545: TBROK: Cannot find block device for
-/tmp/ioctVo52r/test.img
-
-Summary:
-passed   0
-failed   0
-broken   1
-skipped  0
-warnings 0
-#
-
-a stat on the /, results in a couple of minor/major that is different from
-the
-couple listed in the mountinfo. This leads, as a result, a test failure.
-
-
-> >
-> > This solution requires sysfs to be mounted in /sys, but considering many
-> > tests depends on the same, including the ioctl_loop05 that triggered
-> this
-> > patch, this requirement is not too restricted, and the old mountinfo can
-> be
-> > dropped altogether.
->
-> The mountinfo method is not such a maintenance issue that it needs to be
-> removed IMO. Possibly it could be replaced by tst_stat_mount_dev
-> instead, but we're cautious about touching this function.
->
-
-tst_find_backing_dev(), the function that is the target of this patch,
-seems to
-be referenced in only a couple of points in all the LTP test suite.
-One place is in the ioctl_loop05 test, the other reference I found is in
-the
-lib/tst_device.c - tst_dev_block_size().  tst_dev_block_size() is a
-function
-that seems not to be referenced by any test.
-
-
->
-> To be clear, I'm not sure anyone compiles Linux without /sys then tries
-> to run LTP on it. However the fact that it is possible to remove /sys is
-> another signal (in addition to BTRFS) that the situation is complicated.
->
-
-Indeed, if we want to have a test that works in all the possible scenarios,
-it needs additional work.
-But IMHO, keeping the mountinfo strategy gives no advantage over not
-having it.
-
-
-> >
-> > $ sudo /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05
-> > tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s
-> > tst_test.c:1115: TINFO: ext2/ext3/ext4 is supported by the test
-> > tst_device.c:91: TINFO: Found free device 0 '/dev/loop0'
-> > loop0: detected capacity change from 0 to 2048
-> > tst_device.c:570: TINFO: Device name retrived through mountinfo
-> > ioctl_loop05.c:126: TINFO: backing dev(/dev/root) logical_block_size is
-> 512
-> > ioctl_loop05.c:62: TINFO: Without setting lo_offset or sizelimit
-> > ioctl_loop05.c:45: TINFO: In dio mode
-> > ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
-> > ioctl_loop05.c:52: TBROK: Failed to open FILE
-> '/sys/block/loop0/loop/dio' for reading: ENOENT (2)
-> >
-> > Summary:
-> > passed   1
-> > failed   0
-> > broken   1
-> > skipped  0
-> > warnings 0
-> >
-> > The example here shows what happen if sysfs is not mounted and the
-> > mountinfo method is used: the tests that depends on sysfs fail with
-> > broken and not just warn.
-> >
-> > Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> > Signed-off-by: Alessandro Carminati <alessandro.carminati@gmail.com>
-> > ---
-> >  lib/tst_device.c | 41 ++++++++++-------------------------------
-> >  1 file changed, 10 insertions(+), 31 deletions(-)
-> >
-> > diff --git a/lib/tst_device.c b/lib/tst_device.c
-> > index 8419b80c3..4ccb71ac8 100644
-> > --- a/lib/tst_device.c
-> > +++ b/lib/tst_device.c
-> > @@ -520,48 +520,27 @@ void tst_find_backing_dev(const char *path, char
-> *dev)
-> >  {
-> >       struct stat buf;
-> >       FILE *file;
-> > -     char line[PATH_MAX];
-> > -     char *pre = NULL;
-> > -     char *next = NULL;
-> > -     unsigned int dev_major, dev_minor, line_mjr, line_mnr;
-> > -     unsigned int len, best_match_len = 1;
-> > -     char mnt_point[PATH_MAX];
-> > +     unsigned int dev_major, dev_minor;
-> > +     char uevent_path[PATH_MAX];
-> > +     char dev_name[NAME_MAX];
-> >
-> >       if (stat(path, &buf) < 0)
-> >               tst_brkm(TWARN | TERRNO, NULL, "stat() failed");
-> >
-> > +     *dev = '\0';
-> >       dev_major = major(buf.st_dev);
-> >       dev_minor = minor(buf.st_dev);
-> > -     file = SAFE_FOPEN(NULL, "/proc/self/mountinfo", "r");
-> > -     *dev = '\0';
-> > -
-> > -     while (fgets(line, sizeof(line), file)) {
-> > -             if (sscanf(line, "%*d %*d %d:%d %*s %s",
-> > -                     &line_mjr, &line_mnr, mnt_point) != 3)
-> > -                     continue;
-> >
-> > -             pre = strstr(line, " - ");
-> > -             pre = strtok_r(pre, " ", &next);
-> > -             pre = strtok_r(NULL, " ", &next);
-> > -             pre = strtok_r(NULL, " ", &next);
-> > +     sprintf(uevent_path,
-> > +             "/sys/dev/block/%d:%d/uevent", dev_major, dev_minor);
-> >
-> > -             if (line_mjr == dev_major && line_mnr == dev_minor) {
-> > -                     strcpy(dev, pre);
-> > -                     break;
-> > -             }
-> > +     if (!access(uevent_path, R_OK)) {
-> > +             FILE_LINES_SCANF(NULL, uevent_path, "DEVNAME=%s",
-> dev_name);
-> >
-> > -             len = count_match_len(path, mnt_point);
-> > -             if (len > best_match_len) {
-> > -                     strcpy(dev, pre);
-> > -                     best_match_len = len;
-> > -             }
-> > +             if (dev_name[0])
-> > +                     sprintf(dev, "/dev/%s", dev_name);
-> >       }
-> >
-> > -     SAFE_FCLOSE(NULL, file);
-> > -
-> > -     if (!*dev)
-> > -             tst_brkm(TBROK, NULL, "Cannot find block device for %s",
-> path);
-> > -
-> >       if (stat(dev, &buf) < 0)
-> >               tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
->
->
-> --
-> Thank you,
-> Richard.
->
-
-Thank you for your time.
-Alessandro
-
---0000000000006bf99f05ec08bc5f
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr">Hello Richard,<div><br clear=3D"all"><div=
-><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div><div dir=
-=3D"ltr"><div><div dir=3D"ltr"><br><br><div style=3D"display:inline"></div>=
-</div></div></div></div></div></div></div><br></div></div><br><div class=3D=
-"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">Il giorno gio 27 ott 20=
-22 alle ore 11:16 Richard Palethorpe &lt;<a href=3D"mailto:rpalethorpe@suse=
-.de">rpalethorpe@suse.de</a>&gt; ha scritto:<br></div><blockquote class=3D"=
-gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(20=
-4,204,204);padding-left:1ex">Hello,<br>
-<br>
-Alessandro Carminati &lt;<a href=3D"mailto:alessandro.carminati@gmail.com" =
-target=3D"_blank">alessandro.carminati@gmail.com</a>&gt; writes:<br>
-<br>
-&gt; In some minimal Linux the /dev/root can be missing. The consequence fo=
-r this<br>
-&gt; is that mountinfo doesn&#39;t contain the correct information.<br>
-&gt;<br>
-&gt; The unevent file in sysfs is another method to retrieve device info gi=
-ven=C2=A0<br>
-&gt; a major/minor.<br>
-&gt;<br>
-&gt; btrfs subvolumes can be an exception to this rule, but they are not ex=
-pected<br>
-&gt; to be used in the current usecase.<br>
-<br>
-Unfortunately this is not true. If you mount /tmp on BTRFS (or set<br>
-TMPDIR to some BTRFS mount), then we hit this issue.<br></blockquote><div><=
-br></div><div>This is also true if you use the mountinfo strategy.</div>I r=
-an a few tests on my test environment, and I could=C2=A0see that the ioctl_=
-loop05=C2=A0</div><div class=3D"gmail_quote">on btrfs filesystem doesn&#39;=
-t work either with the mountinfo strategy.<br><br>Here is a sample running =
-the original (with a few additional debug output) test</div><div class=3D"g=
-mail_quote">using the mountinfo strategy on ext3:</div><div class=3D"gmail_=
-quote"><br>VFS: Mounted root (ext2 filesystem) on device 8:0.<br>devtmpfs: =
-mounted<br>Freeing unused kernel image (initmem) memory: 956K<br>Write prot=
-ecting the kernel read-only data: 14336k<br>Freeing unused kernel image (te=
-xt/rodata gap) memory: 2044K<br>Freeing unused kernel image (rodata/data ga=
-p) memory: 48K<br>Run /sbin/init as init process<br>random: fast init done<=
-br>EXT4-fs (sda): re-mounted. Opts: (null). Quota mode: disabled.<br>Starti=
-ng syslogd: OK<br>Starting klogd: OK<br>Running sysctl: OK<br>Saving random=
- seed: random: dd: uninitialized urandom read (512 bytes read)<br>OK<br>Sta=
-rting network: Waiting for interface eth0 to appear............... timeout!=
-<br>run-parts: /etc/network/if-pre-up.d/wait_iface: exit status 1<br>FAIL<b=
-r><br>Welcome to Buildroot<br>buildroot login: root<br># /usr/lib/ltp-tests=
-uite/testcases/bin/ioctl_loop05<br>tst_test.c:1363: TINFO: Timeout per run =
-is 0h 05m 00s<br>tst_test.c:1115: TINFO: ext2/ext3/ext4 is supported by the=
- test<br>tst_device.c:88: TINFO: Found free device 0 &#39;/dev/loop0&#39;<b=
-r>loop0: detected capacity change from 0 to 2048<br>tst_device.c:522: TINFO=
-: Debug: Device numbers: 8/0</div><div class=3D"gmail_quote">tst_device.c:5=
-27: TINFO: Debug: 14 1 8:0 / / rw,relatime - ext2 /dev/root rw<br>tst_devic=
-e.c:543: TINFO: Debug: devneme=3D/dev/root<br>tst_device.c:548: TWARN: stat=
-(/dev/root) failed: ENOENT (2)<br><br>Summary:<br>passed =C2=A0 0<br>failed=
- =C2=A0 0<br>broken =C2=A0 0<br>skipped =C2=A00<br>warnings 1<br># ln -s /d=
-ev/sda /dev/root<br># /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05<br>=
-tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s<br>tst_test.c:1115: T=
-INFO: ext2/ext3/ext4 is supported by the test<br>tst_device.c:88: TINFO: Fo=
-und free device 0 &#39;/dev/loop0&#39;<br>loop0: detected capacity change f=
-rom 0 to 2048<br>tst_device.c:522: TINFO: Debug: Device numbers: 8/0</div><=
-div class=3D"gmail_quote">tst_device.c:527: TINFO: Debug: 14 1 8:0 / / rw,r=
-elatime - ext2 /dev/root rw<br>tst_device.c:543: TINFO: Debug: devneme=3D/d=
-ev/root<br>ioctl_loop05.c:126: TINFO: backing dev(/dev/root) logical_block_=
-size is 512<br>ioctl_loop05.c:62: TINFO: Without setting lo_offset or sizel=
-imit<br>ioctl_loop05.c:45: TINFO: In dio mode<br>ioctl_loop05.c:48: TPASS: =
-lo_flags has LO_FLAGS_DIRECT_IO flag<br>ioctl_loop05.c:52: TPASS: /sys/bloc=
-k/loop0/loop/dio =3D 1<br>ioctl_loop05.c:45: TINFO: In non dio mode<br>ioct=
-l_loop05.c:50: TPASS: lo_flags doesn&#39;t have LO_FLAGS_DIRECT_IO flag<br>=
-ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio =3D 0<br>ioctl_loop05.c=
-:69: TINFO: With offset equal to logical_block_size<br>loop0: detected capa=
-city change from 2048 to 2047<br>ioctl_loop05.c:74: TPASS: LOOP_SET_DIRECT_=
-IO succeeded<br>ioctl_loop05.c:45: TINFO: In dio mode<br>ioctl_loop05.c:48:=
- TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag<br>ioctl_loop05.c:52: TPASS: /=
-sys/block/loop0/loop/dio =3D 1<br>ioctl_loop05.c:81: TINFO: With nonzero of=
-fset less than logical_block_size<br>ioctl_loop05.c:92: TPASS: LOOP_SET_DIR=
-ECT_IO failed as expected: EINVAL (22)<br><br>Summary:<br>passed =C2=A0 8<b=
-r>failed =C2=A0 0<br>broken =C2=A0 0<br>skipped =C2=A00<br>warnings 0<br><b=
-r>here the same system on a btrfs<br><br>VFS: Mounted root (btrfs filesyste=
-m) on device 0:13.<br>random: fast init done<br>devtmpfs: mounted<br>Freein=
-g unused kernel image (initmem) memory: 956K<br>Write protecting the kernel=
- read-only data: 14336k<br>Freeing unused kernel image (text/rodata gap) me=
-mory: 2044K<br>Freeing unused kernel image (rodata/data gap) memory: 48K<br=
->Run /sbin/init as init process<br>BTRFS info (device sda): disk space cach=
-ing is enabled<br>Starting syslogd: OK<br>Starting klogd: OK<br>Running sys=
-ctl: OK<br>Saving random seed: random: dd: uninitialized urandom read (512 =
-bytes read)<br>OK<br>Starting network: Waiting for interface eth0 to appear=
-............... timeout!<br>run-parts: /etc/network/if-pre-up.d/wait_iface:=
- exit status 1<br>FAIL<br><br>Welcome to Buildroot<br>buildroot login: root=
-<br># kill 71<br># umount /tmp<br># umount /run<br># /usr/lib/ltp-testsuite=
-/testcases/bin/ioctl_loop05<br>tst_test.c:1363: TINFO: Timeout per run is 0=
-h 05m 00s<br>tst_test.c:1115: TINFO: btrfs is supported by the test<br>tst_=
-device.c:88: TINFO: Found free device 0 &#39;/dev/loop0&#39;<br>loop0: dete=
-cted capacity change from 0 to 2048<br>tst_device.c:522: TINFO: Debug: Devi=
-ce numbers: 0/14</div><div class=3D"gmail_quote">tst_device.c:527: TINFO: D=
-ebug: 15 1 0:13 / / rw,relatime - btrfs /dev/root rw,space_cache,subvolid=
-=3D5,subvol=3D/<br>tst_device.c:527: TINFO: Debug: 16 15 0:5 / /dev rw,rela=
-time - devtmpfs devtmpfs rw,size=3D505416k,nr_inodes=3D126354,mode=3D755<br=
->tst_device.c:527: TINFO: Debug: 14 15 0:15 / /proc rw,relatime - proc proc=
- rw<br>tst_device.c:527: TINFO: Debug: 17 16 0:16 / /dev/pts rw,relatime - =
-devpts devpts rw,gid=3D5,mode=3D620,ptmxmode=3D666<br>tst_device.c:527: TIN=
-FO: Debug: 18 16 0:17 / /dev/shm rw,relatime - tmpfs tmpfs rw,mode=3D777<br=
->tst_device.c:527: TINFO: Debug: 21 15 0:20 / /sys rw,relatime - sysfs sysf=
-s rw<br>tst_device.c:543: TINFO: Debug: devneme=3D<br>tst_device.c:545: TBR=
-OK: Cannot find block device for /tmp/iocz4RUVG/test.img<br><br>Summary:<br=
->passed =C2=A0 0<br>failed =C2=A0 0<br>broken =C2=A0 1<br>skipped =C2=A00<b=
-r>warnings 0<br># ln -s /dev/sda /dev/root<br># /usr/lib/ltp-testsuite/test=
-cases/bin/ioctl_loop05<br>tst_test.c:1363: TINFO: Timeout per run is 0h 05m=
- 00s<br>tst_test.c:1115: TINFO: btrfs is supported by the test<br>tst_devic=
-e.c:88: TINFO: Found free device 0 &#39;/dev/loop0&#39;<br>loop0: detected =
-capacity change from 0 to 2048<br>tst_device.c:522: TINFO: Debug: Device nu=
-mbers: 0/14</div><div class=3D"gmail_quote">tst_device.c:527: TINFO: Debug:=
- 15 1 0:13 / / rw,relatime - btrfs /dev/root rw,space_cache,subvolid=3D5,su=
-bvol=3D/<br>tst_device.c:527: TINFO: Debug: 16 15 0:5 / /dev rw,relatime - =
-devtmpfs devtmpfs rw,size=3D505416k,nr_inodes=3D126354,mode=3D755<br>tst_de=
-vice.c:527: TINFO: Debug: 14 15 0:15 / /proc rw,relatime - proc proc rw<br>=
-tst_device.c:527: TINFO: Debug: 17 16 0:16 / /dev/pts rw,relatime - devpts =
-devpts rw,gid=3D5,mode=3D620,ptmxmode=3D666<br>tst_device.c:527: TINFO: Deb=
-ug: 18 16 0:17 / /dev/shm rw,relatime - tmpfs tmpfs rw,mode=3D777<br>tst_de=
-vice.c:527: TINFO: Debug: 21 15 0:20 / /sys rw,relatime - sysfs sysfs rw<br=
->tst_device.c:543: TINFO: Debug: devneme=3D<br>tst_device.c:545: TBROK: Can=
-not find block device for /tmp/ioctVo52r/test.img<br><br>Summary:<br>passed=
- =C2=A0 0<br>failed =C2=A0 0<br>broken =C2=A0 1<br>skipped =C2=A00<br>warni=
-ngs 0<br>#</div><div class=3D"gmail_quote"><br></div><div class=3D"gmail_qu=
-ote">a stat on the /, results in a couple of minor/major that is different =
-from the=C2=A0</div><div class=3D"gmail_quote">couple listed in the mountin=
-fo. This leads, as a result, a test failure.</div><div class=3D"gmail_quote=
-"><br><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;b=
-order-left:1px solid rgb(204,204,204);padding-left:1ex">
-<br>
-&gt;<br>
-&gt; This solution requires sysfs to be mounted in /sys, but considering ma=
-ny=C2=A0<br>
-&gt; tests depends on the same, including the ioctl_loop05 that triggered t=
-his=C2=A0<br>
-&gt; patch, this requirement is not too restricted, and the old mountinfo c=
-an be=C2=A0<br>
-&gt; dropped altogether.<br>
-<br>
-The mountinfo method is not such a maintenance issue that it needs to be<br=
->
-removed IMO. Possibly it could be replaced by tst_stat_mount_dev<br>
-instead, but we&#39;re cautious about touching this function.<br></blockquo=
-te><div><br></div><div>tst_find_backing_dev(), the function that is the tar=
-get of this patch, seems to=C2=A0</div><div>be referenced in only a couple =
-of points in all the LTP test suite.<br>One place is in the ioctl_loop05 te=
-st, the other reference I found is in the=C2=A0</div><div>lib/tst_device.c =
-- tst_dev_block_size().=C2=A0 tst_dev_block_size() is a function=C2=A0<br><=
-/div><div>that seems not to be referenced by any test.</div><div>=C2=A0<br>=
-</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;b=
-order-left:1px solid rgb(204,204,204);padding-left:1ex">
-<br>
-To be clear, I&#39;m not sure anyone compiles Linux without /sys then tries=
-<br>
-to run LTP on it. However the fact that it is possible to remove /sys is<br=
->
-another signal (in addition to BTRFS) that the situation is complicated.<br=
-></blockquote><div><br></div><div>Indeed, if we want to have a test that wo=
-rks in all the possible scenarios,=C2=A0</div><div>it needs additional work=
-.=C2=A0</div><div>But IMHO, keeping the mountinfo strategy gives no advanta=
-ge over not=C2=A0</div><div>having it.=C2=A0</div><div><br></div><blockquot=
-e class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px s=
-olid rgb(204,204,204);padding-left:1ex">
-<br>
-&gt;<br>
-&gt; $ sudo /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05<br>
-&gt; tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s<br>
-&gt; tst_test.c:1115: TINFO: ext2/ext3/ext4 is supported by the test<br>
-&gt; tst_device.c:91: TINFO: Found free device 0 &#39;/dev/loop0&#39;<br>
-&gt; loop0: detected capacity change from 0 to 2048<br>
-&gt; tst_device.c:570: TINFO: Device name retrived through mountinfo<br>
-&gt; ioctl_loop05.c:126: TINFO: backing dev(/dev/root) logical_block_size i=
-s 512<br>
-&gt; ioctl_loop05.c:62: TINFO: Without setting lo_offset or sizelimit<br>
-&gt; ioctl_loop05.c:45: TINFO: In dio mode<br>
-&gt; ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag<br>
-&gt; ioctl_loop05.c:52: TBROK: Failed to open FILE &#39;/sys/block/loop0/lo=
-op/dio&#39; for reading: ENOENT (2)<br>
-&gt;<br>
-&gt; Summary:<br>
-&gt; passed=C2=A0 =C2=A01<br>
-&gt; failed=C2=A0 =C2=A00<br>
-&gt; broken=C2=A0 =C2=A01<br>
-&gt; skipped=C2=A0 0<br>
-&gt; warnings 0<br>
-&gt;<br>
-&gt; The example here shows what happen if sysfs is not mounted and the<br>
-&gt; mountinfo method is used: the tests that depends on sysfs fail with<br=
->
-&gt; broken and not just warn.<br>
-&gt;<br>
-&gt; Signed-off-by: Richard Palethorpe &lt;<a href=3D"mailto:rpalethorpe@su=
-se.com" target=3D"_blank">rpalethorpe@suse.com</a>&gt;<br>
-&gt; Signed-off-by: Alessandro Carminati &lt;<a href=3D"mailto:alessandro.c=
-arminati@gmail.com" target=3D"_blank">alessandro.carminati@gmail.com</a>&gt=
-;<br>
-&gt; ---<br>
-&gt;=C2=A0 lib/tst_device.c | 41 ++++++++++-------------------------------<=
-br>
-&gt;=C2=A0 1 file changed, 10 insertions(+), 31 deletions(-)<br>
-&gt;<br>
-&gt; diff --git a/lib/tst_device.c b/lib/tst_device.c<br>
-&gt; index 8419b80c3..4ccb71ac8 100644<br>
-&gt; --- a/lib/tst_device.c<br>
-&gt; +++ b/lib/tst_device.c<br>
-&gt; @@ -520,48 +520,27 @@ void tst_find_backing_dev(const char *path, char=
- *dev)<br>
-&gt;=C2=A0 {<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0struct stat buf;<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0FILE *file;<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0char line[PATH_MAX];<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0char *pre =3D NULL;<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0char *next =3D NULL;<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0unsigned int dev_major, dev_minor, line_mjr, line=
-_mnr;<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0unsigned int len, best_match_len =3D 1;<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0char mnt_point[PATH_MAX];<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0unsigned int dev_major, dev_minor;<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0char uevent_path[PATH_MAX];<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0char dev_name[NAME_MAX];<br>
-&gt;=C2=A0 <br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0if (stat(path, &amp;buf) &lt; 0)<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brkm(TWARN |=
- TERRNO, NULL, &quot;stat() failed&quot;);<br>
-&gt;=C2=A0 <br>
-&gt; +=C2=A0 =C2=A0 =C2=A0*dev =3D &#39;\0&#39;;<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0dev_major =3D major(buf.st_dev);<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0dev_minor =3D minor(buf.st_dev);<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0file =3D SAFE_FOPEN(NULL, &quot;/proc/self/mounti=
-nfo&quot;, &quot;r&quot;);<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0*dev =3D &#39;\0&#39;;<br>
-&gt; -<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0while (fgets(line, sizeof(line), file)) {<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (sscanf(line, &quo=
-t;%*d %*d %d:%d %*s %s&quot;,<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0&amp;line_mjr, &amp;line_mnr, mnt_point) !=3D 3)<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0continue;<br>
-&gt;=C2=A0 <br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0pre =3D strstr(line, =
-&quot; - &quot;);<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0pre =3D strtok_r(pre,=
- &quot; &quot;, &amp;next);<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0pre =3D strtok_r(NULL=
-, &quot; &quot;, &amp;next);<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0pre =3D strtok_r(NULL=
-, &quot; &quot;, &amp;next);<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0sprintf(uevent_path,<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;/sys/dev/block/=
-%d:%d/uevent&quot;, dev_major, dev_minor);<br>
-&gt;=C2=A0 <br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (line_mjr =3D=3D d=
-ev_major &amp;&amp; line_mnr =3D=3D dev_minor) {<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0strcpy(dev, pre);<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0break;<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0if (!access(uevent_path, R_OK)) {<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0FILE_LINES_SCANF(NULL=
-, uevent_path, &quot;DEVNAME=3D%s&quot;, dev_name);<br>
-&gt;=C2=A0 <br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0len =3D count_match_l=
-en(path, mnt_point);<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (len &gt; best_mat=
-ch_len) {<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0strcpy(dev, pre);<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0best_match_len =3D len;<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (dev_name[0])<br>
-&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0sprintf(dev, &quot;/dev/%s&quot;, dev_name);<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>
-&gt;=C2=A0 <br>
-&gt; -=C2=A0 =C2=A0 =C2=A0SAFE_FCLOSE(NULL, file);<br>
-&gt; -<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0if (!*dev)<br>
-&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brkm(TBROK, NULL,=
- &quot;Cannot find block device for %s&quot;, path);<br>
-&gt; -<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0if (stat(dev, &amp;buf) &lt; 0)<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brkm(TWARN |=
- TERRNO, NULL, &quot;stat(%s) failed&quot;, dev);<br>
-<br>
-<br>
--- <br>
-Thank you,<br>
-Richard.<br></blockquote><div><br>Thank you for your time.</div><div>Alessa=
-ndro=C2=A0<br></div></div></div>
-
---0000000000006bf99f05ec08bc5f--
-
---===============0188338312==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/testcases/kernel/mem/mmapstress/Makefile b/testcases/kernel/mem/mmapstress/Makefile
+index 744f099d8..b30bd34b8 100644
+--- a/testcases/kernel/mem/mmapstress/Makefile
++++ b/testcases/kernel/mem/mmapstress/Makefile
+@@ -5,3 +5,5 @@ top_srcdir              ?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
++mmapstress01: CFLAGS += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
+index f425c223d..5b2ca94b1 100644
+--- a/testcases/kernel/mem/mmapstress/mmapstress01.c
++++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
+@@ -1,23 +1,24 @@
+-/* IBM Corporation */
+-/* 01/02/2003	Port to LTP avenkat@us.ibm.com */
+-/* 06/30/2001	Port to Linux	nsharoff@us.ibm.com */
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *   Copyright (c) International Business Machines  Corp., 2003
+- *
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
++ * Copyright (c) International Business Machines  Corp., 2003
++ * 01/02/2003	Port to LTP avenkat@us.ibm.com
++ * 06/30/2001	Port to Linux	nsharoff@us.ibm.com
++ * 10/03/2022	Refactor to LTP framework	edliaw@google.com
++ */
++/*\
++ * [Description]
++ * This test stresses mmaps, without dealing with fragments or anything!
++ * It forks a specified number of children,
++ * all of whom mmap the same file, make a given number of accesses
++ * to random pages in the map (reading & writing and comparing data).
++ * Then the child exits and the parent forks another to take its place.
++ * Each time a child is forked, it stats the file and maps the full
++ * length of the file.
+  *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * This program continues to run until it either receives a SIGINT,
++ * or times out (if a timeout value is specified).  When either of
++ * these things happens, it cleans up its kids, then checks the
++ * file to make sure it has the correct data.
+  */
+ 
+ #define _GNU_SOURCE 1
+@@ -32,517 +33,163 @@
+ #include <errno.h>
+ #include <sys/types.h>
+ #include <limits.h>
+-/*****  LTP Port        *****/
+-#include "test.h"
+-#define FAILED 0
+-#define PASSED 1
+-
+-int local_flag = PASSED;
+-char *TCID = "mmapstress01";	//tmnoextend
+-FILE *temp;
+-int TST_TOTAL = 1;
+-
+-int anyfail();
+-void ok_exit();
+-/*****  **      **      *****/
+-
+-/*
+- *  This test stresses mmaps, without dealing with fragments or anything!
+- *  It forks a specified number of children,
+- *  all of whom mmap the same file, make a given number of accesses
+- *  to random pages in the map (reading & writing and comparing data).
+- *  Then the child exits and the parent forks another to take its place.
+- *  Each time a child is forked, it stats the file and maps the full
+- *  length of the file.
+- *
+- *  This program continues to run until it either receives a SIGINT,
+- *  or times out (if a timeout value is specified).  When either of
+- *  these things happens, it cleans up its kids, then checks the
+- *  file to make sure it has the correct data.
+- *
+- *  usage:
+- *	tmnoextend -p nprocs [-t minutes -f filesize -S sparseoffset
+- *			      -r -o -m -l -d]
+- *  where:
+- *	-p nprocs	- specifies the number of mapping children
+- *			  to create.  (nprocs + 1 children actually
+- *			  get created, since one is the writer child)
+- *	-t minutes	- specifies minutes to run.  If not specified,
+- *			  default is to run forever until a SIGINT
+- *			  is received.
+- *	-f filesize	- initial filesize (defaults to FILESIZE)
+- *	-S sparseoffset - when non-zero, causes a sparse area to
+- *			  be left before the data, meaning that the
+- *			  actual initial file size is sparseoffset +
+- *			  filesize.  Useful for testing large files.
+- *			  (default is 0).
+- *	-r		- randomize number of pages map children check.
+- *			  (random % MAXLOOPS).  If not specified, each
+- *			  child checks MAXLOOPS pages.
+- *	-o		- randomize offset of file to map. (default is 0)
+- *	-m		- do random msync/fsyncs as well
+- *	-l		- if set, the output file is not removed on
+- *			  program exit.
+- *	-d		- enable debug output
+- *
+- *  Compile with -DLARGE_FILE to enable file sizes > 2 GB.
+- */
+-
++#include <float.h>
++#include "tst_test.h"
++
++#if _FILE_OFFSET_BITS == 64
++# define FSIZE_MIN LONG_MIN
++# define FSIZE_MAX LONG_MAX
++#else
++# define FSIZE_MIN INT_MIN
++# define FSIZE_MAX INT_MAX
++#endif
+ #define MAXLOOPS	500	/* max pages for map children to write */
+-#define	FILESIZE	4096	/* initial filesize set up by parent */
++#define TEST_FILE	"mmapstress01.out"
+ 
+ #ifdef roundup
+ #undef roundup
+ #endif
+ #define roundup(x, y)	((((x)+((y)-1))/(y))*(y))
+ 
+-extern time_t time(time_t *);
+-extern char *ctime(const time_t *);
+-extern void *malloc(size_t);
+-extern long lrand48(void);
+-extern void srand(unsigned);
+-extern void srand48(long);
+-extern int rand(void);
+-extern int atoi(const char *);
+-
+-char *usage =
+-    "-p nprocs [-t minutes -f filesize -S sparseoffset -r -o -m -l -d]";
+-
+-typedef unsigned char uchar_t;
+-#define SIZE_MAX UINT_MAX
+-
+-unsigned int initrand(void);
+-void finish(int sig);
+-void child_mapper(char *file, unsigned procno, unsigned nprocs);
+-int fileokay(char *file, uchar_t * expbuf);
+-int finished = 0;
+-int leavefile = 0;
+-
+-int debug = 0;
+-#ifdef LARGE_FILE
+-off64_t filesize = FILESIZE;
+-off64_t sparseoffset = 0;
+-#else /* LARGE_FILE */
+-off_t filesize = FILESIZE;
+-off_t sparseoffset = 0;
+-#endif /* LARGE_FILE */
+-unsigned randloops = 0;
+-unsigned dosync = 0;
+-unsigned do_offset = 0;
+-unsigned pattern = 0;
+-
+-int main(int argc, char *argv[])
++static unsigned int initrand(void);
++static void sighandler(int);
++
++static char *debug;
++static char *do_sync;
++static char *do_offset;
++static char *opt_filesize;
++static char *opt_nprocs;
++static char *opt_pattern;
++static char *opt_sparseoffset;
++static char *randloops;
++
++static int fd;
++static volatile int finished;
++static int nprocs;
++static long long filesize = 4096;
++static long long sparseoffset;
++static size_t pagesize;
++static unsigned int pattern;
++
++static struct tst_option options[] = {
++	{"d", &debug, "Enable debug output"},
++	{"f:", &opt_filesize, "Initial filesize (default 4096)"},
++	{"m", &do_sync, "Do random msync/fsyncs as well"},
++	{"o", &do_offset, "Randomize the offset of file to map"},
++	{"p:", &opt_nprocs,
++	 "Number of mapping children to create (default 1 < ncpus < 20)"},
++	{"P:", &opt_pattern,
++	 "Use a fixed pattern (default random)"},
++	{"r", &randloops,
++	 "Randomize number of pages map children check (random % 500), "
++	 "otherwise each child checks 500 pages"},
++	{"S:", &opt_sparseoffset,
++	 "When non-zero, causes the sparse area to be left before the data, "
++	 "so that the actual initial filesize is sparseoffset + filesize "
++	 "(default 0)"},
++	{},
++};
++
++static void setup(void)
+ {
+-	char *progname;
+-	int fd;
+-	int c;
+-	extern char *optarg;
+-	unsigned nprocs = 0;
+-	unsigned procno;
+-	pid_t *pidarray = NULL;
+-	pid_t pid;
+-	uchar_t *buf = NULL;
+-	unsigned int seed;
+-	int pagesize = sysconf(_SC_PAGE_SIZE);
+-	float alarmtime = 0;
+ 	struct sigaction sa;
+-	unsigned i;
+-	int write_cnt;
+-	uchar_t data;
+-	int no_prob = 0;
+-	int wait_stat;
+-	time_t t;
+-#ifdef LARGE_FILE
+-	off64_t bytes_left;
+-#else /* LARGE_FILE */
+-	off_t bytes_left;
+-#endif /* LARGE_FILE */
+-	const char *filename = "mmapstress01.out";
+-
+-	progname = *argv;
+-	tst_tmpdir();
+-	if (argc < 2) {
+-		tst_brkm(TBROK, NULL, "usage: %s %s", progname, usage);
+-	}
+-
+-	while ((c = getopt(argc, argv, "S:omdlrf:p:t:")) != -1) {
+-		switch (c) {
+-		case 'd':
+-			debug = 1;
+-			break;
+-		case 't':
+-			alarmtime = atof(optarg) * 60;
+-			break;
+-		case 'p':
+-			nprocs = atoi(optarg);
+-			break;
+-		case 'l':
+-			leavefile = 1;
+-			break;
+-		case 'f':
+-#ifdef LARGE_FILE
+-			filesize = atoll(optarg);
+-#else /* LARGE_FILE */
+-			filesize = atoi(optarg);
+-#endif /* LARGE_FILE */
+-			if (filesize < 0) {
+-				(void)fprintf(stderr, "error: negative "
+-					      "filesize\n");
+-				anyfail();
+-			}
+-			break;
+-		case 'r':
+-			randloops = 1;
+-			break;
+-		case 'm':
+-			dosync = 1;
+-			break;
+-		case 'o':
+-			do_offset = 1;
+-			break;
+-		case 'S':
+-#ifdef LARGE_FILE
+-			sparseoffset = atoll(optarg);
+-#else /* LARGE_FILE */
+-			sparseoffset = atoi(optarg);
+-#endif /* LARGE_FILE */
+-			if (sparseoffset % pagesize != 0) {
+-				fprintf(stderr,
+-					"sparseoffset must be pagesize multiple\n");
+-				anyfail();
+-			}
+-			break;
+-		default:
+-			(void)fprintf(stderr, "usage: %s %s\n", progname,
+-				      usage);
+-			tst_exit();
+-		}
+-	}
+-
+-	/* nprocs is >= 0 since it's unsigned */
+-	if (nprocs > 255) {
+-		(void)fprintf(stderr, "invalid nprocs %d - (range 0-255)\n",
+-			      nprocs);
+-		anyfail();
+-	}
+-
+-	(void)time(&t);
+-
+-	seed = initrand();
+-	pattern = seed & 0xff;
+-
+-	if (debug) {
+-#ifdef LARGE_FILE
+-		(void)printf("creating file <%s> with %Ld bytes, pattern %d\n",
+-			     filename, filesize, pattern);
+-#else /* LARGE_FILE */
+-		(void)printf("creating file <%s> with %ld bytes, pattern %d\n",
+-			     filename, filesize, pattern);
+-#endif /* LARGE_FILE */
+-		if (alarmtime)
+-			(void)printf("running for %f minutes\n",
+-				     alarmtime / 60);
+-		else
+-			(void)printf("running with no time limit\n");
+-	}
++	int int_pattern;
+ 
+-	/*
+-	 *  Plan for death by signal.  User may have specified
+-	 *  a time limit, in which set an alarm and catch SIGALRM.
+-	 *  Also catch and cleanup with SIGINT.
+-	 */
+-	sa.sa_handler = finish;
++	sa.sa_handler = sighandler;
+ 	sa.sa_flags = 0;
+-	if (sigemptyset(&sa.sa_mask)) {
+-		perror("sigemptyset error");
+-		goto cleanup;
+-	}
+-
+-	if (sigaction(SIGINT, &sa, 0) == -1) {
+-		perror("sigaction error SIGINT");
+-		goto cleanup;
+-	}
+-	if (sigaction(SIGQUIT, &sa, 0) == -1) {
+-		perror("sigaction error SIGQUIT");
+-		goto cleanup;
+-	}
+-	if (sigaction(SIGTERM, &sa, 0) == -1) {
+-		perror("sigaction error SIGTERM");
+-		goto cleanup;
+-	}
+-
+-	if (alarmtime) {
+-		if (sigaction(SIGALRM, &sa, 0) == -1) {
+-			perror("sigaction error");
+-			goto cleanup;
+-		}
+-		(void)alarm(alarmtime);
+-	}
+-#ifdef LARGE_FILE
+-	if ((fd = open64(filename, O_CREAT | O_TRUNC | O_RDWR, 0664)) == -1) {
+-#else /* LARGE_FILE */
+-	if ((fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0664)) == -1) {
+-#endif /* LARGE_FILE */
+-		perror("open error");
+-		anyfail();
+-	}
+-
+-	if ((buf = malloc(pagesize)) == NULL
+-	    || (pidarray = malloc(nprocs * sizeof(pid_t))) == NULL) {
+-		perror("malloc error");
+-		anyfail();
+-	}
+-
+-	for (i = 0; i < nprocs; i++)
+-		*(pidarray + i) = 0;
+-
+-	for (i = 0, data = 0; i < pagesize; i++) {
+-		*(buf + i) = (data + pattern) & 0xff;
+-		if (++data == nprocs)
+-			data = 0;
+-	}
+-#ifdef LARGE_FILE
+-	if (lseek64(fd, sparseoffset, SEEK_SET) < 0) {
+-#else /* LARGE_FILE */
+-	if (lseek(fd, sparseoffset, SEEK_SET) < 0) {
+-#endif /* LARGE_FILE */
+-		perror("lseek");
+-		anyfail();
+-	}
+-	for (bytes_left = filesize; bytes_left; bytes_left -= c) {
+-		write_cnt = MIN(pagesize, (int)bytes_left);
+-		if ((c = write(fd, buf, write_cnt)) != write_cnt) {
+-			if (c == -1) {
+-				perror("write error");
+-			} else {
+-				(void)fprintf(stderr, "write: wrote %d of %d "
+-					      "bytes\n", c, write_cnt);
+-			}
+-			(void)close(fd);
+-			(void)unlink(filename);
+-			anyfail();
+-		}
+-	}
+-
+-	(void)close(fd);
+-
+-	/*
+-	 *  Fork off mmap children.
+-	 */
+-	for (procno = 0; procno < nprocs; procno++) {
+-		switch (pid = fork()) {
+-
+-		case -1:
+-			perror("fork error");
+-			goto cleanup;
+-
+-		case 0:
+-			child_mapper(filename, procno, nprocs);
+-			exit(0);
+-
+-		default:
+-			pidarray[procno] = pid;
+-		}
+-	}
+-
+-	/*
+-	 *  Now wait for children and refork them as needed.
+-	 */
+-
+-	while (!finished) {
+-		pid = wait(&wait_stat);
+-		/*
+-		 *  Block signals while processing child exit.
+-		 */
+-
+-		if (sighold(SIGALRM) || sighold(SIGINT)) {
+-			perror("sighold error");
+-			goto cleanup;
+-		}
+-
+-		if (pid != -1) {
+-			/*
+-			 *  Check exit status, then refork with the
+-			 *  appropriate procno.
+-			 */
+-			if (!WIFEXITED(wait_stat)
+-			    || WEXITSTATUS(wait_stat) != 0) {
+-				(void)fprintf(stderr, "child exit with err "
+-					      "<x%x>\n", wait_stat);
+-				goto cleanup;
+-			}
+-			for (i = 0; i < nprocs; i++)
+-				if (pid == pidarray[i])
+-					break;
+-			if (i == nprocs) {
+-				(void)fprintf(stderr, "unknown child pid %d, "
+-					      "<x%x>\n", pid, wait_stat);
+-				goto cleanup;
+-			}
+-
+-			if ((pid = fork()) == -1) {
+-				perror("fork error");
+-				pidarray[i] = 0;
+-				goto cleanup;
+-			} else if (pid == 0) {	/* child */
+-				child_mapper(filename, i, nprocs);
+-				exit(0);
+-			} else
+-				pidarray[i] = pid;
+-		} else {
+-			/*
+-			 *  wait returned an error.  If EINTR, then
+-			 *  normal finish, else it's an unexpected
+-			 *  error...
+-			 */
+-			if (errno != EINTR || !finished) {
+-				perror("unexpected wait error");
+-				goto cleanup;
+-			}
+-		}
+-		if (sigrelse(SIGALRM) || sigrelse(SIGINT)) {
+-			perror("sigrelse error");
+-			goto cleanup;
+-		}
+-	}
+-
+-	/*
+-	 *  Finished!  Check the file for sanity, then kill all
+-	 *  the children and done!.
+-	 */
+-
+-	if (sighold(SIGALRM)) {
+-		perror("sighold error");
+-		goto cleanup;
+-	}
+-	(void)alarm(0);
+-	no_prob = 1;
+-
+-cleanup:
+-	for (i = 0; i < nprocs; i++)
+-		(void)kill(pidarray[i], SIGKILL);
+-
+-	while (wait(&wait_stat) != -1 || errno != ECHILD)
+-		continue;
+-
+-	if (no_prob) {		/* only check file if no errors */
+-		if (!fileokay(filename, buf)) {
+-			(void)fprintf(stderr, "file data incorrect!\n");
+-			(void)printf("  leaving file <%s>\n", filename);
+-			/***** LTP Port *****/
+-			local_flag = FAILED;
+-			anyfail();
+-			/*****	**	*****/
+-		} else {
+-			(void)printf("file data okay\n");
+-			if (!leavefile)
+-				(void)unlink(filename);
+-		}
+-	} else
+-		(void)printf("  leaving file <%s>\n", filename);
++	SAFE_SIGEMPTYSET(&sa.sa_mask);
++	SAFE_SIGACTION(SIGINT, &sa, 0);
++	SAFE_SIGACTION(SIGQUIT, &sa, 0);
++	SAFE_SIGACTION(SIGTERM, &sa, 0);
++	SAFE_SIGACTION(SIGALRM, &sa, 0);
++
++	pagesize = sysconf(_SC_PAGE_SIZE);
++
++	if (tst_parse_filesize(opt_filesize, &filesize, 0, FSIZE_MAX))
++		tst_brk(TBROK, "invalid initial filesize '%s'", opt_filesize);
++
++	if (tst_parse_filesize(opt_sparseoffset, &sparseoffset, FSIZE_MIN, FSIZE_MAX))
++		tst_brk(TBROK, "invalid sparse offset '%s'", opt_sparseoffset);
++	if (sparseoffset % pagesize != 0)
++		tst_brk(TBROK, "sparseoffset must be pagesize multiple");
++
++	if (tst_parse_int(opt_nprocs, &nprocs, 0, 255))
++		tst_brk(TBROK, "invalid number of mapping children '%s'",
++			opt_nprocs);
++	if (!opt_nprocs)
++		nprocs = MAX(MIN(tst_ncpus() - 1L, 20L), 1L);
++
++	if (tst_parse_int(opt_pattern, &int_pattern, 0, 255))
++		tst_brk(TBROK, "invalid pattern '%s'", opt_pattern);
++	if (opt_pattern)
++		pattern = (unsigned int)int_pattern;
++	else
++		pattern = initrand() & 0xff;
++
++	if (debug)
++		tst_res(TINFO, "creating file <%s> with %lld bytes, pattern %d",
++			TEST_FILE, filesize, pattern);
++}
+ 
+-	(void)time(&t);
+-	//(void)printf("%s: Finished %s", argv[0], ctime(&t)); LTP Port
+-	ok_exit();
+-	tst_exit();
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
+ }
+ 
+ /*
+- *  Child process that reads/writes map.  The child stats the file
+- *  to determine the size, maps the size of the file, then reads/writes
+- *  its own locations on random pages of the map (its locations being
+- *  determined based on nprocs & procno).  After a specific number of
+- *  iterations, it exits.
++ * Child process that reads/writes map.  The child stats the file
++ * to determine the size, maps the size of the file, then reads/writes
++ * its own locations on random pages of the map (its locations being
++ * determined based on nprocs & procno).  After a specific number of
++ * iterations, it exits.
+  */
+-void child_mapper(char *file, unsigned procno, unsigned nprocs)
++static void child_mapper(char *file, unsigned int procno, unsigned int nprocs)
+ {
+-#ifdef LARGE_FILE
+-	struct stat64 statbuf;
+-	off64_t filesize;
+-	off64_t offset;
+-#else /* LARGE_FILE */
+ 	struct stat statbuf;
+ 	off_t filesize;
+ 	off_t offset;
+-#endif /* LARGE_FILE */
+ 	size_t validsize;
+ 	size_t mapsize;
+ 	char *maddr = NULL, *paddr;
+-	int fd;
+-	size_t pagesize = sysconf(_SC_PAGE_SIZE);
+-	unsigned randpage;
++	unsigned int randpage;
+ 	unsigned int seed;
+-	unsigned loopcnt;
+-	unsigned nloops;
+-	unsigned mappages;
+-	unsigned i;
+-
+-	seed = initrand();	/* initialize random seed */
+-
+-#ifdef LARGE_FILE
+-	if (stat64(file, &statbuf) == -1) {
+-#else /* LARGE_FILE */
+-	if (stat(file, &statbuf) == -1) {
+-#endif /* LARGE_FILE */
+-		perror("stat error");
+-		anyfail();
+-	}
++	unsigned int loopcnt;
++	unsigned int nloops;
++	unsigned int mappages;
++	unsigned int i;
++
++	seed = initrand();
++
++	SAFE_STAT(file, &statbuf);
+ 	filesize = statbuf.st_size;
+ 
+-#ifdef LARGE_FILE
+-	if ((fd = open64(file, O_RDWR)) == -1) {
+-#else /* LARGE_FILE */
+-	if ((fd = open(file, O_RDWR)) == -1) {
+-#endif /* LARGE_FILE */
+-		perror("open error");
+-		anyfail();
+-	}
++	fd = SAFE_OPEN(file, O_RDWR);
+ 
+-	if (statbuf.st_size - sparseoffset > SIZE_MAX) {
+-		fprintf(stderr, "size_t overflow when setting up map\n");
+-		anyfail();
+-	}
++	if (statbuf.st_size - sparseoffset > UINT_MAX)
++		tst_brk(TBROK, "size_t overflow when setting up map");
+ 	mapsize = (size_t) (statbuf.st_size - sparseoffset);
+ 	mappages = roundup(mapsize, pagesize) / pagesize;
+ 	offset = sparseoffset;
+ 	if (do_offset) {
+ 		int pageoffset = lrand48() % mappages;
+ 		int byteoffset = pageoffset * pagesize;
++
+ 		offset += byteoffset;
+ 		mapsize -= byteoffset;
+ 		mappages -= pageoffset;
+ 	}
+ 	nloops = (randloops) ? (lrand48() % MAXLOOPS) : MAXLOOPS;
+ 
+-	if (debug) {
+-#ifdef LARGE_FILE
+-		(void)printf("child %d (pid %ld): seed %d, fsize %Ld, "
+-			     "mapsize %d, off %Ld, loop %d\n",
+-			     procno, getpid(), seed, filesize, mapsize,
+-			     offset / pagesize, nloops);
+-#else /* LARGE_FILE */
+-		(void)printf("child %d (pid %d): seed %d, fsize %ld, "
+-			     "mapsize %ld, off %ld, loop %d\n",
+-			     procno, getpid(), seed, filesize, (long)mapsize,
+-			     offset / pagesize, nloops);
+-#endif /* LARGE_FILE */
+-	}
+-#ifdef LARGE_FILE
+-	if ((maddr = mmap64(0, mapsize, PROT_READ | PROT_WRITE, MAP_SHARED,
+-			    fd, offset)) == (caddr_t) - 1) {
+-#else /* LARGE_FILE */
+-	if ((maddr = mmap(0, mapsize, PROT_READ | PROT_WRITE, MAP_SHARED,
+-			  fd, offset)) == (caddr_t) - 1) {
+-#endif /* LARGE_FILE */
+-		perror("mmap error");
+-		anyfail();
+-	}
++	if (debug)
++		tst_res(TINFO, "child %d (pid %d): seed %d, fsize %lld, mapsize %ld, off %lld, loop %d",
++			procno, getpid(), seed, (long long)filesize,
++			(long)mapsize, (long long)offset / pagesize, nloops);
+ 
+-	(void)close(fd);
++	maddr = SAFE_MMAP(0, mapsize, PROT_READ | PROT_WRITE, MAP_SHARED, fd,
++			  offset);
++	SAFE_CLOSE(fd);
+ 
+-	/*
+-	 *  Now loop read/writing random pages.
+-	 */
+ 	for (loopcnt = 0; loopcnt < nloops; loopcnt++) {
+ 		randpage = lrand48() % mappages;
+ 		paddr = maddr + (randpage * pagesize);	/* page address */
+@@ -554,185 +201,174 @@ void child_mapper(char *file, unsigned procno, unsigned nprocs)
+ 
+ 		for (i = procno; i < validsize; i += nprocs) {
+ 			if (*((unsigned char *)(paddr + i))
+-			    != ((procno + pattern) & 0xff)) {
+-				(void)fprintf(stderr, "child %d: invalid data "
+-					      "<x%x>", procno,
+-					      *((unsigned char *)(paddr + i)));
+-				(void)fprintf(stderr, " at pg %d off %d, exp "
+-					      "<x%x>\n", randpage, i,
+-					      (procno + pattern) & 0xff);
+-				anyfail();
+-			}
++			    != ((procno + pattern) & 0xff))
++				tst_brk(TFAIL, "child %d: invalid data <x%x>\n"
++					" at pg %d off %d, exp <x%x>", procno,
++					*((unsigned char *)(paddr + i)),
++					randpage, i, (procno + pattern) & 0xff);
+ 
+-			/*
+-			 *  Now write it.
+-			 */
+ 			*(paddr + i) = (procno + pattern) & 0xff;
+ 		}
+ 	}
+-	if (dosync) {
+-		/*
+-		 * Exercise msync() as well!
+-		 */
++	if (do_sync) {
+ 		randpage = lrand48() % mappages;
+ 		paddr = maddr + (randpage * pagesize);	/* page address */
+ 		if (msync(paddr, (mappages - randpage) * pagesize,
+-			  MS_SYNC) == -1) {
+-			anyfail();
+-		}
+-	}
+-	if (munmap(maddr, mapsize) == -1) {
+-		perror("munmap failed");
+-		local_flag = FAILED;
+-		anyfail();
++			  MS_SYNC) == -1)
++			tst_brk(TBROK | TERRNO, "msync failed");
+ 	}
++	SAFE_MUNMAP(maddr, mapsize);
+ 	exit(0);
+ }
+ 
+-/*
+- *  Make sure file has all the correct data.
+- */
+-int fileokay(char *file, uchar_t * expbuf)
++/* Make sure file has all the correct data. */
++static void fileokay(char *file, unsigned char *expbuf)
+ {
+-#ifdef LARGE_FILE
+-	struct stat64 statbuf;
+-#else /* LARGE_FILE */
+-	struct stat statbuf;
+-#endif /* LARGE_FILE */
+-	size_t mapsize;
+-	unsigned mappages;
+-	unsigned pagesize = sysconf(_SC_PAGE_SIZE);
+-	uchar_t readbuf[pagesize];
+-	int fd;
+ 	int cnt;
+-	unsigned i, j;
+-
+-#ifdef LARGE_FILE
+-	if ((fd = open64(file, O_RDONLY)) == -1) {
+-#else /* LARGE_FILE */
+-	if ((fd = open(file, O_RDONLY)) == -1) {
+-#endif /* LARGE_FILE */
+-		perror("open error");
+-		/***** LTP Port *****/
+-		local_flag = FAILED;
+-		anyfail();
+-		/*****	**	*****/
+-		return 0;
+-	}
+-#ifdef LARGE_FILE
+-	if (fstat64(fd, &statbuf) == -1) {
+-#else /* LARGE_FILE */
+-	if (fstat(fd, &statbuf) == -1) {
+-#endif /* LARGE_FILE */
+-		perror("stat error");
+-		/***** LTP Port *****/
+-		local_flag = FAILED;
+-		anyfail();
+-		/*****	**	*****/
+-		return 0;
+-	}
+-#ifdef LARGE_FILE
+-	if (lseek64(fd, sparseoffset, SEEK_SET) < 0) {
+-#else /* LARGE_FILE */
+-	if (lseek(fd, sparseoffset, SEEK_SET) < 0) {
+-#endif /* LARGE_FILE */
+-		perror("lseek");
+-		anyfail();
+-	}
++	size_t mapsize;
++	struct stat statbuf;
++	unsigned char readbuf[pagesize];
++	unsigned int i, j;
++	unsigned int mappages;
+ 
+-	if (statbuf.st_size - sparseoffset > SIZE_MAX) {
+-		fprintf(stderr, "size_t overflow when setting up map\n");
+-		anyfail();
+-	}
++	fd = SAFE_OPEN(file, O_RDONLY);
++
++	SAFE_FSTAT(fd, &statbuf);
++	SAFE_LSEEK(fd, sparseoffset, SEEK_SET);
++
++	if (statbuf.st_size - sparseoffset > UINT_MAX)
++		tst_brk(TBROK, "size_t overflow when setting up map");
+ 	mapsize = (size_t) (statbuf.st_size - sparseoffset);
+ 
+ 	mappages = roundup(mapsize, pagesize) / pagesize;
+ 
+ 	for (i = 0; i < mappages; i++) {
+-		cnt = read(fd, readbuf, pagesize);
+-		if (cnt == -1) {
+-			perror("read error");
+-			/***** LTP Port *****/
+-			local_flag = FAILED;
+-			anyfail();
+-			/*****	**	*****/
+-			return 0;
+-		} else if (cnt != pagesize) {
+-			/*
+-			 *  Okay if at last page in file...
+-			 */
+-			if ((i * pagesize) + cnt != mapsize) {
+-				(void)fprintf(stderr, "read %d of %ld bytes\n",
+-					      (i * pagesize) + cnt,
+-					      (long)mapsize);
+-				close(fd);
+-				return 0;
+-			}
++		cnt = SAFE_READ(0, fd, readbuf, pagesize);
++		if ((unsigned int)cnt != pagesize) {
++			/* Okay if at last page in file... */
++			if ((i * pagesize) + cnt != mapsize)
++				tst_brk(TFAIL, "missing data: read %lu of %ld bytes",
++					(i * pagesize) + cnt, (long)mapsize);
+ 		}
+-		/*
+-		 *  Compare read bytes of data.
+-		 */
+-		for (j = 0; j < cnt; j++) {
+-			if (expbuf[j] != readbuf[j]) {
+-				(void)fprintf(stderr,
+-					      "read bad data: exp %c got %c)",
+-					      expbuf[j], readbuf[j]);
+-#ifdef LARGE_FILE
+-				(void)fprintf(stderr, ", pg %d off %d, "
+-					      "(fsize %Ld)\n", i, j,
+-					      statbuf.st_size);
+-#else /* LARGE_FILE */
+-				(void)fprintf(stderr, ", pg %d off %d, "
+-					      "(fsize %ld)\n", i, j,
+-					      statbuf.st_size);
+-#endif /* LARGE_FILE */
+-				close(fd);
+-				return 0;
+-			}
++		/* Compare read bytes of data. */
++		for (j = 0; j < (unsigned int)cnt; j++) {
++			if (expbuf[j] != readbuf[j])
++				tst_brk(TFAIL,
++					"read bad data: exp %c got %c, pg %d off %d, (fsize %lld)",
++					expbuf[j], readbuf[j], i, j,
++					(long long)statbuf.st_size);
+ 		}
+ 	}
+-	close(fd);
+-
+-	return 1;
++	SAFE_CLOSE(fd);
+ }
+ 
+- /*ARGSUSED*/ void finish(int sig)
++static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+ {
+ 	finished++;
+-	return;
+ }
+ 
+-unsigned int initrand(void)
++static unsigned int initrand(void)
+ {
+ 	unsigned int seed;
+ 
+ 	/*
+-	 *  Initialize random seed...  Got this from a test written
+-	 *  by scooter:
+-	 *      Use srand/rand to diffuse the information from the
+-	 *      time and pid.  If you start several processes, then
+-	 *      the time and pid information don't provide much
+-	 *      variation.
++	 * Use srand/rand to diffuse the information from the
++	 * time and pid.  If you start several processes, then
++	 * the time and pid information don't provide much
++	 * variation.
+ 	 */
+ 	srand((unsigned int)getpid());
+ 	seed = rand();
+ 	srand((unsigned int)time(NULL));
+ 	seed = (seed ^ rand()) % 100000;
+-	srand48((long int)seed);
+-	return (seed);
++	srand48((long)seed);
++	return seed;
+ }
+ 
+-/*****  LTP Port        *****/
+-void ok_exit(void)
++static void run(void)
+ {
+-	tst_resm(TPASS, "Test passed");
+-	tst_rmdir();
+-	tst_exit();
+-}
++	int c;
++	int i;
++	int wait_stat;
++	off_t bytes_left;
++	pid_t pid;
++	pid_t *pidarray;
++	size_t write_cnt;
++	unsigned char data;
++	unsigned char *buf;
+ 
+-int anyfail(void)
+-{
+-	tst_brkm(TFAIL, tst_rmdir, "Test failed");
++	alarm(tst_remaining_runtime());
++
++	finished = 0;
++	fd = SAFE_OPEN(TEST_FILE, O_CREAT | O_TRUNC | O_RDWR, 0664);
++	buf = SAFE_MALLOC(pagesize);
++	pidarray = SAFE_MALLOC(nprocs * sizeof(pid_t));
++
++	for (i = 0; i < nprocs; i++)
++		*(pidarray + i) = 0;
++
++	for (i = 0, data = 0; i < (int)pagesize; i++) {
++		*(buf + i) = (data + pattern) & 0xff;
++		if (++data == nprocs)
++			data = 0;
++	}
++	SAFE_LSEEK(fd, (off_t)sparseoffset, SEEK_SET);
++	for (bytes_left = filesize; bytes_left; bytes_left -= c) {
++		write_cnt = MIN((long long)pagesize, (long long)bytes_left);
++		c = SAFE_WRITE(1, fd, buf, write_cnt);
++	}
++	SAFE_CLOSE(fd);
++
++	for (i = 0; i < nprocs; i++) {
++		pid = SAFE_FORK();
++
++		if (pid == 0) {
++			child_mapper(TEST_FILE, (unsigned int)i, (unsigned int)nprocs);
++			exit(0);
++		} else {
++			pidarray[i] = pid;
++		}
++	}
++
++	while (!finished) {
++		pid = wait(&wait_stat);
++		if (pid != -1) {
++			if (!WIFEXITED(wait_stat)
++			    || WEXITSTATUS(wait_stat) != 0)
++				tst_brk(TBROK, "child exit with err <x%x>",
++					wait_stat);
++			for (i = 0; i < nprocs; i++)
++				if (pid == pidarray[i])
++					break;
++			if (i == nprocs)
++				tst_brk(TBROK, "unknown child pid %d, <x%x>",
++					pid, wait_stat);
++
++			pid = SAFE_FORK();
++			if (pid == 0) {
++				child_mapper(TEST_FILE, (unsigned int)i, (unsigned int)nprocs);
++				exit(0);
++			} else {
++				pidarray[i] = pid;
++			}
++		} else {
++			if (errno != EINTR || !finished)
++				tst_brk(TBROK | TERRNO,
++					"unexpected wait error");
++		}
++	}
++	alarm(0);
++
++	fileokay(TEST_FILE, buf);
++	tst_res(TPASS, "file has expected data");
+ }
+ 
+-/*****  **      **      *****/
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.options = options,
++	.cleanup = cleanup,
++	.max_runtime = 12,
++	.needs_tmpdir = 1,
++	.forks_child = 1,
++};
+-- 
+2.38.1.273.g43a17bfeac-goog
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0188338312==--
