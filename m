@@ -4,63 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7165FA3741
-	for <ltp@archiver.kernel.org>; Fri, 28 Oct 2022 10:28:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31491ECAAA1
+	for <ltp@archiver.kernel.org>; Fri, 28 Oct 2022 13:26:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C7EC33CA991
-	for <ltp@archiver.kernel.org>; Fri, 28 Oct 2022 12:28:49 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 078943CA964
+	for <ltp@archiver.kernel.org>; Fri, 28 Oct 2022 15:26:31 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B64F53C6840
- for <ltp@lists.linux.it>; Fri, 28 Oct 2022 12:28:36 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id E884D3CA610
+ for <ltp@lists.linux.it>; Fri, 28 Oct 2022 15:26:20 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DC5651000F59
- for <ltp@lists.linux.it>; Fri, 28 Oct 2022 12:28:34 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0BB801401270
+ for <ltp@lists.linux.it>; Fri, 28 Oct 2022 15:26:19 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 893FB1F8AB
- for <ltp@lists.linux.it>; Fri, 28 Oct 2022 10:28:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666952914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3A65721AD8;
+ Fri, 28 Oct 2022 13:26:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1666963579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=F92UD9OsmjouRGs0vJRmjFAvOoBTLQEqo+5bYu8anPE=;
- b=Hn3mj8XtjICiUB56UMeTIHKtiME2fV7WtIg/ewY39JTSFzg9UqFRcATB2LACRFJfblNKhO
- sKHMxPCt4CBhENQco1QPKNxl2bse3CXlHNc2yLk//9CSf7BfC9xlVAKxirKmKr7VSdkW4n
- 7J8SFO432TOOidzVK6py/CYS2AVPkJQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666952914;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=F92UD9OsmjouRGs0vJRmjFAvOoBTLQEqo+5bYu8anPE=;
- b=zYlJ6mIKXrCY+AmSguGsam8DuNt04MoVp/kBBEGaEQupJmAQaiQYG+ESz/ttWiQ+mgw+uu
- TT+2UFGuM4DZWUCA==
+ bh=I3Sn2ZKz7Ws3lxF9wapmGoQghNdWxPmsJsH+TqzDojo=;
+ b=XnJgkVWasHBFWgTXdA1mAh5n2DZgwUgc3EYZppr4ctTVLSkUTK2Wi0tkEZrf1ntnIziueE
+ KtlhsDbP91pMQCfKYEg2rICXcbtXyxS0xLQBypVvryCxqHusXXMTec2qqbyESau6e2qSS3
+ omUD5nPd+3AOJQb0Bf5XtOW7Ohc4aZU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CFB813A6E
- for <ltp@lists.linux.it>; Fri, 28 Oct 2022 10:28:33 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DE7E613A6E;
+ Fri, 28 Oct 2022 13:26:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Kh51MNGuW2OZOgAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Fri, 28 Oct 2022 10:28:33 +0000
-From: Avinesh Kumar <akumar@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id tzG1MHrYW2PeEwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Fri, 28 Oct 2022 13:26:18 +0000
 To: ltp@lists.linux.it
-Date: Fri, 28 Oct 2022 15:58:31 +0530
-Message-Id: <20221028102831.5284-1-akumar@suse.de>
-X-Mailer: git-send-email 2.38.0
+Date: Fri, 28 Oct 2022 15:24:53 +0200
+Message-Id: <20221028132455.26586-1-andrea.cervesato@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] setfsuid03: Convert to new LTP API
+Subject: [LTP] [PATCH v9 0/2] Rewrite aio-stress test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,159 +63,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-- rewrite using new API
-- using caller's real user ID as fsuid when calling
-setfsuid(fsuid) by non-root user
-- verifying that fsuid is updated correctly, by calling
-setfsuid(-1)
+aio-stress-test has been rewritten and runtest files merged.
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- .../kernel/syscalls/setfsuid/setfsuid03.c     | 110 ++++--------------
- 1 file changed, 25 insertions(+), 85 deletions(-)
+Andrea Cervesato (2):
+  Rewrite aio-stress test using LTP API
+  Merge ltp-aio-stress part2 with part1
 
-diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid03.c b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-index 0e5f860c8..ede4a7933 100644
---- a/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-+++ b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-@@ -2,105 +2,45 @@
-  * Copyright (C) International Business Machines  Corp., 2001
-  * Ported by Wayne Boyer
-  * Adapted by Dustin Kirkland (k1rkland@us.ibm.com)
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
- 
--/*
-- * Testcase to test the basic functionality of the setfsuid(2) system
-- * call when called by a user other than root.
-+/*\
-+ * [Description]
-+ *
-+ * Verify that setfsuid() correctly updates the filesystem uid
-+ * when caller is a non-root user and provided fsuid matches
-+ * caller's real user ID.
-  */
- 
--#include <stdio.h>
--#include <unistd.h>
--#include <sys/types.h>
--#include <errno.h>
- #include <pwd.h>
- 
--#include "test.h"
--#include "compat_16.h"
--
--static void setup(void);
--static void cleanup(void);
-+#include "tst_test.h"
-+#include "compat_tst_16.h"
- 
--TCID_DEFINE(setfsuid03);
--int TST_TOTAL = 1;
-+static uid_t nobody_uid;
- 
--static char nobody_uid[] = "nobody";
--static struct passwd *ltpuser;
--
--int main(int ac, char **av)
-+static void setup(void)
- {
--	int lc;
--
--	uid_t uid;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	uid = 1;
--	while (!getpwuid(uid))
--		uid++;
-+	struct passwd *nobody;
- 
--	UID16_CHECK(uid, setfsuid, cleanup);
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		TEST(SETFSUID(cleanup, uid));
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TTERRNO,
--				"setfsuid() failed unexpectedly");
--			continue;
--		}
--
--		if (TEST_RETURN == uid) {
--			tst_resm(TFAIL,
--				 "setfsuid() returned %ld, expected anything but %d",
--				 TEST_RETURN, uid);
--		} else {
--			tst_resm(TPASS, "setfsuid() returned expected value : "
--				 "%ld", TEST_RETURN);
--		}
--	}
--
--	cleanup();
--	tst_exit();
-+	nobody = SAFE_GETPWNAM("nobody");
-+	nobody_uid = nobody->pw_uid;
- }
- 
--static void setup(void)
-+static void run(void)
- {
--	tst_require_root();
--
--	ltpuser = getpwnam(nobody_uid);
--	if (ltpuser == NULL)
--		tst_brkm(TBROK, cleanup, "getpwnam failed for user id %s",
--			nobody_uid);
--
--	if (setuid(ltpuser->pw_uid) == -1)
--		tst_resm(TINFO | TERRNO, "setuid failed to "
--			 "to set the effective uid to %d", ltpuser->pw_uid);
-+	uid_t ruid, euid, suid;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	SAFE_GETRESUID(&ruid, &euid, &suid);
-+	SAFE_SETEUID(nobody_uid);
- 
--	TEST_PAUSE;
-+	TST_EXP_VAL_SILENT(setfsuid(ruid), nobody_uid);
-+	TST_EXP_VAL(setfsuid(-1), ruid, "setfsuid(fsuid) by non-root user:");
- }
- 
--static void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.setup = setup,
-+	.test_all = run
-+};
+ runtest/ltp-aio-stress                      |  55 ++
+ runtest/ltp-aio-stress.part1                |  79 --
+ runtest/ltp-aio-stress.part2                |  38 -
+ testcases/kernel/io/ltp-aiodio/aio-stress.c | 973 ++++++++------------
+ 4 files changed, 459 insertions(+), 686 deletions(-)
+ create mode 100644 runtest/ltp-aio-stress
+ delete mode 100644 runtest/ltp-aio-stress.part1
+ delete mode 100644 runtest/ltp-aio-stress.part2
+
 -- 
-2.38.0
+2.35.3
 
 
 -- 
