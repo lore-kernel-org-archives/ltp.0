@@ -4,54 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15E5DC38A02
-	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 11:32:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54D3EFA3740
+	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 11:32:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C106F3CAAC0
-	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 12:32:23 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id E77363CA9E5
+	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 12:32:34 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF1793CA9B6
+ by picard.linux.it (Postfix) with ESMTPS id E96893CA9B6
  for <ltp@lists.linux.it>; Mon, 31 Oct 2022 12:32:13 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1AD792003AE
- for <ltp@lists.linux.it>; Mon, 31 Oct 2022 12:32:12 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9093A600463
+ for <ltp@lists.linux.it>; Mon, 31 Oct 2022 12:32:13 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 576E733712;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C279D3372C;
  Mon, 31 Oct 2022 11:32:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
  t=1667215932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=8+DL05pbQ+cymUnUAFWm/TQYGGD+C3EPh/yG+wx4/+M=;
- b=BEP/NRL2+OinjigMMJAXxHkcEav5JnOwU2VBl5vC+cobomKjQ7CXcMh1vyXzbwqdY11jc5
- 2W0fvH5Qmgu0jBUPELxY/o5zh3NxsX6vbqMCfPwXLsEkQXEQWj2pVWLZckNakJrtYxMm1i
- tgmwmF5PUdwvTuRyisFMIg6kVS8kHnM=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ncS1wgEj8DhUjGklKB82fRO/UgGa6ty2jhvj3+b0cG4=;
+ b=eeCHS7rhD03/2l+SjZCDS3vwolOj4KZIPn9H6mZtFHq/LJX14SbmxtX1M0jv3iInlUGeDr
+ M9mrwAlVXlCmy5N58dQCQk2X/N6g5FufLGjxF7iQHAtP2ShqBtN35Kx5TSMfL3DHaN108f
+ hOWpl6hN2AHLhLdw4dIbyvOzhCYHpes=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 01F2113AAD;
- Mon, 31 Oct 2022 11:32:11 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 77C0413AAD;
+ Mon, 31 Oct 2022 11:32:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 5dpyNzuyX2ObHQAAMHmgww
- (envelope-from <andrea.cervesato@suse.com>); Mon, 31 Oct 2022 11:32:11 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id WIJEGDyyX2ObHQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Mon, 31 Oct 2022 11:32:12 +0000
 To: ltp@lists.linux.it
-Date: Mon, 31 Oct 2022 12:30:44 +0100
-Message-Id: <20221031113046.9218-1-andrea.cervesato@suse.com>
+Date: Mon, 31 Oct 2022 12:30:45 +0100
+Message-Id: <20221031113046.9218-2-andrea.cervesato@suse.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20221031113046.9218-1-andrea.cervesato@suse.com>
+References: <20221031113046.9218-1-andrea.cervesato@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/2] Rewrite utstest suite
+Subject: [LTP] [PATCH v2 1/2] Add SAFE_SETHOSTNAME macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,34 +74,71 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Added new tests and removed utstest which looked broken.
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Add safe_sethostname missing definition inside header file
 
-Andrea Cervesato (2):
-  Add SAFE_SETHOSTNAME macro
-  Rewrite utsname testing suite
+ include/safe_net_fn.h  |  3 +++
+ include/tst_safe_net.h |  3 +++
+ lib/safe_net.c         | 17 +++++++++++++++++
+ 3 files changed, 23 insertions(+)
 
- include/safe_net_fn.h                         |   3 +
- include/tst_safe_net.h                        |   3 +
- lib/safe_net.c                                |  17 +
- runtest/containers                            |   7 +
- .../kernel/containers/utsname/.gitignore      |   5 +-
- testcases/kernel/containers/utsname/Makefile  |  23 +-
- .../containers/utsname/runutstests_noltp.sh   |  41 --
- testcases/kernel/containers/utsname/utsname.h | 116 ++++++
- .../kernel/containers/utsname/utsname01.c     |  74 ++++
- .../kernel/containers/utsname/utsname02.c     |  97 +++++
- .../kernel/containers/utsname/utsname03.c     | 111 ++++++
- .../kernel/containers/utsname/utsname04.c     |  66 ++++
- testcases/kernel/containers/utsname/utstest.c | 356 ------------------
- 13 files changed, 501 insertions(+), 418 deletions(-)
- delete mode 100755 testcases/kernel/containers/utsname/runutstests_noltp.sh
- create mode 100644 testcases/kernel/containers/utsname/utsname.h
- create mode 100644 testcases/kernel/containers/utsname/utsname01.c
- create mode 100644 testcases/kernel/containers/utsname/utsname02.c
- create mode 100644 testcases/kernel/containers/utsname/utsname03.c
- create mode 100644 testcases/kernel/containers/utsname/utsname04.c
- delete mode 100644 testcases/kernel/containers/utsname/utstest.c
-
+diff --git a/include/safe_net_fn.h b/include/safe_net_fn.h
+index ff81b1337..6c63cb2cf 100644
+--- a/include/safe_net_fn.h
++++ b/include/safe_net_fn.h
+@@ -73,6 +73,9 @@ int safe_getsockname(const char *file, const int lineno,
+ int safe_gethostname(const char *file, const int lineno,
+ 		     char *name, size_t size);
+ 
++int safe_sethostname(const char *file, const int lineno,
++		     const char *name, size_t size);
++
+ int tst_getsockport(const char *file, const int lineno, int sockfd);
+ 
+ unsigned short tst_get_unused_port(const char *file, const int lineno,
+diff --git a/include/tst_safe_net.h b/include/tst_safe_net.h
+index e85b79a3e..98f0256fd 100644
+--- a/include/tst_safe_net.h
++++ b/include/tst_safe_net.h
+@@ -68,6 +68,9 @@
+ #define SAFE_GETHOSTNAME(name, size) \
+ 	safe_gethostname(__FILE__, __LINE__, name, size)
+ 
++#define SAFE_SETHOSTNAME(name, size) \
++	safe_sethostname(__FILE__, __LINE__, name, size)
++
+ #define TST_GETSOCKPORT(sockfd) \
+ 	tst_getsockport(__FILE__, __LINE__, sockfd)
+ 
+diff --git a/lib/safe_net.c b/lib/safe_net.c
+index 1717f0745..5dec0de11 100644
+--- a/lib/safe_net.c
++++ b/lib/safe_net.c
+@@ -469,6 +469,23 @@ int safe_gethostname(const char *file, const int lineno,
+ 	return rval;
+ }
+ 
++int safe_sethostname(const char *file, const int lineno,
++		     const char *name, size_t size)
++{
++	int rval = sethostname(name, size);
++
++	if (rval == -1) {
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
++			"sethostname(%p, %zu) failed", name, size);
++	} else if (rval) {
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
++			"Invalid sethostname(%p, %zu) return value %d", name,
++			size, rval);
++	}
++
++	return rval;
++}
++
+ /*
+  * @return port in network byte order.
+  */
 -- 
 2.35.3
 
