@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D278EECAAA1
-	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 14:00:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A14EFA3741
+	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 14:45:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4FCFF3CAAEF
-	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 15:00:27 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id BC1E13CABF7
+	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 15:45:38 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5A4B93CABC5
- for <ltp@lists.linux.it>; Mon, 31 Oct 2022 15:00:03 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id BDC1D3C0135
+ for <ltp@lists.linux.it>; Mon, 31 Oct 2022 15:45:26 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 63CE71000456
- for <ltp@lists.linux.it>; Mon, 31 Oct 2022 15:00:01 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4994D14002D1
+ for <ltp@lists.linux.it>; Mon, 31 Oct 2022 15:45:25 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4C3371F987;
- Mon, 31 Oct 2022 14:00:01 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 57923338D0;
+ Mon, 31 Oct 2022 14:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667224801; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1667227525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=1nui9r6sKPdbLSnHgBV8iKvfv0xcWc+Ra7KC6pA1CXE=;
- b=DMEmgR0N1L4N/0Dwu7fuCaWImGzvxog6TrP9Q2yqkF4g5q4hZlSE7y4DcpIVu/kKHiR5E3
- P//xM8vmG1tTM5b1+8C0sXy1685Uqa3DKdY5XWcEjkRcshKDfV3K3fv3uH5D+qdZh/poAR
- RjaP0TPEUqwI11XvaYRbeod2dhWoKic=
+ bh=gKkr0fzuNz2AgXIgNAhxdL913mJTPX+iPdI3OMIyYeY=;
+ b=wkyyconnscy3Jel3VjyWDb3NMT1k8nCO16RKUClLl/YffI0/j0cv59LKA0GaoeUljNAQBi
+ rJmB6KiyYgWHcH/yQN0xJ+29Z0Yju8xoniLrTN4SNj//hpnCLy3DgXH4GYR78xoB8a1MVN
+ PVjk5YvFYsFjD+gL5oUd38S8NutdU3o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667224801;
+ s=susede2_ed25519; t=1667227525;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=1nui9r6sKPdbLSnHgBV8iKvfv0xcWc+Ra7KC6pA1CXE=;
- b=CvQZEC++zULOicV3GDdAALOurzFMUM4wzzEEv0HgtZ1JSd7bVVOEtdxUcfHtQozdBxdavt
- AtOut7f0e1wRP/Dg==
+ bh=gKkr0fzuNz2AgXIgNAhxdL913mJTPX+iPdI3OMIyYeY=;
+ b=6YSl4mSv6h3mHoKZmy9wMRimge43gegruVrCmG8WCizoHBo6DKebPmNtV1JvKRDrCahYcs
+ bBZJ3qXpWbHcUmDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 34B8D13451;
- Mon, 31 Oct 2022 14:00:01 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3DFF313451;
+ Mon, 31 Oct 2022 14:45:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 51upC+HUX2OKbAAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Mon, 31 Oct 2022 14:00:01 +0000
-Message-ID: <96b14089-f1bb-e634-d74b-75fe92e58efa@suse.cz>
-Date: Mon, 31 Oct 2022 15:00:00 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id AQN5DoXfX2NFBQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 31 Oct 2022 14:45:25 +0000
+Date: Mon, 31 Oct 2022 15:47:01 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Tarun Sahu <tsahu@linux.ibm.com>
+Message-ID: <Y1/f5Uar5lB3lz0E@yuki>
+References: <20221029071344.45447-1-tsahu@linux.ibm.com>
+ <20221029071344.45447-2-tsahu@linux.ibm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>
-References: <20221027140954.4094-1-akumar@suse.de> <Y1+zeo9kmWOl2yE3@pevik>
- <ad63ddb5-b443-c0ee-fb1b-748bded5f151@suse.cz> <Y1/SkicyE3Mg9Fpc@pevik>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <Y1/SkicyE3Mg9Fpc@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20221029071344.45447-2-tsahu@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] setfsuid02: using -1 as invalid fsuid for
- setfsuid()
+Subject: Re: [LTP] [PATCH v3 1/4] Hugetlb: Add new tst_test options for
+ hugeltb test support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,33 +77,153 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: aneesh.kumar@linux.ibm.com, sbhat@linux.ibm.com, geetika@linux.ibm.com,
+ ltp@lists.linux.it, vaibhav@linux.ibm.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 31. 10. 22 14:50, Petr Vorel wrote:
->> No, UID16_CHECK(invalid_uid, setfsuid); is the correct test call. The test
->> is supposed to verify that trying to set invalid_uid will fail, and the only
->> way to verify that it failed is to call setfsuid(invalid_uid) again and
->> check that it returns current_uid.
-> I'm somehow blind today. UID16_CHECK() in compat_tst_16.h calls
-> UID_SIZE_CHECK(), which just checks the uid value. I don't see setfsuid() call,
-> IMHO that's done in SETFSUID().
+Hi!
+>  extern unsigned int tst_variant;
+> -
+> +extern int tst_hugetlb_fd;
+>  #define TST_NO_HUGEPAGES ((unsigned long)-1)
+>  
+>  #define TST_UNLIMITED_RUNTIME (-1)
+> @@ -176,6 +176,18 @@ struct tst_test {
+>  	int all_filesystems:1;
+>  	int skip_in_lockdown:1;
+>  	int skip_in_compat:1;
+> +	/*
+> +	 * If set, the test function will create a hugetlbfs mount point
+> +	 * at /tmp/xxxxxx, where xxxxxx is a random string.
+> +	 */
+> +	int needs_hugetlbfs:1;
+> +	/*
+> +	 * If set, the test function will create and open a random file
+> +	 * under mounted hugetlbfs. To use this option, needs_hugetlbfs must
+> +	 * be set. The file descriptior will be set in tst_hugetlb_fd.
+> +	 * The close(tst_hugetlb_fd) will be called on test exit(cleanup).
+> +	 */
+> +	int needs_unlinked_hugetlb_file:1;
+>  
+>  	/*
+>  	 * The skip_filesystems is a NULL terminated list of filesystems the
+> @@ -357,6 +369,12 @@ unsigned int tst_remaining_runtime(void);
+>   */
+>  void tst_set_max_runtime(int max_runtime);
+>  
+> +/*
+> + * Create and open a random file inside the given dir path.
+> + * It unlinks the file after opening and return file descriptor.
+> + */
+> +int tst_create_unlinked_file(const char *path);
+> +
+>  /*
+>   * Returns path to the test temporary directory in a newly allocated buffer.
+>   */
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 8ccde1629..43cba1004 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -925,7 +925,8 @@ static int needs_tmpdir(void)
+>  	       tst_test->needs_device ||
+>  	       tst_test->mntpoint ||
+>  	       tst_test->resource_files ||
+> -	       tst_test->needs_checkpoints;
+> +	       tst_test->needs_checkpoints ||
+> +		   tst_test->needs_hugetlbfs;
+>  }
+>  
+>  static void copy_resources(void)
+> @@ -1021,6 +1022,30 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
+>  	}
+>  }
+>  
+> +static void prepare_and_mount_hugetlb_fs(void)
+> +{
+> +	tst_test->mntpoint = tst_get_tmpdir();
+> +	SAFE_MOUNT("none", tst_test->mntpoint, "hugetlbfs", 0, NULL);
+> +	mntpoint_mounted = 1;
+> +}
+> +
+> +int tst_create_unlinked_file(const char *path)
+> +{
+> +	char template[PATH_MAX];
+> +	int fd;
+> +
+> +	snprintf(template, PATH_MAX, "%s/ltp_%.3sXXXXXX",
+> +			path, TCID);
+> +
+> +	fd = mkstemp(template);
+> +	if (fd < 0)
+> +		tst_brk(TBROK | TERRNO,
+> +			 "%s: mkstemp(%s) failed", __func__, template);
+> +
+> +	SAFE_UNLINK(template);
+> +	return fd;
+> +}
+> +
+>  static const char *limit_tmpfs_mount_size(const char *mnt_data,
+>  		char *buf, size_t buf_size, const char *fs_type)
+>  {
+> @@ -1094,6 +1119,8 @@ static void do_cgroup_requires(void)
+>  	tst_cg_init();
+>  }
+>  
+> +int tst_hugetlb_fd = -1;
+> +
+>  static void do_setup(int argc, char *argv[])
+>  {
+>  	if (!tst_test)
+> @@ -1217,6 +1244,17 @@ static void do_setup(int argc, char *argv[])
+>  		}
+>  	}
+>  
+> +	if (tst_test->needs_hugetlbfs)
+> +		prepare_and_mount_hugetlb_fs();
+> +
+> +	if (tst_test->needs_unlinked_hugetlb_file) {
+> +		if (!(tst_test->needs_hugetlbfs)) {
+> +			tst_brk(TBROK, "Option needs_unlinked_hugetlb_file "
+> +					"requires option needs_hugetlbfs");
+> +		}
+> +		tst_hugetlb_fd = tst_create_unlinked_file(tst_test->mntpoint);
+> +	}
 
-It doesn't make sense to call UID16_CHECK() on a value that we'll never 
-pass to a 16bit syscall, does it?
+The function tst_create_unlinked_file() looks useful, but I do not think
+that adding the needs_unlinked_hugetlb_file flag simplifies things that
+much. Also this will not scale well when we would need two
+filedescripors like that. Maybe we it would be cleaner to add only the
+mount/umount functionality to the test library and call the
+tst_create_unlinked_file() in the test setup in the testcases.
+
+>  	if (tst_test->needs_device && !mntpoint_mounted) {
+>  		tdev.dev = tst_acquire_device_(NULL, tst_test->dev_min_size);
+>  
+> @@ -1299,8 +1337,15 @@ static void do_cleanup(void)
+>  	if (ovl_mounted)
+>  		SAFE_UMOUNT(OVL_MNT);
+>  
+> -	if (mntpoint_mounted)
+> -		tst_umount(tst_test->mntpoint);
+> +	if (tst_hugetlb_fd >= 0)
+> +		SAFE_CLOSE(tst_hugetlb_fd);
+> +
+> +	if (mntpoint_mounted) {
+> +		if (tst_test->needs_hugetlbfs)
+> +			SAFE_UMOUNT(tst_test->mntpoint);
+> +		else
+> +			tst_umount(tst_test->mntpoint);
+> +	}
+
+Is there a good reason for this, why can't we call tst_umount() for
+hugetlbfs?
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
