@@ -4,97 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3726ECAAA1
-	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 18:03:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A1F2FA3741
+	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 19:09:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B4CC13CABD6
-	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 19:03:00 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0AA783CAC4E
+	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 20:09:42 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 129DA3C9ED2
- for <ltp@lists.linux.it>; Mon, 31 Oct 2022 19:02:49 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 470ED3C2A0E
+ for <ltp@lists.linux.it>; Mon, 31 Oct 2022 20:09:29 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C506C10004BA
- for <ltp@lists.linux.it>; Mon, 31 Oct 2022 19:02:48 +0100 (CET)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29VHC3uo029914;
- Mon, 31 Oct 2022 18:02:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=wC9gXbIRlYVcJxwPVWTaTms2FByPB6Kc6zmTrYR+rDo=;
- b=fzXYKXpj5GAOVrLvHj9e+hneEduCieFEA0FkWrLocqMFfbKsT6+XfRP6GgLYr7ioo7wv
- YhGi0sFon01AZB2+DIefEtyOs4Lsd/12iYgsQMFTCTaSx9C+ATJCVzCLo0Je3JmkH2Hw
- 9db2F4IbJXT35Z7H+kPpvTjIyPIjiT3i79lgyirMMIFXntzB0EqWDlU3gQj2KJouI+u6
- Lzeo6e18j/sa+7OTzsNa64iJm772JA6N/oGyZ+TgsNa9C+Pj12+pNTQSpI+6JGDez0sQ
- 7oxOlK2oDVji7sbZCdqDuug/IrdWgiq/sKOrYC48dZKyC/etvaRFtYvZoYrf+52W1Xvr nQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kjgykd1m3-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 31 Oct 2022 18:02:45 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 29VFQ7Bh007555;
- Mon, 31 Oct 2022 18:02:45 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.98])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kjgykd1jj-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 31 Oct 2022 18:02:45 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
- by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29VHpbZw017243;
- Mon, 31 Oct 2022 18:02:42 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com
- (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
- by ppma03ams.nl.ibm.com with ESMTP id 3kgut8ubuj-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 31 Oct 2022 18:02:42 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
- by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 29VI2dH32163232
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 31 Oct 2022 18:02:39 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8252542049;
- Mon, 31 Oct 2022 18:02:39 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 5E66C4203F;
- Mon, 31 Oct 2022 18:02:35 +0000 (GMT)
-Received: from tarunpc (unknown [9.43.72.21])
- by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
- Mon, 31 Oct 2022 18:02:34 +0000 (GMT)
-Date: Mon, 31 Oct 2022 23:32:31 +0530
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20221031180231.hgxcngfrwkkajii5@tarunpc>
-References: <20221029071344.45447-1-tsahu@linux.ibm.com>
- <20221029071344.45447-2-tsahu@linux.ibm.com>
- <CAEemH2e+FUZnQws-9pW5E25Uq01T0zaHzsk8QUa2KJsCKQpDBA@mail.gmail.com>
- <Y1/iBcq+iYFsxDJ+@yuki>
-Content-Disposition: inline
-In-Reply-To: <Y1/iBcq+iYFsxDJ+@yuki>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: UztcmLA-Qs77g8sMJZjOVXoodvk9wni0
-X-Proofpoint-GUID: 4TFTQX186DFFxNHDMSZLeABsezU5ZXoR
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BBBF160084D
+ for <ltp@lists.linux.it>; Mon, 31 Oct 2022 20:09:28 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 42C551F8BD;
+ Mon, 31 Oct 2022 19:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1667243367;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=dE35ze6fTq45ge1srQLTJhdsE30rQcx/p38EGt3JIkQ=;
+ b=S5qVVjtgvb1gJryLauP7YttBp1lZfsgouz1yjKc/kP/LamUMMm1ucnHEptnaG8ishRuATY
+ bu5s0Uz+oYmJqQzX/Vt1Pfyd8AEZbW9hrtg9KET76QZ5FI+634Yrc7y9Ik8Ecl8vnaQ6xe
+ I/gRdRXQ6PGexdJ1XAdMWs79helUheM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1667243367;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=dE35ze6fTq45ge1srQLTJhdsE30rQcx/p38EGt3JIkQ=;
+ b=6Z70FIJ5ptF4vrfpTGiR5Yiqc2Q78IBsX/a7yt3l/OX9cv6gZdsi4fno7nTCjNA6NcTwRV
+ I5nbaKluc9CYVxCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5279813451;
+ Mon, 31 Oct 2022 19:09:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id pvJFEWUdYGPjBgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 31 Oct 2022 19:09:25 +0000
+Date: Mon, 31 Oct 2022 20:09:22 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Jeff Layton <jlayton@kernel.org>
+Message-ID: <Y2AdYhMwyfX9vRzu@pevik>
+References: <Y1/P8gDAcWC/+VR3@pevik>
+ <5AE322AD-FF73-4495-A3DF-60A98DBE49A7@oracle.com>
+ <b735dfe6911387b7ba3a2fbfc599c9c55a455288.camel@kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-31_19,2022-10-31_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 lowpriorityscore=0
- clxscore=1015 suspectscore=0 spamscore=0 impostorscore=0 adultscore=0
- malwarescore=0 priorityscore=1501 phishscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
- definitions=main-2210310112
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <b735dfe6911387b7ba3a2fbfc599c9c55a455288.camel@kernel.org>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/4] Hugetlb: Add new tst_test options for
- hugeltb test support
+Subject: Re: [LTP] LTP test regression on exportfs in kernel 6.0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,83 +80,204 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, Richard Palethorpe <rpalethorpe@suse.com>,
- ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ Chuck Lever III <chuck.lever@oracle.com>, NeilBrown <neilb@suse.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>, Steve Dickson <steved@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
-Please find my comments inline.
+Hi all,
 
-On Oct 31 2022, Cyril Hrubis wrote:
-> Hi!
-> > Why not consider encapsulating these two new fields in 'struct
-> > tst_hugepage' ?
-> > 
-> > Then the tst_test in the case can simply initialize to:
-> > 
-> > ....
-> > static struct tst_test test = {
-> >     .needs_root = 1,
-> >     .taint_check = TST_TAINT_D | TST_TAINT_W,
-> >     .setup = setup,
-> >     .test_all = run_test,
-> >     .hugepages = {1, TST_NEEDS, 1, 1},
-> > };
-> 
-> I do not like that we have magic constants in the .hugepages that are
-> not self describing. I would treat the hugetltbfs just as we treat
-> devfs, that would be:
-> 
-> #define MNTPOINT "hugetlbfs/"
-> #define HUGEFILE MNTPOINT "hugefile"
-> 
-> static int huge_fd;
-> 
-> static void setup(void)
-> {
-> 	huge_fd = tst_creat_unlinked(HUGEFILE);
-> 	...
-> }
-> 
-> static void cleanup(void)
-> {
-> 	if (huge_fd > 0)
-> 		SAFE_CLOSE(huge_fd);
-> }
-> 
-> static struct tst_test test = {
-> 	...
-> 	.mntpoint = MNTPOINT,
-> 	.needs_hugetlbfs = 1,
-> 	.setup = setup,
-> 	.cleanup = cleanup,
-> 	...
-> }
-> 
-> 
-> What do you think?
-> 
-My original idea behind putting it in tst_test struct instead of
-tst_hugepages was based on below two reasoning-
+FYI bug fixed by Jeff
 
-1. tst_hugepages seems to have only hugepages related info. It would be
-better to rename it to tst_hugetlb and rename <hugepages> field in tst_test
-struct to <hugetlb>. If we rename it which will require changes in already
-existing tests. and Moreover, there were similar field like needs_tmpdir
-in tst_test so I put it(needs_unlinked_hugetlb_file) in tst_test.
-2. There was already related fields in tst_test for mounting fs, like
-needs_devfs, needs_rofs, So keeping all the needs_ABCfs at same structure.
+https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git/commit/?h=for-rc&id=30bf340ba9d7c8059af7135e5c73f8e9d3240b29
+https://lore.kernel.org/linux-nfs/20221031154921.500620-1-jlayton@kernel.org/
 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Kind regards,
+Petr
+
+> On Mon, 2022-10-31 at 13:47 +0000, Chuck Lever III wrote:
+> > [ dropping Bruce, he's no longer an NFSD maintainer ]
+
+
+> > > On Oct 31, 2022, at 9:38 AM, Petr Vorel <pvorel@suse.cz> wrote:
+
+> > > Hi all,
+
+> > > LTP tests got broken on kernel 6.0. During test cleanup it hangs on exportfs
+> > > (high load). I tested it both on nfs-utils 2.6.2, the same userspace, the
+> > > version of the tests (obviously), it looks really like kernel related regression.
+
+> > Not oopsen, but rather RCU splats.
+
+> > [  326.587135] rcu: INFO: rcu_preempt self-detected stall on CPU
+> > [  326.587168] rcu: 	0-....: (5249 ticks this GP) idle=cf74/1/0x4000000000000000 softirq=7256/7256 fqs=2484
+> > [  326.587187] 	(t=5250 jiffies g=4009 q=388 ncpus=2)
+
+> > and
+
+> > watchdog: BUG: soft lockup - CPU#0 stuck for 44s! [exportfs:1180]
+
+> > RIP: __nfsd_file_cache_purge+0x54
+
+> > seems like the common element. Jeff, can you have a look at this?
+
+
+> Sure, I'll take a look since I'm in here anyway.
+
+> I'll see if I can set up a reproducer.
+
+
+> > > # Simple reproducer
+> > > git clone https://github.com/linux-test-project/ltp.git
+> > > # install dependencies with your distro in ci/*.sh
+> > > make autotools && ./configure && make -j$(getconf _NPROCESSORS_ONLN) && make install
+> > > export LTPROOT=/opt/ltp; PATH="/opt/ltp/testcases/bin:$PATH" nfs02.sh -v 4 -t tcp
+> > > TMPDIR="/var/tmp" nfs02.sh -v 4 -t tcp
+
+> > > # Example on kernel oops on openSUSE
+> > > [  304.772002] Initializing XFRM netlink socket
+> > > [  304.833577] IPv6: ADDRCONF(NETDEV_CHANGE): ltp_ns_veth1: link becomes ready
+> > > [  304.833604] IPv6: ADDRCONF(NETDEV_CHANGE): ltp_ns_veth2: link becomes ready
+> > > [  304.957269] FS-Cache: Loaded
+> > > [  305.002821] Key type dns_resolver registered
+> > > [  305.153926] NFS: Registering the id_resolver key type
+> > > [  305.153942] Key type id_resolver registered
+> > > [  305.153943] Key type id_legacy registered
+> > > [  326.587135] rcu: INFO: rcu_preempt self-detected stall on CPU
+> > > [  326.587168] rcu: 	0-....: (5249 ticks this GP) idle=cf74/1/0x4000000000000000 softirq=7256/7256 fqs=2484
+> > > [  326.587187] 	(t=5250 jiffies g=4009 q=388 ncpus=2)
+> > > [  326.587191] NMI backtrace for cpu 0
+> > > [  326.587192] CPU: 0 PID: 1008 Comm: exportfs Not tainted 5.19.0 #4
+> > > [  326.587195] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552-rebuilt.opensuse.org 04/01/2014
+> > > [  326.587199] Call Trace:
+> > > [  326.587212]  <IRQ>
+> > > [  326.587216]  dump_stack_lvl+0x45/0x5e
+> > > [  326.587231]  nmi_cpu_backtrace.cold+0x30/0x76
+> > > [  326.587234]  ? lapic_can_unplug_cpu+0x80/0x80
+> > > [  326.587241]  nmi_trigger_cpumask_backtrace+0x10c/0x140
+> > > [  326.587252]  rcu_dump_cpu_stacks+0xf8/0x130
+> > > [  326.587260]  rcu_sched_clock_irq.cold+0x67/0x2f8
+> > > [  326.587270]  ? raw_notifier_call_chain+0x41/0x60
+> > > [  326.587275]  ? timekeeping_update+0xde/0x130
+> > > [  326.587280]  ? __cgroup_account_cputime_field+0x5d/0x90
+> > > [  326.587286]  update_process_times+0x62/0x90
+> > > [  326.587291]  tick_sched_handle+0x22/0x60
+> > > [  326.587300]  tick_sched_timer+0x71/0x90
+> > > [  326.587303]  ? tick_sched_do_timer+0xa0/0xa0
+> > > [  326.587306]  __hrtimer_run_queues+0x127/0x2c0
+> > > [  326.587310]  hrtimer_interrupt+0x106/0x220
+> > > [  326.587313]  __sysvec_apic_timer_interrupt+0x7c/0x170
+> > > [  326.587319]  sysvec_apic_timer_interrupt+0x9d/0xd0
+> > > [  326.587328]  </IRQ>
+> > > [  326.587328]  <TASK>
+> > > [  326.587329]  asm_sysvec_apic_timer_interrupt+0x16/0x20
+> > > [  326.587339] RIP: 0010:__nfsd_file_cache_purge+0x54/0xd0 [nfsd]
+> > > [  326.587374] Code: 48 89 24 24 48 89 64 24 08 e8 88 3e e8 e5 48 8d 7c 24 10 e8 ae 53 e8 e5 48 8d 7c 24 10 e8 04 4d e8 e5 48 89 c5 48 85 c0 74 27 <48> 81 fd 00 f0 ff ff 77 55 48 85 db 74 06 48 39 5d 38 75 ec 48 89
+> > > [  326.587376] RSP: 0018:ffffbfe84100bd88 EFLAGS: 00000202
+> > > [  326.587378] RAX: ffff9dcd01f9a3a8 RBX: ffff9dcd0af86600 RCX: ffffffffc0ceabc0
+> > > [  326.587380] RDX: 0000000000000000 RSI: 000000000000008c RDI: ffffbfe84100bd98
+> > > [  326.587381] RBP: ffff9dcd01f9a3a8 R08: 0000000000000000 R09: ffffffffa6fd2b75
+> > > [  326.587382] R10: 0000000000000000 R11: ffffbfe84100bd98 R12: ffffbfe84100bf08
+> > > [  326.587383] R13: 00007fff97dc3a20 R14: ffffbfe84100bf08 R15: 0000000000000000
+> > > [  326.587385]  ? _raw_spin_unlock+0x15/0x30
+> > > [  326.587393]  ? __nfsd_file_cache_purge+0x4c/0xd0 [nfsd]
+> > > [  326.587410]  ? _raw_spin_unlock+0x15/0x30
+> > > [  326.587412]  expkey_flush+0x2a/0x40 [nfsd]
+> > > [  326.587427]  write_flush.constprop.0+0xf4/0x140 [sunrpc]
+> > > [  326.587460]  proc_reg_write+0x4e/0x90
+> > > [  326.587470]  vfs_write+0xc3/0x3d0
+> > > [  326.587478]  ? preempt_count_add+0x4d/0xa0
+> > > [  326.587482]  ? fd_install+0x5c/0xe0
+> > > [  326.587489]  ksys_write+0x5f/0xe0
+> > > [  326.587492]  do_syscall_64+0x38/0xc0
+> > > [  326.587496]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > > [  326.587501] RIP: 0033:0x7f6f908063f3
+> > > [  326.587505] Code: 8b 15 21 9a 0f 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 48 89 54 24 18
+> > > [  326.587506] RSP: 002b:00007fff97dc3a08 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> > > [  326.587508] RAX: ffffffffffffffda RBX: 000056110e2f8dd0 RCX: 00007f6f908063f3
+> > > [  326.587509] RDX: 000000000000000b RSI: 00007fff97dc3a20 RDI: 0000000000000006
+> > > [  326.587510] RBP: 000056110e2f500e R08: 00007f6f908b83e0 R09: 0000000000000000
+> > > [  326.587512] R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff97dc3ad0
+> > > [  326.587514] R13: 00007fff97dc3a20 R14: 0000000000000006 R15: 000056110e2f4fef
+> > > [  326.587517]  </TASK>
+
+> > > # Bug on Debian config with openSUSE setup looks fairly similar:
+> > > [ 7972.371206] watchdog: BUG: soft lockup - CPU#0 stuck for 44s! [exportfs:1180]
+> > > [ 7972.371250] Modules linked in: rpcsec_gss_krb5 nfsv4 dns_resolver nfs fscache netfs xfrm_user xfrm_algo veth intel_rapl_msr intel_rapl_common intel_pmc_core_pltdrv intel_pmc_core kvm_intel kvm irqbypass ghash_clmulni_intel snd_hda_codec_generic ledtrig_audio aesni_intel crypto_simd cryptd rapl qxl evdev snd_hda_intel drm_ttm_helper snd_intel_dspcfg serio_raw pcspkr snd_intel_sdw_acpi ttm joydev virtio_console virtio_balloon snd_hda_codec sg drm_kms_helper snd_hda_core snd_hwdep snd_pcm qemu_fw_cfg snd_timer snd soundcore button nfsd auth_rpcgss nfs_acl lockd grace sunrpc drm fuse configfs virtio_rng rng_core ip_tables x_tables autofs4 btrfs blake2b_generic xor raid6_pq zstd_compress libcrc32c crc32c_generic hid_generic usbhid hid dm_mod virtio_net net_failover virtio_blk failover sr_mod cdrom crct10dif_pclmul crct10dif_common crc32_pclmul crc32c_intel psmouse ata_generic uhci_hcd ehci_pci ehci_hcd ata_piix usbcore libata usb_common virtio_pci virtio_pci_legacy_dev virtio_pci
+ _modern_dev
+> > > [ 7972.371310]  virtio virtio_ring scsi_mod i2c_piix4 scsi_common floppy
+> > > [ 7972.371315] CPU: 0 PID: 1180 Comm: exportfs Not tainted 6.0.1 #2
+> > > [ 7972.371317] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552-rebuilt.opensuse.org 04/01/2014
+> > > [ 7972.371318] RIP: 0010:__nfsd_file_cache_purge+0x54/0xd0 [nfsd]
+> > > [ 7972.371344] Code: 48 89 24 24 48 89 64 24 08 e8 38 23 46 d4 48 8d 7c 24 10 e8 5e 38 46 d4 48 8d 7c 24 10 e8 b4 31 46 d4 48 89 c5 48 85 c0 74 27 <48> 81 fd 00 f0 ff ff 77 55 48 85 db 74 06 48 39 5d 38 75 ec 48 89
+> > > [ 7972.371348] RSP: 0018:ffffc05241067d88 EFLAGS: 00000202
+> > > [ 7972.371350] RAX: ffff9bd3c5380618 RBX: ffff9bd3f260d500 RCX: ffffffffc0b0cbc0
+> > > [ 7972.371351] RDX: 0000000000000000 RSI: 00000000000000b2 RDI: ffffc05241067d98
+> > > [ 7972.371352] RBP: ffff9bd3c5380618 R08: 0000000000000000 R09: ffffffff953d3aa5
+> > > [ 7972.371353] R10: 0000000000000000 R11: ffffc05241067d98 R12: ffffc05241067f08
+> > > [ 7972.371354] R13: 00007ffd820fd9f0 R14: ffffc05241067f08 R15: 0000000000000000
+> > > [ 7972.371356] FS:  00007fd3e4d1c740(0000) GS:ffff9bd3fec00000(0000) knlGS:0000000000000000
+> > > [ 7972.371357] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [ 7972.371358] CR2: 00007fd3e4d8a040 CR3: 00000000089a6005 CR4: 0000000000370ef0
+> > > [ 7972.371362] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > [ 7972.371363] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > [ 7972.371364] Call Trace:
+> > > [ 7972.371367]  <TASK>
+> > > [ 7972.371376]  ? _raw_spin_unlock+0x15/0x30
+> > > [ 7972.371383]  expkey_flush+0x2a/0x40 [nfsd]
+> > > [ 7972.371402]  write_flush.constprop.0+0xf4/0x140 [sunrpc]
+> > > [ 7972.371440]  proc_reg_write+0x4e/0x90
+> > > [ 7972.371443]  vfs_write+0xc3/0x3d0
+> > > [ 7972.371446]  ? preempt_count_add+0x4d/0xa0
+> > > [ 7972.371450]  ? fd_install+0x5c/0xe0
+> > > [ 7972.371452]  ksys_write+0x5f/0xe0
+> > > [ 7972.371454]  do_syscall_64+0x38/0xc0
+> > > [ 7972.371458]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > > [ 7972.371460] RIP: 0033:0x7fd3e4e193f3
+> > > [ 7972.371462] Code: 8b 15 21 9a 0f 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 48 89 54 24 18
+> > > [ 7972.371464] RSP: 002b:00007ffd820fd9d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> > > [ 7972.371466] RAX: ffffffffffffffda RBX: 00005559a20e4dd0 RCX: 00007fd3e4e193f3
+> > > [ 7972.371467] RDX: 000000000000000b RSI: 00007ffd820fd9f0 RDI: 0000000000000006
+> > > [ 7972.371468] RBP: 00005559a20e100e R08: 00007fd3e4ecb3e0 R09: 0000000000000000
+> > > [ 7972.371469] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd820fdaa0
+> > > [ 7972.371470] R13: 00007ffd820fd9f0 R14: 0000000000000006 R15: 00005559a20e0fef
+> > > [ 7972.371473]  </TASK>
+
+> > > I guess I don't need to turn any debugging with rpcdebug at this point (enough
+> > > info from this), right?
+
+> > > It looks like to be config related, because it's broken with openSUSE config,
+> > > but not with Debian config. Building with Debian config, but changing just these
+> > > NFS specific options it also fails:
+
+> > > # config difference Debian (-) vs openSUSE (+)
+> > > -CONFIG_NFS_DISABLE_UDP_SUPPORT=y
+> > > +# CONFIG_NFS_DISABLE_UDP_SUPPORT is not set
+> > > -# CONFIG_NFSD_SCSILAYOUT is not set
+> > > -# CONFIG_NFSD_FLEXFILELAYOUT is not set
+> > > -# CONFIG_NFSD_V4_2_INTER_SSC is not set
+> > > +CONFIG_NFSD_SCSILAYOUT=y
+> > > +CONFIG_NFSD_FLEXFILELAYOUT=y
+> > > +CONFIG_NFSD_V4_2_INTER_SSC=y
+
+> > > I suspect it was caused by e394ff83bbca ("Merge tag 'nfsd-6.0' of
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/cel/linux") [1], but I need to
+> > > finish bisecting to be sure (it was merged earlier than aeb6e6ac18c7 ("Merge tag
+> > > 'nfs-for-5.20-1' of git://git.linux-nfs.org/projects/trondmy/linux-nfs") [2],
+> > > both are broken).
+
+> > > Kind regards,
+> > > Petr
+
+> > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e394ff83bbca1c72427b1feb5c6b9d4dad832f01
+> > > [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=aeb6e6ac18c73ec287b3b1e2c913520699358c13
+
+> > --
+> > Chuck Lever
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
