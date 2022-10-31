@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46DC3ECAAA1
-	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 13:31:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E90AECAAA1
+	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 13:36:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 90C3A3CABBF
-	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 14:31:30 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id BB3503CABD6
+	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 14:36:35 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 50C9E3CA2E4
- for <ltp@lists.linux.it>; Mon, 31 Oct 2022 14:31:21 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id D6CCC3C01CC
+ for <ltp@lists.linux.it>; Mon, 31 Oct 2022 14:36:25 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A71972002C9
- for <ltp@lists.linux.it>; Mon, 31 Oct 2022 14:31:20 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 03A2010006C6
+ for <ltp@lists.linux.it>; Mon, 31 Oct 2022 14:36:24 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E05D93373A;
- Mon, 31 Oct 2022 13:31:19 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EE5011F95D;
+ Mon, 31 Oct 2022 13:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667223079; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1667223383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=CcYa7yK+rvxhdaaKPneECmthrLL7cZl29i3KhD82Pm0=;
- b=tJ2k4LpybD9ytpzr65f0mgyKU8QCcaGxzqPl0LwFMAGzBP4pJH7Z1b1MJMD9lH+4DwovZc
- 1WxXGtKD19OUFPhD8szTiZtbBTL0RZnivISRLf47t/G6Jd1ZJ7lKHeeskRrEW9JkjtxMyk
- QsMka6MjD7uJo6Vz6bB+hXQCYpU3Rm4=
+ bh=+UW5RwbR3Zusou5OZyDo/ZBLQq8nbqVNqaS/2gnjG80=;
+ b=ol4iifw8IcVuNKiOTSKcKu+PZTuFY14hU+tQpM7C6/2aJzDZHKyQueW4THkx2BBaWID+eS
+ uCKA9JxCyVMlCXIIA6vreHyzBKZiSqMGbNoCT9mvdMl1/kMGC+CJaxs+7pxUb66079wQBN
+ tkm41ZBJUV8rqqsWBde1MWZym6+MeZ8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667223079;
+ s=susede2_ed25519; t=1667223383;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=CcYa7yK+rvxhdaaKPneECmthrLL7cZl29i3KhD82Pm0=;
- b=hRXCg3XGfvpfJwbGzXvqdPMzaS+dLBWjiHeYGgXuWP8eioIDdoV6EuZKcBhzdkUVUlmVMW
- 90xwHC4l0jWDjxCw==
+ bh=+UW5RwbR3Zusou5OZyDo/ZBLQq8nbqVNqaS/2gnjG80=;
+ b=adtXSAFggdkM77rYixMxJE6Ls839Ikj50C+grEOYmvhtK9v7RMUd7PPVcuSApnwHyGAIVf
+ KF1bXgPkBllAHVCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD7D713AAD;
- Mon, 31 Oct 2022 13:31:19 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9DD413AAD;
+ Mon, 31 Oct 2022 13:36:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id EnYDMifOX2OiXgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 31 Oct 2022 13:31:19 +0000
-Date: Mon, 31 Oct 2022 14:32:55 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-Message-ID: <Y1/Oh4VCUiUSFIvK@yuki>
-References: <20221027163654.414017-1-teo.coupriediaz@arm.com>
- <20221027163654.414017-2-teo.coupriediaz@arm.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id H0ZYNFfPX2NDYQAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Mon, 31 Oct 2022 13:36:23 +0000
+Message-ID: <ad63ddb5-b443-c0ee-fb1b-748bded5f151@suse.cz>
+Date: Mon, 31 Oct 2022 14:36:23 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221027163654.414017-2-teo.coupriediaz@arm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+To: Petr Vorel <pvorel@suse.cz>, Avinesh Kumar <akumar@suse.de>
+References: <20221027140954.4094-1-akumar@suse.de> <Y1+zeo9kmWOl2yE3@pevik>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <Y1+zeo9kmWOl2yE3@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/1] regen.sh: Use intptr_t for tst_syscall
- return
+Subject: Re: [LTP] [PATCH] setfsuid02: using -1 as invalid fsuid for
+ setfsuid()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,53 +80,47 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Some syscalls directly return pointers, like brk or mmap. int is currently
-> used for the return value in tst_syscall but is not large enough
-> to guarantee that such a returned value will fit.
-> Instead, use intptr_t which is guaranted to be castable to (void *)
-> without loss of data.
-
-Sounds reasonable, glibc syscall returns long but I guess that's because
-there was no intptr_t when that was introduced.
-
-> Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-> ---
->  include/lapi/syscalls/regen.sh |   2 +-
->  runtest/check_tst_syscall      | 190 +++++++++++++++++++++++++++++++++
->  2 files changed, 191 insertions(+), 1 deletion(-)
->  create mode 100644 runtest/check_tst_syscall
+On 31. 10. 22 12:37, Petr Vorel wrote:
+> Hi Avinesh,
 > 
-> diff --git a/include/lapi/syscalls/regen.sh b/include/lapi/syscalls/regen.sh
-> index 3bf38fd03..97027e2f3 100755
-> --- a/include/lapi/syscalls/regen.sh
-> +++ b/include/lapi/syscalls/regen.sh
-> @@ -48,7 +48,7 @@ cat << EOF > "${output_pid}"
->  #endif
->  
->  #define tst_syscall(NR, ...) ({ \\
-> -	int tst_ret; \\
-> +	intptr_t tst_ret; \\
->  	if (NR == __LTP__NR_INVALID_SYSCALL) { \\
->  		errno = ENOSYS; \\
->  		tst_ret = -1; \\
-> diff --git a/runtest/check_tst_syscall b/runtest/check_tst_syscall
-> new file mode 100644
-> index 000000000..7a6003593
-> --- /dev/null
-> +++ b/runtest/check_tst_syscall
+>> a uid which does not have an entry in the /etc/passwd
+>> file is not really an invalid fsuid for setfsuid(), so changing
+>> the test to use -1 as an invalid fsuid.
+>> And second setfsuid(-1) call is to verify that preceding call has
+>> actually failed and there is no change in the fsuid.
+> 
+> Here was supposed to be
+> Fixes: 85f0b8478 ("setfsuid02: Rewrite using new LTP API")
+> 
+> as the problem was introduced in your rewrite, right?
 
-I do not think that we shoud add this file, at least not in this commit
-and without any good description.
+No, the original test was already broken, it just didn't do any real 
+failure checks so it always passed.
+
+> It also does not make sense to check invalid_uid, it should have been
+> current_uid in 85f0b8478 (my bad not catching this):
+> 
+> UID16_CHECK(current_uid, setfsuid);
+
+No, UID16_CHECK(invalid_uid, setfsuid); is the correct test call. The 
+test is supposed to verify that trying to set invalid_uid will fail, and 
+the only way to verify that it failed is to call setfsuid(invalid_uid) 
+again and check that it returns current_uid.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
