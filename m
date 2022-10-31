@@ -4,62 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18CD3FA3742
-	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 13:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31A34ECAAA1
+	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 13:28:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 56F963CAB0C
-	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 14:17:53 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9413B3CABDD
+	for <ltp@archiver.kernel.org>; Mon, 31 Oct 2022 14:28:33 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 78C603C0135
- for <ltp@lists.linux.it>; Mon, 31 Oct 2022 14:17:42 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 842123CA2E4
+ for <ltp@lists.linux.it>; Mon, 31 Oct 2022 14:28:23 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E4C161000348
- for <ltp@lists.linux.it>; Mon, 31 Oct 2022 14:17:41 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 297FE1F383
- for <ltp@lists.linux.it>; Mon, 31 Oct 2022 13:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1667222261;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=2cVCC9BuDWm0D4cWRqVt6jmQF7l0mviGtdpVwVxstA8=;
- b=u5DQuhGree28XY/p+bla8sZQNrQNY9r6Iv8lYjyqj2K+QEz4fQHbtZs95L47ZE2PmJBk20
- EEhri/cJ43rj4BG42xZFCHZt6nl9iFs7IxTZG3dsMuZIHFhvb6iOj8abddOU+DeEL/OzNI
- qMRlie/p0hZhM6touLrXLdpsBzsLfXs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1667222261;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=2cVCC9BuDWm0D4cWRqVt6jmQF7l0mviGtdpVwVxstA8=;
- b=Ql9VrjdFN5u1bMPqba4wRmegi/KSPi3piPp8tij7sqyp5qtt6bPanOFPNKJe9VCfmjm59K
- vNc0eMkYBcEDtxCg==
-Received: from UNKNOWN (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 045491A007E6
+ for <ltp@lists.linux.it>; Mon, 31 Oct 2022 14:28:22 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 7EEE02C141;
- Mon, 31 Oct 2022 13:17:40 +0000 (UTC)
-References: <20221027140954.4094-1-akumar@suse.de>
-User-agent: mu4e 1.8.11; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Avinesh Kumar <akumar@suse.de>
-Date: Mon, 31 Oct 2022 13:01:49 +0000
-Organization: Linux Private Site
-In-reply-to: <20221027140954.4094-1-akumar@suse.de>
-Message-ID: <87tu3kb098.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 716183373E;
+ Mon, 31 Oct 2022 13:28:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1667222902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=qez0nGZGITyaYHv7fqOdmLEJt/Quc7zOyWpr3rhDhRY=;
+ b=Pwqfm5Af0GKB/gkk2OzNBQCETqv07NJyaeoWsGJ2/F0v0ed+HWLU777X//yJW6jQTya+BZ
+ PuWvfecWfpEO7Zq9rHN5RPKdc3ba+bWlmiYYlbkDjO7JUHUxYP88kWE1p/ndUyrFrDA+H6
+ 3iOv9Nj/QNirr+z00PUPk9InNOYGgxU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F4B813AAD;
+ Mon, 31 Oct 2022 13:28:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id mHrRDHbNX2P9XAAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Mon, 31 Oct 2022 13:28:22 +0000
+To: ltp@lists.linux.it
+Date: Mon, 31 Oct 2022 14:26:57 +0100
+Message-Id: <20221031132658.26233-2-andrea.cervesato@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20221031132658.26233-1-andrea.cervesato@suse.com>
+References: <20221031132658.26233-1-andrea.cervesato@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] setfsuid02: using -1 as invalid fsuid for
- setfsuid()
+Subject: [LTP] [PATCH v3 1/2] Add SAFE_SETHOSTNAME macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,60 +67,79 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ include/safe_net_fn.h  |  3 +++
+ include/tst_safe_net.h |  3 +++
+ lib/safe_net.c         | 17 +++++++++++++++++
+ 3 files changed, 23 insertions(+)
 
-Avinesh Kumar <akumar@suse.de> writes:
-
-> a uid which does not have an entry in the /etc/passwd
-> file is not really an invalid fsuid for setfsuid(), so changing
-> the test to use -1 as an invalid fsuid.
-> And second setfsuid(-1) call is to verify that preceding call has
-> actually failed and there is no change in the fsuid.
-
-I think the original test is flawed and testing what using -1 does is
-not very interesting as the kernel uses standard boilerplate to deal
-with this.
-
-AFAICT we don't test what happens if a non-root user tries to set the
-fsuid to a uid that is not the euid, ruid or saved uid or 0/-1.
-
-Possibly that is something for a new test though.
-
->
-> Signed-off-by: Avinesh Kumar <akumar@suse.de>
-> ---
->  testcases/kernel/syscalls/setfsuid/setfsuid02.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid02.c b/testcases/kernel/syscalls/setfsuid/setfsuid02.c
-> index 850f17834..f5aa1c004 100644
-> --- a/testcases/kernel/syscalls/setfsuid/setfsuid02.c
-> +++ b/testcases/kernel/syscalls/setfsuid/setfsuid02.c
-> @@ -21,9 +21,7 @@ static void run(void)
->  	uid_t invalid_uid, current_uid;
->  
->  	current_uid = geteuid();
-> -	invalid_uid = 1;
-> -	while (getpwuid(invalid_uid))
-> -		invalid_uid++;
-> +	invalid_uid = -1;
->  
->  	UID16_CHECK(invalid_uid, setfsuid);
->  
-> -- 
-> 2.38.0
-
-
+diff --git a/include/safe_net_fn.h b/include/safe_net_fn.h
+index ff81b1337..6c63cb2cf 100644
+--- a/include/safe_net_fn.h
++++ b/include/safe_net_fn.h
+@@ -73,6 +73,9 @@ int safe_getsockname(const char *file, const int lineno,
+ int safe_gethostname(const char *file, const int lineno,
+ 		     char *name, size_t size);
+ 
++int safe_sethostname(const char *file, const int lineno,
++		     const char *name, size_t size);
++
+ int tst_getsockport(const char *file, const int lineno, int sockfd);
+ 
+ unsigned short tst_get_unused_port(const char *file, const int lineno,
+diff --git a/include/tst_safe_net.h b/include/tst_safe_net.h
+index e85b79a3e..98f0256fd 100644
+--- a/include/tst_safe_net.h
++++ b/include/tst_safe_net.h
+@@ -68,6 +68,9 @@
+ #define SAFE_GETHOSTNAME(name, size) \
+ 	safe_gethostname(__FILE__, __LINE__, name, size)
+ 
++#define SAFE_SETHOSTNAME(name, size) \
++	safe_sethostname(__FILE__, __LINE__, name, size)
++
+ #define TST_GETSOCKPORT(sockfd) \
+ 	tst_getsockport(__FILE__, __LINE__, sockfd)
+ 
+diff --git a/lib/safe_net.c b/lib/safe_net.c
+index 1717f0745..5dec0de11 100644
+--- a/lib/safe_net.c
++++ b/lib/safe_net.c
+@@ -469,6 +469,23 @@ int safe_gethostname(const char *file, const int lineno,
+ 	return rval;
+ }
+ 
++int safe_sethostname(const char *file, const int lineno,
++		     const char *name, size_t size)
++{
++	int rval = sethostname(name, size);
++
++	if (rval == -1) {
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
++			"sethostname(%p, %zu) failed", name, size);
++	} else if (rval) {
++		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
++			"Invalid sethostname(%p, %zu) return value %d", name,
++			size, rval);
++	}
++
++	return rval;
++}
++
+ /*
+  * @return port in network byte order.
+  */
 -- 
-Thank you,
-Richard.
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
