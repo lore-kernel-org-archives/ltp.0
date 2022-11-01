@@ -4,62 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10F41FA3745
-	for <ltp@archiver.kernel.org>; Tue,  1 Nov 2022 09:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F5E9C433FE
+	for <ltp@archiver.kernel.org>; Tue,  1 Nov 2022 09:17:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 765CE3CAD45
-	for <ltp@archiver.kernel.org>; Tue,  1 Nov 2022 10:07:45 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id F40063CAD3D
+	for <ltp@archiver.kernel.org>; Tue,  1 Nov 2022 10:17:06 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0F2503CA408
- for <ltp@lists.linux.it>; Tue,  1 Nov 2022 10:07:34 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 6FF0F3CAC57
+ for <ltp@lists.linux.it>; Tue,  1 Nov 2022 10:16:55 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 48DA5100079C
- for <ltp@lists.linux.it>; Tue,  1 Nov 2022 10:07:33 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 52690339CA
- for <ltp@lists.linux.it>; Tue,  1 Nov 2022 09:07:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1667293653;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=opVuGjY45rBSlDngPaBHYLTW50wLJK87NqBkQ9GQMg0=;
- b=pddZfM3qB62UFA9iIW/vtbV9VK83lU1bQj8pJwXt4gULMRf3DugF1SL9ABEweLU4d2pgvf
- QfX+PxBVMPsTzDTpEUakiPDqYRzdd0NXFPc0MBvGsiFxhAYoUYTTczNTmGYYmYLiDfw6TX
- gyPpSwqAGFa/2EQng7OaRSCpHxil52g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1667293653;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=opVuGjY45rBSlDngPaBHYLTW50wLJK87NqBkQ9GQMg0=;
- b=tL4gyv4biLS0mbERjzC7Ug7mPbcUDhC246sOKkJ9ioiYfqgMUwjTYl1xf+1C9tobulBPwq
- ZBbDdkRaGTBDWzBQ==
-Received: from UNKNOWN (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2533A1A0088A
+ for <ltp@lists.linux.it>; Tue,  1 Nov 2022 10:16:54 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id CB53E2C141;
- Tue,  1 Nov 2022 09:07:32 +0000 (UTC)
-References: <20221027140954.4094-1-akumar@suse.de> <87tu3kb098.fsf@suse.de>
- <Y2BA6UBSrVQS6HiI@pevik>
-User-agent: mu4e 1.8.11; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 01 Nov 2022 09:03:00 +0000
-Organization: Linux Private Site
-In-reply-to: <Y2BA6UBSrVQS6HiI@pevik>
-Message-ID: <87tu3j9h64.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5747433A0A;
+ Tue,  1 Nov 2022 09:16:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1667294214;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=F/Kb3B3rtnmRaKzp+1OTTrvJQ3JDPgKa3i6BDjFivb0=;
+ b=zXejeVTN0BfcrvQtVvhqHEFDz0XHixLOT5jiCl36ay16dyIPoeOW+2o02JXsuvvfZ8DKcf
+ OzVj5v6TF9tM4Qe5gh38bWgf87LusYFJSvflJ0kefjLcxGuKOmPhPHvy5JRrFbSKl/4Dg9
+ 4xuyUMBrCjiyL1RNQEqECP3hBxQ8q3Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1667294214;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=F/Kb3B3rtnmRaKzp+1OTTrvJQ3JDPgKa3i6BDjFivb0=;
+ b=UL4JvvOs7QrsxyYX+PqlMA0GMZygQg6yoSojRtUs9AVZnZi1rpaw4LIj4GG7+fSyXWk92/
+ x3DTUdas+afOtpCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2DAD11346F;
+ Tue,  1 Nov 2022 09:16:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id hZL7CQbkYGM1NgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 01 Nov 2022 09:16:54 +0000
+Date: Tue, 1 Nov 2022 10:16:52 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: "Zhou, You" <you.zhou@intel.com>
+Message-ID: <Y2DkBBAL72jXlNPI@pevik>
+References: <20221028032103.2050696-1-you.zhou@intel.com>
+ <Y1+qkXXu9uqsJaVG@pevik>
+ <DM4PR11MB62130CD766817757EBF7683D8A369@DM4PR11MB6213.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <DM4PR11MB62130CD766817757EBF7683D8A369@DM4PR11MB6213.namprd11.prod.outlook.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] setfsuid02: using -1 as invalid fsuid for
- setfsuid()
+Subject: Re: [LTP] [PATCH] setfsuid02: Fix a fake failure for setfsuid02
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,44 +77,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi You,
 
-Petr Vorel <pvorel@suse.cz> writes:
+> Hi, Petr,
 
->> Hello,
->
->> Avinesh Kumar <akumar@suse.de> writes:
->
->> > a uid which does not have an entry in the /etc/passwd
->> > file is not really an invalid fsuid for setfsuid(), so changing
->> > the test to use -1 as an invalid fsuid.
->> > And second setfsuid(-1) call is to verify that preceding call has
->> > actually failed and there is no change in the fsuid.
->
->> I think the original test is flawed and testing what using -1 does is
->> not very interesting as the kernel uses standard boilerplate to deal
->> with this.
->
->> AFAICT we don't test what happens if a non-root user tries to set the
->> fsuid to a uid that is not the euid, ruid or saved uid or 0/-1.
->
->> Possibly that is something for a new test though.
->
-> Ah, sorry, I overlooked this, merged now.
+> I try the patch from Avinesh, the test result is normal, so the purpose of this test case is to try to set an invalid uid?
 
-No problem, I think that is the correct thing to do. I'll leave it to
-Avinesh or someone else to extend the test (or not).
+yes, the purpose is to test that setfsuid() syscall fails if an passed invalid fsuid.
 
--- 
-Thank you,
-Richard.
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
