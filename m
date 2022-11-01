@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0F96ECAAA1
-	for <ltp@archiver.kernel.org>; Tue,  1 Nov 2022 13:38:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E336CC4332F
+	for <ltp@archiver.kernel.org>; Tue,  1 Nov 2022 14:32:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1D76A3CAC3E
-	for <ltp@archiver.kernel.org>; Tue,  1 Nov 2022 14:38:05 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 88D0C3CAD1E
+	for <ltp@archiver.kernel.org>; Tue,  1 Nov 2022 15:32:00 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 625863CAC31
- for <ltp@lists.linux.it>; Tue,  1 Nov 2022 14:37:54 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 736073CAC3F
+ for <ltp@lists.linux.it>; Tue,  1 Nov 2022 15:31:50 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ADE361400062
- for <ltp@lists.linux.it>; Tue,  1 Nov 2022 14:37:53 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D8F0F227EA;
- Tue,  1 Nov 2022 13:37:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667309872;
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A61501A0079B
+ for <ltp@lists.linux.it>; Tue,  1 Nov 2022 15:31:48 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 769E21F88E;
+ Tue,  1 Nov 2022 14:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1667313108;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=WEf0pqPNfw36t0k1fISdB2pO4aZ+TBuT89bR1+jJ00k=;
- b=zwBDv1WEsIkOZb+eXWo+monotQqUNAfUoL0UqFWCR57Zp8OKEM90WEahUDkCcHBklNVjLG
- eQETHGBButOoz1Oj1j+bM92lNppXHO8F+gTrE9nZbFPpePAbohqaB2q/5aTfcJa3EqpoHn
- AVgCAvmEZsBCfGnvzUVretybqBfWlVc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667309872;
+ bh=NYGe5mxtGYQcn4cAi8cVlJrdQtYB3oeEsx0qtw0fsv8=;
+ b=BQ7l5F3wtOvFj1v4VNoVNlrHW3wLObiT2QG6zwXDA5sNiEjLNkObpeRaaviYBeOl4POZHJ
+ r8pY8pSCCXa5x4fiGAOc9Iu7KMpB9/FybBUg/VIKOwU/d9Quvl37rWfSPvBWho4uZFfHsP
+ A6YskrLjojD9TvYAiQSsgM1EEmrEiNM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1667313108;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=WEf0pqPNfw36t0k1fISdB2pO4aZ+TBuT89bR1+jJ00k=;
- b=Zt/lkvwIqm6Yib66BFB8jGHMLjVh555fAi3hGXds6maPXEe/So48iDc1JSfInexR7jj0oY
- GKTJPUbOS7L3vFCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=NYGe5mxtGYQcn4cAi8cVlJrdQtYB3oeEsx0qtw0fsv8=;
+ b=5KYMU7pd7y2Q7U+LEcALYkorg8ihZMEhg2W/WVQNKAiz5ux4wS7ju4fN2wfkGXBAqZS/1H
+ IelkHZdZcoBnHoDg==
+Received: from UNKNOWN (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC5F91346F;
- Tue,  1 Nov 2022 13:37:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2rebJzAhYWPSKwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 01 Nov 2022 13:37:52 +0000
-Date: Tue, 1 Nov 2022 14:37:50 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <Y2EhLrTbqpmfYb3w@pevik>
-References: <20221004120653.23237-1-pvorel@suse.cz>
- <877d0xmrq7.fsf@suse.de>
+ by relay2.suse.de (Postfix) with ESMTPS id 087E62C141;
+ Tue,  1 Nov 2022 14:31:47 +0000 (UTC)
+References: <20221020130843.15147-1-mdoucha@suse.cz>
+ <20221020130843.15147-2-mdoucha@suse.cz>
+User-agent: mu4e 1.8.11; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Martin Doucha <mdoucha@suse.cz>
+Date: Tue, 01 Nov 2022 14:29:49 +0000
+Organization: Linux Private Site
+In-reply-to: <20221020130843.15147-2-mdoucha@suse.cz>
+Message-ID: <87edum925p.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <877d0xmrq7.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] doc: LTP C And Shell Test API Comparison
+Subject: Re: [LTP] [PATCH v2 1/3] fanotify14: Print human-readable test case
+ flags
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,19 +71,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Richie,
+Hello,
 
-thanks for your review, merged.
+Martin Doucha <mdoucha@suse.cz> writes:
 
-Kind regards,
-Petr
+> It's hard to tell which test case is failing from the current fanotify14
+> output. Print test case flags to make failure analysis easier.
+>
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+
+I'd be happy to merge this part of the patch-set at least.
+
+Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
