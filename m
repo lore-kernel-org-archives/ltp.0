@@ -4,95 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95DD5C433FE
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 11:07:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EAD3C433FE
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 11:49:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D4C013CAD39
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 12:07:52 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 7FD953CACBB
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 12:49:50 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CC8083CAD4B
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:07:11 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 336EB3CA6D1
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:49:39 +0100 (CET)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E125F200989
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:07:10 +0100 (CET)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2AOS50021881;
- Wed, 2 Nov 2022 11:07:08 GMT
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 647BF10007F3
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:49:37 +0100 (CET)
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2Bk1To021957;
+ Wed, 2 Nov 2022 11:49:36 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=jkLhgDCpqGHKriygFCTxqeNOT4Yu5XLEvVo8KYF/Yww=;
- b=VImj5njTeCgdppnfPA1KL5RyFx0WHP3AHru86dRoDJOiYUI92r5KxZWGiAaGPZgy1WE+
- QmHLP4az5fPaK9XzFbobyngXzV+aXY0jwxGpi0PVIt8+8YWAPmKz31GvL0V8KPnhe2iU
- ViSlEXQ+JffVbYyi5aa/T8G/fM0/bzeTq0Sq6Ni2yiRqnvtmGVmnyNfLTWoPAxCTte1s
- ZZHUSoShYZyQ0CsjhQodRSjSQILH/FPgs/7R3XoImvNtBd8CsxIqPGRGqO/a180XaIid
- 5h35gA7+bquLKjJjqkzHNCCmy7dFnKes/rpfBSSP/IosyEeBu/VURH2axrtLy8FABxsM Sg== 
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=JjF08hkfoC3AswpqXHMPng2+wHugfvcolCtHJSWuYxE=;
+ b=oxL1+X/1AsjkKuHFQjZPVaUuMtSOK29rPT0eBv63X+Rw019kkkzKsHWgdQYwnac6FWxP
+ NuES/PtgOwRfNx1KOTNwUPc8S8/Po1FK0idOeaiqwxE9KO2Dulp5saej39RWVF4bmbD7
+ A53ZJBe6iGBSw82b7hxAorp8jyVAvYvHo2+lMhi6/65ZgpBgnLqqSZBYgxodXC2NWrn1
+ 5CSdKGKmtX8HmIVFnTQKOJ6JEq4NOwyHPYEfMwm1orwpZ6RSp9hEZM+fBNlYo6PsOM3A
+ l5HeCvFobH1LrG5INNssubXufBIQj4/i1Y/OkCGJaSBr7Yop4VWf0qBurGPYcf3VZIZq Ow== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kjvbj6nhy-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkmqfptxr-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 02 Nov 2022 11:07:08 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A2AK1Sp021506;
- Wed, 2 Nov 2022 11:07:07 GMT
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com
- [159.122.73.71])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kjvbj6nfr-1
+ Wed, 02 Nov 2022 11:49:36 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A286E5S001424;
+ Wed, 2 Nov 2022 11:49:35 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com
+ [149.81.74.106])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkmqfptwh-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 02 Nov 2022 11:07:07 +0000
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
- by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A2B73Ch017092;
- Wed, 2 Nov 2022 11:07:03 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com
- (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
- by ppma02fra.de.ibm.com with ESMTP id 3kgut9cxfv-1
+ Wed, 02 Nov 2022 11:49:34 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+ by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A2BZRPC018265;
+ Wed, 2 Nov 2022 11:49:32 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com
+ (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+ by ppma04fra.de.ibm.com with ESMTP id 3kgut8w0dj-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 02 Nov 2022 11:07:03 +0000
+ Wed, 02 Nov 2022 11:49:32 +0000
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com
  (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
- by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
- id 2A2B1UbN38404370
+ by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2A2BnTUg590400
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 2 Nov 2022 11:01:30 GMT
+ Wed, 2 Nov 2022 11:49:29 GMT
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id CE2DCA4068;
- Wed,  2 Nov 2022 11:06:59 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 1C2B7A405B;
+ Wed,  2 Nov 2022 11:49:29 +0000 (GMT)
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 5CB5AA4067;
- Wed,  2 Nov 2022 11:06:56 +0000 (GMT)
-Received: from tarunpc.ibmuc.com (unknown [9.43.114.53])
+ by IMSVA (Postfix) with ESMTP id A1EE2A4054;
+ Wed,  2 Nov 2022 11:49:25 +0000 (GMT)
+Received: from tarunpc.ibmuc.com (unknown [9.43.85.9])
  by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Wed,  2 Nov 2022 11:06:56 +0000 (GMT)
+ Wed,  2 Nov 2022 11:49:25 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Wed,  2 Nov 2022 16:36:38 +0530
-Message-Id: <20221102110638.413561-5-tsahu@linux.ibm.com>
+Date: Wed,  2 Nov 2022 17:19:19 +0530
+Message-Id: <20221102114923.447871-1-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221102110638.413561-1-tsahu@linux.ibm.com>
-References: <20221102110638.413561-1-tsahu@linux.ibm.com>
-MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: t88Mx0JIWFb9-rVRLVYuuU4zVvPodDpc
-X-Proofpoint-ORIG-GUID: sFoSsO7yihZDc10qbFf46j16G5-GMQ9V
+X-Proofpoint-GUID: dyclEDvVXkwtIZ12vfTZ9Pi0uj811WtP
+X-Proofpoint-ORIG-GUID: CQ4aKX3Ox2_lnqciWkXW2dQChD35DvsY
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-02_06,2022-11-02_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015
- lowpriorityscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- bulkscore=0 adultscore=0 mlxscore=0 spamscore=0 malwarescore=0
- mlxlogscore=964 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2210170000 definitions=main-2211020067
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+ mlxscore=0 phishscore=0
+ clxscore=1015 bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ adultscore=0 impostorscore=0 mlxlogscore=668 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211020070
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 4/4] Hugetlb: Migrating libhugetlbfs
- corrupt-by-cow-opt
+Subject: [LTP] [PATCH v5 0/4] Hugetlb:Migrating the libhugetlbfs tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,131 +108,63 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/corrupt-by-cow-opt.c test
+Hi,
+Libhugetlbfs is not being maintained actively, and some distro is dropping
+support for it. There are some tests that are good for testing hugetlb
+functionality in kernel.
 
-Test Description: Test sanity of cow optimization on page cache. If a page
-in page cache has only 1 ref count, it is mapped for a private mapping
-directly and is overwritten freely, so next time we access the page, we
-can see corrupt data.
+As per previous dicussion in RFC[1], Here, this patch series consists
+of hugetlb tests taken from libhugetlbfs modified to work in ltp
+environment.
 
-Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
----
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap09.c  | 80 +++++++++++++++++++
- 3 files changed, 82 insertions(+)
+Based on suggestion[2], I am reposting the patches again. Also, I added
+suggested changes at [3].
+
+ref:
+1:https://lore.kernel.org/all/20220908173947.17956-1-tsahu@linux.ibm.com/
+2:https://lore.kernel.org/all/87wn8xi61v.fsf@suse.de/
+3:https://lore.kernel.org/all/20221016125731.249078-1-tsahu@linux.ibm.com/
+
+v1 -> v2
+	1. In (brk near huge) test [PATCH 1/3] removed unused library
+	function test_addr_huge() and read_maps().
+v2 -> v3
+	1. Added a new patch commit for two new flags "needs_hugetlbfs" &
+	"needs_unlinked_hugetlb_file" in tst_test and modified tests to use
+	these flags. 
+	2. Added taint check in test [PATCH 1/3].
+	3. Removed redundant Hopt and nr_opt option.
+	4. Corrected pre-processor ARCH based conditional flags in test
+	[PATCH 1/3]
+v3 -> v4
+	1. Removed the needs_unlinked_hugetlb_file option in PATCH[1/4].
+	2. Removed the redundant saved_oc_hugepages checks in PATCH[3/4].
+	3. Updated the mntpoint checks in PATCH[1/4].
+v4 -> v5
+	1. Removed the needs_hugetlbfs check from needs_tmpdir function,
+	because mntpoint is now mandatory option with needs_hugetlbfs.
+	(PATCH[1/4])
+
+Tarun Sahu (4):
+  Hugetlb: Add new tst_test options for hugeltb test support
+  Hugetlb: Migrating libhugetlbfs brk_near_huge
+  Hugetlb: Migrating libhugetlbfs chunk-overcommit
+  Hugetlb: Migrating libhugetlbfs corrupt-by-cow-opt
+
+ include/tst_test.h                            |  11 ++
+ lib/tst_test.c                                |  41 ++++-
+ runtest/hugetlb                               |   3 +
+ testcases/kernel/mem/.gitignore               |   3 +
+ .../kernel/mem/hugetlb/hugemmap/Makefile      |   5 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap07.c  | 138 ++++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap08.c  | 148 ++++++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap09.c  |  80 ++++++++++
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h    |   3 +
+ 9 files changed, 427 insertions(+), 5 deletions(-)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 664f18827..e2ada7a97 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -5,6 +5,7 @@ hugemmap05 hugemmap05
- hugemmap06 hugemmap06
- hugemmap07 hugemmap07
- hugemmap08 hugemmap08
-+hugemmap09 hugemmap09
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 003ce422b..1a242ffe0 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -6,6 +6,7 @@
- /hugetlb/hugemmap/hugemmap06
- /hugetlb/hugemmap/hugemmap07
- /hugetlb/hugemmap/hugemmap08
-+/hugetlb/hugemmap/hugemmap09
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
-new file mode 100644
-index 000000000..df7c9edcb
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
-@@ -0,0 +1,80 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
-+/*
-+ * Copyright (C) 2013 Joonsoo Kim, LG Electronics.
-+ * Author: Joonsoo Kim
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Corrupt by COW optimization:
-+ * Test sanity of cow optimization on page cache. If a page in page cache
-+ * has only 1 ref count, it is mapped for a private mapping directly and
-+ * is overwritten freely, so next time we access the page, we can see
-+ * corrupt data.
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+
-+#include "hugetlb.h"
-+
-+#define MNTPOINT "hugetlbfs/"
-+static long hpage_size;
-+static int huge_fd = -1;
-+
-+static void run_test(void)
-+{
-+	char *p;
-+	char c;
-+
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+			huge_fd, 0);
-+	*p = 's';
-+	tst_res(TINFO, "Write %c to %p via shared mapping", *p, p);
-+	SAFE_MUNMAP(p, hpage_size);
-+
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE,
-+			huge_fd, 0);
-+	*p = 'p';
-+	tst_res(TINFO, "Write %c to %p via private mapping", *p, p);
-+	SAFE_MUNMAP(p, hpage_size);
-+
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+			huge_fd, 0);
-+	c = *p;
-+	tst_res(TINFO, "Read %c from %p via shared mapping", *p, p);
-+	SAFE_MUNMAP(p, hpage_size);
-+
-+	/* Direct write from huge page */
-+	if (c != 's')
-+		tst_res(TFAIL, "Data got corrupted.");
-+	else
-+		tst_res(TPASS, "Successful");
-+}
-+
-+static void setup(void)
-+{
-+	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
-+	huge_fd = tst_creat_unlinked(MNTPOINT);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_CLOSE(huge_fd);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {2, TST_NEEDS},
-+};
 -- 
 2.31.1
 
