@@ -4,66 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFA48C433FE
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 09:10:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79669C433FE
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 11:07:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9DD673CAD49
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 10:10:50 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id DA4D33CACBC
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 12:07:04 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CAB6C3CA9C4
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 10:10:40 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 079573C7FCC
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:06:54 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0B0591A0092D
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 10:10:39 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EFE5C1F8C1;
- Wed,  2 Nov 2022 09:10:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667380238; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OB9BvzwK0TLoggOmdB8BLcwLE5zmU1aMEn6zEQMvZe8=;
- b=NntdxfYOVyPDb/2+z1iqHJKPpAaTGYNjrXoIUZXwbs+kam7kbpwCpsL/CULJKevQbTFPXg
- +L203mTbZFWOGWCLB6ffhOG/e8wsdMXFj1tB3Bhlc1VO26IRqL8lFas2Gtj8yvtL7Fwcx5
- 7LyQULg0F+miuawJLvSP7ZgcWYr3Zsw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667380238;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OB9BvzwK0TLoggOmdB8BLcwLE5zmU1aMEn6zEQMvZe8=;
- b=LygFHTSKWaHJORls+WQRx91b9Pyy6AykYrRjy6uBlnr0XcDv017UZWZDDdrLZPbeaErwwC
- SPFKtBMwLgLvWKBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DC631139D3;
- Wed,  2 Nov 2022 09:10:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id X5KMNA40YmOqJAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 02 Nov 2022 09:10:38 +0000
-Date: Wed, 2 Nov 2022 10:12:12 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Vitaly Chikunov <vt@altlinux.org>
-Message-ID: <Y2I0bNnuxmilC0+o@yuki>
-References: <20221101160744.4qb3adfwaf375e6v@altlinux.org>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 578EB1400250
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:06:52 +0100 (CET)
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2AeBKc012299;
+ Wed, 2 Nov 2022 11:06:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=bEjkyQSOGvAOvJeqEI8onQvo7LZVATbtlch1UbtlP1c=;
+ b=gRuz2Qh3GcZcywAdG98WGZclnm6gPMYwMb2OzFGtfiRgrVdmgUXeqeHkdY6FVPHOs2Fx
+ HVjGiCVQI47y600Kp0fQmxeuNJsxT65PB3PEut82vmrXVWIGOJI2YonIchW/fmJ6A/3I
+ zlUbQuQznr+qlYSEhmgUoo7X6lrA7MGes+rT1ooqWfzQ7C5gwUC750Z3TWUIj8AlBNsj
+ HgNZQK0OM4HC3XnUPJaHyuTYoFRrJClJqwNcyOuv3YeemzTfxvSXc0G9tZO7bcDuRbQT
+ NmrWKncyEYp6dV4P5UGhcNnpbw4OeIS408VJcbUMUZS8V09Fi1+ww31jdXoTFygxppyF UA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkppg9661-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 02 Nov 2022 11:06:50 +0000
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A2AfTGm016106;
+ Wed, 2 Nov 2022 11:06:50 GMT
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.72])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkppg9655-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 02 Nov 2022 11:06:49 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+ by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A2B6lXh028871;
+ Wed, 2 Nov 2022 11:06:47 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com
+ (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+ by ppma06fra.de.ibm.com with ESMTP id 3kguejcy5b-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 02 Nov 2022 11:06:47 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com
+ (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+ by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2A2B6il35374544
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 2 Nov 2022 11:06:44 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 0D07FA4068;
+ Wed,  2 Nov 2022 11:06:44 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id AFEEDA4066;
+ Wed,  2 Nov 2022 11:06:40 +0000 (GMT)
+Received: from tarunpc.ibmuc.com (unknown [9.43.114.53])
+ by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+ Wed,  2 Nov 2022 11:06:40 +0000 (GMT)
+From: Tarun Sahu <tsahu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Wed,  2 Nov 2022 16:36:34 +0530
+Message-Id: <20221102110638.413561-1-tsahu@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: eW1CpzNbRtJHtpp2ZekKgs76-sYeVgA1
+X-Proofpoint-ORIG-GUID: 89YVQX4mY76rKB9R48fnH7Bx15mkXPXt
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221101160744.4qb3adfwaf375e6v@altlinux.org>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-02_06,2022-11-02_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0
+ priorityscore=1501 lowpriorityscore=0 clxscore=1015 bulkscore=0
+ adultscore=0 mlxscore=0 spamscore=0 mlxlogscore=640 impostorscore=0
+ suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2210170000 definitions=main-2211020067
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] statx01 test failure/bug on i586
+Subject: [LTP] [PATCH v4 0/4] Hugetlb:Migrating the libhugetlbfs tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,44 +101,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: LTP List <ltp@lists.linux.it>, "Dmitry V. Levin" <ldv@altlinux.org>
+Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+ vaibhav@linux.ibm.com, rpalethorpe@suse.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
->   statx01.c:98: TPASS: statx(AT_FDCWD, test_file, 0, 0, &buff)
->   statx01.c:105: TPASS: stx_uid(0) is correct
->   statx01.c:111: TPASS: stx_gid(0) is correct
->   statx01.c:117: TPASS: stx_size(256) is correct
->   statx01.c:125: TPASS: stx_mode(33188) is correct
->   statx01.c:131: TPASS: stx_blocks(8) is valid
->   statx01.c:138: TPASS: stx_nlink(1) is correct
->   statx01.c:82: TFAIL: statx.stx_mnt_id(23) is different from mount_id(13820440305888919575) in /proc/self/mountinfo
->   statx01.c:88: TPASS: /proc/9494/fdinfo/3 mnt_id: = 23
->   statx01.c:156: TPASS: statx(AT_FDCWD, mntpoint/blk_dev, 0, 0, &buff)
->   statx01.c:163: TPASS: stx_rdev_major(8) is correct
->   statx01.c:171: TPASS: stx_rdev_minor(1) is correct
-> 
-> Value "13820440305888919575" hints there may be integer overflow.
-> 
-> On Tue, Nov 01, 2022 at 06:31:20PM +0300, Dmitry V. Levin wrote:
-> > $ grep -Fwn mnt_id testcases/kernel/syscalls/statx/statx01.c
-> > 20: * - mnt_id
-> > 58:	uint64_t mnt_id;
-> > 68:		if (sscanf(line, "%ld %*d %d:%d", &mnt_id, &line_mjr, &line_mnr) != 3)
-> > ...
-> 
-> On 32-bit systems sscanf of %ld would leave higher part of mnt_id
-> uninitialized, resulting in false positive test failure.
+Hi,
+Libhugetlbfs is not being maintained actively, and some distro is dropping
+support for it. There are some tests that are good for testing hugetlb
+functionality in kernel.
 
-The scanf format string should be obviously fixed so that it uses PRIu64
-for the mnt_id. Will you send a patch?
+As per previous dicussion in RFC[1], Here, this patch series consists
+of hugetlb tests taken from libhugetlbfs modified to work in ltp
+environment.
+
+Based on suggestion[2], I am reposting the patches again. Also, I added
+suggested changes at [3].
+
+ref:
+1:https://lore.kernel.org/all/20220908173947.17956-1-tsahu@linux.ibm.com/
+2:https://lore.kernel.org/all/87wn8xi61v.fsf@suse.de/
+3:https://lore.kernel.org/all/20221016125731.249078-1-tsahu@linux.ibm.com/
+
+v1 -> v2
+	1. In (brk near huge) test [PATCH 1/3] removed unused library
+	function test_addr_huge() and read_maps().
+v2 -> v3
+	1. Added a new patch commit for two new flags "needs_hugetlbfs" &
+	"needs_unlinked_hugetlb_file" in tst_test and modified tests to use
+	these flags. 
+	2. Added taint check in test [PATCH 1/3].
+	3. Removed redundant Hopt and nr_opt option.
+	4. Corrected pre-processor ARCH based conditional flags in test
+	[PATCH 1/3]
+v3 -> v4
+	1. Removed the needs_unlinked_hugetlb_file option in PATCH[1/4].
+	2. Removed the redundant saved_oc_hugepages checks in PATCH[3/4].
+	3. Updated the mntpoint checks in PATCH[1/4].
+
+Tarun Sahu (4):
+  Hugetlb: Add new tst_test options for hugeltb test support
+  Hugetlb: Migrating libhugetlbfs brk_near_huge
+  Hugetlb: Migrating libhugetlbfs chunk-overcommit
+  Hugetlb: Migrating libhugetlbfs corrupt-by-cow-opt
+
+ include/tst_test.h                            |  11 ++
+ lib/tst_test.c                                |  44 +++++-
+ runtest/hugetlb                               |   3 +
+ testcases/kernel/mem/.gitignore               |   3 +
+ .../kernel/mem/hugetlb/hugemmap/Makefile      |   5 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap07.c  | 138 ++++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap08.c  | 148 ++++++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap09.c  |  80 ++++++++++
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h    |   3 +
+ 9 files changed, 429 insertions(+), 6 deletions(-)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.31.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
