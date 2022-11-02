@@ -4,67 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BAB2C4332F
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 15:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72417C4332F
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 20:39:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 219493CAD49
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 16:44:57 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id E1E2A3CAD3B
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 21:39:47 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 210653CACB5
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 16:44:46 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 942143CA8A4
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 21:39:36 +0100 (CET)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 905411400768
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 16:44:45 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D4C221F949;
- Wed,  2 Nov 2022 15:44:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667403884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fa+BC2Ly9aVOzLe/Bpfxx+4xFzu7gn7KjdwWHGfFEzo=;
- b=qW7CnWZs1yxgVBl+rhRZ3+H+XNeO/gf8zaSTcQkpEFONVxzzbmeg7FH8YU4f0GBkG1taIl
- SrF5F2M7RvAxbbl/m1hlyCfSxSOF4e2dDWDgRL94f9Kemz/4rl9TeSW9l8Am5QXoHUiDYM
- wGATRkmGwE4iewcjOhU+Wq9bz9h3B8o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667403884;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fa+BC2Ly9aVOzLe/Bpfxx+4xFzu7gn7KjdwWHGfFEzo=;
- b=TlyKr+x6KITs2tEk0NFaBRkP/o/pXCKk74OPwQvd0GbOkb0vSiYQ+E1+27O5MiqBuBasmD
- ke8eIKlbl71zCSAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB39F139D3;
- Wed,  2 Nov 2022 15:44:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4c1sLWyQYmOECwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 02 Nov 2022 15:44:44 +0000
-Date: Wed, 2 Nov 2022 16:46:19 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <Y2KQy7ez6XUgRRcT@yuki>
-References: <20221102114923.447871-1-tsahu@linux.ibm.com>
- <20221102114923.447871-3-tsahu@linux.ibm.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 72D3C1A00A45
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 21:39:35 +0100 (CET)
+Received: by mail-wm1-x334.google.com with SMTP id 5so11379262wmo.1
+ for <ltp@lists.linux.it>; Wed, 02 Nov 2022 13:39:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=hM54vg37dUpKVgDrBvaWZa98YNV02Uz6DfLZEZukbVE=;
+ b=S6vjgcDdJaoO2R2s+7OYK0SnfVJQNu/Td6Byv5sVin1qcwcr/DQ4mN9obPx2nOPOxX
+ bHa+kksyGya203jGsOsFuXi3yV3dqReCkJcVkkH2onhoju4rrEulZZqD0gAjIdxbi4QC
+ 22wkrAGwDuDw+4mNRV9kEQr8t/lKW6gWFS+qzFcSDqddZURV11y1TD2nY+b+lse2UmET
+ i5dUhO/hwsaWomvysRFyBZZ2iMKkskhwFgujdRzQg9Rtb9q+ezseSPGLpUo++DVC944S
+ wjW0fUUM4/+vzbkEjV4IH6gcF/WHTO1JaW557T81q9qhFVyMjVOqoYUtPFUt9ikprTYl
+ ZRYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=hM54vg37dUpKVgDrBvaWZa98YNV02Uz6DfLZEZukbVE=;
+ b=PzQsty3BTs1Wr3k8kXcjXmGpEJxOlMPVOgnK/hsSGOoyPsAuTKYYAlGrM//oyvJXl3
+ WUhEKmJw16VEQT86NiaJUbyVfmNh2vak2VM7JDcztsgD7DhPC5j9EWo/3cQrKwMdMeq0
+ Om0I3jUY37VrsujDI92jEZS8LZ9wCwGhEI0bScDifrrTEYc7ij6YyfBjNt9cg75zkHak
+ oWj1Cnj3YOZlWwO1bR4/1WSpZ2lj1zxlap6x9l2Xd1KNKTKNaBNwXtELg0AEzAWrjudG
+ P+EhPtqFL/LZN7NL+lCGjzosew4bIyZ+YFmYyocD/2d1HN0Y1qyAp5IxAlerDLIAopC5
+ BXng==
+X-Gm-Message-State: ACrzQf2w/A5mpkk9A7o5uixCGog2+IK3/YaIWXYYetVPLfHjSjG3xS+j
+ hofso2/BZzduR/9hQHU2c8YgNzaSMA0=
+X-Google-Smtp-Source: AMsMyM4uor3WcPcDVmImazIfWJbDk818D5oDcPJ0E4sq5g8uumrcLjMjQTPpDn7dJvTsF2GuGFrICg==
+X-Received: by 2002:a05:600c:5114:b0:3c7:8eb:fb1c with SMTP id
+ o20-20020a05600c511400b003c708ebfb1cmr27107563wms.204.1667421574325; 
+ Wed, 02 Nov 2022 13:39:34 -0700 (PDT)
+Received: from lab.hqhome163.com ([194.183.10.152])
+ by smtp.googlemail.com with ESMTPSA id
+ j19-20020a05600c1c1300b003a8434530bbsm3460435wms.13.2022.11.02.13.39.32
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 02 Nov 2022 13:39:33 -0700 (PDT)
+From: Alessandro Carminati <alessandro.carminati@gmail.com>
+To: ltp@lists.linux.it
+Date: Wed,  2 Nov 2022 20:34:11 +0000
+Message-Id: <20221102203413.547089-1-alessandro.carminati@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <87pme79f3d.fsf@suse.de>
+References: <87pme79f3d.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221102114923.447871-3-tsahu@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 2/4] Hugetlb: Migrating libhugetlbfs
- brk_near_huge
+Subject: [LTP] [PATCH 0/2] tst_find_backing_dev: fix stat fails /dev/root
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,201 +80,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, rpalethorpe@suse.com, ltp@lists.linux.it
+Cc: Alessandro Carminati <alessandro.carminati@gmail.com>, rpalethorpe@suse.com,
+ acarmina@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> --- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-> @@ -9,3 +9,8 @@ include $(abs_srcdir)/../Makefile.inc
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
->  
->  hugemmap06: CFLAGS+=-pthread
-> +
-> +hugemmap07:
-> +ifeq ($(ARCH),ppc)
-> +	CPPFLAGS += -DPPC_NO_SEGMENTS
-> +endif
+This tst_find_backing_dev patch version adds support for btrfs
+filesystems.
+Strategy here is to understand if the subject is btrfs or not.
+btrfs uses virtual device, and the major is 0. In all other test
+supported file systems the major is always non zero.
 
-I do not think that ARCH is defined in LTP build system. Where does it
-come from in the original test?
+If non btrfs it proceed as the previous version using sysfs minor
+and major.
+If btrfs it uses the BTRFS_IOC_FS_INFO ioctl to get it FS uuid.
 
-> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
-> new file mode 100644
-> index 000000000..73ed4b0d6
-> --- /dev/null
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
-> @@ -0,0 +1,138 @@
-> +// SPDX-License-Identifier: LGPL-2.1-or-later
-> +/*
-> + * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
-> + * Author: David Gibson & Adam Litke
-> + */
-> +
-> +/*\
-> + *
-> + * [Description]
-> + *
-> + * brk() near hugepage:
-           ^
-	   I would just remove this, it does not render nicely in the
-	   asciidoc and it's not useful either.
+non btrfs:
+----------------------------------------------------------------
+EXT4-fs (sda): re-mounted. Opts: (null). Quota mode: none.
+Welcome to Buildroot
+buildroot login: root
+# /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05
+tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s
+tst_test.c:1115: TINFO: ext2/ext3/ext4 is supported by the test
+tst_device.c:90: TINFO: Found free device 0 '/dev/loop0'
+loop0: detected capacity change from 0 to 2048
+tst_device.c:579: TINFO: Device numbers: 8/0
+tst_device.c:611: TINFO: Use uevent strategy
+ioctl_loop05.c:126: TINFO: backing dev(/dev/sda) logical_block_size is 512
+ioctl_loop05.c:62: TINFO: Without setting lo_offset or sizelimit
+ioctl_loop05.c:45: TINFO: In dio mode
+ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
+ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 1
+ioctl_loop05.c:45: TINFO: In non dio mode
+ioctl_loop05.c:50: TPASS: lo_flags doesn't have LO_FLAGS_DIRECT_IO flag
+ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 0
+ioctl_loop05.c:69: TINFO: With offset equal to logical_block_size
+loop0: detected capacity change from 2048 to 2047
+ioctl_loop05.c:74: TPASS: LOOP_SET_DIRECT_IO succeeded
+ioctl_loop05.c:45: TINFO: In dio mode
+ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
+ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 1
+ioctl_loop05.c:81: TINFO: With nonzero offset less than logical_block_size
+ioctl_loop05.c:92: TPASS: LOOP_SET_DIRECT_IO failed as expected: EINVAL (22)
 
-> + * Certain kernels have a bug where brk() does not perform the same
-> + * checks that a MAP_FIXED mmap() will, allowing brk() to create a
-> + * normal page VMA in a hugepage only address region. This can lead
-> + * to oopses or other badness.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <sys/mount.h>
-> +#include <limits.h>
-> +#include <sys/param.h>
-> +#include <sys/types.h>
-> +
-> +#include "hugetlb.h"
-> +#include "tst_safe_stdio.h"
-> +
-> +#define MNTPOINT "hugetlbfs/"
-> +static long hpage_size;
-> +static int huge_fd = -1;
-> +
-> +#ifdef __powerpc64__
-> +static int arch_has_slice_support(void)
-> +{
-> +	char mmu_type[16];
-> +	FILE *fp;
-> +	int ret;
-> +
-> +	fp = SAFE_POPEN("cat /proc/cpuinfo | grep MMU | awk '{ print $3}'", "r");
-> +	ret = fscanf(fp, "%s", mmu_type);
-> +	pclose(fp);
-> +
-> +	if (ret < 0)
-> +		tst_brk(TBROK, "Failed to determine MMU type");
-> +
-> +	return strcmp(mmu_type, "Hash") == 0;
-> +}
-> +
-> +static void *next_chunk(void *addr)
-> +{
-> +	if (!arch_has_slice_support())
-> +		return PALIGN(addr, hpage_size);
-> +
-> +	if ((unsigned long)addr < 0x100000000UL)
-> +		/* 256M segments below 4G */
-> +		return PALIGN(addr, 0x10000000UL);
-> +	/* 1TB segments above */
-> +	return PALIGN(addr, 0x10000000000UL);
-> +}
-> +#elif defined(__powerpc__) && !defined(PPC_NO_SEGMENTS)
-> +static void *next_chunk(void *addr)
-> +{
-> +	return PALIGN(addr, 0x10000000UL);
-> +}
-> +#elif defined(__ia64__)
-> +static void *next_chunk(void *addr)
-> +{
-> +	return PALIGN(addr, 0x8000000000000000UL);
-> +}
-> +#else
-> +static void *next_chunk(void *addr)
-> +{
-> +	return PALIGN(addr, hpage_size);
-> +}
-> +#endif
-> +
-> +static void run_test(void)
-> +{
-> +	void *brk0, *hugemap_addr, *newbrk;
-> +	char *p;
-> +	int err;
-> +
-> +	brk0 = sbrk(0);
-> +	tst_res(TINFO, "Initial break at %p", brk0);
-> +
-> +	hugemap_addr = next_chunk(brk0) + hpage_size;
-> +
-> +	p = SAFE_MMAP(hugemap_addr, hpage_size, PROT_READ|PROT_WRITE,
-> +			MAP_PRIVATE|MAP_FIXED, huge_fd, 0);
-> +	if (p != hugemap_addr) {
-> +		tst_res(TFAIL, "mmap() at unexpected address %p instead of %p\n", p,
-> +		     hugemap_addr);
-> +		goto cleanup;
-> +	}
-> +
-> +	newbrk = next_chunk(brk0) + getpagesize();
-> +	err = brk((void *)newbrk);
-> +	if (err == -1) {
-> +		/* Failing the brk() is an acceptable kernel response */
-> +		tst_res(TPASS, "Failing the brk is an acceptable response");
-> +	} else {
-> +		/* Suceeding the brk() is acceptable if the new memory is
-> +		 * properly accesible and we don't have a kernel blow up when
-> +		 * we touch it.
-> +		 */
-> +		tst_res(TINFO, "New break at %p", newbrk);
-> +		memset(brk0, 0, newbrk-brk0);
-> +		tst_res(TPASS, "memory is accessible, hence successful brk() is "
-> +				"an acceptable response");
-> +	}
-> +cleanup:
-> +	SAFE_MUNMAP(p, hpage_size);
-> +	err = brk(brk0);
-> +	if (err == -1)
-> +		tst_brk(TBROK, "Failed to set break at the original position");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
-> +	huge_fd = tst_creat_unlinked(MNTPOINT);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	SAFE_CLOSE(huge_fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.needs_hugetlbfs = 1,
-> +	.taint_check = TST_TAINT_D | TST_TAINT_W,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +	.hugepages = {1, TST_NEEDS},
-> +};
-> diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-> index f75109f3e..1cfeca95a 100644
-> --- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-> +++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-> @@ -20,6 +20,9 @@
->  #include "old_tmpdir.h"
->  #include "mem.h"
->  
-> +#define ALIGN(x, a)	(((x) + (a) - 1) & ~((a) - 1))
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+#
 
-We do have a LTP_ALIGN() please make use of that one instead.
+btrfs
+----------------------------------------------------------------
+BTRFS info (device sda): disk space caching is enabled
+Welcome to Buildroot
+buildroot login: root
+# /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05
+tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s
+tst_test.c:1115: TINFO: btrfs is supported by the test
+tst_device.c:90: TINFO: Found free device 0 '/dev/loop0'
+loop0: detected capacity change from 0 to 2048
+tst_device.c:579: TINFO: Device numbers: 0/15
+tst_device.c:582: TINFO: Use BTRFS specific strategy
+ioctl_loop05.c:126: TINFO: backing dev(/dev/sda) logical_block_size is 512
+ioctl_loop05.c:62: TINFO: Without setting lo_offset or sizelimit
+ioctl_loop05.c:45: TINFO: In dio mode
+ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
+ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 1
+ioctl_loop05.c:45: TINFO: In non dio mode
+ioctl_loop05.c:50: TPASS: lo_flags doesn't have LO_FLAGS_DIRECT_IO flag
+ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 0
+ioctl_loop05.c:69: TINFO: With offset equal to logical_block_size
+loop0: detected capacity change from 2048 to 2047
+ioctl_loop05.c:74: TPASS: LOOP_SET_DIRECT_IO succeeded
+ioctl_loop05.c:45: TINFO: In dio mode
+ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
+ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 1
+ioctl_loop05.c:81: TINFO: With nonzero offset less than logical_block_size
+ioctl_loop05.c:87: TPASS: LOOP_SET_DIRECT_IO succeeded, offset is ignored
 
-> +#define PALIGN(p, a) ((void *)ALIGN((unsigned long)(p), (a)))
-> +
->  #define SHM_RD	0400
->  #define SHM_WR	0200
->  #define SHM_RW	(SHM_RD|SHM_WR)
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+#
 
-Have you run 'make check-hugemmap07' in the respecive directory, did it
-report any problems?
+Alessandro Carminati (2):
+  tst_find_backing_dev: Get dev name from /sys/dev/block/*/uevent
+  c-test-api: Documentation updated
+
+ doc/c-test-api.txt |  7 ++--
+ lib/tst_device.c   | 86 ++++++++++++++++++++++++++++++----------------
+ 2 files changed, 62 insertions(+), 31 deletions(-)
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.34.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
