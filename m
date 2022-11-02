@@ -4,96 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DF3EC43217
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 11:50:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8966C4332F
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 13:06:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3E3CA3CACD0
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 12:50:40 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id BFEF43CAD63
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 14:06:24 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8674C3CAD47
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:49:55 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 2ADA23CA768
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 14:06:14 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D457160091E
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:49:54 +0100 (CET)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2ATo4U032399;
- Wed, 2 Nov 2022 11:49:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=jkLhgDCpqGHKriygFCTxqeNOT4Yu5XLEvVo8KYF/Yww=;
- b=VEu4J/LxqVHfDS6p8nqwDXmhT2QMl5arGcKhjYKaJwRdaWkBvp8zNOXWhkxFLHh6O1SS
- 8pv9Ps4EscisJ4nhMAFhn9CTCKiLoHJPsK6vs7qahmzoVbZGttSCmApz4V+HwO2r6nPW
- Y3cJLz19zfR5kV/jN+cS0zOpkjYfCeHAke82dy7dKl7htMX+yE+y0SZbf1pTI9GtYX0P
- o4igQmXN8lJRRq34lLGMDYxfoYRGVtE2sj5IObYZ3f2Udlosl86RF5CiEDx5S0A08PhE
- VkUfsqV5O2gxQuE/2WESfSLMywP18SOTxs5LxRGPgyWkplWjl+xrOXDiQHzfjWOmF705 Rg== 
-Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkpunahrj-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 02 Nov 2022 11:49:52 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A2ATkRt032284;
- Wed, 2 Nov 2022 11:49:52 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com
- [159.122.73.72])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkpunahpu-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 02 Nov 2022 11:49:51 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
- by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A2BaWb4019316;
- Wed, 2 Nov 2022 11:49:49 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com
- (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
- by ppma06fra.de.ibm.com with ESMTP id 3kguejd0qx-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 02 Nov 2022 11:49:49 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com
- (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
- by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2A2Bnkf653019014
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 2 Nov 2022 11:49:46 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 2E430A4054;
- Wed,  2 Nov 2022 11:49:46 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 70B69A405C;
- Wed,  2 Nov 2022 11:49:42 +0000 (GMT)
-Received: from tarunpc.ibmuc.com (unknown [9.43.85.9])
- by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Wed,  2 Nov 2022 11:49:42 +0000 (GMT)
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Wed,  2 Nov 2022 17:19:23 +0530
-Message-Id: <20221102114923.447871-5-tsahu@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221102114923.447871-1-tsahu@linux.ibm.com>
-References: <20221102114923.447871-1-tsahu@linux.ibm.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5E00410007EF
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 14:06:12 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0AD5D1F855;
+ Wed,  2 Nov 2022 13:06:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1667394372; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3Cv++I2QVyYUH/xPxF9nlk5SBIAiJIIz0eYrG9R87GA=;
+ b=VQ+CeL7XGXuBCn8acRCc3xNYVB0MGFSV1DCiRnwbtkMbYcGbGj/xIiVrRhkWOIxE+ke3f7
+ iFPWjmX9da/kZDK+e+k1J9altfaIu/n1iOFX27GfLIqcnBCLiaTcvEvfe/jwXb7+bhr2hz
+ hqS22uBAk3FAidu7VDpAP5hu7u9MiUg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1667394372;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3Cv++I2QVyYUH/xPxF9nlk5SBIAiJIIz0eYrG9R87GA=;
+ b=G3UOvES4sEIRghS6RcnaPTgVH+FKzECVpIj9j3Lunox0YOUh5B+xqgu1hNMymu3wXJSIOY
+ s0V3mkJipUU9ZiAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD5C313AE0;
+ Wed,  2 Nov 2022 13:06:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id a3X2NENrYmMJKwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 02 Nov 2022 13:06:11 +0000
+Date: Wed, 2 Nov 2022 14:07:45 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Edward Liaw <edliaw@google.com>
+Message-ID: <Y2JroRqqpxZyJpii@yuki>
+References: <20221101000841.1207999-1-edliaw@google.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 4_9Cofwgk2viQePdFViquZrAWXaBBFK9
-X-Proofpoint-ORIG-GUID: U8isc9X3MtidQH_VuLEsz0XeOHVIvFxo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-02_06,2022-11-02_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 adultscore=0
- mlxlogscore=964 clxscore=1015 impostorscore=0 spamscore=0 mlxscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211020070
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20221101000841.1207999-1-edliaw@google.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 4/4] Hugetlb: Migrating libhugetlbfs
- corrupt-by-cow-opt
+Subject: Re: [LTP] [PATCH v1] tst_tmpdir: add TST_GET_TMPDIR_ROOT() to get
+ the TMPDIR env var
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,141 +75,273 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
- vaibhav@linux.ibm.com, rpalethorpe@suse.com
+Cc: kernel-team@android.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/corrupt-by-cow-opt.c test
+Hi!
+> diff --git a/include/old/old_tmpdir.h b/include/old/old_tmpdir.h
+> index 9c61172fd..b1cf79344 100644
+> --- a/include/old/old_tmpdir.h
+> +++ b/include/old/old_tmpdir.h
+> @@ -45,6 +45,11 @@ void tst_rmdir(void);
+>   */
+>  char *tst_get_tmpdir(void);
+>  
+> +/*
+> + * Returns path to the test temporary directory root.
+> + */
+> +const char *tst_get_tmpdir_root(void);
+> +
+>  /*
+>   * Returns 1 if temp directory was created.
+>   */
+> diff --git a/include/tst_test.h b/include/tst_test.h
+> index a69965b95..26a5ec752 100644
+> --- a/include/tst_test.h
+> +++ b/include/tst_test.h
+> @@ -362,6 +362,11 @@ void tst_set_max_runtime(int max_runtime);
+>   */
+>  char *tst_get_tmpdir(void);
+>  
+> +/*
+> + * Returns path to the test temporary directory root.
+> + */
+> +const char *tst_get_tmpdir_root(void);
+> +
+>  /*
+>   * Validates exit status of child processes
+>   */
+> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+> index 6642d6be4..50699bc63 100644
+> --- a/lib/tst_cgroup.c
+> +++ b/lib/tst_cgroup.c
+> @@ -645,10 +645,7 @@ static void cgroup_mount_v2(void)
+>  {
+>  	int ret;
+>  	char mnt_path[PATH_MAX];
+> -	const char *tmpdir = getenv("TMPDIR");
+> -
+> -	if (!tmpdir)
+> -		tmpdir = "/tmp";
+> +	const char *tmpdir = tst_get_tmpdir_root();
+>  
+>  	sprintf(mnt_path, "%s/%s%s",
+>  		tmpdir, cgroup_mount_ltp_prefix, cgroup_v2_ltp_mount);
+> @@ -698,10 +695,7 @@ static void cgroup_mount_v1(struct cgroup_ctrl *const ctrl)
+>  {
+>  	char mnt_path[PATH_MAX];
+>  	int made_dir = 0;
+> -	const char *tmpdir = getenv("TMPDIR");
+> -
+> -	if (!tmpdir)
+> -		tmpdir = "/tmp";
+> +	const char *tmpdir = tst_get_tmpdir_root();
+>  
+>  	if (ctrl->ctrl_indx == CTRL_BLKIO && controllers[CTRL_IO].ctrl_root) {
+>  		tst_res(TCONF,
+> diff --git a/lib/tst_supported_fs_types.c b/lib/tst_supported_fs_types.c
+> index 7781f94c3..d4911fa3b 100644
+> --- a/lib/tst_supported_fs_types.c
+> +++ b/lib/tst_supported_fs_types.c
+> @@ -74,14 +74,11 @@ int tst_fs_in_skiplist(const char *fs_type, const char *const *skiplist)
+>  static enum tst_fs_impl has_kernel_support(const char *fs_type)
+>  {
+>  	static int fuse_supported = -1;
+> -	const char *tmpdir = getenv("TMPDIR");
+> +	const char *tmpdir = tst_get_tmpdir_root();
+>  	char buf[128];
+>  	char template[PATH_MAX];
+>  	int ret;
+>  
+> -	if (!tmpdir)
+> -		tmpdir = "/tmp";
+> -
+>  	snprintf(template, sizeof(template), "%s/mountXXXXXX", tmpdir);
+>  	if (!mkdtemp(template))
+>  		tst_brk(TBROK | TERRNO, "mkdtemp(%s) failed", template);
+> diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
+> index 6e38ae977..9c90f481a 100644
+> --- a/lib/tst_tmpdir.c
+> +++ b/lib/tst_tmpdir.c
+> @@ -122,6 +122,28 @@ char *tst_get_tmpdir(void)
+>  	return ret;
+>  }
+>  
+> +const char *tst_get_tmpdir_root(void)
+> +{
+> +	char *c;
+> +	const char *env_tmpdir = getenv("TMPDIR");
+> +
+> +	if (!env_tmpdir)
+> +		env_tmpdir = TEMPDIR;
+> +
+> +	c = strchr(env_tmpdir, '/');
+> +	/*
+> +	 * We force environment variable TMPDIR to be an absolute pathname,
+> +	 * which does not make much sense, but it will greatly simplify code in
+> +	 * tst_rmdir().
+> +	 */
 
-Test Description: Test sanity of cow optimization on page cache. If a page
-in page cache has only 1 ref count, it is mapped for a private mapping
-directly and is overwritten freely, so next time we access the page, we
-can see corrupt data.
+This looks more like user documentation that anything else. I guess that
+it would make sense to remove this comment from here and add a note
+about absolute pathname to doc/user-guide.txt where we describe all the
+environment variables.
 
-Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
----
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap09.c  | 80 +++++++++++++++++++
- 3 files changed, 82 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
+> +	if (c != env_tmpdir) {
+> +		tst_brkm(TBROK, NULL, "You must specify an absolute "
+> +				"pathname for environment variable TMPDIR");
+> +		return NULL;
+> +	}
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 664f18827..e2ada7a97 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -5,6 +5,7 @@ hugemmap05 hugemmap05
- hugemmap06 hugemmap06
- hugemmap07 hugemmap07
- hugemmap08 hugemmap08
-+hugemmap09 hugemmap09
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 003ce422b..1a242ffe0 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -6,6 +6,7 @@
- /hugetlb/hugemmap/hugemmap06
- /hugetlb/hugemmap/hugemmap07
- /hugetlb/hugemmap/hugemmap08
-+/hugetlb/hugemmap/hugemmap09
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
-new file mode 100644
-index 000000000..df7c9edcb
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
-@@ -0,0 +1,80 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
-+/*
-+ * Copyright (C) 2013 Joonsoo Kim, LG Electronics.
-+ * Author: Joonsoo Kim
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Corrupt by COW optimization:
-+ * Test sanity of cow optimization on page cache. If a page in page cache
-+ * has only 1 ref count, it is mapped for a private mapping directly and
-+ * is overwritten freely, so next time we access the page, we can see
-+ * corrupt data.
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+
-+#include "hugetlb.h"
-+
-+#define MNTPOINT "hugetlbfs/"
-+static long hpage_size;
-+static int huge_fd = -1;
-+
-+static void run_test(void)
-+{
-+	char *p;
-+	char c;
-+
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+			huge_fd, 0);
-+	*p = 's';
-+	tst_res(TINFO, "Write %c to %p via shared mapping", *p, p);
-+	SAFE_MUNMAP(p, hpage_size);
-+
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE,
-+			huge_fd, 0);
-+	*p = 'p';
-+	tst_res(TINFO, "Write %c to %p via private mapping", *p, p);
-+	SAFE_MUNMAP(p, hpage_size);
-+
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+			huge_fd, 0);
-+	c = *p;
-+	tst_res(TINFO, "Read %c from %p via shared mapping", *p, p);
-+	SAFE_MUNMAP(p, hpage_size);
-+
-+	/* Direct write from huge page */
-+	if (c != 's')
-+		tst_res(TFAIL, "Data got corrupted.");
-+	else
-+		tst_res(TPASS, "Successful");
-+}
-+
-+static void setup(void)
-+{
-+	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
-+	huge_fd = tst_creat_unlinked(MNTPOINT);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_CLOSE(huge_fd);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {2, TST_NEEDS},
-+};
+	Isn't this just overly complicated way how to write:
+
+	if (env_tmpdir[0] != '/') {
+		tst_brkm(...);
+		...
+	}
+
+> +	return env_tmpdir;
+> +}
+> +
+>  const char *tst_get_startwd(void)
+>  {
+>  	return test_start_work_dir;
+> @@ -245,31 +267,16 @@ static int rmobj(const char *obj, char **errmsg)
+>  void tst_tmpdir(void)
+>  {
+>  	char template[PATH_MAX];
+> -	char *env_tmpdir;
+> -	char *errmsg, *c;
+> +	const char *env_tmpdir;
+> +	char *errmsg;
+>  
+>  	/*
+>  	 * Create a template for the temporary directory.  Use the
+>  	 * environment variable TMPDIR if it is available, otherwise
+>  	 * use our default TEMPDIR.
+>  	 */
+> -	env_tmpdir = getenv("TMPDIR");
+> -	if (env_tmpdir) {
+> -		c = strchr(env_tmpdir, '/');
+> -		/*
+> -		 * Now we force environment variable TMPDIR to be an absolute
+> -		 * pathname, which dose not make much sense, but it will
+> -		 * greatly simplify code in tst_rmdir().
+> -		 */
+> -		if (c != env_tmpdir) {
+> -			tst_brkm(TBROK, NULL, "You must specify an absolute "
+> -				 "pathname for environment variable TMPDIR");
+> -			return;
+> -		}
+> -		snprintf(template, PATH_MAX, "%s/%.3sXXXXXX", env_tmpdir, TCID);
+> -	} else {
+> -		snprintf(template, PATH_MAX, "%s/%.3sXXXXXX", TEMPDIR, TCID);
+> -	}
+> +	env_tmpdir = tst_get_tmpdir_root();
+> +	snprintf(template, PATH_MAX, "%s/%.3sXXXXXX", env_tmpdir, TCID);
+>  
+>  	/* Make the temporary directory in one shot using mkdtemp. */
+>  	if (mkdtemp(template) == NULL) {
+> diff --git a/testcases/kernel/security/filecaps/filecaps_common.h b/testcases/kernel/security/filecaps/filecaps_common.h
+> index 920f6ac6a..0f011868e 100644
+> --- a/testcases/kernel/security/filecaps/filecaps_common.h
+> +++ b/testcases/kernel/security/filecaps/filecaps_common.h
+> @@ -1,5 +1,6 @@
+>  #include <limits.h>
+>  #include <stdlib.h>
+> +#include <old_tmpdir.h>
+>  
+>  static char *fifofile;
+>  
+> @@ -9,10 +10,8 @@ static const char *get_caps_fifo(void)
+>  		fifofile = getenv("FIFOFILE");
+>  
+>  		if (!fifofile) {
+> -			const char *tmpdir = getenv("TMPDIR");
+> +			const char *tmpdir = tst_get_tmpdir_root();
+>  
+> -			if (!tmpdir)
+> -				tmpdir = "/tmp";
+>  			fifofile = malloc(PATH_MAX);
+>  			snprintf(fifofile, PATH_MAX, "%s/caps_fifo", tmpdir);
+>  		}
+> diff --git a/testcases/kernel/syscalls/getcwd/getcwd02.c b/testcases/kernel/syscalls/getcwd/getcwd02.c
+> index e843a4896..cb111a698 100644
+> --- a/testcases/kernel/syscalls/getcwd/getcwd02.c
+> +++ b/testcases/kernel/syscalls/getcwd/getcwd02.c
+> @@ -42,28 +42,6 @@ static int dir_exists(const char *dirpath)
+>  	return 0;
+>  }
+>  
+> -static const char *get_tmpdir_path(void)
+> -{
+> -	char *tmpdir = "/tmp";
+> -
+> -	if (dir_exists(tmpdir))
+> -		goto done;
+> -
+> -	/* fallback to $TMPDIR */
+> -	tmpdir = getenv("TMPDIR");
+> -	if (!tmpdir)
+> -		tst_brk(TBROK | TERRNO, "Failed to get $TMPDIR");
+> -
+> -	if (tmpdir[0] != '/')
+> -		tst_brk(TBROK, "$TMPDIR must be an absolute path");
+> -
+> -	if (!dir_exists(tmpdir))
+> -		tst_brk(TBROK | TERRNO, "TMPDIR '%s' doesn't exist", tmpdir);
+> -
+> -done:
+> -	return tmpdir;
+> -}
+> -
+>  static void verify_getcwd(unsigned int n)
+>  {
+>  	struct t_case *tc = &tcases[n];
+> @@ -92,7 +70,10 @@ end:
+>  
+>  static void setup(void)
+>  {
+> -	const char *tmpdir = get_tmpdir_path();
+> +	const char *tmpdir = tst_get_tmpdir_root();
+> +
+> +	if (!dir_exists(tmpdir))
+> +		tst_brk(TBROK | TERRNO, "TMPDIR '%s' doesn't exist", tmpdir);
+>  
+>  	SAFE_CHDIR(tmpdir);
+>  
+> diff --git a/testcases/open_posix_testsuite/include/tempfile.h b/testcases/open_posix_testsuite/include/tempfile.h
+> index 0fd27cee3..63e179baf 100644
+> --- a/testcases/open_posix_testsuite/include/tempfile.h
+> +++ b/testcases/open_posix_testsuite/include/tempfile.h
+> @@ -6,14 +6,8 @@
+>  #include <stdlib.h>
+>  #include <stdio.h>
+>  #include <limits.h>
+> +#include <old_tmpdir.h>
+>  
+>  #define PTS_GET_TMP_FILENAME(target, prefix) \
+>      snprintf(target, sizeof(target), \
+> -    "%s/" prefix "_pid-%d", pts_get_tmpdir(), getpid());
+> -
+> -static inline const char *pts_get_tmpdir(void)
+> -{
+> -    const char *tmpdir_env;
+> -    tmpdir_env = getenv("TMPDIR");
+> -    return tmpdir_env ? tmpdir_env : "/tmp";
+> -}
+> +    "%s/" prefix "_pid-%d", tst_get_tmpdir_root(), getpid());
+
+NACK to this part. The Open Posix Testsuite is not integrated into LTP
+and does not use the test library. I doubt that this will even compile
+correctly.
+
 -- 
-2.31.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
