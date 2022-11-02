@@ -4,71 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72417C4332F
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 20:39:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 374FAC4332F
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 20:40:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E1E2A3CAD3B
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 21:39:47 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 5E0CA3CAD48
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 21:40:06 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 942143CA8A4
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 21:39:36 +0100 (CET)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
+ by picard.linux.it (Postfix) with ESMTPS id C21C73CA8A4
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 21:39:55 +0100 (CET)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 72D3C1A00A45
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 21:39:35 +0100 (CET)
-Received: by mail-wm1-x334.google.com with SMTP id 5so11379262wmo.1
- for <ltp@lists.linux.it>; Wed, 02 Nov 2022 13:39:35 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1622A600852
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 21:39:55 +0100 (CET)
+Received: by mail-wr1-x42a.google.com with SMTP id bk15so26166070wrb.13
+ for <ltp@lists.linux.it>; Wed, 02 Nov 2022 13:39:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=hM54vg37dUpKVgDrBvaWZa98YNV02Uz6DfLZEZukbVE=;
- b=S6vjgcDdJaoO2R2s+7OYK0SnfVJQNu/Td6Byv5sVin1qcwcr/DQ4mN9obPx2nOPOxX
- bHa+kksyGya203jGsOsFuXi3yV3dqReCkJcVkkH2onhoju4rrEulZZqD0gAjIdxbi4QC
- 22wkrAGwDuDw+4mNRV9kEQr8t/lKW6gWFS+qzFcSDqddZURV11y1TD2nY+b+lse2UmET
- i5dUhO/hwsaWomvysRFyBZZ2iMKkskhwFgujdRzQg9Rtb9q+ezseSPGLpUo++DVC944S
- wjW0fUUM4/+vzbkEjV4IH6gcF/WHTO1JaW557T81q9qhFVyMjVOqoYUtPFUt9ikprTYl
- ZRYQ==
+ bh=N4YRod5FSpRjg0rnhtR3i6UoyYJ+1U3mTnkv80tUU5c=;
+ b=gFwU8ekRL9f5tJWzYB/bobjYQ4Q7c24iXS1mhFYzlqyBw/wu7O7NdCXM0UGZp/EJFR
+ OprhihsEYrHEz3MRMtMAQIn4IE0T7k6v32fLrdEaOX4SxH4A0/ntXVjV/y3yfvX84bsK
+ DB8oO9g78RMsRh+giuG5j+qLesJfqt4bu6tmoNoPWkZ9741TuekpWTnbcl/r2g7Q1ovu
+ XAXQt487+Lc+KIKc7l0Zy9KQeFXHtVVLWwCSQpYB4mtB0rlhSrEB3nEyDwW49jS5w3u4
+ 8Lcz9nlNoXVOrEb6amI7myhZUXmZEqRNKs2JsIgsAm4Sdf/l9d7M4DO6TgaJkRwI4dy6
+ S9fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=hM54vg37dUpKVgDrBvaWZa98YNV02Uz6DfLZEZukbVE=;
- b=PzQsty3BTs1Wr3k8kXcjXmGpEJxOlMPVOgnK/hsSGOoyPsAuTKYYAlGrM//oyvJXl3
- WUhEKmJw16VEQT86NiaJUbyVfmNh2vak2VM7JDcztsgD7DhPC5j9EWo/3cQrKwMdMeq0
- Om0I3jUY37VrsujDI92jEZS8LZ9wCwGhEI0bScDifrrTEYc7ij6YyfBjNt9cg75zkHak
- oWj1Cnj3YOZlWwO1bR4/1WSpZ2lj1zxlap6x9l2Xd1KNKTKNaBNwXtELg0AEzAWrjudG
- P+EhPtqFL/LZN7NL+lCGjzosew4bIyZ+YFmYyocD/2d1HN0Y1qyAp5IxAlerDLIAopC5
- BXng==
-X-Gm-Message-State: ACrzQf2w/A5mpkk9A7o5uixCGog2+IK3/YaIWXYYetVPLfHjSjG3xS+j
- hofso2/BZzduR/9hQHU2c8YgNzaSMA0=
-X-Google-Smtp-Source: AMsMyM4uor3WcPcDVmImazIfWJbDk818D5oDcPJ0E4sq5g8uumrcLjMjQTPpDn7dJvTsF2GuGFrICg==
-X-Received: by 2002:a05:600c:5114:b0:3c7:8eb:fb1c with SMTP id
- o20-20020a05600c511400b003c708ebfb1cmr27107563wms.204.1667421574325; 
- Wed, 02 Nov 2022 13:39:34 -0700 (PDT)
+ bh=N4YRod5FSpRjg0rnhtR3i6UoyYJ+1U3mTnkv80tUU5c=;
+ b=Q4Ju/2Opr4N9rpwClMIj5yA4cohfIbWWrLKYwIpF4lqQ9a1HVfT6rdcdTfTJSfex0v
+ yWwg8LiKditvZbos89xom23+QfpTT9iv2nCQ9UTUKgi1zJTyH8/XucsPKJE0EsU1Zk+A
+ 04LPfMPj7ooSAc+E8nVKzTqc7aQqsdqhinmq2lYpMc3Yq7gLKi0MKxUS0cVDzH24SIM4
+ Np0Aw2lNbTQxlqVtD/L2OQ7NfQrpBPfBlb0pQC37ZlsK3d8DjUxy++shPiXoKFolc3SO
+ rVDxJkU9fO59rtYXXv/X1/iUwFQuWyALv7vzSTzxwnYPe5hw/OQNWbPGulFwNrKb9Sxh
+ ErZw==
+X-Gm-Message-State: ACrzQf1X4eGnyR+5qObiM4MtCYIWoLelDu5DwhEcGrwIIMljc/NBsNfK
+ 9jVPAEt99n7IaDhWs+tKau51NSIiMO2y0g==
+X-Google-Smtp-Source: AMsMyM7SAHC3wZbphDW+TTDyRoEk9hTU4l3lUlpvIAircTY6Rty/zuNhqUvpeoV3o4mUMvQzsk5FcA==
+X-Received: by 2002:a5d:5551:0:b0:236:c715:59bf with SMTP id
+ g17-20020a5d5551000000b00236c71559bfmr12407194wrw.124.1667421594237; 
+ Wed, 02 Nov 2022 13:39:54 -0700 (PDT)
 Received: from lab.hqhome163.com ([194.183.10.152])
  by smtp.googlemail.com with ESMTPSA id
- j19-20020a05600c1c1300b003a8434530bbsm3460435wms.13.2022.11.02.13.39.32
+ j19-20020a05600c1c1300b003a8434530bbsm3460435wms.13.2022.11.02.13.39.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 02 Nov 2022 13:39:33 -0700 (PDT)
+ Wed, 02 Nov 2022 13:39:53 -0700 (PDT)
 From: Alessandro Carminati <alessandro.carminati@gmail.com>
 To: ltp@lists.linux.it
-Date: Wed,  2 Nov 2022 20:34:11 +0000
-Message-Id: <20221102203413.547089-1-alessandro.carminati@gmail.com>
+Date: Wed,  2 Nov 2022 20:34:12 +0000
+Message-Id: <20221102203413.547089-2-alessandro.carminati@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <87pme79f3d.fsf@suse.de>
+In-Reply-To: <20221102203413.547089-1-alessandro.carminati@gmail.com>
 References: <87pme79f3d.fsf@suse.de>
+ <20221102203413.547089-1-alessandro.carminati@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/2] tst_find_backing_dev: fix stat fails /dev/root
+Subject: [LTP] [PATCH 1/2] tst_find_backing_dev: Get dev name from
+ /sys/dev/block/*/uevent
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,98 +90,154 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This tst_find_backing_dev patch version adds support for btrfs
-filesystems.
-Strategy here is to understand if the subject is btrfs or not.
-btrfs uses virtual device, and the major is 0. In all other test
-supported file systems the major is always non zero.
+In some minimal Linux, the /dev/root can be missing. The consequence of
+this is that mountinfo doesn't contain the correct information. btrfs
+file systems are yet another point of trouble for this function.
 
-If non btrfs it proceed as the previous version using sysfs minor
-and major.
-If btrfs it uses the BTRFS_IOC_FS_INFO ioctl to get it FS uuid.
+The unevent file in sysfs is another method to retrieve device info
+using the sysfs.
 
-non btrfs:
-----------------------------------------------------------------
-EXT4-fs (sda): re-mounted. Opts: (null). Quota mode: none.
-Welcome to Buildroot
-buildroot login: root
-# /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05
-tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s
-tst_test.c:1115: TINFO: ext2/ext3/ext4 is supported by the test
-tst_device.c:90: TINFO: Found free device 0 '/dev/loop0'
-loop0: detected capacity change from 0 to 2048
-tst_device.c:579: TINFO: Device numbers: 8/0
-tst_device.c:611: TINFO: Use uevent strategy
-ioctl_loop05.c:126: TINFO: backing dev(/dev/sda) logical_block_size is 512
-ioctl_loop05.c:62: TINFO: Without setting lo_offset or sizelimit
-ioctl_loop05.c:45: TINFO: In dio mode
-ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
-ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 1
-ioctl_loop05.c:45: TINFO: In non dio mode
-ioctl_loop05.c:50: TPASS: lo_flags doesn't have LO_FLAGS_DIRECT_IO flag
-ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 0
-ioctl_loop05.c:69: TINFO: With offset equal to logical_block_size
-loop0: detected capacity change from 2048 to 2047
-ioctl_loop05.c:74: TPASS: LOOP_SET_DIRECT_IO succeeded
-ioctl_loop05.c:45: TINFO: In dio mode
-ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
-ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 1
-ioctl_loop05.c:81: TINFO: With nonzero offset less than logical_block_size
-ioctl_loop05.c:92: TPASS: LOOP_SET_DIRECT_IO failed as expected: EINVAL (22)
+btrfs file systems are special from the device name retrieval, and in
+place of use of the minor/major they are approached by using the uuid.
+In the end, btrfs strategy is a slightly modified version of the same
+unevent strategy.
 
-Summary:
-passed   8
-failed   0
-broken   0
-skipped  0
-warnings 0
-#
+Non btrfs look in "/sys/dev/block/%d:%d/uevent" major, minor
+btrfs look in /sys/fs/btrfs/%s/devices/%s/uevent, uuid, devname
 
-btrfs
-----------------------------------------------------------------
-BTRFS info (device sda): disk space caching is enabled
-Welcome to Buildroot
-buildroot login: root
-# /usr/lib/ltp-testsuite/testcases/bin/ioctl_loop05
-tst_test.c:1363: TINFO: Timeout per run is 0h 05m 00s
-tst_test.c:1115: TINFO: btrfs is supported by the test
-tst_device.c:90: TINFO: Found free device 0 '/dev/loop0'
-loop0: detected capacity change from 0 to 2048
-tst_device.c:579: TINFO: Device numbers: 0/15
-tst_device.c:582: TINFO: Use BTRFS specific strategy
-ioctl_loop05.c:126: TINFO: backing dev(/dev/sda) logical_block_size is 512
-ioctl_loop05.c:62: TINFO: Without setting lo_offset or sizelimit
-ioctl_loop05.c:45: TINFO: In dio mode
-ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
-ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 1
-ioctl_loop05.c:45: TINFO: In non dio mode
-ioctl_loop05.c:50: TPASS: lo_flags doesn't have LO_FLAGS_DIRECT_IO flag
-ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 0
-ioctl_loop05.c:69: TINFO: With offset equal to logical_block_size
-loop0: detected capacity change from 2048 to 2047
-ioctl_loop05.c:74: TPASS: LOOP_SET_DIRECT_IO succeeded
-ioctl_loop05.c:45: TINFO: In dio mode
-ioctl_loop05.c:48: TPASS: lo_flags has LO_FLAGS_DIRECT_IO flag
-ioctl_loop05.c:52: TPASS: /sys/block/loop0/loop/dio = 1
-ioctl_loop05.c:81: TINFO: With nonzero offset less than logical_block_size
-ioctl_loop05.c:87: TPASS: LOOP_SET_DIRECT_IO succeeded, offset is ignored
+The btrfs handling requires BTRFS specific ioctl for finding the
+file system uuid, and for this reason, btrfs/ioctl.h is needed.
 
-Summary:
-passed   8
-failed   0
-broken   0
-skipped  0
-warnings 0
-#
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Signed-off-by: Alessandro Carminati <alessandro.carminati@gmail.com>
+---
+ lib/tst_device.c | 86 ++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 57 insertions(+), 29 deletions(-)
 
-Alessandro Carminati (2):
-  tst_find_backing_dev: Get dev name from /sys/dev/block/*/uevent
-  c-test-api: Documentation updated
-
- doc/c-test-api.txt |  7 ++--
- lib/tst_device.c   | 86 ++++++++++++++++++++++++++++++----------------
- 2 files changed, 62 insertions(+), 31 deletions(-)
-
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 8419b80c3..4c2bde846 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -33,6 +33,8 @@
+ #include <stdint.h>
+ #include <inttypes.h>
+ #include <sys/sysmacros.h>
++#include <btrfs/ioctl.h>
++#include <dirent.h>
+ #include "lapi/syscalls.h"
+ #include "test.h"
+ #include "safe_macros.h"
+@@ -45,6 +47,7 @@
+ 
+ #define DEV_FILE "test_dev.img"
+ #define DEV_SIZE_MB 300u
++#define UUID_STR_SZ 37
+ 
+ static char dev_path[1024];
+ static int device_acquired;
+@@ -519,48 +522,73 @@ static int count_match_len(const char *first, const char *second)
+ void tst_find_backing_dev(const char *path, char *dev)
+ {
+ 	struct stat buf;
++	struct btrfs_ioctl_fs_info_args args = {0};
++	struct dirent *d;
+ 	FILE *file;
+-	char line[PATH_MAX];
+-	char *pre = NULL;
+-	char *next = NULL;
+-	unsigned int dev_major, dev_minor, line_mjr, line_mnr;
+-	unsigned int len, best_match_len = 1;
+-	char mnt_point[PATH_MAX];
++	char uevent_path[PATH_MAX];
++	char dev_name[NAME_MAX];
++	char bdev_path[PATH_MAX];
++	char btrfs_uuid_str[UUID_STR_SZ];
++	DIR *dir;
++	unsigned int dev_major, dev_minor;
++	int fd;
+ 
+ 	if (stat(path, &buf) < 0)
+ 		tst_brkm(TWARN | TERRNO, NULL, "stat() failed");
+ 
++	*dev = '\0';
+ 	dev_major = major(buf.st_dev);
+ 	dev_minor = minor(buf.st_dev);
+-	file = SAFE_FOPEN(NULL, "/proc/self/mountinfo", "r");
+-	*dev = '\0';
+-
+-	while (fgets(line, sizeof(line), file)) {
+-		if (sscanf(line, "%*d %*d %d:%d %*s %s",
+-			&line_mjr, &line_mnr, mnt_point) != 3)
+-			continue;
+-
+-		pre = strstr(line, " - ");
+-		pre = strtok_r(pre, " ", &next);
+-		pre = strtok_r(NULL, " ", &next);
+-		pre = strtok_r(NULL, " ", &next);
+ 
+-		if (line_mjr == dev_major && line_mnr == dev_minor) {
+-			strcpy(dev, pre);
+-			break;
++	if (dev_major == 0) {
++		tst_resm(TINFO, "Use BTRFS specific strategy");
++		dir = opendir("/");
++		fd = dirfd(dir);
++		if (!ioctl(fd, BTRFS_IOC_FS_INFO, &args)) {
++			sprintf(btrfs_uuid_str,
++				"%02x%02x%02x%02x-%02x%02x-"
++				"%02x%02x-%02x%02x-"
++				"%02x%02x%02x%02x%02x%02x",
++				args.fsid[0],args.fsid[1],
++				args.fsid[2],args.fsid[3],
++				args.fsid[4],args.fsid[5],
++				args.fsid[6],args.fsid[7],
++				args.fsid[8],args.fsid[9],
++				args.fsid[10],args.fsid[11],
++				args.fsid[12],args.fsid[13],
++				args.fsid[14],args.fsid[15]);
++			sprintf(bdev_path,
++				"/sys/fs/btrfs/%s/devices", btrfs_uuid_str);
+ 		}
+-
+-		len = count_match_len(path, mnt_point);
+-		if (len > best_match_len) {
+-			strcpy(dev, pre);
+-			best_match_len = len;
++		closedir(dir);
++		dir = opendir(bdev_path);
++		if (!dir){
++			tst_brkm(TWARN | TERRNO, NULL,
++				"can't opendir %d", dir);
++		}
++		while (d = readdir(dir)){
++			if (d->d_name[0]!='.')
++				break;
++		}
++		uevent_path[0]='\0';
++		closedir(dir);
++		if (d!=NULL) {
++			sprintf(uevent_path, "%s/%s/uevent",
++				bdev_path, d->d_name);
+ 		}
++	} else {
++
++		tst_resm(TINFO, "Use uevent strategy");
++		sprintf(uevent_path,
++			"/sys/dev/block/%d:%d/uevent", dev_major, dev_minor);
+ 	}
+ 
+-	SAFE_FCLOSE(NULL, file);
++	if (!access(uevent_path, R_OK)) {
++		FILE_LINES_SCANF(NULL, uevent_path, "DEVNAME=%s", dev_name);
+ 
+-	if (!*dev)
+-		tst_brkm(TBROK, NULL, "Cannot find block device for %s", path);
++		if (dev_name[0])
++			sprintf(dev, "/dev/%s", dev_name);
++	}
+ 
+ 	if (stat(dev, &buf) < 0)
+ 		tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
 -- 
 2.34.1
 
