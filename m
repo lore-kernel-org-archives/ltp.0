@@ -4,92 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EAD3C433FE
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 11:49:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81FF4C4332F
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 11:50:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7FD953CACBB
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 12:49:50 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id A08183CAD45
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 12:50:01 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 336EB3CA6D1
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:49:39 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 9AF693CAD4B
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:49:43 +0100 (CET)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 647BF10007F3
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:49:37 +0100 (CET)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2Bk1To021957;
- Wed, 2 Nov 2022 11:49:36 GMT
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 57C5A14004E3
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 12:49:41 +0100 (CET)
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A2ATiPj032203;
+ Wed, 2 Nov 2022 11:49:40 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=JjF08hkfoC3AswpqXHMPng2+wHugfvcolCtHJSWuYxE=;
- b=oxL1+X/1AsjkKuHFQjZPVaUuMtSOK29rPT0eBv63X+Rw019kkkzKsHWgdQYwnac6FWxP
- NuES/PtgOwRfNx1KOTNwUPc8S8/Po1FK0idOeaiqwxE9KO2Dulp5saej39RWVF4bmbD7
- A53ZJBe6iGBSw82b7hxAorp8jyVAvYvHo2+lMhi6/65ZgpBgnLqqSZBYgxodXC2NWrn1
- 5CSdKGKmtX8HmIVFnTQKOJ6JEq4NOwyHPYEfMwm1orwpZ6RSp9hEZM+fBNlYo6PsOM3A
- l5HeCvFobH1LrG5INNssubXufBIQj4/i1Y/OkCGJaSBr7Yop4VWf0qBurGPYcf3VZIZq Ow== 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=R4cBkaepjRP7rW7YllaUc3gC6Icm51yOuTkkQs0N9Ok=;
+ b=RVMLnsywMnljYTZTeFT/6rrtoqtx2E0fJdlZnOntA6CYjI7jI6mR6G7S5nZmwq9Awjy1
+ RK2S3n6GXnr9j5dDusX76/+2DA5OQGu2aV4vXscE08fli7My3v7zssES5yhYbQxHhLXI
+ hQkSzUvMuy83h4Abx9JesSFCaxVy3WEIG3U3Mb61HkR6/HhKR4SAiM32AmVPsGwoJEog
+ S+4kUq8RgM96T8OIngFsiDwIQ55L3tjbWSvaOKw0cUTL/S9hXrdWkhjODeQTMPuf6CDH
+ UcvRBBlbsHes+cUpRyvIss2Ue800HOkbhwQi9Qi3JGRnAq5RwWga/batfHh16SB6iNur qg== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkmqfptxr-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkpunahjj-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 02 Nov 2022 11:49:40 +0000
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A2ATkRr032284;
+ Wed, 2 Nov 2022 11:49:39 GMT
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.71])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkpunahj1-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 02 Nov 2022 11:49:39 +0000
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+ by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A2BZ53b006267;
+ Wed, 2 Nov 2022 11:49:37 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com
+ (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+ by ppma02fra.de.ibm.com with ESMTP id 3kgut9d00w-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Wed, 02 Nov 2022 11:49:36 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A286E5S001424;
- Wed, 2 Nov 2022 11:49:35 GMT
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com
- [149.81.74.106])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kkmqfptwh-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 02 Nov 2022 11:49:34 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
- by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A2BZRPC018265;
- Wed, 2 Nov 2022 11:49:32 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com
- (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
- by ppma04fra.de.ibm.com with ESMTP id 3kgut8w0dj-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 02 Nov 2022 11:49:32 +0000
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com
  (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
- by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2A2BnTUg590400
+ by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2A2BnX3T65274346
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 2 Nov 2022 11:49:29 GMT
+ Wed, 2 Nov 2022 11:49:33 GMT
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 1C2B7A405B;
+ by IMSVA (Postfix) with ESMTP id 7B659A4054;
+ Wed,  2 Nov 2022 11:49:33 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id BA2AAA405C;
  Wed,  2 Nov 2022 11:49:29 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id A1EE2A4054;
- Wed,  2 Nov 2022 11:49:25 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.85.9])
  by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Wed,  2 Nov 2022 11:49:25 +0000 (GMT)
+ Wed,  2 Nov 2022 11:49:29 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Wed,  2 Nov 2022 17:19:19 +0530
-Message-Id: <20221102114923.447871-1-tsahu@linux.ibm.com>
+Date: Wed,  2 Nov 2022 17:19:20 +0530
+Message-Id: <20221102114923.447871-2-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: dyclEDvVXkwtIZ12vfTZ9Pi0uj811WtP
-X-Proofpoint-ORIG-GUID: CQ4aKX3Ox2_lnqciWkXW2dQChD35DvsY
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+In-Reply-To: <20221102114923.447871-1-tsahu@linux.ibm.com>
+References: <20221102114923.447871-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: xge6S3sB6SxBBXVlo9kTfVtOBtYXNdNf
+X-Proofpoint-ORIG-GUID: nw1VE1Ss7Lztm8R5A-H23bGUt1Dyhq0f
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-02_06,2022-11-02_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 phishscore=0
- clxscore=1015 bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
- adultscore=0 impostorscore=0 mlxlogscore=668 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ phishscore=0 adultscore=0
+ mlxlogscore=999 clxscore=1015 impostorscore=0 spamscore=0 mlxscore=0
+ suspectscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2210170000 definitions=main-2211020070
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 0/4] Hugetlb:Migrating the libhugetlbfs tests
+Subject: [LTP] [PATCH v5 1/4] Hugetlb: Add new tst_test options for hugeltb
+ test support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,63 +112,126 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-Libhugetlbfs is not being maintained actively, and some distro is dropping
-support for it. There are some tests that are good for testing hugetlb
-functionality in kernel.
+Most of libhugetlbfs test require mounted hugetlbfs.
 
-As per previous dicussion in RFC[1], Here, this patch series consists
-of hugetlb tests taken from libhugetlbfs modified to work in ltp
-environment.
+Here, this patch adds a new field in tst_test struct(include/tst_test.h)
+which user can set if the test requires mounted hugetlbfs. Also, this
+patch added support to create the unlinked file in the provided dirpath.
 
-Based on suggestion[2], I am reposting the patches again. Also, I added
-suggested changes at [3].
+Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+---
+ include/tst_test.h | 11 +++++++++++
+ lib/tst_test.c     | 41 ++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 47 insertions(+), 5 deletions(-)
 
-ref:
-1:https://lore.kernel.org/all/20220908173947.17956-1-tsahu@linux.ibm.com/
-2:https://lore.kernel.org/all/87wn8xi61v.fsf@suse.de/
-3:https://lore.kernel.org/all/20221016125731.249078-1-tsahu@linux.ibm.com/
-
-v1 -> v2
-	1. In (brk near huge) test [PATCH 1/3] removed unused library
-	function test_addr_huge() and read_maps().
-v2 -> v3
-	1. Added a new patch commit for two new flags "needs_hugetlbfs" &
-	"needs_unlinked_hugetlb_file" in tst_test and modified tests to use
-	these flags. 
-	2. Added taint check in test [PATCH 1/3].
-	3. Removed redundant Hopt and nr_opt option.
-	4. Corrected pre-processor ARCH based conditional flags in test
-	[PATCH 1/3]
-v3 -> v4
-	1. Removed the needs_unlinked_hugetlb_file option in PATCH[1/4].
-	2. Removed the redundant saved_oc_hugepages checks in PATCH[3/4].
-	3. Updated the mntpoint checks in PATCH[1/4].
-v4 -> v5
-	1. Removed the needs_hugetlbfs check from needs_tmpdir function,
-	because mntpoint is now mandatory option with needs_hugetlbfs.
-	(PATCH[1/4])
-
-Tarun Sahu (4):
-  Hugetlb: Add new tst_test options for hugeltb test support
-  Hugetlb: Migrating libhugetlbfs brk_near_huge
-  Hugetlb: Migrating libhugetlbfs chunk-overcommit
-  Hugetlb: Migrating libhugetlbfs corrupt-by-cow-opt
-
- include/tst_test.h                            |  11 ++
- lib/tst_test.c                                |  41 ++++-
- runtest/hugetlb                               |   3 +
- testcases/kernel/mem/.gitignore               |   3 +
- .../kernel/mem/hugetlb/hugemmap/Makefile      |   5 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap07.c  | 138 ++++++++++++++++
- .../kernel/mem/hugetlb/hugemmap/hugemmap08.c  | 148 ++++++++++++++++++
- .../kernel/mem/hugetlb/hugemmap/hugemmap09.c  |  80 ++++++++++
- testcases/kernel/mem/hugetlb/lib/hugetlb.h    |   3 +
- 9 files changed, 427 insertions(+), 5 deletions(-)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
-
+diff --git a/include/tst_test.h b/include/tst_test.h
+index a69965b95..01bc5a05b 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -176,6 +176,11 @@ struct tst_test {
+ 	int all_filesystems:1;
+ 	int skip_in_lockdown:1;
+ 	int skip_in_compat:1;
++	/*
++	 * If set, the test function will create a hugetlbfs mount point
++	 * at /tmp/xxxxxx, where xxxxxx is a random string.
++	 */
++	int needs_hugetlbfs:1;
+ 
+ 	/*
+ 	 * The skip_filesystems is a NULL terminated list of filesystems the
+@@ -357,6 +362,12 @@ unsigned int tst_remaining_runtime(void);
+  */
+ void tst_set_max_runtime(int max_runtime);
+ 
++/*
++ * Create and open a random file inside the given dir path.
++ * It unlinks the file after opening and return file descriptor.
++ */
++int tst_creat_unlinked(const char *path);
++
+ /*
+  * Returns path to the test temporary directory in a newly allocated buffer.
+  */
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 8ccde1629..9965706ef 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1021,6 +1021,29 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
+ 	}
+ }
+ 
++static void prepare_and_mount_hugetlb_fs(void)
++{
++	SAFE_MOUNT("none", tst_test->mntpoint, "hugetlbfs", 0, NULL);
++	mntpoint_mounted = 1;
++}
++
++int tst_creat_unlinked(const char *path)
++{
++	char template[PATH_MAX];
++	int fd;
++
++	snprintf(template, PATH_MAX, "%s/ltp_%.3sXXXXXX",
++			path, TCID);
++
++	fd = mkstemp(template);
++	if (fd < 0)
++		tst_brk(TBROK | TERRNO,
++			 "%s: mkstemp(%s) failed", __func__, template);
++
++	SAFE_UNLINK(template);
++	return fd;
++}
++
+ static const char *limit_tmpfs_mount_size(const char *mnt_data,
+ 		char *buf, size_t buf_size, const char *fs_type)
+ {
+@@ -1191,15 +1214,16 @@ static void do_setup(int argc, char *argv[])
+ 		SAFE_MKDIR(tst_test->mntpoint, 0777);
+ 
+ 	if ((tst_test->needs_devfs || tst_test->needs_rofs ||
+-	     tst_test->mount_device || tst_test->all_filesystems) &&
++	     tst_test->mount_device || tst_test->all_filesystems ||
++		 tst_test->needs_hugetlbfs) &&
+ 	     !tst_test->mntpoint) {
+ 		tst_brk(TBROK, "tst_test->mntpoint must be set!");
+ 	}
+ 
+ 	if (!!tst_test->needs_rofs + !!tst_test->needs_devfs +
+-	    !!tst_test->needs_device > 1) {
++	    !!tst_test->needs_device + !!tst_test->needs_hugetlbfs > 1) {
+ 		tst_brk(TBROK,
+-			"Two or more of needs_{rofs, devfs, device} are set");
++			"Two or more of needs_{rofs, devfs, device, hugetlbfs} are set");
+ 	}
+ 
+ 	if (tst_test->needs_devfs)
+@@ -1217,6 +1241,9 @@ static void do_setup(int argc, char *argv[])
+ 		}
+ 	}
+ 
++	if (tst_test->needs_hugetlbfs)
++		prepare_and_mount_hugetlb_fs();
++
+ 	if (tst_test->needs_device && !mntpoint_mounted) {
+ 		tdev.dev = tst_acquire_device_(NULL, tst_test->dev_min_size);
+ 
+@@ -1299,8 +1326,12 @@ static void do_cleanup(void)
+ 	if (ovl_mounted)
+ 		SAFE_UMOUNT(OVL_MNT);
+ 
+-	if (mntpoint_mounted)
+-		tst_umount(tst_test->mntpoint);
++	if (mntpoint_mounted) {
++		if (tst_test->needs_hugetlbfs)
++			SAFE_UMOUNT(tst_test->mntpoint);
++		else
++			tst_umount(tst_test->mntpoint);
++	}
+ 
+ 	if (tst_test->needs_device && tdev.dev)
+ 		tst_release_device(tdev.dev);
 -- 
 2.31.1
 
