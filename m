@@ -4,68 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BAFCC4332F
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 13:37:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 588B7C4332F
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 15:01:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EBD583CAD57
-	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 14:36:59 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 7D23A3CADA6
+	for <ltp@archiver.kernel.org>; Wed,  2 Nov 2022 16:01:13 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6BB403CA80D
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 14:36:47 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 5748C3CA86B
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 16:01:02 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 624002009C3
- for <ltp@lists.linux.it>; Wed,  2 Nov 2022 14:36:47 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C147F1400771
+ for <ltp@lists.linux.it>; Wed,  2 Nov 2022 16:01:01 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B513E336F9;
- Wed,  2 Nov 2022 13:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667396206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IxeVDgm5OjydI7wT6oYNhSfNqCgWZrZSvoZEphj4Kvc=;
- b=bMUiCiA/G0PjuBvUkyV3pMjNHMEGIOheLyK58rW5HkbXkkSmvet3Zb6nAxBwQ/gLByH1tF
- QFLk5qWiXz1Nf45P8u2uFJksSlD4ZbdrU6vwRtFuOkMBvvZlZnxT6drbIec1PSJY2OPj57
- 4T1wbfHRuKCPmQbUIYr4VDvMKav/8YU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667396206;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IxeVDgm5OjydI7wT6oYNhSfNqCgWZrZSvoZEphj4Kvc=;
- b=trKyAnQia0v8Mt81M2u01gwIxz+B74Z2nRth+cdzaIYtg6c7J7V4ch1BtQi2jpLdoKw4ke
- CR33LS0PqjX5hGCg==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8E1EC1F8A3;
+ Wed,  2 Nov 2022 15:01:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1667401260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=TBPFpcNR8Uw2/fqnKHfgdi0dv4W7fP7nywrKN8mTUZQ=;
+ b=DtzNeviCgGf5EYyEUGLZXqNGskx/+FfFCoX6os7xGRagpd9r+aj4nTP74XEx+1lsIhgM0h
+ GoAkFMf6LXMhhMtnbUHO9Wsis0ie3lJTn5H2EKmtgwkYoCJLWAJQBSVmqLMwXlK5r09Vh3
+ oQB9SF9rhpEp8F54E/IIg+wdG8w5eEU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A0A0C139D3;
- Wed,  2 Nov 2022 13:36:46 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5F98B13AE0;
+ Wed,  2 Nov 2022 15:01:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kFF2Jm5yYmMzPQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 02 Nov 2022 13:36:46 +0000
-Date: Wed, 2 Nov 2022 14:38:20 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <Y2JyzD7vBxPSyeX4@yuki>
-References: <20221102114923.447871-1-tsahu@linux.ibm.com>
- <20221102114923.447871-2-tsahu@linux.ibm.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id TM1hFSyGYmO1cAAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Wed, 02 Nov 2022 15:01:00 +0000
+To: ltp@lists.linux.it
+Date: Wed,  2 Nov 2022 15:59:35 +0100
+Message-Id: <20221102145935.24738-1-andrea.cervesato@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221102114923.447871-2-tsahu@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 1/4] Hugetlb: Add new tst_test options for
- hugeltb test support
+Subject: [LTP] [PATCH v1] Correctly check setitimer params in setitimer01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,150 +62,116 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, rpalethorpe@suse.com, ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Most of libhugetlbfs test require mounted hugetlbfs.
-> 
-> Here, this patch adds a new field in tst_test struct(include/tst_test.h)
-> which user can set if the test requires mounted hugetlbfs. Also, this
-> patch added support to create the unlinked file in the provided dirpath.
-> 
-> Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
-> ---
->  include/tst_test.h | 11 +++++++++++
->  lib/tst_test.c     | 41 ++++++++++++++++++++++++++++++++++++-----
->  2 files changed, 47 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index a69965b95..01bc5a05b 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -176,6 +176,11 @@ struct tst_test {
->  	int all_filesystems:1;
->  	int skip_in_lockdown:1;
->  	int skip_in_compat:1;
-> +	/*
-> +	 * If set, the test function will create a hugetlbfs mount point
-> +	 * at /tmp/xxxxxx, where xxxxxx is a random string.
+Last test rewrite didn't consider the right expected boundaries when
+setitimer syscall was tested. We also introduced counter times as
+multiple of clock resolution, to avoid kernel rounding during setitimer
+counter increase.
 
-This is no longer up-to-date I guess that this should be:
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ .../kernel/syscalls/setitimer/setitimer01.c   | 42 ++++++++++++++-----
+ 1 file changed, 32 insertions(+), 10 deletions(-)
 
-"If set hugetlbfs will be moutned at .mntpoint"
-
-> +	 */
-> +	int needs_hugetlbfs:1;
->  
->  	/*
->  	 * The skip_filesystems is a NULL terminated list of filesystems the
-> @@ -357,6 +362,12 @@ unsigned int tst_remaining_runtime(void);
->   */
->  void tst_set_max_runtime(int max_runtime);
->  
-> +/*
-> + * Create and open a random file inside the given dir path.
-> + * It unlinks the file after opening and return file descriptor.
-> + */
-> +int tst_creat_unlinked(const char *path);
-> +
->  /*
->   * Returns path to the test temporary directory in a newly allocated buffer.
->   */
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 8ccde1629..9965706ef 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -1021,6 +1021,29 @@ static void prepare_and_mount_dev_fs(const char *mntpoint)
->  	}
->  }
->  
-> +static void prepare_and_mount_hugetlb_fs(void)
-> +{
-> +	SAFE_MOUNT("none", tst_test->mntpoint, "hugetlbfs", 0, NULL);
-> +	mntpoint_mounted = 1;
-> +}
-> +
-> +int tst_creat_unlinked(const char *path)
-> +{
-> +	char template[PATH_MAX];
-> +	int fd;
-> +
-> +	snprintf(template, PATH_MAX, "%s/ltp_%.3sXXXXXX",
-> +			path, TCID);
-                                 ^
-				 Should be tid in new library code.
-
-> +	fd = mkstemp(template);
-> +	if (fd < 0)
-> +		tst_brk(TBROK | TERRNO,
-> +			 "%s: mkstemp(%s) failed", __func__, template);
-                                                      ^
-						      This is not
-						      necessary
-
-The tst_brk() prints filename and line number already, there is no need
-to print the function name as well.
-
-> +	SAFE_UNLINK(template);
-> +	return fd;
-> +}
-> +
->  static const char *limit_tmpfs_mount_size(const char *mnt_data,
->  		char *buf, size_t buf_size, const char *fs_type)
->  {
-> @@ -1191,15 +1214,16 @@ static void do_setup(int argc, char *argv[])
->  		SAFE_MKDIR(tst_test->mntpoint, 0777);
->  
->  	if ((tst_test->needs_devfs || tst_test->needs_rofs ||
-> -	     tst_test->mount_device || tst_test->all_filesystems) &&
-> +	     tst_test->mount_device || tst_test->all_filesystems ||
-> +		 tst_test->needs_hugetlbfs) &&
->  	     !tst_test->mntpoint) {
->  		tst_brk(TBROK, "tst_test->mntpoint must be set!");
->  	}
->  
->  	if (!!tst_test->needs_rofs + !!tst_test->needs_devfs +
-> -	    !!tst_test->needs_device > 1) {
-> +	    !!tst_test->needs_device + !!tst_test->needs_hugetlbfs > 1) {
->  		tst_brk(TBROK,
-> -			"Two or more of needs_{rofs, devfs, device} are set");
-> +			"Two or more of needs_{rofs, devfs, device, hugetlbfs} are set");
->  	}
->  
->  	if (tst_test->needs_devfs)
-> @@ -1217,6 +1241,9 @@ static void do_setup(int argc, char *argv[])
->  		}
->  	}
->  
-> +	if (tst_test->needs_hugetlbfs)
-> +		prepare_and_mount_hugetlb_fs();
-> +
->  	if (tst_test->needs_device && !mntpoint_mounted) {
->  		tdev.dev = tst_acquire_device_(NULL, tst_test->dev_min_size);
->  
-> @@ -1299,8 +1326,12 @@ static void do_cleanup(void)
->  	if (ovl_mounted)
->  		SAFE_UMOUNT(OVL_MNT);
->  
-> -	if (mntpoint_mounted)
-> -		tst_umount(tst_test->mntpoint);
-> +	if (mntpoint_mounted) {
-> +		if (tst_test->needs_hugetlbfs)
-> +			SAFE_UMOUNT(tst_test->mntpoint);
-> +		else
-> +			tst_umount(tst_test->mntpoint);
-> +	}
-
-And I would just keep this umount part as it was.
-
+diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testcases/kernel/syscalls/setitimer/setitimer01.c
+index f04cb5a69..3fb9250e2 100644
+--- a/testcases/kernel/syscalls/setitimer/setitimer01.c
++++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+@@ -8,20 +8,21 @@
+ /*\
+  * [Description]
+  *
+- * Check that a setitimer() call pass with timer seting.
+- * Check if signal is generated correctly when timer expiration.
++ * Spaw a child and verify that setitimer() syscall passes and it ends up
++ * counting inside expected boundaries. Then verify from parent that our syscall
++ * sent the correct signal to the child.
+  */
+ 
++#include <time.h>
+ #include <errno.h>
+ #include <sys/time.h>
+ #include <stdlib.h>
+ #include "tst_test.h"
+ #include "lapi/syscalls.h"
+-
+-#define USEC1	10000
+-#define USEC2	20000
++#include "tst_safe_clocks.h"
+ 
+ static struct itimerval *value, *ovalue;
++static unsigned long time_step;
+ 
+ static struct tcase {
+ 	int which;
+@@ -55,6 +56,7 @@ static void verify_setitimer(unsigned int i)
+ {
+ 	pid_t pid;
+ 	int status;
++	int usec = 3 * time_step;
+ 	struct tcase *tc = &tcases[i];
+ 
+ 	pid = SAFE_FORK();
+@@ -64,14 +66,18 @@ static void verify_setitimer(unsigned int i)
+ 
+ 		tst_no_corefile(0);
+ 
+-		set_setitimer_value(USEC1, 0);
+-		TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
++		set_setitimer_value(usec, 0);
++		TST_EXP_PASS(sys_setitimer(tc->which, value, 0));
+ 
+-		set_setitimer_value(USEC2, USEC2);
++		set_setitimer_value(5 * time_step, 7 * time_step);
+ 		TST_EXP_PASS(sys_setitimer(tc->which, value, ovalue));
+ 
+-		if (ovalue->it_value.tv_sec != 0 || ovalue->it_value.tv_usec >= USEC2)
+-			tst_brk(TFAIL, "old timer value is not within the expected range");
++		tst_res(TINFO, "tv_sec=%ld, tv_usec=%ld",
++			ovalue->it_value.tv_sec,
++			ovalue->it_value.tv_usec);
++
++		if (ovalue->it_value.tv_sec != 0 || ovalue->it_value.tv_usec > usec)
++			tst_res(TFAIL, "Ending counters are out of range");
+ 
+ 		for (;;)
+ 			;
+@@ -85,10 +91,26 @@ static void verify_setitimer(unsigned int i)
+ 		tst_res(TFAIL, "Child: %s", tst_strstatus(status));
+ }
+ 
++static void setup(void)
++{
++	struct timespec res;
++
++	SAFE_CLOCK_GETRES(CLOCK_MONOTONIC, &res);
++
++	time_step = res.tv_nsec / 1000;
++	if (time_step < 10000)
++		time_step = 10000;
++
++	tst_res(TINFO, "clock resolution: %luns, time step: %luus",
++		res.tv_nsec,
++		time_step);
++}
++
+ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.forks_child = 1,
+ 	.test = verify_setitimer,
++	.setup = setup,
+ 	.bufs = (struct tst_buffers[]) {
+ 		{&value,  .size = sizeof(struct itimerval)},
+ 		{&ovalue, .size = sizeof(struct itimerval)},
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
