@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A21DC4332F
-	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 09:45:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8CD1C4332F
+	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 09:55:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E5DCF3CAD78
-	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 10:45:51 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id E15723CAB99
+	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 10:55:24 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3E0C03C694C
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 10:45:41 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id A2AE13CA6CD
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 10:55:12 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 67B821A00CA4
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 10:45:40 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 53FC3600681
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 10:55:11 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4ADD81F891;
- Thu,  3 Nov 2022 09:45:39 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4896122155;
+ Thu,  3 Nov 2022 09:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667468739; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1667469311; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YhFwzhWeICGfK1G9Oem13Nflp/BHIU96uQ0Atr0M7co=;
- b=SxWf85GZQHYgArofn14sa3AOdBodA6pcWvgBiWlf1cRdPD+DomNkI85rl2JnyLshv/XONR
- Z4Cu23VZ63LvU7WVqmjjl14f5Buiou1ThQ1iwIRYCsXiYg3ce9WUtGRlzN+dNHqcb6Llaj
- ezA0oUd4TFKcigXullq/hwiSRqISw1A=
+ bh=+YcaEvpQ3Z8CZq/XphoSdWmNIoVoFinBal7JX16Hq0A=;
+ b=1SZCaTiFyPfPMC742hq4BJF7cRK4vKTDLIpERds40qi3SbLnrWI9xNop90WUlJBxsag/Ov
+ 1+oSeVWkawZTMwBl2a/wdLDRq6FjPdxOmS1HSOCLZA2j+tLpyd/3bIhGf7gafyeV9TqMk2
+ peOGyJmq5lp6HkItKEPEcWK0ON6Ubtw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667468739;
+ s=susede2_ed25519; t=1667469311;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YhFwzhWeICGfK1G9Oem13Nflp/BHIU96uQ0Atr0M7co=;
- b=00RyWTLGGQhurEvAAPubA1ks+3GCtxAIVg0oJjksYW/tx+JPo8M0ZNdzi6H268Q9WeJ/oX
- TAx0kXCWtQkIC3DA==
+ bh=+YcaEvpQ3Z8CZq/XphoSdWmNIoVoFinBal7JX16Hq0A=;
+ b=kVJqVCLkzqL3PhNfRf46ujbpxXH03ZODjlxFHVH2iMNL83+D+jfJrqr9gK18rgteAcVavy
+ U+1TRJx09FIWweCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2B20113480;
- Thu,  3 Nov 2022 09:45:39 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3302113AAF;
+ Thu,  3 Nov 2022 09:55:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 1D8+CcONY2NbYgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 03 Nov 2022 09:45:39 +0000
-Date: Thu, 3 Nov 2022 10:45:54 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id sYKzCf+PY2MzZwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 03 Nov 2022 09:55:11 +0000
+Date: Thu, 3 Nov 2022 10:55:26 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <Y2ON0qstQzzQqoGa@rei>
+Message-ID: <Y2OQDryqaU8bu5N4@rei>
 References: <20221103054317.499221-1-tsahu@linux.ibm.com>
- <20221103054317.499221-2-tsahu@linux.ibm.com>
+ <20221103054317.499221-3-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221103054317.499221-2-tsahu@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <20221103054317.499221-3-tsahu@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 1/4] Hugetlb: Add new tst_test options for
- hugeltb test support
+Subject: Re: [LTP] [PATCH v6 2/4] Hugetlb: Migrating libhugetlbfs
+ brk_near_huge
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,9 +84,31 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Looks good now.
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> index 2d651b4aa..0199f8446 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> @@ -9,3 +9,9 @@ include $(abs_srcdir)/../Makefile.inc
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>  
+>  hugemmap06: CFLAGS+=-pthread
+> +
+> +ARCH ?= $(shell uname -m | sed -e s/i.86/i386/)
 
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+This will break cross-compilation. We cannot assume anything during
+compilation based on the system we compile LTP on.
+
+What are we trying to detect here?
+
+Looking at:
+
+https://github.com/libhugetlbfs/libhugetlbfs/commit/cc0717ca0deee9dc0bb84acc8c80fd468b180f6f
+
+it seems that we are looking for native 32bit PPC, that means that we
+have to check on runtime, because we don't know if we are going to run
+in 32bit compat mode or on native 32bit machine when we are compiling.
+
+We do have tst_kernel_bits() function exactly for this purpose.
 
 -- 
 Cyril Hrubis
