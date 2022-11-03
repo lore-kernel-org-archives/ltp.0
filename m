@@ -4,68 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92A45C433FE
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 12:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 543C8C433FE
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 12:11:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3B5123CB378
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 13:11:14 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id AA0483CB374
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 13:11:23 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 514193CB505
+ by picard.linux.it (Postfix) with ESMTPS id 514A43CB4F5
  for <ltp@lists.linux.it>; Fri,  4 Nov 2022 13:06:18 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BFE181000541
- for <ltp@lists.linux.it>; Fri,  4 Nov 2022 10:36:40 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A2F88218DF;
- Fri,  4 Nov 2022 09:36:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667554599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eaOmw5qWJRaaeDKc8YPXpiNLRBYVR2HIiMyNVdeiMnQ=;
- b=UZPisqy20h76IjE//n+UFoDJ+S462hqcBQKdqQ4dr230oNFgi/AxTOU98EMwjhCwvMF3z4
- c5Vzhta/XAJP3+zzuVJt3Hy6C8HhioG2rkDdvonAcUibWKBLT8LIzMc5W6/7jLFzSz2yBN
- yAV243E+f3KQt8VCCY3V8YJeBEFfXbY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667554599;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eaOmw5qWJRaaeDKc8YPXpiNLRBYVR2HIiMyNVdeiMnQ=;
- b=zC7az8BhNQfvM72/QAui4M8gB5x4nfDGL+rDZL26lCY3v24bfXGCjt9Lat1ojFM3/c0ATq
- +YRaQjMxkvxdDuCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EF791346F;
- Fri,  4 Nov 2022 09:36:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id eEyQISfdZGPJBwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 04 Nov 2022 09:36:39 +0000
-Date: Fri, 4 Nov 2022 10:36:53 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <Y2TdNaxOzpaaCaPL@rei>
-References: <20221104062716.615021-1-tsahu@linux.ibm.com>
- <20221104062716.615021-4-tsahu@linux.ibm.com>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTP id C384B6005D8
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 17:44:49 +0100 (CET)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 332CB11FB
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 09:44:55 -0700 (PDT)
+Received: from e126380.cambridge.arm.com (e126380.cambridge.arm.com
+ [10.1.32.50])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 737CF3F5A1
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 09:44:48 -0700 (PDT)
+From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+To: ltp@lists.linux.it
+Date: Thu,  3 Nov 2022 16:44:31 +0000
+Message-Id: <20221103164431.365731-3-teo.coupriediaz@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221103164431.365731-1-teo.coupriediaz@arm.com>
+References: <20221103164431.365731-1-teo.coupriediaz@arm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221104062716.615021-4-tsahu@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v7 3/4] Hugetlb: Migrating libhugetlbfs
- chunk-overcommit
+Subject: [LTP] [PATCH 2/2] [DO NOT MERGE] tst_syscall test suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,163 +47,224 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, rpalethorpe@suse.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
-> new file mode 100644
-> index 000000000..3efabc4aa
-> --- /dev/null
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
-> @@ -0,0 +1,146 @@
-> +// SPDX-License-Identifier: LGPL-2.1-or-later
-> +/*
-> + * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
-> + * Author: David Gibson & Adam Litke
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Some kernel versions after hugepage demand allocation was added used a
-> + * dubious heuristic to check if there was enough hugepage space available
-> + * for a given mapping.  The number of not-already-instantiated pages in
-> + * the mapping was compared against the total hugepage free pool. It was
-> + * very easy to confuse this heuristic into overcommitting by allocating
-> + * hugepage memory in chunks, each less than the total available pool size
-> + * but together more than available.  This would generally lead to OOM
-> + * SIGKILLs of one process or another when it tried to instantiate pages
-> + * beyond the available pool.
-> + *
-> + * HISTORY
+This test suite was generated by grepping for uses of `tst_syscall`
+and processing the file names, with a view to verify that the behavior
+of those tests wouldn't change by changing the return type.
 
-This looks like a leftover.
+This is not intended to be merged, rather it is shared to make testing
+the patch easier as well as a reference for what testing was done before
+submitting the patch.
 
-> + *
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <sys/mount.h>
-> +#include <limits.h>
-> +#include <sys/param.h>
-> +#include <sys/types.h>
-> +#include <sys/wait.h>
-> +#include <signal.h>
-> +
-> +#include "hugetlb.h"
-> +
-> +#define MNTPOINT "hugetlbfs/"
-> +#define WITH_OVERCOMMIT 0
-> +#define WITHOUT_OVERCOMMIT 1
-> +
-> +static long hpage_size;
-> +static int huge_fd = -1;
-> +
-> +static void test_chunk_overcommit(void)
-> +{
-> +	unsigned long totpages, chunk1, chunk2;
-> +	void *p, *q;
-> +	pid_t child;
-> +	int status;
-> +
-> +	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-> +
-> +	chunk1 = (totpages / 2) + 1;
-> +	chunk2 = totpages - chunk1 + 1;
-> +
-> +	tst_res(TINFO, "Free: %ld hugepages available: "
-> +	       "chunk1=%ld chunk2=%ld", totpages, chunk1, chunk2);
-> +
-> +	p = SAFE_MMAP(NULL, chunk1*hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-> +		 huge_fd, 0);
-> +
-> +	q = mmap(NULL, chunk2*hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-> +		 huge_fd, chunk1*hpage_size);
-> +	if (q == MAP_FAILED) {
-> +		if (errno != ENOMEM) {
-> +			tst_res(TFAIL | TERRNO, "mmap() chunk2");
-> +			goto cleanup1;
-> +		} else {
-> +			tst_res(TPASS, "Successful without overcommit pages");
-> +			goto cleanup1;
-> +		}
-> +	}
-> +
-> +	tst_res(TINFO, "Looks like we've overcommitted, testing...");
-> +	/* Looks like we're overcommited, but we need to confirm that
-> +	 * this is bad.  We touch it all in a child process because an
-> +	 * overcommit will generally lead to a SIGKILL which we can't
-> +	 * handle, of course.
-> +	 */
-> +	child = SAFE_FORK();
-> +
-> +	if (child == 0) {
-> +		memset(p, 0, chunk1*hpage_size);
-> +		memset(q, 0, chunk2*hpage_size);
-> +		exit(0);
-> +	}
-> +
-> +	SAFE_WAITPID(child, &status, 0);
-> +
-> +	if (WIFSIGNALED(status)) {
-> +		tst_res(TFAIL, "Killed by signal '%s' due to overcommit",
-> +		     tst_strsig(WTERMSIG(status)));
-> +		goto cleanup2;
-> +	}
-> +
-> +	tst_res(TPASS, "Successful with overcommit pages");
-> +
-> +cleanup2:
-> +	SAFE_MUNMAP(q, chunk2*hpage_size);
-> +
-> +cleanup1:
-> +	SAFE_MUNMAP(p, chunk1*hpage_size);
-> +	SAFE_FTRUNCATE(huge_fd, 0);
-> +}
-> +
-> +static void run_test(unsigned int test_type)
-> +{
-> +	switch (test_type) {
-> +	case WITHOUT_OVERCOMMIT:
-> +		tst_res(TINFO, "Without overcommit testing...");
-> +		SAFE_FILE_PRINTF(PATH_OC_HPAGES, "%d", 0);
-> +		break;
-> +	case WITH_OVERCOMMIT:
-> +		tst_res(TINFO, "With overcommit testing...");
-> +		SAFE_FILE_PRINTF(PATH_OC_HPAGES, "%d", 2);
-> +		break;
-> +	}
-> +	test_chunk_overcommit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-> +	huge_fd = tst_creat_unlinked(MNTPOINT);
+Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+---
+ runtest/check_tst_syscall | 190 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 190 insertions(+)
+ create mode 100644 runtest/check_tst_syscall
 
-Shouldn't we open a file under the MNTPOINT?
-
-Something as:
-
-#define HUGEFILE MNTPOINT "hugefile"
-
-...
-	huge_fd = tst_creat_unlinked(HUGEFILE);
-...
-
-
-The rest looks good to me.
-
+diff --git a/runtest/check_tst_syscall b/runtest/check_tst_syscall
+new file mode 100644
+index 000000000..7a6003593
+--- /dev/null
++++ b/runtest/check_tst_syscall
+@@ -0,0 +1,190 @@
++cve-2015-3290 cve-2015-3290
++cve-2016-10044 cve-2016-10044
++cve-2016-7117 cve-2016-7117
++clock_settime03 clock_settime03
++accept4_01 accept4_01
++stime_var stime_var
++rt_sigprocmask02 rt_sigprocmask02
++rt_sigprocmask01 rt_sigprocmask01
++pwritev pwritev
++perf_event_open01 perf_event_open01
++perf_event_open perf_event_open
++capset03 capset03
++capset04 capset04
++capset01 capset01
++capset02 capset02
++readahead02 readahead02
++readahead01 readahead01
++io_submit02 io_submit02
++io_submit02 io_submit02
++io_submit03 io_submit03
++io_submit03 io_submit03
++clock_adjtime clock_adjtime
++getrusage02 getrusage02
++faccessat01 faccessat01
++timer_delete01 timer_delete01
++timer_delete02 timer_delete02
++rt_sigsuspend01 rt_sigsuspend01
++renameat2 renameat2
++ppoll01 ppoll01
++connect01 connect01
++semop semop
++msgctl04 msgctl04
++semctl03 semctl03
++semctl09 semctl09
++shmctl02 shmctl02
++shmctl05 shmctl05
++migrate_pages01 migrate_pages01
++migrate_pages03 migrate_pages03
++migrate_pages02 migrate_pages02
++tkill02 tkill02
++tkill02 tkill02
++tkill01 tkill01
++tkill01 tkill01
++capget01 capget01
++capget02 capget02
++pkey pkey
++clone09 clone09
++clone08 clone08
++gettimeofday01 gettimeofday01
++gettimeofday02 gettimeofday02
++signalfd01 signalfd01
++futimesat01 futimesat01
++vhangup02 vhangup02
++vhangup01 vhangup01
++sched_setaffinity01 sched_setaffinity01
++setdomainname setdomainname
++fchownat fchownat
++timer_settime01 timer_settime01
++timer_settime02 timer_settime02
++readdir21 readdir21
++mlock202 mlock202
++mlock201 mlock201
++mlock203 mlock203
++timerfd03 timerfd03
++timerfd02 timerfd02
++compat_tst_16 compat_tst_16
++compat_16 compat_16
++sigpending02 sigpending02
++signalfd4_02 signalfd4_02
++signalfd4_01 signalfd4_01
++inotify_init1_01 inotify_init1_01
++inotify_init1_02 inotify_init1_02
++inotify_init1_01 inotify_init1_01
++inotify_init1_02 inotify_init1_02
++memfd_create_common memfd_create_common
++getcpu01 getcpu01
++tgkill tgkill
++sysctl03 sysctl03
++sysctl01 sysctl01
++sysctl04 sysctl04
++get_robust_list01 get_robust_list01
++sendmmsg_var sendmmsg_var
++copy_file_range copy_file_range
++rt_sigqueueinfo rt_sigqueueinfo
++rt_sigqueueinfo01 rt_sigqueueinfo01
++setns02 setns02
++setns01 setns01
++mprotect01 mprotect01
++delete_module02 delete_module02
++delete_module03 delete_module03
++delete_module01 delete_module01
++sched_get_priority_max02 sched_get_priority_max02
++sched_get_priority_max01 sched_get_priority_max01
++sched_get_priority_max02 sched_get_priority_max02
++mknodat mknodat
++mknodat02 mknodat02
++utimensat01 utimensat01
++syslog12 syslog12
++syslog11 syslog11
++inotify inotify
++preadv preadv
++sync_file_range01 sync_file_range01
++eventfd01 eventfd01
++sched_get_priority_min02 sched_get_priority_min02
++sched_get_priority_min01 sched_get_priority_min01
++sched_get_priority_min02 sched_get_priority_min02
++fstatat01 fstatat01
++adjtimex02 adjtimex02
++sgetmask01 sgetmask01
++setitimer02 setitimer02
++timer_getoverrun01 timer_getoverrun01
++io_cancel01 io_cancel01
++io_cancel01 io_cancel01
++exit_group01 exit_group01
++timer_create02 timer_create02
++io_getevents01 io_getevents01
++fork05 fork05
++fcntl_common fcntl_common
++fcntl31 fcntl31
++timer_gettime01 timer_gettime01
++membarrier01 membarrier01
++set_thread_area01 set_thread_area01
++swapon01 swapon01
++swapon02 swapon02
++swapon03 swapon03
++ssetmask01 ssetmask01
++eventfd2_02 eventfd2_02
++eventfd2_01 eventfd2_01
++eventfd2_03 eventfd2_03
++request_key05 request_key05
++epoll_create epoll_create
++openat openat
++remap_file_pages02 remap_file_pages02
++io_setup02 io_setup02
++io_setup02 io_setup02
++rt_sigtimedwait01 rt_sigtimedwait01
++linkat02 linkat02
++linkat01 linkat01
++cacheflush01 cacheflush01
++getdents getdents
++epoll_create1_01 epoll_create1_01
++epoll_create1_02 epoll_create1_02
++fchmodat01 fchmodat01
++userfaultfd01 userfaultfd01
++symlinkat01 symlinkat01
++socketcall02 socketcall02
++socketcall03 socketcall03
++socketcall01 socketcall01
++sysfs03 sysfs03
++sysfs04 sysfs04
++sysfs05 sysfs05
++sysfs02 sysfs02
++sysfs01 sysfs01
++select_var select_var
++newuname01 newuname01
++process_vm_readv02 process_vm_readv02
++process_vm_writev02 process_vm_writev02
++process_vm_readv03 process_vm_readv03
++process_vm_writev02 process_vm_writev02
++process_vm_readv01 process_vm01 -r
++process_vm_writev01 process_vm01 -w
++io_destroy02 io_destroy02
++getrandom04 getrandom04
++getrandom03 getrandom03
++getrandom01 getrandom01
++getrandom02 getrandom02
++swapoff02 swapoff02
++swapoff01 swapoff01
++futex2test futex2test
++ioprio ioprio
++getitimer02 getitimer02
++set_tid_address01 set_tid_address01
++getrlimit03 getrlimit03
++ustat01 ustat01
++ustat02 ustat02
++prctl04 prctl04
++prctl05 prctl05
++libclone libclone
++userns04 userns04
++userns04 userns04
++pidns30 pidns30
++pidns31 pidns31
++pidns13 pidns13
++mqns_04 mqns_04
++mqns_02 mqns_02
++mqns_01 mqns_01
++mqns_03 mqns_03
++kmsg01 kmsg01
++pt_test pt_test
++libcpuset libcpuset
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
