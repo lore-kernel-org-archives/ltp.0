@@ -4,78 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1B9EC4332F
-	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 06:09:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55FC3C4332F
+	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 06:28:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 04B873CAD42
-	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 07:09:06 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id F26A43CABAA
+	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 07:28:35 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 763283C03E4
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 07:08:53 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C7AD63C31BB
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 07:28:18 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 84A87200AC7
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 07:08:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1667455731;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4i1479zATPWTYQkPi+XSaIy+qCs5dhN3UUCWktnR/yY=;
- b=EDN8WwM8s7fVV/EAwhAbThezwH+bQPQHguPB52zxGTqxgFXo9aDNd8zYG6fs7//k9DaMNg
- 1M+LOiCWJNgbbOQtT3/wPhryIYEv6I4I3ZpFz3qHy6OBBeg9MAxrb15Q5NWMOfCag2QlkU
- 4hqiPi8WlL2LPvHF5HxbjYXhtDNlJPc=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-259-qhn48VSaOleX3TiD8VPLuQ-1; Thu, 03 Nov 2022 02:08:49 -0400
-X-MC-Unique: qhn48VSaOleX3TiD8VPLuQ-1
-Received: by mail-ot1-f72.google.com with SMTP id
- 33-20020a9d0124000000b0066adf5218b2so355466otu.10
- for <ltp@lists.linux.it>; Wed, 02 Nov 2022 23:08:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=4i1479zATPWTYQkPi+XSaIy+qCs5dhN3UUCWktnR/yY=;
- b=R8N1G6ztzp7OIvbyatXMXUYmUVwv75KMGe5aQLhTSShB9YffLHwYnc9tOV2Y/sVaKM
- RMOM/Xrh4AjbI6jyFVOGKGCHbPPXU5ww42QRNt31DxAncazHRwWUak2enGs3ZwA5h1JD
- /pUOT92xcXfRPZpKgIEk+R7c21AflD+drom2esSNRxpeG0Sc+uu4qdw2DpJggQsSSDeO
- Zkv+TgvEy+eFWm7WQQprgUDxJerRvuS9zLKYLzwSw97VUDlnpIokq2hb773wSiYyQOIB
- cmuItRb+EnvtOv3R0tsvEocK7wCc0KW6E9tV7/TwpdY9Tc++t3ihY4JFnabbNR/bvXQQ
- PTUg==
-X-Gm-Message-State: ACrzQf3vDQEVw7YiTEP65Mts7H7oN3qZJZgoRsGjToYjYOEJIWUR3/Ja
- 059Du0Ri+9BvG33h9nOt1y4ZIyfrOVItvV5WZYhqH2QDzEhI7/5PlJ3v2xwzuXZm+BtC8SXluKJ
- j1MvOIRvNE6NMYOFgiPkZnR4ukVw=
-X-Received: by 2002:a05:6808:14cd:b0:357:62f3:d7b7 with SMTP id
- f13-20020a05680814cd00b0035762f3d7b7mr24284195oiw.107.1667455728388; 
- Wed, 02 Nov 2022 23:08:48 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM4qxX/f0ERH7AUomycru/sb7OpsPC0ViBeGCBZnJcokeXaxiILEA8C087LWQfVC5jYGWmRTn/DAmjYmJNq3rzs=
-X-Received: by 2002:a05:6808:14cd:b0:357:62f3:d7b7 with SMTP id
- f13-20020a05680814cd00b0035762f3d7b7mr24284182oiw.107.1667455728180; Wed, 02
- Nov 2022 23:08:48 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 68EAD1400546
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 07:28:16 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D26B622178
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 06:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1667456894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=2u03aIfgekt2A0mBrtuC6kqlF7sbQAjteXTla72nnXs=;
+ b=fJgg9tzvxAJ2O/CjDPHI4HYnb+MWJvcoq+QNZ+Wy0oRCeakybP+UfMJ1EmjqHDcmrkW9Ew
+ rphylRxZyOk3N7iERF/noO7409ArqKJi/LakMk0bYymm3ogd64Mp8SClphtbCgONxhpdkv
+ Q3ncQHt3gnz5JfGDEYHUnS/NkV8aPH4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1667456894;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=2u03aIfgekt2A0mBrtuC6kqlF7sbQAjteXTla72nnXs=;
+ b=A7fftTOT0NiXmnSiTVrPXs+KqKmVXWve1ONUHkBADg6BziyDN9iMRkz8JPgUdxwfGGMzUB
+ kRDItA1PrFNdhoCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 52AE113480
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 06:28:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ug2LBX5fY2NSBQAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 03 Nov 2022 06:28:14 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Thu,  3 Nov 2022 11:58:11 +0530
+Message-Id: <20221103062811.9636-1-akumar@suse.de>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-References: <20221103054317.499221-1-tsahu@linux.ibm.com>
- <20221103054317.499221-2-tsahu@linux.ibm.com>
-In-Reply-To: <20221103054317.499221-2-tsahu@linux.ibm.com>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 3 Nov 2022 14:08:35 +0800
-Message-ID: <CAEemH2dNhMq35OgCbTTPVO-Hfj62uVb1EsSTuH48P176V+ZJVA@mail.gmail.com>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 1/4] Hugetlb: Add new tst_test options for
- hugeltb test support
+Subject: [LTP] [PATCH v2] setfsuid03: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,78 +71,161 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, rpalethorpe@suse.com, ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============0095382418=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0095382418==
-Content-Type: multipart/alternative; boundary="0000000000005b77a505ec8aca64"
+- rewrite using new API
+- using caller's real user ID as fsuid when calling
+setfsuid(fsuid) by non-root user
+- verifying that fsuid is updated correctly, by calling
+setfsuid(-1)
 
---0000000000005b77a505ec8aca64
-Content-Type: text/plain; charset="UTF-8"
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ .../kernel/syscalls/setfsuid/setfsuid03.c     | 111 ++++--------------
+ 1 file changed, 26 insertions(+), 85 deletions(-)
 
-Tarun Sahu <tsahu@linux.ibm.com> wrote:
-
-Most of libhugetlbfs test require mounted hugetlbfs.
->
-> Here, this patch adds a new field in tst_test struct(include/tst_test.h)
-> which user can set if the test requires mounted hugetlbfs. Also, this
-> patch added support to create the unlinked file in the provided dirpath.
->
-> Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
->
-
-
-Thanks for the patiently iteration. This looks pretty good.
-
-Reviewed-by: Li Wang <liwang@redhat.com>
-
+diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid03.c b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
+index 0e5f860c8..02698f7cf 100644
+--- a/testcases/kernel/syscalls/setfsuid/setfsuid03.c
++++ b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
+@@ -2,105 +2,46 @@
+  * Copyright (C) International Business Machines  Corp., 2001
+  * Ported by Wayne Boyer
+  * Adapted by Dustin Kirkland (k1rkland@us.ibm.com)
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-/*
+- * Testcase to test the basic functionality of the setfsuid(2) system
+- * call when called by a user other than root.
++/*\
++ * [Description]
++ *
++ * Verify that setfsuid() correctly updates the filesystem uid
++ * when caller is a non-root user and provided fsuid matches
++ * caller's real user ID.
+  */
+ 
+-#include <stdio.h>
+-#include <unistd.h>
+-#include <sys/types.h>
+-#include <errno.h>
+ #include <pwd.h>
+ 
+-#include "test.h"
+-#include "compat_16.h"
+-
+-static void setup(void);
+-static void cleanup(void);
++#include "tst_test.h"
++#include "compat_tst_16.h"
+ 
+-TCID_DEFINE(setfsuid03);
+-int TST_TOTAL = 1;
++static uid_t nobody_uid;
+ 
+-static char nobody_uid[] = "nobody";
+-static struct passwd *ltpuser;
+-
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	int lc;
+-
+-	uid_t uid;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	uid = 1;
+-	while (!getpwuid(uid))
+-		uid++;
++	struct passwd *nobody;
+ 
+-	UID16_CHECK(uid, setfsuid, cleanup);
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		TEST(SETFSUID(cleanup, uid));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO,
+-				"setfsuid() failed unexpectedly");
+-			continue;
+-		}
+-
+-		if (TEST_RETURN == uid) {
+-			tst_resm(TFAIL,
+-				 "setfsuid() returned %ld, expected anything but %d",
+-				 TEST_RETURN, uid);
+-		} else {
+-			tst_resm(TPASS, "setfsuid() returned expected value : "
+-				 "%ld", TEST_RETURN);
+-		}
+-	}
+-
+-	cleanup();
+-	tst_exit();
++	nobody = SAFE_GETPWNAM("nobody");
++	nobody_uid = nobody->pw_uid;
+ }
+ 
+-static void setup(void)
++static void run(void)
+ {
+-	tst_require_root();
+-
+-	ltpuser = getpwnam(nobody_uid);
+-	if (ltpuser == NULL)
+-		tst_brkm(TBROK, cleanup, "getpwnam failed for user id %s",
+-			nobody_uid);
+-
+-	if (setuid(ltpuser->pw_uid) == -1)
+-		tst_resm(TINFO | TERRNO, "setuid failed to "
+-			 "to set the effective uid to %d", ltpuser->pw_uid);
++	uid_t ruid, euid, suid;
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	SAFE_GETRESUID(&ruid, &euid, &suid);
++	SAFE_SETEUID(nobody_uid);
++	UID16_CHECK(ruid, setfsuid);
+ 
+-	TEST_PAUSE;
++	TST_EXP_VAL_SILENT(setfsuid(ruid), nobody_uid);
++	TST_EXP_VAL(setfsuid(-1), ruid, "setfsuid(fsuid) by non-root user:");
+ }
+ 
+-static void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.needs_root = 1,
++	.setup = setup,
++	.test_all = run
++};
 -- 
-Regards,
-Li Wang
-
---0000000000005b77a505ec8aca64
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Tarun Sahu &lt;<a href=3D"mailto:tsahu@linux.ibm.com">tsahu@l=
-inux.ibm.com</a>&gt; wrote:<br></div><div class=3D"gmail_default" style=3D"=
-font-size:small"><br></div></div><div class=3D"gmail_quote"><blockquote cla=
-ss=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid =
-rgb(204,204,204);padding-left:1ex">Most of libhugetlbfs test require mounte=
-d hugetlbfs.<br>
-<br>
-Here, this patch adds a new field in tst_test struct(include/tst_test.h)<br=
->
-which user can set if the test requires mounted hugetlbfs. Also, this<br>
-patch added support to create the unlinked file in the provided dirpath.<br=
->
-<br>
-Signed-off-by: Tarun Sahu &lt;<a href=3D"mailto:tsahu@linux.ibm.com" target=
-=3D"_blank">tsahu@linux.ibm.com</a>&gt;<br></blockquote><div><br></div><div=
-><br></div><div><div class=3D"gmail_default" style=3D"font-size:small">Than=
-ks for the patiently iteration. This looks pretty good.</div><br></div><div=
- class=3D"gmail_default" style=3D"font-size:small">Reviewed-by: Li Wang &lt=
-;<a href=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt;</div><div c=
-lass=3D"gmail_default" style=3D"font-size:small"></div></div><div><br></div=
->-- <br><div dir=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div>Re=
-gards,<br></div><div>Li Wang<br></div></div></div></div>
-
---0000000000005b77a505ec8aca64--
-
-
---===============0095382418==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2.38.0
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0095382418==--
-
