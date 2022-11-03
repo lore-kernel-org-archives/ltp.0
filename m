@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C69DCC4332F
-	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 10:19:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 562C1C4332F
+	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 10:50:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A1BF3CAD7C
-	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 11:19:01 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 0485F3CAD6E
+	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 11:50:06 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 215143C0F12
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 11:18:45 +0100 (CET)
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
- [IPv6:2a00:1450:4864:20::630])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 2A84C3C0F12
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 11:49:56 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DA44A600C06
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 11:18:44 +0100 (CET)
-Received: by mail-ej1-x630.google.com with SMTP id k2so3936018ejr.2
- for <ltp@lists.linux.it>; Thu, 03 Nov 2022 03:18:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=AG4E+DIBCMnjapiY88COoJafm5Not7vc7TuLyyzyLHQ=;
- b=lj6hyEbtBxSnCng4KWa93jxymV+o/vabOwA7XUE1hjiwWVJAq59h4BZq94vK6X/k81
- rYX2Lv1aF8RWKUx2bZVjYfur0BKuR52qwlLPv1KbA7Y8ifL2JYGvBZ0PMldj3VdxFX5H
- 91JY/TgnIJSKzZ9VLCpsreO+s/ZLvnW/ttWY1XoRUIIpx249EdhdYVf2K13OuzW5p9p9
- GazUHV243Fl1HfzxWCOQ4gf/SClzaR1HeqPKFNeu1sF+TnAgE1zTEE2oO2DMCD3Fl8C5
- a4lqL5LCvcLEq4uk4SXNdvns56jnfZHhMIywF4PQNkRcEeon1QDDxHfNIuz/ucKWWYbd
- Pn2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=AG4E+DIBCMnjapiY88COoJafm5Not7vc7TuLyyzyLHQ=;
- b=vw2/Q4lCfqHwoSTfBjDJfj+sGg2WQIx2184mmmlZ+UX7jLXrt5HTmh50NYiyHTIjvu
- RwvY0cqeAeBM/kaTUKROq4MiK9IGHh7K2jfozq0YS3IhZl6qKAykEiNylnyW2qK6tYqJ
- Y4MTD6d5+iAUpk1jgJZoH0/yJyUYmT7zxZ3mxSrC/RnqrhpAqOVHtNE9o70lCkMoNIoD
- TuJ+10wWHblizkaL38ml3ylNXVd6mnZ3VryIRQbaNuYmlLCRg1LYV5jhG6xpWtavNKYK
- FVCqQMJIFyzqlM50itjh9XCXulvcwzoxMDaVjHXezFAANtFan7y4ImL64bRpqFb6O28Y
- lIaQ==
-X-Gm-Message-State: ACrzQf3ZtlyzrLIqajI4rQ2vUEeXj/PEF4RHQYJUFl5mU2PJZiaB0T0d
- FoSJlBFG4IaJlJRuBa/W7TPrZbkR7srV5DG8hCdVMQ==
-X-Google-Smtp-Source: AMsMyM4qZzxhJTTWh1i9RgeANyKPlPdqqrTsKFhC3rqFiWN/Q/cPsIS5y6PUQTXpZgSirwwO93Xx/J/1smpkgJZ+VTM=
-X-Received: by 2002:a17:906:fe45:b0:788:15a5:7495 with SMTP id
- wz5-20020a170906fe4500b0078815a57495mr28416943ejb.633.1667470724076; Thu, 03
- Nov 2022 03:18:44 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 44C14600865
+ for <ltp@lists.linux.it>; Thu,  3 Nov 2022 11:49:54 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 3B86E21DA2;
+ Thu,  3 Nov 2022 10:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1667472594;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=db92pW643hQlk7rUJiKNRwC44zKAKA3a5fNvD45V68Q=;
+ b=rtl07ilIG88ZqPjnk6M7dcE7AKraJq3PzYOi0aBL42ukHVsBJphbU3fO78xYXtkHAGeblW
+ TgE1MK03QK5Kw1kfn+0RhCplG+qzoLK2rNmnJZGDnfuo2Lv4JVTGvinlVYO6yLVB6SBCly
+ ncBLG1blrJR87+OTS9xNYLSaUjkSxWM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1667472594;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=db92pW643hQlk7rUJiKNRwC44zKAKA3a5fNvD45V68Q=;
+ b=IVKy9M1mMDlT0d2n/7XmBCyds8586JnW0Bk4kNVac2dfdl85A+VgVAams0P300pJGcx4s9
+ SS6aqV/Sx68WSrDg==
+Received: from UNKNOWN (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 8A9982C141;
+ Thu,  3 Nov 2022 10:49:53 +0000 (UTC)
+References: <87pme79f3d.fsf@suse.de>
+ <20221102203413.547089-1-alessandro.carminati@gmail.com>
+ <20221102203413.547089-2-alessandro.carminati@gmail.com>
+User-agent: mu4e 1.8.11; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Alessandro Carminati <alessandro.carminati@gmail.com>
+Date: Thu, 03 Nov 2022 08:04:53 +0000
+Organization: Linux Private Site
+In-reply-to: <20221102203413.547089-2-alessandro.carminati@gmail.com>
+Message-ID: <8735b0jos5.fsf@suse.de>
 MIME-Version: 1.0
-References: <20221102022052.895556444@linuxfoundation.org>
-In-Reply-To: <20221102022052.895556444@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 3 Nov 2022 15:48:32 +0530
-Message-ID: <CA+G9fYvdCbMc4zcOEow68CkcMXQz3bye8h48AH2uUwkNctAjOg@mail.gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4.19 00/78] 4.19.264-rc1 review
+Subject: Re: [LTP] [PATCH 1/2] tst_find_backing_dev: Get dev name from
+ /sys/dev/block/*/uevent
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,228 +72,288 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: f.fainelli@gmail.com, pavel@denx.de, shuah@kernel.org,
- LTP List <ltp@lists.linux.it>, patches@lists.linux.dev, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org, lkft-triage@lists.linaro.org,
- srw@sladewatkins.net, patches@kernelci.org,
- Richard Palethorpe <rpalethorpe@suse.com>, akpm@linux-foundation.org,
- jonathanh@nvidia.com, torvalds@linux-foundation.org,
- sudipm.mukherjee@gmail.com, linux@roeck-us.net
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: rpalethorpe@suse.de
+Cc: acarmina@redhat.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gV2VkLCAyIE5vdiAyMDIyIGF0IDA4OjU4LCBHcmVnIEtyb2FoLUhhcnRtYW4KPGdyZWdraEBs
-aW51eGZvdW5kYXRpb24ub3JnPiB3cm90ZToKPgo+IFRoaXMgaXMgdGhlIHN0YXJ0IG9mIHRoZSBz
-dGFibGUgcmV2aWV3IGN5Y2xlIGZvciB0aGUgNC4xOS4yNjQgcmVsZWFzZS4KPiBUaGVyZSBhcmUg
-NzggcGF0Y2hlcyBpbiB0aGlzIHNlcmllcywgYWxsIHdpbGwgYmUgcG9zdGVkIGFzIGEgcmVzcG9u
-c2UKPiB0byB0aGlzIG9uZS4gIElmIGFueW9uZSBoYXMgYW55IGlzc3VlcyB3aXRoIHRoZXNlIGJl
-aW5nIGFwcGxpZWQsIHBsZWFzZQo+IGxldCBtZSBrbm93Lgo+Cj4gUmVzcG9uc2VzIHNob3VsZCBi
-ZSBtYWRlIGJ5IEZyaSwgMDQgTm92IDIwMjIgMDI6MjA6MzggKzAwMDAuCj4gQW55dGhpbmcgcmVj
-ZWl2ZWQgYWZ0ZXIgdGhhdCB0aW1lIG1pZ2h0IGJlIHRvbyBsYXRlLgo+Cj4gVGhlIHdob2xlIHBh
-dGNoIHNlcmllcyBjYW4gYmUgZm91bmQgaW4gb25lIHBhdGNoIGF0Ogo+ICAgICAgICAgaHR0cHM6
-Ly93d3cua2VybmVsLm9yZy9wdWIvbGludXgva2VybmVsL3Y0Lngvc3RhYmxlLXJldmlldy9wYXRj
-aC00LjE5LjI2NC1yYzEuZ3oKPiBvciBpbiB0aGUgZ2l0IHRyZWUgYW5kIGJyYW5jaCBhdDoKPiAg
-ICAgICAgIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9zdGFi
-bGUvbGludXgtc3RhYmxlLXJjLmdpdCBsaW51eC00LjE5LnkKPiBhbmQgdGhlIGRpZmZzdGF0IGNh
-biBiZSBmb3VuZCBiZWxvdy4KPgo+IHRoYW5rcywKUmVzdWx0cyBmcm9tIExpbmFyb+KAmXMgdGVz
-dCBmYXJtLgpObyByZWdyZXNzaW9ucyBvbiBhcm0sIHg4Nl82NCwgYW5kIGkzODYuCgpSZWdyZXNz
-aW9uIG9uIGFybTY0IEp1bm8tcjIuCgpSZXBvcnRlZC1ieTogTGludXggS2VybmVsIEZ1bmN0aW9u
-YWwgVGVzdGluZyA8bGtmdEBsaW5hcm8ub3JnPgoKRm9sbG93aW5nIGtlcm5lbCBwYW5pYyBub3Rp
-Y2VkIHdoaWxlIHJ1bm5pbmcgTFRQIGNvbnRyb2xsZXJzIHRlc3QgY2FzZXMKb24gYXJtNjQgSnVu
-byBkZXZpY2UuCgpTaW5jZSB0aGlzIGNyYXNoIHdhcyBub3RpY2VkIGZvciB0aGUgZmlyc3QgdGlt
-ZSwgSSBhbSByZS1ydW5uaW5nIHRlc3RzCm11bHRpcGxlIHRpbWVzCnRvIGNoZWNrIHJlcHJvZHVj
-aWJpbGl0eS4KCkNyYXNoIGxvZzoKICAgIFsgMTk1Mi4yNzA5MDddIEtlcm5lbCBwYW5pYyAtIG5v
-dCBzeW5jaW5nOiBzdGFjay1wcm90ZWN0b3I6IEtlcm5lbApzdGFjayBpcyBjb3JydXB0ZWQgaW46
-IGNwdV9zdXNwZW5kKzB4ZTQvMHgxMDAKICAgIFsgMTk1Mi4yODM2MjNdIENQVTogMSBQSUQ6IDAg
-Q29tbTogc3dhcHBlci8xIE5vdCB0YWludGVkIDQuMTkuMjY0LXJjMSAjMQogICAgWyAxOTUyLjI5
-Mjg0Nl0gSGFyZHdhcmUgbmFtZTogQVJNIEp1bm8gZGV2ZWxvcG1lbnQgYm9hcmQgKHIyKSAoRFQp
-CiAgICAuLi4KICAgIC9vcHQvbHRwL3Rlc3RjYXNlcy9iaW4vY2dyb3VwX2ZqX3N0cmVzcy5zaDog
-bGluZSAxNTU6IDI2MzYwNwpLaWxsZWQgICAgICAgICAgICAgICAgICBjZ3JvdXBfZmpfcHJvYwog
-ICAgL29wdC9sdHAvdGVzdGNhc2VzL2Jpbi9jZ3JvdXBfZmpfc3RyZXNzLnNoOiBsaW5lIDE1NTog
-MjYzNjEwCktpbGxlZCAgICAgICAgICAgICAgICAgIGNncm91cF9mal9wcm9jCiAgICAvb3B0L2x0
-cC90ZXN0Y2FzZXMvYmluL2Nncm91cF9mal9zdHJlc3Muc2g6IGxpbmUgMTU1OiAyNjM2MTMKS2ls
-bGVkICAgICAgICAgICAgICAgICAgY2dbIDE5NTIuNTY4NzgxXSBDYWxsIHRyYWNlOgogICAgWyAx
-OTUyLjU3MTIzMV0gIGR1bXBfYmFja3RyYWNlKzB4MC8weDE5MAogICAgWyAxOTUyLjU3NDg5Nl0g
-IHNob3dfc3RhY2srMHgyOC8weDM0CiAgICBbIDE5NTIuNTc4MjE1XSAgZHVtcF9zdGFjaysweGIw
-LzB4ZjgKICAgIFsgMTk1Mi41ODE1MzNdICBwYW5pYysweDEzNC8weDJhNAogICAgWyAxOTUyLjU4
-NDU5MF0gIHByaW50X3RhaW50ZWQrMHgwLzB4YmMKICAgIFsgMTk1Mi41ODgwODBdICBjcHVfc3Vz
-cGVuZCsweGU0LzB4MTAwCiAgICBbIDE5NTIuNTkxNTcyXSAgc2V0X25leHRfZW50aXR5KzB4OWMv
-MHg2ODAKICAgIFsgMTk1Mi41OTU0MTFdICAweDEwMDAKICAgIFsgMTk1Mi41OTc1MTVdIFNNUDog
-c3RvcHBpbmcgc2Vjb25kYXJ5IENQVXMKICAgIFsgMTk1Mi42MDE2MDVdIEtlcm5lbCBPZmZzZXQ6
-IGRpc2FibGVkCiAgICBbIDE5NTIuNjA1MDk1XSBDUFUgZmVhdHVyZXM6IDB4MzAsMjQwMDYwMDQK
-ICAgIFsgMTk1Mi42MDg5MzJdIE1lbW9yeSBMaW1pdDogbm9uZQogICAgWyAxOTUyLjYxMTk5OF0g
-LS0tWyBlbmQgS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6CnN0YWNrLXByb3RlY3RvcjogS2Vy
-bmVsIHN0YWNrIGlzIGNvcnJ1cHRlZCBpbjogY3B1X3N1c3BlbmQrMHhlNC8weDEwMApdLS0tCiAg
-ICBbMV0gaHR0cHM6Ly9xYS1yZXBvcnRzLmxpbmFyby5vcmcvbGtmdC9saW51eC1zdGFibGUtcmMt
-bGludXgtNC4xOS55L2J1aWxkL3Y0LjE5LjI2My03OS1nMGI0MTA5MzM2MTIyL3Rlc3RydW4vMTI4
-MTk0OTgvc3VpdGUvbG9nLXBhcnNlci10ZXN0L3Rlc3QvY2hlY2sta2VybmVsLXBhbmljL2xvZwog
-ICAgWzJdIGh0dHBzOi8vcWEtcmVwb3J0cy5saW5hcm8ub3JnL2xrZnQvbGludXgtc3RhYmxlLXJj
-LWxpbnV4LTQuMTkueS9idWlsZC92NC4xOS4yNjMtNzktZzBiNDEwOTMzNjEyMi90ZXN0cnVuLzEy
-ODE5NDk4L3N1aXRlL2xvZy1wYXJzZXItdGVzdC90ZXN0cy8KCiAgICBtZXRhZGF0YToKICAgICAg
-Z2l0X3JlZjogbGludXgtNC4xOS55CiAgICAgIGdpdF9yZXBvOiBodHRwczovL2dpdGxhYi5jb20v
-TGluYXJvL2xrZnQvbWlycm9ycy9zdGFibGUvbGludXgtc3RhYmxlLXJjCiAgICAgIGdpdF9zaGE6
-IDBiNDEwOTMzNjEyMmRkM2RmYmIwNzk2NDI3NGMwODVjNTRmNTdiOTIKICAgICAgZ2l0X2Rlc2Ny
-aWJlOiB2NC4xOS4yNjMtNzktZzBiNDEwOTMzNjEyMgogICAgICBrZXJuZWxfdmVyc2lvbjogNC4x
-OS4yNjQtcmMxCiAgICAgIGtlcm5lbC1jb25maWc6Cmh0dHBzOi8vYnVpbGRzLnR1eGJ1aWxkLmNv
-bS8yR3lNMDk4Z3BmUGR0OTUzejZFcjFXVnRhbEovY29uZmlnCiAgICAgIGJ1aWxkLXVybDoKaHR0
-cHM6Ly9naXRsYWIuY29tL0xpbmFyby9sa2Z0L21pcnJvcnMvc3RhYmxlL2xpbnV4LXN0YWJsZS1y
-Yy8tL3BpcGVsaW5lcy82ODMwMzIxMTYKICAgICAgYXJ0aWZhY3QtbG9jYXRpb246IGh0dHBzOi8v
-YnVpbGRzLnR1eGJ1aWxkLmNvbS8yR3lNMDk4Z3BmUGR0OTUzejZFcjFXVnRhbEoKICAgICAgdG9v
-bGNoYWluOiBnY2MtMTEKCk5PVEU6Ci0tLS0tCldoaWxlIHJ1bm5pbmcgbmV3bHkgYWRkZWQgTFRQ
-IHNjaGVkIGNmc19iYW5kd2lkdGgwMSB0ZXN0IGNhc2Ugd2UgaGF2ZSBiZWVuCmdldHRpbmcgdGhl
-IGZvbGxvd2luZyBrZXJuZWwgd2FybmluZyBmcm9tIGEgY291cGxlIG9mIG1vbnRocyBvbiBhbGwg
-ZGV2aWNlcy4KCiAgICB0c3RfdGVzdC5jOjE1MjQ6IFRJTkZPOiBUaW1lb3V0IHBlciBydW4gaXMg
-MGggMDVtIDAwcwogICAgY2ZzX2JhbmR3aWR0aDAxLmM6NTQ6IFRJTkZPOiBTZXQgJ3dvcmtlcjEv
-Y3B1Lm1heCcgPSAnMzAwMCAxMDAwMCcKICAgIGNmc19iYW5kd2lkdGgwMS5jOjU0OiBUSU5GTzog
-U2V0ICd3b3JrZXIyL2NwdS5tYXgnID0gJzIwMDAgMTAwMDAnCiAgICBjZnNfYmFuZHdpZHRoMDEu
-Yzo1NDogVElORk86IFNldCAnd29ya2VyMy9jcHUubWF4JyA9ICczMDAwIDEwMDAwJwogICAgY2Zz
-X2JhbmR3aWR0aDAxLmM6MTE3OiBUUEFTUzogU2NoZWR1bGVkIGJhbmR3aWR0aCBjb25zdHJhaW5l
-ZCB3b3JrZXJzCiAgICBjZnNfYmFuZHdpZHRoMDEuYzo1NDogVElORk86IFNldCAnbGV2ZWwyL2Nw
-dS5tYXgnID0gJzUwMDAgMTAwMDAnCiAgICAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0t
-LS0tLS0KICAgIFsgICA1Ny4wNDg1MDZdIHJxLT50bXBfYWxvbmVfYnJhbmNoICE9ICZycS0+bGVh
-Zl9jZnNfcnFfbGlzdAogICAgWyAgIDU3LjA0ODUyNV0gV0FSTklORzogQ1BVOiAyIFBJRDogMzI1
-MCBhdAprZXJuZWwvc2NoZWQvZmFpci5jOjM3NSBlbnF1ZXVlX3Rhc2tfZmFpcisweDU1Zi8weDVl
-MAogICAgWyAgIDU3LjA2MjUyNl0gTW9kdWxlcyBsaW5rZWQgaW46IHg4Nl9wa2dfdGVtcF90aGVy
-bWFsCiAgICBbICAgNTcuMDY3Mzk5XSBDUFU6IDIgUElEOiAzMjUwIENvbW06IGNmc19iYW5kd2lk
-dGgwMSBOb3QgdGFpbnRlZAo0LjE5LjI2NC1yYzEgIzEKICAgIFsgICA1Ny4wNzQ2MTldIEhhcmR3
-YXJlIG5hbWU6IFN1cGVybWljcm8gU1lTLTUwMTlTLU1ML1gxMVNTSC1GLApCSU9TIDIuNSAxMS8y
-Ni8yMDIwCiAgICBbICAgNTcuMDgyMDEyXSBSSVA6IDAwMTA6ZW5xdWV1ZV90YXNrX2ZhaXIrMHg1
-NWYvMHg1ZTAKICAgIFsgICA1Ny4wODY4ODldIENvZGU6IGU4IDk2IGI2IDVhIDAxIGU5IDQ5IGZi
-IGZmIGZmIDgwIDNkIGVkIDI1IDdlCjAyIDAwIDBmIDg1IDRlIGZjIGZmIGZmIDQ4IGM3IGM3IDgw
-IDM0IDY4IDkwIGM2IDA1IGQ5IDI1IDdlIDAyIDAxIGU4CjcxIGM2IDMwIDAxIDwwZj4gMGIgZTkg
-MzQgZmMgZmYgZmYgNDkgOGQgYmYgYjggMDkgMDAgMDAgZTggZWUgZWUgMjIgMDAKNDkgOGIgOWYK
-ICAgIFsgICA1Ny4xMDU2MjhdIFJTUDogMDAxODpmZmZmODg4NDBhMmY3OTc4IEVGTEFHUzogMDAw
-MTAwODIKICAgIFsgICA1Ny4xMTA4NTFdIFJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IDAwMDAw
-MDAwMDAwMDAwMDAgUkNYOgowMDAwMDAwMDAwMDAwMDAwCiAgICBbICAgNTcuMTE3OTc2XSBSRFg6
-IDAwMDAwMDAwMDAwMDAwMmQgUlNJOiBmZmZmZmZmZjkxOTE0MDRkIFJESToKZmZmZmVkMTA4MTQ1
-ZWYyMQogICAgWyAgIDU3LjEyNTEwMV0gUkJQOiBmZmZmODg4NDBhMmY3OWIwIFIwODogMDAwMDAw
-MDAwMDAwMDAwMSBSMDk6CmZmZmZmYmZmZjIzMjI4YTUKICAgIFsgICA1Ny4xMzIyMjNdIFIxMDog
-ZmZmZmZmZmY5MTkxNDUyYyBSMTE6IDAwMDAwMDAwMDAwMDAzNDYgUjEyOgpmZmZmODg4NDI4ODMy
-ZTgwCiAgICBbICAgNTcuMTM5MzQ4XSBSMTM6IGZmZmY4ODg0Mjg4MzJlMDAgUjE0OiAwMDAwMDAw
-MDAwMDAwMDAxIFIxNToKZmZmZjg4ODQyODgzMmUwMAogICAgWyAgIDU3LjE0NjQ3NF0gRlM6ICAw
-MDAwN2YyZmYxNTU1NzQwKDAwMDApCkdTOmZmZmY4ODg0Mjg5MDAwMDAoMDAwMCkga25sR1M6MDAw
-MDAwMDAwMDAwMDAwMAogICAgWyAgIDU3LjE1NDU1OF0gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAw
-MDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMwogICAgWyAgIDU3LjE2MDI5NV0gQ1IyOiAwMDAwN2Yy
-ZmYxNTg1OTkwIENSMzogMDAwMDAwMDQwYWU5ODAwNCBDUjQ6CjAwMDAwMDAwMDAzNjA2ZTAKICAg
-IFsgICA1Ny4xNjc0MjFdIERSMDogMDAwMDAwMDAwMDAwMDAwMCBEUjE6IDAwMDAwMDAwMDAwMDAw
-MDAgRFIyOgowMDAwMDAwMDAwMDAwMDAwCiAgICBbICAgNTcuMTc0NTUzXSBEUjM6IDAwMDAwMDAw
-MDAwMDAwMDAgRFI2OiAwMDAwMDAwMGZmZmUwZmYwIERSNzoKMDAwMDAwMDAwMDAwMDQwMAogICAg
-WyAgIDU3LjE4MTY4NV0gQ2FsbCBUcmFjZToKICAgIFsgICA1Ny4xODQxMzJdICA/IHJlbW92ZV9l
-bnRpdHlfbG9hZF9hdmcrMHgxMmEvMHgxNDAKICAgIFsgICA1Ny4xODg4MzddICBhY3RpdmF0ZV90
-YXNrKzB4OTAvMHgxMzAKICAgIFsgICA1Ny4xOTI1MDFdICB0dHd1X2RvX2FjdGl2YXRlKzB4NjQv
-MHhkMAogICAgWyAgIDU3LjE5NjMzM10gIHRyeV90b193YWtlX3VwKzB4M2Q1LzB4NzMwCiAgICBb
-ICAgNTcuMjAwMTcyXSAgPyBzZXRfY3B1c19hbGxvd2VkX3B0cisweDIwLzB4MjAKICAgIFsgICA1
-Ny4yMDQ1MzFdICA/IHBsaXN0X2RlbCsweGNjLzB4MTIwCiAgICBbICAgNTcuMjA4MDIzXSAgPyBr
-YXNhbl9jaGVja193cml0ZSsweDE0LzB4MjAKICAgIFsgICA1Ny4yMTIxMjFdICB3YWtlX3VwX3Er
-MHg1MC8weDkwCiAgICBbICAgNTcuMjE1MzQ4XSAgZnV0ZXhfd2FrZSsweDJhNS8weDJkMAogICAg
-WyAgIDU3LjIxODg0MF0gID8gbWFya193YWtlX2Z1dGV4KzB4YzAvMHhjMAogICAgWyAgIDU3LjIy
-Mjc2Nl0gID8gX19zY2hlZHVsZSsweDQ0MC8weGRmMAogICAgWyAgIDU3LjIyNjQzMF0gID8gaW9f
-c2NoZWR1bGVfdGltZW91dCsweGMwLzB4YzAKICAgIFsgICA1Ny4yMzA2OTVdICBkb19mdXRleCsw
-eGI1My8weDExYjAKICAgIFsgICA1Ny4yMzQxMDFdICA/IGRvX25hbm9zbGVlcCsweDFmNy8weDMw
-MAogICAgWyAgIDU3LjIzNzkzOV0gID8gc2NoZWR1bGVfdGltZW91dF9pZGxlKzB4NDAvMHg0MAog
-ICAgWyAgIDU3LjI0MjM3OF0gID8gX192ZnNfd3JpdGUrMHgzNTQvMHgzZDAKICAgIFsgICA1Ny4y
-NDYxMjldICA/IGZ1dGV4X2V4aXRfcmVsZWFzZSsweDEyMC8weDEyMAogICAgWyAgIDU3LjI1MDQ4
-MV0gID8gaHJ0aW1lcl9pbml0KzB4YWMvMHgxNzAKICAgIFsgICA1Ny4yNTQyMjZdICA/IGhydGlt
-ZXJfbmFub3NsZWVwKzB4MTdkLzB4MzIwCiAgICBbICAgNTcuMjU4NDk4XSAgPyBrdGltZV9nZXRf
-Y29hcnNlX3JlYWxfdHM2NCsweDUwLzB4NzAKICAgIFsgICA1Ny4yNjMzNzddICA/IF9fYXVkaXRf
-c3lzY2FsbF9lbnRyeSsweDFhNi8weDFlMAogICAgWyAgIDU3LjI2Nzk5NV0gIF9feDY0X3N5c19m
-dXRleCsweDEyZC8weDI2MAogICAgWyAgIDU3LjI3MTkxNF0gID8gX19pYTMyX2NvbXBhdF9zeXNf
-ZnV0ZXgrMHgyNjAvMHgyNjAKICAgIFsgICA1Ny4yNzY3MDZdICA/IF9fYXVkaXRfc3lzY2FsbF9l
-eGl0KzB4MzY2LzB4NDEwCiAgICBbICAgNTcuMjgxMjM4XSAgPyB0cmFjZV9oYXJkaXJxc19vZmZf
-Y2FsbGVyKzB4MzMvMHhmMAogICAgWyAgIDU3LjI4NjAyMl0gIGRvX3N5c2NhbGxfNjQrMHg2ZC8w
-eDE3MAogICAgWyAgIDU3LjI4OTY4MV0gIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsw
-eDQ5LzB4YmUKICAgIFsgICA1Ny4yOTQ3MzFdIFJJUDogMDAzMzoweDdmMmZmMTY1Y2YyZAogICAg
-WyAgIDU3LjI5ODMwNF0gQ29kZTogNWIgNDEgNWMgYzMgNjYgMGYgMWYgODQgMDAgMDAgMDAgMDAg
-MDAgZjMgMGYKMWUgZmEgNDggODkgZjggNDggODkgZjcgNDggODkgZDYgNDggODkgY2EgNGQgODkg
-YzIgNGQgODkgYzggNGMgOGIgNGMKMjQgMDggMGYgMDUgPDQ4PiAzZCAwMSBmMCBmZiBmZiA3MyAw
-MSBjMyA0OCA4YiAwZCBjMyBhZSAwZSAwMCBmNyBkOCA2NAo4OSAwMSA0OAogICAgWyAgIDU3LjMx
-NzA0N10gUlNQOiAwMDJiOjAwMDA3ZmZjNjhjNzMyZDggRUZMQUdTOiAwMDAwMDIwMgpPUklHX1JB
-WDogMDAwMDAwMDAwMDAwMDBjYQogICAgWyAgIDU3LjMyNDYwNF0gUkFYOiBmZmZmZmZmZmZmZmZm
-ZmRhIFJCWDogMDAwMDAwMDAwMDAwMDAwMCBSQ1g6CjAwMDA3ZjJmZjE2NWNmMmQKICAgIFsgICA1
-Ny4zMzE3MjldIFJEWDogMDAwMDAwMDA3ZmZmZmZmZiBSU0k6IDAwMDAwMDAwMDAwMDAwMDEgUkRJ
-OgowMDAwN2YyZmYxNzkxMDFjCiAgICBbICAgNTcuMzM4ODUyXSBSQlA6IDAwMDAwMDAwMDAwMDAw
-MDAgUjA4OiAwMDAwN2ZmYzY4YzcyYzcwIFIwOToKMDAwMDAwMDAwMDAwMDAwMAogICAgWyAgIDU3
-LjM0NTk3OV0gUjEwOiAwMDAwMDAwMDAwMDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDIwMiBSMTI6
-CjAwMDAwMDAwMDAwMDAwMDAKICAgIFsgICA1Ny4zNTMxMTBdIFIxMzogMDAwMDAwMDAwMDAwMDAw
-OSBSMTQ6IDAwMDAwMDAwMDAwMDI3MTAgUjE1OgowMDAwN2YyZmYxNzk0MDAwCiAgICBbICAgNTcu
-MzYwMjM1XSAtLS1bIGVuZCB0cmFjZSBkNjUzZDJiOTU5NWUxNGEwIF0tLS0KICAgIC4uLgogICAg
-dHN0X3Rlc3QuYzoxNTY0OiBURkFJTDogS2VybmVsIGlzIG5vdyB0YWludGVkLgogICAgSElOVDog
-WW91IF9NQVlfIGJlIG1pc3Npbmcga2VybmVsIGZpeGVzOgogICAgaHR0cHM6Ly9naXQua2VybmVs
-Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC8/
-aWQ9MzlmMjNjZTA3YjkzCiAgICBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgv
-a2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0Lz9pZD1iMzRjYjA3ZGRlN2MKICAg
-IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRz
-L2xpbnV4LmdpdC9jb21taXQvP2lkPWZlNjE0NjhiMmNiYwogICAgaHR0cHM6Ly9naXQua2VybmVs
-Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC8/
-aWQ9NWFiMjk3YmFiOTg0CiAgICBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgv
-a2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0Lz9pZD02ZDRkMjI0NjhkYWUKICAg
-IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRz
-L2xpbnV4LmdpdC9jb21taXQvP2lkPWZkYWJhNjFlZjhhMgogICAgU3VtbWFyeToKICAgIHBhc3Nl
-ZCAgIDEwCiAgICBmYWlsZWQgICAxCgogICAgaHR0cHM6Ly9xYS1yZXBvcnRzLmxpbmFyby5vcmcv
-bGtmdC9saW51eC1zdGFibGUtcmMtbGludXgtNC4xOS55L2J1aWxkL3Y0LjE5LjI2My03OS1nMGI0
-MTA5MzM2MTIyL3Rlc3RydW4vMTI4MTQzODAvc3VpdGUvbG9nLXBhcnNlci10ZXN0L3Rlc3RzLwog
-ICAgaHR0cHM6Ly9sa2Z0LnZhbGlkYXRpb24ubGluYXJvLm9yZy9zY2hlZHVsZXIvam9iLzU3OTY1
-NDgjTDE3MjgKICAgIGh0dHBzOi8vcWEtcmVwb3J0cy5saW5hcm8ub3JnL2xrZnQvbGludXgtc3Rh
-YmxlLXJjLWxpbnV4LTQuMTkueS9idWlsZC92NC4xOS4yNjMtNzktZzBiNDEwOTMzNjEyMi90ZXN0
-cnVuLzEyODE0MzgwL3N1aXRlL2x0cC1zY2hlZC90ZXN0L2Nmc19iYW5kd2lkdGgwMS9oaXN0b3J5
-LwoKIyMgQnVpbGQKKiBrZXJuZWw6IDQuMTkuMjY0LXJjMQoqIGdpdDogaHR0cHM6Ly9naXRsYWIu
-Y29tL0xpbmFyby9sa2Z0L21pcnJvcnMvc3RhYmxlL2xpbnV4LXN0YWJsZS1yYwoqIGdpdCBicmFu
-Y2g6IGxpbnV4LTQuMTkueQoqIGdpdCBjb21taXQ6IDBiNDEwOTMzNjEyMmRkM2RmYmIwNzk2NDI3
-NGMwODVjNTRmNTdiOTIKKiBnaXQgZGVzY3JpYmU6IHY0LjE5LjI2My03OS1nMGI0MTA5MzM2MTIy
-CiogdGVzdCBkZXRhaWxzOgpodHRwczovL3FhLXJlcG9ydHMubGluYXJvLm9yZy9sa2Z0L2xpbnV4
-LXN0YWJsZS1yYy1saW51eC00LjE5LnkvYnVpbGQvdjQuMTkuMjYzLTc5LWcwYjQxMDkzMzYxMjIK
-CiMjIE5vIFRlc3QgUmVncmVzc2lvbnMgKGNvbXBhcmVkIHRvIHY0LjE5LjI2MykKCiMjIE5vIE1l
-dHJpYyBSZWdyZXNzaW9ucyAoY29tcGFyZWQgdG8gdjQuMTkuMjYzKQoKIyMgTm8gVGVzdCBGaXhl
-cyAoY29tcGFyZWQgdG8gdjQuMTkuMjYzKQoKIyMgTm8gTWV0cmljIEZpeGVzIChjb21wYXJlZCB0
-byB2NC4xOS4yNjMpCgojIyBUZXN0IHJlc3VsdCBzdW1tYXJ5CnRvdGFsOiAxMjM4NjYsIHBhc3M6
-IDEwMzYxNCwgZmFpbDogMjEzMCwgc2tpcDogMTcxODEsIHhmYWlsOiA5NDEKCiMjIEJ1aWxkIFN1
-bW1hcnkKKiBhcmM6IDEwIHRvdGFsLCAxMCBwYXNzZWQsIDAgZmFpbGVkCiogYXJtOiAzMjMgdG90
-YWwsIDMxOCBwYXNzZWQsIDUgZmFpbGVkCiogYXJtNjQ6IDYxIHRvdGFsLCA2MCBwYXNzZWQsIDEg
-ZmFpbGVkCiogaTM4NjogMjkgdG90YWwsIDI4IHBhc3NlZCwgMSBmYWlsZWQKKiBtaXBzOiA0NiB0
-b3RhbCwgNDYgcGFzc2VkLCAwIGZhaWxlZAoqIHBhcmlzYzogMTIgdG90YWwsIDEyIHBhc3NlZCwg
-MCBmYWlsZWQKKiBwb3dlcnBjOiA2MyB0b3RhbCwgNjMgcGFzc2VkLCAwIGZhaWxlZAoqIHMzOTA6
-IDE1IHRvdGFsLCAxNSBwYXNzZWQsIDAgZmFpbGVkCiogc2g6IDI0IHRvdGFsLCAyNCBwYXNzZWQs
-IDAgZmFpbGVkCiogc3BhcmM6IDEyIHRvdGFsLCAxMiBwYXNzZWQsIDAgZmFpbGVkCiogeDg2XzY0
-OiA1NSB0b3RhbCwgNTQgcGFzc2VkLCAxIGZhaWxlZAoKIyMgVGVzdCBzdWl0ZXMgc3VtbWFyeQoq
-IGZ3dHMKKiBpZ3QtZ3B1LXRvb2xzCioga3NlbGZ0ZXN0LWFuZHJvaWQKKiBrc2VsZnRlc3QtYXJt
-NjQKKiBrc2VsZnRlc3QtYXJtNjQvYXJtNjQuYnRpdGVzdC5idGlfY19mdW5jCioga3NlbGZ0ZXN0
-LWFybTY0L2FybTY0LmJ0aXRlc3QuYnRpX2pfZnVuYwoqIGtzZWxmdGVzdC1hcm02NC9hcm02NC5i
-dGl0ZXN0LmJ0aV9qY19mdW5jCioga3NlbGZ0ZXN0LWFybTY0L2FybTY0LmJ0aXRlc3QuYnRpX25v
-bmVfZnVuYwoqIGtzZWxmdGVzdC1hcm02NC9hcm02NC5idGl0ZXN0Lm5vaGludF9mdW5jCioga3Nl
-bGZ0ZXN0LWFybTY0L2FybTY0LmJ0aXRlc3QucGFjaWFzcF9mdW5jCioga3NlbGZ0ZXN0LWFybTY0
-L2FybTY0Lm5vYnRpdGVzdC5idGlfY19mdW5jCioga3NlbGZ0ZXN0LWFybTY0L2FybTY0Lm5vYnRp
-dGVzdC5idGlfal9mdW5jCioga3NlbGZ0ZXN0LWFybTY0L2FybTY0Lm5vYnRpdGVzdC5idGlfamNf
-ZnVuYwoqIGtzZWxmdGVzdC1hcm02NC9hcm02NC5ub2J0aXRlc3QuYnRpX25vbmVfZnVuYwoqIGtz
-ZWxmdGVzdC1hcm02NC9hcm02NC5ub2J0aXRlc3Qubm9oaW50X2Z1bmMKKiBrc2VsZnRlc3QtYXJt
-NjQvYXJtNjQubm9idGl0ZXN0LnBhY2lhc3BfZnVuYwoqIGtzZWxmdGVzdC1icmVha3BvaW50cwoq
-IGtzZWxmdGVzdC1jYXBhYmlsaXRpZXMKKiBrc2VsZnRlc3QtZHJpdmVycy1kbWEtYnVmCioga3Nl
-bGZ0ZXN0LWVmaXZhcmZzCioga3NlbGZ0ZXN0LWZpbGVzeXN0ZW1zCioga3NlbGZ0ZXN0LWZpbGVz
-eXN0ZW1zLWJpbmRlcmZzCioga3NlbGZ0ZXN0LWZpcm13YXJlCioga3NlbGZ0ZXN0LWZwdQoqIGtz
-ZWxmdGVzdC1mdXRleAoqIGtzZWxmdGVzdC1ncGlvCioga3NlbGZ0ZXN0LWludGVsX3BzdGF0ZQoq
-IGtzZWxmdGVzdC1pcGMKKiBrc2VsZnRlc3QtaXIKKiBrc2VsZnRlc3Qta2NtcAoqIGtzZWxmdGVz
-dC1rZXhlYwoqIGtzZWxmdGVzdC1rdm0KKiBrc2VsZnRlc3QtbGliCioga3NlbGZ0ZXN0LWxpdmVw
-YXRjaAoqIGtzZWxmdGVzdC1tZW1iYXJyaWVyCioga3NlbGZ0ZXN0LW1lbWZkCioga3NlbGZ0ZXN0
-LW1lbW9yeS1ob3RwbHVnCioga3NlbGZ0ZXN0LW1pbmNvcmUKKiBrc2VsZnRlc3QtbW91bnQKKiBr
-c2VsZnRlc3QtbXF1ZXVlCioga3NlbGZ0ZXN0LW5ldAoqIGtzZWxmdGVzdC1uZXQtZm9yd2FyZGlu
-ZwoqIGtzZWxmdGVzdC1uZXRmaWx0ZXIKKiBrc2VsZnRlc3QtbnNmcwoqIGtzZWxmdGVzdC1vcGVu
-YXQyCioga3NlbGZ0ZXN0LXBpZF9uYW1lc3BhY2UKKiBrc2VsZnRlc3QtcGlkZmQKKiBrc2VsZnRl
-c3QtcHJvYwoqIGtzZWxmdGVzdC1wc3RvcmUKKiBrc2VsZnRlc3QtcHRyYWNlCioga3NlbGZ0ZXN0
-LXJzZXEKKiBrc2VsZnRlc3QtcnRjCioga3NlbGZ0ZXN0LXNlY2NvbXAKKiBrc2VsZnRlc3Qtc2ln
-YWx0c3RhY2sKKiBrc2VsZnRlc3Qtc2l6ZQoqIGtzZWxmdGVzdC1zcGxpY2UKKiBrc2VsZnRlc3Qt
-c3RhdGljX2tleXMKKiBrc2VsZnRlc3Qtc3luYwoqIGtzZWxmdGVzdC1zeXNjdGwKKiBrc2VsZnRl
-c3QtdGMtdGVzdGluZwoqIGtzZWxmdGVzdC10aW1lbnMKKiBrc2VsZnRlc3QtdGltZXJzCioga3Nl
-bGZ0ZXN0LXRtcGZzCioga3NlbGZ0ZXN0LXRwbTIKKiBrc2VsZnRlc3QtdXNlcgoqIGtzZWxmdGVz
-dC12bQoqIGtzZWxmdGVzdC14ODYKKiBrc2VsZnRlc3QtenJhbQoqIGt1bml0Cioga3ZtLXVuaXQt
-dGVzdHMKKiBsaWJodWdldGxiZnMKKiBsb2ctcGFyc2VyLWJvb3QKKiBsb2ctcGFyc2VyLXRlc3QK
-KiBsdHAtY2FwX2JvdW5kcwoqIGx0cC1jb21tYW5kcwoqIGx0cC1jb250YWluZXJzCiogbHRwLWNv
-bnRyb2xsZXJzCiogbHRwLWNwdWhvdHBsdWcKKiBsdHAtY3J5cHRvCiogbHRwLWN2ZQoqIGx0cC1k
-aW8KKiBsdHAtZmNudGwtbG9ja3Rlc3RzCiogbHRwLWZpbGVjYXBzCiogbHRwLWZzCiogbHRwLWZz
-X2JpbmQKKiBsdHAtZnNfcGVybXNfc2ltcGxlCiogbHRwLWZzeAoqIGx0cC1odWdldGxiCiogbHRw
-LWlvCiogbHRwLWlwYwoqIGx0cC1tYXRoCiogbHRwLW1tCiogbHRwLW5wdGwKKiBsdHAtb3Blbi1w
-b3NpeC10ZXN0cwoqIGx0cC1wdHkKKiBsdHAtc2NoZWQKKiBsdHAtc2VjdXJlYml0cwoqIGx0cC1z
-bW9rZQoqIGx0cC1zeXNjYWxscwoqIGx0cC10cmFjaW5nCiogbmV0d29yay1iYXNpYy10ZXN0cwoq
-IHBhY2tldGRyaWxsCiogcmN1dG9ydHVyZQoqIHY0bDItY29tcGxpYW5jZQoqIHZkc28KCi0tCkxp
-bmFybyBMS0ZUCmh0dHBzOi8vbGtmdC5saW5hcm8ub3JnCgotLSAKTWFpbGluZyBsaXN0IGluZm86
-IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hello,
+
+Alessandro Carminati <alessandro.carminati@gmail.com> writes:
+
+> In some minimal Linux, the /dev/root can be missing. The consequence of
+> this is that mountinfo doesn't contain the correct information. btrfs
+> file systems are yet another point of trouble for this function.
+>
+> The unevent file in sysfs is another method to retrieve device info
+> using the sysfs.
+>
+> btrfs file systems are special from the device name retrieval, and in
+> place of use of the minor/major they are approached by using the uuid.
+> In the end, btrfs strategy is a slightly modified version of the same
+> unevent strategy.
+>
+> Non btrfs look in "/sys/dev/block/%d:%d/uevent" major, minor
+> btrfs look in /sys/fs/btrfs/%s/devices/%s/uevent, uuid, devname
+>
+> The btrfs handling requires BTRFS specific ioctl for finding the
+> file system uuid, and for this reason, btrfs/ioctl.h is needed.
+
+Fundamentally this looks like a much better solution. However there are
+a bunch of details to work out.
+
+>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Signed-off-by: Alessandro Carminati <alessandro.carminati@gmail.com>
+> ---
+>  lib/tst_device.c | 86 ++++++++++++++++++++++++++++++++----------------
+>  1 file changed, 57 insertions(+), 29 deletions(-)
+>
+> diff --git a/lib/tst_device.c b/lib/tst_device.c
+> index 8419b80c3..4c2bde846 100644
+> --- a/lib/tst_device.c
+> +++ b/lib/tst_device.c
+> @@ -33,6 +33,8 @@
+>  #include <stdint.h>
+>  #include <inttypes.h>
+>  #include <sys/sysmacros.h>
+> +#include <btrfs/ioctl.h>
+
+This header won't exist on a lot of systems
+(e.g. https://github.com/richiejp/ltp/actions/runs/3384063391/jobs/5620599611). Instead
+we can import <linux/btrfs.h> which is in the kernel headers and we
+already rely on <linux/loop.h>.
+
+It seems though that the definitions we need are 10+ years old and not
+arch or config specific, so we dont' have to add them to
+lapi/btrfs.h. Unless it turns out Android removes them or something like
+that.
+
+So I think it is safe just to switch this to linux/btrfs.h.
+
+> +#include <dirent.h>
+>  #include "lapi/syscalls.h"
+>  #include "test.h"
+>  #include "safe_macros.h"
+> @@ -45,6 +47,7 @@
+>  
+>  #define DEV_FILE "test_dev.img"
+>  #define DEV_SIZE_MB 300u
+> +#define UUID_STR_SZ 37
+>  
+>  static char dev_path[1024];
+>  static int device_acquired;
+> @@ -519,48 +522,73 @@ static int count_match_len(const char *first, const char *second)
+>  void tst_find_backing_dev(const char *path, char *dev)
+>  {
+>  	struct stat buf;
+> +	struct btrfs_ioctl_fs_info_args args = {0};
+> +	struct dirent *d;
+>  	FILE *file;
+
+This var is now unused. Please look at the compiler warnings (and/or
+configure your IDE to display them inline with LSP/clangd or similar).
+
+Please silence any warnings relating to your changes otherwise serious
+errors get lost in the noise.
+
+> -	char line[PATH_MAX];
+> -	char *pre = NULL;
+> -	char *next = NULL;
+> -	unsigned int dev_major, dev_minor, line_mjr, line_mnr;
+> -	unsigned int len, best_match_len = 1;
+> -	char mnt_point[PATH_MAX];
+> +	char uevent_path[PATH_MAX];
+> +	char dev_name[NAME_MAX];
+
+It seems NAME_MAX either does not exist on Alpine linux (perhaps due to
+muslc) or needs an extra explicit include.
+
+https://github.com/richiejp/ltp/actions/runs/3384078253/jobs/5620630058
+
+> +	char bdev_path[PATH_MAX];
+> +	char btrfs_uuid_str[UUID_STR_SZ];
+> +	DIR *dir;
+> +	unsigned int dev_major, dev_minor;
+> +	int fd;
+>  
+>  	if (stat(path, &buf) < 0)
+>  		tst_brkm(TWARN | TERRNO, NULL, "stat() failed");
+>  
+> +	*dev = '\0';
+
+Very minor nit, but moving this around creates unecessary churn when
+doing git-blame.
+
+>  	dev_major = major(buf.st_dev);
+>  	dev_minor = minor(buf.st_dev);
+> -	file = SAFE_FOPEN(NULL, "/proc/self/mountinfo", "r");
+> -	*dev = '\0';
+> -
+> -	while (fgets(line, sizeof(line), file)) {
+> -		if (sscanf(line, "%*d %*d %d:%d %*s %s",
+> -			&line_mjr, &line_mnr, mnt_point) != 3)
+> -			continue;
+> -
+> -		pre = strstr(line, " - ");
+> -		pre = strtok_r(pre, " ", &next);
+> -		pre = strtok_r(NULL, " ", &next);
+> -		pre = strtok_r(NULL, " ", &next);
+>  
+> -		if (line_mjr == dev_major && line_mnr == dev_minor) {
+> -			strcpy(dev, pre);
+> -			break;
+> +	if (dev_major == 0) {
+> +		tst_resm(TINFO, "Use BTRFS specific strategy");
+> +		dir = opendir("/");
+
+What happens if TMPDIR is not on the same mount as '/'?
+
+Also consider what the user will see if opendir fails with for
+e.g. EPERM or ENOMEM. (there is SAFE_OPENDIR).
+
+> +		fd = dirfd(dir);
+
+As we only want the fd, we could call open (SAFE_OPEN)
+instead. Incredibly dirfd can fail, so it saves some effort.
+
+> +		if (!ioctl(fd, BTRFS_IOC_FS_INFO, &args)) {
+
+What happens if the test author allows this function to be called on
+tmpfs, rootfs, etc.? Or if the FS is valid, but has the same issue as
+BTRFS.
+
+Especially considering this may be discovered in an environment where
+it's difficult to trace the test.
+
+> +			sprintf(btrfs_uuid_str,
+> +				"%02x%02x%02x%02x-%02x%02x-"
+> +				"%02x%02x-%02x%02x-"
+> +				"%02x%02x%02x%02x%02x%02x",
+> +				args.fsid[0],args.fsid[1],
+> +				args.fsid[2],args.fsid[3],
+> +				args.fsid[4],args.fsid[5],
+> +				args.fsid[6],args.fsid[7],
+> +				args.fsid[8],args.fsid[9],
+> +				args.fsid[10],args.fsid[11],
+> +				args.fsid[12],args.fsid[13],
+> +				args.fsid[14],args.fsid[15]);
+> +			sprintf(bdev_path,
+> +				"/sys/fs/btrfs/%s/devices",
+> btrfs_uuid_str);
+
+LTP uses the kernel C style. If you run 'make check-tst_device' in lib
+it will run checkpatch.pl and display the formatting issues.
+
+(you can ignore errors not related to your changes).
+
+>  		}
+> -
+> -		len = count_match_len(path, mnt_point);
+> -		if (len > best_match_len) {
+> -			strcpy(dev, pre);
+> -			best_match_len = len;
+> +		closedir(dir);
+> +		dir = opendir(bdev_path);
+> +		if (!dir){
+> +			tst_brkm(TWARN | TERRNO, NULL,
+> +				"can't opendir %d", dir);
+
+This isn't a valid format string and this should be TBROK. However it
+can all be replaced with SAFE_OPENDIR.
+
+> +		}
+> +		while (d = readdir(dir)){
+
+SAFE_READDIR
+
+> +			if (d->d_name[0]!='.')
+> +				break;
+
+I suppose that given the present usage, it doesn't matter if there is
+more than one backing dev. However we should at least print an info
+message if more than one is detected.
+
+> +		}
+> +		uevent_path[0]='\0';
+> +		closedir(dir);
+
+This frees the memory pointed to by *d and results in a use-after-free
+below. I recommend compiling with -fsanatize=undefined,address
+(e.g. ./configure CFLAGS="-fsanatize=undefined,address") during
+development.
+
+Then instead of getting random segfaults you always get:
+
+=298==ERROR: AddressSanitizer: heap-use-after-free on address 0x62d00000a473 at pc 0x7f1d7077357e bp 0x7ffea26903b0 sp 0x7ffea268fb60
+READ of size 6 at 0x62d00000a473 thread T0
+    #0 0x7f1d7077357d  (/lib64/libasan.so.8+0x7657d)
+    #1 0x7f1d707744ba in __interceptor_vsprintf (/lib64/libasan.so.8+0x774ba)
+    #2 0x7f1d7077460e in __interceptor_sprintf (/lib64/libasan.so.8+0x7760e)
+    #3 0x413909 in tst_find_backing_dev /home/rich/qa/ltp/lib/tst_device.c:576
+    #4 0x40916f in setup /home/rich/qa/ltp/testcases/kernel/syscalls/ioctl/ioctl_loop05.c:128
+    #5 0x41ad47 in do_test_setup /home/rich/qa/ltp/lib/tst_test.c:1285
+    #6 0x41ad47 in testrun /home/rich/qa/ltp/lib/tst_test.c:1412
+    #7 0x41ad47 in fork_testrun /home/rich/qa/ltp/lib/tst_test.c:1558
+    #8 0x421670 in tst_run_tcases /home/rich/qa/ltp/lib/tst_test.c:1651
+    #9 0x407c6e in main ../../../../include/tst_test.h:379
+    #10 0x7f1d6fef75af in __libc_start_call_main (/lib64/libc.so.6+0x275af)
+    #11 0x7f1d6fef7678 in __libc_start_main_impl (/lib64/libc.so.6+0x27678)
+    #12 0x4084a4 in _start ../sysdeps/x86_64/start.S:115
+
+0x62d00000a473 is located 115 bytes inside of 32816-byte region [0x62d00000a400,0x62d000012430)
+freed by thread T0 here:
+    #0 0x7f1d707b80e8  (/lib64/libasan.so.8+0xbb0e8)
+    #1 0x7f1d6ffa87f0 in __closedir (/lib64/libc.so.6+0xd87f0)
+
+previously allocated by thread T0 here:
+    #0 0x7f1d707b940f in __interceptor_malloc (/lib64/libasan.so.8+0xbc40f)
+    #1 0x7f1d6ffa8674 in __alloc_dir (/lib64/libc.so.6+0xd8674)
+
+> +		if (d!=NULL) {
+
+Also not kernel style and there is SAFE_CLOSEDIR.
+
+> +			sprintf(uevent_path, "%s/%s/uevent",
+> +				bdev_path, d->d_name);
+>  		}
+
+If d == NULL then what does that mean?
+
+> +	} else {
+> +
+> +		tst_resm(TINFO, "Use uevent strategy");
+> +		sprintf(uevent_path,
+> +			"/sys/dev/block/%d:%d/uevent", dev_major, dev_minor);
+>  	}
+>  
+> -	SAFE_FCLOSE(NULL, file);
+> +	if (!access(uevent_path, R_OK)) {
+
+What is the user going to see if this happens?
+
+N.B if we have no options left then we want to fail as fast as possible
+with any information that is easily available. This can save a lot of
+time remotely debugging/tracing test systems when a simple log message
+could have made the issue clear.
+
+> +		FILE_LINES_SCANF(NULL, uevent_path, "DEVNAME=%s", dev_name);
+>  
+> -	if (!*dev)
+> -		tst_brkm(TBROK, NULL, "Cannot find block device for %s", path);
+> +		if (dev_name[0])
+> +			sprintf(dev, "/dev/%s", dev_name);
+> +	}
+>  
+>  	if (stat(dev, &buf) < 0)
+>  		tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
+
+
+-- 
+Thank you,
+Richard.
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
