@@ -4,72 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 363BCC4332F
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 15:44:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88753C4332F
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 16:25:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EBA953CAF38
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 16:44:27 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 323223CB01F
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 17:25:48 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D3943C32DD
- for <ltp@lists.linux.it>; Fri,  4 Nov 2022 16:44:17 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id D25903CA59A
+ for <ltp@lists.linux.it>; Fri,  4 Nov 2022 17:25:37 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CA9381A0088B
- for <ltp@lists.linux.it>; Fri,  4 Nov 2022 16:44:16 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 205C61F8AE;
- Fri,  4 Nov 2022 15:44:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667576656; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=qN9FgM9dbBCxhOWBamBqxRyDQsKviiYY20MTsOklPVc=;
- b=NQPFID69Ij7goF9UyFxwPERVBVUeUyKosrcgCkoL2/GtJ0HkNT8NlXMj8/uS607sXlTbtB
- GucSqtPpBBVX9hzsi4pMLzq/6IMdqYVaihwhdZMlaSzm/Ju1s+9tl3OWQHuisHDcXpX+6D
- 0q1GPoaRKJpElKU7tt56kjyUwg3gorA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667576656;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=qN9FgM9dbBCxhOWBamBqxRyDQsKviiYY20MTsOklPVc=;
- b=ytgIqxpxRvWQR3Y49mfCidekT+IikkX8A32rFsBm2PIEUVR3ScgstCcORlKl0Ib/8PhAA2
- g9d69rpHtctxC9AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D54B13216;
- Fri,  4 Nov 2022 15:44:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 97MUAlAzZWO3WwAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Fri, 04 Nov 2022 15:44:16 +0000
-Message-ID: <051a74e3-0a6a-5fe3-3e10-24430c8e5a96@suse.cz>
-Date: Fri, 4 Nov 2022 16:44:15 +0100
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B73E51A0065F
+ for <ltp@lists.linux.it>; Fri,  4 Nov 2022 17:25:36 +0100 (CET)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A4G0MGn001210;
+ Fri, 4 Nov 2022 16:25:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=xrgXYqfmPOOmRvLe8jiwbIesjzv5OYQyx9JT64+KxpU=;
+ b=i77QXZGkdlshdEOWF4jCScJU3ZcZfFOj2dL01ccUgezmPkCfHfgy1k7N7CgBZw08Wdai
+ 87c7mN2N8CTLKf6dUbMATf0xjdlEqkUCwODTeQyhcTcyNh9T3lBu1jYrN1T5khaPM3rd
+ XcNk4SpnzB+TXahWfUexF2vQ3in1p6ztIzuODzCZAz+JmxNb8r87i414zHXuZBHPtvo9
+ k7OBDHAtcWjBzzKetsu1fTxMOue5+jr5R1rVBV82kaah4md81o59EYQI/eaUaL9QWQXo
+ OztmzvqX/mBcQWqGxq/N8UazsJLKI/T+Guv1HrmYajtwx7tLLnqIy5dlddzTHkyg8e0V 2A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kmpy2muk9-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 04 Nov 2022 16:25:34 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A4FaxHV005930;
+ Fri, 4 Nov 2022 16:25:34 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.98])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kmpy2muh6-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 04 Nov 2022 16:25:34 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+ by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A4G5qB7019249;
+ Fri, 4 Nov 2022 16:25:32 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com
+ (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+ by ppma03ams.nl.ibm.com with ESMTP id 3kgut92p0v-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 04 Nov 2022 16:25:31 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com
+ [9.149.105.58])
+ by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2A4GPSXZ61342198
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 4 Nov 2022 16:25:28 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 947FB4C044;
+ Fri,  4 Nov 2022 16:25:28 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id E95634C040;
+ Fri,  4 Nov 2022 16:25:24 +0000 (GMT)
+Received: from tarunpc.ibmuc.com (unknown [9.43.23.48])
+ by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+ Fri,  4 Nov 2022 16:25:24 +0000 (GMT)
+From: Tarun Sahu <tsahu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Fri,  4 Nov 2022 21:55:07 +0530
+Message-Id: <20221104162511.28658-1-tsahu@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 7fOYqiwbtCvjXiepdU22FvEure-98lqq
+X-Proofpoint-GUID: 5Y0BEBVQ-VYmcA0SLTnqi-cI2yRFXJNU
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Content-Language: en-US
-To: Andrea Cervesato <andrea.cervesato@suse.com>, ltp@lists.linux.it
-References: <20221104092411.5446-1-andrea.cervesato@suse.com>
- <c9a2c8ce-9dfb-a001-fa93-10a669c0e228@suse.cz>
- <6597b3e7-2f24-6d6d-e0f9-976251518e21@suse.com>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <6597b3e7-2f24-6d6d-e0f9-976251518e21@suse.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-04_11,2022-11-03_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 suspectscore=0
+ spamscore=0 phishscore=0 priorityscore=1501 mlxlogscore=978
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211040104
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Correctly handle user time in setitimer01
+Subject: [LTP] [PATCH v8 0/4] Hugetlb:Migrating the libhugetlbfs tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,36 +102,87 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+ vaibhav@linux.ibm.com, rpalethorpe@suse.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gMDQuIDExLiAyMiAxNToyMCwgQW5kcmVhIENlcnZlc2F0byB3cm90ZToKPiBIaSEKPiAKPiBP
-biAxMS80LzIyIDEzOjQ2LCBNYXJ0aW4gRG91Y2hhIHdyb3RlOgo+PiBUaGlzIGFwcHJvYWNoIGxv
-b2tzIGxpa2UgaXQnbGwgbGVhZCB0byBzb21lIGJhZCBlZGdlIGNhc2VzIHdoZW4KPj4gMCA8IHRp
-bWVfc3RlcCA8IDEwMDAuIEl0J2QgYmUgYmV0dGVyIHRvIGtlZXAgdGhlIG9yaWdpbmFsIHRpbWVf
-c3RlcCAKPj4gZGV0ZWN0aW9uIGFuZCBpbml0aWFsaXplICJlcnJvciIgdmFyaWFibGUgbGlrZSB0
-aGlzIChhbmQgYWxzbyByZW5hbWUgCj4+IGl0IHRvICJtYXJnaW4iKToKPj4KPj4gaW50IGppZmZ5
-Owo+Pgo+PiB2ZXJpZnlfc2V0aXRpbWVyKCkKPj4gewo+PiDCoMKgwqDCoC4uLgo+PiDCoMKgwqDC
-oG1hcmdpbiA9ICh0Yy0+d2hpY2ggPT0gSVRJTUVSX1JFQUwpID8gMCA6IGppZmZ5Owo+IEhlcmUg
-d2UgY2FuJ3QgdGFrZSBpbiBjb25zaWRlcmF0aW9uIENMT0NLX01PTk9UT05JQ19DT0FSU0UgcmVz
-b2x1dGlvbiBieSAKPiBkZWZhdWx0LCBiZWNhdXNlIG9uIElUSU1FUl9SRUFMIHdlIGFyZSBoYXZp
-bmcgYSBjbG9jayByZXNvbHV0aW9uIGdpdmVuIAo+IGJ5IENMT0NLX01PTk9UT05JQy4gQW5kIHVu
-Zm9ydHVuYXRlbHkgd2UgYXJlIG5vdCBzdXJlIGl0J3MgdW5kZXIgdGhlIAo+IG1pbGxpc2Vjb25k
-IHJlc29sdXRpb24gYWxsIHRoZSB0aW1lcywgd2hpY2ggbWVhbnMgbWFyZ2luID4gMC4gRm9yIHRo
-aXMgCj4gcmVhc29uLCBpbiB0aGUgcGF0Y2ggd2UgYXJlIGZldGNoaW5nIGNsb2NrIHJlc29sdXRp
-b24gaW4gYSBkaWZmZXJlbnQgCj4gd2F5LCBhY2NvcmRpbmcgd2l0aCB0aGUgY291bnRlciB0aW1l
-ci4gV2UgY2FuIGZldGNoIGRpZmZlcmVudCAKPiByZXNvbHV0aW9ucyBmcm9tIHNldHVwIHRobyBh
-bmQgdXNpbmcgaW5zaWRlIHRoZSB0ZXN0IGNvZGUuCgpUaGVyZSBpcyBub3RoaW5nIHByZXZlbnRp
-bmcgeW91IGZyb20gdXNpbmcgQ0xPQ0tfTU9OT1RPTklDX0NPQVJTRSAKcmVzb2x1dGlvbiBhcyB0
-aW1lX3N0ZXAgZXZlbiBmb3IgSVRJTUVSX1JFQUwuIFRoZSBvbmx5IGNvbnN0cmFpbnRzIGFyZSAK
-dGhhdCB0aGUgdGltZXIgdmFsdWUgbXVzdCBiZToKMSkgaGlnaGVyIHRoYW4gQ0xPQ0tfTU9OT1RP
-TklDIHJlc29sdXRpb24gKHByZWZlcmFibHkgYSBtdWx0aXBsZSBvZiBpdCkKMikgbGFyZ2UgZW5v
-dWdoIHNvIHRoYXQgeW91IGNhbiBjYWxsIHNldGl0aW1lcigpIGFnYWluIGJlZm9yZSB0aGUgdGlt
-ZXIgCmV4cGlyZXMKCkNMT0NLX01PTk9UT05JQ19DT0FSU0UgcmVzb2x1dGlvbiBzaG91bGQgc2F0
-aXNmeSB0aGUgZmlyc3QgY29uc3RyYWludCBieSAKZGVmaW5pdGlvbi4KCi0tIApNYXJ0aW4gRG91
-Y2hhICAgbWRvdWNoYUBzdXNlLmN6ClFBIEVuZ2luZWVyIGZvciBTb2Z0d2FyZSBNYWludGVuYW5j
-ZQpTVVNFIExJTlVYLCBzLnIuby4KQ09SU08gSUlhCktyaXppa292YSAxNDgvMzQKMTg2IDAwIFBy
-YWd1ZSA4CkN6ZWNoIFJlcHVibGljCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xp
-c3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi,
+Libhugetlbfs is not being maintained actively, and some distro is dropping
+support for it. There are some tests that are good for testing hugetlb
+functionality in kernel.
+
+As per previous dicussion in RFC[1], Here, this patch series consists
+of hugetlb tests taken from libhugetlbfs modified to work in ltp
+environment.
+
+Based on suggestion[2], I am reposting the patches again. Also, I added
+suggested changes at [3].
+
+ref:
+1:https://lore.kernel.org/all/20220908173947.17956-1-tsahu@linux.ibm.com/
+2:https://lore.kernel.org/all/87wn8xi61v.fsf@suse.de/
+3:https://lore.kernel.org/all/20221016125731.249078-1-tsahu@linux.ibm.com/
+
+v1 -> v2
+	1. In (brk near huge) test [PATCH 1/3] removed unused library
+	function test_addr_huge() and read_maps().
+v2 -> v3
+	1. Added a new patch commit for two new flags "needs_hugetlbfs" &
+	"needs_unlinked_hugetlb_file" in tst_test and modified tests to use
+	these flags. 
+	2. Added taint check in test [PATCH 1/3].
+	3. Removed redundant Hopt and nr_opt option.
+	4. Corrected pre-processor ARCH based conditional flags in test
+	[PATCH 1/3]
+v3 -> v4
+	1. Removed the needs_unlinked_hugetlb_file option in PATCH[1/4].
+	2. Removed the redundant saved_oc_hugepages checks in PATCH[3/4].
+	3. Updated the mntpoint checks in PATCH[1/4].
+v4 -> v5
+	1. Removed the needs_hugetlbfs check from needs_tmpdir function,
+	because mntpoint is now mandatory option with needs_hugetlbfs.
+	(PATCH[1/4])
+v5 -> v6
+	1. Edited the comment for needs_hugetlbfs PATCH[1/4].
+	2. Changed TCID to tid and removed __func__ from tst_brk PATCH[1/4].
+	3. Removed SAFE_UMOUNT in do_cleanup PATCH[1/4].
+	4. Added the ARCH definition in Makefile PATCH[2/4].
+	5. Removed ALIGN and use LTP_ALIGN PATCH[2/4].
+v6 -> v7
+	1. Removed ppc32 check from makefile, and checked for ppc32
+	system at runtime in PATCH[2/4]
+	2. Updated the test description in PATCH[2,3,4/4].
+	3. Defined macros for Hugepage related strings.
+v7 -> v8
+	1. Updated the check for mmu_type for powerpc in PATCH[2/4].
+	2. Removed leftover in test description.
+
+Tarun Sahu (4):
+  Hugetlb: Add new tst_test options for hugeltb test support
+  Hugetlb: Migrating libhugetlbfs brk_near_huge
+  Hugetlb: Migrating libhugetlbfs chunk-overcommit
+  Hugetlb: Migrating libhugetlbfs corrupt-by-cow-opt
+
+ include/tst_hugepage.h                        |   7 +
+ include/tst_test.h                            |  10 ++
+ lib/tst_test.c                                |  32 +++-
+ runtest/hugetlb                               |   3 +
+ testcases/kernel/mem/.gitignore               |   3 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap07.c  | 133 ++++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap08.c  | 144 ++++++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap09.c  |  79 ++++++++++
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h    |   2 +
+ 9 files changed, 410 insertions(+), 3 deletions(-)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
+
+-- 
+2.31.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
