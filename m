@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8075AC433FE
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 16:26:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B96CDC43219
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 16:26:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 857B23CB03E
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 17:26:19 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 4DB4E3CAF92
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 17:26:31 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 211A53CB001
- for <ltp@lists.linux.it>; Fri,  4 Nov 2022 17:25:48 +0100 (CET)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ by picard.linux.it (Postfix) with ESMTPS id 7B9193CAF73
+ for <ltp@lists.linux.it>; Fri,  4 Nov 2022 17:25:54 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
  [148.163.158.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 528181000760
- for <ltp@lists.linux.it>; Fri,  4 Nov 2022 17:25:47 +0100 (CET)
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A4Eqard023752;
- Fri, 4 Nov 2022 16:25:46 GMT
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 469561400520
+ for <ltp@lists.linux.it>; Fri,  4 Nov 2022 17:25:52 +0100 (CET)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+ by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A4GE73F010044;
+ Fri, 4 Nov 2022 16:25:51 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=fX6WAmSWRM3V2ZBDe7PVQXulGuQi5+1MCzqB7xZniXA=;
- b=Ix1tK2dM8Tnuz2WCoTLqaIAH2qYi+B/A8AZkIiuLYWPU7nEB0BLzimHhrBnu1Vw0EoVJ
- lnT7/pRkgYedGCLRZfvnWCL75aqnmWpFakwNxQvAHFU22sindajufGdd1//pP5r5b3eJ
- DPRjASXiXbjKLyGZpLRjUYob8iuN7Y4Pt4i81MnalrPwsEoiie9P311R5OzKXPEdzofU
- ecegPI2jgeYoYed3CsgckzD1QC5kOShSothTn8K6rNv26gNUEyhidk7xyrQtkqb5mNcG
- dhSajsCm5fkGVdFiwsYM4/Nqfg/zdo7XlQ8jYDWX2bmjowlb1JpKxcOlRsqJgAP6J+mp Tg== 
+ bh=5/ZfNdaPBemF9FmLg/ZsdOGBFv4cR0U2MTfttiLm4T8=;
+ b=E9KEGmlOFqOOIMUPZoVS89BRRIajuofWXjgu4PRp1KHbVoWRAh2Ie4zWw38qBqaor6w2
+ H3LpVOhnJHP02jIcTUt6mNPbyE3UNEZ1SdZyZpQZGjp8jA2YvwX0MoauSbWPmgZJa3Gr
+ nii+XTLqHJXcwnhEH2xrrCmr7AxwbLaUxk7T/pYP4Ulw53O+7HsVKuw40jlUHGBHrTlk
+ dFm3B1P531nGCAPgeSDeNvh/802Vr0SkDNVOo3wyB3Dk2AiHFTZ8KwPp5VKP3oj5WaT/
+ ljyHGUjcHC/gXKL3vjdG6BKHuivaIEjWeYM/lASQ9AuwVAVHySNsHgIDPC9JKGNrJbN3 6w== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kmpjfnj4m-1
+ by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3kmpt1d9v0-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 04 Nov 2022 16:25:46 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A4CqIP3006595;
- Fri, 4 Nov 2022 16:25:46 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.98])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kmpjfnj38-1
+ Fri, 04 Nov 2022 16:25:51 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A4Feh1j014718;
+ Fri, 4 Nov 2022 16:25:50 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com
+ [149.81.74.106])
+ by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3kmpt1d9tf-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 04 Nov 2022 16:25:46 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
- by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A4G5udE019261;
- Fri, 4 Nov 2022 16:25:44 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com
- (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
- by ppma03ams.nl.ibm.com with ESMTP id 3kgut92p12-1
+ Fri, 04 Nov 2022 16:25:50 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+ by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A4G5sbo031464;
+ Fri, 4 Nov 2022 16:25:48 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com
+ (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+ by ppma04fra.de.ibm.com with ESMTP id 3kgut8yxfy-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 04 Nov 2022 16:25:44 +0000
+ Fri, 04 Nov 2022 16:25:48 +0000
 Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com
  [9.149.105.58])
- by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2A4GPfV61835688
+ by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2A4GPj0465405258
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 4 Nov 2022 16:25:41 GMT
+ Fri, 4 Nov 2022 16:25:45 GMT
 Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 1A6594C046;
+ by IMSVA (Postfix) with ESMTP id 802864C04A;
+ Fri,  4 Nov 2022 16:25:45 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id D0A234C046;
  Fri,  4 Nov 2022 16:25:41 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 4A4144C040;
- Fri,  4 Nov 2022 16:25:37 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.23.48])
  by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Fri,  4 Nov 2022 16:25:36 +0000 (GMT)
+ Fri,  4 Nov 2022 16:25:41 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Fri,  4 Nov 2022 21:55:10 +0530
-Message-Id: <20221104162511.28658-4-tsahu@linux.ibm.com>
+Date: Fri,  4 Nov 2022 21:55:11 +0530
+Message-Id: <20221104162511.28658-5-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221104162511.28658-1-tsahu@linux.ibm.com>
 References: <20221104162511.28658-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: UGLWbZLB4hbSQauXztM6-unq0Y5DKqgn
-X-Proofpoint-ORIG-GUID: -abvQpGpnUyP2rXIngt-_x6_xrJvcZwB
+X-Proofpoint-GUID: T9jzd_jSc42vJRgWmG2Pj06aFOH2Ss_E
+X-Proofpoint-ORIG-GUID: 2q406P8IgXRKn5p8okZO_OdbjSIYHKox
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-04_11,2022-11-03_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015
- priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 bulkscore=0
- mlxlogscore=999 phishscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211040104
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+ adultscore=0 phishscore=0
+ mlxscore=0 suspectscore=0 priorityscore=1501 spamscore=0
+ lowpriorityscore=0 clxscore=1015 bulkscore=0 mlxlogscore=963
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2210170000 definitions=main-2211040104
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v8 3/4] Hugetlb: Migrating libhugetlbfs
- chunk-overcommit
+Subject: [LTP] [PATCH v8 4/4] Hugetlb: Migrating libhugetlbfs
+ corrupt-by-cow-opt
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,171 +111,108 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/chunk-overcommit.c test
+Migrating the libhugetlbfs/testcases/corrupt-by-cow-opt.c test
 
-Test Description: Some kernel versions after hugepage demand allocation was
-added used a dubious heuristic to check if there was enough hugepage space
-available for a given mapping.  The number of not-already-instantiated
-pages in the mapping was compared against the total hugepage free pool. It
-was very easy to confuse this heuristic into overcommitting by allocating
-hugepage memory in chunks, each less than the total available pool size but
-together more than available.  This would generally lead to OOM SIGKILLs of
-one process or another when it tried to instantiate pages beyond the
-available pool.
+Test Description: Test sanity of cow optimization on page cache. If a page
+in page cache has only 1 ref count, it is mapped for a private mapping
+directly and is overwritten freely, so next time we access the page, we
+can see corrupt data.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
- runtest/hugetlb                               |   1 +
- testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap08.c  | 144 ++++++++++++++++++
- 3 files changed, 146 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
+ runtest/hugetlb                               |  1 +
+ testcases/kernel/mem/.gitignore               |  1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap09.c  | 79 +++++++++++++++++++
+ 3 files changed, 81 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index f7ff81cb3..664f18827 100644
+index 664f18827..e2ada7a97 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -4,6 +4,7 @@ hugemmap04 hugemmap04
- hugemmap05 hugemmap05
+@@ -5,6 +5,7 @@ hugemmap05 hugemmap05
  hugemmap06 hugemmap06
  hugemmap07 hugemmap07
-+hugemmap08 hugemmap08
+ hugemmap08 hugemmap08
++hugemmap09 hugemmap09
  hugemmap05_1 hugemmap05 -m
  hugemmap05_2 hugemmap05 -s
  hugemmap05_3 hugemmap05 -s -m
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index df5256ec8..003ce422b 100644
+index 003ce422b..1a242ffe0 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -5,6 +5,7 @@
- /hugetlb/hugemmap/hugemmap05
+@@ -6,6 +6,7 @@
  /hugetlb/hugemmap/hugemmap06
  /hugetlb/hugemmap/hugemmap07
-+/hugetlb/hugemmap/hugemmap08
+ /hugetlb/hugemmap/hugemmap08
++/hugetlb/hugemmap/hugemmap09
  /hugetlb/hugeshmat/hugeshmat01
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
 new file mode 100644
-index 000000000..ce40e7b69
+index 000000000..1008395a4
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
-@@ -0,0 +1,144 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
+@@ -0,0 +1,79 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
-+ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
-+ * Author: David Gibson & Adam Litke
++ * Copyright (C) 2013 Joonsoo Kim, LG Electronics.
++ * Author: Joonsoo Kim
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * Some kernel versions after hugepage demand allocation was added used a
-+ * dubious heuristic to check if there was enough hugepage space available
-+ * for a given mapping.  The number of not-already-instantiated pages in
-+ * the mapping was compared against the total hugepage free pool. It was
-+ * very easy to confuse this heuristic into overcommitting by allocating
-+ * hugepage memory in chunks, each less than the total available pool size
-+ * but together more than available.  This would generally lead to OOM
-+ * SIGKILLs of one process or another when it tried to instantiate pages
-+ * beyond the available pool.
++ * Test sanity of cow optimization on page cache. If a page in page cache
++ * has only 1 ref count, it is mapped for a private mapping directly and
++ * is overwritten freely, so next time we access the page, we can see
++ * corrupt data.
 + *
 + */
 +
 +#define _GNU_SOURCE
 +#include <stdio.h>
-+#include <stdlib.h>
 +#include <sys/mount.h>
 +#include <limits.h>
 +#include <sys/param.h>
 +#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <signal.h>
 +
 +#include "hugetlb.h"
 +
 +#define MNTPOINT "hugetlbfs/"
-+#define WITH_OVERCOMMIT 0
-+#define WITHOUT_OVERCOMMIT 1
-+
 +static long hpage_size;
 +static int huge_fd = -1;
 +
-+static void test_chunk_overcommit(void)
++static void run_test(void)
 +{
-+	unsigned long totpages, chunk1, chunk2;
-+	void *p, *q;
-+	pid_t child;
-+	int status;
++	char *p;
++	char c;
 +
-+	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
++			huge_fd, 0);
++	*p = 's';
++	tst_res(TINFO, "Write %c to %p via shared mapping", *p, p);
++	SAFE_MUNMAP(p, hpage_size);
 +
-+	chunk1 = (totpages / 2) + 1;
-+	chunk2 = totpages - chunk1 + 1;
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE,
++			huge_fd, 0);
++	*p = 'p';
++	tst_res(TINFO, "Write %c to %p via private mapping", *p, p);
++	SAFE_MUNMAP(p, hpage_size);
 +
-+	tst_res(TINFO, "Free: %ld hugepages available: "
-+	       "chunk1=%ld chunk2=%ld", totpages, chunk1, chunk2);
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
++			huge_fd, 0);
++	c = *p;
++	tst_res(TINFO, "Read %c from %p via shared mapping", *p, p);
++	SAFE_MUNMAP(p, hpage_size);
 +
-+	p = SAFE_MMAP(NULL, chunk1*hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+		 huge_fd, 0);
-+
-+	q = mmap(NULL, chunk2*hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+		 huge_fd, chunk1*hpage_size);
-+	if (q == MAP_FAILED) {
-+		if (errno != ENOMEM) {
-+			tst_res(TFAIL | TERRNO, "mmap() chunk2");
-+			goto cleanup1;
-+		} else {
-+			tst_res(TPASS, "Successful without overcommit pages");
-+			goto cleanup1;
-+		}
-+	}
-+
-+	tst_res(TINFO, "Looks like we've overcommitted, testing...");
-+	/* Looks like we're overcommited, but we need to confirm that
-+	 * this is bad.  We touch it all in a child process because an
-+	 * overcommit will generally lead to a SIGKILL which we can't
-+	 * handle, of course.
-+	 */
-+	child = SAFE_FORK();
-+
-+	if (child == 0) {
-+		memset(p, 0, chunk1*hpage_size);
-+		memset(q, 0, chunk2*hpage_size);
-+		exit(0);
-+	}
-+
-+	SAFE_WAITPID(child, &status, 0);
-+
-+	if (WIFSIGNALED(status)) {
-+		tst_res(TFAIL, "Killed by signal '%s' due to overcommit",
-+		     tst_strsig(WTERMSIG(status)));
-+		goto cleanup2;
-+	}
-+
-+	tst_res(TPASS, "Successful with overcommit pages");
-+
-+cleanup2:
-+	SAFE_MUNMAP(q, chunk2*hpage_size);
-+
-+cleanup1:
-+	SAFE_MUNMAP(p, chunk1*hpage_size);
-+	SAFE_FTRUNCATE(huge_fd, 0);
-+}
-+
-+static void run_test(unsigned int test_type)
-+{
-+	switch (test_type) {
-+	case WITHOUT_OVERCOMMIT:
-+		tst_res(TINFO, "Without overcommit testing...");
-+		SAFE_FILE_PRINTF(PATH_OC_HPAGES, "%d", 0);
-+		break;
-+	case WITH_OVERCOMMIT:
-+		tst_res(TINFO, "With overcommit testing...");
-+		SAFE_FILE_PRINTF(PATH_OC_HPAGES, "%d", 2);
-+		break;
-+	}
-+	test_chunk_overcommit();
++	/* Direct write from huge page */
++	if (c != 's')
++		tst_res(TFAIL, "Data got corrupted.");
++	else
++		tst_res(TPASS, "Successful");
 +}
 +
 +static void setup(void)
@@ -293,18 +230,11 @@ index 000000000..ce40e7b69
 +	.needs_root = 1,
 +	.mntpoint = MNTPOINT,
 +	.needs_hugetlbfs = 1,
-+	.forks_child = 1,
-+	.save_restore = (const struct tst_path_val[]) {
-+		{PATH_OC_HPAGES, NULL},
-+		{}
-+	},
-+	.tcnt = 2,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test = run_test,
-+	.hugepages = {3, TST_NEEDS},
++	.test_all = run_test,
++	.hugepages = {2, TST_NEEDS},
 +};
-+
 -- 
 2.31.1
 
