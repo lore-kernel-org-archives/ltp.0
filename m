@@ -4,36 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3EB0C433FE
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 12:12:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD22EC4332F
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 12:12:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 409E23CB33C
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 13:12:15 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 9E71B3CAEDD
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 13:12:24 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 29B423CB514
+ by picard.linux.it (Postfix) with ESMTPS id 586603CB56D
  for <ltp@lists.linux.it>; Fri,  4 Nov 2022 13:06:23 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-6.smtp.seeweb.it (Postfix) with ESMTP id C29331400526
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 17:44:49 +0100 (CET)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7583623A
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 09:44:53 -0700 (PDT)
-Received: from e126380.cambridge.arm.com (e126380.cambridge.arm.com
- [10.1.32.50])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 99F9A3F5A1
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 09:44:46 -0700 (PDT)
-From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DD97E200130
+ for <ltp@lists.linux.it>; Fri,  4 Nov 2022 05:47:38 +0100 (CET)
+Received: by mail-wm1-x335.google.com with SMTP id p16so2357301wmc.3
+ for <ltp@lists.linux.it>; Thu, 03 Nov 2022 21:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=2Ntoy8AyCe/TRcbrwP5YL5bqphFHpz2TiQ7HZNNkJC0=;
+ b=CG3I2dQMGt1hZt325Q2j3xkACzq8H1fOhELRFe8LTnyYfI5hxlcY+oOwo/KT0iddzQ
+ TvAuOS9AzxsfF5/c2eqW0OKXZgguxjG4nNjnsDsKXcON4bXVwDJVCYmXxxyp3JDUjq70
+ cpfrmoDoCQLhdY5D9HoMoGSNCpzQn8MIHg7IxVTeV2OT7Lud4f0kFNboZOSvc9Q2pc5O
+ jb3VSjBSzHrQ/fP1oS2XGrCZSm2Y8UC+FSP36DPsbl7Y0DjeihJQm1s0s/sE3iO53b7Q
+ kL6lkf/H/CkkUhWtEsgntDjuNPrYrQnaqEBaxpT/XfGH//FKybQlVefK6+vqocLjPUkf
+ soxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=2Ntoy8AyCe/TRcbrwP5YL5bqphFHpz2TiQ7HZNNkJC0=;
+ b=avRiJ0IjMq8jja6M9xl4nIJC5m2xPp8rSmC+EWFhuClYV05wOGsY6cKjJE1jL8xl3Y
+ O0NekaXfaRKGLiVpQejEL0J7otKDZxia8DkLsszn+dLFaek/JaBl+9Ap3vSR2pq+bXZW
+ D4vNDlLXTrfK1vyZVA1e2nHhymgc0ZGGvyO96Cd+MbMHx1LXc18GKFfa6QbhuJWAtvOZ
+ sv0na+4SwJAOAeRPkb5fLB0bsKUUmXHYktaDxqFgK12RU1j6bM730xPyx6pNj007bckf
+ lyOrV4JVR54Ag4IA8udi7ZqT/AOHnPAedVS2YJgLQzlaLJb5+KwZRXc26zMvRdWYgRZY
+ Wp4w==
+X-Gm-Message-State: ACrzQf02tWSATa3oq+nPxhU8Hx5YqLP/d6RfYNhgopID+XRuHKW8EIry
+ BBEUM38EwnhlZtr3GDqmOIRF9Hb1Zx4OPw==
+X-Google-Smtp-Source: AMsMyM4yhQOInLjclwdpFi1XSQ86p+szw5fqtIdbkdTPNmMEYZdvAaLOUMYCqsceOeYlSo8PiQJAPA==
+X-Received: by 2002:a05:600c:3b88:b0:3c6:cef8:8465 with SMTP id
+ n8-20020a05600c3b8800b003c6cef88465mr31817038wms.64.1667537258190; 
+ Thu, 03 Nov 2022 21:47:38 -0700 (PDT)
+Received: from lab.hqhome163.com ([194.183.10.152])
+ by smtp.googlemail.com with ESMTPSA id
+ h19-20020a05600c351300b003b4ff30e566sm9583599wmq.3.2022.11.03.21.47.37
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 03 Nov 2022 21:47:37 -0700 (PDT)
+From: Alessandro Carminati <alessandro.carminati@gmail.com>
 To: ltp@lists.linux.it
-Date: Thu,  3 Nov 2022 16:44:29 +0000
-Message-Id: <20221103164431.365731-1-teo.coupriediaz@arm.com>
-X-Mailer: git-send-email 2.25.1
+Date: Fri,  4 Nov 2022 04:41:49 +0000
+Message-Id: <20221104044149.655317-3-alessandro.carminati@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221104044149.655317-1-alessandro.carminati@gmail.com>
+References: <8735b0jos5.fsf@suse.de>
+ <20221104044149.655317-1-alessandro.carminati@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/2] Change return type of tst_syscall
+Subject: [LTP] [PATCH 2/2] c-test-api: Documentation updated
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -45,33 +82,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Alessandro Carminati <alessandro.carminati@gmail.com>, rpalethorpe@suse.com,
+ acarmina@redhat.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGVsbG8gTFRQIG1haW50YWluZXJzLAoKVGhlIGdvYWwgb2YgdGhpcyBwYXRjaCBpcyB0byBmaXgg
-YSBtaXNtYXRjaCBiZXR3ZWVuIHRoZSByZXR1cm4gdHlwZSB1c2VkIGluIGB0c3Rfc3lzY2FsbGAs
-IGBpbnRgLCBhbmQgdGhlIG9uZSB1c2VkIGJ5IHNvbWUgc3lzY2FsbHMsIGBsb25nYCBvciBgdm9p
-ZCAqYCBmb3IgZXhhbXBsZSwgd2hpY2ggY2FuIGJlIGxhcmdlciB0aGFuIGFuIGludCBhbmQgbGVh
-ZCB0byBhbiBpbmNvcnJlY3QgdGVzdC4KCkFzIEN5cmlsIEhydWJpcycgZmVlZGJhY2sgb24gdGhl
-IFJGQyBJIHNlbnQgZWFybGllciB3YXMgbW9zdGx5IHBvc2l0aXZlLCBJIGFtIG5vdyBzZW5kaW5n
-IGl0IGFzIGEgcGF0Y2ggcHJvcGVyLiBUaGFua3MgYWdhaW4gZm9yIGhhdmluZyBhIGxvb2sgIQoK
-VGhlIG1haW4gY2hhbmdlIHNpbmNlIHRoZSBSRkMgaXMgdGhhdCB0aGUgdGVzdCBzdWl0ZSBJIHVz
-ZWQgZm9yIHRlc3RpbmcgdGhlIGNoYW5nZSwgc3BlY2lmaWMgdG8gdGVzdCB0aGF0IHVzZSB0c3Rf
-c3lzY2FsbCwgaXMgbm93IGluIGEgc3BlYXJhdGUgY29tbWl0IHdoaWNoIGlzIG5vdCB0byBiZSBt
-ZXJnZWQuClRoZSBwb2ludCBpcyB0byBwcm92aWRlIGEgcmVmZXJlbmNlIHRvIHdoYXQgd2FzIHRl
-c3RlZCBhbmQgd2hhdCBjb3VsZCBiZSBpbXBhY3RlZC4KCgpDSSBidWlsZCBvbiBsYXRlc3QgbWFz
-dGVyOgpodHRwczovL2dpdGh1Yi5jb20vVGVvLUNEL2x0cC9hY3Rpb25zL3J1bnMvMzM4NjU2NzQy
-NAoKUkZDIHBhdGNoIG9uIHRoZSBtYWlsaW5nIGxpc3QgYXJjaGl2ZToKaHR0cHM6Ly9sb3JlLmtl
-cm5lbC5vcmcvbHRwLzIwMjIxMDI3MTYzNjU0LjQxNDAxNy0xLXRlby5jb3VwcmllZGlhekBhcm0u
-Y29tL1QvI200M2U2YTEyODAxOWQ5NGEyMTVkZTMzNDMzZjA5ZTA2Zjc3MzRjOWEyCgpUaGFuayB5
-b3UgaW4gYWR2YW5jZSwKVMOpbyBDb3VwcmllIERpYXoKCi0tClRlbyBDb3VwcmllIERpYXogKDIp
-OgogIHJlZ2VuLnNoOiBVc2UgaW50cHRyX3QgZm9yIHRzdF9zeXNjYWxsIHJldHVybgogIFtETyBO
-T1QgTUVSR0VdIHRzdF9zeXNjYWxsIHRlc3Qgc3VpdGUKCiBpbmNsdWRlL2xhcGkvc3lzY2FsbHMv
-cmVnZW4uc2ggfCAgIDIgKy0KIHJ1bnRlc3QvY2hlY2tfdHN0X3N5c2NhbGwgICAgICB8IDE5MCAr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKIDIgZmlsZXMgY2hhbmdlZCwgMTkxIGlu
-c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBydW50ZXN0L2No
-ZWNrX3RzdF9zeXNjYWxsCgoKYmFzZS1jb21taXQ6IGI2MDZhN2M3ZGM2MTNiODA0MWY3YjM5NTg2
-OTVmMmNkZGUwNGZiZTUKLS0gCjIuMjUuMQoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6
-Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Since the tst_find_backing_dev logic is changed, the doc is updated
+accordingly.
+
+Signed-off-by: Alessandro Carminati <alessandro.carminati@gmail.com>
+---
+ doc/c-test-api.txt | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+index 64ee3397f..a7888c242 100644
+--- a/doc/c-test-api.txt
++++ b/doc/c-test-api.txt
+@@ -1071,8 +1071,11 @@ voud tst_find_backing_dev(const char *path, char *dev);
+ -------------------------------------------------------------------------------
+ 
+ This function finds the block dev that this path belongs to, it uses stat function
+-to get the major/minor number of the path. Then scan them in '/proc/self/mountinfo'
+-and list 2th column value after ' - ' string as its block dev if match succeeds.
++to get the major/minor number of the path. 
++This function finds the block dev that this path belongs to, it uses the unevent 
++file in sysfs to find the device name. It needs to discriminate between btrfs
++and not btrfs. For non btrfs filesystems it uses the minor, major numbers. For
++btrfs it uses the fs uuid.
+ 
+ [source,c]
+ -------------------------------------------------------------------------------
+-- 
+2.34.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
