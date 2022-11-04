@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A770C4332F
-	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 14:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD9BCC433FE
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 12:06:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D7803CAD70
-	for <ltp@archiver.kernel.org>; Thu,  3 Nov 2022 15:05:38 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 485DE3CB366
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 13:06:37 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4C39D3CA6BA
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 15:05:28 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 9D5F33CB352
+ for <ltp@lists.linux.it>; Fri,  4 Nov 2022 13:06:06 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C9F5E6011AF
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 15:05:27 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0D6271A010F5
+ for <ltp@lists.linux.it>; Fri,  4 Nov 2022 10:21:12 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1DEA61F45F;
- Thu,  3 Nov 2022 14:05:25 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0E6921F8C1;
+ Fri,  4 Nov 2022 09:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667484325;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ t=1667553671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=j2VwIS7T0MbrcWBeoF/n3T4njCePLHhheTqihEh6Hhw=;
- b=uo777YhYfWCh+48a/ONDqLQwWoX2S4E6cntUD6vZMurnyCAE0NUmW6ZsM9FV+8UOacT13g
- +JOPjCN4Nr+zeHUc8cF3xri33uUH0JRiVjRKjED18JpifKLQzvZb1N2KQt0cvg8TRM/dIL
- dw4wqkOy5xxRefkaxkDVcS0GpB4W+8k=
+ bh=88Q07iKFAFfktHyX4btFN1KRbODYjGrMgn+b3SaXMSs=;
+ b=09stfj6Ltd6TcQmKWFO9RlDdIKp0JJVMhT8O+pZAF+fAhbgXBAeyplNtcC1dCTP+z/SXog
+ oFjhJlUx2FVcGPic/bRHB6sIoxm51z6tw0nPdKFK/bQkJg9oZi2+X+hAnq4UDGXlK84NkY
+ mc6vsvoZK42FoB9j1IYqdP+1FsB6BGc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667484325;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1667553671;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=j2VwIS7T0MbrcWBeoF/n3T4njCePLHhheTqihEh6Hhw=;
- b=rjzTFU2F5oSYVgGEuo4jHZFXitoKK8x9FNycRm3Z6qfz7e0ALh0uhwARjBDi6U6yu+gcvg
- xkmemIQFEOzMarCQ==
+ bh=88Q07iKFAFfktHyX4btFN1KRbODYjGrMgn+b3SaXMSs=;
+ b=syMJpwbTRLfylDwWdAs5aLlWE0jO6DxIQ7VrpsbGNcLrgdAjKwWNJoygz+lEEtaLUNeXEA
+ eY+QBkXqX6G7BCDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9FAB13480;
- Thu,  3 Nov 2022 14:05:24 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E2E1C1346F;
+ Fri,  4 Nov 2022 09:21:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 5jhcMaTKY2NhcQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 03 Nov 2022 14:05:24 +0000
-Date: Thu, 3 Nov 2022 15:05:22 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <Y2PKoqbsxun3eAVZ@pevik>
-References: <20221102145935.24738-1-andrea.cervesato@suse.com>
- <61b788f9-3b62-d0dd-2679-e21cef89bffe@suse.cz>
- <1af8a502-c736-c31a-8794-c847788c8766@suse.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id wRcyNobZZGN5fAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 04 Nov 2022 09:21:10 +0000
+Date: Fri, 4 Nov 2022 10:21:25 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Tarun Sahu <tsahu@linux.ibm.com>
+Message-ID: <Y2TZlQKx+tOFCgRU@rei>
+References: <20221104062716.615021-1-tsahu@linux.ibm.com>
+ <20221104062716.615021-3-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1af8a502-c736-c31a-8794-c847788c8766@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20221104062716.615021-3-tsahu@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Correctly check setitimer params in setitimer01
+Subject: Re: [LTP] [PATCH v7 2/4] Hugetlb: Migrating libhugetlbfs
+ brk_near_huge
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,38 +77,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
+ vaibhav@linux.ibm.com, rpalethorpe@suse.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi!
+> +#ifdef __powerpc64__
+> +static int arch_has_slice_support(void)
+> +{
+> +	char mmu_type[16];
+> +	FILE *fp;
+> +	int ret;
+> +
+> +	fp = SAFE_POPEN("cat /proc/cpuinfo | grep MMU | awk '{ print $3}'", "r");
+> +	ret = fscanf(fp, "%s", mmu_type);
+> +	pclose(fp);
+> +
+> +	if (ret < 0)
+> +		tst_brk(TBROK, "Failed to determine MMU type");
 
-> > > @@ -64,14 +66,18 @@ static void verify_setitimer(unsigned int i)
-> > > =A0 =A0=A0=A0=A0=A0=A0=A0=A0=A0 tst_no_corefile(0);
-> > > =A0 -=A0=A0=A0=A0=A0=A0=A0 set_setitimer_value(USEC1, 0);
-> > > -=A0=A0=A0=A0=A0=A0=A0 TST_EXP_PASS(sys_setitimer(tc->which, value, N=
-ULL));
-> > > +=A0=A0=A0=A0=A0=A0=A0 set_setitimer_value(usec, 0);
-> > > +=A0=A0=A0=A0=A0=A0=A0 TST_EXP_PASS(sys_setitimer(tc->which, value, 0=
-));
+We do have SAFE_FILE_LINES_SCANF() that simplifies all this to a single line;
 
-> > Why change the third argument from NULL to 0?
+	SAFE_FILE_LINES_SCANF("/proc/cpuinfo", "MMU : %16s", mmu_type);
 
-> It's a mistake. I sent patch with 0 because I was tweaking with values
-> during tests.
 
-Good. I put it back and merged with updated copyright and adjusted the comm=
-it
-message and description.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-Thanks!
-
-Kind regards,
-Petr
-
--- =
-
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
