@@ -4,38 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 543C8C433FE
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 12:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE375C4332F
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 12:11:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AA0483CB374
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 13:11:23 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 780F33CB327
+	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 13:11:33 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 514A43CB4F5
- for <ltp@lists.linux.it>; Fri,  4 Nov 2022 13:06:18 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-5.smtp.seeweb.it (Postfix) with ESMTP id C384B6005D8
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 17:44:49 +0100 (CET)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 332CB11FB
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 09:44:55 -0700 (PDT)
-Received: from e126380.cambridge.arm.com (e126380.cambridge.arm.com
- [10.1.32.50])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 737CF3F5A1
- for <ltp@lists.linux.it>; Thu,  3 Nov 2022 09:44:48 -0700 (PDT)
-From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-To: ltp@lists.linux.it
-Date: Thu,  3 Nov 2022 16:44:31 +0000
-Message-Id: <20221103164431.365731-3-teo.coupriediaz@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221103164431.365731-1-teo.coupriediaz@arm.com>
-References: <20221103164431.365731-1-teo.coupriediaz@arm.com>
+ by picard.linux.it (Postfix) with ESMTPS id 470B33CB3AB
+ for <ltp@lists.linux.it>; Fri,  4 Nov 2022 13:06:19 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A755B2009D7
+ for <ltp@lists.linux.it>; Fri,  4 Nov 2022 07:49:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1667544560;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=SDyReK6ctmK3M1AYhhLFm/cTdmLCAFbu9pmiVFJAUJg=;
+ b=c7IEHL2nC1IdUTls0R0dSh2fwQFELIhobJzzvrAIQgeaxKGi6lh9TzRR3CUVyQo68Zty5y
+ omoWcnonXnJc3/S4XQhvw2vCub9riwQPHmZ2ukQVhQNPeKJ/5FSpnPofNjpVvUv9Zpr+sh
+ etekBKQuq7tCnCUfgfmq68jiCiy/Cwk=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-641-BVJOmN8DOg-j-jYH0PwH7Q-1; Fri, 04 Nov 2022 02:49:08 -0400
+X-MC-Unique: BVJOmN8DOg-j-jYH0PwH7Q-1
+Received: by mail-ot1-f71.google.com with SMTP id
+ t11-20020a9d590b000000b00655fad88dacso1663190oth.1
+ for <ltp@lists.linux.it>; Thu, 03 Nov 2022 23:49:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=JlkZ09M+xQkO9neSi8mJKFi1mjAlHOVvgCdsKz4g1Y8=;
+ b=DPie20nJmBOM85yO2GmCih1ytAO+Es6iK5cdsUePDrSkTZuZaH3iF7kkruoNa+EMzA
+ 1lisizLt4xTIRe2MosW1moU01LAd+lvm0JI4WDw2/rTuk1fcRULTqYfNgIcM4D5C0Wj3
+ O90ljZqoe1VF4SxTc4/fKTtVUF7K2dc1j17AQbv8A6cBzX67ml1nnRjA5UqrunBPzg2S
+ Ua3LHb2DiBcMCjiUAjswp27OJUkG6jg0ngtQyRLOAV9Y5hx0iouz9UD1lDXiyd8YprTe
+ LXcO2qRcY34l9g9pX5TsMe2eMo/ACL0yGSp44dzw2Kf0sHev1oWE3SEJi8Asn3TBAIbJ
+ IAXg==
+X-Gm-Message-State: ACrzQf1y+vKkeHmuLMxcqk1tJYW+ISh+d7wnRjcVpFNeux1I4Gsn7pl2
+ x5qqPhHJpI0MBhi105fukX7guN0tXTtH3TOEZrbWsObl6kxgir6qod1r+1TwHIah+62Csl4cLkH
+ kDAd8R6okarSerA5Q/2/MSywVTLQ=
+X-Received: by 2002:a05:6870:40cc:b0:13c:d606:27e8 with SMTP id
+ l12-20020a05687040cc00b0013cd60627e8mr18038040oal.107.1667544548087; 
+ Thu, 03 Nov 2022 23:49:08 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM43D+SxKW87JuDu2weDnb0YJMUFCEwIzbmsHaStifc7IKMElIDp0FoCU/WRPrQ+zMRjzPeXHLOssXt+ws9deW4=
+X-Received: by 2002:a05:6870:40cc:b0:13c:d606:27e8 with SMTP id
+ l12-20020a05687040cc00b0013cd60627e8mr18038009oal.107.1667544546758; Thu, 03
+ Nov 2022 23:49:06 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20221102145935.24738-1-andrea.cervesato@suse.com>
+In-Reply-To: <20221102145935.24738-1-andrea.cervesato@suse.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 4 Nov 2022 14:48:53 +0800
+Message-ID: <CAEemH2ePDmJf-Mq=gk8MX+J7tP-qkGrvqxRL-Ri_k8QjZd842g@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] [DO NOT MERGE] tst_syscall test suite
+Subject: Re: [LTP] [PATCH v1] Correctly check setitimer params in setitimer01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -47,224 +84,272 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============2047437079=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test suite was generated by grepping for uses of `tst_syscall`
-and processing the file names, with a view to verify that the behavior
-of those tests wouldn't change by changing the return type.
+--===============2047437079==
+Content-Type: multipart/alternative; boundary="0000000000005b68fa05ec9f7833"
 
-This is not intended to be merged, rather it is shared to make testing
-the patch easier as well as a reference for what testing was done before
-submitting the patch.
+--0000000000005b68fa05ec9f7833
+Content-Type: text/plain; charset="UTF-8"
 
-Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
----
- runtest/check_tst_syscall | 190 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 190 insertions(+)
- create mode 100644 runtest/check_tst_syscall
+Hi Andrea,
 
-diff --git a/runtest/check_tst_syscall b/runtest/check_tst_syscall
-new file mode 100644
-index 000000000..7a6003593
---- /dev/null
-+++ b/runtest/check_tst_syscall
-@@ -0,0 +1,190 @@
-+cve-2015-3290 cve-2015-3290
-+cve-2016-10044 cve-2016-10044
-+cve-2016-7117 cve-2016-7117
-+clock_settime03 clock_settime03
-+accept4_01 accept4_01
-+stime_var stime_var
-+rt_sigprocmask02 rt_sigprocmask02
-+rt_sigprocmask01 rt_sigprocmask01
-+pwritev pwritev
-+perf_event_open01 perf_event_open01
-+perf_event_open perf_event_open
-+capset03 capset03
-+capset04 capset04
-+capset01 capset01
-+capset02 capset02
-+readahead02 readahead02
-+readahead01 readahead01
-+io_submit02 io_submit02
-+io_submit02 io_submit02
-+io_submit03 io_submit03
-+io_submit03 io_submit03
-+clock_adjtime clock_adjtime
-+getrusage02 getrusage02
-+faccessat01 faccessat01
-+timer_delete01 timer_delete01
-+timer_delete02 timer_delete02
-+rt_sigsuspend01 rt_sigsuspend01
-+renameat2 renameat2
-+ppoll01 ppoll01
-+connect01 connect01
-+semop semop
-+msgctl04 msgctl04
-+semctl03 semctl03
-+semctl09 semctl09
-+shmctl02 shmctl02
-+shmctl05 shmctl05
-+migrate_pages01 migrate_pages01
-+migrate_pages03 migrate_pages03
-+migrate_pages02 migrate_pages02
-+tkill02 tkill02
-+tkill02 tkill02
-+tkill01 tkill01
-+tkill01 tkill01
-+capget01 capget01
-+capget02 capget02
-+pkey pkey
-+clone09 clone09
-+clone08 clone08
-+gettimeofday01 gettimeofday01
-+gettimeofday02 gettimeofday02
-+signalfd01 signalfd01
-+futimesat01 futimesat01
-+vhangup02 vhangup02
-+vhangup01 vhangup01
-+sched_setaffinity01 sched_setaffinity01
-+setdomainname setdomainname
-+fchownat fchownat
-+timer_settime01 timer_settime01
-+timer_settime02 timer_settime02
-+readdir21 readdir21
-+mlock202 mlock202
-+mlock201 mlock201
-+mlock203 mlock203
-+timerfd03 timerfd03
-+timerfd02 timerfd02
-+compat_tst_16 compat_tst_16
-+compat_16 compat_16
-+sigpending02 sigpending02
-+signalfd4_02 signalfd4_02
-+signalfd4_01 signalfd4_01
-+inotify_init1_01 inotify_init1_01
-+inotify_init1_02 inotify_init1_02
-+inotify_init1_01 inotify_init1_01
-+inotify_init1_02 inotify_init1_02
-+memfd_create_common memfd_create_common
-+getcpu01 getcpu01
-+tgkill tgkill
-+sysctl03 sysctl03
-+sysctl01 sysctl01
-+sysctl04 sysctl04
-+get_robust_list01 get_robust_list01
-+sendmmsg_var sendmmsg_var
-+copy_file_range copy_file_range
-+rt_sigqueueinfo rt_sigqueueinfo
-+rt_sigqueueinfo01 rt_sigqueueinfo01
-+setns02 setns02
-+setns01 setns01
-+mprotect01 mprotect01
-+delete_module02 delete_module02
-+delete_module03 delete_module03
-+delete_module01 delete_module01
-+sched_get_priority_max02 sched_get_priority_max02
-+sched_get_priority_max01 sched_get_priority_max01
-+sched_get_priority_max02 sched_get_priority_max02
-+mknodat mknodat
-+mknodat02 mknodat02
-+utimensat01 utimensat01
-+syslog12 syslog12
-+syslog11 syslog11
-+inotify inotify
-+preadv preadv
-+sync_file_range01 sync_file_range01
-+eventfd01 eventfd01
-+sched_get_priority_min02 sched_get_priority_min02
-+sched_get_priority_min01 sched_get_priority_min01
-+sched_get_priority_min02 sched_get_priority_min02
-+fstatat01 fstatat01
-+adjtimex02 adjtimex02
-+sgetmask01 sgetmask01
-+setitimer02 setitimer02
-+timer_getoverrun01 timer_getoverrun01
-+io_cancel01 io_cancel01
-+io_cancel01 io_cancel01
-+exit_group01 exit_group01
-+timer_create02 timer_create02
-+io_getevents01 io_getevents01
-+fork05 fork05
-+fcntl_common fcntl_common
-+fcntl31 fcntl31
-+timer_gettime01 timer_gettime01
-+membarrier01 membarrier01
-+set_thread_area01 set_thread_area01
-+swapon01 swapon01
-+swapon02 swapon02
-+swapon03 swapon03
-+ssetmask01 ssetmask01
-+eventfd2_02 eventfd2_02
-+eventfd2_01 eventfd2_01
-+eventfd2_03 eventfd2_03
-+request_key05 request_key05
-+epoll_create epoll_create
-+openat openat
-+remap_file_pages02 remap_file_pages02
-+io_setup02 io_setup02
-+io_setup02 io_setup02
-+rt_sigtimedwait01 rt_sigtimedwait01
-+linkat02 linkat02
-+linkat01 linkat01
-+cacheflush01 cacheflush01
-+getdents getdents
-+epoll_create1_01 epoll_create1_01
-+epoll_create1_02 epoll_create1_02
-+fchmodat01 fchmodat01
-+userfaultfd01 userfaultfd01
-+symlinkat01 symlinkat01
-+socketcall02 socketcall02
-+socketcall03 socketcall03
-+socketcall01 socketcall01
-+sysfs03 sysfs03
-+sysfs04 sysfs04
-+sysfs05 sysfs05
-+sysfs02 sysfs02
-+sysfs01 sysfs01
-+select_var select_var
-+newuname01 newuname01
-+process_vm_readv02 process_vm_readv02
-+process_vm_writev02 process_vm_writev02
-+process_vm_readv03 process_vm_readv03
-+process_vm_writev02 process_vm_writev02
-+process_vm_readv01 process_vm01 -r
-+process_vm_writev01 process_vm01 -w
-+io_destroy02 io_destroy02
-+getrandom04 getrandom04
-+getrandom03 getrandom03
-+getrandom01 getrandom01
-+getrandom02 getrandom02
-+swapoff02 swapoff02
-+swapoff01 swapoff01
-+futex2test futex2test
-+ioprio ioprio
-+getitimer02 getitimer02
-+set_tid_address01 set_tid_address01
-+getrlimit03 getrlimit03
-+ustat01 ustat01
-+ustat02 ustat02
-+prctl04 prctl04
-+prctl05 prctl05
-+libclone libclone
-+userns04 userns04
-+userns04 userns04
-+pidns30 pidns30
-+pidns31 pidns31
-+pidns13 pidns13
-+mqns_04 mqns_04
-+mqns_02 mqns_02
-+mqns_01 mqns_01
-+mqns_03 mqns_03
-+kmsg01 kmsg01
-+pt_test pt_test
-+libcpuset libcpuset
+Andrea Cervesato via ltp <ltp@lists.linux.it> wrote:
+
+Last test rewrite didn't consider the right expected boundaries when
+> setitimer syscall was tested. We also introduced counter times as
+> multiple of clock resolution, to avoid kernel rounding during setitimer
+> counter increase.
+>
+
+Good catch, but I'm afraid this can not solve the problem thoroughly.
+According failure log on "ITIMER_VIRTUAL/PROF" with running this patch.:
+
+setitimer01.c:64: TINFO: tc->which = ITIMER_VIRTUAL
+setitimer01.c:69: TPASS: sys_setitimer(tc->which, value, NULL) passed
+setitimer01.c:72: TPASS: sys_setitimer(tc->which, value, ovalue) passed
+setitimer01.c:76: TINFO: tv_sec=0, tv_usec=31000
+setitimer01.c:79: TFAIL: Ending counters are out of range
+setitimer01.c:88: TPASS: Child received signal: SIGVTALRM
+
+setitimer01.c:64: TINFO: tc->which = ITIMER_PROF
+setitimer01.c:69: TPASS: sys_setitimer(tc->which, value, NULL) passed
+setitimer01.c:72: TPASS: sys_setitimer(tc->which, value, ovalue) passed
+setitimer01.c:76: TINFO: tv_sec=0, tv_usec=31000
+setitimer01.c:79: TFAIL: Ending counters are out of range
+setitimer01.c:88: TPASS: Child received signal: SIGPROF
+
+It seems the tv_usec always increase 1000us, I highly suspect
+this increase comes from kernel function set_cpu_itimer() that
+explicitly add TICK_NSEC when 'nval' is larger than zero:
+
+$ cat kernel/time/itimer.c -n
+   ...
+   168 static void set_cpu_itimer(struct task_struct *tsk, unsigned int
+clock_id,
+   169                 const struct itimerspec64 *const value,
+   170                 struct itimerspec64 *const ovalue)
+   171 {
+                   ...
+   182          if (oval || nval) {
+   183                  if (nval > 0)
+   184                          nval += TICK_NSEC;
+   185                  set_process_cpu_timer(tsk, clock_id, &nval, &oval);
+   186          }
+   187          ...
+   198 }
+
+To verify my guess, I do a modification based on your patch and
+then easily get the result in pass.
+
+--- a/testcases/kernel/syscalls/setitimer/setitimer01.c
++++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+@@ -76,7 +76,7 @@ static void verify_setitimer(unsigned int i)
+                        ovalue->it_value.tv_sec,
+                        ovalue->it_value.tv_usec);
+
+-               if (ovalue->it_value.tv_sec != 0 ||
+ovalue->it_value.tv_usec > usec)
++               if (ovalue->it_value.tv_sec != 0 ||
+ovalue->it_value.tv_usec - time_step > usec)
+                        tst_res(TFAIL, "Ending counters are out of range");
+
+                for (;;)
+@@ -98,8 +98,8 @@ static void setup(void)
+        SAFE_CLOCK_GETRES(CLOCK_MONOTONIC, &res);
+
+        time_step = res.tv_nsec / 1000;
+-       if (time_step < 10000)
+-               time_step = 10000;
++       if (time_step < 1000)
++               time_step = 1000;
+
+        tst_res(TINFO, "clock resolution: %luns, time step: %luus",
+                res.tv_nsec,
+
+
+But after trying this with my RasberryPi4, it fails again with an increase
+4000us each time. So it might related to the system use different time
+resolutions. When I shift to use `CLOCK_MONOTONIC_COARSE`
+then test gets passed on all my platforms.
+
+Any comments?
+
+
+----------CLOCK_MONOTONIC-------------
+setitimer01.c:65: TINFO: tc->which = ITIMER_VIRTUAL
+setitimer01.c:70: TPASS: sys_setitimer(tc->which, value, NULL) passed
+setitimer01.c:73: TPASS: sys_setitimer(tc->which, value, ovalue) passed
+setitimer01.c:77: TINFO: tv_sec=0, tv_usec=7000
+setitimer01.c:80: TFAIL: Ending counters are out of range
+
+-----------CLOCK_MONOTONIC_COARSE-------
+setitimer01.c:65: TINFO: tc->which = ITIMER_VIRTUAL
+setitimer01.c:70: TPASS: sys_setitimer(tc->which, value, NULL) passed
+setitimer01.c:73: TPASS: sys_setitimer(tc->which, value, ovalue) passed
+setitimer01.c:77: TINFO: tv_sec=0, tv_usec=16000
+setitimer01.c:89: TPASS: Child received signal: SIGVTALRM
+
+# lscpu
+Architecture:        aarch64
+Byte Order:          Little Endian
+CPU(s):              4
+On-line CPU(s) list: 0-3
+Thread(s) per core:  1
+Core(s) per cluster: 4
+Socket(s):           -
+Cluster(s):          1
+Vendor ID:           ARM
+Model:               3
+Model name:          Cortex-A72
+Stepping:            r0p3
+CPU max MHz:         1500.0000
+CPU min MHz:         600.0000
+BogoMIPS:            108.00
+Flags:               fp asimd evtstrm crc32 cpuid
+
 -- 
-2.25.1
+Regards,
+Li Wang
+
+--0000000000005b68fa05ec9f7833
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Hi=C2=A0Andrea,</div></div><br><div class=3D"gmail_quote"><di=
+v dir=3D"ltr" class=3D"gmail_attr">Andrea Cervesato via ltp &lt;<a href=3D"=
+mailto:ltp@lists.linux.it" target=3D"_blank">ltp@lists.linux.it</a>&gt; wro=
+te:<br></div><div dir=3D"ltr" class=3D"gmail_attr"><br></div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid=
+ rgb(204,204,204);padding-left:1ex">Last test rewrite didn&#39;t consider t=
+he right expected boundaries when<br>
+setitimer syscall was tested. We also introduced counter times as<br>
+multiple of clock resolution, to avoid kernel rounding during setitimer<br>
+counter increase.<br></blockquote><div><br></div><div><div class=3D"gmail_d=
+efault" style=3D"font-size:small">Good catch, but I&#39;m afraid this can n=
+ot solve the problem thoroughly.</div><div class=3D"gmail_default" style=3D=
+"font-size:small">According failure log on &quot;ITIMER_VIRTUAL/PROF&quot; =
+with running this patch.:</div><div class=3D"gmail_default" style=3D"font-s=
+ize:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small"=
+>setitimer01.c:64: TINFO: tc-&gt;which =3D ITIMER_VIRTUAL<br>setitimer01.c:=
+69: TPASS: sys_setitimer(tc-&gt;which, value, NULL) passed<br>setitimer01.c=
+:72: TPASS: sys_setitimer(tc-&gt;which, value, ovalue) passed<br>setitimer0=
+1.c:76: TINFO: tv_sec=3D0, tv_usec=3D31000<br>setitimer01.c:79: TFAIL: Endi=
+ng counters are out of range</div><div class=3D"gmail_default" style=3D"fon=
+t-size:small">setitimer01.c:88: TPASS: Child received signal: SIGVTALRM</di=
+v><div class=3D"gmail_default" style=3D"font-size:small"><br>setitimer01.c:=
+64: TINFO: tc-&gt;which =3D ITIMER_PROF<br>setitimer01.c:69: TPASS: sys_set=
+itimer(tc-&gt;which, value, NULL) passed<br>setitimer01.c:72: TPASS: sys_se=
+titimer(tc-&gt;which, value, ovalue) passed<br>setitimer01.c:76: TINFO: tv_=
+sec=3D0, tv_usec=3D31000<br>setitimer01.c:79: TFAIL: Ending counters are ou=
+t of range</div><div class=3D"gmail_default" style=3D"font-size:small">seti=
+timer01.c:88: TPASS: Child received signal: SIGPROF<br></div><div class=3D"=
+gmail_default" style=3D"font-size:small"><br></div><div class=3D"gmail_defa=
+ult" style=3D"font-size:small">It seems the tv_usec always increase 1000us,=
+ I highly suspect</div><div class=3D"gmail_default" style=3D"font-size:smal=
+l">this increase comes from kernel function set_cpu_itimer() that</div><div=
+ class=3D"gmail_default" style=3D"font-size:small">explicitly add TICK_NSEC=
+ when &#39;nval&#39; is larger than zero:</div><br></div><div><div class=3D=
+"gmail_default" style=3D"font-size:small">$ cat kernel/time/itimer.c -n</di=
+v><div class=3D"gmail_default" style=3D"font-size:small">=C2=A0 =C2=A0...</=
+div><div class=3D"gmail_default" style=3D"font-size:small">=C2=A0 =C2=A0168=
+=09static void set_cpu_itimer(struct task_struct *tsk, unsigned int clock_i=
+d,<br>=C2=A0 =C2=A0169=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0const struct itimerspec64 *const value,<br>=C2=A0 =C2=A0170=C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0struct itimerspec64=
+ *const ovalue)<br>=C2=A0 =C2=A0171=09{<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0...<br>=C2=A0 =C2=A0182=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 if (oval || nval) {<br>=C2=A0 =C2=A0183=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (nval &gt; 0)<br>=C2=A0=
+ =C2=A0184=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0nval +=3D TICK_NSEC;<br>=C2=A0 =C2=A0185=
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 set_process_=
+cpu_timer(tsk, clock_id, &amp;nval, &amp;oval);<br>=C2=A0 =C2=A0186=C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 }<br>=C2=A0 =C2=A0187=C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 ...<br>=C2=A0 =C2=A0198=09}<br></div><div class=3D"gmail_default=
+" style=3D"font-size:small"><br></div></div><div class=3D"gmail_default" st=
+yle=3D"font-size:small">To verify my guess, I do a modification based on yo=
+ur patch and</div><div class=3D"gmail_default" style=3D"font-size:small">th=
+en easily get the result in pass.</div><div class=3D"gmail_default" style=
+=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font-s=
+ize:small">--- a/testcases/kernel/syscalls/setitimer/setitimer01.c<br>+++ b=
+/testcases/kernel/syscalls/setitimer/setitimer01.c<br>@@ -76,7 +76,7 @@ sta=
+tic void verify_setitimer(unsigned int i)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ovalue-&gt;it_value=
+.tv_sec,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 ovalue-&gt;it_value.tv_usec);<br>=C2=A0<br>- =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (ovalue-&gt;it_value.tv_sec !=
+=3D 0 || ovalue-&gt;it_value.tv_usec &gt; usec)<br>+ =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (ovalue-&gt;it_value.tv_sec !=3D 0 || ovalue=
+-&gt;it_value.tv_usec - time_step &gt; usec)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(TFAIL, &qu=
+ot;Ending counters are out of range&quot;);<br>=C2=A0<br>=C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 for (;;)<br>@@ -98,8 +98,8 @@ static=
+ void setup(void)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 SAFE_CLOCK_GETRES(CLOCK_MO=
+NOTONIC, &amp;res);<br>=C2=A0<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 time_step =3D =
+res.tv_nsec / 1000;<br>- =C2=A0 =C2=A0 =C2=A0 if (time_step &lt; 10000)<br>=
+- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 time_step =3D 10000;<br>=
++ =C2=A0 =C2=A0 =C2=A0 if (time_step &lt; 1000)<br>+ =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 time_step =3D 1000;<br>=C2=A0<br>=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 tst_res(TINFO, &quot;clock resolution: %luns, time step: %luu=
+s&quot;,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 res.tv_=
+nsec,<br></div><div>=C2=A0</div></div><div><br></div><div><div class=3D"gma=
+il_default" style=3D"font-size:small">But after trying this with my Rasberr=
+yPi4, it fails again with an increase</div><div class=3D"gmail_default" sty=
+le=3D"font-size:small">4000us each time. So it might related to the system =
+use different=C2=A0time</div><div class=3D"gmail_default" style=3D"font-siz=
+e:small">resolutions. When I shift to use `CLOCK_MONOTONIC_COARSE`</div></d=
+iv><div class=3D"gmail_default" style=3D"font-size:small">then test gets pa=
+ssed on all my platforms.</div><div class=3D"gmail_default" style=3D"font-s=
+ize:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small"=
+>Any comments?</div><div class=3D"gmail_default" style=3D"font-size:small">=
+<br></div><div><br></div><div><div class=3D"gmail_default" style=3D"font-si=
+ze:small">----------CLOCK_MONOTONIC-------------</div></div><div><div class=
+=3D"gmail_default" style=3D"font-size:small">setitimer01.c:65: TINFO: tc-&g=
+t;which =3D ITIMER_VIRTUAL<br>setitimer01.c:70: TPASS: sys_setitimer(tc-&gt=
+;which, value, NULL) passed<br>setitimer01.c:73: TPASS: sys_setitimer(tc-&g=
+t;which, value, ovalue) passed<br>setitimer01.c:77: TINFO: tv_sec=3D0, tv_u=
+sec=3D7000<br>setitimer01.c:80: TFAIL: Ending counters are out of range</di=
+v><br><div class=3D"gmail_default" style=3D"font-size:small">-----------CLO=
+CK_MONOTONIC_COARSE-------</div></div><div><div class=3D"gmail_default" sty=
+le=3D"font-size:small">setitimer01.c:65: TINFO: tc-&gt;which =3D ITIMER_VIR=
+TUAL<br>setitimer01.c:70: TPASS: sys_setitimer(tc-&gt;which, value, NULL) p=
+assed<br>setitimer01.c:73: TPASS: sys_setitimer(tc-&gt;which, value, ovalue=
+) passed<br>setitimer01.c:77: TINFO: tv_sec=3D0, tv_usec=3D16000<br>setitim=
+er01.c:89: TPASS: Child received signal: SIGVTALRM<br></div><div class=3D"g=
+mail_default" style=3D"font-size:small"><br></div><div class=3D"gmail_defau=
+lt" style=3D"font-size:small"># lscpu <br>Architecture: =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0aarch64<br>Byte Order: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Little E=
+ndian<br>CPU(s): =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A04<br>On-li=
+ne CPU(s) list: 0-3<br>Thread(s) per core: =C2=A01<br>Core(s) per cluster: =
+4<br>Socket(s): =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 -<br>Cluster(s): =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A01<br>Vendor ID: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 ARM<br>Model: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 3<br>Mod=
+el name: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Cortex-A72<br>Stepping: =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0r0p3<br>CPU max MHz: =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 1500.0000<br>CPU min MHz: =C2=A0 =C2=A0 =C2=A0 =C2=A0 600.0000<br>B=
+ogoMIPS: =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0108.00<br>Flags: =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 fp asimd evtstrm crc32 cpuid<br><=
+/div><div class=3D"gmail_default" style=3D"font-size:small"></div><br></div=
+>-- <br><div dir=3D"ltr"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wa=
+ng<br></div></div></div></div>
+
+--0000000000005b68fa05ec9f7833--
+
+
+--===============2047437079==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============2047437079==--
+
