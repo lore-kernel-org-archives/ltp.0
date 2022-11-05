@@ -4,79 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AFE8C4332F
-	for <ltp@archiver.kernel.org>; Sat,  5 Nov 2022 02:38:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB043C4332F
+	for <ltp@archiver.kernel.org>; Sat,  5 Nov 2022 18:32:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 130A93CAE83
-	for <ltp@archiver.kernel.org>; Sat,  5 Nov 2022 03:38:36 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 504883CE023
+	for <ltp@archiver.kernel.org>; Sat,  5 Nov 2022 19:32:49 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 043FA3C7FCC
- for <ltp@lists.linux.it>; Sat,  5 Nov 2022 03:38:24 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 174EE3C0EF2
+ for <ltp@lists.linux.it>; Sat,  5 Nov 2022 19:32:38 +0100 (CET)
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A5A701400335
- for <ltp@lists.linux.it>; Sat,  5 Nov 2022 03:38:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1667615902;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=n1A+vp0/PuOlI6OY6DxOrZcJSdHarRwoKeIns3u7bAM=;
- b=fokjnKnG0ranbs9MKosRNJief6GpyeNd6Qm8HghbCzRl5ePyGbcHdr43oDoqmHCqmchBgw
- zZqPwGJfwdZZQ5mbbrS/OTqZVLtz9ex9CMc9zhhygtATsFyeqb5xU+xEGgxz/F7WD3nm+O
- i0/UGJwVs9SvdpJb3LkRNan1epmF+WI=
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
- [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-158--ht-MVcqPxqzl03JMvNv6w-1; Fri, 04 Nov 2022 22:38:20 -0400
-X-MC-Unique: -ht-MVcqPxqzl03JMvNv6w-1
-Received: by mail-oa1-f69.google.com with SMTP id
- 586e51a60fabf-13b273d54dbso3381563fac.10
- for <ltp@lists.linux.it>; Fri, 04 Nov 2022 19:38:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=n1A+vp0/PuOlI6OY6DxOrZcJSdHarRwoKeIns3u7bAM=;
- b=UIa/ABqez7fix27ZlcvltLQ52Runh+kE20bJaoNdGZcMmThBIVvYHlKn/vHphU1t59
- ge/XHP4rtSf3CNWXOZPmYGGsW7yYK4+RYVk+UW0moGroFfqJD+hAXQ3vuJdbDiSxtl9g
- 6Il6N0fz3A8fzohbirE7YVIitxWgq/5EIAlzZ9C3n4pm18HcJzA3v1ZrzZhXQbyaoaGF
- oEBIUT/d1PlDJUyywINhxZWdnGtgs/KN52EYFmUSE+EOSrytEMTqyUm7UIQS1AsgVC9P
- Tzd+S/pu3BRYOnEK2N/0zr32uCOh3YxU3fKBS/mjZd1nQS2Ee6NpypdpBtWpf2/gCRnN
- RCRA==
-X-Gm-Message-State: ACrzQf2XzoFrG9uNEC9d+D8gRbnO4oNGKYGAFPu+Duib7PB6AHK+K5ML
- JYu2gIBusiRStf20qDeizyKtRo3eE80/jRojRRYwZ782GEsQQz9Q/RzKpmogtCqkgEpeNgHiIEH
- 3VpnQcKpVp0m/M+GCYlkRsRNMMLI=
-X-Received: by 2002:a05:6870:40cc:b0:13c:d606:27e8 with SMTP id
- l12-20020a05687040cc00b0013cd60627e8mr20842264oal.107.1667615899849; 
- Fri, 04 Nov 2022 19:38:19 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM52qe3DSU3LjXB2Pl1bqQGZVlq/AKgUVUMyT3YfhCGqNPABZrC8IQJQR9s/Fzh83G5RbBu+xMFdjjP8rzv1T7Q=
-X-Received: by 2002:a05:6870:40cc:b0:13c:d606:27e8 with SMTP id
- l12-20020a05687040cc00b0013cd60627e8mr20842255oal.107.1667615899581; Fri, 04
- Nov 2022 19:38:19 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3191C1000367
+ for <ltp@lists.linux.it>; Sat,  5 Nov 2022 19:32:37 +0100 (CET)
+Date: Sat, 05 Nov 2022 18:32:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
+ s=protonmail3; t=1667673156; x=1667932356;
+ bh=L6wLxu237MAsoPIoRaoxdtngdzPncxI+BuOv02OBD4w=;
+ h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+ Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+ b=TRGfvytKCX0lVUW07kSrz5co0rFgNLjrttuFibaQCNi1rMJ4DBTHjFD11QqKhzQL2
+ u8hNRckgDCR8InYiXtyna0RzIArXm8ST9QYarnhU08GX0JouY2AkszOwsFbDGiI7cS
+ 1Xy8Sgdz+8IoXNJOMCR2uh8sMUL85tJpRhmWtIoShMIGKW4HJbZo2JWa8aHDzMSt/X
+ 4IeGfhINxPmcctWNnVVfpJzOC93QUfl9Co8AV5+1+PLVVGZc1k2DuZKo6ivmsY+XrD
+ EsuoChx7JnvT9MVQ10l540DWAijurYQQij2W0VgAKx7ZiO0xGiLWL1YXCyNpvT82yp
+ gR7J2f0q3reGQ==
+To: ltp@lists.linux.it
+Message-ID: <20221105183213.36684-1-federico.bonfiglio@protonmail.ch>
+Feedback-ID: 5346557:user:proton
 MIME-Version: 1.0
-References: <20221104092411.5446-1-andrea.cervesato@suse.com>
- <c9a2c8ce-9dfb-a001-fa93-10a669c0e228@suse.cz>
- <6597b3e7-2f24-6d6d-e0f9-976251518e21@suse.com>
- <051a74e3-0a6a-5fe3-3e10-24430c8e5a96@suse.cz>
-In-Reply-To: <051a74e3-0a6a-5fe3-3e10-24430c8e5a96@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Sat, 5 Nov 2022 10:38:07 +0800
-Message-ID: <CAEemH2fTFBiuejwvpxPEDQK_tfzJh3-pouHo0QLnjb8JjAmQug@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Correctly handle user time in setitimer01
+Subject: [LTP] [PATCH v1] sched_setscheduler: test SCHED_RESET_ON_FORK
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,133 +51,228 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============0453357965=="
+From: Federico Bonfiglio via ltp <ltp@lists.linux.it>
+Reply-To: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
+Cc: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
+Content-Type: multipart/mixed; boundary="===============0340550544=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0453357965==
-Content-Type: multipart/alternative; boundary="0000000000005121cf05ecb015e3"
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============0340550544==
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha256; boundary="------fcea5b6887b4d5d051a37e9c33a6fee160fe18c519f8c5d431f01e55303c8897"; charset=utf-8
 
---0000000000005121cf05ecb015e3
-Content-Type: text/plain; charset="UTF-8"
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------fcea5b6887b4d5d051a37e9c33a6fee160fe18c519f8c5d431f01e55303c8897
+Content-Type: multipart/mixed;
+ boundary=06051ca2b8ebb88f8a5fb61834d5401fe06199b9c2b4f6b4da70b1c34881
+From: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
+To: ltp@lists.linux.it
+Cc: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
+Subject: [PATCH v1] sched_setscheduler: test SCHED_RESET_ON_FORK
+Date: Sat,  5 Nov 2022 19:32:13 +0100
+Message-Id: <20221105183213.36684-1-federico.bonfiglio@protonmail.ch>
+X-Mailer: git-send-email 2.38.0
+MIME-Version: 1.0
 
-On Fri, Nov 4, 2022 at 11:44 PM Martin Doucha <mdoucha@suse.cz> wrote:
+--06051ca2b8ebb88f8a5fb61834d5401fe06199b9c2b4f6b4da70b1c34881
+Content-Transfer-Encoding: 8bit
+Content-Disposition: 
+Content-Type: text/plain; charset=UTF-8
 
-> On 04. 11. 22 15:20, Andrea Cervesato wrote:
-> > Hi!
-> >
-> > On 11/4/22 13:46, Martin Doucha wrote:
-> >> This approach looks like it'll lead to some bad edge cases when
-> >> 0 < time_step < 1000. It'd be better to keep the original time_step
-> >> detection and initialize "error" variable like this (and also rename
-> >> it to "margin"):
-> >>
-> >> int jiffy;
-> >>
-> >> verify_setitimer()
-> >> {
-> >>     ...
-> >>     margin = (tc->which == ITIMER_REAL) ? 0 : jiffy;
-> > Here we can't take in consideration CLOCK_MONOTONIC_COARSE resolution by
-> > default, because on ITIMER_REAL we are having a clock resolution given
-> > by CLOCK_MONOTONIC. And unfortunately we are not sure it's under the
-> > millisecond resolution all the times, which means margin > 0. For this
-> > reason, in the patch we are fetching clock resolution in a different
-> > way, according with the counter timer. We can fetch different
-> > resolutions from setup tho and using inside the test code.
->
-> There is nothing preventing you from using CLOCK_MONOTONIC_COARSE
-> resolution as time_step even for ITIMER_REAL. The only constraints are
-> that the timer value must be:
-> 1) higher than CLOCK_MONOTONIC resolution (preferably a multiple of it)
+---
+ runtest/syscalls                              |  1 +
+ .../syscalls/sched_setscheduler/.gitignore    |  1 +
+ .../sched_setscheduler/sched_setscheduler04.c | 71 +++++++++++++++++++
+ 3 files changed, 73 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 3dc6fa397..ff516af3d 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1204,6 +1204,7 @@ sched_getscheduler02 sched_getscheduler02
+ sched_setscheduler01 sched_setscheduler01
+ sched_setscheduler02 sched_setscheduler02
+ sched_setscheduler03 sched_setscheduler03
++sched_setscheduler04 sched_setscheduler04
+
+ sched_yield01 sched_yield01
+
+diff --git a/testcases/kernel/syscalls/sched_setscheduler/.gitignore b/testcases/kernel/syscalls/sched_setscheduler/.gitignore
+index aa8ad9695..1b8860d2c 100644
+--- a/testcases/kernel/syscalls/sched_setscheduler/.gitignore
++++ b/testcases/kernel/syscalls/sched_setschedule
+r/.gitignore
+@@ -1,3 +1,4 @@
+ /sched_setscheduler01
+ /sched_setscheduler02
+ /sched_setscheduler03
++/sched_setscheduler04
+diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
+new file mode 100644
+index 000000000..f2643f001
+--- /dev/null
++++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
+@@ -0,0 +1,71 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2022 Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
++ */
++
++/*
++ * [Description]
++ *
++ * Testcases that test if sched_setscheduler with flag
++ * SCHED_RESET_ON_FORK restores children policy to
++ * SCHED_NORMAL.
++ *
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <stdlib.h>
++#include <sched.h>
++#include <linux/sched.h>
++
++#include "tst_test.h"
++#include "tst_sched.h"
++
++struct test_case_t {
++	int policy;
++	char *desc;
++};
++
++static struct test_cas
+e_t cases[] = {
++	{
++		.policy = SCHED_FIFO,
++		.desc = "SCHED_FIFO"
++	},
++	{
++		.policy = SCHED_RR,
++		.desc = "SCHED_RR"
++	}
++};
++
++static void test_reset_on_fork(unsigned int i)
++{
++	struct sched_variant *tv = &sched_variants[tst_variant];
++	struct test_case_t *tc = &cases[i];
++
++	tst_res(TINFO, "Testing %s variant", tv->desc);
++	tst_res(TINFO, "Testing %s policy", tc->desc);
++
++	struct sched_param param = { .sched_priority = 1 };
++
++	tv->sched_setscheduler(getpid(), tc->policy | SCHED_RESET_ON_FORK, &param);
++
++	pid_t pid = SAFE_FORK();
++
++	if (!pid == 0) {
++		if (sched_getscheduler(pid) == SCHED_NORMAL)
++			tst_res(TPASS, "Policy reset to SCHED_NORMAL");
++		else
++			tst_res(TFAIL, "Policy NOT reset to SCHED_NORMAL");
++	}
++
++	tst_reap_children();
++}
++
++static struct tst_test test = {
++	.forks_child = 1,
++	.needs_root = 1,
++	.test_variants = ARRAY_SIZE(sched_variants),
++	.tcnt = ARRAY_SIZE(cases),
++	.test = test_reset_on_fork
++};
++
+--
+2.3
+8.0
 
 
+--06051ca2b8ebb88f8a5fb61834d5401fe06199b9c2b4f6b4da70b1c34881
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; name="publickey - Federico Bonfiglio -
+ e96ee84c.asc"; filename="publickey - Federico Bonfiglio - e96ee84c.asc"
+Content-Type: application/pgp-keys; name="publickey - Federico Bonfiglio -
+ e96ee84c.asc"; filename="publickey - Federico Bonfiglio - e96ee84c.asc"
 
-> 2) large enough so that you can call setitimer() again before the timer
-> expires
+LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdvcGVuUEdQIDIu
+NC43CkNvbW1lbnQ6IGh0dHBzOi8vZ29wZW5wZ3Aub3JnCgp4c0ROQkdHZGZuMEJEQUMxY3Q1bDJi
+RGR2eG83ZXMxTnlSMkFGbnFkU0dGYlM1ZjltZWc5azAyOTgzUHVwU2NDCkNPOHFmbzl3OXdIQjg4
+TlQwNWNSNVlURTZQUEd0SGwwSWR5RDYrdy9taEtrc1JLNEhXNnl3TUlMUmtCWm95aS8KNnFabkho
+WUQzRGZBajgvZmxUeE9zbGN3ZFlWcWJ5ckwzYUYxM2daOVVJYVpCV2t1QlI0ZFlvd2RmVXdMaEdT
+NApBZUtDL2dUNUdPVUkxZDRFZUtBTk9xTk9JQUFqSFdXUU40QnNVcHZQQUowOVZocnJacDlXbWNE
+b25iV3R2VW40CmwyNWRsbFFWTkswY2pydVRpYVJtQjlHUStLMkhYUm1BWDQ4cDZFNDJxWnBqd0VQ
+eUI0VFRyY3FIK0gzcHg4Z2cKU041NWZvQzVKMGRhSDVSeHhhRHM1dTYxNGlEd04vL0FsQnhIbURh
+WkxEMW1VdlEwMjRpYVdKUXdtV0Y0cVFOSgpTdlVYWjJkQ3RTQjA1MnpIZ3l0cDV3RjZtcVhNWXBS
+dHJyQzBvTGVFcXVlT2tuejJPUElGR3NGUFI0RHhIMjVaClpBNDJGNkllUUMrVC9lWjBGUWJ5aDA5
+SEtUQmxrejhlNzQzMW03L0plTkpDc0llQXBWTTdOUlU1TVBJYkJLelAKOG14MklhZkE2RnZYbEJz
+QUVRRUFBYzAxUm1Wa1pYSnBZMjhnUW05dVptbG5iR2x2SUR4bVpXUmxjbWxqYnk1aQpiMjVtYVdk
+c2FXOUFjSEp2ZEc5dWJXRnBiQzVqYUQ3Q3dTVUVFd0VJQURnV0lRVHBidWhNL0JjMGZoWDhJM0hX
+CmRnVWRvd2NrSlFVQ1laMStmUUliQXdVTENRZ0hBZ1lWQ2drSUN3SUVGZ0lEQVFJZUFRSVhnQUFo
+Q1JEV2RnVWQKb3dja0pSWWhCT2x1NkV6OEZ6UitGZndqY2RaMkJSMmpCeVFsd2JzTC8zd1BCemZC
+T3d4dHVhWjk5L25OUEpDegpzOHNMSmlkMS9YNnpUSHNMZHZOUmJLTGxhWDJLRGx2VWRsY1UwN09k
+U3Z5clg0bHVvdUl3c1oyUnNxamVyVWNFCmtXUzZBOHA4MnVScWlyUzdTT3U0bUlPSjRyMUZXZTNW
+ZUx6Ty9TSUljUk5wL2IwNnRoNTVPRTZZc2ppdHRlM2sKM2w3d0FBaTJSYkNQdXJtZkNjRTFIVEYz
+SGRDbG41a21mZzNoczBsQnhpRHFyVFJxai9aZmhhNGF1RHo5c2kyZgpjRDRNS3Q2UVMzYnNrOFVr
+V2NudGFxUm9HdEsyaW11bGtEb0N0TmgvT1J1U2FLQlpHRmliclZySExMdzNGcFRrCmxFYlI3MFNu
+WFhvMEZldUwxZFArYVczZkFRSzFTWURCRS9UOGgzekpQN05LZ3hGOUhRamlPYzBPNGlRS2tNVkEK
+clhCQmFIRENrWnUxN2w5Y2hOK3g5N3lSZGt2RDVPS2wrYjh4ajBLR1dBL1BRc1hYaUp4REkrdFBt
+eUp6QitENwpNTHpSSkUzRlltN1hRK0V1b3Jkeld4cTNhR1VQTHl6TkY3ZlpFZVk0ekIxNEFuMmRk
+c1QySFErZUpxeEhWbG1BCkRDN0E2aHZ1ZXdjYWllOVFja0JnL1RMK0t2OG13elcrb2ljRkJlRDdF
+czdBelFSaG5YNTlBUXdBN2p6cWRhOXkKSllKbkoyTlRST3F1MVgwMjhaeGp4ZWpDUlprMmt5MUo2
+U1U0amwvc0ZLTHpINUNadm9rWXlFUEY4R2VCRkZ1cwpKK2tZTlhtaytkNnpxUnE1NngrRXVkUUZj
+SE5iOW16cWJpNFhMdWlEc3dtVzZ5Slh4Ylg1NmsxNkxCUEdOeW5sCmpTRVZnTlRiQVZuendQeVVj
+UC94WnRrSFpnOWMyZzdoQkVvN2o2NzBWUFZaQXd5cGFQaXVsOExrWVlTLzVWRi8KNkI0SEIwUW8z
+VmtiSTluUEMyanFHejJ5UU5ncGlMdklvbExvT1NPeVUzS2ZKRWtvODlaQktJOGNLMGxNcUhzbApJ
+V1IxQmZqWGVYWjBDdlEvNkVDeVlQZ1lqQUY1UEQ0Q25ZUDNBelhtVGZCakk0VEcyVmFpZ0tCNVRN
+ZDRGUE95CmtPa0p4R3BQYmZhbXh3ZjJwNDBGdVFRM2ZZOFBnZU0vSjVyTDdqdlo0R2pKVXlTTmJi
+ZFBxL0RKTTc2dE16YzYKUjdtVlJIRG56Qit1cHhSVmM0ZU1WZ0Zrc0x1alNZTVZmeGlKTElaMWpO
+ZmNPVytNbGgzTVp4M2xlczNJWk9GQwo5OWwrWUxDNDZ4Sjk3VlAyREJWNlZUZkh3TlhRMHdTNWpV
+bzFub09xbEtVbUpmWGlXVGVBeG5xckFCRUJBQUhDCndRMEVHQUVJQUNBV0lRVHBidWhNL0JjMGZo
+WDhJM0hXZGdVZG93Y2tKUVVDWVoxK2ZRSWJEQUFoQ1JEV2RnVWQKb3dja0pSWWhCT2x1NkV6OEZ6
+UitGZndqY2RaMkJSMmpCeVFsRjJzTUFKYmlpdXh1QWlPd3VTdjgxSlh0Vkp6YgowV3lYS1dJNmhu
+UngvY1ZRdGQ1WE5rQm1WRjBzS05zRnFiNHZJRk9Ya0w1WkhsNGxrNE1CQ3Jnc1JDQ0NQTHpTCktE
+Tk81ZkJWTk5CVVpGUFpHRW1iMDZGalBpM2xqYlE3Smx0SmtNRUxibllrRCtvYjIwM1k0Z1JTNFB2
+dGxkQUgKVFRBZ2kyMTU5SHlYbC8wUjFZbmRETC8rU2UrSFdJcXhxeWx1SmtNeTB3U2ZFbkdVMU9p
+REUrb1RHQ0UxUjhOQgpZalAxcHdrL0JKWU15TG9UekZVdW0vRVp4bWNwMDFSZS92bzBNWWErMnVr
+bE1jTU05dVdJNUo4djFPczBqb0piCkgrN3dZcWhEenhHdldHLzhiazRxWXRpc0VNaW9sRmRPSGpC
+Qk5TQnVJQmRScWJkSHlpYklZNmdOam94VnF3OEcKZC82b1R5QTM5NkZTaGVRQ0dkclgrU2lyUTBO
+SitacWxyYzNCMUxzOCtERWg2Ni9ZT251NmpkbmFnMTVDQS8yLwpwajBkM0VkdGRxaGdiUHZsQjlv
+WnZRTmdFSmkwQk5mRzdDZkdJQUltVDZYY2s3bUZrMTZRTzMvZllEdE8zWGdrCjNMeXFKeDAxWCtZ
+Nmh6YlJmWlVjMGpwRTRYZnA0TWxDR1NKcWtyNm9XQT09Cj13NGN5Ci0tLS0tRU5EIFBHUCBQVUJM
+SUMgS0VZIEJMT0NLLS0tLS0=
+--06051ca2b8ebb88f8a5fb61834d5401fe06199b9c2b4f6b4da70b1c34881--
 
-Just finding a proper size should be fine, because next I plan to
-split ovalue check from the signal test. That means we can give both
-SEC and USEC for setitimer() verification.
+--------fcea5b6887b4d5d051a37e9c33a6fee160fe18c519f8c5d431f01e55303c8897
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Also, the interval timer should be tested as well, it will be rebased
-(on this problem fixing) in a separate patch.
+-----BEGIN PGP SIGNATURE-----
+Version: ProtonMail
 
-
--- 
-Regards,
-Li Wang
-
---0000000000005121cf05ecb015e3
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Fri, Nov 4, 2022 at 11:44 PM Martin Doucha &lt;<=
-a href=3D"mailto:mdoucha@suse.cz">mdoucha@suse.cz</a>&gt; wrote:<br></div><=
-blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-l=
-eft:1px solid rgb(204,204,204);padding-left:1ex">On 04. 11. 22 15:20, Andre=
-a Cervesato wrote:<br>
-&gt; Hi!<br>
-&gt; <br>
-&gt; On 11/4/22 13:46, Martin Doucha wrote:<br>
-&gt;&gt; This approach looks like it&#39;ll lead to some bad edge cases whe=
-n<br>
-&gt;&gt; 0 &lt; time_step &lt; 1000. It&#39;d be better to keep the origina=
-l time_step <br>
-&gt;&gt; detection and initialize &quot;error&quot; variable like this (and=
- also rename <br>
-&gt;&gt; it to &quot;margin&quot;):<br>
-&gt;&gt;<br>
-&gt;&gt; int jiffy;<br>
-&gt;&gt;<br>
-&gt;&gt; verify_setitimer()<br>
-&gt;&gt; {<br>
-&gt;&gt; =C2=A0=C2=A0=C2=A0=C2=A0...<br>
-&gt;&gt; =C2=A0=C2=A0=C2=A0=C2=A0margin =3D (tc-&gt;which =3D=3D ITIMER_REA=
-L) ? 0 : jiffy;<br>
-&gt; Here we can&#39;t take in consideration CLOCK_MONOTONIC_COARSE resolut=
-ion by <br>
-&gt; default, because on ITIMER_REAL we are having a clock resolution given=
- <br>
-&gt; by CLOCK_MONOTONIC. And unfortunately we are not sure it&#39;s under t=
-he <br>
-&gt; millisecond resolution all the times, which means margin &gt; 0. For t=
-his <br>
-&gt; reason, in the patch we are fetching clock resolution in a different <=
-br>
-&gt; way, according with the counter timer. We can fetch different <br>
-&gt; resolutions from setup tho and using inside the test code.<br>
-<br>
-There is nothing preventing you from using CLOCK_MONOTONIC_COARSE <br>
-resolution as time_step even for ITIMER_REAL. The only constraints are <br>
-that the timer value must be:<br>
-1) higher than CLOCK_MONOTONIC resolution (preferably a multiple of it)</bl=
-ockquote><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin=
-:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
->
-2) large enough so that you can call setitimer() again before the timer <br=
->
-expires</blockquote></div><div class=3D"gmail_default" style=3D"font-size:s=
-mall"></div><div><div class=3D"gmail_default" style=3D"font-size:small">Jus=
-t finding a proper size should be fine, because next I plan to</div><div cl=
-ass=3D"gmail_default" style=3D"font-size:small">split ovalue=C2=A0check fro=
-m the signal test. That means we can give both</div><div class=3D"gmail_def=
-ault" style=3D"font-size:small">SEC and USEC for setitimer() verification.<=
-/div><div class=3D"gmail_default" style=3D"font-size:small"><br></div><div =
-class=3D"gmail_default" style=3D"font-size:small">Also, the interval timer =
-should be tested as well, it will be rebased</div><div class=3D"gmail_defau=
-lt" style=3D"font-size:small">(on this problem fixing) in a separate patch.=
-</div></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr" class=
-=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<b=
-r></div></div></div></div>
-
---0000000000005121cf05ecb015e3--
+wsDzBAEBCAAnBQJjZqw2CZDWdgUdowckJRYhBOlu6Ez8FzR+FfwjcdZ2BR2j
+ByQlAAAaoQv/S3hiXaf/Enf41SZ2LJr7QzGRMV8VbRXgLoQ5PZSxE11U3pwo
+tr5cL7V5HtD5enXX8W9NC8OLmFQ0osRQwIznnVlgv8LrwS9VN+bpjEQsz6pj
+xfCu/f9gQHAHrEcKFjosUivqwKckwI2yYfgeIbr6qkPnLFz6AyqyW+AzmGIX
+GKxjTfqvgXpoVktECKJzSb/+rQyj9+pY9BsxpI4G1hWVKOjI11h3UGPq9Kc7
+2EqDB/kpAr3ttTQiCy2y0QtH6vmdvnMr7TJ9TnJDtJ25rvOAeocl78NFMD5E
+CdsHBZHOc5A1U+2AmG0BsBeNFkEWzO4T5wEcEQaGHbQoyAS70yFDemVojKJs
+fKRBqD9wYuxhceMpr3duq0D0e1YFJ/qzd6hl1uTW4hdCUyCK9Z3YWTx8RajM
+1ufYmM1Sn1/xhsQtlyRyFzG9gzooO/OEJul510R7gTjdEdlMtFXRnIJJgs2M
+1EN870ENW55PZcq/7CX4cQ5LNrUeq1arpNwSPH/+Xqfy
+=o5/8
+-----END PGP SIGNATURE-----
 
 
---===============0453357965==
+--------fcea5b6887b4d5d051a37e9c33a6fee160fe18c519f8c5d431f01e55303c8897--
+
+
+--===============0340550544==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -224,5 +282,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============0453357965==--
+--===============0340550544==--
 
