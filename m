@@ -4,71 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36098C433FE
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 16:36:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7982BC4332F
+	for <ltp@archiver.kernel.org>; Sat,  5 Nov 2022 02:32:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 630773CB05E
-	for <ltp@archiver.kernel.org>; Fri,  4 Nov 2022 17:36:15 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 12D543CAE66
+	for <ltp@archiver.kernel.org>; Sat,  5 Nov 2022 03:32:43 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8D8B83C9BA4
- for <ltp@lists.linux.it>; Fri,  4 Nov 2022 17:36:06 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1B7F63C7FCC
+ for <ltp@lists.linux.it>; Sat,  5 Nov 2022 03:32:32 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5211F2003AA
- for <ltp@lists.linux.it>; Fri,  4 Nov 2022 17:36:04 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 409C11F38A;
- Fri,  4 Nov 2022 16:36:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1667579764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EAA2E14002C4
+ for <ltp@lists.linux.it>; Sat,  5 Nov 2022 03:32:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1667615550;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=I53u5YCxbJIt3aHhEhB+Z+Xfx361u1Xf/SPsxoeUgsI=;
- b=m9QZ72FciasPoGY8qj2SWNWlEix3ZnhwyvRew7nUZsBYuWc+wZK2AU/d+7EABT6KyZKdqK
- o2XE8W7iAd9kQJhZEv1WzqUz46EwmaIRS3xdMJcIFu0nkkN8lUbLHR83C+08zmM0A+/PPI
- 75PIoEzi6iuOpjSTjfi7E8KM+ZFy17E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1667579764;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=I53u5YCxbJIt3aHhEhB+Z+Xfx361u1Xf/SPsxoeUgsI=;
- b=7gYqiBugFTz2eFV6ILZt9ZuSS2fx9NgVqr/XlueIlUJrGl50Rqti+S3B1IbiGDsaDPbFvq
- 2H7jlyon4wBYRHBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A2D71346F;
- Fri,  4 Nov 2022 16:36:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id yE5oCXQ/ZWMheAAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Fri, 04 Nov 2022 16:36:04 +0000
-Message-ID: <9c67d707-72ed-f06d-dcbe-11b9bf01133d@suse.cz>
-Date: Fri, 4 Nov 2022 17:36:03 +0100
+ bh=vlDg0NrnpHET992qr6rXR0OHdgH5Z506g/doKh5/+uk=;
+ b=NMo/ww4tfP3Ze+BFI5GTtF96aumNXh+rz2vyc3cbJ1TNnu6Khp8OCfl6W0SXSdITnTp6Oa
+ s/PC/pMX98lYiyWho7gVGT/FT5RHnpRCQdw5+95TDh7/WXMb8cGJrhafAcqT6HuPbnKTHK
+ +Ot9hEnVbIJQR1lRPzsv51KhyxHHrSs=
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
+ [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-354-sH4QRI6uMh-sN44hVQ7KGQ-1; Fri, 04 Nov 2022 22:32:28 -0400
+X-MC-Unique: sH4QRI6uMh-sN44hVQ7KGQ-1
+Received: by mail-oa1-f71.google.com with SMTP id
+ 586e51a60fabf-13b7af40a31so3341348fac.1
+ for <ltp@lists.linux.it>; Fri, 04 Nov 2022 19:32:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=vlDg0NrnpHET992qr6rXR0OHdgH5Z506g/doKh5/+uk=;
+ b=xGhS4y2SCsEht/e1Wt1oYiMDCbuBWVX5harVmyDA2t6Q0TfjFArK34WloJO1VHIJZU
+ admv/oxbyYgPsoYa8GjhJRYS7TrjXGcWdVimau/k4neDmZdSx8nmTyjRakqSffnOODic
+ h7WCAhJLLcbROlrPDhHkIa0zAX/Zoq9QLQHoJyUCJ11RlIGkihXSc4yso0qavl7EAZ/A
+ 0wKJVzGVSLkMn6TKCEmU28YwJoOsms+46Q5aESRUrx4NAvyhqKof3uIneZfBVymQ5lRP
+ m7nW1OHmDlhvlKkGvHlPnMYvGgjnUqXroxJ0L9UCABT5fLt4NW4qhtLPTQoD6ko7eTjM
+ Tc0g==
+X-Gm-Message-State: ACrzQf2yahU3+MdH1FTM8fk6laO9xwRUWimRUBWVSCu/jWimt/zh6G6G
+ kDgrBhJetC4EyfzbKN4NGuq8P69pLj2+bfA4/EE9apwtijvWWhT1GbOKRPVnf0cAHV8X8mMbUpJ
+ a0F0Da56fOppaCnvEy7uq3uyaAzU=
+X-Received: by 2002:a05:6808:14c9:b0:35a:7106:e036 with SMTP id
+ f9-20020a05680814c900b0035a7106e036mr209765oiw.107.1667615548033; 
+ Fri, 04 Nov 2022 19:32:28 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM7YXfGtYwoiJ0OAU8xNy9xp3ZmmTiWOQJbBArqUSZEF9okDp1vrU32QY3TPZwG3Qamq+nZ/ny6B1EDtPGYDfVg=
+X-Received: by 2002:a05:6808:14c9:b0:35a:7106:e036 with SMTP id
+ f9-20020a05680814c900b0035a7106e036mr209756oiw.107.1667615547780; Fri, 04 Nov
+ 2022 19:32:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Content-Language: en-US
-To: Jan Stancek <jstancek@redhat.com>
-References: <20221103164550.7037-1-mdoucha@suse.cz>
- <CAASaF6ys7d2yVPP15C3G+iGc-Rv06ZFx7xHs-1nLZqg29Tb_Vw@mail.gmail.com>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <CAASaF6ys7d2yVPP15C3G+iGc-Rv06ZFx7xHs-1nLZqg29Tb_Vw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <20221104092411.5446-1-andrea.cervesato@suse.com>
+ <Y2UeAGj58zSd47Rt@yuki> <b0091247-3c27-49f5-351a-6ba06e0cfc24@suse.cz>
+In-Reply-To: <b0091247-3c27-49f5-351a-6ba06e0cfc24@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 5 Nov 2022 10:32:14 +0800
+Message-ID: <CAEemH2cFPw+Y=gBaYOKqLFyfwdYo6Oz_vcrappPempQKknrpHg@mail.gmail.com>
+To: Martin Doucha <mdoucha@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] save_restore: Introduce new struct field for flags
+Subject: Re: [LTP] [PATCH v1] Correctly handle user time in setitimer01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,148 +85,166 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Li Wang <liwan@redhat.com>, ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Cc: ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============1192357393=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gMDQuIDExLiAyMiAxMTo1MiwgSmFuIFN0YW5jZWsgd3JvdGU6Cj4gT24gVGh1LCBOb3YgMywg
-MjAyMiBhdCA1OjQ1IFBNIE1hcnRpbiBEb3VjaGEgPG1kb3VjaGFAc3VzZS5jej4gd3JvdGU6Cj4+
-Cj4+IFRlc3RzIHVzaW5nIHRoZSAuc2F2ZV9yZXN0b3JlIGZ1bmN0aW9uYWxpdHkgY3VycmVudGx5
-IGNhbm5vdCBydW4KPj4gd2l0aG91dCByb290IHByaXZpbGVnZXMgYXQgYWxsIGJlY2F1c2UgdGhl
-IHRlc3Qgd2lsbCB3cml0ZQo+PiBpbnRvIHRoZSBwYXRoIGF0IGxlYXN0IGF0IHRoZSBlbmQgYW5k
-IHRyaWdnZXIgZXJyb3IsIGV2ZW4gd2hlbgo+PiB0aGUgY29uZmlnIHBhdGhzIGFyZSBmbGFnZ2Vk
-IGFzIG9wdGlvbmFsLgo+Pgo+PiBJbnRyb2R1Y2UgbmV3IHRzdF9wYXRoX3ZhbCBmaWVsZCBmb3Ig
-ZmxhZ3MgYW5kIHJlcGxhY2UgcGF0aCBwcmVmaXggZmxhZ3MKPj4gd2l0aCBiaXQgZmxhZ3MuIEFs
-c28gaW50cm9kdWNlIG5ldyBmbGFncyB0byBjb250cm9sIGhhbmRsaW5nIG9mIHJlYWQvd3JpdGUK
-Pj4gZXJyb3JzIGFuZCByZWFkLW9ubHkgc3lzZmlsZXMgYW5kIHJld3JpdGUgc2F2ZV9yZXN0b3Jl
-IGltcGxlbWVudGF0aW9uCj4+IGFjY29yZGluZ2x5Lgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBNYXJ0
-aW4gRG91Y2hhIDxtZG91Y2hhQHN1c2UuY3o+Cj4+IC0tLQo+Pgo+PiBUaGlzIGlzIHRlY2huaWNh
-bGx5IGEgdjIgZm9yCj4+IGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9sdHAv
-cGF0Y2gvMjAyMjEwMjExNTU3NDAuODMzOS0xLW1kb3VjaGFAc3VzZS5jei8KPj4KPj4gSSdsbCBz
-ZW5kIGEgZm9sbG93LXVwIHBhdGNoc2V0IHRvIHJlcGxhY2Ugc2V0dXAoKSBjb2RlIHdoaWNoIHJl
-cXVpcmVzIHJvb3QKPj4gcHJpdmlsZWdlcyB3aXRob3V0IGdvb2QgcmVhc29uIGFmdGVyIHRoaXMg
-cGF0Y2ggZ2V0cyBtZXJnZWQuIEhlcmUgSSd2ZSBrZXB0Cj4+IHRlc3QgY2hhbmdlcyB0byB0aGUg
-bWluaW11bSBuZWVkZWQgdG8gbWFpbnRhaW4gY3VycmVudCBzYXZlX3Jlc3RvcmUgYmVoYXZpb3IK
-Pj4gd2l0aCB0aGUgbmV3IGZsYWdzIHN5c3RlbS4gVGhlIG9ubHkgY2hhbmdlIGluIGJlaGF2aW9y
-IGlzIHRoZSB1c2Ugb2YgcmVhZC1vbmx5Cj4+IGhhbmRsaW5nIGZsYWdzIHdoZXJlIGl0J3MgY2xl
-YXIgdGhhdCB0aGUgY2hhbmdlIGlzIGRlc2lyZWQuCj4+Cj4+IFRob3VnaCBhIGZldyB0ZXN0cyBz
-aG91bGQgZ2V0IGNsb3NlciBhdHRlbnRpb24gZHVyaW5nIHJldmlldzoKPj4gLSBhbGwgS1NNIHRl
-c3RzCj4gSSBDQy1lZCBMaSwgYnV0IGl0IGxvb2tlZCBPSyB0byBtZS4KPiAKPj4gLSBhZGRfa2V5
-MDUKPj4gLSBtaWdyYXRlX3BhZ2VzMDIKPiBUaGlzIGxvb2tzIE9LIHRvIG1lLiBUaG91Z2ggSSBh
-ZGRlZCBzb21lIG5vdGVzIHRvIHRlc3RzIHRoYXQgY3VycmVudGx5Cj4gZG9uJ3QgaGF2ZQo+IG5l
-ZWRzX3Jvb3QgPSAxIGFuZCB3aGVyZSB0aGlzIHBhdGNoIGludHJvZHVjZWQgVFNUX1NSX0lHTk9S
-RV9STy4KPiAKPj4KPj4gICBkb2MvYy10ZXN0LWFwaS50eHQgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAzOCArKysrLS0tLQo+PiAgIGluY2x1ZGUvdHN0X3N5c19jb25mLmggICAgICAgICAg
-ICAgICAgICAgICAgICB8IDE1ICsrLQo+PiAgIGxpYi90c3Rfc3lzX2NvbmYuYyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB8IDk3ICsrKysrKysrKysrKy0tLS0tLS0KPj4gICBsaWIvdHN0X3Rl
-c3QuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMyArLQo+PiAgIHRlc3RjYXNl
-cy9jdmUvaWNtcF9yYXRlX2xpbWl0MDEuYyAgICAgICAgICAgICB8ICAyICstCj4+ICAgdGVzdGNh
-c2VzL2tlcm5lbC9jb250YWluZXJzL3VzZXJucy91c2VybnMwOC5jIHwgIDIgKy0KPj4gICB0ZXN0
-Y2FzZXMva2VybmVsL2t2bS9rdm1fcGFnZWZhdWx0MDEuYyAgICAgICAgfCAgMyArLQo+PiAgIHRl
-c3RjYXNlcy9rZXJuZWwvbWVtL2tzbS9rc20wMS5jICAgICAgICAgICAgICB8IDEwICstCj4+ICAg
-dGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL2tzbTAyLmMgICAgICAgICAgICAgIHwgMTAgKy0KPj4g
-ICB0ZXN0Y2FzZXMva2VybmVsL21lbS9rc20va3NtMDMuYyAgICAgICAgICAgICAgfCAxMCArLQo+
-PiAgIHRlc3RjYXNlcy9rZXJuZWwvbWVtL2tzbS9rc20wNC5jICAgICAgICAgICAgICB8IDEwICst
-Cj4+ICAgdGVzdGNhc2VzL2tlcm5lbC9tZW0va3NtL2tzbTA1LmMgICAgICAgICAgICAgIHwgIDIg
-Ky0KPj4gICB0ZXN0Y2FzZXMva2VybmVsL21lbS9rc20va3NtMDYuYyAgICAgICAgICAgICAgfCAg
-OSArLQo+PiAgIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvYWRkX2tleS9hZGRfa2V5MDUuYyB8
-ICA3ICstCj4+ICAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9iaW5kL2JpbmQwNi5jICAgICAg
-IHwgIDIgKy0KPj4gICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZvcmsvZm9yazEzLmMgICAg
-ICAgfCAgMiArLQo+PiAgIC4uLi9rZXJuZWwvc3lzY2FsbHMvaXBjL21zZ2dldC9tc2dnZXQwMy5j
-ICAgICB8ICAyICstCj4+ICAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tYWR2aXNlL21hZHZp
-c2UwNi5jIHwgIDIgKy0KPj4gICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21hZHZpc2UvbWFk
-dmlzZTA4LmMgfCAgMiArLQo+PiAgIC4uLi9zeXNjYWxscy9taWdyYXRlX3BhZ2VzL21pZ3JhdGVf
-cGFnZXMwMi5jICB8ICAyICstCj4+ICAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZW5kdG8v
-c2VuZHRvMDMuYyAgIHwgIDIgKy0KPj4gICAuLi4va2VybmVsL3N5c2NhbGxzL3NldHNvY2tvcHQv
-c2V0c29ja29wdDA1LmMgfCAgMiArLQo+PiAgIC4uLi9rZXJuZWwvc3lzY2FsbHMvc2V0c29ja29w
-dC9zZXRzb2Nrb3B0MDYuYyB8ICAyICstCj4+ICAgLi4uL2tlcm5lbC9zeXNjYWxscy9zZXRzb2Nr
-b3B0L3NldHNvY2tvcHQwNy5jIHwgIDIgKy0KPj4gICAuLi4va2VybmVsL3N5c2NhbGxzL3NldHNv
-Y2tvcHQvc2V0c29ja29wdDA4LmMgfCAgMiArLQo+PiAgIC4uLi9rZXJuZWwvc3lzY2FsbHMvc2V0
-c29ja29wdC9zZXRzb2Nrb3B0MDkuYyB8ICAyICstCj4+ICAgdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9zeXNsb2cvc3lzbG9nMTEuYyAgIHwgIDIgKy0KPj4gICAyNyBmaWxlcyBjaGFuZ2VkLCAx
-NDIgaW5zZXJ0aW9ucygrKSwgMTAyIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZG9j
-L2MtdGVzdC1hcGkudHh0IGIvZG9jL2MtdGVzdC1hcGkudHh0Cj4+IGluZGV4IGU0YzY2YjQ5Mi4u
-ZGJjYTYyNjZiIDEwMDY0NAo+PiAtLS0gYS9kb2MvYy10ZXN0LWFwaS50eHQKPj4gKysrIGIvZG9j
-L2MtdGVzdC1hcGkudHh0Cj4+IEBAIC0xNjAyLDM1ICsxNjAyLDMzIEBAIExUUCBsaWJyYXJ5IGNh
-biBiZSBpbnN0cnVjdGVkIHRvIHNhdmUgYW5kIHJlc3RvcmUgdmFsdWUgb2Ygc3BlY2lmaWVkCj4+
-ICAgZmllbGQgJ3NhdmVfcmVzdG9yZScuIEl0IGlzIGEgTlVMTC10ZXJtaW5hdGVkIGFycmF5IG9m
-IHN0cnVjdAo+PiAgICd0c3RfcGF0aF92YWwnIHdoZXJlIGVhY2ggdHN0X3BhdGhfdmFsLnBhdGgg
-cmVwcmVzZW50cyBhIGZpbGUsIHdob3NlCj4+ICAgdmFsdWUgaXMgc2F2ZWQgYXQgdGhlIGJlZ2lu
-bmluZyBhbmQgcmVzdG9yZWQgYXQgdGhlIGVuZCBvZiB0aGUgdGVzdC4KPj4gLUlmIG5vbi1OVUxM
-IHZhbHVlIGlzIHBhc3NlZCBpdCBpcyB3cml0dGVuIHRvIHRoZSByZXNwZWN0aXZlIGZpbGUgYXQK
-Pj4gLXRoZSBiZWdpbm5pbmcgb2YgdGhlIHRlc3QuIE9ubHkgdGhlIGZpcnN0IGxpbmUgb2YgYSBz
-cGVjaWZpZWQgZmlsZQo+PiAtaXMgc2F2ZWQgYW5kIHJlc3RvcmVkLgo+PiAtCj4+IC1QYXRobmFt
-ZXMgY2FuIGJlIG9wdGlvbmFsbHkgcHJlZml4ZWQgdG8gc3BlY2lmeSBob3cgc3RyaWN0bHkgKGR1
-cmluZwo+PiAtJ3N0b3JlJykgYXJlIGhhbmRsZWQgZXJyb3JzOgo+PiAtCj4+IC0qIChubyBwcmVm
-aXgpIC0gdGVzdCBlbmRzIHdpdGggJ1RDT05GJywgaWYgZmlsZSBkb2Vzbid0IGV4aXN0Cj4+IC0q
-ICc/JyAgICAgICAgIC0gdGVzdCBwcmludHMgaW5mbyBtZXNzYWdlIGFuZCBjb250aW51ZXMsCj4+
-IC0gICAgICAgICAgICAgICAgaWYgZmlsZSBkb2Vzbid0IGV4aXN0IG9yIG9wZW4vcmVhZCBmYWls
-cwo+PiAtKiAnIScgICAgICAgICAtIHRlc3QgZW5kcyB3aXRoICdUQlJPSycsIGlmIGZpbGUgZG9l
-c24ndCBleGlzdAo+PiArSWYgbm9uLU5VTEwgc3RyaW5nIGlzIHBhc3NlZCBpbiB0c3RfcGF0aF92
-YWwudmFsLCBpdCBpcyB3cml0dGVuCj4+ICt0byB0aGUgcmVzcGVjdGl2ZSBmaWxlIGF0IHRoZSBi
-ZWdpbm5pbmcgb2YgdGhlIHRlc3QuIE9ubHkgdGhlIGZpcnN0IGxpbmUKPj4gK29mIGEgc3BlY2lm
-aWVkIGZpbGUgaXMgc2F2ZWQgYW5kIHJlc3RvcmVkLgo+PiArCj4+ICtCeSBkZWZhdWx0LCB0aGUg
-dGVzdCB3aWxsIGVuZCB3aXRoIFRDT05GIGlmIHRoZSBmaWxlIGlzIHJlYWQtb25seSBvcgo+PiAr
-ZG9lcyBub3QgZXhpc3QuIElmIHRoZSBvcHRpb25hbCB3cml0ZSBvZiBuZXcgdmFsdWUgZmFpbHMs
-IHRoZSB0ZXN0IHdpbGwgZW5kCj4+ICt3aXRoICdUQlJPSycuIFRoaXMgYmVoYXZpb3IgY2FuIGJl
-IGNoYW5nZWQgdXNpbmcgdHN0X3BhdGhfdmFsLmZsYWdzOgo+PiArCj4+ICsqICdUU1RfU1JfRkFJ
-TF9NSVNTSU5HJyDigJMgRW5kIHRlc3Qgd2l0aCAnVEJST0snIGlmIHRoZSBmaWxlIGRvZXMgbm90
-IGV4aXN0Cj4+ICsqICdUU1RfU1JfSUdOT1JFX01JU1NJTkcnIOKAkyBDb250aW51ZSB3aXRob3V0
-IHNhdmluZyB0aGUgZmlsZSBpZiBpdCBkb2VzIG5vdCBleGlzdAo+PiArKiAnVFNUX1NSX0ZBSUxf
-Uk8nIOKAkyBFbmQgdGVzdCB3aXRoICdUQlJPSycgaWYgdGhlIGZpbGUgaXMgcmVhZC1vbmx5Cj4+
-ICsqICdUU1RfU1JfSUdOT1JFX1JPJyDigJMgQ29udGludWUgd2l0aG91dCBzYXZpbmcgdGhlIGZp
-bGUgaWYgaXQgaXMgcmVhZC1vbmx5Cj4+ICsqICdUU1RfU1JfSUdOT1JFX0VSUicg4oCTIElnbm9y
-ZSBlcnJvcnMgd2hlbiB3cml0aW5nIG5ldyB2YWx1ZSBpbnRvIHRoZSBmaWxlCj4gCj4gTWF5YmUg
-c3BsaXQgdGhpcyBsaXN0IGludG8gbG93L2hpZ2gtbGV2ZWwgZmxhZ3M/IEkgd291bGQgaG9wZSBm
-b3IgbW9zdAo+IHRlc3RzIGl0IHdvdWxkIGJlCj4gc3VmZmljaWVudCB0byBwaWNrIG9uZSBvZiBo
-aWdoLWxldmVsIGZsYWdzIGRlZmluZWQgYmVsb3cuIFRoZXJlIHdpbGwKPiBsaWtlbHkgYmUgc29t
-ZQo+IGZyZXF1ZW50bHkgdXNlZCBjb21iaW5hdGlvbnMuCgpTcGxpdHRpbmcgdGhlIGxpc3QgbWln
-aHQgaGVscCBpZiBtb3JlIGVudHJpZXMgZ2V0IGFkZGVkIGxhdGVyIGJ1dCBmb3IgCm5vdyB0aGUg
-bnVtYmVyIG9mIGZsYWdzIGlzIGZhaXJseSBzaG9ydCBzbyBsZXQncyBrZWVwIGl0IHNpbXBsZS4K
-Cj4+ICsqICdUU1RfU1JfUkVRVUlSRUQnIOKAkyBFcXVpdmFsZW50IHRvICdUU1RfU1JfRkFJTF9N
-SVNTSU5HIHwgVFNUX1NSX0ZBSUxfUk8nCj4+ICsqICdUU1RfU1JfSUZfQUNDRVNTJyDigJMgRXF1
-aXZhbGVudCB0byAnVFNUX1NSX0lHTk9SRV9NSVNTSU5HIHwgVFNUX1NSX0lHTk9SRV9STycKPiAK
-PiBJZiB0aGlzIHNob3VsZCB3b3JrIGFzIG9wcG9zaXRlIHRvIFJFUVVJUkVELCBtYXliZSAnVFNU
-X1NSX0lGX0FWQUlMJwo+IHdvdWxkIGZpdCBhcyBuYW1lIGJldHRlcj8KCkkgdGhvdWdodCBhYm91
-dCBzb21ldGhpbmcgbGlrZSBUU1RfU1JfSUZfQVZBSUwgd2hpbGUgd3JpdGluZyB0aGlzIHBhdGNo
-IApidXQgaXQgc291bmRzIHRvbyBtdWNoIGxpa2UgYSBzeW5vbnltIGZvciBUU1RfU1JfSUdOT1JF
-X01JU1NJTkcuIE5hbWluZyAKaXQgVFNUX1NSX0lGX0FDQ0VTUyBwdXRzIG1vcmUgZW1waGFzaXMg
-b24gYWNjZXNzIHBlcm1pc3Npb24gY2hlY2tzLgoKPj4gLWludCB0c3Rfc3lzX2NvbmZfc2F2ZV9z
-dHIoY29uc3QgY2hhciAqcGF0aCwgY29uc3QgY2hhciAqdmFsdWUpOwo+PiAtaW50IHRzdF9zeXNf
-Y29uZl9zYXZlKGNvbnN0IGNoYXIgKnBhdGgpOwo+PiAtdm9pZCB0c3Rfc3lzX2NvbmZfc2V0KGNv
-bnN0IGNoYXIgKnBhdGgsIGNvbnN0IGNoYXIgKnZhbHVlKTsKPj4gK3ZvaWQgdHN0X3N5c19jb25m
-X3NhdmVfc3RyKGNvbnN0IGNoYXIgKnBhdGgsIGNvbnN0IGNoYXIgKnZhbHVlKTsKPj4gK2ludCB0
-c3Rfc3lzX2NvbmZfc2F2ZShjb25zdCBzdHJ1Y3QgdHN0X3BhdGhfdmFsICpjb25mKTsKPiAKPiBB
-cmUgeW91IHBsYW5uaW5nIG9uIHVzaW5nIHJldHVybiB2YWx1ZSBpbiBmb2xsb3ctdXAgcGF0Y2g/
-IEl0IGRvZXMgYXBwZWFyCj4gdG8gYmUgdW51c2VkIGFmdGVyIHRoaXMgcGF0Y2guIE90aGVyIHRo
-YW4gdGhhdCwgbGliIGNoYW5nZXMgbG9vayBPSy4KCkkgaGF2ZSBubyBwbGFucyB0byB1c2UgdGhl
-IHJldHVybiB2YWx1ZSBteXNlbGYgc28gZmVlbCBmcmVlIHRvIGNoYW5nZSAKdGhlIHJldHVybiB0
-eXBlIHRvIHZvaWQgZHVyaW5nIG1lcmdlLiBJJ3ZlIGtlcHQgdGhlIG9sZCByZXR1cm4gdmFsdWUg
-Cmp1c3QgaW4gY2FzZSBpdCdsbCBiZSB1c2VkIGZvciBzb21ldGhpbmcgaW4gdGhlIGZ1dHVyZS4K
-Cj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMvY3ZlL2ljbXBfcmF0ZV9saW1pdDAxLmMgYi90ZXN0
-Y2FzZXMvY3ZlL2ljbXBfcmF0ZV9saW1pdDAxLmMKPj4gaW5kZXggMTI2Mzc2MmQyLi4yM2ZkNjU2
-MGMgMTAwNjQ0Cj4+IC0tLSBhL3Rlc3RjYXNlcy9jdmUvaWNtcF9yYXRlX2xpbWl0MDEuYwo+PiAr
-KysgYi90ZXN0Y2FzZXMvY3ZlL2ljbXBfcmF0ZV9saW1pdDAxLmMKPj4gQEAgLTI2OSw3ICsyNjks
-NyBAQCBzdGF0aWMgc3RydWN0IHRzdF90ZXN0IHRlc3QgPSB7Cj4+ICAgICAgICAgICAgICAgICAg
-TlVMTAo+PiAgICAgICAgICB9LAo+PiAgICAgICAgICAuc2F2ZV9yZXN0b3JlID0gKGNvbnN0IHN0
-cnVjdCB0c3RfcGF0aF92YWxbXSkgewo+PiAtICAgICAgICAgICAgICAgeyI/L3Byb2Mvc3lzL3Vz
-ZXIvbWF4X3VzZXJfbmFtZXNwYWNlcyIsIE5VTEx9LAo+PiArICAgICAgICAgICAgICAgeyIvcHJv
-Yy9zeXMvdXNlci9tYXhfdXNlcl9uYW1lc3BhY2VzIiwgTlVMTCwgVFNUX1NSX0lGX0FDQ0VTU30s
-Cj4gCj4gVGhpcyB0ZXN0IGN1cnJlbnRseSBkb2VzIG5vdCBoYXZlIG5lZWRzX3Jvb3QgPSAxLiBV
-c2luZyBUU1RfU1JfSUdOT1JFX1JPCj4gaW1wbGllcyB0aGF0IGl0IGNhbiB3b3JrIHdpdGhvdXQg
-d3JpdGluZyB0byAnbWF4X3VzZXJfbmFtZXNwYWNlcycsIHdoaWNoIHJhaXNlcwo+IHF1ZXN0aW9u
-LCB3aHkgbm90IGRyb3AgaXQgZnJvbSBzYXZlX3Jlc3RvcmUgaWYgdGVzdCBjYW4gd29yayB3aXRo
-b3V0IGl0Pwo+IAo+IEluIGN1cnJlbnQgZm9ybSwgU0FGRV9UUllfRklMRV9QUklOVEYgd2lsbCBU
-QlJPSyBmb3IgdW5wcml2aWxlZ2VkIHVzZXIuCj4gU28gdGhpcyBzaG91bGQgcHJvYmFibHkgYmUg
-Zm9yIG5vdyBuZWVkc19yb290ID0xIGFuZCBUU1RfU1JfSUdOT1JFX01JU1NJTkcuCgpBcyBJJ3Zl
-IGV4cGxhaW5lZCByaWdodCB1bmRlciB0aGUgY29tbWl0IG1lc3NhZ2UsIHRoZSBzZXR1cCgpIGNv
-ZGUgZm9yIAptYXhfdXNlcl9uYW1lc3BhY2VzIHdpbGwgYmUgdGhlIHN1YmplY3Qgb2YgbXkgZm9s
-bG93LXVwIHBhdGNoc2V0LiBJbiAKdGhpcyBwYXRjaCwgSSdtIGRvaW5nIG9ubHkgdGhlIG1pbmlt
-dW0gbmVjZXNzYXJ5IEFQSSB1cGRhdGUgdGhhdCAKcHJlc2VydmVzIGN1cnJlbnQgYmVoYXZpb3Iu
-IFRDT05GIG9uIHJlYWQtb25seSBzeXNmaWxlIGlzIG5vdCBkZXNpcmFibGUgCmluIHRoZXNlIG5l
-dHdvcmsgdGVzdHMuCgotLSAKTWFydGluIERvdWNoYSAgIG1kb3VjaGFAc3VzZS5jegpRQSBFbmdp
-bmVlciBmb3IgU29mdHdhcmUgTWFpbnRlbmFuY2UKU1VTRSBMSU5VWCwgcy5yLm8uCkNPUlNPIElJ
-YQpLcml6aWtvdmEgMTQ4LzM0CjE4NiAwMCBQcmFndWUgOApDemVjaCBSZXB1YmxpYwoKCi0tIApN
-YWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+--===============1192357393==
+Content-Type: multipart/alternative; boundary="0000000000005901f305ecb00098"
+
+--0000000000005901f305ecb00098
+Content-Type: text/plain; charset="UTF-8"
+
+Martin Doucha <mdoucha@suse.cz> wrote:
+
+On 04. 11. 22 15:13, Cyril Hrubis wrote:
+
+> As ITIMER_VIRTUAL and ITIMER_PROF counts CPU time the precision would be
+> > the same as the COARSE clocks which depends on jiffies and on the
+> > compile time option CONFIG_HZ. That is because in the scheduller the CPU
+> > time is quantized into chunks based on CONFIG_HZ.
+> >
+> > And the ITIMER_REAL runs on hrtimers which would be the same precision
+> > as CLOCK_REALTIME or CLOCK_MONOTONIC.
+>
+
+This description of the rationale is what I was trying to confirm.
+Thanks for sharing.
+
+
+
+>
+> The kernel mangles the new timer values for ITIMER_PROF and
+> ITIMER_VIRTUAL. It'll always add one extra jiffy to the actual timer
+> value you've passed. For ITIMER_REAL, the timer value gets set as is.
+>
+
+
+Right, but I don't think it could be said as "mangles" cause that is
+on purpose, in case people give a very tiny 'tv_usec' to setiitimer(),
+so plus one jiffy to guarantee at least the timer takes effect.
+
+
+
+>
+>  From set_cpu_itimer() in kernel/time/itimer.c:
+>
+> if (oval || nval) {
+>         if (nval > 0)
+>                 nval += TICK_NSEC;
+>         set_process_cpu_timer(tsk, clock_id, &nval, &oval);
+> }
+>
+> nval = new timer value passed to setitimer() converted to nanoseconds
+> TICK_NSEC = 1 jiffy in nanoseconds
+>
+> --
+> Martin Doucha   mdoucha@suse.cz
+> QA Engineer for Software Maintenance
+> SUSE LINUX, s.r.o.
+> CORSO IIa
+> Krizikova 148/34
+> 186 00 Prague 8
+> Czech Republic
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+>
+
+-- 
+Regards,
+Li Wang
+
+--0000000000005901f305ecb00098
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Martin Doucha &lt;<a href=3D"mailto:mdoucha@suse.cz">mdoucha@=
+suse.cz</a>&gt; wrote:<br></div><div class=3D"gmail_default" style=3D"font-=
+size:small"><br></div></div><div class=3D"gmail_quote"><blockquote class=3D=
+"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(2=
+04,204,204);padding-left:1ex">On 04. 11. 22 15:13, Cyril Hrubis wrote:=C2=
+=A0</blockquote><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
+px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+&gt; As ITIMER_VIRTUAL and ITIMER_PROF counts CPU time the precision would =
+be<br>
+&gt; the same as the COARSE clocks which depends on jiffies and on the<br>
+&gt; compile time option CONFIG_HZ. That is because in the scheduller the C=
+PU<br>
+&gt; time is quantized into chunks based on CONFIG_HZ.<br>
+&gt; <br>
+&gt; And the ITIMER_REAL runs on hrtimers which would be the same precision=
+<br>
+&gt; as CLOCK_REALTIME or CLOCK_MONOTONIC.<br></blockquote><div><br></div><=
+div><div class=3D"gmail_default" style=3D"font-size:small">This description=
+ of the rationale=C2=A0is what I was trying to confirm.</div><div class=3D"=
+gmail_default" style=3D"font-size:small">Thanks for sharing.</div><br></div=
+><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px=
+ 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+The kernel mangles the new timer values for ITIMER_PROF and <br>
+ITIMER_VIRTUAL. It&#39;ll always add one extra jiffy to the actual timer <b=
+r>
+value you&#39;ve passed. For ITIMER_REAL, the timer value gets set as is.<b=
+r></blockquote><div><br></div><div><br></div><div><div class=3D"gmail_defau=
+lt" style=3D"font-size:small">Right, but I don&#39;t think it could be said=
+ as &quot;mangles&quot; cause that is</div><div class=3D"gmail_default" sty=
+le=3D"font-size:small">on purpose, in case people give a very tiny &#39;tv_=
+usec&#39; to=C2=A0setiitimer(),</div><div class=3D"gmail_default" style=3D"=
+font-size:small">so plus one jiffy to guarantee at least the timer takes ef=
+fect.</div></div><div><div class=3D"gmail_default" style=3D"font-size:small=
+"><br></div></div><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex">
+<br>
+=C2=A0From set_cpu_itimer() in kernel/time/itimer.c:<br>
+<br>
+if (oval || nval) {<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (nval &gt; 0)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 nval +=3D TICK_NSEC=
+;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 set_process_cpu_timer(tsk, clock_id, &amp;nval,=
+ &amp;oval);<br>
+}<br>
+<br>
+nval =3D new timer value passed to setitimer() converted to nanoseconds<br>
+TICK_NSEC =3D 1 jiffy in nanoseconds<br>
+<br>
+-- <br>
+Martin Doucha=C2=A0 =C2=A0<a href=3D"mailto:mdoucha@suse.cz" target=3D"_bla=
+nk">mdoucha@suse.cz</a><br>
+QA Engineer for Software Maintenance<br>
+SUSE LINUX, s.r.o.<br>
+CORSO IIa<br>
+Krizikova 148/34<br>
+186 00 Prague 8<br>
+Czech Republic<br>
+<br>
+<br>
+-- <br>
+Mailing list info: <a href=3D"https://lists.linux.it/listinfo/ltp" rel=3D"n=
+oreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><br>
+<br>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li =
+Wang<br></div></div></div></div>
+
+--0000000000005901f305ecb00098--
+
+
+--===============1192357393==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1192357393==--
+
