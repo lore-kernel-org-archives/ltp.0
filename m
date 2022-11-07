@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76ECEC4332F
-	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 12:03:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D971C433FE
+	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 12:05:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 802913CD9FE
-	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 13:03:38 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 3D3283CDA01
+	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 13:05:06 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6EC683C0181
- for <ltp@lists.linux.it>; Mon,  7 Nov 2022 13:03:27 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id BCEB13C8C79
+ for <ltp@lists.linux.it>; Mon,  7 Nov 2022 13:04:57 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 30933600667
- for <ltp@lists.linux.it>; Mon,  7 Nov 2022 13:03:26 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 32C3B200330
+ for <ltp@lists.linux.it>; Mon,  7 Nov 2022 13:04:56 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 76771225B9
- for <ltp@lists.linux.it>; Mon,  7 Nov 2022 12:03:26 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 319CA225C1
+ for <ltp@lists.linux.it>; Mon,  7 Nov 2022 12:04:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1667822606;
+ t=1667822696;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HUq7+s10fHZSJEzgeOawnKr/keeAHap2JrVCppZ2IxM=;
- b=ARImmmOqJ0Iye/F3jKn0oDvfGeVeRQt6d93lo47ZcbL884Xx/QL44MTz6pdALRNsUKXjIS
- +9z/7kODOy8Bd3dJj+llfVciU77ENcjsuz4xYnlyp/HQt3PXFVvjR3ZRIIR7xBb80Vnl94
- qe6vxk9Jz8alwaGgPWlLxXiaHVxs+Jo=
+ bh=yLcik5WXzM6hi+EyGh7a170OmA5P8dU147CK9D8LxAc=;
+ b=iBY98Gxf27pLxt2/0wL/Mp6LkPd/b122kNSQZ4OfNGPezV8p3LM5deCUXD+cHOyMNIZtfg
+ zqDJ+aAnduIAWnK/NPopBLCb7tWx/O5Adox+TwjzbjemNkDfzoCQxSZ7WeOsg2BWSyI9ph
+ kTX8ZhT4ru0MMKKbcPz3U7sEs/9hhEE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1667822606;
+ s=susede2_ed25519; t=1667822696;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=HUq7+s10fHZSJEzgeOawnKr/keeAHap2JrVCppZ2IxM=;
- b=cggd04WBsPufD0sUAodP03fuwEUsd1eCDao0ImIJUuHtDeR2osQ6GvWGaLFWe76qt7r715
- Z8SPXai4ltKV/DAQ==
+ bh=yLcik5WXzM6hi+EyGh7a170OmA5P8dU147CK9D8LxAc=;
+ b=8ZxOWexWBdW/rbC0E026atJU9LtNG0SLu5GfJDBuqmER+XihbuN51dNSX/8stqXZm4Z3Kt
+ sNT7Zicb3KTD+pBQ==
 Received: from UNKNOWN (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 205422C141;
- Mon,  7 Nov 2022 12:03:26 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id DA87D2C141;
+ Mon,  7 Nov 2022 12:04:55 +0000 (UTC)
 References: <20221021115333.13725-1-pvorel@suse.cz>
- <20221021115333.13725-4-pvorel@suse.cz>
+ <20221021115333.13725-3-pvorel@suse.cz>
 User-agent: mu4e 1.8.11; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 07 Nov 2022 12:03:02 +0000
+Date: Mon, 07 Nov 2022 12:03:38 +0000
 Organization: Linux Private Site
-In-reply-to: <20221021115333.13725-4-pvorel@suse.cz>
-Message-ID: <87zgd3vunm.fsf@suse.de>
+In-reply-to: <20221021115333.13725-3-pvorel@suse.cz>
+Message-ID: <87v8nrvul4.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] doc: Remove
- mini-howto-building-ltp-from-git.txt
+Subject: Re: [LTP] [PATCH 2/3] Makefile: Update copyright, use SPDX
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,91 +82,49 @@ Hello,
 
 Petr Vorel <pvorel@suse.cz> writes:
 
-> Document is not linked into our wiki, there is "Quick guide to running
-> the tests" section in README.md visible from web and CI scripts in
-> ci/*.sh and build.sh, which describe what to install and how to build.
->
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  Makefile | 24 +++---------------------
+>  1 file changed, 3 insertions(+), 21 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index ea11ac7f3..1ccb301a0 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1,25 +1,7 @@
+> -#
+> -#    Top-level Makefile for LTP. See INSTALL for more info.
+> -#
+> -#    Copyright (c) Linux Test Project, 2009-2020
+> -#    Copyright (c) Cisco Systems Inc., 2009-2010
+> -#
+> -#    This program is free software; you can redistribute it and/or modify
+> -#    it under the terms of the GNU General Public License as published by
+> -#    the Free Software Foundation; either version 2 of the License, or
+> -#    (at your option) any later version.
+> -#
+> -#    This program is distributed in the hope that it will be useful,
+> -#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+> -#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> -#    GNU General Public License for more details.
+> -#
+> -#    You should have received a copy of the GNU General Public License along
+> -#    with this program; if not, write to the Free Software Foundation, Inc.,
+> -#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> -#
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +# Copyright (c) Linux Test Project, 2009-2022
+> +# Copyright (c) Cisco Systems Inc., 2009-2010
+>  # Ngie Cooper, July 2009
+> -#
+
+I would just merge, but it won't apply
 
 Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
 
-> ---
-> Do we want any of these move to "Quick guide to running the tests"
-> section in README.md?
->
->
->  doc/mini-howto-building-ltp-from-git.txt | 62 ------------------------
->  1 file changed, 62 deletions(-)
->  delete mode 100644 doc/mini-howto-building-ltp-from-git.txt
->
-> diff --git a/doc/mini-howto-building-ltp-from-git.txt b/doc/mini-howto-building-ltp-from-git.txt
-> deleted file mode 100644
-> index 28825c20f..000000000
-> --- a/doc/mini-howto-building-ltp-from-git.txt
-> +++ /dev/null
-> @@ -1,62 +0,0 @@
-> -Mini-Howto: Building LTP from Git
-> -=================================
-> -
-> -******************************************************************************
-> -The following document briefly describes the single steps to build LTP from
-> -the Git repository located at GitHub.
-> -The instructions here were tested on a Ubuntu/precise Linux system (feel free
-> -to adapt to your distribution).
-> -
-> -Changelog:
-> - * Initial version: Sedat Dilek <sedat.dilek@gmail.com>
-> - * Embedded comments from Cyril Hrubis <chrubis@suse.cz>
-> -******************************************************************************
-> -
-> -# Export language settings
-> -
-> -export LANG=C
-> -export LC_ALL=C
-> -
-> -# Set some useful variables (adapt if you dislike)
-> -
-> -WORKING_DIR="$HOME/src/ltp"
-> -
-> -PREFIX="/opt/ltp"
-> -
-> -GIT_URL="https://github.com/linux-test-project/ltp.git"
-> -
-> -MAKE_JOBS=$(getconf _NPROCESSORS_ONLN)
-> -
-> -BUILD_LOG_FILE="build-log.txt"
-> -INSTALL_LOG_FILE="install-log.txt"
-> -
-> -# PREREQS on Ubuntu (package-list is incomplete and may vary for other distros)
-> -
-> -sudo apt-get install build-essential
-> -sudo apt-get install autoconf automake autotools-dev m4
-> -sudo apt-get install git
-> -sudo apt-get install linux-headers-$(uname -r)
-> -sudo apt-get install libaio-dev libattr1-dev libcap-dev
-> -
-> -# Working directory
-> -
-> -mkdir -p $WORKING_DIR
-> -cd $WORKING_DIR
-> -
-> -# Get the LTP source
-> -
-> -git clone $GIT_URL ltp-git
-> -
-> -# Configure LTP
-> -
-> -cd ltp-git/
-> -make autotools
-> -./configure --prefix=$PREFIX
-> -
-> -# Start building LTP
-> -
-> -make -j$MAKE_JOBS 2>&1 | tee ../$BUILD_LOG_FILE
-> -
-> -# Install LTP (requires superuser privileges)
-> -
-> -sudo make install 2>&1 | tee ../$INSTALL_LOG_FILE
+>  
+>  # Avoid funny character set dependencies
+>  export LANG=C
 > -- 
 > 2.38.0
 
