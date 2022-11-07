@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D971C433FE
-	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 12:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55AFAC4332F
+	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 12:13:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3D3283CDA01
-	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 13:05:06 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 6FEA23CD9E6
+	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 13:13:39 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BCEB13C8C79
- for <ltp@lists.linux.it>; Mon,  7 Nov 2022 13:04:57 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id AF9923C0181
+ for <ltp@lists.linux.it>; Mon,  7 Nov 2022 13:13:29 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 32C3B200330
- for <ltp@lists.linux.it>; Mon,  7 Nov 2022 13:04:56 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B3BB96006C3
+ for <ltp@lists.linux.it>; Mon,  7 Nov 2022 13:13:28 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 319CA225C1
- for <ltp@lists.linux.it>; Mon,  7 Nov 2022 12:04:56 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id C19B3225E4;
+ Mon,  7 Nov 2022 12:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1667822696;
+ t=1667823207;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yLcik5WXzM6hi+EyGh7a170OmA5P8dU147CK9D8LxAc=;
- b=iBY98Gxf27pLxt2/0wL/Mp6LkPd/b122kNSQZ4OfNGPezV8p3LM5deCUXD+cHOyMNIZtfg
- zqDJ+aAnduIAWnK/NPopBLCb7tWx/O5Adox+TwjzbjemNkDfzoCQxSZ7WeOsg2BWSyI9ph
- kTX8ZhT4ru0MMKKbcPz3U7sEs/9hhEE=
+ bh=ifhS0zTVXU8PsQjGiheOtVqJOo8J+iYFnDEDkLMxij0=;
+ b=1xNVIsuI1+WSB0Y18mCAGApT+TvakwSaWnW8C0BfQbOrma8FICvkVFnajxbYQkuZL36XUz
+ LBL50QuzzMV9jfr5Yiv+8eVnpkeHzBFodunTis6NB47v8zrwtwdXEQwQ5z7th1Sgeyq2T2
+ PYFEgNhZkh5rahWPeLAtxjvdXq6IlFk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1667822696;
+ s=susede2_ed25519; t=1667823207;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=yLcik5WXzM6hi+EyGh7a170OmA5P8dU147CK9D8LxAc=;
- b=8ZxOWexWBdW/rbC0E026atJU9LtNG0SLu5GfJDBuqmER+XihbuN51dNSX/8stqXZm4Z3Kt
- sNT7Zicb3KTD+pBQ==
+ bh=ifhS0zTVXU8PsQjGiheOtVqJOo8J+iYFnDEDkLMxij0=;
+ b=lAttWBjERlNb9VZDsOmTipQpnWCVCTz0/g2oZNW3hqcue5nf936qAQhywGrXWVNiaIbOZa
+ IddRRRiR/k1BghDQ==
 Received: from UNKNOWN (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id DA87D2C141;
- Mon,  7 Nov 2022 12:04:55 +0000 (UTC)
-References: <20221021115333.13725-1-pvorel@suse.cz>
- <20221021115333.13725-3-pvorel@suse.cz>
+ by relay2.suse.de (Postfix) with ESMTPS id E20FC2C141;
+ Mon,  7 Nov 2022 12:13:26 +0000 (UTC)
+References: <20221025121853.3590372-1-liwang@redhat.com>
+ <CAEemH2ciCbmVhVtm+oMV2JqnWf10qK-GAZNp1bZOiC2ks4cnuQ@mail.gmail.com>
 User-agent: mu4e 1.8.11; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 07 Nov 2022 12:03:38 +0000
+To: Li Wang <liwang@redhat.com>
+Date: Mon, 07 Nov 2022 12:11:23 +0000
 Organization: Linux Private Site
-In-reply-to: <20221021115333.13725-3-pvorel@suse.cz>
-Message-ID: <87v8nrvul4.fsf@suse.de>
+In-reply-to: <CAEemH2ciCbmVhVtm+oMV2JqnWf10qK-GAZNp1bZOiC2ks4cnuQ@mail.gmail.com>
+Message-ID: <87r0yfvu6y.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] Makefile: Update copyright, use SPDX
+Subject: Re: [LTP] [PATCH 1/2] setitimer01: add interval timer test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,56 +77,19 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hello Li,
 
-Petr Vorel <pvorel@suse.cz> writes:
+Li Wang <liwang@redhat.com> writes:
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  Makefile | 24 +++---------------------
->  1 file changed, 3 insertions(+), 21 deletions(-)
+> Plz ignore this patch, it needs code rebase after Anderea's work:
 >
-> diff --git a/Makefile b/Makefile
-> index ea11ac7f3..1ccb301a0 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1,25 +1,7 @@
-> -#
-> -#    Top-level Makefile for LTP. See INSTALL for more info.
-> -#
-> -#    Copyright (c) Linux Test Project, 2009-2020
-> -#    Copyright (c) Cisco Systems Inc., 2009-2010
-> -#
-> -#    This program is free software; you can redistribute it and/or modify
-> -#    it under the terms of the GNU General Public License as published by
-> -#    the Free Software Foundation; either version 2 of the License, or
-> -#    (at your option) any later version.
-> -#
-> -#    This program is distributed in the hope that it will be useful,
-> -#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-> -#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> -#    GNU General Public License for more details.
-> -#
-> -#    You should have received a copy of the GNU General Public License along
-> -#    with this program; if not, write to the Free Software Foundation, Inc.,
-> -#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> -#
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) Linux Test Project, 2009-2022
-> +# Copyright (c) Cisco Systems Inc., 2009-2010
->  # Ngie Cooper, July 2009
-> -#
-
-I would just merge, but it won't apply
-
-Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
-
->  
->  # Avoid funny character set dependencies
->  export LANG=C
+>     b606a7c7d setitimer01: Fix checking of setitimer() parameters
+>
 > -- 
-> 2.38.0
+> Regards,
+> Li Wang
 
+I'll set to "changes requested" in patchwork. Plase can you update Patchwork in the future?
 
 -- 
 Thank you,
