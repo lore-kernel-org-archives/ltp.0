@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B8B8C4332F
-	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 13:35:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57892C4332F
+	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 14:02:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 00C733CDA15
-	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 14:35:06 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id DD5F43CDA43
+	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 15:02:19 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6F4CE3C6E8B
- for <ltp@lists.linux.it>; Mon,  7 Nov 2022 14:34:57 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id F34063C889D
+ for <ltp@lists.linux.it>; Mon,  7 Nov 2022 15:02:07 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 66CE5200222
- for <ltp@lists.linux.it>; Mon,  7 Nov 2022 14:34:55 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DBC78600781
+ for <ltp@lists.linux.it>; Mon,  7 Nov 2022 15:02:06 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 610AC1F8B0;
- Mon,  7 Nov 2022 13:34:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id C7D552254E;
+ Mon,  7 Nov 2022 14:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1667828095;
+ t=1667829725;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=WKNXXfYp6i0DJRKMYKtXMvUJAbi9XDvclKrEavDRTm4=;
- b=Twt1tfocNBKDZ2jK6zrlk8i08mucbTYfl0WWnj4KLzYIzeISw2cBEDfaaDRJ6fpq/KNkZg
- 1jZtOPQzT3Gu5FHTJ0+epOXqJ5rX3a7ie2fXptLtq18ehKqiDs9rj1mm0kKcuKzntCMvdb
- pV8MrmyMkF53eIl7cflitpBx1wFe5GY=
+ bh=26JZm4pD0FnOHnSVjVGuHGqOK2HAl0erjxyBBv85UL4=;
+ b=vz2bgywGJJTfgFBZaGL09k6sUXmC7hszi8JFWBDnGniUhly866mHnHZeUkcwZ6Iaqq9MYx
+ 1E6FfB2eVxa93uDm5/tcM0LnZ+GAfrHG8k6QNmleIxI3Jw1RF7QBitQ0GYuMGiJZlW7ZON
+ CXVaA6/2BU4mk2WJutLiZ9YYnTUmwco=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1667828095;
+ s=susede2_ed25519; t=1667829725;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=WKNXXfYp6i0DJRKMYKtXMvUJAbi9XDvclKrEavDRTm4=;
- b=X304pluYv+UiGwqHSA/UoIiQBQ6J5HKGFkCUOaLrNHcYK+PAmUIw+Qo2Gre4AElq7myvl9
- NH1U58uBUr/wLJAw==
+ bh=26JZm4pD0FnOHnSVjVGuHGqOK2HAl0erjxyBBv85UL4=;
+ b=p8Jnf9FvNH+YfEX6J1NJBOboPFO45mkzep/erzt5OYSYT+CrMUV2sIrHDSUAzM29qAkOVJ
+ VhO2wYkXQfYiWoDA==
 Received: from UNKNOWN (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id E2FC42C141;
- Mon,  7 Nov 2022 13:34:54 +0000 (UTC)
-References: <20221026035130.198906-1-zhaogongyi@huawei.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 2BD2C2C141;
+ Mon,  7 Nov 2022 14:02:04 +0000 (UTC)
+References: <1666856118-18962-1-git-send-email-zenghongling@kylinos.cn>
 User-agent: mu4e 1.8.11; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Mon, 07 Nov 2022 12:30:47 +0000
+To: Hongling Zeng <zenghongling@kylinos.cn>
+Date: Mon, 07 Nov 2022 13:54:27 +0000
 Organization: Linux Private Site
-In-reply-to: <20221026035130.198906-1-zhaogongyi@huawei.com>
-Message-ID: <87k046x4zl.fsf@suse.de>
+In-reply-to: <1666856118-18962-1-git-send-email-zenghongling@kylinos.cn>
+Message-ID: <87fseux3qc.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/sched_setscheduler04: new test for
- sched_setscheduler()
+Subject: Re: [LTP] [LTP|PATCH] du: bug fix for testcase/du/du01.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,198 +72,35 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: zhongling0719@126.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
-
-Zhao Gongyi via ltp <ltp@lists.linux.it> writes:
-
-> Verify that the scheduling policy and parameters are in fact per-thread
-> attributes on Linux:
-> 1. Specifying pid as 0 will operate on the attributes of the calling thread
-> 2. The value returned from a call to gettid(2) can be passed in the argument
->    pid.
-> 3. Passing the value returned from a call to getpid(2) will operate on the
->    attributes of the main thread of the  thread  group
->
-> Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> ---
->  runtest/syscalls                              |  1 +
->  .../syscalls/sched_setscheduler/.gitignore    |  1 +
->  .../syscalls/sched_setscheduler/Makefile      |  2 +
->  .../sched_setscheduler/sched_setscheduler04.c | 91 +++++++++++++++++++
->  4 files changed, 95 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
->
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 3dc6fa397..ff516af3d 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1204,6 +1204,7 @@ sched_getscheduler02 sched_getscheduler02
->  sched_setscheduler01 sched_setscheduler01
->  sched_setscheduler02 sched_setscheduler02
->  sched_setscheduler03 sched_setscheduler03
-> +sched_setscheduler04 sched_setscheduler04
->
->  sched_yield01 sched_yield01
->
-> diff --git a/testcases/kernel/syscalls/sched_setscheduler/.gitignore b/testcases/kernel/syscalls/sched_setscheduler/.gitignore
-> index aa8ad9695..1b8860d2c 100644
-> --- a/testcases/kernel/syscalls/sched_setscheduler/.gitignore
-> +++ b/testcases/kernel/syscalls/sched_setscheduler/.gitignore
-> @@ -1,3 +1,4 @@
->  /sched_setscheduler01
->  /sched_setscheduler02
->  /sched_setscheduler03
-> +/sched_setscheduler04
-> diff --git a/testcases/kernel/syscalls/sched_setscheduler/Makefile b/testcases/kernel/syscalls/sched_setscheduler/Makefile
-> index 044619fb8..e3d54e33e 100644
-> --- a/testcases/kernel/syscalls/sched_setscheduler/Makefile
-> +++ b/testcases/kernel/syscalls/sched_setscheduler/Makefile
-> @@ -3,6 +3,8 @@
->
->  top_srcdir		?= ../../../..
->
-> +sched_setscheduler04: CFLAGS += -pthread
-> +
->  include $(top_srcdir)/include/mk/testcases.mk
->
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
-> new file mode 100644
-> index 000000000..6f985be88
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
-> @@ -0,0 +1,91 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright(c) 2022 Huawei Technologies Co., Ltd
-> + * Author: Zhao Gongyi <zhaogongyi@huawei.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that the scheduling policy and parameters are in fact per-thread
-> + * attributes on Linux:
-> + * 1. Specifying pid as 0 will operate on the attributes of the calling thread
-> + * 2. The value returned from a call to gettid(2) can be passed in the argument
-> + *    pid.
-> + * 3. Passing the value returned from a call to getpid(2) will operate on the
-> + *    attributes of the main thread of the  thread  group
-> + */
-> +#include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +#include "tst_safe_pthread.h"
-> +#include <pthread.h>
-> +
-> +static struct sched_param param;
-> +static volatile int sched_prio;
-> +
-> +#define SCHED_POLICY SCHED_FIFO
-> +
-> +static void set_param(int tid)
-> +{
-> +	param.sched_priority = sched_prio;
-> +
-> +	if (sched_setscheduler(tid, SCHED_POLICY, &param)) {
-> +		tst_brk(TBROK | TERRNO,
-> +			"sched_setscheduler(%d, %d, ...) failed",
-> +			tid, SCHED_POLICY);
-> +	}
-> +}
-> +
-> +static void check_prio(int tid)
-> +{
-> +	if (sched_getparam(tid, &param) != 0)
-> +		tst_brk(TBROK | TERRNO, "sched_getparam() failed");
-> +
-> +	if (param.sched_priority != sched_prio)
-> +		tst_res(TFAIL, "Checking of thread priority failed");
-> +	else
-> +		tst_res(TPASS, "Checking of thread priority passed");
-
-How are we going to debug a test failure?
-
-This can be replaced with the TST_EXP_* macros which will print more
-info if used correctly.
-
-At the least we should print what thread or pid we are operating
-on. What the priority and policies were originally, what we changed them
-to and what they are at the end.
-
-> +}
-> +
-> +static void *thread_func(LTP_ATTRIBUTE_UNUSED void *arg)
-> +{
-> +	pid_t threadid = tst_syscall(__NR_gettid);
-> +
-> +	sched_prio++;
-> +	set_param(0);
-> +	check_prio(threadid);
-> +
-> +	sched_prio++;
-> +	set_param(threadid);
-> +	check_prio(threadid);
-> +
-> +	return NULL;
-> +}
-> +
-> +static void test_sched_setscheduler01(void)
-> +{
-> +	sched_prio++;
-> +	set_param(getpid());
-> +	check_prio(tst_syscall(__NR_gettid));
-> +}
-> +
-> +static void test_sched_setscheduler02(void)
-> +{
-> +	pthread_t tid;
-> +
-> +	SAFE_PTHREAD_CREATE(&tid, NULL, thread_func, NULL);
-> +	SAFE_PTHREAD_JOIN(tid, NULL);
-> +}
-> +
-> +
-> +static void run(void)
-> +{
-> +	sched_prio = sched_get_priority_min(SCHED_POLICY);
-
-This can go in the setup function.
-
-> +
-> +	test_sched_setscheduler01();
-> +	test_sched_setscheduler02();
-
-This should be replaced with .tcnt = 2 and .test. or else just merge
-them into run.
-
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-
-We probably need to ensure CAP_SYS_NICE. Full details are in 'man 7
-sched'
-
-i.e. .caps = (struct tst_cap[]) {
-  TST_CAP(TST_CAP_REQ, CAP_SYS_NICE),
-   null
-}
-
-> +};
-> --
-> 2.17.1
-
-Setting patchwork to changes requested for the reasons above.
-
--- 
-Thank you,
-Richard.
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGVsbG8sCgpIb25nbGluZyBaZW5nIDx6ZW5naG9uZ2xpbmdAa3lsaW5vcy5jbj4gd3JpdGVzOgoK
+PiBUaGUgcnVubHRwIGludGVyZmFjZSB0ZXN0IGZvciBjb21tYW5kIGR1IHJlcG9ydCBlcnJvciA6
+Cj4gZHUwMSA5IFRGQUlMOiAnZHUgLWMnIGZhaWxlZAo+IGR1MDEgOSBUSU5GTzogTG9va2luZyBm
+b3IgJ14xMFsyLTNdWzAtOV1bMC05XVtbOnNwYWNlOl1ddG90YWwnIGluOgo+IDQJLi90ZXN0ZGly
+Cj4gNAkuL2Jhc2VkaXIKPiAxMDI1NgkuCj4gMTAyNTYJ5oC755So6YePCj4gZHUwMSAxMCBURkFJ
+TDogJ2R1IC0tdG90YWwnIGZhaWxlZAo+Cj4gQWRkIHNsZWN0aXZlIGp1ZGdlbWVudCBmb3IgY2hp
+bmVzZSBjb21tYW5kIGFuZCBmaXggdGhpcyBlcnJvci4KCkhvcGVmdWxseSB0aGlzIGhhcyBiZWVu
+IGZpeGVkIGFscmVhZHkgYnkgc2V0dGluZyBMQ19BTEw9Qy4KCjlhY2RiZWQ2Y2UwZjBmOTk2YWU0
+ZjhkYTU3Njk2ODcxODMyNjczNmMKdHN0X3Rlc3Quc2g6IE5vcm1hbGl6ZSB0aGUgbG9jYWxlCgpT
+ZXQgdG8gc3VwZXJzZWRlZCBpbiBwYXRjaHdvcmsuCgo+Cj4gU2lnbmVkLW9mZi1ieTogemVuZ2hv
+bmdsaW5nIDx6ZW5naG9uZ2xpbmdAa3lsaW5vcy5jbj4KPiAtLS0KPiAgdGVzdGNhc2VzL2NvbW1h
+bmRzL2R1L2R1MDEuc2ggfCAyICstCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwg
+MSBkZWxldGlvbigtKQo+Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9jb21tYW5kcy9kdS9kdTAx
+LnNoIGIvdGVzdGNhc2VzL2NvbW1hbmRzL2R1L2R1MDEuc2gKPiBpbmRleCA3OTc3ZmQ0Li5hOWM0
+Mzc3IDEwMDc1NQo+IC0tLSBhL3Rlc3RjYXNlcy9jb21tYW5kcy9kdS9kdTAxLnNoCj4gKysrIGIv
+dGVzdGNhc2VzL2NvbW1hbmRzL2R1L2R1MDEuc2gKPiBAQCAtNzQsNyArNzQsNyBAQCBjaGVjazI9
+Il4xMFsyLTNdWzAtOV1bMC05XVtbOnNwYWNlOl1ddGVzdGZpbGUiCj4gIGNoZWNrMz0iXlwoMFx8
+JHtwYWdlX3NpemV9XClbWzpzcGFjZTpdXVwuXC90ZXN0ZGlyXC90ZXN0c3ltbGluayIKPiAgY2hl
+Y2s1PSJeMjBbNC02XVswLTldWzAtOV1bWzpzcGFjZTpdXVwuIgo+ICBjaGVjazc9Il4xMFs0LTVd
+WzAtOV1bMC05XVx7NFx9W1s6c3BhY2U6XV1cLiIKPiAtY2hlY2s5PSJeMTBbMi0zXVswLTldWzAt
+OV1bWzpzcGFjZTpdXXRvdGFsIgo+ICtjaGVjazk9Il4xMFsyLTNdWzAtOV1bMC05XVtbOnNwYWNl
+Ol1dWyjmgLvnlKjph498dG90YWwpXSIKPiAgY2hlY2sxMT0iXjEwWzItM11bMC05XVswLTldW1s6
+c3BhY2U6XV10ZXN0ZGlyXC90ZXN0c3ltbGluayIKPiAgY2hlY2sxND0iXjFbMCwxXU1bWzpzcGFj
+ZTpdXVwuIgo+ICBjaGVjazE2PSJeMTBbMi0zXVswLTldWzAtOV1bWzpzcGFjZTpdXXRlc3RkaXJc
+LyIKPiAtLSAKPiAyLjEuMAoKCi0tIApUaGFuayB5b3UsClJpY2hhcmQuCgotLSAKTWFpbGluZyBs
+aXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
