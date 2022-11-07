@@ -4,78 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E22CBC4332F
-	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 03:05:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98162C433FE
+	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 08:40:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9C8043CDB5B
-	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 04:05:05 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 044183CD9A1
+	for <ltp@archiver.kernel.org>; Mon,  7 Nov 2022 09:40:53 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 742F03CDB93
- for <ltp@lists.linux.it>; Mon,  7 Nov 2022 04:04:54 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 12AF23C0796
+ for <ltp@lists.linux.it>; Mon,  7 Nov 2022 09:40:43 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3F3E01A00791
- for <ltp@lists.linux.it>; Mon,  7 Nov 2022 04:04:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1667790292;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5529B20074D
+ for <ltp@lists.linux.it>; Mon,  7 Nov 2022 09:40:41 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 890BE1F891;
+ Mon,  7 Nov 2022 08:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1667810439;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=QqNJ5lXOyYCe9klU8+FMyB1xnO2gCGtgGXJfiA+w6GY=;
- b=OzAgiYP7Vu5ldgw9iVcGEpBUmizQbwVZuCrdDGJfSpDIJw+Lfw9vQklTKgzxfmfm3yYHl0
- nVs3wy8QyPRfzMhndCQ02tFlA/fKfErKJegpRsUFfD/yrv7v60FiC42bAypko2ozWpr6MQ
- lc0/XsUPSVPpUawzwAhVxeVYYSNYmdE=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-423-TxSgpfOaNR-qDBi00n8B0g-1; Sun, 06 Nov 2022 22:04:51 -0500
-X-MC-Unique: TxSgpfOaNR-qDBi00n8B0g-1
-Received: by mail-ot1-f70.google.com with SMTP id
- p19-20020a056830319300b0066c34a214f2so5026197ots.9
- for <ltp@lists.linux.it>; Sun, 06 Nov 2022 19:04:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=QqNJ5lXOyYCe9klU8+FMyB1xnO2gCGtgGXJfiA+w6GY=;
- b=Isip5nDD4DGEuQ6Fs3CIuI8FM5Z+F5AmUfI0fpiFPJ3NWqo4v1t2EKTLoUSDVfWqEH
- bDJPtq+ry/BqCSLYhZq1Tz0VbtZEJ/jHA717OvMNftFsHitmBK6J7xhHR/U53Fy238bZ
- FyDSjt8sZnhif8J/rMG5nJLPl8FqFBOWemWFqGVSpim2ae0ZTHRFp7fP2WROqB7Qvz9S
- z3LHCT8rH4cOf0UN53gZhdMvkQzePoHE34ZO5yZJ5l7P21Dvv22FKR2hBcx76TKNxiZs
- 2amv1fTjNfINvSYaAjqxv9r6ifyPOgIrknaQYyOvux7R8j6jQ26kqYQ3aWbWPPBO+fsE
- Eu0Q==
-X-Gm-Message-State: ACrzQf1GGA979b8vmAKNMzMrSm91eYU4FkdQxnv0R6FeQU+xTHWt8l6/
- MnqVvamVyMejW9UXiNHuqitlHIv3WmFZ4762b5ruFqgcgH/HmS5rv9cpHQFeMC62zpw+8WbX8B4
- qrkQtGA/a1dZQVj6q1AB46OHodiw=
-X-Received: by 2002:a9d:6b99:0:b0:66c:6851:b961 with SMTP id
- b25-20020a9d6b99000000b0066c6851b961mr16464506otq.160.1667790290580; 
- Sun, 06 Nov 2022 19:04:50 -0800 (PST)
-X-Google-Smtp-Source: AMsMyM7FV6E9l1wR4Xneopi6npLPwLd+OHySlAG/1yPWClrepNwoKyG2Iy90Yl92B+RuLzh5A/1BZEM2u8Ltw7/5R1A=
-X-Received: by 2002:a9d:6b99:0:b0:66c:6851:b961 with SMTP id
- b25-20020a9d6b99000000b0066c6851b961mr16464500otq.160.1667790290401; Sun, 06
- Nov 2022 19:04:50 -0800 (PST)
+ bh=bzuswOF9LHruW/z0I4OveE/kD2IGMwPGua/0CzEnvFQ=;
+ b=h4oR02JVSYQq7FrEMrkWmpVc4PbcKpd8Ymiob0i2L9Yowh/zCP0mMrJRaaS7+A6D58MHHq
+ 85Ya0JnewzrLl9+bpXHPok5cS+dcaMA7ax3R/u8ICCemt+FzMn/WIZLcXBOBzV1qpj3DAm
+ 9q4v9L92Ecl7bKWMnEhmETsm8AuEIUk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1667810439;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=bzuswOF9LHruW/z0I4OveE/kD2IGMwPGua/0CzEnvFQ=;
+ b=1UP7AdnvIhJMLbKXmXIjJI6evAo3tk3wNcjcHdUTWfvnhkKHXefvSuo1Ot/5mj1k0mhNsM
+ Do+Kfnhc4oiT3UCA==
+Received: from UNKNOWN (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 1529A2C141;
+ Mon,  7 Nov 2022 08:40:38 +0000 (UTC)
+References: <8735b0jos5.fsf@suse.de>
+ <20221104044149.655317-1-alessandro.carminati@gmail.com>
+User-agent: mu4e 1.8.11; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Alessandro Carminati <alessandro.carminati@gmail.com>
+Date: Mon, 07 Nov 2022 08:12:33 +0000
+Organization: Linux Private Site
+In-reply-to: <20221104044149.655317-1-alessandro.carminati@gmail.com>
+Message-ID: <87leonxim1.fsf@suse.de>
 MIME-Version: 1.0
-References: <20221104162511.28658-1-tsahu@linux.ibm.com>
- <20221104162511.28658-5-tsahu@linux.ibm.com>
-In-Reply-To: <20221104162511.28658-5-tsahu@linux.ibm.com>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 7 Nov 2022 11:04:37 +0800
-Message-ID: <CAEemH2du1RaF5SHJ2uTzAunU9SWmzvRD9=Sdn0XnpwFrZZxh1A@mail.gmail.com>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8 4/4] Hugetlb: Migrating libhugetlbfs
- corrupt-by-cow-opt
+Subject: Re: [LTP] [PATCH 0/2] Fix tst_find_backing_dev adding BTRFS support
+ and /dev/root missing case
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,42 +72,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, rpalethorpe@suse.com, ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============1198938365=="
+Reply-To: rpalethorpe@suse.de
+Cc: acarmina@redhat.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1198938365==
-Content-Type: multipart/alternative; boundary="000000000000d1d31105ecd8af3f"
+Hello,
 
---000000000000d1d31105ecd8af3f
-Content-Type: text/plain; charset="UTF-8"
+Alessandro Carminati <alessandro.carminati@gmail.com> writes:
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+> Hello Richard,
+>
+> Thanks for the detailed review.
+> If in the future I want to contribute more to the LTP project, I need
+> to provide myself with a CI pipeline like yours.
 
---000000000000d1d31105ecd8af3f
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+If you fork the project in Github and create a new branch then the CI
+will run on the commits you push to GH.
 
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:sma=
-ll">Reviewed-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D=
-"_blank">liwang@redhat.com</a>&gt;<div class=3D"gmail-yj6qo"></div><div cla=
-ss=3D"gmail-adL"><br></div></div></div></div>
+> I appreciated the review that was very detailed, but I couldn't address
+> a single comment.
+>
+>>> +		if (!ioctl(fd, BTRFS_IOC_FS_INFO, &args)) {
+>>What happens if the test author allows this function to be called on
+> tmpfs, rootfs, etc.? Or if the FS is valid, but has the same issue as
+> BTRFS.
+>
+> I have gone thorough all the file systems supported by LTP at this stage,
+> and I noticed that BTRFS is the only file system that owns this
+> singularity.
 
---000000000000d1d31105ecd8af3f--
+tmpfs doesn't have a backing device and we support it? E.g.
 
+40 60 0:38 / /tmp rw,nosuid,nodev shared:19 - tmpfs tmpfs rw,nr_inodes=1048576,inode64
 
---===============1198938365==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+So this function shouldn't be called on it and it is not in the test
+currently effected[1]. However if the test author does it by accident (99%
+chance of happening) then we want a sensible error message.
+
+> In addition to this, I also dared to assume that if device major number
+> is == 0 then the test is facing the BTRFS.
+> This assumption might not be true in general, but I tested it to be
+> true in the test supported file system.
+> Is your comment referring to this?
+
+I think it is absolutely correct that we shouldn't design for
+requirements we presently don't have. However:
+
+1. It's highly probable this function will be misused.
+2. It's relatively easy to guard against.
+
+>
+>
+> Alessandro Carminati (2):
+>   tst_find_backing_dev: Get dev name from /sys/dev/block/*/uevent
+>   c-test-api: Documentation updated
+>
+>  doc/c-test-api.txt |  7 ++--
+>  lib/tst_device.c   | 87 ++++++++++++++++++++++++++++++----------------
+>  2 files changed, 63 insertions(+), 31 deletions(-)
+
+[1]: The test skips it
+
+.skip_filesystems = (const char *const []) {
+	"tmpfs",
+	"overlayfs",
+	NULL
+},
+
+Also note that you can run LTP on any filesystem. You just need to set
+the appropriate env vars.
 
 
 -- 
+Thank you,
+Richard.
+
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1198938365==--
-
