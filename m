@@ -4,94 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23E56C433FE
-	for <ltp@archiver.kernel.org>; Tue,  8 Nov 2022 08:29:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 579CAC433FE
+	for <ltp@archiver.kernel.org>; Tue,  8 Nov 2022 10:20:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A3E713CD8D2
-	for <ltp@archiver.kernel.org>; Tue,  8 Nov 2022 09:29:05 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id B609D3CD8C2
+	for <ltp@archiver.kernel.org>; Tue,  8 Nov 2022 11:20:36 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4EA923CD8B2
- for <ltp@lists.linux.it>; Tue,  8 Nov 2022 09:28:22 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 9A8E03C9733
+ for <ltp@lists.linux.it>; Tue,  8 Nov 2022 11:20:26 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EAEAD600A4B
+ for <ltp@lists.linux.it>; Tue,  8 Nov 2022 11:20:25 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id B81001F889;
+ Tue,  8 Nov 2022 10:20:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1667902824;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=J13ab3dGg8C2FrTU7xayxZoelPI3fkefrsee3slya48=;
+ b=WPFPtBNk+F5zQeDJLd9rRIGgMfzxKMKh5RbWQAS9hMKgzyqIns4ojCqba+vSxaqsTQ0u1C
+ cXfDOks4vwC4IAyReEVASNZOLP/uYIKyhBJL9lWF+ao1WMPzoM8Y8mMSHJIKyESDN1Evau
+ YVpFgR9EG6e4gzw4BpXuXoZCvmdyAu4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1667902824;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=J13ab3dGg8C2FrTU7xayxZoelPI3fkefrsee3slya48=;
+ b=0QyOf6bS6IpMx12NLLlExGffdlDpKCeHHIkCKLeci1Ulb/wrhXXUDSCyZnKZ/8ssRVE2+e
+ W2pXQ3QxYAcaZzBg==
+Received: from UNKNOWN (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 75F8160095E
- for <ltp@lists.linux.it>; Tue,  8 Nov 2022 09:28:21 +0100 (CET)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A88CNZQ019104;
- Tue, 8 Nov 2022 08:28:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=SjvEtUHFDAQHs/r3TlyM4rUJd+N+wbDe2EClXSri3Vc=;
- b=dY8NYlfp8StIN0PzFP4dHp8cnjTF69TIIajTZyWzGvwd+taMpZJpucGyS2jAja/CklnJ
- zsbwr3Sqnw+Nc1mDBniTHun/neNFyA0hEn4kD/b0YQ2/1/9Q15BwEMPve3uSsN//r/Ie
- uDYzY86eEYm7E9Y7183Fyt2VJ3BBV79nnQpdlXb3ewMHDr8TcK1bvA7HGmgaWKoVVInZ
- z0oMIxRJgHfmKrRco9APM9tJpgMdRy0ONQOo1Bp1cGMiQCziEzmrKVjMwXdXJWT9YxMJ
- 7LCpbsOXPWdRANU9nzzKS3jMTRaL/6QCUfu9EJGtFnfX6aAocR7464X3Zkv/c8uxkCt6 mA== 
-Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kqkd88dbj-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 08 Nov 2022 08:28:19 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A88EDWa028317;
- Tue, 8 Nov 2022 08:28:18 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kqkd88daa-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 08 Nov 2022 08:28:18 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A88LAp9004571;
- Tue, 8 Nov 2022 08:28:16 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com
- (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
- by ppma04ams.nl.ibm.com with ESMTP id 3kngqdbs0v-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 08 Nov 2022 08:28:16 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com
- [9.149.105.60])
- by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2A88SDXa42074490
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 8 Nov 2022 08:28:13 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 46AB942042;
- Tue,  8 Nov 2022 08:28:13 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id E9B7C4203F;
- Tue,  8 Nov 2022 08:28:09 +0000 (GMT)
-Received: from tarunpc.ibmuc.com (unknown [9.43.50.217])
- by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Tue,  8 Nov 2022 08:28:09 +0000 (GMT)
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Tue,  8 Nov 2022 13:57:47 +0530
-Message-Id: <20221108082747.176492-6-tsahu@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221108082747.176492-1-tsahu@linux.ibm.com>
-References: <20221108082747.176492-1-tsahu@linux.ibm.com>
+ by relay2.suse.de (Postfix) with ESMTPS id C8FA72C141;
+ Tue,  8 Nov 2022 10:20:23 +0000 (UTC)
+References: <87h6zbxgc9.fsf@suse.de>
+ <20221107163957.721315-1-alessandro.carminati@gmail.com>
+ <20221107163957.721315-2-alessandro.carminati@gmail.com>
+User-agent: mu4e 1.8.11; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Alessandro Carminati <alessandro.carminati@gmail.com>
+Date: Tue, 08 Nov 2022 09:39:44 +0000
+Organization: Linux Private Site
+In-reply-to: <20221107163957.721315-2-alessandro.carminati@gmail.com>
+Message-ID: <877d05wxwe.fsf@suse.de>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MnJ6B0RbziPzx3xVyV1EfDDi2t-swLG7
-X-Proofpoint-GUID: E1gSanJ1LoGHVpRUgPFsgo2Y4JEjGx4J
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-07_11,2022-11-07_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0
- priorityscore=1501 mlxlogscore=907 mlxscore=0 phishscore=0 malwarescore=0
- spamscore=0 suspectscore=0 impostorscore=0 clxscore=1015 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211080043
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 5/5] Hugetlb: Migrating libhugetlbfs fallocate_basic
+Subject: Re: [LTP] [PATCH 1/2] tst_find_backing_dev: Get dev name from
+ /sys/dev/block/*/uevent
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,152 +73,215 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
- vaibhav@linux.ibm.com, rpalethorpe@suse.com
+Reply-To: rpalethorpe@suse.de
+Cc: acarmina@redhat.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/fallocate_basic.c test
+Hello,
 
-Test Description: It tests basic fallocate functionality in hugetlbfs.
-Preallocate huge pages to a file in hugetlbfs, and then remove the pages
-via hole punch.
+I'd like to merge, but discovered some more issues that requuire more
+than a fixup before merge.
 
-Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
----
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../hugetlb/hugefallocate/hugefallocate02.c   | 95 +++++++++++++++++++
- 3 files changed, 97 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
+Also please use the -v flag in git format-patch to version the patches
+after the first revision. I don't mind which version you start at now.
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index ca92dfcff..ec1fc2515 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -1,4 +1,5 @@
- hugefallocate01 hugefallocate01
-+hugefallocate02 hugefallocate02
- 
- hugemmap01 hugemmap01
- hugemmap02 hugemmap02
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index cafdb5259..c0906f3d3 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -1,5 +1,6 @@
- /cpuset/cpuset01
- /hugetlb/hugefallocate/hugefallocate01
-+/hugetlb/hugefallocate/hugefallocate02
- /hugetlb/hugemmap/hugemmap01
- /hugetlb/hugemmap/hugemmap02
- /hugetlb/hugemmap/hugemmap04
-diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
-new file mode 100644
-index 000000000..777b5321e
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
-+/*
-+ * Copyright (C) 2015 Mike Kravetz, Oracle Corporation
-+ *
-+ * Test Name: fallocate_basic
-+ *
-+ * Test Description: It tests basic fallocate functionality in hugetlbfs.
-+ * Preallocate huge pages to a file in hugetlbfs, and then remove the pages
-+ * via hole punch.
-+ *
-+ * HISTORY
-+ *  Written by Mike Kravetz
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+
-+#include "hugetlb.h"
-+
-+#define MAX_PAGES_TO_USE 5
-+#define MNTPOINT "hugetlbfs/"
-+
-+static int  fd = -1;
-+static long hpage_size;
-+
-+static void run_test(void)
-+{
-+	int err;
-+	unsigned long max_iterations;
-+	unsigned long free_before, free_after;
-+
-+	free_before = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	max_iterations = MIN(free_before, MAX_PAGES_TO_USE);
-+
-+	fd = tst_creat_unlinked(MNTPOINT);
-+
-+	/* First preallocate file with max_iterations pages */
-+	err = fallocate(fd, 0, 0, hpage_size * max_iterations);
-+	if (err) {
-+		if (errno == EOPNOTSUPP)
-+			tst_brk(TCONF, "fallocate() Operation is not supported");
-+		tst_res(TFAIL|TERRNO, "fallocate()");
-+		goto cleanup;
-+	}
-+
-+	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	if (free_before - free_after != max_iterations) {
-+		tst_res(TFAIL, "fallocate did not preallocate %lu huge pages",
-+							max_iterations);
-+		goto cleanup;
-+	}
-+
-+	/* Now punch a hole of the same size */
-+	err = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
-+			0, hpage_size * max_iterations);
-+	if (err) {
-+		tst_res(TFAIL|TERRNO, "fallocate(FALLOC_FL_PUNCH_HOLE)");
-+		goto cleanup;
-+	}
-+
-+	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	if (free_after != free_before) {
-+		tst_res(TFAIL, "fallocate hole punch did not release %lu huge pages",
-+							max_iterations);
-+	} else
-+		tst_res(TPASS, "Successful");
-+cleanup:
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void setup(void)
-+{
-+	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {3, TST_NEEDS},
-+};
+Alessandro Carminati <alessandro.carminati@gmail.com> writes:
+
+> In some minimal Linux, the /dev/root can be missing. The consequence of
+> this is that mountinfo doesn't contain the correct information. btrfs
+> file systems are yet another point of trouble for this function.
+>
+> The unevent file in sysfs is another method to retrieve device info
+> using the sysfs.
+>
+> btrfs file systems are special from the device name retrieval, and in
+> place of use of the minor/major they are approached by using the uuid.
+> In the end, btrfs strategy is a slightly modified version of the same
+> unevent strategy.
+>
+> Non btrfs look in "/sys/dev/block/%d:%d/uevent" major, minor
+> btrfs look in /sys/fs/btrfs/%s/devices/%s/uevent, uuid, devname
+>
+> The btrfs handling requires BTRFS specific ioctl for finding the
+> file system uuid, and for this reason, btrfs/ioctl.h is needed.
+>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Signed-off-by: Alessandro Carminati <alessandro.carminati@gmail.com>
+> ---
+>  lib/tst_device.c | 91 ++++++++++++++++++++++++++++++++----------------
+>  1 file changed, 61 insertions(+), 30 deletions(-)
+>
+> diff --git a/lib/tst_device.c b/lib/tst_device.c
+> index 8419b80c3..054e39bcd 100644
+> --- a/lib/tst_device.c
+> +++ b/lib/tst_device.c
+> @@ -33,6 +33,9 @@
+>  #include <stdint.h>
+>  #include <inttypes.h>
+>  #include <sys/sysmacros.h>
+> +#include <linux/btrfs.h>
+> +#include <linux/limits.h>
+> +#include <dirent.h>
+>  #include "lapi/syscalls.h"
+>  #include "test.h"
+>  #include "safe_macros.h"
+> @@ -45,6 +48,8 @@
+>  
+>  #define DEV_FILE "test_dev.img"
+>  #define DEV_SIZE_MB 300u
+> +#define UUID_STR_SZ 37
+> +#define UUID_FMT "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
+>  
+>  static char dev_path[1024];
+>  static int device_acquired;
+> @@ -519,48 +524,74 @@ static int count_match_len(const char *first, const char *second)
+>  void tst_find_backing_dev(const char *path, char *dev)
+>  {
+>  	struct stat buf;
+> -	FILE *file;
+> -	char line[PATH_MAX];
+> -	char *pre = NULL;
+> -	char *next = NULL;
+> -	unsigned int dev_major, dev_minor, line_mjr, line_mnr;
+> -	unsigned int len, best_match_len = 1;
+> -	char mnt_point[PATH_MAX];
+> +	struct btrfs_ioctl_fs_info_args args = {0};
+> +	struct dirent *d;
+> +	char uevent_path[PATH_MAX];
+> +	char dev_name[NAME_MAX];
+> +	char bdev_path[PATH_MAX];
+> +	char btrfs_uuid_str[UUID_STR_SZ];
+> +	DIR *dir;
+> +	unsigned int dev_major, dev_minor;
+> +	int fd;
+>  
+>  	if (stat(path, &buf) < 0)
+>  		tst_brkm(TWARN | TERRNO, NULL, "stat() failed");
+>  
+>  	dev_major = major(buf.st_dev);
+>  	dev_minor = minor(buf.st_dev);
+> -	file = SAFE_FOPEN(NULL, "/proc/self/mountinfo", "r");
+>  	*dev = '\0';
+>  
+> -	while (fgets(line, sizeof(line), file)) {
+> -		if (sscanf(line, "%*d %*d %d:%d %*s %s",
+> -			&line_mjr, &line_mnr, mnt_point) != 3)
+> -			continue;
+> -
+> -		pre = strstr(line, " - ");
+> -		pre = strtok_r(pre, " ", &next);
+> -		pre = strtok_r(NULL, " ", &next);
+> -		pre = strtok_r(NULL, " ", &next);
+> -
+> -		if (line_mjr == dev_major && line_mnr == dev_minor) {
+> -			strcpy(dev, pre);
+> -			break;
+> -		}
+> -
+> -		len = count_match_len(path, mnt_point);
+> -		if (len > best_match_len) {
+> -			strcpy(dev, pre);
+> -			best_match_len = len;
+> +	if (dev_major == 0) {
+> +		tst_resm(TINFO, "Use BTRFS specific strategy");
+> +
+> +		fd = SAFE_OPEN(NULL, dirname(path), O_DIRECTORY);
+
+There are two problems here. One is simple and that dirname can modify
+path, but path is a const pointer (compiler should warn about dropping
+const modifiers). The simple solution is just to copy path into a buffer.
+
+Secondly ioctl_loop05 passes the path to an image, but the self test in
+/lib/newlib_tests/tst_device.c passes the mount point. So unless I am
+mistaken dirname will return the dir below the mount point which is
+wrong.
+
+One option is to try opening path as a dir first and if that fails, use
+dirname to get the containing folder. Changeing ioctl_loop05 would also
+be valid.
+
+> +		if (!ioctl(fd, BTRFS_IOC_FS_INFO, &args)) {
+> +			sprintf(btrfs_uuid_str,
+> +				UUID_FMT,
+> +				args.fsid[0], args.fsid[1],
+> +				args.fsid[2], args.fsid[3],
+> +				args.fsid[4], args.fsid[5],
+> +				args.fsid[6], args.fsid[7],
+> +				args.fsid[8], args.fsid[9],
+> +				args.fsid[10], args.fsid[11],
+> +				args.fsid[12], args.fsid[13],
+> +				args.fsid[14], args.fsid[15]);
+> +			sprintf(bdev_path,
+> +				"/sys/fs/btrfs/%s/devices", btrfs_uuid_str);
+> +		} else {
+> +			tst_brkm(TBROK, NULL, "BTRFS ioctl failed. Is %s
+> on a tmpfs?", path);
+Need TERRNO here and/or check that the errorno is ENOTTY otherwise the
+hint makes no sense.
+> +			}
+> +		SAFE_CLOSE(NULL, fd);
+> +		dir = SAFE_OPENDIR(NULL, bdev_path);
+> +		while (d = SAFE_READDIR(NULL, dir)) {
+> +			if (d->d_name[0]!='.')
+
+There are a few formatting errors like the missing spaces around !=.
+
+Run make check-tst_device in the lib dir and see the kernel style
+guidelines.
+
+> +				break;
+>  		}
+> +		uevent_path[0] = '\0';
+> +		if (d) {
+> +			sprintf(uevent_path, "%s/%s/uevent",
+> +				bdev_path, d->d_name);
+> +		} else {
+> +			tst_brkm(TBROK, NULL, "No backining device
+> found");
+
+Still need to print some information about where we are looking (bdev_path).
+
+> +			}
+> +		if (SAFE_READDIR(NULL, dir))
+> +			tst_resm(TINFO, "Warning: used first of multiple backing device.");
+> +		SAFE_CLOSEDIR(NULL, dir);
+> +	} else {
+> +
+> +		tst_resm(TINFO, "Use uevent strategy");
+> +		sprintf(uevent_path,
+> +			"/sys/dev/block/%d:%d/uevent", dev_major, dev_minor);
+>  	}
+>  
+> -	SAFE_FCLOSE(NULL, file);
+> +	if (!access(uevent_path, R_OK)) {
+> +		FILE_LINES_SCANF(NULL, uevent_path, "DEVNAME=%s", dev_name);
+>  
+> -	if (!*dev)
+> -		tst_brkm(TBROK, NULL, "Cannot find block device for %s", path);
+> +		if (dev_name[0])
+> +			sprintf(dev, "/dev/%s", dev_name);
+> +	} else {
+> +		tst_brkm(TBROK, NULL, "uevent file (%s) access failed",
+> uevent_path);
+
+Also we can use (TBROK | TERRNO) here as access sets that.
+
+> +		}
+
+make check somehow missing this. The } is indented too far.
+
+>  
+>  	if (stat(dev, &buf) < 0)
+>  		tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
+
+
+
 -- 
-2.31.1
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
