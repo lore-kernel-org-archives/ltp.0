@@ -4,76 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5372AC4332F
-	for <ltp@archiver.kernel.org>; Tue,  8 Nov 2022 03:39:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3BFCC433FE
+	for <ltp@archiver.kernel.org>; Tue,  8 Nov 2022 08:28:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B0A5E3CADA6
-	for <ltp@archiver.kernel.org>; Tue,  8 Nov 2022 04:38:57 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 6C61A3CD88F
+	for <ltp@archiver.kernel.org>; Tue,  8 Nov 2022 09:28:13 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B6EAC3C9354
- for <ltp@lists.linux.it>; Tue,  8 Nov 2022 04:38:48 +0100 (CET)
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com
- [IPv6:2607:f8b0:4864:20::62d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id D5C633CD84A
+ for <ltp@lists.linux.it>; Tue,  8 Nov 2022 09:28:03 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CE0E11A00981
- for <ltp@lists.linux.it>; Tue,  8 Nov 2022 04:38:47 +0100 (CET)
-Received: by mail-pl1-x62d.google.com with SMTP id k7so13038839pll.6
- for <ltp@lists.linux.it>; Mon, 07 Nov 2022 19:38:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=daynix-com.20210112.gappssmtp.com; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=cJJ/TD9RV9JaKtvk0kwczu0pphHpbPSlRzf6zTYhVH4=;
- b=3irR9bBBCeHJOD9SSAR0JAUWASQCAzX0aNJjg+tTvVR8a479DobEt+BuOilSdeFEZG
- zH1eiAMjdMoHeJE9ZcWGV/p+5ulHIcdXWWr5f5hOrtprzYOvDvyvAbNHa1Z0WtkerC5X
- 9Ygo9PAKrMrJk3bu6cZMtZUN+HugyCxUSWCxxxTtvOmIuOcz/8uEXCVj08mzAFbWZeKD
- bcmzRtKQkrlPuFiZj0qPzNsTP6Jxez+3OZ3Lhv6GwkQc3dnKaV6HffJBfBitgoT/QBRy
- GQMpVMSpVytQ1KL0WnZX7sONnWtnhnUA+6ZctJgMdcoTdPf4BFJKICPRf2YIWHLUCMsX
- wYyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=cJJ/TD9RV9JaKtvk0kwczu0pphHpbPSlRzf6zTYhVH4=;
- b=EmmAYfpMKEO63K+MK/fBzu/VMAaDZGXzgWjhOrfIh0WTQLrmPJB0Or5vPmixKP2i16
- 2wFKogzx0fGW/MjyoXOFJxariEpUr5A2s8LM0pfcs2r984nfgndp8IwS/H3zNJRUPpDC
- 0aS3ruTzoYECQ+W9NJ7foDcCByJcV/fsbbFaEkVnRdCTN3vNpt4CVo2mC6hL76RD4i4E
- GvyJrMjhq4HaCasJun9UmfKzyRvphQlJMeufKXHDmnIgalnDpkO+6Yah5B5escCBJWN8
- zMgZQDmys5+/TyjbLivngFdf93yolcLJ78h0p5lnACz85+/JQgE/+MXWE5LpVHPvqJbB
- ycJw==
-X-Gm-Message-State: ACrzQf3UvcKhMaWOiTzj0b3Rzanh9HiwOnnLKQY5KTFxFQrYLPKp8nmt
- WiCFFl0ti8yNAEVlxPwl11ucaw==
-X-Google-Smtp-Source: AMsMyM4wq7dV49IQdqGM8Z5M6fBBbcQP87xqJi6TcTUFPlhX0MkncEiJPmGA90GaNHCz0JC6ju055g==
-X-Received: by 2002:a17:902:f20c:b0:188:51c0:6eb with SMTP id
- m12-20020a170902f20c00b0018851c006ebmr27765866plc.128.1667878726291; 
- Mon, 07 Nov 2022 19:38:46 -0800 (PST)
-Received: from ?IPV6:2400:4050:c360:8200:8ae8:3c4:c0da:7419?
- ([2400:4050:c360:8200:8ae8:3c4:c0da:7419])
- by smtp.gmail.com with ESMTPSA id
- b12-20020a17090a7acc00b002139459e121sm6850037pjl.27.2022.11.07.19.38.44
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 07 Nov 2022 19:38:45 -0800 (PST)
-Message-ID: <aaae3524-1d04-2879-973c-8542cacb1447@daynix.com>
-Date: Tue, 8 Nov 2022 12:38:42 +0900
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 810AE1A009AE
+ for <ltp@lists.linux.it>; Tue,  8 Nov 2022 09:28:01 +0100 (CET)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A871ddu026843;
+ Tue, 8 Nov 2022 08:27:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=rPjndZ5cTwDFyC3zAXTpBOK6iN7GEjn2VfM095MqhTM=;
+ b=g5LGzWW6vyHhbh2ZFKfN2zc+Egi/misOylbbpTArmr0x+cOgm/P4rfR2ouW1eft2u5rz
+ jKTWFVQtfq4ODcKpcHINDm/PF9lMC1xQJlybu/UTPT0Gis8FV358hQmAZKFSAF8I29Cn
+ 4GlP12nOTsJ7HSBtMrqSWICUS+J8n8MrpNAYjQ45gGBnsQQgvSXKWUNrejJRG2Vv/NY8
+ EiCiYPgaFEe7UXPao9garCVBnm+p/BVFuFJDXrJRYUvpjpYtrmVJHdql3mFeIO7iQpKR
+ lnGg2YyoYXUvml8M6Ly0noKpjKo1TVBBubFfvhCgNM99MIrPAMNZ0ef7LFPU0NMkqb9K SQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kp1vt94w9-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 08 Nov 2022 08:27:59 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2A88BqDf023543;
+ Tue, 8 Nov 2022 08:27:58 GMT
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.71])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kp1vt94vg-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 08 Nov 2022 08:27:58 +0000
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+ by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A88LdLb001096;
+ Tue, 8 Nov 2022 08:27:57 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com
+ (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+ by ppma02fra.de.ibm.com with ESMTP id 3kngpgjqpq-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 08 Nov 2022 08:27:56 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+ by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2A88RrxK64094602
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 8 Nov 2022 08:27:53 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 80DDC42041;
+ Tue,  8 Nov 2022 08:27:53 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id DAF8F4203F;
+ Tue,  8 Nov 2022 08:27:49 +0000 (GMT)
+Received: from tarunpc.ibmuc.com (unknown [9.43.50.217])
+ by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+ Tue,  8 Nov 2022 08:27:49 +0000 (GMT)
+From: Tarun Sahu <tsahu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Tue,  8 Nov 2022 13:57:42 +0530
+Message-Id: <20221108082747.176492-1-tsahu@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: u3IG2zeC7sakNPmoSm4io2sQ9IcmGkm_
+X-Proofpoint-GUID: QzHbZM3F30p0v4V8-nj_lKlvitv8udNA
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20221107145453.25262-1-pvorel@suse.cz>
-Content-Language: en-US
-From: Akihiko Odaki <akihiko.odaki@daynix.com>
-In-Reply-To: <20221107145453.25262-1-pvorel@suse.cz>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-07_11,2022-11-07_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 mlxlogscore=697
+ phishscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0
+ bulkscore=0 spamscore=0 adultscore=0 suspectscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
+ definitions=main-2211080043
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] Makefile: set LC_{COLLATE, NUMERIC}=C,
- unexport LC_ALL
+Subject: [LTP] [PATCH 0/5][PART 2] Hugetlb:Migrating the libhugetlbfs tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,48 +100,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+ vaibhav@linux.ibm.com, rpalethorpe@suse.com
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+Hi, 
+This patch series is in continution to first part [1].
+This series include 5 more tests taken from libhugetlbfs.
 
-On 2022/11/07 23:54, Petr Vorel wrote:
-> to have reproducible builds (no locale dependencies).
-> Get inspiration from Linux kernel, commits:
-> c051346b7db2 ("Makefile: set LC_CTYPE, LC_COLLATE, LC_NUMERIC to C")
-> 07105202bdeb ("Makefile: do not override LC_CTYPE")
-> 
-> NOTE: we don't care about messages not being localized.
-> 
-> Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->   Makefile | 8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index eb12b9d69..cb80622d6 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1,8 +1,14 @@
->   # SPDX-License-Identifier: GPL-2.0-or-later
-> -# Copyright (c) Linux Test Project, 2009-2021
-> +# Copyright (c) Linux Test Project, 2009-2022
->   # Copyright (c) Cisco Systems Inc., 2009-2010
->   # Ngie Cooper, July 2009
->   
-> +# Avoid funny character set dependencies
-> +unexport LC_ALL
-> +LC_COLLATE=C
-> +LC_NUMERIC=C
-> +export LC_COLLATE LC_NUMERIC
-> +
->   top_srcdir		?= $(CURDIR)
->   
->   include $(top_srcdir)/include/mk/env_pre.mk
+ref:
+	1. https://lore.kernel.org/all/20221104162511.28658-1-tsahu@linux.ibm.com/
+
+Tarun Sahu (5):
+  Hugetlb: Migrating libhugetlbfs counters
+  Hugetlb: Migrating libhugetlbfs directio
+  Hugetlb: Migrating libhugetlbfs fadvise_reserve
+  Hugetlb: Migrating libhugetlbfs fallocate_align
+  Hugetlb: Migrating libhugetlbfs fallocate_basic
+
+ runtest/hugetlb                               |   6 +
+ testcases/kernel/mem/.gitignore               |   5 +
+ .../kernel/mem/hugetlb/hugefallocate/Makefile |  10 +
+ .../hugetlb/hugefallocate/hugefallocate01.c   | 172 +++++++
+ .../hugetlb/hugefallocate/hugefallocate02.c   |  95 ++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap10.c  | 438 ++++++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap11.c  |  88 ++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap12.c  |  89 ++++
+ 8 files changed, 903 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/Makefile
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate01.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap11.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap12.c
+
+-- 
+2.31.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
