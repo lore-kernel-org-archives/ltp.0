@@ -4,68 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11EF4C433FE
-	for <ltp@archiver.kernel.org>; Wed,  9 Nov 2022 16:17:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B669C433FE
+	for <ltp@archiver.kernel.org>; Wed,  9 Nov 2022 18:09:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4FFAC3CD767
-	for <ltp@archiver.kernel.org>; Wed,  9 Nov 2022 17:17:11 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id D828A3CD75B
+	for <ltp@archiver.kernel.org>; Wed,  9 Nov 2022 19:09:49 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BB1203C8F97
- for <ltp@lists.linux.it>; Wed,  9 Nov 2022 17:17:00 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id D5BC73CD742
+ for <ltp@lists.linux.it>; Wed,  9 Nov 2022 19:09:38 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 592CD1A001BB
- for <ltp@lists.linux.it>; Wed,  9 Nov 2022 17:16:58 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3652922AE6;
- Wed,  9 Nov 2022 16:16:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1668010617; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7PcaLcUEOICv5KbYbIODLyr6+VrveGKUPouY9FEP/P8=;
- b=OPzRi2fpJxliNxMwR5FN996lKpqnNLw2+mR0cL/Mh6or45ftGw0FX09DXWxByNfKYCaXCx
- 1sQserD7JEGNHjPAD75Ej8Dy+WvDXydQftNFaADBe/rnenyecxrxsIEh+C+fvnz6kv89PX
- Z4afi946y3WTooOi9MkEHwp26zMycTE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1668010617;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7PcaLcUEOICv5KbYbIODLyr6+VrveGKUPouY9FEP/P8=;
- b=IAbmw47dt1RfZV7QwxJ/ZgZUIn5rXVEEClZmjgS34n7csOdpZ8GI4/tTbRbWINwRPI+IXz
- vAGCl2DXhXewuwBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12CA71331F;
- Wed,  9 Nov 2022 16:16:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id TD6YBXnSa2P8aQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 09 Nov 2022 16:16:57 +0000
-Date: Wed, 9 Nov 2022 17:18:26 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <Y2vS0slepYtvWQBx@yuki>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 50B751A00163
+ for <ltp@lists.linux.it>; Wed,  9 Nov 2022 19:09:36 +0100 (CET)
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A9GBw3T000877;
+ Wed, 9 Nov 2022 18:09:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=J6N1UtOz+wdj9MN9OQsGxjmYq2QBYKeTlponTC3hTOQ=;
+ b=crDAU+Q6IkEnamj/nCrwbr9TGHuFL5DFh11qDtEEmgW8MICAXV6WzeLhviVEYzLBGI9i
+ rOtDhVM4y0pZvKvAcLazikN2m0gpNriKQKRDSwwehz9THrWOdY6zOD/AyLP7AgXv4q7k
+ w2igLCFqrkWKbvHYFDZXF2EefsxrRyUfxtZJaOE0DRl0JEn+B7viRHRTFkyWEB+Wymsb
+ QhhyBYYjb5EarKIS3LeHP3xNKwlCKyDuZy0GPzZ+lN9kh5KR+LIBGIkfNspy2Yw83lP9
+ EP8QmmEfzZMh8w2avGjWK8YZqVGo8FrZ3em8j8Yx7uPR9mZ1XgnT28JV5JoSnfk6n3Vx mw== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.98])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3krfguu61s-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 09 Nov 2022 18:09:33 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+ by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A9I6iS4008348;
+ Wed, 9 Nov 2022 18:09:31 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com
+ (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+ by ppma03ams.nl.ibm.com with ESMTP id 3kngqge302-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 09 Nov 2022 18:09:31 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com
+ [9.149.105.58])
+ by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2A9I9SwM25559566
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 9 Nov 2022 18:09:28 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 27A254C04A;
+ Wed,  9 Nov 2022 18:09:28 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 417504C040;
+ Wed,  9 Nov 2022 18:09:25 +0000 (GMT)
+Received: from tarunpc (unknown [9.43.99.20])
+ by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+ Wed,  9 Nov 2022 18:09:24 +0000 (GMT)
+Date: Wed, 9 Nov 2022 23:39:21 +0530
+From: Tarun Sahu <tsahu@linux.ibm.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20221109180921.7l27oibmhev6fft7@tarunpc>
 References: <20221108195207.232115-1-tsahu@linux.ibm.com>
- <20221108195207.232115-4-tsahu@linux.ibm.com>
-MIME-Version: 1.0
+ <20221108195207.232115-3-tsahu@linux.ibm.com>
+ <Y2uqS3gKG8FbS0s5@yuki>
 Content-Disposition: inline
-In-Reply-To: <20221108195207.232115-4-tsahu@linux.ibm.com>
+In-Reply-To: <Y2uqS3gKG8FbS0s5@yuki>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GXL7DySCxIEqinFKuMpOeruClRAP38_R
+X-Proofpoint-ORIG-GUID: GXL7DySCxIEqinFKuMpOeruClRAP38_R
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-09_06,2022-11-09_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 malwarescore=0
+ mlxlogscore=999 clxscore=1015 spamscore=0 phishscore=0 bulkscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211090137
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/5] Hugetlb: Migrating libhugetlbfs
- fadvise_reserve
+Subject: Re: [LTP] [PATCH v2 2/5] Hugetlb: Migrating libhugetlbfs directio
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,110 +106,129 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +/*\
-> + * [Description]
-> + *
-> + * fadvise() on some kernels can cause the reservation counter to get
-> + * corrupted. The problem is that the patches are allocated for the
-> + * reservation but not faulted in at the time of allocation. The counters
-> + * do not get updated and effectively "leak". This test identifies whether
-> + * the kernel is vulnerable to the problem or not. It's fixed in kernel
-> + * by commit f2deae9d4e70793568ef9e85d227abb7bef5b622.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <sys/mount.h>
-> +#include <limits.h>
-> +#include <sys/param.h>
-> +#include <sys/types.h>
-> +
-> +#include "hugetlb.h"
-> +
-> +#define MNTPOINT "hugetlbfs/"
-> +static long hpage_size;
-> +static int  fd = -1;
-> +
-> +static void run_test(void)
-> +{
-> +	void *p;
-> +	unsigned long initial_rsvd, map_rsvd, fadvise_rsvd, end_rsvd;
-> +
-> +	fd = tst_creat_unlinked(MNTPOINT);
-> +
-> +	initial_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	tst_res(TINFO, "Reserve count before map: %lu", initial_rsvd);
-> +
-> +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-> +		 fd, 0);
-> +	map_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	tst_res(TINFO, "Reserve count after map: %lu", map_rsvd);
-> +
-> +	if (posix_fadvise(fd, 0, hpage_size, POSIX_FADV_WILLNEED) == -1) {
-> +		tst_res(TFAIL|TERRNO, "fadvise()");
-> +		goto cleanup;
-> +	}
+Hi, 
+Thanks for reviewring it.
 
-If we follow how SAFE_MACROS() works this should rather be:
-
-	if (posix_fadvise(...)
-		tst_brk(TBROK|TERRNO, "fadvise()");
-
-> +	fadvise_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	tst_res(TINFO, "Reserve count after fadvise: %lu", fadvise_rsvd);
-> +
-> +	memset(p, 1, hpage_size);
-> +
-> +	SAFE_MUNMAP(p, hpage_size);
-> +	p = NULL;
-> +	SAFE_CLOSE(fd);
-> +	end_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> +	tst_res(TINFO, "Reserve count after close: %lu", end_rsvd);
-> +
-> +	TST_EXP_EQ_LU(end_rsvd, initial_rsvd);
-> +cleanup:
-> +	if (p)
-> +		SAFE_MUNMAP(p, hpage_size);
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tags = (struct tst_tag[]) {
-> +		{"linux-git", "f2deae9d4e70793568ef9e85d227abb7bef5b622"},
-
-We usually shorten the hash to first 12 characters however things should
-work fine either way.
-
-> +		{}
-> +	},
-> +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.needs_hugetlbfs = 1,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +	.hugepages = {1, TST_NEEDS},
-> +};
-> -- 
-> 2.31.1
+On Nov 09 2022, Cyril Hrubis wrote:
+> > Migrating the libhugetlbfs/testcases/direct.c test
+> > 
+> > Test Description: This Test perform Direct Write/Read from/To hugetlbfs
+> > file which is mapped to process address space. The test is checking if it
+> > succeeds and data written or read is not corrupted.
+> > 
+> > Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+> > ---
+> >  runtest/hugetlb                               |  1 +
+> >  testcases/kernel/mem/.gitignore               |  1 +
+> >  .../kernel/mem/hugetlb/hugemmap/hugemmap11.c  | 87 +++++++++++++++++++
+> >  3 files changed, 89 insertions(+)
+> >  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap11.c
+> > 
+> > diff --git a/runtest/hugetlb b/runtest/hugetlb
+> > index 8a56d52a3..b9ee7227d 100644
+> > --- a/runtest/hugetlb
+> > +++ b/runtest/hugetlb
+> > @@ -7,6 +7,7 @@ hugemmap07 hugemmap07
+> >  hugemmap08 hugemmap08
+> >  hugemmap09 hugemmap09
+> >  hugemmap10 hugemmap10
+> > +hugemmap11 hugemmap11
+> >  hugemmap05_1 hugemmap05 -m
+> >  hugemmap05_2 hugemmap05 -s
+> >  hugemmap05_3 hugemmap05 -s -m
+> > diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+> > index e7def68cb..3e64b67be 100644
+> > --- a/testcases/kernel/mem/.gitignore
+> > +++ b/testcases/kernel/mem/.gitignore
+> > @@ -8,6 +8,7 @@
+> >  /hugetlb/hugemmap/hugemmap08
+> >  /hugetlb/hugemmap/hugemmap09
+> >  /hugetlb/hugemmap/hugemmap10
+> > +/hugetlb/hugemmap/hugemmap11
+> >  /hugetlb/hugeshmat/hugeshmat01
+> >  /hugetlb/hugeshmat/hugeshmat02
+> >  /hugetlb/hugeshmat/hugeshmat03
+> > diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap11.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap11.c
+> > new file mode 100644
+> > index 000000000..357c61ab9
+> > --- /dev/null
+> > +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap11.c
+> > @@ -0,0 +1,87 @@
+> > +// SPDX-License-Identifier: LGPL-2.1-or-later
+> > +/*
+> > + * Copyright (C) 2005-2006 IBM Corporation.
+> > + * Author: David Gibson & Adam Litke
+> > + */
+> > +
+> > +/*\
+> > + * [Description]
+> > + *
+> > + * This Test perform Direct Write/Read from/To hugetlbfs file
+> > + * which is mapped to process address space. The test is checking if it
+> > + * succeeds and data written or read is not corrupted.
+> > + *
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +#include <stdio.h>
+> > +#include <sys/mount.h>
+> > +#include <limits.h>
+> > +#include <sys/param.h>
+> > +#include <sys/types.h>
+> > +
+> > +#include "hugetlb.h"
+> > +
+> > +#define P0 "ffffffff"
+> > +#define IOSZ 4096
+> > +#define NORMAL_PATH ""
+> > +#define MNTPOINT "hugetlbfs/"
+> > +
+> > +static long hpage_size;
+> > +static int fd = -1, nfd = -1;
+> > +
+> > +static void run_test(void)
+> > +{
+> > +	void *p;
+> > +	char buf[IOSZ] __attribute__((aligned(IOSZ)));
+> > +
+> > +	fd = tst_creat_unlinked(MNTPOINT);
+> > +	nfd = tst_creat_unlinked(NORMAL_PATH);
+> > +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
+> > +	memcpy(p, P0, 8);
+> > +
+> > +	SAFE_WRITE(1, nfd, p, IOSZ);
+> > +	SAFE_LSEEK(nfd, 0, SEEK_SET);
+> > +
+> > +	SAFE_READ(1, nfd, buf, IOSZ);
+> > +	if (memcmp(P0, buf, 8)) {
+> > +		tst_res(TFAIL, "Memory mismatch after Direct-IO write");
+> > +		goto cleanup;
+> > +	}
+> > +	SAFE_LSEEK(nfd, 0, SEEK_SET);
+> > +
+> > +	memset(p, 0, IOSZ);
+> > +	SAFE_READ(1, nfd, p, IOSZ);
+> > +
+> > +	if (memcmp(p, P0, 8))
+> > +		tst_res(TFAIL, "Memory mismatch after Direct-IO read");
+> > +	else
+> > +		tst_res(TPASS, "Successful");
+>                                 ^
+> 				We shoudl write something more
+> 				meaningful. Something as:
 > 
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 				"All data were read and written correctly"
+> 
+> Other than this the rest looks good.
+> 
+Ok, Will update it.
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
