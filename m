@@ -4,89 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8CC7C4332F
-	for <ltp@archiver.kernel.org>; Wed,  9 Nov 2022 18:40:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9E98C433FE
+	for <ltp@archiver.kernel.org>; Wed,  9 Nov 2022 19:43:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 84C533CAAE6
-	for <ltp@archiver.kernel.org>; Wed,  9 Nov 2022 19:40:46 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id EEB423CD753
+	for <ltp@archiver.kernel.org>; Wed,  9 Nov 2022 20:43:43 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B32203C010E
- for <ltp@lists.linux.it>; Wed,  9 Nov 2022 19:40:36 +0100 (CET)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 7B1703C8F97
+ for <ltp@lists.linux.it>; Wed,  9 Nov 2022 20:43:32 +0100 (CET)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2AB3A14010CA
- for <ltp@lists.linux.it>; Wed,  9 Nov 2022 19:40:34 +0100 (CET)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2A9IaIOI030491;
- Wed, 9 Nov 2022 18:40:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=4Tk6dZ64cT2JR/I8xRAcVA+2l3UV23hYaS8lCFzWysQ=;
- b=XQ3M+V5FnSb0uPIHsUbLUNlXxiTOwUKIkzQJEyNppUZdqLCvoRQq1DW3S8CSh1c5QmWn
- TrvI7Er5FCTXQOTARdECdlq65O4MBLaiJa7MDi6fsM6vQ4U7v+CZGSpuFre2aIKlhCNd
- SQT1+pFnJQhkmC67+UMtoNmDpUiozEOoxvmB4RCFQS118EqpJ23Wg8hC4PofxRW4nonH
- 4uwyK5u2uSdLEiwpD+DOFTKdf7QcZ7hQWvdnl8f9kmR4lKwqYwsl88MxTUm8Q4rzF/G3
- y1g/hPejKrxSnqcrY8xAn247nqvXagiMCU1XC1ihxz5LdK3G/o2Tgmd4LZxGAXY8GeU1 MA== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com
- [159.122.73.72])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3krfj5bw10-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 09 Nov 2022 18:40:32 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
- by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2A9IZQLG031558;
- Wed, 9 Nov 2022 18:40:31 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com
- (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
- by ppma06fra.de.ibm.com with ESMTP id 3kngq8mf5m-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 09 Nov 2022 18:40:31 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
- by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
- id 2A9IYgva44958026
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 9 Nov 2022 18:34:42 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id D4C0242042;
- Wed,  9 Nov 2022 18:40:27 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id AA6354203F;
- Wed,  9 Nov 2022 18:40:24 +0000 (GMT)
-Received: from tarunpc (unknown [9.43.99.20])
- by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
- Wed,  9 Nov 2022 18:40:24 +0000 (GMT)
-Date: Thu, 10 Nov 2022 00:10:20 +0530
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20221109184020.y4wyeli6cegffgby@tarunpc>
-References: <20221108195207.232115-1-tsahu@linux.ibm.com>
- <20221108195207.232115-4-tsahu@linux.ibm.com>
- <Y2vS0slepYtvWQBx@yuki>
-Content-Disposition: inline
-In-Reply-To: <Y2vS0slepYtvWQBx@yuki>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yVMyhNAoUt8Ls4JtVKIxNAIlAn45vB9_
-X-Proofpoint-GUID: yVMyhNAoUt8Ls4JtVKIxNAIlAn45vB9_
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 85E53100053B
+ for <ltp@lists.linux.it>; Wed,  9 Nov 2022 20:43:32 +0100 (CET)
+Received: by mail-ej1-x631.google.com with SMTP id kt23so49671462ejc.7
+ for <ltp@lists.linux.it>; Wed, 09 Nov 2022 11:43:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=EqAyRYap1IuifDigw8meOGBNMOcGR0/+k5/fsEgHuG0=;
+ b=iu7UpojlNdSFhTCJbC4mNNcNdxcKxfQJcBMCgj6rU+F/hI7GL7cKkpxOXktgOYt4e3
+ 2+/GjcZDVzBmG/8aATSJJCcU4TiAJV5h+OZkAOxLuP/Kvn4uNxpAMhTdv/L7ZA6Tpiou
+ ++ng8Ai4QrWxKaHgX19L0onHxIXTVekCoVR1a4CrRPvhKpdofK11EboKT8PmwEU5+ygD
+ XJbE0Z1Q0JUazcJIBOrALmxa2y6j/wHZ9Zy+z4wrAoTxeLcU2xGdi5b3ouycp1phAdTJ
+ hjEYeR8dBiZDNaKS186+wm6CXegwg9l+8KJTVguHELfhbNtOrLHMGGhrvNZU6L1op/oC
+ rbcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=EqAyRYap1IuifDigw8meOGBNMOcGR0/+k5/fsEgHuG0=;
+ b=6PJ0FiL1OFiqjSmuCjvHsi08r2lhfQqXcLrOYEaDEx23xcI5Y6ozBGvq+6QlIwRBw7
+ sEgidbcpkXCpRt7OPPlk0kzL2O9qVGkFH4yuOCEjFiEjrvWejCdEY9ijll1Nz2y+Lo1n
+ mKx6FlFS1cjMFPSgWOS2hJzOAskUIopDtCerUoVPaBG5uS8OktN+lUrev5BqmE3b+jyi
+ tEetchOgQThrTP3+z0g94GTLOG2Rjesx+uFw17IF9b6nk/BW3dgzqzvkKhN0WZff+gyM
+ zeaQ/2/CLVzi41vCx+7Wh6NYVsgEVlZqJKqAAneZ1EXqUUzimgmNrJb6SFwDF7d1qRE6
+ DKwg==
+X-Gm-Message-State: ACrzQf2bfXcjpTSgqz9z+TvRVpeLJ2LYzjjjSsGXUrHFDS1y91SP8PHx
+ Y3ehtvl01Ak0p+SZlGtr4BbLa3g6Lmbs4g==
+X-Google-Smtp-Source: AMsMyM7ezmbYC0qD/si8g61RI5U4SWMpdNReSTFGFYZ1JpL+Qb2f3W3YzZH67/LW340S620PPXAvBQ==
+X-Received: by 2002:a17:907:2c44:b0:7a9:6e50:4c42 with SMTP id
+ hf4-20020a1709072c4400b007a96e504c42mr57234936ejc.768.1668023011625; 
+ Wed, 09 Nov 2022 11:43:31 -0800 (PST)
+Received: from lab.hqhome163.com ([194.183.10.152])
+ by smtp.googlemail.com with ESMTPSA id
+ z23-20020a170906075700b00780b1979adesm6170126ejb.218.2022.11.09.11.43.30
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 09 Nov 2022 11:43:31 -0800 (PST)
+From: Alessandro Carminati <alessandro.carminati@gmail.com>
+To: ltp@lists.linux.it
+Date: Wed,  9 Nov 2022 19:38:17 +0000
+Message-Id: <20221109193819.875478-1-alessandro.carminati@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <877d05wxwe.fsf@suse.de>
+References: <877d05wxwe.fsf@suse.de>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-09_06,2022-11-09_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 bulkscore=0
- adultscore=0 malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=926
- priorityscore=1501 lowpriorityscore=0 impostorscore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211090140
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/5] Hugetlb: Migrating libhugetlbfs
- fadvise_reserve
+Subject: [LTP] [PATCH v6 0/2] tst_find_backing_dev: fix stat fails /dev/root
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,45 +81,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, ltp@lists.linux.it, mike.kravetz@oracle.com
+Cc: Alessandro Carminati <alessandro.carminati@gmail.com>, rpalethorpe@suse.com,
+ acarmina@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Nov 09 2022, Cyril Hrubis wrote:
-Hi,
+This version fixes:
+* dirname can modify path: as suggested in the review a new buffer is
+reserved in the stack and the path string is copied there.
+* Secondly ioctl_loop05 passes the path to an image, but the self
+test in /lib/newlib_tests/tst_device.c passes the mount point. I
+didn't notice this in the test, however I fixed this case. In place
+of trying open the file as suggested I preferred to use
+S_ISREG(buf.st_mode) using the stat data already present.
+As side note, since the /lib/newlib_tests/tst_device.c depends on
+mkfs.ex2 external executable, its results depends on the mkfs.ext2
+implementation. Using the busybox mkfs.ext2 implementation the test
+fails out of the box since a problem with the loop block size.
+* TERRNO flag missing in the error messages fixed.
+* formatting errors fixed .
+* else statement bracket indentation have been adjusted.
 
---skip
-> > +
-> > +	if (posix_fadvise(fd, 0, hpage_size, POSIX_FADV_WILLNEED) == -1) {
-> > +		tst_res(TFAIL|TERRNO, "fadvise()");
-> > +		goto cleanup;
-> > +	}
-> 
-> If we follow how SAFE_MACROS() works this should rather be:
-> 
-> 	if (posix_fadvise(...)
-> 		tst_brk(TBROK|TERRNO, "fadvise()");
->
-Yes. I am thinking of adding it to tst_safe_macros (SAFE_POSIX_FADVISE).
-But there are other tests, that uses it raw
-(https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/mincore/mincore04.c).
-Was there any reason to not create a SAFE_MACROS for it?
 
-> > +	fadvise_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-> > +	tst_res(TINFO, "Reserve count after fadvise: %lu", fadvise_rsvd);
-> > -- 
-> > 2.31.1
-> > 
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+
+Alessandro Carminati (2):
+  tst_find_backing_dev: Get dev name from /sys/dev/block/*/uevent
+  c-test-api: Documentation updated
+
+ doc/c-test-api.txt |  7 +++-
+ lib/tst_device.c   | 95 ++++++++++++++++++++++++++++++++--------------
+ 2 files changed, 71 insertions(+), 31 deletions(-)
+
+-- 
+2.34.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
