@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B772AC433FE
-	for <ltp@archiver.kernel.org>; Thu, 10 Nov 2022 17:53:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00715C4332F
+	for <ltp@archiver.kernel.org>; Thu, 10 Nov 2022 17:53:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 970023CDD73
-	for <ltp@archiver.kernel.org>; Thu, 10 Nov 2022 18:53:02 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 1B66B3CDD76
+	for <ltp@archiver.kernel.org>; Thu, 10 Nov 2022 18:53:12 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 664FD3CDA7A
+ by picard.linux.it (Postfix) with ESMTPS id E1E713CDD6E
  for <ltp@lists.linux.it>; Thu, 10 Nov 2022 18:52:44 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1566010005B4
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F1140600683
  for <ltp@lists.linux.it>; Thu, 10 Nov 2022 18:52:43 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 054F11FA98;
- Thu, 10 Nov 2022 17:52:43 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 334F61F920;
+ Thu, 10 Nov 2022 17:52:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1668102763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1668102762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=baLdQRoRc3sHwrjh0eFb2TMYrf7uQKqTJjs46N5GiQU=;
- b=pE2E4wzLxJQpYDQSSZvTYJIkkv2Nu11/8zSQpJY1Drb8C+sCRyRMOApruC5YO97tTjZyQV
- akUtrSsVE+G9OF4RZldF5EdNF5IIng4SLYOnRTOeFvY1jqXSg1flKipkmvyMMjwu22UDxC
- dcxlDsijLWFJ8wzXgyKhzdZJ3ZJjkHo=
+ bh=NAACcGneFGyGgIPC02bJ/t5qrxKAD3M4c5i4g9pJCTo=;
+ b=VW2Cs3UtXJP4KvzJRiYXX4TnzG9rUN9DQvVBfSuJK/Gidx6QRVz/Nu4RY2P0aBbyQpYi5Y
+ 9sUWWANPIQXC6eeuDFMI0zTO/M3ecAFexxjzlNygZEWd7AkVQQ9BeoTxVJ9EtJkXsFRlIU
+ cPiQJzOl7WMHILuFdYHlzdq3AeelpPY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1668102763;
+ s=susede2_ed25519; t=1668102762;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=baLdQRoRc3sHwrjh0eFb2TMYrf7uQKqTJjs46N5GiQU=;
- b=fzqIMeWpADi8/a6crzM8VMB89/VD0r26chuNovC6L4UYpiqkHhDXZXR/reNPUybHXnuxXd
- tsEe6UxmMlYU1tBw==
+ bh=NAACcGneFGyGgIPC02bJ/t5qrxKAD3M4c5i4g9pJCTo=;
+ b=OXxHXCLwCxw8HpHuWRCgYLT1jBH9xB6f4R5o8ezUWAkfmlH/9apMFdusvnL1qaSmHEzx5s
+ MHUaBpaoi/jQsYBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5324413B58;
- Thu, 10 Nov 2022 17:52:42 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A013A13B58;
+ Thu, 10 Nov 2022 17:52:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kCxlEGo6bWM0GgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 10 Nov 2022 17:52:42 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id EL9iI2k6bWM0GgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 10 Nov 2022 17:52:41 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 10 Nov 2022 18:52:36 +0100
-Message-Id: <20221110175236.32094-3-pvorel@suse.cz>
+Date: Thu, 10 Nov 2022 18:52:35 +0100
+Message-Id: <20221110175236.32094-2-pvorel@suse.cz>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221110175236.32094-1-pvorel@suse.cz>
 References: <20221110175236.32094-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] doc/c-test-api.txt: Improve
- tst_find_backing_dev() doc
+Subject: [LTP] [PATCH 1/2] lib/tst_device: Remove unused count_match_len()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,39 +85,42 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Doc added in 606903cf8 was too complicated. Also there was repeating
-sentence, typo 'unevent'.
-
-While at it, fix also 'voud' typo from 9343d0486.
-
-Fixes: 606903cf8 ("c-test-api: Documentation updated")
-Fixes: 9343d0486 ("tst_device: Add new api tst_find_backing_dev(path, dev)")
+Fixes: e1b1ae66b ("tst_find_backing_dev: Get dev name from /sys/dev/block/*/uevent")
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/c-test-api.txt | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+Hi,
 
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index 8844d9f2f..834a342fd 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -1075,12 +1075,9 @@ is created for that intention.
- void tst_find_backing_dev(const char *path, char *dev);
- -------------------------------------------------------------------------------
+obviously correct, but not merging it without ack there are changes and
+function is actually needed.
+
+Kind regards,
+Petr
+
+ lib/tst_device.c | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index db5c2ab8f..48d7e3ab6 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -510,16 +510,6 @@ unsigned long tst_dev_bytes_written(const char *dev)
+ 	return dev_bytes_written;
+ }
  
--This function finds the block dev that this path belongs to, it uses stat function
--to get the major/minor number of the path.
--This function finds the block dev that this path belongs to, it uses the unevent
--file in sysfs to find the device name. It needs to discriminate between btrfs
--and not btrfs. For non btrfs filesystems it uses the minor, major numbers. For
--btrfs it uses the fs uuid.
-+This function finds the block dev that this path belongs to, using uevent in sysfs.
-+For Btrfs it uses '/sys/fs/btrfs/UUID/devices/DEV_NAME/uevent'; for other
-+filesystems it uses '/sys/dev/block/MAJOR:MINOR/uevent'.
- 
- [source,c]
- -------------------------------------------------------------------------------
+-static int count_match_len(const char *first, const char *second)
+-{
+-	int len = 0;
+-
+-	while (*first && *first++ == *second++)
+-		len++;
+-
+-	return len;
+-}
+-
+ __attribute__((nonnull))
+ void tst_find_backing_dev(const char *path, char *dev)
+ {
 -- 
 2.38.0
 
