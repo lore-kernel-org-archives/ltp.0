@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00715C4332F
-	for <ltp@archiver.kernel.org>; Thu, 10 Nov 2022 17:53:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07506C433FE
+	for <ltp@archiver.kernel.org>; Thu, 10 Nov 2022 18:14:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1B66B3CDD76
-	for <ltp@archiver.kernel.org>; Thu, 10 Nov 2022 18:53:12 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 357033CDD76
+	for <ltp@archiver.kernel.org>; Thu, 10 Nov 2022 19:14:57 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E1E713CDD6E
- for <ltp@lists.linux.it>; Thu, 10 Nov 2022 18:52:44 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 3E4823CD756
+ for <ltp@lists.linux.it>; Thu, 10 Nov 2022 19:14:46 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F1140600683
- for <ltp@lists.linux.it>; Thu, 10 Nov 2022 18:52:43 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 61507600685
+ for <ltp@lists.linux.it>; Thu, 10 Nov 2022 19:14:46 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 334F61F920;
- Thu, 10 Nov 2022 17:52:42 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D396521F4C;
+ Thu, 10 Nov 2022 18:14:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1668102762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1668104084;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NAACcGneFGyGgIPC02bJ/t5qrxKAD3M4c5i4g9pJCTo=;
- b=VW2Cs3UtXJP4KvzJRiYXX4TnzG9rUN9DQvVBfSuJK/Gidx6QRVz/Nu4RY2P0aBbyQpYi5Y
- 9sUWWANPIQXC6eeuDFMI0zTO/M3ecAFexxjzlNygZEWd7AkVQQ9BeoTxVJ9EtJkXsFRlIU
- cPiQJzOl7WMHILuFdYHlzdq3AeelpPY=
+ bh=Fvq3/mnU2FVdPGBHi4geoZyXm8mf3QKuoGJ5AGZe9MU=;
+ b=mWW9iZ2DjEw9mkjv9tAQ4OlnqfjAWOYn5TmvulnAl3VRjKTIdovj+so+4+DVkm2XHS2PLY
+ HXodfw2qQ/W+P1w7AKbVgzhPFJQy6inQLh2RTQxQ4u7RWTiZYlYHFXyjow3a5sygSyBWgh
+ l4i0lSPSDJ07bsJ0Gjob+oudL2iyjTk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1668102762;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1668104084;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NAACcGneFGyGgIPC02bJ/t5qrxKAD3M4c5i4g9pJCTo=;
- b=OXxHXCLwCxw8HpHuWRCgYLT1jBH9xB6f4R5o8ezUWAkfmlH/9apMFdusvnL1qaSmHEzx5s
- MHUaBpaoi/jQsYBA==
+ bh=Fvq3/mnU2FVdPGBHi4geoZyXm8mf3QKuoGJ5AGZe9MU=;
+ b=essaH1HkS7aC+2HdGJmrh6PLj0F58aW0tQsjbLTOgiFEiNGhfq5MQtyFxmkootQ/I5x9GO
+ sumwhcA12OSPJaDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A013A13B58;
- Thu, 10 Nov 2022 17:52:41 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7B3541332F;
+ Thu, 10 Nov 2022 18:14:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id EL9iI2k6bWM0GgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 10 Nov 2022 17:52:41 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id 0AaJHJQ/bWNaJQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 10 Nov 2022 18:14:44 +0000
+Date: Thu, 10 Nov 2022 19:14:41 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Thu, 10 Nov 2022 18:52:35 +0100
-Message-Id: <20221110175236.32094-2-pvorel@suse.cz>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20221110175236.32094-1-pvorel@suse.cz>
-References: <20221110175236.32094-1-pvorel@suse.cz>
+To: Akihiko Odaki <akihiko.odaki@daynix.com>
+Message-ID: <Y20/kcaTKGxHFIHr@pevik>
+References: <20221107145453.25262-1-pvorel@suse.cz>
+ <aaae3524-1d04-2879-973c-8542cacb1447@daynix.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <aaae3524-1d04-2879-973c-8542cacb1447@daynix.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] lib/tst_device: Remove unused count_match_len()
+Subject: Re: [LTP] [PATCH v2 1/1] Makefile: set LC_{COLLATE, NUMERIC}=C,
+ unexport LC_ALL
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,53 +78,19 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Alessandro Carminati <alessandro.carminati@gmail.com>,
- Yang Xu <xuyang2018.jy@cn.fujitsu.com>,
- Richard Palethorpe <rpalethorpe@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes: e1b1ae66b ("tst_find_backing_dev: Get dev name from /sys/dev/block/*/uevent")
+Hi Akihiko, Richard,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Hi,
-
-obviously correct, but not merging it without ack there are changes and
-function is actually needed.
+thank you for a review, merged.
 
 Kind regards,
 Petr
-
- lib/tst_device.c | 10 ----------
- 1 file changed, 10 deletions(-)
-
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index db5c2ab8f..48d7e3ab6 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -510,16 +510,6 @@ unsigned long tst_dev_bytes_written(const char *dev)
- 	return dev_bytes_written;
- }
- 
--static int count_match_len(const char *first, const char *second)
--{
--	int len = 0;
--
--	while (*first && *first++ == *second++)
--		len++;
--
--	return len;
--}
--
- __attribute__((nonnull))
- void tst_find_backing_dev(const char *path, char *dev)
- {
--- 
-2.38.0
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
