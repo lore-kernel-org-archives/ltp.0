@@ -4,68 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23785C4332F
-	for <ltp@archiver.kernel.org>; Fri, 11 Nov 2022 09:29:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 307EFC4332F
+	for <ltp@archiver.kernel.org>; Fri, 11 Nov 2022 09:42:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F0F223CD52A
-	for <ltp@archiver.kernel.org>; Fri, 11 Nov 2022 10:29:41 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D16053CD549
+	for <ltp@archiver.kernel.org>; Fri, 11 Nov 2022 10:42:00 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC2643CA956
- for <ltp@lists.linux.it>; Fri, 11 Nov 2022 10:29:32 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D57BE3CA956
+ for <ltp@lists.linux.it>; Fri, 11 Nov 2022 10:41:51 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 48D4D1000234
- for <ltp@lists.linux.it>; Fri, 11 Nov 2022 10:29:31 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C95E222237;
- Fri, 11 Nov 2022 09:29:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1668158970;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C265F10000EB
+ for <ltp@lists.linux.it>; Fri, 11 Nov 2022 10:41:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1668159709;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=N1dVUIpFQi8O7Feo048ZZ65SBEEuoI/CXn0xkHOeIQ8=;
- b=LZdrByDsfEwPhehQVcHHbocAJpkj6zR2HNxwZf7CERcVw9IZNSpweoj2AjG27HK+t/ZCBX
- mZj4iULIoNXFmrloqCiJmx8LLzvB82fWehyAZyEqQKyXc8eCHrc5kNSipU7vdsNeEHkZ1k
- p7kw37TBqMli/YQkAQpbe/zmXj4HSLU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1668158970;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=N1dVUIpFQi8O7Feo048ZZ65SBEEuoI/CXn0xkHOeIQ8=;
- b=ntvSU9jJFb8JO/N/C45DbT7XTcQeW8VRLcv/T1eopJaPSfX3aijtLJ7dx94qOUCXaxZ0E5
- 0E9hnRihOKha/ECQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A04B13273;
- Fri, 11 Nov 2022 09:29:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id JCK3GPoVbmOQYgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 11 Nov 2022 09:29:30 +0000
-Date: Fri, 11 Nov 2022 10:29:28 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Minchan Kim <minchan@kernel.org>
-Message-ID: <Y24V+AUuivt1F/Kw@pevik>
-References: <20221107191136.18048-1-pvorel@suse.cz>
- <Y2l3vJb1y2Jynf50@google.com> <Y2l89dt/t8M6+9go@pevik>
- <Y22DiF5Q5EDUIrZE@google.com>
+ bh=frQJo5IhpABUsF+QS2EJuw3BCLfnh0OtgEYRODE8fdE=;
+ b=dKeg/CsEdAaiFYTo4gnsrBqyc25X2MKFYlVlv1PLsYt+6PZKpLdn/Lq46xeyb0fdueMM7q
+ MNt7AecbctUqM0bsynqu2dsRILy5S2+QW7LM8yGUtftv2i0f7JAerbGQk3qds+H6rBYDdq
+ XvvBDSBiPiemyX/GPM95UqsZK9E0ESs=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-106-U8LKsODAPO-mKVKHyfkJFw-1; Fri, 11 Nov 2022 04:41:46 -0500
+X-MC-Unique: U8LKsODAPO-mKVKHyfkJFw-1
+Received: by mail-oi1-f200.google.com with SMTP id
+ x203-20020acae0d4000000b0035a623fce1aso1526857oig.10
+ for <ltp@lists.linux.it>; Fri, 11 Nov 2022 01:41:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=frQJo5IhpABUsF+QS2EJuw3BCLfnh0OtgEYRODE8fdE=;
+ b=aNDXHtGT32dJO2SUrBIoHbtmf4A9BLq7FPUE11rKs5edAPOMljqK/0SIfqCrVLJqce
+ el8jIIpU53e/pbAVek5L61QDLk4lJy5PdYGlCnGd4Cgbg6slhGkdjIHL9W4u3ENavsJ0
+ HeUuLnSksh5M1JzpUBex6Kf3h9KfdZzILy/XUKo0kd9Nb6JeGxaX11WT7Jm/ii7oNph1
+ e/CW19ANoDAO9keOUxRw27ET/RwtJhH7TBILpeP7o5LB7Ve0wkuV/GM/xVq0NH2EWUpy
+ aPZMS8j9vyAzXlvGUX0Ku8LlzsiDCDzTkhomP/VQbQufRjSFIc95/XRPAyKs19d7Slpx
+ BxNg==
+X-Gm-Message-State: ANoB5pn4PCZI+2h0JzZZHT2C9wfZeHZVh9SAA8fXsrzkM09MyyyNThMY
+ bYvgpjQiYRCvyxDfvbWwIOlEtO6QFMcLEnkve5xELQJUi6s6YewJJa9mVUj0kQMwfGPFHMJ4Utt
+ pMW6RAiyOxXyRfHncwVUO8z8waJk=
+X-Received: by 2002:a05:6808:1589:b0:35a:8668:c9ca with SMTP id
+ t9-20020a056808158900b0035a8668c9camr379716oiw.107.1668159703016; 
+ Fri, 11 Nov 2022 01:41:43 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf5qAh0ndHEvqgnTPbRbzZh3tQ1FrjS1z+3xX5hLsfhE2cqEWiV+8K/Xmju/37USTQOWMvAgPDEiBfqZCiJH7uo=
+X-Received: by 2002:a05:6808:1589:b0:35a:8668:c9ca with SMTP id
+ t9-20020a056808158900b0035a8668c9camr379713oiw.107.1668159702751; Fri, 11 Nov
+ 2022 01:41:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y22DiF5Q5EDUIrZE@google.com>
+References: <20221110102758.26328-1-andrea.cervesato@suse.com>
+In-Reply-To: <20221110102758.26328-1-andrea.cervesato@suse.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 11 Nov 2022 17:41:29 +0800
+Message-ID: <CAEemH2fc--utPwQmhB=fE_i+6PEGyK5a+B6j4NgVLxogc+kbgw@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/1] Possible bug in zram on ppc64le on vfat
+Subject: Re: [LTP] [PATCH v3] Correctly check setitimer params in setitimer01
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,73 +85,108 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Jens Axboe <axboe@kernel.dk>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- Sergey Senozhatsky <senozhatsky@chromium.org>, ltp@lists.linux.it,
- linux-kselftest@vger.kernel.org, Nitin Gupta <ngupta@vflare.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============0875513232=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Mon, Nov 07, 2022 at 10:47:33PM +0100, Petr Vorel wrote:
-> > Hi Minchan,
+--===============0875513232==
+Content-Type: multipart/alternative; boundary="00000000000082f82c05ed2eb2af"
 
-> > > On Mon, Nov 07, 2022 at 08:11:35PM +0100, Petr Vorel wrote:
-> > > > Hi all,
+--00000000000082f82c05ed2eb2af
+Content-Type: text/plain; charset="UTF-8"
 
-> > > > following bug is trying to workaround an error on ppc64le, where
-> > > > zram01.sh LTP test (there is also kernel selftest
-> > > > tools/testing/selftests/zram/zram01.sh, but LTP test got further
-> > > > updates) has often mem_used_total 0 although zram is already filled.
+Andrea Cervesato via ltp <ltp@lists.linux.it> wrote:
 
-> > > Hi, Petr,
 
-> > > Is it happening on only ppc64le?
-> > I haven't seen it on other archs (x86_64, aarch64).
+>  static void setup(void)
+>  {
+> ...
+> +       struct timespec time_res;
+> +
+> +       /*
+> +        * We use CLOCK_MONOTONIC_COARSE resolution for all timers, since
+> +        * we are sure its value is bigger than CLOCK_MONOTONIC and we can
+> use
+> +        * it for both realtime and virtual/prof timers resolutions.
+> +        */
+> +       SAFE_CLOCK_GETRES(CLOCK_MONOTONIC_COARSE, &time_res);
+> +
+> +       time_step = time_res.tv_nsec / 1000;
+> +       if (time_step <= 0)
+> +               time_step = 1000;
+> +
+> +       time_count = 3 * time_step;
+> +
+> +       tst_res(TINFO, "clock resolution: %luns, "
+>
 
-> > > Is it a new regression? What kernel version did you use?
-> > Found on openSUSE kernel, which uses stable kernel releases 6.0.x.
-> > It's probably much older, first I've seen it some years ago (I'm not able to find kernel version), but it was random. Now it's much more common.
 
-> > Test runs on VM (I can give qemu command or whatever you need to know about it)
-> > I'll try to verify it on some bare metal ppc64le.
+I would use "low-resolution" for this output, but
+someone merge patch can help modify it.
 
-> Hi Petr and Martin,
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-> Thanks for testing and meaning information.
 
-> Could you tell how I could create VM to run ppc64le and run the test?
-> I'd like to reproduce in my local to debug it.
-I suppose you don't have ppc64le bare metal machine, thus you run on x86_64.
+-- 
+Regards,
+Li Wang
 
-One way would be to install on host qemu-system-ppc64, download iso image of any
-distro which supports ppc64le and install it with virt-manager (which would fill
-necessary qemu params).
+--00000000000082f82c05ed2eb2af
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Other way, which I often use is to compile system with Buildroot distribution.
-You can clone my Buildroot distro fork, branch debug/zram [1].
-I put there in 3 commits my configuration.
-I added 0001-zram-Debug-mm_stat_show.patch [2] on the top of 6.0.7 with little debugging.
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small">Andrea Cervesato via ltp &lt;<a href=3D"mailto:ltp@lists.linu=
+x.it">ltp@lists.linux.it</a>&gt; wrote:<br></div></div><div class=3D"gmail_=
+quote"><div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0=
+px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+=C2=A0static void setup(void)<br>
+=C2=A0{<br><span class=3D"gmail_default" style=3D"font-size:small">...</spa=
+n><br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0struct timespec time_res;<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0/*<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 * We use CLOCK_MONOTONIC_COARSE resolution for=
+ all timers, since<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 * we are sure its value is bigger than CLOCK_M=
+ONOTONIC and we can use<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 * it for both realtime and virtual/prof timers=
+ resolutions.<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 */<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0SAFE_CLOCK_GETRES(CLOCK_MONOTONIC_COARSE, &amp;=
+time_res);<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0time_step =3D time_res.tv_nsec / 1000;<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0if (time_step &lt;=3D 0)<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0time_step =3D 1000;=
+<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0time_count =3D 3 * time_step;<br>
++<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quot;clock resolution: %luns, &=
+quot;<br></blockquote><div><br></div><div><br></div><div><div class=3D"gmai=
+l_default" style=3D"font-size:small">I would use &quot;low-resolution&quot;=
+ for this output, but</div><div class=3D"gmail_default" style=3D"font-size:=
+small">someone merge patch can help modify it.</div><br></div><div><div cla=
+ss=3D"gmail_default" style=3D"font-size:small">Reviewed-by: Li Wang &lt;<a =
+href=3D"mailto:liwang@redhat.com">liwang@redhat.com</a>&gt;</div></div><div=
+><br></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_sign=
+ature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div>=
+</div></div>
 
-What is now only needed is to 1) install on host qemu-system-ppc64
-(speedup build + Buildroot is configured not to compile qemu-system-ppc64),
-then:
-$ make # takes time
-$ ./output/images/start-qemu.sh serial-only
+--00000000000082f82c05ed2eb2af--
 
-When I have ppc64le host with enough space, I often use rapido [3],
-but that crashed stable kernel (another story which I'll report soon).
 
-Hope that helps.
+--===============0875513232==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Kind regards,
-Petr
-
-[1] https://github.com/pevik/buildroot/commits/debug/zram
-[2] https://github.com/pevik/buildroot/blob/debug/zram/0001-zram-Debug-mm_stat_show.patch
-[3] https://github.com/rapido-linux/rapido
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0875513232==--
+
