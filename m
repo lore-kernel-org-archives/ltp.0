@@ -4,69 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AE51C4332F
-	for <ltp@archiver.kernel.org>; Fri, 11 Nov 2022 16:54:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3ACDC4332F
+	for <ltp@archiver.kernel.org>; Fri, 11 Nov 2022 17:04:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B45BE3C7621
-	for <ltp@archiver.kernel.org>; Fri, 11 Nov 2022 17:54:07 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 883B73CD5E7
+	for <ltp@archiver.kernel.org>; Fri, 11 Nov 2022 18:04:28 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8424A3C7621
- for <ltp@lists.linux.it>; Fri, 11 Nov 2022 17:53:57 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id C35203CBBE1
+ for <ltp@lists.linux.it>; Fri, 11 Nov 2022 18:04:17 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E1597600F7B
- for <ltp@lists.linux.it>; Fri, 11 Nov 2022 17:53:56 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 43153600543
+ for <ltp@lists.linux.it>; Fri, 11 Nov 2022 18:04:16 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 06FC02021E;
- Fri, 11 Nov 2022 16:53:56 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1CBBE1FD4A;
+ Fri, 11 Nov 2022 17:04:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1668185636;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8u/z8V07GfsbzEl1Wm910evNicVui6ApCqwZpScfRmM=;
- b=RhfF1ErDKBRYvHoIgzxWQwtb6+NhwYiPiHWvWvkky1SituSaie1adbJHbhBQ2JJzf9oXNO
- uxfVatvhUiWv5zw+kTQ5qifn35gfbAjBDxyRTdCGVp9Uqr0/ANRwTGYQ3m5OuEMRnVHEPz
- ZwOA2t5CaTT/WQ+2KCrJvUUdTWo2xug=
+ t=1668186256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=S88NvkQ379LBdIapssSYHUeXqE7y2RGKMX+xopfuInk=;
+ b=kWGQoeqJI+maJ9xVAeO2MMHyj43yO6y4C4bt8uEuH1ut/ZZRCUUwVx36yDHzeea0URsBBw
+ 9lQoGJ3jgbxeL1etmEB94vn4Py+bJD7nFAtAB6/jHIQO1U44rgZeXcaGLuoPVxHHZ4IluC
+ s0p0ni1VUheK6KLUBUmTh3atUVwW8iE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1668185636;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8u/z8V07GfsbzEl1Wm910evNicVui6ApCqwZpScfRmM=;
- b=/55YNfvuHrsQJkeDejOENSuIv29EQiOFvV4IEXjAQtD7vn3GqOsFVXAZaqdNRpDvOMQgyR
- obhZWErPTV+Yb9Bg==
+ s=susede2_ed25519; t=1668186256;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=S88NvkQ379LBdIapssSYHUeXqE7y2RGKMX+xopfuInk=;
+ b=7fYsEZGoDDTf85KriEmJYMDkhSmoe9H59lSNhZs0rlRNFaOlXbe1HHv1v7hJT/JzB3LCDc
+ XZ8+0xkgX9W/u0DQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C85BE13357;
- Fri, 11 Nov 2022 16:53:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB0FD13357;
+ Fri, 11 Nov 2022 17:04:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id a1B/LyN+bmPtYQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 11 Nov 2022 16:53:55 +0000
-Date: Fri, 11 Nov 2022 17:53:53 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id /irZJo+AbmM6ZwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 11 Nov 2022 17:04:15 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <Y25+IZDZ9/rvSH+E@pevik>
-References: <20221027215808.4126148-1-edliaw@google.com>
- <20221027215808.4126148-2-edliaw@google.com>
- <8735atww9l.fsf@suse.de> <87y1slvgkm.fsf@suse.de>
+To: ltp@lists.linux.it
+Date: Fri, 11 Nov 2022 18:04:10 +0100
+Message-Id: <20221111170410.16350-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87y1slvgkm.fsf@suse.de>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v7 1/1] mmapstress01: refactor to tst_test
- framework
+Subject: [LTP] [PATCH 1/1] runtest/mm: Use the default value for -p
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,87 +71,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: kernel-team@android.com, ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Edward, Richard, all,
+Test rewrite in 88321bfff introduced reasonable default value for -p
+option "number of mapping children" (nproc -1 in range <1, 20>), let's
+use it, instead of forcing -p 20.
 
-> Hello,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ runtest/mm | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Richard Palethorpe <rpalethorpe@suse.de> writes:
+diff --git a/runtest/mm b/runtest/mm
+index 51302258a..f288fed36 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -41,7 +41,7 @@ shmt10 shmt10
+ shm_test01	shm_test -l 10 -t 2
+ mallocstress01	mallocstress
+ 
+-mmapstress01 mmapstress01 -p 20
++mmapstress01 mmapstress01
+ mmapstress02 mmapstress02
+ mmapstress03 mmapstress03
+ mmapstress04 mmapstress04
+-- 
+2.38.1
 
-> > Hello,
-
-> > Edward Liaw via ltp <ltp@lists.linux.it> writes:
-
-> >> Use ltp framework and apply make check corrections.  Reorder functions
-> >> and variables.  Use safe macros.
-> >> Drop leavefile option.
-> >> Build tests with FILE_OFFSET_BITS=64 instead of doing LARGE_FILE checks
-> >> to switch between 32 and 64 bit types and syscalls.
-> >> Define fsize bounds by file offset bits.
-> >> Move sighandler to setup and remove sig blocks.
-> >> Add option to specify pattern.
-> >> Set default nprocs to ncpus with min of 1 and max of 20.
-
-> >> Signed-off-by: Edward Liaw <edliaw@google.com>
-
-> > Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
-
-> > Will merge this today if the CI is happy and nobody comments.
-
-> Merged, thanks!
-
-Thanks for your work! FYI 2 tiny problems sneaked in, see below.
-
-runtest/mm contained -t 0.20 option, which caused failure. Fixed in:
-https://github.com/linux-test-project/ltp/commit/36321277a294c0467219f650fd76aa1a8d310c1d
-
-> >> ---
-> >>  testcases/kernel/mem/mmapstress/Makefile      |   2 +
-...
-> >> +static struct tst_option options[] = {
-> >> +	{"d", &debug, "Enable debug output"},
-> >> +	{"f:", &opt_filesize, "Initial filesize (default 4096)"},
-> >> +	{"m", &do_sync, "Do random msync/fsyncs as well"},
-> >> +	{"o", &do_offset, "Randomize the offset of file to map"},
-> >> +	{"p:", &opt_nprocs,
-> >> +	 "Number of mapping children to create (default 1 < ncpus < 20)"},
-> >> +	{"P:", &opt_pattern,
-> >> +	 "Use a fixed pattern (default random)"},
-> >> +	{"r", &randloops,
-> >> +	 "Randomize number of pages map children check (random % 500), "
-> >> +	 "otherwise each child checks 500 pages"},
-> >> +	{"S:", &opt_sparseoffset,
-> >> +	 "When non-zero, causes the sparse area to be left before the data, "
-> >> +	 "so that the actual initial filesize is sparseoffset + filesize "
-> >> +	 "(default 0)"},
-> >> +	{},
-> >> +};
-Using options as non-inline leads to our docparse documentation
-having the name of the variable (options) i this case instead of listing
-options.  Fixed in
-https://github.com/linux-test-project/ltp/commit/72de038ff54496c5ced6ddc2d76713376aababb1
-
-@Metan: I wonder if this can be fixed in docparser.
-@Richie: If not, it would be nice to have check for it (I'll add issue with
-"check" label).
-
-@Edward FYI to build doc:
-cd metadata && make # open ../docparse/metadata.html
-
-Here is stable version:
-http://linux-test-project.github.io/metadata/metadata.stable.html
-
-I plan to write hook to put version for master branch, being updated after each
-commit.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
