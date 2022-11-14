@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BB36C4332F
-	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 10:24:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E16EFC433FE
+	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 10:25:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2BBC43CD246
-	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 11:24:54 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 637603CD212
+	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 11:25:55 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8511F3C25A5
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 11:24:45 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 8CA343C25A5
+ for <ltp@lists.linux.it>; Mon, 14 Nov 2022 11:25:46 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D71C3200913
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 11:24:44 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 99A151A0067E
+ for <ltp@lists.linux.it>; Mon, 14 Nov 2022 11:25:45 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 26C1B1FE22;
- Mon, 14 Nov 2022 10:24:44 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 9AF1A21E91;
+ Mon, 14 Nov 2022 10:25:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668421484;
+ t=1668421544;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2MbopUaZc/vhZt2IB6EsQE6bkvFZbzK/9H8P2MaP5w8=;
- b=z6ZhyzWfDBXil8FfYXecaVgnY2ACHXppR8uy8RsWm/z06abdrep2eJ+o6Bca2BqK4+RSi9
- yqEDuNsIDbvPoITi6RLGM45O6pm2S/U4PjzOKDY4VZE/SF3KREvinqvUjn7vIyP4BAgZ5j
- SdDIgLAb5brVOviWR7UmkKYuyogUN/A=
+ bh=Y8e15cbmlclLRY6JYSWKrr9K4kZ3cCC03gmnxQairWs=;
+ b=m0RDqRtwgkakyq6Nj3BuJqhZVacmMo0GGTp6LmtR5U+bNpIGefEZwlKE37pRzTwWW7c1UR
+ 1PTELQ27EUXJyOEH+uok6YvwQTwAJkOG8ewHRuuM+Wvm3Lp1Y5AEVsuAXqzs8a5J+cb+Gp
+ ND5LlAhdZsw446x9plTpmvMkEBe+tss=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668421484;
+ s=susede2_ed25519; t=1668421544;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=2MbopUaZc/vhZt2IB6EsQE6bkvFZbzK/9H8P2MaP5w8=;
- b=1gEiJMq3Xu3m8eKuiWlv0HxKQufQmQQRmsRs5nX1FaJO3q1DBezBPJRVabpo8GxjIpcZ9Y
- EhP9C4MSULdJCUCw==
+ bh=Y8e15cbmlclLRY6JYSWKrr9K4kZ3cCC03gmnxQairWs=;
+ b=pvF1JywGYNb4UAVJD3aLwxvHH5zwWPhfIVD8f/wyxQEzsoSUZjEeMEtvqVVKdd9OTFQFTA
+ EHfXnxz8bUUiXNBw==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id D87F42C14B;
- Mon, 14 Nov 2022 10:24:43 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id 558E92C141;
+ Mon, 14 Nov 2022 10:25:44 +0000 (UTC)
 References: <20221110175236.32094-1-pvorel@suse.cz>
- <20221110175236.32094-2-pvorel@suse.cz>
+ <20221110175236.32094-3-pvorel@suse.cz>
 User-agent: mu4e 1.8.11; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 14 Nov 2022 10:23:41 +0000
+Date: Mon, 14 Nov 2022 10:25:10 +0000
 Organization: Linux Private Site
-In-reply-to: <20221110175236.32094-2-pvorel@suse.cz>
-Message-ID: <87wn7xu93o.fsf@suse.de>
+In-reply-to: <20221110175236.32094-3-pvorel@suse.cz>
+Message-ID: <87sfilu920.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] lib/tst_device: Remove unused
- count_match_len()
+Subject: Re: [LTP] [PATCH 2/2] doc/c-test-api.txt: Improve
+ tst_find_backing_dev() doc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,48 +84,44 @@ Hello,
 
 Petr Vorel <pvorel@suse.cz> writes:
 
-> Fixes: e1b1ae66b ("tst_find_backing_dev: Get dev name from /sys/dev/block/*/uevent")
+> Doc added in 606903cf8 was too complicated. Also there was repeating
+> sentence, typo 'unevent'.
+>
+> While at it, fix also 'voud' typo from 9343d0486.
+>
+> Fixes: 606903cf8 ("c-test-api: Documentation updated")
+> Fixes: 9343d0486 ("tst_device: Add new api tst_find_backing_dev(path, dev)")
 >
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 
-Yup, my mistake.
+Thanks
 
 Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
 
-
 > ---
-> Hi,
+>  doc/c-test-api.txt | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
 >
-> obviously correct, but not merging it without ack there are changes and
-> function is actually needed.
->
-> Kind regards,
-> Petr
->
->  lib/tst_device.c | 10 ----------
->  1 file changed, 10 deletions(-)
->
-> diff --git a/lib/tst_device.c b/lib/tst_device.c
-> index db5c2ab8f..48d7e3ab6 100644
-> --- a/lib/tst_device.c
-> +++ b/lib/tst_device.c
-> @@ -510,16 +510,6 @@ unsigned long tst_dev_bytes_written(const char *dev)
->  	return dev_bytes_written;
->  }
+> diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+> index 8844d9f2f..834a342fd 100644
+> --- a/doc/c-test-api.txt
+> +++ b/doc/c-test-api.txt
+> @@ -1075,12 +1075,9 @@ is created for that intention.
+>  void tst_find_backing_dev(const char *path, char *dev);
+>  -------------------------------------------------------------------------------
 >  
-> -static int count_match_len(const char *first, const char *second)
-> -{
-> -	int len = 0;
-> -
-> -	while (*first && *first++ == *second++)
-> -		len++;
-> -
-> -	return len;
-> -}
-> -
->  __attribute__((nonnull))
->  void tst_find_backing_dev(const char *path, char *dev)
->  {
+> -This function finds the block dev that this path belongs to, it uses stat function
+> -to get the major/minor number of the path.
+> -This function finds the block dev that this path belongs to, it uses the unevent
+> -file in sysfs to find the device name. It needs to discriminate between btrfs
+> -and not btrfs. For non btrfs filesystems it uses the minor, major numbers. For
+> -btrfs it uses the fs uuid.
+> +This function finds the block dev that this path belongs to, using uevent in sysfs.
+> +For Btrfs it uses '/sys/fs/btrfs/UUID/devices/DEV_NAME/uevent'; for other
+> +filesystems it uses '/sys/dev/block/MAJOR:MINOR/uevent'.
+>  
+>  [source,c]
+>  -------------------------------------------------------------------------------
 
 
 -- 
