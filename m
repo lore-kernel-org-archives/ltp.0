@@ -4,49 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 840B8C4332F
-	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 11:13:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A3E3C4332F
+	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 11:25:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 734E43CD24A
-	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 12:13:44 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2D2DC3CD226
+	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 12:25:42 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6DC033C2306
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 12:13:34 +0100 (CET)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id ACFE53C2306
+ for <ltp@lists.linux.it>; Mon, 14 Nov 2022 12:25:32 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5EBDA2005E7
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 12:13:33 +0100 (CET)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.56])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N9mnB3Ys4zJnjM
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 19:10:22 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (7.192.104.229) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 14 Nov 2022 19:13:28 +0800
-Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
- canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
- Mon, 14 Nov 2022 19:13:28 +0800
-To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>
-Thread-Topic: Re[LTP] [PATCH] syscalls/sched_setscheduler04: new test for
- sched_setscheduler()
-Thread-Index: Adj4Gho1BVH8bk7tQ6qY/MBojcV06w==
-Date: Mon, 14 Nov 2022 11:13:28 +0000
-Message-ID: <efc489b0b94a488c9c3c1dbc438da279@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.110.209]
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8E434200074
+ for <ltp@lists.linux.it>; Mon, 14 Nov 2022 12:25:31 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id D524B22958;
+ Mon, 14 Nov 2022 11:25:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1668425130;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=r6tHTYl6RWGQ7DKbE4N6MecHKDRYSsJ20lG/uXrXFWQ=;
+ b=AubGDqPUesE2oZaAyoYfXrIReF/a5RfAphDRGBcd+XfUal/0cbVbCv6a57YkMaqxWUwzxx
+ qX9x5E6rdpPsSnDnfurQPsPvpf37w62GHDp04FtZCimcCeaQaxTymm26KzzMW6w43xK05X
+ /i0qEbExndlv+5Jpo8zZRZWFmgqP6UE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1668425130;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=r6tHTYl6RWGQ7DKbE4N6MecHKDRYSsJ20lG/uXrXFWQ=;
+ b=UBMAZa/7QKPqtngMjsJCkwbVBbnWYOd09NCuR1l1CGsGhH/ZcpM9rf3qsYfKurtbL+hvX1
+ QAcgwYr9MZyqgoCQ==
+Received: from g78 (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id ABEE62C141;
+ Mon, 14 Nov 2022 11:25:30 +0000 (UTC)
+References: <20221105183213.36684-1-federico.bonfiglio@protonmail.ch>
+User-agent: mu4e 1.8.11; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
+Date: Mon, 14 Nov 2022 11:06:04 +0000
+Organization: Linux Private Site
+In-reply-to: <20221105183213.36684-1-federico.bonfiglio@protonmail.ch>
+Message-ID: <87fselu6ad.fsf@suse.de>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Re [PATCH] syscalls/sched_setscheduler04: new test for
- sched_setscheduler()
+Subject: Re: [LTP] [PATCH v1] sched_setscheduler: test SCHED_RESET_ON_FORK
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,89 +70,148 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: zhaogongyi via ltp <ltp@lists.linux.it>
-Reply-To: zhaogongyi <zhaogongyi@huawei.com>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+Hello,
 
-> > >> > +static void test_sched_setscheduler02(void) {
-> >> > +	pthread_t tid;
-> >> > +
-> >> > +	SAFE_PTHREAD_CREATE(&tid, NULL, thread_func, NULL);
-> >> > +	SAFE_PTHREAD_JOIN(tid, NULL);
-> >> > +}
-> >> > +
-> >> > +
-> >> > +static void run(void)
-> >> > +{
-> >> > +	sched_prio = sched_get_priority_min(SCHED_POLICY);
-> >>
-> >> This can go in the setup function.
-> >
-> > If move it to setup function, we run the test with option "-I 200", it
-> > will fail.
-> 
-> Why?
+This patch doesn't apply, the PGP signature appears to be confusing 'git
+am'.
 
-sched_prio is a global variable, and it increase in any running loop, thus it will be out of range and report:
+Also you need to add the
+"Signed-off-by: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>"
+trailer to the commit message.
 
-sched_setscheduler04.c:52: TPASS: param.sched_priority == sched_prio (99)
-sched_setscheduler04.c:53: TPASS: new_policy == EXP_POLICY (1)
-sched_setscheduler04.c:34: TINFO: Setting of tid: 70774
-sched_setscheduler04.c:40: TBROK: sched_setscheduler(70774, 1, ...) failed: EINVAL (22)
+I suppose it should be possible to send the patch with "git send-email"
+from any e-mail address using whatever SMTP server. Git should CC in
+your proton mail address if you use it in the Signed-off-by trailer.
 
-Summary:
-passed   196
-failed   0
-broken   1
-skipped  0
-warnings 0
+From just looking at it, the actual patch looks good with just one
+comment below.
 
+Federico Bonfiglio via ltp <ltp@lists.linux.it> writes:
 
-> >
-> >>
-> >> > +
-> >> > +	test_sched_setscheduler01();
-> >> > +	test_sched_setscheduler02();
-> >>
-> >> This should be replaced with .tcnt = 2 and .test. or else just merge
-> >> them into run.
-> >
-> > Agree, I will fix it int the next version.
-> >
-> >>
-> >> > +}
-> >> > +
-> >> > +static struct tst_test test = {
-> >> > +	.test_all = run,
-> >>
-> >> We probably need to ensure CAP_SYS_NICE. Full details are in 'man 7
-> >> sched'
-> >>
-> >> i.e. .caps = (struct tst_cap[]) {
-> >>   TST_CAP(TST_CAP_REQ, CAP_SYS_NICE),
-> >>    null
-> >> }
-> >>
-> >
-> > In this testcase, we just increase the priority, should we add the checking
-> of capability?
-> 
-> For the test to run we need CAP_SYS_NICE. If you want to test that the
-> priority can only be set when CAP_SYS_NICE is available, then that is a
-> seperate test in my opinion.
+> [[PGP Signed Part:Undecided]]
+> ---
+>  runtest/syscalls                              |  1 +
+>  .../syscalls/sched_setscheduler/.gitignore    |  1 +
+>  .../sched_setscheduler/sched_setscheduler04.c | 71 +++++++++++++++++++
+>  3 files changed, 73 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 3dc6fa397..ff516af3d 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -1204,6 +1204,7 @@ sched_getscheduler02 sched_getscheduler02
+>  sched_setscheduler01 sched_setscheduler01
+>  sched_setscheduler02 sched_setscheduler02
+>  sched_setscheduler03 sched_setscheduler03
+> +sched_setscheduler04 sched_setscheduler04
+>
+>  sched_yield01 sched_yield01
+>
+> diff --git a/testcases/kernel/syscalls/sched_setscheduler/.gitignore b/testcases/kernel/syscalls/sched_setscheduler/.gitignore
+> index aa8ad9695..1b8860d2c 100644
+> --- a/testcases/kernel/syscalls/sched_setscheduler/.gitignore
+> +++ b/testcases/kernel/syscalls/sched_setschedule
+> r/.gitignore
+> @@ -1,3 +1,4 @@
+>  /sched_setscheduler01
+>  /sched_setscheduler02
+>  /sched_setscheduler03
+> +/sched_setscheduler04
+> diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
+> new file mode 100644
+> index 000000000..f2643f001
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
+> @@ -0,0 +1,71 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2022 Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
+> + */
+> +
+> +/*
+> + * [Description]
+> + *
+> + * Testcases that test if sched_setscheduler with flag
+> + * SCHED_RESET_ON_FORK restores children policy to
+> + * SCHED_NORMAL.
+> + *
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sched.h>
+> +#include <linux/sched.h>
+> +
+> +#include "tst_test.h"
+> +#include "tst_sched.h"
+> +
+> +struct test_case_t {
+> +	int policy;
+> +	char *desc;
+> +};
+> +
+> +static struct test_cas
+> e_t cases[] = {
+> +	{
+> +		.policy = SCHED_FIFO,
+> +		.desc = "SCHED_FIFO"
+> +	},
+> +	{
+> +		.policy = SCHED_RR,
+> +		.desc = "SCHED_RR"
+> +	}
+> +};
+> +
+> +static void test_reset_on_fork(unsigned int i)
+> +{
+> +	struct sched_variant *tv = &sched_variants[tst_variant];
+> +	struct test_case_t *tc = &cases[i];
+> +
+> +	tst_res(TINFO, "Testing %s variant", tv->desc);
+> +	tst_res(TINFO, "Testing %s policy", tc->desc);
+> +
+> +	struct sched_param param = { .sched_priority = 1 };
+> +
+> +	tv->sched_setscheduler(getpid(), tc->policy | SCHED_RESET_ON_FORK, &param);
+> +
+> +	pid_t pid = SAFE_FORK();
+> +
+> +	if (!pid == 0) {
+> +		if (sched_getscheduler(pid) == SCHED_NORMAL)
+> +			tst_res(TPASS, "Policy reset to SCHED_NORMAL");
+> +		else
+> +			tst_res(TFAIL, "Policy NOT reset to SCHED_NORMAL");
+> +	}
+> +
+> +	tst_reap_children();
+> +}
+> +
+> +static struct tst_test test = {
+> +	.forks_child = 1,
+> +	.needs_root = 1,
 
-Anybody can call nice() to increase the priority, i have test it with normal user and passed.
+Does it actually need root or is just CAP_SYS_NICE enough?
 
-And if decrease the priority, the test will report EPERM when running with normal user.
+We can just set
 
-Regards,
-Gongyi
+	.caps = (struct tst_cap []) {
+		TST_CAP(TST_CAP_REQ, CAP_SYS_NICE)
+        }
+
+If so.
+
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
