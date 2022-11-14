@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A3E3C4332F
-	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 11:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED711C4332F
+	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 11:35:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2D2DC3CD226
-	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 12:25:42 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id E22633CD22E
+	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 12:35:23 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ACFE53C2306
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 12:25:32 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 1B7C93C2306
+ for <ltp@lists.linux.it>; Mon, 14 Nov 2022 12:35:13 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8E434200074
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 12:25:31 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3456360004C
+ for <ltp@lists.linux.it>; Mon, 14 Nov 2022 12:35:12 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id D524B22958;
- Mon, 14 Nov 2022 11:25:30 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 710662286B;
+ Mon, 14 Nov 2022 11:35:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668425130;
+ t=1668425712;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=r6tHTYl6RWGQ7DKbE4N6MecHKDRYSsJ20lG/uXrXFWQ=;
- b=AubGDqPUesE2oZaAyoYfXrIReF/a5RfAphDRGBcd+XfUal/0cbVbCv6a57YkMaqxWUwzxx
- qX9x5E6rdpPsSnDnfurQPsPvpf37w62GHDp04FtZCimcCeaQaxTymm26KzzMW6w43xK05X
- /i0qEbExndlv+5Jpo8zZRZWFmgqP6UE=
+ bh=qpNuiAybYuTz/wkmyeHzbLUo+xM9Dq0aMS20HG6fxk8=;
+ b=v3u6Fd6lnPbojRkNaafjchLeUnjqguP6urQsXOj94AcLO049oPh1Gh+jXIVCpZFul/BIEI
+ 9cmJiv0TmwiFKhm8ogJNbdEr8DW6gM90Ww4b9jcgSCIqd8g2ziIOpNqUHjc2xAKXxn7XYb
+ GGEw6R9qUZfm/dbIqC5bKVHuL3fwRk4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668425130;
+ s=susede2_ed25519; t=1668425712;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=r6tHTYl6RWGQ7DKbE4N6MecHKDRYSsJ20lG/uXrXFWQ=;
- b=UBMAZa/7QKPqtngMjsJCkwbVBbnWYOd09NCuR1l1CGsGhH/ZcpM9rf3qsYfKurtbL+hvX1
- QAcgwYr9MZyqgoCQ==
+ bh=qpNuiAybYuTz/wkmyeHzbLUo+xM9Dq0aMS20HG6fxk8=;
+ b=8cbuFtOFOo9EmU/3M4oa7Tx7WnHa8BiDYsKmbPCwfWiQW26zk5Sh4REJVVEPmAzLIZVL3I
+ qXKLK/MUdNCOclCw==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id ABEE62C141;
- Mon, 14 Nov 2022 11:25:30 +0000 (UTC)
-References: <20221105183213.36684-1-federico.bonfiglio@protonmail.ch>
+ by relay2.suse.de (Postfix) with ESMTPS id 3C4D22C141;
+ Mon, 14 Nov 2022 11:35:12 +0000 (UTC)
+References: <20221101112621.20031-1-rpalethorpe@suse.com>
 User-agent: mu4e 1.8.11; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
-Date: Mon, 14 Nov 2022 11:06:04 +0000
+To: ltp@lists.linux.it
+Date: Mon, 14 Nov 2022 11:34:22 +0000
 Organization: Linux Private Site
-In-reply-to: <20221105183213.36684-1-federico.bonfiglio@protonmail.ch>
-Message-ID: <87fselu6ad.fsf@suse.de>
+In-reply-to: <20221101112621.20031-1-rpalethorpe@suse.com>
+Message-ID: <87bkp9u5u8.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] sched_setscheduler: test SCHED_RESET_ON_FORK
+Subject: Re: [LTP] [PATCH] pidns12: Avoid write in sig handler
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,7 +71,7 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -79,135 +79,46 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-This patch doesn't apply, the PGP signature appears to be confusing 'git
-am'.
+Richard Palethorpe <rpalethorpe@suse.com> writes:
 
-Also you need to add the
-"Signed-off-by: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>"
-trailer to the commit message.
+> It is best to avoid doing any kind of unecessary work in a signal
+> handler.
 
-I suppose it should be possible to send the patch with "git send-email"
-from any e-mail address using whatever SMTP server. Git should CC in
-your proton mail address if you use it in the Signed-off-by trailer.
+No review after 2 weeks. Merged!
 
-From just looking at it, the actual patch looks good with just one
-comment below.
-
-Federico Bonfiglio via ltp <ltp@lists.linux.it> writes:
-
-> [[PGP Signed Part:Undecided]]
+>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Cc: Andrea Cervesato <andrea.cervesato@suse.com>
 > ---
->  runtest/syscalls                              |  1 +
->  .../syscalls/sched_setscheduler/.gitignore    |  1 +
->  .../sched_setscheduler/sched_setscheduler04.c | 71 +++++++++++++++++++
->  3 files changed, 73 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
+>  testcases/kernel/containers/pidns/pidns12.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 3dc6fa397..ff516af3d 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1204,6 +1204,7 @@ sched_getscheduler02 sched_getscheduler02
->  sched_setscheduler01 sched_setscheduler01
->  sched_setscheduler02 sched_setscheduler02
->  sched_setscheduler03 sched_setscheduler03
-> +sched_setscheduler04 sched_setscheduler04
->
->  sched_yield01 sched_yield01
->
-> diff --git a/testcases/kernel/syscalls/sched_setscheduler/.gitignore b/testcases/kernel/syscalls/sched_setscheduler/.gitignore
-> index aa8ad9695..1b8860d2c 100644
-> --- a/testcases/kernel/syscalls/sched_setscheduler/.gitignore
-> +++ b/testcases/kernel/syscalls/sched_setschedule
-> r/.gitignore
-> @@ -1,3 +1,4 @@
->  /sched_setscheduler01
->  /sched_setscheduler02
->  /sched_setscheduler03
-> +/sched_setscheduler04
-> diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
-> new file mode 100644
-> index 000000000..f2643f001
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2022 Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
-> + */
+> diff --git a/testcases/kernel/containers/pidns/pidns12.c b/testcases/kernel/containers/pidns/pidns12.c
+> index 65e2a0836..0e6b17142 100644
+> --- a/testcases/kernel/containers/pidns/pidns12.c
+> +++ b/testcases/kernel/containers/pidns/pidns12.c
+> @@ -18,9 +18,11 @@
+>  #include "tst_test.h"
+>  #include "lapi/namespaces_constants.h"
+>  
+> +static volatile pid_t sig_pid = -1;
 > +
-> +/*
-> + * [Description]
-> + *
-> + * Testcases that test if sched_setscheduler with flag
-> + * SCHED_RESET_ON_FORK restores children policy to
-> + * SCHED_NORMAL.
-> + *
-> + */
+>  static void child_signal_handler(LTP_ATTRIBUTE_UNUSED int sig, siginfo_t *si, LTP_ATTRIBUTE_UNUSED void *unused)
+>  {
+> -	TST_EXP_EQ_LI(si->si_pid, 0);
+> +	sig_pid = si->si_pid;
+>  }
+>  
+>  static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+> @@ -38,6 +40,8 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+>  
+>  	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+>  
+> +	TST_EXP_EQ_LI(sig_pid, 0);
 > +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <sched.h>
-> +#include <linux/sched.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_sched.h"
-> +
-> +struct test_case_t {
-> +	int policy;
-> +	char *desc;
-> +};
-> +
-> +static struct test_cas
-> e_t cases[] = {
-> +	{
-> +		.policy = SCHED_FIFO,
-> +		.desc = "SCHED_FIFO"
-> +	},
-> +	{
-> +		.policy = SCHED_RR,
-> +		.desc = "SCHED_RR"
-> +	}
-> +};
-> +
-> +static void test_reset_on_fork(unsigned int i)
-> +{
-> +	struct sched_variant *tv = &sched_variants[tst_variant];
-> +	struct test_case_t *tc = &cases[i];
-> +
-> +	tst_res(TINFO, "Testing %s variant", tv->desc);
-> +	tst_res(TINFO, "Testing %s policy", tc->desc);
-> +
-> +	struct sched_param param = { .sched_priority = 1 };
-> +
-> +	tv->sched_setscheduler(getpid(), tc->policy | SCHED_RESET_ON_FORK, &param);
-> +
-> +	pid_t pid = SAFE_FORK();
-> +
-> +	if (!pid == 0) {
-> +		if (sched_getscheduler(pid) == SCHED_NORMAL)
-> +			tst_res(TPASS, "Policy reset to SCHED_NORMAL");
-> +		else
-> +			tst_res(TFAIL, "Policy NOT reset to SCHED_NORMAL");
-> +	}
-> +
-> +	tst_reap_children();
-> +}
-> +
-> +static struct tst_test test = {
-> +	.forks_child = 1,
-> +	.needs_root = 1,
+>  	return 0;
+>  }
 
-Does it actually need root or is just CAP_SYS_NICE enough?
-
-We can just set
-
-	.caps = (struct tst_cap []) {
-		TST_CAP(TST_CAP_REQ, CAP_SYS_NICE)
-        }
-
-If so.
 
 -- 
 Thank you,
