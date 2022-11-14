@@ -4,61 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B594C433FE
-	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 10:52:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 840B8C4332F
+	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 11:13:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 508E93CD24E
-	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 11:52:30 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 734E43CD24A
+	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 12:13:44 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB06C3C0796
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 11:52:20 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 6DC033C2306
+ for <ltp@lists.linux.it>; Mon, 14 Nov 2022 12:13:34 +0100 (CET)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EEBA71A00701
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 11:52:19 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 54C4F1FE73
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 10:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668423139;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=AsbXhOh8i0nuyeh2iD4TZc+xvQzuZ5R/GE1uRdo/MFs=;
- b=qsx2yyPDtemF+M/Ck+sjSB7VcJ1JAjYTIsTogM8Fh1n0udwdXrpnV/SQLs+Cn6MsDFB+r5
- BsC1ouo1ZzfsBChfuyuukqQa54ZaDs2smKevDKpp+/OV8V1odrPjH1HnfOr4Tb16w/1Ly9
- 5+vyxItWqUE7j+OuDJIRbUMMLF54gnM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668423139;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=AsbXhOh8i0nuyeh2iD4TZc+xvQzuZ5R/GE1uRdo/MFs=;
- b=tleR1fKPWw8HVXUVuOVQRsM5yPax95gswdm1bqtcSAyN/HnbDfx9dFPGAfejNtVq6JntR2
- dkMeC6KPqlYqXYCA==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 2B3F32C141;
- Mon, 14 Nov 2022 10:52:19 +0000 (UTC)
-References: <20221103062811.9636-1-akumar@suse.de>
-User-agent: mu4e 1.8.11; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Avinesh Kumar <akumar@suse.de>
-Date: Mon, 14 Nov 2022 10:52:08 +0000
-Organization: Linux Private Site
-In-reply-to: <20221103062811.9636-1-akumar@suse.de>
-Message-ID: <87k03xu7tp.fsf@suse.de>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5EBDA2005E7
+ for <ltp@lists.linux.it>; Mon, 14 Nov 2022 12:13:33 +0100 (CET)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.56])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N9mnB3Ys4zJnjM
+ for <ltp@lists.linux.it>; Mon, 14 Nov 2022 19:10:22 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (7.192.104.229) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 14 Nov 2022 19:13:28 +0800
+Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
+ canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
+ Mon, 14 Nov 2022 19:13:28 +0800
+To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>
+Thread-Topic: Re[LTP] [PATCH] syscalls/sched_setscheduler04: new test for
+ sched_setscheduler()
+Thread-Index: Adj4Gho1BVH8bk7tQ6qY/MBojcV06w==
+Date: Mon, 14 Nov 2022 11:13:28 +0000
+Message-ID: <efc489b0b94a488c9c3c1dbc438da279@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.110.209]
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] setfsuid03: Convert to new LTP API
+Subject: Re: [LTP] Re [PATCH] syscalls/sched_setscheduler04: new test for
+ sched_setscheduler()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,174 +58,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+From: zhaogongyi via ltp <ltp@lists.linux.it>
+Reply-To: zhaogongyi <zhaogongyi@huawei.com>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi!
 
-Avinesh Kumar <akumar@suse.de> writes:
+> > >> > +static void test_sched_setscheduler02(void) {
+> >> > +	pthread_t tid;
+> >> > +
+> >> > +	SAFE_PTHREAD_CREATE(&tid, NULL, thread_func, NULL);
+> >> > +	SAFE_PTHREAD_JOIN(tid, NULL);
+> >> > +}
+> >> > +
+> >> > +
+> >> > +static void run(void)
+> >> > +{
+> >> > +	sched_prio = sched_get_priority_min(SCHED_POLICY);
+> >>
+> >> This can go in the setup function.
+> >
+> > If move it to setup function, we run the test with option "-I 200", it
+> > will fail.
+> 
+> Why?
 
-> - rewrite using new API
-> - using caller's real user ID as fsuid when calling
-> setfsuid(fsuid) by non-root user
-> - verifying that fsuid is updated correctly, by calling
-> setfsuid(-1)
->
-> Signed-off-by: Avinesh Kumar <akumar@suse.de>
+sched_prio is a global variable, and it increase in any running loop, thus it will be out of range and report:
 
-Merged, thanks!
+sched_setscheduler04.c:52: TPASS: param.sched_priority == sched_prio (99)
+sched_setscheduler04.c:53: TPASS: new_policy == EXP_POLICY (1)
+sched_setscheduler04.c:34: TINFO: Setting of tid: 70774
+sched_setscheduler04.c:40: TBROK: sched_setscheduler(70774, 1, ...) failed: EINVAL (22)
 
-> ---
->  .../kernel/syscalls/setfsuid/setfsuid03.c     | 111 ++++--------------
->  1 file changed, 26 insertions(+), 85 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid03.c b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-> index 0e5f860c8..02698f7cf 100644
-> --- a/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-> +++ b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-> @@ -2,105 +2,46 @@
->   * Copyright (C) International Business Machines  Corp., 2001
->   * Ported by Wayne Boyer
->   * Adapted by Dustin Kirkland (k1rkland@us.ibm.com)
-> - *
-> - * This program is free software;  you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> - *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - * the GNU General Public License for more details.
-> - *
-> - * You should have received a copy of the GNU General Public License
-> - * along with this program;  if not, write to the Free Software
-> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
->   */
->  
-> -/*
-> - * Testcase to test the basic functionality of the setfsuid(2) system
-> - * call when called by a user other than root.
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that setfsuid() correctly updates the filesystem uid
-> + * when caller is a non-root user and provided fsuid matches
-> + * caller's real user ID.
->   */
->  
-> -#include <stdio.h>
-> -#include <unistd.h>
-> -#include <sys/types.h>
-> -#include <errno.h>
->  #include <pwd.h>
->  
-> -#include "test.h"
-> -#include "compat_16.h"
-> -
-> -static void setup(void);
-> -static void cleanup(void);
-> +#include "tst_test.h"
-> +#include "compat_tst_16.h"
->  
-> -TCID_DEFINE(setfsuid03);
-> -int TST_TOTAL = 1;
-> +static uid_t nobody_uid;
->  
-> -static char nobody_uid[] = "nobody";
-> -static struct passwd *ltpuser;
-> -
-> -int main(int ac, char **av)
-> +static void setup(void)
->  {
-> -	int lc;
-> -
-> -	uid_t uid;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	uid = 1;
-> -	while (!getpwuid(uid))
-> -		uid++;
-> +	struct passwd *nobody;
->  
-> -	UID16_CHECK(uid, setfsuid, cleanup);
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		TEST(SETFSUID(cleanup, uid));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL | TTERRNO,
-> -				"setfsuid() failed unexpectedly");
-> -			continue;
-> -		}
-> -
-> -		if (TEST_RETURN == uid) {
-> -			tst_resm(TFAIL,
-> -				 "setfsuid() returned %ld, expected anything but %d",
-> -				 TEST_RETURN, uid);
-> -		} else {
-> -			tst_resm(TPASS, "setfsuid() returned expected value : "
-> -				 "%ld", TEST_RETURN);
-> -		}
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> +	nobody = SAFE_GETPWNAM("nobody");
-> +	nobody_uid = nobody->pw_uid;
->  }
->  
-> -static void setup(void)
-> +static void run(void)
->  {
-> -	tst_require_root();
-> -
-> -	ltpuser = getpwnam(nobody_uid);
-> -	if (ltpuser == NULL)
-> -		tst_brkm(TBROK, cleanup, "getpwnam failed for user id %s",
-> -			nobody_uid);
-> -
-> -	if (setuid(ltpuser->pw_uid) == -1)
-> -		tst_resm(TINFO | TERRNO, "setuid failed to "
-> -			 "to set the effective uid to %d", ltpuser->pw_uid);
-> +	uid_t ruid, euid, suid;
->  
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +	SAFE_GETRESUID(&ruid, &euid, &suid);
-> +	SAFE_SETEUID(nobody_uid);
-> +	UID16_CHECK(ruid, setfsuid);
->  
-> -	TEST_PAUSE;
-> +	TST_EXP_VAL_SILENT(setfsuid(ruid), nobody_uid);
-> +	TST_EXP_VAL(setfsuid(-1), ruid, "setfsuid(fsuid) by non-root user:");
->  }
->  
-> -static void cleanup(void)
-> -{
-> -}
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.setup = setup,
-> +	.test_all = run
-> +};
-> -- 
-> 2.38.0
+Summary:
+passed   196
+failed   0
+broken   1
+skipped  0
+warnings 0
 
 
--- 
-Thank you,
-Richard.
+> >
+> >>
+> >> > +
+> >> > +	test_sched_setscheduler01();
+> >> > +	test_sched_setscheduler02();
+> >>
+> >> This should be replaced with .tcnt = 2 and .test. or else just merge
+> >> them into run.
+> >
+> > Agree, I will fix it int the next version.
+> >
+> >>
+> >> > +}
+> >> > +
+> >> > +static struct tst_test test = {
+> >> > +	.test_all = run,
+> >>
+> >> We probably need to ensure CAP_SYS_NICE. Full details are in 'man 7
+> >> sched'
+> >>
+> >> i.e. .caps = (struct tst_cap[]) {
+> >>   TST_CAP(TST_CAP_REQ, CAP_SYS_NICE),
+> >>    null
+> >> }
+> >>
+> >
+> > In this testcase, we just increase the priority, should we add the checking
+> of capability?
+> 
+> For the test to run we need CAP_SYS_NICE. If you want to test that the
+> priority can only be set when CAP_SYS_NICE is available, then that is a
+> seperate test in my opinion.
+
+Anybody can call nice() to increase the priority, i have test it with normal user and passed.
+
+And if decrease the priority, the test will report EPERM when running with normal user.
+
+Regards,
+Gongyi
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
