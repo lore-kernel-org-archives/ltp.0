@@ -4,94 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B6DAC433FE
-	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 07:10:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D72F9C433FE
+	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 09:24:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AEC5D3CD143
-	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 08:10:38 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 9B21E3CD14A
+	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 10:24:21 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 47F0F3CD131
- for <ltp@lists.linux.it>; Tue, 15 Nov 2022 08:09:33 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 5C0DE3CA363
+ for <ltp@lists.linux.it>; Tue, 15 Nov 2022 10:24:12 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 96E0C600906
+ for <ltp@lists.linux.it>; Tue, 15 Nov 2022 10:24:10 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id B1B0F1F8C5;
+ Tue, 15 Nov 2022 09:24:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1668504248;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=U7aP6CyJfIPYZLhBbFnbKdDhsam0p/7Cqq91HD2HfJM=;
+ b=E/Liq7sKO1LKJNFMa2DasLcyrjHZDmrAv9qwl9UaAHVr8DdV1gFvMUndzad/Pn/3xBWLlm
+ YaI9GqaPmiNVg6xGbFMN4NG7DtqQ/iXUFlWsuYxRtEg7k45DyhuQ3ZBphnG0pCg2eKidpB
+ IcLVHsNkc7jXcQ3CCbmm4qjHvjAHmZw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1668504248;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=U7aP6CyJfIPYZLhBbFnbKdDhsam0p/7Cqq91HD2HfJM=;
+ b=W8HAFLWV6z/UEr/O3tEjeOh9Oao+zMxt2OYy+Bghlf419t4JgNTcpDRWxYbZCSEqkabWv9
+ 6Bi07O12yfvSarDw==
+Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8548F6008C8
- for <ltp@lists.linux.it>; Tue, 15 Nov 2022 08:09:32 +0100 (CET)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AF6bQ9W013520; Tue, 15 Nov 2022 07:09:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=hODmIogkps+ugJWIu3ioUlJhvwA6UiPKws/CfZsx918=;
- b=QcgZOvk0vukt02vqITGbEouYEQQ2Nc2ITrtclphzmnevV/7vFYopQzrN+uMcS8yyTCtK
- utJGYvzSDXLf4e8zgytu0M6rB2RkFdtUDvl/VHYfm78aWWRUZoinyw6qUi7ku0Toc5aM
- BptOSokvYw79VneYnlyt5wU9MIGXeMB/qD3KzHQhuOCpANfXmYkhYeZMFMG/0KOfV79a
- Nh2GxuTljqe2fTuwhZdmyjOfigPcT9KtnGNWh4WbkyUaHwUmbu/ECjCWaddb7FSN+1j9
- Ny/SVBPPFBANcQfEG8VpSCLEVhMtdAG2ic1BYq0Y3d9JvABT2Yme6OEcuuS4rduOD8Zg Bg== 
-Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kv5nrs4p1-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 15 Nov 2022 07:09:30 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AF6c1gH014578;
- Tue, 15 Nov 2022 07:09:29 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kv5nrs4kc-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 15 Nov 2022 07:09:29 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AF75fMg012534;
- Tue, 15 Nov 2022 07:09:27 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com
- (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
- by ppma04ams.nl.ibm.com with ESMTP id 3kt348uu1r-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 15 Nov 2022 07:09:27 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com
- [9.149.105.62])
- by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
- id 2AF73RSA49873166
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 15 Nov 2022 07:03:27 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 2A8FEAE045;
- Tue, 15 Nov 2022 07:09:24 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C75F1AE051;
- Tue, 15 Nov 2022 07:09:21 +0000 (GMT)
-Received: from tarunpc.in.ibm.com (unknown [9.199.157.25])
- by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Tue, 15 Nov 2022 07:09:21 +0000 (GMT)
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Tue, 15 Nov 2022 12:37:52 +0530
-Message-Id: <20221115070752.244461-8-tsahu@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221115070752.244461-1-tsahu@linux.ibm.com>
-References: <20221115070752.244461-1-tsahu@linux.ibm.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 7A58A2C142;
+ Tue, 15 Nov 2022 09:24:08 +0000 (UTC)
+References: <20221112040107.3953862-1-liwang@redhat.com>
+ <87pmdpsfdv.fsf@suse.de>
+ <CAEemH2fJJ8Fv0=OMjdh3d8QaEdr1ivLUuHs_8=D6qV6-YZhbwQ@mail.gmail.com>
+User-agent: mu4e 1.8.11; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Li Wang <liwang@redhat.com>
+Date: Tue, 15 Nov 2022 08:44:11 +0000
+Organization: Linux Private Site
+In-reply-to: <CAEemH2fJJ8Fv0=OMjdh3d8QaEdr1ivLUuHs_8=D6qV6-YZhbwQ@mail.gmail.com>
+Message-ID: <87h6z0sh8o.fsf@suse.de>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: JxeBzjNikfsaqFEQDs8nBbSxsnNCj4t-
-X-Proofpoint-ORIG-GUID: nRUZ6DgUSpESvpt15pfw3ARVn1IrsxoG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-15_02,2022-11-11_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0
- bulkscore=0 clxscore=1015 spamscore=0 mlxlogscore=999 priorityscore=1501
- mlxscore=0 suspectscore=0 phishscore=0 adultscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211150051
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 7/7] Hugetlb: Migrating libhugetlbfs fallocate_basic
+Subject: Re: [LTP] [PATCH 1/2] setitimer01: add interval timer test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,147 +71,222 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
- vaibhav@linux.ibm.com, mike.kravetz@oracle.com
+Reply-To: rpalethorpe@suse.de
+Cc: Andrea Cervesato <acervesato@suse.de>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/fallocate_basic.c test
+Hello,
 
-Test Description: It tests basic fallocate functionality in hugetlbfs.
-Preallocate huge pages to a file in hugetlbfs, and then remove the pages
-via hole punch.
+Li Wang <liwang@redhat.com> writes:
 
-Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
----
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../hugetlb/hugefallocate/hugefallocate02.c   | 90 +++++++++++++++++++
- 3 files changed, 92 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
+> On Mon, Nov 14, 2022 at 11:52 PM Richard Palethorpe <rpalethorpe@suse.de> wrote:
+>
+>  Hello,
+>
+>  Li Wang <liwang@redhat.com> writes:
+>
+>  > Split checking the return ovalue from testing the signal is
+>  > delivered, so that we could use two time value for verifying.
+>  >
+>  > Also, adding interval timer test by handling the signal at
+>  > least 10 times. After that recover the signal behavior to
+>  > default and do deliver-signal checking.
+>  >
+>  > Signed-off-by: Li Wang <liwang@redhat.com>
+>  > ---
+>  >  .../kernel/syscalls/setitimer/setitimer01.c   | 63 ++++++++++++-------
+>  >  1 file changed, 39 insertions(+), 24 deletions(-)
+>  >
+>  > diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testcases/kernel/syscalls/setitimer/setitimer01.c
+>  > index 1f631d457..260590b0e 100644
+>  > --- a/testcases/kernel/syscalls/setitimer/setitimer01.c
+>  > +++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+>  > @@ -22,8 +22,10 @@
+>  >  #include "tst_safe_clocks.h"
+>  >  
+>  >  static struct itimerval *value, *ovalue;
+>  > +static volatile unsigned long sigcnt;
+>  >  static long time_step;
+>  > -static long time_count;
+>  > +static long time_sec;
+>  > +static long time_usec;
+>  >  
+>  >  static struct tcase {
+>  >       int which;
+>  > @@ -40,54 +42,66 @@ static int sys_setitimer(int which, void *new_value, void *old_value)
+>  >       return tst_syscall(__NR_setitimer, which, new_value, old_value);
+>  >  }
+>  >  
+>  > -static void set_setitimer_value(int usec, int o_usec)
+>  > +static void sig_routine(int signo LTP_ATTRIBUTE_UNUSED)
+>  >  {
+>  > -     value->it_value.tv_sec = 0;
+>  > -     value->it_value.tv_usec = usec;
+>  > -     value->it_interval.tv_sec = 0;
+>  > -     value->it_interval.tv_usec = 0;
+>  > +     sigcnt++;
+>  > +}
+>  >  
+>  > -     ovalue->it_value.tv_sec = o_usec;
+>  > -     ovalue->it_value.tv_usec = o_usec;
+>  > -     ovalue->it_interval.tv_sec = 0;
+>  > -     ovalue->it_interval.tv_usec = 0;
+>  > +static void set_setitimer_value(int sec, int usec)
+>  > +{
+>  > +     value->it_value.tv_sec = sec;
+>  > +     value->it_value.tv_usec = usec;
+>  > +     value->it_interval.tv_sec = sec;
+>  > +     value->it_interval.tv_usec = usec;
+>  >  }
+>  >  
+>  >  static void verify_setitimer(unsigned int i)
+>  >  {
+>  >       pid_t pid;
+>  >       int status;
+>  > -     long margin;
+>  >       struct tcase *tc = &tcases[i];
+>  >  
+>  > +     tst_res(TINFO, "tc->which = %s", tc->des);
+>  > +
+>  >       pid = SAFE_FORK();
+>  >  
+>  >       if (pid == 0) {
+>  > -             tst_res(TINFO, "tc->which = %s", tc->des);
+>  > -
+>  >               tst_no_corefile(0);
+>  >  
+>  > -             set_setitimer_value(time_count, 0);
+>  > +             set_setitimer_value(time_sec, time_usec);
+>  >               TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
+>  >  
+>  > -             set_setitimer_value(5 * time_step, 7 * time_step);
+>  > +             set_setitimer_value(2 * time_sec, 2 * time_usec);
+>
+>  IDK if there was some reason for choosing 5 and 7 in the first place?
+>
+> I don't see any necessary reasons for using prime numbers here.
+>
+> @Andrea, did I miss something?
+>
+>  
+>  
+>  Andrea seemed to be going through the prime numbers.
+>
+>  >               TST_EXP_PASS(sys_setitimer(tc->which, value, ovalue));
+>  >  
+>  > -             tst_res(TINFO, "tv_sec=%ld, tv_usec=%ld",
+>  > -                     ovalue->it_value.tv_sec,
+>  > -                     ovalue->it_value.tv_usec);
+>  > +             TST_EXP_EQ_LI(ovalue->it_interval.tv_sec, time_sec);
+>  > +             TST_EXP_EQ_LI(ovalue->it_interval.tv_usec, time_usec);
+>  > +
+>  > +             tst_res(TINFO, "ovalue->it_value.tv_sec=%ld, ovalue->it_value.tv_usec=%ld",
+>  > +                     ovalue->it_value.tv_sec, ovalue->it_value.tv_usec);
+>  >  
+>  >               /*
+>  >                * ITIMER_VIRTUAL and ITIMER_PROF timers always expire a
+>  >                * time_step afterward the elapsed time to make sure that
+>  >                * at least counters take effect.
+>  >                */
+>  > -             margin = tc->which == ITIMER_REAL ? 0 : time_step;
+>  > +             long margin = (tc->which == ITIMER_REAL) ? 0 : time_step;
+>
+>  Looks like an unecessary change?
+>
+> Yes, but the 'margin' is only used in children, and I moved
+> the declaration here is just to highlight and cause attention
+> in code reading.
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index ca92dfcff..ec1fc2515 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -1,4 +1,5 @@
- hugefallocate01 hugefallocate01
-+hugefallocate02 hugefallocate02
- 
- hugemmap01 hugemmap01
- hugemmap02 hugemmap02
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index cafdb5259..c0906f3d3 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -1,5 +1,6 @@
- /cpuset/cpuset01
- /hugetlb/hugefallocate/hugefallocate01
-+/hugetlb/hugefallocate/hugefallocate02
- /hugetlb/hugemmap/hugemmap01
- /hugetlb/hugemmap/hugemmap02
- /hugetlb/hugemmap/hugemmap04
-diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
-new file mode 100644
-index 000000000..d1e11dcbe
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
-@@ -0,0 +1,90 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
-+/*
-+ * Copyright (C) 2015 Oracle Corporation
-+ * Author: Mike Kravetz
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * It tests basic fallocate functionality in hugetlbfs. Preallocate huge
-+ * pages to a file in hugetlbfs, and then remove the pages via hole punch.
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+
-+#include "hugetlb.h"
-+
-+#define MAX_PAGES_TO_USE 5
-+#define MNTPOINT "hugetlbfs/"
-+
-+static int  fd = -1;
-+static long hpage_size;
-+
-+static void run_test(void)
-+{
-+	int err;
-+	unsigned long max_iterations;
-+	unsigned long free_initial, free_after, free_end;
-+
-+	free_initial = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	max_iterations = MIN(free_initial, MAX_PAGES_TO_USE);
-+
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+
-+	/* First preallocate file with max_iterations pages */
-+	err = fallocate(fd, 0, 0, hpage_size * max_iterations);
-+	if (err) {
-+		if (errno == EOPNOTSUPP)
-+			tst_brk(TCONF, "fallocate() Operation is not supported");
-+		tst_res(TFAIL|TERRNO, "fallocate()");
-+		goto cleanup;
-+	}
-+
-+	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	if (free_initial - free_after != max_iterations) {
-+		tst_res(TFAIL, "fallocate did not preallocate %lu huge pages",
-+							max_iterations);
-+		goto cleanup;
-+	}
-+
-+	/* Now punch a hole of the same size */
-+	err = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
-+			0, hpage_size * max_iterations);
-+	if (err) {
-+		tst_res(TFAIL|TERRNO, "fallocate(FALLOC_FL_PUNCH_HOLE)");
-+		goto cleanup;
-+	}
-+
-+	free_end = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	TST_EXP_EQ_LU(free_end, free_initial);
-+cleanup:
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void setup(void)
-+{
-+	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {3, TST_NEEDS},
-+};
+It's a valid change, but the benefit is very minor IMO. I would prefer
+to have the 'git blame' show the original commit which added this logic.
+
+>
+>  
+>  
+>  >  
+>  > -             if (ovalue->it_value.tv_sec != 0 || ovalue->it_value.tv_usec > time_count + margin)
+>  > +             if (ovalue->it_value.tv_sec > time_sec ||
+>  > +                             ovalue->it_value.tv_usec > time_usec + margin)
+>
+>  Looking at the man page, technically speaking the valid range for
+>  ovalue->it_value.tv_sec is 0 to value->it_value.tv_sec when
+>  ovalue->it_value.tv_usec > 0.
+>
+> Good point!! Seems we have to split the situation into two,
+>
+> 1. no tv_sec elapse happen, just check
+>     'it_value.tv_usec' within [0, time_usec + margin]
+>
+> 2. tv_sec elapses happen, then check 
+>     'it_value.tv_sec' within [0, time_sec]
+>
+> Something maybe like:
+>
+> --- a/testcases/kernel/syscalls/setitimer/setitimer01.c
+> +++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+> @@ -87,9 +87,17 @@ static void verify_setitimer(unsigned int i)
+>                  */
+>                 long margin = (tc->which == ITIMER_REAL) ? 0 : time_step;
+>  
+> -               if (ovalue->it_value.tv_sec > time_sec ||
+> -                               ovalue->it_value.tv_usec > time_usec + margin)
+> -                       tst_res(TFAIL, "Ending counters are out of range");
+> +               if (ovalue->it_value.tv_sec == time_sec) {
+> +                       if (ovalue->it_value.tv_usec < 0 ||
+> +                                       ovalue->it_value.tv_usec > time_usec + margin)
+> +                               tst_res(TFAIL, "ovalue->it_value.tv_usec is out of range: %ld",
+> +                                               ovalue->it_value.tv_usec);
+> +               } else {
+> +                       if (ovalue->it_value.tv_sec < 0 ||
+> +                                       ovalue->it_value.tv_sec > time_sec)
+> +                               tst_res(TFAIL, "ovalue->it_value.tv_sec is out of range: %ld",
+> +                                               ovalue->it_value.tv_usec);
+> +               }
+
+Yes, I think this is correct.
+
+>  
+>                 SAFE_SIGNAL(tc->signo, sig_routine);
+>
+>  
+>  
+>  Practically speaking we have to assume a large amount of time has passed
+>  when using ITIMER_REAL. It has to be *much* larger than a VM is likely
+>  to be paused for and then successfully resumed. Or the amount of time a
+>  clock may be corrected by (for e.g. with NTP).
+>
+> Hmm, not sure if I understand correctly above, will that
+> timer value be out of the range but reasonable?
+>
+> Or is there any additional situation we should cover?
+
+Sorry that is confusing.
+
+The question is what happens if the clock jumps backwards?
+
+I don't see anything which says it_value.tv_sec can't go out of
+range. OTOH I would expect it to compensate for large jumps in time.
+
+If the test randomly fails because it_value.tv_sec > time_sec then what
+action will we take?
+
+>
+>  
+>  
+>  >                       tst_res(TFAIL, "Ending counters are out of range");
+>
+>  While we are here; we should make our lives easier when the test fails
+>  by printing any relevant values.
+>
+> We already do that in the above print, but it's fine to have that here as well.
+
+
 -- 
-2.31.1
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
