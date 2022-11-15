@@ -4,43 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD3CDC4332F
-	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 22:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EA68C4332F
+	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 04:01:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 521E93CD268
-	for <ltp@archiver.kernel.org>; Mon, 14 Nov 2022 23:58:07 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id EAF403CD278
+	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 05:01:25 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0DA8D3CAF94
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 23:57:54 +0100 (CET)
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch
- [185.70.40.134])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 6165C3CD213
+ for <ltp@lists.linux.it>; Tue, 15 Nov 2022 05:01:15 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0074E200997
- for <ltp@lists.linux.it>; Mon, 14 Nov 2022 23:57:53 +0100 (CET)
-Date: Mon, 14 Nov 2022 22:57:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
- s=protonmail3; t=1668466672; x=1668725872;
- bh=x+U5rIO//TS5F/TNTZBlpatluCRcjqHuQdl304rDxLc=;
- h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
- Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
- b=V7ImDXg+OzrB3EaMJ2+wz14M5md8oGLToV2sZvltyI5WoGoYmWEi3+99HdtIY1nqp
- LO2bSL1y+vnhQBpjkfz6YAmRH/NwEY71Iu5Ew9KRQZ0+iMQa3W83Qt5jTEf9s7Bsl8
- vDb3nT7yWBSGGI8ejDjTZBY3850iKXalAeCQQ6Q9CiOgET+WNCzCg4Asz3xO1QkXzo
- YcUPJUKfLRt7QHeM4si+JpPl8Lr0pZzpcghL25gN7Fyov5VMxRCbveQRdxFhHJtWvM
- 0qfM7VBdUw0r5RySMjgnWIlRQC9VYpvlr82mjHlor1R7cQzorKquHRt4gcysATRZnQ
- DAUyZovfeeDXA==
-To: ltp@lists.linux.it
-Message-ID: <20221114225616.54212-1-federico.bonfiglio@protonmail.ch>
-Feedback-ID: 5346557:user:proton
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F2846600664
+ for <ltp@lists.linux.it>; Tue, 15 Nov 2022 05:01:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1668484872;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Do/z9RIWZgWtK1D5qMhW96ee4oqZQhq85Q5+6tMSPbk=;
+ b=H0PWuCZUCB1D+/pac88IflXMfl1F5nSSIGbcDKs+oLbw1FAa6dUxNd4kh8BoAAxUPO7STX
+ TkMtie2tUXBhA5ivMq5UgJ43kYkLquQU5l2GvpezEsRO1GE4wxELH/5ec/Slbqa0TtbUIz
+ SGMPrSRofkqLjtc6IhtLCNr/dk20W2Y=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-673-etMsPCuGM1WgcSC85nn_KQ-1; Mon, 14 Nov 2022 23:01:10 -0500
+X-MC-Unique: etMsPCuGM1WgcSC85nn_KQ-1
+Received: by mail-wm1-f71.google.com with SMTP id
+ bi19-20020a05600c3d9300b003cf9d6c4016so9922954wmb.8
+ for <ltp@lists.linux.it>; Mon, 14 Nov 2022 20:01:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=Do/z9RIWZgWtK1D5qMhW96ee4oqZQhq85Q5+6tMSPbk=;
+ b=fxtO1+3VSlMCd7yIHhdzi3+LLaF6gtRtbOSJ7G/odJWn5AzbSr6Eerpgl4NcdgUxgG
+ yCwsdqXsRn15kKeyB0enPEedIggEsxTRI9FdyN2P7Kq4Cfd0NQqAnc712Mc0fzQkUgTj
+ ebHI0CRR9HUtR0Fkt+z1DBCAdA3wS1oy31KE26rSULUBYA8hc4VBT7YSdGp8bYtgxftC
+ FYbAXYC7hpBhHSNUJwCyULjb5OVk+a3mDiHt/VP6GXGHFjmm35B7kfOIAOeRzduDQFUU
+ tYO0fihcp/x4C9Y1ZjSeTSZjX3PUL2ouPfipjWQJ74woBBF3Fp72YljNCvGPKBtha+Bw
+ hqgw==
+X-Gm-Message-State: ANoB5pnWO/EreIvd0PYVpQR5juq9v19Qvi9eYqH41XR4O89TShL+mMXS
+ aePr9+KW6CrWTT9Muk9BuQFx4U0xP8yrG0fxVJ6Ag/Ro8C3m21oiXgLs2Ddx9eMRFWekJ7U3akr
+ 9sSlPn1mRmmrcDttZyy0rY3l93N4=
+X-Received: by 2002:a5d:4042:0:b0:236:8322:4bd5 with SMTP id
+ w2-20020a5d4042000000b0023683224bd5mr9020570wrp.129.1668484868708; 
+ Mon, 14 Nov 2022 20:01:08 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf4U3E8jDR596IoyInLDoY21wSYPJ54/0oUX7tVOjVOJdYsaEX/lepjJgpembP+44haRyLu3UzIe9he2OPbluVY=
+X-Received: by 2002:a5d:4042:0:b0:236:8322:4bd5 with SMTP id
+ w2-20020a5d4042000000b0023683224bd5mr9020565wrp.129.1668484868475; Mon, 14
+ Nov 2022 20:01:08 -0800 (PST)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <20221112040107.3953862-1-liwang@redhat.com>
+ <87pmdpsfdv.fsf@suse.de>
+In-Reply-To: <87pmdpsfdv.fsf@suse.de>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 15 Nov 2022 12:00:56 +0800
+Message-ID: <CAEemH2fJJ8Fv0=OMjdh3d8QaEdr1ivLUuHs_8=D6qV6-YZhbwQ@mail.gmail.com>
+To: rpalethorpe@suse.de, Andrea Cervesato <acervesato@suse.de>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] sched_setscheduler: test SCHED_RESET_ON_FORK
+Subject: Re: [LTP] [PATCH 1/2] setitimer01: add interval timer test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -52,231 +86,476 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Federico Bonfiglio via ltp <ltp@lists.linux.it>
-Reply-To: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
-Cc: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
-Content-Type: multipart/mixed; boundary="===============1497799902=="
+Cc: ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============0846105604=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============1497799902==
-Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha256; boundary="------aa81b65ec6e530be1a9e49ce88bee703ee5a1d98f177bb3a021efc7a818b7c5b"; charset=utf-8
+--===============0846105604==
+Content-Type: multipart/alternative; boundary="000000000000e625eb05ed7a6795"
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------aa81b65ec6e530be1a9e49ce88bee703ee5a1d98f177bb3a021efc7a818b7c5b
-Content-Type: multipart/mixed;
- boundary=fa3beb4eb25dff80ce69eb556a41813efc2f8001743fbfd6931cbefb532c
-From: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
-To: ltp@lists.linux.it
-Cc: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
-Subject: [PATCH v2] sched_setscheduler: test SCHED_RESET_ON_FORK
-Date: Mon, 14 Nov 2022 23:56:16 +0100
-Message-Id: <20221114225616.54212-1-federico.bonfiglio@protonmail.ch>
-X-Mailer: git-send-email 2.38.1
-MIME-Version: 1.0
+--000000000000e625eb05ed7a6795
+Content-Type: text/plain; charset="UTF-8"
 
---fa3beb4eb25dff80ce69eb556a41813efc2f8001743fbfd6931cbefb532c
-Content-Transfer-Encoding: 8bit
-Content-Disposition: 
-Content-Type: text/plain; charset=UTF-8
+On Mon, Nov 14, 2022 at 11:52 PM Richard Palethorpe <rpalethorpe@suse.de>
+wrote:
 
-Signed-off-by: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
----
- runtest/syscalls                              |  1 +
- .../syscalls/sched_setscheduler/.gitignore    |  1 +
- .../sched_setscheduler/sched_setscheduler04.c | 73 +++++++++++++++++++
- 3 files changed, 75 insertions(+)
- create mode 100644 testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
+> Hello,
+>
+> Li Wang <liwang@redhat.com> writes:
+>
+> > Split checking the return ovalue from testing the signal is
+> > delivered, so that we could use two time value for verifying.
+> >
+> > Also, adding interval timer test by handling the signal at
+> > least 10 times. After that recover the signal behavior to
+> > default and do deliver-signal checking.
+> >
+> > Signed-off-by: Li Wang <liwang@redhat.com>
+> > ---
+> >  .../kernel/syscalls/setitimer/setitimer01.c   | 63 ++++++++++++-------
+> >  1 file changed, 39 insertions(+), 24 deletions(-)
+> >
+> > diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c
+> b/testcases/kernel/syscalls/setitimer/setitimer01.c
+> > index 1f631d457..260590b0e 100644
+> > --- a/testcases/kernel/syscalls/setitimer/setitimer01.c
+> > +++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+> > @@ -22,8 +22,10 @@
+> >  #include "tst_safe_clocks.h"
+> >
+> >  static struct itimerval *value, *ovalue;
+> > +static volatile unsigned long sigcnt;
+> >  static long time_step;
+> > -static long time_count;
+> > +static long time_sec;
+> > +static long time_usec;
+> >
+> >  static struct tcase {
+> >       int which;
+> > @@ -40,54 +42,66 @@ static int sys_setitimer(int which, void *new_value,
+> void *old_value)
+> >       return tst_syscall(__NR_setitimer, which, new_value, old_value);
+> >  }
+> >
+> > -static void set_setitimer_value(int usec, int o_usec)
+> > +static void sig_routine(int signo LTP_ATTRIBUTE_UNUSED)
+> >  {
+> > -     value->it_value.tv_sec = 0;
+> > -     value->it_value.tv_usec = usec;
+> > -     value->it_interval.tv_sec = 0;
+> > -     value->it_interval.tv_usec = 0;
+> > +     sigcnt++;
+> > +}
+> >
+> > -     ovalue->it_value.tv_sec = o_usec;
+> > -     ovalue->it_value.tv_usec = o_usec;
+> > -     ovalue->it_interval.tv_sec = 0;
+> > -     ovalue->it_interval.tv_usec = 0;
+> > +static void set_setitimer_value(int sec, int usec)
+> > +{
+> > +     value->it_value.tv_sec = sec;
+> > +     value->it_value.tv_usec = usec;
+> > +     value->it_interval.tv_sec = sec;
+> > +     value->it_interval.tv_usec = usec;
+> >  }
+> >
+> >  static void verify_setitimer(unsigned int i)
+> >  {
+> >       pid_t pid;
+> >       int status;
+> > -     long margin;
+> >       struct tcase *tc = &tcases[i];
+> >
+> > +     tst_res(TINFO, "tc->which = %s", tc->des);
+> > +
+> >       pid = SAFE_FORK();
+> >
+> >       if (pid == 0) {
+> > -             tst_res(TINFO, "tc->which = %s", tc->des);
+> > -
+> >               tst_no_corefile(0);
+> >
+> > -             set_setitimer_value(time_count, 0);
+> > +             set_setitimer_value(time_sec, time_usec);
+> >               TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
+> >
+> > -             set_setitimer_value(5 * time_step, 7 * time_step);
+> > +             set_setitimer_value(2 * time_sec, 2 * time_usec);
+>
+> IDK if there was some reason for choosing 5 and 7 in the first place?
+>
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 3dc6fa397..ff516af3d 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1204,6 +1204,7 @@ sched_getscheduler02 sched_getscheduler02
- sched_setscheduler01 sched_setscheduler01
- sched_setscheduler02 sched_setscheduler02
- sched_setscheduler03 sched_setscheduler03
-+sched_setscheduler04 sched_setscheduler04
+I don't see any necessary reasons for using prime numbers here.
 
- sched_yield01 sched_yield01
-
-diff --git a/testcases/kernel/syscalls/sched_setscheduler/.gitignore b/testcases/kernel/syscalls/sched_setscheduler/.gitignore
-index aa8ad9695..1b8860d2c 100644
---- a/testcases/kernel/syscalls/sched_sets
-cheduler/.gitignore
-+++ b/testcases/kernel/syscalls/sched_setscheduler/.gitignore
-@@ -1,3 +1,4 @@
- /sched_setscheduler01
- /sched_setscheduler02
- /sched_setscheduler03
-+/sched_setscheduler04
-diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
-new file mode 100644
-index 000000000..4a5d27f5b
---- /dev/null
-+++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
-@@ -0,0 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
-+ */
-+
-+/*
-+ * [Description]
-+ *
-+ * Testcases that test if sched_setscheduler with flag
-+ * SCHED_RESET_ON_FORK restores children policy to
-+ * SCHED_NORMAL.
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sched.h>
-+#include <linux/sched.h>
-+
-+#include "tst_test.h"
-+#include "tst_sched.h"
-+
-+struct test_c
-ase_t {
-+	int policy;
-+	char *desc;
-+};
-+
-+static struct test_case_t cases[] = {
-+	{
-+		.policy = SCHED_FIFO,
-+		.desc = "SCHED_FIFO"
-+	},
-+	{
-+		.policy = SCHED_RR,
-+		.desc = "SCHED_RR"
-+	}
-+};
-+
-+static void test_reset_on_fork(unsigned int i)
-+{
-+	struct sched_variant *tv = &sched_variants[tst_variant];
-+	struct test_case_t *tc = &cases[i];
-+
-+	tst_res(TINFO, "Testing %s variant", tv->desc);
-+	tst_res(TINFO, "Testing %s policy", tc->desc);
-+
-+	struct sched_param param = { .sched_priority = 1 };
-+
-+	tv->sched_setscheduler(getpid(), tc->policy | SCHED_RESET_ON_FORK, &param);
-+
-+	pid_t pid = SAFE_FORK();
-+
-+	if (!pid == 0) {
-+		if (sched_getscheduler(pid) == SCHED_NORMAL)
-+			tst_res(TPASS, "Policy reset to SCHED_NORMAL");
-+		else
-+			tst_res(TFAIL, "Policy NOT reset to SCHED_NORMAL");
-+	}
-+
-+	tst_reap_children();
-+}
-+
-+static struct tst_test test = {
-+	.forks_child = 1,
-+	.caps = (struct tst_cap[]) {
-+	    TST_CAP(TST_CAP_REQ, CAP_SYS_NICE)
-
-+	},
-+	.test_variants = ARRAY_SIZE(sched_variants),
-+	.tcnt = ARRAY_SIZE(cases),
-+	.test = test_reset_on_fork
-+};
-+
---
-2.38.1
+@Andrea, did I miss something?
 
 
---fa3beb4eb25dff80ce69eb556a41813efc2f8001743fbfd6931cbefb532c
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; name="publickey - Federico Bonfiglio -
- e96ee84c.asc"; filename="publickey - Federico Bonfiglio - e96ee84c.asc"
-Content-Type: application/pgp-keys; name="publickey - Federico Bonfiglio -
- e96ee84c.asc"; filename="publickey - Federico Bonfiglio - e96ee84c.asc"
 
-LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdvcGVuUEdQIDIu
-NC43CkNvbW1lbnQ6IGh0dHBzOi8vZ29wZW5wZ3Aub3JnCgp4c0ROQkdHZGZuMEJEQUMxY3Q1bDJi
-RGR2eG83ZXMxTnlSMkFGbnFkU0dGYlM1ZjltZWc5azAyOTgzUHVwU2NDCkNPOHFmbzl3OXdIQjg4
-TlQwNWNSNVlURTZQUEd0SGwwSWR5RDYrdy9taEtrc1JLNEhXNnl3TUlMUmtCWm95aS8KNnFabkho
-WUQzRGZBajgvZmxUeE9zbGN3ZFlWcWJ5ckwzYUYxM2daOVVJYVpCV2t1QlI0ZFlvd2RmVXdMaEdT
-NApBZUtDL2dUNUdPVUkxZDRFZUtBTk9xTk9JQUFqSFdXUU40QnNVcHZQQUowOVZocnJacDlXbWNE
-b25iV3R2VW40CmwyNWRsbFFWTkswY2pydVRpYVJtQjlHUStLMkhYUm1BWDQ4cDZFNDJxWnBqd0VQ
-eUI0VFRyY3FIK0gzcHg4Z2cKU041NWZvQzVKMGRhSDVSeHhhRHM1dTYxNGlEd04vL0FsQnhIbURh
-WkxEMW1VdlEwMjRpYVdKUXdtV0Y0cVFOSgpTdlVYWjJkQ3RTQjA1MnpIZ3l0cDV3RjZtcVhNWXBS
-dHJyQzBvTGVFcXVlT2tuejJPUElGR3NGUFI0RHhIMjVaClpBNDJGNkllUUMrVC9lWjBGUWJ5aDA5
-SEtUQmxrejhlNzQzMW03L0plTkpDc0llQXBWTTdOUlU1TVBJYkJLelAKOG14MklhZkE2RnZYbEJz
-QUVRRUFBYzAxUm1Wa1pYSnBZMjhnUW05dVptbG5iR2x2SUR4bVpXUmxjbWxqYnk1aQpiMjVtYVdk
-c2FXOUFjSEp2ZEc5dWJXRnBiQzVqYUQ3Q3dTVUVFd0VJQURnV0lRVHBidWhNL0JjMGZoWDhJM0hX
-CmRnVWRvd2NrSlFVQ1laMStmUUliQXdVTENRZ0hBZ1lWQ2drSUN3SUVGZ0lEQVFJZUFRSVhnQUFo
-Q1JEV2RnVWQKb3dja0pSWWhCT2x1NkV6OEZ6UitGZndqY2RaMkJSMmpCeVFsd2JzTC8zd1BCemZC
-T3d4dHVhWjk5L25OUEpDegpzOHNMSmlkMS9YNnpUSHNMZHZOUmJLTGxhWDJLRGx2VWRsY1UwN09k
-U3Z5clg0bHVvdUl3c1oyUnNxamVyVWNFCmtXUzZBOHA4MnVScWlyUzdTT3U0bUlPSjRyMUZXZTNW
-ZUx6Ty9TSUljUk5wL2IwNnRoNTVPRTZZc2ppdHRlM2sKM2w3d0FBaTJSYkNQdXJtZkNjRTFIVEYz
-SGRDbG41a21mZzNoczBsQnhpRHFyVFJxai9aZmhhNGF1RHo5c2kyZgpjRDRNS3Q2UVMzYnNrOFVr
-V2NudGFxUm9HdEsyaW11bGtEb0N0TmgvT1J1U2FLQlpHRmliclZySExMdzNGcFRrCmxFYlI3MFNu
-WFhvMEZldUwxZFArYVczZkFRSzFTWURCRS9UOGgzekpQN05LZ3hGOUhRamlPYzBPNGlRS2tNVkEK
-clhCQmFIRENrWnUxN2w5Y2hOK3g5N3lSZGt2RDVPS2wrYjh4ajBLR1dBL1BRc1hYaUp4REkrdFBt
-eUp6QitENwpNTHpSSkUzRlltN1hRK0V1b3Jkeld4cTNhR1VQTHl6TkY3ZlpFZVk0ekIxNEFuMmRk
-c1QySFErZUpxeEhWbG1BCkRDN0E2aHZ1ZXdjYWllOVFja0JnL1RMK0t2OG13elcrb2ljRkJlRDdF
-czdBelFSaG5YNTlBUXdBN2p6cWRhOXkKSllKbkoyTlRST3F1MVgwMjhaeGp4ZWpDUlprMmt5MUo2
-U1U0amwvc0ZLTHpINUNadm9rWXlFUEY4R2VCRkZ1cwpKK2tZTlhtaytkNnpxUnE1NngrRXVkUUZj
-SE5iOW16cWJpNFhMdWlEc3dtVzZ5Slh4Ylg1NmsxNkxCUEdOeW5sCmpTRVZnTlRiQVZuendQeVVj
-UC94WnRrSFpnOWMyZzdoQkVvN2o2NzBWUFZaQXd5cGFQaXVsOExrWVlTLzVWRi8KNkI0SEIwUW8z
-VmtiSTluUEMyanFHejJ5UU5ncGlMdklvbExvT1NPeVUzS2ZKRWtvODlaQktJOGNLMGxNcUhzbApJ
-V1IxQmZqWGVYWjBDdlEvNkVDeVlQZ1lqQUY1UEQ0Q25ZUDNBelhtVGZCakk0VEcyVmFpZ0tCNVRN
-ZDRGUE95CmtPa0p4R3BQYmZhbXh3ZjJwNDBGdVFRM2ZZOFBnZU0vSjVyTDdqdlo0R2pKVXlTTmJi
-ZFBxL0RKTTc2dE16YzYKUjdtVlJIRG56Qit1cHhSVmM0ZU1WZ0Zrc0x1alNZTVZmeGlKTElaMWpO
-ZmNPVytNbGgzTVp4M2xlczNJWk9GQwo5OWwrWUxDNDZ4Sjk3VlAyREJWNlZUZkh3TlhRMHdTNWpV
-bzFub09xbEtVbUpmWGlXVGVBeG5xckFCRUJBQUhDCndRMEVHQUVJQUNBV0lRVHBidWhNL0JjMGZo
-WDhJM0hXZGdVZG93Y2tKUVVDWVoxK2ZRSWJEQUFoQ1JEV2RnVWQKb3dja0pSWWhCT2x1NkV6OEZ6
-UitGZndqY2RaMkJSMmpCeVFsRjJzTUFKYmlpdXh1QWlPd3VTdjgxSlh0Vkp6YgowV3lYS1dJNmhu
-UngvY1ZRdGQ1WE5rQm1WRjBzS05zRnFiNHZJRk9Ya0w1WkhsNGxrNE1CQ3Jnc1JDQ0NQTHpTCktE
-Tk81ZkJWTk5CVVpGUFpHRW1iMDZGalBpM2xqYlE3Smx0SmtNRUxibllrRCtvYjIwM1k0Z1JTNFB2
-dGxkQUgKVFRBZ2kyMTU5SHlYbC8wUjFZbmRETC8rU2UrSFdJcXhxeWx1SmtNeTB3U2ZFbkdVMU9p
-REUrb1RHQ0UxUjhOQgpZalAxcHdrL0JKWU15TG9UekZVdW0vRVp4bWNwMDFSZS92bzBNWWErMnVr
-bE1jTU05dVdJNUo4djFPczBqb0piCkgrN3dZcWhEenhHdldHLzhiazRxWXRpc0VNaW9sRmRPSGpC
-Qk5TQnVJQmRScWJkSHlpYklZNmdOam94VnF3OEcKZC82b1R5QTM5NkZTaGVRQ0dkclgrU2lyUTBO
-SitacWxyYzNCMUxzOCtERWg2Ni9ZT251NmpkbmFnMTVDQS8yLwpwajBkM0VkdGRxaGdiUHZsQjlv
-WnZRTmdFSmkwQk5mRzdDZkdJQUltVDZYY2s3bUZrMTZRTzMvZllEdE8zWGdrCjNMeXFKeDAxWCtZ
-Nmh6YlJmWlVjMGpwRTRYZnA0TWxDR1NKcWtyNm9XQT09Cj13NGN5Ci0tLS0tRU5EIFBHUCBQVUJM
-SUMgS0VZIEJMT0NLLS0tLS0=
---fa3beb4eb25dff80ce69eb556a41813efc2f8001743fbfd6931cbefb532c--
+>
+> Andrea seemed to be going through the prime numbers.
+>
+> >               TST_EXP_PASS(sys_setitimer(tc->which, value, ovalue));
+> >
+> > -             tst_res(TINFO, "tv_sec=%ld, tv_usec=%ld",
+> > -                     ovalue->it_value.tv_sec,
+> > -                     ovalue->it_value.tv_usec);
+> > +             TST_EXP_EQ_LI(ovalue->it_interval.tv_sec, time_sec);
+> > +             TST_EXP_EQ_LI(ovalue->it_interval.tv_usec, time_usec);
+> > +
+> > +             tst_res(TINFO, "ovalue->it_value.tv_sec=%ld,
+> ovalue->it_value.tv_usec=%ld",
+> > +                     ovalue->it_value.tv_sec, ovalue->it_value.tv_usec);
+> >
+> >               /*
+> >                * ITIMER_VIRTUAL and ITIMER_PROF timers always expire a
+> >                * time_step afterward the elapsed time to make sure that
+> >                * at least counters take effect.
+> >                */
+> > -             margin = tc->which == ITIMER_REAL ? 0 : time_step;
+> > +             long margin = (tc->which == ITIMER_REAL) ? 0 : time_step;
+>
+> Looks like an unecessary change?
+>
 
---------aa81b65ec6e530be1a9e49ce88bee703ee5a1d98f177bb3a021efc7a818b7c5b
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: ProtonMail
-
-wsDzBAEBCAAnBQJjcsfrCZDWdgUdowckJRYhBOlu6Ez8FzR+FfwjcdZ2BR2j
-ByQlAAD6DAv8CCOhw87T+hspB4BkEHDZgLpKVGE2PfXCg/N8bIveKnT7R6C2
-39+BsYv0547qZHWwSTX0ecnEnr1cOJOEfkJCm2ncZyabv1SJhDQN16Qg13m9
-ceD1ZdRrwK4NrE7kU43OAhjWwfkYS+lhGZCC/dYxfPWHs7V/Vvp56iqh5vrE
-GCQxYPZWlGrxkNkUBO8IDShaVilb31HIBwSv4RpmK3tp9SJq5J3BTODRi4Hz
-PYvEF1Q4AGx9DN6V2T9ZTILteYk84ywiGzFezND15StcSQRafRIc2RJZkTCD
-wwIYIWfl/7BHSE6jwm7qjQNot+mHVBcKYD37FnUtssqK5OuwqpdwZjIaHAWj
-8wqEwAQ1/DFn994/40wCZpSwuzbrAM3SZTJkoS5oviqgiRyAS+VmVh03MQAa
-qap/Tt6ipz71u40YkMiB/j7ZOatV54ReecXnheAiQ5gHEHDCctHVcViQ/y8Y
-6nLPlCCGWBISIzrvWLQJYXrgnE92Ymd7kgTcywU71csb
-=EZWn
------END PGP SIGNATURE-----
+Yes, but the 'margin' is only used in children, and I moved
+the declaration here is just to highlight and cause attention
+in code reading.
 
 
---------aa81b65ec6e530be1a9e49ce88bee703ee5a1d98f177bb3a021efc7a818b7c5b--
+
+>
+> >
+> > -             if (ovalue->it_value.tv_sec != 0 ||
+> ovalue->it_value.tv_usec > time_count + margin)
+> > +             if (ovalue->it_value.tv_sec > time_sec ||
+> > +                             ovalue->it_value.tv_usec > time_usec +
+> margin)
+>
+> Looking at the man page, technically speaking the valid range for
+> ovalue->it_value.tv_sec is 0 to value->it_value.tv_sec when
+> ovalue->it_value.tv_usec > 0.
+>
+
+Good point!! Seems we have to split the situation into two,
+
+1. no tv_sec elapse happen, just check
+    'it_value.tv_usec' within [0, time_usec + margin]
+
+2. tv_sec elapses happen, then check
+    'it_value.tv_sec' within [0, time_sec]
+
+Something maybe like:
+
+--- a/testcases/kernel/syscalls/setitimer/setitimer01.c
++++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+@@ -87,9 +87,17 @@ static void verify_setitimer(unsigned int i)
+                 */
+                long margin = (tc->which == ITIMER_REAL) ? 0 : time_step;
+
+-               if (ovalue->it_value.tv_sec > time_sec ||
+-                               ovalue->it_value.tv_usec > time_usec +
+margin)
+-                       tst_res(TFAIL, "Ending counters are out of range");
++               if (ovalue->it_value.tv_sec == time_sec) {
++                       if (ovalue->it_value.tv_usec < 0 ||
++                                       ovalue->it_value.tv_usec >
+time_usec + margin)
++                               tst_res(TFAIL, "ovalue->it_value.tv_usec is
+out of range: %ld",
++                                               ovalue->it_value.tv_usec);
++               } else {
++                       if (ovalue->it_value.tv_sec < 0 ||
++                                       ovalue->it_value.tv_sec > time_sec)
++                               tst_res(TFAIL, "ovalue->it_value.tv_sec is
+out of range: %ld",
++                                               ovalue->it_value.tv_usec);
++               }
+
+                SAFE_SIGNAL(tc->signo, sig_routine);
 
 
---===============1497799902==
+
+>
+> Practically speaking we have to assume a large amount of time has passed
+> when using ITIMER_REAL. It has to be *much* larger than a VM is likely
+> to be paused for and then successfully resumed. Or the amount of time a
+> clock may be corrected by (for e.g. with NTP).
+>
+
+Hmm, not sure if I understand correctly above, will that
+timer value be out of the range but reasonable?
+
+Or is there any additional situation we should cover?
+
+
+
+>
+> >                       tst_res(TFAIL, "Ending counters are out of range");
+>
+> While we are here; we should make our lives easier when the test fails
+> by printing any relevant values.
+>
+
+We already do that in the above print, but it's fine to have that here as
+well.
+
+-- 
+Regards,
+Li Wang
+
+--000000000000e625eb05ed7a6795
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Mon, Nov 14, 2022 at 11:52 PM Richard Palethorpe=
+ &lt;<a href=3D"mailto:rpalethorpe@suse.de" target=3D"_blank">rpalethorpe@s=
+use.de</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"m=
+argin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left=
+:1ex">Hello,<br>
+<br>
+Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_blank">liwang@r=
+edhat.com</a>&gt; writes:<br>
+<br>
+&gt; Split checking the return ovalue from testing the signal is<br>
+&gt; delivered, so that we could use two time value for verifying.<br>
+&gt;<br>
+&gt; Also, adding interval timer test by handling the signal at<br>
+&gt; least 10 times. After that recover the signal behavior to<br>
+&gt; default and do deliver-signal checking.<br>
+&gt;<br>
+&gt; Signed-off-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=
+=3D"_blank">liwang@redhat.com</a>&gt;<br>
+&gt; ---<br>
+&gt;=C2=A0 .../kernel/syscalls/setitimer/setitimer01.c=C2=A0 =C2=A0| 63 +++=
++++++++++-------<br>
+&gt;=C2=A0 1 file changed, 39 insertions(+), 24 deletions(-)<br>
+&gt;<br>
+&gt; diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testc=
+ases/kernel/syscalls/setitimer/setitimer01.c<br>
+&gt; index 1f631d457..260590b0e 100644<br>
+&gt; --- a/testcases/kernel/syscalls/setitimer/setitimer01.c<br>
+&gt; +++ b/testcases/kernel/syscalls/setitimer/setitimer01.c<br>
+&gt; @@ -22,8 +22,10 @@<br>
+&gt;=C2=A0 #include &quot;tst_safe_clocks.h&quot;<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 static struct itimerval *value, *ovalue;<br>
+&gt; +static volatile unsigned long sigcnt;<br>
+&gt;=C2=A0 static long time_step;<br>
+&gt; -static long time_count;<br>
+&gt; +static long time_sec;<br>
+&gt; +static long time_usec;<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 static struct tcase {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0int which;<br>
+&gt; @@ -40,54 +42,66 @@ static int sys_setitimer(int which, void *new_valu=
+e, void *old_value)<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0return tst_syscall(__NR_setitimer, which, ne=
+w_value, old_value);<br>
+&gt;=C2=A0 }<br>
+&gt;=C2=A0 <br>
+&gt; -static void set_setitimer_value(int usec, int o_usec)<br>
+&gt; +static void sig_routine(int signo LTP_ATTRIBUTE_UNUSED)<br>
+&gt;=C2=A0 {<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0value-&gt;it_value.tv_sec =3D 0;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0value-&gt;it_value.tv_usec =3D usec;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0value-&gt;it_interval.tv_sec =3D 0;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0value-&gt;it_interval.tv_usec =3D 0;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0sigcnt++;<br>
+&gt; +}<br>
+&gt;=C2=A0 <br>
+&gt; -=C2=A0 =C2=A0 =C2=A0ovalue-&gt;it_value.tv_sec =3D o_usec;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0ovalue-&gt;it_value.tv_usec =3D o_usec;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0ovalue-&gt;it_interval.tv_sec =3D 0;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0ovalue-&gt;it_interval.tv_usec =3D 0;<br>
+&gt; +static void set_setitimer_value(int sec, int usec)<br>
+&gt; +{<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0value-&gt;it_value.tv_sec =3D sec;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0value-&gt;it_value.tv_usec =3D usec;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0value-&gt;it_interval.tv_sec =3D sec;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0value-&gt;it_interval.tv_usec =3D usec;<br>
+&gt;=C2=A0 }<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 static void verify_setitimer(unsigned int i)<br>
+&gt;=C2=A0 {<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0pid_t pid;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0int status;<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0long margin;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0struct tcase *tc =3D &amp;tcases[i];<br>
+&gt;=C2=A0 <br>
+&gt; +=C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quot;tc-&gt;which =3D %s&quot;, t=
+c-&gt;des);<br>
+&gt; +<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0pid =3D SAFE_FORK();<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0if (pid =3D=3D 0) {<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quot;=
+tc-&gt;which =3D %s&quot;, tc-&gt;des);<br>
+&gt; -<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_no_corefile(=
+0);<br>
+&gt;=C2=A0 <br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0set_setitimer_value(t=
+ime_count, 0);<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0set_setitimer_value(t=
+ime_sec, time_usec);<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0TST_EXP_PASS(sys=
+_setitimer(tc-&gt;which, value, NULL));<br>
+&gt;=C2=A0 <br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0set_setitimer_value(5=
+ * time_step, 7 * time_step);<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0set_setitimer_value(2=
+ * time_sec, 2 * time_usec);<br>
+<br>
+IDK if there was some reason for choosing 5 and 7 in the first place?<br></=
+blockquote><div><br></div><div><div class=3D"gmail_default" style=3D"font-s=
+ize:small">I don&#39;t see any necessary reasons for using prime=C2=A0numbe=
+rs=C2=A0here.</div><div class=3D"gmail_default" style=3D"font-size:small"><=
+br></div><div class=3D"gmail_default" style=3D"font-size:small">@Andrea, di=
+d I miss something?</div><br></div><div>=C2=A0</div><blockquote class=3D"gm=
+ail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,=
+204,204);padding-left:1ex">
+<br>
+Andrea seemed to be going through the prime numbers.<br>
+<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0TST_EXP_PASS(sys=
+_setitimer(tc-&gt;which, value, ovalue));<br>
+&gt;=C2=A0 <br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quot;=
+tv_sec=3D%ld, tv_usec=3D%ld&quot;,<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0ovalue-&gt;it_value.tv_sec,<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0ovalue-&gt;it_value.tv_usec);<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0TST_EXP_EQ_LI(ovalue-=
+&gt;it_interval.tv_sec, time_sec);<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0TST_EXP_EQ_LI(ovalue-=
+&gt;it_interval.tv_usec, time_usec);<br>
+&gt; +<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TINFO, &quot;=
+ovalue-&gt;it_value.tv_sec=3D%ld, ovalue-&gt;it_value.tv_usec=3D%ld&quot;,<=
+br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0ovalue-&gt;it_value.tv_sec, ovalue-&gt;it_value.tv_usec);<br>
+&gt;=C2=A0 <br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/*<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 * ITIMER_VIRTUA=
+L and ITIMER_PROF timers always expire a<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 * time_step aft=
+erward the elapsed time to make sure that<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 * at least coun=
+ters take effect.<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 */<br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0margin =3D tc-&gt;whi=
+ch =3D=3D ITIMER_REAL ? 0 : time_step;<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0long margin =3D (tc-&=
+gt;which =3D=3D ITIMER_REAL) ? 0 : time_step;<br>
+<br>
+Looks like an unecessary change?<br></blockquote><div><br></div><div><div c=
+lass=3D"gmail_default" style=3D"font-size:small">Yes, but the &#39;margin&#=
+39; is only used in children, and I moved</div><div class=3D"gmail_default"=
+ style=3D"font-size:small">the declaration here is just to highlight and ca=
+use attention</div><div class=3D"gmail_default" style=3D"font-size:small">i=
+n code reading.</div><br></div><div>=C2=A0</div><blockquote class=3D"gmail_=
+quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,=
+204);padding-left:1ex">
+<br>
+&gt;=C2=A0 <br>
+&gt; -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (ovalue-&gt;it_val=
+ue.tv_sec !=3D 0 || ovalue-&gt;it_value.tv_usec &gt; time_count + margin)<b=
+r>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (ovalue-&gt;it_val=
+ue.tv_sec &gt; time_sec ||<br>
+&gt; +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0ovalue-&gt;it_value.tv_usec &gt; time_us=
+ec + margin)<br>
+<br>
+Looking at the man page, technically speaking the valid range for<br>
+ovalue-&gt;it_value.tv_sec is 0 to value-&gt;it_value.tv_sec when<br>
+ovalue-&gt;it_value.tv_usec &gt; 0.<br></blockquote><div><br></div><div><di=
+v class=3D"gmail_default" style=3D"font-size:small">Good point!! Seems we h=
+ave to split the situation into two,</div><div class=3D"gmail_default" styl=
+e=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font-=
+size:small">1. no tv_sec elapse happen, just check</div><div class=3D"gmail=
+_default" style=3D"font-size:small">=C2=A0 =C2=A0 &#39;it_value.tv_usec&#39=
+; within [0, time_usec + margin]</div><div class=3D"gmail_default" style=3D=
+"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size=
+:small">2. tv_sec elapses happen, then check=C2=A0</div><div class=3D"gmail=
+_default" style=3D"font-size:small">=C2=A0 =C2=A0 &#39;it_value.tv_sec&#39;=
+ within [0, time_sec]</div></div><div class=3D"gmail_default" style=3D"font=
+-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:smal=
+l">Something maybe like:</div><div class=3D"gmail_default" style=3D"font-si=
+ze:small"><br></div><div class=3D"gmail_default" style=3D"font-size:small">=
+--- a/testcases/kernel/syscalls/setitimer/setitimer01.c<br>+++ b/testcases/=
+kernel/syscalls/setitimer/setitimer01.c<br>@@ -87,9 +87,17 @@ static void v=
+erify_setitimer(unsigned int i)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0*/<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 long margin =3D (tc-&gt;which =3D=3D ITIMER_REAL) ? 0 : time_ste=
+p;<br>=C2=A0<br>- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (oval=
+ue-&gt;it_value.tv_sec &gt; time_sec ||<br>- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 ovalue-&gt;it_value.tv_usec &gt; time_usec + margin)<br>- =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(TFA=
+IL, &quot;Ending counters are out of range&quot;);<br>+ =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (ovalue-&gt;it_value.tv_sec =3D=3D time_=
+sec) {<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 if (ovalue-&gt;it_value.tv_usec &lt; 0 ||<br>+ =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ovalue-&gt;it_value.tv_usec &=
+gt; time_usec + margin)<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(TFAIL, =
+&quot;ovalue-&gt;it_value.tv_usec is out of range: %ld&quot;,<br>+ =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 ovalue-&gt;it_value.tv_usec);<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 } else {<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (ovalue-&gt;it_value.tv_sec &lt; 0 ||=
+<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ovalue-&gt;=
+it_value.tv_sec &gt; time_sec)<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(=
+TFAIL, &quot;ovalue-&gt;it_value.tv_sec is out of range: %ld&quot;,<br>+ =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 ovalue-&gt;it_value.tv_usec);<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 }<br>=C2=A0<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 SAFE_SIGNAL(tc-&gt;signo, sig_routine);<br></div><div =
+class=3D"gmail_default" style=3D"font-size:small"><br></div><div>=C2=A0</di=
+v><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;borde=
+r-left:1px solid rgb(204,204,204);padding-left:1ex">
+<br>
+Practically speaking we have to assume a large amount of time has passed<br=
+>
+when using ITIMER_REAL. It has to be *much* larger than a VM is likely<br>
+to be paused for and then successfully resumed. Or the amount of time a<br>
+clock may be corrected by (for e.g. with NTP).<br></blockquote><div><br></d=
+iv><div><div class=3D"gmail_default" style=3D"font-size:small">Hmm, not sur=
+e if I understand correctly above, will that</div><div class=3D"gmail_defau=
+lt" style=3D"font-size:small">timer value be out of the range but reasonabl=
+e?</div><div class=3D"gmail_default" style=3D"font-size:small"><br></div><d=
+iv class=3D"gmail_default" style=3D"font-size:small">Or is there any additi=
+onal situation we should cover?</div><div class=3D"gmail_default" style=3D"=
+font-size:small"><br></div></div><div>=C2=A0</div><blockquote class=3D"gmai=
+l_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,20=
+4,204);padding-left:1ex">
+<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0tst_res(TFAIL, &quot;Ending counters are out of range&quot;);<=
+br>
+<br>
+While we are here; we should make our lives easier when the test fails<br>
+by printing any relevant values.<br></blockquote><div><br></div><div><div c=
+lass=3D"gmail_default" style=3D"font-size:small">We already do that in the =
+above print,=C2=A0but it&#39;s fine to=C2=A0have that here as well.</div></=
+div></div><div><br></div>-- <br><div dir=3D"ltr"><div dir=3D"ltr"><div>Rega=
+rds,<br></div><div>Li Wang<br></div></div></div></div>
+
+--000000000000e625eb05ed7a6795--
+
+
+--===============0846105604==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -286,5 +565,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============1497799902==--
+--===============0846105604==--
 
