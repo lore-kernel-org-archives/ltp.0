@@ -4,95 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBECFC433FE
-	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 07:09:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A088C4332F
+	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 07:09:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C6B133CD122
-	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 08:09:36 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 44BBD3CD11F
+	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 08:09:47 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A67093CD125
- for <ltp@lists.linux.it>; Tue, 15 Nov 2022 08:09:17 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id D055A3CD142
+ for <ltp@lists.linux.it>; Tue, 15 Nov 2022 08:09:19 +0100 (CET)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BF8A51400B81
- for <ltp@lists.linux.it>; Tue, 15 Nov 2022 08:09:16 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7BEB2200061
+ for <ltp@lists.linux.it>; Tue, 15 Nov 2022 08:09:18 +0100 (CET)
 Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AF77fkF023259; Tue, 15 Nov 2022 07:09:14 GMT
+ 2AF77e8r023189; Tue, 15 Nov 2022 07:09:16 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=DOIshCjZ2mjvX2NYQ6zGkrMD2XuwTDL15dBDno6xFto=;
- b=fSWT4D+dxeeyTB2mVuTEEwUMAeKUWKD30TokVL+UpDnLRzi/0nHf8PFNPRmlmFUQPrQw
- QkHXVd62C3dRk8WG1KNi7UdDifwm8yIMyBc1yYzkytHB/TWNhV+oNK8PW8aXJBUSQ/ij
- /MjjR0nP0FgTc1/e5eawTSDtm5ztGz5V8RxL3XgcG6GLH6bYnNH2PQCZAhu3yWb1qpCi
- VomHTIVU8WOSsbM4+AyShAwTfKxk87yDg3Ftw0pNmkBbx/SRUubxDOYyde2tgmg/7RVh
- qB6RKuMeeV4axsP/+jZI1yvfngjvbkyGKQpq+6gN8TtCp3QyGg0hTbQ1ERM9Kaiv4RFG +Q== 
+ bh=BpGAA/UZtoo5NDRggMJcFdUeQMojpgbdfMqLOhfvezc=;
+ b=GwoXi4pOMqHLcTJzcy/kK1gBecLt0zTpUBxbDKjiUZVhxmDfFrCb7soW9s2UC4acROMl
+ K5S1ILA0rt46dILgd7nPRgwh5/hMpsOlxPHw3KO2AsdenYnSB5eSx0u5WbFkLsXWv5Cq
+ uK0jw5Augju0MyCk1FWPbOQOHAkhHnbfdTTR3SpR8bqEXyacfdlakDCNzMIo0lUNFybu
+ IuKhRgF3QT3r2Jwxqx7jxSGUbqAofxX2Ia5azRZmCj0kzrVMM1ZhIHLpZLL4OsKokpUN
+ yhl6hldXiseroedzi+epbQKWg+4rf+6Rf1bDA8+6IjlEJWdTtqjHKXIx4nwZdwAOVdrS sg== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kv5wwg85y-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kv5wwg87q-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 15 Nov 2022 07:09:14 +0000
+ Tue, 15 Nov 2022 07:09:16 +0000
 Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AF78L9E026038;
- Tue, 15 Nov 2022 07:09:14 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com
- [159.122.73.70])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kv5wwg83q-1
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AF77vWb024384;
+ Tue, 15 Nov 2022 07:09:16 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.98])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kv5wwg85f-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 15 Nov 2022 07:09:14 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
- by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AF75wdX024215;
- Tue, 15 Nov 2022 07:09:11 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com
- (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
- by ppma01fra.de.ibm.com with ESMTP id 3ktbd9jgq5-1
+ Tue, 15 Nov 2022 07:09:15 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+ by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AF76Qlg003470;
+ Tue, 15 Nov 2022 07:09:13 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com
+ (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+ by ppma03ams.nl.ibm.com with ESMTP id 3kt348uub5-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 15 Nov 2022 07:09:11 +0000
+ Tue, 15 Nov 2022 07:09:13 +0000
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com
  [9.149.105.62])
- by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2AF7977w57475492
+ by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
+ id 2AF73DgS43057590
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 15 Nov 2022 07:09:07 GMT
+ Tue, 15 Nov 2022 07:03:13 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id A8491AE04D;
- Tue, 15 Nov 2022 07:09:07 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 5F533AE045;
+ Tue, 15 Nov 2022 07:09:10 +0000 (GMT)
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C7AC5AE045;
- Tue, 15 Nov 2022 07:09:04 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 16A3EAE04D;
+ Tue, 15 Nov 2022 07:09:08 +0000 (GMT)
 Received: from tarunpc.in.ibm.com (unknown [9.199.157.25])
  by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Tue, 15 Nov 2022 07:09:04 +0000 (GMT)
+ Tue, 15 Nov 2022 07:09:07 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Tue, 15 Nov 2022 12:37:46 +0530
-Message-Id: <20221115070752.244461-2-tsahu@linux.ibm.com>
+Date: Tue, 15 Nov 2022 12:37:47 +0530
+Message-Id: <20221115070752.244461-3-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221115070752.244461-1-tsahu@linux.ibm.com>
 References: <20221115070752.244461-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 3W60w1YHDukkIn1HTYDUixheOn4NTjCX
-X-Proofpoint-GUID: 9LybJbedkrJUgs_KnL5Z4RkNJjRRlZDY
+X-Proofpoint-ORIG-GUID: jzaabhzAQQ35_smxDa3WXGrOzEdj2H05
+X-Proofpoint-GUID: hBn26O4t2j18MMmVL8h0gR6Gc-vHdjeH
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-15_02,2022-11-11_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  clxscore=1015
- lowpriorityscore=0 mlxlogscore=941 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
  spamscore=0 adultscore=0 bulkscore=0 suspectscore=0 impostorscore=0
  mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2210170000 definitions=main-2211150051
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/7] Hugetlb: Add new argument flags in
- tst_creat_unlinked
+Subject: [LTP] [PATCH v3 2/7] Hugetlb: Migrating libhugetlbfs counters
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,110 +110,514 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Some test requires custom flags along with O_CREAT|O_EXCL|O_RDWR.
-This patch creates support to pass custom flags in tst_creat_unlinked.
+Migrating the libhugetlbfs/testcases/counters.c test
+
+Test Description: This Test perform mmap and unmap and write operation on
+hugetlb file based mapping. Mapping can be shared or private. and it
+checks for Hugetlb counter (Total, Free, Reserve, Surplus) in /proc/meminfo
+and compare them with expected (calculated) value. if all checks are
+successful, the test passes.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
- include/tst_test.h                            |  2 +-
- lib/tst_test.c                                | 22 ++++++++++++++-----
- .../kernel/mem/hugetlb/hugemmap/hugemmap07.c  |  2 +-
- .../kernel/mem/hugetlb/hugemmap/hugemmap08.c  |  2 +-
- .../kernel/mem/hugetlb/hugemmap/hugemmap09.c  |  2 +-
- 5 files changed, 21 insertions(+), 9 deletions(-)
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap10.c  | 462 ++++++++++++++++++
+ 3 files changed, 464 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index acf2421de..a62515bfe 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -365,7 +365,7 @@ void tst_set_max_runtime(int max_runtime);
-  * Create and open a random file inside the given dir path.
-  * It unlinks the file after opening and return file descriptor.
-  */
--int tst_creat_unlinked(const char *path);
-+int tst_creat_unlinked(const char *path, int flags);
- 
- /*
-  * Returns path to the test temporary directory in a newly allocated buffer.
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index b225ba082..6adb4c3a4 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -1027,18 +1027,30 @@ static void prepare_and_mount_hugetlb_fs(void)
- 	mntpoint_mounted = 1;
- }
- 
--int tst_creat_unlinked(const char *path)
-+int tst_creat_unlinked(const char *path, int flags)
- {
- 	char template[PATH_MAX];
-+	int len, c, range;
- 	int fd;
-+	int start[3] = {'0', 'a', 'A'};
- 
- 	snprintf(template, PATH_MAX, "%s/ltp_%.3sXXXXXX",
- 			path, tid);
-+	len = strlen(template) - 1;
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index e2ada7a97..8a56d52a3 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -6,6 +6,7 @@ hugemmap06 hugemmap06
+ hugemmap07 hugemmap07
+ hugemmap08 hugemmap08
+ hugemmap09 hugemmap09
++hugemmap10 hugemmap10
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index 1a242ffe0..e7def68cb 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -7,6 +7,7 @@
+ /hugetlb/hugemmap/hugemmap07
+ /hugetlb/hugemmap/hugemmap08
+ /hugetlb/hugemmap/hugemmap09
++/hugetlb/hugemmap/hugemmap10
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
+new file mode 100644
+index 000000000..a77db660f
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap10.c
+@@ -0,0 +1,462 @@
++// SPDX-License-Identifier: LGPL-2.1-or-later
++/*
++ * Copyright (C) 2005-2007 IBM Corporation.
++ * Author: David Gibson & Adam Litke
++ */
 +
-+retry:
-+	srand(time(NULL));
-+	while (template[len] == 'X') {
-+		c = rand() % 3;
-+		range = start[c] == '0' ? 10 : 26;
-+		c = start[c] + (rand() % range);
-+		template[len--] = (char)c;
++/*\
++ * [Description]
++ *
++ * This Test perform mmap and unmap and write operation on hugetlb file
++ * based mapping. Mapping can be shared or private. and it checks for
++ * Hugetlb counter (Total, Free, Reserve, Surplus) in /proc/meminfo and
++ * compare them with expected (calculated) value. if all checks are
++ * successful, the test passes.
++ *
++ */
++
++#define _GNU_SOURCE
++#include <unistd.h>
++#include <stdio.h>
++#include <sys/mount.h>
++#include <limits.h>
++#include <sys/param.h>
++#include <sys/types.h>
++
++#include "hugetlb.h"
++
++#define MNTPOINT "hugetlbfs/"
++
++#define CHECK_(fun)	\
++		{			\
++		if (fun)	\
++			break;	\
 +	}
-+	if (access(template, F_OK) == 0)
-+		goto retry;
- 
--	fd = mkstemp(template);
--	if (fd < 0)
--		tst_brk(TBROK | TERRNO, "mkstemp(%s) failed", template);
--
-+	flags |= O_CREAT|O_EXCL|O_RDWR;
-+	fd = SAFE_OPEN(template, flags);
- 	SAFE_UNLINK(template);
- 	return fd;
- }
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
-index bd0fb440a..3122d5b9d 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c
-@@ -113,7 +113,7 @@ cleanup:
- static void setup(void)
- {
- 	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
--	huge_fd = tst_creat_unlinked(MNTPOINT);
-+	huge_fd = tst_creat_unlinked(MNTPOINT, 0);
- }
- 
- static void cleanup(void)
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
-index ce40e7b69..f66b331dc 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap08.c
-@@ -118,7 +118,7 @@ static void run_test(unsigned int test_type)
- static void setup(void)
- {
- 	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
--	huge_fd = tst_creat_unlinked(MNTPOINT);
-+	huge_fd = tst_creat_unlinked(MNTPOINT, 0);
- }
- 
- static void cleanup(void)
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
-index 1008395a4..ceb0f64a1 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap09.c
-@@ -60,7 +60,7 @@ static void run_test(void)
- static void setup(void)
- {
- 	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
--	huge_fd = tst_creat_unlinked(MNTPOINT);
-+	huge_fd = tst_creat_unlinked(MNTPOINT, 0);
- }
- 
- static void cleanup(void)
++
++static long hpage_size;
++static int private_resv;
++
++#define NR_SLOTS	2
++#define SL_SETUP	0
++#define SL_TEST		1
++static int map_fd[NR_SLOTS];
++static char *map_addr[NR_SLOTS];
++static unsigned long map_size[NR_SLOTS];
++static unsigned int touched[NR_SLOTS];
++
++static long prev_total;
++static long prev_free;
++static long prev_resv;
++static long prev_surp;
++
++static void read_meminfo_huge(long *total, long *free, long *resv, long *surp)
++{
++	*total = SAFE_READ_MEMINFO(MEMINFO_HPAGE_TOTAL);
++	*free = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	*resv = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	*surp = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SURP);
++}
++
++static int kernel_has_private_reservations(void)
++{
++	int fd;
++	long t, f, r, s;
++	long nt, nf, nr, ns;
++	void *map;
++
++	read_meminfo_huge(&t, &f, &r, &s);
++	fd = tst_creat_unlinked(MNTPOINT, 0);
++
++	map = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
++
++	read_meminfo_huge(&nt, &nf, &nr, &ns);
++
++	SAFE_MUNMAP(map, hpage_size);
++	SAFE_CLOSE(fd);
++
++	/*
++	 * There are only three valid cases:
++	 * 1) If a surplus page was allocated to create a reservation, all
++	 *    four pool counters increment
++	 * 2) All counters remain the same except for Hugepages_Rsvd, then
++	 *    a reservation was created using an existing pool page.
++	 * 3) All counters remain the same, indicates that no reservation has
++	 *    been created
++	 */
++	if ((nt == t + 1) && (nf == f + 1) && (ns == s + 1) && (nr == r + 1))
++		return 1;
++	else if ((nt == t) && (nf == f) && (ns == s)) {
++		if (nr == r + 1)
++			return 1;
++		else if (nr == r)
++			return 0;
++	}
++	tst_brk(TCONF, "bad counter state - "
++	      "T:%li F:%li R:%li S:%li -> T:%li F:%li R:%li S:%li",
++		  t, f, r, s, nt, nf, nr, ns);
++	return -1;
++}
++
++static int verify_counters(int line, char *desc, long et, long ef, long er, long es)
++{
++	long t, f, r, s;
++	long fail = 0;
++
++	read_meminfo_huge(&t, &f, &r, &s);
++
++	if (t != et) {
++		tst_res(TFAIL, "At Line %i:While %s: Bad "MEMINFO_HPAGE_TOTAL
++				" expected %li, actual %li", line, desc, et, t);
++		fail++;
++	}
++	if (f != ef) {
++		tst_res(TFAIL, "At Line %i:While %s: Bad "MEMINFO_HPAGE_FREE
++				" expected %li, actual %li", line, desc, ef, f);
++		fail++;
++	}
++	if (r != er) {
++		tst_res(TFAIL, "At Line %i:While %s: Bad "MEMINFO_HPAGE_RSVD
++				" expected %li, actual %li", line, desc, er, r);
++		fail++;
++	}
++	if (s != es) {
++		tst_res(TFAIL, "At Line %i:While %s: Bad "MEMINFO_HPAGE_SURP
++				" expected %li, actual %li", line, desc, es, s);
++		fail++;
++	}
++
++	if (fail)
++		return -1;
++
++	prev_total = t;
++	prev_free = f;
++	prev_resv = r;
++	prev_surp = s;
++	return 0;
++}
++
++/* Memory operations:
++ * Each of these has a predefined effect on the counters
++ */
++static int set_nr_hugepages_(long count, char *desc, int line)
++{
++	long min_size;
++	long et, ef, er, es;
++
++	SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%lu", count);
++
++	/* The code below is based on set_max_huge_pages in mm/hugetlb.c */
++	es = prev_surp;
++	et = prev_total;
++	ef = prev_free;
++	er = prev_resv;
++
++	/*
++	 * Increase the pool size
++	 * First take pages out of surplus state.  Then make up the
++	 * remaining difference by allocating fresh huge pages.
++	 */
++	while (es && count > et - es)
++		es--;
++	while (count > et - es) {
++		et++;
++		ef++;
++	}
++	if (count >= et - es)
++		goto out;
++
++	/*
++	 * Decrease the pool size
++	 * First return free pages to the buddy allocator (being careful
++	 * to keep enough around to satisfy reservations).  Then place
++	 * pages into surplus state as needed so the pool will shrink
++	 * to the desired size as pages become free.
++	 */
++	min_size = MAX(count, er + et - ef);
++	while (min_size < et - es) {
++		ef--;
++		et--;
++	}
++	while (count < et - es)
++		es++;
++
++out:
++	return verify_counters(line, desc, et, ef, er, es);
++}
++#define set_nr_hugepages(c, d) CHECK_(set_nr_hugepages_(c, d, __LINE__))
++
++static int map_(int s, int hpages, int flags, char *desc, int line)
++{
++	long et, ef, er, es;
++
++	map_fd[s] = tst_creat_unlinked(MNTPOINT, 0);
++	map_size[s] = hpages * hpage_size;
++	map_addr[s] = SAFE_MMAP(NULL, map_size[s], PROT_READ|PROT_WRITE, flags,
++				map_fd[s], 0);
++	touched[s] = 0;
++
++	et = prev_total;
++	ef = prev_free;
++	er = prev_resv;
++	es = prev_surp;
++	/*
++	 * When using MAP_SHARED, a reservation will be created to guarantee
++	 * pages to the process.  If not enough pages are available to
++	 * satisfy the reservation, surplus pages are added to the pool.
++	 * NOTE: This code assumes that the whole mapping needs to be
++	 * reserved and hence, will not work with partial reservations.
++	 *
++	 * If the kernel supports private reservations, then MAP_PRIVATE
++	 * mappings behave like MAP_SHARED at mmap time.  Otherwise,
++	 * no counter updates will occur.
++	 */
++	if ((flags & MAP_SHARED) || private_resv) {
++		unsigned long shortfall = 0;
++
++		if (hpages + prev_resv > prev_free)
++			shortfall = hpages - prev_free + prev_resv;
++		et += shortfall;
++		ef += shortfall;
++		er += hpages;
++		es += shortfall;
++	}
++
++	return verify_counters(line, desc, et, ef, er, es);
++}
++#define map(s, h, f, d) CHECK_(map_(s, h, f, d, __LINE__))
++
++static int unmap_(int s, int hpages, int flags, char *desc, int line)
++{
++	long et, ef, er, es;
++	unsigned long i;
++
++	SAFE_MUNMAP(map_addr[s], map_size[s]);
++	SAFE_CLOSE(map_fd[s]);
++	map_addr[s] = NULL;
++	map_size[s] = 0;
++
++	et = prev_total;
++	ef = prev_free;
++	er = prev_resv;
++	es = prev_surp;
++
++	/*
++	 * When a VMA is unmapped, the instantiated (touched) pages are
++	 * freed.  If the pool is in a surplus state, pages are freed to the
++	 * buddy allocator, otherwise they go back into the hugetlb pool.
++	 * NOTE: This code assumes touched pages have only one user.
++	 */
++	for (i = 0; i < touched[s]; i++) {
++		if (es) {
++			et--;
++			es--;
++		} else
++			ef++;
++	}
++
++	/*
++	 * mmap may have created some surplus pages to accommodate a
++	 * reservation.  If those pages were not touched, then they will
++	 * not have been freed by the code above.  Free them here.
++	 */
++	if ((flags & MAP_SHARED) || private_resv) {
++		int unused_surplus = MIN(hpages - touched[s], es);
++
++		et -= unused_surplus;
++		ef -= unused_surplus;
++		er -= hpages - touched[s];
++		es -= unused_surplus;
++	}
++
++	return verify_counters(line, desc, et, ef, er, es);
++}
++#define unmap(s, h, f, d) CHECK_(unmap_(s, h, f, d, __LINE__))
++
++static int touch_(int s, int hpages, int flags, char *desc, int line)
++{
++	long et, ef, er, es;
++	int nr;
++	char *c;
++
++	for (c = map_addr[s], nr = hpages;
++			hpages && c < map_addr[s] + map_size[s];
++			c += hpage_size, nr--)
++		*c = (char) (nr % 2);
++	/*
++	 * Keep track of how many pages were touched since we can't easily
++	 * detect that from user space.
++	 * NOTE: Calling this function more than once for a mmap may yield
++	 * results you don't expect.  Be careful :)
++	 */
++	touched[s] = MAX(touched[s], hpages);
++
++	/*
++	 * Shared (and private when supported) mappings and consume resv pages
++	 * that were previously allocated. Also deduct them from the free count.
++	 *
++	 * Unreserved private mappings may need to allocate surplus pages to
++	 * satisfy the fault.  The surplus pages become part of the pool
++	 * which could elevate total, free, and surplus counts.  resv is
++	 * unchanged but free must be decreased.
++	 */
++	if (flags & MAP_SHARED || private_resv) {
++		et = prev_total;
++		ef = prev_free - hpages;
++		er = prev_resv - hpages;
++		es = prev_surp;
++	} else {
++		if (hpages + prev_resv > prev_free)
++			et = prev_total + (hpages - prev_free + prev_resv);
++		else
++			et = prev_total;
++		er = prev_resv;
++		es = prev_surp + et - prev_total;
++		ef = prev_free - hpages + et - prev_total;
++	}
++	return verify_counters(line, desc, et, ef, er, es);
++}
++#define touch(s, h, f, d) CHECK_(touch_(s, h, f, d, __LINE__))
++
++static int test_counters_(char *desc, int base_nr)
++{
++	int fail = 1;
++
++	tst_res(TINFO, "%s...", desc);
++
++	do {
++		set_nr_hugepages(base_nr, "initializing hugepages pool");
++
++		/* untouched, shared mmap */
++		map(SL_TEST, 1, MAP_SHARED, "doing mmap shared with no touch");
++		unmap(SL_TEST, 1, MAP_SHARED, "doing munmap on shared with no touch");
++
++		/* untouched, private mmap */
++		map(SL_TEST, 1, MAP_PRIVATE, "doing mmap private with no touch");
++		unmap(SL_TEST, 1, MAP_PRIVATE, "doing munmap private with on touch");
++
++		/* touched, shared mmap */
++		map(SL_TEST, 1, MAP_SHARED, "doing mmap shared followed by touch");
++		touch(SL_TEST, 1, MAP_SHARED, "touching the addr after mmap shared");
++		unmap(SL_TEST, 1, MAP_SHARED, "doing munmap shared after touch");
++
++		/* touched, private mmap */
++		map(SL_TEST, 1, MAP_PRIVATE, "doing mmap private followed by touch");
++		touch(SL_TEST, 1, MAP_PRIVATE, "touching the addr after mmap private");
++		unmap(SL_TEST, 1, MAP_PRIVATE, "doing munmap private after touch");
++
++		/* Explicit resizing during outstanding surplus */
++		/* Consume surplus when growing pool */
++		map(SL_TEST, 2, MAP_SHARED, "doing mmap to consume surplus");
++		set_nr_hugepages(MAX(base_nr, 1), "setting hugepages pool to consume surplus");
++
++		/* Add pages once surplus is consumed */
++		set_nr_hugepages(MAX(base_nr, 3), "Adding more pages after consuming surplus");
++
++		/* Release free huge pages first */
++		set_nr_hugepages(MAX(base_nr, 2), "Releasing free huge pages");
++
++		/* When shrinking beyond committed level, increase surplus */
++		set_nr_hugepages(base_nr, "increasing surplus counts");
++
++		/* Upon releasing the reservation, reduce surplus counts */
++		unmap(SL_TEST, 2, MAP_SHARED, "reducing surplus counts");
++		fail = 0;
++	} while (0);
++
++	if (fail)
++		return -1;
++	tst_res(TINFO, "OK");
++	return 0;
++}
++
++#define test_counters(a, b) CHECK_(test_counters_(a, b))
++
++static void per_iteration_cleanup(void)
++{
++	int nr;
++
++	prev_total = 0;
++	prev_free = 0;
++	prev_resv = 0;
++	prev_surp = 0;
++	for (nr = 0; nr < NR_SLOTS; nr++) {
++		if (map_addr[nr])
++			SAFE_MUNMAP(map_addr[nr], map_size[nr]);
++		if (map_fd[nr] > 0)
++			SAFE_CLOSE(map_fd[nr]);
++	}
++}
++
++static void run_test(void)
++{
++	int base_nr;
++
++	for (base_nr = 0; base_nr <= 3; base_nr++) {
++		tst_res(TINFO, "Base pool size: %i", base_nr);
++		/* Run the tests with a clean slate */
++		test_counters("Clean", base_nr);
++
++		/* Now with a pre-existing untouched, shared mmap */
++		map(SL_SETUP, 1, MAP_SHARED,
++				"doing mmap for running pre-existing untouched shared mapping test");
++		test_counters("Untouched, shared", base_nr);
++		unmap(SL_SETUP, 1, MAP_SHARED,
++				"doing munmap after running pre-existing untouched shared mapping test");
++
++		/* Now with a pre-existing untouched, private mmap */
++		map(SL_SETUP, 1, MAP_PRIVATE,
++				"doing mmap for running pre-existing untouched private mapping test");
++		test_counters("Untouched, private", base_nr);
++		unmap(SL_SETUP, 1, MAP_PRIVATE,
++				"doing munmap after running pre-existing untouced private mapping test");
++
++		/* Now with a pre-existing touched, shared mmap */
++		map(SL_SETUP, 1, MAP_SHARED,
++				"doing mmap for running pre-existing touched shared mapping test");
++		touch(SL_SETUP, 1, MAP_SHARED,
++				"touching for running pre-existing touched shared mapping test");
++		test_counters("Touched, shared", base_nr);
++		unmap(SL_SETUP, 1, MAP_SHARED,
++				"doing munmap after running pre-existing touched shared mapping test");
++
++		/* Now with a pre-existing touched, private mmap */
++		map(SL_SETUP, 1, MAP_PRIVATE,
++				"doing mmap for running pre-existing touched private mapping test");
++		touch(SL_SETUP, 1, MAP_PRIVATE,
++				"touching for running pre-existing touched private mapping test");
++		test_counters("Touched, private", base_nr);
++		unmap(SL_SETUP, 1, MAP_PRIVATE,
++				"doing munmap after running pre-existing touched private mapping test");
++	}
++	if (base_nr > 3)
++		tst_res(TPASS, "Hugepages Counters works as expected.");
++	per_iteration_cleanup();
++}
++
++static void setup(void)
++{
++	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
++	SAFE_FILE_PRINTF(PATH_OC_HPAGES, "%lu", tst_hugepages);
++	private_resv = kernel_has_private_reservations();
++}
++
++static void cleanup(void)
++{
++	per_iteration_cleanup();
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.save_restore = (const struct tst_path_val[]) {
++		{PATH_OC_HPAGES, NULL},
++		{PATH_NR_HPAGES, NULL},
++		{}
++	},
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.hugepages = {3, TST_NEEDS},
++};
++
 -- 
 2.31.1
 
