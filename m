@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7678AC433FE
-	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 11:12:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5019C4332F
+	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 11:24:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD7323CD14B
-	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 12:12:15 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 910133CD165
+	for <ltp@archiver.kernel.org>; Tue, 15 Nov 2022 12:24:08 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E87E83CD123
- for <ltp@lists.linux.it>; Tue, 15 Nov 2022 12:12:05 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 996203CD12D
+ for <ltp@lists.linux.it>; Tue, 15 Nov 2022 12:23:58 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 55695100092C
- for <ltp@lists.linux.it>; Tue, 15 Nov 2022 12:12:05 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 7268C1F8B5;
- Tue, 15 Nov 2022 11:12:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668510724;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=WBvGpcLh+m36di/Rq6bKDyrZWsyC66vR4zNwliID+yg=;
- b=RypB5dZoXdmbmtbmFufNkqtM/o647izdCSpkAPof6+XOWzxvZDohoD5bGkVrNdu4eusgj0
- 5J3VSglVA5aSpB3nXZQj/bYqIAz8WA/fowe9qYz1a2u7r18/Y9MCxJi1T4dLxpnTe81yg0
- JpK6/8UOge23ErtDDDUMeXYhiSiV9NY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668510724;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=WBvGpcLh+m36di/Rq6bKDyrZWsyC66vR4zNwliID+yg=;
- b=woH/meMHM0K9s9r3lGBpTlT2UTreteoFKK65Qt9lsnLqvkisHP7En76Cp4mj2NNp/WLpjx
- FIjv3EClvsxLaRBg==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1A4F41000772
+ for <ltp@lists.linux.it>; Tue, 15 Nov 2022 12:23:57 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 321082C142;
- Tue, 15 Nov 2022 11:12:04 +0000 (UTC)
-References: <20221112040107.3953862-1-liwang@redhat.com>
- <87pmdpsfdv.fsf@suse.de>
- <CAEemH2fJJ8Fv0=OMjdh3d8QaEdr1ivLUuHs_8=D6qV6-YZhbwQ@mail.gmail.com>
- <87h6z0sh8o.fsf@suse.de>
- <CAEemH2c-90baLEbom4yF8oVjh9n7O4uKkXS5SBmx2rSBRsZBBQ@mail.gmail.com>
- <CAEemH2d=65BMhY4RFXHS1d5dkbq7v2QDskfE_5b_WnttDXT+Fg@mail.gmail.com>
-User-agent: mu4e 1.8.11; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Li Wang <liwang@redhat.com>
-Date: Tue, 15 Nov 2022 11:04:36 +0000
-Organization: Linux Private Site
-In-reply-to: <CAEemH2d=65BMhY4RFXHS1d5dkbq7v2QDskfE_5b_WnttDXT+Fg@mail.gmail.com>
-Message-ID: <87zgcsqxoc.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D4FEA1F8B5;
+ Tue, 15 Nov 2022 11:23:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1668511436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AJJWB5TfbaHr8O/DQtGmSCYC1bzO5zhGzZG3HIkTWGg=;
+ b=QaBSPz9ErunFM9arYChioRUuBhh91BwOeP8ScFzYupz4o31JmNylhtoVKNsTl/cwVcKLuM
+ +ChqpKtlZIJEte05RfZ/Dr4WgWHsmHlf58C349V2kdeTCLcimjlPOKVPenZL03VoysePIm
+ pTFBFOR35PQfOUeI6xWbtzHOe5qLeCs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1668511436;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=AJJWB5TfbaHr8O/DQtGmSCYC1bzO5zhGzZG3HIkTWGg=;
+ b=PjrQ/WskB7h30UrqZY7ztOrtcP0aknnniTZruPKtfIFlBKOg/g+TleYydPOuOoqYyVDF5H
+ DyeRV0b0TsHxhqDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C297013A91;
+ Tue, 15 Nov 2022 11:23:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Uqp0Lsx2c2NoHAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 15 Nov 2022 11:23:56 +0000
+Date: Tue, 15 Nov 2022 12:25:20 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Federico Bonfiglio <federico.bonfiglio@protonmail.ch>
+Message-ID: <Y3N3ICYP+g2Tf6bd@yuki>
+References: <20221114225616.54212-1-federico.bonfiglio@protonmail.ch>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221114225616.54212-1-federico.bonfiglio@protonmail.ch>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] setitimer01: add interval timer test
+Subject: Re: [LTP] [PATCH v2] sched_setscheduler: test SCHED_RESET_ON_FORK
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,89 +74,120 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: Andrea Cervesato <acervesato@suse.de>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi!
+> +/*
+> + * [Description]
+> + *
+> + * Testcases that test if sched_setscheduler with flag
+> + * SCHED_RESET_ON_FORK restores children policy to
+> + * SCHED_NORMAL.
+> + *
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sched.h>
+> +#include <linux/sched.h>
+> +
+> +#include "tst_test.h"
+> +#include "tst_sched.h"
+> +
+> +struct test_c
+> ase_t {
+ ^
+ Looks like the patch was mangled by your email client.
 
-Li Wang <liwang@redhat.com> writes:
+> +	int policy;
+> +	char *desc;
+> +};
+> +
+> +static struct test_case_t cases[] = {
+> +	{
+> +		.policy = SCHED_FIFO,
+> +		.desc = "SCHED_FIFO"
+> +	},
+> +	{
+> +		.policy = SCHED_RR,
+> +		.desc = "SCHED_RR"
+> +	}
+> +};
+> +
+> +static void test_reset_on_fork(unsigned int i)
+> +{
+> +	struct sched_variant *tv = &sched_variants[tst_variant];
+> +	struct test_case_t *tc = &cases[i];
+> +
+> +	tst_res(TINFO, "Testing %s variant", tv->desc);
+> +	tst_res(TINFO, "Testing %s policy", tc->desc);
 
-> On Tue, Nov 15, 2022 at 6:00 PM Li Wang <liwang@redhat.com> wrote:
->
->  Richard Palethorpe <rpalethorpe@suse.de> wrote:
->   
->  >  
->  >  Practically speaking we have to assume a large amount of time has passed
->  >  when using ITIMER_REAL. It has to be *much* larger than a VM is likely
->  >  to be paused for and then successfully resumed. Or the amount of time a
->  >  clock may be corrected by (for e.g. with NTP).
->  >
->  > Hmm, not sure if I understand correctly above, will that
->  > timer value be out of the range but reasonable?
->  >
->  > Or is there any additional situation we should cover?
->
->  Sorry that is confusing.
->
->  The question is what happens if the clock jumps backwards?
->
->  I don't see anything which says it_value.tv_sec can't go out of
->  range. OTOH I would expect it to compensate for large jumps in time.
->
->  If the test randomly fails because it_value.tv_sec > time_sec then what
->  action will we take?
->
-> Or, we do nothing on this, just let the test report TFAIL, because that
-> is not what this test can control.
->
->  
->  
->  How about increasing the time_sec on virtual machine?
+Why two messages? Why not just:
 
-It could happen on bare metal as well.
+tst_res(TINFO, "Testing %s variant %s policy", tv->desc, tc->desc);
 
->
->  Seems no perfect way to completely resolve but only reducing
->  the odds of happening. 
->
->  Or do you have another better suggestion?
+> +	struct sched_param param = { .sched_priority = 1 };
+> +
+> +	tv->sched_setscheduler(getpid(), tc->policy | SCHED_RESET_ON_FORK, &param);
+> +
+> +	pid_t pid = SAFE_FORK();
+> +
+> +	if (!pid == 0) {
+            ^
+	    Uff, please don't.
 
-TBH I don't know if it will happen. An acceptable outcome for me is to
-print the time at the beginning and end of the test. Then if the test
-fails we can see if it was due to a time jump and start investigating
-what the kernel is supposed to do in this case.
+That's just if (pid)
 
-The alternative is to find out now what the kernel should do. We could
-also write a test which deliberately changes the system time during an
-interval. Depending how motivated you are.
 
->
->  --- a/testcases/kernel/syscalls/setitimer/setitimer01.c
->  +++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
->  @@ -142,6 +142,11 @@ static void setup(void)
->   
->          time_sec  = 9 + time_step / 1000;
->          time_usec = 3 * time_step;
->  +
->  +       if (tst_is_virt(VIRT_ANY)) {
->  +               tst_res(TINFO, "Running in a VM, multiply the time_sec by 10.");
->  +               time_sec *= 10;
->  +       }
->   }
->
->   
->  -- 
->  Regards,
->  Li Wang
+> +		if (sched_getscheduler(pid) == SCHED_NORMAL)
+> +			tst_res(TPASS, "Policy reset to SCHED_NORMAL");
+> +		else
+> +			tst_res(TFAIL, "Policy NOT reset to SCHED_NORMAL");
+
+
+We should check that the priority was reset to DEFAULT_PRIO as well.
+
+> +	}
+> +
+> +	tst_reap_children();
+
+There is no need to call this as long as the child exits normally the
+test library will pick it up.
+
+> +}
+> +
+> +static struct tst_test test = {
+> +	.forks_child = 1,
+> +	.caps = (struct tst_cap[]) {
+> +	    TST_CAP(TST_CAP_REQ, CAP_SYS_NICE)
+> 
+> +	},
+> +	.test_variants = ARRAY_SIZE(sched_variants),
+> +	.tcnt = ARRAY_SIZE(cases),
+> +	.test = test_reset_on_fork
+> +};
+> +
+> --
+> 2.38.1
+> 
+
+
+
+
+
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
