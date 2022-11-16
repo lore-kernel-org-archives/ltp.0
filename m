@@ -4,81 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB023C433FE
-	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 10:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BE42C4332F
+	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 10:58:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E516A3CD046
-	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 11:25:38 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 244873CD046
+	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 11:58:28 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 86D533CAFBA
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 11:25:28 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A94FF3CD025
+ for <ltp@lists.linux.it>; Wed, 16 Nov 2022 11:58:18 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7E4D310000CA
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 11:25:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1668594325;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A07CE1400DBC
+ for <ltp@lists.linux.it>; Wed, 16 Nov 2022 11:58:16 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6D825336F0;
+ Wed, 16 Nov 2022 10:58:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1668596295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BmgqUFtCJcXn3Zf65OINjp5WfOfdETfykEEArEDi/HY=;
- b=VM6GVFIhCLSpQpMeDgXf23E4DWeNY99YsA2bXhb+Br1mRWlB13MwOoiUV2RW0NNgRCoOXf
- OGZAZholY+XA1CQ9VjvOZ6qFZSU8ZGy9xqbWgt4nnwruG191P2g2T77qpOXjAvSVA1ZwZq
- HURXEcQEt7iyiyJe9sN37MAE59nFmdU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-458-I2Ce4U1wPx6rZvxe2eLorg-1; Wed, 16 Nov 2022 05:25:24 -0500
-X-MC-Unique: I2Ce4U1wPx6rZvxe2eLorg-1
-Received: by mail-wr1-f69.google.com with SMTP id
- c18-20020adfa312000000b002364fabf2ceso3516040wrb.2
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 02:25:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=BmgqUFtCJcXn3Zf65OINjp5WfOfdETfykEEArEDi/HY=;
- b=LSCcYRvNUrfG/HSHL/SefkYVA+pbD+OFF+TmC1MAekQwNi9M5apt9n5J76eD8wJjp5
- PnLf+lErcb1Sb47Dx55/Z0laqBf6j6z1HagTnVBOGAEsswjvXvdNcm296lpBGeMlf/LV
- Dvq5evUnkXLCASCmAakIo+tIoDIy3iPUp6EnK0Xxq+ZpHFCz9Kl4Xa2Ud0AcNJE8+UsY
- 0+FbxdSkjKFLCSGs5jk9T4u7krtF5KIAgDyEMR97xfI6DzpYEO5m+Z4D6U1iQ9rv/wRc
- 3qKoUTPSphpHluRr8DIHiskbTCIDNSOwRydwv3kw1TWgCrZLMO6VE2AfD102ietaWLKb
- zi9w==
-X-Gm-Message-State: ANoB5pkvxMdtp04ZxDOlKLCbqK0NGLtV6I8DcWee4/wWcCDEMvDRsoEx
- Dagp7+iHwsOirsk7DBx/XtjWsNiHfy/Y52pEowLyzb5SgcPwR5BOTvOTN9sucKhMPyt8Mw8zN1h
- 7UUYLy5QWKGgnHHeiGhTKGpNzNPk=
-X-Received: by 2002:a05:600c:4a2a:b0:3b4:c00d:2329 with SMTP id
- c42-20020a05600c4a2a00b003b4c00d2329mr1607668wmp.124.1668594322765; 
- Wed, 16 Nov 2022 02:25:22 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6sz7+VbhhwcPBV58rBqFe1Sjlnxs/UQZniSoo7Eh8KFgMHHube/rx4kGbCpshUuRVYlTC0xurq2vX+av8oWPU=
-X-Received: by 2002:a05:600c:4a2a:b0:3b4:c00d:2329 with SMTP id
- c42-20020a05600c4a2a00b003b4c00d2329mr1607653wmp.124.1668594322510; Wed, 16
- Nov 2022 02:25:22 -0800 (PST)
+ bh=H/5a54KDrDw4h1HGsmAwy2pCa9sEir5FMYLPEAc8GLM=;
+ b=ZeRJ2jnIjZ7bUBn4W1KphcA8GIR1lvYVvB+tktfc2E718aBXBNAAJtF6yA8Ux/8WIA8uBE
+ TJVBMT3VDdv+GDVR/WRNiRmzonlS8BjSGdpOY7SkUxkLxB1SDJtWPlI6l1chbu2YdNTa7Q
+ QiEjWH/snQ1+8BwLZtWlJ2Mq6pDLviA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1668596295;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=H/5a54KDrDw4h1HGsmAwy2pCa9sEir5FMYLPEAc8GLM=;
+ b=c8ijRBpJdEMCMDxfV9xAWppp4HQb2I0zTys3W40klO7rZgdmradZFBFqARvMf4Ompo09OG
+ X3eGzkBJEoQJBDCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5FBD013480;
+ Wed, 16 Nov 2022 10:58:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ++FdF0fCdGN0XwAAMHmgww
+ (envelope-from <jack@suse.cz>); Wed, 16 Nov 2022 10:58:15 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id EE8C1A0709; Wed, 16 Nov 2022 11:58:14 +0100 (CET)
+Date: Wed, 16 Nov 2022 11:58:14 +0100
+From: Jan Kara <jack@suse.cz>
+To: Pengfei Xu <pengfei.xu@intel.com>
+Message-ID: <20221116105814.ozfankn5qkizj2zr@quack3>
+References: <20221115123721.12176-1-jack@suse.cz>
+ <20221115124741.14400-3-jack@suse.cz>
+ <Y3RIKsBUx+KiH4lD@xpf.sh.intel.com>
 MIME-Version: 1.0
-References: <20221112040107.3953862-1-liwang@redhat.com>
- <87pmdpsfdv.fsf@suse.de>
- <CAEemH2fJJ8Fv0=OMjdh3d8QaEdr1ivLUuHs_8=D6qV6-YZhbwQ@mail.gmail.com>
- <87h6z0sh8o.fsf@suse.de>
- <CAEemH2c-90baLEbom4yF8oVjh9n7O4uKkXS5SBmx2rSBRsZBBQ@mail.gmail.com>
- <CAEemH2d=65BMhY4RFXHS1d5dkbq7v2QDskfE_5b_WnttDXT+Fg@mail.gmail.com>
- <87zgcsqxoc.fsf@suse.de>
-In-Reply-To: <87zgcsqxoc.fsf@suse.de>
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 16 Nov 2022 18:25:10 +0800
-Message-ID: <CAEemH2fqN-haZ64xgANqihHD9pEfM=oe3e+QGT6Uf9HFHDohSw@mail.gmail.com>
-To: rpalethorpe@suse.de
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Y3RIKsBUx+KiH4lD@xpf.sh.intel.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] setitimer01: add interval timer test
+Subject: Re: [LTP] [PATCH 3/3] fanotify10: Make evictable marks tests more
+ reliable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,266 +79,192 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Andrea Cervesato <acervesato@suse.de>, ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============0064538402=="
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0064538402==
-Content-Type: multipart/alternative; boundary="000000000000de310105ed93e394"
+On Wed 16-11-22 10:17:14, Pengfei Xu wrote:
+> Hi Jan Kara,
+> 
+> On 2022-11-15 at 13:47:38 +0100, Jan Kara wrote:
+> > Tests verifying that evictable inode marks don't pin inodes in memory
+> > are unreliable because slab shrinking (triggered by drop_caches) does
+> > not reliably evict inodes - dentries have to take round through the LRU
+> > list and only then get reclaimed and inodes get unpinned and then inodes
+> > have to be rotated through their LRU list to get reclaimed. If there are
+> > not enough freed entries while shrinking other slab caches, drop_caches
+> > will abort attempts to reclaim slab before inodes get evicted.
+> > 
+> > Tweak evictable marks tests to use more files and marks in parallel and
+> > just verify that some (at least half) of the marks got evicted. This
+> > should be more tolerant to random fluctuation in slab reclaim
+> > efficiency.
+> > 
+> If possible, could you add the Tested-by tag:
+> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 
---000000000000de310105ed93e394
-Content-Type: text/plain; charset="UTF-8"
+Sure, will do. I'll just wait whether there will be some other review
+comments.
 
-On Tue, Nov 15, 2022 at 7:12 PM Richard Palethorpe <rpalethorpe@suse.de>
-wrote:
+								Honza
 
-> Hello,
->
-> Li Wang <liwang@redhat.com> writes:
->
-> > On Tue, Nov 15, 2022 at 6:00 PM Li Wang <liwang@redhat.com> wrote:
-> >
-> >  Richard Palethorpe <rpalethorpe@suse.de> wrote:
-> >
-> >  >
-> >  >  Practically speaking we have to assume a large amount of time has
-> passed
-> >  >  when using ITIMER_REAL. It has to be *much* larger than a VM is
-> likely
-> >  >  to be paused for and then successfully resumed. Or the amount of
-> time a
-> >  >  clock may be corrected by (for e.g. with NTP).
-> >  >
-> >  > Hmm, not sure if I understand correctly above, will that
-> >  > timer value be out of the range but reasonable?
-> >  >
-> >  > Or is there any additional situation we should cover?
-> >
-> >  Sorry that is confusing.
-> >
-> >  The question is what happens if the clock jumps backwards?
->
-
-
-I did some research on the work theory of setitimer() for modern
-kernels, it seems that situation won't happen, because the kernel
-uses a relative mode for the timer countdown. IOW, once the system
-wall clock getting changed, the timer for the process will update its
-timer relatively.
-
-To verify this I adjust the wall-clock with adding whatever 10 sec or
-24 hour, it all works well and get expected signal:
-
---- a/testcases/kernel/syscalls/setitimer/setitimer01.c
-+++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
-@@ -21,6 +21,7 @@
- #include "lapi/syscalls.h"
- #include "tst_safe_clocks.h"
-
-+static struct timespec now;
- static struct itimerval *value, *ovalue;
- static volatile unsigned long sigcnt;
- static long time_step;
-@@ -33,8 +34,8 @@ static struct tcase {
-        int signo;
- } tcases[] = {
-        {ITIMER_REAL,    "ITIMER_REAL",    SIGALRM},
--       {ITIMER_VIRTUAL, "ITIMER_VIRTUAL", SIGVTALRM},
--       {ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
-+//     {ITIMER_VIRTUAL, "ITIMER_VIRTUAL", SIGVTALRM},
-+//     {ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
- };
-
- static int sys_setitimer(int which, void *new_value, void *old_value)
-@@ -72,6 +73,10 @@ static void verify_setitimer(unsigned int i)
-                set_setitimer_value(time_sec, time_usec);
-                TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
-
-+               now.tv_sec += 20; // 86400s == 24h
-+               SAFE_CLOCK_SETTIME(CLOCK_REALTIME, &now);
-+               tst_res(TINFO, "debug only: add 20 secs to now.tv_sec
-%ld\n", now.tv_sec);
-+
-                set_setitimer_value(5 * time_sec, 7 * time_usec);
-                TST_EXP_PASS(sys_setitimer(tc->which, value, ovalue));
-
-@@ -120,6 +125,9 @@ static void verify_setitimer(unsigned int i)
-                tst_res(TPASS, "Child received signal: %s",
-tst_strsig(tc->signo));
-        else
-                tst_res(TFAIL, "Child: %s", tst_strstatus(status));
-+
-+       SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &now);
-+       tst_res(TINFO, "debug only: now.tv_sec is %ld\n", now.tv_sec);
- }
-
- static void setup(void)
-@@ -142,6 +150,9 @@ static void setup(void)
-
-        time_sec  = 9 + time_step / 1000;
-        time_usec = 3 * time_step;
-+
-+       SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &now);
-+       tst_res(TINFO, "debug only: now.tv_sec is %ld\n", now.tv_sec);
- }
-
- static struct tst_test test = {
-
-
->  Or do you have another better suggestion?
->
-> TBH I don't know if it will happen. An acceptable outcome for me is to
-> print the time at the beginning and end of the test. Then if the test
-> fails we can see if it was due to a time jump and start investigating
-> what the kernel is supposed to do in this case.
->
-
-But I think this print is still necessary, in case that some older kernels
-do not use the relative mode for timer. I'll add this and send patch v2.
-
-
-> The alternative is to find out now what the kernel should do. We could
-> also write a test which deliberately changes the system time during an
-> interval. Depending how motivated you are.
->
-
-Thanks!
-
-
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  .../kernel/syscalls/fanotify/fanotify10.c     | 62 ++++++++++++++++---
+> >  1 file changed, 52 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> > index e19bd907470f..cfbf4c31dd08 100644
+> > --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
+> > +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
+> > @@ -86,7 +86,10 @@ static int ignore_mark_unsupported;
+> >  #define TEST_APP "fanotify_child"
+> >  #define TEST_APP2 "fanotify_child2"
+> >  #define DIR_PATH MOUNT_PATH"/"DIR_NAME
+> > +#define DIR_PATH_MULTI DIR_PATH"%d"
+> >  #define FILE_PATH DIR_PATH"/"FILE_NAME
+> > +#define FILE_PATH_MULTI FILE_PATH"%d"
+> > +#define FILE_PATH_MULTIDIR DIR_PATH_MULTI"/"FILE_NAME
+> >  #define FILE2_PATH DIR_PATH"/"FILE2_NAME
+> >  #define SUBDIR_PATH DIR_PATH"/"SUBDIR_NAME
+> >  #define FILE_EXEC_PATH MOUNT_PATH"/"TEST_APP
+> > @@ -104,6 +107,7 @@ static int old_cache_pressure;
+> >  static pid_t child_pid;
+> >  static int bind_mount_created;
+> >  static unsigned int num_classes = NUM_CLASSES;
+> > +static int max_file_multi;
+> >  
+> >  enum {
+> >  	FANOTIFY_INODE,
+> > @@ -378,9 +382,11 @@ static struct tcase {
+> >  		.tname = "don't ignore mount events created on file with evicted ignore mark",
+> >  		.mark_path_fmt = MOUNT_PATH,
+> >  		.mark_type = FANOTIFY_MOUNT,
+> > -		.ignore_path_fmt = FILE_PATH,
+> > +		.ignore_path_cnt = 16,
+> > +		.ignore_path_fmt = FILE_PATH_MULTI,
+> >  		.ignore_mark_type = FANOTIFY_EVICTABLE,
+> > -		.event_path_fmt = FILE_PATH,
+> > +		.event_path_cnt = 16,
+> > +		.event_path_fmt = FILE_PATH_MULTI,
+> >  		.expected_mask_with_ignore = FAN_OPEN,
+> >  		.expected_mask_without_ignore = FAN_OPEN
+> >  	},
+> > @@ -388,9 +394,11 @@ static struct tcase {
+> >  		.tname = "don't ignore fs events created on a file with evicted ignore mark",
+> >  		.mark_path_fmt = MOUNT_PATH,
+> >  		.mark_type = FANOTIFY_FILESYSTEM,
+> > -		.ignore_path_fmt = FILE_PATH,
+> > +		.ignore_path_cnt = 16,
+> > +		.ignore_path_fmt = FILE_PATH_MULTI,
+> >  		.ignore_mark_type = FANOTIFY_EVICTABLE,
+> > -		.event_path_fmt = FILE_PATH,
+> > +		.event_path_cnt = 16,
+> > +		.event_path_fmt = FILE_PATH_MULTI,
+> >  		.expected_mask_with_ignore = FAN_OPEN,
+> >  		.expected_mask_without_ignore = FAN_OPEN
+> >  	},
+> > @@ -398,10 +406,12 @@ static struct tcase {
+> >  		.tname = "don't ignore mount events created inside a parent with evicted ignore mark",
+> >  		.mark_path_fmt = MOUNT_PATH,
+> >  		.mark_type = FANOTIFY_MOUNT,
+> > -		.ignore_path_fmt = DIR_PATH,
+> > +		.ignore_path_cnt = 16,
+> > +		.ignore_path_fmt = DIR_PATH_MULTI,
+> >  		.ignore_mark_type = FANOTIFY_EVICTABLE,
+> >  		.ignored_flags = FAN_EVENT_ON_CHILD,
+> > -		.event_path_fmt = FILE_PATH,
+> > +		.event_path_cnt = 16,
+> > +		.event_path_fmt = FILE_PATH_MULTIDIR,
+> >  		.expected_mask_with_ignore = FAN_OPEN,
+> >  		.expected_mask_without_ignore = FAN_OPEN
+> >  	},
+> > @@ -409,10 +419,12 @@ static struct tcase {
+> >  		.tname = "don't ignore fs events created inside a parent with evicted ignore mark",
+> >  		.mark_path_fmt = MOUNT_PATH,
+> >  		.mark_type = FANOTIFY_FILESYSTEM,
+> > -		.ignore_path_fmt = DIR_PATH,
+> > +		.ignore_path_cnt = 16,
+> > +		.ignore_path_fmt = DIR_PATH_MULTI,
+> >  		.ignore_mark_type = FANOTIFY_EVICTABLE,
+> >  		.ignored_flags = FAN_EVENT_ON_CHILD,
+> > -		.event_path_fmt = FILE_PATH,
+> > +		.event_path_cnt = 16,
+> > +		.event_path_fmt = FILE_PATH_MULTIDIR,
+> >  		.expected_mask_with_ignore = FAN_OPEN,
+> >  		.expected_mask_without_ignore = FAN_OPEN
+> >  	},
+> > @@ -864,6 +876,8 @@ cleanup:
+> >  
+> >  static void setup(void)
+> >  {
+> > +	int i;
+> > +
+> >  	exec_events_unsupported = fanotify_events_supported_by_kernel(FAN_OPEN_EXEC,
+> >  								      FAN_CLASS_CONTENT, 0);
+> >  	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
+> > @@ -880,7 +894,24 @@ static void setup(void)
+> >  	SAFE_MKDIR(DIR_PATH, 0755);
+> >  	SAFE_MKDIR(SUBDIR_PATH, 0755);
+> >  	SAFE_FILE_PRINTF(FILE_PATH, "1");
+> > -	SAFE_FILE_PRINTF(FILE2_PATH, "1");
+> > +	for (i = 0; i < (int)(sizeof(tcases)/sizeof(tcases[0])); i++) {
+> > +		if (tcases[i].mark_path_cnt > max_file_multi)
+> > +			max_file_multi = tcases[i].mark_path_cnt;
+> > +		if (tcases[i].ignore_path_cnt > max_file_multi)
+> > +			max_file_multi = tcases[i].ignore_path_cnt;
+> > +		if (tcases[i].event_path_cnt > max_file_multi)
+> > +			max_file_multi = tcases[i].event_path_cnt;
+> > +	}
+> > +	for (i = 0; i < max_file_multi; i++) {
+> > +		char path[PATH_MAX];
+> > +
+> > +		sprintf(path, FILE_PATH_MULTI, i);
+> > +		SAFE_FILE_PRINTF(path, "1");
+> > +		sprintf(path, DIR_PATH_MULTI, i);
+> > +		SAFE_MKDIR(path, 0755);
+> > +		sprintf(path, FILE_PATH_MULTIDIR, i);
+> > +		SAFE_FILE_PRINTF(path, "1");
+> > +	}
+> >  
+> >  	SAFE_CP(TEST_APP, FILE_EXEC_PATH);
+> >  	SAFE_CP(TEST_APP, FILE2_EXEC_PATH);
+> > @@ -896,6 +927,8 @@ static void setup(void)
+> >  
+> >  static void cleanup(void)
+> >  {
+> > +	int i;
+> > +
+> >  	cleanup_fanotify_groups();
+> >  
+> >  	if (bind_mount_created)
+> > @@ -903,8 +936,17 @@ static void cleanup(void)
+> >  
+> >  	SAFE_FILE_PRINTF(CACHE_PRESSURE_FILE, "%d", old_cache_pressure);
+> >  
+> > +	for (i = 0; i < max_file_multi; i++) {
+> > +		char path[PATH_MAX];
+> > +
+> > +		sprintf(path, FILE_PATH_MULTIDIR, i);
+> > +		SAFE_UNLINK(path);
+> > +		sprintf(path, DIR_PATH_MULTI, i);
+> > +		SAFE_RMDIR(path);
+> > +		sprintf(path, FILE_PATH_MULTI, i);
+> > +		SAFE_UNLINK(path);
+> > +	}
+> >  	SAFE_UNLINK(FILE_PATH);
+> > -	SAFE_UNLINK(FILE2_PATH);
+> >  	SAFE_RMDIR(SUBDIR_PATH);
+> >  	SAFE_RMDIR(DIR_PATH);
+> >  	SAFE_RMDIR(MNT2_PATH);
+> > -- 
+> > 2.35.3
+> > 
 -- 
-Regards,
-Li Wang
-
---000000000000de310105ed93e394
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
-r" class=3D"gmail_attr">On Tue, Nov 15, 2022 at 7:12 PM Richard Palethorpe =
-&lt;<a href=3D"mailto:rpalethorpe@suse.de">rpalethorpe@suse.de</a>&gt; wrot=
-e:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0=
-.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hello,<br>
-<br>
-Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_blank">liwang@r=
-edhat.com</a>&gt; writes:<br>
-<br>
-&gt; On Tue, Nov 15, 2022 at 6:00 PM Li Wang &lt;<a href=3D"mailto:liwang@r=
-edhat.com" target=3D"_blank">liwang@redhat.com</a>&gt; wrote:<br>
-&gt;<br>
-&gt;=C2=A0 Richard Palethorpe &lt;<a href=3D"mailto:rpalethorpe@suse.de" ta=
-rget=3D"_blank">rpalethorpe@suse.de</a>&gt; wrote:<br>
-&gt;=C2=A0 =C2=A0<br>
-&gt;=C2=A0 &gt;=C2=A0 <br>
-&gt;=C2=A0 &gt;=C2=A0 Practically speaking we have to assume a large amount=
- of time has passed<br>
-&gt;=C2=A0 &gt;=C2=A0 when using ITIMER_REAL. It has to be *much* larger th=
-an a VM is likely<br>
-&gt;=C2=A0 &gt;=C2=A0 to be paused for and then successfully resumed. Or th=
-e amount of time a<br>
-&gt;=C2=A0 &gt;=C2=A0 clock may be corrected by (for e.g. with NTP).<br>
-&gt;=C2=A0 &gt;<br>
-&gt;=C2=A0 &gt; Hmm, not sure if I understand correctly above, will that<br=
->
-&gt;=C2=A0 &gt; timer value be out of the range but reasonable?<br>
-&gt;=C2=A0 &gt;<br>
-&gt;=C2=A0 &gt; Or is there any additional situation we should cover?<br>
-&gt;<br>
-&gt;=C2=A0 Sorry that is confusing.<br>
-&gt;<br>
-&gt;=C2=A0 The question is what happens if the clock jumps backwards?<br></=
-blockquote><div><br></div><div><br></div><div class=3D"gmail_default" style=
-=3D"font-size:small">I did some research on the work theory of setitimer() =
-for modern</div><div class=3D"gmail_default" style=3D"font-size:small">kern=
-els, it seems that situation won&#39;t happen, because the kernel</div><div=
- class=3D"gmail_default" style=3D"font-size:small">uses a relative mode for=
- the timer countdown. IOW, once the system</div><div class=3D"gmail_default=
-" style=3D"font-size:small">wall=C2=A0clock getting changed, the timer for =
-the process will update its</div><div class=3D"gmail_default" style=3D"font=
--size:small">timer relatively.</div><div class=3D"gmail_default" style=3D"f=
-ont-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:s=
-mall">To verify this I adjust the wall-clock with adding whatever 10 sec or=
-</div><div class=3D"gmail_default" style=3D"font-size:small">24 hour, it al=
-l works well and get expected signal:</div><div class=3D"gmail_default" sty=
-le=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font=
--size:small">--- a/testcases/kernel/syscalls/setitimer/setitimer01.c<br>+++=
- b/testcases/kernel/syscalls/setitimer/setitimer01.c<br>@@ -21,6 +21,7 @@<b=
-r>=C2=A0#include &quot;lapi/syscalls.h&quot;<br>=C2=A0#include &quot;tst_sa=
-fe_clocks.h&quot;<br>=C2=A0<br>+static struct timespec now;<br>=C2=A0static=
- struct itimerval *value, *ovalue;<br>=C2=A0static volatile unsigned long s=
-igcnt;<br>=C2=A0static long time_step;<br>@@ -33,8 +34,8 @@ static struct t=
-case {<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 int signo;<br>=C2=A0} tcases[] =3D {<=
-br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 {ITIMER_REAL, =C2=A0 =C2=A0&quot;ITIMER_REAL=
-&quot;, =C2=A0 =C2=A0SIGALRM},<br>- =C2=A0 =C2=A0 =C2=A0 {ITIMER_VIRTUAL, &=
-quot;ITIMER_VIRTUAL&quot;, SIGVTALRM},<br>- =C2=A0 =C2=A0 =C2=A0 {ITIMER_PR=
-OF, =C2=A0 =C2=A0&quot;ITIMER_PROF&quot;, =C2=A0 =C2=A0SIGPROF},<br>+// =C2=
-=A0 =C2=A0 {ITIMER_VIRTUAL, &quot;ITIMER_VIRTUAL&quot;, SIGVTALRM},<br>+// =
-=C2=A0 =C2=A0 {ITIMER_PROF, =C2=A0 =C2=A0&quot;ITIMER_PROF&quot;, =C2=A0 =
-=C2=A0SIGPROF},<br>=C2=A0};<br>=C2=A0<br>=C2=A0static int sys_setitimer(int=
- which, void *new_value, void *old_value)<br>@@ -72,6 +73,10 @@ static void=
- verify_setitimer(unsigned int i)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 set_setitimer_value(time_sec, time_usec);<br>=C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 TST_EXP_PASS(sys_setitimer(tc=
--&gt;which, value, NULL));<br>=C2=A0<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 now.tv_sec +=3D 20; // 86400s =3D=3D 24h<br>+ =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 SAFE_CLOCK_SETTIME(CLOCK_REALTIME, &=
-amp;now);<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(TIN=
-FO, &quot;debug only: add 20 secs to now.tv_sec %ld\n&quot;, now.tv_sec);<b=
-r>+<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 set_setitime=
-r_value(5 * time_sec, 7 * time_usec);<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 TST_EXP_PASS(sys_setitimer(tc-&gt;which, value, ovalu=
-e));<br>=C2=A0<br>@@ -120,6 +125,9 @@ static void verify_setitimer(unsigned=
- int i)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(=
-TPASS, &quot;Child received signal: %s&quot;, tst_strsig(tc-&gt;signo));<br=
->=C2=A0 =C2=A0 =C2=A0 =C2=A0 else<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 tst_res(TFAIL, &quot;Child: %s&quot;, tst_strstatus(statu=
-s));<br>+<br>+ =C2=A0 =C2=A0 =C2=A0 SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &amp=
-;now);<br>+ =C2=A0 =C2=A0 =C2=A0 tst_res(TINFO, &quot;debug only: now.tv_se=
-c is %ld\n&quot;, now.tv_sec);<br>=C2=A0}<br>=C2=A0<br>=C2=A0static void se=
-tup(void)<br>@@ -142,6 +150,9 @@ static void setup(void)<br>=C2=A0<br>=C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 time_sec =C2=A0=3D 9 + time_step / 1000;<br>=C2=A0=
- =C2=A0 =C2=A0 =C2=A0 time_usec =3D 3 * time_step;<br>+<br>+ =C2=A0 =C2=A0 =
-=C2=A0 SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &amp;now);<br>+ =C2=A0 =C2=A0 =C2=
-=A0 tst_res(TINFO, &quot;debug only: now.tv_sec is %ld\n&quot;, now.tv_sec)=
-;<br>=C2=A0}<br>=C2=A0<br>=C2=A0static struct tst_test test =3D {<br></div>=
-<div class=3D"gmail_default" style=3D"font-size:small"><br></div><div class=
-=3D"gmail_default" style=3D"font-size:small"><br></div><blockquote class=3D=
-"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(2=
-04,204,204);padding-left:1ex">
-&gt;=C2=A0 Or do you have another better suggestion?<br>
-<br>
-TBH I don&#39;t know if it will happen. An acceptable outcome for me is to<=
-br>
-print the time at the beginning and end of the test. Then if the test<br>
-fails we can see if it was due to a time jump and start investigating<br>
-what the kernel is supposed to do in this case.<br></blockquote><div><br></=
-div><div><div class=3D"gmail_default" style=3D"font-size:small">But I think=
- this print is still necessary, in case that some older kernels</div><div c=
-lass=3D"gmail_default" style=3D"font-size:small">do not use the relative mo=
-de for timer. I&#39;ll add this and send patch v2.</div></div><div>=C2=A0</=
-div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bor=
-der-left:1px solid rgb(204,204,204);padding-left:1ex">
-The alternative is to find out now what the kernel should do. We could<br>
-also write a test which deliberately changes the system time during an<br>
-interval. Depending how motivated you are.<br></blockquote><div><br></div><=
-div><div class=3D"gmail_default" style=3D"font-size:small">Thanks!</div><br=
-></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signatur=
-e"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></di=
-v></div>
-
---000000000000de310105ed93e394--
-
-
---===============0064538402==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0064538402==--
-
