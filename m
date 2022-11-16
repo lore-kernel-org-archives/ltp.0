@@ -4,134 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D404DC433FE
-	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 10:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB023C433FE
+	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 10:25:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 47C073CD03D
-	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 11:24:14 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id E516A3CD046
+	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 11:25:38 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DD9573CAFBA
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 11:24:03 +0100 (CET)
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com
- [205.220.166.238])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 86D533CAFBA
+ for <ltp@lists.linux.it>; Wed, 16 Nov 2022 11:25:28 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F08C01A00A26
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 11:23:59 +0100 (CET)
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
- by mx0a-0064b401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AG9kLG6021153
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 02:23:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
- h=from : to :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=PPS06212021;
- bh=7ldeTq8mfkep7kA6JomlYIrnMiFkuWNsyGcZTWTCv4s=;
- b=m8TXSXyWBifPpeS2RDaoWpu+ziL9xX5iN5oYAS1DfizZ+vHUIO3eoSD340leOZN6FrZj
- DwXZzgFDAMM0OaodS31VISTemwk1Gr27pv7/o/Fn5ENm4jl0am5ie8I0sVLoAwWABYYv
- 8iJGGFuigDGw5+S9czFp/Jvop0490OORVbSI3BcQGyxpjHr7aBPODO8h3nO7/Guez/Ok
- lviELRmeFar/by5iMOphbc0YnpakQnBotVcJmkz1mGZSWVOiHyOj40fkEz2BIalS0/bI
- GwA/nqd/jIcRXxgJMeEvz54kh2IIHZbpID9GraNygt+Idu1WxlT2OA9mcNSHHc09XuIf RQ== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com
- (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
- by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3kt7n9b5wu-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 02:23:56 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WoTSTy+pa4jKJ/O1l7fdx0YBaZKQoLtcPMI9k4WAXW7iuANDWYHtwae87VHnK21zbetKU00diTN06YvWuYfIgmHSuDLoLQNKKjGy0s4JeuUaA3hXy1gxkQDu6GQmT8sUv8FI9PjWbuRX+NTGv2NqGICiTlfCtDAJ1ITL8mVPzANMxY/ZqvkzFw29ofEzY+KcwG7HB6KGbKwnJEz+k7+5FIi0cAB6liDtb9vhwL9NTe46NFgR4k0iU2kwZD0JPfYGWsyM/8ZcYx/cRfb4jPiLcGlyZr9dRJ/fIebr5j+/+1rIf4YDYubg1JVETp1rh1pCXSPMxHU1lhjw9Yd307UHXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7ldeTq8mfkep7kA6JomlYIrnMiFkuWNsyGcZTWTCv4s=;
- b=UZED3Mnd6HBc0+6O8EIRBAWpL9O0XM1qdUj9ld7X1yx3E91mtSLODJjAQHGn+49WPd0ACLfjPmlW+CLHqaSXOS0QvD5xhTI2ByIwD6i8sEzhnoNeeKh4ICYnx4shSBscRN0Ku4n5iJoH2icH4wQYoGuLb7Drpz7y/rJHPgPiaBBxYMgodmBPB2xlLAQj2VRFDmXwfS+gzMWSIc0tam/BSxO5YUhfXG9gmdmeKEISdRLp1Cfs3Ql/hBloZrOeSlxT/Xrc3uKb+izaqrqwla8XjU3yV0UVCt80PxpePhWagEZ8pu8mpH6eNieuXbNnv96bfvxEsUX1H1MNKVRHwqunvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from MWHPR11MB1358.namprd11.prod.outlook.com (2603:10b6:300:23::8)
- by CY8PR11MB6940.namprd11.prod.outlook.com (2603:10b6:930:58::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.19; Wed, 16 Nov
- 2022 10:23:53 +0000
-Received: from MWHPR11MB1358.namprd11.prod.outlook.com
- ([fe80::fca6:eedf:ad46:d1df]) by MWHPR11MB1358.namprd11.prod.outlook.com
- ([fe80::fca6:eedf:ad46:d1df%3]) with mapi id 15.20.5813.019; Wed, 16 Nov 2022
- 10:23:53 +0000
-From: He Zhe <zhe.he@windriver.com>
-To: ltp@lists.linux.it
-Date: Wed, 16 Nov 2022 18:23:34 +0800
-Message-Id: <20221116102334.741189-1-zhe.he@windriver.com>
-X-Mailer: git-send-email 2.25.1
-X-ClientProxiedBy: YQBPR0101CA0294.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:6d::18) To MWHPR11MB1358.namprd11.prod.outlook.com
- (2603:10b6:300:23::8)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7E4D310000CA
+ for <ltp@lists.linux.it>; Wed, 16 Nov 2022 11:25:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1668594325;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=BmgqUFtCJcXn3Zf65OINjp5WfOfdETfykEEArEDi/HY=;
+ b=VM6GVFIhCLSpQpMeDgXf23E4DWeNY99YsA2bXhb+Br1mRWlB13MwOoiUV2RW0NNgRCoOXf
+ OGZAZholY+XA1CQ9VjvOZ6qFZSU8ZGy9xqbWgt4nnwruG191P2g2T77qpOXjAvSVA1ZwZq
+ HURXEcQEt7iyiyJe9sN37MAE59nFmdU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-458-I2Ce4U1wPx6rZvxe2eLorg-1; Wed, 16 Nov 2022 05:25:24 -0500
+X-MC-Unique: I2Ce4U1wPx6rZvxe2eLorg-1
+Received: by mail-wr1-f69.google.com with SMTP id
+ c18-20020adfa312000000b002364fabf2ceso3516040wrb.2
+ for <ltp@lists.linux.it>; Wed, 16 Nov 2022 02:25:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=BmgqUFtCJcXn3Zf65OINjp5WfOfdETfykEEArEDi/HY=;
+ b=LSCcYRvNUrfG/HSHL/SefkYVA+pbD+OFF+TmC1MAekQwNi9M5apt9n5J76eD8wJjp5
+ PnLf+lErcb1Sb47Dx55/Z0laqBf6j6z1HagTnVBOGAEsswjvXvdNcm296lpBGeMlf/LV
+ Dvq5evUnkXLCASCmAakIo+tIoDIy3iPUp6EnK0Xxq+ZpHFCz9Kl4Xa2Ud0AcNJE8+UsY
+ 0+FbxdSkjKFLCSGs5jk9T4u7krtF5KIAgDyEMR97xfI6DzpYEO5m+Z4D6U1iQ9rv/wRc
+ 3qKoUTPSphpHluRr8DIHiskbTCIDNSOwRydwv3kw1TWgCrZLMO6VE2AfD102ietaWLKb
+ zi9w==
+X-Gm-Message-State: ANoB5pkvxMdtp04ZxDOlKLCbqK0NGLtV6I8DcWee4/wWcCDEMvDRsoEx
+ Dagp7+iHwsOirsk7DBx/XtjWsNiHfy/Y52pEowLyzb5SgcPwR5BOTvOTN9sucKhMPyt8Mw8zN1h
+ 7UUYLy5QWKGgnHHeiGhTKGpNzNPk=
+X-Received: by 2002:a05:600c:4a2a:b0:3b4:c00d:2329 with SMTP id
+ c42-20020a05600c4a2a00b003b4c00d2329mr1607668wmp.124.1668594322765; 
+ Wed, 16 Nov 2022 02:25:22 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf6sz7+VbhhwcPBV58rBqFe1Sjlnxs/UQZniSoo7Eh8KFgMHHube/rx4kGbCpshUuRVYlTC0xurq2vX+av8oWPU=
+X-Received: by 2002:a05:600c:4a2a:b0:3b4:c00d:2329 with SMTP id
+ c42-20020a05600c4a2a00b003b4c00d2329mr1607653wmp.124.1668594322510; Wed, 16
+ Nov 2022 02:25:22 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWHPR11MB1358:EE_|CY8PR11MB6940:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2f208aed-1ebe-4d27-ac02-08dac7bca893
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: M/FLSjNHdZNER2x9Tjf00JdLkt6xrnt3QpejOSIdO1FAT37IpAZ3uQ1QH6A/FKigyV2Xzk3GuZYCcJ6lT6q6cAjavHHbvSOAS5akKrL7uOMy28kQNKxxCTa3dJrDWAXMe1RHH0ZQd3jeVCTMMCLMUDp27pkhG1ExWRZgkMegYYCostZ0E8yPPJsikbf1j+ASLBZ3NP3KR93Vf7mCy8yUVa05F6vlnmzzqETdS7gnYK5am5UHG0lUPVdLxn3oVgvljcnPLepLQSsEu4mQb3F7P5POqLAyYbUlnfXgPDHy6Wj+tUmnAK1AFLdD+eu1ibGU/ZmS9MqdRWtx/rprTOFvxADibSefeiVAGJsIzqiKuWQIMmj8GS0FGPSClt4gkqGddrhedmk740SVOWKEFDbLZg9ti0SeZuRez7wimB66WnJG6EDNEJT1YrL3HpVB7op0DeKKs5hHNOX0V8GWq7FPAL7O1Qhm//1nwcFef/npnl0KTPmZ/bzmaVMN1A9sApV+42Q7peQaAzabkuMTS2hUEkO+UvIlwRRrtlYGNzd167xu9djV7QRufiVG7WwbwDAgFEHYtrqZLERlNFTcVWDt19akVseg2EtGnTmUstA6m9VJ7/oy3S+cBk6Sdy5wkhGx4GMRj0meyFHWJRu98qDMoxH65+nJUGbAAJ/we5sS4TvgB+D8ZUqBsElBW4pxOu6mkC4JEtpOHMnqM0ILx01JEG6NSQsxd1PqZNekKzxeJLbugrHRPPQ6V93nWJlBDm4de2ORoTXmzujojTRTvWO21w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MWHPR11MB1358.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230022)(4636009)(376002)(396003)(136003)(39850400004)(346002)(366004)(451199015)(478600001)(6486002)(52116002)(6666004)(6506007)(6916009)(316002)(66556008)(41300700001)(8676002)(66476007)(8936002)(186003)(1076003)(2616005)(36756003)(5660300002)(2906002)(66946007)(86362001)(83380400001)(38100700002)(26005)(6512007)(38350700002);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DcXgKJJp4YQRg8jKrsTQXOj7OS6wrZtELD8UE2+QMUJAcvGmlP3JVFRs05Oz?=
- =?us-ascii?Q?cTbtFvBv/djLj4RKUYzjohViezZIWMulvkeM6e0IK4AmvumO6XXBuhG3gx+r?=
- =?us-ascii?Q?dNS1Q5ngP+6eXgrAsWklKB3RYs0WbCqloASDuOqxU870exkbAVcnBikecGEE?=
- =?us-ascii?Q?G01YhLZNHmwuY9bu12/coQvbyU0QdN7ctyaWyc0E/7zJ7alag0PXf6BT253Q?=
- =?us-ascii?Q?QCGCWo/H0jeHvvWKT1nJAm19i3nzMBCn1dxWO5bNai1eqrihp1maTL/MbeJ9?=
- =?us-ascii?Q?MMl0c93xvIwqn/Gv4wkCRAAzSBkxKVxItg5I8NdGkke2wTUYXg+PXJSrbi3S?=
- =?us-ascii?Q?tCjf7NH/bH8H2x524QTRBr+ULqNtwaNSMVZmZ/ty5PS9ZyFzj8bHASgeOTE0?=
- =?us-ascii?Q?E4mLS/3tf3FCpzxuaDQihonZs3i0hf8xGK5FEm/YKyA1rExDcVXQAdGA5isx?=
- =?us-ascii?Q?gvJz13RgmFs8Ywoeep0AK9+++4lP2gyuTSEGz4qSIIiGobRJlDbVsTjPeZt8?=
- =?us-ascii?Q?9IhKbGq0noxDP/RF1eL9KhxLZgKhvvDqF6AGAL692sJpsgALwYzp6WijQX3m?=
- =?us-ascii?Q?uNsSJWMuwEo+Rt+d9FtV60puSx0+yo+MG6v/jSI6xvgnQGZ8vWyW9kyMBev8?=
- =?us-ascii?Q?MImmRhtdhYVuW2RRJdTd3Kb7QANistWjPUnoFLcnMJYxwuHeSCR5cTiv15BU?=
- =?us-ascii?Q?V8CsSrOEDZZbukutB/DwoOIAfhzYkR1j5zx3tFmceiZV3ReduRDPMeAsU5+Y?=
- =?us-ascii?Q?LEa4L5eOeop7pZAfWArThGir450YxGYiqe9a1k3Q16n5t8qaVk8I/C9hMBv2?=
- =?us-ascii?Q?OT2IoIU/O2r/uI8R3wWROZqnw3/dsXIj2sdXOy3t4bXhFxmPzrnZ5xS7z542?=
- =?us-ascii?Q?m+zeMjKymVwiUCrzK8QAmwZUNeWzXan4YUj5aoDakFdqDIEWKp8iHT9130zv?=
- =?us-ascii?Q?FCVnNfcDxcFnOKAclVU5MG91JkuiYx0Nbb3DYSnDkZcdG/7YEDK2zHUjH+h/?=
- =?us-ascii?Q?XT4WmND1Rd5yEpardJXKD6kfYuE7U6WAtTWwEUynt/MCRyo8MqxDmPXCs/34?=
- =?us-ascii?Q?aoyG1CKP9TSiKeYvUlB5y9TzlDp2WR6OOQ4fa5FWNd+2dThYabQzph3ZY0y8?=
- =?us-ascii?Q?6Bd7mQUB47YxWyI8EtEsPrGXoTN9BKq1jUJFnrzYE16r6HQ0lldXrIu8AQeB?=
- =?us-ascii?Q?ittZktupLk9HscxJWU2Q40LYky2gvuCYDjmYyHGxxzGxTub9NnkbdaPpSI0q?=
- =?us-ascii?Q?t3v0SDpU+Ye/4oZiDfKozhwseN72WkETR6TCzvNCJcMg8WQ2+uWgmtYmO2Pk?=
- =?us-ascii?Q?jfk2Q5+HAsVfxBV477NnlqweNkGtc8MYTAHYEMusRDTAjGKXdmAC/ZL32w4V?=
- =?us-ascii?Q?ClE990d3z6GaC7zPu+ugP89MVaGI8t68vQKq7Yw+cf/1MdzUjpfvf7+TsESs?=
- =?us-ascii?Q?fp7bHOgTTksny3XyAMkwM9njvDF4yQUA1yFigypmU+j36a48gk5AQtlBtmQr?=
- =?us-ascii?Q?F/ZCz385h44/eXAxxcdF+JmJKjcR5dvCGKBP6Zo2R2bkO/gg7alXO4CqVa96?=
- =?us-ascii?Q?Qu5kq0K0ndfAKbHjnBwq3sXoZBCjcQN1rPGSqdyx?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f208aed-1ebe-4d27-ac02-08dac7bca893
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1358.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2022 10:23:53.7374 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aWeSjJEjuuOJ+u6aJA9yEphGD6SIrgObisl2100n1lBU2IAqx3tPot5hT/6iAhAU/mIbBZOD+nRa1b1T+7il1A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6940
-X-Proofpoint-ORIG-GUID: i3SeNVwadIQ7bxdpZgB3BdTZN4dnNPQ5
-X-Proofpoint-GUID: i3SeNVwadIQ7bxdpZgB3BdTZN4dnNPQ5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-16_01,2022-11-16_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 phishscore=0
- bulkscore=0 malwarescore=0 priorityscore=1501 adultscore=0 suspectscore=0
- spamscore=0 mlxlogscore=436 lowpriorityscore=0 mlxscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
- definitions=main-2211160072
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+References: <20221112040107.3953862-1-liwang@redhat.com>
+ <87pmdpsfdv.fsf@suse.de>
+ <CAEemH2fJJ8Fv0=OMjdh3d8QaEdr1ivLUuHs_8=D6qV6-YZhbwQ@mail.gmail.com>
+ <87h6z0sh8o.fsf@suse.de>
+ <CAEemH2c-90baLEbom4yF8oVjh9n7O4uKkXS5SBmx2rSBRsZBBQ@mail.gmail.com>
+ <CAEemH2d=65BMhY4RFXHS1d5dkbq7v2QDskfE_5b_WnttDXT+Fg@mail.gmail.com>
+ <87zgcsqxoc.fsf@suse.de>
+In-Reply-To: <87zgcsqxoc.fsf@suse.de>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 16 Nov 2022 18:25:10 +0800
+Message-ID: <CAEemH2fqN-haZ64xgANqihHD9pEfM=oe3e+QGT6Uf9HFHDohSw@mail.gmail.com>
+To: rpalethorpe@suse.de
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/prctl04: Fix false positive report when
- SECCOMP_MODE_FILTER is not supported
+Subject: Re: [LTP] [PATCH 1/2] setitimer01: add interval timer test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -143,73 +90,266 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Andrea Cervesato <acervesato@suse.de>, ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============0064538402=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The child process really should not receive the expected siganl, SIGSYS, when
-kernel doesn't support SECCOMP_MODE_FILTER.
+--===============0064538402==
+Content-Type: multipart/alternative; boundary="000000000000de310105ed93e394"
 
-This patch makes the child process exit with 1 to indicate such case.
+--000000000000de310105ed93e394
+Content-Type: text/plain; charset="UTF-8"
 
-Before this patch:
-root@xilinx-zynq:~# /opt/ltp/testcases/bin/prctl04
-tst_test.c:1431: TINFO: Timeout per run is 0h 05m 00s
----- snip ----
-prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
-prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
-prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
-prctl04.c:204: TFAIL: SECCOMP_MODE_FILTER permits exit() unexpectedly
-prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
+On Tue, Nov 15, 2022 at 7:12 PM Richard Palethorpe <rpalethorpe@suse.de>
+wrote:
 
-After this patch:
-root@xilinx-zynq:~# /opt/ltp/testcases/bin/prctl04
-tst_test.c:1431: TINFO: Timeout per run is 0h 05m 00s
----- snip ----
-prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
-prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
-prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
-prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
+> Hello,
+>
+> Li Wang <liwang@redhat.com> writes:
+>
+> > On Tue, Nov 15, 2022 at 6:00 PM Li Wang <liwang@redhat.com> wrote:
+> >
+> >  Richard Palethorpe <rpalethorpe@suse.de> wrote:
+> >
+> >  >
+> >  >  Practically speaking we have to assume a large amount of time has
+> passed
+> >  >  when using ITIMER_REAL. It has to be *much* larger than a VM is
+> likely
+> >  >  to be paused for and then successfully resumed. Or the amount of
+> time a
+> >  >  clock may be corrected by (for e.g. with NTP).
+> >  >
+> >  > Hmm, not sure if I understand correctly above, will that
+> >  > timer value be out of the range but reasonable?
+> >  >
+> >  > Or is there any additional situation we should cover?
+> >
+> >  Sorry that is confusing.
+> >
+> >  The question is what happens if the clock jumps backwards?
+>
 
-Signed-off-by: He Zhe <zhe.he@windriver.com>
----
- testcases/kernel/syscalls/prctl/prctl04.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/prctl/prctl04.c b/testcases/kernel/syscalls/prctl/prctl04.c
-index b9f4c2a10..868b35a29 100644
---- a/testcases/kernel/syscalls/prctl/prctl04.c
-+++ b/testcases/kernel/syscalls/prctl/prctl04.c
-@@ -158,12 +158,14 @@ static void check_filter_mode(int val)
- 
- 	TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &strict));
- 	if (TST_RET == -1) {
--		if (TST_ERR == EINVAL)
-+		if (TST_ERR == EINVAL) {
- 			tst_res(TCONF,
- 				"kernel doesn't support SECCOMP_MODE_FILTER");
--		else
-+			exit(1);
-+		} else {
- 			tst_res(TFAIL | TERRNO,
- 				"prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_FILTER failed");
-+		}
- 		return;
- 	}
- 
-@@ -208,7 +210,7 @@ static void verify_prctl(unsigned int n)
- 			return;
- 		}
- 
--		if (tc->pass_flag == 2)
-+		if (!(WIFEXITED(status) && WEXITSTATUS(status) == 1) && tc->pass_flag == 2)
- 			tst_res(TFAIL,
- 				"SECCOMP_MODE_FILTER permits exit() unexpectedly");
- 	}
+I did some research on the work theory of setitimer() for modern
+kernels, it seems that situation won't happen, because the kernel
+uses a relative mode for the timer countdown. IOW, once the system
+wall clock getting changed, the timer for the process will update its
+timer relatively.
+
+To verify this I adjust the wall-clock with adding whatever 10 sec or
+24 hour, it all works well and get expected signal:
+
+--- a/testcases/kernel/syscalls/setitimer/setitimer01.c
++++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+@@ -21,6 +21,7 @@
+ #include "lapi/syscalls.h"
+ #include "tst_safe_clocks.h"
+
++static struct timespec now;
+ static struct itimerval *value, *ovalue;
+ static volatile unsigned long sigcnt;
+ static long time_step;
+@@ -33,8 +34,8 @@ static struct tcase {
+        int signo;
+ } tcases[] = {
+        {ITIMER_REAL,    "ITIMER_REAL",    SIGALRM},
+-       {ITIMER_VIRTUAL, "ITIMER_VIRTUAL", SIGVTALRM},
+-       {ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
++//     {ITIMER_VIRTUAL, "ITIMER_VIRTUAL", SIGVTALRM},
++//     {ITIMER_PROF,    "ITIMER_PROF",    SIGPROF},
+ };
+
+ static int sys_setitimer(int which, void *new_value, void *old_value)
+@@ -72,6 +73,10 @@ static void verify_setitimer(unsigned int i)
+                set_setitimer_value(time_sec, time_usec);
+                TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
+
++               now.tv_sec += 20; // 86400s == 24h
++               SAFE_CLOCK_SETTIME(CLOCK_REALTIME, &now);
++               tst_res(TINFO, "debug only: add 20 secs to now.tv_sec
+%ld\n", now.tv_sec);
++
+                set_setitimer_value(5 * time_sec, 7 * time_usec);
+                TST_EXP_PASS(sys_setitimer(tc->which, value, ovalue));
+
+@@ -120,6 +125,9 @@ static void verify_setitimer(unsigned int i)
+                tst_res(TPASS, "Child received signal: %s",
+tst_strsig(tc->signo));
+        else
+                tst_res(TFAIL, "Child: %s", tst_strstatus(status));
++
++       SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &now);
++       tst_res(TINFO, "debug only: now.tv_sec is %ld\n", now.tv_sec);
+ }
+
+ static void setup(void)
+@@ -142,6 +150,9 @@ static void setup(void)
+
+        time_sec  = 9 + time_step / 1000;
+        time_usec = 3 * time_step;
++
++       SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &now);
++       tst_res(TINFO, "debug only: now.tv_sec is %ld\n", now.tv_sec);
+ }
+
+ static struct tst_test test = {
+
+
+>  Or do you have another better suggestion?
+>
+> TBH I don't know if it will happen. An acceptable outcome for me is to
+> print the time at the beginning and end of the test. Then if the test
+> fails we can see if it was due to a time jump and start investigating
+> what the kernel is supposed to do in this case.
+>
+
+But I think this print is still necessary, in case that some older kernels
+do not use the relative mode for timer. I'll add this and send patch v2.
+
+
+> The alternative is to find out now what the kernel should do. We could
+> also write a test which deliberately changes the system time during an
+> interval. Depending how motivated you are.
+>
+
+Thanks!
+
+
 -- 
-2.25.1
+Regards,
+Li Wang
+
+--000000000000de310105ed93e394
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
+t-size:small"><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"lt=
+r" class=3D"gmail_attr">On Tue, Nov 15, 2022 at 7:12 PM Richard Palethorpe =
+&lt;<a href=3D"mailto:rpalethorpe@suse.de">rpalethorpe@suse.de</a>&gt; wrot=
+e:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0=
+.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">Hello,<br>
+<br>
+Li Wang &lt;<a href=3D"mailto:liwang@redhat.com" target=3D"_blank">liwang@r=
+edhat.com</a>&gt; writes:<br>
+<br>
+&gt; On Tue, Nov 15, 2022 at 6:00 PM Li Wang &lt;<a href=3D"mailto:liwang@r=
+edhat.com" target=3D"_blank">liwang@redhat.com</a>&gt; wrote:<br>
+&gt;<br>
+&gt;=C2=A0 Richard Palethorpe &lt;<a href=3D"mailto:rpalethorpe@suse.de" ta=
+rget=3D"_blank">rpalethorpe@suse.de</a>&gt; wrote:<br>
+&gt;=C2=A0 =C2=A0<br>
+&gt;=C2=A0 &gt;=C2=A0 <br>
+&gt;=C2=A0 &gt;=C2=A0 Practically speaking we have to assume a large amount=
+ of time has passed<br>
+&gt;=C2=A0 &gt;=C2=A0 when using ITIMER_REAL. It has to be *much* larger th=
+an a VM is likely<br>
+&gt;=C2=A0 &gt;=C2=A0 to be paused for and then successfully resumed. Or th=
+e amount of time a<br>
+&gt;=C2=A0 &gt;=C2=A0 clock may be corrected by (for e.g. with NTP).<br>
+&gt;=C2=A0 &gt;<br>
+&gt;=C2=A0 &gt; Hmm, not sure if I understand correctly above, will that<br=
+>
+&gt;=C2=A0 &gt; timer value be out of the range but reasonable?<br>
+&gt;=C2=A0 &gt;<br>
+&gt;=C2=A0 &gt; Or is there any additional situation we should cover?<br>
+&gt;<br>
+&gt;=C2=A0 Sorry that is confusing.<br>
+&gt;<br>
+&gt;=C2=A0 The question is what happens if the clock jumps backwards?<br></=
+blockquote><div><br></div><div><br></div><div class=3D"gmail_default" style=
+=3D"font-size:small">I did some research on the work theory of setitimer() =
+for modern</div><div class=3D"gmail_default" style=3D"font-size:small">kern=
+els, it seems that situation won&#39;t happen, because the kernel</div><div=
+ class=3D"gmail_default" style=3D"font-size:small">uses a relative mode for=
+ the timer countdown. IOW, once the system</div><div class=3D"gmail_default=
+" style=3D"font-size:small">wall=C2=A0clock getting changed, the timer for =
+the process will update its</div><div class=3D"gmail_default" style=3D"font=
+-size:small">timer relatively.</div><div class=3D"gmail_default" style=3D"f=
+ont-size:small"><br></div><div class=3D"gmail_default" style=3D"font-size:s=
+mall">To verify this I adjust the wall-clock with adding whatever 10 sec or=
+</div><div class=3D"gmail_default" style=3D"font-size:small">24 hour, it al=
+l works well and get expected signal:</div><div class=3D"gmail_default" sty=
+le=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"font=
+-size:small">--- a/testcases/kernel/syscalls/setitimer/setitimer01.c<br>+++=
+ b/testcases/kernel/syscalls/setitimer/setitimer01.c<br>@@ -21,6 +21,7 @@<b=
+r>=C2=A0#include &quot;lapi/syscalls.h&quot;<br>=C2=A0#include &quot;tst_sa=
+fe_clocks.h&quot;<br>=C2=A0<br>+static struct timespec now;<br>=C2=A0static=
+ struct itimerval *value, *ovalue;<br>=C2=A0static volatile unsigned long s=
+igcnt;<br>=C2=A0static long time_step;<br>@@ -33,8 +34,8 @@ static struct t=
+case {<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 int signo;<br>=C2=A0} tcases[] =3D {<=
+br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 {ITIMER_REAL, =C2=A0 =C2=A0&quot;ITIMER_REAL=
+&quot;, =C2=A0 =C2=A0SIGALRM},<br>- =C2=A0 =C2=A0 =C2=A0 {ITIMER_VIRTUAL, &=
+quot;ITIMER_VIRTUAL&quot;, SIGVTALRM},<br>- =C2=A0 =C2=A0 =C2=A0 {ITIMER_PR=
+OF, =C2=A0 =C2=A0&quot;ITIMER_PROF&quot;, =C2=A0 =C2=A0SIGPROF},<br>+// =C2=
+=A0 =C2=A0 {ITIMER_VIRTUAL, &quot;ITIMER_VIRTUAL&quot;, SIGVTALRM},<br>+// =
+=C2=A0 =C2=A0 {ITIMER_PROF, =C2=A0 =C2=A0&quot;ITIMER_PROF&quot;, =C2=A0 =
+=C2=A0SIGPROF},<br>=C2=A0};<br>=C2=A0<br>=C2=A0static int sys_setitimer(int=
+ which, void *new_value, void *old_value)<br>@@ -72,6 +73,10 @@ static void=
+ verify_setitimer(unsigned int i)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 set_setitimer_value(time_sec, time_usec);<br>=C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 TST_EXP_PASS(sys_setitimer(tc=
+-&gt;which, value, NULL));<br>=C2=A0<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 now.tv_sec +=3D 20; // 86400s =3D=3D 24h<br>+ =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 SAFE_CLOCK_SETTIME(CLOCK_REALTIME, &=
+amp;now);<br>+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(TIN=
+FO, &quot;debug only: add 20 secs to now.tv_sec %ld\n&quot;, now.tv_sec);<b=
+r>+<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 set_setitime=
+r_value(5 * time_sec, 7 * time_usec);<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 TST_EXP_PASS(sys_setitimer(tc-&gt;which, value, ovalu=
+e));<br>=C2=A0<br>@@ -120,6 +125,9 @@ static void verify_setitimer(unsigned=
+ int i)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_res(=
+TPASS, &quot;Child received signal: %s&quot;, tst_strsig(tc-&gt;signo));<br=
+>=C2=A0 =C2=A0 =C2=A0 =C2=A0 else<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 tst_res(TFAIL, &quot;Child: %s&quot;, tst_strstatus(statu=
+s));<br>+<br>+ =C2=A0 =C2=A0 =C2=A0 SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &amp=
+;now);<br>+ =C2=A0 =C2=A0 =C2=A0 tst_res(TINFO, &quot;debug only: now.tv_se=
+c is %ld\n&quot;, now.tv_sec);<br>=C2=A0}<br>=C2=A0<br>=C2=A0static void se=
+tup(void)<br>@@ -142,6 +150,9 @@ static void setup(void)<br>=C2=A0<br>=C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 time_sec =C2=A0=3D 9 + time_step / 1000;<br>=C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 time_usec =3D 3 * time_step;<br>+<br>+ =C2=A0 =C2=A0 =
+=C2=A0 SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &amp;now);<br>+ =C2=A0 =C2=A0 =C2=
+=A0 tst_res(TINFO, &quot;debug only: now.tv_sec is %ld\n&quot;, now.tv_sec)=
+;<br>=C2=A0}<br>=C2=A0<br>=C2=A0static struct tst_test test =3D {<br></div>=
+<div class=3D"gmail_default" style=3D"font-size:small"><br></div><div class=
+=3D"gmail_default" style=3D"font-size:small"><br></div><blockquote class=3D=
+"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(2=
+04,204,204);padding-left:1ex">
+&gt;=C2=A0 Or do you have another better suggestion?<br>
+<br>
+TBH I don&#39;t know if it will happen. An acceptable outcome for me is to<=
+br>
+print the time at the beginning and end of the test. Then if the test<br>
+fails we can see if it was due to a time jump and start investigating<br>
+what the kernel is supposed to do in this case.<br></blockquote><div><br></=
+div><div><div class=3D"gmail_default" style=3D"font-size:small">But I think=
+ this print is still necessary, in case that some older kernels</div><div c=
+lass=3D"gmail_default" style=3D"font-size:small">do not use the relative mo=
+de for timer. I&#39;ll add this and send patch v2.</div></div><div>=C2=A0</=
+div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bor=
+der-left:1px solid rgb(204,204,204);padding-left:1ex">
+The alternative is to find out now what the kernel should do. We could<br>
+also write a test which deliberately changes the system time during an<br>
+interval. Depending how motivated you are.<br></blockquote><div><br></div><=
+div><div class=3D"gmail_default" style=3D"font-size:small">Thanks!</div><br=
+></div></div><div><br></div>-- <br><div dir=3D"ltr" class=3D"gmail_signatur=
+e"><div dir=3D"ltr"><div>Regards,<br></div><div>Li Wang<br></div></div></di=
+v></div>
+
+--000000000000de310105ed93e394--
+
+
+--===============0064538402==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============0064538402==--
+
