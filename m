@@ -4,70 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BE42C4332F
-	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 10:58:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE7A3C4321E
+	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 11:26:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 244873CD046
-	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 11:58:28 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 08C9F3CD038
+	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 12:26:36 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A94FF3CD025
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 11:58:18 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id D8D6D3CD018
+ for <ltp@lists.linux.it>; Wed, 16 Nov 2022 12:26:24 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A07CE1400DBC
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 11:58:16 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6D825336F0;
- Wed, 16 Nov 2022 10:58:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1668596295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=H/5a54KDrDw4h1HGsmAwy2pCa9sEir5FMYLPEAc8GLM=;
- b=ZeRJ2jnIjZ7bUBn4W1KphcA8GIR1lvYVvB+tktfc2E718aBXBNAAJtF6yA8Ux/8WIA8uBE
- TJVBMT3VDdv+GDVR/WRNiRmzonlS8BjSGdpOY7SkUxkLxB1SDJtWPlI6l1chbu2YdNTa7Q
- QiEjWH/snQ1+8BwLZtWlJ2Mq6pDLviA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1668596295;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=H/5a54KDrDw4h1HGsmAwy2pCa9sEir5FMYLPEAc8GLM=;
- b=c8ijRBpJdEMCMDxfV9xAWppp4HQb2I0zTys3W40klO7rZgdmradZFBFqARvMf4Ompo09OG
- X3eGzkBJEoQJBDCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5FBD013480;
- Wed, 16 Nov 2022 10:58:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ++FdF0fCdGN0XwAAMHmgww
- (envelope-from <jack@suse.cz>); Wed, 16 Nov 2022 10:58:15 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
- id EE8C1A0709; Wed, 16 Nov 2022 11:58:14 +0100 (CET)
-Date: Wed, 16 Nov 2022 11:58:14 +0100
-From: Jan Kara <jack@suse.cz>
-To: Pengfei Xu <pengfei.xu@intel.com>
-Message-ID: <20221116105814.ozfankn5qkizj2zr@quack3>
-References: <20221115123721.12176-1-jack@suse.cz>
- <20221115124741.14400-3-jack@suse.cz>
- <Y3RIKsBUx+KiH4lD@xpf.sh.intel.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8454C10009BA
+ for <ltp@lists.linux.it>; Wed, 16 Nov 2022 12:26:22 +0100 (CET)
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2AGAn5aC010422; Wed, 16 Nov 2022 11:26:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=kTfeVIuVoOecD9VISC46q9exwzeDvx7LolvfhKQnpTg=;
+ b=BdZJlTBCYrT4BL1p5PHP2a8uxemlF21XATxUwoyOUv/0lpL5miHQz0DfJjsEazUMzwOo
+ YR2tARHiBozZxduMhmRiboFHiu2dqaK3ouoVlDuyZESc0ujyHIVvYVAbUAVvz0sjtqIW
+ /hmr4oI/WMDLLJgAEA735/VQxw560qQlCOBqf5W/p0l3mo1kkhAKG4haBKEIGsGjst/r
+ glZBVRIkT2jfCOnVsV3/Y4je4MqGHMikfQa5qaoyjKyTk0tV1EUSC5DIS4PPR9ezvOuE
+ TcC15SsYf8kut/mxHmTyWJI3L4pCgnXjf6mKf5bz2ph46Hli/aEOsKt2+iLpA7q1kiGG AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kvxeg0wue-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 16 Nov 2022 11:26:20 +0000
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AGAp238021313;
+ Wed, 16 Nov 2022 11:26:20 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.99])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kvxeg0wtj-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 16 Nov 2022 11:26:19 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+ by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AGBLjn4008357;
+ Wed, 16 Nov 2022 11:26:17 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com
+ (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+ by ppma04ams.nl.ibm.com with ESMTP id 3kt348wt24-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 16 Nov 2022 11:26:17 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+ by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2AGBQE7r13107956
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 16 Nov 2022 11:26:14 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 1053642042;
+ Wed, 16 Nov 2022 11:26:14 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id AD6754203F;
+ Wed, 16 Nov 2022 11:26:11 +0000 (GMT)
+Received: from tarunpc.in.ibm.com (unknown [9.199.157.25])
+ by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+ Wed, 16 Nov 2022 11:26:11 +0000 (GMT)
+From: Tarun Sahu <tsahu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Wed, 16 Nov 2022 16:55:09 +0530
+Message-Id: <20221116112516.261535-1-tsahu@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: cgCNha3xhHgEj4w80K-0jiaFwIpuYLPd
+X-Proofpoint-ORIG-GUID: NBhL2tYD-a9aHoMoblk6cIeh2_etzCAq
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y3RIKsBUx+KiH4lD@xpf.sh.intel.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-16_01,2022-11-16_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0
+ lowpriorityscore=0 mlxlogscore=990 phishscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 malwarescore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211160074
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] fanotify10: Make evictable marks tests more
- reliable
+Subject: [LTP] [PATCH v4 0/7] Hugetlb:Migrating the libhugetlbfs tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,192 +101,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+ vaibhav@linux.ibm.com, mike.kravetz@oracle.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed 16-11-22 10:17:14, Pengfei Xu wrote:
-> Hi Jan Kara,
-> 
-> On 2022-11-15 at 13:47:38 +0100, Jan Kara wrote:
-> > Tests verifying that evictable inode marks don't pin inodes in memory
-> > are unreliable because slab shrinking (triggered by drop_caches) does
-> > not reliably evict inodes - dentries have to take round through the LRU
-> > list and only then get reclaimed and inodes get unpinned and then inodes
-> > have to be rotated through their LRU list to get reclaimed. If there are
-> > not enough freed entries while shrinking other slab caches, drop_caches
-> > will abort attempts to reclaim slab before inodes get evicted.
-> > 
-> > Tweak evictable marks tests to use more files and marks in parallel and
-> > just verify that some (at least half) of the marks got evicted. This
-> > should be more tolerant to random fluctuation in slab reclaim
-> > efficiency.
-> > 
-> If possible, could you add the Tested-by tag:
-> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+Hi,
+This patch series is in continuation to first part [1]
+This series include 5 more tests taken from libhugetlbfs.
 
-Sure, will do. I'll just wait whether there will be some other review
-comments.
+Background:
+Libhugetlbfs is not being maintained actively, and some distro is dropping
+support for it. There are some tests that are good for testing hugetlb
+functionality in kernel. These patches include tests from libhugetlbfs.
 
-								Honza
+ref:
+ 1. https://lore.kernel.org/all/20221104162511.28658-1-tsahu@linux.ibm.com/
 
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> > ---
-> >  .../kernel/syscalls/fanotify/fanotify10.c     | 62 ++++++++++++++++---
-> >  1 file changed, 52 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/fanotify/fanotify10.c b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > index e19bd907470f..cfbf4c31dd08 100644
-> > --- a/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > +++ b/testcases/kernel/syscalls/fanotify/fanotify10.c
-> > @@ -86,7 +86,10 @@ static int ignore_mark_unsupported;
-> >  #define TEST_APP "fanotify_child"
-> >  #define TEST_APP2 "fanotify_child2"
-> >  #define DIR_PATH MOUNT_PATH"/"DIR_NAME
-> > +#define DIR_PATH_MULTI DIR_PATH"%d"
-> >  #define FILE_PATH DIR_PATH"/"FILE_NAME
-> > +#define FILE_PATH_MULTI FILE_PATH"%d"
-> > +#define FILE_PATH_MULTIDIR DIR_PATH_MULTI"/"FILE_NAME
-> >  #define FILE2_PATH DIR_PATH"/"FILE2_NAME
-> >  #define SUBDIR_PATH DIR_PATH"/"SUBDIR_NAME
-> >  #define FILE_EXEC_PATH MOUNT_PATH"/"TEST_APP
-> > @@ -104,6 +107,7 @@ static int old_cache_pressure;
-> >  static pid_t child_pid;
-> >  static int bind_mount_created;
-> >  static unsigned int num_classes = NUM_CLASSES;
-> > +static int max_file_multi;
-> >  
-> >  enum {
-> >  	FANOTIFY_INODE,
-> > @@ -378,9 +382,11 @@ static struct tcase {
-> >  		.tname = "don't ignore mount events created on file with evicted ignore mark",
-> >  		.mark_path_fmt = MOUNT_PATH,
-> >  		.mark_type = FANOTIFY_MOUNT,
-> > -		.ignore_path_fmt = FILE_PATH,
-> > +		.ignore_path_cnt = 16,
-> > +		.ignore_path_fmt = FILE_PATH_MULTI,
-> >  		.ignore_mark_type = FANOTIFY_EVICTABLE,
-> > -		.event_path_fmt = FILE_PATH,
-> > +		.event_path_cnt = 16,
-> > +		.event_path_fmt = FILE_PATH_MULTI,
-> >  		.expected_mask_with_ignore = FAN_OPEN,
-> >  		.expected_mask_without_ignore = FAN_OPEN
-> >  	},
-> > @@ -388,9 +394,11 @@ static struct tcase {
-> >  		.tname = "don't ignore fs events created on a file with evicted ignore mark",
-> >  		.mark_path_fmt = MOUNT_PATH,
-> >  		.mark_type = FANOTIFY_FILESYSTEM,
-> > -		.ignore_path_fmt = FILE_PATH,
-> > +		.ignore_path_cnt = 16,
-> > +		.ignore_path_fmt = FILE_PATH_MULTI,
-> >  		.ignore_mark_type = FANOTIFY_EVICTABLE,
-> > -		.event_path_fmt = FILE_PATH,
-> > +		.event_path_cnt = 16,
-> > +		.event_path_fmt = FILE_PATH_MULTI,
-> >  		.expected_mask_with_ignore = FAN_OPEN,
-> >  		.expected_mask_without_ignore = FAN_OPEN
-> >  	},
-> > @@ -398,10 +406,12 @@ static struct tcase {
-> >  		.tname = "don't ignore mount events created inside a parent with evicted ignore mark",
-> >  		.mark_path_fmt = MOUNT_PATH,
-> >  		.mark_type = FANOTIFY_MOUNT,
-> > -		.ignore_path_fmt = DIR_PATH,
-> > +		.ignore_path_cnt = 16,
-> > +		.ignore_path_fmt = DIR_PATH_MULTI,
-> >  		.ignore_mark_type = FANOTIFY_EVICTABLE,
-> >  		.ignored_flags = FAN_EVENT_ON_CHILD,
-> > -		.event_path_fmt = FILE_PATH,
-> > +		.event_path_cnt = 16,
-> > +		.event_path_fmt = FILE_PATH_MULTIDIR,
-> >  		.expected_mask_with_ignore = FAN_OPEN,
-> >  		.expected_mask_without_ignore = FAN_OPEN
-> >  	},
-> > @@ -409,10 +419,12 @@ static struct tcase {
-> >  		.tname = "don't ignore fs events created inside a parent with evicted ignore mark",
-> >  		.mark_path_fmt = MOUNT_PATH,
-> >  		.mark_type = FANOTIFY_FILESYSTEM,
-> > -		.ignore_path_fmt = DIR_PATH,
-> > +		.ignore_path_cnt = 16,
-> > +		.ignore_path_fmt = DIR_PATH_MULTI,
-> >  		.ignore_mark_type = FANOTIFY_EVICTABLE,
-> >  		.ignored_flags = FAN_EVENT_ON_CHILD,
-> > -		.event_path_fmt = FILE_PATH,
-> > +		.event_path_cnt = 16,
-> > +		.event_path_fmt = FILE_PATH_MULTIDIR,
-> >  		.expected_mask_with_ignore = FAN_OPEN,
-> >  		.expected_mask_without_ignore = FAN_OPEN
-> >  	},
-> > @@ -864,6 +876,8 @@ cleanup:
-> >  
-> >  static void setup(void)
-> >  {
-> > +	int i;
-> > +
-> >  	exec_events_unsupported = fanotify_events_supported_by_kernel(FAN_OPEN_EXEC,
-> >  								      FAN_CLASS_CONTENT, 0);
-> >  	filesystem_mark_unsupported = fanotify_mark_supported_by_kernel(FAN_MARK_FILESYSTEM);
-> > @@ -880,7 +894,24 @@ static void setup(void)
-> >  	SAFE_MKDIR(DIR_PATH, 0755);
-> >  	SAFE_MKDIR(SUBDIR_PATH, 0755);
-> >  	SAFE_FILE_PRINTF(FILE_PATH, "1");
-> > -	SAFE_FILE_PRINTF(FILE2_PATH, "1");
-> > +	for (i = 0; i < (int)(sizeof(tcases)/sizeof(tcases[0])); i++) {
-> > +		if (tcases[i].mark_path_cnt > max_file_multi)
-> > +			max_file_multi = tcases[i].mark_path_cnt;
-> > +		if (tcases[i].ignore_path_cnt > max_file_multi)
-> > +			max_file_multi = tcases[i].ignore_path_cnt;
-> > +		if (tcases[i].event_path_cnt > max_file_multi)
-> > +			max_file_multi = tcases[i].event_path_cnt;
-> > +	}
-> > +	for (i = 0; i < max_file_multi; i++) {
-> > +		char path[PATH_MAX];
-> > +
-> > +		sprintf(path, FILE_PATH_MULTI, i);
-> > +		SAFE_FILE_PRINTF(path, "1");
-> > +		sprintf(path, DIR_PATH_MULTI, i);
-> > +		SAFE_MKDIR(path, 0755);
-> > +		sprintf(path, FILE_PATH_MULTIDIR, i);
-> > +		SAFE_FILE_PRINTF(path, "1");
-> > +	}
-> >  
-> >  	SAFE_CP(TEST_APP, FILE_EXEC_PATH);
-> >  	SAFE_CP(TEST_APP, FILE2_EXEC_PATH);
-> > @@ -896,6 +927,8 @@ static void setup(void)
-> >  
-> >  static void cleanup(void)
-> >  {
-> > +	int i;
-> > +
-> >  	cleanup_fanotify_groups();
-> >  
-> >  	if (bind_mount_created)
-> > @@ -903,8 +936,17 @@ static void cleanup(void)
-> >  
-> >  	SAFE_FILE_PRINTF(CACHE_PRESSURE_FILE, "%d", old_cache_pressure);
-> >  
-> > +	for (i = 0; i < max_file_multi; i++) {
-> > +		char path[PATH_MAX];
-> > +
-> > +		sprintf(path, FILE_PATH_MULTIDIR, i);
-> > +		SAFE_UNLINK(path);
-> > +		sprintf(path, DIR_PATH_MULTI, i);
-> > +		SAFE_RMDIR(path);
-> > +		sprintf(path, FILE_PATH_MULTI, i);
-> > +		SAFE_UNLINK(path);
-> > +	}
-> >  	SAFE_UNLINK(FILE_PATH);
-> > -	SAFE_UNLINK(FILE2_PATH);
-> >  	SAFE_RMDIR(SUBDIR_PATH);
-> >  	SAFE_RMDIR(DIR_PATH);
-> >  	SAFE_RMDIR(MNT2_PATH);
-> > -- 
-> > 2.35.3
-> > 
+v1 -> v2
+	1. Fixed comments
+v2 -> v3
+	1. Changed from setjmp/longjmp logic to check/return logic in
+	hugemmap10.c
+	2. Added a new patch to create support for custom flags in
+	tst_creat_unlinked api.
+	3. Added patch to add safe macros for posix_fadvise call.
+	4. Updated coding asthetics.
+	5. Added description along with the line of failure in hugemmap10.c
+v3 -> v4
+	1. Removing redundant access call to check if file already exist.
+	and removing the retry path, as the case is very rare in PATCH[1/7].
+
+Tarun Sahu (7):
+  Hugetlb: Migrating libhugetlbfs noresv-reserve-resv-page
+  Hugetlb: Migrating libhugetlbfs noresv-regarded-as-resv
+  Hugetlb: Migrating libhugetlbfs private
+  Hugetlb: Migrating libhugetlbfs readahead_reserve
+  Hugetlb: Migrating libhugetlbfs readback
+  Hugetlb: Migrating libhugetlbfs shared
+  Hugetlb: Migrating libhugetlbfs shm-fork
+
+ runtest/hugetlb                               |   7 +
+ testcases/kernel/mem/.gitignore               |   7 +
+ .../kernel/mem/hugetlb/hugefork/hugefork02.c  | 196 ++++++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap27.c  | 166 +++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap28.c  | 107 ++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap29.c  | 129 ++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap30.c  | 120 +++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap31.c  |  98 +++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap32.c  | 104 ++++++++++
+ 9 files changed, 934 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefork/hugefork02.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap27.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap28.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap29.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap31.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
