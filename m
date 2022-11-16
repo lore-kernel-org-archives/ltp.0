@@ -4,95 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39B7CC43217
-	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 11:27:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48BD8C433FE
+	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 12:27:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 863D13CD056
-	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 12:27:52 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id DD02F3CD052
+	for <ltp@archiver.kernel.org>; Wed, 16 Nov 2022 13:27:02 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8AD343CD054
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 12:26:40 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 38E983CA330
+ for <ltp@lists.linux.it>; Wed, 16 Nov 2022 13:26:53 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B50211A00CA3
- for <ltp@lists.linux.it>; Wed, 16 Nov 2022 12:26:39 +0100 (CET)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AGBPeOf009815; Wed, 16 Nov 2022 11:26:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=hODmIogkps+ugJWIu3ioUlJhvwA6UiPKws/CfZsx918=;
- b=fVvJ4EZJCQ+zuWdu1C2n5wUszBjCdG2g6IKh3qZNptxcBSNi4CtJ2kkwOccHF3xPHET7
- QpSNWJcVKvNmEDWlwD/ox441QFduZH6Pfq1zyT9vkTLRZcCxdWllF1HkQM6b2DOeClpj
- bLCmqAA2UMw2SuIozHWqn2l0tbmcpcIx6rbXUBF6UfGjNjFQGTxmypZ2fouHmV7s07g/
- 8mMTbEFY7fdeQvOaeUDB2nVD5ox+vvTQRy9A1X155lHQEvFxTujETrxYXiiJdmkzXfsv
- 5kV8NTJnXozmRGIj+pPKnsLbqPLXb78ymUI7TaQKdjy0yvX5ffIpLc+vziRcK/5R2zLl Tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3kvxygr0f7-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 16 Nov 2022 11:26:38 +0000
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AGBQbe0012411;
- Wed, 16 Nov 2022 11:26:37 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.102])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3kvxygr0ev-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 16 Nov 2022 11:26:37 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
- by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AGBKd0c016550;
- Wed, 16 Nov 2022 11:26:35 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com
- (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
- by ppma06ams.nl.ibm.com with ESMTP id 3kt2rjdtqv-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 16 Nov 2022 11:26:35 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com
- [9.149.105.60])
- by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2AGBQW7f37814712
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 16 Nov 2022 11:26:32 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 930D742045;
- Wed, 16 Nov 2022 11:26:32 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 6D3FD4203F;
- Wed, 16 Nov 2022 11:26:30 +0000 (GMT)
-Received: from tarunpc.in.ibm.com (unknown [9.199.157.25])
- by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Wed, 16 Nov 2022 11:26:30 +0000 (GMT)
-From: Tarun Sahu <tsahu@linux.ibm.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5BC151400159
+ for <ltp@lists.linux.it>; Wed, 16 Nov 2022 13:26:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1668601610;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=osPN8uP0aa+p+Vb3pMl6dugTsPLcOjNReEUgYU2UIDs=;
+ b=Iy+MaIExH0duMhyNocl29IqRsg0YyJlYlP9WdPvWn/jexb1SroxHTsMGCRqIrlk3Dq/z1I
+ Ih6b8/G12MpTaR4HzJiyAb8lLjQNAzkk1XbY5U4fsCxD06gErJcRFJ5LLya3ibDpEVi1FF
+ CsAQ51g75A2H9c1ut1HvVFF3qOM3uLY=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-222-77eW49QWMRCh-wHoMq1dJQ-1; Wed, 16 Nov 2022 07:26:49 -0500
+X-MC-Unique: 77eW49QWMRCh-wHoMq1dJQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.2])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4D6F83C0F66C;
+ Wed, 16 Nov 2022 12:26:49 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com
+ (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 0B77D40C6F75;
+ Wed, 16 Nov 2022 12:26:47 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
-Date: Wed, 16 Nov 2022 16:55:16 +0530
-Message-Id: <20221116112516.261535-8-tsahu@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221116112516.261535-1-tsahu@linux.ibm.com>
-References: <20221116112516.261535-1-tsahu@linux.ibm.com>
+Date: Wed, 16 Nov 2022 20:26:45 +0800
+Message-Id: <20221116122646.4085688-1-liwang@redhat.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vOMpkc8GpksqmmL3ucPk1MdcQhJ5VQt-
-X-Proofpoint-ORIG-GUID: yeaNBZQy9oT7nN8MYwglCXicEZN39rIE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-16_02,2022-11-16_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501
- mlxlogscore=999 phishscore=0 clxscore=1015 lowpriorityscore=0
- malwarescore=0 spamscore=0 adultscore=0 bulkscore=0 impostorscore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211160078
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 7/7] Hugetlb: Migrating libhugetlbfs fallocate_basic
+Subject: [LTP] [PATCH v2 1/2] setitimer01: add interval timer test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,146 +68,179 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
- vaibhav@linux.ibm.com, mike.kravetz@oracle.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/fallocate_basic.c test
+Split checking the return ovalue from testing the signal is
+delivered, so that we could use two time value for verifying.
 
-Test Description: It tests basic fallocate functionality in hugetlbfs.
-Preallocate huge pages to a file in hugetlbfs, and then remove the pages
-via hole punch.
+Also, adding interval timer test by handling the signal at
+least 10 times. After that recover the signal behavior to
+default and do deliver-signal checking.
 
-Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../hugetlb/hugefallocate/hugefallocate02.c   | 90 +++++++++++++++++++
- 3 files changed, 92 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index ca92dfcff..ec1fc2515 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -1,4 +1,5 @@
- hugefallocate01 hugefallocate01
-+hugefallocate02 hugefallocate02
+Notes:
+    v1 --> v2
+    	* use prime number in set_setitimer_value
+    	* print the time at the begining and end of test
+    	* sperately compare result for tv_sec elapse or not
+    	* print more info when TFAIL
+
+ .../kernel/syscalls/setitimer/setitimer01.c   | 85 ++++++++++++++-----
+ 1 file changed, 62 insertions(+), 23 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/setitimer/setitimer01.c b/testcases/kernel/syscalls/setitimer/setitimer01.c
+index 1f631d457..d12abe904 100644
+--- a/testcases/kernel/syscalls/setitimer/setitimer01.c
++++ b/testcases/kernel/syscalls/setitimer/setitimer01.c
+@@ -21,9 +21,12 @@
+ #include "lapi/syscalls.h"
+ #include "tst_safe_clocks.h"
  
- hugemmap01 hugemmap01
- hugemmap02 hugemmap02
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index cafdb5259..c0906f3d3 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -1,5 +1,6 @@
- /cpuset/cpuset01
- /hugetlb/hugefallocate/hugefallocate01
-+/hugetlb/hugefallocate/hugefallocate02
- /hugetlb/hugemmap/hugemmap01
- /hugetlb/hugemmap/hugemmap02
- /hugetlb/hugemmap/hugemmap04
-diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
-new file mode 100644
-index 000000000..d1e11dcbe
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
-@@ -0,0 +1,90 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
-+/*
-+ * Copyright (C) 2015 Oracle Corporation
-+ * Author: Mike Kravetz
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * It tests basic fallocate functionality in hugetlbfs. Preallocate huge
-+ * pages to a file in hugetlbfs, and then remove the pages via hole punch.
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+
-+#include "hugetlb.h"
-+
-+#define MAX_PAGES_TO_USE 5
-+#define MNTPOINT "hugetlbfs/"
-+
-+static int  fd = -1;
-+static long hpage_size;
-+
-+static void run_test(void)
++static struct timeval tv;
+ static struct itimerval *value, *ovalue;
++static volatile unsigned long sigcnt;
+ static long time_step;
+-static long time_count;
++static long time_sec;
++static long time_usec;
+ 
+ static struct tcase {
+ 	int which;
+@@ -40,17 +43,17 @@ static int sys_setitimer(int which, void *new_value, void *old_value)
+ 	return tst_syscall(__NR_setitimer, which, new_value, old_value);
+ }
+ 
+-static void set_setitimer_value(int usec, int o_usec)
++static void sig_routine(int signo LTP_ATTRIBUTE_UNUSED)
+ {
+-	value->it_value.tv_sec = 0;
+-	value->it_value.tv_usec = usec;
+-	value->it_interval.tv_sec = 0;
+-	value->it_interval.tv_usec = 0;
++	sigcnt++;
++}
+ 
+-	ovalue->it_value.tv_sec = o_usec;
+-	ovalue->it_value.tv_usec = o_usec;
+-	ovalue->it_interval.tv_sec = 0;
+-	ovalue->it_interval.tv_usec = 0;
++static void set_setitimer_value(int sec, int usec)
 +{
-+	int err;
-+	unsigned long max_iterations;
-+	unsigned long free_initial, free_after, free_end;
++	value->it_value.tv_sec = sec;
++	value->it_value.tv_usec = usec;
++	value->it_interval.tv_sec = sec;
++	value->it_interval.tv_usec = usec;
+ }
+ 
+ static void verify_setitimer(unsigned int i)
+@@ -60,22 +63,31 @@ static void verify_setitimer(unsigned int i)
+ 	long margin;
+ 	struct tcase *tc = &tcases[i];
+ 
++	tst_res(TINFO, "tc->which = %s", tc->des);
 +
-+	free_initial = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	max_iterations = MIN(free_initial, MAX_PAGES_TO_USE);
-+
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+
-+	/* First preallocate file with max_iterations pages */
-+	err = fallocate(fd, 0, 0, hpage_size * max_iterations);
-+	if (err) {
-+		if (errno == EOPNOTSUPP)
-+			tst_brk(TCONF, "fallocate() Operation is not supported");
-+		tst_res(TFAIL|TERRNO, "fallocate()");
-+		goto cleanup;
++	if (tc->which == ITIMER_REAL) {
++		if (gettimeofday(&tv, NULL) == -1)
++			tst_brk(TBROK | TERRNO, "gettimeofday(&tv1, NULL) failed");
++		else
++			tst_res(TINFO, "Test begin time: %ld.%lds", tv.tv_sec, tv.tv_usec);
 +	}
 +
-+	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	if (free_initial - free_after != max_iterations) {
-+		tst_res(TFAIL, "fallocate did not preallocate %lu huge pages",
-+							max_iterations);
-+		goto cleanup;
+ 	pid = SAFE_FORK();
+ 
+ 	if (pid == 0) {
+-		tst_res(TINFO, "tc->which = %s", tc->des);
+-
+ 		tst_no_corefile(0);
+ 
+-		set_setitimer_value(time_count, 0);
++		set_setitimer_value(time_sec, time_usec);
+ 		TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
+ 
+-		set_setitimer_value(5 * time_step, 7 * time_step);
++		set_setitimer_value(5 * time_sec, 7 * time_usec);
+ 		TST_EXP_PASS(sys_setitimer(tc->which, value, ovalue));
+ 
+-		tst_res(TINFO, "tv_sec=%ld, tv_usec=%ld",
+-			ovalue->it_value.tv_sec,
+-			ovalue->it_value.tv_usec);
++		TST_EXP_EQ_LI(ovalue->it_interval.tv_sec, time_sec);
++		TST_EXP_EQ_LI(ovalue->it_interval.tv_usec, time_usec);
++
++		tst_res(TINFO, "ovalue->it_value.tv_sec=%ld, ovalue->it_value.tv_usec=%ld",
++			ovalue->it_value.tv_sec, ovalue->it_value.tv_usec);
+ 
+ 		/*
+ 		 * ITIMER_VIRTUAL and ITIMER_PROF timers always expire a
+@@ -84,10 +96,29 @@ static void verify_setitimer(unsigned int i)
+ 		 */
+ 		margin = tc->which == ITIMER_REAL ? 0 : time_step;
+ 
+-		if (ovalue->it_value.tv_sec != 0 || ovalue->it_value.tv_usec > time_count + margin)
+-			tst_res(TFAIL, "Ending counters are out of range");
++		if (ovalue->it_value.tv_sec == time_sec) {
++			if (ovalue->it_value.tv_usec < 0 ||
++					ovalue->it_value.tv_usec > time_usec + margin)
++				tst_res(TFAIL, "ovalue->it_value.tv_usec is out of range: %ld",
++					ovalue->it_value.tv_usec);
++		} else {
++			if (ovalue->it_value.tv_sec < 0 ||
++					ovalue->it_value.tv_sec > time_sec)
++				tst_res(TFAIL, "ovalue->it_value.tv_sec is out of range: %ld",
++					ovalue->it_value.tv_sec);
++		}
++
++		SAFE_SIGNAL(tc->signo, sig_routine);
++
++		set_setitimer_value(0, time_usec);
++		TST_EXP_PASS(sys_setitimer(tc->which, value, NULL));
+ 
+-		for (;;)
++		while (sigcnt <= 10UL)
++			;
++
++		SAFE_SIGNAL(tc->signo, SIG_DFL);
++
++		while (1)
+ 			;
+ 	}
+ 
+@@ -97,6 +128,13 @@ static void verify_setitimer(unsigned int i)
+ 		tst_res(TPASS, "Child received signal: %s", tst_strsig(tc->signo));
+ 	else
+ 		tst_res(TFAIL, "Child: %s", tst_strstatus(status));
++
++	if (tc->which == ITIMER_REAL) {
++		if (gettimeofday(&tv, NULL) == -1)
++			tst_brk(TBROK | TERRNO, "gettimeofday(&tv1, NULL) failed");
++		else
++			tst_res(TINFO, "Test end time: %ld.%lds", tv.tv_sec, tv.tv_usec);
 +	}
-+
-+	/* Now punch a hole of the same size */
-+	err = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
-+			0, hpage_size * max_iterations);
-+	if (err) {
-+		tst_res(TFAIL|TERRNO, "fallocate(FALLOC_FL_PUNCH_HOLE)");
-+		goto cleanup;
-+	}
-+
-+	free_end = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	TST_EXP_EQ_LU(free_end, free_initial);
-+cleanup:
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void setup(void)
-+{
-+	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {3, TST_NEEDS},
-+};
+ }
+ 
+ static void setup(void)
+@@ -114,10 +152,11 @@ static void setup(void)
+ 	if (time_step <= 0)
+ 		time_step = 1000;
+ 
+-	time_count = 3 * time_step;
++	tst_res(TINFO, "clock low-resolution: %luns, time step: %luus",
++		time_res.tv_nsec, time_step);
+ 
+-	tst_res(TINFO, "low-resolution: %luns, time step: %luus, time count: %luus",
+-		time_res.tv_nsec, time_step, time_count);
++	time_sec  = 9 + time_step / 1000;
++	time_usec = 3 * time_step;
+ }
+ 
+ static struct tst_test test = {
 -- 
-2.31.1
+2.35.3
 
 
 -- 
