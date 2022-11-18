@@ -4,90 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99427C4332F
-	for <ltp@archiver.kernel.org>; Fri, 18 Nov 2022 15:52:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B656DC433FE
+	for <ltp@archiver.kernel.org>; Fri, 18 Nov 2022 19:54:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 808193CCEB5
-	for <ltp@archiver.kernel.org>; Fri, 18 Nov 2022 16:52:22 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 051EB3CCEC5
+	for <ltp@archiver.kernel.org>; Fri, 18 Nov 2022 20:54:46 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7A4AF3C76CE
- for <ltp@lists.linux.it>; Fri, 18 Nov 2022 16:52:11 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 02F553CCE9E
+ for <ltp@lists.linux.it>; Fri, 18 Nov 2022 20:54:30 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A09581BC3825
- for <ltp@lists.linux.it>; Fri, 18 Nov 2022 16:52:10 +0100 (CET)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AIE7fpZ029768; Fri, 18 Nov 2022 15:52:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=SXwhqIAaftuo8sNcAL6uRbJclPuQtaJaKdJIV2dBOS8=;
- b=cvAodgl+ZQYA/e+VPrP8wJyTcSNNcD3CCXhISn91szAP5FL9+PEhGiEPHHr22TTjilTP
- Bx7KRXxwqin5GXEN8V2/RWbDTpujNppjQMIvqlBt0XEq7/MPUw8QvnPeDqr69SqtTFB6
- MdcseOjuKl0FZI8r9RIW3V5TVnTDN8dc7pYDajfpsHN3eANcB6gRQcvFdKjQuZJ5/uxp
- N1pHwZ2H3AZsPqV7uVzcpnxlUgfrh6XEzmH1GuJP9keWx57+LVD4cq8DMjlUYytFYT51
- jusqf16AdNQyHiv5dTJ3mbjclnEJORw/hTKF8z03DBVjwLrWfOIzgMvM3gA5/QXn6PrT bA== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.102])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3kx66kb467-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 18 Nov 2022 15:52:08 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
- by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AIFot9F022075;
- Fri, 18 Nov 2022 15:52:06 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com
- (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
- by ppma06ams.nl.ibm.com with ESMTP id 3kwu4yh3p7-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 18 Nov 2022 15:52:06 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com
- [9.149.105.62])
- by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2AIFq3kF39715554
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Fri, 18 Nov 2022 15:52:03 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 356AFAE045;
- Fri, 18 Nov 2022 15:52:03 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 81C8EAE04D;
- Fri, 18 Nov 2022 15:52:00 +0000 (GMT)
-Received: from tarunpc (unknown [9.43.17.26])
- by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Fri, 18 Nov 2022 15:52:00 +0000 (GMT)
-Message-ID: <690a07c2b82db5356c81ecd36c6d6d91d62b2cd5.camel@linux.ibm.com>
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 18 Nov 2022 21:21:59 +0530
-In-Reply-To: <Y3ebLYv5EzkOV/cZ@yuki>
-References: <20221116112516.261535-1-tsahu@linux.ibm.com>
- <20221116112516.261535-3-tsahu@linux.ibm.com> <Y3UDxqM8qvnqRfeT@yuki>
- <20221116162630.fhjoksvrdel5rlzs@tarunpc> <Y3ebLYv5EzkOV/cZ@yuki>
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ASKf7GECHm84sFjEt3aLlQllYUzdR_dn
-X-Proofpoint-GUID: ASKf7GECHm84sFjEt3aLlQllYUzdR_dn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-18_02,2022-11-18_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 phishscore=0
- mlxlogscore=940 mlxscore=0 clxscore=1015 spamscore=0 bulkscore=0
- malwarescore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211180090
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4CE60909C78
+ for <ltp@lists.linux.it>; Fri, 18 Nov 2022 20:54:29 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 696EB1FF47;
+ Fri, 18 Nov 2022 19:54:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1668801269;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=zlMYQP2lVQV1DAhvIlr5QGY/FlAgfEjvT/y+rh77ePo=;
+ b=FCtop+b08HxEazbXDuBBS5FkGsPq29xi623ib5EIE+8MU6CP+tcGKqTXbl9/9teXzNflZ/
+ glYLWxk493cJraMxmqjOJr96Fjcue0EuASpHde7YzjsZ9yq3yhoJp/AUrdL5IkyV6xwGNE
+ RQtSO6+/mnE/Ua5cUp1Yq5EP1iXCejg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1668801269;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=zlMYQP2lVQV1DAhvIlr5QGY/FlAgfEjvT/y+rh77ePo=;
+ b=qLrB5Sh3b/BS9VgMv3kpZYu8SINn1RrqKpVx1GTIMIirXTSMGat0H2sZjKl63Azcvv28ok
+ 5ljiz4ib/fmjdWDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 363A813A66;
+ Fri, 18 Nov 2022 19:54:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 761XC/Xid2PTYAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 18 Nov 2022 19:54:29 +0000
+Date: Fri, 18 Nov 2022 20:54:26 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Tim Bird <tim.bird@sony.com>
+Message-ID: <Y3fi8ljdbNP/CvQ3@pevik>
+References: <416608e6-10ac-c943-1fc8-a3944286f193@suse.com>
+ <BYAPR13MB25032674327E22B588074DE0FD069@BYAPR13MB2503.namprd13.prod.outlook.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <BYAPR13MB25032674327E22B588074DE0FD069@BYAPR13MB2503.namprd13.prod.outlook.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 2/7] Hugetlb: Migrating libhugetlbfs counters
+Subject: Re: [LTP] [Automated-testing] [RFC] Include runltp-ng (runltp
+ successor) into LTP git
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,119 +80,88 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: tsahu@linux.ibm.com
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, ltp@lists.linux.it, mike.kravetz@oracle.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>,
+ "automated-testing@lists.yoctoproject.org"
+ <automated-testing@lists.yoctoproject.org>
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-Thanks Cyril, for the such a good insights. I will rework on this test.
+Hi Tim,
 
-~Tarun
+> Just one quick bit of feedback...
 
-On Fri, 2022-11-18 at 15:48 +0100, Cyril Hrubis wrote:
-> Hi!
-> > > > +static long hpage_size;
-> > > > +
-> > > > +	if (t != et) {
-> > > > +		tst_res(TFAIL, "At Line %i:While %s: Bad
-> > > > "MEMINFO_HPAGE_TOTAL
-> > > > +				" expected %li, actual %li",
-> > > > line, desc, et, t);
-> > > 
-> > > We do have tst_res_() that can be called as:
-> > > 
-> > > 	tst_res_(__FILE__, line,
-> > >                  "%s bad " MEMINFO_HPAGE_TOTAL " = %li expected
-> > > %li",
-> > > 		 desc, et, t);
-> > Ok. Will update it.
-> > > > +out:
-> > > > +	return verify_counters(line, desc, et, ef, er, es);
-> > > > +}
-> > > > +#define set_nr_hugepages(c, d) CHECK_(set_nr_hugepages_(c, d,
-> > > > __LINE__))
-> > > 
-> > > The macro name should be uppercase so that it's clear that it's a
-> > > macro
-> > > and not a simple function. With that we can also drop the
-> > > underscore
-> > > from the actual function name too.
-> > > 
-> > I avoided it deliberately knowing that these macros are being
-> > called too
-> > often, keeping them in uppercase would have made the code look too
-> > messy.
-> > Then, I looked that there was tst_res and similiar macros too which
-> > were
-> > kept in smallcase too (which is wrapper to tst_res_ function), That
-> > is why
-> > I kept them smallcase.
-> 
-> The whole point why we are going in circles around how to structure
-> this
-> piece of code is code readibility. Source code is more often read
-> than
-> written, which means that it's more important to invest into writing
-> code that is easily understandable since that will save effort in the
-> long term. That is true especially for kernel tests, where there is
-> enough complexity in the kernel itself and writing tests that are not
-> easy to understand does actually harm.
-> 
-> There is a key difference between tst_res() defined to tst_res_()
-> that
-> adds a few parameters and macros that change the codeflow. If there
-> are
-> macros that change code flow, and perhaps checkpatch is right here
-> that
-> it's wiser to avoid them at all, they should at least scream in upper
-> case letters that this is not a regular function.
-> 
-> This all boils down to a principle of a least surprise.
-> 
-> Perhaps the best solution would be to get back to a drawing board and
-> figure out how to better structure the test so that the code flow is
-> easier to follow.
-> 
+> > -----Original Message-----
+> > From: automated-testing@lists.yoctoproject.org <automated-testing@lists=
+.yoctoproject.org> On Behalf Of Andrea Cervesato via
+> > lists.yoctoproject.org
+
+> > Hi,
+
+> > as you may know, runltp has been under bug fixing for years without
+> > providing any new feature. For this reason the Perl runltp-ng
+> > (https://github.com/metan-ucw/runltp-ng) was developed, providing an
+> > alternative solution that wasn't completely accepted by LTP community
+> > due to the choice of using Perl as the main language.
+
+> > For this reason, a new Python runltp-ng has been developed during this
+> > year, with the target to replace Perl version and the current runltp in
+> > the next future. Its code can be found here:
+> > https://github.com/acerv/runltp-ng
+
+> I think this sounds like a great project, and I look forward to trying it=
+ out.
+
+> > runltp-ng Python version provides the following features:
+> >  =A0=A0=A0 - class based architecture in Python 3.6+
+
+> Why python 3.6+?  Fuego uses a docker container with an older
+> version of Debian, that defaults to Python version 3.5.3.
+We support versions from 3.6 to 3.11.
+We didn't want to maintain anything older.
+
+> Is there something specifically in Python 3.6 that is required for runltp=
+-ng?
+> Could it be avoided so that runltp-ng could be backward compatible with
+> older interpreters?
+Andrea will give more info, there was some limitations.
+
+FYI runltp-ng allows you to connect over SSH (i.e. running on newer host) or
+test qcow image started with QEMU. We are also thinking about supporting ro=
+otfs
++ separate kernel (output of https://buildroot.org/). Not sure if this helps
+you.
+
+We actually try to encourage people to not run runltp-ng on SUT, running fr=
+om
+host will allow more control in case of crashed system by test.
+
+Kind regards,
+Petr
+
+> (Sorry, but this is one of my pet peeves about the whole Python ecosystem=
+ - the lack of
+> backward compatibility, and the constant need to be creating virtual envi=
+ronments
+> for basic tools and apps.)
+>  -- Tim
 
 
-> > > Maybe it would be a bit nicer to have actually two different
-> > > macros so
-> > > that we don't have to resort to this do {} while (0) trickery
-> > > e.g.
-> > > 
-> > > #define CHECK_BREAK(cond) if (cond) break;
-> > > #define CHECK_RETURN(cond) if (cond) return -1;
-> > > 
-> > > #define MAP_BREAK(s, h, f, d) CHECK_BREAK(map(s, h, f, d,
-> > > __LINE__))
-> > > #define MAP_RETURN(s, h, f, d) CHECK_RETURN(map(s, h, f, d,
-> > > __LINE__))
-> > > 
-> > > Then the check counters would look much better.
-> > > 
-> > > Or we can just stick to the RETURN variants and put the body of
-> > > the loop
-> > > in the runtest() function into do_interation() function.
-> > > 
-> > I like the second idea, as it will only have one macro. which will
-> > keep the
-> > code less messy. But anyway, I had tried this already, if (cond)
-> > return; is
-> > not allowed. "make check" throws warning saying, "Macros with flow
-> > control
-> > statements should be avoided". Only way I could see is to use
-> > break.
-> 
-> Again, let's not work around the tooling we have, the tooling is
-> supposed to help, once you start bending the code so that the tooling
-> is
-> happy you are on a wrong path.
-> 
+
+> -=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-
+> Links: You receive all messages sent to this group.
+> View/Reply Online (#1194): https://lists.yoctoproject.org/g/automated-tes=
+ting/message/1194
+> Mute This Topic: https://lists.yoctoproject.org/mt/94688149/3616762
+> Group Owner: automated-testing+owner@lists.yoctoproject.org
+> Unsubscribe: https://lists.yoctoproject.org/g/automated-testing/unsub [pv=
+orel@suse.cz]
+> -=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-
 
 
--- 
+
+-- =
+
 Mailing list info: https://lists.linux.it/listinfo/ltp
