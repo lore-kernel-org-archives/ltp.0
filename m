@@ -4,71 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B656DC433FE
-	for <ltp@archiver.kernel.org>; Fri, 18 Nov 2022 19:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10D7EC433FE
+	for <ltp@archiver.kernel.org>; Sat, 19 Nov 2022 02:02:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 051EB3CCEC5
-	for <ltp@archiver.kernel.org>; Fri, 18 Nov 2022 20:54:46 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 9DEB43CCEE0
+	for <ltp@archiver.kernel.org>; Sat, 19 Nov 2022 03:02:43 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 02F553CCE9E
- for <ltp@lists.linux.it>; Fri, 18 Nov 2022 20:54:30 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D4BC23CCEA8
+ for <ltp@lists.linux.it>; Sat, 19 Nov 2022 03:02:33 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4CE60909C78
- for <ltp@lists.linux.it>; Fri, 18 Nov 2022 20:54:29 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 696EB1FF47;
- Fri, 18 Nov 2022 19:54:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1668801269;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 257C86F9D1B
+ for <ltp@lists.linux.it>; Sat, 19 Nov 2022 03:02:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1668823351;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zlMYQP2lVQV1DAhvIlr5QGY/FlAgfEjvT/y+rh77ePo=;
- b=FCtop+b08HxEazbXDuBBS5FkGsPq29xi623ib5EIE+8MU6CP+tcGKqTXbl9/9teXzNflZ/
- glYLWxk493cJraMxmqjOJr96Fjcue0EuASpHde7YzjsZ9yq3yhoJp/AUrdL5IkyV6xwGNE
- RQtSO6+/mnE/Ua5cUp1Yq5EP1iXCejg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1668801269;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=zlMYQP2lVQV1DAhvIlr5QGY/FlAgfEjvT/y+rh77ePo=;
- b=qLrB5Sh3b/BS9VgMv3kpZYu8SINn1RrqKpVx1GTIMIirXTSMGat0H2sZjKl63Azcvv28ok
- 5ljiz4ib/fmjdWDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 363A813A66;
- Fri, 18 Nov 2022 19:54:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 761XC/Xid2PTYAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 18 Nov 2022 19:54:29 +0000
-Date: Fri, 18 Nov 2022 20:54:26 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Tim Bird <tim.bird@sony.com>
-Message-ID: <Y3fi8ljdbNP/CvQ3@pevik>
-References: <416608e6-10ac-c943-1fc8-a3944286f193@suse.com>
- <BYAPR13MB25032674327E22B588074DE0FD069@BYAPR13MB2503.namprd13.prod.outlook.com>
+ bh=3MIw3uylXZepKRH09gUyVZT8FAkMlQOl4cT89Cckj98=;
+ b=aYqFNhpgXrfs2jA3XJ4SyA17tls5RwmByNhDLvEK7dU3MhjyYza8Go65vjOiw7Bq2DPyT1
+ QHEfaJiYsMGXg8x4uTbsuvcr6fpl3Z4BIlt1na5R2+tNU3ggwL6kLS1LLB/gkGmJMxFen9
+ xuPG/7IkPOQSMKZ3UcwE54HKIj+b/6I=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-619-oVad7DBuN2KnD-DkobevRg-1; Fri, 18 Nov 2022 21:02:29 -0500
+X-MC-Unique: oVad7DBuN2KnD-DkobevRg-1
+Received: by mail-wm1-f69.google.com with SMTP id
+ h9-20020a1c2109000000b003cfd37aec58so3116799wmh.1
+ for <ltp@lists.linux.it>; Fri, 18 Nov 2022 18:02:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=3MIw3uylXZepKRH09gUyVZT8FAkMlQOl4cT89Cckj98=;
+ b=wD5eawDV1gApeXs2xqdVMzb85vbDAV3Ks6wOFcQBgM2YpeGdBZHp59osaaz3wqcw4t
+ NSVKj1R0J60Lxci/O94wPx9qpVDNefoCRkq6hNVc/+SbVQbU66FM0NN/ewMYWFxsu0/D
+ i6HTWppPRyMdgA5avPXm7/qtvl+A3KJ6ifD+u4/+L+7YhkZAF72UCACodmoQ8RQ74E+t
+ UHbu79qwiycUS9J23f3zmrE5KhV7q12t1PmfALvP702QzIhkPJ/DVI96aagCyMB2OP0S
+ 7yuZY1wRMAut8kw+cmstsm+nT7U2CW7ZGUcIcfcN8W1n0KUQ1FEfV3NoCbUsjkkRG6aG
+ 9UrA==
+X-Gm-Message-State: ANoB5pmHHoKikjHrRtrrxu1xT/0mG+xajGFKwQ2T+JZUVaFGFw4jNxP/
+ VZL68rr20yjNad5LWK+rrs3zfulX5adZA7imS8qmcdNI3kS37UXt8ntOF3XwSlYgutgQ4afVV/X
+ Asg0qvZ7tcNZg8qD3EzaDJCMhnBM=
+X-Received: by 2002:a05:600c:4194:b0:3cf:5080:412c with SMTP id
+ p20-20020a05600c419400b003cf5080412cmr9633233wmh.99.1668823348395; 
+ Fri, 18 Nov 2022 18:02:28 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf4O2ErIVIAFQ/hVyuzgz67siASSMYfisBbJFD5TxoLX1+6IkF5mPg55Jv6PnmvxFdGHWFUJsoIVq7sPP6kSqFg=
+X-Received: by 2002:a05:600c:4194:b0:3cf:5080:412c with SMTP id
+ p20-20020a05600c419400b003cf5080412cmr9633227wmh.99.1668823348194; Fri, 18
+ Nov 2022 18:02:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <BYAPR13MB25032674327E22B588074DE0FD069@BYAPR13MB2503.namprd13.prod.outlook.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20221118065751.4120847-1-liwang@redhat.com>
+ <Y3eLHM6Q/W+5Ndcg@yuki>
+In-Reply-To: <Y3eLHM6Q/W+5Ndcg@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 19 Nov 2022 10:02:17 +0800
+Message-ID: <CAEemH2dDYfX-tYjT_w4M0Of09yeNDanG=bxjtRwPgOFK35CyoA@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [Automated-testing] [RFC] Include runltp-ng (runltp
- successor) into LTP git
+Subject: Re: [LTP] [PATCH] keyctl02: make use of .max_runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,88 +85,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>,
- "automated-testing@lists.yoctoproject.org"
- <automated-testing@lists.yoctoproject.org>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Cc: ltp@lists.linux.it
+Content-Type: multipart/mixed; boundary="===============1048982454=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Tim,
+--===============1048982454==
+Content-Type: multipart/alternative; boundary="000000000000dcc55305edc93694"
 
-> Just one quick bit of feedback...
+--000000000000dcc55305edc93694
+Content-Type: text/plain; charset="UTF-8"
 
-> > -----Original Message-----
-> > From: automated-testing@lists.yoctoproject.org <automated-testing@lists=
-.yoctoproject.org> On Behalf Of Andrea Cervesato via
-> > lists.yoctoproject.org
+On Fri, Nov 18, 2022 at 9:38 PM Cyril Hrubis <chrubis@suse.cz> wrote:
 
-> > Hi,
+> Hi!
+> > --- a/testcases/kernel/syscalls/keyctl/keyctl02.c
+> > +++ b/testcases/kernel/syscalls/keyctl/keyctl02.c
+> > @@ -81,6 +81,11 @@ static void do_test(void)
+> >               SAFE_PTHREAD_JOIN(pth[1], NULL);
+> >               SAFE_PTHREAD_JOIN(pth[2], NULL);
+> >               SAFE_PTHREAD_JOIN(pth[3], NULL);
+> > +
+> > +             if (!tst_remaining_runtime()) {
+> > +                     tst_res(TINFO, "Runtime exhausted, exiting at %i
+> looping times", i);
+>                                                               ^
+>                                                               maybe it
+>                                                               would be
+>                                                               better:
+>                                                               "exiting
+> after %i loops"
+>
 
-> > as you may know, runltp has been under bug fixing for years without
-> > providing any new feature. For this reason the Perl runltp-ng
-> > (https://github.com/metan-ucw/runltp-ng) was developed, providing an
-> > alternative solution that wasn't completely accepted by LTP community
-> > due to the choice of using Perl as the main language.
+Sounds good, merged this modification.
 
-> > For this reason, a new Python runltp-ng has been developed during this
-> > year, with the target to replace Perl version and the current runltp in
-> > the next future. Its code can be found here:
-> > https://github.com/acerv/runltp-ng
+-- 
+Regards,
+Li Wang
 
-> I think this sounds like a great project, and I look forward to trying it=
- out.
+--000000000000dcc55305edc93694
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-> > runltp-ng Python version provides the following features:
-> >  =A0=A0=A0 - class based architecture in Python 3.6+
-
-> Why python 3.6+?  Fuego uses a docker container with an older
-> version of Debian, that defaults to Python version 3.5.3.
-We support versions from 3.6 to 3.11.
-We didn't want to maintain anything older.
-
-> Is there something specifically in Python 3.6 that is required for runltp=
--ng?
-> Could it be avoided so that runltp-ng could be backward compatible with
-> older interpreters?
-Andrea will give more info, there was some limitations.
-
-FYI runltp-ng allows you to connect over SSH (i.e. running on newer host) or
-test qcow image started with QEMU. We are also thinking about supporting ro=
-otfs
-+ separate kernel (output of https://buildroot.org/). Not sure if this helps
-you.
-
-We actually try to encourage people to not run runltp-ng on SUT, running fr=
-om
-host will allow more control in case of crashed system by test.
-
-Kind regards,
-Petr
-
-> (Sorry, but this is one of my pet peeves about the whole Python ecosystem=
- - the lack of
-> backward compatibility, and the constant need to be creating virtual envi=
-ronments
-> for basic tools and apps.)
->  -- Tim
-
-
-
-> -=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-
-> Links: You receive all messages sent to this group.
-> View/Reply Online (#1194): https://lists.yoctoproject.org/g/automated-tes=
-ting/message/1194
-> Mute This Topic: https://lists.yoctoproject.org/mt/94688149/3616762
-> Group Owner: automated-testing+owner@lists.yoctoproject.org
-> Unsubscribe: https://lists.yoctoproject.org/g/automated-testing/unsub [pv=
-orel@suse.cz]
-> -=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-
-
+PGRpdiBkaXI9Imx0ciI+PGRpdiBkaXI9Imx0ciI+PGRpdiBjbGFzcz0iZ21haWxfZGVmYXVsdCIg
+c3R5bGU9ImZvbnQtc2l6ZTpzbWFsbCI+PGJyPjwvZGl2PjwvZGl2Pjxicj48ZGl2IGNsYXNzPSJn
+bWFpbF9xdW90ZSI+PGRpdiBkaXI9Imx0ciIgY2xhc3M9ImdtYWlsX2F0dHIiPk9uIEZyaSwgTm92
+IDE4LCAyMDIyIGF0IDk6MzggUE0gQ3lyaWwgSHJ1YmlzICZsdDs8YSBocmVmPSJtYWlsdG86Y2hy
+dWJpc0BzdXNlLmN6Ij5jaHJ1YmlzQHN1c2UuY3o8L2E+Jmd0OyB3cm90ZTo8YnI+PC9kaXY+PGJs
+b2NrcXVvdGUgY2xhc3M9ImdtYWlsX3F1b3RlIiBzdHlsZT0ibWFyZ2luOjBweCAwcHggMHB4IDAu
+OGV4O2JvcmRlci1sZWZ0OjFweCBzb2xpZCByZ2IoMjA0LDIwNCwyMDQpO3BhZGRpbmctbGVmdDox
+ZXgiPkhpITxicj4NCiZndDsgLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9rZXljdGwv
+a2V5Y3RsMDIuYzxicj4NCiZndDsgKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9rZXlj
+dGwva2V5Y3RsMDIuYzxicj4NCiZndDsgQEAgLTgxLDYgKzgxLDExIEBAIHN0YXRpYyB2b2lkIGRv
+X3Rlc3Qodm9pZCk8YnI+DQomZ3Q7wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBTQUZFX1BUSFJFQURf
+Sk9JTihwdGhbMV0sIE5VTEwpOzxicj4NCiZndDvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoFNBRkVf
+UFRIUkVBRF9KT0lOKHB0aFsyXSwgTlVMTCk7PGJyPg0KJmd0O8KgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgU0FGRV9QVEhSRUFEX0pPSU4ocHRoWzNdLCBOVUxMKTs8YnI+DQomZ3Q7ICs8YnI+DQomZ3Q7
+ICvCoCDCoCDCoCDCoCDCoCDCoCDCoGlmICghdHN0X3JlbWFpbmluZ19ydW50aW1lKCkpIHs8YnI+
+DQomZ3Q7ICvCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHRzdF9yZXMoVElORk8sICZx
+dW90O1J1bnRpbWUgZXhoYXVzdGVkLCBleGl0aW5nIGF0ICVpIGxvb3BpbmcgdGltZXMmcXVvdDss
+IGkpOzxicj4NCsKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIF48YnI+DQrCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBtYXliZSBpdDxicj4NCsKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHdvdWxkIGJlPGJyPg0KwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgYmV0dGVyOjxicj4NCsKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgICZxdW90O2V4aXRpbmcgYWZ0ZXIgJWkgbG9vcHMmcXVvdDs8YnI+PC9ibG9ja3F1
+b3RlPjxkaXY+PGJyPjwvZGl2PjxkaXY+PGRpdiBjbGFzcz0iZ21haWxfZGVmYXVsdCIgc3R5bGU9
+ImZvbnQtc2l6ZTpzbWFsbCI+U291bmRzIGdvb2QsIG1lcmdlZCB0aGlzIG1vZGlmaWNhdGlvbi48
+L2Rpdj48L2Rpdj48L2Rpdj48ZGl2Pjxicj48L2Rpdj4tLSA8YnI+PGRpdiBkaXI9Imx0ciIgY2xh
+c3M9ImdtYWlsX3NpZ25hdHVyZSI+PGRpdiBkaXI9Imx0ciI+PGRpdj5SZWdhcmRzLDxicj48L2Rp
+dj48ZGl2PkxpIFdhbmc8YnI+PC9kaXY+PC9kaXY+PC9kaXY+PC9kaXY+DQo=
+--000000000000dcc55305edc93694--
 
 
--- =
+--===============1048982454==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
+
+-- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1048982454==--
+
