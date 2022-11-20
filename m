@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E2D6C4332F
-	for <ltp@archiver.kernel.org>; Sun, 20 Nov 2022 19:17:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04E56C4332F
+	for <ltp@archiver.kernel.org>; Sun, 20 Nov 2022 19:17:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 888AF3CCC95
-	for <ltp@archiver.kernel.org>; Sun, 20 Nov 2022 20:16:58 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 9D1E33CCC81
+	for <ltp@archiver.kernel.org>; Sun, 20 Nov 2022 20:17:09 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E3ABC3CCCA8
- for <ltp@lists.linux.it>; Sun, 20 Nov 2022 20:16:06 +0100 (CET)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id 6228E3CCC98
+ for <ltp@lists.linux.it>; Sun, 20 Nov 2022 20:16:12 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 492D0636CD0
- for <ltp@lists.linux.it>; Sun, 20 Nov 2022 20:16:05 +0100 (CET)
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C062323C6B2
+ for <ltp@lists.linux.it>; Sun, 20 Nov 2022 20:16:10 +0100 (CET)
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AKD2dVr038261; Sun, 20 Nov 2022 19:16:04 GMT
+ 2AKIBrQS001479; Sun, 20 Nov 2022 19:16:08 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=nts7f3jfAvZI9IV3ObuihBQCIoZ56vAo7u0fFVGhqwM=;
- b=odiR7Be7EnvCnpmIP/Ux8hmrt1yg6W1kPaxedKVIbeH0VabQu6xLiA+fMuRVyyaViDAP
- OtyQPlmNAhzmYD3KVO84rfhSMqRitxKOnql7nmqN8PuUGAmZqoIlxAy0WJbBsHtmfRRt
- l1T1zDT+2hQLWKcqMhHvxj+QsdTsOJzfmFF1Y/pkkOtaS84gkxtp0wjbkav2Rkzlf9nu
- PUZ7LgGtqo4tdEksdMTcl6F+n8xtHRWl3XNQlGHydaJAdiPxGnot9RApPqykyUUFpiQ9
- sfLqnCmwwsp0Zxbdx4gc3TKBxYFExcVFzR6MEn//PQd1prcp2bfcfmd0ILRekcJNaqws AA== 
+ bh=rj+Yi3fllLCrVDCYzy0K1UM6Ats3OlmPjPgn2+W5O0k=;
+ b=Ch2YkJtw3rRT0O1UiqfWTxhHib2m7RUUp99HT7NvqMLtnGRnORKZwZT6e/A21s/zxemd
+ vvc5txpdnB1puxIkS6BKSp9DtuJT+cfVTr71MZpkS2Tr+EQHG11eNKq7FURUNTJ24uTj
+ iLHzVvjYW1RIYnKu97J21NwwArSrdIgKyRXJJ5H3sK1MSH4mj4SxYW0i9tZ2LYDaMPXR
+ D1cHyJTswC6UjbSibGyDgNhcg8/oU2GUPeB+lcvpObup0N8RK+mv40Z5j3dr9f54XCXD
+ gcWmroxuefBl11Okc18jMyCRa0fONgziVCfzRsyx9sTasetH6e+LRZM3WG0A6nLh0s7X ZA== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ky90neq79-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ky8khey1y-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 20 Nov 2022 19:16:04 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AKJATgN033604;
- Sun, 20 Nov 2022 19:16:03 GMT
+ Sun, 20 Nov 2022 19:16:08 +0000
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AKJ8eB1006466;
+ Sun, 20 Nov 2022 19:16:08 GMT
 Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
  [169.51.49.99])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ky90neq6q-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ky8khey1h-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 20 Nov 2022 19:16:03 +0000
+ Sun, 20 Nov 2022 19:16:07 +0000
 Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AKJ7QBi016909;
- Sun, 20 Nov 2022 19:16:02 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com
- (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
- by ppma04ams.nl.ibm.com with ESMTP id 3kxps8skwv-1
+ by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AKJ6hIA016541;
+ Sun, 20 Nov 2022 19:16:05 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com
+ (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+ by ppma04ams.nl.ibm.com with ESMTP id 3kxps8skww-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 20 Nov 2022 19:16:01 +0000
+ Sun, 20 Nov 2022 19:16:05 +0000
 Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com
  [9.149.105.232])
- by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2AKJFwwH63766966
+ by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
+ id 2AKJGhVJ40632650
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sun, 20 Nov 2022 19:15:58 GMT
+ Sun, 20 Nov 2022 19:16:43 GMT
 Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C588D52050;
- Sun, 20 Nov 2022 19:15:58 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 539D65204F;
+ Sun, 20 Nov 2022 19:16:02 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.36.159])
- by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id C2DFA5204F;
- Sun, 20 Nov 2022 19:15:55 +0000 (GMT)
+ by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 43BA852050;
+ Sun, 20 Nov 2022 19:15:58 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Mon, 21 Nov 2022 00:45:31 +0530
-Message-Id: <20221120191533.164848-6-tsahu@linux.ibm.com>
+Date: Mon, 21 Nov 2022 00:45:32 +0530
+Message-Id: <20221120191533.164848-7-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221120191533.164848-1-tsahu@linux.ibm.com>
 References: <20221120191533.164848-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: IVQ6oLAN8pFLXOJN066zYOGxYbewIMCP
-X-Proofpoint-ORIG-GUID: H-m-VvFP8iYGhBOaBrwjxcMAsgZQS1um
+X-Proofpoint-GUID: BlFKagoI8RQuZzzqZAjAlR3dVEvqGKaU
+X-Proofpoint-ORIG-GUID: 8wgqgsvEVagkcaqsG1QlWf84QmvXfkxN
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-20_13,2022-11-18_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 phishscore=0
- spamscore=0 bulkscore=0 clxscore=1015 impostorscore=0 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 mlxscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211200162
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+ priorityscore=1501
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1015 adultscore=0 impostorscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2210170000 definitions=main-2211200162
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 5/7] Hugetlb: Migrating libhugetlbfs fadvise_reserve
+Subject: [LTP] [PATCH v5 6/7] Hugetlb: Migrating libhugetlbfs fallocate_align
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -107,68 +107,78 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/fadvise_reserve.c test
+Migrating the libhugetlbfs/testcases/fallocate_align.c test
 
-Test Description: fadvise() on some kernels can cause the reservation
-counter to get corrupted. The problem is that the patches are allocated for
-the reservation but not faulted in at the time of allocation. The counters
-do not get updated and effectively "leak". This test identifies whether the
-kernel is vulnerable to the problem or not. It's fixed in kernel by 'commit
-f2deae9d4e70 ("Remove implementation of readpage from the hugetlbfs_aops")'
+Test Description: It tests alignment of fallocate arguments. fallocate will
+take non-huge page aligned offsets and addresses.  However, operations are
+only performed on huge pages.  This is different that than fallocate
+behavior in "normal" filesystems.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap12.c  | 84 +++++++++++++++++++
- 3 files changed, 86 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap12.c
+ runtest/hugetlb                               |   2 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugefallocate/Makefile |  10 ++
+ .../hugetlb/hugefallocate/hugefallocate01.c   | 169 ++++++++++++++++++
+ 4 files changed, 182 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/Makefile
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate01.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index b9ee7227d..b019c4195 100644
+index b019c4195..ca92dfcff 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -8,6 +8,7 @@ hugemmap08 hugemmap08
- hugemmap09 hugemmap09
- hugemmap10 hugemmap10
- hugemmap11 hugemmap11
-+hugemmap12 hugemmap12
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
+@@ -1,3 +1,5 @@
++hugefallocate01 hugefallocate01
++
+ hugemmap01 hugemmap01
+ hugemmap02 hugemmap02
+ hugemmap04 hugemmap04
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 3e64b67be..ec250592d 100644
+index ec250592d..cafdb5259 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -9,6 +9,7 @@
- /hugetlb/hugemmap/hugemmap09
- /hugetlb/hugemmap/hugemmap10
- /hugetlb/hugemmap/hugemmap11
-+/hugetlb/hugemmap/hugemmap12
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap12.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap12.c
+@@ -1,4 +1,5 @@
+ /cpuset/cpuset01
++/hugetlb/hugefallocate/hugefallocate01
+ /hugetlb/hugemmap/hugemmap01
+ /hugetlb/hugemmap/hugemmap02
+ /hugetlb/hugemmap/hugemmap04
+diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/Makefile b/testcases/kernel/mem/hugetlb/hugefallocate/Makefile
 new file mode 100644
-index 000000000..ae132107c
+index 000000000..77ebb0aef
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap12.c
-@@ -0,0 +1,84 @@
++++ b/testcases/kernel/mem/hugetlb/hugefallocate/Makefile
+@@ -0,0 +1,10 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2009, Cisco Systems Inc.
++# Ngie Cooper, July 2009
++
++top_srcdir		?= ../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(abs_srcdir)/../Makefile.inc
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
+diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate01.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate01.c
+new file mode 100644
+index 000000000..1ec0dd000
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate01.c
+@@ -0,0 +1,169 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
-+ * Copyright (C) 2005-2006 IBM Corporation.
-+ * Author: Mel Gorman
++ * Copyright (C) 2015 Oracle Corporation
++ * Author: Mike Kravetz
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * fadvise() on some kernels can cause the reservation counter to get
-+ * corrupted. The problem is that the patches are allocated for the
-+ * reservation but not faulted in at the time of allocation. The counters
-+ * do not get updated and effectively "leak". This test identifies whether
-+ * the kernel is vulnerable to the problem or not. It's fixed in kernel
-+ * by commit f2deae9d4e70793568ef9e85d227abb7bef5b622.
++ * It tests alignment of fallocate arguments. fallocate will take non-huge
++ * page aligned offsets and addresses.  However, operations are only
++ * performed on huge pages.  This is different that than fallocate
++ * behavior in "normal" filesystems.
 + *
 + */
 +
@@ -182,36 +192,126 @@ index 000000000..ae132107c
 +#include "hugetlb.h"
 +
 +#define MNTPOINT "hugetlbfs/"
-+static long hpage_size;
++
 +static int  fd = -1;
++static long hpage_size;
 +
 +static void run_test(void)
 +{
-+	void *p;
-+	unsigned long initial_rsvd, map_rsvd, fadvise_rsvd, end_rsvd;
++	int err;
++	unsigned long free_initial, free_after, free_after_delete;
 +
 +	fd = tst_creat_unlinked(MNTPOINT, 0);
 +
-+	initial_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-+	tst_res(TINFO, "Reserve count before map: %lu", initial_rsvd);
++	free_initial = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
 +
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+		 fd, 0);
-+	map_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-+	tst_res(TINFO, "Reserve count after map: %lu", map_rsvd);
++	/*
++	 * First preallocate file with just 1 byte.  Allocation sizes
++	 * are rounded up, so we should get an entire huge page.
++	 */
++	err = fallocate(fd, 0, 0, 1);
++	if (err) {
++		if (errno == EOPNOTSUPP)
++			tst_brk(TCONF, "Operation Not Supported");
++		tst_res(TFAIL|TERRNO, "fallocate()");
++		goto cleanup;
++	}
 +
-+	SAFE_POSIX_FADVISE(fd, 0, hpage_size, POSIX_FADV_WILLNEED);
-+	fadvise_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-+	tst_res(TINFO, "Reserve count after fadvise: %lu", fadvise_rsvd);
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	if (free_initial - free_after != 1) {
++		tst_res(TFAIL, "fallocate 1 byte did not preallocate entire huge page");
++		goto cleanup;
++	}
 +
-+	memset(p, 1, hpage_size);
++	/*
++	 * Now punch a hole with just 1 byte.  On hole punch, sizes are
++	 * rounded down. So, this operation should not create a hole.
++	 */
++	err = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
++			0, 1);
++	if (err) {
++		tst_res(TFAIL|TERRNO, "fallocate(FALLOC_FL_PUNCH_HOLE)");
++		goto cleanup;
++	}
 +
-+	SAFE_MUNMAP(p, hpage_size);
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	if (free_after == free_initial) {
++		tst_res(TFAIL, "fallocate hole punch 1 byte free'ed a huge page");
++		goto cleanup;
++	}
++
++	/*
++	 * Now punch a hole with of 2 * hpage_size - 1 byte.  This size
++	 * should be rounded down to a single huge page and the hole created.
++	 */
++	err = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
++			0, (2 * hpage_size) - 1);
++	if (err) {
++		tst_res(TFAIL|TERRNO, "fallocate(FALLOC_FL_PUNCH_HOLE)");
++		goto cleanup;
++	}
++
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	if (free_after != free_initial) {
++		tst_res(TFAIL, "fallocate hole punch 2 * hpage_size - 1 byte did not"
++				" free huge page");
++		goto cleanup;
++	}
++
++	/*
++	 * Perform a preallocate operation with offset 1 and size of
++	 * hpage_size.  The offset should be rounded down and the
++	 * size rounded up to preallocate two huge pages.
++	 */
++	err = fallocate(fd, 0, 1, hpage_size);
++	if (err) {
++		tst_res(TFAIL, "fallocate()");
++		goto cleanup;
++	}
++
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	if (free_initial - free_after != 2) {
++		tst_res(TFAIL, "fallocate 1 byte offset, huge page size did not"
++				" preallocate two huge pages");
++		goto cleanup;
++	}
++
++	/*
++	 * The hole punch code will only delete 'whole' huge pags that are
++	 * in the specified range.  The offset is rounded up, and (offset
++	 * + size) is rounded down to determine the huge pages to be deleted.
++	 * In this case, after rounding the range is (hpage_size, hpage_size).
++	 * So, no pages should be deleted.
++	 */
++	err = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
++			1, hpage_size);
++	if (err) {
++		tst_res(TFAIL|TERRNO, "fallocate(FALLOC_FL_PUNCH_HOLE)");
++		goto cleanup;
++	}
++
++	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	if (free_initial - free_after != 2) {
++		tst_res(TFAIL, "fallocate hole punch 1 byte offset, huge page size"
++				" incorrectly deleted a huge page");
++		goto cleanup;
++	}
++
++	/*
++	 * To delete both huge pages, the range passed to hole punch must
++	 * overlap the allocated pages
++	 */
++	err = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
++			0, 2 * hpage_size);
++	if (err) {
++		tst_res(TFAIL|TERRNO, "fallocate(FALLOC_FL_PUNCH_HOLE)");
++		goto cleanup;
++	}
++
++	free_after_delete = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	TST_EXP_EQ_LU(free_after_delete, free_initial);
++cleanup:
 +	SAFE_CLOSE(fd);
-+	end_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-+	tst_res(TINFO, "Reserve count after close: %lu", end_rsvd);
-+
-+	TST_EXP_EQ_LU(end_rsvd, initial_rsvd);
 +}
 +
 +static void setup(void)
@@ -226,17 +326,14 @@ index 000000000..ae132107c
 +}
 +
 +static struct tst_test test = {
-+	.tags = (struct tst_tag[]) {
-+		{"linux-git", "f2deae9d4e70"},
-+		{}
-+	},
 +	.needs_root = 1,
 +	.mntpoint = MNTPOINT,
 +	.needs_hugetlbfs = 1,
++	.needs_tmpdir = 1,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.test_all = run_test,
-+	.hugepages = {1, TST_NEEDS},
++	.hugepages = {2, TST_NEEDS},
 +};
 -- 
 2.31.1
