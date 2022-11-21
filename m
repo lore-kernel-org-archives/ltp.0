@@ -4,73 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E97ECC433FE
-	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 09:54:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7CD9C433FE
+	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 11:50:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 068E13CCB97
-	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 10:54:01 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 5A5323CCBC0
+	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 12:50:53 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 46D203C0F12
- for <ltp@lists.linux.it>; Mon, 21 Nov 2022 10:53:49 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 0CA333C0727
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 12:50:43 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 870AF1BC6DC3
- for <ltp@lists.linux.it>; Mon, 21 Nov 2022 10:53:46 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 294D32C884F
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 12:50:42 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D4B341F85D;
- Mon, 21 Nov 2022 09:53:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1669024425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Coh9JOSrCXV8KecRbrkb0lOMdR+a4bd2/SSh1W7K8PA=;
- b=Rwbg51PB/CMLN8IhdN8nfQcqaAgwdsxr692PqWfdq9dGp05TDbndIJVeibnUQoczz6616t
- TMYccFgRFKFc4PqVr7kDX+mhdat9QhHpBuiK5dXBOgffLh8R1awJwUKgs93ZFUoMVeSJLp
- njl/yrXz7RhaIAiRnPebj14aT6sLOlI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1669024425;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Coh9JOSrCXV8KecRbrkb0lOMdR+a4bd2/SSh1W7K8PA=;
- b=3UefBaHdUZ3W2GTfa4XepuQgXuB/aKtM0McBeLQCvYVqx/E8gzj5iA1yAWvXI8sTGiFOTy
- tuYOC1iZmoGedCBw==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7B8AD1F85D
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 11:50:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1669031442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ousBBVOEMCt1OzPBo21RzugBBf7GoQyfkMNKCYYVN6E=;
+ b=R7zo3d54Jdq9QnxDvimyUKSPBdN21WgXKuFilz6XCpWKHrOJXvbZlkumR2QxTyoz3lHi1n
+ gaEKvMoqGzNsbz1wihXu6yerP800JyBTapmqf9AP4VxBmk6geaDuH+V8WVW2enoY9AlEkv
+ B8MaQYQYwCKp/sAJhegwGFpSq1qi32w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1669031442;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ousBBVOEMCt1OzPBo21RzugBBf7GoQyfkMNKCYYVN6E=;
+ b=1ZGkxO4r3DayNU39kCIw9646Fungu0YFcumBPBigygx8k1NH0DUAzivWISeqdTvrp5M+dV
+ JUXr0HTl6cySniDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BF8E51377F;
- Mon, 21 Nov 2022 09:53:45 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DE9231377F
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 11:50:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id gwQ4LqlKe2OhegAAMHmgww
- (envelope-from <jack@suse.cz>); Mon, 21 Nov 2022 09:53:45 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
- id 459B8A070A; Mon, 21 Nov 2022 10:53:45 +0100 (CET)
-Date: Mon, 21 Nov 2022 10:53:45 +0100
-From: Jan Kara <jack@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <20221121095345.2m7aze7xtlmxb4hy@quack3>
-References: <20221115123721.12176-1-jack@suse.cz>
- <20221115124741.14400-2-jack@suse.cz> <Y3ZaOqpTvvBgUTTi@pevik>
- <20221121091438.qpx3u5vpdu5afucg@quack3> <Y3tF2XF1xVlOE3fA@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id a9bzJhFme2OwQAAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 11:50:41 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Mon, 21 Nov 2022 17:20:38 +0530
+Message-Id: <20221121115038.27564-1-akumar@suse.de>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y3tF2XF1xVlOE3fA@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] fanotify10: Add support for multiple event
- files
+Subject: [LTP] [PATCH] getrlimit02: add EFAULT case & use TST_EXP_FAIL()
+ macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,44 +73,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, Richard Palethorpe <rpalethorpe@suse.com>,
- ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uIDIxLTExLTIyIDEwOjMzOjEzLCBQZXRyIFZvcmVsIHdyb3RlOgo+IEhpIEphbiwgYWxs
-LAo+IAo+ID4gT24gVGh1IDE3LTExLTIyIDE2OjU4OjUwLCBQZXRyIFZvcmVsIHdyb3RlOgo+ID4g
-PiBIaSBKYW4sIGFsbCwKPiAKPiA+ID4gPiArI2RlZmluZSBmb3JlYWNoX3BhdGgodGMsIGJ1Ziwg
-cG5hbWUpIFwKPiA+ID4gPiArCWZvciAoaW50IHBpdGVyID0gMDsgZm9ybWF0X3BhdGhfY2hlY2so
-KGJ1ZiksICh0YyktPnBuYW1lIyNfZm10LAlcCj4gPiA+IFVuZm9ydHVuYXRlbHkgd2Ugc3RpbGwg
-c3VwcG9ydCBDOTkgZHVlIG9sZCBjb21waWxlciBvbiBDZW50T1MgNywKPiA+ID4gdGhlcmVmb3Jl
-IGludCBwaXRlciBuZWVkcyB0byBiZSBkZWZpbmVkIG91dHNpZGUgb2YgZm9yIGxvb3AuCj4gCj4g
-PiBIdW0sIGJ1dCB2YXJpYWJsZSBkZWNsYXJhdGlvbiBpbiB0aGUgZm9yIGxvb3AgaXMgcGFydCBv
-ZiBDOTkgc3RhbmRhcmQgKGFzCj4gPiB0aGUgZXJyb3IgbWVzc2FnZSBhbHNvIHNheXMpLiBTbyBk
-aWQgeW91IHdhbnQgdG8gc2F5IHlvdSBhcmUgY29tcGlsaW5nCj4gPiBhZ2FpbnN0IEM4OSBzdGFu
-ZGFyZD8gQW5kIENlbnRPUyA3IHNoaXBzIHdpdGggR0NDIDQuOC41IEFGQUlDUyB3aGljaCBzaG91
-bGQKPiA+IGJlIGZ1bGx5IEM5OSBjb21wbGlhbnQgQlRXLiBTbyB3aGF0J3MgdGhlIHNpdHVhdGlv
-biBoZXJlPwo+IEknbSBzb3JyeSwgSSBkaWRuJ3QgZXhwcmVzcyBjbGVhcmx5IG15c2VsZi4gWWVz
-LCA0LjguNSBzdXBwb3J0cyBDOTksCj4gYnV0IHRoZSBkZWZhdWx0IGlzIEM5MCBbMV0uCgpPSywg
-dGhhbmtzIGZvciBleHBsYW5hdGlvbi4KCj4gPiBUaGF0IGJlaW5nIHNhaWQgSSBjYW4gd29ya2Fy
-b3VuZCB0aGUgcHJvYmxlbSBpbiB0aGUgbWFjcm8sIGl0IHdpbGwganVzdCBiZQo+ID4gc29tZXdo
-YXQgdWdsaWVyLiBTbyBiZWZvcmUgZG9pbmcgdGhhdCBJJ2QgbGlrZSB0byB1bmRlcnN0YW5kIHdo
-ZXRoZXIKPiA+IGZvbGxvd2luZyBDODkgaXMgcmVhbGx5IHJlcXVpcmVkLi4uCj4gCj4gSSdtIGRv
-bid0IHJlbWVtYmVyIHdoeSB3ZSBoYXZlIGp1c3Qgbm90IHNwZWNpZmllZCAtc3RkPS4uLiBhbHJl
-YWR5LCBDeXJpbCBoYWQKPiBzb21lIG9iamVjdGlvbnMsIHRodXMgQ2MgaGltLgo+IAo+IENlbnQw
-UyBFT0wgaW4gMjAyNC0wNiwgd2UgbWlnaHQgcmVjb25zaWRlciB0byBhZGQgLXN0ZD0uLi4gdG8g
-ZW5kdXAgdGhpcyBhZ29ueQo+IChlcnJvcnMgbGlrZSB0aGlzIG9mdGVuIG5lZWQgdG8gYmUgZml4
-ZWQpLgo+IAo+IFsxXSBodHRwczovL2djYy5nbnUub3JnL29ubGluZWRvY3MvZ2NjLTQuOC41L2dj
-Yy9TdGFuZGFyZHMuaHRtbAoKR2l2ZW4gQ3lyaWwncyByZXBseSwgc2hvdWxkIEkgcmV3b3JrIG15
-IHBhdGNoIG9yIGFyZSB3ZSBmaW5lIHdpdGggdXNpbmcKQzk5PwoKCQkJCQkJCQlIb256YQoKPiA+
-ID4gZmFub3RpZnkxMC5jOjQ3MDoyOiBlcnJvcjog4oCYZm9y4oCZIGxvb3AgaW5pdGlhbCBkZWNs
-YXJhdGlvbnMgYXJlIG9ubHkgYWxsb3dlZCBpbiBDOTkgbW9kZQo+ID4gPiAgIGZvciAoaW50IHBp
-dGVyID0gMDsgZm9ybWF0X3BhdGhfY2hlY2soKGJ1ZiksICh0YyktPnBuYW1lIyNfZm10LCBcCj4g
-PiA+ICAgXgo+IAo+ID4gPiBmYW5vdGlmeTEwLmM6NDcwOjExOiBlcnJvcjogcmVkZWZpbml0aW9u
-IG9mIOKAmHBpdGVy4oCZCj4gPiA+ICAgZm9yIChpbnQgcGl0ZXIgPSAwOyBmb3JtYXRfcGF0aF9j
-aGVjaygoYnVmKSwgKHRjKS0+cG5hbWUjI19mbXQsIFwKPiA+ID4gICAgICAgICAgICBeCj4gPiA+
-IEtpbmQgcmVnYXJkcywKPiA+ID4gUGV0cgotLSAKSmFuIEthcmEgPGphY2tAc3VzZS5jb20+ClNV
-U0UgTGFicywgQ1IKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
-dC9saXN0aW5mby9sdHAK
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ .../kernel/syscalls/getrlimit/getrlimit02.c   | 27 ++++++++-----------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit02.c b/testcases/kernel/syscalls/getrlimit/getrlimit02.c
+index 586ca5a67..9b68ce20b 100644
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit02.c
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit02.c
+@@ -18,33 +18,28 @@
+ #include <sys/resource.h>
+ #include "tst_test.h"
+ 
+-#define RLIMIT_TOO_HIGH 1000
++#define INVALID_RES_TYPE 1000
+ 
+ static struct rlimit rlim;
+ 
+ static struct tcase {
+-	int exp_errno;		/* Expected error no            */
+-	char *exp_errval;	/* Expected error value string  */
+-	struct rlimit *rlim;	/* rlimit structure             */
+-	int res_type;		/* resource type                */
++	int exp_errno;
++	char *desc;
++	struct rlimit *rlim;
++	int res_type;
+ } tcases[] = {
+-	{ EINVAL, "EINVAL", &rlim, RLIMIT_TOO_HIGH}
++	{EFAULT, "invalid address", (void *)-1, RLIMIT_CORE},
++	{EINVAL, "invalid resource type", &rlim, INVALID_RES_TYPE}
+ };
+ 
+ static void verify_getrlimit(unsigned int i)
+ {
+ 	struct tcase *tc = &tcases[i];
+ 
+-	TEST(getrlimit(tc->res_type, tc->rlim));
+-
+-	if ((TST_RET == -1) && (TST_ERR == tc->exp_errno)) {
+-		tst_res(TPASS, "expected failure; got %s",
+-			 tc->exp_errval);
+-	} else {
+-		tst_res(TFAIL, "call failed to produce "
+-			 "expected error;  errno: %d : %s",
+-			 TST_ERR, strerror(TST_ERR));
+-	}
++	TST_EXP_FAIL(getrlimit(tc->res_type, tc->rlim),
++				tc->exp_errno,
++				"getrlimit() with %s",
++				tc->desc);
+ }
+ 
+ static struct tst_test test = {
+-- 
+2.38.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
