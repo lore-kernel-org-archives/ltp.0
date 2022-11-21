@@ -4,87 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8877DC433FE
-	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 14:59:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AB60C4332F
+	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 15:02:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 286433CCBCF
-	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 15:59:46 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id E71FE3CCBCF
+	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 16:02:54 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0F3AC3CCB95
- for <ltp@lists.linux.it>; Mon, 21 Nov 2022 15:59:34 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 411093CCB8E
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 16:02:43 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 45AC220AD7C
- for <ltp@lists.linux.it>; Mon, 21 Nov 2022 15:59:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1669042772;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0A0E210009A1
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 16:02:42 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3A2641F8BA;
+ Mon, 21 Nov 2022 15:02:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1669042962; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=R7Yo6KSjxNiHOFMBpQ7TjoHo1vd/itwBIeJ/zoYQHBs=;
- b=IBYmuRZC79NUYtsNgbAzzKNo55wFZ1SpxURElNPx35KgzsiggV1W+pM7naWWCSrdTItuEa
- aASa05VSt4YBwlElzYnG3hblvoYQp6/OzgKwwujLHvIsnfHWeqoaVXPdJLP+95DVKnZmvT
- R5s5vqLdLxLL97q5ddsHhJaf0YG06zs=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-569-8Dm0yizNNuKZ4MapKjH9Cw-1; Mon, 21 Nov 2022 09:59:31 -0500
-X-MC-Unique: 8Dm0yizNNuKZ4MapKjH9Cw-1
-Received: by mail-wm1-f70.google.com with SMTP id
- ay19-20020a05600c1e1300b003cf758f1617so9409799wmb.5
- for <ltp@lists.linux.it>; Mon, 21 Nov 2022 06:59:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:subject:organization:from
- :references:cc:to:content-language:user-agent:mime-version:date
- :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=R7Yo6KSjxNiHOFMBpQ7TjoHo1vd/itwBIeJ/zoYQHBs=;
- b=gyEwjexkt4ZsGKW+GCXStrWbM7vv0dE/LlFrXV3gTXLkcce8HOvw0/RDKMoo+PEJcC
- GgsyC8tf6dcgAnTgQ6NZPgfd89DcMrSOE5uh6qlG/n2nlif0o8CnGt+D2QYdLGuaT9qq
- q951SDv0TJD9O7uUt+MLZZwJcDeGPbGQ9eTDOUEyv05G87EOkzWNRX4joTCD711DNVDn
- Zx1bBwattlgI2Ive93XIy22Dq9cgmRij69TDmjj/Wnim6QZglE0NsbZZUjC90O/UrFo/
- XQwSEH7Pl0rSs6ALagVdJGPsoWlgWyTDXBLraPp/sl5daX5aFB55mVoDKkHDSsIWQ13z
- Q1Vg==
-X-Gm-Message-State: ANoB5pnbDjSwz9GrtHPIwv2TyaxGBfPhPKFeP5w5tYeKnzOPDaACYoh8
- llchXeWGbL0kce7Z8ncp5Nx28bFad4iXYpmWoOcvPzW33qRoSWV1TYChdfXSHJ5y+YqeZVwLSiQ
- 7E6mZqHDvPbw=
-X-Received: by 2002:a05:600c:3b0c:b0:3cf:8df2:63b7 with SMTP id
- m12-20020a05600c3b0c00b003cf8df263b7mr495620wms.11.1669042770025; 
- Mon, 21 Nov 2022 06:59:30 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5FGNhSQBBF5ReATgi1PxzdPhZC7Lw/u94hw2cj/QGVvno6HvLtvfYGpCQSunRa9FzOFxDLvg==
-X-Received: by 2002:a05:600c:3b0c:b0:3cf:8df2:63b7 with SMTP id
- m12-20020a05600c3b0c00b003cf8df263b7mr495605wms.11.1669042769729; 
- Mon, 21 Nov 2022 06:59:29 -0800 (PST)
-Received: from [192.168.3.108] (p5b0c67dc.dip0.t-ipconnect.de. [91.12.103.220])
- by smtp.gmail.com with ESMTPSA id
- l32-20020a05600c1d2000b003cfbbd54178sm28487321wms.2.2022.11.21.06.59.28
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 21 Nov 2022 06:59:29 -0800 (PST)
-Message-ID: <34f4e1af-8b1f-fd6b-8345-5b1948de7f14@redhat.com>
-Date: Mon, 21 Nov 2022 15:59:28 +0100
+ bh=PVm8718GRpWbskjkGd+pHsmZKO9so3qovkIJbRl4gNI=;
+ b=CPBWrtazPmsETB2W+XfMGKCdJAzli/FAtglmXlpgbvU9ZMX0SbjCJsDE4ONFI+WUU4sbIn
+ RHB2Cm9/TLft5VELR7w5IIhxIox9UzvcHSnMUVH0Oce9UV8zzo9lvE59Eha8CRHNWpHONO
+ IH36WeUX+ksTlLS96Arr45RTBRN9Jws=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1669042962;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PVm8718GRpWbskjkGd+pHsmZKO9so3qovkIJbRl4gNI=;
+ b=VBS3JVDNZhmb2Q0jNpKFmSGCJwQ8NC8YHhR/bCmIvHwMoxpYOyNdYPu+oE1bSSGs2j2hDG
+ prHFAGPBWpIzT8Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 24E431376E;
+ Mon, 21 Nov 2022 15:02:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id uGNpCBKTe2MCMQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 21 Nov 2022 15:02:42 +0000
+Date: Mon, 21 Nov 2022 16:04:05 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Jan Kara <jack@suse.cz>
+Message-ID: <Y3uTZVir3OBBTrJ7@yuki>
+References: <20221115123721.12176-1-jack@suse.cz>
+ <20221115124741.14400-2-jack@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20221117121409.179210-1-david@redhat.com> <Y3eI0Q5BTE12+4zO@yuki>
-From: David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <Y3eI0Q5BTE12+4zO@yuki>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20221115124741.14400-2-jack@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] security/dirtyc0w_shmem: Add new test for
- CVE-2022-2590
+Subject: Re: [LTP] [PATCH 2/3] fanotify10: Add support for multiple event
+ files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,200 +78,301 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 18.11.22 14:29, Cyril Hrubis wrote:
-> Hi!
+Hi!
+>  static void drop_caches(void)
+> @@ -482,6 +515,7 @@ static int create_fanotify_groups(unsigned int n)
+>  	int evictable_ignored = (tc->ignore_mark_type == FANOTIFY_EVICTABLE);
+>  	int ignore_mark_type;
+>  	int ignored_onchild = tc->ignored_flags & FAN_EVENT_ON_CHILD;
+> +	char path[PATH_MAX];
+>  
+>  	mark = &fanotify_mark_types[tc->mark_type];
+>  	ignore_mark = &fanotify_mark_types[tc->ignore_mark_type];
+> @@ -501,11 +535,12 @@ static int create_fanotify_groups(unsigned int n)
+>  			 * FAN_EVENT_ON_CHILD has no effect on filesystem/mount
+>  			 * or inode mark on non-directory.
+>  			 */
+> -			SAFE_FANOTIFY_MARK(fd_notify[p][i],
+> +			foreach_path(tc, path, mark_path)
+> +				SAFE_FANOTIFY_MARK(fd_notify[p][i],
+>  					    FAN_MARK_ADD | mark->flag,
+>  					    tc->expected_mask_without_ignore |
+>  					    FAN_EVENT_ON_CHILD | FAN_ONDIR,
+> -					    AT_FDCWD, tc->mark_path);
+> +					    AT_FDCWD, path);
 
-Hi Cyril,
+This is minor, but I would have named the macro FOREACH_PATH() and added
+curly braces around the block. And the same for the rest of the
+invocations.
 
-thanks for your review!
+>  			/* Do not add ignore mark for first priority groups */
+>  			if (p == 0)
+> @@ -519,9 +554,10 @@ static int create_fanotify_groups(unsigned int n)
+>  			mark_ignored = tst_variant ? FAN_MARK_IGNORE_SURV : FAN_MARK_IGNORED_SURV;
+>  			mask = FAN_OPEN | tc->ignored_flags;
+>  add_mark:
+> -			SAFE_FANOTIFY_MARK(fd_notify[p][i],
+> +			foreach_path(tc, path, ignore_path)
+> +				SAFE_FANOTIFY_MARK(fd_notify[p][i],
+>  					    FAN_MARK_ADD | ignore_mark->flag | mark_ignored,
+> -					    mask, AT_FDCWD, tc->ignore_path);
+> +					    mask, AT_FDCWD, path);
+>  
+>  			/*
+>  			 * FAN_MARK_IGNORE respects FAN_EVENT_ON_CHILD flag, but legacy
+> @@ -578,9 +614,24 @@ add_mark:
+>  	if (ignore_mark_type == FAN_MARK_INODE) {
+>  		for (p = 0; p < num_classes; p++) {
+>  			for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> -				if (fd_notify[p][i] > 0)
+> +				if (fd_notify[p][i] > 0) {
+> +					int minexp, maxexp;
+> +
+> +					if (p == 0) {
+> +						minexp = maxexp = 0;
+> +					} else if (evictable_ignored) {
+> +						minexp = 0;
+> +						/*
+> +						 * Check at least half the
+> +						 * marks get evicted by reclaim
+> +						 */
+> +						maxexp = tc->ignore_path_cnt / 2;
+> +					} else {
+> +						minexp = maxexp = tc->ignore_path_cnt ? : 1;
+> +					}
+>  					show_fanotify_ignore_marks(fd_notify[p][i],
+> -								   p > 0 && !evictable_ignored);
+> +								   minexp, maxexp);
+> +				}
+>  			}
+>  		}
+>  	}
+> @@ -613,7 +664,7 @@ static void mount_cycle(void)
+>  	bind_mount_created = 1;
+>  }
+>  
+> -static void verify_event(int p, int group, struct fanotify_event_metadata *event,
+> +static int verify_event(int p, int group, struct fanotify_event_metadata *event,
+>  			 unsigned long long expected_mask)
+>  {
+>  	/* Only FAN_REPORT_FID reports the FAN_ONDIR flag in events on dirs */
+> @@ -626,33 +677,35 @@ static void verify_event(int p, int group, struct fanotify_event_metadata *event
+>  			(unsigned long long) event->mask,
+>  			(unsigned long long) expected_mask,
+>  			(unsigned int)event->pid, event->fd);
+> +		return 0;
+>  	} else if (event->pid != child_pid) {
+>  		tst_res(TFAIL, "group %d (%x) got event: mask %llx pid=%u "
+>  			"(expected %u) fd=%u", group, fanotify_class[p],
+>  			(unsigned long long)event->mask, (unsigned int)event->pid,
+>  			(unsigned int)child_pid, event->fd);
+> -	} else {
+> -		tst_res(TPASS, "group %d (%x) got event: mask %llx pid=%u fd=%u",
+> -			group, fanotify_class[p], (unsigned long long)event->mask,
+> -			(unsigned int)event->pid, event->fd);
+> +		return 0;
+>  	}
+> +	return 1;
+>  }
+>  
+> -static int generate_event(const char *event_path,
+> -			  unsigned long long expected_mask)
+> +static int generate_event(struct tcase *tc, unsigned long long expected_mask)
+>  {
+>  	int fd, status;
+>  
+>  	child_pid = SAFE_FORK();
+>  
+>  	if (child_pid == 0) {
+> -		if (expected_mask & FAN_OPEN_EXEC) {
+> -			SAFE_EXECL(event_path, event_path, NULL);
+> -		} else {
+> -			fd = SAFE_OPEN(event_path, O_RDONLY);
+> +		char path[PATH_MAX];
+> +
+> +		foreach_path(tc, path, event_path) {
+> +			if (expected_mask & FAN_OPEN_EXEC) {
+> +				SAFE_EXECL(path, path, NULL);
+> +			} else {
+> +				fd = SAFE_OPEN(path, O_RDONLY);
+>  
+> -			if (fd > 0)
+> -				SAFE_CLOSE(fd);
+> +				if (fd > 0)
+> +					SAFE_CLOSE(fd);
+> +			}
+>  		}
+>  
+>  		exit(0);
+> @@ -665,6 +718,37 @@ static int generate_event(const char *event_path,
+>  	return 0;
+>  }
+>  
+> +struct fanotify_event_metadata *fetch_event(int fd, int *retp)
+> +{
+> +	int ret;
+> +	struct fanotify_event_metadata *event;
+> +
+> +	*retp = 0;
+> +	if (event_buf_pos >= event_buf_len) {
+> +		event_buf_pos = 0;
+> +		ret = read(fd, event_buf, EVENT_BUF_LEN);
+> +		if (ret < 0) {
+> +			if (errno == EAGAIN)
+> +				return NULL;
+> +			tst_brk(TBROK | TERRNO, "reading fanotify events failed");
+> +			*retp = -1;
 
-[...]
+If you call tst_brk(TBROK ...) the test exists since that is supposed to
+signal unrecoverable error. There is no need to propagate the retp from
+this function.
 
->> +
->> +/*
->> + * CVE-2022-2590
->> + *
->> + * This is a regression test for a write race that allows unprivileged programs
->> + * to change readonly files located on tmpfs/shmem on the system.
->> + *
->> + * Fixed by:
->> + *
->> + *   commit 5535be3099717646781ce1540cf725965d680e7b
->> + *   Author: David Hildenbrand <david@redhat.com>
->> + *   Date:   Tue Aug 9 22:56:40 2022 +0200
->> + *
->> + *   mm/gup: fix FOLL_FORCE COW security issue and remove FOLL_COW
->> + */
-> 
-> This is not a proper documentation comment. We do have a system in place
-> that picks up ascii-doc formatted documentation comments and builds a
-> documentation based on that.
-> 
-> The documentation comment has to start with:
-> 
-> /*\
->   * [Description]
->   *
-> 
-> 
-> Also the CVE and kernel commit are picked from tags when documentation
-> is build, so they do not need to be part of the documentation comment.
-> 
+> +			return NULL;
+> +		}
+> +		event_buf_len = ret;
+> +	}
+> +	if (event_buf_len - event_buf_pos < (int)FAN_EVENT_METADATA_LEN) {
+> +		tst_brk(TBROK,
+> +			"too short event when reading fanotify events (%d < %d)",
+> +			event_buf_len - event_buf_pos,
+> +			(int)FAN_EVENT_METADATA_LEN);
+> +		*retp = -1;
+> +		return NULL;
+> +	}
+> +	event = (struct fanotify_event_metadata *)(event_buf + event_buf_pos);
+> +	event_buf_pos += event->event_len;
+> +	return event;
+> +}
+> +
+>  static void test_fanotify(unsigned int n)
+>  {
+>  	struct tcase *tc = &tcases[n];
+> @@ -672,6 +756,7 @@ static void test_fanotify(unsigned int n)
+>  	int ret;
+>  	unsigned int p, i;
+>  	struct fanotify_event_metadata *event;
+> +	int event_count;
+>  
+>  	tst_res(TINFO, "Test #%d: %s", n, tc->tname);
+>  
+> @@ -715,7 +800,7 @@ static void test_fanotify(unsigned int n)
+>  	ignore_mark = &fanotify_mark_types[tc->ignore_mark_type];
+>  
+>  	/* Generate event in child process */
+> -	if (!generate_event(tc->event_path, tc->expected_mask_with_ignore))
+> +	if (!generate_event(tc, tc->expected_mask_with_ignore))
+>  		tst_brk(TBROK, "Child process terminated incorrectly");
+>  
+>  	/* First verify all groups without matching ignore mask got the event */
+> @@ -724,64 +809,52 @@ static void test_fanotify(unsigned int n)
+>  			break;
+>  
+>  		for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> -			ret = read(fd_notify[p][i], event_buf, EVENT_BUF_LEN);
+> -			if (ret < 0) {
+> -				if (errno == EAGAIN) {
+> -					tst_res(TFAIL, "group %d (%x) "
+> -						"with %s did not get event",
+> -						i, fanotify_class[p], mark->name);
+> -					continue;
+> -				}
+> -				tst_brk(TBROK | TERRNO,
+> -					"reading fanotify events failed");
+> -			}
+> -			if (ret < (int)FAN_EVENT_METADATA_LEN) {
+> -				tst_brk(TBROK,
+> -					"short read when reading fanotify "
+> -					"events (%d < %d)", ret,
+> -					(int)EVENT_BUF_LEN);
+> +			event_count = 0;
+> +			event_buf_pos = event_buf_len = 0;
+> +			while ((event = fetch_event(fd_notify[p][i], &ret))) {
+> +				event_count++;
+> +				if (!verify_event(p, i, event, p == 0 ?
+> +						tc->expected_mask_without_ignore :
+> +						tc->expected_mask_with_ignore))
+> +					break;
+> +				if (event->fd != FAN_NOFD)
+> +					SAFE_CLOSE(event->fd);
+>  			}
+> -			event = (struct fanotify_event_metadata *)event_buf;
+> -			if (ret > (int)event->event_len) {
+> +			if (ret < 0)
+> +				continue;
+> +			if (event_count != (tc->event_path_cnt ? : 1)) {
+>  				tst_res(TFAIL, "group %d (%x) with %s "
+> -					"got more than one event (%d > %d)",
+> -					i, fanotify_class[p], mark->name, ret,
+> -					event->event_len);
+> +					"got unexpected number of events (%d != %d)",
+> +					i, fanotify_class[p], mark->name,
+> +					event_count, tc->event_path_cnt);
+>  			} else {
+> -				verify_event(p, i, event, p == 0 ?
+> -						tc->expected_mask_without_ignore :
+> -						tc->expected_mask_with_ignore);
+> +				tst_res(TPASS, "group %d (%x) got %d events: mask %llx pid=%u",
+> +					i, fanotify_class[p], event_count,
+> +					(unsigned long long)(p == 0 ?
+> +					tc->expected_mask_without_ignore :
+> +					tc->expected_mask_with_ignore),
+> +					(unsigned int)child_pid);
+>  			}
+> -			if (event->fd != FAN_NOFD)
+> -				SAFE_CLOSE(event->fd);
+>  		}
+>  	}
+>  	/* Then verify all groups with matching ignore mask did got the event */
+>  	for (p = 1; p < num_classes && !tc->expected_mask_with_ignore; p++) {
+>  		for (i = 0; i < GROUPS_PER_PRIO; i++) {
+> -			ret = read(fd_notify[p][i], event_buf, EVENT_BUF_LEN);
+> -			if (ret >= 0 && ret < (int)FAN_EVENT_METADATA_LEN) {
+> -				tst_brk(TBROK,
+> -					"short read when reading fanotify "
+> -					"events (%d < %d)", ret,
+> -					(int)EVENT_BUF_LEN);
+> -			}
+> -			event = (struct fanotify_event_metadata *)event_buf;
+> -			if (ret > 0) {
+> -				tst_res(TFAIL, "group %d (%x) with %s and "
+> -					"%s ignore mask got unexpected event (mask %llx)",
+> -					i, fanotify_class[p], mark->name, ignore_mark->name,
+> -					event->mask);
+> +			event_count = 0;
+> +			event_buf_pos = event_buf_len = 0;
+> +			while ((event = fetch_event(fd_notify[p][i], &ret))) {
+> +				event_count++;
+>  				if (event->fd != FAN_NOFD)
+>  					SAFE_CLOSE(event->fd);
+> -			} else if (errno == EAGAIN) {
+> -				tst_res(TPASS, "group %d (%x) with %s and "
+> -					"%s ignore mask got no event",
+> -					i, fanotify_class[p], mark->name, ignore_mark->name);
+> -			} else {
+> -				tst_brk(TBROK | TERRNO,
+> -					"reading fanotify events failed");
+>  			}
+> +			if (ret < 0)
+> +				continue;
+> +			if (event_count > tc->event_path_cnt / 2)
+> +				tst_res(TFAIL, "group %d (%x) with %s and "
+> +					"%s ignore mask got unexpectedly many events (%d > %d)",
+> +					i, fanotify_class[p], mark->name,
+> +					ignore_mark->name, event_count,
+> +					tc->event_path_cnt / 2);
 
-I used dirtyc0w.c as orientation, which probably wasn't a good idea.
-
-I'll use a simple
-
-/*\
-  * [Description]
-  *
-  * This is a regression test for a write race that allowed unprivileged programs
-  * to change readonly files located on tmpfs/shmem on the system using
-  * userfaultfd "minor fault handling" (CVE-2022-2590).
-  */
-
->> +#include "config.h"
->> +
->> +#include <pthread.h>
->> +#include <unistd.h>
->> +#include <sys/stat.h>
->> +#include <string.h>
->> +#include <stdlib.h>
->> +#include <stdbool.h>
->> +#include <pwd.h>
->> +
->> +#include "tst_test.h"
->> +
->> +#define TMP_DIR "tmp_dirtyc0w_shmem"
->> +#define TEST_FILE TMP_DIR"/testfile"
->> +#define STR "this is not a test\n"
->> +
->> +static uid_t nobody_uid;
->> +static gid_t nobody_gid;
->> +static bool child_early_exit;
-> 
-> Anything that is changed from signal handler should be volatile
-> otherwise it may end up optimized out.
-
-Ack.
-
-> 
->> +static void sighandler(int sig)
->> +{
->> +	if (sig == SIGCHLD) {
->> +		child_early_exit = true;
->> +		return;
->> +	}
->> +
->> +	_exit(0);
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	struct passwd *pw;
->> +
->> +	umask(0);
->> +
->> +	pw = SAFE_GETPWNAM("nobody");
->> +
->> +	nobody_uid = pw->pw_uid;
->> +	nobody_gid = pw->pw_gid;
->> +
->> +	SAFE_MKDIR(TMP_DIR, 0664);
->> +	SAFE_MOUNT(TMP_DIR, TMP_DIR, "tmpfs", 0, NULL);
->> +}
->> +
->> +static void dirtyc0w_shmem_test(void)
->> +{
->> +	bool failed = false;
->> +	int fd, pid;
->> +	char c;
->> +
->> +	fd = SAFE_OPEN(TEST_FILE, O_WRONLY|O_CREAT|O_EXCL, 0444);
->> +	SAFE_WRITE(SAFE_WRITE_ALL, fd, STR, sizeof(STR)-1);
->> +	SAFE_CLOSE(fd);
-> 
-> SAFE_FILE_PRINTF() ?
-
-AFAIU, that would mean
-
-SAFE_FILE_PRINTF(TEST_FILE, "%s", STR);
-SAFE_CHMOD(TEST_FILE, 0444);
-
-I'll give that a churn.
-
-> 
->> +	pid = SAFE_FORK();
->> +	if (!pid) {
->> +		SAFE_SETGID(nobody_gid);
->> +		SAFE_SETUID(nobody_uid);
->> +		SAFE_EXECLP("dirtyc0w_shmem_child", "dirtyc0w_shmem_child", NULL);
->> +	}
->> +
->> +	TST_CHECKPOINT_WAIT(0);
->> +
->> +	SAFE_SIGNAL(SIGCHLD, sighandler);
->> +	do {
->> +		usleep(100000);
->> +
->> +		SAFE_FILE_SCANF(TEST_FILE, "%c", &c);
->> +
->> +		if (c != 't') {
->> +			failed = true;
->> +			break;
->> +		}
->> +	} while (tst_remaining_runtime() && !child_early_exit);
->> +	SAFE_SIGNAL(SIGCHLD, SIG_DFL);
->> +
->> +	SAFE_KILL(pid, SIGUSR1);
->> +	tst_reap_children();
->> +	SAFE_UNLINK(TEST_FILE);
->> +
->> +	if (child_early_exit)
->> +		tst_res(TINFO, "Early child process exit");
-> 
-> This will potentionally trigger library detection for buggy tests. A
-> test has to report a result in all situations.
-> 
-> I suppose that this will only happen if child process did exit with
-> TBROK or TCONF. If that is the case it should be fine.
-
-Yes, exactly. The child process will only quit in case it fails with
-TBROK / TCONF. In all other cases, it will simply run until we zap it.
-
-> 
->> +	else if (failed)
->> +		tst_res(TFAIL, "Bug reproduced!");
->> +	else
->> +		tst_res(TPASS, "Bug not reproduced");
->> +}
->> +
->> +static void cleanup(void)
->> +{
->> +	SAFE_UMOUNT(TMP_DIR);
->> +}
->> +
->> +static struct tst_test test = {
->> +	.needs_checkpoints = 1,
->> +	.forks_child = 1,
->> +	.needs_root = 1,
-> 
-> We are missing .needs_tmpdir flag here, otherwise the test will create
-> the the TMPDIR in PWD which may fail in certain setups.
-
-Thanks!
-
+Apart from the two minor issues I pointed out the rest looks good to me,
+but honestly the code is getting way to complicated I would refrain from
+adding anything else into the test without some refactoring.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
