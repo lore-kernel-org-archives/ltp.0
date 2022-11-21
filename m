@@ -4,92 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E16ABC4332F
-	for <ltp@archiver.kernel.org>; Sun, 20 Nov 2022 19:17:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8061DC4332F
+	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 01:59:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6285A3CCCAB
-	for <ltp@archiver.kernel.org>; Sun, 20 Nov 2022 20:17:22 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 1B9243C89F3
+	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 02:59:57 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD30B3CCC9B
- for <ltp@lists.linux.it>; Sun, 20 Nov 2022 20:16:15 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id BE8D23C1B40
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 02:59:47 +0100 (CET)
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
+ [195.245.231.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B430923C6B2
- for <ltp@lists.linux.it>; Sun, 20 Nov 2022 20:16:14 +0100 (CET)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AKDOaEX016173; Sun, 20 Nov 2022 19:16:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=hODmIogkps+ugJWIu3ioUlJhvwA6UiPKws/CfZsx918=;
- b=goU600b+SZ2qyXmyfeh/QeJ0xYK/Jf8ULOosRtgSCYvrqRPuDzYNEtRRmU0mNAbc3Vdv
- 9Qg1MRrzTQhb76Y3L+aIZR/YO+oayskjUquS+nQ+ooKxsDx4t26Aw432+Tyzdh0i74zo
- UlXyLnnWH3jgwnuR47CjPU7InL/oNdyERaWVXClDGJagSP8t8JeYv0qgR9MJgxuEtH2/
- zKY6Wa0uFXc+fbHnKAxEkxPiQXq5pveUgVklEzQW/7XC7UTyAAMAEWKx16SQJvP3/i3S
- 4rZ7sx/xs7YPSFFKkgEwKcVWL6Ol8DLb9hRHervKWUah/TjgHckKdya/y/vxaaz3VP/D VQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ky8xspmu7-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 20 Nov 2022 19:16:12 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2AKJCBHw017958;
- Sun, 20 Nov 2022 19:16:11 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com
- [159.122.73.72])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ky8xspmtq-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 20 Nov 2022 19:16:11 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
- by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AKJ6660028114;
- Sun, 20 Nov 2022 19:16:09 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com
- (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
- by ppma06fra.de.ibm.com with ESMTP id 3kxpdj17a2-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 20 Nov 2022 19:16:09 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com
- [9.149.105.232])
- by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2AKJG6FI39125720
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sun, 20 Nov 2022 19:16:06 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 40DF852050;
- Sun, 20 Nov 2022 19:16:06 +0000 (GMT)
-Received: from tarunpc.ibmuc.com (unknown [9.43.36.159])
- by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D65475204F;
- Sun, 20 Nov 2022 19:16:02 +0000 (GMT)
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Mon, 21 Nov 2022 00:45:33 +0530
-Message-Id: <20221120191533.164848-8-tsahu@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221120191533.164848-1-tsahu@linux.ibm.com>
-References: <20221120191533.164848-1-tsahu@linux.ibm.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B85E78FFE70
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 02:59:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1668995985; i=@fujitsu.com;
+ bh=RVYDrRO3h9U0TOBWaHpi6e9QfMXU99R+W+1Q407INew=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+ b=bbsfCLImokn/Jo093xfxQ2VsYMDMXJoKDTzXeT94Og9pZ8HXT0bU1ULmm6MViRbab
+ RMkHSr/2V/onlKQuqBTqC0dFc7rS/BxkIK8i0PXMpqpVW1LK6r2kKP7ZZrbmi21/rG
+ 5vUKinwo+QZvKEb3eQeYLZdqVPSLyJAXIxwm/zBRRnklxlt5asXOksA7P5OnI/3Yyq
+ OhF9EKJOc6QOqvP0/c38E2aNPSnULvPc6R6U0vbH0DPnpcaQQBJAPKICxbmdkBhQeY
+ sLNnCPQGUgHuBVd6qcje2x36i20OtpjiXpSPndcbH7b4zBYYs48eCxOh8aG5F5g6yI
+ Sn3UvyYvueepA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPIsWRWlGSWpSXmKPExsViZ8MxSXfi7ap
+ kgzc2Fiu+72B0YPTY93sdawBjFGtmXlJ+RQJrxpV7L9kKDnFXvL/VytrAuI2ri5GLQ0jgLKPE
+ suu/GCGcA0wSV+6sYYZw9jBKLLjdxtTFyMnBJqAp8axzATOILSIgIdHR8JYdxGYWUJdYPukXW
+ I2wQLTEjyUtjCA2i4CqxP6+BSwgNq+Ah8TD93fBeiUEFCSmPHzPDBEXlDg58wkLxBwJiYMvXk
+ DVKEpc6vjGCGFXSMyaBXGDhICaxNVzm5gnMPLPQtI+C0n7AkamVYymxalFZalFuuZ6SUWZ6Rk
+ luYmZOXqJVbqJeqmluuWpxSW6RnqJ5cV6qcXFesWVuck5KXp5qSWbGIGhmFKsarGDcf2yP3qH
+ GCU5mJREefe2lycL8SXlp1RmJBZnxBeV5qQWH2KU4eBQkuD1v1iVLCRYlJqeWpGWmQOMC5i0B
+ AePkgivyn6gNG9xQWJucWY6ROoUozHH+Z379zJzTJ39bz+zEEtefl6qlDjvqetApQIgpRmleX
+ CDYPF6iVFWSpiXkYGBQYinILUoN7MEVf4VozgHo5Iwr8INoCk8mXklcPteAZ3CBHSKmgXYKSW
+ JCCmpBib/nZsYk36srvcRnPSGS2mCuUPnqeIZWff+Pgz7LyShnOfW9m3bPHnD8F7Nh/8XpHwS
+ 2lDG+8rsbpn1jdhTJ5WkPhg8vf3Equzxksx+Xe2PxVoGq+KvRt6qC0qQOKuxmW+7gPin54KLn
+ j+oZjplsufahTWVV1N4avdK3DUp1lNVPbhyyYa6WX+UZ6nVhgWJZzKe9JOc67+nsFJ7jnmrjd
+ Wv8vp291NvTmu53bO/5pDEdiKI4yBHiYVvb076FQ9mJrHw7/WXmC1FbimfDj7dl3h5wX7W3X2
+ rNl4VeB4xZ5rC4om33E2mxhmfX/tnxi1Ns5c/036VWf/7vXZejwGLX/psrnNcM5hYj7S/3FkR
+ eV2JpTgj0VCLuag4EQC5TSW9UgMAAA==
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-10.tower-548.messagelabs.com!1668995984!188384!1
+X-Originating-IP: [62.60.8.146]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.101.1; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 5167 invoked from network); 21 Nov 2022 01:59:45 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+ by server-10.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 21 Nov 2022 01:59:45 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id B5F681039E3
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 01:59:44 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126
+ [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id A919E1039DA
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 01:59:44 +0000 (GMT)
+Received: from localhost.localdomain (10.167.220.84) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.32; Mon, 21 Nov 2022 01:59:43 +0000
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Mon, 21 Nov 2022 11:00:35 +0800
+Message-ID: <1668999635-2018-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: tttVfnZ5nTcX4vdw9YTMHxiu8jvMnXAL
-X-Proofpoint-ORIG-GUID: DJ92WLNHE4L80PWeBjfvoUOzlHVVS8yK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-20_13,2022-11-18_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 spamscore=0 adultscore=0 impostorscore=0
- mlxlogscore=995 suspectscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211200162
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Originating-IP: [10.167.220.84]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 7/7] Hugetlb: Migrating libhugetlbfs fallocate_basic
+Subject: [LTP] [PATCH] syscalls/setfsuid: Use SETFSUID instead of setfsuid
+ to check 32bit syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,146 +93,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
- vaibhav@linux.ibm.com, mike.kravetz@oracle.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/fallocate_basic.c test
-
-Test Description: It tests basic fallocate functionality in hugetlbfs.
-Preallocate huge pages to a file in hugetlbfs, and then remove the pages
-via hole punch.
-
-Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../hugetlb/hugefallocate/hugefallocate02.c   | 90 +++++++++++++++++++
- 3 files changed, 92 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
+ testcases/kernel/syscalls/setfsuid/setfsuid01.c | 4 ++--
+ testcases/kernel/syscalls/setfsuid/setfsuid03.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index ca92dfcff..ec1fc2515 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -1,4 +1,5 @@
- hugefallocate01 hugefallocate01
-+hugefallocate02 hugefallocate02
+diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid01.c b/testcases/kernel/syscalls/setfsuid/setfsuid01.c
+index 0cbf101ee..9805e38b6 100644
+--- a/testcases/kernel/syscalls/setfsuid/setfsuid01.c
++++ b/testcases/kernel/syscalls/setfsuid/setfsuid01.c
+@@ -34,8 +34,8 @@ static void run(void)
+ 	UID16_CHECK(uid, setfsuid);
  
- hugemmap01 hugemmap01
- hugemmap02 hugemmap02
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index cafdb5259..c0906f3d3 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -1,5 +1,6 @@
- /cpuset/cpuset01
- /hugetlb/hugefallocate/hugefallocate01
-+/hugetlb/hugefallocate/hugefallocate02
- /hugetlb/hugemmap/hugemmap01
- /hugetlb/hugemmap/hugemmap02
- /hugetlb/hugemmap/hugemmap04
-diff --git a/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
-new file mode 100644
-index 000000000..d1e11dcbe
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugefallocate/hugefallocate02.c
-@@ -0,0 +1,90 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
-+/*
-+ * Copyright (C) 2015 Oracle Corporation
-+ * Author: Mike Kravetz
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * It tests basic fallocate functionality in hugetlbfs. Preallocate huge
-+ * pages to a file in hugetlbfs, and then remove the pages via hole punch.
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+
-+#include "hugetlb.h"
-+
-+#define MAX_PAGES_TO_USE 5
-+#define MNTPOINT "hugetlbfs/"
-+
-+static int  fd = -1;
-+static long hpage_size;
-+
-+static void run_test(void)
-+{
-+	int err;
-+	unsigned long max_iterations;
-+	unsigned long free_initial, free_after, free_end;
-+
-+	free_initial = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	max_iterations = MIN(free_initial, MAX_PAGES_TO_USE);
-+
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+
-+	/* First preallocate file with max_iterations pages */
-+	err = fallocate(fd, 0, 0, hpage_size * max_iterations);
-+	if (err) {
-+		if (errno == EOPNOTSUPP)
-+			tst_brk(TCONF, "fallocate() Operation is not supported");
-+		tst_res(TFAIL|TERRNO, "fallocate()");
-+		goto cleanup;
-+	}
-+
-+	free_after = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	if (free_initial - free_after != max_iterations) {
-+		tst_res(TFAIL, "fallocate did not preallocate %lu huge pages",
-+							max_iterations);
-+		goto cleanup;
-+	}
-+
-+	/* Now punch a hole of the same size */
-+	err = fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
-+			0, hpage_size * max_iterations);
-+	if (err) {
-+		tst_res(TFAIL|TERRNO, "fallocate(FALLOC_FL_PUNCH_HOLE)");
-+		goto cleanup;
-+	}
-+
-+	free_end = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	TST_EXP_EQ_LU(free_end, free_initial);
-+cleanup:
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void setup(void)
-+{
-+	hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {3, TST_NEEDS},
-+};
+ 	SAFE_SETEUID(0);
+-	TST_EXP_VAL(setfsuid(nobody_uid), uid, "setfsuid(%d)", nobody_uid);
+-	TST_EXP_VAL(setfsuid(-1), nobody_uid);
++	TST_EXP_VAL(SETFSUID(nobody_uid), uid, "setfsuid(%d)", nobody_uid);
++	TST_EXP_VAL(SETFSUID(-1), nobody_uid);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid03.c b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
+index 02698f7cf..ee06e9376 100644
+--- a/testcases/kernel/syscalls/setfsuid/setfsuid03.c
++++ b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
+@@ -36,8 +36,8 @@ static void run(void)
+ 	SAFE_SETEUID(nobody_uid);
+ 	UID16_CHECK(ruid, setfsuid);
+ 
+-	TST_EXP_VAL_SILENT(setfsuid(ruid), nobody_uid);
+-	TST_EXP_VAL(setfsuid(-1), ruid, "setfsuid(fsuid) by non-root user:");
++	TST_EXP_VAL_SILENT(SETFSUID(ruid), nobody_uid);
++	TST_EXP_VAL(SETFSUID(-1), ruid, "setfsuid(fsuid) by non-root user:");
+ }
+ 
+ static struct tst_test test = {
 -- 
-2.31.1
+2.27.0
 
 
 -- 
