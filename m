@@ -4,70 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD46CC433FE
-	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 09:00:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87E8BC433FE
+	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 09:14:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 356703CCBA5
-	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 10:00:12 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 7FA6B3CCBAF
+	for <ltp@archiver.kernel.org>; Mon, 21 Nov 2022 10:14:51 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 13D593C06C8
- for <ltp@lists.linux.it>; Mon, 21 Nov 2022 09:59:59 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 63F3C3C0F12
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 10:14:40 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3E3FD100043B
- for <ltp@lists.linux.it>; Mon, 21 Nov 2022 09:59:58 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 267057AFD71
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 10:14:39 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 463F61F897;
- Mon, 21 Nov 2022 08:59:57 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2F8E01F86C;
+ Mon, 21 Nov 2022 09:14:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1669021197;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1669022079; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=v9eI0l3L5J3waSLvW+eC332jj5gD4Rcqx/oy4092T7U=;
- b=uJNWoBaxwvTkrgcPCkmSH5N8lmksBFO6vBhMcKeC2W7lOUh2gTFKNUCWjI6fbYlxpP4bPc
- FekS8LKjm1E6B5wm3peAwXuznfWm6rE2l2WmGEaZSqIF05/CrJqQtHQvIhenohiltd0lPR
- V2J68v0dm4icKuYkLMj6IUjdDe79bbc=
+ bh=PZJQYpENwQh1J//HldGOrFeLMgIKVoP64qZRx3wsUIs=;
+ b=psP50Rp7mzttzox2qqEFqewP51mqo5yfKzBunJaCcEXDryBG8RAMaOyILP8r/jjFRR39hO
+ rGkK3UK07mVM7VljB8jwi59r7opcOAfLt1QI97jBy1UqSFs/KmGhBv8wh/pBf19+xCiZiE
+ MIXAzNE7KTcg3r+idVmR8EUnwZTfqYQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1669021197;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1669022079;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=v9eI0l3L5J3waSLvW+eC332jj5gD4Rcqx/oy4092T7U=;
- b=mwKTVaxEkEJfXDxmby4hh4uyjgP5plQNW4zg0K0s18PEbBjnSvse2OmeQrilKUMTFtMoFK
- tjiy0rAVGrz7aCDA==
+ bh=PZJQYpENwQh1J//HldGOrFeLMgIKVoP64qZRx3wsUIs=;
+ b=cMdgv+SLOz4z1BZDG32I8rTxCaO0MD4yOMshWS1rtwOo2A3A3A7MgWGu8P5O6ruJUsnSy4
+ ZYl/+lxrMTb/O5BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F0E0D1376E;
- Mon, 21 Nov 2022 08:59:56 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 20AD11377F;
+ Mon, 21 Nov 2022 09:14:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id BGsKOQw+e2MxXQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 21 Nov 2022 08:59:56 +0000
-Date: Mon, 21 Nov 2022 09:59:55 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <Y3s+Czg8sBsGYO+1@pevik>
-References: <20221107191136.18048-1-pvorel@suse.cz>
- <20221107191136.18048-2-pvorel@suse.cz>
- <CAEemH2fYv_=9UWdWB7VDiFOd8EC89qdCbxnPcTPAtGnkwLOYFg@mail.gmail.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id EhfuB39Be2OXZAAAMHmgww
+ (envelope-from <jack@suse.cz>); Mon, 21 Nov 2022 09:14:39 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id 917A5A070A; Mon, 21 Nov 2022 10:14:38 +0100 (CET)
+Date: Mon, 21 Nov 2022 10:14:38 +0100
+From: Jan Kara <jack@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <20221121091438.qpx3u5vpdu5afucg@quack3>
+References: <20221115123721.12176-1-jack@suse.cz>
+ <20221115124741.14400-2-jack@suse.cz> <Y3ZaOqpTvvBgUTTi@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2fYv_=9UWdWB7VDiFOd8EC89qdCbxnPcTPAtGnkwLOYFg@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <Y3ZaOqpTvvBgUTTi@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] zram01.sh: Workaround division by 0 on vfat
- on ppc64le
+Subject: Re: [LTP] [PATCH 2/3] fanotify10: Add support for multiple event
+ files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,107 +81,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Jens Axboe <axboe@kernel.dk>, Sergey Senozhatsky <senozhatsky@chromium.org>,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- Minchan Kim <minchan@kernel.org>, ltp@lists.linux.it,
- linux-kselftest@vger.kernel.org, Nitin Gupta <ngupta@vflare.org>,
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Jan Kara <jack@suse.cz>, Richard Palethorpe <rpalethorpe@suse.com>,
+ ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
-
-> Hi Petr,
-
-> On Tue, Nov 8, 2022 at 3:12 AM Petr Vorel <pvorel@suse.cz> wrote:
-
-> > Repeatedly read /sys/block/zram*/mm_stat for 1 sec. This should fix bug
-> > on ppc64le on stable kernels, where mem_used_total is often 0.
-
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> >  .../kernel/device-drivers/zram/zram01.sh      | 27 +++++++++++++++++--
-> >  1 file changed, 25 insertions(+), 2 deletions(-)
-
-> > diff --git a/testcases/kernel/device-drivers/zram/zram01.sh
-> > b/testcases/kernel/device-drivers/zram/zram01.sh
-> > index 58d233f91..76a8ccab4 100755
-> > --- a/testcases/kernel/device-drivers/zram/zram01.sh
-> > +++ b/testcases/kernel/device-drivers/zram/zram01.sh
-> > @@ -105,6 +105,26 @@ zram_mount()
-> >         tst_res TPASS "mount of zram device(s) succeeded"
-> >  }
-
-> > +read_mem_used_total()
-> > +{
-> > +       echo $(awk '{print $3}' $1)
-> > +}
-> > +
-> > +# Reads /sys/block/zram*/mm_stat until mem_used_total is not 0.
-> > +loop_read_mem_used_total()
-
-
-> This is not a looping function to check if mem_used_total is equal to zero,
-> the loop part is by means of the TST_RETRY_FUNC macro.
-Thanks for your review!
-
-> So, I'd suggest renaming it to check_read_mem_used_total().
-Agree. Unfortunately even this didn't help on ppc64le system where I was able to
-reproduce it, thus probably not worth to merge.
-
-Unfortunately later I was not able to reproduce the problem any more, I'll try
-it more this week.
-
-Kind regards,
-Petr
-
-> Reviewed-by: Li Wang <liwang@redhat.com>
-
-
-
-> > +{
-> > +       local file="$1"
-> > +       local mem_used_total
-> > +
-> > +       tst_res TINFO "$file"
-> > +       cat $file >&2
-> > +
-> > +       mem_used_total=$(read_mem_used_total $file)
-> > +       [ "$mem_used_total" -eq 0 ] && return 1
-> > +
-> > +       return 0
-> > +}
-> > +
-> >  zram_fill_fs()
-> >  {
-> >         local mem_used_total
-> > @@ -133,9 +153,12 @@ zram_fill_fs()
-> >                         continue
-> >                 fi
-
-> > -               mem_used_total=`awk '{print $3}'
-> > "/sys/block/zram$i/mm_stat"`
-> > +               TST_RETRY_FUNC "loop_read_mem_used_total
-> > /sys/block/zram$i/mm_stat" 0
-> > +               mem_used_total=$(read_mem_used_total
-> > /sys/block/zram$i/mm_stat)
-> > +               tst_res TINFO "mem_used_total: $mem_used_total"
-> > +
-> >                 v=$((100 * 1024 * $b / $mem_used_total))
-> > -               r=`echo "scale=2; $v / 100 " | bc`
-> > +               r=$(echo "scale=2; $v / 100 " | bc)
-
-> >                 if [ "$v" -lt 100 ]; then
-> >                         tst_res TFAIL "compression ratio: $r:1"
-> > --
-> > 2.38.0
-
-
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVGh1IDE3LTExLTIyIDE2OjU4OjUwLCBQZXRyIFZvcmVsIHdyb3RlOgo+IEhpIEphbiwgYWxs
+LAo+IAo+ID4gKyNkZWZpbmUgZm9yZWFjaF9wYXRoKHRjLCBidWYsIHBuYW1lKSBcCj4gPiArCWZv
+ciAoaW50IHBpdGVyID0gMDsgZm9ybWF0X3BhdGhfY2hlY2soKGJ1ZiksICh0YyktPnBuYW1lIyNf
+Zm10LAlcCj4gVW5mb3J0dW5hdGVseSB3ZSBzdGlsbCBzdXBwb3J0IEM5OSBkdWUgb2xkIGNvbXBp
+bGVyIG9uIENlbnRPUyA3LAo+IHRoZXJlZm9yZSBpbnQgcGl0ZXIgbmVlZHMgdG8gYmUgZGVmaW5l
+ZCBvdXRzaWRlIG9mIGZvciBsb29wLgoKSHVtLCBidXQgdmFyaWFibGUgZGVjbGFyYXRpb24gaW4g
+dGhlIGZvciBsb29wIGlzIHBhcnQgb2YgQzk5IHN0YW5kYXJkIChhcwp0aGUgZXJyb3IgbWVzc2Fn
+ZSBhbHNvIHNheXMpLiBTbyBkaWQgeW91IHdhbnQgdG8gc2F5IHlvdSBhcmUgY29tcGlsaW5nCmFn
+YWluc3QgQzg5IHN0YW5kYXJkPyBBbmQgQ2VudE9TIDcgc2hpcHMgd2l0aCBHQ0MgNC44LjUgQUZB
+SUNTIHdoaWNoIHNob3VsZApiZSBmdWxseSBDOTkgY29tcGxpYW50IEJUVy4gU28gd2hhdCdzIHRo
+ZSBzaXR1YXRpb24gaGVyZT8KClRoYXQgYmVpbmcgc2FpZCBJIGNhbiB3b3JrYXJvdW5kIHRoZSBw
+cm9ibGVtIGluIHRoZSBtYWNybywgaXQgd2lsbCBqdXN0IGJlCnNvbWV3aGF0IHVnbGllci4gU28g
+YmVmb3JlIGRvaW5nIHRoYXQgSSdkIGxpa2UgdG8gdW5kZXJzdGFuZCB3aGV0aGVyCmZvbGxvd2lu
+ZyBDODkgaXMgcmVhbGx5IHJlcXVpcmVkLi4uCgoJCQkJCQkJCUhvbnphCgo+IGZhbm90aWZ5MTAu
+Yzo0NzA6MjogZXJyb3I6IOKAmGZvcuKAmSBsb29wIGluaXRpYWwgZGVjbGFyYXRpb25zIGFyZSBv
+bmx5IGFsbG93ZWQgaW4gQzk5IG1vZGUKPiAgIGZvciAoaW50IHBpdGVyID0gMDsgZm9ybWF0X3Bh
+dGhfY2hlY2soKGJ1ZiksICh0YyktPnBuYW1lIyNfZm10LCBcCj4gICBeCj4gCj4gZmFub3RpZnkx
+MC5jOjQ3MDoxMTogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiDigJhwaXRlcuKAmQo+ICAgZm9yIChp
+bnQgcGl0ZXIgPSAwOyBmb3JtYXRfcGF0aF9jaGVjaygoYnVmKSwgKHRjKS0+cG5hbWUjI19mbXQs
+IFwKPiAgICAgICAgICAgIF4KPiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgotLSAKSmFuIEthcmEgPGph
+Y2tAc3VzZS5jb20+ClNVU0UgTGFicywgQ1IKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6
+Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
