@@ -4,62 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DEA7C433FE
-	for <ltp@archiver.kernel.org>; Tue, 22 Nov 2022 10:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51543C4332F
+	for <ltp@archiver.kernel.org>; Tue, 22 Nov 2022 10:11:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 27F6C3CCAD1
-	for <ltp@archiver.kernel.org>; Tue, 22 Nov 2022 11:02:08 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 4C8043CCAEB
+	for <ltp@archiver.kernel.org>; Tue, 22 Nov 2022 11:11:06 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 16BE83C03AE
- for <ltp@lists.linux.it>; Tue, 22 Nov 2022 11:01:57 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 136393C03AE
+ for <ltp@lists.linux.it>; Tue, 22 Nov 2022 11:10:56 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6E88A14002AB
- for <ltp@lists.linux.it>; Tue, 22 Nov 2022 11:01:57 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id CFCC021AF4;
- Tue, 22 Nov 2022 10:01:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669111316;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RUV1uw0W1PTbXzXzPe80Zv7T8KOi2keY3i9iVkCkz18=;
- b=VpAy5riVDWjTiS/SCf2GD1DHDQ91yvxs+pDQi/farvi9kKtYyaveu75AMgIXqP2B/ZtJ2z
- oP7wD256FRC/kvfa0djbqRRi5fwThSkuUB1DbefG3mxQCORS8pTXgj5hOkkyosrRK4wI7I
- jUY+gtNx4w/1ABIHeZKT5PmFRBFj4Tw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669111316;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=RUV1uw0W1PTbXzXzPe80Zv7T8KOi2keY3i9iVkCkz18=;
- b=kn2yEtHgP7ZUDf7G4+Iw8RX+w4vroPCPuhKklwnbH99hMJm2EIMPj9GJawKzC4Y3LbO9ZU
- WjEP9LaGb9FRXvAg==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 78C206008F6
+ for <ltp@lists.linux.it>; Tue, 22 Nov 2022 11:10:56 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 9187C2C142;
- Tue, 22 Nov 2022 10:01:56 +0000 (UTC)
-References: <20221121144505.1496-1-rpalethorpe@suse.com>
- <Y3uUk6nKsASeFRf7@yuki> <87mt8kfgad.fsf@suse.de> <Y3ukncX84lQTJNe9@rei>
- <87ilj7fjz6.fsf@suse.de> <Y3yWsgwJrcsi26Vu@pevik>
-User-agent: mu4e 1.8.11; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 22 Nov 2022 10:00:40 +0000
-Organization: Linux Private Site
-In-reply-to: <Y3yWsgwJrcsi26Vu@pevik>
-Message-ID: <87a64jfgtn.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 98E66220CB;
+ Tue, 22 Nov 2022 10:10:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1669111855;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kr6ax75RDQM75AhdKI4ptNi7kDlOeTak+FEaRlVGM4I=;
+ b=VL0JCe3jHxCai43cA6AFeBsZr2F7IUkOMnx3Tc4cm6nBwm8KPud9NdTgOvQML+edxuKddO
+ 54IV0FDwTbhPFPvYU+yhf2tXeym6FVF8I+QaGibUq5DSQE6RcNCxhLPy1HXz+XZl4JKXfp
+ 46230uxoLWCquH+uRpfAjBoJvR42QO8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1669111855;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=kr6ax75RDQM75AhdKI4ptNi7kDlOeTak+FEaRlVGM4I=;
+ b=rOqZCPnxvcRNxc38wad02BWUVf/1wSc3Kj3mKUE3XRSlOSCR6FlQjwlURSAY2MRfFHQosp
+ 7KCIzeS1wOLh2DBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 615C013AA1;
+ Tue, 22 Nov 2022 10:10:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id JugjFi+gfGNuUwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 22 Nov 2022 10:10:55 +0000
+Date: Tue, 22 Nov 2022 11:10:54 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>, Jan Kara <jack@suse.cz>,
+ Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Message-ID: <Y3ygLvFbFubATR+9@pevik>
+References: <20221115123721.12176-1-jack@suse.cz>
+ <20221115124741.14400-2-jack@suse.cz> <Y3ZaOqpTvvBgUTTi@pevik>
+ <20221121091438.qpx3u5vpdu5afucg@quack3> <Y3tF2XF1xVlOE3fA@pevik>
+ <Y3tHYo/iQ6t6D7SR@rei> <Y3yGHec6j0qbBXja@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Y3yGHec6j0qbBXja@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] config: Explicitly set gnu99
+Subject: Re: [LTP] [PATCH 2/3] fanotify10: Add support for multiple event
+ files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,58 +80,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it, Jan Kara <jack@suse.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi all,
 
-Petr Vorel <pvorel@suse.cz> writes:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> Hi Richie, Cyril,
->
-> ...
->> >> > I woder if this would work with different compilers. I suppose clang
->> >> > does work, but what about icc?
->
->> >> Clang is fine. I doubt that icc compiles LTP at present unless it does
->> >> support GNU extensions.
->
->> > Fair enough.
->
->> >> > I supose that we get tons of 'can't do pointer arithmetics on void*
->> >> > pointers and stuff' with plain c99. Maybe it would be better to clean
->> >> > these out instead.
->
-> FYI gnu99 works on our CI
-> https://github.com/pevik/ltp/actions/runs/3521626082
->
-> and c99 not
-> https://github.com/pevik/ltp/actions/runs/3521624383
-> parse_opts.c:458:35: error: implicit declaration of function 'sbrk' [-Werror=implicit-function-declaration]
-> parse_opts.c:475:27: error: 'CLOCK_MONOTONIC' undeclared (first use in this function)
-> parse_opts.c:208:47: error: 'optarg' undeclared (first use in this function)
-> and many other errors
->
-> Richie probably found that himself.
->
-> So that I'm for merging this and Jan's fixes on the top of it.
-> I suppose there is no feature dependency on autotools (i.e. we don't need to add
-> -std=gnu99 to any of macros in m4/.
-
-Yes, agreed. Just see my comment on the other thread first. Thanks.
-
->
-> Kind regards,
-> Petr
-
-
--- 
-Thank you,
-Richard.
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
