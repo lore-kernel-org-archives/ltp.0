@@ -4,77 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5A6CC4332F
-	for <ltp@archiver.kernel.org>; Tue, 22 Nov 2022 03:52:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F0B1C4332F
+	for <ltp@archiver.kernel.org>; Tue, 22 Nov 2022 03:53:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4BFEE3CCBEC
-	for <ltp@archiver.kernel.org>; Tue, 22 Nov 2022 04:52:48 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id A8C9A3CCBF2
+	for <ltp@archiver.kernel.org>; Tue, 22 Nov 2022 04:53:45 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 833853C03AE
- for <ltp@lists.linux.it>; Tue, 22 Nov 2022 04:52:39 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 11D5D3C03AE
+ for <ltp@lists.linux.it>; Tue, 22 Nov 2022 04:53:36 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B59D91000EDE
- for <ltp@lists.linux.it>; Tue, 22 Nov 2022 04:52:38 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3BB531457B42
+ for <ltp@lists.linux.it>; Tue, 22 Nov 2022 04:53:35 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1669089157;
+ s=mimecast20190719; t=1669089214;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=sVYjtULupvlS6KyxZVoAY2y+aSq6QWgwp743NIZmObM=;
- b=Bt21TVF61II3G7NjhMNL2mCOBJO9JrvUhqNURUZNxNHiw6GeDjMqRmEeKy2nRvue00V9sM
- zvIQjPOtbb8Ug/bE0UMby8NXPaL3FtF11fMhSKOeZqF/8wVvYRIaJ1onw0puIBeAsF1lpU
- 07cMWsj6Pjsilm1i6zorp0D9rj8Lzog=
+ bh=e+mIZoak2dAgLsHM+14q32PR4u09NL54fIbyY1qJ5i8=;
+ b=dqtQv1YqmujaBJ95BgM8rNr3ik4Jc6HbEtGBCZfF7JEdMPPlA712B9mp2BHY7prWKeidfG
+ SXdGmhQsaa9nLsKFjC47+6bgiw4LMpWG2Q3wVnV5AbI1zdidOlv0EEyY2tmMaLaV2/Y7+7
+ aY7eFQ1O+h19wbJ3xr1MHwR/AWqndxE=
 Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
  [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-36-e-CqFjXwM3uOo3MekJdfug-1; Mon, 21 Nov 2022 22:52:34 -0500
-X-MC-Unique: e-CqFjXwM3uOo3MekJdfug-1
+ us-mta-372-KE8w9LwTNGSNZVoAil7t_w-1; Mon, 21 Nov 2022 22:53:32 -0500
+X-MC-Unique: KE8w9LwTNGSNZVoAil7t_w-1
 Received: by mail-wr1-f71.google.com with SMTP id
- r23-20020adfa157000000b00241bcae980cso3163262wrr.7
- for <ltp@lists.linux.it>; Mon, 21 Nov 2022 19:52:34 -0800 (PST)
+ i24-20020adfa518000000b00241e2f40d8bso132125wrb.14
+ for <ltp@lists.linux.it>; Mon, 21 Nov 2022 19:53:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=sVYjtULupvlS6KyxZVoAY2y+aSq6QWgwp743NIZmObM=;
- b=WkRyg06gzUSASZi4V0MsfBbNTdK0Y35w2Ykb04FExRCNdQEtPzfOKM+ThT2MY5IGit
- cgU7SV448FQVPlfM+X1H5uIlVluIf0ZJopUIx0+wtFUdED6Dw0p1D3IJlObtAfemU5vu
- VOFpK7/OKUQeWsEOlI0WUr0Lq5rFqDMmLsS2NMfnFiv0F1AqQ3AmWvVh5Iw/GRGAook9
- nTwnybf7e5YmOXrCJzeB9oZK/I1V2MyHMeHSqn6rph+WuMdpuEjSowkVKTlinE3F9icu
- sesr439L8dSP1ohvmEe63JaUAvPzvH1AjimOD1AGh0r1ud1NlV9SwVVoNC/xX42FjZYg
- etNA==
-X-Gm-Message-State: ANoB5plAPPszvCkTXGvynrBDOeoAQEIg8iQxWAzu5lQfbsr0OcXLl1ME
- DY247wKnI5UH4QdSO/D9m00VXSMKTNM2CqbKkOk7l5vnpNSgF+ssVPGrLhvyTGir/ZfICnKSDgT
- WmGM9ejZ1bJLFPLtNcb9Bm5Fu7aw=
-X-Received: by 2002:a05:600c:3ba1:b0:3d0:47c:9ff5 with SMTP id
- n33-20020a05600c3ba100b003d0047c9ff5mr7980773wms.121.1669089153169; 
- Mon, 21 Nov 2022 19:52:33 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf5pdYmj6TPfhKDlHSng3UbrQFDQsI7HBwFtejZYgYN/FvaRuCWwCP+WcjDQcTwuOzpjDV8s8RVCIPsefI7nUhU=
-X-Received: by 2002:a05:600c:3ba1:b0:3d0:47c:9ff5 with SMTP id
- n33-20020a05600c3ba100b003d0047c9ff5mr7980762wms.121.1669089152916; Mon, 21
- Nov 2022 19:52:32 -0800 (PST)
+ bh=e+mIZoak2dAgLsHM+14q32PR4u09NL54fIbyY1qJ5i8=;
+ b=tG8cirE85EqNfeKWEPRio5M3Dqw6zDIa3djpA0pjKZQXCkCovzKIYyOHk560a+Z925
+ jfoUHqbT2FLK6m4e3SDAAKdN/uXFUeLEA3Hw/UX4l7gtvFft/rQA95UmkwnCCktXuuuq
+ XkigzmTTGhLjsO+PfaAJ4YkXNTLmSWwtNQEFBNiyIA/KwkUZnknSXk2gRB5fr2+0T+8O
+ oPWqJZ88I5pC4BwwgGk+zlullaFWPhfU7Y4qPeCTkfcGE9U5+6SZ2VqRdTHEhm557BwX
+ MyTeNbf5JFqrY2xxpSJLZkQI+7EtrU6PeffEHeWf+Xf/cXZsdweXrWuPPFb1QlzheFSf
+ pTYQ==
+X-Gm-Message-State: ANoB5pnRsU/Nc0HqFvvNyQ8XnZfI4SgUv/Rb4gVcJREPfBoB7Nxwxtis
+ l5WwYGBWGjbBCbKu6aqvRajgvOY4bLlz4R4x4XeMp2j2eJo0v79KD5wegrpSWbJhoJ4LNNGN3hF
+ /KTz+jV9a1Xm2WcXGyIBoRAguekg=
+X-Received: by 2002:adf:f8c5:0:b0:241:b408:f170 with SMTP id
+ f5-20020adff8c5000000b00241b408f170mr13075506wrq.42.1669089210993; 
+ Mon, 21 Nov 2022 19:53:30 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf65LI+cJICGJed3LM9PKDGDixd6d3AJtqhJrYgLE/yDMsBsTRx3aKAwh3a7vcCo4o09r6KUKkkhvPaMcqAcMH8=
+X-Received: by 2002:adf:f8c5:0:b0:241:b408:f170 with SMTP id
+ f5-20020adff8c5000000b00241b408f170mr13075501wrq.42.1669089210821; Mon, 21
+ Nov 2022 19:53:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20221121115038.27564-1-akumar@suse.de>
-In-Reply-To: <20221121115038.27564-1-akumar@suse.de>
+References: <20221121115128.27847-1-akumar@suse.de>
+In-Reply-To: <20221121115128.27847-1-akumar@suse.de>
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 22 Nov 2022 11:52:21 +0800
-Message-ID: <CAEemH2dYimufC7OvUe09F47_tyrx7Vj9fW4PiWwnzHVpAfurfQ@mail.gmail.com>
+Date: Tue, 22 Nov 2022 11:53:19 +0800
+Message-ID: <CAEemH2eNByAiwMfvWTGch61WPAiOd-tgKKfWSAdhy7Adi+7HBg@mail.gmail.com>
 To: Avinesh Kumar <akumar@suse.de>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] getrlimit02: add EFAULT case & use TST_EXP_FAIL()
- macro
+Subject: Re: [LTP] [PATCH] getrlimit01: use TST_EXP_PASS() macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,74 +85,52 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============0689844764=="
+Content-Type: multipart/mixed; boundary="===============1171314025=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============0689844764==
-Content-Type: multipart/alternative; boundary="0000000000000ef5ea05ee071a5d"
+--===============1171314025==
+Content-Type: multipart/alternative; boundary="00000000000082856805ee071d11"
 
---0000000000000ef5ea05ee071a5d
+--00000000000082856805ee071d11
 Content-Type: text/plain; charset="UTF-8"
 
 On Mon, Nov 21, 2022 at 7:51 PM Avinesh Kumar <akumar@suse.de> wrote:
 
 > Signed-off-by: Avinesh Kumar <akumar@suse.de>
->
-
-Merged, thanks!
-
 > ---
->  .../kernel/syscalls/getrlimit/getrlimit02.c   | 27 ++++++++-----------
->  1 file changed, 11 insertions(+), 16 deletions(-)
+>  testcases/kernel/syscalls/getrlimit/getrlimit01.c | 14 +++-----------
+>  1 file changed, 3 insertions(+), 11 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit02.c
-> b/testcases/kernel/syscalls/getrlimit/getrlimit02.c
-> index 586ca5a67..9b68ce20b 100644
-> --- a/testcases/kernel/syscalls/getrlimit/getrlimit02.c
-> +++ b/testcases/kernel/syscalls/getrlimit/getrlimit02.c
-> @@ -18,33 +18,28 @@
->  #include <sys/resource.h>
->  #include "tst_test.h"
->
-> -#define RLIMIT_TOO_HIGH 1000
-> +#define INVALID_RES_TYPE 1000
->
->  static struct rlimit rlim;
->
->  static struct tcase {
-> -       int exp_errno;          /* Expected error no            */
-> -       char *exp_errval;       /* Expected error value string  */
-> -       struct rlimit *rlim;    /* rlimit structure             */
-> -       int res_type;           /* resource type                */
-> +       int exp_errno;
-> +       char *desc;
-> +       struct rlimit *rlim;
-> +       int res_type;
->  } tcases[] = {
-> -       { EINVAL, "EINVAL", &rlim, RLIMIT_TOO_HIGH}
-> +       {EFAULT, "invalid address", (void *)-1, RLIMIT_CORE},
-> +       {EINVAL, "invalid resource type", &rlim, INVALID_RES_TYPE}
->  };
->
->  static void verify_getrlimit(unsigned int i)
->  {
+> diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit01.c
+> b/testcases/kernel/syscalls/getrlimit/getrlimit01.c
+> index 2a480dfa7..bea37ab1c 100644
+> --- a/testcases/kernel/syscalls/getrlimit/getrlimit01.c
+> +++ b/testcases/kernel/syscalls/getrlimit/getrlimit01.c
+> @@ -47,17 +47,9 @@ static void verify_getrlimit(unsigned int i)
+>         struct rlimit rlim;
 >         struct tcase *tc = &tcases[i];
 >
-> -       TEST(getrlimit(tc->res_type, tc->rlim));
+> -       TEST(getrlimit(tc->res, &rlim));
 > -
-> -       if ((TST_RET == -1) && (TST_ERR == tc->exp_errno)) {
-> -               tst_res(TPASS, "expected failure; got %s",
-> -                        tc->exp_errval);
+> -       if (TST_RET == -1) {
+> -               tst_res(TFAIL | TTERRNO,
+> -                       "getrlimit() test %s failed",
+> -                       tc->res_str);
 > -       } else {
-> -               tst_res(TFAIL, "call failed to produce "
-> -                        "expected error;  errno: %d : %s",
-> -                        TST_ERR, strerror(TST_ERR));
+> -               tst_res(TPASS,
+> -                       "getrlimit() test %s success",
+> -                       tc->res_str);
 > -       }
-> +       TST_EXP_FAIL(getrlimit(tc->res_type, tc->rlim),
-> +                               tc->exp_errno,
-> +                               "getrlimit() with %s",
-> +                               tc->desc);
+> +       TST_EXP_PASS(getrlimit(tc->res, &rlim),
+> +                               "getrlimit() test for resource type %s:",
+> +                               tc->res_str);
+>
+
+Merged (with print message refined), thanks!
+
+
+
 >  }
 >
 >  static struct tst_test test = {
@@ -171,7 +147,7 @@ Merged, thanks!
 Regards,
 Li Wang
 
---0000000000000ef5ea05ee071a5d
+--00000000000082856805ee071d11
 Content-Type: text/html; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -182,81 +158,48 @@ a href=3D"mailto:akumar@suse.de">akumar@suse.de</a>&gt; wrote:<br></div><bl=
 ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
 t:1px solid rgb(204,204,204);padding-left:1ex">Signed-off-by: Avinesh Kumar=
  &lt;<a href=3D"mailto:akumar@suse.de" target=3D"_blank">akumar@suse.de</a>=
-&gt;<br></blockquote><div><br></div><div class=3D"gmail_default" style=3D"f=
-ont-size:small">Merged, thanks!</div><div class=3D"gmail_default" style=3D"=
-font-size:small"></div><blockquote class=3D"gmail_quote" style=3D"margin:0p=
-x 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+&gt;<br>
 ---<br>
-=C2=A0.../kernel/syscalls/getrlimit/getrlimit02.c=C2=A0 =C2=A0| 27 ++++++++=
------------<br>
-=C2=A01 file changed, 11 insertions(+), 16 deletions(-)<br>
+=C2=A0testcases/kernel/syscalls/getrlimit/getrlimit01.c | 14 +++-----------=
 <br>
-diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit02.c b/testcases/=
-kernel/syscalls/getrlimit/getrlimit02.c<br>
-index 586ca5a67..9b68ce20b 100644<br>
---- a/testcases/kernel/syscalls/getrlimit/getrlimit02.c<br>
-+++ b/testcases/kernel/syscalls/getrlimit/getrlimit02.c<br>
-@@ -18,33 +18,28 @@<br>
-=C2=A0#include &lt;sys/resource.h&gt;<br>
-=C2=A0#include &quot;tst_test.h&quot;<br>
+=C2=A01 file changed, 3 insertions(+), 11 deletions(-)<br>
 <br>
--#define RLIMIT_TOO_HIGH 1000<br>
-+#define INVALID_RES_TYPE 1000<br>
-<br>
-=C2=A0static struct rlimit rlim;<br>
-<br>
-=C2=A0static struct tcase {<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0int exp_errno;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 /* Expected error no=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 */<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0char *exp_errval;=C2=A0 =C2=A0 =C2=A0 =C2=A0/* =
-Expected error value string=C2=A0 */<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0struct rlimit *rlim;=C2=A0 =C2=A0 /* rlimit str=
-ucture=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0*/<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0int res_type;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0/* resource type=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 */<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0int exp_errno;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0char *desc;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0struct rlimit *rlim;<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0int res_type;<br>
-=C2=A0} tcases[] =3D {<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0{ EINVAL, &quot;EINVAL&quot;, &amp;rlim, RLIMIT=
-_TOO_HIGH}<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{EFAULT, &quot;invalid address&quot;, (void *)-=
-1, RLIMIT_CORE},<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0{EINVAL, &quot;invalid resource type&quot;, &am=
-p;rlim, INVALID_RES_TYPE}<br>
-=C2=A0};<br>
-<br>
-=C2=A0static void verify_getrlimit(unsigned int i)<br>
-=C2=A0{<br>
+diff --git a/testcases/kernel/syscalls/getrlimit/getrlimit01.c b/testcases/=
+kernel/syscalls/getrlimit/getrlimit01.c<br>
+index 2a480dfa7..bea37ab1c 100644<br>
+--- a/testcases/kernel/syscalls/getrlimit/getrlimit01.c<br>
++++ b/testcases/kernel/syscalls/getrlimit/getrlimit01.c<br>
+@@ -47,17 +47,9 @@ static void verify_getrlimit(unsigned int i)<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 struct rlimit rlim;<br>
 =C2=A0 =C2=A0 =C2=A0 =C2=A0 struct tcase *tc =3D &amp;tcases[i];<br>
 <br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0TEST(getrlimit(tc-&gt;res_type, tc-&gt;rlim));<=
-br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0TEST(getrlimit(tc-&gt;res, &amp;rlim));<br>
 -<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0if ((TST_RET =3D=3D -1) &amp;&amp; (TST_ERR =3D=
-=3D tc-&gt;exp_errno)) {<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TPASS, &quo=
-t;expected failure; got %s&quot;,<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0if (TST_RET =3D=3D -1) {<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TFAIL | TTE=
+RRNO,<br>
 -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 tc-&gt;exp_errval);<br>
+=A0 =C2=A0&quot;getrlimit() test %s failed&quot;,<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0tc-&gt;res_str);<br>
 -=C2=A0 =C2=A0 =C2=A0 =C2=A0} else {<br>
--=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TFAIL, &quo=
-t;call failed to produce &quot;<br>
+-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_res(TPASS,<br>
 -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 &quot;expected error;=C2=A0 errno: %d : %s&quot;,<br>
+=A0 =C2=A0&quot;getrlimit() test %s success&quot;,<br>
 -=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 TST_ERR, strerror(TST_ERR));<br>
+=A0 =C2=A0tc-&gt;res_str);<br>
 -=C2=A0 =C2=A0 =C2=A0 =C2=A0}<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0TST_EXP_FAIL(getrlimit(tc-&gt;res_type, tc-&gt;=
-rlim),<br>
++=C2=A0 =C2=A0 =C2=A0 =C2=A0TST_EXP_PASS(getrlimit(tc-&gt;res, &amp;rlim),<=
+br>
 +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tc-&gt;exp_errno,<br>
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;getrlimit() test for resource t=
+ype %s:&quot;,<br>
 +=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0&quot;getrlimit() with %s&quot;,<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tc-&gt;desc);<br>
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tc-&gt;res_str);<br></blockquote><div=
+><br></div><div><div class=3D"gmail_default" style=3D"font-size:small">Merg=
+ed (with print message refined), thanks!</div><br></div><div>=C2=A0</div><b=
+lockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-le=
+ft:1px solid rgb(204,204,204);padding-left:1ex">
 =C2=A0}<br>
 <br>
 =C2=A0static struct tst_test test =3D {<br>
@@ -272,10 +215,10 @@ oreferrer" target=3D"_blank">https://lists.linux.it/listinfo/ltp</a><br>
  class=3D"gmail_signature"><div dir=3D"ltr"><div>Regards,<br></div><div>Li =
 Wang<br></div></div></div></div>
 
---0000000000000ef5ea05ee071a5d--
+--00000000000082856805ee071d11--
 
 
---===============0689844764==
+--===============1171314025==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -285,5 +228,5 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---===============0689844764==--
+--===============1171314025==--
 
