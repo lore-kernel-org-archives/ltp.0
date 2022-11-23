@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CBF9C433FE
-	for <ltp@archiver.kernel.org>; Wed, 23 Nov 2022 14:27:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E8B9C4332F
+	for <ltp@archiver.kernel.org>; Wed, 23 Nov 2022 14:27:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9A0283CCA2B
-	for <ltp@archiver.kernel.org>; Wed, 23 Nov 2022 15:27:31 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id A8C263CC9FA
+	for <ltp@archiver.kernel.org>; Wed, 23 Nov 2022 15:27:45 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D01613C1B75
- for <ltp@lists.linux.it>; Wed, 23 Nov 2022 15:27:21 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 274703C1B75
+ for <ltp@lists.linux.it>; Wed, 23 Nov 2022 15:27:36 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EF97B1400444
- for <ltp@lists.linux.it>; Wed, 23 Nov 2022 15:27:20 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0C4A414004F8
+ for <ltp@lists.linux.it>; Wed, 23 Nov 2022 15:27:35 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A99621F8B2
- for <ltp@lists.linux.it>; Wed, 23 Nov 2022 14:27:19 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 32E9C1F890
+ for <ltp@lists.linux.it>; Wed, 23 Nov 2022 14:27:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669213639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1669213655; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=9t8OUpk6Wy4Wgo9T+9Kr5P2X1PtmWn1b1fXjmqRpH2w=;
- b=lY4bgvrrC3hqEdQHpBGtQl2UDpFWxE8VFOKhzko85hq0D0FZpyvWN9oNT6gQz+8hTQFRt9
- CZzCk0IGjP2GMEWuohG1tX2Zh/4wGrqxFzS0oM1NNtTLh1Ok8OuhE1Avd/QfSC9LKpQEvZ
- jk+I5I7Cg8ngOr2tagFuxz76T0SU6nc=
+ bh=CU3bgJs+mtVl6vzy6FJ3edLGKqJ1QOLZzhrzI+2tEvk=;
+ b=Eqxw8EDaf3ImIuLovxvFjcNdT0VOJQjwGwPOqvmbTAn1cG3yE4sUbvt2j7YVk/XLM3Xw1P
+ fdjEg4np5xuf26miftomdsT74omt96iSwqijKlEg2jywkZbksR2L8ZlqQtx7XGWSOFwDkm
+ ECcDzwGnzSdSYsFcmy9y9G1CPWkL41Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669213639;
+ s=susede2_ed25519; t=1669213655;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=9t8OUpk6Wy4Wgo9T+9Kr5P2X1PtmWn1b1fXjmqRpH2w=;
- b=rXSWNfW4tSvQGaYDXOZl0P68C5o9FiuHaazcxNUBksLpwmYLyCkBpnXuvH9iuSozss6xMf
- J94y3y9+kEsgmsDw==
+ bh=CU3bgJs+mtVl6vzy6FJ3edLGKqJ1QOLZzhrzI+2tEvk=;
+ b=AqymEYiUU8kvicP/Vxvw5sOoq5eIth2OZNSQQAUCMDhh4QCHS44K8rRu0Gb01ZDu97pnbD
+ Rvx+0C1aq+qKgJAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 274EB13AE7
- for <ltp@lists.linux.it>; Wed, 23 Nov 2022 14:27:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A666C13AE7
+ for <ltp@lists.linux.it>; Wed, 23 Nov 2022 14:27:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id BAthNsYtfmONIgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id YdPgGdYtfmOyIgAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Wed, 23 Nov 2022 14:27:18 +0000
+ for <ltp@lists.linux.it>; Wed, 23 Nov 2022 14:27:34 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Wed, 23 Nov 2022 19:57:16 +0530
-Message-Id: <20221123142716.1336-1-akumar@suse.de>
+Date: Wed, 23 Nov 2022 19:57:32 +0530
+Message-Id: <20221123142732.1399-1-akumar@suse.de>
 X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] fstatfs01: Convert to new API and enable for all
+Subject: [LTP] [PATCH] statfs01: Convert to new API and enable for all
  filesystems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -79,14 +80,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/fstatfs/fstatfs01.c | 126 +++++-------------
- 1 file changed, 35 insertions(+), 91 deletions(-)
+ testcases/kernel/syscalls/statfs/statfs01.c | 211 +++-----------------
+ 1 file changed, 29 insertions(+), 182 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fstatfs/fstatfs01.c b/testcases/kernel/syscalls/fstatfs/fstatfs01.c
-index b06652dd5..6b14fd0d6 100644
---- a/testcases/kernel/syscalls/fstatfs/fstatfs01.c
-+++ b/testcases/kernel/syscalls/fstatfs/fstatfs01.c
-@@ -1,57 +1,22 @@
+diff --git a/testcases/kernel/syscalls/statfs/statfs01.c b/testcases/kernel/syscalls/statfs/statfs01.c
+index 65f008988..5c38a12c3 100644
+--- a/testcases/kernel/syscalls/statfs/statfs01.c
++++ b/testcases/kernel/syscalls/statfs/statfs01.c
+@@ -1,197 +1,44 @@
 +// SPDX-License-Identifier: GPL-2.0
  /*
   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
@@ -119,15 +120,87 @@ index b06652dd5..6b14fd0d6 100644
 - *
 - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
 - *
-- */
--/*
-- * DETAILED DESCRIPTION
-- *   This is a Phase I test for the fstatfs(2) system call.  It is intended
-- *   to provide a limited exposure of the system call, for now.  It
-- *   should/will be extended when full functional tests are written for
-- *   fstatfs(2).
++ * AUTHOR : William Roske, CO-PILOT	: Dave Fenner
 + * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
   */
+-/* $Id: statfs01.c,v 1.6 2009/11/02 13:57:19 subrata_modak Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: statfs01
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for statfs(2) mounted filesys
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 05/14/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- * 	1.) statfs(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- * 	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *$
+- *    DURATION
+- * 	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- * 	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- * 	None
+- *
+- *    INTERCASE DEPENDENCIES
+- * 	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the statfs(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	statfs(2).
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
  
 -#include <sys/types.h>
 -#include <fcntl.h>
@@ -135,74 +208,71 @@ index b06652dd5..6b14fd0d6 100644
 -#include <errno.h>
 -#include <signal.h>
 -#include <string.h>
+-#include "test.h"
+-
+-void setup();
+-void cleanup();
 +/*\
 + * [Description]
 + *
-+ * Verify that fstatfs() syscall executes successfully for all
++ * Verify that statfs() syscall executes successfully on all
 + * available filesystems.
 + */
  
--#include "test.h"
--#include "safe_macros.h"
- 
--static void setup(void);
--static void cleanup(void);
-+#include <stdio.h>
+-char *TCID = "statfs01";
+-int TST_TOTAL = 1;
 +#include "tst_test.h"
  
--char *TCID = "fstatfs01";
+-char fname[255];
+-int fd;
+-struct statfs stats;
 +#define MNT_POINT "mntpoint"
-+#define TEMP_FILE MNT_POINT"/test_file"
++#define TEMP_FILE MNT_POINT"/testfile"
++#define TEXT "dummy text"
  
- static int file_fd;
- static int pipe_fd;
-@@ -59,65 +24,44 @@ static int pipe_fd;
- static struct tcase {
- 	int *fd;
- 	const char *msg;
--} tcases[2] = {
-+} tcases[] = {
- 	{&file_fd, "fstatfs() on a file"},
- 	{&pipe_fd, "fstatfs() on a pipe"},
- };
- 
--int TST_TOTAL = ARRAY_SIZE(tcases);
--
 -int main(int ac, char **av)
-+static void run(unsigned int i)
++static void setup(void)
  {
--	int lc, i;
--	struct statfs stats;
-+	struct tcase *tc = &tcases[i];
-+	struct statfs buf;
- 
+-	int lc;
+-
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
 -		tst_count = 0;
 -
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(fstatfs(*tcases[i].fd, &stats));
+-		/* Call fstatfs(2) */
+-		TEST(statfs(fname, &stats));
 -
--			if (TEST_RETURN == -1) {
--				tst_resm(TFAIL | TTERRNO, "%s", tcases[i].msg);
--			} else {
--				tst_resm(TPASS, "%s - f_type=%lx",
--				         tcases[i].msg, stats.f_type);
--			}
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO, "statfs(%s, ..) failed",
+-				 fname);
+-		} else {
+-			tst_resm(TPASS, "statfs(%s, ..) returned %ld",
+-				 fname, TEST_RETURN);
 -		}
+-
 -	}
 -
 -	cleanup();
 -	tst_exit();
-+	TST_EXP_PASS(fstatfs(*tc->fd, &buf), "%s", tc->msg);
++	int fd;
+ 
++	fd = SAFE_OPEN(TEMP_FILE, O_RDWR | O_CREAT, 0700);
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, TEXT, strlen(TEXT));
++	SAFE_CLOSE(fd);
  }
  
- static void setup(void)
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
+-void setup(void)
++static void run(void)
  {
- 	int pipe[2];
++	struct statfs buf;
  
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
@@ -210,40 +280,39 @@ index b06652dd5..6b14fd0d6 100644
 -
 -	tst_tmpdir();
 -
--	file_fd = SAFE_OPEN(cleanup, "test_file", O_RDWR | O_CREAT, 0700);
+-	sprintf(fname, "tfile_%d", getpid());
+-	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT,0700) Failed, errno=%d : %s",
+-			 fname, errno, strerror(errno));
+-	}
+-	/* write the TCID to the file */
+-	if (write(fd, TCID, strlen(TCID)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "write(fd, TCID, strlen(TCID))Failed, errno=%d : %s",
+-			 errno, strerror(errno));
+-	}
+-	close(fd);
 -
--	SAFE_PIPE(cleanup, pipe);
-+	file_fd = SAFE_OPEN(TEMP_FILE, O_RDWR | O_CREAT, 0700);
-+	SAFE_PIPE(pipe);
- 	pipe_fd = pipe[0];
--	SAFE_CLOSE(cleanup, pipe[1]);
-+	SAFE_CLOSE(pipe[1]);
++	TST_EXP_PASS(statfs(TEMP_FILE, &buf));
  }
  
- static void cleanup(void)
- {
--	if (file_fd > 0 && close(file_fd))
--		tst_resm(TWARN | TERRNO, "close(file_fd) failed");
--
--	if (pipe_fd > 0 && close(pipe_fd))
--		tst_resm(TWARN | TERRNO, "close(pipe_fd) failed");
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- ***************************************************************/
+-void cleanup(void)
+-{
 -
 -	tst_rmdir();
-+	if (file_fd > 0)
-+		SAFE_CLOSE(file_fd);
-+	if (pipe_fd > 0)
-+		SAFE_CLOSE(pipe_fd);
- }
-+
+-}
 +static struct tst_test test = {
 +	.setup = setup,
-+	.cleanup = cleanup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = run,
++	.test_all = run,
++	.needs_root = 1,
 +	.mount_device = 1,
 +	.mntpoint = MNT_POINT,
-+	.all_filesystems = 1,
-+	.needs_root = 1
++	.all_filesystems = 1
 +};
 -- 
 2.38.1
