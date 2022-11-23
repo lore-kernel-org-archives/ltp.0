@@ -4,36 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18D3DC4332F
-	for <ltp@archiver.kernel.org>; Wed, 23 Nov 2022 14:48:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6478C4332F
+	for <ltp@archiver.kernel.org>; Wed, 23 Nov 2022 14:48:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7BA283CCA10
-	for <ltp@archiver.kernel.org>; Wed, 23 Nov 2022 15:48:13 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 0D5E33CCA0C
+	for <ltp@archiver.kernel.org>; Wed, 23 Nov 2022 15:48:23 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E4FCC3CC9EA
- for <ltp@lists.linux.it>; Wed, 23 Nov 2022 15:48:03 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id C38423CCA1B
+ for <ltp@lists.linux.it>; Wed, 23 Nov 2022 15:48:06 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-3.smtp.seeweb.it (Postfix) with ESMTP id 058C41A00664
- for <ltp@lists.linux.it>; Wed, 23 Nov 2022 15:48:01 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTP id A512360067C
+ for <ltp@lists.linux.it>; Wed, 23 Nov 2022 15:48:05 +0100 (CET)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3E4A1FB;
- Wed, 23 Nov 2022 06:48:05 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 58D3A1FB;
+ Wed, 23 Nov 2022 06:48:10 -0800 (PST)
 Received: from e129169.arm.com (usa-sjc-imap-foss1.foss.arm.com
  [10.121.207.14])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50EF83F73B;
- Wed, 23 Nov 2022 06:47:58 -0800 (PST)
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 234433F73B;
+ Wed, 23 Nov 2022 06:48:03 -0800 (PST)
 From: Tudor Cretu <tudor.cretu@arm.com>
 To: ltp@lists.linux.it
-Date: Wed, 23 Nov 2022 14:47:43 +0000
-Message-Id: <20221123144746.590890-1-tudor.cretu@arm.com>
+Date: Wed, 23 Nov 2022 14:47:44 +0000
+Message-Id: <20221123144746.590890-2-tudor.cretu@arm.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221123144746.590890-1-tudor.cretu@arm.com>
+References: <20221123144746.590890-1-tudor.cretu@arm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/3] safe_macros: Fix undefined behaviour in vararg
+Subject: [LTP] [PATCH 1/3] safe_open: Fix undefined behaviour in vararg
  handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -46,33 +48,105 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-QWNjZXNzaW5nIGVsZW1lbnRzIGluIGFuIGVtcHR5IHZhX2xpc3QgcmVzdWx0cyBpbiB1bmRlZmlu
-ZWQgYmVoYXZpb3VyWzBdCnRoYXQgY2FuIGluY2x1ZGUgYWNjZXNzaW5nIGFyYml0cmFyeSBzdGFj
-ayBtZW1vcnkuIFdoaWxlIHR5cGljYWxseSB0aGlzCmRvZXNuJ3QgcmFpc2UgYSBmYXVsdCwgc29t
-ZSBuZXcgbW9yZSBzZWN1cml0eS1vcmllbnRlZCBhcmNoaXRlY3R1cmVzCihlLmcuIENIRVJJWzFd
-IG9yIE1vcmVsbG9bMl0pIGRvbid0IGFsbG93IGl0LgoKVGhlcmVmb3JlLCByZW1vdmUgdGhlIHZh
-cmlhZGljbmVzcyBmcm9tIHNhZmVfKiB3cmFwcGVycyB0aGF0IGFsd2F5cyBjYWxsCnRoZSBmdW5j
-dGlvbnMgd2l0aCB0aGUgb3B0aW9uYWwgYXJndW1lbnQgaW5jbHVkZWQuCgpBZGFwdCB0aGUgcmVz
-cGVjdGl2ZSBTQUZFXyogbWFjcm9zIHRvIGhhbmRsZSB0aGUgY2hhbmdlIGJ5IHBhc3NpbmcgYQpk
-ZWZhdWx0IGFyZ3VtZW50IGlmIHRoZXkncmUgb21pdHRlZC4KClswXTogW0lTTy9JRUMgOTg5OToy
-MDExXSBQcm9ncmFtbWluZyBMYW5ndWFnZXPigJRDLCAzcmQgZWQsIHBhcmFncmFwaCA3LjE2LjEu
-MQpbMV06IGh0dHBzOi8vd3d3LmNsLmNhbS5hYy51ay9yZXNlYXJjaC9zZWN1cml0eS9jdHNyZC9j
-aGVyaS8KWzJdOiBodHRwczovL3d3dy5tb3JlbGxvLXByb2plY3Qub3JnLwoKVHVkb3IgQ3JldHUg
-KDMpOgogIHNhZmVfb3BlbjogRml4IHVuZGVmaW5lZCBiZWhhdmlvdXIgaW4gdmFyYXJnIGhhbmRs
-aW5nCiAgc2FmZV9vcGVuYXQ6IEZpeCB1bmRlZmluZWQgYmVoYXZpb3VyIGluIHZhcmFyZyBoYW5k
-bGluZwogIHNhZmVfc2VtY3RsOiBGaXggdW5kZWZpbmVkIGJlaGF2aW91ciBpbiB2YXJhcmcgaGFu
-ZGxpbmcKCiBpbmNsdWRlL29sZC9zYWZlX21hY3Jvcy5oICAgfCAgNiArKysrLS0KIGluY2x1ZGUv
-c2FmZV9tYWNyb3NfZm4uaCAgICB8ICAzICsrLQogaW5jbHVkZS90c3Rfc2FmZV9maWxlX2F0Lmgg
-IHwgMTAgKysrKysrLS0tLQogaW5jbHVkZS90c3Rfc2FmZV9tYWNyb3MuaCAgIHwgIDYgKysrKy0t
-CiBpbmNsdWRlL3RzdF9zYWZlX3N5c3ZfaXBjLmggfCAxNCArKysrKysrKystLS0tLQogbGliL3Nh
-ZmVfbWFjcm9zLmMgICAgICAgICAgIHwgMTMgKy0tLS0tLS0tLS0tLQogbGliL3RzdF9jZ3JvdXAu
-YyAgICAgICAgICAgIHwgIDIgKy0KIGxpYi90c3Rfc2FmZV9maWxlX2F0LmMgICAgICB8IDExICsr
-Ky0tLS0tLS0tCiBsaWIvdHN0X3NhZmVfc3lzdl9pcGMuYyAgICAgfCAxMCArLS0tLS0tLS0tCiA5
-IGZpbGVzIGNoYW5nZWQsIDMxIGluc2VydGlvbnMoKyksIDQ0IGRlbGV0aW9ucygtKQoKLS0gCjIu
-MjUuMQoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0
-aW5mby9sdHAK
+Accessing elements in an empty va_list is undefined behaviour.
+Therefore, remove the variadicness from safe_open as it always calls
+open with the mode argument included.
+
+Adapt the SAFE_OPEN macro to handle the change by passing a default
+argument of 0 to mode if it's omitted.
+
+Signed-off-by: Tudor Cretu <tudor.cretu@arm.com>
+---
+ include/old/safe_macros.h |  6 ++++--
+ include/safe_macros_fn.h  |  3 ++-
+ include/tst_safe_macros.h |  6 ++++--
+ lib/safe_macros.c         | 13 +------------
+ 4 files changed, 11 insertions(+), 17 deletions(-)
+
+diff --git a/include/old/safe_macros.h b/include/old/safe_macros.h
+index fb1d7a110..d16540d63 100644
+--- a/include/old/safe_macros.h
++++ b/include/old/safe_macros.h
+@@ -59,9 +59,11 @@
+ #define SAFE_MUNMAP(cleanup_fn, addr, length)	\
+ 	safe_munmap(__FILE__, __LINE__, (cleanup_fn), (addr), (length))
+ 
++#define __SAFE_OPEN(cleanup_fn, pathname, oflags, mode, ...)	\
++	safe_open(__FILE__, __LINE__, (cleanup_fn), (pathname), (oflags), (mode))
++
+ #define SAFE_OPEN(cleanup_fn, pathname, oflags, ...)	\
+-	safe_open(__FILE__, __LINE__, (cleanup_fn), (pathname), (oflags), \
+-	    ##__VA_ARGS__)
++	__SAFE_OPEN((cleanup_fn), (pathname), (oflags), ##__VA_ARGS__, 0)
+ 
+ #define SAFE_PIPE(cleanup_fn, fildes)	\
+ 	safe_pipe(__FILE__, __LINE__, cleanup_fn, (fildes))
+diff --git a/include/safe_macros_fn.h b/include/safe_macros_fn.h
+index 114d8fd43..d143079c3 100644
+--- a/include/safe_macros_fn.h
++++ b/include/safe_macros_fn.h
+@@ -74,7 +74,8 @@ int safe_munmap(const char *file, const int lineno,
+                 void (*cleanup_fn)(void), void *addr, size_t length);
+ 
+ int safe_open(const char *file, const int lineno,
+-              void (*cleanup_fn)(void), const char *pathname, int oflags, ...);
++              void (*cleanup_fn)(void), const char *pathname, int oflags,
++              mode_t mode);
+ 
+ int safe_pipe(const char *file, const int lineno,
+               void (*cleanup_fn)(void), int fildes[2]);
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 81c4b0844..d53555c88 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -86,9 +86,11 @@ void *safe_realloc(const char *file, const int lineno, void *ptr, size_t size);
+ #define SAFE_MUNMAP(addr, length) \
+ 	safe_munmap(__FILE__, __LINE__, NULL, (addr), (length))
+ 
++#define __SAFE_OPEN(pathname, oflags, mode, ...) \
++	safe_open(__FILE__, __LINE__, NULL, (pathname), (oflags), (mode))
++
+ #define SAFE_OPEN(pathname, oflags, ...) \
+-	safe_open(__FILE__, __LINE__, NULL, (pathname), (oflags), \
+-	    ##__VA_ARGS__)
++	__SAFE_OPEN((pathname), (oflags), ##__VA_ARGS__, 0)
+ 
+ #define SAFE_PIPE(fildes) \
+ 	safe_pipe(__FILE__, __LINE__, NULL, (fildes))
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index d8816631f..a92b58347 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -234,20 +234,9 @@ int safe_munmap(const char *file, const int lineno, void (*cleanup_fn) (void),
+ }
+ 
+ int safe_open(const char *file, const int lineno, void (*cleanup_fn) (void),
+-              const char *pathname, int oflags, ...)
++              const char *pathname, int oflags, mode_t mode)
+ {
+-	va_list ap;
+ 	int rval;
+-	mode_t mode;
+-
+-	va_start(ap, oflags);
+-
+-	/* Android's NDK's mode_t is smaller than an int, which results in
+-	 * SIGILL here when passing the mode_t type.
+-	 */
+-	mode = va_arg(ap, int);
+-
+-	va_end(ap);
+ 
+ 	rval = open(pathname, oflags, mode);
+ 
+-- 
+2.25.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
