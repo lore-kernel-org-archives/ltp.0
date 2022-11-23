@@ -4,153 +4,143 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57DA5C433FE
-	for <ltp@archiver.kernel.org>; Tue, 22 Nov 2022 16:00:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D466AC433FE
+	for <ltp@archiver.kernel.org>; Wed, 23 Nov 2022 05:38:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 838263CCAD9
-	for <ltp@archiver.kernel.org>; Tue, 22 Nov 2022 17:00:19 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5F1E13CC9FB
+	for <ltp@archiver.kernel.org>; Wed, 23 Nov 2022 06:38:36 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C8483C06C8
- for <ltp@lists.linux.it>; Tue, 22 Nov 2022 16:56:38 +0100 (CET)
-Received: from thsbbfxrt01p.thalesgroup.com (thsbbfxrt01p.thalesgroup.com
- [192.54.144.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id CF7893CC9D4
+ for <ltp@lists.linux.it>; Wed, 23 Nov 2022 06:38:26 +0100 (CET)
+Received: from esa15.fujitsucc.c3s2.iphmx.com (esa15.fujitsucc.c3s2.iphmx.com
+ [68.232.156.107])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A46A7200245
- for <ltp@lists.linux.it>; Tue, 22 Nov 2022 16:56:36 +0100 (CET)
-Received: from thsbbfxrt01p.thalesgroup.com (localhost [127.0.0.1])
- by localhost (Postfix) with SMTP id 4NGpll5s4Qz45YQ
- for <ltp@lists.linux.it>; Tue, 22 Nov 2022 16:56:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thalesgroup.com;
- s=xrt20181201; t=1669132595;
- bh=/mpgFoDP0F2y9QH1+NgWP3/YTFkucr7dHvK3AeT+a6A=;
- h=From:To:Subject:Date:Message-ID:MIME-Version:From;
- b=kn9V8nKaLLWwDufziZfxgCQ8lyHc5MyjBKb7LhHI01z2rtShGjoXl7Dyg/7/syG4O
- z1If1PvbObF8Csc9Gq0NlOzAY/pE+V++0MHUPMKuHihq/8QQRmUpf7blHGwCU8lvaX
- SQn6Zu7+NpcjmP7rQmfkUGEhItgkJiaqmSsyurSC88FRgPNUM2RDcHx4lnlF9MXaVu
- a1Zh2yhs8STMhki33cdnzC/zhgNJe0hoS7mPp0Co7Hi0uolDcW4hcaI4MzT0rKxhlP
- TDdyUCJJrdsORgTP+2XFhZmCG/XSBlYfboeqLachKJeJ2dh4eaBWgtA7XyHbS+fF0M
- Zau49YEfdmfOQ==
-Authentication-Results: thsbbfxss01p.thalesgroup.com; dkim=pass (1024-bit key;
- unprotected) header.d=thalesgroup.onmicrosoft.com
- header.i=@thalesgroup.onmicrosoft.com header.a=rsa-sha256
- header.s=selector2-thalesgroup-onmicrosoft-com header.b=lzNCfqrm; 
- dkim-atps=neutral
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5E8EA600067
+ for <ltp@lists.linux.it>; Wed, 23 Nov 2022 06:38:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1669181906; x=1700717906;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=8smPOZviJSaKl3ENCku/QGER4F5MWTQduXOp4n6pGxE=;
+ b=f1zqH+GwvAjVr3WDHaoCzRWzNHu2Ofp9FJsH8xpCLt8DtrC1uS/0bV8+
+ gMH3Gjscn+dhMoS4j1Gekzg9KK/0XnmnrlTOXdAOt708MUEwYL8ua1rtE
+ 57g/6HYApba3CoHNmYzloRBFGyibXB91lmm/NfXkarqQ2E6dwzx/D+mHq
+ JuMdZBD6h7DnHi36R4hzVq6xjog6x2pECb7qWuth+ghvteQ2DAuMlAkDD
+ BjYhp42Z1msSlXFftOkBI38hquRSw9h2yR1HlHUhrMS9FLqRTqhuuI5T0
+ 3Z6ZuxNxW00HFLWp3l+YWrLeHBxBqTygxS4WWt6/S3HtxWn4ep4RQIUH6 w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10539"; a="70698437"
+X-IronPort-AV: E=Sophos;i="5.96,186,1665414000"; d="scan'208";a="70698437"
+Received: from mail-tycjpn01lp2173.outbound.protection.outlook.com (HELO
+ JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.173])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Nov 2022 14:38:23 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f48FPfXnDHaJFSiSUNPWc5lJLfSihVgXnA1AHRb9JHL+78ix9RMqYyJVpcPqMLrPZTT8vAsyTApnK3RPJN7Lm29gsVncAy2dEf7D2WLPvt7JIpV392ltk/7j28cxlzvb/YZhG37sgYM1vkCt38cWXni7TztKvcFWRFmjr9PLOwLBRUKflrlOsmkEmvdkrPHkhebYrzChrnpAtRFNCNIHj/ced8mFqvdkbh6wyxDUeWt1SmV0or4NkqaPif2y87/0Vp/8KI7SPbAxcv030Ol24H8gJflwrZbnh1gKHzTllc0wh2jgX2WRD373QIXLiAryAFUJjCJhgl0eb9FYueBqig==
+ b=AQrYmOtYYl+AD7pgJ1FIWjcpCw5fWnVaE+1yNvvKTzEwFIl44LjOOhhPrtwAVjECSIBj9JW9it3/xFiVwKpHif7XKMJr1GnNhLV19LrInrP9mfMqlj181amsYsBnTZ1NzH+21zfHyCMXvphU2nqOjIcifg4Ok2ct1uZB+XVLUYsc07St6oXLvPlHidd1oI8z8Ipld4gWl1EUPK3oYvuVF+pIKjpUy3DuwBiekzFXFVm/oF9u4pyuE4LaNvOkq2RobckqLkD03pwcrzmAUreXtIbsapQIPJYW5jbQsp3RCyN8ZtW7oRVmj6nsZArlxIuRVfokfzqKYwsqeQZ8H+1jDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/mpgFoDP0F2y9QH1+NgWP3/YTFkucr7dHvK3AeT+a6A=;
- b=GZDw33BiaLvvwU/MGZGJ+jFiJseTwJoE0WCSNlzV1AfIVzh6P+m2A7pvj2FXw8JP43Zdzy8UOY8YUR7SM038WdqF+W0kKFkcXt3UxIPEsvfPV0tJbD13nQvAlBOu304DXHwulo67i9zfrPhZtt3+Q3u8nW/dB3VaNfBpEDkip1/7Rxqiuhcpp32pVHBMQ0pxvrmHASR9DWHdQ24c5e9uMzEAv+CK2o0BqgT9Pwy54YvmxD/AnhylyEbyS7NLSlN8koOBOt3bA2GJoOfCQX8bHfWXbqgdw46YaQdYVdKkR5R00HJGKLhD7nzJ66QOGBaKdvA+yi+2vvkMRs20qKygaQ==
+ bh=8smPOZviJSaKl3ENCku/QGER4F5MWTQduXOp4n6pGxE=;
+ b=c5XKArW5PKSNxhED8LkRlaubcFdxhPGk9SIAR0Savg40Seeqv1Wq6r1cM8h/ImGGL+u2C2aw2+AQwiTG6Fg1O3/y2w4X2WWL4yvpjOJusXKjMDP5wZZLN9q6VlAXUaSZm8x2zIYuaUEetgTy4upKD4kC4ZYEWy3qhfXwQaXkjZfdqv6WK6kYg09og2WIcqSw06sYuDou1NPwbTUVAJxj4D64QuOsOlMbHQBwL2I5d23ot2N2KolNLq8LjGoGm1c2+c0mFKuQtuOyrE0JEcPvMWiTC5QICpmVOQz5ReU1QnxWlcnYy6U9ICUVfFJvBzoIEilSwJ4zkZS/aImuCFp7Bg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=thalesgroup.com; dmarc=pass action=none
- header.from=thalesgroup.com; dkim=pass header.d=thalesgroup.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=thalesgroup.onmicrosoft.com; s=selector2-thalesgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/mpgFoDP0F2y9QH1+NgWP3/YTFkucr7dHvK3AeT+a6A=;
- b=lzNCfqrmkST09CCnU+NEWtM0FGn8iDSfJg6zuVdHBc7l4G1Tb+WTwAFi1laVGBCg4xhIGYQqwIuEUrIxWRwbkFg4fTMOi/7aa6aTJrRuzoANcs/f06p4ybuFIOKTU/6D0IzWJP9Zsl+ag6gkXCqDbKVJuQl4YGqABgz9ReBlOoE=
-To: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Thread-Topic: Need info on LTP tests that use /dev/loop mount device.
-Thread-Index: Adj+iMU9fJ1gBi/0Soy30UMN7rFgYAAAhZHA
-Date: Tue, 22 Nov 2022 15:56:33 +0000
-Message-ID: <MR1P264MB3953913324A116A1E9CADE40A80D9@MR1P264MB3953.FRAP264.PROD.OUTLOOK.COM>
-Accept-Language: en-US
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from TYWPR01MB8313.jpnprd01.prod.outlook.com (2603:1096:400:166::9)
+ by TYCPR01MB9892.jpnprd01.prod.outlook.com (2603:1096:400:20e::5)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5834.15; Wed, 23 Nov
+ 2022 05:38:19 +0000
+Received: from TYWPR01MB8313.jpnprd01.prod.outlook.com
+ ([fe80::969a:5a0c:6455:b5]) by TYWPR01MB8313.jpnprd01.prod.outlook.com
+ ([fe80::969a:5a0c:6455:b5%6]) with mapi id 15.20.5834.015; Wed, 23 Nov 2022
+ 05:38:19 +0000
+From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+To: He Zhe <zhe.he@windriver.com>, "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: [PATCH v3] syscalls/prctl04: Fix false positive report when
+ SECCOMP_MODE_FILTER is not supported
+Thread-Index: AQHY/koeuMep6QKnJkOD79eDGBLTY65MEBIA
+Date: Wed, 23 Nov 2022 05:38:19 +0000
+Message-ID: <9ab63923-591d-f6ac-ffc1-d70ed179415a@fujitsu.com>
+References: <20221122081142.2433326-1-zhe.he@windriver.com>
+In-Reply-To: <20221122081142.2433326-1-zhe.he@windriver.com>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=thalesgroup.com;
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MR1P264MB3953:EE_|PR0P264MB3189:EE_
-x-ms-office365-filtering-correlation-id: f8229c74-6fc8-4323-5b4b-08dacca220e1
+x-ms-traffictypediagnostic: TYWPR01MB8313:EE_|TYCPR01MB9892:EE_
+x-ms-office365-filtering-correlation-id: 5acee8d2-4609-4012-6c22-08dacd14ed87
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eFx/lu81oYw7aL2P9KwqlzYEJJsvUHlulYE9ch7zDpcJoJMFWA21fZuBFWBmOPbyBnXivLTG1funa/ZMB0vhABmyErX3XnU0QOIBcoHB8VKj6mlsKYwG8I4G89G9SJLhNc0dFjAXoMXkaKR+UfayRqxZOGXiXseeOBrxyOmUMQqpvzWps4MKb4KeMUmviHHz1+zsTomuGS/7Dyv2azFnZ4tVD26ayTaGg0HXF3aUNU1NDLPhqSmwI521ZSbWCTQtmM5Lde9kJnh/N/bGnA5RWCj+Vg1VA23+CZCnW7W0Z2jlY+KFQ/CPztWLrmRhu5JPIkXIS7qlyA96cev5zBD0e7HyhcSF6ppAhNxM5Q+rc527m62uu+qktPrfUAPfAUCJiUt7+XvLdXcIf8mfiBdHv7Tf2kduXz5EH0mxNPeG+zHt9aALp08SJk9+esgDb0RVUSCzLLmK5QiKzSWGRI6bHS0YLThKwNlvkCp9ZmtdmhyQP/GvcNICUeC0gafkOhIOQa8mHVIOYcC6p/BtTrGEE5jqGCOR16PM3HBd4dbjimo6pdT2qO2QgJrQ4gYyEp84LsDbFwCLBDurYi1KO9YDi8+lCOy8FT95UQ1XbdJoFtJgRKpj35TpcKQ0D/ciZYCOjZGuANIeyJGnJQ7jsQn9MuYiVnUW2+Fe7StutNnPK2G7Amx5oXHKbNIQdlQLxhy5cInyjvAsYfK26jm9VNH4PA==
+x-microsoft-antispam-message-info: 8RvnbKvqYRk/YxpAC3+D+kLFAfEJq/OJwq4+q0nglQGIPk4lngPMSXbnYI5qr0c9eFi+DPk0CtsvCbTjWtFkSbwNheW+jprRyoAjkHwdsudOIUOctTDQ7xwCsQi63LqQ5dGM0PSgSCpGCqQHZTznVh7ZhfcTWv3vkhOR9iN0predefyMMlbL/09e9/jU6nphV5U4DXOXJzbCocJDuQVDGi8mZBM1BhW85YOgsnSt+Cgyzi1epO05A35PT1C0rZHI+7iYQHzx0TsZ8/dxrYhkgilQHxbGeYSg8BrpZ20Of+aQR6RYReRZALNOkKKyxhrwyGOxizyPzrl6HJuPRqlcqCM+5xMcgIVcQHhogC9Z+x6z+LsXzIKHJlhxS/CjL48Z25DnaU4bnDfBYOfAS3ew13KUK+RygcNfvXpQNfkPC3sGiuoNcPF/wN6YhDAVwQbtxIGReuctzvnYxcmSoYQ6YLzyuO98JQfxz6o7Jp7g5ddw6Kc335Z92gqhbqnhr2NrmkcagCIuzaTOwMFV0H8W/DFoCjhvE1hD/I54QZfmcG1+ka5UUXQ2XYXviQgwqlz4Nnd8Oqxra+p0FAmijpjEOGbKx5L9JciQrlV9THVEha5XokuxVh3d3WywjQKdHzvJTnWi2JVUNP+LNN+s4Nghght5PLmp96z1Npr5TX5rIauEaLX1VCK1CWbR8KCaoHHWMZus/pqjgI42DR0fJtikYcx+6w6+vAaxvGEUYv/tJ9MBMo+cpHDvdVxfr53T8xJwWT9eV7oZj4ogo7dH1APCxn9gM4FqH9M5GUtv6TiJJuA=
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MR1P264MB3953.FRAP264.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
- SFS:(13230022)(4636009)(396003)(376002)(39860400002)(366004)(346002)(136003)(451199015)(9686003)(82960400001)(122000001)(186003)(76116006)(4744005)(55016003)(64756008)(7696005)(2906002)(26005)(38100700002)(55236004)(5660300002)(6506007)(71200400001)(52536014)(6916009)(66556008)(8676002)(478600001)(66946007)(316002)(8936002)(66446008)(41300700001)(9326002)(66476007)(33656002)(86362001)(38070700005);
+ IPV:NLI; SFV:NSPM; H:TYWPR01MB8313.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230022)(4636009)(376002)(346002)(39860400002)(136003)(366004)(396003)(451199015)(1590799012)(1580799009)(85182001)(31686004)(36756003)(31696002)(122000001)(86362001)(26005)(38100700002)(82960400001)(38070700005)(2616005)(186003)(2906002)(6512007)(83380400001)(110136005)(8936002)(5660300002)(6486002)(478600001)(6506007)(71200400001)(66556008)(966005)(41300700001)(66476007)(8676002)(316002)(76116006)(66946007)(64756008)(4326008)(66446008)(91956017)(45980500001);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lxrxyfWEj5XFyfNViB6rVjoDDeY7uoqA4oIFj95ldVPMRIrjgi6ru+w0DLs1?=
- =?us-ascii?Q?PP2dZcOrNAQJ37Q/uuY8UXYPBhBuSJx/82GQygLiuTCanqdaDCJFpnhVuN/r?=
- =?us-ascii?Q?Y/mwZns3wF/LQLUCcDlaUYDylb65L3wFBx9ZZDhrIkzNxHduGEqroV9Nof5G?=
- =?us-ascii?Q?dA0rXED7BPtRNlAkV0BVej4O3K2tNbMb40nCpJbTu6iADSZAfgUF2csCgMVR?=
- =?us-ascii?Q?079+wpKo0VnEbjyE2frxAvy14ZkNKkJ6TO7U7OsX8/1SmCaqFHzAMeXbrdhl?=
- =?us-ascii?Q?N/eEbX792ruitzw9mdo3NqtH40BiuzsS6HQ0+d/O1CJc++yGCB5nyEgWElPb?=
- =?us-ascii?Q?UfDMEfoSpgJmlpW0f43s5qSk0sjsJyOhcEpY3in5B6V8BFoQUjYi6CVwPI20?=
- =?us-ascii?Q?NApwMSZ7zW0VHXBEYrX/3kzllzqfG4Z8DdCPgvc/maZb321u73st8z9Upqog?=
- =?us-ascii?Q?sLEuNyY3qWslpyohKN6AAqxxLuyhWtqr9URaWzTR6baFRk31+hsCuyMSTszI?=
- =?us-ascii?Q?xjSe5294vE3NKf18Ew3jk9w5l2ujKVhNKV8M7x2bKgWAuKLxd3neJf9PkxiD?=
- =?us-ascii?Q?lVDrYdwr4eF8xP8MX7mIiOO5u0KMpVCYIH82IiQT/5FoT1cPEKvHS+QjCUsD?=
- =?us-ascii?Q?yLJLs24HpOQAZeHb8RxQI6d53CTR59QaxYS5xdcJJay2Px6YY/yfFwSVhAzE?=
- =?us-ascii?Q?Ip8O0WWVLMTXZzThyDwcAINF64eIz21aY4R4HKYeCF6n5Ivmrruv+J2SkO3O?=
- =?us-ascii?Q?SB1REjBElavsH3DJ0/QJkgdvmXTSxKKOn7QqXqTOM8eeqWTmFY7yP3i/u3xp?=
- =?us-ascii?Q?obBaEnen0vh7Yf9V9hFUsEC7T3odcWWHFNgLmYN3v8sifDu5FDbKi50G6szx?=
- =?us-ascii?Q?dgXhiVhHOKQYROzy7nBQqFX8HIfHYjX8B3FVEvnybugIn6Uo78sSWzD/r62j?=
- =?us-ascii?Q?V33OCliLCw1JW1fXdyvsaIAZ9KbAom0epNrC3pQM7SqtrppOPqcXNIJM8NGF?=
- =?us-ascii?Q?QOyrKq6BBhCEFwG4D5OF+K6cqralkuqO0OOgZimCnz4ducNp3pLfRzoQbNuZ?=
- =?us-ascii?Q?dEDnAoO6RgYEK8zpA9eY+Wm7UZgIMhXWbGdh6wBqqkjCpcMi38196ZiQh6Zh?=
- =?us-ascii?Q?ttmCuSKSbcJmOwjb8TJ1cVTurGx9XS3B/l0Ps/gZZUUsuvgNBEBdPFL9wj6z?=
- =?us-ascii?Q?OKm7c+A0wsVqpGdVdinas7Jt8bV4ns1rBF6yPoRcxUENfawmalyFM5dmTmg0?=
- =?us-ascii?Q?twmbCkttPrYtLq9xaAIqS+In1ssOdjyVZ6Xt/dLjISe5p4g8hydoAdMsO3E7?=
- =?us-ascii?Q?aDp6CCcQyg2g1fLfmIU1lGLc+Wdmadi2RJYabxtC79HsqMjA3wUeJZzz9oxZ?=
- =?us-ascii?Q?SW2otk1dD7YHVdXmhAPsyadmLfrBpfXidyWyTJJjTfuJhHSYgOxmLaf82Fn2?=
- =?us-ascii?Q?Pv73xRkApTbt09N/Y/7NMcjzfKd+hGbgxFa9PG/NXyVAIgRYfTV70f7mJR0l?=
- =?us-ascii?Q?pk1TxAzBWXpWlIDGUlxByRZ1NWUX6Z36j3qovUhT2hin9n5KeW6QsfVKIAm9?=
- =?us-ascii?Q?l6rw3UE9gV37WjHJcWIorO9LJbmQzFERRhJTGgSIYzte1mFZYKmYBbkUNbEd?=
- =?us-ascii?Q?uw=3D=3D?=
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bDJUOXRxVjd2aDI0RGRtV2NRSHMvOUNvZldPT1p1QmNZT1JlT0RYWFRtMzh2?=
+ =?utf-8?B?bkFZTFA0RDVNeWJDaktVM3AvMUpRanp3amJVamIyT3lrV3NOWno0YnA4ZUZk?=
+ =?utf-8?B?OFY1bXp1cWQ4WkxrRHUwQ2lpelJVMjQwdlEvVzB2cG8waWI3cnVsZVRyMC9j?=
+ =?utf-8?B?OHZWdmZxWjF1RmF1UzA5K0pBSGxibFRMRGpqY3R2K1hRNGVzVjlTYTAvU2s3?=
+ =?utf-8?B?S01JaWpmMEd4cWc5blo3V0U1T3JJSVdqbVQ5WXhpZFJrR1hGamZ6NVFhSkhu?=
+ =?utf-8?B?YmlqTUN2eStaS1Y1Y0ZMdUMya2RYRVhhUVczRFUrTWxHWFRxWFNXN2NFRi8v?=
+ =?utf-8?B?UzEwWTZrOXRyVFV1cktrTU9SbGtSRE05UTlGZitSNXN4bnB4bWJpSjBnV0th?=
+ =?utf-8?B?ZTZIT00zUFE3eGlyQXJCN1hxQ3NGWWQ1M1FXVHNtSlB2WllZVlVKLzBvNlJL?=
+ =?utf-8?B?dlM4YWEzOHhRVVVpd09MYkQveVRTVU9RWXB4SFVWWDE1aUNydGlJOTRCaWtm?=
+ =?utf-8?B?OVN3WW8yZDFCa2czV0VRRFB6R1U0TkJPa29LV3BVdG9HWVJwMEJJa0ZaZ3Fo?=
+ =?utf-8?B?KzVFU3lnKzUyTDltM1NPTCtnVG5LTGRmdlVCazNlbGR6UTEzZDBKM3ErbU5W?=
+ =?utf-8?B?Y1Z6Y280d3pMcHg4R3ZQZXdtWUdrb3JmL1l5NnRQeVhxSUVRNEx3N1FKY2xu?=
+ =?utf-8?B?Y2NBQjUxd0VJekVkckd2dk15RzFwR1poT3pPczJEUHBkbWpXTzRQUitLYVUr?=
+ =?utf-8?B?OUNxeUl1emg5ZElwbDZtbkxUcUhkV0pWRSs4aExFMHdRWGVhVERjUEZzSW9L?=
+ =?utf-8?B?YW84WTBpOHFLQ2g2UmpCSloxZGpDbkMvVUtoMjhHMVdQTW1kTjFySHNvdlp5?=
+ =?utf-8?B?aWkvR3ZNZm5xcDZ2NndmUDBRY0UvL1hqSTZMY2RsU2JWTkdZVExEcVU1Rktz?=
+ =?utf-8?B?WXc0alU1QmIvY0ZGY05nMGxud3JXMlU2YVFiUG9GUC8rRXYxQ1hDYW9KeE9t?=
+ =?utf-8?B?YWpZNTM3K29JTUFQTy84c0ZVZHZVd2FrTUVQVkVxQm9qVE14OFphMGs1ZVpU?=
+ =?utf-8?B?T2o2bTRiUDhYcmg5SXB3V00vWmE4cmNPK09tRkxhbzExVEtUcFFjanhnN2xB?=
+ =?utf-8?B?eHNYWEkvUndqMkdHekgvdWUzYWtXdFQxV3dSM3J6dG8waExEUUpTdS95WFB6?=
+ =?utf-8?B?NEV3SG0zYmR6UGduL1ZoYis4L2RiZEMydFM2RkVQck04Y2w3aWM5c29QOXVQ?=
+ =?utf-8?B?TXh3TXYrNGh5blhpRVQ0TmZrbnNadnFTbVUyelM5dHVUMm9pWFBUb3lGOWRD?=
+ =?utf-8?B?QUtoZ0ZDdnJiY0JKSmcyY2M5QXZSQVFKazQ3TXlaYzN3aDdQdjJKdStxUUxI?=
+ =?utf-8?B?NE5ocitFc0taNEJIL2NWSFBSWlp1RVR3M0VkU3BNVFh1cXFncEQrOEVTTVNo?=
+ =?utf-8?B?RzJ0TFJPMVVTZXFoRHdacmt6QnBjNWVqU0J3aHlsa1JkV2lQYXFZM2wvMWNY?=
+ =?utf-8?B?SDFaMjV4MmlBUE5nZUFXQWRkeC85ZUg2cmo2Rzc3NTdldC91T25pNEduSlFp?=
+ =?utf-8?B?V1NENmswVDJBeEgzNkJYdTVuQzBwTzRLV3dLNUxhU1hEV3ZLWFdhTE9ybitQ?=
+ =?utf-8?B?UTFVemwwYlZyWU5pWDQ1WUh5V0VzYnpMY3YrNHNaa1lpeXdGY2hxNGlYdVpl?=
+ =?utf-8?B?SldoMlJlYzhDeDNNUTZFTUk2ZEZQQ25WSGZ4WTZMS24xeCtzVTZCaUtYL1h0?=
+ =?utf-8?B?U0MxSzdxd1JEbXBqdmV1UVBLTGhodEJrb3JobGVkY1pZR2wzL0plNXllWGJ0?=
+ =?utf-8?B?aVJFVjdodjM1VGdlLzJxUVV6RFpXd3hRZk1nZkNDMnM3MXNuSmJ1RVJJb3Rm?=
+ =?utf-8?B?SGx5eTBpYXBCc1F0azVRT3IzR3ZreUUvZHBWc0hJdEdldWxCYnk3QzJPQkVu?=
+ =?utf-8?B?WEd5bW1xQkpvUXU5YlczaDZYTG1XbDM4WjdYVjduMW1lSEQ1SDhwUklRYVh6?=
+ =?utf-8?B?Y2tjcytSOVJ6d0hMemVQUFdKRUxXYzhqU3haOXB3VmhVdk5GWUhUb3VUWVJJ?=
+ =?utf-8?B?VjkvUjNDenpFOGFEN3pnc3FnYUFJN1hqZ1ZPZXVPUGFVQlFyOUdvaHBlNlNT?=
+ =?utf-8?B?ckVGclM2M0tLVEZUR2xjRFlIVktQRVFXZldZSFZPendpaDh1SWVvbk95dGlh?=
+ =?utf-8?B?R3c9PQ==?=
+Content-ID: <CF5C07B24741114C8D09DE1C52CA06F9@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Thalesgroup.com
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: bgF8joJnsw5w1DkggCO2LeX+ygvBi3+jtXb1g3CpkIlEFb2smfBoa7ny2coOfsuZVafbQr6y1jO2DLFyuQimZvIUAamVGMHne8AM2NdDvWFw24a8IH1dkqnE7RAVEMntWuaUhDtFRRqe8kFg9zfY/chQmCatm0zD6dkwpElTYzqr9EyaQJD12nfZwgQJSlxSURlQUpHTt8Jr4OlQQqEcgRl7Edeoxj6zcSE8wrzmnlA+ZgCbZ+ZqI9Zk1FByB27dWjs83iE12C3/o5sfl3QgBnrT13HWo4RmCF4uEIVYY7vLSyLGrtmnnNcnysmFZ+n5n3zK5Fii/27We8lg710dMYVPIkk3DKGRMIpLBqCghrIvJFhH3gF/mkcj7KL8s0Spf076QYOt7Ud+/Y3GLJCLQAkydadUbhhmGVAPDvW/nSzz2+L0TbyPSZeEhQGp1+MyiKCT+e9T2HFgQlcxLcHCZgMHEwLtqKgmLLSOh8PoHRxaDf/5450DMWaixif/S4xQDDwhQOYprrJjMUgMf8dwOFKhyvV/0qAcgKBrehyQ+Jk+dEm0ottf4AaDZqtisH1Tq3M1I6MGs2Uv30/StbNqarHMwP+PE1GcYseRuLYU5X1Ej6d2d4tfF3Vy7aTz0YRuRHHdZiv6ulpMEgcsoWmfcNbRx0r0ddXVN7GngTjkAIzkGA2pZprRFBDeoejC6NGKwGub9iCWicJ/3Z0f153MjecEy+FjqfpHGcH4JsKCdHojj18jioYRBdAkgEW42zgRgvuc47o228+17R1TNtEfuh7l/DorHEzG6pv24dd1LO4FJyaIDUGhqyyw3QJRlwcXJd+fSXmOXl8Is6kvEUNofQ==
+X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MR1P264MB3953.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8229c74-6fc8-4323-5b4b-08dacca220e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Nov 2022 15:56:33.4598 (UTC)
+X-MS-Exchange-CrossTenant-AuthSource: TYWPR01MB8313.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5acee8d2-4609-4012-6c22-08dacd14ed87
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2022 05:38:19.3836 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 6e603289-5e46-4e26-ac7c-03a85420a9a5
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8SkPsa9E08KSYafMAahZOz0SY5dOc3ybR8jqgi0rKqh8bOQQ6J+dsVGaabTsuFCU35Zowlo1xiyPObrcy8j/sCbbMdrC4+zH9FXqJrIMkPs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB3189
-X-PMX-Version: 6.4.8.2820816, Antispam-Engine: 2.7.2.2107409,
- Antispam-Data: 2022.11.22.154517, AntiVirus-Engine: 5.95.0,
- AntiVirus-Data: 2022.11.22.5950001
-X-Sophos-SenderHistory: ip=104.47.25.100, fs=399277, da=117847125, mc=10232,
- sc=1, hc=10231, sp=0, fso=116752868, re=133, sd=0, hd=30
-X-PMX-Spam: Gauge=X, Probability=10%, Report='
- TO_IN_SUBJECT 0.5, HTML_70_90 0.1, SUPERLONG_LINE 0.05,
- BODYTEXTH_SIZE_10000_LESS 0, BODYTEXTH_SIZE_3000_MORE 0,
- BODYTEXTP_SIZE_3000_LESS 0, BODY_SIZE_4000_4999 0, BODY_SIZE_5000_LESS 0,
- BODY_SIZE_7000_LESS 0, DKIM_SIGNATURE 0, DQ_S_H 0, KNOWN_MTA_TFX 0,
- NO_CTA_FOUND 0, NO_CTA_URI_FOUND 0, NO_URI_FOUND 0, NO_URI_HTTPS 0,
- SPF_SOFTFAIL 0, SXL_IP_TFX_WM 0, WEBMAIL_SOURCE 0, __ARCAUTH_DKIM_PASSED 0,
- __ARCAUTH_DMARC_PASSED 0, __ARCAUTH_PASSED 0, __ARC_SEAL_MICROSOFT 0,
- __ARC_SIGNATURE_MICROSOFT 0, __AUTH_RES_DKIM_PASS 0, __BODY_NO_MAILTO 0,
- __BODY_TEXT_X4 0, __COURIER_PHRASE 0, __CT 0, __CTYPE_HAS_BOUNDARY 0,
- __CTYPE_MULTIPART 0, __CTYPE_MULTIPART_ALT 0, __DQ_IP_FSO_LARGE 0,
- __DQ_NEG_DOMAIN 0, __DQ_NEG_HEUR 0, __DQ_NEG_IP 0, __DQ_S_HIST_1 0,
- __DQ_S_IP_1MO 0, __DQ_S_IP_HD_10_P 0, __DQ_S_IP_MC_100_P 0,
- __DQ_S_IP_MC_10_P 0, __DQ_S_IP_MC_1K_P 0, __DQ_S_IP_MC_1_P 0,
- __DQ_S_IP_MC_5_P 0, 
- __DQ_S_IP_RE_100_P 0, __DQ_S_IP_SC_1_P 0, __DQ_S_IP_SP_0_P 0,
- __FROM_DOMAIN_NOT_IN_BODY 0, __FROM_NAME_NOT_IN_BODY 0, __FUR_HEADER 0,
- __FUR_RDNS_OUTLOOK 0, __HAS_FROM 0, __HAS_HTML 0, __HAS_MSGID 0,
- __HAS_X_FF_ASR 0, __HAS_X_FF_ASR_CAT 0, __HAS_X_FF_ASR_SFV 0, __HTML_TAG_DIV 0,
- __MIME_HTML 0, __MIME_TEXT_H 0, __MIME_TEXT_H1 0, __MIME_TEXT_H2 0,
- __MIME_TEXT_P 0, __MIME_TEXT_P1 0, __MIME_TEXT_P2 0, __MIME_VERSION 0,
- __RDNS_WEBMAIL 0, __SANE_MSGID 0, __STYLE_RATWARE_NEG 0, __STYLE_TAG 0,
- __TAG_EXISTS_HTML 0, __TO_IN_SUBJECT2 0, __TO_MALFORMED_2 0, __TO_NAME 0,
- __TO_NO_NAME 0, __URI_NO_MAILTO 0, __X_FF_ASR_SCL_NSP 0,
- __X_FF_ASR_SFV_NSPM 0'
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-userprincipalname: nk+CxBb5a7A8Hgv6ksBUNI5bTnkD6mU5d+7IhLih16GRzfbYwVt9oUmfhu079nxmDrGyV5fCdatZpny/4Kr7W2pRNEwc5uWqjttfbw99h7k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB9892
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 22 Nov 2022 16:59:59 +0100
-Subject: [LTP] Need info on LTP tests that use /dev/loop mount device.
+Subject: Re: [LTP] [PATCH v3] syscalls/prctl04: Fix false positive report
+ when SECCOMP_MODE_FILTER is not supported
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -162,151 +152,124 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: SANDUR Suresh via ltp <ltp@lists.linux.it>
-Reply-To: SANDUR Suresh <suresh-s.sandur@thalesgroup.com>
-Content-Type: multipart/mixed; boundary="===============2003725247=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============2003725247==
-Content-Language: en-US
-Content-Type: multipart/alternative;
-	boundary="_000_MR1P264MB3953913324A116A1E9CADE40A80D9MR1P264MB3953FRAP_"
+Hi He
 
---_000_MR1P264MB3953913324A116A1E9CADE40A80D9MR1P264MB3953FRAP_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+> The child process really should not receive the expected siganl, SIGSYS, when
+> kernel doesn't support SECCOMP_MODE_FILTER.
+I still feel confused, so which subtestcase has problem since we have do 
+check whether support SECCOMP_MODE_FILTER in check_filter_mode.
+> 
+> This patch tests if SECCOMP_MODE_FILTER is supported in setup and adds a
+> variable to record it.
+> 
+> Before this patch:
+> root@xilinx-zynq:~# /opt/ltp/testcases/bin/prctl04
+> tst_test.c:1431: TINFO: Timeout per run is 0h 05m 00s
+> ---- snip ----
+> prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
+> prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
+> prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
+> prctl04.c:204: TFAIL: SECCOMP_MODE_FILTER permits exit() unexpectedly
+> prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
+> 
+> After this patch:
+> root@xilinx-zynq:~# /opt/ltp/testcases/bin/prctl04
+> tst_test.c:1431: TINFO: Timeout per run is 0h 05m 00s
+> ---- snip ----
+> prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
+> prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
+> prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
+> prctl04.c:154: TCONF: kernel doesn't support SECCOMP_MODE_FILTER
 
-Hello,
 
-I am trying to understand the test cases that use the /dev/loop* device. Fo=
-r example the following tests use the loop device:
+The line 154 and 204 is refer to origin case[1], so do you use the 
+lastest ltp?
 
-chmod06, chown04, chown04_16, create06, fallocate04, fallocate05 and fsetxa=
-ttr01
+[1] 
+https://github.com/linux-test-project/ltp/commit/3ddc217d7b466f16782c257e29e18b251969edec#diff-6ae2f0e9ae152457424103cc20b7885e242f33f58b2e543b7941671f418d9485R154
 
-What is the purpose of using the /dev/loop device? Is it to test some featu=
-re of the FS which cannot be done with the currently mounted FS? For exampl=
-e, execute the testcase on a RO filesystem? Are there any others? I am not =
-sure about this, but does LTP also do something like mount the loop device =
-and put different FS, like ext2, ext3, ext4, xfs on the loop device and run=
- the same testcase?
-
-regards,
-Suresh
-
-
---_000_MR1P264MB3953913324A116A1E9CADE40A80D9MR1P264MB3953FRAP_
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
-osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
-//www.w3.org/TR/REC-html40">
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
->
-<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
-<style><!--
-/* Font Definitions */
-@font-face
-	{font-family:"Cambria Math";
-	panose-1:2 4 5 3 5 4 6 3 2 4;}
-@font-face
-	{font-family:Calibri;
-	panose-1:2 15 5 2 2 2 4 3 2 4;}
-/* Style Definitions */
-p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:11.0pt;
-	font-family:"Calibri",sans-serif;}
-a:link, span.MsoHyperlink
-	{mso-style-priority:99;
-	color:#0563C1;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{mso-style-priority:99;
-	color:#954F72;
-	text-decoration:underline;}
-code
-	{mso-style-priority:99;
-	font-family:"Courier New";}
-p.msonormal0, li.msonormal0, div.msonormal0
-	{mso-style-name:msonormal;
-	mso-margin-top-alt:auto;
-	margin-right:0cm;
-	mso-margin-bottom-alt:auto;
-	margin-left:0cm;
-	font-size:12.0pt;
-	font-family:"Times New Roman",serif;}
-span.EmailStyle19
-	{mso-style-type:personal;
-	font-family:"Calibri",sans-serif;
-	color:windowtext;}
-span.EmailStyle20
-	{mso-style-type:personal;
-	font-family:"Calibri",sans-serif;
-	color:#1F497D;}
-span.EmailStyle21
-	{mso-style-type:personal-reply;
-	font-family:"Calibri",sans-serif;
-	color:#1F497D;}
-.MsoChpDefault
-	{mso-style-type:export-only;
-	font-size:10.0pt;}
-@page WordSection1
-	{size:612.0pt 792.0pt;
-	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
-div.WordSection1
-	{page:WordSection1;}
---></style><!--[if gte mso 9]><xml>
-<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
-</xml><![endif]--><!--[if gte mso 9]><xml>
-<o:shapelayout v:ext=3D"edit">
-<o:idmap v:ext=3D"edit" data=3D"1" />
-</o:shapelayout></xml><![endif]-->
-</head>
-<body lang=3D"EN-US" link=3D"#0563C1" vlink=3D"#954F72">
-<div class=3D"WordSection1">
-<p class=3D"MsoNormal"><span lang=3D"EN-IN">Hello,<o:p></o:p></span></p>
-<p class=3D"MsoNormal"><span lang=3D"EN-IN"><o:p>&nbsp;</o:p></span></p>
-<p class=3D"MsoNormal"><span lang=3D"EN-IN">I am trying to understand the t=
-est cases that use the /dev/loop* device. For example the following tests u=
-se the loop device:<o:p></o:p></span></p>
-<p class=3D"MsoNormal"><span lang=3D"EN-IN"><o:p>&nbsp;</o:p></span></p>
-<p class=3D"MsoNormal"><code><span style=3D"font-size:10.0pt">chmod06, chow=
-n04, chown04_16, create06, fallocate04, fallocate05</span></code><span lang=
-=3D"EN-IN"> and
-</span><code><span style=3D"font-size:10.0pt">fsetxattr01<o:p></o:p></span>=
-</code></p>
-<p class=3D"MsoNormal"><span lang=3D"EN-IN"><o:p>&nbsp;</o:p></span></p>
-<p class=3D"MsoNormal"><span lang=3D"EN-IN">What is the purpose of using th=
-e /dev/loop device? Is it to test some feature of the FS which cannot be do=
-ne with the currently mounted FS? For example, execute the testcase on a RO=
- filesystem? Are there any others? I
- am not sure about this, but does LTP also do something like mount the loop=
- device and put different FS, like ext2, ext3, ext4, xfs on the loop device=
- and run the same testcase?<o:p></o:p></span></p>
-<p class=3D"MsoNormal"><span lang=3D"EN-IN"><o:p>&nbsp;</o:p></span></p>
-<p class=3D"MsoNormal"><span lang=3D"EN-IN">regards,<o:p></o:p></span></p>
-<p class=3D"MsoNormal"><span lang=3D"EN-IN">Suresh<o:p></o:p></span></p>
-<p class=3D"MsoNormal"><span lang=3D"EN-IN"><o:p>&nbsp;</o:p></span></p>
-</div>
-</body>
-</html>
-
---_000_MR1P264MB3953913324A116A1E9CADE40A80D9MR1P264MB3953FRAP_--
-
---===============2003725247==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Best Regards
+Yang Xu
+> 
+> Signed-off-by: He Zhe <zhe.he@windriver.com>
+> ---
+> v2: Add a variable to record the support status instead of exit(1)
+> v3: Move mode_filter_not_supported check a bit upper to save a prctl call
+> 
+>   testcases/kernel/syscalls/prctl/prctl04.c | 30 +++++++++++++++++------
+>   1 file changed, 22 insertions(+), 8 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/prctl/prctl04.c b/testcases/kernel/syscalls/prctl/prctl04.c
+> index b9f4c2a10..d3de4b0d6 100644
+> --- a/testcases/kernel/syscalls/prctl/prctl04.c
+> +++ b/testcases/kernel/syscalls/prctl/prctl04.c
+> @@ -93,6 +93,9 @@ static struct tcase {
+>   	"SECCOMP_MODE_FILTER doesn't permit exit()"}
+>   };
+>   
+> +
+> +static int mode_filter_not_supported;
+> +
+>   static void check_filter_mode_inherit(void)
+>   {
+>   	int childpid;
+> @@ -154,16 +157,17 @@ static void check_filter_mode(int val)
+>   {
+>   	int fd;
+>   
+> +	if (mode_filter_not_supported == 1) {
+> +		tst_res(TCONF, "kernel doesn't support SECCOMP_MODE_FILTER");
+> +		return;
+> +	}
+> +
+>   	fd = SAFE_OPEN(FNAME, O_RDWR | O_CREAT, 0666);
+>   
+>   	TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &strict));
+>   	if (TST_RET == -1) {
+> -		if (TST_ERR == EINVAL)
+> -			tst_res(TCONF,
+> -				"kernel doesn't support SECCOMP_MODE_FILTER");
+> -		else
+> -			tst_res(TFAIL | TERRNO,
+> -				"prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_FILTER failed");
+> +		tst_res(TFAIL | TERRNO,
+> +			"prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_FILTER failed");
+>   		return;
+>   	}
+>   
+> @@ -208,7 +212,7 @@ static void verify_prctl(unsigned int n)
+>   			return;
+>   		}
+>   
+> -		if (tc->pass_flag == 2)
+> +		if (mode_filter_not_supported == 0 && tc->pass_flag == 2)
+>   			tst_res(TFAIL,
+>   				"SECCOMP_MODE_FILTER permits exit() unexpectedly");
+>   	}
+> @@ -218,7 +222,17 @@ static void setup(void)
+>   {
+>   	TEST(prctl(PR_GET_SECCOMP));
+>   	if (TST_RET == 0) {
+> -		tst_res(TINFO, "kernel support PR_GET/SET_SECCOMP");
+> +		tst_res(TINFO, "kernel supports PR_GET/SET_SECCOMP");
+> +
+> +		TEST(prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, NULL));
+> +		if (TST_RET == -1)
+> +			if (TST_ERR == EINVAL) {
+> +				mode_filter_not_supported = 1;
+> +				return;
+> +			}
+> +
+> +		tst_res(TINFO, "kernel supports SECCOMP_MODE_FILTER");
+> +
+>   		return;
+>   	}
+>   
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============2003725247==--
