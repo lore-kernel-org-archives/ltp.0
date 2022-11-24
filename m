@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6230C43217
-	for <ltp@archiver.kernel.org>; Thu, 24 Nov 2022 14:49:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1120C43217
+	for <ltp@archiver.kernel.org>; Thu, 24 Nov 2022 15:14:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 372153CC975
-	for <ltp@archiver.kernel.org>; Thu, 24 Nov 2022 15:49:50 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 8765B3CC92D
+	for <ltp@archiver.kernel.org>; Thu, 24 Nov 2022 16:14:11 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 822773CC909
- for <ltp@lists.linux.it>; Thu, 24 Nov 2022 15:49:41 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 56B523C8524
+ for <ltp@lists.linux.it>; Thu, 24 Nov 2022 16:14:03 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B49166007BD
- for <ltp@lists.linux.it>; Thu, 24 Nov 2022 15:49:40 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D2A7A1A00920
+ for <ltp@lists.linux.it>; Thu, 24 Nov 2022 16:14:02 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id ED0B2218CE;
- Thu, 24 Nov 2022 14:49:39 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0C4491F889;
+ Thu, 24 Nov 2022 15:14:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1669301379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1669302842; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/vvRpx1uxeRGLU4Vwq+ZlJrwzNPh8afH1Li3HrLvRJQ=;
- b=EJq9qz5zNjZ0RbtTo/BJ+Bi7S3keMtOxthHUtsBkB93CfDvccMnTgj6NLvJRO+7fe1KaD9
- jIm5INUE4UXDlsnetw6ah6aibPysNxWoiPmxnEVN7Zn2yMlkhr3QtvDVZxnYsFUOcENpII
- UF7rak6RzXg5Jyp2CM00zDueSp1kSAM=
+ bh=7c6TfKaTJ1Xkc7DaOhR7/P4hGjVMHWUVbMV4h4vZlGw=;
+ b=dNnohlUM+le2JfAMzbrxX8EQqRddilCSTrC+BCPjhyEXN0Wb01tEKt2R1nN/IrUVKQS/io
+ 9tFFxv4u1OgjsYwTIIcW2O0DLkiJTyyR0CLvj0pzIzZWiUkKmf270h7gwjpOlObMBjMSGr
+ bRUI6rgaTd4N82oGxpiVeDPglbDChGc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1669301379;
+ s=susede2_ed25519; t=1669302842;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/vvRpx1uxeRGLU4Vwq+ZlJrwzNPh8afH1Li3HrLvRJQ=;
- b=eBzxlU6isHOvgVUp2q9HhEbO3q35uF+898Afw0ejBmq3Is7/LWCf7Pe8FeIgzTaHZxOg8I
- ahQMAAxAcmD4huBg==
+ bh=7c6TfKaTJ1Xkc7DaOhR7/P4hGjVMHWUVbMV4h4vZlGw=;
+ b=d23kt7MGFpSGpR1SMKtBv3IdxhpZHbN+//1fYB0pi7g/B9Dre46HxKFWg9UMhoMmO2+4+3
+ pPitZkRSx+maWMAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BF2C413488;
- Thu, 24 Nov 2022 14:49:39 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DABBA13488;
+ Thu, 24 Nov 2022 15:14:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 5gbAKoOEf2PTUwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 24 Nov 2022 14:49:39 +0000
-Date: Thu, 24 Nov 2022 15:51:02 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id 85A5NDmKf2NZYgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 24 Nov 2022 15:14:01 +0000
+Date: Thu, 24 Nov 2022 16:15:24 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <Y3+E1ndrPqXA1car@yuki>
-References: <20221120191533.164848-1-tsahu@linux.ibm.com>
- <20221120191533.164848-7-tsahu@linux.ibm.com>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <Y3+KjEWQcFRtJvoK@yuki>
+References: <20221123115546.786-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221120191533.164848-7-tsahu@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <20221123115546.786-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 6/7] Hugetlb: Migrating libhugetlbfs
- fallocate_align
+Subject: Re: [LTP] [RFC PATCH 1/1] Remove fs-bench
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,15 +75,16 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, ltp@lists.linux.it, mike.kravetz@oracle.com
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-And I've pushed the two hugefallocate tests as well, thanks.
+Looks like we can go ahead, green light from me as well.
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
