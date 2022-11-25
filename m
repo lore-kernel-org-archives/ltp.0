@@ -4,86 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF2E2C4332F
-	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 11:38:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79EBEC4332F
+	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 12:02:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C9EC3CC8A6
-	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 12:38:02 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id D71AF3CC8CD
+	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 13:02:32 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 539CF3CC87D
- for <ltp@lists.linux.it>; Fri, 25 Nov 2022 12:37:53 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 37E7B3C0162
+ for <ltp@lists.linux.it>; Fri, 25 Nov 2022 13:02:22 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A802D1401159
- for <ltp@lists.linux.it>; Fri, 25 Nov 2022 12:37:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1669376270;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 799611401109
+ for <ltp@lists.linux.it>; Fri, 25 Nov 2022 13:02:21 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E34FB21AD9;
+ Fri, 25 Nov 2022 12:02:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1669377740;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fWoMVW7PWrRm24IYn9IWBVbEiW2PRTP6juGDdLg0sGY=;
- b=hiRxZmSIpM1O1bxByu7fESn+KOQu8lyCH7955iOQOzv5fA2kezX5AAVvG7hnBjID9vdDnZ
- Nph8hL+cCUB9xtjiLCf/lvzOkmSf5f5gsqfIF+cTaWyUqeHfPEgXL40Xo4MDgwQXQSFGPj
- zvAIWaDcVaeScNl8PtyOoTGBC/+uTMA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-198-4Eu2ag3nOCiI8FTpwxQTag-1; Fri, 25 Nov 2022 06:37:49 -0500
-X-MC-Unique: 4Eu2ag3nOCiI8FTpwxQTag-1
-Received: by mail-wm1-f69.google.com with SMTP id
- ay40-20020a05600c1e2800b003cf8aa16377so2310480wmb.7
- for <ltp@lists.linux.it>; Fri, 25 Nov 2022 03:37:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:organization:from:references
- :cc:to:content-language:subject:user-agent:mime-version:date
- :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=fWoMVW7PWrRm24IYn9IWBVbEiW2PRTP6juGDdLg0sGY=;
- b=vEwnACOS7NH8NXb8hl934LRNjCeR/6CIMbjWS6qE0rlSXmbqQwqDM4ChlajKD1c3qz
- hdZO+vwCt/PboueKbWYWaNvh4XGKJhEYLYLUdjcqpeQvuPuI2avvDUsg+Wj8BIhxHBw7
- DHaPE39FD0vDxOsyxmx1qTJlXPWDkLcRqa6oq/xlwIsa3mNRgkw7bQUKMqItnZ03gkY8
- URLRKtNgC16GCE2X38tOGZa7QzehDVAmjDcCysvJq7oh0ETJUtEXdW1tilnh9jDQOA2W
- 4vbDeQP0lGjHS6/oX5nHqGB9Y0YF13ECiJ8nG/XC863gxf0QkG7Yv87an5R6sf20emaE
- tpcw==
-X-Gm-Message-State: ANoB5pnWPVt2oFl9bln8sEPoa+PbRgH6CTX+pPaXVxWHaMg+OE3QtnVl
- 4ywLGQA+QVy9HumMRX1M5puaopwPoHP+8+0JEvFOhtdbyAhcSmGyHOKwkoJag25/IFig8IjKdAn
- zSwLMY2uCd1M=
-X-Received: by 2002:adf:dd4c:0:b0:241:c075:30db with SMTP id
- u12-20020adfdd4c000000b00241c07530dbmr13119907wrm.159.1669376268409; 
- Fri, 25 Nov 2022 03:37:48 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf7WNHiwk3D/FKEcUz7miA89dAYtynBFtysT9r2Hm+CgzqTm41mowpEIeVXKRKWiIOfgcRQnJw==
-X-Received: by 2002:adf:dd4c:0:b0:241:c075:30db with SMTP id
- u12-20020adfdd4c000000b00241c07530dbmr13119891wrm.159.1669376268106; 
- Fri, 25 Nov 2022 03:37:48 -0800 (PST)
-Received: from ?IPV6:2003:cb:c704:d800:887:cbec:f31f:a08?
- (p200300cbc704d8000887cbecf31f0a08.dip0.t-ipconnect.de.
- [2003:cb:c704:d800:887:cbec:f31f:a08])
- by smtp.gmail.com with ESMTPSA id
- o7-20020adfeac7000000b00236883f2f5csm3534180wrn.94.2022.11.25.03.37.47
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 25 Nov 2022 03:37:47 -0800 (PST)
-Message-ID: <70e7f5af-d0a8-6f08-0b18-36f71e44443f@redhat.com>
-Date: Fri, 25 Nov 2022 12:37:46 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-To: Cyril Hrubis <chrubis@suse.cz>
+ bh=y7mhmJI0+6pCm/9utmvEdYHRRRMdr9gEiZ7QHS1FQAA=;
+ b=TtIINt+jXQawCQCgHXDusjgRmZ8pLroHeF02hBKlXzIshT2gundjdOwlMi9LnlsZqL5PXu
+ blupbfaj4omaLya+lN2S0s+hy6dr5gkYtFO0frerZSvNyn5N1+y6KdTW5gOPaNPQqxaH34
+ Sy/gACxD5pfbTHtRrEngayRsW1T/Z+0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1669377740;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y7mhmJI0+6pCm/9utmvEdYHRRRMdr9gEiZ7QHS1FQAA=;
+ b=lA59RXV9MS0C0xXTXWdgosTEvGNyxF3z/lT4lc5RLtvgDi1H5CYSUNyBmHrtJH+BLidOUV
+ y1eyYqMt43KeMtAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BCCB11361C;
+ Fri, 25 Nov 2022 12:02:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id LhdvLMyugGNIHgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 25 Nov 2022 12:02:20 +0000
+Date: Fri, 25 Nov 2022 13:02:18 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: David Hildenbrand <david@redhat.com>
+Message-ID: <Y4CuyodvMln8/3N1@pevik>
 References: <20221117121409.179210-1-david@redhat.com> <Y3eI0Q5BTE12+4zO@yuki>
-From: David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <Y3eI0Q5BTE12+4zO@yuki>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
+ <70e7f5af-d0a8-6f08-0b18-36f71e44443f@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <70e7f5af-d0a8-6f08-0b18-36f71e44443f@redhat.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v1] security/dirtyc0w_shmem: Add new test for
@@ -99,36 +78,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
->> +static void cleanup(void)
->> +{
->> +	SAFE_UMOUNT(TMP_DIR);
->> +}
->> +
->> +static struct tst_test test = {
->> +	.needs_checkpoints = 1,
->> +	.forks_child = 1,
->> +	.needs_root = 1,
-> 
-> We are missing .needs_tmpdir flag here, otherwise the test will create
-> the the TMPDIR in PWD which may fail in certain setups.
+> > > +static void cleanup(void)
+> > > +{
+> > > +	SAFE_UMOUNT(TMP_DIR);
+> > > +}
+> > > +
+> > > +static struct tst_test test = {
+> > > +	.needs_checkpoints = 1,
+> > > +	.forks_child = 1,
+> > > +	.needs_root = 1,
 
-I just noticed that compilation now says:
+> > We are missing .needs_tmpdir flag here, otherwise the test will create
+> > the the TMPDIR in PWD which may fail in certain setups.
 
-testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c: useless tag: 
-needs_tmpdir
+> I just noticed that compilation now says:
 
-So is "needs_tmpdir" indeed usless or are we missing something else?
+> testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c: useless tag:
+> needs_tmpdir
+Good catch.
 
--- 
-Thanks,
+> So is "needs_tmpdir" indeed usless or are we missing something else?
 
-David / dhildenb
+Although not printing which tags implying .needs_tmpdir is a bit confusing,
+the warning is correct - .needs_checkpoints implies .needs_tmpdir
+
+https://github.com/linux-test-project/ltp/blob/e814430fad2e976e4a40c9d2de9e39401456d8eb/metadata/metaparse.c#L797-L806
+
+Kind regards,
+Petr
 
 
 -- 
