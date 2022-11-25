@@ -4,70 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B38B7C4332F
-	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 11:20:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF2E2C4332F
+	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 11:38:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A00833CC8A2
-	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 12:20:48 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 8C9EC3CC8A6
+	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 12:38:02 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F18463C00D1
- for <ltp@lists.linux.it>; Fri, 25 Nov 2022 12:20:37 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 539CF3CC87D
+ for <ltp@lists.linux.it>; Fri, 25 Nov 2022 12:37:53 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 55E561401149
- for <ltp@lists.linux.it>; Fri, 25 Nov 2022 12:20:37 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AAB1E1FD63;
- Fri, 25 Nov 2022 11:20:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1669375236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A802D1401159
+ for <ltp@lists.linux.it>; Fri, 25 Nov 2022 12:37:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1669376270;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=W5cImaf+If0tRFv6bTd/I3JWSBRc7ghZvvumqWW4q2k=;
- b=ekn8fXJSmOZAumrN6A4ISFkFk7WPUGz0IoX6AT2dvoaljAIfdOscOfAOS9G4hHH+jYvIVB
- jSrIdiRgeaatIgt9ML4f60fdVDge/apwDP5YynR3SrBWD8hewjxT8/Is/3nJvCJNWfsVkR
- TsFOVk6WNiOGZXK4FehAofSVO9JT+uU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1669375236;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=W5cImaf+If0tRFv6bTd/I3JWSBRc7ghZvvumqWW4q2k=;
- b=jrTbZYDZEC++pwuD2AkmRmdCq6lNI+vtLY5hey+EWPasY6zfgP41hUkLFpJSPQewiX3ozS
- tpB1c/23R+aeMoBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 835F31361C;
- Fri, 25 Nov 2022 11:20:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id KUHhHgSlgGPWBwAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Fri, 25 Nov 2022 11:20:36 +0000
-Message-ID: <6ce3a102-f2ec-16be-927d-a32ab46eaf0c@suse.cz>
-Date: Fri, 25 Nov 2022 12:20:36 +0100
+ bh=fWoMVW7PWrRm24IYn9IWBVbEiW2PRTP6juGDdLg0sGY=;
+ b=hiRxZmSIpM1O1bxByu7fESn+KOQu8lyCH7955iOQOzv5fA2kezX5AAVvG7hnBjID9vdDnZ
+ Nph8hL+cCUB9xtjiLCf/lvzOkmSf5f5gsqfIF+cTaWyUqeHfPEgXL40Xo4MDgwQXQSFGPj
+ zvAIWaDcVaeScNl8PtyOoTGBC/+uTMA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-198-4Eu2ag3nOCiI8FTpwxQTag-1; Fri, 25 Nov 2022 06:37:49 -0500
+X-MC-Unique: 4Eu2ag3nOCiI8FTpwxQTag-1
+Received: by mail-wm1-f69.google.com with SMTP id
+ ay40-20020a05600c1e2800b003cf8aa16377so2310480wmb.7
+ for <ltp@lists.linux.it>; Fri, 25 Nov 2022 03:37:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:organization:from:references
+ :cc:to:content-language:subject:user-agent:mime-version:date
+ :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=fWoMVW7PWrRm24IYn9IWBVbEiW2PRTP6juGDdLg0sGY=;
+ b=vEwnACOS7NH8NXb8hl934LRNjCeR/6CIMbjWS6qE0rlSXmbqQwqDM4ChlajKD1c3qz
+ hdZO+vwCt/PboueKbWYWaNvh4XGKJhEYLYLUdjcqpeQvuPuI2avvDUsg+Wj8BIhxHBw7
+ DHaPE39FD0vDxOsyxmx1qTJlXPWDkLcRqa6oq/xlwIsa3mNRgkw7bQUKMqItnZ03gkY8
+ URLRKtNgC16GCE2X38tOGZa7QzehDVAmjDcCysvJq7oh0ETJUtEXdW1tilnh9jDQOA2W
+ 4vbDeQP0lGjHS6/oX5nHqGB9Y0YF13ECiJ8nG/XC863gxf0QkG7Yv87an5R6sf20emaE
+ tpcw==
+X-Gm-Message-State: ANoB5pnWPVt2oFl9bln8sEPoa+PbRgH6CTX+pPaXVxWHaMg+OE3QtnVl
+ 4ywLGQA+QVy9HumMRX1M5puaopwPoHP+8+0JEvFOhtdbyAhcSmGyHOKwkoJag25/IFig8IjKdAn
+ zSwLMY2uCd1M=
+X-Received: by 2002:adf:dd4c:0:b0:241:c075:30db with SMTP id
+ u12-20020adfdd4c000000b00241c07530dbmr13119907wrm.159.1669376268409; 
+ Fri, 25 Nov 2022 03:37:48 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf7WNHiwk3D/FKEcUz7miA89dAYtynBFtysT9r2Hm+CgzqTm41mowpEIeVXKRKWiIOfgcRQnJw==
+X-Received: by 2002:adf:dd4c:0:b0:241:c075:30db with SMTP id
+ u12-20020adfdd4c000000b00241c07530dbmr13119891wrm.159.1669376268106; 
+ Fri, 25 Nov 2022 03:37:48 -0800 (PST)
+Received: from ?IPV6:2003:cb:c704:d800:887:cbec:f31f:a08?
+ (p200300cbc704d8000887cbecf31f0a08.dip0.t-ipconnect.de.
+ [2003:cb:c704:d800:887:cbec:f31f:a08])
+ by smtp.gmail.com with ESMTPSA id
+ o7-20020adfeac7000000b00236883f2f5csm3534180wrn.94.2022.11.25.03.37.47
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 25 Nov 2022 03:37:47 -0800 (PST)
+Message-ID: <70e7f5af-d0a8-6f08-0b18-36f71e44443f@redhat.com>
+Date: Fri, 25 Nov 2022 12:37:46 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
+ Thunderbird/102.4.1
+To: Cyril Hrubis <chrubis@suse.cz>
+References: <20221117121409.179210-1-david@redhat.com> <Y3eI0Q5BTE12+4zO@yuki>
+From: David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <Y3eI0Q5BTE12+4zO@yuki>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, ltp@lists.linux.it
-References: <20221125105201.59048-1-david@redhat.com>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <20221125105201.59048-1-david@redhat.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] security/dirtyc0w_shmem: Fix remaining cases
- where UFFD_FEATURE_MINOR_SHMEM is absent
+Subject: Re: [LTP] [PATCH v1] security/dirtyc0w_shmem: Add new test for
+ CVE-2022-2590
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,92 +99,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-
-On 25. 11. 22 11:52, David Hildenbrand wrote:
-> When UFFD_FEATURE_MINOR_SHMEM is not defined, we still have to make the
-> checkpoint happy, otherwise our parent process will run into a timeout.
-> Further, we have to test if UFFD_FEATURE_MINOR_SHMEM is really returned by
-> the UFFD_API ioctl: if the kernel knows about the feature but doesn't
-> support it, it will be masked off.
+>> +static void cleanup(void)
+>> +{
+>> +	SAFE_UMOUNT(TMP_DIR);
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.needs_checkpoints = 1,
+>> +	.forks_child = 1,
+>> +	.needs_root = 1,
 > 
-> Reported-by: Martin Doucha <mdoucha@suse.cz>
-> Cc: Petr Vorel <pvorel@suse.cz>
-> Cc: Cyril Hrubis <chrubis@suse.cz>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->   .../dirtyc0w_shmem/dirtyc0w_shmem_child.c        | 16 ++++++++++++----
->   1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem_child.c b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem_child.c
-> index cb2e9df0c..c117c6f39 100644
-> --- a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem_child.c
-> +++ b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem_child.c
-> @@ -24,12 +24,12 @@
->   #include <linux/userfaultfd.h>
->   #endif
->   
-> -#ifdef UFFD_FEATURE_MINOR_SHMEM
-> -
->   #define TST_NO_DEFAULT_MAIN
->   #include "tst_test.h"
->   #include "tst_safe_macros.h"
->   #include "tst_safe_pthread.h"
-> +
-> +#ifdef UFFD_FEATURE_MINOR_SHMEM
->   #include "lapi/syscalls.h"
->   
->   #define TMP_DIR "tmp_dirtyc0w_shmem"
-> @@ -162,6 +162,10 @@ retry:
->   			"Could not create userfault file descriptor");
->   	}
->   
-> +	if (!(uffdio_api.features & UFFD_FEATURE_MINOR_SHMEM))
-> +		tst_brk(TCONF,
-> +			"System does not have userfaultfd minor fault support for shmem");
-> +
->   	uffdio_register.range.start = (unsigned long) map;
->   	uffdio_register.range.len = page_size;
->   	uffdio_register.mode = UFFDIO_REGISTER_MODE_MINOR;
-> @@ -236,6 +240,10 @@ int main(void)
->   	return 0;
->   }
->   #else /* UFFD_FEATURE_MINOR_SHMEM */
-> -#include "tst_test.h"
-> -TST_TEST_TCONF("System does not have userfaultfd minor fault support for shmem");
-> +int main(void)
-> +{
-> +	tst_reinit();
-> +	TST_CHECKPOINT_WAKE(0);
-> +	tst_brk(TCONF, "System does not have userfaultfd minor fault support for shmem");
-> +}
->   #endif /* UFFD_FEATURE_MINOR_SHMEM */
+> We are missing .needs_tmpdir flag here, otherwise the test will create
+> the the TMPDIR in PWD which may fail in certain setups.
 
-This would work as a workaround but I'd recommend adding the necessary 
-structures and constants to include/lapi/userfaultfd.h instead. Then you 
-won't need this conditional compilation at all.
+I just noticed that compilation now says:
 
-I also recommend looking at the fuzzy sync library we use for race 
-conditions:
-https://github.com/linux-test-project/ltp/wiki/C-Test-API#133-reproducing-race-conditions
+testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem.c: useless tag: 
+needs_tmpdir
 
-The original dirtyc0w test was written before this library but using it 
-generally makes race condition reproducers faster, simpler and more 
-reliable.
+So is "needs_tmpdir" indeed usless or are we missing something else?
 
 -- 
-Martin Doucha   mdoucha@suse.cz
-QA Engineer for Software Maintenance
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+Thanks,
+
+David / dhildenb
 
 
 -- 
