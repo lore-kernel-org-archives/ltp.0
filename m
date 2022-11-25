@@ -4,67 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21189C4332F
-	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 18:58:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D315DC4332F
+	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 22:38:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2AEBA3CE31F
-	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 19:58:40 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 79C263CE320
+	for <ltp@archiver.kernel.org>; Fri, 25 Nov 2022 23:38:07 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF91B3CDCC0
- for <ltp@lists.linux.it>; Fri, 25 Nov 2022 19:58:30 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 4770A3CDCD3
+ for <ltp@lists.linux.it>; Fri, 25 Nov 2022 23:37:56 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 177256008C0
- for <ltp@lists.linux.it>; Fri, 25 Nov 2022 19:58:29 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3C5AA1FD87;
- Fri, 25 Nov 2022 18:58:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1669402709; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=QWScvZMkOqP0GVVnq5gKCLLJ1MF7MD6cvBAtRoY81F8=;
- b=MO4lhe6eIYLhcD+pbTu9Gw1fiXzula9nd8ONxTM8rjnewoqoz3xYEBwKDSKN1Wbf9vvRa3
- IDHGkZ4cAWON9U16I79lZ+J5elMEEWY+OZh89pLCm3qOoCv4BNRMYSXrziQ8HJPf44hYkI
- qt2ERvVqpcet9f0aatK+Ummq+vg4fow=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1669402709;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=QWScvZMkOqP0GVVnq5gKCLLJ1MF7MD6cvBAtRoY81F8=;
- b=AXJO4sznxGly4IHOnIzQ0MXCqWiRQnY6/1vRTgaAwszbR24qaiu1n87MOqlcmfJo+V7IRQ
- QQKvqfpe7o0jJIAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1025E1361C;
- Fri, 25 Nov 2022 18:58:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id V3RQAVUQgWN2aAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 25 Nov 2022 18:58:29 +0000
-Date: Fri, 25 Nov 2022 19:59:51 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <Y4EQp/E1AyLq8L2F@yuki>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F1AEE600F6E
+ for <ltp@lists.linux.it>; Fri, 25 Nov 2022 23:37:54 +0100 (CET)
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2APMR04g018919; Fri, 25 Nov 2022 22:37:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=LisryYRtflP9q97j14u66WkHDTKH1ub3GA6L+l3ogIM=;
+ b=CP4ZVQdzBt0GDx4pTqQaqasvPvj0qJwqd87+P6TleZV8yS1gBQiIxnKGB0ULjXyoSFh7
+ kTlc8bnniow2K+sBglByy+6gaM081vkLJXgK+41Vks5F5bEsovQBnkpbMTqzcszDU1rH
+ Ayd6Ff7Q8jtjKGKkK6xdI28KnRv10JU9li8APnZTGYJD1nlTfIiIAW8jIcIgVFY0aRhE
+ /9I/CDnHqQ9KEflnlGVDl4EZ8mPUmTVN9XcF3BF8dGO07KEgmGyR9UI6u5FRwDzLAAZ+
+ cYD40mr5X/ocDOunNnI9IHZLUeN5VjzUU3LZOohISgN68ESQgZ6iwn2qrDjGDLCnCnPP OQ== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com
+ [149.81.74.106])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3m32xkm6s4-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 25 Nov 2022 22:37:51 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+ by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2APMZDRW007830;
+ Fri, 25 Nov 2022 22:37:49 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com
+ (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+ by ppma04fra.de.ibm.com with ESMTP id 3kxps8yasb-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 25 Nov 2022 22:37:49 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com
+ [9.149.105.60])
+ by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2APMbk113998378
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 25 Nov 2022 22:37:46 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 2E67F42045;
+ Fri, 25 Nov 2022 22:37:46 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 676A442042;
+ Fri, 25 Nov 2022 22:37:43 +0000 (GMT)
+Received: from tarunpc.ibmuc.com (unknown [9.43.9.201])
+ by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+ Fri, 25 Nov 2022 22:37:43 +0000 (GMT)
+From: Tarun Sahu <tsahu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Sat, 26 Nov 2022 04:07:39 +0530
+Message-Id: <20221125223740.80580-1-tsahu@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20221120191533.164848-1-tsahu@linux.ibm.com>
 References: <20221120191533.164848-1-tsahu@linux.ibm.com>
- <20221120191533.164848-5-tsahu@linux.ibm.com>
- <Y39cpPahJWYvQ4cT@yuki> <20221125173459.cwujma4km7gcd4vq@tarunpc>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221125173459.cwujma4km7gcd4vq@tarunpc>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: gB3wfL44wKQBsWzaIqJQ2_G9F9JQPock
+X-Proofpoint-ORIG-GUID: gB3wfL44wKQBsWzaIqJQ2_G9F9JQPock
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-25_12,2022-11-25_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 impostorscore=0
+ suspectscore=0 adultscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ mlxscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211250174
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 4/7] Hugetlb: Safe macro for posix_fadvise call
+Subject: [LTP] [PATCH v6 1/2] Hugetlb: Safe macro for posix_fadvise call
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,73 +97,94 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, ltp@lists.linux.it, mike.kravetz@oracle.com
+Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+ vaibhav@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > >  include/tst_safe_macros.h | 17 +++++++++++++++++
-> > >  1 file changed, 17 insertions(+)
-> > > 
-> > > diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-> > > index 81c4b0844..4965e44d0 100644
-> > > --- a/include/tst_safe_macros.h
-> > > +++ b/include/tst_safe_macros.h
-> > > @@ -298,6 +298,23 @@ static inline int safe_ftruncate(const char *file, const int lineno,
-> > >  #define SAFE_FTRUNCATE(fd, length) \
-> > >  	safe_ftruncate(__FILE__, __LINE__, (fd), (length))
-> > >  
-> > > +static inline int safe_posix_fadvise(const char *file, const int lineno,
-> > > +                                int fd, off_t offset, off_t len, int advice)
-> > > +{
-> > > +	int rval;
-> > > +
-> > > +	rval = posix_fadvise(fd, offset, len, advice);
-> > > +
-> > > +	if (rval)
-> > > +		tst_brk_(file, lineno, TBROK | TERRNO,
-> > > +			"posix_fadvise(%d,%ld,%ld,%d) failed",
-> > > +			fd, (long)offset, (long)len, advice);
-> > 
-> > I did a closer look at the posix_fadvise() manual and it returns an
-> > error in case of a failure, so the TERRNO is wrong here since that
-> > would print whatever was the last error stored in there.
-> > 
-> > So we either have to do errno = rval; in the if (rval) branch or use
-> > tst_strerrno() to print the errno ourselves.
-> > 
-> > Looking at the code we have the safe_pthread.c does use tst_strerrno()
-> > to print the error, so I would be inclined to do so here as well.
-> > 
-> 
-> posix_fadvise should be inline, and so for the convention it will be part of
-> tst_safe_macros.h
-> tst_strerrno is defined in lib/errnos.h
-> 
-> there are only two such header file declared in this way. errnos.h and
-> signame.h. To be able to use tst_strerrno, it will require some cleanup
-> (like converting .h to .c and transfer PAIR, STRPAIR macros definition to
-> header files too from tst_res.c).
-> 
-> As, Even looking at past commits, I am not sure why these two file are
-> implememnted as .h, and not available as in general. I am currently
-> thinking of errno = rval way.
-> 
-> Can those file be converted?
+This patch adds SAFE_POSIX_FADVISE for posix_fadvise call.
 
-Isn't the tst_strerrno() prototype defined in the tst_test.h?
+Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+---
+ include/tst_safe_macros.h | 17 +++++++++++++++++
+ include/tst_test.h        | 24 ++++++++++++------------
+ 2 files changed, 29 insertions(+), 12 deletions(-)
 
-The headers in lib/ are strictly internal implementation and shouldn't
-be used from tests at all. And they don't have to be included at all,
-since these are included in the test library in order to provide the
-implementation for these functions.
-
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 81c4b0844..ab00dd14a 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -298,6 +298,23 @@ static inline int safe_ftruncate(const char *file, const int lineno,
+ #define SAFE_FTRUNCATE(fd, length) \
+ 	safe_ftruncate(__FILE__, __LINE__, (fd), (length))
+ 
++static inline int safe_posix_fadvise(const char *file, const int lineno,
++                                int fd, off_t offset, off_t len, int advice)
++{
++	int rval;
++
++	rval = posix_fadvise(fd, offset, len, advice);
++
++	if (rval)
++		tst_brk_(file, lineno, TBROK,
++			"posix_fadvise(%d,%ld,%ld,%d) failed: %s",
++			fd, (long)offset, (long)len, advice, tst_strerrno(rval));
++
++	return rval;
++}
++#define SAFE_POSIX_FADVISE(fd, offset, len, advice) \
++	safe_posix_fadvise(__FILE__, __LINE__, (fd), (offset), (len), (advice))
++
+ static inline int safe_truncate(const char *file, const int lineno,
+                                 const char *path, off_t length)
+ {
+diff --git a/include/tst_test.h b/include/tst_test.h
+index a62515bfe..2de9301e5 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -95,6 +95,18 @@ pid_t safe_fork(const char *filename, unsigned int lineno);
+ 	({int ret = expr;                                           \
+ 	  ret != 0 ? tst_res(TINFO, #expr " failed"), ret : ret; }) \
+ 
++/*
++ * Functions to convert ERRNO to its name and SIGNAL to its name.
++ */
++const char *tst_strerrno(int err);
++const char *tst_strsig(int sig);
++/*
++ * Returns string describing status as returned by wait().
++ *
++ * BEWARE: Not thread safe.
++ */
++const char *tst_strstatus(int status);
++
+ #include "tst_safe_macros.h"
+ #include "tst_safe_file_ops.h"
+ #include "tst_safe_net.h"
+@@ -333,18 +345,6 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+  */
+ void tst_reinit(void);
+ 
+-/*
+- * Functions to convert ERRNO to its name and SIGNAL to its name.
+- */
+-const char *tst_strerrno(int err);
+-const char *tst_strsig(int sig);
+-/*
+- * Returns string describing status as returned by wait().
+- *
+- * BEWARE: Not thread safe.
+- */
+-const char *tst_strstatus(int status);
+-
+ unsigned int tst_multiply_timeout(unsigned int timeout);
+ 
+ /*
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.31.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
