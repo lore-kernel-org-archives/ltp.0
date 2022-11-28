@@ -4,62 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 745C0C433FE
-	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 15:39:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D5D0C433FE
+	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 15:45:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CBC893CC673
-	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 16:39:26 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 8D2C43CC681
+	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 16:45:02 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0C1483C0041
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:39:16 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id EEF283C010E
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:44:52 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0AE311A0036A
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:39:15 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 3728221BB4
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 15:39:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669649955;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7BD9214002CE
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:44:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1669650289;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=flNiIQjQ3lbVunRxi/NY3VlQPxC0OWJQq+UUZ9riMlU=;
- b=OQeiXl1G+6ztIoWxoeypfmWMwOONp1y4lwUmVgVQfuBVTQMsyIgBkfJ9yb/YoC9CWxv3DN
- bGtJVhNIPTYt3XZ+HfCdxhPh+OIE2UBitYqexK5YCjWf308AfnZMG+4XKxDHGMiSycg6hB
- 7fkR66dDvjKev8G+ao7Fkw1IS5sUTgM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669649955;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=flNiIQjQ3lbVunRxi/NY3VlQPxC0OWJQq+UUZ9riMlU=;
- b=S1yAs+G+WsBblkzKsG1EF8XSQoLdAlJKySFjgqYCnA1Bd4Yvgu06S6ZQIYUxRUXjPKTBoN
- ChPQlCpNrReSz4CQ==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 106542C142;
- Mon, 28 Nov 2022 15:39:15 +0000 (UTC)
-References: <20221123142716.1336-1-akumar@suse.de>
-User-agent: mu4e 1.8.11; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Avinesh Kumar <akumar@suse.de>
-Date: Mon, 28 Nov 2022 15:38:57 +0000
-Organization: Linux Private Site
-In-reply-to: <20221123142716.1336-1-akumar@suse.de>
-Message-ID: <87zgcbt7fh.fsf@suse.de>
+ bh=0O7VVh7FbjUvgm/CYPfFHHZUR0pm3SxXOXQrDSKrP/Y=;
+ b=TAf+75TqKrBhY4wHHXkho3335YwP0UH4u1MzukXfYpeL1ITTNAtZrXMt/ZZp1Oyak/mVnt
+ nTPWlXTwsENxXXP397kMbewHj4NhbptwVN//YHCjHcmUGBNiwFzUEEA3110iMbXvJi/R/0
+ TyleLyh4SmsF8J+PLFRw0QZtf4JCmI4=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-397-5bhLW-qPOFKvufVl3rUFPQ-1; Mon, 28 Nov 2022 10:44:45 -0500
+X-MC-Unique: 5bhLW-qPOFKvufVl3rUFPQ-1
+Received: by mail-wm1-f71.google.com with SMTP id
+ l42-20020a05600c1d2a00b003cf8e70c1ecso8756694wms.4
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 07:44:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:organization:from:references
+ :cc:to:content-language:subject:user-agent:mime-version:date
+ :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=0O7VVh7FbjUvgm/CYPfFHHZUR0pm3SxXOXQrDSKrP/Y=;
+ b=oozU4esqahboVSDYPhhcCR1akrzmxCsiQtsExKkFqM8zPB79IQF6I52HA8vQ6XCVN5
+ QAM6UBLmoYx1bS8HcxWfm0HbP1MlGPcDfeWnYBaDUmfX6FLJbgXT4iOofM5vX+m4KHRt
+ LG4JWXw4kuhpZtDM6eLh9dKau9V0MFgA04z0Xf0psQukOUangmI63mfjGYYpuvrwqvsq
+ nqfyQrCUEI75uHT7fraX4WNfQdnir5nIFEh3AOcTCkfTn02eZY0BoDwZDUOrygcpl9gq
+ 67gRFeHmsejaTKwwh96J0YycLJh/HRGvLKBZ8paYoVt6GdzbY/o8i9FwBg+AexlzVjzP
+ bBTw==
+X-Gm-Message-State: ANoB5pnUzchy8LKBM6p5ohqSgUXwUTdQKHLJRxP2nl19oBPNL+ekHaXZ
+ p6jEsDaVApipUefSWbuxpERMXIkC0XHT5Ry7hwy9iGRZnAE78RRg1NZx8ds3B53U1i5dQH1aU0y
+ Y+/2gnP+fBZM=
+X-Received: by 2002:adf:e34c:0:b0:242:19db:9d0b with SMTP id
+ n12-20020adfe34c000000b0024219db9d0bmr2573221wrj.559.1669650284749; 
+ Mon, 28 Nov 2022 07:44:44 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf4wyNlhCjNhBXhVGYRoq8HAbMb0uFNRQjyKOyCQFMKKXjPQUC+NWrMCT6vv6cWgBdhH+CRgAQ==
+X-Received: by 2002:adf:e34c:0:b0:242:19db:9d0b with SMTP id
+ n12-20020adfe34c000000b0024219db9d0bmr2573209wrj.559.1669650284508; 
+ Mon, 28 Nov 2022 07:44:44 -0800 (PST)
+Received: from ?IPV6:2003:cb:c702:9000:3d6:e434:f8b4:80cf?
+ (p200300cbc702900003d6e434f8b480cf.dip0.t-ipconnect.de.
+ [2003:cb:c702:9000:3d6:e434:f8b4:80cf])
+ by smtp.gmail.com with ESMTPSA id
+ p15-20020a05600c468f00b003cfaae07f68sm16983563wmo.17.2022.11.28.07.44.43
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 28 Nov 2022 07:44:43 -0800 (PST)
+Message-ID: <abd991c4-e6eb-349e-807c-71e7283ee83e@redhat.com>
+Date: Mon, 28 Nov 2022 16:44:42 +0100
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+To: Martin Doucha <mdoucha@suse.cz>, Petr Vorel <pvorel@suse.cz>
+References: <20221128111833.98937-1-david@redhat.com> <Y4SiDZXCSqMafjIb@pevik>
+ <7f71a2c3-a66b-b442-3785-3e251ce2f781@suse.cz>
+From: David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <7f71a2c3-a66b-b442-3785-3e251ce2f781@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] fstatfs01: Convert to new API and enable for all
- filesystems
+Subject: Re: [LTP] [PATCH v1 0/3] userfaultfd: Fix and remove compile-time
+ TCONF handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,194 +99,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+On 28.11.22 13:29, Martin Doucha wrote:
+> On 28. 11. 22 12:57, Petr Vorel wrote:
+>> Hi David,
+>>
+>> If I remember correctly the reason for runtime check was ppc64le
+>> missing userfaultfd minor fault support which needs to be check in runtime,
+>> right? [1]. At least this is how I understand Martin's suggestion [2] to replace
+>> compile time check with lapi. I'd state this reason at first commit message as
+>> it's not obvious.
+> 
+> The reason for runtime check is that the presence of the header file
+> does not guarantee that the kernel supports UFFD API. The reason for
+> LAPI is that we only care about actual kernel support, not build-time
+> header files.
+> 
 
-Merged, Thanks!
-
-Avinesh Kumar <akumar@suse.de> writes:
-
-> Signed-off-by: Avinesh Kumar <akumar@suse.de>
-> ---
->  testcases/kernel/syscalls/fstatfs/fstatfs01.c | 126 +++++-------------
->  1 file changed, 35 insertions(+), 91 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/fstatfs/fstatfs01.c b/testcases/kernel/syscalls/fstatfs/fstatfs01.c
-> index b06652dd5..6b14fd0d6 100644
-> --- a/testcases/kernel/syscalls/fstatfs/fstatfs01.c
-> +++ b/testcases/kernel/syscalls/fstatfs/fstatfs01.c
-> @@ -1,57 +1,22 @@
-> +// SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-> - *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms of version 2 of the GNU General Public License as
-> - * published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope that it would be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> - *
-> - * Further, this software is distributed without any warranty that it is
-> - * free of the rightful claim of any third person regarding infringement
-> - * or the like.  Any license provided herein, whether implied or
-> - * otherwise, applies only to this software file.  Patent licenses, if
-> - * any, provided herein do not apply to combinations of this program with
-> - * other software, or any other product whatsoever.
-> - *
-> - * You should have received a copy of the GNU General Public License along
-> - * with this program; if not, write the Free Software Foundation, Inc.,
-> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> - *
-> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-> - * Mountain View, CA  94043, or:
-> - *
-> - * http://www.sgi.com
-> - *
-> - * For further information regarding this notice, see:
-> - *
-> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-> - *
-> - */
-> -/*
-> - * DETAILED DESCRIPTION
-> - *   This is a Phase I test for the fstatfs(2) system call.  It is intended
-> - *   to provide a limited exposure of the system call, for now.  It
-> - *   should/will be extended when full functional tests are written for
-> - *   fstatfs(2).
-> + * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
->   */
->  
-> -#include <sys/types.h>
-> -#include <fcntl.h>
-> -#include <sys/statfs.h>
-> -#include <errno.h>
-> -#include <signal.h>
-> -#include <string.h>
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that fstatfs() syscall executes successfully for all
-> + * available filesystems.
-> + */
->  
-> -#include "test.h"
-> -#include "safe_macros.h"
->  
-> -static void setup(void);
-> -static void cleanup(void);
-> +#include <stdio.h>
-> +#include "tst_test.h"
->  
-> -char *TCID = "fstatfs01";
-> +#define MNT_POINT "mntpoint"
-> +#define TEMP_FILE MNT_POINT"/test_file"
->  
->  static int file_fd;
->  static int pipe_fd;
-> @@ -59,65 +24,44 @@ static int pipe_fd;
->  static struct tcase {
->  	int *fd;
->  	const char *msg;
-> -} tcases[2] = {
-> +} tcases[] = {
->  	{&file_fd, "fstatfs() on a file"},
->  	{&pipe_fd, "fstatfs() on a pipe"},
->  };
->  
-> -int TST_TOTAL = ARRAY_SIZE(tcases);
-> -
-> -int main(int ac, char **av)
-> +static void run(unsigned int i)
->  {
-> -	int lc, i;
-> -	struct statfs stats;
-> +	struct tcase *tc = &tcases[i];
-> +	struct statfs buf;
->  
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		tst_count = 0;
-> -
-> -		for (i = 0; i < TST_TOTAL; i++) {
-> -			TEST(fstatfs(*tcases[i].fd, &stats));
-> -
-> -			if (TEST_RETURN == -1) {
-> -				tst_resm(TFAIL | TTERRNO, "%s", tcases[i].msg);
-> -			} else {
-> -				tst_resm(TPASS, "%s - f_type=%lx",
-> -				         tcases[i].msg, stats.f_type);
-> -			}
-> -		}
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> +	TST_EXP_PASS(fstatfs(*tc->fd, &buf), "%s", tc->msg);
->  }
->  
->  static void setup(void)
->  {
->  	int pipe[2];
->  
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> -
-> -	file_fd = SAFE_OPEN(cleanup, "test_file", O_RDWR | O_CREAT, 0700);
-> -
-> -	SAFE_PIPE(cleanup, pipe);
-> +	file_fd = SAFE_OPEN(TEMP_FILE, O_RDWR | O_CREAT, 0700);
-> +	SAFE_PIPE(pipe);
->  	pipe_fd = pipe[0];
-> -	SAFE_CLOSE(cleanup, pipe[1]);
-> +	SAFE_CLOSE(pipe[1]);
->  }
->  
->  static void cleanup(void)
->  {
-> -	if (file_fd > 0 && close(file_fd))
-> -		tst_resm(TWARN | TERRNO, "close(file_fd) failed");
-> -
-> -	if (pipe_fd > 0 && close(pipe_fd))
-> -		tst_resm(TWARN | TERRNO, "close(pipe_fd) failed");
-> -
-> -	tst_rmdir();
-> +	if (file_fd > 0)
-> +		SAFE_CLOSE(file_fd);
-> +	if (pipe_fd > 0)
-> +		SAFE_CLOSE(pipe_fd);
->  }
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = run,
-> +	.mount_device = 1,
-> +	.mntpoint = MNT_POINT,
-> +	.all_filesystems = 1,
-> +	.needs_root = 1
-> +};
-> -- 
-> 2.38.1
-
+Right. Petr, do you still want a commit message state?
 
 -- 
-Thank you,
-Richard.
+Thanks,
+
+David / dhildenb
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
