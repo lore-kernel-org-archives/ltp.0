@@ -4,36 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49DE4C433FE
-	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 09:15:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A934CC4332F
+	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 09:15:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 084EE3CC661
-	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 10:15:34 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 2F8763CC66A
+	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 10:15:44 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3E7BF3C585E
+ by picard.linux.it (Postfix) with ESMTPS id 973963C585E
  for <ltp@lists.linux.it>; Mon, 28 Nov 2022 10:15:24 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-3.smtp.seeweb.it (Postfix) with ESMTP id C06F41A00368
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 10:15:22 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTP id 7FF031000467
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 10:15:23 +0100 (CET)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4539DD6E
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 01:15:27 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33C571063
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 01:15:28 -0800 (PST)
 Received: from e126380.arm.com (unknown [10.57.39.128])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 249DE3F73B
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 01:15:19 -0800 (PST)
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 11A6F3F73B
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 01:15:20 -0800 (PST)
 From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
 To: ltp@lists.linux.it
-Date: Mon, 28 Nov 2022 09:15:07 +0000
-Message-Id: <20221128091508.75414-1-teo.coupriediaz@arm.com>
+Date: Mon, 28 Nov 2022 09:15:08 +0000
+Message-Id: <20221128091508.75414-2-teo.coupriediaz@arm.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221128091508.75414-1-teo.coupriediaz@arm.com>
+References: <20221128091508.75414-1-teo.coupriediaz@arm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RFC PATCH 0/1] brk: use direct syscalls
+Subject: [LTP] [RFC PATCH 1/1] syscalls/brk: use direct syscall
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -50,41 +52,117 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello LTP maintainers,
+Direct usage of brk is discouraged in favor of using malloc. Also, brk was
+removed from POSIX in POSIX.1-2001.
+In particular, the Musl libc's brk always returns -ENOMEM which causes
+the LTP tests to exit prematurely. Invoking the syscall directly allows
+them to properly validate brk behavior.
 
-This patch slightly reworks the brk01 and brk02 tests to use direct
-syscalls with tst_syscall rather than calling through the libc.
+Use tst_syscall() and handle the failure cases ourselves, as
+we don't depend on the libc to do it anymore.
 
-While running LTP on a musl-based distribution, we noticed that the brk
-tests were failing. It turns out that Musl prevents the use of brk
-with their wrapper: it always returns an error.
-This isn't too egregious as using brk is deprecated in favor of malloc
-and it isn't part of POSIX anymore since POSIX.1-2001, but it _is_
-different from glibc's beavior, which allows using it.
+The patch also removes the dependency on sbrk to get the current break
+as it has the same issues. Instead, call tst_syscall(__NR_brk, 0) which
+always returns the current break.
 
-This patch allows proper testing of brk's functionality, independent of
-libc specifics, and thus allows the tests to pass on Musl-based
-distributions like Alpine.
+Update brk01 to use void* to unify it with brk02.
 
-Do you think this is a correct approach for LTP ?
-From what I could see there are a few tests that use tst_syscall directly
-and it doesn't affect the logic much for brk.
-
-Green build:
-https://github.com/Teo-CD/ltp/actions/runs/3563193507
-
-This was discovered in the context of the Morello project[0].
-[0]: https://www.morello-project.org/
-
-Teo Couprie Diaz (1):
-  syscalls/brk: use direct syscall
-
+Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+---
  testcases/kernel/syscalls/brk/brk01.c | 15 ++++++---------
  testcases/kernel/syscalls/brk/brk02.c | 14 ++++++--------
  2 files changed, 12 insertions(+), 17 deletions(-)
 
-
-base-commit: 498247917f40b0a82cb149e2ec1cb518acd7b632
+diff --git a/testcases/kernel/syscalls/brk/brk01.c b/testcases/kernel/syscalls/brk/brk01.c
+index a9b89bce5..d4596c20f 100644
+--- a/testcases/kernel/syscalls/brk/brk01.c
++++ b/testcases/kernel/syscalls/brk/brk01.c
+@@ -9,14 +9,15 @@
+ #include <errno.h>
+ 
+ #include "tst_test.h"
++#include "lapi/syscalls.h"
+ 
+ void verify_brk(void)
+ {
+-	uintptr_t cur_brk, new_brk;
+-	uintptr_t inc = getpagesize() * 2 - 1;
++	void *cur_brk, *new_brk;
++	size_t inc = getpagesize() * 2 - 1;
+ 	unsigned int i;
+ 
+-	cur_brk = (uintptr_t)sbrk(0);
++	cur_brk = (void *)tst_syscall(__NR_brk, 0);
+ 
+ 	for (i = 0; i < 33; i++) {
+ 		switch (i % 3) {
+@@ -31,16 +32,12 @@ void verify_brk(void)
+ 		break;
+ 		}
+ 
+-		TST_EXP_PASS_SILENT(brk((void *)new_brk), "brk()");
+-		if (!TST_PASS)
+-			return;
+-
+-		cur_brk = (uintptr_t)sbrk(0);
++		cur_brk = (void *)tst_syscall(__NR_brk, new_brk);
+ 
+ 		if (cur_brk != new_brk) {
+ 			tst_res(TFAIL,
+ 				"brk() failed to set address have %p expected %p",
+-				(void *)cur_brk, (void *)new_brk);
++				cur_brk, new_brk);
+ 			return;
+ 		}
+ 
+diff --git a/testcases/kernel/syscalls/brk/brk02.c b/testcases/kernel/syscalls/brk/brk02.c
+index 11e803cb4..dabda30c2 100644
+--- a/testcases/kernel/syscalls/brk/brk02.c
++++ b/testcases/kernel/syscalls/brk/brk02.c
+@@ -14,24 +14,22 @@
+ #include <unistd.h>
+ #include <sys/mman.h>
+ #include "tst_test.h"
++#include "lapi/syscalls.h"
+ 
+ void brk_down_vmas(void)
+ {
+-	void *brk_addr = sbrk(0);
+-
+-	if (brk_addr == (void *) -1)
+-		tst_brk(TBROK, "sbrk() failed");
++	void *brk_addr = (void *)tst_syscall(__NR_brk, 0);
+ 
+ 	unsigned long page_size = getpagesize();
+ 	void *addr = brk_addr + page_size;
+ 
+-	if (brk(addr)) {
++	if ((void *)tst_syscall(__NR_brk, addr) < addr) {
+ 		tst_res(TFAIL | TERRNO, "Cannot expand brk() by page size");
+ 		return;
+ 	}
+ 
+ 	addr += page_size;
+-	if (brk(addr)) {
++	if ((void *)tst_syscall(__NR_brk, addr) < addr) {
+ 		tst_res(TFAIL | TERRNO, "Cannot expand brk() by 2x page size");
+ 		return;
+ 	}
+@@ -42,12 +40,12 @@ void brk_down_vmas(void)
+ 	}
+ 
+ 	addr += page_size;
+-	if (brk(addr)) {
++	if ((void *)tst_syscall(__NR_brk, addr) < addr) {
+ 		tst_res(TFAIL | TERRNO, "Cannot expand brk() after mprotect");
+ 		return;
+ 	}
+ 
+-	if (brk(brk_addr)) {
++	if ((void *)tst_syscall(__NR_brk, brk_addr) != brk_addr) {
+ 		tst_res(TFAIL | TERRNO, "Cannot restore brk() to start address");
+ 		return;
+ 	}
 -- 
 2.25.1
 
