@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5E70C433FE
-	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 13:32:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5740DC433FE
+	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 14:38:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9D3EE3CC66A
-	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 14:32:43 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 334CD3CC67E
+	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 15:38:18 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7ACC73C714A
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 14:32:34 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 6BA993C32D9
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 15:38:08 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BC0FA200067
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 14:32:33 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9CFB720032F
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 15:38:06 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 1A09E1F381;
- Mon, 28 Nov 2022 13:32:33 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 730A121B23;
+ Mon, 28 Nov 2022 14:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669642353;
+ t=1669646286;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OHpJTb2CXDBxDrxXMUraxxOlhTRDzTiJ0T1kRnuv4Yk=;
- b=rHZgDoy7c6P0YWDTWC4ELi8/WRHK2ce7nrPc50DMErcRw985duAnt1iVtBRr3FBF6h8pkN
- GrcpMf8z0LoMgv2ztibMiz/BhfWJwzv74MK0kkFCakLxhK/Bc0PsxmsMc3hM5Tf9m0aJdo
- YZWB3Ca6BDLcIZSxas/o4GuTwn33H/8=
+ bh=Ppli+BqEMQIbcG4KAFsWBRa8ky31lvUlzGW8qaC9tO0=;
+ b=J2U22EC5rkpu6+0nDGTWznbR5RI9F8cu8A9q11Mr69vAAjXNmh/HJNBnkL49iWAXSCS8nY
+ S1eVeTea0QKJCG1cJWY1qvU34ZlxfKrgzkGLEF5rm2LPJLWtn2NzUP75VTMku86yxdUfdL
+ K5yx9APWxOYZoWPKMYsWHCnOiyQ6sVo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669642353;
+ s=susede2_ed25519; t=1669646286;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OHpJTb2CXDBxDrxXMUraxxOlhTRDzTiJ0T1kRnuv4Yk=;
- b=blfA8M+al4KuIT/uqOM0LTMwgpPSSMMPjVZ6IcO8fMy5+bqD/KPBJFcJIY9rtyxspCtaF1
- A7jVZ5VyEFMrvKBQ==
+ bh=Ppli+BqEMQIbcG4KAFsWBRa8ky31lvUlzGW8qaC9tO0=;
+ b=J7uHTUayEKVlYAl7i/H0i0pF70UM90mdqwhXbIBPyCvndlZVvLrQ7zBIeDLxCx946/3Vev
+ vqLaZG2hpKof4dBA==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id A3F8A2C141;
- Mon, 28 Nov 2022 13:32:32 +0000 (UTC)
-References: <20221116021651.21104-1-zhaogongyi@huawei.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 14C1A2C141;
+ Mon, 28 Nov 2022 14:38:06 +0000 (UTC)
+References: <20221116034910.37030-1-zhaogongyi@huawei.com>
 User-agent: mu4e 1.8.11; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Zhao Gongyi <zhaogongyi@huawei.com>
-Date: Mon, 28 Nov 2022 12:38:52 +0000
+Date: Mon, 28 Nov 2022 14:26:52 +0000
 Organization: Linux Private Site
-In-reply-to: <20221116021651.21104-1-zhaogongyi@huawei.com>
-Message-ID: <87pmd7urv9.fsf@suse.de>
+In-reply-to: <20221116034910.37030-1-zhaogongyi@huawei.com>
+Message-ID: <87lenvuotu.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/sched_setscheduler04: new test for
- sched_setscheduler()
+Subject: Re: [LTP] [PATCH] syscalls/nice01: Add test nice(-1) and nice(-50)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,79 +81,91 @@ Hello,
 
 Zhao Gongyi via ltp <ltp@lists.linux.it> writes:
 
-> Verify that the scheduling policy and parameters are in fact per-thread
-> attributes on Linux:
-> 1. Specifying pid as 0 will operate on the attributes of the calling thread
-> 2. The value returned from a call to gettid(2) can be passed in the argument
->    pid.
-> 3. Passing the value returned from a call to getpid(2) will operate on the
->    attributes of the main thread of the  thread  group
+> 1. Add test verify that the errno is zero when callling of nice
+> legitimately return -1.(nice(-1), the default nice is usally 0)
+> 2. Add test verify that user of root can decrease the nice value of
+> the process successfully by passing a lower increment
+> value (< min. applicable limits) to nice() system call.(nice(-50))
 >
 > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
 > ---
->  runtest/syscalls                              |   1 +
->  .../syscalls/sched_setscheduler/.gitignore    |   1 +
->  .../syscalls/sched_setscheduler/Makefile      |   2 +
->  .../sched_setscheduler/sched_setscheduler04.c | 101 ++++++++++++++++++
->  4 files changed, 105 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
+>  testcases/kernel/syscalls/nice/nice01.c | 27 ++++++++++++++-----------
+>  1 file changed, 15 insertions(+), 12 deletions(-)
 >
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 3dc6fa397..ff516af3d 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1204,6 +1204,7 @@ sched_getscheduler02 sched_getscheduler02
->  sched_setscheduler01 sched_setscheduler01
->  sched_setscheduler02 sched_setscheduler02
->  sched_setscheduler03 sched_setscheduler03
-> +sched_setscheduler04 sched_setscheduler04
+> diff --git a/testcases/kernel/syscalls/nice/nice01.c b/testcases/kernel/syscalls/nice/nice01.c
+> index 876246180..bc022a265 100644
+> --- a/testcases/kernel/syscalls/nice/nice01.c
+> +++ b/testcases/kernel/syscalls/nice/nice01.c
+> @@ -17,29 +17,31 @@
+>  #include <sys/resource.h>
+>  #include "tst_test.h"
 >
->  sched_yield01 sched_yield01
+> -#define	NICEINC		-12
+> -#define MIN_PRIO	-20
+> +#define MIN_PRIO        -20
 >
-> diff --git a/testcases/kernel/syscalls/sched_setscheduler/.gitignore b/testcases/kernel/syscalls/sched_setscheduler/.gitignore
-> index aa8ad9695..1b8860d2c 100644
-> --- a/testcases/kernel/syscalls/sched_setscheduler/.gitignore
-> +++ b/testcases/kernel/syscalls/sched_setscheduler/.gitignore
-> @@ -1,3 +1,4 @@
->  /sched_setscheduler01
->  /sched_setscheduler02
->  /sched_setscheduler03
-> +/sched_setscheduler04
-> diff --git a/testcases/kernel/syscalls/sched_setscheduler/Makefile b/testcases/kernel/syscalls/sched_setscheduler/Makefile
-> index 044619fb8..e3d54e33e 100644
-> --- a/testcases/kernel/syscalls/sched_setscheduler/Makefile
-> +++ b/testcases/kernel/syscalls/sched_setscheduler/Makefile
-> @@ -3,6 +3,8 @@
->
->  top_srcdir		?= ../../../..
->
-> +sched_setscheduler04: CFLAGS += -pthread
+> -static void verify_nice(void)
+> +static int nice_inc[] = {-1, -12, -50};
 > +
->  include $(top_srcdir)/include/mk/testcases.mk
+> +static void verify_nice(unsigned int i)
+>  {
+>  	int new_nice;
+>  	int orig_nice;
+>  	int exp_nice;
+> +	int inc = nice_inc[i];
 >
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
-> new file mode 100644
-> index 000000000..38f5750ba
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sched_setscheduler/sched_setscheduler04.c
-> @@ -0,0 +1,101 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright(c) 2022 Huawei Technologies Co., Ltd
-> + * Author: Zhao Gongyi <zhaogongyi@huawei.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that the scheduling policy and parameters are in fact per-thread
-> + * attributes on Linux:
+>  	orig_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
+>
+> -	TEST(nice(NICEINC));
+> +	TEST(nice(inc));
+>
+> -	exp_nice = MAX(MIN_PRIO, (orig_nice + NICEINC));
+> +	exp_nice = MAX(MIN_PRIO, (orig_nice + inc));
+>
+>  	if (TST_RET != exp_nice) {
+>  		tst_res(TFAIL | TTERRNO, "nice(%d) returned %li, expected %i",
+> -			NICEINC, TST_RET, exp_nice);
+> +				inc, TST_RET, exp_nice);
+>  		return;
+>  	}
+>
+>  	if (TST_ERR) {
+> -		tst_res(TFAIL | TTERRNO, "nice(%d) failed", NICEINC);
+> +		tst_res(TFAIL | TTERRNO, "nice(%d) failed", inc);
+>  		return;
+>  	}
+>
+> @@ -47,18 +49,19 @@ static void verify_nice(void)
+>
+>  	if (new_nice != exp_nice) {
+>  		tst_res(TFAIL, "Process priority %i, expected %i",
+> -				new_nice, orig_nice + NICEINC);
+> +				new_nice, exp_nice);
+>  		return;
+>  	}
+>
+> -	tst_res(TPASS, "nice(%d) passed", NICEINC);
+> +	tst_res(TPASS, "nice(%d) passed", inc);
+>
+> -	TEST(nice(-NICEINC));
+> +	TEST(setpriority(PRIO_PROCESS, 0, orig_nice));
 
-No it doesn't. This test would still pass if calling sched_setscheduler
-changed the priority of every thread on the system.
+This is the nice test not the setpriority test (which also has a SAFE_ variant).
 
-NACK.
+>  	if (TST_ERR)
+> -		tst_brk(TBROK | TTERRNO, "nice(%d) failed", -NICEINC);
+> +		tst_brk(TBROK | TTERRNO, "setpriority(%d) failed", orig_nice);
+>  }
+>
+>  static struct tst_test test = {
+> -	.test_all = verify_nice,
+>  	.needs_root = 1,
+> +	.test = verify_nice,
+> +	.tcnt = ARRAY_SIZE(nice_inc),
+>  };
+> --
+> 2.17.1
+
 
 -- 
 Thank you,
