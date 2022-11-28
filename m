@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFD17C433FE
-	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 15:16:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A7CDC433FE
+	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 15:21:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 589493CC674
-	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 16:16:31 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 1A7E93CC679
+	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 16:21:44 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A13FF3C32D9
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:16:21 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 154803C32D9
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:21:35 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 941631400337
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:16:19 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6B86114002B3
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:21:33 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 99ADE1F8BE;
- Mon, 28 Nov 2022 15:16:18 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 6705421B5D;
+ Mon, 28 Nov 2022 15:21:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669648578;
+ t=1669648893;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=RwYU8f1GCbJIBuJiZgzS1gwT+KGDiDQs8Gw9YEpCfZM=;
- b=MtWqTCfOalTPrOWU4wiHe9sXDVGgB8b3UVu+hw7LnZA5ku7E6JddsmYxuS+cchjs7hgrN5
- S7iW8kkVOfThzdtQhP9eIwP4oxA3q/Hpg+sqTcNNQ+U9QRTg7ps4Sqi+uaVxuuZ1rtpuqG
- G9JcTebzOf3wFLsxSmp/y3PTllIpJfA=
+ bh=itL/eUt5kewFPO8LlNS3K2UKVzi8uiT4UqGvIDDPo6o=;
+ b=F5o37dNMBsBEtij0Nz/CQeh5U/OtI7xM0qzauW190Y9Mrm2DKL555BRdzB7QEI5WS5w9WO
+ buvofnfFtYRMXHg5ecllrVWYvffydWEqohcTXZyaRovy9MXF7C6x6OsKHAxR+DUsE+tNwW
+ Ben3SKUWy1d0BlTpolMEBEn1eTKvpeA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669648578;
+ s=susede2_ed25519; t=1669648893;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=RwYU8f1GCbJIBuJiZgzS1gwT+KGDiDQs8Gw9YEpCfZM=;
- b=yk0qsArL8eLk9eSl2ggw400mwvpmdhIei7VlHkkOpAaQ0ErRO5I4KjRZ97gdnX6IDYsSJ7
- 0/u/ydkylRCKDABA==
+ bh=itL/eUt5kewFPO8LlNS3K2UKVzi8uiT4UqGvIDDPo6o=;
+ b=SZ/nIhudMstTMEWjRcVDCFSyXSxxeNzLHP3aD+uUtON8E+CzpSi4nGyWMab/iT7OUz1HYK
+ Vp4IT5wT7xZPr0Bg==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 691A82C141;
- Mon, 28 Nov 2022 15:16:18 +0000 (UTC)
-References: <1668999635-2018-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 399B32C141;
+ Mon, 28 Nov 2022 15:21:33 +0000 (UTC)
+References: <20221121135616.19369-1-rpalethorpe@suse.com>
 User-agent: mu4e 1.8.11; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Mon, 28 Nov 2022 15:16:09 +0000
+To: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 28 Nov 2022 15:20:56 +0000
 Organization: Linux Private Site
-In-reply-to: <1668999635-2018-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <878rjvun26.fsf@suse.de>
+In-reply-to: <20221121135616.19369-1-rpalethorpe@suse.com>
+Message-ID: <874jujumtf.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/setfsuid: Use SETFSUID instead of
- setfsuid to check 32bit syscall
+Subject: Re: [LTP] [PATCH] pty03: Add CONFIG_SERIO_SERPORT as a hint
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,50 +76,36 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
 
-Merged, Thanks!
+Trivial patch and no remarks, so merged.
 
-Yang Xu <xuyang2018.jy@fujitsu.com> writes:
+Richard Palethorpe via ltp <ltp@lists.linux.it> writes:
 
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-> ---
->  testcases/kernel/syscalls/setfsuid/setfsuid01.c | 4 ++--
->  testcases/kernel/syscalls/setfsuid/setfsuid03.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
+> It's not clear what module implements the mouse ldisc. So adding this
+> helps configure test kernels.
 >
-> diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid01.c b/testcases/kernel/syscalls/setfsuid/setfsuid01.c
-> index 0cbf101ee..9805e38b6 100644
-> --- a/testcases/kernel/syscalls/setfsuid/setfsuid01.c
-> +++ b/testcases/kernel/syscalls/setfsuid/setfsuid01.c
-> @@ -34,8 +34,8 @@ static void run(void)
->  	UID16_CHECK(uid, setfsuid);
->  
->  	SAFE_SETEUID(0);
-> -	TST_EXP_VAL(setfsuid(nobody_uid), uid, "setfsuid(%d)", nobody_uid);
-> -	TST_EXP_VAL(setfsuid(-1), nobody_uid);
-> +	TST_EXP_VAL(SETFSUID(nobody_uid), uid, "setfsuid(%d)", nobody_uid);
-> +	TST_EXP_VAL(SETFSUID(-1), nobody_uid);
->  }
->  
->  static struct tst_test test = {
-> diff --git a/testcases/kernel/syscalls/setfsuid/setfsuid03.c b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-> index 02698f7cf..ee06e9376 100644
-> --- a/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-> +++ b/testcases/kernel/syscalls/setfsuid/setfsuid03.c
-> @@ -36,8 +36,8 @@ static void run(void)
->  	SAFE_SETEUID(nobody_uid);
->  	UID16_CHECK(ruid, setfsuid);
->  
-> -	TST_EXP_VAL_SILENT(setfsuid(ruid), nobody_uid);
-> -	TST_EXP_VAL(setfsuid(-1), ruid, "setfsuid(fsuid) by non-root user:");
-> +	TST_EXP_VAL_SILENT(SETFSUID(ruid), nobody_uid);
-> +	TST_EXP_VAL(SETFSUID(-1), ruid, "setfsuid(fsuid) by non-root user:");
->  }
->  
->  static struct tst_test test = {
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  testcases/kernel/pty/pty03.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/testcases/kernel/pty/pty03.c b/testcases/kernel/pty/pty03.c
+> index 53df6d62c..6324bc876 100644
+> --- a/testcases/kernel/pty/pty03.c
+> +++ b/testcases/kernel/pty/pty03.c
+> @@ -153,6 +153,10 @@ static struct tst_test test = {
+>  	.cleanup = cleanup,
+>  	.needs_root = 1,
+>  	.max_runtime = 30,
+> +	.needs_kconfigs = (const char *const[]){
+> +		"CONFIG_SERIO_SERPORT",
+> +		NULL
+> +	},
+>  	.tags = (const struct tst_tag[]) {
+>  		{"linux-git", "0ace17d568241"},
+>  		{"CVE", "2020-14416"},
 > -- 
-> 2.27.0
+> 2.38.1
 
 
 -- 
