@@ -4,60 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A7CDC433FE
-	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 15:21:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 745C0C433FE
+	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 15:39:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1A7E93CC679
-	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 16:21:44 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id CBC893CC673
+	for <ltp@archiver.kernel.org>; Mon, 28 Nov 2022 16:39:26 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 154803C32D9
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:21:35 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 0C1483C0041
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:39:16 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6B86114002B3
- for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:21:33 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0AE311A0036A
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 16:39:15 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6705421B5D;
- Mon, 28 Nov 2022 15:21:33 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 3728221BB4
+ for <ltp@lists.linux.it>; Mon, 28 Nov 2022 15:39:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669648893;
+ t=1669649955;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=itL/eUt5kewFPO8LlNS3K2UKVzi8uiT4UqGvIDDPo6o=;
- b=F5o37dNMBsBEtij0Nz/CQeh5U/OtI7xM0qzauW190Y9Mrm2DKL555BRdzB7QEI5WS5w9WO
- buvofnfFtYRMXHg5ecllrVWYvffydWEqohcTXZyaRovy9MXF7C6x6OsKHAxR+DUsE+tNwW
- Ben3SKUWy1d0BlTpolMEBEn1eTKvpeA=
+ bh=flNiIQjQ3lbVunRxi/NY3VlQPxC0OWJQq+UUZ9riMlU=;
+ b=OQeiXl1G+6ztIoWxoeypfmWMwOONp1y4lwUmVgVQfuBVTQMsyIgBkfJ9yb/YoC9CWxv3DN
+ bGtJVhNIPTYt3XZ+HfCdxhPh+OIE2UBitYqexK5YCjWf308AfnZMG+4XKxDHGMiSycg6hB
+ 7fkR66dDvjKev8G+ao7Fkw1IS5sUTgM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669648893;
+ s=susede2_ed25519; t=1669649955;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=itL/eUt5kewFPO8LlNS3K2UKVzi8uiT4UqGvIDDPo6o=;
- b=SZ/nIhudMstTMEWjRcVDCFSyXSxxeNzLHP3aD+uUtON8E+CzpSi4nGyWMab/iT7OUz1HYK
- Vp4IT5wT7xZPr0Bg==
+ bh=flNiIQjQ3lbVunRxi/NY3VlQPxC0OWJQq+UUZ9riMlU=;
+ b=S1yAs+G+WsBblkzKsG1EF8XSQoLdAlJKySFjgqYCnA1Bd4Yvgu06S6ZQIYUxRUXjPKTBoN
+ ChPQlCpNrReSz4CQ==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 399B32C141;
- Mon, 28 Nov 2022 15:21:33 +0000 (UTC)
-References: <20221121135616.19369-1-rpalethorpe@suse.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 106542C142;
+ Mon, 28 Nov 2022 15:39:15 +0000 (UTC)
+References: <20221123142716.1336-1-akumar@suse.de>
 User-agent: mu4e 1.8.11; emacs 28.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 28 Nov 2022 15:20:56 +0000
+To: Avinesh Kumar <akumar@suse.de>
+Date: Mon, 28 Nov 2022 15:38:57 +0000
 Organization: Linux Private Site
-In-reply-to: <20221121135616.19369-1-rpalethorpe@suse.com>
-Message-ID: <874jujumtf.fsf@suse.de>
+In-reply-to: <20221123142716.1336-1-akumar@suse.de>
+Message-ID: <87zgcbt7fh.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] pty03: Add CONFIG_SERIO_SERPORT as a hint
+Subject: Re: [LTP] [PATCH] fstatfs01: Convert to new API and enable for all
+ filesystems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,34 +78,180 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hello,
 
-Trivial patch and no remarks, so merged.
+Merged, Thanks!
 
-Richard Palethorpe via ltp <ltp@lists.linux.it> writes:
+Avinesh Kumar <akumar@suse.de> writes:
 
-> It's not clear what module implements the mouse ldisc. So adding this
-> helps configure test kernels.
->
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Signed-off-by: Avinesh Kumar <akumar@suse.de>
 > ---
->  testcases/kernel/pty/pty03.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  testcases/kernel/syscalls/fstatfs/fstatfs01.c | 126 +++++-------------
+>  1 file changed, 35 insertions(+), 91 deletions(-)
 >
-> diff --git a/testcases/kernel/pty/pty03.c b/testcases/kernel/pty/pty03.c
-> index 53df6d62c..6324bc876 100644
-> --- a/testcases/kernel/pty/pty03.c
-> +++ b/testcases/kernel/pty/pty03.c
-> @@ -153,6 +153,10 @@ static struct tst_test test = {
->  	.cleanup = cleanup,
->  	.needs_root = 1,
->  	.max_runtime = 30,
-> +	.needs_kconfigs = (const char *const[]){
-> +		"CONFIG_SERIO_SERPORT",
-> +		NULL
-> +	},
->  	.tags = (const struct tst_tag[]) {
->  		{"linux-git", "0ace17d568241"},
->  		{"CVE", "2020-14416"},
+> diff --git a/testcases/kernel/syscalls/fstatfs/fstatfs01.c b/testcases/kernel/syscalls/fstatfs/fstatfs01.c
+> index b06652dd5..6b14fd0d6 100644
+> --- a/testcases/kernel/syscalls/fstatfs/fstatfs01.c
+> +++ b/testcases/kernel/syscalls/fstatfs/fstatfs01.c
+> @@ -1,57 +1,22 @@
+> +// SPDX-License-Identifier: GPL-2.0
+>  /*
+>   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+> - *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms of version 2 of the GNU General Public License as
+> - * published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * Further, this software is distributed without any warranty that it is
+> - * free of the rightful claim of any third person regarding infringement
+> - * or the like.  Any license provided herein, whether implied or
+> - * otherwise, applies only to this software file.  Patent licenses, if
+> - * any, provided herein do not apply to combinations of this program with
+> - * other software, or any other product whatsoever.
+> - *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> - *
+> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+> - * Mountain View, CA  94043, or:
+> - *
+> - * http://www.sgi.com
+> - *
+> - * For further information regarding this notice, see:
+> - *
+> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+> - *
+> - */
+> -/*
+> - * DETAILED DESCRIPTION
+> - *   This is a Phase I test for the fstatfs(2) system call.  It is intended
+> - *   to provide a limited exposure of the system call, for now.  It
+> - *   should/will be extended when full functional tests are written for
+> - *   fstatfs(2).
+> + * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+>   */
+>  
+> -#include <sys/types.h>
+> -#include <fcntl.h>
+> -#include <sys/statfs.h>
+> -#include <errno.h>
+> -#include <signal.h>
+> -#include <string.h>
+> +/*\
+> + * [Description]
+> + *
+> + * Verify that fstatfs() syscall executes successfully for all
+> + * available filesystems.
+> + */
+>  
+> -#include "test.h"
+> -#include "safe_macros.h"
+>  
+> -static void setup(void);
+> -static void cleanup(void);
+> +#include <stdio.h>
+> +#include "tst_test.h"
+>  
+> -char *TCID = "fstatfs01";
+> +#define MNT_POINT "mntpoint"
+> +#define TEMP_FILE MNT_POINT"/test_file"
+>  
+>  static int file_fd;
+>  static int pipe_fd;
+> @@ -59,65 +24,44 @@ static int pipe_fd;
+>  static struct tcase {
+>  	int *fd;
+>  	const char *msg;
+> -} tcases[2] = {
+> +} tcases[] = {
+>  	{&file_fd, "fstatfs() on a file"},
+>  	{&pipe_fd, "fstatfs() on a pipe"},
+>  };
+>  
+> -int TST_TOTAL = ARRAY_SIZE(tcases);
+> -
+> -int main(int ac, char **av)
+> +static void run(unsigned int i)
+>  {
+> -	int lc, i;
+> -	struct statfs stats;
+> +	struct tcase *tc = &tcases[i];
+> +	struct statfs buf;
+>  
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -
+> -		for (i = 0; i < TST_TOTAL; i++) {
+> -			TEST(fstatfs(*tcases[i].fd, &stats));
+> -
+> -			if (TEST_RETURN == -1) {
+> -				tst_resm(TFAIL | TTERRNO, "%s", tcases[i].msg);
+> -			} else {
+> -				tst_resm(TPASS, "%s - f_type=%lx",
+> -				         tcases[i].msg, stats.f_type);
+> -			}
+> -		}
+> -	}
+> -
+> -	cleanup();
+> -	tst_exit();
+> +	TST_EXP_PASS(fstatfs(*tc->fd, &buf), "%s", tc->msg);
+>  }
+>  
+>  static void setup(void)
+>  {
+>  	int pipe[2];
+>  
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	tst_tmpdir();
+> -
+> -	file_fd = SAFE_OPEN(cleanup, "test_file", O_RDWR | O_CREAT, 0700);
+> -
+> -	SAFE_PIPE(cleanup, pipe);
+> +	file_fd = SAFE_OPEN(TEMP_FILE, O_RDWR | O_CREAT, 0700);
+> +	SAFE_PIPE(pipe);
+>  	pipe_fd = pipe[0];
+> -	SAFE_CLOSE(cleanup, pipe[1]);
+> +	SAFE_CLOSE(pipe[1]);
+>  }
+>  
+>  static void cleanup(void)
+>  {
+> -	if (file_fd > 0 && close(file_fd))
+> -		tst_resm(TWARN | TERRNO, "close(file_fd) failed");
+> -
+> -	if (pipe_fd > 0 && close(pipe_fd))
+> -		tst_resm(TWARN | TERRNO, "close(pipe_fd) failed");
+> -
+> -	tst_rmdir();
+> +	if (file_fd > 0)
+> +		SAFE_CLOSE(file_fd);
+> +	if (pipe_fd > 0)
+> +		SAFE_CLOSE(pipe_fd);
+>  }
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.test = run,
+> +	.mount_device = 1,
+> +	.mntpoint = MNT_POINT,
+> +	.all_filesystems = 1,
+> +	.needs_root = 1
+> +};
 > -- 
 > 2.38.1
 
