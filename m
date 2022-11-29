@@ -4,84 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF528C43217
-	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 01:28:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 349A3C4332F
+	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 03:17:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4BE833CC664
-	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 02:28:15 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id D3C163CACF2
+	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 04:17:08 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6BD6A3C01D2
- for <ltp@lists.linux.it>; Tue, 29 Nov 2022 02:28:05 +0100 (CET)
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com
- [85.158.142.112])
+ by picard.linux.it (Postfix) with ESMTPS id B8B393C130F
+ for <ltp@lists.linux.it>; Tue, 29 Nov 2022 04:16:56 +0100 (CET)
+Received: from mailgw.kylinos.cn (unknown [124.126.103.232])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 579D810005FA
- for <ltp@lists.linux.it>; Tue, 29 Nov 2022 02:28:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1669685283; i=@fujitsu.com;
- bh=jKry2qw6IMOn7aMHD+eHECLtDxy/AVfTlgYNPQMACoc=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=oVmVI8g/nPJym5fAYdj5QxZvVVUdH6nlMdyURC/JVo0lHq9wID/diyVS9n25gp7f0
- kGntmzaG2l7CiIhHy2YcHCtYD5k10tpe4V1Aygi59o8sjJ2X5kRG6L+VUfZpx/Gc+Q
- A+yF/6L7NkxH8CyOUIV1jxIJ+Mov3qwQpjctuaASBvBg6e0dNkHoFct1M43OHccUB5
- lHG4NcVqKuqKXMa1k6Ahboii4FfyQalc3Io5YJYMcxHXes3TTK4PdMSc8p3GtmjYO/
- /dV+kiLhTvQs7kRV88gEE03zCfCjxRgpFNAX+CwUKyaLPN9OPnHAPrJVnVgu7E0WG9
- ADlsi3jolwn4g==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJIsWRWlGSWpSXmKPExsViZ8OxWVcxoTX
- ZYMVZM4sV33cwOjB67Pu9jjWAMYo1My8pvyKBNWPtw8ksBW+4Kjb0qDYwXuPsYuTiEBI4ySjR
- O+MmI4Szl0mi/0MjK4Szh1Hi79+5QA4nB5uApsSzzgXMILaIgIRER8NbdhCbWUBdYvmkX0wgt
- rCAg8SDk01gNouAqsS9IzeA6jk4eAU8JC5e9AIJSwgoSEx5+B5sDK+AoMTJmU9YIMZISBx88Y
- IZokZR4lLHN0YIu0Ji1qw2JghbTeLquU3MExj5ZyFpn4WkfQEj0ypGs+LUorLUIl0TvaSizPS
- MktzEzBy9xCrdRL3UUt28/KKSDF1DvcTyYr3U4mK94src5JwUvbzUkk2MwFBMKU6y2cH4d+kf
- vUOMkhxMSqK88k9bkoX4kvJTKjMSizPii0pzUosPMcpwcChJ8PrHtSYLCRalpqdWpGXmAOMCJ
- i3BwaMkwmsOkuYtLkjMLc5Mh0idYtTl2LSv6wCzEEtefl6qlDjvepAiAZCijNI8uBGwGL3EKC
- slzMvIwMAgxFOQWpSbWYIq/4pRnINRSZi3CmQKT2ZeCdymV0BHMAEdsUmxCeSIkkSElFQD0xq
- tqSJO+dJ5PEn/dpgvvbHVySbjvI7V8aTgG9susLgb59kKXFzteThr5inu87tzfIAR+/fV0jQX
- 2f3nfntJ/OZ45jTl97S5TnOXlgT8jZiqrGAdo2LhsDVpU9vHJRw6pn/P/azenbVQujFe6mFb9
- xojzc2rm1INHC43bji3N2r2JOZ7K5Z++3Fv0o5ww6uvo47lJ/Hn3lD6vXrKxaMvjooYsP61ND
- MKm/WL/WA6k4fo1fMNzB33S4x/fpm6viM3mTPswc0N7BWmMevqa0WyAz8ZOi195nO74bmDSO0
- c6V6pcH2B+1+//Pjz9pazql2Nz1WvJ2rn069FvFC197bXO5ATP3fOifveu2btkNRhUGIpzkg0
- 1GIuKk4EAHUA19VMAwAA
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-14.tower-732.messagelabs.com!1669685281!214082!1
-X-Originating-IP: [62.60.8.179]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.101.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 27610 invoked from network); 29 Nov 2022 01:28:01 -0000
-Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
- by server-14.tower-732.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 29 Nov 2022 01:28:01 -0000
-Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 5C51773
- for <ltp@lists.linux.it>; Tue, 29 Nov 2022 01:28:01 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126
- [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 4F9F2153
- for <ltp@lists.linux.it>; Tue, 29 Nov 2022 01:28:01 +0000 (GMT)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.32; Tue, 29 Nov 2022 01:27:59 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Tue, 29 Nov 2022 10:28:37 +0800
-Message-ID: <1669688917-1997-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id ED24B2002DF
+ for <ltp@lists.linux.it>; Tue, 29 Nov 2022 04:16:49 +0100 (CET)
+X-UUID: ab026bd4dd71430b931e496cee90a377-20221129
+X-CPASD-INFO: a4bcdae236f64738a318e04ecc508429@qoScg5GTk2JfVqiCg3p-coFkYWiVXFS
+ 0pZ1VYGZkXlmVhH5xTV5nX1V9gnNXZF5dXFV3dnBQYmBhXVJ3i3-XblBgXoZgUZB3sHacg5SPlQ==
+X-CLOUD-ID: a4bcdae236f64738a318e04ecc508429
+X-CPASD-SUMMARY: SIP:-1, APTIP:-2.0, KEY:0.0, FROMBLOCK:1, OB:0.0, URL:-5,
+ TVAL:190.
+ 0, ESV:0.0, ECOM:-5.0, ML:0.0, FD:0.0, CUTS:111.0, IP:-2.0, MAL:-5.0, PHF:-5.0,
+ PHC:-5
+ .0, SPF:4.0, EDMS:-5, IPLABEL:4480.0, FROMTO:0, AD:0, FFOB:0.0, CFOB:0.0, SPC:0,
+ SIG:-
+ 5, AUF:43, DUF:9417, ACD:155, DCD:155, SL:0, EISP:0, AG:0, CFC:0.258,
+ CFSR:0.091, UAT:0
+ , RAF:0, IMG:-5.0, DFA:0, DTA:0, IBL:-2.0, ADI:-5, SBL:0, REDM:0, REIP:0, ESB:0,
+ ATTNUM: 0,EAF:0,CID:-5.0,VERSION:2.3.17
+X-CPASD-ID: ab026bd4dd71430b931e496cee90a377-20221129
+X-CPASD-BLOCK: 1000
+X-CPASD-STAGE: 1
+X-UUID: ab026bd4dd71430b931e496cee90a377-20221129
+X-User: zenghongling@kylinos.cn
+Received: from localhost.localdomain.localdomain [(112.64.161.44)] by mailgw
+ (envelope-from <zenghongling@kylinos.cn>) (Generic MTA)
+ with ESMTP id 1721779190; Tue, 29 Nov 2022 11:16:45 +0800
+From: zenghongling <zenghongling@kylinos.cn>
+To: ltp@lists.linux.it,
+	zenghongling@kylinos.cn
+Date: Tue, 29 Nov 2022 11:17:11 +0800
+Message-Id: <1669691831-23456-1-git-send-email-zenghongling@kylinos.cn>
+X-Mailer: git-send-email 2.1.0
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lapi/namespace_constants.h: Add CLONE_NEWCGROUP
+Subject: [LTP] [PATCH] mkfs: relax size check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,50 +62,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This fix undefined CLONE_NEWCGROUP problem on centos7.
+Number of total data blocks in filesystem reported by statfs
+may be less than current formula of 90%. For example ext4 will
+subtract "s_first_data_block plus internal journal blocks".
 
-Fixes: 5f2a365da ("cgroup_core02: copy from kernel selftest test_cgcore_lesser_ns_open")
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+With recent change to e2fsprogs, overhead calculated in user-space
+increased slightly and LTP test started failing:
+  tytso/e2fsprogs
+
+mkfs01 1 TPASS: 'mkfs -t ext4  /dev/loop0 ' passed.
+mkfs01 2 TFAIL: 'mkfs -t ext4  /dev/loop0 16000' failed, not expected.
+
+Since there's no strict rule how much the overhead will be,
+as rule of thumb relax the condition to 70%.
+
+Signed-off-by: zenghongling <zenghongling@kylinos.cn>
 ---
-I have verified it on my ltp fork[1]
-[1]https://github.com/xuyang0410/ltp/actions/runs/3570059301/jobs/6000664209
- include/lapi/namespaces_constants.h                 | 3 +++
- testcases/kernel/controllers/cgroup/cgroup_core02.c | 1 +
- 2 files changed, 4 insertions(+)
+ testcases/commands/mkfs/mkfs01.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/lapi/namespaces_constants.h b/include/lapi/namespaces_constants.h
-index 447f16c5b..e34b0d6a8 100644
---- a/include/lapi/namespaces_constants.h
-+++ b/include/lapi/namespaces_constants.h
-@@ -21,6 +21,9 @@
- #ifndef CLONE_NEWUSER
- #  define CLONE_NEWUSER	0x10000000
- #endif
-+#ifndef CLONE_NEWCGROUP
-+#  define CLONE_NEWCGROUP 0x02000000
-+#endif
- #ifndef CLONE_NEWUTS
- #  define CLONE_NEWUTS	0x04000000
- #endif
-diff --git a/testcases/kernel/controllers/cgroup/cgroup_core02.c b/testcases/kernel/controllers/cgroup/cgroup_core02.c
-index 0dff71eea..e6d599b36 100644
---- a/testcases/kernel/controllers/cgroup/cgroup_core02.c
-+++ b/testcases/kernel/controllers/cgroup/cgroup_core02.c
-@@ -31,6 +31,7 @@
- #include <pwd.h>
- #include "tst_test.h"
- #include "tst_safe_file_at.h"
-+#include "lapi/namespaces_constants.h"
- 
- static struct tst_cg_group *cg_child_a, *cg_child_b;
- static uid_t nobody_uid;
+diff --git a/testcases/commands/mkfs/mkfs01.sh b/testcases/commands/mkfs/mkfs01.sh
+index 263aa47..a964774 100755
+--- a/testcases/commands/mkfs/mkfs01.sh
++++ b/testcases/commands/mkfs/mkfs01.sh
+@@ -66,11 +66,11 @@ mkfs_verify_size()
+ 	# 1k-block size should be devided by this argument for ntfs verification.
+ 	if [ "$1" = "ntfs" ]; then
+ 		local rate=1024/512
+-		if [ $blocknum -lt "$(($2/$rate*8/10))" ]; then
++		if [ $blocknum -lt "$(($2/$rate*7/10))" ]; then
+ 			return 1
+ 		fi
+ 	else
+-		if [ $blocknum -lt "$(($2*8/10))" ]; then
++		if [ $blocknum -lt "$(($2*7/10))" ]; then
+ 			return 1
+ 		fi
+ 	fi
 -- 
-2.23.0
+2.1.0
 
 
 -- 
