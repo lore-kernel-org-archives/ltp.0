@@ -4,64 +4,37 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D64FC46467
-	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 12:02:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F010C4321E
+	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 13:04:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 740C63CC5F6
-	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 13:02:30 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id EF65D3CC5C2
+	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 14:04:12 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 130293C85AE
- for <ltp@lists.linux.it>; Tue, 29 Nov 2022 13:02:18 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B73FE60012A
- for <ltp@lists.linux.it>; Tue, 29 Nov 2022 13:02:17 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id BCA4721B7A;
- Tue, 29 Nov 2022 12:02:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669723336;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=juSseI67vGCLDyGAyPSNWsH2R9lZp42DIeelVT7TgFc=;
- b=S1aFU+zZoj05L/LGXG0NS2vfsB2jP41z65B0bJRDoTrhSRYeanSBcdl4Sorqp8RV1TTaIe
- I+Nwqjp9iuvVNG3tFgm05g+B46m9T0jG8gjDBYrOhs38qS81p3BcOkqLMrrM1ggJDbkolT
- jPw/Qhe+GDCYnVwmCUFU4Hp5Wk5x7vE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669723336;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=juSseI67vGCLDyGAyPSNWsH2R9lZp42DIeelVT7TgFc=;
- b=zCCxO5K2FGKAowJvW94KQNIEeS+0hIVeNWjt9XMIrMNa8kLM3saHzxKpHnU3MjEz/vvSOW
- Ne3pM0fr0l7lRlCw==
-Received: from g78 (rpalethorpe.tcp.ovpn1.nue.suse.de [10.163.17.14])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 6DF4D2C141;
- Tue, 29 Nov 2022 12:02:16 +0000 (UTC)
-References: <20221123144746.590890-1-tudor.cretu@arm.com>
- <Y4XmlHZyi2DG9DRT@pevik> <Y4Xnt+OsEt94aZRr@pevik> <87mt8at3md.fsf@suse.de>
- <87iliyt2x7.fsf@suse.de> <Y4Xt5vXi3c0tdRkK@pevik>
- <ab38f01b-0290-0cbf-ae7d-beab064a89cb@arm.com>
-User-agent: mu4e 1.8.11; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Tudor Cretu <tudor.cretu@arm.com>
-Date: Tue, 29 Nov 2022 12:01:49 +0000
-Organization: Linux Private Site
-In-reply-to: <ab38f01b-0290-0cbf-ae7d-beab064a89cb@arm.com>
-Message-ID: <87edtmt1dm.fsf@suse.de>
+ by picard.linux.it (Postfix) with ESMTPS id 22EAE3C714A
+ for <ltp@lists.linux.it>; Tue, 29 Nov 2022 14:04:01 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-5.smtp.seeweb.it (Postfix) with ESMTP id A8ACF600736
+ for <ltp@lists.linux.it>; Tue, 29 Nov 2022 14:04:00 +0100 (CET)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D6B9D6E;
+ Tue, 29 Nov 2022 05:04:05 -0800 (PST)
+Received: from e129169.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com
+ [10.121.207.14])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C97E13F73D;
+ Tue, 29 Nov 2022 05:03:57 -0800 (PST)
+From: Tudor Cretu <tudor.cretu@arm.com>
+To: ltp@lists.linux.it
+Date: Tue, 29 Nov 2022 13:03:47 +0000
+Message-Id: <20221129130350.219082-1-tudor.cretu@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/3] safe_macros: Fix undefined behaviour in
- vararg handling
+Subject: [LTP] [PATCH v2 0/3] safe_macros: Fix undefined behaviour in vararg
+ handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,42 +46,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
-
-Tudor Cretu <tudor.cretu@arm.com> writes:
-
-> On 29-11-2022 11:32, Petr Vorel wrote:
->>> Hello,
->> 
->>> This looks pretty trivial to fix actually. We shouldn't pass NULL as
->>> mode. If it works I'll add the fix and push.
->> Yes, it fixes it, good point. I was also surprised by NULL.
->
-> Many thanks, both! I'll remove the NULL and re-post a v2 if that's
-> alright.
-
-OK, please do.
-
->
-> Kind regards,
-> Tudor
->
->> to whole patchset:
->> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->> Kind regards,
->> Petr
-
-
--- 
-Thank you,
-Richard.
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+QWNjZXNzaW5nIGVsZW1lbnRzIGluIGFuIGVtcHR5IHZhX2xpc3QgcmVzdWx0cyBpbiB1bmRlZmlu
+ZWQgYmVoYXZpb3VyWzBdCnRoYXQgY2FuIGluY2x1ZGUgYWNjZXNzaW5nIGFyYml0cmFyeSBzdGFj
+ayBtZW1vcnkuIFdoaWxlIHR5cGljYWxseSB0aGlzCmRvZXNuJ3QgcmFpc2UgYSBmYXVsdCwgc29t
+ZSBuZXcgbW9yZSBzZWN1cml0eS1vcmllbnRlZCBhcmNoaXRlY3R1cmVzCihlLmcuIENIRVJJWzFd
+IG9yIE1vcmVsbG9bMl0pIGRvbid0IGFsbG93IGl0LgoKVGhlcmVmb3JlLCByZW1vdmUgdGhlIHZh
+cmlhZGljbmVzcyBmcm9tIHNhZmVfKiB3cmFwcGVycyB0aGF0IGFsd2F5cyBjYWxsCnRoZSBmdW5j
+dGlvbnMgd2l0aCB0aGUgb3B0aW9uYWwgYXJndW1lbnQgaW5jbHVkZWQuCgpBZGFwdCB0aGUgcmVz
+cGVjdGl2ZSBTQUZFXyogbWFjcm9zIHRvIGhhbmRsZSB0aGUgY2hhbmdlIGJ5IHBhc3NpbmcgYQpk
+ZWZhdWx0IGFyZ3VtZW50IGlmIHRoZXkncmUgb21pdHRlZC4KClswXTogW0lTTy9JRUMgOTg5OToy
+MDExXSBQcm9ncmFtbWluZyBMYW5ndWFnZXPigJRDLCAzcmQgZWQsIHBhcmFncmFwaCA3LjE2LjEu
+MQpbMV06IGh0dHBzOi8vd3d3LmNsLmNhbS5hYy51ay9yZXNlYXJjaC9zZWN1cml0eS9jdHNyZC9j
+aGVyaS8KWzJdOiBodHRwczovL3d3dy5tb3JlbGxvLXByb2plY3Qub3JnLwoKdjIuLnYxOgogIC0g
+UEFUQ0ggMTogUmVtb3ZlIHRoZSBOVUxMIGFyZ3VtZW50IGZvciBtb2RlIGZyb20gU0FGRV9PUEVO
+IGluc3RhbmNlcwogICAgdG8gYXZvaWQgdGhlIHBvaW50ZXIgdG8gaW50IGNvbnZlcnNpb24uCgpU
+dWRvciBDcmV0dSAoMyk6CiAgc2FmZV9vcGVuOiBGaXggdW5kZWZpbmVkIGJlaGF2aW91ciBpbiB2
+YXJhcmcgaGFuZGxpbmcKICBzYWZlX29wZW5hdDogRml4IHVuZGVmaW5lZCBiZWhhdmlvdXIgaW4g
+dmFyYXJnIGhhbmRsaW5nCiAgc2FmZV9zZW1jdGw6IEZpeCB1bmRlZmluZWQgYmVoYXZpb3VyIGlu
+IHZhcmFyZyBoYW5kbGluZwoKIGluY2x1ZGUvb2xkL3NhZmVfbWFjcm9zLmggICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgNiArKysrLS0KIGluY2x1ZGUvc2FmZV9tYWNyb3NfZm4uaCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgMyArKy0KIGluY2x1ZGUvdHN0X3NhZmVfZmlsZV9hdC5oICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAxMCArKysrKystLS0tCiBpbmNsdWRlL3RzdF9zYWZlX21h
+Y3Jvcy5oICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDYgKysrKy0tCiBpbmNsdWRlL3RzdF9z
+YWZlX3N5c3ZfaXBjLmggICAgICAgICAgICAgICAgICAgICAgIHwgMTQgKysrKysrKysrLS0tLS0K
+IGxpYi9zYWZlX21hY3Jvcy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMyAr
+LS0tLS0tLS0tLS0tCiBsaWIvdHN0X2Nncm91cC5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgIDIgKy0KIGxpYi90c3Rfc2FmZV9maWxlX2F0LmMgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAxMSArKystLS0tLS0tLQogbGliL3RzdF9zYWZlX3N5c3ZfaXBjLmMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8IDEwICstLS0tLS0tLS0KIHRlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvZmdldHhhdHRyL2ZnZXR4YXR0cjAxLmMgfCAgMiArLQogdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9mZ2V0eGF0dHIvZmdldHhhdHRyMDIuYyB8ICAyICstCiB0ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2ZnZXR4YXR0ci9mZ2V0eGF0dHIwMy5jIHwgIDIgKy0KIHRlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvZnNldHhhdHRyL2ZzZXR4YXR0cjAxLmMgfCAgMiArLQogdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9mc2V0eGF0dHIvZnNldHhhdHRyMDIuYyB8ICAyICstCiAxNCBmaWxlcyBj
+aGFuZ2VkLCAzNiBpbnNlcnRpb25zKCspLCA0OSBkZWxldGlvbnMoLSkKCi0tIAoyLjI1LjEKCgot
+LSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
+Cg==
