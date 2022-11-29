@@ -4,47 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D346C4332F
-	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 08:17:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AB7DC4332F
+	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 08:29:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 854BC3CC5AC
-	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 09:17:48 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id DF7073CC5B2
+	for <ltp@archiver.kernel.org>; Tue, 29 Nov 2022 09:29:39 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6F1A53C714A
- for <ltp@lists.linux.it>; Tue, 29 Nov 2022 09:17:39 +0100 (CET)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id D52223C714A
+ for <ltp@lists.linux.it>; Tue, 29 Nov 2022 09:29:30 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 742F9200759
- for <ltp@lists.linux.it>; Tue, 29 Nov 2022 09:17:38 +0100 (CET)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.53])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NLw8z4MkjzJp0k
- for <ltp@lists.linux.it>; Tue, 29 Nov 2022 16:14:11 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (7.192.104.229) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 29 Nov 2022 16:17:33 +0800
-Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
- canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
- Tue, 29 Nov 2022 16:17:33 +0800
-To: "rpalethorpe@suse.de" <rpalethorpe@suse.de>
-Thread-Topic: [LTP] [PATCH] syscalls/nice01: Add test nice(-1) and nice(-50)
-Thread-Index: AdkDx4twpiw7lHD0QdSYspPHcUNPSg==
-Date: Tue, 29 Nov 2022 08:17:33 +0000
-Message-ID: <5b842e074eeb425da7f664ca3395784e@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.110.209]
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4F5CF20075C
+ for <ltp@lists.linux.it>; Tue, 29 Nov 2022 09:29:29 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 41FA221BCE;
+ Tue, 29 Nov 2022 08:29:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1669710569;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hRh9gDUkL6Ekt8GlEtiCzuj3Xm1y/LSuc1cpy9Gflvs=;
+ b=zIle4htzoS0qBxYibn/Hsrd+2vnuWB0I9fcdJxFOdmKJn3AhLvO6YffIWcqsM6wuZMNZfZ
+ 9+wdrhm0HzkpWDg51B6v+Yb3sEQcORE85DQByT4qrgRfYEFPMU/7ULmX6U2U4ygICooKsF
+ jLOBK4lVsnHeaBxOjFgPrwKCvTgInBQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1669710569;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hRh9gDUkL6Ekt8GlEtiCzuj3Xm1y/LSuc1cpy9Gflvs=;
+ b=nOTRNgBbut4LARHdWjEjmmGrcS4dqddY5IghXnqiMrA3B3GWbYjLC+6UPr5/Fd661Uvyoq
+ zho+KKwHgXyq5ZBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12FD013AF6;
+ Tue, 29 Nov 2022 08:29:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id PThCA+nChWP1BAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 29 Nov 2022 08:29:29 +0000
+Date: Tue, 29 Nov 2022 09:29:26 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: David Hildenbrand <david@redhat.com>, Martin Doucha <mdoucha@suse.cz>,
+ ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <Y4XC5sBLL8z8gviA@pevik>
+References: <20221128111833.98937-1-david@redhat.com> <Y4SiDZXCSqMafjIb@pevik>
+ <7f71a2c3-a66b-b442-3785-3e251ce2f781@suse.cz>
+ <abd991c4-e6eb-349e-807c-71e7283ee83e@redhat.com>
+ <Y4UBAa9GS9SU/bVt@pevik>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <Y4UBAa9GS9SU/bVt@pevik>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/nice01: Add test nice(-1) and nice(-50)
+Subject: Re: [LTP] [PATCH v1 0/3] userfaultfd: Fix and remove compile-time
+ TCONF handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,98 +80,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: zhaogongyi via ltp <ltp@lists.linux.it>
-Reply-To: zhaogongyi <zhaogongyi@huawei.com>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+> > On 28.11.22 13:29, Martin Doucha wrote:
+> > > On 28. 11. 22 12:57, Petr Vorel wrote:
+> > > > Hi David,
 
-> Hello,
-> 
-> Zhao Gongyi via ltp <ltp@lists.linux.it> writes:
-> 
-> > 1. Add test verify that the errno is zero when callling of nice
-> > legitimately return -1.(nice(-1), the default nice is usally 0) 2. Add
-> > test verify that user of root can decrease the nice value of the
-> > process successfully by passing a lower increment value (< min.
-> > applicable limits) to nice() system call.(nice(-50))
-> >
-> > Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
-> > ---
-> >  testcases/kernel/syscalls/nice/nice01.c | 27
-> > ++++++++++++++-----------
-> >  1 file changed, 15 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/testcases/kernel/syscalls/nice/nice01.c
-> > b/testcases/kernel/syscalls/nice/nice01.c
-> > index 876246180..bc022a265 100644
-> > --- a/testcases/kernel/syscalls/nice/nice01.c
-> > +++ b/testcases/kernel/syscalls/nice/nice01.c
-> > @@ -17,29 +17,31 @@
-> >  #include <sys/resource.h>
-> >  #include "tst_test.h"
-> >
-> > -#define	NICEINC		-12
-> > -#define MIN_PRIO	-20
-> > +#define MIN_PRIO        -20
-> >
-> > -static void verify_nice(void)
-> > +static int nice_inc[] = {-1, -12, -50};
-> > +
-> > +static void verify_nice(unsigned int i)
-> >  {
-> >  	int new_nice;
-> >  	int orig_nice;
-> >  	int exp_nice;
-> > +	int inc = nice_inc[i];
-> >
-> >  	orig_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
-> >
-> > -	TEST(nice(NICEINC));
-> > +	TEST(nice(inc));
-> >
-> > -	exp_nice = MAX(MIN_PRIO, (orig_nice + NICEINC));
-> > +	exp_nice = MAX(MIN_PRIO, (orig_nice + inc));
-> >
-> >  	if (TST_RET != exp_nice) {
-> >  		tst_res(TFAIL | TTERRNO, "nice(%d) returned %li, expected %i",
-> > -			NICEINC, TST_RET, exp_nice);
-> > +				inc, TST_RET, exp_nice);
-> >  		return;
-> >  	}
-> >
-> >  	if (TST_ERR) {
-> > -		tst_res(TFAIL | TTERRNO, "nice(%d) failed", NICEINC);
-> > +		tst_res(TFAIL | TTERRNO, "nice(%d) failed", inc);
-> >  		return;
-> >  	}
-> >
-> > @@ -47,18 +49,19 @@ static void verify_nice(void)
-> >
-> >  	if (new_nice != exp_nice) {
-> >  		tst_res(TFAIL, "Process priority %i, expected %i",
-> > -				new_nice, orig_nice + NICEINC);
-> > +				new_nice, exp_nice);
-> >  		return;
-> >  	}
-> >
-> > -	tst_res(TPASS, "nice(%d) passed", NICEINC);
-> > +	tst_res(TPASS, "nice(%d) passed", inc);
-> >
-> > -	TEST(nice(-NICEINC));
-> > +	TEST(setpriority(PRIO_PROCESS, 0, orig_nice));
-> 
-> This is the nice test not the setpriority test (which also has a SAFE_ variant).
-> 
+> > > > If I remember correctly the reason for runtime check was ppc64le
+> > > > missing userfaultfd minor fault support which needs to be check in runtime,
+> > > > right? [1]. At least this is how I understand Martin's suggestion [2] to replace
+> > > > compile time check with lapi. I'd state this reason at first commit message as
+> > > > it's not obvious.
 
-Thanks, I have submit a v2 patch, please see: https://patchwork.ozlabs.org/project/ltp/patch/20221129081304.47000-1-zhaogongyi@huawei.com/
+> > > The reason for runtime check is that the presence of the header file
+> > > does not guarantee that the kernel supports UFFD API. The reason for
+> > > LAPI is that we only care about actual kernel support, not build-time
+> > > header files.
+Also hope that people compile LTP with relevant headers (including LTP distro
+package), but of course it's better to cover the case when kernel headers are
+missing or for different kernel version.
 
-Regards,
-Gongyi
+> Thx, agree. BTW I was thinking about compile time check #ifdef
+> UFFD_FEATURE_MINOR_SHMEM, but that's the same as ifdef HAVE_LINUX_USERFAULTFD_H.
+
+> > Right. Petr, do you still want a commit message state?
+
+> I can just add to commit message of the first commit the reason Martin reported:
+> ppc64le on kernel 5.14 does not seem to support userfaultfd minor fault.
+
+In the end I merged without any change in commit message. You described the
+reason (runtime check) enough in the second commit. I was wrongly looking at
+fist commit, sorry for bothering you.
+
+Thank you both!
+
+Kind regards,
+Petr
+
+> (no need to resent new version).
+
+> Kind regards,
+> Petr
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
