@@ -4,39 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 689C2C433FE
-	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 13:37:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94DCFC4332F
+	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 13:43:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1A2BA3CC52D
-	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 14:37:45 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A654C3CC522
+	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 14:43:25 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 246F23CC535
- for <ltp@lists.linux.it>; Wed, 30 Nov 2022 14:37:09 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id D79AE3CC504
+ for <ltp@lists.linux.it>; Wed, 30 Nov 2022 14:43:15 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-2.smtp.seeweb.it (Postfix) with ESMTP id 56B936009C8
- for <ltp@lists.linux.it>; Wed, 30 Nov 2022 14:37:08 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTP id 6BC631400DD5
+ for <ltp@lists.linux.it>; Wed, 30 Nov 2022 14:43:14 +0100 (CET)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC3B2D6E;
- Wed, 30 Nov 2022 05:37:13 -0800 (PST)
-Received: from e129169.arm.com (usa-sjc-imap-foss1.foss.arm.com
- [10.121.207.14])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 028ED3F73D;
- Wed, 30 Nov 2022 05:37:05 -0800 (PST)
-From: Tudor Cretu <tudor.cretu@arm.com>
-To: ltp@lists.linux.it
-Date: Wed, 30 Nov 2022 13:36:19 +0000
-Message-Id: <20221130133619.632073-4-tudor.cretu@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221130133619.632073-1-tudor.cretu@arm.com>
-References: <20221130133619.632073-1-tudor.cretu@arm.com>
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55B8DD6E;
+ Wed, 30 Nov 2022 05:43:19 -0800 (PST)
+Received: from [10.57.40.140] (unknown [10.57.40.140])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C900F3F73D;
+ Wed, 30 Nov 2022 05:43:11 -0800 (PST)
+Message-ID: <b90f144e-4165-0192-a3ac-59edf6712374@arm.com>
+Date: Wed, 30 Nov 2022 13:43:10 +0000
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Content-Language: en-US
+To: Petr Vorel <pvorel@suse.cz>
+References: <20221129130350.219082-1-tudor.cretu@arm.com>
+ <87a649ubuq.fsf@suse.de> <Y4YQL2TezOp2dcnD@pevik>
+ <eff8f05f-fd4b-4cad-86bc-d039aab0a56a@arm.com> <Y4YiL/Os2G+cZMFp@pevik>
+From: Tudor Cretu <tudor.cretu@arm.com>
+In-Reply-To: <Y4YiL/Os2G+cZMFp@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 3/3] safe_semctl: Fix undefined behaviour in vararg
- handling
+Subject: Re: [LTP] [PATCH v2 0/3] safe_macros: Fix undefined behaviour in
+ vararg handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -48,95 +51,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Accessing elements in an empty va_list is undefined behaviour.
-The semctl system call expects the union semun argument only for a
-set of cmd values, otherwise the argument is ignored.
-
-Modify the safe_semctl wrapper to read the variadic argument only when
-it's expected to be provided.
-
-Signed-off-by: Tudor Cretu <tudor.cretu@arm.com>
----
- include/lapi/ipc.h      | 14 ++++++++++++++
- lib/tst_safe_sysv_ipc.c | 23 ++++++++++++++++-------
- 2 files changed, 30 insertions(+), 7 deletions(-)
- create mode 100644 include/lapi/ipc.h
-
-diff --git a/include/lapi/ipc.h b/include/lapi/ipc.h
-new file mode 100644
-index 000000000..5645c8817
---- /dev/null
-+++ b/include/lapi/ipc.h
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 Arm Ltd.
-+ */
-+#ifndef LAPI_IPC_H__
-+#define LAPI_IPC_H__
-+
-+#include <sys/ipc.h>
-+
-+#ifndef IPC_INFO
-+# define IPC_INFO 3
-+#endif
-+
-+#endif /* LAPI_IPC_H__ */
-diff --git a/lib/tst_safe_sysv_ipc.c b/lib/tst_safe_sysv_ipc.c
-index 5eaa82539..a196fc9ce 100644
---- a/lib/tst_safe_sysv_ipc.c
-+++ b/lib/tst_safe_sysv_ipc.c
-@@ -4,12 +4,12 @@
-  */
- 
- #include <sys/types.h>
--#include <sys/ipc.h>
- #include <sys/msg.h>
- #include <sys/shm.h>
- #define TST_NO_DEFAULT_MAIN
- #include "tst_test.h"
- #include "tst_safe_sysv_ipc.h"
-+#include "lapi/ipc.h"
- #include "lapi/sem.h"
- 
- /*
-@@ -232,13 +232,22 @@ int safe_semctl(const char *file, const int lineno, int semid, int semnum,
- {
- 	int rval;
- 	va_list va;
--	union semun un;
-+	union semun un = {0};
- 
--	va_start(va, cmd);
--
--	un = va_arg(va, union semun);
--
--	va_end(va);
-+	switch (cmd) {
-+	case SETVAL:
-+	case GETALL:
-+	case SETALL:
-+	case IPC_STAT:
-+	case IPC_SET:
-+	case SEM_STAT:
-+	case SEM_STAT_ANY:
-+	case IPC_INFO:
-+	case SEM_INFO:
-+		va_start(va, cmd);
-+		un = va_arg(va, union semun);
-+		va_end(va);
-+	}
- 
- 	rval = semctl(semid, semnum, cmd, un);
- 
--- 
-2.25.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+CgpPbiAyOS0xMS0yMDIyIDE1OjE1LCBQZXRyIFZvcmVsIHdyb3RlOgo+IAo+IAo+PiBPbiAyOS0x
+MS0yMDIyIDEzOjU5LCBQZXRyIFZvcmVsIHdyb3RlOgo+Pj4gSGkgYWxsLAo+IAo+Pj4+IEhlbGxv
+LAo+IAo+Pj4+IFNvIEknbSBoYXBweSB3aXRoIHRoaXMsIGJ1dCBJIHRoaW5rIEN5cmlsJ3MgY29t
+bWVudCBkZXNlcnZlcyBhIHJlc3BvbnNlOgo+IAo+PiBJbmRlZWQsIEkgbm90aWNlZCBpdCB0b28g
+bGF0ZSBhZnRlciBzZW5kaW5nIHRoZSB2Mi4KPiAKPj4+ICsxCj4gCj4+Pj4+IExvb2tpbmcgYXQg
+aG93IGdsaWJjIGhhbmRsZXMgdGhpcywgdGhlIGNvZGUgbG9va3MgbGlrZToKPiAKPj4+Pj4gCWlu
+dCBtb2RlID0gMDsKPiAKPj4+Pj4gCWlmIChfX09QRU5fTkVFRFNfTU9ERShvZmxhZykpIHsKPj4+
+Pj4gCQkuLgo+Pj4+PiAJCW1vZGUgPSB2YV9hcmcoYXJnLCBpbnQpOwo+Pj4+PiAJCS4uCj4+Pj4+
+IAl9Cj4gCj4+Pj4+IFRoYXQgc291bmRzIG11Y2ggZWFzaWVyIHRoYW4gbWVzc2luZyB3aXRoIHRo
+ZSBtYWNyb3MgYW5kIHNob3VsZCBhdm9pZAo+Pj4+PiB1bmRlZmluZWQgYmVoYXZpb3IuCj4gCj4+
+IEkgY29uc2lkZXJlZCB0aGlzIGFuZCBJIHRoaW5rIGl0J3MgYmV0dGVyIHRvIGZvY3VzIHN0cmlj
+dGx5IG9uIHRoZSBoYW5kbGluZwo+PiB0aGUgdmFyaWFkaWNuZXNzIGlzc3VlLCBhbmQgd2FudGVk
+IHRvIGF2b2lkIGR1cGxpY2F0aW5nIGxvZ2ljIGZyb20gbGliY3MuCj4gCj4+PiArMQo+IAo+Pj4+
+IEkgZG9uJ3Qgc2VlIHdoeSwgX19PUEVOX05FRURTX01PREUgaXMgZ29pbmcgdG8gYmUgZGlmZmVy
+ZW50IGJldHdlZW4KPiAKPj4+PiBmdW5jdGlvbnMgYW5kIGxpYmMva2VybmVsIHZlcnNpb25zLgo+
+IAo+PiBIYXZlbid0IHRob3VnaHQgYWJvdXQgdGhhdCwgdGhhdCdzIGEgZ29vZCBwb2ludCBpbiBt
+eSBvcGluaW9uLgo+IAo+IAo+Pj4gTG9va2luZyBhdCBnbGliYydzIF9fT1BFTl9ORUVEU19NT0RF
+IGRlZmluaXRpb24sIHRoZSBsb2dpYyBpcyBvYnZpb3VzbHkgdGhlIHNhbWUKPj4+IGFzIG11c2wg
+Y29kZSBmb3Igb3BlbiAoaXQganVzdCB1c2UgT19UTVBGSUxFIGluc3RlYWQgb2YgX19PX1RNUEZJ
+TEUgdGhlcmVmb3JlIG5vCj4+PiBuZWVkIHRvIGNoZWNrIGZvciAjaWZkZWYgX19PX1RNUEZJTEUp
+Lgo+IAo+PiBJIGFncmVlLCBmb3Igb3Blbi9vcGVuYXQgdGhpcyBhcHByb2FjaCB3b3VsZCBiZSBm
+YWlybHkgc2ltcGxlLCB0aGVyZSBpcwo+PiBzZW1jdGwgdG9vIHRob3VnaCwgSSdsbCBuZWVkIHRv
+IGhhdmUgYSBsb29rIGhvdyBnbGliYyBhbmQgbXVzbCBoYW5kbGUgaXQuCj4gCj4gVGhhbmtzIGEg
+bG90IGZvciB5b3VyIHRpbWUgVHVkb3IhCgpNeSBwbGVhc3VyZSEgTWFueSB0aGFua3MgZm9yIHRo
+ZSBmZWVkYmFjaywgYWxsLiBJIGhhdmUgcG9zdGVkIGEgdjMuIEkgCmxvb2sgZm9yd2FyZCB0byB5
+b3VyIG9waW5pb25zLgoKS2luZCByZWdhcmRzLApUdWRvcgoKPiAKPiBLaW5kIHJlZ2FyZHMsCj4g
+UGV0cgo+IAo+PiBLaW5kIHJlZ2FyZHMsCj4+IFR1ZG9yCj4gCj4gCj4+PiBLaW5kIHJlZ2FyZHMs
+Cj4+PiBQZXRyCj4gCj4+Pj4gUmV2aWV3ZWQtYnk6IFJpY2hhcmQgUGFsZXRob3JwZSA8cnBhbGV0
+aG9ycGVAc3VzZS5jb20+Cj4gCj4+Pj4gVHVkb3IgQ3JldHUgPHR1ZG9yLmNyZXR1QGFybS5jb20+
+IHdyaXRlczoKPiAKPj4+Pj4gQWNjZXNzaW5nIGVsZW1lbnRzIGluIGFuIGVtcHR5IHZhX2xpc3Qg
+cmVzdWx0cyBpbiB1bmRlZmluZWQgYmVoYXZpb3VyWzBdCj4+Pj4+IHRoYXQgY2FuIGluY2x1ZGUg
+YWNjZXNzaW5nIGFyYml0cmFyeSBzdGFjayBtZW1vcnkuIFdoaWxlIHR5cGljYWxseSB0aGlzCj4+
+Pj4+IGRvZXNuJ3QgcmFpc2UgYSBmYXVsdCwgc29tZSBuZXcgbW9yZSBzZWN1cml0eS1vcmllbnRl
+ZCBhcmNoaXRlY3R1cmVzCj4+Pj4+IChlLmcuIENIRVJJWzFdIG9yIE1vcmVsbG9bMl0pIGRvbid0
+IGFsbG93IGl0Lgo+IAo+Pj4+PiBUaGVyZWZvcmUsIHJlbW92ZSB0aGUgdmFyaWFkaWNuZXNzIGZy
+b20gc2FmZV8qIHdyYXBwZXJzIHRoYXQgYWx3YXlzIGNhbGwKPj4+Pj4gdGhlIGZ1bmN0aW9ucyB3
+aXRoIHRoZSBvcHRpb25hbCBhcmd1bWVudCBpbmNsdWRlZC4KPiAKPj4+Pj4gQWRhcHQgdGhlIHJl
+c3BlY3RpdmUgU0FGRV8qIG1hY3JvcyB0byBoYW5kbGUgdGhlIGNoYW5nZSBieSBwYXNzaW5nIGEK
+Pj4+Pj4gZGVmYXVsdCBhcmd1bWVudCBpZiB0aGV5J3JlIG9taXR0ZWQuCj4gCj4+Pj4+IFswXTog
+W0lTTy9JRUMgOTg5OToyMDExXSBQcm9ncmFtbWluZyBMYW5ndWFnZXPigJRDLCAzcmQgZWQsIHBh
+cmFncmFwaCA3LjE2LjEuMQo+Pj4+PiBbMV06IGh0dHBzOi8vd3d3LmNsLmNhbS5hYy51ay9yZXNl
+YXJjaC9zZWN1cml0eS9jdHNyZC9jaGVyaS8KPj4+Pj4gWzJdOiBodHRwczovL3d3dy5tb3JlbGxv
+LXByb2plY3Qub3JnLwo+IAo+Pj4+PiB2Mi4udjE6Cj4+Pj4+ICAgICAtIFBBVENIIDE6IFJlbW92
+ZSB0aGUgTlVMTCBhcmd1bWVudCBmb3IgbW9kZSBmcm9tIFNBRkVfT1BFTiBpbnN0YW5jZXMKPj4+
+Pj4gICAgICAgdG8gYXZvaWQgdGhlIHBvaW50ZXIgdG8gaW50IGNvbnZlcnNpb24uCj4gCj4+Pj4+
+IFR1ZG9yIENyZXR1ICgzKToKPj4+Pj4gICAgIHNhZmVfb3BlbjogRml4IHVuZGVmaW5lZCBiZWhh
+dmlvdXIgaW4gdmFyYXJnIGhhbmRsaW5nCj4+Pj4+ICAgICBzYWZlX29wZW5hdDogRml4IHVuZGVm
+aW5lZCBiZWhhdmlvdXIgaW4gdmFyYXJnIGhhbmRsaW5nCj4+Pj4+ICAgICBzYWZlX3NlbWN0bDog
+Rml4IHVuZGVmaW5lZCBiZWhhdmlvdXIgaW4gdmFyYXJnIGhhbmRsaW5nCj4gCj4+Pj4+ICAgIGlu
+Y2x1ZGUvb2xkL3NhZmVfbWFjcm9zLmggICAgICAgICAgICAgICAgICAgICAgICAgfCAgNiArKysr
+LS0KPj4+Pj4gICAgaW5jbHVkZS9zYWZlX21hY3Jvc19mbi5oICAgICAgICAgICAgICAgICAgICAg
+ICAgICB8ICAzICsrLQo+Pj4+PiAgICBpbmNsdWRlL3RzdF9zYWZlX2ZpbGVfYXQuaCAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgMTAgKysrKysrLS0tLQo+Pj4+PiAgICBpbmNsdWRlL3RzdF9zYWZl
+X21hY3Jvcy5oICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDYgKysrKy0tCj4+Pj4+ICAgIGlu
+Y2x1ZGUvdHN0X3NhZmVfc3lzdl9pcGMuaCAgICAgICAgICAgICAgICAgICAgICAgfCAxNCArKysr
+KysrKystLS0tLQo+Pj4+PiAgICBsaWIvc2FmZV9tYWNyb3MuYyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHwgMTMgKy0tLS0tLS0tLS0tLQo+Pj4+PiAgICBsaWIvdHN0X2Nncm91cC5j
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPj4+Pj4gICAgbGliL3Rz
+dF9zYWZlX2ZpbGVfYXQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDExICsrKy0tLS0t
+LS0tCj4+Pj4+ICAgIGxpYi90c3Rfc2FmZV9zeXN2X2lwYy5jICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAxMCArLS0tLS0tLS0tCj4+Pj4+ICAgIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+ZmdldHhhdHRyL2ZnZXR4YXR0cjAxLmMgfCAgMiArLQo+Pj4+PiAgICB0ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2ZnZXR4YXR0ci9mZ2V0eGF0dHIwMi5jIHwgIDIgKy0KPj4+Pj4gICAgdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9mZ2V0eGF0dHIvZmdldHhhdHRyMDMuYyB8ICAyICstCj4+Pj4+
+ICAgIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZnNldHhhdHRyL2ZzZXR4YXR0cjAxLmMgfCAg
+MiArLQo+Pj4+PiAgICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZzZXR4YXR0ci9mc2V0eGF0
+dHIwMi5jIHwgIDIgKy0KPj4+Pj4gICAgMTQgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygr
+KSwgNDkgZGVsZXRpb25zKC0pCj4gCj4+Pj4+IC0tIAo+Pj4+PiAyLjI1LjEKCi0tIApNYWlsaW5n
+IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
