@@ -4,43 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DC29C4332F
-	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 14:22:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90336C433FE
+	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 15:08:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3C3253CC541
-	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 15:22:47 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5FD0F3CC558
+	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 16:07:57 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AE1253CA96F
- for <ltp@lists.linux.it>; Wed, 30 Nov 2022 15:22:37 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 0C6EB3CC50E
+ for <ltp@lists.linux.it>; Wed, 30 Nov 2022 16:07:46 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-7.smtp.seeweb.it (Postfix) with ESMTP id D21A62009C5
- for <ltp@lists.linux.it>; Wed, 30 Nov 2022 15:22:35 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTP id BEB58600330
+ for <ltp@lists.linux.it>; Wed, 30 Nov 2022 16:07:45 +0100 (CET)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52546D6E;
- Wed, 30 Nov 2022 06:22:40 -0800 (PST)
-Received: from [10.57.37.211] (unknown [10.57.37.211])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B5253F73D;
- Wed, 30 Nov 2022 06:22:33 -0800 (PST)
-Message-ID: <3511407c-df92-7097-2193-e2ee82b02350@arm.com>
-Date: Wed, 30 Nov 2022 14:22:28 +0000
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A44E01042;
+ Wed, 30 Nov 2022 07:07:51 -0800 (PST)
+Received: from e129169.arm.com (usa-sjc-imap-foss1.foss.arm.com
+ [10.121.207.14])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 085E13F73D;
+ Wed, 30 Nov 2022 07:07:43 -0800 (PST)
+From: Tudor Cretu <tudor.cretu@arm.com>
+To: ltp@lists.linux.it
+Date: Wed, 30 Nov 2022 15:07:36 +0000
+Message-Id: <20221130150738.745960-2-tudor.cretu@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221130150738.745960-1-tudor.cretu@arm.com>
+References: <20221130150738.745960-1-tudor.cretu@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20221128091508.75414-1-teo.coupriediaz@arm.com>
- <Y4UMUqkLijWXOWu6@pevik> <Y4YEnmDLD7AEMHrr@yuki> <Y4YK6uhK94C0vrVR@pevik>
- <Y4YLvhQfIW1SW1XB@yuki> <448cb776-770d-3235-c0d9-3c9005663790@arm.com>
- <Y4dXWopbsqbyDZMF@yuki>
-From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-Organization: Arm Ltd.
-In-Reply-To: <Y4dXWopbsqbyDZMF@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 0/1] brk: use direct syscalls
+Subject: [LTP] [PATCH v4 1/3] syscalls/f{get,
+ set}xattr: Don't pass a pointer to mode argument in open
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -52,27 +49,94 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGksCgpPbiAzMC8xMS8yMDIyIDEzOjE1LCBDeXJpbCBIcnViaXMgd3JvdGU6Cj4gSGkhCj4+Pj4g
-V0RZVCBhYm91dCAudGVzdF92YXJpYW50cz8gSW4gdGhhdCBjYXNlIGl0J2QgYmUgdGVzdGVkIGFs
-c28gb24gbXVzbAo+Pj4+IG9yIGFueSBwbGF0Zm9ybSB3aGVyZSBpdCdzIGltcGxlbWVudGVkLgo+
-Pj4gSSB3b3VsZCBnb3QgZm9yIGl0LCB0aGF0IHdheSB3ZSB3b3VsZCB0ZXN0IGJvdGggdGhlIGtl
-cm5lbCBpbXBsZW1udGF0aW9uCj4+PiBhbmQgdGhhdCBsaWJjIGRvZXMgc29tZXRoaW5nIHNlbnNp
-YmxlLCBlLmcuIHJldHVybnMgZXJyb3IuCj4+Pgo+PiBJJ20gc3RpbGwgcXVpdGUgbmV3IHRvIExU
-UCwgc28gSSBtaWdodCBiZSB1bmRlcnN0YW5kaW5nIHRoaW5ncyB3cm9uZy4KPj4KPj4gTXkgdW5k
-ZXJzdGFuZGluZyBvZiB5b3VyIGNvbnZlcnNhdGlvbiBpcyB0aGF0IHlvdSdyZSBzdWdnZXN0aW5n
-IHVzaW5nCj4+IHRoZSAudGVzdF92YXJpYW50cyB0byBoYXZlIG9uZSB2ZXJzaW9uIG9mIHRoZSB0
-ZXN0cyBnb2luZyB0aHJvdWdoIHRoZQo+PiBsaWJjIHdyYXBwZXJzIGFzIHVzdWFsLCBldmVudHVh
-bGx5IHNraXBwaW5nIHRoZSB0ZXN0IHdpdGggVENPTkYgaWYgdGhlCj4+IGxpYmMgd3JhcHBlciBk
-b2VzIG5vdCBpbXBsZW1lbnQgdGhlIHN5c2NhbGwsIGFuZCBvbmUgdmVyc2lvbiB3aGljaCB3b3Vs
-ZAo+PiBiZSB0aGUgdGhlIGRpcmVjdCBzeXNjYWxsIEkgYW0gc3VnZ2VzdGluZyBpbiB0aGlzIHBh
-dGNoLgo+Pgo+PiBXb3VsZCB0aGF0IGJlIGNvcnJlY3QgPyBJZiBzbyBpdCBkb2VzIG1ha2Ugc2Vu
-c2UgdG8gbWUsIEkgY291bGQgdHJ5Cj4+IGltcGxlbWVudGluZyB0aGF0Lgo+IFllcywgZXhhY3Rs
-eSB0aGlzLgoKR3JlYXQsIHRoYW5rcyA6IEkgd2lsbCBpbXBsZW1lbnQgdGhpcyBhbmQgc2VuZCBh
-IHJldmlzaW9uIHdoZW4gaXQncyBkb25lICEKCkJlc3QgcmVnYXJkcywKVMOpbwoKCi0tIApNYWls
-aW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Passing NULL to open as the mode parameter is undefined behaviour
+as a mode_t is a numerical type, not compatible with a pointer type.
+If neither O_CREAT nor O_TMPFILE is specified in flags, then the mode
+argument is ignored, so just remove it in these cases.
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Tudor Cretu <tudor.cretu@arm.com>
+---
+ testcases/kernel/syscalls/fgetxattr/fgetxattr01.c | 2 +-
+ testcases/kernel/syscalls/fgetxattr/fgetxattr02.c | 2 +-
+ testcases/kernel/syscalls/fgetxattr/fgetxattr03.c | 2 +-
+ testcases/kernel/syscalls/fsetxattr/fsetxattr01.c | 2 +-
+ testcases/kernel/syscalls/fsetxattr/fsetxattr02.c | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c b/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c
+index 35c46a1c3..52e6e44ab 100644
+--- a/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c
++++ b/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c
+@@ -111,7 +111,7 @@ static void setup(void)
+ 	size_t i = 0;
+ 
+ 	SAFE_TOUCH(FNAME, 0644, NULL);
+-	fd = SAFE_OPEN(FNAME, O_RDONLY, NULL);
++	fd = SAFE_OPEN(FNAME, O_RDONLY);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tc); i++) {
+ 		tc[i].value = SAFE_MALLOC(tc[i].size);
+diff --git a/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c b/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c
+index 82fb676be..c3cff0aab 100644
+--- a/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c
++++ b/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c
+@@ -244,7 +244,7 @@ static void setup(void)
+ 			SAFE_BIND(tc[i].fd, (const struct sockaddr *) &sun,
+ 					sizeof(struct sockaddr_un));
+ 		} else {
+-			tc[i].fd = SAFE_OPEN(tc[i].fname, tc[i].fflags, NULL);
++			tc[i].fd = SAFE_OPEN(tc[i].fname, tc[i].fflags);
+ 		}
+ 
+ 		if (tc[i].exp_ret >= 0) {
+diff --git a/testcases/kernel/syscalls/fgetxattr/fgetxattr03.c b/testcases/kernel/syscalls/fgetxattr/fgetxattr03.c
+index d293ffca9..0581b9670 100644
+--- a/testcases/kernel/syscalls/fgetxattr/fgetxattr03.c
++++ b/testcases/kernel/syscalls/fgetxattr/fgetxattr03.c
+@@ -48,7 +48,7 @@ static void verify_fgetxattr(void)
+ static void setup(void)
+ {
+ 	SAFE_TOUCH(FILENAME, 0644, NULL);
+-	fd = SAFE_OPEN(FILENAME, O_RDONLY, NULL);
++	fd = SAFE_OPEN(FILENAME, O_RDONLY);
+ 
+ 	SAFE_FSETXATTR(fd, XATTR_TEST_KEY, XATTR_TEST_VALUE,
+ 			XATTR_TEST_VALUE_SIZE, XATTR_CREATE);
+diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c
+index ffec8104f..d799e477f 100644
+--- a/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c
++++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c
+@@ -205,7 +205,7 @@ static void setup(void)
+ 	long_value[XATTR_SIZE_MAX + 1] = '\0';
+ 
+ 	SAFE_TOUCH(FNAME, 0644, NULL);
+-	fd = SAFE_OPEN(FNAME, O_RDONLY, NULL);
++	fd = SAFE_OPEN(FNAME, O_RDONLY);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tc); i++) {
+ 		if (!tc[i].key)
+diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+index 3aea4b59e..0336c964a 100644
+--- a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
++++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
+@@ -211,7 +211,7 @@ static void setup(void)
+ 	for (i = 0; i < ARRAY_SIZE(tc); i++) {
+ 
+ 		if (!tc[i].issocket) {
+-			tc[i].fd = SAFE_OPEN(tc[i].fname, tc[i].fflags, NULL);
++			tc[i].fd = SAFE_OPEN(tc[i].fname, tc[i].fflags);
+ 			continue;
+ 		}
+ 
+-- 
+2.25.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
