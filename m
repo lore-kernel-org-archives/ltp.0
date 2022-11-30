@@ -4,67 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B038DC4332F
-	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 14:20:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DC29C4332F
+	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 14:22:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A022A3CC51B
-	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 15:20:26 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 3C3253CC541
+	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 15:22:47 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EA4063C0367
- for <ltp@lists.linux.it>; Wed, 30 Nov 2022 15:20:16 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6484B1A0027B
- for <ltp@lists.linux.it>; Wed, 30 Nov 2022 15:20:15 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9546621B13;
- Wed, 30 Nov 2022 14:20:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1669818015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=xCmIP8xKXaOkGLzUTFc4cex2FEv5lqT04X3f68921KM4rqzaLEg7cQbGY84xOBMoRmqpWq
- t6ooCTUcG7pkhj6DUtIb6sECa90GkTBVMZwI1lUKGBp4lgRyCyjlccf4RDpRut1XqVdaQM
- HWeuS/NrmKykH8xW4N3XVuuwni0Th84=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1669818015;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
- b=XsndkIiBZ+EvQFmKfYD5+5cX1w1WGgYeOn5OACnGNY9dQp7NE+8Q7IWFNFCvox4C2S57qw
- jl2QiS9CvJhXslAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7690D13A70;
- Wed, 30 Nov 2022 14:20:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id DjRXG59mh2NKewAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 30 Nov 2022 14:20:15 +0000
-Date: Wed, 30 Nov 2022 15:20:10 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Tudor Cretu <tudor.cretu@arm.com>
-Message-ID: <Y4dmmpp31jQ01pvw@rei>
-References: <20221130133619.632073-1-tudor.cretu@arm.com>
- <20221130133619.632073-4-tudor.cretu@arm.com>
+ by picard.linux.it (Postfix) with ESMTPS id AE1253CA96F
+ for <ltp@lists.linux.it>; Wed, 30 Nov 2022 15:22:37 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTP id D21A62009C5
+ for <ltp@lists.linux.it>; Wed, 30 Nov 2022 15:22:35 +0100 (CET)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52546D6E;
+ Wed, 30 Nov 2022 06:22:40 -0800 (PST)
+Received: from [10.57.37.211] (unknown [10.57.37.211])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B5253F73D;
+ Wed, 30 Nov 2022 06:22:33 -0800 (PST)
+Message-ID: <3511407c-df92-7097-2193-e2ee82b02350@arm.com>
+Date: Wed, 30 Nov 2022 14:22:28 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221130133619.632073-4-tudor.cretu@arm.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Content-Language: en-US
+To: Cyril Hrubis <chrubis@suse.cz>
+References: <20221128091508.75414-1-teo.coupriediaz@arm.com>
+ <Y4UMUqkLijWXOWu6@pevik> <Y4YEnmDLD7AEMHrr@yuki> <Y4YK6uhK94C0vrVR@pevik>
+ <Y4YLvhQfIW1SW1XB@yuki> <448cb776-770d-3235-c0d9-3c9005663790@arm.com>
+ <Y4dXWopbsqbyDZMF@yuki>
+From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+Organization: Arm Ltd.
+In-Reply-To: <Y4dXWopbsqbyDZMF@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/3] safe_semctl: Fix undefined behaviour in
- vararg handling
+Subject: Re: [LTP] [RFC PATCH 0/1] brk: use direct syscalls
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,17 +53,26 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGksCgpPbiAzMC8xMS8yMDIyIDEzOjE1LCBDeXJpbCBIcnViaXMgd3JvdGU6Cj4gSGkhCj4+Pj4g
+V0RZVCBhYm91dCAudGVzdF92YXJpYW50cz8gSW4gdGhhdCBjYXNlIGl0J2QgYmUgdGVzdGVkIGFs
+c28gb24gbXVzbAo+Pj4+IG9yIGFueSBwbGF0Zm9ybSB3aGVyZSBpdCdzIGltcGxlbWVudGVkLgo+
+Pj4gSSB3b3VsZCBnb3QgZm9yIGl0LCB0aGF0IHdheSB3ZSB3b3VsZCB0ZXN0IGJvdGggdGhlIGtl
+cm5lbCBpbXBsZW1udGF0aW9uCj4+PiBhbmQgdGhhdCBsaWJjIGRvZXMgc29tZXRoaW5nIHNlbnNp
+YmxlLCBlLmcuIHJldHVybnMgZXJyb3IuCj4+Pgo+PiBJJ20gc3RpbGwgcXVpdGUgbmV3IHRvIExU
+UCwgc28gSSBtaWdodCBiZSB1bmRlcnN0YW5kaW5nIHRoaW5ncyB3cm9uZy4KPj4KPj4gTXkgdW5k
+ZXJzdGFuZGluZyBvZiB5b3VyIGNvbnZlcnNhdGlvbiBpcyB0aGF0IHlvdSdyZSBzdWdnZXN0aW5n
+IHVzaW5nCj4+IHRoZSAudGVzdF92YXJpYW50cyB0byBoYXZlIG9uZSB2ZXJzaW9uIG9mIHRoZSB0
+ZXN0cyBnb2luZyB0aHJvdWdoIHRoZQo+PiBsaWJjIHdyYXBwZXJzIGFzIHVzdWFsLCBldmVudHVh
+bGx5IHNraXBwaW5nIHRoZSB0ZXN0IHdpdGggVENPTkYgaWYgdGhlCj4+IGxpYmMgd3JhcHBlciBk
+b2VzIG5vdCBpbXBsZW1lbnQgdGhlIHN5c2NhbGwsIGFuZCBvbmUgdmVyc2lvbiB3aGljaCB3b3Vs
+ZAo+PiBiZSB0aGUgdGhlIGRpcmVjdCBzeXNjYWxsIEkgYW0gc3VnZ2VzdGluZyBpbiB0aGlzIHBh
+dGNoLgo+Pgo+PiBXb3VsZCB0aGF0IGJlIGNvcnJlY3QgPyBJZiBzbyBpdCBkb2VzIG1ha2Ugc2Vu
+c2UgdG8gbWUsIEkgY291bGQgdHJ5Cj4+IGltcGxlbWVudGluZyB0aGF0Lgo+IFllcywgZXhhY3Rs
+eSB0aGlzLgoKR3JlYXQsIHRoYW5rcyA6IEkgd2lsbCBpbXBsZW1lbnQgdGhpcyBhbmQgc2VuZCBh
+IHJldmlzaW9uIHdoZW4gaXQncyBkb25lICEKCkJlc3QgcmVnYXJkcywKVMOpbwoKCi0tIApNYWls
+aW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
