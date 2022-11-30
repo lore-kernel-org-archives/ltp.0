@@ -4,40 +4,37 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90336C433FE
-	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 15:08:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A15C5C433FE
+	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 15:08:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5FD0F3CC558
-	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 16:07:57 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 7E59C3CC524
+	for <ltp@archiver.kernel.org>; Wed, 30 Nov 2022 16:08:09 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0C6EB3CC50E
+ by picard.linux.it (Postfix) with ESMTPS id 1BCE43CC510
  for <ltp@lists.linux.it>; Wed, 30 Nov 2022 16:07:46 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-2.smtp.seeweb.it (Postfix) with ESMTP id BEB58600330
+ by in-3.smtp.seeweb.it (Postfix) with ESMTP id BC6981A0090B
  for <ltp@lists.linux.it>; Wed, 30 Nov 2022 16:07:45 +0100 (CET)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A44E01042;
- Wed, 30 Nov 2022 07:07:51 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BADBD6E;
+ Wed, 30 Nov 2022 07:07:50 -0800 (PST)
 Received: from e129169.arm.com (usa-sjc-imap-foss1.foss.arm.com
  [10.121.207.14])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 085E13F73D;
- Wed, 30 Nov 2022 07:07:43 -0800 (PST)
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92BBB3F73D;
+ Wed, 30 Nov 2022 07:07:42 -0800 (PST)
 From: Tudor Cretu <tudor.cretu@arm.com>
 To: ltp@lists.linux.it
-Date: Wed, 30 Nov 2022 15:07:36 +0000
-Message-Id: <20221130150738.745960-2-tudor.cretu@arm.com>
+Date: Wed, 30 Nov 2022 15:07:35 +0000
+Message-Id: <20221130150738.745960-1-tudor.cretu@arm.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221130150738.745960-1-tudor.cretu@arm.com>
-References: <20221130150738.745960-1-tudor.cretu@arm.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 1/3] syscalls/f{get,
- set}xattr: Don't pass a pointer to mode argument in open
+Subject: [LTP] [PATCH v4 0/3] safe_macros: Fix undefined behaviour in vararg
+ handling
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -49,94 +46,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Passing NULL to open as the mode parameter is undefined behaviour
-as a mode_t is a numerical type, not compatible with a pointer type.
-If neither O_CREAT nor O_TMPFILE is specified in flags, then the mode
-argument is ignored, so just remove it in these cases.
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Tudor Cretu <tudor.cretu@arm.com>
----
- testcases/kernel/syscalls/fgetxattr/fgetxattr01.c | 2 +-
- testcases/kernel/syscalls/fgetxattr/fgetxattr02.c | 2 +-
- testcases/kernel/syscalls/fgetxattr/fgetxattr03.c | 2 +-
- testcases/kernel/syscalls/fsetxattr/fsetxattr01.c | 2 +-
- testcases/kernel/syscalls/fsetxattr/fsetxattr02.c | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c b/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c
-index 35c46a1c3..52e6e44ab 100644
---- a/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c
-+++ b/testcases/kernel/syscalls/fgetxattr/fgetxattr01.c
-@@ -111,7 +111,7 @@ static void setup(void)
- 	size_t i = 0;
- 
- 	SAFE_TOUCH(FNAME, 0644, NULL);
--	fd = SAFE_OPEN(FNAME, O_RDONLY, NULL);
-+	fd = SAFE_OPEN(FNAME, O_RDONLY);
- 
- 	for (i = 0; i < ARRAY_SIZE(tc); i++) {
- 		tc[i].value = SAFE_MALLOC(tc[i].size);
-diff --git a/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c b/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c
-index 82fb676be..c3cff0aab 100644
---- a/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c
-+++ b/testcases/kernel/syscalls/fgetxattr/fgetxattr02.c
-@@ -244,7 +244,7 @@ static void setup(void)
- 			SAFE_BIND(tc[i].fd, (const struct sockaddr *) &sun,
- 					sizeof(struct sockaddr_un));
- 		} else {
--			tc[i].fd = SAFE_OPEN(tc[i].fname, tc[i].fflags, NULL);
-+			tc[i].fd = SAFE_OPEN(tc[i].fname, tc[i].fflags);
- 		}
- 
- 		if (tc[i].exp_ret >= 0) {
-diff --git a/testcases/kernel/syscalls/fgetxattr/fgetxattr03.c b/testcases/kernel/syscalls/fgetxattr/fgetxattr03.c
-index d293ffca9..0581b9670 100644
---- a/testcases/kernel/syscalls/fgetxattr/fgetxattr03.c
-+++ b/testcases/kernel/syscalls/fgetxattr/fgetxattr03.c
-@@ -48,7 +48,7 @@ static void verify_fgetxattr(void)
- static void setup(void)
- {
- 	SAFE_TOUCH(FILENAME, 0644, NULL);
--	fd = SAFE_OPEN(FILENAME, O_RDONLY, NULL);
-+	fd = SAFE_OPEN(FILENAME, O_RDONLY);
- 
- 	SAFE_FSETXATTR(fd, XATTR_TEST_KEY, XATTR_TEST_VALUE,
- 			XATTR_TEST_VALUE_SIZE, XATTR_CREATE);
-diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c
-index ffec8104f..d799e477f 100644
---- a/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c
-+++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr01.c
-@@ -205,7 +205,7 @@ static void setup(void)
- 	long_value[XATTR_SIZE_MAX + 1] = '\0';
- 
- 	SAFE_TOUCH(FNAME, 0644, NULL);
--	fd = SAFE_OPEN(FNAME, O_RDONLY, NULL);
-+	fd = SAFE_OPEN(FNAME, O_RDONLY);
- 
- 	for (i = 0; i < ARRAY_SIZE(tc); i++) {
- 		if (!tc[i].key)
-diff --git a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-index 3aea4b59e..0336c964a 100644
---- a/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-+++ b/testcases/kernel/syscalls/fsetxattr/fsetxattr02.c
-@@ -211,7 +211,7 @@ static void setup(void)
- 	for (i = 0; i < ARRAY_SIZE(tc); i++) {
- 
- 		if (!tc[i].issocket) {
--			tc[i].fd = SAFE_OPEN(tc[i].fname, tc[i].fflags, NULL);
-+			tc[i].fd = SAFE_OPEN(tc[i].fname, tc[i].fflags);
- 			continue;
- 		}
- 
--- 
-2.25.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+QWNjZXNzaW5nIGVsZW1lbnRzIGluIGFuIGVtcHR5IHZhX2xpc3QgcmVzdWx0cyBpbiB1bmRlZmlu
+ZWQgYmVoYXZpb3VyWzBdCnRoYXQgY2FuIGluY2x1ZGUgYWNjZXNzaW5nIGFyYml0cmFyeSBzdGFj
+ayBtZW1vcnkuIFdoaWxlIHR5cGljYWxseSB0aGlzCmRvZXNuJ3QgcmFpc2UgYSBmYXVsdCwgc29t
+ZSBuZXcgbW9yZSBzZWN1cml0eS1vcmllbnRlZCBhcmNoaXRlY3R1cmVzCihlLmcuIENIRVJJWzFd
+IG9yIE1vcmVsbG9bMl0pIGRvbid0IGFsbG93IGl0LgoKWzBdOiBbSVNPL0lFQyA5ODk5OjIwMTFd
+IFByb2dyYW1taW5nIExhbmd1YWdlc+KAlEMsIDNyZCBlZCwgcGFyYWdyYXBoIDcuMTYuMS4xClsx
+XTogaHR0cHM6Ly93d3cuY2wuY2FtLmFjLnVrL3Jlc2VhcmNoL3NlY3VyaXR5L2N0c3JkL2NoZXJp
+LwpbMl06IGh0dHBzOi8vd3d3Lm1vcmVsbG8tcHJvamVjdC5vcmcvCgp2NC4udjM6CiAgLSBSZW5h
+bWVkIF9fT1BFTl9ORUVEU19NT0RFIHRvIFRTVF9PUEVOX05FRURTX01PREUKCnYzLi52MjoKICAt
+IFNlcGFyYXRlIHRoZSBme2dldCxzZXR9eGF0dHIgY2hhbmdlcyBpbnRvIGEgbmV3IHBhdGNoOiBQ
+QVRDSCAxLzMKICAtIERvbid0IHJlbW92ZSB0aGUgdmFyaWFkaWNuZXNzIGZyb20gc2FmZV8qIHdy
+YXBwZXJzIGFueW1vcmUsIGJ1dCBvbmx5CiAgICByZWFkIHRoZSB2YXJpYWRpYyBhcmd1bWVudHMg
+aW4gdGhlIGNhc2VzIHdoZXJlIGl0J3MgZXhwZWN0ZWQKICAtIFJlbW92ZSB0aGUgY2hhbmdlcyB0
+byBTQUZFXyogbWFjcm9zIGFzIHRoZXkncmUgbm90IG5lZWRlZCBhbnltb3JlCiAgLSBBZGQgaW5j
+bHVkZS9sYXBpL2lwYy5oIHRvIGRlZmluZSBJUENfSU5GTwogIC0gZGVmaW5lIF9fT1BFTl9ORUVE
+U19NT0RFIHNpbWlsYXIgdG8gdGhlIGNvbmRpdGlvbnMgdXNlZCBpbiBzdXBwb3J0ZWQKICAgIGxp
+YmNzIChnbGliYywgbXVzbCwgdWNsaWJjLCBhbmQgQmlvbmljKSwgdG8gYmUgc2hhcmVkIGJ5IGJv
+dGgKICAgIHNhZmVfb3BlbiBhbmQgc2FmZV9vcGVuYXQuCiAgLSBUaGUgc3dpdGNoIGNhc2UgaW4g
+c2FmZV9zZW1jdGwgaXMgdGhlIHNhbWUgYXMgdGhlIG9uZSB1c2VkIGluIGdsaWJjLAogICAgYW5k
+IGZ1bmN0aW9uYWxseSBzaW1pbGFyIHRvIHRoZSBvbmUgdXNlZCBpbiBNdXNsLiBCaW9uaWMgYW5k
+IHVjbGliYwogICAgZG9uJ3QgaGF2ZSBhIHNpbWlsYXIgc3dpdGNoIGNhc2UsIHRoZXkgcmVhZCB0
+aGUgdW5pb24gc2VtdW4gdmFyYXJnCiAgICB1bmNvbmRpdGlvbmFsbHkuCiAgLSBUZXN0ZWQgd2l0
+aCBib3RoIGdsaWJjIGFuZCBNdXNsCgp2Mi4udjE6CiAgLSBQQVRDSCAxOiBSZW1vdmUgdGhlIE5V
+TEwgYXJndW1lbnQgZm9yIG1vZGUgZnJvbSBTQUZFX09QRU4gaW5zdGFuY2VzCiAgICB0byBhdm9p
+ZCB0aGUgcG9pbnRlciB0byBpbnQgY29udmVyc2lvbi4KClR1ZG9yIENyZXR1ICgzKToKICBzeXNj
+YWxscy9me2dldCxzZXR9eGF0dHI6IERvbid0IHBhc3MgYSBwb2ludGVyIHRvIG1vZGUgYXJndW1l
+bnQgaW4KICAgIG9wZW4KICBzYWZlX29wZW4sIHNhZmVfb3BlbmF0OiBGaXggdW5kZWZpbmVkIGJl
+aGF2aW91ciBpbiB2YXJhcmcgaGFuZGxpbmcKICBzYWZlX3NlbWN0bDogRml4IHVuZGVmaW5lZCBi
+ZWhhdmlvdXIgaW4gdmFyYXJnIGhhbmRsaW5nCgogaW5jbHVkZS9sYXBpL2ZjbnRsLmggICAgICAg
+ICAgICAgICAgICAgICAgICAgIHwgIDMgKysrCiBpbmNsdWRlL2xhcGkvaXBjLmggICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAxNCArKysrKysrKysrKwogbGliL3NhZmVfbWFjcm9zLmMgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwgMjEgKysrKysrKysrLS0tLS0tLS0KIGxpYi90c3Rf
+c2FmZV9maWxlX2F0LmMgICAgICAgICAgICAgICAgICAgICAgICB8IDEzICsrKysrKystLS0tCiBs
+aWIvdHN0X3NhZmVfc3lzdl9pcGMuYyAgICAgICAgICAgICAgICAgICAgICAgfCAyMyArKysrKysr
+KysrKysrLS0tLS0tCiAuLi4va2VybmVsL3N5c2NhbGxzL2ZnZXR4YXR0ci9mZ2V0eGF0dHIwMS5j
+ICAgfCAgMiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9mZ2V0eGF0dHIvZmdldHhhdHRyMDIuYyAg
+IHwgIDIgKy0KIC4uLi9rZXJuZWwvc3lzY2FsbHMvZmdldHhhdHRyL2ZnZXR4YXR0cjAzLmMgICB8
+ICAyICstCiAuLi4va2VybmVsL3N5c2NhbGxzL2ZzZXR4YXR0ci9mc2V0eGF0dHIwMS5jICAgfCAg
+MiArLQogLi4uL2tlcm5lbC9zeXNjYWxscy9mc2V0eGF0dHIvZnNldHhhdHRyMDIuYyAgIHwgIDIg
+Ky0KIDEwIGZpbGVzIGNoYW5nZWQsIDU4IGluc2VydGlvbnMoKyksIDI2IGRlbGV0aW9ucygtKQog
+Y3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGFwaS9pcGMuaAoKLS0gCjIuMjUuMQoKCi0tIApN
+YWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
