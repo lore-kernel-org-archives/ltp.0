@@ -4,89 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90EAAC43217
-	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 12:03:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A31BC43217
+	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 12:03:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E6BD53CC49F
-	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 13:03:45 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 68B5F3CC4B4
+	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 13:03:56 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4157E3CC4B6
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 13:03:08 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 45F5C3CC4C8
+ for <ltp@lists.linux.it>; Thu,  1 Dec 2022 13:03:09 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7BDC5100376E
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 13:03:06 +0100 (CET)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D202A20E765
+ for <ltp@lists.linux.it>; Thu,  1 Dec 2022 13:03:08 +0100 (CET)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2B1BkpjP030891; Thu, 1 Dec 2022 12:03:05 GMT
+ 2B1C2v8f035647; Thu, 1 Dec 2022 12:03:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=lfSdaqkQjtj7K36FsCtQt+yJUd/qsTLDvw1211FCkhQ=;
- b=PwTag1JcJQVATbd0+tLRL+4BxpdHh6szLr4hZ0vRMZNdZWr0nZELqXTdRF8ZSd0JT5yu
- K17DmyXK5ULX5f8Ig4BXxad8SOtmKhE3bgR2ZgAczCXTNSWvJAKW7G9Rkd6NvRN96aLm
- RQV0LYYPOhlRM8Du/bj9SXhttptFv8dFdh6wjN1p3mL/xWgT8AcBxC0j4kZsbJ11zqOa
- lldqbS3LuVu76DXW7iBnHkdDvA3uEDOgkVS/Id5V+D8hs8pO7AVA8ReiT1/AX3mlHuYR
- 0I4SRZFUtX/Q1RvMXm8dcMh6uVet7D9xfqgab8PMQTzRfIhyHrLfRSDNxyuts5zM5Cjo Yg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3m6upt8c5t-1
+ bh=77vBXbgf4Cj2IWhWCzM3tp1RiLzeueqfc6JabtPd+oM=;
+ b=IX3OkP7nKxULERPAEguqWrIzsqlbnte43nEn/akIkjxYx8BRXwthXEJqa+kSzHLb6gXs
+ DR1PnvcV2hCSHG6pl+zmzldd2QPV1skIqeAD7zZ0C14eSNl6lZQQ6lZpKz+sbzxFx6uH
+ e2Ic+Sp9LnRgynbpg7wY2EODF+ilL0n9eMdMZPqTjJbryNnH9H21LFzE3B5lBtvtcHng
+ DYOeOCID/6MUiHavaZrbuJ4WXbVc4Pa0XKqmLhyc2XqWnYJp/DgrPHSkqyWq9oi4ZTCv
+ PklHOZG2tVN8rLCiyIscrLBv0DzI4aYloE2xZgD2GT565PLVDEMvEf2j7ZUyRBrZluPT gA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.102])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3m6ux9r06d-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 01 Dec 2022 12:03:04 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2B1BoEY3020886;
- Thu, 1 Dec 2022 12:03:02 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com
- (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
- by ppma04ams.nl.ibm.com with ESMTP id 3m3ae9f9hd-1
+ Thu, 01 Dec 2022 12:03:06 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+ by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2B1Bp46R009385;
+ Thu, 1 Dec 2022 12:03:05 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com
+ (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+ by ppma06ams.nl.ibm.com with ESMTP id 3m3a2hyany-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 01 Dec 2022 12:03:02 +0000
+ Thu, 01 Dec 2022 12:03:05 +0000
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com
  (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
- by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
- id 2B1C3gLq49807656
+ by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2B1C32Ck3736156
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 1 Dec 2022 12:03:42 GMT
+ Thu, 1 Dec 2022 12:03:02 GMT
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8ED48A405B;
+ by IMSVA (Postfix) with ESMTP id E5410A4054;
+ Thu,  1 Dec 2022 12:03:01 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id F1CE6A405B;
  Thu,  1 Dec 2022 12:02:59 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 9B1ADA4054;
- Thu,  1 Dec 2022 12:02:57 +0000 (GMT)
 Received: from tarunpc.in.ibm.com (unknown [9.199.157.25])
  by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
- Thu,  1 Dec 2022 12:02:57 +0000 (GMT)
+ Thu,  1 Dec 2022 12:02:59 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Thu,  1 Dec 2022 17:32:43 +0530
-Message-Id: <20221201120248.139396-4-tsahu@linux.ibm.com>
+Date: Thu,  1 Dec 2022 17:32:44 +0530
+Message-Id: <20221201120248.139396-5-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221201120248.139396-1-tsahu@linux.ibm.com>
 References: <20221120191533.164848-1-tsahu@linux.ibm.com>
  <20221201120248.139396-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: FApdzG2m0ePhl92urrqAihDHdPdn7-Xm
-X-Proofpoint-ORIG-GUID: FApdzG2m0ePhl92urrqAihDHdPdn7-Xm
+X-Proofpoint-GUID: Y9XgbRDklptR88B0AFkxyVjhvXtCnvXb
+X-Proofpoint-ORIG-GUID: Y9XgbRDklptR88B0AFkxyVjhvXtCnvXb
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-01_04,2022-12-01_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 mlxlogscore=999
- priorityscore=1501 malwarescore=0 lowpriorityscore=0 suspectscore=0
- adultscore=0 clxscore=1015 impostorscore=0 mlxscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2212010086
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+ mlxscore=0 lowpriorityscore=0
+ clxscore=1015 mlxlogscore=883 adultscore=0 priorityscore=1501 spamscore=0
+ phishscore=0 impostorscore=0 malwarescore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
+ definitions=main-2212010086
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/8] Hugetlb: Migrating libhugetlbfs
- huge_below_4GB_normal_above
+Subject: [LTP] [PATCH 4/8] Hugetlb: Migrating libhugetlbfs icache-hygiene
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,50 +105,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/huge_below_4GB_normal_above.c test
+Migrating the libhugetlbfs/testcases/icache-hygiene.c test
 
-Test Description: Designed to pick up a bug on ppc64 where
-touches_hugepage_low_range() could give false positives because of the
-peculiar (undefined) behaviour of << for large shifts
+Test Description: Older ppc64 kernels don't properly flush dcache to
+icache before giving a cleared page to userspace.  With some exceedingly
+hairy code, this attempts to test for this bug.
+
+This test will never trigger (obviously) on machines with coherent
+icache and dcache (including x86 and POWER5).  On any given run,
+even on a buggy kernel there's a chance the bug won't trigger -
+either because we don't get the same physical page back when we
+remap, or because the icache happens to get flushed in the interim.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
  runtest/hugetlb                               |   1 +
  testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap14.c  | 156 ++++++++++++++++++
- 3 files changed, 158 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
+ .../kernel/mem/hugetlb/hugemmap/hugemmap15.c  | 239 ++++++++++++++++++
+ 3 files changed, 241 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 2029ee4b3..796ebe7fa 100644
+index 796ebe7fa..0714ed34c 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -15,6 +15,7 @@ hugemmap10 hugemmap10
- hugemmap11 hugemmap11
+@@ -16,6 +16,7 @@ hugemmap11 hugemmap11
  hugemmap12 hugemmap12
  hugemmap13 hugemmap13
-+hugemmap14 hugemmap14
+ hugemmap14 hugemmap14
++hugemmap15 hugemmap15
  hugemmap05_1 hugemmap05 -m
  hugemmap05_2 hugemmap05 -s
  hugemmap05_3 hugemmap05 -s -m
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 5955ed613..3106579ce 100644
+index 3106579ce..d59b60fd4 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -14,6 +14,7 @@
- /hugetlb/hugemmap/hugemmap11
+@@ -15,6 +15,7 @@
  /hugetlb/hugemmap/hugemmap12
  /hugetlb/hugemmap/hugemmap13
-+/hugetlb/hugemmap/hugemmap14
+ /hugetlb/hugemmap/hugemmap14
++/hugetlb/hugemmap/hugemmap15
  /hugetlb/hugeshmat/hugeshmat01
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c
 new file mode 100644
-index 000000000..8ccd141f8
+index 000000000..8be4d194f
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
-@@ -0,0 +1,156 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c
+@@ -0,0 +1,239 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
 + * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
@@ -158,135 +164,218 @@ index 000000000..8ccd141f8
 +/*\
 + * [Description]
 + *
-+ * Designed to pick up a bug on ppc64 where touches_hugepage_low_range()
-+ * could give false positives because of the peculiar (undefined)
-+ * behaviour of << for large shifts
++ * Older ppc64 kernels don't properly flush dcache to icache before
++ * giving a cleared page to userspace.  With some exceedingly
++ * hairy code, this attempts to test for this bug.
 + *
-+ * WARNING: The offsets and addresses used within are specifically
-+ * calculated to trigger the bug as it existed.  Don't mess with them
-+ * unless you *really* know what you're doing.
++ * This test will never trigger (obviously) on machines with coherent
++ * icache and dcache (including x86 and POWER5).  On any given run,
++ * even on a buggy kernel there's a chance the bug won't trigger -
++ * either because we don't get the same physical page back when we
++ * remap, or because the icache happens to get flushed in the interim.
 + */
 +
 +#define _GNU_SOURCE
 +#include <stdio.h>
-+#include <sys/mount.h>
++#include <stdlib.h>
++#include <setjmp.h>
++#include <unistd.h>
++#include <signal.h>
++#include <sys/mman.h>
++#include <ucontext.h>
 +#include <limits.h>
 +#include <sys/param.h>
 +#include <sys/types.h>
 +
 +#include "hugetlb.h"
 +
-+#define FOURGB (1UL << 32)
++#define SUCC_JMP 1
++#define FAIL_JMP 2
++#define COPY_SIZE	128
++
++/* Seems to be enough to trigger reliably */
++#define NUM_REPETITIONS	64
 +#define MNTPOINT "hugetlbfs/"
++static long hpage_size;
 +static int  fd = -1;
-+static unsigned long hpage_size;
-+static int page_size;
++
++static void cacheflush(void *p)
++{
++#if defined(__powerpc__)
++	asm volatile("dcbst 0,%0; sync; icbi 0,%0; isync" : : "r"(p));
++#elif defined(__arm__) || defined(__aarch64__)
++	__clear_cache(p, p + COPY_SIZE);
++#else
++	(void)p;
++#endif
++}
++
++static void jumpfunc(int copy, void *p)
++{
++	/*
++	 * gcc bug workaround: if there is exactly one &&label
++	 * construct in the function, gcc assumes the computed goto
++	 * goes there, leading to the complete elision of the goto in
++	 * this case
++	 */
++	void *l = &&dummy;
++
++	l = &&jumplabel;
++
++	if (copy) {
++		memcpy(p, l, COPY_SIZE);
++		cacheflush(p);
++	}
++
++	goto *p;
++ dummy:
++	tst_res(TWARN, "unreachable?");
++
++ jumplabel:
++	return;
++}
++
++static sigjmp_buf sig_escape;
++static void *sig_expected;
++
++static void sig_handler(int signum, siginfo_t *si, void *uc)
++{
++#if defined(__powerpc__) || defined(__powerpc64__) || defined(__ia64__) || \
++	defined(__s390__) || defined(__s390x__) || defined(__sparc__) || \
++	defined(__aarch64__) || (defined(__riscv) && __riscv_xlen == 64)
++	/* On powerpc, ia64, s390 and Aarch64, 0 bytes are an illegal
++	 * instruction, so, if the icache is cleared properly, we SIGILL
++	 * as soon as we jump into the cleared page
++	 */
++	if (signum == SIGILL) {
++		tst_res(TINFO, "SIGILL at %p (sig_expected=%p)", si->si_addr,
++				sig_expected);
++		if (si->si_addr == sig_expected)
++			siglongjmp(sig_escape, SUCC_JMP);
++		siglongjmp(sig_escape, FAIL_JMP + SIGILL);
++	}
++#elif defined(__i386__) || defined(__x86_64__) || defined(__arm__)
++	/* On x86, zero bytes form a valid instruction:
++	 *	add %al,(%eax)		(i386)
++	 * or	add %al,(%rax)		(x86_64)
++	 *
++	 * So, behaviour depends on the contents of [ER]AX, which in
++	 * turn depends on the details of code generation.  If [ER]AX
++	 * contains a valid pointer, we will execute the instruction
++	 * repeatedly until we run off that hugepage and get a SIGBUS
++	 * on the second, truncated page.  If [ER]AX does not contain
++	 * a valid pointer, we will SEGV on the first instruction in
++	 * the cleared page.  We check for both possibilities
++	 * below.
++	 *
++	 * On 32 bit ARM, zero bytes are interpreted as follows:
++	 *  andeq	r0, r0, r0	(ARM state, 4 bytes)
++	 *  movs	r0, r0		(Thumb state, 2 bytes)
++	 *
++	 * So, we only expect to run off the end of the huge page and
++	 * generate a SIGBUS.
++	 */
++	if (signum == SIGBUS) {
++		tst_res(TINFO, "SIGBUS at %p (sig_expected=%p)", si->si_addr,
++				sig_expected);
++		if (sig_expected
++		    && (PALIGN(sig_expected, hpage_size)
++			== si->si_addr)) {
++			siglongjmp(sig_escape, SUCC_JMP);
++		}
++		siglongjmp(sig_escape, FAIL_JMP + SIGBUS);
++	}
++#if defined(__x86_64__) || defined(__i386__)
++	if (signum == SIGSEGV) {
++#ifdef __x86_64__
++		void *pc = (void *)((ucontext_t *)uc)->uc_mcontext.gregs[REG_RIP];
++#else
++		void *pc = (void *)((ucontext_t *)uc)->uc_mcontext.gregs[REG_EIP];
++#endif
++		tst_res(TINFO, "SIGSEGV at %p, PC=%p (sig_expected=%p)",
++				si->si_addr, pc, sig_expected);
++		if (sig_expected == pc)
++			siglongjmp(sig_escape, SUCC_JMP);
++		siglongjmp(sig_escape, FAIL_JMP + SIGSEGV);
++	}
++#endif
++#else
++#error "Need to setup signal conditions for this arch"
++#endif
++}
++
++static int test_once(int fd)
++{
++	void *p, *q;
++
++	SAFE_FTRUNCATE(fd, 0);
++
++	switch (sigsetjmp(sig_escape, 1)) {
++	case SUCC_JMP:
++		sig_expected = NULL;
++		SAFE_FTRUNCATE(fd, 0);
++		return 0;
++	case FAIL_JMP + SIGILL:
++		tst_res(TFAIL, "SIGILL somewhere unexpected");
++		return -1;
++	case FAIL_JMP + SIGBUS:
++		tst_res(TFAIL, "SIGBUS somewhere unexpected");
++		return -1;
++	case FAIL_JMP + SIGSEGV:
++		tst_res(TFAIL, "SIGSEGV somewhere unexpected");
++		return -1;
++	default:
++		break;
++	}
++	p = SAFE_MMAP(NULL, 2*hpage_size, PROT_READ|PROT_WRITE|PROT_EXEC,
++		 MAP_SHARED, fd, 0);
++
++	SAFE_FTRUNCATE(fd, hpage_size);
++
++	q = p + hpage_size - COPY_SIZE;
++
++	jumpfunc(1, q);
++
++	SAFE_FTRUNCATE(fd, 0);
++	p = SAFE_MMAP(p, hpage_size, PROT_READ|PROT_WRITE|PROT_EXEC,
++		 MAP_SHARED|MAP_FIXED, fd, 0);
++
++	q = p + hpage_size - COPY_SIZE;
++	sig_expected = q;
++
++	jumpfunc(0, q); /* This should blow up */
++
++	tst_res(TFAIL, "icache unclean");
++	return -1;
++}
 +
 +static void run_test(void)
 +{
-+	void *p, *q = NULL, *r = NULL;
-+	unsigned long lowaddr, highaddr;
-+	unsigned long below_start;
-+	unsigned long above_end;
++	int i;
 +
-+	/*
-+	 * We use a low address right below 4GB so we can test for
-+	 * off-by-one errors
-+	 */
-+	lowaddr = FOURGB - hpage_size;
-+	tst_res(TINFO, "Mapping hugepage at %lx...", lowaddr);
-+	p = mmap((void *)lowaddr, hpage_size, PROT_READ|PROT_WRITE,
-+		 MAP_SHARED|MAP_FIXED, fd, 0);
-+	if (p == MAP_FAILED) {
-+		/* This is last low slice - 256M just before 4G */
-+		below_start = FOURGB - 256L*1024*1024;
-+		above_end = FOURGB;
++	struct sigaction sa = {
++		.sa_sigaction = sig_handler,
++		.sa_flags = SA_SIGINFO,
++	};
 +
-+		if (range_is_mapped(below_start, above_end) == 1) {
-+			tst_res(TINFO|TERRNO, "region (4G-256M)-4G is not free & "
-+					"mmap() failed expected");
-+			tst_res(TPASS, "Successful but inconclusive");
-+		} else
-+			tst_res(TFAIL|TERRNO, "mmap() huge failed unexpected");
-+		goto cleanup;
-+	}
-+	if (p != (void *)lowaddr) {
-+		tst_res(TFAIL, "Wrong address with MAP_FIXED huge");
-+		goto cleanup;
-+	}
-+	memset(p, 0, hpage_size);
++	SAFE_SIGACTION(SIGILL, &sa, NULL);
++	SAFE_SIGACTION(SIGBUS, &sa, NULL);
++	SAFE_SIGACTION(SIGSEGV, &sa, NULL);
 +
-+	/* Test for off by one errors */
-+	highaddr = FOURGB;
-+	tst_res(TINFO, "Mapping normal page at %lx...", highaddr);
-+	q = mmap((void *)highaddr, page_size, PROT_READ|PROT_WRITE,
-+		 MAP_SHARED|MAP_FIXED|MAP_ANONYMOUS, 0, 0);
-+	if (q == MAP_FAILED) {
-+		below_start = FOURGB;
-+		above_end = FOURGB + page_size;
++	fd = tst_creat_unlinked(MNTPOINT, 0);
 +
-+		if (range_is_mapped(below_start, above_end) == 1) {
-+			tst_res(TINFO|TERRNO, "region 4G-(4G+page) is not free & "
-+					"mmap() failed expected");
-+			tst_res(TPASS, "Successful but inconclusive");
-+		} else
-+			tst_res(TFAIL|TERRNO, "mmap() normal 1 failed unexpected");
-+		goto cleanup;
-+	}
-+	if (q != (void *)highaddr) {
-+		tst_res(TFAIL, "Wrong address with MAP_FIXED normal 1");
-+		goto cleanup;
-+	}
-+	memset(q, 0, page_size);
++	for (i = 0; i < NUM_REPETITIONS; i++)
++		if (test_once(fd))
++			goto cleanup;
 +
-+	/*
-+	 * Why this address?  Well on ppc64, we're working with 256MB
-+	 * segment numbers, hence >>28.  In practice the shift
-+	 * instructions only start wrapping around with shifts 128 or
-+	 * greater.
-+	 */
-+	highaddr = ((lowaddr >> 28) + 128) << 28;
-+	tst_res(TINFO, "Mapping normal page at %lx...", highaddr);
-+	r = mmap((void *)highaddr, page_size, PROT_READ|PROT_WRITE,
-+		 MAP_SHARED|MAP_FIXED|MAP_ANONYMOUS, 0, 0);
-+	if (r == MAP_FAILED) {
-+		below_start = highaddr;
-+		above_end = highaddr + page_size;
-+
-+		if (range_is_mapped(below_start, above_end) == 1) {
-+			tst_res(TINFO|TERRNO, "region haddr-(haddr+page) not free & "
-+					"mmap() failed unexpected");
-+			tst_res(TPASS, "Successful but inconclusive");
-+		}
-+		tst_res(TFAIL|TERRNO, "mmap() normal 2 failed unexpected");
-+		goto cleanup;
-+	}
-+	if (r != (void *)highaddr) {
-+		tst_res(TFAIL, "Wrong address with MAP_FIXED normal 2");
-+		goto cleanup;
-+	}
-+	memset(r, 0, page_size);
-+	tst_res(TPASS, "Successful");
-+
++	tst_res(TPASS, "Successfully tested dcache to icache flush");
 +cleanup:
-+	if (p && p != MAP_FAILED)
-+		SAFE_MUNMAP(p, hpage_size);
-+	if (q && q != MAP_FAILED)
-+		SAFE_MUNMAP(q, page_size);
-+	if (r && r != MAP_FAILED)
-+		SAFE_MUNMAP(r, page_size);
++	SAFE_CLOSE(fd);
 +}
 +
 +static void setup(void)
 +{
-+	page_size = getpagesize();
 +	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
-+
-+	if (sizeof(void *) <= 4)
-+		tst_brk(TCONF, "Machine must be >32 bit");
-+	if (hpage_size > FOURGB)
-+		tst_brk(TCONF, "Huge page size is too large");
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
 +}
 +
 +static void cleanup(void)
@@ -303,7 +392,7 @@ index 000000000..8ccd141f8
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.test_all = run_test,
-+	.hugepages = {2, TST_NEEDS},
++	.hugepages = {3, TST_NEEDS},
 +};
 -- 
 2.31.1
