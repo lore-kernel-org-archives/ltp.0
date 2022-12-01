@@ -4,84 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12B95C43217
-	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 12:30:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FDDDC43217
+	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 13:41:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 537DD3CC4A5
-	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 13:30:38 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id DB9E23CC4B9
+	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 14:41:25 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AFE0C3CC4B6
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 13:29:14 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id D4CC33CC470
+ for <ltp@lists.linux.it>; Thu,  1 Dec 2022 14:41:15 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D3D6D6104B0
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 13:29:13 +0100 (CET)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2B1B2Fcw000973; Thu, 1 Dec 2022 12:29:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=VpEWAwcjm3pPkpLey0OdLrMRWGje+QKElrsOkvB0iKA=;
- b=c00g3W5jGLi57gdmgKL9rU09Yq+HrFrLtnwWX39Khm15+po6L5Jm4zVXSG0rJXK6LFO3
- jGWlkmiX02ftRISjRp3lh1HwAENgWLwWQLmIJ8THUoecEoYW+kj8/Ar3nZEYA+N3weoS
- v0ZnoSqmaXdQHKekFRCCfK6g+/KyLjtMJ8Rb0JtpvXVZryUghCnFkZi09kMLOhcn32ps
- c+z7hFMOmZVfJA/KTIt/FNJKYi/3N+Eb3lyoeKLQuotDLeQJukPT14l3ewNmbit+Awt6
- gCauuCy/0agnkmPnIRhSOI2Z+jJtcyCQ9m2g0ijnJod1ExGHmJ7sUZF82jyWNntAmc9T DQ== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3m6u1vsyt0-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 01 Dec 2022 12:29:11 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2B1CM1Pb012663;
- Thu, 1 Dec 2022 12:29:09 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com
- (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
- by ppma04ams.nl.ibm.com with ESMTP id 3m3ae9fagy-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 01 Dec 2022 12:29:09 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com
- [9.149.105.232])
- by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
- id 2B1CMYKE3801756
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 1 Dec 2022 12:22:34 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 15A955204E;
- Thu,  1 Dec 2022 12:29:06 +0000 (GMT)
-Received: from tarunpc.in.ibm.com (unknown [9.199.157.25])
- by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 47DAC52051;
- Thu,  1 Dec 2022 12:29:04 +0000 (GMT)
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Thu,  1 Dec 2022 17:58:44 +0530
-Message-Id: <20221201122844.142062-9-tsahu@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221201122844.142062-1-tsahu@linux.ibm.com>
-References: <20221201122844.142062-1-tsahu@linux.ibm.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 489251BE9BA8
+ for <ltp@lists.linux.it>; Thu,  1 Dec 2022 14:41:14 +0100 (CET)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 23E311FD8F;
+ Thu,  1 Dec 2022 13:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1669902074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Zp82etR4AoB9/n40LxH/kR5etus3dHh06Ta8bdRLjdw=;
+ b=ZCeHpIVKS+t8X7owTlnaBK2VGL5tlKf2A/XQy9jnjjnvpHNJXjm8pNk7OjVTWtV3PY651L
+ u057nN6LnuTitZm7s+jzi49xoCXeIqgj/Gxp73bCMYSgF4JX5YcgpiLXSgm4lROZ3WB7Ol
+ dj3alFzaD9bMbpB9wXIp6QrSTK7xv20=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1669902074;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Zp82etR4AoB9/n40LxH/kR5etus3dHh06Ta8bdRLjdw=;
+ b=1E76tZ3R/x5lKseMYYtnHpaHZJkBVSTM5H9edLbKVby5RTqge4Y0sN7AsRdN3JxXEhSLL1
+ CxiJdhCuRu3AggBw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 12BC11320E;
+ Thu,  1 Dec 2022 13:41:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap1.suse-dmz.suse.de with ESMTPSA id OYr0A/quiGNOGQAAGKfGzw
+ (envelope-from <chrubis@suse.cz>); Thu, 01 Dec 2022 13:41:14 +0000
+Date: Thu, 1 Dec 2022 14:42:33 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Zhao Gongyi <zhaogongyi@huawei.com>
+Message-ID: <Y4ivSaZhuMSevMR2@yuki>
+References: <20221201025141.71227-1-zhaogongyi@huawei.com>
+ <20221201025141.71227-2-zhaogongyi@huawei.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: xD3_q8x8hmlllIFU-l8Nh1uOvUSa2LdL
-X-Proofpoint-ORIG-GUID: xD3_q8x8hmlllIFU-l8Nh1uOvUSa2LdL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-01_04,2022-12-01_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 malwarescore=0
- bulkscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- mlxlogscore=999 lowpriorityscore=0 clxscore=1015 spamscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2212010086
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20221201025141.71227-2-zhaogongyi@huawei.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 8/8] Hugetlb: Migrating libhugetlbfs misaligned_offset
+Subject: Re: [LTP] [PATCH v2 1/2] lib/safe_macros: Add SAFE_STRTOF
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,216 +76,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
- vaibhav@linux.ibm.com
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/misaligned_offset.c test
+Hi!
+> +float safe_strtof(const char *file, const int lineno,
+> +		  void (cleanup_fn) (void), char *str,
+> +		  float min, float max)
+> +{
+> +	float rval;
+> +	char *endptr;
+> +
+> +	errno = 0;
+> +	rval = strtof(str, &endptr);
+> +
+> +	if ((errno == ERANGE) || (rval == 0)
+> +	    || (rval == HUGE_VAL) || (rval == -HUGE_VAL)) {
 
-Test Name: Misaligned offset
+This does not look right, supposedly the ERANGE is only set on overflow,
+and the rval is not guaranteed to be exact on underflow. Also rval == 0
+is a valid result.
 
-Test Description: At one stage, a misconversion of hugetlb_vmtruncate_list
-to a prio_tree meant that on 32-bit machines, truncates at or above 4GB
-could truncate lower pages, resulting in BUG_ON()s.
+We do zero errno above so I would just do:
 
-WARNING: The offsets and addresses used within are specifically
-calculated to trigger the bug as it existed.  Don't mess with them
-unless you *really* know what you're doing.
+	if (errno) {
+		tst_brkm_(...);
+		return rval;
+	}
 
-The kernel bug in question was fixed with
-'commit 856fc2950555 ("[PATCH] hugetlb: fix prio_tree unit")'.
+> +		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
+> +			"strtof(%s) failed", str);
+> +		return rval;
+> +	}
+> +
+> +	if (rval > max || rval < min) {
+> +		tst_brkm_(file, lineno, TBROK, cleanup_fn,
+> +			"strtof(%s): %f is out of range %f - %f",
+> +			str, rval, min, max);
+> +		return 0;
+> +	}
+> +
+> +	if (endptr == str || (*endptr != '\0' && *endptr != '\n')) {
+> +		tst_brkm_(file, lineno, TBROK, cleanup_fn,
+> +			"Invalid value: '%s'", str);
+> +		return 0;
+> +	}
+> +
+> +	return rval;
+> +}
 
-Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
----
- runtest/hugetlb                               |   1 +
- testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap19.c  | 147 ++++++++++++++++++
- 3 files changed, 149 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap19.c
+Otherwise it looks good.
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index de76cdaf2..4da1525a7 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -20,6 +20,7 @@ hugemmap15 hugemmap15
- hugemmap16 hugemmap16
- hugemmap17 hugemmap17
- hugemmap18 hugemmap18
-+hugemmap19 hugemmap19
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index daee70586..b6b3e5ddd 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -19,6 +19,7 @@
- /hugetlb/hugemmap/hugemmap16
- /hugetlb/hugemmap/hugemmap17
- /hugetlb/hugemmap/hugemmap18
-+/hugetlb/hugemmap/hugemmap19
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap19.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap19.c
-new file mode 100644
-index 000000000..c5b29a701
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap19.c
-@@ -0,0 +1,147 @@
-+// SPDX-License-Identifier: LGPL-2.1-or-later
-+/*
-+ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
-+ * Copyright (C) 2006 Hugh Dickins <hugh@veritas.com>
-+ * Author: David Gibson & Adam Litke
-+ */
-+
-+/*\
-+ * [Descripiton]
-+ *
-+ * At one stage, a misconversion of hugetlb_vmtruncate_list to a
-+ * prio_tree meant that on 32-bit machines, truncates at or above 4GB
-+ * could truncate lower pages, resulting in BUG_ON()s.
-+ *
-+ * WARNING: The offsets and addresses used within are specifically
-+ * calculated to trigger the bug as it existed.  Don't mess with them
-+ * unless you *really* know what you're doing.
-+ *
-+ * The kernel bug in question was fixed with commit
-+ * 856fc29505556cf263f3dcda2533cf3766c14ab6.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+
-+#include "hugetlb.h"
-+
-+#define RANDOM_CONSTANT	0x1234ABCD
-+#define MNTPOINT "hugetlbfs/"
-+static int page_size;
-+static long hpage_size;
-+static int  fd = -1;
-+
-+static void run_test(void)
-+{
-+	off_t buggy_offset;
-+	void *p, *q;
-+	volatile int *pi;
-+	int err;
-+
-+	/*
-+	 * First, we make a 2 page sane hugepage mapping.  Then we
-+	 * memset() it to ensure that the ptes are instantiated for
-+	 * it.  Then we attempt to replace the second half of the map
-+	 * with one at a bogus offset.  We leave the first page of
-+	 * sane mapping in place to ensure that the corresponding
-+	 * pud/pmd/whatever entries aren't cleaned away.  It's those
-+	 * bad entries which can trigger bad_pud() checks if the
-+	 * backout path for the bogus mapping is buggy, which it was
-+	 * in some kernels.
-+	 */
-+	tst_res(TINFO, "Initial free hugepages: %lu",
-+		SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE));
-+
-+	/* First get arena of three hpages size, at file offset 4GB */
-+	p = SAFE_MMAP(NULL, 2*hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
-+
-+	tst_res(TINFO, "After Mapping reference map, Free hugepages: %lu",
-+		SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE));
-+	tst_res(TINFO, "Mapped Address Range: %p-%p", p, p+2*hpage_size-1);
-+
-+	memset(p, 0, 2*hpage_size);
-+	pi = p;
-+	*pi = RANDOM_CONSTANT;
-+
-+	tst_res(TINFO, "After instantiate the pages, Free hugepages: %lu",
-+		   SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE));
-+
-+	/*
-+	 * Toggle the permissions on the first page.  This forces TLB
-+	 * entries (including hash page table on powerpc) to be
-+	 * flushed, so that the page tables must be accessed for the
-+	 * test further down.  In the buggy case, those page tables
-+	 * can get thrown away by a pud_clear()
-+	 */
-+	err = mprotect(p, hpage_size, PROT_READ);
-+	if (err)
-+		tst_brk(TBROK|TERRNO, "mprotect(%p, 0x%lx, PROT_READ)", p, hpage_size);
-+
-+	/* Replace top hpage by hpage mapping at confusing file offset */
-+	buggy_offset = page_size;
-+	tst_res(TINFO, "Replacing map at %p with map from offset 0x%lx...",
-+	       p + hpage_size, (unsigned long)buggy_offset);
-+	q = mmap(p + hpage_size, hpage_size, PROT_READ|PROT_WRITE,
-+		 MAP_FIXED|MAP_PRIVATE, fd, buggy_offset);
-+	if (q != MAP_FAILED) {
-+		tst_res(TFAIL|TERRNO, "bogus offset mmap() succeeded at %p", q);
-+		goto cleanup;
-+	}
-+	if (errno != EINVAL) {
-+		tst_res(TFAIL|TERRNO, "bogus mmap() failed should be \"%s\" but it is",
-+		     tst_strerrno(EINVAL));
-+		goto cleanup;
-+	}
-+
-+	tst_res(TINFO, "After Mapping with buggy offset, Free hugepages: %lu",
-+		SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE));
-+
-+	if (*pi != RANDOM_CONSTANT) {
-+		tst_res(TFAIL, "Pre-existing mapping clobbered: %x instead of %x",
-+		     *pi, RANDOM_CONSTANT);
-+		goto cleanup;
-+	}
-+
-+	/*
-+	 * The real test is whether we got a bad_pud() or similar
-+	 * during the run.  The check above, combined with the earlier
-+	 * mprotect()s to flush the TLB are supposed to catch it, but
-+	 * it's hard to be certain.  Once bad_pud() is called
-+	 * behaviour can be very strange.
-+	 */
-+
-+	tst_res(TPASS, "Successful but inconclusive");
-+cleanup:
-+	SAFE_MUNMAP(p, 2*hpage_size);
-+}
-+
-+static void setup(void)
-+{
-+	page_size = getpagesize();
-+	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd >= 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.tags = (struct tst_tag[]) {
-+		{"linux-git", "856fc2950555"},
-+		{}
-+	},
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {4, TST_NEEDS},
-+};
 -- 
-2.31.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
