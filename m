@@ -4,63 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEB53C43217
-	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 08:44:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9952BC43217
+	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 08:51:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B26203CC4AF
-	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 09:44:07 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 05CDA3CC48E
+	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 09:51:54 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE0E73CC45A
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 09:43:57 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 95D933CC471
+ for <ltp@lists.linux.it>; Thu,  1 Dec 2022 09:51:44 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D9DB61A01988
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 09:43:56 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1DCF2600428
+ for <ltp@lists.linux.it>; Thu,  1 Dec 2022 09:51:43 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CEC9721B1E
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 08:43:54 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2405921B14;
+ Thu,  1 Dec 2022 08:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669884234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Awkjrf0jGBYrI0rB0dib++NB0OnNdKxBI2T8f9qWiZI=;
- b=W3qNOAy+MGB+IfPETAjpqEgNisENEk5VOnqFqOeSh5U3iVdRt5UsvwVOcTyOEtWXgpaqky
- cYdfpPGsB81T6B2DCadyDDMD2DRTKxjm6KUsPMMyuEhmdSG2L2qSbh55ouwh+zg0M+90mD
- sW86nRbXyllCFrPwybwWzHctRFLMgn0=
+ t=1669884703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=uf6TjFanvoqx14Q4zv18Q13431vHtDFuqooVscmm4PE=;
+ b=ORoHo6j6k74sPfTH1p7jFfWXY+YT31zUuh1mEa3XTgSfXUdcu27vf8QIXDDt87MIWlufU4
+ 8U3jf2mEpXpR/VOdq5QSKKWxMWUCvNBBxyCliL1ibzjQjBHfTaaX/SZhP0ObzL7IOTLTE1
+ EdzoBGFvPxnHBJbnTfxF8vv0PeBwBK4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669884234;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Awkjrf0jGBYrI0rB0dib++NB0OnNdKxBI2T8f9qWiZI=;
- b=YGI2WCEDt+bqymQIMm/T8JudcAtc4L6Y7I4ZSNcb27687F8qb7NBeAvN+oQ7aYPDD04vFW
- 1GEkubNo+tLCBADg==
+ s=susede2_ed25519; t=1669884703;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=uf6TjFanvoqx14Q4zv18Q13431vHtDFuqooVscmm4PE=;
+ b=mJnMZWdhfRA9gphwFftX40ys47nFos6klCQc/wiqUEqj04urr07Bp2BWMxU4PI0b/+gTt6
+ y0SMWLp5opfuaMDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A82113B4A
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 08:43:54 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9CEB713B4A;
+ Thu,  1 Dec 2022 08:51:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2qgEA0ppiGM9FwAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 01 Dec 2022 08:43:54 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id oXWxFB1riGOtGwAAMHmgww
+ (envelope-from <akumar@suse.de>); Thu, 01 Dec 2022 08:51:41 +0000
 From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Thu,  1 Dec 2022 14:13:51 +0530
-Message-Id: <20221201084351.31644-1-akumar@suse.de>
-X-Mailer: git-send-email 2.38.1
+To: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 01 Dec 2022 14:21:38 +0530
+Message-ID: <1774275.JVTEKzzMJm@localhost>
+Organization: SUSE
+In-Reply-To: <Y4cnbaAtMAtw3IWC@pevik>
+References: <87r0xmt3ts.fsf@suse.de> <Y4cZxK/SqTtpQb07@pevik>
+ <Y4cnbaAtMAtw3IWC@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] statvfs01: Convert to new LTP API
+Subject: Re: [LTP] [PATCH v2] statvfs01: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,147 +78,87 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Li Wang <liwan@redhat.com>, Richard Palethorpe <rpalethorpe@suse.com>,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Removed the TINFO statements,
-Added a validation of statvfs.f_namemax field by trying to create
-a file having name longer than max allowed.
+Hi Petr,
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/statvfs/statvfs01.c | 100 +++++-------------
- 1 file changed, 28 insertions(+), 72 deletions(-)
+On Wednesday, November 30, 2022 3:20:37 PM IST Petr Vorel wrote:
+> Hi all,
+> 
+> ...
+> > > +static struct tst_test test = {
+> > > +	.test_all = run,
+> > > +	.setup = setup,
+> > > +	.needs_root = 1,
+> > > +	.mount_device = 1,
+> > > +	.mntpoint = MNT_POINT,
+> > > +	.all_filesystems = 1,
+> > > +	.skip_filesystems = (const char *const[]) {
+> > > +		"vfat",
+> > > +		"exfat",
+> > I was looking what's wrong with vfat and exfat.
+> > statvfs.f_namemax returns 1530, which is obviously too long, thus valid_fname
+> > obviously returns ENAMETOOLONG (36). Tested on 6.1.0-rc6-1.g4c01546-default.
+> > I wonder why, isn't that a bug?
+> 
+> To reply myself, both glibc and musl defines:
+> statvfs->f_namemax = statfs->f_namelen;
+> 
+> TL;DR: 6 * 255 = 1530 due names being in UTF-8:
+> 
+> Therefore looking into kernel sources for statfs->f_namelen:
+> 
+> include/linux/nls.h
+> #define NLS_MAX_CHARSET_SIZE 6 /* for UTF-8 */
+> 
+> === exfat ===
+> exfat/exfat_raw.h
+> #define EXFAT_MAX_FILE_LEN 255
+> 
+> exfat/super.c
+> static int exfat_statfs(struct dentry *dentry, struct kstatfs *buf)
+> {
+> 	...
+>     /* Unicode utf16 255 characters */
+>     buf->f_namelen = EXFAT_MAX_FILE_LEN * NLS_MAX_CHARSET_SIZE;
+> 
+> === vfat ===
+> include/uapi/linux/msdos_fs.h
+> #define FAT_LFN_LEN 255     /* maximum long name length */
+> 
+> fat/inode.c
+> static int fat_statfs(struct dentry *dentry, struct kstatfs *buf)
+> {
+> 	...
+>     buf->f_namelen =
+>         (sbi->options.isvfat ? FAT_LFN_LEN : 12) * NLS_MAX_CHARSET_SIZE;
+> 
+> => i.e. for vfat without long filename support it'd be 72.
+> 
+> How about
+> 1) don't skip exfat and vfat but just skip creating file with valid name? or
+> 
+> 2) Add #define NLS_MAX_CHARSET_SIZE 6 and for vfat and exfat calculate
+> length as: buf.f_namemax / NLS_MAX_CHARSET_SIZE - 1 ?
+> 
+> Kind regards,
+> Petr
+> 
 
-diff --git a/testcases/kernel/syscalls/statvfs/statvfs01.c b/testcases/kernel/syscalls/statvfs/statvfs01.c
-index e3b356c93..3bed9a78e 100644
---- a/testcases/kernel/syscalls/statvfs/statvfs01.c
-+++ b/testcases/kernel/syscalls/statvfs/statvfs01.c
-@@ -1,92 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2005.  All Rights Reserved.
-  *    AUTHOR: Prashant P Yendigeri <prashant.yendigeri@wipro.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- */
--/*
-- *    DESCRIPTION
-- *      This is a Phase I test for the statvfs(2) system call.
-- *      It is intended to provide a limited exposure of the system call.
-- *	This call behaves similar to statfs.
-+ * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
- 
-+/*\
-+ * [Description]
-+ *
-+ * Verify that statvfs() executes successfully for all
-+ * available filesystems. Verify statvfs.f_namemax field
-+ * by trying to create a file having name longer than
-+ * maximum allowed.
-+ */
- #include <stdio.h>
--#include <unistd.h>
--#include <errno.h>
- #include <sys/statvfs.h>
--#include <stdint.h>
--
--#include "test.h"
--
--#define TEST_PATH "/"
-+#include "tst_test.h"
- 
--static void setup(void);
--static void cleanup(void);
-+#define MNT_POINT "mntpoint"
-+#define TEST_PATH MNT_POINT"/testfile"
- 
--char *TCID = "statvfs01";
--int TST_TOTAL = 1;
--
--int main(int ac, char **av)
-+static void run(void)
- {
- 	struct statvfs buf;
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
-+	char *toolong_fname;
- 
--		TEST(statvfs(TEST_PATH, &buf));
-+	TST_EXP_PASS(statvfs(TEST_PATH, &buf));
- 
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TTERRNO, "statvfs(%s, ...) failed",
--				 TEST_PATH);
--		} else {
--			tst_resm(TPASS, "statvfs(%s, ...) passed", TEST_PATH);
--		}
-+	toolong_fname = SAFE_MALLOC(buf.f_namemax + 1);
-+	memset(toolong_fname, 'b', buf.f_namemax + 1);
- 
--	}
--
--	tst_resm(TINFO, "This call is similar to statfs");
--	tst_resm(TINFO, "Extracting info about the '%s' file system",
--		 TEST_PATH);
--	tst_resm(TINFO, "file system block size = %lu bytes", buf.f_bsize);
--	tst_resm(TINFO, "file system fragment size = %lu bytes", buf.f_frsize);
--	tst_resm(TINFO, "file system free blocks = %ju",
--		 (uintmax_t) buf.f_bfree);
--	tst_resm(TINFO, "file system total inodes = %ju",
--		 (uintmax_t) buf.f_files);
--	tst_resm(TINFO, "file system free inodes = %ju",
--		 (uintmax_t) buf.f_ffree);
--	tst_resm(TINFO, "file system id = %lu", buf.f_fsid);
--	tst_resm(TINFO, "file system max filename length = %lu", buf.f_namemax);
--
--	cleanup();
--	tst_exit();
-+	TST_EXP_FAIL(creat(toolong_fname, 0444), ENAMETOOLONG);
- }
- 
- static void setup(void)
- {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	SAFE_TOUCH(TEST_PATH, 0666, NULL);
- }
- 
--static void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.mntpoint = MNT_POINT,
-+	.all_filesystems = 1
-+};
--- 
-2.38.1
+Thank you for the review and research on vfat, exfat scenarios.
+I have adopted the option 1 for now and sent a v3 of this patch.
+
+
+Regards,
+Avinesh
+
+
+
 
 
 -- 
