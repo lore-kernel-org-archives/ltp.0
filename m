@@ -4,75 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23A2BC43217
-	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 09:17:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14D6CC43217
+	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 09:45:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D3AEB3CC49B
-	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 10:17:37 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 5E2393CC48F
+	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 10:45:28 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CFC753CA9B6
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 10:17:26 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 70F223CC450
+ for <ltp@lists.linux.it>; Thu,  1 Dec 2022 10:45:14 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A1A5B2013C9
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 10:17:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1669886244;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B00491001144
+ for <ltp@lists.linux.it>; Thu,  1 Dec 2022 10:45:12 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 9B8E121AAE;
+ Thu,  1 Dec 2022 09:45:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1669887912;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zpfDgndwIqNNDuu4YqmsIGNRVOQNfDP5zCOyYVa0mu8=;
- b=b5340+hXKDBxMvPhADTDzrQKEbqgt5u4BxHqWjRc+Q7xgs17XoKTfAWCxPme11+wPzQ5Xv
- oTN78nvS0tpXTO20PYlARbvj1IklRU36znHAaAX0uwceiOlYLevXFgqulPsSsdmVn4Wum/
- 8IvWjQ/8SVf3Bndinsy21HVzZnvuCgE=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-426-PzRrg_haOsGwkGDnEGAN0g-1; Thu, 01 Dec 2022 04:17:22 -0500
-X-MC-Unique: PzRrg_haOsGwkGDnEGAN0g-1
-Received: by mail-wr1-f69.google.com with SMTP id
- g14-20020adfa48e000000b00241f94bcd54so217557wrb.23
- for <ltp@lists.linux.it>; Thu, 01 Dec 2022 01:17:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=zpfDgndwIqNNDuu4YqmsIGNRVOQNfDP5zCOyYVa0mu8=;
- b=1F3b4aFNP8LlGNxg/6v8zbFfgcOKxQQNDgp9kXtBMEvhHhLxbc/KvuBWEUTJDaoaKC
- gfhdnWyAWlnKXPxKn17Unkk7fkMPQAgQcRFqV1s97a1+SqyfxkYsHPnnsAPZaiPwi60V
- ugxhzZd9wUe/+AoCZGiyoNHGFLAIAX4vfzZtUGuTvv+o4Hzn5d2w/c/r0oRqFdFw2c7Z
- BAVAECeUISZswoJkGZb1d/AImaSrsM+2pCfc4n8wE/19L+4ej5YGyH+9mPCtfOZNMzw0
- uErn3oTa1mN3QpJ8KY2yuIvDVy59llbYUBoquyOkxyIP6S9F+/ZnmWqlSYEn5fmbku8T
- rUmQ==
-X-Gm-Message-State: ANoB5pkphhDskR6sa4LrufSWcgfjI2K3YZOP2nPNKfwQwFLJK5/PLdUX
- qjlyQLzzTbXKzD8IunWBkTio6FM/sMDaspMO7D0EMIP7GKtuZ0KS9mYEQoj8Abz4JEA5oWoOmV3
- lBau//P8uQO2H3bZHtusc0EeqEDg=
-X-Received: by 2002:adf:e8c9:0:b0:22e:33dc:3bf1 with SMTP id
- k9-20020adfe8c9000000b0022e33dc3bf1mr41012697wrn.316.1669886240425; 
- Thu, 01 Dec 2022 01:17:20 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf7Cf6qlyYl5khII8zu/9jLlmlmEM15thCfSJaBmcU4sxanFccleLfeRd/rbXbVkMjfJRt/MP2y3fPzTD9A5HrU=
-X-Received: by 2002:adf:e8c9:0:b0:22e:33dc:3bf1 with SMTP id
- k9-20020adfe8c9000000b0022e33dc3bf1mr41012686wrn.316.1669886240201; Thu, 01
- Dec 2022 01:17:20 -0800 (PST)
+ bh=F9A0vuQl0PJQprHt1qfFmIu4siUDANP5myz8wszOnK0=;
+ b=mP45wUxXpvxuYMdl6B40HnSHGysg01sOpvXqbDKdCOWUTPP3XHgvrOOD33VNlg1AOomDbo
+ zUDhVbBUtFK8hOdAoYgIKbJaPNfHoVO/06yCkfGCRyq7NQGZ54G/n7SmTclxOGT6b4YdM9
+ 5AL+A7NmOQ9vjKq0i4kgJVQypBsfOU0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1669887912;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=F9A0vuQl0PJQprHt1qfFmIu4siUDANP5myz8wszOnK0=;
+ b=lZXmNoea6BmG5LDVk2KNvNj3wmwikJhN/uN7dwMb9vKUMQpug1GJOZNholqzYuhkWp8SNq
+ ZteixtRupIG9V7DQ==
+Received: from g78 (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 5D4412C142;
+ Thu,  1 Dec 2022 09:45:12 +0000 (UTC)
+References: <87r0xmt3ts.fsf@suse.de> <20221130070500.28664-1-akumar@suse.de>
+ <Y4cZxK/SqTtpQb07@pevik> <Y4cnbaAtMAtw3IWC@pevik>
+ <CAEemH2dO+QXEteiEOqA5o_Axxxe9c4mdPrMB34Pj1FMPyDf9EQ@mail.gmail.com>
+User-agent: mu4e 1.8.11; emacs 28.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Li Wang <liwang@redhat.com>
+Date: Thu, 01 Dec 2022 09:34:07 +0000
+Organization: Linux Private Site
+In-reply-to: <CAEemH2dO+QXEteiEOqA5o_Axxxe9c4mdPrMB34Pj1FMPyDf9EQ@mail.gmail.com>
+Message-ID: <87y1rrihjs.fsf@suse.de>
 MIME-Version: 1.0
-References: <87r0xmt3ts.fsf@suse.de> <Y4cZxK/SqTtpQb07@pevik>
- <Y4cnbaAtMAtw3IWC@pevik> <1774275.JVTEKzzMJm@localhost>
-In-Reply-To: <1774275.JVTEKzzMJm@localhost>
-From: Li Wang <liwan@redhat.com>
-Date: Thu, 1 Dec 2022 17:17:08 +0800
-Message-ID: <CAEemH2eDBmac9hSZ+n_hQhLjaHOtxqSAj+QfJ_Sc_+4jd4hDww@mail.gmail.com>
-To: Avinesh Kumar <akumar@suse.de>, Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] statvfs01: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
@@ -86,133 +72,115 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
-Content-Type: multipart/mixed; boundary="===============1466321833=="
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---===============1466321833==
-Content-Type: multipart/alternative; boundary="00000000000029c4f705eec0b0bb"
+Hello,
 
---00000000000029c4f705eec0b0bb
-Content-Type: text/plain; charset="UTF-8"
+Li Wang <liwang@redhat.com> writes:
 
-Avinesh Kumar <akumar@suse.de> wrote:
-
-> How about
-> > 1) don't skip exfat and vfat but just skip creating file with valid
-> name? or
-> >
-> > 2) Add #define NLS_MAX_CHARSET_SIZE 6 and for vfat and exfat calculate
-> > length as: buf.f_namemax / NLS_MAX_CHARSET_SIZE - 1 ?
+> On Wed, Nov 30, 2022 at 5:50 PM Petr Vorel <pvorel@suse.cz> wrote:
 >
+>> Hi all,
+>>
+>> ...
+>> > > +static struct tst_test test = {
+>> > > +   .test_all = run,
+>> > > +   .setup = setup,
+>> > > +   .needs_root = 1,
+>> > > +   .mount_device = 1,
+>> > > +   .mntpoint = MNT_POINT,
+>> > > +   .all_filesystems = 1,
+>> > > +   .skip_filesystems = (const char *const[]) {
+>> > > +           "vfat",
+>> > > +           "exfat",
+>> > I was looking what's wrong with vfat and exfat.
+>> > statvfs.f_namemax returns 1530, which is obviously too long, thus
+>> valid_fname
+>> > obviously returns ENAMETOOLONG (36). Tested on
+>> 6.1.0-rc6-1.g4c01546-default.
+>> > I wonder why, isn't that a bug?
 
+This is the kind of issue which made me think it should be a separate
+patch. Because maybe it is a bug.
 
-> Thank you for the review and research on vfat, exfat scenarios.
-> I have adopted the option 1 for now and sent a v3 of this patch.
+>>
+>> To reply myself, both glibc and musl defines:
+>> statvfs->f_namemax = statfs->f_namelen;
+>>
+>> TL;DR: 6 * 255 = 1530 due names being in UTF-8:
+>>
+>> Therefore looking into kernel sources for statfs->f_namelen:
+>>
+>> include/linux/nls.h
+>> #define NLS_MAX_CHARSET_SIZE 6 /* for UTF-8 */
+>>
+>> === exfat ===
+>> exfat/exfat_raw.h
+>> #define EXFAT_MAX_FILE_LEN 255
+>>
+>> exfat/super.c
+>> static int exfat_statfs(struct dentry *dentry, struct kstatfs *buf)
+>> {
+>>         ...
+>>     /* Unicode utf16 255 characters */
+>>     buf->f_namelen = EXFAT_MAX_FILE_LEN * NLS_MAX_CHARSET_SIZE;
+>>
+>> === vfat ===
+>> include/uapi/linux/msdos_fs.h
+>> #define FAT_LFN_LEN 255     /* maximum long name length */
+>>
+>> fat/inode.c
+>> static int fat_statfs(struct dentry *dentry, struct kstatfs *buf)
+>> {
+>>         ...
+>>     buf->f_namelen =
+>>         (sbi->options.isvfat ? FAT_LFN_LEN : 12) * NLS_MAX_CHARSET_SIZE;
+>>
+>> => i.e. for vfat without long filename support it'd be 72.
+>>
+>> How about
+>> 1) don't skip exfat and vfat but just skip creating file with valid name?
+>> or
+>>
 >
+> Sure, I think this method is better.
 
-I thought option_1 meant to skip creating a valide-file when
-detecting on "vfat,exfat" FS, but not skip for others.
+Is it supposed to return the length in bytes or unicode 'characters'? If
+it's the later then things get really complicated so I guess it's bytes.
 
-Or probably I misunderstood Petr's words.
+However BTRFS also supports unicode (and bigger file names in theory)
+and just reports 255. If you look at the BTRFS code comments, it says
+that they limited it to 255 because other things might break.
 
-Anyway, don't hurry to send V3 until we get an agreement :).
+So will creating a file with > 255 chars ever work, even if we use
+UTF-16 symbols?
 
---- a/testcases/kernel/syscalls/statvfs/statvfs01.c
-+++ b/testcases/kernel/syscalls/statvfs/statvfs01.c
-@@ -30,7 +30,10 @@ static void run(void)
-        memset(valid_fname, 'a', buf.f_namemax - 1);
-        memset(invalid_fname, 'b', buf.f_namemax + 1);
+In the meantime could we just read the data into a guarded buffer and
+check it's not all zero's or all one's (for e.g.)?
 
--       TST_EXP_FD(creat(valid_fname, 0444));
-+       long fs_type = tst_fs_type(TEST_PATH);
-+       if  (fs_type != TST_VFAT_MAGIC && fs_type != TST_EXFAT_MAGIC)
-+               TST_EXP_FD(creat(valid_fname, 0444));
-+
-        TST_EXP_FAIL(creat(invalid_fname, 0444), ENAMETOOLONG);
- }
-
-@@ -46,9 +49,4 @@ static struct tst_test test = {
-        .mount_device = 1,
-        .mntpoint = MNT_POINT,
-        .all_filesystems = 1,
--       .skip_filesystems = (const char *const[]) {
--               "vfat",
--               "exfat",
--               NULL
--       }
- };
+>
+>
+>>
+>> 2) Add #define NLS_MAX_CHARSET_SIZE 6 and for vfat and exfat calculate
+>> length as: buf.f_namemax / NLS_MAX_CHARSET_SIZE - 1 ?
+>>
+>> Kind regards,
+>> Petr
+>>
+>> --
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+>>
+>>
 
 
 -- 
-Regards,
-Li Wang
-
---00000000000029c4f705eec0b0bb
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"fon=
-t-size:small">Avinesh Kumar &lt;<a href=3D"mailto:akumar@suse.de">akumar@su=
-se.de</a>&gt; wrote:<br></div></div><div class=3D"gmail_quote"><div><br></d=
-iv><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bord=
-er-left:1px solid rgb(204,204,204);padding-left:1ex">
-&gt; How about<br>
-&gt; 1) don&#39;t skip exfat and vfat but just skip creating file with vali=
-d name? or<br>
-&gt; <br>
-&gt; 2) Add #define NLS_MAX_CHARSET_SIZE 6 and for vfat and exfat calculate=
-<br>
-&gt; length as: buf.f_namemax / NLS_MAX_CHARSET_SIZE - 1 ?<br></blockquote>=
-<div>=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
-0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
-Thank you for the review and research on vfat, exfat scenarios.<br>
-I have adopted the option 1 for now and sent a v3 of this patch.<br></block=
-quote><div><br></div><div class=3D"gmail_default" style=3D"font-size:small"=
->I thought option_1 meant to skip creating a=C2=A0valide-file when</div><di=
-v class=3D"gmail_default" style=3D"font-size:small">detecting on &quot;vfat=
-,exfat&quot; FS, but not skip for others.</div><div class=3D"gmail_default"=
- style=3D"font-size:small"><br></div><div class=3D"gmail_default" style=3D"=
-font-size:small">Or probably I misunderstood Petr&#39;s words.</div><div cl=
-ass=3D"gmail_default" style=3D"font-size:small"><br></div><div class=3D"gma=
-il_default" style=3D"font-size:small">Anyway, don&#39;t hurry to send V3 un=
-til we get an agreement :).</div><div class=3D"gmail_default" style=3D"font=
--size:small"><br></div>--- a/testcases/kernel/syscalls/statvfs/statvfs01.c<=
-br>+++ b/testcases/kernel/syscalls/statvfs/statvfs01.c<br>@@ -30,7 +30,10 @=
-@ static void run(void)<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 memset(valid_fname, =
-&#39;a&#39;, buf.f_namemax - 1);<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 memset(inva=
-lid_fname, &#39;b&#39;, buf.f_namemax + 1);<br>=C2=A0<br>- =C2=A0 =C2=A0 =
-=C2=A0 TST_EXP_FD(creat(valid_fname, 0444));<br>+ =C2=A0 =C2=A0 =C2=A0 long=
- fs_type =3D tst_fs_type(TEST_PATH);<br>+ =C2=A0 =C2=A0 =C2=A0 if =C2=A0(fs=
-_type !=3D TST_VFAT_MAGIC &amp;&amp; fs_type !=3D TST_EXFAT_MAGIC)<br>+ =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 TST_EXP_FD(creat(valid_fname,=
- 0444));<br>+<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 TST_EXP_FAIL(creat(invalid_fna=
-me, 0444), ENAMETOOLONG);<br>=C2=A0}<br>=C2=A0<br>@@ -46,9 +49,4 @@ static =
-struct tst_test test =3D {<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 .mount_device =3D=
- 1,<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 .mntpoint =3D MNT_POINT,<br>=C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 .all_filesystems =3D 1,<br>- =C2=A0 =C2=A0 =C2=A0 .skip_f=
-ilesystems =3D (const char *const[]) {<br>- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 &quot;vfat&quot;,<br>- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 &quot;exfat&quot;,<br>- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 NULL<br>- =C2=A0 =C2=A0 =C2=A0 }<br>=C2=A0};<br><div class=3D=
-"gmail_default" style=3D"font-size:small"><br></div><div class=3D"gmail_def=
-ault" style=3D"font-size:small"></div></div><div><br></div>-- <br><div dir=
-=3D"ltr" class=3D"gmail_signature"><div dir=3D"ltr"><div><div dir=3D"ltr">R=
-egards,<br>Li Wang<br></div></div></div></div></div>
-
---00000000000029c4f705eec0b0bb--
-
-
---===============1466321833==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============1466321833==--
-
