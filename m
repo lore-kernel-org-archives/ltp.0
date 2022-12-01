@@ -4,63 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86A26C4321E
-	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 10:07:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39BFBC43217
+	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 10:13:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 213453CC499
-	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 11:07:07 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 7C6BD3CC4A9
+	for <ltp@archiver.kernel.org>; Thu,  1 Dec 2022 11:13:48 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB8713CC470
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 11:06:54 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 202B53CC470
+ for <ltp@lists.linux.it>; Thu,  1 Dec 2022 11:13:39 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1009C1A019AF
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 11:06:51 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 741541FD63;
- Thu,  1 Dec 2022 10:06:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669889211;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=WAISaVwaUzlwiQbLVJwNW1WfR1FwDv3bKtYelKrUOiM=;
- b=Bua8WL9wcm1VDiaIyk1LTnaU0l0F0X+7c2SGKBUiRJ7woBisSG69dvzDg8wRnWE/CVjl06
- M3zLdMVYVcEsWY6YLFRgDU79sX+3Z3PqwI176axoVYw3ydEt0UZ5COxZqk2pLsU5KTelqK
- o0ugSSpSBjiyoq7K6StXc+38oAL8y6I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669889211;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=WAISaVwaUzlwiQbLVJwNW1WfR1FwDv3bKtYelKrUOiM=;
- b=wkoNDe12whpXPEusJvqcyi2a+r2mIdVOUx3RuCvC4SQy9QzVlydYHvEAbSUsJfOwq9pJN+
- ZXkI8/SxlYged0DQ==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 73FE21001865
+ for <ltp@lists.linux.it>; Thu,  1 Dec 2022 11:13:38 +0100 (CET)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 4C0412C141;
- Thu,  1 Dec 2022 10:06:51 +0000 (UTC)
-References: <1669704060-5635-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1669704060-5635-2-git-send-email-xuyang2018.jy@fujitsu.com>
-User-agent: mu4e 1.8.11; emacs 28.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Thu, 01 Dec 2022 10:06:40 +0000
-Organization: Linux Private Site
-In-reply-to: <1669704060-5635-2-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <87lenrigjp.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C9BC11FD68;
+ Thu,  1 Dec 2022 10:13:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1669889617;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=HK6pnCi1qP8FFtMs45m05rOGYvqXTvxdOjuW/EuRruE=;
+ b=NxrdHspKyAj8UHpz/Lx5228Q9gSwTfKblU+hpaFVDzHXNTPxcbg/My1NUxNzXcJNdnMtH4
+ wmIGrKXGoN5ug8EHCbKfCBfIWZZqe38Q7nW5QCC9n4/P0YXap7XxjkiogrXTLaWr7erOcs
+ m8HIj7DZTw2Zse2xGBZH9p7Cm7pHOt0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1669889617;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=HK6pnCi1qP8FFtMs45m05rOGYvqXTvxdOjuW/EuRruE=;
+ b=Tv+TFKMVJqS7anEln+zoivlMe9cY38Lal8ihZOtRCNaNknRxo7pu6kzp5EP2BZbvoEBdJS
+ Pcj/xKFM2pttjhBA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5EB751320E;
+ Thu,  1 Dec 2022 10:13:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap1.suse-dmz.suse.de with ESMTPSA id vJPFFVF+iGOHJQAAGKfGzw
+ (envelope-from <pvorel@suse.cz>); Thu, 01 Dec 2022 10:13:37 +0000
+Date: Thu, 1 Dec 2022 11:13:35 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Message-ID: <Y4h+T54ghKFPmkqO@pevik>
+References: <20221201073426.17328-1-jirislaby@kernel.org>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20221201073426.17328-1-jirislaby@kernel.org>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 2/2] include/lapi/sched.h: Move lapi/clone.h
- into here
+Subject: Re: [LTP] [PATCH] can: slcan: fix freed work crash
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,254 +75,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Petr Vorel <petr.vorel@suse.com>,
+ Max Staudt <max@enpas.org>, Eric Dumazet <edumazet@google.com>,
+ Marc Kleine-Budde <mkl@pengutronix.de>, ltp@lists.linux.it,
+ linux-serial@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ dario.binacchi@amarulasolutions.com, "David S. Miller" <davem@davemloft.net>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ Richard Palethorpe <richard.palethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi all,
 
-Yang Xu <xuyang2018.jy@fujitsu.com> writes:
+Cc LTP mailing list.
+Jiri, thanks a lot for quick fix!
 
-> Like namespaces_constants.h, kernel doesn't have
-> clone.h header. We can also move it into here.
->
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Kind regards,
+Petr
 
-Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+> The LTP test pty03 is causing a crash in slcan:
+>   BUG: kernel NULL pointer dereference, address: 0000000000000008
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   PGD 0 P4D 0
+>   Oops: 0000 [#1] PREEMPT SMP NOPTI
+>   CPU: 0 PID: 348 Comm: kworker/0:3 Not tainted 6.0.8-1-default #1 openSUSE Tumbleweed 9d20364b934f5aab0a9bdf84e8f45cfdfae39dab
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b-rebuilt.opensuse.org 04/01/2014
+>   Workqueue:  0x0 (events)
+>   RIP: 0010:process_one_work (/home/rich/kernel/linux/kernel/workqueue.c:706 /home/rich/kernel/linux/kernel/workqueue.c:2185)
+>   Code: 49 89 ff 41 56 41 55 41 54 55 53 48 89 f3 48 83 ec 10 48 8b 06 48 8b 6f 48 49 89 c4 45 30 e4 a8 04 b8 00 00 00 00 4c 0f 44 e0 <49> 8b 44 24 08 44 8b a8 00 01 00 00 41 83 e5 20 f6 45 10 04 75 0e
+>   RSP: 0018:ffffaf7b40f47e98 EFLAGS: 00010046
+>   RAX: 0000000000000000 RBX: ffff9d644e1b8b48 RCX: ffff9d649e439968
+>   RDX: 00000000ffff8455 RSI: ffff9d644e1b8b48 RDI: ffff9d64764aa6c0
+>   RBP: ffff9d649e4335c0 R08: 0000000000000c00 R09: ffff9d64764aa734
+>   R10: 0000000000000007 R11: 0000000000000001 R12: 0000000000000000
+>   R13: ffff9d649e4335e8 R14: ffff9d64490da780 R15: ffff9d64764aa6c0
+>   FS:  0000000000000000(0000) GS:ffff9d649e400000(0000) knlGS:0000000000000000
+>   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 0000000000000008 CR3: 0000000036424000 CR4: 00000000000006f0
+>   Call Trace:
+>    <TASK>
+>   worker_thread (/home/rich/kernel/linux/kernel/workqueue.c:2436)
+>   kthread (/home/rich/kernel/linux/kernel/kthread.c:376)
+>   ret_from_fork (/home/rich/kernel/linux/arch/x86/entry/entry_64.S:312)
 
+> Apparently, the slcan's tx_work is freed while being scheduled. While
+> slcan_netdev_close() (netdev side) calls flush_work(&sl->tx_work),
+> slcan_close() (tty side) does not. So when the netdev is never set UP,
+> but the tty is stuffed with bytes and forced to wakeup write, the work
+> is scheduled, but never flushed.
+
+> So add an additional flush_work() to slcan_close() to be sure the work
+> is flushed under all circumstances.
+
+> The Fixes commit below moved flush_work() from slcan_close() to
+> slcan_netdev_close(). What was the rationale behind it? Maybe we can
+> drop the one in slcan_netdev_close()?
+
+> I see the same pattern in can327. So it perhaps needs the very same fix.
+
+> Fixes: cfcb4465e992 ("can: slcan: remove legacy infrastructure")
+> Link: https://bugzilla.suse.com/show_bug.cgi?id=1205597
+> Reported-by: Richard Palethorpe <richard.palethorpe@suse.com>
+> Tested-by: Petr Vorel <petr.vorel@suse.com>
+> Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: linux-can@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> Cc: Max Staudt <max@enpas.org>
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 > ---
-> This patch has been verified on my ltp fork[1].
-> [1]https://github.com/xuyang0410/ltp/actions/runs/3571298308/jobs/6003048080
->  include/lapi/clone.h                          | 56 -------------------
->  include/lapi/sched.h                          | 31 ++++++++++
->  lib/tst_clone.c                               |  2 +-
->  testcases/kernel/containers/pidns/pidns13.c   |  2 +-
->  testcases/kernel/containers/userns/userns08.c |  2 +-
->  testcases/kernel/syscalls/clone3/clone301.c   |  2 +-
->  testcases/kernel/syscalls/clone3/clone302.c   |  2 +-
->  .../syscalls/close_range/close_range01.c      |  2 +-
->  .../syscalls/close_range/close_range02.c      |  2 +-
->  9 files changed, 38 insertions(+), 63 deletions(-)
->  delete mode 100644 include/lapi/clone.h
->
-> diff --git a/include/lapi/clone.h b/include/lapi/clone.h
-> deleted file mode 100644
-> index 437d1376f..000000000
-> --- a/include/lapi/clone.h
-> +++ /dev/null
-> @@ -1,56 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0-or-later
-> -/*
-> - * Copyright (c) 2020 Linaro Limited. All rights reserved.
-> - * Author: Viresh Kumar <viresh.kumar@linaro.org>
-> - */
-> -
-> -#ifndef LAPI_CLONE_H__
-> -#define LAPI_CLONE_H__
-> -
-> -#include <sys/syscall.h>
-> -#include <linux/types.h>
-> -#include <sched.h>
-> -#include <stdint.h>
-> -
-> -#include "config.h"
-> -#include "lapi/syscalls.h"
-> -
-> -#ifndef HAVE_CLONE3
-> -struct clone_args {
-> -	uint64_t __attribute__((aligned(8))) flags;
-> -	uint64_t __attribute__((aligned(8))) pidfd;
-> -	uint64_t __attribute__((aligned(8))) child_tid;
-> -	uint64_t __attribute__((aligned(8))) parent_tid;
-> -	uint64_t __attribute__((aligned(8))) exit_signal;
-> -	uint64_t __attribute__((aligned(8))) stack;
-> -	uint64_t __attribute__((aligned(8))) stack_size;
-> -	uint64_t __attribute__((aligned(8))) tls;
-> -};
-> -
-> -static inline int clone3(struct clone_args *args, size_t size)
-> -{
-> -	return tst_syscall(__NR_clone3, args, size);
-> -}
-> -#endif
-> -
-> -#ifndef CLONE_PIDFD
-> -#define CLONE_PIDFD	0x00001000	/* set if a pidfd should be placed in parent */
-> -#endif
-> -
-> -#ifndef CLONE_NEWUSER
-> -# define CLONE_NEWUSER	0x10000000
-> -#endif
-> -
-> -static inline void clone3_supported_by_kernel(void)
-> -{
-> -	long ret;
-> -
-> -	if ((tst_kvercmp(5, 3, 0)) < 0) {
-> -		/* Check if the syscall is backported on an older kernel */
-> -		ret = syscall(__NR_clone3, NULL, 0);
-> -		if (ret == -1 && errno == ENOSYS)
-> -			tst_brk(TCONF, "Test not supported on kernel version < v5.3");
-> -	}
-> -}
-> -
-> -#endif /* LAPI_CLONE_H__ */
-> diff --git a/include/lapi/sched.h b/include/lapi/sched.h
-> index 3b0b4be31..1d22a9d7e 100644
-> --- a/include/lapi/sched.h
-> +++ b/include/lapi/sched.h
-> @@ -11,6 +11,7 @@
->  #include <unistd.h>
->  #include <stdint.h>
->  #include <inttypes.h>
-> +#include "config.h"
->  #include "lapi/syscalls.h"
->  
->  struct sched_attr {
-> @@ -43,6 +44,32 @@ static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
->  	return syscall(__NR_sched_getattr, pid, attr, size, flags);
->  }
->  
-> +#ifndef HAVE_CLONE3
-> +struct clone_args {
-> +	uint64_t __attribute__((aligned(8))) flags;
-> +	uint64_t __attribute__((aligned(8))) pidfd;
-> +	uint64_t __attribute__((aligned(8))) child_tid;
-> +	uint64_t __attribute__((aligned(8))) parent_tid;
-> +	uint64_t __attribute__((aligned(8))) exit_signal;
-> +	uint64_t __attribute__((aligned(8))) stack;
-> +	uint64_t __attribute__((aligned(8))) stack_size;
-> +	uint64_t __attribute__((aligned(8))) tls;
-> +};
-> +
-> +static inline int clone3(struct clone_args *args, size_t size)
-> +{
-> +	return tst_syscall(__NR_clone3, args, size);
-> +}
-> +#endif
-> +
-> +static inline void clone3_supported_by_kernel(void)
-> +{
-> +	if ((tst_kvercmp(5, 3, 0)) < 0) {
-> +		/* Check if the syscall is backported on an older kernel */
-> +		tst_syscall(__NR_clone3, NULL, 0);
-> +	}
-> +}
-> +
->  #ifndef SCHED_DEADLINE
->  # define SCHED_DEADLINE	6
->  #endif
-> @@ -55,6 +82,10 @@ static inline int sched_getattr(pid_t pid, struct sched_attr *attr,
->  # define CLONE_FS	0x00000200
->  #endif
->  
-> +#ifndef CLONE_PIDFD
-> +# define CLONE_PIDFD	0x00001000
-> +#endif
-> +
->  #ifndef CLONE_NEWNS
->  # define CLONE_NEWNS	0x00020000
->  #endif
-> diff --git a/lib/tst_clone.c b/lib/tst_clone.c
-> index 07e7f0767..ecc84408c 100644
-> --- a/lib/tst_clone.c
-> +++ b/lib/tst_clone.c
-> @@ -8,7 +8,7 @@
->  #include <stddef.h>
->  
->  #include "tst_test.h"
-> -#include "lapi/clone.h"
-> +#include "lapi/sched.h"
->  
->  pid_t tst_clone(const struct tst_clone_args *tst_args)
->  {
-> diff --git a/testcases/kernel/containers/pidns/pidns13.c b/testcases/kernel/containers/pidns/pidns13.c
-> index 39fd6df7f..6a155027c 100644
-> --- a/testcases/kernel/containers/pidns/pidns13.c
-> +++ b/testcases/kernel/containers/pidns/pidns13.c
-> @@ -31,7 +31,7 @@
->  
->  #include "tst_test.h"
->  #include "tst_clone.h"
-> -#include "lapi/clone.h"
-> +#include "lapi/sched.h"
->  
->  static int pipe_fd[2];
->  
-> diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
-> index afdad6cad..2697d874b 100644
-> --- a/testcases/kernel/containers/userns/userns08.c
-> +++ b/testcases/kernel/containers/userns/userns08.c
-> @@ -25,7 +25,7 @@
->  
->  #include "tst_test.h"
->  #include "tst_clone.h"
-> -#include "lapi/clone.h"
-> +#include "lapi/sched.h"
->  #include "tst_safe_file_at.h"
->  
->  static pid_t clone_newuser(void)
-> diff --git a/testcases/kernel/syscalls/clone3/clone301.c b/testcases/kernel/syscalls/clone3/clone301.c
-> index f7ef0b2d7..d0fadbc5d 100644
-> --- a/testcases/kernel/syscalls/clone3/clone301.c
-> +++ b/testcases/kernel/syscalls/clone3/clone301.c
-> @@ -15,7 +15,7 @@
->  #include <sys/wait.h>
->  
->  #include "tst_test.h"
-> -#include "lapi/clone.h"
-> +#include "lapi/sched.h"
->  #include "lapi/pidfd.h"
->  
->  #define CHILD_SIGNAL	SIGUSR1
-> diff --git a/testcases/kernel/syscalls/clone3/clone302.c b/testcases/kernel/syscalls/clone3/clone302.c
-> index 08d6417ce..b1b4ccebb 100644
-> --- a/testcases/kernel/syscalls/clone3/clone302.c
-> +++ b/testcases/kernel/syscalls/clone3/clone302.c
-> @@ -14,7 +14,7 @@
->  #include <stdlib.h>
->  
->  #include "tst_test.h"
-> -#include "lapi/clone.h"
-> +#include "lapi/sched.h"
->  
->  static struct clone_args *valid_args, *invalid_args;
->  unsigned long stack;
-> diff --git a/testcases/kernel/syscalls/close_range/close_range01.c b/testcases/kernel/syscalls/close_range/close_range01.c
-> index 5e2de4d1e..30bb600b6 100644
-> --- a/testcases/kernel/syscalls/close_range/close_range01.c
-> +++ b/testcases/kernel/syscalls/close_range/close_range01.c
-> @@ -28,7 +28,7 @@
->  #include "tst_test.h"
->  #include "tst_clone.h"
->  
-> -#include "lapi/clone.h"
-> +#include "lapi/sched.h"
->  #include "lapi/close_range.h"
->  
->  static int fd[3];
-> diff --git a/testcases/kernel/syscalls/close_range/close_range02.c b/testcases/kernel/syscalls/close_range/close_range02.c
-> index bd46936bb..aec899261 100644
-> --- a/testcases/kernel/syscalls/close_range/close_range02.c
-> +++ b/testcases/kernel/syscalls/close_range/close_range02.c
-> @@ -18,7 +18,7 @@
->  #include "tst_clone.h"
->  #include "lapi/fcntl.h"
->  #include "lapi/close_range.h"
-> -#include "lapi/clone.h"
-> +#include "lapi/sched.h"
->  
->  static int try_close_range(int fd, int flags)
->  {
-> -- 
-> 2.23.0
+>  drivers/net/can/slcan/slcan-core.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 
+> diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/slcan-core.c
+> index fbb34139daa1..f4db77007c13 100644
+> --- a/drivers/net/can/slcan/slcan-core.c
+> +++ b/drivers/net/can/slcan/slcan-core.c
+> @@ -864,12 +864,14 @@ static void slcan_close(struct tty_struct *tty)
+>  {
+>  	struct slcan *sl = (struct slcan *)tty->disc_data;
 
--- 
-Thank you,
-Richard.
+> -	/* unregister_netdev() calls .ndo_stop() so we don't have to.
+> -	 * Our .ndo_stop() also flushes the TTY write wakeup handler,
+> -	 * so we can safely set sl->tty = NULL after this.
+> -	 */
+>  	unregister_candev(sl->dev);
+
+> +	/*
+> +	 * The netdev needn't be UP (so .ndo_stop() is not called). Hence make
+> +	 * sure this is not running before freeing it up.
+> +	 */
+> +	flush_work(&sl->tx_work);
+> +
+>  	/* Mark channel as dead */
+>  	spin_lock_bh(&sl->lock);
+>  	tty->disc_data = NULL;
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
