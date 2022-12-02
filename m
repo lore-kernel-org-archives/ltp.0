@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C51E5C4332F
-	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 02:34:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FE1CC4332F
+	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 02:54:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CDC6F3CC4B4
-	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 03:34:37 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 3235F3CC4CC
+	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 03:54:17 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 572B43CC46B
- for <ltp@lists.linux.it>; Fri,  2 Dec 2022 03:34:27 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 6B8C63CC4B2
+ for <ltp@lists.linux.it>; Fri,  2 Dec 2022 03:54:07 +0100 (CET)
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 26E542C5F53
- for <ltp@lists.linux.it>; Fri,  2 Dec 2022 03:34:25 +0100 (CET)
-Received: from canpemm100008.china.huawei.com (unknown [172.30.72.55])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NNcSc4VzfzRpkQ
- for <ltp@lists.linux.it>; Fri,  2 Dec 2022 10:33:36 +0800 (CST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6ED0912A53A6
+ for <ltp@lists.linux.it>; Fri,  2 Dec 2022 03:54:05 +0100 (CET)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.54])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NNcvK2K7MzHw3V
+ for <ltp@lists.linux.it>; Fri,  2 Dec 2022 10:53:17 +0800 (CST)
 Received: from canpemm500005.china.huawei.com (7.192.104.229) by
- canpemm100008.china.huawei.com (7.192.104.152) with Microsoft SMTP Server
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 2 Dec 2022 10:34:19 +0800
+ 15.1.2375.31; Fri, 2 Dec 2022 10:54:01 +0800
 Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
  canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
- Fri, 2 Dec 2022 10:34:19 +0800
+ Fri, 2 Dec 2022 10:54:01 +0800
 To: Cyril Hrubis <chrubis@suse.cz>
 Thread-Topic: [LTP] [PATCH v2 1/2] lib/safe_macros: Add SAFE_STRTOF
-Thread-Index: AdkF9o4Ussfs+t0XaUCELIVaGoxCEQ==
-Date: Fri, 2 Dec 2022 02:34:19 +0000
-Message-ID: <fb6425cf863e4c178db2cb78cee119eb@huawei.com>
+Thread-Index: AdkF9o4UB/k8KYOPSBi9wCJSpVLWIgAAOw3Q
+Date: Fri, 2 Dec 2022 02:54:01 +0000
+Message-ID: <e9275edb756041e3acb64c6e9a4ec0b3@huawei.com>
 Accept-Language: zh-CN, en-US
 Content-Language: zh-CN
 X-MS-Has-Attach: 
@@ -43,7 +43,7 @@ X-MS-TNEF-Correlator:
 x-originating-ip: [10.67.110.209]
 MIME-Version: 1.0
 X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 1/2] lib/safe_macros: Add SAFE_STRTOF
 X-BeenThere: ltp@lists.linux.it
@@ -68,37 +68,56 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 Hi Cyril,
 
 > 
-> Hi!
-> > +float safe_strtof(const char *file, const int lineno,
-> > +		  void (cleanup_fn) (void), char *str,
-> > +		  float min, float max)
-> > +{
-> > +	float rval;
-> > +	char *endptr;
-> > +
-> > +	errno = 0;
-> > +	rval = strtof(str, &endptr);
-> > +
-> > +	if ((errno == ERANGE) || (rval == 0)
-> > +	    || (rval == HUGE_VAL) || (rval == -HUGE_VAL)) {
+> > Hi!
+> > > +float safe_strtof(const char *file, const int lineno,
+> > > +		  void (cleanup_fn) (void), char *str,
+> > > +		  float min, float max)
+> > > +{
+> > > +	float rval;
+> > > +	char *endptr;
+> > > +
+> > > +	errno = 0;
+> > > +	rval = strtof(str, &endptr);
+> > > +
+> > > +	if ((errno == ERANGE) || (rval == 0)
+> > > +	    || (rval == HUGE_VAL) || (rval == -HUGE_VAL)) {
+> >
+> > This does not look right, supposedly the ERANGE is only set on
+> > overflow, and the rval is not guaranteed to be exact on underflow.
+> > Also rval == 0 is a valid result.
+> >
 > 
-> This does not look right, supposedly the ERANGE is only set on overflow,
-> and the rval is not guaranteed to be exact on underflow. Also rval == 0 is a
-> valid result.
->
+> According to man 3 strtof, it seems there are some cases like:
+> 
+> 1. strtof return the converted value as normal 2. strtof return 0 when no
+> conversion is performed, and endptr == nptr:  'rval == 0'
+> 3. strtof return HUGE_VAL or -HUGE_VAL when overflow:      '(rval ==
+> HUGE_VAL) || (rval == -HUGE_VAL)'
+> 4. strtof retrun 0 and set errno to ERANGE when underflow:   'errno ==
+> ERANGE'
+> 
+> 
+> For 2, it seems need to add checking of endptr when 'rval == 0' like:  (rval
+> == 0 && !strcmp(endptr, nptr)
+> 
+> Other places seem to be fine.
+> 
+> 
 
-According to man 3 strtof, it seems there are some cases like:
+The exception cases may be described as:
 
-1. strtof return the converted value as normal
-2. strtof return 0 when no conversion is performed, and endptr == nptr:  'rval == 0'
-3. strtof return HUGE_VAL or -HUGE_VAL when overflow:      '(rval == HUGE_VAL) || (rval == -HUGE_VAL)'
-4. strtof retrun 0 and set errno to ERANGE when underflow:   'errno == ERANGE'
+ 1. strtof return 0 when no conversion is performed, and endptr == nptr:  'rval == 0 && !strcmp(endptr, nptr)'
+
+ 2. strtof return HUGE_VAL or -HUGE_VAL when overflow:      '((rval ==HUGE_VAL) || (rval == -HUGE_VAL)) && errno == ERANGE'
+
+ 3. strtof retrun 0 and set errno to ERANGE when underflow:   'errno ==ERANGE && rval == 0'
 
 
-For 2, it seems need to add checking of endptr when 'rval == 0' like:  (rval == 0 && !strcmp(endptr, nptr)
-	
-Other places seem to be fine.
+So it may be write as:
+	If (( errno == ERANGE && (rval == HUGE_VAL || rval == -HUGE_VAL || rval == 0))
+	   || (rval == 0 && !strcmp(endptr, nptr)))
 
+If the description as above is ok, I will resubmit the patch.
 
 Regards,
 Gongyi
