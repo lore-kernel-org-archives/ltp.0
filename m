@@ -4,55 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 802C4C4321E
-	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 12:15:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 449B9C4321E
+	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 12:36:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2F0753CC3F0
-	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 13:15:28 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 3AE7E3CC408
+	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 13:36:44 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B94B53CC3C4
- for <ltp@lists.linux.it>; Fri,  2 Dec 2022 13:15:18 +0100 (CET)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ by picard.linux.it (Postfix) with ESMTPS id 82CFB3CC3E1
+ for <ltp@lists.linux.it>; Fri,  2 Dec 2022 13:36:35 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B53A11BFADBF
- for <ltp@lists.linux.it>; Fri,  2 Dec 2022 13:15:17 +0100 (CET)
-Received: from gallifrey.ext.pengutronix.de
- ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <mkl@pengutronix.de>)
- id 1p14we-0008Hv-0H; Fri, 02 Dec 2022 13:15:08 +0100
-Received: from pengutronix.de (unknown
- [IPv6:2a03:f580:87bc:d400:63a6:d4c5:22e2:f72a])
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C6D906B656D
+ for <ltp@lists.linux.it>; Fri,  2 Dec 2022 13:36:33 +0100 (CET)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits)
- server-digest SHA256) (Client did not present a certificate)
- (Authenticated sender: mkl-all@blackshift.org)
- by smtp.blackshift.org (Postfix) with ESMTPSA id 1C95A13156D;
- Fri,  2 Dec 2022 12:15:04 +0000 (UTC)
-Date: Fri, 2 Dec 2022 13:14:58 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Max Staudt <max@enpas.org>
-Message-ID: <20221202121458.qeqjzewvdbnqhvnt@pengutronix.de>
-References: <20221201073426.17328-1-jirislaby@kernel.org>
- <20221202035242.155d54f4.max@enpas.org>
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5F6F5218A2;
+ Fri,  2 Dec 2022 12:36:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1669984593;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y5PbojPK+iZufheNsthQ5zYlsJjcOJISSunJjbaRiBs=;
+ b=RUkyAZ8B/z0CvjZh41IC249sCcXM7+PLOmpxX+2jv36MDqipQLbtVTYH5Qhye+yeLxDfI8
+ 6I+Xm07sVISBjHvMObAdASFsJh/hPz54i/FGaqt2+oStP4DWZng9gBJCRrto7mpANaHdI6
+ U31gjj5xRKx6ws+naylsGiCQdvBKw5M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1669984593;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=y5PbojPK+iZufheNsthQ5zYlsJjcOJISSunJjbaRiBs=;
+ b=uFB7voc+aYrijXXIEcPT0v7ekDyFOXKSjhFQ6LyzBoagN9+2Js/IXc/f2/3ZK2UgU5vQb9
+ aCFYSOWzr/XuisAw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 30D8D13644;
+ Fri,  2 Dec 2022 12:36:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap1.suse-dmz.suse.de with ESMTPSA id ytNrClHxiWOtMAAAGKfGzw
+ (envelope-from <pvorel@suse.cz>); Fri, 02 Dec 2022 12:36:33 +0000
+Date: Fri, 2 Dec 2022 13:36:31 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <Y4nxT1kDnlwTDhk7@pevik>
+References: <20221202114205.11077-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20221202035242.155d54f4.max@enpas.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20221202114205.11077-1-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] can: slcan: fix freed work crash
+Subject: Re: [LTP] [PATCH] cve-2017-16939: Improve and fix test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -64,82 +75,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Petr Vorel <petr.vorel@suse.com>,
- Eric Dumazet <edumazet@google.com>, ltp@lists.linux.it,
- linux-serial@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
- dario.binacchi@amarulasolutions.com,
- "Jiri Slaby \(SUSE\)" <jirislaby@kernel.org>,
- "David S. Miller" <davem@davemloft.net>,
- Wolfgang Grandegger <wg@grandegger.com>,
- Richard Palethorpe <richard.palethorpe@suse.com>
-Content-Type: multipart/mixed; boundary="===============0105696188=="
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi Martin,
 
---===============0105696188==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="x4q6zeagiapw3mdj"
-Content-Disposition: inline
+> The test was unable to reproduce the kernel bug because it needs to
+> send then netlink message twice and then close the socket. Sending it
+> just once is not enough.
 
+> Also remove unnecessary structures and code and use taint checks.
 
---x4q6zeagiapw3mdj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Good catch, thanks!
 
-On 02.12.2022 03:52:42, Max Staudt wrote:
-> (CC: ltp@lists.linux.it because Petr did so.)
->=20
-> Hi Jiry,
->=20
-> Thanks for finding this!
->=20
->=20
-> Your patch looks correct to me, so please have a
->=20
->   Reviewed-by: Max Staudt <max@enpas.org>
->=20
-> for both this patch to slcan, as well as an 1:1 patch to can327.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-Max, can you create a patch for the can327 driver?
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---x4q6zeagiapw3mdj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEBsvAIBsPu6mG7thcrX5LkNig010FAmOJ7D8ACgkQrX5LkNig
-013NnAf/Z62/13CIDQ7V894/ROU5ZGk6S6LRPGG/p7Q4oFGe7BxjDOn4Izk+wTGX
-kisclotCPB1hsAfPi988cEjHEe2b6CXib1aZmtJOyGC8cuTgRvBimHElXGgDIUJe
-NYsq2C+WZsGSQqHX6eSClICQZ0DrIsyidSrhZ3gsl0KKGxxLEV1oKhlYjLhM7Hx2
-Ntd/uU3oFiOAIoRtDXORfGf1kleLK/XTvJMv1gg+NkTuYYh01HKXK7d42bthX1tP
-X0a28lItgg4SyQMXm6tX3KJ8AMsbpMKHPhIjXSB/Fild1XdAvnhxnNuZYg4w1oPI
-/Ib6xzyF13qn8t2HKAY0C8C3YfnTzw==
-=EslA
------END PGP SIGNATURE-----
-
---x4q6zeagiapw3mdj--
-
---===============0105696188==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
-
---===============0105696188==--
