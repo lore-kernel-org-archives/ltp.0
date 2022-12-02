@@ -4,69 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 812E6C4332F
-	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 09:34:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3059FC4332F
+	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 10:32:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6CDBC3CC3DB
-	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 10:33:58 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 7CFEF3CC3DB
+	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 11:32:00 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D606C3CC3C5
- for <ltp@lists.linux.it>; Fri,  2 Dec 2022 10:33:49 +0100 (CET)
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com
- [IPv6:2607:f8b0:4864:20::1032])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 574443CC3BE
+ for <ltp@lists.linux.it>; Fri,  2 Dec 2022 11:31:51 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6981011F35DB
- for <ltp@lists.linux.it>; Fri,  2 Dec 2022 10:33:49 +0100 (CET)
-Received: by mail-pj1-x1032.google.com with SMTP id q15so3362214pja.0
- for <ltp@lists.linux.it>; Fri, 02 Dec 2022 01:33:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=daynix-com.20210112.gappssmtp.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=6iVmaxthzk74fG4zje1Q2ufmLBFzeDjymnW4S9m7Suw=;
- b=ifXvSbQS7C6xM5AwOw9gB55bwIF9MRW75chfk0ETk67eblZN3kTjbqGsAb7YVDHMpU
- WTvv5kuHrX+3lglq6lTXzbNDop8OSmEkSO21QTcOXgqDuqv0IW+8XXtLBV9bOu5k7l5H
- jRBm9p/Acx/zptttDMm2GtZUbDX7bzSTq+oYOl4dXLq43yIxsxnpEQ4Z+i/+TIwxQIPg
- scE88IRqa6B58sSJ0G5hy7M3x6Y1qw9UOxpWOrvnTUDmVtzn3FUWh9AgiOq/40hx7z+U
- EES3Guq0AdFyvs0Y7xUCKEBf3VnKKSAx/JgMIyKtOCb4i/4wgHQL+R/X7X51imCJCGYZ
- rbSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=6iVmaxthzk74fG4zje1Q2ufmLBFzeDjymnW4S9m7Suw=;
- b=7Q5u5fwvhZyO3JW3aqpZtZ6Dd+okSS1sz3+f+iZBmxd18hkBiapau2fjvSDvXGH67n
- g4eEOqm3M08H63g1/alLjSxSLIM8t2KGymxTql1tKnVxE1/E8S+6NyRdbfScg+BvvJxr
- bOizNbd2pI6eoh1jDoMMAC+jhttUY3m+BYW78G2J8teso0lES2n1PaaRH8866n1jkTOK
- wbMBGVV3ZjxB7KZ+aYi3Hw3h6fltMxDs21eyCQXZbS5fKDKHaKrz8t0GIYmAPUBnpJ/b
- mQ4z7Po68ITvMV4l2R5fEx3AFFrh5G9Hz+0d9fO0CrGEZxGNpg0G7tmiCc57V0RzsHKA
- 7inw==
-X-Gm-Message-State: ANoB5pmFhOITfSfsBou1gdxbkkrIbR5zSaN5CG/FQOSB1RLYOaPsG/J/
- wuEpbyilY4K5qSfq1fHHQrCBSS1KEc+GAZhZrrc=
-X-Google-Smtp-Source: AA0mqf7bmuukwSJuimFBrTzZS+AVILcCjoZ0NVN2jS4w8R1oah/hMXNDRIM/MRIqoomfjAgVyDobwQ==
-X-Received: by 2002:a17:90b:30c6:b0:219:11ae:265f with SMTP id
- hi6-20020a17090b30c600b0021911ae265fmr35927781pjb.194.1669973627710; 
- Fri, 02 Dec 2022 01:33:47 -0800 (PST)
-Received: from alarm.flets-east.jp ([2400:4050:c360:8200:7b99:f7c3:d084:f1e2])
- by smtp.gmail.com with ESMTPSA id
- b18-20020aa79512000000b005765df21e68sm1023718pfp.94.2022.12.02.01.33.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 02 Dec 2022 01:33:47 -0800 (PST)
-From: Akihiko Odaki <akihiko.odaki@daynix.com>
-To: 
-Date: Fri,  2 Dec 2022 18:33:42 +0900
-Message-Id: <20221202093342.104600-1-akihiko.odaki@daynix.com>
-X-Mailer: git-send-email 2.38.1
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A9752141545F
+ for <ltp@lists.linux.it>; Fri,  2 Dec 2022 11:31:49 +0100 (CET)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0A7E221C99;
+ Fri,  2 Dec 2022 10:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1669977108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=nAlqPoppglqdFui8YcnSxI04C4T2Z/2fHSYlBQyXdZ8=;
+ b=cdTAQ76ZATPsl4gMm89Bq6IK1xuXha+sP7lWYDoHby5NnjnJmZ50lS7bA1N5VMpj73J0H2
+ mDK7/yr0R5WlDhDkfCrdt/lqKA7hVNBK37yZ4v7AgQ+JCU5nY3WaKW3H3T161WsweCx6Vk
+ I7Nhh3TKtlnikLwEatZAKyw5dSeaUm8=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 939F413644;
+ Fri,  2 Dec 2022 10:31:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap1.suse-dmz.suse.de with ESMTPSA id wltcHhPUiWOZbQAAGKfGzw
+ (envelope-from <andrea.cervesato@suse.com>); Fri, 02 Dec 2022 10:31:47 +0000
+To: ltp@lists.linux.it
+Date: Fri,  2 Dec 2022 11:30:11 +0100
+Message-Id: <20221202103011.12206-1-andrea.cervesato@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] ftp/ftp01.sh: Fix list_files
+Subject: [LTP] [PATCH v1] Add runltp-ng to upstream
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,37 +62,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Yan Vugenfirer <yan@daynix.com>,
- Yuri Benditovich <yuri.benditovich@daynix.com>, ltp@lists.linux.it
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The arguments and the returned values were swapped.
+runltp-ng is the next generation runner for Linux Testing Project and it
+will replace the current obsolete runltp script in the next future.
 
-Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/network/tcp_cmds/ftp/ftp01.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .gitmodules     | 3 +++
+ tools/runltp-ng | 1 +
+ 2 files changed, 4 insertions(+)
+ create mode 160000 tools/runltp-ng
 
-diff --git a/testcases/network/tcp_cmds/ftp/ftp01.sh b/testcases/network/tcp_cmds/ftp/ftp01.sh
-index da3cdb375..53d1eec53 100755
---- a/testcases/network/tcp_cmds/ftp/ftp01.sh
-+++ b/testcases/network/tcp_cmds/ftp/ftp01.sh
-@@ -25,8 +25,8 @@ do_test()
- list_files()
- {
-     case $1 in
--    binary) echo 'ascii.sm ascii.med ascii.lg ascii.jmb';;
--    ascii) echo 'bin.sm bin.med bin.lg bin.jmb';;
-+    ascii) echo 'ascii.sm ascii.med ascii.lg ascii.jmb';;
-+    binary) echo 'bin.sm bin.med bin.lg bin.jmb';;
-     esac
- }
- 
+diff --git a/.gitmodules b/.gitmodules
+index a3c34af4b..e85fc6279 100644
+--- a/.gitmodules
++++ b/.gitmodules
+@@ -4,3 +4,6 @@
+ [submodule "tools/sparse/sparse-src"]
+ 	path = tools/sparse/sparse-src
+ 	url = git://git.kernel.org/pub/scm/devel/sparse/sparse.git
++[submodule "tools/runltp-ng"]
++	path = tools/runltp-ng
++	url = https://github.com/acerv/runltp-ng
+diff --git a/tools/runltp-ng b/tools/runltp-ng
+new file mode 160000
+index 000000000..b08471158
+--- /dev/null
++++ b/tools/runltp-ng
+@@ -0,0 +1 @@
++Subproject commit b0847115891bd3dddbe920a716342917e7088379
 -- 
-2.38.1
+2.35.3
 
 
 -- 
