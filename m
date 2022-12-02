@@ -4,53 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3059FC4332F
-	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 10:32:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 477A1C4332F
+	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 10:36:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7CFEF3CC3DB
-	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 11:32:00 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 013353CC409
+	for <ltp@archiver.kernel.org>; Fri,  2 Dec 2022 11:36:24 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 574443CC3BE
- for <ltp@lists.linux.it>; Fri,  2 Dec 2022 11:31:51 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id A1AD83CC3BE
+ for <ltp@lists.linux.it>; Fri,  2 Dec 2022 11:36:14 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A9752141545F
- for <ltp@lists.linux.it>; Fri,  2 Dec 2022 11:31:49 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BDBBD1BCA6D6
+ for <ltp@lists.linux.it>; Fri,  2 Dec 2022 11:36:13 +0100 (CET)
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0A7E221C99;
- Fri,  2 Dec 2022 10:31:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1669977108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=nAlqPoppglqdFui8YcnSxI04C4T2Z/2fHSYlBQyXdZ8=;
- b=cdTAQ76ZATPsl4gMm89Bq6IK1xuXha+sP7lWYDoHby5NnjnJmZ50lS7bA1N5VMpj73J0H2
- mDK7/yr0R5WlDhDkfCrdt/lqKA7hVNBK37yZ4v7AgQ+JCU5nY3WaKW3H3T161WsweCx6Vk
- I7Nhh3TKtlnikLwEatZAKyw5dSeaUm8=
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 99F571FE04;
+ Fri,  2 Dec 2022 10:36:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1669977372; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Okg1SKfObLDpEaKnoZe2VflkYMfHByETi1eLa1pJ8mQ=;
+ b=kN95AXeaOxZ7cPlV5KBTCkqYN6xaGkNrfiBjawy5VrzTdXn2Ax44N1Bu14c5skzQZL56lr
+ GJ5s06a5JRujmOt1xmKmuv1nyav8d6ZJabBbdYQNDXf8R6PMe/OhCt8k6dZVgNAKByrh5f
+ aKwZNoA4wPHmWY3L/0HLzOIxN0W5jA8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1669977372;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Okg1SKfObLDpEaKnoZe2VflkYMfHByETi1eLa1pJ8mQ=;
+ b=slAsNIBIIIXQ1equodkt6ElTdPmRR48xj+DzQNmyrTs3K5Iw0Wxypwv45J2NGxrlnW4+43
+ sMvGSNrLaP6Zo8Ag==
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 939F413644;
- Fri,  2 Dec 2022 10:31:47 +0000 (UTC)
+ by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7D5F9133DE;
+ Fri,  2 Dec 2022 10:36:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap1.suse-dmz.suse.de with ESMTPSA id wltcHhPUiWOZbQAAGKfGzw
- (envelope-from <andrea.cervesato@suse.com>); Fri, 02 Dec 2022 10:31:47 +0000
-To: ltp@lists.linux.it
-Date: Fri,  2 Dec 2022 11:30:11 +0100
-Message-Id: <20221202103011.12206-1-andrea.cervesato@suse.com>
-X-Mailer: git-send-email 2.35.3
+ by imap1.suse-dmz.suse.de with ESMTPSA id N0AKHBzViWPbbwAAGKfGzw
+ (envelope-from <chrubis@suse.cz>); Fri, 02 Dec 2022 10:36:12 +0000
+Date: Fri, 2 Dec 2022 11:37:32 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: zhaogongyi <zhaogongyi@huawei.com>
+Message-ID: <Y4nVbLMCS2Bg1Z4K@yuki>
+References: <fb6425cf863e4c178db2cb78cee119eb@huawei.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <fb6425cf863e4c178db2cb78cee119eb@huawei.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Add runltp-ng to upstream
+Subject: Re: [LTP] [PATCH v2 1/2] lib/safe_macros: Add SAFE_STRTOF
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,44 +75,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-runltp-ng is the next generation runner for Linux Testing Project and it
-will replace the current obsolete runltp script in the next future.
+Hi!
+> According to man 3 strtof, it seems there are some cases like:
+> 
+> 1. strtof return the converted value as normal
+> 2. strtof return 0 when no conversion is performed, and endptr == nptr:  'rval == 0'
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- .gitmodules     | 3 +++
- tools/runltp-ng | 1 +
- 2 files changed, 4 insertions(+)
- create mode 160000 tools/runltp-ng
+We can ignore this case since we check that the string was consumed
+later on. That's the:
 
-diff --git a/.gitmodules b/.gitmodules
-index a3c34af4b..e85fc6279 100644
---- a/.gitmodules
-+++ b/.gitmodules
-@@ -4,3 +4,6 @@
- [submodule "tools/sparse/sparse-src"]
- 	path = tools/sparse/sparse-src
- 	url = git://git.kernel.org/pub/scm/devel/sparse/sparse.git
-+[submodule "tools/runltp-ng"]
-+	path = tools/runltp-ng
-+	url = https://github.com/acerv/runltp-ng
-diff --git a/tools/runltp-ng b/tools/runltp-ng
-new file mode 160000
-index 000000000..b08471158
---- /dev/null
-+++ b/tools/runltp-ng
-@@ -0,0 +1 @@
-+Subproject commit b0847115891bd3dddbe920a716342917e7088379
++       if (endptr == str || (*endptr != '\0' && *endptr != '\n')) {
++               tst_brkm_(file, lineno, TBROK, cleanup_fn,
++                       "Invalid value: '%s'", str);
++               return 0;
++       }
+
+
+> 3. strtof return HUGE_VAL or -HUGE_VAL when overflow:      '(rval == HUGE_VAL) || (rval == -HUGE_VAL)'
+> 4. strtof retrun 0 and set errno to ERANGE when underflow:   'errno == ERANGE'
+
+My manual says that the value is no larger than DBL_MIN, FLT_MIN, or
+LDBL_MIN in this case. Either way I would avoid checking the returned
+value in the case errno was set.
+
+> For 2, it seems need to add checking of endptr when 'rval == 0' like:  (rval == 0 && !strcmp(endptr, nptr)
+
+Again, no need to check the actual return value, we can just check that
+the string was consumed, which we already do.
+
 -- 
-2.35.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
