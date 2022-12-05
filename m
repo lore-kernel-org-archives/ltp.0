@@ -4,34 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B1A7C4321E
-	for <ltp@archiver.kernel.org>; Mon,  5 Dec 2022 11:14:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B606C4321E
+	for <ltp@archiver.kernel.org>; Mon,  5 Dec 2022 11:47:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 38BBC3CC213
-	for <ltp@archiver.kernel.org>; Mon,  5 Dec 2022 12:14:00 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id A00133CC204
+	for <ltp@archiver.kernel.org>; Mon,  5 Dec 2022 12:47:41 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D6CFE3CC44E
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 19:52:59 +0100 (CET)
-Received: from mail.enpas.org (zhong.enpas.org [IPv6:2a03:4000:2:537::1])
- by in-5.smtp.seeweb.it (Postfix) with ESMTP id 7E6CE644E88
- for <ltp@lists.linux.it>; Thu,  1 Dec 2022 19:52:56 +0100 (CET)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
- by mail.enpas.org (Postfix) with ESMTPSA id A3484100AD8;
- Thu,  1 Dec 2022 18:52:49 +0000 (UTC)
-Date: Fri, 2 Dec 2022 03:52:42 +0900
-From: Max Staudt <max@enpas.org>
-To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Message-ID: <20221202035242.155d54f4.max@enpas.org>
-In-Reply-To: <20221201073426.17328-1-jirislaby@kernel.org>
-References: <20221201073426.17328-1-jirislaby@kernel.org>
+ by picard.linux.it (Postfix) with ESMTPS id 29B753CAC66
+ for <ltp@lists.linux.it>; Mon,  5 Dec 2022 12:47:31 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 859E961AD9D
+ for <ltp@lists.linux.it>; Mon,  5 Dec 2022 12:47:30 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 5B9EF1FD94
+ for <ltp@lists.linux.it>; Mon,  5 Dec 2022 11:47:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1670240850;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type;
+ bh=/ynPACEE8X+9oaprmC8nlzAqbLVI9S4fBbpUFC/0cVQ=;
+ b=XryCBzJlVnjExpy4oKcyjmrEjHwE5aZDe0kXelGYK25oFFj3N5qb+z4TGpHFz0MfmVhovF
+ ztemInXbrQHRGsoCQFzZrwgrAeI7YA7JJyCZcoY0lS51e/Bzn40j3GjkSFoGhx2lttDH/6
+ Xvrup+hKLJ0WoIH0Hm7bURLnRV127Fc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1670240850;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type;
+ bh=/ynPACEE8X+9oaprmC8nlzAqbLVI9S4fBbpUFC/0cVQ=;
+ b=/XsjFBjJZ8wsjUIqXnnETxKBvztYTyctctj3j8OcMYfOtDrQHGKfD/5xrL5Z4MZynzxAei
+ oMacJFiZ8G0h90CA==
+Received: from g78 (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 38AF12C141
+ for <ltp@lists.linux.it>; Mon,  5 Dec 2022 11:47:30 +0000 (UTC)
+User-agent: mu4e 1.8.11; emacs 28.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: ltp@lists.linux.it <ltp@lists.linux.it>
+Date: Mon, 05 Dec 2022 11:44:30 +0000
+Organization: Linux Private Site
+Message-ID: <87v8mqt6lq.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 05 Dec 2022 12:13:38 +0100
-Subject: Re: [LTP] [PATCH] can: slcan: fix freed work crash
+Subject: [LTP] text/html mails should now be rejected
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -43,57 +65,21 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Petr Vorel <petr.vorel@suse.com>,
- Eric Dumazet <edumazet@google.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
- ltp@lists.linux.it, linux-serial@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, dario.binacchi@amarulasolutions.com,
- "David S. Miller" <davem@davemloft.net>,
- Wolfgang Grandegger <wg@grandegger.com>,
- Richard Palethorpe <richard.palethorpe@suse.com>
+Reply-To: rpalethorpe@suse.de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-(CC: ltp@lists.linux.it because Petr did so.)
+Hello,
 
-Hi Jiry,
+I have disallowed HTML message attachments in mailman because they are
+not supported by a variety of tooling. Please complain loudly if this
+breaks something.
 
-Thanks for finding this!
-
-
-Your patch looks correct to me, so please have a
-
-  Reviewed-by: Max Staudt <max@enpas.org>
-
-for both this patch to slcan, as well as an 1:1 patch to can327.
-
-
-
-Some history:
-
-This is actually my code from can327, which was backported to slcan as
-part of Dario's larger modernisation effort.
-
-The rationale for moving it was to flush the UART TX buffer in case of
-ndo_close(), in order to bring the device into a more predictable state
-between ndo_close() and ndo_open(). I guess that's actually
-counterproductive - whatever is in the TX buffer at that time should
-likely be fully sent. For example, can327 sends one last byte to abort
-any running chatty monitoring mode from the adapter. So your patch also
-fixes this as well ;)
-
-Of course, this resulted in calling flush_worker() in both ndo_stop()
-and ldisc_close(), so I wanted to avoid code duplication, and relied on
-ndo_stop(). Oops.
-
-
-
-Thanks,
-
-Max
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
