@@ -4,44 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7BB1C4708D
-	for <ltp@archiver.kernel.org>; Mon,  5 Dec 2022 06:58:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E5B3C4321E
+	for <ltp@archiver.kernel.org>; Mon,  5 Dec 2022 07:04:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 032C33CC216
-	for <ltp@archiver.kernel.org>; Mon,  5 Dec 2022 07:58:22 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 43DD13CC205
+	for <ltp@archiver.kernel.org>; Mon,  5 Dec 2022 08:04:12 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7097B3CC1E6
- for <ltp@lists.linux.it>; Mon,  5 Dec 2022 07:57:40 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 158423CA6CD
+ for <ltp@lists.linux.it>; Mon,  5 Dec 2022 08:04:02 +0100 (CET)
 Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 916E310005FA
- for <ltp@lists.linux.it>; Mon,  5 Dec 2022 07:57:39 +0100 (CET)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NQZ8x2lv4z15N5b
- for <ltp@lists.linux.it>; Mon,  5 Dec 2022 14:56:49 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.63) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 57A4F7F9107
+ for <ltp@lists.linux.it>; Mon,  5 Dec 2022 08:04:00 +0100 (CET)
+Received: from canpemm500008.china.huawei.com (unknown [172.30.72.53])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NQZJH3BCyz15N5V
+ for <ltp@lists.linux.it>; Mon,  5 Dec 2022 15:03:11 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (7.192.104.229) by
+ canpemm500008.china.huawei.com (7.192.105.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 5 Dec 2022 14:57:35 +0800
-To: <ltp@lists.linux.it>
-Date: Mon, 5 Dec 2022 14:54:32 +0800
-Message-ID: <20221205065432.242539-4-zhaogongyi@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20221205065432.242539-1-zhaogongyi@huawei.com>
-References: <20221205065432.242539-1-zhaogongyi@huawei.com>
+ 15.1.2375.31; Mon, 5 Dec 2022 15:03:57 +0800
+Received: from canpemm500005.china.huawei.com ([7.192.104.229]) by
+ canpemm500005.china.huawei.com ([7.192.104.229]) with mapi id 15.01.2375.031; 
+ Mon, 5 Dec 2022 15:03:57 +0800
+To: Cyril Hrubis <chrubis@suse.cz>
+Thread-Topic: [LTP] [PATCH v2 1/2] lib/safe_macros: Add SAFE_STRTOF
+Thread-Index: AdkId15Jp0KGmP/JQvClShxxQUnRog==
+Date: Mon, 5 Dec 2022 07:03:57 +0000
+Message-ID: <ee6ea2b055eb486a851b932a3d7ae92b@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.110.209]
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.63]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500005.china.huawei.com (7.192.104.229)
 X-CFilter-Loop: Reflected
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 3/3] lib: Adjust the position of the checking of
- the return value
+Subject: Re: [LTP] [PATCH v2 1/2] lib/safe_macros: Add SAFE_STRTOF
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -53,57 +57,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Zhao Gongyi via ltp <ltp@lists.linux.it>
-Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
+From: zhaogongyi via ltp <ltp@lists.linux.it>
+Reply-To: zhaogongyi <zhaogongyi@huawei.com>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-we need to check the return value before the checking of the endptr,
-otherwise, it will report out of range when calling of
-SAFE_STRTOUL("a100", 1, 10000000):
+Hi Cyril,
 
-  TBROK: strtoul(a100): 0 is out of range 1 - 10000000
+> 
+> Hi!
+> > According to man 3 strtof, it seems there are some cases like:
+> >
+> > 1. strtof return the converted value as normal 2. strtof return 0 when
+> > no conversion is performed, and endptr == nptr:  'rval == 0'
+> 
+> We can ignore this case since we check that the string was consumed later
+> on. That's the:
+> 
+> +       if (endptr == str || (*endptr != '\0' && *endptr != '\n')) {
+> +               tst_brkm_(file, lineno, TBROK, cleanup_fn,
+> +                       "Invalid value: '%s'", str);
+> +               return 0;
+> +       }
+> 
+> 
+> > 3. strtof return HUGE_VAL or -HUGE_VAL when overflow:      '(rval ==
+> HUGE_VAL) || (rval == -HUGE_VAL)'
+> > 4. strtof retrun 0 and set errno to ERANGE when underflow:   'errno ==
+> ERANGE'
+> 
+> My manual says that the value is no larger than DBL_MIN, FLT_MIN, or
+> LDBL_MIN in this case. Either way I would avoid checking the returned
+> value in the case errno was set.
 
-and it is expected that reported as:
+I usually look for information here: https://pubs.opengroup.org/onlinepubs/9699919799/
 
-  TBROK: Invalid value: 'a100'
+> 
+> > For 2, it seems need to add checking of endptr when 'rval == 0' like:
+> > (rval == 0 && !strcmp(endptr, nptr)
+> 
+> Again, no need to check the actual return value, we can just check that the
+> string was consumed, which we already do.
+> 
 
-Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
----
- lib/safe_macros.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Thanks! I have resubmit the patch as your suggestion. 
 
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 0fb5580ac..1ade829aa 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -614,16 +614,16 @@ unsigned long safe_strtoul(const char *file, const int lineno,
- 		return rval;
- 	}
-
--	if (rval > max || rval < min) {
-+	if (endptr == str || (*endptr != '\0' && *endptr != '\n')) {
- 		tst_brkm_(file, lineno, TBROK, cleanup_fn,
--			"strtoul(%s): %lu is out of range %lu - %lu",
--			str, rval, min, max);
-+			"Invalid value: '%s'", str);
- 		return 0;
- 	}
-
--	if (endptr == str || (*endptr != '\0' && *endptr != '\n')) {
-+	if (rval > max || rval < min) {
- 		tst_brkm_(file, lineno, TBROK, cleanup_fn,
--			"Invalid value: '%s'", str);
-+			"strtoul(%s): %lu is out of range %lu - %lu",
-+			str, rval, min, max);
- 		return 0;
- 	}
-
---
-2.17.1
-
+Regards,
+Gongyi
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
