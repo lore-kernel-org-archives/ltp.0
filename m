@@ -4,42 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1804C352A1
-	for <ltp@archiver.kernel.org>; Tue,  6 Dec 2022 14:46:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DCC2C4708E
+	for <ltp@archiver.kernel.org>; Tue,  6 Dec 2022 15:32:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7D4103CC1A0
-	for <ltp@archiver.kernel.org>; Tue,  6 Dec 2022 15:46:02 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 6E3CE3CC1DF
+	for <ltp@archiver.kernel.org>; Tue,  6 Dec 2022 16:32:02 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5BB503CC161
- for <ltp@lists.linux.it>; Tue,  6 Dec 2022 15:45:46 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-4.smtp.seeweb.it (Postfix) with ESMTP id 1D52E100035D
- for <ltp@lists.linux.it>; Tue,  6 Dec 2022 15:45:44 +0100 (CET)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95AEA23A;
- Tue,  6 Dec 2022 06:45:49 -0800 (PST)
-Received: from [10.57.37.186] (unknown [10.57.37.186])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C36E3F73B;
- Tue,  6 Dec 2022 06:45:42 -0800 (PST)
-Message-ID: <fe1c5bac-0ed1-92ef-3c28-e3758dc3465d@arm.com>
-Date: Tue, 6 Dec 2022 14:45:44 +0000
+ by picard.linux.it (Postfix) with ESMTPS id D52723C2B4D
+ for <ltp@lists.linux.it>; Tue,  6 Dec 2022 16:31:49 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2010A10000C6
+ for <ltp@lists.linux.it>; Tue,  6 Dec 2022 16:31:48 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 17E6821C31
+ for <ltp@lists.linux.it>; Tue,  6 Dec 2022 15:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1670340708;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=udQ8JHwjV3l1wpYvxEUEbUBg9fzr6r7zahbE4PyH428=;
+ b=QOKEzVQ1hkIKhUAcAcGRp6SthgRpKQHAGkE9N8CmR/BevNbSRo+tEQoVUzrXYgihtNNVsq
+ MtYcM2+auUw9nAcbjdXBMcHackdbAUNzXFX2I6WPR8oZQngwIiNHMdka43M40cXE0DkTbp
+ k2WFQFxGCVifvZsY47a5sszFUe9Yi5Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1670340708;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=udQ8JHwjV3l1wpYvxEUEbUBg9fzr6r7zahbE4PyH428=;
+ b=99/TEO8rJnuqtLpOPW7oGcuBft3tEmlkI+Fk6DBtkko4EN4gUQQpLxYyGe0RJs5wyM6J3W
+ EA83ftFTZSc2EsAg==
+Received: from g78 (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id E45B32C142;
+ Tue,  6 Dec 2022 15:31:47 +0000 (UTC)
+References: <20221206115329.17760-1-rpalethorpe@suse.com>
+ <20221206115329.17760-2-rpalethorpe@suse.com> <Y49EjvZHd1npsXS7@rei>
+User-agent: mu4e 1.8.11; emacs 28.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 06 Dec 2022 15:22:27 +0000
+Organization: Linux Private Site
+In-reply-to: <Y49EjvZHd1npsXS7@rei>
+Message-ID: <87edtctuos.fsf@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-To: Petr Vorel <pvorel@suse.cz>
-References: <20221206122604.212528-1-teo.coupriediaz@arm.com>
- <20221206140421.GB21839@pevik>
-Content-Language: en-US
-From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-Organization: Arm Ltd.
-In-Reply-To: <20221206140421.GB21839@pevik>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/brk: add direct syscall tst_variant
+Subject: Re: [LTP] [PATCH 2/2] fill_fs: Ensure written data is not easily
+ compressed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -51,50 +71,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKCk9uIDA2LzEyLzIwMjIgMTQ6MDQsIFBldHIgVm9yZWwgd3JvdGU6Cj4gSGkgVGVv
-LAo+Cj4+IERpcmVjdCB1c2FnZSBvZiBicmsgaXMgZGlzY291cmFnZWQgaW4gZmF2b3Igb2YgdXNp
-bmcgbWFsbG9jLiBBbHNvLCBicmsgd2FzCj4+IHJlbW92ZWQgZnJvbSBQT1NJWCBpbiBQT1NJWC4x
-LTIwMDEuCj4+IEluIHBhcnRpY3VsYXIsIHRoZSBNdXNsIGxpYmMncyBicmsgYWx3YXlzIHJldHVy
-bnMgLUVOT01FTSB3aGljaCBjYXVzZXMKPj4gdGhlIExUUCB0ZXN0cyB0byBleGl0IHByZW1hdHVy
-ZWx5LiBJbnZva2luZyB0aGUgc3lzY2FsbCBkaXJlY3RseSBhbGxvd3MKPj4gdGhlbSB0byBwcm9w
-ZXJseSB2YWxpZGF0ZSBicmsgYmVoYXZpb3IuIEFkZCBhIG5ldyB0ZXN0IHZhcmlhbnQgaGFuZGxp
-bmcgaWYKPj4gdGhlIGxpYmMgd3JhcHBlcnMgYXJlIG5vdCBpbXBsZW1lbnRlZCBhbmQgdGVzdGlu
-ZyB0aGUgZGlyZWN0IHN5c2NhbGwuCj4+IFVzZSB0c3Rfc3lzY2FsbCgpIGFuZCBoYW5kbGUgdGhl
-IGZhaWx1cmUgY2FzZXMgb3Vyc2VsdmVzLCBhcwo+PiB3ZSBkb24ndCBkZXBlbmQgb24gdGhlIGxp
-YmMgdG8gZG8gaXQgYW55bW9yZS4KPj4gVGhlIHBhdGNoIGFsc28gd29ya3MgYXJvdW5kIHRoZSBk
-ZXBlbmRlbmN5IG9uIHNicmsgdG8gZ2V0IHRoZSBjdXJyZW50IGJyZWFrCj4+IGFzIGl0IGhhcyB0
-aGUgc2FtZSBpc3N1ZXMuIEluc3RlYWQsIGNhbGwgdHN0X3N5c2NhbGwoX19OUl9icmssIDApIHdo
-aWNoCj4+IGFsd2F5cyByZXR1cm5zIHRoZSBjdXJyZW50IGJyZWFrLgo+PiBVcGRhdGUgYnJrMDEg
-dG8gdXNlIHZvaWQqIHRvIHVuaWZ5IGl0IHdpdGggYnJrMDIuCj4gVGhhdCBicm91Z2h0IHdhcm5p
-bmdzLCBzZWUgYmVsb3cuCj4KPiAuLi4KPj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9icmsvYnJrMDIuYwo+PiBAQCAtMTQsMjQgKzE0LDUxIEBACj4+ICAgI2luY2x1ZGUgPHVuaXN0
-ZC5oPgo+PiAgICNpbmNsdWRlIDxzeXMvbW1hbi5oPgo+PiAgICNpbmNsdWRlICJ0c3RfdGVzdC5o
-Igo+PiArI2luY2x1ZGUgImxhcGkvc3lzY2FsbHMuaCIKPj4gKwo+PiAraW5saW5lIHZvaWQgKmJy
-a192YXJpYW50cyh2b2lkICphZGRyKQo+PiArewo+PiArCXZvaWQgKmJya19hZGRyOwo+PiArCWlm
-ICh0c3RfdmFyaWFudCkgewo+PiArCQlicmtfYWRkciA9ICh2b2lkICopdHN0X3N5c2NhbGwoX19O
-Ul9icmssIGFkZHIpOwo+PiArCX0gZWxzZSB7Cj4+ICsJCWJya19hZGRyID0gKHZvaWQgKilicmso
-YWRkcik7Cj4gTk9URSB1c2luZyBwb2ludGVyIGZvciBicmsoKSBpcyBwcm9ibGVtYXRpYywgdGhl
-cmUgYXJlIGNvbXBsYWluczoKPgo+IGJyazAyLmM6IEluIGZ1bmN0aW9uIOKAmGJya192YXJpYW50
-c+KAmToKPiBicmswMi5jOjI2OjI4OiB3YXJuaW5nOiBjYXN0IHRvIHBvaW50ZXIgZnJvbSBpbnRl
-Z2VyIG9mIGRpZmZlcmVudCBzaXplCj4gWy1XaW50LXRvLXBvaW50ZXItY2FzdF0KPiAgICAgMjYg
-fCAgICAgICAgICAgICAgICAgYnJrX2FkZHIgPSAodm9pZCAqKWJyayhhZGRyKTsKPiAgICAgICAg
-ICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICBeCj4KPiBOb3Qgc3VyZSBob3cgdG8gZml4
-IHRoaXMuIFByb2JsZW0gaXMgaW4gYm90aCBDIGZpbGVzLCBvbiBzZXZlcmFsIHBsYWNlcy4KCkFo
-IHllcywgb2YgY291cnNlLiBUaGF0J3MgbXkgbWlzdGFrZTogSSBqdXN0IHJlYWxpemVkIHRoYXQg
-SSB1c2VkIHRoZSAKbGliYyBicmsgYXMgaWYgaXQgcmV0dXJuZWQgdGhlIGJyZWFrLCBidXQgaXQg
-ZG9lc24ndC4gSXQganVzdCByZXR1cm5zIGFuIAplcnJvciwgc28gdGhlIHdhcm5pbmcgaXMganVz
-dGlmaWVkIChhbmQgYSBkcm93bmVkIGluIG90aGVyIG1lc3NhZ2VzIGZyb20gCm15IGJ1aWxkIHN5
-c3RlbSkuCgpJJ2xsIHJld29yayBhbmQgY2hhbmdlIHRoYXQsIEkgYmVsaWV2ZSBpdCB3aWxsIHdv
-cmsgd2l0aG91dCB3YXJuaW5ncyAKb25jZSBpdCBpcyBwcm9wZXJseSB1c2VkLgoKPiBUaGVyZSBh
-cmUgYWxzbyBjb2RlIHN0eWxlIHByb2JsZW1zICh5b3UgY2FuIHNlZSBpdCB3aGVuIHJ1bm5pbmcg
-bWFrZSBjaGVjayBpbgo+IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvYnJrLyksIGJ1dCB0aGF0
-J3MgYSBtaW5vciBkZXRhaWwuCkkgd2Fzbid0IGF3YXJlIG9mIHRoYXQsIGdvb2QgdG8ga25vdyB0
-aGFua3MgISBJIHdpbGwgdGFrZSBjYXJlIG9mIGl0IGFzIAp3ZWxsLgo+IEtpbmQgcmVnYXJkcywK
-PiBQZXRyClRoYW5rcyBmb3IgZ2l2aW5nIGl0IGEgbG9vaywKVMOpbwoKLS0gCk1haWxpbmcgbGlz
-dCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hello,
+
+Cyril Hrubis <chrubis@suse.cz> writes:
+
+> Hi!
+>> --- a/lib/tst_fill_fs.c
+>> +++ b/lib/tst_fill_fs.c
+>> @@ -16,13 +16,20 @@ void tst_fill_fs(const char *path, int verbose)
+>>  {
+>>  	int i = 0;
+>>  	char file[PATH_MAX];
+>> -	char buf[4096];
+>> +	static char buf[4096];
+>
+> I'm not sure if caching the random data is worth here, I bet that
+> reading the random data would be neglectible to the rest of the write
+> operations we do.
+
+I suppose that instead of writing random lengths we could just copy
+/dev/urandom to <path> in static chunks of a reasonable size.
+
+Furthermore we can use copy_file_range on newer kernels.
+
+-- 
+Thank you,
+Richard.
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
