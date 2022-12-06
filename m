@@ -4,44 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1B18C352A1
-	for <ltp@archiver.kernel.org>; Tue,  6 Dec 2022 16:59:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B155FC352A1
+	for <ltp@archiver.kernel.org>; Tue,  6 Dec 2022 18:01:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 899713CDB51
-	for <ltp@archiver.kernel.org>; Tue,  6 Dec 2022 17:58:58 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 536FB3CDBDC
+	for <ltp@archiver.kernel.org>; Tue,  6 Dec 2022 19:01:42 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1D0153CAEDD
- for <ltp@lists.linux.it>; Tue,  6 Dec 2022 17:58:49 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 4F8FC3C7621
+ for <ltp@lists.linux.it>; Tue,  6 Dec 2022 19:01:33 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 493841000410
- for <ltp@lists.linux.it>; Tue,  6 Dec 2022 17:58:47 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 824B51FE72;
- Tue,  6 Dec 2022 16:58:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1670345926; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=OE2OcYWomu79vEwpCLO4QIYYdfDWGde71ij58C5IiRg=;
- b=XQDZT///iRdVSJuEawHSFLvfXE+vPMEmrn9hetamubqJtQzsTIN8IlDlDTPcMnfn4WCJRa
- xdAxWY5kcuFtrMxbPStJ+MVXv5mFX9oWpTpFKxqy78kMFdAoQ+4oWYhSY4lnn5wDAL9CQw
- 5u77urzmD+q7jHtoP3tcb/TAiK9Z3/U=
-Received: from g78.cable.virginm.net (unknown [10.163.28.198])
- by relay2.suse.de (Postfix) with ESMTP id 59AE62C141;
- Tue,  6 Dec 2022 16:58:46 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Tue,  6 Dec 2022 16:58:40 +0000
-Message-Id: <20221206165840.12107-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.38.1
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4D38C1A0034A
+ for <ltp@lists.linux.it>; Tue,  6 Dec 2022 19:01:31 +0100 (CET)
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7320921C54;
+ Tue,  6 Dec 2022 18:01:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1670349691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KUvattl1vOeajy5RTiXUN115kmAyvdmSnX5eY4J6xDU=;
+ b=X8A58WR8C63lY8kC5hF+XHTzt5TNq/kQW2u8TzCDRZHkN7oHOn6vJNavRL8O+2feykkdMw
+ s3sX0GXVI57TbRHfeuGumjioRmuObLjDLMHVFf5sC1LJZs7qjaqX2mcYG8/RHZxZMl6yB1
+ j/u13+5y8dBE1dOJCHH3R1RgemKNBvs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1670349691;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=KUvattl1vOeajy5RTiXUN115kmAyvdmSnX5eY4J6xDU=;
+ b=EXRjGDtPEhfNPXofnarnTyXVSVIpSjVVr80PKqZEIx++eu7g8k7gnRuHMS4xdExzgl1VSK
+ QqDGV9mg0t67UsDQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 050AF13326;
+ Tue,  6 Dec 2022 18:01:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap1.suse-dmz.suse.de with ESMTPSA id smXnMnqDj2NYFwAAGKfGzw
+ (envelope-from <chrubis@suse.cz>); Tue, 06 Dec 2022 18:01:30 +0000
+Date: Tue, 6 Dec 2022 19:02:47 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <Y4+Dx/K8sglGix0m@yuki>
+References: <20221206115329.17760-1-rpalethorpe@suse.com>
+ <20221206115329.17760-2-rpalethorpe@suse.com>
+ <Y49EjvZHd1npsXS7@rei> <87edtctuos.fsf@suse.de>
+ <Y49qssvWl2g+rvOu@yuki> <87a640trg1.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87a640trg1.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] getcpu01: Reinstate node_id test
+Subject: Re: [LTP] [PATCH 2/2] fill_fs: Ensure written data is not easily
+ compressed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -53,94 +79,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Presently the node_id is only checked on i386 and it is broken. The
-sched_getcpu call was substituted for getcpu when
-available. sched_getcpu does not have the node_id parameter and does
-not even call SYS_getcpu if it can be completed by vDSO.
+Hi!
+> What are we trying to do though, simply fill the device to test the
+> ENOSPC condition or some kind of poor man's fuzzing?
 
-Also we can at least check the node_id on x86_64 as well.
+The test is supposed to test what happens when filesystem is altmost
+full and being written to, which may trigger all kinds of corner cases.
+In that sense it makes sense to randomize the access patterns a bit so
+that we have higher chances of utilizing different code paths. But of
+course the question where should we stop in randomizing things and what
+makes sense and what does not.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- testcases/kernel/syscalls/getcpu/getcpu01.c | 22 +++++++++------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/getcpu/getcpu01.c b/testcases/kernel/syscalls/getcpu/getcpu01.c
-index fcc273e29..21c67f412 100644
---- a/testcases/kernel/syscalls/getcpu/getcpu01.c
-+++ b/testcases/kernel/syscalls/getcpu/getcpu01.c
-@@ -15,20 +15,16 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <sys/types.h>
-+#include "tst_test.h"
- #include "lapi/syscalls.h"
- #include "lapi/cpuset.h"
--#include "tst_test.h"
- #include "config.h"
- 
- static inline int get_cpu(unsigned *cpu_id,
--			  unsigned *node_id LTP_ATTRIBUTE_UNUSED,
--			  void *cache_struct LTP_ATTRIBUTE_UNUSED)
-+			  unsigned *node_id)
- {
--#ifndef HAVE_SCHED_GETCPU
--	return tst_syscall(__NR_getcpu, cpu_id, node_id, cache_struct);
--#else
--	*cpu_id = sched_getcpu();
--#endif
-+	return tst_syscall(__NR_getcpu, cpu_id, node_id, NULL);
-+
- 	return 0;
- }
- 
-@@ -78,7 +74,7 @@ realloc:
- 	return cpu_max;
- }
- 
--#ifdef __i386__
-+#if  defined(__i386__) || defined(__x86_64__)
- static unsigned int get_nodeid(unsigned int cpu_id)
- {
- 	DIR *directory_parent, *directory_node;
-@@ -125,22 +121,22 @@ static void run(void)
- {
- 	unsigned int cpu_id, node_id = 0;
- 	unsigned int cpu_set;
--#ifdef __i386__
-+#if defined(__i386__) || defined(__x86_64__)
- 	unsigned int node_set;
- #endif
- 
- 	cpu_set = set_cpu_affinity();
--#ifdef __i386__
-+#if defined(__i386__) || defined(__x86_64__)
- 	node_set = get_nodeid(cpu_set);
- #endif
- 
--	TEST(get_cpu(&cpu_id, &node_id, NULL));
-+	TEST(get_cpu(&cpu_id, &node_id));
- 	if (TST_RET == 0) {
- 		if (cpu_id != cpu_set)
- 			tst_res(TFAIL, "getcpu() returned wrong value"
- 				" expected cpuid:%d, returned value cpuid: %d",
- 				cpu_set, cpu_id);
--#ifdef __i386__
-+#if defined(__i386__) || defined(__x86_64__)
- 		else if (node_id != node_set)
- 			tst_res(TFAIL, "getcpu() returned wrong value"
- 				" expected  node id:%d returned  node id:%d",
 -- 
-2.38.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
