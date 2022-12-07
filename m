@@ -4,63 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B53EC352A1
-	for <ltp@archiver.kernel.org>; Wed,  7 Dec 2022 07:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E827C352A1
+	for <ltp@archiver.kernel.org>; Wed,  7 Dec 2022 08:40:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E8CBE3CC100
-	for <ltp@archiver.kernel.org>; Wed,  7 Dec 2022 08:52:52 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 556AA3CC0FB
+	for <ltp@archiver.kernel.org>; Wed,  7 Dec 2022 09:40:26 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 30C663CC0C3
- for <ltp@lists.linux.it>; Wed,  7 Dec 2022 08:52:43 +0100 (CET)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id C94753CAEDD
+ for <ltp@lists.linux.it>; Wed,  7 Dec 2022 09:40:15 +0100 (CET)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 510FB1400422
- for <ltp@lists.linux.it>; Wed,  7 Dec 2022 08:52:42 +0100 (CET)
-Received: by mail-lf1-x12b.google.com with SMTP id c1so27426964lfi.7
- for <ltp@lists.linux.it>; Tue, 06 Dec 2022 23:52:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
- :date:message-id:reply-to;
- bh=G2X6/x2Zh83sZHmia+Pwkl5wCoNcLUH2/O3aM5sR8Hw=;
- b=LrLyTTDkSDY1zS0Ki5dSflVGZZVDOYqD9DL3Nt7MpQJK10h4uYLc0NsCqBRLWLktT9
- VjCbQgfCAx2FiWK9jr9OzYXQQYCkEV7hfMIff1CEAiYvt52DaehV+k632CfRbsOQin14
- WiQ+srmce1DHTJedwQIBDszxD0iShQ6zHB2t/jS/8V8cHV5LmwkVIb8on28rg1oXueg1
- xENaQiLU/L6s0geFEXowfZ/9yfJhFG++N2kChwHcHgRC8G1JY8tdhFw/3CIBrYBLqxbL
- cNSUzDPxGAAUE6GEOGpzOtyq9A1SrJclKPrKanXXY0ZqvzotND3g0mO4BFrbHBpp6sd/
- JKPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=G2X6/x2Zh83sZHmia+Pwkl5wCoNcLUH2/O3aM5sR8Hw=;
- b=VYQcuSC4LlWWvccSwEItstcU07x6PLPSP9OXCOQU0Y3nj+RcHPdh0jnzdcj6H4S10B
- 93WlbJNGYa858hI7jOcXfVBfI8xT1Ua5+tEb8I5if+ch5pkp/lcMfwyPs6MZYTUUx9bY
- ArT7uT3d5udO4xRmKcKzYLSRKvGwRdMAyO8HWXlIkdd0wMB2T7PPZP9jkqwEhynO5eTI
- G436G2os4mq1ULgm1CyWd2pZXhikqhjOGnHvGgct15P8wyQuOBZQwa6VwE2934ZKlekQ
- O8e1ZiXcxWUgMECIKRvZb0QxjJ8qOvjCvqr9HAbQc5HNNzO+6y08RB7aIgjKGEOVrgU/
- EqOg==
-X-Gm-Message-State: ANoB5pnOzeGURpezvgfsa/CBN6v98x/3AlrI0fo2HA4LmRAiP9409r2/
- Blqp0Fa/9qgIsz6hUgPGuZO7KgM4/wmwkYRgWspPbWggnDg=
-X-Google-Smtp-Source: AA0mqf4BoxO4OgWXruBl6OXlUb2E7IscAd5fW7t7BDQAyDr4BNHkf5oskth6ebiWQLl7PxUkN9qoMmAf3ZI9G1l9vjU=
-X-Received: by 2002:a19:7b0f:0:b0:4a2:3bed:2008 with SMTP id
- w15-20020a197b0f000000b004a23bed2008mr32206578lfc.88.1670399561277; Tue, 06
- Dec 2022 23:52:41 -0800 (PST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7BF6E2001DA
+ for <ltp@lists.linux.it>; Wed,  7 Dec 2022 09:40:12 +0100 (CET)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.55])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NRrLF2kP7zRpdL
+ for <ltp@lists.linux.it>; Wed,  7 Dec 2022 16:39:17 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.63) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 7 Dec 2022 16:40:07 +0800
+To: <ltp@lists.linux.it>
+Date: Wed, 7 Dec 2022 16:37:09 +0800
+Message-ID: <20221207083709.164984-1-zhaogongyi@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-From: Xinkuan Yan <lucky33newman@gmail.com>
-Date: Wed, 7 Dec 2022 15:52:32 +0800
-Message-ID: <CAFQkDybMFX16dSaW+eZ0rC7TAwD5O7RnCkSuTS-ka9zZwKjC6Q@mail.gmail.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Originating-IP: [10.67.174.63]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: [LTP] About those realtime tests.
+Subject: [LTP] [PATCH] memcg_lib.sh: Update 'PAGESIZES' for 6.1 kernel
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,29 +50,85 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Zhao Gongyi via ltp <ltp@lists.linux.it>
+Reply-To: Zhao Gongyi <zhaogongyi@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello list,
+Post 6.1 kernel updates stat in batch (> 64 pages) every time
+since commit 1813e51eece0ad6f4aacaeb738e7cced46feb470.
 
-Green hand here to ask a question about thost realtime tests, I mean, tests
-under this folder:
+Update 'PAGESIZES' for 6.1 kernel, otherwise the testcase
+memcg_max_usage_in_bytes_test.sh will fail and report:
 
-/opt/ltp/testcases/realtime/func
+memcg_max_usage_in_bytes_test 1 TINFO: timeout per run is 0h 5m 0s
+memcg_max_usage_in_bytes_test 1 TINFO: set /dev/memcg/memory.use_hierarchy to 0 failed
+memcg_max_usage_in_bytes_test 1 TINFO: Test memory.max_usage_in_bytes
+memcg_max_usage_in_bytes_test 1 TINFO: Running memcg_process --mmap-anon -s 4194304
+memcg_max_usage_in_bytes_test 1 TINFO: Warming up pid: 17808
+memcg_max_usage_in_bytes_test 1 TINFO: Process is still here after warm up: 17808
+memcg_max_usage_in_bytes_test 1 TFAIL: memory.max_usage_in_bytes is 4456448, 4206592-4341760 expected
+memcg_max_usage_in_bytes_test 2 TINFO: Test memory.memsw.max_usage_in_bytes
+memcg_max_usage_in_bytes_test 2 TPASS: echo 8388608 > memory.limit_in_bytes passed as expected
+memcg_max_usage_in_bytes_test 2 TPASS: echo 8388608 > memory.memsw.limit_in_bytes passed as expected
+memcg_max_usage_in_bytes_test 2 TINFO: Running memcg_process --mmap-anon -s 4194304
+memcg_max_usage_in_bytes_test 2 TINFO: Warming up pid: 17828
+memcg_max_usage_in_bytes_test 2 TINFO: Process is still here after warm up: 17828
+memcg_max_usage_in_bytes_test 2 TFAIL: memory.memsw.max_usage_in_bytes is 4456448, 4206592-4341760 expected
+memcg_max_usage_in_bytes_test 3 TINFO: Test reset memory.max_usage_in_bytes
+memcg_max_usage_in_bytes_test 3 TINFO: Running memcg_process --mmap-anon -s 4194304
+memcg_max_usage_in_bytes_test 3 TINFO: Warming up pid: 17844
+memcg_max_usage_in_bytes_test 3 TINFO: Process is still here after warm up: 17844
+memcg_max_usage_in_bytes_test 3 TFAIL: memory.max_usage_in_bytes is 4456448, 4206592-4341760 expected
+memcg_max_usage_in_bytes_test 3 TFAIL: memory.max_usage_in_bytes is 262144, 0-135168 expected
+memcg_max_usage_in_bytes_test 4 TINFO: Test reset memory.memsw.max_usage_in_bytes
+memcg_max_usage_in_bytes_test 4 TPASS: echo 8388608 > memory.limit_in_bytes passed as expected
+memcg_max_usage_in_bytes_test 4 TPASS: echo 8388608 > memory.memsw.limit_in_bytes passed as expected
+memcg_max_usage_in_bytes_test 4 TINFO: Running memcg_process --mmap-anon -s 4194304
+memcg_max_usage_in_bytes_test 4 TINFO: Warming up pid: 17863
+memcg_max_usage_in_bytes_test 4 TINFO: Process is still here after warm up: 17863
+memcg_max_usage_in_bytes_test 4 TFAIL: memory.memsw.max_usage_in_bytes is 4456448, 4206592-4341760 expected
+memcg_max_usage_in_bytes_test 4 TFAIL: memory.memsw.max_usage_in_bytes is 262144, 0-135168 expected
+memcg_max_usage_in_bytes_test 5 TINFO: SELinux enabled in enforcing mode, this may affect test results
+memcg_max_usage_in_bytes_test 5 TINFO: it can be disabled with TST_DISABLE_SELINUX=1 (requires super/root)
+memcg_max_usage_in_bytes_test 5 TWARN: test interrupted
+memcg_max_usage_in_bytes_test 5 TINFO: loaded SELinux profiles: kill
 
-I surely knew that those tests could be started with 'run_auto.sh', and
-most of them provide reports with PASS or FAIL.
+Summary:
+passed   4
+failed   6
+broken   0
+skipped  0
+warnings 1
 
-The question for me is that is it possible to use the script file 'runltp'
-to start those tests?
+Signed-off-by: Zhao Gongyi <zhaogongyi@huawei.com>
+---
+ testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-I have read the doc ltp-run-files.txt but I did not quite get to it.
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index a89e24485..004946456 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -402,7 +402,12 @@ if [ $? -ne 0 ]; then
+ fi
 
-Any guidance is appreciated!
+ # Post 4.16 kernel updates stat in batch (> 32 pages) every time
+-PAGESIZES=$(($PAGESIZE * 33))
++# Post 6.1 kernel updates stat in batch (> 64 pages) every time
++if tst_kvcmp -lt "6.1"; then
++	PAGESIZES=$(($PAGESIZE * 33))
++else
++	PAGESIZES=$(($PAGESIZE * 65))
++fi
 
-Yan
+ # On recent Linux kernels (at least v5.4) updating stats happens in batches
+ # (PAGESIZES) and also might depend on workload and number of CPUs.  The kernel
+--
+2.17.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
