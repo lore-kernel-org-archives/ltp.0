@@ -4,67 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0116BC4332F
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 09:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADD57C4332F
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 09:14:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3C9963CBE38
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 10:09:16 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 686FE3CBE26
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 10:14:05 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8726B3CB6DC
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 10:09:05 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A65E33C264E
+ for <ltp@lists.linux.it>; Fri,  9 Dec 2022 20:43:13 +0100 (CET)
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com
+ [IPv6:2607:f8b0:4864:20::830])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C2B576005D7
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 10:09:03 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EB1861FE80;
- Mon, 12 Dec 2022 09:09:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1670836142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=XJ2KblaUvcNl6OdwMhBL/QCWNgXvHzx/pGPQS1N93wQ=;
- b=UqZy9DlHfRw9YPXWKN5htl61C8L1LNIJ416Q8+ERU0WB/RStTw5+/p70gzjjrw4oiqhAuy
- tgxzLpMsEgJm7N9MsbV3LjNcP2T5W7IKm3kxZYhcuBH6THZZH7Dpq7wrS7TWMAVxlBiiw7
- BXhdCGT7mcUWkxqQkvknFi15Se/ROlk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1670836142;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=XJ2KblaUvcNl6OdwMhBL/QCWNgXvHzx/pGPQS1N93wQ=;
- b=ZqpFMhcxOzkSK4fQ8IK3LwWCgzik/l4qOXRm9tdgt9ptaMxHQpwRx88r7wn3m11vNwA391
- CdsAnI8jDrhFv+Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA64113456;
- Mon, 12 Dec 2022 09:09:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id N/yvNK7vlmOVIAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 12 Dec 2022 09:09:02 +0000
-Date: Mon, 12 Dec 2022 10:10:17 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Xinkuan Yan <lucky33newman@gmail.com>
-Message-ID: <Y5bv+X+BnyhKJLWy@yuki>
-References: <CAFQkDyZABHU38_LTvsv1eP8PvK4rHprfZrL45CYqMvav1-O8_A@mail.gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 736D41400558
+ for <ltp@lists.linux.it>; Fri,  9 Dec 2022 20:43:12 +0100 (CET)
+Received: by mail-qt1-x830.google.com with SMTP id j16so4408569qtv.4
+ for <ltp@lists.linux.it>; Fri, 09 Dec 2022 11:43:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=gRJTs9+SBroSyGvMtmVyKnEau+bQZUBWgY31sFvqRjc=;
+ b=aadxeURzQ02Z751ZmBMRvCNvyXkPhfztoKWIQTV8AsbVK7Cajwkt4uqlvYc/LHMlck
+ PHhH+Kt9SynLakKvLgC5Ut5QzrVoJzud2hzZplz2YCa6M0UN+QjGb14oPs9dpuftm2ho
+ b/dCNLfO/N5sIefkqpqj4RjmH03UJFb6JN87VZQ5Fs8vlKVKnrbpJRKlgMve5RMveUEG
+ XkN0GbzAIookuc3+sZ8i1ydm3n3+lZdf/Y0bY1aNvdQZIPVU7yoR9mSd8TkUeMNM1Aik
+ XJQ1QdM1t2YLx2rvH2Qfw5a+GQKGWiAqV3jSkViMIVWz49j3RhV/i6NPVLy4JhjpC2mQ
+ S3yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=gRJTs9+SBroSyGvMtmVyKnEau+bQZUBWgY31sFvqRjc=;
+ b=UMaDFHfbaby1KwwtIzAYzuX0V7CDZMnM+od9u+Eygxl2gCBHCO+CNOehf4wHpiCz/3
+ RHNkUAO28OL+eplbIj4jBtIyfJM3SeBgMbmNPnR5CudNXDD4c4zl5YXgEogQWQbX7YZb
+ JUER7AiJCBJGsLRClIOS/99gQDWLfKO29fGRJkFTE9gDwmghDTp/j2i0ZrQaYkkIZ3hI
+ BUjbWffoJjx9OhgW7mTt4rqT/uu4epzhBcjEBe9urxYMGgwBVUHEKdsKOGYJon2lJGne
+ 3WOregAsLQaRhDEOJBRNa2xYBNJ8KUClm2bJR5JkWdLIndt+hLb2envbmq/z1zXbpM7Y
+ rkFw==
+X-Gm-Message-State: ANoB5pkxVEAV+1Tha9w1WjIITUCzYO4BPhiEGI/N7NDFEM/lZrtn/B7R
+ IlxtiUxzL2CuZ5aajeZAuwCzFE89LVNZGnSdW06D1lFX49G8Qw==
+X-Google-Smtp-Source: AA0mqf6ogKC62ZUB5vRz6IJK6TjT4VitJ7n06+dN4VijzL5htPSrTRrxgLXds07Sj4nRvbhOysXSop10oJMTJlf+CPY=
+X-Received: by 2002:ac8:5055:0:b0:3a5:3388:4135 with SMTP id
+ h21-20020ac85055000000b003a533884135mr76264994qtm.129.1670614989423; Fri, 09
+ Dec 2022 11:43:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAFQkDyZABHU38_LTvsv1eP8PvK4rHprfZrL45CYqMvav1-O8_A@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Date: Fri, 9 Dec 2022 11:42:58 -0800
+Message-ID: <CAELULbe=xV5mH2PFpEAUuiG6q1_Pz6LdBcaUueBq4r+vT8mmmA@mail.gmail.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Question about log format.
+X-Mailman-Approved-At: Mon, 12 Dec 2022 10:13:55 +0100
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: [LTP] Fix the syntax error ltp
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,39 +72,17 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Zijun Zhao via ltp <ltp@lists.linux.it>
+Reply-To: Zijun Zhao <zijunzhao@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkhCj4gSSdtIHRyeWluZyB0byBkbyBhIGNvbmNpc2UgcGFyc2luZyBvZiB0aGUgTFRQIHJlcG9y
-dC4KPiAKPiBJIGRvbid0IGhhdmUgbXVjaCBleHBlcmllbmNlIGFuZCBJJ20gbm90IGZhbWlsaWFy
-IHdpdGggTFRQLCBzbyBJJ20gZ29pbmcgdG8KPiB0YWtlICNtYXRoIGFzIGFuIGV4YW1wbGUsIGZv
-ciBpdCBpcyBub3QgY29tcGxleC4KPgo+IFJ1biB0ZXN0IGNvbW1hbmQ6Cj4gCj4gLi9sdHAg4oCT
-ZiBtYXRoIOKAk3EKPiAKPiBJIGhhdmUgdGhyZWUgcXVlc3Rpb25zIG5vdywgIHRha2luZyB0aGUg
-b25lLWxpbmUgb3V0cHV0IHJlc3VsdCBiZWxvdyBhcyBhbgo+IGV4YW1wbGU6Cj4gCj4gZmxvYXRf
-aXBlcmIgMSBUUEFTUzogVGVzdCBwYXNzZWQKPiAKPiAxLCBJdCBpcyBjbGVhciB0aGF0IFRQQVNT
-IG1lYW5zIGl0IHBhc3NlZCwgYnV0IHdoYXQgaXMgdGhlIG51bWJlciAxCj4gc3RhbmRpbmcgZm9y
-Lgo+IAo+IDIsIFdoeSB0aGlzIGxpbmUgc2hvd2VkIHVwIHR3aWNlPyAoIFBTOiBCZXR3ZWVuIHRo
-ZXNlIHR3byBsaW5lcyBhcmUgbWFueQo+IFRJTkZPLikKClRoZSBtYXRoIHRlc3RzIGFyZSBwcmlt
-ZSBleGFtcGxlIGhvdyBub3QgdG8gd3JpdGUgdGVzdHMuIFBsZWFzZSBkbyBub3QKdGFrZSB0aGVt
-IGFzIGFuIGV4YW1wbGUgb2YgYW55dGhpbmcgZWxzZS4gVXN1YWxseSB0aGUgbW9zdCBjbGVhbiBh
-bmQgdXAKdG8gZGF0ZSB0ZXN0cyBhcmUgaW4gc3lzY2FsbHMvIGRpcmVjdG9yeS4KCj4gMywgV2hl
-cmUgdG8gY2hlY2sgdGhvc2Ugb3V0IHB1dCBzdGFuZGFyZHMsIHRha2luZyB5b2N0byBwYWNrYWdl
-IHRlc3QgYXMgYQo+IHNtYWxsIGNvbXByZWhlbnNpb24sIHRoYXQgc3RhbmRhcmQgd2FzICggUEFT
-U3xGQUlMfFNLSVApOiBUZXN0IGluZm8uIEhvdyBpcwo+IGl0IGxpa2UgaW4gTFRQPwoKR2VuZXJh
-bGx5IHRlc3RzIGluIExUUCBjYW4gaGF2ZSBtb3JlIHRoYW4gb25lIHJlc3VsdCBzbyB5b3UgY2Fu
-J3QgcmVhbGx5Cm1hcCBhIHRlc3QgcmVzdWx0IHRvIGEgc2luZ2xlIHZhbHVlLiBJdCdzIGNvbW1v
-biBmb3IgYSB0ZXN0IHRvIHJlcG9ydApzZXZlcmFsIFRQQVNTIGFuZCBvbmUgb3IgdHdvIFRDT05G
-IGZvciBleGFtcGxlLiBUaGF0IG1lYW5zIHRoYXQgbW9zdCBvZgp0aGUgdGVzdCB3YXMgZXhlY3V0
-ZWQgYnV0IHNtYWxsIHBhcnQgd2FzIHNraXBwZWQuCgpUaGUgVElORk8gbWVzc2FnZXMgYXJlIGFk
-ZGl0aW9uYWwgaW5mb3JtYXRpb24gdGhhdCBtYXkgYmUgdXNlZnVsIHdoZW4KdGVzdCBmYWlsLCBu
-b3RoaW5nIG1vcmUuCgpUaGUgb3ZlcmFsbCByZXN1bHQgaXMgcmVwb3J0ZWQgaW4gdGhlIHRlc3Qg
-ZXhpdCB2YWx1ZSBhcyBiaXRmbGFncywgd2hpY2gKaXMgd2hhdCBpcyB1c2VkIGJ5IHRoZSBydW5s
-dHAgc2NyaXB0IHRvIHByb2R1Y2UgdGhlIHJlc3VsdCBmaWxlcy4KCkFuZCBieSB0aGUgd2F5LCB3
-ZSBhcmUgd29ya2luZyBvbiByZXBsYWNlbWVudCBmb3IgdGhlIHJ1bmx0cCBzY3JpcHQKd2hpY2gg
-aXMgY2FsbGVkIHJ1bmx0cC1uZywgbWF5YmUgeW91IHNob3VsZCBoYXZlIGEgbG9vayBhdCB0aGF0
-IGJlZm9yZQp5b3UgdHJ5IHRvIHdyaXRlIHlvdXIgb3duIHNvbHV0aW9uLgoKLS0gCkN5cmlsIEhy
-dWJpcwpjaHJ1YmlzQHN1c2UuY3oKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi there,
+  Could you help me review the patch? Thank you!
+Best regards,
+Zijun Zhao
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
