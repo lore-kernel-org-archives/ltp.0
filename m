@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B353BC4332F
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 15:57:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17041C4332F
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 16:03:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7E7BE3CBE7F
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 16:57:08 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 339E93CBE6E
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 17:03:37 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7BD433CBE07
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 16:56:59 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 7DDC13CBE28
+ for <ltp@lists.linux.it>; Mon, 12 Dec 2022 17:03:28 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0CB551A00437
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 16:56:58 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C316F200353
+ for <ltp@lists.linux.it>; Mon, 12 Dec 2022 17:03:27 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 26072337DC;
- Mon, 12 Dec 2022 15:56:58 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AECCB337DC;
+ Mon, 12 Dec 2022 16:03:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1670860618;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=heOh/kny3uq7aaAQziAvSRxXNnwfIaSKc85gj+UA16M=;
- b=YeBRu79kKhEfZoHMjfj0uWTaNz2i//e/mmziI8c0HUqKgjbgutIq38nR0BUdBnhT9r9/On
- AB1OediGBYse5Si8B8Pn0j2k9TKmuhkpSWVp3ysv3q8gj4ySfoGnWm83TklXwAON7sOajx
- yDQh4le/L8NF6mqkmyTufkp5ZhLN5wo=
+ t=1670861006; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=srX7WiC4O1lw4ZLRjzgDzMsGTTIy05bqASVMhgHPkxs=;
+ b=1acm/gnRFHOWGDUOHlPA70xdSzoTO1P4QrQZ5rAeXxQ3F86RdHmnAzr77wTZxFr5jAWCEy
+ wDdcITYRbTbHFmon6RiCtHZ5w96WWO1xwrY05eUbWqftXKUpyBlhFZMQR9H5X72gVMA51R
+ 3PloKHVtOYeflDczl3eS1bDoptj0xDc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1670860618;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=heOh/kny3uq7aaAQziAvSRxXNnwfIaSKc85gj+UA16M=;
- b=un7upDJOP/luXV3ujzDuMh58H/mGqS+iFNhTX8f6cydSrETtJz+pPIKr2dRG+gSrXn7L1X
- Nymc++1ZujUES8BA==
+ s=susede2_ed25519; t=1670861006;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=srX7WiC4O1lw4ZLRjzgDzMsGTTIy05bqASVMhgHPkxs=;
+ b=Lf3hpka38O9ymUb1CqjFM43m6FkfM0xtp/L3vcwee1bRELQdVFadfsrTd9ACdECZnfo3ko
+ F9sm2oWiuL9DffDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0554E138F3;
- Mon, 12 Dec 2022 15:56:57 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E173138F3;
+ Mon, 12 Dec 2022 16:03:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Ok9YO0lPl2P8cwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 12 Dec 2022 15:56:57 +0000
-Date: Mon, 12 Dec 2022 16:56:55 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id 2o5qGc5Ql2OadwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 12 Dec 2022 16:03:26 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <Y5dPRz3sP6YVr/pY@pevik>
-References: <20221209140631.11609-1-andrea.cervesato@suse.com>
- <Y5NUeKtwr2b6Bx0t@rei>
+To: ltp@lists.linux.it
+Date: Mon, 12 Dec 2022 17:03:22 +0100
+Message-Id: <20221212160322.4600-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y5NUeKtwr2b6Bx0t@rei>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v11 0/2] Rewrite aio-stress test
+Subject: [LTP] [PATCH 1/1] aio-stress.c: Use static variable iterations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,31 +71,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+local iteration variable in worker() was probably left over from
+previous versions rewrite (maybe -i was not used in previous versions).
 
-> Hi!
-> You could have added my Reviewed-by: to the patches already, anyways:
+Clang correctly reported:
+aio-stress.c:1049:6: warning: variable 'iteration' set but not used [-Wunused-but-set-variable]
+int iteration = 0;
 
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Fixes: 054d45390 ("Rewrite aio-stress test using LTP API")
 
-Thanks all for their worked!
-Merged this one.
+Reported-by: Richard Palethorpe <rpalethorpe@suse.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Hi,
 
-Richie raised [1] clang warning 'iteration' set but not used. I thought clang is
-wrong (static int iterations = 500;), but there is really another variable
-iteration not used). Going to remove it. Sorry for the noise.
-
-Kind regards,
-Petr
+reported by Richie [1], I got confused thus merge before this fix.
 
 [1] https://lore.kernel.org/ltp/87h6yfifbr.fsf@suse.de/
+
+ testcases/kernel/io/ltp-aiodio/aio-stress.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/io/ltp-aiodio/aio-stress.c b/testcases/kernel/io/ltp-aiodio/aio-stress.c
+index 39db14d65..29e679087 100644
+--- a/testcases/kernel/io/ltp-aiodio/aio-stress.c
++++ b/testcases/kernel/io/ltp-aiodio/aio-stress.c
+@@ -1046,7 +1046,6 @@ static int *worker(struct thread_info *t)
+ 	char *this_stage = NULL;
+ 	struct timeval stage_time;
+ 	int status = 0;
+-	int iteration = 0;
+ 	int cnt;
+ 
+ 	aio_setup(&t->io_ctx, 512);
+@@ -1151,7 +1150,7 @@ restart:
+ 
+ 	/* someone got restarted, go back to the beginning */
+ 	if (t->active_opers && cnt < iterations) {
+-		iteration++;
++		iterations++;
+ 		goto restart;
+ 	}
+ 
+-- 
+2.38.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
