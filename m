@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70B92C4332F
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 18:53:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F377FC4332F
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 19:29:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D65873CBE69
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 19:53:07 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 1B2893CBE74
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 20:29:01 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A7BDC3CBE03
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 19:52:57 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 4C3A03C32DD
+ for <ltp@lists.linux.it>; Mon, 12 Dec 2022 20:28:49 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 16E0C648453
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 19:52:56 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E55EC1A006A0
+ for <ltp@lists.linux.it>; Mon, 12 Dec 2022 20:28:48 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EA18E1F385;
- Mon, 12 Dec 2022 18:52:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B1F9133971;
+ Mon, 12 Dec 2022 19:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1670871175;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1670873327;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=17Nfip1J1Lt2MsuXMoJC9OcpLIEq8FNiwjOsEvzs8TQ=;
- b=eerv2O3Ts8lCIND0lrxNkcl1205pBZY99oaxbjKBioZ1aU1ztTGBd9VhmK4+1rnSqPXHy3
- puZGuZkxuKJVDKslLlUQC4k6sji/Ktlkd+IxVozZjfz60O8HJzWkxuFPczE5lkm/2RAOjj
- 58BkRQ1ABWGN6QGMC1Ge+Fc3inEmsI4=
+ bh=p2B9rxCvPHyjmd9tCrCfOCmMepMpwVwKHoP1MuNrFAY=;
+ b=MTFMYVToFXVzMP0Lg4sbaKEkfOLRxLMFMOuz8G+laqxbMwhqFYWCnWhD7gdwOLf7l8vFiu
+ TfnqOI2uuZ8pJ0JFf3a6fq8Xv6t2DTNOL7lw4XDJa7fLUaQDUyRdB0YjnWW06JlcSt2RWc
+ AF62nC7jUcCp8D4QoSZjYFqKU22ozmA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1670871175;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1670873327;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=17Nfip1J1Lt2MsuXMoJC9OcpLIEq8FNiwjOsEvzs8TQ=;
- b=xCYJjhawi8MU7Uiw85YC13KKNvTcgaXS6IG4xpE8fzrCkJ1E1K00UHeb71ly0winLM7n0n
- T0WehOKkxtrPd2Ag==
+ bh=p2B9rxCvPHyjmd9tCrCfOCmMepMpwVwKHoP1MuNrFAY=;
+ b=XFM9v4StY+3pcAZPmurWmLHN1qgpQsFvL8WSOyjwcyWsCBr6cD/K/7yeeEc1IrPxKrtNUZ
+ XiJby8adqrI3NLBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE9E6138F3;
- Mon, 12 Dec 2022 18:52:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6FB6713456;
+ Mon, 12 Dec 2022 19:28:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id m88nKId4l2OoSwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 12 Dec 2022 18:52:55 +0000
-Date: Mon, 12 Dec 2022 19:52:52 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id o6O6F++Al2N5WgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 12 Dec 2022 19:28:47 +0000
+Date: Mon, 12 Dec 2022 20:28:45 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>, ltp@lists.linux.it,
- Cyril Hrubis <chrubis@suse.cz>,
- Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <Y5d4hBWwj0Oqpw3H@pevik>
-References: <20221212160322.4600-1-pvorel@suse.cz> <87k02wshw2.fsf@suse.de>
- <Y5dzHeDwtlBKok5W@pevik>
+To: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+Message-ID: <Y5eA7WeAV4b/Cp8d@pevik>
+References: <20221207092428.11798-1-teo.coupriediaz@arm.com>
+ <871qp4u02j.fsf@suse.de> <Y5dHRcLD1359Rm3o@pevik>
+ <4b38f13f-a8a1-bbde-9103-9900f0cf5a88@arm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Y5dzHeDwtlBKok5W@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <4b38f13f-a8a1-bbde-9103-9900f0cf5a88@arm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] aio-stress.c: Use static variable iterations
+Subject: Re: [LTP] [PATCH v2] syscalls/brk: add direct syscall tst_variant
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,78 +81,126 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi Richie,
-
-> > Hello,
-
-> > Petr Vorel <pvorel@suse.cz> writes:
-
-> > > local iteration variable in worker() was probably left over from
-> > > previous versions rewrite (maybe -i was not used in previous versions).
-
-> > > Clang correctly reported:
-> > > aio-stress.c:1049:6: warning: variable 'iteration' set but not used [-Wunused-but-set-variable]
-> > > int iteration = 0;
-
-> > > Fixes: 054d45390 ("Rewrite aio-stress test using LTP API")
-
-> > > Reported-by: Richard Palethorpe <rpalethorpe@suse.com>
-> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > > ---
-> > > Hi,
-
-> > > reported by Richie [1], I got confused thus merge before this fix.
-
-> > > [1] https://lore.kernel.org/ltp/87h6yfifbr.fsf@suse.de/
-
-> > >  testcases/kernel/io/ltp-aiodio/aio-stress.c | 3 +--
-> > >  1 file changed, 1 insertion(+), 2 deletions(-)
-
-> > > diff --git a/testcases/kernel/io/ltp-aiodio/aio-stress.c b/testcases/kernel/io/ltp-aiodio/aio-stress.c
-> > > index 39db14d65..29e679087 100644
-> > > --- a/testcases/kernel/io/ltp-aiodio/aio-stress.c
-> > > +++ b/testcases/kernel/io/ltp-aiodio/aio-stress.c
-> > > @@ -1046,7 +1046,6 @@ static int *worker(struct thread_info *t)
-> > >  	char *this_stage = NULL;
-> > >  	struct timeval stage_time;
-> > >  	int status = 0;
-> > > -	int iteration = 0;
-> > >  	int cnt;
-
-> > >  	aio_setup(&t->io_ctx, 512);
-> > > @@ -1151,7 +1150,7 @@ restart:
-
-> > >  	/* someone got restarted, go back to the beginning */
-> > >  	if (t->active_opers && cnt < iterations) {
-> > > -		iteration++;
-> > > +		iterations++;
-
-> > Why is this correct?
-> OK, this is obviously wrong, we don't want to increase global iterations (-i).
-> iteration appeared in v6. In v8, the default changed to 500 and RUN_FOREVER -1
-> was not used any more.
-> The warning was on legacy version as well, IMHO code is dead and whole restart
-> label and iteration variable should go away. I'll send v2.
-> Thanks for catching my obvious error.
-
-Actually, thinking about it twice, I'm not sure if restart should be really
-handled and thus only iteration variable should be removed (but restart label
-kept) or it's so unlikely that it happen so that also restart label should be
-deleted.
-
-Kind regards,
-Petr
-
-> Kind regards,
-> Petr
-
-> > >  		goto restart;
-> > >  	}
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgVGVvLAoKPiBIaSBQZXRyLAoKPiBPbiAxMi8xMi8yMDIyIDE1OjIyLCBQZXRyIFZvcmVsIHdy
+b3RlOgo+ID4gSGkgUmljaGllLAoKPiA+ID4gQ3lyaWwsIFBldHIsIFdvdWxkIHlvdSBsaWtlIHRv
+IGFkZCB5b3VyIHJldmlld2VkIGJ5IHRhZ3M/IFRoZW4gd2UgY2FuCj4gPiA+IG1lcmdlIHRoaXMu
+Cj4gPiBCeSBhY2NpZGVudCBJIHJlcGx5IHRvIG15IHBvaW50cyB0byB2MSBbMV0uCj4gPiBUbyBj
+b3B5IGl0IGhlcmU6Cgo+ID4gMSkgVGhlcmUgYXJlIHdhcm5pbmdzOgo+ID4gYnJrMDIuYzogSW4g
+ZnVuY3Rpb24g4oCYYnJrX3ZhcmlhbnRz4oCZOgo+ID4gYnJrMDIuYzoyNjoyODogd2FybmluZzog
+Y2FzdCB0byBwb2ludGVyIGZyb20gaW50ZWdlciBvZiBkaWZmZXJlbnQgc2l6ZQo+ID4gWy1XaW50
+LXRvLXBvaW50ZXItY2FzdF0KPiA+ICAgICAyNiB8ICAgICAgICAgICAgICAgICBicmtfYWRkciA9
+ICh2b2lkICopYnJrKGFkZHIpOwo+ID4gICAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgXgoKPiA+IDIpIG1ha2UgY2hlY2sgcmVwb3J0cyBlcnJvcnMgd2hpY2ggYXJlIGVhc2ls
+eSBmaXhlZC4KCj4gPiBUZW8gcmVwbGllZCBbMl0sIHRoYXQgaGUncyBnb2luZyB0byBmaXggaXQu
+IEkgdGhvdWdodCBJIGhhZCBzZXQgaXQKPiA+ICJDaGFuZ2VzIHJlcXVlc3RlZCIsIGJ1dCBub3cg
+SSBzZWUgIk5lZWRzIFJldmlldyAvIEFDSyIuIFNldHRpbmcgaXQgdG8KPiA+ICJDaGFuZ2VzIHJl
+cXVlc3RlZCIuCgo+IEkgYmVsaWV2ZSB0aGUgcG9pbnRzIHlvdSByYWlzZWQgYXJlIGZpeGVkIGlu
+IHRoZSB2Miwgb24gdG9wIG9mIHRoaXMgdGhyZWFkLgo+IFJlLWFwcGx5aW5nIGl0IG9uIHRvcCBv
+ZiBtYXN0ZXIgb24gbXkgc2lkZSBkb2Vzbid0IGdpdmUgbWUgYW55IHdhcm5pbmdzIGZvcgo+IHRo
+ZSBicmsgdGVzdHMsIGFzIEkgZG8gbm90IGNhc3QgdGhlIHJlc3VsdCBmcm9tIHRoZSBsaWJjIGJy
+ayBhbnltb3JlLCBhbmQKPiBtYWtlIGNoZWNrIHJlcG9ydHMgZXhpc3RpbmcgaXNzdWVzIHdpdGgg
+dGhlIG5hbWUgb2YgdGhlIGZ1bmN0aW9uLCBidXQgbm8KPiBzdHlsZSBwcm9ibGVtcyB0aGF0IGRp
+ZCBleGlzdCBpbiB2MS4gKEkgZG9uJ3QgbWluZCBjaGFuZ2luZyB0aGVtIGlmIHlvdQo+IHdhbnQs
+IGJ1dCB0aGV5IGFyZSBwcmVzZW50IG9uIG1hc3RlciBhcyB3ZWxsKS4KCj4gSWYgeW91IGdpdmUg
+YSBxdWljayBsb29rIGF0IHRoZSBwYXRjaCB2MiB5b3UnbGwgc2VlIHRoYXQgaW5kZWVkIHRoZXJl
+IGlzIG5vCj4gbW9yZSAodm9pZCAqKWJyayhhZGRyKSBvciBzdWNoIHRoYXQgZ2VuZXJhdGVkIHRo
+ZSB3YXJuaW5ncywgZm9yIGV4YW1wbGUuCj4gKFRoZSBzeXNjYWxscyBzdGlsbCBuZWVkIGl0LCBh
+cyB0aGV5IHJldHVybiB0aGUgYnJlYWsgZGlyZWN0bHkgcmF0aGVyIHRoYW4KPiBhbiBlcnJvciwg
+d2hpY2ggaXMgd2hhdCB0aGUgbGliYyB3cmFwcGVyIGRvZXMuKQoKPiBJIG1pZ2h0IGJlIG1pc3Np
+bmcgc29tZXRoaW5nLCBwbGVhc2UgZG8gdGVsbCBtZSBpZiB0aGF0J3MgdGhlIGNhc2UgISBCdXQg
+SQo+IGJlbGlldmUgdGhhdCB0aGUgdjIgX3Nob3VsZF8gYmUgZnJlZSBvZiB0aG9zZSBpc3N1ZXMu
+CgpJIHRob3VnaHQgSSBtdXN0IGhhdmUgcHV0IHYxIGNvZGUgaW50byBteSB2MiBicmFuY2guIEJ1
+dCB0aGUgd2FybmluZ3MgYXJlCmFjdHVhbGx5IHdoZW4gY29tcGlsaW5nIG9uIEFscGluZToKCiQg
+bWFrZSBWPTEKZ2NjIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUg
+LUkuLi8uLi8uLi8uLi9pbmNsdWRlL29sZC8gLWcgLU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlh
+c2luZyAtcGlwZSAtV2FsbCAtVyAtV29sZC1zdHlsZS1kZWZpbml0aW9uIC1MLi4vLi4vLi4vLi4v
+bGliIGJyazAxLmMgIC1sbHRwIC1vIGJyazAxCmJyazAxLmM6IEluIGZ1bmN0aW9uICd2ZXJpZnlf
+YnJrJzoKYnJrMDEuYzoyMjoyNzogd2FybmluZzogY2FzdCB0byBwb2ludGVyIGZyb20gaW50ZWdl
+ciBvZiBkaWZmZXJlbnQgc2l6ZSBbLVdpbnQtdG8tcG9pbnRlci1jYXN0XQogICAyMiB8ICAgICAg
+ICAgICAgICAgICBjdXJfYnJrID0gKHZvaWQgKil0c3Rfc3lzY2FsbChfX05SX2JyaywgMCk7CiAg
+ICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICBeCmJyazAxLmM6NTI6MzU6IHdhcm5pbmc6
+IGNhc3QgdG8gcG9pbnRlciBmcm9tIGludGVnZXIgb2YgZGlmZmVyZW50IHNpemUgWy1XaW50LXRv
+LXBvaW50ZXItY2FzdF0KICAgNTIgfCAgICAgICAgICAgICAgICAgICAgICAgICBjdXJfYnJrID0g
+KHZvaWQgKil0c3Rfc3lzY2FsbChfX05SX2JyaywgbmV3X2Jyayk7CiAgICAgIHwgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIF4KZ2NjIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtSS4u
+Ly4uLy4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlL29sZC8gLWcgLU8yIC1nIC1P
+MiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtVyAtV29sZC1zdHlsZS1kZWZpbml0
+aW9uIC1MLi4vLi4vLi4vLi4vbGliIGJyazAyLmMgIC1sbHRwIC1vIGJyazAyCmJyazAyLmM6IElu
+IGZ1bmN0aW9uICdicmtfdmFyaWFudHMnOgpicmswMi5jOjI0OjI4OiB3YXJuaW5nOiBjYXN0IHRv
+IHBvaW50ZXIgZnJvbSBpbnRlZ2VyIG9mIGRpZmZlcmVudCBzaXplIFstV2ludC10by1wb2ludGVy
+LWNhc3RdCiAgIDI0IHwgICAgICAgICAgICAgICAgIGJya19hZGRyID0gKHZvaWQgKil0c3Rfc3lz
+Y2FsbChfX05SX2JyaywgYWRkcik7CiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+XgpicmswMi5jOiBJbiBmdW5jdGlvbiAnYnJrX2Rvd25fdm1hcyc6CmJyazAyLmM6Mzg6Mjg6IHdh
+cm5pbmc6IGNhc3QgdG8gcG9pbnRlciBmcm9tIGludGVnZXIgb2YgZGlmZmVyZW50IHNpemUgWy1X
+aW50LXRvLXBvaW50ZXItY2FzdF0KICAgMzggfCAgICAgICAgICAgICAgICAgYnJrX2FkZHIgPSAo
+dm9pZCAqKXRzdF9zeXNjYWxsKF9fTlJfYnJrLCAwKTsKICAgICAgfCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBeCgokIGdjYyAtdgpVc2luZyBidWlsdC1pbiBzcGVjcy4KQ09MTEVDVF9HQ0M9
+Z2NjCkNPTExFQ1RfTFRPX1dSQVBQRVI9L3Vzci9saWJleGVjL2djYy94ODZfNjQtYWxwaW5lLWxp
+bnV4LW11c2wvMTIuMS4xL2x0by13cmFwcGVyClRhcmdldDogeDg2XzY0LWFscGluZS1saW51eC1t
+dXNsCkNvbmZpZ3VyZWQgd2l0aDogL2hvbWUvYnVpbGRvemVyL2Fwb3J0cy9tYWluL2djYy9zcmMv
+Z2NjLTEyLjEuMV9naXQyMDIyMDYzMC9jb25maWd1cmUgLS1wcmVmaXg9L3VzciAtLW1hbmRpcj0v
+dXNyL3NoYXJlL21hbiAtLWluZm9kaXI9L3Vzci9zaGFyZS9pbmZvIC0tYnVpbGQ9eDg2XzY0LWFs
+cGluZS1saW51eC1tdXNsIC0taG9zdD14ODZfNjQtYWxwaW5lLWxpbnV4LW11c2wgLS10YXJnZXQ9
+eDg2XzY0LWFscGluZS1saW51eC1tdXNsIC0td2l0aC1wa2d2ZXJzaW9uPSdBbHBpbmUgMTIuMS4x
+X2dpdDIwMjIwNjMwJyAtLWVuYWJsZS1jaGVja2luZz1yZWxlYXNlIC0tZGlzYWJsZS1maXhlZC1w
+b2ludCAtLWRpc2FibGUtbGlic3RkY3h4LXBjaCAtLWRpc2FibGUtbXVsdGlsaWIgLS1kaXNhYmxl
+LW5scyAtLWRpc2FibGUtd2Vycm9yIC0tZGlzYWJsZS1zeW12ZXJzIC0tZW5hYmxlLV9fY3hhX2F0
+ZXhpdCAtLWVuYWJsZS1kZWZhdWx0LXBpZSAtLWVuYWJsZS1kZWZhdWx0LXNzcCAtLWVuYWJsZS1j
+bG9vZy1iYWNrZW5kIC0tZW5hYmxlLWxhbmd1YWdlcz1jLGMrKyxkLG9iamMsZ28sZm9ydHJhbixh
+ZGEsaml0IC0tZGlzYWJsZS1saWJzc3AgLS1kaXNhYmxlLWxpYm1weCAtLWRpc2FibGUtbGlibXVk
+ZmxhcCAtLWRpc2FibGUtbGlic2FuaXRpemVyIC0tZW5hYmxlLXNoYXJlZCAtLWVuYWJsZS10aHJl
+YWRzIC0tZW5hYmxlLXRscyAtLWVuYWJsZS1ob3N0LXNoYXJlZCAtLXdpdGgtc3lzdGVtLXpsaWIg
+LS13aXRoLWxpbmtlci1oYXNoLXN0eWxlPWdudQpUaHJlYWQgbW9kZWw6IHBvc2l4ClN1cHBvcnRl
+ZCBMVE8gY29tcHJlc3Npb24gYWxnb3JpdGhtczogemxpYgpnY2MgdmVyc2lvbiAxMi4xLjEgMjAy
+MjA2MzAgKEFscGluZSAxMi4xLjFfZ2l0MjAyMjA2MzApCgokIHN1ZG8gLi9icmswMQp0c3RfdGVz
+dC5jOjE1NTg6IFRJTkZPOiBUaW1lb3V0IHBlciBydW4gaXMgMGggMDBtIDMwcwpicmswMS5jOjI0
+OiBUSU5GTzogVGVzdGluZyBsaWJjIHZhcmlhbnQKYnJrMDEuYzozNTogVENPTkY6IGJyaygpIG5v
+dCBpbXBsZW1lbnRlZApicmswMS5jOjIxOiBUSU5GTzogVGVzdGluZyBzeXNjYWxsIHZhcmlhbnQK
+YnJrMDEuYzo1OTogVEZBSUw6IGJyaygpIGZhaWxlZCB0byBzZXQgYWRkcmVzcyBoYXZlIDB4NGQz
+YzQwMDAgZXhwZWN0ZWQgMHg0ZDNjNWZmZgoKJCBzdWRvIC4vYnJrMDIKdHN0X3Rlc3QuYzoxNTU4
+OiBUSU5GTzogVGltZW91dCBwZXIgcnVuIGlzIDBoIDAwbSAzMHMKYnJrMDIuYzo0MDogVElORk86
+IFRlc3RpbmcgbGliYyB2YXJpYW50CmJyazAyLmM6NTE6IFRDT05GOiBicmsoKSBub3QgaW1wbGVt
+ZW50ZWQKYnJrMDIuYzozNzogVElORk86IFRlc3Rpbmcgc3lzY2FsbCB2YXJpYW50CmJyazAyLmM6
+NTg6IFRGQUlMOiBDYW5ub3QgZXhwYW5kIGJyaygpIGJ5IHBhZ2Ugc2l6ZTogRUZBVUxUICgxNCkK
+Ckxvb2tpbmcgb24gZXh0cmEgYnJrKCkgc3VwcG9ydCBkZXRlY3Rpb24sIHlvdSBtdXN0IGhhdmUg
+dGVzdGVkIGl0IG9uIEFscGluZS4KV2hhdCBhbSBJIG1pc3Npbmc/CgpIYXZlIHlvdSBhbHNvIGNv
+bXBpbGVkIHRoZSBjb2RlIG9uIEFscGluZSBvciBtdXNsIHJlbGF0ZWQgZGlzdHJvPwpJZiB0ZXN0
+ZWQgb24gbXVzbCwgYnV0IG5vdCBBbHBpbmUsIHdoYXQgZG8geW91IHVzZT8gKG1heWJlIEFscGlu
+ZSBpc3N1ZT8pCkkgdGVzdGVkIG9uIHNvbWUgb2xkIHJhbmRvbSBBbHBpbmUgKDMuMTdfYWxwaGEy
+MDIyMDgwOSksIEknbGwgdHJ5IG9uIHNvbWUKdXBkYXRlZCB2ZXJzaW9uLgoKQWxzbyBJIHdvbmRl
+ciBpZiB3ZSBzaG91bGQgYm90aGVyIHdpdGggYWRkaW5nIGJyaygpIC8gc2JyaygpIGxvZ2ljIGlu
+dG8gc2VwYXJhdGUKZnVuY3Rpb24sIGFkZGVkIGludG8gYnJrLmguIFByb2JhYmx5IG5vdCwgYWx0
+aG91Z2ggSSBkb24ndCBsaWtlIHJlcGVhdGluZyBjb2RlLAppdCdzIG5vdCB3b3J0aCBmb3Igc2lu
+Z2xlIGZ1bmN0aW9uLgoKVGhlcmUgYXJlIHN0aWxsIG1pc3Npbmcgc3RhdGljIGZvdW5kIGJ5ICdt
+YWtlIGNoZWNrJywgZGlmZiBiZWxvdyB3aWxsIGZpeCB0aGF0CigrIHNvbWUgYWRkaXRpb25hbCBz
+cGFjZSBmb3IgcmVhZGFiaWxpdHkpLgoKS2luZCByZWdhcmRzLApQZXRyCgpkaWZmIC0tZ2l0IHRl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvYnJrL2JyazAxLmMgdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9icmsvYnJrMDEuYwppbmRleCA5M2U0MzAzMjguLjk3OGUxZjIxMSAxMDA2NDQKLS0tIHRl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvYnJrL2JyazAxLmMKKysrIHRlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvYnJrL2JyazAxLmMKQEAgLTExLDcgKzExLDcgQEAKICNpbmNsdWRlICJ0c3RfdGVz
+dC5oIgogI2luY2x1ZGUgImxhcGkvc3lzY2FsbHMuaCIKIAotdm9pZCB2ZXJpZnlfYnJrKHZvaWQp
+CitzdGF0aWMgdm9pZCB2ZXJpZnlfYnJrKHZvaWQpCiB7CiAJdm9pZCAqY3VyX2JyaywgKm5ld19i
+cms7CiAJc2l6ZV90IGluYyA9IGdldHBhZ2VzaXplKCkgKiAyIC0gMTsKZGlmZiAtLWdpdCB0ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Jyay9icmswMi5jIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvYnJrL2JyazAyLmMKaW5kZXggM2E5N2QyNzliLi42NDkzMWJjODAgMTAwNjQ0Ci0tLSB0ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Jyay9icmswMi5jCisrKyB0ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2Jyay9icmswMi5jCkBAIC01LDYgKzUsNyBAQAogCiAvKlwKICAqIFtEZXNjcmlwdGlv
+bl0KKyAqCiAgKiBFeHBhbmQgYnJrKCkgYnkgYXQgbGVhc3QgMiBwYWdlcyB0byBlbnN1cmUgdGhl
+cmUgaXMgYSBuZXdseSBjcmVhdGVkIFZNQQogICogYW5kIG5vdCBleHBhbmRpbmcgdGhlIG9yaWdp
+bmFsIGR1ZSB0byBtdWx0aXBsZSBhbm9uIHBhZ2VzLiAgbXByb3RlY3QoKSB0aGF0CiAgKiBuZXcg
+Vk1BIHRoZW4gYnJrKCkgYmFjayB0byB0aGUgb3JpZ2luYWwgYWRkcmVzcyB0aGVyZWZvcmUgY2F1
+c2luZyBhIG11bm1hcCBvZgpAQCAtMTYsNyArMTcsNyBAQAogI2luY2x1ZGUgInRzdF90ZXN0Lmgi
+CiAjaW5jbHVkZSAibGFwaS9zeXNjYWxscy5oIgogCi12b2lkICpicmtfdmFyaWFudHModm9pZCAq
+YWRkcikKK3N0YXRpYyB2b2lkICpicmtfdmFyaWFudHModm9pZCAqYWRkcikKIHsKIAl2b2lkICpi
+cmtfYWRkcjsKIApAQCAtMjYsMTAgKzI3LDExIEBAIHZvaWQgKmJya192YXJpYW50cyh2b2lkICph
+ZGRyKQogCQlUU1RfRVhQX1BBU1NfU0lMRU5UKGJyayhhZGRyKSwgImJyaygpIik7CiAJCWJya19h
+ZGRyID0gKHZvaWQgKilzYnJrKDApOwogCX0KKwogCXJldHVybiBicmtfYWRkcjsKIH0KIAotdm9p
+ZCBicmtfZG93bl92bWFzKHZvaWQpCitzdGF0aWMgdm9pZCBicmtfZG93bl92bWFzKHZvaWQpCiB7
+CiAJdm9pZCAqYnJrX2FkZHI7CiAKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
+cy5saW51eC5pdC9saXN0aW5mby9sdHAK
