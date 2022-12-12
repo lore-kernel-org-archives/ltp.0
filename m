@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A889C4332F
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 14:03:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A998C4332F
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 14:17:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2F5CD3CBE4E
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 15:03:05 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 590263CBE58
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 15:17:12 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 48A843CBE07
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 15:02:55 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 8EAB53CBE07
+ for <ltp@lists.linux.it>; Mon, 12 Dec 2022 15:17:02 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B1027600681
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 15:02:54 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CCA2A1400141
+ for <ltp@lists.linux.it>; Mon, 12 Dec 2022 15:17:01 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id B81D033764;
- Mon, 12 Dec 2022 14:02:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id D805E1FE91;
+ Mon, 12 Dec 2022 14:17:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1670853773;
+ t=1670854620;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hGPa0whbkt7aTGg5fl65m2JLnO30NN9xmqQQl7MwGFo=;
- b=YqwF/R5MYJqqJHdN0PWA9lVMhVL0r7PKawbyZsvDu1G9aiOYXTGY7cwm36aMk2PU1WrVSU
- B/O6qJn82ypvbLwiZ2OWkqmHwGvPwnPHPHbzMg49w+6N48/qPNue7rnDerF7ShJ4Dg3Ch5
- BvMKmEC7cVfVRPf9w7MkQHuXzHTP/aM=
+ bh=ZlJs4D3GmcN4HAfU8sFAT09ki8G0t0lu9FrPBx2Q/aA=;
+ b=wIrXXD3qhfCdb8Hc1WxmSRmeRKGOIAiX9CQPmtEE3+YwSqGoyXkAXDD96zuYrVHIH/dq3v
+ iVZSPEFHI47fDvcpyrQZg2Esc0GOBl765b6h/5NRVac93TH7QU5YNuLKfBG8V0M6Hw23W+
+ +ANEtDbafRHYzc1owRymJBnZsO9HcqY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1670853773;
+ s=susede2_ed25519; t=1670854620;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hGPa0whbkt7aTGg5fl65m2JLnO30NN9xmqQQl7MwGFo=;
- b=uWqXv7Vxgx/6gT87CXBHADmtekKCBE+67A0EqeaaUaGk4aUejHJAe2NzDELyfXanZrK3Cz
- e7Lw3qjlBH+nk/Bg==
+ bh=ZlJs4D3GmcN4HAfU8sFAT09ki8G0t0lu9FrPBx2Q/aA=;
+ b=hJgXosGiIWq9IGie+aZXnTdtdXTRPoGJ7qMfeYwWAh9u9OlJrcGdt6oBYcx6zA/AJvlGbf
+ i1LIMmc59eqqHiBg==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 8C5792C141;
- Mon, 12 Dec 2022 14:02:53 +0000 (UTC)
-References: <20221206165840.12107-1-rpalethorpe@suse.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 836432C141;
+ Mon, 12 Dec 2022 14:17:00 +0000 (UTC)
+References: <20221201122844.142062-1-tsahu@linux.ibm.com>
+ <20221201122844.142062-5-tsahu@linux.ibm.com>
 User-agent: mu4e 1.8.11; emacs 28.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 12 Dec 2022 14:01:23 +0000
+To: Tarun Sahu <tsahu@linux.ibm.com>
+Date: Mon, 12 Dec 2022 14:08:37 +0000
 Organization: Linux Private Site
-In-reply-to: <20221206165840.12107-1-rpalethorpe@suse.com>
-Message-ID: <87fsdkvhx0.fsf@suse.de>
+In-reply-to: <20221201122844.142062-5-tsahu@linux.ibm.com>
+Message-ID: <878rjcvh9f.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] getcpu01: Reinstate node_id test
+Subject: Re: [LTP] [PATCH 4/8] Hugetlb: Migrating libhugetlbfs icache-hygiene
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,7 +71,8 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Cc: aneesh.kumar@linux.ibm.com, ltp@lists.linux.it, sbhat@linux.ibm.com,
+ geetika@linux.ibm.com, vaibhav@linux.ibm.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -79,90 +80,45 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-Ping! I will merge soon if there are no comments.
+Tarun Sahu <tsahu@linux.ibm.com> writes:
 
-Richard Palethorpe via ltp <ltp@lists.linux.it> writes:
+> Migrating the libhugetlbfs/testcases/icache-hygiene.c test
+>
+> Test Description: Older ppc64 kernels don't properly flush dcache to
+> icache before giving a cleared page to userspace.  With some exceedingly
+> hairy code, this attempts to test for this bug.
+>
+> This test will never trigger (obviously) on machines with coherent
+> icache and dcache (including x86 and POWER5).  On any given run,
+> even on a buggy kernel there's a chance the bug won't trigger -
+> either because we don't get the same physical page back when we
+> remap, or because the icache happens to get flushed in the interim.
 
-> Presently the node_id is only checked on i386 and it is broken. The
-> sched_getcpu call was substituted for getcpu when
-> available. sched_getcpu does not have the node_id parameter and does
-> not even call SYS_getcpu if it can be completed by vDSO.
->
-> Also we can at least check the node_id on x86_64 as well.
->
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
->  testcases/kernel/syscalls/getcpu/getcpu01.c | 22 +++++++++------------
->  1 file changed, 9 insertions(+), 13 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/getcpu/getcpu01.c b/testcases/kernel/syscalls/getcpu/getcpu01.c
-> index fcc273e29..21c67f412 100644
-> --- a/testcases/kernel/syscalls/getcpu/getcpu01.c
-> +++ b/testcases/kernel/syscalls/getcpu/getcpu01.c
-> @@ -15,20 +15,16 @@
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <sys/types.h>
-> +#include "tst_test.h"
->  #include "lapi/syscalls.h"
->  #include "lapi/cpuset.h"
-> -#include "tst_test.h"
->  #include "config.h"
->  
->  static inline int get_cpu(unsigned *cpu_id,
-> -			  unsigned *node_id LTP_ATTRIBUTE_UNUSED,
-> -			  void *cache_struct LTP_ATTRIBUTE_UNUSED)
-> +			  unsigned *node_id)
->  {
-> -#ifndef HAVE_SCHED_GETCPU
-> -	return tst_syscall(__NR_getcpu, cpu_id, node_id, cache_struct);
-> -#else
-> -	*cpu_id = sched_getcpu();
-> -#endif
-> +	return tst_syscall(__NR_getcpu, cpu_id, node_id, NULL);
+Compiling with Clang 15.0.5 on x86_64 and upstream kernel 6.0.9 in a KVM
+VM the test fails:
+
+sh-5.2# ./hugemmap15
+[13712.044617] hugemmap15 (2118): drop_caches: 3
+tst_hugepage.c:83: TINFO: 3 hugepage(s) reserved
+tst_test.c:1560: TINFO: Timeout per run is 0h 00m 30s
+hugemmap15.c:191: TFAIL: icache unclean
+
 > +
->  	return 0;
->  }
->  
-> @@ -78,7 +74,7 @@ realloc:
->  	return cpu_max;
->  }
->  
-> -#ifdef __i386__
-> +#if  defined(__i386__) || defined(__x86_64__)
->  static unsigned int get_nodeid(unsigned int cpu_id)
->  {
->  	DIR *directory_parent, *directory_node;
-> @@ -125,22 +121,22 @@ static void run(void)
->  {
->  	unsigned int cpu_id, node_id = 0;
->  	unsigned int cpu_set;
-> -#ifdef __i386__
-> +#if defined(__i386__) || defined(__x86_64__)
->  	unsigned int node_set;
->  #endif
->  
->  	cpu_set = set_cpu_affinity();
-> -#ifdef __i386__
-> +#if defined(__i386__) || defined(__x86_64__)
->  	node_set = get_nodeid(cpu_set);
->  #endif
->  
-> -	TEST(get_cpu(&cpu_id, &node_id, NULL));
-> +	TEST(get_cpu(&cpu_id, &node_id));
->  	if (TST_RET == 0) {
->  		if (cpu_id != cpu_set)
->  			tst_res(TFAIL, "getcpu() returned wrong value"
->  				" expected cpuid:%d, returned value cpuid: %d",
->  				cpu_set, cpu_id);
-> -#ifdef __i386__
-> +#if defined(__i386__) || defined(__x86_64__)
->  		else if (node_id != node_set)
->  			tst_res(TFAIL, "getcpu() returned wrong value"
->  				" expected  node id:%d returned  node id:%d",
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.needs_hugetlbfs = 1,
+> +	.needs_tmpdir = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run_test,
+> +	.hugepages = {3, TST_NEEDS},
+> +};
 > -- 
-> 2.38.1
+> 2.31.1
 
+Again, it would be nice to have the git tag(s) of the fix commit(s) if
+possible.
 
 -- 
 Thank you,
