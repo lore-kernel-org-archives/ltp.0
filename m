@@ -4,76 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99A68C4167B
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 16:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65E1CC4332F
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 18:28:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 103FA3CBE7E
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 17:40:01 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id A63973CBE5B
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 19:28:30 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 957C23C2B4D
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 17:39:51 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 00545200758
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 17:39:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1670863189;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=f+MKzh8LMLpF6fZwjrwKL8EIWrQsY+iofndmiLR1ngA=;
- b=ee7WK8UAe8nuw5P0BOp9FmV3xfY2Oo+dXf1AkVpMuIQXZj62k8razPn1rYst48/0nLBmyy
- 0Y5KvDrsbcGPKbKQcNcHzjpKqtcNIdmYDt1X3hdXOFiYFJicKyFJCIsm3UB+FH1UskIiX8
- H9qlDZSj4YELhK3VaFjCPmNgvffpTjQ=
-Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
- [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-79-ULKQyFmRP_mfeLxBQtpWkQ-1; Mon, 12 Dec 2022 11:39:48 -0500
-X-MC-Unique: ULKQyFmRP_mfeLxBQtpWkQ-1
-Received: by mail-ua1-f71.google.com with SMTP id
- y10-20020ab0560a000000b003af33bfa8c4so5531750uaa.21
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 08:39:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=f+MKzh8LMLpF6fZwjrwKL8EIWrQsY+iofndmiLR1ngA=;
- b=XjPm0JirIkcysprVxK77AJGpkvmfR6esvufUwzTGLeN4hIhd9u9oP1wguynlQJLwDU
- m3UENmIK/F9zFgqBAloZbHeWqXBEKB/msDVX30iPILVF+0GFv19s+EAfvKZcIWkzEbuX
- G9/F8HS+rCgFH5bsoeX1E36r5MG9cuC9cZ90swMIGYOhaWANZTgYFnNWxFkh7lgYFTnU
- MuZ8N2u5GzFN6KPLHyCqOnD3Vdid/8o8PAuP9F6Tyk6tN54ugeVk78u7vklVkcgEUGTS
- hC/15YXjQWXscknJeETRim6tx8/npgKuoSIY6EEQ1VZd6+lpCjvtlIn+i8cAmyLFTCxe
- oTLw==
-X-Gm-Message-State: ANoB5pnWvCP0/aRdDP1Birbg06LdC2HaVc+N6mDQszk02JGFXASMWxQ3
- HmJHZVkQikRGcqE/Uw1n53BhA15IL0fSigdA+2cC4/DkLqLu+7YFsVA2s+/iSWC6TFbxx1A/0Ur
- IHkUsO6kHemdQO+Ra5H0RYE1o0WY=
-X-Received: by 2002:ab0:7785:0:b0:415:65dc:4733 with SMTP id
- x5-20020ab07785000000b0041565dc4733mr47556709uar.87.1670863187894; 
- Mon, 12 Dec 2022 08:39:47 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf7vIskReS1Eny/vVZ9qMxwxePESmXZ+n63VBK6ADBe5ZUHPsSM94ktM6Jco2NBrqobiRLs5CPXcitVnHfSE1fs=
-X-Received: by 2002:ab0:7785:0:b0:415:65dc:4733 with SMTP id
- x5-20020ab07785000000b0041565dc4733mr47556702uar.87.1670863187659; Mon, 12
- Dec 2022 08:39:47 -0800 (PST)
+ by picard.linux.it (Postfix) with ESMTPS id 1CA5B3C1BCA
+ for <ltp@lists.linux.it>; Mon, 12 Dec 2022 19:28:20 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTP id C72781000601
+ for <ltp@lists.linux.it>; Mon, 12 Dec 2022 19:28:18 +0100 (CET)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D06C1FB;
+ Mon, 12 Dec 2022 10:28:56 -0800 (PST)
+Received: from [10.57.42.36] (unknown [10.57.42.36])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC4323F73B;
+ Mon, 12 Dec 2022 10:28:14 -0800 (PST)
+Message-ID: <4b38f13f-a8a1-bbde-9103-9900f0cf5a88@arm.com>
+Date: Mon, 12 Dec 2022 18:28:21 +0000
 MIME-Version: 1.0
-References: <1670845229-1981-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <Y5dJDFk5DpAhTKDV@pevik>
-In-Reply-To: <Y5dJDFk5DpAhTKDV@pevik>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 12 Dec 2022 17:39:30 +0100
-Message-ID: <CAASaF6wrx+0bkVa2_sSViOYHE25O08GbW_Jy2MQBfWKuJWtZkw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Content-Language: en-US
 To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <20221207092428.11798-1-teo.coupriediaz@arm.com>
+ <871qp4u02j.fsf@suse.de> <Y5dHRcLD1359Rm3o@pevik>
+From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+Organization: Arm Ltd.
+In-Reply-To: <Y5dHRcLD1359Rm3o@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/4] lib/tst_kvercmp: Remove old distnames
+Subject: Re: [LTP] [PATCH v2] syscalls/brk: add direct syscall tst_variant
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,25 +50,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Wanlong Gao <gaowanlong@cn.fujitsu.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Dec 12, 2022 at 4:30 PM Petr Vorel <pvorel@suse.cz> wrote:
->
-> Hi,
->
-> > Our travis-ci has dropped or never used them, they are useless.
-> > So delete.
-> They were here before CI. They were meant for using by tests
-> (no CI related at all).
-
-Right, it's not just CI. RHEL5 is EOL, presumably Oracle as well, so
-those likely won't be missed.
-RHEL6 has 2 more years - Isn't this removal going to break tst_kvercmp2()?
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUGV0ciwKCk9uIDEyLzEyLzIwMjIgMTU6MjIsIFBldHIgVm9yZWwgd3JvdGU6Cj4gSGkgUmlj
+aGllLAo+Cj4+IEN5cmlsLCBQZXRyLCBXb3VsZCB5b3UgbGlrZSB0byBhZGQgeW91ciByZXZpZXdl
+ZCBieSB0YWdzPyBUaGVuIHdlIGNhbgo+PiBtZXJnZSB0aGlzLgo+IEJ5IGFjY2lkZW50IEkgcmVw
+bHkgdG8gbXkgcG9pbnRzIHRvIHYxIFsxXS4KPiBUbyBjb3B5IGl0IGhlcmU6Cj4KPiAxKSBUaGVy
+ZSBhcmUgd2FybmluZ3M6Cj4gYnJrMDIuYzogSW4gZnVuY3Rpb24g4oCYYnJrX3ZhcmlhbnRz4oCZ
+Ogo+IGJyazAyLmM6MjY6Mjg6IHdhcm5pbmc6IGNhc3QgdG8gcG9pbnRlciBmcm9tIGludGVnZXIg
+b2YgZGlmZmVyZW50IHNpemUKPiBbLVdpbnQtdG8tcG9pbnRlci1jYXN0XQo+ICAgICAyNiB8ICAg
+ICAgICAgICAgICAgICBicmtfYWRkciA9ICh2b2lkICopYnJrKGFkZHIpOwo+ICAgICAgICAgICB8
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4KPgo+IDIpIG1ha2UgY2hlY2sgcmVwb3J0cyBl
+cnJvcnMgd2hpY2ggYXJlIGVhc2lseSBmaXhlZC4KPgo+IFRlbyByZXBsaWVkIFsyXSwgdGhhdCBo
+ZSdzIGdvaW5nIHRvIGZpeCBpdC4gSSB0aG91Z2h0IEkgaGFkIHNldCBpdAo+ICJDaGFuZ2VzIHJl
+cXVlc3RlZCIsIGJ1dCBub3cgSSBzZWUgIk5lZWRzIFJldmlldyAvIEFDSyIuIFNldHRpbmcgaXQg
+dG8KPiAiQ2hhbmdlcyByZXF1ZXN0ZWQiLgoKSSBiZWxpZXZlIHRoZSBwb2ludHMgeW91IHJhaXNl
+ZCBhcmUgZml4ZWQgaW4gdGhlIHYyLCBvbiB0b3Agb2YgdGhpcyB0aHJlYWQuClJlLWFwcGx5aW5n
+IGl0IG9uIHRvcCBvZiBtYXN0ZXIgb24gbXkgc2lkZSBkb2Vzbid0IGdpdmUgbWUgYW55IHdhcm5p
+bmdzIApmb3IgdGhlIGJyayB0ZXN0cywgYXMgSSBkbyBub3QgY2FzdCB0aGUgcmVzdWx0IGZyb20g
+dGhlIGxpYmMgYnJrIAphbnltb3JlLCBhbmQgbWFrZSBjaGVjayByZXBvcnRzIGV4aXN0aW5nIGlz
+c3VlcyB3aXRoIHRoZSBuYW1lIG9mIHRoZSAKZnVuY3Rpb24sIGJ1dCBubyBzdHlsZSBwcm9ibGVt
+cyB0aGF0IGRpZCBleGlzdCBpbiB2MS4gKEkgZG9uJ3QgbWluZCAKY2hhbmdpbmcgdGhlbSBpZiB5
+b3Ugd2FudCwgYnV0IHRoZXkgYXJlIHByZXNlbnQgb24gbWFzdGVyIGFzIHdlbGwpLgoKSWYgeW91
+IGdpdmUgYSBxdWljayBsb29rIGF0IHRoZSBwYXRjaCB2MiB5b3UnbGwgc2VlIHRoYXQgaW5kZWVk
+IHRoZXJlIGlzIApubyBtb3JlICh2b2lkICopYnJrKGFkZHIpIG9yIHN1Y2ggdGhhdCBnZW5lcmF0
+ZWQgdGhlIHdhcm5pbmdzLCBmb3IgCmV4YW1wbGUuIChUaGUgc3lzY2FsbHMgc3RpbGwgbmVlZCBp
+dCwgYXMgdGhleSByZXR1cm4gdGhlIGJyZWFrIGRpcmVjdGx5IApyYXRoZXIgdGhhbiBhbiBlcnJv
+ciwgd2hpY2ggaXMgd2hhdCB0aGUgbGliYyB3cmFwcGVyIGRvZXMuKQoKSSBtaWdodCBiZSBtaXNz
+aW5nIHNvbWV0aGluZywgcGxlYXNlIGRvIHRlbGwgbWUgaWYgdGhhdCdzIHRoZSBjYXNlICEgQnV0
+IApJIGJlbGlldmUgdGhhdCB0aGUgdjIgX3Nob3VsZF8gYmUgZnJlZSBvZiB0aG9zZSBpc3N1ZXMu
+Cgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4KPiBbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
+bHRwLzIwMjIxMjA2MTQwNDIxLkdCMjE4MzlAcGV2aWsvCj4gWzJdIGh0dHBzOi8vbG9yZS5rZXJu
+ZWwub3JnL2x0cC9mZTFjNWJhYy0wZWQxLTkyZWYtM2MyOC1lMzc1OGRjMzQ2NWRAYXJtLmNvbS8K
+VGhhbmtzIGZvciB0YWtpbmcgdGhlIHRpbWUuCkJlc3QgcmVnYXJkcywKVMOpbwoKLS0gCk1haWxp
+bmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
