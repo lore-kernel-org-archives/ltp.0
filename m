@@ -4,58 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F28DFC4332F
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 15:13:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2730C4332F
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 15:23:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 360823CBE65
-	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 16:13:52 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 400523CBE6C
+	for <ltp@archiver.kernel.org>; Mon, 12 Dec 2022 16:22:58 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 059E43C2B4D
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 16:13:42 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id C889A3C2B4D
+ for <ltp@lists.linux.it>; Mon, 12 Dec 2022 16:22:49 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2DF4C1A0042C
- for <ltp@lists.linux.it>; Mon, 12 Dec 2022 16:13:41 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 37A061F8BD;
- Mon, 12 Dec 2022 15:13:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1670858021;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b6Yyl45goivCU8s4wADeH19pEcwqCYeQOAWSUZj33Dk=;
- b=Nfvt0J6r0VLoEmw2opu2Dp5I8Uz4vA/INVnkVmsQOLtje+/RcWO2hoirHHdbwR/6c1FIsr
- WcruCpqq9TXmfKL/DtctLuGKo0TUOJbH4W7UkqYLkbWj+iXg9U5HjegfYPg6IQ9WIEVNMU
- TTAwuAfiqCXwfevjQ6whvXdjdTNHMo8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1670858021;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b6Yyl45goivCU8s4wADeH19pEcwqCYeQOAWSUZj33Dk=;
- b=MPB/hWH5nciqQRiE6kUY8cRdxF6/9Uew92QsURtlvJbshCrbtH2gp2y8QMWdVl7foN0h/C
- gWDW3kLj7EOCkYCQ==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5E867600060
+ for <ltp@lists.linux.it>; Mon, 12 Dec 2022 16:22:48 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id F25B72C141;
- Mon, 12 Dec 2022 15:13:40 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5872533750;
+ Mon, 12 Dec 2022 15:22:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1670858568;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nmT4VyoEOmRQIrtAWwzqNfO032TwuUEGKyQv/FikBik=;
+ b=aKbcv1sL3/xP9BblaD/CrBps3KQhLwc0lMhXstiFFZXA7BywmudXIMoOLjwVZARM+WWCFv
+ b80QMKB+oWt+zz5f0pNp6DefkZRJeyd7IXyXX/2cn4ALAQ9QGFcwo0Bu1njIMfh2pGQO3e
+ AqjhqhNoF6uPHCZqdhddtUcmOOTx1SY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1670858568;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nmT4VyoEOmRQIrtAWwzqNfO032TwuUEGKyQv/FikBik=;
+ b=AvwbktssAYz1UdW0z74fGm+6eYGnmCh0OX9apYLDD8Q9euu+/cHjRWObUKPznoyuHSYwfD
+ SnuMCbVCC/VXSdDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 094FC13456;
+ Mon, 12 Dec 2022 15:22:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ZTCoOkdHl2PCYQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 12 Dec 2022 15:22:47 +0000
+Date: Mon, 12 Dec 2022 16:22:45 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <Y5dHRcLD1359Rm3o@pevik>
 References: <20221207092428.11798-1-teo.coupriediaz@arm.com>
-User-agent: mu4e 1.8.11; emacs 28.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>
-Date: Mon, 12 Dec 2022 15:12:04 +0000
-Organization: Linux Private Site
-In-reply-to: <20221207092428.11798-1-teo.coupriediaz@arm.com>
-Message-ID: <871qp4u02j.fsf@suse.de>
+ <871qp4u02j.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <871qp4u02j.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] syscalls/brk: add direct syscall tst_variant
 X-BeenThere: ltp@lists.linux.it
@@ -69,208 +78,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-
-Cyril, Petr, Would you like to add your reviewed by tags? Then we can
-merge this.
-
-Teo Couprie Diaz <teo.coupriediaz@arm.com> writes:
-
-> Direct usage of brk is discouraged in favor of using malloc. Also, brk was
-> removed from POSIX in POSIX.1-2001.
-> In particular, the Musl libc's brk always returns -ENOMEM which causes
-> the LTP tests to exit prematurely. Invoking the syscall directly allows
-> them to properly validate brk behavior. Add a new test variant handling if
-> the libc wrappers are not implemented and testing the direct syscall.
->
-> Use tst_syscall() and handle the failure cases ourselves, as
-> we don't depend on the libc to do it anymore.
->
-> The patch also works around the dependency on sbrk to get the current break
-> as it has the same issues. Instead, call tst_syscall(__NR_brk, 0) which
-> always returns the current break.
->
-> Update brk01 to use void* to unify it with brk02.
->
-> Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-> ---
-> v1: Reworked from RFC by adding a variant rather than replacing the
->     existing tests. Thanks Petr and Cyril !
-> v2: brk doesn't return the new break, just if it error'd or not.
->     Fix styling and warnings.
->
->  testcases/kernel/syscalls/brk/brk01.c | 37 ++++++++++++++++------
->  testcases/kernel/syscalls/brk/brk02.c | 44 ++++++++++++++++++++++-----
->  2 files changed, 65 insertions(+), 16 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/brk/brk01.c b/testcases/kernel/syscalls/brk/brk01.c
-> index a9b89bce5..93e430328 100644
-> --- a/testcases/kernel/syscalls/brk/brk01.c
-> +++ b/testcases/kernel/syscalls/brk/brk01.c
-> @@ -9,14 +9,31 @@
->  #include <errno.h>
->  
->  #include "tst_test.h"
-> +#include "lapi/syscalls.h"
->  
->  void verify_brk(void)
->  {
-> -	uintptr_t cur_brk, new_brk;
-> -	uintptr_t inc = getpagesize() * 2 - 1;
-> +	void *cur_brk, *new_brk;
-> +	size_t inc = getpagesize() * 2 - 1;
->  	unsigned int i;
->  
-> -	cur_brk = (uintptr_t)sbrk(0);
-> +	if (tst_variant) {
-> +		tst_res(TINFO, "Testing syscall variant");
-> +		cur_brk = (void *)tst_syscall(__NR_brk, 0);
-> +	} else {
-> +		tst_res(TINFO, "Testing libc variant");
-> +		cur_brk = (void *)sbrk(0);
-> +
-> +		if (cur_brk == (void *)-1)
-> +			tst_brk(TCONF, "sbrk() not implemented");
-> +
-> +		/*
-> +		 * Check if brk itself is implemented: updating to the current break
-> +		 * should be a no-op.
-> +		 */
-> +		if (brk(cur_brk) != 0)
-> +			tst_brk(TCONF, "brk() not implemented");
-> +	}
->  
->  	for (i = 0; i < 33; i++) {
->  		switch (i % 3) {
-> @@ -31,16 +48,17 @@ void verify_brk(void)
->  		break;
->  		}
->  
-> -		TST_EXP_PASS_SILENT(brk((void *)new_brk), "brk()");
-> -		if (!TST_PASS)
-> -			return;
-> -
-> -		cur_brk = (uintptr_t)sbrk(0);
-> +		if (tst_variant) {
-> +			cur_brk = (void *)tst_syscall(__NR_brk, new_brk);
-> +		} else {
-> +			TST_EXP_PASS_SILENT(brk(new_brk), "brk()");
-> +			cur_brk = sbrk(0);
-> +		}
->  
->  		if (cur_brk != new_brk) {
->  			tst_res(TFAIL,
->  				"brk() failed to set address have %p expected %p",
-> -				(void *)cur_brk, (void *)new_brk);
-> +				cur_brk, new_brk);
->  			return;
->  		}
->  
-> @@ -54,4 +72,5 @@ void verify_brk(void)
->  
->  static struct tst_test test = {
->  	.test_all = verify_brk,
-> +	.test_variants = 2,
->  };
-> diff --git a/testcases/kernel/syscalls/brk/brk02.c b/testcases/kernel/syscalls/brk/brk02.c
-> index 11e803cb4..3a97d279b 100644
-> --- a/testcases/kernel/syscalls/brk/brk02.c
-> +++ b/testcases/kernel/syscalls/brk/brk02.c
-> @@ -14,24 +14,53 @@
->  #include <unistd.h>
->  #include <sys/mman.h>
->  #include "tst_test.h"
-> +#include "lapi/syscalls.h"
-> +
-> +void *brk_variants(void *addr)
-> +{
-> +	void *brk_addr;
-> +
-> +	if (tst_variant) {
-> +		brk_addr = (void *)tst_syscall(__NR_brk, addr);
-> +	} else {
-> +		TST_EXP_PASS_SILENT(brk(addr), "brk()");
-> +		brk_addr = (void *)sbrk(0);
-> +	}
-> +	return brk_addr;
-> +}
->  
->  void brk_down_vmas(void)
->  {
-> -	void *brk_addr = sbrk(0);
-> +	void *brk_addr;
-> +
-> +	if (tst_variant) {
-> +		tst_res(TINFO, "Testing syscall variant");
-> +		brk_addr = (void *)tst_syscall(__NR_brk, 0);
-> +	} else {
-> +		tst_res(TINFO, "Testing libc variant");
-> +		brk_addr = (void *)sbrk(0);
->  
-> -	if (brk_addr == (void *) -1)
-> -		tst_brk(TBROK, "sbrk() failed");
-> +		if (brk_addr == (void *)-1)
-> +			tst_brk(TCONF, "sbrk() not implemented");
-> +
-> +		/*
-> +		 * Check if brk itself is implemented: updating to the current break
-> +		 * should be a no-op.
-> +		 */
-> +		if (brk(brk_addr) != 0)
-> +			tst_brk(TCONF, "brk() not implemented");
-> +	}
->  
->  	unsigned long page_size = getpagesize();
->  	void *addr = brk_addr + page_size;
->  
-> -	if (brk(addr)) {
-> +	if (brk_variants(addr) < addr) {
->  		tst_res(TFAIL | TERRNO, "Cannot expand brk() by page size");
->  		return;
->  	}
->  
->  	addr += page_size;
-> -	if (brk(addr)) {
-> +	if (brk_variants(addr) < addr) {
->  		tst_res(TFAIL | TERRNO, "Cannot expand brk() by 2x page size");
->  		return;
->  	}
-> @@ -42,12 +71,12 @@ void brk_down_vmas(void)
->  	}
->  
->  	addr += page_size;
-> -	if (brk(addr)) {
-> +	if (brk_variants(addr) < addr) {
->  		tst_res(TFAIL | TERRNO, "Cannot expand brk() after mprotect");
->  		return;
->  	}
->  
-> -	if (brk(brk_addr)) {
-> +	if (brk_variants(brk_addr) != brk_addr) {
->  		tst_res(TFAIL | TERRNO, "Cannot restore brk() to start address");
->  		return;
->  	}
-> @@ -57,4 +86,5 @@ void brk_down_vmas(void)
->  
->  static struct tst_test test = {
->  	.test_all = brk_down_vmas,
-> +	.test_variants = 2,
->  };
->
-> base-commit: 990c0b48f8508a747863b1dea5556fba57e1c304
-> -- 
-> 2.25.1
-
-
--- 
-Thank you,
-Richard.
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUmljaGllLAoKPiBDeXJpbCwgUGV0ciwgV291bGQgeW91IGxpa2UgdG8gYWRkIHlvdXIgcmV2
+aWV3ZWQgYnkgdGFncz8gVGhlbiB3ZSBjYW4KPiBtZXJnZSB0aGlzLgoKQnkgYWNjaWRlbnQgSSBy
+ZXBseSB0byBteSBwb2ludHMgdG8gdjEgWzFdLgpUbyBjb3B5IGl0IGhlcmU6CgoxKSBUaGVyZSBh
+cmUgd2FybmluZ3M6CmJyazAyLmM6IEluIGZ1bmN0aW9uIOKAmGJya192YXJpYW50c+KAmToKYnJr
+MDIuYzoyNjoyODogd2FybmluZzogY2FzdCB0byBwb2ludGVyIGZyb20gaW50ZWdlciBvZiBkaWZm
+ZXJlbnQgc2l6ZQpbLVdpbnQtdG8tcG9pbnRlci1jYXN0XQogICAyNiB8ICAgICAgICAgICAgICAg
+ICBicmtfYWRkciA9ICh2b2lkICopYnJrKGFkZHIpOwogICAgICAgICB8ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIF4KCjIpIG1ha2UgY2hlY2sgcmVwb3J0cyBlcnJvcnMgd2hpY2ggYXJlIGVh
+c2lseSBmaXhlZC4KClRlbyByZXBsaWVkIFsyXSwgdGhhdCBoZSdzIGdvaW5nIHRvIGZpeCBpdC4g
+SSB0aG91Z2h0IEkgaGFkIHNldCBpdAoiQ2hhbmdlcyByZXF1ZXN0ZWQiLCBidXQgbm93IEkgc2Vl
+ICJOZWVkcyBSZXZpZXcgLyBBQ0siLiBTZXR0aW5nIGl0IHRvCiJDaGFuZ2VzIHJlcXVlc3RlZCIu
+CgpLaW5kIHJlZ2FyZHMsClBldHIKClsxXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9sdHAvMjAy
+MjEyMDYxNDA0MjEuR0IyMTgzOUBwZXZpay8KWzJdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2x0
+cC9mZTFjNWJhYy0wZWQxLTkyZWYtM2MyOC1lMzc1OGRjMzQ2NWRAYXJtLmNvbS8KCi0tIApNYWls
+aW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
