@@ -4,71 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11C66C4332F
-	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 09:41:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 515CBC4332F
+	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 09:44:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B2E613CBD9E
-	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 10:41:01 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id EF06B3CBDA8
+	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 10:44:48 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 05F723C32DD
- for <ltp@lists.linux.it>; Tue, 13 Dec 2022 10:40:51 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 693863C32DD
+ for <ltp@lists.linux.it>; Tue, 13 Dec 2022 10:44:36 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 54CC91A007AB
- for <ltp@lists.linux.it>; Tue, 13 Dec 2022 10:40:50 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E9F0422CD4;
- Tue, 13 Dec 2022 09:40:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1670924449;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Sys2SHqo5ozrEw7pkTaudTCfO34VviQDyagGBhR5Txg=;
- b=bpIrufHlAiM8+ebmWq/6bo9ULl8m9lOJK/RWkVZAdEqdv5zmCT9+EIhfqG5M9YNxEpl3lU
- 6Aja81mbgGZgFQoSYkmbLvF/XjhSlhOLx3z+TmAmQyd+OUhSiB9Rho1Ae8yF3MddOPL7Ul
- uz/a/cH40fa90/Ugd/p/XVb+UWnCI9A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1670924449;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Sys2SHqo5ozrEw7pkTaudTCfO34VviQDyagGBhR5Txg=;
- b=SOMQoPA7fSUGTRJLq0H2MN7Z32tupZyfJq7wNgmzikrFbArKoNOSJRPaT8crhPiOT/fzGT
- 7rLkzooJsVTZPrAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 88C42138F9;
- Tue, 13 Dec 2022 09:40:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id uwGAHaFImGPXSAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 13 Dec 2022 09:40:49 +0000
-Date: Tue, 13 Dec 2022 10:40:47 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <Y5hIn5r39G5gnZWt@pevik>
-References: <1670845229-1981-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <Y5dJDFk5DpAhTKDV@pevik>
- <CAASaF6wrx+0bkVa2_sSViOYHE25O08GbW_Jy2MQBfWKuJWtZkw@mail.gmail.com>
- <b4b93a47-d106-3a65-939d-230fee359f13@fujitsu.com>
- <CAASaF6wpj3YcJ1gX4g6n7koXL0WnX=9td5RqSjNumrCB+ncmhw@mail.gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 22A7E140099D
+ for <ltp@lists.linux.it>; Tue, 13 Dec 2022 10:44:33 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 0842E1F893;
+ Tue, 13 Dec 2022 09:44:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1670924673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ldDkUW6dVD1gYNNj1nR0inCTmM/aJGlwBdIypP6L/UM=;
+ b=U6sJKJ4URdMvkCjrnLUmKZADwmMaMtL3cmCCUpuZqnX+FsjV47hutQQ1fpui5yr8YuSTkd
+ 3B+hCyxBk3p+s8no79JH8ij9E6Znrw5olNH8fD5JX5Su2P+9kYrGBUIYKEvN2YG/H2yK2t
+ NPYhZvzevcTI9geeJCtHP9drbJHbeLA=
+Received: from g78.cable.virginm.net (unknown [10.163.17.14])
+ by relay2.suse.de (Postfix) with ESMTP id B7C112C141;
+ Tue, 13 Dec 2022 09:44:32 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Tue, 13 Dec 2022 09:44:27 +0000
+Message-Id: <20221213094427.32743-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAASaF6wpj3YcJ1gX4g6n7koXL0WnX=9td5RqSjNumrCB+ncmhw@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/4] lib/tst_kvercmp: Remove old distnames
+Subject: [LTP] [PATCH v2] getcpu01: Reinstate node_id test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,69 +54,159 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Wanlong Gao <gaowanlong@cn.fujitsu.com>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Tue, Dec 13, 2022 at 3:31 AM xuyang2018.jy@fujitsu.com
-> <xuyang2018.jy@fujitsu.com> wrote:
+Presently the node_id is only checked on i386 and it is broken. The
+sched_getcpu call was substituted for getcpu when
+available. sched_getcpu does not have the node_id parameter, it's not
+the same thing as getcpu.
 
-> > Hi Jan, Petr
+Also we can check the node_id on any platform which has NUMA. Which
+includes more than just x86.
 
-> > > On Mon, Dec 12, 2022 at 4:30 PM Petr Vorel <pvorel@suse.cz> wrote:
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Cyril Hrubis <chrubis@suse.cz>
+---
 
-> > >> Hi,
+V2:
+* Removed all the ifdefs
+* Use libc getcpu when available
+* Remove kernel version check
 
-> > >>> Our travis-ci has dropped or never used them, they are useless.
-> > >>> So delete.
-> > >> They were here before CI. They were meant for using by tests
-> > >> (no CI related at all).
+ configure.ac                                |  1 +
+ include/lapi/sched.h                        |  7 +++++
+ testcases/kernel/syscalls/getcpu/getcpu01.c | 35 ++-------------------
+ 3 files changed, 11 insertions(+), 32 deletions(-)
 
-> > > Right, it's not just CI. RHEL5 is EOL, presumably Oracle as well, so
-> > > those likely won't be missed.
-> > > RHEL6 has 2 more years - Isn't this removal going to break tst_kvercmp2()?
+diff --git a/configure.ac b/configure.ac
+index e9b15c7f7..1ab7cc60d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -101,6 +101,7 @@ AC_CHECK_FUNCS_ONCE([ \
+     fstatat \
+     getauxval \
+     getcontext \
++    getcpu \
+     getdents \
+     getdents64 \
+     io_pgetevents \
+diff --git a/include/lapi/sched.h b/include/lapi/sched.h
+index 1d22a9d7e..1065665d1 100644
+--- a/include/lapi/sched.h
++++ b/include/lapi/sched.h
+@@ -70,6 +70,13 @@ static inline void clone3_supported_by_kernel(void)
+ 	}
+ }
+ 
++#ifndef HAVE_GETCPU
++static inline int getcpu(unsigned *cpu, unsigned *node)
++{
++	return tst_syscall(__NR_getcpu, cpu, node, NULL);
++}
++#endif
++
+ #ifndef SCHED_DEADLINE
+ # define SCHED_DEADLINE	6
+ #endif
+diff --git a/testcases/kernel/syscalls/getcpu/getcpu01.c b/testcases/kernel/syscalls/getcpu/getcpu01.c
+index fcc273e29..f6fcc4fc1 100644
+--- a/testcases/kernel/syscalls/getcpu/getcpu01.c
++++ b/testcases/kernel/syscalls/getcpu/getcpu01.c
+@@ -11,26 +11,12 @@
+ #define _GNU_SOURCE
+ #include <dirent.h>
+ #include <errno.h>
+-#include <sched.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <sys/types.h>
+-#include "lapi/syscalls.h"
+-#include "lapi/cpuset.h"
+ #include "tst_test.h"
+-#include "config.h"
+-
+-static inline int get_cpu(unsigned *cpu_id,
+-			  unsigned *node_id LTP_ATTRIBUTE_UNUSED,
+-			  void *cache_struct LTP_ATTRIBUTE_UNUSED)
+-{
+-#ifndef HAVE_SCHED_GETCPU
+-	return tst_syscall(__NR_getcpu, cpu_id, node_id, cache_struct);
+-#else
+-	*cpu_id = sched_getcpu();
+-#endif
+-	return 0;
+-}
++#include "lapi/cpuset.h"
++#include "lapi/sched.h"
+ 
+ static unsigned int max_cpuid(size_t size, cpu_set_t * set)
+ {
+@@ -78,7 +64,6 @@ realloc:
+ 	return cpu_max;
+ }
+ 
+-#ifdef __i386__
+ static unsigned int get_nodeid(unsigned int cpu_id)
+ {
+ 	DIR *directory_parent, *directory_node;
+@@ -119,33 +104,26 @@ static unsigned int get_nodeid(unsigned int cpu_id)
+ 	}
+ 	return node_id;
+ }
+-#endif
+ 
+ static void run(void)
+ {
+ 	unsigned int cpu_id, node_id = 0;
+ 	unsigned int cpu_set;
+-#ifdef __i386__
+ 	unsigned int node_set;
+-#endif
+ 
+ 	cpu_set = set_cpu_affinity();
+-#ifdef __i386__
+ 	node_set = get_nodeid(cpu_set);
+-#endif
+ 
+-	TEST(get_cpu(&cpu_id, &node_id, NULL));
++	TEST(getcpu(&cpu_id, &node_id));
+ 	if (TST_RET == 0) {
+ 		if (cpu_id != cpu_set)
+ 			tst_res(TFAIL, "getcpu() returned wrong value"
+ 				" expected cpuid:%d, returned value cpuid: %d",
+ 				cpu_set, cpu_id);
+-#ifdef __i386__
+ 		else if (node_id != node_set)
+ 			tst_res(TFAIL, "getcpu() returned wrong value"
+ 				" expected  node id:%d returned  node id:%d",
+ 				node_set, node_id);
+-#endif
+ 		else
+ 			tst_res(TPASS, "getcpu() returned proper"
+ 				" cpuid:%d, node id:%d", cpu_id,
+@@ -156,13 +134,6 @@ static void run(void)
+ 	}
+ }
+ 
+-static void setup(void)
+-{
+-	if (tst_kvercmp(2, 6, 20) < 0)
+-		tst_brk(TCONF, "kernel >= 2.6.20 required");
+-}
+-
+ static struct tst_test test = {
+ 	.test_all = run,
+-	.setup = setup,
+ };
+-- 
+2.38.1
 
-> > I have removed tst_kvercmp2 usage for RHEL6 in
-> > testcases/kernel/syscalls/inotify/inotify04.c and
-> > ../kernel/tracing/dynamic_debug/dynamic_debug01.sh, so it should not
-> > break tst_kvercmp2.
-
-> OK, you convinced me it's OK to drop it.
-
-
-> > Also, the current lastest ltp can't ensure that can be compile
-> > successfully on rhel6 because of lack of ci, so I think we don't need to
-> > still maintain the old version check.  If people want to use old kernel
-> > ie RHEL6, why not use the old ltp release?
-
-> They can, but they also likely want fixes to tests. I know there have been
-> some workarounds, such as using pre-configured LTP to workaround
-> autotools issue.
-
-BTW if anybody wishes (and have time) to run some sort of stable branch in LTP
-tree, why not? Not sure how many people would be interested to be worth for that
-person to invest time.
-
-Kind regards,
-Petr
-
-
-> > ps: @Jan, if you want to keep RHEL6, I will keep it. But two more years,
-> > we still need to drop it.
-
-> You showed this isn't significant change for those few users that still might
-> exist (and EOL is coming), so:
-
-> Acked-by: Jan Stancek <jstancek@redhat.com>
-
-Thanks Jan for review (suppose ack is just for this first patch).
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
