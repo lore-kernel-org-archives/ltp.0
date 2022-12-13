@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA751C4332F
-	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 10:39:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FC76C4332F
+	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 10:48:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 40C533CBDA4
-	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 11:39:38 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 440803CBDB0
+	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 11:48:11 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A016B3C32DD
- for <ltp@lists.linux.it>; Tue, 13 Dec 2022 11:39:29 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id E471D3C32DD
+ for <ltp@lists.linux.it>; Tue, 13 Dec 2022 11:48:01 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CD4251A006F0
- for <ltp@lists.linux.it>; Tue, 13 Dec 2022 11:39:28 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 5357E1400B69
+ for <ltp@lists.linux.it>; Tue, 13 Dec 2022 11:48:00 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id BB6DE1FE4C;
- Tue, 13 Dec 2022 10:39:27 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 6975D1FE8F;
+ Tue, 13 Dec 2022 10:48:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1670927967;
+ t=1670928480;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fFcV13OAEjoi1RiCN/UtNvrLZQhCbm0jcaB3Dcdpw28=;
- b=l36dvOBIa/MfATofclzghT764DQpPeSl2O4a1HVYZ7pxtf4ZfSB7srT3BHZRdoFNZzamni
- GZKab9WBr7QgzY+DTMdwc0LBnNNOWhgJRjvkN1jXUHYjgX7mHnzzY+iOpud25icpSN34NU
- t9sYwQyouK4L80DFUC7ZT0qcLJI2UOA=
+ bh=m7JI6sjXcuzgrx9odVnXQM+CYT/Y///vIvRgOn7Gw34=;
+ b=pcuUN6NCI9taREQggNnMh4H/+Av6a0GykDQbPh0TGH13cRz8W/Hx9lLhDR948M7jnMy8dE
+ 8ChD5YIT21y5UfEkiS58og1NJVhMn4gv5g+IPLj9hhMUOpx4/ZTTVUexhlKCUb2U5zK56v
+ Pcbwqx3ew2X4ZX9rR1/rFdrKxEiIqZA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1670927967;
+ s=susede2_ed25519; t=1670928480;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fFcV13OAEjoi1RiCN/UtNvrLZQhCbm0jcaB3Dcdpw28=;
- b=c8djfpCmJzi9tc4d/93Yn0TUmX2vUGBVnaGhUp4WDki79LsGTo92uGP6cEVoWZr0Sw7ASw
- 3sMwUe81hkYXRXBQ==
+ bh=m7JI6sjXcuzgrx9odVnXQM+CYT/Y///vIvRgOn7Gw34=;
+ b=Ux24fq33i8mE7ALd9o1p9B1hYocRrdjbs0W6/EzBr1m/0mza4y1X8idThLdzDEaOeq/qMb
+ Z3C/utOtTg9rMcBQ==
 Received: from g78 (unknown [10.163.17.14])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 7C85D2C16F;
- Tue, 13 Dec 2022 10:39:27 +0000 (UTC)
-References: <20221213094427.32743-1-rpalethorpe@suse.com>
- <Y5hLfAN7NCvsKmNk@pevik>
- <e0488665-e68e-455d-6ee6-8709b5f57599@fujitsu.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 2D8B92C141;
+ Tue, 13 Dec 2022 10:48:00 +0000 (UTC)
+References: <20221213003553.3693243-1-zijunzhao@google.com>
 User-agent: mu4e 1.8.11; emacs 28.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Date: Tue, 13 Dec 2022 10:36:00 +0000
+To: zijunzhao <zijunzhao@google.com>
+Date: Tue, 13 Dec 2022 10:46:32 +0000
 Organization: Linux Private Site
-In-reply-to: <e0488665-e68e-455d-6ee6-8709b5f57599@fujitsu.com>
-Message-ID: <877cyvsi3l.fsf@suse.de>
+In-reply-to: <20221213003553.3693243-1-zijunzhao@google.com>
+Message-ID: <87359jshpc.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] getcpu01: Reinstate node_id test
+Subject: Re: [LTP] [PATCH] signalfd01.c: put the right round bracket to the
+ right place in tst_resm
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,36 +80,31 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
->> 
->> FYI Richie is touching the same code, one of you will need to rebase.
->> IMHO it's better to remove this in dedicated patchset (i.e. in Xu).
->
-> Even I will limit the kernel version check to 3.0 in my patchset because 
-> we don't reach the same target to 3.10, so let me rebase.
->
-> ps: If we reach the same target to 3.10, then we can remove remain old 
-> version check in the future.
+The patch is perfect, but you need to add your Signed-off-by git trailer
+to the commit (or just respond this e-mail with it).
 
-I'm not sure what you mean. It's not the important thing for this patch
-though. I'll just remove it before merge.
+zijunzhao via ltp <ltp@lists.linux.it> writes:
 
+> ---
+>  testcases/kernel/syscalls/signalfd/signalfd01.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> Best Regards
-> Yang Xu
->> 
->> Kind regards,
->> Petr
->> 
->>> -static void setup(void)
->>> -{
->>> -	if (tst_kvercmp(2, 6, 20) < 0)
->>> -		tst_brk(TCONF, "kernel >= 2.6.20 required");
->>> -}
->>> -
->>>   static struct tst_test test = {
->>>   	.test_all = run,
->>> -	.setup = setup,
->>>   };
+> diff --git a/testcases/kernel/syscalls/signalfd/signalfd01.c b/testcases/kernel/syscalls/signalfd/signalfd01.c
+> index 3df941785..c6a7c3a58 100644
+> --- a/testcases/kernel/syscalls/signalfd/signalfd01.c
+> +++ b/testcases/kernel/syscalls/signalfd/signalfd01.c
+> @@ -249,8 +249,7 @@ void do_test2(int fd, uint32_t sig)
+>  		goto out;
+>  	} else {
+>  		tst_resm(TFAIL, "got unexpected signal: signal=%d : %s",
+> -			 fdsi.ssi_signo),
+> -			 strsignal(fdsi.ssi_signo);
+> +			 fdsi.ssi_signo, strsignal(fdsi.ssi_signo));
+>  		goto out;
+>  	}
+>  
+> -- 
+> 2.39.0.rc1.256.g54fd8350bd-goog
 
 
 -- 
