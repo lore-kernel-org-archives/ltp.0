@@ -4,67 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE966C4332F
-	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 11:53:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62546C4332F
+	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 17:28:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D20B3CBDB9
-	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 12:53:30 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id ED12E3CBDB1
+	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 18:28:24 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6EA6C3CBD8B
- for <ltp@lists.linux.it>; Tue, 13 Dec 2022 12:53:20 +0100 (CET)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 9B6193C32DD
+ for <ltp@lists.linux.it>; Tue, 13 Dec 2022 18:28:13 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 77DB7600431
- for <ltp@lists.linux.it>; Tue, 13 Dec 2022 12:53:20 +0100 (CET)
-Received: by mail-lf1-x12b.google.com with SMTP id b3so4513575lfv.2
- for <ltp@lists.linux.it>; Tue, 13 Dec 2022 03:53:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=Jal3/JFQ8LmBRW7V8wi0HA0IM1v4WHaSvNJjV4F6bHU=;
- b=hEr4dHsBKeVWswYf9ABkSViaHze43e9q2GBafLQwfS8uUJOCMz97bM6RkC+k6BfsiR
- PC0I4PZF/RCEsXW9OYuL1MV6IfTJUXNa0THOh9VuJZv3+fn1N/NbUJc1YlPDE0NOhzX5
- bFgyiHxxyy7N0QHqh4OYPuAbwEWeaU8rEZD33i9lA2QD/j4VwPRvwLHUdUEnPJEOFW0n
- DuAeHQkznf4QQTqYc6fvQfT6DI5xghS1t4rJPJ9JFcv6dU9ge65ocUAR8/LfFW20UgZN
- IKMR6wbHTzpHu5+pGHfNS+1wVqGPUwt/DWzZp/bOBCznGtpUkIMNhrZpPP9dVRsuUZkG
- Sglg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=Jal3/JFQ8LmBRW7V8wi0HA0IM1v4WHaSvNJjV4F6bHU=;
- b=w97QiXhXPEfIhtw4+CwBot8FYG7HZlH/S2E2SEIfRjnI1QruEa95z4R/aI6in+Ol0y
- Obpg2pLdLcr7zOYCLzDqUQ/ZMbp7+IhB+yQR0a5xPwa9HfX6Jty6GGCHTC2gK75QQCdX
- oImiVOYtVL+Bbv+Wym4AjdcGACxcrj2s4FEXEwDzCM2/Cl1VQoTkzgoL8Apa8XrDqYtz
- adBqTN2bFQYGHujvixeZjrSQ+dO5MGynqDDrE6RT6w1SWuwjyMLnHgHbi4Cf+aF685t3
- tw8c+fzsNFSxQdKUtSF45PonQIE1/jABjBgcVR+jxLi8d2fIQVfn1/GF8/JOneBlVETr
- 2Kzw==
-X-Gm-Message-State: ANoB5pkQnXkSgvV96nDgcaf57Vq/k01rJ1eimicfhJZb4NNFnAppuN4I
- 35yXc32GwwCi4enOovMg11Z8mRsRho64xP5GtZM=
-X-Google-Smtp-Source: AA0mqf7sJYIEEoe7/Vh0gl1/42IApAVnDQa2xvz2s5uyn0k44BB+HxDBx/Ry3R3z6aFXXJppkFggZm7K9uLB8cwbOnI=
-X-Received: by 2002:a19:690c:0:b0:4b5:834e:5091 with SMTP id
- e12-20020a19690c000000b004b5834e5091mr4597221lfc.386.1670932399731; Tue, 13
- Dec 2022 03:53:19 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 760BE1A00703
+ for <ltp@lists.linux.it>; Tue, 13 Dec 2022 18:28:12 +0100 (CET)
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2BDG89ec001299; Tue, 13 Dec 2022 17:28:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=filkMu+niNB9io43B+FXTpJoi4oW1Y7Su4ZPaPkEpZI=;
+ b=hFHvPF0XGhvjjcn0nsOis0OhiS0rqTyqNpd1ruOxPLa24LER8ITjaK9YDQRVk208YU8O
+ DleEP/1I5AJi++h59DOEiGH8T1nBZiU19fWJM9ij42Gu1ccx2q4Ty0yOBSevRBccKOfa
+ MjKWGwfEW8cXMWyklkO8/K0PXdhcL3BUlI8TDKhQsEd3ELeQnLRYt2gDBizRrrRO6fAm
+ 74k9GsP7ni7V0PecZt8J/3Fnj0cx0tm/vHFc9p0QIr3ZL8U8zD7RVXBmFbgnPTCiIaH9
+ IyzU4xJI9YnfXwmzwjblf4lIOsvSwXy5QCAC2+Wfg2dmu1iglnrxOrrOtagOhk6vlb5u Hg== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.98])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mevn6jb8t-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 13 Dec 2022 17:28:09 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+ by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BDGwaSb028368;
+ Tue, 13 Dec 2022 17:28:07 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3mchr64gwn-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 13 Dec 2022 17:28:07 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2BDHS3Mn32702954
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 13 Dec 2022 17:28:03 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 5A0582004B;
+ Tue, 13 Dec 2022 17:28:03 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id E8FB420043;
+ Tue, 13 Dec 2022 17:28:00 +0000 (GMT)
+Received: from tarunpc.in.ibm.com (unknown [9.43.67.208])
+ by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+ Tue, 13 Dec 2022 17:28:00 +0000 (GMT)
+Date: Tue, 13 Dec 2022 22:57:53 +0530
+From: Tarun Sahu <tsahu@linux.ibm.com>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <20221213172705.r2kczfotivg4sbck@tarunpc.in.ibm.com>
+References: <20221201122844.142062-1-tsahu@linux.ibm.com>
+ <20221201122844.142062-5-tsahu@linux.ibm.com>
+ <878rjcvh9f.fsf@suse.de>
+Content-Disposition: inline
+In-Reply-To: <878rjcvh9f.fsf@suse.de>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: nkjZt94N27WHoBIIXMYKqC2CU0lzBq1O
+X-Proofpoint-ORIG-GUID: nkjZt94N27WHoBIIXMYKqC2CU0lzBq1O
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <CAFQkDyZABHU38_LTvsv1eP8PvK4rHprfZrL45CYqMvav1-O8_A@mail.gmail.com>
- <87mt7su1dg.fsf@suse.de>
-In-Reply-To: <87mt7su1dg.fsf@suse.de>
-From: Xinkuan Yan <lucky33newman@gmail.com>
-Date: Tue, 13 Dec 2022 19:53:08 +0800
-Message-ID: <CAFQkDyahG5Y8_=WcB4Kz4QLOc32p0vhDb5tSEd3Xoo_OY79LwA@mail.gmail.com>
-To: rpalethorpe@suse.de, Cyril Hrubis <chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-12-13_03,2022-12-13_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 impostorscore=0
+ malwarescore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0 mlxscore=0
+ priorityscore=1501 clxscore=1015 phishscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2210170000
+ definitions=main-2212130151
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] Question about log format.
+Subject: Re: [LTP] [PATCH 4/8] Hugetlb: Migrating libhugetlbfs icache-hygiene
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,58 +97,73 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com, sbhat@linux.ibm.com,
+ ltp@lists.linux.it, geetika@linux.ibm.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGksCgpTb3JyeSBmb3IgdGhlIGxhdGUgcmVwbHkuCgpZb3VyIGFuc3dlcnMgaGVscGVkIG1lIHNv
-IG11Y2ggZnJvbSBnZXR0aW5nIGxvc3QgaW4gbHRwLCB3b29vcHMsIHRoaXMKbWFzc2l2ZSBGcmFu
-a2Vuc3RhaW4gbWFkZSBtZSBnbyBtYWQgd2hlbiBJIGRlc2lnbiB0aGUgY29yZSBwYXJzZXIgZnVu
-Y3Rpb24uCgpXaXNoIHJ1bmx0cC1uZyB2ZXJzaW9uIGEgZ3JlYXQgam9iISBMb29raW5nIGZvcndh
-cmQgdG8gc2VlIHRoYXQuCgpDaGVlcnMsCllhbgoKUmljaGFyZCBQYWxldGhvcnBlIDxycGFsZXRo
-b3JwZUBzdXNlLmRlPiDkuo4yMDIy5bm0MTLmnIgxMuaXpeWRqOS4gCAyMjo0NeWGmemBk++8mgoK
-PiBIZWxsbywKPgo+IFhpbmt1YW4gWWFuIDxsdWNreTMzbmV3bWFuQGdtYWlsLmNvbT4gd3JpdGVz
-Ogo+Cj4gPiBIZWxsbyBsaXN0LAo+ID4KPiA+IEknbSB0cnlpbmcgdG8gZG8gYSBjb25jaXNlIHBh
-cnNpbmcgb2YgdGhlIExUUCByZXBvcnQuCj4gPgo+ID4gSSBkb24ndCBoYXZlIG11Y2ggZXhwZXJp
-ZW5jZSBhbmQgSSdtIG5vdCBmYW1pbGlhciB3aXRoIExUUCwgc28gSSdtIGdvaW5nCj4gdG8KPiA+
-IHRha2UgI21hdGggYXMgYW4gZXhhbXBsZSwgZm9yIGl0IGlzIG5vdCBjb21wbGV4Lgo+ID4KPiA+
-IFJ1biB0ZXN0IGNvbW1hbmQ6Cj4gPgo+ID4gLi9sdHAg4oCTZiBtYXRoIOKAk3EKPiA+Cj4gPiBJ
-IGhhdmUgdGhyZWUgcXVlc3Rpb25zIG5vdywgIHRha2luZyB0aGUgb25lLWxpbmUgb3V0cHV0IHJl
-c3VsdCBiZWxvdyBhcwo+IGFuCj4gPiBleGFtcGxlOgo+ID4KPiA+IGZsb2F0X2lwZXJiIDEgVFBB
-U1M6IFRlc3QgcGFzc2VkCj4KPiBUaGlzIGlzIGEgdGVzdCB1c2luZyB0aGUgb2xkIEFQSSwgc28g
-bm90IHRoZSBiZXN0IGV4YW1wbGUuCj4KPiA+Cj4gPiAxLCBJdCBpcyBjbGVhciB0aGF0IFRQQVNT
-IG1lYW5zIGl0IHBhc3NlZCwgYnV0IHdoYXQgaXMgdGhlIG51bWJlciAxCj4gPiBzdGFuZGluZyBm
-b3IuCj4KPiBJIGRvbid0IGtub3cgdG8gYmUgaG9uZXN0LiBJdCB3YXMgcmVtb3ZlZCBpbiB0aGUg
-bmV3IHRlc3QgQVBJLgo+Cj4gPgo+ID4gMiwgV2h5IHRoaXMgbGluZSBzaG93ZWQgdXAgdHdpY2U/
-ICggUFM6IEJldHdlZW4gdGhlc2UgdHdvIGxpbmVzIGFyZSBtYW55Cj4gPiBUSU5GTy4pCj4KPiBQ
-b3NzaWJseSBiZWNhdXNlIHRoZXJlIGFyZSBtdWx0aXBsZSBpdGVyYXRpb25zIG9mIHRoZSB0ZXN0
-LiBQb3NzaWJseQo+IHNvbWUgcGFyYW10ZXJzIGFyZSBjaGFuZ2VkIGJldHdlZW4gaXRlcmF0aW9u
-cy4KPgo+IE9ubHkgd2F5IHRvIGZpbmQgb3V0IGlzIHRvIGxvb2sgZm9yIHRzdF9yZXNtIGNhbGxz
-IGluIHRoZSBzb3VyY2UgY29kZS4KPgo+ID4KPiA+IDMsIFdoZXJlIHRvIGNoZWNrIHRob3NlIG91
-dCBwdXQgc3RhbmRhcmRzLCB0YWtpbmcgeW9jdG8gcGFja2FnZSB0ZXN0IGFzIGEKPiA+IHNtYWxs
-IGNvbXByZWhlbnNpb24sIHRoYXQgc3RhbmRhcmQgd2FzICggUEFTU3xGQUlMfFNLSVApOiBUZXN0
-IGluZm8uIEhvdwo+IGlzCj4gPiBpdCBsaWtlIGluIExUUD8KPgo+Cj4gaHR0cHM6Ly9naXRodWIu
-Y29tL2xpbnV4LXRlc3QtcHJvamVjdC9sdHAvd2lraS9DLVRlc3QtQVBJIzEyLWJhc2ljLXRlc3Qt
-aW50ZXJmYWNlCj4KPiBOb3RlIHRhaHQgdGhlIG5ldyBBUEkgb3V0cHV0IGxvb2tzIG1vcmUgbGlr
-ZSB0aGUgZm9sbG93aW5nOgo+Cj4gc2gtNS4yIyAuL2JwZl9wcm9nMDcKPiB0c3RfYnVmZmVycy5j
-OjU1OiBUSU5GTzogVGVzdCBpcyB1c2luZyBndWFyZGVkIGJ1ZmZlcnMKPiB0c3RfdGFpbnQuYzox
-MTY6IFRDT05GOiBJZ25vcmluZyBhbHJlYWR5IHNldCBrZXJuZWwgd2FybmluZyB0YWludAo+IHRz
-dF90ZXN0LmM6MTU2MDogVElORk86IFRpbWVvdXQgcGVyIHJ1biBpcyAwaCAwMG0gMzBzCj4gYnBm
-X2NvbW1vbi5jOjE3OiBUSU5GTzogUmFpc2luZyBSTElNSVRfTUVNTE9DSyB0byAxMDQ4NTc2MAo+
-IHRzdF9jYXBhYmlsaXR5LmM6Mjk6IFRJTkZPOiBEcm9wcGluZyBDQVBfU1lTX0FETUlOKDIxKQo+
-IHRzdF9jYXBhYmlsaXR5LmM6Mjk6IFRJTkZPOiBEcm9wcGluZyBDQVBfQlBGKDM5KQo+IGJwZl9j
-b21tb24uYzozOTogVENPTkY6IEhpbnQ6IGNoZWNrIGFsc28KPiAvcHJvYy9zeXMva2VybmVsL3Vu
-cHJpdmlsZWdlZF9icGZfZGlzYWJsZWQKPiBicGZfY29tbW9uLmM6NDE6IFRDT05GOiBicGYoKSBy
-ZXF1aXJlcyBDQVBfU1lTX0FETUlOIG9yIENBUF9CUEYgb24gdGhpcwo+IHN5c3RlbTogRVBFUk0g
-KDEpCj4KPiBTdW1tYXJ5Ogo+IHBhc3NlZCAgIDAKPiBmYWlsZWQgICAwCj4gYnJva2VuICAgMAo+
-IHNraXBwZWQgIDMKPiB3YXJuaW5ncyAwCj4KPiBzaC01LjIjIC4vYnBmX3Byb2cwMQo+IHRzdF9i
-dWZmZXJzLmM6NTU6IFRJTkZPOiBUZXN0IGlzIHVzaW5nIGd1YXJkZWQgYnVmZmVycwo+IHRzdF90
-ZXN0LmM6MTU2MDogVElORk86IFRpbWVvdXQgcGVyIHJ1biBpcyAwaCAwMG0gMzBzCj4gYnBmX2Nv
-bW1vbi5jOjE3OiBUSU5GTzogUmFpc2luZyBSTElNSVRfTUVNTE9DSyB0byAxMDQ4NTc2MAo+IGJw
-Zl9jb21tb24uYzoxMTQ6IFRQQVNTOiBMb2FkZWQgcHJvZ3JhbQo+IGJwZl9wcm9nMDEuYzo5NTog
-VFBBU1M6IHZhbCA9IDEKPiAuLi4KPgo+IFNvIHRoZSBmb3JtYXQgaXMgbGlrZToKPgo+IDxmaWxl
-X25hbWU+OjxsaW5lPjogPHR0eXBlPjogPG1lc3NhZ2U+Cj4KPiAtLQo+IFRoYW5rIHlvdSwKPiBS
-aWNoYXJkLgo+CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQv
-bGlzdGluZm8vbHRwCg==
+Hi Richard,
+Thanks for looking at it.
+
+I am also trying to reproduce the same, In the meantime, I have found the
+fix commit for this bug: https://lore.kernel.org/all/20051209032051.GA11744@localhost.localdomain/
+
+I will update the tag in this and all tests moving forward,
+Pardon me for missing such crucial details.
+
+Thanks
+Taurn
+On Dec 12 2022, Richard Palethorpe wrote:
+> Hello,
+> 
+> Tarun Sahu <tsahu@linux.ibm.com> writes:
+> 
+> > Migrating the libhugetlbfs/testcases/icache-hygiene.c test
+> >
+> > Test Description: Older ppc64 kernels don't properly flush dcache to
+> > icache before giving a cleared page to userspace.  With some exceedingly
+> > hairy code, this attempts to test for this bug.
+> >
+> > This test will never trigger (obviously) on machines with coherent
+> > icache and dcache (including x86 and POWER5).  On any given run,
+> > even on a buggy kernel there's a chance the bug won't trigger -
+> > either because we don't get the same physical page back when we
+> > remap, or because the icache happens to get flushed in the interim.
+> 
+> Compiling with Clang 15.0.5 on x86_64 and upstream kernel 6.0.9 in a KVM
+> VM the test fails:
+> 
+> sh-5.2# ./hugemmap15
+> [13712.044617] hugemmap15 (2118): drop_caches: 3
+> tst_hugepage.c:83: TINFO: 3 hugepage(s) reserved
+> tst_test.c:1560: TINFO: Timeout per run is 0h 00m 30s
+> hugemmap15.c:191: TFAIL: icache unclean
+> 
+> > +
+> > +static struct tst_test test = {
+> > +	.needs_root = 1,
+> > +	.mntpoint = MNTPOINT,
+> > +	.needs_hugetlbfs = 1,
+> > +	.needs_tmpdir = 1,
+> > +	.setup = setup,
+> > +	.cleanup = cleanup,
+> > +	.test_all = run_test,
+> > +	.hugepages = {3, TST_NEEDS},
+> > +};
+> > -- 
+> > 2.31.1
+> 
+> Again, it would be nice to have the git tag(s) of the fix commit(s) if
+> possible.
+> 
+> -- 
+> Thank you,
+> Richard.
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
