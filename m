@@ -4,67 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E58EBC4332F
-	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 19:18:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD04FC4332F
+	for <ltp@archiver.kernel.org>; Wed, 14 Dec 2022 10:03:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 66F803CBDE1
-	for <ltp@archiver.kernel.org>; Tue, 13 Dec 2022 20:18:52 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 54B7D3CBD1E
+	for <ltp@archiver.kernel.org>; Wed, 14 Dec 2022 11:03:54 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B89793CBD96
- for <ltp@lists.linux.it>; Tue, 13 Dec 2022 20:18:42 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 22742600852
- for <ltp@lists.linux.it>; Tue, 13 Dec 2022 20:18:41 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E53912299B;
- Tue, 13 Dec 2022 19:18:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1670959120;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=X0IyIMaEAp2T3Vv/b5rSJDsR8keq6tWjzQdx1bKdEsg=;
- b=fTn+6CGQ6TZ4LzqkgL+zIwfeWwNi2Qz0NlGghUMt9//sqP5gnet1N5WYed0SMxQw6kx6iP
- J/xWzo1yCYU1JSXgAXu/mXCs9515Yfr0366IMBNqFwLbNYOYPGgrAh2w6NK0X2vkTUGvY2
- fnT6tGAw49NYCEeKnypL5Qiz1+ZAKG8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1670959120;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=X0IyIMaEAp2T3Vv/b5rSJDsR8keq6tWjzQdx1bKdEsg=;
- b=AuI93W16HfCUsxK2YxzudQDV7wBz7gVsw3jJpI87z2R//iHcgl2sGQrGhkW7VMTjl+zefg
- Kov8bPUwcdo9nkDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A14CF138F9;
- Tue, 13 Dec 2022 19:18:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id HbtwJRDQmGM1DAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 13 Dec 2022 19:18:40 +0000
-Date: Tue, 13 Dec 2022 20:18:38 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <Y5jQDt7A/VmUZp9G@pevik>
-References: <20221209141002.15551-1-pvorel@suse.cz>
- <87bko7sinw.fsf@suse.de>
+ by picard.linux.it (Postfix) with ESMTPS id EDCE33CBCFE
+ for <ltp@lists.linux.it>; Wed, 14 Dec 2022 11:03:44 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTP id 76D0360045E
+ for <ltp@lists.linux.it>; Wed, 14 Dec 2022 11:03:43 +0100 (CET)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8EED9FEC;
+ Wed, 14 Dec 2022 02:04:21 -0800 (PST)
+Received: from [10.57.41.215] (unknown [10.57.41.215])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 204323F5A1;
+ Wed, 14 Dec 2022 02:03:40 -0800 (PST)
+Message-ID: <bcbe5dc0-c8e2-5849-15fc-226b5afe7ed0@arm.com>
+Date: Wed, 14 Dec 2022 10:03:25 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87bko7sinw.fsf@suse.de>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+To: Petr Vorel <pvorel@suse.cz>
+References: <20221207092428.11798-1-teo.coupriediaz@arm.com>
+ <871qp4u02j.fsf@suse.de> <Y5dHRcLD1359Rm3o@pevik>
+ <4b38f13f-a8a1-bbde-9103-9900f0cf5a88@arm.com> <Y5eA7WeAV4b/Cp8d@pevik>
+ <a2f0fa00-f14f-e394-c5cb-f2916cdc1271@arm.com> <Y5jLt3e3xODIcj8d@pevik>
+Content-Language: en-US
+From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+Organization: Arm Ltd.
+In-Reply-To: <Y5jLt3e3xODIcj8d@pevik>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] ci: Add hook to mirror docparse to homepage
+Subject: Re: [LTP] [PATCH v2] syscalls/brk: add direct syscall tst_variant
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,123 +52,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, Aleks L <aleksandrosansan@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Richie,
-
-first, thank you for your review!
-
-> Hello,
-
-> Petr Vorel <pvorel@suse.cz> writes:
-
-> > GitHub Actions git push hook generates metadata HTML and push it
-> > to LTP homepage.
-
-> > Hook pushes only if there are actual changes in generated doc.
-
-> IIUC we have to do most of the work to generate the meta data, but then
-> don't push it if there is no diff?
-
-> What are we saving with this optimisation?
-
-This saves number of commits which will change nothing.
-Because the page itself has also other changes for the web page itself,
-which will be buried with these changes.
-But sure, I'll remove this check, if considered useless.
-
-If your comment is about to do the detection earlier,
-I'd have to do some smart 'git diff'. Could be done with:
-git diff $old_commit testcases/ | grep '^+ \* '
-in step "Check metadata need to be updated"
-(i.e. after both checkouts).
-
-
-> > NOTE: this change requires to add:
-
-> > 1) Personal Access Token (PAT) to any developer which has write access
-> > to homepage git repository [3]. In Developer settings -> Personal access
-> > tokens -> Tokens (classic) [4]), where set:
-> > Note: GH_PERSONAL_ACCESS_TOKEN
-> > Select scopes: public_repo (minimal permission)
-> > Expiration: either never or regularly renew.
-
-> > 2) Allow PAT in LTP organisation (I dared to already set it)
-> > Iin linux-test-project group -> Settings -> Third-party Access -> Personal
-> > access tokens -> Settings [5]
-> > select:
-> > Allow access via personal access tokens (classic)
-> > API and Git access will be allowed using an organization member's personal access token (classic)
-
-> > 3) Add repository action secret to ltp repository
-> > IN Settings -> Actions -> New repository secret [6]:
-> > name: GH_PERSONAL_ACCESS_TOKEN
-> > value: the value of previously created token.
-
-> > Because using token, default permission is just read.
-
-> This seems like a very convoluted process. Can't we just put the
-> metadata generation in the docs build and upload the assets as usual?
-> I've never had to use a PAT to deploy a github page.
-
-Do you mean to have this Action in linux-test-project.github.com git repo?
-What would trigger the build? Some kind of cron behavior?
-Using PAT is a weak point thus I'm really open to other solutions.
-
-...
-> > +++ b/.github/workflows/metadata-mirror.yml
-...
-> > +    steps:
-> > +      - name: Check secret
-> > +        env:
-> > +          GH_PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-> > +        run: |
-> > +          if [ -z "$GH_PERSONAL_ACCESS_TOKEN" ]; then
-> > +            echo "::error::GH_PERSONAL_ACCESS_TOKEN environment variable is not set"
-> > +            exit 1
-> > +          fi
-
-> Do we not trust Github to set an env variable?
-If I delete my PAT, this will catch it. Of course error message could be
-improved.
-
-...
-> > +      - name: Push generated html metadata to LTP homepage
-> > +        env:
-> > +          GH_PERSONAL_ACCESS_TOKEN: ${{
-> > secrets.GH_PERSONAL_ACCESS_TOKEN }}
-
-> Why put a credential in an env variable anyway? Can we not simply write
-> ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }} below?
-I can test if it's supported inside "run:", but github hides env content,
-thus no big deal to use env. See:
-https://github.com/foo-pevik/ltp_foo/actions/runs/3660784474
-GH_PERSONAL_ACCESS_TOKEN: ***
-
-https://github.com/foo-pevik/ltp_foo/actions/runs/3660784474/jobs/6188315802
-GH_PERSONAL_ACCESS_TOKEN: ***
-
-(Hidden on all places.)
-
-> > +        run: |
-...
-> > +          printf "metadata.nightly.html: Update to $commit\n\nUpdate metadata.nightly.html to $commit_desc\n" > /tmp/msg
-> > +          git commit -F /tmp/msg .
-> > +
-> > +          echo "::notice::GH_PERSONAL_ACCESS_TOKEN: $GH_PERSONAL_ACCESS_TOKEN"
-
-> Won't this print your PAT for the world to use?
-No (described above, see the links of actual run).
-> > +          git push
-> > https://${GH_PERSONAL_ACCESS_TOKEN}@github.com/linux-test-project/linux-test-project.github.com.git
-
-Kind regards,
-Petr
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUGV0ciwKCk9uIDEzLzEyLzIwMjIgMTk6MDAsIFBldHIgVm9yZWwgd3JvdGU6Cj4gSGkgVGVv
+LAo+Cj4gLi4uCj4+PiBMb29raW5nIG9uIGV4dHJhIGJyaygpIHN1cHBvcnQgZGV0ZWN0aW9uLCB5
+b3UgbXVzdCBoYXZlIHRlc3RlZCBpdCBvbiBBbHBpbmUuCj4+PiBXaGF0IGFtIEkgbWlzc2luZz8K
+Pj4gVGhhdCBpcyBxdWl0ZSBzdHJhbmdlIGluZGVlZC4gQXMgUmljaGFyZCBwb2ludGVkIG91dCBp
+biBoaXMgcmVwbHkgdG8gdGhpcwo+PiBtZXNzYWdlLCB0aG9zZSB3YXJuaW5ncyBzaG91bGQgbm90
+IGhhcHBlbiBhbnltb3JlIHNpbmNlIG15IHBhdGNoIHRoYXQKPj4gY2hhbmdlZCB0c3Rfc3lzY2Fs
+bCB0byB1c2UgaW50cHRyX3QuICggZTVkMmEwNWE5MGU1IDogcmVnZW4uc2g6IFVzZSBpbnRwdHJf
+dAo+PiBmb3IgdHN0X3N5c2NhbGwgcmV0dXJuICkKPj4gSG93ZXZlciwgSSBiZWxpZXZlIHRoYXQg
+dGhlIHJlbGV2YW50IGhlYWRlciBpcyBvbmx5IHJlZ2VuZXJhdGVkIHdoZW4gcnVubmluZwo+PiAu
+L2NvbmZpZ3VyZSAsIG5vdCB3aGVuIGJ1aWxkaW5nIG5vcm1hbGx5LiBJIGtub3cgdGhhdCBJIGZv
+cmdvdCB0byBkbyBpdCBhCj4+IGZldyB0aW1lcyBteXNlbGYgd2hpbGUgdGVzdGluZyB0aGUgY2hh
+bmdlIHRvIHRzdF9zeXNjYWxsICEKPj4gVG8gYmUgc3VyZSB0aGF0IGl0IGlzIHN1cHBvc2VkIHRv
+IHdvcmssIEkgZGlkIHRoZSBmb2xsb3dpbmcgb24gYW4gQWxwaW5lIFZNCj4+IEkgdXNlZCBmb3Ig
+dGVzdGluZyA6Cj4+IG1ha2UgY2xlYW4KPj4gbWFrZSBhdXRvdG9vbHMKPj4gLi9jb25maWd1cmUK
+PiBJJ20gc29ycnkgdG8gZm9yZ2V0IGJhc2ljIExUUCB0aGluZ3MuIFNldHVwIHdhcyByZWFsbHkg
+b2xkLCB0aHVzIHJlcnVubmluZwo+IGNvbmZpZ3VyZSB3YXMgbmVlZGVkLgo+IE5vIG1vcmUgb2Jq
+ZWN0aW9ucyBmcm9tIG15IHNpZGUsIG1lcmdlZCB3aXRoIGNoYW5nZXMgSSBwcmV2aW91c2x5IHBv
+c3RlZAo+ICh0byBrZWVwIGNoZWNrcyBoYXBweSkuClRoYXQgbWFrZXMgc2Vuc2UsIG5vIHdvcnJp
+ZXMgIQo+Cj4gVGhhbmsgeW91IQo+Cj4gS2luZCByZWdhcmRzLAo+IFBldHIKVGhhbmtzIGZvciB0
+aGUgdGhvcm91Z2ggcmV2aWV3IGFuZCB0ZXN0aW5nICEKS2luZCByZWdhcmRzLApUw6lvCgotLSAK
+TWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
