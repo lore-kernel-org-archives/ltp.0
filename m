@@ -4,87 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A10CC4332F
-	for <ltp@archiver.kernel.org>; Wed, 14 Dec 2022 10:45:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B243C4332F
+	for <ltp@archiver.kernel.org>; Wed, 14 Dec 2022 20:37:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 71C283CBD24
-	for <ltp@archiver.kernel.org>; Wed, 14 Dec 2022 11:45:43 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id A3C3D3CBD66
+	for <ltp@archiver.kernel.org>; Wed, 14 Dec 2022 21:37:46 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D82223CBD79
- for <ltp@lists.linux.it>; Wed, 14 Dec 2022 11:45:01 +0100 (CET)
-Received: from mail3.bemta32.messagelabs.com (mail3.bemta32.messagelabs.com
- [195.245.230.82])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id D6B413CB893
+ for <ltp@lists.linux.it>; Wed, 14 Dec 2022 21:37:37 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E9D2F600642
- for <ltp@lists.linux.it>; Wed, 14 Dec 2022 11:45:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1671014700; i=@fujitsu.com;
- bh=kYrY1cWKp770jjWeWG5pUO82MswMyWYpSyKWYMGL8jc=;
- h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
- MIME-Version:Content-Type;
- b=GOcZvVJNleUDamxvXvmpWV6SlFnfEgjYhLSAkFB1n3mWrMizjlmCOgQRA7coy+LSs
- vY41o+YZBur2Ye/SQGLUdV2cofKmsSEAgqjRD59G+JrV9TcfzDgJ+dlPFu0A66dlWf
- M1UEfZYwvt7nT5Fep4FQGXCJ6ngi30E4OW34tskPzA5khPIBlIBl7p+XTgCbvokoIi
- tNEWmdyy1RnwHYnak3Gv+ywDqurMpmetFiu2t8XAxqo0e89KLkdc0VnTbPFOewvXPR
- Oqfk7JQgCPDSeXSllMfh4JR6j74gau0nA7g0pCMaIqqmZoKn/akHnUcnHkZX3uOQHY
- OrPSgfnR7TIug==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMIsWRWlGSWpSXmKPExsViZ8MxSVd75cx
- kg5Xv1SxWfN/B6MDose/3OtYAxijWzLyk/IoE1oztTXPZCl5yV1yYe4+1gfEDZxcjJ4eQwFlG
- iRuPA7sYuYDsA0wSWz+sY4FI7GGU+PhRDsRmE9CUeNa5gBnEFhGQkOhoeMsOYjMLqEssn/SLC
- cQWFtCS2HW8l7WLkYODRUBV4kBbMUiYV8BDoqXvEdhICQEFiSkP34ON4RTwlNh8ah0TxCoPiQ
- 3/vrFB1AtKnJz5hAVivITEwRcvmCF6FSUudXxjhLArJGbNamOCsNUkrp7bxDyBUXAWkvZZSNo
- XMDKtYjQtTi0qSy3SNdJLKspMzyjJTczM0Uus0k3USy3VLU8tLtE11EssL9ZLLS7WK67MTc5J
- 0ctLLdnECAzblGKW2TsYe5b+0TvEKMnBpCTKa1Q3I1mILyk/pTIjsTgjvqg0J7X4EKMMB4eSB
- O+fpTOThQSLUtNTK9Iyc4AxBJOW4OBREuG9Mh0ozVtckJhbnJkOkTrFqCglzrtgOVBCACSRUZ
- oH1waL20uMslLCvIwMDAxCPAWpRbmZJajyrxjFORiVhHnvg2znycwrgZv+CmgxE9DiqJdTQRa
- XJCKkpBqY3Nb6irzbItUZ2/W81URzxY8tFm+sey8+PbKh3XQv36bK5+0XHQ+1KrZzvvy48Ij6
- M99ZS9bUtky6kuSW+ynISU2jIVLvlkj4a/4fXSsVt76yrcuOzHCTTD5hcWBBVonRx/SLS4N2/
- Qk23nK2xHa2zOU1IT+/zylkrTp20f2bo+fro7uYV5sWZhrf1n7xQqvALzhjeq+dpvgDU+aSIP
- UO0Vc1Z2+d2RNWJ+52wvi00Edh0ZI9bBc0/nocOM374ulhB4672zxTp70NmW9yIO1h6aFWUza
- drMzZh2+WVB+dyhkV/G4Z//ml2y9Oy2Ep4e5J96x+O8Vr54Jnau+c2578zl3SlLzg8a1iDxY3
- G3FXJZbijERDLeai4kQAbxm6MlYDAAA=
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-12.tower-585.messagelabs.com!1671014699!95625!1
-X-Originating-IP: [62.60.8.146]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.101.2; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 9686 invoked from network); 14 Dec 2022 10:44:59 -0000
-Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
- by server-12.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 14 Dec 2022 10:44:59 -0000
-Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 441A2100450
- for <ltp@lists.linux.it>; Wed, 14 Dec 2022 10:44:59 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126
- [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 08C5F6008F4
+ for <ltp@lists.linux.it>; Wed, 14 Dec 2022 21:37:36 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 37ACC100441
- for <ltp@lists.linux.it>; Wed, 14 Dec 2022 10:44:59 +0000 (GMT)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Wed, 14 Dec 2022 10:44:57 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Wed, 14 Dec 2022 19:45:03 +0800
-Message-ID: <1671018303-2079-6-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1671018303-2079-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1671018303-2079-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A5CF520329;
+ Wed, 14 Dec 2022 20:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1671050254;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=joaIVjKlCWkKP0fmCBXMvW2EZaW0rUqxHuXmISqXW8k=;
+ b=YfE/ZOYhMeCcNwvlg04vjCrp/1di4dCorVOgNH2a1kSI730z3Z51MkM1I/BmcTFNz8ynyt
+ 7h0wNNWTHVKoKpSri0on5SchUif9om6QqpoZUaWsT1M9ap3g9IWCP/bKZo/neS3iaVKFEN
+ +dRmDJi0bmS+BzqegJTbdfYjVZh0WzI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1671050254;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=joaIVjKlCWkKP0fmCBXMvW2EZaW0rUqxHuXmISqXW8k=;
+ b=03t6oX2KhS3FHdCmzAOYGFfL+0lsoq4yW3l5KXFNDAV+7P14W6z4PH4s5wER7aCURUKjnJ
+ moDthTVXa4qF8oDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 67B50138F6;
+ Wed, 14 Dec 2022 20:37:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id kZvlFg40mmPyYQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 14 Dec 2022 20:37:34 +0000
+Date: Wed, 14 Dec 2022 21:37:32 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <Y5o0DF5paB5iox5p@pevik>
+References: <20221213003553.3693243-1-zijunzhao@google.com>
+ <87359jshpc.fsf@suse.de>
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+Content-Disposition: inline
+In-Reply-To: <87359jshpc.fsf@suse.de>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 6/6] doc/c-test-api.txt
+Subject: Re: [LTP] [PATCH] signalfd01.c: put the right round bracket to the
+ right place in tst_resm
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,46 +78,51 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Update min_kver usage. Also inotify04 has removed tst_kvercmp2,
-so remove it.
+Hi all,
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- doc/c-test-api.txt | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> Hello,
 
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index e6d121dce..f4da9ff41 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -559,7 +559,8 @@ static struct tst_test test = {
- Testcases for newly added kernel functionality require kernel newer than a
- certain version to run. All you need to skip a test on older kernels is to
- set the '.min_kver' string in the 'struct tst_test' to a minimal required
--kernel version, e.g. '.min_kver = "2.6.30"'.
-+kernel version, e.g. '.min_kver = "3.10.0"'. For ltp, the oldest supported
-+kernel version is 3.0, so we don't add this check for old kernel ie 2.6.32.
- 
- For more complicated operations such as skipping a test for a certain range
- of kernel versions, following functions could be used:
-@@ -585,8 +586,7 @@ positive means that it's newer.
- 
- The second function 'tst_kvercmp2()' allows for specifying per-vendor table of
- kernel versions as vendors typically backport fixes to their kernels and the
--test may be relevant even if the kernel version does not suggests so. See
--'testcases/kernel/syscalls/inotify/inotify04.c' for example usage.
-+test may be relevant even if the kernel version does not suggests so.
- 
- WARNING: The shell 'tst_kvercmp' maps the result into unsigned integer - the
-          process exit value.
--- 
-2.27.0
+> The patch is perfect, but you need to add your Signed-off-by git trailer
+> to the commit (or just respond this e-mail with it).
 
+I added Zijun's mail and merged. Thanks for the fix!
+
+I dared to slightly modify the commit message and added
+Fixes: 3306ad4398 ("m4: clean up ltp-signalfd.m4")
+
+Kind regards,
+Petr
+
+
+> zijunzhao via ltp <ltp@lists.linux.it> writes:
+
+> > ---
+> >  testcases/kernel/syscalls/signalfd/signalfd01.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+
+> > diff --git a/testcases/kernel/syscalls/signalfd/signalfd01.c b/testcases/kernel/syscalls/signalfd/signalfd01.c
+> > index 3df941785..c6a7c3a58 100644
+> > --- a/testcases/kernel/syscalls/signalfd/signalfd01.c
+> > +++ b/testcases/kernel/syscalls/signalfd/signalfd01.c
+> > @@ -249,8 +249,7 @@ void do_test2(int fd, uint32_t sig)
+> >  		goto out;
+> >  	} else {
+> >  		tst_resm(TFAIL, "got unexpected signal: signal=%d : %s",
+> > -			 fdsi.ssi_signo),
+> > -			 strsignal(fdsi.ssi_signo);
+> > +			 fdsi.ssi_signo, strsignal(fdsi.ssi_signo));
+> >  		goto out;
+> >  	}
+
+> > -- 
+> > 2.39.0.rc1.256.g54fd8350bd-goog
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
