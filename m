@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AF22C4332F
-	for <ltp@archiver.kernel.org>; Thu, 15 Dec 2022 11:09:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B412C4332F
+	for <ltp@archiver.kernel.org>; Thu, 15 Dec 2022 11:20:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 426AC3CBCB4
-	for <ltp@archiver.kernel.org>; Thu, 15 Dec 2022 12:09:16 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 2AE1C3CBCC3
+	for <ltp@archiver.kernel.org>; Thu, 15 Dec 2022 12:20:55 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 923303CBC83
- for <ltp@lists.linux.it>; Thu, 15 Dec 2022 12:09:06 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id F15803CBC83
+ for <ltp@lists.linux.it>; Thu, 15 Dec 2022 12:20:45 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 24BF8200B6B
- for <ltp@lists.linux.it>; Thu, 15 Dec 2022 12:09:05 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E56131400965
+ for <ltp@lists.linux.it>; Thu, 15 Dec 2022 12:20:44 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6E17221BB4;
- Thu, 15 Dec 2022 11:09:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id E42F121D6D;
+ Thu, 15 Dec 2022 11:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1671102545;
+ t=1671103243;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mrIRWlprqqCJyPRxMjp3T94pov+Y5Yn/MME2UL4ydyY=;
- b=KXQu2cA6DTWFbaSJ0J1oc9HOlZg+tNtVsYYCd7B0g3gW0lsTuI0w/5KtFf5N/IIJwRCNkg
- mklwAXVB+SdqYcUVw/Eyio0tjAb4oJhxHMU7Zkq9g/TJj5RyN9lyiFOi0rJ5pJxkq4BFQF
- 58Wd4ZJPAjs9oJSJ9c7YxgnCEmW5I70=
+ bh=CEKMLnU/pRNrWlcwWOtekyhROIFc5uOjyUvAltNKzHM=;
+ b=0BvDHRJu9rorel7yP9LUYqYhVO1dkWqbVqr1MXWIPvVFYhuOBQ0RCx2H5icHL895mrm/1J
+ pOWj8wPmN90JVY8RGTbzPm2Wyr4MXjbQ6eAVXsWhlN5FZ+xYFspQR3BGNkyigJ0sEKLo7y
+ B9KZgquPL5TgJwHszzGhBWSLCChgNFs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1671102545;
+ s=susede2_ed25519; t=1671103243;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mrIRWlprqqCJyPRxMjp3T94pov+Y5Yn/MME2UL4ydyY=;
- b=QJoWOZxnPxzeQqnkfLC2Wr73l5WlOKEIKNrZrWqIA6ZsWPL2hOMp+o8Qbj7F/84wG4vgY9
- 5NyJ9SCkfaSq33BQ==
+ bh=CEKMLnU/pRNrWlcwWOtekyhROIFc5uOjyUvAltNKzHM=;
+ b=A6ilMrVPzZvtlRzAPRl3jszZVV2iTnzkFWr5KuWD5X7zwLMt145NI21Bwrirxz2u3uXDnX
+ OlbWyA2IdzB7UCCw==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 42A962C141;
- Thu, 15 Dec 2022 11:09:05 +0000 (UTC)
-References: <1671079666-15971-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ by relay2.suse.de (Postfix) with ESMTPS id BA8542C141;
+ Thu, 15 Dec 2022 11:20:43 +0000 (UTC)
+References: <20221215101322.14417-1-rpalethorpe@suse.com>
 User-agent: mu4e 1.8.13; emacs 28.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Thu, 15 Dec 2022 11:08:15 +0000
+To: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Thu, 15 Dec 2022 11:16:26 +0000
 Organization: Linux Private Site
-In-reply-to: <1671079666-15971-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <87len8q5yn.fsf@suse.de>
+In-reply-to: <20221215101322.14417-1-rpalethorpe@suse.com>
+Message-ID: <87h6xwq5f8.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/setresuid04: Use SETRESUID instead of
- SAFE_SETRESUID to check 16bit syscall
+Subject: Re: [LTP] [PATCH v3] getcpu01: Reinstate node_id test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,40 +79,21 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-Yang Xu <xuyang2018.jy@fujitsu.com> writes:
+Richard Palethorpe via ltp <ltp@lists.linux.it> writes:
 
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
-
-> ---
->  testcases/kernel/syscalls/setresuid/setresuid04.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Presently the node_id is only checked on i386 and it is broken. The
+> sched_getcpu call was substituted for getcpu when
+> available. sched_getcpu does not have the node_id parameter, it's not
+> the same thing as getcpu.
 >
-> diff --git a/testcases/kernel/syscalls/setresuid/setresuid04.c b/testcases/kernel/syscalls/setresuid/setresuid04.c
-> index 833aee91d..57b290f37 100644
-> --- a/testcases/kernel/syscalls/setresuid/setresuid04.c
-> +++ b/testcases/kernel/syscalls/setresuid/setresuid04.c
-> @@ -40,7 +40,7 @@ static void run(void)
->  	pid_t pid;
->  	int status;
->  
-> -	SAFE_SETRESUID(-1, ltpuser->pw_uid, -1);
-> +	TST_EXP_PASS_SILENT(SETRESUID(-1, ltpuser->pw_uid, -1));
->  	TST_EXP_FAIL2(open(TEMP_FILE, O_RDWR), EACCES);
->  
->  	pid = SAFE_FORK();
-> @@ -52,7 +52,7 @@ static void run(void)
->  	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
->  		tst_res(TFAIL, "child process exited with status: %d", status);
->  
-> -	SAFE_SETRESUID(-1, 0, -1);
-> +	TST_EXP_PASS_SILENT(SETRESUID(-1, 0, -1));
->  	TST_EXP_FD(open(TEMP_FILE, O_RDWR));
->  	SAFE_CLOSE(TST_RET);
->  }
-> -- 
-> 2.27.0
+> Also we can check the node_id on any platform which has NUMA. Which
+> includes more than just x86.
+>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Cc: Cyril Hrubis <chrubis@suse.cz>
+
+Maybe this is a bit impatient (although v2 was submitted some time ago),
+but no response, so merged.
 
 
 -- 
