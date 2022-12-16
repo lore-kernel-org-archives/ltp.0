@@ -4,54 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5347FC4332F
-	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 15:01:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 766F4C4332F
+	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 17:09:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 83E573CBC72
-	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 16:01:53 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id E69023CBC72
+	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 18:09:34 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 319EF3CBC18
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 16:01:42 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 0A93D3C913E
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 18:09:24 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6DB34600917
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 16:01:42 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EB3FE1A009B9
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 18:09:23 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CAD1C34341;
- Fri, 16 Dec 2022 15:01:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1671202901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3A6F93462F
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 17:09:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1671210563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Ds+7DD0eYwp3SBU/hu/elr8FYOyOg6pkVcwD75K/apM=;
- b=GVXrvME1fCo8NXZv7uCnz1oKeHCQ5FVrAvbnf2f5XlyrnMKWCd9/gWNUeBndheBHdYh5/d
- aR5SBlZyafSrubprI5hw44gY1vO6htYNc6e4IrYjj13EfUcRZDiK5EH8GTX1j9cFcJLYlE
- taU57dybsigXvnZ1hgEpC2zAz0uExkg=
+ bh=+R1B2k/gjpcziugoBQmVnbvMlMar51hmuhPk+IOCajk=;
+ b=FYPfw2LEQnLcHyj9q9Qh0nTdWrA0+amzAgUdROkmW66SHAC2ya4c6T5LAJrcYrFqsghGBw
+ rNGF2KmrHehLyfwJ0mm3jJCcHWHROthzxHdVFuuP1BHEmy2TVhQwlhpyOoIWbUugqanMVl
+ tbC4edmnc2e2LLOhLKMEl3JTtfhqGgM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1671210563;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=+R1B2k/gjpcziugoBQmVnbvMlMar51hmuhPk+IOCajk=;
+ b=kDGoYIhf5uutFAn12NN6yRSjpyqnQD22GzeSECrJ2qP/zTR2StaQbtgYylUQKnAc9J9gwT
+ o7VaE1CGnUDBrhCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 95237138FD;
- Fri, 16 Dec 2022 15:01:41 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 28677138FD
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 17:09:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id XSNLIVWInGOKegAAMHmgww
- (envelope-from <andrea.cervesato@suse.com>); Fri, 16 Dec 2022 15:01:41 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id KIL7CEOmnGOCOgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 17:09:23 +0000
+From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 16 Dec 2022 16:00:01 +0100
-Message-Id: <20221216150001.3425-1-andrea.cervesato@suse.com>
-X-Mailer: git-send-email 2.35.3
+Date: Fri, 16 Dec 2022 18:09:22 +0100
+Message-Id: <20221216170922.21752-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Use filesize notation for aio-stress options
+Subject: [LTP] [PATCH] Add test for CVE 2022-4378
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,137 +72,154 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The record size defined by -r option is not using filesize notation
-inside ltp-aio-stress runtest file.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- runtest/ltp-aio-stress | 108 ++++++++++++++++++++---------------------
- 1 file changed, 54 insertions(+), 54 deletions(-)
+ runtest/cve                   |   1 +
+ testcases/cve/.gitignore      |   1 +
+ testcases/cve/cve-2022-4378.c | 108 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 110 insertions(+)
+ create mode 100644 testcases/cve/cve-2022-4378.c
 
-diff --git a/runtest/ltp-aio-stress b/runtest/ltp-aio-stress
-index 4b0b81ce2..1de49b406 100644
---- a/runtest/ltp-aio-stress
-+++ b/runtest/ltp-aio-stress
-@@ -1,55 +1,55 @@
- # ltp A-sync IO Stress IO tests
--ADS1000 aio-stress -o2 -r4 -f1
--ADS1001 aio-stress -o2 -r8 -f1
--ADS1002 aio-stress -o2 -r16 -f1
--ADS1003 aio-stress -o2 -r32 -t2 -f2
--ADS1004 aio-stress -o2 -r64 -f2
--ADS1005 aio-stress -o3 -r4 -f2
--ADS1006 aio-stress -o3 -r8 -f2
--ADS1007 aio-stress -o3 -r16 -f2
--ADS1008 aio-stress -o3 -r32 -f4
--ADS1009 aio-stress -o3 -r64 -t4 -f4
--ADS1010 aio-stress -o3 -r128 -t4 -f4
--ADS1011 aio-stress -o3 -r256 -t8 -f8
--ADS1012 aio-stress -o3 -r512 -t8 -f8
--ADS1013 aio-stress -o2 -O -r4 -t8 -f8
--ADS1014 aio-stress -o2 -O -r8 -f2
--ADS1015 aio-stress -o2 -O -r16 -f2
--ADS1016 aio-stress -o2 -O -r32 -t2 -f2
--ADS1017 aio-stress -o2 -O -r64 -t2 -f2
--ADS1018 aio-stress -o3 -O -r4 -t2 -f2
--ADS1019 aio-stress -o3 -O -r8 -t2 -f2
--ADS1020 aio-stress -o3 -O -r16 -t2 -f2
--ADS1021 aio-stress -o3 -O -r32 -t4 -f4
--ADS1022 aio-stress -o3 -O -r64 -t4 -f4
--ADS1023 aio-stress -o3 -O -r128 -t4 -f4
--ADS1024 aio-stress -o3 -O -r256 -t8 -f8
--ADS1025 aio-stress -o3 -O -r512 -t8 -f8
--ADS1026 aio-stress -o0 -r4 -t8 -f8
--ADS1027 aio-stress -o0 -r8 -f1
--ADS1028 aio-stress -o0 -r16 -f1
--ADS1029 aio-stress -o0 -r32 -t2 -f2
--ADS1030 aio-stress -o0 -r64 -t2 -f2
--ADS1031 aio-stress -o1 -r4 -t2 -f1
--ADS1032 aio-stress -o1 -r8 -t2 -f1
--ADS1033 aio-stress -o1 -r16 -t2 -f2
--ADS1034 aio-stress -o1 -r32 -t4 -f4
--ADS1035 aio-stress -o1 -r64 -t4 -f4
--ADS1036 aio-stress -o1 -r128 -t4 -f4
--ADS1037 aio-stress -o1 -r256 -t8 -f8
--ADS1038 aio-stress -o1 -r512 -t8 -f8
--ADS1039 aio-stress -o1 -O -r4 -t8 -f8
--ADS1040 aio-stress -o1 -O -r8 -t2 -f2
--ADS1041 aio-stress -o1 -O -r16 -t2 -f2
--ADS1042 aio-stress -o1 -O -r32 -t2 -f2
--ADS1043 aio-stress -o1 -O -r64 -t2 -f2
--ADS1044 aio-stress -o1 -O -r4 -t4 -f4
--ADS1045 aio-stress -o1 -O -r8 -t4 -f4
--ADS1046 aio-stress -o1 -O -r16 -t4 -f4
--ADS1047 aio-stress -o1 -O -r32 -t8 -f8
--ADS1048 aio-stress -o1 -O -r64 -t8 -f8
--ADS1049 aio-stress -o1 -O -r128 -t8 -f8
--ADS1050 aio-stress -o1 -O -r256 -t2 -f2
--ADS1051 aio-stress -o3 -r8 -t2 -f2
--ADS1052 aio-stress -o3 -r16 -t2 -f2
--ADS1053 aio-stress -o3 -r32 -t4 -f4
-+ADS1000 aio-stress -o2 -r4k -f1
-+ADS1001 aio-stress -o2 -r8k -f1
-+ADS1002 aio-stress -o2 -r16k -f1
-+ADS1003 aio-stress -o2 -r32k -t2 -f2
-+ADS1004 aio-stress -o2 -r64k -f2
-+ADS1005 aio-stress -o3 -r4k -f2
-+ADS1006 aio-stress -o3 -r8k -f2
-+ADS1007 aio-stress -o3 -r16k -f2
-+ADS1008 aio-stress -o3 -r32k -f4
-+ADS1009 aio-stress -o3 -r64k -t4 -f4
-+ADS1010 aio-stress -o3 -r128k -t4 -f4
-+ADS1011 aio-stress -o3 -r256k -t8 -f8
-+ADS1012 aio-stress -o3 -r512k -t8 -f8
-+ADS1013 aio-stress -o2 -O -r4k -t8 -f8
-+ADS1014 aio-stress -o2 -O -r8k -f2
-+ADS1015 aio-stress -o2 -O -r16k -f2
-+ADS1016 aio-stress -o2 -O -r32k -t2 -f2
-+ADS1017 aio-stress -o2 -O -r64k -t2 -f2
-+ADS1018 aio-stress -o3 -O -r4k -t2 -f2
-+ADS1019 aio-stress -o3 -O -r8k -t2 -f2
-+ADS1020 aio-stress -o3 -O -r16k -t2 -f2
-+ADS1021 aio-stress -o3 -O -r32k -t4 -f4
-+ADS1022 aio-stress -o3 -O -r64k -t4 -f4
-+ADS1023 aio-stress -o3 -O -r128k -t4 -f4
-+ADS1024 aio-stress -o3 -O -r256k -t8 -f8
-+ADS1025 aio-stress -o3 -O -r512k -t8 -f8
-+ADS1026 aio-stress -o0 -r4k -t8 -f8
-+ADS1027 aio-stress -o0 -r8k -f1
-+ADS1028 aio-stress -o0 -r16k -f1
-+ADS1029 aio-stress -o0 -r32k -t2 -f2
-+ADS1030 aio-stress -o0 -r64k -t2 -f2
-+ADS1031 aio-stress -o1 -r4k -t2 -f1
-+ADS1032 aio-stress -o1 -r8k -t2 -f1
-+ADS1033 aio-stress -o1 -r16k -t2 -f2
-+ADS1034 aio-stress -o1 -r32k -t4 -f4
-+ADS1035 aio-stress -o1 -r64k -t4 -f4
-+ADS1036 aio-stress -o1 -r128k -t4 -f4
-+ADS1037 aio-stress -o1 -r256k -t8 -f8
-+ADS1038 aio-stress -o1 -r512k -t8 -f8
-+ADS1039 aio-stress -o1 -O -r4k -t8 -f8
-+ADS1040 aio-stress -o1 -O -r8k -t2 -f2
-+ADS1041 aio-stress -o1 -O -r16k -t2 -f2
-+ADS1042 aio-stress -o1 -O -r32k -t2 -f2
-+ADS1043 aio-stress -o1 -O -r64k -t2 -f2
-+ADS1044 aio-stress -o1 -O -r4k -t4 -f4
-+ADS1045 aio-stress -o1 -O -r8k -t4 -f4
-+ADS1046 aio-stress -o1 -O -r16k -t4 -f4
-+ADS1047 aio-stress -o1 -O -r32k -t8 -f8
-+ADS1048 aio-stress -o1 -O -r64k -t8 -f8
-+ADS1049 aio-stress -o1 -O -r128k -t8 -f8
-+ADS1050 aio-stress -o1 -O -r256k -t2 -f2
-+ADS1051 aio-stress -o3 -r8k -t2 -f2
-+ADS1052 aio-stress -o3 -r16k -t2 -f2
-+ADS1053 aio-stress -o3 -r32k -t4 -f4
+diff --git a/runtest/cve b/runtest/cve
+index fd0305aa3..1ba63c2a7 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -76,3 +76,4 @@ cve-2022-0847 dirtypipe
+ cve-2022-2590 dirtyc0w_shmem
+ # Tests below may cause kernel memory leak
+ cve-2020-25704 perf_event_open03
++cve-2022-4378 cve-2022-4378
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+index eb0a8b37d..90e8b191c 100644
+--- a/testcases/cve/.gitignore
++++ b/testcases/cve/.gitignore
+@@ -10,4 +10,5 @@ stack_clash
+ cve-2017-17052
+ cve-2017-16939
+ cve-2017-17053
++cve-2022-4378
+ icmp_rate_limit01
+diff --git a/testcases/cve/cve-2022-4378.c b/testcases/cve/cve-2022-4378.c
+new file mode 100644
+index 000000000..e1c5df325
+--- /dev/null
++++ b/testcases/cve/cve-2022-4378.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2022 SUSE LLC <mdoucha@suse.cz>
++ */
++
++/*\
++ * CVE 2022-4378
++ *
++ * Check that writing several pages worth of whitespace into /proc/sys files
++ * does not cause kernel stack overflow. Kernel bug fixed in:
++ *
++ * commit bce9332220bd677d83b19d21502776ad555a0e73
++ * Author: Linus Torvalds <torvalds@linux-foundation.org>
++ * Date:   Mon Dec 5 12:09:06 2022 -0800
++ *
++ * proc: proc_skip_spaces() shouldn't think it is working on C strings
++ */
++
++#include <stdlib.h>
++#include "tst_test.h"
++
++static char *buf;
++static unsigned int bufsize;
++static int fd = -1;
++
++static struct testcase {
++	const char *path;
++	int err;
++} testcase_list[] = {
++	{"/proc/sys/net/ipv4/icmp_ratelimit", EINVAL},
++	{"/proc/sys/net/ipv4/icmp_ratemask", EINVAL},
++	{"/proc/sys/net/ipv4/icmp_echo_ignore_all", EINVAL},
++	{"/proc/sys/net/ipv4/tcp_probe_interval", EINVAL},
++	{"/proc/sys/net/ipv4/tcp_keepalive_time", EINVAL},
++	{"/proc/sys/net/ipv4/tcp_notsent_lowat", EINVAL},
++	{"/proc/sys/net/ipv4/ip_local_reserved_ports", 0}
++};
++
++static void setup(void)
++{
++	tst_setup_netns();
++
++	bufsize = 2 * SAFE_SYSCONF(_SC_PAGESIZE);
++	buf = SAFE_MALLOC(bufsize);
++	memset(buf, '\n', bufsize);
++}
++
++static void run(unsigned int n)
++{
++	const struct testcase *tc = testcase_list + n;
++
++	if (access(tc->path, W_OK)) {
++		tst_res(TCONF | TERRNO, "Skipping %s", tc->path);
++		return;
++	}
++
++	tst_res(TINFO, "Writing whitespace to %s", tc->path);
++
++	fd = SAFE_OPEN(tc->path, O_WRONLY);
++	TEST(write(fd, buf, bufsize));
++	SAFE_CLOSE(fd);
++
++	if (TST_RET >= 0 && tc->err == 0) {
++		tst_res(TPASS, "write() passed as expected");
++	} else if (TST_RET >= 0) {
++		tst_res(TFAIL, "write() unexpectedly passed");
++	} else if (TST_RET != -1) {
++		tst_res(TFAIL | TTERRNO, "Invalid write() return value %ld",
++			TST_RET);
++	} else if (TST_ERR != tc->err) {
++		tst_res(TFAIL | TTERRNO, "write() returned unexpected error");
++	} else {
++		tst_res(TPASS | TTERRNO, "write() failed as expected");
++	}
++
++	if (tst_taint_check())
++		tst_res(TFAIL, "Kernel is vulnerable");
++}
++
++static void cleanup(void)
++{
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++
++	if (buf)
++		free(buf);
++}
++
++static struct tst_test test = {
++	.test = run,
++	.tcnt = ARRAY_SIZE(testcase_list),
++	.setup = setup,
++	.cleanup = cleanup,
++	.taint_check = TST_TAINT_W | TST_TAINT_D,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_NS=y",
++		"CONFIG_NET_NS=y",
++		NULL
++	},
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{}
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "bce9332220bd"},
++		{"CVE", "2022-4378"},
++	}
++};
 -- 
-2.35.3
+2.39.0
 
 
 -- 
