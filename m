@@ -4,71 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DD09C4332F
-	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 10:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F084FC4332F
+	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 11:43:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A6BEE3CBC4C
-	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 11:36:49 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 60A633CBC44
+	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 12:43:47 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4A22A3C913E
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 11:36:40 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 309F53C8C27
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 12:43:36 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 97F0D600D18
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 11:36:39 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 38FA11A00FB5
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 12:43:35 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 909115CCAB;
- Fri, 16 Dec 2022 10:36:38 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 69BF122E04;
+ Fri, 16 Dec 2022 11:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1671186998;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=diOXd7G2pAjBplRolkW5xd/dwO0uHy9HkbS5ctMrm7I=;
- b=v1uBXN8f0PhWNkiHJNv+4USs7clk3Wpvmq4H/F0Rtsp5x85NDCtuzGTu4HaS2AKkJwP2Bh
- NGt6NiD2yY4FZZlAWaCXaNe0acIupZa9CAMgY8ih3142S+bunk2oO6qvQ9tMqOeFCnxQt7
- rDEvyM8GhUEbM4zALL8M+HJlq1RtdJk=
+ t=1671191015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=emj4zIzzPngeqGs/oTaez8xOAJp3538VpDKasrib1O0=;
+ b=xdNguZ5mQYzW7wShN+a9966IQaIGf7Kloh0jf5VT4WL6IkiGHx0uczZlYN9yFlqGZwrbRF
+ YWe57Hi/3aEwERt9cnGcfPazGHzICeuSjQwkavTABllWFEMIHOQi1zhpSh4xNertz9UE2k
+ Q6dhhAtIWNZ2iCwd91S7mF2iUN1tt3Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1671186998;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=diOXd7G2pAjBplRolkW5xd/dwO0uHy9HkbS5ctMrm7I=;
- b=vGVXiyE2vpxoNesTJyDALiNAFWrI1olJmdhuZS7G5T7ZJ7aAyVlV5a3RhU1KvR75kfa8L7
- 8Gw5gq97f9gsWbDQ==
+ s=susede2_ed25519; t=1671191015;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=emj4zIzzPngeqGs/oTaez8xOAJp3538VpDKasrib1O0=;
+ b=Wf2WplFYJrQXFlMrzBwoeurNOuVZ1kSYm0CFQzqn36GV0x3P9LfNzUz33cwVbrmCrjT4iJ
+ CykFMuC6G3csWBDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5CE4B138FD;
- Fri, 16 Dec 2022 10:36:38 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3DAC7138F0;
+ Fri, 16 Dec 2022 11:43:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 76XyFDZKnGOHcAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 16 Dec 2022 10:36:38 +0000
-Date: Fri, 16 Dec 2022 11:36:36 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6P5ADedZnGNlFAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 16 Dec 2022 11:43:35 +0000
 From: Petr Vorel <pvorel@suse.cz>
-To: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
-Message-ID: <Y5xKNPLwIRTzXC8t@pevik>
-References: <1671166923-2173-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1671166923-2173-3-git-send-email-xuyang2018.jy@fujitsu.com>
- <Y5w0DtP9yETeJl2T@pevik>
- <ac355bae-ae8f-811d-ff18-24534cf94031@fujitsu.com>
+To: ltp@lists.linux.it
+Date: Fri, 16 Dec 2022 12:43:31 +0100
+Message-Id: <20221216114331.28883-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ac355bae-ae8f-811d-ff18-24534cf94031@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/7] cgroup_regression_test.sh: Remove obselte
- test_6
+Subject: [LTP] [PATCH 1/1] aio-stress: TCONF on O_DIRECT on tmpfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,51 +71,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Xu,
+O_DIRECT is not supported on tmpfs. This flag is added by -O option,
+thus cannot be filtered with .skip_filesystems.
 
-> >> test_6 is a test case when kernel version is less than 3.0.
-> >> Since the oldest supported kernel version is 3.0, so the case
-> >> is useless. Remove it.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/kernel/io/ltp-aiodio/aio-stress.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-It would be worth to note here:
-CONFIG_CGROUP_NS is not supported in kernel >= 3.0
+diff --git a/testcases/kernel/io/ltp-aiodio/aio-stress.c b/testcases/kernel/io/ltp-aiodio/aio-stress.c
+index 39db14d651..f20383dcfc 100644
+--- a/testcases/kernel/io/ltp-aiodio/aio-stress.c
++++ b/testcases/kernel/io/ltp-aiodio/aio-stress.c
+@@ -1239,10 +1239,13 @@ static void setup(void)
+ 	if (tst_parse_int(str_num_threads, &num_threads, 1, INT_MAX))
+ 		tst_brk(TBROK, "Invalid number of threads '%s'", str_num_threads);
+ 
+-	if (str_o_flag)
++	if (str_o_flag) {
++		if (tst_fs_type(".") == TST_TMPFS_MAGIC)
++			tst_brk(TCONF, "O_DIRECT not supported on tmpfs");
+ 		o_flag = O_DIRECT;
+-	else
++	} else {
+ 		o_flag = O_SYNC;
++	}
+ 
+ 	if (str_use_shm) {
+ 		if (!strcmp(str_use_shm, "shm")) {
+-- 
+2.39.0
 
-Because tests have comments with kernel versions which are a bit misleading
-(all comments have 2.6.x).
-
-Also note typo on the subject: obselte => obsolete.
-
-> >> Also rename test9 to test6. modify TST_CNT.
-> > I wonder if rename is a good thing to do, because it complicates git history.
-> > I'd keep old names.
-> > Also in the past we didn't rename, e.g. in 1c44244849 ("getuid, getgid, setuid,
-> > setgid: fixed 16-bit versions")
-> > testcases/kernel/syscalls/getuid/getuid02.c was renamed to
-> > testcases/kernel/syscalls/geteuid/geteuid02.c to match the new test coverage,
-> > but testcases/kernel/syscalls/getuid/getuid03.c stayed the same (not renamed to
-> > testcases/kernel/syscalls/getuid/getuid02.c, which was then free).
-
-> > Or maybe better example: testcases/kernel/syscalls/kill/kill01.c got deleted
-> > in eafdc5dd83 ("syscalls/kill01: Remove it"), but test names did not shift.
-
-> I can understand,  but I used the same renamed way because we did this 
-> case for test_5 in 2019[1].
-
-> [1]https://github.com/linux-test-project/ltp/commit/9b8f841ced26cd0d19dc9a007d0efd941929abde
-
-OK, due TST_CNT it must be shifted, I'm sorry.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
