@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 517B4C4332F
-	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 10:03:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49F50C4332F
+	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 10:11:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0D2F23CBC2C
-	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 11:03:45 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id A9C693C913E
+	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 11:11:20 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8F4923CBAF1
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 11:03:35 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 008ED3C913E
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 11:11:09 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E00A91A00CD7
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 11:03:34 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 38536600CF8
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 11:11:08 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2E30C5CC0B;
- Fri, 16 Dec 2022 10:03:34 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6E3FD33EB4;
+ Fri, 16 Dec 2022 10:11:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1671185014;
+ t=1671185468;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+BjGAJFiqyEWQ9qIvFQh4sYwFrIyBwRVHCy+/ee7jco=;
- b=VcKMBbx+YH/jWhipXD/cuM9yGVzgQ8gn5d7xr7Gn9Wdp4ah9SZI3ACKBvSSObnc2J0Fsck
- eJMg43rZp/YBBbhwRR7d6A2j6XGkqVWpAu/NKoL7qudFd8QCYPg4+ZAIGAoanbtWWpo+YO
- TgfZiSw9OFhqYbZbBtHxKhBSAsvX+Gw=
+ bh=LDXMFc+J3JjTHszieuhdQUlVybbuSmVNYNLtDlOb7C0=;
+ b=BCIBoIKmMb7FOPEZ3lmYSVSz0HHQQAAnX6lLN1uilHSV7UfgeBl9DtMA1ffYCJMZJOo0Rg
+ Ia3A3m9UJv9Fmws+FskXBDqCGYNSqfDGHaDtQKMYz9djipdohaLijxcRF+amEmvo5kxENc
+ SrjwwF8Sgbw8zABKDn4RdRa65fulnz0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1671185014;
+ s=susede2_ed25519; t=1671185468;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+BjGAJFiqyEWQ9qIvFQh4sYwFrIyBwRVHCy+/ee7jco=;
- b=OFl3wgY2Wi+BsRJTQ6hEkBO4b7zLhMEhDT34Yj7L8F/nIgV5oerpI2lYgXLmVvIMzTU/Wj
- pOjQV7APKfmVH9Cw==
+ bh=LDXMFc+J3JjTHszieuhdQUlVybbuSmVNYNLtDlOb7C0=;
+ b=t6scxaxeaQZPklFfy4wUgk25SOVFOvHFxujLguJKn/7BIzWvkX2UQpihgITOLSXHdupcCz
+ MaT4dJYjOr6HtvBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CA18138F0;
- Fri, 16 Dec 2022 10:03:34 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 370F1138F0;
+ Fri, 16 Dec 2022 10:11:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2vrOAXZCnGOdXwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 16 Dec 2022 10:03:34 +0000
-Date: Fri, 16 Dec 2022 11:03:32 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id Wos0CzxEnGPOYwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 16 Dec 2022 10:11:08 +0000
+Date: Fri, 16 Dec 2022 11:11:06 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <Y5xCdDRf+B+OFQKh@pevik>
+Message-ID: <Y5xEOkdaNUQiULiK@pevik>
 References: <1671166923-2173-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1671166923-2173-5-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1671166923-2173-6-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1671166923-2173-5-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <1671166923-2173-6-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 5/7] Remove old kernel version check in C case
- when using tst_kvercmp
+Subject: Re: [LTP] [PATCH v3 6/7] Remove old kernel version check when using
+ min_kver
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,41 +86,12 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Xu,
 
-> The oldest supported kernel version is 3.0, so remove them.
+> The oldest supported kernel version check is 3.0, so remove them.
+
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-...
-> +++ b/testcases/kernel/syscalls/sysctl/sysctl03.c
-> @@ -68,14 +68,10 @@ static void verify_sysctl(void)
-
->  static void setup(void)
->  {
-> -	if ((tst_kvercmp(2, 6, 32)) <= 0) {
-> -		exp_eno = EPERM;
-> -	} else {
-> -		/* Look above this warning. */
-> -		tst_res(TINFO,
-> -			 "this test's results are based on potentially undocumented behavior in the kernel. read the NOTE in the source file for more details");
-> -		exp_eno = EACCES;
-> -	}
-> +	/* Look above this warning. */
-> +	tst_res(TINFO,
-> +		 "this test's results are based on potentially undocumented behavior in the kernel. read the NOTE in the source file for more details");
-
-NOTE after you get this merged, I'm going to update sysctl03.c.
-This warning is really old, it was added in b49b375167 ("Make test pass with
-undoc'ed sysctl(2) behavior.") (in 2010) and references
-https://bugzilla.kernel.org/show_bug.cgi?id=15446, which was fixed in 2012.
-
-Thus warning is not needed any more. But as the test also requires converting to
-docparse, I'll do it in separate patch.
 
 Kind regards,
 Petr
-
-> +	exp_eno = EACCES;
->  }
-...
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
