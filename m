@@ -4,87 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F43CC4332F
-	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 04:02:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84A80C4332F
+	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 08:09:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF5293CBCDF
-	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 05:02:23 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 442ED3CBC2B
+	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 09:09:11 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 676433CBCEE
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 05:01:28 +0100 (CET)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id CAD8B3CAFC9
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 09:09:01 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5C1581A009B4
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 05:01:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1671163286; i=@fujitsu.com;
- bh=kYrY1cWKp770jjWeWG5pUO82MswMyWYpSyKWYMGL8jc=;
- h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
- MIME-Version:Content-Type;
- b=yRTdv4voi2Hivpj4Hy1n3HQNUsbXTfj8vFZi/NhcykVh90eVG+/jcMvmdg9RGptB1
- JnK6ccF09P2qKsbJX85Tq7Qr05wUP8eZoj4B3TuUL4daevVAVlRiCP0lOKHgQCdo74
- 9upfMBV1c0S/4QXG4lgS9OyOCpfqhB9M7zkeHaZYJLhgSdS70qC6lnt+syHcqGhcO6
- EBUtapkWOvPltGf9uutIUNUO4X4GX6g4A5fqKp+mMkpVgJ8Fu+LLS7Xf2P1yJBNldQ
- 297c4f8m/kuXHW8OSNempupfHaUENMacmUtfK7C5Zkj1QGYFwQdTVF9OPUHjvrilOV
- 3+g39KT1v/AZQ==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMIsWRWlGSWpSXmKPExsViZ8ORqDvt7ex
- kgy3vWSxWfN/B6MDose/3OtYAxijWzLyk/IoE1oztTXPZCl5yV1yYe4+1gfEDZxcjJ4eQwFlG
- ifUnqiDsA0wSn5dndDFyAdl7GCWW9TxlB0mwCWhKPOtcwAxiiwhISHQ0vAWLMwuoSyyf9IsJx
- BYW0JK4vLKJEcRmEVCVmH9gJ1gNr4CHxLPri1lAbAkBBYkpD98DzeHg4BTwlHh8zBnEFAIqef
- evHqJaUOLkzCcsENMlJA6+eMEM0akocanjGyOEXSExa1YbE4StJnH13CbmCYyCs5C0z0LSvoC
- RaRWjWXFqUVlqka6RgV5SUWZ6RkluYmaOXmKVbqJeaqlueWpxia6RXmJ5sV5qcbFecWVuck6K
- Xl5qySZGYNimFKtf3MHYueyP3iFGSQ4mJVFe/eWzk4X4kvJTKjMSizPii0pzUosPMcpwcChJ8
- Fa+BsoJFqWmp1akZeYAYwgmLcHBoyTCu+UCUJq3uCAxtzgzHSJ1ilFRSpx35SughABIIqM0D6
- 4NFreXGGWlhHkZGRgYhHgKUotyM0tQ5V8xinMwKgnzXngJNIUnM68EbvoroMVMQItl7s0EWVy
- SiJCSamDy+sDEJVLPMtG65pZ+DJOap8dJua7+o929B1cnX1NYeSzssMMSXlPWgIajhqntr2/e
- KFft/PF76wyTSbIG2sunHhZv3774g0hdzfx2RsmtjSZ7Pm2uDYz/3m/ge3SH2saPa5wnbax9n
- nCtWvy14MNEnwj2Xaqc959827aPgUnpr9qNS1rXBHIrMrLytNNYuxcHWbItFQ/58vFyzZyvZf
- ICgXuvXmDdvm2q7/1C2U5ZS7uTeV/UbjY1+3i0/tt/uyHntMUvgd3NVubHHybaXLbYfOt6dPu
- y1eXNm0wy+S0ufTNk94nf4Lm20m5RzucbR79V7C73sb6zhPEve016CT/3QeELbCy2E87OXP0h
- IFSJpTgj0VCLuag4EQAuSI0eVgMAAA==
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-2.tower-548.messagelabs.com!1671163285!29810!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.101.2; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 28433 invoked from network); 16 Dec 2022 04:01:26 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-2.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 16 Dec 2022 04:01:26 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id C6744100194
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 04:01:25 +0000 (GMT)
-Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126
- [10.183.43.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CE825200207
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 09:08:59 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id BAD08100191
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 04:01:25 +0000 (GMT)
-Received: from localhost.localdomain (10.167.220.84) by
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Fri, 16 Dec 2022 04:01:24 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Fri, 16 Dec 2022 13:02:03 +0800
-Message-ID: <1671166923-2173-7-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1671166923-2173-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1671166923-2173-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C197333CA6;
+ Fri, 16 Dec 2022 08:08:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1671178138;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1doEWPEo134cD58m+NrlBWYQ02M/exN0L5CiMJ3r5Yw=;
+ b=oWY82D8Bplk5/0xW/5F0x6hhtmwe4endVRHbGXXyxPzZdmWwdaBlb2KZVZEiWAZyDwKSfV
+ ldJ3tq4YJm4Td7QxoE+qN/mMhPYZDFv2xBCRhQTe+r3EjH1knD9+XuNYlWD0QAMBm8W3zW
+ mbe6UMSZVwg9/CiqWQ2xhDCqwMecGSw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1671178138;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1doEWPEo134cD58m+NrlBWYQ02M/exN0L5CiMJ3r5Yw=;
+ b=+4QN0jo9/1Glz6f3UHVl6y0YcWPmKdI/nAnhY7vjYsYdbk4W+Rwu1MLiPuLwZyjb5lEucL
+ EwEiPCMmg0yKJYDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A074D138FD;
+ Fri, 16 Dec 2022 08:08:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id tfKzJZonnGOlIgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 16 Dec 2022 08:08:58 +0000
+Date: Fri, 16 Dec 2022 09:08:56 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Mimi Zohar <zohar@linux.ibm.com>
+Message-ID: <Y5wnmJ3WgOix+ICa@pevik>
+References: <20221006164342.68763-1-zohar@linux.ibm.com>
+ <Yz9CW5vXCuztOTOl@pevik>
+ <42eb7aef99a50e09d28f0b9c16ad64cb2caabe91.camel@linux.ibm.com>
+ <Yz+4xepB6HlyFSNJ@pevik>
+ <9aee3c94e8816196b9449981f3559e1c149d1c49.camel@linux.ibm.com>
+ <Y0QFSiMTx3XlvAHJ@pevik>
+ <a7b9b60182d13d92d6e0c5d2c588644027c72b41.camel@linux.ibm.com>
+ <Y5tp0K5QIZ74bnw7@pevik>
+ <d7f4edfe75498d5d80bc55f2bb118fea34d9ad08.camel@linux.ibm.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.167.220.84]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <d7f4edfe75498d5d80bc55f2bb118fea34d9ad08.camel@linux.ibm.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 7/7] doc/c-test-api.txt
+Subject: Re: [LTP] [PATCH] security/ima: limit the scope of the LTP policy
+ rules based on the UUID
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,46 +85,111 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Update min_kver usage. Also inotify04 has removed tst_kvercmp2,
-so remove it.
+> On Thu, 2022-12-15 at 19:39 +0100, Petr Vorel wrote:
+> > Hi Mimi,
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- doc/c-test-api.txt | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> > I'm sorry, it took me long time to look into the issue.
 
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index e6d121dce..f4da9ff41 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -559,7 +559,8 @@ static struct tst_test test = {
- Testcases for newly added kernel functionality require kernel newer than a
- certain version to run. All you need to skip a test on older kernels is to
- set the '.min_kver' string in the 'struct tst_test' to a minimal required
--kernel version, e.g. '.min_kver = "2.6.30"'.
-+kernel version, e.g. '.min_kver = "3.10.0"'. For ltp, the oldest supported
-+kernel version is 3.0, so we don't add this check for old kernel ie 2.6.32.
- 
- For more complicated operations such as skipping a test for a certain range
- of kernel versions, following functions could be used:
-@@ -585,8 +586,7 @@ positive means that it's newer.
- 
- The second function 'tst_kvercmp2()' allows for specifying per-vendor table of
- kernel versions as vendors typically backport fixes to their kernels and the
--test may be relevant even if the kernel version does not suggests so. See
--'testcases/kernel/syscalls/inotify/inotify04.c' for example usage.
-+test may be relevant even if the kernel version does not suggests so.
- 
- WARNING: The shell 'tst_kvercmp' maps the result into unsigned integer - the
-          process exit value.
--- 
-2.27.0
+> > > Only the ima_conditionals.sh and ima_policy.sh tests define policy
+> > > rules based on fsuuid.  The other tests are still based on the builtin
+> > > "ima_policy=tcb" rules.
+> > Yes.
 
+> < trimmed >
+
+> > 4) running ima_violations.sh after ima_policy.sh no longer works, because
+> > there is nothing new in /var/log/audit/audit.log. I don't know why, but
+> > ima_violations.sh requires either the default ima_policy=tcb policy or policy
+> > created by ima_policy.sh *without* fsuuid.
+
+> Violations occur when a file in policy is already opened for read and
+> is being opened for write, or the reverse.  After the builtin policy is
+> replaced with the custom policy based on the UUID, running the
+> violation test fails because the UUID is reset by the call to
+> ima_setup().  So the file being opened doesn't match any policy rule.
+Yes, I was just surprised that test ima_violations.sh really depends on
+ima_policy=tcb or policy created by ima_policy.sh test.
+
+This also means if somebody wants to test just ima_violations.sh,
+he would need to have ima_policy=tcb. Dependency between IMA tests
+is something LTP does not expect nor want.
+
+Unfortunately due failures described above it'd be not good to accept this
+patch.  But it's a very nice proof of concept how to use fsuuid, thank you.
+
+> > FYI below is content of /var/log/audit/audit.log.
+
+> > Also looking at things twice, fsuuid does not help testing much.
+> > Because main blocker for testing is not the scope of the policy, but write once
+> > policy - CONFIG_IMA_WRITE_POLICY not being set on distro kernels thus repeated
+> > write of the policy will need reboot.
+
+> Oh, I didn't realize this.  Fedora (and RHEL) enable
+> CONFIG_IMA_WRITE_POLICY.
+Yes, but this config is 'n' by default. I wonder: shouldn't it be 'y' by
+default, so that people who does not care get it enabled? Or is it a security
+concern to get it enabled during just on boot by systemd?
+
+Even if it were 'y' by default, there still might be some distros/people who
+disable it... This is the source of all complications.
+
+> > Rebooting actually might be possible sooner or later with new runltp-ng from
+> > Andrea [1] (the feature is not here yet, but will be sooner or later). runltp-ng
+> > is close to upstream, there was first attempt [2].
+
+> Let's try to avoid this solution as much as possible.
+Sure, reboot is complication.
+
+But you need to accept exact order of the tests. Or have detection,
+but the detection does not work on disabled CONFIG_IMA_READ_POLICY
+(which is the default when CONFIG_IMA_WRITE_POLICY is not set - again people can
+have it unset). Actually ima_kexec.sh has broken detection - this gives TWARN
+and TBROK (= failure) on disabled CONFIG_IMA_READ_POLICY:
+
+		if [ "$policy_readable" != 1 ]; then
+			tst_res TWARN "policy not readable, it might not contain required policy '$REQUIRED_POLICY'"
+			res=TBROK
+		fi
+		tst_brk $res "unable to find a correct measurement"
+
+Exact order is first test anything with ima_policy=tcb, then have custom policy.
+Also, one should run tests with no IMA setup, then with ima_policy=tcb. Then
+there are other unsupported/untested policies: ima_policy=secure_boot and
+ima_policy=appraise_tcb, supporting them would obviously require reboot.
+
+> > Other option would be to prepare policy which would be suitable for all tests,
+> > with help of fsuuid.
+
+> Ok, I'll look into this.
+Thank you, very much appreciated!
+
+> > But that has drawback:
+> > Currently we use LTP API to mount directories on loop device after test has started.
+> > These devices are temporary, e.g.
+> > /tmp/LTP_ima_violations.pEvyfJO7Af/mntpoint/test.txt will be unmounted and
+> > deleted after each test run. But for fsuuid we'd need to first permanently
+> > mount the devices to get their UUID. Therefore there would have to be some
+> > special setup script needed to be run for all tests. This has proven to be
+> > problematic in the past. I'd have to extend the API to create something permanent.
+
+> Instead of ima_setup() setting the UUID to a new different value, if
+> additional rules cannot be written (require_policy_writable) the UUID
+> could be set to the existing policy rules UUID.
+Not sure if I understand you. FYI no mounted directory exists before test run,
+nothing survives after test finishes.
+Test is supposed to write *only* to it's temporary directory $TST_TMPDIR, which
+is created by TST_NEEDS_TMPDIR=1 after test has started, this is the directory
+which gets deleted.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
