@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED6F1C4332F
-	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 08:55:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49134C4332F
+	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 09:02:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C307D3CBC22
-	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 09:55:24 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D2C773CBC2B
+	for <ltp@archiver.kernel.org>; Fri, 16 Dec 2022 10:02:26 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 810523CBC18
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 09:55:14 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 37C6F3CBC0A
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 10:02:15 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9299D1A00E5F
- for <ltp@lists.linux.it>; Fri, 16 Dec 2022 09:55:12 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 38C941A00F25
+ for <ltp@lists.linux.it>; Fri, 16 Dec 2022 10:02:14 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 771C533D79;
- Fri, 16 Dec 2022 08:55:12 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EB8F65CB39;
+ Fri, 16 Dec 2022 09:02:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1671180912;
+ t=1671181333;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=cqroESyYsncCMU5P1fa086szq9+5RXnsj50WkUBpd3s=;
- b=TmLVt9fhPdH82U4oG74qBzxPnb3lnBLzajXEAYjgQ/ETEIiyE0Pp/KCYJsUT8ofQL87qCR
- r44Y+Entf9iVHwC1HiQMQHz5yYEm9V1ospkLH96KLcKbV1oOGZLHfVKl9R1ghqef69zWq2
- FbgeoMq3RQ/0XI+0YAE71vNf+45sFPw=
+ bh=4FGPAOS08kg9D4yh3j+XFHF5/gLvSkVHDW719SKFwcI=;
+ b=vNE8fidbL2NmwqaDzSVCPB/b34vr4Fn3QWAkhTzjnnZAImP8AGYqgXVBNTLmYq0sSZey4M
+ ZsL7PqB8vH92zMYD7blSSfK0NGnrTR8fvrMGzte39opqH0DXSEmcar0E8118cmBC5522rG
+ coY7/ym4y9hLz+p/PHGmw15w8xJYjj8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1671180912;
+ s=susede2_ed25519; t=1671181333;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=cqroESyYsncCMU5P1fa086szq9+5RXnsj50WkUBpd3s=;
- b=2htEYZxuI39POMM2y14AzO8viLk7GUVUL5x6Zv2v4+3IG8EhPMxWJYDFbdgPVh9LNGIk/R
- im0VYw8WMNVmXHDw==
+ bh=4FGPAOS08kg9D4yh3j+XFHF5/gLvSkVHDW719SKFwcI=;
+ b=FXvUXyE5F2szP7QcNYaLx3uKgxcQ9Kv4Te0hWcXK5zZfXAN/DnnpCGwwvCSOcUp2nDC4rB
+ V9vAd+pyVIC99+BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 56B63138FD;
- Fri, 16 Dec 2022 08:55:12 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7BEA138FD;
+ Fri, 16 Dec 2022 09:02:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id d+NwE3AynGPLOwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 16 Dec 2022 08:55:12 +0000
-Date: Fri, 16 Dec 2022 09:55:10 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id EBB6KRU0nGN7PwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 16 Dec 2022 09:02:13 +0000
+Date: Fri, 16 Dec 2022 10:02:06 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <Y5wyboyGmmZySY9D@pevik>
+Message-ID: <Y5w0DtP9yETeJl2T@pevik>
 References: <1671166923-2173-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1671166923-2173-2-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1671166923-2173-3-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1671166923-2173-2-git-send-email-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <1671166923-2173-3-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/7] shell: Remove old kernel version check
+Subject: Re: [LTP] [PATCH v3 3/7] cgroup_regression_test.sh: Remove obselte
+ test_6
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,44 +84,24 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Xu,
+> test_6 is a test case when kernel version is less than 3.0.
+> Since the oldest supported kernel version is 3.0, so the case
+> is useless. Remove it.
 
-...
-> +++ b/testcases/kernel/power_management/pm_include.sh
-> @@ -15,21 +15,15 @@ cleanup() {
->  	fi
->  }
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
-> -check_kervel_arch() {
-> -	# Checking required kernel version and architecture
-> -	if tst_kvcmp -lt "2.6.21"; then
-> -		tst_brkm TCONF "Kernel version not supported; not " \
-> -			"running testcases"
-> -	else
-> -		case "$(uname -m)" in
-> -		i[4-6]86|x86_64)
-> -			;;
-> -		*)
-> -			tst_brkm TCONF "Arch not supported; not running " \
-> -				"testcases"
-> -			;;
-> -		esac
-> -	fi
-> +check_arch() {
-> +	case "$(uname -m)" in
-> +	i[4-6]86|x86_64)
-> +		;;
-> +	*)
-> +		tst_brkm TCONF "Arch not supported; not running " \
-> +			"testcases"
-Could you please put this on single line?
-		tst_brkm TCONF "Arch not supported; not running testcases"
+> Also rename test9 to test6. modify TST_CNT.
+I wonder if rename is a good thing to do, because it complicates git history.
+I'd keep old names.
+Also in the past we didn't rename, e.g. in 1c44244849 ("getuid, getgid, setuid,
+setgid: fixed 16-bit versions")
+testcases/kernel/syscalls/getuid/getuid02.c was renamed to
+testcases/kernel/syscalls/geteuid/geteuid02.c to match the new test coverage,
+but testcases/kernel/syscalls/getuid/getuid03.c stayed the same (not renamed to
+testcases/kernel/syscalls/getuid/getuid02.c, which was then free).
 
-Can be done before merge.
-
-Otherwise LGTM.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Or maybe better example: testcases/kernel/syscalls/kill/kill01.c got deleted
+in eafdc5dd83 ("syscalls/kill01: Remove it"), but test names did not shift.
 
 Kind regards,
 Petr
