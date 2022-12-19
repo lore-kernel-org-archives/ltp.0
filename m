@@ -4,83 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37EF6C4332F
-	for <ltp@archiver.kernel.org>; Mon, 19 Dec 2022 06:16:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED1E6C4332F
+	for <ltp@archiver.kernel.org>; Mon, 19 Dec 2022 06:16:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3791D3CBAC6
-	for <ltp@archiver.kernel.org>; Mon, 19 Dec 2022 07:16:11 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2BD2E3CBAEA
+	for <ltp@archiver.kernel.org>; Mon, 19 Dec 2022 07:16:23 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 229663C6C93
- for <ltp@lists.linux.it>; Mon, 19 Dec 2022 07:16:00 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 2A4B23CBADA
+ for <ltp@lists.linux.it>; Mon, 19 Dec 2022 07:16:06 +0100 (CET)
 Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com
- [85.158.142.112])
+ [85.158.142.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C7D6F2001AB
- for <ltp@lists.linux.it>; Mon, 19 Dec 2022 07:15:59 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 66C1E6005E3
+ for <ltp@lists.linux.it>; Mon, 19 Dec 2022 07:16:04 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1671430558; i=@fujitsu.com;
- bh=+kUalfNZfhX5xvR3MaGpwkOtr35YeFrK5rPeuo5pKl0=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=QAQbgfvpFCX/XsyKg4rhuLsl8YuBuMpqgqmJHtwKMxQTNNeeqfhKWML5YiOvLM4pw
- 82GkvB6bs66qkjXkSm21Mzi/WbXGHzEGEdiWQt5Y/3uKRMn483E1evYE5Q0Hxzn6Np
- F0UIfCu93EwQy+uR8aTKHlj/SXj3zkSoj/Ts0g4wVLjexHxTcX5zV0XUSQs45GtQmu
- Ef3Vh7a1PBQ2QYtq5W3pQOff5iUHogJrPBXv17avLoWCLFnyWCGGugaLitv78oszvD
- PyPeGAy/2GsNhSBHHo+ENCTOv1yBZZVy9evwOgFc7jhhqOBYO11ur8XKnoMktfnz60
- U2tPbHU/jzfaQ==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRWlGSWpSXmKPExsViZ8ORqDuPcUG
- ywaIjHBaTDqdabN6zjsVixfcdjA7MHvt+r2P1eL/vKlsAUxRrZl5SfkUCa8at49eZC+ayVKzf
- eJC5gfEccxcjF4eQwBZGiee/XzF1MXICOcuZJNZ84oRI7GGU2H5oESNIgk1AU+JZ5wJmEFtEQ
- EKio+EtexcjBwezQIjEp9uOIGFhAWOJFefvg81hEVCVeL10L1g5r4CHxNaJHWBjJAQUJKY8fA
- 8VF5Q4OfMJC4jNDDTy4IsXzBA1ihKXOr5B1VdIzJrVxgRhq0lcPbeJeQIj/ywk7bOQtC9gZFr
- FaF6cWlSWWqRraKqXVJSZnlGSm5iZo5dYpZuol1qqm5dfVJKha6iXWF6sl1pcrFdcmZuck6KX
- l1qyiREYqCnFCdw7GB8t+6N3iFGSg0lJlJfn3/xkIb6k/JTKjMTijPii0pzU4kOMMhwcShK8M
- 34D5QSLUtNTK9Iyc4BRA5OW4OBREuH9/BcozVtckJhbnJkOkTrFqCglzlvFsCBZSAAkkVGaB9
- cGi9RLjLJSwryMDAwMQjwFqUW5mSWo8q8YxTkYlYR5z4GM58nMK4Gb/gpoMRPQ4kOX5oIsLkl
- ESEk1MK3/e3hXZlttP7tz4VnG69VMb3rbTryv/3v8gbUW34WmgwE5n/rSja4LPKuZc+tX39Ww
- uldMd20K7NdVcOU+u/c6LTY4XmfVUd7Jn1kTm/6eO370uMLRyavZKsp7OrNvTzrQsX/hRQkve
- eYDqieebOmYNu3rjLJFvBclai35T2W+61ix4F88e7qI2hmXar3voga7pOLqPPZ8q875q2/daX
- Ni6nwbzbcb1z1TFGIXOvno/2Whu55iwlV79qQzK60r2bGS84nm7uNpn9byhW3ZZSscb3RNnTP
- +BCP7rijRdZOT4qKig7UvSx0N4hKf7L2C+UnnEcsvFbOX3Gwtz0zkDSjWF7tbumL+rqz0aRfv
- WCqxFGckGmoxFxUnAgB/2a0XTwMAAA==
+ s=170520fj; t=1671430564; i=@fujitsu.com;
+ bh=ivz3qzD+PzSjNYtJmmLwGjtDTxZhTAZl9JoVMyxbO0k=;
+ h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+ MIME-Version:Content-Type;
+ b=sqeoxYQ06KKS6SYLwIUIlYn0nR8cXfS95uZ1AuAPYiKKvMMaZBmN3bMXluDpZ3l+4
+ cjuKUMxx867AUxPloz/w7JCyZYX7MOAm5BdfyGHwk5bL45q7+oicL5kUNPvk02Ad8U
+ 9mEK1L01zeHtXMeKVYUWe6seuS5CyZug+h08IaAUAQEhEyD/5v1YdxQQHUeRM0IMSH
+ wyzvp7dSM9EwzAgPqe/bAyS3OPh1ncuVaMSmNaDNmibWq8Koy+3O6RmOBA04BSDmoa
+ rJ4euo3yqyiSh4qZLKtZi5RIEp75oBQMQFqN51fUpDHIXV9w+u7C919dkJi1pFPkOk
+ wF4cyHMLKn/8A==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGIsWRWlGSWpSXmKPExsViZ8OxWXcx44J
+ kgyNPFS0mHU612LxnHYvFiu87GB2YPfb9Xsfq8X7fVbYApijWzLyk/IoE1ozda+4yF9zgqDjb
+ MZ+1gfEKexcjF4eQwEZGiftvvgM5nEDOYiaJBxMLIRJ7GCV2bngOlmAT0JR41rmAGcQWEZCQ6
+ Gh4CxTn4GAWCJH4dNsRJCwsYCnxou0kK4jNIqAqseVbGxOIzSvgIbHkRh8biC0hoCAx5eF7sD
+ GcAp4SX3ffZoHY6yHR9Xc6M0S9oMTJmU/A4sxAqw6+eMEM0asocanjGyOEXSExaxbEfAkBNYm
+ r5zYxT2AUnIWkfRaS9gWMTKsYzYtTi8pSi3QNTfWSijLTM0pyEzNz9BKrdBP1Ukt18/KLSjJ0
+ DfUSy4v1UouL9Yorc5NzUvTyUks2MQIDO6U4gXsH46Nlf/QOMUpyMCmJ8vL8m58sxJeUn1KZk
+ VicEV9UmpNafIhRhoNDSYJ3xm+gnGBRanpqRVpmDjDKYNISHDxKIryf/wKleYsLEnOLM9MhUq
+ cYjTnWNhzYy8yxaV/XAWYhlrz8vFQpcd4qhgXJQgIgpRmleXCDYNF/iVFWSpiXkYGBQYinILU
+ oN7MEVf4VozgHo5Iw7zmQhTyZeSVw+14BncIEdMqhS3NBTilJREhJNTA1LH8WVX5D3n3u4fnb
+ m3RbHCvlu1RbjJ/cuvx07/O0zgusp2+vOCt5S8hB1F9TjWnxFLm8UG3NSaIRiUv+Zjo5qers2
+ fPG9VDAlsqzBhbWqqazVsz+0/rWfNr6a0caI1I//pyv/49V1+KFxY+NMdV+hyc8XSrg37D/4F
+ RjyeclNYs3P5CUW1m9s/iXZ3/B2dOrqy6Fb705hd05eK/svSnFq99+jdvvnpdt82/Slo/Hb3n
+ E3pmYoGwfc+Lj0mOXgg5+uxl8Zva/P8dnnfNO7RadpJ/51/N1yBXJHMUXXEp1T+bbRFrEcTW6
+ WhhfcVReoHZXzGKlldRW9fD6KzMWrctvW1focpZt9q9VUV2hq4qeKLEUZyQaajEXFScCAG63I
+ Ph5AwAA
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-12.tower-745.messagelabs.com!1671430557!258595!1
-X-Originating-IP: [62.60.8.97]
+X-Msg-Ref: server-12.tower-745.messagelabs.com!1671430563!258601!1
+X-Originating-IP: [62.60.8.179]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.101.2; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 29646 invoked from network); 19 Dec 2022 06:15:58 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+Received: (qmail 31008 invoked from network); 19 Dec 2022 06:16:03 -0000
+Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
  by server-12.tower-745.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 19 Dec 2022 06:15:58 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 8D94E10018D;
- Mon, 19 Dec 2022 06:15:57 +0000 (GMT)
+ encrypted SMTP; 19 Dec 2022 06:16:03 -0000
+Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id D6938142;
+ Mon, 19 Dec 2022 06:16:02 +0000 (GMT)
 Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126
  [10.183.43.178])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 80DC9100188;
- Mon, 19 Dec 2022 06:15:57 +0000 (GMT)
+ by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id CA50D73;
+ Mon, 19 Dec 2022 06:16:02 +0000 (GMT)
 Received: from localhost.localdomain (10.167.220.84) by
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Mon, 19 Dec 2022 06:15:55 +0000
+ (TLS) id 15.0.1497.42; Mon, 19 Dec 2022 06:16:00 +0000
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Mon, 19 Dec 2022 15:16:26 +0800
-Message-ID: <1671434187-2038-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Mon, 19 Dec 2022 15:16:27 +0800
+Message-ID: <1671434187-2038-2-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1671434187-2038-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1671434187-2038-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.167.220.84]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] tst_kvercmp: Add rhel9 support
+Subject: [LTP] [PATCH 2/2] memcg_lib.sh: Add fallback for RHEL9
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,25 +102,30 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+The kernel patch has been merged on RHEL9. You can see it
+in url[1], to avoid false report, so add a fallback for this.
+
+[1]http://www.rpmfind.net/linux/RPM/centos-stream/9/baseos/x86_64/kernel-5.14.0-205.el9.x86_64.html
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- lib/tst_kvercmp.c | 3 +++
- 1 file changed, 3 insertions(+)
+ testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
-index a01b4332b..552920fac 100644
---- a/lib/tst_kvercmp.c
-+++ b/lib/tst_kvercmp.c
-@@ -140,6 +140,9 @@ const char *tst_kvcmp_distname(const char *kver)
- 	if (strstr(kver, ".el8"))
- 		return "RHEL8";
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index 004946456..dbb61e6b1 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -403,7 +403,9 @@ fi
  
-+	if (strstr(kver, ".el9"))
-+		return "RHEL9";
-+
- 	if (access(OSRELEASE_PATH, F_OK) != -1) {
- 		SAFE_FILE_LINES_SCANF(NULL, OSRELEASE_PATH, "ID=%s", distname);
- 
+ # Post 4.16 kernel updates stat in batch (> 32 pages) every time
+ # Post 6.1 kernel updates stat in batch (> 64 pages) every time
+-if tst_kvcmp -lt "6.1"; then
++# 1813e51eece0ad6 ("memcg: increase MEMCG_CHARGE_BATCH to 64")
++# has been merged since 5.14.0-191.el9.
++if tst_kvcmp -lt "6.1 RHEL9:5.14.0-191" ; then
+ 	PAGESIZES=$(($PAGESIZE * 33))
+ else
+ 	PAGESIZES=$(($PAGESIZE * 65))
 -- 
 2.31.1
 
