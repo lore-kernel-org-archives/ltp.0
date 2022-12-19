@@ -4,89 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A72DEC4332F
-	for <ltp@archiver.kernel.org>; Mon, 19 Dec 2022 21:09:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAFEDC4332F
+	for <ltp@archiver.kernel.org>; Mon, 19 Dec 2022 23:58:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2BF8B3CBB17
-	for <ltp@archiver.kernel.org>; Mon, 19 Dec 2022 22:09:00 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id DF56A3CBB29
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 00:58:35 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9627F3CBABC
- for <ltp@lists.linux.it>; Mon, 19 Dec 2022 22:08:48 +0100 (CET)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 0F23D3C1351
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 00:58:26 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 777D21000643
- for <ltp@lists.linux.it>; Mon, 19 Dec 2022 22:08:46 +0100 (CET)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2BJKhZJq020073; Mon, 19 Dec 2022 21:08:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=mXgrjUdNKpz43Gwnm3959Nvdlkj9Me+Rndl2b9QoC5o=;
- b=b5JRGaZVtWrZXRb/HernmkXewidgvvJSV5PUIJ2j43MnX8tv3YmQDBX5kdR0aQHIADXU
- 0deLUm9BwfKRcsTl603Obj3bfQhggk9PlYV65Qs2qQZ6TdFsCOTtgBipm+rPuggPH6mm
- etfXpzsJuZs6sn+owDRPkktMKJC8oz4rZsTgj+kGA1FOcTigIFkkH1B+DY3X3b2zlc3v
- wBozuX9PICzw17g39Zkp2zMQJEJL8bEgAStzqDwzb4oCbyzMDDJ1Q6OtjpmVmDvel1N5
- BqS2/ySF7x+AFBCkZb+CLKuihHgdbpsRdioArP2Z8PPflbHd0zVh8VwrJUHuczB1stOy RA== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com
- [149.81.74.106])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mjy85rpja-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 19 Dec 2022 21:08:44 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
- by ppma04fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BJIfs8k032627;
- Mon, 19 Dec 2022 21:01:58 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma04fra.de.ibm.com (PPS) with ESMTPS id 3mh6yw27jm-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 19 Dec 2022 21:01:57 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
- [10.20.54.102])
- by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2BJL1sn023593500
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 19 Dec 2022 21:01:54 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 1155520040;
- Mon, 19 Dec 2022 21:01:54 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3194F20043;
- Mon, 19 Dec 2022 21:01:45 +0000 (GMT)
-Received: from tarunpc (unknown [9.43.70.172])
- by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Mon, 19 Dec 2022 21:01:43 +0000 (GMT)
-Date: Tue, 20 Dec 2022 02:31:30 +0530
-From: Tarun Sahu <tsahu@linux.ibm.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 65D20200261
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 00:58:25 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 183F438054;
+ Mon, 19 Dec 2022 23:58:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1671494305;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ShnW0gEYKdspUx4ZmoxhspP2mrRkAjl76gU03v3I92I=;
+ b=a2RHyMVy6ZoQLFqtWiZAuoN0zl+hxNmWok3bgkCxSD2NmYzWvyA/lIfOexxsbWrwsBr6DV
+ XhgbnJGvV93uZovq2JBCzJtM5k+zp4sLC5R69IrSTSpGV8oC6XbgQAnPayEnaVCdjg0mdj
+ w/pTQBpxpKV2xQtbEHsZZFW1wTwiWTY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1671494305;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ShnW0gEYKdspUx4ZmoxhspP2mrRkAjl76gU03v3I92I=;
+ b=81OKJAaYSDhzPz7N8uWozsTJc9u9J0XWPK0/8E5plKPzpUC+Nd/r+grDOhuiWa+pC8Zscc
+ 8dTreoNPB74tYtCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E80A713498;
+ Mon, 19 Dec 2022 23:58:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 9i5oN6D6oGPdcQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 19 Dec 2022 23:58:24 +0000
+Date: Tue, 20 Dec 2022 00:58:23 +0100
+From: Petr Vorel <pvorel@suse.cz>
 To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <20221219205502.x3d4u3pj4ynf6vev@tarunpc>
-References: <20221201122844.142062-1-tsahu@linux.ibm.com>
- <20221201122844.142062-5-tsahu@linux.ibm.com>
- <878rjcvh9f.fsf@suse.de>
- <20221213172705.r2kczfotivg4sbck@tarunpc.in.ibm.com>
-Content-Disposition: inline
-In-Reply-To: <20221213172705.r2kczfotivg4sbck@tarunpc.in.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lbGO17APhlMnTiDBei6zwh1LqfIRAKGX
-X-Proofpoint-ORIG-GUID: lbGO17APhlMnTiDBei6zwh1LqfIRAKGX
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Message-ID: <Y6D6n/OJ9U6aebhg@pevik>
+References: <20221216170922.21752-1-mdoucha@suse.cz>
+ <98573ca81db1625d7b2f639aabeae1d9@suse.de>
+ <53c35db794540b736389a7c18275cd79@suse.de> <87mt7jtq7y.fsf@suse.de>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-19_01,2022-12-15_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501
- bulkscore=0 mlxscore=0 malwarescore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 clxscore=1015 adultscore=0 lowpriorityscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2212190186
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87mt7jtq7y.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 4/8] Hugetlb: Migrating libhugetlbfs icache-hygiene
+Subject: Re: [LTP] [PATCH] Add test for CVE 2022-4378
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,97 +77,69 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: geetika@linux.ibm.com, aneesh.kumar@linux.ibm.com, ltp@lists.linux.it,
- sbhat@linux.ibm.com, vaibhav@linux.ibm.com
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: pvorel <pvorel@suse.de>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Dec 13 2022, Tarun Sahu wrote:
-Hi,
+Hi Richie,
 
-with clang (any version) it even fails on power (with/without VM).
-while debugging with lldb, I found clang/llvm used an optmization which
-caused goto *p to be ignored and it just jump to jumplabel. Tunrning off
-the optimization makes the test work as expected.
+> Hello,
 
-I will post the v2 with change in Makefile for this test.
+> pvorel <pvorel@suse.de> writes:
 
---- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-@@ -8,4 +8,5 @@ include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../Makefile.inc
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> > On 2022-12-19 11:07, pvorel wrote:
+> >> Hi Martin,
 
-+hugemmap15: CFLAGS+=-O0
+> >>> diff --git a/testcases/cve/cve-2022-4378.c
+> >>> b/testcases/cve/cve-2022-4378.c
+> >>> new file mode 100644
+> >>> index 000000000..e1c5df325
+> >>> --- /dev/null
+> >>> +++ b/testcases/cve/cve-2022-4378.c
+> >>> @@ -0,0 +1,108 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0-or-later
+> >>> +/*
+> >>> + * Copyright (C) 2022 SUSE LLC <mdoucha@suse.cz>
+> >>> + */
+> >>> +
+> >>> +/*\
+> >> nit: you used /*\ docparse start comment, but without any [...] mark,
+> >> thus nothing shows in generated docs.
+> >> There should have been either normal C comment /* or docparse [...]
+> >> mark.
 
-Thanks
-Tarun
+> > I'm sorry, I was wrong, the text *appear* in generated docs, just
+> > without any header.
 
-> Hi Richard,
-> Thanks for looking at it.
-> 
-> I am also trying to reproduce the same, In the meantime, I have found the
-> fix commit for this bug: https://lore.kernel.org/all/20051209032051.GA11744@localhost.localdomain/
-> 
-> I will update the tag in this and all tests moving forward,
-> Pardon me for missing such crucial details.
-> 
-> Thanks
-> Taurn
-> On Dec 12 2022, Richard Palethorpe wrote:
-> > Hello,
-> > 
-> > Tarun Sahu <tsahu@linux.ibm.com> writes:
-> > 
-> > > Migrating the libhugetlbfs/testcases/icache-hygiene.c test
-> > >
-> > > Test Description: Older ppc64 kernels don't properly flush dcache to
-> > > icache before giving a cleared page to userspace.  With some exceedingly
-> > > hairy code, this attempts to test for this bug.
-> > >
-> > > This test will never trigger (obviously) on machines with coherent
-> > > icache and dcache (including x86 and POWER5).  On any given run,
-> > > even on a buggy kernel there's a chance the bug won't trigger -
-> > > either because we don't get the same physical page back when we
-> > > remap, or because the icache happens to get flushed in the interim.
-> > 
-> > Compiling with Clang 15.0.5 on x86_64 and upstream kernel 6.0.9 in a KVM
-> > VM the test fails:
-> > 
-> > sh-5.2# ./hugemmap15
-> > [13712.044617] hugemmap15 (2118): drop_caches: 3
-> > tst_hugepage.c:83: TINFO: 3 hugepage(s) reserved
-> > tst_test.c:1560: TINFO: Timeout per run is 0h 00m 30s
-> > hugemmap15.c:191: TFAIL: icache unclean
-> > 
-> > > +
-> > > +static struct tst_test test = {
-> > > +	.needs_root = 1,
-> > > +	.mntpoint = MNTPOINT,
-> > > +	.needs_hugetlbfs = 1,
-> > > +	.needs_tmpdir = 1,
-> > > +	.setup = setup,
-> > > +	.cleanup = cleanup,
-> > > +	.test_all = run_test,
-> > > +	.hugepages = {3, TST_NEEDS},
-> > > +};
-> > > -- 
-> > > 2.31.1
-> > 
-> > Again, it would be nice to have the git tag(s) of the fix commit(s) if
-> > possible.
-> > 
-> > -- 
-> > Thank you,
-> > Richard.
-> > 
-> > -- 
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> Perhaps make-check could validate the docparse string?
+
++1, I was already thinking about it.
+
+It would not help in the case below, but it's definitely worth
+(error in JSON will be caught by CI, but why not to catch it early?)
+
+> > Just the text contains too much details (given we have link to git
+> > commit in the table below):
+
+> > ... fixed in:
+
+> > commit bce9332220bd677d83b19d21502776ad555a0e73 Author: Linus Torvalds
+> > <torvalds@linux-foundation.org> Date: Mon Dec 5 12:09:06 2022 -0800
+
+> I think it is fine to even copy and paste the whole commit message. If
+> we list the wrong Git commit this may make it easier to see as well.
+
+I'd just use the format for "Fixes:":
+
+$ git log --pretty=format:"%h (\"%s\")" -1
+bce9332220bd ("proc: proc_skip_spaces() shouldn't think it is working on C strings")
+
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
