@@ -4,60 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3891C4332F
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 14:11:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEF6EC4332F
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 14:15:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9FCE13CD46F
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 15:11:35 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 2D17E3C8C6C
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 15:15:50 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E3FEE3CBA96
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 15:11:25 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 66CF03C1BBD
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 15:15:40 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BF3EF100097F
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 15:11:23 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id CB47A75A5E;
- Tue, 20 Dec 2022 14:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1671545482;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0Fcvda7u7F4opUY7FagoQqKleyDDizVHNRDZNWvC7Ec=;
- b=RE1jGdEVW8AoOBe6wT+D0tI1To0IOZhIdGBgdu6lriihgzwMQjqKVmxtghB3+N1kwSi1cy
- /B3OfK5OBIuVx8Y01M/eDWcbtmG1Q9g9EGVfr9O4MuZNZp+AJ+aMIazodxr+MCSlWV8qPk
- eutQz5BOCkSG/8iEPHUmcoxK7x8jZvw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1671545482;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0Fcvda7u7F4opUY7FagoQqKleyDDizVHNRDZNWvC7Ec=;
- b=jRbLAtM5khaYo49fDVjf5YdhKLM+tRnRKysUz/72ff3DJUZuaZG2mX7IpEhaDlnB4hpfX3
- kTgOgAtWO+rTfSDA==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 7FC361A0090C
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 15:15:39 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 9D5E32C141;
- Tue, 20 Dec 2022 14:11:22 +0000 (UTC)
-References: <20221220124351.5001-1-andrea.cervesato@suse.com>
-User-agent: mu4e 1.8.13; emacs 28.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Date: Tue, 20 Dec 2022 14:10:22 +0000
-Organization: Linux Private Site
-In-reply-to: <20221220124351.5001-1-andrea.cervesato@suse.com>
-Message-ID: <87o7ryrwqd.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6470575AB3;
+ Tue, 20 Dec 2022 14:15:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1671545738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7m72/6PIbdiL51+XEeyYWeI6D0Kwrc6So+lJTbIuO10=;
+ b=1cEBa8csca0S1JgrcXUTw7lH+6TCX1VSGIGCe/IkeQrEthB+eJxoeKRMR4F+/gZwsRct5/
+ zNjKRDaeG/fNq6hXGFbR/A8Q3Ud+cYr5+GLuWyxigx9tynTNTx5nIIcz1jPC6gcjAfU+SD
+ TaOqgQdEdFjJbtjLvprHG4pPlSpKNt0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1671545738;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7m72/6PIbdiL51+XEeyYWeI6D0Kwrc6So+lJTbIuO10=;
+ b=zep9jZiaF6PKnIy0vGvBYhGZ7eZaBtLed/5bcARoE8DIJr1vaaLHHRP9gZG7EUwbq0HeMP
+ DUuuVP6tGfJCiODw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4F2191390E;
+ Tue, 20 Dec 2022 14:15:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id XwuvEorDoWOgKgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 20 Dec 2022 14:15:38 +0000
+Date: Tue, 20 Dec 2022 15:16:51 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Y6HD05Aa9WmWyUhl@yuki>
+References: <20221220054549.1757270-1-liwang@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20221220054549.1757270-1-liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Add runltp-ng to upstream
+Subject: Re: [LTP] [PATCH] set_mempolicy01: cancel the limit of maximum
+ runtime
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,56 +76,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi!
+> It needs more time for running on multiple numa nodes system.
+> Here propose to cancel the limit of max_runtime.
+> 
+>   ========= test log on 16 nodes system =========
+>   ...
+>   set_mempolicy01.c:80: TPASS: child: Node 15 allocated 16
+>   tst_numa.c:25: TINFO: Node 0 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 1 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 2 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 3 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 4 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 5 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 6 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 7 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 8 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 9 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 10 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 11 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 12 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 13 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 14 allocated 0 pages
+>   tst_numa.c:25: TINFO: Node 15 allocated 16 pages
+>   set_mempolicy01.c:80: TPASS: parent: Node 15 allocated 16
+> 
+>   Summary:
+>   passed   393210
+>   failed   0
+>   broken   0
+>   skipped  0
+>   warnings 0
+> 
+>   real	6m15.147s
+>   user	0m33.641s
+>   sys	0m44.553s
 
-Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
-
-> runltp-ng is the next generation runner for Linux Testing Project and it
-> will replace the current obsolete runltp script in the next future.
->
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
-
-> ---
->  .gitmodules     | 3 +++
->  tools/runltp-ng | 1 +
->  2 files changed, 4 insertions(+)
->  create mode 160000 tools/runltp-ng
->
-> diff --git a/.gitmodules b/.gitmodules
-> index a3c34af4b..810eac395 100644
-> --- a/.gitmodules
-> +++ b/.gitmodules
-> @@ -4,3 +4,6 @@
->  [submodule "tools/sparse/sparse-src"]
->  	path = tools/sparse/sparse-src
->  	url = git://git.kernel.org/pub/scm/devel/sparse/sparse.git
-> +[submodule "tools/runltp-ng"]
-> +	path = tools/runltp-ng
-> +	url = git@github.com:linux-test-project/runltp-ng.git
-> diff --git a/tools/runltp-ng b/tools/runltp-ng
-> new file mode 160000
-> index 000000000..af20a864e
-> --- /dev/null
-> +++ b/tools/runltp-ng
-> @@ -0,0 +1 @@
-> +Subproject commit af20a864ec01674ce4f5a21d3308dc3a76da9303
-> -- 
-> 2.35.3
-
-
+Can't we just set the default to 30 minutes or something large enough?
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
