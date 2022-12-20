@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DB12C4332F
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 07:57:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F110FC4332F
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 11:19:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 78B143CBAAA
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 08:57:30 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 6DEF03CBA84
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 12:19:38 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 258FE3CBA53
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 08:57:20 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 7487B3CBA4A
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 12:19:28 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7BEC0A0D128
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 08:57:19 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 62ACF1A0089A
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 12:19:26 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5369F3F8ED
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:57:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1671523038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 182D1377F5;
+ Tue, 20 Dec 2022 11:19:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1671535165;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PsJhYI/uWWZ+A4vJ9xWJMwlCCUoMn9gDcs6bsqMu9D0=;
- b=mTDgFo802S5UsmrCc5Wy2tGnjwJhJuSPz++WAgQFR/s2svxWUQVMCd4zsOOx7JUZ9PRGw4
- qiJRCTPWqBauTFP3YlGeRBObwfKshpbipGml3VLkJmpzVXKYUEoN5hmSM4W+Rz/jTVxZLt
- f7sPXsQQ6FXfiSe4rHaJtqTWpBNdQmw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1671523038;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ bh=7YBzdzMt3WqBeVbjaMjrKI8cqKJp8OMsHu3HtT5bF44=;
+ b=1eb69OzKO8nYEKCIuVKXhqptf1fXD0W+HEWSy8XvwGU07xQDCWjJMGadkRSEqvQs4RW/bc
+ 11FsxtXcKL+lYzNMDSSICrMZ84YWCCGSXiBhp4KIVOBEs5p/hZ8xSqikD6StlJl1rst1fA
+ +TpWlI5OKUG/7D0oV1X8cdpdXpegkGc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1671535165;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PsJhYI/uWWZ+A4vJ9xWJMwlCCUoMn9gDcs6bsqMu9D0=;
- b=R/Idt1bTMM2jrlwdeUdIFwoAvW49J0mGhnYmVxpE3t8C4BEu6bi0VB9PrNHI6wN1URUPC+
- Ccz4nKG4/VQh36BA==
+ bh=7YBzdzMt3WqBeVbjaMjrKI8cqKJp8OMsHu3HtT5bF44=;
+ b=eVKwc7f+LpaqoYPAXl3NJZ8/ra1hCb6q1y+Dngp/BPEu3IR7V4FAdtn+4xx3eAXHnJFKpu
+ ZGaoOk7+Q0PFn/DA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C62D913254
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:57:17 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8137A1390E;
+ Tue, 20 Dec 2022 11:19:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2CZLId1qoWODdQAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:57:17 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Tue, 20 Dec 2022 13:27:14 +0530
-Message-Id: <20221220075714.28762-1-akumar@suse.de>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <Y5xF6PU5Yvh+oku5@pevik>
-References: <Y5xF6PU5Yvh+oku5@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id LnUdHjyaoWMqUwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 20 Dec 2022 11:19:24 +0000
+Date: Tue, 20 Dec 2022 12:19:17 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <Y6GaNcnDTAEGaAh9@pevik>
+References: <20221216094611.2924-1-pvorel@suse.cz>
+ <20221216094611.2924-2-pvorel@suse.cz>
+ <CAASaF6yUfeCS_MnTiYR1v291d=A0xzijDRJqz1SgGORvnCEXbg@mail.gmail.com>
+ <CAEemH2d=kNwrAmrvy21Si4wF9H0qqg_Zkq=12S9ZC=11MQKFSw@mail.gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2d=kNwrAmrvy21Si4wF9H0qqg_Zkq=12S9ZC=11MQKFSw@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5] statvfs01: Convert to new LTP API
+Subject: Re: [LTP] [RFC PATCH 1/2] doc: State the minimal kernel version
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,163 +78,97 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Jan =?iso-8859-2?Q?L=FCbbe?= <jlu@pengutronix.de>,
+ Khem Raj <raj.khem@gmail.com>, Richard Palethorpe <rpalethorpe@suse.com>,
+ ltp@lists.linux.it, automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Removed the TINFO statements,
-Added a validation of statvfs.f_namemax field by trying to create
-files of valid and invalid length names.
+> On Mon, Dec 19, 2022 at 5:52 PM Jan Stancek <jstancek@redhat.com> wrote:
 
-Changes in v5:
-Enabled file creation for vfat and exfat filesystems also.
+> > On Fri, Dec 16, 2022 at 10:46 AM Petr Vorel <pvorel@suse.cz> wrote:
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/statvfs/statvfs01.c | 109 +++++++-----------
- 1 file changed, 40 insertions(+), 69 deletions(-)
+> > > Because the tested version does not automatically mean the minimal
+> > > supported.
 
-diff --git a/testcases/kernel/syscalls/statvfs/statvfs01.c b/testcases/kernel/syscalls/statvfs/statvfs01.c
-index e3b356c93..034835da7 100644
---- a/testcases/kernel/syscalls/statvfs/statvfs01.c
-+++ b/testcases/kernel/syscalls/statvfs/statvfs01.c
-@@ -1,92 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2005.  All Rights Reserved.
-  *    AUTHOR: Prashant P Yendigeri <prashant.yendigeri@wipro.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-+ * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
--/*
-- *    DESCRIPTION
-- *      This is a Phase I test for the statvfs(2) system call.
-- *      It is intended to provide a limited exposure of the system call.
-- *	This call behaves similar to statfs.
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify that statvfs() executes successfully for all
-+ * available filesystems. Verify statvfs.f_namemax field
-+ * by trying to create files of valid and invalid length names.
-  */
- 
--#include <stdio.h>
--#include <unistd.h>
--#include <errno.h>
- #include <sys/statvfs.h>
--#include <stdint.h>
--
--#include "test.h"
-+#include "tst_test.h"
- 
--#define TEST_PATH "/"
-+#define MNT_POINT "mntpoint"
-+#define TEST_PATH MNT_POINT"/testfile"
-+#define NLS_MAX_CHARSET_SIZE 6
- 
--static void setup(void);
--static void cleanup(void);
--
--char *TCID = "statvfs01";
--int TST_TOTAL = 1;
--
--int main(int ac, char **av)
-+static void run(void)
- {
- 	struct statvfs buf;
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
-+	char *valid_fname, *toolong_fname;
-+	long fs_type;
- 
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+	fs_type = tst_fs_type(TEST_PATH);
- 
--		tst_count = 0;
-+	TST_EXP_PASS(statvfs(TEST_PATH, &buf));
- 
--		TEST(statvfs(TEST_PATH, &buf));
-+	toolong_fname = SAFE_MALLOC(buf.f_namemax + 1);
-+	if (fs_type == TST_VFAT_MAGIC || fs_type == TST_EXFAT_MAGIC)
-+		valid_fname = SAFE_MALLOC(buf.f_namemax / NLS_MAX_CHARSET_SIZE - 1);
-+	else
-+		valid_fname = SAFE_MALLOC(buf.f_namemax - 1);
- 
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TTERRNO, "statvfs(%s, ...) failed",
--				 TEST_PATH);
--		} else {
--			tst_resm(TPASS, "statvfs(%s, ...) passed", TEST_PATH);
--		}
-+	memset(toolong_fname, 'b', buf.f_namemax + 1);
-+	if (fs_type == TST_VFAT_MAGIC || fs_type == TST_EXFAT_MAGIC)
-+		memset(valid_fname, 'a', buf.f_namemax / NLS_MAX_CHARSET_SIZE - 1);
-+	else
-+		memset(valid_fname, 'a', buf.f_namemax - 1);
- 
--	}
-+	TST_EXP_FD(creat(valid_fname, 0444));
-+	SAFE_CLOSE(TST_RET);
- 
--	tst_resm(TINFO, "This call is similar to statfs");
--	tst_resm(TINFO, "Extracting info about the '%s' file system",
--		 TEST_PATH);
--	tst_resm(TINFO, "file system block size = %lu bytes", buf.f_bsize);
--	tst_resm(TINFO, "file system fragment size = %lu bytes", buf.f_frsize);
--	tst_resm(TINFO, "file system free blocks = %ju",
--		 (uintmax_t) buf.f_bfree);
--	tst_resm(TINFO, "file system total inodes = %ju",
--		 (uintmax_t) buf.f_files);
--	tst_resm(TINFO, "file system free inodes = %ju",
--		 (uintmax_t) buf.f_ffree);
--	tst_resm(TINFO, "file system id = %lu", buf.f_fsid);
--	tst_resm(TINFO, "file system max filename length = %lu", buf.f_namemax);
--
--	cleanup();
--	tst_exit();
-+	TST_EXP_FAIL(creat(toolong_fname, 0444), ENAMETOOLONG);
- }
- 
- static void setup(void)
- {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	SAFE_TOUCH(TEST_PATH, 0666, NULL);
- }
- 
--static void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.needs_root = 1,
-+	.mount_device = 1,
-+	.mntpoint = MNT_POINT,
-+	.all_filesystems = 1
-+};
--- 
-2.39.0
+> > > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > > ---
+> > > Hi all,
 
+> > > I'm sorry to bother you, many of you concentrate on current mainline (or
+> > > supported stable) instead of digging into history. But you might know
+> > > about somebody who still cares about 3.x. Although not many of these
+> > > people would try to run recent LTP on these old versions, but we never
+> > > know.
+
+> > > I started with 3.0 as that was the result of the old discussions over
+> > > ML.  I'm perfectly ok, if we raise it to 3.10, which is tested.
+> > > I guess after CentOS 7 EOL we should raise support even higher.
+
+> > I'd be fine with raising it to 3.10, that still covers CentOS7 for now.
+> > (3.10 will be 10 years old in couple months)
+
+
+> +1 that's exactly!
+
+OK, is anybody against raising the support to 3.10?
+
+If not, I can change it:
+
+-Minimal supported (although untested) kernel version is 3.0.
++Minimal supported kernel version is 3.10.
+
+Kind regards,
+Petr
+
+> Reviewed-by: Li Wang <liwang@redhat.com>
+
+
+
+> > Acked-by: Jan Stancek <jstancek@redhat.com>
+
+
+> > > The motivation is to state the version here, instead in
+> > > doc/c-test-api.txt
+
+> > https://patchwork.ozlabs.org/project/ltp/patch/1671166923-2173-7-git-send-email-xuyang2018.jy@fujitsu.com/
+
+> > > Also stating kernel version limits minimal libc version.
+> > > Thus I'm not going to start a discussion about what libc version we
+> > > support.
+
+> > > Kind regards,
+> > > Petr
+
+> > >  doc/supported-kernel-libc-versions.txt | 7 ++++++-
+> > >  1 file changed, 6 insertions(+), 1 deletion(-)
+
+> > > diff --git a/doc/supported-kernel-libc-versions.txt
+> > b/doc/supported-kernel-libc-versions.txt
+> > > index e48e3aeae3..f89c4882fb 100644
+> > > --- a/doc/supported-kernel-libc-versions.txt
+> > > +++ b/doc/supported-kernel-libc-versions.txt
+> > > @@ -51,7 +51,12 @@ distribution you may as well reconsider you life
+> > choices.
+> > >  | s390x         | cross compilation
+> > >  |==================================
+
+> > > -1.3 Supported libc
+> > > +1.3 Minimal supported kernel version
+> > > +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > +
+> > > +Minimal supported (although untested) kernel version is 3.0.
+> > > +
+> > > +1.4 Supported libc
+> > >  ~~~~~~~~~~~~~~~~~~
+
+> > >  [align="center",options="header"]
+> > > --
+> > > 2.39.0
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
