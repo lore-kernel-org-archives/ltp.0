@@ -4,87 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D562AC4332F
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 06:32:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E44E7C4332F
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 06:32:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D9453CBA65
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 07:32:01 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 1F6303CBA80
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 07:32:13 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6076F3CBA77
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:31:39 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id A50D33CBA64
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:31:43 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 47684600705
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:31:37 +0100 (CET)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2BK6DWWh014778; Tue, 20 Dec 2022 06:31:36 GMT
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D5BFE6006D8
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:31:42 +0100 (CET)
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2BK6C8sf020385; Tue, 20 Dec 2022 06:31:40 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=REXeVKxv2twkKm89f6QQg83csY6BZEBNMQPqCuKht20=;
- b=tBTkwo3PNO4wBsGKpSXFuRcxoT18Ot8ss6Z6zzl/1owsvbfvxDcDhnf0voizBXsBDqK1
- IwZMmUpTjQXo8rN+YOAeMX5kL59FT3Sndi9Q5//9x1gWbEOGhtBTlhcTWkWbscR+ZFk6
- fbAWKGt26/d+bPd6Yqh8qF91vqKFyVYQSSCgJfRup9glP+sGszdA/xkptowHeX8SHwad
- +d6jQ2UV7sbzKjn8HQwHS0cMY0BVPV8++VhDNm3iI8l2N+useODCmHhPykQeD3fQKRo2
- 6d523yKRKldPJGBCshb8Uq5botvXKrzaYyelCJcduQhsgWuahOJGnyhphnjVZfRo5Lse 8g== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.98])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mk7kb0e8f-1
+ bh=TjJuy81hZnuh++RsdxD0s9JaFGWhRjD+A/wrEJZVqfw=;
+ b=bSXPyOAnAQgsNwU310xlLUfqnv6kdOR43zKZ9LGgcJEY10u0BwMi6MEzdueCDQG5KQBE
+ rsiwCg3QMJu0x/Ta3CeAuRKgRh+eMocplLWpSf4iaCWl//O6oDp4zmE8o+wWnUY9viYV
+ MtIMpOiI06f9PRqDkvb73OhXW4SzWnhWXhp03uYokYcI2WsRu1ZMmxMGR6MBR3jUqzxv
+ quQm05Vs0vsHyHj2Ue9speeq81OhaUl+egJIyfnb6SVxjH+KbYQAtTuFVJ1UPhbwMatT
+ HSvfAKUI2GxwwmUODpdL0PYdDyc9S+6r4fTtg5v7snK8eXNMGN9yn4toRfOYzBvLtmRd 9w== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.72])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mk7jnrfcu-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 20 Dec 2022 06:31:36 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
- by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BJEQ9YX014051;
- Tue, 20 Dec 2022 06:31:34 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3mh6yw3j32-1
+ Tue, 20 Dec 2022 06:31:40 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+ by ppma06fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BJLg1ao014508;
+ Tue, 20 Dec 2022 06:31:38 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma06fra.de.ibm.com (PPS) with ESMTPS id 3mh6yxjjq9-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 20 Dec 2022 06:31:34 +0000
+ Tue, 20 Dec 2022 06:31:38 +0000
 Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
  [10.20.54.105])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2BK6VUTe48497034
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2BK6VYrd28508478
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 20 Dec 2022 06:31:30 GMT
+ Tue, 20 Dec 2022 06:31:34 GMT
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 75BC320040;
- Tue, 20 Dec 2022 06:31:30 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 870B020043;
+ Tue, 20 Dec 2022 06:31:34 +0000 (GMT)
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 2929820049;
- Tue, 20 Dec 2022 06:31:27 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 0F49B20040;
+ Tue, 20 Dec 2022 06:31:31 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.119.42])
  by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Tue, 20 Dec 2022 06:31:26 +0000 (GMT)
+ Tue, 20 Dec 2022 06:31:30 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Tue, 20 Dec 2022 12:01:03 +0530
-Message-Id: <20221220063109.279007-3-tsahu@linux.ibm.com>
+Date: Tue, 20 Dec 2022 12:01:04 +0530
+Message-Id: <20221220063109.279007-4-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221220063109.279007-1-tsahu@linux.ibm.com>
 References: <20221220063109.279007-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 6QqajqsqHGQNHFqnD0ezTEYMsCwSjM4z
-X-Proofpoint-ORIG-GUID: 6QqajqsqHGQNHFqnD0ezTEYMsCwSjM4z
+X-Proofpoint-ORIG-GUID: YpVO8-Lfy0BvVajTZarc7Hf5SmmhXuG4
+X-Proofpoint-GUID: YpVO8-Lfy0BvVajTZarc7Hf5SmmhXuG4
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-19_05,2022-12-15_02,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 impostorscore=0
- phishscore=0 adultscore=0 mlxlogscore=886 mlxscore=0 malwarescore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2212200051
+ clxscore=1015
+ lowpriorityscore=0 malwarescore=0 spamscore=0 adultscore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 priorityscore=1501 impostorscore=0
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2212200054
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/8] Hugetlb: Migrating libhugetlbfs
- huge_at_4GB_normal_below
+Subject: [LTP] [PATCH v2 3/8] Hugetlb: Migrating libhugetlbfs
+ huge_below_4GB_normal_above
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,50 +104,50 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/huge_at_4GB_normal_below.c test
+Migrating the libhugetlbfs/testcases/huge_below_4GB_normal_above.c test
 
-Test Description: On some old ppc64 kernel, when hpage is mmaped on 32 bit
-boundary and normal page below it, it triggers the bug caused by
-off-by-one error.
+Test Description: On some old ppc64 kernel, when huge page is mapped at
+below touching 32 bit boundary (4GB - hpage_size), and normal page is
+mmaped at just above it, it triggers a bug caused by off-by-one error.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
  runtest/hugetlb                               |   1 +
  testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap13.c  | 126 ++++++++++++++++++
- 3 files changed, 128 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
+ .../kernel/mem/hugetlb/hugemmap/hugemmap14.c  | 159 ++++++++++++++++++
+ 3 files changed, 161 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 4c16e1e7c..2029ee4b3 100644
+index 2029ee4b3..796ebe7fa 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -14,6 +14,7 @@ hugemmap09 hugemmap09
- hugemmap10 hugemmap10
+@@ -15,6 +15,7 @@ hugemmap10 hugemmap10
  hugemmap11 hugemmap11
  hugemmap12 hugemmap12
-+hugemmap13 hugemmap13
+ hugemmap13 hugemmap13
++hugemmap14 hugemmap14
  hugemmap05_1 hugemmap05 -m
  hugemmap05_2 hugemmap05 -s
  hugemmap05_3 hugemmap05 -s -m
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index adea760c7..5955ed613 100644
+index 5955ed613..3106579ce 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -13,6 +13,7 @@
- /hugetlb/hugemmap/hugemmap10
+@@ -14,6 +14,7 @@
  /hugetlb/hugemmap/hugemmap11
  /hugetlb/hugemmap/hugemmap12
-+/hugetlb/hugemmap/hugemmap13
+ /hugetlb/hugemmap/hugemmap13
++/hugetlb/hugemmap/hugemmap14
  /hugetlb/hugeshmat/hugeshmat01
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
 new file mode 100644
-index 000000000..7235c55ac
+index 000000000..13068e5b6
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
-@@ -0,0 +1,126 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
+@@ -0,0 +1,159 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
 + * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
@@ -155,12 +156,12 @@ index 000000000..7235c55ac
 +
 +/*\
 + * [Description]
-+ *
-+ * On some old ppc64 kernel, when hpage is mmaped on 32 bit boundary and
-+ * normal page below it, it triggers the bug caused by off-by-one error.
++ * On some old ppc64 kernel, when huge page is mapped at below touching
++ * 32 bit boundary (4GB - hpage_size), and normal page is mmaped
++ * at just above it, it triggers a bug caused by off-by-one error.
 + *
 + * WARNING: The offsets and addresses used within are specifically
-+ * calculated to trigger the bug as it existed. Don't mess with them
++ * calculated to trigger the bug as it existed.  Don't mess with them
 + * unless you *really* know what you're doing.
 + */
 +
@@ -181,57 +182,88 @@ index 000000000..7235c55ac
 +
 +static void run_test(void)
 +{
-+	void *p, *q = NULL;
-+	unsigned long lowaddr;
++	void *p, *q = NULL, *r = NULL;
++	unsigned long lowaddr, highaddr;
 +	unsigned long below_start;
 +	unsigned long above_end;
 +
-+	p = mmap((void *)FOURGB, hpage_size, PROT_READ|PROT_WRITE,
-+		 MAP_SHARED | MAP_FIXED, fd, 0);
++	/*
++	 * We use a low address right below 4GB so we can test for
++	 * off-by-one errors
++	 */
++	lowaddr = FOURGB - hpage_size;
++	tst_res(TINFO, "Mapping hugepage at %lx...", lowaddr);
++	p = mmap((void *)lowaddr, hpage_size, PROT_READ|PROT_WRITE,
++		 MAP_SHARED|MAP_FIXED, fd, 0);
 +	if (p == MAP_FAILED) {
-+		/* slice 0 (high) spans from 4G-1T */
-+		below_start = FOURGB;
-+		above_end = 1024L*1024*1024*1024;
++		/* This is last low slice - 256M just before 4G */
++		below_start = FOURGB - 256L*1024*1024;
++		above_end = FOURGB;
 +
 +		if (range_is_mapped(below_start, above_end) == 1) {
-+			tst_res(TINFO|TERRNO, "region 4G-IT is not free & "
++			tst_res(TINFO|TERRNO, "region (4G-256M)-4G is not free & "
 +					"mmap() failed expected");
 +			tst_res(TPASS, "Successful but inconclusive");
 +		} else
 +			tst_res(TFAIL|TERRNO, "mmap() huge failed unexpected");
 +		goto cleanup;
 +	}
-+	if (p != (void *)FOURGB) {
++	if (p != (void *)lowaddr) {
 +		tst_res(TFAIL, "Wrong address with MAP_FIXED huge");
 +		goto cleanup;
 +	}
-+
-+	tst_res(TINFO, "Mapped hugetlb at %p", p);
-+
 +	memset(p, 0, hpage_size);
 +
-+	/* Test just below 4GB to check for off-by-one errors */
-+	lowaddr = FOURGB - page_size;
-+	q = mmap((void *)lowaddr, page_size, PROT_READ|PROT_WRITE,
++	/* Test for off by one errors */
++	highaddr = FOURGB;
++	tst_res(TINFO, "Mapping normal page at %lx...", highaddr);
++	q = mmap((void *)highaddr, page_size, PROT_READ|PROT_WRITE,
 +		 MAP_SHARED|MAP_FIXED|MAP_ANONYMOUS, 0, 0);
 +	if (q == MAP_FAILED) {
-+		below_start = FOURGB - page_size;
-+		above_end = FOURGB;
++		below_start = FOURGB;
++		above_end = FOURGB + page_size;
 +
 +		if (range_is_mapped(below_start, above_end) == 1) {
-+			tst_res(TINFO|TERRNO, "region (4G-page)-4G is not free & "
++			tst_res(TINFO|TERRNO, "region 4G-(4G+page) is not free & "
 +					"mmap() failed expected");
 +			tst_res(TPASS, "Successful but inconclusive");
 +		} else
-+			tst_res(TFAIL|TERRNO, "mmap() normal failed unexpected");
++			tst_res(TFAIL|TERRNO, "mmap() normal 1 failed unexpected");
 +		goto cleanup;
 +	}
-+	if (q != (void *)lowaddr) {
-+		tst_res(TFAIL, "Wrong address with MAP_FIXED normal");
++	if (q != (void *)highaddr) {
++		tst_res(TFAIL, "Wrong address with MAP_FIXED normal 1");
 +		goto cleanup;
 +	}
-+
 +	memset(q, 0, page_size);
++
++	/*
++	 * Why this address?  Well on ppc64, we're working with 256MB
++	 * segment numbers, hence >>28.  In practice the shift
++	 * instructions only start wrapping around with shifts 128 or
++	 * greater.
++	 */
++	highaddr = ((lowaddr >> 28) + 128) << 28;
++	tst_res(TINFO, "Mapping normal page at %lx...", highaddr);
++	r = mmap((void *)highaddr, page_size, PROT_READ|PROT_WRITE,
++		 MAP_SHARED|MAP_FIXED|MAP_ANONYMOUS, 0, 0);
++	if (r == MAP_FAILED) {
++		below_start = highaddr;
++		above_end = highaddr + page_size;
++
++		if (range_is_mapped(below_start, above_end) == 1) {
++			tst_res(TINFO|TERRNO, "region haddr-(haddr+page) not free & "
++					"mmap() failed unexpected");
++			tst_res(TPASS, "Successful but inconclusive");
++		}
++		tst_res(TFAIL|TERRNO, "mmap() normal 2 failed unexpected");
++		goto cleanup;
++	}
++	if (r != (void *)highaddr) {
++		tst_res(TFAIL, "Wrong address with MAP_FIXED normal 2");
++		goto cleanup;
++	}
++	memset(r, 0, page_size);
 +	tst_res(TPASS, "Successful");
 +
 +cleanup:
@@ -239,6 +271,8 @@ index 000000000..7235c55ac
 +		SAFE_MUNMAP(p, hpage_size);
 +	if (q && q != MAP_FAILED)
 +		SAFE_MUNMAP(q, page_size);
++	if (r && r != MAP_FAILED)
++		SAFE_MUNMAP(r, page_size);
 +}
 +
 +static void setup(void)
