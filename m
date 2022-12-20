@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20374C4332F
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 04:58:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CF46C4332F
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 05:00:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 180733C6C93
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 05:58:34 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 217833CBB33
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 06:00:54 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6B5963C1B40
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 05:58:18 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id CEC223CBAC0
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 06:00:44 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8DDFB140042E
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 05:58:16 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B00D41400513
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 06:00:43 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1671512295;
+ s=mimecast20190719; t=1671512442;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=vQvXuT6GUOv57412JdH7WvIOst7XDKysgJRBD3LlnG4=;
- b=JELdpEM+gyneFmOlonfTWunIrTQ+wi+cWx+kwu0lCMW/4HVz2sLZcW0HbWkLdyVr1ZgRy2
- 0XhcyWG5hjGWtkCUg8usLYPkOfL2Nreb39HINq8sz/a60ZzEhfmZ+hFR51Rea93LTCsl4O
- UOer54ZKy0rTQYKE3i91O1VZW67GC+M=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=vsPAo+pI0v5ViuM0RGuGLpewsdt8ur1GTmAcb81ZJoY=;
+ b=D7RGZ+iHPLW/Upio9W6jv2tuCO2eLJSqSKPqTVDcjZvHrUpc1Y0QPOtTgM+1+rgQNhIHjI
+ eABbgYuNLI8ySsuP2rtjBnMujkjnoSd8IE/oKmYg6aohtTXy0fHBt0XAanMdrFBVemtRFz
+ rY4RmyZFrG/EFkDzIXUxTAqtxSmzJ8A=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-379-iIDRQapdNXKRQ3tbxgSDxA-1; Mon, 19 Dec 2022 23:58:14 -0500
-X-MC-Unique: iIDRQapdNXKRQ3tbxgSDxA-1
-Received: by mail-wm1-f70.google.com with SMTP id
- f20-20020a7bc8d4000000b003d1cda5bd6fso2201398wml.9
- for <ltp@lists.linux.it>; Mon, 19 Dec 2022 20:58:13 -0800 (PST)
+ us-mta-426-5Mnh9m6hPVKbyUMqmQ5SLQ-1; Tue, 20 Dec 2022 00:00:38 -0500
+X-MC-Unique: 5Mnh9m6hPVKbyUMqmQ5SLQ-1
+Received: by mail-wm1-f72.google.com with SMTP id
+ m17-20020a05600c3b1100b003cf9cc47da5so6040289wms.9
+ for <ltp@lists.linux.it>; Mon, 19 Dec 2022 21:00:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=vQvXuT6GUOv57412JdH7WvIOst7XDKysgJRBD3LlnG4=;
- b=A3+XcvZv63bOwyjjmYrgmZ34YpCIW3yNlP54/tdKd3ASfvkAMZTrQJrTjVMvhfKwH9
- akpjwHBymmUgiwwSQLsMbalbivIgzy9X7F66Ws1D4FaHEmvb1jJJKSkLA5qgl7nam5xf
- TYHcms8iZikv7dk4TXe3jo5imnWDgiMQrUjGkq1odlnkszDRabyYERxo/AtS4IENuJkn
- tqf7J52mc1/i95TKMuEwFrv/cfozdjbSKHXCufL0H/Il15ZPcLy7byxanVuVKNTZ2Uqh
- Sa6CVur6JGpSFH8xBNbfHK4pQek9e5NryhuhKT5kte9qWnuDBSKGw9IhND5VUXNhZnIX
- oIwA==
-X-Gm-Message-State: ANoB5pkZt83gW/UXFxIrbo+DFcxGWY0icXvvxbElNvkGnl6dGQClAqH+
- Az5eQoFCb2OP+4xvSQeAE1LyMdbv/yClcebBrCLi8xebc3MAf+EdqYhOY1mY9etjhfnUUH//+Ry
- +vUKczgcDzpQtFEGzBTXjoWhmkfg=
-X-Received: by 2002:a1c:7717:0:b0:3d1:de6e:8afb with SMTP id
- t23-20020a1c7717000000b003d1de6e8afbmr1597782wmi.92.1671512292593; 
- Mon, 19 Dec 2022 20:58:12 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf78vY22xNmTm/9eiNlR8eCW+lwpqaouWDP3b+k+KxI4U8efyIZHBfo/IiOUz19OU5sW/N20+37cxZXUZNojllY=
-X-Received: by 2002:a1c:7717:0:b0:3d1:de6e:8afb with SMTP id
- t23-20020a1c7717000000b003d1de6e8afbmr1597780wmi.92.1671512292221; Mon, 19
- Dec 2022 20:58:12 -0800 (PST)
+ bh=vsPAo+pI0v5ViuM0RGuGLpewsdt8ur1GTmAcb81ZJoY=;
+ b=zkkRrXbvaXLa9C5IOIorskin4jooRI5S31YLOVt9M/ckboWKsvKmcJ0Cu2+wfQnnvT
+ PrOME8zS5kihmbKuLrEBKP9UMQ1YwXkKdhjmHrjy1YMvv4QJCgxNUNAPHx3RKylL7fSg
+ VY/eWQ3n2+SQ92Q5h5DUcm8YTQNsFz0wcNuxAkCsv5qkiDi5z6HHMR6SsNbJHhRiqmyT
+ NY+9nEGtdJ1ttbMY8rnu0hdEIhGqOAzNChdOc+Ym2LV5GV7sDxd7bbRoBqp6Yyg49Rp+
+ qo3nFGi6Yp5lqBkq2+1Bgg+txqDm8ONnTtSGPDsdhWcHEqonDMBUrTzvd3dX28nYcAVs
+ jZGw==
+X-Gm-Message-State: ANoB5pnAe3NWCmlPAt+X1JCQAuBbr5dU37rPzSozjBotZOj4VZ5iQBEX
+ BAmNM6qeVmvS4PYbwW3G9+42VoMVExY/eNzWcqA1fXSnwXsFUt7g6eW4qBlbTkUrSdh7TvBiDgU
+ 4vywafhZUSrh28HEGNJ1VijeDF/c=
+X-Received: by 2002:adf:fcc9:0:b0:242:3a48:1757 with SMTP id
+ f9-20020adffcc9000000b002423a481757mr19487569wrs.528.1671512437122; 
+ Mon, 19 Dec 2022 21:00:37 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf7CByON687gQCjLlHB5oFhp/yRJSCEUDfKAPgOZVU3o4pt0HPnxD5nz5WniP+s6wgjdUCIVAS2PqVPtEKnX6EI=
+X-Received: by 2002:adf:fcc9:0:b0:242:3a48:1757 with SMTP id
+ f9-20020adffcc9000000b002423a481757mr19487559wrs.528.1671512436857; Mon, 19
+ Dec 2022 21:00:36 -0800 (PST)
 MIME-Version: 1.0
 References: <20221216094611.2924-1-pvorel@suse.cz>
- <20221216094611.2924-2-pvorel@suse.cz>
- <CAASaF6yUfeCS_MnTiYR1v291d=A0xzijDRJqz1SgGORvnCEXbg@mail.gmail.com>
-In-Reply-To: <CAASaF6yUfeCS_MnTiYR1v291d=A0xzijDRJqz1SgGORvnCEXbg@mail.gmail.com>
+ <20221216094611.2924-3-pvorel@suse.cz>
+In-Reply-To: <20221216094611.2924-3-pvorel@suse.cz>
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 20 Dec 2022 12:58:01 +0800
-Message-ID: <CAEemH2d=kNwrAmrvy21Si4wF9H0qqg_Zkq=12S9ZC=11MQKFSw@mail.gmail.com>
-To: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 20 Dec 2022 13:00:25 +0800
+Message-ID: <CAEemH2fPZ3AJuDKUm9RkXijjL6c1-ObHMFaLFVENCoKVc0Qr5A@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [RFC PATCH 1/2] doc: State the minimal kernel version
+Subject: Re: [LTP] [RFC PATCH 2/2] doc: Document used C standard
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,78 +96,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Dec 19, 2022 at 5:52 PM Jan Stancek <jstancek@redhat.com> wrote:
+On Fri, Dec 16, 2022 at 5:46 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-> On Fri, Dec 16, 2022 at 10:46 AM Petr Vorel <pvorel@suse.cz> wrote:
-> >
-> > Because the tested version does not automatically mean the minimal
-> > supported.
-> >
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > Hi all,
-> >
-> > I'm sorry to bother you, many of you concentrate on current mainline (or
-> > supported stable) instead of digging into history. But you might know
-> > about somebody who still cares about 3.x. Although not many of these
-> > people would try to run recent LTP on these old versions, but we never
-> > know.
-> >
-> > I started with 3.0 as that was the result of the old discussions over
-> > ML.  I'm perfectly ok, if we raise it to 3.10, which is tested.
-> > I guess after CentOS 7 EOL we should raise support even higher.
+> which was added in dc7be30e25 ("config: Explicitly set gnu99")
 >
-> I'd be fine with raising it to 3.10, that still covers CentOS7 for now.
-> (3.10 will be 10 years old in couple months)
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
 >
-
-+1 that's exactly!
 
 Reviewed-by: Li Wang <liwang@redhat.com>
 
 
+> ---
+> BTW I guess after CentOS 7 EOL we should raise std.
 >
-> Acked-by: Jan Stancek <jstancek@redhat.com>
+>  doc/supported-kernel-libc-versions.txt | 5 +++++
+>  1 file changed, 5 insertions(+)
 >
-> >
-> > The motivation is to state the version here, instead in
-> > doc/c-test-api.txt
-> >
-> https://patchwork.ozlabs.org/project/ltp/patch/1671166923-2173-7-git-send-email-xuyang2018.jy@fujitsu.com/
-> >
-> > Also stating kernel version limits minimal libc version.
-> > Thus I'm not going to start a discussion about what libc version we
-> > support.
-> >
-> > Kind regards,
-> > Petr
-> >
-> >  doc/supported-kernel-libc-versions.txt | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/doc/supported-kernel-libc-versions.txt
+> diff --git a/doc/supported-kernel-libc-versions.txt
 > b/doc/supported-kernel-libc-versions.txt
-> > index e48e3aeae3..f89c4882fb 100644
-> > --- a/doc/supported-kernel-libc-versions.txt
-> > +++ b/doc/supported-kernel-libc-versions.txt
-> > @@ -51,7 +51,12 @@ distribution you may as well reconsider you life
-> choices.
-> >  | s390x         | cross compilation
-> >  |==================================
-> >
-> > -1.3 Supported libc
-> > +1.3 Minimal supported kernel version
-> > +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +Minimal supported (although untested) kernel version is 3.0.
-> > +
-> > +1.4 Supported libc
-> >  ~~~~~~~~~~~~~~~~~~
-> >
-> >  [align="center",options="header"]
-> > --
-> > 2.39.0
-> >
+> index f89c4882fb..b5f12962b2 100644
+> --- a/doc/supported-kernel-libc-versions.txt
+> +++ b/doc/supported-kernel-libc-versions.txt
+> @@ -70,3 +70,8 @@ Minimal supported (although untested) kernel version is
+> 3.0.
+>                                   for list of files which need to be
+> deleted in order to compile under musl).
+>  | binder (Android) | Please use
+> https://android.googlesource.com/platform/external/ltp/[AOSP fork].
+>  |==================================
+> +
+> +1.5 Used C standard
+> +~~~~~~~~~~~~~~~~~~~
+> +
+> +LTP now compiles with '-std=gnu99'.
+> --
+> 2.39.0
 >
 >
 
