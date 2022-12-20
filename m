@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12A86C4332F
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 06:31:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05B7BC4332F
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 06:31:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 61A1C3CBA89
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 07:31:41 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 5ED893CBA7F
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 07:31:52 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD1673CBA51
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:31:31 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id 55A7E3CBA55
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:31:36 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5EB6C6002A3
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:31:29 +0100 (CET)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2BK6DWEg014804; Tue, 20 Dec 2022 06:31:28 GMT
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2066410007B3
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 07:31:34 +0100 (CET)
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2BK6PZ9m024362; Tue, 20 Dec 2022 06:31:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=p69rrTSut0LD+A/FFrrcq5hvmERrNbnuY3k7Vlxsi+E=;
- b=U1Yet1qhvcSDWgA5j+E1kXgzpe8ooL3r9t7FnPv6V30PXktnYvfuP0qWtwI8B+c4oiJK
- OFBqfEQGVKwEVFrAhRd93uIZKyRmaGuaKwwcnIqS76LnN2cNxgTWI3OOyTh/YUbRVADG
- 68x4tbF3Os0pbgQagfF11Sx16Vzi3KhmKACJeA97lnQ5r4UmRkPiXEe8LwjOkoifb3tF
- HRQGS0SL047s4tKZUlneges1ItQViBCTZjGpWF21ZcMzf52JoF55je7nkt2Svrn+VFED
- 3Xi+aTPqx/p8+2GJTJ5GqfjziOadkKB8ZygDSn38YErkz5S9MB3BfZlpnoGT6KpzI49s Sg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mk7kb0e5t-1
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=hxGic49S7UHfr5ZpfSoiexBAGJi4QvrlXTB9VO7HOa4=;
+ b=aW2xVgCCkTqv8s35tr4qP5Q3cxpEHOA45bkUwc0HSKAx2rAGqfnx7vBjepJH97FL49Kj
+ 2sKWoolmixTSL/WbjeuFFJPHGU4WhGXcr4Q7RbLcFWdLbOpg3NgX9TNO0Bfwag+8/EQ9
+ GrDjlNTwdQ89bL7YKPRfM88ozDA5BAHSYy5n6I+xytVhtIkwz5mJPmEV5ivddY2AEvTq
+ XCZTg43ILO0531sjU/fpqYlG/sWaiqUyWX7rEBJSRzoY2CXorWGU3phIghQ0d0L7vKrI
+ pZn2bjx9UwKtwuvnn9zF7AdtfUnhRMMU2RzKOa4WPATiG2XlbCuWrNQX+WI9QY3/Phax 2g== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com
+ [149.81.74.108])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mk7s7049m-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 20 Dec 2022 06:31:27 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BJEMPNn025292;
- Tue, 20 Dec 2022 06:31:26 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
- by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3mh6ywkhqr-1
+ Tue, 20 Dec 2022 06:31:32 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+ by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BJLeTXY015566;
+ Tue, 20 Dec 2022 06:31:30 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+ by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3mh6yy2j40-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 20 Dec 2022 06:31:26 +0000
+ Tue, 20 Dec 2022 06:31:30 +0000
 Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
  [10.20.54.105])
- by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2BK6VMGU40174034
+ by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2BK6VQMF23200054
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 20 Dec 2022 06:31:22 GMT
+ Tue, 20 Dec 2022 06:31:26 GMT
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8901E2004B;
- Tue, 20 Dec 2022 06:31:22 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 8A46520040;
+ Tue, 20 Dec 2022 06:31:26 +0000 (GMT)
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 46B0920043;
- Tue, 20 Dec 2022 06:31:19 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 2A9D320043;
+ Tue, 20 Dec 2022 06:31:23 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.119.42])
  by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Tue, 20 Dec 2022 06:31:18 +0000 (GMT)
+ Tue, 20 Dec 2022 06:31:22 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Tue, 20 Dec 2022 12:01:01 +0530
-Message-Id: <20221220063109.279007-1-tsahu@linux.ibm.com>
+Date: Tue, 20 Dec 2022 12:01:02 +0530
+Message-Id: <20221220063109.279007-2-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: gkUb4R6ckFhGrPdYDGl_auGNigxkLzcW
-X-Proofpoint-ORIG-GUID: gkUb4R6ckFhGrPdYDGl_auGNigxkLzcW
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+In-Reply-To: <20221220063109.279007-1-tsahu@linux.ibm.com>
+References: <20221220063109.279007-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: CrsUJs1iRvRd3VtOb_p6ANt2MQ5yFx7h
+X-Proofpoint-ORIG-GUID: CrsUJs1iRvRd3VtOb_p6ANt2MQ5yFx7h
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-19_05,2022-12-15_02,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 impostorscore=0
- phishscore=0 adultscore=0 mlxlogscore=914 mlxscore=0 malwarescore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2212200051
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+ clxscore=1015
+ lowpriorityscore=0 suspectscore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 priorityscore=1501 malwarescore=0 adultscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2212200054
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/8][PART 3] Hugetlb:Migrating the libhugetlbfs
- tests
+Subject: [LTP] [PATCH v2 1/8] Hugetlb: Migrating libhugetlbfs fork-cow
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,56 +102,163 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-V2:
-	1. Added linux bug fix commit tag in testcases.
-	2. Asthetics changes in [PATCH 1/8].
-Hi,
-This patch series is in continuation to part [1] and part [2]
-This series include 8 more tests taken from libhugetlbfs.
+Migrating the libhugetlbfs/testcases/fork-cow.c test
 
-Background:
-Libhugetlbfs is not being maintained actively, and some distro is dropping
-support for it. There are some tests that are good for testing hugetlb
-functionality in kernel. These patches include tests from libhugetlbfs.
+Test Description: This checks copy-on-write semantics, specifically the
+semantics of a MAP_PRIVATE mapping across a fork().  Some versions of the
+powerpc kernel had a bug in huge_ptep_set_wrprotect() which would fail to
+flush the hash table after setting the write protect bit in the parent's
+page tables, thus allowing the parent to pollute the child's mapping.
 
-ref:
- 1. https://lore.kernel.org/all/20221104162511.28658-1-tsahu@linux.ibm.com/
- 2. https://lore.kernel.org/all/20221120191533.164848-1-tsahu@linux.ibm.com/
- 3. https://lore.kernel.org/all/20221201120248.139396-1-tsahu@linux.ibm.com/
-
-Tarun Sahu (8):
-  Hugetlb: Migrating libhugetlbfs fork-cow
-  Hugetlb: Migrating libhugetlbfs huge_at_4GB_normal_below
-  Hugetlb: Migrating libhugetlbfs huge_below_4GB_normal_above
-  Hugetlb: Migrating libhugetlbfs icache-hygiene
-  Hugetlb: Migrating libhugetlbfs madvise_reserve
-  Hugetlb: Migrating libhugetlbfs map_high_truncate_2
-  Hugetlb: Migrating libhugetlbfs misalign
-  Hugetlb: Migrating libhugetlbfs misaligned_offset
-
- runtest/hugetlb                               |   9 +
- testcases/kernel/mem/.gitignore               |   8 +
- .../kernel/mem/hugetlb/hugefork/Makefile      |  10 +
- .../kernel/mem/hugetlb/hugefork/hugefork01.c  |  92 +++++++
- .../kernel/mem/hugetlb/hugemmap/Makefile      |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap13.c  | 126 +++++++++
- .../kernel/mem/hugetlb/hugemmap/hugemmap14.c  | 159 ++++++++++++
- .../kernel/mem/hugetlb/hugemmap/hugemmap15.c  | 243 ++++++++++++++++++
- .../kernel/mem/hugetlb/hugemmap/hugemmap16.c  |  83 ++++++
- .../kernel/mem/hugetlb/hugemmap/hugemmap17.c  | 103 ++++++++
- .../kernel/mem/hugetlb/hugemmap/hugemmap18.c  | 153 +++++++++++
- .../kernel/mem/hugetlb/hugemmap/hugemmap19.c  | 147 +++++++++++
- 12 files changed, 1134 insertions(+)
+Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+---
+ runtest/hugetlb                               |  2 +
+ testcases/kernel/mem/.gitignore               |  1 +
+ .../kernel/mem/hugetlb/hugefork/Makefile      | 10 ++
+ .../kernel/mem/hugetlb/hugefork/hugefork01.c  | 92 +++++++++++++++++++
+ 4 files changed, 105 insertions(+)
  create mode 100644 testcases/kernel/mem/hugetlb/hugefork/Makefile
  create mode 100644 testcases/kernel/mem/hugetlb/hugefork/hugefork01.c
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap16.c
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap17.c
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap18.c
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap19.c
 
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index ec1fc2515..4c16e1e7c 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -1,6 +1,8 @@
+ hugefallocate01 hugefallocate01
+ hugefallocate02 hugefallocate02
+ 
++hugefork01 hugefork01
++
+ hugemmap01 hugemmap01
+ hugemmap02 hugemmap02
+ hugemmap04 hugemmap04
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index c0906f3d3..adea760c7 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -1,6 +1,7 @@
+ /cpuset/cpuset01
+ /hugetlb/hugefallocate/hugefallocate01
+ /hugetlb/hugefallocate/hugefallocate02
++/hugetlb/hugefork/hugefork01
+ /hugetlb/hugemmap/hugemmap01
+ /hugetlb/hugemmap/hugemmap02
+ /hugetlb/hugemmap/hugemmap04
+diff --git a/testcases/kernel/mem/hugetlb/hugefork/Makefile b/testcases/kernel/mem/hugetlb/hugefork/Makefile
+new file mode 100644
+index 000000000..77ebb0aef
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugefork/Makefile
+@@ -0,0 +1,10 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++# Copyright (C) 2009, Cisco Systems Inc.
++# Ngie Cooper, July 2009
++
++top_srcdir		?= ../../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(abs_srcdir)/../Makefile.inc
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
+diff --git a/testcases/kernel/mem/hugetlb/hugefork/hugefork01.c b/testcases/kernel/mem/hugetlb/hugefork/hugefork01.c
+new file mode 100644
+index 000000000..90cefdba2
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugefork/hugefork01.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: LGPL-2.1-or-later
++/*
++ * Copyright (C) 2008 David Gibson, IBM Corporation.
++ * Author: David Gibson
++ */
++
++/*\
++ * [Description]
++ *
++ * This checks copy-on-write semantics, specifically the semantics of a
++ * MAP_PRIVATE mapping across a fork().  Some versions of the powerpc
++ * kernel had a bug in huge_ptep_set_wrprotect() which would fail to
++ * flush the hash table after setting the write protect bit in the parent's
++ * page tables, thus allowing the parent to pollute the child's mapping.
++ *
++ */
++
++#include <sys/wait.h>
++#include <sys/mman.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <sys/types.h>
++
++#include "hugetlb.h"
++
++#define C1		0x1234ABCD
++#define C2		~0x1234ABCD
++#define C3		0xfeef5678
++#define MNTPOINT "hugetlbfs/"
++static int  fd = -1;
++static long hpage_size;
++
++static void run_test(void)
++{
++	volatile unsigned int *p;
++	int parent_readback;
++	pid_t pid;
++
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
++	*p = C1;
++
++	pid = SAFE_FORK();
++	if (pid != 0) {
++		*p = C2;
++		TST_CHECKPOINT_WAKE_AND_WAIT(0);
++		parent_readback = *p;
++		TST_CHECKPOINT_WAKE(0);
++	} else {
++		unsigned int child_readback = 0;
++
++		TST_CHECKPOINT_WAIT(0);
++		child_readback = *p;
++		*p = C3;
++		TST_CHECKPOINT_WAKE_AND_WAIT(0);
++		TST_EXP_EXPR(child_readback == C1, "0x%x == child_readback (0x%x)",
++				C1, child_readback);
++		exit(0);
++	}
++	tst_reap_children();
++	TST_EXP_EXPR(parent_readback == C2, "0x%x == parent_readback (0x%x)",
++			C2, parent_readback);
++
++	SAFE_MUNMAP((void *)p, hpage_size);
++}
++
++static void setup(void)
++{
++	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:")*1024;
++	fd = tst_creat_unlinked(MNTPOINT, 0);
++}
++
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.tags = (struct tst_tag[]) {
++		{"linux-git", "86df86424939"},
++		{}
++	},
++	.needs_root = 1,
++	.needs_checkpoints = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.forks_child = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.hugepages = {2, TST_NEEDS},
++};
 -- 
 2.31.1
 
