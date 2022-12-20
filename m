@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23D56C4332F
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 04:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20374C4332F
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 04:58:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D5FA03CCD65
-	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 05:55:09 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 180733C6C93
+	for <ltp@archiver.kernel.org>; Tue, 20 Dec 2022 05:58:34 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D72983C6C93
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 05:54:59 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 6B5963C1B40
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 05:58:18 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4CEAE10004BF
- for <ltp@lists.linux.it>; Tue, 20 Dec 2022 05:54:58 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8DDFB140042E
+ for <ltp@lists.linux.it>; Tue, 20 Dec 2022 05:58:16 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1671512097;
+ s=mimecast20190719; t=1671512295;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=6cToacL9z5doqT3DAnmL0QSQh+dg3x5uDeYIA8IiNpA=;
- b=cDH3TrowvGE0o+JHaGbVjJ9j4BAUdZZBjwBIlAvnJprv2UARJBOdBTNRE3f6z/emgOLQDu
- t8i88azgC6UxJKE+JA+O5YOTXW0mMFHS0X31zsRGEuyd93PhlAl7pa6PRpnoIWc12jn/c1
- KA0uSYSRpPYf5FPCBOoPo5rpNoQU9fE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=vQvXuT6GUOv57412JdH7WvIOst7XDKysgJRBD3LlnG4=;
+ b=JELdpEM+gyneFmOlonfTWunIrTQ+wi+cWx+kwu0lCMW/4HVz2sLZcW0HbWkLdyVr1ZgRy2
+ 0XhcyWG5hjGWtkCUg8usLYPkOfL2Nreb39HINq8sz/a60ZzEhfmZ+hFR51Rea93LTCsl4O
+ UOer54ZKy0rTQYKE3i91O1VZW67GC+M=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-435-TYGHbOIoNrqdHXbmXi0hmQ-1; Mon, 19 Dec 2022 23:54:55 -0500
-X-MC-Unique: TYGHbOIoNrqdHXbmXi0hmQ-1
-Received: by mail-wm1-f72.google.com with SMTP id
- m38-20020a05600c3b2600b003d1fc5f1f80so7511180wms.1
- for <ltp@lists.linux.it>; Mon, 19 Dec 2022 20:54:55 -0800 (PST)
+ us-mta-379-iIDRQapdNXKRQ3tbxgSDxA-1; Mon, 19 Dec 2022 23:58:14 -0500
+X-MC-Unique: iIDRQapdNXKRQ3tbxgSDxA-1
+Received: by mail-wm1-f70.google.com with SMTP id
+ f20-20020a7bc8d4000000b003d1cda5bd6fso2201398wml.9
+ for <ltp@lists.linux.it>; Mon, 19 Dec 2022 20:58:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=6cToacL9z5doqT3DAnmL0QSQh+dg3x5uDeYIA8IiNpA=;
- b=rfsg7MHPP8QBF98IW7fGkH2vNl6NnEXZs25QZTErk3+4O4pG8ep+tmU/TwyXpCRaWT
- tSUr0ZIPkTk8Ci/821SSkUjMhhwjK2P5HZF6HPfNVmtAxIz+6oa2BrPNZ/pRd/l7I4tT
- w0F6dFEkennZgD6u/+DKaaSBMPhYefIYLcZITzw2+10omh64LABD20ztHam9lDocpS7t
- 0jkIy8pj7ROT+lbKfF9xrr95veTFat+BaZY2tPaGTX/mX68omb0K+RoLc2Yz39ADY6eX
- +6TTRr/Okafx5lr+EpD51d/cYJUO1Q1HmahMM86O3SyOcTm0ei7m7YPoAYptMVWMXdJk
- 4Udw==
-X-Gm-Message-State: ANoB5pm5ZLG6A0J8BTuN5XGFY0cOC9QHGPVpayEqBMlht4zoHro+UKI4
- q+JFB3f+pkWgfDCAwZ5keNVG3NoRAglvpAhj6RSo267mUcWjctssMppu7VuEGHI/ABivjC1doT5
- URt28R+lY6fMqE9hPYhH/njq1q3c=
-X-Received: by 2002:adf:fa12:0:b0:242:1c:7507 with SMTP id
- m18-20020adffa12000000b00242001c7507mr40433316wrr.42.1671512094296; 
- Mon, 19 Dec 2022 20:54:54 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf6nbDdkQ3qjTwA7s8pzW5aYTGqcW2qcUTWVan7FJ750dieTcbHwEffOO+Q+SwB5QKvjZ4pPBwTSnztYQcX2AFo=
-X-Received: by 2002:adf:fa12:0:b0:242:1c:7507 with SMTP id
- m18-20020adffa12000000b00242001c7507mr40433313wrr.42.1671512093958; 
- Mon, 19 Dec 2022 20:54:53 -0800 (PST)
+ bh=vQvXuT6GUOv57412JdH7WvIOst7XDKysgJRBD3LlnG4=;
+ b=A3+XcvZv63bOwyjjmYrgmZ34YpCIW3yNlP54/tdKd3ASfvkAMZTrQJrTjVMvhfKwH9
+ akpjwHBymmUgiwwSQLsMbalbivIgzy9X7F66Ws1D4FaHEmvb1jJJKSkLA5qgl7nam5xf
+ TYHcms8iZikv7dk4TXe3jo5imnWDgiMQrUjGkq1odlnkszDRabyYERxo/AtS4IENuJkn
+ tqf7J52mc1/i95TKMuEwFrv/cfozdjbSKHXCufL0H/Il15ZPcLy7byxanVuVKNTZ2Uqh
+ Sa6CVur6JGpSFH8xBNbfHK4pQek9e5NryhuhKT5kte9qWnuDBSKGw9IhND5VUXNhZnIX
+ oIwA==
+X-Gm-Message-State: ANoB5pkZt83gW/UXFxIrbo+DFcxGWY0icXvvxbElNvkGnl6dGQClAqH+
+ Az5eQoFCb2OP+4xvSQeAE1LyMdbv/yClcebBrCLi8xebc3MAf+EdqYhOY1mY9etjhfnUUH//+Ry
+ +vUKczgcDzpQtFEGzBTXjoWhmkfg=
+X-Received: by 2002:a1c:7717:0:b0:3d1:de6e:8afb with SMTP id
+ t23-20020a1c7717000000b003d1de6e8afbmr1597782wmi.92.1671512292593; 
+ Mon, 19 Dec 2022 20:58:12 -0800 (PST)
+X-Google-Smtp-Source: AA0mqf78vY22xNmTm/9eiNlR8eCW+lwpqaouWDP3b+k+KxI4U8efyIZHBfo/IiOUz19OU5sW/N20+37cxZXUZNojllY=
+X-Received: by 2002:a1c:7717:0:b0:3d1:de6e:8afb with SMTP id
+ t23-20020a1c7717000000b003d1de6e8afbmr1597780wmi.92.1671512292221; Mon, 19
+ Dec 2022 20:58:12 -0800 (PST)
 MIME-Version: 1.0
-References: <1671434187-2038-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1671434187-2038-2-git-send-email-xuyang2018.jy@fujitsu.com>
-In-Reply-To: <1671434187-2038-2-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <20221216094611.2924-1-pvorel@suse.cz>
+ <20221216094611.2924-2-pvorel@suse.cz>
+ <CAASaF6yUfeCS_MnTiYR1v291d=A0xzijDRJqz1SgGORvnCEXbg@mail.gmail.com>
+In-Reply-To: <CAASaF6yUfeCS_MnTiYR1v291d=A0xzijDRJqz1SgGORvnCEXbg@mail.gmail.com>
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 20 Dec 2022 12:54:42 +0800
-Message-ID: <CAEemH2eHs1cjuur9zYYt6iRLxg3WR6Bx9OYc8vU63Gt4JhsK3A@mail.gmail.com>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Tue, 20 Dec 2022 12:58:01 +0800
+Message-ID: <CAEemH2d=kNwrAmrvy21Si4wF9H0qqg_Zkq=12S9ZC=11MQKFSw@mail.gmail.com>
+To: Jan Stancek <jstancek@redhat.com>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 2/2] memcg_lib.sh: Add fallback for RHEL9
+Subject: Re: [LTP] [RFC PATCH 1/2] doc: State the minimal kernel version
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,47 +87,87 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ =?UTF-8?Q?Jan_L=C3=BCbbe?= <jlu@pengutronix.de>, Khem Raj <raj.khem@gmail.com>,
+ Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it,
+ automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Dec 19, 2022 at 2:16 PM Yang Xu <xuyang2018.jy@fujitsu.com> wrote:
+On Mon, Dec 19, 2022 at 5:52 PM Jan Stancek <jstancek@redhat.com> wrote:
 
-> The kernel patch has been merged on RHEL9. You can see it
-> in url[1], to avoid false report, so add a fallback for this.
+> On Fri, Dec 16, 2022 at 10:46 AM Petr Vorel <pvorel@suse.cz> wrote:
+> >
+> > Because the tested version does not automatically mean the minimal
+> > supported.
+> >
+> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> > Hi all,
+> >
+> > I'm sorry to bother you, many of you concentrate on current mainline (or
+> > supported stable) instead of digging into history. But you might know
+> > about somebody who still cares about 3.x. Although not many of these
+> > people would try to run recent LTP on these old versions, but we never
+> > know.
+> >
+> > I started with 3.0 as that was the result of the old discussions over
+> > ML.  I'm perfectly ok, if we raise it to 3.10, which is tested.
+> > I guess after CentOS 7 EOL we should raise support even higher.
 >
-> [1]
-> http://www.rpmfind.net/linux/RPM/centos-stream/9/baseos/x86_64/kernel-5.14.0-205.el9.x86_64.html
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> I'd be fine with raising it to 3.10, that still covers CentOS7 for now.
+> (3.10 will be 10 years old in couple months)
 >
+
++1 that's exactly!
 
 Reviewed-by: Li Wang <liwang@redhat.com>
 
 
----
->  testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> index 004946456..dbb61e6b1 100755
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> @@ -403,7 +403,9 @@ fi
+> Acked-by: Jan Stancek <jstancek@redhat.com>
 >
->  # Post 4.16 kernel updates stat in batch (> 32 pages) every time
->  # Post 6.1 kernel updates stat in batch (> 64 pages) every time
-> -if tst_kvcmp -lt "6.1"; then
-> +# 1813e51eece0ad6 ("memcg: increase MEMCG_CHARGE_BATCH to 64")
-> +# has been merged since 5.14.0-191.el9.
-> +if tst_kvcmp -lt "6.1 RHEL9:5.14.0-191" ; then
->         PAGESIZES=$(($PAGESIZE * 33))
->  else
->         PAGESIZES=$(($PAGESIZE * 65))
-> --
-> 2.31.1
+> >
+> > The motivation is to state the version here, instead in
+> > doc/c-test-api.txt
+> >
+> https://patchwork.ozlabs.org/project/ltp/patch/1671166923-2173-7-git-send-email-xuyang2018.jy@fujitsu.com/
+> >
+> > Also stating kernel version limits minimal libc version.
+> > Thus I'm not going to start a discussion about what libc version we
+> > support.
+> >
+> > Kind regards,
+> > Petr
+> >
+> >  doc/supported-kernel-libc-versions.txt | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/doc/supported-kernel-libc-versions.txt
+> b/doc/supported-kernel-libc-versions.txt
+> > index e48e3aeae3..f89c4882fb 100644
+> > --- a/doc/supported-kernel-libc-versions.txt
+> > +++ b/doc/supported-kernel-libc-versions.txt
+> > @@ -51,7 +51,12 @@ distribution you may as well reconsider you life
+> choices.
+> >  | s390x         | cross compilation
+> >  |==================================
+> >
+> > -1.3 Supported libc
+> > +1.3 Minimal supported kernel version
+> > +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > +
+> > +Minimal supported (although untested) kernel version is 3.0.
+> > +
+> > +1.4 Supported libc
+> >  ~~~~~~~~~~~~~~~~~~
+> >
+> >  [align="center",options="header"]
+> > --
+> > 2.39.0
+> >
 >
 >
 
