@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E401BC4332F
-	for <ltp@archiver.kernel.org>; Thu, 22 Dec 2022 08:54:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C329C4332F
+	for <ltp@archiver.kernel.org>; Thu, 22 Dec 2022 09:31:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B02C03CB9CA
-	for <ltp@archiver.kernel.org>; Thu, 22 Dec 2022 09:54:00 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D77293CB9C3
+	for <ltp@archiver.kernel.org>; Thu, 22 Dec 2022 10:31:35 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5741A3C1364
- for <ltp@lists.linux.it>; Thu, 22 Dec 2022 09:53:50 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id CF8E03C327F
+ for <ltp@lists.linux.it>; Thu, 22 Dec 2022 10:31:24 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6CE81200BCF
- for <ltp@lists.linux.it>; Thu, 22 Dec 2022 09:53:49 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 28A53200C04
+ for <ltp@lists.linux.it>; Thu, 22 Dec 2022 10:31:23 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 42DC8767AC
- for <ltp@lists.linux.it>; Thu, 22 Dec 2022 08:53:48 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id E17D576FF7;
+ Thu, 22 Dec 2022 09:31:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1671699228;
+ t=1671701482;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ervXvfSvIBTLVcKWi6qgMfP4x/w1KbHCqcyy8VCy5tY=;
- b=eCM/sJRipVc9YQQzoD9WdthBlKPnO90C57UcpEYeK0TXN1+qTGIODtBxHzVwhC5u75fjgR
- VfIdeOn97Xxjw27LvIFiJsEcpbgnKKS/R5UY3tMv+ka5EzGP7TSjA/xr2Ry7kZ61qdNuSQ
- R2A78M1hq2eaY4Ypbwn6wSTq3wSsVaI=
+ bh=j/bvX4Gp1bxoxWWMYO+uVXQEKGO5691pNwCk0tNrKc8=;
+ b=ybQNg/kBdTUVYWLfCqswoTL4n4frhHOG7mJjD7bKwRihpEbqI0g9ZZnqop6dzu7oaUSgKw
+ Y32pTZ/Awj2KlD1KK/wSwbeTDaeozSyorEKb6V5TrVozfa57qIGYNmpsvRoKH2zt4M1jJc
+ 6yu960tfrQaA48wgN2BDmdZaYyusFMM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1671699228;
+ s=susede2_ed25519; t=1671701482;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ervXvfSvIBTLVcKWi6qgMfP4x/w1KbHCqcyy8VCy5tY=;
- b=QYp00D46i3k4XZecKaRlXHn28CrNlMm0Immd9KDz4vBpdHdsvMs8ot0l1sKRrnNG6wp2K8
- 8RNyJ1n94lcqyEDw==
+ bh=j/bvX4Gp1bxoxWWMYO+uVXQEKGO5691pNwCk0tNrKc8=;
+ b=snIrlY2I2G1qGbHWNDSaScCsW7u0nkBEr6IvDIRrfo+8wiwz3MACj81mKSX4jLOfpGnVYZ
+ Ql+eS3uI5D9qMTCw==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 18A702C15A;
- Thu, 22 Dec 2022 08:53:48 +0000 (UTC)
-References: <20221221075220.14353-1-akumar@suse.de>
+ by relay2.suse.de (Postfix) with ESMTPS id B7FCD2C141;
+ Thu, 22 Dec 2022 09:31:22 +0000 (UTC)
+References: <20221221075821.3786392-1-jencce.kernel@gmail.com>
 User-agent: mu4e 1.8.13; emacs 28.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Avinesh Kumar <akumar@suse.de>
-Date: Thu, 22 Dec 2022 08:47:34 +0000
+To: Murphy Zhou <jencce.kernel@gmail.com>
+Date: Thu, 22 Dec 2022 09:31:13 +0000
 Organization: Linux Private Site
-In-reply-to: <20221221075220.14353-1-akumar@suse.de>
-Message-ID: <87ili3stt2.fsf@suse.de>
+In-reply-to: <20221221075821.3786392-1-jencce.kernel@gmail.com>
+Message-ID: <87edsrss2d.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] setreuid01.c: Rewrite using new LTP API and use
- TST_EXP* macros
+Subject: Re: [LTP] [PATCH] statx07: umount before un-export
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,231 +78,45 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-Avinesh Kumar <akumar@suse.de> writes:
+Murphy Zhou <jencce.kernel@gmail.com> writes:
 
-> Hi,
-> I changed this simple setreuid() test to new LTP API but I think
-> this is a subset of setreuid03.c test and can be removed altogether.
-> Please share your opinion. If this should be removed, I'll post new
-> patch for that.
+> We need to umount first, or there will be an umounted mountpoint
+> left behind.
 
-Yes, I think that is reasonable.
+Merged, thanks!
 
 >
->
-> Signed-off-by: Avinesh Kumar <akumar@suse.de>
+> Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
 > ---
->  .../kernel/syscalls/setreuid/setreuid01.c     | 188 +++---------------
->  1 file changed, 25 insertions(+), 163 deletions(-)
+>  testcases/kernel/syscalls/statx/statx07.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/setreuid/setreuid01.c b/testcases/kernel/syscalls/setreuid/setreuid01.c
-> index 54ba2d7a8..b0c1e0ab2 100644
-> --- a/testcases/kernel/syscalls/setreuid/setreuid01.c
-> +++ b/testcases/kernel/syscalls/setreuid/setreuid01.c
-> @@ -1,176 +1,38 @@
-> +// SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-> - *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms of version 2 of the GNU General Public License as
-> - * published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope that it would be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> - *
-> - * Further, this software is distributed without any warranty that it is
-> - * free of the rightful claim of any third person regarding infringement
-> - * or the like.  Any license provided herein, whether implied or
-> - * otherwise, applies only to this software file.  Patent licenses, if
-> - * any, provided herein do not apply to combinations of this program with
-> - * other software, or any other product whatsoever.
-> - *
-> - * You should have received a copy of the GNU General Public License along
-> - * with this program; if not, write the Free Software Foundation, Inc.,
-> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> - *
-> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-> - * Mountain View, CA  94043, or:
-> - *
-> - * http://www.sgi.com
-> - *
-> - * For further information regarding this notice, see:
-> - *
-> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-> - *
-> - * Author: William Roske
-> - * Co-pilot: Dave Fenner
-> + *	Author: William Roske
-> + *	Co-pilot: Dave Fenner
-> + * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
->   */
+> diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
+> index e1ae36a35..8cb3e9b6d 100644
+> --- a/testcases/kernel/syscalls/statx/statx07.c
+> +++ b/testcases/kernel/syscalls/statx/statx07.c
+> @@ -149,6 +149,9 @@ static void setup(void)
 >  
-> -/*
-> - * Testcase to test the basic functionality of setreuid(2) system call.
-> +/*\
-> + * [Description]
-> + *
-> + * Verify the basic functionality of setreuid(2) system call when executed
-> + * as non-root user.
->   */
->  
-> -#include <errno.h>
-> -#include <string.h>
-> -#include <signal.h>
-> -#include <sys/types.h>
-> +#include "tst_test.h"
-> +#include "compat_tst_16.h"
->  
-> -#include "test.h"
-> -#include "compat_16.h"
-> +static uid_t ruid, euid;
->  
-> -static void setup(void);
-> -static void cleanup(void);
-> -
-> -TCID_DEFINE(setreuid01);
-> -int TST_TOTAL = 5;
-> -
-> -static uid_t ruid, euid;	/* real and effective user ids */
-> -
-> -int main(int ac, char **av)
-> +static void run(void)
+>  static void cleanup(void)
 >  {
-> -	int lc;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		/*
-> -		 * TEST CASE:
-> -		 *  Don't change either real or effective uid
-> -		 */
-> -		ruid = getuid();	/* get real uid */
-> -		UID16_CHECK(ruid, setreuid, cleanup);
-> -
-> -		euid = geteuid();	/* get effective uid */
-> -		UID16_CHECK(euid, setreuid, cleanup);
-> -
-> -		TEST(SETREUID(cleanup, -1, -1));
-> +	ruid = getuid();
-> +	UID16_CHECK(ruid, setreuid);
+> +	if (mounted)
+> +		SAFE_UMOUNT(CLI_PATH);
+> +
+>  	if (!exported)
+>  		return;
+>  	snprintf(cmd, sizeof(cmd),
+> @@ -156,9 +159,6 @@ static void cleanup(void)
 >  
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setreuid -  Don't change either real or effective uid failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setreuid -  Don't change either real or effective uid returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> +	euid = geteuid();
-> +	UID16_CHECK(euid, setreuid);
->  
-> -		/*
-> -		 * TEST CASE:
-> -		 *  change effective to effective uid
-> -		 */
+>  	if (tst_system(cmd) == -1)
+>  		tst_res(TWARN | TST_ERR, "failed to clear exportfs");
 > -
-> -		TEST(SETREUID(cleanup, -1, euid));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setreuid -  change effective to effective uid failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setreuid -  change effective to effective uid returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> -
-> -		/*
-> -		 * TEST CASE:
-> -		 *  change real to real uid
-> -		 */
-> -
-> -		TEST(SETREUID(cleanup, ruid, -1));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setreuid -  change real to real uid failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setreuid -  change real to real uid returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> -
-> -		/*
-> -		 * TEST CASE:
-> -		 *  change effective to real uid
-> -		 */
-> -
-> -		TEST(SETREUID(cleanup, -1, ruid));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setreuid -  change effective to real uid failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setreuid -  change effective to real uid returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> -
-> -		/*
-> -		 * TEST CASE:
-> -		 *  try to change real to current real
-> -		 */
-> -
-> -		TEST(SETREUID(cleanup, ruid, ruid));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setreuid -  try to change real to current real failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setreuid -  try to change real to current real returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> -
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -}
-> -
-> -static void setup(void)
-> -{
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> +	TST_EXP_PASS(setreuid(-1, -1));
-> +	TST_EXP_PASS(setreuid(-1, euid));
-> +	TST_EXP_PASS(setreuid(ruid, -1));
-> +	TST_EXP_PASS(setreuid(-1, ruid));
-> +	TST_EXP_PASS(setreuid(euid, -1));
+> -	if (mounted)
+> -		SAFE_UMOUNT(CLI_PATH);
 >  }
 >  
-> -static void cleanup(void)
-> -{
-> -	tst_rmdir();
-> -}
-> +static struct tst_test test = {
-> +	.test_all = run
-> +};
+>  static struct tst_test test = {
 > -- 
-> 2.39.0
+> 2.31.1
 
 
 -- 
