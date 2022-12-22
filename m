@@ -4,60 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C329C4332F
-	for <ltp@archiver.kernel.org>; Thu, 22 Dec 2022 09:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFC65C4332F
+	for <ltp@archiver.kernel.org>; Thu, 22 Dec 2022 09:49:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D77293CB9C3
-	for <ltp@archiver.kernel.org>; Thu, 22 Dec 2022 10:31:35 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id C75513CB9B0
+	for <ltp@archiver.kernel.org>; Thu, 22 Dec 2022 10:49:45 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CF8E03C327F
- for <ltp@lists.linux.it>; Thu, 22 Dec 2022 10:31:24 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 51EA23C327F
+ for <ltp@lists.linux.it>; Thu, 22 Dec 2022 10:49:36 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 28A53200C04
- for <ltp@lists.linux.it>; Thu, 22 Dec 2022 10:31:23 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id E17D576FF7;
- Thu, 22 Dec 2022 09:31:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1671701482;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=j/bvX4Gp1bxoxWWMYO+uVXQEKGO5691pNwCk0tNrKc8=;
- b=ybQNg/kBdTUVYWLfCqswoTL4n4frhHOG7mJjD7bKwRihpEbqI0g9ZZnqop6dzu7oaUSgKw
- Y32pTZ/Awj2KlD1KK/wSwbeTDaeozSyorEKb6V5TrVozfa57qIGYNmpsvRoKH2zt4M1jJc
- 6yu960tfrQaA48wgN2BDmdZaYyusFMM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1671701482;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=j/bvX4Gp1bxoxWWMYO+uVXQEKGO5691pNwCk0tNrKc8=;
- b=snIrlY2I2G1qGbHWNDSaScCsW7u0nkBEr6IvDIRrfo+8wiwz3MACj81mKSX4jLOfpGnVYZ
- Ql+eS3uI5D9qMTCw==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A793960094C
+ for <ltp@lists.linux.it>; Thu, 22 Dec 2022 10:49:34 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id B7FCD2C141;
- Thu, 22 Dec 2022 09:31:22 +0000 (UTC)
-References: <20221221075821.3786392-1-jencce.kernel@gmail.com>
-User-agent: mu4e 1.8.13; emacs 28.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Murphy Zhou <jencce.kernel@gmail.com>
-Date: Thu, 22 Dec 2022 09:31:13 +0000
-Organization: Linux Private Site
-In-reply-to: <20221221075821.3786392-1-jencce.kernel@gmail.com>
-Message-ID: <87edsrss2d.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 81DAD77178;
+ Thu, 22 Dec 2022 09:49:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1671702574;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=nDDM8Wvxy1oK/zWyEJUIspYMbSo+bbGHs3OvJQ/cGJ4=;
+ b=hXLI4/Epc5lCbI+WfOwnjscH/O/wpwxO6shqE8DsCCYibWLTb4xaEkHkCALLOmUIMft70n
+ 8Hydhr6c3nSwWag2LMH72CEpBh7c+Jpc5CkENqxaXewaqcOBrrTQOH3brt1cnNf6uW/Qs2
+ kQAY/w83JMTsClPBgGbl45J51uXBQYg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1671702574;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=nDDM8Wvxy1oK/zWyEJUIspYMbSo+bbGHs3OvJQ/cGJ4=;
+ b=Gdfjl1WK9smJP3GNVEcD7B95xgFLMTDci3WOhY5J9C5vY1r6Pj1il9+ZAqpDrLfReRu02Z
+ TjdBBj/75yCZXyDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5996B138FD;
+ Thu, 22 Dec 2022 09:49:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id PG1kFC4opGOATwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 22 Dec 2022 09:49:34 +0000
+Date: Thu, 22 Dec 2022 10:49:32 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <Y6QoLAfvY/W175WH@pevik>
+References: <Y5xF6PU5Yvh+oku5@pevik> <20221220075714.28762-1-akumar@suse.de>
+ <87a63ith0b.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87a63ith0b.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] statx07: umount before un-export
+Subject: Re: [LTP] [PATCH v5] statvfs01: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,59 +76,103 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi Avinesh, Richie,
 
-Murphy Zhou <jencce.kernel@gmail.com> writes:
+Generally LGTM, thanks for fixing exfat and vfat.
 
-> We need to umount first, or there will be an umounted mountpoint
-> left behind.
+> > +	toolong_fname = SAFE_MALLOC(buf.f_namemax + 1);
+However, length could be smaller:
+Instead using buf.f_namemax + 1 (1531) also for exfat and vfat,
+invalid length is already buf.f_namemax / NLS_MAX_CHARSET_SIZE + 1 (256).
 
-Merged, thanks!
+> > +	if (fs_type == TST_VFAT_MAGIC || fs_type == TST_EXFAT_MAGIC)
+> > +		valid_fname = SAFE_MALLOC(buf.f_namemax / NLS_MAX_CHARSET_SIZE - 1);
+> > +	else
+> > +		valid_fname = SAFE_MALLOC(buf.f_namemax - 1);
 
->
-> Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
-> ---
->  testcases/kernel/syscalls/statx/statx07.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
-> index e1ae36a35..8cb3e9b6d 100644
-> --- a/testcases/kernel/syscalls/statx/statx07.c
-> +++ b/testcases/kernel/syscalls/statx/statx07.c
-> @@ -149,6 +149,9 @@ static void setup(void)
->  
->  static void cleanup(void)
->  {
-> +	if (mounted)
-> +		SAFE_UMOUNT(CLI_PATH);
-> +
->  	if (!exported)
->  		return;
->  	snprintf(cmd, sizeof(cmd),
-> @@ -156,9 +159,6 @@ static void cleanup(void)
->  
->  	if (tst_system(cmd) == -1)
->  		tst_res(TWARN | TST_ERR, "failed to clear exportfs");
-> -
-> -	if (mounted)
-> -		SAFE_UMOUNT(CLI_PATH);
->  }
->  
->  static struct tst_test test = {
-> -- 
-> 2.31.1
+> > -		if (TEST_RETURN == -1) {
+> > -			tst_resm(TFAIL | TTERRNO, "statvfs(%s, ...) failed",
+> > -				 TEST_PATH);
+> > -		} else {
+> > -			tst_resm(TPASS, "statvfs(%s, ...) passed", TEST_PATH);
+> > -		}
+> > +	memset(toolong_fname, 'b', buf.f_namemax + 1);
+> > +	if (fs_type == TST_VFAT_MAGIC || fs_type == TST_EXFAT_MAGIC)
+> > +		memset(valid_fname, 'a', buf.f_namemax / NLS_MAX_CHARSET_SIZE - 1);
+> > +	else
+> > +		memset(valid_fname, 'a', buf.f_namemax - 1);
+Also valid length is for buf.f_namemax, not buf.f_namemax - 1. I guess -1 is for
+\0 (NULL terminator), but tests work even with just buf.f_namemax.
 
+Also adding variable to hold the length makes source more readable.
+How about this?
 
--- 
-Thank you,
-Richard.
+	struct statvfs buf;
+	char *valid_fname, *toolong_fname;
+	long fs_type;
+	long valid_len;
+
+	fs_type = tst_fs_type(TEST_PATH);
+
+	TST_EXP_PASS(statvfs(TEST_PATH, &buf));
+
+	valid_len = buf.f_namemax;
+	if (fs_type == TST_VFAT_MAGIC || fs_type == TST_EXFAT_MAGIC)
+		valid_len = buf.f_namemax / NLS_MAX_CHARSET_SIZE;
+
+	valid_fname = SAFE_MALLOC(valid_len);
+	memset(valid_fname, 'a', valid_len);
+
+	toolong_fname = SAFE_MALLOC(valid_len + 1);
+	memset(toolong_fname, 'b', valid_len + 1);
+
+Final diff is below.
+
+Kind regards,
+Petr
+
+diff --git testcases/kernel/syscalls/statvfs/statvfs01.c testcases/kernel/syscalls/statvfs/statvfs01.c
+index 034835da7d..f357855eb1 100644
+--- testcases/kernel/syscalls/statvfs/statvfs01.c
++++ testcases/kernel/syscalls/statvfs/statvfs01.c
+@@ -25,22 +25,21 @@ static void run(void)
+ 	struct statvfs buf;
+ 	char *valid_fname, *toolong_fname;
+ 	long fs_type;
++	long valid_len;
+ 
+ 	fs_type = tst_fs_type(TEST_PATH);
+ 
+ 	TST_EXP_PASS(statvfs(TEST_PATH, &buf));
+ 
+-	toolong_fname = SAFE_MALLOC(buf.f_namemax + 1);
++	valid_len = buf.f_namemax;
+ 	if (fs_type == TST_VFAT_MAGIC || fs_type == TST_EXFAT_MAGIC)
+-		valid_fname = SAFE_MALLOC(buf.f_namemax / NLS_MAX_CHARSET_SIZE - 1);
+-	else
+-		valid_fname = SAFE_MALLOC(buf.f_namemax - 1);
++		valid_len = buf.f_namemax / NLS_MAX_CHARSET_SIZE;
+ 
+-	memset(toolong_fname, 'b', buf.f_namemax + 1);
+-	if (fs_type == TST_VFAT_MAGIC || fs_type == TST_EXFAT_MAGIC)
+-		memset(valid_fname, 'a', buf.f_namemax / NLS_MAX_CHARSET_SIZE - 1);
+-	else
+-		memset(valid_fname, 'a', buf.f_namemax - 1);
++	valid_fname = SAFE_MALLOC(valid_len);
++	memset(valid_fname, 'a', valid_len);
++
++	toolong_fname = SAFE_MALLOC(valid_len + 1);
++	memset(toolong_fname, 'b', valid_len + 1);
+ 
+ 	TST_EXP_FD(creat(valid_fname, 0444));
+ 	SAFE_CLOSE(TST_RET);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
