@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FE5AC4167B
-	for <ltp@archiver.kernel.org>; Fri, 23 Dec 2022 08:53:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AA4FC4332F
+	for <ltp@archiver.kernel.org>; Fri, 23 Dec 2022 14:37:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 266913CB98D
-	for <ltp@archiver.kernel.org>; Fri, 23 Dec 2022 09:53:37 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 5853D3CD36A
+	for <ltp@archiver.kernel.org>; Fri, 23 Dec 2022 15:37:09 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 94AE63C0F12
- for <ltp@lists.linux.it>; Fri, 23 Dec 2022 09:53:28 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 5692C3CB971
+ for <ltp@lists.linux.it>; Fri, 23 Dec 2022 15:36:57 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 367D76011B4
- for <ltp@lists.linux.it>; Fri, 23 Dec 2022 09:53:26 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6CFCA100117C
+ for <ltp@lists.linux.it>; Fri, 23 Dec 2022 15:36:56 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 070C72625B;
- Fri, 23 Dec 2022 08:53:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1671785605;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7gpvvAdgK2J1XDC1A4olDel5y5y75vP98fl6495VKJE=;
- b=kKqb+cHDyhrjVo/m35PPens600BjNC+QooCSiI81/hqBRIJA/NNiHFzZIl5wA1XutonxIY
- W4lPmSjRDLtbMNbE+d1+6chwyCjU0qkXHyzMvBgAoh+mzejkA0tsZPSF7jVq/4QFGVst3h
- ekxnMHOJ5xjjFSG043HzQ4pbK8JZ/Mw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1671785605;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=7gpvvAdgK2J1XDC1A4olDel5y5y75vP98fl6495VKJE=;
- b=6TDmfjQ6bS69fq58V1B1EZx3bFpEgN4+POGD7ft1m9EpPMUywhT+TsfX9VzUbYbYmOMjoi
- FU5s9r7Dl7FSz1Dw==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7710720958
+ for <ltp@lists.linux.it>; Fri, 23 Dec 2022 14:36:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1671806215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=NhkgijfcBBx5b+lmWutgEQ3Dtf58iHF15Lm2rQMRHF8=;
+ b=RDTzkOg5vYPU7aty3GNROHO/PC/HHAUQb4pKvgAzKbsKNJblJ1q3qqYYhJcYlfsV4Xp8Tt
+ 5NgfZmSRB9xukX2CJxGzxgaldUzQQDgzN8ilYdFRo0ry10LIeKmCtqdPHbfFPs5QwPMZam
+ Bc3onZdClM8UqqRrFGvSJFcww42jojM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1671806215;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=NhkgijfcBBx5b+lmWutgEQ3Dtf58iHF15Lm2rQMRHF8=;
+ b=zQlAq6l3aE7DHHMhmF0uFTD9XrgOID94RGSIcUkfR88qcy2v+dsnYkmiRhYCRFUVuv0aPp
+ 9hV/Oa+vy+gkZVCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D42F113913;
- Fri, 23 Dec 2022 08:53:24 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EA91E138E4
+ for <ltp@lists.linux.it>; Fri, 23 Dec 2022 14:36:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OeQTMoRspWPGYgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 23 Dec 2022 08:53:24 +0000
-Date: Fri, 23 Dec 2022 09:53:22 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <Y6Vsgkx/VcY/78vs@pevik>
-References: <20221221075220.14353-1-akumar@suse.de>
- <87ili3stt2.fsf@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id KC+SKga9pWN7bgAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Fri, 23 Dec 2022 14:36:54 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Fri, 23 Dec 2022 20:06:52 +0530
+Message-Id: <20221223143652.32232-1-akumar@suse.de>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87ili3stt2.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] setreuid01.c: Rewrite using new LTP API and use
- TST_EXP* macros
+Subject: [LTP] [PATCH v6] statvfs01: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,31 +72,160 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hello,
+Removed the TINFO statements,
+Added a validation of statvfs.f_namemax field by trying to create
+files of valid and invalid length names.
 
-> Avinesh Kumar <akumar@suse.de> writes:
+changes in v6:
+add variable for file name length.
+use static buffers of PATH_MAX length to avoid memory leak.
 
-> > Hi,
-> > I changed this simple setreuid() test to new LTP API but I think
-> > this is a subset of setreuid03.c test and can be removed altogether.
-> > Please share your opinion. If this should be removed, I'll post new
-> > patch for that.
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ testcases/kernel/syscalls/statvfs/statvfs01.c | 105 ++++++------------
+ 1 file changed, 36 insertions(+), 69 deletions(-)
 
-> Yes, I think that is reasonable.
+diff --git a/testcases/kernel/syscalls/statvfs/statvfs01.c b/testcases/kernel/syscalls/statvfs/statvfs01.c
+index e3b356c93..dd14d6a0e 100644
+--- a/testcases/kernel/syscalls/statvfs/statvfs01.c
++++ b/testcases/kernel/syscalls/statvfs/statvfs01.c
+@@ -1,92 +1,59 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * Copyright (c) Wipro Technologies Ltd, 2005.  All Rights Reserved.
+  *    AUTHOR: Prashant P Yendigeri <prashant.yendigeri@wipro.com>
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
++ * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+-/*
+- *    DESCRIPTION
+- *      This is a Phase I test for the statvfs(2) system call.
+- *      It is intended to provide a limited exposure of the system call.
+- *	This call behaves similar to statfs.
++
++/*\
++ * [Description]
++ *
++ * Verify that statvfs() executes successfully for all
++ * available filesystems. Verify statvfs.f_namemax field
++ * by trying to create files of valid and invalid length names.
+  */
+ 
+-#include <stdio.h>
+-#include <unistd.h>
+-#include <errno.h>
+ #include <sys/statvfs.h>
+-#include <stdint.h>
+-
+-#include "test.h"
++#include "tst_test.h"
+ 
+-#define TEST_PATH "/"
++#define MNT_POINT "mntpoint"
++#define TEST_PATH MNT_POINT"/testfile"
++#define NLS_MAX_CHARSET_SIZE 6
+ 
+-static void setup(void);
+-static void cleanup(void);
+-
+-char *TCID = "statvfs01";
+-int TST_TOTAL = 1;
+-
+-int main(int ac, char **av)
++static void run(void)
+ {
+ 	struct statvfs buf;
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
++	char valid_fname[PATH_MAX], toolong_fname[PATH_MAX];
++	long fs_type;
++	long valid_len;
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
++	fs_type = tst_fs_type(TEST_PATH);
+ 
+-		tst_count = 0;
++	TST_EXP_PASS(statvfs(TEST_PATH, &buf));
+ 
+-		TEST(statvfs(TEST_PATH, &buf));
++	valid_len = buf.f_namemax;
++	if (fs_type == TST_VFAT_MAGIC || fs_type == TST_EXFAT_MAGIC)
++		valid_len = buf.f_namemax / NLS_MAX_CHARSET_SIZE;
+ 
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL | TTERRNO, "statvfs(%s, ...) failed",
+-				 TEST_PATH);
+-		} else {
+-			tst_resm(TPASS, "statvfs(%s, ...) passed", TEST_PATH);
+-		}
++	memset(valid_fname, 'a', valid_len);
++	memset(toolong_fname, 'b', valid_len + 1);
+ 
+-	}
++	TST_EXP_FD(creat(valid_fname, 0444));
++	SAFE_CLOSE(TST_RET);
+ 
+-	tst_resm(TINFO, "This call is similar to statfs");
+-	tst_resm(TINFO, "Extracting info about the '%s' file system",
+-		 TEST_PATH);
+-	tst_resm(TINFO, "file system block size = %lu bytes", buf.f_bsize);
+-	tst_resm(TINFO, "file system fragment size = %lu bytes", buf.f_frsize);
+-	tst_resm(TINFO, "file system free blocks = %ju",
+-		 (uintmax_t) buf.f_bfree);
+-	tst_resm(TINFO, "file system total inodes = %ju",
+-		 (uintmax_t) buf.f_files);
+-	tst_resm(TINFO, "file system free inodes = %ju",
+-		 (uintmax_t) buf.f_ffree);
+-	tst_resm(TINFO, "file system id = %lu", buf.f_fsid);
+-	tst_resm(TINFO, "file system max filename length = %lu", buf.f_namemax);
+-
+-	cleanup();
+-	tst_exit();
++	TST_EXP_FAIL(creat(toolong_fname, 0444), ENAMETOOLONG);
+ }
+ 
+ static void setup(void)
+ {
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	SAFE_TOUCH(TEST_PATH, 0666, NULL);
+ }
+ 
+-static void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.needs_root = 1,
++	.mount_device = 1,
++	.mntpoint = MNT_POINT,
++	.all_filesystems = 1
++};
+-- 
+2.39.0
 
-+1. Also setreuid03.c tests as nobody, but we have no garancy setreuid01.c is
-run as non-root user (it can be root or UID 1000, which has enhanced
-privileges).
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
