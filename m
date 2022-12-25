@@ -4,94 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE464C3DA7A
-	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 15:43:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BEB4C3DA7A
+	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 15:43:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B49963CB8C7
-	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 16:43:36 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 4D26F3CB8AC
+	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 16:43:46 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6FEEC3CB8E7
- for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:42:45 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 5DC013CB8EA
+ for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:42:49 +0100 (CET)
 Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
  [148.163.158.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6998A14001ED
- for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:42:43 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id F1C001A002CA
+ for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:42:48 +0100 (CET)
 Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
  by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2BPFcW8K003771; Sun, 25 Dec 2022 15:42:42 GMT
+ 2BPFcW4M003758; Sun, 25 Dec 2022 15:42:47 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=euMeBK8u4Dm1/V5YCK1r5UcsIKyeFoUP9SvivxAFQ2o=;
- b=coSeVFLSvBaCePfEEmRpb4RDm4j9TyIo9s0J1Tt59e9hWzSglQ69GD93hP0k86lNdUgL
- s/oak5LbTKqVSRMBf2jjPlQN8VwrHn7Ph/FOsf5njWTKJruH27nmIn6uypt3026yGsz9
- LuFHyQH3f6EwmbqBh8o8szbixU8soFBCCafNjliNLXzDjkyrwZmxR5w8XoQwXRP/uNZO
- jVJKWJcBkf1GPtubWtQ+bqHy8GIgl8CyC+qCYYobqtmQJKdOEO3ZROOPi3PSNwElm6lA
- iw2/uZuLDvTDMRuKahmR7Sc4+/1JKtWUkx4MAikHtAXAuhaMdqWGatRimrEWDD9d4cYH Ew== 
+ bh=KAsaxkz6Tae9ZRGR7AAOSv+ZhIC1lFNIQpJdTzqPEV0=;
+ b=YtC2ztshSmbEyUd63EOQgoJMTFQDMIcgKW4RlOXIo2wt8HE+r3TIUtOcXovgRi4YQi7L
+ /zP+UqTCyFqbr137MRaSwFXYTBDy9ZqkW+vz+kQJi3mG1JfwzO3BYc7i+8zjccUsnsaP
+ Aq0hlH7lG01xjkdrdfotv065WcuajFrmkJ1zxiO7UjezvbA58cVZI7MOXGbHTEEuZczr
+ +Au4VrcE0p3zijMZBS37IzH1Uc+sG8ZfW8jGw+xCgJ2bPdYStjl190B592lXZuqKIFva
+ KPi6q91w9HAZ2u2n3mhaORoUYUipPCRmp/BEP6qi7HJr3d1Xi+Y8GPKg/OdIJiLrKqxd UQ== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mprjcrmhb-1
+ by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mprjcrmj3-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 25 Dec 2022 15:42:42 +0000
+ Sun, 25 Dec 2022 15:42:47 +0000
 Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BPFggg2020653;
- Sun, 25 Dec 2022 15:42:42 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com
- [159.122.73.70])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mprjcrmh0-1
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BPFeawh009976;
+ Sun, 25 Dec 2022 15:42:46 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com
+ [149.81.74.107])
+ by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mprjcrmht-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 25 Dec 2022 15:42:41 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
- by ppma01fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BPEQifu014657;
- Sun, 25 Dec 2022 15:42:40 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma01fra.de.ibm.com (PPS) with ESMTPS id 3mns2691r8-1
+ Sun, 25 Dec 2022 15:42:46 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+ by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BPAc2uM031312;
+ Sun, 25 Dec 2022 15:42:44 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3mns2691mb-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 25 Dec 2022 15:42:40 +0000
+ Sun, 25 Dec 2022 15:42:44 +0000
 Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
  [10.20.54.103])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2BPFgaf252560366
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2BPFge8j42795412
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sun, 25 Dec 2022 15:42:36 GMT
+ Sun, 25 Dec 2022 15:42:40 GMT
 Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8F20020043;
- Sun, 25 Dec 2022 15:42:36 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id B633A20049;
+ Sun, 25 Dec 2022 15:42:40 +0000 (GMT)
 Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 11B4D20040;
- Sun, 25 Dec 2022 15:42:33 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 2CCD520040;
+ Sun, 25 Dec 2022 15:42:37 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.100.54])
  by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Sun, 25 Dec 2022 15:42:32 +0000 (GMT)
+ Sun, 25 Dec 2022 15:42:36 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Sun, 25 Dec 2022 21:12:04 +0530
-Message-Id: <20221225154213.84183-5-tsahu@linux.ibm.com>
+Date: Sun, 25 Dec 2022 21:12:05 +0530
+Message-Id: <20221225154213.84183-6-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221225154213.84183-1-tsahu@linux.ibm.com>
 References: <20221225154213.84183-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 9Ae_1tUWz8mCYDtfxiurTJHfuH7hoJYD
-X-Proofpoint-GUID: VMvoWWYvdi2V3uXDlD8MMxtxKHnHMyX_
+X-Proofpoint-ORIG-GUID: nUVnp5MO1DJZYZvdhUIYi0ivg586Q25l
+X-Proofpoint-GUID: x_KaNIpjLAuR66NjAZ3y_9FzOXROOgUL
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-25_12,2022-12-23_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  mlxscore=0 adultscore=0
  impostorscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1015
- spamscore=0 bulkscore=0 phishscore=0 mlxlogscore=947 priorityscore=1501
+ spamscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 priorityscore=1501
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2212070000 definitions=main-2212250138
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 04/13] Hugetlb: Migrating libhugetlbfs mprotect
+Subject: [LTP] [PATCH 05/13] Hugetlb: Migrating libhugetlbfs
+ mremap-fixed-huge-near-normal
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,270 +111,175 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/mprotect.c test
+Migrating the libhugetlbfs/testcases/mremap-fixed-huge-near-normal.c test
 
-Test Description: This test uses mprotect to change protection of
-hugepage mapping and perform read/write operation. It checks if the
-operation results in expected behaviour as per the protection.
+Test Description: The kernel has bug for mremap() on some architecture.
+mremap() can cause crashes on architectures with holes in the address
+space (like ia64) and on powerpc with it's distinct page size "slices".
+
+This test get the normal mapping address and mremap() hugepage mapping
+near to this normal mapping.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
  runtest/hugetlb                               |   1 +
  testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap23.c  | 244 ++++++++++++++++++
- 3 files changed, 246 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap23.c
+ .../kernel/mem/hugetlb/hugemmap/hugemmap25.c  | 146 ++++++++++++++++++
+ 3 files changed, 148 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap25.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 8e80db140..8ade3c9ec 100644
+index 8ade3c9ec..65265b0fe 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -24,6 +24,7 @@ hugemmap19 hugemmap19
- hugemmap20 hugemmap20
+@@ -25,6 +25,7 @@ hugemmap20 hugemmap20
  hugemmap21 hugemmap21
  hugemmap22 hugemmap22
-+hugemmap23 hugemmap23
+ hugemmap23 hugemmap23
++hugemmap25 hugemmap25
  hugemmap05_1 hugemmap05 -m
  hugemmap05_2 hugemmap05 -s
  hugemmap05_3 hugemmap05 -s -m
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 0fd01dbce..ffd831f2e 100644
+index ffd831f2e..c865a1e55 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -23,6 +23,7 @@
- /hugetlb/hugemmap/hugemmap20
+@@ -24,6 +24,7 @@
  /hugetlb/hugemmap/hugemmap21
  /hugetlb/hugemmap/hugemmap22
-+/hugetlb/hugemmap/hugemmap23
+ /hugetlb/hugemmap/hugemmap23
++/hugetlb/hugemmap/hugemmap25
  /hugetlb/hugeshmat/hugeshmat01
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap23.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap23.c
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap25.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap25.c
 new file mode 100644
-index 000000000..687b192ae
+index 000000000..f8e99faf6
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap23.c
-@@ -0,0 +1,244 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap25.c
+@@ -0,0 +1,146 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
-+ * Copyright (C) 2005-2006 IBM Corporation.
-+ * Author: David Gibson & Adam Litke
++ * Copyright (C) 2009 IBM Corporation.
++ * Author: David Gibson
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * This test uses mprotect to change protection of hugepage mapping and
-+ * perform read/write operation. It checks if the operation results in
-+ * expected behaviour as per the protection.
++ * The kernel has bug for mremap() on some architecture. mremap() can
++ * cause crashes on architectures with holes in the address space
++ * (like ia64) and on powerpc with it's distinct page size "slices".
++ *
++ * This test get the normal mapping address and mremap() hugepage mapping
++ * near to this normal mapping.
 + */
 +
++#define _GNU_SOURCE
 +#include <stdio.h>
 +#include <sys/mount.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
-+#include <setjmp.h>
-+#include <signal.h>
++#include <limits.h>
++#include <sys/param.h>
++#include <sys/types.h>
 +
 +#include "hugetlb.h"
 +
-+#ifndef barrier
-+# ifdef mb
-+	/* Redefining the mb() */
-+#   define barrier() mb()
-+# else
-+#   define barrier() __asm__ __volatile__ ("" : : : "memory")
-+# endif
-+#endif
-+
-+#define MNTPOINT "hugetlbfs/"
 +#define RANDOM_CONSTANT	0x1234ABCD
++#define MNTPOINT "hugetlbfs/"
 +
 +static int  fd = -1;
-+static sigjmp_buf sig_escape;
-+static void *sig_expected = MAP_FAILED;
 +static long hpage_size;
 +
-+static void sig_handler(int signum, siginfo_t *si, void *uc)
++static int do_readback(void *p, size_t size, const char *stage)
 +{
-+	(void)uc;
-+	if (signum == SIGSEGV) {
-+		tst_res(TINFO, "SIGSEGV at %p (sig_expected=%p)", si->si_addr,
-+		       sig_expected);
-+		if (si->si_addr == sig_expected)
-+			siglongjmp(sig_escape, 1);
-+		tst_res(TFAIL, "SIGSEGV somewhere unexpected");
-+	} else
-+		tst_res(TFAIL, "Unexpected signal %s", strsignal(signum));
-+}
++	unsigned int *q = p;
++	size_t i;
 +
-+static int test_read(void *p)
-+{
-+	volatile unsigned long *pl = p;
-+	unsigned long x;
++	tst_res(TINFO, "%s(%p, 0x%lx, \"%s\")", __func__, p,
++	       (unsigned long)size, stage);
 +
-+	if (sigsetjmp(sig_escape, 1)) {
-+		/* We got a SEGV */
-+		sig_expected = MAP_FAILED;
-+		return -1;
-+	}
++	for (i = 0; i < (size / sizeof(*q)); i++)
++		q[i] = RANDOM_CONSTANT ^ i;
 +
-+	sig_expected = p;
-+	barrier();
-+	x = *pl;
-+	tst_res(TINFO, "Read back %lu", x);
-+	barrier();
-+	sig_expected = MAP_FAILED;
-+	return 0;
-+}
-+
-+static int test_write(void *p, unsigned long val)
-+{
-+	volatile unsigned long *pl = p;
-+	unsigned long x;
-+
-+	if (sigsetjmp(sig_escape, 1)) {
-+		/* We got a SEGV */
-+		sig_expected = MAP_FAILED;
-+		return -1;
-+	}
-+
-+	sig_expected = p;
-+	barrier();
-+	*pl = val;
-+	x = *pl;
-+	barrier();
-+	sig_expected = MAP_FAILED;
-+
-+	return (x != val);
-+}
-+
-+static int test_prot(void *p, int prot, char *prot_str)
-+{
-+	int r, w;
-+
-+	r = test_read(p);
-+	tst_res(TINFO, "On Read: %d", r);
-+	w = test_write(p, RANDOM_CONSTANT);
-+	tst_res(TINFO, "On Write: %d", w);
-+
-+	if (prot & PROT_READ) {
-+		if (r != 0) {
-+			tst_res(TFAIL, "read failed on mmap(prot %s)", prot_str);
++	for (i = 0; i < (size / sizeof(*q)); i++) {
++		if (q[i] != (RANDOM_CONSTANT ^ i)) {
++			tst_res(TFAIL, "Stage \"%s\": Mismatch at offset 0x%lx: 0x%x "
++					"instead of 0x%lx", stage, i, q[i], RANDOM_CONSTANT ^ i);
 +			return -1;
-+		}
-+
-+	} else {
-+		if (r != -1) {
-+			tst_res(TFAIL, "read succeeded on mmap(prot %s)", prot_str);
-+			return -1;
-+		}
-+	}
-+
-+	if (prot & PROT_WRITE) {
-+		switch (w) {
-+		case -1:
-+			tst_res(TFAIL, "write failed on mmap(prot %s)", prot_str);
-+			return -1;
-+		case 0:
-+			break;
-+		case 1:
-+			tst_res(TFAIL, "write mismatch on mmap(prot %s)", prot_str);
-+			return -1;
-+		default:
-+			tst_res(TWARN, "Bug in test");
-+			return -1;
-+		}
-+	} else {
-+		switch (w) {
-+		case -1:
-+			break;
-+		case 0:
-+			tst_res(TFAIL, "write succeeded on mmap(prot %s)", prot_str);
-+			return -1;
-+		case 1:
-+			tst_res(TFAIL, "write mismatch on mmap(prot %s)", prot_str);
-+			return -1;
-+		default:
-+			tst_res(TWARN, "Bug in test");
-+			break;
 +		}
 +	}
 +	return 0;
 +}
 +
-+static int test_mprotect(int fd, char *testname,
-+			  unsigned long len1, int prot1, char *prot1_str,
-+			  unsigned long len2, int prot2, char *prot2_str)
++static int do_remap(int fd, void *target)
 +{
-+	void *p;
++	void *a, *b;
 +	int ret;
 +
-+	tst_res(TINFO, "Testing %s", testname);
-+	tst_res(TINFO, "Mapping with prot %s", prot1_str);
-+	p = SAFE_MMAP(NULL, len1, prot1, MAP_SHARED, fd, 0);
++	a = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
 +
-+	ret = test_prot(p, prot1, prot1_str);
++	ret = do_readback(a, hpage_size, "base huge");
 +	if (ret)
 +		goto cleanup;
-+	tst_res(TINFO, "mprotect()ing to prot %s", prot2_str);
-+	ret = mprotect(p, len2, prot2);
-+	if (ret != 0) {
-+		tst_res(TFAIL|TERRNO, "%s: mprotect(prot %s)", testname, prot2_str);
-+		goto cleanup;
-+	}
++	b = mremap(a, hpage_size, hpage_size, MREMAP_MAYMOVE | MREMAP_FIXED,
++		   target);
 +
-+	ret = test_prot(p, prot2, prot2_str);
-+	if (ret)
-+		goto cleanup;
-+	if (len2 < len1)
-+		ret = test_prot(p + len2, prot1, prot1_str);
-+
++	if (b != MAP_FAILED) {
++		ret = do_readback(b, hpage_size, "remapped");
++		a = b;
++	} else
++		tst_res(TINFO|TERRNO, "mremap(MAYMOVE|FIXED) disallowed");
 +cleanup:
-+	SAFE_MUNMAP(p, len1);
++	SAFE_MUNMAP(a, hpage_size);
 +	return ret;
++}
++
++static void *map_align(size_t size, size_t align)
++{
++	unsigned long xsize = size + align - getpagesize();
++	size_t t;
++	void *p, *q;
++
++	p = SAFE_MMAP(NULL, xsize, PROT_READ|PROT_WRITE,
++		 MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++
++	q = PALIGN(p, align);
++
++	t = q - p;
++	if (t)
++		SAFE_MUNMAP(p, t);
++
++	t = p + xsize - (q + size);
++	if (t)
++		SAFE_MUNMAP(q + size, t);
++
++	return q;
 +}
 +
 +static void run_test(void)
 +{
 +	void *p;
-+
-+	struct sigaction sa = {
-+		.sa_sigaction = sig_handler,
-+		.sa_flags = SA_SIGINFO,
-+	};
-+
-+	SAFE_SIGACTION(SIGSEGV, &sa, NULL);
++	int ret;
 +
 +	fd = tst_creat_unlinked(MNTPOINT, 0);
-+	p = SAFE_MMAP(NULL, 2*hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-+	memset(p, 0, hpage_size);
++	p = map_align(3*hpage_size, hpage_size);
++
 +	SAFE_MUNMAP(p, hpage_size);
++	SAFE_MUNMAP(p + 2*hpage_size, hpage_size);
 +
-+	if (test_mprotect(fd, "R->RW", hpage_size, PROT_READ, "PROT_READ",
-+		      hpage_size, PROT_READ|PROT_WRITE, "PROT_READ|PROT_WRITE"))
-+		goto cleanup;
-+	if (test_mprotect(fd, "RW->R", hpage_size, PROT_READ|PROT_WRITE,
-+		     "PROT_READ|PROT_WRITE", hpage_size, PROT_READ, "PROT_READ"))
-+		goto cleanup;
++	p = p + hpage_size;
 +
-+	if (test_mprotect(fd, "R->RW 1/2", 2*hpage_size, PROT_READ, "PROT_READ",
-+		      hpage_size, PROT_READ|PROT_WRITE, "PROT_READ|PROT_WRITE"))
++	tst_res(TINFO, "Normal mapping at %p", p);
++	ret = do_readback(p, hpage_size, "base normal page");
++	if (ret)
 +		goto cleanup;
-+	if (test_mprotect(fd, "RW->R 1/2", 2*hpage_size, PROT_READ|PROT_WRITE,
-+		      "PROT_READ|PROT_WRITE", hpage_size, PROT_READ, "PROT_READ"))
++	ret = do_remap(fd, p - hpage_size);
++	if (ret)
 +		goto cleanup;
-+
-+	if (test_mprotect(fd, "NONE->R", hpage_size, PROT_NONE, "PROT_NONE",
-+		      hpage_size, PROT_READ, "PROT_READ"))
-+		goto cleanup;
-+	if (test_mprotect(fd, "NONE->RW", hpage_size, PROT_NONE, "PROT_NONE",
-+		      hpage_size, PROT_READ|PROT_WRITE, "PROT_READ|PROT_WRITE"))
-+		goto cleanup;
-+
-+	tst_res(TPASS, "Successfully tested mprotect with hugetlb area");
++	ret = do_remap(fd, p + hpage_size);
++	if (ret == 0)
++		tst_res(TPASS, "Successfully tested mremap hpage near normal mapping");
 +cleanup:
-+	SAFE_MUNMAP(p+hpage_size, hpage_size);
 +	SAFE_CLOSE(fd);
 +}
 +
@@ -396,7 +302,7 @@ index 000000000..687b192ae
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.test_all = run_test,
-+	.hugepages = {2, TST_NEEDS},
++	.hugepages = {3, TST_NEEDS},
 +};
 -- 
 2.31.1
