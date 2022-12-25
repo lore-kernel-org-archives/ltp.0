@@ -4,94 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51DE3C3DA7A
-	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 15:43:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51505C3DA7A
+	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 15:43:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6A0493CB8E3
-	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 16:43:00 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 814E63CB8DB
+	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 16:43:12 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B49663CB8AC
- for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:42:34 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id E2B193CB8B5
+ for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:42:40 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 915D7600125
- for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:42:33 +0100 (CET)
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 32FBC6000E6
+ for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:42:39 +0100 (CET)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2BPFfeIM028144; Sun, 25 Dec 2022 15:42:31 GMT
+ 2BPFgQql009506; Sun, 25 Dec 2022 15:42:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=cKVtYKqKJi4cjfmEwOOwYdn77X5844wZxYnDBDQhZh0=;
- b=m/ZkZQfK6iKGNZXSZrp/LcigMUHVRlxubk1BCm3QtV/IVH+256sdsbwQlw/DQgIgI323
- 5Nddbdf/WwBYVwNCUwxCk/Pu3r+tjNWdzucCo6zpXQSNrcgd0ZQs8bE8VcmXgTleDw0D
- tnId12mTT+a/rJtJH5K67yGuRr19aoDDFjSJtz508H6PwG0uQ1Qm/8zOAQRo2BH7SIQK
- goK/+23R/FJbqXmZHMWE09t4Vz9xSq4YUolIPAGNiaKwdr0u5kp1lC/vKMTefIFCrVvg
- ZJm3pniYGJPmQZVaa7QTPc9e5kH4jovfACqSt+W9pBnBcl2mDG6/Kx53nSljb5li5iMS 7w== 
+ bh=O5+5PIS36cF3lk2YGeS36itLuPhs64lojeg5+8S57i0=;
+ b=na0eP4TEZ277wMqYno5vJRTBojhIVEF0s0/FoWLEifwxo3IIgVPpY0nr5bpFFm039n/r
+ d2JAgW1GUpZy8/Q+zZMRn7Uqiy6I2GeXOJNXDWA5Bs+XVfB9w1XULvBAnxIy1wMAgO94
+ oepwDTxIzvdwXrAxQGMSFkaJP5U0hUeDsoxT0tFH/JBeySqYRPqrh0opL10gFeIRT4dD
+ /ArJ0mHhEy1W8l2iEHEUkHxamertXLDCjufT3wdcf55vlciqgcQEcUtBNbQ6jP08uylk
+ O5psq/iDcazIf8a1Gg+Jy870+s111ZIbx0kjBFPdKXlrdcabgbCuNQlgkpgZNdM1WkZx GQ== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mpscp00ch-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mpsd30042-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 25 Dec 2022 15:42:30 +0000
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BPFgUvt030796;
- Sun, 25 Dec 2022 15:42:30 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.98])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mpscp00c9-1
+ Sun, 25 Dec 2022 15:42:38 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BPFgb1h010176;
+ Sun, 25 Dec 2022 15:42:37 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.99])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mpsd3003j-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 25 Dec 2022 15:42:30 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
- by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BP1J3k9005485;
- Sun, 25 Dec 2022 15:42:28 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
- by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3mns26he6d-1
+ Sun, 25 Dec 2022 15:42:37 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+ by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BP2BatN004783;
+ Sun, 25 Dec 2022 15:42:36 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+ by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3mns26hdvg-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 25 Dec 2022 15:42:27 +0000
+ Sun, 25 Dec 2022 15:42:35 +0000
 Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
  [10.20.54.103])
- by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2BPFgO7141746912
+ by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2BPFgWgU23724362
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sun, 25 Dec 2022 15:42:24 GMT
+ Sun, 25 Dec 2022 15:42:32 GMT
 Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 45E4C20043;
- Sun, 25 Dec 2022 15:42:24 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 6E30020043;
+ Sun, 25 Dec 2022 15:42:32 +0000 (GMT)
 Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id A6DF620040;
- Sun, 25 Dec 2022 15:42:20 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id D291E20040;
+ Sun, 25 Dec 2022 15:42:28 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.100.54])
  by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Sun, 25 Dec 2022 15:42:20 +0000 (GMT)
+ Sun, 25 Dec 2022 15:42:28 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Sun, 25 Dec 2022 21:12:01 +0530
-Message-Id: <20221225154213.84183-2-tsahu@linux.ibm.com>
+Date: Sun, 25 Dec 2022 21:12:03 +0530
+Message-Id: <20221225154213.84183-4-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221225154213.84183-1-tsahu@linux.ibm.com>
 References: <20221225154213.84183-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: tYQjL4FWUyB121QqsN3hTEErRniol38Z
-X-Proofpoint-ORIG-GUID: J7uZW9w8B5ZPe8WXZrCLNovwk5NqklwT
+X-Proofpoint-ORIG-GUID: Ynsgvvo7mORCbUBQlJOMoU8Qdm6m5YCM
+X-Proofpoint-GUID: 2Mb6DtqIsYIYEhyl0XoFqb-B30t4A2MT
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-25_12,2022-12-23_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 spamscore=0
- clxscore=1015 mlxscore=0 adultscore=0 malwarescore=0 phishscore=0
- mlxlogscore=938 lowpriorityscore=0 priorityscore=1501 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ priorityscore=1501
+ malwarescore=0 mlxlogscore=999 spamscore=0 impostorscore=0
+ lowpriorityscore=0 clxscore=1015 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2212070000 definitions=main-2212250138
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 01/13] Hugetlb: Migrating libhugetlbfs mlock
+Subject: [LTP] [PATCH 03/13] Hugetlb: Migrating libhugetlbfs mmap-gettest
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,115 +109,133 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/mlock.c test
+Migrating the libhugetlbfs/testcases/mmap-gettest.c test
 
-Test Description: The test checks that mlocking hugetlb areas works
-with all combinations of MAP_PRIVATE and MAP_SHARED with and without
-MAP_LOCKED specified.
+Test Description: This baseline test validates that a mapping of a
+certain size can be created, correctly.  Once created, all the pages are
+filled with a pattern and rechecked to test for corruption. The mapping is
+then released.  This process is repeated for a specified number of
+iterations.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap20.c  | 88 +++++++++++++++++++
- 3 files changed, 90 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap20.c
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap22.c  | 104 ++++++++++++++++++
+ 3 files changed, 106 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap22.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 4da1525a7..2dffa8421 100644
+index 71b4d57e4..8e80db140 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -21,6 +21,7 @@ hugemmap16 hugemmap16
- hugemmap17 hugemmap17
- hugemmap18 hugemmap18
+@@ -23,6 +23,7 @@ hugemmap18 hugemmap18
  hugemmap19 hugemmap19
-+hugemmap20 hugemmap20
+ hugemmap20 hugemmap20
+ hugemmap21 hugemmap21
++hugemmap22 hugemmap22
  hugemmap05_1 hugemmap05 -m
  hugemmap05_2 hugemmap05 -s
  hugemmap05_3 hugemmap05 -s -m
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index b6b3e5ddd..dfd372892 100644
+index 74edfa392..0fd01dbce 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -20,6 +20,7 @@
- /hugetlb/hugemmap/hugemmap17
- /hugetlb/hugemmap/hugemmap18
+@@ -22,6 +22,7 @@
  /hugetlb/hugemmap/hugemmap19
-+/hugetlb/hugemmap/hugemmap20
+ /hugetlb/hugemmap/hugemmap20
+ /hugetlb/hugemmap/hugemmap21
++/hugetlb/hugemmap/hugemmap22
  /hugetlb/hugeshmat/hugeshmat01
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap20.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap20.c
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap22.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap22.c
 new file mode 100644
-index 000000000..9607d58b7
+index 000000000..50addbe62
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap20.c
-@@ -0,0 +1,88 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap22.c
+@@ -0,0 +1,104 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
-+ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
++ * Copyright (C) 2005-2006 IBM Corporation.
 + * Author: David Gibson & Adam Litke
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * The test checks that mlocking hugetlb areas works with all combinations
-+ * of MAP_PRIVATE and MAP_SHARED with and without MAP_LOCKED specified.
++ * This baseline test validates that a mapping of a certain size can be
++ * created, correctly.  Once created, all the pages are filled with a
++ * pattern and rechecked to test for corruption. The mapping is then
++ * released. This process is repeated for a specified number of
++ * iterations.
 + */
 +
 +#include <stdio.h>
 +#include <sys/mount.h>
-+#include <limits.h>
-+#include <sys/param.h>
-+#include <sys/types.h>
-+#include <sys/resource.h>
++#include <unistd.h>
++#include <unistd.h>
 +
 +#include "hugetlb.h"
 +
++#define ITERATIONS 10
++#define NR_HUGEPAGES 2
 +#define MNTPOINT "hugetlbfs/"
-+static int  fd = -1;
-+static unsigned long hpage_size;
 +
-+static void test_simple_mlock(int flags, char *flags_str)
++static unsigned long hpage_size;
++static int fd = -1;
++
++static void test_per_iteration(size_t size, int iter)
 +{
-+	void *p;
-+	int ret;
++	char *m;
++	size_t i, j;
++	char pattern = 'A';
 +
 +	fd = tst_creat_unlinked(MNTPOINT, 0);
-+	p = SAFE_MMAP(0, hpage_size, PROT_READ|PROT_WRITE, flags, fd, 0);
++	m = SAFE_MMAP(NULL, size, (PROT_READ|PROT_WRITE), MAP_SHARED, fd, 0);
 +
-+	ret = mlock(p, hpage_size);
-+	if (ret) {
-+		tst_res(TFAIL|TERRNO, "mlock() failed (flags %s)", flags_str);
-+		goto cleanup;
++	for (i = 0; i < NR_HUGEPAGES; i++) {
++		for (j = 0; j < hpage_size; j++) {
++			if (*(m+(i*hpage_size)+j) != 0) {
++				tst_res(TFAIL, "Iter %d: Verifying the mmap area failed. "
++				     "Got %c, expected 0", iter,
++				     *(m+(i*hpage_size)+j));
++				goto cleanup;
++			}
++		}
++	}
++	for (i = 0; i < NR_HUGEPAGES; i++) {
++		pattern = 65+(i%26);
++		memset(m+(i*hpage_size), pattern, hpage_size);
 +	}
 +
-+	ret = munlock(p, hpage_size);
-+	if (ret)
-+		tst_res(TFAIL|TERRNO, "munlock() failed (flags %s)", flags_str);
-+	else
-+		tst_res(TPASS, "mlock/munlock with %s hugetlb mmap",
-+				flags_str);
++	for (i = 0; i < NR_HUGEPAGES; i++) {
++		pattern = 65+(i%26);
++		for (j = 0; j < hpage_size; j++) {
++			if (*(m+(i*hpage_size)+j) != pattern) {
++				tst_res(TFAIL, "Verifying the mmap area failed. "
++				     "got: %c, expected: %c",
++				     *(m+(i*hpage_size)+j), pattern);
++				goto cleanup;
++			}
++		}
++	}
++
 +cleanup:
-+	SAFE_MUNMAP(p, hpage_size);
++	SAFE_MUNMAP(m, size);
 +	SAFE_CLOSE(fd);
 +}
 +
 +static void run_test(void)
 +{
-+	struct rlimit limit_info;
++	size_t size;
++	int i;
 +
-+	if (getrlimit(RLIMIT_MEMLOCK, &limit_info))
-+		tst_res(TWARN|TERRNO, "Unable to read locked memory rlimit");
-+	if (limit_info.rlim_cur < hpage_size)
-+		tst_brk(TCONF, "Locked memory ulimit set below huge page size");
++	size = NR_HUGEPAGES * hpage_size;
++	for (i = 0; i < ITERATIONS; i++)
++		test_per_iteration(size, i);
 +
-+	test_simple_mlock(MAP_PRIVATE, "MAP_PRIVATE");
-+	test_simple_mlock(MAP_SHARED, "MAP_SHARED");
-+	test_simple_mlock(MAP_PRIVATE|MAP_LOCKED, "MAP_PRIVATE|MAP_LOCKED");
-+	test_simple_mlock(MAP_SHARED|MAP_LOCKED, "MAP_SHARED|MAP_LOCKED");
-+
++	tst_res(TPASS, "Successfully verified the mmap area.");
 +}
 +
 +static void setup(void)
@@ -240,7 +257,7 @@ index 000000000..9607d58b7
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.test_all = run_test,
-+	.hugepages = {1, TST_NEEDS},
++	.hugepages = {NR_HUGEPAGES, TST_NEEDS},
 +};
 -- 
 2.31.1
