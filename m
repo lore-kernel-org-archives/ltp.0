@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA9C5C3DA7A
-	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 15:44:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71AF3C3DA7A
+	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 15:44:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ED7913CB8B9
-	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 16:44:32 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id AA40D3CB8BC
+	for <ltp@archiver.kernel.org>; Sun, 25 Dec 2022 16:44:41 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 00CD63CB8D9
- for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:43:06 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 0880B3CB8CC
+ for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:43:11 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E1594200254
- for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:43:05 +0100 (CET)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3AC9514001EC
+ for <ltp@lists.linux.it>; Sun, 25 Dec 2022 16:43:09 +0100 (CET)
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2BPFfu6o025347; Sun, 25 Dec 2022 15:43:03 GMT
+ 2BPFIhla023514; Sun, 25 Dec 2022 15:43:08 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=4o2tsaQrWXn0UZ/j0WS/MkRxMWHftTVlATE+flyEsdI=;
- b=ftkhANNVr1IjSJjJOJ5xm6u4RHvXm6mfmjHE5VzuhgdVa07RAPrkA5QliyFVun8Wu9XM
- QWGNXgBY9TMH4nW6YlaepnNeQyB0HzQLczeuLC0nQ1D0vb1Pq86arpEYsX9MYqsyPfau
- OvXqsUxPFZIBaS1NLrXhIGnekVp7T5+6p5mfl4nYF1Bmwe2iIz8M63/xl+LiJ17ZSAZY
- /gFuRiH4zPxoKOA3djGJ30hncbmYCbS0bLWuHpWZb/4y5G7vIzDCTACPQZQnFVieZQuA
- TGBr4UtSNocX5g+jJYglJDc5ePWeomq+WUd489gxzqTLlMEA/C1lUW17j3XLxFNLX6xW Zg== 
+ bh=9MC58NKwYm839uJ8wid+xYgl43chQjZRJ1nmbRRkLrY=;
+ b=IkAElIwGQ5GwrxEi/VSR8E0cW/L8uNjk9uB/XA/1u/vgmum1VjhKoHzuQiInZLHoe7iR
+ KhHwY+9PuADDHQiPfx/enlIyFV6ZALKWMTw/ffCyQDOwpAocvkpw8sDOKxsdd3YiVo+G
+ OesnWxTvZElxecNUZJbpuWl5PS8l9e0wulIy2cNyfn2wwCRLMHmuQn9milfBDPGGHv0S
+ 8NosdFVvmbSC3nZ1vS1wxoQk9iAUfqBNT6j3Gmidp4qP8aFV6RDL3jylKHtsHQjvs/1l
+ hRN4nMt3rWVdTO7cqlGlf0v1cbiPdsoYlfTAMn6JTubcgXndFFxyjIxUn/d7Da+kkKww rw== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mpscs00au-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mps1ugaxx-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 25 Dec 2022 15:43:03 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BPFh3Nk030182;
- Sun, 25 Dec 2022 15:43:03 GMT
+ Sun, 25 Dec 2022 15:43:07 +0000
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BPFab04008748;
+ Sun, 25 Dec 2022 15:43:07 GMT
 Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com
  [169.51.49.102])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mpscs00ah-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mps1ugaxm-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 25 Dec 2022 15:43:02 +0000
+ Sun, 25 Dec 2022 15:43:07 +0000
 Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
- by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BP1NiLr003674;
- Sun, 25 Dec 2022 15:43:00 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3mnrpfheew-1
+ by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BOI8mLR008772;
+ Sun, 25 Dec 2022 15:43:05 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3mnrpfheey-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 25 Dec 2022 15:43:00 +0000
+ Sun, 25 Dec 2022 15:43:05 +0000
 Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
  [10.20.54.103])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2BPFgvMu44827002
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2BPFh1qt42795426
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Sun, 25 Dec 2022 15:42:57 GMT
+ Sun, 25 Dec 2022 15:43:02 GMT
 Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 08A4720040;
+ by IMSVA (Postfix) with ESMTP id D343A20043;
+ Sun, 25 Dec 2022 15:43:01 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id B553E20040;
  Sun, 25 Dec 2022 15:42:57 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8477A20043;
- Sun, 25 Dec 2022 15:42:53 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.100.54])
  by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Sun, 25 Dec 2022 15:42:53 +0000 (GMT)
+ Sun, 25 Dec 2022 15:42:57 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Sun, 25 Dec 2022 21:12:09 +0530
-Message-Id: <20221225154213.84183-10-tsahu@linux.ibm.com>
+Date: Sun, 25 Dec 2022 21:12:10 +0530
+Message-Id: <20221225154213.84183-11-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20221225154213.84183-1-tsahu@linux.ibm.com>
 References: <20221225154213.84183-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: eaOzK0V3YpPK4kFjMNl6zWXPQPTLHGbi
-X-Proofpoint-ORIG-GUID: j49Uvqq38Pr3jqir7br8YJFxSgytRAvQ
+X-Proofpoint-ORIG-GUID: 1HXAaAh1vpq2IUxTgnF-mf81pPcSRy0-
+X-Proofpoint-GUID: mvpoeIUzPH4POvb0s4mzsuCVhgq1PNox
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-25_12,2022-12-23_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 priorityscore=1501
- impostorscore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- adultscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ mlxlogscore=999
+ suspectscore=0 impostorscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2212070000 definitions=main-2212250138
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 09/13] Hugetlb: Migrating libhugetlbfs private
+Subject: [LTP] [PATCH 10/13] Hugetlb: Migrating libhugetlbfs
+ readahead_reserve
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,143 +110,112 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/private.c test
+Migrating the libhugetlbfs/testcases/readahead_reserve.c test
 
-Test Description: The test do mmap() with shared mapping and write.
-It matches the data with private mmap() and then change it with other
-data. It checks shared mapping data if data is not contaiminated by
-private mapping.
+Test Description: readahead() on some kernels can cause the reservation
+counter to get corrupted. The problem is that the patches are allocated
+for the reservation but not faulted in at the time of allocation. The
+counters do not get updated and effectively "leak". This test
+identifies whether the kernel is vulnerable to the problem or not.
+It's fixed in kernel by 'commit f2deae9d4e70
+("Remove implementation of readpage from the hugetlbfs_aops")'.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
- runtest/hugetlb                               |   1 +
- testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap29.c  | 115 ++++++++++++++++++
- 3 files changed, 117 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap29.c
+ runtest/hugetlb                               |  1 +
+ testcases/kernel/mem/.gitignore               |  1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap30.c  | 85 +++++++++++++++++++
+ 3 files changed, 87 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 95afe009e..6ec8d1018 100644
+index 6ec8d1018..60cca4eb7 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -29,6 +29,7 @@ hugemmap25 hugemmap25
- hugemmap26 hugemmap26
+@@ -30,6 +30,7 @@ hugemmap26 hugemmap26
  hugemmap27 hugemmap27
  hugemmap28 hugemmap28
-+hugemmap29 hugemmap29
+ hugemmap29 hugemmap29
++hugemmap30 hugemmap30
  hugemmap05_1 hugemmap05 -m
  hugemmap05_2 hugemmap05 -s
  hugemmap05_3 hugemmap05 -s -m
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 2f8ed0df0..fef0a76d6 100644
+index fef0a76d6..bb9720452 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -28,6 +28,7 @@
- /hugetlb/hugemmap/hugemmap26
+@@ -29,6 +29,7 @@
  /hugetlb/hugemmap/hugemmap27
  /hugetlb/hugemmap/hugemmap28
-+/hugetlb/hugemmap/hugemmap29
+ /hugetlb/hugemmap/hugemmap29
++/hugetlb/hugemmap/hugemmap30
  /hugetlb/hugeshmat/hugeshmat01
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap29.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap29.c
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
 new file mode 100644
-index 000000000..2d921e169
+index 000000000..9a0709af1
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap29.c
-@@ -0,0 +1,115 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
+@@ -0,0 +1,85 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
 + * Copyright (C) 2005-2006 IBM Corporation.
-+ * Author: David Gibson & Adam Litke
++ * Author: Mel Gorman
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * The test do mmap() with shared mapping and write. It matches the data
-+ * with private mmap() and then change it with other data. It checks
-+ * shared mapping data if data is not contaiminated by private mapping.
-+ * Similiarly checks for private data if it is not contaminated by changing
-+ * shared mmap data.
++ * readahead() on some kernels can cause the reservation counter to get
++ * corrupted. The problem is that the pages are allocated for the
++ * reservation but not faulted in at the time of allocation. The
++ * counters do not get updated and effectively "leak". This test
++ * identifies whether the kernel is vulnerable to the problem or not.
++ * It's fixed in kernel by commit f2deae9d4e70.
 + */
 +
 +#define _GNU_SOURCE
++#include <fcntl.h>
 +#include <stdio.h>
++#include <stdlib.h>
 +#include <sys/mount.h>
 +#include <limits.h>
 +#include <sys/param.h>
-+#include <setjmp.h>
++#include <string.h>
++#include <unistd.h>
 +#include <sys/types.h>
 +
 +#include "hugetlb.h"
 +
-+#define C1	0x1234ABCD
-+#define C2  0xFEDC9876
-+
 +#define MNTPOINT "hugetlbfs/"
-+static unsigned long hpage_size;
++static long hpage_size;
 +static int fd = -1;
 +
 +static void run_test(void)
 +{
-+	void *p, *q;
-+	unsigned int *pl, *ql;
-+	unsigned long i;
++	void *p;
++	unsigned long initial_rsvd, map_rsvd, readahead_rsvd, end_rsvd;
 +
 +	fd = tst_creat_unlinked(MNTPOINT, 0);
++	initial_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++
 +	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
 +		 fd, 0);
++	map_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "map_rsvd: %lu", map_rsvd);
 +
-+	pl = p;
-+	for (i = 0; i < (hpage_size / sizeof(*pl)); i++)
-+		pl[i] = C1 ^ i;
++	readahead(fd, 0, hpage_size);
++	readahead_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "readahead_rsvd: %lu", readahead_rsvd);
 +
-+	q = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_PRIVATE,
-+		 fd, 0);
++	memset(p, 1, hpage_size);
 +
-+	ql = q;
-+	for (i = 0; i < (hpage_size / sizeof(*ql)); i++) {
-+		if (ql[i] != (C1 ^ i)) {
-+			tst_res(TFAIL, "Mismatch at offset %lu, got: %u, expected: %lu",
-+					i, ql[i], C1 ^ i);
-+			goto cleanup;
-+		}
-+	}
-+
-+	for (i = 0; i < (hpage_size / sizeof(*ql)); i++)
-+		ql[i] = C2 ^ i;
-+
-+	for (i = 0; i < (hpage_size / sizeof(*ql)); i++) {
-+		if (ql[i] != (C2 ^ i)) {
-+			tst_res(TFAIL, "PRIVATE mismatch at offset %lu, got: %u, expected: %lu",
-+					i, ql[i], C2 ^ i);
-+			goto cleanup;
-+		}
-+	}
-+
-+	for (i = 0; i < (hpage_size / sizeof(*pl)); i++) {
-+		if (pl[i] != (C1 ^ i)) {
-+			tst_res(TFAIL, "SHARED map contaminated at offset %lu, "
-+					"got: %u, expected: %lu", i, pl[i], C1 ^ i);
-+			goto cleanup;
-+		}
-+	}
-+
-+	memset(p, 0, hpage_size);
-+
-+	for (i = 0; i < (hpage_size / sizeof(*ql)); i++) {
-+		if (ql[i] != (C2 ^ i)) {
-+			tst_res(TFAIL, "PRIVATE map contaminated at offset %lu, "
-+					"got: %u, expected: %lu", i, ql[i], C2 ^ i);
-+			goto cleanup;
-+		}
-+	}
-+	tst_res(TPASS, "Successfully tested shared/private mmaping and its data");
-+cleanup:
 +	SAFE_MUNMAP(p, hpage_size);
-+	SAFE_MUNMAP(q, hpage_size);
 +	SAFE_CLOSE(fd);
++	end_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++
++	TST_EXP_EQ_LU(end_rsvd, initial_rsvd);
 +}
 +
 +static void setup(void)
@@ -261,6 +230,10 @@ index 000000000..2d921e169
 +}
 +
 +static struct tst_test test = {
++	.tags = (struct tst_tag[]) {
++		{"linux-git", "f2deae9d4e70"},
++		{}
++	},
 +	.needs_root = 1,
 +	.mntpoint = MNTPOINT,
 +	.needs_hugetlbfs = 1,
@@ -268,7 +241,7 @@ index 000000000..2d921e169
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.test_all = run_test,
-+	.hugepages = {2, TST_NEEDS},
++	.hugepages = {1, TST_NEEDS},
 +};
 -- 
 2.31.1
