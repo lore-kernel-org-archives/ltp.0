@@ -4,96 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95CC9C4332F
-	for <ltp@archiver.kernel.org>; Mon, 26 Dec 2022 07:55:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C700C4167B
+	for <ltp@archiver.kernel.org>; Mon, 26 Dec 2022 09:39:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A4363CB881
-	for <ltp@archiver.kernel.org>; Mon, 26 Dec 2022 08:55:20 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9A5423CB896
+	for <ltp@archiver.kernel.org>; Mon, 26 Dec 2022 10:39:36 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DF1283C217C
- for <ltp@lists.linux.it>; Mon, 26 Dec 2022 08:55:09 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id 93E723C899B
+ for <ltp@lists.linux.it>; Mon, 26 Dec 2022 10:39:26 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C641510004AF
- for <ltp@lists.linux.it>; Mon, 26 Dec 2022 08:55:06 +0100 (CET)
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2BQ7DIs4004927; Mon, 26 Dec 2022 07:55:05 GMT
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 23D25600120
+ for <ltp@lists.linux.it>; Mon, 26 Dec 2022 10:39:24 +0100 (CET)
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2BQ9BmLg008091; Mon, 26 Dec 2022 09:39:22 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=fARPImHxzIEiDx5As9u/u1cnIUWlIh9YFqwC15emrFw=;
- b=sAqG6PqkzvEE6qJysuOENjMJmasHxm87EOjdRgZile+XQIkmGb6RMJPcdeIa8KPjlu8h
- jf6b93qsnnsoDscPwmy2FTyEQkeAf4RYByF2LZpAEX5sJUFKT2W9j+4I57cQg2cTddpB
- dV5wI6nRfSbwAJy8OGs3+qeuEvNwiR2VTTAyv8f8N001F0kyLChvctDEsWpj2UYZQXsb
- b0tev0OmRCO7MvC/GKeUNqaAFEu0WYm7/rSE3swmXUE0NFhlZ3LwApx8qN6oK2x5Tw9t
- DO4HF26SxYmBV8uDXTB2HS2j5KhVqOdj8VC3g1oTYf6nKd4xZyhh1aFPwhDv1iaLKHDK Vw== 
+ mime-version; s=pp1; bh=8l35mdAv6JP20LBcKzBmluRjvyrMuNLNwmAszNClQHw=;
+ b=ckc3/xe+qZh02qZ5zlHlwduHCzDyP+ONNqiYuYErttyzR2DruRgET6GuWw01SNoerleg
+ F1e8szdBzSkmMu0WZqm7GUuTwzDsqmz9LjGCgIVW3sLm+Lwl4S6yTmL+KDcoXNAQquRO
+ j6SJ8pYWzs08Ir1c5aJ8AVDBrM88IHrRLuv3JUSzx1Gvc/4NbDPBfKbklVbhuU35lG9z
+ FZREXb5Ji8Py6LNzL86CR5fgoL4sXAa4hozuPCjq1Wl68qJBuddir/eIKfnalJHwssg4
+ rYSnzyKN+XfB5+yC+4E+zraGrXd4LicKPK+PGY7Neyx1bZ0ZvTOghgVDtBhcoKrUqlXx 9w== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mq71h1449-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mq8s2rnyp-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 26 Dec 2022 07:55:05 +0000
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BQ7sCAj016594;
- Mon, 26 Dec 2022 07:55:04 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com
- [159.122.73.70])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3mq71h143u-1
+ Mon, 26 Dec 2022 09:39:22 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 2BQ9YA3B005663;
+ Mon, 26 Dec 2022 09:39:21 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.98])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mq8s2rnvt-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 26 Dec 2022 07:55:04 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
- by ppma01fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BPCc9Ro025847;
- Mon, 26 Dec 2022 07:36:23 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma01fra.de.ibm.com (PPS) with ESMTPS id 3mns269gtt-1
+ Mon, 26 Dec 2022 09:39:21 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+ by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 2BPF7udB014382;
+ Mon, 26 Dec 2022 09:39:19 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+ by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3mns26j6gv-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 26 Dec 2022 07:36:22 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
- [10.20.54.103])
- by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 2BQ7aJK024248864
+ Mon, 26 Dec 2022 09:39:19 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com
+ [10.20.54.102])
+ by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2BQ9dFd522872336
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 26 Dec 2022 07:36:19 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3A6972004D;
- Mon, 26 Dec 2022 07:36:19 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 5BE7920040;
- Mon, 26 Dec 2022 07:36:16 +0000 (GMT)
+ Mon, 26 Dec 2022 09:39:15 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 4029F20049;
+ Mon, 26 Dec 2022 09:39:15 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 130A620040;
+ Mon, 26 Dec 2022 09:39:12 +0000 (GMT)
 Received: from tarunpc (unknown [9.43.13.185])
- by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Mon, 26 Dec 2022 07:36:16 +0000 (GMT)
-Date: Mon, 26 Dec 2022 13:05:46 +0530
+ by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+ Mon, 26 Dec 2022 09:39:11 +0000 (GMT)
+Date: Mon, 26 Dec 2022 15:09:08 +0530
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: Li Wang <liwang@redhat.com>
-Message-ID: <20221226073546.md4doiwok4vadq3i@tarunpc>
+Message-ID: <20221226093908.hfcf4o25wfh2zfsp@tarunpc>
 References: <20221225154213.84183-1-tsahu@linux.ibm.com>
- <20221225154213.84183-3-tsahu@linux.ibm.com>
- <CAEemH2dB6RqzSnmN2CH0f1ZtG5sO9T2-RmDSg4cOR2-m-12b7g@mail.gmail.com>
+ <20221225154213.84183-2-tsahu@linux.ibm.com>
+ <CAEemH2eyO686YNSSdRE7vDhyU9qYEsdNLfwFUiv_a+jK1QeLiA@mail.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <CAEemH2dB6RqzSnmN2CH0f1ZtG5sO9T2-RmDSg4cOR2-m-12b7g@mail.gmail.com>
+In-Reply-To: <CAEemH2eyO686YNSSdRE7vDhyU9qYEsdNLfwFUiv_a+jK1QeLiA@mail.gmail.com>
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ybuBWZsfoN1KsaqnXm7mAHm6suWco8Cu
-X-Proofpoint-ORIG-GUID: GmiTJcwvuQ8e_yAw8NQqDi_gg1AK4p3S
+X-Proofpoint-GUID: SIyJEX3aGGT0lLw4jJH9NBmlY2HjPJ1J
+X-Proofpoint-ORIG-GUID: gM-6kStCPK0Njhl_faSgrGInrATrokt4
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-12-26_04,2022-12-23_01,2022-06-22_01
+ definitions=2022-12-26_06,2022-12-23_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 mlxscore=0
- bulkscore=0 impostorscore=0 malwarescore=0 suspectscore=0 phishscore=0
- spamscore=0 clxscore=1015 mlxlogscore=999 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2212260066
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+ impostorscore=0 bulkscore=0
+ mlxlogscore=999 clxscore=1015 suspectscore=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 phishscore=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2212260083
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 02/13] Hugetlb: Migrating libhugetlbfs mmap-cow
+Subject: Re: [LTP] [PATCH 01/13] Hugetlb: Migrating libhugetlbfs mlock
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,136 +116,90 @@ Thanks for reviewing the patch.
 Please find my comments inline.
 
 --skip
-> > +static void do_work(int thread, size_t size, int fd)
-> > +{
-> > +       char *addr;
-> > +       size_t i;
-> > +       char pattern = thread+65;
-> > +
-> > +       addr = SAFE_MMAP(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE,
-> > fd, 0);
-> > +
-> > +       tst_res(TINFO, "Thread %d (pid %d): Mapped at address %p",
-> > +              thread, getpid(), addr);
-> > +
-> > +       for (i = 0; i < size; i++)
-> > +               memcpy((char *)addr+i, &pattern, 1);
-> > +
-> > +       if (msync(addr, size, MS_SYNC))
-> > +               tst_brk(TBROK|TERRNO, "Thread %d (pid %d): msync() failed",
-> > +                               thread, getpid());
-> > +
-> > +       for (i = 0; i < size; i++)
-> > +               if (addr[i] != pattern) {
-> > +                       tst_res(TFAIL, "thread %d (pid: %d): Corruption at
-> > %p; "
-> > +                                  "Got %c, Expected %c", thread, getpid(),
-> > +                                  &addr[i], addr[i], pattern);
-> > +                       goto cleanup;
-> > +               }
-> > +       tst_res(TINFO, "Thread %d (pid %d): Pattern verified",
-> > +                       thread, getpid());
-> >
-> 
-> Maybe combining the address output with the content of patterns is better?
-> 
-> i.e.
-> 
-> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap21.c
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap21.c
-> @@ -45,9 +45,6 @@ static void do_work(int thread, size_t size, int fd)
-> 
->         addr = SAFE_MMAP(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd,
-> 0);
-> 
-> -       tst_res(TINFO, "Thread %d (pid %d): Mapped at address %p",
-> -              thread, getpid(), addr);
-> -
->         for (i = 0; i < size; i++)
->                 memcpy((char *)addr+i, &pattern, 1);
-> 
-> @@ -62,8 +59,8 @@ static void do_work(int thread, size_t size, int fd)
->                                    &addr[i], addr[i], pattern);
->                         goto cleanup;
->                 }
-> -       tst_res(TINFO, "Thread %d (pid %d): Pattern verified",
-> -                       thread, getpid());
-> +       tst_res(TINFO, "Thread %d (pid %d): Pattern %c verified at address
-> %p",
-> +                       thread, getpid(), pattern, addr);
-> 
->  cleanup:
->         SAFE_MUNMAP(addr, size);
-> 
-In case of failure, this verified comment will not get printed.
-In case of success, I dont think it matters to show the content of pattern.
-> 
-> 
-> > +
-> > +cleanup:
-> > +       SAFE_MUNMAP(addr, size);
-> > +       exit(0);
-> > +}
-> > +
+On Dec 26 2022, Li Wang wrote:
+> On Sun, Dec 25, 2022 at 11:42 PM Tarun Sahu <tsahu@linux.ibm.com> wrote:
 > > +static void run_test(void)
 > > +{
-> > +       char *addr;
-> > +       size_t size, itr;
-> > +       int i, pid;
-> > +       pid_t *wait_list;
+> >
+> 
+> 
+> 
+> > +       struct rlimit limit_info;
 > > +
-> > +       wait_list = SAFE_MALLOC(THREADS * sizeof(pid_t));
-> > +       size = (NR_HUGEPAGES / (THREADS+1)) * hpage_size;
+> > +       if (getrlimit(RLIMIT_MEMLOCK, &limit_info))
+> > +               tst_res(TWARN|TERRNO, "Unable to read locked memory
+> > rlimit");
+> > +       if (limit_info.rlim_cur < hpage_size)
+> > +               tst_brk(TCONF, "Locked memory ulimit set below huge page
+> > size");
+> >
+> 
+> These lines are better for moving into setup() phase. And, I'd propose
+> printing the value of 'limit_info.rlim_cur' and 'hpage_size' when TCONF.
+> 
+> The default value of max-locked-memory is smaller than hpage_size on
+> both RHEL8 and 9, which means this test will TCONF and skip running.
+> I'm hesitating should we temporally cancel the limitations and make
+> this test can really perform then restore that value to the original,
+> is this change make sense? WDYT?
+> 
+Yeah, Incase if limit is smaller than expected, we can change it temporarily
+to run the test. Will update in next revision. Also will change,
+getrlimit/setrlimit function to SAFE_*.
+
+
+> 
+> 
 > > +
+> > +       test_simple_mlock(MAP_PRIVATE, "MAP_PRIVATE");
+> > +       test_simple_mlock(MAP_SHARED, "MAP_SHARED");
+> > +       test_simple_mlock(MAP_PRIVATE|MAP_LOCKED,
+> > "MAP_PRIVATE|MAP_LOCKED");
+> > +       test_simple_mlock(MAP_SHARED|MAP_LOCKED, "MAP_SHARED|MAP_LOCKED");
+> >
+> 
+> If we define an additional function like flags_to_str(int flags) for
+> converting
+> the flag into a string, which will be more simple for reading.
+> 
+> static char *flags_to_str(int flags)
+> {
+>        ...
+> }
+> 
+> static void test_simple_mlock(int flags)
+> {
+>         char *flags_str = flags_to_str(flags);
+>         ...
+> }
+> 
+It was not used so often and only some specific flags are used. I think
+if there will be more general use case being some more mmap flags used in
+application, then it would be good to change this to function.
+
+Another way is to define a macro like
+
+#define FLAGS_STR(flag) #flag
+
+and pass it like: test_simple_mlock(flag, FLAGS_STR(flag));
+
+But I thought, it is like passing the string itself.
+
+what do you think?
+
+> 
+> 
 > > +
-> > +       /* First, mmap the file with MAP_SHARED and fill with data
-> > +        * If this is not done, then the fault handler will not be
-> > +        * called in the kernel since private mappings will be
-> > +        * created for the children at prefault time.
-> > +        */
-> > +       addr = SAFE_MMAP(NULL, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd,
-> > 0);
-> > +
-> > +       for (itr = 0; itr < size; itr += 8)
-> > +               memcpy(addr+itr, "deadbeef", 8);
-> > +
-> > +       for (i = 0; i < THREADS; i++) {
-> > +               pid = SAFE_FORK();
-> > +
-> > +               if (pid == 0)
-> > +                       do_work(i, size, fd);
-> > +
-> > +               wait_list[i] = pid;
-> > +       }
-> > +       tst_reap_children();
-> > +
-> > +       SAFE_MUNMAP(addr, size);
-> > +       free(wait_list);
-> > +       tst_res(TPASS, "mmap COW working as expected.");
 > > +}
 > > +
 > > +static void setup(void)
 > > +{
 > > +       hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-> >
-> 
-> We do have a dedicated function named tst_get_hugepage_size();
-> could be used for getting huge page size.
-Oh right! I could have used it in all other previous tests too.
-Thanks for pointing this, Will take care of it in next revision.
-> 
-> The rest part looks good to me.
-> 
-> Reviewed-by: Li Wang <liwang@redhat.com>
-> 
-> 
-> 
-> > +       fd = tst_creat_unlinked(MNTPOINT, 0);
 > > +}
 > > +
 > > +static void cleanup(void)
 > > +{
-> > +       if (fd >= 1)
+> > +       if (fd >= 0)
 > > +               SAFE_CLOSE(fd);
 > > +}
 > > +
@@ -255,11 +208,10 @@ Thanks for pointing this, Will take care of it in next revision.
 > > +       .mntpoint = MNTPOINT,
 > > +       .needs_hugetlbfs = 1,
 > > +       .needs_tmpdir = 1,
-> > +       .forks_child = 1,
 > > +       .setup = setup,
 > > +       .cleanup = cleanup,
 > > +       .test_all = run_test,
-> > +       .hugepages = {NR_HUGEPAGES, TST_NEEDS},
+> > +       .hugepages = {1, TST_NEEDS},
 > > +};
 > > --
 > > 2.31.1
