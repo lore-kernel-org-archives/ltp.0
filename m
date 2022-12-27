@@ -4,77 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 136E9C10F1B
-	for <ltp@archiver.kernel.org>; Tue, 27 Dec 2022 05:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 747EFC10F1B
+	for <ltp@archiver.kernel.org>; Tue, 27 Dec 2022 06:31:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D92353CB80A
-	for <ltp@archiver.kernel.org>; Tue, 27 Dec 2022 06:49:15 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id EF0AB3CB846
+	for <ltp@archiver.kernel.org>; Tue, 27 Dec 2022 07:31:37 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C35913CB80A
- for <ltp@lists.linux.it>; Tue, 27 Dec 2022 06:49:04 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 7FA9D3C4F11
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 07:31:24 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C848C1A00668
- for <ltp@lists.linux.it>; Tue, 27 Dec 2022 06:49:02 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EA846600680
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 07:31:23 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1672120141;
+ s=mimecast20190719; t=1672122682;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=G+NOmV8Qu28EvM0eMed52yLkgwQr+xZfhLhKWbZbKDI=;
- b=YQ9ndiAiVi8mdSKoENS/QBwwEeXNKrJ4R8RE6mHSyU/sSq8iSvLpV1fbAbab8UteyWKkua
- 2o9BhXagIypOOetkx9+LuPrdtqc4NDxMCKb6qepSJUABd7EN1bCoJX4VAgeE7OYdO+jKKi
- mYc9vwSKymnT/2jfGpI5zndRCGUT1P8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=ZdkY4plpYvvSZQKEKpgTaijDa5yoEwr/KhJilbViqBM=;
+ b=KhL4TSp/ahh19uYywfdJKadlDpUutX4h0SoLPxtfTsF7Z9K4Y7iCsdLCQM/VXWb3Ycn8lT
+ Pb0wRVjADxJJygLWWKWG9e55zJCTlNY2/ybyjlKPXX/2+oT2dQy7kSTa4o9cgx0ghDT8Lf
+ Bmq2PoBCE7w60TiiHvgp3qb/Wb9PsjI=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-209-LV55aP6ANdaACOh0qe5vwQ-1; Tue, 27 Dec 2022 00:48:59 -0500
-X-MC-Unique: LV55aP6ANdaACOh0qe5vwQ-1
-Received: by mail-wm1-f70.google.com with SMTP id
- b47-20020a05600c4aaf00b003d031aeb1b6so9011872wmp.9
- for <ltp@lists.linux.it>; Mon, 26 Dec 2022 21:48:58 -0800 (PST)
+ us-mta-83-43DU1JyyOiSoLuZ8oc72vw-1; Tue, 27 Dec 2022 01:31:20 -0500
+X-MC-Unique: 43DU1JyyOiSoLuZ8oc72vw-1
+Received: by mail-wr1-f70.google.com with SMTP id
+ w20-20020adf8bd4000000b00272d0029f18so1126390wra.7
+ for <ltp@lists.linux.it>; Mon, 26 Dec 2022 22:31:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=G+NOmV8Qu28EvM0eMed52yLkgwQr+xZfhLhKWbZbKDI=;
- b=PJqVD3h4S4Yk8YaMdCPxJ074IFfkHpEwnTHAYn5dMgr6/AQas0FpL7iWSoJpYosA2k
- ry0+0XPJHBORse4fSzcDw0PYCddr8GGCKD1On+yfb2dZXPaSyVCDd8IW7wAT04vLM8Bs
- j3xkv7UbCmAPu7JTugXxDUD/Oh6iUFmhDq0V8DavacFfMYvpCa81NWKcSK7Mx9AaFgiy
- 6m+4rvCMckNZWqhGrcGt6ANcL1uZ7fh9+DJhWH6v/flPikNKvb3JPINiHAhe0FZH1K99
- oQ2OrHra0vCVEVxx3iEqob6qDxkZ+UF5Ndh3T+FKHt0LAyJBTW2Uu7IJxQaDy91xJcrf
- 4k1g==
-X-Gm-Message-State: AFqh2kriTtdKY55XTV4zplANNms+V1eCsrf/tD02DnwlpnqLDOkDV5I2
- zlvonwXlhJ4nNcJsibwR96LS/QkTNDtbQIqW1/y+Be8gW9Zj+P64u5qtrbQ7aJw7+f72cArCS/3
- 7MWO0ELnaO1bbysVVa7BLAAHDxew=
-X-Received: by 2002:a05:600c:4d14:b0:3b4:c00d:2329 with SMTP id
- u20-20020a05600c4d1400b003b4c00d2329mr857539wmp.124.1672120137988; 
- Mon, 26 Dec 2022 21:48:57 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXswOug2crSZD63+YflPzegP5K76r6cP5PJotAICwVe1T3Mtq9+UIXtYeWDXV0E8bhSGv2SZAQfXuKG04y4meDY=
-X-Received: by 2002:a05:600c:4d14:b0:3b4:c00d:2329 with SMTP id
- u20-20020a05600c4d1400b003b4c00d2329mr857532wmp.124.1672120137770; Mon, 26
- Dec 2022 21:48:57 -0800 (PST)
+ bh=ZdkY4plpYvvSZQKEKpgTaijDa5yoEwr/KhJilbViqBM=;
+ b=VbQZS0FIcVu4OS5qOhg/KlPnNDHhDavZtf3Roif7JeDtly3PrEvIiznh6iiFP5NhsD
+ nxDrIwR3jkdle9VClVe1kaq7NvXVSOD4FNs0+7tYe9bINiXzyU+BdN7cMpzBJXIfkoNf
+ insiHhR8UvW7fanNrEKhuBjVw4EbnHri9LWX8LxmjEiDxMAyEV6o9DFdH23e5XVJzr/r
+ SBffiaV4F1v0StLuJ/+l95PS1kqwJNAQ2mmjDWis5bE0ddJmfAg87ZOWB9jMFw7X1Yl7
+ DhenAdXiecn6n51GCSITzbCYP8Epb7pcXRnYDyeBcXNQlYWpEMobuHFZ7jwVmcOFCNK3
+ +ThQ==
+X-Gm-Message-State: AFqh2kpmK7FGp5DlwCY5I0yK6M90ceuuOaXYzRelOiRh+xbSx4viR0hN
+ Nhqg+1UjPFJZcGFPFxZJSg90NJ5fWfdI4jP8rHE1Q1RD4Kp3irg79xPeNvKWjoL5+juJSJpljqL
+ XcjMrK0CjE1vpIfQbX/C+db6o5xs=
+X-Received: by 2002:a5d:4a90:0:b0:27a:2d68:8c25 with SMTP id
+ o16-20020a5d4a90000000b0027a2d688c25mr276385wrq.707.1672122679139; 
+ Mon, 26 Dec 2022 22:31:19 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXsJDm0Rbv99jRuSR5nm+GDtfp+GiPQQOXeTYv/3EW0346qKh0tSSL+LtxfQ8i7joL5uZcJjZimlq93jYF/ktY0=
+X-Received: by 2002:a5d:4a90:0:b0:27a:2d68:8c25 with SMTP id
+ o16-20020a5d4a90000000b0027a2d688c25mr276376wrq.707.1672122678813; Mon, 26
+ Dec 2022 22:31:18 -0800 (PST)
 MIME-Version: 1.0
 References: <20221225154213.84183-1-tsahu@linux.ibm.com>
- <20221225154213.84183-5-tsahu@linux.ibm.com>
-In-Reply-To: <20221225154213.84183-5-tsahu@linux.ibm.com>
+ <20221225154213.84183-7-tsahu@linux.ibm.com>
+In-Reply-To: <20221225154213.84183-7-tsahu@linux.ibm.com>
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 27 Dec 2022 13:48:46 +0800
-Message-ID: <CAEemH2eXzTP4m0v8bFjkA4ShKwzMppJzh1aa43QsZbp5NUf6Fw@mail.gmail.com>
+Date: Tue, 27 Dec 2022 14:31:07 +0800
+Message-ID: <CAEemH2fOB=NSnCt=JMhpDU49MwHvP+z7hjmUoEXi-BEM-tvqCw@mail.gmail.com>
 To: Tarun Sahu <tsahu@linux.ibm.com>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 04/13] Hugetlb: Migrating libhugetlbfs mprotect
+Subject: Re: [LTP] [PATCH 06/13] Hugetlb: Migrating libhugetlbfs
+ mremap-fixed-normal-near-huge
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,449 +95,146 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Tarun,
+On Sun, Dec 25, 2022 at 11:42 PM Tarun Sahu <tsahu@linux.ibm.com> wrote:
 
-This test itself is no problem but looks a bit messy in code organization.
-At least we need to do some refactored work to improve the readability and
-reduce the (long-term) maintenance workload.
-
-
-Tarun Sahu <tsahu@linux.ibm.com> wrote:
-
-Migrating the libhugetlbfs/testcases/mprotect.c test
+> Migrating the libhugetlbfs/testcases/mremap-fixed-normal-near-huge.c test
 >
-> Test Description: This test uses mprotect to change protection of
-> hugepage mapping and perform read/write operation. It checks if the
-> operation results in expected behaviour as per the protection.
+> Test Description: The kernel has bug for mremap() on some architecture.
+> mremap() can cause crashes on architectures with holes in the address
+> space (like ia64) and on powerpc with it's distinct page size "slices".
+>
+> This test get the huge mapping address and mremap() normal mapping
+> near to this huge mapping.
 >
 > Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 > ---
 >  runtest/hugetlb                               |   1 +
 >  testcases/kernel/mem/.gitignore               |   1 +
->  .../kernel/mem/hugetlb/hugemmap/hugemmap23.c  | 244 ++++++++++++++++++
->  3 files changed, 246 insertions(+)
->  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap23.c
+>  .../kernel/mem/hugetlb/hugemmap/hugemmap26.c  | 131 ++++++++++++++++++
+>  3 files changed, 133 insertions(+)
+>  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap26.c
 >
 > diff --git a/runtest/hugetlb b/runtest/hugetlb
-> index 8e80db140..8ade3c9ec 100644
+> index 65265b0fe..55185f2f7 100644
 > --- a/runtest/hugetlb
 > +++ b/runtest/hugetlb
-> @@ -24,6 +24,7 @@ hugemmap19 hugemmap19
->  hugemmap20 hugemmap20
->  hugemmap21 hugemmap21
+> @@ -26,6 +26,7 @@ hugemmap21 hugemmap21
 >  hugemmap22 hugemmap22
-> +hugemmap23 hugemmap23
+>  hugemmap23 hugemmap23
+>  hugemmap25 hugemmap25
+> +hugemmap26 hugemmap26
 >  hugemmap05_1 hugemmap05 -m
 >  hugemmap05_2 hugemmap05 -s
 >  hugemmap05_3 hugemmap05 -s -m
 > diff --git a/testcases/kernel/mem/.gitignore
 > b/testcases/kernel/mem/.gitignore
-> index 0fd01dbce..ffd831f2e 100644
+> index c865a1e55..4886c6a5f 100644
 > --- a/testcases/kernel/mem/.gitignore
 > +++ b/testcases/kernel/mem/.gitignore
-> @@ -23,6 +23,7 @@
->  /hugetlb/hugemmap/hugemmap20
->  /hugetlb/hugemmap/hugemmap21
+> @@ -25,6 +25,7 @@
 >  /hugetlb/hugemmap/hugemmap22
-> +/hugetlb/hugemmap/hugemmap23
+>  /hugetlb/hugemmap/hugemmap23
+>  /hugetlb/hugemmap/hugemmap25
+> +/hugetlb/hugemmap/hugemmap26
 >  /hugetlb/hugeshmat/hugeshmat01
 >  /hugetlb/hugeshmat/hugeshmat02
 >  /hugetlb/hugeshmat/hugeshmat03
-> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap23.c
-> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap23.c
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap26.c
+> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap26.c
 > new file mode 100644
-> index 000000000..687b192ae
+> index 000000000..03dd248bd
 > --- /dev/null
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap23.c
-> @@ -0,0 +1,244 @@
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap26.c
+> @@ -0,0 +1,131 @@
 > +// SPDX-License-Identifier: LGPL-2.1-or-later
 > +/*
-> + * Copyright (C) 2005-2006 IBM Corporation.
-> + * Author: David Gibson & Adam Litke
+> + * Copyright (C) 2009 IBM Corporation.
+> + * Author: David Gibson
 > + */
 > +
 > +/*\
 > + * [Description]
 > + *
-> + * This test uses mprotect to change protection of hugepage mapping and
-> + * perform read/write operation. It checks if the operation results in
-> + * expected behaviour as per the protection.
+> + * Test Description: The kernel has bug for mremap() on some architecture.
+> + * mremap() can cause crashes on architectures with holes in the address
+> + * space (like ia64) and on powerpc with it's distinct page size "slices".
+> + *
+> + * This test get the huge mapping address and mremap() normal mapping
+> + * near to this huge mapping.
 > + */
 > +
+> +#define _GNU_SOURCE
 > +#include <stdio.h>
 > +#include <sys/mount.h>
-> +#include <unistd.h>
-> +#include <sys/mman.h>
-> +#include <setjmp.h>
-> +#include <signal.h>
+> +#include <limits.h>
+> +#include <sys/param.h>
+> +#include <sys/types.h>
 > +
 > +#include "hugetlb.h"
 > +
-> +#ifndef barrier
-> +# ifdef mb
-> +       /* Redefining the mb() */
-> +#   define barrier() mb()
-> +# else
-> +#   define barrier() __asm__ __volatile__ ("" : : : "memory")
-> +# endif
-> +#endif
-> +
-> +#define MNTPOINT "hugetlbfs/"
 > +#define RANDOM_CONSTANT        0x1234ABCD
->
-
-Avoid mixing tab and spaces in the macro definition.
-
-
-
+> +#define MNTPOINT "hugetlbfs/"
 > +
 > +static int  fd = -1;
->
-
-^ one space is enough.
-
-
-
-> +static sigjmp_buf sig_escape;
-> +static void *sig_expected = MAP_FAILED;
-> +static long hpage_size;
+> +static long hpage_size, page_size;
 > +
-> +static void sig_handler(int signum, siginfo_t *si, void *uc)
+> +static int do_readback(void *p, size_t size, const char *stage)
 > +{
-> +       (void)uc;
-> +       if (signum == SIGSEGV) {
-> +               tst_res(TINFO, "SIGSEGV at %p (sig_expected=%p)",
-> si->si_addr,
-> +                      sig_expected);
-> +               if (si->si_addr == sig_expected)
-> +                       siglongjmp(sig_escape, 1);
-> +               tst_res(TFAIL, "SIGSEGV somewhere unexpected");
-> +       } else
-> +               tst_res(TFAIL, "Unexpected signal %s", strsignal(signum));
-> +}
+> +       unsigned int *q = p;
+> +       size_t i;
 > +
-> +static int test_read(void *p)
-> +{
-> +       volatile unsigned long *pl = p;
-> +       unsigned long x;
+> +       tst_res(TINFO, "%s(%p, 0x%lx, \"%s\")", __func__, p,
+> +              (unsigned long)size, stage);
 > +
-> +       if (sigsetjmp(sig_escape, 1)) {
-> +               /* We got a SEGV */
-> +               sig_expected = MAP_FAILED;
-> +               return -1;
-> +       }
+> +       for (i = 0; i < (size / sizeof(*q)); i++)
+> +               q[i] = RANDOM_CONSTANT ^ i;
 > +
-> +       sig_expected = p;
-> +       barrier();
-> +       x = *pl;
-> +       tst_res(TINFO, "Read back %lu", x);
-> +       barrier();
-> +       sig_expected = MAP_FAILED;
-> +       return 0;
-> +}
-> +
-> +static int test_write(void *p, unsigned long val)
-> +{
-> +       volatile unsigned long *pl = p;
-> +       unsigned long x;
-> +
-> +       if (sigsetjmp(sig_escape, 1)) {
-> +               /* We got a SEGV */
-> +               sig_expected = MAP_FAILED;
-> +               return -1;
-> +       }
-> +
-> +       sig_expected = p;
-> +       barrier();
-> +       *pl = val;
-> +       x = *pl;
-> +       barrier();
-> +       sig_expected = MAP_FAILED;
-> +
-> +       return (x != val);
-> +}
-> +
-> +static int test_prot(void *p, int prot, char *prot_str)
-> +{
-> +       int r, w;
-> +
-> +       r = test_read(p);
-> +       tst_res(TINFO, "On Read: %d", r);
-> +       w = test_write(p, RANDOM_CONSTANT);
-> +       tst_res(TINFO, "On Write: %d", w);
-> +
-> +       if (prot & PROT_READ) {
-> +               if (r != 0) {
-> +                       tst_res(TFAIL, "read failed on mmap(prot %s)",
-> prot_str);
+> +       for (i = 0; i < (size / sizeof(*q)); i++) {
+> +               if (q[i] != (RANDOM_CONSTANT ^ i)) {
+> +                       tst_res(TFAIL, "Stage \"%s\": Mismatch at offset
+> 0x%lx: 0x%x "
+> +                                       "instead of 0x%lx", stage, i,
+> q[i], RANDOM_CONSTANT ^ i);
 > +                       return -1;
-> +               }
-> +
-> +       } else {
-> +               if (r != -1) {
-> +                       tst_res(TFAIL, "read succeeded on mmap(prot %s)",
-> prot_str);
-> +                       return -1;
-> +               }
-> +       }
-> +
-> +       if (prot & PROT_WRITE) {
-> +               switch (w) {
-> +               case -1:
-> +                       tst_res(TFAIL, "write failed on mmap(prot %s)",
-> prot_str);
-> +                       return -1;
-> +               case 0:
-> +                       break;
-> +               case 1:
-> +                       tst_res(TFAIL, "write mismatch on mmap(prot %s)",
-> prot_str);
-> +                       return -1;
-> +               default:
-> +                       tst_res(TWARN, "Bug in test");
-> +                       return -1;
-> +               }
-> +       } else {
-> +               switch (w) {
-> +               case -1:
-> +                       break;
-> +               case 0:
-> +                       tst_res(TFAIL, "write succeeded on mmap(prot %s)",
-> prot_str);
-> +                       return -1;
-> +               case 1:
-> +                       tst_res(TFAIL, "write mismatch on mmap(prot %s)",
-> prot_str);
-> +                       return -1;
-> +               default:
-> +                       tst_res(TWARN, "Bug in test");
-> +                       break;
 > +               }
 > +       }
 > +       return 0;
 > +}
 > +
-> +static int test_mprotect(int fd, char *testname,
-> +                         unsigned long len1, int prot1, char *prot1_str,
-> +                         unsigned long len2, int prot2, char *prot2_str)
+> +static int do_remap(void *target)
 > +{
-> +       void *p;
+> +       void *a, *b;
 > +       int ret;
 > +
-> +       tst_res(TINFO, "Testing %s", testname);
-> +       tst_res(TINFO, "Mapping with prot %s", prot1_str);
-> +       p = SAFE_MMAP(NULL, len1, prot1, MAP_SHARED, fd, 0);
+> +       a = SAFE_MMAP(NULL, page_size, PROT_READ|PROT_WRITE,
+> +                 MAP_SHARED|MAP_ANONYMOUS, -1, 0);
 > +
-> +       ret = test_prot(p, prot1, prot1_str);
+> +       ret = do_readback(a, page_size, "base normal");
 > +       if (ret)
 > +               goto cleanup;
-> +       tst_res(TINFO, "mprotect()ing to prot %s", prot2_str);
-> +       ret = mprotect(p, len2, prot2);
-> +       if (ret != 0) {
-> +               tst_res(TFAIL|TERRNO, "%s: mprotect(prot %s)", testname,
-> prot2_str);
-> +               goto cleanup;
-> +       }
+> +       b = mremap(a, page_size, page_size, MREMAP_MAYMOVE | MREMAP_FIXED,
+> +                  target);
 > +
-> +       ret = test_prot(p, prot2, prot2_str);
-> +       if (ret)
-> +               goto cleanup;
-> +       if (len2 < len1)
-> +               ret = test_prot(p + len2, prot1, prot1_str);
+> +       if (b != MAP_FAILED) {
+> +               do_readback(b, page_size, "remapped");
+> +               a = b;
+> +       } else
+> +               tst_res(TINFO|TERRNO, "mremap(MAYMOVE|FIXED) disallowed");
 > +
 > +cleanup:
-> +       SAFE_MUNMAP(p, len1);
+> +       SAFE_MUNMAP(a, page_size);
 > +       return ret;
 > +}
-> +
-> +static void run_test(void)
-> +{
-> +       void *p;
-> +
 >
 
+Those two functions do_readback() and do_remap() are
+copy&past from hugemmap2[4|5].c, what about extracting
+them into a common header file(tst_hugetlb.h or mem.h) for
+easy reusing?
 
-> +       struct sigaction sa = {
-> +               .sa_sigaction = sig_handler,
-> +               .sa_flags = SA_SIGINFO,
-> +       };
-> +
-> +       SAFE_SIGACTION(SIGSEGV, &sa, NULL);
-> +
-> +       fd = tst_creat_unlinked(MNTPOINT, 0);
-> +       p = SAFE_MMAP(NULL, 2*hpage_size, PROT_READ|PROT_WRITE,
-> MAP_SHARED, fd, 0);
-> +       memset(p, 0, hpage_size);
-> +       SAFE_MUNMAP(p, hpage_size);
->
+And I also noticed other tests (hugemmap27) using the same
+macro mem barrier(), it'd be great to define it in a header file.
 
-I guess moving those preparation work into setup() is better.
-
-
-> +
-> +       if (test_mprotect(fd, "R->RW", hpage_size, PROT_READ, "PROT_READ",
-> +                     hpage_size, PROT_READ|PROT_WRITE,
-> "PROT_READ|PROT_WRITE"))
-> +               goto cleanup;
-> +       if (test_mprotect(fd, "RW->R", hpage_size, PROT_READ|PROT_WRITE,
-> +                    "PROT_READ|PROT_WRITE", hpage_size, PROT_READ,
-> "PROT_READ"))
-> +               goto cleanup;
-> +
-> +       if (test_mprotect(fd, "R->RW 1/2", 2*hpage_size, PROT_READ,
-> "PROT_READ",
-> +                     hpage_size, PROT_READ|PROT_WRITE,
-> "PROT_READ|PROT_WRITE"))
-> +               goto cleanup;
-> +       if (test_mprotect(fd, "RW->R 1/2", 2*hpage_size,
-> PROT_READ|PROT_WRITE,
-> +                     "PROT_READ|PROT_WRITE", hpage_size, PROT_READ,
-> "PROT_READ"))
-> +               goto cleanup;
-> +
-> +       if (test_mprotect(fd, "NONE->R", hpage_size, PROT_NONE,
-> "PROT_NONE",
-> +                     hpage_size, PROT_READ, "PROT_READ"))
-> +               goto cleanup;
-> +       if (test_mprotect(fd, "NONE->RW", hpage_size, PROT_NONE,
-> "PROT_NONE",
-> +                     hpage_size, PROT_READ|PROT_WRITE,
-> "PROT_READ|PROT_WRITE"))
-> +               goto cleanup;
->
-
-Can we reorg those test options just into one structure for reducing
-the duplicated code? Something maybe like:
-
-static struct mprotect_param {
-        char *tname;
-        int pg_num;
-        int prot1;
-        char *prot1_str;
-        int prot2;
-        char *prot2_str;
-} mprotect_params[] = {
-        {"R->RW", 1,
-                PROT_READ, "PROT_READ",
-                PROT_READ|PROT_WRITE, "PROT_READ|PROT_WRITE"},
-
-        {"RW->R", 1,
-                PROT_READ|PROT_WRITE, "PROT_READ|PROT_WRITE",
-                PROT_READ, "PROT_READ"},
-
-        {"R->RW 1/2", 2,
-                PROT_READ, "PROT_READ",
-                PROT_READ|PROT_WRITE, "PROT_READ|PROT_WRITE"},
-
-        {"RW->R 1/2", 2,
-                PROT_READ|PROT_WRITE, "PROT_READ|PROT_WRITE",
-                PROT_READ, "PROT_READ"},
-
-        {"NONE->R", 1,
-                PROT_NONE, "PROT_NONE",
-                PROT_READ, "PROT_READ"},
-
-        {"NONE->RW", 1,
-                PROT_NONE, "PROT_NONE",
-                PROT_READ|PROT_WRITE, "PROT_READ|PROT_WRITE"},
-};
-
-static void run_test(unsigned int i)
-{
-        struct mprotect_param *mpt = &mprotect_params[i];
-
-        if (test_mprotect(fd, mpt->tname,
-                        hpage_size * mpt->pg_num, mpt->prot1,
-mpt->prot1_str,
-                        hpage_size, mpt->prot2, mpt->prot2_str))
-                return;
-
-        tst_res(TPASS, "Successfully tested mprotect with hugetlb area\n");
-}
-
-static void setup(void)
-{
-        struct sigaction sa = {
-                .sa_sigaction = sig_handler,
-                .sa_flags = SA_SIGINFO,
-        };
-
-        SAFE_SIGACTION(SIGSEGV, &sa, NULL);
-
-        hpage_size = tst_get_hugepage_size();
-
-        fd = tst_creat_unlinked(MNTPOINT, 0);
-        p = SAFE_MMAP(NULL, 2*hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-fd, 0);
-
-        memset(p, 0, hpage_size);
-        SAFE_MUNMAP(p, hpage_size);
-}
-
-static void cleanup(void)
-{
-        SAFE_MUNMAP(p+hpage_size, hpage_size);
-
-        if (fd >= 0)
-                SAFE_CLOSE(fd);
-}
-
-static struct tst_test test = {
-        .tcnt = ARRAY_SIZE(mprotect_params),
-        .needs_root = 1,
-        .mntpoint = MNTPOINT,
-        .needs_hugetlbfs = 1,
-        .needs_tmpdir = 1,
-        .setup = setup,
-        .cleanup = cleanup,
-        .test = run_test,
-        .hugepages = {2, TST_NEEDS},
-};
-
-
-
-> +
-> +       tst_res(TPASS, "Successfully tested mprotect with hugetlb area");
->
-
-
-
-> +cleanup:
-> +       SAFE_MUNMAP(p+hpage_size, hpage_size);
-> +       SAFE_CLOSE(fd);
->
-
-we can move this into cleanup() function as well.
-
-
-
-> +}
-> +
-> +static void setup(void)
-> +{
-> +       hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +       if (fd >= 0)
-> +               SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +       .needs_root = 1,
-> +       .mntpoint = MNTPOINT,
-> +       .needs_hugetlbfs = 1,
-> +       .needs_tmpdir = 1,
-> +       .setup = setup,
-> +       .cleanup = cleanup,
-> +       .test_all = run_test,
-> +       .hugepages = {2, TST_NEEDS},
-> +};
-> --
-> 2.31.1
->
->
 
 -- 
 Regards,
