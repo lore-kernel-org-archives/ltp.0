@@ -4,80 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F105C4167B
-	for <ltp@archiver.kernel.org>; Mon, 26 Dec 2022 09:48:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDBAEC10F1B
+	for <ltp@archiver.kernel.org>; Tue, 27 Dec 2022 05:33:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2435B3CB878
-	for <ltp@archiver.kernel.org>; Mon, 26 Dec 2022 10:48:37 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id BEA303CB831
+	for <ltp@archiver.kernel.org>; Tue, 27 Dec 2022 06:33:02 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DA4D63C899B
- for <ltp@lists.linux.it>; Mon, 26 Dec 2022 10:48:26 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E3A853CB80A
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 06:32:53 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 658FD6005C3
- for <ltp@lists.linux.it>; Mon, 26 Dec 2022 10:48:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1672048101;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=qVJNo+MW/IIEMZDrSZSGsODpM48jKD0pOH7tMvr38RI=;
- b=Az+HCqPmM1lJTGD26lTznZUC48QgoHhqN0Qy2JT1gP7Z4VO680k0Mxn/x6hF1Vd1N7MYq1
- Hof9oYieEb974+vSm4XQAWWsy5333rHfpYlA70/auVKNy7ThrsC2sjOtv2xSLCj/qoGUwc
- GNoXST/EQPHTpnxgsUXVrn/1H+NI/Ww=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-460-MmRXMCwAMNKwsCpikF6Vgw-1; Mon, 26 Dec 2022 04:48:17 -0500
-X-MC-Unique: MmRXMCwAMNKwsCpikF6Vgw-1
-Received: by mail-wm1-f71.google.com with SMTP id
- m38-20020a05600c3b2600b003d23f8c6ebdso4860242wms.0
- for <ltp@lists.linux.it>; Mon, 26 Dec 2022 01:48:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=qVJNo+MW/IIEMZDrSZSGsODpM48jKD0pOH7tMvr38RI=;
- b=PwvqtUmxtJxXjDEKRzR0HcgpLLmYTcBKuFWYoLVe5URGrL1m59/ck3xNiK+q6HTXpf
- JOfaEQlXE4Wm8vm4Lr4OsN3wsOSF3+RKL3QUjNM9j5Cj3xYOLP4h/EnnylxvG0p47v/b
- lq7Tgh6hKPKpyNn69H4AxLifIjLtlcTpraiJCzYhvxHB+Zv2qX9f1rgm4m7PuWGRPT5p
- dqGiUK8S+dN37K5xajtHIwbVtRh5IaOfyxjvFyj8UC6ljBphZ2PE6Jew3lZo2zplyu7f
- dGB5Ll6fkMEeLXXLNbFbT5nWU8I7qoeG7M62kz767xgwZXrxib+ur+KXYPRu6NL0HbQ9
- /vGg==
-X-Gm-Message-State: AFqh2kpLnttY/uQlr5RzNvQJUQFp/XLscAQjKRWe5XlnJeWx8rqeoKtk
- W92ethvLeMEHlHY84I22VGVjvM/INJ2WwD/YFMAO2NJpstvKBt/rTwKVcWZMT3fcwKWeq66g/ds
- EJRTXhH995Hid8XNM9LSJcbVJSXE=
-X-Received: by 2002:a5d:444d:0:b0:242:3a48:1757 with SMTP id
- x13-20020a5d444d000000b002423a481757mr683367wrr.528.1672048096783; 
- Mon, 26 Dec 2022 01:48:16 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXvxPPbw9cjyssw8QeirFvvCJ2jJOTQKdtBmJATykJzNV9EZVfkvK3f6oU6Z4NV+Wt3QgRK6NjABAt8YyD4+7no=
-X-Received: by 2002:a5d:444d:0:b0:242:3a48:1757 with SMTP id
- x13-20020a5d444d000000b002423a481757mr683365wrr.528.1672048096545; Mon, 26
- Dec 2022 01:48:16 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8D0BE6005D0
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 06:32:52 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 52B0621AA5
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 05:32:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1672119170; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=/a4ico6sn74saFg1WSlhCfyIhjwYCLUGmc1Y22Bt/9w=;
+ b=kXjBgm21+p/3/GbcnENbWXUiVmwaqHuCVC3O04ne0GZBqA2LdFK3NbFv3r5mQxQHn3rzbU
+ /QP9hJJztpo90yWPIMiblkXpaFB/+jtu7s4YUSl4KEocHsFbMay5EXs0MjXbjoPjN5UFih
+ cZBen4oaUvsxpNYUJ7qp3oUudyBfra0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1672119170;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=/a4ico6sn74saFg1WSlhCfyIhjwYCLUGmc1Y22Bt/9w=;
+ b=hzQGp61earVHxcnlfHEkOEmxCRk+QwwjhLMQXVEU/8cl2nNZKa+MFTTGZzQWwuZf+9Mdmr
+ MM4OmWQ9sn1OyuCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C4052138F2
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 05:32:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 0FC8IIGDqmOjPwAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 05:32:49 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Tue, 27 Dec 2022 11:02:47 +0530
+Message-Id: <20221227053247.1855-1-akumar@suse.de>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-References: <20221225154213.84183-1-tsahu@linux.ibm.com>
- <20221225154213.84183-2-tsahu@linux.ibm.com>
- <CAEemH2eyO686YNSSdRE7vDhyU9qYEsdNLfwFUiv_a+jK1QeLiA@mail.gmail.com>
- <20221226093908.hfcf4o25wfh2zfsp@tarunpc>
-In-Reply-To: <20221226093908.hfcf4o25wfh2zfsp@tarunpc>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 26 Dec 2022 17:48:05 +0800
-Message-ID: <CAEemH2csQriyVe2jv5dz+A0FtHnZKS-NmDygkFWBik=5_ssQcQ@mail.gmail.com>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 01/13] Hugetlb: Migrating libhugetlbfs mlock
+Subject: [LTP] [PATCH] setreuid01.c: remove the test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,104 +72,218 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, rpalethorpe@suse.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Dec 26, 2022 at 5:39 PM Tarun Sahu <tsahu@linux.ibm.com> wrote:
+Test scenarios in setreuid01.c is covered in setreuid03.c with
+better approach, hence remove it [1]
 
-> Hi Li,
-> Thanks for reviewing the patch.
-> Please find my comments inline.
->
-> --skip
-> On Dec 26 2022, Li Wang wrote:
-> > On Sun, Dec 25, 2022 at 11:42 PM Tarun Sahu <tsahu@linux.ibm.com> wrote:
-> > > +static void run_test(void)
-> > > +{
-> > >
-> >
-> >
-> >
-> > > +       struct rlimit limit_info;
-> > > +
-> > > +       if (getrlimit(RLIMIT_MEMLOCK, &limit_info))
-> > > +               tst_res(TWARN|TERRNO, "Unable to read locked memory
-> > > rlimit");
-> > > +       if (limit_info.rlim_cur < hpage_size)
-> > > +               tst_brk(TCONF, "Locked memory ulimit set below huge
-> page
-> > > size");
-> > >
-> >
-> > These lines are better for moving into setup() phase. And, I'd propose
-> > printing the value of 'limit_info.rlim_cur' and 'hpage_size' when TCONF.
-> >
-> > The default value of max-locked-memory is smaller than hpage_size on
-> > both RHEL8 and 9, which means this test will TCONF and skip running.
-> > I'm hesitating should we temporally cancel the limitations and make
-> > this test can really perform then restore that value to the original,
-> > is this change make sense? WDYT?
-> >
-> Yeah, Incase if limit is smaller than expected, we can change it
-> temporarily
-> to run the test. Will update in next revision. Also will change,
-> getrlimit/setrlimit function to SAFE_*.
->
->
-> >
-> >
-> > > +
-> > > +       test_simple_mlock(MAP_PRIVATE, "MAP_PRIVATE");
-> > > +       test_simple_mlock(MAP_SHARED, "MAP_SHARED");
-> > > +       test_simple_mlock(MAP_PRIVATE|MAP_LOCKED,
-> > > "MAP_PRIVATE|MAP_LOCKED");
-> > > +       test_simple_mlock(MAP_SHARED|MAP_LOCKED,
-> "MAP_SHARED|MAP_LOCKED");
-> > >
-> >
-> > If we define an additional function like flags_to_str(int flags) for
-> > converting
-> > the flag into a string, which will be more simple for reading.
-> >
-> > static char *flags_to_str(int flags)
-> > {
-> >        ...
-> > }
-> >
-> > static void test_simple_mlock(int flags)
-> > {
-> >         char *flags_str = flags_to_str(flags);
-> >         ...
-> > }
-> >
-> It was not used so often and only some specific flags are used. I think
-> if there will be more general use case being some more mmap flags used in
-> application, then it would be good to change this to function.
->
-> Another way is to define a macro like
->
-> #define FLAGS_STR(flag) #flag
->
-> and pass it like: test_simple_mlock(flag, FLAGS_STR(flag));
->
-> But I thought, it is like passing the string itself.
->
-> what do you think?
->
+[1] https://lore.kernel.org/ltp/Y6Vsgkx%2FVcY%2F78vs@pevik/
 
-Yes sure, and I think of we have TST_TO_STR() in LTP as well.
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ testcases/kernel/syscalls/setreuid/.gitignore |   2 -
+ .../kernel/syscalls/setreuid/setreuid01.c     | 176 ------------------
+ 2 files changed, 178 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/setreuid/setreuid01.c
 
-$ git grep TST_TO_STR
-tst_common.h:#define TST_TO_STR_(s) #s
-tst_common.h:#define TST_TO_STR(s) TST_TO_STR_(s)
-
+diff --git a/testcases/kernel/syscalls/setreuid/.gitignore b/testcases/kernel/syscalls/setreuid/.gitignore
+index 52690606c..b67a23fbc 100644
+--- a/testcases/kernel/syscalls/setreuid/.gitignore
++++ b/testcases/kernel/syscalls/setreuid/.gitignore
+@@ -1,5 +1,3 @@
+-/setreuid01
+-/setreuid01_16
+ /setreuid02
+ /setreuid02_16
+ /setreuid03
+diff --git a/testcases/kernel/syscalls/setreuid/setreuid01.c b/testcases/kernel/syscalls/setreuid/setreuid01.c
+deleted file mode 100644
+index 54ba2d7a8..000000000
+--- a/testcases/kernel/syscalls/setreuid/setreuid01.c
++++ /dev/null
+@@ -1,176 +0,0 @@
+-/*
+- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
+- * Author: William Roske
+- * Co-pilot: Dave Fenner
+- */
+-
+-/*
+- * Testcase to test the basic functionality of setreuid(2) system call.
+- */
+-
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <sys/types.h>
+-
+-#include "test.h"
+-#include "compat_16.h"
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-TCID_DEFINE(setreuid01);
+-int TST_TOTAL = 5;
+-
+-static uid_t ruid, euid;	/* real and effective user ids */
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/*
+-		 * TEST CASE:
+-		 *  Don't change either real or effective uid
+-		 */
+-		ruid = getuid();	/* get real uid */
+-		UID16_CHECK(ruid, setreuid, cleanup);
+-
+-		euid = geteuid();	/* get effective uid */
+-		UID16_CHECK(euid, setreuid, cleanup);
+-
+-		TEST(SETREUID(cleanup, -1, -1));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL,
+-				 "setreuid -  Don't change either real or effective uid failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS,
+-				 "setreuid -  Don't change either real or effective uid returned %ld",
+-				 TEST_RETURN);
+-		}
+-
+-		/*
+-		 * TEST CASE:
+-		 *  change effective to effective uid
+-		 */
+-
+-		TEST(SETREUID(cleanup, -1, euid));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL,
+-				 "setreuid -  change effective to effective uid failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS,
+-				 "setreuid -  change effective to effective uid returned %ld",
+-				 TEST_RETURN);
+-		}
+-
+-		/*
+-		 * TEST CASE:
+-		 *  change real to real uid
+-		 */
+-
+-		TEST(SETREUID(cleanup, ruid, -1));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL,
+-				 "setreuid -  change real to real uid failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS,
+-				 "setreuid -  change real to real uid returned %ld",
+-				 TEST_RETURN);
+-		}
+-
+-		/*
+-		 * TEST CASE:
+-		 *  change effective to real uid
+-		 */
+-
+-		TEST(SETREUID(cleanup, -1, ruid));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL,
+-				 "setreuid -  change effective to real uid failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS,
+-				 "setreuid -  change effective to real uid returned %ld",
+-				 TEST_RETURN);
+-		}
+-
+-		/*
+-		 * TEST CASE:
+-		 *  try to change real to current real
+-		 */
+-
+-		TEST(SETREUID(cleanup, ruid, ruid));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL,
+-				 "setreuid -  try to change real to current real failed, errno=%d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		} else {
+-			tst_resm(TPASS,
+-				 "setreuid -  try to change real to current real returned %ld",
+-				 TEST_RETURN);
+-		}
+-
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-static void setup(void)
+-{
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-}
+-
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
 -- 
-Regards,
-Li Wang
+2.39.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
