@@ -4,78 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F12CC10F1B
-	for <ltp@archiver.kernel.org>; Tue, 27 Dec 2022 07:08:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E5A2C3DA7D
+	for <ltp@archiver.kernel.org>; Tue, 27 Dec 2022 08:19:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6DDA93CB827
-	for <ltp@archiver.kernel.org>; Tue, 27 Dec 2022 08:08:49 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 2656C3CB838
+	for <ltp@archiver.kernel.org>; Tue, 27 Dec 2022 09:19:39 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DDF8C3CB80E
- for <ltp@lists.linux.it>; Tue, 27 Dec 2022 08:08:38 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 3B1A03CB80E
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 09:19:28 +0100 (CET)
+Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com
+ [85.158.142.113])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DFEE81400543
- for <ltp@lists.linux.it>; Tue, 27 Dec 2022 08:08:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1672124916;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mxaY84O3kFP5IqpEqfzbmWx+oo6J029RiduT6wWW5+k=;
- b=NrRgD5P6xcjEIOEA+NHic9amoW8xlr9UdYPMpXyPa94tBAZQFnQy3Dyja5LTuEFlgzZuGV
- S71HyiubFqh0DSKzbdGopCVX7y8yfMhXJvlrwI/Zneeb8N3iYL+e2S92YKOI41pJMwYVRA
- RyeJ/IBuNdxeQSuLnI1zmFT92jhRjeQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-393--ZbzhmtSNC6JwlAqAWuwNg-1; Tue, 27 Dec 2022 02:08:34 -0500
-X-MC-Unique: -ZbzhmtSNC6JwlAqAWuwNg-1
-Received: by mail-wr1-f71.google.com with SMTP id
- i9-20020adfa509000000b0027df24b887fso339590wrb.3
- for <ltp@lists.linux.it>; Mon, 26 Dec 2022 23:08:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=mxaY84O3kFP5IqpEqfzbmWx+oo6J029RiduT6wWW5+k=;
- b=AVMoLO1sp2S89LaGjD8eFURiT7aBVOeb4sWB631dYJzyJStodUt12NGKnmZ6oOx/Vz
- F95oaTOdkHOUnvRDFRrOPzlgQ2I4SLjDtxV/IphNbTJhZFzoEYpb8cZ5kdNsVLTzXC4O
- UsNimhRSTzRiiX3nN/ldK+2nBQXmYYMIeliHc6jiGAggBnHlzlYQ3wIhkiF+QvN6aQQs
- S8unqm0h6oeYZcTcjJ8/3yZbfJaRHhpC94ETocQFbYZ+PallHCOvz7Dk/I8RsGwPg/dC
- dpvLKFopcKkz64xqy+gIEUel3GLxAVLBfscLnn2QQRO5FZv8gz8fodwHP9CLNqjYgKOA
- zylw==
-X-Gm-Message-State: AFqh2koFGwDuMkmnt5e00mKzc69GZj8//b60uKs1Qtkg8zO0/+WXEnZL
- w8cpCbafxiRCOjTt3aTC3g1dGy4V5x1qyFp+XV5XWEwWjy8xkzzpXwKzHWEWHNJUX1cNwqY9BnD
- NNqRFxNHsrIxjBFmT+0VhT79QhWw=
-X-Received: by 2002:a5d:4a90:0:b0:27a:2d68:8c25 with SMTP id
- o16-20020a5d4a90000000b0027a2d688c25mr280065wrq.707.1672124912154; 
- Mon, 26 Dec 2022 23:08:32 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXsaML8j/IYQD25S4TlMiCV/K0M4EZAZzUHF2sykPoLmgu6pNrXgdzTdKjxNYGCVn6IVttUrCWB0Uv9Q/TSROgs=
-X-Received: by 2002:a5d:4a90:0:b0:27a:2d68:8c25 with SMTP id
- o16-20020a5d4a90000000b0027a2d688c25mr280061wrq.707.1672124911980; Mon, 26
- Dec 2022 23:08:31 -0800 (PST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1A2901000646
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 09:19:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1672129165; i=@fujitsu.com;
+ bh=APioyppkZY2RyzCkaG9s1efOh0S8knZw96wKwj/oZjk=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+ b=NqMPhfdLMZibPIeYlBJ1ctTdIV+tijyqW81bwutN+5cdsCx24a86CrpZVbTd69SC3
+ Ky6SdtVxhfjhQIiuaV8E10XYYP8dpAkSCVQ9cm7KnbJfVZiD53ROmeNPoJBROLrwsw
+ FOjCHP3C00+zu4LsXAUslX/2X8TQqPBKxGgj/l+B7zgW74qesgFibB53FfukefLv+u
+ L8DdPQRvdFrWRNaHOVc9BGp3yAPpOZaw/MknXKmJoSXBRNIdJthzAtmNyEs1LH6kpz
+ W020KmPyPujtJBDU5GvDsStXlbAFs5vXLdop32UXooUwkddMjop7AtfwJW4NEoqvmM
+ 59VPJTO+GwH3Q==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRWlGSWpSXmKPExsViZ8ORpNu7alW
+ ywZcDAhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8blRaeZC/ZJVXxof87WwPhbtIuRi0NI4BSj
+ xMEdyxghnD1MEqvn/WSHchgl7v5ezNTFyMnBJqAp8axzATOILSIgIdHR8JYdxGYWUJdYPukXW
+ I2wgJvEtqnrwGwWAVWJxnsP2UBsXgFPiba3G8HqJQQUJKY8fM8MEReUODnzCQvEHAmJgy9eME
+ PUKEpc6vjGCGFXSMya1cYEYatJXD23iXkCI/8sJO2zkLQvYGRaxWhenFpUllqka2isl1SUmZ5
+ RkpuYmaOXWKWbqJdaqpuXX1SSoWuol1herJdaXKxXXJmbnJOil5dasokRGJApxakSOxgblv/R
+ O8QoycGkJMor1b0qWYgvKT+lMiOxOCO+qDQntfgQowwHh5IEr8EKoJxgUWp6akVaZg4wOmDSE
+ hw8SiK855YBpXmLCxJzizPTIVKnGHU5Pv65uJdZiCUvPy9VSpxXcyVQkQBIUUZpHtwIWKReYp
+ SVEuZlZGBgEOIpSC3KzSxBlX/FKM7BqCTMuxfkEp7MvBK4Ta+AjmACOuLDoZUgR5QkIqSkGpj
+ aHI+bLJnw0PVC+ONrFUsYThj9/3Z9gXu0w7yCC/2KE/j93X2cE6zX5WqkZnPJbcj7sMFd52uK
+ VsN0r835p44yrF/td2uKWFirMOvOD9/PaLvozhKbZ/Dr2O+9tdMPru7tZtj5OSMibSKn8pWn1
+ mKxtSZ3LYzO+5uvmnHr7lXZfcahO6329l+/sL9eXk/+xakwhi8zwm98Dn1qf+VAkmZxRFBP/F
+ cn9f7kxP11gQL8EX9Sgtkyl7cXrlosk5az20KsrvfjfdnUg38FfRhvs9vuCSuoWi0grH9vd7p
+ N8ezZCn2zDnHoqN+6MG23u7HTR391jknrOK2nT9Jbr7q3dZG/0o43uk/8Ol4ruwd2mSixFGck
+ GmoxFxUnAgAN7MjZTwMAAA==
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-11.tower-732.messagelabs.com!1672129164!519824!1
+X-Originating-IP: [62.60.8.98]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.101.2; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 5778 invoked from network); 27 Dec 2022 08:19:25 -0000
+Received: from unknown (HELO n03ukasimr03.n03.fujitsu.local) (62.60.8.98)
+ by server-11.tower-732.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 27 Dec 2022 08:19:25 -0000
+Received: from n03ukasimr03.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id AA5931B1
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 08:19:24 +0000 (GMT)
+Received: from R01UKEXCASM126.r01.fujitsu.local (R01UKEXCASM126
+ [10.183.43.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id 9F5C37B
+ for <ltp@lists.linux.it>; Tue, 27 Dec 2022 08:19:24 +0000 (GMT)
+Received: from localhost.localdomain (10.167.220.84) by
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.42; Tue, 27 Dec 2022 08:19:22 +0000
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Tue, 27 Dec 2022 17:20:11 +0800
+Message-ID: <1672132813-26636-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <20221225154213.84183-1-tsahu@linux.ibm.com>
- <20221225154213.84183-12-tsahu@linux.ibm.com>
-In-Reply-To: <20221225154213.84183-12-tsahu@linux.ibm.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 27 Dec 2022 15:08:20 +0800
-Message-ID: <CAEemH2fiOZ+oFpnJvb7c2cS8w5_cKJeUVjdBP1REs9_0d9gaXw@mail.gmail.com>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Originating-IP: [10.167.220.84]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM126.r01.fujitsu.local (10.183.43.178)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 11/13] Hugetlb: Migrating libhugetlbfs shared
+Subject: [LTP] [PATCH 1/3] shell: Remove old kernel version check below 3.10
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,159 +92,115 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com, geetika@linux.ibm.com,
- vaibhav@linux.ibm.com, rpalethorpe@suse.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Sun, Dec 25, 2022 at 11:43 PM Tarun Sahu <tsahu@linux.ibm.com> wrote:
+We have raised the minimal kernel version from 3.0 to 3.10,
+so remove these useless check.
 
-> Migrating the libhugetlbfs/testcases/shared.c test
->
-> Test Description: This test is basic shared mapping test. Two shared
-> mappings are created with same offset on a file. It checks if writing
-> to one mapping can be seen to other mapping or not?
->
-> Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
->
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ doc/shell-test-api.txt                           |  6 +++---
+ .../tracing/dynamic_debug/dynamic_debug01.sh     | 16 ++++------------
+ testcases/network/virt/virt_lib.sh               |  8 --------
+ 3 files changed, 7 insertions(+), 23 deletions(-)
 
-Reviewed-by: Li Wang <liwang@redhat.com>
-
-> ---
->  runtest/hugetlb                               |  1 +
->  testcases/kernel/mem/.gitignore               |  1 +
->  .../kernel/mem/hugetlb/hugemmap/hugemmap31.c  | 84 +++++++++++++++++++
->  3 files changed, 86 insertions(+)
->  create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap31.c
->
-> diff --git a/runtest/hugetlb b/runtest/hugetlb
-> index 60cca4eb7..33fd384b4 100644
-> --- a/runtest/hugetlb
-> +++ b/runtest/hugetlb
-> @@ -31,6 +31,7 @@ hugemmap27 hugemmap27
->  hugemmap28 hugemmap28
->  hugemmap29 hugemmap29
->  hugemmap30 hugemmap30
-> +hugemmap31 hugemmap31
->  hugemmap05_1 hugemmap05 -m
->  hugemmap05_2 hugemmap05 -s
->  hugemmap05_3 hugemmap05 -s -m
-> diff --git a/testcases/kernel/mem/.gitignore
-> b/testcases/kernel/mem/.gitignore
-> index bb9720452..8375389cd 100644
-> --- a/testcases/kernel/mem/.gitignore
-> +++ b/testcases/kernel/mem/.gitignore
-> @@ -30,6 +30,7 @@
->  /hugetlb/hugemmap/hugemmap28
->  /hugetlb/hugemmap/hugemmap29
->  /hugetlb/hugemmap/hugemmap30
-> +/hugetlb/hugemmap/hugemmap31
->  /hugetlb/hugeshmat/hugeshmat01
->  /hugetlb/hugeshmat/hugeshmat02
->  /hugetlb/hugeshmat/hugeshmat03
-> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap31.c
-> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap31.c
-> new file mode 100644
-> index 000000000..a09905023
-> --- /dev/null
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap31.c
-> @@ -0,0 +1,84 @@
-> +// SPDX-License-Identifier: LGPL-2.1-or-later
-> +/*
-> + * Copyright (C) 2005-2006 IBM Corporation.
-> + * Author: David Gibson & Adam Litke
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * This test is basic shared mapping test. Two shared mappings are created
-> + * with same offset on a file. It checks if writing to one mapping can be
-> + * seen to other mapping or not?
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <sys/mount.h>
-> +#include <limits.h>
-> +#include <sys/param.h>
-> +#include <setjmp.h>
-> +#include <sys/types.h>
-> +
-> +#include "hugetlb.h"
-> +
-> +#define RANDOM_CONSTANT        0x1234ABCD
-> +#define MNTPOINT "hugetlbfs/"
-> +
-> +static long hpage_size;
-> +static int fd = -1;
-> +
-> +static void run_test(void)
-> +{
-> +       void *p, *q;
-> +       unsigned long *pl, *ql;
-> +       unsigned long i;
-> +
-> +       fd = tst_creat_unlinked(MNTPOINT, 0);
-> +       p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-> +                fd, 0);
-> +
-> +       q = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-> +                fd, 0);
-> +
-> +       pl = p;
-> +       for (i = 0; i < (hpage_size / sizeof(*pl)); i++)
-> +               pl[i] = RANDOM_CONSTANT ^ i;
-> +
-> +       ql = q;
-> +       for (i = 0; i < (hpage_size / sizeof(*ql)); i++) {
-> +               if (ql[i] != (RANDOM_CONSTANT ^ i)) {
-> +                       tst_res(TFAIL, "Mismatch at offset %lu, Got: %lu,
-> Expected: %lu",
-> +                                       i, ql[i], RANDOM_CONSTANT ^ i);
-> +                       goto cleanup;
-> +               }
-> +       }
-> +
-> +       tst_res(TPASS, "Successfully tested data between two shared
-> mappings");
-> +cleanup:
-> +       SAFE_MUNMAP(p, hpage_size);
-> +       SAFE_MUNMAP(q, hpage_size);
-> +       SAFE_CLOSE(fd);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +       hpage_size = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE)*1024;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +       if (fd >= 0)
-> +               SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +       .needs_root = 1,
-> +       .mntpoint = MNTPOINT,
-> +       .needs_hugetlbfs = 1,
-> +       .needs_tmpdir = 1,
-> +       .setup = setup,
-> +       .cleanup = cleanup,
-> +       .test_all = run_test,
-> +       .hugepages = {2, TST_NEEDS},
-> +};
-> --
-> 2.31.1
->
->
-
+diff --git a/doc/shell-test-api.txt b/doc/shell-test-api.txt
+index 7f0ca02a7..df6a56874 100644
+--- a/doc/shell-test-api.txt
++++ b/doc/shell-test-api.txt
+@@ -661,9 +661,9 @@ if tst_kvcmp -le 4.0.0; then
+ 	tst_brk TCONF "Kernel newer than 4.0.0 is needed"
+ fi
+ 
+-# Exit the test if kernel is newer than 3.8 and older than 4.0.1
+-if tst_kvcmp -gt 3.8 -a -lt 4.0.1; then
+-	tst_brk TCONF "Kernel must be older than 3.8 or newer than 4.0.1"
++# Exit the test if kernel is newer than 3.16 and older than 4.0.1
++if tst_kvcmp -gt 3.16 -a -lt 4.0.1; then
++	tst_brk TCONF "Kernel must be older than 3.16 or newer than 4.0.1"
+ fi
+ -------------------------------------------------------------------------------
+ 
+diff --git a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+index 9d0575b90..ebb961fd9 100755
+--- a/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
++++ b/testcases/kernel/tracing/dynamic_debug/dynamic_debug01.sh
+@@ -21,8 +21,7 @@ DEBUGFS_WAS_MOUNTED=0
+ DEBUGFS_PATH=""
+ DEBUGFS_CONTROL=""
+ DYNDEBUG_STATEMENTS="./debug_statements"
+-EMPTY_FLAG="-"
+-NEW_INTERFACE=0
++EMPTY_FLAG="=_"
+ 
+ mount_debugfs()
+ {
+@@ -55,11 +54,6 @@ setup()
+ 		tst_brk TBROK "Unable to find $DEBUGFS_CONTROL"
+ 	fi
+ 
+-	if tst_kvcmp -ge 3.4 ; then
+-		NEW_INTERFACE=1
+-		EMPTY_FLAG="=_"
+-	fi
+-
+ 	grep -v "^#" "$DEBUGFS_CONTROL" > "$DYNDEBUG_STATEMENTS"
+ }
+ 
+@@ -83,10 +77,8 @@ do_all_flags()
+ 
+ 	for INPUT_LINE in $ALL_INPUTS; do
+ 		do_flag "+p" "$OPTION" "$INPUT_LINE"
+-		if tst_kvcmp -ge 3.2 || [ $NEW_INTERFACE -eq 1 ] ; then
+-			do_flag "+flmt" "$OPTION" "$INPUT_LINE"
+-			do_flag "-flmt" "$OPTION" "$INPUT_LINE"
+-		fi
++		do_flag "+flmt" "$OPTION" "$INPUT_LINE"
++		do_flag "-flmt" "$OPTION" "$INPUT_LINE"
+ 		do_flag "-p" "$OPTION" "$INPUT_LINE"
+ 	done
+ 
+@@ -131,7 +123,7 @@ cleanup()
+ 		FLAGS_SET=$(awk -v emp="$EMPTY_FLAG" '$3 != emp' $DYNDEBUG_STATEMENTS)
+ 	fi
+ 	if [ "$FLAGS_SET" ] ; then
+-		FLAG_PREFIX=$([ $NEW_INTERFACE -eq 1 ] && echo "" || echo "+")
++		FLAG_PREFIX=$(echo "")
+ 		/bin/echo "$FLAGS_SET" | while read -r FLAG_LINE ; do
+ 			/bin/echo -n "$FLAG_LINE" \
+ 				| awk -v prf="$FLAG_PREFIX" -F " |:" \
+diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
+index 98a9bb6aa..e919bc3a5 100644
+--- a/testcases/network/virt/virt_lib.sh
++++ b/testcases/network/virt/virt_lib.sh
+@@ -44,10 +44,6 @@ virt_lib_setup()
+ {
+ 	case "$virt_type" in
+ 	vxlan|geneve)
+-		if tst_kvcmp -lt "3.8"; then
+-			tst_brk TCONF "test must be run with kernel 3.8 or newer"
+-		fi
+-
+ 		if [ "$TST_IPV6" ] && tst_kvcmp -lt "3.12"; then
+ 			tst_brk TCONF "test must be run with kernels >= 3.12"
+ 		fi
+@@ -252,10 +248,6 @@ virt_minimize_timeout()
+ 
+ vxlan_setup_subnet_uni()
+ {
+-	if tst_kvcmp -lt "3.10"; then
+-		tst_brk TCONF "test must be run with kernel 3.10 or newer"
+-	fi
+-
+ 	[ "$(ip link add type $virt_type help 2>&1 | grep remote)" ] || \
+ 		tst_brk TCONF "iproute doesn't support remote unicast address"
+ 
 -- 
-Regards,
-Li Wang
+2.31.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
