@@ -4,94 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A04D3C4332F
-	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 12:24:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CED7C4332F
+	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 12:24:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D2E523CCE13
-	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 13:23:58 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 18B1D3CB7EA
+	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 13:24:12 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3F0783CCDE8
- for <ltp@lists.linux.it>; Wed,  4 Jan 2023 13:23:07 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id D473E3CB680
+ for <ltp@lists.linux.it>; Wed,  4 Jan 2023 13:23:11 +0100 (CET)
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
  [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5FE18600285
- for <ltp@lists.linux.it>; Wed,  4 Jan 2023 13:23:05 +0100 (CET)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6E6FC200740
+ for <ltp@lists.linux.it>; Wed,  4 Jan 2023 13:23:09 +0100 (CET)
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 304BqYH0008367; Wed, 4 Jan 2023 12:23:04 GMT
+ 304Aqqc6025364; Wed, 4 Jan 2023 12:23:08 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=Kxt+54v+8ZcLGEkv0meJhSazoorpDMAwtLAi8D1420A=;
- b=VXEfAM6+ZwMgFOv06LK1zDjMPEOCNdQq8peiWSMwPoMJRkriJonMvuyEStOANd1irmoo
- UR3k++BVajxz0ZEUshco5030isiWj0sqmTu/aNdx1cXRYnaK1VmydEXRKcd1gSiF52VR
- FGuK9QemcuctRiocC4Fut2zDCAgdeW/FIrKDG6nDHM1TTqiDk7xelzyFJ4kJKhtPZkqM
- vWTMm3JSiM8RsmiHwVdyveDuE4fIa1IPczImdL1t7BR72NC144wX5GEmfw/PQFjcsY9C
- OqfLO4wZwV5BV5p3bU4Xlpk5POhKwab+I3r+dWMhhwMcVtRRJUcv49t6pQ3CbEEY7nYc yA== 
+ bh=EQO1gIGjbX3Qra3PmenSyvqwgrbdEs+/J+1CpbH5K4I=;
+ b=ZYRW/45qybbNKshk4+ImfHbaThxJe3vhdnT0WdO4W+FiWYLTjdA9y5V4XgqGYm5a4DJz
+ n0hAqHSAIawc5HygoHkXxUAliq620l0AZfCuyXPLHgHK2fEFmlhFM3R3Dfw81HeDttdy
+ vZVTWe7468x7X49eg7J9sxRULBlQJL4xCN9A/tnb1Y8SvYdR+5b+aTYlFfg9fSTP4jG6
+ HiABmq1tOCBSVQi0/zQn99JxDRVoZCiqfYnPyw/0X8vMY6avevpuzXIKfYkGCMC9/moI
+ oEjs0fvHrl5hqC8m2LSSYH/+xsf3L/XZY4kT1ixgYOB8f9r73IndQQEdjMYEUoOxZJus yA== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mw8y30ncq-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mw83bj10p-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 04 Jan 2023 12:23:08 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 304BkVW3018083;
+ Wed, 4 Jan 2023 12:23:07 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.70])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mw83bj0ys-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 04 Jan 2023 12:23:07 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+ by ppma01fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 303GuGCx012120;
+ Wed, 4 Jan 2023 12:23:05 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+ by ppma01fra.de.ibm.com (PPS) with ESMTPS id 3mtcq6buh0-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Wed, 04 Jan 2023 12:23:04 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 304BrkNQ010244;
- Wed, 4 Jan 2023 12:23:03 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mw8y30nc4-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 04 Jan 2023 12:23:03 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 303MoMXq020628;
- Wed, 4 Jan 2023 12:23:01 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
- by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3mtcq6d95v-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 04 Jan 2023 12:23:00 +0000
 Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
  [10.20.54.105])
- by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 304CMvlK18743770
+ by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 304CN10246596380
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 4 Jan 2023 12:22:57 GMT
+ Wed, 4 Jan 2023 12:23:01 GMT
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 683E320043;
- Wed,  4 Jan 2023 12:22:57 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 61FC120043;
+ Wed,  4 Jan 2023 12:23:01 +0000 (GMT)
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 1E54620040;
- Wed,  4 Jan 2023 12:22:53 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 011CD20040;
+ Wed,  4 Jan 2023 12:22:58 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.18.9])
  by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Wed,  4 Jan 2023 12:22:52 +0000 (GMT)
+ Wed,  4 Jan 2023 12:22:57 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Wed,  4 Jan 2023 17:52:17 +0530
-Message-Id: <20230104122224.369467-7-tsahu@linux.ibm.com>
+Date: Wed,  4 Jan 2023 17:52:18 +0530
+Message-Id: <20230104122224.369467-8-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230104122224.369467-1-tsahu@linux.ibm.com>
 References: <20230104122224.369467-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: RBYpygV-7tXsQz-P0QWNGTLi-Q7_TJVt
-X-Proofpoint-ORIG-GUID: YWXuO5fRXfeVUpNsSrDI7KiKD8xLA_hE
+X-Proofpoint-ORIG-GUID: Oe7-OSYdZjaGOTfGVTkm5QC6fUeLZYkC
+X-Proofpoint-GUID: pf_JRR-LHTXdWgAVhhxQ37lY1CFR2wJQ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2023-01-04_06,2023-01-04_01,2022-06-22_01
+ definitions=2023-01-04_06,2023-01-04_02,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxlogscore=999
- priorityscore=1501 phishscore=0 lowpriorityscore=0 suspectscore=0
- bulkscore=0 clxscore=1015 mlxscore=0 malwarescore=0 adultscore=0
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2212070000 definitions=main-2301040097
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+ malwarescore=0
+ priorityscore=1501 phishscore=0 adultscore=0 impostorscore=0
+ mlxlogscore=999 bulkscore=0 lowpriorityscore=0 suspectscore=0
+ clxscore=1015 mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2212070000 definitions=main-2301040102
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 06/13] Hugetlb: Migrating libhugetlbfs
- mremap-fixed-normal-near-huge
+Subject: [LTP] [PATCH v2 07/13] Hugetlb: Migrating libhugetlbfs
+ noresv-reserve-resv-page
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,144 +111,160 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/mremap-fixed-normal-near-huge.c test
+Migrating the libhugetlbfs/testcases/noresv-preserve-resv-page.c test
 
-Test Description: The kernel has bug for mremap() on some architecture.
-mremap() can cause crashes on architectures with holes in the address
-space (like ia64) and on powerpc with it's distinct page size "slices".
-
-This test get the huge mapping address and mremap() normal mapping
-near to this huge mapping.
+Test Description: Test to preserve a reserved page against no-reserved
+mapping. If all hugepages are reserved, access to no-reserved shared
+mapping cause a process die, instead of stealing a hugepage which is
+reserved for other process.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
 ---
  runtest/hugetlb                               |   1 +
  testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap26.c  | 103 ++++++++++++++++++
- 3 files changed, 105 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap26.c
+ .../kernel/mem/hugetlb/hugemmap/hugemmap27.c  | 121 ++++++++++++++++++
+ 3 files changed, 123 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap27.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 65265b0fe..55185f2f7 100644
+index 55185f2f7..d108542d2 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -26,6 +26,7 @@ hugemmap21 hugemmap21
- hugemmap22 hugemmap22
+@@ -27,6 +27,7 @@ hugemmap22 hugemmap22
  hugemmap23 hugemmap23
  hugemmap25 hugemmap25
-+hugemmap26 hugemmap26
+ hugemmap26 hugemmap26
++hugemmap27 hugemmap27
  hugemmap05_1 hugemmap05 -m
  hugemmap05_2 hugemmap05 -s
  hugemmap05_3 hugemmap05 -s -m
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index c865a1e55..4886c6a5f 100644
+index 4886c6a5f..9862414c6 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -25,6 +25,7 @@
- /hugetlb/hugemmap/hugemmap22
+@@ -26,6 +26,7 @@
  /hugetlb/hugemmap/hugemmap23
  /hugetlb/hugemmap/hugemmap25
-+/hugetlb/hugemmap/hugemmap26
+ /hugetlb/hugemmap/hugemmap26
++/hugetlb/hugemmap/hugemmap27
  /hugetlb/hugeshmat/hugeshmat01
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap26.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap26.c
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap27.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap27.c
 new file mode 100644
-index 000000000..db2d9ce81
+index 000000000..42dc55558
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap26.c
-@@ -0,0 +1,103 @@
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap27.c
+@@ -0,0 +1,121 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
-+ * Copyright (C) 2009 IBM Corporation.
-+ * Author: David Gibson
++ * Copyright (C) 2013 LG Electronics.
++ * Author: Joonsoo Kim
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * Test Description: The kernel has bug for mremap() on some architecture.
-+ * mremap() can cause crashes on architectures with holes in the address
-+ * space (like ia64) and on powerpc with it's distinct page size "slices".
-+ *
-+ * This test get the huge mapping address and mremap() normal mapping
-+ * near to this huge mapping.
++ * Test to preserve a reserved page against no-reserved mapping. If all
++ * hugepages are reserved, access to no-reserved shared mapping cause a
++ * process die, instead of stealing a hugepage which is reserved for other
++ * process.
 + */
 +
-+#define _GNU_SOURCE
++#include <setjmp.h>
++
 +#include "hugetlb.h"
 +
 +#define MNTPOINT "hugetlbfs/"
++static long hpage_size;
++static int fd1 = -1, fd2 = -1;
++static sigjmp_buf sig_escape;
++static void *sig_expected = MAP_FAILED;
 +
-+static int fd = -1;
-+static long hpage_size, page_size;
-+
-+static int do_remap(void *target)
++static void sig_handler(int signum, siginfo_t *si, void *uc)
 +{
-+	void *a, *b;
-+	int ret;
-+
-+	a = SAFE_MMAP(NULL, page_size, PROT_READ|PROT_WRITE,
-+		  MAP_SHARED|MAP_ANONYMOUS, -1, 0);
-+
-+	ret = do_readback(a, page_size, "base normal");
-+	if (ret)
-+		goto cleanup;
-+	b = mremap(a, page_size, page_size, MREMAP_MAYMOVE | MREMAP_FIXED,
-+		   target);
-+
-+	if (b != MAP_FAILED) {
-+		do_readback(b, page_size, "remapped");
-+		a = b;
++	(void)uc;
++	if (signum == SIGBUS) {
++		if (si->si_addr == sig_expected)
++			siglongjmp(sig_escape, 1);
++		tst_res(TFAIL, "SIGBUS somewhere unexpected: %p (expected: %p)",
++				si->si_addr, sig_expected);
 +	} else
-+		tst_res(TINFO|TERRNO, "mremap(MAYMOVE|FIXED) disallowed");
++		tst_res(TFAIL, "Unexpected signal %s", strsignal(signum));
++}
 +
-+cleanup:
-+	SAFE_MUNMAP(a, page_size);
-+	return ret;
++static int test_write(void *p)
++{
++	volatile char *pl = p;
++
++	if (sigsetjmp(sig_escape, 1)) {
++		/* We got a SIGBUS */
++		return 1;
++	}
++
++	sig_expected = p;
++	barrier();
++	*pl = 's';
++	return 0;
 +}
 +
 +static void run_test(void)
 +{
-+	void *p;
++	int nr_hugepages;
++	int surp_hugepages;
 +	int ret;
++	char *p, *q;
++	struct sigaction sa = {
++		.sa_sigaction = sig_handler,
++		.sa_flags = SA_SIGINFO,
++	};
 +
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+	p = SAFE_MMAP(NULL, 3*hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+		 fd, 0);
++	nr_hugepages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
 +
-+	SAFE_MUNMAP(p, hpage_size);
++	SAFE_SIGACTION(SIGBUS, &sa, NULL);
 +
-+	SAFE_MUNMAP(p + 2*hpage_size, hpage_size);
++	p = SAFE_MMAP(NULL, hpage_size * nr_hugepages,
++		PROT_READ | PROT_WRITE, MAP_SHARED, fd1, 0);
 +
-+	p = p + hpage_size;
++	tst_res(TINFO, "Reserve all hugepages %d", nr_hugepages);
 +
-+	tst_res(TINFO, "Hugepage mapping at %p", p);
++	q = SAFE_MMAP(NULL, hpage_size,
++		PROT_READ | PROT_WRITE, MAP_SHARED | MAP_NORESERVE, fd2, 0);
 +
-+	ret = do_readback(p, hpage_size, "base hugepage");
-+	if (ret)
++	tst_res(TINFO, "Write to %p to steal reserved page", q);
++
++	surp_hugepages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SURP);
++	ret = test_write(q);
++	if (ret == 1) {
++		tst_res(TPASS, "Successful with SIGSEGV received");
 +		goto cleanup;
-+	ret = do_remap(p - page_size);
-+	if (ret)
++	}
++	/* Provisioning succeeded because of overcommit */
++	if (SAFE_READ_MEMINFO(MEMINFO_HPAGE_SURP) ==
++			surp_hugepages + 1) {
++		tst_res(TPASS, "Successful because of surplus pages");
 +		goto cleanup;
-+	ret = do_remap(p + hpage_size);
-+	if (ret == 0)
-+		tst_res(TPASS, "Successfully tested mremap normal near hpage mapping");
++	}
++
++	tst_res(TFAIL, "Steal reserved page");
 +cleanup:
-+	SAFE_MUNMAP(p, hpage_size);
-+	SAFE_CLOSE(fd);
++	SAFE_MUNMAP(p, hpage_size * nr_hugepages);
++	SAFE_MUNMAP(q, hpage_size);
 +}
 +
 +static void setup(void)
 +{
 +	hpage_size = tst_get_hugepage_size();
-+	page_size = getpagesize();
++	fd1 = tst_creat_unlinked(MNTPOINT, 0);
++	fd2 = tst_creat_unlinked(MNTPOINT, 0);
 +}
 +
 +static void cleanup(void)
 +{
-+	if (fd >= 0)
-+		SAFE_CLOSE(fd);
++	if (fd1 >= 0)
++		SAFE_CLOSE(fd1);
++	if (fd2 >= 0)
++		SAFE_CLOSE(fd2);
 +}
 +
 +static struct tst_test test = {
@@ -258,7 +275,7 @@ index 000000000..db2d9ce81
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.test_all = run_test,
-+	.hugepages = {3, TST_NEEDS},
++	.hugepages = {2, TST_NEEDS},
 +};
 -- 
 2.31.1
