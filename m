@@ -4,95 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9116C46467
-	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 12:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D8FDC4332F
+	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 12:24:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6258D3CCE0F
-	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 13:24:43 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id AA2C73CCE06
+	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 13:24:56 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 92EC33CCDDF
- for <ltp@lists.linux.it>; Wed,  4 Jan 2023 13:23:23 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 7F6FA3CCDE6
+ for <ltp@lists.linux.it>; Wed,  4 Jan 2023 13:23:30 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 331A760073B
- for <ltp@lists.linux.it>; Wed,  4 Jan 2023 13:23:21 +0100 (CET)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2BFA31000231
+ for <ltp@lists.linux.it>; Wed,  4 Jan 2023 13:23:28 +0100 (CET)
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 304BqeGM008585; Wed, 4 Jan 2023 12:23:20 GMT
+ 304BtmXq028031; Wed, 4 Jan 2023 12:23:27 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=OucA6jNyU7hUo2VOveCyByVOMrCH3+sS4UG2xuImG8s=;
- b=Sliq5+JY69dukrMca99Y6twbDcO1SqY4nKgzAw8IpXBMyw4LGldLbLsE0zH6pgRiv9n5
- uY/tMdZJVzgodanGy3N7uTjDaLCLBJDPIdlCN1HCiGSyzLWk5Hj0FnbscqdfVaUd7f/e
- +bFgWMa4Uhk3uVRrqhXbxKGym9h5GiirECCXEY/Zv5BQDj5YKN6Bz7n6sVfdXp593wbE
- DD5ZDjQBjVbGluTMFicdp+2/NVxepa/Pzohi04tmfpVpZSH2TSLhnD2fdGJdH1qj+xYN
- 3P8jnEtOpe6EcMVF5jDR+JHApN6XUsS15gERGIEXhA4UK9DYWO+CtMKxwes45BKxOWGc lQ== 
+ bh=Bo8v0K5NVFIbvVTHsgRzkkicGInGpoSw6oQm+aoNXL8=;
+ b=Ak7DG5a3W6aJYIbm0RBrCBUCDH8XvH/VC3bgbYDNTO3kTtA+q6+5WVLvR2IUohsbIhBw
+ cT4sd7Z33G9BxaSF9XQI/r8hTfO9Evgr4s1715fZTi0OGYehFdyXaQir6RbRfkhhh4IX
+ jqoK0GsXJTGoshaKqCK1THzl3v0aaN2kPmCR776eLOAQDo8Zty37xbAT6fWEpjG/67Rj
+ Bm+Ow8AI7VVAwWHRkJootXUqEVrMQFp4GycEuNr0R6MyUFZq+yDyv9+wih7xt/GcrE9A
+ KULjm8YJSyR74pMDG0gtnbz2y16wyPHC93qV5DmHA8/Jxo8vUyZh45ObU/xH5SDBmYp8 3Q== 
 Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mw8y30njy-1
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mw90xrmga-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 04 Jan 2023 12:23:19 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 304BqmQM008738;
- Wed, 4 Jan 2023 12:23:19 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mw8y30nj9-1
+ Wed, 04 Jan 2023 12:23:27 +0000
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 304Bu77v028421;
+ Wed, 4 Jan 2023 12:23:26 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com
+ [149.81.74.107])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mw90xrmfp-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 04 Jan 2023 12:23:19 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 303MoMXs020628;
- Wed, 4 Jan 2023 12:23:17 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3mtcq6d963-1
+ Wed, 04 Jan 2023 12:23:26 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+ by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3047AFF4000437;
+ Wed, 4 Jan 2023 12:23:25 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3mtcq6ku86-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 04 Jan 2023 12:23:17 +0000
+ Wed, 04 Jan 2023 12:23:24 +0000
 Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
  [10.20.54.105])
- by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 304CNDvj21496126
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 304CNLpb49873344
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 4 Jan 2023 12:23:13 GMT
+ Wed, 4 Jan 2023 12:23:21 GMT
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 8108A20040;
- Wed,  4 Jan 2023 12:23:13 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id 1F0312004B;
+ Wed,  4 Jan 2023 12:23:21 +0000 (GMT)
 Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 2B15520043;
- Wed,  4 Jan 2023 12:23:10 +0000 (GMT)
+ by IMSVA (Postfix) with ESMTP id CF81C20040;
+ Wed,  4 Jan 2023 12:23:17 +0000 (GMT)
 Received: from tarunpc.ibmuc.com (unknown [9.43.18.9])
  by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Wed,  4 Jan 2023 12:23:09 +0000 (GMT)
+ Wed,  4 Jan 2023 12:23:17 +0000 (GMT)
 From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Wed,  4 Jan 2023 17:52:21 +0530
-Message-Id: <20230104122224.369467-11-tsahu@linux.ibm.com>
+Date: Wed,  4 Jan 2023 17:52:23 +0530
+Message-Id: <20230104122224.369467-13-tsahu@linux.ibm.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230104122224.369467-1-tsahu@linux.ibm.com>
 References: <20230104122224.369467-1-tsahu@linux.ibm.com>
 MIME-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: DEhxAtphXls-vZKvjYUO_12-tG38r2tZ
-X-Proofpoint-ORIG-GUID: M8jNva7fTrTDenynC1u9Yf6rYvDIjtXp
+X-Proofpoint-ORIG-GUID: KshtRWMXw7K3BoqEwhm23O6zHUgg4JSI
+X-Proofpoint-GUID: RETdYzA0pTIYFCru72naqSwrOCqzBm0l
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2023-01-04_06,2023-01-04_01,2022-06-22_01
+ definitions=2023-01-04_06,2023-01-04_02,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxlogscore=999
- priorityscore=1501 phishscore=0 lowpriorityscore=0 suspectscore=0
- bulkscore=0 clxscore=1015 mlxscore=0 malwarescore=0 adultscore=0
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2212070000 definitions=main-2301040097
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+ mlxscore=0 mlxlogscore=999
+ priorityscore=1501 bulkscore=0 spamscore=0 clxscore=1015 suspectscore=0
+ adultscore=0 malwarescore=0 impostorscore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2301040097
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 10/13] Hugetlb: Migrating libhugetlbfs
- readahead_reserve
+Subject: [LTP] [PATCH v2 12/13] Hugetlb: Migrating libhugetlbfs shm-fork
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,104 +110,118 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Migrating the libhugetlbfs/testcases/readahead_reserve.c test
+Migrating the libhugetlbfs/testcases/shm-fork.c test
 
-Test Description: readahead() on some kernels can cause the reservation
-counter to get corrupted. The problem is that the patches are allocated
-for the reservation but not faulted in at the time of allocation. The
-counters do not get updated and effectively "leak". This test
-identifies whether the kernel is vulnerable to the problem or not.
-It's fixed in kernel by 'commit f2deae9d4e70
-("Remove implementation of readpage from the hugetlbfs_aops")'.
+Test Description: Test shared memory behavior when multiple threads are
+Test shared memory behavior when multiple threads are attached
+to a segment.  A segment is created and then children are
+spawned which attach, write, read (verify), and detach from the
+shared memory segment.
 
 Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
-Reviewed-by: Li Wang <liwang@redhat.com>
-
 ---
  runtest/hugetlb                               |  1 +
  testcases/kernel/mem/.gitignore               |  1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap30.c  | 75 +++++++++++++++++++
- 3 files changed, 77 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
+ .../kernel/mem/hugetlb/hugefork/hugefork02.c  | 90 +++++++++++++++++++
+ 3 files changed, 92 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefork/hugefork02.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 6ec8d1018..60cca4eb7 100644
+index 33fd384b4..6d63fec5d 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -30,6 +30,7 @@ hugemmap26 hugemmap26
- hugemmap27 hugemmap27
- hugemmap28 hugemmap28
- hugemmap29 hugemmap29
-+hugemmap30 hugemmap30
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
+@@ -2,6 +2,7 @@ hugefallocate01 hugefallocate01
+ hugefallocate02 hugefallocate02
+ 
+ hugefork01 hugefork01
++hugefork02 hugefork02
+ 
+ hugemmap01 hugemmap01
+ hugemmap02 hugemmap02
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index fef0a76d6..bb9720452 100644
+index 8375389cd..0c1311303 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -29,6 +29,7 @@
- /hugetlb/hugemmap/hugemmap27
- /hugetlb/hugemmap/hugemmap28
- /hugetlb/hugemmap/hugemmap29
-+/hugetlb/hugemmap/hugemmap30
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
+@@ -2,6 +2,7 @@
+ /hugetlb/hugefallocate/hugefallocate01
+ /hugetlb/hugefallocate/hugefallocate02
+ /hugetlb/hugefork/hugefork01
++/hugetlb/hugefork/hugefork02
+ /hugetlb/hugemmap/hugemmap01
+ /hugetlb/hugemmap/hugemmap02
+ /hugetlb/hugemmap/hugemmap04
+diff --git a/testcases/kernel/mem/hugetlb/hugefork/hugefork02.c b/testcases/kernel/mem/hugetlb/hugefork/hugefork02.c
 new file mode 100644
-index 000000000..7ed9046f3
+index 000000000..e356a256f
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
-@@ -0,0 +1,75 @@
++++ b/testcases/kernel/mem/hugetlb/hugefork/hugefork02.c
+@@ -0,0 +1,90 @@
 +// SPDX-License-Identifier: LGPL-2.1-or-later
 +/*
-+ * Copyright (C) 2005-2006 IBM Corporation.
-+ * Author: Mel Gorman
++ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
++ * Author: David Gibson & Adam Litke
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * readahead() on some kernels can cause the reservation counter to get
-+ * corrupted. The problem is that the pages are allocated for the
-+ * reservation but not faulted in at the time of allocation. The
-+ * counters do not get updated and effectively "leak". This test
-+ * identifies whether the kernel is vulnerable to the problem or not.
-+ * It's fixed in kernel by commit f2deae9d4e70.
++ * Test shared memory behavior when multiple threads are attached to a
++ * segment. A segment is created and then children are spawned which
++ * attach, write, read (verify), and detach from the shared memory segment.
 + */
 +
-+#define _GNU_SOURCE
++#include "tst_safe_sysv_ipc.h"
 +#include "hugetlb.h"
 +
++static int shmid = -1;
++
++#define NR_HUGEPAGES 5
++#define NUMPROCS MIN(50L, tst_ncpus_available())
 +#define MNTPOINT "hugetlbfs/"
++
 +static long hpage_size;
-+static int fd = -1;
++
++static void do_child(int thread, unsigned long size)
++{
++	volatile char *shmaddr;
++	int j;
++	unsigned long k;
++
++	for (j = 0; j < 5; j++) {
++		shmaddr = SAFE_SHMAT(shmid, 0, SHM_RND);
++
++		for (k = 0; k < size; k++)
++			shmaddr[k] = (char) (k);
++		for (k = 0; k < size; k++)
++			if (shmaddr[k] != (char)k) {
++				tst_res(TFAIL, "Thread %d, Offset %lu mismatch", thread, k);
++				goto cleanup;
++			}
++
++		SAFE_SHMDT((const void *)shmaddr);
++	}
++cleanup:
++	exit(0);
++}
 +
 +static void run_test(void)
 +{
-+	void *p;
-+	unsigned long initial_rsvd, map_rsvd, readahead_rsvd, end_rsvd;
++	unsigned long size;
++	int pid;
++	int i;
 +
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+	initial_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	size = hpage_size * NR_HUGEPAGES;
++	shmid = SAFE_SHMGET(2, size, SHM_HUGETLB|IPC_CREAT|SHM_R|SHM_W);
 +
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
-+		 fd, 0);
-+	map_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-+	tst_res(TINFO, "map_rsvd: %lu", map_rsvd);
++	for (i = 0; i < NUMPROCS; i++) {
++		pid = SAFE_FORK();
 +
-+	readahead(fd, 0, hpage_size);
-+	readahead_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-+	tst_res(TINFO, "readahead_rsvd: %lu", readahead_rsvd);
++		if (pid == 0)
++			do_child(i, size);
++	}
 +
-+	memset(p, 1, hpage_size);
-+
-+	SAFE_MUNMAP(p, hpage_size);
-+	SAFE_CLOSE(fd);
-+	end_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
-+
-+	TST_EXP_EQ_LU(end_rsvd, initial_rsvd);
++	tst_reap_children();
++	tst_res(TPASS, "Successfully tested shared hugetlb memory with multiple procs");
 +}
 +
 +static void setup(void)
@@ -218,23 +231,20 @@ index 000000000..7ed9046f3
 +
 +static void cleanup(void)
 +{
-+	if (fd >= 0)
-+		SAFE_CLOSE(fd);
++	if (shmid >= 0)
++		SAFE_SHMCTL(shmid, IPC_RMID, NULL);
 +}
 +
 +static struct tst_test test = {
-+	.tags = (struct tst_tag[]) {
-+		{"linux-git", "f2deae9d4e70"},
-+		{}
-+	},
 +	.needs_root = 1,
 +	.mntpoint = MNTPOINT,
 +	.needs_hugetlbfs = 1,
 +	.needs_tmpdir = 1,
++	.forks_child = 1,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +	.test_all = run_test,
-+	.hugepages = {1, TST_NEEDS},
++	.hugepages = {NR_HUGEPAGES, TST_NEEDS},
 +};
 -- 
 2.31.1
