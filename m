@@ -4,62 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6213C4332F
-	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 10:07:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF3D6C4332F
+	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 12:22:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9FFBB3CB6CE
-	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 11:07:46 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 043643CB685
+	for <ltp@archiver.kernel.org>; Wed,  4 Jan 2023 13:22:53 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CCA383C5ABC
- for <ltp@lists.linux.it>; Wed,  4 Jan 2023 11:07:36 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id E3BC33C2953
+ for <ltp@lists.linux.it>; Wed,  4 Jan 2023 13:22:43 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B957B10005BF
- for <ltp@lists.linux.it>; Wed,  4 Jan 2023 11:07:35 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 21E154861;
- Wed,  4 Jan 2023 10:07:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1672826855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=fTqm2OUUDyacHHhpniO7+KdY48UceMSuGKEthSMrK1k=;
- b=Cw/dSZ0nbmAAhEBanwVSs69+F/JTOu5HfwLcVVw5VKEuuVA0h/lI71EQF0Z80cNPccUWB1
- wFx6fU8ncnbfXWjo9JLpskLtI59XAanf/PhSKp61rZJhzFSzL/AU/v4OSq0ah5ctx5KZch
- 3fW1DVCF8WapXcUr2XjYwCPUja4GJ4o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1672826855;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=fTqm2OUUDyacHHhpniO7+KdY48UceMSuGKEthSMrK1k=;
- b=zHmhcnNItrjkyS4ZaGqnhNZU41rpNuRM+Lkj2HmNpfSkBs2siDybgVoR/4yQa/UTPL58Zv
- 9TstWmSSK+cO6OBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06B54133D1;
- Wed,  4 Jan 2023 10:07:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id JaU/AOdPtWMmTAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 04 Jan 2023 10:07:35 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DCB7A600711
+ for <ltp@lists.linux.it>; Wed,  4 Jan 2023 13:22:41 +0100 (CET)
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 304Bf3uP002562; Wed, 4 Jan 2023 12:22:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=JiqwPytcJ7osrxPDkc6FW0Lz70KqZXACU9RgMVSUIzA=;
+ b=BhQhxTHw17U4WcMqUGWWWfN/Wa+aqAsujv2pntr7BQBsPViSRS7fxGnnfjlQjtF8lBIc
+ 4kZvpkfJ3D4U3w6/hlt2cU4fPsl3PSfNNOxOnixipn8vXmoJXTBUyeWwpf8zMox6wGda
+ OojcbOi+EmQ0r7i6KEbazfV90tquSdpQKAx70vFP0RiR543CoEWVYrS4Pxoc8JkrAPLq
+ +b48Tg7h6vnZBuE/IfPhKrpEvUekgfSw2BHgPZU9pn/YtN41qNX9HDQ/irl8vBWL7va+
+ PnQzeTxsTKgl9VkYEnMRdk4CrM1XhpQMr45RHN3kV7mGUJubEG5AD417oMXqfw9mDkLi lw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mw83x9pha-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 04 Jan 2023 12:22:38 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 304CEwVp035381;
+ Wed, 4 Jan 2023 12:22:37 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.70])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mw83x9pg8-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 04 Jan 2023 12:22:37 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+ by ppma01fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3043xica028079;
+ Wed, 4 Jan 2023 12:22:35 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma01fra.de.ibm.com (PPS) with ESMTPS id 3mtcq6bugk-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 04 Jan 2023 12:22:34 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
+ [10.20.54.105])
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 304CMVXZ23724726
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 4 Jan 2023 12:22:31 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 3260320043;
+ Wed,  4 Jan 2023 12:22:31 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id C9A3720040;
+ Wed,  4 Jan 2023 12:22:27 +0000 (GMT)
+Received: from tarunpc.ibmuc.com (unknown [9.43.18.9])
+ by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Wed,  4 Jan 2023 12:22:27 +0000 (GMT)
+From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Wed,  4 Jan 2023 11:07:30 +0100
-Message-Id: <20230104100730.20425-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.39.0
+Date: Wed,  4 Jan 2023 17:52:11 +0530
+Message-Id: <20230104122224.369467-1-tsahu@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: b1Cfu8-eYpNB7Q5tCt6YoF_b8VEYyqQR
+X-Proofpoint-GUID: N_SrISZHsr3eQIsGkg5vrr9cYdluCNg-
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2023-01-04_06,2023-01-04_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 phishscore=0
+ priorityscore=1501 suspectscore=0 spamscore=0 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 mlxscore=0 mlxlogscore=762
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2212070000 definitions=main-2301040097
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] github: Improve pull request template
+Subject: [LTP] [PATCH v2 0/13][PART 4] Hugetlb:Migrating the libhugetlbfs
+ tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,53 +101,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: geetika@linux.ibm.com, sbhat@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+ vaibhav@linux.ibm.com, rpalethorpe@suse.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-* Signed-off-by
-* code style
-* links to wiki (API, maintainer checklist, ...)
-* wrap text in html comments (instructions will not be visible)
+Hi,
+This patch series is in continuation to part [1], part [2] and part [3].
+This series include 13 more tests taken from libhugetlbfs.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- .github/pull_request_template.md | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+Background:
+Libhugetlbfs is not being maintained actively, and some distro is dropping
+support for it. There are some tests that are good for testing hugetlb
+functionality in kernel. These patches include tests from libhugetlbfs.
 
-diff --git a/.github/pull_request_template.md b/.github/pull_request_template.md
-index 477f49c6bc..1082bcdd88 100644
---- a/.github/pull_request_template.md
-+++ b/.github/pull_request_template.md
-@@ -1,8 +1,22 @@
- [ type description here; PLEASE REMOVE THIS LINE AND THE LINES BELOW BEFORE SUBMITTING THIS PULL REQUEST ]
- 
--Although we *occasionally* also accept GitHub pull requests, the *preferred* way is sending patches to our mailing list: https://lore.kernel.org/ltp/
--
-+<!--
-+* Although we *occasionally* also accept GitHub pull requests, the *preferred* way is sending patches to our mailing list: https://lore.kernel.org/ltp/
- There is an example how to use it: https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial#7-submitting-the-test-for-review (using git format-patch and git send-email).
--
- LTP mailing list is archived at: https://lore.kernel.org/ltp/.
- We also have a patchwork instance: https://patchwork.ozlabs.org/project/ltp/list/.
-+
-+* Commits should be signed: Signed-off-by: Your Name <me@example.org>, see
-+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
-+
-+* New code should follow Linux kernel coding style, see
-+https://www.kernel.org/doc/html/latest/process/coding-style.html.
-+You can run 'make check' or 'make check-foo' in the folder with modified code to check style and common errors.
-+
-+* For more tips check
-+https://github.com/linux-test-project/ltp/wiki/Maintainer-Patch-Review-Checklist
-+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-+https://github.com/linux-test-project/ltp/wiki/C-Test-API
-+https://github.com/linux-test-project/ltp/wiki/Shell-Test-API
-+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
-+-->
+ref:
+ 1. https://lore.kernel.org/all/20221104162511.28658-1-tsahu@linux.ibm.com/
+ 2. https://lore.kernel.org/all/20221120191533.164848-1-tsahu@linux.ibm.com/
+ 3. https://lore.kernel.org/all/20221220063109.279007-1-tsahu@linux.ibm.com/
+
+Tarun Sahu (13):
+  Hugetlb: Migrating libhugetlbfs mlock
+  Hugetlb: Migrating libhugetlbfs mmap-cow
+  Hugetlb: Migrating libhugetlbfs mmap-gettest
+  Hugetlb: Migrating libhugetlbfs mprotect
+  Hugetlb: Migrating libhugetlbfs mremap-fixed-huge-near-normal
+  Hugetlb: Migrating libhugetlbfs mremap-fixed-normal-near-huge
+  Hugetlb: Migrating libhugetlbfs noresv-reserve-resv-page
+  Hugetlb: Migrating libhugetlbfs noresv-regarded-as-resv
+  Hugetlb: Migrating libhugetlbfs private
+  Hugetlb: Migrating libhugetlbfs readahead_reserve
+  Hugetlb: Migrating libhugetlbfs shared
+  Hugetlb: Migrating libhugetlbfs shm-fork
+  Hugetlb: Migrating libhugetlbfs mremap-expand-slice-collision
+
+ runtest/hugetlb                               |  13 +
+ testcases/kernel/mem/.gitignore               |  13 +
+ .../kernel/mem/hugetlb/hugefork/hugefork02.c  |  90 +++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap20.c  |  86 +++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap21.c  | 116 +++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap22.c  |  89 +++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap23.c  | 226 ++++++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap24.c  | 186 ++++++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap25.c  | 118 +++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap26.c  | 103 ++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap27.c  | 121 ++++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap28.c  |  66 +++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap29.c  | 107 +++++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap30.c  |  75 ++++++
+ .../kernel/mem/hugetlb/hugemmap/hugemmap31.c  |  76 ++++++
+ testcases/kernel/mem/hugetlb/lib/hugetlb.c    |  19 ++
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h    |  11 +-
+ 17 files changed, 1514 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugefork/hugefork02.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap20.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap21.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap22.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap23.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap25.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap26.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap27.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap28.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap29.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap30.c
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap31.c
+
 -- 
-2.39.0
+2.31.1
 
 
 -- 
