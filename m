@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 521A5C5479D
-	for <ltp@archiver.kernel.org>; Fri,  6 Jan 2023 09:05:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54C4DC3DA7A
+	for <ltp@archiver.kernel.org>; Fri,  6 Jan 2023 09:06:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 73DFB3CB61D
-	for <ltp@archiver.kernel.org>; Fri,  6 Jan 2023 10:05:50 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 309143CB621
+	for <ltp@archiver.kernel.org>; Fri,  6 Jan 2023 10:06:10 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3CFD83C84F2
- for <ltp@lists.linux.it>; Thu,  5 Jan 2023 11:37:21 +0100 (CET)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+ by picard.linux.it (Postfix) with ESMTPS id 557C63C81C8
+ for <ltp@lists.linux.it>; Thu,  5 Jan 2023 15:26:10 +0100 (CET)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 11E8C600796
- for <ltp@lists.linux.it>; Thu,  5 Jan 2023 11:37:21 +0100 (CET)
-Received: by mail-wm1-x330.google.com with SMTP id
- bi26-20020a05600c3d9a00b003d3404a89faso2017216wmb.1
- for <ltp@lists.linux.it>; Thu, 05 Jan 2023 02:37:21 -0800 (PST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CF3911A00990
+ for <ltp@lists.linux.it>; Thu,  5 Jan 2023 15:26:09 +0100 (CET)
+Received: by mail-wr1-x42f.google.com with SMTP id s9so4281297wru.13
+ for <ltp@lists.linux.it>; Thu, 05 Jan 2023 06:26:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=i4PzIdY4rNagGqvjDkNcZWpPb3Qq2be79AhmDWAu19U=;
- b=qnvcdUR/pGz4J9v+o0ltXjF/RvYGNJZkREhERFWuVQrkOTTyNQvTxqL+ZxAzJls7D7
- P0iSs9W5FNdhcdJJsDnNEKNdUlAnwzVXkyUt2niqoKknvyP3bj19w6Dn77ilH/JIOlV/
- UX8hMofY/QOIxGUovQnW5KGEqgyRfP5gAvdOYpERmq6cV/fl6RKtjkGnlq56QaKGY5+T
- 6226Moxea4CoIqHS9WexzJZvVBEoiWebYWcBjGlTY9RXF6tQNTVuRLNmGZJycXsW9OkH
- RtEHgz6T755Xocj6Vxdrktm3bsJc3utaIHFABqnM9UQeI/T7R3ljJi2y01Mz/g9xIfEr
- YTfA==
+ bh=SPKIOaOccfRsWgHi2TMA9uQmKIjRDvnlOd9qMcuRzFA=;
+ b=gF8cObA+0dukyH7u48Cm4FSF45ypvufN2IZkNsysEuXLc+ur0XBQvRK52mR2CoPJ+U
+ aGsELH0NA+nS/GfbsnOsHmwH94P1UFB3Wt9Zgx7iI6Z+o/443574HoHLxYUd2hA8RgJz
+ DMgNE3D1NgLL3Zc+zCcYHZXxNSW0aJ6CnCi+kr5rPk++4RISQUzibuIep+9FKo40tOHk
+ rAB2Wv9L9XQJO0LQRECu79H7Xvm4SSkFW5BpzJbgMfbyK26iptWqYY7mewwZCEP7Ctv+
+ lkV+1TaTuoZ7+7iA/D0Qo50ZFdXW7pQbqOz37H1Ol2Frab/2DsKfxEYSagXuOb9XknSC
+ ICOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=i4PzIdY4rNagGqvjDkNcZWpPb3Qq2be79AhmDWAu19U=;
- b=qXbm+wCsrHuiSIMgd4fW0xVAKk4IL7Vtu1ghDxnqxuDhVr2bX7BiCdJn1A7sHfH4tO
- JUORhc79PzLPzsyquCLSzE9QK35ktzXTURcoEtJIezlhA76GgK+v8TfiRPqZNUzmsrBC
- 4s3SH84B1dSXKixbix6ShWJn89qR+giJvoYJj5ByEyIGLZs5shNtQp3WGI3h5BFdurbD
- Qad6pXsPjA81m4dmvtJMBWpcbdJUnO8xFCSgPV9mbYRNyjmN9H+vDMpLhOJfgbVjcOnx
- vDhyH6uIzGAzGk5uYV/6PQhjbXdil4qv0VP0roUwgqKSRp3BlTSLDRW1mmt+BoV13kF/
- I+9A==
-X-Gm-Message-State: AFqh2kr/7N+3O3cJ/e01znkCtHAwhLB1Kafw0ddZKVZJfHeIVlTseSIT
- HaWu/boQotOv8OSqvihZh9kZG/Q9qb9RKJVG
-X-Google-Smtp-Source: AMrXdXsRD5db0F7Np8p2CzBUGE+hOlGNKgjKe6pMQp4pD9xy2HdcUkDchbK4xRx3KSChpc0mWci5zg==
-X-Received: by 2002:a05:600c:4e51:b0:3cf:7b8b:6521 with SMTP id
- e17-20020a05600c4e5100b003cf7b8b6521mr35263684wmq.32.1672915040629; 
- Thu, 05 Jan 2023 02:37:20 -0800 (PST)
+ bh=SPKIOaOccfRsWgHi2TMA9uQmKIjRDvnlOd9qMcuRzFA=;
+ b=568kvZByyT+7UHMwzUFywQ/wiBA1TvWvWQuk6aP41wriFlDayiydDew4rcMBdBMTzv
+ 78ceD3le9+5VO5t/uwY/lk4IXJ9gAmhq3FXkpTUStjalCl1ZGSd0WmrANT3Y10o14HJ+
+ aNaYf95PwTpRLMbLeExN8gVd8t8BPLNy5dwXgeL9ohvq/IW5fPO08B+wpWCsYWCQaKoa
+ 4j+7L4T0ieFi+9b7rcCjeoVhQ75Q/z/ejmPihMxgND/fCY9iphI7VXTXl8P8pFCzN2Wg
+ 4MWSEy65QSKLdKtu3DpYODQjFxCTrimd/hxgxe9kFaeLapPF04/5KOgZ5AC43nQZKmqZ
+ K0TQ==
+X-Gm-Message-State: AFqh2kpeEPhz0NxF7LJVdpRiQ9PWzdODCMIsRvNM5aNV6CsLLbyLiAT3
+ sjQ2UXVDEi9XGKzD/wPaej1Qvyc2xJnr6A==
+X-Google-Smtp-Source: AMrXdXtlz4D+nTR2mxX4ZPOGIKN/LMnIaM1gzlSBBs/MsbjNeZxREJd54V7MzE/dN2ewCukPy+JPrw==
+X-Received: by 2002:a5d:6449:0:b0:285:5249:1178 with SMTP id
+ d9-20020a5d6449000000b0028552491178mr19987741wrw.66.1672928769403; 
+ Thu, 05 Jan 2023 06:26:09 -0800 (PST)
 Received: from aa.suse.de ([223.72.84.126]) by smtp.gmail.com with ESMTPSA id
- d13-20020a05600c34cd00b003d9c97d82f2sm2002455wmq.8.2023.01.05.02.37.18
+ i1-20020adfb641000000b002425787c5easm37003829wre.96.2023.01.05.06.26.06
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 05 Jan 2023 02:37:20 -0800 (PST)
+ Thu, 05 Jan 2023 06:26:08 -0800 (PST)
 From: coolgw <coolgw1126@gmail.com>
 X-Google-Original-From: coolgw <wegao@suse.com>
 To: ltp@lists.linux.it
-Date: Thu,  5 Jan 2023 05:37:11 -0500
-Message-Id: <20230105103711.7343-1-wegao@suse.com>
+Date: Thu,  5 Jan 2023 09:25:59 -0500
+Message-Id: <20230105142559.20174-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Fri, 06 Jan 2023 10:05:41 +0100
-Subject: [LTP] [PATCH v1] Add containers/share to PATH when call
+X-Mailman-Approved-At: Fri, 06 Jan 2023 10:06:02 +0100
+Subject: [LTP] [PATCH v2] Add containers/share to PATH when call
  init_ltp_netspace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -89,15 +88,17 @@ When run single test case use command such as:
 LTP_SHELL_API_TESTS=shell/net/tst_rhost_run.sh make test-shell
 Error msg such as "ns_create: command not found" will popup, so
 need update PATH before call ns_create etc..
+
+Signed-off-by: WEI GAO <wegao@suse.com>
 ---
- testcases/lib/tst_net.sh | 3 +++
- 1 file changed, 3 insertions(+)
+ testcases/lib/tst_net.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index ceb45c98d..54c6dd1cc 100644
+index ceb45c98d..cd370e26f 100644
 --- a/testcases/lib/tst_net.sh
 +++ b/testcases/lib/tst_net.sh
-@@ -128,6 +128,9 @@ tst_net_require_ipv6()
+@@ -128,10 +128,13 @@ tst_net_require_ipv6()
  
  init_ltp_netspace()
  {
@@ -107,6 +108,11 @@ index ceb45c98d..54c6dd1cc 100644
  	local pid
  
  	if [ ! -f /var/run/netns/ltp_ns -a -z "$LTP_NETNS" ]; then
+-		tst_require_cmds ip
++		tst_require_cmds ip ns_create ns_exec ns_ifmov
+ 		tst_require_root
+ 
+ 		tst_require_drivers veth
 -- 
 2.35.3
 
