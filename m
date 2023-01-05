@@ -4,58 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1042BC53210
-	for <ltp@archiver.kernel.org>; Thu,  5 Jan 2023 15:38:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C874C3DA7A
+	for <ltp@archiver.kernel.org>; Thu,  5 Jan 2023 16:28:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9B37B3CB652
-	for <ltp@archiver.kernel.org>; Thu,  5 Jan 2023 16:38:33 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 489813CB68B
+	for <ltp@archiver.kernel.org>; Thu,  5 Jan 2023 17:27:59 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 321303C84F2
- for <ltp@lists.linux.it>; Thu,  5 Jan 2023 16:38:22 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id F17383C88EF
+ for <ltp@lists.linux.it>; Thu,  5 Jan 2023 17:27:49 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EB7181400459
- for <ltp@lists.linux.it>; Thu,  5 Jan 2023 16:38:20 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6E87E2009A0
+ for <ltp@lists.linux.it>; Thu,  5 Jan 2023 17:27:48 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 72A57247C5;
- Thu,  5 Jan 2023 15:38:15 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 509CA178DA;
+ Thu,  5 Jan 2023 16:27:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1672936068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8IXPn2WvvwKu678BxjGd9+N/HCd9lhA01IcgWDmPRmE=;
+ b=B4cBwE/Nvjlq72Ffi/fisioQ2TpyihaDLyN/9+8qO1bXt83A89gfS5GTkxw4iJPsghNLzi
+ fWlvpbQFqJX0N3fEhBQv7SfPnrIk5TN1PT6vDe7/iL9YNkIi/W7+2IVsrvuaYTENHJD1kb
+ HO26yfG8xSW+jogATwDqQdKBCSIGVzk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1672936068;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8IXPn2WvvwKu678BxjGd9+N/HCd9lhA01IcgWDmPRmE=;
+ b=fJvzWDwmIM3YLZTIA3pIm09sw60iihv6pi6sspmu+XeZdeo67fcZtlzDqb1YZckMnwL8ud
+ 6boSfoTHPCfv9lDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EF9B113338;
- Thu,  5 Jan 2023 15:38:14 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 317E613338;
+ Thu,  5 Jan 2023 16:27:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ggJoMebutmNeLwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 05 Jan 2023 15:38:14 +0000
-Date: Thu, 5 Jan 2023 16:38:06 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <Y7bu3jaL+nLIc/+0@pevik>
-References: <20230105134416.15853-1-mdoucha@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id Qax+CoT6tmPBSAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 05 Jan 2023 16:27:48 +0000
+Message-ID: <a94f5417-c580-8b05-dca6-3bb968ef5afb@suse.cz>
+Date: Thu, 5 Jan 2023 17:27:47 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230105134416.15853-1-mdoucha@suse.cz>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-3.30 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+To: Petr Vorel <pvorel@suse.cz>
+References: <20230105134416.15853-1-mdoucha@suse.cz> <Y7bu3jaL+nLIc/+0@pevik>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <Y7bu3jaL+nLIc/+0@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] ltp-aiodio.part4: Run DIT000 with only 1 reader
  process
@@ -70,50 +79,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+On 05. 01. 23 16:38, Petr Vorel wrote:
+> But I wonder why changing just the first dio_truncate will fix it
+> (obviously not). Could we detect RT and force -n 1 for it?
+> (utsname.version should have "PREEMPT RT"). Obviously only from version which
+> got affected.
 
-> New changes in real-time kernel patchset give high priority to direct I/O
-> readers and may cause writes to block indefinitely if there are too many
-> reader processes running in parallel. Reduce the number of reader processes
-> in DIT000 to 1 which was the dio_truncate default before rewrite to new API.
+It'll fix only one of the three tests. But I like having some direct I/O 
+stress tests for regular kernels so I've modified only one dio_truncate 
+instance. The other can be skipped manually on RT kernels.
 
-Correct, before 7a3741679d it was 1:
+But let's add a warning to dio_truncate if it's running on RT kernel 
+with too many children so that users know that the failure is sometimes 
+expected.
 
--int main(void)
-+static void run(void)
- {
--	char filename[PATH_MAX];
--	int pid[NUM_CHILDREN];
--	int num_children = 1;
-+	char *filename = "file";
-+	int filesize = FILE_SIZE;
-+	int num_children = NUM_CHILDREN;
-
-> +++ b/runtest/ltp-aiodio.part4
-> @@ -56,7 +56,7 @@ ADI007 dio_append
->  ADI008 dio_append
->  ADI009 dio_append
->  #Running dio_truncate
-> -DIT000 dio_truncate
-> +DIT000 dio_truncate -n 1
->  DIT001 dio_truncate
->  DIT002 dio_truncate
->  #Running dio_read
-
-But I wonder why changing just the first dio_truncate will fix it
-(obviously not). Could we detect RT and force -n 1 for it?
-(utsname.version should have "PREEMPT RT"). Obviously only from version which
-got affected.
-
-Kind regards,
-Petr
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 
 -- 
