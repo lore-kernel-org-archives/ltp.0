@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A0E0C61DB3
-	for <ltp@archiver.kernel.org>; Mon,  9 Jan 2023 05:06:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89A7BC54EBD
+	for <ltp@archiver.kernel.org>; Mon,  9 Jan 2023 05:13:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E622B3CDDF5
-	for <ltp@archiver.kernel.org>; Mon,  9 Jan 2023 06:06:45 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 74A9E3CDDEC
+	for <ltp@archiver.kernel.org>; Mon,  9 Jan 2023 06:13:13 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 49F7E3CB7C3
- for <ltp@lists.linux.it>; Mon,  9 Jan 2023 06:06:36 +0100 (CET)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
+ by picard.linux.it (Postfix) with ESMTPS id 670D93CB7C3
+ for <ltp@lists.linux.it>; Mon,  9 Jan 2023 06:13:03 +0100 (CET)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D1B4F20006A
- for <ltp@lists.linux.it>; Mon,  9 Jan 2023 06:06:35 +0100 (CET)
-Received: by mail-wr1-x432.google.com with SMTP id az7so6999374wrb.5
- for <ltp@lists.linux.it>; Sun, 08 Jan 2023 21:06:35 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 17201778504
+ for <ltp@lists.linux.it>; Mon,  9 Jan 2023 06:13:03 +0100 (CET)
+Received: by mail-wm1-x333.google.com with SMTP id
+ m8-20020a05600c3b0800b003d96f801c48so8167521wms.0
+ for <ltp@lists.linux.it>; Sun, 08 Jan 2023 21:13:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
  bh=TfE0r8vbQNShwhh+v5bcv4BVqmvyTb7SYCcgSkCjuPg=;
- b=Ah02iXQrafmATGyVDItw/KZxEIw3h2ZpinLcjFcpner4ITYy3kfL4JwrpvcnDeB0JJ
- rUKaVY3TDB9/ho+ryCxRRgzeEoIeqJieiSnM9MWxDc5Q6MEaHsRKUdZ8Mu63gTxbHopR
- 57PVX15AeKw9HVOdoXyvVFns21JU1Ps88bbZq9JToGdpuU8jf3y2iO2qPv9Zi7MjwPfS
- GPYN51Gvy3gfxqULeuxx1uH1HVK/leViiyMmqzLf6EnxhfY8FVQnJ5CgcOfjCKXw1G5i
- Qa6z7dToq8rAjeAOI16uI2b6FMJlc1OU5c3iGMwYBC+s4xKH+Em3kwASUiZd697lSbJA
- 0RyQ==
+ b=TeLj2PEjQWdUZ8xHwP9OrG38wauPhie9Fg2nOhk9oHambbcRxZyt2B7vsBhlErQmDH
+ 0rJz3EV/IvO04IVj5fe/gDPucbDwzKRFSXADBDCCv+OyFxiv6sc4Fusf/dz9FXxB7Gih
+ lT7vN4gwI8K6fC12Xc6WTP688hNDK5jTOXBx11wNUYgOPiJaCt7s8M5EupLumacgUvB9
+ u5XIQF2xFYoBXD2WOAfezO0QHHKDOMtRkIISoK4Qcqa1u5LQL4j4uZbdEmd/2Vv3DzxR
+ X0lgmwgylfsinwaIc4fW7w/Yff6N8d162+Yqq2ldmNBL5ZZxSMXHOQadX8okebZzSIzJ
+ xohA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
  bh=TfE0r8vbQNShwhh+v5bcv4BVqmvyTb7SYCcgSkCjuPg=;
- b=dS2WwudP/cg/6MCm6PgQYg0bigObyP5mP584AcyMrSXCi7xDyLFh5tB0hPqQXFuhoW
- 1GZsR7EMA8LgkLcSauGqkF4qqBIcV3Y9YbNr9S0B3It+GUV9dvoEsmpQY8XyZaNentkX
- L59UtHIMm4CFcrHIbfYUu0WIhPGGNK3XPaaH/26uYDs1ktlHSIIseaACbHNrOIXUTqK4
- F7iJaGBQb5ui0SZa+t1iniNKJN8sOQibBB9Kp/ZOP241psv6ojdZS7DB3sryzZG4UlUG
- dhAd8O6nERg5ouj6Tk3XNzySyrnTDdABjRmDMRYGi5J9OxH3eJ8YS+TSXSxl3DmQ3Wr0
- qvKA==
-X-Gm-Message-State: AFqh2kryO3/tcBF+PfrByXLQ+0+gnbUOdZ/CDOm4bQvt/FUBIdQ3sQ7o
- e5YQGJeWeD2viWQAY+rGl6k=
-X-Google-Smtp-Source: AMrXdXsmraOI1y+mj9h/uzR4ZmaStJY/8x4qNzliuZaZIvEMJ3d0dnjqFyZQeIfB0sYjU6nyP6kQWQ==
-X-Received: by 2002:adf:de0e:0:b0:242:63e5:2449 with SMTP id
- b14-20020adfde0e000000b0024263e52449mr41497361wrm.69.1673240795272; 
- Sun, 08 Jan 2023 21:06:35 -0800 (PST)
+ b=L0hDp09trLZLD4sxMG+BoThsXrgvHKKmxORU5CqcwBY2INywItpDF9fzYVNqK6539T
+ Qb/7eE3WO2hOjuN+/3CiRiS86Wn2mYaPPH9fTW3SjudhkIQsIPRlmN6yly8u/DSN9bvE
+ vvHEj7SykEWyEXjLfwyQ2wrmgMtEMLVwLiIlOpmfpZqm9ODMXc0fYj7H3kPzVQ7EvJUZ
+ dwLM8b2XHUBthbqrKci9x96hC0f64d7rW80h/OY5QifIa+U4qwjsz99enhl3KVSZq5/y
+ wEYkzPiiyJdgYUiuo48GeBd0fITHvFOmQJ/0fwBME46xOPU4cbA3Q4LeWRmQ4bkRt4h7
+ AbFQ==
+X-Gm-Message-State: AFqh2kofOwaC7xIPmg3sJemxYc3msTzgYPb1Bvy0u1x7ngnngbO2aY1L
+ Bj5y92P/GJ/ivMfOr9ABDc3ZLak/h62YFQ==
+X-Google-Smtp-Source: AMrXdXsThVTarUPEkOs5hXKc4mpmX29JCyGh0TxCuAIUNZZNyNF1ZWkPXDyWCHcqYGBDo/XCFXHR4w==
+X-Received: by 2002:a05:600c:3d10:b0:3c6:e63e:89c6 with SMTP id
+ bh16-20020a05600c3d1000b003c6e63e89c6mr11045466wmb.34.1673241182634; 
+ Sun, 08 Jan 2023 21:13:02 -0800 (PST)
 Received: from openqa-migration-qe1-1.qa.suse.de (nat1.nue.suse.com.
  [195.135.221.27]) by smtp.gmail.com with ESMTPSA id
- f8-20020a0560001b0800b002423edd7e50sm7427060wrz.32.2023.01.08.21.06.34
+ v12-20020a5d6b0c000000b002366553eca7sm7466508wrw.83.2023.01.08.21.13.02
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 08 Jan 2023 21:06:34 -0800 (PST)
+ Sun, 08 Jan 2023 21:13:02 -0800 (PST)
 From: coolgw <coolgw1126@gmail.com>
 X-Google-Original-From: coolgw <wegao@suse.com>
-To: wegao@suse.com,
-	ltp@lists.linux.it
-Date: Mon,  9 Jan 2023 00:06:32 -0500
-Message-Id: <20230109050632.30153-1-wegao@suse.com>
+To: ltp@lists.linux.it
+Date: Mon,  9 Jan 2023 00:12:59 -0500
+Message-Id: <20230109051259.30263-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: [LTP] [PATCH v1] readahead02.c fixes: use tst_parse_filesize() so
  that we can pass sizes with units e.g. -s 128M
