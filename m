@@ -4,64 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB30AC46467
-	for <ltp@archiver.kernel.org>; Tue, 10 Jan 2023 09:48:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28935C46467
+	for <ltp@archiver.kernel.org>; Tue, 10 Jan 2023 09:52:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 883983CB588
-	for <ltp@archiver.kernel.org>; Tue, 10 Jan 2023 10:48:27 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 8C6CD3CCB27
+	for <ltp@archiver.kernel.org>; Tue, 10 Jan 2023 10:52:09 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 412053C85F1
- for <ltp@lists.linux.it>; Tue, 10 Jan 2023 10:48:19 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 0F6FD3C85F1
+ for <ltp@lists.linux.it>; Tue, 10 Jan 2023 10:51:59 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9B3851400142
- for <ltp@lists.linux.it>; Tue, 10 Jan 2023 10:48:18 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 31A49600159
+ for <ltp@lists.linux.it>; Tue, 10 Jan 2023 10:51:58 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 6B40E4E500;
- Tue, 10 Jan 2023 09:48:17 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id D325567FC7;
+ Tue, 10 Jan 2023 09:51:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673344097;
+ t=1673344317;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TCiYuPKM+AK/CPyI4w07CdwX0Xk4JnNxLNu0dEd7V+0=;
- b=gjeuSRNaCjazKQDncA/4MIB8JP3PLS5Yvk6jCWrzg747grjuI72IHy9zfoseLPV/A6/sAP
- KLSMJ2+8QBqMX/RTW0Yi3GqLN35xxrLgDpo6fFlzO/61Omsl5la2FX9aaIwcdpIKbwo9K0
- WRNdBDVHwnxiS3VDMr0aWG5ab6sQSg4=
+ bh=sjhyU5TYAFjREDlJLiGOZFQuKOcR+HIBZhfkeI4rJMY=;
+ b=uZLeNZ0SF94SAuH1Mr9qp2FhDyyBg/Ut+PFjjhjxmtFlGy1msBGwS+22iZXvyWlk7YrEJ5
+ foN03KTYngV4Pw/gPEM80Zls0bzLGJjGoF8cHdjUxRXJzWgOwVGFexRbOXJ32DdLStQlQ6
+ QNN+hMXP4A5eSeccO8zSxXtSTjet/FM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673344097;
+ s=susede2_ed25519; t=1673344317;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TCiYuPKM+AK/CPyI4w07CdwX0Xk4JnNxLNu0dEd7V+0=;
- b=YeIg6Dw3HIY9g9xbmgLIaEz59lfEVjPsqJhB7DgOQfpGDoApEsQxLVq8yb4cQAksPvP0Ku
- i5L/wvptKvMdtKDQ==
+ bh=sjhyU5TYAFjREDlJLiGOZFQuKOcR+HIBZhfkeI4rJMY=;
+ b=41AFl1DqnVlpfjtTnXApnEnteLwmJnxb2/0DJ1nsZw7MK4c1GSDh9OlvyawDEvhvmHSRf3
+ TtSdi8qUeaRu+qDQ==
 Received: from g78 (unknown [10.163.17.14])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 1C4A72C141;
- Tue, 10 Jan 2023 09:48:17 +0000 (UTC)
-References: <20230103124505.6611-1-pvorel@suse.cz>
- <CAEemH2c69cKYLFzivuCRNnpxB8sco-9LRhL8_EYw0i+Srp71CA@mail.gmail.com>
- <Y7VCssq333Y5QgPt@pevik>
- <CAEemH2e3Ob-faePkzSyjhRqHYx_96VwB0_by+tV2S=vPPFz9kw@mail.gmail.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 98F4D2C141;
+ Tue, 10 Jan 2023 09:51:57 +0000 (UTC)
+References: <20221220144232.27950-1-andrea.cervesato@suse.com>
 User-agent: mu4e 1.8.13; emacs 28.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Li Wang <liwang@redhat.com>
-Date: Tue, 10 Jan 2023 09:48:08 +0000
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Date: Tue, 10 Jan 2023 09:51:35 +0000
 Organization: Linux Private Site
-In-reply-to: <CAEemH2e3Ob-faePkzSyjhRqHYx_96VwB0_by+tV2S=vPPFz9kw@mail.gmail.com>
-Message-ID: <87h6wyiuu7.fsf@suse.de>
+In-reply-to: <20221220144232.27950-1-andrea.cervesato@suse.com>
+Message-ID: <87cz7miuo3.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] configure.ac: Require 2.64
+Subject: Re: [LTP] [PATCH v3] Add runltp-ng to upstream
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,7 +71,7 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
-Cc: Mike Frysinger <vapier@gentoo.org>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -84,48 +81,42 @@ Hello,
 
 Merged, thanks!
 
-Li Wang <liwang@redhat.com> writes:
+Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
 
-> Petr Vorel <pvorel@suse.cz> wrote:
+> runltp-ng is the next generation runner for Linux Testing Project and it
+> will replace the current obsolete runltp script in the next future.
 >
-> Hi Li,
->>
->> > Hi Petr,
->>
->> > I see other places also used 2.61, do you think we need to correct them
->> as
->> > well?
->> > (e.g. open-posix and realtime)
->>
->> > $ git grep AC_PREREQ
->> > configure.ac:AC_PREREQ(2.61)
->> > testcases/open_posix_testsuite/configure.ac:AC_PREREQ(2.61)
->> > testcases/realtime/configure.ac:AC_PREREQ(2.61)
->>
->> Sure, I could do that, but these independent projects actually work with
->> older
->> version, that's why I didn't do that.
->>
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Acked-by: Petr Vorel <pvorel@suse.cz>
+> ---
+> Use https protocol
 >
-> Ok, as long as we build it internally of LTP, that is required because
-> we have to check the configuration at top-level and then go into the
-> subproject. It will use the upper version first.
+>  .gitmodules     | 3 +++
+>  tools/runltp-ng | 1 +
+>  2 files changed, 4 insertions(+)
+>  create mode 160000 tools/runltp-ng
 >
->
->>
->> FYI realtime will go away, once I find time to port relevant tests to
->> rt_tests
->> and openposix could one day become in separate git.
->>
->
-> If so, that older version will be tolerated. Thanks!
->
-> For both:
-> Reviewed-by: Li Wang <liwang@redhat.com>
->
+> diff --git a/.gitmodules b/.gitmodules
+> index a3c34af4b..d1d558b9e 100644
+> --- a/.gitmodules
+> +++ b/.gitmodules
+> @@ -4,3 +4,6 @@
+>  [submodule "tools/sparse/sparse-src"]
+>  	path = tools/sparse/sparse-src
+>  	url = git://git.kernel.org/pub/scm/devel/sparse/sparse.git
+> +[submodule "tools/runltp-ng"]
+> +	path = tools/runltp-ng
+> +	url = https://github.com/linux-test-project/runltp-ng.git
+> diff --git a/tools/runltp-ng b/tools/runltp-ng
+> new file mode 160000
+> index 000000000..39792805b
+> --- /dev/null
+> +++ b/tools/runltp-ng
+> @@ -0,0 +1 @@
+> +Subproject commit 39792805b3c2c30bde665b01550994aeecff6071
 > -- 
-> Regards,
-> Li Wang
+> 2.35.3
 
 
 -- 
