@@ -4,62 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 750E8C54EBD
-	for <ltp@archiver.kernel.org>; Mon,  9 Jan 2023 15:05:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C20E4C54EBE
+	for <ltp@archiver.kernel.org>; Tue, 10 Jan 2023 08:20:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 50C2B3CA166
-	for <ltp@archiver.kernel.org>; Mon,  9 Jan 2023 16:05:23 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 4CB933CCB42
+	for <ltp@archiver.kernel.org>; Tue, 10 Jan 2023 09:20:17 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE2C23C899B
- for <ltp@lists.linux.it>; Mon,  9 Jan 2023 16:05:12 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 02C833CB576
+ for <ltp@lists.linux.it>; Tue, 10 Jan 2023 09:20:07 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A0BF71A000A4
- for <ltp@lists.linux.it>; Mon,  9 Jan 2023 16:05:11 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 4CF023F161
- for <ltp@lists.linux.it>; Mon,  9 Jan 2023 15:05:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673276710;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UCt21rMPX0aGjOkaL5RlcW8DgegMzkjeyyHOuAxeuEM=;
- b=ZLK2zpZq+M04X8ibcbrMcF/2twnxgBaDsYUf/OPTZkJfDxPHhziBQhnUnodLlOf8X5eDHb
- Zb465atbYz+/vu2sPpudks4JJmv6YUjhmRVmumopdZD3dgDRzhV96u0VciVvz0N/Lxo5y1
- yTKM7JLT0NpsDRJN1OEkMlDg5BPJhe4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673276710;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=UCt21rMPX0aGjOkaL5RlcW8DgegMzkjeyyHOuAxeuEM=;
- b=Dqeb3/Z7cWWmeSdasgRuxoqRxz9DXy5+iBUnWMOyMO0IFRhntS+3XMr2/zpcNR+Spk2eEo
- elMKOOxX7EdlTpBA==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 557651A00900
+ for <ltp@lists.linux.it>; Tue, 10 Jan 2023 09:20:06 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 237FC2C19F;
- Mon,  9 Jan 2023 15:05:10 +0000 (UTC)
-References: <20221221075220.14353-1-akumar@suse.de>
-User-agent: mu4e 1.8.13; emacs 28.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Avinesh Kumar <akumar@suse.de>
-Date: Mon, 09 Jan 2023 14:55:16 +0000
-Organization: Linux Private Site
-In-reply-to: <20221221075220.14353-1-akumar@suse.de>
-Message-ID: <87pmbniw9o.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0375722933;
+ Tue, 10 Jan 2023 08:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1673338806;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yTrxUWnKlogfA9wbXqBMMJlclPkxxw+mKdzgBJ5rBk0=;
+ b=Qbr3p/HWOo5+V7JI/k7dEy5mDj3pNsK3cn0+LjTZrFCdBHdwdxA6ushmLMtNzgb02Yu0P9
+ vLfPZpkXtrkuHTQCqkuov6Th2UvBsO8U/xYU1vfYox1PIldUpgCXBt/SQX2OjuvztC0xiQ
+ Z9TLH3HGTNfbumoTPgYsG4ym7Vx4CeQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1673338806;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yTrxUWnKlogfA9wbXqBMMJlclPkxxw+mKdzgBJ5rBk0=;
+ b=YQtynqMsKYOScNSWlSVQQQzpV+0Y1jwBA6YrPh+ZeC41apu+mCgwsZm+QGlOMaLcUOkWR8
+ dfcRVJOFvRk6tbCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA66B1358A;
+ Tue, 10 Jan 2023 08:20:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id JHefM7UfvWMGDgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 10 Jan 2023 08:20:05 +0000
+Date: Tue, 10 Jan 2023 09:20:04 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: coolgw <coolgw1126@gmail.com>
+Message-ID: <Y70ftLpcLzdV32O9@pevik>
+References: <20230106113126.5304-1-wegao@suse.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230106113126.5304-1-wegao@suse.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] setreuid01.c: Rewrite using new LTP API and use
- TST_EXP* macros
+Subject: Re: [LTP] [PATCH v3] Add containers/share to PATH when call
+ init_ltp_netspace
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,245 +76,87 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi Wei,
 
-Avinesh Kumar <akumar@suse.de> writes:
+There are 2 unrelated changes, they should be separated (in 2 commits).
+We are sometimes benevolent on this, if the other change is tiny,
+but these are 2 functional changes, they should really be separated.
 
-> Hi,
-> I changed this simple setreuid() test to new LTP API but I think
-> this is a subset of setreuid03.c test and can be removed altogether.
-> Please share your opinion. If this should be removed, I'll post new
-> patch for that.
->
->
-> Signed-off-by: Avinesh Kumar <akumar@suse.de>
+Also, the subject (first line of the patch) is too long and describe only one
+change.
+
+> When run single test case use command such as:
+> LTP_SHELL_API_TESTS=shell/net/tst_rhost_run.sh make test-shell
+Instead of the description how to run tst_rhost_run.sh
+(which now with the PATH can be run simply as
+./lib/newlib_tests/shell/net/tst_rhost_run.sh)
+more important is to say:
+1) LTP shell API tests depend on properly compiled LTP.
+Therefore this is just a workaround to make visible that some tool is missing.
+
+2) I wonder if there is way to properly fix this dependency in make.
+I guess test-shell target should depend on (at least): ns_create ns_exec
+ns_ifmove.
+
+> Error msg such as "ns_create: command not found" will popup, so
+> need update PATH before call ns_create etc..
+
+> Signed-off-by: WEI GAO <wegao@suse.com>
 > ---
->  .../kernel/syscalls/setreuid/setreuid01.c     | 188 +++---------------
->  1 file changed, 25 insertions(+), 163 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/setreuid/setreuid01.c b/testcases/kernel/syscalls/setreuid/setreuid01.c
-> index 54ba2d7a8..b0c1e0ab2 100644
-> --- a/testcases/kernel/syscalls/setreuid/setreuid01.c
-> +++ b/testcases/kernel/syscalls/setreuid/setreuid01.c
-> @@ -1,176 +1,38 @@
-> +// SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-> - *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms of version 2 of the GNU General Public License as
-> - * published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope that it would be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> - *
-> - * Further, this software is distributed without any warranty that it is
-> - * free of the rightful claim of any third person regarding infringement
-> - * or the like.  Any license provided herein, whether implied or
-> - * otherwise, applies only to this software file.  Patent licenses, if
-> - * any, provided herein do not apply to combinations of this program with
-> - * other software, or any other product whatsoever.
-> - *
-> - * You should have received a copy of the GNU General Public License along
-> - * with this program; if not, write the Free Software Foundation, Inc.,
-> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> - *
-> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-> - * Mountain View, CA  94043, or:
-> - *
-> - * http://www.sgi.com
-> - *
-> - * For further information regarding this notice, see:
-> - *
-> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-> - *
-> - * Author: William Roske
-> - * Co-pilot: Dave Fenner
-> + *	Author: William Roske
-> + *	Co-pilot: Dave Fenner
-> + * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
->   */
->  
-> -/*
-> - * Testcase to test the basic functionality of setreuid(2) system call.
-> +/*\
-> + * [Description]
-> + *
-> + * Verify the basic functionality of setreuid(2) system call when executed
-> + * as non-root user.
->   */
->  
-> -#include <errno.h>
-> -#include <string.h>
-> -#include <signal.h>
-> -#include <sys/types.h>
-> +#include "tst_test.h"
-> +#include "compat_tst_16.h"
->  
-> -#include "test.h"
-> -#include "compat_16.h"
-> +static uid_t ruid, euid;
->  
-> -static void setup(void);
-> -static void cleanup(void);
-> -
-> -TCID_DEFINE(setreuid01);
-> -int TST_TOTAL = 5;
-> -
-> -static uid_t ruid, euid;	/* real and effective user ids */
-> -
-> -int main(int ac, char **av)
-> +static void run(void)
+> V2 -> V3: move path to test case itself 
+> V1 -> V2: add tst_require_cmds for init_ltp_netspace()
+
+>  lib/newlib_tests/shell/net/tst_rhost_run.sh | 2 +-
+>  testcases/lib/tst_net.sh                    | 3 ++-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+
+> diff --git a/lib/newlib_tests/shell/net/tst_rhost_run.sh b/lib/newlib_tests/shell/net/tst_rhost_run.sh
+> index 773b8dd33..70087aa61 100755
+> --- a/lib/newlib_tests/shell/net/tst_rhost_run.sh
+> +++ b/lib/newlib_tests/shell/net/tst_rhost_run.sh
+> @@ -3,7 +3,7 @@
+>  # Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
+
+>  TST_TESTFUNC=do_test
+> -PATH="$(dirname $0)/../../../../testcases/lib/:$PATH"
+> +PATH="$(dirname $0)/../../../../testcases/lib/:$(dirname $0)/../../../../testcases/kernel/containers/share/:$PATH"
+PATH line will get quite long, I'd use variable for path to root.
+It will be also more readable (similar to Makefiles, which have top_srcdir
+variable).
+
+root="$(dirname $0)/../../../../"
+PATH="$root/testcases/lib/:$root/testcases/kernel/containers/share/:$PATH"
+
+>  export TST_NET_RHOST_RUN_DEBUG=1
+
+> diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+> index ceb45c98d..2849f6bc6 100644
+> --- a/testcases/lib/tst_net.sh
+> +++ b/testcases/lib/tst_net.sh
+> @@ -128,10 +128,11 @@ tst_net_require_ipv6()
+
+>  init_ltp_netspace()
 >  {
-> -	int lc;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		/*
-> -		 * TEST CASE:
-> -		 *  Don't change either real or effective uid
-> -		 */
-> -		ruid = getuid();	/* get real uid */
-> -		UID16_CHECK(ruid, setreuid, cleanup);
-> -
-> -		euid = geteuid();	/* get effective uid */
-> -		UID16_CHECK(euid, setreuid, cleanup);
-> -
-> -		TEST(SETREUID(cleanup, -1, -1));
-> +	ruid = getuid();
-> +	UID16_CHECK(ruid, setreuid);
->  
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setreuid -  Don't change either real or effective uid failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setreuid -  Don't change either real or effective uid returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> +	euid = geteuid();
-> +	UID16_CHECK(euid, setreuid);
->  
-> -		/*
-> -		 * TEST CASE:
-> -		 *  change effective to effective uid
-> -		 */
-> -
-> -		TEST(SETREUID(cleanup, -1, euid));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setreuid -  change effective to effective uid failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setreuid -  change effective to effective uid returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> -
-> -		/*
-> -		 * TEST CASE:
-> -		 *  change real to real uid
-> -		 */
-> -
-> -		TEST(SETREUID(cleanup, ruid, -1));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setreuid -  change real to real uid failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setreuid -  change real to real uid returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> -
-> -		/*
-> -		 * TEST CASE:
-> -		 *  change effective to real uid
-> -		 */
-> -
-> -		TEST(SETREUID(cleanup, -1, ruid));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setreuid -  change effective to real uid failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setreuid -  change effective to real uid returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> -
-> -		/*
-> -		 * TEST CASE:
-> -		 *  try to change real to current real
-> -		 */
-> -
-> -		TEST(SETREUID(cleanup, ruid, ruid));
-> -
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setreuid -  try to change real to current real failed, errno=%d : %s",
-> -				 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setreuid -  try to change real to current real returned %ld",
-> -				 TEST_RETURN);
-> -		}
-> -
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -}
-> -
-> -static void setup(void)
-> -{
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> +	TST_EXP_PASS(setreuid(-1, -1));
-> +	TST_EXP_PASS(setreuid(-1, euid));
-> +	TST_EXP_PASS(setreuid(ruid, -1));
-> +	TST_EXP_PASS(setreuid(-1, ruid));
-> +	TST_EXP_PASS(setreuid(euid, -1));
+> +
+Please avoid added extra blank lines like this one.
+>  	local pid
 
-This drops setreuid(ruid, ruid) from the end.
+Kind regards,
+Petr
 
->  }
->  
-> -static void cleanup(void)
-> -{
-> -	tst_rmdir();
-> -}
-> +static struct tst_test test = {
-> +	.test_all = run
-> +};
-> -- 
-> 2.39.0
+>  	if [ ! -f /var/run/netns/ltp_ns -a -z "$LTP_NETNS" ]; then
+> -		tst_require_cmds ip
+> +		tst_require_cmds ip ns_create ns_exec ns_ifmove
+>  		tst_require_root
 
-
--- 
-Thank you,
-Richard.
+>  		tst_require_drivers veth
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
