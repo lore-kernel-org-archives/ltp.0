@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B16EAC63797
-	for <ltp@archiver.kernel.org>; Tue, 10 Jan 2023 14:20:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57DB2C46467
+	for <ltp@archiver.kernel.org>; Tue, 10 Jan 2023 14:41:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D40803CCB27
-	for <ltp@archiver.kernel.org>; Tue, 10 Jan 2023 15:20:31 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 84DEF3CCB3D
+	for <ltp@archiver.kernel.org>; Tue, 10 Jan 2023 15:41:45 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A2C443CA6C2
- for <ltp@lists.linux.it>; Tue, 10 Jan 2023 15:20:22 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 9153E3CA6C2
+ for <ltp@lists.linux.it>; Tue, 10 Jan 2023 15:41:34 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0DEE26005FC
- for <ltp@lists.linux.it>; Tue, 10 Jan 2023 15:20:21 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B1A461A003EC
+ for <ltp@lists.linux.it>; Tue, 10 Jan 2023 15:41:33 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 00C7F77029
- for <ltp@lists.linux.it>; Tue, 10 Jan 2023 14:20:21 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id B65C877175
+ for <ltp@lists.linux.it>; Tue, 10 Jan 2023 14:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673360421;
+ t=1673361691;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OPB+ki0dXvnzqeySE5ARXdEYRZaNwUh8ltDjf8AwZ5Q=;
- b=Uj1aKFznr0N6TQaHEz2Q3jX1HBLVfSiQIwmj2Kr8pYtDet70RiYw2t27PuS0d18/SjXn1e
- FIbCrtJCSAzk0f6W84K7C/F0wmtFrND+L2u3CEyCf1Vwt/XQrxb+vUn3r5Ce7WnYu38Nq0
- p0qUpz7Lxr6XTf/0VplAdWTEO9BkKN8=
+ bh=eWZzeVJuOReBO8vE5P1gHUZXUAHRF5OaDoi83J8Q+xE=;
+ b=19+5KvY9GBo4zVmnJS0r0Z9GLKqDHKtEjPcga3n+2VHpsgg1xx3Xmk+GqmjRsYB/uA4Z66
+ 00LJDaWTkdk/UM5YcheV481f0k4F8WWRhlytg0S8mDs3L97/uxTqTnQyId6dJ84FT7YgmL
+ oJxn2c4r1EZlmZT+nVIqhwZXaxGkKIk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673360421;
+ s=susede2_ed25519; t=1673361691;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OPB+ki0dXvnzqeySE5ARXdEYRZaNwUh8ltDjf8AwZ5Q=;
- b=wNl9S0LEV/mfqT4yBH5C0latFlJzFFpzP/nZ4AQ0Li1+fVSp412rUVHIE63z9VM0SwVMom
- usoK2QbZAvq0k/DQ==
-Received: from g78 (rpalethorpe.tcp.ovpn1.nue.suse.de [10.163.17.14])
+ bh=eWZzeVJuOReBO8vE5P1gHUZXUAHRF5OaDoi83J8Q+xE=;
+ b=ougOkFOHbyj3fFk1G7iqXw2iu41555+OGEf1uMEHrx8LOvaZa1g8ZPwLP9s8UbbhmZmMZp
+ boriAOAB5yJxSfCg==
+Received: from g78 (unknown [10.163.17.14])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 17A252C141;
- Tue, 10 Jan 2023 14:20:19 +0000 (UTC)
-References: <20230110130711.29274-1-akumar@suse.de>
+ by relay2.suse.de (Postfix) with ESMTPS id 6FFB22C141;
+ Tue, 10 Jan 2023 14:41:31 +0000 (UTC)
+References: <20230110130135.27979-1-akumar@suse.de>
 User-agent: mu4e 1.8.13; emacs 28.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Avinesh Kumar <akumar@suse.de>
-Date: Tue, 10 Jan 2023 14:20:14 +0000
+Date: Tue, 10 Jan 2023 14:41:22 +0000
 Organization: Linux Private Site
-In-reply-to: <20230110130711.29274-1-akumar@suse.de>
-Message-ID: <87mt6qh3oc.fsf@suse.de>
+In-reply-to: <20230110130135.27979-1-akumar@suse.de>
+Message-ID: <87ilheh2p3.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] setreuid01: Use SETREUID() instead of setreuid()
- to check 32bit syscall
+Subject: Re: [LTP] [PATCH] setregid01.c: Turn comment into docparse format
+ and use TST_EXP_PASS macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,34 +85,60 @@ Avinesh Kumar <akumar@suse.de> writes:
 
 > Signed-off-by: Avinesh Kumar <akumar@suse.de>
 > ---
->  testcases/kernel/syscalls/setreuid/setreuid01.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+>  .../kernel/syscalls/setregid/setregid01.c     | 19 ++++++++-----------
+>  1 file changed, 8 insertions(+), 11 deletions(-)
 >
-> diff --git a/testcases/kernel/syscalls/setreuid/setreuid01.c b/testcases/kernel/syscalls/setreuid/setreuid01.c
-> index bbf29d360..7c2b6d589 100644
-> --- a/testcases/kernel/syscalls/setreuid/setreuid01.c
-> +++ b/testcases/kernel/syscalls/setreuid/setreuid01.c
-> @@ -26,13 +26,13 @@ static void run(void)
->  	euid = geteuid();
->  	UID16_CHECK(euid, setreuid);
+> diff --git a/testcases/kernel/syscalls/setregid/setregid01.c b/testcases/kernel/syscalls/setregid/setregid01.c
+> index 8c9e11918..741028a4a 100644
+> --- a/testcases/kernel/syscalls/setregid/setregid01.c
+> +++ b/testcases/kernel/syscalls/setregid/setregid01.c
+> @@ -15,14 +15,16 @@
+>   * Co-pilot: Dave Fenner
+>   */
 >  
-> -	TST_EXP_PASS(setreuid(-1, -1));
-> -	TST_EXP_PASS(setreuid(-1, euid));
-> -	TST_EXP_PASS(setreuid(ruid, -1));
-> -	TST_EXP_PASS(setreuid(-1, ruid));
-> -	TST_EXP_PASS(setreuid(euid, -1));
-> -	TST_EXP_PASS(setreuid(euid, euid));
-> -	TST_EXP_PASS(setreuid(ruid, ruid));
-> +	TST_EXP_PASS(SETREUID(-1, -1));
-> +	TST_EXP_PASS(SETREUID(-1, euid));
-> +	TST_EXP_PASS(SETREUID(ruid, -1));
-> +	TST_EXP_PASS(SETREUID(-1, ruid));
-> +	TST_EXP_PASS(SETREUID(euid, -1));
-> +	TST_EXP_PASS(SETREUID(euid, euid));
-> +	TST_EXP_PASS(SETREUID(ruid, ruid));
+> -/*
+> - * Testcase to test the basic functionality of setregid(2) systemm call.
+> +/*\
+> + * [Description]
+> + *
+> + * Verify the basic functionality of setregid(2) system call.
+>   */
+>  
+>  #include "tst_test.h"
+>  #include "compat_tst_16.h"
+>  
+> -static gid_t gid, egid;	    /* current real and effective group id */
+> +static gid_t gid, egid;
+>  static gid_t neg_one = -1;
+>  
+>  static struct tcase {
+> @@ -30,23 +32,18 @@ static struct tcase {
+>  	gid_t *arg2;
+>  	const char *msg;
+>  } tcases[] = {
+> -	{&neg_one, &neg_one, "Dont change either real or effective gid" },
+> +	{&neg_one, &neg_one, "Leave real and effective both gids unchanged" },
+>  	{&neg_one, &egid,    "Change effective to effective gid" },
+>  	{&gid,     &neg_one, "Change real to real gid" },
+>  	{&neg_one, &gid,     "Change effective to real gid" },
+> -	{&gid,     &gid,     "Try to change real to current real" }
+> +	{&gid,     &gid,     "Change real and effective both gids to current real gid" }
+>  };
+>  
+>  static void run(unsigned int n)
+>  {
+>  	struct tcase *tc = &tcases[n];
+>  
+> -	TEST(SETREGID(*tc->arg1, *tc->arg2));
+> -
+> -	if (TST_RET == -1)
+> -		tst_res(TFAIL | TTERRNO, "%s", tc->msg);
+> -	else
+> -		tst_res(TPASS, "%s", tc->msg);
+> +	TST_EXP_PASS(SETREGID(*tc->arg1, *tc->arg2), "%s:", tc->msg);
 >  }
 >  
->  static struct tst_test test = {
+>  static void setup(void)
 > -- 
 > 2.39.0
 
