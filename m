@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E54E1C5479D
-	for <ltp@archiver.kernel.org>; Wed, 11 Jan 2023 13:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1725C46467
+	for <ltp@archiver.kernel.org>; Wed, 11 Jan 2023 14:16:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C0C83CCB07
-	for <ltp@archiver.kernel.org>; Wed, 11 Jan 2023 14:26:06 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 7563A3CCB02
+	for <ltp@archiver.kernel.org>; Wed, 11 Jan 2023 15:16:32 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C06E63C0528
- for <ltp@lists.linux.it>; Wed, 11 Jan 2023 14:25:55 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 21A8A3CB560
+ for <ltp@lists.linux.it>; Wed, 11 Jan 2023 15:16:21 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EDD9A2009D5
- for <ltp@lists.linux.it>; Wed, 11 Jan 2023 14:25:54 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id CC2716005C1
+ for <ltp@lists.linux.it>; Wed, 11 Jan 2023 15:16:20 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6190A17A0A
- for <ltp@lists.linux.it>; Wed, 11 Jan 2023 13:25:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 04A6B17B91
+ for <ltp@lists.linux.it>; Wed, 11 Jan 2023 14:16:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673443553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1673446580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=yLWBrL6JjO0k216aaGTvWQy4IF02sBzQu5Ys2UUs54s=;
- b=kv+IxQZeJXczWeq8/miLfCrsjHRxsWWbYs43NqExZJ9kIkY/QqsjgYo6HdlEx90+RWdfRa
- 5OC3z3y7IGvCLcu9OUdiVb9ZJqPfSR2zcwYaxhCjh2Wj9Vxe5q3vqZ19B/JTa2wUuW1Mnk
- +b4+GvcHhoo/mDqtslhFsBt3Ow5GcSc=
+ bh=0mBhuf0WxA9xC1xNHS+tglhRb0jBJiNdbaEHhRUUETE=;
+ b=j0C6zPREkNHZk50PsL0Ajxmd9RuEl/zlfVJlpmXN1x5uZ+1YWVXTOFVqc/mrtRRtaYKemo
+ xsfvV0ThXXX0PAGRYe1fDbSs7FqPfKfLD78q48+hLHaKA7tDpgM1BQPh8re2E5MdajSP5P
+ kZOrFQ+IdA3eBdShkepFf/GIKUg3E3Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673443553;
+ s=susede2_ed25519; t=1673446580;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=yLWBrL6JjO0k216aaGTvWQy4IF02sBzQu5Ys2UUs54s=;
- b=/jSPg1GO8S6XAYMdbrowOKTr8YNdWsD/l1h6zYzuENhUjgY0AKE0raon7YCXTyruTh+vK3
- oMOVR2elcO5lHVDQ==
+ bh=0mBhuf0WxA9xC1xNHS+tglhRb0jBJiNdbaEHhRUUETE=;
+ b=g2NgpfR5dFH21WIkDaG3ZQD0e64Xc8apsi82PgMlH4kTwN6FkrEZS3dIMyFZFtF79TiDBk
+ edO1J2Q5AYNnxYBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C7AB51358A
- for <ltp@lists.linux.it>; Wed, 11 Jan 2023 13:25:52 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7B1661358A
+ for <ltp@lists.linux.it>; Wed, 11 Jan 2023 14:16:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QUbFIeC4vmPtaQAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id BPykD7PEvmMACgAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Wed, 11 Jan 2023 13:25:52 +0000
+ for <ltp@lists.linux.it>; Wed, 11 Jan 2023 14:16:19 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Wed, 11 Jan 2023 18:55:50 +0530
-Message-Id: <20230111132550.15587-1-akumar@suse.de>
+Date: Wed, 11 Jan 2023 19:46:16 +0530
+Message-Id: <20230111141616.20011-1-akumar@suse.de>
 X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] setreuid04.c: Rewrite using new LTP API
+Subject: [LTP] [PATCH] c-test-tutorial-simple.txt: improve documentation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,196 +79,44 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- .../kernel/syscalls/setreuid/setreuid04.c     | 158 +++++-------------
- 1 file changed, 41 insertions(+), 117 deletions(-)
+ doc/c-test-tutorial-simple.txt | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid04.c b/testcases/kernel/syscalls/setreuid/setreuid04.c
-index 8eed90df0..9c52ff1bd 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid04.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid04.c
-@@ -1,141 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- *
-  * Ported by John George
-+ * Copyright (c) 2022 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
+diff --git a/doc/c-test-tutorial-simple.txt b/doc/c-test-tutorial-simple.txt
+index 89b0ad4e7..c5861cb36 100644
+--- a/doc/c-test-tutorial-simple.txt
++++ b/doc/c-test-tutorial-simple.txt
+@@ -333,16 +333,16 @@ call in the +*.in+ files (e.g. +x86_64.in+) which are used to generate
+ may find the system call number is missing from the +*.in+ files and will need
+ to add it (see +include/lapi/syscalls/strip_syscall.awk+).
  
--/*
-- * Test that root can change the real and effective uid to an
-- * unpriviledged user.
-+/*\
-+ * [Description]
-+ *
-+ * Verify that root user can change the real and effective uid to an
-+ * unprivileged user.
-  */
+-System call numbers vary between architectures, hence why there are multiple
++System call numbers vary between architectures, hence there are multiple
+ +*.in+ files for each architecture. You can find the various values for the
+-+statx+ system call across a number of +uinstd.h+ files in the Linux kernel.
+++statx+ system call across a number of +unistd.h+ files in the Linux kernel.
  
--#include <errno.h>
--#include <stdlib.h>
- #include <pwd.h>
--#include <sys/wait.h>
--
--#include "test.h"
--#include "compat_16.h"
--
--TCID_DEFINE(setreuid04);
-+#include "tst_test.h"
-+#include "compat_tst_16.h"
+ Note that we don't use the system-call-identifier value available in
+-+/usr/include/linux/uinstd.h+ because the kernel might be much newer than the
+++/include/uapi/linux/unistd.h+ because the kernel might be much newer than the
+ user land development packages.
  
- static uid_t neg_one = -1;
-+static uid_t root_uid, nobody_uid;
+-For +statx+ we had to add +statx 332+ to +testcases/kernel/include/x86_64.in+,
+-+statx 383+ to +testcases/kernel/include/powerpc.in+, etc.  Now lets look at
++For +statx+ we had to add +statx 332+ to +include/lapi/syscalls/x86_64.in+,
+++statx 383+ to +include/lapi/syscalls/powerpc.in+, etc.  Now lets look at
+ the code, which I will explain in more detail further down.
  
--static struct passwd nobody, root;
--
--/*
-- * The following structure contains all test data.  Each structure in the array
-- * is used for a separate test.  The tests are executed in the for loop below.
-- */
--
--struct test_data_t {
-+static struct tcase {
- 	uid_t *real_uid;
- 	uid_t *eff_uid;
--	struct passwd *exp_real_usr;
--	struct passwd *exp_eff_usr;
--	char *test_msg;
--} test_data[] = {
--	{
--	&neg_one, &neg_one, &root, &root, "After setreuid(-1, nobody),"}, {
--&nobody.pw_uid, &nobody.pw_uid, &nobody, &nobody,
--		    "After setreuid(-1, -1),"},};
--
--int TST_TOTAL = ARRAY_SIZE(test_data);
--
--static void setup(void);
--static void cleanup(void);
--static void uid_verify(struct passwd *, struct passwd *, char *);
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		int i, pid;
--
--		tst_count = 0;
--
--		if ((pid = FORK_OR_VFORK()) == -1) {
--			tst_brkm(TBROK, cleanup, "fork failed");
--		} else if (pid == 0) {	/* child */
--
--			for (i = 0; i < TST_TOTAL; i++) {
--
--				/* Set the real or effective user id */
--				TEST(SETREUID(cleanup, *test_data[i].real_uid,
--					      *test_data[i].eff_uid));
--
--				if (TEST_RETURN != -1) {
--					tst_resm(TPASS, "setreuid(%d, %d) "
--						 "succeeded as expected.",
--						 *test_data[i].real_uid,
--						 *test_data[i].eff_uid);
--				} else {
--					tst_resm(TFAIL, "setreuid(%d, %d) "
--						 "did not return as expected.",
--						 *test_data[i].real_uid,
--						 *test_data[i].eff_uid);
--				}
--
--				uid_verify(test_data[i].exp_real_usr,
--					   test_data[i].exp_eff_usr,
--					   test_data[i].test_msg);
--			}
--			tst_exit();
--		} else {	/* parent */
--			tst_record_childstatus(cleanup, pid);
--		}
--	}
--	cleanup();
--	tst_exit();
--}
-+	uid_t *exp_real_uid;
-+	uid_t *exp_eff_uid;
-+} tcases[] = {
-+	{&neg_one, &neg_one, &root_uid, &root_uid},
-+	{&nobody_uid, &nobody_uid, &nobody_uid, &nobody_uid}
-+};
+ [source,c]
+@@ -1007,7 +1007,7 @@ We can then send this patch with the following command sans +--dry-run+.
+ $ git send-email --dry-run output/v2-0001-tutorial-Add-a-step-by-step-C-test-tutorial.patch
+ --------------------------------------------------------------------------------
  
- static void setup(void)
- {
--	tst_require_root();
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	if (getpwnam("nobody") == NULL)
--		tst_brkm(TBROK, NULL, "nobody must be a valid user.");
--
--	root = *(getpwnam("root"));
--	UID16_CHECK(root.pw_uid, setreuid, cleanup);
-+	struct passwd *nobody;
- 
--	nobody = *(getpwnam("nobody"));
--	UID16_CHECK(nobody.pw_uid, setreuid, cleanup);
-+	root_uid = getuid();
-+	nobody = SAFE_GETPWNAM("nobody");
-+	nobody_uid = nobody->pw_uid;
- 
--	TEST_PAUSE;
-+	UID16_CHECK(nobody_uid, setreuid);
-+	UID16_CHECK(root_uid, setreuid);
- }
- 
--static void cleanup(void)
-+static void run(unsigned int i)
- {
--}
-+	struct tcase *tc = tcases + i;
- 
--static void uid_verify(struct passwd *ru, struct passwd *eu, char *when)
--{
--	if ((getuid() != ru->pw_uid) || (geteuid() != eu->pw_uid)) {
--		tst_resm(TFAIL, "ERROR: %s real uid = %d; effective uid = %d",
--			 when, getuid(), geteuid());
--		tst_resm(TINFO, "Expected: real uid = %d; effective uid = %d",
--			 ru->pw_uid, eu->pw_uid);
-+	if (!SAFE_FORK()) {
-+		TST_EXP_PASS(SETREUID(*tc->real_uid, *tc->eff_uid),
-+					"setreuid(%d, %d)",
-+					*tc->real_uid, *tc->eff_uid);
-+
-+		TST_EXP_EQ_LI(getuid(), *tc->exp_real_uid);
-+		TST_EXP_EQ_LI(geteuid(), *tc->exp_eff_uid);
- 	}
-+	tst_reap_children();
- }
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.needs_root = 1,
-+	.forks_child = 1
-+};
+-Git will ask some questions (which you an ignore) and then tell you what it
++Git will ask some questions (which you can ignore) and then tell you what it
+ would do if this weren't a dry-run. In order for this to work you have to have
+ a valid SMTP server set in +.gitconfig+ and also be signed up to the LTP
+ mailing list under the same e-mail address you have configured in Git. You can
 -- 
 2.39.0
 
