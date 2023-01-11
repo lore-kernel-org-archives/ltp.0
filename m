@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 799ABC46467
-	for <ltp@archiver.kernel.org>; Wed, 11 Jan 2023 10:46:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6A7EC54EBC
+	for <ltp@archiver.kernel.org>; Wed, 11 Jan 2023 13:18:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 950AC3CB584
-	for <ltp@archiver.kernel.org>; Wed, 11 Jan 2023 11:45:56 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id A8BDA3CCA9C
+	for <ltp@archiver.kernel.org>; Wed, 11 Jan 2023 14:18:44 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 261FE3CB54E
- for <ltp@lists.linux.it>; Wed, 11 Jan 2023 11:45:48 +0100 (CET)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id DC6123CA19D
+ for <ltp@lists.linux.it>; Wed, 11 Jan 2023 14:18:33 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B35CA600971
- for <ltp@lists.linux.it>; Wed, 11 Jan 2023 11:45:47 +0100 (CET)
-Received: by mail-wm1-x32f.google.com with SMTP id
- bi26-20020a05600c3d9a00b003d3404a89faso2213851wmb.1
- for <ltp@lists.linux.it>; Wed, 11 Jan 2023 02:45:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=hzIxFAixvTgNepkI9PJWI8sNp1ezR4FX1GHJVam0q2Y=;
- b=Oa7k0RoT3T4roe4ryoCKc2Z6PKqHMzQloYQrnEiygwSiGZFseVyKWvdTalDbb8skvI
- T0NJhrlRgOIkjggaftiXFqUvNBaQ3oS3xZ8XGOTi6/6WdrCsha2otDWlfxDLFO6p5JZN
- 0klctn+FDGuzNE/GghetgF6m4D8m9jRYbbz9bFGhlKr/s5tX6OstEnWRehhQ2AwvRTpV
- n1Bk2VWZ9ANQzsEQC3RBVnIlqB+p2IUSCUxc7bcZ3BYdkKpAaCJongHvs5LSxY4F6yJr
- vyOSFpX/abxNppCq8NRxkQjIWi4VllzZEfJGZfWXNHolmnBbtTmMPdbGIh+HuAS5BxzK
- TMRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=hzIxFAixvTgNepkI9PJWI8sNp1ezR4FX1GHJVam0q2Y=;
- b=D+AUAVSF2zgMq1xNSEmgOCh0DyXitzlJB997FW3K00m7rOHkqv/dJKF3b1DtEIHypp
- MzRj7vKHhkJb20MhklbrSg6Sv1mcsBSRRiExn2BC2aNowM6uJVh3pe8Vkh/OydG2gEZ+
- GUM+ATSC8dOA5kz1gNpfY+KJTQqy2S4H4mBvICjwSduGAhaTD0ua5cpH1WSoiHJ1p25J
- SUKXuH5anTG+p7phi3hyqQUBqueQZFsbY8k1Jz9IgX3DGd07pgrYzTKTln38XBlORXbq
- PzEJFmg4oIi+Ds7QlBlYzXR80zcr2p0v2nWV2P7Yk4YRGplbOFb/YifEWkf9ZDcxKbKo
- 5C1A==
-X-Gm-Message-State: AFqh2kq5Q6PkCYB9/L4gT+dNgnpobxS9FCT861Js+5EfXNyc8Pk6CAxr
- KQpXRvzSBt2e4puKOiPyleVWuXH+ztM=
-X-Google-Smtp-Source: AMrXdXvCX+tQ/+Kk+Vemuz6Ar7srBkiutTNOIiRRlWWbzQDXDorboafBx9B0/lSUH2EwoFB5RjYptQ==
-X-Received: by 2002:a05:600c:34c4:b0:3d1:bf7c:391c with SMTP id
- d4-20020a05600c34c400b003d1bf7c391cmr56294968wmq.4.1673433947207; 
- Wed, 11 Jan 2023 02:45:47 -0800 (PST)
-Received: from openqa-migration-qe1-1.qa.suse.de (nat1.nue.suse.com.
- [195.135.221.27]) by smtp.gmail.com with ESMTPSA id
- h10-20020a1ccc0a000000b003d237d60318sm18195483wmb.2.2023.01.11.02.45.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 11 Jan 2023 02:45:46 -0800 (PST)
-From: coolgw <coolgw1126@gmail.com>
-X-Google-Original-From: coolgw <wegao@suse.com>
-To: ltp@lists.linux.it
-Date: Wed, 11 Jan 2023 05:45:28 -0500
-Message-ID: <20230106113126.5304-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1A70E1400543
+ for <ltp@lists.linux.it>; Wed, 11 Jan 2023 14:18:32 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6257C5D088;
+ Wed, 11 Jan 2023 13:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1673443111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+zbTXFvZ3o1fDAkk/1MfKwK9GaUbabxNhUl4Mug1WGU=;
+ b=XUAyZx7KcNZI95/2a7bb+g7LdwIFGyAfAfY97PwbhV0qKSi5JH5Jl8JGUTffgzEc0wYHOT
+ mtlSUIcCWTawijT4TE+Y23wMmr5oZrb3PUul0PyOYsOKTzFrt6bZEkTJ4+l7uHBpUpvD+b
+ Hpegqs53aKF3DSnx8frxMwWncS9Yi7M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1673443111;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+zbTXFvZ3o1fDAkk/1MfKwK9GaUbabxNhUl4Mug1WGU=;
+ b=axkq21XJmEOaHKEwPmsOuKoiEdFgfp/3UqkZrSlz9ahJaFQTxZvLf6oyFFOzd5FGXO68jz
+ Ju85CmVA4LMT70Cw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 96B4E1358A;
+ Wed, 11 Jan 2023 13:18:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id fYu0FSa3vmOpZQAAMHmgww
+ (envelope-from <akumar@suse.de>); Wed, 11 Jan 2023 13:18:30 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 11 Jan 2023 18:48:27 +0530
+Message-ID: <2068101.vSGb3dL7Gk@localhost>
+Organization: SUSE
+In-Reply-To: <20230110183555.6915-1-pvorel@suse.cz>
+References: <20230110183555.6915-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] Add PATH to tst_rhost_run.sh
+Subject: Re: [LTP] [PATCH 1/1] tst_tmpdir: Add 'LTP_' prefix
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,50 +77,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
-Message-ID: <20230111104528.xdKKTplqMXw8D7nddBeGqitL_cN_IMTOX0gRaL-G3Jg@z>
 
-When run single test case use command such as:
-LTP_SHELL_API_TESTS=shell/net/tst_rhost_run.sh make test-shell
-Error msg such as "ns_create: command not found" will popup, so
-need update PATH before call ns_create etc..
+Hi,
 
-More important:
-1) LTP shell API tests depend on properly compiled LTP.
-Therefore this is just a workaround to make visible that some tool is missing.
+Reviewed-by: Avinesh Kumar <akumar@suse.de>
 
-2) I wonder if there is way to properly fix this dependency in make.
-I guess test-shell target should depend on (at least): ns_create ns_exec
-ns_ifmove.
+On Wednesday, January 11, 2023 12:05:55 AM IST Petr Vorel wrote:
+> Follow the approach of the shell API:
+> 
+>     TST_TMPDIR=$(mktemp -d "$TMPDIR/LTP_$TST_ID.XXXXXXXXXX")
+> 
+> Prefix helps to see directories mounted by LTP.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  lib/tst_tmpdir.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
+> index d1419a1a40..b73b5c66f7 100644
+> --- a/lib/tst_tmpdir.c
+> +++ b/lib/tst_tmpdir.c
+> @@ -269,7 +269,7 @@ void tst_tmpdir(void)
+>  	 * use our default TEMPDIR.
+>  	 */
+>  	env_tmpdir = tst_get_tmpdir_root();
+> -	snprintf(template, PATH_MAX, "%s/%.3sXXXXXX", env_tmpdir, TCID);
+> +	snprintf(template, PATH_MAX, "%s/LTP_%.3sXXXXXX", env_tmpdir, TCID);
+>  
+>  	/* Make the temporary directory in one shot using mkdtemp. */
+>  	if (mkdtemp(template) == NULL) {
+> 
 
-Signed-off-by: WEI GAO <wegao@suse.com>
----
-v3 -> v4: update format base latest comments, remove unrelated change
-V2 -> V3: move path to test case itself 
-V1 -> V2: add tst_require_cmds for init_ltp_netspace()
+Regards,
+Avinesh
 
- lib/newlib_tests/shell/net/tst_rhost_run.sh | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/lib/newlib_tests/shell/net/tst_rhost_run.sh b/lib/newlib_tests/shell/net/tst_rhost_run.sh
-index 773b8dd33..951551514 100755
---- a/lib/newlib_tests/shell/net/tst_rhost_run.sh
-+++ b/lib/newlib_tests/shell/net/tst_rhost_run.sh
-@@ -3,7 +3,8 @@
- # Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
- 
- TST_TESTFUNC=do_test
--PATH="$(dirname $0)/../../../../testcases/lib/:$PATH"
-+root="$(dirname $0)/../../../../"
-+PATH="$root/testcases/lib/:$root/testcases/kernel/containers/share/:$PATH"
- 
- export TST_NET_RHOST_RUN_DEBUG=1
- 
--- 
-2.35.3
 
 
 -- 
