@@ -4,67 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3677C5479D
-	for <ltp@archiver.kernel.org>; Thu, 12 Jan 2023 00:39:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3992BC5479D
+	for <ltp@archiver.kernel.org>; Thu, 12 Jan 2023 02:46:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 56EE33CDCD2
-	for <ltp@archiver.kernel.org>; Thu, 12 Jan 2023 01:39:54 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D14CF3CCB06
+	for <ltp@archiver.kernel.org>; Thu, 12 Jan 2023 03:46:10 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 483F93CB55B
- for <ltp@lists.linux.it>; Thu, 12 Jan 2023 01:39:44 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 8A7C03CB56A
+ for <ltp@lists.linux.it>; Thu, 12 Jan 2023 03:45:58 +0100 (CET)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AF98B100092B
- for <ltp@lists.linux.it>; Thu, 12 Jan 2023 01:39:43 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id BC3C3373B9;
- Thu, 12 Jan 2023 00:39:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1673483982;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/vwYvI9eqdxGH7plu5kvO6peWN6u/WGVEZ1YNiyMJXQ=;
- b=yGW0eq54T0Rz4oPpub5GOiZMir185W8on16zs/i7sipjwcK+M8Ez+rAvsaXx1jh/llV1CG
- e5zgwtOAYfAMHQcDHY5MLnEcXAyAwcO1iJZtrv9gJ6B9416XOLP7S3Xbv2s0K/gMcKDrQX
- S/sWKkhQQX6lqZVvkjRLTTB6JXK1mcM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1673483982;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/vwYvI9eqdxGH7plu5kvO6peWN6u/WGVEZ1YNiyMJXQ=;
- b=/+bUkx0tIjhw1TuFMyGOlfsKNPgas+qOHh7PownAVuREEjkLD0Uw7j/agbBTr1TZESfaD0
- C8g9EAjztQw46cDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B9A91358A;
- Thu, 12 Jan 2023 00:39:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id M8PhIM5Wv2OwMgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 12 Jan 2023 00:39:42 +0000
-Date: Thu, 12 Jan 2023 01:39:36 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Nikolaus Voss <nikolaus.voss@haag-streit.com>
-Message-ID: <Y79WyOooDNfPojIA@pevik>
-References: <20230111142316.A0DBECA25@mail.steuer-voss.de>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DF8AA2009F6
+ for <ltp@lists.linux.it>; Thu, 12 Jan 2023 03:45:57 +0100 (CET)
+Received: by mail-wm1-x331.google.com with SMTP id
+ g19-20020a05600c4ed300b003d9eb1dbc0aso11046496wmq.3
+ for <ltp@lists.linux.it>; Wed, 11 Jan 2023 18:45:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=0dIgAOVaOt79gY0PVDUPBMzxfLQtYY90oPZN8/ULUvA=;
+ b=i+alyyeM1mBb5gryilwFnoTwnFgcC9yj+nF73yvcTUL0YyzpjUPns5crbl/HvrIQ5L
+ wNTjr1UtPKZiRMQOzxCnFgYBCoW+ohlUMtf/XPRGgwgyxfSzGvIJUNrNWA2EKUVKUHxj
+ NbqWKP3k/qet2XjwouDZk0ddnXVZGgrts68Zts9C1mUOGsDFANbcy+Lalg0lGsyeeLp+
+ JykTFYrT394PE07cUtwiowBNTvV+UB29QQdB747Wj8wY2NMx757OufsguTjTtJnJf3Pz
+ AzxbRVs5XOWCkiMCa4/aD642iB4ZmJmYqFjdCgf1/XO+mcZC9HysiwfwfxwYTGQJg3UB
+ bMiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=0dIgAOVaOt79gY0PVDUPBMzxfLQtYY90oPZN8/ULUvA=;
+ b=eYmYG7EdIkMDcdwvxRQ4Dp2cPNePFOM5PJ0dvzq06W/2os/frxSTWOi7qtJS868VW3
+ Lcy3CipS+XnXzROzKm9KwQqt/SK3EDScecNnjnaoUCuuyjOjM5VHW4tp4/+srE5TK303
+ Bu0mckV7TFjOcRIUrzQ3NCrRXRT1Dc/hNAyVZxC3eoOONfvlJL2U7XklkBod7A1XMTZQ
+ iN697I2rtJuXjc3OOZhQfaCDSPxaTABgVx6rIBkyTtA5ulXBRJ8q3KxRJ7nS2jIXqtCG
+ BmutAmTqzwtJLcML7hHm0fRPo0tL1bdPR9uisqVCkbOFo2S7EJhw+DFszP5GNe8mf4gZ
+ eHrA==
+X-Gm-Message-State: AFqh2kpV4fkKGDtAtA32Gf4nXJbSOn8odjXPD6ostqtJoxbn4XDjyWGa
+ KhOFLVdNZk3ad/ZB8nU0D/+iiDig+mkwIw==
+X-Google-Smtp-Source: AMrXdXteHCDR4nLgMGQ9zyFihHTL0R8bihaimFV5GgERgX9zdn4SHbzeoyVA9BAtjG1N2c0StohMvA==
+X-Received: by 2002:a05:600c:538e:b0:3da:11d7:dba3 with SMTP id
+ hg14-20020a05600c538e00b003da11d7dba3mr644517wmb.5.1673491557316; 
+ Wed, 11 Jan 2023 18:45:57 -0800 (PST)
+Received: from openqa-migration-qe1-1.qa.suse.de (nat1.nue.suse.com.
+ [195.135.221.27]) by smtp.gmail.com with ESMTPSA id
+ bg23-20020a05600c3c9700b003d1de805de5sm23008208wmb.16.2023.01.11.18.45.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 11 Jan 2023 18:45:56 -0800 (PST)
+From: coolgw <coolgw1126@gmail.com>
+X-Google-Original-From: coolgw <wegao@suse.com>
+To: ltp@lists.linux.it
+Date: Wed, 11 Jan 2023 21:45:47 -0500
+Message-Id: <20230112024547.4121-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230111142316.A0DBECA25@mail.steuer-voss.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/keyctl/keyctl09.c: fix test encrypted
- key
+Subject: [LTP] [PATCH v1] Add more strict check for tst_require_cmds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,35 +80,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, Yael Tzur <yaelt@google.com>, nv@vosn.de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Nikolaus,
+From: WEI GAO <wegao@suse.com>
 
-thank you for this update.
+Add more strict tst_require_cmds check for init_ltp_netspace()
 
+Signed-off-by: WEI GAO <wegao@suse.com>
+---
+ testcases/lib/tst_net.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I pushed your patch through mailing list, because you posted unsubscribed.
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index ceb45c98d..e6bb09d81 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -131,7 +131,7 @@ init_ltp_netspace()
+ 	local pid
+ 
+ 	if [ ! -f /var/run/netns/ltp_ns -a -z "$LTP_NETNS" ]; then
+-		tst_require_cmds ip
++		tst_require_cmds ip ns_create ns_exec ns_ifmove
+ 		tst_require_root
+ 
+ 		tst_require_drivers veth
+-- 
+2.35.3
 
-> Link: https://lore.kernel.org/ltp/20221006081709.92303897@mail.steuer-voss.de/
-
-From a link above you were able to send patch to kernel mailing list, thus you
-managed to subscribed. Why do you expect LTP would work for unsubscribed mails
-addresses?
-
-I also dared to enable this mail for posting to LTP mailing list,
-but better would be if you subscribed before sending patches.
-
-v1 is not in patchwork, but it's in lore:
-https://lore.kernel.org/ltp/d2d2afa4-b031-3455-38dd-c099715319e4@vosn.de/
-
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
