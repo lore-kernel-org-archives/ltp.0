@@ -4,67 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2C54C54EBD
-	for <ltp@archiver.kernel.org>; Thu, 12 Jan 2023 08:13:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0C92C54EBD
+	for <ltp@archiver.kernel.org>; Thu, 12 Jan 2023 09:02:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 55D353CCA59
-	for <ltp@archiver.kernel.org>; Thu, 12 Jan 2023 09:13:31 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 953DD3CCA7C
+	for <ltp@archiver.kernel.org>; Thu, 12 Jan 2023 10:02:00 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 431B23C2FC4
- for <ltp@lists.linux.it>; Thu, 12 Jan 2023 09:13:21 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id C03B43CB53A
+ for <ltp@lists.linux.it>; Thu, 12 Jan 2023 10:01:50 +0100 (CET)
+Received: from mail.steuer-voss.de (mail.steuer-voss.de [85.183.69.95])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 707B02009D3
- for <ltp@lists.linux.it>; Thu, 12 Jan 2023 09:13:20 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7B2093F63C;
- Thu, 12 Jan 2023 08:13:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673511199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=U0KnDZhyZ1FJILqr6uVge5FEluREsFezu7USfEZZpv0=;
- b=tGISy0ULvc9gjkhjQ3/1sNpQkk6G/ei3yT89Wm0HWq5suYeUG6qPv9mut/7Rx6zjWRAU50
- UOU5R72ukxkTECqP1Ufoh3eUPNZ+mJS4mIMMWh6wjXF2cdSgzpdrSsvbCVRCq39FIJEL7m
- v+ufHD3qSS678wOGBlpnQ63/22R+QtM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673511199;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=U0KnDZhyZ1FJILqr6uVge5FEluREsFezu7USfEZZpv0=;
- b=/FK/aiw9xiMsfGv3quou1o4E8x7ouYvsHFrBYZBOTI99GyRYH4E5KWZTJ07xK0kmtyZ+Jk
- nWa4aEuKfDaz5QAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74168134B3;
- Thu, 12 Jan 2023 08:13:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id BDBqDR7Bv2OUaQAAMHmgww
- (envelope-from <akumar@suse.de>); Thu, 12 Jan 2023 08:13:18 +0000
-From: Avinesh Kumar <akumar@suse.de>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DFEE51A00984
+ for <ltp@lists.linux.it>; Thu, 12 Jan 2023 10:01:49 +0100 (CET)
+Received: by mail.steuer-voss.de (Postfix, from userid 1000)
+ id A06573173; Thu, 12 Jan 2023 10:01:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by mail.steuer-voss.de (Postfix) with ESMTP id 9CF66C95;
+ Thu, 12 Jan 2023 10:01:45 +0100 (CET)
+Date: Thu, 12 Jan 2023 10:01:45 +0100 (CET)
+From: Nikolaus Voss <nv@vosn.de>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 12 Jan 2023 13:43:15 +0530
-Message-ID: <2775880.erAxF3upz8@localhost>
-Organization: SUSE
-In-Reply-To: <Y79O1AlWHL5SD/zJ@pevik>
-References: <20230111141616.20011-1-akumar@suse.de> <Y79O1AlWHL5SD/zJ@pevik>
+In-Reply-To: <Y79WyOooDNfPojIA@pevik>
+Message-ID: <655dd7b3-1b70-8d3c-c43-414e1d6e86@vosn.de>
+References: <20230111142316.A0DBECA25@mail.steuer-voss.de>
+ <Y79WyOooDNfPojIA@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] c-test-tutorial-simple.txt: improve documentation
+Subject: Re: [LTP] [PATCH v2] syscalls/keyctl/keyctl09.c: fix test encrypted
+ key
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,79 +50,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it, Yael Tzur <yaelt@google.com>,
+ Nikolaus Voss <nikolaus.voss@haag-streit.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Petr,
 
-On Thursday, January 12, 2023 5:35:40 AM IST Petr Vorel wrote:
-> Hi Avinesh,
-> 
-> > Signed-off-by: Avinesh Kumar <akumar@suse.de>
-> > ---
-> >  doc/c-test-tutorial-simple.txt | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> > diff --git a/doc/c-test-tutorial-simple.txt b/doc/c-test-tutorial-simple.txt
-> > index 89b0ad4e7..c5861cb36 100644
-> > --- a/doc/c-test-tutorial-simple.txt
-> > +++ b/doc/c-test-tutorial-simple.txt
-> > @@ -333,16 +333,16 @@ call in the +*.in+ files (e.g. +x86_64.in+) which are used to generate
-> >  may find the system call number is missing from the +*.in+ files and will need
-> >  to add it (see +include/lapi/syscalls/strip_syscall.awk+).
-> 
-> > -System call numbers vary between architectures, hence why there are multiple
-> > +System call numbers vary between architectures, hence there are multiple
-> >  +*.in+ files for each architecture. You can find the various values for the
-> > -+statx+ system call across a number of +uinstd.h+ files in the Linux kernel.
-> > ++statx+ system call across a number of +unistd.h+ files in the Linux kernel.
-> 
-> >  Note that we don't use the system-call-identifier value available in
-> > -+/usr/include/linux/uinstd.h+ because the kernel might be much newer than the
-> > ++/include/uapi/linux/unistd.h+ because the kernel might be much newer than the
-> NOTE: /include/uapi/linux/unistd.h does not exists. include/uapi/linux/unistd.h
-> is relative path in kernel git tree. The same file exists as
-> /usr/include/linux/unistd.h as part of kernel headers distro package.
-> 
-> I'd prefer to keep /usr/include/linux/unistd.h as a real path.
-Thank you for your review and correcting this.
+On Thu, 12 Jan 2023, Petr Vorel wrote:
+> Hi Nikolaus,
+>
+> thank you for this update.
+>
+>
+> I pushed your patch through mailing list, because you posted unsubscribed.
 
-> 
-> The other changes are good. Thank you for carefully reading docs and fixing
-> them!
-> 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
-> 
-> Kind regards,
-> Petr
-> 
-> >  user land development packages.
-> 
-> > -For +statx+ we had to add +statx 332+ to +testcases/kernel/include/x86_64.in+,
-> > -+statx 383+ to +testcases/kernel/include/powerpc.in+, etc.  Now lets look at
-> > +For +statx+ we had to add +statx 332+ to +include/lapi/syscalls/x86_64.in+,
-> > ++statx 383+ to +include/lapi/syscalls/powerpc.in+, etc.  Now lets look at
-> >  the code, which I will explain in more detail further down.
-> 
-> >  [source,c]
-> > @@ -1007,7 +1007,7 @@ We can then send this patch with the following command sans +--dry-run+.
-> >  $ git send-email --dry-run output/v2-0001-tutorial-Add-a-step-by-step-C-test-tutorial.patch
-> >  --------------------------------------------------------------------------------
-> 
-> > -Git will ask some questions (which you an ignore) and then tell you what it
-> > +Git will ask some questions (which you can ignore) and then tell you what it
-> >  would do if this weren't a dry-run. In order for this to work you have to have
-> >  a valid SMTP server set in +.gitconfig+ and also be signed up to the LTP
-> >  mailing list under the same e-mail address you have configured in Git. You can
-> 
+thanks!
 
-Regards,
-Avinesh
+>
+>> Link: https://lore.kernel.org/ltp/20221006081709.92303897@mail.steuer-voss.de/
+>
+> From a link above you were able to send patch to kernel mailing list, thus you
+> managed to subscribed. Why do you expect LTP would work for unsubscribed mails
+> addresses?
 
+I don't remember, maybe I subscribed, posted and then unsubscribed for v1 
+and didn't remember I have to be subscribed before posting v2. As an 
+irregular contributor I'm not subscribed to any list and use the archives 
+instead. The majority of lists don't require subscription.
 
+As an additional complication I use two mail-addresses, as I'm forced to 
+use Outlook on the job, which doesn't work well with posting patches.
+
+> I also dared to enable this mail for posting to LTP mailing list,
+> but better would be if you subscribed before sending patches.
+>
+> v1 is not in patchwork, but it's in lore:
+> https://lore.kernel.org/ltp/d2d2afa4-b031-3455-38dd-c099715319e4@vosn.de/
+
+The above link (in the patch) _is_ a lore link, isn't it?
+
+Niko
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
