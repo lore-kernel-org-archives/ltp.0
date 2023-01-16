@@ -4,57 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C430DC54EBE
-	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 11:12:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C292DC46467
+	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 11:44:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A85323CC8F9
-	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 12:12:45 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 34E2F3CB59B
+	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 12:44:25 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7B9753CB4C0
- for <ltp@lists.linux.it>; Mon, 16 Jan 2023 12:12:35 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 8AD993CB4BA
+ for <ltp@lists.linux.it>; Mon, 16 Jan 2023 12:44:15 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CEF241A0080C
- for <ltp@lists.linux.it>; Mon, 16 Jan 2023 12:12:34 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 82C453728F;
- Mon, 16 Jan 2023 11:12:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1673867552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 766E62001DB
+ for <ltp@lists.linux.it>; Mon, 16 Jan 2023 12:44:13 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 6417267743
+ for <ltp@lists.linux.it>; Mon, 16 Jan 2023 11:44:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1673869453;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=x/Yx1GTIaMGQjpCEO+NliwJIx+zl/nopFR2MsmmNyfw=;
- b=KBl5pTZGmjwx5yKtayDDJFShbm3HwACmiT1leOvAwgqmwurQEkTK0MsKuvd18zgsfmbIi+
- l2eoLhtBeAwfSycr0KUH+FKHcjIxUQkazc0x1cdgCNPShBVUYGr8/z9rx06iUqY74fDgjJ
- Le60kebU4g+FJ6lyevcunBu9gF4LmBY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=LGaVx8t1dy8VDi8VlAp0BpFVdzVX4LyAToUYwSFsrwc=;
+ b=qhh0z1d9QEUJbUCPF7l6VRRklWtAeO+p68OJff3D+G6dCf3Zz+IwgiqS5n5KxMvutRnqvN
+ MyQkThd/SKHmq/dM6GxlagxJEHXmzCHPzELDltbiHmw+NDdGG+PF/AWFbuhAfAmeRWBKT9
+ cKstjkrZjSysi+WpgoNH1vOd3lAPHr8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1673869453;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LGaVx8t1dy8VDi8VlAp0BpFVdzVX4LyAToUYwSFsrwc=;
+ b=AWKSQ4BjSX0EQRK5y+LvPCyWGXi/D4LJyUKx4jgygPcISivkZ0eWKpigfLJNy6JkqtYbVs
+ 0JKZ+jttovZX+OAw==
+Received: from g78 (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6CBF3138FA;
- Mon, 16 Jan 2023 11:12:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id IZoAEh8xxWO5agAAMHmgww
- (envelope-from <wegao@suse.com>); Mon, 16 Jan 2023 11:12:31 +0000
-To: ltp@lists.linux.it
-Date: Mon, 16 Jan 2023 03:48:02 -0500
-Message-Id: <20230116084802.6510-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230115234708.12802-1-wegao@suse.com>
-References: <20230115234708.12802-1-wegao@suse.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 3D3622C152;
+ Mon, 16 Jan 2023 11:44:13 +0000 (UTC)
+References: <20230112075731.7769-1-akumar@suse.de>
+User-agent: mu4e 1.8.13; emacs 28.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Avinesh Kumar <akumar@suse.de>
+Date: Mon, 16 Jan 2023 11:42:20 +0000
+Organization: Linux Private Site
+In-reply-to: <20230112075731.7769-1-akumar@suse.de>
+Message-ID: <87k01mwvoz.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] readahead02.c: Fix check input fsize
+Subject: Re: [LTP] [PATCH] setreuid06: Rewrite the test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,124 +70,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-We run the test with a loop device it will fail with ENOSPC if we
-pass -s bigger than the loop device, we should at least check if
-the device is large enough in the test setup.The test should make
-use of use tst_parse_filesize() so that we can pass sizes with
-units e.g. -s 128M.
+Hello,
 
-Signed-off-by: Wei Gao <wegao@suse.com>
-Suggested-by: Petr Vorel <pvorel@suse.cz>
-Suggested-by: Richard Palethorpe <rpalethorpe@suse.com>
-Suggested-by: PCyril Hrubis <chrubis@suse.cz>
----
- include/tst_device.h                          |  4 +++-
- lib/tst_device.c                              |  2 +-
- .../kernel/syscalls/readahead/readahead02.c   | 22 +++++++++++++++----
- 3 files changed, 22 insertions(+), 6 deletions(-)
+Merged, with a minor change. See below.
 
-diff --git a/include/tst_device.h b/include/tst_device.h
-index 977427f1c..f03f17f7d 100644
---- a/include/tst_device.h
-+++ b/include/tst_device.h
-@@ -6,6 +6,8 @@
- #ifndef TST_DEVICE_H__
- #define TST_DEVICE_H__
- 
-+#define DEV_SIZE_MB 300u
-+
- #include <unistd.h>
- #include <stdint.h>
- #include <sys/stat.h>
-@@ -49,7 +51,7 @@ int tst_clear_device(const char *dev);
-  * free loopdev). If path is non-NULL, it will be filled with free loopdev path.
-  *
-  */
--int tst_find_free_loopdev(const char *path, size_t path_len);
-+int tst_find_free_loopdev(char *path, size_t path_len);
- 
- /*
-  * Attaches a file to a loop device.
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 48d7e3ab6..b098fc80b 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -38,6 +38,7 @@
- #include "lapi/syscalls.h"
- #include "test.h"
- #include "safe_macros.h"
-+#include "tst_device.h"
- 
- #ifndef LOOP_CTL_GET_FREE
- # define LOOP_CTL_GET_FREE 0x4C82
-@@ -46,7 +47,6 @@
- #define LOOP_CONTROL_FILE "/dev/loop-control"
- 
- #define DEV_FILE "test_dev.img"
--#define DEV_SIZE_MB 300u
- #define UUID_STR_SZ 37
- #define UUID_FMT "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
- 
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index 7acf4bb18..7cf6b5032 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -33,6 +33,7 @@
- #include "tst_test.h"
- #include "tst_timer.h"
- #include "lapi/syscalls.h"
-+#include "tst_device.h"
- 
- static char testfile[PATH_MAX] = "testfile";
- #define DROP_CACHES_FNAME "/proc/sys/vm/drop_caches"
-@@ -366,11 +367,25 @@ static void setup_readahead_length(void)
- 
- static void setup(void)
- {
--	if (opt_fsizestr) {
--		testfile_size = SAFE_STRTOL(opt_fsizestr, 1, INT_MAX);
--		tst_set_max_runtime(1 + testfile_size / (DEFAULT_FILESIZE/32));
-+	/*
-+	 * Acutaly dev size will reduced after create filesystem,
-+	 * so use dev_szie * 0.8 as dev real usage size, test case will
-+	 * create two files within dev so we need div 2 get max file size
-+	 */
-+	size_t dev_size = (tst_device->size ? tst_device->size : DEV_SIZE_MB) * 1024 * 1024;
-+	size_t fsize_max = dev_size * 0.8 / 2;
-+
-+	/* At least two pagesize for test case */
-+	pagesize = getpagesize();
-+	size_t fsize_min = pagesize * 2;
-+
-+	if (tst_parse_filesize(opt_fsizestr, (long long *)&testfile_size, fsize_min, fsize_max)) {
-+		tst_set_max_runtime(1 + DEFAULT_FILESIZE / (DEFAULT_FILESIZE/32));
-+		tst_brk(TBROK, "invalid initial filesize '%s'", opt_fsizestr);
- 	}
- 
-+	tst_set_max_runtime(1 + testfile_size / (DEFAULT_FILESIZE/32));
-+
- 	if (access(PROC_IO_FNAME, F_OK))
- 		tst_brk(TCONF, "Requires " PROC_IO_FNAME);
- 
-@@ -380,7 +395,6 @@ static void setup(void)
- 	/* check if readahead is supported */
- 	tst_syscall(__NR_readahead, 0, 0, 0);
- 
--	pagesize = getpagesize();
- 
- 	setup_readahead_length();
- 	tst_res(TINFO, "readahead length: %d", readahead_length);
+Avinesh Kumar <akumar@suse.de> writes:
+
+> Signed-off-by: Avinesh Kumar <akumar@suse.de>
+> ---
+>  .../kernel/syscalls/setreuid/setreuid06.c     | 108 ++++++------------
+>  1 file changed, 34 insertions(+), 74 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/setreuid/setreuid06.c b/testcases/kernel/syscalls/setreuid/setreuid06.c
+> index 22acd996f..72c7e5e47 100644
+> --- a/testcases/kernel/syscalls/setreuid/setreuid06.c
+> +++ b/testcases/kernel/syscalls/setreuid/setreuid06.c
+> @@ -1,95 +1,55 @@
+> +// SPDX-License-Identifier: GPL-2.0-later
+>  /*
+>   * Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - * This program is free software;  you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation; either version 2 of the License, or
+> - * (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - * the GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program;  if not, write to the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> - *
+>   * Ported by John George
+> + * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+>   */
+>  
+> -/*
+> - * Test that EPERM is set when setreuid is given an invalid user id.
+> +/*\
+> + * [Description]
+> + *
+> + * Verify that setreuid(2) syscall fails with EPERM errno when the calling
+> + * process is not privileged and a change other than
+> + * (i) swapping the effective user ID with the real user ID, or
+> + * (ii) setting one to the value of the other or
+> + * (iii) setting the effective user ID to the value of the saved set-user-ID
+> + * was specified.
+>   */
+>  
+> -#include <sys/wait.h>
+> -#include <limits.h>
+> -#include <signal.h>
+> -#include <errno.h>
+> -#include <unistd.h>
+>  #include <pwd.h>
+> -#include <sys/param.h>
+> -#include <sys/types.h>
+> -#include <sys/stat.h>
+> -
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -#include "compat_16.h"
+> -
+> -#define INVAL_USER		 (USHRT_MAX-2)
+> -
+> -TCID_DEFINE(setreuid06);
+> -int TST_TOTAL = 1;
+> +#include "tst_test.h"
+> +#include "tst_uid.h"
+> +#include "compat_tst_16.h"
+>  
+>  static struct passwd *ltpuser;
+> +static uid_t other_uid;
+>  
+> -static void setup(void);
+> -static void cleanup(void);
+> -
+> -int main(int argc, char **argv)
+> +static void setup(void)
+>  {
+> -	int lc;
+> -
+> -	tst_parse_opts(argc, argv, NULL, NULL);
+> -
+> -	setup();
+> +	uid_t test_user[1];
+>  
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> +	tst_get_uids(test_user, 0, 1);
+
+We can just pass a pointer to other_uid.
+
+Thanks!
+
 -- 
-2.35.3
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
