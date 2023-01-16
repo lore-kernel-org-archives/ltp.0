@@ -4,61 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1784C54EBE
-	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 10:59:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C430DC54EBE
+	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 11:12:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 758833CC8F3
-	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 11:59:52 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id A85323CC8F9
+	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 12:12:45 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 98FDC3CC904
- for <ltp@lists.linux.it>; Mon, 16 Jan 2023 11:59:42 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 7B9753CB4C0
+ for <ltp@lists.linux.it>; Mon, 16 Jan 2023 12:12:35 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CDB0020075A
- for <ltp@lists.linux.it>; Mon, 16 Jan 2023 11:59:41 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 239E9676D0;
- Mon, 16 Jan 2023 10:59:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673866781;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9dkTtyC/QPFkeA39ccr4MXK2PgahhQXGf0q0vPBbYlE=;
- b=nobP6DmLHXJ+pVCvYNZLeCa+brQC27x2BiTsxeoMEpIbQwZIeDWStiJ+p4+OZ9HpxMZW4L
- jdFq7ygr8xzfXYpdJNNOxvXqYRP4ZXrsnAIcoIoLbqdnHlmtZ/r580x9Tlm/6nTYyJpal3
- 01y7U4BgIf5Sw00QU8VrK396Yhd1zR8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673866781;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9dkTtyC/QPFkeA39ccr4MXK2PgahhQXGf0q0vPBbYlE=;
- b=2yYy2fL6LfVAnhDnYTAxOMo2Tzw5vkeH9hN89Cm6CPRLVGrET3errgEfT7bgvtTWB5fjkr
- eBFdb/s6YS+0w5CA==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CEF241A0080C
+ for <ltp@lists.linux.it>; Mon, 16 Jan 2023 12:12:34 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id E28A82C149;
- Mon, 16 Jan 2023 10:59:40 +0000 (UTC)
-References: <20230111091341.13346-1-pvorel@suse.cz>
-User-agent: mu4e 1.8.13; emacs 28.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Mon, 16 Jan 2023 10:53:07 +0000
-Organization: Linux Private Site
-In-reply-to: <20230111091341.13346-1-pvorel@suse.cz>
-Message-ID: <87o7qywxr7.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 82C453728F;
+ Mon, 16 Jan 2023 11:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1673867552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=x/Yx1GTIaMGQjpCEO+NliwJIx+zl/nopFR2MsmmNyfw=;
+ b=KBl5pTZGmjwx5yKtayDDJFShbm3HwACmiT1leOvAwgqmwurQEkTK0MsKuvd18zgsfmbIi+
+ l2eoLhtBeAwfSycr0KUH+FKHcjIxUQkazc0x1cdgCNPShBVUYGr8/z9rx06iUqY74fDgjJ
+ Le60kebU4g+FJ6lyevcunBu9gF4LmBY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6CBF3138FA;
+ Mon, 16 Jan 2023 11:12:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id IZoAEh8xxWO5agAAMHmgww
+ (envelope-from <wegao@suse.com>); Mon, 16 Jan 2023 11:12:31 +0000
+To: ltp@lists.linux.it
+Date: Mon, 16 Jan 2023 03:48:02 -0500
+Message-Id: <20230116084802.6510-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230115234708.12802-1-wegao@suse.com>
+References: <20230115234708.12802-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/1] aio-stress.c: Remove useless iteration
- variable
+Subject: [LTP] [PATCH v3] readahead02.c: Fix check input fsize
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,68 +66,124 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+We run the test with a loop device it will fail with ENOSPC if we
+pass -s bigger than the loop device, we should at least check if
+the device is large enough in the test setup.The test should make
+use of use tst_parse_filesize() so that we can pass sizes with
+units e.g. -s 128M.
 
-I have merged this and my/Petr's aiocp patches.
+Signed-off-by: Wei Gao <wegao@suse.com>
+Suggested-by: Petr Vorel <pvorel@suse.cz>
+Suggested-by: Richard Palethorpe <rpalethorpe@suse.com>
+Suggested-by: PCyril Hrubis <chrubis@suse.cz>
+---
+ include/tst_device.h                          |  4 +++-
+ lib/tst_device.c                              |  2 +-
+ .../kernel/syscalls/readahead/readahead02.c   | 22 +++++++++++++++----
+ 3 files changed, 22 insertions(+), 6 deletions(-)
 
-Petr I'm not sure what motivated some of these changes? Although clearly
-the code was incorrect, I don't see the test failures in OpenQA?
-
-Petr Vorel <pvorel@suse.cz> writes:
-
-> local iteration variable in worker() was probably left over from
-> previous version before rewrite because clang correctly reported also on
-> this old version:
->
->     aio-stress.c:1049:6: warning: variable 'iteration' set but not used [-Wunused-but-set-variable]
->     int iteration = 0;
->
-> NOTE: restart label was considered to be removed, but in the end kept.
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Changes v2->v3:
-> * Keep restart label (remove only the variable)
->
->  testcases/kernel/io/ltp-aiodio/aio-stress.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/testcases/kernel/io/ltp-aiodio/aio-stress.c b/testcases/kernel/io/ltp-aiodio/aio-stress.c
-> index d84d5a0741..5c3a0a3a49 100644
-> --- a/testcases/kernel/io/ltp-aiodio/aio-stress.c
-> +++ b/testcases/kernel/io/ltp-aiodio/aio-stress.c
-> @@ -1039,7 +1039,6 @@ static int *worker(struct thread_info *t)
->  	char *this_stage = NULL;
->  	struct timeval stage_time;
->  	int status = 0;
-> -	int iteration = 0;
->  	int cnt;
->  
->  	aio_setup(&t->io_ctx, 512);
-> @@ -1116,10 +1115,8 @@ restart:
->  	}
->  
->  	/* someone got restarted, go back to the beginning */
-> -	if (t->active_opers && cnt < iterations) {
-> -		iteration++;
-> +	if (t->active_opers && cnt < iterations)
->  		goto restart;
-> -	}
->  
->  	/* finally, free all the ram */
->  	while (t->finished_opers) {
-
-
+diff --git a/include/tst_device.h b/include/tst_device.h
+index 977427f1c..f03f17f7d 100644
+--- a/include/tst_device.h
++++ b/include/tst_device.h
+@@ -6,6 +6,8 @@
+ #ifndef TST_DEVICE_H__
+ #define TST_DEVICE_H__
+ 
++#define DEV_SIZE_MB 300u
++
+ #include <unistd.h>
+ #include <stdint.h>
+ #include <sys/stat.h>
+@@ -49,7 +51,7 @@ int tst_clear_device(const char *dev);
+  * free loopdev). If path is non-NULL, it will be filled with free loopdev path.
+  *
+  */
+-int tst_find_free_loopdev(const char *path, size_t path_len);
++int tst_find_free_loopdev(char *path, size_t path_len);
+ 
+ /*
+  * Attaches a file to a loop device.
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 48d7e3ab6..b098fc80b 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -38,6 +38,7 @@
+ #include "lapi/syscalls.h"
+ #include "test.h"
+ #include "safe_macros.h"
++#include "tst_device.h"
+ 
+ #ifndef LOOP_CTL_GET_FREE
+ # define LOOP_CTL_GET_FREE 0x4C82
+@@ -46,7 +47,6 @@
+ #define LOOP_CONTROL_FILE "/dev/loop-control"
+ 
+ #define DEV_FILE "test_dev.img"
+-#define DEV_SIZE_MB 300u
+ #define UUID_STR_SZ 37
+ #define UUID_FMT "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
+ 
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+index 7acf4bb18..7cf6b5032 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -33,6 +33,7 @@
+ #include "tst_test.h"
+ #include "tst_timer.h"
+ #include "lapi/syscalls.h"
++#include "tst_device.h"
+ 
+ static char testfile[PATH_MAX] = "testfile";
+ #define DROP_CACHES_FNAME "/proc/sys/vm/drop_caches"
+@@ -366,11 +367,25 @@ static void setup_readahead_length(void)
+ 
+ static void setup(void)
+ {
+-	if (opt_fsizestr) {
+-		testfile_size = SAFE_STRTOL(opt_fsizestr, 1, INT_MAX);
+-		tst_set_max_runtime(1 + testfile_size / (DEFAULT_FILESIZE/32));
++	/*
++	 * Acutaly dev size will reduced after create filesystem,
++	 * so use dev_szie * 0.8 as dev real usage size, test case will
++	 * create two files within dev so we need div 2 get max file size
++	 */
++	size_t dev_size = (tst_device->size ? tst_device->size : DEV_SIZE_MB) * 1024 * 1024;
++	size_t fsize_max = dev_size * 0.8 / 2;
++
++	/* At least two pagesize for test case */
++	pagesize = getpagesize();
++	size_t fsize_min = pagesize * 2;
++
++	if (tst_parse_filesize(opt_fsizestr, (long long *)&testfile_size, fsize_min, fsize_max)) {
++		tst_set_max_runtime(1 + DEFAULT_FILESIZE / (DEFAULT_FILESIZE/32));
++		tst_brk(TBROK, "invalid initial filesize '%s'", opt_fsizestr);
+ 	}
+ 
++	tst_set_max_runtime(1 + testfile_size / (DEFAULT_FILESIZE/32));
++
+ 	if (access(PROC_IO_FNAME, F_OK))
+ 		tst_brk(TCONF, "Requires " PROC_IO_FNAME);
+ 
+@@ -380,7 +395,6 @@ static void setup(void)
+ 	/* check if readahead is supported */
+ 	tst_syscall(__NR_readahead, 0, 0, 0);
+ 
+-	pagesize = getpagesize();
+ 
+ 	setup_readahead_length();
+ 	tst_res(TINFO, "readahead length: %d", readahead_length);
 -- 
-Thank you,
-Richard.
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
