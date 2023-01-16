@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD3AEC67871
-	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 15:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BD1C46467
+	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 15:28:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 895A83CC917
-	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 16:22:56 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id ABB233CC940
+	for <ltp@archiver.kernel.org>; Mon, 16 Jan 2023 16:28:39 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 934393CB4F3
- for <ltp@lists.linux.it>; Mon, 16 Jan 2023 16:22:45 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 873233CB568
+ for <ltp@lists.linux.it>; Mon, 16 Jan 2023 16:28:30 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E8A17778502
- for <ltp@lists.linux.it>; Mon, 16 Jan 2023 16:22:44 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 85851600763
+ for <ltp@lists.linux.it>; Mon, 16 Jan 2023 16:28:29 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id CAC2E34B18;
- Mon, 16 Jan 2023 15:22:43 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id EDFA667928
+ for <ltp@lists.linux.it>; Mon, 16 Jan 2023 15:28:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673882563;
+ t=1673882908;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NolmwWi0yrY51Uwg80mwz98PCC/hjCSRru1+NeoXdiw=;
- b=MgU8KiuCqVUecEza46xErs06qmpTDtg+CkoDdrK9gNkyk+9CWIc+P7euSjtBmHvwi+FWec
- VSsEwakF7UW+xJlmyQtWPjsEDib+xuieMEQKV7ePn45t3UsGSNYf7ILs026Jre89lPVyoi
- S3Q3D/UgeRTMqHWkpYn1JOC7NSONKpM=
+ bh=44iO3qwUEGZQoFlilFvIaDqwskqrtWLBVgjZbG9tJ0g=;
+ b=Jbrai80wHkBQHiwEy6T81XNmLYZIGdtNy1NRuzRBTN05hetOlYQSb6a0Zh6Pj+R0eKXvzW
+ r7M/YUkzEhJaH/1PMBW7LGeHlcYTgWt+Wy7CFKBzXrTp5iGI5bZc54pfyGAkW8pZO5L/+x
+ CWPHYLuO61msDnnoaD/v5XdywgtEz/8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673882563;
+ s=susede2_ed25519; t=1673882908;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NolmwWi0yrY51Uwg80mwz98PCC/hjCSRru1+NeoXdiw=;
- b=+As9KaWOLOwocsjBk2hEpIGcSWZ02RAtb1hN82He/bl2Smb5jNubWD29jEHDkKbjVo7WEu
- TT7CQBlJSs2chXAw==
+ bh=44iO3qwUEGZQoFlilFvIaDqwskqrtWLBVgjZbG9tJ0g=;
+ b=q/prDOGMDSqsAyjNe/cWzA7doUvepBvu5yY7p66oY6Tx1Zl1D5tikiZbj9apFl2F1NYCEa
+ 8npJAM9XZ3aisXAQ==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id A59572C19A;
- Mon, 16 Jan 2023 15:22:43 +0000 (UTC)
-References: <20230116074101.1264-1-wegao@suse.com>
+ by relay2.suse.de (Postfix) with ESMTPS id C87EF2C19F;
+ Mon, 16 Jan 2023 15:28:28 +0000 (UTC)
+References: <Y8VRpdW7LUh4uFm9@yuki>
 User-agent: mu4e 1.8.13; emacs 28.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Wei Gao <wegao@suse.com>
-Date: Mon, 16 Jan 2023 15:08:44 +0000
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 16 Jan 2023 15:23:24 +0000
 Organization: Linux Private Site
-In-reply-to: <20230116074101.1264-1-wegao@suse.com>
-Message-ID: <87fscawlku.fsf@suse.de>
+In-reply-to: <Y8VRpdW7LUh4uFm9@yuki>
+Message-ID: <87bkmywlb7.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] readahead02.c: Use fsync instead of sync
+Subject: Re: [LTP] LTP release
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,69 +79,27 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-Wei Gao via ltp <ltp@lists.linux.it> writes:
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-> Use fsync on test file instead of sync should faster than syncing
-> whole system.
-
-The test completes in less than a second in OpenQA. We don't want to
-risk introducing a regression or spend time reviewing changes unless the
-performance improvement solves a timeout.
-
-I suggest you convert dup06 to the new API (for example) or investigate
-a test failure.
-
+> Hi!
+> It's about the time to start preparing for the LTP January release. Well
+> we should have started at least a week ago, but my family was sick and
+> nobody else seemd to start to work on that...
 >
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  .../kernel/syscalls/readahead/readahead02.c     | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
+> Anyways let's start with listing patches that should be considered for
+> the release, looking at patchwork the queueu is nice and short so I
+> suppose there will not be many and that we can start with pre-release
+> testing now and do a git freeze at the start of the next week. Does that
+> sound reasonable?
 >
-> diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-> index 7acf4bb18..e04046bc3 100644
-> --- a/testcases/kernel/syscalls/readahead/readahead02.c
-> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
-> @@ -99,6 +99,17 @@ static void drop_caches(void)
->  	SAFE_FILE_PRINTF(DROP_CACHES_FNAME, "1");
->  }
->  
-> +static void sync_drop_caches(void)
-> +{
-> +	int fd;
-> +
-> +	fd  = SAFE_OPEN(testfile, O_RDONLY);
-> +	if (fsync(fd) == -1)
-> +		tst_brk(TBROK | TERRNO, "fsync()");
-> +	SAFE_CLOSE(fd);
-> +	drop_caches();
-> +}
-> +
->  static unsigned long get_bytes_read(void)
->  {
->  	unsigned long ret;
-> @@ -233,8 +244,7 @@ static void test_readahead(unsigned int n)
->  	read_testfile(tc, 0, testfile, testfile_size, &read_bytes, &usec,
->  		      &cached);
->  	cached_high = get_cached_size();
-> -	sync();
-> -	drop_caches();
-> +	sync_drop_caches();
->  	cached_low = get_cached_size();
->  	cached_max = MAX(cached_max, cached_high - cached_low);
->  
-> @@ -246,8 +256,7 @@ static void test_readahead(unsigned int n)
->  	else
->  		cached = 0;
->  
-> -	sync();
-> -	drop_caches();
-> +	sync_drop_caches();
->  	cached_low = get_cached_size();
->  	tst_res(TINFO, "read_testfile(1)");
->  	ret = read_testfile(tc, 1, testfile, testfile_size, &read_bytes_ra,
+> Also are there any volunteers for picking up various release tasks?
+>
 > -- 
-> 2.35.3
+> Cyril Hrubis
+> chrubis@suse.cz
 
+My fix for fcntl36/34 doesn't seem to fully work for fcntl36 on 32bit
+compat. Hopefully I can fix that before next week.
 
 -- 
 Thank you,
