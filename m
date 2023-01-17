@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F564C6379F
-	for <ltp@archiver.kernel.org>; Tue, 17 Jan 2023 16:59:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE3D8C3DA78
+	for <ltp@archiver.kernel.org>; Tue, 17 Jan 2023 18:17:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1BE213CD9EF
-	for <ltp@archiver.kernel.org>; Tue, 17 Jan 2023 17:59:29 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id EC82A3CC8FC
+	for <ltp@archiver.kernel.org>; Tue, 17 Jan 2023 19:17:34 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E85C63C7197
- for <ltp@lists.linux.it>; Tue, 17 Jan 2023 17:59:19 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 4B0163CB55D
+ for <ltp@lists.linux.it>; Tue, 17 Jan 2023 19:17:24 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 52660600819
- for <ltp@lists.linux.it>; Tue, 17 Jan 2023 17:59:19 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 3EA5621F69;
- Tue, 17 Jan 2023 16:59:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673974758;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rp/tbTZJPO1j85edWsIAoiFfak+DCsEQczf4zAWvpzw=;
- b=lyaB5Ds5uNbF7ypCvVvDbZCg2cO7KDGO6xhI8q7MTBH2h9duYt9wmmPJ/g3/rtVCMrCxw1
- ZVkXZzCfzPb9xH3Xv2luJ65LMeXkmA67aR82pgWr+G4e5H5gFs5S51BB+reMBsLHRRXNdS
- yDnae5/x1084fHqqjafXqJ7lqPvtDLo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673974758;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rp/tbTZJPO1j85edWsIAoiFfak+DCsEQczf4zAWvpzw=;
- b=eBpP8ddfE6bOd2muza8z4c3M5D/x2QcJOJbrpdiox+WW0+pdPBi4Y2tsZgRzz25HqUlCjj
- 0RJKgdwgr98n0vCw==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 68F92600685
+ for <ltp@lists.linux.it>; Tue, 17 Jan 2023 19:17:22 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 0BC3E2C141;
- Tue, 17 Jan 2023 16:59:18 +0000 (UTC)
-References: <20230116074101.1264-1-wegao@suse.com> <87fscawlku.fsf@suse.de>
- <20230117021631.GA20825@aa> <877cxlwk66.fsf@suse.de>
- <Y8bN4Bxkook8BZvs@yuki>
-User-agent: mu4e 1.8.13; emacs 28.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 17 Jan 2023 16:50:49 +0000
-Organization: Linux Private Site
-In-reply-to: <Y8bN4Bxkook8BZvs@yuki>
-Message-ID: <87tu0pumfu.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 63AED22DCC;
+ Tue, 17 Jan 2023 18:17:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1673979442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=WDZ9P1p6L8d4HM2o/gUO/n6qpLdq/26ZMpHjECA/IKA=;
+ b=PBGsskKmtVdkyldae1ZuUofvVC068Q/46emQUwy8jun2e20aAW2o1ASOCmmzeVOyTOLy4g
+ iIMBrCm6WiM8ONDjZ8T3ANbxdxkzosd2jtIybLGhjy4A3EjGHcPpujee3BOshSUofrD1C2
+ KI+/L+jHhXC9WRVCrK+kFv4UpBWjcwM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1673979442;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=WDZ9P1p6L8d4HM2o/gUO/n6qpLdq/26ZMpHjECA/IKA=;
+ b=BEUaDXmyNQTj16PkhVXSvISEGYcY4qWXWuN7u4QtKub+bem3MTEVirIInv0YZxgrfxLsVP
+ FaWoRETKwE7HVeCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BDA2D13357;
+ Tue, 17 Jan 2023 18:17:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8XxmJzHmxmOTJgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 17 Jan 2023 18:17:21 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue, 17 Jan 2023 19:16:57 +0100
+Message-Id: <20230117181657.20932-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] readahead02.c: Use fsync instead of sync
+Subject: [LTP] [PATCH 1/1] containers: Remove setns_check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,58 +70,120 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+setns_check.c was used to verify __NR_setns support.
+It was added in Linux 3.0 and SYSCALL_DEFINE2(setns, int, fd, int,
+flags) is not guarded by any configuration variable.
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+=> safe to remove the helper.
 
-> Hi!
->> > The motivation of this change is base on the https://github.com/linux-test-project/ltp/issues/972
->> > which give following suggestion:
->> > "As we run the test inside a loop device I guess that we can also 
->> > sync and drop caches just for the device, which should be faster 
->> > than syncing and dropping the whole system. Possibly we just need 
->> > to umount it and mount it again."
->> 
->> I see. Well unless Cyril can show that the test is actually failing
->> somewhere (or there is a strong logical argument this will cause a
->> failure). Then this task is still valid, but low priority IMO.
->
-> We do sync more than needed here, since we are looking at the per device
-> counters we have to sync just the device we mount for the test, so this
-> is optimization for the case that the system has many dirty cases and
-> will need seconds or a minute to write them to the pernament storage.
->
->> > But currently i can not find any API to sync and drop caches just 
->> > ONLY for device, so base my view just replace sync whole 
->> > system to single file also can make a small help.
->> 
->> If we don't have one or more concrete failures to focus on then we
->> really have to research whether fsync (or syncfs FYI) or unmounting the
->> device are the correct thing to do. They will all have subtly different
->> effects.
->
-> Looking at the code closely I'm starting to think that the sync is not
-> required at all. What we do in the test is that we create file and sync
-> it to the external storage. Then we read it a few times and mesure
-> differences in cache. As far as I can tell we just need to drop the page
-> cache after we have read the file. What do you think?
->
-> In any case I would avoid changing the test before the release, but it's
-> certainly something we can look at after that.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ doc/namespaces-helper-tools.txt               |  2 --
+ .../kernel/containers/netns/netns_lib.sh      |  3 --
+ .../kernel/containers/netns/netns_sysfs.sh    |  5 ---
+ testcases/kernel/containers/share/.gitignore  |  1 -
+ .../kernel/containers/share/setns_check.c     | 32 -------------------
+ 5 files changed, 43 deletions(-)
+ delete mode 100644 testcases/kernel/containers/share/setns_check.c
 
-I still think same as before. It may be valid to drop sync or whatever,
-but it's just not important compared to actively failing tests.
-
+diff --git a/doc/namespaces-helper-tools.txt b/doc/namespaces-helper-tools.txt
+index 6990e0155a..81eec4d6ca 100644
+--- a/doc/namespaces-helper-tools.txt
++++ b/doc/namespaces-helper-tools.txt
+@@ -14,8 +14,6 @@ located in ltp/testcases/kernel/containers/share directory and include:
+ ** PID of the daemonized child process is printed on the stdout
+ ** the new namespace(s) is(are) maintained by the daemonized child process
+ ** namespace(s) can be removed by killing the daemonized process
+-* setns_check
+-** check for setns() availability, should be called before using ns_exec
+ * ns_exec
+ ** enters the namespace(s) of a process specified by a PID
+ ** then executes the indicated program inside that namespace(s)
+diff --git a/testcases/kernel/containers/netns/netns_lib.sh b/testcases/kernel/containers/netns/netns_lib.sh
+index 79e90336a8..039631e9f6 100755
+--- a/testcases/kernel/containers/netns/netns_lib.sh
++++ b/testcases/kernel/containers/netns/netns_lib.sh
+@@ -72,9 +72,6 @@ netns_setup()
+ 	if [ "$NS_EXEC" = "ip" ]; then
+ 		netns_ip_setup
+ 	else
+-		setns_check
+-		[ $? -eq 32 ] && tst_brk TCONF "setns not supported"
+-
+ 		NS_TYPE="net"
+ 		netns_ns_exec_setup
+ 	fi
+diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
+index 1792427210..34ef3b8eef 100755
+--- a/testcases/kernel/containers/netns/netns_sysfs.sh
++++ b/testcases/kernel/containers/netns/netns_sysfs.sh
+@@ -18,11 +18,6 @@ do_setup()
+ 	DUMMYDEV_HOST="dummy_test0"
+ 	DUMMYDEV="dummy_test1"
+ 
+-	setns_check
+-	if [ $? -eq 32 ]; then
+-		tst_brk TCONF "setns not supported"
+-	fi
+-
+ 	NS_HANDLE=$(ns_create $NS_TYPE)
+ 	if [ $? -eq 1 ]; then
+ 		tst_res TINFO "$NS_HANDLE"
+diff --git a/testcases/kernel/containers/share/.gitignore b/testcases/kernel/containers/share/.gitignore
+index 06615d9ea2..0d5ecf069d 100644
+--- a/testcases/kernel/containers/share/.gitignore
++++ b/testcases/kernel/containers/share/.gitignore
+@@ -1,4 +1,3 @@
+ /ns_ifmove
+ /ns_create
+ /ns_exec
+-/setns_check
+diff --git a/testcases/kernel/containers/share/setns_check.c b/testcases/kernel/containers/share/setns_check.c
+deleted file mode 100644
+index 75aad17f3a..0000000000
+--- a/testcases/kernel/containers/share/setns_check.c
++++ /dev/null
+@@ -1,32 +0,0 @@
+-/* Copyright (c) 2015 Fujitsu Ltd.
+- * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of version 2 the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- ***********************************************************************
+- * Check for setns() availability, should be called before ns_exec.
+- *
+- */
+-
+-#include "test.h"
+-#include "lapi/syscalls.h"
+-
+-char *TCID = "setns_check";
+-
+-int main(void)
+-{
+-	if (syscall(__NR_setns, -1, 0) == -1 && errno == ENOSYS)
+-		tst_brkm(TCONF, NULL, "setns is not supported in the kernel");
+-	else
+-		return 0;
+-}
 -- 
-Thank you,
-Richard.
+2.39.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
