@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59422C004D4
-	for <ltp@archiver.kernel.org>; Thu, 19 Jan 2023 17:43:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BE29C38142
+	for <ltp@archiver.kernel.org>; Thu, 19 Jan 2023 18:00:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0D5153CD845
-	for <ltp@archiver.kernel.org>; Thu, 19 Jan 2023 18:43:00 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 1C7433CD852
+	for <ltp@archiver.kernel.org>; Thu, 19 Jan 2023 19:00:52 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2C4FE3CC84A
- for <ltp@lists.linux.it>; Thu, 19 Jan 2023 18:42:49 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id A44883CC83E
+ for <ltp@lists.linux.it>; Thu, 19 Jan 2023 19:00:41 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 661D87784E5
- for <ltp@lists.linux.it>; Thu, 19 Jan 2023 18:42:49 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id DD6FA60004C
+ for <ltp@lists.linux.it>; Thu, 19 Jan 2023 19:00:40 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8EB3E210DB;
- Thu, 19 Jan 2023 17:42:48 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2949C218E2;
+ Thu, 19 Jan 2023 18:00:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1674150168;
+ t=1674151240;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OsBLiEJsxuXGhbo7/PzoBrSje6OFPqyI7mZB1dLm6zU=;
- b=YmXQbTFKr5aw9dyq4NHNa4gBU4YMOIOVx2Bzr9qH6ci8s3DFR7SVlSaYVrDQOz5krdmmuM
- VJ4jLeZjVLRcF7ihyYJ79P3nZ5oIs/huaPn5IgcefD1Tr7YBa7obJc98Zkcl2R/obVbmJE
- PvGDeTf7bocgj+830JW/MMS7hWqOLbM=
+ bh=BftFUOAd0NoQz1UNZ0amgVto3PepOkU3mkvxf+c+HY0=;
+ b=zgurGBBcfgLG8BY25Hctn/OD7dWMHId/g6ZywAS4tNfEBMNGWCFH3KDnBKXNH1f4N7hS7j
+ op2bexzVoIDNkgAvCwBlWcXKvDQDhUc9lqV1g4cLJot0wyD04cG7jsxxl6QJ3WVg9MSuuK
+ k35sbNtqqXpa3hogD3k7QpQnzf9hyrw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1674150168;
+ s=susede2_ed25519; t=1674151240;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OsBLiEJsxuXGhbo7/PzoBrSje6OFPqyI7mZB1dLm6zU=;
- b=DFZiKa4ccsgtvS6QRdEOGVnzc/3vxaQgjKm7lgl5s3eih5QjAzZZrJ3c3bTOJfTCwGZVT0
- 0aL1Jrnr+CpZBmDQ==
+ bh=BftFUOAd0NoQz1UNZ0amgVto3PepOkU3mkvxf+c+HY0=;
+ b=hpJsThmPYlYUW0PE2uTScb0DhQhXuQm9Y1Ttf0vsqr9hdfZSDS2zzMBbCP1SAKqK9fqvR2
+ qbUlCkPMpiLWPeBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43BB6134F5;
- Thu, 19 Jan 2023 17:42:48 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E25D8134F5;
+ Thu, 19 Jan 2023 18:00:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id sFvFCxiByWNcDQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 19 Jan 2023 17:42:48 +0000
-Date: Thu, 19 Jan 2023 18:42:41 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id pdr1NUeFyWMjFgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 19 Jan 2023 18:00:39 +0000
+Date: Thu, 19 Jan 2023 19:00:27 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <Y8mBEWsu1qtye7aU@pevik>
-References: <20230119111854.13844-1-andrea.cervesato@suse.com>
- <Y8lOA6q1j1tLjsOa@yuki>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <Y8mFO/zMqZ9SS3TH@pevik>
+References: <20230119132536.23209-1-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Y8lOA6q1j1tLjsOa@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20230119132536.23209-1-wegao@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] tools/runltp-ng: Updated to increase stability
+Subject: Re: [LTP] [PATCH v1] Move semaphore/ tests to semop/
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,12 +83,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril, Andrea,
+Hi Wei,
 
-> Hi!
-> This fixes several bugs I found with the qemu backend hence:
+> There is no point in having two different directories with semop()
+> testcaes so it would make sense to move these two tests into the
+> syscalls/ipc/semop/ directory as semop04 and semop05.
+> So we move ipc/semaphore/ tests to syscalls/ipc/semop/.
+> Also update runtest files accordingly.
 
-Cyril, thanks for testing, merged!
+testcases/kernel/ipc/semaphore/Makefile
+links with libpthread.so.0:
+LDLIBS			+= -lpthread
+
+Although it looks like only sem02.c uses pthread functions.
+https://man7.org/linux/man-pages/man7/pthreads.7.html
+
+testcases/kernel/syscalls/ipc/semop/Makefile
+links with ltp library libltpnewipc.a:
+LTPLDLIBS  = -lltpnewipc
+which uses /proc/sysvipc/
+https://man7.org/linux/man-pages/man7/sysvipc.7.html
+
+I'm not sure if it's good idea to mix both
+@Cyril any input?
+
+> +++ b/testcases/kernel/syscalls/ipc/semop/Makefile
+> @@ -8,5 +8,6 @@ LTPLIBS = ltpnewipc
+>  include $(top_srcdir)/include/mk/testcases.mk
+
+>  LTPLDLIBS  = -lltpnewipc
+> +LDLIBS    += -lpthread
+
+If it's ok to merge them into single directory, it'd be better to specify
+used libraries for files which need them. e.g.:
+
+semop01: LTPLDLIBS  = -lltpnewipc
+semop02: LTPLDLIBS  = -lltpnewipc
+semop03: LTPLDLIBS  = -lltpnewipc
+semop05: LDLIBS    += -lpthread
 
 Kind regards,
 Petr
