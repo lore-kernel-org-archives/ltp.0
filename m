@@ -4,60 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5193BC05027
-	for <ltp@archiver.kernel.org>; Fri, 20 Jan 2023 14:06:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05F01C05027
+	for <ltp@archiver.kernel.org>; Fri, 20 Jan 2023 15:04:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 558913CD73B
-	for <ltp@archiver.kernel.org>; Fri, 20 Jan 2023 15:06:12 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 2E5AF3CD746
+	for <ltp@archiver.kernel.org>; Fri, 20 Jan 2023 16:04:07 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EFA483C4D1C
- for <ltp@lists.linux.it>; Fri, 20 Jan 2023 15:06:02 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 56B2B3C18A6
+ for <ltp@lists.linux.it>; Fri, 20 Jan 2023 16:03:58 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3D7C6600F90
- for <ltp@lists.linux.it>; Fri, 20 Jan 2023 15:06:01 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 7D9F35FA78
- for <ltp@lists.linux.it>; Fri, 20 Jan 2023 14:06:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1674223561;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EU7Cqa0XhiC1ohQQPcbpFZ8g9m8W2NmzZBUenNOSRyc=;
- b=gROfguEDj4eJhwAsARCyoB00+Fi/F4RZ5Z5zRcyi/XLC9Knsq8E83ebVfMSMj/C5XzTqYI
- i+7C0Du4K6B9eGuiPvw+/cwfQOmIgXSFD4LMpZDeWE3d5rgy5wA60ATPepr9LDVf/ylX0r
- 0UAgLyZI6UV1TCo+ZneKxfqkA7FQ1oA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1674223561;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EU7Cqa0XhiC1ohQQPcbpFZ8g9m8W2NmzZBUenNOSRyc=;
- b=Y0pAC+fIeJpPUbTlgrChzokMBieag95LXEGpeNgUWYK50WwRv5OS27fUw0aSVQMRSx4sbd
- P8XwAjcpjzz2I5Aw==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9E20720013D
+ for <ltp@lists.linux.it>; Fri, 20 Jan 2023 16:03:57 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 52F022C141;
- Fri, 20 Jan 2023 14:06:01 +0000 (UTC)
-References: <20230117181657.20932-1-pvorel@suse.cz>
-User-agent: mu4e 1.8.13; emacs 28.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 20 Jan 2023 14:05:53 +0000
-Organization: Linux Private Site
-In-reply-to: <20230117181657.20932-1-pvorel@suse.cz>
-Message-ID: <873585s3lj.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CC5825FACA;
+ Fri, 20 Jan 2023 15:03:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1674227036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VPHXKn6uZr0vUCEyJAEtdA9CyI2ZW6k2/V6VZ64LGCI=;
+ b=RP6SOhey1IH8fAj37a5ujswO8zhrT3tp+MLk3xN0/13nCMF7k7I2iuIdQrfzt9AbkYJ07/
+ zfT47Rh2YJUHknUqKIZKkrkFOL2i/xonbnHHiX88l+LVVYib/KC0UWhVh5MuDJkDVES0Sq
+ 0YeS6Z0W20OWIdf/Oq9LHlJICIL5cFM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1674227036;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VPHXKn6uZr0vUCEyJAEtdA9CyI2ZW6k2/V6VZ64LGCI=;
+ b=fvJDJbnMpZw674eFWy09V4L+1y+ZJAfiFeG0l6vwEAZxPDLs6FQwSgDl16vhzrPwq0R858
+ DyzArTLLQPpUkaAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B748D13251;
+ Fri, 20 Jan 2023 15:03:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id b+feK1ytymN6dgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 20 Jan 2023 15:03:56 +0000
+Date: Fri, 20 Jan 2023 16:05:32 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.com>
+Message-ID: <Y8qtvIrfMQP9BlX4@yuki>
+References: <20230120135651.24816-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230120135651.24816-1-rpalethorpe@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] containers: Remove setns_check
+Subject: Re: [LTP] [PATCH] tst_assert: Fix buffer overflow in scanf
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,132 +75,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Hi!
+> The maximum field width of a string conversion does not include the
+> null byte. So we can overflow the buffer by one byte.
+> 
+> This can be triggered in ioctl_loop01 with -fsanitize=address even if
+> the file contents are far less than the buffer size:
+> 
+> tst_test.c:1558: TINFO: Timeout per run is 0h 00m 30s
+> tst_device.c:93: TINFO: Found free device 1 '/dev/loop1'
+> ioctl_loop01.c:85: TPASS: /sys/block/loop1/loop/partscan = 0
+> ioctl_loop01.c:86: TPASS: /sys/block/loop1/loop/autoclear = 0
+> =================================================================
+> ==293==ERROR: AddressSanitizer: stack-buffer-overflow on address 0xf5c03420 at pc 0xf7952bf8 bp 0xff9cf9f8 sp 0xff9cf5d0
+> WRITE of size 1025 at 0xf5c03420 thread T0
+>     #0 0xf7952bf7  (/lib/libasan.so.8+0x89bf7) (BuildId: f8d5331e88e5c1b8a8a55eda0a8e20503ea0d2b9)
+>     #1 0xf7953879 in __isoc99_vfscanf (/lib/libasan.so.8+0x8a879) (BuildId: f8d5331e88e5c1b8a8a55eda0a8e20503ea0d2b9)
+>     #2 0x8071f85 in safe_file_scanf /home/rich/qa/ltp/lib/safe_file_ops.c:139
+>     #3 0x80552ea in tst_assert_str /home/rich/qa/ltp/lib/tst_assert.c:60
+>     #4 0x804f17a in verify_ioctl_loop /home/rich/qa/ltp/testcases/kernel/syscalls/ioctl/ioctl_loop01.c:87
+>     #5 0x8061599 in run_tests /home/rich/qa/ltp/lib/tst_test.c:1380
+>     #6 0x8061599 in testrun /home/rich/qa/ltp/lib/tst_test.c:1463
+>     #7 0x8061599 in fork_testrun /home/rich/qa/ltp/lib/tst_test.c:1592
+>     #8 0x806877a in tst_run_tcases /home/rich/qa/ltp/lib/tst_test.c:1686
+>     #9 0x804e01b in main ../../../../include/tst_test.h:394
+>     #10 0xf7188294 in __libc_start_call_main (/lib/libc.so.6+0x23294) (BuildId: 87c7a50c8792985dd164f5af2d45b8e91d9f4391)
+>     #11 0xf7188357 in __libc_start_main@@GLIBC_2.34 (/lib/libc.so.6+0x23357) (BuildId: 87c7a50c8792985dd164f5af2d45b8e91d9f4391)
+>     #12 0x804e617 in _start ../sysdeps/i386/start.S:111
+> 
+> Address 0xf5c03420 is located in stack of thread T0 at offset 1056 in frame
+>     #0 0x805525f in tst_assert_str /home/rich/qa/ltp/lib/tst_assert.c:57
+> 
+>   This frame has 1 object(s):
+>     [32, 1056) 'sys_val' (line 58) <== Memory access at offset 1056 overflows this variable
 
-Petr Vorel <pvorel@suse.cz> writes:
+Uff, looking closely at the scanf manual:
 
-> setns_check.c was used to verify __NR_setns support.
-> It was added in Linux 3.0 and SYSCALL_DEFINE2(setns, int, fd, int,
-> flags) is not guarded by any configuration variable.
->
-> => safe to remove the helper.
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+String input conversions store a terminating null byte ('\0') to mark
+the end of the input; the maximum field width does not include this
+terminator.
 
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+So do I get it right that scanf() actually writes one byte after the
+size passed after the % character? That sounds a bit evil to me.
 
-> ---
->  doc/namespaces-helper-tools.txt               |  2 --
->  .../kernel/containers/netns/netns_lib.sh      |  3 --
->  .../kernel/containers/netns/netns_sysfs.sh    |  5 ---
->  testcases/kernel/containers/share/.gitignore  |  1 -
->  .../kernel/containers/share/setns_check.c     | 32 -------------------
->  5 files changed, 43 deletions(-)
->  delete mode 100644 testcases/kernel/containers/share/setns_check.c
->
-> diff --git a/doc/namespaces-helper-tools.txt b/doc/namespaces-helper-tools.txt
-> index 6990e0155a..81eec4d6ca 100644
-> --- a/doc/namespaces-helper-tools.txt
-> +++ b/doc/namespaces-helper-tools.txt
-> @@ -14,8 +14,6 @@ located in ltp/testcases/kernel/containers/share directory and include:
->  ** PID of the daemonized child process is printed on the stdout
->  ** the new namespace(s) is(are) maintained by the daemonized child process
->  ** namespace(s) can be removed by killing the daemonized process
-> -* setns_check
-> -** check for setns() availability, should be called before using ns_exec
->  * ns_exec
->  ** enters the namespace(s) of a process specified by a PID
->  ** then executes the indicated program inside that namespace(s)
-> diff --git a/testcases/kernel/containers/netns/netns_lib.sh b/testcases/kernel/containers/netns/netns_lib.sh
-> index 79e90336a8..039631e9f6 100755
-> --- a/testcases/kernel/containers/netns/netns_lib.sh
-> +++ b/testcases/kernel/containers/netns/netns_lib.sh
-> @@ -72,9 +72,6 @@ netns_setup()
->  	if [ "$NS_EXEC" = "ip" ]; then
->  		netns_ip_setup
->  	else
-> -		setns_check
-> -		[ $? -eq 32 ] && tst_brk TCONF "setns not supported"
-> -
->  		NS_TYPE="net"
->  		netns_ns_exec_setup
->  	fi
-> diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
-> index 1792427210..34ef3b8eef 100755
-> --- a/testcases/kernel/containers/netns/netns_sysfs.sh
-> +++ b/testcases/kernel/containers/netns/netns_sysfs.sh
-> @@ -18,11 +18,6 @@ do_setup()
->  	DUMMYDEV_HOST="dummy_test0"
->  	DUMMYDEV="dummy_test1"
->  
-> -	setns_check
-> -	if [ $? -eq 32 ]; then
-> -		tst_brk TCONF "setns not supported"
-> -	fi
-> -
->  	NS_HANDLE=$(ns_create $NS_TYPE)
->  	if [ $? -eq 1 ]; then
->  		tst_res TINFO "$NS_HANDLE"
-> diff --git a/testcases/kernel/containers/share/.gitignore b/testcases/kernel/containers/share/.gitignore
-> index 06615d9ea2..0d5ecf069d 100644
-> --- a/testcases/kernel/containers/share/.gitignore
-> +++ b/testcases/kernel/containers/share/.gitignore
-> @@ -1,4 +1,3 @@
->  /ns_ifmove
->  /ns_create
->  /ns_exec
-> -/setns_check
-> diff --git a/testcases/kernel/containers/share/setns_check.c b/testcases/kernel/containers/share/setns_check.c
-> deleted file mode 100644
-> index 75aad17f3a..0000000000
-> --- a/testcases/kernel/containers/share/setns_check.c
-> +++ /dev/null
-> @@ -1,32 +0,0 @@
-> -/* Copyright (c) 2015 Fujitsu Ltd.
-> - * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-> - *
-> - * This program is free software: you can redistribute it and/or modify
-> - * it under the terms of version 2 the GNU General Public License as
-> - * published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> - * GNU General Public License for more details.
-> - *
-> - * You should have received a copy of the GNU General Public License
-> - * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-> - *
-> - ***********************************************************************
-> - * Check for setns() availability, should be called before ns_exec.
-> - *
-> - */
-> -
-> -#include "test.h"
-> -#include "lapi/syscalls.h"
-> -
-> -char *TCID = "setns_check";
-> -
-> -int main(void)
-> -{
-> -	if (syscall(__NR_setns, -1, 0) == -1 && errno == ENOSYS)
-> -		tst_brkm(TCONF, NULL, "setns is not supported in the kernel");
-> -	else
-> -		return 0;
-> -}
-> -- 
-> 2.39.0
+Anyways:
 
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
