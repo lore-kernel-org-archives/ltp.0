@@ -4,70 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00A8EC54E94
-	for <ltp@archiver.kernel.org>; Tue, 24 Jan 2023 04:42:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9568CC25B4E
+	for <ltp@archiver.kernel.org>; Tue, 24 Jan 2023 08:49:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 72B393CD489
-	for <ltp@archiver.kernel.org>; Tue, 24 Jan 2023 05:42:47 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id AB36B3CC78B
+	for <ltp@archiver.kernel.org>; Tue, 24 Jan 2023 09:49:28 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9748B3CB949
- for <ltp@lists.linux.it>; Tue, 24 Jan 2023 05:42:37 +0100 (CET)
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com
- [IPv6:2607:f8b0:4864:20::62b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E8EE33CB39D
+ for <ltp@lists.linux.it>; Tue, 24 Jan 2023 09:49:18 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0D979140075B
- for <ltp@lists.linux.it>; Tue, 24 Jan 2023 05:42:37 +0100 (CET)
-Received: by mail-pl1-x62b.google.com with SMTP id be8so713409plb.7
- for <ltp@lists.linux.it>; Mon, 23 Jan 2023 20:42:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=daynix-com.20210112.gappssmtp.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=pOjd3CPoj0nBrAXClvAncpI+lEp1HUON3ZX7CK16MOM=;
- b=uHgppoq7mWVAIuwA2yjSCxaFvIye6+s7EgnpYaXMshzAGNdbeB1YDgYTOYBFYFVTA5
- m4EwL80i1YgQ808ZozLJYMAqQDufqvl2WgJIvxChOteClCmtYV3xUd/s5VmTSuz2A+Gp
- cwmuWUXJ6U+iP4p6LuBN4Y5K7j3sJ/yUVAy8EifipdgdmTLUm8wgrEUmv6qpAg1W22QV
- BzS9uaMn3cSdWf3K3CgVureCR4GLx6LRJGRUQrcIgWizkXZPs82+vCo1JWfFC32Oziv1
- Awt68CKJiC08x9QSYe4kOnL7Ks+jSxt5HPosYfOZlHOVv1KFIerD30OPz8PiTjtCDv03
- 37dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=pOjd3CPoj0nBrAXClvAncpI+lEp1HUON3ZX7CK16MOM=;
- b=57BBJovSQBK6SC+8ZldvJw5mtBmIYEFLgbjFpX5F+ye175QQ3ZxI4yCRt8urQY3Mg+
- b5hxma9ZX27IPTdzRe3/oI367K7OLrvQam8tox5NO0gtpSEkQZn+3z8ATpkRVLOjgo6s
- BLQ+1Y48WnZysxD/Hlv/pngTeiFBL6aS3/0nsOhKsk7LcEzPgq1F90CAMtufVHj0yUgk
- 37lTI+2dmH4QZe0Jjs7hrbAGBxYUiTc/tS9sWCCysAELVo2dhDGd/TU67aeC/iHDH9b2
- amyrTOd7yIlEyLcEDo7IYKlgUh8szcA/Oy2hzIZSNrkvNDJdXhHTaDOBd5Bq7Yfw1One
- tyhA==
-X-Gm-Message-State: AO0yUKWu5BhoLndFQnFush0DvP98kQVmdApHyHkCzVRrJww4aqUjoc0N
- 8/cOcjQsm5l8hc2NXsfn71n07MdYA6h20rVY
-X-Google-Smtp-Source: AK7set8dGEw1z6ZkM+ySOgD/YrErcH9BBwKqF+eLspdgGxBUrxwCNRsJle60WMS+y1ROBpifnFd8HA==
-X-Received: by 2002:a17:90b:1b04:b0:22b:ec6a:be66 with SMTP id
- nu4-20020a17090b1b0400b0022bec6abe66mr1409466pjb.31.1674535354921; 
- Mon, 23 Jan 2023 20:42:34 -0800 (PST)
-Received: from alarm.flets-east.jp ([2400:4050:a840:1e00:4457:c267:5e09:481b])
- by smtp.gmail.com with ESMTPSA id
- nh15-20020a17090b364f00b002276ba8fb71sm265184pjb.25.2023.01.23.20.42.33
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 23 Jan 2023 20:42:34 -0800 (PST)
-From: Akihiko Odaki <akihiko.odaki@daynix.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2CA781A001CD
+ for <ltp@lists.linux.it>; Tue, 24 Jan 2023 09:49:17 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 39F8A1FE4C
+ for <ltp@lists.linux.it>; Tue, 24 Jan 2023 08:49:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1674550156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Ut4Vo48YDH8f+E9uhGGCVewJyW1mrGYjj02KIG+IPfw=;
+ b=EotdDQhJJZpf58ktV7UxaW7WrTZ6OpH8MTiXo/8WupWMkzlnXgRUEDrICg1AR+oYHHOsUj
+ vOWhtRLJ8AEqfBkA3YTJoflq0g60sJaNMoI3kwRPBShysMXMCKLIVpYpzW0ncX96T1T7gJ
+ /8tSWEz14x9RyTfe+PmRPGrvZe+h02c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1674550156;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Ut4Vo48YDH8f+E9uhGGCVewJyW1mrGYjj02KIG+IPfw=;
+ b=MAqV/DHUCcV8SFiBKHT6EAvDcGm0f0vZi56JFQVaCNPllzpftsYN4DzJEse56FTv0Y0A5B
+ kiclOHozYgRkvXCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EC5913487
+ for <ltp@lists.linux.it>; Tue, 24 Jan 2023 08:49:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id hMklFIubz2OdPAAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Tue, 24 Jan 2023 08:49:15 +0000
+From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Tue, 24 Jan 2023 13:42:27 +0900
-Message-Id: <20230124044227.13635-1-akihiko.odaki@daynix.com>
+Date: Tue, 24 Jan 2023 14:19:11 +0530
+Message-Id: <20230124084911.7208-1-akumar@suse.de>
 X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] network/stress/http: Do not use SIGPIPE
+Subject: [LTP] [PATCH] setreuid07.c: Rewrite the test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,27 +76,244 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-curl ignores SIGPIPE according to:
-https://github.com/curl/curl/commit/e2bcd2ab9e5ad894a57756fa660d2a07b69171f4
-
-Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/network/stress/http/http-stress02-rmt.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../kernel/syscalls/setreuid/setreuid07.c     | 197 ++++--------------
+ 1 file changed, 36 insertions(+), 161 deletions(-)
 
-diff --git a/testcases/network/stress/http/http-stress02-rmt.sh b/testcases/network/stress/http/http-stress02-rmt.sh
-index 1734c2bd3..d7a77d3ea 100755
---- a/testcases/network/stress/http/http-stress02-rmt.sh
-+++ b/testcases/network/stress/http/http-stress02-rmt.sh
-@@ -60,7 +60,7 @@ while true ; do
- 		-o /dev/null &
- done
+diff --git a/testcases/kernel/syscalls/setreuid/setreuid07.c b/testcases/kernel/syscalls/setreuid/setreuid07.c
+index ff222cd00..83559583e 100644
+--- a/testcases/kernel/syscalls/setreuid/setreuid07.c
++++ b/testcases/kernel/syscalls/setreuid/setreuid07.c
+@@ -1,192 +1,67 @@
++// SPDX-License-Identifier: GPL-2.0-later
+ /*
+  * Copyright (c) Kerlabs 2008.
+  * Copyright (c) International Business Machines  Corp., 2008
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- *
+  * Created by Renaud Lottiaux
++ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
  
--killall -qw -s SIGPIPE curl
-+killall -qw curl
+-/*
++/*\
++ * [Description]
++ *
+  * Check if setreuid behaves correctly with file permissions.
+  * The test creates a file as ROOT with permissions 0644, does a setreuid
+  * and then tries to open the file with RDWR permissions.
+  * The same test is done in a fork to check if new UIDs are correctly
+- * passed to the son.
++ * passed to the child process.
+  */
  
- out=$(curl --noproxy '*' -sS -g "http://$server_ipaddr/$filename" -o /dev/null \
- 	-w "time=%{time_total} size=%{size_download} speed=%{speed_download}")
+-#include <errno.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/wait.h>
+-#include <fcntl.h>
+-#include <unistd.h>
+ #include <pwd.h>
++#include <stdlib.h>
+ 
+-#include "test.h"
+-#include "safe_macros.h"
+-#include "compat_16.h"
++#include "tst_test.h"
++#include "compat_tst_16.h"
+ 
+-TCID_DEFINE(setreuid07);
+-int TST_TOTAL = 1;
++#define TEMPFILE "testfile"
+ 
+-static char testfile[256] = "";
+ static struct passwd *ltpuser;
+ 
+-static int fd = -1;
+-
+-static void setup(void);
+-static void cleanup(void);
+-static void do_master_child(void);
+-
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	pid_t pid;
++	int fd;
+ 
+-	tst_parse_opts(ac, av, NULL, NULL);
++	ltpuser = SAFE_GETPWNAM("nobody");
+ 
+-	setup();
+-
+-	pid = FORK_OR_VFORK();
+-	if (pid < 0)
+-		tst_brkm(TBROK, cleanup, "Fork failed");
+-
+-	if (pid == 0)
+-		do_master_child();
+-
+-	tst_record_childstatus(cleanup, pid);
+-
+-	cleanup();
+-	tst_exit();
++	UID16_CHECK(ltpuser->pw_uid, setreuid);
++	fd = SAFE_OPEN(TEMPFILE, O_CREAT | O_RDWR, 0644);
++	SAFE_CLOSE(fd);
+ }
+ 
+-static void do_master_child(void)
++static void run(void)
+ {
+-	int lc;
+-	int pid;
++	pid_t pid;
+ 	int status;
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		int tst_fd;
+-
+-		tst_count = 0;
+-
+-		if (SETREUID(NULL, 0, ltpuser->pw_uid) == -1) {
+-			perror("setreuid failed");
+-			exit(TFAIL);
+-		}
+-
+-		/* Test 1: Check the process with new uid cannot open the file
+-		 *         with RDWR permissions.
+-		 */
+-		TEST(tst_fd = open(testfile, O_RDWR));
+-
+-		if (TEST_RETURN != -1) {
+-			printf("open succeeded unexpectedly\n");
+-			close(tst_fd);
+-			exit(TFAIL);
+-		}
+-
+-		if (TEST_ERRNO == EACCES) {
+-			printf("open failed with EACCES as expected\n");
+-		} else {
+-			perror("open failed unexpectedly");
+-			exit(TFAIL);
+-		}
++	TST_EXP_PASS_SILENT(SETREUID(-1, ltpuser->pw_uid));
++	TST_EXP_FAIL2(open(TEMPFILE, O_RDWR), EACCES);
+ 
+-		/* Test 2: Check a son process cannot open the file
+-		 *         with RDWR permissions.
+-		 */
+-		pid = FORK_OR_VFORK();
+-		if (pid < 0)
+-			tst_brkm(TBROK, cleanup, "Fork failed");
+-
+-		if (pid == 0) {
+-			int tst_fd2;
+-
+-			/* Test to open the file in son process */
+-			TEST(tst_fd2 = open(testfile, O_RDWR));
+-
+-			if (TEST_RETURN != -1) {
+-				printf("call succeeded unexpectedly\n");
+-				close(tst_fd2);
+-				exit(TFAIL);
+-			}
+-
+-			if (TEST_ERRNO == EACCES) {
+-				printf("open failed with EACCES as expected\n");
+-				exit(TPASS);
+-			} else {
+-				printf("open failed unexpectedly\n");
+-				exit(TFAIL);
+-			}
+-		} else {
+-			/* Wait for son completion */
+-			if (waitpid(pid, &status, 0) == -1) {
+-				perror("waitpid failed");
+-				exit(TFAIL);
+-			}
+-			if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
+-				exit(WEXITSTATUS(status));
+-		}
+-
+-		/* Test 3: Fallback to initial uid and check we can again open
+-		 *         the file with RDWR permissions.
+-		 */
+-		tst_count++;
+-		if (SETREUID(NULL, 0, 0) == -1) {
+-			perror("setreuid failed");
+-			exit(TFAIL);
+-		}
+-
+-		TEST(tst_fd = open(testfile, O_RDWR));
+-
+-		if (TEST_RETURN == -1) {
+-			perror("open failed unexpectedly");
+-			exit(TFAIL);
+-		} else {
+-			printf("open call succeeded\n");
+-			close(tst_fd);
+-		}
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		TST_EXP_FAIL2(open(TEMPFILE, O_RDWR), EACCES);
++		exit(0);
+ 	}
+-	exit(TPASS);
+-}
++	SAFE_WAITPID(pid, &status, 0);
++	if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
++		exit(WEXITSTATUS(status));
+ 
+-static void setup(void)
+-{
+-	tst_require_root();
+-
+-	ltpuser = getpwnam("nobody");
+-	if (ltpuser == NULL)
+-		tst_brkm(TBROK, NULL, "nobody must be a valid user.");
+-
+-	tst_tmpdir();
+-
+-	sprintf(testfile, "setreuid07file%d.tst", getpid());
+-
+-	/* Create test file */
+-	fd = SAFE_OPEN(cleanup, testfile, O_CREAT | O_RDWR, 0644);
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
++	TST_EXP_PASS_SILENT(SETREUID(-1, 0));
++	TST_EXP_FD(open(TEMPFILE, O_RDWR));
++	SAFE_CLOSE(TST_RET);
+ }
+ 
+-static void cleanup(void)
+-{
+-	close(fd);
+-
+-	tst_rmdir();
+-}
++static struct tst_test test = {
++	.setup = setup,
++	.test_all = run,
++	.needs_root = 1,
++	.forks_child = 1
++};
 -- 
 2.39.0
 
