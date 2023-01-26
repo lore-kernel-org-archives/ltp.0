@@ -4,86 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA482C636BD
-	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 21:05:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE876C05027
+	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 21:54:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 83F603CD35E
-	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 22:05:33 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 38FDA3CC797
+	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 22:54:19 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 191883CC736
- for <ltp@lists.linux.it>; Thu, 26 Jan 2023 22:05:22 +0100 (CET)
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 1112F3CC75C
+ for <ltp@lists.linux.it>; Thu, 26 Jan 2023 22:54:07 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 802A014010F4
- for <ltp@lists.linux.it>; Thu, 26 Jan 2023 22:05:20 +0100 (CET)
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 30QKjl2F005528; Thu, 26 Jan 2023 21:05:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : in-reply-to : references : date : message-id : content-type :
- mime-version; s=pp1; bh=D+Uww1VJQy/g1iDIMjrbZuZFxOSyEd6mq5VOnMp0ch0=;
- b=i/+4zM3VBuTWxicDi/VrYrXzB4N89Y4ZAVEUoLQ7dGlWJ83+StIfSfj0UTK0m88RFzIH
- P94fPx0Qvwyxkq4hYRKSOk3eK03FnC5mXgysWzwCAwAovTRzZkSBJAD9m6wUzRCkDovj
- YaLQ7tpP61aiA+DHSXlIoR1z5KxtU9UQObx5xa4sC0fOimR7wrL90Y1q6zNyWoNSlqWy
- Fm/4OdbHrDca+H4MQuRQll4ty+T5tztVeCumaHv4SrKruBNe6JklS+nDsRPqrBE94FfR
- iisnTRLI3TmTwYUAh2hDeFLh7v06J1eS+nn64MgHSUrKn/FZPekUasd44t9K4oYP0JhX xg== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com
- [149.81.74.108])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3nc0ucrbk1-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 26 Jan 2023 21:05:17 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
- by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 30QF5UKh032034;
- Thu, 26 Jan 2023 21:05:15 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3n87p64v44-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 26 Jan 2023 21:05:15 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
- [10.20.54.101])
- by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 30QL5D8S22544896
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 26 Jan 2023 21:05:13 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 68A7220043;
- Thu, 26 Jan 2023 21:05:13 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3EC6F20040;
- Thu, 26 Jan 2023 21:05:12 +0000 (GMT)
-Received: from tarunpc (unknown [9.43.26.43])
- by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Thu, 26 Jan 2023 21:05:11 +0000 (GMT)
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-In-Reply-To: <20230125222703.19943-2-pvorel@suse.cz>
-References: <20230125222703.19943-1-pvorel@suse.cz>
- <20230125222703.19943-2-pvorel@suse.cz>
-Date: Fri, 27 Jan 2023 02:35:09 +0530
-Message-ID: <87edrh0zy2.fsf@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: wylmlS_yqU5STtn-hvRWc6ig6SQ6kK4y
-X-Proofpoint-ORIG-GUID: wylmlS_yqU5STtn-hvRWc6ig6SQ6kK4y
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 73EEB200C7F
+ for <ltp@lists.linux.it>; Thu, 26 Jan 2023 22:54:07 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 10D9D1FECC;
+ Thu, 26 Jan 2023 21:54:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1674770047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8KGU/UaZmt6UCyoYV+E8AxbcoUKRsL/eClO1uo+ObT4=;
+ b=vgwAG+3iNDHP5UeMh9gLCXktl2Svx9fV18OBgE1OLoFIRTYaPNV5CmHBgnPgdQIjQ/wXmp
+ YLUET6LCTwIMhB32wr6ePRPjWFsm4NV8Lh7SgkvGJ6QwXVti6jGEGXWCEShH2bwUyLUZyJ
+ +0V3ZAS3c7rmZmwd9mU8Hwz0Ye4c8HQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1674770047;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8KGU/UaZmt6UCyoYV+E8AxbcoUKRsL/eClO1uo+ObT4=;
+ b=4H3WxNaWCDteVA1/wbq4wLIXmO/wfBZ4+ofTqKRs/HsM9QUvUBcP5ggoXNVpPgDVUub5mJ
+ wjjGw2BXihDv9vDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AFDBC139B3;
+ Thu, 26 Jan 2023 21:54:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id wE7mI3720mOcYgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 26 Jan 2023 21:54:06 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu, 26 Jan 2023 22:53:53 +0100
+Message-Id: <20230126215401.29101-2-pvorel@suse.cz>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230126215401.29101-1-pvorel@suse.cz>
+References: <20230126215401.29101-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-26_09,2023-01-26_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 clxscore=1015
- suspectscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0
- adultscore=0 mlxscore=0 bulkscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2301260198
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] hugemmap15: Compile with -O
+Subject: [LTP] [PATCH 1/9] tst_net.sh: Use tst_res_()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,53 +76,64 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Petr, Cyril, all
+To avoid error on legacy network tests:
 
-Though It already got merged, please note this,
+./tcpdump01.sh
+Usage: tst_res TTYPE FNAME STRING
+	TTYPE  - Test Result Type; one of TFAIL, TBROK and  TCONF.
+	FNAME  - Print contents of this file after the message
+	STRING - Message explaining the test result
+tcpdump01 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
 
-IIRC, I specifically turned off optimization for hugemmap15
-because of clang compiler issue, it behaves weirdly with clang
-without -O0 and test fails on the system.
+NOTE: only check in tst_net_detect_ipv6() requires to call tst_res_(),
+but it's better to be consistent.
 
-Petr Vorel <pvorel@suse.cz> writes:
+Fixes: ecc29beeda ("tst_net.sh: Harden library against deadlocks")
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/tst_net.sh | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> -O0 originally used causes warning on gcc 12:
->
-> In file included from /usr/include/bits/libc-header-start.h:33,
->                  from /usr/include/stdio.h:27,
->                  from hugemmap15.c:22:
-> /usr/include/features.h:412:4: warning: #warning _FORTIFY_SOURCE requires compiling with optimization (-O) [-Wcpp]
->   412 | #  warning _FORTIFY_SOURCE requires compiling with optimization (-O)
->
-> Fixes: 15625f6185 ("Hugetlb: Migrating libhugetlbfs icache-hygiene")
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/kernel/mem/hugetlb/hugemmap/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-> index 6f10807cde..503a35f7f1 100644
-> --- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-> @@ -8,5 +8,5 @@ include $(top_srcdir)/include/mk/testcases.mk
->  include $(abs_srcdir)/../Makefile.inc
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
->  
-> -hugemmap15: CFLAGS+=-O0
-> +hugemmap15: CFLAGS+=-O
->  hugemmap06: CFLAGS+=-pthread
-> -- 
-> 2.39.1
->
->
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index e6bb09d81f..925cf50e1c 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -74,15 +74,15 @@ tst_net_setup()
+ }
+ 
+ if [ "$TST_PARSE_ARGS_CALLER" = "$TST_PARSE_ARGS" ]; then
+-	tst_res TWARN "TST_PARSE_ARGS_CALLER same as TST_PARSE_ARGS, unset it ($TST_PARSE_ARGS)"
++	tst_res_ TWARN "TST_PARSE_ARGS_CALLER same as TST_PARSE_ARGS, unset it ($TST_PARSE_ARGS)"
+ 	unset TST_PARSE_ARGS_CALLER
+ fi
+ if [ "$TST_SETUP_CALLER" = "$TST_SETUP" ]; then
+-	tst_res TWARN "TST_SETUP_CALLER same as TST_SETUP, unset it ($TST_SETUP)"
++	tst_res_ TWARN "TST_SETUP_CALLER same as TST_SETUP, unset it ($TST_SETUP)"
+ 	unset TST_SETUP_CALLER
+ fi
+ if [ "$TST_USAGE_CALLER" = "$TST_USAGE" ]; then
+-	tst_res TWARN "TST_USAGE_CALLER same as TST_USAGE, unset it ($TST_USAGE)"
++	tst_res_ TWARN "TST_USAGE_CALLER same as TST_USAGE, unset it ($TST_USAGE)"
+ 	unset TST_USAGE_CALLER
+ fi
+ 
+@@ -117,7 +117,7 @@ tst_net_detect_ipv6()
+ 		TST_NET_IPV6_ENABLED=1
+ 	else
+ 		TST_NET_IPV6_ENABLED=0
+-		tst_res TINFO "IPv6 disabled on $type"
++		tst_res_ TINFO "IPv6 disabled on $type"
+ 	fi
+ }
+ 
+-- 
+2.39.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
