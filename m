@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F190C05027
-	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 22:17:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F9E0C54EAA
+	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 23:01:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BFD5D3CD369
-	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 23:17:47 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 7BDE03CD36D
+	for <ltp@archiver.kernel.org>; Fri, 27 Jan 2023 00:01:00 +0100 (CET)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 685573CC788
- for <ltp@lists.linux.it>; Thu, 26 Jan 2023 23:17:37 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 401C73CB5BD
+ for <ltp@lists.linux.it>; Fri, 27 Jan 2023 00:00:49 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 766351000BD6
- for <ltp@lists.linux.it>; Thu, 26 Jan 2023 23:17:35 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C08471000C13
+ for <ltp@lists.linux.it>; Fri, 27 Jan 2023 00:00:48 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6B5C821C34;
- Thu, 26 Jan 2023 22:17:35 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 814901F8A8;
+ Thu, 26 Jan 2023 23:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1674771455;
+ t=1674774046;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=M0XieSyaW+paWlFtiZAbApDEy6SYXHciAuMgNjtxAh0=;
- b=0RP4to8JeCB0p6wQ20nfRgY+7afU+NLUNTjo7eHdJmUQRTnFuM49vVXnmnHV8st3vspE2U
- sfCHtyyEQFFK3ZTdE3XgrklnJ/qaWjX1eWLGfM8GUEwYTfuvK/sWkh5gH9aJw9ATuiVxx/
- wFXq3A9WrOBCHMj5g+zbBLCamoAP/fk=
+ bh=P7EXtEgYOQI23G3BOCqpnOex0tLhMePgQZIqp60h6X8=;
+ b=ZlCF3l7otx9axGPf0ecHD+A+GJzWWxDIJktbDBqnxuRvYfMh6KerjmBrjhgJvIsdixb29F
+ ku4SatW6CusFk5TeBih0dIo7G+w+iMhy2cXg9VcNVeFBQcVc3I6yvrjFE1pYcb5RfOcgip
+ z4CkXso1ovoc60PZLjuWU2x5j+ZGGxM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1674771455;
+ s=susede2_ed25519; t=1674774046;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=M0XieSyaW+paWlFtiZAbApDEy6SYXHciAuMgNjtxAh0=;
- b=Hs/H1//zQMXTXJvJeOS1FSlgJ/saNQH+Fx1DOhPf1rDz2WKUWtbqWhdNu/rVALK9SQZpug
- Y5xh/4gkBIfEodBQ==
+ bh=P7EXtEgYOQI23G3BOCqpnOex0tLhMePgQZIqp60h6X8=;
+ b=Akjei4kyz7byoemvOP7F5KagVBoUdVOVRoKieiniAGqF++GuCqYdSq3GN+4CkSHPPSuixC
+ kw6DKwC08545RMAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4554F139B3;
- Thu, 26 Jan 2023 22:17:35 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 459B813A09;
+ Thu, 26 Jan 2023 23:00:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id yma9D//70mNFbQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 26 Jan 2023 22:17:35 +0000
-Date: Thu, 26 Jan 2023 23:17:33 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id puXvDR4G02MIAgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 26 Jan 2023 23:00:46 +0000
+Date: Fri, 27 Jan 2023 00:00:44 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <Y9L7/bn1XKb9JXAX@pevik>
-References: <20230106113126.5304-1-wegao@suse.com>
- <20230111195231.23596-1-wegao@suse.com> <Y8EnKACJtJJ80uw+@pevik>
- <Y8Zbpfq8xcDZ2uZI@pevik> <Y8a8XH5TVsCvzhCF@aa>
+To: Tarun Sahu <tsahu@linux.ibm.com>
+Message-ID: <Y9MGHKXel5kjwoTT@pevik>
+References: <20230125222703.19943-1-pvorel@suse.cz>
+ <20230125222703.19943-2-pvorel@suse.cz>
+ <87edrh0zy2.fsf@linux.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Y8a8XH5TVsCvzhCF@aa>
+In-Reply-To: <87edrh0zy2.fsf@linux.ibm.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] Add PATH to tst_rhost_run.sh
+Subject: Re: [LTP] [PATCH 1/2] hugemmap15: Compile with -O
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,59 +84,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Tue, Jan 17, 2023 at 09:26:13AM +0100, Petr Vorel wrote:
-> > Hi Wei, all,
+Hi Tarun,
 
-> > I at least once reproduced the problem:
-> > # ./tst_rhost_run.sh
-> > RTNETLINK answers: File exists
-> > tst_rhost_run 1 TBROK: ip li add name ltp_ns_veth1 type veth peer name ltp_ns_veth2 failed
+> Hi Petr, Cyril, all
 
-> > I can't reproduce it now, let's skip it.
+> Though It already got merged, please note this,
+FYI this has not been merged (only the second patch "hugemmap15: Use
+TST_TEST_TCONF() for unsupported archs", which was needed to fix compilations).
 
-> > Unfortunately there is another problem, which can't be solved with adjusting
-> > PATH for the test, because also remote end would need to have PATH adjusted
-> > With this patch and with your another patch [1]:
+> IIRC, I specifically turned off optimization for hugemmap15
+> because of clang compiler issue, it behaves weirdly with clang
+> without -O0 and test fails on the system.
 
-> > # ./tst_rhost_run.sh
-> > ...
-> > tst_rhost_run 1 TINFO: tst_rhost_run: cmd: tst_net_iface_prefix -r 10.0.0.1
-> > tst_rhost_run 1 TINFO: NETNS: ns_exec 17258 net,mnt sh -c " tst_net_iface_prefix -r 10.0.0.1 || echo RTERR" 2>&1
-> > ./../../../..//testcases/lib/tst_net.sh: line 1027: sh:: command not found
-> > tst_rhost_run 1 TINFO: tst_rhost_run: cmd: tst_net_iface_prefix -r fd00:1:1:1::1
-> > tst_rhost_run 1 TINFO: NETNS: ns_exec 17258 net,mnt sh -c " tst_net_iface_prefix -r fd00:1:1:1::1 || echo RTERR" 2>&1
-> > ./../../../..//testcases/lib/tst_net.sh: line 1032: sh:: command not found
-> > ...
-> > tst_rhost_run 1 TPASS: tst_rhost_run is working
-
-> > => test claims TPASS, but it actually does not work properly (false negative).
-
-> > Therefore instead of adjusting PATH I want to fix it properly, i.e. moving
-> > to testcases/kernel/containers/share/ (described previously).
-
-> > Kind regards,
-> > Petr
-
-> > [1] https://patchwork.ozlabs.org/project/ltp/patch/20230117040132.5245-1-wegao@suse.com/
-
-> Your failed case already not related my patch already since failed show "sh:: command not found", could you help check env such as
-> "which sh" ,  "sh" normally should work in default system PATH, no need add specific PATH.
-
-> But yes the test case claim PASS is wrong so we can further make improvement on this kind of error, such as add further check 
-> for "sh" command then we will exit case and make result failed. I can add more check for "sh" command.
-
-I thought "sh:: command not found" is for command missing (tst_net_iface_prefix
-is actually missing), but probably not. But I also think that it's not related
-to sh is missing, because the message has 'sh::' (double colon).
-
-Anyway, I really think to concentrate on this broken test should come after
-tst_net.sh cleanup is merged and netns helpers are moved to testcases/lib/.
-1) These things are needed not just for shake of test 2) That will allow not to
-add code which will be removed after cleanup.
+Isn't -O the same as -O0 ?
 
 Kind regards,
 Petr
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
