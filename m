@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45B06C54EAA
-	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 21:55:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BFB1C61D97
+	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 22:04:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BEFD43CD355
-	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 22:55:51 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 0A4213CD369
+	for <ltp@archiver.kernel.org>; Thu, 26 Jan 2023 23:04:37 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BA4B23CD354
- for <ltp@lists.linux.it>; Thu, 26 Jan 2023 22:54:10 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 344023CC73C
+ for <ltp@lists.linux.it>; Thu, 26 Jan 2023 23:04:24 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BCDB11000A5E
- for <ltp@lists.linux.it>; Thu, 26 Jan 2023 22:54:09 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 69EB71A0036A
+ for <ltp@lists.linux.it>; Thu, 26 Jan 2023 23:04:23 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D3D7821CE0;
- Thu, 26 Jan 2023 21:54:08 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AAB0B21891;
+ Thu, 26 Jan 2023 22:04:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1674770048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1674770662;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uSlqSulkOhhl6S44JHoPABKoxo2SW/5X43ERAj8X6fU=;
- b=DRzk0LjeVYXyXyr6pJV9iSeIRbteM+lrL1pxfUhIVSBsxZItebeEWehmy84TyBY35RbFnS
- LdWEKVWDKgqlcu/ZUEj+o9zaGICoQog2agjjD4tLU/YKJjrynikeGeOscX6xrY+8anUhVS
- 42BCQKN+eR8FtJOdk0V2SRs2xkDbKlM=
+ bh=X9Ix9TJLV9KTeCu0ejzNvLJBNLWwY09L8O9Ac704a6Q=;
+ b=TQjhCZd7wYwY1yktLXhaDGCvOOW+UH/HaBNDso98c8gPXlDLfVmmI7LFFd0otAbrbNu4aC
+ A/eiYwbvPVC8KDmMqdTTcLmYA+89A2s5FupRyZlg+AIrPyN3wcE5QAIHu4E/TqsPH6skYX
+ iUgaWVFOtNMZ5JGQS4z4b+X/5UnJekA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1674770048;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1674770662;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uSlqSulkOhhl6S44JHoPABKoxo2SW/5X43ERAj8X6fU=;
- b=4+sfL76ill3FH0CmRxAkGRlvYNoPIi1VRDprFyEfsizcF/ZZXB/Z086BKRESe/fIoHEEF0
- wLeTmYXMENVhZtBA==
+ bh=X9Ix9TJLV9KTeCu0ejzNvLJBNLWwY09L8O9Ac704a6Q=;
+ b=up+kWauP3wKzCRvQugKDTO87N/hyulPWP9zfEQAjg3ls6ZBaKch8ZzmFPIeaJ6+4goBHxZ
+ tlMCiZbVSR7ODuBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A9500139B3;
- Thu, 26 Jan 2023 21:54:08 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F46B139B3;
+ Thu, 26 Jan 2023 22:04:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4ElKJ4D20mOcYgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 26 Jan 2023 21:54:08 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id XVVwHOb40mNdZwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 26 Jan 2023 22:04:22 +0000
+Date: Thu, 26 Jan 2023 23:04:20 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Thu, 26 Jan 2023 22:54:00 +0100
-Message-Id: <20230126215401.29101-9-pvorel@suse.cz>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230126215401.29101-1-pvorel@suse.cz>
-References: <20230126215401.29101-1-pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>, ltp@lists.linux.it
+Message-ID: <Y9L45DgVD7g+NYFb@pevik>
+References: <20230117040132.5245-1-wegao@suse.com> <Y8ZdSla1SoyThtBj@pevik>
+ <Y8Zg+PIzLUySx2BI@aa> <Y8pTE3I38qTV2Kez@pevik>
+ <Y8p0jyFVMXe8Y3w9@aa> <Y82xaekaeDtdzK00@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Y82xaekaeDtdzK00@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 8/9] tst_net.sh: Harden on disabled IPv6 via sysctl
+Subject: Re: [LTP] [PATCH v1] tst_net.sh: Add more tst_require_cmds check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,112 +77,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Detect IPv6 can be disabled via sysctl (for both netns or on ssh based
-links) and tests than fails:
+Hi Wei,
 
-    # sysctl net.ipv6.conf.ltp_ns_veth2.disable_ipv6=1
-    # TST_NET_RHOST_RUN_DEBUG=1 ./ping02.sh -6
-    ping02 1 TINFO: tst_rhost_run: cmd: [ -f /proc/net/if_inet6 ]
-    ping02 1 TINFO: NETNS: sh -c " [ -f /proc/net/if_inet6 ] || echo RTERR" 2>&1
-    ping02 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
-    ping02 1 TINFO: add local addr 10.0.0.2/24
-    ping02 1 TINFO: add local addr fd00:1:1:1::2/64
-    RTNETLINK answers: Permission denied
-    ping02 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
-    ...
-    ping02 1 TINFO: timeout per run is 0h 5m 0s
-    ping6: connect: Network is unreachable
-    ping02 1 TFAIL: ping6 -I ltp_ns_veth2 -c 3 -s 8 -f -p 000102030405060708090a0b0c0d0e0f fd00:1:1:1::1 >/dev/null failed unexpectedly
+> ...
+> > > But even if "ip ns_create ns_exec ns_ifmove" are needed to be checked to fix
+> > > tst_rhost_run (not yet convinced), why to check them each time tst_rhost_run is
+> > > called? It should be checked before first tst_rhost_run call to avoid useless
+> > > repeating.
 
-Therefore detect IPv6 disabled via sysctl:
-1) tst_init_iface - to avoid setting net.ipv6.conf.$iface.accept_dad=0.
-tst_init_iface is called by tst_restore_ipaddr, which is called by
-init_ltp_netspace (netns) at the start of testing.
-2) For ssh are all devices tested at the start.
+> > tst_rhost_run already be called everywhere so if you need check before call
+> > tst_rhost_run, means lot of place/cases maybe need review and update. 
 
-There are guards in both functions to avoid repeated checks (e.g.
-tst_restore_ipaddr() it's also cleanup function for some tests therefore
-called by both netns and ssh).
+> No, the check would be on single place at tst_net.sh.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/lib/tst_net.sh | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+> > Furthermore, check each time in tst_rhost_run can make this function more robust, the 
+> > old code also do tst_require_cmds if go ssh logic in line 211 for example.
 
-diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
-index 518a3ed579..7ee8594a54 100644
---- a/testcases/lib/tst_net.sh
-+++ b/testcases/lib/tst_net.sh
-@@ -126,6 +126,43 @@ tst_net_require_ipv6()
- 	[ "$TST_NET_IPV6_ENABLED" = 1 ] || tst_brk_ TCONF "IPv6 disabled"
- }
- 
-+# Detect IPv6 disabled via sysctl.
-+tst_net_detect_ipv6_sysctl()
-+{
-+	[ "$TST_NET_IPV6_ENABLED" = 1 ] || return 1
-+
-+	local iface="$1"
-+	local type="${2:-lhost}"
-+	local check="sysctl -n net.ipv6.conf.$iface.disable_ipv6"
-+	local disabled
-+
-+	if [ "$type" = "lhost" ]; then
-+		disabled=$($check)
-+	else
-+		disabled=$(tst_rhost_run -c "$check")
-+	fi
-+	if [ $disabled = 1 ]; then
-+		tst_res_ TINFO "IPv6 disabled on $type on $iface"
-+		TST_NET_IPV6_ENABLED=0
-+		return 1
-+	fi
-+
-+	return 0
-+}
-+
-+tst_net_check_ifaces_ipv6()
-+{
-+	local iface
-+
-+	for iface in $(tst_get_ifaces); do
-+		tst_net_detect_ipv6_sysctl || return
-+	done
-+
-+	for iface in $(tst_get_ifaces rhost); do
-+		tst_net_detect_ipv6_sysctl $iface rhost || return
-+	done
-+}
-+
- init_ltp_netspace()
- {
- 	local pid
-@@ -531,7 +568,9 @@ tst_init_iface()
- 	local type="${1:-lhost}"
- 	local link_num="${2:-0}"
- 	local iface="$(tst_iface $type $link_num)"
-+
- 	tst_res_ TINFO "initialize '$type' '$iface' interface"
-+	tst_net_detect_ipv6_sysctl $iface $type
- 
- 	if [ "$type" = "lhost" ]; then
- 		if ip xfrm state 1>/dev/null 2>&1; then
-@@ -1015,6 +1054,7 @@ if [ "$TST_NET_IPV6_ENABLED" = 1 ]; then
- fi
- 
- tst_net_use_netns && init_ltp_netspace
-+tst_net_check_ifaces_ipv6
- 
- eval $(tst_net_iface_prefix $IPV4_LHOST || echo "exit $?")
- eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST \
--- 
-2.39.1
+> Well, repeated check for ssh is not ideal either (how likely is that ssh will
+> disappear during testing?), but it's a single command which is used here.
+> And it's definitely less awkward than checking "ip ns_create ns_exec ns_ifmove"
+> which aren't used there. tst_net.sh needs cleanup, not more unneeded code.
 
+> We could document the reason to make this check more obvious, but the code is
+> wrong, because for netns (the default) running "tst_net_detect_ipv6 rhost"
+> before init_ltp_netspace does not make sense, because interfaces aren't defined
+> (probably error code is not detected, I need to recheck that).
+
+> It's actually enough for netns to test IPv6 support only on localhost (it will
+> be the same on rhost), I'll send a patch to fix that.
+
+I'm sorry, I was wrong. tst_net_detect_ipv6() checks [ -f /proc/net/if_inet6 ],
+which is ok even before interfaces are set. It's a question whether this needs
+to be run on netns also on rhost (IMHO the result will be always the same).
+We should investigate that.
+
+FYI I changed your patch to use just check in $_tst_net_parse_variables and put
+it into larger cleanup. I haven't addressed move tools to testcases/lib/ yet,
+nor the case when tools are missing. Instead I fixed few real problems with IPv6
+disabled and did cleanup.
+
+https://lore.kernel.org/ltp/20230126215401.29101-1-pvorel@suse.cz/
+https://patchwork.ozlabs.org/project/ltp/list/?series=338700&state=*
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
