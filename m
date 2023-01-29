@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F110C05027
-	for <ltp@archiver.kernel.org>; Sun, 29 Jan 2023 11:50:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CD43C54EED
+	for <ltp@archiver.kernel.org>; Mon, 30 Jan 2023 04:03:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BAF5B3CB32D
-	for <ltp@archiver.kernel.org>; Sun, 29 Jan 2023 12:50:53 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0AAED3CB340
+	for <ltp@archiver.kernel.org>; Mon, 30 Jan 2023 05:03:49 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D8D303CB2E0
- for <ltp@lists.linux.it>; Sun, 29 Jan 2023 12:50:43 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id B7B7C3C03E4
+ for <ltp@lists.linux.it>; Mon, 30 Jan 2023 05:03:38 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4FEDA1000354
- for <ltp@lists.linux.it>; Sun, 29 Jan 2023 12:50:42 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 02CF16005EA
+ for <ltp@lists.linux.it>; Mon, 30 Jan 2023 05:03:37 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 718041FF0D;
- Sun, 29 Jan 2023 11:50:41 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EBDA8219EA;
+ Mon, 30 Jan 2023 04:03:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1674993041; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1675051416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=7JkMuC18vT4hPlcQTx/xpX6AH86nnW0hKW4AUWvuLnY=;
- b=D1QjJdIxctakJdZX/k02E7rrA+WvLzukIKkOJsaL/bzHXuOIyUiqH+LOqDkL7HKJpnqW1b
- 3ioIXALCgb4KvyeXdcw2fZOeAWJwKseDPfpzprgMKTFaDnVZSMM5tJ/LQPRA6WDhYO35ZK
- cMZijD03GcrVAXXjVggR5tR3Zy2ubSc=
+ bh=BKkJctmrSCtcZXJPe6iXv+hGdef2BT219rAv3RhAyL4=;
+ b=i9s9hUhJ8mnTbiCPridHfuyvVAIpkDQt6wirHhGpglQEqnzEf1lnT1QIgfavTznnBzSV2e
+ c53cnbh98c4aicEshJ0N/gMmVvkVcnFJvKo6w1W80i2w8FtBzfmJqER0gxNS6XtOdeWQwY
+ fGqW9tqEDGOrHZsKeTMUoLsdrHfFg4Q=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB0BB13583;
- Sun, 29 Jan 2023 11:50:40 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5303213A06;
+ Mon, 30 Jan 2023 04:03:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id MZKwHpBd1mPuFgAAMHmgww
- (envelope-from <wegao@suse.com>); Sun, 29 Jan 2023 11:50:40 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id q4qWC5hB12P6aAAAMHmgww
+ (envelope-from <wegao@suse.com>); Mon, 30 Jan 2023 04:03:36 +0000
 To: ltp@lists.linux.it
-Date: Sun, 29 Jan 2023 06:50:21 -0500
-Message-Id: <20230129115021.25778-1-wegao@suse.com>
+Date: Sun, 29 Jan 2023 13:39:30 -0500
+Message-Id: <20230129183930.2045-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] fsconfig: New case cover CVE-2022-0185
+Subject: [LTP] [PATCH v1] ioctl01.c:Test also struct termios
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,119 +69,75 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-There are reproducers available for CVE-2022-0185
-https://www.openwall.com/lists/oss-security/2022/01/25/14
-has links or even a zip file for an exploit
-https://github.com/Crusaders-of-Rust/CVE-2022-0185
-The exploits are kind of complicated as they try to be complete,
-but the exploitation vector is the fsconfig() syscall,
-this case used for add some coverage to that to detect it.
+ATM we're testing just legacy struct termio in ioctl01.c,
+we also need test struct termios.
 
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- include/lapi/fsmount.h                        |  5 +-
- runtest/syscalls                              |  1 +
- .../kernel/syscalls/fsconfig/fsconfig03.c     | 58 +++++++++++++++++++
- 3 files changed, 63 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig03.c
+ testcases/kernel/syscalls/ioctl/ioctl01.c | 28 ++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
-index 07eb42ffa..252accb0f 100644
---- a/include/lapi/fsmount.h
-+++ b/include/lapi/fsmount.h
-@@ -11,12 +11,15 @@
- #include "config.h"
- #include <sys/syscall.h>
- #include <sys/types.h>
--#include <sys/mount.h>
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl01.c b/testcases/kernel/syscalls/ioctl/ioctl01.c
+index 2989c0e9b..cc8d1d731 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl01.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl01.c
+@@ -28,26 +28,28 @@ static int fd, fd_file;
+ static int bfd = -1;
  
- #ifndef HAVE_FSOPEN
- # ifdef HAVE_LINUX_MOUNT_H
- #  include <linux/mount.h>
-+# else
-+#  include <sys/mount.h>
- # endif
-+#else
-+# include <sys/mount.h>
- #endif
+ static struct termio termio;
++static struct termios termios;
  
- #include "lapi/fcntl.h"
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ae37a1192..b4cde8071 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -383,6 +383,7 @@ fremovexattr02 fremovexattr02
+ static struct tcase {
+ 	int *fd;
+ 	int request;
+ 	struct termio *s_tio;
++	struct termios *s_tios;
+ 	int error;
+ } tcases[] = {
+ 	/* file descriptor is invalid */
+-	{&bfd, TCGETA, &termio, EBADF},
++	{&bfd, TCGETA, &termio, &termios, EBADF},
+ 	/* termio address is invalid */
+-	{&fd, TCGETA, (struct termio *)-1, EFAULT},
++	{&fd, TCGETA, (struct termio *)-1, (struct termios *)-1, EFAULT},
+ 	/* command is invalid */
+ 	/* This errno value was changed from EINVAL to ENOTTY
+ 	 * by kernel commit 07d106d0 and bbb63c51
+ 	 */
+-	{&fd, INVAL_IOCTL, &termio, ENOTTY},
++	{&fd, INVAL_IOCTL, &termio, &termios, ENOTTY},
+ 	/* file descriptor is for a regular file */
+-	{&fd_file, TCGETA, &termio, ENOTTY},
++	{&fd_file, TCGETA, &termio, &termios, ENOTTY},
+ 	/* termio is NULL */
+-	{&fd, TCGETA, NULL, EFAULT}
++	{&fd, TCGETA, NULL, NULL, EFAULT}
+ };
  
- fsconfig01 fsconfig01
- fsconfig02 fsconfig02
-+fsconfig03 fsconfig03
- 
- fsmount01 fsmount01
- fsmount02 fsmount02
-diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig03.c b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-new file mode 100644
-index 000000000..e076c2f09
---- /dev/null
-+++ b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * Test add some coverage to CVE-2022-0185.
-+ * Try to trigger a crash.
-+ * References links:
-+ * https://www.openwall.com/lists/oss-security/2022/01/25/14
-+ * https://github.com/Crusaders-of-Rust/CVE-2022-0185
-+ */
-+
-+#include "tst_test.h"
-+#include "lapi/fsmount.h"
-+
-+#define MNTPOINT	"mntpoint"
-+
-+static int fd = -1;
-+
-+static void setup(void)
-+{
-+	fsopen_supported_by_kernel();
-+
-+	TEST(fd = fsopen(tst_device->fs_type, 0));
-+	if (fd == -1)
-+		tst_brk(TBROK | TTERRNO, "fsopen() failed");
-+
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static void run(void)
-+{
-+	char *val = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-+
-+	for (unsigned int i = 0; i < 2; i++) {
-+		TEST(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0));
-+		if (TST_RET == -1)
-+			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
+ static char *device;
+@@ -64,7 +66,21 @@ static void verify_ioctl(unsigned int i)
+ 	if (TST_ERR != tcases[i].error) {
+ 		tst_res(TFAIL | TTERRNO,
+ 			"failed unexpectedly; expected %s",
+-		        tst_strerrno(tcases[i].error));
++			tst_strerrno(tcases[i].error));
++		return;
 +	}
-+	tst_res(TPASS, "Try fsconfig overflow on %s done!", tst_device->fs_type);
-+}
 +
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.format_device = 1,
-+	.mntpoint = MNTPOINT,
-+	.all_filesystems = 1,
-+	.skip_filesystems = (const char *const []){"fuse", "ext2", "xfs", "tmpfs", NULL},
-+};
++	TEST(ioctl(*(tcases[i].fd), tcases[i].request, tcases[i].s_tios));
++
++	if (TST_RET != -1) {
++		tst_res(TFAIL, "call succeeded unexpectedly");
++		return;
++	}
++
++	if (TST_ERR != tcases[i].error) {
++		tst_res(TFAIL | TTERRNO,
++			"failed unexpectedly; expected %s",
++			tst_strerrno(tcases[i].error));
+ 		return;
+ 	}
+ 
 -- 
 2.35.3
 
