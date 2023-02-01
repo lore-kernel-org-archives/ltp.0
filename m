@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75260C636CD
-	for <ltp@archiver.kernel.org>; Wed,  1 Feb 2023 12:25:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5B6FC05027
+	for <ltp@archiver.kernel.org>; Wed,  1 Feb 2023 12:50:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 06D1D3CC550
-	for <ltp@archiver.kernel.org>; Wed,  1 Feb 2023 13:25:10 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id D5FE43CC54A
+	for <ltp@archiver.kernel.org>; Wed,  1 Feb 2023 13:49:57 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 883583CB7E6
- for <ltp@lists.linux.it>; Wed,  1 Feb 2023 13:25:01 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 4191C3CB7E6
+ for <ltp@lists.linux.it>; Wed,  1 Feb 2023 13:49:48 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A06631000A1D
- for <ltp@lists.linux.it>; Wed,  1 Feb 2023 13:24:59 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BB0A8600BF8
+ for <ltp@lists.linux.it>; Wed,  1 Feb 2023 13:49:46 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 89C6020E06;
- Wed,  1 Feb 2023 12:24:59 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CC6CF33D33;
+ Wed,  1 Feb 2023 12:49:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1675254299;
+ t=1675255785;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gNhUCybcIhaABbq6qLovki8mNllCr0pdCmAlWgWc1/I=;
- b=goHERZA/axaAjopPJjX1GN3frmM1Fs8C+Rq1nAi2YV7iZXgI/dISsm37msqb7agrqcHqAl
- JU4fKY8YBn1ggm6nIz1l0f3uqySiC1vr8Zdo1Yb1Uh9ojWmYZNm1w32mpY6+nwP7PaqIw2
- CCbp/U92YWXVp1pAZ02GQa/zrqArcOw=
+ bh=upZfVHs9LCAfzIDpwu2/60JcTbS6WWxiFDA5DKaL4qM=;
+ b=3JRiWjAwJWYSg+12suWFJoHSFrz0ju9uruPPmYWJdzSjI4F1hNHhtRNTPNxnh6oYlxM7j2
+ IUV2Avdnm38v6mbizYsajK1lR7uQlJnxmV9z9UR6H5uX7C0WLflaxgUoazCODz3Zjn8qd2
+ /mvXWQrD6ZhaPXl982Npy4nekSATJ4g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1675254299;
+ s=susede2_ed25519; t=1675255785;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gNhUCybcIhaABbq6qLovki8mNllCr0pdCmAlWgWc1/I=;
- b=7o3g83Zv0KGkXOlcpgiMketkP4RTmEGO5LZDRMq1mesDwp10xK1m8xDMvz/vXcgU+Y3gR1
- tdCADXwSZF5CQYAQ==
+ bh=upZfVHs9LCAfzIDpwu2/60JcTbS6WWxiFDA5DKaL4qM=;
+ b=LDrNP8dToV9736ztZmDjD+bI1YppKtnJwmEk79UBmckvns5AmGKJzISa32sKNbeYv2zaVh
+ MXDV9v5Fa+yY5vCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 618991348C;
- Wed,  1 Feb 2023 12:24:59 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A3BA313A10;
+ Wed,  1 Feb 2023 12:49:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 7ldUFhta2mPNOQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 01 Feb 2023 12:24:59 +0000
-Date: Wed, 1 Feb 2023 13:24:57 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id YFulJelf2mMwRQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 01 Feb 2023 12:49:45 +0000
+Date: Wed, 1 Feb 2023 13:49:43 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Edward Liaw <edliaw@google.com>
-Message-ID: <Y9paGafh97zKnu/j@pevik>
-References: <20230131002532.459456-1-edliaw@google.com>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <Y9pf5075zsuAhznN@pevik>
+References: <20230129115021.25778-1-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230131002532.459456-1-edliaw@google.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20230129115021.25778-1-wegao@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] close_range: check for kernel support below 5.9
+Subject: Re: [LTP] [PATCH v1] fsconfig: New case cover CVE-2022-0185
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,37 +77,146 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: kernel-team@android.com, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Edward,
-
-good catch :).
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Hi Wei,
 
 ...
-> +++ b/include/lapi/close_range.h
-> @@ -25,4 +25,17 @@ static inline int close_range(unsigned int fd, unsigned int max_fd,
->  	return tst_syscall(__NR_close_range, fd, max_fd, flags);
->  }
+> +++ b/include/lapi/fsmount.h
+> @@ -11,12 +11,15 @@
+>  #include "config.h"
+>  #include <sys/syscall.h>
+>  #include <sys/types.h>
+> -#include <sys/mount.h>
+
+>  #ifndef HAVE_FSOPEN
+>  # ifdef HAVE_LINUX_MOUNT_H
+>  #  include <linux/mount.h>
+> +# else
+> +#  include <sys/mount.h>
 >  # endif
+> +#else
+> +# include <sys/mount.h>
+>  #endif
+Does <linux/mount.h> conflicts with <sys/mount.h>? Or why is this needed?
+
+>  #include "lapi/fcntl.h"
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index ae37a1192..b4cde8071 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -383,6 +383,7 @@ fremovexattr02 fremovexattr02
+
+>  fsconfig01 fsconfig01
+>  fsconfig02 fsconfig02
+> +fsconfig03 fsconfig03
+
+NOTE: you also need to add a new record in testcases/kernel/syscalls/fsconfig/.gitignore.
+
+> diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig03.c b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
+> new file mode 100644
+> index 000000000..e076c2f09
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
+> @@ -0,0 +1,58 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
+> + */
 > +
-> +static inline void close_range_supported_by_kernel(void)
+> +/*\
+NOTE, there should be docparse label:
+ * [Description]
+> + * Test add some coverage to CVE-2022-0185.
+> + * Try to trigger a crash.
+> + * References links:
+> + * https://www.openwall.com/lists/oss-security/2022/01/25/14
+> + * https://github.com/Crusaders-of-Rust/CVE-2022-0185
+> + */
+> +
+> +#include "tst_test.h"
+> +#include "lapi/fsmount.h"
+> +
+> +#define MNTPOINT	"mntpoint"
+> +
+> +static int fd = -1;
+> +
+> +static void setup(void)
 > +{
-> +	long ret;
+> +	fsopen_supported_by_kernel();
 > +
-> +	if ((tst_kvercmp(5, 9, 0)) < 0) {
-> +		/* Check if the syscall is backported on an older kernel */
-BTW what particular use case this fixed? Is it backported to some android
-kernel? Or to some enterprise distro? Because I don't think kernel stable trees
-accept new functionality, just fixes.
+> +	TEST(fd = fsopen(tst_device->fs_type, 0));
+> +	if (fd == -1)
+> +		tst_brk(TBROK | TTERRNO, "fsopen() failed");
+Sooner or later we should add SAFE_FSOPEN(), but that can wait.
+
+> +
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd != -1)
+> +		SAFE_CLOSE(fd);
+> +}
+> +
+> +static void run(void)
+> +{
+> +	char *val = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+> +
+> +	for (unsigned int i = 0; i < 2; i++) {
+> +		TEST(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0));
+> +		if (TST_RET == -1)
+> +			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
+TST_EXP_PASS() or other could here be used (it should be changes also in fsconfig01.c).
+
+Hm, there is a kernel fix from 5.17 [1]. But test fails when I run it on 6.2.0-rc5:
+
+tst_supported_fs_types.c:165: TINFO: Skipping FUSE based ntfs as requested by the test
+tst_supported_fs_types.c:157: TINFO: Skipping tmpfs as requested by the test
+tst_test.c:1634: TINFO: === Testing on ext3 ===
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.46.5 (30-Dec-2021)
+fsconfig03.c:44: TFAIL: fsconfig(FSCONFIG_SET_STRING) failed: EINVAL (22)
+
+Isn't it the opposite: we expect to fail, thus TST_EXP_FAIL() should here be
+used?
+
+> +	}
+> +	tst_res(TPASS, "Try fsconfig overflow on %s done!", tst_device->fs_type);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_root = 1,
+> +	.format_device = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.all_filesystems = 1,
+> +	.skip_filesystems = (const char *const []){"fuse", "ext2", "xfs", "tmpfs", NULL},
+
+I wonder why this is should not be run on XFS and ext2.
+
+Also, while we have CVE and kernel fix [1], it should be marked in struct tst_test:
+
+	.tags = (const struct tst_tag[]) {
+		{"linux-git", "722d94847de2"},
+		{"CVE", "2020-29373"},
+		{"CVE", "2022-0185"},
+		{}
+	}
 
 Kind regards,
 Petr
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=722d94847de2
+
+
+> +};
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
