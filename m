@@ -4,67 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5B6FC05027
-	for <ltp@archiver.kernel.org>; Wed,  1 Feb 2023 12:50:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E5CBC38142
+	for <ltp@archiver.kernel.org>; Wed,  1 Feb 2023 18:32:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D5FE43CC54A
-	for <ltp@archiver.kernel.org>; Wed,  1 Feb 2023 13:49:57 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id D3D303CC66A
+	for <ltp@archiver.kernel.org>; Wed,  1 Feb 2023 19:32:31 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4191C3CB7E6
- for <ltp@lists.linux.it>; Wed,  1 Feb 2023 13:49:48 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 96E6A3CB28F
+ for <ltp@lists.linux.it>; Wed,  1 Feb 2023 19:32:22 +0100 (CET)
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
+ [IPv6:2a00:1450:4864:20::633])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BB0A8600BF8
- for <ltp@lists.linux.it>; Wed,  1 Feb 2023 13:49:46 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CC6CF33D33;
- Wed,  1 Feb 2023 12:49:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1675255785;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=upZfVHs9LCAfzIDpwu2/60JcTbS6WWxiFDA5DKaL4qM=;
- b=3JRiWjAwJWYSg+12suWFJoHSFrz0ju9uruPPmYWJdzSjI4F1hNHhtRNTPNxnh6oYlxM7j2
- IUV2Avdnm38v6mbizYsajK1lR7uQlJnxmV9z9UR6H5uX7C0WLflaxgUoazCODz3Zjn8qd2
- /mvXWQrD6ZhaPXl982Npy4nekSATJ4g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1675255785;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=upZfVHs9LCAfzIDpwu2/60JcTbS6WWxiFDA5DKaL4qM=;
- b=LDrNP8dToV9736ztZmDjD+bI1YppKtnJwmEk79UBmckvns5AmGKJzISa32sKNbeYv2zaVh
- MXDV9v5Fa+yY5vCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A3BA313A10;
- Wed,  1 Feb 2023 12:49:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YFulJelf2mMwRQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 01 Feb 2023 12:49:45 +0000
-Date: Wed, 1 Feb 2023 13:49:43 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <Y9pf5075zsuAhznN@pevik>
-References: <20230129115021.25778-1-wegao@suse.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2C7BA600D93
+ for <ltp@lists.linux.it>; Wed,  1 Feb 2023 19:32:22 +0100 (CET)
+Received: by mail-ej1-x633.google.com with SMTP id hx15so34541478ejc.11
+ for <ltp@lists.linux.it>; Wed, 01 Feb 2023 10:32:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=4BOOXUPVXrUmlwMM+HULBsxTBE55UTXdSUBQjN+a61U=;
+ b=WIBOZEge3PSiw1WPIqmUd6/R7AnpkpKbBtjRURsLz6T3JY5RdRzd+8Cvno9fxOeF3L
+ ZM/L3HasZ3p0pLXCTc8ZNrMimuz7Wo99JsUcgXwdNhv6ymdMOZqaMxMDOlTxUvK4amOI
+ YPlIibICnDwnV9/NcGRlqBQQygFMepxndYoaJ/F3H6/wCNB1wJpoZVQuSlyOBopZwbdP
+ 79CM5dag6Rx8y11/rN4guPrYpN5ZmfZQTyrBu6KxLm1SqOwytjhnJMLO7jzuAnf8mEu8
+ lCt35euHqxr0qjr7P9CwGYwEYDt86MsojVgzECNHnMG333OkUod67EBzxRz8F5BG4kMB
+ 1WUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=4BOOXUPVXrUmlwMM+HULBsxTBE55UTXdSUBQjN+a61U=;
+ b=NEmGWt4i+yCFZaDfonBzTKpLCRKdWYA2C8hVGpJnE6IAz6km5IzzDOjcTz4kinAUYl
+ lpYWeCQnq10lRt1oSgIm2lbSGVe86tA+yKN3cOCCqUpoPMaY76dnSXn60GOciPWAncRJ
+ JHWE4wSc4woQh9DwC76+TmaKM0BpFrhK56qVvzvrBg6IiqIVjhXOfLOy/zWObuetQrdC
+ iL4bt342H6qA5L7piag9t41fojbIoMwBp4rPM0YtmZFGbXDWMmTj8N+sTTkpIzK9xl0q
+ vqOR/tHcuVeRrdkt8Ko0sx75M3Y1bhzq97GJnCttWn/WtE1q8sjYNxM694pMFLig7Xo8
+ JMkg==
+X-Gm-Message-State: AO0yUKVRj8jXrvuyQj408u5/IojlqTodx5nRP4HXigm6FeeAqDQGVSbF
+ EaYmloQd2dZGl1tjBZZ+gGS0hTrGarkjq83biosaQRA8P99c25jP
+X-Google-Smtp-Source: AK7set+83ewLaYxEJs/4jPaF+YzPq+6fjb05uQgbQw5mqzCKUteVemBDWO3lIN0R5FPMj8o5bYaeXUrhhJqurKjk1MM=
+X-Received: by 2002:a17:907:6087:b0:889:7bef:3a9d with SMTP id
+ ht7-20020a170907608700b008897bef3a9dmr1078009ejc.150.1675276341608; Wed, 01
+ Feb 2023 10:32:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230129115021.25778-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20230131002532.459456-1-edliaw@google.com>
+ <Y9paGafh97zKnu/j@pevik>
+In-Reply-To: <Y9paGafh97zKnu/j@pevik>
+Date: Wed, 1 Feb 2023 10:31:54 -0800
+Message-ID: <CAG4es9V2773dyVrDwt7fiUq=VkUrn0Tr8icCC=X3xx+RGrbR9A@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] fsconfig: New case cover CVE-2022-0185
+Subject: Re: [LTP] [PATCH] close_range: check for kernel support below 5.9
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,147 +74,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team@android.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Petr,
 
-...
-> +++ b/include/lapi/fsmount.h
-> @@ -11,12 +11,15 @@
->  #include "config.h"
->  #include <sys/syscall.h>
->  #include <sys/types.h>
-> -#include <sys/mount.h>
+> > +++ b/include/lapi/close_range.h
+> > @@ -25,4 +25,17 @@ static inline int close_range(unsigned int fd, unsigned int max_fd,
+> >       return tst_syscall(__NR_close_range, fd, max_fd, flags);
+> >  }
+> >  # endif
+> > +
+> > +static inline void close_range_supported_by_kernel(void)
+> > +{
+> > +     long ret;
+> > +
+> > +     if ((tst_kvercmp(5, 9, 0)) < 0) {
+> > +             /* Check if the syscall is backported on an older kernel */
+> BTW what particular use case this fixed? Is it backported to some android
+> kernel? Or to some enterprise distro? Because I don't think kernel stable trees
+> accept new functionality, just fixes.
 
->  #ifndef HAVE_FSOPEN
->  # ifdef HAVE_LINUX_MOUNT_H
->  #  include <linux/mount.h>
-> +# else
-> +#  include <sys/mount.h>
->  # endif
-> +#else
-> +# include <sys/mount.h>
->  #endif
-Does <linux/mount.h> conflicts with <sys/mount.h>? Or why is this needed?
+Oops, should I use .min_kver instead?  It isn't backported on Android;
+I just wasn't sure what the right approach was.
 
->  #include "lapi/fcntl.h"
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index ae37a1192..b4cde8071 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -383,6 +383,7 @@ fremovexattr02 fremovexattr02
-
->  fsconfig01 fsconfig01
->  fsconfig02 fsconfig02
-> +fsconfig03 fsconfig03
-
-NOTE: you also need to add a new record in testcases/kernel/syscalls/fsconfig/.gitignore.
-
-> diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig03.c b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-> new file mode 100644
-> index 000000000..e076c2f09
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-> @@ -0,0 +1,58 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-> + */
-> +
-> +/*\
-NOTE, there should be docparse label:
- * [Description]
-> + * Test add some coverage to CVE-2022-0185.
-> + * Try to trigger a crash.
-> + * References links:
-> + * https://www.openwall.com/lists/oss-security/2022/01/25/14
-> + * https://github.com/Crusaders-of-Rust/CVE-2022-0185
-> + */
-> +
-> +#include "tst_test.h"
-> +#include "lapi/fsmount.h"
-> +
-> +#define MNTPOINT	"mntpoint"
-> +
-> +static int fd = -1;
-> +
-> +static void setup(void)
-> +{
-> +	fsopen_supported_by_kernel();
-> +
-> +	TEST(fd = fsopen(tst_device->fs_type, 0));
-> +	if (fd == -1)
-> +		tst_brk(TBROK | TTERRNO, "fsopen() failed");
-Sooner or later we should add SAFE_FSOPEN(), but that can wait.
-
-> +
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd != -1)
-> +		SAFE_CLOSE(fd);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	char *val = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-> +
-> +	for (unsigned int i = 0; i < 2; i++) {
-> +		TEST(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0));
-> +		if (TST_RET == -1)
-> +			tst_brk(TFAIL | TTERRNO, "fsconfig(FSCONFIG_SET_STRING) failed");
-TST_EXP_PASS() or other could here be used (it should be changes also in fsconfig01.c).
-
-Hm, there is a kernel fix from 5.17 [1]. But test fails when I run it on 6.2.0-rc5:
-
-tst_supported_fs_types.c:165: TINFO: Skipping FUSE based ntfs as requested by the test
-tst_supported_fs_types.c:157: TINFO: Skipping tmpfs as requested by the test
-tst_test.c:1634: TINFO: === Testing on ext3 ===
-tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
-mke2fs 1.46.5 (30-Dec-2021)
-fsconfig03.c:44: TFAIL: fsconfig(FSCONFIG_SET_STRING) failed: EINVAL (22)
-
-Isn't it the opposite: we expect to fail, thus TST_EXP_FAIL() should here be
-used?
-
-> +	}
-> +	tst_res(TPASS, "Try fsconfig overflow on %s done!", tst_device->fs_type);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.format_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.all_filesystems = 1,
-> +	.skip_filesystems = (const char *const []){"fuse", "ext2", "xfs", "tmpfs", NULL},
-
-I wonder why this is should not be run on XFS and ext2.
-
-Also, while we have CVE and kernel fix [1], it should be marked in struct tst_test:
-
-	.tags = (const struct tst_tag[]) {
-		{"linux-git", "722d94847de2"},
-		{"CVE", "2020-29373"},
-		{"CVE", "2022-0185"},
-		{}
-	}
-
-Kind regards,
-Petr
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=722d94847de2
-
-
-> +};
+Thanks,
+Edward
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
