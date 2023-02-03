@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C445C61DA4
-	for <ltp@archiver.kernel.org>; Thu,  2 Feb 2023 08:20:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CA94C61DA4
+	for <ltp@archiver.kernel.org>; Fri,  3 Feb 2023 02:04:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 29B453CC3E4
-	for <ltp@archiver.kernel.org>; Thu,  2 Feb 2023 09:20:17 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 208623CC4B8
+	for <ltp@archiver.kernel.org>; Fri,  3 Feb 2023 03:04:17 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8C0893CB28B
- for <ltp@lists.linux.it>; Thu,  2 Feb 2023 09:20:07 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C4ED83CB282
+ for <ltp@lists.linux.it>; Fri,  3 Feb 2023 03:04:05 +0100 (CET)
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com
+ [IPv6:2607:f8b0:4864:20::b2f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E3D861A0042A
- for <ltp@lists.linux.it>; Thu,  2 Feb 2023 09:20:06 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 298181FE36;
- Thu,  2 Feb 2023 08:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1675326006;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=blfbzfO0WXZAAbEZ2v5W1LXrTv9otsINgmby/3KW0N8=;
- b=OxEWLohySnD15QLBw/EFJYfYQ9pDy/pJcHxxFsBUqrzFdNi33x0JzS9eLWUQq4jYiPExOG
- XcYIduM9ZRql0wiBvE3R6MgU9YRRd9QKPSXXl7Bre0rKSWad3m0tP7DEdLEW4O5Urq3aWG
- Gbk3zVMs/LdpOqK30zsgJQ2taAtqwu4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1675326006;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=blfbzfO0WXZAAbEZ2v5W1LXrTv9otsINgmby/3KW0N8=;
- b=Pi1phh9LJhlmQyWHgTHfugRHy+H4Q0RxVhbHC3InpslWLH3j2monb7Vyi89ka/KzDmbeuz
- YUnCHQDs/T8csFCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EC911139D0;
- Thu,  2 Feb 2023 08:20:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id GkUIODVy22PMHAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 02 Feb 2023 08:20:05 +0000
-Date: Thu, 2 Feb 2023 09:20:04 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Message-ID: <Y9tyNEspOUlHMOGU@pevik>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 51213600B62
+ for <ltp@lists.linux.it>; Fri,  3 Feb 2023 03:04:05 +0100 (CET)
+Received: by mail-yb1-xb2f.google.com with SMTP id m199so4703515ybm.4
+ for <ltp@lists.linux.it>; Thu, 02 Feb 2023 18:04:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=pKmQNI1LZRNZlwzqHmQUYSwaP0OiWBdk0cjJ1yQQsmw=;
+ b=O27AhT54kEBcPUPI1Pz/8HDQuTV8LfLondMTbRjPbNI26gwiyeUW9A6mt4be5A9Fws
+ INiegB0WozvJPiEcedxvj8i8joUmC2pB20CJAmSH41OCg8hkjF2wibdqTqGTWgz3Y34h
+ D564CQFNqOciU/PBseayMBzmiUiOt5OwLQW1LdZHnSTU4VQnGVGhZj7W4haqkHRlk6aC
+ Qi/tu+Bas1DOpoPlOxM2mwDtFUO7avLATeBN+Jrmp1A5VGs0ftyfwZ2+GjyDW9Cvx4v4
+ nK5To9an6x7i28d2xvUxFsxJWhqOk262fx1UU710+SZaN7NOvX1ve+y40xfRQljRtZGh
+ enrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=pKmQNI1LZRNZlwzqHmQUYSwaP0OiWBdk0cjJ1yQQsmw=;
+ b=Q9mEHGWYHP2GpUbWDVswuodvL/60xb9utQudkLH1cad0LyeASpWhOLYT//aAqaZwsI
+ tX53B3KB3cjx8yJPrSxLzJer8FMtKlLwqM6keePcZGseg3NNvom9hfhceaJeQKTuH4ff
+ aL3VTSxDrhs6Y3pH/Vf2fVCdp3gBifVDu+a555KxI6eWSvNGnU2s5Fr1NMf7bQO/Tdgt
+ gwoFkxxjI+yL+9iBqwEVWPLjvL+6j6R61EeRkFmBCYTLwbENICLh7oMjoW+fn0Q8ywZl
+ szmUGFQaNcdlKoDnA7b0ZMlz3ElBbBiE852IoVYaRXRKkKh7F+ayf9cv7QjRqZR2DTia
+ 09Yw==
+X-Gm-Message-State: AO0yUKWw1balMSEALzgkEnJfkU6Ns684WaWK3aVIwzgQ7kkUlQjIkLx0
+ dZo0DXH+GkhrcilbaYU1nm1pjWuHEelabuN+4I/3bQ==
+X-Google-Smtp-Source: AK7set80hhGD6baCIYlKTiryH3ylG8GiQUEm/ZNgr5YaTiJrpcepwcTOyJCiPlUGqcz4YcBhTcgUDI1CVX5XQdjtsEc=
+X-Received: by 2002:a25:9d81:0:b0:7ba:e354:5aaf with SMTP id
+ v1-20020a259d81000000b007bae3545aafmr207869ybp.37.1675389843965; Thu, 02 Feb
+ 2023 18:04:03 -0800 (PST)
+MIME-Version: 1.0
 References: <20230131002532.459456-1-edliaw@google.com>
  <Y9paGafh97zKnu/j@pevik>
  <CAG4es9V2773dyVrDwt7fiUq=VkUrn0Tr8icCC=X3xx+RGrbR9A@mail.gmail.com>
  <Y9trG4QnXUEbhBbJ@pevik>
  <CAASaF6xQPu1ZgAFKMLjbLtcP4woq7+uQ_H4phB5TO_6CLsy_kQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAASaF6xQPu1ZgAFKMLjbLtcP4woq7+uQ_H4phB5TO_6CLsy_kQ@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+ <Y9tyNEspOUlHMOGU@pevik>
+In-Reply-To: <Y9tyNEspOUlHMOGU@pevik>
+Date: Thu, 2 Feb 2023 18:03:37 -0800
+Message-ID: <CAG4es9X=_vaE_3oX4JD598BNSX8RmQmAKVJS2kZdE1XzUjRu+A@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] close_range: check for kernel support below 5.9
 X-BeenThere: ltp@lists.linux.it
@@ -79,62 +78,67 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
 Cc: kernel-team@android.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Thu, Feb 2, 2023 at 8:50 AM Petr Vorel <pvorel@suse.cz> wrote:
+Oh, lucky coincidence I guess.  Thanks, Petr!
 
-> > Hi Edward,
-
-> > > Hi Petr,
-
-> > > > > +++ b/include/lapi/close_range.h
-> > > > > @@ -25,4 +25,17 @@ static inline int close_range(unsigned int fd, unsigned int max_fd,
-> > > > >       return tst_syscall(__NR_close_range, fd, max_fd, flags);
-> > > > >  }
-> > > > >  # endif
-> > > > > +
-> > > > > +static inline void close_range_supported_by_kernel(void)
-> > > > > +{
-> > > > > +     long ret;
-> > > > > +
-> > > > > +     if ((tst_kvercmp(5, 9, 0)) < 0) {
-> > > > > +             /* Check if the syscall is backported on an older kernel */
-> > > > BTW what particular use case this fixed? Is it backported to some android
-> > > > kernel? Or to some enterprise distro? Because I don't think kernel stable trees
-> > > > accept new functionality, just fixes.
-
-> > > Oops, should I use .min_kver instead?  It isn't backported on Android;
-> > > I just wasn't sure what the right approach was.
-
-> > Actually, looking into SLES kernel sources, we backported close_range() to SLES
-> > 15-SP3 (bsc#1179090), which was 5.3.18 based. Thus you actually did good work :).
-
-> > @Li, @Jan out of curiosity, was this backported to RHEL kernel as well?
-> > It'd be useful to note that (one day we will be able to remove it once kernels
-> > which backported are EOL).
-
-> Yes, it's present in 8.4 since kernel-4.18.0-290.el8.
-
-Jan, thanks a lot!
-
-@Edward we have Hackweek at SUSE, I'll merge this on Monday,
-noting the reason why to keep this instead simple .min_kver.
-
-Kind regards,
-Petr
-
-> > Kind regards,
-> > Petr
-
-> > > Thanks,
-> > > Edward
-
-
+On Thu, Feb 2, 2023 at 12:20 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> > On Thu, Feb 2, 2023 at 8:50 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> > > Hi Edward,
+>
+> > > > Hi Petr,
+>
+> > > > > > +++ b/include/lapi/close_range.h
+> > > > > > @@ -25,4 +25,17 @@ static inline int close_range(unsigned int fd, unsigned int max_fd,
+> > > > > >       return tst_syscall(__NR_close_range, fd, max_fd, flags);
+> > > > > >  }
+> > > > > >  # endif
+> > > > > > +
+> > > > > > +static inline void close_range_supported_by_kernel(void)
+> > > > > > +{
+> > > > > > +     long ret;
+> > > > > > +
+> > > > > > +     if ((tst_kvercmp(5, 9, 0)) < 0) {
+> > > > > > +             /* Check if the syscall is backported on an older kernel */
+> > > > > BTW what particular use case this fixed? Is it backported to some android
+> > > > > kernel? Or to some enterprise distro? Because I don't think kernel stable trees
+> > > > > accept new functionality, just fixes.
+>
+> > > > Oops, should I use .min_kver instead?  It isn't backported on Android;
+> > > > I just wasn't sure what the right approach was.
+>
+> > > Actually, looking into SLES kernel sources, we backported close_range() to SLES
+> > > 15-SP3 (bsc#1179090), which was 5.3.18 based. Thus you actually did good work :).
+>
+> > > @Li, @Jan out of curiosity, was this backported to RHEL kernel as well?
+> > > It'd be useful to note that (one day we will be able to remove it once kernels
+> > > which backported are EOL).
+>
+> > Yes, it's present in 8.4 since kernel-4.18.0-290.el8.
+>
+> Jan, thanks a lot!
+>
+> @Edward we have Hackweek at SUSE, I'll merge this on Monday,
+> noting the reason why to keep this instead simple .min_kver.
+>
+> Kind regards,
+> Petr
+>
+> > > Kind regards,
+> > > Petr
+>
+> > > > Thanks,
+> > > > Edward
+>
+>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
