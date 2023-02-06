@@ -4,66 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1291FC05027
-	for <ltp@archiver.kernel.org>; Mon,  6 Feb 2023 05:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2E20C61DA4
+	for <ltp@archiver.kernel.org>; Mon,  6 Feb 2023 05:37:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 172603CB177
-	for <ltp@archiver.kernel.org>; Mon,  6 Feb 2023 06:31:57 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 8C4BA3CC23C
+	for <ltp@archiver.kernel.org>; Mon,  6 Feb 2023 06:37:03 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D4BBC3CB170
- for <ltp@lists.linux.it>; Mon,  6 Feb 2023 06:31:47 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 0D2D73CB170
+ for <ltp@lists.linux.it>; Mon,  6 Feb 2023 06:36:52 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9EC3260069C
- for <ltp@lists.linux.it>; Mon,  6 Feb 2023 06:31:39 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 42F3D1000524
+ for <ltp@lists.linux.it>; Mon,  6 Feb 2023 06:36:51 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1AC8B38B2E;
- Mon,  6 Feb 2023 05:31:37 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5A3E03EEB5;
+ Mon,  6 Feb 2023 05:36:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1675661497;
+ t=1675661811;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=M/eonmfVsL2YvgxKqpRClz+pnsMyJ+PM7FQTfZ4vswA=;
- b=YwGDgyoqAmQquhAEVqQu9J5Bao4aKViQXsHYKPd7zenlZcs5C1vjjQ7fZSuGzXLDezBWTZ
- DoHjwp6DGpQuZ91XFJ6dzy+hMFNYkZYoICwPbUQN7iWsASIvOCHTfwr44AN+RvDBihMnio
- JkW38Uafxbqj2byXipTRFal8/T3eVIA=
+ bh=hhd/tbh38fIXATTWujeUnIbfHwviS/7GmBuNlBPQQeQ=;
+ b=yEy5mTfESkY5IXVpn9TCtmec0XfdxJD2cKj6NTtIT8SOpTkc3Ahe7BeRZdKbApa932qrer
+ Hs/k3GVweVfP6l+u6fCdgCaVmfbt+mZW40YGVWJu1Qo+V5+pfuPocypqCACXJQWdoHx30D
+ LtKmplQiC40Ehhc8VCiYRtMZOE9vIwo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1675661497;
+ s=susede2_ed25519; t=1675661811;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=M/eonmfVsL2YvgxKqpRClz+pnsMyJ+PM7FQTfZ4vswA=;
- b=TSmPXA0E4TMNDJjOjVo/tzrIP2PimQ8ThJPft34CGJ18co4MMxXaMzNJcz0nMc7xVJAif6
- nz5DH/qUyvnZ24DQ==
+ bh=hhd/tbh38fIXATTWujeUnIbfHwviS/7GmBuNlBPQQeQ=;
+ b=GDxNwXO3tS+BwiEKw20iAzGg1lUFj+DpwkVa9N6XK0uLMkYmvT8/eAXVKR2bw62ExPtJKS
+ ZsY2fCdrZ8aBTICw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE0A213A65;
- Mon,  6 Feb 2023 05:31:36 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CC9913A65;
+ Mon,  6 Feb 2023 05:36:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id aZPuOLiQ4GMKLQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 06 Feb 2023 05:31:36 +0000
-Date: Mon, 6 Feb 2023 06:31:35 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id HCCKCfOR4GMULgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 06 Feb 2023 05:36:51 +0000
+Date: Mon, 6 Feb 2023 06:36:49 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <Y+CQt2SpeMzibUDT@pevik>
-References: <20230129183930.2045-1-wegao@suse.com>
+To: Edward Liaw <edliaw@google.com>
+Message-ID: <Y+CR8VDtE4CpmDAA@pevik>
+References: <20230131002532.459456-1-edliaw@google.com>
+ <Y9paGafh97zKnu/j@pevik>
+ <CAG4es9V2773dyVrDwt7fiUq=VkUrn0Tr8icCC=X3xx+RGrbR9A@mail.gmail.com>
+ <Y9trG4QnXUEbhBbJ@pevik>
+ <CAASaF6xQPu1ZgAFKMLjbLtcP4woq7+uQ_H4phB5TO_6CLsy_kQ@mail.gmail.com>
+ <Y9tyNEspOUlHMOGU@pevik>
+ <CAG4es9X=_vaE_3oX4JD598BNSX8RmQmAKVJS2kZdE1XzUjRu+A@mail.gmail.com>
+ <Y9zfkeF3MdzMeizT@pevik> <Y9zhLO27YMWd6p6n@pevik>
+ <CAG4es9Wy8pnEJqr2D2WvL=4kmP_JF+QTGVKYixCrBenv7Lg83A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230129183930.2045-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <CAG4es9Wy8pnEJqr2D2WvL=4kmP_JF+QTGVKYixCrBenv7Lg83A@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] ioctl01.c:Test also struct termios
+Subject: Re: [LTP] [PATCH] close_range: check for kernel support below 5.9
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,52 +85,53 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: kernel-team@android.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+Hi Edward,
 
-> ATM we're testing just legacy struct termio in ioctl01.c,
-> we also need test struct termios.
+> Hey Petr,
 
-Good idea.
+> We turned on the HAVE_CLOSE_RANGE flag to test the bionic-defined
+> close_range on Android, but doing so bypasses tst_syscall in
+> include/lapi/close_range.h.  We don't currently have a way to
+> configure ltp differently across each kernel version, so I wanted to
+> use this check as a fallback to gate earlier kernels.
 
-> @@ -64,7 +66,21 @@ static void verify_ioctl(unsigned int i)
->  	if (TST_ERR != tcases[i].error) {
->  		tst_res(TFAIL | TTERRNO,
->  			"failed unexpectedly; expected %s",
-> -		        tst_strerrno(tcases[i].error));
-> +			tst_strerrno(tcases[i].error));
-> +		return;
-> +	}
-Could you please replace TEST(ioctl(...) with TST_EXP_FAIL(ioctl(...))?
-That would save all error handling.
+Thanks for info. OK, at least it's needed :).
+If these fixes would be needed for more syscalls, we might want to check if
+there is a way to enhance tst_syscall() (likely there is no way).
 
-We try to use these helping macros in include/tst_test_macros.h.
-Although they would deserve some docs as macros are a bit harder to read.
-
-> +
-> +	TEST(ioctl(*(tcases[i].fd), tcases[i].request, tcases[i].s_tios));
-> +
-And obviously here should go TST_EXP_FAIL(ioctl(...)) as well.
+Also (for next time) it's always safe to be more verbose for the reason in the
+commit message to prevent cleanup of workarounds too early (before EOL of that
+particular kernel).
 
 Kind regards,
 Petr
-> +	if (TST_RET != -1) {
-> +		tst_res(TFAIL, "call succeeded unexpectedly");
-> +		return;
-> +	}
-> +
-> +	if (TST_ERR != tcases[i].error) {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"failed unexpectedly; expected %s",
-> +			tst_strerrno(tcases[i].error));
->  		return;
->  	}
 
+> Thanks,
+> Edward
+
+
+> On Fri, Feb 3, 2023 at 2:25 AM Petr Vorel <pvorel@suse.cz> wrote:
+
+> > Hi,
+
+> > hm, I was too fast to merge it. Looking at older result,
+> > It looks like this (merged as 7b5ee03899) was not needed,
+> > because tst_syscall() properly detects missing support:
+
+> > close_range01.c:134: TINFO: Plain close range
+> > ../../../../include/lapi/close_range.h:25: TCONF: syscall(436) __NR_close_range not supported on your arch
+
+> > @Edward: Before we revert it, did you encounter some problem that it's really
+> > needed? If yes, please share details.
+
+> > Kind regards,
+> > Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
