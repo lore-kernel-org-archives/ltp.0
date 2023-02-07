@@ -4,53 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CF63C636CC
-	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 12:27:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B3FBC636CC
+	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 12:29:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 839BF3CC20B
-	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 13:27:07 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 3908F3CC22D
+	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 13:29:42 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B18293CB14D
- for <ltp@lists.linux.it>; Tue,  7 Feb 2023 13:26:57 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 560513CB14D
+ for <ltp@lists.linux.it>; Tue,  7 Feb 2023 13:29:33 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E3C2820006F
- for <ltp@lists.linux.it>; Tue,  7 Feb 2023 13:26:56 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7005E200A1E
+ for <ltp@lists.linux.it>; Tue,  7 Feb 2023 13:29:32 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C207E20D6C;
- Tue,  7 Feb 2023 12:26:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C0A8E3E7DA;
+ Tue,  7 Feb 2023 12:29:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1675772815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1675772971; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=jiDxc44RP7AxCy6AW/blxYf/7bbbwkPjL/wH7yd8BE8=;
- b=M1Fv9U0rkgDsAmC0UsW4nM+R9+WqfzGDHDhIhI/iQj3rkIdpeIQ+/16/DW9Zl33KLpUFmq
- 66mZUZLTejXAfEupIXDplmYRDJZiWukxehQTxAdwrw98LSdRtceo5wBLjqoerz0MvBVCN0
- KyNyE5AlMhFDCGmJ2nUYe5qvEk4S7PQ=
+ bh=aI3sUlX02EwXX9YzGsmm8ef24RhY+JRApUPUXHdpN+A=;
+ b=UgJlt8MMKxgn3su4hJPJ100MCfkbh8IgHcE7QnLsDdyh+O2Yia4f/L1LtsVsYZMPZpCMYQ
+ u0xqtq8NPu2dQBj4kOMJQG2spc6PzfQ8vcUHLDjdrk0Un5hEINWrOPKONGpXXJ6GYOj0xb
+ I4lj4iGyVjSOG77lLQNZGGB16qf3MHg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9218313467;
- Tue,  7 Feb 2023 12:26:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9A80913467;
+ Tue,  7 Feb 2023 12:29:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id WJwQIY9D4mPKVgAAMHmgww
- (envelope-from <andrea.cervesato@suse.com>); Tue, 07 Feb 2023 12:26:55 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id e/vHIytE4mPkVwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Tue, 07 Feb 2023 12:29:31 +0000
 To: ltp@lists.linux.it
-Date: Tue,  7 Feb 2023 13:24:55 +0100
-Message-Id: <20230207122455.28177-1-andrea.cervesato@suse.com>
+Date: Tue,  7 Feb 2023 13:27:31 +0100
+Message-Id: <20230207122731.29303-1-andrea.cervesato@suse.com>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] Refactor pidns16 test using new LTP API
+Subject: [LTP] [PATCH v4] Refactor pidns16 test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,18 +72,16 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
-Using tst_clone API
-More TST_* macro usage
-Better TINFO messages
+Removed counter flag that now is unused
 
- testcases/kernel/containers/pidns/pidns16.c | 193 +++++++-------------
- 1 file changed, 62 insertions(+), 131 deletions(-)
+ testcases/kernel/containers/pidns/pidns16.c | 191 ++++++--------------
+ 1 file changed, 60 insertions(+), 131 deletions(-)
 
 diff --git a/testcases/kernel/containers/pidns/pidns16.c b/testcases/kernel/containers/pidns/pidns16.c
-index 2ee61065a..121da8e63 100644
+index 2ee61065a..430cf4dd8 100644
 --- a/testcases/kernel/containers/pidns/pidns16.c
 +++ b/testcases/kernel/containers/pidns/pidns16.c
-@@ -1,157 +1,88 @@
+@@ -1,157 +1,86 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
 -* Copyright (c) International Business Machines Corp., 2007
@@ -154,7 +153,6 @@ index 2ee61065a..121da8e63 100644
  
 -char *TCID = "pidns16";
 -int TST_TOTAL = 3;
-+static int counter;
 +static int signal_pid;
  
 -void child_signal_handler(int sig, siginfo_t * si, void *unused)
@@ -186,7 +184,6 @@ index 2ee61065a..121da8e63 100644
 -
 -	c++;
 +	signal_pid = si->si_pid;
-+	counter++;
  }
  
 -/*
