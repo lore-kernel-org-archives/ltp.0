@@ -4,66 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4A2AC636CD
-	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 08:39:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BA34C636CD
+	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 10:27:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9CB213CC1F0
-	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 09:39:50 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 6B9383CC235
+	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 11:27:04 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 224653CB111
- for <ltp@lists.linux.it>; Tue,  7 Feb 2023 09:39:40 +0100 (CET)
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com
- [IPv6:2607:f8b0:4864:20::e32])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 273563CB14E
+ for <ltp@lists.linux.it>; Tue,  7 Feb 2023 11:26:52 +0100 (CET)
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur04on0628.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe0e::628])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 69C24600188
- for <ltp@lists.linux.it>; Tue,  7 Feb 2023 09:39:39 +0100 (CET)
-Received: by mail-vs1-xe32.google.com with SMTP id z22so1528689vsq.11
- for <ltp@lists.linux.it>; Tue, 07 Feb 2023 00:39:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
- :date:message-id:reply-to;
- bh=5+6qB4vlKVB5tLtNNBRw/IQ+8WVih8Pl31Jj1D+xa3Q=;
- b=S9kUObvgd9FZN/OazSAdZ8+r2xQT7tTuIX+3wXSCIxslvcvjkhzTwHNuzL7As6C957
- KnxA56ooN0HXwzZRqAu1o8G0hu7Uk/eX5kUfQWkwYHlI39PT1mA4nBYDcNo/JiOPH2DL
- LYNPLsK1H+v1AdZGT3lrXK9UV2GyI60pzN4SJp2z6/jEpjo2FctGlBv94Kp3PbKu446y
- UQXEeEL9HELjjoCTD2ws1bWMFEwjcAGOQf9Rp1utwuPR1qPEyHA0pow/5nzNE3Hxu75V
- kJmB790THEZYbSXMFX4yLcrB1pX9MeldngVUPmiULTTWfbCiNRTjEmjl//GpQZzm79ja
- a07A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=5+6qB4vlKVB5tLtNNBRw/IQ+8WVih8Pl31Jj1D+xa3Q=;
- b=ZxxyIIeiHvTFpiJU8l37yZLrq6YSIZHxEe5YV/0Zo7EUKg7ezePdmfKIP8w7CQerBQ
- lzXMw9YOsmt8wrrDdY75x7v0Jybyhb2+MHAjiRINlYTbrl/VOng4JPbajh+/SeLHu1Q7
- 0iyMJSiRIEWocEO0FfkIDSWUy/Bu3nc4TVvr3+zagSI98MYn5c6ez3YLOJiLmgRZTpul
- lFbiVY1BLiK+rG8sY4Vnvob0AHAogbjy/AGcuVzXzLGQJVDe2C8bZL+2w3LiOrW9C2Fi
- MAZZcSBWg0HDuLu1iMXAuQluRTGTht2xiqRpOznSZKTnMa2wVVCIG8hHLj+yZ3hl+3dk
- 7tDw==
-X-Gm-Message-State: AO0yUKV29UMAPq+Co+GH35deu3zQi/H4mlX5JKII/ZRVmcbWhVDZjfbe
- Al2rYmoclSmam5FGb32+N3Gn5RLnIRdEjcCvDPimpw==
-X-Google-Smtp-Source: AK7set8QNiwhOZR4JO/wj7gNPzUgw2f6N0NhhqQSYu2PMqQ694WKwQkbHH3t5+/F42OzNjs38vSo3X1nbLt67tocAgc=
-X-Received: by 2002:a67:e186:0:b0:3f7:528b:d25f with SMTP id
- e6-20020a67e186000000b003f7528bd25fmr564683vsl.9.1675759178010; Tue, 07 Feb
- 2023 00:39:38 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 75A1E1400C48
+ for <ltp@lists.linux.it>; Tue,  7 Feb 2023 11:26:51 +0100 (CET)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eei2B5DsjIBKEkffsww+41I/wlPKJvrh3m0IeTJBWXEpvYgJRboa+jif3Diml6TU9iK5+dR79L2ArEgUR+zgkb+WGs75gH/KkNuB0FtPGWJ5AhoYBjKtMNw2mh4LmRxpPvj50oVHD/TIUY8qbn2X4CdMPf3ZwC7QYSaJdjPvEYN/geEht+D4K9CZptW2qUFcZ21UYEK3CJ+v7oxBGg4XqkhsWiBmHAJd9XBZOhYF8bic3O1644zaLG/6cMuKTOMmTkZ9B71ZWGnNCji83ZHHM+rLyVfLEZwJOkIGPqQCI0DJLnmbNAcxbkXTG/QhZktkNyNh9cRNyJFj2Bato7dqcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6xp+LyWqlsgWik8SBHzM+eDfgMJlreminTH6xRYDZCU=;
+ b=Wba/XuCz5lcyJuF8SUwbBDTxPb//H5sOBFIXnT96e6IcQYtQZpPUJW9cOZyIok05dPwdY1V7TpcumdMOiyeroGQHekGalsRDUmyC27zl488aGxkHl/oV0NGB1SDhAAdTwDSff3XsiwsQUiq/d2WNgCtQScyCklnOD3LZOAW6Bgzmm5Cqbnho+dUBcFuUFTxRfY6BDrnXoQ2kcWIsog+4hJCi7L8RFhRhtzTkX6iPfhjPHBxRDIQkD6aM2N8LO50InGWNuMkSYSzieSUnm/b1gM4n+2NTdXNa5UxwipTLa50DNV1MIYjPA6QjAYT+Q7FWryiAHOsrN3ZIzEwOKLkqyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6xp+LyWqlsgWik8SBHzM+eDfgMJlreminTH6xRYDZCU=;
+ b=CF04SkZah3N+lELD4JyfkHAdzUY2NFyVvCskQcgIVFcIByGsfUIe1A0LUHU+Z7I0bC2TAHSo/fYeyfOCeJmQt0eEH4NzEILuIpTvnVHnH3LrQ+xmkDNKZDGuMSlQy92fi7PHxKbUyHrOMi8qFJ/psfPADmreYvy9sR1GiYuiVEd+zPG10OWel5g2jMWI+hgF7QClITUTdpHe4h1KDvmu+hDODMX6a54/MfL8vURLbIyoGp1B4Yx/iRFCpRtlPmhKwHwjOobM/WLiXhAJft+kdW1Y52YQwlY/7GuCDZbrQBB81DUAdbl2iD6irJhLAvwhrwahtUDvBP6DiGNw9Jd8LA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB6797.eurprd04.prod.outlook.com (2603:10a6:803:13e::13)
+ by PAXPR04MB9489.eurprd04.prod.outlook.com (2603:10a6:102:2c1::17)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.27; Tue, 7 Feb
+ 2023 10:26:50 +0000
+Received: from VI1PR04MB6797.eurprd04.prod.outlook.com
+ ([fe80::a9f4:e4e9:9b9b:2dc6]) by VI1PR04MB6797.eurprd04.prod.outlook.com
+ ([fe80::a9f4:e4e9:9b9b:2dc6%6]) with mapi id 15.20.6064.036; Tue, 7 Feb 2023
+ 10:26:49 +0000
+Message-ID: <f0c71f61-a0e2-ac62-b338-2a06c4d951be@suse.com>
+Date: Tue, 7 Feb 2023 11:24:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+To: rpalethorpe@suse.de
+References: <20220805091315.26835-1-andrea.cervesato@suse.com>
+ <874jwa8ywj.fsf@suse.de>
+Content-Language: en-US
+In-Reply-To: <874jwa8ywj.fsf@suse.de>
+X-ClientProxiedBy: FR3P281CA0139.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:95::13) To VI1PR04MB6797.eurprd04.prod.outlook.com
+ (2603:10a6:803:13e::13)
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 7 Feb 2023 14:09:27 +0530
-Message-ID: <CA+G9fYvAURcTwqyGwoTpxAOR0EDTbU6a71d5z74R4Wv-qT02OQ@mail.gmail.com>
-To: open list <linux-kernel@vger.kernel.org>, 
- Linux-Next Mailing List <linux-next@vger.kernel.org>,
- lkft-triage@lists.linaro.org, 
- linux-mm <linux-mm@kvack.org>, LTP List <ltp@lists.linux.it>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6797:EE_|PAXPR04MB9489:EE_
+X-MS-Office365-Filtering-Correlation-Id: 17a706ff-7241-4c47-5c7c-08db08f5d28e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bVR76xCWhO14lip2i74d8EmUXvG3IIwPWSHOSQxzEGClaHtWjoonMEzJEQrpb0frK0IY6RBMmRPNbfQqbx7Y9XiM+amA9MhvlQ9peRiY4hpn4/97lncklaDbZBWMSdXyF3KVOpjRist7NUazFQ1aZJQZLa68EnKP1idebpkOJ/JeK5KTiwpEoNwq8corBgoIzZgy3VJJZP8B9pHu5h8gbsnXMDBEJQKB4+85SIwlk2VfC6zWOxmrMXn0P68/uWS20lI6i0iuHUsJgbKUJPLxsEO9/Ah/IexK7R2ZW+vdVvu8Wwedp1u3NOAMX+OAA6oVXXCmVqxwyGWyW1hO81SmMFFo5mAQ9S5umHxEPX8mlaNP5Bp3cyGK4XGlhatiQ8fAL93lMn8ZlxPmqXJCWnvk2dRohLj00bRGD3HWVsOLvy/XZo9NSWXUHckRrJdz741uBOuulSBQoaIOGuXHeCfes7Zv0HqYbM/rVxNEC3pPCjdFQioH3of8qSGxE9zxH+eUcntryfc/OBcHPfKMCOJIZbmQZXwMNV1r+RDTw10dSnEk4FmXY7EhuXydjpuLZNExcJY493DLptEErTOmhs0wzP6b7s+51cQyenottZNu6eJF+AQj26gbiBgWSIohCjktfdwvtonWRQcdZJS51qy9JiFg1tgyKlwjCICVn2KlBVDGUYot4E9iklH1PwtfSJyBy7xOoikFYyXu+t7HxQ7aCMm9GUBssh3iF5oLObJ/Zw0f+kRyl0FCvHsjTe56R129lUupx7Ifgrh8oDBvd9saPA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:VI1PR04MB6797.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230025)(346002)(366004)(376002)(39860400002)(136003)(396003)(451199018)(44832011)(26005)(41300700001)(186003)(6506007)(31686004)(36756003)(53546011)(2616005)(38100700002)(6512007)(30864003)(66476007)(8936002)(2906002)(316002)(66556008)(83380400001)(66946007)(86362001)(5660300002)(8676002)(6916009)(4326008)(31696002)(6486002)(478600001)(2004002)(21314003)(45980500001)(43740500002);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SHk2RWIxTVZSaTQ5cm1peVVSSGwxR1dMQkFxaGVOUGxMRXhSd25EZDFVb01x?=
+ =?utf-8?B?RlJyTXRrUE9kMWZpOHkvSWZ6dThXdHBBNVBHQktlaE1OT3c0WFB1OWFjUUhK?=
+ =?utf-8?B?MzBpWEJmRWVWcE5xeUU0ZHp2QlZSczZlWnJzanlibTJnbDlHQ3g4aUhyZm9H?=
+ =?utf-8?B?aGlMdytlM2tOMjNFdmV6RHk3eXFIN0VwUmViT0RPdnZjeXd2QTZkS2R6ZWQr?=
+ =?utf-8?B?VDlqeDB3TURDN0tOL1Y5L0hJUFB2TDlvVkNkZ1ZIVUhhOWRkNjZUWlpaYUdi?=
+ =?utf-8?B?V3NXWisyOWZSVVpCaGNFcUVWTlRyaDVZb3dTWTdUTk5qS3JNMkZLYzl2VEtq?=
+ =?utf-8?B?LzNTL2lSV3U3ci9HZGJLQktUTllQOFNhckNVWHh1N2tYRUNkRHVXWkRDYkNR?=
+ =?utf-8?B?Vko5NW4rYkxJYjVSbTE0ZGhtNC9MVFVVcXV6ZkFHeGdlZHpGKzlpR0hCODhi?=
+ =?utf-8?B?TmhQeTZJYURpMWZjdVJLWnVZL0t0allOTkQxM0xkMEdVYnpGc3hpaDBXVFpI?=
+ =?utf-8?B?NXVZSFR4a1lYdHBSVWR2TGhUaHlZeWdGZFV4TnJJSkZyZDVxTkRWMEtyd2ZF?=
+ =?utf-8?B?TVo4b1RtRTdwWHViZVFTTStFU3FmYVFJSHk1M1Zlc0Z4SHUwcjZMZHRMVEFy?=
+ =?utf-8?B?UFoxTGJYQmxxcGF3TTc4eEhKU09USGQ4VW5TMmVPYVJ1dkZvem8vZTZWS2I0?=
+ =?utf-8?B?VXZwa0pRRmQwMDV4UEo3SlhHYVhVbktuc2ZuUjZwd0xZaHJ2eDdicjF2ZDhu?=
+ =?utf-8?B?M3BnWWRsODNMaktSc2VYMjQwZnA2Uy9YV09GRTMrODZOZ3hGc2V4WUpqQk1j?=
+ =?utf-8?B?R25uQUduRC9ZamtuUm13TVZpN3F2cTBwTm5LQ3BiME9jMkFBOGtFeTZwd0hF?=
+ =?utf-8?B?Q3N5SHJRdHlzNmxoTTFGL2pqN0xudVpVMUNpU0YvYXZZcWxVeWhYdTFqNWRu?=
+ =?utf-8?B?b3NoN3hoanpablVOako1RmlYazBvV3dnaG5nakN2N0MrdisvbFg5eDhQdk5m?=
+ =?utf-8?B?WHpidjlicnlpLzJQeGZIRWlVVDVjRUlXL2hDdTYyT1dpU2p2MUREUlIrekw5?=
+ =?utf-8?B?NzJqdlAzaG9QVFlUeldJZ2ZBK3VlQmtZanYvRlI3ZGRzM2crQjIwaEZLMC9N?=
+ =?utf-8?B?WHk5bU1VUUQwZm5mM2NEUmIyN1VvT0g0U2taNGNRWjZSczFIcmU1ZUxzeWdE?=
+ =?utf-8?B?REx0NUhLNGV6di9LOHRPMWpKZ2NxYXpJVG5WUFlBcjlKUnYrdmY1RnZrZlhB?=
+ =?utf-8?B?RGFkMExYc05zYXlGdiswSGtEQWZDdE02NlM1cHc2Umd3QnJ4dEg4akh4dExQ?=
+ =?utf-8?B?NVdkVkMxNlRKSDh6Q0xva2NZMHF1ZXZkK1JUVW9vSUZLa05KS0VRRDl4dWRQ?=
+ =?utf-8?B?WFlpditiK3VQWEI2akhHQlZnM2MvblhwUkR5bkhneksrcDdTbktjQm5UNlRt?=
+ =?utf-8?B?dlBHWXZYLzZGV0NvYVV6SGRCUlRYeTE2U1VvczRRWDJhbVoxcTVBOG55NWJ0?=
+ =?utf-8?B?WHJmZzNZY2o3YmV6bVR1MFk1R3Z1ZWd4aHhuZ0xQK2JYTnNDMW5OY0FZQVR3?=
+ =?utf-8?B?UkEvY1FoTENzb3FZQ0o0MjIvQkt2SFZrbDFGREpiV0pnYjNZckd4b3lPVm5q?=
+ =?utf-8?B?UFJ5ODRNeDdPNGFjbXdseXp2QW11cmRaWFlxZDJ2RE8zQklIV0tYdW42cFJr?=
+ =?utf-8?B?NkIvOHdULzF6NnY0dC9YSmhHUWt0SzlPdC82aG1DZ1RQczhzckRrNUtlVEZK?=
+ =?utf-8?B?a0UvZjgxcWxiZmVGenpTRndwb0EzTnNGT2l1RjNKUUNVeXJQL2NEVENoWHM1?=
+ =?utf-8?B?K2tOREFLVWJtK0dBalBsMWRhaEs3eDlId0JzTW5heVpnNEk0VEE4U04wNEdq?=
+ =?utf-8?B?MDIyNm5BWDdiaWhtUUxiSE5SZFg4M0srUjQ5cWd6aVpZVkhjZkE3ODcwbDRW?=
+ =?utf-8?B?clhJRXlGT25RTFRkZDdrcTRZdmoxUmZkdnk0UkhhWit0YnhzSjdKd2FmNzFE?=
+ =?utf-8?B?TkFaSUF4aVFpem1FRmxSSVp3U0tnUzVYZjdrd29pek9Ib204a2dpQVAzVllU?=
+ =?utf-8?B?TXVGdzRGdXhPbE9PV2dSV3VVYlZnd3lCQW1BY2UvTkc0VUtTRy9uaDIvZkhO?=
+ =?utf-8?B?aEVXK0kvTDFnL1hnQkNFajVOOEVGWTA2S0NoTHJFemRhUC9NS1psdGxZeVZ5?=
+ =?utf-8?B?emc9PQ==?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17a706ff-7241-4c47-5c7c-08db08f5d28e
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB6797.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2023 10:26:49.8267 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WxNqUlng40GJDWcwubymNLUSHbYu9aAKjAXcxSmOu2t2eV/8LP83jZb9ic7t+eQHrq5JGmUIhj8v8YYEpO1vpLW3jZj3wPXrOf49C7vAWtU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9489
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] LTP: preadv03: WARNING: CPU: 0 PID: 101250 at mm/gup.c:2121
- is_valid_gup_args (mm/gup.c:2121 (discriminator 1))
+Subject: Re: [LTP] [PATCH v1] Refactor pidns05 test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,233 +134,377 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: David Howells <dhowells@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
- David Hildenbrand <david@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
- Alistair Popple <apopple@nvidia.com>, Christoph Hellwig <hch@infradead.org>,
- Jason Gunthorpe <jgg@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>, Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Following test regressions noticed on Linux next-20230207.
-LTP syscalls pwritev03 and preadv03 failed.
-The tests use external mounted SSD drives for creating tmp files.
+Hi!
 
-Regressions found on arm64 juno-r2 and x86:
-  - ltp-syscalls/pwritev03
-  - ltp-syscalls/preadv03
-  - ltp-syscalls/pwritev03_64
-  - ltp-syscalls/preadv03_64
+Can we merge this patch anyway? ltp_clone should be added after with a 
+single patch.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Andrea
 
-Crash log:
-[  627.667111] loop0: detected capacity change from 0 to 524288
-tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
-tst_test.c:1524: TINFO: Timeout per run is 0h 05m 00s
-tst_supported_fs_types.c:89: TINFO: Kernel supports ext2
-tst_supported_fs_types.c:51: TINF[  627.733224] /dev/zero: Can't open blockdev
-O: mkfs.ext2 does exist
-tst_supported_fs_types.c:89: TINFO: Kernel supports ext3
-tst_supported_fs_types.c:51: TINF[  627.767886] /dev/zero: Can't open blockdev
-O: mkfs.ext3 does exist
-tst_supported_fs_types.c:89: TINFO: Kernel supports ext4
-tst_supported_fs_types.c:51: TINFO: mkfs.ext4 does exist
-tst_supported_fs_types.c:115: TINFO: Filesystem xfs is not supported
-tst_supported_fs_types.c:89: TINFO: Kernel supports btrfs
-tst_supported_fs_types.c:47: TINFO: mkfs.btrfs does not exist
-tst_supported_fs_types.c:89: TINFO: Kernel supports vfat
-tst_supported_fs_types.c:47: TINFO: mkfs.vfat does not exist
-tst_supported_fs_types.c:115: TINFO: Filesystem exfat is not supported
-tst_supported_fs_types.c:115: TINFO: Filesystem ntfs is not supported
-tst_supported_fs_types.c:156: TINFO: Skipping tmpfs as requested by the test
-tst_test.c:1597: TINFO: Testing on ext2
-tst_test.c:1062: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-mke2fs 1.46.5 (30-Dec-2021)
-[  628.174542] ext2 filesystem being mounted at
-/scratch/ltp-VAWW7MRdVP/pre9CETnZ/mntpoint supports timestamps until
-2038 (0x7fffffff)
-preadv03.c:102: TINFO: Using block size 512
-preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully
-with content 'a' expectedly
-preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully
-with content 'a' expectedly
-preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully
-with content 'b' expectedly
-tst_test.c:1597: TINFO: Testing on ext3
-tst_test.c:1062: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
-mke2fs 1.46.5 (30-Dec-2021)
-[  628.475714] EXT4-fs (loop0): mounting ext3 file system using the
-ext4 subsystem
-[  628.494219] EXT4-fs (loop0): mounted filesystem
-9bb01ff0-cd35-41e2-8e7a-fc68c05ab15e with ordered data mode. Quota
-mode: none.
-preadv03.c:102: TINFO: Using block size 512
-[  628.513685] ------------[ cut here ]------------
-[  628.518327] WARNING: CPU: 0 PID: 101250 at mm/gup.c:2121
-is_valid_gup_args+0x98/0xe8
-[  628.526105] Modules linked in: tun overlay btrfs blake2b_generic
-libcrc32c xor xor_neon raid6_pq zstd_compress bluetooth cfg80211
-rfkill tda998x hdlcd cec drm_dma_helper onboard_usb_hub drm_kms_helper
-crct10dif_ce fuse drm
-[  628.545975] CPU: 0 PID: 101250 Comm: preadv03 Not tainted
-6.2.0-rc7-next-20230207 #1
-[  628.553737] Hardware name: ARM Juno development board (r2) (DT)
-[  628.559667] pstate: 00000005 (nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  628.566646] pc : is_valid_gup_args+0x98/0xe8
-[  628.570927] lr : pin_user_pages_fast+0x44/0x88
-[  628.575382] sp : ffff80000bea38f0
-[  628.578700] x29: ffff80000bea38f0 x28: ffff80000bea3b78 x27: ffff80000bea3a40
-[  628.585864] x26: 0000000000000001 x25: 00000000ffffffff x24: 0000000000000004
-[  628.593025] x23: 0000000000000c00 x22: ffff80000bea3a38 x21: 0000000000000001
-[  628.600187] x20: 000000003ae0b000 x19: ffff000840c3db98 x18: 0000000000000000
-[  628.607348] x17: 0000000000000104 x16: 0000000000000103 x15: 0000000000000000
-[  628.614509] x14: 0000000000000000 x13: f9fdffffffffffff x12: ffff00082225eff8
-[  628.621671] x11: 0000000000000800 x10: ffff00082aa45000 x9 : ffff8000082fa6bc
-[  628.628832] x8 : ffff80000bea38d8 x7 : 0000000000000000 x6 : 00000000004c2800
-[  628.635993] x5 : 0000000000040000 x4 : 0000000000040000 x3 : ffff80000bea392c
-[  628.643155] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff000840c3db98
-[  628.650317] Call trace:
-[  628.652764]  is_valid_gup_args+0x98/0xe8
-[  628.656696]  iov_iter_extract_pages+0xd4/0x648
-[  628.661152]  bio_iov_iter_get_pages+0xb0/0x470
-[  628.665612]  iomap_dio_bio_iter+0x240/0x498
-[  628.669808]  __iomap_dio_rw+0x438/0x768
-[  628.673654]  iomap_dio_rw+0x18/0x58
-[  628.677152]  ext4_file_write_iter+0x3ec/0x7e0
-[  628.681526]  vfs_write+0x2b4/0x358
-[  628.684936]  ksys_write+0x70/0x108
-[  628.688345]  __arm64_sys_write+0x24/0x38
-[  628.692277]  invoke_syscall+0x50/0x128
-[  628.696040]  el0_svc_common.constprop.0+0x104/0x130
-[  628.700934]  do_el0_svc+0x44/0xb8
-[  628.704260]  el0_svc+0x30/0x98
-[  628.707326]  el0t_64_sync_handler+0xbc/0x138
-[  628.711608]  el0t_64_sync+0x190/0x198
-[  628.715281] ---[ end trace 0000000000000000 ]---
-preadv03.c:111: TBROK: write(3,0x3ae0bc00,512) failed: EINVAL (22)
-[  628.727712] EXT4-fs (loop0): unmounting filesystem
-9bb01ff0-cd35-41e2-8e7a-fc68c05ab15e.
+On 10/11/22 11:56, Richard Palethorpe wrote:
+> Hello,
+>
+> Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
+>
+>> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+>> ---
+>>   testcases/kernel/containers/pidns/pidns05.c | 288 ++++++--------------
+>>   1 file changed, 78 insertions(+), 210 deletions(-)
+>>
+>> diff --git a/testcases/kernel/containers/pidns/pidns05.c b/testcases/kernel/containers/pidns/pidns05.c
+>> index 79e146e36..1c588991b 100644
+>> --- a/testcases/kernel/containers/pidns/pidns05.c
+>> +++ b/testcases/kernel/containers/pidns/pidns05.c
+>> @@ -1,256 +1,124 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>>   /*
+>> -* Copyright (c) International Business Machines Corp., 2007
+>> -* This program is free software; you can redistribute it and/or modify
+>> -* it under the terms of the GNU General Public License as published by
+>> -* the Free Software Foundation; either version 2 of the License, or
+>> -* (at your option) any later version.
+>> -* This program is distributed in the hope that it will be useful
+>> -* but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> -* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+>> -* the GNU General Public License for more details.
+>> -* You should have received a copy of the GNU General Public License
+>> -* along with this program; if not, write to the Free Software
+>> -* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>> -*
+>> -***************************************************************************
+>> -*
+>> -* Assertion:
+>> -*   a) Create a  container.
+>> -*   b) Create many levels of child containers inside this container.
+>> -*   c) Now do kill -9 init , outside of the container.
+>> -*   d) This should kill all the child containers.
+>> -*      (containers created at the level below)
+>> -*
+>> -* Description:
+>> -* 1. Parent process clone a process with flag CLONE_NEWPID
+>> -* 2. The container will recursively loop and creates 4 more containers.
+>> -* 3. All the container init's  goes into sleep(), waiting to be terminated.
+>> -* 4. The parent process will kill child[3] by passing SIGKILL
+>> -* 5. Now parent process, verifies the child containers 4 & 5 are destroyed.
+>> -* 6. If they are killed then
+>> -*	Test passed
+>> -*  else Test failed.
+>> -*
+>> -* Test Name: pidns05
+>> -*
+>> -* History:
+>> -*
+>> -* FLAG DATE		NAME				DESCRIPTION
+>> -* 31/10/08  Veerendra C <vechandr@in.ibm.com>	Verifies killing of NestedCont's
+>> -*
+>> -*******************************************************************************/
+>> -#define _GNU_SOURCE 1
+>> + * Copyright (c) International Business Machines Corp., 2007
+>> + *		08/10/08 Veerendra C <vechandr@in.ibm.com>
+>> + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+>> + */
+>> +
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * Clone a process with CLONE_NEWPID flag and create many levels of child
+>> + * containers. Then kill container init process from parent and check if all
+>> + * containers have been killed.
+>> + */
+>> +
+>>   #include <sys/wait.h>
+>> -#include <assert.h>
+>> -#include <stdio.h>
+>> -#include <stdlib.h>
+>> -#include <unistd.h>
+>> -#include <string.h>
+>> -#include <errno.h>
+>> -#include "pidns_helper.h"
+>> -#include "test.h"
+>> -#include "safe_macros.h"
+>> +#include "tst_test.h"
+>> +#include "lapi/namespaces_constants.h"
+>>   
+>> -#define INIT_PID	1
+>> -#define CINIT_PID	1
+>> -#define PARENT_PID	0
+>>   #define MAX_DEPTH	5
+>>   
+>> -char *TCID = "pidns05";
+>> -int TST_TOTAL = 1;
+>> -int fd[2];
+>> +static pid_t pid_max;
+>>   
+>> -int max_pid(void)
+>> +static int child_func(void *arg)
+>>   {
+>> -	FILE *fp;
+>>   	int ret;
+>> +	int *level;
+>> +	pid_t cpid, ppid;
+>> +
+>> +	cpid = getpid();
+>> +	ppid = getppid();
+>>   
+>> -	fp = fopen("/proc/sys/kernel/pid_max", "r");
+>> -	if (fp != NULL) {
+>> -		fscanf(fp, "%d", &ret);
+>> -		fclose(fp);
+>> -	} else {
+>> -		tst_resm(TBROK, "Cannot open /proc/sys/kernel/pid_max");
+>> -		ret = -1;
+>> +	if (cpid != 1 || ppid != 0) {
+>> +		tst_res(TFAIL, "Got unexpected result of cpid=%d ppid=%d", cpid, ppid);
+>> +		return 1;
+>>   	}
+>> -	return ret;
+>> +
+>> +	level = (int *)arg;
+>> +
+>> +	if (*level >= MAX_DEPTH) {
+>> +		TST_CHECKPOINT_WAKE(0);
+>> +		return 0;
+>> +	}
+>> +
+>> +	(*level)++;
+>> +
+>> +	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func,
+>> level);
+> Again, ltp_clone should be converted to tst_clone.
+>
+>> +	if (ret < 0)
+>> +		tst_brk(TBROK | TERRNO, "clone failed");
+>> +
+>> +	pause();
+>> +
+>> +	return 0;
+>>   }
+>>   
+>> -/* find_cinit_pids() iteratively finds the pid's having same PGID as its parent.
+>> - * Input parameter - Accepts pointer to pid_t : To copy the pid's matching.
+>> - * Returns - the number of pids matched.
+>> -*/
+>> -int find_cinit_pids(pid_t * pids)
+>> +static int find_cinit_pids(pid_t *pids)
+>>   {
+>> -	int next = 0, pid_max, i;
+>> +	int i;
+>> +	int next = 0;
+>>   	pid_t parentpid, pgid, pgid2;
+>>   
+>> -	pid_max = max_pid();
+>>   	parentpid = getpid();
+>>   	pgid = getpgid(parentpid);
+>>   
+>> -	/* The loop breaks, when the loop counter reaches the parentpid value */
+>> -	for (i = parentpid + 1; i != parentpid; i++) {
+>> -		if (i > pid_max)
+>> -			i = 2;
+>> -
+>> +	for (i = parentpid + 1; i < pid_max; i++) {
+>>   		pgid2 = getpgid(i);
+>> +
+>>   		if (pgid2 == pgid) {
+>>   			pids[next] = i;
+>>   			next++;
+>>   		}
+>>   	}
+>> +
+>>   	return next;
+>>   }
+>>   
+>> -/*
+>> -* create_nested_container() Recursively create MAX_DEPTH nested containers
+>> -*/
+>> -int create_nested_container(void *vtest)
+>> +static void setup(void)
+>>   {
+>> -	int exit_val;
+>> -	int ret, count, *level;
+>> -	pid_t cpid, ppid;
+>> -	cpid = getpid();
+>> -	ppid = getppid();
+>> -	char mesg[] = "Nested Containers are created";
+>> -
+>> -	level = (int *)vtest;
+>> -	count = *level;
+>> -
+>> -	/* Child process closes up read side of pipe */
+>> -	close(fd[0]);
+>> -
+>> -	/* Comparing the values to make sure pidns is created correctly */
+>> -	if (cpid != CINIT_PID || ppid != PARENT_PID) {
+>> -		printf("Got unexpected cpid and/or ppid (cpid=%d ppid=%d)\n",
+>> -		       cpid, ppid);
+>> -		exit_val = 1;
+>> -	}
+>> -	if (count > 1) {
+>> -		count--;
+>> -		ret = do_clone_unshare_test(T_CLONE, CLONE_NEWPID,
+>> -					    create_nested_container,
+>> -					    (void *)&count);
+>> -		if (ret == -1) {
+>> -			printf("clone failed; errno = %d : %s\n",
+>> -			       ret, strerror(ret));
+>> -			exit_val = 1;
+>> -		} else
+>> -			exit_val = 0;
+>> -	} else {
+>> -		/* Sending mesg, 'Nested containers created' through the pipe */
+>> -		write(fd[1], mesg, (strlen(mesg) + 1));
+>> -		exit_val = 0;
+>> -	}
+>> -
+>> -	close(fd[1]);
+>> -	pause();
+>> -
+>> -	return exit_val;
+>> +	SAFE_FILE_SCANF("/proc/sys/kernel/pid_max", "%d\n", &pid_max);
+>>   }
+>>   
+>> -void kill_nested_containers()
+>> +static void run(void)
+>>   {
+>> -	int orig_count, new_count, status = 0, i;
+>> +	int ret, i;
+>> +	int status;
+>> +	int children;
+>> +	int level = 0;
+>>   	pid_t pids[MAX_DEPTH];
+>>   	pid_t pids_new[MAX_DEPTH];
+>>   
+>> -	orig_count = find_cinit_pids(pids);
+>> -	kill(pids[MAX_DEPTH - 3], SIGKILL);
+>> -	sleep(1);
+>> -
+>> -	/* After killing child container, getting the New PID list */
+>> -	new_count = find_cinit_pids(pids_new);
+>> +	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, &level);
+>> +	if (ret < 0)
+>> +		tst_brk(TBROK | TERRNO, "clone failed");
+>>   
+>> -	/* Verifying that the child containers were destroyed when parent is killed */
+>> -	if (orig_count - 2 != new_count)
+>> -		status = -1;
+>> +	TST_CHECKPOINT_WAIT(0);
+>>   
+>> -	for (i = 0; i < new_count; i++) {
+>> -		if (pids[i] != pids_new[i])
+>> -			status = -1;
+>> -	}
+>> +	find_cinit_pids(pids);
+>>   
+>> -	if (status == 0)
+>> -		tst_resm(TPASS, "The number of containers killed are %d",
+>> -			 orig_count - new_count);
+>> -	else
+>> -		tst_resm(TFAIL, "Failed to kill the sub-containers of "
+>> -			 "the container %d", pids[MAX_DEPTH - 3]);
+>> -
+>> -	/* Loops through the containers created to exit from sleep() */
+>> -	for (i = 0; i < MAX_DEPTH; i++) {
+>> -		kill(pids[i], SIGKILL);
+>> -		waitpid(pids[i], &status, 0);
+>> -	}
+>> -}
+>> +	SAFE_KILL(pids[0], SIGKILL);
+>>   
+>> -static void setup(void)
+>> -{
+>> -	tst_require_root();
+>> -	check_newpid();
+>> -}
+>> +	TST_RETRY_FUNC(waitpid(0, &status, WNOHANG), TST_RETVAL_NOTNULL);
+>>   
+>> -int main(void)
+>> -{
+>> -	int ret, nbytes, status;
+>> -	char readbuffer[80];
+>> -	pid_t pid, pgid;
+>> -	int count = MAX_DEPTH;
+>> +	children = find_cinit_pids(pids_new);
+>>   
+>> -	setup();
+>> +	if (children > 0) {
+>> +		tst_res(TFAIL, "%d children left after sending SIGKILL", children);
+>>   
+>> -	/*
+>> -	 * XXX (garrcoop): why in the hell is this fork-wait written this way?
+>> -	 * This doesn't add up with the pattern used for the rest of the tests,
+>> -	 * so I'm pretty damn sure this test is written incorrectly.
+>> -	 */
+>> -	pid = fork();
+>> -	if (pid == -1) {
+>> -		tst_brkm(TBROK | TERRNO, NULL, "fork failed");
+>> -	} else if (pid != 0) {
+>> -		/*
+>> -		 * NOTE: use waitpid so that we know we're waiting for the
+>> -		 * _top-level_ child instead of a spawned subcontainer.
+>> -		 *
+>> -		 * XXX (garrcoop): Might want to mask SIGCHLD in the top-level
+>> -		 * child too, or not *shrugs*.
+>> -		 */
+>> -		if (waitpid(pid, &status, 0) == -1) {
+>> -			perror("wait failed");
+>> +		for (i = 0; i < MAX_DEPTH; i++) {
+>> +			kill(pids[i], SIGKILL);
+>> +			waitpid(pids[i], &status, 0);
+>>   		}
+>> -		if (WIFEXITED(status))
+>> -			exit(WEXITSTATUS(status));
+>> -		else
+>> -			exit(status);
+>> -	}
+>>   
+>> -	/* To make all the containers share the same PGID as its parent */
+>> -	setpgid(0, 0);
+>> -
+>> -	pid = getpid();
+>> -	pgid = getpgid(pid);
+>> -	SAFE_PIPE(NULL, fd);
+>> -
+>> -	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWPID,
+>> -				   create_nested_container, (void *)&count));
+>> -	if (TEST_RETURN == -1) {
+>> -		tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
+>> +		return;
+>>   	}
+>>   
+>> -	close(fd[1]);
+>> -	/* Waiting for the MAX_DEPTH number of containers to be created */
+>> -	nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
+>> -	close(fd[0]);
+>> -	if (nbytes > 0)
+>> -		tst_resm(TINFO, " %d %s", MAX_DEPTH, readbuffer);
+>> -	else
+>> -		tst_brkm(TFAIL, NULL, "unable to create %d containers",
+>> -			 MAX_DEPTH);
+>> -
+>> -	/* Kill the container created */
+>> -	kill_nested_containers();
+>> -
+>> -	tst_exit();
+>> +	tst_res(TPASS, "No children left after sending SIGKILL to the first child");
+>>   }
+>> +
+>> +static struct tst_test test = {
+>> +	.test_all = run,
+>> +	.setup = setup,
+>> +	.needs_root = 1,
+>> +	.needs_checkpoints = 1,
+>> +};
+>> -- 
+>> 2.35.3
+>
 
-Summary:
-passed   3
-failed   0
-broken   1
-
-The decode stacktrace on arm64:
----------------------------
-[  628.518327] WARNING: CPU: 0 PID: 101250 at mm/gup.c:2121
-is_valid_gup_args (mm/gup.c:2121 (discriminator 1))
-[  628.526105] Modules linked in: tun overlay btrfs blake2b_generic
-libcrc32c xor xor_neon raid6_pq zstd_compress bluetooth cfg80211
-rfkill tda998x hdlcd cec drm_dma_helper onboard_usb_hub drm_kms_helper
-crct10dif_ce fuse drm
-[  628.545975] CPU: 0 PID: 101250 Comm: preadv03 Not tainted
-6.2.0-rc7-next-20230207 #1
-[  628.553737] Hardware name: ARM Juno development board (r2) (DT)
-[  628.559667] pstate: 00000005 (nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  628.566646] pc : is_valid_gup_args (mm/gup.c:2121 (discriminator 1))
-[  628.570927] lr : pin_user_pages_fast (mm/gup.c:3089)
-[  628.575382] sp : ffff80000bea38f0
-[  628.578700] x29: ffff80000bea38f0 x28: ffff80000bea3b78 x27: ffff80000bea3a40
-[  628.585864] x26: 0000000000000001 x25: 00000000ffffffff x24: 0000000000000004
-[  628.593025] x23: 0000000000000c00 x22: ffff80000bea3a38 x21: 0000000000000001
-[  628.600187] x20: 000000003ae0b000 x19: ffff000840c3db98 x18: 0000000000000000
-[  628.607348] x17: 0000000000000104 x16: 0000000000000103 x15: 0000000000000000
-[  628.614509] x14: 0000000000000000 x13: f9fdffffffffffff x12: ffff00082225eff8
-[  628.621671] x11: 0000000000000800 x10: ffff00082aa45000 x9 : ffff8000082fa6bc
-[  628.628832] x8 : ffff80000bea38d8 x7 : 0000000000000000 x6 : 00000000004c2800
-[  628.635993] x5 : 0000000000040000 x4 : 0000000000040000 x3 : ffff80000bea392c
-[  628.643155] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff000840c3db98
-[  628.650317] Call trace:
-[  628.652764] is_valid_gup_args (mm/gup.c:2121 (discriminator 1))
-[  628.656696] iov_iter_extract_pages (lib/iov_iter.c:2161 lib/iov_iter.c:2229)
-[  628.661152] bio_iov_iter_get_pages (block/bio.c:1267
-block/bio.c:1340 block/bio.c:1327)
-[  628.665612] iomap_dio_bio_iter (fs/iomap/direct-io.c:323)
-[  628.669808] __iomap_dio_rw (fs/iomap/direct-io.c:436
-fs/iomap/direct-io.c:594)
-[  628.673654] iomap_dio_rw (include/linux/err.h:41 fs/iomap/direct-io.c:684)
-[  628.677152] ext4_file_write_iter (fs/ext4/file.c:591 fs/ext4/file.c:698)
-[  628.681526] vfs_write (include/linux/fs.h:1851 fs/read_write.c:491
-fs/read_write.c:584)
-[  628.684936] ksys_write (fs/read_write.c:637)
-[  628.688345] __arm64_sys_write (fs/read_write.c:646)
-[  628.692277] invoke_syscall (arch/arm64/include/asm/current.h:19
-arch/arm64/kernel/syscall.c:57)
-[  628.696040] el0_svc_common.constprop.0 (arch/arm64/kernel/syscall.c:149)
-[  628.700934] do_el0_svc (arch/arm64/kernel/syscall.c:194)
-[  628.704260] el0_svc (arch/arm64/include/asm/daifflags.h:28
-arch/arm64/kernel/entry-common.c:133
-arch/arm64/kernel/entry-common.c:142
-arch/arm64/kernel/entry-common.c:638)
-[  628.707326] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:656)
-[  628.711608] el0t_64_sync (arch/arm64/kernel/entry.S:591)
-[  628.715281] ---[ end trace 0000000000000000 ]---
-
-
-code snippet:
-vim mm/gup.c +2121
---
-
-/*
- * Check that the given flags are valid for the exported gup/pup interface, and
- * update them with the required flags that the caller must have set.
- */
-static bool is_valid_gup_args(struct page **pages, struct vm_area_struct **vmas,
-      int *locked, unsigned int *gup_flags_p,
-      unsigned int to_set)
-{
-unsigned int gup_flags = *gup_flags_p;
-
-/*
-* These flags not allowed to be specified externally to the gup
-* interfaces:
-* - FOLL_PIN/FOLL_TRIED/FOLL_FAST_ONLY are internal only
-* - FOLL_REMOTE is internal only and used on follow_page()
-* - FOLL_UNLOCKABLE is internal only and used if locked is !NULL
-*/
-if (WARN_ON_ONCE(gup_flags & (FOLL_PIN | FOLL_TRIED | FOLL_UNLOCKABLE |
-      FOLL_REMOTE | FOLL_FAST_ONLY)))
-return false;
-
-gup_flags |= to_set;
-if (locked) {
-/* At the external interface locked must be set */
-if (WARN_ON_ONCE(*locked != 1))
-return false;
-
-gup_flags |= FOLL_UNLOCKABLE;
-}
-
---
-
-Following config diff found.
- + CONFIG_COMPAT_WARN_32BIT_FILESYSTEM_ACCESS=y
-
-Build details link,
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230207/testrun/14613395/suite/ltp-syscalls/test/preadv03/history/
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230207/testrun/14611722/suite/ltp-syscalls/test/preadv03/details/
-
-
-metadata:
-  git_ref: master
-  git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git_sha: 49a8133221c71b935f36a7c340c0271c2a9ee2db
-  git_describe: next-20230207
-  kernel_version: 6.2.0-rc7
-  kernel-config:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2LOjOyThMioNMuCfF8eJHA6kTyh/config
-  artifact-location:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2LOjOyThMioNMuCfF8eJHA6kTyh/
-  toolchain: gcc-11
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
