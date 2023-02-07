@@ -4,45 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE3B2C636CC
-	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 12:40:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48FB7C636CD
+	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 12:42:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 006973CC235
-	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 13:40:36 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 65C593CC214
+	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 13:42:00 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 828693CB14D
- for <ltp@lists.linux.it>; Tue,  7 Feb 2023 13:40:26 +0100 (CET)
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
- [60.248.80.70])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 053613CB14D
+ for <ltp@lists.linux.it>; Tue,  7 Feb 2023 13:39:40 +0100 (CET)
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam04on20626.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7e8d::626])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3DA601000A14
- for <ltp@lists.linux.it>; Tue,  7 Feb 2023 13:40:22 +0100 (CET)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
- by Atcsqr.andestech.com with ESMTP id 317CeGkE006519
- for <ltp@lists.linux.it>; Tue, 7 Feb 2023 20:40:16 +0800 (+08)
- (envelope-from ycliang@andestech.com)
-Received: from atctrx.andestech.com (10.0.15.173) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Tue, 7 Feb 2023
- 20:40:14 +0800
-From: Leo Yu-Chi Liang <ycliang@andestech.com>
-To: <ycliang@andestech.com>, <ltp@lists.linux.it>
-Date: Tue, 7 Feb 2023 20:40:08 +0800
-Message-ID: <20230207124008.1788759-1-ycliang@andestech.com>
-X-Mailer: git-send-email 2.34.1
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 62A54600873
+ for <ltp@lists.linux.it>; Tue,  7 Feb 2023 13:39:39 +0100 (CET)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GY02VNChEcHfXe0lpOFG/0c0XIRSyN9el5xv7At+vLFfIBRt7dbBJ9FrgPfjj1qTuqxWGh/dmaOtz4cFFpxLb8AwLfMVw2KGwBoSzPmDyTwnVO6A51I+WBH9fnCDJVrMrzU8BhZSM4MnWQ5S5iHCtbY9rImIU/L0ln9uXhG7CUWXjIt6M4RM+MT45lOQi/gpiG2draxFOtMp4e+M/8YtG0DFTRaJ7VNlotMPfYmJSC8WkYLOJt9tCi0e/jAEFaxMmN8ZGkDKNf/9SCbwyXKP4XMiEMsP0+bh3Lv3y1jkODbWHOwJRGQIClGTb1Rxrj6nCVOPkGJS5F0YWQQ1WqeHEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DgSnE+q7hoUoGkmzi2iid7Ju5OBswmZqPQWopKj812I=;
+ b=I7TkKkv3isatrcFPy5XAx4ETBgt/dWkx1EdxiasC9DaASNohT6AO6c1Y4r+aai29QkiKIUHWgrCF06giHrEBZs8cLq+Utb2WuSPMtwxK+VY28JZYeHNIgWzzeXKidd3B+S7En4MjQ1xgrHHQ0m9plXbAyxNpMiWUgrrKXnOCCByoz5Tc5nBO6r9Emfttbhpa686wCoYYVSKoHZ5LR3LLMItHD35mmkliv3rT8Wg7EcsS4E0M5J5/gAH6rXvl32rBGTNwoYlLQ3oEM8QM5NK/4DjNwAAGCRuo8/dA5gKzG7OdaIFOdd+3RmhE/COOxwl6HSaOKEKj9sxQbMQMqjFqtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DgSnE+q7hoUoGkmzi2iid7Ju5OBswmZqPQWopKj812I=;
+ b=cl0j9GgjgLwORoasO3F+ztHVB8roHAeBfZCH0uzGiiT+FX+B7C0NAXgSBcqLN4CFbMOQX8uEDm+rhSH4PEzaR1Kygcn+yvn24kfXYvmDAlBxUtjq2yBUmTeMcHmoD398cITkx34dURGgAUTB1nMpuBhYCK6HK3cg1OfUKIH8tMzPuMuTwEFMnAanwk9Boz9wMVPpczrPdK3JripmONMDCW3Y+MECaHSQveA+vqeO05knbol7meSVGOaL5RkC4XrrjCrWUZ2L6kLPuKegbMVgBdlbhkaI9xJ5gJDm2SLPhSxGdMHVUK2NJokHMosoZLVArhJuhjz5VcaC2TcTaiBkpw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ0PR12MB6880.namprd12.prod.outlook.com (2603:10b6:a03:485::13)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.36; Tue, 7 Feb
+ 2023 12:39:35 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3cb3:2fce:5c8f:82ee%4]) with mapi id 15.20.6064.031; Tue, 7 Feb 2023
+ 12:39:35 +0000
+Date: Tue, 7 Feb 2023 08:39:35 -0400
+To: Naresh Kamboju <naresh.kamboju@linaro.org>,
+ Stephen Rothwell <sfr@canb.auug.org.au>
+Message-ID: <Y+JGh0+a540TLr6V@nvidia.com>
+References: <CA+G9fYvAURcTwqyGwoTpxAOR0EDTbU6a71d5z74R4Wv-qT02OQ@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvAURcTwqyGwoTpxAOR0EDTbU6a71d5z74R4Wv-qT02OQ@mail.gmail.com>
+X-ClientProxiedBy: BLAPR03CA0163.namprd03.prod.outlook.com
+ (2603:10b6:208:32f::7) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-X-Originating-IP: [10.0.15.173]
-X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 317CeGkE006519
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ0PR12MB6880:EE_
+X-MS-Office365-Filtering-Correlation-Id: 23c0a96c-621b-481c-4d2a-08db09085ea8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JdD/sMrzjX+OsWcGNyJYdkJXkyG5t3T585/3Cva1XqSM4k+gslXwd/UttHv9a4WrUo1EXh/ZMOWslQz3I0wmJBCSSaN9I/gs4TWJOxzBo5W7xn4OH399lnZbg7YZ9FuFTywTZszFLgYdkV8VKk/aG2VBrMeDqEIeGcdzEN3xTkInwlhLBJ6U8sJgtY1dMNnXhtMYlPt5XG4Xe8MQYu53UrOTttZB2DHH+a7iT3ezZou5NJFG43jQp6wjeGcKGjwIs4dZBERaozqMmKh3VEIHzp8+Zhfge/9Rl1Th4n00qergW+CVijXbGrOS7y2rrl7CWEjwQw5buf6p8SM5gaaprX1Yidtq5aujcAu93Nj7NhDRK3+hDsNdd5/in0mI0O7VfyzPi/Gsc1xN2d+TcVF/vbmpTFFZc2Uexi3Je5V61Dzc384fN5/HtFsWE9Pk9Fu6lpAhTdenrRyNaA6YGEE40idVvaIo99/t2UuA1s+Y4ey5SElw4lm98ZR8uKB4jY6nUUmMNkSf3Zc+BI6KqkUaxCF72mkEbai4/QlsBm6YrjszZhshIL/7CzL2aF/RWnP2mc7L7xW3QRHS1NERPUl+k9kpP+xPY4S1ayeILMTg7H8WpUlJ6xnhe5EjmBZmfHxj41KU0X4P3/tDhQxp5xkR3WQl5juyGcKCU46dvQrHHhBLOiCfNUVUgzrxcQjtrj0A4jLqinJY7i//d2ReyszjM92G8CdKJmvAXJqGxQr76uc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:LV2PR12MB5869.namprd12.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230025)(4636009)(396003)(376002)(39860400002)(346002)(136003)(366004)(451199018)(38100700002)(966005)(6506007)(6512007)(26005)(186003)(36756003)(8676002)(6486002)(86362001)(478600001)(66556008)(66946007)(4326008)(83380400001)(66476007)(316002)(54906003)(110136005)(4744005)(7416002)(5660300002)(2906002)(2616005)(8936002)(41300700001);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2CcNDrI8hs0C/xHgLFm3iSB0OK6otIrtoA20+BV1lE/YSPR68sRC31PH/pbF?=
+ =?us-ascii?Q?i8BsfHzY0JlxcA8a+SeO/39dw32nlZ5M1uSkSQVzMazhDS8rDTcOZ+KxP+ar?=
+ =?us-ascii?Q?5l8MIEpo2Zs0bB5wqNPnB62r8NmbN/HGuDY8rtfjEyPJgUOg8GT89FjVx7a4?=
+ =?us-ascii?Q?o3ynHwhkruyMsXVu4WTRKthiqWph9oXRznZN9L06J1zRfg+zSmFXwwWROEuK?=
+ =?us-ascii?Q?+fegg+37zpCNZpNiz5stK4/0S7Su3X8qsZbegSlaY0+A/9ks5CI6NWqFZP+T?=
+ =?us-ascii?Q?PGiv0sw+gtrUyKQdfWe6NQw8LuBeYCEdgd5AowdMr/82F1P8h8iXRMJccyM/?=
+ =?us-ascii?Q?WWUnF9HQuZDwLEea6zksY9an/WW2nFOBpaUzdG0VWvWnVlF57MKaoSTjji2J?=
+ =?us-ascii?Q?Q87VqWgj3YVVMfi+b16bTROgLqZRmgrAinTXi5K9paUBJQnz5oydvNzt23rD?=
+ =?us-ascii?Q?dgbsk9qBgORmtqJfFNebudfYoKKiITlOYNQ1Z5K4Rq2xwhBixuXNe0VtDf0o?=
+ =?us-ascii?Q?YHEq+1yxLc4O3phi5CIlCd8wztv1G+0kvY5rw1j/M6DiDZ1uBhf6oF2OHw4m?=
+ =?us-ascii?Q?g+P+kuoQFC56kVtsQ5cQ48bKT3527OqQKulWUJ2eooXFyYe4FbP3+HCGeuCn?=
+ =?us-ascii?Q?TCRi1ldtVkfxb/mYnjQp5L0hcMPV3/zNKgEYY3DW+wgj+alE4mbe9S8nizw2?=
+ =?us-ascii?Q?eawVVMBt/SuHrcssRR3LCgtwIts8OaiBSWmJ9pKyqPYE28ioA4V2ozEVuIAQ?=
+ =?us-ascii?Q?Kz1ojocheh+kpsVMUunSm+yXic0ClPHAphO/ujlq1nNA9D2ygaEImIN+ncN6?=
+ =?us-ascii?Q?PqwNw61qclQ4QV6vi/wo1aeplDCQmA4ywSGGUD8hb07iiLPqCglV3ixTHAgV?=
+ =?us-ascii?Q?sQhL45NZxzXczEGZ7wYKJcwLyc0G097UdO0Kr4bN/i3y/FvWPa4TsrrLuFDC?=
+ =?us-ascii?Q?cvf3dSghoOzs7TQ+CnVwQPQlfMFrkwRhjIIzohn3Ia0N5QJRHg9jrH7NALE3?=
+ =?us-ascii?Q?f0CNbS1nXMcE91CC0HRynqlCFdh1K6sc+7nMdihYsrBoZ8QZaUszmVOfdKNh?=
+ =?us-ascii?Q?0lWFlDxxZA+j93VKfIjcpXIOUdqyAInt+Y5FiiAd9NEPZ0Nma8DG6FvLul9g?=
+ =?us-ascii?Q?sOMCIJjYJiDMDE+R9ThM+BHlN3O2lLfKDQ8BzUqSnUylIdNZfbwnTtAgGX8P?=
+ =?us-ascii?Q?uYpGazX02VmT7GrY/CE22/y7XZ16/6jHaopbaXFYw3hgetZ6BwD2C6rkoz7N?=
+ =?us-ascii?Q?8nnqM5UBq6JjHprAwgY1A6b0KTTZhJX3+RqnH6lEq3/b1qMDTjIDzscE43nT?=
+ =?us-ascii?Q?veU/MuifhlWZsrKEazLPmmRf9kz0tzjKbTDuS0xxjwwGqRxOe4EzW+ZWMtNW?=
+ =?us-ascii?Q?1BZCi2196ho+w5L9RNuzdt0cfiLWTqndOuEtFi0vwiyDsRc9SzH9Df4CtQ2c?=
+ =?us-ascii?Q?/Kv+02oPwi4esGcQawqMrmNRJ8EaXw0eCq5RQ7f/MX4WQF8zJ5X28n2pbAKZ?=
+ =?us-ascii?Q?BfF1+VZmDkUh1MQ9wxMoGaJdcuvI6ncADN7Mgulg5XOvhWwCi2Z3hXE/wa7I?=
+ =?us-ascii?Q?gjOivSHnDiX1uxQ3DRDOZPSCtWEiAasGXFjFQbhM?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 23c0a96c-621b-481c-4d2a-08db09085ea8
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2023 12:39:35.6939 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wFE5rjgH5UwqLdhYIykeayxeZGBXfVLgVGmb4ZMKiAGTMqV90kx7BJFsF6hvYIIw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6880
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] tst_pids.c: fix fork failure on small memory
- systems
+X-Mailman-Approved-At: Tue, 07 Feb 2023 13:41:50 +0100
+Subject: Re: [LTP] LTP: preadv03: WARNING: CPU: 0 PID: 101250 at
+ mm/gup.c:2121 is_valid_gup_args (mm/gup.c:2121 (discriminator 1))
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -54,58 +124,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Jason Gunthorpe via ltp <ltp@lists.linux.it>
+Reply-To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: David Howells <dhowells@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+ David Hildenbrand <david@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
+ Alistair Popple <apopple@nvidia.com>, open list <linux-kernel@vger.kernel.org>,
+ lkft-triage@lists.linaro.org, Christoph Hellwig <hch@infradead.org>,
+ linux-mm <linux-mm@kvack.org>,
+ Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>, LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Running syscalls/msgstress03 on a system with less than ~1 GB of RAM fails:
+On Tue, Feb 07, 2023 at 02:09:27PM +0530, Naresh Kamboju wrote:
+> Following test regressions noticed on Linux next-20230207.
+> LTP syscalls pwritev03 and preadv03 failed.
+> The tests use external mounted SSD drives for creating tmp files.
+> 
+> Regressions found on arm64 juno-r2 and x86:
+>   - ltp-syscalls/pwritev03
+>   - ltp-syscalls/preadv03
+>   - ltp-syscalls/pwritev03_64
+>   - ltp-syscalls/preadv03_64
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-	msgstress03    1  TFAIL  :  msgstress03.c:163:  Fork failed (may be OK if under stress)
+Yes, this is what Stephen noticed, it is a merge resolution problem
+in linux-next
 
-The reason is that besides /proc/sys/kernel/pid_max, /proc/sys/kernel/threads-max
-is another factor determining how many processes a system could create.
+https://lore.kernel.org/all/Y+JBak3Tt8Pdw3yE@nvidia.com/
 
-Use the smaller number between pid_max and threads-max as the nprocs.
-
-Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
----
- lib/tst_pid.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-index 21cadef2a..3fb3f39ad 100644
---- a/lib/tst_pid.c
-+++ b/lib/tst_pid.c
-@@ -31,6 +31,7 @@
- #include "tst_safe_macros.h"
- 
- #define PID_MAX_PATH "/proc/sys/kernel/pid_max"
-+#define THREADS_MAX_PATH "/proc/sys/kernel/threads-max"
- #define CGROUPS_V1_SLICE_FMT "/sys/fs/cgroup/pids/user.slice/user-%d.slice/pids.max"
- #define CGROUPS_V2_SLICE_FMT "/sys/fs/cgroup/user.slice/user-%d.slice/pids.max"
- /* Leave some available processes for the OS */
-@@ -113,7 +114,7 @@ static int get_session_pids_limit(void (*cleanup_fn) (void))
- int tst_get_free_pids_(void (*cleanup_fn) (void))
- {
- 	FILE *f;
--	int rc, used_pids, max_pids, max_session_pids;
-+	int rc, used_pids, max_pids, max_session_pids, max_threads;
- 
- 	f = popen("ps -eT | wc -l", "r");
- 	if (!f) {
-@@ -129,6 +130,8 @@ int tst_get_free_pids_(void (*cleanup_fn) (void))
- 	}
- 
- 	SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &max_pids);
-+	SAFE_FILE_SCANF(cleanup_fn, THREADS_MAX_PATH, "%d", &max_threads);
-+	max_pids = (max_pids < max_threads) ? max_pids : max_threads;
- 
- 	max_session_pids = get_session_pids_limit(cleanup_fn);
- 	if ((max_session_pids > 0) && (max_session_pids < max_pids))
--- 
-2.34.1
-
+Jason
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
