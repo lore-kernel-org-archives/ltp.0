@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 132F9C636CC
-	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 13:17:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAECDC636CC
+	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 13:17:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 662E73CD0EC
-	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 14:17:30 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 0C6853CC214
+	for <ltp@archiver.kernel.org>; Tue,  7 Feb 2023 14:17:41 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 210D33C7835
+ by picard.linux.it (Postfix) with ESMTPS id 550C73C7835
  for <ltp@lists.linux.it>; Tue,  7 Feb 2023 14:17:20 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E1E971A00997
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A58B460091A
  for <ltp@lists.linux.it>; Tue,  7 Feb 2023 14:17:19 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 81CF33F7EA;
- Tue,  7 Feb 2023 13:17:19 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 82CE43F82A;
+ Tue,  7 Feb 2023 13:17:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1675775839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=NcwzSyIDTv65KHPWGkpALp0vcMBOwFqZ39k6j9u5zwE=;
- b=DyY/AaVVuN5M+AkE7GV7PdjRKSU5mGLQ81x96WfmZQBXbEen/pc6xx5wtJEGVAMm/kC/oK
- rrCAVbuwmaW61WxVgwXQfQ0uPt1YY+E08hsWg4FKUOosvhvVNFzkkvLWHtzVo/z1W80hbD
- GR+LkB6TvXtGPsE3nCXgpCfvmsCdNRs=
+ t=1675775838; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=b6LSDJj3ZQhsrDU2zwK0Abm7ANDGdie5NsAwzCrZOfs=;
+ b=Mn9CjLbqSSyV/VXM7SVJHLmpJ4+y/k2naVnjsFkCCDbBPtQVUOEvjg3FbeXctyjrrs8B5H
+ xR5tOOvBRc4YnHmjsE5XFf9RWjins7hjYBHuTAZuRH2bp86c2Re9vGaLXoNvODe+2zUIp0
+ mM22P5pNMihVeCcasyp9KYC7b8Qla8I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1675775839;
+ s=susede2_ed25519; t=1675775838;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=NcwzSyIDTv65KHPWGkpALp0vcMBOwFqZ39k6j9u5zwE=;
- b=e23NnOkP7iYjOVPEiK5aW9J23TzuaUrP/mr0uzkMeLu5AtHAKsy2Sr/HXdjhyqKWiwtqXj
- zs54gOTYjUzUBxCQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=b6LSDJj3ZQhsrDU2zwK0Abm7ANDGdie5NsAwzCrZOfs=;
+ b=KW8PAqZ8/eooV6Ta9pTb4W3rz1TDygFPqgYdxEfmEit4vcflNhy/oGYG1uF+PLOV+wkCj6
+ 8Aw4IUJy5zuT6GCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0F7BF13467;
- Tue,  7 Feb 2023 13:17:19 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 38CA013467;
+ Tue,  7 Feb 2023 13:17:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id iLT0AF9P4mOJbQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 07 Feb 2023 13:17:19 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id SYlTC15P4mOJbQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 07 Feb 2023 13:17:18 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue,  7 Feb 2023 14:17:13 +0100
-Message-Id: <20230207131714.2500-3-pvorel@suse.cz>
+Date: Tue,  7 Feb 2023 14:17:11 +0100
+Message-Id: <20230207131714.2500-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230207131714.2500-1-pvorel@suse.cz>
-References: <20230207131714.2500-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] ioctl01: Check tty device
+Subject: [LTP] [PATCH 0/3] ioctl01: device check, enable
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,46 +76,23 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-tty device must be a char device.
+Hi,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/syscalls/ioctl/ioctl01.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+NOTE: the same should be done for ioctl02, but it should be first
+converted to the new API.
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl01.c b/testcases/kernel/syscalls/ioctl/ioctl01.c
-index cb184aee40..5e121ae460 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl01.c
-@@ -25,6 +25,7 @@
- #include <termios.h>
- #include "tst_test.h"
- #include "lapi/ioctl.h"
-+#include "tst_safe_macros.h"
- 
- #define	INVAL_IOCTL	9999999
- #define	DEFAULT_TTY_DEVICE	"/dev/tty0"
-@@ -70,11 +71,20 @@ static void verify_ioctl(unsigned int i)
- 
- static void setup(void)
- {
-+	struct stat st;
-+
- 	if (!device)
- 		device = DEFAULT_TTY_DEVICE;
- 
- 	tst_res(TINFO, "Using device '%s'", device);
- 
-+	if (access(device, F_OK))
-+		tst_brk(TCONF, "Device '%s' does not exist", device);
-+
-+	SAFE_STAT(device, &st);
-+	if (!S_ISCHR(st.st_mode))
-+		tst_brk(TCONF, "Device '%s' is not a char device", device);
-+
- 	fd = SAFE_OPEN(device, O_RDWR, 0777);
- 	fd_file = SAFE_OPEN("x", O_CREAT, 0777);
- }
+Kind regards,
+Petr
+
+Petr Vorel (3):
+  ioctl01: Add default tty device
+  ioctl01: Check tty device
+  runtest/syscalls: Enable ioctl01
+
+ runtest/syscalls                          |  2 +-
+ testcases/kernel/syscalls/ioctl/ioctl01.c | 15 ++++++++++++++-
+ 2 files changed, 15 insertions(+), 2 deletions(-)
+
 -- 
 2.39.1
 
