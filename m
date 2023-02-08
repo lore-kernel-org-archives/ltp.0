@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6B9DC05027
-	for <ltp@archiver.kernel.org>; Wed,  8 Feb 2023 14:04:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA325C636CC
+	for <ltp@archiver.kernel.org>; Wed,  8 Feb 2023 14:13:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B0FDE3CC22A
-	for <ltp@archiver.kernel.org>; Wed,  8 Feb 2023 15:04:38 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 5B0CA3CC1AC
+	for <ltp@archiver.kernel.org>; Wed,  8 Feb 2023 15:13:24 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DE42C3C632B
- for <ltp@lists.linux.it>; Wed,  8 Feb 2023 15:04:25 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 1126C3CC139
+ for <ltp@lists.linux.it>; Wed,  8 Feb 2023 15:13:12 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 214321000CED
- for <ltp@lists.linux.it>; Wed,  8 Feb 2023 15:04:24 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 764391A00E0F
+ for <ltp@lists.linux.it>; Wed,  8 Feb 2023 15:13:11 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EBB991F8B4;
- Wed,  8 Feb 2023 14:04:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6D8E134254;
+ Wed,  8 Feb 2023 14:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1675865063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1675865591;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=WJmI+eO0zWSiabxldZrQnHL1fVdO7xukWojv8ZyT+rY=;
- b=qHUZAXMHWlmLwjuIi7rWX6QPIpQCLo6sn+ajMWxT+E/AybedvTxEM6Q6exhkTuBaG6CnaE
- a1NoXjG7jnttN974YwaAP6DU/O2A5zhlTIaoDHXqlIUBv5RVHI3ewmo0sXafoOD9Zxj5E1
- nBqJch6adSaw9ydhAYQmS4X8ribdSG4=
+ bh=F1umj43KTKQUdFGbkFIesi3d21xKvSwdK2sAbwxUQG4=;
+ b=ZqGDPfuo8VUhRuMHqztGO9bNWybW/offinDbibuq4tACIdszzN3/pnUNOUSi22jULy6AJm
+ y3FTJubyKmFLAXpyKEgOsuZDrj31+6CpA7GC0ZvtDDSG4vUCpdpSzy96MYs3JDUvUZjobD
+ 98i0xffG02Qu7KD2OzftLlrwbCDRgCI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1675865063;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1675865591;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=WJmI+eO0zWSiabxldZrQnHL1fVdO7xukWojv8ZyT+rY=;
- b=lbNaluKJp9pJYxQzfWtN67Jh5vRtRfi9kwzESl+4ujz1dsG2BqLk3OAZX016De0BRJ5RFG
- LI3pKmMYXWqHRSAA==
+ bh=F1umj43KTKQUdFGbkFIesi3d21xKvSwdK2sAbwxUQG4=;
+ b=hG8ItSyllGDiC8JsbinlSRXB4DCrLry/IBPm+XYUlvXJxcDhX5u5ZtMoAvhpUAWl5oqUOm
+ IIJcXwPUevhiicAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9D321358A;
- Wed,  8 Feb 2023 14:04:23 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5718C1358A;
+ Wed,  8 Feb 2023 14:13:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id IJM7NOer42NzGQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 08 Feb 2023 14:04:23 +0000
-Date: Wed, 8 Feb 2023 15:05:54 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Y+OsQt/ReLv1pt5R@yuki>
-References: <20230126215401.29101-1-pvorel@suse.cz>
- <20230126215401.29101-7-pvorel@suse.cz> <Y+N3DxhCsh7NAQoE@yuki>
- <20230208134523.GA31469@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id HtM4FPet42OyHQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 08 Feb 2023 14:13:11 +0000
+Date: Wed, 8 Feb 2023 15:13:10 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20230208141309.GC31469@pevik>
+References: <20230207131714.2500-1-pvorel@suse.cz>
+ <20230207131714.2500-2-pvorel@suse.cz>
+ <CAEemH2chcTe263-zqpSF2Gc2CVc8NC+G-KZsFMbwoxEKyjA01w@mail.gmail.com>
+ <20230208135404.GB31469@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230208134523.GA31469@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20230208135404.GB31469@pevik>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 6/9] tst_net.sh: Rename function + add doc
+Subject: Re: [LTP] [PATCH 1/3] ioctl01: Add default tty device
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,56 +79,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > What I didn't get here is why do we put the code to detect IPV6 into two
-> > different functions and then call it twice nearly from the same place in
-> > the library. Is there a reason why can't we put the sysctl check right
-> > after the proc check in the current ipv6 detection function?
-> 
-> Well, the old check (cmdline check for ipv6.disable=1) must be run before
-> creating interfaces. But the new sysctl based tests test interfaces
-> (${L,R}HOST_IFACES).  Technically it could be run just after ipv6.disable=1
-> check, because it's needed only for the non-default ssh based two host setup [1].
-> But ${L,R}HOST_IFACES initialization:
-> 
-> export LHOST_IFACES="${LHOST_IFACES:-eth0}"
-> export RHOST_IFACES="${RHOST_IFACES:-eth0}"
-> 
-> would have to be moved before this check and run only for ssh based test
-> (the default netns based single host will create interfaces in init_ltp_netspace()
-> and for them ipv6.disable=1 check is good enough). I wanted to keep variables in
-> single place, but I'm ok to add this exception. Or we can keep variables where
-> they are and run this check on ${LHOST_IFACES:-} and ${RHOST_IFACES:-} (i.e.
-> only if these interfaces are set externally - which should be only on ssh two
-> host based setup).
-> 
-> I also thought that having to run this new check separately could be useful
-> (setup can change any time). But as nobody required that /complained it's
-> needed, let's ignore this.
+> Hi Li,
 
-Ah, it's more complicated than a single switch, there is actually a
-master swtich, default settings and per interface settings.
+> > > +#define        DEFAULT_TTY_DEVICE      "/dev/tty0"
 
-i.e. /proc/sys/net/ipv6/conf/default/disable_ipv6
-     /proc/sys/net/ipv6/conf/all/disable_ipv6
-     /proc/sys/net/ipv6/conf/${IFACE}/disable_ipv6
+> > Hidden the device path parameter is a good idea.
 
-Since the deafult value is I suppose inherited by newly added interfaces
-we have to check if ipv6 is disabled by sysctl in the case of network
-namespaces as well, right? Technically we could probably check the
-default/disable_ipv6 before we attempt to create new interfaces, but I
-guess that we woudl rather want to have the same code both for ssh and
-namespaces.
+> > But maybe can we add a function to find available char devices instead
+> > of using the tty0 as default? In that function, we do the S_ISCHR() check
+> > and return the valid path of it. Then the rest test (e.g. ioctl02) can make
+> > use of it but not set the specified device as well. WDYT?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> FYI I'm using S_ISCHR() in other patches, which check if device can be used.
+> Implementing search looks like a good idea. Are useful files any /dev/tty*
+> (including /dev/tty, /dev/ttyACM0, /dev/ttyS0) or should I avoid any file
+> or include other paths?
+
+I also wonder if we still want to keep -D parameter (i.e. allow tester to pass a
+file).
+
+Kind regards,
+Petr
+
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
