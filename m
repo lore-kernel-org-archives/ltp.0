@@ -4,76 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 508D7C61DA4
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 13:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A824DC05027
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 13:49:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 231603CC0B4
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 14:39:24 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 419603CC0A4
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 14:49:53 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 658E33C03EB
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 14:39:13 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C2DC23C01AA
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 14:49:43 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A3284600ACB
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 14:39:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1675949951;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BD2951400FB2
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 14:49:42 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E35B35CFF3;
+ Thu,  9 Feb 2023 13:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1675950581;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zS9p+W9x+EOx02DbTxYkV3E/zs+hpXiZCcBloZyK8yw=;
- b=G3r3og4D8HTXXHwBb4LgyIfACq5rXMM59qRjtV+b7dDvLVzogAMAiQjwIlTYNct23M8NzH
- ivacBnk00smjQG7F6tICMPvaY4U9kSJBkYAeEylkkgXsqh+ZZEHh3oXoJB0G1ov5Inxuxa
- pZ38rMLRTyi2EamWR1oO/MB4SlvYD8I=
-Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
- [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-472-ow41ZnigM9iGDEpkZcE2xw-1; Thu, 09 Feb 2023 08:39:10 -0500
-X-MC-Unique: ow41ZnigM9iGDEpkZcE2xw-1
-Received: by mail-ua1-f72.google.com with SMTP id
- f12-20020ab03d0c000000b00686debaf70aso906894uax.23
- for <ltp@lists.linux.it>; Thu, 09 Feb 2023 05:39:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=zS9p+W9x+EOx02DbTxYkV3E/zs+hpXiZCcBloZyK8yw=;
- b=OIhA3WeDvlS1UotUzGXmtlvyoJ2VsGrKrqrI+NJNI5IqJLI2qTwR4TNd+V1UkMSDZN
- G/iaLN5SsNKEvxKe97orGksYAfUR6Cma92+jNllR/LHf3P6DO+DY+5vVs43p3DrnbKso
- KBsoP/14KH1K7yFiyD6c+tyWBHfU0gLHxWyXlQX2WmCejxxgJb0AfrXJPdVfrCZQvPz4
- 70xMd2ELPYzjEEDxuGlpwKKrDMII0aD2QNn3bxXDkt+VEx10DA4p9+ehrrb3sYtInerQ
- IvVb+IcwtVwRSP+0523nwGDKemq9yVIB5tix4F9A9+Obj5W9+nmYmIPC3Bl4lcbYFh03
- BVNA==
-X-Gm-Message-State: AO0yUKVpusBawI0GjUc53jjBj/btLE6uxNT85Yu1cZakLAcAzW3TmUbz
- JueGBOHDaKITN6incwcp/QqJu4oRDSjN+YkuQvcI87a4bZVKDZTM0Nx42IdSxsSN/WQ8MFTzGKM
- RTEZsZwzRUbfoYezZPuE189wKPTE=
-X-Received: by 2002:a1f:5804:0:b0:3e1:f8b0:e35d with SMTP id
- m4-20020a1f5804000000b003e1f8b0e35dmr2697849vkb.35.1675949949600; 
- Thu, 09 Feb 2023 05:39:09 -0800 (PST)
-X-Google-Smtp-Source: AK7set+dAxKJQphzg6sWLuTMkrZ1Tfysz4rUBVJrlMKlCGbxk9EfXeNNYjc94zlNNNPwaZUDaJpMCei2abLMZVTIv4Q=
-X-Received: by 2002:a1f:5804:0:b0:3e1:f8b0:e35d with SMTP id
- m4-20020a1f5804000000b003e1f8b0e35dmr2697844vkb.35.1675949949357; Thu, 09 Feb
- 2023 05:39:09 -0800 (PST)
+ bh=z0heynYyEzJVsoMewS9AhwNJQec6A6v1D1Sm0V75hhU=;
+ b=loWydvYxd+H5nc5WsstP1wGSebYUt4j3KgfQUtRX6DpqrpX6ghUWbqKmpk/9qQDAAQL797
+ UeCtY3hzEy4R52jQgz2x1EenTR3/zrVsEpykDvCiCtUaqfSQFE7uJq7h3jEt352bdMreJ8
+ SXoLZRL7aapXFaeUeGFFywMwqQs+V5s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1675950581;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=z0heynYyEzJVsoMewS9AhwNJQec6A6v1D1Sm0V75hhU=;
+ b=98c9hP+EsMUWEYmyialwbMFpJFwqWhs/xOj5ZATEqGgiYdyTCcnKfJl9fjXjssf6DonIrB
+ E0gcOSCEEYT8r8Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD8E9138E4;
+ Thu,  9 Feb 2023 13:49:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id wRCaLPX55GO6fAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 09 Feb 2023 13:49:41 +0000
+Date: Thu, 9 Feb 2023 14:49:39 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Leo Liang <ycliang@andestech.com>
+Message-ID: <Y+T58w801imaclXo@pevik>
+References: <20230207124008.1788759-1-ycliang@andestech.com>
+ <Y+JVPi5jo++joA/g@pevik> <Y+T2qzXrZcGK/EQt@ubuntu01>
 MIME-Version: 1.0
-References: <20230209090307.491586-1-pifang@redhat.com> <Y+TTxcCMpoa8umhj@yuki>
-In-Reply-To: <Y+TTxcCMpoa8umhj@yuki>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 9 Feb 2023 14:39:14 +0100
-Message-ID: <CAASaF6yQBFOiJ4Er8J=4VgWF5SFqS3=SY=moSN1FFD9UBjTYhQ@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Y+T2qzXrZcGK/EQt@ubuntu01>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] aiocp: Filter out O_DIRECT before read
+Subject: Re: [LTP] [PATCH 1/1] tst_pids.c: fix fork failure on small memory
+ systems
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,93 +78,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: liwan@redhat.com, ltp@lists.linux.it, rpalethorpe@suse.com
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Feb 9, 2023 at 12:05 PM Cyril Hrubis <chrubis@suse.cz> wrote:
->
-> Hi!
-> > When aiocp executed with -f DIRECT will fail.
-> >
-> > <<<test_start>>>
-> > tag=AD049 stime=1675520824
-> > cmdline="aiocp -b 8k -n 8 -f DIRECT"
-> > contacts=""
-> > analysis=exit
-> > <<<test_output>>>
-> > tst_test.c:1560: TINFO: Timeout per run is 0h 30m 30s
-> > aiocp.c:211: TINFO: Maximum AIO blocks: 65536
-> > tst_device.c:585: TINFO: Use uevent strategy
-> > aiocp.c:250: TINFO: Fill srcfile.bin with random data
-> > aiocp.c:279: TINFO: Copy srcfile.bin -> dstfile.bin
-> > aiocp.c:291: TINFO: Comparing srcfile.bin with dstfile.bin
-> > aiocp.c:306: TBROK: read(3,0x7ffcd743abe0,4096) failed, returned -1: EINVAL (22)
-> > ...
-> >
-> > syscall read manual ERROR section said that:
-> > EINVAL fd  is  attached to an object which is unsuitable for reading;
-> > or the file was opened with the O_DIRECT flag, and either the address
-> > specified in buf, the value specified in  count, or the file offset is
-> > not suitably aligned.
-> >
-> > We need filter out O_DIRECT flag before read.
->
-> This is not very good changelog, I had to look closely at the source to
-> figure out why we may need this.
->
-> Better description should say that the code which checks that the data
-> has been written correctly does not use aligned buffers, which may cause
-> a failure like the one above.
+Hi all,
 
-+1, I also found it confusing (do we pass DIRECT as parameter just to
-ignore it?)
+Thanks Leo, I merged it with MIN(max_pids, max_threads), thanks Cyril for
+catching it.
 
->
-> > Signed-off-by: Ping Fang <pifang@redhat.com>
-> > ---
-> >  testcases/kernel/io/ltp-aiodio/aiocp.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/testcases/kernel/io/ltp-aiodio/aiocp.c b/testcases/kernel/io/ltp-aiodio/aiocp.c
-> > index bc0e209b2..e4252d641 100644
-> > --- a/testcases/kernel/io/ltp-aiodio/aiocp.c
-> > +++ b/testcases/kernel/io/ltp-aiodio/aiocp.c
-> > @@ -297,8 +297,8 @@ static void run(void)
-> >               return;
-> >       }
-> >
-> > -     srcfd = SAFE_OPEN(srcname, srcflags | O_RDONLY, 0666);
-> > -     dstfd = SAFE_OPEN(dstname, srcflags | O_RDONLY, 0666);
-> > +     srcfd = SAFE_OPEN(srcname, (srcflags & ~O_DIRECT) | O_RDONLY, 0666);
-> > +     dstfd = SAFE_OPEN(dstname, (srcflags & ~O_DIRECT) | O_RDONLY, 0666);
->
-> I guess that we can as well just remove the srcflags and keep just the
-> O_RDONLY since the srcflags are by definition either O_RDONLY or
-> O_DIRECT | O_RDONLY.
->
-> I suppose that using scrflags and dstflags for anything else than the
-> filedescriptors passed to the async_run() is actually a mistake.
->
-> >       reads = howmany(filesize, buffsize);
-> >
-> > --
-> > 2.31.1
-> >
-> >
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
+> > BTW IMHO it'd be better to rewrite
+> > f = popen("ps -eT | wc -l", "r");
+> > to list count of /proc/[0-9]*/ in plain C (TODO for us).
 
+
+> Thanks for the review!
+> I could send a v2 to add this as well.
+
+Thank you, if you have time to send another patch to fix.
+
+Kind regards,
+Petr
+
+> Best regards,
+> Leo
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
