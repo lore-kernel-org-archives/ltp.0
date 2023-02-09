@@ -4,67 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B2C5C05027
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 08:10:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 850E5C61DA4
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 09:03:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 382EE3CC0B8
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 09:10:17 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 997F93CC0A5
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 10:03:27 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F30FC3C2A67
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 09:10:06 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1A2F73C69D4
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 10:03:16 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 485991A010EA
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 09:10:05 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4DA07200C65
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 10:03:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1675933394;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ISjHA2Sj0265vTXsw2dyhOqoC/nq5q9pL+Klc2pnU3M=;
+ b=QYseyJScUPDS+uTfxdn5ME8BiPLPat1K3dzvO9fHlOEAbn20wWBjC8eZ1AtgWfkV6u92nB
+ uku36qlYGd+Nl4xIay/e2jE4BFeCCG32z6huxXhQ/pKXulPE98Ji2p+yslT2FJ6NXfoaul
+ 2XcbuNcbX0sjhIzT/bldIMAo5iNnlz8=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-138-xUjpyPuUNfS_P-zRrXS6ow-1; Thu, 09 Feb 2023 04:03:11 -0500
+X-MC-Unique: xUjpyPuUNfS_P-zRrXS6ow-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.6])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 906FA34ED6;
- Thu,  9 Feb 2023 08:10:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1675930205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=SkLxqRmITDtlFQS1aM+2BbuxT6FBydO7toif32JeAdo=;
- b=OUInnE4huJzscqKH4X854T9rqAXPQmV99IV3Af+HuKrh7+nElYXr2LkuPmk0BddpyFgZdt
- dZMk40VZfmZF1qIvdTx8x60KdhrRnVmnHo62aPGWscYr9brI7bTATSQHuTve4a4wO+638O
- 8/mebr9322BhYWZjH3VHTWM9WB8xcvQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1675930205;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=SkLxqRmITDtlFQS1aM+2BbuxT6FBydO7toif32JeAdo=;
- b=dhdkx9gk2Qo6u98PMKHf03NAY/o1qYS62Cp4Lv0IlIWHSpV4OpvvNQKGoXZxxyd/I39r84
- N8y6q4inMr8r6YDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74D3213A1F;
- Thu,  9 Feb 2023 08:10:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wKAoG12q5GNrCwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 09 Feb 2023 08:10:05 +0000
-Date: Thu, 9 Feb 2023 09:11:35 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Y+Sqt9NA9S4gxISX@yuki>
-References: <20230208092327.28914-1-pvorel@suse.cz> <Y+NzkUcAyeupRwmP@pevik>
- <Y+Ox+H1awhu+h2j+@yuki> <20230208145833.GB1918@pevik>
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DC81E1C05149;
+ Thu,  9 Feb 2023 09:03:10 +0000 (UTC)
+Received: from nay-workstation.nay.redhat.com (unused-66-82-86.nay.redhat.com
+ [10.66.82.86])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 0148A2166B29;
+ Thu,  9 Feb 2023 09:03:08 +0000 (UTC)
+From: Ping Fang <pifang@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu,  9 Feb 2023 17:03:07 +0800
+Message-Id: <20230209090307.491586-1-pifang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230208145833.GB1918@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] testscripts/network.sh: Don't load tst_net.sh
+Subject: [LTP] [PATCH v1] aiocp: Filter out O_DIRECT before read
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,23 +68,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: liwan@redhat.com, rpalethorpe@suse.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Please read further info in my later reaction [1]
-> (TL;DR: not all include it, but these aren't in runtest files anyway).
+When aiocp executed with -f DIRECT will fail.
 
-In that case:
+<<<test_start>>>
+tag=AD049 stime=1675520824
+cmdline="aiocp -b 8k -n 8 -f DIRECT"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1560: TINFO: Timeout per run is 0h 30m 30s
+aiocp.c:211: TINFO: Maximum AIO blocks: 65536
+tst_device.c:585: TINFO: Use uevent strategy
+aiocp.c:250: TINFO: Fill srcfile.bin with random data
+aiocp.c:279: TINFO: Copy srcfile.bin -> dstfile.bin
+aiocp.c:291: TINFO: Comparing srcfile.bin with dstfile.bin
+aiocp.c:306: TBROK: read(3,0x7ffcd743abe0,4096) failed, returned -1: EINVAL (22)
+...
 
-Acked-by: Cyril Hrubis <chrubis@suse.cz>
+syscall read manual ERROR section said that:
+EINVAL fd  is  attached to an object which is unsuitable for reading;
+or the file was opened with the O_DIRECT flag, and either the address
+specified in buf, the value specified in  count, or the file offset is
+not suitably aligned.
 
+We need filter out O_DIRECT flag before read.
+
+Signed-off-by: Ping Fang <pifang@redhat.com>
+---
+ testcases/kernel/io/ltp-aiodio/aiocp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/io/ltp-aiodio/aiocp.c b/testcases/kernel/io/ltp-aiodio/aiocp.c
+index bc0e209b2..e4252d641 100644
+--- a/testcases/kernel/io/ltp-aiodio/aiocp.c
++++ b/testcases/kernel/io/ltp-aiodio/aiocp.c
+@@ -297,8 +297,8 @@ static void run(void)
+ 		return;
+ 	}
+ 
+-	srcfd = SAFE_OPEN(srcname, srcflags | O_RDONLY, 0666);
+-	dstfd = SAFE_OPEN(dstname, srcflags | O_RDONLY, 0666);
++	srcfd = SAFE_OPEN(srcname, (srcflags & ~O_DIRECT) | O_RDONLY, 0666);
++	dstfd = SAFE_OPEN(dstname, (srcflags & ~O_DIRECT) | O_RDONLY, 0666);
+ 
+ 	reads = howmany(filesize, buffsize);
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.31.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
