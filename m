@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 294D3C61DA4
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 14:51:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02CF6C61DA4
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 14:52:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F3AC93CC0A1
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 15:51:19 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 12C073CC0A3
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 15:52:15 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 41BE53CB0EA
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 15:51:09 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 3E1353CB0EA
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 15:52:05 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6C55410000D3
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 15:51:08 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BF8B11A007FE
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 15:52:04 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C54095C953;
- Thu,  9 Feb 2023 14:51:07 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B69DF5CAE7;
+ Thu,  9 Feb 2023 14:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1675954267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1675954323; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Vl0gy+u/gx4yjuoQOVEyQLzW6MkVzb5h1xtZ6q5COws=;
- b=Q49xy+wLMXZuvEGlLAuIg/mR3YW2hUa4/nD4J1ZOXE5voIAw5AmAHsJGhBMhKa830Spqxt
- KiuFqvjdxyf9Zu+galSJop841Nl+AMAJYIUQBPEMzf6JQVWdgNMjqm81ysJmd3Cyfecgy3
- sxckS0CvUxJkFIi1RL5bk7xZYKwKhRU=
+ bh=EjkIQbT43hJ8H9PcYTBL55jUl8QfpNAyW1d/GpC48dw=;
+ b=PHnsxY7oAC4I3iHQf8obZSAKPdCmLkLPAhhb4om8dKRxKrnts9mz+HIm7yP1yKlEuyHKo5
+ Vy25GXREbAR9bEGPCvZfFqVoq+lvWBed7FVyAKpwgNPWkha7RvBRnf5ZVqaB3Ju2Ymx1Ud
+ MELvIhLI7T59+PFnFRF240K9T15NhJs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1675954267;
+ s=susede2_ed25519; t=1675954323;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Vl0gy+u/gx4yjuoQOVEyQLzW6MkVzb5h1xtZ6q5COws=;
- b=FhD0YkmpmuwnM3vaXFgsWJrilVCYAnzqA7PX8cVTe8N8iv/cKHcR2xlYSXJ7fXz2DN+0QJ
- icuacy1SlXOggoDA==
+ bh=EjkIQbT43hJ8H9PcYTBL55jUl8QfpNAyW1d/GpC48dw=;
+ b=HZYI7Qw1da7UpyBZCXCVIZBaLJnqzY/1YuQa6m/Q5mN4iGSLMF2K9CATJyOB2d9yBFasJU
+ hqgdkLIPN5VjHDCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B3713138E4;
- Thu,  9 Feb 2023 14:51:07 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A36F5138E4;
+ Thu,  9 Feb 2023 14:52:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id SWD9KlsI5WP/IgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 09 Feb 2023 14:51:07 +0000
-Date: Thu, 9 Feb 2023 15:52:37 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id ZWmPJpMI5WOKIwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 09 Feb 2023 14:52:03 +0000
+Date: Thu, 9 Feb 2023 15:53:34 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Y+UItbp4v2WKZedL@yuki>
+Message-ID: <Y+UI7lmdULFVhMWN@yuki>
 References: <20230129115021.25778-1-wegao@suse.com>
  <20230209131902.12260-1-wegao@suse.com> <Y+UAENJVDUSDPAay@pevik>
- <Y+UEqNtUTNaGVwXT@pevik>
+ <Y+UCwJZhgIlP5Sjs@yuki> <Y+UF4eCFAR0jy7P7@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Y+UEqNtUTNaGVwXT@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <Y+UF4eCFAR0jy7P7@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2] fsconfig: New case cover CVE-2022-0185
 X-BeenThere: ltp@lists.linux.it
@@ -84,114 +84,14 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> I guess something like this should be used:
-> 
-> 	for (unsigned int i = 0; i < 5000; i++) {
-> 		TST_EXP_FAIL_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0),
-> 							EINVAL);
+> I'd test all kernels and expect them to return EINVAL.
+> Because 722d94847de29 was backported to 5.10.x and 5.4.x stable kernels.
+> It'd be worth to check how it behaves on older stable (e.g. 4.19.x) and either
+> raise .min_kernel lower than 5.4 if easily modified behavior for older kernels
+> or ask for 5.4 otherwise. (I mean .min_kver = "5.17", is too aggressive).
 
-It doesn't fail on older kernels, or did I misinterpret something? There
-are three stable kernel trees based on kernels that are supposedly
-affected, we do want to run this test for them too.
-
-> 		if (!TST_PASS)
-> 			return;
-> 	}
-> 
-> 	tst_res(TPASS, "fsconfig() overflow on %s haven't triggerred crash",
-> 			tst_device->fs_type);
-> 
-> but that fails on Btrfs.
-> 
-> > > +}
-> > > +
-> > > +static struct tst_test test = {
-> > > +	.test_all = run,
-> > > +	.setup = setup,
-> > > +	.cleanup = cleanup,
-> > > +	.needs_root = 1,
-> > > +	.format_device = 1,
-> > > +	.mntpoint = MNTPOINT,
-> > > +	.all_filesystems = 1,
-> > > +	.min_kver = "5.17",
-> > You probably add it because 722d94847de29 comes from 5.17-rc1, but that should
-> > go away, because this fix has been backported to (at least) sles kernels (which
-> > are older).
-> 
-> > > +	.tags = (const struct tst_tag[]) {
-> > > +		{"linux-git", "722d94847de29"},
-> > > +		{"CVE", "2020-29373"},
-> > IMHO CVE-2020-29373 is about io_uring
-> > https://nvd.nist.gov/vuln/detail/CVE-2020-29373
-> > Does it really belong to this test? If yes, it has another kernel fix.
-> > And you don't mention it in docparse description.
-> 
-> > > +		{"CVE", "2022-0185"},
-> > > +		{}
-> > > +	}
-> 
-> Results on my machine (6.2.0-rc6)
-> 
-> tst_test.c:1634: TINFO: === Testing on ext2 ===
-> tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-> mke2fs 1.46.5 (30-Dec-2021)
-> note ext2 is *not* using new mount API
-> fsconfig03.c:50: TPASS: fsconfig() overflow on ext2 haven't triggerred crash
-> tst_test.c:1634: TINFO: === Testing on ext3 ===
-> tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
-> mke2fs 1.46.5 (30-Dec-2021)
-> fsconfig03.c:50: TPASS: fsconfig() overflow on ext3 haven't triggerred crash
-> tst_test.c:1634: TINFO: === Testing on ext4 ===
-> tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
-> mke2fs 1.46.5 (30-Dec-2021)
-> fsconfig03.c:50: TPASS: fsconfig() overflow on ext4 haven't triggerred crash
-> tst_test.c:1634: TINFO: === Testing on xfs ===
-> tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
-> fsconfig03.c:50: TPASS: fsconfig() overflow on xfs haven't triggerred crash
-> tst_test.c:1634: TINFO: === Testing on btrfs ===
-> tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
-> fsconfig03.c:44: TFAIL: fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0) succeeded
-> Btrfs should be investigated (IMHO btrfs is using new mount API).
-> 
-> tst_test.c:1634: TINFO: === Testing on vfat ===
-> tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-> fsconfig03.c:44: TFAIL: fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0) succeeded
-> 
-> tst_test.c:1634: TINFO: === Testing on exfat ===
-> tst_test.c:1093: TINFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
-> fsconfig03.c:50: TPASS: fsconfig() overflow on exfat haven't triggerred crash
-> Interesting, exfat works :) It also uses new mount API.
-> 
-> tst_test.c:1634: TINFO: === Testing on ntfs ===
-> tst_test.c:1093: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
-> The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-> The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-> The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
-> To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
-> Windows will not be able to boot from this device.
-> fsconfig03.c:29: TBROK: fsopen() failed: ENODEV (19)
-> Hm, that's strange
-
-ENODEV means that filesystem is not compiled in kernel, that's strage,
-that would mean that you have a broken system, e.g. kernel modules that
-support these filesystems are not installed properly or something like
-that.
-
-If you look at fs/filesystems.c the get_fs_type() function called from
-the fsopen() uses the very same array that is used by the
-/proc/filesystems we parse in LTP to get list of supported filesystems.
-
-This is the place where you can get ENODEV:
-
-https://elixir.bootlin.com/linux/latest/source/fs/fsopen.c#L132
-
-And this is the place where it can fail:
-
-https://elixir.bootlin.com/linux/latest/source/fs/filesystems.c#L261
-
-> Due above, I suggest this:
-> 	.skip_filesystems = (const char *const []){"ntfs", "vfat", NULL},
-
+As long as the backported fix causes fsopen() to return EINVAL we should
+check for it as well.
 
 -- 
 Cyril Hrubis
