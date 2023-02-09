@@ -4,47 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6940CC61DA4
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 13:37:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 508D7C61DA4
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 13:39:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6F5353CC0BE
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 14:37:03 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 231603CC0B4
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 14:39:24 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4FC633C03EB
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 14:36:54 +0100 (CET)
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
- [60.248.80.70])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 658E33C03EB
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 14:39:13 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 539E32000AF
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 14:36:52 +0100 (CET)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
- by Atcsqr.andestech.com with ESMTP id 319DajAJ002528;
- Thu, 9 Feb 2023 21:36:45 +0800 (+08)
- (envelope-from ycliang@andestech.com)
-Received: from ubuntu01 (10.0.12.75) by ATCPCS16.andestech.com (10.0.1.222)
- with Microsoft SMTP Server id 14.3.498.0; Thu, 9 Feb 2023 21:36:46 +0800
-Date: Thu, 9 Feb 2023 13:36:36 +0000
-From: Leo Liang <ycliang@andestech.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <Y+T25EqnoMz60ESf@ubuntu01>
-References: <20230207124008.1788759-1-ycliang@andestech.com>
- <Y+Tvqit/PmTn8Da5@yuki>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A3284600ACB
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 14:39:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1675949951;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=zS9p+W9x+EOx02DbTxYkV3E/zs+hpXiZCcBloZyK8yw=;
+ b=G3r3og4D8HTXXHwBb4LgyIfACq5rXMM59qRjtV+b7dDvLVzogAMAiQjwIlTYNct23M8NzH
+ ivacBnk00smjQG7F6tICMPvaY4U9kSJBkYAeEylkkgXsqh+ZZEHh3oXoJB0G1ov5Inxuxa
+ pZ38rMLRTyi2EamWR1oO/MB4SlvYD8I=
+Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
+ [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-472-ow41ZnigM9iGDEpkZcE2xw-1; Thu, 09 Feb 2023 08:39:10 -0500
+X-MC-Unique: ow41ZnigM9iGDEpkZcE2xw-1
+Received: by mail-ua1-f72.google.com with SMTP id
+ f12-20020ab03d0c000000b00686debaf70aso906894uax.23
+ for <ltp@lists.linux.it>; Thu, 09 Feb 2023 05:39:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=zS9p+W9x+EOx02DbTxYkV3E/zs+hpXiZCcBloZyK8yw=;
+ b=OIhA3WeDvlS1UotUzGXmtlvyoJ2VsGrKrqrI+NJNI5IqJLI2qTwR4TNd+V1UkMSDZN
+ G/iaLN5SsNKEvxKe97orGksYAfUR6Cma92+jNllR/LHf3P6DO+DY+5vVs43p3DrnbKso
+ KBsoP/14KH1K7yFiyD6c+tyWBHfU0gLHxWyXlQX2WmCejxxgJb0AfrXJPdVfrCZQvPz4
+ 70xMd2ELPYzjEEDxuGlpwKKrDMII0aD2QNn3bxXDkt+VEx10DA4p9+ehrrb3sYtInerQ
+ IvVb+IcwtVwRSP+0523nwGDKemq9yVIB5tix4F9A9+Obj5W9+nmYmIPC3Bl4lcbYFh03
+ BVNA==
+X-Gm-Message-State: AO0yUKVpusBawI0GjUc53jjBj/btLE6uxNT85Yu1cZakLAcAzW3TmUbz
+ JueGBOHDaKITN6incwcp/QqJu4oRDSjN+YkuQvcI87a4bZVKDZTM0Nx42IdSxsSN/WQ8MFTzGKM
+ RTEZsZwzRUbfoYezZPuE189wKPTE=
+X-Received: by 2002:a1f:5804:0:b0:3e1:f8b0:e35d with SMTP id
+ m4-20020a1f5804000000b003e1f8b0e35dmr2697849vkb.35.1675949949600; 
+ Thu, 09 Feb 2023 05:39:09 -0800 (PST)
+X-Google-Smtp-Source: AK7set+dAxKJQphzg6sWLuTMkrZ1Tfysz4rUBVJrlMKlCGbxk9EfXeNNYjc94zlNNNPwaZUDaJpMCei2abLMZVTIv4Q=
+X-Received: by 2002:a1f:5804:0:b0:3e1:f8b0:e35d with SMTP id
+ m4-20020a1f5804000000b003e1f8b0e35dmr2697844vkb.35.1675949949357; Thu, 09 Feb
+ 2023 05:39:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y+Tvqit/PmTn8Da5@yuki>
-User-Agent: Mutt/2.0.5 (2021-01-21)
-X-Originating-IP: [10.0.12.75]
-X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 319DajAJ002528
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <20230209090307.491586-1-pifang@redhat.com> <Y+TTxcCMpoa8umhj@yuki>
+In-Reply-To: <Y+TTxcCMpoa8umhj@yuki>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 9 Feb 2023 14:39:14 +0100
+Message-ID: <CAASaF6yQBFOiJ4Er8J=4VgWF5SFqS3=SY=moSN1FFD9UBjTYhQ@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] tst_pids.c: fix fork failure on small memory
- systems
+Subject: Re: [LTP] [PATCH v1] aiocp: Filter out O_DIRECT before read
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -56,67 +85,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: liwan@redhat.com, ltp@lists.linux.it, rpalethorpe@suse.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
-
-On Thu, Feb 09, 2023 at 02:05:46PM +0100, Cyril Hrubis wrote:
+On Thu, Feb 9, 2023 at 12:05 PM Cyril Hrubis <chrubis@suse.cz> wrote:
+>
 > Hi!
-> >  lib/tst_pid.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-> > index 21cadef2a..3fb3f39ad 100644
-> > --- a/lib/tst_pid.c
-> > +++ b/lib/tst_pid.c
-> > @@ -31,6 +31,7 @@
-> >  #include "tst_safe_macros.h"
-> >  
-> >  #define PID_MAX_PATH "/proc/sys/kernel/pid_max"
-> > +#define THREADS_MAX_PATH "/proc/sys/kernel/threads-max"
-> >  #define CGROUPS_V1_SLICE_FMT "/sys/fs/cgroup/pids/user.slice/user-%d.slice/pids.max"
-> >  #define CGROUPS_V2_SLICE_FMT "/sys/fs/cgroup/user.slice/user-%d.slice/pids.max"
-> >  /* Leave some available processes for the OS */
-> > @@ -113,7 +114,7 @@ static int get_session_pids_limit(void (*cleanup_fn) (void))
-> >  int tst_get_free_pids_(void (*cleanup_fn) (void))
-> >  {
-> >  	FILE *f;
-> > -	int rc, used_pids, max_pids, max_session_pids;
-> > +	int rc, used_pids, max_pids, max_session_pids, max_threads;
-> >  
-> >  	f = popen("ps -eT | wc -l", "r");
-> >  	if (!f) {
-> > @@ -129,6 +130,8 @@ int tst_get_free_pids_(void (*cleanup_fn) (void))
-> >  	}
-> >  
-> >  	SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &max_pids);
-> > +	SAFE_FILE_SCANF(cleanup_fn, THREADS_MAX_PATH, "%d", &max_threads);
-> > +	max_pids = (max_pids < max_threads) ? max_pids : max_threads;
-> 
-> BTW: We do have a MIN() macro definition in tst_minmax.h header so we
->      can just do max_pids = MIN(max_pids, max_threads);
-> 
+> > When aiocp executed with -f DIRECT will fail.
+> >
+> > <<<test_start>>>
+> > tag=AD049 stime=1675520824
+> > cmdline="aiocp -b 8k -n 8 -f DIRECT"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > tst_test.c:1560: TINFO: Timeout per run is 0h 30m 30s
+> > aiocp.c:211: TINFO: Maximum AIO blocks: 65536
+> > tst_device.c:585: TINFO: Use uevent strategy
+> > aiocp.c:250: TINFO: Fill srcfile.bin with random data
+> > aiocp.c:279: TINFO: Copy srcfile.bin -> dstfile.bin
+> > aiocp.c:291: TINFO: Comparing srcfile.bin with dstfile.bin
+> > aiocp.c:306: TBROK: read(3,0x7ffcd743abe0,4096) failed, returned -1: EINVAL (22)
+> > ...
+> >
+> > syscall read manual ERROR section said that:
+> > EINVAL fd  is  attached to an object which is unsuitable for reading;
+> > or the file was opened with the O_DIRECT flag, and either the address
+> > specified in buf, the value specified in  count, or the file offset is
+> > not suitably aligned.
+> >
+> > We need filter out O_DIRECT flag before read.
+>
+> This is not very good changelog, I had to look closely at the source to
+> figure out why we may need this.
+>
+> Better description should say that the code which checks that the data
+> has been written correctly does not use aligned buffers, which may cause
+> a failure like the one above.
 
-Thanks for the review!
-Will send a v2 to fix this!
++1, I also found it confusing (do we pass DIRECT as parameter just to
+ignore it?)
 
-Best regards,
-Leo
-
-> >  	max_session_pids = get_session_pids_limit(cleanup_fn);
-> >  	if ((max_session_pids > 0) && (max_session_pids < max_pids))
-> 
-> Otherwise:
-> 
-> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-> 
-> -- 
+>
+> > Signed-off-by: Ping Fang <pifang@redhat.com>
+> > ---
+> >  testcases/kernel/io/ltp-aiodio/aiocp.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/testcases/kernel/io/ltp-aiodio/aiocp.c b/testcases/kernel/io/ltp-aiodio/aiocp.c
+> > index bc0e209b2..e4252d641 100644
+> > --- a/testcases/kernel/io/ltp-aiodio/aiocp.c
+> > +++ b/testcases/kernel/io/ltp-aiodio/aiocp.c
+> > @@ -297,8 +297,8 @@ static void run(void)
+> >               return;
+> >       }
+> >
+> > -     srcfd = SAFE_OPEN(srcname, srcflags | O_RDONLY, 0666);
+> > -     dstfd = SAFE_OPEN(dstname, srcflags | O_RDONLY, 0666);
+> > +     srcfd = SAFE_OPEN(srcname, (srcflags & ~O_DIRECT) | O_RDONLY, 0666);
+> > +     dstfd = SAFE_OPEN(dstname, (srcflags & ~O_DIRECT) | O_RDONLY, 0666);
+>
+> I guess that we can as well just remove the srcflags and keep just the
+> O_RDONLY since the srcflags are by definition either O_RDONLY or
+> O_DIRECT | O_RDONLY.
+>
+> I suppose that using scrflags and dstflags for anything else than the
+> filedescriptors passed to the async_run() is actually a mistake.
+>
+> >       reads = howmany(filesize, buffsize);
+> >
+> > --
+> > 2.31.1
+> >
+> >
+> > --
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+> --
 > Cyril Hrubis
 > chrubis@suse.cz
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
