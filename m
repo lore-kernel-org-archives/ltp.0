@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BF92C05027
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 06:16:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26616C05027
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 06:19:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EFE6E3CC0D3
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 07:16:07 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id CAC573CB125
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 07:19:35 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9750B3CB107
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 07:15:57 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 0BEB03CB107
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 07:19:25 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 56F301A00156
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 07:15:55 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AE86560071A
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 07:19:24 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1675923354;
+ s=mimecast20190719; t=1675923563;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=G713lsGy7MYVwWVNGIyvB6dV129CRxXZhkuLXbEMPMo=;
- b=ETRf/oXchy5KJZmq0PgwHplRi7BLv2BjhUhjdLfrbp9uhQW1wpL+qsNT61VUsAF6Vxj8S8
- zAlaAMPUDjzZKfAeFCkcGSEPg6wnDXBcPFT0IH4arR4gPmBZhhDC/1h+flPJ8xEqEy0xPH
- bEUFkxY6YSJgjkllDCadgGeQFygnWeU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=2qU2TJTqHZu+EOez0MZBP22cmzaE5PqJe0n6Df1x0ps=;
+ b=dUdpyqncNEXBxJHiLvie+vmF79oxn6SLpNvjoASuDVGyqC+PRoBd/5beeUSdFPcauH/w95
+ Tca4KCsJ8flvzwrPto3AkWSwWABgvX2RzasK9l26MXhhnIgt9GEP1UlEhEwomRgAol1Pe/
+ CKHVjubsRODExqEIXPlJhzL/hOtRGpQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-373-aBu0HYrzMnKKZuao6PfVrQ-1; Thu, 09 Feb 2023 01:15:52 -0500
-X-MC-Unique: aBu0HYrzMnKKZuao6PfVrQ-1
-Received: by mail-wm1-f70.google.com with SMTP id
- h9-20020a05600c350900b003e000facbb1so2299460wmq.9
- for <ltp@lists.linux.it>; Wed, 08 Feb 2023 22:15:52 -0800 (PST)
+ us-mta-452-SU3Nj6rHNfWq5ic15qhfSQ-1; Thu, 09 Feb 2023 01:19:19 -0500
+X-MC-Unique: SU3Nj6rHNfWq5ic15qhfSQ-1
+Received: by mail-wm1-f72.google.com with SMTP id
+ r14-20020a05600c35ce00b003e10bfcd160so536532wmq.6
+ for <ltp@lists.linux.it>; Wed, 08 Feb 2023 22:19:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=G713lsGy7MYVwWVNGIyvB6dV129CRxXZhkuLXbEMPMo=;
- b=kEmi0dHXy6xTCXoRws9jIh8QCr4Q+s+TI2AQAbBhxOpN/V7S2xWxMUUeIAF0MA6I06
- o67KYmJszEVrXi1fqMlfHkgtbRJfZS+HKZDljlCtB2wwGzkQ76JQq9C01cjASfrbKMMC
- +18Ztshhvx5lneBvC4Ye5ly31xuLt27VNSnRt5GqFCl6T+jgPv8t162BA0AYVMa0AbGN
- x9RX2X1Aq2mLNlagOecyHkdxhfzVWnlJIPLNNR8dMWL5LNi1SFql6gv2Ig0bK0C0CIds
- b6qglSoJswgJY+TbAkPGB+5rxM+guLCcF5rpHInhG5ut9wrI2wO/tUywNIfU2vYqw7rx
- /0gA==
-X-Gm-Message-State: AO0yUKVkMqpeVI8EtVsufyQ8koi9+k/zYuqjRoFczC73qinyjjqcZgd4
- 4GN2ROScDYkQRTxk7wxpaHMDgMe+CV9IJSbHMgy22Rv0Xu4NS2Rzt32a4yAa+CAkKnLfdFKCwTq
- mja9Ahuc9k9wwYGxflnETiLdt2V8=
-X-Received: by 2002:a5d:5949:0:b0:2c3:36d4:edea with SMTP id
- e9-20020a5d5949000000b002c336d4edeamr455127wri.528.1675923351572; 
- Wed, 08 Feb 2023 22:15:51 -0800 (PST)
-X-Google-Smtp-Source: AK7set/JDDmBasGCsB8fxFVpGk0Skq8C+NH0U2fxL1IiiESxO2Zdb0jCKCA6KiA9JkRzMA8AdGAtFwRFyRtQEyKdMPs=
-X-Received: by 2002:a5d:5949:0:b0:2c3:36d4:edea with SMTP id
- e9-20020a5d5949000000b002c336d4edeamr455126wri.528.1675923351361; Wed, 08 Feb
- 2023 22:15:51 -0800 (PST)
+ bh=2qU2TJTqHZu+EOez0MZBP22cmzaE5PqJe0n6Df1x0ps=;
+ b=OBPjMMR0NrMzr/rLTWI8+Lm+I4kRQslNiqJzTagKxgh24CF8ywQ7QEG6kMKCNRGZxh
+ /Gs3bTKT109x+L03juVJWB8ilPws88PbvbcbZFsv23oM3zF+lDxYJc0TCoeOKU7CLEEl
+ 0npSz+FqpTZFNj/07JwCjJ6iZVmYx3WKlgFBJ0zjURkjCuwCn/BNBucapotrKFcImznN
+ 8q0z9NlRKc4X3qWmooLgeUkgnkX8XNgoA87H4KeHexchb9rge+yg2xCvr5FfEshJfHhh
+ ud3VDL9zF5L2F/aFGFeEt2Biijjz4NhUk3TObDiiJT3LLvHa1hVhDxrNGZO019HDlSb1
+ xrbg==
+X-Gm-Message-State: AO0yUKUXfYHqaUHi/dkr41pT85Z8nYFzFr7zfbs6MBxDiC6NoU6Lj6hI
+ TdNaJhyvsW4/VYTQVweBlxGxmeYo9y0F7ppBDWd/FGpVpLVWVA1R08UeZxX0jqNmeLBHRPOLN4i
+ om1ZS4sELW2BoZT9phPmtGYhP6Cc=
+X-Received: by 2002:a05:600c:3ac7:b0:3dd:1a1e:fa58 with SMTP id
+ d7-20020a05600c3ac700b003dd1a1efa58mr282702wms.99.1675923558689; 
+ Wed, 08 Feb 2023 22:19:18 -0800 (PST)
+X-Google-Smtp-Source: AK7set+pZSO9CEGR00zJ2iFo2Jt2Re9uPLrndIX2C6jDTyuzs6gSF0qctBvPfh4wsoyypEtTjhMSWrycLb3CHyxEJBc=
+X-Received: by 2002:a05:600c:3ac7:b0:3dd:1a1e:fa58 with SMTP id
+ d7-20020a05600c3ac700b003dd1a1efa58mr282699wms.99.1675923558519; Wed, 08 Feb
+ 2023 22:19:18 -0800 (PST)
 MIME-Version: 1.0
 References: <20230207131714.2500-1-pvorel@suse.cz>
  <20230207131714.2500-2-pvorel@suse.cz>
  <CAEemH2chcTe263-zqpSF2Gc2CVc8NC+G-KZsFMbwoxEKyjA01w@mail.gmail.com>
- <20230208135404.GB31469@pevik>
-In-Reply-To: <20230208135404.GB31469@pevik>
+ <20230208135404.GB31469@pevik> <20230208141309.GC31469@pevik>
+In-Reply-To: <20230208141309.GC31469@pevik>
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 9 Feb 2023 14:15:40 +0800
-Message-ID: <CAEemH2cg_ATrf35WwFOoA0oqVN6GTZgT4jaRzkNjae8D6SBLZw@mail.gmail.com>
+Date: Thu, 9 Feb 2023 14:19:07 +0800
+Message-ID: <CAEemH2dTnMwyi5hvD9GvSNOHWON=pi6z5eF8xTVb7rUobuoWKQ@mail.gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [PATCH 1/3] ioctl01: Add default tty device
@@ -95,42 +95,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Feb 8, 2023 at 9:54 PM Petr Vorel <pvorel@suse.cz> wrote:
+On Wed, Feb 8, 2023 at 10:13 PM Petr Vorel <pvorel@suse.cz> wrote:
 
-> Hi Li,
+> > Hi Li,
 >
-> > > +#define        DEFAULT_TTY_DEVICE      "/dev/tty0"
+> > > > +#define        DEFAULT_TTY_DEVICE      "/dev/tty0"
 >
-> > Hidden the device path parameter is a good idea.
+> > > Hidden the device path parameter is a good idea.
 >
-> > But maybe can we add a function to find available char devices instead
-> > of using the tty0 as default? In that function, we do the S_ISCHR() check
-> > and return the valid path of it. Then the rest test (e.g. ioctl02) can
+> > > But maybe can we add a function to find available char devices instead
+> > > of using the tty0 as default? In that function, we do the S_ISCHR()
+> check
+> > > and return the valid path of it. Then the rest test (e.g. ioctl02) can
 > make
-> > use of it but not set the specified device as well. WDYT?
+> > > use of it but not set the specified device as well. WDYT?
 >
-> FYI I'm using S_ISCHR() in other patches, which check if device can be
+> > FYI I'm using S_ISCHR() in other patches, which check if device can be
 > used.
-> Implementing search looks like a good idea. Are useful files any /dev/tty*
-> (including /dev/tty, /dev/ttyACM0, /dev/ttyS0) or should I avoid any file
-> or include other paths?
+> > Implementing search looks like a good idea. Are useful files any
+> /dev/tty*
+> > (including /dev/tty, /dev/ttyACM0, /dev/ttyS0) or should I avoid any file
+> > or include other paths?
+>
+> I also wonder if we still want to keep -D parameter (i.e. allow tester to
+> pass a
+> file).
 >
 
-It seems not all char devices can be used here.
-The /dev/tty*Num* should be the first choice.
+I think there is no necessary keep "-D" parameter since this ioctl01
+is to check errno of ioctl(2) syscall, it might meaningless to specify a
+different char device.
 
-I tried some of them and only /dev/tty0-N works well,
-maybe we can just make use of them to avoid no tty0
-file failure should be enough. Because my only concern
-about the hard coding is that "/dev/tty0" is non-exist.
-
-
-
->
-> Kind regards,
-> Petr
->
->
 
 -- 
 Regards,
