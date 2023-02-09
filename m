@@ -4,69 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3D3BC61DA4
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 10:09:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE1ADC61DA4
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 10:11:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6C0DF3CB137
-	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 11:09:29 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id BB75B3CC0AB
+	for <ltp@archiver.kernel.org>; Thu,  9 Feb 2023 11:11:20 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 091753C632B
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 11:09:17 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 2EBCA3C632B
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 11:11:10 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 310F760068B
- for <ltp@lists.linux.it>; Thu,  9 Feb 2023 11:09:16 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 53BB2352BA;
- Thu,  9 Feb 2023 10:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1675937356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BD1B560035A
+ for <ltp@lists.linux.it>; Thu,  9 Feb 2023 11:11:09 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id D4B46352CF;
+ Thu,  9 Feb 2023 10:11:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1675937468;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EfRNutFd+jJvz0QG4EkhB9RaoASPamv7YtVmIYYMChE=;
- b=Hked/FrRyE6dBgPQOhDJr1cOrTkq/Td1SMhFtA25oH8YnFLLVsQKudKYRe1gFwuCq5xn3y
- Mbiazzc4PlXdLXZfr8o6jUDmc63mbzPllwMhp9mTz34aAeeq/94UN6KOolvR7OPoInoU0c
- 5+9+4rHDth00BW786cmJqMoTGSPDXuk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1675937356;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ bh=2omLlFaUq91DJwT710UTV4fidwUJFK6SyzW7glIuiAs=;
+ b=p3a8sn6eUHkKOsN5VQCAa9AcMylgS80XTL94CIZBrc8vt766lrYK3RlvDd35wJygEnR3Fc
+ nIQY9Wn95z6M5mKSwdo3iWzY2V3c+atIE98N/4h4a/Rx1SMZv1cUVKrIgWVe8B4qQUADcN
+ Jm3FGcBC8hviWMM5TSy/Il08euYrc8s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1675937468;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=EfRNutFd+jJvz0QG4EkhB9RaoASPamv7YtVmIYYMChE=;
- b=9X+VzsOZJr8aOv0uEU0GkoNU1NmrxQPTKkuKAPdKCKcYjEc2AX0/RvGJnWr1hhb08iRvyB
- nvspdBSS1zG+TlCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=2omLlFaUq91DJwT710UTV4fidwUJFK6SyzW7glIuiAs=;
+ b=/SqRE6wKE1HtinOviafS6/4ZpCW33/ttzjoeSvo0bpesrIwho4275seqVhJTRL9tQim5AW
+ zq3FIgYtTJwGQ7CA==
+Received: from g78 (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C995138E4;
- Thu,  9 Feb 2023 10:09:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QE83CEzG5GOkGwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 09 Feb 2023 10:09:16 +0000
-Date: Thu, 9 Feb 2023 11:10:46 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <Y+TGpsrGdPy13FSK@yuki>
-References: <20230129115021.25778-1-wegao@suse.com> <Y9pf5075zsuAhznN@pevik>
- <Y+DYmkBnv/NQK8gZ@aa> <Y+Eoqd5+bWPxlpXD@pevik>
- <20230208090148.GA8108@localhost> <20230208154823.GD1918@pevik>
- <20230209022522.GA10910@localhost>
+ by relay2.suse.de (Postfix) with ESMTPS id 961302C141;
+ Thu,  9 Feb 2023 10:11:08 +0000 (UTC)
+References: <20230125100043.32349-1-andrea.cervesato@suse.com>
+ <20230125100043.32349-2-andrea.cervesato@suse.com>
+User-agent: mu4e 1.8.13; emacs 28.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Date: Thu, 09 Feb 2023 10:10:21 +0000
+Organization: Linux Private Site
+In-reply-to: <20230125100043.32349-2-andrea.cervesato@suse.com>
+Message-ID: <877cwrrvwk.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230209022522.GA10910@localhost>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] fsconfig: New case cover CVE-2022-0185
+Subject: Re: [LTP] [PATCH v4 1/2] Add SAFE_SETHOSTNAME macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,39 +71,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Let me explain more detail for this:
-> 
-> CVE-2022-0185 security bug popped up since 5.1-rc1 and fixed by 722d94847de29 in v5.17-rc1~50, so normally we should check build from v5.17.
-> Most important thing is this security issue ONLY happen if fsconfig go through legacy_parse_param function(security issue happen and fixed within this function).
+Hello,
+
+Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+
+Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
+
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+>  include/safe_net_fn.h  |  3 +++
+>  include/tst_safe_net.h |  3 +++
+>  lib/safe_net.c         | 17 +++++++++++++++++
+>  3 files changed, 23 insertions(+)
 >
-> But:
-> For xfs filesystem, from v5.5-rc1 already start use xfs_fs_parse_param instead of  legacy_parse_param, so make no sense check this secruity issue
-> For ext2&ext3&ext4, after patch cebe85d570cf8 in v5.17-rc1~131^2~36, use ext4_parse_param instead of legacy_parse_param, so also make no sense check 
-> 
-> In summary, we can reject this test case since from v5.17, ext2/ext4/xfs not go through legacy_parse_param and means we can not verify security fix 
-> 722d94847de29(this fix happen in legacy_parse_param.)
+> diff --git a/include/safe_net_fn.h b/include/safe_net_fn.h
+> index ff81b1337..6c63cb2cf 100644
+> --- a/include/safe_net_fn.h
+> +++ b/include/safe_net_fn.h
+> @@ -73,6 +73,9 @@ int safe_getsockname(const char *file, const int lineno,
+>  int safe_gethostname(const char *file, const int lineno,
+>  		     char *name, size_t size);
+>  
+> +int safe_sethostname(const char *file, const int lineno,
+> +		     const char *name, size_t size);
+> +
+>  int tst_getsockport(const char *file, const int lineno, int sockfd);
+>  
+>  unsigned short tst_get_unused_port(const char *file, const int lineno,
+> diff --git a/include/tst_safe_net.h b/include/tst_safe_net.h
+> index e85b79a3e..98f0256fd 100644
+> --- a/include/tst_safe_net.h
+> +++ b/include/tst_safe_net.h
+> @@ -68,6 +68,9 @@
+>  #define SAFE_GETHOSTNAME(name, size) \
+>  	safe_gethostname(__FILE__, __LINE__, name, size)
+>  
+> +#define SAFE_SETHOSTNAME(name, size) \
+> +	safe_sethostname(__FILE__, __LINE__, name, size)
+> +
+>  #define TST_GETSOCKPORT(sockfd) \
+>  	tst_getsockport(__FILE__, __LINE__, sockfd)
+>  
+> diff --git a/lib/safe_net.c b/lib/safe_net.c
+> index 1717f0745..5dec0de11 100644
+> --- a/lib/safe_net.c
+> +++ b/lib/safe_net.c
+> @@ -469,6 +469,23 @@ int safe_gethostname(const char *file, const int lineno,
+>  	return rval;
+>  }
+>  
+> +int safe_sethostname(const char *file, const int lineno,
+> +		     const char *name, size_t size)
+> +{
+> +	int rval = sethostname(name, size);
+> +
+> +	if (rval == -1) {
+> +		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+> +			"sethostname(%p, %zu) failed", name, size);
+> +	} else if (rval) {
+> +		tst_brkm_(file, lineno, TBROK | TERRNO, NULL,
+> +			"Invalid sethostname(%p, %zu) return value %d", name,
+> +			size, rval);
+> +	}
+> +
+> +	return rval;
+> +}
+> +
+>  /*
+>   * @return port in network byte order.
+>   */
+> -- 
+> 2.35.3
 
-Quite contrary it make sense to add regression tests for kernel and keep them
-running on all filesystems and never releases since you never know when
-similar mistake will make it into the kernel code again. It does not
-make much sense to invest time into tests only to keep them disabled
-later on.
-
-More generally it makes sense to try to throw all kind of garbage
-strings into fsconfig() and expect to get EINVAL or other sane behavior,
-writing such tests is the only way to avoid or at least catch most CVEs
-before they happen.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
