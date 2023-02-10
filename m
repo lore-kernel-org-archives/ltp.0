@@ -4,79 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9131C636CD
-	for <ltp@archiver.kernel.org>; Fri, 10 Feb 2023 06:11:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A266AC05027
+	for <ltp@archiver.kernel.org>; Fri, 10 Feb 2023 08:01:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3987F3CC076
-	for <ltp@archiver.kernel.org>; Fri, 10 Feb 2023 07:11:11 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 60A703CC08C
+	for <ltp@archiver.kernel.org>; Fri, 10 Feb 2023 09:01:15 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD9373C304A
- for <ltp@lists.linux.it>; Fri, 10 Feb 2023 07:11:00 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 1DA223CC055
+ for <ltp@lists.linux.it>; Fri, 10 Feb 2023 09:01:03 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6E9776007A0
- for <ltp@lists.linux.it>; Fri, 10 Feb 2023 07:10:58 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 27C9F200C8F
+ for <ltp@lists.linux.it>; Fri, 10 Feb 2023 09:01:02 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1676009457;
+ s=mimecast20190719; t=1676016061;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YYqQm9cJRWpGzXFSdHLlCTR2kKulOAMtZYcDpMPOuQI=;
- b=DGgaoHioCOh92v2DnwCnTHh10kaXH49kyVq015ztHRYOtPACDmL8pnmOtfU3BpbbjisAaD
- VqHGoI6ilc+KjCOjCFa0WBuz46XQcCN8KkJ9r8wPIbq6lt5Itg+VIv/YCgYHbPZi8Y5BPt
- mxBrK9xURFcDUlFOTuHApzEE7TKYQZk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=4TCp7YYTheGQKsJl+inRfp1YUM3CbQfQrU0+xqdHaU8=;
+ b=H4mmoQm7AqGXnhTTY5WsttJ9c/YHTE9qqom29lxuUFnLzTJ8qBcS55Nvb8bOwHyOLGabXZ
+ Ktid00DNjQ29dYSvy0QsQ4rfsje+DDWmMLPiuLs6hcYCzz2BqdpBmS6IkhdC44wlkP+bAI
+ DUJ6RLckPTigZP8xecOJl3u83VmRcLE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-417-Txf7B3dAOr2yDE7nnlladg-1; Fri, 10 Feb 2023 01:10:56 -0500
-X-MC-Unique: Txf7B3dAOr2yDE7nnlladg-1
-Received: by mail-wm1-f70.google.com with SMTP id
- h2-20020a1ccc02000000b003db1ded176dso2060126wmb.5
- for <ltp@lists.linux.it>; Thu, 09 Feb 2023 22:10:55 -0800 (PST)
+ us-mta-664-3CW3f4U7OwaHP2_wZkIFIg-1; Fri, 10 Feb 2023 03:00:58 -0500
+X-MC-Unique: 3CW3f4U7OwaHP2_wZkIFIg-1
+Received: by mail-wm1-f69.google.com with SMTP id
+ m3-20020a05600c3b0300b003dfdc6021bcso2247111wms.3
+ for <ltp@lists.linux.it>; Fri, 10 Feb 2023 00:00:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=YYqQm9cJRWpGzXFSdHLlCTR2kKulOAMtZYcDpMPOuQI=;
- b=F8VGHSKhMk8tgA1wLC57G4cwbXPmGN0ivhf0EUyq9BOpzvNbl9yqaBeamTd4gds/ik
- 777otjTxMrf1OpFuThv1SW/C37eaJmn0BU2GGltFmWbSR0U3+voHPHl5rhjIBeilYzq+
- o+yXi4V/6h8VHbfUM/f95rlJHv4FD0Zfq3iKSVq6VxrNAymi36Xx8WKw6kSGKKTPrlMj
- swhjPrtdR1LfAVnK4PZCY6vkxdRfkM8HlQYhuYXAVVNOE7Iw2Wi7ZqIfTeaovkaC8hh9
- YVjvqk77UZtdfUGNYRtaB8ZsWTy5qixp5PaJULbyghdwhBcGFiHnqpc5usCuamj3myNw
- qmOw==
-X-Gm-Message-State: AO0yUKWoMC1xfX0KOw5VXlReC8/N4z7mtnw+wfNwScWLBdrkaasXHj2R
- TCo00L2gcmH8ei+OZk92a0tFtjCxw85gF4b+KUIa8PAnj8R2szhDakueTEoVss6CIL9YTnN1jPB
- uVLeiHwu9qGF0eRgGbCmssTZwgV+PWmWQ3rMO9M3S
-X-Received: by 2002:a5d:40c7:0:b0:2c4:ee3d:8c05 with SMTP id
- b7-20020a5d40c7000000b002c4ee3d8c05mr215760wrq.707.1676009454598; 
- Thu, 09 Feb 2023 22:10:54 -0800 (PST)
-X-Google-Smtp-Source: AK7set+mrCe6RQezSCQvu29IXjorV7uYGi7xpig9cjn7TldjxQ3IY14aqna5U4JbEar6SUi3E41OZQjTPG48zPHAMl8=
-X-Received: by 2002:a5d:40c7:0:b0:2c4:ee3d:8c05 with SMTP id
- b7-20020a5d40c7000000b002c4ee3d8c05mr215759wrq.707.1676009454368; Thu, 09 Feb
- 2023 22:10:54 -0800 (PST)
+ h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=C5RmLZBoN75eU9R+SnLMNA8Et0r8sHBQ2nLTgs9/SMY=;
+ b=URV/UZv69umSd2TSdLkTyaNsOwpsnXNmOGAtm0b2CBpW9tHs05/2CLelEjxHXEseaH
+ JfcaFALRQtRgrs/EpFHyPcmKu2s5VFBhQHB0dd3ROuuHjeRCVbuEij83MK2lEZqHihbE
+ uImnBmZoyO/mGSLXy9DpWpyWAWBLBUIlJqxyDzVtBdMevERU6IzivdVEGo/MaXb/A2q+
+ YIAiSG0YdYJ7erIug+8NFpNv2xhEiDcIunr0MOFxYkl1HHGTlqnGFiK84sXCl2eQqBSh
+ u8lts/LSAez2CY+wuwfA6YJLh+QyuMF6sWiYtNGnJHe79mNbx0mgYKA/jR1eNXXtimas
+ v7eg==
+X-Gm-Message-State: AO0yUKUvXNOePq1FOlhJHRH5zJcJEfASdT5/H7TTMk94ps4r9LfueaR3
+ w/nNpWf3/c989uFWjxfYT11wpoizgk+2+ibMmFWFS1Qv1WXqluDnnO1CN+KnysFBKKYRl6VAEt/
+ iMWa3t2QysowNtUnpr7HqW+O+Bsbn4PhSSzOMSOzF
+X-Received: by 2002:a5d:5949:0:b0:2c3:36d4:edea with SMTP id
+ e9-20020a5d5949000000b002c336d4edeamr658419wri.528.1676016056997; 
+ Fri, 10 Feb 2023 00:00:56 -0800 (PST)
+X-Google-Smtp-Source: AK7set+KWYps5Qjgg/pqz0eUROBg0ToS/8pkfEYgzDuJ2aTtQ7ahUVSOD8/8RU3ejIhWOmnD6Sp2dGEDu9JlXHZQtKg=
+X-Received: by 2002:a5d:5949:0:b0:2c3:36d4:edea with SMTP id
+ e9-20020a5d5949000000b002c336d4edeamr658418wri.528.1676016056624; Fri, 10 Feb
+ 2023 00:00:56 -0800 (PST)
 MIME-Version: 1.0
-References: <0328e9f247cfb76b27b68e9592bfb1954ddfe2b2.80b5c6e1.08b5.4363.8caf.668693c771f5@feishu.cn>
- <0328e9f247cfb76b27b68e9592bfb1954ddfe2b2.a192d563.9c88.4b19.a161.eca7160d4e8b@feishu.cn>
-In-Reply-To: <0328e9f247cfb76b27b68e9592bfb1954ddfe2b2.a192d563.9c88.4b19.a161.eca7160d4e8b@feishu.cn>
+References: <20230209142016.494090-1-pifang@redhat.com>
+ <a4e0b95e-47dd-0c05-9575-a844d1e05953@suse.com>
+ <CAEemH2d2CoivWG_A+aDURAHSTaY_pE+djDYTeVu8tmWdGnw86g@mail.gmail.com>
+In-Reply-To: <CAEemH2d2CoivWG_A+aDURAHSTaY_pE+djDYTeVu8tmWdGnw86g@mail.gmail.com>
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 10 Feb 2023 14:10:43 +0800
-Message-ID: <CAEemH2d_iF=2bfhJhgUN9MbF3HELCC+qOQ2s=9tjaXkyA3x3gg@mail.gmail.com>
-To: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
+Date: Fri, 10 Feb 2023 16:00:45 +0800
+Message-ID: <CAEemH2dwdokuU+PJEGWcM43HLxKnyoJyZRzLLddD84QxcEu4hw@mail.gmail.com>
+To: LTP List <ltp@lists.linux.it>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/1] Add ioctl_loop08 test for LOOP_GET_STATUS
- lock imbalance
+Subject: Re: [LTP] [PATCH v2] aiocp: remove the check read unnecessary flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,19 +87,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Shouyi,
+Hi All,
 
-I can't read your patch contents, could you make sure to
-send a patch in the recommended way:
+Just for curious, I copy this complete patch into chatGPT,
+and the analysis answer from it is below FYI:
 
-# git format-patch -1
-# git send-email 0001-xxxx --to ltp@lists.linux.it
+From chatGPT:
+
+"
+This patch modifies the code of the "aiocp" utility. The purpose of this
+patch is to remove the check for the "read unnecessary flag" in the code.
+The check was causing the "aiocp" utility to fail when executed with the
+"-f DIRECT" option.
+
+The code that was checking that the data had been written correctly was
+using the O_DIRECT flag incorrectly, which caused the failure. The patch
+removes the usage of the O_DIRECT flag from the code by changing the open
+flags for the source and destination files from srcflags | O_RDONLY to
+O_RDONLY.
+
+This patch has been reviewed by multiple people and has received approval
+from them. The author of the patch is Ping Fang, and it has been signed off
+by them.
+"
+
+
+
+On Fri, Feb 10, 2023 at 1:27 PM Li Wang <liwang@redhat.com> wrote:
+
+> Hi All,
+>
+> Thanks for the patch and review, merged!!
+>
+> --
+> Regards,
+> Li Wang
+>
 
 
 -- 
