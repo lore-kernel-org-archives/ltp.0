@@ -4,78 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A266AC05027
-	for <ltp@archiver.kernel.org>; Fri, 10 Feb 2023 08:01:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BECEC05027
+	for <ltp@archiver.kernel.org>; Fri, 10 Feb 2023 08:22:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 60A703CC08C
-	for <ltp@archiver.kernel.org>; Fri, 10 Feb 2023 09:01:15 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 321F63CC059
+	for <ltp@archiver.kernel.org>; Fri, 10 Feb 2023 09:22:27 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1DA223CC055
- for <ltp@lists.linux.it>; Fri, 10 Feb 2023 09:01:03 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D577F3C632B
+ for <ltp@lists.linux.it>; Fri, 10 Feb 2023 09:22:15 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 27C9F200C8F
- for <ltp@lists.linux.it>; Fri, 10 Feb 2023 09:01:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1676016061;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D63C4200240
+ for <ltp@lists.linux.it>; Fri, 10 Feb 2023 09:22:14 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9641D6715B;
+ Fri, 10 Feb 2023 08:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1676017332; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4TCp7YYTheGQKsJl+inRfp1YUM3CbQfQrU0+xqdHaU8=;
- b=H4mmoQm7AqGXnhTTY5WsttJ9c/YHTE9qqom29lxuUFnLzTJ8qBcS55Nvb8bOwHyOLGabXZ
- Ktid00DNjQ29dYSvy0QsQ4rfsje+DDWmMLPiuLs6hcYCzz2BqdpBmS6IkhdC44wlkP+bAI
- DUJ6RLckPTigZP8xecOJl3u83VmRcLE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-664-3CW3f4U7OwaHP2_wZkIFIg-1; Fri, 10 Feb 2023 03:00:58 -0500
-X-MC-Unique: 3CW3f4U7OwaHP2_wZkIFIg-1
-Received: by mail-wm1-f69.google.com with SMTP id
- m3-20020a05600c3b0300b003dfdc6021bcso2247111wms.3
- for <ltp@lists.linux.it>; Fri, 10 Feb 2023 00:00:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=to:subject:message-id:date:from:in-reply-to:references:mime-version
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=C5RmLZBoN75eU9R+SnLMNA8Et0r8sHBQ2nLTgs9/SMY=;
- b=URV/UZv69umSd2TSdLkTyaNsOwpsnXNmOGAtm0b2CBpW9tHs05/2CLelEjxHXEseaH
- JfcaFALRQtRgrs/EpFHyPcmKu2s5VFBhQHB0dd3ROuuHjeRCVbuEij83MK2lEZqHihbE
- uImnBmZoyO/mGSLXy9DpWpyWAWBLBUIlJqxyDzVtBdMevERU6IzivdVEGo/MaXb/A2q+
- YIAiSG0YdYJ7erIug+8NFpNv2xhEiDcIunr0MOFxYkl1HHGTlqnGFiK84sXCl2eQqBSh
- u8lts/LSAez2CY+wuwfA6YJLh+QyuMF6sWiYtNGnJHe79mNbx0mgYKA/jR1eNXXtimas
- v7eg==
-X-Gm-Message-State: AO0yUKUvXNOePq1FOlhJHRH5zJcJEfASdT5/H7TTMk94ps4r9LfueaR3
- w/nNpWf3/c989uFWjxfYT11wpoizgk+2+ibMmFWFS1Qv1WXqluDnnO1CN+KnysFBKKYRl6VAEt/
- iMWa3t2QysowNtUnpr7HqW+O+Bsbn4PhSSzOMSOzF
-X-Received: by 2002:a5d:5949:0:b0:2c3:36d4:edea with SMTP id
- e9-20020a5d5949000000b002c336d4edeamr658419wri.528.1676016056997; 
- Fri, 10 Feb 2023 00:00:56 -0800 (PST)
-X-Google-Smtp-Source: AK7set+KWYps5Qjgg/pqz0eUROBg0ToS/8pkfEYgzDuJ2aTtQ7ahUVSOD8/8RU3ejIhWOmnD6Sp2dGEDu9JlXHZQtKg=
-X-Received: by 2002:a5d:5949:0:b0:2c3:36d4:edea with SMTP id
- e9-20020a5d5949000000b002c336d4edeamr658418wri.528.1676016056624; Fri, 10 Feb
- 2023 00:00:56 -0800 (PST)
+ bh=v+OyJPbfP2aVOEu8UK9Fr7Hi8i9KNh0/PuEKlh57bDQ=;
+ b=axoKnnJ20Ript1MCG9iIbYYnvokcgqmhdlxnwKV8sv5tNx3A266Mh63RqEgOw4GHSxZfHt
+ KZCP9ldoUeTQW/ZDj9qXCwqjoBdUqtv+0G/iYnpHB2FKiHzyIhUNs22KKtWIU33PVaVDDz
+ 4oUWEMV48yt6i/PEfvyJJLn2qglXB6o=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E03EC13588;
+ Fri, 10 Feb 2023 08:22:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id IFPILLP+5WOIBwAAMHmgww
+ (envelope-from <wegao@suse.com>); Fri, 10 Feb 2023 08:22:11 +0000
+Date: Fri, 10 Feb 2023 03:22:08 -0500
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20230210082208.GA24174@localhost>
+References: <20230129115021.25778-1-wegao@suse.com>
+ <20230209131902.12260-1-wegao@suse.com> <Y+UAENJVDUSDPAay@pevik>
+ <Y+UEqNtUTNaGVwXT@pevik> <Y+UItbp4v2WKZedL@yuki>
 MIME-Version: 1.0
-References: <20230209142016.494090-1-pifang@redhat.com>
- <a4e0b95e-47dd-0c05-9575-a844d1e05953@suse.com>
- <CAEemH2d2CoivWG_A+aDURAHSTaY_pE+djDYTeVu8tmWdGnw86g@mail.gmail.com>
-In-Reply-To: <CAEemH2d2CoivWG_A+aDURAHSTaY_pE+djDYTeVu8tmWdGnw86g@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 10 Feb 2023 16:00:45 +0800
-Message-ID: <CAEemH2dwdokuU+PJEGWcM43HLxKnyoJyZRzLLddD84QxcEu4hw@mail.gmail.com>
-To: LTP List <ltp@lists.linux.it>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+In-Reply-To: <Y+UItbp4v2WKZedL@yuki>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2] aiocp: remove the check read unnecessary flag
+Subject: Re: [LTP] [PATCH v2] fsconfig: New case cover CVE-2022-0185
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,52 +69,118 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi All,
+On Thu, Feb 09, 2023 at 03:52:37PM +0100, Cyril Hrubis wrote:
+> Hi!
 
-Just for curious, I copy this complete patch into chatGPT,
-and the analysis answer from it is below FYI:
+> > Results on my machine (6.2.0-rc6)
+> > 
+> > tst_test.c:1634: TINFO: === Testing on ext2 ===
+> > tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+> > mke2fs 1.46.5 (30-Dec-2021)
+> > note ext2 is *not* using new mount API
+> > fsconfig03.c:50: TPASS: fsconfig() overflow on ext2 haven't triggerred crash
+> > tst_test.c:1634: TINFO: === Testing on ext3 ===
+> > tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+> > mke2fs 1.46.5 (30-Dec-2021)
+> > fsconfig03.c:50: TPASS: fsconfig() overflow on ext3 haven't triggerred crash
+> > tst_test.c:1634: TINFO: === Testing on ext4 ===
+> > tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+> > mke2fs 1.46.5 (30-Dec-2021)
+> > fsconfig03.c:50: TPASS: fsconfig() overflow on ext4 haven't triggerred crash
+> > tst_test.c:1634: TINFO: === Testing on xfs ===
+> > tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+> > fsconfig03.c:50: TPASS: fsconfig() overflow on xfs haven't triggerred crash
+> > tst_test.c:1634: TINFO: === Testing on btrfs ===
+> > tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+> > fsconfig03.c:44: TFAIL: fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0) succeeded
+> > Btrfs should be investigated (IMHO btrfs is using new mount API).
+> > 
+> > tst_test.c:1634: TINFO: === Testing on vfat ===
+> > tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+> > fsconfig03.c:44: TFAIL: fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0) succeeded
+> > 
+> > tst_test.c:1634: TINFO: === Testing on exfat ===
+> > tst_test.c:1093: TINFO: Formatting /dev/loop0 with exfat opts='' extra opts=''
+> > fsconfig03.c:50: TPASS: fsconfig() overflow on exfat haven't triggerred crash
+> > Interesting, exfat works :) It also uses new mount API.
+> > 
+> > tst_test.c:1634: TINFO: === Testing on ntfs ===
+> > tst_test.c:1093: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+> > The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+> > The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+> > The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+> > To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+> > Windows will not be able to boot from this device.
+> > fsconfig03.c:29: TBROK: fsopen() failed: ENODEV (19)
+> > Hm, that's strange
+> 
+> ENODEV means that filesystem is not compiled in kernel, that's strage,
+> that would mean that you have a broken system, e.g. kernel modules that
+> support these filesystems are not installed properly or something like
+> that.
+> 
+> If you look at fs/filesystems.c the get_fs_type() function called from
+> the fsopen() uses the very same array that is used by the
+> /proc/filesystems we parse in LTP to get list of supported filesystems.
+> 
+> This is the place where you can get ENODEV:
+> 
+> https://elixir.bootlin.com/linux/latest/source/fs/fsopen.c#L132
+> 
+> And this is the place where it can fail:
+> 
+> https://elixir.bootlin.com/linux/latest/source/fs/filesystems.c#L261
+> 
+> > Due above, I suggest this:
+> > 	.skip_filesystems = (const char *const []){"ntfs", "vfat", NULL},
+> 
 
-From chatGPT:
-
-"
-This patch modifies the code of the "aiocp" utility. The purpose of this
-patch is to remove the check for the "read unnecessary flag" in the code.
-The check was causing the "aiocp" utility to fail when executed with the
-"-f DIRECT" option.
-
-The code that was checking that the data had been written correctly was
-using the O_DIRECT flag incorrectly, which caused the failure. The patch
-removes the usage of the O_DIRECT flag from the code by changing the open
-flags for the source and destination files from srcflags | O_RDONLY to
-O_RDONLY.
-
-This patch has been reviewed by multiple people and has received approval
-from them. The author of the patch is Ping Fang, and it has been signed off
-by them.
-"
+Result in my machine 6.0.0-rc5, the ntfs check no failed with ENODEV but show succeeded when do fsconfig.
+I will do further check on btrfs why it show success, will notify you once i got result.
 
 
+tst_test.c:1634: TINFO: === Testing on ext2 ===
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.46.6 (1-Feb-2023)
+fsconfig03.c:50: TPASS: fsconfig() overflow on ext2 haven't triggerred crash
+tst_test.c:1634: TINFO: === Testing on ext3 ===
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts='' extra opts=''
+mke2fs 1.46.6 (1-Feb-2023)
+fsconfig03.c:50: TPASS: fsconfig() overflow on ext3 haven't triggerred crash
+tst_test.c:1634: TINFO: === Testing on ext4 ===
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.46.6 (1-Feb-2023)
+fsconfig03.c:50: TPASS: fsconfig() overflow on ext4 haven't triggerred crash
+tst_test.c:1634: TINFO: === Testing on btrfs ===
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
+fsconfig03.c:44: TFAIL: fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0) succeeded
+tst_test.c:1634: TINFO: === Testing on vfat ===
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
+fsconfig03.c:44: TFAIL: fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0) succeeded
+tst_test.c:1634: TINFO: === Testing on ntfs ===
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ntfs opts='' extra opts=''
+Failed to set locale, using default 'C'.
+The partition start sector was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be obtained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+fsconfig03.c:44: TFAIL: fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0) succeeded
+tst_test.c:1634: TINFO: === Testing on tmpfs ===
+tst_test.c:1093: TINFO: Skipping mkfs for TMPFS filesystem
 
-On Fri, Feb 10, 2023 at 1:27 PM Li Wang <liwang@redhat.com> wrote:
-
-> Hi All,
->
-> Thanks for the patch and review, merged!!
->
-> --
-> Regards,
-> Li Wang
->
-
-
--- 
-Regards,
-Li Wang
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
