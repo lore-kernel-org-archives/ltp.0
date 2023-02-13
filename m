@@ -4,53 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6C40C636CC
-	for <ltp@archiver.kernel.org>; Mon, 13 Feb 2023 15:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28643C6379F
+	for <ltp@archiver.kernel.org>; Mon, 13 Feb 2023 15:30:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 058203CBFA0
-	for <ltp@archiver.kernel.org>; Mon, 13 Feb 2023 16:27:56 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 322363CBF91
+	for <ltp@archiver.kernel.org>; Mon, 13 Feb 2023 16:30:04 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0F4A33CBFA0
- for <ltp@lists.linux.it>; Mon, 13 Feb 2023 16:27:44 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 2213D3C1D84
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 16:29:52 +0100 (CET)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6BAF31A0078A
- for <ltp@lists.linux.it>; Mon, 13 Feb 2023 16:27:44 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AB09E1F7AB;
- Mon, 13 Feb 2023 15:27:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1676302063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=IqhShLNwtZ0irUrLc4xJSPo3L3VWQyDbR5RV0P0nU9o=;
- b=NM16fpnt+0e1dwNJAmQIahpfzCCQ8eThCoG2TVEEEyyc4jVR+NZDbNN2j723hG8FMrxzJM
- fDFkCmVgk0/cQrx4WPcjQ9BVcoXQc9+dU0zlzcgdeIZfUMEGzOp91ntdtyApPj6d/uOlgr
- 3ZbyOi9jKXa1J8aS4lcVf3HcAzmGinU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B1F41391B;
- Mon, 13 Feb 2023 15:27:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id dxTEFu9W6mOjIgAAMHmgww
- (envelope-from <andrea.cervesato@suse.com>); Mon, 13 Feb 2023 15:27:43 +0000
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0423B600186
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 16:29:51 +0100 (CET)
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 31DEWS4X022856
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 15:29:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : subject :
+ in-reply-to : references : date : message-id : content-type :
+ mime-version; s=pp1; bh=BGRt+3WSgeee8GHOpM1cEmCYiwRm97op6PzYPsphUE8=;
+ b=sv+iKVp4Yj48I+4uSYbjz868nCAasFvVz2DWDIRhk7VaI0bwVrt8VUAPx/RUYUeIsGWr
+ bqDaOK7Ykq4bcKtOU+nsOOdqzde0facGprGM+tEY4GRJ9QUjkTSDyH0ColPdpL2fnhMO
+ HgIWhTOFoD6kMbLA9e5i/gf/qrXeosjjjQK+gDU8y8jkqSiDYKqKVyLHJUAMGW4jYGHC
+ t5XbAer2XsPU175ErGHLeapRzpGGoyehavbI4MbOSNOgrb8WZ1TQwGhje5q09q3l7VyF
+ 5yGIHZfV1FtEdOkhp+r9mbiQzit0ShqJfc5NujPed5DdXK5yBgI8lfySBxccxo2qPFAy zw== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.72])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3nqq2dhj28-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 15:29:49 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+ by ppma06fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 31D81W3C007478
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 15:29:48 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma06fra.de.ibm.com (PPS) with ESMTPS id 3np29fa3wk-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 15:29:47 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 31DFTjNI18416008
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 15:29:45 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 6D3AE2004F
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 15:29:45 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 6CA2920040
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 15:29:44 +0000 (GMT)
+Received: from tarunpc (unknown [9.43.27.182])
+ by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 15:29:44 +0000 (GMT)
+From: Tarun Sahu <tsahu@linux.ibm.com>
 To: ltp@lists.linux.it
-Date: Mon, 13 Feb 2023 16:25:40 +0100
-Message-Id: <20230213152540.17916-1-andrea.cervesato@suse.com>
-X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230210223342.240969-1-tsahu@linux.ibm.com>
+References: <20230125222703.19943-2-pvorel@suse.cz>
+ <20230210223342.240969-1-tsahu@linux.ibm.com>
+Date: Mon, 13 Feb 2023 20:59:40 +0530
+Message-ID: <87r0utinx7.fsf@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DpYnAHKgMUcrzZxsbJKeya1djw0xnK4r
+X-Proofpoint-ORIG-GUID: DpYnAHKgMUcrzZxsbJKeya1djw0xnK4r
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-13_09,2023-02-13_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 malwarescore=0
+ clxscore=1015 lowpriorityscore=0 spamscore=0 priorityscore=1501
+ mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302130136
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Refactor pidns10 using new LTP API
+Subject: Re: [LTP] [PATCH] hugepage15: Resolve compile time warning
+ generating with -O0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,171 +98,75 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-Using SAFE_CLONE
-Using TST_EXP_* macros
 
- testcases/kernel/containers/pidns/pidns10.c | 128 +++++---------------
- 1 file changed, 30 insertions(+), 98 deletions(-)
+Thanks for reviewing it, Petr.
+Sent the re-based version.
 
-diff --git a/testcases/kernel/containers/pidns/pidns10.c b/testcases/kernel/containers/pidns/pidns10.c
-index b38b9fd18..a35c73f5d 100644
---- a/testcases/kernel/containers/pidns/pidns10.c
-+++ b/testcases/kernel/containers/pidns/pidns10.c
-@@ -1,112 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
--* Copyright (c) International Business Machines Corp., 2007
--* This program is free software; you can redistribute it and/or modify
--* it under the terms of the GNU General Public License as published by
--* the Free Software Foundation; either version 2 of the License, or
--* (at your option) any later version.
--* This program is distributed in the hope that it will be useful,
--* but WITHOUT ANY WARRANTY; without even the implied warranty of
--* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
--* the GNU General Public License for more details.
--* You should have received a copy of the GNU General Public License
--* along with this program; if not, write to the Free Software
--* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--*
--***************************************************************************
--* File: pidns10.c
--* *
--* * Description:
--* *  The pidns10.c testcase verifies inside the container, if kill(-1, signal)
--* *  fails with ESRCH when there are no processes in container.
--* *
--* * Test Assertion & Strategy:
--* *  Create a PID namespace container.
--* *  Invoke kill(-1, SIGUSR1) inside container and check return code and error.
--* *  kill() should have failed;except swapper & init, no process is inside.
--* *
--* * Usage: <for command-line>
--* *  pidns10
--* *
--* * History:
--* *  DATE      NAME                             DESCRIPTION
--* *  13/11/08  Gowrishankar M 			Creation of this test.
--* *            <gowrishankar.m@in.ibm.com>
--*
--******************************************************************************/
--#define _GNU_SOURCE 1
--#include <sys/wait.h>
--#include <sys/types.h>
--#include <string.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <stdio.h>
--#include <errno.h>
--#include "pidns_helper.h"
--#include "test.h"
--
--char *TCID = "pidns10";
--int TST_TOTAL = 1;
-+ * Copyright (C) International Business Machines Corp., 2008
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
- 
--int child_fn(void *);
-+/*\
-+ * [Description]
-+ *
-+ * Clone a process with CLONE_NEWPID flag and check that killing subprocesses
-+ * from child namespace will raise ESRCH error.
-+ */
- 
--#define CHILD_PID       1
--#define PARENT_PID      0
-+#include "tst_test.h"
-+#include "lapi/sched.h"
- 
--/*
-- * child_fn() - Inside container
-- */
--int child_fn(void *arg)
-+static void child_func(void)
- {
--	int exit_val, ret;
--	pid_t pid, ppid;
-+	pid_t cpid = getpid();
-+	pid_t ppid = getppid();
- 
--	/* Set process id and parent pid */
--	pid = getpid();
--	ppid = getppid();
--	if (pid != CHILD_PID || ppid != PARENT_PID) {
--		printf("cinit: pidns was not created.\n");
--		return 1;
--	}
-+	TST_EXP_EQ_LI(cpid, 1);
-+	TST_EXP_EQ_LI(ppid, 0);
- 
--	if ((ret = kill(-1, SIGUSR1)) == -1 && errno == ESRCH) {
--		printf("cinit: kill(-1, sig) failed with -1 / ESRCH as "
--		       "expected\n");
--		exit_val = 0;
--	} else {
--		printf("cinit: kill(-1, sig) didn't fail with -1 / ESRCH "
--		       "(%d); failed with %d / %d instead", ESRCH, ret, errno);
--		exit_val = 1;
--	}
--	exit(exit_val);
--}
-+	tst_res(TINFO, "Trying to kill all subprocesses from within container");
- 
--static void setup(void)
--{
--	tst_require_root();
--	check_newpid();
-+	TST_EXP_FAIL(kill(-1, SIGKILL), ESRCH);
- }
- 
--int main(void)
-+static void run(void)
- {
--	int status;
--	pid_t pid;
--
--	setup();
-+	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
- 
--	pid = getpid();
--
--	/* Container creation on PID namespace */
--	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWPID, child_fn, NULL));
--	if (TEST_RETURN == -1) {
--		tst_brkm(TBROK | TTERRNO, NULL, "clone failed");
-+	if (!SAFE_CLONE(&args)) {
-+		child_func();
-+		return;
- 	}
--
--	sleep(1);
--	if (wait(&status) < 0)
--		tst_resm(TWARN, "parent: waitpid() failed.");
--
--	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
--		tst_resm(TBROK, "container was terminated abnormally");
--
--	tst_exit();
- }
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.needs_root = 1,
-+	.forks_child = 1,
-+};
--- 
-2.35.3
+Tarun Sahu <tsahu@linux.ibm.com> writes:
 
+> Instead of turning off the optimizaton with -O0 to resolve unwanted
+> behaviour of clang with goto statements, this will make use of clang
+> pragma to turn off the optimization for just clang compiler. This way,
+> gcc won't throw unwanted warning on turning off optimization:
+> "warning: _FORTIFY_SOURCE requires compiling with optimization (-O)".
+>
+> Also, removed redundant header-includes.
+>
+> Reported-by: Petr Vorel <pvorel@suse.cz>
+> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+> ---
+>  testcases/kernel/mem/hugetlb/hugemmap/Makefile     |  1 -
+>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c | 12 ++++--------
+>  2 files changed, 4 insertions(+), 9 deletions(-)
+>
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> index 6f10807cd..2d651b4aa 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+> @@ -8,5 +8,4 @@ include $(top_srcdir)/include/mk/testcases.mk
+>  include $(abs_srcdir)/../Makefile.inc
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>  
+> -hugemmap15: CFLAGS+=-O0
+>  hugemmap06: CFLAGS+=-pthread
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c
+> index 4730d8d18..aae234135 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c
+> @@ -18,17 +18,13 @@
+>   * remap, or because the icache happens to get flushed in the interim.
+>   */
+>  
+> +#if defined(__clang__)
+> +	#pragma clang optimize off
+> +#endif
+> +
+>  #define _GNU_SOURCE
+> -#include <stdio.h>
+> -#include <stdlib.h>
+>  #include <setjmp.h>
+> -#include <unistd.h>
+>  #include <signal.h>
+> -#include <sys/mman.h>
+> -#include <ucontext.h>
+> -#include <limits.h>
+> -#include <sys/param.h>
+> -#include <sys/types.h>
+>  
+>  #include "hugetlb.h"
+>  
+> -- 
+> 2.31.1
+>
+>
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
