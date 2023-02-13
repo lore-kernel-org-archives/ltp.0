@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EEADC636CC
-	for <ltp@archiver.kernel.org>; Mon, 13 Feb 2023 15:23:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DBA8C636CC
+	for <ltp@archiver.kernel.org>; Mon, 13 Feb 2023 15:26:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 04C443CBFA6
-	for <ltp@archiver.kernel.org>; Mon, 13 Feb 2023 16:23:09 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id BD71A3CBF94
+	for <ltp@archiver.kernel.org>; Mon, 13 Feb 2023 16:26:01 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A29983C1D84
- for <ltp@lists.linux.it>; Mon, 13 Feb 2023 16:22:56 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id CB8E03C1D84
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 16:25:51 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 99ED2200059
- for <ltp@lists.linux.it>; Mon, 13 Feb 2023 16:22:55 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C58F51A006E8
+ for <ltp@lists.linux.it>; Mon, 13 Feb 2023 16:25:50 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CF50D1F38D;
- Mon, 13 Feb 2023 15:22:54 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C82B71F45B;
+ Mon, 13 Feb 2023 15:25:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1676301774; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1676301949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=purlXo6M0p9jKp5xxR0gU92RJhLr/8xGfOML8SSd/os=;
- b=oDQxHMYjScZyyWRgv+6Q4mp0wTm6yygNHbthReaOu7uXUcsiWVRxcFnoaRgxYrgRgnU0lm
- mMz3qj+xiMVajI9icfahIRCcvrWJx+EK2AxmmjAHlGQOoIJPUBclbJ4SDt+mzVM0mtffD4
- 7/qO1bh30Fexxnyg8UvU3rQZHpkDPPk=
+ bh=IS4tLi5qq5iGtcPye1ZbnV6YIsKnR2cLW10TfRmjoDI=;
+ b=dYy0vXBiyLrt6m2s3LEbD80MhkiGsctodw9YT+FjBNeuFn5HdfbqmNvi1IweT/xhIxJYVi
+ 3V+KGUHJh/fuDD/C/BDX2+2SMljLpagjvynGa4QrefSKYLg30iWYJbRme5Wv8hVg/zLiye
+ Wd5iFpcCA5buFTTpgAr1jEUPg+AjDaE=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE01A1391B;
- Mon, 13 Feb 2023 15:22:47 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B49011391B;
+ Mon, 13 Feb 2023 15:25:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ddeMJsdV6mMnIAAAMHmgww
- (envelope-from <andrea.cervesato@suse.com>); Mon, 13 Feb 2023 15:22:47 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id NrMVI3hW6mOeIQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Mon, 13 Feb 2023 15:25:44 +0000
 To: ltp@lists.linux.it
-Date: Mon, 13 Feb 2023 16:20:37 +0100
-Message-Id: <20230213152037.16285-1-andrea.cervesato@suse.com>
+Date: Mon, 13 Feb 2023 16:23:37 +0100
+Message-Id: <20230213152337.17075-1-andrea.cervesato@suse.com>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] Refactor pidns04 test using new LTP API
+Subject: [LTP] [PATCH v3] Refactor pidns06 test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,197 +72,175 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/containers/pidns/pidns04.c | 172 +++++---------------
- 1 file changed, 38 insertions(+), 134 deletions(-)
+Using SAFE_CLONE
+Using TST_EXP_* macros
 
-diff --git a/testcases/kernel/containers/pidns/pidns04.c b/testcases/kernel/containers/pidns/pidns04.c
-index 9ac0e5aca..de4b736d6 100644
---- a/testcases/kernel/containers/pidns/pidns04.c
-+++ b/testcases/kernel/containers/pidns/pidns04.c
-@@ -1,150 +1,54 @@
+ testcases/kernel/containers/pidns/pidns06.c | 148 ++++----------------
+ 1 file changed, 30 insertions(+), 118 deletions(-)
+
+diff --git a/testcases/kernel/containers/pidns/pidns06.c b/testcases/kernel/containers/pidns/pidns06.c
+index d6623941a..ed440f043 100644
+--- a/testcases/kernel/containers/pidns/pidns06.c
++++ b/testcases/kernel/containers/pidns/pidns06.c
+@@ -1,133 +1,45 @@
 +// SPDX-License-Identifier: GPL-2.0
  /*
--* Copyright (c) International Business Machines Corp., 2007
+-* Copyright (c) International Business Machines Corp., 2008
 -* This program is free software; you can redistribute it and/or modify
 -* it under the terms of the GNU General Public License as published by
 -* the Free Software Foundation; either version 2 of the License, or
 -* (at your option) any later version.
--* This program is distributed in the hope that it will be useful,
+-* This program is distributed in the hope that it will be useful
 -* but WITHOUT ANY WARRANTY; without even the implied warranty of
 -* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
 -* the GNU General Public License for more details.
 -* You should have received a copy of the GNU General Public License
 -* along with this program; if not, write to the Free Software
 -* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-
+-*************************************************************************
+-* Description:
+-*  Testcase tries killing of the parent namespace pid by the container-init.
+-*  It also tries killing of non-existent PID, by the container-init.
+-*  Returns Success if Unable to kill, and proper error number is set.
+-*  else Returns Failure
 -*
--***************************************************************************
+-* Steps:
+-* 1. Parent process clone a process with flag CLONE_NEWPID
+-* 2. The pid of the parent namespace is passed to the container.
+-* 3. Container receieves the PID and passes SIGKILL to this PID.
+-* 4. If kill() is unsuccessful and the errno is set to 'No Such process'
+-*	then sets PASS
+-*    else,
+-*	sets FAIL
+-* 5. It also verifies by passing SIGKILL to FAKE_PID
+-* 6. If kill() is unsuccessful and the errno is set to 'No Such process'
+-*	then sets PASS
+-*    else,
+-*	sets FAIL
+-*
+-*******************************************************************************/
+-#define _GNU_SOURCE 1
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <sys/wait.h>
+-#include <assert.h>
+-#include <unistd.h>
+-#include <errno.h>
+-#include <signal.h>
+-#include "pidns_helper.h"
+-#include "test.h"
 + * Copyright (C) International Business Machines Corp., 2008
 + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
  
--* File: pidns04.c
--*
--* Description:
--*  The pidns04.c testcase builds into the ltp framework to verify
--*  the basic functionality of PID Namespace.
--*
--* Verify that:
--* 1. When parent clone a process with flag CLONE_NEWPID, the process ID of
--* child should be one.
--*
--* 2. When parent clone a process with flag CLONE_NEWPID, the parent process ID
--* of should be zero.
--*
--* 3. The container init process (one), should not get killed by the SIGKILL in
--* the childNS
--*
--* Total Tests:
--*
--* Test Name: pidns04
--*
--* Test Assertion & Strategy:
--*
--* From main() clone a new child process with passing the clone_flag as
--* CLONE_NEWPID.
--* The container init, should not get killed by the SIGKILL inside the child NS.
--* Usage: <for command-line>
--* pidns04
--*
--* History:
--*
--* FLAG DATE     	NAME	   			DESCRIPTION
--* 08/10/08      Veerendra C <vechandr@in.ibm.com> Verifies killing of cont init.
--*
--*******************************************************************************/
--#define _GNU_SOURCE 1
--#include <sys/wait.h>
--#include <assert.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--#include <errno.h>
--#define CLEANUP cleanup
--#include "pidns_helper.h"
--#include "test.h"
--
--#define INIT_PID	1
--#define CHILD_PID       1
+-#define CINIT_PID       1
 -#define PARENT_PID      0
+-#define FAKE_PID	-1
 +/*\
 + * [Description]
 + *
-+ * Clone a process with CLONE_NEWPID flag and check that child container does
-+ * not get kill itself with SIGKILL.
++ * Clone a process with CLONE_NEWPID flag and check that parent process can't
++ * be killed from child namespace.
 + */
  
--char *TCID = "pidns04";
+-char *TCID = "pidns06";
 -int TST_TOTAL = 1;
--int fd[2];
-+#include <sys/wait.h>
 +#include "tst_test.h"
 +#include "lapi/sched.h"
  
 -/*
-- * child_fn1() - Inside container
--*/
--static int child_fn1(void *ttype)
-+static void child_func(void)
+- * kill_pid_in_childfun()
+- *      Cont-init tries to kill the parent-process using parent's global Pid.
+- *	Also checks passing SIGKILL to non existent PID in the container.
+- */
+-static int kill_pid_in_childfun(void *vtest)
++static void child_func(int pid)
  {
--	int exit_val;
--	pid_t cpid, ppid;
+-	int cpid, ppid, *par_pid;
+-	int ret = 0;
 -	cpid = getpid();
 -	ppid = getppid();
--	char mesg[] = "I was not killed !";
--	/* Child process closes up read side of pipe */
--	close(fd[0]);
+-	par_pid = (int *)vtest;
 +	pid_t cpid = getpid();
 +	pid_t ppid = getppid();
  
--	/* Comparing the values to make sure pidns is created correctly */
--	if ((cpid == CHILD_PID) && (ppid == PARENT_PID)) {
--		printf("PIDNS test is running inside container\n");
--		kill(INIT_PID, SIGKILL);
--		/* Verifying whether the container init is not killed, "
--		   If so writing into the pipe created in the parent NS" */
+-	/* Checking the values to make sure pidns is created correctly */
+-	if (cpid != CINIT_PID || ppid != PARENT_PID) {
+-		printf("Unexpected result for Container: init "
+-		       "pid=%d ppid=%d\n", cpid, ppid);
+-		exit(1);
+-	}
 +	TST_EXP_EQ_LI(cpid, 1);
 +	TST_EXP_EQ_LI(ppid, 0);
  
--		/* Send "mesg" through the write side of pipe */
--		write(fd[1], mesg, (strlen(mesg) + 1));
--		exit_val = 0;
+-	/*
+-	 * While trying kill() of the pid of the parent namespace..
+-	 * Check to see if the errno was set to the expected, value of 3 : ESRCH
+-	 */
+-	ret = kill(*par_pid, SIGKILL);
+-	if (ret == -1 && errno == ESRCH) {
+-		printf("Container: killing parent pid=%d failed as expected "
+-		       "with ESRCH\n", *par_pid);
 -	} else {
--		printf("got unexpected result of cpid=%d ppid=%d\n",
--		       cpid, ppid);
--		exit_val = 1;
+-		printf("Container: killing parent pid=%d, didn't fail as "
+-		       "expected with ESRCH (%d) and a return value of -1. Got "
+-		       "%d (\"%s\") and a return value of %d instead.\n",
+-		       *par_pid, ESRCH, errno, strerror(errno), ret);
+-		exit(1);
 -	}
--	exit(exit_val);
--}
-+	tst_res(TINFO, "Trying to kill container from within container");
+-	/*
+-	 * While killing non-existent pid in the container,
+-	 * Check to see if the errno was set to the expected, value of 3 : ESRCH
+-	 */
+-	ret = kill(FAKE_PID, SIGKILL);
+-	if (ret == -1 && errno == ESRCH) {
+-		printf("Container: killing non-existent pid failed as expected "
+-		       "with ESRCH\n");
+-	} else {
+-		printf("Container: killing non-existent pid, didn't fail as "
+-		       "expected with ESRCH (%d) and a return value of -1. Got "
+-		       "%d (\"%s\") and a return value of %d instead.\n",
+-		       ESRCH, errno, strerror(errno), ret);
+-		exit(1);
+-	}
++	tst_res(TINFO, "Trying to kill parent from within container");
  
--static void setup(void)
--{
--	tst_require_root();
--	check_newpid();
-+	SAFE_KILL(1, SIGKILL);
-+
-+	tst_res(TINFO, "Container is up and running");
+-	exit(0);
++	TST_EXP_FAIL(kill(pid, SIGKILL), ESRCH);
  }
  
--int main(void)
+-static void setup(void)
 +static void run(void)
  {
--	int nbytes, status;
--	char readbuffer[80];
+-	tst_require_root();
+-	check_newpid();
+-}
+-
+-int main(void)
+-{
+-	int status;
 -
 -	setup();
 -
--	pipe(fd);
--	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWPID, child_fn1, NULL));
--	if (TEST_RETURN == -1) {
--		tst_brkm(TFAIL | TTERRNO, CLEANUP, "clone failed");
--	} else if (wait(&status) == -1) {
--		tst_brkm(TFAIL | TERRNO, CLEANUP, "wait failed");
--	}
--
--	/* Parent process closes up write side of pipe */
--	close(fd[1]);
--	/* Read in a string from the pipe */
--	nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
--
--	if (0 <= nbytes) {
--		tst_resm(TPASS, "Container init : %s", readbuffer);
--	} else {
--		tst_brkm(TFAIL, CLEANUP,
--			 "Container init is killed by SIGKILL !!!");
 +	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
-+	int status;
-+	pid_t pid;
-+
-+	pid = SAFE_CLONE(&args);
-+	if (!pid) {
-+		child_func();
+ 	pid_t pid = getpid();
+ 
+-	tst_resm(TINFO, "Parent: Passing the pid of the process %d", pid);
+-	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWPID, kill_pid_in_childfun,
+-				   (void *)&pid));
+-	if (TEST_RETURN == -1) {
+-		tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
+-	} else if (wait(&status) == -1) {
+-		tst_brkm(TFAIL | TERRNO, NULL, "wait failed");
++	if (!SAFE_CLONE(&args)) {
++		child_func(pid);
 +		return;
  	}
- 
--	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
--		tst_resm(TFAIL, "Container init pid exited abnormally");
--	} else if (WIFSIGNALED(status)) {
--		tst_resm(TFAIL, "Container init pid got killed by signal %d",
--			 WTERMSIG(status));
--	}
--	CLEANUP();
 -
 -	tst_exit();
-+	SAFE_WAITPID(pid, &status, 0);
- 
-+	TST_EXP_EQ_LI(WTERMSIG(status), 0);
  }
- 
--static void cleanup(void)
--{
--	close(fd[0]);
--}
++
 +static struct tst_test test = {
 +	.test_all = run,
 +	.needs_root = 1,
