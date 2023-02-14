@@ -4,69 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DEEBC61DA4
-	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 08:53:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3C75C05027
+	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 09:34:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A98D3CC5C5
-	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 09:53:55 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D5A363CC5C0
+	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 10:34:17 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A9E343C632B
- for <ltp@lists.linux.it>; Fri, 10 Feb 2023 09:05:13 +0100 (CET)
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
- [IPv6:2607:f8b0:4864:20::1043])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E2E483CBF3B
+ for <ltp@lists.linux.it>; Tue, 14 Feb 2023 10:34:07 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B3B3E600C60
- for <ltp@lists.linux.it>; Fri, 10 Feb 2023 09:05:12 +0100 (CET)
-Received: by mail-pj1-x1043.google.com with SMTP id o13so4489013pjg.2
- for <ltp@lists.linux.it>; Fri, 10 Feb 2023 00:05:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=ZizZ2n9R70hniBk464JFs3KDVnyMp0yGo1DHQLmQVUk=;
- b=aZvKdR+7p43UaiP28wMAMZISv+0/acCZGuoQjq/8UvukXWS1PaaCnf5k2EwS/fyqU8
- X1G5DIwbBQgrtUk4n5UjVmQGH7ZwEef99pIvii9f209CJDcDoD8pz2x9iSdmQPdeVC1W
- 3L/zhgon/2yL5Ba/rT7RfdU2efBOyGzqulpxzhtIEzJAfrYRTpar8TBLwKnDdeadCBL5
- XfVgWfqhfk/6oAaed7gnedTM/by23IBOR34GA/nV2SN4opMawvKXeneiYUVw2nlVawV4
- DVM5tbsy6Nswb9mjU2zaMsZE1jqnUvMXekGWTZQGDZMGJ9MWkgHg0urOiERSohA8zeEm
- hSLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=ZizZ2n9R70hniBk464JFs3KDVnyMp0yGo1DHQLmQVUk=;
- b=wQVYi2w7zivkjOWS9EP+NXQ7zmsOMoPPDoCzlCpFhX8YDVX35cIEQC1msyMK0XagGq
- /lZE6ylWhjFm9TgUdrt/iJB6SmebP9wavrOOAOERheTNMDyFHzrQSUqyuuaXEg7yvNUv
- q1PcZCaFlAsrGHhWOvyqpiuD4+X4Q4+xOEfSOuYm0EoL68vbFR5l5UVHnIvZIk2xP3IQ
- gMzGJWj/8j9M8o69mPTnRrRr8T/W3cRUSHiMUEdwufVhgwLdWnW3Wy2HfJvpr1taBB6T
- aNs1em+TaRY81BXxaWnFoc7QCLoR1TxcNUc+XQYzwzBeGUuyr3b1LxfE7w/QmySMrClI
- IYNA==
-X-Gm-Message-State: AO0yUKUEF/SiMDcerl97FRIf0xKwBq7WoyZoOpC9ORHg0dORwMhQ5vZ/
- jOViDIHfWQxuvhGaqxCpxMNtlJTPeq588uNyaOpob01/
-X-Google-Smtp-Source: AK7set81gEk5O3xa3Ef4tF4AajKOe9STSdZgzMkL3y5qPBmKWhRd0A9nbT7pCPFWn2VKDZokslc5rQ==
-X-Received: by 2002:a17:902:ea0e:b0:199:4362:93df with SMTP id
- s14-20020a170902ea0e00b00199436293dfmr11712046plg.12.1676016310957; 
- Fri, 10 Feb 2023 00:05:10 -0800 (PST)
-Received: from localhost ([218.66.91.195]) by smtp.gmail.com with ESMTPSA id
- ik22-20020a170902ab1600b0019a7363e752sm701724plb.276.2023.02.10.00.05.10
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 10 Feb 2023 00:05:10 -0800 (PST)
-From: xiaoshoukui <xiaoshoukui@gmail.com>
-To: ltp@lists.linux.it
-Date: Fri, 10 Feb 2023 03:05:04 -0500
-Message-Id: <20230210080504.7131-1-xiaoshoukui@gmail.com>
-X-Mailer: git-send-email 2.20.1
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EE6111A008BF
+ for <ltp@lists.linux.it>; Tue, 14 Feb 2023 10:34:06 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id E7B5F21AD6;
+ Tue, 14 Feb 2023 09:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1676367245;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Nbexxs+ilmBRwaq52s7dXCM4jneTx/TAeRDSmUAwo74=;
+ b=z35Gypb//4UgYHGNEISpfLEpYSOg0z55VQ1MyKKd+X4xWLlvUiWmgZQZb+mWiNzrgt7co7
+ uSqlGSb6rjs2uST2M6GHVO4zskEvvF/h8on2eAzUuMmdbQPEtTS/axQUb7EQdbQrjtVv15
+ +s6yAFZ1ixXhCKzM+3Ac5yfekMyhfDU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1676367245;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Nbexxs+ilmBRwaq52s7dXCM4jneTx/TAeRDSmUAwo74=;
+ b=Y90FquURSuHWNrkoPNrzHxqqmGG39PI34En92rlsdWn97WnFZwwGnuycDxo1+p5MhpIGzF
+ yAc1iYodojPs+5Bw==
+Received: from g78 (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id B64CB2C141;
+ Tue, 14 Feb 2023 09:34:05 +0000 (UTC)
+References: <20230207143758.31331-1-andrea.cervesato@suse.com>
+User-agent: mu4e 1.8.13; emacs 28.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Date: Tue, 14 Feb 2023 08:55:31 +0000
+Organization: Linux Private Site
+In-reply-to: <20230207143758.31331-1-andrea.cervesato@suse.com>
+Message-ID: <87v8k4oak3.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 14 Feb 2023 09:53:33 +0100
-Subject: [LTP] [PATCH 1/1 1/1] Add ioctl_loop08 test for LOOP_GET_STATUS
- lock imbalance
+Subject: Re: [LTP] [PATCH v2] Refactor pidns17 test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,170 +69,267 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
+Hello,
 
-Signed-off-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
----
- testcases/kernel/syscalls/ioctl/Makefile      |   1 +
- .../kernel/syscalls/ioctl/ioctl_loop08.c      | 132 ++++++++++++++++++
- 2 files changed, 133 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop08.c
+Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
 
-diff --git a/testcases/kernel/syscalls/ioctl/Makefile b/testcases/kernel/syscalls/ioctl/Makefile
-index c2ff6c8e7..b61c61189 100644
---- a/testcases/kernel/syscalls/ioctl/Makefile
-+++ b/testcases/kernel/syscalls/ioctl/Makefile
-@@ -12,3 +12,4 @@ FILTER_OUT_MAKE_TARGETS	+= ioctl02
- endif
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+CFLAGS+=-pthread
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop08.c b/testcases/kernel/syscalls/ioctl/ioctl_loop08.c
-new file mode 100644
-index 000000000..a6cd31805
---- /dev/null
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop08.c
-@@ -0,0 +1,132 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 xiaoshoukui <xiaoshoukui@ruijie.com.cn>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * This is a basic ioctl test about loopdevice LOOP_GET_STATUS
-+ * and LOOP_GET_STATUS64.
-+ * Commit 2d1d4c1e591f made loop_get_status() drop lo_ctx_mutex before
-+ * returning, but the loop_get_status_old(), loop_get_status64(), and
-+ * loop_get_status_compat() wrappers don't call loop_get_status() if the
-+ * passed argument is NULL. The callers expect that the lock is dropped, so
-+ * make sure we drop it in that case, too.
-+ *
-+ * Fixed by commit:
-+ *
-+ *  commit bdac616db9bbadb90b7d6a406144571015e138f7
-+ *  Author: Omar Sandoval <osandov@fb.com>
-+ *  Date:   Fri Apr 06 09:57:03 2018 -0700
-+ *
-+ *    loop: fix LOOP_GET_STATUS lock imbalance
-+ */
-+
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <stdlib.h>
-+#include "lapi/loop.h"
-+#include "tst_test.h"
-+#include <pthread.h>
-+
-+#define MAX_MSGSIZE 4096
-+
-+static const char lock_imbalance[] = "lock held when returning to user space";
-+
-+static struct tcase {
-+	int ioctl_flag;
-+	char *message;
-+} tcases[] = {
-+	{ LOOP_GET_STATUS,
-+	 "Testing LOOP_GET_STATUS lock imbalance" },
-+
-+	{ LOOP_GET_STATUS64,
-+	 "Testing LOOP_GET_STATUS64 lock imbalance" },
-+};
-+
-+static int find_kmsg(const char *text_to_find)
-+{
-+	int f, msg_found = 0;
-+	char msg[MAX_MSGSIZE + 1];
-+
-+	f = SAFE_OPEN("/dev/kmsg", O_RDONLY | O_NONBLOCK);
-+
-+	while (1) {
-+		TEST(read(f, msg, MAX_MSGSIZE));
-+		if (TST_RET < 0) {
-+			if (TST_ERR == EAGAIN)
-+				/* there are no more messages */
-+				break;
-+			else if (TST_ERR == EPIPE)
-+				/* current message was overwritten */
-+				continue;
-+			else
-+				tst_brk(TBROK | TTERRNO,
-+					"err reading /dev/kmsg");
-+		} else {
-+			/* lines from kmsg are not NULL terminated */
-+			msg[TST_RET] = '\0';
-+			if (strstr(msg, text_to_find) != NULL) {
-+				msg_found = 1;
-+				break;
-+			}
-+		}
-+	}
-+	SAFE_CLOSE(f);
-+
-+	if (msg_found)
-+		return 0;
-+	else
-+		return -1;
-+}
-+
-+static void *ioctl_thread(void *arg)
-+{
-+	char dev_path[1024];
-+	int dev_num, dev_fd;
-+	struct tcase *tc = (struct tcase *)arg;
-+
-+	tst_res(TINFO, "%s", tc->message);
-+	dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
-+	if (dev_num < 0)
-+		tst_brk(TBROK, "Failed to find free loop device");
-+	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	if (tc->ioctl_flag == LOOP_GET_STATUS)
-+		ioctl(dev_fd, LOOP_GET_STATUS, NULL);
-+	else
-+		ioctl(dev_fd, LOOP_GET_STATUS64, NULL);
-+	if (dev_fd > 0)
-+		SAFE_CLOSE(dev_fd);
-+}
-+
-+static void verify_ioctl_loop(void)
-+{
-+	struct tcase *tc = &tcases[0];
-+	pthread_t th1, th2;
-+
-+	pthread_create(&th1, NULL, ioctl_thread, tc);
-+	usleep(500000);
-+	pthread_create(&th2, NULL, ioctl_thread, tc + 1);
-+	usleep(500000);
-+	if (!find_kmsg(lock_imbalance))
-+		tst_res(TFAIL, "Trigger lock imbalance");
-+	else
-+		tst_res(TPASS, "Nothing bad happened, probably");
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_ioctl_loop,
-+	.needs_root = 1,
-+	.needs_kconfigs = (const char *[]) {
-+					    "CONFIG_LOCKDEP=y",
-+					    NULL },
-+	.tags = (const struct tst_tag[]) {
-+					  { "linux-git", "bdac616db9bb "},
-+					  {}
-+					   },
-+	.needs_drivers = (const char *const[]) {
-+						"loop",
-+						NULL }
-+};
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+> Use more TST_* macros
+> Use SAFE_CLONE
+> Better TINFO messages
+>
+>  testcases/kernel/containers/pidns/pidns17.c | 192 ++++++--------------
+>  1 file changed, 54 insertions(+), 138 deletions(-)
+>
+> diff --git a/testcases/kernel/containers/pidns/pidns17.c b/testcases/kernel/containers/pidns/pidns17.c
+> index cf0c5826f..c45d9fef8 100644
+> --- a/testcases/kernel/containers/pidns/pidns17.c
+> +++ b/testcases/kernel/containers/pidns/pidns17.c
+> @@ -1,162 +1,78 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+> -* Copyright (c) International Business Machines Corp., 2007
+> -* This program is free software; you can redistribute it and/or modify
+> -* it under the terms of the GNU General Public License as published by
+> -* the Free Software Foundation; either version 2 of the License, or
+> -* (at your option) any later version.
+> -* This program is distributed in the hope that it will be useful,
+> -* but WITHOUT ANY WARRANTY; without even the implied warranty of
+> -* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+> -* the GNU General Public License for more details.
+> -* You should have received a copy of the GNU General Public License
+> -* along with this program; if not, write to the Free Software
+> -* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> -*
+> -***************************************************************************
+> -* File: pidns17.c
+> -* *
+> -* * Description:
+> -* *  The pidns17.c testcase verifies inside the container, if kill(-1, SIGUSR1)
+> -* *  terminates all children running inside.
+> -* *
+> -* * Test Assertion & Strategy:
+> -* *  Create a PID namespace container.
+> -* *  Spawn many children inside it.
+> -* *  Invoke kill(-1, SIGUSR1) inside container and check if it terminates
+> -* *  all children.
+> -* *
+> -* * Usage: <for command-line>
+> -* *  pidns17
+> -* *
+> -* * History:
+> -* *  DATE      NAME                             DESCRIPTION
+> -* *  13/11/08  Gowrishankar M 			Creation of this test.
+> -* *            <gowrishankar.m@in.ibm.com>
+> -*
+> -******************************************************************************/
+> -#define _GNU_SOURCE 1
+> -#include <sys/wait.h>
+> -#include <sys/types.h>
+> -#include <string.h>
+> -#include <stdlib.h>
+> -#include <unistd.h>
+> -#include <stdio.h>
+> -#include <errno.h>
+> -#include "pidns_helper.h"
+> -#include "test.h"
+> + * Copyright (c) International Business Machines Corp., 2007
+> + *               13/11/08  Gowrishankar M <gowrishankar.m@in.ibm.com>
+> + * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+>  
+> -char *TCID = "pidns17";
+> -int TST_TOTAL = 1;
+> +/*\
+> + * [Description]
+> + *
+> + * Clone a process with CLONE_NEWPID flag and spawn many children inside the
+> + * container. Then terminate all children and check if they ended up.
+
+                                                          ^^ they were signaled?
+
+> + */
+>  
+> -int child_fn(void *);
+> +#include <sys/wait.h>
+> +#include "tst_test.h"
+> +#include "lapi/sched.h"
+>  
+> -#define CHILD_PID       1
+> -#define PARENT_PID      0
+> +#define CHILDREN_NUM 10
+>  
+> -/*
+> - * child_fn() - Inside container
+> - */
+> -int child_fn(void *arg)
+> +static void child_func(void)
+>  {
+> -	int children[10], exit_val, i, status;
+> -	pid_t pid, ppid;
+> +	int children[CHILDREN_NUM], status;
+> +	unsigned int sig, i, counter = 0;
+> +	pid_t cpid, ppid;
+>  
+> -	/* Set process id and parent pid */
+> -	pid = getpid();
+> +	cpid = getpid();
+>  	ppid = getppid();
+> -	if (pid != CHILD_PID || ppid != PARENT_PID) {
+> -		printf("cinit: pidns was not created\n");
+> -		exit(1);
+> -	}
+>  
+> -	exit_val = 0;
+> +	TST_EXP_EQ_LI(cpid, 1);
+> +	TST_EXP_EQ_LI(ppid, 0);
+> +
+> +	tst_res(TINFO, "Spawning %d children", CHILDREN_NUM);
+>  
+> -	/* Spawn many children */
+> -	for (i = 0; i < ARRAY_SIZE(children); i++) {
+> -		switch ((children[i] = fork())) {
+> -		case -1:
+> -			perror("fork failed");
+> -			exit_val = 1;
+> -			break;
+> -		case 0:
+> +	for (i = 0; i < CHILDREN_NUM; i++) {
+> +		children[i] = SAFE_FORK();
+> +		if (!children[i]) {
+>  			pause();
+> -			/* XXX (garrcoop): why exit with an exit code of 2? */
+> -			exit(2);
+> -			break;
+> -		default:
+> -			/* fork succeeded. */
+> -			break;
+> +			return;
+>  		}
+>  	}
+> -	/* wait for last child to get scheduled */
+> -	sleep(1);
+>  
+> -	if (kill(-1, SIGUSR1) == -1) {
+> -		perror("cinit: kill(-1, SIGUSR1) failed");
+> -		exit_val = 1;
+> -	}
+> +	tst_res(TINFO, "Terminate children with SIGUSR1");
+>  
+> -	for (i = 0; i < ARRAY_SIZE(children); i++) {
+> -		if (waitpid(children[i], &status, 0) == -1) {
+> -			perror("cinit: waitpid failed");
+> -			kill(children[i], SIGTERM);
+> -			waitpid(children[i], &status, 0);
+> -			exit_val = 1;
+> -		}
+> -		if (!(WIFSIGNALED(status) || WTERMSIG(status) == SIGUSR1)) {
+> -			/*
+> -			 * XXX (garrcoop): this status reporting is overly
+> -			 * noisy. Someone obviously needs to read the
+> -			 * constraints documented in wait(2) a bit more
+> -			 * closely -- in particular the relationship between
+> -			 * WIFEXITED and WEXITSTATUS, and WIFSIGNALED and
+> -			 * WTERMSIG.
+> -			 */
+> -			printf("cinit: found a child alive still "
+> -			       "%d exit: %d, %d, signal %d, %d", i,
+> -			       WIFEXITED(status), WEXITSTATUS(status),
+> -			       WIFSIGNALED(status), WTERMSIG(status));
+> -			exit_val = 1;
+> +	SAFE_KILL(-1, SIGUSR1);
+> +
+> +	for (i = 0; i < CHILDREN_NUM; i++) {
+> +		SAFE_WAITPID(children[i], &status, 0);
+> +
+> +		if (WIFSIGNALED(status)) {
+> +			sig = WTERMSIG(status);
+> +			if (sig != SIGUSR1) {
+> +				tst_res(TFAIL, "%d child died by %s", i, tst_strsig(sig));
+> +				return;
+
+Why not check the other children?
+
+If only one died by another sig that is different to all of them.
+
+> +			}
+> +
+> +			counter++;
+>  		}
+
+Why have this counter instead of calling
+tst_res(TFAIL, "%d child exited with %d instead of being signaled", i, WEXITSTATUS(status))
+if we have exited?
+
+>  	}
+> -	if (exit_val == 0)
+> -		printf("cinit: all children have terminated.\n");
+> -
+> -	exit(exit_val);
+> -}
+>  
+> -static void setup(void)
+> -{
+> -	tst_require_root();
+> -	check_newpid();
+> +	TST_EXP_EQ_LI(counter, CHILDREN_NUM);
+>  }
+>  
+> -int main(void)
+> +static void run(void)
+>  {
+> -	int status;
+> -	pid_t pid;
+> -
+> -	setup();
+> -
+> -	pid = getpid();
+> +	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
+>  
+> -	/* Container creation on PID namespace */
+> -	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWPID, child_fn, NULL));
+> -	if (TEST_RETURN == -1) {
+> -		tst_brkm(TBROK | TTERRNO, NULL, "clone failed");
+> +	if (!SAFE_CLONE(&args)) {
+> +		child_func();
+> +		return;
+>  	}
+> -
+> -	sleep(1);
+> -	if (wait(&status) == -1)
+> -		tst_resm(TFAIL, "waitpid failed");
+> -
+> -	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+> -		tst_resm(TFAIL, "container exited abnormally");
+> -	else if (WIFSIGNALED(status))
+> -		tst_resm(TFAIL,
+> -			 "container was signaled with signal = %d",
+> -			 WTERMSIG(status));
+> -
+> -	tst_exit();
+> -
+>  }
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +};
+> -- 
+> 2.35.3
+
+
 -- 
-2.20.1
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
