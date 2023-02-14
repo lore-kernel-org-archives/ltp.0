@@ -4,65 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD15AC61DA4
-	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 13:42:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D177C6379F
+	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 14:14:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 47E9C3CC5A2
-	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 14:42:20 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 808273CC598
+	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 15:14:56 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D11863CBF50
- for <ltp@lists.linux.it>; Tue, 14 Feb 2023 14:42:09 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 81CAB3CB0B8
+ for <ltp@lists.linux.it>; Tue, 14 Feb 2023 15:14:45 +0100 (CET)
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
+ [60.248.80.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 355EF1A0093E
- for <ltp@lists.linux.it>; Tue, 14 Feb 2023 14:42:08 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 719AC1FDD9;
- Tue, 14 Feb 2023 13:42:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1676382128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ple81L/wBcR3jF32F3Bz5qCqBlS+8WiSHIpbZBRwj0I=;
- b=WchCJR32UR9DsttT/Vj2N/J6YVngLcQL13MDQwTA2c2Ee5du5olxQCVxeaBMZBwtAhzztA
- c89OXAECX1iMtqGpLj1++Aj2rSyK95/1TzJgNc2HTTLUYLogENPkjUjOJqMqVzS6eFgc6W
- rw/5oDvej4TNnmR+/+pyT43teaAWboQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1676382128;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ple81L/wBcR3jF32F3Bz5qCqBlS+8WiSHIpbZBRwj0I=;
- b=alNiAXx6pLK1ERTjW8v5ky7/fILHCcWy6JmHe9cx0ggu4Di0Dcsub4cw4u0cP1mpAACZvS
- hB6gFD57JA24KJDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E150138E3;
- Tue, 14 Feb 2023 13:42:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id MPD4FrCP62MVPQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 14 Feb 2023 13:42:08 +0000
-Date: Tue, 14 Feb 2023 14:43:35 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2EF9B20025A
+ for <ltp@lists.linux.it>; Tue, 14 Feb 2023 15:14:41 +0100 (CET)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+ by Atcsqr.andestech.com with ESMTP id 31EEEYCc025526;
+ Tue, 14 Feb 2023 22:14:34 +0800 (+08)
+ (envelope-from ycliang@andestech.com)
+Received: from ubuntu01 (10.0.12.75) by ATCPCS16.andestech.com (10.0.1.222)
+ with Microsoft SMTP Server id 14.3.498.0; Tue, 14 Feb 2023 22:14:32 +0800
+Date: Tue, 14 Feb 2023 14:14:17 +0000
+From: Leo Liang <ycliang@andestech.com>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <Y+uQB1iojD/0oQDY@yuki>
+Message-ID: <Y+uXOX+EA/hOFsh4@ubuntu01>
 References: <20230214122509.2957225-1-ycliang@andestech.com>
  <20230214122509.2957225-2-ycliang@andestech.com>
  <Y+uOimkvJ76Q8diX@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <Y+uOimkvJ76Q8diX@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Originating-IP: [10.0.12.75]
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 31EEEYCc025526
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [v2 2/2] lib/tst_pid.c: Increase PIDS_RESERVED to avoid
  fork failure.
@@ -83,18 +64,50 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+Hi Petr,
+
+On Tue, Feb 14, 2023 at 02:37:14PM +0100, Petr Vorel wrote:
+> Hi Leo,
+> 
 > > After Adjusting how we count used pid, we increase
 > > the number of PIDS_RESERVED to void fork failure.
 > nit: in this case I'd actually keep changes in single commit
 > (otherwise first commit alone would break tests),
+> 
 
-Do we get a different result from ps and parsing /proc? That sounds
-strange...
+That makes sense!
+Then we could probably drop this v2 patch
+and stay with the v1?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Best regards,
+Leo
+
+> Kind regards,
+> Petr
+> 
+> > Suggested-by: Petr Vorel <pvorel@suse.cz>
+> > Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> > ---
+> > Changes v1 -> v2
+> > * Split into two patches
+> > ---
+> >  lib/tst_pid.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> > diff --git a/lib/tst_pid.c b/lib/tst_pid.c
+> > index a282f8cc9..7582e4828 100644
+> > --- a/lib/tst_pid.c
+> > +++ b/lib/tst_pid.c
+> > @@ -36,7 +36,7 @@
+> >  #define CGROUPS_V1_SLICE_FMT "/sys/fs/cgroup/pids/user.slice/user-%d.slice/pids.max"
+> >  #define CGROUPS_V2_SLICE_FMT "/sys/fs/cgroup/user.slice/user-%d.slice/pids.max"
+> >  /* Leave some available processes for the OS */
+> > -#define PIDS_RESERVE 50
+> > +#define PIDS_RESERVE 200
+> 
+> >  pid_t tst_get_unused_pid_(void (*cleanup_fn) (void))
+> >  {
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
