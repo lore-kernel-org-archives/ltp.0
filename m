@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4240C05027
-	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 10:51:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8F9BC61DA4
+	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 10:57:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5C0643CBF51
-	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 11:51:12 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id DCD663CC55C
+	for <ltp@archiver.kernel.org>; Tue, 14 Feb 2023 11:57:06 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 03D693CB4DB
- for <ltp@lists.linux.it>; Tue, 14 Feb 2023 11:51:01 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id D00213CB4DB
+ for <ltp@lists.linux.it>; Tue, 14 Feb 2023 11:56:56 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DAAEC1A000BB
- for <ltp@lists.linux.it>; Tue, 14 Feb 2023 11:51:00 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0903F1400BC8
+ for <ltp@lists.linux.it>; Tue, 14 Feb 2023 11:56:55 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0DAB8219C0;
- Tue, 14 Feb 2023 10:51:00 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B01FF1F8B6;
+ Tue, 14 Feb 2023 10:56:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1676371860; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1676372214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mIeQdcnJup7b92+O6lDBeThiIAUxxriNfj/orQiP93k=;
- b=iXc4UeReRunkhDc3SQHhE/ZTjZS4Cj6UPpv9EJrRELxJoHIajYGQhJxmF6IzBNoKTS3mqX
- TCSpCN2jPy+kZz4C8pbLodHfpvXcT+gBFnhVGvY7qwYUVfv63jmJmwyQEgECm4uivACjCR
- hwJgBZ5Mgm5/zkPblASq4yZQ67kw8D4=
+ bh=m//7iatUDvhVRLkq/MlO4o5VlY9OE+rJlJiboUc5z4c=;
+ b=wZFmnlntD2qYRDNh+ccw5SuhVt2o0atPb4Arb7s+Sxt+yI1PFS6zP+YPmERk24WE3hX0rJ
+ fIRQjMFR+y6501iTcogGnK1foOSe1przA0FC2GQH8+n36ljVabkJGrqEayjMi4fc7p7XB9
+ jaBS2b3MeMDG++yj433LdAXciNHsJcw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1676371860;
+ s=susede2_ed25519; t=1676372214;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mIeQdcnJup7b92+O6lDBeThiIAUxxriNfj/orQiP93k=;
- b=Quz+i5BFjjsy8+6lyoDz+EWiln8eMOg9gHENiIziAzP60mUAUCPOIxSLmEWz6v4nMReKCy
- JwpPMaJqbcvdJ/BQ==
+ bh=m//7iatUDvhVRLkq/MlO4o5VlY9OE+rJlJiboUc5z4c=;
+ b=OrJ5hkaeapan/d7i4CXj3n4M45icIy/48vhAIvVdycmIVDtvtEWAAo+RHWO7WON48OCMer
+ iC3JOAsPLpCerxCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E741B138E3;
- Tue, 14 Feb 2023 10:50:59 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9FEEF138E3;
+ Tue, 14 Feb 2023 10:56:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id B6QZOJNn62OlawAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 14 Feb 2023 10:50:59 +0000
-Date: Tue, 14 Feb 2023 11:52:26 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id YpEAJ/Zo62PzbQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 14 Feb 2023 10:56:54 +0000
+Date: Tue, 14 Feb 2023 11:58:21 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <Y+tn6kLC3cj+YqVl@yuki>
-References: <20230214095027.9614-1-rpalethorpe@suse.com>
+To: Leo Yu-Chi Liang <ycliang@andestech.com>
+Message-ID: <Y+tpTaLp7cYjGDnO@yuki>
+References: <20230213134104.229241-1-ycliang@andestech.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230214095027.9614-1-rpalethorpe@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <20230213134104.229241-1-ycliang@andestech.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib/tst_safe_posix_ipc: Use %zu to format size_t
+Subject: Re: [LTP] [PATCH 1/1] lib/tst_pid.c: Count used pid by traversing
+ /proc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,33 +83,80 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-This would classify as obviously correct, so you could have just pushed
-the patch and then send it as FYI to the list with [COMMITED] in the
-subject.
-
-Anyways:
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
-
-> ---
->  include/tst_safe_posix_ipc.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Use "ps -eT | wc -l" to calculate the number of used pid
+> could have an incorrectly larger result because "ps -eT"
+> may list the same pid multiple times (with different SPID).
 > 
-> diff --git a/include/tst_safe_posix_ipc.h b/include/tst_safe_posix_ipc.h
-> index 2d3d0928f..e7892f2af 100644
-> --- a/include/tst_safe_posix_ipc.h
-> +++ b/include/tst_safe_posix_ipc.h
-> @@ -121,7 +121,7 @@ static inline int safe_mq_send(const char *file, const int lineno,
+> Instead, we could count used pid by traversing /proc
+> directory and count the subdirectories that have name
+> composed of digits.
+> 
+> Increase PIDS_RESERVED to avoid fork failure.
+
+The changes looks good, but can we please split the patch into two?
+
+We should keep the change to the PIDS_RESERVED separate from the code
+changes.
+
+> Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+> ---
+>  lib/tst_pid.c | 26 +++++++++++---------------
+>  1 file changed, 11 insertions(+), 15 deletions(-)
+> 
+> diff --git a/lib/tst_pid.c b/lib/tst_pid.c
+> index 5595e79bd..7582e4828 100644
+> --- a/lib/tst_pid.c
+> +++ b/lib/tst_pid.c
+> @@ -18,6 +18,7 @@
+>   *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>   */
 >  
->  	if (rval == -1) {
->  		tst_brk_(file, lineno, TBROK | TERRNO,
-> -			"mq_send(%d,%s,%lu,%d) failed", mqdes, msg_ptr,
-> +			"mq_send(%d,%s,%zu,%d) failed", mqdes, msg_ptr,
->  			msg_len, msg_prio);
+> +#include <ctype.h>
+>  #include <errno.h>
+>  #include <fcntl.h>
+>  #include <limits.h>
+> @@ -35,7 +36,7 @@
+>  #define CGROUPS_V1_SLICE_FMT "/sys/fs/cgroup/pids/user.slice/user-%d.slice/pids.max"
+>  #define CGROUPS_V2_SLICE_FMT "/sys/fs/cgroup/user.slice/user-%d.slice/pids.max"
+>  /* Leave some available processes for the OS */
+> -#define PIDS_RESERVE 50
+> +#define PIDS_RESERVE 200
+>  
+>  pid_t tst_get_unused_pid_(void (*cleanup_fn) (void))
+>  {
+> @@ -113,21 +114,16 @@ static int get_session_pids_limit(void (*cleanup_fn) (void))
+>  
+>  int tst_get_free_pids_(void (*cleanup_fn) (void))
+>  {
+> -	FILE *f;
+> -	int rc, used_pids, max_pids, max_session_pids, max_threads;
+> -
+> -	f = popen("ps -eT | wc -l", "r");
+> -	if (!f) {
+> -		tst_brkm(TBROK, cleanup_fn, "Could not run 'ps' to calculate used pids");
+> -		return -1;
+> -	}
+> -	rc = fscanf(f, "%i", &used_pids);
+> -	pclose(f);
+> -
+> -	if (rc != 1 || used_pids < 0) {
+> -		tst_brkm(TBROK, cleanup_fn, "Could not read output of 'ps' to calculate used pids");
+> -		return -1;
+> +	DIR *f;
+> +	struct dirent *ent;
+> +	int max_pids, max_session_pids, max_threads, used_pids = 0;
+> +
+> +	f = SAFE_OPENDIR("/proc");
+> +	while ((ent = SAFE_READDIR(f))) {
+> +		if (isdigit(ent->d_name[0]))
+> +			++used_pids;
 >  	}
+> +	SAFE_CLOSEDIR(f);
 >  
+>  	SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &max_pids);
+>  	SAFE_FILE_SCANF(cleanup_fn, THREADS_MAX_PATH, "%d", &max_threads);
 > -- 
-> 2.39.1
+> 2.34.1
 > 
 > 
 > -- 
