@@ -4,81 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3D72C636CC
-	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 13:45:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88F08C636CC
+	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 14:42:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A82733CC3C9
-	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 14:45:26 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id CC0FD3CC44A
+	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 15:42:38 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 352023CB4DB
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 14:22:57 +0100 (CET)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
+ by picard.linux.it (Postfix) with ESMTPS id 7893D3CB4DB
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 15:42:28 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5D77E100042B
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 14:22:56 +0100 (CET)
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C443B60063B
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 15:42:27 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 290A53F214
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 13:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1676467375;
- bh=Vc+spTkpwnOf/2/foxLE7ZHLvZ51H6Hm9OZU6lz+EVo=;
- h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
- b=X6WjcWc0iwWA+1spLASog9aZo+b0jDY2rQ3PlkjQ6kHVEZS8LCSoF+1hQwhzckmOV
- VVpO1T7x6/2/WdHOB6TyOXmsn4xvAz+Zeksu+yOPg0DPePHqJ+fGt9N4KGrcCu7L0M
- 7j1LpSFxS/6l9nd7KSQs30L0/Uf24xVSO0nWBvlkSzTMdE4wukuMQpMbWFCzhz+zth
- ogQ/D8rF51ywlSB3NX9Py5Bnb0x63F/hHZRRBdCVkhrXbwjJpxQOATmWlembFfMnbI
- 9Hvw5z6w5g/G33oPTzxPbQentO7eypdfgRu7EsCYNUdutFhz+PD4whuKOXfo6+AO+3
- uTd0A7gXD+CjQ==
-Received: by mail-wr1-f72.google.com with SMTP id
- f14-20020a0560001a8e00b002c3b562d76cso3649542wry.12
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 05:22:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-disposition:mime-version:message-id:subject:to:from:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=Vc+spTkpwnOf/2/foxLE7ZHLvZ51H6Hm9OZU6lz+EVo=;
- b=VKgwABF0vpmDUjEEuKd9vhef0Cc84QE1kh6nN5H4bcbXHD8YsEqNsYrtIjRoqzfI7d
- IJCm9HJiX+mTShWKIjP+LaQHcXM3WzXowhVeLoyTCy6Q2ZLW8mEgAc1XjTb2KzlcCkcI
- MuaTw33P5E82LB5ieVKpEdePH7yCnQ6wjzbqN7K+naiyvnTDvyQ2FhMVv2sst4mng/7M
- TMhAT91uPxH/RBHsqg+ranD2ptucomqAsujiB7MEiOEdOPs2OFg7RQxd+koMieWoaJN5
- NsJUBUPuIQp322IWSPH0CFz1fllkYUmTPO2mx7Rk1WrtVI7z30Lj3goNxA4Jevh+M7pv
- WFfg==
-X-Gm-Message-State: AO0yUKWhw19Yimw3JNsW4KWruWcLe5KZaL3gefbVPqDa2c3C1y9bbvVE
- 2wext1r2iVnVJukOkxJkEsTAV3fFjikatMQDcOfkNRYf6sUIOYaXOB6orjNjp+s1bA9qq/Ww2Q7
- R/ggWFOuAZCQragl2OlsUPhh4UsY8YMwQOLv9
-X-Received: by 2002:a05:600c:180a:b0:3e1:f8b3:6333 with SMTP id
- n10-20020a05600c180a00b003e1f8b36333mr1879304wmp.27.1676467372789; 
- Wed, 15 Feb 2023 05:22:52 -0800 (PST)
-X-Google-Smtp-Source: AK7set9ov6lbmX1Nt0mTbdJKV0TUmjoir+yDeHpMDes1b3VEzCMVvXUdo0pxwpzApmL3iJnqz4l3ag==
-X-Received: by 2002:a05:600c:180a:b0:3e1:f8b3:6333 with SMTP id
- n10-20020a05600c180a00b003e1f8b36333mr1879294wmp.27.1676467372430; 
- Wed, 15 Feb 2023 05:22:52 -0800 (PST)
-Received: from qwirkle (38-242-176-173.ofnl.uk. [38.242.176.173])
- by smtp.gmail.com with ESMTPSA id
- m17-20020a05600c3b1100b003dd1bd0b915sm2253024wms.22.2023.02.15.05.22.51
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 15 Feb 2023 05:22:52 -0800 (PST)
-Date: Wed, 15 Feb 2023 13:22:50 +0000
-From: Andrei Gherzan <andrei.gherzan@canonical.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8E1E620B38
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 14:42:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1676472146; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ot8XN1uYTY7ZzggVbugLXT2j2fSNqt2o7hc2wJFnWpI=;
+ b=Z+QD8r3e39bjDpG9QmNRRu7nd0rmWTlCAE0LKl4Lp8vfNzQk8x8sPdABBbTY95tzBDEL8w
+ 9WZsxcrb2RidJDt/yUEulMWEisSmj1lULZYWdD8ApBqFivsr2AgvwaFhQXOuYeg1o0HzUe
+ j76s8zNQlCI49qCb7vRAY8x1uZ6Kd9A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1676472146;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ot8XN1uYTY7ZzggVbugLXT2j2fSNqt2o7hc2wJFnWpI=;
+ b=FaguNfV7/jTRNp14utVfsZM9LHAyq9DSlT+64/PWXU1UqOQKy12nsLyDhGEb28jTNqREiT
+ E6aR37thFlQgHcCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7EDCE13483
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 14:42:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id F+YgHlLv7GMKDgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 14:42:26 +0000
+From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Message-ID: <Y+zcqqNE01cNcm1Y@qwirkle>
+Date: Wed, 15 Feb 2023 15:42:25 +0100
+Message-Id: <20230215144225.25008-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Wed, 15 Feb 2023 14:45:05 +0100
-Subject: [LTP] LTP fs_fill test on vfat - ENOSPC
+Subject: [LTP] [PATCH] cve-2015-3290: Fix tst_syscall() return value
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,58 +76,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+The modify_ldt() syscall returns 32-bit signed integer value. Recent changes
+in tst_syscall() caused the value to be interpreted as unsigned on older
+kernels/glibc, which breaks the cve-2015-3290 test. Add explicit type cast
+to fix it.
 
-tl;dr fs_fill test broken for vfat on systems with more than 256 CPUs.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ testcases/cve/cve-2015-3290.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-The fs_fill test runs a fill test on all the supported filesystems. One
-of them being vfat. This filesystem is configured dynamically or through
-flags/arguments for its file allocation table type (12/16/32).
-
-The size of the test device (which is a loop mounted fs) is 300MB. When
-not instructed, mkfs will "automatically select between 12, 16 and 32
-bit, whatever fits better for the filesystem size"[1]. For the case of
-a 300Mb that wwould end up as FAT16:
-
-# sudo file -s /dev/loop0
-/dev/loop0: DOS/MBR boot sector, code offset 0x3c+2, OEM-ID "mkfs.fat",
-sectors/cluster 16, reserved sectors 16, root entries 512, Media
-descriptor 0xf8, sectors/FAT 160, sectors/track 32, heads 64, sectors
-600000 (volumes > 32 MB), serial number 0x5de1e96b, unlabeled, FAT (16
-bit)
-
-This is pretty well known, but it's important to start with because it is
-linked with another configuration that is the actual impact on this
-issue and that is the maximum number of directories in the root of the
-filesystem.  FAT12 and FAT16 uses a special system region for "Root
-Directory Region". And by default (there is also an argument to
-configure this at mkfs-time) this ends up being 256 when no custom
-arguments are provided.
-
-On the other hand, the test sets up the filesystem with a
-"tst_ncpus_conf + 2" number of directories in the root which can break
-the limit explained above on systems that take the value over the
-default 256 limit of root directories.
-
-There a couple of ways to deal with this:
-
-1. Force the filesystem creation in FAT32. This would be the best way
-forward in my opinion, but I can't see anything that supports doing so on
-a per-filesystem basis in LTP.
-2. Increase the minimal numbers of entries available in the root
-directory via "-r ROOT-DIR-ENTRIES"[1]. This would only push the crash
-on fewer systems.
-3. Use a subdirectory in the test setup. Something like /subdir/threadX.
-If I'm not missing any support to do 1, this would probably be the
-easiest to do.
-
-I'm happy to go forward with a PR to fix this properly but looking
-forward to your feedback on how to steer this.
-
-[1] MKFS.FAT(8)
-
+diff --git a/testcases/cve/cve-2015-3290.c b/testcases/cve/cve-2015-3290.c
+index f61d2809b..a2a8fcedd 100644
+--- a/testcases/cve/cve-2015-3290.c
++++ b/testcases/cve/cve-2015-3290.c
+@@ -195,7 +195,8 @@ static void set_ldt(void)
+ 		.useable	 = 0
+ 	};
+ 
+-	TEST(tst_syscall(__NR_modify_ldt, 1, &data_desc, sizeof(data_desc)));
++	TEST((int)tst_syscall(__NR_modify_ldt, 1, &data_desc,
++		sizeof(data_desc)));
+ 	if (TST_RET == -EINVAL) {
+ 		tst_brk(TCONF | TRERRNO,
+ 			"modify_ldt: 16-bit data segments are probably disabled");
 -- 
-Andrei Gherzan
+2.39.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
