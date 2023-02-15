@@ -4,58 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96D10C636D4
-	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 10:20:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E6CDC636D4
+	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 13:45:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A2B7F3CC441
-	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 11:20:32 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id A7A693CBF16
+	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 14:45:15 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9D4C33CBF1E
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 11:18:23 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 59A873CB0B8
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 09:34:23 +0100 (CET)
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com
+ [IPv6:2607:f8b0:4864:20::1135])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0E86C1400C60
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 11:18:23 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A5C1120570;
- Wed, 15 Feb 2023 10:18:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1676456302; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Sbb9oAn3ydzA9nSPHzGe8fvqAkrqL3y0JV5b/GEzAF4=;
- b=uTMQBgmeBRkwA/jvshRcihQwN2ovK5ap8T4wHMunhR1X2LRaDt7R8ddqueOmZupLe9/UKq
- nVgoBjnpgIfc4NZrCqUHAsY5fRWtqdr4gytfrOAJQCty8O5N6uz4yzP8z4yUsMOpmU04es
- 1K0oEtak+vttmR7a9fpNYfSyEtPj64M=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7224A13483;
- Wed, 15 Feb 2023 10:18:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id MKMJGW6x7GNKDgAAMHmgww
- (envelope-from <andrea.cervesato@suse.com>); Wed, 15 Feb 2023 10:18:22 +0000
-To: ltp@lists.linux.it
-Date: Wed, 15 Feb 2023 11:16:15 +0100
-Message-Id: <20230215101615.27534-11-andrea.cervesato@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230215101615.27534-1-andrea.cervesato@suse.com>
-References: <20230215101615.27534-1-andrea.cervesato@suse.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 99C7314001EC
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 09:34:22 +0100 (CET)
+Received: by mail-yw1-x1135.google.com with SMTP id
+ 00721157ae682-52ee632329dso176864557b3.6
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 00:34:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=Eg5eKvTCeeudx3FfwlsbsdkPgt/OlX0JaIC6NlDe4y8=;
+ b=N6q+PH6C/cRrxjQN3T62JxRZsHPA8mXe1DSfpsXCqyCljvBemi4DFpzSciTON6g1V4
+ 6OQefNpVWI/2hRU9MP0dHQNRLDvoHmNB0+SfgE5l5FoDAwETbbH1idyFpKE1Y1F5p3J7
+ mGlbXb2XoWR1KOD1JOdl9XCI/Pr2+rMwvxukASmQUf7zk7NcSvDxwG5DHcVVpzNMblrv
+ 82IXJyJ5fvg5Y0VemYOBayE2d5pMsa8I5UjO1gJrkCEjB/WiAyI6SSpnhcwhqzdQLlh0
+ ZDep8XvNQLZ21H1RpaT2EvOMscVZmPivK4eWA3kfyRcndD6zaJZrL/eg+EH5F7QLi1Fa
+ gP2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=Eg5eKvTCeeudx3FfwlsbsdkPgt/OlX0JaIC6NlDe4y8=;
+ b=BVC4UNzBg0159cdIOYvpR/xPifdnNgZYfXVQwYXe5W/nDdZdROsH09SGJpbWjIj1TS
+ qFaG6x3I6ClHixtsPO1bg2uZO1js2BDUiW2xWW08Pl3I5tdetCbf1a+7R7mm3mRfPPXZ
+ o037ILNCeJNKaWqn/5kBhsk4yV7ovKvK6+sj82zuw7BDEWD7y4InZtoGAUjNBn8tky7E
+ aHyzCklm3jhM50DAli4fMZ3DOr8rfCd5z3jo6jC/koeMa2qkvrZFnRcQr86PahGBM4Cb
+ nAJzDi601Ft3ejq390Z/EJhPCbWp71h+suVciLOsaqNlBH/dgeUNn0rpHk/s3TLfIxsM
+ 6hfQ==
+X-Gm-Message-State: AO0yUKVPE9eFye1ebFFEAH7WRfMmfXPHP04GIwyqG5ewX/LE3l6qMa7w
+ /kWwymBfcUD6eEfDziWslcuSvv3TR49QPW1UTgG8Fn4XkrWf7A==
+X-Google-Smtp-Source: AK7set88/JujvvTWx8EV85Zeq5SL0YlqnyN/Dq9N+71ecOFFb5d5PU8KFt7tX4SOanyoxkhKukEEJb/0uYFeechW2hM=
+X-Received: by 2002:a0d:ea12:0:b0:523:ce6b:3db5 with SMTP id
+ t18-20020a0dea12000000b00523ce6b3db5mr213916ywe.24.1676450061050; Wed, 15 Feb
+ 2023 00:34:21 -0800 (PST)
 MIME-Version: 1.0
+From: Paulson Raja L <lpaulsonraja@gmail.com>
+Date: Wed, 15 Feb 2023 14:04:10 +0530
+Message-ID: <CA+O3cCQk5CEKTqdCkHnMmAwqWF8ePeGOOuHXKBMPqsqwvv7ihA@mail.gmail.com>
+To: ltp@lists.linux.it
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 10/10] Delete userns_helper.h from userns suite
+X-Mailman-Approved-At: Wed, 15 Feb 2023 14:45:05 +0100
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: [LTP] RFC:[PATCH v1] Added testcase to test mmap with
+ MAP_SHARED_VALIDATE flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,90 +75,87 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-userns_helper.h has been replaced by common.h inside the userns testing
-suite.
+This patch adds a new test case for mmap syscall. It tests the
+MAP_SHARED_VALIDATE flag of mmap. The code checks of the
+MAP_SHARED_VALIDATE flag return EOPNOTSUPP when mapped with an invalid flag
+value. It does so by setting the unused bits of the flag argument.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- .../kernel/containers/userns/userns_helper.h  | 59 -------------------
- 1 file changed, 59 deletions(-)
- delete mode 100644 testcases/kernel/containers/userns/userns_helper.h
+Signed-off-by: Paulson Raja L. <lpaulsonraja@gmail.com>
 
-diff --git a/testcases/kernel/containers/userns/userns_helper.h b/testcases/kernel/containers/userns/userns_helper.h
-deleted file mode 100644
-index be47690ea..000000000
---- a/testcases/kernel/containers/userns/userns_helper.h
-+++ /dev/null
-@@ -1,59 +0,0 @@
--/*
-- * Copyright (c) Huawei Technologies Co., Ltd., 2015
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- *  (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-- * the GNU General Public License for more details.
-- */
--
--#include "../libclone/libclone.h"
--#include "test.h"
--#include "safe_macros.h"
--#include <stdbool.h>
--
--#define UID_MAP 0
--#define GID_MAP 1
--
--static int dummy_child(void *v)
--{
--	(void) v;
--	return 0;
--}
--
--static int check_newuser(void)
--{
--	int pid, status;
--
--	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWUSER, dummy_child, NULL);
--	if (pid == -1)
--		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWUSER not supported");
--	SAFE_WAIT(NULL, &status);
--
--	return 0;
--}
--
--LTP_ATTRIBUTE_UNUSED static int updatemap(int cpid, bool type, int idnum,
--	int parentmappid, void (*cleanup)(void))
--{
--	char path[BUFSIZ];
--	char content[BUFSIZ];
--	int fd;
--
--	if (type == UID_MAP)
--		sprintf(path, "/proc/%d/uid_map", cpid);
--	else if (type == GID_MAP)
--		sprintf(path, "/proc/%d/gid_map", cpid);
--	else
--		tst_brkm(TBROK, cleanup, "invalid type parameter");
--
--	sprintf(content, "%d %d 1", idnum, parentmappid);
--	fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
--	SAFE_WRITE(cleanup, SAFE_WRITE_ALL, fd, content, strlen(content));
--	SAFE_CLOSE(cleanup, fd);
--	return 0;
--}
--- 
-2.35.3
-
+diff --git a/testcases/kernel/syscalls/mmap/mmap20.c
+b/testcases/kernel/syscalls/mmap/mmap20.c
+new file mode 100644
+index 000000000..2f6dd5d4d
+--- /dev/null
++++ b/testcases/kernel/syscalls/mmap/mmap20.c
+@@ -0,0 +1,61 @@
++//SPDX-License-Identifier: GPL-2.0-or-later
++
++/*
++ * Test mmap with MAP_SHARED_VALIDATE flag
++ *
++ * We are testing the MAP_SHARED_VALIDATE flag of mmap() syscall. To check
++ * if there is an invalid flag value, the MAP_SHARED_VALIDATE return
++ * EOPNOTSUPP. The unused bit in the MAP_SHARED_VALIDATE is found, and by
++ * setting the unused bits of the flag argument the flag value becomes
++ * invalid and the error EOPNOTSUPP is produced as expected.
++ */
++#include <stdio.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <sys/mman.h>
++#include <linux/mman.h>
++#include <errno.h>
++#include "tst_test.h"
++
++#define TEST_FILE "file_to_mmap"
++#define TEST_FILE_SIZE 1024
++#define TEST_FILE_MODE 0600
++
++static int fd_file;
++static void *mapped_address = NULL;
++
++static void setup(void)
++{
++ fd_file = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR, TEST_FILE_MODE);
++ if (tst_fill_file(TEST_FILE, 'a', TEST_FILE_SIZE, 1))
++ tst_brk(TBROK, "Could not fill the testfile.");
++}
++
++static void cleanup(void)
++{
++ if (fd_file > 0)
++ SAFE_CLOSE(fd_file);
++ if (mapped_address != NULL && mapped_address != MAP_FAILED)
++ SAFE_MUNMAP(mapped_address, TEST_FILE_SIZE);
++}
++
++static void test_mmap(void)
++{
++ mapped_address = mmap(NULL, TEST_FILE_SIZE, PROT_READ | PROT_WRITE,
++      (1 << 7) | (1 << 9) | MAP_SHARED_VALIDATE, fd_file, 0);
++ if (mapped_address != MAP_FAILED)
++ tst_res(TFAIL | TERRNO, "mmap() is successful, but it should have
+failed.");
++ else if (errno == EOPNOTSUPP)
++ tst_res(TPASS, "mmap() failed with errno set to EOPNOTSUPP.");
++ else
++ tst_res(TFAIL | TERRNO, "mmap() failed with unexpected error.");
++}
++
++static struct tst_test test = {
++ .min_kver = "4.15",
++ .setup = setup,
++ .cleanup = cleanup,
++ .test_all = test_mmap,
++ .needs_tmpdir = 1,
++};
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
