@@ -4,57 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4EF2C636D4
-	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 10:19:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24DF3C636CC
+	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 10:19:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 953403C010A
-	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 11:19:36 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id AD9403CBF2A
+	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 11:19:48 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A14A93CBF08
+ by picard.linux.it (Postfix) with ESMTPS id BCD593CBF0C
  for <ltp@lists.linux.it>; Wed, 15 Feb 2023 11:18:22 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2672D1400BF4
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 11:18:22 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D70F92009FF
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 11:18:21 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id BD31A20571;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7887220570;
  Wed, 15 Feb 2023 10:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
  t=1676456301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=dBvdF7RKQU8bbk+no9U/Fuif49/OsPil5EsJK9n1LO0=;
- b=tsgUQ6QTmEw+jLpZKzcaMpisJIWs+oD1N/joE7MijGmV4gr3zZbB38KrCREaBHCuzlhO2m
- 4t+LMXpOZiBWg7Xfq0N2Dy4vxBif/+Cd/jxKUU8QMFfi9SCCvzRFZNFKFWSYGJNsqky0/3
- XDwlv++fTH0yWQt2ahE2Z3tD1CeTv8Y=
+ bh=+KP2yZa4F7HqJ/+UIhNpi4Pw82Y/+2GcmmDy9gM0uaI=;
+ b=RjFvjE+GhbsAtyfUgXrpLY8BG+Wym5xIbppzFen+w1kHFvqEpElHP6louRbpvgtYrC8Ezj
+ hHqIp3XKMJu6HV7Wlpo5ggqkN8abmeyaGPHJr2PvkLBdsXgDfxi5BZwuEXPv+2dI7qVwwD
+ aUCpJnZhRgA0qLGX7Tu+SaBxqzp/tAQ=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8AF6713483;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 44FD513483;
  Wed, 15 Feb 2023 10:18:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2LMxH22x7GNKDgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id kCkzDm2x7GNKDgAAMHmgww
  (envelope-from <andrea.cervesato@suse.com>); Wed, 15 Feb 2023 10:18:21 +0000
 To: ltp@lists.linux.it
-Date: Wed, 15 Feb 2023 11:16:12 +0100
-Message-Id: <20230215101615.27534-8-andrea.cervesato@suse.com>
+Date: Wed, 15 Feb 2023 11:16:11 +0100
+Message-Id: <20230215101615.27534-7-andrea.cervesato@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230215101615.27534-1-andrea.cervesato@suse.com>
 References: <20230215101615.27534-1-andrea.cervesato@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 07/10] Refactor userns07 test
+Subject: [LTP] [PATCH v1 06/10] Refactor userns06 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,132 +76,156 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/containers/userns/userns07.c | 67 +++++++++++--------
- 1 file changed, 38 insertions(+), 29 deletions(-)
+ testcases/kernel/containers/userns/userns06.c | 41 ++++++++-----------
+ .../containers/userns/userns06_capcheck.c     | 19 ++++-----
+ 2 files changed, 25 insertions(+), 35 deletions(-)
 
-diff --git a/testcases/kernel/containers/userns/userns07.c b/testcases/kernel/containers/userns/userns07.c
-index 4659de636..3a693b8e3 100644
---- a/testcases/kernel/containers/userns/userns07.c
-+++ b/testcases/kernel/containers/userns/userns07.c
-@@ -16,80 +16,89 @@
- #include <sys/wait.h>
- #include "common.h"
- #include "tst_test.h"
+diff --git a/testcases/kernel/containers/userns/userns06.c b/testcases/kernel/containers/userns/userns06.c
+index 39f02e38a..a2c51f725 100644
+--- a/testcases/kernel/containers/userns/userns06.c
++++ b/testcases/kernel/containers/userns/userns06.c
+@@ -20,6 +20,7 @@
+ #define _GNU_SOURCE
+ 
+ #include <stdio.h>
 +#include "lapi/sched.h"
+ #include "common.h"
  
- #define MAXNEST 32
+ #define TEST_APP "userns06_capcheck"
+@@ -29,7 +30,7 @@
+ #define CHILD2UID 200
+ #define CHILD2GID 200
  
+-static int child_fn1(void)
++static void child_fn1(void)
+ {
+ 	char *const args[] = { TEST_APP, "privileged", NULL };
+ 	int ret;
+@@ -39,11 +40,9 @@ static int child_fn1(void)
+ 	ret = execv(args[0], args);
+ 	if (ret == -1)
+ 		tst_brk(TBROK | TERRNO, "execv: unexpected error");
+-
+-	return 0;
+ }
+ 
+-static int child_fn2(void)
++static void child_fn2(void)
+ {
+ 	int uid, gid, ret;
+ 	char *const args[] = { TEST_APP, "unprivileged", NULL };
+@@ -53,27 +52,17 @@ static int child_fn2(void)
+ 	uid = geteuid();
+ 	gid = getegid();
+ 
+-	if (uid != CHILD2UID || gid != CHILD2GID) {
+-		tst_res(TFAIL, "unexpected uid=%d gid=%d", uid, gid);
+-		return 1;
+-	}
+-
+-	tst_res(TPASS, "expected uid and gid");
++	TST_EXP_EQ_LI(uid, CHILD2UID);
++	TST_EXP_EQ_LI(gid, CHILD2GID);
+ 
+ 	ret = execv(args[0], args);
+ 	if (ret == -1)
+ 		tst_brk(TBROK | TERRNO, "execv: unexpected error");
+-
+-	return 0;
+-}
+-
 -static void setup(void)
 -{
 -	check_newuser();
--}
-+static int *level;
- 
--static int child_fn1(void *arg)
-+static void child_fn1(void)
- {
--	pid_t cpid1;
--	long level = (long)arg;
--	int status;
-+	const struct tst_clone_args args = { CLONE_NEWUSER, SIGCHLD };
-+	pid_t cpid;
- 	int parentuid;
- 	int parentgid;
-+	int status;
- 
- 	TST_CHECKPOINT_WAIT(0);
- 
--	if (level == MAXNEST) {
-+	if (*level == MAXNEST) {
- 		tst_res(TPASS, "nested all children");
--		return 0;
-+		return;
- 	}
- 
--	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn1, (void *)(level + 1));
--	if (cpid1 < 0) {
--		tst_res(TFAIL | TERRNO, "level %ld, unexpected error", level);
--		return 1;
-+	cpid = SAFE_CLONE(&args);
-+	if (!cpid) {
-+		*level += 1;
-+		child_fn1();
-+		return;
- 	}
- 
- 	parentuid = geteuid();
- 	parentgid = getegid();
- 
--	updatemap(cpid1, UID_MAP, 0, parentuid);
--	updatemap(cpid1, GID_MAP, 0, parentgid);
-+	updatemap(cpid, UID_MAP, 0, parentuid);
-+	updatemap(cpid, GID_MAP, 0, parentgid);
- 
- 	TST_CHECKPOINT_WAKE(0);
- 
--	SAFE_WAITPID(cpid1, &status, 0);
--
--	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
--		tst_brk(TBROK, "child %s", tst_strstatus(status));
--
--	return 0;
-+	SAFE_WAITPID(cpid, &status, 0);
  }
  
  static void run(void)
  {
--	pid_t cpid1;
 +	const struct tst_clone_args args = { CLONE_NEWUSER, SIGCHLD };
-+	pid_t cpid;
+ 	pid_t cpid1;
+ 	pid_t cpid2;
  	int parentuid;
- 	int parentgid;
- 	char path[BUFSIZ];
+@@ -84,13 +73,17 @@ static void run(void)
+ 	parentuid = geteuid();
+ 	parentgid = getegid();
  
--	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn1, (void *)0);
+-	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn1, NULL);
 -	if (cpid1 < 0)
--		tst_brk(TBROK | TTERRNO, "clone failed");
-+	cpid = SAFE_CLONE(&args);
-+	if (!cpid) {
+-		tst_brk(TBROK | TTERRNO, "cpid1 clone failed");
++	cpid1 = SAFE_CLONE(&args);
++	if (!cpid1) {
 +		child_fn1();
 +		return;
 +	}
  
- 	parentuid = geteuid();
- 	parentgid = getegid();
+-	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, (void *)child_fn2, NULL);
+-	if (cpid2 < 0)
+-		tst_brk(TBROK | TTERRNO, "cpid2 clone failed");
++	cpid2 = SAFE_CLONE(&args);
++	if (!cpid2) {
++		child_fn2();
++		return;
++	}
  
  	if (access("/proc/self/setgroups", F_OK) == 0) {
--		sprintf(path, "/proc/%d/setgroups", cpid1);
-+		sprintf(path, "/proc/%d/setgroups", cpid);
- 		SAFE_FILE_PRINTF(path, "deny");
- 	}
- 
--	updatemap(cpid1, UID_MAP, 0, parentuid);
--	updatemap(cpid1, GID_MAP, 0, parentgid);
-+	updatemap(cpid, UID_MAP, 0, parentuid);
-+	updatemap(cpid, GID_MAP, 0, parentgid);
- 
- 	TST_CHECKPOINT_WAKE(0);
+ 		sprintf(path, "/proc/%d/setgroups", cpid1);
+@@ -117,9 +110,9 @@ static void run(void)
  }
  
-+static void setup(void)
-+{
-+	level = SAFE_MMAP(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_MUNMAP(level, sizeof(int));
-+}
-+
  static struct tst_test test = {
- 	.setup = setup,
-+	.cleanup = cleanup,
+-	.setup = setup,
  	.test_all = run,
  	.needs_root = 1,
 +	.forks_child = 1,
  	.needs_checkpoints = 1,
- 	.needs_kconfigs = (const char *[]) {
- 		"CONFIG_USER_NS",
+ 	.resource_files = (const char *[]) {
+ 		TEST_APP,
+diff --git a/testcases/kernel/containers/userns/userns06_capcheck.c b/testcases/kernel/containers/userns/userns06_capcheck.c
+index c048ef63f..8669657b9 100644
+--- a/testcases/kernel/containers/userns/userns06_capcheck.c
++++ b/testcases/kernel/containers/userns/userns06_capcheck.c
+@@ -24,8 +24,8 @@ int main(int argc, char *argv[])
+ {
+ 	cap_t caps;
+ 	int i, last_cap;
+-	cap_flag_value_t flag_val;
+-	cap_flag_value_t expected_flag = 1;
++	cap_flag_value_t cap_flag;
++	cap_flag_value_t expected_cap_flag = 1;
+ 
+ 	tst_reinit();
+ 
+@@ -35,24 +35,21 @@ int main(int argc, char *argv[])
+ 	SAFE_FILE_SCANF("/proc/sys/kernel/cap_last_cap", "%d", &last_cap);
+ 
+ 	if (strcmp("privileged", argv[1]))
+-		expected_flag = 0;
++		expected_cap_flag = 0;
+ 
+ 	caps = cap_get_proc();
+ 
+ 	for (i = 0; i <= last_cap; i++) {
+-		cap_get_flag(caps, i, CAP_EFFECTIVE, &flag_val);
+-		if (flag_val != expected_flag)
++		cap_get_flag(caps, i, CAP_EFFECTIVE, &cap_flag);
++		if (cap_flag != expected_cap_flag)
+ 			break;
+ 
+-		cap_get_flag(caps, i, CAP_PERMITTED, &flag_val);
+-		if (flag_val != expected_flag)
++		cap_get_flag(caps, i, CAP_PERMITTED, &cap_flag);
++		if (cap_flag != expected_cap_flag)
+ 			break;
+ 	}
+ 
+-	if (flag_val != expected_flag)
+-		tst_res(TFAIL, "unexpected effective/permitted caps at %d", i);
+-	else
+-		tst_res(TPASS, "expected caps at %d", i);
++	TST_EXP_EQ_LI(cap_flag, expected_cap_flag);
+ 
+ 	return 0;
+ }
 -- 
 2.35.3
 
