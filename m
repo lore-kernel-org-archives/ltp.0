@@ -4,58 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A23A0C61DA4
-	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 02:36:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B82B6C636D4
+	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 05:57:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 002D03CC960
-	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 03:36:34 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 4C0223CC3D3
+	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 06:57:49 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CD0CE3CBF90
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 03:36:24 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D0E753CB073
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 06:57:38 +0100 (CET)
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
+ [IPv6:2607:f8b0:4864:20::442])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9B7E31400B8B
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 03:36:22 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 067DE1F74B;
- Wed, 15 Feb 2023 02:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1676428580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=25Y+F9Box8HadZemax1YZ4Bc4zfQ6uu+mWAAxdlG1Xk=;
- b=h5GlwUN5HGDazp1wiKxo1KvLI9PWlb6YYG1srt1Mer7BNTHB0k6agAjT+NvkAYRUCmb5u7
- cVpPrx3TqZYXwC0rcYLAvB/bZfZnzSAhYK5D6LjrEI49nNCWR9SrkodrlFWSA3EbJIQJTH
- 57trbD1IjGBT7cRGxGxQIaoIIzNdqW0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6511C138E3;
- Wed, 15 Feb 2023 02:36:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 7T3cDiNF7GPuZQAAMHmgww
- (envelope-from <wegao@suse.com>); Wed, 15 Feb 2023 02:36:19 +0000
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 199DC1400B8B
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 06:57:38 +0100 (CET)
+Received: by mail-pf1-x442.google.com with SMTP id ct17so6298881pfb.12
+ for <ltp@lists.linux.it>; Tue, 14 Feb 2023 21:57:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=gABn0MZ+pkGK3glSWvoRIvgsBPfvDBquS3oddQctAu8=;
+ b=qy5x1ujO4LBS+83QiyNpeG/dJyUCMtdYviAlByZUAdeT7i5nwNbpl0XCzgzpUVy7NA
+ HL//YfdoX0jO2ofsg6E0hv5Kh0S8uXtlSTyugEdg928AsKy7nBKZOCET7UKvAmhlcg+t
+ tDlIrODyx39uTDtRO4FM+RJT65Tl+XslCIJCojTp0CLb6tZJc70rFRmmWom+eQTrnfEf
+ zHkC02fKDLd0A8JaxjdtP+iYQynbgqAmwZS34zdNMdqR63w86ZjRClfz4JaXGU0HcqRv
+ vUPqW5HMF4DkW+iPI7q1939tABZCwJfutQqgpsmNYRgKj/oIwU6mERNMvPOB6bLpbSmI
+ 5l9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=gABn0MZ+pkGK3glSWvoRIvgsBPfvDBquS3oddQctAu8=;
+ b=6HEwpKwsR9aZvQgc2jj2OBSkNAMdtC4FXwYV/NK3mtzyNpC7A2L7fSBqGtk69/TNeJ
+ wEyGD3NsV4rHN0SqefIKrASkc0xYAGkTwJG+TBnsKvGpBTErFRt2rNZD+ld08icFlbEX
+ bM3jhWtIKoem5M4atCT/pqnNvFCekxKqecqjoQLp8gvs3VefKFEabgA7WzzF3hTRcl/b
+ /t5DwZ6Eq7uyslXtMAKqhRTpPw4fr/5TdZQOMRsFdQGAH800aZGtus5p5dWtd5zDJI+h
+ 22emXbm9f435TGZEbNuTp4/mhfYTGHA0tpNH7fuqna67SaVrxLp9bDWzhpeWLZVBQb9J
+ N+DA==
+X-Gm-Message-State: AO0yUKWMbbhG1JGOc4TUlwRvzwkBoQYyeS/tjtwxoEUw/yQAJb4qN1So
+ 4IPalGsa0rWV2leZ2t2S0KJF0RkUs8f+FrqSGA0=
+X-Google-Smtp-Source: AK7set/KzaTjnH26FlJP7fovYn439EqYQ2Namz2y48SSndRtIGwbOovjKP2gGUM2wyNmJQQYKEOZoA==
+X-Received: by 2002:a62:1d58:0:b0:5a8:a250:bc16 with SMTP id
+ d85-20020a621d58000000b005a8a250bc16mr715359pfd.3.1676440656168; 
+ Tue, 14 Feb 2023 21:57:36 -0800 (PST)
+Received: from localhost.localdomain ([218.66.91.195])
+ by smtp.gmail.com with ESMTPSA id
+ 2-20020aa79142000000b00575caf80d08sm10881324pfi.31.2023.02.14.21.57.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 14 Feb 2023 21:57:35 -0800 (PST)
+From: xiaoshoukui <xiaoshoukui@gmail.com>
 To: ltp@lists.linux.it
-Date: Tue, 14 Feb 2023 21:34:39 -0500
-Message-Id: <20230215023438.11370-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230213134619.27486-1-wegao@suse.com>
-References: <20230213134619.27486-1-wegao@suse.com>
+Date: Wed, 15 Feb 2023 00:57:27 -0500
+Message-Id: <20230215055727.20793-1-xiaoshoukui@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] rseq01: basic test rseq
+Subject: [LTP] [PATCH v2] Add ioctl_loop08 test for LOOP_GET_STATUS lock
+ imbalance
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,174 +78,171 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Add basic check for the newly added glibc API in LTP.
-This test references the glibc test case tst-rseq.c.
-
-Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- configure.ac                              |  1 +
- include/lapi/rseq.h                       | 57 +++++++++++++++++++++++
- runtest/syscalls                          |  2 +
- testcases/kernel/syscalls/rseq/.gitignore |  1 +
- testcases/kernel/syscalls/rseq/Makefile   |  7 +++
- testcases/kernel/syscalls/rseq/rseq01.c   | 28 +++++++++++
- 6 files changed, 96 insertions(+)
- create mode 100644 include/lapi/rseq.h
- create mode 100644 testcases/kernel/syscalls/rseq/.gitignore
- create mode 100644 testcases/kernel/syscalls/rseq/Makefile
- create mode 100644 testcases/kernel/syscalls/rseq/rseq01.c
+ .../kernel/syscalls/ioctl/ioctl_loop08.c      | 147 ++++++++++++++++++
+ 1 file changed, 147 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop08.c
 
-diff --git a/configure.ac b/configure.ac
-index c2b0f48e7..43b9ca3ce 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -80,6 +80,7 @@ AC_CHECK_HEADERS_ONCE([ \
-     sys/utsname.h \
-     sys/xattr.h \
-     xfs/xqm.h \
-+    sys/rseq.h \
- ])
- AC_CHECK_HEADERS(fts.h, [have_fts=1])
- AC_SUBST(HAVE_FTS_H, $have_fts)
-diff --git a/include/lapi/rseq.h b/include/lapi/rseq.h
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop08.c b/testcases/kernel/syscalls/ioctl/ioctl_loop08.c
 new file mode 100644
-index 000000000..7f4834f2c
+index 000000000..047273576
 --- /dev/null
-+++ b/include/lapi/rseq.h
-@@ -0,0 +1,57 @@
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop08.c
+@@ -0,0 +1,147 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (C) 2021-2023 Free Software Foundation, Inc.
-+ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+ */
-+
-+#ifndef LAPI_RSEQ_H__
-+#define LAPI_RSEQ_H__
-+
-+#include <errno.h>
-+#include <unistd.h>
-+#include <stdbool.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <syscall.h>
-+#include "config.h"
-+#include "tst_test.h"
-+
-+
-+#if defined(HAVE_SYS_RSEQ_H)
-+# include <sys/rseq.h>
-+#endif
-+
-+
-+#if defined(HAVE_SYS_RSEQ_H) && defined(RSEQ_SIG)
-+static int sys_rseq(struct rseq *rseq_abi, uint32_t rseq_len, int flags, uint32_t sig)
-+{
-+	return syscall(__NR_rseq, rseq_abi, rseq_len, flags, sig);
-+}
-+
-+static void check_rseq_available(void)
-+{
-+	int rc;
-+
-+	rc = sys_rseq(NULL, 0, 0, 0);
-+	if (rc != -1)
-+		tst_brk(TFAIL | TTERRNO, "Unexpected rseq return value %d ", rc);
-+	switch (errno) {
-+	case ENOSYS:
-+		tst_brk(TCONF,
-+				"kernel does not support rseq, skipping test");
-+	case EINVAL:
-+		/* rseq is implemented, but detected an invalid rseq_len parameter.  */
-+		break;
-+	default:
-+		tst_brk(TFAIL | TTERRNO, "Unexpected rseq error ");
-+	}
-+}
-+#else /* HAVE_SYS_RSEQ_H && RSEQ_SIG */
-+static void check_rseq_available(void)
-+{
-+	tst_brk(TCONF,
-+		"glibc does not support rseq, skipping test");
-+}
-+#endif /* HAVE_SYS_RSEQ_H && RSEQ_SIG */
-+
-+#endif /* LAPI_RSEQ_H__ */
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ae37a1192..f46950b27 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1752,6 +1752,8 @@ copy_file_range01 copy_file_range01
- copy_file_range02 copy_file_range02
- copy_file_range03 copy_file_range03
- 
-+rseq01 rseq01
-+
- statx01 statx01
- statx02 statx02
- statx03 statx03
-diff --git a/testcases/kernel/syscalls/rseq/.gitignore b/testcases/kernel/syscalls/rseq/.gitignore
-new file mode 100644
-index 000000000..8a6c7ee36
---- /dev/null
-+++ b/testcases/kernel/syscalls/rseq/.gitignore
-@@ -0,0 +1 @@
-+/rseq01
-diff --git a/testcases/kernel/syscalls/rseq/Makefile b/testcases/kernel/syscalls/rseq/Makefile
-new file mode 100644
-index 000000000..159d5651c
---- /dev/null
-+++ b/testcases/kernel/syscalls/rseq/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#  Copyright (C) 2012 Linux Test Project, Inc.
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/rseq/rseq01.c b/testcases/kernel/syscalls/rseq/rseq01.c
-new file mode 100644
-index 000000000..6f3e7ff97
---- /dev/null
-+++ b/testcases/kernel/syscalls/rseq/rseq01.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2021-2023 Free Software Foundation, Inc.
-+ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
++ * Copyright (c) 2022 xiaoshoukui <xiaoshoukui@ruijie.com.cn>
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * Restartable Sequences basic tests.
++ * This is a basic ioctl test about loopdevice LOOP_GET_STATUS
++ * and LOOP_GET_STATUS64.
++ * Commit 2d1d4c1e591f made loop_get_status() drop lo_ctx_mutex before
++ * returning, but the loop_get_status_old(), loop_get_status64(), and
++ * loop_get_status_compat() wrappers don't call loop_get_status() if the
++ * passed argument is NULL. The callers expect that the lock is dropped, so
++ * make sure we drop it in that case, too.
++ *
++ * Fixed by commit:
++ *
++ *  commit bdac616db9bbadb90b7d6a406144571015e138f7
++ *  Author: Omar Sandoval <osandov@fb.com>
++ *  Date:   Fri Apr 06 09:57:03 2018 -0700
++ *
++ *    loop: fix LOOP_GET_STATUS lock imbalance
 + */
 +
-+#define _GNU_SOURCE
 +#include <stdio.h>
-+#include <sched.h>
-+#include "lapi/rseq.h"
++#include <unistd.h>
++#include <sys/types.h>
++#include <stdlib.h>
++#include "lapi/loop.h"
++#include "tst_test.h"
 +
-+static void run(void)
++#define MAX_MSGSIZE 4096
++
++static const char lock_imbalance[] = "lock held when returning to user space";
++
++static struct tcase {
++	int ioctl_flag;
++	char *message;
++} tcases[] = {
++	{ LOOP_GET_STATUS,
++	 "Testing LOOP_GET_STATUS lock imbalance" },
++
++	{ LOOP_GET_STATUS64,
++	 "Testing LOOP_GET_STATUS64 lock imbalance" },
++};
++
++static int find_kmsg(const char *text_to_find)
 +{
-+	check_rseq_available();
++	int f, msg_found = 0;
++	char msg[MAX_MSGSIZE + 1];
 +
-+	TST_EXP_PASS(!(sched_getcpu() >= 0));
++	f = SAFE_OPEN("/dev/kmsg", O_RDONLY | O_NONBLOCK);
++
++	while (1) {
++		TEST(read(f, msg, MAX_MSGSIZE));
++		if (TST_RET < 0) {
++			if (TST_ERR == EAGAIN)
++				/* there are no more messages */
++				break;
++			else if (TST_ERR == EPIPE)
++				/* current message was overwritten */
++				continue;
++			else
++				tst_brk(TBROK | TTERRNO,
++					"err reading /dev/kmsg");
++		} else {
++			/* lines from kmsg are not NULL terminated */
++			msg[TST_RET] = '\0';
++			if (strstr(msg, text_to_find) != NULL) {
++				msg_found = 1;
++				break;
++			}
++		}
++	}
++	SAFE_CLOSE(f);
++
++	if (msg_found)
++		return 0;
++	else
++		return -1;
++}
++
++static void do_child(void)
++{
++	char dev_path[1024];
++	int dev_num, dev_fd;
++	unsigned int i;
++
++	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
++		tst_res(TINFO, "%s", tcases[i].message);
++		dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
++
++		if (dev_num < 0)
++			tst_brk(TBROK, "Failed to find free loop device");
++
++		dev_fd = SAFE_OPEN(dev_path, O_RDWR);
++
++		if (tcases[i].ioctl_flag == LOOP_GET_STATUS)
++			ioctl(dev_fd, LOOP_GET_STATUS, NULL);
++		else
++			ioctl(dev_fd, LOOP_GET_STATUS64, NULL);
++
++		if (dev_fd > 0)
++			SAFE_CLOSE(dev_fd);
++
++	}
++
++	exit(0);
++
++}
++
++static void verify_ioctl_loop(void)
++{
++	int ret, pid;
++
++	pid = SAFE_FORK();
++	if (!pid)
++		do_child();
++
++	ret = TST_PROCESS_STATE_WAIT(pid, 'D', 5000);
++
++	if (!ret && !find_kmsg(lock_imbalance))
++		tst_res(TFAIL, "Trigger ioctl loop lock imbalance");
++	else
++		tst_res(TPASS, "Nothing bad happened, probably");
++
 +}
 +
 +static struct tst_test test = {
-+	.test_all = run,
++	.test_all = verify_ioctl_loop,
 +	.needs_root = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_LOCKDEP=y",
++		NULL
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "bdac616db9bb "},
++		{}
++	},
++	.needs_drivers = (const char *const[]) {
++		"loop",
++		NULL
++	},
++	.forks_child = 1,
++	.timeout = 60,
 +};
 -- 
-2.35.3
+2.20.1
 
 
 -- 
