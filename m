@@ -4,38 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71815C636CC
-	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 14:55:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48499C636D4
+	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 15:20:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5069D3CBF11
-	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 15:55:36 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 8891C3CC3B0
+	for <ltp@archiver.kernel.org>; Wed, 15 Feb 2023 16:20:15 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A8183CB4DB
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 15:54:50 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-2.smtp.seeweb.it (Postfix) with ESMTP id B23A9600101
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 15:54:49 +0100 (CET)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B5E5106F
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 06:55:30 -0800 (PST)
-Received: from e126380.cambridge.arm.com (unknown [10.1.196.169])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 16B143F703
- for <ltp@lists.linux.it>; Wed, 15 Feb 2023 06:54:46 -0800 (PST)
-From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-To: ltp@lists.linux.it
-Date: Wed, 15 Feb 2023 14:54:38 +0000
-Message-Id: <20230215145440.78482-2-teo.coupriediaz@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230215145440.78482-1-teo.coupriediaz@arm.com>
-References: <20230215145440.78482-1-teo.coupriediaz@arm.com>
+ by picard.linux.it (Postfix) with ESMTPS id 051CF3CB4DB
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 16:20:04 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5426E1A00CB0
+ for <ltp@lists.linux.it>; Wed, 15 Feb 2023 16:20:03 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 38F2020B80;
+ Wed, 15 Feb 2023 15:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1676474403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=SGd1meu78vOKgXDLGE4oIP16E07SAWmNn0l28lTc5H8=;
+ b=bbhUcH0ZZAU6paHJA3B9OBbshGoVz5cYlbqgXVD6hakIY0Tgn5tnpSS+9fgMGOtxHlXrN/
+ 1WFjrvM3XJbKRadx4ERpT4E3GhZrKYRCd8jA2hYHoGXqGOsF1a+vn8bYTrnDU/JGFBKjmw
+ cBi8HkVoeemFHwJ2XhqpAukxE7m1w/0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1676474403;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=SGd1meu78vOKgXDLGE4oIP16E07SAWmNn0l28lTc5H8=;
+ b=qrycluIgZ8nN7wliheslCyXiH42Y4O3VMPOrGW+L0TE87IUrgTmA0tSOibmeZW+RSjA3Bm
+ +yNNxOeKYQdUrTCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 26C33134BA;
+ Wed, 15 Feb 2023 15:20:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 2QvsCCP47GPgHwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 15 Feb 2023 15:20:03 +0000
+Date: Wed, 15 Feb 2023 16:21:30 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Paulson Raja L <lpaulsonraja@gmail.com>
+Message-ID: <Y+z4en9kAOOMgGk9@yuki>
+References: <CA+O3cCQk5CEKTqdCkHnMmAwqWF8ePeGOOuHXKBMPqsqwvv7ihA@mail.gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CA+O3cCQk5CEKTqdCkHnMmAwqWF8ePeGOOuHXKBMPqsqwvv7ihA@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] lib/tst_pid: Find cgroup pid.max programmatically
+Subject: Re: [LTP] RFC:[PATCH v1] Added testcase to test mmap with
+ MAP_SHARED_VALIDATE flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -47,112 +75,43 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In some distributions, the two files used in lib/tst_pid.c are not
-available, but cgroups still imposes a task limit far smaller than
-the kernel pid_max.
-If the cgroup sysfs is mounted, we can use it to retrieve the current task
-limit imposed to the process. Implement the retrieval of this limit.
+Hi!
+> +static void test_mmap(void)
+> +{
+> + mapped_address = mmap(NULL, TEST_FILE_SIZE, PROT_READ | PROT_WRITE,
+> +      (1 << 7) | (1 << 9) | MAP_SHARED_VALIDATE, fd_file, 0);
+> + if (mapped_address != MAP_FAILED)
+> + tst_res(TFAIL | TERRNO, "mmap() is successful, but it should have
+> failed.");
+> + else if (errno == EOPNOTSUPP)
+> + tst_res(TPASS, "mmap() failed with errno set to EOPNOTSUPP.");
+> + else
+> + tst_res(TFAIL | TERRNO, "mmap() failed with unexpected error.");
+> +}
+> +
+> +static struct tst_test test = {
+> + .min_kver = "4.15",
+> + .setup = setup,
+> + .cleanup = cleanup,
+> + .test_all = test_mmap,
+> + .needs_tmpdir = 1,
+> +};
 
-This can be done by first checking /proc/self/cgroup to get the cgroup
-the process is in, which will be a path under the cgroup sysfs.
-To get the path to the cgroup sysfs, check /proc/self/mountinfo.
-Finally, concatenate those two paths with pid.max to get the full path
-to the file containing the limit.
+First of all all the whitespaces are messed up and some of the lines are
+wrapped, quite likely this was done by your email client. Please make
+sure to send patches so that they do not get mangled like this.
 
-This patch changes the way read_session_pids_limit is called, not passing
-a format string to be completed anymore, but is still used the same way.
-A following patch will update this function.
+See: https://www.kernel.org/doc/html/v4.17/process/email-clients.html
 
-This fixes failures for msgstress04.
-
-Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
----
- lib/tst_pid.c | 53 +++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 43 insertions(+), 10 deletions(-)
-
-diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-index 5595e79bd..3d0be6dcd 100644
---- a/lib/tst_pid.c
-+++ b/lib/tst_pid.c
-@@ -32,8 +32,6 @@
- 
- #define PID_MAX_PATH "/proc/sys/kernel/pid_max"
- #define THREADS_MAX_PATH "/proc/sys/kernel/threads-max"
--#define CGROUPS_V1_SLICE_FMT "/sys/fs/cgroup/pids/user.slice/user-%d.slice/pids.max"
--#define CGROUPS_V2_SLICE_FMT "/sys/fs/cgroup/user.slice/user-%d.slice/pids.max"
- /* Leave some available processes for the OS */
- #define PIDS_RESERVE 50
- 
-@@ -97,18 +95,53 @@ static int read_session_pids_limit(const char *path_fmt, int uid,
- 
- static int get_session_pids_limit(void (*cleanup_fn) (void))
- {
--	int max_pids, uid;
-+	char path[PATH_MAX + 1];
-+	char cgroup_pids[PATH_MAX + 1];
-+	char catchall;
-+	int uid, ret = 0;
- 
- 	uid = get_session_uid();
--	max_pids = read_session_pids_limit(CGROUPS_V2_SLICE_FMT, uid, cleanup_fn);
--	if (max_pids < 0)
--		max_pids = read_session_pids_limit(CGROUPS_V1_SLICE_FMT, uid,
--						   cleanup_fn);
-+	/* Check for generic cgroup v1 pid.max */
-+	ret = FILE_LINES_SCANF(cleanup_fn, "/proc/self/cgroup",
-+						   "%*d:pids:%s\n", cgroup_pids);
-+	/*
-+	 * This is a bit of a hack of scanf format strings. Indeed, if all
-+	 * conversion specifications have been matched the return of scanf will be
-+	 * the same whether any outstanding literal characters match or not.
-+	 * As we want to match the literal part, we can add a catchall after it
-+	 * so that it won't be counted if the literal part doesn't match.
-+	 * This makes the macro go to the next line until the catchall, thus
-+	 * the literal parts, is matched.
-+	 *
-+	 * Assume that the root of the mount is '/'. It can be anything,
-+	 * but it should be '/' on any normal system.
-+	 */
-+	if (!ret)
-+		ret = FILE_LINES_SCANF(cleanup_fn, "/proc/self/mountinfo",
-+							   "%*s %*s %*s %*s %s %*[^-] - cgroup %*s %*[rw],pid%c",
-+							   path, &catchall);
-+
-+	if (!ret) {
-+		strncat(path, cgroup_pids, PATH_MAX);
-+		strncat(path, "/pids.max", PATH_MAX);
-+		return read_session_pids_limit(path, uid, cleanup_fn);
-+	}
- 
--	if (max_pids < 0)
--		return -1;
-+	/* Check for generic cgroup v2 pid.max */
-+	ret = FILE_LINES_SCANF(cleanup_fn, "/proc/self/cgroup",
-+						   "%*d::%s\n", cgroup_pids);
-+	if (!ret)
-+		ret = FILE_LINES_SCANF(cleanup_fn, "/proc/self/mountinfo",
-+							   "%*s %*s %*s %*s %s %*[^-] - cgroup2 %c",
-+							   path, &catchall);
-+
-+	if (!ret) {
-+		strncat(path, cgroup_pids, PATH_MAX);
-+		strncat(path, "/pids.max", PATH_MAX);
-+		return read_session_pids_limit(path, uid, cleanup_fn);
-+	}
- 
--	return max_pids;
-+	return -1;
- }
- 
- int tst_get_free_pids_(void (*cleanup_fn) (void))
 -- 
-2.25.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
