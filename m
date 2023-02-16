@@ -4,67 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0504EC61DA4
-	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 10:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C202C636CC
+	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 11:10:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D75523CBEE9
-	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 11:57:07 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 68D083CBEEB
+	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 12:10:11 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9E1CA3CB073
- for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:56:57 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 26E9F3C1D84
+ for <ltp@lists.linux.it>; Thu, 16 Feb 2023 12:10:00 +0100 (CET)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8532D1400211
- for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:56:55 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5BE331A00A22
+ for <ltp@lists.linux.it>; Thu, 16 Feb 2023 12:09:59 +0100 (CET)
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7585521C48;
- Thu, 16 Feb 2023 10:56:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1676545015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hSJabEKgGjFQJ5QFKN4Ht2AMWtjMrzeP+WfsKznmAnw=;
- b=Nne3B0qSU1XYpRYboJj3Akweqq/FcdMnUYl5ainHqLOZkn2hYV5uV1cRu+PoBysE1dt3q3
- p0+56LdyOExiAb4O8f8OfTyPN4Vo08V2vVjsc4T4Y2KRKTOwakf+7rhEk3+BbPnyaIRlEA
- Fyn0OEqdW6XqshqWatmdfPPJ7VaZP9M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1676545015;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hSJabEKgGjFQJ5QFKN4Ht2AMWtjMrzeP+WfsKznmAnw=;
- b=3HaI5bbRxwiRQA0qjZrLPeEGHAdaJ8DcR8W7UjhujJpj+QJMEWgIIqva1UetV8NVRWq+B0
- twNaR8xlyht2IbAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5FF3F13484;
- Thu, 16 Feb 2023 10:56:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id hFjeFfcL7mN8UAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 16 Feb 2023 10:56:55 +0000
-Date: Thu, 16 Feb 2023 11:58:22 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <Y+4MTlm9O/sN3Ety@yuki>
-References: <20230213134619.27486-1-wegao@suse.com>
- <20230215023438.11370-1-wegao@suse.com>
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 386EC3F214
+ for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1676545798;
+ bh=STYwgULn/Ev6ukqdh3387r21W9A+8wVjTzUprIu58z4=;
+ h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+ Content-Type:In-Reply-To;
+ b=Kv4FzD30ziDewe7A+bd/QLetaj+7uvlN0MsdqnChitIanXTpaHJA5FY3q3xbXbv3x
+ raJkwkko9deQDw4EszVfQXTVLsQq0ud/s1VMV+4u0e4PliXnj4qqGjQOU0g63A+rUy
+ YbXPvZgooKDpaYEbkCL7Dco4A3CRVNJySAZCM5jzfl1ffCNavzS7CDQz3xmpCpCNzl
+ 6I7fe8akxnvRunhAWiUr7NiQN77nKdR0duF5SIfNcbjbHxGuNvtUagvYrNuvDN6j3I
+ B4BavWrX3scZCup58bwnJYCWeICrX6AWaHbPV1xRiajpC6veTdfHk5yAU2Dc09AACE
+ 8z4QSnD8CSmPA==
+Received: by mail-wm1-f69.google.com with SMTP id
+ d18-20020a05600c34d200b003df901ab982so684985wmq.4
+ for <ltp@lists.linux.it>; Thu, 16 Feb 2023 03:09:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=STYwgULn/Ev6ukqdh3387r21W9A+8wVjTzUprIu58z4=;
+ b=TWkJsXpsS/X5EtnnDfZVUAh0lS8TfidhHr307x3dOPdXM/vwBsxo3pqHafG9fiD1kh
+ z30Y9ONK+TfrM/fTRP03Jg/GylF8d4ttbAq7BMTFqw5MEIxZKh1ZxbrYkG37Hx/r1OTq
+ LEYhfov51OugsGvhP5uK4QfARabGoT7qPpDApbkTwhYNb3LFV8YgMvkiA6SMImv6miWo
+ P+zMw5ppclwzViOwQfv+l0Llzca0vfVqZgucn5zCaO1uZ0tAtwatp9fuznkqhMNOA3Ji
+ rXBodAEQZNueA1CZ2AqAiIjS0NnZVzdtFmeaXQMsscsdcGIxo8doHiDNQKYQGq2I5TLs
+ /K8g==
+X-Gm-Message-State: AO0yUKUuDq0hTICrHmmqOB5oVO3CizIEBLdhhGFOlkmuP6zBbeMJhtUs
+ dBexI2F3JPxKiYvx8qsFQqi69rYIADQh/qr8ZD3HC7CefX8iy0ZCxCL2+YEc42vT9HEMRQkyIcT
+ k8t6wL/iirEO7UikTruugrkSI3oEG8g8oXVQIaZY=
+X-Received: by 2002:adf:dd8e:0:b0:2c5:55cf:b1b4 with SMTP id
+ x14-20020adfdd8e000000b002c555cfb1b4mr4285358wrl.10.1676545797551; 
+ Thu, 16 Feb 2023 03:09:57 -0800 (PST)
+X-Google-Smtp-Source: AK7set+XZjWrP/H8eTgbcUfFvPipaVqNJzwSoALRnXly3xwux6sm9sunMjOpeSZOU44i+HUU4VHEgA==
+X-Received: by 2002:adf:dd8e:0:b0:2c5:55cf:b1b4 with SMTP id
+ x14-20020adfdd8e000000b002c555cfb1b4mr4285342wrl.10.1676545797305; 
+ Thu, 16 Feb 2023 03:09:57 -0800 (PST)
+Received: from qwirkle ([2001:67c:1560:8007::aac:c4dd])
+ by smtp.gmail.com with ESMTPSA id
+ z16-20020adfec90000000b002c54737e908sm1172104wrn.91.2023.02.16.03.09.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 16 Feb 2023 03:09:56 -0800 (PST)
+Date: Thu, 16 Feb 2023 11:09:55 +0000
+From: Andrei Gherzan <andrei.gherzan@canonical.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <Y+4PA8sAFBlBo1R6@qwirkle>
+References: <Y+zcqqNE01cNcm1Y@qwirkle> <Y+38qMc2Kdh2DPA7@yuki>
+ <Y+4GEbRopmw5QA5r@qwirkle> <Y+4KJ3tgxRiIr7JN@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230215023438.11370-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <Y+4KJ3tgxRiIr7JN@yuki>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] rseq01: basic test rseq
+Subject: Re: [LTP] LTP fs_fill test on vfat - ENOSPC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,209 +99,23 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Add basic check for the newly added glibc API in LTP.
-> This test references the glibc test case tst-rseq.c.
+On 23/02/16 11:49AM, Cyril Hrubis wrote:
+> Hi!
+> > I did consider this as well, but I haven't proposed it initially because
+> > I didn't want to come with a solution that will switch all tests to
+> > Fat32. This is a limitation for tests that create a large enough number
+> > of directories in the root of the filesystem, so I wanted to keep the
+> > scope there.
+> > 
+> > I have tested, and we will locally go with my proposed 3rd option for
+> > now. Does that sound resonable for a push to upstrem too? 
 > 
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  configure.ac                              |  1 +
->  include/lapi/rseq.h                       | 57 +++++++++++++++++++++++
->  runtest/syscalls                          |  2 +
->  testcases/kernel/syscalls/rseq/.gitignore |  1 +
->  testcases/kernel/syscalls/rseq/Makefile   |  7 +++
->  testcases/kernel/syscalls/rseq/rseq01.c   | 28 +++++++++++
->  6 files changed, 96 insertions(+)
->  create mode 100644 include/lapi/rseq.h
->  create mode 100644 testcases/kernel/syscalls/rseq/.gitignore
->  create mode 100644 testcases/kernel/syscalls/rseq/Makefile
->  create mode 100644 testcases/kernel/syscalls/rseq/rseq01.c
-> 
-> diff --git a/configure.ac b/configure.ac
-> index c2b0f48e7..43b9ca3ce 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -80,6 +80,7 @@ AC_CHECK_HEADERS_ONCE([ \
->      sys/utsname.h \
->      sys/xattr.h \
->      xfs/xqm.h \
-> +    sys/rseq.h \
->  ])
->  AC_CHECK_HEADERS(fts.h, [have_fts=1])
->  AC_SUBST(HAVE_FTS_H, $have_fts)
-> diff --git a/include/lapi/rseq.h b/include/lapi/rseq.h
-> new file mode 100644
-> index 000000000..7f4834f2c
-> --- /dev/null
-> +++ b/include/lapi/rseq.h
-> @@ -0,0 +1,57 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2021-2023 Free Software Foundation, Inc.
-> + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-> + */
-> +
-> +#ifndef LAPI_RSEQ_H__
-> +#define LAPI_RSEQ_H__
-> +
-> +#include <errno.h>
-> +#include <unistd.h>
-> +#include <stdbool.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <syscall.h>
-> +#include "config.h"
-> +#include "tst_test.h"
-> +
-> +
-> +#if defined(HAVE_SYS_RSEQ_H)
-> +# include <sys/rseq.h>
-> +#endif
-> +
-> +
-> +#if defined(HAVE_SYS_RSEQ_H) && defined(RSEQ_SIG)
-                                             ^
-					     Where is this macro
-					     defined?
-> +static int sys_rseq(struct rseq *rseq_abi, uint32_t rseq_len, int flags, uint32_t sig)
-> +{
-> +	return syscall(__NR_rseq, rseq_abi, rseq_len, flags, sig);
-                ^
-		tst_syscall
-> +}
-> +
-> +static void check_rseq_available(void)
-> +{
-> +	int rc;
-> +
-> +	rc = sys_rseq(NULL, 0, 0, 0);
-> +	if (rc != -1)
-> +		tst_brk(TFAIL | TTERRNO, "Unexpected rseq return value %d ", rc);
-> +	switch (errno) {
-> +	case ENOSYS:
-> +		tst_brk(TCONF,
-> +				"kernel does not support rseq, skipping test");
-> +	case EINVAL:
-> +		/* rseq is implemented, but detected an invalid rseq_len parameter.  */
-> +		break;
-> +	default:
-> +		tst_brk(TFAIL | TTERRNO, "Unexpected rseq error ");
-> +	}
-> +}
+> Sure, this sounds reasonable as well.
 
-These two functions should be defined regardless of the presense of the
-sys/rqseq.h header.
-
-The configure checks for the header are there to ensure there are no
-collisions between the function/macro definitions we carry in LTP and
-the ones in the libc library.
-
-More generally there is no correlation between kernel version and libc
-version installed on the system. We deal with that in LTP by adding:
-
-- configure check for particular functionality
-- fallback definitions in lapi/ headers in case that system headers
-  does not include the definitions we need
-- syscall availability check in the test setup()
-
-With that we can run the test if the syscall() is supported by kernel
-and exit greacefuly otherwhise.
-
-> +#else /* HAVE_SYS_RSEQ_H && RSEQ_SIG */
-> +static void check_rseq_available(void)
-> +{
-> +	tst_brk(TCONF,
-> +		"glibc does not support rseq, skipping test");
-> +}
-> +#endif /* HAVE_SYS_RSEQ_H && RSEQ_SIG */
-> +
-> +#endif /* LAPI_RSEQ_H__ */
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index ae37a1192..f46950b27 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -1752,6 +1752,8 @@ copy_file_range01 copy_file_range01
->  copy_file_range02 copy_file_range02
->  copy_file_range03 copy_file_range03
->  
-> +rseq01 rseq01
-> +
->  statx01 statx01
->  statx02 statx02
->  statx03 statx03
-> diff --git a/testcases/kernel/syscalls/rseq/.gitignore b/testcases/kernel/syscalls/rseq/.gitignore
-> new file mode 100644
-> index 000000000..8a6c7ee36
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/rseq/.gitignore
-> @@ -0,0 +1 @@
-> +/rseq01
-> diff --git a/testcases/kernel/syscalls/rseq/Makefile b/testcases/kernel/syscalls/rseq/Makefile
-> new file mode 100644
-> index 000000000..159d5651c
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/rseq/Makefile
-> @@ -0,0 +1,7 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +#  Copyright (C) 2012 Linux Test Project, Inc.
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/rseq/rseq01.c b/testcases/kernel/syscalls/rseq/rseq01.c
-> new file mode 100644
-> index 000000000..6f3e7ff97
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/rseq/rseq01.c
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2021-2023 Free Software Foundation, Inc.
-> + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Restartable Sequences basic tests.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <sched.h>
-> +#include "lapi/rseq.h"
-> +
-> +static void run(void)
-> +{
-> +	check_rseq_available();
-> +
-> +	TST_EXP_PASS(!(sched_getcpu() >= 0));
-
-This does not actually check anything useful.
-
-Very basic test would register rqseq, then loop over available CPUs, pin
-a process to the CPU and check that rqsed did register the buffers. The
-very basic test would look like:
-
-https://github.com/torvalds/linux/blob/master/tools/testing/selftests/rseq/basic_test.c
-
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.needs_root = 1,
-> +};
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Great. What's the default in LTP: GitHub PR or mailing list patches?
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Andrei Gherzan
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
