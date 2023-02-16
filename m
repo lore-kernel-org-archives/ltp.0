@@ -4,64 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1AC3C636CC
-	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 10:30:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 211E1C636D6
+	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 10:32:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 759CC3CBED4
-	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 11:30:11 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 31DCB3CBEED
+	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 11:31:59 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7F80F3CB073
- for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:30:01 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 35D7E3CB073
+ for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:31:48 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B75212009B0
- for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:30:00 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id AC3F222254;
- Thu, 16 Feb 2023 10:29:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1676543399;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9hCeaTSC0VGc3u+AuhloBkn9ZjlGwS6LCqE+Zh8U+js=;
- b=1X9w2IelrEb0oTOX4BfuYeTMQFKXrkr74Bu6B6Jfy5ISSURnGieK485catoRNq7QrYdKR8
- xpsqsYC2szQJiiO4TZm6vjoiv8jmGu5oy+4l4wrlmABR3H+Dj+4EibBPVU+OgMmcda5pdt
- I8Hwykp3jqg1DqD8ypa3wJBXPDUiSwo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1676543399;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9hCeaTSC0VGc3u+AuhloBkn9ZjlGwS6LCqE+Zh8U+js=;
- b=DaTcHi3y5CMor9XWOsdKAAZOt/w+sVSS523OvWNhWWzLwkcVKInscMI8zIEdotBLoZbbAR
- 0Msy9RchEB8NaYAQ==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7E7C7600913
+ for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:31:47 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 66D212C141;
- Thu, 16 Feb 2023 10:29:59 +0000 (UTC)
-References: <20230215144225.25008-1-mdoucha@suse.cz>
- <Y+z4MNO+jwydz1w8@pevik> <abf5eb48-d63d-1b5f-4047-1a8c210a48a1@arm.com>
-User-agent: mu4e 1.8.13; emacs 28.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-Date: Thu, 16 Feb 2023 10:12:05 +0000
-Organization: Linux Private Site
-In-reply-to: <abf5eb48-d63d-1b5f-4047-1a8c210a48a1@arm.com>
-Message-ID: <87lekxrjh6.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C683D222C9;
+ Thu, 16 Feb 2023 10:31:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1676543506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=uCxmK1wqlPitxDtvETGf7qOW33wWk/sVt3MMHBnfGPU=;
+ b=E3abfKIzsoPP2saLn+qdL8lDp97S2Veyc8xYJsHiGxmDjcMihUEfbN2FKlmM2Yd3Zl1Wx+
+ QxfQ+UJhoGInnWnhshKByEbCPO4XJ+Ni9/olDJA7hE8G28F2/ftaAm84x8q2RkJ1nqf4EO
+ LPxMvbJvffpclxLtz2L64reR9MekBoM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 59EF2139B5;
+ Thu, 16 Feb 2023 10:31:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ZWUuEBIG7mOaRQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.com>); Thu, 16 Feb 2023 10:31:46 +0000
+To: ltp@lists.linux.it
+Date: Thu, 16 Feb 2023 11:29:42 +0100
+Message-Id: <20230216102942.11859-1-andrea.cervesato@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] cve-2015-3290: Fix tst_syscall() return value
+Subject: [LTP] [PATCH v1] Remove ltp_quick_clone from mountns testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,53 +62,258 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-ClRlbyBDb3VwcmllIERpYXogPHRlby5jb3VwcmllZGlhekBhcm0uY29tPiB3cml0ZXM6Cgo+IEhp
-IGFsbCwKPgo+IE9uIDE1LzAyLzIwMjMgMTU6MjAsIFBldHIgVm9yZWwgd3JvdGU6Cj4+IEhpIGFs
-bCwKPj4KPj4+IFRoZSBtb2RpZnlfbGR0KCkgc3lzY2FsbCByZXR1cm5zIDMyLWJpdCBzaWduZWQg
-aW50ZWdlciB2YWx1ZS4gUmVjZW50IGNoYW5nZXMKPj4+IGluIHRzdF9zeXNjYWxsKCkgY2F1c2Vk
-IHRoZSB2YWx1ZSB0byBiZSBpbnRlcnByZXRlZCBhcyB1bnNpZ25lZCBvbiBvbGRlcgo+Pj4ga2Vy
-bmVscy9nbGliYywgd2hpY2ggYnJlYWtzIHRoZSBjdmUtMjAxNS0zMjkwIHRlc3QuIEFkZCBleHBs
-aWNpdCB0eXBlIGNhc3QKPj4+IHRvIGZpeCBpdC4KPj4gUmV2aWV3ZWQtYnk6IFBldHIgVm9yZWwg
-PHB2b3JlbEBzdXNlLmN6Pgo+Pgo+PiBUaGlzIGlzIGNhdXNlZCBieSBlNWQyYTA1YTkgKCJyZWdl
-bi5zaDogVXNlIGludHB0cl90IGZvciB0c3Rfc3lzY2FsbCByZXR1cm4iKQo+PiB3aGljaCBjaGFu
-Z2VkIHJldHVybmluZyB0c3RfcmV0IGZyb20gaW50IHRvIGludHB0cl90ICh3aGljaCBpcyBhbHNv
-IGludCBmb3IgMzIKPj4gYml0IGFyY2hzLCBidXQgbG9uZyBmb3IgNjQgYml0IGFyY2hzKS4gVGhp
-cyBjb21taXQgaXMgYWxzbyBuZWVkZWQsIHRodXMgSSBkb24ndAo+PiBzdWdnZXN0IHRvIHJldmVy
-dCBpdCwgYnV0IEkgd29uZGVyIGhvdyBtYW55IG90aGVyIHRlc3RzIGl0IGJyb2tlLgoKSSB0aGlu
-ayBtb2RpZnlfbGR0IGlzIHNwZWNpYWwuIFlvdSBjb3VsZCBzZWFyY2ggZm9yIG90aGVyIHN5c2Nh
-bGxzIHdoaWNoCm9ubHkgcmV0dXJuIDMyYml0IHRvIG1ha2Ugc3VyZS4KCj4KPiBJIHNlbnQgdGhl
-IHRzdF9zeXNjYWxsIHJldHVybiBwYXRjaC4gSSBkaWQgc29tZSB0ZXN0aW5nIHdpdGggd2hhdCBz
-eXN0ZW1zIEkKPiBoYWQgYXZhaWxhYmxlIHdoZW4gd29ya2luZyBvbiBpdCBhbmQsIGF0IHRoZSB0
-aW1lLCBkaWRuJ3Qgc2VlIGFueQo+IHJlZ3Jlc3Npb25zLAo+IGluY2x1ZGluZyBmb3IgY3ZlLTIw
-MTUtMzI5MC4KPgo+IEhvd2V2ZXIgdGhpcyB3YXMgd2l0aCBmYWlybHkgcmVjZW50IGtlcm5lbHMg
-YW5kIGxpYmNzLCBhbmQgYWNjb3JkaW5nCj4gdG8gTWFydGluCj4gdGhlIHRlc3QgZmFpbGVkIGZv
-ciB0aGVtIG9uIGFuIG9sZGVyIGNvbWJpbmF0aW9uLgo+Cj4gSSBzaGFyZWQgdGhlIHRlc3Qgc3Vp
-dGVbMF0gSSB0ZXN0ZWQgdGhlIHBhdGNoIHdpdGgsIGNvbnRhaW5pbmcgYWxsIHRoZQo+IHVzZXMg
-SSBmb3VuZC4KPiBJdCBtaWdodCBiZSB3b3J0aHdoaWxlIHRvIHJ1biBpdCBvbiBhIHN5c3RlbSB3
-aGVyZSB3ZSBub3cga25vdyBvbmUgb2YKPiB0aGUgdGVzdHMKPiB3YXMgYWZmZWN0ZWQgPyBIb3Bl
-ZnVsbHksIG5vbmUgbW9yZSwgYnV0IGhhdmluZyBhIHJlc3VsdCB3b3VsZCBiZQo+IGJldHRlci4K
-CkkgdGhpbmsgdGhlIHRlc3RpbmcgeW91IGRpZCB3YXMgbW9yZSB0aGFuIGFkZXF1YXRlLgoKPgo+
-IEJlc3QgcmVnYXJkcywKPiBUw6lvCj4KPiBbMF06IGh0dHBzOi8vbGlzdHMubGludXguaXQvcGlw
-ZXJtYWlsL2x0cC8yMDIyLU5vdmVtYmVyLzAzMTY0MC5odG1sCj4KPj4KPj4gS2luZCByZWdhcmRz
-LAo+PiBQZXRyCj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBNYXJ0aW4gRG91Y2hhIDxtZG91Y2hhQHN1
-c2UuY3o+Cj4+PiAtLS0KPj4+ICAgdGVzdGNhc2VzL2N2ZS9jdmUtMjAxNS0zMjkwLmMgfCAzICsr
-LQo+Pj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4+
-PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2N2ZS9jdmUtMjAxNS0zMjkwLmMgYi90ZXN0Y2FzZXMv
-Y3ZlL2N2ZS0yMDE1LTMyOTAuYwo+Pj4gaW5kZXggZjYxZDI4MDliLi5hMmE4ZmNlZGQgMTAwNjQ0
-Cj4+PiAtLS0gYS90ZXN0Y2FzZXMvY3ZlL2N2ZS0yMDE1LTMyOTAuYwo+Pj4gKysrIGIvdGVzdGNh
-c2VzL2N2ZS9jdmUtMjAxNS0zMjkwLmMKPj4+IEBAIC0xOTUsNyArMTk1LDggQEAgc3RhdGljIHZv
-aWQgc2V0X2xkdCh2b2lkKQo+Pj4gICAJCS51c2VhYmxlCSA9IDAKPj4+ICAgCX07Cj4+PiAtCVRF
-U1QodHN0X3N5c2NhbGwoX19OUl9tb2RpZnlfbGR0LCAxLCAmZGF0YV9kZXNjLCBzaXplb2YoZGF0
-YV9kZXNjKSkpOwo+Pj4gKwlURVNUKChpbnQpdHN0X3N5c2NhbGwoX19OUl9tb2RpZnlfbGR0LCAx
-LCAmZGF0YV9kZXNjLAo+Pj4gKwkJc2l6ZW9mKGRhdGFfZGVzYykpKTsKPj4+ICAgCWlmIChUU1Rf
-UkVUID09IC1FSU5WQUwpIHsKPj4+ICAgCQl0c3RfYnJrKFRDT05GIHwgVFJFUlJOTywKPj4+ICAg
-CQkJIm1vZGlmeV9sZHQ6IDE2LWJpdCBkYXRhIHNlZ21lbnRzIGFyZSBwcm9iYWJseSBkaXNhYmxl
-ZCIpOwoKCi0tIApUaGFuayB5b3UsClJpY2hhcmQuCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
-dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+ltp_quick_clone has been replaced by SAFE_CLONE in the mountns testing
+suite that now is independed from libclone and legacy API.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ testcases/kernel/containers/mountns/mountns.h  | 18 ------------------
+ .../kernel/containers/mountns/mountns01.c      | 16 ++++++++--------
+ .../kernel/containers/mountns/mountns02.c      | 16 ++++++++--------
+ .../kernel/containers/mountns/mountns03.c      | 16 ++++++++--------
+ .../kernel/containers/mountns/mountns04.c      |  2 +-
+ 5 files changed, 25 insertions(+), 43 deletions(-)
+
+diff --git a/testcases/kernel/containers/mountns/mountns.h b/testcases/kernel/containers/mountns/mountns.h
+index 615f1a058..9bb854659 100644
+--- a/testcases/kernel/containers/mountns/mountns.h
++++ b/testcases/kernel/containers/mountns/mountns.h
+@@ -8,28 +8,10 @@
+ #define COMMON_H
+ 
+ #include "tst_test.h"
+-#include "lapi/sched.h"
+ 
+ #define DIRA "LTP_DIR_A"
+ #define DIRB "LTP_DIR_B"
+ 
+-static int dummy_child(void *v)
+-{
+-	(void)v;
+-	return 0;
+-}
+-
+-static void check_newns(void)
+-{
+-	int pid, status;
+-
+-	pid = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, dummy_child, NULL);
+-	if (pid < 0)
+-		tst_brk(TCONF, "CLONE_NEWNS not supported");
+-
+-	SAFE_WAIT(&status);
+-}
+-
+ static void umount_folders(void)
+ {
+ 	if (tst_is_mounted(DIRA))
+diff --git a/testcases/kernel/containers/mountns/mountns01.c b/testcases/kernel/containers/mountns/mountns01.c
+index e8f176920..c5b6077f1 100644
+--- a/testcases/kernel/containers/mountns/mountns01.c
++++ b/testcases/kernel/containers/mountns/mountns01.c
+@@ -33,8 +33,9 @@
+ #include <sys/mount.h>
+ #include "mountns.h"
+ #include "tst_test.h"
++#include "lapi/sched.h"
+ 
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+@@ -51,13 +52,11 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ 	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+ 	SAFE_UMOUNT(DIRA);
+-
+-	return 0;
+ }
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
+ 
+ 	SAFE_UNSHARE(CLONE_NEWNS);
+ 
+@@ -67,9 +66,10 @@ static void run(void)
+ 	SAFE_MOUNT(DIRA, DIRA, "none", MS_BIND, NULL);
+ 	SAFE_MOUNT("none", DIRA, "none", MS_SHARED, NULL);
+ 
+-	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK, "clone failed");
++	if (!SAFE_CLONE(&args)) {
++		child_func();
++		return;
++	}
+ 
+ 	SAFE_MOUNT(DIRB, DIRA, "none", MS_BIND, NULL);
+ 
+@@ -93,7 +93,6 @@ static void run(void)
+ 
+ static void setup(void)
+ {
+-	check_newns();
+ 	create_folders();
+ }
+ 
+@@ -107,5 +106,6 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = run,
+ 	.needs_root = 1,
++	.forks_child = 1,
+ 	.needs_checkpoints = 1,
+ };
+diff --git a/testcases/kernel/containers/mountns/mountns02.c b/testcases/kernel/containers/mountns/mountns02.c
+index 4b85fa79b..c2260961e 100644
+--- a/testcases/kernel/containers/mountns/mountns02.c
++++ b/testcases/kernel/containers/mountns/mountns02.c
+@@ -34,8 +34,9 @@
+ #include <sys/mount.h>
+ #include "mountns.h"
+ #include "tst_test.h"
++#include "lapi/sched.h"
+ 
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+@@ -51,13 +52,11 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ 	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+ 	SAFE_UMOUNT(DIRA);
+-
+-	return 0;
+ }
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
+ 
+ 	SAFE_UNSHARE(CLONE_NEWNS);
+ 
+@@ -68,9 +67,10 @@ static void run(void)
+ 
+ 	SAFE_MOUNT("none", DIRA, "none", MS_PRIVATE, NULL);
+ 
+-	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK, "clone failed");
++	if (!SAFE_CLONE(&args)) {
++		child_func();
++		return;
++	}
+ 
+ 	SAFE_MOUNT(DIRB, DIRA, "none", MS_BIND, NULL);
+ 
+@@ -94,7 +94,6 @@ static void run(void)
+ 
+ static void setup(void)
+ {
+-	check_newns();
+ 	create_folders();
+ }
+ 
+@@ -108,5 +107,6 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = run,
+ 	.needs_root = 1,
++	.forks_child = 1,
+ 	.needs_checkpoints = 1,
+ };
+diff --git a/testcases/kernel/containers/mountns/mountns03.c b/testcases/kernel/containers/mountns/mountns03.c
+index 1d26a25d8..357a4f30b 100644
+--- a/testcases/kernel/containers/mountns/mountns03.c
++++ b/testcases/kernel/containers/mountns/mountns03.c
+@@ -36,8 +36,9 @@
+ #include <sys/mount.h>
+ #include "mountns.h"
+ #include "tst_test.h"
++#include "lapi/sched.h"
+ 
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+ 	/*
+ 	 * makes mount DIRA a slave of DIRA (all slave mounts have
+@@ -59,13 +60,11 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ 	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+ 	SAFE_UMOUNT(DIRA);
+-
+-	return 0;
+ }
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
+ 
+ 	SAFE_UNSHARE(CLONE_NEWNS);
+ 
+@@ -76,9 +75,10 @@ static void run(void)
+ 
+ 	SAFE_MOUNT("none", DIRA, "none", MS_SHARED, NULL);
+ 
+-	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK, "clone failed");
++	if (!SAFE_CLONE(&args)) {
++		child_func();
++		return;
++	}
+ 
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+@@ -104,7 +104,6 @@ static void run(void)
+ 
+ static void setup(void)
+ {
+-	check_newns();
+ 	create_folders();
+ }
+ 
+@@ -118,5 +117,6 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = run,
+ 	.needs_root = 1,
++	.forks_child = 1,
+ 	.needs_checkpoints = 1,
+ };
+diff --git a/testcases/kernel/containers/mountns/mountns04.c b/testcases/kernel/containers/mountns/mountns04.c
+index fc392f1a7..6a64c2443 100644
+--- a/testcases/kernel/containers/mountns/mountns04.c
++++ b/testcases/kernel/containers/mountns/mountns04.c
+@@ -22,6 +22,7 @@
+ #include <sys/mount.h>
+ #include "mountns.h"
+ #include "tst_test.h"
++#include "lapi/sched.h"
+ 
+ static void run(void)
+ {
+@@ -46,7 +47,6 @@ static void run(void)
+ 
+ static void setup(void)
+ {
+-	check_newns();
+ 	create_folders();
+ }
+ 
+-- 
+2.35.3
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
