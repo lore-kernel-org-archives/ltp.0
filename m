@@ -4,57 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48768C61DA4
-	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 10:11:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1AC3C636CC
+	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 10:30:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E9F153CBED0
-	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 11:11:07 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 759CC3CBED4
+	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 11:30:11 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 26A2F3CB10B
- for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:10:57 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 7F80F3CB073
+ for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:30:01 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4BB8A20097F
- for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:10:56 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B75212009B0
+ for <ltp@lists.linux.it>; Thu, 16 Feb 2023 11:30:00 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id A7BD622307
- for <ltp@lists.linux.it>; Thu, 16 Feb 2023 10:10:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id AC3F222254;
+ Thu, 16 Feb 2023 10:29:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1676542255;
+ t=1676543399;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=qyhnBjTn5TWtkD8tzWU3w4UPBvRMfduQbFmF3E42hmQ=;
- b=pu0quZCSsifjkVxCVYD9/xv8rWbZyZ5MlporH+8skECAyz2WkyYaW3qexLePoOBY1b6RxQ
- 1eXd/PpEwIVgoZuxxF0buYOoWkW7aZUldiRRardDhXWu2f4RZRiYcW4jtnt3Halv7WoFVh
- jhCHo6mVRNGG2BBMsVrSf0n3wI2UHic=
+ bh=9hCeaTSC0VGc3u+AuhloBkn9ZjlGwS6LCqE+Zh8U+js=;
+ b=1X9w2IelrEb0oTOX4BfuYeTMQFKXrkr74Bu6B6Jfy5ISSURnGieK485catoRNq7QrYdKR8
+ xpsqsYC2szQJiiO4TZm6vjoiv8jmGu5oy+4l4wrlmABR3H+Dj+4EibBPVU+OgMmcda5pdt
+ I8Hwykp3jqg1DqD8ypa3wJBXPDUiSwo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1676542255;
+ s=susede2_ed25519; t=1676543399;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=qyhnBjTn5TWtkD8tzWU3w4UPBvRMfduQbFmF3E42hmQ=;
- b=IczszSkf6hVRzYtC3g+6bAmEc05qEKh9fosDCi5yC3XQp2Nc2MHKhR7EWIENHTFEK2fr8E
- j1XrWlChJ8vi2eCg==
+ bh=9hCeaTSC0VGc3u+AuhloBkn9ZjlGwS6LCqE+Zh8U+js=;
+ b=DaTcHi3y5CMor9XWOsdKAAZOt/w+sVSS523OvWNhWWzLwkcVKInscMI8zIEdotBLoZbbAR
+ 0Msy9RchEB8NaYAQ==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 7A86F2C142;
- Thu, 16 Feb 2023 10:10:55 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id 66D212C141;
+ Thu, 16 Feb 2023 10:29:59 +0000 (UTC)
 References: <20230215144225.25008-1-mdoucha@suse.cz>
+ <Y+z4MNO+jwydz1w8@pevik> <abf5eb48-d63d-1b5f-4047-1a8c210a48a1@arm.com>
 User-agent: mu4e 1.8.13; emacs 28.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Martin Doucha <mdoucha@suse.cz>
-Date: Thu, 16 Feb 2023 09:24:51 +0000
+To: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+Date: Thu, 16 Feb 2023 10:12:05 +0000
 Organization: Linux Private Site
-In-reply-to: <20230215144225.25008-1-mdoucha@suse.cz>
-Message-ID: <87pma9rkcx.fsf@suse.de>
+In-reply-to: <abf5eb48-d63d-1b5f-4047-1a8c210a48a1@arm.com>
+Message-ID: <87lekxrjh6.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
@@ -72,56 +75,51 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
-
-Martin Doucha <mdoucha@suse.cz> writes:
-
-> The modify_ldt() syscall returns 32-bit signed integer value. Recent changes
-> in tst_syscall() caused the value to be interpreted as unsigned on older
-> kernels/glibc, which breaks the cve-2015-3290 test. Add explicit type cast
-> to fix it.
-
-This is strange, currently for the test to work the return 32bit return
-value must be sign extended to 64bit so that it equals -EINVAL (right?).
-
-Meanwhile kernel has never changed the return value, it's always 32bit
-("which is a bug"). I can't find any change in glibc either that would
-explain it.
-
-I am missing something or is it a mystery?
-
->
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
->  testcases/cve/cve-2015-3290.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/testcases/cve/cve-2015-3290.c b/testcases/cve/cve-2015-3290.c
-> index f61d2809b..a2a8fcedd 100644
-> --- a/testcases/cve/cve-2015-3290.c
-> +++ b/testcases/cve/cve-2015-3290.c
-> @@ -195,7 +195,8 @@ static void set_ldt(void)
->  		.useable	 = 0
->  	};
->  
-> -	TEST(tst_syscall(__NR_modify_ldt, 1, &data_desc, sizeof(data_desc)));
-> +	TEST((int)tst_syscall(__NR_modify_ldt, 1, &data_desc,
-> +		sizeof(data_desc)));
->  	if (TST_RET == -EINVAL) {
->  		tst_brk(TCONF | TRERRNO,
->  			"modify_ldt: 16-bit data segments are probably disabled");
-> -- 
-> 2.39.0
-
-
--- 
-Thank you,
-Richard.
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+ClRlbyBDb3VwcmllIERpYXogPHRlby5jb3VwcmllZGlhekBhcm0uY29tPiB3cml0ZXM6Cgo+IEhp
+IGFsbCwKPgo+IE9uIDE1LzAyLzIwMjMgMTU6MjAsIFBldHIgVm9yZWwgd3JvdGU6Cj4+IEhpIGFs
+bCwKPj4KPj4+IFRoZSBtb2RpZnlfbGR0KCkgc3lzY2FsbCByZXR1cm5zIDMyLWJpdCBzaWduZWQg
+aW50ZWdlciB2YWx1ZS4gUmVjZW50IGNoYW5nZXMKPj4+IGluIHRzdF9zeXNjYWxsKCkgY2F1c2Vk
+IHRoZSB2YWx1ZSB0byBiZSBpbnRlcnByZXRlZCBhcyB1bnNpZ25lZCBvbiBvbGRlcgo+Pj4ga2Vy
+bmVscy9nbGliYywgd2hpY2ggYnJlYWtzIHRoZSBjdmUtMjAxNS0zMjkwIHRlc3QuIEFkZCBleHBs
+aWNpdCB0eXBlIGNhc3QKPj4+IHRvIGZpeCBpdC4KPj4gUmV2aWV3ZWQtYnk6IFBldHIgVm9yZWwg
+PHB2b3JlbEBzdXNlLmN6Pgo+Pgo+PiBUaGlzIGlzIGNhdXNlZCBieSBlNWQyYTA1YTkgKCJyZWdl
+bi5zaDogVXNlIGludHB0cl90IGZvciB0c3Rfc3lzY2FsbCByZXR1cm4iKQo+PiB3aGljaCBjaGFu
+Z2VkIHJldHVybmluZyB0c3RfcmV0IGZyb20gaW50IHRvIGludHB0cl90ICh3aGljaCBpcyBhbHNv
+IGludCBmb3IgMzIKPj4gYml0IGFyY2hzLCBidXQgbG9uZyBmb3IgNjQgYml0IGFyY2hzKS4gVGhp
+cyBjb21taXQgaXMgYWxzbyBuZWVkZWQsIHRodXMgSSBkb24ndAo+PiBzdWdnZXN0IHRvIHJldmVy
+dCBpdCwgYnV0IEkgd29uZGVyIGhvdyBtYW55IG90aGVyIHRlc3RzIGl0IGJyb2tlLgoKSSB0aGlu
+ayBtb2RpZnlfbGR0IGlzIHNwZWNpYWwuIFlvdSBjb3VsZCBzZWFyY2ggZm9yIG90aGVyIHN5c2Nh
+bGxzIHdoaWNoCm9ubHkgcmV0dXJuIDMyYml0IHRvIG1ha2Ugc3VyZS4KCj4KPiBJIHNlbnQgdGhl
+IHRzdF9zeXNjYWxsIHJldHVybiBwYXRjaC4gSSBkaWQgc29tZSB0ZXN0aW5nIHdpdGggd2hhdCBz
+eXN0ZW1zIEkKPiBoYWQgYXZhaWxhYmxlIHdoZW4gd29ya2luZyBvbiBpdCBhbmQsIGF0IHRoZSB0
+aW1lLCBkaWRuJ3Qgc2VlIGFueQo+IHJlZ3Jlc3Npb25zLAo+IGluY2x1ZGluZyBmb3IgY3ZlLTIw
+MTUtMzI5MC4KPgo+IEhvd2V2ZXIgdGhpcyB3YXMgd2l0aCBmYWlybHkgcmVjZW50IGtlcm5lbHMg
+YW5kIGxpYmNzLCBhbmQgYWNjb3JkaW5nCj4gdG8gTWFydGluCj4gdGhlIHRlc3QgZmFpbGVkIGZv
+ciB0aGVtIG9uIGFuIG9sZGVyIGNvbWJpbmF0aW9uLgo+Cj4gSSBzaGFyZWQgdGhlIHRlc3Qgc3Vp
+dGVbMF0gSSB0ZXN0ZWQgdGhlIHBhdGNoIHdpdGgsIGNvbnRhaW5pbmcgYWxsIHRoZQo+IHVzZXMg
+SSBmb3VuZC4KPiBJdCBtaWdodCBiZSB3b3J0aHdoaWxlIHRvIHJ1biBpdCBvbiBhIHN5c3RlbSB3
+aGVyZSB3ZSBub3cga25vdyBvbmUgb2YKPiB0aGUgdGVzdHMKPiB3YXMgYWZmZWN0ZWQgPyBIb3Bl
+ZnVsbHksIG5vbmUgbW9yZSwgYnV0IGhhdmluZyBhIHJlc3VsdCB3b3VsZCBiZQo+IGJldHRlci4K
+CkkgdGhpbmsgdGhlIHRlc3RpbmcgeW91IGRpZCB3YXMgbW9yZSB0aGFuIGFkZXF1YXRlLgoKPgo+
+IEJlc3QgcmVnYXJkcywKPiBUw6lvCj4KPiBbMF06IGh0dHBzOi8vbGlzdHMubGludXguaXQvcGlw
+ZXJtYWlsL2x0cC8yMDIyLU5vdmVtYmVyLzAzMTY0MC5odG1sCj4KPj4KPj4gS2luZCByZWdhcmRz
+LAo+PiBQZXRyCj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBNYXJ0aW4gRG91Y2hhIDxtZG91Y2hhQHN1
+c2UuY3o+Cj4+PiAtLS0KPj4+ICAgdGVzdGNhc2VzL2N2ZS9jdmUtMjAxNS0zMjkwLmMgfCAzICsr
+LQo+Pj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4+
+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2N2ZS9jdmUtMjAxNS0zMjkwLmMgYi90ZXN0Y2FzZXMv
+Y3ZlL2N2ZS0yMDE1LTMyOTAuYwo+Pj4gaW5kZXggZjYxZDI4MDliLi5hMmE4ZmNlZGQgMTAwNjQ0
+Cj4+PiAtLS0gYS90ZXN0Y2FzZXMvY3ZlL2N2ZS0yMDE1LTMyOTAuYwo+Pj4gKysrIGIvdGVzdGNh
+c2VzL2N2ZS9jdmUtMjAxNS0zMjkwLmMKPj4+IEBAIC0xOTUsNyArMTk1LDggQEAgc3RhdGljIHZv
+aWQgc2V0X2xkdCh2b2lkKQo+Pj4gICAJCS51c2VhYmxlCSA9IDAKPj4+ICAgCX07Cj4+PiAtCVRF
+U1QodHN0X3N5c2NhbGwoX19OUl9tb2RpZnlfbGR0LCAxLCAmZGF0YV9kZXNjLCBzaXplb2YoZGF0
+YV9kZXNjKSkpOwo+Pj4gKwlURVNUKChpbnQpdHN0X3N5c2NhbGwoX19OUl9tb2RpZnlfbGR0LCAx
+LCAmZGF0YV9kZXNjLAo+Pj4gKwkJc2l6ZW9mKGRhdGFfZGVzYykpKTsKPj4+ICAgCWlmIChUU1Rf
+UkVUID09IC1FSU5WQUwpIHsKPj4+ICAgCQl0c3RfYnJrKFRDT05GIHwgVFJFUlJOTywKPj4+ICAg
+CQkJIm1vZGlmeV9sZHQ6IDE2LWJpdCBkYXRhIHNlZ21lbnRzIGFyZSBwcm9iYWJseSBkaXNhYmxl
+ZCIpOwoKCi0tIApUaGFuayB5b3UsClJpY2hhcmQuCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
+dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
