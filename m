@@ -4,60 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41DB9C61DA4
-	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 12:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2458CC61DA4
+	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 14:52:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 30D293CC001
-	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 13:55:15 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 5B9823CC119
+	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 15:52:56 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0BBB13C1D84
- for <ltp@lists.linux.it>; Thu, 16 Feb 2023 13:55:03 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 7C0553CB167
+ for <ltp@lists.linux.it>; Thu, 16 Feb 2023 15:52:45 +0100 (CET)
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
+ [60.248.80.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2525F1A0071A
- for <ltp@lists.linux.it>; Thu, 16 Feb 2023 13:55:02 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6397E1FD89;
- Thu, 16 Feb 2023 12:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1676552102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=kPjXsu33mgQC24xhf1XgYg+Sgq6yGSH7lfH5ySv0sy4=;
- b=I6wAwRmbyePLZJZz4fZiGRa3bV4UqFOA/mLpIvVUYXJRdIASuZfJLM5w/0RXDzgpzFOMb9
- 2pRXVATKF0tsssDr2UTWUvBFAAVmLCxZ8oKgY9pngkAEx9PsD3lUZ75UNJq+W2+iEt5+hh
- Y1k8XIvvAF/fUYyTy6Llxbjd3QBsObw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D41D813438;
- Thu, 16 Feb 2023 12:55:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id s9EFKKQn7mPsTQAAMHmgww
- (envelope-from <wegao@suse.com>); Thu, 16 Feb 2023 12:55:00 +0000
-Date: Thu, 16 Feb 2023 07:54:57 -0500
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <20230216125457.GA31870@localhost>
-References: <20230209131902.12260-1-wegao@suse.com>
- <20230213010924.12352-1-wegao@suse.com> <87a61go5ro.fsf@suse.de>
- <20230216094235.GA29664@localhost> <87h6vlregu.fsf@suse.de>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 15CD2200B3F
+ for <ltp@lists.linux.it>; Thu, 16 Feb 2023 15:52:41 +0100 (CET)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+ by Atcsqr.andestech.com with ESMTP id 31GEqXY0051864;
+ Thu, 16 Feb 2023 22:52:33 +0800 (+08)
+ (envelope-from ycliang@andestech.com)
+Received: from ubuntu01 (10.0.12.75) by ATCPCS16.andestech.com (10.0.1.222)
+ with Microsoft SMTP Server id 14.3.498.0; Thu, 16 Feb 2023 22:52:32 +0800
+Date: Thu, 16 Feb 2023 14:52:14 +0000
+From: Leo Liang <ycliang@andestech.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <Y+5DHpOxWi0iP8H0@ubuntu01>
+References: <20230214122509.2957225-1-ycliang@andestech.com>
+ <20230214122509.2957225-2-ycliang@andestech.com>
+ <Y+uOimkvJ76Q8diX@pevik> <Y+uQB1iojD/0oQDY@yuki>
+ <Y+uYAn0RyjKBTfj4@ubuntu01> <Y+uZ+ngyoz94gp9e@yuki>
+ <Y+ukQAh4GMXh1TiK@yuki> <Y+3B1yAqIMrivj1O@ubuntu01>
+ <Y+3tg68PkP7ce2eV@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <87h6vlregu.fsf@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <Y+3tg68PkP7ce2eV@yuki>
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Originating-IP: [10.0.12.75]
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 31GEqXY0051864
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] fsconfig03: New test CVE-2022-0185
+Subject: Re: [LTP] [v2 2/2] lib/tst_pid.c: Increase PIDS_RESERVED to avoid
+ fork failure.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,43 +61,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Feb 16, 2023 at 12:09:20PM +0000, Richard Palethorpe wrote:
-> Hello,
-> 
-> >> We need to close and reopen the FD inside run() otherwise the test fails
-> >> on BTRFS with -i2 because we have already filled the buffer.
-> > Thanks for your feedback, i have some quesiton on this comments:
-> > The error will happen when buffer is full filled on btrfs(means buffer len > pagesize), this is normal 
-> > and current logic verfiy this logic for btrfs.
-> 
-> I'm not sure you understand what "-i2" means. The run() function can be
-> called multiple times in a loop. If you do ./fsconfig03 -i2 then you
-> will see the test fails.
+Hi Cyril,
 
-Yes, i do not understand "-i2" before but i know this now : ) 
-I will update and will send new patch soon!
+On Thu, Feb 16, 2023 at 09:46:59AM +0100, Cyril Hrubis wrote:
+> Hi!
+> > Just out of curiosity, is there any reason that we should do this in plain C ?
+> > (Otherwise, we could drop this patchset and stay with the current implementation)
+> 
+> There are a few, calling random scripts from C is a bad practice
+> overall.
+> 
+> Portabilitity may be one of the problems, there are several
+> iimplementations of the basic UNIX utilities for Linux eg. coreutils,
+> busybox, toybox, etc. These implemtations are subtly incompatible, not
+> all commandline options are supported and so on. And for the busybox and
+> toybox some options can be disabled at a compile time. We leaned that
+> sometimes you have to double check if the functionality available and
+> most of the time the end result is that it's just easier to rewrite the
+> code in C.
+> 
+> We also have rule to make tests as self contained as possible, which
+> simplifies debugging. One of the problems is that we do not have the
+> environment the shell code runs in under control, we had a few test
+> failing for non-standard settings of the LANG variables.
+> 
+> In this case the code is reasonably simple, so it will be less likely to
+> be problematic, however I would stil lean towards replacing it with C
+> code.
+> 
+> tl;dr Calling shell code from C programs makes things less predictable
+>       and possibly unstable.
+> 
 
-> 
-> That's because it executes run() twice and the second time
-> TST_EXP_PASS_SILENT fails.
-> 
-> > Are you mean we need create another fd and continue do fsconfig on new fd once first fsconfig fails happen ? Correct 
-> > me if i have misunderstanding.
-> 
-> This would also work.
-> 
-> 
+Understood! Thank you for the detailed explanation!!
+Will send a v3 patch ASAP in accordance with your advice!
+
+Best regards,
+Leo
+
 > -- 
-> Thank you,
-> Richard.
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
