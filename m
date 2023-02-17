@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28A09C61DA4
-	for <ltp@archiver.kernel.org>; Thu, 16 Feb 2023 23:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78F03C05027
+	for <ltp@archiver.kernel.org>; Fri, 17 Feb 2023 04:17:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1CB453CBF48
-	for <ltp@archiver.kernel.org>; Fri, 17 Feb 2023 00:52:47 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id E6E513CBF29
+	for <ltp@archiver.kernel.org>; Fri, 17 Feb 2023 05:17:42 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B93303CB073
- for <ltp@lists.linux.it>; Fri, 17 Feb 2023 00:52:36 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 892363CB073
+ for <ltp@lists.linux.it>; Fri, 17 Feb 2023 05:17:32 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BBE91600A67
- for <ltp@lists.linux.it>; Fri, 17 Feb 2023 00:52:35 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B82B3200170
+ for <ltp@lists.linux.it>; Fri, 17 Feb 2023 05:17:31 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 12A9D339BE;
- Thu, 16 Feb 2023 23:52:35 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F286F20B5A;
+ Fri, 17 Feb 2023 04:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1676591555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1676607450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=lcHZZiBnF75oyXf7uBaBMWU/DDkIU2Ju2tz2P+r8Zvw=;
- b=mAfDlRJC7EttljnBUJohz8WcyESTt0n8gz3UbTvEf6nyojGSbl1E+tRk6h+CxndmmT91qg
- KNG/wRLJ8vQxbapR6rGNxZlPOfg6QJw4QyJT6hvHf4Fj6n0pyVD3t5flUfDfhouE1c17AL
- LiWq/yHJoqO2WEAE+plnHbSxkqRgXWM=
+ bh=eEtW3IgQmbUpZQ2NsS0vnLU20q94wMoFjrUkWe2EABY=;
+ b=NCgWbM9aWsSvAG/3A3LnCzl/qgMnBJAqwC0I9KbxKlfQi6T/8kd3nkYpVBb5vXk7ScWamt
+ veq78Z5G+rZLCTG4Js8oe08vauNvgnN/cw81+codoxQ5Tgdyx5V8khFyLVlXbatcKOxeOf
+ f+69HZZz7R2l0Pw8f5J9fyugNfymk10=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F20CD13438;
- Thu, 16 Feb 2023 23:52:33 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 507941323E;
+ Fri, 17 Feb 2023 04:17:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kaI1MsHB7mNXSQAAMHmgww
- (envelope-from <wegao@suse.com>); Thu, 16 Feb 2023 23:52:33 +0000
-To: ltp@lists.linux.it
-Date: Thu, 16 Feb 2023 18:52:18 -0500
-Message-Id: <20230216235218.25757-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230213010924.12352-1-wegao@suse.com>
-References: <20230213010924.12352-1-wegao@suse.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id f2jSCdr/7mNhNAAAMHmgww
+ (envelope-from <wegao@suse.com>); Fri, 17 Feb 2023 04:17:30 +0000
+Date: Thu, 16 Feb 2023 23:17:27 -0500
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20230217041727.GA30450@localhost>
+References: <20230213134619.27486-1-wegao@suse.com>
+ <20230215023438.11370-1-wegao@suse.com> <Y+4MTlm9O/sN3Ety@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <Y+4MTlm9O/sN3Ety@yuki>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] fsconfig03: New test CVE-2022-0185
+Subject: Re: [LTP] [PATCH v2] rseq01: basic test rseq
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,160 +70,78 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-There are reproducers available for CVE-2022-0185
-https://www.openwall.com/lists/oss-security/2022/01/25/14
+On Thu, Feb 16, 2023 at 11:58:22AM +0100, Cyril Hrubis wrote:
+> Hi!
+> > Add basic check for the newly added glibc API in LTP.
+> > This test references the glibc test case tst-rseq.c.
+> > 
+> > Signed-off-by: Wei Gao <wegao@suse.com>
+> > ---
+> > +#if defined(HAVE_SYS_RSEQ_H) && defined(RSEQ_SIG)
+>                                              ^
+> 					     Where is this macro
+> 					     defined?
+RSEQ_SIG is arch specific macro , following are result in my test system:
 
-Also with links or even a zip file for an exploit
-https://github.com/Crusaders-of-Rust/CVE-2022-0185
+find / -name "*.h" | xargs grep RSEQ_SIG
+/usr/include/x86_64-linux-gnu/bits/rseq.h:#define RSEQ_SIG        0x53053053
 
-The exploits are kind of complicated as they try to be complete,
-but the exploitation vector is the fsconfig() syscall,
-this case used for add some coverage to that to detect it.
+dpkg -S /usr/include/x86_64-linux-gnu/bits/rseq.h
+libc6-dev:amd64: /usr/include/x86_64-linux-gnu/bits/rseq.h
 
-When kernel < v5.15.16, you can easily reproduce crash use test case
-without check error and return logic in loop.
+> > +#include <stdio.h>
+> > +#include <sched.h>
+> > +#include "lapi/rseq.h"
+> > +
+> > +static void run(void)
+> > +{
+> > +	check_rseq_available();
+> > +
+> > +	TST_EXP_PASS(!(sched_getcpu() >= 0));
+> 
+> This does not actually check anything useful.
+This case used to test against glibc's implementation, correct me if i am wrong.
+Once i saw following commit in glibc, so i think we can use sched_getcpu 
+do some sanity check for rseq implementation in glibc. 
+1d350aa060 Linux: Use rseq to accelerate sched_getcpu
 
-I have used this test case trigger 5.14.1 kernel crash with ext2/4.
-Just make sure your kernel have not patched by following two commits:
-e192ccc17ecf3 - fix up param length parsing in legacy_parse_param
-cebe85d570cf8 - ext4: switch to the new mount api
+> 
+> Very basic test would register rqseq, then loop over available CPUs, pin
+> a process to the CPU and check that rqsed did register the buffers. The
+> very basic test would look like:
+> 
+> https://github.com/torvalds/linux/blob/master/tools/testing/selftests/rseq/basic_test.c
+> 
 
-Signed-off-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
----
- runtest/cve                                   |  2 +
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/fsconfig/.gitignore |  1 +
- .../kernel/syscalls/fsconfig/fsconfig03.c     | 79 +++++++++++++++++++
- 4 files changed, 83 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig03.c
+Thanks for your feedback, i have a question on test direction, which one is our target?
 
-diff --git a/runtest/cve b/runtest/cve
-index 1ba63c2a7..7da3ff853 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -77,3 +77,5 @@ cve-2022-2590 dirtyc0w_shmem
- # Tests below may cause kernel memory leak
- cve-2020-25704 perf_event_open03
- cve-2022-4378 cve-2022-4378
-+# Tests below may cause kernel crash
-+cve-2022-0185 fsconfig03
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ae37a1192..b4cde8071 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -383,6 +383,7 @@ fremovexattr02 fremovexattr02
- 
- fsconfig01 fsconfig01
- fsconfig02 fsconfig02
-+fsconfig03 fsconfig03
- 
- fsmount01 fsmount01
- fsmount02 fsmount02
-diff --git a/testcases/kernel/syscalls/fsconfig/.gitignore b/testcases/kernel/syscalls/fsconfig/.gitignore
-index 2bc54b827..cfedae5f7 100644
---- a/testcases/kernel/syscalls/fsconfig/.gitignore
-+++ b/testcases/kernel/syscalls/fsconfig/.gitignore
-@@ -1,2 +1,3 @@
- /fsconfig01
- /fsconfig02
-+/fsconfig03
-diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig03.c b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-new file mode 100644
-index 000000000..c2e908221
---- /dev/null
-+++ b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2022 Alejandro Guerrero <aguerrero@...lys.com>
-+ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+ */
-+
-+
-+/*\
-+ * [Description]
-+ *
-+ * Test for CVE-2022-0185.
-+ *
-+ * References links:
-+ * - https://www.openwall.com/lists/oss-security/2022/01/25/14
-+ * - https://github.com/Crusaders-of-Rust/CVE-2022-0185
-+ */
-+
-+#include "tst_test.h"
-+#include "lapi/fsmount.h"
-+
-+#define MNTPOINT	"mntpoint"
-+
-+static int fd = -1;
-+
-+static void setup(void)
-+{
-+	fsopen_supported_by_kernel();
-+}
-+
-+static void run(void)
-+{
-+	char *val = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-+	long pagesize;
-+
-+	TEST(fd = fsopen(tst_device->fs_type, 0));
-+	if (fd == -1)
-+		tst_brk(TBROK | TTERRNO, "fsopen() failed");
-+
-+	pagesize = sysconf(_SC_PAGESIZE);
-+	if (pagesize == -1)
-+		tst_brk(TBROK, "sysconf(_SC_PAGESIZE) failed");
-+
-+	for (size_t i = 0; i < 5000; i++) {
-+		/* use same logic in kernel legacy_parse_param function */
-+		const size_t len = i * (strlen(val) + 2) + (strlen(val) + 1) + 2;
-+
-+		if (!strcmp(tst_device->fs_type, "btrfs") && len <= (size_t)pagesize) {
-+			TST_EXP_PASS_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0));
-+			if (TST_ERR)
-+				return;
-+		} else {
-+			TST_EXP_FAIL_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0),
-+					    EINVAL);
-+			if (!TST_PASS)
-+				return;
-+		}
-+	}
-+
-+	if (fd != -1)
-+		SAFE_CLOSE(fd);
-+
-+	tst_res(TPASS, "fsconfig() overflow on %s haven't triggerred crash",
-+			tst_device->fs_type);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.needs_root = 1,
-+	.format_device = 1,
-+	.mntpoint = MNTPOINT,
-+	.all_filesystems = 1,
-+	.skip_filesystems = (const char *const []){"ntfs", "vfat", NULL},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "722d94847de29"},
-+		{"CVE", "2022-0185"},
-+		{}
-+	}
-+};
--- 
-2.35.3
+1) Check system call ONLY regardless glibc version/implementation then we move linux kernel test(as above link you mentioned) into our test.
 
+2) Check glibc's implemenation for rseq(from 2.35), such as 1.check sched_getcpu, 2.check glibc API 
+how to disable rseq feature which support automaticly from glibc start. (e3e589829d nptl: Add glibc.pthread.rseq tunable to control rseq registration). Then our target is move glibc test case to our test.
+
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.test_all = run,
+> > +	.needs_root = 1,
+> > +};
+> > -- 
+> > 2.35.3
+> > 
+> > 
+> > -- 
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
