@@ -4,65 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F01AC6379F
-	for <ltp@archiver.kernel.org>; Fri, 17 Feb 2023 16:03:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B544C61DA4
+	for <ltp@archiver.kernel.org>; Sat, 18 Feb 2023 04:09:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 40AB63CBECB
-	for <ltp@archiver.kernel.org>; Fri, 17 Feb 2023 17:03:51 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0460E3CBE8A
+	for <ltp@archiver.kernel.org>; Sat, 18 Feb 2023 05:09:45 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 526453C00D1
- for <ltp@lists.linux.it>; Fri, 17 Feb 2023 17:03:41 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 19C073CB10B
+ for <ltp@lists.linux.it>; Sat, 18 Feb 2023 05:09:28 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 360E71000D13
- for <ltp@lists.linux.it>; Fri, 17 Feb 2023 17:03:39 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 527D660067F
+ for <ltp@lists.linux.it>; Sat, 18 Feb 2023 05:09:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1676693365;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=6h66+29x3ZKbjQIpRjgBMR0d42q09OLcQ0lQPU/zR/4=;
+ b=OQeIGv74g/9FV78zxdcFXOlf3JPm5B52LxFAZwDXvdPPMYvgk5QDpKqWU0H46q1WmrzuQf
+ zmDdf57Hk0wlp8g7ODirHHZVFLP9l1rK6mFSJ/TF/YD2nnxr6gWk9zOif0bwEJZZjg94Dd
+ 9qwoAFpZ2VZZRxjWRA5upJGwUFwMnEs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-275-SE_AA9v3NnGnwpSEjShrSg-1; Fri, 17 Feb 2023 23:09:23 -0500
+X-MC-Unique: SE_AA9v3NnGnwpSEjShrSg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.2])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5D87520392;
- Fri, 17 Feb 2023 16:03:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1676649819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ES3RP51/ypEYyBWrpx8buWkNpet2RwR22uuY2fY2tto=;
- b=SIX4o47F1lUhnfaSdkPr7iqqf8uv8KGqNnvlZ43qzS0pHZSfGfY0BDwU32qx7j+VhdzpKR
- DajSkoRS2yeXwkAWq6unvuS9U6TiVxVuWo/XF6J01XPrHknnZ8bK0X/Z6YE1h1yA8q9vt0
- iFoS3sn6unMhDsGeqss3YKg50+5seZQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1676649819;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ES3RP51/ypEYyBWrpx8buWkNpet2RwR22uuY2fY2tto=;
- b=5EjBxo6EojFvcoI3nIU/NC8R1lSx7W49ZWh4PKqi8Fdmbte1pItS2jQxGqAXddJb+l8Gyg
- eEYYvzg4knDmJdAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4C80A13274;
- Fri, 17 Feb 2023 16:03:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id iEhnEVul72MjRwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 17 Feb 2023 16:03:39 +0000
-Date: Fri, 17 Feb 2023 17:05:06 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <Y++lsqEyHVZp9uZp@yuki>
-References: <20230215144820.17876-1-wegao@suse.com>
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 818C5185A794;
+ Sat, 18 Feb 2023 04:09:23 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com
+ (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id E534240C10FA;
+ Sat, 18 Feb 2023 04:09:20 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Sat, 18 Feb 2023 12:09:19 +0800
+Message-Id: <20230218040919.3548296-1-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230215144820.17876-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] mq_notify03.c: New test CVE-2021-38604
+Subject: [LTP] [PATCH] madvise06: Raise the bar for judging failure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,146 +69,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Yongqiang Liu <liuyongqiang13@huawei.com>, Paul Bunyan <pbunyan@redhat.com>,
+ Eirik Fuller <efuller@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +/*\
-> + * [Description]
-> + *
-> + * Test for NULL pointer dereference in mq_notify(CVE-2021-38604)
-> + *
-> + * References links:
-> + * - https://sourceware.org/bugzilla/show_bug.cgi?id=28213
-> + */
-> +
-> +#include <errno.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
-> +#include <unistd.h>
-> +#include <mqueue.h>
-> +#include <signal.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include "tst_test.h"
-> +#include "tst_safe_posix_ipc.h"
-> +
-> +static mqd_t m = -1;
-> +static const char msg[] = "hello";
-> +
-> +static void check_bz28213_cb(union sigval sv)
-> +{
-> +	char buf[sizeof(msg)];
-> +
-> +	(void)sv;
-> +
-> +	TST_EXP_PASS(!((size_t) mq_receive(m, buf, sizeof(buf), NULL)
+There is an intermittent failure which we have observed many times whether
+on rhel or mainline kernel. But we're unable to stable reproduce it:
 
-Does this line of code even compile?
+    43	madvise06.c:201: TFAIL: less than 102400 Kb were moved to the swap cache
+    ...
 
-> +	TST_EXP_PASS(!(memcmp(buf, msg, sizeof(buf)) == 0));
-> +
-> +	exit(0);
-> +}
-> +
-> +static void check_bz28213(void)
-> +{
-> +	struct sigevent sev;
-> +
-> +	memset(&sev, '\0', sizeof(sev));
-> +	sev.sigev_notify = SIGEV_THREAD;
-> +	sev.sigev_notify_function = check_bz28213_cb;
-> +
-> +	/* Step 1: Register & unregister notifier.
-> +	 * Helper thread should receive NOTIFY_REMOVED notification.
-> +	 * In a vulnerable version of glibc, NULL pointer dereference follows.
-> +	 */
-> +	TST_EXP_PASS(!(mq_notify(m, &sev) == 0));
-> +	TST_EXP_PASS(!(mq_notify(m, NULL) == 0));
+However it does not look like a kernel issue, because SwapCached change is
+not strictly abiding by the principle of MADV_WILLNEED advice. That means it
+all depends on the kernel's specific circumstances. The value of the threshold
+is debatable at least from my point of view, its use 1/4 is not guaranteed
+100% safe.
 
-That's not how use use the TST_EXP_PASS() macro, the bare mq_notify()
-call should be inside.
+As MADV_WILLNEED is just advice to the kernel, not a guarantee. The kernel may
+choose to ignore the advice, or may prioritize other memory management tasks
+over pre-loading the advised pages.
 
-> +	/* Step 2: Once again, register notification.
-> +	 * Try to send one message.
-> +	 * Test is considered successful, if the callback does exit (0).
-> +	 */
-> +	TST_EXP_PASS(!(mq_notify(m, &sev) == 0));
-> +	TST_EXP_PASS(!(mq_send(m, msg, sizeof(msg), 1) == 0));
+So this patch is aimed at improving the accuracy and clarity of the test results.
+Specifically, the use of two separate variables to track the results of different
+comparisons will make it easier to understand what the test is doing.
 
-Here as well.
+Additionally, the change to report a test result of "TINFO" instead of "TFAIL"
+when the swap cache size is less than expected would be intended to indicate
+that this is an acceptable outcome.
 
-> +	/* Wait... */
-> +	pause();
-> +}
-> +
-> +static void do_test(void)
-> +{
-> +	static const char m_name[] = "/bz28213_queue";
-                                       ^
-				       We tend to prefix globaly visible
-				       object with ltp_ and use the test
-				       name in there, so in this case
-				       this would be "/ltp_mq_notify03"
-> +	struct mq_attr m_attr;
-> +
-> +	memset(&m_attr, '\0', sizeof(m_attr));
-> +	m_attr.mq_maxmsg = 1;
-> +	m_attr.mq_msgsize = sizeof(msg);
-> +
-> +	m = SAFE_MQ_OPEN(m_name,
-> +			O_RDWR | O_CREAT | O_EXCL,
-> +			0600,
-> +			&m_attr);
-> +
-> +	if (m < 0) {
-> +		if (errno == ENOSYS)
-> +			tst_brk(TCONF, "POSIX message queues are not implemented");
-> +		tst_brk(TFAIL | TTERRNO, "mq_open failed");
-> +	}
+Finally, the change to the second tst_res call is intended to make the test more
+lenient, as it now passes if either no page faults occur or the swap cache size
+is larger than expected.
 
-This will never work, the SAFE_MQ_OPEN() will exit the test if the call
-fails with ENOSYS. You have to check for the support in a test setup
-instead.
+Reported-by: Paul Bunyan <pbunyan@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.de>
+Cc: Yongqiang Liu <liuyongqiang13@huawei.com>
+Cc: Eirik Fuller <efuller@redhat.com>
+---
+ testcases/kernel/syscalls/madvise/madvise06.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Also I think that unlike the SysV IPC the POSIX IPC cannot be disabled
-in kernel .config, so ENOSYS handling may not be needed after all.
-
-> +	TST_EXP_PASS(!(mq_unlink(m_name) == 0));
-
-Here as well.
-
-> +	check_bz28213();
-               ^
-	       This is poorly choosen name for a function, can we please
-	       call this more descriptive name? What about
-	       try_null_dereference() ?
-> +}
-> +
-> +
-> +static struct tst_test test = {
-> +	.test_all = do_test,
-> +	.tags = (const struct tst_tag[]) {
-> +		{"glibc-git", "b805aebd42"},
-> +		{"CVE", "2021-38604"},
-> +		{}
-> +	},
-> +	.needs_root = 1,
-> +};
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index c7967ae6f..5bd428bd9 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -164,7 +164,7 @@ static int get_page_fault_num(void)
+ 
+ static void test_advice_willneed(void)
+ {
+-	int loops = 100, res;
++	int loops = 100, res1, res2;
+ 	char *target;
+ 	long swapcached_start, swapcached;
+ 	int page_fault_num_1, page_fault_num_2;
+@@ -197,10 +197,10 @@ static void test_advice_willneed(void)
+ 	} while (swapcached < swapcached_start + PASS_THRESHOLD_KB && loops > 0);
+ 
+ 	meminfo_diag("After madvise");
+-	res = swapcached > swapcached_start + PASS_THRESHOLD_KB;
+-	tst_res(res ? TPASS : TFAIL,
++	res1 = swapcached > swapcached_start + PASS_THRESHOLD_KB;
++	tst_res(res1 ? TPASS : TINFO,
+ 		"%s than %ld Kb were moved to the swap cache",
+-		res ? "more" : "less", PASS_THRESHOLD_KB);
++		res1 ? "more" : "less", PASS_THRESHOLD_KB);
+ 
+ 	loops = 100;
+ 	SAFE_FILE_LINES_SCANF("/proc/meminfo", "SwapCached: %ld", &swapcached_start);
+@@ -225,9 +225,9 @@ static void test_advice_willneed(void)
+ 			page_fault_num_2);
+ 	meminfo_diag("After page access");
+ 
+-	res = page_fault_num_2 - page_fault_num_1;
+-	tst_res(res == 0 ? TPASS : TFAIL,
+-		"%d pages were faulted out of 3 max", res);
++	res2 = page_fault_num_2 - page_fault_num_1;
++	tst_res(((res2 == 0) || res1) ? TPASS : TFAIL,
++		"%d pages were faulted out of 3 max", res2);
+ 
+ 	SAFE_MUNMAP(target, CHUNK_SZ);
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.38.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
