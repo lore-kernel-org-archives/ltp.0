@@ -4,60 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B544C61DA4
-	for <ltp@archiver.kernel.org>; Sat, 18 Feb 2023 04:09:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D75D3C61DA4
+	for <ltp@archiver.kernel.org>; Sat, 18 Feb 2023 05:50:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0460E3CBE8A
-	for <ltp@archiver.kernel.org>; Sat, 18 Feb 2023 05:09:45 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 37C183CBDAD
+	for <ltp@archiver.kernel.org>; Sat, 18 Feb 2023 06:50:15 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 19C073CB10B
- for <ltp@lists.linux.it>; Sat, 18 Feb 2023 05:09:28 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id DDA5B3CB041
+ for <ltp@lists.linux.it>; Sat, 18 Feb 2023 06:50:00 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 527D660067F
- for <ltp@lists.linux.it>; Sat, 18 Feb 2023 05:09:26 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2795810004A6
+ for <ltp@lists.linux.it>; Sat, 18 Feb 2023 06:49:58 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1676693365;
+ s=mimecast20190719; t=1676699397;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=6h66+29x3ZKbjQIpRjgBMR0d42q09OLcQ0lQPU/zR/4=;
- b=OQeIGv74g/9FV78zxdcFXOlf3JPm5B52LxFAZwDXvdPPMYvgk5QDpKqWU0H46q1WmrzuQf
- zmDdf57Hk0wlp8g7ODirHHZVFLP9l1rK6mFSJ/TF/YD2nnxr6gWk9zOif0bwEJZZjg94Dd
- 9qwoAFpZ2VZZRxjWRA5upJGwUFwMnEs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-275-SE_AA9v3NnGnwpSEjShrSg-1; Fri, 17 Feb 2023 23:09:23 -0500
-X-MC-Unique: SE_AA9v3NnGnwpSEjShrSg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com
- [10.11.54.2])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 818C5185A794;
- Sat, 18 Feb 2023 04:09:23 +0000 (UTC)
-Received: from liwang-workstation.nay.redhat.com
- (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id E534240C10FA;
- Sat, 18 Feb 2023 04:09:20 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Sat, 18 Feb 2023 12:09:19 +0800
-Message-Id: <20230218040919.3548296-1-liwang@redhat.com>
+ in-reply-to:in-reply-to:references:references;
+ bh=dUgX7iA34rv9TAGfaVMdCTHxNi0b63cr59agRxDe0Vk=;
+ b=W+cxe3FrV472T88w510Jii5jLtUMIvUQCZEDKfil3lCpuVositqyrBFCKp+5Pi9NVrv4Ni
+ dyHy1KXvd/24WfdqIH7A33Nvaz+bj/q3rXuMqIROw/YVsC2dyGXApuP/9XJ1vwLBgiauhW
+ f9dc8O4b9U6U/OVVhjrwrQyX4Wa3diA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-655-uzkWjGrzPK60D_Xpp0s7BQ-1; Sat, 18 Feb 2023 00:49:53 -0500
+X-MC-Unique: uzkWjGrzPK60D_Xpp0s7BQ-1
+Received: by mail-wm1-f71.google.com with SMTP id
+ o25-20020a05600c511900b003e000facbb1so78193wms.9
+ for <ltp@lists.linux.it>; Fri, 17 Feb 2023 21:49:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=dUgX7iA34rv9TAGfaVMdCTHxNi0b63cr59agRxDe0Vk=;
+ b=0FZ9WhkoCwCH7rcOOwH554Ez48fgIwOgqJZMxif/WNY3HYsEeeeQGbtkjnFGfWpiHA
+ 8X2wJ5icjoWfgU9Pk1C2g2pmfjogcYTPvQv0cnQxBnYKXpfvTyAlOslsoxQehUB+BE2T
+ IBq8NIHIVPlSZZt+8aO+TI7k5s0vlKhYoJgYyxed1Pu5H5CGEjFxol4jd+0GpY2H1ONN
+ Ho89r1VX2s7WJJtVMqXdjRTKVoI9OwQT6yaFZHVdpEi3DlzWYIA4ixHtko+9iUcjjE0r
+ Ju/e/oidUK03CMdljT/c6jg4BNlUDw90X1y2ue9t/PFfrq3OCd5xkaz3US7X/XRzt3mD
+ yJBA==
+X-Gm-Message-State: AO0yUKVaX9vlwFgPHZVLDKphH7RzMgOzMfersDLPmVvJDYQJFhkb9kTO
+ oPBzlor95GjcTEjxCc9SkIVElaZU9zbEDRFlgkmerD8WAwFAcEc7F7jUMwOC3Jjt45gEQTfMflM
+ HK1wLoKFD7WZVTJtXcxbALAAuYWM=
+X-Received: by 2002:a05:600c:444c:b0:3dc:42e7:8d38 with SMTP id
+ v12-20020a05600c444c00b003dc42e78d38mr500687wmn.93.1676699392722; 
+ Fri, 17 Feb 2023 21:49:52 -0800 (PST)
+X-Google-Smtp-Source: AK7set+fX3WXcQm8kAt7BeFOnDKFq2HINt12xFRFv5NfVfe4UBe1T6zEUQ2zCmy16oCd6xDxSk5D6/d4RYp/uiv+4xU=
+X-Received: by 2002:a05:600c:444c:b0:3dc:42e7:8d38 with SMTP id
+ v12-20020a05600c444c00b003dc42e78d38mr500676wmn.93.1676699392368; Fri, 17 Feb
+ 2023 21:49:52 -0800 (PST)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+References: <5ed4bc3d-9c30-8cae-e826-b2d0c37c2f6e@huawei.com>
+In-Reply-To: <5ed4bc3d-9c30-8cae-e826-b2d0c37c2f6e@huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 18 Feb 2023 13:49:41 +0800
+Message-ID: <CAEemH2cEyLkWvrds9vvMX6S5dDkJvtJ5zhWRsySKL7ShD-cJDQ@mail.gmail.com>
+To: Yongqiang Liu <liuyongqiang13@huawei.com>, LTP List <ltp@lists.linux.it>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] madvise06: Raise the bar for judging failure
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [QUESTION] ltp: mavise06 failed when the task scheduled
+ to another cpu
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,93 +86,104 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Yongqiang Liu <liuyongqiang13@huawei.com>, Paul Bunyan <pbunyan@redhat.com>,
- Eirik Fuller <efuller@redhat.com>
+Cc: "Wangkefeng \(OS Kernel Lab\)" <wangkefeng.wang@huawei.com>,
+ David Hildenbrand <david@redhat.com>, peterz@infradead.org,
+ linux-kernel@vger.kernel.org, willy@infradead.org, linux-mm@kvack.org,
+ mingo@redhat.com, mgorman@suse.de, vincent.guittot@linaro.org,
+ akpm@linux-foundation.org, dietmar.eggemann@arm.com, vbabka@suse.cz
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-There is an intermittent failure which we have observed many times whether
-on rhel or mainline kernel. But we're unable to stable reproduce it:
+Hi Yongqiang,
 
-    43	madvise06.c:201: TFAIL: less than 102400 Kb were moved to the swap cache
-    ...
+Sorry for the late reply, I missed your email because of the filter.
+Next time, plz remember to CC the LTP mailing list: ltp@lists.linux.it
 
-However it does not look like a kernel issue, because SwapCached change is
-not strictly abiding by the principle of MADV_WILLNEED advice. That means it
-all depends on the kernel's specific circumstances. The value of the threshold
-is debatable at least from my point of view, its use 1/4 is not guaranteed
-100% safe.
+We ever submitted a patch for reducing this happening in:
 
-As MADV_WILLNEED is just advice to the kernel, not a guarantee. The kernel may
-choose to ignore the advice, or may prioritize other memory management tasks
-over pre-loading the advised pages.
+https://github.com/linux-test-project/ltp/commit/00e769e63515e51ee1020314efcf4fe880c46d7c
+And from our team testing, there do not be similar failures happening
+anymore since then.
 
-So this patch is aimed at improving the accuracy and clarity of the test results.
-Specifically, the use of two separate variables to track the results of different
-comparisons will make it easier to understand what the test is doing.
+-----------------------
 
-Additionally, the change to report a test result of "TINFO" instead of "TFAIL"
-when the swap cache size is less than expected would be intended to indicate
-that this is an acceptable outcome.
+BTW, recently we catch another issue:
+      43 madvise06.c:201: TFAIL: less than 102400 Kb were moved to the swap
+cache
 
-Finally, the change to the second tst_res call is intended to make the test more
-lenient, as it now passes if either no page faults occur or the swap cache size
-is larger than expected.
+And I started an RFC patch here:
+    https://lists.linux.it/pipermail/ltp/2023-February/032945.html
 
-Reported-by: Paul Bunyan <pbunyan@redhat.com>
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.de>
-Cc: Yongqiang Liu <liuyongqiang13@huawei.com>
-Cc: Eirik Fuller <efuller@redhat.com>
----
- testcases/kernel/syscalls/madvise/madvise06.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+<https://lists.linux.it/pipermail/ltp/2023-February/032945.html>
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
-index c7967ae6f..5bd428bd9 100644
---- a/testcases/kernel/syscalls/madvise/madvise06.c
-+++ b/testcases/kernel/syscalls/madvise/madvise06.c
-@@ -164,7 +164,7 @@ static int get_page_fault_num(void)
- 
- static void test_advice_willneed(void)
- {
--	int loops = 100, res;
-+	int loops = 100, res1, res2;
- 	char *target;
- 	long swapcached_start, swapcached;
- 	int page_fault_num_1, page_fault_num_2;
-@@ -197,10 +197,10 @@ static void test_advice_willneed(void)
- 	} while (swapcached < swapcached_start + PASS_THRESHOLD_KB && loops > 0);
- 
- 	meminfo_diag("After madvise");
--	res = swapcached > swapcached_start + PASS_THRESHOLD_KB;
--	tst_res(res ? TPASS : TFAIL,
-+	res1 = swapcached > swapcached_start + PASS_THRESHOLD_KB;
-+	tst_res(res1 ? TPASS : TINFO,
- 		"%s than %ld Kb were moved to the swap cache",
--		res ? "more" : "less", PASS_THRESHOLD_KB);
-+		res1 ? "more" : "less", PASS_THRESHOLD_KB);
- 
- 	loops = 100;
- 	SAFE_FILE_LINES_SCANF("/proc/meminfo", "SwapCached: %ld", &swapcached_start);
-@@ -225,9 +225,9 @@ static void test_advice_willneed(void)
- 			page_fault_num_2);
- 	meminfo_diag("After page access");
- 
--	res = page_fault_num_2 - page_fault_num_1;
--	tst_res(res == 0 ? TPASS : TFAIL,
--		"%d pages were faulted out of 3 max", res);
-+	res2 = page_fault_num_2 - page_fault_num_1;
-+	tst_res(((res2 == 0) || res1) ? TPASS : TFAIL,
-+		"%d pages were faulted out of 3 max", res2);
- 
- 	SAFE_MUNMAP(target, CHUNK_SZ);
- }
+On Mon, Oct 11, 2021 at 4:14 PM Yongqiang Liu <liuyongqiang13@huawei.com>
+wrote:
+
+> Hi,
+>
+> when runing this case in 5.10-lts kernel, it will trigger the folloing
+> failure:
+>
+>   ......
+>
+>      madvise06.c:74: TINFO:  memory.kmem.usage_in_bytes: 1752 Kb
+>      madvise06.c:208: TPASS: more than 102400 Kb were moved to the swap
+> cache
+>      madvise06.c:217: TINFO: PageFault(madvice / no mem access): 102401
+>      madvise06.c:221: TINFO: PageFault(madvice / mem access): 102417
+>      madvise06.c:82: TINFO: After page access
+>      madvise06.c:84: TINFO:  Swap: 307372 Kb
+>      madvise06.c:86: TINFO:  SwapCached: 101820 Kb
+>      madvise06.c:88: TINFO:  Cached: 103004Kb
+>      madvise06.c:74: TINFO:  memory.kmem.usage_in_bytes: 0Kb
+>      madvise06.c:225: TFAIL: 16 pages were faulted out of 2 max
+>
+> and we found that when we call the madvise the task was scheduled to
+> another cpu:
+>
+> ......
+>
+> tst_res(TINFO, "before madvise MEMLIMIT CPU:%d", sched_getcpu());--->cpu0
+>
+> TEST(madvise(target, MEM_LIMIT, MADV_WILLNEED));
+>
+> tst_res(TINFO, "after madvise MEMLIMIT CPU:%d", sched_getcpu());--->cpu1
+>
+> ......
+>
+> tst_res(TINFO, "before madvise PASS_THRESHOLDCPU:%d",
+> sched_getcpu());-->cpu1
+>
+> TEST(madvise(target, PASS_THRESHOLD, MADV_WILLNEED));
+>
+> tst_res(TINFO, "after madvise PASS_THRESHOLDCPU:%d",
+> sched_getcpu());-->cpu0
+>
+> .....
+>
+> Is the PERCPU data swap_slot was not handled well?
+>
+>
+> with the following patch almost fix the error:
+>
+> e9b9734b7465 sched/fair: Reduce cases for active balance
+>
+> 8a41dfcda7a3 sched/fair: Don't set LBF_ALL_PINNED unnecessarily
+>
+> fc488ffd4297 sched/fair: Skip idle cfs_rq
+>
+> but bind the task to a cpu also can solve this problem.
+>
+> Kind regards,
+>
+>
+>
+
 -- 
-2.38.1
-
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
