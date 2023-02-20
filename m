@@ -4,45 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F7B2C05027
-	for <ltp@archiver.kernel.org>; Sun, 19 Feb 2023 08:53:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6AC4C05027
+	for <ltp@archiver.kernel.org>; Mon, 20 Feb 2023 10:27:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C7E4C3CBD90
-	for <ltp@archiver.kernel.org>; Sun, 19 Feb 2023 09:53:07 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 83B773CBCFB
+	for <ltp@archiver.kernel.org>; Mon, 20 Feb 2023 11:26:59 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CD97D3CB039
- for <ltp@lists.linux.it>; Sun, 19 Feb 2023 09:52:56 +0100 (CET)
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
- [60.248.80.70])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 2A1FC3C03AE
+ for <ltp@lists.linux.it>; Mon, 20 Feb 2023 11:26:49 +0100 (CET)
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
+ [205.220.177.32])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 366982000E9
- for <ltp@lists.linux.it>; Sun, 19 Feb 2023 09:52:52 +0100 (CET)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
- by Atcsqr.andestech.com with ESMTP id 31J8qhZf054106;
- Sun, 19 Feb 2023 16:52:43 +0800 (+08)
- (envelope-from ycliang@andestech.com)
-Received: from atctrx.andestech.com (10.0.15.173) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Sun, 19 Feb 2023
- 16:52:41 +0800
-From: Leo Yu-Chi Liang <ycliang@andestech.com>
-To: <ltp@lists.linux.it>
-Date: Sun, 19 Feb 2023 16:52:33 +0800
-Message-ID: <20230219085233.645683-1-ycliang@andestech.com>
-X-Mailer: git-send-email 2.34.1
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C6B50100067C
+ for <ltp@lists.linux.it>; Mon, 20 Feb 2023 11:26:47 +0100 (CET)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+ by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 31K9DsxC028915; Mon, 20 Feb 2023 10:26:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2022-7-12;
+ bh=0Ro9dKgCXHnG+qKrBBhprZ2m62T/XgpDWBR+zvVEq0I=;
+ b=c5vZ9lIHrCoq1SH1IRS5g+WL9fcd6ec2wl1yWoef3wC9DnvArY9QTVQbpnuBl3PAZCwy
+ 4sqCn2fbb+I5Qs10pKDZAn+loaqMAp99+c38YR/kUC8kDYPrGaLUF+YWpYjMj+o/Ewq6
+ 8WlQW5g1c0F5xREj48IiOvdnrb85obu25nFQnRszfPh9mEjUnITZqqaaj7Lo/GHPYXUp
+ kcKYa1ZrSkzlWm1tAUB0NwhH50+ZwI1PXLS3PanSECwVPtLRGulvgRt5AVcmTnco2uT8
+ B1X8V+IXldFOOnWWmQWGWQxcWbSr41gL0Inl0VKV9npiUZzVr5YJVCti/3vIYgO+a5uA bQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com
+ (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+ by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ntpqcasxq-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 20 Feb 2023 10:26:46 +0000
+Received: from pps.filterd
+ (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+ by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5)
+ with ESMTP id 31K9silA023408; Mon, 20 Feb 2023 10:26:46 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id
+ 3ntn43sbe2-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 20 Feb 2023 10:26:45 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com
+ (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31KAQU3S032696;
+ Mon, 20 Feb 2023 10:26:45 GMT
+Received: from instance-20210517-1606.osdevelopmeniad.oraclevcn.com
+ (instance-20210517-1606.appad1iad.osdevelopmeniad.oraclevcn.com
+ [100.100.230.212])
+ by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id
+ 3ntn43sbdt-1; Mon, 20 Feb 2023 10:26:45 +0000
+From: william.roche@oracle.com
+To: rpalethorpe@suse.de, ltp@lists.linux.it
+Date: Mon, 20 Feb 2023 10:26:44 +0000
+Message-Id: <20230220102645.16842-1-william.roche@oracle.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <87h6vpq2lk.fsf@suse.de>
+References: <87h6vpq2lk.fsf@suse.de>
 MIME-Version: 1.0
-X-Originating-IP: [10.0.15.173]
-X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 31J8qhZf054106
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-20_08,2023-02-17_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999
+ phishscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302200093
+X-Proofpoint-GUID: v9vKD8KDjJ3KLsO8q1FpAnE7dLsXely4
+X-Proofpoint-ORIG-GUID: v9vKD8KDjJ3KLsO8q1FpAnE7dLsXely4
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/1] lib/tst_pid.c: Count used pid by traversing
- /proc
+Subject: [LTP] [LTP PATCH v3 0/1] Add some memory page soft-offlining control
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -54,83 +90,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: peterlin@andestech.com
+Cc: william.roche@oracle.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Calling shell code from C programs makes things less predictable
-and possibly unstable, so we modify the calculating process to
-plain C code.
+From: William Roche <william.roche@oracle.com>
 
-Suggested-by: Petr Vorel <pvorel@suse.cz>
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
----
- lib/tst_pid.c | 37 +++++++++++++++++++++++--------------
- 1 file changed, 23 insertions(+), 14 deletions(-)
+Thank you very much Richard for your feedback about my previous patch version
+proposal.
+In this new version I made the changes you suggested:
 
-diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-index 5595e79bd..546526113 100644
---- a/lib/tst_pid.c
-+++ b/lib/tst_pid.c
-@@ -18,6 +18,7 @@
-  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
-+#include <ctype.h>
- #include <errno.h>
- #include <fcntl.h>
- #include <limits.h>
-@@ -111,23 +112,31 @@ static int get_session_pids_limit(void (*cleanup_fn) (void))
- 	return max_pids;
- }
- 
--int tst_get_free_pids_(void (*cleanup_fn) (void))
-+static int get_used_pids(void (*cleanup_fn) (void))
- {
--	FILE *f;
--	int rc, used_pids, max_pids, max_session_pids, max_threads;
--
--	f = popen("ps -eT | wc -l", "r");
--	if (!f) {
--		tst_brkm(TBROK, cleanup_fn, "Could not run 'ps' to calculate used pids");
--		return -1;
-+	DIR *dir_proc;
-+	struct dirent *ent;
-+	char status_path[PATH_MAX];
-+	int used_thread, used_pids = 0;
-+
-+	dir_proc = SAFE_OPENDIR("/proc");
-+
-+	while ((ent = SAFE_READDIR(dir_proc))) {
-+		if (isdigit(ent->d_name[0])) {
-+			snprintf(status_path, sizeof(status_path), "/proc/%s/status", ent->d_name);
-+			if (!FILE_LINES_SCANF(cleanup_fn, status_path, "Threads: %d", &used_threads))
-+				used_pids += used_threads;
-+		}
- 	}
--	rc = fscanf(f, "%i", &used_pids);
--	pclose(f);
- 
--	if (rc != 1 || used_pids < 0) {
--		tst_brkm(TBROK, cleanup_fn, "Could not read output of 'ps' to calculate used pids");
--		return -1;
--	}
-+	SAFE_CLOSEDIR(dir_proc);
-+
-+	return used_pids;
-+}
-+
-+int tst_get_free_pids_(void (*cleanup_fn) (void))
-+{
-+	int max_pids, max_session_pids, max_threads, used_pids = get_used_pids(cleanup_fn);
- 
- 	SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &max_pids);
- 	SAFE_FILE_SCANF(cleanup_fn, THREADS_MAX_PATH, "%d", &max_threads);
+- Changed the signal handler to avoid using unsafe code like "tst_res", and use
+  a variable (with its mutex and cv) to inform an additional thread to end the
+  test on a SIGBUS. The signal handler doesn't return to avoid a loop of SIGBUS
+  delivery.
+
+- Changed the code to use SAFE_MMAP and SAFE_MUNMAP
+
+- The find_in_file() function could not be removed as I use it to verify if the
+  hwpoison_inject module is already loaded or not, but I simplified it.
+
+- And I'm now using getmntent() code to identify the debugfs mount point on the
+  machine, and open the <debug_fs>/hwpoison/unpoison-pfn location.
+
+Compile and check-madvise11 are clean, code tested on x86 and ARM.
+
+Cheers,
+William.
+
+
+William Roche (1):
+  madvise11: Add test for memory allocation / Soft-offlining possible
+    race
+
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/madvise/.gitignore  |   1 +
+ testcases/kernel/syscalls/madvise/Makefile    |   2 +
+ testcases/kernel/syscalls/madvise/madvise11.c | 424 ++++++++++++++++++
+ 4 files changed, 428 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/madvise/madvise11.c
+
 -- 
-2.34.1
+2.31.1
 
 
 -- 
