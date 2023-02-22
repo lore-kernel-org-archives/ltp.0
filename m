@@ -4,58 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93C6DC636D6
-	for <ltp@archiver.kernel.org>; Wed, 22 Feb 2023 11:50:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17C18C636D6
+	for <ltp@archiver.kernel.org>; Wed, 22 Feb 2023 11:55:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 183643CBCA0
-	for <ltp@archiver.kernel.org>; Wed, 22 Feb 2023 12:50:25 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id DE4803CBC31
+	for <ltp@archiver.kernel.org>; Wed, 22 Feb 2023 12:55:29 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 04C0F3C304A
- for <ltp@lists.linux.it>; Wed, 22 Feb 2023 12:50:14 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9629B3CBC21
+ for <ltp@lists.linux.it>; Wed, 22 Feb 2023 12:55:19 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6DCBB200074
- for <ltp@lists.linux.it>; Wed, 22 Feb 2023 12:50:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1677066611;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=YdFJ13L8KbHG0ffs2nkRl2SP6ae02YAFdxxEq+yOT1I=;
- b=RGVZsdAMzW7KzTus2Bu14ivg84siOVN8q7yj+OlKGDobXzWt1l0LMDxOAs+PO5M5AyghyT
- 2ja7EnAtmCDrUOSt0PE2rTZBpZZpp9vsPBDhDM0XJzYk+C40q4NCX2w7hgSfejnyKZaYfQ
- evENtYxnFrQjJM5OaKvowD8BPVHQ+rk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-231-xvwZABWPMIScc6BEVoGnWA-1; Wed, 22 Feb 2023 06:50:08 -0500
-X-MC-Unique: xvwZABWPMIScc6BEVoGnWA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
- [10.11.54.10])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0CC2A1400C5E
+ for <ltp@lists.linux.it>; Wed, 22 Feb 2023 12:55:18 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0808085A588;
- Wed, 22 Feb 2023 11:50:08 +0000 (UTC)
-Received: from t480s.fritz.box (unknown [10.39.194.180])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 79D7A492B00;
- Wed, 22 Feb 2023 11:50:06 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: ltp@lists.linux.it
-Date: Wed, 22 Feb 2023 12:50:05 +0100
-Message-Id: <20230222115005.223063-1-david@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6E3315D3EF;
+ Wed, 22 Feb 2023 11:55:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1677066916; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/F5R5GpuFPnXnfvZfrijv7DtSyPwTeFWupVjdT03QvQ=;
+ b=0onJKeHv1Gubl3N2I3e1I3eAFKt6mJUNDddYF5LgcwY8a7AVcGS2vWujF+tPhmlcMDAwiu
+ VRrFwNzXisYx52Iu9XcCoN2GqVDEyit+VqNFWarbbqoLVML5FeZxM/sEO3Ceq6dNdn1+DI
+ PKPO7sNdmoCwv8wbMJps9ZX2speAaGs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1677066916;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/F5R5GpuFPnXnfvZfrijv7DtSyPwTeFWupVjdT03QvQ=;
+ b=FXpWCjzlKkA/6xF4fw8K+UePjeaixwWILrS+26SeAz8KI2sXQC4ovQlcNiRZmTP2A+PXhz
+ 7pDFw75E9ckKZFBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 607DE139DB;
+ Wed, 22 Feb 2023 11:55:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id PyqHF6QC9mMvMgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 22 Feb 2023 11:55:16 +0000
+Date: Wed, 22 Feb 2023 12:54:12 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: David Hildenbrand <david@redhat.com>
+Message-ID: <Y/YCZJ9hFMhY3Y8Y@rei>
+References: <20230222115005.223063-1-david@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230222115005.223063-1-david@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] security/dirtyc0w_shmem: Fix test with host
+Subject: Re: [LTP] [PATCH v1] security/dirtyc0w_shmem: Fix test with host
  pagesize != 4k
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -69,43 +76,18 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: Juri Lelli <juri.lelli@redhat.com>, Bruno Goncalves <bgoncalv@redhat.com>,
- David Hildenbrand <david@redhat.com>
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The test can currently fail if the host page size is not 4k, because we
-forgot to replace a hard-coded 4k by the actual page size. So if we end
-up having to trigger a UFFDIO_WAKE, that ioctl will fail because it's
-not aligned to the host page size.
+Hi!
+Applied, thanks.
 
-Reported-by: Juri Lelli <juri.lelli@redhat.com>
-Reported-by: Bruno Goncalves <bgoncalv@redhat.com>
-Tested-by: Chunyu Hu <chuhu@redhat.com>
-Cc: Petr Vorel <pvorel@suse.cz>
-Cc: Martin Doucha <mdoucha@suse.cz>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem_child.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem_child.c b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem_child.c
-index 9c2b03994..2a982347c 100644
---- a/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem_child.c
-+++ b/testcases/kernel/security/dirtyc0w_shmem/dirtyc0w_shmem_child.c
-@@ -115,7 +115,7 @@ static void *uffd_thread_fn(void *arg)
- 		if (ioctl(uffd, UFFDIO_CONTINUE, &uffdio) < 0) {
- 			if (errno == EEXIST) {
- 				uffdio_wake.start = (unsigned long) map;
--				uffdio_wake.len = 4096;
-+				uffdio_wake.len = page_size;
- 				SAFE_IOCTL(uffd, UFFDIO_WAKE, &uffdio_wake);
- 			}
- 		}
 -- 
-2.39.2
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
