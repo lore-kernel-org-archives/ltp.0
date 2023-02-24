@@ -4,64 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B47FC64ED8
-	for <ltp@archiver.kernel.org>; Fri, 24 Feb 2023 10:11:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F071C61DA4
+	for <ltp@archiver.kernel.org>; Fri, 24 Feb 2023 12:27:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 991E73CBB48
-	for <ltp@archiver.kernel.org>; Fri, 24 Feb 2023 11:11:05 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 0ADDF3CBB42
+	for <ltp@archiver.kernel.org>; Fri, 24 Feb 2023 13:27:32 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CCD923CB014
- for <ltp@lists.linux.it>; Fri, 24 Feb 2023 11:10:55 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 361D83CBB1C
+ for <ltp@lists.linux.it>; Fri, 24 Feb 2023 13:27:21 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0DEFD601370
- for <ltp@lists.linux.it>; Fri, 24 Feb 2023 11:10:54 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 391571A00EC1
+ for <ltp@lists.linux.it>; Fri, 24 Feb 2023 13:27:20 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C5A985D802;
- Fri, 24 Feb 2023 10:10:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1677233453; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1D9365C837;
+ Fri, 24 Feb 2023 12:27:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1677241640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NeAhbvAHU6lz/JNvRHBfQH0TdM6iJb53r7PkOrTLw38=;
- b=NNlG1fndGhr6IEbbzWcK++F5F8ua1tnXedrxjCJ1cxqlUcSDBzG0SOtpxqDxsdaEnjChWp
- 4/qB+cv+geTo6KX6F4ZpZjvPznK9pO9B7TNN8ShzK2VCN5Fs9SXmvWhgZrN6QmbR31Nc2K
- cKmAmgM4s7q2k1+7h5NybAtAQDfWbEo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1677233453;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=NeAhbvAHU6lz/JNvRHBfQH0TdM6iJb53r7PkOrTLw38=;
- b=vhb1CUWc6DwNSg9BdAlINIPC6koI+7912YgrDTsoEZt9IWXVsOkn4MF5ttqD5SoNCKQxDx
- nexXsmqF1GsqSMCQ==
+ bh=Gy4GxXxG0ZrNuoKwaCju1L8KvePk9KlIFvxQNw51M+c=;
+ b=OIomp1DV0rmdj45CHaGEDdn+k4OJNK5dHYgG5EEPcLBusFbwpbfEevEG4z+wQCPvK/tmoE
+ IKm/uxaX0WtEbSsALDaZ8OnJpA0RU1dRwhEDDVwOjCvs9EPYDCc+zQmGkB96LXxXR4nITK
+ 36DMhJNdT40PBffbvf9++FX8b7vM3Xg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A6E4813246;
- Fri, 24 Feb 2023 10:10:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3A85813246;
+ Fri, 24 Feb 2023 12:27:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id uk5WJS2N+GNhVAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 24 Feb 2023 10:10:53 +0000
-Date: Fri, 24 Feb 2023 11:12:16 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <Y/iNgMOstbpVWfo1@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id NH7LASet+GMLJAAAMHmgww
+ (envelope-from <wegao@suse.com>); Fri, 24 Feb 2023 12:27:19 +0000
+Date: Fri, 24 Feb 2023 07:27:15 -0500
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20230224122715.GA20840@localhost>
 References: <20230224023815.28273-1-wegao@suse.com>
+ <Y/iNgMOstbpVWfo1@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230224023815.28273-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <Y/iNgMOstbpVWfo1@yuki>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v1] kill01: New case cgroup kill
 X-BeenThere: ltp@lists.linux.it
@@ -75,19 +68,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-We already have a library for cgroup manipulations see
-include/tst_cgroup.h in the LTP git tree.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On Fri, Feb 24, 2023 at 11:12:16AM +0100, Cyril Hrubis wrote:
+> Hi!
+> We already have a library for cgroup manipulations see
+> include/tst_cgroup.h in the LTP git tree.
+Thanks a lot, will check it.
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
