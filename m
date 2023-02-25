@@ -4,64 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6F6CC64ED8
-	for <ltp@archiver.kernel.org>; Sat, 25 Feb 2023 00:35:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18915C7EE23
+	for <ltp@archiver.kernel.org>; Sat, 25 Feb 2023 08:04:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2EA4B3CBB91
-	for <ltp@archiver.kernel.org>; Sat, 25 Feb 2023 01:35:01 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 3F2383CBAD8
+	for <ltp@archiver.kernel.org>; Sat, 25 Feb 2023 09:04:32 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 77D163CB036
- for <ltp@lists.linux.it>; Sat, 25 Feb 2023 01:34:50 +0100 (CET)
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com
- [IPv6:2607:f8b0:4864:20::44a])
+ by picard.linux.it (Postfix) with ESMTPS id B27F73CB036
+ for <ltp@lists.linux.it>; Sat, 25 Feb 2023 09:04:21 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E026260057F
- for <ltp@lists.linux.it>; Sat, 25 Feb 2023 01:34:49 +0100 (CET)
-Received: by mail-pf1-x44a.google.com with SMTP id
- be12-20020a056a001f0c00b00593e2189278so320593pfb.19
- for <ltp@lists.linux.it>; Fri, 24 Feb 2023 16:34:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=nDM3B3vbEgaqkBqVTEB/KE433sy7DwludmUWeRToUv8=;
- b=DNLY3VJtlooRIKi9WTGRjAhmRHs/JJ2BexrUWRtTN27Zp7mzcmpojlL8FYMVXlanRV
- 4dy+alxYH3iVMGWyFlVANhJrkzJJq6IcxGxSFItDGMwtVy2NQq2AP9+FKAIRXt8cORAz
- 1Xg+/g1Egz5C4AieUGcNdWP2mScHGW0RLFdCkQlSMxR1RFBmnxmd/LMkmEFpIQAakMZ4
- MOl5y7UyK82wGXqa9Bx5iEpNoNatoqP89Dccr3Nuh26hNWV5PYXDUSk7UUzMhKQ3JGFv
- 62UTLv2a7lh7pJP3OXUeXen4vFyPTbp6Ks/Zvjg35schFeoaWqKLus+ppCEnET6CLQIF
- 6J5g==
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8FA3F6001B8
+ for <ltp@lists.linux.it>; Sat, 25 Feb 2023 09:04:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1677312259;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qxUcRR47Gh3Wjtx983u/NXeFiFsbsraCVWKmys3sz+g=;
+ b=Bi5t77LrpDzgL7iRbGi4RGzpQ0pio8prNnfjYUi0ucv8L3VUGb9AJESEiHt16EmUKI8hIx
+ VBwbfAYah1gHt0Z1VcRphYRakjg9U6QDfCuib53s2/azbMihPOUR3aJBlvSeUZymd5Dzpz
+ j+EbClUOkjK0jD59TFK49GLcPCPV5P0=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-601-FXbVsQEaPzeI8OObphPCVQ-1; Sat, 25 Feb 2023 03:04:17 -0500
+X-MC-Unique: FXbVsQEaPzeI8OObphPCVQ-1
+Received: by mail-wm1-f72.google.com with SMTP id
+ m28-20020a05600c3b1c00b003e7d4662b83so2370190wms.0
+ for <ltp@lists.linux.it>; Sat, 25 Feb 2023 00:04:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=nDM3B3vbEgaqkBqVTEB/KE433sy7DwludmUWeRToUv8=;
- b=22BSDV8FJYeDT+Cvl8i5QIjGw7VyIhsRt5LQtlgg8iMSgTne3sFS9cxVUDktFS57mN
- 9QI/bUYxrDj08y4HFzF642V4Y324SJSLwaPARBnkp4SVbG2OGvLnu2cUyIxGX5UMioTE
- 0QGY+CpnbU8+VQPzJcsVCQDu4XBl1xET+7UThTOuRWK5r4r2X+N/1EulwMX95iO6A1ab
- mC6UMOsvVx7ggINFmpVMCAMb0Dkcgihv9jy4v80GYI2iBKDR5eo10xKq81Jab13x/FeF
- GjMFxeA4Lzx0BkiFJlYBFtpCw+LMP870Ob0m3a4V2LbTF+BQb4wQuFsG1QHevuitBKL2
- fUOw==
-X-Gm-Message-State: AO0yUKUwKv8Gm3TZ+mE5ZxaUBjDWUUCxBgGBOr6J3Udxg1O5H3WlT366
- JiH83fQJ8G8Y2g/yiut/bls5qLvQegNjsswgEicEYpvDd/ilaY73JivZgW9Xj+cwtq8M7/7jjKr
- I9tX6qN8mxxZruXKlv9PuV+wDNqpXywohXkJIxpCGZLcjtsrEaSG/M+An
-X-Google-Smtp-Source: AK7set9qPAbP3hqkSSrAWMFwwAM+pIcmWfoi9zUUTlcOy5DditI80slOrbh14R8lo7NtDuD2CaoF/GRyces=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a63:7902:0:b0:502:fd12:83ce with SMTP id
- u2-20020a637902000000b00502fd1283cemr2166492pgc.5.1677285287805; Fri, 24 Feb
- 2023 16:34:47 -0800 (PST)
-Date: Sat, 25 Feb 2023 00:34:44 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.39.2.637.g21b0678d19-goog
-Message-ID: <20230225003444.2368729-1-edliaw@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=qxUcRR47Gh3Wjtx983u/NXeFiFsbsraCVWKmys3sz+g=;
+ b=wQT58gpyvMt9ErEfCOHhlT7wiM+2JzMZOybD7+HAI60iEzSoJGHqzGaXBfAfaiWt9X
+ dtElpkDcqu8SDyk9eB4WWWJRKBEWsyzAH1jj6P1Zj1+sco8C1Cu/V0gGtSEYapwJYrNp
+ T8DKUSbwCblN2q5j4OR2QegC69V0bM02ueAtBHVaxqpmC8p9CfWn+TAxkaX+MKJsClJo
+ EfTmgXsPC0MDZMJrx6j9KLDJIY38xypgVEW3zqcNTxmnE8/XWZ21pXwWWqslFiMi6nK2
+ QUXaa9Onur3BVJ49KfIB/77khK6TlVvrUZEKGRYmZlfaVQQY4V8a6rJ516Q1UJ1MWrB6
+ sIYA==
+X-Gm-Message-State: AO0yUKWcwFJmPxSggiH7Npx4yjh7gmjhYA/FwOvZWU9FKFp0qs5SOvO8
+ bizQwNy18bc68Ppa+U2VyGgKmwr7vihxdERUywI5QOL7RlSFutHusD1DkhjsB4qRvLPJpQ9yfN0
+ 3vIO45o3OQKYKVJX8CBi6FNxVz2GTfT9DNco=
+X-Received: by 2002:a5d:45c4:0:b0:2c9:bb13:2122 with SMTP id
+ b4-20020a5d45c4000000b002c9bb132122mr41280wrs.8.1677312255510; 
+ Sat, 25 Feb 2023 00:04:15 -0800 (PST)
+X-Google-Smtp-Source: AK7set8IO227yehdqQqWdezpmUSxGRNZn48vYG48qcVzkqTF3CHi9n73Be3QnXEMGwE73mWqoHABpHkuMQdPTlUvabQ=
+X-Received: by 2002:a5d:45c4:0:b0:2c9:bb13:2122 with SMTP id
+ b4-20020a5d45c4000000b002c9bb132122mr41276wrs.8.1677312255227; Sat, 25 Feb
+ 2023 00:04:15 -0800 (PST)
+MIME-Version: 1.0
+References: <20230225003444.2368729-1-edliaw@google.com>
+In-Reply-To: <20230225003444.2368729-1-edliaw@google.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 25 Feb 2023 16:04:04 +0800
+Message-ID: <CAEemH2cjKVjBS2PzCzUozXew3ZqPyShjThOKkfEzd18h6fTK8Q@mail.gmail.com>
+To: Edward Liaw <edliaw@google.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] pcrypt_aead01: Should be related to CVE-2017-18075
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v1] pcrypt_aead01: Should be related to
+ CVE-2017-18075
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,49 +86,17 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team@android.com
+Cc: kernel-team@android.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fix the association with the correct CVE.
+Good catch, merged!
 
-CVE-2017-18075: pcrypt mishandles freeing instances.
-CVE-2017-5754: Meltdown.
-
-Signed-off-by: Edward Liaw <edliaw@google.com>
----
- testcases/kernel/crypto/pcrypt_aead01.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/crypto/pcrypt_aead01.c b/testcases/kernel/crypto/pcrypt_aead01.c
-index 5eefee4cb..3b4f5d8d1 100644
---- a/testcases/kernel/crypto/pcrypt_aead01.c
-+++ b/testcases/kernel/crypto/pcrypt_aead01.c
-@@ -7,7 +7,7 @@
-  * Originally found by syzkaller:
-  * https://groups.google.com/forum/#!topic/syzkaller-bugs/NKn_ivoPOpk
-  *
-- * Test for CVE-2017-5754 - pcrypt mishandles freeing instances.
-+ * Test for CVE-2017-18075 - pcrypt mishandles freeing instances.
-  *
-  * The test works by adding and then removing pcrypt-AEAD instances.
-  * See commit d76c68109f37 crypto: pcrypt - fix freeing pcrypt instances.
-@@ -78,7 +78,7 @@ static struct tst_test test = {
- 	.max_runtime = 300,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "d76c68109f37"},
--		{"CVE", "2017-5754"},
-+		{"CVE", "2017-18075"},
- 		{}
- 	}
- };
 -- 
-2.39.2.637.g21b0678d19-goog
-
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
