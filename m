@@ -4,69 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06625C64ED6
-	for <ltp@archiver.kernel.org>; Sun, 26 Feb 2023 19:26:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7864BC64ED6
+	for <ltp@archiver.kernel.org>; Mon, 27 Feb 2023 07:21:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9FDEB3CBA81
-	for <ltp@archiver.kernel.org>; Sun, 26 Feb 2023 20:26:14 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 48F353CDE35
+	for <ltp@archiver.kernel.org>; Mon, 27 Feb 2023 08:21:27 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D8F13CAD39
- for <ltp@lists.linux.it>; Sun, 26 Feb 2023 20:26:03 +0100 (CET)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
+ by picard.linux.it (Postfix) with ESMTPS id E55443CAC68
+ for <ltp@lists.linux.it>; Mon, 27 Feb 2023 08:21:17 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 84BB720098F
- for <ltp@lists.linux.it>; Sun, 26 Feb 2023 20:26:02 +0100 (CET)
-Received: by mail-wr1-x431.google.com with SMTP id t15so4127071wrz.7
- for <ltp@lists.linux.it>; Sun, 26 Feb 2023 11:26:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=U62Arrv6ChKVu1tuCtkM8NMK36ga7uDzNIRKdBNtjBg=;
- b=fHvwyADCZ5Sz8E/+DthJd2q1LLzXMG5x2toKPQJhhvHUviNUSrYyJlbw8grK+fPGuq
- D0LrDLmz/qO1SBddJYhSBFNDcoBpY73slVWMtRnfO48RgtAx3ztT3wuimXL8F5fsDCEv
- V/ggLJaKu6Ncw0MZ4aPC4vqzp4qkMGVEoXacPmeNFbSDduAh9sFinWjzjGJQC+leNN57
- sG61Yt3iZMyYSaued6kkurec+lMq7rNFhCZ2WbeKnGt75UJLD43jYE8HderWtIUIu6jV
- 60WBh0schcpvgi+iafR1kUgw7KhHlKhXUy1Ga237T7XEeS0tyjUODN5GEUpkKRAORges
- rqgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=U62Arrv6ChKVu1tuCtkM8NMK36ga7uDzNIRKdBNtjBg=;
- b=rhefUL9lcUhtz+932qskMU74OzDU7FQuj3dybecKYsJnfkoa8x0/9fBYgYYQn+Euyr
- /yu9DVCZQkdp++BiWZVMDT8QX2B3yo+LSTvlE6LqcgQk3OzCYi/7jZ1kSiTI/eQLUKkx
- nzjdQ4K0Rel7FKZqe57j/DUL92/zmSlDw2bs0Be3EyTrUjgVNJhZIP/0snxHJiLL/JHW
- mcQ1JHcIYPTREFZgkzHTOHytepmNXE3qt9nQI/E2cIOaT8tC2hlJSV8Ixx8uFW/11zyG
- zuGfC6hXX/zn8rHjldid2KTFaiLy8vJZmHJtx47QLGGbBGnkLETq/d/m3GH+8Kdtf2he
- fCZg==
-X-Gm-Message-State: AO0yUKWePEIglplesgg8Qg7tJvB3oOWgw3obavBTwqxDh6Gq5wLpIpai
- N9Hnph3Z56MahzCCqLUm8s5W55O/3qo=
-X-Google-Smtp-Source: AK7set9LfJ6Yj3xs+lmEenIDZD5MPS5+7dI4Q1lr+BLT+yo0XNaJKz0xnDgNomXVuXjqkxXIhlOglw==
-X-Received: by 2002:adf:f208:0:b0:2c8:4bca:7fc2 with SMTP id
- p8-20020adff208000000b002c84bca7fc2mr6568979wro.4.1677439561610; 
- Sun, 26 Feb 2023 11:26:01 -0800 (PST)
-Received: from kali.home (lfbn-ren-1-787-165.w83-197.abo.wanadoo.fr.
- [83.197.114.165]) by smtp.gmail.com with ESMTPSA id
- l17-20020a5d6691000000b002c54e26bca5sm5104985wru.49.2023.02.26.11.26.00
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 26 Feb 2023 11:26:01 -0800 (PST)
-From: Fabrice Fontaine <fontaine.fabrice@gmail.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7021260564B
+ for <ltp@lists.linux.it>; Mon, 27 Feb 2023 08:21:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1677482474;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=h21l1O6tUtF8U6ph5sygNAS7cv9YoSxMxVMEaNKLcys=;
+ b=WKssZffmVwHdnNFsIbyvEgzMVlXtDxpcz4Mw369+A+bgaGERhmg0HXTuxh9i8AwBcxPMvE
+ EN+1GTrxCOKicWat3s5gkFnqcpK9N3UnPegonKoHhN9JXn+E+OGVXgD8dP2k+AzWkBuuzY
+ acSusaxD4hKxg/5msNe1EEckLbECad4=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-615-2taGeyR9OTGI5Iz7PCHgig-1; Mon, 27 Feb 2023 02:21:12 -0500
+X-MC-Unique: 2taGeyR9OTGI5Iz7PCHgig-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9639629ABA07
+ for <ltp@lists.linux.it>; Mon, 27 Feb 2023 07:21:12 +0000 (UTC)
+Received: from liwang-workstation.nay.redhat.com
+ (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 32860404BEC5;
+ Mon, 27 Feb 2023 07:21:04 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
-Date: Sun, 26 Feb 2023 20:25:54 +0100
-Message-Id: <20230226192554.669332-1-fontaine.fabrice@gmail.com>
-X-Mailer: git-send-email 2.39.1
+Date: Mon, 27 Feb 2023 15:21:03 +0800
+Message-Id: <20230227072103.264317-1-liwang@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] configure.ac: fix mount_attr detection
+Subject: [LTP] [PATCH] mount03: flip to the next second before doing the
+ access
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,54 +70,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Fabrice Fontaine <fontaine.fabrice@gmail.com>
+Cc: llong@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Commit b857f8723f30a4b9554bf6b0ff8fa52fd07e8b60 tried to fix build with
-latest glibc which provides mount_attr in sys/mount.h. Unfortunately,
-the following build failure is still raised because sys/mount is now
-unconditionally included in include/lapi/fsmount.h:
+Mount03 occasionally reports failure on tmpfs:
 
-In file included from fsconfig01.c:9:
-../../../../include/lapi/fsmount.h:55:8: error: redefinition of 'struct mount_attr'
-   55 | struct mount_attr {
-      |        ^~~~~~~~~~
-In file included from ../../../../include/lapi/fsmount.h:14:
-/home/autobuild/autobuild/instance-4/output-1/host/armeb-buildroot-linux-gnueabi/sysroot/usr/include/sys/mount.h:210:8: note: originally defined here
-  210 | struct mount_attr
-      |        ^~~~~~~~~~
+  170	mount03.c:214: TINFO: Testing flag MS_STRICTATIME
+  171	mount03.c:140: TFAIL: st.st_atime(1677086243) < atime(1677086243)
+  172	mount03.c:151: TFAIL: dir_st.st_atime(1677086243) < dir_atime(1677086243)
 
-Fixes:
- - http://autobuild.buildroot.org/results/4dbb72e1bf081afd3cd944571b9beeefc7608865
+From Waiman Long:
 
-Signed-off-by: Fabrice Fontaine <fontaine.fabrice@gmail.com>
+  Looking at the mount03.c test, it is reading a directory in tmpfs, sleeping for
+  1 second and read the directory again. The test fails because the reported atime
+  didn't change. Since tmpfs is in memory, access to them can be much faster and I
+  believe that a race condition may happen that the two directory reads can happen
+  within the same atime even though one second is supposed to have passed. The same
+  test pass when applying to a real filesystem. So I believe the assumption made in
+  the test may not be totally correct as the time lag can happen in different
+  subsystems inside the kernel for time tracking. I believe it is more a test problem
+  than a real kernel problem.
+
+  There may be some slight discrepancy in how sleep and the tmpfs file system is
+  keeping track of time. If the first access is right at the beginning of a second
+  from the tmpfs perspective, the 2nd access may be at the end of that second, but
+  not flip to the next second yet. What I would suggest is to sleep a little more
+  like usleep(10 000) to make sure that it will flip to the next second before doing
+  the access.
+
+Suggested-by: Waiman Long <llong@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- configure.ac | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ testcases/kernel/syscalls/mount/mount03.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/configure.ac b/configure.ac
-index c2b0f48e7..a6d8ac826 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -225,10 +225,10 @@ AC_CHECK_TYPES([struct __kernel_old_timeval, struct __kernel_old_timespec, struc
+diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
+index 60f9963da..98d5933b7 100644
+--- a/testcases/kernel/syscalls/mount/mount03.c
++++ b/testcases/kernel/syscalls/mount/mount03.c
+@@ -122,7 +122,7 @@ static void test_file_dir_noatime(int update_fatime, int update_datime)
+ 	SAFE_CLOSEDIR(test_dir);
+ 	dir_atime = dir_st.st_atime;
  
- AC_CHECK_TYPES([struct futex_waitv],,,[#include <linux/futex.h>])
- AC_CHECK_TYPES([struct mount_attr],,,[
--#ifdef HAVE_LINUX_MOUNT_H
--# include <linux/mount.h>
--#else
-+#ifdef HAVE_MOUNT_SETATTR
- # include <sys/mount.h>
-+#elif HAVE_LINUX_MOUNT_H
-+# include <linux/mount.h>
- #endif
- ])
+-	sleep(1);
++	usleep(1001000);
  
+ 	SAFE_READ(0, otfd, readbuf, sizeof(readbuf));
+ 	SAFE_FSTAT(otfd, &st);
 -- 
-2.39.1
+2.38.1
 
 
 -- 
