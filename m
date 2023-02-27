@@ -4,61 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7864BC64ED6
-	for <ltp@archiver.kernel.org>; Mon, 27 Feb 2023 07:21:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D0E7C64ED8
+	for <ltp@archiver.kernel.org>; Mon, 27 Feb 2023 11:23:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 48F353CDE35
-	for <ltp@archiver.kernel.org>; Mon, 27 Feb 2023 08:21:27 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 666783CDE53
+	for <ltp@archiver.kernel.org>; Mon, 27 Feb 2023 12:23:39 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E55443CAC68
- for <ltp@lists.linux.it>; Mon, 27 Feb 2023 08:21:17 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4EE6A3CAF43
+ for <ltp@lists.linux.it>; Mon, 27 Feb 2023 12:23:29 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7021260564B
- for <ltp@lists.linux.it>; Mon, 27 Feb 2023 08:21:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1677482474;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=h21l1O6tUtF8U6ph5sygNAS7cv9YoSxMxVMEaNKLcys=;
- b=WKssZffmVwHdnNFsIbyvEgzMVlXtDxpcz4Mw369+A+bgaGERhmg0HXTuxh9i8AwBcxPMvE
- EN+1GTrxCOKicWat3s5gkFnqcpK9N3UnPegonKoHhN9JXn+E+OGVXgD8dP2k+AzWkBuuzY
- acSusaxD4hKxg/5msNe1EEckLbECad4=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-615-2taGeyR9OTGI5Iz7PCHgig-1; Mon, 27 Feb 2023 02:21:12 -0500
-X-MC-Unique: 2taGeyR9OTGI5Iz7PCHgig-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
- [10.11.54.1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 18398145E0B2
+ for <ltp@lists.linux.it>; Mon, 27 Feb 2023 12:23:25 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 47DFE219C3;
+ Mon, 27 Feb 2023 11:23:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1677497004;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z94SqzQfItGYtMc6Fz/VBURyFxttY9pGANoAKvf0xl8=;
+ b=udLSapz23soyitYuyguFWutlwatgWJsmnQOiRPxfC4ABBDqkbAieLf3FIdDduSVkCJsuKf
+ ayDPTcNdcox3DAe43dSz2JvsnFlkZ/IOr8kOnnLQiAZZIZKWMXdecC1XGxWILUJSpcyTTT
+ CbYlM5IceLDkDGmk9MeyN5mala0/rok=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1677497004;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z94SqzQfItGYtMc6Fz/VBURyFxttY9pGANoAKvf0xl8=;
+ b=IKIkXQ8LfL0d+jnY+dHudsPFI8VVmOLMSghsD8qoTLMbNc7kVYpFhD+QKAgN7m8LxtNbvb
+ LSgly5Ly26b4CaAA==
+Received: from g78 (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9639629ABA07
- for <ltp@lists.linux.it>; Mon, 27 Feb 2023 07:21:12 +0000 (UTC)
-Received: from liwang-workstation.nay.redhat.com
- (dhcp-66-81-187.nay.redhat.com [10.66.81.187])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 32860404BEC5;
- Mon, 27 Feb 2023 07:21:04 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Mon, 27 Feb 2023 15:21:03 +0800
-Message-Id: <20230227072103.264317-1-liwang@redhat.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 48A442C141;
+ Mon, 27 Feb 2023 11:23:23 +0000 (UTC)
+References: <87h6vpq2lk.fsf@suse.de>
+ <20230220102645.16842-1-william.roche@oracle.com>
+ <20230220102645.16842-2-william.roche@oracle.com>
+User-agent: mu4e 1.8.13; emacs 28.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: william.roche@oracle.com
+Date: Mon, 27 Feb 2023 10:16:04 +0000
+Organization: Linux Private Site
+In-reply-to: <20230220102645.16842-2-william.roche@oracle.com>
+Message-ID: <87k003bbdn.fsf@suse.de>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] mount03: flip to the next second before doing the
- access
+Subject: Re: [LTP] [LTP PATCH v3 1/1] madvise11: Add test for memory
+ allocation / Soft-offlining possible race
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,59 +72,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: llong@redhat.com
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Mount03 occasionally reports failure on tmpfs:
+Hello,
 
-  170	mount03.c:214: TINFO: Testing flag MS_STRICTATIME
-  171	mount03.c:140: TFAIL: st.st_atime(1677086243) < atime(1677086243)
-  172	mount03.c:151: TFAIL: dir_st.st_atime(1677086243) < dir_atime(1677086243)
+william.roche@oracle.com writes:
 
-From Waiman Long:
+> From: William Roche <william.roche@oracle.com>
+>
+> Test a possible race condition between mmap() allocating memory and
+> madvise() used to Soft-offline an unrelated memory page.
+> As fixed with the following kernel commit:
+> d4ae9916ea29 mm: soft-offline: close the race against page allocation
+>
+> If everything works, restore all poisoned pages created by this test.
+>
+> Reviewed-by: Richard Palethorpe <rpalethorpe@suse.de>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Signed-off-by: William Roche <william.roche@oracle.com>
 
-  Looking at the mount03.c test, it is reading a directory in tmpfs, sleeping for
-  1 second and read the directory again. The test fails because the reported atime
-  didn't change. Since tmpfs is in memory, access to them can be much faster and I
-  believe that a race condition may happen that the two directory reads can happen
-  within the same atime even though one second is supposed to have passed. The same
-  test pass when applying to a real filesystem. So I believe the assumption made in
-  the test may not be totally correct as the time lag can happen in different
-  subsystems inside the kernel for time tracking. I believe it is more a test problem
-  than a real kernel problem.
+Merged, thanks!
 
-  There may be some slight discrepancy in how sleep and the tmpfs file system is
-  keeping track of time. If the first access is right at the beginning of a second
-  from the tmpfs perspective, the 2nd access may be at the end of that second, but
-  not flip to the next second yet. What I would suggest is to sleep a little more
-  like usleep(10 000) to make sure that it will flip to the next second before doing
-  the access.
+I think this test is well worth the effort.
 
-Suggested-by: Waiman Long <llong@redhat.com>
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/mount/mount03.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This took an extra week to get merged because we were at a workshop.
 
-diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
-index 60f9963da..98d5933b7 100644
---- a/testcases/kernel/syscalls/mount/mount03.c
-+++ b/testcases/kernel/syscalls/mount/mount03.c
-@@ -122,7 +122,7 @@ static void test_file_dir_noatime(int update_fatime, int update_datime)
- 	SAFE_CLOSEDIR(test_dir);
- 	dir_atime = dir_st.st_atime;
- 
--	sleep(1);
-+	usleep(1001000);
- 
- 	SAFE_READ(0, otfd, readbuf, sizeof(readbuf));
- 	SAFE_FSTAT(otfd, &st);
+> +
+> +static int sigbus_received;
+
+I added volatile in an extra patch to this. Usually I would recommend
+tst_atomic* instead, but it is protected by a mutex anyway.
+
 -- 
-2.38.1
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
