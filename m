@@ -4,78 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0039C64ED6
-	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 05:45:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BF73C64EC7
+	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 08:45:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C1D73CBA31
-	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 06:45:35 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 8F9993CBA27
+	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 09:45:16 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DF9A63CAF3C
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 06:45:22 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 261053CAFFE
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 09:44:59 +0100 (CET)
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
+ [195.245.231.3])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2868B1A00378
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 06:45:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1677563118;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=/fCeQEKcaufK5EZWHVAyV2H0XuB8uibehy7y+yEkec4=;
- b=hZiVi73MGNqAzlXXzFZMZaD4qLiBjwUotLWFtLWmlIUyJTQWYnsPqdbcc4WzEedsqULz04
- ok98qWGlTUhP2oC3+Y+FP3mJN6E4+uV1Y8V1xst51BBu+RQm5n33YtymPzQERpPhX4hLTJ
- DxCGkL4sU8hx0RiXoY8ChnTyY5mOYBQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-596-te-M7FGhNDu_tXn3MMk0Ug-1; Tue, 28 Feb 2023 00:45:16 -0500
-X-MC-Unique: te-M7FGhNDu_tXn3MMk0Ug-1
-Received: by mail-wm1-f71.google.com with SMTP id
- e22-20020a05600c219600b003e000facbb1so6396742wme.9
- for <ltp@lists.linux.it>; Mon, 27 Feb 2023 21:45:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1677563114;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=/fCeQEKcaufK5EZWHVAyV2H0XuB8uibehy7y+yEkec4=;
- b=MRHqoNbFcoF2T2GNIUOG30quOq9P4hZSB4L/9mxEKJydkxnIlVSmAs+4wDcxthJdra
- Ze1wfGXznsl/5e8jmCN9g6cHCQm4Y+gZF67xRaT8PreS1q/qoCqHJSkcr7W42OCD2aFl
- hUn01W4jQfMg2nPYN1leFUHsXtZNw9XwH1NaiBsVc2/5Hy7pYeOGmrA+vGsGwjQ3nhVQ
- GfpnJwCILAM047za1kNiKaY92mMGF3GBy8UHzv74MINk1ROohzk2zPwqe8WE4Z4XR3M+
- colHLm9FUtFffi9dd+wxHxAchp7cHRGNEzcCCZgJ9p2L6RfRWKhbEkhYqyVbdJip7Bmm
- SRDA==
-X-Gm-Message-State: AO0yUKUnaBzZwjo9u/PsuZWgnhQp0Rk7/zVqJn+qLaDJcrp8tjiu16AX
- 7caKhGQMgsxSSr5uXmApAkHLOayvig5XSNMEXlxs4XpWerN9hfBNHQLgDbDz5gLb5ILho6qsCZr
- jRIrPxTXekn5adFXPyiMsDxWHmas=
-X-Received: by 2002:a05:600c:3b11:b0:3eb:40de:981b with SMTP id
- m17-20020a05600c3b1100b003eb40de981bmr634173wms.3.1677563114640; 
- Mon, 27 Feb 2023 21:45:14 -0800 (PST)
-X-Google-Smtp-Source: AK7set/9LxCVqIWo8D/8a+x7S7hkDXgZz4Qi2B0Wc2eWfgS8VsoFBwMWSywiVlB8AQD4z5v2W72sC74si14/YKtxMFU=
-X-Received: by 2002:a05:600c:3b11:b0:3eb:40de:981b with SMTP id
- m17-20020a05600c3b1100b003eb40de981bmr634168wms.3.1677563114353; Mon, 27 Feb
- 2023 21:45:14 -0800 (PST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 336031400437
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 09:44:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1677573897; i=@fujitsu.com;
+ bh=VGdNr+4ewTRo+wwgatazLjHshLHQNS9acfJLszGbNKU=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+ b=p9EfjN+MAu/dRcaI6IOmN4gIXy/F0G6UZBPtjbMCp8AQ/oTrsgX7GGKl9Vn03m/o+
+ Q/J7plc9laIQ3C57nhGDZQUss55TC/rR7O1SlLqMplMZzZQeH2qIGmYQf+/YqQOUqN
+ 1e0XoFN04YwRDi0gUu8DXv1yDzir3hKezE8f+AuNQTfl1rU8xNHJeqxa21WFZh4Zwq
+ iuQ6b8TctLVQgkXKTwOY3AMynT+O4oleQJiIVEI3ehtaEOiFui0irIo0fMlW/y8dAG
+ dUYDrqrEcUYXFyA++dPfpv18VlYqAotu7EUsqV2+CnWB/7YITIs+XPb67QfPudbZwJ
+ PNZ4bAaxaBDAw==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLIsWRWlGSWpSXmKPExsViZ8ORqMux/2+
+ ywc+pKhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8bJbceZCxZzViy6c5e5gfELexcjF4eQwFlG
+ iWunXjBDOAeZJJr+XWLsYuQEcvYxSqz8qwdiswloSjzrXMAMYosISEh0NLxlB7GZBdQllk/6x
+ QRiCwv4SJw4ex8sziKgKjHp8h4wm1fAQ+LIXIheCQEFiSkP3zNDxAUlTs58wgIxR0Li4IsXUD
+ VKEm2tV1gh7EqJ1g+/WCBsNYmr5zYxT2Dkn4WkfRaS9gWMTKsYTYtTi8pSi3SN9JKKMtMzSnI
+ TM3P0Eqt0E/VSS3XLU4tLgDKJ5cV6qcXFesWVuck5KXp5qSWbGIGhmFKs2r+DcW3vX71DjJIc
+ TEqivL35f5OF+JLyUyozEosz4otKc1KLDzHKcHAoSfAK7QHKCRalpqdWpGXmAOMCJi3BwaMkw
+ muzGyjNW1yQmFucmQ6ROsWoKCXO+xikTwAkkVGaB9cGi8VLjLJSwryMDAwMQjwFqUW5mSWo8q
+ 8YxTkYlYR5U7YBTeHJzCuBm/4KaDET0OKGa39AFpckIqSkGpjK1veWGe8RsfY+Yie213exTov
+ +ylxeTnEG3++7J3N+TxO49kxFbbq1iPLC13KmC/+7n+wQEZ/L33JExa1FeOrmx1ZqF3o4o3/n
+ f1V6lnloauhXxUlR7cbtnvN21Qfsu62z7m/xxKnF/RKzktwuOXS1/zg88/mclbe6iw/v2RuU7
+ lNT2xa1ttd3Skg34xVfvfuBT3NPabRwz+P7fHnfXn+XzKMaO+/WbknhF01ft8RljV/ftOZqw2
+ 23P3G6pEbn6xUZzbx+vGTtl4MH+V8w/ZjlfprPSHN+avCJ50uSc1vl7LWSVrNVTBMzd03uqLp
+ bXyvZ3ba39cXuft5dJk+lExd/3rP+CYOM+3Pf/8LWqUosxRmJhlrMRcWJAF7ANqtAAwAA
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-4.tower-548.messagelabs.com!1677573896!331937!1
+X-Originating-IP: [62.60.8.97]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.103.1; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 7496 invoked from network); 28 Feb 2023 08:44:56 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+ by server-4.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 28 Feb 2023 08:44:56 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 4A49C100194
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 08:44:56 +0000 (GMT)
+Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223
+ [10.182.185.121])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 3DBB4100182
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 08:44:56 +0000 (GMT)
+Received: from localhost.localdomain (10.167.215.131) by
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.42; Tue, 28 Feb 2023 08:44:54 +0000
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Tue, 28 Feb 2023 16:44:24 +0800
+Message-ID: <1677573864-5319-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <20230218040919.3548296-1-liwang@redhat.com>
- <87fsarb8eb.fsf@suse.de>
-In-Reply-To: <87fsarb8eb.fsf@suse.de>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 28 Feb 2023 13:45:03 +0800
-Message-ID: <CAEemH2esqAP+kfEgwXkSkw6V7ubFn+uq2_QdF_Nx1gF2t-WXzA@mail.gmail.com>
-To: rpalethorpe@suse.de
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Originating-IP: [10.167.215.131]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] madvise06: Raise the bar for judging failure
+Subject: [LTP] [PATCH] containers/utsname04: don't use TST_EXP_EQ_LI for
+ tst_clone
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,71 +93,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Yang Xu <xuyang2018.jy@cn.fujitsu.com>,
- Yongqiang Liu <liuyongqiang13@huawei.com>, Paul Bunyan <pbunyan@redhat.com>,
- Eirik Fuller <efuller@redhat.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUmljaGFyZCwKCk9uIE1vbiwgRmViIDI3LCAyMDIzIGF0IDg6MjfigK9QTSBSaWNoYXJkIFBh
-bGV0aG9ycGUgPHJwYWxldGhvcnBlQHN1c2UuZGU+Cndyb3RlOgoKPiBIZWxsIExpLAo+Cj4gTGkg
-V2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+IHdyaXRlczoKPgo+ID4gVGhlcmUgaXMgYW4gaW50ZXJt
-aXR0ZW50IGZhaWx1cmUgd2hpY2ggd2UgaGF2ZSBvYnNlcnZlZCBtYW55IHRpbWVzCj4gd2hldGhl
-cgo+ID4gb24gcmhlbCBvciBtYWlubGluZSBrZXJuZWwuIEJ1dCB3ZSdyZSB1bmFibGUgdG8gc3Rh
-YmxlIHJlcHJvZHVjZSBpdDoKPiA+Cj4gPiAgICAgNDMgICAgICAgIG1hZHZpc2UwNi5jOjIwMTog
-VEZBSUw6IGxlc3MgdGhhbiAxMDI0MDAgS2Igd2VyZSBtb3ZlZCB0bwo+IHRoZSBzd2FwIGNhY2hl
-Cj4gPiAgICAgLi4uCj4gPgo+ID4gSG93ZXZlciBpdCBkb2VzIG5vdCBsb29rIGxpa2UgYSBrZXJu
-ZWwgaXNzdWUsIGJlY2F1c2UgU3dhcENhY2hlZCBjaGFuZ2UKPiBpcwo+ID4gbm90IHN0cmljdGx5
-IGFiaWRpbmcgYnkgdGhlIHByaW5jaXBsZSBvZiBNQURWX1dJTExORUVEIGFkdmljZS4gVGhhdAo+
-IG1lYW5zIGl0Cj4gPiBhbGwgZGVwZW5kcyBvbiB0aGUga2VybmVsJ3Mgc3BlY2lmaWMgY2lyY3Vt
-c3RhbmNlcy4gVGhlIHZhbHVlIG9mIHRoZQo+IHRocmVzaG9sZAo+ID4gaXMgZGViYXRhYmxlIGF0
-IGxlYXN0IGZyb20gbXkgcG9pbnQgb2YgdmlldywgaXRzIHVzZSAxLzQgaXMgbm90Cj4gZ3VhcmFu
-dGVlZAo+ID4gMTAwJSBzYWZlLgo+ID4KPiA+IEFzIE1BRFZfV0lMTE5FRUQgaXMganVzdCBhZHZp
-Y2UgdG8gdGhlIGtlcm5lbCwgbm90IGEgZ3VhcmFudGVlLiBUaGUKPiBrZXJuZWwgbWF5Cj4gPiBj
-aG9vc2UgdG8gaWdub3JlIHRoZSBhZHZpY2UsIG9yIG1heSBwcmlvcml0aXplIG90aGVyIG1lbW9y
-eSBtYW5hZ2VtZW50Cj4gdGFza3MKPiA+IG92ZXIgcHJlLWxvYWRpbmcgdGhlIGFkdmlzZWQgcGFn
-ZXMuCj4gPgo+ID4gU28gdGhpcyBwYXRjaCBpcyBhaW1lZCBhdCBpbXByb3ZpbmcgdGhlIGFjY3Vy
-YWN5IGFuZCBjbGFyaXR5IG9mIHRoZSB0ZXN0Cj4gcmVzdWx0cy4KPiA+IFNwZWNpZmljYWxseSwg
-dGhlIHVzZSBvZiB0d28gc2VwYXJhdGUgdmFyaWFibGVzIHRvIHRyYWNrIHRoZSByZXN1bHRzIG9m
-Cj4gZGlmZmVyZW50Cj4gPiBjb21wYXJpc29ucyB3aWxsIG1ha2UgaXQgZWFzaWVyIHRvIHVuZGVy
-c3RhbmQgd2hhdCB0aGUgdGVzdCBpcyBkb2luZy4KPiA+Cj4gPiBBZGRpdGlvbmFsbHksIHRoZSBj
-aGFuZ2UgdG8gcmVwb3J0IGEgdGVzdCByZXN1bHQgb2YgIlRJTkZPIiBpbnN0ZWFkIG9mCj4gIlRG
-QUlMIgo+ID4gd2hlbiB0aGUgc3dhcCBjYWNoZSBzaXplIGlzIGxlc3MgdGhhbiBleHBlY3RlZCB3
-b3VsZCBiZSBpbnRlbmRlZCB0bwo+IGluZGljYXRlCj4gPiB0aGF0IHRoaXMgaXMgYW4gYWNjZXB0
-YWJsZSBvdXRjb21lLgo+ID4KPiA+IEZpbmFsbHksIHRoZSBjaGFuZ2UgdG8gdGhlIHNlY29uZCB0
-c3RfcmVzIGNhbGwgaXMgaW50ZW5kZWQgdG8gbWFrZSB0aGUKPiB0ZXN0IG1vcmUKPiA+IGxlbmll
-bnQsIGFzIGl0IG5vdyBwYXNzZXMgaWYgZWl0aGVyIG5vIHBhZ2UgZmF1bHRzIG9jY3VyIG9yIHRo
-ZSBzd2FwCj4gY2FjaGUgc2l6ZQo+ID4gaXMgbGFyZ2VyIHRoYW4gZXhwZWN0ZWQuCj4KPiBXaHkg
-bm90IHNraXAgdG8gbWFraW5nIHRoZW0gYWxsIFRJTkZPPwo+Cj4gSXQncyB1bmRlZmluZWQgd2hh
-dCBhY3Rpb24gd2lsbCByZXN1bHQgZnJvbSBNQURWX1dJTExORUVELiBJZiBpdCB3ZXJlCj4gYmV0
-dGVyIGZvciBwZXJmb3JtYW5jZSAqbm90KiB0byByZWFkIGluIHBhZ2VzLCB0aGVuIGl0IHdvdWxk
-IGJlIHZhbGlkCj4gZm9yIHRoZSBrZXJuZWwgdG8gaWdub3JlIGl0Lgo+CgpZZXMsIGJ1dCBJIGRp
-ZG4ndCBkbyB0aGF0IGJlY2F1c2UgbWFkdmlzZTA2IHRlc3QgY2hlY2tzIGZyZWVfbWVtL2ZyZWVf
-c3dhcApzaXplIGF0IHRoZSBiZWdpbm5pbmcsIGl0IGdhcmFudGVlIHRoZSBzeXN0ZW0gYXQgbGVh
-c3Qgd2l0aCAyICogQ0hVTktfU1oKKDgwME1CICsgODAwTUIpIG1lbW9yeSBmb3IgdGhlIHRlc3Qg
-cGVyZm9ybWluZywgdW5sZXNzIHRoZXJlIGlzIHNvbWV0aGluZwpoYXBwZW5pbmcgcGFyYWxsZWwg
-b3RoZXJ3aXNlIGtlcm5lbCB3aWxsIGhhbmRsZSBNQURWX1dJTExORUVEIHJlcXVlc3QKY29ycmVj
-dGx5IGZvciBtb3N0IHNjZW5hcmlvcy4KCkFuZCB3ZSBpbmRlZWQgZG8gbm90IHNlZSBwYWdlLWZh
-dWx0cyBmYWlsdXJlIG91dCBvZiBleHBlY3RlZAphbnltb3JlIHNpbmNlIGNvbW1pdCAwMGU3Njll
-NjM1MTVlNTEsIHNvIEkganVzdCBjb21iaW5lZCB0aGUKdHdvIGp1ZGdtZW50cyB0b2dldGhlciBp
-biB0aGlzIHBhdGNoLiBJIGJlbGlldmUgaXQncyBlbm91Z2ggYW5kIGFsc28KZ2l2ZSBhIGxlZXdh
-eSB0byB0aGUga2VybmVsLgoKSSBob3BlIHRoZXJlIGNvdWxkIGJlIGEgbGVuaWVudCB0ZXN0IGZv
-ciBNQURWX1dJTExORUVELgpJIHdpbGwgZGVjaXNpdmVseSB0YWtlIHlvdXIgc3VnZ2VzdGlvbiBv
-bmNlIHRoZSBmYWlsdXJlIGFwcGVhcnMgYWdhaW4gbmV4dAp0aW1lLgoKCgo+Cj4gWWFuZyBYdSBh
-ZGRlZCBhIHRhZyBmb3IgYSBwZXJmIHJlZ3Jlc3Npb24gdGhhdCBpdCBjb3VsZAo+IHJlcHJvZHVj
-ZS4gSG93ZXZlciBsb29raW5nIGF0IHRoZSBrZXJuZWwgY29tbWl0IHRoaXMgd2FzIGZpcnN0IGZv
-dW5kIGJ5Cj4gc3RyZXNzLW5nLgo+Cj4gY29tbWl0IDY2MzgzODAwZGY5Y2JkYmYzYjBjMzRkNWE1
-MWJmMzViY2RiNzJmZDIKPiBBdXRob3I6IE1hdHRoZXcgV2lsY294IChPcmFjbGUpIDx3aWxseUBp
-bmZyYWRlYWQub3JnPgo+IERhdGU6ICAgU2F0IE5vdiAyMSAyMjoxNzoyMiAyMDIwIC0wODAwCj4K
-PiAgICAgbW06IGZpeCBtYWR2aXNlIFdJTExORUVEIHBlcmZvcm1hbmNlIHByb2JsZW0KPgo+ICAg
-ICBUaGUgY2FsY3VsYXRpb24gb2YgdGhlIGVuZCBwYWdlIGluZGV4IHdhcyBpbmNvcnJlY3QsIGxl
-YWRpbmcgdG8gYQo+ICAgICByZWdyZXNzaW9uIG9mIDcwJSB3aGVuIHJ1bm5pbmcgc3RyZXNzLW5n
-Lgo+Cj4gICAgIFdpdGggdGhpcyBmaXgsIHdlIGluc3RlYWQgc2VlIGEgcGVyZm9ybWFuY2UgaW1w
-cm92ZW1lbnQgb2YgMyUKPgo+IEkgZm91bmQgYSBidWcgd2l0aCB0aGlzIHRlc3QsIGJ1dCBpdCB3
-YXMgY2F1c2luZyBhbiBPb3BzLiBJdCB3b3VsZG4ndAo+IG1hdHRlciBpZiB0aGUgdGVzdCBwcmlu
-dGVkIHBhc3Mgb3IgZmFpbC4KPgo+IFNvIEkgdGhpbmsgd2UgYXJlIHdhc3Rpbmcgb3VyIHRpbWUg
-YnkgY29uc3RhbnRseSB0d2Vha2luZyB0aGlzIHRlc3QuCj4KPiAtLQo+IFRoYW5rIHlvdSwKPiBS
-aWNoYXJkLgo+Cj4KCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86
-IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+For old kernel that doesn't support clone3, tst_clone returns
+-2 instead of -1. So we can't use TST_EXP_EQ_LI api.
+
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ testcases/kernel/containers/utsname/utsname04.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/containers/utsname/utsname04.c b/testcases/kernel/containers/utsname/utsname04.c
+index e8d636d0d..1adc4542c 100644
+--- a/testcases/kernel/containers/utsname/utsname04.c
++++ b/testcases/kernel/containers/utsname/utsname04.c
+@@ -22,6 +22,7 @@ static void run(void)
+ {
+ 	const struct tst_clone_args cargs = { CLONE_NEWUTS, SIGCHLD };
+ 	struct passwd *pw;
++	pid_t pid;
+ 
+ 	tst_res(TINFO, "Dropping root privileges");
+ 
+@@ -29,7 +30,11 @@ static void run(void)
+ 	SAFE_SETRESUID(pw->pw_uid, pw->pw_uid, pw->pw_uid);
+ 
+ 	if (!str_op || !strcmp(str_op, "clone")) {
+-		TST_EXP_EQ_LI(tst_clone(&cargs), -1);
++		pid = tst_clone(&cargs);
++		if (pid == -1 || pid == -2)
++			tst_res(TPASS, "clone() returns an expected value %d", pid);
++		else
++			tst_res(TFAIL, "clone() returns an unexpected value %d", pid);
+ 		TST_EXP_PASS(errno == EPERM);
+ 	} else {
+ 		if (!SAFE_FORK()) {
+-- 
+2.39.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
