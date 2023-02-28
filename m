@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD45CC64ED6
-	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 14:07:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8A2BC64EC7
+	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 14:20:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 488603CBA26
-	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 15:07:00 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id B0F163CDDDF
+	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 15:20:41 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 840603CAFCE
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 15:06:49 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 394983CAFCE
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 15:20:31 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 85776200744
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 15:06:47 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0F2BE600202
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 15:20:29 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 7BD2E1FDC1;
- Tue, 28 Feb 2023 14:06:47 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 12310219BA;
+ Tue, 28 Feb 2023 14:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1677593207;
+ t=1677594029;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=np2N1O/6qCsdVk9C6U43n2MD5wDfmXp58MIbhw0qS64=;
- b=fDecB5DSUDVekTlkf5zBmzZHQ7DUm09A5JES5EvS3F+TPqN6fhheXyrHF6HQzFIxzTolkX
- Ayx3U/EPQmnJ5FneRCtTN9M2y5Lu7mjEAvwKHAHW4AHIIflz4MdaelZzllLl/YlhnTdpB/
- qxEejcm3XU3Q1YPOBAY2KRc+7E1miow=
+ bh=xNH77FTIXzWWW1h8lF48jlpKEpzzNzwboUiSeSbp1xY=;
+ b=qnd0YAXMhxejAnoZRBngRDz1/JkfE2HuVlahP/fW0+MDQcSXI/xjw76sXzxoMylvnSCCEE
+ H6Yw9vg3mOjZb0sJUOqvjzYPxFtyGd3wB7I0yqrYQ/YDg1amDEhyg/CPrgeTPTCJ8lxE/w
+ ++DVsKpuKHgIeX1+HVOy5d2Y3pG+mO0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1677593207;
+ s=susede2_ed25519; t=1677594029;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=np2N1O/6qCsdVk9C6U43n2MD5wDfmXp58MIbhw0qS64=;
- b=RlsHHCgBJO2zUSJButLB+9kafo0g2IN6Vn/B7tc5cv1vU2a8grXc+i+vRgO4j8NWTCx/mp
- ntYRgyhdLqfJZQCQ==
+ bh=xNH77FTIXzWWW1h8lF48jlpKEpzzNzwboUiSeSbp1xY=;
+ b=EY9ad7ULKb2O6CfJi5w92hRAk2cbi8bJ1CuxAkRj0icyNFV3KkYAlCM7Im4FiI5ZmTN2HN
+ XeqRn7geHcfF6VDw==
 Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 2B5A12C141;
- Tue, 28 Feb 2023 14:06:47 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id C6A7A2C141;
+ Tue, 28 Feb 2023 14:20:28 +0000 (UTC)
 References: <20230215145440.78482-1-teo.coupriediaz@arm.com>
- <20230215145440.78482-2-teo.coupriediaz@arm.com>
+ <20230215145440.78482-3-teo.coupriediaz@arm.com>
 User-agent: mu4e 1.8.13; emacs 28.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-Date: Tue, 28 Feb 2023 13:50:39 +0000
+Date: Tue, 28 Feb 2023 14:07:52 +0000
 Organization: Linux Private Site
-In-reply-to: <20230215145440.78482-2-teo.coupriediaz@arm.com>
-Message-ID: <87k001ubnw.fsf@suse.de>
+In-reply-to: <20230215145440.78482-3-teo.coupriediaz@arm.com>
+Message-ID: <87fsapub13.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3] lib/tst_pid: Find cgroup pid.max
- programmatically
+Subject: Re: [LTP] [PATCH 2/3] lib/tst_pid: Go to parent cgroups for max
+ value
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,7 +72,7 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Cc: Beata Michalska <beata.michalska@arm.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -83,123 +82,173 @@ Hello,
 
 Teo Couprie Diaz <teo.coupriediaz@arm.com> writes:
 
-> In some distributions, the two files used in lib/tst_pid.c are not
-> available, but cgroups still imposes a task limit far smaller than
-> the kernel pid_max.
-> If the cgroup sysfs is mounted, we can use it to retrieve the current task
-> limit imposed to the process. Implement the retrieval of this limit.
+> A cgroup resource limitation can be either a number or "max".
+
+IIRC this is not true on V1, at least not historically. On some tests we
+have to simulate "max" when V1 is detected.
+
+Perhaps for pids.max specifically it is the case though?
+
+> It means that the cgroup will not be limited _more_ than it already is.
+> This can mean that it will use the kernel limit for the resource, if it
+> exists, or the limit of a parent cgroup.
 >
-> This can be done by first checking /proc/self/cgroup to get the cgroup
-> the process is in, which will be a path under the cgroup sysfs.
-> To get the path to the cgroup sysfs, check /proc/self/mountinfo.
-> Finally, concatenate those two paths with pid.max to get the full path
-> to the file containing the limit.
+> This patch reworks "read_session_pids_limit" to go up the cgroup hierarchy
+> if it encounters a "max" value rather than a numerical one, using the
+> kernel limit in the event where it doesn't find any.
 >
-> This patch changes the way read_session_pids_limit is called, not passing
-> a format string to be completed anymore, but is still used the same way.
-> A following patch will update this function.
->
-> This fixes failures for msgstress04.
+> Clean up uid related code as it is not used anymore.
 >
 > Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+> Co-developed-by: Beata Michalska <beata.michalska@arm.com>
+> Signed-off-by: Beata Michalska <beata.michalska@arm.com>
 > ---
->  lib/tst_pid.c | 53 +++++++++++++++++++++++++++++++++++++++++----------
->  1 file changed, 43 insertions(+), 10 deletions(-)
+>  lib/tst_pid.c | 96 +++++++++++++++++++++++++++++----------------------
+>  1 file changed, 54 insertions(+), 42 deletions(-)
 >
 > diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-> index 5595e79bd..3d0be6dcd 100644
+> index 3d0be6dcd..ad1893290 100644
 > --- a/lib/tst_pid.c
 > +++ b/lib/tst_pid.c
-> @@ -32,8 +32,6 @@
->  
->  #define PID_MAX_PATH "/proc/sys/kernel/pid_max"
->  #define THREADS_MAX_PATH "/proc/sys/kernel/threads-max"
-> -#define CGROUPS_V1_SLICE_FMT "/sys/fs/cgroup/pids/user.slice/user-%d.slice/pids.max"
-> -#define CGROUPS_V2_SLICE_FMT "/sys/fs/cgroup/user.slice/user-%d.slice/pids.max"
->  /* Leave some available processes for the OS */
->  #define PIDS_RESERVE 50
->  
-> @@ -97,18 +95,53 @@ static int read_session_pids_limit(const char *path_fmt, int uid,
->  
->  static int get_session_pids_limit(void (*cleanup_fn) (void))
->  {
-> -	int max_pids, uid;
-> +	char path[PATH_MAX + 1];
-> +	char cgroup_pids[PATH_MAX + 1];
-> +	char catchall;
-> +	int uid, ret = 0;
->  
->  	uid = get_session_uid();
-> -	max_pids = read_session_pids_limit(CGROUPS_V2_SLICE_FMT, uid, cleanup_fn);
-> -	if (max_pids < 0)
-> -		max_pids = read_session_pids_limit(CGROUPS_V1_SLICE_FMT, uid,
-> -						   cleanup_fn);
-> +	/* Check for generic cgroup v1 pid.max */
-> +	ret = FILE_LINES_SCANF(cleanup_fn, "/proc/self/cgroup",
-> +						   "%*d:pids:%s\n", cgroup_pids);
-> +	/*
-> +	 * This is a bit of a hack of scanf format strings. Indeed, if all
-> +	 * conversion specifications have been matched the return of scanf will be
-> +	 * the same whether any outstanding literal characters match or not.
-> +	 * As we want to match the literal part, we can add a catchall after it
-> +	 * so that it won't be counted if the literal part doesn't match.
-> +	 * This makes the macro go to the next line until the catchall, thus
-> +	 * the literal parts, is matched.
-> +	 *
-> +	 * Assume that the root of the mount is '/'. It can be anything,
-> +	 * but it should be '/' on any normal system.
-> +	 */
-> +	if (!ret)
-> +		ret = FILE_LINES_SCANF(cleanup_fn, "/proc/self/mountinfo",
-> +							   "%*s %*s %*s %*s %s %*[^-] - cgroup %*s %*[rw],pid%c",
-> +							   path,
->  	&catchall);
-
-Uhhff, I already implemented this logic in tst_cg_scan in tst_cgroup. In
-there we scan the current CGroup hierarchy and build a data structure
-which represents it.
-
-I guess you are not aware of tst_cgroup?
-
-> +
-> +	if (!ret) {
-> +		strncat(path, cgroup_pids, PATH_MAX);
-> +		strncat(path, "/pids.max", PATH_MAX);
-> +		return read_session_pids_limit(path, uid, cleanup_fn);
-> +	}
->  
-> -	if (max_pids < 0)
-> -		return -1;
-> +	/* Check for generic cgroup v2 pid.max */
-> +	ret = FILE_LINES_SCANF(cleanup_fn, "/proc/self/cgroup",
-> +						   "%*d::%s\n",
-> cgroup_pids);
-
-This has not been added to tst_cgroup because usually tests that need a
-cgroup feature are moved to a cgroup created by LTP. We also check that
-any required CGroups are available and mount them if necessary.
-
-I suppose in this case we do not care if there is no CGroup hierarchy or
-the pids controller is absent?
-
-In any case I think tst_cgroup should be used or extended.
-
-> +	if (!ret)
-> +		ret = FILE_LINES_SCANF(cleanup_fn, "/proc/self/mountinfo",
-> +							   "%*s %*s %*s %*s %s %*[^-] - cgroup2 %c",
-> +							   path, &catchall);
-> +
-> +	if (!ret) {
-> +		strncat(path, cgroup_pids, PATH_MAX);
-> +		strncat(path, "/pids.max", PATH_MAX);
-> +		return read_session_pids_limit(path, uid, cleanup_fn);
-> +	}
->  
-> -	return max_pids;
-> +	return -1;
+> @@ -44,50 +44,69 @@ pid_t tst_get_unused_pid_(void (*cleanup_fn) (void))
+>  	return pid;
 >  }
 >  
->  int tst_get_free_pids_(void (*cleanup_fn) (void))
+> -/*
+> - * Get the effective session UID - either one invoking current test via sudo
+> - * or the real UID.
+> - */
+> -static unsigned int get_session_uid(void)
+> +static int __read_pids_limit(const char *path, void (*cleanup_fn) (void))
+>  {
+> -	const char *sudo_uid;
+> +	char max_pids_value[100];
+> +	int max_pids;
+>  
+> -	sudo_uid = getenv("SUDO_UID");
+> -	if (sudo_uid) {
+> -		unsigned int real_uid;
+> -		int ret;
+> +	if (access(path, R_OK) != 0) {
+> +		tst_resm(TINFO, "Cannot read session user limits from '%s'", path);
+> +		return -1;
+> +	}
+>  
+> -		ret = sscanf(sudo_uid, "%u", &real_uid);
+> -		if (ret == 1)
+> -			return real_uid;
+> +	SAFE_FILE_SCANF(cleanup_fn, path, "%s", max_pids_value);
+> +	if (strcmp(max_pids_value, "max")) {
+> +		max_pids =  SAFE_STRTOL(max_pids_value, 0, INT_MAX);
+> +		tst_resm(TINFO, "Found limit of processes %d (from %s)",
+> +				max_pids, path);
+> +	} else {
+> +		max_pids = -1;
+>  	}
+>  
+> -	return getuid();
+> +	return max_pids;
+>  }
+>  
+> -static int read_session_pids_limit(const char *path_fmt, int uid,
+> -				   void (*cleanup_fn) (void))
+> +/*
+> + * Take the path to the cgroup mount and to the current cgroup pid controller
+> + * and try to find the PID limit imposed by cgroup.
+> + * Go up the cgroup hierarchy if needed, otherwise use the kernel PID limit.
+> + */
+> +static int read_session_pids_limit(const char *cgroup_mount,
+> +				   const char *cgroup_path, void (*cleanup_fn) (void))
+>  {
+> -	int max_pids, ret;
+> -	char max_pid_value[100];
+> -	char path[PATH_MAX];
+> -
+> -	ret = snprintf(path, sizeof(path), path_fmt, uid);
+> +	int ret, cgroup_depth = 0, max_pids = -1;
+> +	char path[PATH_MAX + 1], file_path[PATH_MAX + 1];
+> +	const char *sub_path = cgroup_path;
+> +
+> +	/* Find the number of groups we can go up. */
+> +	do {
+> +		cgroup_depth += 1;
+> +		sub_path++;
+> +		sub_path = strchr(sub_path, '/');
+> +	} while (sub_path);
+> +
+> +	ret = snprintf(path, sizeof(path), "%s%s", cgroup_mount, cgroup_path);
+>  	if (ret < 0 || (size_t)ret >= sizeof(path))
+>  		return -1;
+>  
+> -	if (access(path, R_OK) != 0) {
+> -		tst_resm(TINFO, "Cannot read session user limits from '%s'", path);
+> -		return -1;
+> +	for (int i = 0 ; i < cgroup_depth ; i++) {
+> +		/* Create a path to read from. */
+> +		ret = snprintf(file_path, sizeof(file_path), "%s/pids.max", path);
+> +		if (ret < 0 || (size_t)ret >= sizeof(file_path))
+> +			return -1;
+> +
+> +		max_pids = __read_pids_limit(file_path, cleanup_fn);
+> +		if (max_pids >= 0)
+> +			return max_pids;
+> +
+> +		strncat(path, "/..", PATH_MAX);
+>  	}
+>  
+> -	SAFE_FILE_SCANF(cleanup_fn, path, "%s", max_pid_value);
+> -	if (!strcmp(max_pid_value, "max")) {
+> +	if (max_pids < 0) {
+> +		/* Read kernel imposed limits */
+>  		SAFE_FILE_SCANF(cleanup_fn, PID_MAX_PATH, "%d", &max_pids);
+> -		tst_resm(TINFO, "Found limit of processes %d (from %s=max)", max_pids, path);
+> -	} else {
+> -		max_pids = SAFE_STRTOL(max_pid_value, 0, INT_MAX);
+> -		tst_resm(TINFO, "Found limit of processes %d (from %s)", max_pids, path);
+> +		tst_resm(TINFO, "Using kernel processes limit of %d",
+> +			 max_pids);
+>  	}
+>  
+>  	return max_pids;
+> @@ -98,9 +117,8 @@ static int get_session_pids_limit(void (*cleanup_fn) (void))
+>  	char path[PATH_MAX + 1];
+>  	char cgroup_pids[PATH_MAX + 1];
+>  	char catchall;
+> -	int uid, ret = 0;
+> +	int ret = 0;
+>  
+> -	uid = get_session_uid();
+>  	/* Check for generic cgroup v1 pid.max */
+>  	ret = FILE_LINES_SCANF(cleanup_fn, "/proc/self/cgroup",
+>  						   "%*d:pids:%s\n", cgroup_pids);
+> @@ -121,11 +139,8 @@ static int get_session_pids_limit(void (*cleanup_fn) (void))
+>  							   "%*s %*s %*s %*s %s %*[^-] - cgroup %*s %*[rw],pid%c",
+>  							   path, &catchall);
+>  
+> -	if (!ret) {
+> -		strncat(path, cgroup_pids, PATH_MAX);
+> -		strncat(path, "/pids.max", PATH_MAX);
+> -		return read_session_pids_limit(path, uid, cleanup_fn);
+> -	}
+> +	if (!ret)
+> +		return read_session_pids_limit(path, cgroup_pids, cleanup_fn);
+>  
+>  	/* Check for generic cgroup v2 pid.max */
+>  	ret = FILE_LINES_SCANF(cleanup_fn, "/proc/self/cgroup",
+> @@ -135,11 +150,8 @@ static int get_session_pids_limit(void (*cleanup_fn) (void))
+>  							   "%*s %*s %*s %*s %s %*[^-] - cgroup2 %c",
+>  							   path, &catchall);
+>  
+> -	if (!ret) {
+> -		strncat(path, cgroup_pids, PATH_MAX);
+> -		strncat(path, "/pids.max", PATH_MAX);
+> -		return read_session_pids_limit(path, uid, cleanup_fn);
+> -	}
+> +	if (!ret)
+> +		return read_session_pids_limit(path, cgroup_pids, cleanup_fn);
+>  
+>  	return -1;
+>  }
 > -- 
 > 2.25.1
 
