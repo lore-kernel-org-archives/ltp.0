@@ -4,84 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BF73C64EC7
-	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 08:45:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D273EC64ED6
+	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 08:58:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8F9993CBA27
-	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 09:45:16 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 92DF63CBA2D
+	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 09:58:39 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 261053CAFFE
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 09:44:59 +0100 (CET)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.3])
+ by picard.linux.it (Postfix) with ESMTPS id 342873CAFFE
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 09:58:28 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 2930310001E0
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 09:58:27 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 285F121A5F;
+ Tue, 28 Feb 2023 08:58:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1677574707;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GiZDP8nt/ZZ/w/rFEKuDieVN13bmBmExCUIt2Epmn3w=;
+ b=P9Aprnm0I+1H0Ui3wqFDKKyu31iFSJEhk4N+rSwgOGPh5Jn2UGrcY9wbADbSyeKBG6QzX8
+ K07rwZLff+mBlWYbOlDemS3WSgvQ6Q+lfq1zLx2tp1gh3qd+XxtVBMuvvRGIvUlw5E3JYw
+ oVuhmvk3MsmUwrAl8YekzEUxNfOHIV8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1677574707;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GiZDP8nt/ZZ/w/rFEKuDieVN13bmBmExCUIt2Epmn3w=;
+ b=RX4eN0bQ977MwvqqxH9Ni5t8SEylfMt9sgA++auClvFqf3jSBmvzI8bGg1KsLvxmbdS+NE
+ HT9dZH5JrnozqxCA==
+Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 336031400437
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 09:44:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1677573897; i=@fujitsu.com;
- bh=VGdNr+4ewTRo+wwgatazLjHshLHQNS9acfJLszGbNKU=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=p9EfjN+MAu/dRcaI6IOmN4gIXy/F0G6UZBPtjbMCp8AQ/oTrsgX7GGKl9Vn03m/o+
- Q/J7plc9laIQ3C57nhGDZQUss55TC/rR7O1SlLqMplMZzZQeH2qIGmYQf+/YqQOUqN
- 1e0XoFN04YwRDi0gUu8DXv1yDzir3hKezE8f+AuNQTfl1rU8xNHJeqxa21WFZh4Zwq
- iuQ6b8TctLVQgkXKTwOY3AMynT+O4oleQJiIVEI3ehtaEOiFui0irIo0fMlW/y8dAG
- dUYDrqrEcUYXFyA++dPfpv18VlYqAotu7EUsqV2+CnWB/7YITIs+XPb67QfPudbZwJ
- PNZ4bAaxaBDAw==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLIsWRWlGSWpSXmKPExsViZ8ORqMux/2+
- ywc+pKhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8bJbceZCxZzViy6c5e5gfELexcjF4eQwFlG
- iWunXjBDOAeZJJr+XWLsYuQEcvYxSqz8qwdiswloSjzrXMAMYosISEh0NLxlB7GZBdQllk/6x
- QRiCwv4SJw4ex8sziKgKjHp8h4wm1fAQ+LIXIheCQEFiSkP3zNDxAUlTs58wgIxR0Li4IsXUD
- VKEm2tV1gh7EqJ1g+/WCBsNYmr5zYxT2Dkn4WkfRaS9gWMTKsYTYtTi8pSi3SN9JKKMtMzSnI
- TM3P0Eqt0E/VSS3XLU4tLgDKJ5cV6qcXFesWVuck5KXp5qSWbGIGhmFKs2r+DcW3vX71DjJIc
- TEqivL35f5OF+JLyUyozEosz4otKc1KLDzHKcHAoSfAK7QHKCRalpqdWpGXmAOMCJi3BwaMkw
- muzGyjNW1yQmFucmQ6ROsWoKCXO+xikTwAkkVGaB9cGi8VLjLJSwryMDAwMQjwFqUW5mSWo8q
- 8YxTkYlYR5U7YBTeHJzCuBm/4KaDET0OKGa39AFpckIqSkGpjK1veWGe8RsfY+Yie213exTov
- +ylxeTnEG3++7J3N+TxO49kxFbbq1iPLC13KmC/+7n+wQEZ/L33JExa1FeOrmx1ZqF3o4o3/n
- f1V6lnloauhXxUlR7cbtnvN21Qfsu62z7m/xxKnF/RKzktwuOXS1/zg88/mclbe6iw/v2RuU7
- lNT2xa1ttd3Skg34xVfvfuBT3NPabRwz+P7fHnfXn+XzKMaO+/WbknhF01ft8RljV/ftOZqw2
- 23P3G6pEbn6xUZzbx+vGTtl4MH+V8w/ZjlfprPSHN+avCJ50uSc1vl7LWSVrNVTBMzd03uqLp
- bXyvZ3ba39cXuft5dJk+lExd/3rP+CYOM+3Pf/8LWqUosxRmJhlrMRcWJAF7ANqtAAwAA
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-4.tower-548.messagelabs.com!1677573896!331937!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.103.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 7496 invoked from network); 28 Feb 2023 08:44:56 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-4.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 28 Feb 2023 08:44:56 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 4A49C100194
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 08:44:56 +0000 (GMT)
-Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223
- [10.182.185.121])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 3DBB4100182
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 08:44:56 +0000 (GMT)
-Received: from localhost.localdomain (10.167.215.131) by
- R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Tue, 28 Feb 2023 08:44:54 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Tue, 28 Feb 2023 16:44:24 +0800
-Message-ID: <1677573864-5319-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by relay2.suse.de (Postfix) with ESMTPS id C95EA2C141;
+ Tue, 28 Feb 2023 08:58:26 +0000 (UTC)
+References: <20230228032254.13992-1-wegao@suse.com>
+ <20230228032745.16595-1-wegao@suse.com>
+User-agent: mu4e 1.8.13; emacs 28.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Wei Gao <wegao@suse.com>
+Date: Tue, 28 Feb 2023 08:49:33 +0000
+Organization: Linux Private Site
+In-reply-to: <20230228032745.16595-1-wegao@suse.com>
+Message-ID: <87r0uaupxp.fsf@suse.de>
 MIME-Version: 1.0
-X-Originating-IP: [10.167.215.131]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM223.r01.fujitsu.local (10.182.185.121)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] containers/utsname04: don't use TST_EXP_EQ_LI for
- tst_clone
+Subject: Re: [LTP] [PATCH v6] fsconfig03: New test CVE-2022-0185
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,47 +71,183 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-For old kernel that doesn't support clone3, tst_clone returns
--2 instead of -1. So we can't use TST_EXP_EQ_LI api.
+Hello,
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- testcases/kernel/containers/utsname/utsname04.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Merged with minor fixes, thanks!
 
-diff --git a/testcases/kernel/containers/utsname/utsname04.c b/testcases/kernel/containers/utsname/utsname04.c
-index e8d636d0d..1adc4542c 100644
---- a/testcases/kernel/containers/utsname/utsname04.c
-+++ b/testcases/kernel/containers/utsname/utsname04.c
-@@ -22,6 +22,7 @@ static void run(void)
- {
- 	const struct tst_clone_args cargs = { CLONE_NEWUTS, SIGCHLD };
- 	struct passwd *pw;
-+	pid_t pid;
- 
- 	tst_res(TINFO, "Dropping root privileges");
- 
-@@ -29,7 +30,11 @@ static void run(void)
- 	SAFE_SETRESUID(pw->pw_uid, pw->pw_uid, pw->pw_uid);
- 
- 	if (!str_op || !strcmp(str_op, "clone")) {
--		TST_EXP_EQ_LI(tst_clone(&cargs), -1);
-+		pid = tst_clone(&cargs);
-+		if (pid == -1 || pid == -2)
-+			tst_res(TPASS, "clone() returns an expected value %d", pid);
-+		else
-+			tst_res(TFAIL, "clone() returns an unexpected value %d", pid);
- 		TST_EXP_PASS(errno == EPERM);
- 	} else {
- 		if (!SAFE_FORK()) {
+See comments below.
+
+Wei Gao <wegao@suse.com> writes:
+
+> There are reproducers available for CVE-2022-0185
+> https://www.openwall.com/lists/oss-security/2022/01/25/14
+>
+> Also with links or even a zip file for an exploit
+> https://github.com/Crusaders-of-Rust/CVE-2022-0185
+>
+> The exploits are kind of complicated as they try to be complete,
+> but the exploitation vector is the fsconfig() syscall,
+> this case used for add some coverage to that to detect it.
+>
+> When kernel < v5.15.16, you can easily reproduce crash use test case
+> without check error and return logic in loop.
+>
+> I have used this test case trigger 5.14.1 kernel crash with ext2/4.
+>
+> Signed-off-by: Wei Gao <wegao@suse.com>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  runtest/cve                                   |  2 +
+>  runtest/syscalls                              |  1 +
+>  testcases/kernel/syscalls/fsconfig/.gitignore |  1 +
+>  .../kernel/syscalls/fsconfig/fsconfig03.c     | 79 +++++++++++++++++++
+>  4 files changed, 83 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/fsconfig/fsconfig03.c
+>
+> diff --git a/runtest/cve b/runtest/cve
+> index 1ba63c2a7..7da3ff853 100644
+> --- a/runtest/cve
+> +++ b/runtest/cve
+> @@ -77,3 +77,5 @@ cve-2022-2590 dirtyc0w_shmem
+>  # Tests below may cause kernel memory leak
+>  cve-2020-25704 perf_event_open03
+>  cve-2022-4378 cve-2022-4378
+> +# Tests below may cause kernel crash
+
+rm this comment, almost all the CVE tests can cause a crash.
+
+I'm not sure why there is a comment about memory leak above. There is no
+reason to ever comment about such things in the runtest file.
+
+> +cve-2022-0185 fsconfig03
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index ae37a1192..b4cde8071 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -383,6 +383,7 @@ fremovexattr02 fremovexattr02
+>  
+>  fsconfig01 fsconfig01
+>  fsconfig02 fsconfig02
+> +fsconfig03 fsconfig03
+>  
+>  fsmount01 fsmount01
+>  fsmount02 fsmount02
+> diff --git a/testcases/kernel/syscalls/fsconfig/.gitignore b/testcases/kernel/syscalls/fsconfig/.gitignore
+> index 2bc54b827..cfedae5f7 100644
+> --- a/testcases/kernel/syscalls/fsconfig/.gitignore
+> +++ b/testcases/kernel/syscalls/fsconfig/.gitignore
+> @@ -1,2 +1,3 @@
+>  /fsconfig01
+>  /fsconfig02
+> +/fsconfig03
+> diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig03.c b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
+> new file mode 100644
+> index 000000000..2d9183dd6
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
+> @@ -0,0 +1,79 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2022 Alejandro Guerrero <aguerrero@...lys.com>
+
+Added the full domain which is qualys.com.
+
+> + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
+> + */
+> +
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Test for CVE-2022-0185.
+> + *
+> + * References links:
+
+Added blank line here as suggested by pvorel
+
+> + * - https://www.openwall.com/lists/oss-security/2022/01/25/14
+> + * - https://github.com/Crusaders-of-Rust/CVE-2022-0185
+> + */
+> +
+> +#include "tst_test.h"
+> +#include "lapi/fsmount.h"
+> +
+> +#define MNTPOINT	"mntpoint"
+> +
+> +static int fd = -1;
+> +
+> +static void setup(void)
+> +{
+> +	fsopen_supported_by_kernel();
+> +}
+> +
+> +static void run(void)
+> +{
+> +	char *val = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+> +	long pagesize;
+> +
+> +	TEST(fd = fsopen(tst_device->fs_type, 0));
+> +	if (fd == -1)
+> +		tst_brk(TBROK | TTERRNO, "fsopen() failed");
+> +
+> +	pagesize = sysconf(_SC_PAGESIZE);
+> +	if (pagesize == -1)
+> +		tst_brk(TBROK, "sysconf(_SC_PAGESIZE) failed");
+> +
+> +	for (size_t i = 0; i < 5000; i++) {
+> +		/* use same logic in kernel legacy_parse_param function */
+> +		const size_t len = i * (strlen(val) + 2) + (strlen(val) + 1) + 2;
+> +
+> +		if (!strcmp(tst_device->fs_type, "btrfs") && len <= (size_t)pagesize)
+> +			TST_EXP_PASS_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0));
+> +		else
+> +			TST_EXP_FAIL_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0),
+> +					    EINVAL);
+> +	}
+> +
+> +	if (fd != -1)
+> +		SAFE_CLOSE(fd);
+> +
+> +	if (tst_taint_check() != 0)
+
+Removed the unecessary '!= 0'
+
+> +		tst_res(TFAIL, "kernel has issues on %s",
+> +			tst_device->fs_type);
+> +	else
+> +		tst_res(TPASS, "kernel seems to be fine on %s",
+> +			tst_device->fs_type);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.setup = setup,
+> +	.needs_root = 1,
+> +	.format_device = 1,
+> +	.mntpoint = MNTPOINT,
+> +	.all_filesystems = 1,
+> +	.taint_check = TST_TAINT_W | TST_TAINT_D,
+> +	.skip_filesystems = (const char *const []){"ntfs", "vfat", NULL},
+> +	.tags = (const struct tst_tag[]) {
+> +		{"linux-git", "722d94847de29"},
+> +		{"CVE", "2022-0185"},
+> +		{}
+> +	}
+> +};
+
+
 -- 
-2.39.1
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
