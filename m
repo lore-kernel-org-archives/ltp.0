@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AD20C64ED6
-	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 10:17:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51F22C64EC7
+	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 10:36:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 18D3F3CCE34
-	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 11:17:06 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 4448D3CBB82
+	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 11:36:01 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8B2D53CBA10
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 11:16:55 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 9632B3CAFC8
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 11:35:50 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 621D910005E3
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 11:16:54 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8E36D60070B
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 11:35:49 +0100 (CET)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 9B5141FDC1;
- Tue, 28 Feb 2023 10:16:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 8FFC21FDC2;
+ Tue, 28 Feb 2023 10:35:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1677579413;
+ t=1677580548;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=LWTw47escqF1YwJ9bNbBTmUbmoCliVCHNgr7viMBPSc=;
- b=EFIvH8NGzGPw/flVyo+a2iH6GxkQ4P4Xan+q9e9oHarDnOxBy/aQVn/nq7kOzggd9Ad6gm
- sfEpMCAsSm2oQ6hJjoLhwmwGhLxFaqwl7kxzyGn65hS+3FXpDpTWD7xQXcSfzzulmYxPWM
- Pq6h14FPZS5bOP6QiB18hpDDtif6uUg=
+ bh=iIOV0UEw/bdJa+oTNdssMwGCgaYOAnbMq0ZODa5vjak=;
+ b=bqF0OWNViecA8IrzPUiwYUcWzCv8EsmxERyP7DxNd/Z3tU/1szVCd7d7zC7lEHyYXpMQvK
+ OWbar1hKho5cYrHhgbz2Xp4/h1dJlwvHMGZmreWXKBr7eGIJayw/6y9tkY3vu9uVPm/722
+ NTjFOw6B3PBSZPJRD50JLv6g25mWdZQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1677579413;
+ s=susede2_ed25519; t=1677580548;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=LWTw47escqF1YwJ9bNbBTmUbmoCliVCHNgr7viMBPSc=;
- b=MTQXUQEU/TjFFzTvftHHoDNSfzOpjLmTicj/bt6DClmUlVrd3wkCUjVma9WispQKBHldQG
- Ai4nACVjuNCFsMBQ==
+ bh=iIOV0UEw/bdJa+oTNdssMwGCgaYOAnbMq0ZODa5vjak=;
+ b=d6NgeFcnVzp5ZnhExHFyU2VycOrS56vhJ44O90856AB/UYeYIIoedp5WBSIs1a5GHYu4NB
+ UAfJIvCQLuz9m6AA==
 Received: from g78 (unknown [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 6CBBF2C141;
- Tue, 28 Feb 2023 10:16:53 +0000 (UTC)
-References: <20230215055727.20793-1-xiaoshoukui@gmail.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 64E852C141;
+ Tue, 28 Feb 2023 10:35:48 +0000 (UTC)
+References: <CA+O3cCQk5CEKTqdCkHnMmAwqWF8ePeGOOuHXKBMPqsqwvv7ihA@mail.gmail.com>
 User-agent: mu4e 1.8.13; emacs 28.2
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: xiaoshoukui <xiaoshoukui@gmail.com>
-Date: Tue, 28 Feb 2023 10:06:54 +0000
+To: Paulson Raja L <lpaulsonraja@gmail.com>
+Date: Tue, 28 Feb 2023 10:20:40 +0000
 Organization: Linux Private Site
-In-reply-to: <20230215055727.20793-1-xiaoshoukui@gmail.com>
-Message-ID: <875ybmumb0.fsf@suse.de>
+In-reply-to: <CA+O3cCQk5CEKTqdCkHnMmAwqWF8ePeGOOuHXKBMPqsqwvv7ihA@mail.gmail.com>
+Message-ID: <871qmaulfg.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Add ioctl_loop08 test for LOOP_GET_STATUS lock
- imbalance
+Subject: Re: [LTP] RFC:[PATCH v1] Added testcase to test mmap with
+ MAP_SHARED_VALIDATE flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,178 +79,103 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-xiaoshoukui <xiaoshoukui@gmail.com> writes:
+In principal the test is good, you can remove the RFC.
 
-> ---
->  .../kernel/syscalls/ioctl/ioctl_loop08.c      | 147 ++++++++++++++++++
->  1 file changed, 147 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_loop08.c
+Please see comments below (in addition to Cyril's).
+
+Paulson Raja L <lpaulsonraja@gmail.com> writes:
+
+> This patch adds a new test case for mmap syscall. It tests the
+> MAP_SHARED_VALIDATE flag of mmap. The code checks of the
+> MAP_SHARED_VALIDATE flag return EOPNOTSUPP when mapped with an invalid flag
+> value. It does so by setting the unused bits of the flag argument.
+
+Would it be possible to use two incompatible flags together instead?
+
+Unused flags can become valid at a later date.
+
 >
-> diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop08.c b/testcases/kernel/syscalls/ioctl/ioctl_loop08.c
+> Signed-off-by: Paulson Raja L. <lpaulsonraja@gmail.com>
+>
+> diff --git a/testcases/kernel/syscalls/mmap/mmap20.c
+> b/testcases/kernel/syscalls/mmap/mmap20.c
 > new file mode 100644
-> index 000000000..047273576
+> index 000000000..2f6dd5d4d
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/ioctl/ioctl_loop08.c
-> @@ -0,0 +1,147 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +++ b/testcases/kernel/syscalls/mmap/mmap20.c
+> @@ -0,0 +1,61 @@
+> +//SPDX-License-Identifier: GPL-2.0-or-later
+> +
 > +/*
-> + * Copyright (c) 2022 xiaoshoukui <xiaoshoukui@ruijie.com.cn>
+> + * Test mmap with MAP_SHARED_VALIDATE flag
+> + *
+> + * We are testing the MAP_SHARED_VALIDATE flag of mmap() syscall. To check
+> + * if there is an invalid flag value, the MAP_SHARED_VALIDATE return
+> + * EOPNOTSUPP. The unused bit in the MAP_SHARED_VALIDATE is found, and by
+> + * setting the unused bits of the flag argument the flag value becomes
+> + * invalid and the error EOPNOTSUPP is produced as expected.
 > + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * This is a basic ioctl test about loopdevice LOOP_GET_STATUS
-> + * and LOOP_GET_STATUS64.
-> + * Commit 2d1d4c1e591f made loop_get_status() drop lo_ctx_mutex before
-> + * returning, but the loop_get_status_old(), loop_get_status64(), and
-> + * loop_get_status_compat() wrappers don't call loop_get_status() if the
-> + * passed argument is NULL. The callers expect that the lock is dropped, so
-> + * make sure we drop it in that case, too.
-> + *
-> + * Fixed by commit:
-> + *
-> + *  commit bdac616db9bbadb90b7d6a406144571015e138f7
-> + *  Author: Omar Sandoval <osandov@fb.com>
-> + *  Date:   Fri Apr 06 09:57:03 2018 -0700
-> + *
-> + *    loop: fix LOOP_GET_STATUS lock imbalance
-> + */
-> +
 > +#include <stdio.h>
-> +#include <unistd.h>
 > +#include <sys/types.h>
-> +#include <stdlib.h>
-> +#include "lapi/loop.h"
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +#include <sys/mman.h>
+> +#include <linux/mman.h>
+> +#include <errno.h>
 > +#include "tst_test.h"
 > +
-> +#define MAX_MSGSIZE 4096
+> +#define TEST_FILE "file_to_mmap"
+> +#define TEST_FILE_SIZE 1024
+> +#define TEST_FILE_MODE 0600
 > +
-> +static const char lock_imbalance[] = "lock held when returning to user space";
+> +static int fd_file;
+> +static void *mapped_address = NULL;
 > +
-> +static struct tcase {
-> +	int ioctl_flag;
-> +	char *message;
-> +} tcases[] = {
-> +	{ LOOP_GET_STATUS,
-> +	 "Testing LOOP_GET_STATUS lock imbalance" },
-> +
-> +	{ LOOP_GET_STATUS64,
-> +	 "Testing LOOP_GET_STATUS64 lock imbalance" },
-> +};
-> +
-> +static int find_kmsg(const char *text_to_find)
+> +static void setup(void)
 > +{
-> +	int f, msg_found = 0;
-> +	char msg[MAX_MSGSIZE + 1];
-> +
-> +	f = SAFE_OPEN("/dev/kmsg", O_RDONLY | O_NONBLOCK);
-> +
-> +	while (1) {
-> +		TEST(read(f, msg, MAX_MSGSIZE));
-> +		if (TST_RET < 0) {
-> +			if (TST_ERR == EAGAIN)
-> +				/* there are no more messages */
-> +				break;
-> +			else if (TST_ERR == EPIPE)
-> +				/* current message was overwritten */
-> +				continue;
-> +			else
-> +				tst_brk(TBROK | TTERRNO,
-> +					"err reading /dev/kmsg");
-> +		} else {
-> +			/* lines from kmsg are not NULL terminated */
-> +			msg[TST_RET] = '\0';
-> +			if (strstr(msg, text_to_find) != NULL) {
-> +				msg_found = 1;
-> +				break;
-> +			}
-> +		}
-> +	}
-> +	SAFE_CLOSE(f);
-> +
-> +	if (msg_found)
-> +		return 0;
-> +	else
-> +		return -1;
+> + fd_file = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR, TEST_FILE_MODE);
+> + if (tst_fill_file(TEST_FILE, 'a', TEST_FILE_SIZE, 1))
+> + tst_brk(TBROK, "Could not fill the testfile.");
 > +}
 > +
-> +static void do_child(void)
+> +static void cleanup(void)
 > +{
-> +	char dev_path[1024];
-> +	int dev_num, dev_fd;
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(tcases); i++) {
-> +		tst_res(TINFO, "%s", tcases[i].message);
-> +		dev_num = tst_find_free_loopdev(dev_path, sizeof(dev_path));
-> +
-> +		if (dev_num < 0)
-> +			tst_brk(TBROK, "Failed to find free loop device");
-> +
-> +		dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-> +
-> +		if (tcases[i].ioctl_flag == LOOP_GET_STATUS)
-> +			ioctl(dev_fd, LOOP_GET_STATUS, NULL);
-> +		else
-> +			ioctl(dev_fd, LOOP_GET_STATUS64, NULL);
-> +
-> +		if (dev_fd > 0)
-> +			SAFE_CLOSE(dev_fd);
-> +
-> +	}
-> +
-> +	exit(0);
-> +
+> + if (fd_file > 0)
+
+It's unlikely, but possible that fd_file is 0, so it should be
+initialised to -1 and we check it is > -1.
+
+> + SAFE_CLOSE(fd_file);
+> + if (mapped_address != NULL && mapped_address != MAP_FAILED)
+> + SAFE_MUNMAP(mapped_address, TEST_FILE_SIZE);
 > +}
 > +
-> +static void verify_ioctl_loop(void)
+> +static void test_mmap(void)
 > +{
-> +	int ret, pid;
-> +
-> +	pid = SAFE_FORK();
-> +	if (!pid)
-> +		do_child();
-> +
-> +	ret = TST_PROCESS_STATE_WAIT(pid, 'D', 5000);
-> +
-> +	if (!ret && !find_kmsg(lock_imbalance))
-> +		tst_res(TFAIL, "Trigger ioctl loop lock imbalance");
-> +	else
-> +		tst_res(TPASS, "Nothing bad happened, probably");
-> +
+> + mapped_address = mmap(NULL, TEST_FILE_SIZE, PROT_READ | PROT_WRITE,
+> +      (1 << 7) | (1 << 9) | MAP_SHARED_VALIDATE, fd_file, 0);
+
+The TEST macro can be used here, which will set errno=0. Possibly errno
+is already set to some previous error. (also note you need to then use
+TTERRNO below)
+
+> + if (mapped_address != MAP_FAILED)
+> + tst_res(TFAIL | TERRNO, "mmap() is successful, but it should have
+> failed.");
+> + else if (errno == EOPNOTSUPP)
+> + tst_res(TPASS, "mmap() failed with errno set to EOPNOTSUPP.");
+> + else
+> + tst_res(TFAIL | TERRNO, "mmap() failed with unexpected error.");
 > +}
 > +
 > +static struct tst_test test = {
-> +	.test_all = verify_ioctl_loop,
-> +	.needs_root = 1,
-> +	.needs_kconfigs = (const char *[]) {
-> +		"CONFIG_LOCKDEP=y",
-
-We don't want to rely on a debugging feature unless necessary. Often
-testing is done on production kernels.
-
-If the test is run on a buggy kernel without lockdep then might we get a
-deadlock?
-
-So I think it would be best to run the test, but skip the kmsg check if
-lockdep is not enabled (using tst_kconfig_get).
-
-> +		NULL
-> +	},
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "bdac616db9bb "},
-> +		{}
-> +	},
-> +	.needs_drivers = (const char *const[]) {
-> +		"loop",
-> +		NULL
-> +	},
-> +	.forks_child = 1,
-> +	.timeout = 60,
+> + .min_kver = "4.15",
+> + .setup = setup,
+> + .cleanup = cleanup,
+> + .test_all = test_mmap,
+> + .needs_tmpdir = 1,
 > +};
-> -- 
-> 2.20.1
+
 
 
 -- 
