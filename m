@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9873C7EE23
-	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 03:23:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F98EC7EE23
+	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 03:28:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 072313CBA8D
-	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 04:23:51 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C96B53CDE70
+	for <ltp@archiver.kernel.org>; Tue, 28 Feb 2023 04:28:29 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4B5973C30A8
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 04:23:36 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id A53513C30A8
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 04:28:17 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A3163100040D
- for <ltp@lists.linux.it>; Tue, 28 Feb 2023 04:23:35 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 78E95600468
+ for <ltp@lists.linux.it>; Tue, 28 Feb 2023 04:28:16 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C2F1C1FDB4;
- Tue, 28 Feb 2023 03:23:33 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7ECAC21A07;
+ Tue, 28 Feb 2023 03:28:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1677554613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1677554896; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=u/6A/4utsVk5G/+gQKEwLhoAy6iMU41EXscv1YJkKIU=;
- b=B+nc7hN9Hpq4eUu2TJG7SOfG4eJ3hUoHXDd4Ki0X/cVbrMPYuKOIbzVwrvHm+zSrzf2EKM
- wY0ko2iKgtdMF7kBkKXN/2ToWDO83e54/uVSSQtAJTlclwNHGRju7YeR1/IRPP7IrDdvLW
- OX0ksmAxSMDGI3eaIVM5Z1XjkMC2Dfk=
+ bh=DITl0QaXyrSEMWw/2fGXatPanC6fiwPUienQSQ+8fX0=;
+ b=RtjPUPUiaS79L74uZ42GHcQO03ryhhzAa9UEk7hRsFZUHPJHZfnTqURXiArTVeCFie5oSh
+ y4loIHJ6sqeOT5BVcugzKOn8EwCBgzT1hitl816QEecdiF6tx/S4BC0MS8LT0atWCWe1XG
+ aq7OG5kNnwlfjHR7kjutNUELQpOVmR4=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA8381325E;
- Tue, 28 Feb 2023 03:23:32 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5F6D81325E;
+ Tue, 28 Feb 2023 03:28:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id KDPGH7Rz/WO3MQAAMHmgww
- (envelope-from <wegao@suse.com>); Tue, 28 Feb 2023 03:23:32 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id HPOrDc90/WPjMgAAMHmgww
+ (envelope-from <wegao@suse.com>); Tue, 28 Feb 2023 03:28:15 +0000
 To: ltp@lists.linux.it
-Date: Mon, 27 Feb 2023 22:22:54 -0500
-Message-Id: <20230228032254.13992-1-wegao@suse.com>
+Date: Mon, 27 Feb 2023 22:27:45 -0500
+Message-Id: <20230228032745.16595-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230216235218.25757-1-wegao@suse.com>
-References: <20230216235218.25757-1-wegao@suse.com>
+In-Reply-To: <20230228032254.13992-1-wegao@suse.com>
+References: <20230228032254.13992-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5] fsconfig03: New test CVE-2022-0185
+Subject: [LTP] [PATCH v6] fsconfig03: New test CVE-2022-0185
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -133,7 +133,7 @@ index 2bc54b827..cfedae5f7 100644
 +/fsconfig03
 diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig03.c b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
 new file mode 100644
-index 000000000..c2e908221
+index 000000000..2d9183dd6
 --- /dev/null
 +++ b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
 @@ -0,0 +1,79 @@
@@ -183,22 +183,21 @@ index 000000000..c2e908221
 +		/* use same logic in kernel legacy_parse_param function */
 +		const size_t len = i * (strlen(val) + 2) + (strlen(val) + 1) + 2;
 +
-+		if (!strcmp(tst_device->fs_type, "btrfs") && len <= (size_t)pagesize) {
++		if (!strcmp(tst_device->fs_type, "btrfs") && len <= (size_t)pagesize)
 +			TST_EXP_PASS_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0));
-+			if (TST_ERR)
-+				return;
-+		} else {
++		else
 +			TST_EXP_FAIL_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0),
 +					    EINVAL);
-+			if (!TST_PASS)
-+				return;
-+		}
 +	}
 +
 +	if (fd != -1)
 +		SAFE_CLOSE(fd);
 +
-+	tst_res(TPASS, "fsconfig() overflow on %s haven't triggerred crash",
++	if (tst_taint_check() != 0)
++		tst_res(TFAIL, "kernel has issues on %s",
++			tst_device->fs_type);
++	else
++		tst_res(TPASS, "kernel seems to be fine on %s",
 +			tst_device->fs_type);
 +}
 +
@@ -209,6 +208,7 @@ index 000000000..c2e908221
 +	.format_device = 1,
 +	.mntpoint = MNTPOINT,
 +	.all_filesystems = 1,
++	.taint_check = TST_TAINT_W | TST_TAINT_D,
 +	.skip_filesystems = (const char *const []){"ntfs", "vfat", NULL},
 +	.tags = (const struct tst_tag[]) {
 +		{"linux-git", "722d94847de29"},
