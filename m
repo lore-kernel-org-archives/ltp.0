@@ -4,66 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44959C6FA9D
-	for <ltp@archiver.kernel.org>; Wed,  1 Mar 2023 15:27:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A934C64ED6
+	for <ltp@archiver.kernel.org>; Wed,  1 Mar 2023 15:28:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2E4F63CDD9F
-	for <ltp@archiver.kernel.org>; Wed,  1 Mar 2023 16:27:41 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 15CF73CDD65
+	for <ltp@archiver.kernel.org>; Wed,  1 Mar 2023 16:28:15 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D0F893CB124
- for <ltp@lists.linux.it>; Wed,  1 Mar 2023 16:27:29 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 1B18D3CB2FA
+ for <ltp@lists.linux.it>; Wed,  1 Mar 2023 09:01:45 +0100 (CET)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9335F601295
- for <ltp@lists.linux.it>; Wed,  1 Mar 2023 16:27:27 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D19EC21AA3;
- Wed,  1 Mar 2023 15:27:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1677684444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=2VsOLck5osIpHVrymZFYCQkTH0zaffaT8R0jfxuXu7k=;
- b=tfBdLDFSYB3pgmLWOhchJReH2d9sOsHHXtNWlfjCjjvcn4Q7tWVUl7DuCSjwaVcVIXEXAt
- Hwcrfr2xLRAzxGaROMqypdP1oLeq1+BXLx3yAk1tr9VEojHkid+Kimw7F/UffYkmRsE9oD
- nS4SSbfkdv2ZKwYeicz6jHYUeFslajY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1677684444;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=2VsOLck5osIpHVrymZFYCQkTH0zaffaT8R0jfxuXu7k=;
- b=41VKKe3QH7BtFyW9EPuR0w9CRddVQnrjbp3f6SkIhlefavVS9V5/9Su4ts8BmkUHoPkPJf
- xaKB5HQs0qLzo8Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD80013A3E;
- Wed,  1 Mar 2023 15:27:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ltkPLdxu/2NYXAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 01 Mar 2023 15:27:24 +0000
-Date: Wed, 1 Mar 2023 16:28:47 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Message-ID: <Y/9vL6uW2UxcMzrP@yuki>
-References: <20230301141634.2881117-1-Liam.Howlett@oracle.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3341260033B
+ for <ltp@lists.linux.it>; Wed,  1 Mar 2023 09:01:40 +0100 (CET)
+X-UUID: ac9fd2209ae9439c8d966bd753bd07c5-20230301
+X-CPASD-INFO: e8dd1a7e03174f4fa5d0c7f339487b02@roiehF6TZZVcU3ODg6l_oIFmlGCTY4a
+ CdXNUaGWSXFKVhH5xTV5nX1V9gnNXZF5dXFV3dnBQYmBhXVJ3i3-XblBgXoZgUZB3tHqehGKPZw==
+X-CLOUD-ID: e8dd1a7e03174f4fa5d0c7f339487b02
+X-CPASD-SUMMARY: SIP:-1, APTIP:-2.0, KEY:0.0, FROMBLOCK:1, OB:0.0, URL:-5,
+ TVAL:184.
+ 0, ESV:0.0, ECOM:-5.0, ML:0.0, FD:0.0, CUTS:149.0, IP:-2.0, MAL:-5.0, PHF:-5.0,
+ PHC:-5
+ .0, SPF:4.0, EDMS:-5, IPLABEL:4480.0, FROMTO:0, AD:0, FFOB:0.0, CFOB:1.0, SPC:0,
+ SIG:-
+ 5, AUF:2, DUF:17225, ACD:248, DCD:248, SL:0, EISP:0, AG:0, CFC:0.335,
+ CFSR:0.055, UAT:0
+ , RAF:0, IMG:-5.0, DFA:0, DTA:0, IBL:-2.0, ADI:-5, SBL:0, REDM:0, REIP:0, ESB:0,
+ ATTNUM: 0,EAF:0,CID:-5.0,VERSION:2.3.17
+X-CPASD-ID: ac9fd2209ae9439c8d966bd753bd07c5-20230301
+X-CPASD-BLOCK: 1000
+X-CPASD-STAGE: 1
+X-UUID: ac9fd2209ae9439c8d966bd753bd07c5-20230301
+X-User: gehao@kylinos.cn
+Received: from localhost.localdomain [(116.128.244.169)] by mailgw
+ (envelope-from <gehao@kylinos.cn>) (Generic MTA)
+ with ESMTP id 1453693745; Wed, 01 Mar 2023 16:01:39 +0800
+From: Hao Ge <gehao@kylinos.cn>
+To: ltp@lists.linux.it
+Date: Wed,  1 Mar 2023 16:01:31 +0800
+Message-Id: <20230301080131.86627-1-gehao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230301141634.2881117-1-Liam.Howlett@oracle.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] mprotect: Add mprotect05 testcase
+X-Mailman-Approved-At: Wed, 01 Mar 2023 16:28:03 +0100
+Subject: [LTP] [ [PATCH]] cpuset/cpuset_memory_pressure_test: Fix free
+ memory calculate
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,169 +64,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Hao Ge <gehao@kylinos.cn>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Add a test that uses mprotect to split and combine VMAs.  Created to
-> ensure the correctness of the VMA iterator after a bug report.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217061
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-> ---
->  .../kernel/syscalls/mprotect/mprotect05.c     | 118 ++++++++++++++++++
->  1 file changed, 118 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/mprotect/mprotect05.c
-> 
-> diff --git a/testcases/kernel/syscalls/mprotect/mprotect05.c b/testcases/kernel/syscalls/mprotect/mprotect05.c
-> new file mode 100644
-> index 000000000..36f137544
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/mprotect/mprotect05.c
-> @@ -0,0 +1,118 @@
-> +/*
-> + * Copyright (c) International Business Machines  Corp., 2001
-> + *
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program;  if not, write to the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + */
+Currently, free has two output formats,as follows
 
-We switched to SPDX long time ago, please use that instead.
+free -m
+        total        used        free      shared  buff/cache   available
+Mem:   128135        3857      120633         158        3644      123219
+Swap:    8191          82        8109
 
-> +/*
-> + * DESCRIPTION
-> + *	Testcase to check the mprotect(2) system call split/merge
-> + *
-> + * ALGORITHM
-> + *	Create a mapped region using mmap with READ permission.
-> + *	Create different VMAs in stripes with mprotect (exec & write)
-> + *	mprotect over middle & write area, causing vma_merge of prev & next
-> + *	before hitting the limnits.
-> + *
-> + */
+free -m
+        total       used       free     shared    buffers     cached
+Mem:   419694       9464     410230        234        435       6005
+-/+ buffers/cache:       3022     416671
+Swap:    2053          0       2053
 
-This should be asciidoc formatted comment that starts with a special
-header:
+We need to avoid the error of adding the available item so that free is
+wrong.
 
-/*\
- * [Description]
- *
+Signed-off-by: Hao Ge <gehao@kylinos.cn>
+---
+ .../cpuset_memory_pressure_testset.sh                  | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-> +#include <sys/mman.h>
-> +#include <sys/wait.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <limits.h>
-> +#include <stdlib.h>
-> +#include "test.h"
-> +
-> +#include "safe_macros.h"
-> +
-> +static void sighandler(int sig);
-> +static void cleanup(void);
-> +static void setup(void);
-> +
-> +char *TCID = "mprotect05";
-> +int TST_TOTAL = 1;
-> +static int fd;
-> +static char file1[BUFSIZ];
-> +
-> +static char *addr = MAP_FAILED;
-> +static unsigned long fullsize;
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +	int fd;
-> +	unsigned long pagesize;
-> +
-> +	tst_parse_opts(ac, av, NULL, NULL);
-> +
-> +	setup();
-> +
-> +	pagesize = getpagesize();
-> +	fullsize = 5 * pagesize;
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		fd = SAFE_OPEN(cleanup, file1, O_RDWR | O_CREAT, 0777);
-> +
-> +		addr = SAFE_MMAP(cleanup, 0, fullsize, PROT_READ,
-> +				MAP_SHARED, fd, 0);
-> +
-> +		TEST(mprotect(addr + pagesize, pagesize*1, PROT_EXEC));
-> +		if (TEST_RETURN)
-> +			tst_resm(TFAIL | TERRNO, "mprotect failed to write");
-> +
-> +		TEST(mprotect(addr + 3*pagesize, pagesize, PROT_WRITE));
-> +		if (TEST_RETURN)
-> +			tst_resm(TFAIL | TERRNO, "mprotect failed to write");
-> +
-> +		TEST(mprotect(addr + pagesize, pagesize*4, PROT_READ));
-> +		if (TEST_RETURN)
-> +			tst_resm(TFAIL | TERRNO, "mprotect failed to write");
-> +
-> +		SAFE_MUNMAP(cleanup, addr, fullsize);
-> +		addr = MAP_FAILED;
-> +		SAFE_CLOSE(cleanup, fd);
-> +		SAFE_UNLINK(cleanup, file1);
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-
-Please use the new test library, the old test library is deprecated and
-will be removed. See include/tst_test.h.
-
-> +static void sighandler(int sig)
-> +{
-> +	_exit((sig == SIGSEGV) ? 0 : sig);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(FORK, sighandler, cleanup);
-> +
-> +	TEST_PAUSE;
-> +
-> +	tst_tmpdir();
-> +
-> +	sprintf(file1, "mprotect05.tmp.%d", getpid());
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (addr != MAP_FAILED) {
-> +		SAFE_MUNMAP(NULL, addr, fullsize);
-> +		SAFE_CLOSE(NULL, fd);
-> +	}
-> +
-> +	tst_rmdir();
-> +}
-> -- 
-> 2.39.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
+index eddd7f6c5..d3428a9a0 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
+@@ -32,8 +32,16 @@ check
+ 
+ exit_status=0
+ 
++#read free layout is buff/cache or buff cache
++bc_string=$(free -g | awk '{if(NR==1) print $5}')
++
+ # usable physical memory
+-py_mem=$(free -m | awk '{if(NR==2) print $4 + $6 + $7}')
++if [ "$bc_string" == "buff/cache" ]
++then
++        py_mem=$(free -m | awk '{if(NR==2) print $4 + $6}')
++else
++        py_mem=$(free -m | awk '{if(NR==2) print $4 + $6 + $7}')
++fi
+ 
+ # free swap space
+ sw_mem=$(free -m | awk '{if(NR==4) print $4}')
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
