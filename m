@@ -4,60 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE751C6FA8E
-	for <ltp@archiver.kernel.org>; Thu,  2 Mar 2023 10:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C335C6FA8E
+	for <ltp@archiver.kernel.org>; Thu,  2 Mar 2023 10:04:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 82BA93CDCF1
-	for <ltp@archiver.kernel.org>; Thu,  2 Mar 2023 11:00:21 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id E1B393CB9FB
+	for <ltp@archiver.kernel.org>; Thu,  2 Mar 2023 11:04:09 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 63D403CB9CA
- for <ltp@lists.linux.it>; Thu,  2 Mar 2023 11:00:11 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id C0A613CB9CA
+ for <ltp@lists.linux.it>; Thu,  2 Mar 2023 11:03:59 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CAFBB1A00E7F
- for <ltp@lists.linux.it>; Thu,  2 Mar 2023 11:00:10 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2F4291A010EF
+ for <ltp@lists.linux.it>; Thu,  2 Mar 2023 11:03:58 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 082BA21C1A;
- Thu,  2 Mar 2023 10:00:10 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5701D1FE6E;
+ Thu,  2 Mar 2023 10:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1677751210;
+ t=1677751438;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fjoM4Ii6DngkTCV3k4fwBkoSL3zFiATMjf6+mvLHTF4=;
- b=2sPZ+1g5BGoFg2vtbKQ6BkPIYOuiDVFoWNm2lnYJLhOz2CuAFxlEw7siMLNk2JzCZZNmvH
- BNXN/q72ra/kGcxWkDM/GJHZgqBp+LoKu25ad9PMSuiw4TQ531C5DN10ezzwkmD5bLCvEX
- 6NzGhbbAA2FkcSDvPJaA92+PKNLAZQA=
+ bh=DndrlAaC3VyVpuNDmSs4hTD/HksSVvLjqS3dVROU6JQ=;
+ b=hDO+hVrJ6Da2cdvw77t6JRT6m0juWhJaxXXXRbw++DldGw/PvW25LSVIbEyFNpF1DVlYeL
+ k2PRq6GJS3gXCfUXJRxsL8C/WRIeDsc2tIokN/3KtNoHPNGxWW8YdV+xe958LBqxr6fFm2
+ ZsqeoemzZh9hCyhsY6P+eQY6kiKAV58=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1677751210;
+ s=susede2_ed25519; t=1677751438;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fjoM4Ii6DngkTCV3k4fwBkoSL3zFiATMjf6+mvLHTF4=;
- b=UoJ8ftXrqQ2qSEcpd3BHc2sXNRFKSJdbqdFiPeMJvrW8q6nIBiuaY6MOpSthNXNR0xa90Y
- 5Bj9A5BhZA7PjfDw==
+ bh=DndrlAaC3VyVpuNDmSs4hTD/HksSVvLjqS3dVROU6JQ=;
+ b=vs8rDqfg57K/ymp212fjlPculu4XbKUedQc6GKl4FHRCWgqOs+od1MIo+WmEWNWeW5nn08
+ Pg3JEcpQtvJ9DwCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C88B913349;
- Thu,  2 Mar 2023 10:00:09 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 10E5C13349;
+ Thu,  2 Mar 2023 10:03:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id GkNcL6lzAGTRSwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 02 Mar 2023 10:00:09 +0000
-Date: Thu, 2 Mar 2023 11:00:08 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id bUjlAY50AGT2TQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 02 Mar 2023 10:03:58 +0000
+Date: Thu, 2 Mar 2023 11:03:56 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Wei Gao <wegao@suse.com>
-Message-ID: <ZABzqALt4+Zjqtxq@pevik>
+Message-ID: <ZAB0jOFczVIeDsRL@pevik>
 References: <20230228032745.16595-1-wegao@suse.com>
  <20230302014519.31512-1-wegao@suse.com>
 MIME-Version: 1.0
@@ -87,55 +86,16 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Wei,
 
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  .../kernel/syscalls/fsconfig/fsconfig03.c     | 21 ++++++++++++-------
->  1 file changed, 13 insertions(+), 8 deletions(-)
-
-> diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig03.c b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-> index 7ee37f4ae..9adf06207 100644
-> --- a/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-> +++ b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-> @@ -41,15 +41,20 @@ static void run(void)
->  	if (pagesize == -1)
->  		tst_brk(TBROK, "sysconf(_SC_PAGESIZE) failed");
-
-> -	for (size_t i = 0; i < 5000; i++) {
-> -		/* use same logic in kernel legacy_parse_param function */
-> -		const size_t len = i * (strlen(val) + 2) + (strlen(val) + 1) + 2;
-> +	if ((tst_kvercmp(5, 17, 1)) >= 0) {
-I suppose 722d94847de29 (in .tags) change the old behavior (from v5.17-rc1).
-Shouldn't be the check against 5.17.0?
-if ((tst_kvercmp(5, 17, 0)) >= 0) {
-
-
-> +		for (size_t i = 0; i < 5000; i++) {
-> +			/* use same logic in kernel legacy_parse_param function */
-> +			const size_t len = i * (strlen(val) + 2) + (strlen(val) + 1) + 2;
-
-> -		if (!strcmp(tst_device->fs_type, "btrfs") && len <= (size_t)pagesize)
-> -			TST_EXP_PASS_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0));
-> -		else
-> -			TST_EXP_FAIL_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0),
-> -					    EINVAL);
-> +			if (!strcmp(tst_device->fs_type, "btrfs") && len <= (size_t)pagesize)
-> +				TST_EXP_PASS_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0));
-> +			else
-> +				TST_EXP_FAIL_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0),
-> +						EINVAL);
-> +		}
+...
 > +	} else {
 > +		for (size_t i = 0; i < 5000; i++)
-Repeating the loop again. Wouldn't be more readable moving the if clause to
-separate function and doing if/else inside of for loop?
-
-Also "\x00" might be in #define (used 3 times).
+> +			fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0);
+Why calling fsconfig() without any check for old kernels? It really looks
+strange we don't care about the result. That would deserve an explanation in the
+commit message.
 
 Kind regards,
 Petr
-
-> +			fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0);
->  	}
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
