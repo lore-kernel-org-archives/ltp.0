@@ -4,68 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C335C6FA8E
-	for <ltp@archiver.kernel.org>; Thu,  2 Mar 2023 10:04:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF5CBC6FA8E
+	for <ltp@archiver.kernel.org>; Thu,  2 Mar 2023 10:36:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E1B393CB9FB
-	for <ltp@archiver.kernel.org>; Thu,  2 Mar 2023 11:04:09 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id C865B3CCE03
+	for <ltp@archiver.kernel.org>; Thu,  2 Mar 2023 11:36:48 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C0A613CB9CA
- for <ltp@lists.linux.it>; Thu,  2 Mar 2023 11:03:59 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id BB3F23CB9C9
+ for <ltp@lists.linux.it>; Thu,  2 Mar 2023 11:36:36 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2F4291A010EF
- for <ltp@lists.linux.it>; Thu,  2 Mar 2023 11:03:58 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4D8D060085E
+ for <ltp@lists.linux.it>; Thu,  2 Mar 2023 11:36:35 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5701D1FE6E;
- Thu,  2 Mar 2023 10:03:58 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2F0171FE65
+ for <ltp@lists.linux.it>; Thu,  2 Mar 2023 10:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1677751438;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DndrlAaC3VyVpuNDmSs4hTD/HksSVvLjqS3dVROU6JQ=;
- b=hDO+hVrJ6Da2cdvw77t6JRT6m0juWhJaxXXXRbw++DldGw/PvW25LSVIbEyFNpF1DVlYeL
- k2PRq6GJS3gXCfUXJRxsL8C/WRIeDsc2tIokN/3KtNoHPNGxWW8YdV+xe958LBqxr6fFm2
- ZsqeoemzZh9hCyhsY6P+eQY6kiKAV58=
+ t=1677753395; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=9f7fRcoy++uWfQbtJ29ahHo3uaSY70x73p3VE5tPYGU=;
+ b=OGafIo6kEw/++n4x23mhG/Ly1z5vPIocOzFq0tRilQId3PVpxuAud9wKCe796Q44K5QwJd
+ nRCdpEiSc5fKDtsucQBfAcOsZCo21O8iA1owlkDuBj5UpocCx5hZ7C7KKXvY1CmpVmRYQ/
+ kwMmDQR2XQWYeArai6vH4UwqVoeIt0g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1677751438;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DndrlAaC3VyVpuNDmSs4hTD/HksSVvLjqS3dVROU6JQ=;
- b=vs8rDqfg57K/ymp212fjlPculu4XbKUedQc6GKl4FHRCWgqOs+od1MIo+WmEWNWeW5nn08
- Pg3JEcpQtvJ9DwCA==
+ s=susede2_ed25519; t=1677753395;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=9f7fRcoy++uWfQbtJ29ahHo3uaSY70x73p3VE5tPYGU=;
+ b=bZNeN/M+JwFuxC+6HN+6K28/uvIOrzWGah8Lt6plLXXKLQ9NuneyCiWjJG7g+1GL2NUQXK
+ JAHOwhWpnWdYS5Dg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 10E5C13349;
- Thu,  2 Mar 2023 10:03:58 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2068813349
+ for <ltp@lists.linux.it>; Thu,  2 Mar 2023 10:36:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id bUjlAY50AGT2TQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 02 Mar 2023 10:03:58 +0000
-Date: Thu, 2 Mar 2023 11:03:56 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <ZAB0jOFczVIeDsRL@pevik>
-References: <20230228032745.16595-1-wegao@suse.com>
- <20230302014519.31512-1-wegao@suse.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ynIxBzN8AGR3YAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Thu, 02 Mar 2023 10:36:35 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu,  2 Mar 2023 11:35:52 +0100
+Message-Id: <20230302103552.10800-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230302014519.31512-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v7] fsconfig03: SKIP check return value for old
- kernel
+Subject: [LTP] [PATCH] fsconfig03: Fix return value validation on older
+ kernels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,25 +73,75 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: kernel-qa@suse.de, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+On older kernels, Btrfs is not the only filesystem using the legacy
+fsconfig() handlers. Assume that fsconfig() is using legacy_parse_param()
+and allow it to return success regardless of filesystem up until the point
+where the legacy buffer would get full.
 
-...
-> +	} else {
-> +		for (size_t i = 0; i < 5000; i++)
-> +			fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0);
-Why calling fsconfig() without any check for old kernels? It really looks
-strange we don't care about the result. That would deserve an explanation in the
-commit message.
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-Kind regards,
-Petr
+Tested on kernel 5.3 both with and without the CVE fix.
+
+ .../kernel/syscalls/fsconfig/fsconfig03.c     | 27 +++++++++++++++----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/fsconfig/fsconfig03.c b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
+index 7ee37f4ae..e891c9f98 100644
+--- a/testcases/kernel/syscalls/fsconfig/fsconfig03.c
++++ b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
+@@ -45,11 +45,21 @@ static void run(void)
+ 		/* use same logic in kernel legacy_parse_param function */
+ 		const size_t len = i * (strlen(val) + 2) + (strlen(val) + 1) + 2;
+ 
+-		if (!strcmp(tst_device->fs_type, "btrfs") && len <= (size_t)pagesize)
+-			TST_EXP_PASS_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0));
+-		else
+-			TST_EXP_FAIL_SILENT(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0),
+-					    EINVAL);
++		TEST(fsconfig(fd, FSCONFIG_SET_STRING, "\x00", val, 0));
++
++		/* Legacy fsconfig() just copies arguments to buffer */
++		if (!TST_RET && len <= (size_t)pagesize)
++			continue;
++
++		if (!TST_RET) {
++			tst_res(TFAIL, "fsconfig() passed unexpectedly");
++		} else if (TST_RET != -1) {
++			tst_brk(TBROK | TTERRNO,
++				"Invalid fsconfig() return value %ld", TST_RET);
++		} else if (TST_ERR != EINVAL) {
++			tst_res(TFAIL | TTERRNO,
++				"fsconfig() failed with unexpected error");
++		}
+ 	}
+ 
+ 	if (fd != -1)
+@@ -63,9 +73,16 @@ static void run(void)
+ 			tst_device->fs_type);
+ }
+ 
++static void cleanup(void)
++{
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
+ static struct tst_test test = {
+ 	.test_all = run,
+ 	.setup = setup,
++	.cleanup = cleanup,
+ 	.needs_root = 1,
+ 	.format_device = 1,
+ 	.mntpoint = MNTPOINT,
+-- 
+2.39.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
