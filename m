@@ -4,56 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A633C678D4
-	for <ltp@archiver.kernel.org>; Fri,  3 Mar 2023 09:25:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAE42C64EC4
+	for <ltp@archiver.kernel.org>; Fri,  3 Mar 2023 09:38:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8F5D43CB98C
-	for <ltp@archiver.kernel.org>; Fri,  3 Mar 2023 10:25:26 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 585453CB986
+	for <ltp@archiver.kernel.org>; Fri,  3 Mar 2023 10:38:52 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EB8CF3CB8F0
- for <ltp@lists.linux.it>; Fri,  3 Mar 2023 10:25:10 +0100 (CET)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 147203CB005
+ for <ltp@lists.linux.it>; Fri,  3 Mar 2023 10:38:40 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E22CC1000A29
- for <ltp@lists.linux.it>; Fri,  3 Mar 2023 10:25:06 +0100 (CET)
-X-UUID: 8ed66b6e096140e7bd6b207ee86b2093-20230303
-X-CPASD-INFO: 69ae94b2e15b4c949cbd1e992eba1797
- @f4mbhWZmkGKRUXeug6aEblmUkpRhkVmIdJ-
- CkV9nZVeVhH5xTV5nX1V9gnNXZF5dXFV3dnBQYmBhXVJ3i3-XblBgXoZgUZB3hXubhWlikg==
-X-CLOUD-ID: 69ae94b2e15b4c949cbd1e992eba1797
-X-CPASD-SUMMARY: SIP:-1, APTIP:-2.0, KEY:0.0, FROMBLOCK:1, OB:0.0, URL:-5,
- TVAL:169.
- 0, ESV:0.0, ECOM:-5.0, ML:0.0, FD:0.0, CUTS:152.0, IP:-2.0, MAL:-5.0, PHF:-5.0,
- PHC:-5
- .0, SPF:4.0, EDMS:-5, IPLABEL:4480.0, FROMTO:0, AD:0, FFOB:0.0, CFOB:0.0, SPC:0,
- SIG:-
- 5, AUF:3, DUF:17382, ACD:250, DCD:250, SL:0, EISP:0, AG:0, CFC:0.294,
- CFSR:0.056, UAT:0
- , RAF:0, IMG:-5.0, DFA:0, DTA:0, IBL:-2.0, ADI:-5, SBL:0, REDM:0, REIP:0, ESB:0,
- ATTNUM: 0,EAF:0,CID:-5.0,VERSION:2.3.17
-X-CPASD-ID: 8ed66b6e096140e7bd6b207ee86b2093-20230303
-X-CPASD-BLOCK: 1000
-X-CPASD-STAGE: 1
-X-UUID: 8ed66b6e096140e7bd6b207ee86b2093-20230303
-X-User: gehao@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by mailgw
- (envelope-from <gehao@kylinos.cn>) (Generic MTA)
- with ESMTP id 1580110299; Fri, 03 Mar 2023 17:25:00 +0800
-To: ltp@lists.linux.it
-Date: Fri,  3 Mar 2023 17:24:29 +0800
-Message-Id: <20230303092429.103190-1-gehao@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230301080131.86627-1-gehao@kylinos.cn>
-References: <20230301080131.86627-1-gehao@kylinos.cn>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DA6501A0116F
+ for <ltp@lists.linux.it>; Fri,  3 Mar 2023 10:38:39 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2C01D22A64;
+ Fri,  3 Mar 2023 09:38:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1677836319;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6DAF7KvEvZICteAs36tLTrNi9W25l63B9RF4JSKOqHo=;
+ b=yK1e2DIt0FLCnU54dGhY3y+4oivtpJQWQqEZu5NSlrxjWurn1OUgRx2Bbws6Lqggb71xn2
+ 4EYS/qFP7X6//8qTZnxLqPr4NaeK6VNkZbkARPgq//FUDmuwi4Lt/1AKKwCxhvvcs1kh8t
+ ahsswltJDxG6oOBLwInEvTnIZlllKUU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1677836319;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6DAF7KvEvZICteAs36tLTrNi9W25l63B9RF4JSKOqHo=;
+ b=BQBRluEyuBbpoDg+RZ7l18EchJQf690jdwxloguGnFBTmdmBfILJ0UD7sMnALFEkw2KhQF
+ t55XmbMIqFqbMLCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE6B21329E;
+ Fri,  3 Mar 2023 09:38:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3n3zIh7AAWSccQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 03 Mar 2023 09:38:38 +0000
+Date: Fri, 3 Mar 2023 11:22:56 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <20230303102256.GA15936@pevik>
+References: <20230301152818.4427-1-andrea.cervesato@suse.com>
+ <20230301152818.4427-4-andrea.cervesato@suse.com>
+ <20230303092526.GD4255@pevik>
+ <30a9ec9f-4b14-da27-83c4-ffbbf8b0c0cb@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <30a9ec9f-4b14-da27-83c4-ffbbf8b0c0cb@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] cpuset/cpuset_memory_pressure_test: Fix free
- memory calculate
+Subject: Re: [LTP] [PATCH v5 3/6] Refactor mqns_03 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,60 +78,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Hao Ge via ltp <ltp@lists.linux.it>
-Reply-To: Hao Ge <gehao@kylinos.cn>
-Cc: Hao Ge <gehao@kylinos.cn>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Currently, free has two output formats,as follows
+Hi Andrea,
 
-free -m
-        total        used        free      shared  buff/cache   available
-Mem:   128135        3857      120633         158        3644      123219
-Swap:    8191          82        8109
+...
+> > >   #define _GNU_SOURCE
+> > I wonder why _GNU_SOURCE was used here and in mqns_04.c. I don't see anything
+> > in man mq_open(3), both tests are working without it.
+> Because of MAP_ANONYMOUS for mmap
 
-free -m
-        total       used       free     shared    buffers     cached
-Mem:   419694       9464     410230        234        435       6005
--/+ buffers/cache:       3022     416671
-Swap:    2053          0       2053
+Hm, I see MAP_ANONYMOUS and MAP_ANON not being guarded in glibc nor in musl.
 
-We need to avoid the error of adding the available item so that py_mem is
-wrong.
-
-Signed-off-by: Hao Ge <gehao@kylinos.cn>
----
- .../cpuset_memory_pressure_testset.sh                  | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-index eddd7f6c5..88db03fd9 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_memory_pressure_test/cpuset_memory_pressure_testset.sh
-@@ -32,8 +32,16 @@ check
- 
- exit_status=0
- 
-+#read free cmd print layout is buff/cache or buff cache
-+bc_string=$(free -m | awk '{if(NR==1) print $5}')
-+
- # usable physical memory
--py_mem=$(free -m | awk '{if(NR==2) print $4 + $6 + $7}')
-+if [ "$bc_string" == "buff/cache" ]
-+then
-+        py_mem=$(free -m | awk '{if(NR==2) print $4 + $6}')
-+else
-+        py_mem=$(free -m | awk '{if(NR==2) print $4 + $6 + $7}')
-+fi
- 
- # free swap space
- sw_mem=$(free -m | awk '{if(NR==4) print $4}')
--- 
-2.25.1
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
