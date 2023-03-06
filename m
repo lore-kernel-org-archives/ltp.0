@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98F14C6FA99
-	for <ltp@archiver.kernel.org>; Mon,  6 Mar 2023 15:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0079C61DA4
+	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 00:00:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 13AB43CDB1E
-	for <ltp@archiver.kernel.org>; Mon,  6 Mar 2023 16:13:43 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 8168F3CB0E4
+	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 01:00:05 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 877FC3C4D54
- for <ltp@lists.linux.it>; Mon,  6 Mar 2023 16:13:32 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id C6D3C3C27D9
+ for <ltp@lists.linux.it>; Tue,  7 Mar 2023 00:59:55 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F2AAC600782
- for <ltp@lists.linux.it>; Mon,  6 Mar 2023 16:13:31 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EDF191A002CF
+ for <ltp@lists.linux.it>; Tue,  7 Mar 2023 00:59:54 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 128DF1FDEB;
- Mon,  6 Mar 2023 15:13:31 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D4FD821A09;
+ Mon,  6 Mar 2023 23:59:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1678115611; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1678147193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Nd1zgxgz5inr87l9dEt2U7ojPGLsEInLGLZxR01nkZ0=;
- b=DBIBcmEKHfPMsbyJTWgNFnAXKtCPHbZz+1x8uycKI0MBdd5QMxzmd4rykcbMWEbZSLJhAo
- AIKh4IyfrL4TkvAtRhmztUf3WKQEIY2kQJ8VDVCZnPKZrP00JQK3zDcBYjzcAwh6d0FIav
- 2zb0uqJN9k0GiyQTKjgemgVD+8O8wpk=
+ bh=pPFsLIPbf1btnCqFptwYKhjzamVkmFpYHLVpV+lduy8=;
+ b=Nn1EzFq4zmL+Q6nv4s2DqQMxgNddyTxWDcRMmcNAX23P84WGJlBMqcmsWsYsIb2XOjqdTS
+ SPfSfael2ff+4Az+dnYyoi/YLKEHINlNCm/hxCeAAuv7YbiswXxuX2hS3jWQiGE5VH3cPv
+ jk0MJTaH3nychHGFj3dyC3+8tIfhF5Q=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BDF8A13A66;
- Mon,  6 Mar 2023 15:13:29 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1463113524;
+ Mon,  6 Mar 2023 23:59:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id u2H/HxkDBmRXIwAAMHmgww
- (envelope-from <wegao@suse.com>); Mon, 06 Mar 2023 15:13:29 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id rO4eN3h+BmT2LwAAMHmgww
+ (envelope-from <wegao@suse.com>); Mon, 06 Mar 2023 23:59:52 +0000
 To: ltp@lists.linux.it
-Date: Mon,  6 Mar 2023 10:13:03 -0500
-Message-Id: <20230306151303.2757-1-wegao@suse.com>
+Date: Mon,  6 Mar 2023 18:57:15 -0500
+Message-Id: <20230306235715.29868-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230305091044.25715-1-wegao@suse.com>
-References: <20230305091044.25715-1-wegao@suse.com>
+In-Reply-To: <20230306151303.2757-1-wegao@suse.com>
+References: <20230306151303.2757-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] kill01: New case cgroup kill
+Subject: [LTP] [PATCH v4] kill01: New case cgroup kill
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,7 +74,6 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Wei Gao <wegao@suse.com>
-Reviewed-by: Li Wang <liwang@redhat.com>
 ---
  lib/tst_cgroup.c                             |   1 +
  runtest/controllers                          |   1 +
