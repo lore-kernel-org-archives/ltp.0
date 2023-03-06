@@ -4,66 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26A88C6FA99
-	for <ltp@archiver.kernel.org>; Mon,  6 Mar 2023 15:11:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98F14C6FA99
+	for <ltp@archiver.kernel.org>; Mon,  6 Mar 2023 15:13:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9DC023CDAF9
-	for <ltp@archiver.kernel.org>; Mon,  6 Mar 2023 16:11:40 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 13AB43CDB1E
+	for <ltp@archiver.kernel.org>; Mon,  6 Mar 2023 16:13:43 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EC7823C4D54
- for <ltp@lists.linux.it>; Mon,  6 Mar 2023 16:11:30 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 877FC3C4D54
+ for <ltp@lists.linux.it>; Mon,  6 Mar 2023 16:13:32 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7B95B20033C
- for <ltp@lists.linux.it>; Mon,  6 Mar 2023 16:11:29 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F2AAC600782
+ for <ltp@lists.linux.it>; Mon,  6 Mar 2023 16:13:31 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7D28F223A0;
- Mon,  6 Mar 2023 15:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1678115489; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 128DF1FDEB;
+ Mon,  6 Mar 2023 15:13:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1678115611; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XwdnOGdcsbpmmVllQu6wZx/fpa97gvLI3sCliaFlOSs=;
- b=xkV+TKbUNTUlA3fD3UIEMK3mXDxH1mfqgC7HqCDsIAIEsBnNdv7g2wI4Xg+eiMEq2a2/Wd
- EhshgEIzK7hfjqOSrniUoDmIWimkBQ9bLCBYpG5jWuVXX2I8n9H6gOcCiKqwCewsOe3ZXu
- myk1d9vLod0dcYZMUXj9neKv+eKXPjA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1678115489;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=XwdnOGdcsbpmmVllQu6wZx/fpa97gvLI3sCliaFlOSs=;
- b=MLQChrgTXVmyFn0/H8fRbX/60vJBET3rJbijwYK8reFoTT/QYL3+9zXsVyrtBdpkazJAxN
- 04S5l7C708AaoYCg==
+ bh=Nd1zgxgz5inr87l9dEt2U7ojPGLsEInLGLZxR01nkZ0=;
+ b=DBIBcmEKHfPMsbyJTWgNFnAXKtCPHbZz+1x8uycKI0MBdd5QMxzmd4rykcbMWEbZSLJhAo
+ AIKh4IyfrL4TkvAtRhmztUf3WKQEIY2kQJ8VDVCZnPKZrP00JQK3zDcBYjzcAwh6d0FIav
+ 2zb0uqJN9k0GiyQTKjgemgVD+8O8wpk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 638DC13A66;
- Mon,  6 Mar 2023 15:11:29 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BDF8A13A66;
+ Mon,  6 Mar 2023 15:13:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id zOWMFqECBmQyIgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 06 Mar 2023 15:11:29 +0000
-Date: Mon, 6 Mar 2023 16:12:49 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Zhao Gongyi <zhaogongyi@bytedance.com>
-Message-ID: <ZAYC8TNhPkjT9BMX@yuki>
-References: <20230303075258.1066-1-zhaogongyi@bytedance.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id u2H/HxkDBmRXIwAAMHmgww
+ (envelope-from <wegao@suse.com>); Mon, 06 Mar 2023 15:13:29 +0000
+To: ltp@lists.linux.it
+Date: Mon,  6 Mar 2023 10:13:03 -0500
+Message-Id: <20230306151303.2757-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230305091044.25715-1-wegao@suse.com>
+References: <20230305091044.25715-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230303075258.1066-1-zhaogongyi@bytedance.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] ltp-pan: Send SIGKILL instead of SIGALRM to kill
- the child process
+Subject: [LTP] [PATCH v3] kill01: New case cgroup kill
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,27 +66,221 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> When PAN stop Alarm was received, and the testcase blocked the signal SIGALRM,
-> PAN will be hung up until the testcase exit. So it is necessary to send SIGKILL
-> instead of SIGALRM to kill the running process.
+Signed-off-by: Wei Gao <wegao@suse.com>
+Reviewed-by: Li Wang <liwang@redhat.com>
+---
+ lib/tst_cgroup.c                             |   1 +
+ runtest/controllers                          |   1 +
+ testcases/kernel/controllers/kill/.gitignore |   1 +
+ testcases/kernel/controllers/kill/Makefile   |   6 +
+ testcases/kernel/controllers/kill/kill01.c   | 143 +++++++++++++++++++
+ 5 files changed, 152 insertions(+)
+ create mode 100644 testcases/kernel/controllers/kill/.gitignore
+ create mode 100644 testcases/kernel/controllers/kill/Makefile
+ create mode 100644 testcases/kernel/controllers/kill/kill01.c
 
-The ltp-pan is deprecated and the latest LTP release included runltp-ng; a
-modern replacement for the runltp script + ltp-pan. Have you tried
-runltp-ng?
-
-It's not worth investing time into ltp-pan that will be eventually
-removed.
-
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 50699bc63..77575431d 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -166,6 +166,7 @@ static const struct cgroup_file cgroup_ctrl_files[] = {
+ 	{ "cgroup.controllers", NULL, 0 },
+ 	{ "cgroup.subtree_control", NULL, 0 },
+ 	{ "cgroup.clone_children", "cgroup.clone_children", 0 },
++	{ "cgroup.kill", NULL, 0 },
+ 	{ }
+ };
+ 
+diff --git a/runtest/controllers b/runtest/controllers
+index 8d1b936bf..2f69a8ec2 100644
+--- a/runtest/controllers
++++ b/runtest/controllers
+@@ -23,6 +23,7 @@ memcontrol01 memcontrol01
+ memcontrol02 memcontrol02
+ memcontrol03 memcontrol03
+ memcontrol04 memcontrol04
++kill01 kill01
+ 
+ cgroup_fj_function_debug cgroup_fj_function.sh debug
+ cgroup_fj_function_cpuset cgroup_fj_function.sh cpuset
+diff --git a/testcases/kernel/controllers/kill/.gitignore b/testcases/kernel/controllers/kill/.gitignore
+new file mode 100644
+index 000000000..4f9649e27
+--- /dev/null
++++ b/testcases/kernel/controllers/kill/.gitignore
+@@ -0,0 +1 @@
++/kill01
+diff --git a/testcases/kernel/controllers/kill/Makefile b/testcases/kernel/controllers/kill/Makefile
+new file mode 100644
+index 000000000..5ea7d67db
+--- /dev/null
++++ b/testcases/kernel/controllers/kill/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/controllers/kill/kill01.c b/testcases/kernel/controllers/kill/kill01.c
+new file mode 100644
+index 000000000..4024049e0
+--- /dev/null
++++ b/testcases/kernel/controllers/kill/kill01.c
+@@ -0,0 +1,143 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2012 Christian Brauner <brauner-AT-kernel.org>
++ * Copyright (c) 2023 SUSE LLC <wegao@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Basic cgroup kill test.
++ *
++ */
++
++#include <errno.h>
++#include <linux/limits.h>
++#include <stdbool.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <sys/wait.h>
++
++#include "lapi/syscalls.h"
++#include "tst_test.h"
++
++#define MAX_PID_NUM 100
++#define pid_num MIN(MAX_PID_NUM, (tst_ncpus_available() + 1))
++#define buf_len (20 * pid_num)
++
++static char *buf;
++static struct tst_cg_group *cg_child_test_simple;
++
++static int wait_for_pid(pid_t pid)
++{
++	int status, ret;
++
++again:
++	ret = waitpid(pid, &status, 0);
++	if (ret == -1) {
++		if (errno == EINTR)
++			goto again;
++
++		return -1;
++	}
++
++	if (!WIFEXITED(status))
++		return -1;
++
++	return WEXITSTATUS(status);
++}
++
++/*
++ * A simple process running in a sleep loop until being
++ * re-parented.
++ */
++static void child_fn(void)
++{
++	int ppid = getppid();
++
++	while (getppid() == ppid)
++		usleep(1000);
++
++}
++
++static int cg_run_nowait(const struct tst_cg_group *const cg,
++		  void (*fn)(void))
++{
++	int pid;
++
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		SAFE_CG_PRINTF(cg, "cgroup.procs", "%d", getpid());
++		fn();
++	}
++
++	return pid;
++}
++
++static int cg_wait_for_proc_count(const struct tst_cg_group *cg, int count)
++{
++	int attempts;
++	char *ptr;
++
++	for (attempts = 100; attempts >= 0; attempts--) {
++		int nr = 0;
++
++		SAFE_CG_READ(cg, "cgroup.procs", buf, buf_len);
++
++		for (ptr = buf; *ptr; ptr++)
++			if (*ptr == '\n')
++				nr++;
++
++		if (nr >= count)
++			return 0;
++
++		usleep(100000);
++	}
++
++	return -1;
++}
++
++static void run(void)
++{
++	pid_t pids[MAX_PID_NUM];
++	int i;
++
++	cg_child_test_simple = tst_cg_group_mk(tst_cg, "cg_test_simple");
++
++	for (i = 0; i < pid_num; i++)
++		pids[i] = cg_run_nowait(cg_child_test_simple, child_fn);
++
++	TST_EXP_PASS(cg_wait_for_proc_count(cg_child_test_simple, pid_num));
++	SAFE_CG_PRINTF(cg_child_test_simple, "cgroup.kill", "%d", 1);
++
++	for (i = 0; i < pid_num; i++) {
++		/* wait_for_pid(pids[i]); */
++		TST_EXP_PASS_SILENT(wait_for_pid(pids[i]) == SIGKILL);
++	}
++
++	cg_child_test_simple = tst_cg_group_rm(cg_child_test_simple);
++}
++
++static void setup(void)
++{
++	buf = SAFE_MALLOC(buf_len);
++	memset(buf, 0, buf_len);
++}
++
++static void cleanup(void)
++{
++	free(buf);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.forks_child = 1,
++	.max_runtime = 15,
++	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
++	.needs_cgroup_ver = TST_CG_V2,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
