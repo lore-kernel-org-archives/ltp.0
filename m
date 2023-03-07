@@ -4,62 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D090EC678D4
-	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 08:47:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50AC2C678D4
+	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 08:52:14 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 574943CB884
-	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 09:47:13 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 84A993CCDCF
+	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 09:52:12 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B76993C27D9
- for <ltp@lists.linux.it>; Tue,  7 Mar 2023 09:47:03 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 605783C27D9
+ for <ltp@lists.linux.it>; Tue,  7 Mar 2023 09:52:01 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B5BEA600280
- for <ltp@lists.linux.it>; Tue,  7 Mar 2023 09:47:02 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 8021321972;
- Tue,  7 Mar 2023 08:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1678178821;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pSHaSuxcbTLsCfbVL33xVAelmlLOAqTlMWRRWYw39CQ=;
- b=XI2ZVqXs3fU/DahmUEtKhpeUErBAb+TLvQP121PP4zKpTwIWPJAlg9JdiuYGeEqdXUa/Dp
- LSPOFvlBXmiAlA/t9nY6O1Q8hLV9IG1w4F0Q8TcfYYtc9Yfz74rVvaLD/4kc9eLYPr37+F
- SopwrMBKo3h0/ZyQVYO2zKF6h1k6NRM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1678178821;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pSHaSuxcbTLsCfbVL33xVAelmlLOAqTlMWRRWYw39CQ=;
- b=oM1dI3lpJkAU4sSjs47aAQkCjv/2u9P0JQjzyN9nRdVuQx4QOXzy4gZSHlbqadGwrF1JDI
- R9xsJimMT/xu4+CA==
-Received: from g78 (unknown [10.100.204.110])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B519360080F
+ for <ltp@lists.linux.it>; Tue,  7 Mar 2023 09:52:00 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id BC6632C141;
- Tue,  7 Mar 2023 08:47:00 +0000 (UTC)
-References: <87bkl67xxa.fsf@suse.de>
- <1678169395-4584-1-git-send-email-xuyang2018.jy@fujitsu.com>
-User-agent: mu4e 1.8.13; emacs 28.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Date: Tue, 07 Mar 2023 08:35:29 +0000
-Organization: Linux Private Site
-In-reply-to: <1678169395-4584-1-git-send-email-xuyang2018.jy@fujitsu.com>
-Message-ID: <877cvt7xtq.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 00E2E21972;
+ Tue,  7 Mar 2023 08:52:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1678179120; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=zlIrT1vnzIWT4wiwtFTOSXHWzb338vmlO0gt0qlmz1s=;
+ b=rAku2ksPgqfEqPPs74KURN6DT4AZqxC25K+5WaSPNfXKu42WG1Aq7LdUJsp84+z3yRvS6v
+ MfuJHVBkSf+5sR4yLAVf/QjpYgBGTfku6MH2xt5dZXe5+5yZz0m5DEBTtfKwYsISWGkQzf
+ nwRghTUlW4DV9RPik+35m3tfhDt7Ebs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ECC1913440;
+ Tue,  7 Mar 2023 08:51:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8zPjLy77BmQxJgAAMHmgww
+ (envelope-from <wegao@suse.com>); Tue, 07 Mar 2023 08:51:58 +0000
+To: ltp@lists.linux.it
+Date: Tue,  7 Mar 2023 03:51:39 -0500
+Message-Id: <20230307085139.3574-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230306235715.29868-1-wegao@suse.com>
+References: <20230306235715.29868-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] containers/utsname04: don't use TST_EXP_EQ_LI
- for tst_clone
+Subject: [LTP] [PATCH v5] kill01: New case cgroup kill
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,66 +67,215 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ lib/tst_cgroup.c                             |   1 +
+ runtest/controllers                          |   1 +
+ testcases/kernel/controllers/kill/.gitignore |   1 +
+ testcases/kernel/controllers/kill/Makefile   |   6 +
+ testcases/kernel/controllers/kill/kill01.c   | 138 +++++++++++++++++++
+ 5 files changed, 147 insertions(+)
+ create mode 100644 testcases/kernel/controllers/kill/.gitignore
+ create mode 100644 testcases/kernel/controllers/kill/Makefile
+ create mode 100644 testcases/kernel/controllers/kill/kill01.c
 
-Yang Xu <xuyang2018.jy@fujitsu.com> writes:
-
-> For old kernel(below 5.3) that doesn't support clone3, tst_clone returns
-> -2 instead of -1. So we can't use TST_EXP_EQ_LI api.
->
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
-
-Thanks, I suppose this could be avoided in the future by hinting that
-the return type is more complex than the usual for clone
-
-typedef tst_clone_return_t pid_t;
-
-enum tst_clone_error {
-  TST_CLONE_ERROR = -2,
-  TST_CLONE3_ERROR = -1
-};
-
-Possibly we could force a cast somehow? Otherwise it's just a hint.
-
-> ---
->  testcases/kernel/containers/utsname/utsname04.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/testcases/kernel/containers/utsname/utsname04.c b/testcases/kernel/containers/utsname/utsname04.c
-> index e8d636d0d..61cc066d8 100644
-> --- a/testcases/kernel/containers/utsname/utsname04.c
-> +++ b/testcases/kernel/containers/utsname/utsname04.c
-> @@ -29,7 +29,13 @@ static void run(void)
->  	SAFE_SETRESUID(pw->pw_uid, pw->pw_uid, pw->pw_uid);
->  
->  	if (!str_op || !strcmp(str_op, "clone")) {
-> -		TST_EXP_EQ_LI(tst_clone(&cargs), -1);
-> +		TEST(tst_clone(&cargs));
-> +		if (TST_RET == -1)
-> +			tst_res(TPASS, "clone3() fails as expected");
-> +		else if (TST_RET == -2)
-> +			tst_res(TPASS, "clone() fails as expected");
-> +		else
-> +			tst_res(TFAIL, "tst_clone returns %ld", TST_RET);
->  		TST_EXP_PASS(errno == EPERM);
->  	} else {
->  		if (!SAFE_FORK()) {
-> -- 
-> 2.39.1
-
-
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 50699bc63..77575431d 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -166,6 +166,7 @@ static const struct cgroup_file cgroup_ctrl_files[] = {
+ 	{ "cgroup.controllers", NULL, 0 },
+ 	{ "cgroup.subtree_control", NULL, 0 },
+ 	{ "cgroup.clone_children", "cgroup.clone_children", 0 },
++	{ "cgroup.kill", NULL, 0 },
+ 	{ }
+ };
+ 
+diff --git a/runtest/controllers b/runtest/controllers
+index 8d1b936bf..2f69a8ec2 100644
+--- a/runtest/controllers
++++ b/runtest/controllers
+@@ -23,6 +23,7 @@ memcontrol01 memcontrol01
+ memcontrol02 memcontrol02
+ memcontrol03 memcontrol03
+ memcontrol04 memcontrol04
++kill01 kill01
+ 
+ cgroup_fj_function_debug cgroup_fj_function.sh debug
+ cgroup_fj_function_cpuset cgroup_fj_function.sh cpuset
+diff --git a/testcases/kernel/controllers/kill/.gitignore b/testcases/kernel/controllers/kill/.gitignore
+new file mode 100644
+index 000000000..4f9649e27
+--- /dev/null
++++ b/testcases/kernel/controllers/kill/.gitignore
+@@ -0,0 +1 @@
++/kill01
+diff --git a/testcases/kernel/controllers/kill/Makefile b/testcases/kernel/controllers/kill/Makefile
+new file mode 100644
+index 000000000..5ea7d67db
+--- /dev/null
++++ b/testcases/kernel/controllers/kill/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/controllers/kill/kill01.c b/testcases/kernel/controllers/kill/kill01.c
+new file mode 100644
+index 000000000..432747e16
+--- /dev/null
++++ b/testcases/kernel/controllers/kill/kill01.c
+@@ -0,0 +1,138 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2012 Christian Brauner <brauner-AT-kernel.org>
++ * Copyright (c) 2023 SUSE LLC <wegao@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Basic cgroup kill test.
++ *
++ */
++
++#include <errno.h>
++#include <linux/limits.h>
++#include <stdbool.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <sys/wait.h>
++
++#include "lapi/syscalls.h"
++#include "tst_test.h"
++
++#define MAX_PID_NUM 100
++#define pid_num MIN(MAX_PID_NUM, (tst_ncpus_available() + 1))
++#define buf_len (20 * pid_num)
++
++static char *buf;
++static struct tst_cg_group *cg_child_test_simple;
++
++static int wait_for_pid(pid_t pid)
++{
++	int status, ret;
++
++again:
++	ret = waitpid(pid, &status, 0);
++	if (ret == -1) {
++		if (errno == EINTR)
++			goto again;
++
++		return -1;
++	}
++
++	if (!WIFEXITED(status))
++		return -1;
++
++	return WEXITSTATUS(status);
++}
++
++/*
++ * A simple process running in a sleep loop until being
++ * re-parented.
++ */
++static void child_fn(void)
++{
++	int ppid = getppid();
++
++	while (getppid() == ppid)
++		usleep(1000);
++
++}
++
++static int cg_run_nowait(const struct tst_cg_group *const cg,
++		  void (*fn)(void))
++{
++	int pid;
++
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		SAFE_CG_PRINTF(cg, "cgroup.procs", "%d", getpid());
++		fn();
++	}
++
++	return pid;
++}
++
++static int cg_wait_for_proc_count(const struct tst_cg_group *cg, int count)
++{
++	int attempts;
++	char *ptr;
++
++	for (attempts = 100; attempts >= 0; attempts--) {
++		int nr = 0;
++
++		SAFE_CG_READ(cg, "cgroup.procs", buf, buf_len);
++
++		for (ptr = buf; *ptr; ptr++)
++			if (*ptr == '\n')
++				nr++;
++
++		if (nr >= count)
++			return 0;
++
++		usleep(100000);
++	}
++
++	return -1;
++}
++
++static void run(void)
++{
++	pid_t pids[MAX_PID_NUM];
++	int i;
++
++	cg_child_test_simple = tst_cg_group_mk(tst_cg, "cg_test_simple");
++
++	memset(buf, 0, buf_len);
++
++	for (i = 0; i < pid_num; i++)
++		pids[i] = cg_run_nowait(cg_child_test_simple, child_fn);
++
++	TST_EXP_PASS(cg_wait_for_proc_count(cg_child_test_simple, pid_num));
++	SAFE_CG_PRINTF(cg_child_test_simple, "cgroup.kill", "%d", 1);
++
++	for (i = 0; i < pid_num; i++) {
++		/* wait_for_pid(pids[i]); */
++		TST_EXP_PASS_SILENT(wait_for_pid(pids[i]) == SIGKILL);
++	}
++
++	cg_child_test_simple = tst_cg_group_rm(cg_child_test_simple);
++}
++
++static void setup(void)
++{
++	buf = tst_alloc(buf_len);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.forks_child = 1,
++	.max_runtime = 15,
++	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
++	.needs_cgroup_ver = TST_CG_V2,
++};
 -- 
-Thank you,
-Richard.
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
