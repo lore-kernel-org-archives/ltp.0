@@ -4,78 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FA7EC678D5
-	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 11:37:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8683C678D5
+	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 12:28:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C076E3CD9D7
-	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 12:37:43 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9D36C3CB8BB
+	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 13:28:50 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A7733CB86E
- for <ltp@lists.linux.it>; Tue,  7 Mar 2023 12:37:32 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 9D96B3CB855
+ for <ltp@lists.linux.it>; Tue,  7 Mar 2023 13:28:40 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 364771000B11
- for <ltp@lists.linux.it>; Tue,  7 Mar 2023 12:37:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1678189049;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B5B891400060
+ for <ltp@lists.linux.it>; Tue,  7 Mar 2023 13:28:39 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 063A21F37C;
+ Tue,  7 Mar 2023 12:28:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1678192119;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rY5a3aWxFIkRnZd5+rGj3QwaoymHriRm3OwGWJmCr1w=;
- b=VZg8fVMZiph5pfmewbOZlJVQ/eQbkmi6Bf1kzL+MvK/fuJ1WOpFOJLAT7NLzVz+PBGFNIZ
- E7vVpDo7YY4zmBkW9VxZGA8UdUHeLeaud6w4V5FEK2wU7Q+oB4bupsDrcPpysxPFP+qxtl
- vvpy3eZHk+geKdeL0NBrDPmNSOwT7VI=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-393-SIDvgS8EOXuP_0xqxZCJdQ-1; Tue, 07 Mar 2023 06:37:28 -0500
-X-MC-Unique: SIDvgS8EOXuP_0xqxZCJdQ-1
-Received: by mail-wm1-f72.google.com with SMTP id
- c7-20020a7bc847000000b003e00be23a70so8144348wml.2
- for <ltp@lists.linux.it>; Tue, 07 Mar 2023 03:37:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1678189046;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=rY5a3aWxFIkRnZd5+rGj3QwaoymHriRm3OwGWJmCr1w=;
- b=CFe3vN1l+54ptSKS4rCEkNW2aKcrP5aALi4ugC/iF/Pk/mGLTSUuTjQsVPQVWQsMx/
- 1rBKJO85UoDu4WKyUxxPHTrDdCr40X65mT4V+Z/rzH3JPNniqkqBX+urPBawK8A9y2f4
- PnWPQMXq9gRBi0ca7Ic7qD93hIqG5+MiBD63basTOrNrAq7Npwnn5rjiC0HN8jW94nQc
- /nOb8fDf/M1hopwSWdUs4vgOUqCjEtINYvqOcE/SpICDLSG/WsZW5KZ3Yer0E8Nrbcky
- ttTHdQsUW/gC/ULsk5A79jAqLAMT5coerdGhJXzuCYex2Y5Ii/zebVtO4+I2CEDeyoww
- q/Jg==
-X-Gm-Message-State: AO0yUKV2gzz3EY7M/XTab0jezfRY/yoi7ozZYzo460SPiHzDstz3cj6N
- FXwtnH4a9ScPgs24fBj0/kbI8L5ZZA0ykWlJmT69pqU+bxUDQt72C6HmvYxNvEhn4+HgFbE/YMq
- rnPeBxOdGX10YHQwa8Yv31yg3w07KwkHtGYbxtmkQ
-X-Received: by 2002:a05:600c:a:b0:3eb:40de:981b with SMTP id
- g10-20020a05600c000a00b003eb40de981bmr3452468wmc.3.1678189046651; 
- Tue, 07 Mar 2023 03:37:26 -0800 (PST)
-X-Google-Smtp-Source: AK7set9RvCEQUKvN8b1giLRfSZcVX45dNItyxqaYoO+V+fugW/gtXWlyLe9hsVgQh4flGLYfxlHXaClkHQ+yKvscpDM=
-X-Received: by 2002:a05:600c:a:b0:3eb:40de:981b with SMTP id
- g10-20020a05600c000a00b003eb40de981bmr3452462wmc.3.1678189046301; Tue, 07 Mar
- 2023 03:37:26 -0800 (PST)
+ bh=F9r8urI0EHm+ai1qTG1g3s+6+s6RUKoJ8zldHPQvIJc=;
+ b=MNNSLfF0IAOUWfovVDXvldybfy/a5QpEYt+n8nVH71pZXvR6E1rT6/VpIEKUdJB1yQlxoB
+ ClEeLDhYuPiAgun19nqc8wbPvh89IZCFbHi2Vs8Kgl94YyM7rPyaMj1mG8Y3crreeqcMV+
+ oNFaIyoGWc4nmFzyTXDGotqYaNn/sQs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1678192119;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=F9r8urI0EHm+ai1qTG1g3s+6+s6RUKoJ8zldHPQvIJc=;
+ b=x35cbh9X59rZvTxLjiO+xdPHJsJKsLVzkItR9RgVXu/w4J1otfojBWh/v39ROTajU8TUve
+ gwBZR6ttJ7s6HEAg==
+Received: from g78 (rpalethorpe.udp.ovpn2.prg.suse.de [10.100.204.110])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 565572C141;
+ Tue,  7 Mar 2023 12:28:38 +0000 (UTC)
+References: <20230216102942.11859-1-andrea.cervesato@suse.com>
+User-agent: mu4e 1.8.13; emacs 28.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Date: Tue, 07 Mar 2023 12:26:38 +0000
+Organization: Linux Private Site
+In-reply-to: <20230216102942.11859-1-andrea.cervesato@suse.com>
+Message-ID: <87y1o87nkf.fsf@suse.de>
 MIME-Version: 1.0
-References: <20230306235715.29868-1-wegao@suse.com>
- <20230307085139.3574-1-wegao@suse.com>
-In-Reply-To: <20230307085139.3574-1-wegao@suse.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 7 Mar 2023 19:37:14 +0800
-Message-ID: <CAEemH2ehHZhFpYHtH3u8kk5DO0u099Nnxy=Df58=yZSXEFTEsg@mail.gmail.com>
-To: Wei Gao <wegao@suse.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v5] kill01: New case cgroup kill
+Subject: Re: [LTP] [PATCH v1] Remove ltp_quick_clone from mountns testing
+ suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,114 +70,272 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBNYXIgNywgMjAyMyBhdCA0OjUy4oCvUE0gV2VpIEdhbyA8d2VnYW9Ac3VzZS5jb20+
-IHdyb3RlOgoKPiBTaWduZWQtb2ZmLWJ5OiBXZWkgR2FvIDx3ZWdhb0BzdXNlLmNvbT4KPgoKUmV2
-aWV3ZWQtYnk6IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPgoKCgo+IC0tLQo+ICBsaWIvdHN0
-X2Nncm91cC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArCj4gIHJ1bnRlc3Qv
-Y29udHJvbGxlcnMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxICsKPiAgdGVzdGNhc2Vz
-L2tlcm5lbC9jb250cm9sbGVycy9raWxsLy5naXRpZ25vcmUgfCAgIDEgKwo+ICB0ZXN0Y2FzZXMv
-a2VybmVsL2NvbnRyb2xsZXJzL2tpbGwvTWFrZWZpbGUgICB8ICAgNiArCj4gIHRlc3RjYXNlcy9r
-ZXJuZWwvY29udHJvbGxlcnMva2lsbC9raWxsMDEuYyAgIHwgMTM4ICsrKysrKysrKysrKysrKysr
-KysKPiAgNSBmaWxlcyBjaGFuZ2VkLCAxNDcgaW5zZXJ0aW9ucygrKQo+ICBjcmVhdGUgbW9kZSAx
-MDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9raWxsLy5naXRpZ25vcmUKPiAgY3Jl
-YXRlIG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMva2lsbC9NYWtlZmls
-ZQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9raWxs
-L2tpbGwwMS5jCj4KPiBkaWZmIC0tZ2l0IGEvbGliL3RzdF9jZ3JvdXAuYyBiL2xpYi90c3RfY2dy
-b3VwLmMKPiBpbmRleCA1MDY5OWJjNjMuLjc3NTc1NDMxZCAxMDA2NDQKPiAtLS0gYS9saWIvdHN0
-X2Nncm91cC5jCj4gKysrIGIvbGliL3RzdF9jZ3JvdXAuYwo+IEBAIC0xNjYsNiArMTY2LDcgQEAg
-c3RhdGljIGNvbnN0IHN0cnVjdCBjZ3JvdXBfZmlsZSBjZ3JvdXBfY3RybF9maWxlc1tdID0gewo+
-ICAgICAgICAgeyAiY2dyb3VwLmNvbnRyb2xsZXJzIiwgTlVMTCwgMCB9LAo+ICAgICAgICAgeyAi
-Y2dyb3VwLnN1YnRyZWVfY29udHJvbCIsIE5VTEwsIDAgfSwKPiAgICAgICAgIHsgImNncm91cC5j
-bG9uZV9jaGlsZHJlbiIsICJjZ3JvdXAuY2xvbmVfY2hpbGRyZW4iLCAwIH0sCj4gKyAgICAgICB7
-ICJjZ3JvdXAua2lsbCIsIE5VTEwsIDAgfSwKPiAgICAgICAgIHsgfQo+ICB9Owo+Cj4gZGlmZiAt
-LWdpdCBhL3J1bnRlc3QvY29udHJvbGxlcnMgYi9ydW50ZXN0L2NvbnRyb2xsZXJzCj4gaW5kZXgg
-OGQxYjkzNmJmLi4yZjY5YThlYzIgMTAwNjQ0Cj4gLS0tIGEvcnVudGVzdC9jb250cm9sbGVycwo+
-ICsrKyBiL3J1bnRlc3QvY29udHJvbGxlcnMKPiBAQCAtMjMsNiArMjMsNyBAQCBtZW1jb250cm9s
-MDEgbWVtY29udHJvbDAxCj4gIG1lbWNvbnRyb2wwMiBtZW1jb250cm9sMDIKPiAgbWVtY29udHJv
-bDAzIG1lbWNvbnRyb2wwMwo+ICBtZW1jb250cm9sMDQgbWVtY29udHJvbDA0Cj4gK2tpbGwwMSBr
-aWxsMDEKPgo+ICBjZ3JvdXBfZmpfZnVuY3Rpb25fZGVidWcgY2dyb3VwX2ZqX2Z1bmN0aW9uLnNo
-IGRlYnVnCj4gIGNncm91cF9mal9mdW5jdGlvbl9jcHVzZXQgY2dyb3VwX2ZqX2Z1bmN0aW9uLnNo
-IGNwdXNldAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2tpbGwv
-LmdpdGlnbm9yZQo+IGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9raWxsLy5naXRpZ25v
-cmUKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMC4uNGY5NjQ5ZTI3Cj4g
-LS0tIC9kZXYvbnVsbAo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMva2lsbC8u
-Z2l0aWdub3JlCj4gQEAgLTAsMCArMSBAQAo+ICsva2lsbDAxCj4gZGlmZiAtLWdpdCBhL3Rlc3Rj
-YXNlcy9rZXJuZWwvY29udHJvbGxlcnMva2lsbC9NYWtlZmlsZQo+IGIvdGVzdGNhc2VzL2tlcm5l
-bC9jb250cm9sbGVycy9raWxsL01ha2VmaWxlCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRl
-eCAwMDAwMDAwMDAuLjVlYTdkNjdkYgo+IC0tLSAvZGV2L251bGwKPiArKysgYi90ZXN0Y2FzZXMv
-a2VybmVsL2NvbnRyb2xsZXJzL2tpbGwvTWFrZWZpbGUKPiBAQCAtMCwwICsxLDYgQEAKPiArIyBT
-UERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgo+ICsKPiArdG9wX3NyY2Rp
-ciAgICAgICAgICAgICA/PSAuLi8uLi8uLi8uLgo+ICsKPiAraW5jbHVkZSAkKHRvcF9zcmNkaXIp
-L2luY2x1ZGUvbWsvdGVzdGNhc2VzLm1rCj4gK2luY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRl
-L21rL2dlbmVyaWNfbGVhZl90YXJnZXQubWsKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5l
-bC9jb250cm9sbGVycy9raWxsL2tpbGwwMS5jCj4gYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xs
-ZXJzL2tpbGwva2lsbDAxLmMKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAw
-MC4uNDMyNzQ3ZTE2Cj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29u
-dHJvbGxlcnMva2lsbC9raWxsMDEuYwo+IEBAIC0wLDAgKzEsMTM4IEBACj4gKy8vIFNQRFgtTGlj
-ZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9yLWxhdGVyCj4gKy8qCj4gKyAqIENvcHlyaWdodCAo
-YykgMjAxMiBDaHJpc3RpYW4gQnJhdW5lciA8YnJhdW5lci1BVC1rZXJuZWwub3JnPgo+ICsgKiBD
-b3B5cmlnaHQgKGMpIDIwMjMgU1VTRSBMTEMgPHdlZ2FvQHN1c2UuY29tPgo+ICsgKi8KPiArCj4g
-Ky8qXAo+ICsgKiBbRGVzY3JpcHRpb25dCj4gKyAqCj4gKyAqIEJhc2ljIGNncm91cCBraWxsIHRl
-c3QuCj4gKyAqCj4gKyAqLwo+ICsKPiArI2luY2x1ZGUgPGVycm5vLmg+Cj4gKyNpbmNsdWRlIDxs
-aW51eC9saW1pdHMuaD4KPiArI2luY2x1ZGUgPHN0ZGJvb2wuaD4KPiArI2luY2x1ZGUgPHN0ZGlv
-Lmg+Cj4gKyNpbmNsdWRlIDxzdGRsaWIuaD4KPiArI2luY2x1ZGUgPHN0cmluZy5oPgo+ICsjaW5j
-bHVkZSA8c3lzL3R5cGVzLmg+Cj4gKyNpbmNsdWRlIDx1bmlzdGQuaD4KPiArI2luY2x1ZGUgPHN5
-cy93YWl0Lmg+Cj4gKwo+ICsjaW5jbHVkZSAibGFwaS9zeXNjYWxscy5oIgo+ICsjaW5jbHVkZSAi
-dHN0X3Rlc3QuaCIKPiArCj4gKyNkZWZpbmUgTUFYX1BJRF9OVU0gMTAwCj4gKyNkZWZpbmUgcGlk
-X251bSBNSU4oTUFYX1BJRF9OVU0sICh0c3RfbmNwdXNfYXZhaWxhYmxlKCkgKyAxKSkKPiArI2Rl
-ZmluZSBidWZfbGVuICgyMCAqIHBpZF9udW0pCj4gKwo+ICtzdGF0aWMgY2hhciAqYnVmOwo+ICtz
-dGF0aWMgc3RydWN0IHRzdF9jZ19ncm91cCAqY2dfY2hpbGRfdGVzdF9zaW1wbGU7Cj4gKwo+ICtz
-dGF0aWMgaW50IHdhaXRfZm9yX3BpZChwaWRfdCBwaWQpCj4gK3sKPiArICAgICAgIGludCBzdGF0
-dXMsIHJldDsKPiArCj4gK2FnYWluOgo+ICsgICAgICAgcmV0ID0gd2FpdHBpZChwaWQsICZzdGF0
-dXMsIDApOwo+ICsgICAgICAgaWYgKHJldCA9PSAtMSkgewo+ICsgICAgICAgICAgICAgICBpZiAo
-ZXJybm8gPT0gRUlOVFIpCj4gKyAgICAgICAgICAgICAgICAgICAgICAgZ290byBhZ2FpbjsKPiAr
-Cj4gKyAgICAgICAgICAgICAgIHJldHVybiAtMTsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICBp
-ZiAoIVdJRkVYSVRFRChzdGF0dXMpKQo+ICsgICAgICAgICAgICAgICByZXR1cm4gLTE7Cj4gKwo+
-ICsgICAgICAgcmV0dXJuIFdFWElUU1RBVFVTKHN0YXR1cyk7Cj4gK30KPiArCj4gKy8qCj4gKyAq
-IEEgc2ltcGxlIHByb2Nlc3MgcnVubmluZyBpbiBhIHNsZWVwIGxvb3AgdW50aWwgYmVpbmcKPiAr
-ICogcmUtcGFyZW50ZWQuCj4gKyAqLwo+ICtzdGF0aWMgdm9pZCBjaGlsZF9mbih2b2lkKQo+ICt7
-Cj4gKyAgICAgICBpbnQgcHBpZCA9IGdldHBwaWQoKTsKPiArCj4gKyAgICAgICB3aGlsZSAoZ2V0
-cHBpZCgpID09IHBwaWQpCj4gKyAgICAgICAgICAgICAgIHVzbGVlcCgxMDAwKTsKPiArCj4gK30K
-PiArCj4gK3N0YXRpYyBpbnQgY2dfcnVuX25vd2FpdChjb25zdCBzdHJ1Y3QgdHN0X2NnX2dyb3Vw
-ICpjb25zdCBjZywKPiArICAgICAgICAgICAgICAgICB2b2lkICgqZm4pKHZvaWQpKQo+ICt7Cj4g
-KyAgICAgICBpbnQgcGlkOwo+ICsKPiArICAgICAgIHBpZCA9IFNBRkVfRk9SSygpOwo+ICsgICAg
-ICAgaWYgKHBpZCA9PSAwKSB7Cj4gKyAgICAgICAgICAgICAgIFNBRkVfQ0dfUFJJTlRGKGNnLCAi
-Y2dyb3VwLnByb2NzIiwgIiVkIiwgZ2V0cGlkKCkpOwo+ICsgICAgICAgICAgICAgICBmbigpOwo+
-ICsgICAgICAgfQo+ICsKPiArICAgICAgIHJldHVybiBwaWQ7Cj4gK30KPiArCj4gK3N0YXRpYyBp
-bnQgY2dfd2FpdF9mb3JfcHJvY19jb3VudChjb25zdCBzdHJ1Y3QgdHN0X2NnX2dyb3VwICpjZywg
-aW50Cj4gY291bnQpCj4gK3sKPiArICAgICAgIGludCBhdHRlbXB0czsKPiArICAgICAgIGNoYXIg
-KnB0cjsKPiArCj4gKyAgICAgICBmb3IgKGF0dGVtcHRzID0gMTAwOyBhdHRlbXB0cyA+PSAwOyBh
-dHRlbXB0cy0tKSB7Cj4gKyAgICAgICAgICAgICAgIGludCBuciA9IDA7Cj4gKwo+ICsgICAgICAg
-ICAgICAgICBTQUZFX0NHX1JFQUQoY2csICJjZ3JvdXAucHJvY3MiLCBidWYsIGJ1Zl9sZW4pOwo+
-ICsKPiArICAgICAgICAgICAgICAgZm9yIChwdHIgPSBidWY7ICpwdHI7IHB0cisrKQo+ICsgICAg
-ICAgICAgICAgICAgICAgICAgIGlmICgqcHRyID09ICdcbicpCj4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBucisrOwo+ICsKPiArICAgICAgICAgICAgICAgaWYgKG5yID49IGNvdW50
-KQo+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAwOwo+ICsKPiArICAgICAgICAgICAg
-ICAgdXNsZWVwKDEwMDAwMCk7Cj4gKyAgICAgICB9Cj4gKwo+ICsgICAgICAgcmV0dXJuIC0xOwo+
-ICt9Cj4gKwo+ICtzdGF0aWMgdm9pZCBydW4odm9pZCkKPiArewo+ICsgICAgICAgcGlkX3QgcGlk
-c1tNQVhfUElEX05VTV07Cj4gKyAgICAgICBpbnQgaTsKPiArCj4gKyAgICAgICBjZ19jaGlsZF90
-ZXN0X3NpbXBsZSA9IHRzdF9jZ19ncm91cF9tayh0c3RfY2csICJjZ190ZXN0X3NpbXBsZSIpOwo+
-ICsKPiArICAgICAgIG1lbXNldChidWYsIDAsIGJ1Zl9sZW4pOwo+ICsKPiArICAgICAgIGZvciAo
-aSA9IDA7IGkgPCBwaWRfbnVtOyBpKyspCj4gKyAgICAgICAgICAgICAgIHBpZHNbaV0gPSBjZ19y
-dW5fbm93YWl0KGNnX2NoaWxkX3Rlc3Rfc2ltcGxlLCBjaGlsZF9mbik7Cj4gKwo+ICsgICAgICAg
-VFNUX0VYUF9QQVNTKGNnX3dhaXRfZm9yX3Byb2NfY291bnQoY2dfY2hpbGRfdGVzdF9zaW1wbGUs
-Cj4gcGlkX251bSkpOwo+ICsgICAgICAgU0FGRV9DR19QUklOVEYoY2dfY2hpbGRfdGVzdF9zaW1w
-bGUsICJjZ3JvdXAua2lsbCIsICIlZCIsIDEpOwo+ICsKPiArICAgICAgIGZvciAoaSA9IDA7IGkg
-PCBwaWRfbnVtOyBpKyspIHsKPiArICAgICAgICAgICAgICAgLyogd2FpdF9mb3JfcGlkKHBpZHNb
-aV0pOyAqLwo+ICsgICAgICAgICAgICAgICBUU1RfRVhQX1BBU1NfU0lMRU5UKHdhaXRfZm9yX3Bp
-ZChwaWRzW2ldKSA9PSBTSUdLSUxMKTsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICBjZ19jaGls
-ZF90ZXN0X3NpbXBsZSA9IHRzdF9jZ19ncm91cF9ybShjZ19jaGlsZF90ZXN0X3NpbXBsZSk7Cj4g
-K30KPiArCj4gK3N0YXRpYyB2b2lkIHNldHVwKHZvaWQpCj4gK3sKPiArICAgICAgIGJ1ZiA9IHRz
-dF9hbGxvYyhidWZfbGVuKTsKPiArfQo+ICsKPiArc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0
-ID0gewo+ICsgICAgICAgLnRlc3RfYWxsID0gcnVuLAo+ICsgICAgICAgLnNldHVwID0gc2V0dXAs
-Cj4gKyAgICAgICAuZm9ya3NfY2hpbGQgPSAxLAo+ICsgICAgICAgLm1heF9ydW50aW1lID0gMTUs
-Cj4gKyAgICAgICAubmVlZHNfY2dyb3VwX2N0cmxzID0gKGNvbnN0IGNoYXIgKmNvbnN0IFtdKXsg
-Im1lbW9yeSIsIE5VTEwgfSwKPiArICAgICAgIC5uZWVkc19jZ3JvdXBfdmVyID0gVFNUX0NHX1Yy
-LAo+ICt9Owo+IC0tCj4gMi4zNS4zCj4KPgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWls
-aW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hello,
+
+Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
+
+> ltp_quick_clone has been replaced by SAFE_CLONE in the mountns testing
+> suite that now is independed from libclone and legacy API.
+>
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+>  testcases/kernel/containers/mountns/mountns.h  | 18 ------------------
+>  .../kernel/containers/mountns/mountns01.c      | 16 ++++++++--------
+>  .../kernel/containers/mountns/mountns02.c      | 16 ++++++++--------
+>  .../kernel/containers/mountns/mountns03.c      | 16 ++++++++--------
+>  .../kernel/containers/mountns/mountns04.c      |  2 +-
+>  5 files changed, 25 insertions(+), 43 deletions(-)
+>
+> diff --git a/testcases/kernel/containers/mountns/mountns.h b/testcases/kernel/containers/mountns/mountns.h
+> index 615f1a058..9bb854659 100644
+> --- a/testcases/kernel/containers/mountns/mountns.h
+> +++ b/testcases/kernel/containers/mountns/mountns.h
+> @@ -8,28 +8,10 @@
+>  #define COMMON_H
+>  
+>  #include "tst_test.h"
+> -#include "lapi/sched.h"
+>  
+>  #define DIRA "LTP_DIR_A"
+>  #define DIRB "LTP_DIR_B"
+>  
+> -static int dummy_child(void *v)
+> -{
+> -	(void)v;
+> -	return 0;
+> -}
+> -
+> -static void check_newns(void)
+> -{
+> -	int pid, status;
+> -
+> -	pid = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, dummy_child, NULL);
+> -	if (pid < 0)
+> -		tst_brk(TCONF, "CLONE_NEWNS not supported");
+> -
+> -	SAFE_WAIT(&status);
+> -}
+> -
+
+If we remove this then we need to check the kernel config for namespace
+support. Which you were doing in other tests IIRC.
+
+Otherwise looks good, but setting to changes requested.
+
+>  static void umount_folders(void)
+>  {
+>  	if (tst_is_mounted(DIRA))
+> diff --git a/testcases/kernel/containers/mountns/mountns01.c b/testcases/kernel/containers/mountns/mountns01.c
+> index e8f176920..c5b6077f1 100644
+> --- a/testcases/kernel/containers/mountns/mountns01.c
+> +++ b/testcases/kernel/containers/mountns/mountns01.c
+> @@ -33,8 +33,9 @@
+>  #include <sys/mount.h>
+>  #include "mountns.h"
+>  #include "tst_test.h"
+> +#include "lapi/sched.h"
+>  
+> -static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+> +static void child_func(void)
+>  {
+>  	TST_CHECKPOINT_WAIT(0);
+>  
+> @@ -51,13 +52,11 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+>  	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+>  
+>  	SAFE_UMOUNT(DIRA);
+> -
+> -	return 0;
+>  }
+>  
+>  static void run(void)
+>  {
+> -	int ret;
+> +	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
+>  
+>  	SAFE_UNSHARE(CLONE_NEWNS);
+>  
+> @@ -67,9 +66,10 @@ static void run(void)
+>  	SAFE_MOUNT(DIRA, DIRA, "none", MS_BIND, NULL);
+>  	SAFE_MOUNT("none", DIRA, "none", MS_SHARED, NULL);
+>  
+> -	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+> -	if (ret < 0)
+> -		tst_brk(TBROK, "clone failed");
+> +	if (!SAFE_CLONE(&args)) {
+> +		child_func();
+> +		return;
+> +	}
+>  
+>  	SAFE_MOUNT(DIRB, DIRA, "none", MS_BIND, NULL);
+>  
+> @@ -93,7 +93,6 @@ static void run(void)
+>  
+>  static void setup(void)
+>  {
+> -	check_newns();
+>  	create_folders();
+>  }
+>  
+> @@ -107,5 +106,6 @@ static struct tst_test test = {
+>  	.cleanup = cleanup,
+>  	.test_all = run,
+>  	.needs_root = 1,
+> +	.forks_child = 1,
+>  	.needs_checkpoints = 1,
+>  };
+> diff --git a/testcases/kernel/containers/mountns/mountns02.c b/testcases/kernel/containers/mountns/mountns02.c
+> index 4b85fa79b..c2260961e 100644
+> --- a/testcases/kernel/containers/mountns/mountns02.c
+> +++ b/testcases/kernel/containers/mountns/mountns02.c
+> @@ -34,8 +34,9 @@
+>  #include <sys/mount.h>
+>  #include "mountns.h"
+>  #include "tst_test.h"
+> +#include "lapi/sched.h"
+>  
+> -static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+> +static void child_func(void)
+>  {
+>  	TST_CHECKPOINT_WAIT(0);
+>  
+> @@ -51,13 +52,11 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+>  	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+>  
+>  	SAFE_UMOUNT(DIRA);
+> -
+> -	return 0;
+>  }
+>  
+>  static void run(void)
+>  {
+> -	int ret;
+> +	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
+>  
+>  	SAFE_UNSHARE(CLONE_NEWNS);
+>  
+> @@ -68,9 +67,10 @@ static void run(void)
+>  
+>  	SAFE_MOUNT("none", DIRA, "none", MS_PRIVATE, NULL);
+>  
+> -	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+> -	if (ret < 0)
+> -		tst_brk(TBROK, "clone failed");
+> +	if (!SAFE_CLONE(&args)) {
+> +		child_func();
+> +		return;
+> +	}
+>  
+>  	SAFE_MOUNT(DIRB, DIRA, "none", MS_BIND, NULL);
+>  
+> @@ -94,7 +94,6 @@ static void run(void)
+>  
+>  static void setup(void)
+>  {
+> -	check_newns();
+>  	create_folders();
+>  }
+>  
+> @@ -108,5 +107,6 @@ static struct tst_test test = {
+>  	.cleanup = cleanup,
+>  	.test_all = run,
+>  	.needs_root = 1,
+> +	.forks_child = 1,
+>  	.needs_checkpoints = 1,
+>  };
+> diff --git a/testcases/kernel/containers/mountns/mountns03.c b/testcases/kernel/containers/mountns/mountns03.c
+> index 1d26a25d8..357a4f30b 100644
+> --- a/testcases/kernel/containers/mountns/mountns03.c
+> +++ b/testcases/kernel/containers/mountns/mountns03.c
+> @@ -36,8 +36,9 @@
+>  #include <sys/mount.h>
+>  #include "mountns.h"
+>  #include "tst_test.h"
+> +#include "lapi/sched.h"
+>  
+> -static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+> +static void child_func(void)
+>  {
+>  	/*
+>  	 * makes mount DIRA a slave of DIRA (all slave mounts have
+> @@ -59,13 +60,11 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+>  	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+>  
+>  	SAFE_UMOUNT(DIRA);
+> -
+> -	return 0;
+>  }
+>  
+>  static void run(void)
+>  {
+> -	int ret;
+> +	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
+>  
+>  	SAFE_UNSHARE(CLONE_NEWNS);
+>  
+> @@ -76,9 +75,10 @@ static void run(void)
+>  
+>  	SAFE_MOUNT("none", DIRA, "none", MS_SHARED, NULL);
+>  
+> -	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+> -	if (ret < 0)
+> -		tst_brk(TBROK, "clone failed");
+> +	if (!SAFE_CLONE(&args)) {
+> +		child_func();
+> +		return;
+> +	}
+>  
+>  	TST_CHECKPOINT_WAIT(0);
+>  
+> @@ -104,7 +104,6 @@ static void run(void)
+>  
+>  static void setup(void)
+>  {
+> -	check_newns();
+>  	create_folders();
+>  }
+>  
+> @@ -118,5 +117,6 @@ static struct tst_test test = {
+>  	.cleanup = cleanup,
+>  	.test_all = run,
+>  	.needs_root = 1,
+> +	.forks_child = 1,
+>  	.needs_checkpoints = 1,
+>  };
+> diff --git a/testcases/kernel/containers/mountns/mountns04.c b/testcases/kernel/containers/mountns/mountns04.c
+> index fc392f1a7..6a64c2443 100644
+> --- a/testcases/kernel/containers/mountns/mountns04.c
+> +++ b/testcases/kernel/containers/mountns/mountns04.c
+> @@ -22,6 +22,7 @@
+>  #include <sys/mount.h>
+>  #include "mountns.h"
+>  #include "tst_test.h"
+> +#include "lapi/sched.h"
+>  
+>  static void run(void)
+>  {
+> @@ -46,7 +47,6 @@ static void run(void)
+>  
+>  static void setup(void)
+>  {
+> -	check_newns();
+>  	create_folders();
+>  }
+>  
+> -- 
+> 2.35.3
+
+
+-- 
+Thank you,
+Richard.
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
