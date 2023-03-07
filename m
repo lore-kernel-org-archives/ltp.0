@@ -4,63 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2EB4C678D4
-	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 12:48:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C112C678D4
+	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 12:49:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 605AB3CDA11
-	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 13:48:43 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id A919F3CD9A2
+	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 13:49:26 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1072B3CB855
- for <ltp@lists.linux.it>; Tue,  7 Mar 2023 13:48:33 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id B1C893CB855
+ for <ltp@lists.linux.it>; Tue,  7 Mar 2023 13:49:16 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6F4B72000D3
- for <ltp@lists.linux.it>; Tue,  7 Mar 2023 13:48:31 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 66378219AA;
- Tue,  7 Mar 2023 12:48:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1678193311;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=SZXZLt2vGZJysS02f9Hev4LVO5qqGGTm8oHC4hYy6bI=;
- b=pw6B2lgHuJM2nIuAhwgpYY4G99OQ2aZuxBXPK/uHMY98Cn7271EWxq5TCRae3uRKQqMTph
- irP0A1576vBIjvUXjgAQY8SURpFdlVZ/SpumYBXGO1oK86SzIBMP3kmNKTq4Bo6ld0AiAR
- TZTiaRdqSW21gvbmK+EW/vj0H9wiAW0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1678193311;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=SZXZLt2vGZJysS02f9Hev4LVO5qqGGTm8oHC4hYy6bI=;
- b=ZzCgLMZEijHbrov8j3Stx7TPw/BiakvmrZSu5Nfk92pV1+acxqrBNlG6PLRWljkeRfB/+T
- Id8FSjNbbtnVnOBg==
-Received: from g78 (unknown [10.100.204.110])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 23FFE1A0090C
+ for <ltp@lists.linux.it>; Tue,  7 Mar 2023 13:49:15 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 9066B2C141;
- Tue,  7 Mar 2023 12:48:30 +0000 (UTC)
-References: <20230216114745.2389810-1-andrei.gherzan@canonical.com>
- <Y++c8fBZxmUIR3Lb@pevik>
-User-agent: mu4e 1.8.13; emacs 28.2
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 07 Mar 2023 12:43:14 +0000
-Organization: Linux Private Site
-In-reply-to: <Y++c8fBZxmUIR3Lb@pevik>
-Message-ID: <87ttyw7mn6.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9E8CB1FE1B;
+ Tue,  7 Mar 2023 12:49:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1678193355; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5EOHsqWCLhacq/qJjgJi/4PUhJCuTLvAn/6KgKnSRxY=;
+ b=KsEuHUK6e+kyN0lxo0c3czIVkF2ZZy6jYgSlLcUebTV/SwDlecwJbci2Sw5OX/NaQc1uP0
+ 5g8ooWxQ9DcugAfJBBZzzgoDzu38qCTGQUfHTaoOlpM9ipGsCF0ti1/q8TUpSk0GgV87Y0
+ 03fzTrerBdizTKAK6X8lboHYIdnWVPU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1678193355;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5EOHsqWCLhacq/qJjgJi/4PUhJCuTLvAn/6KgKnSRxY=;
+ b=Oj5zMSmdlZolaWGlFP5GldA6kAEbWGT6NU7yqK6D2kfF/i76uZh0x8bY/FF5ZBXu6huIWg
+ OWDvQaVvQVb9UpCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 781B71341F;
+ Tue,  7 Mar 2023 12:49:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6OVcG8syB2RjPQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 07 Mar 2023 12:49:15 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Tue,  7 Mar 2023 13:47:03 +0100
+Message-Id: <20230307124708.27280-2-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230307124708.27280-1-andrea.cervesato@suse.de>
+References: <20230307124708.27280-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] fs_fill: Fix test when running on a 256 CPU+
- machine
+Subject: [LTP] [PATCH v6 1/6] Refactor mqns_01 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,121 +77,248 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it, Andrei Gherzan <andrei.gherzan@canonical.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Petr Vorel <pvorel@suse.cz> writes:
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ runtest/containers                         |   3 +-
+ testcases/kernel/containers/mqns/mqns_01.c | 184 +++++++--------------
+ 2 files changed, 61 insertions(+), 126 deletions(-)
 
-> Hi Andrei,
->
->> The fs_fill test runs a fill test on all the supported filesystems. One
->> of them being vfat. This filesystem is configured dynamically or through
->> flags/arguments for its file allocation table type (12/16/32).
->
->> The size of the test device (which is a loop-mounted fs) is 300MB. When not
->> instructed, mkfs will "automatically select between 12, 16 and 32 bit,
->> whatever fits better for the filesystem size"[1]. In the case of a 300Mb that
->> would end up as FAT16.
-> Interesting. BTW we plan to change 300 MB to minimal filesystem which would fit
-> to all existing tests (255 MB was for Btrfs, 300 MB was for XFS, but there might
-> be minimal systems which can use vfat, ext4, ... with smaller resources, e.g.
-> 16 MB for filesystem). Therefore I wonder what is minimal reasonable required
-> size for vfat. i.e. what MB is required for FAT32? (I guess we don't want to
-> check FAT12 or FAT16).
->
->> This is linked with another configuration that is the actual impact on
->> this issue: the maximum number of directories in the root of the
->> filesystem. FAT12 and FAT16 use a special system region: "Root Directory
->> Region". And by default (there is also an argument to configure this at
->> mkfs-time) this ends up being 256 when no custom arguments are provided.
->
->> On the other hand, the test sets up the filesystem with a
->> "tst_ncpus_conf + 2" number of directories in the test filesystem's root
->> which can break the limit explained above on systems with a number of
->> CPUs that would amount above the limit.
->
->> This change addresses this situation by using a subdirectory in the test
->> filesystem which is not subject to this limit.
->
->> Signed-off-by: Andrei Gherzan <andrei.gherzan@canonical.com>
->> ---
->>  testcases/kernel/fs/fs_fill/fs_fill.c | 7 ++++++-
->>  1 file changed, 6 insertions(+), 1 deletion(-)
->
->> diff --git a/testcases/kernel/fs/fs_fill/fs_fill.c b/testcases/kernel/fs/fs_fill/fs_fill.c
->> index 2027b6df1..dd8ad2935 100644
->> --- a/testcases/kernel/fs/fs_fill/fs_fill.c
->> +++ b/testcases/kernel/fs/fs_fill/fs_fill.c
->> @@ -18,6 +18,7 @@
->>  #include "tst_test.h"
->
->>  #define MNTPOINT "mntpoint"
->> +#define THREADS_SUBDIR "subdir"
->
->>  static volatile int run;
->>  static unsigned int nthreads;
->> @@ -99,9 +100,13 @@ static void setup(void)
->>  	nthreads = tst_ncpus_conf() + 2;
->>  	workers = SAFE_MALLOC(sizeof(struct worker) * nthreads);
->
->> +	// Avoid creating the thread directories in the root of the filesystem
->> +	// to not hit the root entries limit on a  FAT16 filesystem.
->> +	SAFE_MKDIR(MNTPOINT "/" THREADS_SUBDIR, 0700);
->> +
->>  	for (i = 0; i < nthreads; i++) {
->>  		snprintf(workers[i].dir, sizeof(workers[i].dir),
->> -			 MNTPOINT "/thread%i", i + 1);
->> +			 MNTPOINT "/" THREADS_SUBDIR "/thread%i", i + 1);
->>  		SAFE_MKDIR(workers[i].dir, 0700);
->>  	}
->
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->
-> If you don't mind, I suggest to merge slightly changed patch.
->
-> Kind regards,
-> Petr
->
-> +++ testcases/kernel/fs/fs_fill/fs_fill.c
-> @@ -18,6 +18,7 @@
->  #include "tst_test.h"
->  
->  #define MNTPOINT "mntpoint"
-> +#define THREADS_DIR MNTPOINT "/subdir"
->  
->  static volatile int run;
->  static unsigned int nthreads;
-> @@ -99,9 +100,15 @@ static void setup(void)
->  	nthreads = tst_ncpus_conf() + 2;
->  	workers = SAFE_MALLOC(sizeof(struct worker) * nthreads);
->  
-> +	/*
-> +	 * Avoid creating the thread directories in the root of the filesystem
-> +	 * to not hit the root entries limit on a FAT16 filesystem.
-> +	 */
-> +	SAFE_MKDIR(THREADS_DIR, 0700);
-> +
->  	for (i = 0; i < nthreads; i++) {
->  		snprintf(workers[i].dir, sizeof(workers[i].dir),
-> -			 MNTPOINT "/thread%i", i + 1);
-> +			 THREADS_DIR "/thread%i", i + 1);
->  		SAFE_MKDIR(workers[i].dir, 0700);
->  	}
-
-Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
-
-FWIW I think you could have merged this after a few days or even
-straight away.
-
+diff --git a/runtest/containers b/runtest/containers
+index 23f394579..5e1b53bfa 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -16,7 +16,8 @@ pidns31 pidns31
+ pidns32 pidns32
+ 
+ mqns_01 mqns_01
+-mqns_01_clone mqns_01 -clone
++mqns_01_clone mqns_01 -m clone
++mqns_01_unshare mqns_01 -m unshare
+ mqns_02 mqns_02
+ mqns_02_clone mqns_02 -clone
+ mqns_03 mqns_03
+diff --git a/testcases/kernel/containers/mqns/mqns_01.c b/testcases/kernel/containers/mqns/mqns_01.c
+index 1d109e020..61e586c14 100644
+--- a/testcases/kernel/containers/mqns/mqns_01.c
++++ b/testcases/kernel/containers/mqns/mqns_01.c
+@@ -1,148 +1,82 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+-* Copyright (c) International Business Machines Corp., 2009
+-* Copyright (c) Nadia Derbey, 2009
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-*
+-* Author: Nadia Derbey <Nadia.Derbey@bull.net>
+-*
+-* Check mqns isolation: father mqns cannot be accessed from newinstance
+-*
+-* Mount mqueue fs
+-* Create a posix mq -->mq1
+-* unshare
+-* In unshared process:
+-*    Mount newinstance mqueuefs
+-*    Check that mq1 is not readable from new ns
++ * Copyright (c) International Business Machines Corp., 2009
++ * Copyright (c) Nadia Derbey, 2009 <Nadia.Derbey@bull.net>
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
+ 
+-***************************************************************************/
++/*\
++ * [Description]
++ *
++ * Create a mqueue inside the parent and check if it can be accessed from
++ * the child namespace.
++ */
+ 
+-#ifndef _GNU_SOURCE
+-#define _GNU_SOURCE
+-#endif
+-#include <sys/wait.h>
+-#include <errno.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+-#include "mqns.h"
+-#include "mqns_helper.h"
++#include "tst_test.h"
++#include "lapi/sched.h"
++#include "tst_safe_posix_ipc.h"
+ 
+-char *TCID = "posixmq_namespace_01";
+-int TST_TOTAL = 1;
++#define MQNAME "/MQ1"
+ 
+-int p1[2];
+-int p2[2];
++static mqd_t mqd;
++static char *str_op;
+ 
+-int check_mqueue(void *vtest)
++static void run(void)
+ {
+-	char buf[30];
+-	mqd_t mqd;
++	const struct tst_clone_args clone_args = { CLONE_NEWIPC, SIGCHLD };
+ 
+-	(void) vtest;
++	tst_res(TINFO, "Checking namespaces isolation from parent to child");
+ 
+-	close(p1[1]);
+-	close(p2[0]);
++	if (str_op && !strcmp(str_op, "clone")) {
++		tst_res(TINFO, "Spawning isolated process");
+ 
+-	if (read(p1[0], buf, strlen("go") + 1) < 0) {
+-		printf("read(p1[0], ...) failed: %s\n", strerror(errno));
+-		exit(1);
+-	}
+-	mqd = tst_syscall(__NR_mq_open, NOSLASH_MQ1, O_RDONLY);
+-	if (mqd == -1) {
+-		if (write(p2[1], "notfnd", strlen("notfnd") + 1) < 0) {
+-			perror("write(p2[1], ...) failed");
+-			exit(1);
++		if (!SAFE_CLONE(&clone_args)) {
++			TST_EXP_FAIL(mq_open(MQNAME, O_RDONLY), ENOENT);
++			return;
++		}
++	} else if (str_op && !strcmp(str_op, "unshare")) {
++		tst_res(TINFO, "Spawning unshared process");
++
++		if (!SAFE_FORK()) {
++			SAFE_UNSHARE(CLONE_NEWIPC);
++			TST_EXP_FAIL(mq_open(MQNAME, O_RDONLY), ENOENT);
++			return;
+ 		}
+ 	} else {
+-		if (write(p2[1], "exists", strlen("exists") + 1) < 0) {
+-			perror("write(p2[1], \"exists\", 7) failed");
+-			exit(1);
+-		} else if (mq_close(mqd) < 0) {
+-			perror("mq_close(mqd) failed");
+-			exit(1);
++		tst_res(TINFO, "Spawning plain process");
++
++		if (!SAFE_FORK()) {
++			TST_EXP_POSITIVE(mq_open(MQNAME, O_RDONLY));
++			return;
+ 		}
+ 	}
+-
+-	exit(0);
+ }
+ 
+ static void setup(void)
+ {
+-	tst_require_root();
+-	check_mqns();
++	mqd = SAFE_MQ_OPEN(MQNAME, O_RDWR | O_CREAT | O_EXCL, 0777, NULL);
+ }
+ 
+-int main(int argc, char *argv[])
++static void cleanup(void)
+ {
+-	int r;
+-	mqd_t mqd;
+-	char buf[30];
+-	int use_clone = T_UNSHARE;
+-
+-	setup();
+-
+-	if (argc == 2 && strcmp(argv[1], "-clone") == 0) {
+-		tst_resm(TINFO,
+-			 "Testing posix mq namespaces through clone(2).");
+-		use_clone = T_CLONE;
+-	} else
+-		tst_resm(TINFO,
+-			 "Testing posix mq namespaces through unshare(2).");
+-
+-	if (pipe(p1) == -1 || pipe(p2) == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL, "pipe failed");
+-	}
+-
+-	mqd = tst_syscall(__NR_mq_open, NOSLASH_MQ1, O_RDWR | O_CREAT | O_EXCL,
+-		0777, NULL);
+-	if (mqd == -1) {
+-		perror("mq_open");
+-		tst_brkm(TFAIL, NULL, "mq_open failed");
++	if (mqd != -1) {
++		SAFE_MQ_CLOSE(mqd);
++		SAFE_MQ_UNLINK(MQNAME);
+ 	}
+-
+-	tst_resm(TINFO, "Checking namespaces isolation from parent to child");
+-	/* fire off the test */
+-	r = do_clone_unshare_test(use_clone, CLONE_NEWIPC, check_mqueue, NULL);
+-	if (r < 0) {
+-		tst_resm(TFAIL, "failed clone/unshare");
+-		mq_close(mqd);
+-		tst_syscall(__NR_mq_unlink, NOSLASH_MQ1);
+-		tst_exit();
+-	}
+-
+-	close(p1[0]);
+-	close(p2[1]);
+-	if (write(p1[1], "go", strlen("go") + 1) < 0)
+-		tst_resm(TBROK | TERRNO, "write(p1[1], \"go\", ...) failed");
+-	else if (read(p2[0], buf, 7) < 0)
+-		tst_resm(TBROK | TERRNO, "read(p2[0], buf, ...) failed");
+-	else {
+-		if (!strcmp(buf, "exists")) {
+-			tst_resm(TFAIL, "child process found mqueue");
+-		} else if (!strcmp(buf, "notfnd")) {
+-			tst_resm(TPASS, "child process didn't find mqueue");
+-		} else {
+-			tst_resm(TFAIL, "UNKNOWN RESULT");
+-		}
+-	}
+-
+-	/* destroy the mqueue */
+-	if (mq_close(mqd) == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL, "mq_close failed");
+-	}
+-	tst_syscall(__NR_mq_unlink, NOSLASH_MQ1);
+-
+-	tst_exit();
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.forks_child = 1,
++	.options = (struct tst_option[]) {
++		{ "m:", &str_op, "Child process isolation <clone|unshare>" },
++		{},
++	},
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_NS",
++		NULL
++	},
++};
 -- 
-Thank you,
-Richard.
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
