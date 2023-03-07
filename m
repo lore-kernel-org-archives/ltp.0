@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA353C678D4
-	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 12:50:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2C26C678D4
+	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 12:52:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6276E3CB888
-	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 13:50:27 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id F24EE3CB945
+	for <ltp@archiver.kernel.org>; Tue,  7 Mar 2023 13:52:27 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 880E33CB88A
- for <ltp@lists.linux.it>; Tue,  7 Mar 2023 13:49:17 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id C791E3CB855
+ for <ltp@lists.linux.it>; Tue,  7 Mar 2023 13:52:18 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2A7B060007E
- for <ltp@lists.linux.it>; Tue,  7 Mar 2023 13:49:17 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 53F3D100048A
+ for <ltp@lists.linux.it>; Tue,  7 Mar 2023 13:52:18 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A1621219D8;
- Tue,  7 Mar 2023 12:49:16 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BBE8F1FE17;
+ Tue,  7 Mar 2023 12:52:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1678193356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=cpRaRaCa5USar1crot1rQ+Dou5i+DnNRNXVqA6vP4Cc=;
- b=SxB57I2U6GD3AOtUHSqfV3wedlnPwNeJWfygrCVQGKJDlc9LdMKf+q1weYrnCapydayjTt
- sDEVKYHWn6M2n3Gd9WWI9REDDi2VAd4MqCOSBk/AbbfWfotd+cKf3YR4+qKnJ0Zw3RhD2t
- eFPV79xFeuUdN2pz9yN/nW78wQEINyY=
+ t=1678193537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Gf368CuOXdXbzPZ3/C6x1IARqWG5VoCIW7cQMuTCQug=;
+ b=nQuhGvStUwAqyybP5/6HaLgX+31zfJiTai4FvMa+T+UZhjQxc9MkHcZOAgdEZbPzyglUgI
+ 6v/ubzARHSAWmuqhs7ypsHxFuOVUNkPS3H7J+BGWlj3Mv9o9CuEp0OgO5vFA+k8g/cGqbm
+ Us31BXMJvoLDJBvGpxOlGylZ9N3Yz7g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1678193356;
+ s=susede2_ed25519; t=1678193537;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=cpRaRaCa5USar1crot1rQ+Dou5i+DnNRNXVqA6vP4Cc=;
- b=OswrpJxjyn7H+42VpUGQBPTqNYw1+7WMy08uSh789KVJe+BsbK7vsJZQtIj0r6qeMTrni0
- pmuyQdw4y3ZHN+CQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Gf368CuOXdXbzPZ3/C6x1IARqWG5VoCIW7cQMuTCQug=;
+ b=0WJjKMUJ1x3BKdEoflZs+BzgOw1tekLgvHItjci70kY+PwafS6PIuoeYMyyeUiHxPkVmSI
+ 2IZUqATIbnqmXNCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7797B1341F;
- Tue,  7 Mar 2023 12:49:16 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 98E2E1341F;
+ Tue,  7 Mar 2023 12:52:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id MI4/G8wyB2RjPQAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Tue, 07 Mar 2023 12:49:16 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id ytxxI4EzB2RqPwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 07 Mar 2023 12:52:17 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Tue,  7 Mar 2023 13:47:08 +0100
-Message-Id: <20230307124708.27280-7-andrea.cervesato@suse.de>
+Date: Tue,  7 Mar 2023 13:50:10 +0100
+Message-Id: <20230307125010.28964-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230307124708.27280-1-andrea.cervesato@suse.de>
-References: <20230307124708.27280-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 6/6] Remove libclone dependency from mqns suite
+Subject: [LTP] [PATCH v2] Remove ltp_quick_clone from mountns testing suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,50 +78,271 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
+ltp_quick_clone has been replaced by SAFE_CLONE in the mountns testing
+suite that now is independed from libclone and legacy API.
+
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- testcases/kernel/containers/mqns/Makefile | 27 +++++------------------
- 1 file changed, 5 insertions(+), 22 deletions(-)
+Check for CONFIG_USER_NS
 
-diff --git a/testcases/kernel/containers/mqns/Makefile b/testcases/kernel/containers/mqns/Makefile
-index 64c3763ee..eb0f97c2b 100644
---- a/testcases/kernel/containers/mqns/Makefile
-+++ b/testcases/kernel/containers/mqns/Makefile
-@@ -1,29 +1,12 @@
--################################################################################
--##                                                                            ##
--## Copyright (c) International Business Machines  Corp., 2009                 ##
--## Copyright (c) Nadia Derbey, 2009                                           ##
--##                                                                            ##
--## This program is free software;  you can redistribute it and#or modify      ##
--## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ##
--## (at your option) any later version.                                        ##
--##                                                                            ##
--## This program is distributed in the hope that it will be useful, but        ##
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
--## for more details.                                                          ##
--##                                                                            ##
--## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
--##                                                                            ##
--################################################################################
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+# Copyright (c) International Business Machines  Corp., 2009
-+# Copyright (c) Nadia Derbey, 2009 
-+# Copyright (C) 2021 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+ testcases/kernel/containers/mountns/mountns.h | 18 -----------------
+ .../kernel/containers/mountns/mountns01.c     | 20 +++++++++++--------
+ .../kernel/containers/mountns/mountns02.c     | 20 +++++++++++--------
+ .../kernel/containers/mountns/mountns03.c     | 20 +++++++++++--------
+ .../kernel/containers/mountns/mountns04.c     |  6 +++++-
+ 5 files changed, 41 insertions(+), 43 deletions(-)
+
+diff --git a/testcases/kernel/containers/mountns/mountns.h b/testcases/kernel/containers/mountns/mountns.h
+index 615f1a058..9bb854659 100644
+--- a/testcases/kernel/containers/mountns/mountns.h
++++ b/testcases/kernel/containers/mountns/mountns.h
+@@ -8,28 +8,10 @@
+ #define COMMON_H
  
- top_srcdir		?= ../../../..
+ #include "tst_test.h"
+-#include "lapi/sched.h"
  
- include $(top_srcdir)/include/mk/testcases.mk
--include $(abs_srcdir)/../Makefile.inc
+ #define DIRA "LTP_DIR_A"
+ #define DIRB "LTP_DIR_B"
  
--LDLIBS			:= -lpthread -lrt -lclone $(LDLIBS)
-+LDLIBS			:= -lpthread -lrt $(LDLIBS)
+-static int dummy_child(void *v)
+-{
+-	(void)v;
+-	return 0;
+-}
+-
+-static void check_newns(void)
+-{
+-	int pid, status;
+-
+-	pid = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, dummy_child, NULL);
+-	if (pid < 0)
+-		tst_brk(TCONF, "CLONE_NEWNS not supported");
+-
+-	SAFE_WAIT(&status);
+-}
+-
+ static void umount_folders(void)
+ {
+ 	if (tst_is_mounted(DIRA))
+diff --git a/testcases/kernel/containers/mountns/mountns01.c b/testcases/kernel/containers/mountns/mountns01.c
+index e8f176920..41c2956ea 100644
+--- a/testcases/kernel/containers/mountns/mountns01.c
++++ b/testcases/kernel/containers/mountns/mountns01.c
+@@ -33,8 +33,9 @@
+ #include <sys/mount.h>
+ #include "mountns.h"
+ #include "tst_test.h"
++#include "lapi/sched.h"
  
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+@@ -51,13 +52,11 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ 	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+ 	SAFE_UMOUNT(DIRA);
+-
+-	return 0;
+ }
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
+ 
+ 	SAFE_UNSHARE(CLONE_NEWNS);
+ 
+@@ -67,9 +66,10 @@ static void run(void)
+ 	SAFE_MOUNT(DIRA, DIRA, "none", MS_BIND, NULL);
+ 	SAFE_MOUNT("none", DIRA, "none", MS_SHARED, NULL);
+ 
+-	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK, "clone failed");
++	if (!SAFE_CLONE(&args)) {
++		child_func();
++		return;
++	}
+ 
+ 	SAFE_MOUNT(DIRB, DIRA, "none", MS_BIND, NULL);
+ 
+@@ -93,7 +93,6 @@ static void run(void)
+ 
+ static void setup(void)
+ {
+-	check_newns();
+ 	create_folders();
+ }
+ 
+@@ -107,5 +106,10 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = run,
+ 	.needs_root = 1,
++	.forks_child = 1,
+ 	.needs_checkpoints = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_NS",
++		NULL,
++	},
+ };
+diff --git a/testcases/kernel/containers/mountns/mountns02.c b/testcases/kernel/containers/mountns/mountns02.c
+index 4b85fa79b..7ca01a438 100644
+--- a/testcases/kernel/containers/mountns/mountns02.c
++++ b/testcases/kernel/containers/mountns/mountns02.c
+@@ -34,8 +34,9 @@
+ #include <sys/mount.h>
+ #include "mountns.h"
+ #include "tst_test.h"
++#include "lapi/sched.h"
+ 
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+@@ -51,13 +52,11 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ 	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+ 	SAFE_UMOUNT(DIRA);
+-
+-	return 0;
+ }
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
+ 
+ 	SAFE_UNSHARE(CLONE_NEWNS);
+ 
+@@ -68,9 +67,10 @@ static void run(void)
+ 
+ 	SAFE_MOUNT("none", DIRA, "none", MS_PRIVATE, NULL);
+ 
+-	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK, "clone failed");
++	if (!SAFE_CLONE(&args)) {
++		child_func();
++		return;
++	}
+ 
+ 	SAFE_MOUNT(DIRB, DIRA, "none", MS_BIND, NULL);
+ 
+@@ -94,7 +94,6 @@ static void run(void)
+ 
+ static void setup(void)
+ {
+-	check_newns();
+ 	create_folders();
+ }
+ 
+@@ -108,5 +107,10 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = run,
+ 	.needs_root = 1,
++	.forks_child = 1,
+ 	.needs_checkpoints = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_NS",
++		NULL,
++	},
+ };
+diff --git a/testcases/kernel/containers/mountns/mountns03.c b/testcases/kernel/containers/mountns/mountns03.c
+index 1d26a25d8..3b4936b06 100644
+--- a/testcases/kernel/containers/mountns/mountns03.c
++++ b/testcases/kernel/containers/mountns/mountns03.c
+@@ -36,8 +36,9 @@
+ #include <sys/mount.h>
+ #include "mountns.h"
+ #include "tst_test.h"
++#include "lapi/sched.h"
+ 
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+ 	/*
+ 	 * makes mount DIRA a slave of DIRA (all slave mounts have
+@@ -59,13 +60,11 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ 	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+ 	SAFE_UMOUNT(DIRA);
+-
+-	return 0;
+ }
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
+ 
+ 	SAFE_UNSHARE(CLONE_NEWNS);
+ 
+@@ -76,9 +75,10 @@ static void run(void)
+ 
+ 	SAFE_MOUNT("none", DIRA, "none", MS_SHARED, NULL);
+ 
+-	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK, "clone failed");
++	if (!SAFE_CLONE(&args)) {
++		child_func();
++		return;
++	}
+ 
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+@@ -104,7 +104,6 @@ static void run(void)
+ 
+ static void setup(void)
+ {
+-	check_newns();
+ 	create_folders();
+ }
+ 
+@@ -118,5 +117,10 @@ static struct tst_test test = {
+ 	.cleanup = cleanup,
+ 	.test_all = run,
+ 	.needs_root = 1,
++	.forks_child = 1,
+ 	.needs_checkpoints = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_NS",
++		NULL,
++	},
+ };
+diff --git a/testcases/kernel/containers/mountns/mountns04.c b/testcases/kernel/containers/mountns/mountns04.c
+index fc392f1a7..7b4dcb16d 100644
+--- a/testcases/kernel/containers/mountns/mountns04.c
++++ b/testcases/kernel/containers/mountns/mountns04.c
+@@ -22,6 +22,7 @@
+ #include <sys/mount.h>
+ #include "mountns.h"
+ #include "tst_test.h"
++#include "lapi/sched.h"
+ 
+ static void run(void)
+ {
+@@ -46,7 +47,6 @@ static void run(void)
+ 
+ static void setup(void)
+ {
+-	check_newns();
+ 	create_folders();
+ }
+ 
+@@ -61,4 +61,8 @@ static struct tst_test test = {
+ 	.test_all = run,
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_NS",
++		NULL,
++	},
+ };
 -- 
 2.35.3
 
