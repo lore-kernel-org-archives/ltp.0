@@ -4,62 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DF17C64EC4
-	for <ltp@archiver.kernel.org>; Wed,  8 Mar 2023 09:51:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74099C678D5
+	for <ltp@archiver.kernel.org>; Wed,  8 Mar 2023 11:10:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0985B3CD948
-	for <ltp@archiver.kernel.org>; Wed,  8 Mar 2023 10:51:28 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 5DCB83CD955
+	for <ltp@archiver.kernel.org>; Wed,  8 Mar 2023 12:09:57 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D29463C2A67
- for <ltp@lists.linux.it>; Wed,  8 Mar 2023 10:51:18 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 386E33CB828
+ for <ltp@lists.linux.it>; Wed,  8 Mar 2023 12:09:47 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 74DC5100041A
- for <ltp@lists.linux.it>; Wed,  8 Mar 2023 10:51:18 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 38A431A00783
+ for <ltp@lists.linux.it>; Wed,  8 Mar 2023 12:09:45 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B60C41FE3C;
- Wed,  8 Mar 2023 09:51:17 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2A09521A08
+ for <ltp@lists.linux.it>; Wed,  8 Mar 2023 11:09:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1678269077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type;
- bh=2HFgwGWSudUNDanuaE2llLpDwANKelCaVQ4u1wCgAkk=;
- b=vIvNzGrhlqJJOGEhLeDaqJ+K+8vMrptIhpywxlSJCZcb2scF78jJNRzhGnOzYQl2ROqn5B
- P/dTLdQxpMa7Si+Yp8KlPUW2M7oxzenTgf+rHjKqOJ0UQ7XYRJiG2d+zXsV/EwfVAinD9N
- CNEA1jgHRm2ZQoB1VbwICr2V2m1SMzY=
+ t=1678273785;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5G4X4RiY0UQ2pXLHbUw7fvqPc0bf01K00Jm439PUENs=;
+ b=rrY1P7E1Zp8Xfw9Wu4brQa7ThtIXuj91o55v6EpDO7yMDsOls46uVfMbOBWE3A3B/xMDcS
+ kgcnFlH2CH2b5dToGWl8WJXNafRIyLsGvQyikfC7v8RooBzdFgRCWoIxJoDufbEvlLdUUy
+ 8kIq2HdIkhCaNTyQLPwxyHPGiMn3mCs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1678269077;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type;
- bh=2HFgwGWSudUNDanuaE2llLpDwANKelCaVQ4u1wCgAkk=;
- b=gKzcjrQfftRiYUw6CPlYSoqBHyb4yv5mmaZMUekDRRrzH1FY2Rc1FdRZNhvNL89/ed0x5D
- OjR1zLjb+wgWwBAw==
+ s=susede2_ed25519; t=1678273785;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5G4X4RiY0UQ2pXLHbUw7fvqPc0bf01K00Jm439PUENs=;
+ b=drqgMVwAGtX1OtnjZ4QH9Tzl+mMU3Kjv6uQRqMeoinORViVJgzHh1A1jfR0n/iLb4Cqtxp
+ N6ZvR/WRagdA3xCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A3C001391B;
- Wed,  8 Mar 2023 09:51:17 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ED9611348D
+ for <ltp@lists.linux.it>; Wed,  8 Mar 2023 11:09:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id StpRJ5VaCGTHRwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 08 Mar 2023 09:51:17 +0000
-Date: Wed, 8 Mar 2023 10:52:40 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Tarun Sahu <tsahu@linux.ibm.com>
-Message-ID: <ZAha6JdEJSoKUkyQ@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id LSthNfhsCGR/dQAAMHmgww
+ (envelope-from <pvorel@suse.cz>)
+ for <ltp@lists.linux.it>; Wed, 08 Mar 2023 11:09:44 +0000
+Date: Wed, 8 Mar 2023 12:09:43 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Message-ID: <20230308110943.GA30945@pevik>
+References: <20230308093219.27090-1-pvorel@suse.cz>
+ <20230308093219.27090-3-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20230308093219.27090-3-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] hugemmap24 failure on aarch64 with 512MB hugepages
+Subject: Re: [LTP] [PATCH 2/2] insmod01.sh: Skip test on enabled lockdown
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,22 +77,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-Looks like the hugemmap24 test fails on aarch64 with 512MB hugepages
-since it attempts to MAP_FIXED at NULL address, any idea why aarch64 is
-limited to 0x10000000 as slice boundary?
+Hi all,
 
-See: https://github.com/linux-test-project/ltp/issues/1022
+> Lockdown patchset does not allow to install LTP kernel module:
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> insmod: ERROR: could not insert module ltp_insmod01.ko: Operation not permitted
+> insmod01 1 TFAIL: insmod failed
+
+> Therefore skip the test on enabled lockdown.
+
+> Link: https://bugzilla.opensuse.org/show_bug.cgi?id=1208920
+
+OK, this is probably our downstream issue in openSUSE.
+And because insmod01.sh was the only one shell test which needed this,
+even previous commit would not be used.
+Thus marking whole patchset as rejected.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
