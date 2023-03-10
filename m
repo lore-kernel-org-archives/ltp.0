@@ -4,67 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 807FAC64EC4
-	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 07:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 725D5C64EC4
+	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 07:42:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 351753CB842
-	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 08:34:22 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 357C33CCD78
+	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 08:42:34 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 414F33C2A67
- for <ltp@lists.linux.it>; Fri, 10 Mar 2023 08:34:12 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id DD2883CB708
+ for <ltp@lists.linux.it>; Fri, 10 Mar 2023 08:42:22 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 40CDC200DC5
- for <ltp@lists.linux.it>; Fri, 10 Mar 2023 08:34:08 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0BA72200279
+ for <ltp@lists.linux.it>; Fri, 10 Mar 2023 08:42:21 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7C74722363;
- Fri, 10 Mar 2023 07:34:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1678433648;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D49B522A3F;
+ Fri, 10 Mar 2023 07:42:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1678434140; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=D7uUdxr5T69z0EAqpIm8ocI+9mq0CKEmfgj92Iw58rI=;
- b=SQagF58Pv+1jWcPcmr4bKmf3kAuiXiSLp7i0lx9jrus79Eja0KcLAs2WtF8mdM9Y4GklhH
- WXKkXa/vBVoASzHgSDbFHIXbvi/WlHkf5jniDzAsHsGYNL4fY6eomTnrKW5dcsW6AhtjQD
- wQTinTg43aku8JXbDFMI++KC9DzNmoI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1678433648;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=D7uUdxr5T69z0EAqpIm8ocI+9mq0CKEmfgj92Iw58rI=;
- b=qe5BHz45WWib5Bhe5Pvau1ogT6He1kKxaNooq7RvvqcK303Yf9ENhSEULOyEr+4aZ32WAt
- 08jZlwLCnGUkCaBg==
+ bh=pxMSEwHaC8jghs9dGGEcuJUpRWP7x674gGGMHPlBVJE=;
+ b=EgbbxM811hzoZuZp6niksfFp7mnCRnf8QDcZ6CFEAI9dgal5LsKpNeBKhk8CiOarTXSKXi
+ zqNyZTEa1CZDxc+YmeYIy7Wh2SloWfgSt/LrDTrlsxJ4BN3NlScmWchWUoarBl3k+lN31j
+ PdvwnwMpb/9VxiW7c70ArS2aHULBdJ0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5571C13A77;
- Fri, 10 Mar 2023 07:34:08 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3935513A77;
+ Fri, 10 Mar 2023 07:42:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id pHxLE3DdCmRHAgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 10 Mar 2023 07:34:08 +0000
-Date: Fri, 10 Mar 2023 08:34:06 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: "Bird, Tim" <Tim.Bird@sony.com>
-Message-ID: <20230310073406.GB2216@pevik>
-References: <20230309145917.26846-1-pvorel@suse.cz>
- <BYAPR13MB2503F6AE85D17F078B806C0AFDBA9@BYAPR13MB2503.namprd13.prod.outlook.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id l+0ABFzfCmQyBgAAMHmgww
+ (envelope-from <wegao@suse.com>); Fri, 10 Mar 2023 07:42:20 +0000
+Date: Fri, 10 Mar 2023 02:42:17 -0500
+To: Souta Kawahara <souta.kawahara@miraclelinux.com>
+Message-ID: <20230310074217.GA8843@localhost>
+References: <20230215144820.17876-1-wegao@suse.com>
+ <20230221020853.7650-1-wegao@suse.com>
+ <ba91dc79-cbbe-52d0-8bcb-d0fda74dad34@miraclelinux.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <BYAPR13MB2503F6AE85D17F078B806C0AFDBA9@BYAPR13MB2503.namprd13.prod.outlook.com>
+In-Reply-To: <ba91dc79-cbbe-52d0-8bcb-d0fda74dad34@miraclelinux.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] ns_ifmove.c: Rewrite to new API
+Subject: Re: [LTP] [PATCH v2] mq_notify03.c: New test CVE-2021-38604
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,48 +69,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Tim,
-
-> > +++ b/testcases/kernel/containers/share/ns_ifmove.c
-> > @@ -1,43 +1,31 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-
-> I don't see "or later" anywhere in the license header that was removed.
-
-> Is this the correct SPDX license identifier?
-> Maybe it should be 'GPL-2.0-only'
-Good catch, thank you!
-
-Kind regards,
-Petr
-
->  -- Tim
-
-> >  /* Copyright (c) 2015 Red Hat, Inc.
-> > - *
-> > - * This program is free software: you can redistribute it and/or modify
-> > - * it under the terms of version 2 the GNU General Public License as
-> > - * published by the Free Software Foundation.
-> > - *
-> > - * This program is distributed in the hope that it will be useful,
-> > - * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > - * GNU General Public License for more details.
-> > - *
-> > - * You should have received a copy of the GNU General Public License
-> > - * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-> > - *
-> > + * Copyright (c) Linux Test Project, 2015-2022
-> > + * Copyright (c) 2023 Petr Vorel <pvorel@suse.cz>
-> >   * Written by Matus Marhefka <mmarhefk@redhat.com>
-> > + */
+On Fri, Mar 10, 2023 at 03:58:39PM +0900, Souta Kawahara wrote:
+> Hi!
+> 
+> I tried this test on several environments and got the expected results. and
+> no problems were encountered.
+> env1) Test PASSED on glibc2.23-21.fc34 after vulnerability fix.
+> env2) Test PASSED on glibc2.23-5.fc34 before the regression.
+> env3) Test FAILED as expected on glibc2.23-16.fc34 after the regression,
+> before vulnerability fix.
+> 
+> It looks good from my site.
+> If there is anything else I should check, please let me know.
+> 
+> Thank you!
+Thanks a lot for your verfication :)
+> 
+> --
+> Souta Kawahara <souta.kawahara@miraclelinux.com>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
