@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F83CC6FD19
-	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 06:26:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 212E7C64EC4
+	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 06:58:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8B17F3CB739
-	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 07:26:13 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 4477A3CB70D
+	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 07:58:57 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A0FAD3CB077
- for <ltp@lists.linux.it>; Fri, 10 Mar 2023 07:26:01 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B7FE33CB077
+ for <ltp@lists.linux.it>; Fri, 10 Mar 2023 07:58:46 +0100 (CET)
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com
+ [IPv6:2607:f8b0:4864:20::1032])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 913E6100112B
- for <ltp@lists.linux.it>; Fri, 10 Mar 2023 07:25:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1678429557;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uaJhkBITyrgUV7abh9fnc6aw1PYfJ/YXHbRMonVkNKA=;
- b=YCQpIBlQSerEpB9X7CxAkUtYCI3nxFj9bK/99Yu9AamAt7kBGVJMA76uo+rNo4IfAlH1jt
- L8ztxbPywqN+TNqAXO7Aqu8LSfBmT7cWqCVSGgsR1st9d5h6j8JlsKWdhjc3hUFYTYRsZv
- x+xOLNbcF5MYYtmWD3f1rDJC3g0OqQ4=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-664-Z2TmYWbgPu2uiG45IouIOQ-1; Fri, 10 Mar 2023 01:25:55 -0500
-X-MC-Unique: Z2TmYWbgPu2uiG45IouIOQ-1
-Received: by mail-wm1-f69.google.com with SMTP id
- f26-20020a7bcd1a000000b003e71cde0e70so2000268wmj.0
- for <ltp@lists.linux.it>; Thu, 09 Mar 2023 22:25:55 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 27D4A601AAB
+ for <ltp@lists.linux.it>; Fri, 10 Mar 2023 07:58:44 +0100 (CET)
+Received: by mail-pj1-x1032.google.com with SMTP id
+ fr5-20020a17090ae2c500b0023af8a036d2so8033342pjb.5
+ for <ltp@lists.linux.it>; Thu, 09 Mar 2023 22:58:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=miraclelinux-com.20210112.gappssmtp.com; s=20210112; t=1678431522;
+ h=content-transfer-encoding:in-reply-to:from:references:to:subject
+ :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=vKMSgrHmZWge5zozjl32mKkoBGKk/vb1YNuGvwP9dNY=;
+ b=hp3eokfsup0rThD0jcaD35vsCazCfwaLDQSlwhv8h1dOV7Hd8VANCvhlzmve2rt0MG
+ gBgF5iblhqr6vUdq1YR/N+AScpu1DZeAamydmI68UIxludiPXj9K/cRKyE6ag9jiBSS8
+ AeSj4aFTO9Kj113HVsr0N/IMWhiJ6+5b+tgSXEix97sp8VIAo4iP0nv/0bSzTw7nxTWJ
+ WyzTq1VoXErwXvnN7uCVP2t0Wde2ewI+76El/OSE6d92oY2Cn49b9Qoszx98fC8G98DL
+ B8H5FkiqmSiJA2yboWtIqJX+CoTxeM7bc0C6qSoxf/fb1g908PXALO6nH6iE1Yq88zdg
+ 47AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1678429554;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=uaJhkBITyrgUV7abh9fnc6aw1PYfJ/YXHbRMonVkNKA=;
- b=n8dYjLO6T4iRPE9yX5f0+gKUDlLMuxKjEha/H2VI8Ig/+pEcgIWZ4MD78VfHjWxCjK
- Mx4nlbyAsK0qqSqvt+x/0262g/beyY8QOHWJTtkPSFu+IIVCmoE5OSCAhGWOngHUxu6V
- OOnigCYpT6CFXbJ4RlQsWcr8xrUMENA1d3g2uvheb9rgPmKTR2f+LwR7b/ZPy4XhYKRk
- vX7saDWGXNecaz3oF1zSP9h9/lojtiFnpoydEXIlewXQXMoV8tYMvBL3RUAfB3dZGtxX
- XQsmWnsGZE54Erl6NaTI6svRIEIGajXG4YWHOmqXPSNl70Lgp2x3z64PIJXSrKG/7WYb
- cjrw==
-X-Gm-Message-State: AO0yUKUeTyzUQdTnJ2xkcgF5nE0A9xVfsmg1ICPEn9xPrBD4s3J2g/5M
- rSf6W4ru3w2elHfv8lqUsQ+CI7+qc4xfiRB3+xaNWtWukX6uDsEJst7Jme3TiCIx5Fy8aAlLDgD
- TgwHYs3hlqI3NY76s3pH0LCWw7BM=
-X-Received: by 2002:a05:600c:3b99:b0:3df:97b0:ba06 with SMTP id
- n25-20020a05600c3b9900b003df97b0ba06mr494613wms.7.1678429554378; 
- Thu, 09 Mar 2023 22:25:54 -0800 (PST)
-X-Google-Smtp-Source: AK7set9VSSSi86bBSoGsMksz6X6F4IH29ylnoJrDDwE6nTUnuksBxgcdQEuGk/h+Iy4zVzz7rqTsxchhq39/J6B09JY=
-X-Received: by 2002:a05:600c:3b99:b0:3df:97b0:ba06 with SMTP id
- n25-20020a05600c3b9900b003df97b0ba06mr494600wms.7.1678429553974; Thu, 09 Mar
- 2023 22:25:53 -0800 (PST)
+ d=1e100.net; s=20210112; t=1678431522;
+ h=content-transfer-encoding:in-reply-to:from:references:to:subject
+ :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=vKMSgrHmZWge5zozjl32mKkoBGKk/vb1YNuGvwP9dNY=;
+ b=LjAbEw4QnZyhJf6amccnv/NtjRBlG6qf8MOzc0gcotn7MsCpm+yqzos8XwRRzV6YnU
+ H0Yh3vpE8ujnWY0Qm7FOOg3SZtsKibD1t+7IW8MJUEm/civA3WwlWNp7a9AbXVZ99qTr
+ MgIyIqDye7t/rf05WX0bK0NXqyNvIn6kqukFvfhq0Gz831xGcliT6A9DQRbzRZP9WWD8
+ PDY3iSzl/vh1i/WYkbSkZa2+wD7owFHv4snq11CClIlU2qGbdEQswl53++GdvNTiOu65
+ dN9+lvdlae0Ojr8GeCw2hkVVyy0PiWegVJYVris6Udb7pO//SXGtIg+ut8DQYnxM6OPv
+ qRIw==
+X-Gm-Message-State: AO0yUKXdWbPKGpAkg+VTttAlPoXNcg85vP9itTtWVwsHQ1RvYsdGKa5t
+ lJQPJkvm38q7JsvyMi9gAwc6YA==
+X-Google-Smtp-Source: AK7set9ZCmx9yFAatbXnD1rKJ+pM2tREqidy4qEG11sVPt99O+PgM6CTuAzkZHkyG0QW5StS2+l2hw==
+X-Received: by 2002:a05:6a20:8e19:b0:cd:fc47:dd74 with SMTP id
+ y25-20020a056a208e1900b000cdfc47dd74mr1946696pzj.4.1678431522471; 
+ Thu, 09 Mar 2023 22:58:42 -0800 (PST)
+Received: from [192.168.11.4] (165.141.30.125.dy.iij4u.or.jp. [125.30.141.165])
+ by smtp.gmail.com with ESMTPSA id
+ km14-20020a17090327ce00b0019a75ea08e5sm715491plb.33.2023.03.09.22.58.40
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 09 Mar 2023 22:58:41 -0800 (PST)
+Message-ID: <ba91dc79-cbbe-52d0-8bcb-d0fda74dad34@miraclelinux.com>
+Date: Fri, 10 Mar 2023 15:58:39 +0900
 MIME-Version: 1.0
-References: <20230226192554.669332-1-fontaine.fabrice@gmail.com>
- <Y/yTyk9rYYsPJyVA@yuki>
-In-Reply-To: <Y/yTyk9rYYsPJyVA@yuki>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 10 Mar 2023 14:25:42 +0800
-Message-ID: <CAEemH2fLFYu8=ZRBbu0xgmfYh4=XHJSu07R+4=-qX_1ESVza0w@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+To: Wei Gao <wegao@suse.com>, ltp@lists.linux.it
+References: <20230215144820.17876-1-wegao@suse.com>
+ <20230221020853.7650-1-wegao@suse.com>
+From: Souta Kawahara <souta.kawahara@miraclelinux.com>
+In-Reply-To: <20230221020853.7650-1-wegao@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] configure.ac: fix mount_attr detection
+Subject: Re: [LTP] [PATCH v2] mq_notify03.c: New test CVE-2021-38604
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,56 +85,187 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Fabrice Fontaine <fontaine.fabrice@gmail.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBGZWIgMjcsIDIwMjMgYXQgNzoyNuKAr1BNIEN5cmlsIEhydWJpcyA8Y2hydWJpc0Bz
-dXNlLmN6PiB3cm90ZToKCj4gSGkhCj4gPiBDb21taXQgYjg1N2Y4NzIzZjMwYTRiOTU1NGJmNmIw
-ZmY4ZmE1MmZkMDdlOGI2MCB0cmllZCB0byBmaXggYnVpbGQgd2l0aAo+ID4gbGF0ZXN0IGdsaWJj
-IHdoaWNoIHByb3ZpZGVzIG1vdW50X2F0dHIgaW4gc3lzL21vdW50LmguIFVuZm9ydHVuYXRlbHks
-Cj4gPiB0aGUgZm9sbG93aW5nIGJ1aWxkIGZhaWx1cmUgaXMgc3RpbGwgcmFpc2VkIGJlY2F1c2Ug
-c3lzL21vdW50IGlzIG5vdwo+ID4gdW5jb25kaXRpb25hbGx5IGluY2x1ZGVkIGluIGluY2x1ZGUv
-bGFwaS9mc21vdW50Lmg6Cj4gPgo+ID4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGZzY29uZmlnMDEu
-Yzo5Ogo+ID4gLi4vLi4vLi4vLi4vaW5jbHVkZS9sYXBpL2ZzbW91bnQuaDo1NTo4OiBlcnJvcjog
-cmVkZWZpbml0aW9uIG9mICdzdHJ1Y3QKPiBtb3VudF9hdHRyJwo+ID4gICAgNTUgfCBzdHJ1Y3Qg
-bW91bnRfYXR0ciB7Cj4gPiAgICAgICB8ICAgICAgICBefn5+fn5+fn5+Cj4gPiBJbiBmaWxlIGlu
-Y2x1ZGVkIGZyb20gLi4vLi4vLi4vLi4vaW5jbHVkZS9sYXBpL2ZzbW91bnQuaDoxNDoKPiA+Cj4g
-L2hvbWUvYXV0b2J1aWxkL2F1dG9idWlsZC9pbnN0YW5jZS00L291dHB1dC0xL2hvc3QvYXJtZWIt
-YnVpbGRyb290LWxpbnV4LWdudWVhYmkvc3lzcm9vdC91c3IvaW5jbHVkZS9zeXMvbW91bnQuaDoy
-MTA6ODoKPiBub3RlOiBvcmlnaW5hbGx5IGRlZmluZWQgaGVyZQo+ID4gICAyMTAgfCBzdHJ1Y3Qg
-bW91bnRfYXR0cgo+ID4gICAgICAgfCAgICAgICAgXn5+fn5+fn5+fgo+ID4KPiA+IEZpeGVzOgo+
-ID4gIC0KPiBodHRwOi8vYXV0b2J1aWxkLmJ1aWxkcm9vdC5vcmcvcmVzdWx0cy80ZGJiNzJlMWJm
-MDgxYWZkM2NkOTQ0NTcxYjliZWVlZmM3NjA4ODY1Cj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogRmFi
-cmljZSBGb250YWluZSA8Zm9udGFpbmUuZmFicmljZUBnbWFpbC5jb20+Cj4gPiAtLS0KPiA+ICBj
-b25maWd1cmUuYWMgfCA2ICsrKy0tLQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMo
-KyksIDMgZGVsZXRpb25zKC0pCj4gPgo+ID4gZGlmZiAtLWdpdCBhL2NvbmZpZ3VyZS5hYyBiL2Nv
-bmZpZ3VyZS5hYwo+ID4gaW5kZXggYzJiMGY0OGU3Li5hNmQ4YWM4MjYgMTAwNjQ0Cj4gPiAtLS0g
-YS9jb25maWd1cmUuYWMKPiA+ICsrKyBiL2NvbmZpZ3VyZS5hYwo+ID4gQEAgLTIyNSwxMCArMjI1
-LDEwIEBAIEFDX0NIRUNLX1RZUEVTKFtzdHJ1Y3QgX19rZXJuZWxfb2xkX3RpbWV2YWwsCj4gc3Ry
-dWN0IF9fa2VybmVsX29sZF90aW1lc3BlYywgc3RydWMKPiA+Cj4gPiAgQUNfQ0hFQ0tfVFlQRVMo
-W3N0cnVjdCBmdXRleF93YWl0dl0sLCxbI2luY2x1ZGUgPGxpbnV4L2Z1dGV4Lmg+XSkKPiA+ICBB
-Q19DSEVDS19UWVBFUyhbc3RydWN0IG1vdW50X2F0dHJdLCwsWwo+ID4gLSNpZmRlZiBIQVZFX0xJ
-TlVYX01PVU5UX0gKPiA+IC0jIGluY2x1ZGUgPGxpbnV4L21vdW50Lmg+Cj4gPiAtI2Vsc2UKPiA+
-ICsjaWZkZWYgSEFWRV9NT1VOVF9TRVRBVFRSCj4gPiAgIyBpbmNsdWRlIDxzeXMvbW91bnQuaD4K
-PiA+ICsjZWxpZiBIQVZFX0xJTlVYX01PVU5UX0gKPiA+ICsjIGluY2x1ZGUgPGxpbnV4L21vdW50
-Lmg+Cj4gPiAgI2VuZGlmCj4gPiAgXSkKPgo+IEkgd29uZGVyIGlmIHdlIGNhbiBnZXQgdGhpcyB3
-aG9sZSBtZXNzIG9mIHR3byBkaWZmZXJlbnQgZmFsbGJhY2sgaGVhZGVycwo+IHNpbXBsaWZpZWQu
-IExvb2tpbmcgYXQgdGhlIGdsaWJjIGltcGxlbWVudGF0aW9uIGl0IHNlZW1zIHRvIGluY2x1ZGUK
-PiAibGludXgvbW91bnQuaCIgaWYgaXQgZG9lcyBleGlzdC4gU28gbW9zdCByZWFzb25hYmxlIHNv
-bHV0aW9uIHdvdWxkIGRvCj4gdGhlIHNhbWUgSSBndWVzcyB3aGljaCB3ZSBkaWQgYmVmb3JlIHRo
-ZSBjb21taXQgeW91IHJlZmVyZW5jZS4KPgoKVGhpcyBpcyBpbmRlZWQgY29ycmVjdCBpZiBvbmx5
-IGZhY2UgdGhlIGxhdGVzdCBHbGliYywgYnV0IHRoYXQgbWlnaHQgaGF2ZQpwcm9ibGVtcyB3aGVu
-IGJ1aWxkaW5nIExUUCBvbiBhIG1pZGRsZSB2ZXJzaW9uIG9mIEdsaWJjL0tlcm5lbC1oZWFkZXJz
-LgpUaGUgYnVnIEkgbWVudGlvbmVkIGluIHRoZSBsYXN0IGVtYWlsIHdhcyBmaXhlZCBzaW5jZSBn
-bGliYy0yLjM3fjQyNi4KCkBGYWJyaWNlLCB3aGF0IGtpbmQgb2YgdmVyc2lvbiBvZiBHbGliYy9L
-ZXJuZWwtaGVhZGVycyBkbyB5b3UgdXNlPyBhbmQKd2hpY2ggcGxhdGZvcm0/CgpCdHcsIHRoaXMg
-cGF0Y2ggYnVpbGRzIExUUCBzdWNjZXNzZnVsbHkgaW4gQ0k6CiAgLSBodHRwczovL2dpdGh1Yi5j
-b20vd2FuZ2xpNTY2NS9sdHAvYWN0aW9ucy9ydW5zLzQzODA3Mzk0NzAKQW5kIEkgbWFudWFsbHkg
-dHJpZWQgd2l0aCBmZWRvcmEtcmF3aGlkZS9mZWRvcmEzNC8zNS8zNy8zOCBhbGwgbG9va3MgZ29v
-ZC4KCk1heWJlIHdlIGNhbiBqdXN0IGFwcGx5IHRoaXMgcGF0Y2ggdG8ga2VlcCBldmVyeXRoaW5n
-IHdpdGggbm8gYmlnIGNoYW5nZXMuCgpAQ3lyaWwsIFBldHIsIHdoYXQgZG8geW91IHRoaW5rPwoK
-Ci0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
-dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi!
+
+I tried this test on several environments and got the expected results. 
+and no problems were encountered.
+env1) Test PASSED on glibc2.23-21.fc34 after vulnerability fix.
+env2) Test PASSED on glibc2.23-5.fc34 before the regression.
+env3) Test FAILED as expected on glibc2.23-16.fc34 after the regression, 
+before vulnerability fix.
+
+It looks good from my site.
+If there is anything else I should check, please let me know.
+
+Thank you!
+
+On 2023/02/21 11:08, Wei Gao via ltp wrote:
+> This test is come from glibc test mq_notify.c.
+> Implements following logic:
+> 1) Create POSIX message queue.
+>     Register a notification with mq_notify (using NULL attributes).
+>     Then immediately unregister the notification with mq_notify.
+>     Helper thread in a vulnerable version of glibc
+>     should cause NULL pointer dereference after these steps.
+> 2) Once again, register the same notification.
+>     Try to send a dummy message.
+>     Test is considered successfulif the dummy message
+>     is successfully received by the callback function.
+> 
+> Signed-off-by: Wei Gao <wegao@suse.com>
+> ---
+>   runtest/cve                                   |  1 +
+>   runtest/syscalls                              |  1 +
+>   .../kernel/syscalls/mq_notify/.gitignore      |  1 +
+>   .../kernel/syscalls/mq_notify/mq_notify03.c   | 99 +++++++++++++++++++
+>   4 files changed, 102 insertions(+)
+>   create mode 100644 testcases/kernel/syscalls/mq_notify/mq_notify03.c
+> 
+> diff --git a/runtest/cve b/runtest/cve
+> index 1ba63c2a7..07bcac0b0 100644
+> --- a/runtest/cve
+> +++ b/runtest/cve
+> @@ -74,6 +74,7 @@ cve-2021-26708 vsock01
+>   cve-2021-22600 setsockopt09
+>   cve-2022-0847 dirtypipe
+>   cve-2022-2590 dirtyc0w_shmem
+> +cve-2021-38604 mq_notify03
+>   # Tests below may cause kernel memory leak
+>   cve-2020-25704 perf_event_open03
+>   cve-2022-4378 cve-2022-4378
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 81c30402b..536140a3e 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -832,6 +832,7 @@ pkey01 pkey01
+>   
+>   mq_notify01 mq_notify01
+>   mq_notify02 mq_notify02
+> +mq_notify03 mq_notify03
+>   mq_open01 mq_open01
+>   mq_timedreceive01 mq_timedreceive01
+>   mq_timedsend01 mq_timedsend01
+> diff --git a/testcases/kernel/syscalls/mq_notify/.gitignore b/testcases/kernel/syscalls/mq_notify/.gitignore
+> index cca05a7fa..3f9403c05 100644
+> --- a/testcases/kernel/syscalls/mq_notify/.gitignore
+> +++ b/testcases/kernel/syscalls/mq_notify/.gitignore
+> @@ -1,2 +1,3 @@
+>   /mq_notify01
+>   /mq_notify02
+> +/mq_notify03
+> diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify03.c b/testcases/kernel/syscalls/mq_notify/mq_notify03.c
+> new file mode 100644
+> index 000000000..5c322ef0e
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/mq_notify/mq_notify03.c
+> @@ -0,0 +1,99 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) The GNU Toolchain Authors.
+> + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
+> + *
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Test for NULL pointer dereference in mq_notify(CVE-2021-38604)
+> + *
+> + * References links:
+> + * - https://sourceware.org/bugzilla/show_bug.cgi?id=28213
+> + */
+> +
+> +#include <errno.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +#include <unistd.h>
+> +#include <mqueue.h>
+> +#include <signal.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include "tst_test.h"
+> +#include "tst_safe_posix_ipc.h"
+> +
+> +static mqd_t m = -1;
+> +static const char msg[] = "hello";
+> +
+> +static void try_null_dereference_cb(union sigval sv)
+> +{
+> +	char buf[sizeof(msg)];
+> +
+> +	(void)sv;
+> +
+> +	TST_EXP_VAL((size_t) mq_receive(m, buf, sizeof(buf), NULL)
+> +				, sizeof(buf));
+> +	TST_EXP_PASS(memcmp(buf, msg, sizeof(buf)));
+> +
+> +	exit(0);
+> +}
+> +
+> +static void try_null_dereference(void)
+> +{
+> +	struct sigevent sev;
+> +
+> +	memset(&sev, '\0', sizeof(sev));
+> +	sev.sigev_notify = SIGEV_THREAD;
+> +	sev.sigev_notify_function = try_null_dereference_cb;
+> +
+> +	/* Step 1: Register & unregister notifier.
+> +	 * Helper thread should receive NOTIFY_REMOVED notification.
+> +	 * In a vulnerable version of glibc, NULL pointer dereference follows.
+> +	 */
+> +	TST_EXP_PASS(mq_notify(m, &sev));
+> +	TST_EXP_PASS(mq_notify(m, NULL));
+> +
+> +	/* Step 2: Once again, register notification.
+> +	 * Try to send one message.
+> +	 * Test is considered successful, if the callback does exit (0).
+> +	 */
+> +	TST_EXP_PASS(mq_notify(m, &sev));
+> +	TST_EXP_PASS(mq_send(m, msg, sizeof(msg), 1));
+> +
+> +	/* Wait... */
+> +	pause();
+> +}
+> +
+> +static void do_test(void)
+> +{
+> +	static const char m_name[] = "/ltp_mq_notify03";
+> +	struct mq_attr m_attr;
+> +
+> +	memset(&m_attr, '\0', sizeof(m_attr));
+> +	m_attr.mq_maxmsg = 1;
+> +	m_attr.mq_msgsize = sizeof(msg);
+> +
+> +	m = SAFE_MQ_OPEN(m_name,
+> +			O_RDWR | O_CREAT | O_EXCL,
+> +			0600,
+> +			&m_attr);
+> +
+> +	TST_EXP_PASS(mq_unlink(m_name));
+> +
+> +	try_null_dereference();
+> +}
+> +
+> +
+> +static struct tst_test test = {
+> +	.test_all = do_test,
+> +	.tags = (const struct tst_tag[]) {
+> +		{"glibc-git", "b805aebd42"},
+> +		{"CVE", "2021-38604"},
+> +		{}
+> +	},
+> +	.needs_root = 1,
+> +};
+
+--
+Souta Kawahara <souta.kawahara@miraclelinux.com>
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
