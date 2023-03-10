@@ -4,84 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C335C64EC4
-	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 05:55:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F83CC6FD19
+	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 06:26:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B6ED43CB7ED
-	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 06:55:27 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8B17F3CB739
+	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 07:26:13 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3542C3CAEE6
- for <ltp@lists.linux.it>; Fri, 10 Mar 2023 06:55:14 +0100 (CET)
-Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com
- [195.245.230.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id A0FAD3CB077
+ for <ltp@lists.linux.it>; Fri, 10 Mar 2023 07:26:01 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2538C20033D
- for <ltp@lists.linux.it>; Fri, 10 Mar 2023 06:55:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1678427711; i=@fujitsu.com;
- bh=m6OT3eLYgOGXAhLYsy2YTo3WACPuWZSWWsFn3RMXwcU=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=bs2hsCXzCFANMHqcddNeKV2u0X+YmjAkzOWS4ZyBCbqtMZ31BTYyvuRyHZmlOuyVi
- Pxm8G9eI2RXs+qgFUS1wedSnnO8W1rX/ff64TRQVLgnxMjjuujlJo+7KdczZ3d4ccF
- NjL16ziCeghF5KnQx1+23WqqtdL5zZAyQu4aZFdh/A9TXcYWOxD06+PGn6M6RNt08J
- 5rlzoPY2yQ+tfn6x+3/lT6/11k1QE9e7MxuTAxAf/+I4SoHXgBRqNuQ3x7w2g64MMb
- rLPoUXt9k2osf5InnTrizMLcKqwRMJgn4CTTkIkTMnhUtIKFCO/QZzoCO+QSVzbCnx
- m6rtweM+TASTA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLIsWRWlGSWpSXmKPExsViZ8OxWdfuGFe
- KwfT5UhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8aWG5wF1zkr+ub/Y29gPMzRxcjFISRwklHi
- 2Of3bBDOHiaJxR9aWboYOYGcvYwSC/r8QWw2AU2JZ50LmEFsEQEJiY6Gt+wgNrOAusTySb+YQ
- GxhAVOJh7eeMnYxcnCwCKhKPG1PAwnzCnhK7Np8HKxcQkBBYsrD98wQcUGJkzOfsECMkZA4+O
- IFM0SNkkRb6xVWCLtConH6ISYIW03i6rlNzBMY+WchaZ+FpH0BI9MqRtPi1KKy1CJdE72kosz
- 0jJLcxMwcvcQq3US91FLd8tTiEl1DvcTyYr3U4mK94src5JwUvbzUkk2MwDBMKWZ9u4Pxf+9f
- vUOMkhxMSqK8yqlcKUJ8SfkplRmJxRnxRaU5qcWHGGU4OJQkeP0PAOUEi1LTUyvSMnOAMQGTl
- uDgURLhZd0BlOYtLkjMLc5Mh0idYjTmWNtwYC8zx6Z9XQeYhVjy8vNSpcR5ZY4ClQqAlGaU5s
- ENgsXqJUZZKWFeRgYGBiGegtSi3MwSVPlXjOIcjErCvKmHgabwZOaVwO17BXQKE9Apu7ZwgJx
- SkoiQkmpgUtq0tnDanX69H8zcgpa+j9++NFI47eutsPEse7xBoXztBNfvCedOLXkpwbM0fsHt
- QF5jrpRDXt5iO/z+yEpL9p1jN/inpH9rWlhAtPX8A/FfpxX11SxTPxYsM6fhfe7qVbJzD1Szm
- 27PX8dXLPCJ4fn9cKPE363zlklGOvIZd9hPOuN+couPEN+XxrvGx2UkX2woffLrx741DyT6Jr
- 2x1g09fMzQOfauffThBJ3XS2Y3ShQuyvH6GMRQWbluQsWCGZ+bX5mK+C/63GQ84e3yoHSp/pY
- M2w7di4I7FtRtrduUs6iv7dqNwkLLBQEaN+Vb+8UmPFzYVrhm68o1ee+/XK5ZcbnvR98jMYm1
- Bzh/KLEUZyQaajEXFScCAGCSiIZQAwAA
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-12.tower-591.messagelabs.com!1678427710!606299!1
-X-Originating-IP: [62.60.8.179]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.103.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 23075 invoked from network); 10 Mar 2023 05:55:10 -0000
-Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
- by server-12.tower-591.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 10 Mar 2023 05:55:10 -0000
-Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 1394873
- for <ltp@lists.linux.it>; Fri, 10 Mar 2023 05:55:10 +0000 (GMT)
-Received: from R01UKEXCASM121.r01.fujitsu.local (R01UKEXCASM121
- [10.183.43.173])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 06F427B
- for <ltp@lists.linux.it>; Fri, 10 Mar 2023 05:55:10 +0000 (GMT)
-Received: from localhost.localdomain (10.167.215.131) by
- R01UKEXCASM121.r01.fujitsu.local (10.183.43.173) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Fri, 10 Mar 2023 05:55:08 +0000
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Fri, 10 Mar 2023 13:54:55 +0800
-Message-ID: <1678427695-12871-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 913E6100112B
+ for <ltp@lists.linux.it>; Fri, 10 Mar 2023 07:25:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1678429557;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=uaJhkBITyrgUV7abh9fnc6aw1PYfJ/YXHbRMonVkNKA=;
+ b=YCQpIBlQSerEpB9X7CxAkUtYCI3nxFj9bK/99Yu9AamAt7kBGVJMA76uo+rNo4IfAlH1jt
+ L8ztxbPywqN+TNqAXO7Aqu8LSfBmT7cWqCVSGgsR1st9d5h6j8JlsKWdhjc3hUFYTYRsZv
+ x+xOLNbcF5MYYtmWD3f1rDJC3g0OqQ4=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-664-Z2TmYWbgPu2uiG45IouIOQ-1; Fri, 10 Mar 2023 01:25:55 -0500
+X-MC-Unique: Z2TmYWbgPu2uiG45IouIOQ-1
+Received: by mail-wm1-f69.google.com with SMTP id
+ f26-20020a7bcd1a000000b003e71cde0e70so2000268wmj.0
+ for <ltp@lists.linux.it>; Thu, 09 Mar 2023 22:25:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112; t=1678429554;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=uaJhkBITyrgUV7abh9fnc6aw1PYfJ/YXHbRMonVkNKA=;
+ b=n8dYjLO6T4iRPE9yX5f0+gKUDlLMuxKjEha/H2VI8Ig/+pEcgIWZ4MD78VfHjWxCjK
+ Mx4nlbyAsK0qqSqvt+x/0262g/beyY8QOHWJTtkPSFu+IIVCmoE5OSCAhGWOngHUxu6V
+ OOnigCYpT6CFXbJ4RlQsWcr8xrUMENA1d3g2uvheb9rgPmKTR2f+LwR7b/ZPy4XhYKRk
+ vX7saDWGXNecaz3oF1zSP9h9/lojtiFnpoydEXIlewXQXMoV8tYMvBL3RUAfB3dZGtxX
+ XQsmWnsGZE54Erl6NaTI6svRIEIGajXG4YWHOmqXPSNl70Lgp2x3z64PIJXSrKG/7WYb
+ cjrw==
+X-Gm-Message-State: AO0yUKUeTyzUQdTnJ2xkcgF5nE0A9xVfsmg1ICPEn9xPrBD4s3J2g/5M
+ rSf6W4ru3w2elHfv8lqUsQ+CI7+qc4xfiRB3+xaNWtWukX6uDsEJst7Jme3TiCIx5Fy8aAlLDgD
+ TgwHYs3hlqI3NY76s3pH0LCWw7BM=
+X-Received: by 2002:a05:600c:3b99:b0:3df:97b0:ba06 with SMTP id
+ n25-20020a05600c3b9900b003df97b0ba06mr494613wms.7.1678429554378; 
+ Thu, 09 Mar 2023 22:25:54 -0800 (PST)
+X-Google-Smtp-Source: AK7set9VSSSi86bBSoGsMksz6X6F4IH29ylnoJrDDwE6nTUnuksBxgcdQEuGk/h+Iy4zVzz7rqTsxchhq39/J6B09JY=
+X-Received: by 2002:a05:600c:3b99:b0:3df:97b0:ba06 with SMTP id
+ n25-20020a05600c3b9900b003df97b0ba06mr494600wms.7.1678429553974; Thu, 09 Mar
+ 2023 22:25:53 -0800 (PST)
 MIME-Version: 1.0
-X-Originating-IP: [10.167.215.131]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM121.r01.fujitsu.local (10.183.43.173)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <20230226192554.669332-1-fontaine.fabrice@gmail.com>
+ <Y/yTyk9rYYsPJyVA@yuki>
+In-Reply-To: <Y/yTyk9rYYsPJyVA@yuki>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 10 Mar 2023 14:25:42 +0800
+Message-ID: <CAEemH2fLFYu8=ZRBbu0xgmfYh4=XHJSu07R+4=-qX_1ESVza0w@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] memcg_lib.sh: Add fallback for RHEL8
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] configure.ac: fix mount_attr detection
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,39 +87,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Fabrice Fontaine <fontaine.fabrice@gmail.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-As the same as RHEL9, this kernel patch has been merged on RHEL8. You can
-see it in url[1], to avoid false report, so add a fallback for this.
-
-[1]http://www.rpmfind.net/linux/RPM/centos/8-stream/baseos/x86_64/Packages/kernel-4.18.0-448.el8.x86_64.html
-
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- testcases/kernel/controllers/memcg/functional/memcg_lib.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index dbb61e6b1..5efede9cf 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -404,8 +404,8 @@ fi
- # Post 4.16 kernel updates stat in batch (> 32 pages) every time
- # Post 6.1 kernel updates stat in batch (> 64 pages) every time
- # 1813e51eece0ad6 ("memcg: increase MEMCG_CHARGE_BATCH to 64")
--# has been merged since 5.14.0-191.el9.
--if tst_kvcmp -lt "6.1 RHEL9:5.14.0-191" ; then
-+# has been merged since 5.14.0-191.el9 and 4.18.0-438.el8.
-+if tst_kvcmp -lt "6.1 RHEL9:5.14.0-191 RHEL8:4.18.0-438" ; then
- 	PAGESIZES=$(($PAGESIZE * 33))
- else
- 	PAGESIZES=$(($PAGESIZE * 65))
--- 
-2.39.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBGZWIgMjcsIDIwMjMgYXQgNzoyNuKAr1BNIEN5cmlsIEhydWJpcyA8Y2hydWJpc0Bz
+dXNlLmN6PiB3cm90ZToKCj4gSGkhCj4gPiBDb21taXQgYjg1N2Y4NzIzZjMwYTRiOTU1NGJmNmIw
+ZmY4ZmE1MmZkMDdlOGI2MCB0cmllZCB0byBmaXggYnVpbGQgd2l0aAo+ID4gbGF0ZXN0IGdsaWJj
+IHdoaWNoIHByb3ZpZGVzIG1vdW50X2F0dHIgaW4gc3lzL21vdW50LmguIFVuZm9ydHVuYXRlbHks
+Cj4gPiB0aGUgZm9sbG93aW5nIGJ1aWxkIGZhaWx1cmUgaXMgc3RpbGwgcmFpc2VkIGJlY2F1c2Ug
+c3lzL21vdW50IGlzIG5vdwo+ID4gdW5jb25kaXRpb25hbGx5IGluY2x1ZGVkIGluIGluY2x1ZGUv
+bGFwaS9mc21vdW50Lmg6Cj4gPgo+ID4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGZzY29uZmlnMDEu
+Yzo5Ogo+ID4gLi4vLi4vLi4vLi4vaW5jbHVkZS9sYXBpL2ZzbW91bnQuaDo1NTo4OiBlcnJvcjog
+cmVkZWZpbml0aW9uIG9mICdzdHJ1Y3QKPiBtb3VudF9hdHRyJwo+ID4gICAgNTUgfCBzdHJ1Y3Qg
+bW91bnRfYXR0ciB7Cj4gPiAgICAgICB8ICAgICAgICBefn5+fn5+fn5+Cj4gPiBJbiBmaWxlIGlu
+Y2x1ZGVkIGZyb20gLi4vLi4vLi4vLi4vaW5jbHVkZS9sYXBpL2ZzbW91bnQuaDoxNDoKPiA+Cj4g
+L2hvbWUvYXV0b2J1aWxkL2F1dG9idWlsZC9pbnN0YW5jZS00L291dHB1dC0xL2hvc3QvYXJtZWIt
+YnVpbGRyb290LWxpbnV4LWdudWVhYmkvc3lzcm9vdC91c3IvaW5jbHVkZS9zeXMvbW91bnQuaDoy
+MTA6ODoKPiBub3RlOiBvcmlnaW5hbGx5IGRlZmluZWQgaGVyZQo+ID4gICAyMTAgfCBzdHJ1Y3Qg
+bW91bnRfYXR0cgo+ID4gICAgICAgfCAgICAgICAgXn5+fn5+fn5+fgo+ID4KPiA+IEZpeGVzOgo+
+ID4gIC0KPiBodHRwOi8vYXV0b2J1aWxkLmJ1aWxkcm9vdC5vcmcvcmVzdWx0cy80ZGJiNzJlMWJm
+MDgxYWZkM2NkOTQ0NTcxYjliZWVlZmM3NjA4ODY1Cj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogRmFi
+cmljZSBGb250YWluZSA8Zm9udGFpbmUuZmFicmljZUBnbWFpbC5jb20+Cj4gPiAtLS0KPiA+ICBj
+b25maWd1cmUuYWMgfCA2ICsrKy0tLQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMo
+KyksIDMgZGVsZXRpb25zKC0pCj4gPgo+ID4gZGlmZiAtLWdpdCBhL2NvbmZpZ3VyZS5hYyBiL2Nv
+bmZpZ3VyZS5hYwo+ID4gaW5kZXggYzJiMGY0OGU3Li5hNmQ4YWM4MjYgMTAwNjQ0Cj4gPiAtLS0g
+YS9jb25maWd1cmUuYWMKPiA+ICsrKyBiL2NvbmZpZ3VyZS5hYwo+ID4gQEAgLTIyNSwxMCArMjI1
+LDEwIEBAIEFDX0NIRUNLX1RZUEVTKFtzdHJ1Y3QgX19rZXJuZWxfb2xkX3RpbWV2YWwsCj4gc3Ry
+dWN0IF9fa2VybmVsX29sZF90aW1lc3BlYywgc3RydWMKPiA+Cj4gPiAgQUNfQ0hFQ0tfVFlQRVMo
+W3N0cnVjdCBmdXRleF93YWl0dl0sLCxbI2luY2x1ZGUgPGxpbnV4L2Z1dGV4Lmg+XSkKPiA+ICBB
+Q19DSEVDS19UWVBFUyhbc3RydWN0IG1vdW50X2F0dHJdLCwsWwo+ID4gLSNpZmRlZiBIQVZFX0xJ
+TlVYX01PVU5UX0gKPiA+IC0jIGluY2x1ZGUgPGxpbnV4L21vdW50Lmg+Cj4gPiAtI2Vsc2UKPiA+
+ICsjaWZkZWYgSEFWRV9NT1VOVF9TRVRBVFRSCj4gPiAgIyBpbmNsdWRlIDxzeXMvbW91bnQuaD4K
+PiA+ICsjZWxpZiBIQVZFX0xJTlVYX01PVU5UX0gKPiA+ICsjIGluY2x1ZGUgPGxpbnV4L21vdW50
+Lmg+Cj4gPiAgI2VuZGlmCj4gPiAgXSkKPgo+IEkgd29uZGVyIGlmIHdlIGNhbiBnZXQgdGhpcyB3
+aG9sZSBtZXNzIG9mIHR3byBkaWZmZXJlbnQgZmFsbGJhY2sgaGVhZGVycwo+IHNpbXBsaWZpZWQu
+IExvb2tpbmcgYXQgdGhlIGdsaWJjIGltcGxlbWVudGF0aW9uIGl0IHNlZW1zIHRvIGluY2x1ZGUK
+PiAibGludXgvbW91bnQuaCIgaWYgaXQgZG9lcyBleGlzdC4gU28gbW9zdCByZWFzb25hYmxlIHNv
+bHV0aW9uIHdvdWxkIGRvCj4gdGhlIHNhbWUgSSBndWVzcyB3aGljaCB3ZSBkaWQgYmVmb3JlIHRo
+ZSBjb21taXQgeW91IHJlZmVyZW5jZS4KPgoKVGhpcyBpcyBpbmRlZWQgY29ycmVjdCBpZiBvbmx5
+IGZhY2UgdGhlIGxhdGVzdCBHbGliYywgYnV0IHRoYXQgbWlnaHQgaGF2ZQpwcm9ibGVtcyB3aGVu
+IGJ1aWxkaW5nIExUUCBvbiBhIG1pZGRsZSB2ZXJzaW9uIG9mIEdsaWJjL0tlcm5lbC1oZWFkZXJz
+LgpUaGUgYnVnIEkgbWVudGlvbmVkIGluIHRoZSBsYXN0IGVtYWlsIHdhcyBmaXhlZCBzaW5jZSBn
+bGliYy0yLjM3fjQyNi4KCkBGYWJyaWNlLCB3aGF0IGtpbmQgb2YgdmVyc2lvbiBvZiBHbGliYy9L
+ZXJuZWwtaGVhZGVycyBkbyB5b3UgdXNlPyBhbmQKd2hpY2ggcGxhdGZvcm0/CgpCdHcsIHRoaXMg
+cGF0Y2ggYnVpbGRzIExUUCBzdWNjZXNzZnVsbHkgaW4gQ0k6CiAgLSBodHRwczovL2dpdGh1Yi5j
+b20vd2FuZ2xpNTY2NS9sdHAvYWN0aW9ucy9ydW5zLzQzODA3Mzk0NzAKQW5kIEkgbWFudWFsbHkg
+dHJpZWQgd2l0aCBmZWRvcmEtcmF3aGlkZS9mZWRvcmEzNC8zNS8zNy8zOCBhbGwgbG9va3MgZ29v
+ZC4KCk1heWJlIHdlIGNhbiBqdXN0IGFwcGx5IHRoaXMgcGF0Y2ggdG8ga2VlcCBldmVyeXRoaW5n
+IHdpdGggbm8gYmlnIGNoYW5nZXMuCgpAQ3lyaWwsIFBldHIsIHdoYXQgZG8geW91IHRoaW5rPwoK
+Ci0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
+dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
