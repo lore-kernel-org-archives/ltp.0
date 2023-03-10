@@ -4,53 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1B53C6FD1F
-	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 14:04:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8D2CC742A7
+	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 14:51:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 89FBA3CD81A
-	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 15:04:28 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id D90BE3CD804
+	for <ltp@archiver.kernel.org>; Fri, 10 Mar 2023 15:51:07 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1EC083C08AA
- for <ltp@lists.linux.it>; Fri, 10 Mar 2023 15:04:15 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 7CF743CA013
+ for <ltp@lists.linux.it>; Fri, 10 Mar 2023 15:50:57 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E90C7601CEC
- for <ltp@lists.linux.it>; Fri, 10 Mar 2023 15:04:14 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DD5DD1A01223
+ for <ltp@lists.linux.it>; Fri, 10 Mar 2023 15:50:56 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 41BC821DAB;
- Fri, 10 Mar 2023 14:04:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1678457054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=pdCKwVsHzxw+enSChoIpVpDdAKrKIvQeAWw42ogMrhY=;
- b=kth7RMVDyobI48xjZwS+WXem8gL0TYUZFV118CaXH6+26eN8FPd7pGcIK1EjX3LTSAI0R8
- 7jLbefl8tUzxfNxeF9KpMpNVGly3TKRYFzo6dDE4Gu3TFIv/t3vMD2MTaDUdV5kYk0pUBE
- FF1EGx18Xpkr64TC1aUJhM0G6fY0RHw=
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7EFC220657;
+ Fri, 10 Mar 2023 14:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1678459854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3dKBUY0F0l7pXmOfoJbVLaJH7PILbr+F9VNy1IzvxO0=;
+ b=Ui3EiMeBFZNsVgItDo+b0UoCqXCuD4yza6LS3+Xt0Z/AqFJ1KUsA+h4LSFUae/u3BXrHYG
+ jwwDIqJTJ7rFcmVzvzcWrwOb/Yo/npryj6msVySB+1ps3zNHeQqYn4Zw3oap90fqCJX9KL
+ 0kAuF9WFC6NsOb4HXGA5Asl3NY0FiKk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1678459854;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3dKBUY0F0l7pXmOfoJbVLaJH7PILbr+F9VNy1IzvxO0=;
+ b=uf2FPtVcjILPNv7TKcLzInQD2nHP+Cfj5vYzFNRl4Cz1oVMMDz0bn+Umf8lVgIj2LrM35W
+ 62QFs+3Ziu9hWrBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5B021134F7;
- Fri, 10 Mar 2023 14:04:13 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6386B13592;
+ Fri, 10 Mar 2023 14:50:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 1tVKCd04C2SzVAAAMHmgww
- (envelope-from <wegao@suse.com>); Fri, 10 Mar 2023 14:04:13 +0000
-To: ltp@lists.linux.it
-Date: Fri, 10 Mar 2023 09:04:07 -0500
-Message-Id: <20230310140407.20137-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
+ by imap2.suse-dmz.suse.de with ESMTPSA id HoukF85DC2RJbwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 10 Mar 2023 14:50:54 +0000
+Date: Fri, 10 Mar 2023 15:52:16 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <ZAtEIClci4QximeK@yuki>
+References: <20230310140407.20137-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230310140407.20137-1-wegao@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] madvise11.c:Check loadable module before rmmod
+Subject: Re: [LTP] [PATCH v1] madvise11.c:Check loadable module before rmmod
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -62,85 +75,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- testcases/kernel/syscalls/madvise/madvise11.c | 32 +++++++++++++++++--
- 1 file changed, 30 insertions(+), 2 deletions(-)
+Hi!
+> +static int is_loadable_module(const char *modname)
+> +{
+> +	char command[MAX_BUF];
+> +	char line[MAX_BUF];
+> +	char *token;
+> +
+> +	sprintf(command, "lsmod | grep '^%s'", modname);
+> +
+> +	FILE *fp = popen(command, "r");
+> +
+> +	if (fp == NULL)
+> +		tst_brk(TBROK, "Popen command %s failed", command);
+> +
+> +	if (fgets(line, MAX_BUF, fp) != NULL) {
+> +		token = strtok(line, " \t\n");
+> +		if (strcmp(token, modname) == 0) {
+> +			pclose(fp);
+> +			return 1;
+> +		}
+> +	}
+> +
+> +	pclose(fp);
+> +	return 0;
+> +}
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
-index 7e291d571..bac077fc8 100644
---- a/testcases/kernel/syscalls/madvise/madvise11.c
-+++ b/testcases/kernel/syscalls/madvise/madvise11.c
-@@ -33,6 +33,7 @@
- #define NUM_LOOPS	5
- #define NUM_PAGES	32
- #define NUM_PAGES_OFFSET	5
-+#define MAX_BUF 4094
- 
- /* Needed module to online back memory pages */
- #define HW_MODULE	"hwpoison_inject"
-@@ -291,6 +292,31 @@ static void unpoison_this_pfn(unsigned long pfn, int fd)
- 	SAFE_WRITE(0, fd, pfn_str, strlen(pfn_str));
- }
- 
-+static int is_loadable_module(const char *modname)
-+{
-+	char command[MAX_BUF];
-+	char line[MAX_BUF];
-+	char *token;
-+
-+	sprintf(command, "lsmod | grep '^%s'", modname);
-+
-+	FILE *fp = popen(command, "r");
-+
-+	if (fp == NULL)
-+		tst_brk(TBROK, "Popen command %s failed", command);
-+
-+	if (fgets(line, MAX_BUF, fp) != NULL) {
-+		token = strtok(line, " \t\n");
-+		if (strcmp(token, modname) == 0) {
-+			pclose(fp);
-+			return 1;
-+		}
-+	}
-+
-+	pclose(fp);
-+	return 0;
-+}
-+
- /* Find and open the <debugfs>/hwpoison/unpoison-pfn special file */
- static int open_unpoison_pfn(void)
- {
-@@ -337,6 +363,7 @@ static void unpoison_pfn(char *begin_tag)
- 	unsigned long *pfns;
- 	const char *const cmd_rmmod[] = {"rmmod", HW_MODULE, NULL};
- 	int found_pfns, fd;
-+	int is_loadable = -1;
- 
- 	pfns = SAFE_MALLOC(sizeof(pfns) * maximum_pfns * run_iterations);
- 
-@@ -351,8 +378,9 @@ static void unpoison_pfn(char *begin_tag)
- 
- 		SAFE_CLOSE(fd);
- 	}
--	/* remove hwpoison only if we probed it */
--	if (hwpoison_probe)
-+	/* remove hwpoison only if we probed it and not built in*/
-+	is_loadable = is_loadable_module(HW_MODULE);
-+	if (hwpoison_probe && (is_loadable == 1))
- 		SAFE_CMD(cmd_rmmod, NULL, NULL);
- }
- 
+The code already has if (!find_in_file("/proc/modules", HW_MODULE)), you
+are reinventing the wheel.
+
 -- 
-2.35.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
