@@ -4,54 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0106C6FD19
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 16:12:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE76FC74A5B
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 17:15:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BB30C3CAEAF
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 17:12:55 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 637BD3CD5F8
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 18:15:21 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 585553C03AE
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 17:12:45 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id EC0B03CA013
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 18:15:09 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2CF55200938
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 17:12:43 +0100 (CET)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 663B72002AD
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 18:15:08 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id E8FFE61359;
- Mon, 13 Mar 2023 16:12:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3A37C4331E;
- Mon, 13 Mar 2023 16:12:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1678723961;
- bh=JMgBqqkMq8aazAV81LpMJjduhwTQKD7p13DYY8ThETE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=LLGEodfJotMM/Ce/S9nXcb64TZrGFEy81O0upuGAIk/uWB9ZTJE4PwyVpdK+j5oEJ
- gJ2Lu35Vno7xzSnV3B7FtcYhGVb96KMPMmkV8E3rJ6ge/vfMA/n/D4XkdYeH4UbBEe
- IrojXwx616dF/pMY4+pKKwfUu75EK++nRYzxTCfw7tvZ5/As87rBeTexffLHPdJjtE
- yh66AMfxFV8pRtTtczktwkciIMJlwAvFGHIDJaLrZ2lTdC/xHon17eJHTMexu2JtIL
- AqBN4qC9jddd7b1kMXYUGyhUjHwmjV1Urr7AYzlpnwRW2+waj2ar1CQ0UAATzyw5cL
- N+gYv0YdcrlBg==
-Date: Mon, 13 Mar 2023 09:12:40 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <20230313161240.GA11394@frogsfrogsfrogs>
-References: <20230307145517.1359-1-pvorel@suse.cz>
- <20230307145517.1359-3-pvorel@suse.cz> <ZA81c11hvBu4xlsd@yuki>
- <9e05fdea-94f5-c7a2-6bd2-3107f0410e17@redhat.com>
- <20230313153009.GA10305@pevik> <20230313153309.GC10305@pevik>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 726BE229F4
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 17:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1678727708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=cMyuo1bfJyMxefumNYM5ei99gNt2wJVD7YCK2ByT4CY=;
+ b=1D5bZj2N3CkSY/EOlHgvQ/Amlg1D6PWaV9XmzC9Qd28LPyNr75AsIkV/ipU3bycyJU+NqM
+ Knt9UCAblCCj9W4qXYD14D/dpKrLyFMBR9aE//Fk/t+t8xuAMpvjpuMqCBIypBoGO0Pu7b
+ dITCZA6K+Ot5urfKvDyRTKRJmqFMoK4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1678727708;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=cMyuo1bfJyMxefumNYM5ei99gNt2wJVD7YCK2ByT4CY=;
+ b=wjyKcsheQtcl2Y3AEXRXR+KgPNJv2NuDqmUTbISNFusUkfiRqkQKpJemSnkX7UQxsGitK8
+ Ti7RM1SNOKlQHaBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 57B3313582
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 17:15:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id cAeEFBxaD2Q9KgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 17:15:08 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 13 Mar 2023 18:15:07 +0100
+Message-Id: <20230313171507.1257-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230313153309.GC10305@pevik>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] df01.sh: Use tst_fsfreeze for XFS on kernel
- >= 5.19
+Subject: [LTP] [PATCH] KVM: Fix ELF segment with RWX permissions warnings
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,100 +71,127 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Eric Sandeen <sandeen@redhat.com>, Eric Sandeen <sandeen@sandeen.net>,
- ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Mar 13, 2023 at 04:33:09PM +0100, Petr Vorel wrote:
-> > > On 3/13/23 9:38 AM, Cyril Hrubis wrote:
-> > > > Hi!
-> > > >> XFS since kernel 5.19 postpone certain operation.  Use LTP fsfreeze
-> > > >> implementation to force all the background garbage collection to run
-> > > >> to completion.
-> 
-> > > >> Link: https://lore.kernel.org/linux-block/974cc110-d47e-5fae-af5f-e2e610720e2d@redhat.com/
-> > > >> Suggested-by: Eric Sandeen <sandeen@redhat.com>
-> > > >> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > > >> ---
-> > > >>  testcases/commands/df/df01.sh | 7 ++++++-
-> > > >>  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> > > >> diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-> > > >> index ae0449c3c..699d1538f 100755
-> > > >> --- a/testcases/commands/df/df01.sh
-> > > >> +++ b/testcases/commands/df/df01.sh
-> > > >> @@ -1,7 +1,7 @@
-> > > >>  #!/bin/sh
-> > > >>  # SPDX-License-Identifier: GPL-2.0-or-later
-> > > >>  # Copyright (c) 2015 Fujitsu Ltd.
-> > > >> -# Copyright (c) 2018-2022 Petr Vorel <pvorel@suse.cz>
-> > > >> +# Copyright (c) 2018-2023 Petr Vorel <pvorel@suse.cz>
-> > > >>  # Author: Zhang Jin <jy_zhangjin@cn.fujitsu.com>
-> 
-> > > >>  # Test df command with some basic options.
-> > > >> @@ -46,6 +46,11 @@ df_test()
-> 
-> > > >>  	ROD_SILENT rm -rf $TST_MNTPOINT/testimg
-> 
-> > > >> +	# force all the background garbage collection to run to completion
-> > > >> +	if [ "$TST_FS_TYPE" = "xfs" ] && tst_kvcmp -ge "5.19"; then
-> > > >> +		tst_fsfreeze $TST_MNTPOINT
-> > > >> +	fi
-> 
-> > > > This looks overly specific, can't we just freeze and unfreeze the FS
-> > > > without looking at kernel version? Or will we get errors on older XFS?
-> 
-> > > > I suppose that this may still start to fail on distribution kernels if
-> > > > some of the newer functionality gets backported...
-> 
-> > So far it's OK on SLES, likely nothing related has been backported to it.
-> > I wonder if we should remove the check or just wait till first complaint.
-> 
-> Well, I haven't seen any problems with older kernels, but I'll retest it more.
-> I don't expect any problems, thus I'm OK with removing it.
+Linker complains that some ASM bootstrap segments have both write
+and execute permissions. Rename .data.gdt32 section because the ASM
+compiler seems to make it writable regardless of section flags.
+Also define new ELF segment for writable data sections.
 
-If the fs doesn't support freezing (e.g. tmpfs), you'll get a -1 return
-value and errno == EOPNOTUPP or NOTTY.  Is that going to cause the test
-to fail due to tst_brk?
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
+ testcases/kernel/kvm/Makefile           | 2 +-
+ testcases/kernel/kvm/bootstrap_x86.S    | 2 +-
+ testcases/kernel/kvm/bootstrap_x86_64.S | 2 +-
+ testcases/kernel/kvm/linker/x86.lds     | 5 +++--
+ testcases/kernel/kvm/linker/x86_64.lds  | 5 +++--
+ 5 files changed, 9 insertions(+), 7 deletions(-)
 
-> Kind regards,
-> Petr
-> 
-> > > Yup, I agree. Freeze should be safe for any kernel, I wouldn't condition it either.
-> 
-> > > (You do want to be very sure that you're not freezing the root fs, tho,
-> > > if that is any possibility.)
+diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
+index 6986844be..e12cb4e98 100644
+--- a/testcases/kernel/kvm/Makefile
++++ b/testcases/kernel/kvm/Makefile
+@@ -9,7 +9,7 @@ ASFLAGS =
+ CPPFLAGS += -I$(abs_srcdir)/include
+ GUEST_CPPFLAGS = $(CPPFLAGS) -DCOMPILE_PAYLOAD
+ GUEST_CFLAGS = -ffreestanding -O2 -Wall -fno-asynchronous-unwind-tables -mno-mmx -mno-sse
+-GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none -fno-stack-protector
++GUEST_LDFLAGS = -nostdlib -Wl,--build-id=none -fno-stack-protector -z noexecstack
+ GUEST_LDLIBS =
+ KVM_LD ?= $(LD)
+ 
+diff --git a/testcases/kernel/kvm/bootstrap_x86.S b/testcases/kernel/kvm/bootstrap_x86.S
+index 5ec4c0b7e..1aaf0a4d1 100644
+--- a/testcases/kernel/kvm/bootstrap_x86.S
++++ b/testcases/kernel/kvm/bootstrap_x86.S
+@@ -31,7 +31,7 @@ protected_mode_entry:
+ 	mov %eax, %es
+ 	jmp init_memlayout
+ 
+-.section .data.gdt32, "a", @progbits
++.section .init.gdt32, "a", @progbits
+ 
+ .macro gdt32_entry type:req l=0 d=0 dpl=0 limit=0xfffff g=1 p=1
+ 	.4byte \limit & 0xffff
+diff --git a/testcases/kernel/kvm/bootstrap_x86_64.S b/testcases/kernel/kvm/bootstrap_x86_64.S
+index 9ddbd17ed..0cffd5a12 100644
+--- a/testcases/kernel/kvm/bootstrap_x86_64.S
++++ b/testcases/kernel/kvm/bootstrap_x86_64.S
+@@ -32,7 +32,7 @@ protected_mode_entry:
+ 	mov %eax, %es
+ 	jmp init_memlayout
+ 
+-.section .data.gdt32, "a", @progbits
++.section .init.gdt32, "a", @progbits
+ 
+ .macro gdt32_entry type:req l=0 d=0 dpl=0 limit=0xfffff g=1 p=1
+ 	.4byte \limit & 0xffff
+diff --git a/testcases/kernel/kvm/linker/x86.lds b/testcases/kernel/kvm/linker/x86.lds
+index 95edb0be0..6e69c4d0f 100644
+--- a/testcases/kernel/kvm/linker/x86.lds
++++ b/testcases/kernel/kvm/linker/x86.lds
+@@ -4,6 +4,7 @@ PHDRS
+ {
+ 	headers PT_PHDR PHDRS ;
+ 	text PT_LOAD FILEHDR PHDRS ;
++	data PT_LOAD ;
+ 	bss PT_LOAD ;
+ }
+ 
+@@ -18,7 +19,7 @@ SECTIONS
+ 	.init.boot :
+ 	{
+ 		*(.init.protected_mode)
+-		*(.data.gdt32)
++		*(.init.gdt32)
+ 		*(.init.memlayout)
+ 	} :text
+ 
+@@ -40,7 +41,7 @@ SECTIONS
+ 	{
+ 		*(.data.strings)
+ 		*(.data)
+-	}
++	} :data
+ 
+ 	.preinit_array :
+ 	{
+diff --git a/testcases/kernel/kvm/linker/x86_64.lds b/testcases/kernel/kvm/linker/x86_64.lds
+index ac372f863..9e62aa5ad 100644
+--- a/testcases/kernel/kvm/linker/x86_64.lds
++++ b/testcases/kernel/kvm/linker/x86_64.lds
+@@ -4,6 +4,7 @@ PHDRS
+ {
+ 	headers PT_PHDR PHDRS ;
+ 	text PT_LOAD FILEHDR PHDRS ;
++	data PT_LOAD ;
+ 	bss PT_LOAD ;
+ }
+ 
+@@ -18,7 +19,7 @@ SECTIONS
+ 	.init.boot :
+ 	{
+ 		*(.init.protected_mode)
+-		*(.data.gdt32)
++		*(.init.gdt32)
+ 		*(.init.memlayout)
+ 	} :text
+ 
+@@ -40,7 +41,7 @@ SECTIONS
+ 	{
+ 		*(.data.strings)
+ 		*(.data)
+-	}
++	} :data
+ 
+ 	.preinit_array :
+ 	{
+-- 
+2.39.2
 
-Why?  Are you worried about not being able to unfreeze the rootfs?
-I know fstests has had problems with people doing:
-
-xfs_io -c freeze "/$moo"	# whoops, moo is undefined
-<something that blocks>
-xfs_io -c thaw "/$moo"		# never gets here
-
-But that's not the case here.
-
-Even if it is the rootfs, the text page containing the two ioctls should
-be in memory due to the instruction pointer, and even if it gets paged
-out, freezes don't block read faults.
-
---D
-
-> > $TST_MNTPOINT in on $TMPDIR, which is by default /tmp. In case of /tmp being on
-> > root fs we're freezing root tmpfs. But it works on openSUSE, which found the
-> > problem.
-> 
-> > Kind regards,
-> > Petr
-> 
-> > > -Eric
-> 
-> > > > Otherwise it looks good.
-> 
-> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
