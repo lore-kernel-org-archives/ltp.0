@@ -4,57 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9067EC6FD19
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 13:42:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C8A3C6FD19
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 13:46:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4884D3C62D3
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 14:42:04 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 4FB8F3CAEAF
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 14:46:40 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F04E33C01AA
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 14:41:53 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 0C2BA3C01AA
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 14:46:30 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 74BA6140075B
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 14:41:52 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9D10A6001FD
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 14:46:29 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 64C231FE07;
- Mon, 13 Mar 2023 13:41:52 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F214D1FE07;
+ Mon, 13 Mar 2023 13:46:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1678714912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1678715188; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uL0zP8PTvDh92v5NNRtObg7HknED9XUWBU9VfJBeMSU=;
- b=ASatHfzkdob/LBB30hwYK0cZICRGfnWznIw0L3fNkBkhWKVl0gZJwf8gt8Hc7gvtvCkcHY
- g8MTnrO/TuVNbPCB8dCpHtg2ea3ViZX6IrcDoVtWAuYsR+0jk9WASaqIzyiVbviTaKhKuw
- TtbUgxMrOQCJZp0BeVxFhtgDow55eGk=
+ bh=4cD9P6DNbFUNffTdJtFClemEn78m7WOcKsuD2fWuiBU=;
+ b=osEuFmWqpmGLzIY/8f25U24/WyLzsipMY1RteOLULKGXnYdC5VKNoBwOurKPHbHlAtlo3E
+ E0BXqcksJFpo7zTWP7j7Z6lvv/kMPFjo5KJQoap8fOIq++0JAouxslnW/RyHfW5VnKAGdo
+ UEq41B8xK67xWAvjgh/uq8z9bSntq+w=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4FBE513517;
- Mon, 13 Mar 2023 13:41:51 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D922613517;
+ Mon, 13 Mar 2023 13:46:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id k74iBB8oD2SzMAAAMHmgww
- (envelope-from <wegao@suse.com>); Mon, 13 Mar 2023 13:41:51 +0000
-To: ltp@lists.linux.it
-Date: Mon, 13 Mar 2023 09:41:33 -0400
-Message-Id: <20230313134133.8396-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230312004420.16457-1-wegao@suse.com>
-References: <20230312004420.16457-1-wegao@suse.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id b9DBJDMpD2RZMwAAMHmgww
+ (envelope-from <wegao@suse.com>); Mon, 13 Mar 2023 13:46:27 +0000
+Date: Mon, 13 Mar 2023 09:46:24 -0400
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20230313134624.GA9783@localhost>
+References: <20230311023343.25177-1-wegao@suse.com>
+ <20230312004420.16457-1-wegao@suse.com> <ZA7qq15aeKS+ZeJR@yuki>
+ <20230313122100.GA12608@localhost> <ZA8Y+O7QFfVB0/62@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <ZA8Y+O7QFfVB0/62@yuki>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] madvise11.c:Check loadable module before rmmod
+Subject: Re: [LTP] [PATCH v3] madvise11.c:Check loadable module before rmmod
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,45 +71,72 @@ List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 From: Wei Gao via ltp <ltp@lists.linux.it>
 Reply-To: Wei Gao <wegao@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Following fail msg will popup if we try to rmmod buildin module:
-rmmod: ERROR: Module hwpoison_inject is builtin
+On Mon, Mar 13, 2023 at 01:37:12PM +0100, Cyril Hrubis wrote:
+> Hi!
+> > > That does not solve the problem completely though, if we have a kernel
+> > > where the hwpoinson_inject is set to N in config the test will attempt
+> > > to rmmod it and get different error.
+> > 
+> > 
+> > I have tested on the kernel which set to N in config and the test will report:
+> > tst_test.c:1180: TCONF: hwpoison_inject driver not available
+> > 
+> > I think it should caused by following configuration of test case:
+> >         .needs_drivers = (const char *const []) {
+> >                 HW_MODULE,
+> >                 NULL
+> >         },
+> > 
+> > So the scenario of "N in kernel config" already handled by LTP framework, i have
+> > to say LTP frame work already do a lot of things which i have no idea... xD
+> 
+> Ah, missed that part as well.
+> 
+> Looking at lib/tst_kernel.c we can also easily add tst_buildin_driver()
+> function into the LTP library with just:
+> 
+> diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
+> index ecf4b917e..6000522b7 100644
+> --- a/lib/tst_kernel.c
+> +++ b/lib/tst_kernel.c
+> @@ -153,6 +153,11 @@ static int tst_check_driver_(const char *driver)
+>         return -1;
+>  }
+> 
+> +int tst_buildin_driver(const char *driver)
+> +{
+> +       return !tst_search_driver(driver, "modules.buildin");
+> +}
+> +
+>  int tst_check_driver(const char *driver)
+>  {
+>  #ifdef __ANDROID__
+> 
 
-So need add extra check.
+Try use above implementation but i found another TWARN : (
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- testcases/kernel/syscalls/madvise/madvise11.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+localhost:/home/ltp/testcases/kernel/syscalls/madvise # ./madvise11
+tst_test.c:1560: TINFO: Timeout per run is 0h 01m 00s
+madvise11.c:396: TINFO: Spawning 5 threads, with a total of 800 memory pages
+madvise11.c:165: TINFO: Thread [3] returned 0, succeeded.
+madvise11.c:165: TINFO: Thread [1] returned 0, succeeded.
+madvise11.c:165: TINFO: Thread [2] returned 0, succeeded.
+madvise11.c:165: TINFO: Thread [4] returned 0, succeeded.
+madvise11.c:165: TINFO: Thread [0] returned 0, succeeded.
+madvise11.c:199: TPASS: soft-offline / mmap race still clean
+madvise11.c:327: TWARN: open(/sys/kernel/debug/hwpoison/unpoison-pfn,1,0000) failed: ENOENT (2) !!!!
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
-index 7e291d571..7c0bef157 100644
---- a/testcases/kernel/syscalls/madvise/madvise11.c
-+++ b/testcases/kernel/syscalls/madvise/madvise11.c
-@@ -300,12 +300,12 @@ static int open_unpoison_pfn(void)
- 	struct mntent *mnt;
- 	FILE *mntf;
- 
--	if (!find_in_file("/proc/modules", HW_MODULE))
--		hwpoison_probe = 1;
--
- 	/* probe hwpoison only if it isn't already there */
--	if (hwpoison_probe)
-+	if (!find_in_file("/proc/modules", HW_MODULE)) {
- 		SAFE_CMD(cmd_modprobe, NULL, NULL);
-+		if (find_in_file("/proc/modules", HW_MODULE))
-+			hwpoison_probe = 1;
-+	}
- 
- 	/* debugfs mount point */
- 	mntf = setmntent("/etc/mtab", "r");
--- 
-2.35.3
 
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
