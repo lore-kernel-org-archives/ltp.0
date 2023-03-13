@@ -4,66 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D3D8C61DA4
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 09:18:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6964BC61DA4
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 09:51:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 93F833CD574
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 10:18:31 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id BE7F03CD5C1
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 10:51:36 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 26A4B3C0925
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 10:18:20 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 777783CAE6B
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 10:51:22 +0100 (CET)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5CEB710005D4
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 10:18:19 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 45F451FE07;
- Mon, 13 Mar 2023 09:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1678699099; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=w83LUbr1Vf1n3+YV43JH6rds6LxGhpHvY7sw0sWbM6s=;
- b=vVJUY2335WlJ9ac5e2lE1+D2OtUfE3pVrRJHfzURT7NxsNlC9+PjX52LhssmM+t6wAbwUl
- hPrSpprshgk2At2IRCq+zns4uIxRV3T/iFhx3Sl18Y8epsfVF2PU8MI23WdBYbUZdTaO+0
- dO0RzGdjYv9vgkDNvSr59rKFnuQs7Dk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1678699099;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=w83LUbr1Vf1n3+YV43JH6rds6LxGhpHvY7sw0sWbM6s=;
- b=kOProNZ9Trw1YI2DRMPajVfN5EUf4aH9+ID12G1kHOyM+iGxfi4bO72xqCpm9yWl6SDX9U
- /ZWP4XCiZzSJojAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3073913517;
- Mon, 13 Mar 2023 09:18:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id NtiJClvqDmR/GAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 13 Mar 2023 09:18:19 +0000
-Date: Mon, 13 Mar 2023 10:19:39 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <ZA7qq15aeKS+ZeJR@yuki>
-References: <20230311023343.25177-1-wegao@suse.com>
- <20230312004420.16457-1-wegao@suse.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B84E76006D4
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 10:51:18 +0100 (CET)
+X-UUID: 4faa214fe0e942efa10c521d29f29f96-20230313
+X-CID-UNFAMILIAR: 1
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_HamU
+X-CID-O-INFO: VERSION:1.1.20, REQID:70c87b02-05fe-4bf9-b338-535643f6f1c3, IP:5,
+ U
+ RL:0,TC:0,Content:0,EDM:0,RT:0,SF:18,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+ :release,TS:23
+X-CID-INFO: VERSION:1.1.20, REQID:70c87b02-05fe-4bf9-b338-535643f6f1c3, IP:5,
+ URL
+ :0,TC:0,Content:0,EDM:0,RT:0,SF:18,FILE:0,BULK:0,RULE:Release_HamU,ACTION:
+ release,TS:23
+X-CID-META: VersionHash:25b5999, CLOUDID:eb1514b3-beed-4dfc-bd9c-e1b22fa6ccc4,
+ B
+ ulkID:230313175111KGQNENL8,BulkQuantity:0,Recheck:0,SF:38|23|16|19|43|102,
+ TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+ L:0,OSI:0,OSA:0,AV:0
+X-CID-BVR: 0
+X-UUID: 4faa214fe0e942efa10c521d29f29f96-20230313
+X-User: gehao@kylinos.cn
+Received: from localhost.localdomain [(116.128.244.169)] by mailgw
+ (envelope-from <gehao@kylinos.cn>) (Generic MTA)
+ with ESMTP id 513340505; Mon, 13 Mar 2023 17:51:08 +0800
+From: Hao Ge <gehao@kylinos.cn>
+To: liwang@redhat.com,
+	ltp@lists.linux.it
+Date: Mon, 13 Mar 2023 17:50:49 +0800
+Message-Id: <20230313095049.53761-1-gehao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <c39b6d7.3f25.186da11eb00.Coremail.gehao618@163.com>
+References: <c39b6d7.3f25.186da11eb00.Coremail.gehao618@163.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230312004420.16457-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] madvise11.c:Check loadable module before rmmod
+Subject: [LTP] [PATCH V3] memcg_stress_test.sh: Fix reserved mem calculate
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,56 +67,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Hao Ge <gehao@kylinos.cn>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
->  /* Find and open the <debugfs>/hwpoison/unpoison-pfn special file */
->  static int open_unpoison_pfn(void)
->  {
-> @@ -300,7 +324,7 @@ static int open_unpoison_pfn(void)
->  	struct mntent *mnt;
->  	FILE *mntf;
->  
-> -	if (!find_in_file("/proc/modules", HW_MODULE))
-> +	if (!find_in_file("/proc/modules", HW_MODULE) && !is_builtin(HW_MODULE))
->  		hwpoison_probe = 1;
+When running this test case on a machine with large memory,
+and without swap or swap is too small,existing reserved
+memory is too small for a machine with large memory,and
+will cause forking a subprocess to run a command will fail
+due to memory is exhausted,so optimize reserved memory
+calculate .
 
-That does not solve the problem completely though, if we have a kernel
-where the hwpoinson_inject is set to N in config the test will attempt
-to rmmod it and get different error.
+Signed-off-by: Hao Ge <gehao@kylinos.cn>
+---
+ .../memcg/stress/memcg_stress_test.sh         | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-I suppose that the easiest solution would be:
-
-diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
-index 7e291d571..7c0bef157 100644
---- a/testcases/kernel/syscalls/madvise/madvise11.c
-+++ b/testcases/kernel/syscalls/madvise/madvise11.c
-@@ -300,12 +300,12 @@ static int open_unpoison_pfn(void)
-        struct mntent *mnt;
-        FILE *mntf;
-
--       if (!find_in_file("/proc/modules", HW_MODULE))
--               hwpoison_probe = 1;
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index cb52840d7..2c0488170 100755
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -34,13 +34,20 @@ setup()
+ 	echo 3 > /proc/sys/vm/drop_caches
+ 	sleep 2
+ 	local mem_free=`cat /proc/meminfo | grep MemFree | awk '{ print $2 }'`
++	local mem_available=`cat /proc/meminfo | grep MemAvailable | awk '{ print $2 }'`
+ 	local swap_free=`cat /proc/meminfo | grep SwapFree | awk '{ print $2 }'`
+-	local pgsize=`tst_getconf PAGESIZE`
 -
-        /* probe hwpoison only if it isn't already there */
--       if (hwpoison_probe)
-+       if (!find_in_file("/proc/modules", HW_MODULE)) {
-                SAFE_CMD(cmd_modprobe, NULL, NULL);
-+               if (find_in_file("/proc/modules", HW_MODULE))
-+                       hwpoison_probe = 1;
-+       }
-
-        /* debugfs mount point */
-        mntf = setmntent("/etc/mtab", "r");
-
-
+-	MEM=$(( $mem_free + $swap_free / 2 ))
++	mem_min=`cat /proc/sys/vm/min_free_kbytes`
++
++	#Apply a margin because we cannot get below "min" watermark
++	mem_min=$(( $mem_min + $mem_min/10 ))
++	#we need calculate RESERVED_MEN , if have enough swap ,RESERVED_MEM =0
++	#else RESERVED_MEN = mem_min + mem_min/10
++	[ $swap_free -gt $mem_min ] && RESERVED_MEM=0 || RESERVED_MEM=$mem_min
++	# Use the lower value of free and available to calculate MEM
++	[ $mem_free -lt $mem_available ] && MEM=$mem_free || MEM=$mem_available
++	MEM=$(( $MEM - $RESERVED_MEM ))
+ 	MEM=$(( $MEM / 1024 ))
+ 	RUN_TIME=$(( 15 * 60 ))
+-	[ "$pgsize" = "4096" ] && THREAD_SPARE_MB=1 || THREAD_SPARE_MB=8
+ 
+ 	tst_res TINFO "Calculated available memory $MEM MB"
+ }
+@@ -93,12 +100,12 @@ run_stress()
+ 
+ test1()
+ {
+-	run_stress 150 $(( ($MEM - 150 * $THREAD_SPARE_MB) / 150 )) 5 $RUN_TIME
++	run_stress 150 $(( $MEM  / 150 )) 5 $RUN_TIME
+ }
+ 
+ test2()
+ {
+-	run_stress 1 $(( $MEM - $THREAD_SPARE_MB)) 5 $RUN_TIME
++	run_stress 1 $MEM 5 $RUN_TIME
+ }
+ 
+ . cgroup_lib.sh
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
