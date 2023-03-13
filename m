@@ -4,67 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F5A5C6FD19
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 08:54:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15D8BC74A4B
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 09:01:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DBA123CAE63
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 09:54:06 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 92E603CAE69
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 10:01:07 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3A5A93C1047
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 09:53:55 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 87FFD3CAD8E
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 10:00:56 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5AD866000F0
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 09:53:54 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DE1A71FE07;
- Mon, 13 Mar 2023 08:53:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1678697632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8FF312003AA
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 10:00:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1678698054;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PL7/S9fZZSEs2eAfAlZvwrXtz6LHjXlEmQyvJda62EQ=;
- b=LQnULXcAdBzpnHepci+2ZQg7aDmpdTYTiwCGnr2/qFdiiE2Gk2c4LAaXWxM/70A4zug3v6
- ofZx9dK9hbfGmbJeLmLAY2QtMV1RawN+X/28ag+5hdUGtj3LPg/McdyeZjZIjw6O7WgMpi
- t7h76h/OGSfvu84dag5XVZsVauyMzxs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1678697632;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=PL7/S9fZZSEs2eAfAlZvwrXtz6LHjXlEmQyvJda62EQ=;
- b=AU6N0WsAFpKrkUKLEid7vMjKlDh8vbjXdD/yhPel9rFy5K9tnpm2ps77748A0RLt5N6V7K
- fwRffTinGQimhaDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5A3613517;
- Mon, 13 Mar 2023 08:53:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id hRoOL6DkDmTECgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 13 Mar 2023 08:53:52 +0000
-Date: Mon, 13 Mar 2023 09:55:12 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <ZA7k8HLZpY+3Evx7@yuki>
-References: <20230310140407.20137-1-wegao@suse.com> <ZAtEIClci4QximeK@yuki>
- <20230311022309.GA12553@localhost>
+ bh=+EnvDHxQVNBTL0zRGf54cbxoY2bXExlz3F0DovXW76c=;
+ b=d9uGcaEnd75dGfcchkGQNHDi3HEvIQO0hHq4RevYQqLtS6AFIthPOFPrBIVZ2Zvg/+tvcs
+ XhucxcsbSvtHkn2fJzWSExt5HMzzXWmcAjR4u19DBkbLEUOJfq+mGQGrodlgWBJiy9Hu5b
+ ma2hyYFB78sn0WAoxWegyiNMjxJb+30=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-70-RFKKvChWPJGZb8J5zIwKXA-1; Mon, 13 Mar 2023 05:00:50 -0400
+X-MC-Unique: RFKKvChWPJGZb8J5zIwKXA-1
+Received: by mail-wm1-f72.google.com with SMTP id
+ m28-20020a05600c3b1c00b003e7d4662b83so7505421wms.0
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 02:00:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112; t=1678698048;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=+EnvDHxQVNBTL0zRGf54cbxoY2bXExlz3F0DovXW76c=;
+ b=nbMz6mwEesL2p2pb66k2PQo2g4B756rltyUS3QE6t2bqC4+Ew4tlfz9S1+yvFawcbP
+ qvVNeAVl1zh2actlrz/OjdmtzvfS1+wqU93a/Kc1D6Xexd0dDEZ6C9KwKBc20Sp4mGN+
+ f14FHsNTF/HW7Qeet+gZ+o6ylLKNi6OKMayz6gSsnrHiiE4ENHTFba8z6Qzyh15fhSQr
+ 77WrA46NVKO7F9ONAAcjk8Zsqps58N4Sw77v/TC3EgqK6RITkeNpfR0zU5Dev1Wl5/JF
+ 7gPcEU8REMMhgUJa3N9pHkJS8LH0Z3EyqvNrGP20Jt6lZdWENxvwlZWS1Pg+5qafnip5
+ RvLA==
+X-Gm-Message-State: AO0yUKUpvw4xi8zRfpSwldYKogR/tArzPVpZ+DBrSkrzebY2L/+OFSd2
+ k3La1WaXnfU7QeGkHRt6MyOHA5eWC60CStoe2BcC6EoPZtY4Gk0UEIl/vfyQo+E/lK2LLrWgYyd
+ MWaP5xaTvIhg+Gplbw8pzs6zIYDIbco8X7mVvNZHH
+X-Received: by 2002:a5d:468f:0:b0:2ce:3426:6304 with SMTP id
+ u15-20020a5d468f000000b002ce34266304mr5954906wrq.8.1678698048344; 
+ Mon, 13 Mar 2023 02:00:48 -0700 (PDT)
+X-Google-Smtp-Source: AK7set9YZb3bwA99InjP69xU5dNActhAMW/G7bRa4sXT/d+Y7d54UmrO/cYXuF21WN6g3VtvjgAFG4If9+o0lwehjmQ=
+X-Received: by 2002:a5d:468f:0:b0:2ce:3426:6304 with SMTP id
+ u15-20020a5d468f000000b002ce34266304mr5954899wrq.8.1678698048129; Mon, 13 Mar
+ 2023 02:00:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230311022309.GA12553@localhost>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <20230309085454.735531-1-pifang@redhat.com>
+In-Reply-To: <20230309085454.735531-1-pifang@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 13 Mar 2023 17:00:36 +0800
+Message-ID: <CAEemH2fy0qq7OYN66L47_yj+ef+TZUzm5Wjwgzt_4g3D-t=W5A@mail.gmail.com>
+To: Ping Fang <pifang@redhat.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] madvise11.c:Check loadable module before rmmod
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v1] setfsuid02_16: Fix uid -1 too large for
+ testing 16-bit version
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,24 +93,12 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > The code already has if (!find_in_file("/proc/modules", HW_MODULE)), you
-> > are reinventing the wheel.
-> There is an issue happen during our test, the fail happen with following failed msg.
-> rmmod: ERROR: Module hwpoison_inject is builtin.
-> madvise11.c:356: TWARN: rmmod failed (1)
-> 
-> So i think before rmmod we should check this module can be rmmod or not.
-> And every modules which can show in lsmod output, it means the module can be unload.
-> I am not sure the output of /proc/modules contain ONLY loadable module, it maybe
-> also can contain the buildin module so this function created.
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-The lsmod command reads the /proc/modules, that's where it gets the list
-of loaded modules.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
