@@ -4,69 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00743C61DA4
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 14:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C162C6FD19
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 14:27:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E9EAA3CAE93
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 15:05:29 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 150BF3CB82A
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 15:27:28 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E515A3C0277
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 15:05:19 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 51BDE3C0925
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 15:27:18 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 71B6D200903
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 15:05:18 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D5EBC20091D
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 15:27:17 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 3CD151FE08;
- Mon, 13 Mar 2023 14:05:18 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1D3B51FE0A;
+ Mon, 13 Mar 2023 14:27:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1678716318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1678717637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dnNbulv+tv1G96YscZ/TsqqASLJeRfiXKW4lt9q1ri0=;
- b=l777hweLQ+ibjbju6JqrQ5b+ezEqRs1R2DX11Fl78EYWOZvn6FfsU2yIkRJ+Qn4ATAhEWH
- pas/T64OWci+gBVLv5SHpZnokEx3/JrACmaCOdsowazyN5x8dN+eDoFNH40N4nDLS/81of
- vA+xQWvK19TIQ1iV0P0JedH02jBlsZA=
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=rpmrG9hzNQ8g/xdY6ba7TzpL0AD9m95w/M4fx2ytWsb5Nt0hXWYzgTbr1QL0EzPex5sMId
+ VECKRWcfaaSJXAuHM5BOkfEQKM85vWaKjXlX+L397eQAskQ8L8X1/ckvJAlyj40WLpy8PN
+ O4FNPD3ku/87Y4fUt8FINPpIQzlLjb4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1678716318;
+ s=susede2_ed25519; t=1678717637;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dnNbulv+tv1G96YscZ/TsqqASLJeRfiXKW4lt9q1ri0=;
- b=9PyhbdCYH3YHkyj966+SADWv6JtBZJkCU0fI+vd9JSslsI7NzZ+e/cf+PhXUP7S0Bv3wZU
- 7ffX0Yld+awXA7Cg==
+ bh=+qEjuQevZqyO6CweEJ3yMgcImI5q9b4HueNFxukrWBY=;
+ b=HIlL4OYz0I9J6Isz3MY8yq4aguEYcs2YAcaxCp2/zwKW9NUOjH/c7LQe8PwKgfHUY1hNTh
+ GV/UWLbChYojqwAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1985213517;
- Mon, 13 Mar 2023 14:05:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F157A13582;
+ Mon, 13 Mar 2023 14:27:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id DPY1BZ4tD2RHPgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 13 Mar 2023 14:05:18 +0000
-Date: Mon, 13 Mar 2023 15:06:38 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id dqYGOsQyD2TASgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 13 Mar 2023 14:27:16 +0000
+Date: Mon, 13 Mar 2023 15:28:37 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <ZA8t7hVYRmF+I9k0@yuki>
-References: <20230311023343.25177-1-wegao@suse.com>
- <20230312004420.16457-1-wegao@suse.com> <ZA7qq15aeKS+ZeJR@yuki>
- <20230313122100.GA12608@localhost> <ZA8Y+O7QFfVB0/62@yuki>
- <20230313134624.GA9783@localhost>
+To: Jan Stancek <jstancek@redhat.com>
+Message-ID: <ZA8zFQrQIDXrFrmg@yuki>
+References: <fb88846b13f4b0c39c6e3f44b67454f5c3857f6d.1678432077.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230313134624.GA9783@localhost>
+In-Reply-To: <fb88846b13f4b0c39c6e3f44b67454f5c3857f6d.1678432077.git.jstancek@redhat.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] madvise11.c:Check loadable module before rmmod
+Subject: Re: [LTP] [PATCH] endian_switch01.c: drop unused main4()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,31 +81,7 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > +int tst_buildin_driver(const char *driver)
-> > +{
-> > +       return !tst_search_driver(driver, "modules.buildin");
-> > +}
-> > +
-> >  int tst_check_driver(const char *driver)
-> >  {
-> >  #ifdef __ANDROID__
-> > 
-> 
-> Try use above implementation but i found another TWARN : (
-> 
-> localhost:/home/ltp/testcases/kernel/syscalls/madvise # ./madvise11
-> tst_test.c:1560: TINFO: Timeout per run is 0h 01m 00s
-> madvise11.c:396: TINFO: Spawning 5 threads, with a total of 800 memory pages
-> madvise11.c:165: TINFO: Thread [3] returned 0, succeeded.
-> madvise11.c:165: TINFO: Thread [1] returned 0, succeeded.
-> madvise11.c:165: TINFO: Thread [2] returned 0, succeeded.
-> madvise11.c:165: TINFO: Thread [4] returned 0, succeeded.
-> madvise11.c:165: TINFO: Thread [0] returned 0, succeeded.
-> madvise11.c:199: TPASS: soft-offline / mmap race still clean
-> madvise11.c:327: TWARN: open(/sys/kernel/debug/hwpoison/unpoison-pfn,1,0000) failed: ENOENT (2) !!!!
-
-That's strange, this should be equivalent to the modinfo patch you send,
-at least the modinfo parses the same file.
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
 -- 
 Cyril Hrubis
