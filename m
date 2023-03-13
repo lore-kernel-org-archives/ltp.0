@@ -4,78 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15D8BC74A4B
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 09:01:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D3D8C61DA4
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 09:18:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 92E603CAE69
-	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 10:01:07 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 93F833CD574
+	for <ltp@archiver.kernel.org>; Mon, 13 Mar 2023 10:18:31 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 87FFD3CAD8E
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 10:00:56 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 26A4B3C0925
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 10:18:20 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8FF312003AA
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 10:00:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1678698054;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5CEB710005D4
+ for <ltp@lists.linux.it>; Mon, 13 Mar 2023 10:18:19 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 45F451FE07;
+ Mon, 13 Mar 2023 09:18:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1678699099; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+EnvDHxQVNBTL0zRGf54cbxoY2bXExlz3F0DovXW76c=;
- b=d9uGcaEnd75dGfcchkGQNHDi3HEvIQO0hHq4RevYQqLtS6AFIthPOFPrBIVZ2Zvg/+tvcs
- XhucxcsbSvtHkn2fJzWSExt5HMzzXWmcAjR4u19DBkbLEUOJfq+mGQGrodlgWBJiy9Hu5b
- ma2hyYFB78sn0WAoxWegyiNMjxJb+30=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-70-RFKKvChWPJGZb8J5zIwKXA-1; Mon, 13 Mar 2023 05:00:50 -0400
-X-MC-Unique: RFKKvChWPJGZb8J5zIwKXA-1
-Received: by mail-wm1-f72.google.com with SMTP id
- m28-20020a05600c3b1c00b003e7d4662b83so7505421wms.0
- for <ltp@lists.linux.it>; Mon, 13 Mar 2023 02:00:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1678698048;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=+EnvDHxQVNBTL0zRGf54cbxoY2bXExlz3F0DovXW76c=;
- b=nbMz6mwEesL2p2pb66k2PQo2g4B756rltyUS3QE6t2bqC4+Ew4tlfz9S1+yvFawcbP
- qvVNeAVl1zh2actlrz/OjdmtzvfS1+wqU93a/Kc1D6Xexd0dDEZ6C9KwKBc20Sp4mGN+
- f14FHsNTF/HW7Qeet+gZ+o6ylLKNi6OKMayz6gSsnrHiiE4ENHTFba8z6Qzyh15fhSQr
- 77WrA46NVKO7F9ONAAcjk8Zsqps58N4Sw77v/TC3EgqK6RITkeNpfR0zU5Dev1Wl5/JF
- 7gPcEU8REMMhgUJa3N9pHkJS8LH0Z3EyqvNrGP20Jt6lZdWENxvwlZWS1Pg+5qafnip5
- RvLA==
-X-Gm-Message-State: AO0yUKUpvw4xi8zRfpSwldYKogR/tArzPVpZ+DBrSkrzebY2L/+OFSd2
- k3La1WaXnfU7QeGkHRt6MyOHA5eWC60CStoe2BcC6EoPZtY4Gk0UEIl/vfyQo+E/lK2LLrWgYyd
- MWaP5xaTvIhg+Gplbw8pzs6zIYDIbco8X7mVvNZHH
-X-Received: by 2002:a5d:468f:0:b0:2ce:3426:6304 with SMTP id
- u15-20020a5d468f000000b002ce34266304mr5954906wrq.8.1678698048344; 
- Mon, 13 Mar 2023 02:00:48 -0700 (PDT)
-X-Google-Smtp-Source: AK7set9YZb3bwA99InjP69xU5dNActhAMW/G7bRa4sXT/d+Y7d54UmrO/cYXuF21WN6g3VtvjgAFG4If9+o0lwehjmQ=
-X-Received: by 2002:a5d:468f:0:b0:2ce:3426:6304 with SMTP id
- u15-20020a5d468f000000b002ce34266304mr5954899wrq.8.1678698048129; Mon, 13 Mar
- 2023 02:00:48 -0700 (PDT)
+ bh=w83LUbr1Vf1n3+YV43JH6rds6LxGhpHvY7sw0sWbM6s=;
+ b=vVJUY2335WlJ9ac5e2lE1+D2OtUfE3pVrRJHfzURT7NxsNlC9+PjX52LhssmM+t6wAbwUl
+ hPrSpprshgk2At2IRCq+zns4uIxRV3T/iFhx3Sl18Y8epsfVF2PU8MI23WdBYbUZdTaO+0
+ dO0RzGdjYv9vgkDNvSr59rKFnuQs7Dk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1678699099;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=w83LUbr1Vf1n3+YV43JH6rds6LxGhpHvY7sw0sWbM6s=;
+ b=kOProNZ9Trw1YI2DRMPajVfN5EUf4aH9+ID12G1kHOyM+iGxfi4bO72xqCpm9yWl6SDX9U
+ /ZWP4XCiZzSJojAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3073913517;
+ Mon, 13 Mar 2023 09:18:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id NtiJClvqDmR/GAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 13 Mar 2023 09:18:19 +0000
+Date: Mon, 13 Mar 2023 10:19:39 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <ZA7qq15aeKS+ZeJR@yuki>
+References: <20230311023343.25177-1-wegao@suse.com>
+ <20230312004420.16457-1-wegao@suse.com>
 MIME-Version: 1.0
-References: <20230309085454.735531-1-pifang@redhat.com>
-In-Reply-To: <20230309085454.735531-1-pifang@redhat.com>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 13 Mar 2023 17:00:36 +0800
-Message-ID: <CAEemH2fy0qq7OYN66L47_yj+ef+TZUzm5Wjwgzt_4g3D-t=W5A@mail.gmail.com>
-To: Ping Fang <pifang@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230312004420.16457-1-wegao@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v1] setfsuid02_16: Fix uid -1 too large for
- testing 16-bit version
+Subject: Re: [LTP] [PATCH v3] madvise11.c:Check loadable module before rmmod
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,12 +81,50 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+Hi!
+>  /* Find and open the <debugfs>/hwpoison/unpoison-pfn special file */
+>  static int open_unpoison_pfn(void)
+>  {
+> @@ -300,7 +324,7 @@ static int open_unpoison_pfn(void)
+>  	struct mntent *mnt;
+>  	FILE *mntf;
+>  
+> -	if (!find_in_file("/proc/modules", HW_MODULE))
+> +	if (!find_in_file("/proc/modules", HW_MODULE) && !is_builtin(HW_MODULE))
+>  		hwpoison_probe = 1;
+
+That does not solve the problem completely though, if we have a kernel
+where the hwpoinson_inject is set to N in config the test will attempt
+to rmmod it and get different error.
+
+I suppose that the easiest solution would be:
+
+diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
+index 7e291d571..7c0bef157 100644
+--- a/testcases/kernel/syscalls/madvise/madvise11.c
++++ b/testcases/kernel/syscalls/madvise/madvise11.c
+@@ -300,12 +300,12 @@ static int open_unpoison_pfn(void)
+        struct mntent *mnt;
+        FILE *mntf;
+
+-       if (!find_in_file("/proc/modules", HW_MODULE))
+-               hwpoison_probe = 1;
+-
+        /* probe hwpoison only if it isn't already there */
+-       if (hwpoison_probe)
++       if (!find_in_file("/proc/modules", HW_MODULE)) {
+                SAFE_CMD(cmd_modprobe, NULL, NULL);
++               if (find_in_file("/proc/modules", HW_MODULE))
++                       hwpoison_probe = 1;
++       }
+
+        /* debugfs mount point */
+        mntf = setmntent("/etc/mtab", "r");
 
 
 -- 
-Regards,
-Li Wang
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
