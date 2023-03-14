@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A776AC05027
-	for <ltp@archiver.kernel.org>; Tue, 14 Mar 2023 16:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A3D3C6FD1F
+	for <ltp@archiver.kernel.org>; Tue, 14 Mar 2023 17:54:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0874E3CD511
-	for <ltp@archiver.kernel.org>; Tue, 14 Mar 2023 17:55:26 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 7DFD93CD4E1
+	for <ltp@archiver.kernel.org>; Tue, 14 Mar 2023 18:54:53 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7A6D03CAD28
- for <ltp@lists.linux.it>; Tue, 14 Mar 2023 17:55:15 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 2D8CA3CA013
+ for <ltp@lists.linux.it>; Tue, 14 Mar 2023 18:54:42 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8A01E600132
- for <ltp@lists.linux.it>; Tue, 14 Mar 2023 17:55:14 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 449E11000342
+ for <ltp@lists.linux.it>; Tue, 14 Mar 2023 18:54:40 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 93F8B1F8A3;
- Tue, 14 Mar 2023 16:55:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 240EE1F37E;
+ Tue, 14 Mar 2023 17:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1678812913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1678816480;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GNjD/BOLfPf+qOMJTp0ZV61wskSdf767MnMmXZCmwss=;
- b=XHlydEB6swlBrBKC7+c88r6qQSa6EsyVd61w7yUixsxCSw+Uv7vRAR8SuZvdwXzXquxrsB
- cgpaRlH1HzP9ROW6kXf49L3yNsUprpPnKsjLhANfRWhDS7b5zjzKXDE0tx89E1wbyJgUls
- z5sMJ2kLdzboxccPVZGlddH4U++S4Sg=
+ bh=Pqz8SVUYfSifS3HJ/jICgAJW/mSQso2DEKPYAJEcfyw=;
+ b=JtZEnOeEX0ZypxO0EuMTaXRcSqCPlCP1ZL+gf+oVeL2Qd39c4vLU4b+4mDW0I2sFDAebo1
+ jmaigXB/1Og+D24QzWTrMw5fDfV43Rq9PjfSmQLcFXgN4YNYpmMfeXO9iLqeA61m8iRjjw
+ TXSoOEGH2mmY4OzvO52vCzdnlUr1e+k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1678812913;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1678816480;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GNjD/BOLfPf+qOMJTp0ZV61wskSdf767MnMmXZCmwss=;
- b=mjGXMO3KGLhYMsdfUZUvRuS2N0kwxryMWpreha5dqX4dianQWTdxfXHtmBcjUTPdM8ojRo
- iyicRWujlN8pKJDA==
+ bh=Pqz8SVUYfSifS3HJ/jICgAJW/mSQso2DEKPYAJEcfyw=;
+ b=4fV7s51XUU1B/vbroKqurooglyJkTIVVARiCTW9ro7ix6Lpww2da64/ySq9syuQW06aSHX
+ nubHb4YcK/K39yBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 794BB13A26;
- Tue, 14 Mar 2023 16:55:13 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE45413A1B;
+ Tue, 14 Mar 2023 17:54:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 5fiZG/GmEGS4cwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 14 Mar 2023 16:55:13 +0000
-Date: Tue, 14 Mar 2023 17:56:33 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZBCnQeVxNOPDCc+1@yuki>
-References: <20230314130027.24108-1-andrea.cervesato@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6fhbKN+0EGSDFQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 14 Mar 2023 17:54:39 +0000
+Date: Tue, 14 Mar 2023 18:54:38 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.com>
+Message-ID: <20230314175438.GB79562@pevik>
+References: <20230314114037.25581-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230314130027.24108-1-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20230314114037.25581-1-rpalethorpe@suse.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Rewrite eventfd01 using new LTP API
+Subject: Re: [LTP] [PATCH] Add goals of patch review and tips
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,308 +75,163 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Splitted eventfd01 test into multiple test files using new LTP API.
-  ^
-  Split
+Hi Richie,
 
-> Now we have 5 more tests.
-> 
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> I see two options for patch review. Either we have a single senior
+> maintainer who does most of or it is distributed.
+
+> For now I think it needs to be distributed which is beyond the scope
+> of this commit.
+
+> In order to distribute it we need new contributors to review each
+> others' work at least for the first few revisions.
+
+> I think that anyone can review a patch if they put the work in to test
+> it and try to break it. Then understand why it is broken.
+
+> This commit states some ideas about how to do that, plus some tips for
+> more advanced patch review.
+
+Very nice improvements, thanks!
+I agree with points Cyril already raised.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Cc: Cyril Hrubis <chrubis@suse.cz>
+> Cc: Andrea Cervesato <andrea.cervesato@suse.de>
+> Cc: Avinesh Kumar <akumar@suse.de>
+> Cc: Wei Gao <wegao@suse.com>
+> Cc: Petr Vorel <pvorel@suse.cz>
 > ---
-> Use TST_EXP_FD for fd check
-> Check CONFIG_EVENTFD for each test
-> Description adjustments
-> 
->  runtest/syscalls                              |   5 +
->  testcases/kernel/syscalls/eventfd/.gitignore  |   5 +
->  testcases/kernel/syscalls/eventfd/eventfd01.c | 745 +-----------------
->  testcases/kernel/syscalls/eventfd/eventfd02.c |  50 ++
->  testcases/kernel/syscalls/eventfd/eventfd03.c |  54 ++
->  testcases/kernel/syscalls/eventfd/eventfd04.c |  57 ++
->  testcases/kernel/syscalls/eventfd/eventfd05.c |  44 ++
->  testcases/kernel/syscalls/eventfd/eventfd06.c | 171 ++++
->  8 files changed, 412 insertions(+), 719 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/eventfd/eventfd02.c
->  create mode 100644 testcases/kernel/syscalls/eventfd/eventfd03.c
->  create mode 100644 testcases/kernel/syscalls/eventfd/eventfd04.c
->  create mode 100644 testcases/kernel/syscalls/eventfd/eventfd05.c
->  create mode 100644 testcases/kernel/syscalls/eventfd/eventfd06.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 9c76d7fe3..2179f8d5b 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -182,6 +182,11 @@ epoll_pwait04 epoll_pwait04
->  epoll_pwait05 epoll_pwait05
->  
->  eventfd01 eventfd01
-> +eventfd02 eventfd02
-> +eventfd03 eventfd03
-> +eventfd04 eventfd04
-> +eventfd05 eventfd05
-> +eventfd06 eventfd06
->  
->  eventfd2_01 eventfd2_01
->  eventfd2_02 eventfd2_02
-> diff --git a/testcases/kernel/syscalls/eventfd/.gitignore b/testcases/kernel/syscalls/eventfd/.gitignore
-> index db45c67cf..4f577370c 100644
-> --- a/testcases/kernel/syscalls/eventfd/.gitignore
-> +++ b/testcases/kernel/syscalls/eventfd/.gitignore
-> @@ -1 +1,6 @@
->  /eventfd01
-> +/eventfd02
-> +/eventfd03
-> +/eventfd04
-> +/eventfd05
-> +/eventfd06
-> diff --git a/testcases/kernel/syscalls/eventfd/eventfd01.c b/testcases/kernel/syscalls/eventfd/eventfd01.c
-> index 9b60434a2..8f83378da 100644
-> --- a/testcases/kernel/syscalls/eventfd/eventfd01.c
-> +++ b/testcases/kernel/syscalls/eventfd/eventfd01.c
-> @@ -1,738 +1,45 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - *   Copyright (c) 2008 Vijay Kumar B. <vijaykumar@bravegnu.org>
-> - *   Copyright (c) Linux Test Project, 2008-2022
-> - *
-> - *   Based on testcases/kernel/syscalls/waitpid/waitpid01.c
-> - *   Original copyright message:
-> - *
-> - *   Copyright (c) International Business Machines  Corp., 2001
+>  doc/maintainer-patch-review-checklist.txt | 78 ++++++++++++++++++++++-
+>  1 file changed, 77 insertions(+), 1 deletion(-)
 
-I suppose that we should retain these copyrights as well, since the new
-tests are mostly cleaned up code from the original test.
+> diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
+> index 706b0a516..be0cd0961 100644
+> --- a/doc/maintainer-patch-review-checklist.txt
+> +++ b/doc/maintainer-patch-review-checklist.txt
+> @@ -1,4 +1,80 @@
+> -# Maintainer Patch Review Checklist
+> +# Patch Review
 
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
->   */
->  
->  /*
-    ^
-Should be /*\
+I'd rename the page to patch-review.txt (can be done later).
 
-> - * NAME
-> - *	eventfd01.c
-> - *
-> - * DESCRIPTION
-> - *      Test cases for eventfd syscall.
-> - *
-> - * USAGE:  <for command-line>
-> - *      eventfd01 [-c n] [-i n] [-I x] [-P x] [-t]
-> - *      where,  -c n : Run n copies concurrently.
-> - *              -i n : Execute test n times.
-> - *              -I x : Execute test for x seconds.
-> - *              -P x : Pause for x seconds between iterations.
-> + * [Description]
->   *
-> - * History
-> - *	07/2008 Vijay Kumar
-> - *		Initial Version.
-> - *
-> - * Restrictions
-> - *	None
-> - */
-
-...
-
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/eventfd/eventfd02.c
-> @@ -0,0 +1,50 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-> + */
-> +/*\
-> + * [Description]
-> + *
-> + * Verify write operation for eventfd fail with:
-> + *
-> + * - EAGAIN when counter is zero on non blocking fd
-> + * - EINVAL when buffer size is less than 8 bytes, or if an attempt is made to
-> + *	write the value 0xffffffffffffffff
-> + */
 > +
-> +#include <stdlib.h>
-> +#include <sys/eventfd.h>
-> +#include "tst_test.h"
+> +Anyone can and should review patches. It's the only way to get good at
+> +patch review and for the project to scale.
 > +
-> +static void run(void)
-> +{
-> +	int fd;
-> +	uint64_t val = 12;
-> +	uint64_t buf;
-> +	uint32_t invalid;
+> +## Goals of patch review
 > +
-> +	fd = eventfd(0, EFD_NONBLOCK);
-> +	TST_EXP_FD(fd);
-
-This produces rather cryptic message:
-
-eventfd02.c:27: TPASS: fd returned fd 3
-
-You are supposed to pass the syscall to the TST_EXP_FD() as:
-
-	TST_EXP_FD(eventfd(0, EFD_NONBLOCK));
-	fd = TST_RET;
-
-I suppose that we can as well redesing subset of the TST_EXP_*() macros
-so that they return a value with:
-
-diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-index 231c04951..091209558 100644
---- a/include/tst_test_macros.h
-+++ b/include/tst_test_macros.h
-@@ -86,13 +86,14 @@ extern void *TST_RET_PTR;
- #define TST_EXP_FD_SILENT(SCALL, ...)  TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__)
-
- #define TST_EXP_FD(SCALL, ...)                                                 \
--       do {                                                                   \
-+       ({                                                                     \
-                TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__);               \
-                                                                               \
-                if (TST_PASS)                                                  \
-                        TST_MSGP_(TPASS, " returned fd %ld", TST_RET,          \
-                                #SCALL, ##__VA_ARGS__);                        \
--       } while (0)
-+               TST_RET;                                                       \
-+       })
-
-
-Then we can write more simple:
-
-	fd = TST_EXP_FD(eventfd(0, EFD_NONBLOCK));
-
-
-> +	SAFE_WRITE(0, fd, &val, sizeof(val));
-> +	SAFE_READ(0, fd, &buf, sizeof(buf));
-> +	TST_EXP_EQ_LI(buf, val);
+> +1. Prevent false positive test results
+> +2. Prevent false negative test results
+> +3. Make future changes as easy as possible
 > +
-> +	val = UINT64_MAX - 1;
-> +	SAFE_WRITE(0, fd, &val, sizeof(val));
-> +	TST_EXP_FAIL(write(fd, &val, sizeof(val)), EAGAIN);
-> +	TST_EXP_FAIL(write(fd, &invalid, sizeof(invalid)), EINVAL);
+> +## How to find clear errors
 > +
-> +	val = 0xffffffffffffffffLL;
-> +	TST_EXP_FAIL(write(fd, &val, sizeof(val)), EINVAL);
+> +A clear error is one where there is unlikely to be any argument if you
+> +provide evidence of it. Evidence being an error trace or logical proof
+> +that an error will occur in a common situation.
 > +
-> +	SAFE_CLOSE(fd);
-> +}
+> +The following are examples and may not be appropriate for all tests.
 > +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.needs_kconfigs = (const char *[]) {
-> +		"CONFIG_EVENTFD",
-> +		NULL
-> +	},
-> +};
+> +* Merge the patch. It should apply cleanly to master.
+> +* Compile the patch with default and non-default configurations.
+very nit: you sometimes put dot at the end of list item, sometimes not.
 
-...
+> +  - Use sanitizers e.g. undefined behaviour, address.
+> +  - Compile on non-x86
+> +  - Compile on x86 with -m32
+BTW: I suppose nobody bothers about 32bit arm or even other archs.
+It's definitely out of scope in SUSE.
 
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-> + */
-> +/*\
-> + * [Description]
-> + *
-> + * Test whether counter overflow is detected and handled correctly.
-> + *
-> + * It is not possible to directly overflow the counter using the
-> + * write() syscall. Overflows occur when the counter is incremented
-> + * from kernel space, in an irq context, when it is not possible to
-> + * block the calling thread of execution.
-> + *
-> + * The AIO subsystem internally uses eventfd mechanism for
-> + * notification of completion of read or write requests. In this test
-> + * we trigger a counter overflow, by setting the counter value to the
-> + * max possible value initially. When the AIO subsystem notifies
-> + * through the eventfd counter, the counter overflows.
-> + *
-> + * NOTE: If the counter starts from an initial value of 0, it will
-> + * take decades for an overflow to occur. But since we set the initial
-> + * value to the max possible counter value, we are able to cause it to
-> + * overflow with a single increment.
-> + *
-> + * When the counter overflows, the following are tested
-> + *	1. Check whether POLLERR event occurs in poll() for the eventfd.
-> + *	2. Check whether readfd_set/writefd_set is set in select() for the
-> + *		eventfd.
-> + *	3. The counter value is UINT64_MAX.
-> + */
+> +* Use `make check`
+> +* Run effected tests in a VM
+> +  - Use single vCPU
+> +  - Use many vCPUs and enable NUMA
+> +  - Restrict RAM to < 1GB.
+> +* Run effected tests on an embedded device
+> +* Run effected tests on non-x86 machine in general
+Very nice list, which show how hard would be to do a proper testing
+(not being run for most of the patches - it's found afterwards, but it's very
+good you list it there).
 
-This does not render reasonably, the list does not render as a list at
-all, and I would drop the NOTE: as well.
+> +* Run reproducers on a kernel where the bug is present
+> +* Run tests with "-i0"
+`-i0` (for better syntax).
 
-The list should look like:
+I'd also mention -i100 (or even higher, e.g. -i1100 to catch errors like get
+file descriptors exhausted due missing SAFE_CLOSE(fd)).
 
-* When the counter overflows, the following is tested:
-*
-* - POLLERR event occurs in poll() for the eventfd
-* - readfd_set/writefd_set is set in select() for the eventfd
-* - the counter value is UINT64_MAX
-*/
+Also, both of these are already somehow mentioned at "New tests" section, I'd
+remove it from there (enough to mention them just once).
 
-> +	TEST(io_setup(MAXEVENTS, &ctx));
-> +	if (TST_RET < 0)
-> +		tst_brk(TBROK, "io_setup() failed: %s", tst_strerrno(-TST_RET));
+> +* Compare usage of system calls with man page descriptions
+> +* Compare usage of system calls with kernel code
+> +* Search the LTP library for existing helper functions
 > +
-> +	fd = SAFE_OPEN("testfile", O_RDWR | O_CREAT, 0644);
-> +	evfd = eventfd(0, EFD_NONBLOCK);
-> +	TST_EXP_FD(evfd);
-> +}
+> +## How to find subtle errors
 > +
-> +static void cleanup(void)
-> +{
-> +	SAFE_CLOSE(evfd);
-> +	io_destroy(ctx);
-> +}
+> +A subtle error is one where you can expect some argument because you
+> +do not have clear evidence of an error. It is best to state these as
+> +questions and not make assertions if possible.
 > +
-> +static void run(void)
-> +{
-> +	test_select();
-> +	test_poll();
-> +}
+> +Although if it is a matter of style or "taste" then senior maintainers
+> +can assert what is correct to avoid bike shedding.
 > +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_tmpdir = 1,
-> +	.needs_kconfigs = (const char *[]) {
-> +		"CONFIG_EVENTFD",
-> +		NULL
-> +	},
-> +};
-> +
-> +#else /* HAVE_IO_SET_EVENTFD */
-> +TST_TEST_TCONF("eventfd support is not available in AIO subsystem");
-> +#endif
-> +#else /* HAVE_LIBAIO */
-> +TST_TEST_TCONF("libaio is not available");
-> +#endif
+> +* Ask what happens if there is an error, could it be debugged just
+> +  with the test output?
+> +* Are we testing undefined behaviour?
+> +  - Could future kernel behaviour change without "breaking userland"?
+> +  - Does the kernel behave differently depending on hardware?
+> +  - Does it behave differently depending kernel on configuration?
+> +  - Does it behave differently depending on the compiler?
+> +* Will it scale to tiny and huge systems?
+> +  - What happens if there are 100+ CPUs?
+> +  - What happens if each CPU core is very slow?
+> +  - What happens if there are 2TB or RAM?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Again, very good points, even it's hard to test all of these before.
+
+> +* Are we repeating a pattern that can be turned into a library function?
+> +* Is a single test trying to do too much?
+> +* Could multiple similar tests be merged?
+> +* Race conditions
+> +  - What happens if a process gets preempted?
+> +  - Could checkpoints or fuzzsync by used instead?
+> +  - Note, usually you can insert a sleep to prove a race condition
+> +    exists however finding them is hard
+> +* Is there a simpler way to achieve the same kernel coverage?
+> +
+> +## How to get patches merged
+> +
+> +Once you think a patch is good enough you should add your Reviewed-by
+> +tags. This means you will get some credit for getting the patch
+> +merged. Also some blame if there are problems.
+> +
+> +In addition you can expect others to review your patches and add their
+> +tags. This will speed up the process of getting your patches merged.
+> +
+> +## Maintainers Checklist
+
+>  Patchset should be tested locally and ideally also in maintainer's fork in
+>  GitHub Actions on GitHub.
+I'd encourage people to enable GitHub Actions in their forks (I'm not sure how
+many maintainers do this; best would be automation [1] [2], but nobody bothers
+about CI and I'm sort of burn out driving it myself).
+
+Kind regards,
+Petr
+
+[1] https://github.com/linux-test-project/ltp/issues/599
+[2] https://github.com/linux-test-project/ltp/issues/600
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
