@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6EB1C6FD1D
-	for <ltp@archiver.kernel.org>; Tue, 14 Mar 2023 13:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC3FBC6FD1C
+	for <ltp@archiver.kernel.org>; Tue, 14 Mar 2023 13:21:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C67793CD4F0
-	for <ltp@archiver.kernel.org>; Tue, 14 Mar 2023 14:17:46 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id BDB813CD50B
+	for <ltp@archiver.kernel.org>; Tue, 14 Mar 2023 14:21:06 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 82AA83CAD42
- for <ltp@lists.linux.it>; Tue, 14 Mar 2023 14:17:37 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id D116A3CAD42
+ for <ltp@lists.linux.it>; Tue, 14 Mar 2023 14:20:57 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E22C0600879
- for <ltp@lists.linux.it>; Tue, 14 Mar 2023 14:17:36 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 06FD721A8B;
- Tue, 14 Mar 2023 13:17:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1678799856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 610561400C5F
+ for <ltp@lists.linux.it>; Tue, 14 Mar 2023 14:20:57 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id DA27321CB2;
+ Tue, 14 Mar 2023 13:20:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1678800056;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MYNo7WyrIG78xorFu7SYMdFfeLUaDvOsLp75QFcwHCc=;
- b=SE2IeozDkJkJRjoiSLQtBVsD84lW2WI/D2R/ruDttWbfmpEETtcw7vqu45dreT7zP0EYI+
- hLZLhTw7tVFDRlasGqw2waLxffiwkf+yCdwaHTtJ9zEFxkelhYKAyd0hKP4ycANrX4y6nl
- ho5FiNC4NjqLSM1lLk+ObdLumShubp4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1678799856;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ bh=VmHqn6tEhKy71zw4KBKhzRI25YhkUNcRIbvsmVA/EHU=;
+ b=p0lxsqo1yc5yZWyfJ34ZwbADLJAgkTAqMOTJYVOXw1E5apWcHMYykib2EzqyagQZ9ZS1h1
+ GBrnldCpNzDA3SnoMUGjIyBNHCWqTj/fYX1d0RfGrnWVR5EdCasT3Ud9E1Y4BkEQ4VWj3H
+ em58JVZi0MF7t2ro2FXIWBYO3Pkjrws=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1678800056;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MYNo7WyrIG78xorFu7SYMdFfeLUaDvOsLp75QFcwHCc=;
- b=SjDXEr/uJFkqMvo0Nn7AdHnfRt0fxTcKf3vj1j82e6ihRqGQ+AIB3ELYORsKlJJhlvTUiR
- VJZ0DxNyiLNskJCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=VmHqn6tEhKy71zw4KBKhzRI25YhkUNcRIbvsmVA/EHU=;
+ b=mPAtTITQer9lZS4VQIq80+T/7hDJzOrsdiztyfDxFo0y74anTJgtboDMKZFtBf7/pVikJl
+ K7Ztx7hVKEsZceBw==
+Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E01E913A1B;
- Tue, 14 Mar 2023 13:17:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id VqKWNe9zEGTpcgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 14 Mar 2023 13:17:35 +0000
-Date: Tue, 14 Mar 2023 14:18:55 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <ZBB0P/nfffbrMFme@yuki>
-References: <20230314114037.25581-1-rpalethorpe@suse.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 0DF842C141;
+ Tue, 14 Mar 2023 13:20:55 +0000 (UTC)
+References: <20230311023343.25177-1-wegao@suse.com>
+ <20230312004420.16457-1-wegao@suse.com> <ZA7qq15aeKS+ZeJR@yuki>
+ <20230313122100.GA12608@localhost> <ZA8Y+O7QFfVB0/62@yuki>
+ <20230313134624.GA9783@localhost> <ZA8t7hVYRmF+I9k0@yuki>
+ <20230314053151.GA22202@localhost> <ZBAtCbeSVH0/l137@rei>
+ <87pm9b67gc.fsf@suse.de> <ZBA7H+TYMN9OBzjm@yuki>
+User-agent: mu4e 1.8.13; emacs 28.2
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 14 Mar 2023 13:10:43 +0000
+Organization: Linux Private Site
+In-reply-to: <ZBA7H+TYMN9OBzjm@yuki>
+Message-ID: <87h6un5v0t.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230314114037.25581-1-rpalethorpe@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Add goals of patch review and tips
+Subject: Re: [LTP] [PATCH v3] madvise11.c:Check loadable module before rmmod
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,154 +75,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> I see two options for patch review. Either we have a single senior
-> maintainer who does most of or it is distributed.
-> 
-> For now I think it needs to be distributed which is beyond the scope
-> of this commit.
-> 
-> In order to distribute it we need new contributors to review each
-> others' work at least for the first few revisions.
-> 
-> I think that anyone can review a patch if they put the work in to test
-> it and try to break it. Then understand why it is broken.
-> 
-> This commit states some ideas about how to do that, plus some tips for
-> more advanced patch review.
-> 
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Cc: Cyril Hrubis <chrubis@suse.cz>
-> Cc: Andrea Cervesato <andrea.cervesato@suse.de>
-> Cc: Avinesh Kumar <akumar@suse.de>
-> Cc: Wei Gao <wegao@suse.com>
-> Cc: Petr Vorel <pvorel@suse.cz>
-> ---
->  doc/maintainer-patch-review-checklist.txt | 78 ++++++++++++++++++++++-
->  1 file changed, 77 insertions(+), 1 deletion(-)
-> 
-> diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
-> index 706b0a516..be0cd0961 100644
-> --- a/doc/maintainer-patch-review-checklist.txt
-> +++ b/doc/maintainer-patch-review-checklist.txt
-> @@ -1,4 +1,80 @@
-> -# Maintainer Patch Review Checklist
-> +# Patch Review
-> +
-> +Anyone can and should review patches. It's the only way to get good at
-> +patch review and for the project to scale.
-> +
-> +## Goals of patch review
-> +
+Hello,
 
-Maybe start with:
+Cyril Hrubis <chrubis@suse.cz> writes:
 
-1. Catch typos and obvious mistakes
+> Hi!
+>> > Sounds like a bug that shoudl be fixed, we probably need to create two
+>> > search strings, one with dashes and one with underscores and try to
+>> > strstr() both.
+>> 
+>> Could we not check kconfig for builtin modules?
+>
+> Are we 100% sure that the module-name always translates to
+> CONFIG_MODULE_NAME?
 
-Everyone does these and usually they are easy to spot for anyone but the
-author.
+I'm fairly sure this is not the case because I have spent quite some
+time trying to match modules with their configuration parameters.
 
-> +1. Prevent false positive test results
-> +2. Prevent false negative test results
-> +3. Make future changes as easy as possible
+I had not considered trying that, but specifying the module names and
+config parameters separately.
 
-I would say that number 3 maybe be a bit controversial, I've seen cases
-where attempts to futureproof the code caused steep increase in the test
-complexity. So maybe:
+>
+> I would say that we are a bit safer if we use the same files the rest of
+> the tooling uses e.g. depmod, dracut etc.
 
-3. Keep the code as simple as possible as well as futureproof
-
-Or something along the lines.
-
-> +## How to find clear errors
-> +
-> +A clear error is one where there is unlikely to be any argument if you
-> +provide evidence of it. Evidence being an error trace or logical proof
-> +that an error will occur in a common situation.
-> +
-> +The following are examples and may not be appropriate for all tests.
-> +
-> +* Merge the patch. It should apply cleanly to master.
-> +* Compile the patch with default and non-default configurations.
-> +  - Use sanitizers e.g. undefined behaviour, address.
-> +  - Compile on non-x86
-> +  - Compile on x86 with -m32
-
-Maybe note here that some tests trigger undefined behavior
-intentionally, we do have a few tests that dereference NULL to trigger
-crash, etc.
-
-> +* Use `make check`
-> +* Run effected tests in a VM
-> +  - Use single vCPU
-> +  - Use many vCPUs and enable NUMA
-> +  - Restrict RAM to < 1GB.
-> +* Run effected tests on an embedded device
-> +* Run effected tests on non-x86 machine in general
-> +* Run reproducers on a kernel where the bug is present
-> +* Run tests with "-i0"
-> +* Compare usage of system calls with man page descriptions
-> +* Compare usage of system calls with kernel code
-> +* Search the LTP library for existing helper functions
-> +
-> +## How to find subtle errors
-> +
-> +A subtle error is one where you can expect some argument because you
-> +do not have clear evidence of an error. It is best to state these as
-> +questions and not make assertions if possible.
-> +
-> +Although if it is a matter of style or "taste" then senior maintainers
-> +can assert what is correct to avoid bike shedding.
-> +
-> +* Ask what happens if there is an error, could it be debugged just
-> +  with the test output?
-> +* Are we testing undefined behaviour?
-> +  - Could future kernel behaviour change without "breaking userland"?
-> +  - Does the kernel behave differently depending on hardware?
-> +  - Does it behave differently depending kernel on configuration?
-> +  - Does it behave differently depending on the compiler?
-> +* Will it scale to tiny and huge systems?
-> +  - What happens if there are 100+ CPUs?
-> +  - What happens if each CPU core is very slow?
-> +  - What happens if there are 2TB or RAM?
-> +* Are we repeating a pattern that can be turned into a library function?
-> +* Is a single test trying to do too much?
-> +* Could multiple similar tests be merged?
-> +* Race conditions
-> +  - What happens if a process gets preempted?
-> +  - Could checkpoints or fuzzsync by used instead?
-> +  - Note, usually you can insert a sleep to prove a race condition
-> +    exists however finding them is hard
-> +* Is there a simpler way to achieve the same kernel coverage?
-> +
-> +## How to get patches merged
-> +
-> +Once you think a patch is good enough you should add your Reviewed-by
-> +tags. This means you will get some credit for getting the patch
-> +merged. Also some blame if there are problems.
-
-Maybe we should mention the Tested-by: tag explicitly here as well.
-
-> +In addition you can expect others to review your patches and add their
-> +tags. This will speed up the process of getting your patches merged.
-> +
-> +## Maintainers Checklist
->  
->  Patchset should be tested locally and ideally also in maintainer's fork in
->  GitHub Actions on GitHub.
-> -- 
-> 2.39.2
-> 
+I suppose that copying the logic from depmod would be safest.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
