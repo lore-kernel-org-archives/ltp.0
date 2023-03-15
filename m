@@ -4,60 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A942C6FD1D
-	for <ltp@archiver.kernel.org>; Wed, 15 Mar 2023 13:12:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64496C6FD1D
+	for <ltp@archiver.kernel.org>; Wed, 15 Mar 2023 14:39:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D4E43CD49E
-	for <ltp@archiver.kernel.org>; Wed, 15 Mar 2023 14:12:02 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 508913CE61D
+	for <ltp@archiver.kernel.org>; Wed, 15 Mar 2023 15:39:49 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4DF493CACA3
- for <ltp@lists.linux.it>; Wed, 15 Mar 2023 14:11:51 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 86ADC3CACAA
+ for <ltp@lists.linux.it>; Wed, 15 Mar 2023 15:39:39 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A29D1600C44
- for <ltp@lists.linux.it>; Wed, 15 Mar 2023 14:11:49 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E210B601294
+ for <ltp@lists.linux.it>; Wed, 15 Mar 2023 15:39:38 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8D14521995;
- Wed, 15 Mar 2023 13:11:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1678885909; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1583D1FD87;
+ Wed, 15 Mar 2023 14:39:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1678891178; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=IJePJEk8/kldbOOYa966vni0KNGe21pl0gbPDqQT6uQ=;
- b=sLl1mY5D17he3tqck1+88L8mYQ1a7lMpVEqlovJ1tJxVKni7v2H0TpbZCGNRwy3CPUWcb7
- Wt2oaGKx4JVa5cdO7AVM87u2nGv9TRDRPKnX0FHdy41JVArVVwHfeF7qHPHAa6tT5XBAJI
- Sp2GthnUOsGE04BjoafThvjBkKhPIec=
+ bh=ycXIw1k+9pi5M6i0FOJDQAnKzSLTYe8MO04t/EWycTc=;
+ b=09nb+UNfcSCeGcD7PDZSQR+ze6RGXOO1mfbWy+Iu+IUznLdaGLPE6i20iWUmHie+nQIfUh
+ EYRwPkJTVtTMJ4pAJVwKDkdr5hKwIUleSxYeT0us75vTBwzp9ewz+gcMJjXL+WIqCSyrow
+ IZHtoqp4iPSdr2+Wlv9tkudP+JFVZZ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1678891178;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ycXIw1k+9pi5M6i0FOJDQAnKzSLTYe8MO04t/EWycTc=;
+ b=RFvVeBHFEUjwwV7zGzZhBaGWxUH+XNIiZE/B+wo6ZePe1SBHp44rU3VoaD3MAefy7cS7y8
+ yZuq/RL5psik8qDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C3F0013A00;
- Wed, 15 Mar 2023 13:11:48 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 54E6513A00;
+ Wed, 15 Mar 2023 14:39:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qH5tJRTEEWQUIQAAMHmgww
- (envelope-from <wegao@suse.com>); Wed, 15 Mar 2023 13:11:48 +0000
-Date: Wed, 15 Mar 2023 09:11:46 -0400
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <20230315131146.GD10248@localhost>
-References: <20230120010533.11202-1-wegao@suse.com>
- <20230302071555.18420-1-wegao@suse.com>
- <20230302071555.18420-2-wegao@suse.com>
- <20230315123119.GA164307@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id TLCEBqnYEWRjTwAAMHmgww
+ (envelope-from <akumar@suse.de>); Wed, 15 Mar 2023 14:39:37 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 15 Mar 2023 20:09:34 +0530
+Message-ID: <5670246.DvuYhMxLoT@localhost>
+Organization: SUSE
+In-Reply-To: <20230224063717.32388-1-akumar@suse.de>
+References: <20230224063717.32388-1-akumar@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230315123119.GA164307@pevik>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/2] Move semaphore/ tests to semop/
+Subject: Re: [LTP] [PATCH 1/1] mknod02.c: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,44 +76,113 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Mar 15, 2023 at 01:31:19PM +0100, Petr Vorel wrote:
-> Hi Wei,
-> 
-> > There is no point in having two different directories with semop()
-> > testcaes so it would make sense to move these two tests into the
-> > syscalls/ipc/semop/ directory as semop04 and semop05.
-> > So we move ipc/semaphore/ tests to syscalls/ipc/semop/.
-> > Also update runtest files accordingly.
-> 
-> As I already stated, I'm not really sure this is good to do, but maybe I'm
-> missing something.  I wonder what others thing about it.
-> 
-Ah, you also start work on this?  Should i still continue work on this patch or not?
-To me this is not bad thing at least, we do some clean work and reorganize the test cases.
-> ...
-> >  rename testcases/kernel/{ipc/semaphore/sem01.c => syscalls/ipc/semop/semop04.c} (100%)
-> >  rename testcases/kernel/{ipc/semaphore/sem02.c => syscalls/ipc/semop/semop05.c} (100%)
-> 
-> > +++ b/runtest/syscalls
-> > @@ -1239,6 +1239,8 @@ semget06 semget06
-> >  semop01 semop01
-> >  semop02 semop02
-> >  semop03 semop03
-> > +semop04 semop04
-> > +semop05 semop05
-> You renamed files, you need to remove sem01 sem02 from runtest/ipc.
-Ack!
-> 
-> Kind regards,
-> Petr
+Cyril's review of this patch which was send to another thread - https://lore.kernel.org/ltp/ZAEBOhm3nAExVfT2@yuki/#t
+
+========
+Re: [LTP] [PATCH v2 1/1] mknod01: Rewrite the test using new LTP API
+
+From:	Cyril Hrubis <chrubis@suse.cz>
+To:	Avinesh Kumar <akumar@suse.de>
+CC:	ltp@lists.linux.it
+Date:	3/3/23 1:34 AM
+Hi!
+> --- a/testcases/kernel/syscalls/mknod/mknod02.c
+> +++ b/testcases/kernel/syscalls/mknod/mknod02.c
+> @@ -1,301 +1,77 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> /*
+> - *
+> *   Copyright (c) International Business Machines  Corp., 2001
+> - *
+> - *   This program is free software;  you can redistribute it and/or modify
+> - *   it under the terms of the GNU General Public License as published by
+> - *   the Free Software Foundation; either version 2 of the License, or
+> - *   (at your option) any later version.
+> - *
+> - *   This program is distributed in the hope that it will be useful,
+> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - *   the GNU General Public License for more details.
+> - *
+> - *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + *     07/2001 Ported by Wayne Boyer
+> + *   Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+> */
+>
+> -/*
+> - * Test Name: mknod02
+> +/*\
+> + * [Description]
+> *
+> - * Test Description:
+> *  Verify that mknod(2) succeeds when used to create a filesystem
+> *  node with set group-ID bit set on a directory without set group-ID bit set.
+> *  The node created should have set group-ID bit set and its gid should be
+> *  equal to that of its parent directory.
+
+I've read this a few times and I stil do not understand what exactly is
+this test supposed to test or at least the code does not correspond to
+the description.
+
+I did look at the kernel sources for a while and as far as I can tell
+the whole S_ISGID handling is done in the inode_init_owner() function:
+
+void inode_init_owner(struct user_namespace *mnt_userns, struct inode *inode,
+                      const struct inode *dir, umode_t mode)
+{
+        inode_fsuid_set(inode, mnt_userns);
+        if (dir && dir->i_mode & S_ISGID) {
+                inode->i_gid = dir->i_gid;
+
+                /* Directories are special, and always inherit S_ISGID */
+                if (S_ISDIR(mode))
+                        mode |= S_ISGID;
+        } else
+                inode_fsgid_set(inode, mnt_userns);
+        inode->i_mode = mode;
+}
+EXPORT_SYMBOL(inode_init_owner);
+
+Which looks pretty straightforward.
+
+- If the parent direcotry has S_ISGID we set the inode GID to the
+  parent directory gid
+- If not we call the inode_fsgid_set(), which does namepsace mappings,
+  but eventually we end up whaterver the current running process GID
+  maps to
+
+So the test is awfully complex for what it's supposed to do, which is
+without S_ISGID on parent directory the FIFO gid is set to the running
+process GID. As far as I can tell all that needs to be done here is:
+
+With .require_root:
+
+1. Create a directory and set the directory GID to nobody
+2. Create a FIFO inside the directory and check that the
+   FIFO GID matches the root gid
+
+And that should be it. As far as I can tell the S_ISGID on FIFO is
+pointless in this case since for files the S_ISGID means that the GID is
+changed when they are executed, which we do not attempt here and I'm not
+even sure if we can execute FIFO.
+
+And the same should be done by the mknod03 with the difference that th
+S_ISGID should be set on the directory and we should expect the GID to
+be inherited.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+==============
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
