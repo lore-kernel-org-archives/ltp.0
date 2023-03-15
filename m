@@ -4,126 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CF9BC61DA4
-	for <ltp@archiver.kernel.org>; Wed, 15 Mar 2023 09:10:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D2F8C74A5B
+	for <ltp@archiver.kernel.org>; Wed, 15 Mar 2023 09:28:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD7653CD490
-	for <ltp@archiver.kernel.org>; Wed, 15 Mar 2023 10:10:30 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 1AF473CB82A
+	for <ltp@archiver.kernel.org>; Wed, 15 Mar 2023 10:28:16 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2942E3C54D5
- for <ltp@lists.linux.it>; Wed, 15 Mar 2023 10:10:19 +0100 (CET)
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04on0630.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe0d::630])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 502773CAC9D
+ for <ltp@lists.linux.it>; Wed, 15 Mar 2023 10:28:04 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 024536002C2
- for <ltp@lists.linux.it>; Wed, 15 Mar 2023 10:10:18 +0100 (CET)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nSxRkwj/vWUU91YpI9n/XOhIE+hS4abkPT9WN0AAPNpeDF17S/C64iGQlhASxP72/PE9IfkbdkJiZZI226hewiwtdQMCGIWT3o0l6YsDwRTlaueogFcxE007B0PVksg6g97OSV+rKZkCRJLJ53vjcpsnkvtDuHc7bc/4Ap7D80dSEXb4HSImGsgxTrABt0MzM30R7S+X0kdMel2c1B9hKvJuxUYYSZVPf/tHwFfVPcn1RJ6fNRKEvoJ6TYgGLsgmZZED9OQcZuuZFLVjlWOKOQa3/jJXfmc7tbJU9E8DQJI1LHlDWxlnCRuix3rWARI01ZT0hfLrf0ezeRGsrwY8qA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fNVbioYqn0GExEqkQIULN0JFHiH/0fFjqqXUF6SGzYA=;
- b=cg8bTLB1IxHYJA0GEx2X6H6OAx3/pwpqF8EFxa0MD6qDP4EtDsU3JeRvKEL9eQ60mBW5MPnA1yK47qkxE9xNil+llyszja1smYPV2elRynAM5ashnKrMmrytYcrJ4xD0aH51pb/jQy0dNO6fIyGBOZgLNFvl0v6Tva1LEqCEnLGeTsO70nzlB/wWRps/w4ThgeCK0a9KXb1wHSjndYMKxO3JQpOYRjHdvzLDtkrSOZ6dUVIPgaH2xhs1WKbyDp/nES878EO2RGF8B7kI91/oT5eKwRMLKwdQBFZwIvW9nq7NskSThI6xJUllGLgK88iNkv+QRCz+on7ZHVzmXVJpdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fNVbioYqn0GExEqkQIULN0JFHiH/0fFjqqXUF6SGzYA=;
- b=zABejpe+E8IZaEfbnMgkAWPRrKBE4aSCBb1CZb3oF8DgcZs9R5K7OA3X3vh9P8XzAgLaHBPX+65llT3Ipu8uiJceAzEwW+TcCObzdZkhlMphTNBpFGzmZ/qRLKcbV+XIfYsUXTnIvinfhk0jPi9tiQ87RMwM8w/Sndb2/oeyPP+HhmCM+hv7yoxSw9Q9Wta6tTAAMHww5F474OlWnaeN9JF6YZYontL9wTUyDtgegsdsH8Y9o9x5TWvf8qomtRc+iKHpHPHOggW70n13bZEl87p1zeVXayIyecbuMNjLcSwTjpH+RXlk/vQMVsbEOsaEP2JPrEqv+eq9rt7zgziyyA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB6797.eurprd04.prod.outlook.com (2603:10a6:803:13e::13)
- by VI1PR04MB7165.eurprd04.prod.outlook.com (2603:10a6:800:125::13)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.26; Wed, 15 Mar
- 2023 09:10:16 +0000
-Received: from VI1PR04MB6797.eurprd04.prod.outlook.com
- ([fe80::e6db:281a:b03d:39ca]) by VI1PR04MB6797.eurprd04.prod.outlook.com
- ([fe80::e6db:281a:b03d:39ca%8]) with mapi id 15.20.6178.029; Wed, 15 Mar 2023
- 09:10:15 +0000
-Message-ID: <2d3f7d41-2ee3-7945-dc77-627ae9ecc69d@suse.com>
-Date: Wed, 15 Mar 2023 10:08:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Content-Language: en-US
-To: Wei Gao <wegao@suse.com>, Andrea Cervesato <andrea.cervesato@suse.de>
-References: <20230308132335.29621-1-andrea.cervesato@suse.de>
- <20230308132335.29621-2-andrea.cervesato@suse.de>
- <20230314234000.GA10628@localhost>
-In-Reply-To: <20230314234000.GA10628@localhost>
-X-ClientProxiedBy: FR0P281CA0111.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a8::12) To VI1PR04MB6797.eurprd04.prod.outlook.com
- (2603:10a6:803:13e::13)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D91E81A00A5A
+ for <ltp@lists.linux.it>; Wed, 15 Mar 2023 10:28:02 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A2E541FD6F;
+ Wed, 15 Mar 2023 09:28:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1678872481; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=rOpxM/xSDh20DSvc8VIhhVHzmd33gp0A+V2nB+8Hh9w=;
+ b=kqEFVO+Tt0lLSDDyNpeYMawpB1YKepgxYjv1clsJCjvjFy9L8F+3+227pEWqlvIMrwS0wU
+ C8fne+9Ah8xMtGayw0mWi74EfH+6h9Eao5fKipCyE0l2ooQclS3Dqr5vFbkze5RytImXAu
+ NsoZneloNsCeBSALoj/Nn0iFIr2lbuA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1678872481;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=rOpxM/xSDh20DSvc8VIhhVHzmd33gp0A+V2nB+8Hh9w=;
+ b=wwyzPfoMC/DPe/0RzUin184WR+Js8qunpnE6M7epO/Lfu34+NXeEP73JeRkpyLh0VdbBzG
+ WwCOz6vZWusKbZBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65E5F13A2F;
+ Wed, 15 Mar 2023 09:28:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 7I0vF6GPEWQ2KgAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 15 Mar 2023 09:28:01 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Wed, 15 Mar 2023 10:25:52 +0100
+Message-Id: <20230315092552.18127-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6797:EE_|VI1PR04MB7165:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0673c861-b331-4e04-7cab-08db25351730
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QAhgeeO+QGs3YC3LT66EviQCyzVzTdAg7aLsAlr6GACmp5qu/mLtJr7ZnEJlkqVWKxrDCXVQX7qCca9QHpOiTf9UG2MYENKt/wgPF/AXMSj0GISBpZBRxQKwcdEk2lF0s/EuTNBVNVo/zqpjzhbbLdldhHKsJ1A6aTPSROvX8pvCAanbzJxTbXzocodSBmkyj7w8AzkABicZJMLuMXvAUHcycB5O1pXRHhNBsTgghCn0N4DgSP/qqBI0pdLc5zAXTCWlb6LLmjyuxvPYz2qM2mYUOBeywBwxmngOUoqU7JAYA0HU0pFs0Ff+MqFsmB4fm7bxzPuy6OI/w2t6/l20leLKRcNsABpjy4Mi9J2+CX77R+oAWxx/G3cXXgKxMnKaTF0i/C7akhVpwhcAVUCMuvbHNAvXyoTjvflQDZpWj0B159i+vSrv9QsbYXuM7zjOXs1nEfyxbsOFM8YPAlBhw/GCap46+/65X4KfjjQWPhhsEa1rDSj3FSKwvpCaRDUl+dC9F/zOSpDnQnSo1xXX1TSaFEQgD8x3NR7xW+FndIbqGVfxU3zckymwlpgvmUG+46x3zkFH7ym9BLx30pVLBhfK0a2PoyFwHR64IDs6/I5J1Sr2mydJrJtArCKdP+6TEEDZZeDckqFqYKbdprXbz2g+4RqutJnk5bak0N/uDznklm3dh6O+ictn/GDrnHUjojuuMkANLHFIOSzIzifLt0VUiHhc5oUSVbgT2VEpYZA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:VI1PR04MB6797.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230025)(396003)(346002)(39860400002)(136003)(366004)(376002)(451199018)(36756003)(316002)(110136005)(478600001)(6486002)(4326008)(8936002)(41300700001)(5660300002)(2906002)(66946007)(8676002)(66556008)(44832011)(66476007)(31696002)(38100700002)(2616005)(6666004)(6512007)(26005)(53546011)(6506007)(186003)(83380400001)(86362001)(31686004)(43740500002)(45980500001);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YWpsTnJTS2xWWXAxN1pjeXhpcEpQckpvTWRsbXlEbHVHckNXWWI5b3NoYm5Q?=
- =?utf-8?B?M2dNY2tqWDN1QlJOVHdsaEY3dHFVSUZKNzlMNXZjWUkybURyZkliYlRCK2NJ?=
- =?utf-8?B?Tk0xNXVaazBoVEIzU1lVaHFtb1RPdnZ4d0U1d01RSk9nRi9KdlRUM2ltbE93?=
- =?utf-8?B?TldiL05McXBWdmw4Mk9WdUtKMkQ5NXFqS1pwY3VKaWNHNlJydFErQlBKNEJm?=
- =?utf-8?B?MGg3OUFrMDZwdTNYRWptYVd4ZThRdi9pa1VBb3pCUzA0eVFNeitEQmljMnpI?=
- =?utf-8?B?ckozbnB6dmh4OWtYWGtNeFE4NWd6T0JaNGtYeFRabzVMV1ZXeW5SaDZBSkJC?=
- =?utf-8?B?UGZBL3ZvS3ZYY1JBNmZ4bG5WdlhFeTVvUEVkUWtIQ3l6amxaelpWWHFncjdz?=
- =?utf-8?B?bDNrUlNoU2YwelFrckxwZjB1ZkpSWmJHRUtzTGZTRVRkRTVPQStHbDNYRjh6?=
- =?utf-8?B?dTJsNDdINFJPdzFnWHFaM253TUhPcWVHcnRCa1dlU1VXanNvSjFPK1pMWUth?=
- =?utf-8?B?eUNGTUswdlhTdDBxbGMveUJqZm0yWmoxQzhGdmtBNWVKbmR5c0J1TkhzTjlM?=
- =?utf-8?B?SnhvQlBZTkt2a1FoczIvOHpkeldEbW9WMEdWOHBIeTVBZjV2YXVzdEsxS2lZ?=
- =?utf-8?B?MHJZZ00rYk50b0ZFMFlIUGdrVFV1RUxBYW9hbDl2ajdTbVN1S2dHZU12Ym1C?=
- =?utf-8?B?TUQzRnR5eHFkWWY1UlFyWnBNc3hBZFY5OXNqeUJQdUt1V1Nzb1lPc09HMXht?=
- =?utf-8?B?Z2hqd3ZjUm9rY0dnRjRGUllEQk9FMEFnRFlWWFg4Q29rR1JyR3dJeFJZR2NN?=
- =?utf-8?B?WExSS0ZDYTRaOCtmVjQ4UzVlOExDSExjQVBFMDRqT1B4Zkl2dGd0ZDE4bUky?=
- =?utf-8?B?emt1cnl1SFdOcW01VzlNc0JJdldidG9hS1Z4cVZ6OWxWYzVVTEg5c1I5eWdD?=
- =?utf-8?B?UjVGUEtjN2hkN3ZLWG9YcG9LY0lybHJHSXV2ZUVKMkRJdTNXWG8xbVRXSTJS?=
- =?utf-8?B?NXY1TVp4Zkl4bTJtc1c0MFFWUUNZWFZENzFWbTQrazlFZit1TURjY1pIc2hS?=
- =?utf-8?B?bzlkVnRhcFFneU53Y0x2eXBvNlppOEZ4MDFLTmc1SFhxaUhYN2hEOSt3bG9Z?=
- =?utf-8?B?bmJxcTVjZjM4MkJrb2hqUlU4d1B2TUgrYXp4eDg0ZmZGU3dDVDMzTTBmSmhs?=
- =?utf-8?B?NGcybWd0eWlhVXFWMWc3VlRaUEVpd1czMjlZRldNUFVUcGJXSFNkY3UxcERX?=
- =?utf-8?B?bTlNdU1wMEgyK2R6dDFKRE1PTDFwUDBSR2tZT0NYQWdZaFhpa2JYNWJlcCt4?=
- =?utf-8?B?aU5XVzJsVVhCVTdaOXpzcTJoRzc3VDI1VlNoQm9WbWFSMi8xTTFRRnpHdUhH?=
- =?utf-8?B?cXltclQvZHpLbWhITHZzSnB4ckNyZ0FQa1NOVGVRL2J3QnN3ZVM4ZFRNR2pL?=
- =?utf-8?B?MnQ1QWtZUElvaDF0dFh4Unpla1hjS2FRNEw1QUx4SjJGZTBOcVlvQVNTR0NC?=
- =?utf-8?B?S0tOVmlYQlQzdTA0MmVCRkpadHBXNHU1VVRVdysrWmpGUFU4Mk1WYzZ3SThu?=
- =?utf-8?B?WXBkaHZTdENrSlJ6RStuWDhFdm9ROUhaNmJkMjZpdXIycEhEWmZBeHhUeVBZ?=
- =?utf-8?B?UFI4cHAwRzVkUWNvSml5cU42T1pjeC9jZEZGeTVQZlp1NnRMQmIzMTNLcEVI?=
- =?utf-8?B?WnJSVzlGTlNZRGtwU2dKOE50dXBZR2FBSm5razFINlhCQUgvWm9Vak5VdFA4?=
- =?utf-8?B?c0JobzlXN3czcjV4alUxMkpIUmprb0NzdGMxMmNudDduaFowR05KeGFrWEdR?=
- =?utf-8?B?NkRaWDlEN2tseWc5VG9oSGhyMjVjcHRrcDJrMzZNK3A1VWJ1cjRQQTRjWDYw?=
- =?utf-8?B?dlpsOTNyeUJtRVQzU1ZKQjNnbXdWS01YWjhJelJJaW1tbW1YbEkyUCttaVNk?=
- =?utf-8?B?ZjZyK00xUERERmZhUjBtNmtmcXdJVFhzNUFJMjEvMWRIcS9LRlZuRXRiakpQ?=
- =?utf-8?B?SnNIZTgyZHU3Y2lZQWRXb2dFZkNQcllKWElUWDd3OExGQjh6QW12Uld2VThQ?=
- =?utf-8?B?TlJpSTVKaWVneURXb0ZjWXliZDZVUWpsYWs4NDJxTWd2bXN4dzFCLzJuc2wz?=
- =?utf-8?B?MzNOczFEMjdtd1VnZUluZ0pMUmdCYmhsMitFRFBRdUVLYm9LQnk3dFhrdUJC?=
- =?utf-8?B?WlE9PQ==?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0673c861-b331-4e04-7cab-08db25351730
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB6797.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2023 09:10:15.7479 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +Dw4IbMNGCjQ/r2nd29BftQ3ht9lJa6AH4RYBjVM+79lYTXpmltsXhmsU3+HxjIH678yw+Wlxam4l4SFsSfnC8MXnsFkmwEA56ZW9j2cjR0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7165
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/3] Rewrite eventfd2_01 test using new LTP API
+Subject: [LTP] [PATCH v3] Rewrite eventfd01 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -135,57 +70,1261 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-On 3/15/23 00:40, Wei Gao wrote:
-> On Wed, Mar 08, 2023 at 02:23:33PM +0100, Andrea Cervesato wrote:
->> From: Andrea Cervesato <andrea.cervesato@suse.com>
->>
->> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
->> ---
->>   testcases/kernel/syscalls/eventfd2/eventfd2.h |  18 +++
->>   .../kernel/syscalls/eventfd2/eventfd2_01.c    | 148 ++++--------------
->>   2 files changed, 51 insertions(+), 115 deletions(-)
->>   create mode 100644 testcases/kernel/syscalls/eventfd2/eventfd2.h
->>
->> diff --git a/testcases/kernel/syscalls/eventfd2/eventfd2.h b/testcases/kernel/syscalls/eventfd2/eventfd2.h
->> new file mode 100644
->> index 000000000..5350820b8
->> --- /dev/null
->> +++ b/testcases/kernel/syscalls/eventfd2/eventfd2.h
->> @@ -0,0 +1,18 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
->> + */
->> +
->> +#include "tst_test.h"
->> +#include "lapi/syscalls.h"
->> +
->> +static inline int eventfd2(unsigned int count, unsigned int flags)
->> +{
->> +	int ret;
->> +
->> +	ret = tst_syscall(__NR_eventfd2, count, flags);
->> +	if (ret == -1)
->> +		tst_brk(TBROK | TERRNO, "eventfd2");
->> +
->> +	return ret;
->> +}
-> Normally we need put file or store this file into some lib directory?
+Tests functions inside eventfd01 have been threated as single tests
+files and code has been rewritten using new LTP API.
 
-Common pattern is usually to add a header file (if needed) with the name 
-of the testing suite in the folder name of that suite.
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ runtest/syscalls                              |   5 +
+ testcases/kernel/syscalls/eventfd/.gitignore  |   5 +
+ testcases/kernel/syscalls/eventfd/eventfd01.c | 750 +-----------------
+ testcases/kernel/syscalls/eventfd/eventfd02.c |  54 ++
+ testcases/kernel/syscalls/eventfd/eventfd03.c |  58 ++
+ testcases/kernel/syscalls/eventfd/eventfd04.c |  61 ++
+ testcases/kernel/syscalls/eventfd/eventfd05.c |  48 ++
+ testcases/kernel/syscalls/eventfd/eventfd06.c | 175 ++++
+ 8 files changed, 436 insertions(+), 720 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/eventfd/eventfd02.c
+ create mode 100644 testcases/kernel/syscalls/eventfd/eventfd03.c
+ create mode 100644 testcases/kernel/syscalls/eventfd/eventfd04.c
+ create mode 100644 testcases/kernel/syscalls/eventfd/eventfd05.c
+ create mode 100644 testcases/kernel/syscalls/eventfd/eventfd06.c
 
-Andrea
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9c76d7fe3..2179f8d5b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -182,6 +182,11 @@ epoll_pwait04 epoll_pwait04
+ epoll_pwait05 epoll_pwait05
+ 
+ eventfd01 eventfd01
++eventfd02 eventfd02
++eventfd03 eventfd03
++eventfd04 eventfd04
++eventfd05 eventfd05
++eventfd06 eventfd06
+ 
+ eventfd2_01 eventfd2_01
+ eventfd2_02 eventfd2_02
+diff --git a/testcases/kernel/syscalls/eventfd/.gitignore b/testcases/kernel/syscalls/eventfd/.gitignore
+index db45c67cf..4f577370c 100644
+--- a/testcases/kernel/syscalls/eventfd/.gitignore
++++ b/testcases/kernel/syscalls/eventfd/.gitignore
+@@ -1 +1,6 @@
+ /eventfd01
++/eventfd02
++/eventfd03
++/eventfd04
++/eventfd05
++/eventfd06
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd01.c b/testcases/kernel/syscalls/eventfd/eventfd01.c
+index 9b60434a2..2b66d9e3d 100644
+--- a/testcases/kernel/syscalls/eventfd/eventfd01.c
++++ b/testcases/kernel/syscalls/eventfd/eventfd01.c
+@@ -1,738 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *   Copyright (c) 2008 Vijay Kumar B. <vijaykumar@bravegnu.org>
+- *   Copyright (c) Linux Test Project, 2008-2022
+- *
+- *   Based on testcases/kernel/syscalls/waitpid/waitpid01.c
+- *   Original copyright message:
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (c) 2008 Vijay Kumar B. <vijaykumar@bravegnu.org>
++ * Copyright (c) Linux Test Project, 2008-2022
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+  */
+ 
+-/*
+- * NAME
+- *	eventfd01.c
+- *
+- * DESCRIPTION
+- *      Test cases for eventfd syscall.
++/*\
++ * [Description]
+  *
+- * USAGE:  <for command-line>
+- *      eventfd01 [-c n] [-i n] [-I x] [-P x] [-t]
+- *      where,  -c n : Run n copies concurrently.
+- *              -i n : Execute test n times.
+- *              -I x : Execute test for x seconds.
+- *              -P x : Pause for x seconds between iterations.
+- *
+- * History
+- *	07/2008 Vijay Kumar
+- *		Initial Version.
+- *
+- * Restrictions
+- *	None
+- */
+-
+-#include "config.h"
+-
+-#include <sys/types.h>
+-#include <sys/select.h>
+-#include <sys/wait.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <inttypes.h>
+-#include <poll.h>
+-#include <signal.h>
+-#include <stdint.h>
+-#include <string.h>
+-#include <unistd.h>
+-
+-#include "test.h"
+-#define CLEANUP cleanup
+-#include "lapi/syscalls.h"
+-
+-TCID_DEFINE(eventfd01);
+-int TST_TOTAL = 15;
+-
+-#ifdef HAVE_LIBAIO
+-#include <libaio.h>
+-
+-static void setup(void);
+-
+-static int myeventfd(unsigned int initval, int flags)
+-{
+-	/* eventfd2 uses FLAGS but eventfd doesn't take FLAGS. */
+-	return tst_syscall(__NR_eventfd, initval);
+-}
+-
+-/*
+- * clear_counter() - clears the counter by performing a dummy read
+- * @fd: the eventfd
++ * Verify read operation for eventfd fail with:
+  *
+- * RETURNS:
+- * 0 on success, and -1 on failure
+- */
+-static int clear_counter(int fd)
+-{
+-	uint64_t dummy;
+-	int ret;
+-
+-	ret = read(fd, &dummy, sizeof(dummy));
+-	if (ret == -1) {
+-		if (errno != EAGAIN) {
+-			tst_resm(TINFO | TERRNO, "error clearing counter");
+-			return -1;
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-/*
+- * set_counter() - sets the count to specified value
+- * @fd: the eventfd
+- * @val: the value to be set
+- *
+- * Clears the counter and sets the counter to @val.
+- *
+- * RETURNS:
+- * 0 on success, -1 on failure
+- */
+-static int set_counter(int fd, uint64_t val)
+-{
+-	int ret;
+-
+-	ret = clear_counter(fd);
+-	if (ret == -1)
+-		return -1;
+-
+-	ret = write(fd, &val, sizeof(val));
+-	if (ret == -1) {
+-		tst_resm(TINFO | TERRNO, "error setting counter value");
+-		return -1;
+-	}
+-
+-	return 0;
+-}
+-
+-/*
+- * Test whether the current value of the counter matches @required.
+- */
+-static void read_test(int fd, uint64_t required)
+-{
+-	int ret;
+-	uint64_t val;
+-
+-	ret = read(fd, &val, sizeof(val));
+-	if (ret == -1) {
+-		tst_resm(TBROK | TERRNO, "error reading eventfd");
+-		return;
+-	}
+-
+-	if (val == required)
+-		tst_resm(TPASS, "counter value matches required");
+-	else
+-		tst_resm(TFAIL, "counter value mismatch: "
+-			 "required: %" PRIu64 ", got: %" PRIu64, required, val);
+-}
+-
+-/*
+- * Test whether read returns with error EAGAIN when counter is at 0.
+- */
+-static void read_eagain_test(int fd)
+-{
+-	int ret;
+-	uint64_t val;
+-
+-	ret = clear_counter(fd);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error clearing counter");
+-		return;
+-	}
+-
+-	ret = read(fd, &val, sizeof(val));
+-	if (ret == -1) {
+-		if (errno == EAGAIN)
+-			tst_resm(TPASS, "read failed with EAGAIN as expected");
+-		else
+-			tst_resm(TFAIL | TERRNO, "read failed (wanted EAGAIN)");
+-	} else
+-		tst_resm(TFAIL, "read returned with %d", ret);
+-}
+-
+-/*
+- * Test whether writing to counter works.
++ * - EAGAIN when counter is zero on non blocking fd
++ * - EINVAL when buffer size is less than 8 bytes
+  */
+-static void write_test(int fd)
+-{
+-	int ret;
+-	uint64_t val;
+-
+-	val = 12;
+ 
+-	ret = set_counter(fd, val);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error setting counter value to %" PRIu64, val);
+-		return;
+-	}
++#include <stdlib.h>
++#include <sys/eventfd.h>
++#include "tst_test.h"
+ 
+-	read_test(fd, val);
+-}
++#define EVENT_COUNT 10
+ 
+-/*
+- * Test whether write returns with error EAGAIN when counter is at
+- * (UINT64_MAX - 1).
+- */
+-static void write_eagain_test(int fd)
++static void run(void)
+ {
+-	int ret;
++	int fd;
+ 	uint64_t val;
+-
+-	ret = set_counter(fd, UINT64_MAX - 1);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error setting counter value to UINT64_MAX-1");
+-		return;
+-	}
+-
+-	val = 1;
+-	ret = write(fd, &val, sizeof(val));
+-	if (ret == -1) {
+-		if (errno == EAGAIN)
+-			tst_resm(TPASS, "write failed with EAGAIN as expected");
+-		else
+-			tst_resm(TFAIL, "write failed (wanted EAGAIN)");
+-	} else
+-		tst_resm(TFAIL, "write returned with %d", ret);
+-}
+-
+-/*
+- * Test whether read returns with error EINVAL, if buffer size is less
+- * than 8 bytes.
+- */
+-static void read_einval_test(int fd)
+-{
+ 	uint32_t invalid;
+-	int ret;
+ 
+-	ret = read(fd, &invalid, sizeof(invalid));
+-	if (ret == -1) {
+-		if (errno == EINVAL)
+-			tst_resm(TPASS, "read failed with EINVAL as expected");
+-		else
+-			tst_resm(TFAIL | TERRNO, "read failed (wanted EINVAL)");
+-	} else
+-		tst_resm(TFAIL, "read returned with %d", ret);
+-}
++	TST_EXP_FD(eventfd(EVENT_COUNT, EFD_NONBLOCK));
++	fd = TST_RET;
+ 
+-/*
+- * Test whether write returns with error EINVAL, if buffer size is
+- * less than 8 bytes.
+- */
+-static void write_einval_test(int fd)
+-{
+-	uint32_t invalid;
+-	int ret;
++	SAFE_READ(0, fd, &val, sizeof(val));
++	TST_EXP_EQ_LI(val, EVENT_COUNT);
+ 
+-	ret = write(fd, &invalid, sizeof(invalid));
+-	if (ret == -1) {
+-		if (errno == EINVAL)
+-			tst_resm(TPASS, "write failed with EINVAL as expected");
+-		else
+-			tst_resm(TFAIL | TERRNO,
+-				 "write failed (wanted EINVAL)");
+-	} else
+-		tst_resm(TFAIL, "write returned with %d", ret);
+-}
++	TST_EXP_FAIL(read(fd, &val, sizeof(val)), EAGAIN);
++	TST_EXP_FAIL(read(fd, &invalid, sizeof(invalid)), EINVAL);
+ 
+-/*
+- * Test wheter write returns with error EINVAL, when the written value
+- * is 0xFFFFFFFFFFFFFFFF.
+- */
+-static void write_einval2_test(int fd)
+-{
+-	int ret;
+-	uint64_t val;
+-
+-	ret = clear_counter(fd);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error clearing counter");
+-		return;
+-	}
+-
+-	val = 0xffffffffffffffffLL;
+-	ret = write(fd, &val, sizeof(val));
+-	if (ret == -1) {
+-		if (errno == EINVAL)
+-			tst_resm(TPASS, "write failed with EINVAL as expected");
+-		else
+-			tst_resm(TFAIL | TERRNO,
+-				 "write failed (wanted EINVAL)");
+-	} else {
+-		tst_resm(TFAIL, "write returned with %d", ret);
+-	}
++	SAFE_CLOSE(fd);
+ }
+ 
+-/*
+- * Test whether readfd is set by select when counter value is
+- * non-zero.
+- */
+-static void readfd_set_test(int fd)
+-{
+-	int ret;
+-	fd_set readfds;
+-	struct timeval timeout = { 0, 0 };
+-	uint64_t non_zero = 10;
+-
+-	FD_ZERO(&readfds);
+-	FD_SET(fd, &readfds);
+-
+-	ret = set_counter(fd, non_zero);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error setting counter value to %" PRIu64,
+-			 non_zero);
+-		return;
+-	}
+-
+-	ret = select(fd + 1, &readfds, NULL, NULL, &timeout);
+-	if (ret == -1) {
+-		/* EINTR cannot occur, since we don't block. */
+-		tst_resm(TBROK | TERRNO, "select() failed");
+-		return;
+-	}
+-
+-	if (FD_ISSET(fd, &readfds))
+-		tst_resm(TPASS, "fd is set in readfds");
+-	else
+-		tst_resm(TFAIL, "fd is not set in readfds");
+-}
+-
+-/*
+- * Test whether readfd is not set by select when counter value is
+- * zero.
+- */
+-static void readfd_not_set_test(int fd)
+-{
+-	int ret;
+-	fd_set readfds;
+-	struct timeval timeout = { 0, 0 };
+-
+-	FD_ZERO(&readfds);
+-	FD_SET(fd, &readfds);
+-
+-	ret = clear_counter(fd);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error clearing counter");
+-		return;
+-	}
+-
+-	ret = select(fd + 1, &readfds, NULL, NULL, &timeout);
+-	if (ret == -1) {
+-		/* EINTR cannot occur, since we don't block. */
+-		tst_resm(TBROK | TERRNO, "select() failed");
+-		return;
+-	}
+-
+-	if (!FD_ISSET(fd, &readfds))
+-		tst_resm(TPASS, "fd is not set in readfds");
+-	else
+-		tst_resm(TFAIL, "fd is set in readfds");
+-}
+-
+-/*
+- * Test whether writefd is set by select when counter value is not the
+- * maximum counter value.
+- */
+-static void writefd_set_test(int fd)
+-{
+-	int ret;
+-	fd_set writefds;
+-	struct timeval timeout = { 0, 0 };
+-	uint64_t non_max = 10;
+-
+-	FD_ZERO(&writefds);
+-	FD_SET(fd, &writefds);
+-
+-	ret = set_counter(fd, non_max);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error setting counter value to %" PRIu64,
+-			 non_max);
+-		return;
+-	}
+-
+-	ret = select(fd + 1, NULL, &writefds, NULL, &timeout);
+-	if (ret == -1) {
+-		/* EINTR cannot occur, since we don't block. */
+-		tst_resm(TBROK | TERRNO, "select: error getting fd status");
+-		return;
+-	}
+-
+-	if (FD_ISSET(fd, &writefds))
+-		tst_resm(TPASS, "fd is set in writefds");
+-	else
+-		tst_resm(TFAIL, "fd is not set in writefds");
+-}
+-
+-/*
+- * Test whether writefd is not set by select when counter value is at
+- * (UINT64_MAX - 1).
+- */
+-static void writefd_not_set_test(int fd)
+-{
+-	int ret;
+-	fd_set writefds;
+-	struct timeval timeout = { 0, 0 };
+-
+-	FD_ZERO(&writefds);
+-	FD_SET(fd, &writefds);
+-
+-	ret = set_counter(fd, UINT64_MAX - 1);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error setting counter value to UINT64_MAX-1");
+-		return;
+-	}
+-
+-	ret = select(fd + 1, NULL, &writefds, NULL, &timeout);
+-	if (ret == -1) {
+-		/* EINTR cannot occur, since we don't block. */
+-		tst_resm(TBROK | TERRNO, "select: error getting fd status");
+-		return;
+-	}
+-
+-	if (!FD_ISSET(fd, &writefds))
+-		tst_resm(TPASS, "fd is not set in writefds");
+-	else
+-		tst_resm(TFAIL, "fd is set in writefds");
+-}
+-
+-/*
+- * Test whether counter update in child is reflected in the parent.
+- */
+-static void child_inherit_test(int fd)
+-{
+-	uint64_t val;
+-	pid_t cpid;
+-	int ret;
+-	int status;
+-	uint64_t to_parent = 0xdeadbeef;
+-	uint64_t dummy;
+-
+-	cpid = fork();
+-	if (cpid == -1)
+-		tst_resm(TBROK | TERRNO, "fork failed");
+-	else if (cpid != 0) {
+-		ret = wait(&status);
+-		if (ret == -1) {
+-			tst_resm(TBROK, "error getting child exit status");
+-			return;
+-		}
+-
+-		if (WEXITSTATUS(status) == 1) {
+-			tst_resm(TBROK, "counter value write not "
+-				 "successful in child");
+-			return;
+-		}
+-
+-		ret = read(fd, &val, sizeof(val));
+-		if (ret == -1) {
+-			tst_resm(TBROK | TERRNO, "error reading eventfd");
+-			return;
+-		}
+-
+-		if (val == to_parent)
+-			tst_resm(TPASS, "counter value write from "
+-				 "child successful");
+-		else
+-			tst_resm(TFAIL, "counter value write in child "
+-				 "failed");
+-	} else {
+-		/* Child */
+-		ret = read(fd, &dummy, sizeof(dummy));
+-		if (ret == -1 && errno != EAGAIN) {
+-			tst_resm(TWARN | TERRNO, "error clearing counter");
+-			exit(1);
+-		}
+-
+-		ret = write(fd, &to_parent, sizeof(to_parent));
+-		if (ret == -1) {
+-			tst_resm(TWARN | TERRNO, "error writing eventfd");
+-			exit(1);
+-		}
+-
+-		exit(0);
+-	}
+-}
+-
+-#ifdef HAVE_IO_SET_EVENTFD
+-/*
+- * Test whether counter overflow is detected and handled correctly.
+- *
+- * It is not possible to directly overflow the counter using the
+- * write() syscall. Overflows occur when the counter is incremented
+- * from kernel space, in an irq context, when it is not possible to
+- * block the calling thread of execution.
+- *
+- * The AIO subsystem internally uses eventfd mechanism for
+- * notification of completion of read or write requests. In this test
+- * we trigger a counter overflow, by setting the counter value to the
+- * max possible value initially. When the AIO subsystem notifies
+- * through the eventfd counter, the counter overflows.
+- *
+- * NOTE: If the the counter starts from an initial value of 0, it will
+- * take decades for an overflow to occur. But since we set the initial
+- * value to the max possible counter value, we are able to cause it to
+- * overflow with a single increment.
+- *
+- * When the counter overflows, the following are tested
+- *   1. Check whether POLLERR event occurs in poll() for the eventfd.
+- *   2. Check whether readfd_set/writefd_set is set in select() for the
+-        eventfd.
+- *   3. The counter value is UINT64_MAX.
+- */
+-static int trigger_eventfd_overflow(int evfd, int *fd, io_context_t * ctx)
+-{
+-	int ret;
+-	struct iocb iocb;
+-	struct iocb *iocbap[1];
+-	struct io_event ioev;
+-	static char buf[4 * 1024];
+-
+-	*ctx = 0;
+-	ret = io_setup(16, ctx);
+-	if (ret < 0) {
+-		errno = -ret;
+-		if (errno == ENOSYS) {
+-			tst_brkm(TCONF | TERRNO, cleanup,
+-				 "io_setup(): AIO not supported by kernel");
+-		}
+-
+-		tst_resm(TINFO | TERRNO, "io_setup error");
+-		return -1;
+-	}
+-
+-	*fd = open("testfile", O_RDWR | O_CREAT, 0644);
+-	if (*fd == -1) {
+-		tst_resm(TINFO | TERRNO, "open(testfile) failed");
+-		goto err_io_destroy;
+-	}
+-
+-	ret = set_counter(evfd, UINT64_MAX - 1);
+-	if (ret == -1) {
+-		tst_resm(TINFO, "error setting counter to UINT64_MAX-1");
+-		goto err_close_file;
+-	}
+-
+-	io_prep_pwrite(&iocb, *fd, buf, sizeof(buf), 0);
+-	io_set_eventfd(&iocb, evfd);
+-
+-	iocbap[0] = &iocb;
+-	ret = io_submit(*ctx, 1, iocbap);
+-	if (ret < 0) {
+-		errno = -ret;
+-		tst_resm(TINFO | TERRNO, "error submitting iocb");
+-		goto err_close_file;
+-	}
+-
+-	ret = io_getevents(*ctx, 1, 1, &ioev, NULL);
+-	if (ret < 0) {
+-		errno = -ret;
+-		tst_resm(TINFO | TERRNO, "error waiting for event");
+-		goto err_close_file;
+-	}
+-
+-	return 0;
+-
+-err_close_file:
+-	close(*fd);
+-
+-err_io_destroy:
+-	io_destroy(*ctx);
+-
+-	return -1;
+-}
+-
+-static void cleanup_overflow(int fd, io_context_t ctx)
+-{
+-	close(fd);
+-	io_destroy(ctx);
+-}
+-
+-static void overflow_select_test(int evfd)
+-{
+-	struct timeval timeout = { 10, 0 };
+-	fd_set readfds;
+-	int fd;
+-	io_context_t ctx;
+-	int ret;
+-
+-	ret = trigger_eventfd_overflow(evfd, &fd, &ctx);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error triggering eventfd overflow");
+-		return;
+-	}
+-
+-	FD_ZERO(&readfds);
+-	FD_SET(evfd, &readfds);
+-	ret = select(evfd + 1, &readfds, NULL, NULL, &timeout);
+-	if (ret == -1)
+-		tst_resm(TBROK | TERRNO,
+-			 "error getting evfd status with select");
+-	else {
+-		if (FD_ISSET(evfd, &readfds))
+-			tst_resm(TPASS, "read fd set as expected");
+-		else
+-			tst_resm(TFAIL, "read fd not set");
+-	}
+-	cleanup_overflow(fd, ctx);
+-}
+-
+-static void overflow_poll_test(int evfd)
+-{
+-	struct pollfd pollfd;
+-	int fd;
+-	io_context_t ctx;
+-	int ret;
+-
+-	ret = trigger_eventfd_overflow(evfd, &fd, &ctx);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error triggering eventfd overflow");
+-		return;
+-	}
+-
+-	pollfd.fd = evfd;
+-	pollfd.events = POLLIN;
+-	pollfd.revents = 0;
+-	ret = poll(&pollfd, 1, 10000);
+-	if (ret == -1)
+-		tst_resm(TBROK | TERRNO, "error getting evfd status with poll");
+-	else {
+-		if (pollfd.revents & POLLERR)
+-			tst_resm(TPASS, "POLLERR occurred as expected");
+-		else
+-			tst_resm(TFAIL, "POLLERR did not occur");
+-	}
+-	cleanup_overflow(fd, ctx);
+-}
+-
+-static void overflow_read_test(int evfd)
+-{
+-	uint64_t count;
+-	io_context_t ctx;
+-	int fd;
+-	int ret;
+-
+-	ret = trigger_eventfd_overflow(evfd, &fd, &ctx);
+-	if (ret == -1) {
+-		tst_resm(TBROK, "error triggering eventfd overflow");
+-		return;
+-	}
+-
+-	ret = read(evfd, &count, sizeof(count));
+-	if (ret == -1)
+-		tst_resm(TBROK | TERRNO, "error reading eventfd");
+-	else {
+-
+-		if (count == UINT64_MAX)
+-			tst_resm(TPASS, "overflow occurred as expected");
+-		else
+-			tst_resm(TFAIL, "overflow did not occur");
+-	}
+-	cleanup_overflow(fd, ctx);
+-}
+-#else
+-static void overflow_select_test(int evfd)
+-{
+-	tst_resm(TCONF, "eventfd support is not available in AIO subsystem");
+-}
+-
+-static void overflow_poll_test(int evfd)
+-{
+-	tst_resm(TCONF, "eventfd support is not available in AIO subsystem");
+-}
+-
+-static void overflow_read_test(int evfd)
+-{
+-	tst_resm(TCONF, "eventfd support is not available in AIO subsystem");
+-}
+-#endif
+-
+-int main(int argc, char **argv)
+-{
+-	int lc;
+-	int fd;
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		int ret;
+-		uint64_t einit = 10;
+-
+-		tst_count = 0;
+-
+-		fd = myeventfd(einit, 0);
+-		if (fd == -1)
+-			tst_brkm(TBROK | TERRNO, CLEANUP,
+-				 "error creating eventfd");
+-
+-		ret = fcntl(fd, F_SETFL, O_NONBLOCK);
+-		if (ret == -1)
+-			tst_brkm(TBROK | TERRNO, CLEANUP,
+-				 "error setting non-block mode");
+-
+-		read_test(fd, einit);
+-		read_eagain_test(fd);
+-		write_test(fd);
+-		write_eagain_test(fd);
+-		read_einval_test(fd);
+-		write_einval_test(fd);
+-		write_einval2_test(fd);
+-		readfd_set_test(fd);
+-		readfd_not_set_test(fd);
+-		writefd_set_test(fd);
+-		writefd_not_set_test(fd);
+-		child_inherit_test(fd);
+-		overflow_select_test(fd);
+-		overflow_poll_test(fd);
+-		overflow_read_test(fd);
+-
+-		close(fd);
+-	}
+-
+-	cleanup();
+-
+-	tst_exit();
+-}
+-
+-static void setup(void)
+-{
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	tst_tmpdir();
+-
+-	TEST_PAUSE;
+-}
+-
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
+-
+-#else
+-int main(void)
+-{
+-	tst_brkm(TCONF, NULL, "test requires libaio and it's development packages");
+-}
+-#endif
++static struct tst_test test = {
++	.test_all = run,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_EVENTFD",
++		NULL
++	},
++};
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd02.c b/testcases/kernel/syscalls/eventfd/eventfd02.c
+new file mode 100644
+index 000000000..dfb51c05f
+--- /dev/null
++++ b/testcases/kernel/syscalls/eventfd/eventfd02.c
+@@ -0,0 +1,54 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (c) 2008 Vijay Kumar B. <vijaykumar@bravegnu.org>
++ * Copyright (c) Linux Test Project, 2008-2022
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Verify write operation for eventfd fail with:
++ *
++ * - EAGAIN when counter is zero on non blocking fd
++ * - EINVAL when buffer size is less than 8 bytes, or if an attempt is made to
++ *	write the value 0xffffffffffffffff
++ */
++
++#include <stdlib.h>
++#include <sys/eventfd.h>
++#include "tst_test.h"
++
++static void run(void)
++{
++	int fd;
++	uint64_t val = 12;
++	uint64_t buf;
++	uint32_t invalid;
++
++	TST_EXP_FD(eventfd(0, EFD_NONBLOCK));
++	fd = TST_RET;
++
++	SAFE_WRITE(0, fd, &val, sizeof(val));
++	SAFE_READ(0, fd, &buf, sizeof(buf));
++	TST_EXP_EQ_LI(buf, val);
++
++	val = UINT64_MAX - 1;
++	SAFE_WRITE(0, fd, &val, sizeof(val));
++	TST_EXP_FAIL(write(fd, &val, sizeof(val)), EAGAIN);
++	TST_EXP_FAIL(write(fd, &invalid, sizeof(invalid)), EINVAL);
++
++	val = 0xffffffffffffffffLL;
++	TST_EXP_FAIL(write(fd, &val, sizeof(val)), EINVAL);
++
++	SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_EVENTFD",
++		NULL
++	},
++};
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd03.c b/testcases/kernel/syscalls/eventfd/eventfd03.c
+new file mode 100644
+index 000000000..6297d3acc
+--- /dev/null
++++ b/testcases/kernel/syscalls/eventfd/eventfd03.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (c) 2008 Vijay Kumar B. <vijaykumar@bravegnu.org>
++ * Copyright (c) Linux Test Project, 2008-2022
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Test whether readfd is set by select() when eventfd() counter value is
++ * non-zero, then check if readfd is not set when eventfd() counter value is
++ * zero.
++ */
++
++#include <stdlib.h>
++#include <sys/eventfd.h>
++#include "tst_test.h"
++
++static void run(void)
++{
++	int fd;
++	uint64_t val;
++	fd_set readfds;
++	uint64_t non_zero = 10;
++	struct timeval timeout = { 0, 0 };
++
++	TST_EXP_FD(eventfd(0, EFD_NONBLOCK));
++	fd = TST_RET;
++
++	FD_ZERO(&readfds);
++	FD_SET(fd, &readfds);
++
++	SAFE_WRITE(0, fd, &non_zero, sizeof(non_zero));
++	TEST(select(fd + 1, &readfds, NULL, NULL, &timeout));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TERRNO, "select");
++
++	TST_EXP_EQ_LI(FD_ISSET(fd, &readfds), 1);
++
++	SAFE_READ(0, fd, &val, sizeof(val));
++	TEST(select(fd + 1, &readfds, NULL, NULL, &timeout));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TERRNO, "select");
++
++	TST_EXP_EQ_LI(FD_ISSET(fd, &readfds), 0);
++
++	SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_EVENTFD",
++		NULL
++	},
++};
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd04.c b/testcases/kernel/syscalls/eventfd/eventfd04.c
+new file mode 100644
+index 000000000..8043191dc
+--- /dev/null
++++ b/testcases/kernel/syscalls/eventfd/eventfd04.c
+@@ -0,0 +1,61 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (c) 2008 Vijay Kumar B. <vijaykumar@bravegnu.org>
++ * Copyright (c) Linux Test Project, 2008-2022
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Test whether writefd is set by select() when eventfd() counter value is
++ * not the maximum value, then check if writefd is not set when eventfd()
++ * counter value is maximum value.
++ */
++
++#include <stdlib.h>
++#include <sys/eventfd.h>
++#include "tst_test.h"
++
++static void run(void)
++{
++	int fd;
++	fd_set writefds;
++	uint64_t val;
++	uint64_t non_max = 10;
++	uint64_t max = UINT64_MAX - 1;
++	struct timeval timeout = { 0, 0 };
++
++	TST_EXP_FD(eventfd(0, EFD_NONBLOCK));
++	fd = TST_RET;
++
++	FD_ZERO(&writefds);
++	FD_SET(fd, &writefds);
++
++	SAFE_WRITE(0, fd, &non_max, sizeof(non_max));
++	TEST(select(fd + 1, NULL, &writefds, NULL, &timeout));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TERRNO, "select");
++
++	TST_EXP_EQ_LI(FD_ISSET(fd, &writefds), 1);
++
++	SAFE_READ(0, fd, &val, sizeof(val));
++	SAFE_WRITE(0, fd, &max, sizeof(max));
++
++	TEST(select(fd + 1, NULL, &writefds, NULL, &timeout));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TERRNO, "select");
++
++	TST_EXP_EQ_LI(FD_ISSET(fd, &writefds), 0);
++
++	SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_EVENTFD",
++		NULL
++	},
++};
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd05.c b/testcases/kernel/syscalls/eventfd/eventfd05.c
+new file mode 100644
+index 000000000..8685b7778
+--- /dev/null
++++ b/testcases/kernel/syscalls/eventfd/eventfd05.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (c) 2008 Vijay Kumar B. <vijaykumar@bravegnu.org>
++ * Copyright (c) Linux Test Project, 2008-2022
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Test whether eventfd() counter update in child is reflected in the parent.
++ */
++
++#include <stdlib.h>
++#include <sys/eventfd.h>
++#include "tst_test.h"
++
++static void run(void)
++{
++	int fd;
++	uint64_t val;
++	uint64_t to_parent = 0xdeadbeef;
++
++	TST_EXP_FD(eventfd(0, EFD_NONBLOCK));
++	fd = TST_RET;
++
++	if (!SAFE_FORK()) {
++		SAFE_WRITE(0, fd, &to_parent, sizeof(to_parent));
++		exit(0);
++	}
++
++	tst_reap_children();
++
++	SAFE_READ(0, fd, &val, sizeof(val));
++	TST_EXP_EQ_LI(val, to_parent);
++
++	SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.forks_child = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_EVENTFD",
++		NULL
++	},
++};
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd06.c b/testcases/kernel/syscalls/eventfd/eventfd06.c
+new file mode 100644
+index 000000000..a7ca17f1f
+--- /dev/null
++++ b/testcases/kernel/syscalls/eventfd/eventfd06.c
+@@ -0,0 +1,175 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (c) 2008 Vijay Kumar B. <vijaykumar@bravegnu.org>
++ * Copyright (c) Linux Test Project, 2008-2022
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Test whether counter overflow is detected and handled correctly.
++ *
++ * It is not possible to directly overflow the counter using the
++ * write() syscall. Overflows occur when the counter is incremented
++ * from kernel space, in an irq context, when it is not possible to
++ * block the calling thread of execution.
++ *
++ * The AIO subsystem internally uses eventfd mechanism for
++ * notification of completion of read or write requests. In this test
++ * we trigger a counter overflow, by setting the counter value to the
++ * max possible value initially. When the AIO subsystem notifies
++ * through the eventfd counter, the counter overflows.
++ *
++ * If the counter starts from an initial value of 0, it will
++ * take decades for an overflow to occur. But since we set the initial
++ * value to the max possible counter value, we are able to cause it to
++ * overflow with a single increment.
++ *
++ * When the counter overflows, the following is tested:
++ *
++ * - POLLERR event occurs in poll() for the eventfd
++ * - readfd_set/writefd_set is set in select() for the eventfd
++ * - the counter value is UINT64_MAX
++ */
++
++#include "tst_test.h"
++
++#ifdef HAVE_LIBAIO
++#ifdef HAVE_IO_SET_EVENTFD
++
++#include <poll.h>
++#include <libaio.h>
++#include <stdlib.h>
++#include <sys/eventfd.h>
++
++#define MAXEVENTS 16
++#define BUFSIZE 1024
++
++static int fd;
++static int evfd;
++static io_context_t ctx;
++
++static void async_write(void)
++{
++	struct iocb iocb;
++	struct iocb *iocbap[1];
++	struct io_event ioev;
++	static char buf[BUFSIZE];
++
++	memset(buf, 1, BUFSIZE);
++
++	io_prep_pwrite(&iocb, fd, buf, sizeof(buf), 0);
++	io_set_eventfd(&iocb, evfd);
++
++	iocbap[0] = &iocb;
++	TEST(io_submit(ctx, 1, iocbap));
++	if (TST_RET < 0)
++		tst_brk(TBROK, "io_submit() failed: %s", tst_strerrno(-TST_RET));
++
++	TEST(io_getevents(ctx, 1, 1, &ioev, NULL));
++	if (TST_RET < 0)
++		tst_brk(TBROK, "io_getevents() failed: %s", tst_strerrno(-TST_RET));
++}
++
++static void clear_counter(void)
++{
++	uint64_t val;
++	uint64_t max =  UINT64_MAX - 1;
++
++	TEST(read(evfd, &val, sizeof(val)));
++	if (TST_RET == -1 && TST_ERR != EAGAIN)
++		tst_brk(TBROK | TERRNO, "read");
++
++	SAFE_WRITE(0, evfd, &max, sizeof(max));
++}
++
++static void test_select(void)
++{
++	fd_set readfds;
++	uint64_t count;
++	struct timeval timeout = { 10, 0 };
++
++	clear_counter();
++	async_write();
++
++	FD_ZERO(&readfds);
++	FD_SET(fd, &readfds);
++
++	tst_res(TINFO, "Checking if select() detects counter overflow");
++
++	TEST(select(fd + 1, NULL, &readfds, NULL, &timeout));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TERRNO, "select");
++
++	TST_EXP_EQ_LI(FD_ISSET(fd, &readfds), 1);
++
++	SAFE_READ(0, evfd, &count, sizeof(count));
++	TST_EXP_EQ_LI(count, UINT64_MAX);
++}
++
++static void test_poll(void)
++{
++	uint64_t count;
++	struct pollfd pollfd;
++
++	clear_counter();
++	async_write();
++
++	pollfd.fd = evfd;
++	pollfd.events = POLLIN;
++	pollfd.revents = 0;
++
++	tst_res(TINFO, "Checking if poll() detects counter overflow");
++
++	TEST(poll(&pollfd, 1, 10000));
++	if (TST_RET == -1)
++		tst_brk(TBROK | TERRNO, "poll");
++
++	TST_EXP_EQ_LI(pollfd.revents & POLLERR, POLLERR);
++
++	SAFE_READ(0, evfd, &count, sizeof(count));
++	TST_EXP_EQ_LI(count, UINT64_MAX);
++}
++
++static void setup(void)
++{
++	TEST(io_setup(MAXEVENTS, &ctx));
++	if (TST_RET < 0)
++		tst_brk(TBROK, "io_setup() failed: %s", tst_strerrno(-TST_RET));
++
++	fd = SAFE_OPEN("testfile", O_RDWR | O_CREAT, 0644);
++	TST_EXP_FD(eventfd(0, EFD_NONBLOCK));
++	evfd = TST_RET;
++}
++
++static void cleanup(void)
++{
++	SAFE_CLOSE(evfd);
++	io_destroy(ctx);
++}
++
++static void run(void)
++{
++	test_select();
++	test_poll();
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_tmpdir = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_EVENTFD",
++		NULL
++	},
++};
++
++#else /* HAVE_IO_SET_EVENTFD */
++TST_TEST_TCONF("eventfd support is not available in AIO subsystem");
++#endif
++#else /* HAVE_LIBAIO */
++TST_TEST_TCONF("libaio is not available");
++#endif
+-- 
+2.35.3
 
 
 -- 
