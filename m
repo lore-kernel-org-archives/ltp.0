@@ -4,59 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7246AC74A5B
-	for <ltp@archiver.kernel.org>; Sat, 18 Mar 2023 05:01:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC122C7618A
+	for <ltp@archiver.kernel.org>; Sun, 19 Mar 2023 17:05:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DC5853CD446
-	for <ltp@archiver.kernel.org>; Sat, 18 Mar 2023 06:00:58 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 6791D3CCD33
+	for <ltp@archiver.kernel.org>; Sun, 19 Mar 2023 18:05:21 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 916CA3CB02B
- for <ltp@lists.linux.it>; Sat, 18 Mar 2023 06:00:47 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 47B643C4C12
+ for <ltp@lists.linux.it>; Sun, 19 Mar 2023 18:05:11 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E8C87140121F
- for <ltp@lists.linux.it>; Sat, 18 Mar 2023 06:00:46 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B46F71A00244
+ for <ltp@lists.linux.it>; Sun, 19 Mar 2023 18:05:10 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D27BA21ABF;
- Sat, 18 Mar 2023 05:00:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1679115645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 52CC61FED4;
+ Sun, 19 Mar 2023 17:05:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1679245509;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=H7JeO2d0bmowqxtuX6oWLIc/oeG5E0S1jXG2eyabeoM=;
- b=vMtf7R8LETPXUhYepJkVHreQ1h8sCXk/0zb4OHEWzEbnafP2uMOqSffrgZcwo4ySIFKUx/
- RckgprMLTnGXztEy4kcMxlt/zsx/WV9PaJeHMJmJaetM8DSDTkr7MDOswSbVU7ZFFF8G1e
- qPm30cTO8FR8g74OKM6ACC9+33jt4Yg=
+ bh=zZCVpy3S7XwMxJPTPyGrRwGiX9llLmUkp+SY4pVwCBc=;
+ b=KSE6M2lHFgVO1LLspcNs9GnThI6t2TnmTCoKJ+eOpYNEbDUfX1TSttX4RSSr1/SEo1lNIm
+ IQ8ZAP4f9SKhf3Yd3vVDAb9Lk3iqBILpc+fhgHS/+6IcMfHaR+ZuOysIERhmxoyzBVKKa8
+ bZMtgZ8aDgmzMgC8AyYu+RUfFdzXcrs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1679245509;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=zZCVpy3S7XwMxJPTPyGrRwGiX9llLmUkp+SY4pVwCBc=;
+ b=8yBqlYGgEpOnpUQZPpI9Gr1HJwO6yfnUFhH3gP2oiLynabwLR/aer3Vk2f9D1O5H7bwos/
+ 8WMLdM0nQfoJFRCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 896541391B;
- Sat, 18 Mar 2023 05:00:44 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7E950133E6;
+ Sun, 19 Mar 2023 17:05:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id VObCFnxFFWTYdgAAMHmgww
- (envelope-from <wegao@suse.com>); Sat, 18 Mar 2023 05:00:44 +0000
-Date: Sat, 18 Mar 2023 01:00:41 -0400
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <20230318050041.GA11900@localhost>
-References: <20230306235715.29868-1-wegao@suse.com>
- <20230307085139.3574-1-wegao@suse.com> <87ttyo6g7o.fsf@suse.de>
- <20230315125532.GB10248@localhost> <87jzzg3oqg.fsf@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id Ov+hGsRAF2RQeQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Sun, 19 Mar 2023 17:05:08 +0000
+Date: Sun, 19 Mar 2023 18:05:03 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20230319170503.GA157011@pevik>
+References: <20230120010533.11202-1-wegao@suse.com>
+ <20230302071555.18420-1-wegao@suse.com>
+ <20230302071555.18420-2-wegao@suse.com>
+ <20230315123119.GA164307@pevik>
+ <CAEemH2fU8CC3-Xj=26VaeejphxHfFBOAE6pPzXFp3n32WC1v+Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <87jzzg3oqg.fsf@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <CAEemH2fU8CC3-Xj=26VaeejphxHfFBOAE6pPzXFp3n32WC1v+Q@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] kill01: New case cgroup kill
+Subject: Re: [LTP] [PATCH v3 1/2] Move semaphore/ tests to semop/
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,56 +80,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: Li Wang <liwan@redhat.com>, ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Mar 16, 2023 at 11:10:07AM +0000, Richard Palethorpe wrote:
-> 
-> Wei Gao <wegao@suse.com> writes:
-> 
-> >> > +static int cg_run_nowait(const struct tst_cg_group *const cg,
-> >> > +		  void (*fn)(void))
-> >> 
-> >> Why keep this function?
-> >> 
-> >> If you want to convert tests to LTP, then don't do the minimum possible
-> >> to use the LTP API. Use as much of it as possible otherwise we are just
-> >> importing brittle self tests.
-> >> 
-> > function is useful and wrap the fork action & put pid into cgroup.procs,
-> > is there any LTP API can replace this function? Could you help give
-> > example.
-> 
-> IMO you don't need to wrap fork or SAFE_CG_PRINTF, just write it inline.
-More logic added into this function in latest patch v6, i prefer keep it currently.
-> 
-> >> > +
-> >> > +	for (i = 0; i < pid_num; i++)
-> >> > +		pids[i] = cg_run_nowait(cg_child_test_simple, child_fn);
-> >> 
-> >> If the parent is killed and the children are moved then they will return
-> >> and cause a fork bomb.
-> > There is no extra fork action in child_fn so all child_fn will
-> > reparent and exit.
-> 
-> I don't see how it will exit? It seems like it will just return.
+> Petr Vorel <pvorel@suse.cz> wrote:
 
-The child_fun will exit if parent id is changed like below
+> Hi Wei,
 
-+static void child_fn(void)
-+{
-+	int ppid = getppid();
-+
-+	while (getppid() == ppid)
-+		usleep(1000);
-+
-+}
+> > > There is no point in having two different directories with semop()
+> > > testcaes so it would make sense to move these two tests into the
+> > > syscalls/ipc/semop/ directory as semop04 and semop05.
+> > > So we move ipc/semaphore/ tests to syscalls/ipc/semop/.
+> > > Also update runtest files accordingly.
 
+
+
+> > As I already stated, I'm not really sure this is good to do, but maybe I'm
+> > missing something.  I wonder what others think about it.
+
+
+> This patch makes sense. Petr, I know what you're concerned about,
+> but it is correct to move them into syscalls/ipc/semop/.
+
+> They essentially all belong to System V IPC way to use
+> semaphore which includes <sys/sem.h>:
+>   semid_ds
+>   semget()
+>   semctl()
+>   semop()
+
+> To distinguish from another POSIX IPC way which
+> include <semaphore.h>:
+>   sem_open()
+>   sem_close()
+>   sem_unlink()
+>   sem_post(), sem_wait()
+>   sem_getvalue()
+>   sem_init()
+>   sem_destrory()
+
+> The sem02.c needs '-lpthread' only because it invoked pthread_attr_init/exit
+> functions in the test, but not any POSIX IPC functions.
+
+> So you have my reviewed-by in patch v4:
+> Reviewed-by: Li Wang <liwang@redhat.com>
+
+Li, thanks for having look, first patch in merged v4.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
