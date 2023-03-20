@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F04AC6FD1D
-	for <ltp@archiver.kernel.org>; Mon, 20 Mar 2023 23:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1E93C7618D
+	for <ltp@archiver.kernel.org>; Mon, 20 Mar 2023 23:51:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 088DD3CAABC
-	for <ltp@archiver.kernel.org>; Tue, 21 Mar 2023 00:51:42 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id C64223CACC4
+	for <ltp@archiver.kernel.org>; Tue, 21 Mar 2023 00:51:53 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 99C5F3CA9B0
- for <ltp@lists.linux.it>; Tue, 21 Mar 2023 00:51:17 +0100 (CET)
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com
- [IPv6:2607:f8b0:4864:20::449])
+ by picard.linux.it (Postfix) with ESMTPS id 91FBF3C979B
+ for <ltp@lists.linux.it>; Tue, 21 Mar 2023 00:51:19 +0100 (CET)
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com
+ [IPv6:2607:f8b0:4864:20::114a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E2F741000603
- for <ltp@lists.linux.it>; Tue, 21 Mar 2023 00:51:16 +0100 (CET)
-Received: by mail-pf1-x449.google.com with SMTP id
- e14-20020a056a00162e00b0062804a7a79bso1309776pfc.23
- for <ltp@lists.linux.it>; Mon, 20 Mar 2023 16:51:16 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 31E061400980
+ for <ltp@lists.linux.it>; Tue, 21 Mar 2023 00:51:18 +0100 (CET)
+Received: by mail-yw1-x114a.google.com with SMTP id
+ 00721157ae682-536cb268ab8so138964947b3.17
+ for <ltp@lists.linux.it>; Mon, 20 Mar 2023 16:51:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20210112; t=1679356275;
+ d=google.com; s=20210112; t=1679356277;
  h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
  :date:from:to:cc:subject:date:message-id:reply-to;
- bh=4Fas2rakiukDaDdeltWCU43sJnn/oSNsrkv4SQGpOHY=;
- b=Ap9bREZFzGS0vnjrfL1cOqKN0iJlPTzbzwnDVZlAtJ80cC5LoSZzVS0kyahBWEfOkZ
- dJj527raGtavT93RwqGeI9QnhXUYEYR1GusIaYuE+TgrjGiVSt6Dzn9A9gOcgx9X2J7P
- oz2XmawNpsr4+nprOYf7RbmFNU65i8HbOGa8RK/00hdjdbsubH+PfvxJxEZc3RO+H8+n
- E4nAgujSMvqHtVoI96LRe3zjLh/0FSaf4iVY0e2ECh70jvf9q+opZskUaTRJ+k4t6OcM
- kcWqS5URPuFZlcH4Jnv41urvT4lYEe+lwmJST897Yz9w+daXQvGsROFdlOmBVt20NQDn
- /Obg==
+ bh=pi6ZbuljnlMIkXomu9Dc1K6gA+NTa1EUTD4h4S/0Xms=;
+ b=VCRIGzzrtKJDErkZbSPy2JvOW/MQWvM1upDl/9Erxkj1+9qKo2QYdoA6nAblXbSR2k
+ 1yv1KFBaz+LEp3/tTJ+tU42FXH/+F3g2Vqh3cgMZAAkOl9psea+uAJpyxZBC/HglazxP
+ oiKgDELiJD8xStcZfnZ/IMMWqGSKG85VZi+ZlLUfO2G/BidJIhOPw4xRFRDMRlWiy4/d
+ +SFyIakV89khNeVMwiCSkTsIH8HfLIxYM8TBqndIqcyXY+DLM1EtXlZGnjIGUyr4b1EF
+ nIr3yqjxSFglgQA9Wni2Q+NGdG1NSTAN4usV95qa2lpC+gZEmhMcgrLfYektU0u4ew0t
+ LNFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1679356275;
+ d=1e100.net; s=20210112; t=1679356277;
  h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
  :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=4Fas2rakiukDaDdeltWCU43sJnn/oSNsrkv4SQGpOHY=;
- b=1dLWoue2NfldvEQyNepfTyoGYMkmqWINb3x/hm1azhMmDELPhTW4kMs8854kYrHsUh
- wFhjm0sxNyFFqTBwCcmaaMR1L6XZyMURCOLegBvsPd0+2kRij2TLwsYoFGsfzEARru9Q
- AMnj4/KF/o54mGUR+dH97fc9uWO70OOvsHHqHPHcPKRXmTGBlKAeFoe36hPJ92cGzjqJ
- 5Lsr4O+5bP/Ai8uZ7ryQ9LuKz6MOFKzOoQV309hdd0bsCFB96Fn8YktM6h/K66nWR7yY
- 9EOac2oV8TsX57WK4daLR5R++ba1p6JUFJ7pSvD7uL8QD3pRUv1vdMInRHQqFsASO46o
- nMuQ==
-X-Gm-Message-State: AO0yUKV9uPCxAsfmVtWG+Y4JRTCj6yvRbhi/F+ky1t0f6KCS4nXDAvmf
- z/S8MZgv7uw7lvKP5KUS4PaB9YJVyVOO/jfb0cQXduSGRxjmel95Hy8VkibsZF5A7nYVqoLBNFQ
- jzgyAAvW05w37794D4dLiOSFOzHQhf2WYyzC1c3nsg9BYmQGQkHCq9cqj
-X-Google-Smtp-Source: AK7set8LDyuel1agPlSaDW28NngQWiO4eq7HYAp0lr6Xr65fNnK0+vEXQemvaLyfkoCQLrbEFFL73TsmDxE=
+ bh=pi6ZbuljnlMIkXomu9Dc1K6gA+NTa1EUTD4h4S/0Xms=;
+ b=tBhCwZS4st1u6wZ7OPqIBxLo2SW+aUES28oPhktDWvcAmjksEd/eOvwJYd2ad6A5iN
+ 4YwLvoMqao55heHLs1Kpqne0qV1Up+LcR82isyUAFUOv3ZJR6KVMXMEdIpGiocxoVDBo
+ FbRN73bTHNOGXi06ZsZuDx4DYSyYERTjF8eZj3KaCW8wwQ8grzBFg8Fyq3m1TgYXDd1y
+ b8bDXqis/KuRl7xV5FTEYptBtEllsv+d1knRX+F9BE8m20WkrdaeYCllpDvpFD5OPp5O
+ cQnzFjkOvZp7OpOXQLitMQwsp7VsohjgXjRIlToHaggyPSbOKluN/0HUOcwD6+TXsf8F
+ 8rZw==
+X-Gm-Message-State: AAQBX9ce2xlqrzfo3HJzYsWxsSYHa4eGd8ksKucBK299PuXXiFjVuuKi
+ 6gatky+8/ZijCtg75lTp28hzWfHs8AZYvqv/HQCg5G0WKEH8Nr+3EAycz7TN+f1iG/CRim0QTAy
+ NiIeKsdf/hB++x4PTy8K2OSvKZCLLXV2IZq7OUT8FIW9oLO75n0gxLW2F
+X-Google-Smtp-Source: AKy350ZARF6jjr54ZfuuDjr2K+ThJNqG1YfBOulBh3AuT11bhTzjSxU3qBilI4trfSO6WBjSD11yIuLaQbg=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:aa7:88c7:0:b0:624:3ff:db10 with SMTP id
- k7-20020aa788c7000000b0062403ffdb10mr338602pff.5.1679356275127; Mon, 20 Mar
- 2023 16:51:15 -0700 (PDT)
-Date: Mon, 20 Mar 2023 23:51:06 +0000
+ (user=edliaw job=sendgmr) by 2002:a25:8a0e:0:b0:b21:5fb4:c6e6 with SMTP id
+ g14-20020a258a0e000000b00b215fb4c6e6mr149753ybl.11.1679356276875; Mon, 20 Mar
+ 2023 16:51:16 -0700 (PDT)
+Date: Mon, 20 Mar 2023 23:51:07 +0000
 In-Reply-To: <20230320235108.2058967-1-edliaw@google.com>
 Mime-Version: 1.0
 References: <20230320235108.2058967-1-edliaw@google.com>
 X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
-Message-ID: <20230320235108.2058967-2-edliaw@google.com>
+Message-ID: <20230320235108.2058967-3-edliaw@google.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/3] tst_device.c: Use PATH_MAX more consistently
+Subject: [LTP] [PATCH v2 2/3] set_dev_loop_path: Refactor set_dev_path and
+ check return value
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,53 +86,77 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Replace hardcoded 1024 path sizes with PATH_MAX.
+tst_find_free_loopdev does not check the return value of set_dev_path
+and will return the last attempted path even if it does not pass a stat
+check.  set_dev_path also has a return value that is not consistent with
+the other functions in this file.
+
+Renames the function to set_dev_loop_path, the const array to
+dev_loop_variants and changes the return value to 0 on success and 1 on
+failure.  Check the return value when called in tst_find_free_loopdev
+for failure to acquire a loop device.
 
 Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
- lib/tst_device.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ lib/tst_device.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 48d7e3ab6..a61c5a748 100644
+index a61c5a748..ae665f7b6 100644
 --- a/lib/tst_device.c
 +++ b/lib/tst_device.c
-@@ -50,7 +50,7 @@
- #define UUID_STR_SZ 37
- #define UUID_FMT "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"
- 
--static char dev_path[1024];
-+static char dev_path[PATH_MAX];
+@@ -54,25 +54,25 @@ static char dev_path[PATH_MAX];
  static int device_acquired;
  static unsigned long prev_dev_sec_write;
  
-@@ -79,7 +79,7 @@ int tst_find_free_loopdev(char *path, size_t path_len)
+-static const char *dev_variants[] = {
++static const char *dev_loop_variants[] = {
+ 	"/dev/loop%i",
+ 	"/dev/loop/%i",
+ 	"/dev/block/loop%i"
+ };
+ 
+-static int set_dev_path(int dev, char *path, size_t path_len)
++static int set_dev_loop_path(int dev, char *path, size_t path_len)
  {
- 	int ctl_fd, dev_fd, rc, i;
- 	struct loop_info loopinfo;
--	char buf[1024];
-+	char buf[PATH_MAX];
+ 	unsigned int i;
+ 	struct stat st;
  
- 	/* since Linux 3.1 */
- 	ctl_fd = open(LOOP_CONTROL_FILE, O_RDWR);
-@@ -489,7 +489,7 @@ int find_stat_file(const char *dev, char *path, size_t path_len)
- unsigned long tst_dev_bytes_written(const char *dev)
- {
- 	unsigned long dev_sec_write = 0, dev_bytes_written, io_ticks = 0;
--	char dev_stat_path[1024];
-+	char dev_stat_path[PATH_MAX];
+-	for (i = 0; i < ARRAY_SIZE(dev_variants); i++) {
+-		snprintf(path, path_len, dev_variants[i], dev);
++	for (i = 0; i < ARRAY_SIZE(dev_loop_variants); i++) {
++		snprintf(path, path_len, dev_loop_variants[i], dev);
  
- 	if (!find_stat_file(dev, dev_stat_path, sizeof(dev_stat_path)))
- 		tst_brkm(TCONF, NULL, "Test device stat file: %s not found",
-@@ -641,7 +641,7 @@ int tst_dev_block_size(const char *path)
- {
- 	int fd;
- 	int size;
--	char dev_name[1024];
-+	char dev_name[PATH_MAX];
+ 		if (stat(path, &st) == 0 && S_ISBLK(st.st_mode))
+-			return 1;
++			return 0;
+ 	}
  
- 	tst_find_backing_dev(path, dev_name);
+-	return 0;
++	return 1;
+ }
  
+ int tst_find_free_loopdev(char *path, size_t path_len)
+@@ -88,8 +88,8 @@ int tst_find_free_loopdev(char *path, size_t path_len)
+ 		rc = ioctl(ctl_fd, LOOP_CTL_GET_FREE);
+ 		close(ctl_fd);
+ 		if (rc >= 0) {
+-			if (path)
+-				set_dev_path(rc, path, path_len);
++			if (!path || set_dev_loop_path(rc, path, path_len) != 0)
++				tst_brkm(TBROK, NULL, "Could not stat loop device %i", rc);
+ 			tst_resm(TINFO, "Found free device %d '%s'",
+ 				rc, path ?: "");
+ 			return rc;
+@@ -116,7 +116,7 @@ int tst_find_free_loopdev(char *path, size_t path_len)
+ 	 */
+ 	for (i = 0; i < 256; i++) {
+ 
+-		if (!set_dev_path(i, buf, sizeof(buf)))
++		if (set_dev_loop_path(i, buf, sizeof(buf)) != 0)
+ 			continue;
+ 
+ 		dev_fd = open(buf, O_RDONLY);
 -- 
 2.40.0.rc1.284.g88254d51c5-goog
 
