@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1E93C7618D
-	for <ltp@archiver.kernel.org>; Mon, 20 Mar 2023 23:51:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81A9FC6FD1C
+	for <ltp@archiver.kernel.org>; Mon, 20 Mar 2023 23:52:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C64223CACC4
-	for <ltp@archiver.kernel.org>; Tue, 21 Mar 2023 00:51:53 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 68C363CABD0
+	for <ltp@archiver.kernel.org>; Tue, 21 Mar 2023 00:52:05 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 91FBF3C979B
- for <ltp@lists.linux.it>; Tue, 21 Mar 2023 00:51:19 +0100 (CET)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com
- [IPv6:2607:f8b0:4864:20::114a])
+ by picard.linux.it (Postfix) with ESMTPS id 172573C95FB
+ for <ltp@lists.linux.it>; Tue, 21 Mar 2023 00:51:20 +0100 (CET)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
+ [IPv6:2607:f8b0:4864:20::549])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 31E061400980
- for <ltp@lists.linux.it>; Tue, 21 Mar 2023 00:51:18 +0100 (CET)
-Received: by mail-yw1-x114a.google.com with SMTP id
- 00721157ae682-536cb268ab8so138964947b3.17
- for <ltp@lists.linux.it>; Mon, 20 Mar 2023 16:51:18 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4AF086006C9
+ for <ltp@lists.linux.it>; Tue, 21 Mar 2023 00:51:20 +0100 (CET)
+Received: by mail-pg1-x549.google.com with SMTP id
+ t2-20020a632d02000000b005075b896422so3054130pgt.19
+ for <ltp@lists.linux.it>; Mon, 20 Mar 2023 16:51:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20210112; t=1679356277;
+ d=google.com; s=20210112; t=1679356279;
  h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
  :date:from:to:cc:subject:date:message-id:reply-to;
- bh=pi6ZbuljnlMIkXomu9Dc1K6gA+NTa1EUTD4h4S/0Xms=;
- b=VCRIGzzrtKJDErkZbSPy2JvOW/MQWvM1upDl/9Erxkj1+9qKo2QYdoA6nAblXbSR2k
- 1yv1KFBaz+LEp3/tTJ+tU42FXH/+F3g2Vqh3cgMZAAkOl9psea+uAJpyxZBC/HglazxP
- oiKgDELiJD8xStcZfnZ/IMMWqGSKG85VZi+ZlLUfO2G/BidJIhOPw4xRFRDMRlWiy4/d
- +SFyIakV89khNeVMwiCSkTsIH8HfLIxYM8TBqndIqcyXY+DLM1EtXlZGnjIGUyr4b1EF
- nIr3yqjxSFglgQA9Wni2Q+NGdG1NSTAN4usV95qa2lpC+gZEmhMcgrLfYektU0u4ew0t
- LNFQ==
+ bh=e4JVBtzlTGJG+ZmfbdHL4Z4c1/9QdQoljHtTpLViGog=;
+ b=WIFytlMbPVEysZhNdjt/2ulqF4AKuF/Bitkx3TRmLGoVTDJtlHi90GX2GecfYJUIjF
+ 98ldk/fj6LpbEy/cJXeByRoOHzWeIurrkDzCQvbPL7hO4AaXRaMfkl8u9hHGb9HX3hPl
+ Dww4ntyA7Hna9Oija245ugah1xNc4vHmvm+u4M0NWnowZcl9Ouem73iiZoiVl7Fc0CpT
+ Ab3eKRklpodCJ+OFo4GmjsZMNubJNJfy4B9yJClHjdyHBdecDSZgZZqVmAcgaBz3agzh
+ cjrI11TAujMEKhihKzWn2CcmDlf8ypdUNDTmTdX/ixOBjXG2Tvv+ixZkv646ZZnLhopo
+ teHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1679356277;
+ d=1e100.net; s=20210112; t=1679356279;
  h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
  :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=pi6ZbuljnlMIkXomu9Dc1K6gA+NTa1EUTD4h4S/0Xms=;
- b=tBhCwZS4st1u6wZ7OPqIBxLo2SW+aUES28oPhktDWvcAmjksEd/eOvwJYd2ad6A5iN
- 4YwLvoMqao55heHLs1Kpqne0qV1Up+LcR82isyUAFUOv3ZJR6KVMXMEdIpGiocxoVDBo
- FbRN73bTHNOGXi06ZsZuDx4DYSyYERTjF8eZj3KaCW8wwQ8grzBFg8Fyq3m1TgYXDd1y
- b8bDXqis/KuRl7xV5FTEYptBtEllsv+d1knRX+F9BE8m20WkrdaeYCllpDvpFD5OPp5O
- cQnzFjkOvZp7OpOXQLitMQwsp7VsohjgXjRIlToHaggyPSbOKluN/0HUOcwD6+TXsf8F
- 8rZw==
-X-Gm-Message-State: AAQBX9ce2xlqrzfo3HJzYsWxsSYHa4eGd8ksKucBK299PuXXiFjVuuKi
- 6gatky+8/ZijCtg75lTp28hzWfHs8AZYvqv/HQCg5G0WKEH8Nr+3EAycz7TN+f1iG/CRim0QTAy
- NiIeKsdf/hB++x4PTy8K2OSvKZCLLXV2IZq7OUT8FIW9oLO75n0gxLW2F
-X-Google-Smtp-Source: AKy350ZARF6jjr54ZfuuDjr2K+ThJNqG1YfBOulBh3AuT11bhTzjSxU3qBilI4trfSO6WBjSD11yIuLaQbg=
+ bh=e4JVBtzlTGJG+ZmfbdHL4Z4c1/9QdQoljHtTpLViGog=;
+ b=VfNuqYA2fukZw2kSfDQMb9ezQbd0FfX0i8TbtwfU9YCuE4+0iFPjqGg5YZB0X4P5xB
+ AmwiTUunQn3mJHDz9AU2eaARTXgy3XtFrojAqoY2xDC4tQMasMfFoGmOYoKlRUzsibbS
+ J46zm2S/q8eiGpwsFzHssc5v/wvgeuIQRCxpm81wBbC+wGzHbgrrXvmR3m8CKW94gGFu
+ 6y624MJXCa6BxouDClOGvDfHJoyrQIo/T1+380nt6iczJd6lcTMgBtF07RVqvqsJGRzD
+ emTWvVIMCPgLkVzEPJ9MvI5nXesIBbUu79Mn5RqN2EVHwnZLpz1KqHlIPwjGBHvFf2zQ
+ NJXg==
+X-Gm-Message-State: AO0yUKVLx5u2hl5JEvyq6jnDGd4vZNoBQyAeWCfr2RCYXRMuJNsItuBW
+ 0sX8arWBamfi3Or0nwFYLja5zkXRxC3tanWKaQieq50Y2gGiiRXqJJ8KxcFYHe5pboSHTqwb7RW
+ IdrAHl4a8D0qrXwca3JGd2ovIEZKXE6By/5GolEUIeY8TIjuc02pEnluG
+X-Google-Smtp-Source: AK7set/azfWsAW0rROoQEBDVCCFJL7AzvHsSyf3D0echVxhy4icMKcdpexA2LWPFfQaDWWjRNLLBXik2EOM=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a25:8a0e:0:b0:b21:5fb4:c6e6 with SMTP id
- g14-20020a258a0e000000b00b215fb4c6e6mr149753ybl.11.1679356276875; Mon, 20 Mar
- 2023 16:51:16 -0700 (PDT)
-Date: Mon, 20 Mar 2023 23:51:07 +0000
+ (user=edliaw job=sendgmr) by 2002:a17:902:e748:b0:19f:2aa4:b1e5 with SMTP id
+ p8-20020a170902e74800b0019f2aa4b1e5mr85736plf.2.1679356278646; Mon, 20 Mar
+ 2023 16:51:18 -0700 (PDT)
+Date: Mon, 20 Mar 2023 23:51:08 +0000
 In-Reply-To: <20230320235108.2058967-1-edliaw@google.com>
 Mime-Version: 1.0
 References: <20230320235108.2058967-1-edliaw@google.com>
 X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
-Message-ID: <20230320235108.2058967-3-edliaw@google.com>
+Message-ID: <20230320235108.2058967-4-edliaw@google.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/3] set_dev_loop_path: Refactor set_dev_path and
- check return value
+Subject: [LTP] [PATCH v2 3/3] tst_find_backing_dev: Also check /dev/block/
+ for backing device
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,77 +85,164 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-tst_find_free_loopdev does not check the return value of set_dev_path
-and will return the last attempted path even if it does not pass a stat
-check.  set_dev_path also has a return value that is not consistent with
-the other functions in this file.
+On Android, the backing devices are created in /dev/block/ and will not
+be found using the method added in e1b1ae66b240 ("tst_find_backing_dev:
+Get dev name from /sys/dev/block/*/uevent").  Adds a check for
+/dev/block/%s as well as /dev/%s.
 
-Renames the function to set_dev_loop_path, the const array to
-dev_loop_variants and changes the return value to 0 on success and 1 on
-failure.  Check the return value when called in tst_find_free_loopdev
-for failure to acquire a loop device.
+Modified the function signature of tst_find_backing_dev to add the
+length of the dev path string.  Updated the documentation and code that
+references it.
 
 Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
- lib/tst_device.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ doc/c-test-api.txt                            |  2 +-
+ include/tst_device.h                          |  3 +-
+ lib/newlib_tests/tst_device.c                 |  2 +-
+ lib/tst_device.c                              | 37 +++++++++++++------
+ .../kernel/syscalls/ioctl/ioctl_loop05.c      |  2 +-
+ 5 files changed, 31 insertions(+), 15 deletions(-)
 
+diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+index a7dd59dac..eddb5c893 100644
+--- a/doc/c-test-api.txt
++++ b/doc/c-test-api.txt
+@@ -1087,7 +1087,7 @@ is created for that intention.
+ -------------------------------------------------------------------------------
+ #include "tst_test.h"
+ 
+-void tst_find_backing_dev(const char *path, char *dev);
++void tst_find_backing_dev(const char *path, char *dev, size_t dev_len);
+ -------------------------------------------------------------------------------
+ 
+ This function finds the block dev that this path belongs to, using uevent in sysfs.
+diff --git a/include/tst_device.h b/include/tst_device.h
+index 977427f1c..f0aff4473 100644
+--- a/include/tst_device.h
++++ b/include/tst_device.h
+@@ -110,8 +110,9 @@ void tst_purge_dir(const char *path);
+  * Find the file or path belongs to which block dev
+  * @path  Path to find the backing dev
+  * @dev   The block dev
++ * @dev_len   The length of the dev string
+  */
+-void tst_find_backing_dev(const char *path, char *dev);
++void tst_find_backing_dev(const char *path, char *dev, size_t dev_len);
+ 
+ /*
+  * Stat the device mounted on a given path.
+diff --git a/lib/newlib_tests/tst_device.c b/lib/newlib_tests/tst_device.c
+index 87cec3961..53099f9bc 100644
+--- a/lib/newlib_tests/tst_device.c
++++ b/lib/newlib_tests/tst_device.c
+@@ -71,7 +71,7 @@ static void test_tst_find_backing_dev(void)
+ {
+ 	char block_dev[100];
+ 
+-	tst_find_backing_dev(mntpoint, block_dev);
++	tst_find_backing_dev(mntpoint, block_dev, sizeof(block_dev));
+ 
+ 	if (!strcmp(tst_device->dev, block_dev))
+ 		tst_res(TPASS, "%s belongs to %s block dev", mntpoint,
 diff --git a/lib/tst_device.c b/lib/tst_device.c
-index a61c5a748..ae665f7b6 100644
+index ae665f7b6..dbeae4c03 100644
 --- a/lib/tst_device.c
 +++ b/lib/tst_device.c
-@@ -54,25 +54,25 @@ static char dev_path[PATH_MAX];
- static int device_acquired;
- static unsigned long prev_dev_sec_write;
- 
--static const char *dev_variants[] = {
-+static const char *dev_loop_variants[] = {
- 	"/dev/loop%i",
- 	"/dev/loop/%i",
+@@ -60,6 +60,11 @@ static const char *dev_loop_variants[] = {
  	"/dev/block/loop%i"
  };
  
--static int set_dev_path(int dev, char *path, size_t path_len)
-+static int set_dev_loop_path(int dev, char *path, size_t path_len)
++static const char *dev_variants[] = {
++	"/dev/%s",
++	"/dev/block/%s"
++};
++
+ static int set_dev_loop_path(int dev, char *path, size_t path_len)
  {
  	unsigned int i;
- 	struct stat st;
- 
--	for (i = 0; i < ARRAY_SIZE(dev_variants); i++) {
--		snprintf(path, path_len, dev_variants[i], dev);
-+	for (i = 0; i < ARRAY_SIZE(dev_loop_variants); i++) {
-+		snprintf(path, path_len, dev_loop_variants[i], dev);
- 
- 		if (stat(path, &st) == 0 && S_ISBLK(st.st_mode))
--			return 1;
-+			return 0;
- 	}
- 
--	return 0;
-+	return 1;
+@@ -75,6 +80,21 @@ static int set_dev_loop_path(int dev, char *path, size_t path_len)
+ 	return 1;
  }
  
++static int set_dev_path(char *dev, char *path, size_t path_len)
++{
++	unsigned int i;
++	struct stat st;
++
++	for (i = 0; i < ARRAY_SIZE(dev_variants); i++) {
++		snprintf(path, path_len, dev_variants[i], dev);
++
++		if (stat(path, &st) == 0 && S_ISBLK(st.st_mode))
++			return 0;
++	}
++
++	return 1;
++}
++
  int tst_find_free_loopdev(char *path, size_t path_len)
-@@ -88,8 +88,8 @@ int tst_find_free_loopdev(char *path, size_t path_len)
- 		rc = ioctl(ctl_fd, LOOP_CTL_GET_FREE);
- 		close(ctl_fd);
- 		if (rc >= 0) {
--			if (path)
--				set_dev_path(rc, path, path_len);
-+			if (!path || set_dev_loop_path(rc, path, path_len) != 0)
-+				tst_brkm(TBROK, NULL, "Could not stat loop device %i", rc);
- 			tst_resm(TINFO, "Found free device %d '%s'",
- 				rc, path ?: "");
- 			return rc;
-@@ -116,7 +116,7 @@ int tst_find_free_loopdev(char *path, size_t path_len)
+ {
+ 	int ctl_fd, dev_fd, rc, i;
+@@ -511,7 +531,7 @@ unsigned long tst_dev_bytes_written(const char *dev)
+ }
+ 
+ __attribute__((nonnull))
+-void tst_find_backing_dev(const char *path, char *dev)
++void tst_find_backing_dev(const char *path, char *dev, size_t dev_len)
+ {
+ 	struct stat buf;
+ 	struct btrfs_ioctl_fs_info_args args = {0};
+@@ -574,7 +594,7 @@ void tst_find_backing_dev(const char *path, char *dev)
+ 			sprintf(uevent_path, "%s/%s/uevent",
+ 				bdev_path, d->d_name);
+ 		} else {
+-			tst_brkm(TBROK | TERRNO, NULL, "No backining device found while looking in %s.", bdev_path);
++			tst_brkm(TBROK | TERRNO, NULL, "No backing device found while looking in %s.", bdev_path);
+ 		}
+ 
+ 		if (SAFE_READDIR(NULL, dir))
+@@ -590,17 +610,12 @@ void tst_find_backing_dev(const char *path, char *dev)
+ 	if (!access(uevent_path, R_OK)) {
+ 		FILE_LINES_SCANF(NULL, uevent_path, "DEVNAME=%s", dev_name);
+ 
+-		if (dev_name[0])
+-			sprintf(dev, "/dev/%s", dev_name);
++		if (!dev_name[0] || set_dev_path(dev_name, dev, dev_len) != 0)
++			tst_brkm(TBROK, NULL, "Could not stat backing device %s", dev);
++
+ 	} else {
+ 		tst_brkm(TBROK, NULL, "uevent file (%s) access failed", uevent_path);
+ 	}
+-
+-	if (stat(dev, &buf) < 0)
+-		tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
+-
+-	if (S_ISBLK(buf.st_mode) != 1)
+-		tst_brkm(TCONF, NULL, "dev(%s) isn't a block dev", dev);
+ }
+ 
+ void tst_stat_mount_dev(const char *const mnt_path, struct stat *const st)
+@@ -643,7 +658,7 @@ int tst_dev_block_size(const char *path)
+ 	int size;
+ 	char dev_name[PATH_MAX];
+ 
+-	tst_find_backing_dev(path, dev_name);
++	tst_find_backing_dev(path, dev_name, sizeof(dev_name));
+ 
+ 	fd = SAFE_OPEN(NULL, dev_name, O_RDONLY);
+ 	SAFE_IOCTL(NULL, fd, BLKSSZGET, &size);
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+index b4427f331..3a5d5afef 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
+@@ -125,7 +125,7 @@ static void setup(void)
+ 	 *   needn't transform transfer.
  	 */
- 	for (i = 0; i < 256; i++) {
- 
--		if (!set_dev_path(i, buf, sizeof(buf)))
-+		if (set_dev_loop_path(i, buf, sizeof(buf)) != 0)
- 			continue;
- 
- 		dev_fd = open(buf, O_RDONLY);
+ 	sprintf(backing_file_path, "%s/test.img", tst_get_tmpdir());
+-	tst_find_backing_dev(backing_file_path, bd_path);
++	tst_find_backing_dev(backing_file_path, bd_path, sizeof(bd_path));
+ 	block_devfd = SAFE_OPEN(bd_path, O_RDWR);
+ 	SAFE_IOCTL(block_devfd, BLKSSZGET, &logical_block_size);
+ 	tst_res(TINFO, "backing dev(%s) logical_block_size is %d", bd_path, logical_block_size);
 -- 
 2.40.0.rc1.284.g88254d51c5-goog
 
