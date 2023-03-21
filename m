@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03E71C6FD1D
-	for <ltp@archiver.kernel.org>; Tue, 21 Mar 2023 16:50:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A525C6FD20
+	for <ltp@archiver.kernel.org>; Tue, 21 Mar 2023 23:07:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 854903CD338
-	for <ltp@archiver.kernel.org>; Tue, 21 Mar 2023 17:50:32 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 90B823CE3BC
+	for <ltp@archiver.kernel.org>; Wed, 22 Mar 2023 00:07:28 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1F5223C56B7
- for <ltp@lists.linux.it>; Tue, 21 Mar 2023 17:50:20 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 34C613C5624
+ for <ltp@lists.linux.it>; Wed, 22 Mar 2023 00:07:17 +0100 (CET)
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com
+ [IPv6:2607:f8b0:4864:20::449])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AB649600831
- for <ltp@lists.linux.it>; Tue, 21 Mar 2023 17:50:18 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4960C20260;
- Tue, 21 Mar 2023 16:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1679417418;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=u6TCrLcTlOiG+rQ1nUtdmLboRd5Bi/H4dFtqbslZwhY=;
- b=AEWZKSNaeVGBj4F2kw17de/kw4ZV3YP7yVtAxHtqEyGrKJsgKqMgyKLIB8zVQZojQaB1LW
- UK3txktOKwLEfcHopIkuCjq2Ds574EdFpcilKlb/+bO8TCoONXYCz+nG9Q4ajA8eX3yPLn
- Uy27IoFXv4bmfYdzl9n+aIwv6msH3uE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1679417418;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=u6TCrLcTlOiG+rQ1nUtdmLboRd5Bi/H4dFtqbslZwhY=;
- b=i7aqRocI6dLPnlYQEHTPbQJePrH+PdNFW+hUJa7ze/rp19iPJ0C0JZL257DQA3tfHAa5Ku
- uYgLE9Asgn78+kBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 17CD013451;
- Tue, 21 Mar 2023 16:50:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id bYMsBErgGWR6DQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 21 Mar 2023 16:50:18 +0000
-Date: Tue, 21 Mar 2023 17:50:16 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20230321165016.GA306314@pevik>
-References: <20230313134133.8396-1-wegao@suse.com>
- <20230314093725.3814-1-wegao@suse.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230314093725.3814-1-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 265C62009A0
+ for <ltp@lists.linux.it>; Wed, 22 Mar 2023 00:07:17 +0100 (CET)
+Received: by mail-pf1-x449.google.com with SMTP id
+ 16-20020a056a00071000b00627e9b4871eso4573257pfl.11
+ for <ltp@lists.linux.it>; Tue, 21 Mar 2023 16:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20210112; t=1679440035;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=AaC5OxIwYuLKOnG5tpBa27XPELOc+MdvV/VA175rW6o=;
+ b=i01xO7eUjgbzOe60FRIqi2P1VDnCb/2LMC97n5txFnUFnh6k5q8jordWlC9uvRQocE
+ EwqsZNF2t9sMTF6L9CAeJENa2RvXZHBqpn0jLujmCl+9NRprpN4k1jujZj2ZaEh4bfd/
+ jfsPaQupXcAowX+g4dGyE74N5cVDSR8EpZQXpxpVWVVuut+xjctcnCBLPSMYpMD4aczl
+ p92feMbTOtrP3O6QxKQc8mGB8+ClKYj7JY1sbIxz4iiJGJFHgtEAnYRspBe4503HgegO
+ VUXk1iE1LHFnZzQv4da6uXL1zMyM1qM90Q4j/pwZxzs+gGc9WFYOlAZu/Pfipmg1gTCS
+ /i/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112; t=1679440035;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=AaC5OxIwYuLKOnG5tpBa27XPELOc+MdvV/VA175rW6o=;
+ b=iax+uHnXSBwn2G9E86VvinFSpdXCFudFS4RXx2S7hhT0TFM1MZsRt+Fgtu4ZQOA3U1
+ TuqlSiTCkwZjR9Qp0Yk/nbqODHucwIWyrxs1X8n2ssXCsNMjguInzIl/eIF9vpv62+4M
+ GKvR3o6dQTtfZbS1f7ki9Anfy572jj1Lyx8CRzDcVViaQAQCOszL3V/pzxghlZN2Hr6e
+ DNFfLfNjMIuvEKXlDnt0rZ4Q/UdEW31D9q0aweVKznaSn4afBgzJamrzAQS/CImrij1y
+ cMPC48NPr12IhMOjongEsRs0AfabFzgEYF3VuClCu8BgTS+YLDffnuaT1OskMhv7JI2u
+ QeFw==
+X-Gm-Message-State: AO0yUKVGibZd+TX9C6A7yU6yhM/k1DnqqZrc1K/mYzr18MeM+qEWUXTN
+ dxTecBnN7mlzwsZEnIHQeA5OLR2kRG0FQ8cWb+ejXHcUaQpj+x7+bIV00F8Cnxh1eiUvML58jaj
+ CTeKpUR3hSA/kZJHZtgRMgDyIY1s/yQfgk/A9e/Rgw4nGMjByUqroUBg6
+X-Google-Smtp-Source: AK7set9R3CN9moLq4vSWMarg22WlKt8o6GK/YLJye3EH0wuSqM6HaZJIlWrpWVHstXpzlyXV6wXNGFkU8JU=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a05:6a00:22c7:b0:626:2638:5a51 with SMTP id
+ f7-20020a056a0022c700b0062626385a51mr868930pfj.5.1679440035222; Tue, 21 Mar
+ 2023 16:07:15 -0700 (PDT)
+Date: Tue, 21 Mar 2023 23:07:06 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
+Message-ID: <20230321230706.2927611-1-edliaw@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] madvise11.c:Check loadable module before rmmod
+Subject: [LTP] [PATCH v1] hugemmap: use 64-bit types
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,155 +75,121 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, Richard Palethorpe <rpalethorpe@suse.com>
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team@android.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Compiler throws -Wshift-count-overflow warning when compiling hugemmap13
+and hugemmap14 as 32-bit. Resolve warning by using unsigned long long
+that is always 64-bit.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Edward Liaw <edliaw@google.com>
+---
+ .../kernel/mem/hugetlb/hugemmap/hugemmap13.c   | 10 +++++-----
+ .../kernel/mem/hugetlb/hugemmap/hugemmap14.c   | 18 +++++++++---------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
-FYI although it turned out that CONFIG_HWPOISON_INJECT=y in one of our kernels
-was a mistake (will be changed to CONFIG_HWPOISON_INJECT=m, which is the default
-since kernel ~ 3.14 thus nobody noticed), the test still should work with
-CONFIG_HWPOISON_INJECT=y.
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
+index 7235c55ac..f8c36640d 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap13.c
+@@ -24,7 +24,7 @@
+ 
+ #include "hugetlb.h"
+ 
+-#define FOURGB (1UL << 32)
++#define FOURGB (1ULL << 32)
+ #define MNTPOINT "hugetlbfs/"
+ static int  fd = -1;
+ static unsigned long hpage_size;
+@@ -33,16 +33,16 @@ static int page_size;
+ static void run_test(void)
+ {
+ 	void *p, *q = NULL;
+-	unsigned long lowaddr;
+-	unsigned long below_start;
+-	unsigned long above_end;
++	unsigned long long lowaddr;
++	unsigned long long below_start;
++	unsigned long long above_end;
+ 
+ 	p = mmap((void *)FOURGB, hpage_size, PROT_READ|PROT_WRITE,
+ 		 MAP_SHARED | MAP_FIXED, fd, 0);
+ 	if (p == MAP_FAILED) {
+ 		/* slice 0 (high) spans from 4G-1T */
+ 		below_start = FOURGB;
+-		above_end = 1024L*1024*1024*1024;
++		above_end = 1024ULL*1024*1024*1024;
+ 
+ 		if (range_is_mapped(below_start, above_end) == 1) {
+ 			tst_res(TINFO|TERRNO, "region 4G-IT is not free & "
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
+index 13068e5b6..c54a746b3 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap14.c
+@@ -24,30 +24,30 @@
+ 
+ #include "hugetlb.h"
+ 
+-#define FOURGB (1UL << 32)
++#define FOURGB (1ULL << 32)
+ #define MNTPOINT "hugetlbfs/"
+ static int  fd = -1;
+-static unsigned long hpage_size;
++static unsigned long long hpage_size;
+ static int page_size;
+ 
+ static void run_test(void)
+ {
+ 	void *p, *q = NULL, *r = NULL;
+-	unsigned long lowaddr, highaddr;
+-	unsigned long below_start;
+-	unsigned long above_end;
++	unsigned long long lowaddr, highaddr;
++	unsigned long long below_start;
++	unsigned long long above_end;
+ 
+ 	/*
+ 	 * We use a low address right below 4GB so we can test for
+ 	 * off-by-one errors
+ 	 */
+ 	lowaddr = FOURGB - hpage_size;
+-	tst_res(TINFO, "Mapping hugepage at %lx...", lowaddr);
++	tst_res(TINFO, "Mapping hugepage at %llx...", lowaddr);
+ 	p = mmap((void *)lowaddr, hpage_size, PROT_READ|PROT_WRITE,
+ 		 MAP_SHARED|MAP_FIXED, fd, 0);
+ 	if (p == MAP_FAILED) {
+ 		/* This is last low slice - 256M just before 4G */
+-		below_start = FOURGB - 256L*1024*1024;
++		below_start = FOURGB - 256ULL*1024*1024;
+ 		above_end = FOURGB;
+ 
+ 		if (range_is_mapped(below_start, above_end) == 1) {
+@@ -66,7 +66,7 @@ static void run_test(void)
+ 
+ 	/* Test for off by one errors */
+ 	highaddr = FOURGB;
+-	tst_res(TINFO, "Mapping normal page at %lx...", highaddr);
++	tst_res(TINFO, "Mapping normal page at %llx...", highaddr);
+ 	q = mmap((void *)highaddr, page_size, PROT_READ|PROT_WRITE,
+ 		 MAP_SHARED|MAP_FIXED|MAP_ANONYMOUS, 0, 0);
+ 	if (q == MAP_FAILED) {
+@@ -94,7 +94,7 @@ static void run_test(void)
+ 	 * greater.
+ 	 */
+ 	highaddr = ((lowaddr >> 28) + 128) << 28;
+-	tst_res(TINFO, "Mapping normal page at %lx...", highaddr);
++	tst_res(TINFO, "Mapping normal page at %llx...", highaddr);
+ 	r = mmap((void *)highaddr, page_size, PROT_READ|PROT_WRITE,
+ 		 MAP_SHARED|MAP_FIXED|MAP_ANONYMOUS, 0, 0);
+ 	if (r == MAP_FAILED) {
+-- 
+2.40.0.rc1.284.g88254d51c5-goog
 
-BTW I'd personally put madvise11.c change to separate commit.
-
-nit: the title should be:
-
-madvise11: Check if module is loadable before rmmod
-
-> Following fail msg will popup if we try to rmmod buildin module:
-> rmmod: ERROR: Module hwpoison_inject is builtin
-
-> So need add extra check.
-
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  include/tst_kernel.h                          | 10 ++++++
->  lib/tst_kernel.c                              | 36 +++++++++++--------
->  testcases/kernel/syscalls/madvise/madvise11.c |  2 +-
->  3 files changed, 33 insertions(+), 15 deletions(-)
-
-> diff --git a/include/tst_kernel.h b/include/tst_kernel.h
-> index 9e17bb71e..0c1262e2f 100644
-> --- a/include/tst_kernel.h
-> +++ b/include/tst_kernel.h
-> @@ -10,6 +10,16 @@
->   */
->  int tst_kernel_bits(void);
-
-> +/*
-> + * Checks builtin module for the kernel driver.
-Check if the kernel module is built-in .
-> + *
-> + * @param driver The name of the driver.
-> + * @return Returns 0 if builtin driver
-> + * -1 when driver is missing or config file not available.
-> + * On Android *always* 0 (always expect the driver is available).
-> + */
-> +int tst_check_builtin_driver(const char *driver);
-> +
->  /**
->   * Checks support for the kernel driver.
-Checks support for the kernel module (both built-in and loadable).
-
-I'm willing to do the changes before merge.
-
-Kind regards,
-Petr
-
->   *
-> diff --git a/lib/tst_kernel.c b/lib/tst_kernel.c
-> index ecf4b917e..be3ec92da 100644
-> --- a/lib/tst_kernel.c
-> +++ b/lib/tst_kernel.c
-> @@ -90,7 +90,7 @@ int tst_kernel_bits(void)
->  	return kernel_bits;
->  }
-
-> -static int tst_search_driver(const char *driver, const char *file)
-> +static int tst_search_driver_(const char *driver, const char *file)
->  {
->  	struct stat st;
->  	char buf[PATH_MAX];
-> @@ -144,28 +144,19 @@ static int tst_search_driver(const char *driver, const char *file)
->  	return ret;
->  }
-
-> -static int tst_check_driver_(const char *driver)
-> -{
-> -	if (!tst_search_driver(driver, "modules.dep") ||
-> -		!tst_search_driver(driver, "modules.builtin"))
-> -		return 0;
-> -
-> -	return -1;
-> -}
-> -
-> -int tst_check_driver(const char *driver)
-> +static int tst_search_driver(const char *driver, const char *file)
->  {
->  #ifdef __ANDROID__
->  	/*
->  	 * Android may not have properly installed modules.* files. We could
-> -	 * search modules in /system/lib/modules, but to to determine built-in
-> +	 * search modules in /system/lib/modules, but to determine built-in
->  	 * drivers we need modules.builtin. Therefore assume all drivers are
->  	 * available.
->  	 */
->  	return 0;
->  #endif
-
-> -	if (!tst_check_driver_(driver))
-> +	if (!tst_search_driver_(driver, file))
->  		return 0;
-
->  	int ret = -1;
-> @@ -183,9 +174,26 @@ int tst_check_driver(const char *driver)
->  		while ((ix = strchr(ix, find)))
->  			*ix++ = replace;
-
-> -		ret = tst_check_driver_(driver2);
-> +		ret = tst_search_driver_(driver2, file);
->  		free(driver2);
->  	}
-
->  	return ret;
->  }
-> +
-> +int tst_check_builtin_driver(const char *driver)
-> +{
-> +	if (!tst_search_driver(driver, "modules.builtin"))
-> +		return 0;
-> +
-> +	return -1;
-> +}
-> +
-> +int tst_check_driver(const char *driver)
-> +{
-> +	if (!tst_search_driver(driver, "modules.dep") ||
-> +		!tst_search_driver(driver, "modules.builtin"))
-> +		return 0;
-> +
-> +	return -1;
-> +}
-> diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
-> index 7e291d571..4d99d5289 100644
-> --- a/testcases/kernel/syscalls/madvise/madvise11.c
-> +++ b/testcases/kernel/syscalls/madvise/madvise11.c
-> @@ -300,7 +300,7 @@ static int open_unpoison_pfn(void)
->  	struct mntent *mnt;
->  	FILE *mntf;
-
-> -	if (!find_in_file("/proc/modules", HW_MODULE))
-> +	if (!find_in_file("/proc/modules", HW_MODULE) && tst_check_builtin_driver(HW_MODULE))
->  		hwpoison_probe = 1;
-
->  	/* probe hwpoison only if it isn't already there */
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
