@@ -4,68 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81A9FC6FD1C
-	for <ltp@archiver.kernel.org>; Mon, 20 Mar 2023 23:52:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C09BC7619A
+	for <ltp@archiver.kernel.org>; Tue, 21 Mar 2023 06:57:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 68C363CABD0
-	for <ltp@archiver.kernel.org>; Tue, 21 Mar 2023 00:52:05 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 8C8B33CD2F9
+	for <ltp@archiver.kernel.org>; Tue, 21 Mar 2023 07:57:05 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 172573C95FB
- for <ltp@lists.linux.it>; Tue, 21 Mar 2023 00:51:20 +0100 (CET)
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
- [IPv6:2607:f8b0:4864:20::549])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1AF563C4C12
+ for <ltp@lists.linux.it>; Tue, 21 Mar 2023 07:56:54 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4AF086006C9
- for <ltp@lists.linux.it>; Tue, 21 Mar 2023 00:51:20 +0100 (CET)
-Received: by mail-pg1-x549.google.com with SMTP id
- t2-20020a632d02000000b005075b896422so3054130pgt.19
- for <ltp@lists.linux.it>; Mon, 20 Mar 2023 16:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20210112; t=1679356279;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:from:to:cc:subject:date:message-id:reply-to;
- bh=e4JVBtzlTGJG+ZmfbdHL4Z4c1/9QdQoljHtTpLViGog=;
- b=WIFytlMbPVEysZhNdjt/2ulqF4AKuF/Bitkx3TRmLGoVTDJtlHi90GX2GecfYJUIjF
- 98ldk/fj6LpbEy/cJXeByRoOHzWeIurrkDzCQvbPL7hO4AaXRaMfkl8u9hHGb9HX3hPl
- Dww4ntyA7Hna9Oija245ugah1xNc4vHmvm+u4M0NWnowZcl9Ouem73iiZoiVl7Fc0CpT
- Ab3eKRklpodCJ+OFo4GmjsZMNubJNJfy4B9yJClHjdyHBdecDSZgZZqVmAcgaBz3agzh
- cjrI11TAujMEKhihKzWn2CcmDlf8ypdUNDTmTdX/ixOBjXG2Tvv+ixZkv646ZZnLhopo
- teHg==
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6B86D600810
+ for <ltp@lists.linux.it>; Tue, 21 Mar 2023 07:56:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1679381811;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=NAiJTrS2P/sE+G5kw5FY8bA2WUpechhEpUUXssARzKs=;
+ b=JPGq2P3ZmFtxMG+BIhH/2r/mpO2vWVEisap0tOLUffEn1UtD1rFZLU3ymIozNbDuFfgJuy
+ EhGBdIwsS1W0FE2e9QV/vTC5uifK3oKGuKjLvFK8oo/XB+c649J1jctZUd5ZwpD0zERY01
+ NPEYCjfHs3gZo+yC9Li0ZuoCZaOaJXE=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-21-JQ7BaSRCPeeKwN2I_wNOdQ-1; Tue, 21 Mar 2023 02:56:49 -0400
+X-MC-Unique: JQ7BaSRCPeeKwN2I_wNOdQ-1
+Received: by mail-wm1-f71.google.com with SMTP id
+ ay12-20020a05600c1e0c00b003ed201dcf71so6592167wmb.4
+ for <ltp@lists.linux.it>; Mon, 20 Mar 2023 23:56:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1679356279;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=e4JVBtzlTGJG+ZmfbdHL4Z4c1/9QdQoljHtTpLViGog=;
- b=VfNuqYA2fukZw2kSfDQMb9ezQbd0FfX0i8TbtwfU9YCuE4+0iFPjqGg5YZB0X4P5xB
- AmwiTUunQn3mJHDz9AU2eaARTXgy3XtFrojAqoY2xDC4tQMasMfFoGmOYoKlRUzsibbS
- J46zm2S/q8eiGpwsFzHssc5v/wvgeuIQRCxpm81wBbC+wGzHbgrrXvmR3m8CKW94gGFu
- 6y624MJXCa6BxouDClOGvDfHJoyrQIo/T1+380nt6iczJd6lcTMgBtF07RVqvqsJGRzD
- emTWvVIMCPgLkVzEPJ9MvI5nXesIBbUu79Mn5RqN2EVHwnZLpz1KqHlIPwjGBHvFf2zQ
- NJXg==
-X-Gm-Message-State: AO0yUKVLx5u2hl5JEvyq6jnDGd4vZNoBQyAeWCfr2RCYXRMuJNsItuBW
- 0sX8arWBamfi3Or0nwFYLja5zkXRxC3tanWKaQieq50Y2gGiiRXqJJ8KxcFYHe5pboSHTqwb7RW
- IdrAHl4a8D0qrXwca3JGd2ovIEZKXE6By/5GolEUIeY8TIjuc02pEnluG
-X-Google-Smtp-Source: AK7set/azfWsAW0rROoQEBDVCCFJL7AzvHsSyf3D0echVxhy4icMKcdpexA2LWPFfQaDWWjRNLLBXik2EOM=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a17:902:e748:b0:19f:2aa4:b1e5 with SMTP id
- p8-20020a170902e74800b0019f2aa4b1e5mr85736plf.2.1679356278646; Mon, 20 Mar
- 2023 16:51:18 -0700 (PDT)
-Date: Mon, 20 Mar 2023 23:51:08 +0000
-In-Reply-To: <20230320235108.2058967-1-edliaw@google.com>
-Mime-Version: 1.0
-References: <20230320235108.2058967-1-edliaw@google.com>
-X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
-Message-ID: <20230320235108.2058967-4-edliaw@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+ d=1e100.net; s=20210112; t=1679381808;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=NAiJTrS2P/sE+G5kw5FY8bA2WUpechhEpUUXssARzKs=;
+ b=WOeQF89OtPv2BV7E9zVl9sFbGbPaxIZvSsPX9aofoeyqXMf9klxGa39YAsN/mTzBJJ
+ RdfIox72CVEZkRaSWOlm8794k3EsnNxwdvUOn5yGGxSgh9lNzWOzQfPYNpK1eZXd+vtE
+ XoI0B3QeNRn0y8QwvNtIQwCthWObZY9QkrOmFv+t27y/dWPQqJtEqDW4wa1PQ+lyQkIU
+ cKHTf7zo2wYcZRDpJKTUOVPA1QZBoa1LSIE/oiJRKGfGWnQtTWpPLMH4RdqCIACWT8P5
+ 46WppjBK7NHXEUj5XgWEAPdaoha8tDBUf3DjmPYMNXZt/rhP8BMHpl+VgOE93E2l9sNa
+ ZNKw==
+X-Gm-Message-State: AO0yUKVwrbgHgxJ2/VEgDZcM4pdVctbupTGzPnMty/q/9Cg1KFHcL7mb
+ SBzv3kO/TtyC+wxohX8LoQzW6AEKAcCTKGhbgHemEkpc+u0uDbypnUFv+AFsR+2wM9n33sLRMub
+ bHP3Rn62MWJbWh5i0w30xme3bh4U=
+X-Received: by 2002:a5d:5685:0:b0:2ca:4533:5d6a with SMTP id
+ f5-20020a5d5685000000b002ca45335d6amr391674wrv.7.1679381808644; 
+ Mon, 20 Mar 2023 23:56:48 -0700 (PDT)
+X-Google-Smtp-Source: AK7set8f6fYhGv0ro0k06k6Vk9RXLMDyQ9DwLQ0PGD/FJhtNz78egLbCOG7BakEIOxOT8Y6qEKMdi+i6Iuvy7C+Nw6Q=
+X-Received: by 2002:a5d:5685:0:b0:2ca:4533:5d6a with SMTP id
+ f5-20020a5d5685000000b002ca45335d6amr391668wrv.7.1679381808273; Mon, 20 Mar
+ 2023 23:56:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230320092332.36187-1-pifang@redhat.com>
+In-Reply-To: <20230320092332.36187-1-pifang@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 21 Mar 2023 14:56:37 +0800
+Message-ID: <CAEemH2edWRT1f=8wb=qQn2=3L0CXD-sQ4qQUSk+DwcRWE8xqqA@mail.gmail.com>
+To: Ping Fang <pifang@redhat.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 3/3] tst_find_backing_dev: Also check /dev/block/
- for backing device
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] getcpu01: Fix strtoul incorrectly returns 0
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,175 +86,59 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team@android.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: shichen@redhat.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Android, the backing devices are created in /dev/block/ and will not
-be found using the method added in e1b1ae66b240 ("tst_find_backing_dev:
-Get dev name from /sys/dev/block/*/uevent").  Adds a check for
-/dev/block/%s as well as /dev/%s.
-
-Modified the function signature of tst_find_backing_dev to add the
-length of the dev path string.  Updated the documentation and code that
-references it.
-
-Signed-off-by: Edward Liaw <edliaw@google.com>
----
- doc/c-test-api.txt                            |  2 +-
- include/tst_device.h                          |  3 +-
- lib/newlib_tests/tst_device.c                 |  2 +-
- lib/tst_device.c                              | 37 +++++++++++++------
- .../kernel/syscalls/ioctl/ioctl_loop05.c      |  2 +-
- 5 files changed, 31 insertions(+), 15 deletions(-)
-
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index a7dd59dac..eddb5c893 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -1087,7 +1087,7 @@ is created for that intention.
- -------------------------------------------------------------------------------
- #include "tst_test.h"
- 
--void tst_find_backing_dev(const char *path, char *dev);
-+void tst_find_backing_dev(const char *path, char *dev, size_t dev_len);
- -------------------------------------------------------------------------------
- 
- This function finds the block dev that this path belongs to, using uevent in sysfs.
-diff --git a/include/tst_device.h b/include/tst_device.h
-index 977427f1c..f0aff4473 100644
---- a/include/tst_device.h
-+++ b/include/tst_device.h
-@@ -110,8 +110,9 @@ void tst_purge_dir(const char *path);
-  * Find the file or path belongs to which block dev
-  * @path  Path to find the backing dev
-  * @dev   The block dev
-+ * @dev_len   The length of the dev string
-  */
--void tst_find_backing_dev(const char *path, char *dev);
-+void tst_find_backing_dev(const char *path, char *dev, size_t dev_len);
- 
- /*
-  * Stat the device mounted on a given path.
-diff --git a/lib/newlib_tests/tst_device.c b/lib/newlib_tests/tst_device.c
-index 87cec3961..53099f9bc 100644
---- a/lib/newlib_tests/tst_device.c
-+++ b/lib/newlib_tests/tst_device.c
-@@ -71,7 +71,7 @@ static void test_tst_find_backing_dev(void)
- {
- 	char block_dev[100];
- 
--	tst_find_backing_dev(mntpoint, block_dev);
-+	tst_find_backing_dev(mntpoint, block_dev, sizeof(block_dev));
- 
- 	if (!strcmp(tst_device->dev, block_dev))
- 		tst_res(TPASS, "%s belongs to %s block dev", mntpoint,
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index ae665f7b6..dbeae4c03 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -60,6 +60,11 @@ static const char *dev_loop_variants[] = {
- 	"/dev/block/loop%i"
- };
- 
-+static const char *dev_variants[] = {
-+	"/dev/%s",
-+	"/dev/block/%s"
-+};
-+
- static int set_dev_loop_path(int dev, char *path, size_t path_len)
- {
- 	unsigned int i;
-@@ -75,6 +80,21 @@ static int set_dev_loop_path(int dev, char *path, size_t path_len)
- 	return 1;
- }
- 
-+static int set_dev_path(char *dev, char *path, size_t path_len)
-+{
-+	unsigned int i;
-+	struct stat st;
-+
-+	for (i = 0; i < ARRAY_SIZE(dev_variants); i++) {
-+		snprintf(path, path_len, dev_variants[i], dev);
-+
-+		if (stat(path, &st) == 0 && S_ISBLK(st.st_mode))
-+			return 0;
-+	}
-+
-+	return 1;
-+}
-+
- int tst_find_free_loopdev(char *path, size_t path_len)
- {
- 	int ctl_fd, dev_fd, rc, i;
-@@ -511,7 +531,7 @@ unsigned long tst_dev_bytes_written(const char *dev)
- }
- 
- __attribute__((nonnull))
--void tst_find_backing_dev(const char *path, char *dev)
-+void tst_find_backing_dev(const char *path, char *dev, size_t dev_len)
- {
- 	struct stat buf;
- 	struct btrfs_ioctl_fs_info_args args = {0};
-@@ -574,7 +594,7 @@ void tst_find_backing_dev(const char *path, char *dev)
- 			sprintf(uevent_path, "%s/%s/uevent",
- 				bdev_path, d->d_name);
- 		} else {
--			tst_brkm(TBROK | TERRNO, NULL, "No backining device found while looking in %s.", bdev_path);
-+			tst_brkm(TBROK | TERRNO, NULL, "No backing device found while looking in %s.", bdev_path);
- 		}
- 
- 		if (SAFE_READDIR(NULL, dir))
-@@ -590,17 +610,12 @@ void tst_find_backing_dev(const char *path, char *dev)
- 	if (!access(uevent_path, R_OK)) {
- 		FILE_LINES_SCANF(NULL, uevent_path, "DEVNAME=%s", dev_name);
- 
--		if (dev_name[0])
--			sprintf(dev, "/dev/%s", dev_name);
-+		if (!dev_name[0] || set_dev_path(dev_name, dev, dev_len) != 0)
-+			tst_brkm(TBROK, NULL, "Could not stat backing device %s", dev);
-+
- 	} else {
- 		tst_brkm(TBROK, NULL, "uevent file (%s) access failed", uevent_path);
- 	}
--
--	if (stat(dev, &buf) < 0)
--		tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
--
--	if (S_ISBLK(buf.st_mode) != 1)
--		tst_brkm(TCONF, NULL, "dev(%s) isn't a block dev", dev);
- }
- 
- void tst_stat_mount_dev(const char *const mnt_path, struct stat *const st)
-@@ -643,7 +658,7 @@ int tst_dev_block_size(const char *path)
- 	int size;
- 	char dev_name[PATH_MAX];
- 
--	tst_find_backing_dev(path, dev_name);
-+	tst_find_backing_dev(path, dev_name, sizeof(dev_name));
- 
- 	fd = SAFE_OPEN(NULL, dev_name, O_RDONLY);
- 	SAFE_IOCTL(NULL, fd, BLKSSZGET, &size);
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-index b4427f331..3a5d5afef 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-@@ -125,7 +125,7 @@ static void setup(void)
- 	 *   needn't transform transfer.
- 	 */
- 	sprintf(backing_file_path, "%s/test.img", tst_get_tmpdir());
--	tst_find_backing_dev(backing_file_path, bd_path);
-+	tst_find_backing_dev(backing_file_path, bd_path, sizeof(bd_path));
- 	block_devfd = SAFE_OPEN(bd_path, O_RDWR);
- 	SAFE_IOCTL(block_devfd, BLKSSZGET, &logical_block_size);
- 	tst_res(TINFO, "backing dev(%s) logical_block_size is %d", bd_path, logical_block_size);
--- 
-2.40.0.rc1.284.g88254d51c5-goog
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgUGluZywKCkdvb2QgY2F0Y2ghCgpPbiBNb24sIE1hciAyMCwgMjAyMyBhdCA1OjIz4oCvUE0g
+UGluZyBGYW5nIDxwaWZhbmdAcmVkaGF0LmNvbT4gd3JvdGU6Cgo+IGdldF9ub2RlaWQoKSBmaW5k
+IG5vZGVpZCBieSBpdGVyYXRlIC9zeXMvZGV2aWNlcy9zeXN0ZW0vbm9kZS9ub2RlWC9jcHVZLgo+
+IEJ1dCB0aGVyZSBhcmUgY3B1bGlzdCBhbmQgY3B1bWFwLCB3aGljaCB3aWxsIHJlcG9ydCAwIGlu
+IHN0cnRvdWwuCj4gT24gbXVsdGktbm9kZSBudW1hIHN5c3RlbSwgdGhlIGxhc3QgaXRlcmF0aW9u
+IG5vZGVYIGRpcmVjdG9yeSBtaXNtYXRjaAo+IHRoZSBjcHUwIG5vZGUgaWQuIFRoZW4gZmFpbCB0
+aGUgdGVzdC4gVGhlIGZvbGxvd2luZyBzaG93cyBvbiBhIDQgbm9kZQo+IG51bWEgc3lzdGVtLiBU
+aGUgbGFzdCBpdGVyYXRpb24gc3RvcHBlZCB1bmRlciAvbm9kZTEuIHNvIGV4cGVjdGVkIG5vZGUK
+PiBpZCAxLiBUaGVuIGZhaWxlZC4KPgo+IGdldGNwdTAxLmM6OTg6IFRJTkZPOiBjcHU6MCwgY3B1
+X2lkOjAsIGRlLT5kX25hbWU6bm9kZTIKPiBnZXRjcHUwMS5jOjk5OiBUSU5GTzogZG4tPmRfbmFt
+ZTpjcHVsaXN0Cj4gZ2V0Y3B1MDEuYzo5ODogVElORk86IGNwdTowLCBjcHVfaWQ6MCwgZGUtPmRf
+bmFtZTpub2RlMAo+IGdldGNwdTAxLmM6OTk6IFRJTkZPOiBkbi0+ZF9uYW1lOmNwdWxpc3QKPiBn
+ZXRjcHUwMS5jOjk4OiBUSU5GTzogY3B1OjAsIGNwdV9pZDowLCBkZS0+ZF9uYW1lOm5vZGUzCj4g
+Z2V0Y3B1MDEuYzo5OTogVElORk86IGRuLT5kX25hbWU6Y3B1bGlzdAo+IGdldGNwdTAxLmM6OTg6
+IFRJTkZPOiBjcHU6MCwgY3B1X2lkOjAsIGRlLT5kX25hbWU6bm9kZTEKPiBnZXRjcHUwMS5jOjk5
+OiBUSU5GTzogZG4tPmRfbmFtZTpjcHVsaXN0Cj4gZ2V0Y3B1MDEuYzoxMjg6IFRGQUlMOiBnZXRj
+cHUoKSByZXR1cm5lZCB3cm9uZyB2YWx1ZSBleHBlY3RlZCAgbm9kZSBpZDoxCj4gcmV0dXJuZWQg
+IG5vZGUgaWQ6MCwgY3B1X3NldDowCj4KPiBSZXBvcnRlZC1ieTogU2hpemhhbyBDaGVuIDxzaGlj
+aGVuQHJlZGhhdC5jb20+Cj4gU2lnbmVkLW9mZi1ieTogUGluZyBGYW5nIDxwaWZhbmdAcmVkaGF0
+LmNvbT4KPiAtLS0KPiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRjcHUvZ2V0Y3B1MDEu
+YyB8IDUgKysrKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlv
+bigtKQo+Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0Y3B1L2dl
+dGNwdTAxLmMKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0Y3B1L2dldGNwdTAxLmMK
+PiBpbmRleCBmNmZjYzRmYzEuLjk4NDJjODk5OSAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2Vy
+bmVsL3N5c2NhbGxzL2dldGNwdS9nZXRjcHUwMS5jCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9nZXRjcHUvZ2V0Y3B1MDEuYwo+IEBAIC02OSw2ICs2OSw3IEBAIHN0YXRpYyB1bnNp
+Z25lZCBpbnQgZ2V0X25vZGVpZCh1bnNpZ25lZCBpbnQgY3B1X2lkKQo+ICAgICAgICAgRElSICpk
+aXJlY3RvcnlfcGFyZW50LCAqZGlyZWN0b3J5X25vZGU7Cj4gICAgICAgICBzdHJ1Y3QgZGlyZW50
+ICpkZSwgKmRuOwo+ICAgICAgICAgY2hhciBkaXJlY3RvcnlfcGF0aFtQQVRIX01BWF07Cj4gKyAg
+ICAgICBjaGFyICppbnZhbGlkX251bWJlcjsKPiAgICAgICAgIHVuc2lnbmVkIGludCBjcHU7Cj4g
+ICAgICAgICBpbnQgbm9kZV9pZCA9IDA7Cj4KPiBAQCAtOTEsNyArOTIsOSBAQCBzdGF0aWMgdW5z
+aWduZWQgaW50IGdldF9ub2RlaWQodW5zaWduZWQgaW50IGNwdV9pZCkKPiAgICAgICAgICAgICAg
+ICAgICAgICAgICB3aGlsZSAoKGRuID0gcmVhZGRpcihkaXJlY3Rvcnlfbm9kZSkpICE9IE5VTEwp
+IHsKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChzdHJuY21wKGRuLT5kX25h
+bWUsICJjcHUiLCAzKSkKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+Y29udGludWU7Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjcHUgPSBzdHJ0b3Vs
+KGRuLT5kX25hbWUgKyAzLCBOVUxMLCAwKTsKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGNwdSA9IHN0cnRvdWwoZG4tPmRfbmFtZSArIDMsCj4gJmludmFsaWRfbnVtYmVyLCAwKTsK
+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChzdHJjbXAoaW52YWxpZF9udW1i
+ZXIsICJcMCIpKQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb250
+aW51ZTsKPgoKV2h5IG9ubHkgY2hlY2sgaWYgKiplbmRwdHIgaXMgJ1wwJyBvbiByZXR1cm4/IFNo
+b3VsZG4ndCB3ZSBjb25zaWRlcgphIG1vcmUgZ2VuZXJpYyBzaXR1YXRpb24gdGhhdCB3YXMgbm8g
+ZGlnaXRzIGFuZCAqZW5kcHRyIHN0b3JlcyB0aGUKb3JpZ2luYWwgc3RyaW5nIChvciByZXR1cm5z
+IDApPwoKCgo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGNwdSA9PSBjcHVf
+aWQpIHsKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbm9kZV9pZCA9
+Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ0b3VsKGRl
+LT5kX25hbWUgKyA0LCBOVUxMLAo+IDApOwo+IC0tCj4gMi4zMS4xCj4KPgo+IC0tCj4gTWFpbGlu
+ZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCj4KPgoKLS0g
+ClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5s
+aW51eC5pdC9saXN0aW5mby9sdHAK
