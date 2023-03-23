@@ -4,36 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77EE8C6FD1C
-	for <ltp@archiver.kernel.org>; Thu, 23 Mar 2023 16:05:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A370C74A5B
+	for <ltp@archiver.kernel.org>; Thu, 23 Mar 2023 16:05:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8F1753CE320
-	for <ltp@archiver.kernel.org>; Thu, 23 Mar 2023 17:05:27 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 89C3B3CE2F8
+	for <ltp@archiver.kernel.org>; Thu, 23 Mar 2023 17:05:39 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1034B3CD2F4
- for <ltp@lists.linux.it>; Thu, 23 Mar 2023 17:05:17 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id C7BA93CE2E7
+ for <ltp@lists.linux.it>; Thu, 23 Mar 2023 17:05:18 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-3.smtp.seeweb.it (Postfix) with ESMTP id 2BDEE1A00CDE
- for <ltp@lists.linux.it>; Thu, 23 Mar 2023 17:05:16 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTP id 854FF200968
+ for <ltp@lists.linux.it>; Thu, 23 Mar 2023 17:05:17 +0100 (CET)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41AD91FB
- for <ltp@lists.linux.it>; Thu, 23 Mar 2023 09:05:59 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 275F34B3
+ for <ltp@lists.linux.it>; Thu, 23 Mar 2023 09:06:00 -0700 (PDT)
 Received: from e126380.arm.com (unknown [10.57.53.10])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4A3E73F766
- for <ltp@lists.linux.it>; Thu, 23 Mar 2023 09:05:14 -0700 (PDT)
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9B6A73F766
+ for <ltp@lists.linux.it>; Thu, 23 Mar 2023 09:05:15 -0700 (PDT)
 From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
 To: ltp@lists.linux.it
-Date: Thu, 23 Mar 2023 16:05:07 +0000
-Message-Id: <20230323160508.672397-1-teo.coupriediaz@arm.com>
+Date: Thu, 23 Mar 2023 16:05:08 +0000
+Message-Id: <20230323160508.672397-2-teo.coupriediaz@arm.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] safe_open: Add missing mode from some calls
+Subject: [LTP] [PATCH] syscalls/sockioctl: Align buffer to struct ifreq
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -50,63 +49,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-safe_open expects a mode when creating or using a temporary file, which is
-read via a variadic argument.
-Add the mode when it is missing for a few tests.
+In setup3, the following line can lead to an undefined behavior:
+  ifr = *(struct ifreq *)ifc.ifc_buf;
+
+Indeed, at this point it can be assumed that ifc.ifc_buf is suitably
+aligned for struct ifreq.
+However, ifc.ifc_buf is assigned to buf which has no alignment
+constraints. This means there exists cases where buf is not suitably
+aligned to load a struct ifreq, which can generate a SIGBUS.
+
+Force the alignment of buf to that of struct ifreq.
 
 Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
 ---
-This was detected on Morello[0] as the missing mode triggered an access
-outside of capability bounds when processing the variadic argument.
+CI Build: https://github.com/Teo-CD/ltp/actions/runs/4502204132
 
-CI Build: https://github.com/Teo-CD/ltp/actions/runs/4502201455
+ testcases/kernel/syscalls/sockioctl/sockioctl01.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-[0]: https://www.morello-project.org/
-
- .../kernel/syscalls/name_to_handle_at/name_to_handle_at01.c     | 2 +-
- .../kernel/syscalls/open_by_handle_at/open_by_handle_at01.c     | 2 +-
- testcases/kernel/syscalls/utimensat/utimensat01.c               | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
-index 9677b06719e3..6535fdf5c0ed 100644
---- a/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
-+++ b/testcases/kernel/syscalls/name_to_handle_at/name_to_handle_at01.c
-@@ -72,7 +72,7 @@ static void setup(void)
- 	dir_fd = SAFE_OPEN(TEST_DIR, O_DIRECTORY);
- 	SAFE_CHDIR(TEST_DIR);
- 	SAFE_TOUCH(TEST_FILE, 0600, NULL);
--	file_fd = SAFE_OPEN("foo_file", O_RDWR | O_CREAT);
-+	file_fd = SAFE_OPEN("foo_file", O_RDWR | O_CREAT, 0600);
- 	fhp = allocate_file_handle(AT_FDCWD, TEST_FILE);
- }
+diff --git a/testcases/kernel/syscalls/sockioctl/sockioctl01.c b/testcases/kernel/syscalls/sockioctl/sockioctl01.c
+index 486236af9d6b..e63aa1921877 100644
+--- a/testcases/kernel/syscalls/sockioctl/sockioctl01.c
++++ b/testcases/kernel/syscalls/sockioctl/sockioctl01.c
+@@ -52,7 +52,13 @@ static struct ifreq ifr;
+ static int sinlen;
+ static int optval;
  
-diff --git a/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c b/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c
-index 76be720cad78..6171229f0b6f 100644
---- a/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c
-+++ b/testcases/kernel/syscalls/open_by_handle_at/open_by_handle_at01.c
-@@ -55,7 +55,7 @@ static void setup(void)
- 	dir_fd = SAFE_OPEN(TEST_DIR, O_DIRECTORY);
- 	SAFE_CHDIR(TEST_DIR);
- 	SAFE_TOUCH(TEST_FILE, 0600, NULL);
--	file_fd = SAFE_OPEN("foo_file", O_RDWR | O_CREAT);
-+	file_fd = SAFE_OPEN("foo_file", O_RDWR | O_CREAT, 0600);
+-static char buf[8192];
++/*
++ * buf has no alignment constraints by default. However, it is used to load
++ * a struct ifreq in setup3, which requires it to have an appropriate alignment
++ * to prevent a possible undefined behavior.
++ */
++static char buf[8192]
++	__attribute__((aligned(__alignof__(struct ifreq))));
  
- 	f_fhp = allocate_file_handle(AT_FDCWD, TEST_FILE);
- 	d_fhp = allocate_file_handle(AT_FDCWD, TEST_FILE);
-diff --git a/testcases/kernel/syscalls/utimensat/utimensat01.c b/testcases/kernel/syscalls/utimensat/utimensat01.c
-index ac267e7d9f84..a2897b42288d 100644
---- a/testcases/kernel/syscalls/utimensat/utimensat01.c
-+++ b/testcases/kernel/syscalls/utimensat/utimensat01.c
-@@ -233,7 +233,7 @@ static void run(unsigned int i)
- 		dfd = SAFE_OPEN(TEST_DIR, tc->oflags);
- 
- 	if (tc->pathname) {
--		fd = SAFE_OPEN(tc->pathname, O_WRONLY | O_CREAT);
-+		fd = SAFE_OPEN(tc->pathname, O_WRONLY | O_CREAT, 0200);
- 		pathname = tc->pathname;
- 		SAFE_CHMOD(tc->pathname, tc->mode);
- 		reset_time(pathname, dfd, tc->flags, i);
+ static void setup(void);
+ static void setup0(void);
 -- 
 2.34.1
 
