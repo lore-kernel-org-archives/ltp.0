@@ -4,65 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA723C6FD1C
-	for <ltp@archiver.kernel.org>; Thu, 23 Mar 2023 15:59:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75D01C74A5B
+	for <ltp@archiver.kernel.org>; Thu, 23 Mar 2023 16:00:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8C57A3CE2F7
-	for <ltp@archiver.kernel.org>; Thu, 23 Mar 2023 16:59:55 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id D98AC3CE304
+	for <ltp@archiver.kernel.org>; Thu, 23 Mar 2023 17:00:09 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4C4C43C0277
- for <ltp@lists.linux.it>; Thu, 23 Mar 2023 16:45:53 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 3842F3CE2DB
+ for <ltp@lists.linux.it>; Thu, 23 Mar 2023 16:59:58 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 85EAA6009FB
- for <ltp@lists.linux.it>; Thu, 23 Mar 2023 16:45:52 +0100 (CET)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9449A20013B
+ for <ltp@lists.linux.it>; Thu, 23 Mar 2023 16:59:56 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 3A9F1B82035
- for <ltp@lists.linux.it>; Thu, 23 Mar 2023 15:45:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B49F8C433D2;
- Thu, 23 Mar 2023 15:45:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1679586349;
- bh=mthTcYlwRQAPG9WQnqr42YWJPry9/OJx+HMIH6pa8iI=;
- h=From:Date:Subject:To:Cc:From;
- b=bU2YJLFPh46FPOUYqRIU8xK+uTOcFezwRG2Vy2kUZoug/j7efTvEd55LsLe2OxJYk
- DmrBawWfgORQv+FYfHZM9zNDDvawSGQUViLPizraHicgzzkrCDKHEnA3cFzM5ITXQE
- wTyxdT/DPxzZndevGQr3prBm7iTdHF5EzPUkb8goE+wgcupImMLE4i8GWExzqrHPMn
- EVc5JpYnatfD4tzurhg7hh48N0OB2744azGmvFvv7F54Qd87aON48dhInfnQ4Cuj2K
- VqhFD0nE2uGlEl3JY1bxAUfy783lnRyAJlbGsBBzugBlsppL5YlbFQtjXmsRSjtMn7
- Bg3qQjU3jK64Q==
-From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Date: Thu, 23 Mar 2023 10:45:37 -0500
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8464F1FE0C;
+ Thu, 23 Mar 2023 15:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1679587195;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ySiqJRW+v7tDK7/eNTLLTOxdHPO/dD5JAdREwP60AT8=;
+ b=V6VYPVmzMdUhpt8eqfpcITZ9V5jyacw6H7/Zu2utmKrxNr+871+gQzqQDvNKt3x8+W2P/n
+ RIJ00efnK/ufrvxfz5zVAsrQynFd5Y5QkQUNwvCznmmTAogqMEMUbR+4fgcOXrDyUf1PCN
+ we29j7qAio8PO46d0y9neDPfXeI4834=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1679587195;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ySiqJRW+v7tDK7/eNTLLTOxdHPO/dD5JAdREwP60AT8=;
+ b=HgEqBQeoXmUC8+9wXoNzafatCDxkqTGMX5c6E4tbS1QFFLFLEVeERbqBAf1zg8Xhu5aGFe
+ kKKKztupriJN35Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 332EB13596;
+ Thu, 23 Mar 2023 15:59:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id X4YrCXt3HGQtOAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 23 Mar 2023 15:59:55 +0000
+Date: Thu, 23 Mar 2023 16:59:53 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: "Bird, Tim" <Tim.Bird@sony.com>
+Message-ID: <20230323155953.GA461339@pevik>
+References: <20230309145917.26846-1-pvorel@suse.cz>
+ <BYAPR13MB2503F6AE85D17F078B806C0AFDBA9@BYAPR13MB2503.namprd13.prod.outlook.com>
+ <20230310073406.GB2216@pevik> <20230310114747.GA5055@pevik>
+ <BYAPR13MB2503C9BF7ED9D78FAD55E6FEFDBA9@BYAPR13MB2503.namprd13.prod.outlook.com>
 MIME-Version: 1.0
-Message-Id: <20230323-override-unpriv-userns-sysctl-v1-1-0b62c71acd43@kernel.org>
-X-B4-Tracking: v=1; b=H4sIACB0HGQC/32OQQqDMBBFryKz7kBMFtZepXSRxLEOlFFmarCId
- 2/sAbp88P7j72CkTAa3ZgelwsazVGgvDeQpypOQh8rgnQ8u+IBzIVUeCFdZlAuuNSCG9rH8fqH
- rrqnvQ+dH10JtpGiESaPk6az8HZ/+ojTy9vtzfxzHF3wS0UufAAAA
-To: ltp@lists.linux.it
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1838; i=sforshee@kernel.org;
- h=from:subject:message-id; bh=mthTcYlwRQAPG9WQnqr42YWJPry9/OJx+HMIH6pa8iI=;
- b=owEBbQGS/pANAwAKAVMDma7l9DHJAcsmYgBkHHQmtnuoFWV8jzcCv913iVi0mSwgwfBeIY1bIYRE
- A7z++GiJATMEAAEKAB0WIQSQnt+rKAvnETy4Hc9TA5mu5fQxyQUCZBx0JgAKCRBTA5mu5fQxyS+iB/
- 92dA1NIKiPTpq095R8PmMJx0WqIp9sX7WYjJJ/rIiZaIseLhtCC7vZ+bYQvP/1z4NzILCTG5IQKcNL
- 0X4x5KGuCqowTts3pER61I9ZDhdRKWqQUC76U8qx3xRwyEtGm7DJepIaQJein6XcxKBSELTtgX30fb
- MAZrS+59Zs15uNsWrAxrbkoaDqwTiAzNbDaUfHC0S/OWJ19S1QHsxEECvjY1TkeoxTg8gUsXlIUsuT
- NWQkiqBkEw3Ia5+Use+zXw5wYurLspPrzN56AW7OxCMaK1SiFT9mSqeZr5fxqgE4qfuswVlM9Qi1UE
- jqqeXlk6WQINwmZja3kV3Plu9dKkhZ
-X-Developer-Key: i=sforshee@kernel.org; a=openpgp;
- fpr=2ABCA7498D83E1D32D51D3B5AB4800A62DB9F73A
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <BYAPR13MB2503C9BF7ED9D78FAD55E6FEFDBA9@BYAPR13MB2503.namprd13.prod.outlook.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Thu, 23 Mar 2023 16:59:45 +0100
-Subject: [LTP] [PATCH] containers: override kernel.unprivileged_userns_clone
- sysctl where needed
+Subject: Re: [LTP] [PATCH 1/1] ns_ifmove.c: Rewrite to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,60 +78,20 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "Seth Forshee \(DigitalOcean\)" <sforshee@kernel.org>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>,
+ Matus Marhefka <mmarhefk@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Some distros have a kernel.unprivileged_userns_clone which when disabled
-forbids users without CAP_SYS_ADMIN in the initial user namespace from
-creating new user namespaces. When disabled the containers user07 and
-user08 tests fail.
+Hi all,
 
-Update these tests to ensure that when this sysctl is present it is set
-to allow unprivileged user namespace creation while the test is running.
+FYI merged. Thanks for your comments.
 
-Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
----
- testcases/kernel/containers/userns/userns07.c | 4 ++++
- testcases/kernel/containers/userns/userns08.c | 1 +
- 2 files changed, 5 insertions(+)
-
-diff --git a/testcases/kernel/containers/userns/userns07.c b/testcases/kernel/containers/userns/userns07.c
-index 40cc1e26c244..2c946a659278 100644
---- a/testcases/kernel/containers/userns/userns07.c
-+++ b/testcases/kernel/containers/userns/userns07.c
-@@ -88,4 +88,8 @@ static struct tst_test test = {
- 		"CONFIG_USER_NS",
- 		NULL,
- 	},
-+	.save_restore = (const struct tst_path_val[]) {
-+		{"/proc/sys/kernel/unprivileged_userns_clone", "1", TST_SR_SKIP},
-+		{}
-+	},
- };
-diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
-index 2697d874b3a0..84f0ce9a92e1 100644
---- a/testcases/kernel/containers/userns/userns08.c
-+++ b/testcases/kernel/containers/userns/userns08.c
-@@ -136,6 +136,7 @@ static struct tst_test test = {
- 	},
- 	.save_restore = (const struct tst_path_val[]) {
- 		{"/proc/sys/user/max_user_namespaces", NULL, TST_SR_SKIP},
-+		{"/proc/sys/kernel/unprivileged_userns_clone", "1", TST_SR_SKIP},
- 		{}
- 	},
- 	.tags = (const struct tst_tag[]) {
-
----
-base-commit: ce8a8edf1c5a917d0fd2f983c36b67e93de0a5c7
-change-id: 20230323-override-unpriv-userns-sysctl-078b99372f01
-
-Best regards,
--- 
-Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
