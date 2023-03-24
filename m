@@ -4,61 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE9A9C6FD20
-	for <ltp@archiver.kernel.org>; Fri, 24 Mar 2023 08:18:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54C20C6FD1C
+	for <ltp@archiver.kernel.org>; Fri, 24 Mar 2023 08:26:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EB6FB3CD1E8
-	for <ltp@archiver.kernel.org>; Fri, 24 Mar 2023 09:18:02 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id ACFD13CD1EB
+	for <ltp@archiver.kernel.org>; Fri, 24 Mar 2023 09:26:32 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BBAFC3CA4C4
- for <ltp@lists.linux.it>; Fri, 24 Mar 2023 09:17:52 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 6E8263CA4C4
+ for <ltp@lists.linux.it>; Fri, 24 Mar 2023 09:26:22 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D1D9F14010D9
- for <ltp@lists.linux.it>; Fri, 24 Mar 2023 09:17:51 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E8B0B1A00E6F
+ for <ltp@lists.linux.it>; Fri, 24 Mar 2023 09:26:21 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0620833A22;
- Fri, 24 Mar 2023 08:17:51 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CA89F219B8;
+ Fri, 24 Mar 2023 08:26:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1679645871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=gNdYa8JqnWPhUqZBmknsQQoBO72sQMG9CiC5ivqdt0g=;
- b=nL6/hQEs8PcI/gSenJScLarEQ08rjpeEoj67gM/QhlkwxncFaonuIqNvpjGoxdMKXsIsEI
- Jzqojb6Mu4NnFCvpBXsZz6/xppecx1wtd4xO+DSLj/bQDav+KDxy8Ns14METc96Nj9Vx4x
- MPHKjCXFHdPdzR5bCgnRsZDeSzbVFNw=
+ t=1679646380;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0c2A/gUuy6CNPc4NdCF58VpmJqo1a2SRJ/lINp407dM=;
+ b=x/OAkLRsANE0tiTKkU4q1Z8qqufgyevUW/KCGh1dPyl7W3Vodr0Ff0/TvFsjypDoTtivwP
+ Cdrh9iIOKOS0qzJ8RaR7RJ58BkPlhR7nBXoPIrnOYVDDh1FwMgJ3xZQbc+st7eKfb05sFD
+ NwXLs9N3YUkUQ+Xs1nWYrXIfTi49NqI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1679645871;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=gNdYa8JqnWPhUqZBmknsQQoBO72sQMG9CiC5ivqdt0g=;
- b=kr14LHb+oUbRv78LaF2dFwZXSaZKHUAaaQ/FQY/ivXOcd8vRGb1ZtnhF7+YBrSEnmJri/E
- FB1l+YxaE1XfEnCw==
+ s=susede2_ed25519; t=1679646380;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=0c2A/gUuy6CNPc4NdCF58VpmJqo1a2SRJ/lINp407dM=;
+ b=worKSztrteLOyrU7obup2Cc9QxDqkNoigYdQEPbSfuG+lc8Q/Pfvu9E6Cblpar12kb2WFr
+ APsPzdBkOok7NODg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ABF8113A26;
- Fri, 24 Mar 2023 08:17:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9EB2313A26;
+ Fri, 24 Mar 2023 08:26:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id jPLpJq5cHWRndgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 24 Mar 2023 08:17:50 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id kdhiJaxeHWRzewAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 24 Mar 2023 08:26:20 +0000
+Date: Fri, 24 Mar 2023 09:26:19 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 24 Mar 2023 09:17:44 +0100
-Message-Id: <20230324081744.539431-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.40.0
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20230324082619.GA544254@pevik>
+References: <20230226003526.8733-1-wegao@suse.com>
+ <20230323092655.GF405493@pevik> <20230323121757.GA30319@localhost>
+ <20230324063254.GA520087@pevik> <20230324065436.GA10116@localhost>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230324065436.GA10116@localhost>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] file01.sh: Drop csh and ksh detection
+Subject: Re: [LTP] [PATCH v1] clone3: Add clone3's clone_args cgroup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,115 +78,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-in.csh and in.ksh data files causes automatic csh and ksh dependency
-of ltp package built in openSUSE / SLES build systems.
-csh and ksh shells aren't commonly used in nowadays Linux distros,
-therefore it's not worth to deal with workarounds for missing
-dependency.
+> On Fri, Mar 24, 2023 at 07:32:54AM +0100, Petr Vorel wrote:
+> > Hi Wei,
+> > > On Thu, Mar 23, 2023 at 10:26:55AM +0100, Petr Vorel wrote:
+> > > > Hi Wei,
 
-Reported-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/commands/file/datafiles/in.csh |  4 ---
- testcases/commands/file/datafiles/in.ksh |  4 ---
- testcases/commands/file/file01.sh        | 35 ++++++++++++------------
- 3 files changed, 17 insertions(+), 26 deletions(-)
- delete mode 100644 testcases/commands/file/datafiles/in.csh
- delete mode 100644 testcases/commands/file/datafiles/in.ksh
+> > > > Do you plan to use this somewhere? Otherwise I don't see the point to just
+> > > > add it.
+> > > Sorry i need add another commit above this and start using new added args, will
+> > > create test case later, maybe you can put ChangRequest firstly, thanks.
 
-diff --git a/testcases/commands/file/datafiles/in.csh b/testcases/commands/file/datafiles/in.csh
-deleted file mode 100644
-index c475aef9c..000000000
---- a/testcases/commands/file/datafiles/in.csh
-+++ /dev/null
-@@ -1,4 +0,0 @@
--#! /bin/csh
--
--echo "this is a shell script"
--echo "used to test file command"
-diff --git a/testcases/commands/file/datafiles/in.ksh b/testcases/commands/file/datafiles/in.ksh
-deleted file mode 100644
-index 3ae45125c..000000000
---- a/testcases/commands/file/datafiles/in.ksh
-+++ /dev/null
-@@ -1,4 +0,0 @@
--#! /bin/ksh
--
--echo "this is a shell script"
--echo "used to test file command"
-diff --git a/testcases/commands/file/file01.sh b/testcases/commands/file/file01.sh
-index df152b656..f0c129f33 100755
---- a/testcases/commands/file/file01.sh
-+++ b/testcases/commands/file/file01.sh
-@@ -2,12 +2,13 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) International Business Machines Corp., 2001
- # Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
-+# Copyright (c) Linux Test Project, 2017-2023
- #
- # This program tests the file command. The tests are aimed at
- # testing if the file command can recognize some of the commonly
- # used file formats like, tar, tar.gz, rpm, C, ASCII, ELF etc.
- 
--TST_CNT=20
-+TST_CNT=18
- TST_SETUP=setup
- TST_TESTFUNC=do_test
- TST_NEEDS_TMPDIR=1
-@@ -61,30 +62,28 @@ do_test()
- 			    "POSIX shell script text executable" \
- 			    "POSIX shell script text" \
- 			    "Bourne shell script text executable";;
--	 4) file_test in.ksh "Korn shell script";;
--	 5) file_test in.csh "C shell script";;
--	 6) file_test in.c "ASCII C program text" "C source, ASCII text";;
--	 7) file_test in.pl "[pP]erl script, ASCII text executable" \
-+	 4) file_test in.c "ASCII C program text" "C source, ASCII text";;
-+	 5) file_test in.pl "[pP]erl script, ASCII text executable" \
- 			    "[pP]erl script text executable" \
- 			    "a /usr/bin/perl script text";;
--	 8) file_test in.py "[pP]ython3\{0,1\} script, ASCII text executable" \
-+	 6) file_test in.py "[pP]ython3\{0,1\} script, ASCII text executable" \
- 			    "[pP]ython3\{0,1\} script text executable";;
--	 9) file_test in.m4 "M4 macro processor script, ASCII text" \
-+	 7) file_test in.m4 "M4 macro processor script, ASCII text" \
- 			    "ASCII M4 macro language pre-processor text";;
--	10) file_test in "ELF .*-bit $TEST_ARCH executable, .*" \
-+	 8) file_test in "ELF .*-bit $TEST_ARCH executable, .*" \
- 			 "ELF .*-bit $TEST_ARCH shared object, .*" \
- 			 "ELF .*-bit $TEST_ARCH pie executable, .*" \
- 			 "ELF .*-bit $TEST_ARCH pie shared object, .*";;
--	11) file_test in.ar "current ar archive";;
--	12) file_test in.tar "tar archive";;
--	13) file_test in.tar.gz "gzip compressed data, .*";;
--	14) file_test in.tar.bz2 "bzip2 compressed data, .*";;
--	15) file_test in.src.rpm "RPM v3 src" "RPM v3.0 src";;
--	16) file_test in.jpg "JPEG image data";;
--	17) file_test in.png "PNG image data";;
--	18) file_test in.wav "RIFF (little-endian) data, WAVE audio, Microsoft PCM";;
--	19) file_test in.mp3 "MPEG ADTS, layer III";;
--	20) file_test in.zip "Zip archive data";;
-+	 9) file_test in.ar "current ar archive";;
-+	10) file_test in.tar "tar archive";;
-+	11) file_test in.tar.gz "gzip compressed data, .*";;
-+	12) file_test in.tar.bz2 "bzip2 compressed data, .*";;
-+	13) file_test in.src.rpm "RPM v3 src" "RPM v3.0 src";;
-+	14) file_test in.jpg "JPEG image data";;
-+	15) file_test in.png "PNG image data";;
-+	16) file_test in.wav "RIFF (little-endian) data, WAVE audio, Microsoft PCM";;
-+	17) file_test in.mp3 "MPEG ADTS, layer III";;
-+	18) file_test in.zip "Zip archive data";;
- 	esac
- }
- 
--- 
-2.40.0
+> > I'd prefer to merge them once they are actually needed. But Richie might have a
+> > different opinion.
 
+> @Petr So i need continue add case or not? 
+That's up to you. I'm just saying I would not merge code which is not use.
+
+Kind regards,
+Petr
+
+> @Richie what's your plan?
+> > Kind regards,
+> > Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
