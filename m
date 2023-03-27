@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71BBCC76195
-	for <ltp@archiver.kernel.org>; Mon, 27 Mar 2023 16:12:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DC73C6FD1D
+	for <ltp@archiver.kernel.org>; Mon, 27 Mar 2023 16:12:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E17A43CCBC5
-	for <ltp@archiver.kernel.org>; Mon, 27 Mar 2023 18:12:02 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 464BA3CCD76
+	for <ltp@archiver.kernel.org>; Mon, 27 Mar 2023 18:12:14 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 84EDC3CA955
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 18:11:51 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 8A3043CA955
+ for <ltp@lists.linux.it>; Mon, 27 Mar 2023 18:11:52 +0200 (CEST)
 Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com
  [IPv6:2607:f8b0:4864:20::1149])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9A9E31000A1A
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 18:11:50 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CA953601E8D
+ for <ltp@lists.linux.it>; Mon, 27 Mar 2023 18:11:51 +0200 (CEST)
 Received: by mail-yw1-x1149.google.com with SMTP id
- 00721157ae682-5425c04765dso92358627b3.0
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 09:11:50 -0700 (PDT)
+ 00721157ae682-54196bfcd5fso91011277b3.4
+ for <ltp@lists.linux.it>; Mon, 27 Mar 2023 09:11:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20210112; t=1679933509;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=NkmiU4zmCqMgcQF3NLXiMPPrYfAfqOPOoQedCxNLha8=;
- b=HKEV8btwtY0oyszMv+R6EYY1tyxGPvcJnZ+SKXEFWyC9HY+9RVDucI/K8DAB2H5L/e
- uFZm4lXK/zd83qBtSfyP2kIAnmEQmdjn7jWRdG2Tpu3lq8Swfk/JOD6OMZ+KQY0oqmnT
- cOPNCT6ZkLaBuNxYc7uEqpYEndxMpUtzZUmTQfYtcO59QFDqL8dtU/GfwOdEabSo/9x+
- 1VEgLwIKoGm9lyyb0KXkeGJw2vDsURuSA+VBmPLHFhZ8spZBw7lTjyLSMJi7POiTUCo5
- K15qNNlTqn7QGBW4iHsTKGatNov+VynuQymn2S/PS8aCB1XxXvAMz4KQQscPN11UCPbP
- clKQ==
+ d=google.com; s=20210112; t=1679933510;
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:from:to:cc:subject:date:message-id:reply-to;
+ bh=OnUBlM2QF0u4kCUBpJyJfqUrBWT/0YSKm2QOLBU3x/o=;
+ b=g9A06O1BMCzIvvciAQtyVnrp5LV/Pd5MyzVLmqwoPtEk7r4FtiHvzUYqug4HzkCLdo
+ cwNrQVgXRfCSoVvGCU85xEDPS2vAqHVwyKFTLwRrZt+5xHsxfH4PH0utMBMKDukImDNB
+ 600b7DwQOTAbkCAsmWGt8pMNUJ4p7DQB+HAj5e1HajjUoBRFzYBaHb/14q4Ls/Jt6xlM
+ vm0sOctdpnaUXtola7Bqo77zUBr1dRW1JctlE4bhjX7ey5U+2yZoRxIF+Lj/pA0YWAyN
+ NAfM4dMW9R3VtLiPukcIUNqlpW7Tn6cYpQF9YQ07TZ4Mw1lEeJ73T2N2sbmmiMWBXSxH
+ 7Erg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1679933509;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=NkmiU4zmCqMgcQF3NLXiMPPrYfAfqOPOoQedCxNLha8=;
- b=MkZ6PSkovPfcaMi8Mtsf5Sipc93JZMl0F1SuX8866Lprafn94yvYsHf1p1chAf07de
- iifuvDPsNm+NfWimjxeYKDz7PE6XvInI1CZiInVPBZGVm4LK2Mp1lxoVhyuLnNm4ZqLG
- SvN3TU3vIIHGxA42FRnCKLDlfSKv9eOD8l9M99BGuqMwxEp9v2h2PmIO+eQDBuUpfZvk
- PPsGCqHrQgy8pQpfx4+D90iX25e+a9hHl5ANC18tQYFvIr+axxGG8/9aiDg/GSOyf8Ry
- KVXJ19CnGHv5JdzUnmM+IAY2IGtQXG30xvGHcqbPEEk2DaOyZSQHFX1QeuRE6sBc4ynY
- v+4g==
-X-Gm-Message-State: AAQBX9eKdOGYEJHooj5KgjQC05NDdZPnvUYspTE3Nif8sTz/AH//sRqr
- mNMlSXWyWAPECzMQJV/QpZC+ZcaHqq+KyCZ9ov/6DYBTQ6zkgssEmEfyEANq0bmiwRm7e6f0pWG
- R91VLkgGxAIawX+EsVZtUmgQ5LZJF4d6g0L2b2LBlDWvs6UOqHWRzmMOL
-X-Google-Smtp-Source: AKy350YwLdvh3IxpdDqMD/5c7yMXcmTuRKpCJgf8fuG0i2pTXjbLW2YuAT8XtM/YHLkWasWi8ZgEoAl/7TI=
+ d=1e100.net; s=20210112; t=1679933510;
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=OnUBlM2QF0u4kCUBpJyJfqUrBWT/0YSKm2QOLBU3x/o=;
+ b=tLKdJGpMnMZeMyB/bi+xlR7NClBz3qBok4hdPZ5aEitaGo/HeT20PdK70j8juGod10
+ jMao1PqqtKXZv+wMvwK/fy1ce5SbPfosMFMHp7aOrTwGqZHVINBJb240l40MUHsj9WcU
+ r+CuHKw/o1GETIT7PDsw9SrGHpWcRHPo2TTDCXEBY4Eh5CDpo55xh45cJD69v9NClmEE
+ kflHYc3MkGEQBoJZPZ7+Ut2zit8nMIigfjh2G35x2cBN6NuqnEgMMC8k0qaaPuGP4VY2
+ HchVJVjuaBgrZKCKdfHXummjLUCFB4GLYUXtfN2wQWJKR3wRGLBOdncMtJ+NMd9SVDH2
+ KUKg==
+X-Gm-Message-State: AAQBX9cWIorugqO4s4xiFOp3QYMHjOpdojsS0PmMdKNbPlhlmO4Tq68y
+ FM/t73QHySHR0lwljgE+5VZWj1VP/oTUy5Ivcz9xfXM3LHOLgi3LVbE4jg+KmuqC+BTulbw/n/7
+ GBP2tp0rxaWGuST3DN4t/LOkyzUi/u/DFNnZVyI7OTM7ZqP7sRTfK8NhH
+X-Google-Smtp-Source: AKy350Yi5LZIYYOLmLQ7w7G8thxr+JWj1E9mO8PUrcbNdEK7EuoVRF8qVxXWKVGZCYuouY/hp3n9jV0+jBA=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a05:6902:100a:b0:b76:3e1:c42d with SMTP id
- w10-20020a056902100a00b00b7603e1c42dmr7761408ybt.13.1679933509041; Mon, 27
- Mar 2023 09:11:49 -0700 (PDT)
-Date: Mon, 27 Mar 2023 16:11:41 +0000
+ (user=edliaw job=sendgmr) by 2002:a25:e054:0:b0:b6b:d3f3:45af with SMTP id
+ x81-20020a25e054000000b00b6bd3f345afmr8062817ybg.1.1679933510675; Mon, 27 Mar
+ 2023 09:11:50 -0700 (PDT)
+Date: Mon, 27 Mar 2023 16:11:42 +0000
+In-Reply-To: <20230327161145.1702680-1-edliaw@google.com>
 Mime-Version: 1.0
+References: <20230327161145.1702680-1-edliaw@google.com>
 X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
-Message-ID: <20230327161145.1702680-1-edliaw@google.com>
+Message-ID: <20230327161145.1702680-2-edliaw@google.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 0/4] tst_device.c: Handle Android path for backing
- device
+Subject: [LTP] [PATCH v4 1/4] set_dev_path: Rename to set_dev_loop_path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,43 +85,62 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-e1b1ae66b240 ("tst_find_backing_dev: Get dev name from
-/sys/dev/block/*/uevent") added a hardcoded path to check for the
-backing device in /dev.  On Android, it needs to check /dev/block.
+Rename set_dev_path to set_dev_loop_path and the array dev_variants to
+dev_loop_variants.  This will differentiate it from adding a similar
+function that is checking a more generic dev path.
 
-The set_dev_path function was renamed to set_dev_loop_path and its
-return value was changed from 1 on success to 0 on success to be more
-consistent with other functions.  A check was added to
-tst_find_free_loopdev in the event that the loop device is not ready
-yet, which appears to happen occasionally on Android.
+Signed-off-by: Edward Liaw <edliaw@google.com>
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/tst_device.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-v1->v2:
-Changed the function signature of tst_find_backing_dev to add the length
-of the path string.  Updated all references for this function to include
-the added parameter.
-
-v2->v3:
-Split the function rename, return value change, and the return value
-check into 3 commits.  Fixed logic for non-NULL path check.  Added Fixes
-tag for e1b1ae66b240.
-
-v3->v4:
-Rename dev_len argument to dev_size and update documentation and
-references.  Remove != 0 as it is redundant. 
-
-Edward Liaw (4):
-  set_dev_path: Rename to set_dev_loop_path
-  set_dev_loop_path: Change return value to zero on success
-  tst_find_free_loopdev: Check return value of set_dev_loop_path
-  tst_find_backing_dev: Also check /dev/block/ for backing device
-
- doc/c-test-api.txt                            |  2 +-
- include/tst_device.h                          |  7 +--
- lib/newlib_tests/tst_device.c                 |  2 +-
- lib/tst_device.c                              | 51 ++++++++++++-------
- .../kernel/syscalls/ioctl/ioctl_loop05.c      |  2 +-
- 5 files changed, 40 insertions(+), 24 deletions(-)
-
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index b4a6b8e82..82550dbcd 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -54,19 +54,19 @@ static char dev_path[PATH_MAX];
+ static int device_acquired;
+ static unsigned long prev_dev_sec_write;
+ 
+-static const char *dev_variants[] = {
++static const char *dev_loop_variants[] = {
+ 	"/dev/loop%i",
+ 	"/dev/loop/%i",
+ 	"/dev/block/loop%i"
+ };
+ 
+-static int set_dev_path(int dev, char *path, size_t path_len)
++static int set_dev_loop_path(int dev, char *path, size_t path_len)
+ {
+ 	unsigned int i;
+ 	struct stat st;
+ 
+-	for (i = 0; i < ARRAY_SIZE(dev_variants); i++) {
+-		snprintf(path, path_len, dev_variants[i], dev);
++	for (i = 0; i < ARRAY_SIZE(dev_loop_variants); i++) {
++		snprintf(path, path_len, dev_loop_variants[i], dev);
+ 
+ 		if (stat(path, &st) == 0 && S_ISBLK(st.st_mode))
+ 			return 1;
+@@ -89,7 +89,7 @@ int tst_find_free_loopdev(char *path, size_t path_len)
+ 		close(ctl_fd);
+ 		if (rc >= 0) {
+ 			if (path)
+-				set_dev_path(rc, path, path_len);
++				set_dev_loop_path(rc, path, path_len);
+ 			tst_resm(TINFO, "Found free device %d '%s'",
+ 				rc, path ?: "");
+ 			return rc;
+@@ -116,7 +116,7 @@ int tst_find_free_loopdev(char *path, size_t path_len)
+ 	 */
+ 	for (i = 0; i < 256; i++) {
+ 
+-		if (!set_dev_path(i, buf, sizeof(buf)))
++		if (!set_dev_loop_path(i, buf, sizeof(buf)))
+ 			continue;
+ 
+ 		dev_fd = open(buf, O_RDONLY);
 -- 
 2.40.0.348.gf938b09366-goog
 
