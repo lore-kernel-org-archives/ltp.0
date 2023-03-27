@@ -4,83 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9342DC761A6
-	for <ltp@archiver.kernel.org>; Mon, 27 Mar 2023 10:21:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5ED9C76195
+	for <ltp@archiver.kernel.org>; Mon, 27 Mar 2023 10:26:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 06CE53CCB49
-	for <ltp@archiver.kernel.org>; Mon, 27 Mar 2023 12:21:41 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 5D4663CCBDB
+	for <ltp@archiver.kernel.org>; Mon, 27 Mar 2023 12:26:17 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 91AAF3CCCF9
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 12:21:24 +0200 (CEST)
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com
- [85.158.142.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 780CD1A00886
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 12:21:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1679912482; i=@fujitsu.com;
- bh=AfUaO4lr332p++cK68g7B44I0fMgrHSw9orV3ZmdifA=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=WE4e1Ak2H2coXeFKuet8cgSJtvnGMz3qs86MwDolmqfHyKO3N/z4f4ouSNYY9z3HK
- y2nFc1kip3DpSBr2TD1UVhkQOk/UJwz2SUZTForF774RdnhB39neepT+7phiTCmFfx
- SQMy7iqK5Bor23Z8g3QsOnBepKeagk6tUxLW+6x2cTkDW46SSpp713zeTtn5410GkC
- 5NbEPFMuOBjN9Of2at2Sgnp4Cruu778cFO4e6O0y/il6zJrHnZObqZkR1Uxxk7jtX9
- hpAWrZHx2rZyPnPK0Ed1OZ/KilRtAiLinJA3fveAJQiXt5qW3bM4VpyAu/5KVVywOM
- RgLULg/hFwiag==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRWlGSWpSXmKPExsViZ8OxWVcxTzH
- F4M9sK4sV33cwOjB67Pu9jjWAMYo1My8pvyKBNWP93AdMBR+EK6b9TG1gfCbYxcjFISRwilFi
- zdoGRghnD5PE4YP/2CGcvYwSu7qeMnUxcnKwCWhKPOtcwAxiiwhISHQ0vGUHsZkF1CWWT/oFV
- iMsYCAx5/8PoDgHB4uAqkTHvmSQMK+Ah8TlZdvBWiUEFCSmPHzPDBEXlDg58wkLxBgJiYMvXk
- DVKEm0tV5hhbArJBqnH2KCsNUkrp7bxDyBkX8WkvZZSNoXMDKtYjQvTi0qSy3SNTTQSyrKTM8
- oyU3MzNFLrNJN1Est1c3LLyrJ0DXUSywv1kstLtYrrsxNzknRy0st2cQIDMaU4sT5Oxgv9/3V
- O8QoycGkJMrbz6mYIsSXlJ9SmZFYnBFfVJqTWnyIUYaDQ0mCVzIHKCdYlJqeWpGWmQOMDJi0B
- AePkghvaRpQmre4IDG3ODMdInWKUZdjYf/VvcxCLHn5ealS4rx3QWYIgBRllObBjYBF6SVGWS
- lhXkYGBgYhnoLUotzMElT5V4ziHIxKwry5mUBTeDLzSuA2vQI6ggnoiG8FCiBHlCQipKQamPS
- vhdxSe1ay+ImYyXJr27QsX5EfzzmeRqXpxuacPFmj5mvRUJ3PNVPyskL9oTq3JZrzcr5Jnt9R
- vUhOKTDUK3mCQHToTMmmhb1hj14qrJNql0hh4HXmWj3DsK5yddHP67afN3r2f/rxaJe5v/elZ
- /ohtSKsQvPZ4n9wGBY0Tdxx8/03nVOnbs5QkfM0fRGx4/IXuedRl0L11Jcw/nzJdDnDJuie5L
- oV+xXvOf748UcymmmmQv08m2OZIdvkc+9VT2yfyWe16fV/lqq5S1TPLp7l9HB7xnc/na/S1yJ
- OLo+bej24ryf84aYDzDpv1T+ueRDrwS1lPz3FVLlgSv7l6DxOq2P8DntmsrLdb566V4mlOCPR
- UIu5qDgRAJ75NrxNAwAA
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-12.tower-728.messagelabs.com!1679912481!478306!1
-X-Originating-IP: [62.60.8.179]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.104.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 28827 invoked from network); 27 Mar 2023 10:21:21 -0000
-Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
- by server-12.tower-728.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 27 Mar 2023 10:21:21 -0000
-Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 57EC9152
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 11:21:21 +0100 (BST)
-Received: from R01UKEXCASM121.r01.fujitsu.local (R01UKEXCASM121
- [10.183.43.173])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 4B68E7B
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 11:21:21 +0100 (BST)
-Received: from localhost.localdomain (10.167.215.131) by
- R01UKEXCASM121.r01.fujitsu.local (10.183.43.173) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Mon, 27 Mar 2023 11:21:19 +0100
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Mon, 27 Mar 2023 18:21:08 +0800
-Message-ID: <1679912468-4539-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
+ by picard.linux.it (Postfix) with ESMTPS id 16B1B3CA2FE
+ for <ltp@lists.linux.it>; Mon, 27 Mar 2023 12:26:05 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTP id 2D8FE140076D
+ for <ltp@lists.linux.it>; Mon, 27 Mar 2023 12:26:03 +0200 (CEST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 731384B3;
+ Mon, 27 Mar 2023 03:26:45 -0700 (PDT)
+Received: from [10.57.54.115] (unknown [10.57.54.115])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B18AE3F73F;
+ Mon, 27 Mar 2023 03:26:00 -0700 (PDT)
+Message-ID: <d9d23632-b21a-5c43-c3dc-8a9b0873e0ba@arm.com>
+Date: Mon, 27 Mar 2023 11:25:54 +0100
 MIME-Version: 1.0
-X-Originating-IP: [10.167.215.131]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM121.r01.fujitsu.local (10.183.43.173)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+To: Li Wang <liwang@redhat.com>
+References: <20230323160508.672397-2-teo.coupriediaz@arm.com>
+ <ZB2PB6adFr+3sYI8@yuki> <76663541-e9bd-a17a-0ebd-ddd4d1eb68dd@arm.com>
+ <CAEemH2e9gbNOfm3Opc46Qh8FYmiYNtzrmyJy1hdbsVFVjyLk3w@mail.gmail.com>
+Content-Language: en-US
+From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+Organization: Arm Ltd.
+In-Reply-To: <CAEemH2e9gbNOfm3Opc46Qh8FYmiYNtzrmyJy1hdbsVFVjyLk3w@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] runtest/cve: sort by cve number
+Subject: Re: [LTP] [PATCH] syscalls/sockioctl: Align buffer to struct ifreq
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,100 +52,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- runtest/cve | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/runtest/cve b/runtest/cve
-index cdbb5bc5f..5447284c9 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -5,9 +5,9 @@ cve-2011-2496 vma03
- cve-2012-0957 uname04
- cve-2014-0196 cve-2014-0196
- cve-2015-0235 gethostbyname_r01
-+cve-2015-3290 cve-2015-3290
- cve-2015-7550 keyctl02
- cve-2016-4470 keyctl01.sh
--cve-2015-3290 cve-2015-3290
- cve-2016-4997 setsockopt03
- cve-2016-5195 dirtyc0w
- cve-2016-7042 cve-2016-7042
-@@ -19,6 +19,7 @@ cve-2016-10044 cve-2016-10044
- cve-2017-2618 cve-2017-2618
- cve-2017-2636 pty05
- cve-2017-2671 cve-2017-2671
-+cve-2017-5754 meltdown
- cve-2017-6951 request_key05
- cve-2017-7308 setsockopt02
- cve-2017-7472 keyctl04
-@@ -31,19 +32,18 @@ cve-2017-15299 request_key03 -b cve-2017-15299
- cve-2017-15537 ptrace07
- cve-2017-15649 fanout01
- cve-2017-15951 request_key03 -b cve-2017-15951
-+cve-2017-16939 cve-2017-16939
-+cve-2017-16995 bpf_prog03
-+cve-2017-17052 cve-2017-17052
-+cve-2017-17053 cve-2017-17053
- cve-2017-17712 sendmsg03
- cve-2017-17805 af_alg02
- cve-2017-17806 af_alg01
- cve-2017-17807 request_key04
--cve-2017-1000364 stack_clash
--cve-2017-5754 meltdown
--cve-2017-17052 cve-2017-17052
--cve-2017-16939 cve-2017-16939
--cve-2017-16995 bpf_prog03
--cve-2017-17053 cve-2017-17053
- cve-2017-18075 pcrypt_aead01
- cve-2017-1000111 setsockopt07
- cve-2017-1000112 setsockopt05
-+cve-2017-1000364 stack_clash
- cve-2017-1000380 snd_timer01
- cve-2017-1000405 thp04
- cve-2018-5803 sctp_big_chunk
-@@ -51,15 +51,15 @@ cve-2018-7566 snd_seq01
- cve-2018-8897 ptrace09
- cve-2018-9568 connect02
- cve-2018-10124 kill13
--cve-2018-1000001 realpath01
--cve-2018-1000199 ptrace08
--cve-2018-1000204 ioctl_sg01
- cve-2018-12896 timer_settime03
- cve-2018-13405 creat09
- cve-2018-18445 bpf_prog04
- cve-2018-18559 bind06
- cve-2018-18955 userns08
- cve-2018-19854 crypto_user01
-+cve-2018-1000001 realpath01
-+cve-2018-1000199 ptrace08
-+cve-2018-1000204 ioctl_sg01
- cve-2019-8912 af_alg07
- cve-2020-11494 pty04
- cve-2020-14386 sendto03
-@@ -72,10 +72,10 @@ cve-2021-4034 execve06
- cve-2021-22555 setsockopt08 -i 100
- cve-2021-26708 vsock01
- cve-2021-22600 setsockopt09
-+cve-2021-38604 mq_notify03
- cve-2022-0847 dirtypipe
- cve-2022-2590 dirtyc0w_shmem
--cve-2021-38604 mq_notify03
- # Tests below may cause kernel memory leak
--cve-2020-25704 perf_event_open03
--cve-2022-4378 cve-2022-4378
- cve-2022-0185 fsconfig03
-+cve-2022-4378 cve-2022-4378
-+cve-2020-25704 perf_event_open03
--- 
-2.39.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgTGksCgpPbiAyNy8wMy8yMDIzIDA5OjM1LCBMaSBXYW5nIHdyb3RlOgo+IEhpIFRlbywKPgo+
+IE9uIEZyaSwgTWFyIDI0LCAyMDIzIGF0IDEwOjM14oCvUE0gVGVvIENvdXByaWUgRGlhego+IDx0
+ZW8uY291cHJpZWRpYXpAYXJtLmNvbT4gd3JvdGU6Cj4+IEhpIEN5cmlsLAo+Pgo+PiBPbiAyNC8w
+My8yMDIzIDExOjUyLCBDeXJpbCBIcnViaXMgd3JvdGU6Cj4+PiBIaSEKPj4+PiBJbiBzZXR1cDMs
+IHRoZSBmb2xsb3dpbmcgbGluZSBjYW4gbGVhZCB0byBhbiB1bmRlZmluZWQgYmVoYXZpb3I6Cj4+
+Pj4gICAgIGlmciA9ICooc3RydWN0IGlmcmVxICopaWZjLmlmY19idWY7Cj4+Pj4KPj4+PiBJbmRl
+ZWQsIGF0IHRoaXMgcG9pbnQgaXQgY2FuIGJlIGFzc3VtZWQgdGhhdCBpZmMuaWZjX2J1ZiBpcyBz
+dWl0YWJseQo+Pj4+IGFsaWduZWQgZm9yIHN0cnVjdCBpZnJlcS4KPj4+PiBIb3dldmVyLCBpZmMu
+aWZjX2J1ZiBpcyBhc3NpZ25lZCB0byBidWYgd2hpY2ggaGFzIG5vIGFsaWdubWVudAo+Pj4+IGNv
+bnN0cmFpbnRzLiBUaGlzIG1lYW5zIHRoZXJlIGV4aXN0cyBjYXNlcyB3aGVyZSBidWYgaXMgbm90
+IHN1aXRhYmx5Cj4+Pj4gYWxpZ25lZCB0byBsb2FkIGEgc3RydWN0IGlmcmVxLCB3aGljaCBjYW4g
+Z2VuZXJhdGUgYSBTSUdCVVMuCj4+Pj4KPj4+PiBGb3JjZSB0aGUgYWxpZ25tZW50IG9mIGJ1ZiB0
+byB0aGF0IG9mIHN0cnVjdCBpZnJlcS4KPj4+Pgo+Pj4+IFNpZ25lZC1vZmYtYnk6IFRlbyBDb3Vw
+cmllIERpYXogPHRlby5jb3VwcmllZGlhekBhcm0uY29tPgo+Pj4+IC0tLQo+Pj4+IENJIEJ1aWxk
+OiBodHRwczovL2dpdGh1Yi5jb20vVGVvLUNEL2x0cC9hY3Rpb25zL3J1bnMvNDUwMjIwNDEzMgo+
+Pj4+Cj4+Pj4gICAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zb2NraW9jdGwvc29ja2lvY3Rs
+MDEuYyB8IDggKysrKysrKy0KPj4+PiAgICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCsp
+LCAxIGRlbGV0aW9uKC0pCj4+Pj4KPj4+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9zb2NraW9jdGwvc29ja2lvY3RsMDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvc29ja2lvY3RsL3NvY2tpb2N0bDAxLmMKPj4+PiBpbmRleCA0ODYyMzZhZjlkNmIuLmU2M2Fh
+MTkyMTg3NyAxMDA2NDQKPj4+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NvY2tp
+b2N0bC9zb2NraW9jdGwwMS5jCj4+Pj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9z
+b2NraW9jdGwvc29ja2lvY3RsMDEuYwo+Pj4+IEBAIC01Miw3ICs1MiwxMyBAQCBzdGF0aWMgc3Ry
+dWN0IGlmcmVxIGlmcjsKPj4+PiAgICBzdGF0aWMgaW50IHNpbmxlbjsKPj4+PiAgICBzdGF0aWMg
+aW50IG9wdHZhbDsKPj4+Pgo+Pj4+IC1zdGF0aWMgY2hhciBidWZbODE5Ml07Cj4+Pj4gKy8qCj4+
+Pj4gKyAqIGJ1ZiBoYXMgbm8gYWxpZ25tZW50IGNvbnN0cmFpbnRzIGJ5IGRlZmF1bHQuIEhvd2V2
+ZXIsIGl0IGlzIHVzZWQgdG8gbG9hZAo+Pj4+ICsgKiBhIHN0cnVjdCBpZnJlcSBpbiBzZXR1cDMs
+IHdoaWNoIHJlcXVpcmVzIGl0IHRvIGhhdmUgYW4gYXBwcm9wcmlhdGUgYWxpZ25tZW50Cj4+Pj4g
+KyAqIHRvIHByZXZlbnQgYSBwb3NzaWJsZSB1bmRlZmluZWQgYmVoYXZpb3IuCj4+Pj4gKyAqLwo+
+Pj4+ICtzdGF0aWMgY2hhciBidWZbODE5Ml0KPj4+PiArICAgIF9fYXR0cmlidXRlX18oKGFsaWdu
+ZWQoX19hbGlnbm9mX18oc3RydWN0IGlmcmVxKSkpKTsKPj4+Pgo+Pj4+ICAgIHN0YXRpYyB2b2lk
+IHNldHVwKHZvaWQpOwo+Pj4+ICAgIHN0YXRpYyB2b2lkIHNldHVwMCh2b2lkKTsKPj4+IExvb2tp
+bmcgYXQgdGhlIGNvZGUsIHNob3VsZG4ndCB3ZSByYXRoZXIgdGhhbiB0aGF0IGRlY2xhcmUgdGhl
+IGJ1ZmZlciBhcwo+Pj4gYW4gc3RydWN0IGlmcmVxIGFycmF5LCB0aGF0IHdvdWxkIG5hdHVyYWxs
+eSBhbGlnbiB0aGUgYnVmZmVyIHdpdGhvdXQgYW55Cj4+PiBuZWVkIGZvciB0cmlja3kgX19hdHRy
+aWJ1dGVfXy4KPj4gX19hdHRyaWJ1dGVfXytfX2FsaWdub2ZfXyBpcyBxdWl0ZSB1bndpZWxkeSBp
+bmRlZWQuIEkga2VwdCB0aGUgY2hhciogdG8KPj4gbWF0Y2ggdGhlIHN0cnVjdCBkZWZpbml0aW9u
+LAo+PiBidXQgaXQncyByZWFsbHkganVzdCB0byByZXByZXNlbnQgYSBwb2ludGVyIHRvIHNvbWV0
+aGluZy4gSXQncyBub3QgdXNlZAo+PiBhcyBhbnl0aGluZyBlbHNlIGluIHRoZSB0ZXN0IGFueXdh
+eS4KPj4KPj4gSWYgeW91IGZlZWwgdGhlcmUncyBubyBnb29kIHJlYXNvbiB0byBrZWVwIHRoZSBj
+aGFyKiBidWZmIGFuZCBjYXN0IHRvCj4+IHZvaWQqIGZvciB0aGUgc3lzY2FsbCwKPj4gSSBhZ3Jl
+ZSB0aGF0IGl0IHdvdWxkIGJlIGJldHRlci4gSSB0ZXN0ZWQgb24gb3VyIHN5c3RlbSB3aGljaCBn
+ZW5lcmF0ZWQKPj4gdGhlIGZhdWx0IGluaXRpYWxseQo+PiBhbmQgaXQgd29ya3MgZmluZSBhcyBl
+eHBlY3RlZC4KPj4KPj4gV2hhdCB3b3VsZCBiZSB0aGUgcHJvY2VkdXJlIGluIHRoaXMgY2FzZSA/
+IFNoYWxsIEkgcmVzZW5kIHRoZSBwYXRjaCB3aXRoCj4+IHlvdXIgY2hhbmdlcyA/Cj4gWWVzLCB5
+b3UgbmVlZCB0byBzZW5kIGEgcGF0Y2ggdjIgd2l0aCBDeXJpbCdzIHN1Z2dlc3Rpb24uClRoYW5r
+cyBmb3IgY2xhcmlmeWluZyBMaSwgdGhlbiBJIHdpbGwgc2ltcGx5IHNlbmQgb3V0IHRoZSB2MiB3
+aXRoIApDeXJpbCdzIGNoYW5nZXMKYW5kIHVwZGF0ZWQgY29tbWl0IG1lc3NhZ2UuCgpCZXN0IHJl
+Z2FyZHMsClTDqW8KCj4KPj4gV291bGQgeW91IGp1c3QgYXBwbHkgaXQgb3Igc2VuZCBpdCB5b3Vy
+c2VsZiA/IEhhcHB5IHRvIGZvbGxvdyB1cCBob3dldmVyCj4+IGlzIGJlc3QuCj4+Cj4+IFRoYW5r
+cyBmb3IgdGFraW5nIHRoZSB0aW1lIHRvIGxvb2sgaW50byBpdCwKPj4gQmVzdCByZWdhcmRzCj4+
+IFTDqW8KPj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NvY2tpb2N0
+bC9zb2NraW9jdGwwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zb2NraW9jdGwvc29j
+a2lvY3RsMDEuYwo+Pj4gaW5kZXggNTFkYWM5YzE2Li4yMDZhNDk5OWUgMTAwNjQ0Cj4+PiAtLS0g
+YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NvY2tpb2N0bC9zb2NraW9jdGwwMS5jCj4+PiAr
+KysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NvY2tpb2N0bC9zb2NraW9jdGwwMS5jCj4+
+PiBAQCAtNTIsNyArNTIsNyBAQCBzdGF0aWMgc3RydWN0IGlmcmVxIGlmcjsKPj4+ICAgIHN0YXRp
+YyBpbnQgc2lubGVuOwo+Pj4gICAgc3RhdGljIGludCBvcHR2YWw7Cj4+Pgo+Pj4gLXN0YXRpYyBj
+aGFyIGJ1Zls4MTkyXTsKPj4+ICtzdGF0aWMgc3RydWN0IGlmcmVxIGJ1ZlsyMDBdOwo+Pj4KPj4+
+ICAgIHN0YXRpYyB2b2lkIHNldHVwKHZvaWQpOwo+Pj4gICAgc3RhdGljIHZvaWQgc2V0dXAwKHZv
+aWQpOwo+Pj4gQEAgLTIxOCw3ICsyMTgsNyBAQCBzdGF0aWMgdm9pZCBzZXR1cDIodm9pZCkKPj4+
+ICAgICAgICAgICBzID0gU0FGRV9TT0NLRVQoY2xlYW51cCwgdGRhdFt0ZXN0bm9dLmRvbWFpbiwg
+dGRhdFt0ZXN0bm9dLnR5cGUsCj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgIHRkYXRbdGVz
+dG5vXS5wcm90byk7Cj4+PiAgICAgICAgICAgaWZjLmlmY19sZW4gPSBzaXplb2YoYnVmKTsKPj4+
+IC0gICAgICAgaWZjLmlmY19idWYgPSBidWY7Cj4+PiArICAgICAgIGlmYy5pZmNfYnVmID0gKHZv
+aWQqKWJ1ZjsKPj4+ICAgIH0KPj4+Cj4+Pgo+PiAtLQo+PiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0
+cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAKPgo+CgotLSAKTWFpbGluZyBsaXN0IGlu
+Zm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
