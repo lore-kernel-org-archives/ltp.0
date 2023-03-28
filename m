@@ -4,69 +4,143 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9054C76195
-	for <ltp@archiver.kernel.org>; Mon, 27 Mar 2023 16:12:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E680C76195
+	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 01:28:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B048F3CCD74
-	for <ltp@archiver.kernel.org>; Mon, 27 Mar 2023 18:12:51 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 849CB3CCEFB
+	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 03:27:58 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5D8F83CCD74
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 18:11:58 +0200 (CEST)
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com
- [IPv6:2607:f8b0:4864:20::649])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 862BA3CA2FE
+ for <ltp@lists.linux.it>; Tue, 28 Mar 2023 03:27:46 +0200 (CEST)
+Received: from esa17.fujitsucc.c3s2.iphmx.com (esa17.fujitsucc.c3s2.iphmx.com
+ [216.71.158.34])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ACECF1A00A28
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 18:11:57 +0200 (CEST)
-Received: by mail-pl1-x649.google.com with SMTP id
- z16-20020a170902d55000b001a06f9b5e31so6170708plf.21
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 09:11:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20210112; t=1679933516;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:from:to:cc:subject:date:message-id:reply-to;
- bh=Dq+u+hLzvFu1QO/mkJ3o+R8rp2fj58CwJfA8LZJICuM=;
- b=MdxsCktD0HiiAeXyCJQ9FymCm+Y6DdSCx8zFRybJk3HkuYh64jQ1xEWlEjwu202YeH
- zwbdCJvyZOLDlMJ0XeRILzfx/vG6idwK8KpygBY9dxdXK4mfFQqbKYLFuyHq1mPe/hH9
- l7Qg8g0Y9Y/NuVlsJUPWDpPLONwot27UHIKTcq06F8nFnKXhdNyXr9bwGa4vIEuMORIR
- 79HcHCxwG+JDWFAz+nwP7LyQjUqvEv6CtKgy0FGxHOyAVZSj6skJ0PtJqG692P7jQmS/
- cM8Pe4Mi361Jn8hKm20LZgXf7kEk8HIlWXd6S5AZdWhem+OBQV0ydbdPKPF7peQDWMew
- EQOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1679933516;
- h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
- :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=Dq+u+hLzvFu1QO/mkJ3o+R8rp2fj58CwJfA8LZJICuM=;
- b=m+jAtGBk6JJo5hztC3eNycczEnON6xhN09mxHhYShPQ+ab4NcphAFpgbb4TLJEgJLo
- y5kpbh9sOwtMx/popqLuvd0nMaX7T3Ftw6rHw61PdgvwKxDZLxbimO9TKL0Vy2yH2SKX
- dBl6B7zQC2wNBabPWWneecJjwf8B5o6xDHxnUfhR4zDJ+0E95yuVGQH7bbABVSlg86+0
- mluP9l9UbpfOD5rMXIuhhCuX+55RHfk62ehsei+k22vktPMfhuG3R3LWpKql8wiOFVAv
- YCR5q7ZwPxIZ4+yNdIETQE0BIBZIwkpIf1jJxcyrb1YBqpVFsmlV1UzRTU+0lVXBLFL1
- bhFg==
-X-Gm-Message-State: AAQBX9drhI8979R9Ql/M0dHTdHreTCFkoVuKNCSyiJujpdqFR9cHXSp1
- +WLwL6QvBYRjcYR0GO+5oLPHWYMLLpz6gqCB3EOf1+/CDPazzjSj8WF8BOhyXXLU71N/OJ1tSAb
- R5KE4a6HmRY4OFHADM5xEaKownPro1vNWxncqMv6j+Zuz7Cts/n7YnNK9
-X-Google-Smtp-Source: AKy350Z6f2hCMlD3MNTL24/KShixYKPrdnr0mMs3RPXNUOPdJ5c2q6q94YtI6yqKyJrwy1WR+aQdETIK9WQ=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a05:6a00:1881:b0:625:d7e6:51a0 with SMTP id
- x1-20020a056a00188100b00625d7e651a0mr6784863pfh.1.1679933515951; Mon, 27 Mar
- 2023 09:11:55 -0700 (PDT)
-Date: Mon, 27 Mar 2023 16:11:45 +0000
-In-Reply-To: <20230327161145.1702680-1-edliaw@google.com>
-Mime-Version: 1.0
-References: <20230327161145.1702680-1-edliaw@google.com>
-X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
-Message-ID: <20230327161145.1702680-5-edliaw@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id ECEF9200A10
+ for <ltp@lists.linux.it>; Tue, 28 Mar 2023 03:27:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1679966865; x=1711502865;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=wG0y6ibMEkXYgeqff8GZGQtA1aT0sFtyBUmfPnyikms=;
+ b=KTZ7TkmL7pKloxZZ3w2ptwyEUsmMadqA4eXfBF/awQBfT5pdIC0ONQv3
+ WJB9S5d5+8HtBnFuLxvrJB9lr4OXgdv1LsMIepvJkWwU2u7b3uvI300NV
+ pwEJQ1n+T4FNZPSON9Y3KNryGVH2u3nBNI4kDUodAhBekmu/tG3/FQpR3
+ R1QkpeAMZydiuH7qVxFfRfPq2GHSgfheu1oXcct9Lm1QLeKwB5d2DGgiv
+ 5B4zzS8w2gK4AjOH27NYOEJPwjuOSLYvc33xsWV7kcrabqe9/CUA0cG0S
+ gXza1LVZfUeZWS6/74FkEH6ae4iJj17h2DclRsWSSTRyQfF2vasyEWsqq A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10662"; a="80245050"
+X-IronPort-AV: E=Sophos;i="5.98,295,1673881200"; d="scan'208";a="80245050"
+Received: from mail-os0jpn01lp2106.outbound.protection.outlook.com (HELO
+ JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.106])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Mar 2023 10:27:43 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TNNj51ymp4EpvTBGZyMMQJ964SdHwbavlicHLbWsAanvb/XwERl1xuzirN8/S7/F4T1TPulqA+WOiCecRyqG9Zlo6MhEWAK2KFcxHJyqyXakdIz3szLiXZrDFwEIlTm1GgjT7R09Upf3fISVYbZd9DktJDueNfkpYJNb8yGtdtHbK2wKOOaW1PzNTRoCY6at4YJPSC32I2NrknTaXUbiFlkMw1L6G2WkScYzGTSEFembhq6N2mV6cedfYFAotkJ8LtF+Chb16v9ZoXQL+90f49WaYNZg+pAcjEevdPifmzEB1bBSB+VDP856H4bwu6C7/aNlExu0P1mHqj8QCKusVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wG0y6ibMEkXYgeqff8GZGQtA1aT0sFtyBUmfPnyikms=;
+ b=B0tRMulvCZEWmGAF6ejhtK4Tgu4IGPuFrvVHdLDzAEhC/Md11QuuWNqN3to6D9zvJzCUpTxIVdvHdfM4IbMcGjhoUMU+X/7/BllF205a3CH8LrJAEEqasFW6ICzgNcYzfqaZpBe92ZMobrcLb9z/d7VlLdkD3VwR639t91K22L/vtI72+6d+GqML+suQt64s1hPvwQPcKRJNttXbB63MvmYHFi7YHOUNwxKvr2x1PqrX5DUuEVmI2H1X6vuf4dFIh11LqRMZuqsTOVlVnHPmF3Z4oaRipHgD58Y4nWdp3oViCNUpkj8zyqUDPeU6a+2BJ0adUTJUpjvY2mtZsqXpHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from TYWPR01MB8313.jpnprd01.prod.outlook.com (2603:1096:400:166::9)
+ by OS0PR01MB5586.jpnprd01.prod.outlook.com (2603:1096:604:bf::12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6222.33; Tue, 28 Mar
+ 2023 01:27:39 +0000
+Received: from TYWPR01MB8313.jpnprd01.prod.outlook.com
+ ([fe80::b09b:8bce:a0d9:d3dd]) by TYWPR01MB8313.jpnprd01.prod.outlook.com
+ ([fe80::b09b:8bce:a0d9:d3dd%5]) with mapi id 15.20.6222.033; Tue, 28 Mar 2023
+ 01:27:39 +0000
+From: "xuyang2018.jy@fujitsu.com" <xuyang2018.jy@fujitsu.com>
+To: Petr Vorel <pvorel@suse.cz>, Li Wang <liwang@redhat.com>
+Thread-Topic: [LTP] [RESEND PATCH] runtest/cve: sort by cve number
+Thread-Index: AQHZYJc/6fW+G87oGEW+xuLbYoCu068OcAoAgAAGCoCAAPGygA==
+Date: Tue, 28 Mar 2023 01:27:39 +0000
+Message-ID: <44100779-b2fa-2832-2e66-4e534178ebb1@fujitsu.com>
+References: <1679913040-4675-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <CAEemH2cu7sXXyAC=D8pLXqEbFfctdMrafgRMNh5s67vX1MrYLA@mail.gmail.com>
+ <20230327110233.GA671310@pevik>
+In-Reply-To: <20230327110233.GA671310@pevik>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYWPR01MB8313:EE_|OS0PR01MB5586:EE_
+x-ms-office365-filtering-correlation-id: d89d52a7-6361-4857-950f-08db2f2b9e91
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: i5fmAvydblW1LnOeTCVpAZRzQzzZvw+vXIEnXzfPCsCtn6v3n6bGx8dKhJK0HSfNtxuNpFW2I0z1y95F7Ox1EbAA/DLVhfeN7dviEPDkKiUcM6pLSE+PUEFUuz9LKgrzm+KntSmJCqf3qM3Pntr5bJnkSSMEdyCzwxCHKs0QrF0CqJOpe4pOV15Vu0H0ahFcBFCAQuKTHrT3LemRgNZ96RDOPoUZzuLG5aLHyGT7mFGlYzmVSt5pQvBX5S2/x6lZFZE9bySnnNEOHa0+F9aoOtBGJzYtRudT/uleyB6BdAYwOv2Fw6zYdlg7l0qIieru2hb9LpW1Bf0jMqrtNKkoNwsWWHIBOn1UP+c5eU85xCYhPElgUEsWMEXcbhFZn1cWTX4lHxPLQ2Z4I++b3/7T/KfCdq8H2QMotpdDJBErREGH3tV8ODsqfy1n1YdKemGLwyJX32pxu5FT2nrb305SzPVsK8kzOv8Qht1h+7j7qwIkluCTCQVmpeWJOHnS3conk+rY6FkpLrTwLMNOjYM+OIoz8ZXEXvRKpFRZmhdg/i2dIvDM3KoTIAEOctEJ9yd617vWw7NLm9YuKG2hExXUxjRIg4cjY1OW3uQdNHS1KFUZfDAFY9tf66qbmL/hKtpicpjAn5m9SNuE6BVhXGoUt56x8uu0wDz46LJFrjB0Ul+PtoJl5Fo2efRALGskJGNg
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:TYWPR01MB8313.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230028)(4636009)(346002)(366004)(136003)(376002)(396003)(39860400002)(1590799018)(451199021)(6506007)(186003)(2616005)(6512007)(26005)(31686004)(6486002)(66556008)(66476007)(66446008)(64756008)(76116006)(66946007)(478600001)(110136005)(71200400001)(316002)(91956017)(8676002)(4326008)(5660300002)(82960400001)(31696002)(38100700002)(122000001)(86362001)(8936002)(2906002)(38070700005)(41300700001)(1580799015)(558084003)(36756003)(85182001)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MkJxaXF2TDlXTkhseitrTUhxVFRxbEVDMnNzdHNGY2t3eWhwc0pOYW00eUVz?=
+ =?utf-8?B?dXIrSFhPOFkrWXJENnVnL2ZwVHEwaWwvL1pHZmFvc05oSUFnSFp4TnhZbVlw?=
+ =?utf-8?B?NGxpZDRjT1VaVlhWdVppNVBuUWdjTWhRcXlacjB1bEthMUZ0WENpbXRnUTVT?=
+ =?utf-8?B?c2FmbzB2Wkh1RkdRakd2VnEzZHBjbm9FRmExenFNWWJQZFdqWDBURTJaTXIw?=
+ =?utf-8?B?V3BVV09Va0U3RGp3ZlJCbVBNcE1HbXVIaEFwdFBZT2tSQ1hTS2tOaVg4aDRM?=
+ =?utf-8?B?dFA2c2hyZy9Ha09tWktIQ3NUOWZIc21SNkEwTnVQSm4zcWZoa1JYeVNKdkQ1?=
+ =?utf-8?B?TFM1TG1QM3c2c1dsU0tLc2IyQVJXdXhvNEREU3UrMk91RUp0Wk9HQS9DMDFY?=
+ =?utf-8?B?d0tKcGNMK3k4QmpMNDE5ejdhb1FNYWtmbFAzYmdneUdrSVhxTXlmWDRSR2RX?=
+ =?utf-8?B?RUs4NGZkSithN2NwcXd1RkxaSmhJeDNSc054V1dabmtRSnE4dkVWSTN0Smc3?=
+ =?utf-8?B?a01PdDh1UFJTUFl5MEx5VS9JMWNNRXdkVGVZSmhtbUhnaXB0eS92dG56clpo?=
+ =?utf-8?B?NEhGVXhwdGEvMk91a0xqeG44VFExMElMeFIxUTZjNEFjNjdiSEQyYjAweUR4?=
+ =?utf-8?B?bGs2N0FKTm84TlduaHpsaEZMZG52ZVA5bmQwWDNodEZLWmhqRlhNZDJ3aUVs?=
+ =?utf-8?B?dmpBd3gya3ZTdm5BdCtHSlFmZDVSQkVTMyswSGkycEpxdlQzSDNqN3FPQXFl?=
+ =?utf-8?B?R3pyb0xkRXdaVTJyd3V5aGkyWkplTXhhVmtaOXdCdmdkRndBeDRPR1ZQQXMw?=
+ =?utf-8?B?Z1AvTGtNTmdKUUNOblFoWVdvRjBWbWNxbTBVcHQzemdhQ1FSUU40a3ViSVlB?=
+ =?utf-8?B?bk1kMk5MWUplUFV6WCtmOGZXQmpBTm9Id1pFM1NoY3JZdTZDbmhsNzFCZVhi?=
+ =?utf-8?B?YlZwckhyYUtlMEgzNy9KUTR1bE9vVlZTZStieVIwb3FuV2ZjUU5oSVFSeURH?=
+ =?utf-8?B?eEJDMmlnT1lQMGtic2d6Q21KaDlLOEtwWnVZMjJ1R3BuU1lkRmJVWWg4UUox?=
+ =?utf-8?B?cGN2TFlQcGExbXJ3ZEFSeVp2N00vNHlVeEI4UU9YVGU0aWpselhIc1kyd2E2?=
+ =?utf-8?B?QStQNzRqZXNVL1ZwM3hCNDU5SVRrdGNMT0Vmc0ZsZ0ZQZ0ZCNTE4Z0FnNFZk?=
+ =?utf-8?B?Wk4rU2M3MkFKejhWK0xKNW9VeGRQR292UC9lVEJaUXpZMzJxZm5XNGZPTVB0?=
+ =?utf-8?B?OXlHUDAxUGt3bllTakFwaFZwV0VETXZWSGtmajhDQStIaGN2Z3JtU1pFb1E0?=
+ =?utf-8?B?dEZBTG1ERXdKb3pMeE55bWprNU5VeU1wREhkWTFNTndTTmNOVWlKeHMzOUc1?=
+ =?utf-8?B?QnNmVVJxMDRpdEkxUWk1TVJ5NU1Sbm9VazF6c2QxZGFudFJjVWFDN1UxSFVO?=
+ =?utf-8?B?N25saUI0SjVwVjFPRHVJeUhlbEtNQVRIQjJuQXB1OWFNRVRSL2svaHVMdzhh?=
+ =?utf-8?B?NXhtWGdyR2dMRlJobEt0YlltRThNcExvbUxsRXVlS1RFVFoyby96NlhOcW5E?=
+ =?utf-8?B?cXlNQ1pJRndjeVJYV1NLMm42YXVZQkRFZmloSWtPU3FRWS9ZWTllbHZZVkV2?=
+ =?utf-8?B?Mnp6YjkyZWJacWd6QjRqK2NTNXhKRUpqK1VURStoY3orQ2ZEWE9idUw2em1h?=
+ =?utf-8?B?UkpoTmZGZGh3a3RzYThTQVlVYWdRZ2hlM2QwUFU1ck5zRENhVGhpVmRuSytJ?=
+ =?utf-8?B?ODFDOEZjNWpnRGhSYVEwb1c1VTVzVUtCTHRBbnl6N1NlbjFaOGJXaUpoaTNz?=
+ =?utf-8?B?ZmI0Ync3ZlBwSzdCdGxRNkhJOHV6OGFhMzBsTFRPbVBsOHdyRTgyTTlxQUZm?=
+ =?utf-8?B?bXhEVm84eFlRRi96WFhxYjBIOForYW1pUXhlZ01SN05tZnY1N1Z4d2xSOXMz?=
+ =?utf-8?B?MDZXNG4zLzBWaG03Z210TmN1cE8zWndsclhsbkFSSE9TVUoxWTdYMCthamdY?=
+ =?utf-8?B?ZzZhY2NqK3FxSzlhbmJMY0dCYVQzVkpYK3RibXYwckk1Q1pjbVg0QmZlbXlm?=
+ =?utf-8?B?aFJXcHFOS3NCQUJoWk9TK1JrNGNnaGFoYlBybGM5N1ZmbTJmcmthejlaeG5z?=
+ =?utf-8?B?clV6UktySUZzN0ZpTk9Td25LVk5PWVh6T1BqSXQ4OXdueEs3U3R4RFJCNnlM?=
+ =?utf-8?B?dkE9PQ==?=
+Content-ID: <6B481E768591614E8836A24287A9F15F@jpnprd01.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: HyxtII2LKCMUNOsszMy9HpFcgn3V1D7kRW1w1TK2BllBvzQ0KhUXxQ54STmpNQFeP1ngGFF9octLMN8sUx3N2ozxQqMZJd644lJOxzITvZ8mFVxE5GokBF4nlhxU1sycDDxKFcF81Hile1EEEWUwpUuOG3qY1zXFBCUiWOs5f1FF0Qy5gb/FMlrmHnxkSwlMm+g+En7WPpm4Xo66Nn66ATumU6oNW4WvM8Y1d1zQpz45fcjQjqrmqWP5FOdHfkRYxBRFIgT/EcArh68Kl2oMij6hC7IMOGb5CkWN3f6Lfd0bbb/urxKx2JsD9cojj167FrsyA8WfUkcyt9IYQIibOoOrGofRoQK9NeF+dk754hyuL7ml7D+JCCSKQI2Vx7dVSscmUfqa/pJubtkNhQS6bCfQoKcKf1AomRLtcXxAalsGEVunUfVgCljdFftN20ARFUAO0gRm3r7jcy9jeu6HXMYNqy8OkOF5BRm9H3rpTsckJC2NkRe6iCcVfp7nUPn4UgmhofPiGMNxxqK4nEdT4+JH9LuyCzt4RtjpX+F3rxlYCwqw0Qrf1D55YdJHdyzAC548zFluFIiLnAxPVKhl/pDr0XD0exDSY8sNtmSkK/n7xvM5zhdj6/ofbY6iMe5cxHgNw4ilYnAc12GTD0dL22j3eDCQCAJQ5k0J5dilHEavbfRdR8wM/HSWjosks0CBsCPG1M0dGvwt9coj+r+UeIAJTfrLW0XWEOZb3C/FVJlKI8BFyh/7FTVO7POg/OlSg6PEOx6Q9/N6GaZ8AGPjw71Xk4xti47v3yXuD77UMnX4kSOgCjj62fMZOtrwWLWY
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYWPR01MB8313.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d89d52a7-6361-4857-950f-08db2f2b9e91
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2023 01:27:39.3099 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9Wn41uGhvLm5YtySi1Z1w92qlj+BntqJktDlv3NpOKBPLy8HGG3H7Z83fUejiXZejZu2DoVKxsez93J7mVKHOw6MjSm227ChxHIAyLZ+DPE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5586
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 4/4] tst_find_backing_dev: Also check /dev/block/
- for backing device
+Subject: Re: [LTP] [RESEND PATCH] runtest/cve: sort by cve number
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,182 +152,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team@android.com
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes: e1b1ae66b240 ("tst_find_backing_dev: Get dev name from /sys/dev/block/*/uevent")
+Hi Li, Petr
 
-On Android, the backing devices are created in /dev/block/ and will not
-be found using the method added in e1b1ae66b240.  Adds a check for
-/dev/block/%s as well as /dev/%s.
+Thanks for your review, merged!
 
-Modified the function signature of tst_find_backing_dev to add the
-length of the dev path string.  Updated the documentation and code that
-references it.
-
-Signed-off-by: Edward Liaw <edliaw@google.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
----
- doc/c-test-api.txt                            |  2 +-
- include/tst_device.h                          |  7 ++--
- lib/newlib_tests/tst_device.c                 |  2 +-
- lib/tst_device.c                              | 37 +++++++++++++------
- .../kernel/syscalls/ioctl/ioctl_loop05.c      |  2 +-
- 5 files changed, 33 insertions(+), 17 deletions(-)
-
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index a7dd59dac..11f87def2 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -1087,7 +1087,7 @@ is created for that intention.
- -------------------------------------------------------------------------------
- #include "tst_test.h"
- 
--void tst_find_backing_dev(const char *path, char *dev);
-+void tst_find_backing_dev(const char *path, char *dev, size_t dev_size);
- -------------------------------------------------------------------------------
- 
- This function finds the block dev that this path belongs to, using uevent in sysfs.
-diff --git a/include/tst_device.h b/include/tst_device.h
-index 977427f1c..39545fab0 100644
---- a/include/tst_device.h
-+++ b/include/tst_device.h
-@@ -108,10 +108,11 @@ void tst_purge_dir(const char *path);
- 
- /*
-  * Find the file or path belongs to which block dev
-- * @path  Path to find the backing dev
-- * @dev   The block dev
-+ * @path       Path to find the backing dev
-+ * @dev        The buffer to store the block dev in
-+ * @dev_size   The length of the block dev buffer
-  */
--void tst_find_backing_dev(const char *path, char *dev);
-+void tst_find_backing_dev(const char *path, char *dev, size_t dev_size);
- 
- /*
-  * Stat the device mounted on a given path.
-diff --git a/lib/newlib_tests/tst_device.c b/lib/newlib_tests/tst_device.c
-index 87cec3961..53099f9bc 100644
---- a/lib/newlib_tests/tst_device.c
-+++ b/lib/newlib_tests/tst_device.c
-@@ -71,7 +71,7 @@ static void test_tst_find_backing_dev(void)
- {
- 	char block_dev[100];
- 
--	tst_find_backing_dev(mntpoint, block_dev);
-+	tst_find_backing_dev(mntpoint, block_dev, sizeof(block_dev));
- 
- 	if (!strcmp(tst_device->dev, block_dev))
- 		tst_res(TPASS, "%s belongs to %s block dev", mntpoint,
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 2b4b6fb95..892e0b2e6 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -60,6 +60,11 @@ static const char *dev_loop_variants[] = {
- 	"/dev/block/loop%i"
- };
- 
-+static const char *dev_variants[] = {
-+	"/dev/%s",
-+	"/dev/block/%s"
-+};
-+
- static int set_dev_loop_path(int dev, char *path, size_t path_len)
- {
- 	unsigned int i;
-@@ -75,6 +80,21 @@ static int set_dev_loop_path(int dev, char *path, size_t path_len)
- 	return 1;
- }
- 
-+static int set_dev_path(char *dev, char *path, size_t path_len)
-+{
-+	unsigned int i;
-+	struct stat st;
-+
-+	for (i = 0; i < ARRAY_SIZE(dev_variants); i++) {
-+		snprintf(path, path_len, dev_variants[i], dev);
-+
-+		if (stat(path, &st) == 0 && S_ISBLK(st.st_mode))
-+			return 0;
-+	}
-+
-+	return 1;
-+}
-+
- int tst_find_free_loopdev(char *path, size_t path_len)
- {
- 	int ctl_fd, dev_fd, rc, i;
-@@ -512,7 +532,7 @@ unsigned long tst_dev_bytes_written(const char *dev)
- }
- 
- __attribute__((nonnull))
--void tst_find_backing_dev(const char *path, char *dev)
-+void tst_find_backing_dev(const char *path, char *dev, size_t dev_size)
- {
- 	struct stat buf;
- 	struct btrfs_ioctl_fs_info_args args = {0};
-@@ -575,7 +595,7 @@ void tst_find_backing_dev(const char *path, char *dev)
- 			sprintf(uevent_path, "%s/%s/uevent",
- 				bdev_path, d->d_name);
- 		} else {
--			tst_brkm(TBROK | TERRNO, NULL, "No backining device found while looking in %s.", bdev_path);
-+			tst_brkm(TBROK | TERRNO, NULL, "No backing device found while looking in %s.", bdev_path);
- 		}
- 
- 		if (SAFE_READDIR(NULL, dir))
-@@ -591,17 +611,12 @@ void tst_find_backing_dev(const char *path, char *dev)
- 	if (!access(uevent_path, R_OK)) {
- 		FILE_LINES_SCANF(NULL, uevent_path, "DEVNAME=%s", dev_name);
- 
--		if (dev_name[0])
--			sprintf(dev, "/dev/%s", dev_name);
-+		if (!dev_name[0] || set_dev_path(dev_name, dev, dev_size))
-+			tst_brkm(TBROK, NULL, "Could not stat backing device %s", dev);
-+
- 	} else {
- 		tst_brkm(TBROK, NULL, "uevent file (%s) access failed", uevent_path);
- 	}
--
--	if (stat(dev, &buf) < 0)
--		tst_brkm(TWARN | TERRNO, NULL, "stat(%s) failed", dev);
--
--	if (S_ISBLK(buf.st_mode) != 1)
--		tst_brkm(TCONF, NULL, "dev(%s) isn't a block dev", dev);
- }
- 
- void tst_stat_mount_dev(const char *const mnt_path, struct stat *const st)
-@@ -644,7 +659,7 @@ int tst_dev_block_size(const char *path)
- 	int size;
- 	char dev_name[PATH_MAX];
- 
--	tst_find_backing_dev(path, dev_name);
-+	tst_find_backing_dev(path, dev_name, sizeof(dev_name));
- 
- 	fd = SAFE_OPEN(NULL, dev_name, O_RDONLY);
- 	SAFE_IOCTL(NULL, fd, BLKSSZGET, &size);
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-index b4427f331..3a5d5afef 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop05.c
-@@ -125,7 +125,7 @@ static void setup(void)
- 	 *   needn't transform transfer.
- 	 */
- 	sprintf(backing_file_path, "%s/test.img", tst_get_tmpdir());
--	tst_find_backing_dev(backing_file_path, bd_path);
-+	tst_find_backing_dev(backing_file_path, bd_path, sizeof(bd_path));
- 	block_devfd = SAFE_OPEN(bd_path, O_RDWR);
- 	SAFE_IOCTL(block_devfd, BLKSSZGET, &logical_block_size);
- 	tst_res(TINFO, "backing dev(%s) logical_block_size is %d", bd_path, logical_block_size);
--- 
-2.40.0.348.gf938b09366-goog
-
+Best Regards
+Yang Xu
+> Hi Xu,
+> 
+> obviously ok to push.
+> 
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> 
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
