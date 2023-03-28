@@ -4,77 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91EA4C76195
-	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 07:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 262FAC76196
+	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 08:11:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 65F8F3CCB0A
-	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 09:44:41 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 02C9C3CCB16
+	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 10:11:47 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5AE853C010E
- for <ltp@lists.linux.it>; Tue, 28 Mar 2023 09:44:27 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 4AEEB3CB238
+ for <ltp@lists.linux.it>; Tue, 28 Mar 2023 10:11:36 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 16BF9601EFC
- for <ltp@lists.linux.it>; Tue, 28 Mar 2023 09:44:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1679989465;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 697F4100034B
+ for <ltp@lists.linux.it>; Tue, 28 Mar 2023 10:11:35 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AB892219CB;
+ Tue, 28 Mar 2023 08:11:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1679991094;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=7xuMKcRCvB5tHnerPYgIEyxAxD7qu7P1WlIxutjYnAM=;
- b=J9R7GDUda0Ow9ilf3LLPqeuJKouaSNZgqfJ+P7PLeyaQ6IvNQIqQtbph+3AHxFX1dbcGM9
- gWpHiSjwEcqmhOshLAmHYQKz/BomFrhiQG00TOrDM5uINP3Ap5exGD+I7giGc7ET3d5YWn
- dJ01QP+ilRbEUx54+zH5t7iRSywh+2E=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-277-gEFEwDHEPQGVqytbNfhbrw-1; Tue, 28 Mar 2023 03:44:22 -0400
-X-MC-Unique: gEFEwDHEPQGVqytbNfhbrw-1
-Received: by mail-wm1-f71.google.com with SMTP id
- e5-20020a05600c4e4500b003edc5824521so6897374wmq.0
- for <ltp@lists.linux.it>; Tue, 28 Mar 2023 00:44:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1679989461;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=7xuMKcRCvB5tHnerPYgIEyxAxD7qu7P1WlIxutjYnAM=;
- b=OgwhgWFRNQg82HSP2DSIRd611KEH9n4SkdWCgi3tyh+ymvqj32q8kzIMQfD8l+5+AR
- qDpyP3l3E6FyNTRN7lbg+zFq8e4U/MzHIC2ynYFwCwH0YR0Ua9chSieO8Sh7kxupY3Nd
- 9/APNbtDccQ+8GEnWZdh3O/KzYxS24zN9pS74FApaM0QtFXfysD/l/PG/EIIcrdXEuXX
- YRn49ezFB64dtPp/Wxb04EzrNBFr/SXJQanUXRqrytGI0Dj47LGLZyCB2YbytqrmT2ey
- KgObRnjUaou5qVqYVu1vFyNw99eOC0TwTHE0C+HFbMd9eBM0qKyxuWYBu7Cc9KTetsxc
- KWbA==
-X-Gm-Message-State: AAQBX9fkvUGODzryxKZ8TYj3U/H5b1zgCihMhka+0PIFod8l26x2rXm6
- CeH3IwWpy2jDuZouMyFID37WHTI88ZspNe8M/1ltU5FjF1TRjCjSAm4htRF2p0nXRsp/UNet8QQ
- 2uTx9tED58EDbFa0Gd6MC51PxwVY=
-X-Received: by 2002:adf:e941:0:b0:2d6:e7b3:74cb with SMTP id
- m1-20020adfe941000000b002d6e7b374cbmr2943452wrn.7.1679989461717; 
- Tue, 28 Mar 2023 00:44:21 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bH8psVdJL2CQODXh/xOTJNq31nM9TUNuiWJ4A/9P/lJ67Vv1WhastXNBW7dNSG3wItoHU8L8jnx2KkXgDuz2Q=
-X-Received: by 2002:adf:e941:0:b0:2d6:e7b3:74cb with SMTP id
- m1-20020adfe941000000b002d6e7b374cbmr2943447wrn.7.1679989461481; Tue, 28 Mar
- 2023 00:44:21 -0700 (PDT)
+ bh=8gOH9yszeT6k7GwAXmz7mvWsr5h2z0hQkaksklWwyAs=;
+ b=FRQ7p7g51+PVDO72HiuNV1Y0gCT/fGXoBXhd2Tzsf9nkJVPPqJX7/yX6kXcmnIgHuKozX8
+ tIGC8l9HH4KMMIcBymdzzxHr9KyCaqYufntPLvjeU4GvHnlv6SKjHjUP3f6TY7qLSlycES
+ 6fElouUUtVv75Xhs+B8q86XEBMH/bIM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1679991094;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8gOH9yszeT6k7GwAXmz7mvWsr5h2z0hQkaksklWwyAs=;
+ b=GfPF3DWrRbkheOi2KRjSD8CRbWFopbnGu2pqcNsdkBgsrIWhyn7MKFhd6b595uMdt9xrYt
+ LAEeupcrooqCb+Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7E65C1390D;
+ Tue, 28 Mar 2023 08:11:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3HLxHDahImTqGQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 28 Mar 2023 08:11:34 +0000
+Date: Tue, 28 Mar 2023 10:11:33 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20230328081133.GA743322@pevik>
+References: <20230323121330.92244-1-paulson@zilogic.com>
+ <20230327105110.GA667966@pevik>
+ <CAEemH2eTt9P2FWhsS2VASCbLwcOvV4ESrRKLuxWS7HwTNGjSrQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230323160442.671164-1-teo.coupriediaz@arm.com>
-In-Reply-To: <20230323160442.671164-1-teo.coupriediaz@arm.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 28 Mar 2023 15:44:10 +0800
-Message-ID: <CAEemH2dHG-j53Q1W+aGtORNjX+v2WWnXdCvzD0TEX65Cr1ifAQ@mail.gmail.com>
-To: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2eTt9P2FWhsS2VASCbLwcOvV4ESrRKLuxWS7HwTNGjSrQ@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] ipc/msgstress03: Assume all forks will run
- concurently
+Subject: Re: [LTP] [PATCH] Added test for mmap() with MAP_SHARED_VALIDATE.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,19 +78,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, paulson <lpaulsonraja@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+...
+> > FYI we have various helpers in include/tst_test_macros.h, e.g. TST_EXP_FAIL()
+> > for expected failures where return is just classical syscalls result
+> > (0 for pass, -1 for error) or TST_EXP_FD() for file descriptors.
 
+> > But these cannot be used here, because mmap returns pointer to void.
+> > We might want to write helpers which use TEST_VOID() instead of TEST(),
+> > after tests for mmap() are rewritten to new API, they could use it.
 
--- 
-Regards,
-Li Wang
+> Sounds good, but we can do this in later refactoring work on mmap tests.
+> Now I'm slightly OK with not using TEST_ macros for everything:).
 
+Sure (it will not block this effort, definitely for separate effort with low
+priority).
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
