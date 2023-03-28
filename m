@@ -4,48 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EB15C76196
-	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 03:50:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E9D1C76195
+	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 07:42:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 800AF3CCDAA
-	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 05:50:30 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id CC7C63CCB94
+	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 09:42:09 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 511C83CB238
- for <ltp@lists.linux.it>; Tue, 28 Mar 2023 05:50:18 +0200 (CEST)
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
- [60.248.80.70])
+ by picard.linux.it (Postfix) with ESMTPS id 10FAA3C2C74
+ for <ltp@lists.linux.it>; Tue, 28 Mar 2023 09:41:57 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 66EAA6006DC
- for <ltp@lists.linux.it>; Tue, 28 Mar 2023 05:50:14 +0200 (CEST)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
- by Atcsqr.andestech.com with ESMTP id 32S3o2jb040449;
- Tue, 28 Mar 2023 11:50:02 +0800 (+08)
- (envelope-from ycliang@andestech.com)
-Received: from atcfdc88.andestech.com (10.0.15.158) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0;
- Tue, 28 Mar 2023 11:49:57 +0800
-Date: Tue, 28 Mar 2023 11:50:14 +0800
-From: Leo Liang <ycliang@andestech.com>
-To: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-Message-ID: <20230328035014.GA31403@atcfdc88.andestech.com>
-References: <20230323160442.671164-1-teo.coupriediaz@arm.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 39EED1400E19
+ for <ltp@lists.linux.it>; Tue, 28 Mar 2023 09:41:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1679989315;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=iRgRMZQmTwKufpT2a+k58zoz2At60jBudm7LrNl4d/Q=;
+ b=E3Kgcr9jpybz6q0lwnq/M6STZHgHetc7FRgV1UNPCWLd4Jt9vK09oWLpa1ufxxb8ekDPqj
+ tBpymnj55g5jkm5vKuEqpRI40Iui9lTGo8zadxeM/u1q9XcC8FYUDHVZ8pVhzqCGoMo+Ll
+ 3pMV9E2aOS/IPKi4jpUmeDd9t3P8blA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-144-_ByrHACLNimtkOyvsbRE3w-1; Tue, 28 Mar 2023 03:41:53 -0400
+X-MC-Unique: _ByrHACLNimtkOyvsbRE3w-1
+Received: by mail-wm1-f69.google.com with SMTP id
+ j27-20020a05600c1c1b00b003edd2023418so6867940wms.4
+ for <ltp@lists.linux.it>; Tue, 28 Mar 2023 00:41:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112; t=1679989312;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=iRgRMZQmTwKufpT2a+k58zoz2At60jBudm7LrNl4d/Q=;
+ b=7USsI8j1OHl3JOdK+aHA6R7wHXww8xDezY/+V5j/llOJJV5st0vzOwl6RfN4s0nyDA
+ vCrj0dSXQtMts7WKfSiErZlfGix1SxFO12WxfxE5+6jVYNwsTrmeQKEV2QXV6gz1B+pw
+ MWWbJUtfzwaUR+knF9Db98xT38ip+fk5vMzob9i8PDse0ieVlBMfLENsMZpZPZ80/Gsv
+ Ab8U7+AyVYaNJj9YaS7y6Rb50jPZonIDMz7VLKDuGl142+Z9GXb+45iOBe1FHRs3FVsm
+ CUbvWNJM1izokmxRPs7D4oVjIbKFH1iMtPAwvP7EFG65GC56DFW3vc/PRl7V4irfzqUB
+ zF9A==
+X-Gm-Message-State: AO0yUKXhZcu1x7UeODzcR2mZlIpe+vSLG0pyXA4XY7228WBrE39Jable
+ eLpbCjClUjCecFbCn7ZzTXCtKB6ubDzfvWGWekb4lQ/qW4WmbWEu3jUt5ZyTjv9hw+nc9WkbhUm
+ xx5vzm4Yzz5hsFnGewSj21PWAl9o=
+X-Received: by 2002:a05:600c:2295:b0:3ed:779c:4063 with SMTP id
+ 21-20020a05600c229500b003ed779c4063mr3299966wmf.8.1679989312358; 
+ Tue, 28 Mar 2023 00:41:52 -0700 (PDT)
+X-Google-Smtp-Source: AK7set/onILtUBfim6F2hD91I1pJ5RD183obqXc5OKvAoJ8cVk1i6cvDJIKKlI2YCAgUquOBUDB5zp8w7g3mpgw1O40=
+X-Received: by 2002:a05:600c:2295:b0:3ed:779c:4063 with SMTP id
+ 21-20020a05600c229500b003ed779c4063mr3299961wmf.8.1679989312070; Tue, 28 Mar
+ 2023 00:41:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230323160442.671164-1-teo.coupriediaz@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.0.15.158]
-X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 32S3o2jb040449
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20230324101630.562727-1-pvorel@suse.cz>
+In-Reply-To: <20230324101630.562727-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 28 Mar 2023 15:41:41 +0800
+Message-ID: <CAEemH2fXxvAKiDvBHY+Pbg=OXtgzCALoW5HD8Fi7gGucgsRtbA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] ipc/msgstress03: Assume all forks will run
- concurently
+Subject: Re: [LTP] [PATCH 1/1] lapi/mmap.h: Add MAP_SHARED_VALIDATE
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,38 +84,18 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it, paulson <lpaulsonraja@gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, Mar 23, 2023 at 04:04:42PM +0000, Teo Couprie Diaz wrote:
-> It appears that msgstress03 doesn't account for all PIDs that its children
-> can use, as it expects the tasks will terminate quickly and not reach
-> the PID limit.
-> On some systems, this assumption can be invalid and the PID limit
-> will be hit.
-> Change the limit to account for all possible children at once, knowning
-> that each child will fork as well.
-> 
-> Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-> Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
-> ---
-> This patch was already reviewed as part of a larger series[0]. The rest of
-> the series needs a large rework to be merged, but I felt this patch was a
-> simple and independnt enough to warrant a resend.
-> No changes were made.
-> 
-> CI Build: https://github.com/Teo-CD/ltp/actions/runs/4502197808
-> 
-> [0]: https://lists.linux.it/pipermail/ltp/2023-February/033007.html
-> 
->  testcases/kernel/syscalls/ipc/msgstress/msgstress03.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Li Wang <liwang@redhat.com>
 
-LGTM!
-Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+-- 
+Regards,
+Li Wang
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
