@@ -4,78 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 119A4C76195
-	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 03:40:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EB15C76196
+	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 03:50:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8F5CD3CCBCB
-	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 05:40:21 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 800AF3CCDAA
+	for <ltp@archiver.kernel.org>; Tue, 28 Mar 2023 05:50:30 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 307843CB238
- for <ltp@lists.linux.it>; Tue, 28 Mar 2023 05:40:11 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 511C83CB238
+ for <ltp@lists.linux.it>; Tue, 28 Mar 2023 05:50:18 +0200 (CEST)
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
+ [60.248.80.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 44D8F1A005EB
- for <ltp@lists.linux.it>; Tue, 28 Mar 2023 05:40:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1679974808;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=gT/iohH8pixl7PHXvmcGruMNluGYaAEif9IqxtBBXII=;
- b=NYSUnsD6n83f/UkxdxSD6xdJQ0lGyjlwJqRwUDXjeBklSN4XDK6NekwCCoSMG/9SnBwHWM
- +mQMifn7aed/OCAo8+EpitH3FyiS+cV5JforDEMfCnkbi6PuNcX3DPSjd01c2nxyoT7cbk
- o09Z+3IuvRJ1mzPuoInYYc6c5sMd+hg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-297-VCy_IKmVM9qqDZgFBK1k8g-1; Mon, 27 Mar 2023 23:40:06 -0400
-X-MC-Unique: VCy_IKmVM9qqDZgFBK1k8g-1
-Received: by mail-wm1-f69.google.com with SMTP id
- h22-20020a05600c351600b003ef739416c3so826752wmq.4
- for <ltp@lists.linux.it>; Mon, 27 Mar 2023 20:40:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112; t=1679974806;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=gT/iohH8pixl7PHXvmcGruMNluGYaAEif9IqxtBBXII=;
- b=BV7RhSabF+21KHnXWSdlV92df15NH327FNX1EGtf9U7fgzqgn553xOmLZ091csJoPy
- smYipatR53cXefPUAP1YBcGmM9HZSSA2Ek0t3mtWgPUdeArkcpOnEPF2G8ts1c6IPWXD
- IFySaCulLSjOsvqkYtv0EdUBLFAEjacGGnxUYGEfOejOgTKBy+jhgidB/yqxn2/TCBWV
- YsRbTHUOnxYGdZK2QEGJbjw+JTl5NJu9apYF+8DHHKH59qJ2uh5EJw37Figw0+/JSzhX
- 6YHqEKHaYsYa4StXOBASPNlz+5KwdMrZuByNf6xHqYE/Njv/9/jtcevnvvWhkJrekr7u
- eZqg==
-X-Gm-Message-State: AAQBX9dGBLvRm1TJdX77cvOpFK0IxtC6woN7Yv70yg58zb/PoaiCnnhr
- bc5gwS4i3WISuNJUpbLB7tpdam4PmTzznlqvLlNqP/Gn2DMq16N3aFVco1PX43vpwuU/tSrE6AW
- vKh8sbp+mhxMSU1kE37VFj6aYGdc=
-X-Received: by 2002:adf:fdd1:0:b0:2c8:5741:a8fc with SMTP id
- i17-20020adffdd1000000b002c85741a8fcmr2863022wrs.7.1679974805815; 
- Mon, 27 Mar 2023 20:40:05 -0700 (PDT)
-X-Google-Smtp-Source: AKy350Y9WTZo9jbCjFsUurjxj2T+uj629W2i9J4qJf5FxNpk9zuvqwkRcQBIKdiO03AHu83otvH31zyN5aINTcqd+NI=
-X-Received: by 2002:adf:fdd1:0:b0:2c8:5741:a8fc with SMTP id
- i17-20020adffdd1000000b002c85741a8fcmr2863019wrs.7.1679974805564; Mon, 27 Mar
- 2023 20:40:05 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 66EAA6006DC
+ for <ltp@lists.linux.it>; Tue, 28 Mar 2023 05:50:14 +0200 (CEST)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+ by Atcsqr.andestech.com with ESMTP id 32S3o2jb040449;
+ Tue, 28 Mar 2023 11:50:02 +0800 (+08)
+ (envelope-from ycliang@andestech.com)
+Received: from atcfdc88.andestech.com (10.0.15.158) by ATCPCS16.andestech.com
+ (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0;
+ Tue, 28 Mar 2023 11:49:57 +0800
+Date: Tue, 28 Mar 2023 11:50:14 +0800
+From: Leo Liang <ycliang@andestech.com>
+To: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+Message-ID: <20230328035014.GA31403@atcfdc88.andestech.com>
+References: <20230323160442.671164-1-teo.coupriediaz@arm.com>
 MIME-Version: 1.0
-References: <20230323121330.92244-1-paulson@zilogic.com>
- <20230327105110.GA667966@pevik>
-In-Reply-To: <20230327105110.GA667966@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 28 Mar 2023 11:39:54 +0800
-Message-ID: <CAEemH2eTt9P2FWhsS2VASCbLwcOvV4ESrRKLuxWS7HwTNGjSrQ@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230323160442.671164-1-teo.coupriediaz@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.0.15.158]
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 32S3o2jb040449
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Added test for mmap() with MAP_SHARED_VALIDATE.
+Subject: Re: [LTP] [PATCH] ipc/msgstress03: Assume all forks will run
+ concurently
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,32 +57,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, paulson <lpaulsonraja@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBNYXIgMjcsIDIwMjMgYXQgNjo1MeKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKPgo+IEhpLAo+Cj4gPiArc3RhdGljIHZvaWQgdGVzdF9tbWFwKHZvaWQpCj4g
-PiArewo+ID4gKyAgICAgbWFwcGVkX2FkZHJlc3MgPSBtbWFwKE5VTEwsIFRFU1RfRklMRV9TSVpF
-LCBQUk9UX1JFQUQgfCBQUk9UX1dSSVRFLAo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICgxIDw8IDcpIHwgTUFQX1NIQVJFRF9WQUxJREFURSwgZmRfZmlsZSwgMCk7Cj4gPiArICAgICBp
-ZiAobWFwcGVkX2FkZHJlc3MgIT0gTUFQX0ZBSUxFRCkKPiA+ICsgICAgICAgICAgICAgdHN0X3Jl
-cyhURkFJTCB8IFRFUlJOTywgIm1tYXAoKSBpcyBzdWNjZXNzZnVsLCBidXQgaXQgc2hvdWxkIGhh
-dmUgZmFpbGVkLiIpOwo+ID4gKyAgICAgZWxzZSBpZiAoZXJybm8gPT0gRU9QTk9UU1VQUCkKPiA+
-ICsgICAgICAgICAgICAgdHN0X3JlcyhUUEFTUywgIm1tYXAoKSBmYWlsZWQgd2l0aCBlcnJubyBz
-ZXQgdG8gRU9QTk9UU1VQUC4iKTsKPiA+ICsgICAgIGVsc2UKPiA+ICsgICAgICAgICAgICAgdHN0
-X3JlcyhURkFJTCB8IFRFUlJOTywgIm1tYXAoKSBmYWlsZWQgd2l0aCB1bmV4cGVjdGVkIGVycm9y
-LiIpOwo+ID4gK30KPgo+IEZZSSB3ZSBoYXZlIHZhcmlvdXMgaGVscGVycyBpbiBpbmNsdWRlL3Rz
-dF90ZXN0X21hY3Jvcy5oLCBlLmcuIFRTVF9FWFBfRkFJTCgpCj4gZm9yIGV4cGVjdGVkIGZhaWx1
-cmVzIHdoZXJlIHJldHVybiBpcyBqdXN0IGNsYXNzaWNhbCBzeXNjYWxscyByZXN1bHQKPiAoMCBm
-b3IgcGFzcywgLTEgZm9yIGVycm9yKSBvciBUU1RfRVhQX0ZEKCkgZm9yIGZpbGUgZGVzY3JpcHRv
-cnMuCj4KPiBCdXQgdGhlc2UgY2Fubm90IGJlIHVzZWQgaGVyZSwgYmVjYXVzZSBtbWFwIHJldHVy
-bnMgcG9pbnRlciB0byB2b2lkLgo+IFdlIG1pZ2h0IHdhbnQgdG8gd3JpdGUgaGVscGVycyB3aGlj
-aCB1c2UgVEVTVF9WT0lEKCkgaW5zdGVhZCBvZiBURVNUKCksCj4gYWZ0ZXIgdGVzdHMgZm9yIG1t
-YXAoKSBhcmUgcmV3cml0dGVuIHRvIG5ldyBBUEksIHRoZXkgY291bGQgdXNlIGl0LgoKU291bmRz
-IGdvb2QsIGJ1dCB3ZSBjYW4gZG8gdGhpcyBpbiBsYXRlciByZWZhY3RvcmluZyB3b3JrIG9uIG1t
-YXAgdGVzdHMuCk5vdyBJJ20gc2xpZ2h0bHkgT0sgd2l0aCBub3QgdXNpbmcgVEVTVF8gbWFjcm9z
-IGZvciBldmVyeXRoaW5nOikuCgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCgotLSAKTWFpbGluZyBs
-aXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+On Thu, Mar 23, 2023 at 04:04:42PM +0000, Teo Couprie Diaz wrote:
+> It appears that msgstress03 doesn't account for all PIDs that its children
+> can use, as it expects the tasks will terminate quickly and not reach
+> the PID limit.
+> On some systems, this assumption can be invalid and the PID limit
+> will be hit.
+> Change the limit to account for all possible children at once, knowning
+> that each child will fork as well.
+> 
+> Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
+> Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+> This patch was already reviewed as part of a larger series[0]. The rest of
+> the series needs a large rework to be merged, but I felt this patch was a
+> simple and independnt enough to warrant a resend.
+> No changes were made.
+> 
+> CI Build: https://github.com/Teo-CD/ltp/actions/runs/4502197808
+> 
+> [0]: https://lists.linux.it/pipermail/ltp/2023-February/033007.html
+> 
+>  testcases/kernel/syscalls/ipc/msgstress/msgstress03.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+LGTM!
+Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
