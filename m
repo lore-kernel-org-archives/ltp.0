@@ -4,58 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D45DCC761A6
-	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 14:15:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFA6CC6FD1D
+	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 16:47:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 20C973CC9A1
-	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 16:15:06 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id EDF233CCB8A
+	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 18:47:07 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2F2EF3CC990
- for <ltp@lists.linux.it>; Thu, 30 Mar 2023 16:14:54 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 095573CA2C2
+ for <ltp@lists.linux.it>; Thu, 30 Mar 2023 18:46:58 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 39ADD600C22
- for <ltp@lists.linux.it>; Thu, 30 Mar 2023 16:14:53 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1052D200B86
+ for <ltp@lists.linux.it>; Thu, 30 Mar 2023 18:46:57 +0200 (CEST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 68E5C1FE28;
- Thu, 30 Mar 2023 14:14:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1680185693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=lHcrxAP4pvfumxApAuvnQ6guIOptfrSXDn7gTkGI5FE=;
- b=K/Z0q86giGM2kVbyuPFIep6dAw8ClnBRykkh0DXCgmdvUjb75Jd/OIOTiN5Q7fWoLzvD5/
- IAjHKQ71AbAdfqMLLor2CvZ6tC9TahTkUbY+O1bBmY5IPDffmRNc8dneiNSn4DyCHHWRrU
- doQ5F+/qZV5orz1Q7+4FDRLh28LarF8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA24C133E0;
- Thu, 30 Mar 2023 14:14:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id VXLMHlyZJWQHJAAAMHmgww
- (envelope-from <wegao@suse.com>); Thu, 30 Mar 2023 14:14:52 +0000
-Date: Thu, 30 Mar 2023 10:14:49 -0400
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <20230330141449.GA23902@localhost>
-References: <20230328144031.791212-1-pvorel@suse.cz>
- <20230329115850.GA28443@localhost> <20230329133818.GA847898@pevik>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 49A59B829A3;
+ Thu, 30 Mar 2023 16:46:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC7F2C4339B;
+ Thu, 30 Mar 2023 16:46:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1680194815;
+ bh=73at8LX0eY5/IoqC6e2icmouP88OUCRH9vwcTYUccVw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lEh1tb9lbMtgH2gwXpat+5S/GfdrniYBudXZiQPrFUO5RxhTilvcJC2krt7yerF/s
+ 8Y1LwNpRdk8lYPVDr2gtiO/959oahPVIPfGxpvWcQsb2ww5Rfre1lAHr9IxNRLCdeP
+ GS5klBUGFhmt4UCwMoM/LnqP0F87YZ5SghqmTAxVCIisd89Ek+jou/rkktwWB3hMdw
+ p90JMyemCQh5q3LTRRfRKMHbcEiAU73HRppChRbEtUEMLjPr1MMwQZ4rlQrl/sfu8+
+ dHYMbV/1MugZ1KjWyKlmaE29s9DLC1z2LqxJNIr1rvkfeYr8qDcwljUG5QM0AwKNja
+ +/UTTXv7c1frA==
+Date: Thu, 30 Mar 2023 09:46:53 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Message-ID: <20230330164653.GA881@sol.localdomain>
+References: <1680164569-12114-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1680164569-12114-2-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230329133818.GA847898@pevik>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <1680164569-12114-2-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] fsconfig03: Skip on FUSE
+Subject: Re: [LTP] [PATCH 2/3] syscalls/statx10: Add basic test for
+ STATX_DIOALIGN
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,124 +63,96 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Mar 29, 2023 at 03:38:18PM +0200, Petr Vorel wrote:
-> > On Tue, Mar 28, 2023 at 04:40:31PM +0200, Petr Vorel wrote:
-> > > fsconfig03 is broken not only on vfat and ntfs, but also over FUSE:
-> 
-> > > tst_supported_fs_types.c:120: TINFO: FUSE does support exfat
-> 
-> > I have a question on function has_kernel_support.
-> 
-> > If has_kernel_support start check exfat file system, if exfat not exist then start
-> > check fuse, i have no idea why we still need check fuse, i suppose directly
-> > return "exfat not support" instead of "FUSE does support exfat".
-> 
-> Because some filesystems can be supported by both Linux kernel or by FUSE
-> (userspace). IMHO only NTFS and exfat are supported by both. We first check
-> kernel implementation, but if it's not supported (e.g. kernel configured to
-> support particular filesystem, but kernel module not being installed),
-> we try to check if FUSE does support that filesystem.
-> 
-My opinion is has_kernel_support need ONLY check exfat implementation in kernel, this
-can better match the name of function. Use for example has_fuse_support return exfat-fuse
-or ntfs-3g support.
+Hi Yang,
 
-> > > +++ b/testcases/kernel/syscalls/fsconfig/fsconfig03.c
-> > > @@ -88,7 +88,7 @@ static struct tst_test test = {
-> > >  	.mntpoint = MNTPOINT,
-> > >  	.all_filesystems = 1,
-> > >  	.taint_check = TST_TAINT_W | TST_TAINT_D,
-> > > -	.skip_filesystems = (const char *const []){"ntfs", "vfat", NULL},
-> > > +	.skip_filesystems = (const char *const []){"fuse", NULL},
-> 
-> > I feel you can not skip fuse system since i found following list in LTP:
-> > static const char *const fs_type_whitelist[] = {
-> >         "ext2",
-> >         "ext3",
-> >         "ext4",
-> >         "xfs",
-> >         "btrfs",
-> >         "vfat",
-> >         "exfat",
-> >         "ntfs",
-> >         "tmpfs",
-> >         NULL
-> > };
-> 
-> This array name is quite confusing, that I even once proposed to rename it :) [1].
-> It's used for .all_filesystems = 1 (if you don't define .skip_filesystems, all
-> filesystems defined in fs_type_whitelist will be running. Therefore only
-> filesystems defined in it makes sense to whitelist.
-> 
+On Thu, Mar 30, 2023 at 04:22:48PM +0800, Yang Xu wrote:
+> diff --git a/testcases/kernel/syscalls/statx/statx10.c b/testcases/kernel/syscalls/statx/statx10.c
+> new file mode 100644
+> index 000000000..7a2c92ad2
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/statx/statx10.c
+> @@ -0,0 +1,81 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
+> + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * It is a basic test for STATX_DIOALIGN mask.
+> + *
+> + * - STATX_DIOALIGN   Want stx_dio_mem_align and stx_dio_offset_align value
+> + *
+> + * Minimum Linux version required is v6.1.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <sys/types.h>
+> +#include <unistd.h>
+> +#include <fcntl.h>
+> +#include <stdlib.h>
+> +#include <stdbool.h>
+> +#include "tst_test.h"
+> +#include "lapi/stat.h"
+> +
+> +#ifdef HAVE_STRUCT_STATX_STX_DIO_MEM_ALIGN
+> +#define MNTPOINT "mnt_point"
+> +#define TESTFILE "testfile"
+> +
+> +static int fd = -1;
+> +
+> +static void verify_statx(void)
+> +{
+> +	struct statx buf;
+> +
+> +	memset(&buf, 0, sizeof(buf));
+> +	TST_EXP_PASS(statx(AT_FDCWD, TESTFILE, 0, STATX_DIOALIGN, &buf),
+> +		"statx(AT_FDCWD, %s, 0, STATX_DIOALIGN, &buf)", TESTFILE);
+> +
+> +	if (!(buf.stx_mask & STATX_DIOALIGN)) {
+> +		tst_res(TCONF, "STATX_DIOALIGN is not supported until linux 6.1");
+> +		return;
+> +	}
+> +
+> +	if (buf.stx_dio_mem_align != 0)
+> +		tst_res(TPASS, "stx_dio_mem_align:%u", buf.stx_dio_mem_align);
+> +	else
+> +		tst_res(TFAIL, "don't get stx_dio_mem_align on supported dio fs");
+> +
+> +	if (buf.stx_dio_offset_align != 0)
+> +		tst_res(TPASS, "stx_dio_offset_align:%u", buf.stx_dio_offset_align);
+> +	else
+> +		tst_res(TFAIL, "don't get stx_dio_offset_align on supported dio fs");
+> +}
 
-I prefer replace .all_filesystems to .def_filesystems_check if we keep current logic.
+Thanks for writing a test for STATX_DIOALIGN!
 
-> But on tests without .all_filesystems = 1, any filesystem can be defined in
-> .skip_filesystems (see testcases/kernel/syscalls/fcntl/fcntl33.c, it has "ramfs"
-> and "nfs"). In this case filesystem in $TMPDIR is checked and if the same as any
-> member in .skip_filesystems, test is being skipped (see the beginning of
-> do_test_setup()). I put some effort to document it, but mainly due
-> "ext2/ext3/ext4" (when .all_filesystems = 1, is *not defined*) vs. using these
-> separately (e.g..skip_filesystems = (const char *const []){"ext2", "ext3", NULL} ).
+However, the above code isn't actually a valid test, since stx_dio_mem_align and
+stx_dio_offset_align will be 0 if the file doesn't support DIO.  This is
+documented in the statx(2) manual page.  Filesystems aren't guaranteed to
+support DIO, if they do, they aren't guaranteed to support it on all files.
 
-I have some difficult to understand above logic.
+I think you might be assuming that STATX_DIOALIGN won't be set in stx_mask if
+DIO is unsupported on the file.  That's not quite correct.  If STATX_DIOALIGN is
+not set, that just means the filesystem doesn't support STATX_DIOALIGN.  In that
+case, DIO might or might not be supported on the file.  The filesystem just
+isn't making a statement one way or the other.
 
-> 
-> Back to your question, fuse is somehow special, see functions in lib/safe_macros.c
-> Also, note, we don't even use kernel's NTFS driver, see lib/safe_macros.c:
-> 
+I gave some thoughts on possible tests for STATX_DIOALIGN here:
+https://lore.kernel.org/fstests/Y7fU4pRA+LHhsMKj@sol.localdomain/
+Can you take a look at that?
 
-I prefer using more clear word describe fuse or non-fuse filesystem for white list/skip_filesystems such as:
-*exfat // means we check exfat kernel version
-*exfat-fuse //fuse version, we can add this into current white list
-*ntfs // check ntfs kernel version
-*ntfs-3g //fuse userspace implemen, we can add this into current white list
+Thanks,
 
-> int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
-> 	       const char *source, const char *target,
-> 	       const char *filesystemtype, unsigned long mountflags,
-> 	       const void *data)
-> {
-> 	int rval = -1;
-> 
-> 	/*
-> 	 * Don't try using the kernel's NTFS driver when mounting NTFS, since
-> 	 * the kernel's NTFS driver doesn't have proper write support.
-> 	 */
-> 	if (!filesystemtype || strcmp(filesystemtype, "ntfs")) {
-> 		rval = mount(source, target, filesystemtype, mountflags, data);
-> 		if (!rval)
-> 			return 0;
-> 	}
-> 
-> 	/*
-> 	 * The FUSE filesystem executes mount.fuse helper, which tries to
-> 	 * execute corresponding binary name which is encoded at the start of
-> 	 * the source string and separated by # from the device name.
->          *
-> 	 * The mount helpers are called mount.$fs_type.
-> 	 */
-> 	if (possibly_fuse(filesystemtype)) {
-> 		char buf[1024];
-> 
-> 		tst_resm_(file, lineno, TINFO, "Trying FUSE...");
-> 		snprintf(buf, sizeof(buf), "mount.%s '%s' '%s'",
-> 			filesystemtype, source, target);
-> 
-> Kind regards,
-> Petr
-> 
-> [1] https://lore.kernel.org/ltp/20220126141152.6428-1-pvorel@suse.cz/
-> [2] https://github.com/linux-test-project/ltp/wiki/C-Test-API#113-filesystem-type-detection-and-skiplist
-Thanks again for support so much detail backgroud information!
+- Eric
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
