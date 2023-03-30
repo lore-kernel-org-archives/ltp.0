@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6C73C761AF
-	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 08:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D025DC761AF
+	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 08:23:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A0243CC9B3
-	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 10:23:32 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 120383C0123
+	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 10:23:46 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E39473CC9B8
- for <ltp@lists.linux.it>; Thu, 30 Mar 2023 10:23:20 +0200 (CEST)
-Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com
- [85.158.142.112])
+ by picard.linux.it (Postfix) with ESMTPS id 25E833CC9B1
+ for <ltp@lists.linux.it>; Thu, 30 Mar 2023 10:23:23 +0200 (CEST)
+Received: from mail3.bemta32.messagelabs.com (mail3.bemta32.messagelabs.com
+ [195.245.230.82])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 583B91400073
- for <ltp@lists.linux.it>; Thu, 30 Mar 2023 10:23:19 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3DF98600973
+ for <ltp@lists.linux.it>; Thu, 30 Mar 2023 10:23:22 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1680164598; i=@fujitsu.com;
- bh=nnGuvGJCH84ORxt37jTiJoBl79rqyxrDw/8OJRhfuJI=;
+ s=170520fj; t=1680164602; i=@fujitsu.com;
+ bh=9DxWK2tbYyu5/brN8GelV3mERG5UOKb+6PysFuVVIj4=;
  h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
  MIME-Version:Content-Type;
- b=OQkqGHcDCiaGQUcCs4CwotWI7qUk+ElrR469j7d1kA56Yb9wSljA/E71i4kG/YQeQ
- Y+zeUQ9eEJ3WbDdxtdLD3/J+brHwewwbSsd06qAKAiIQLcg7JMxCrBY1SZrSdjQih0
- XgU5gqtQY2OHh8vkYwwWOHCe2lX5Lf5lirSww5qLILJYdwTBsR5f8iIZ/Z3Cr3F4LH
- UE2EoCAii70W2agz8UsyGmGWmqIR3kWccfd1yvAPhfpbr3rmea4Nz0JrdYNH9qS75G
- nomJZHqe3lLY7gHtbdgnB5wJ2+yLMw9DFTKS+MJyiiwSRISIpmaJFDw/yLO/xxusyg
- GBZjT5pMb8iWA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRWlGSWpSXmKPExsViZ8ORpPvNTTX
- F4PpPJou1e/4wW6z4voPRgclj06pONo99v9exBjBFsWbmJeVXJLBm3Ht4kbFghmLF6wMHWRoY
- L8h0MXJxCAlsYJRY9fQgG4SzhEni7J7tLBDOXkaJY5unsncxcnKwCWhKPOtcwAxiiwhISHQ0v
- AWLMwvYSdxZ3AQWFxbwkLh9p5UVxGYRUJV41HGVCcTmFfCUePr0GpgtIaAgMeXhe6B6Dg5OAS
- +Jlr2cIGEhoJIF+6+wQpQLSpyc+YQFYryExMEXL5ghWpUk2lohaiQEKiQapx+CGqkmcfXcJuY
- JjIKzkLTPQtK+gJFpFaN5cWpRWWqRrqGlXlJRZnpGSW5iZo5eYpVuol5qqW5eflFJhq6hXmJ5
- sV5qcbFecWVuck6KXl5qySZGYEinFKd93cE4u++v3iFGSQ4mJVHeSk7VFCG+pPyUyozE4oz4o
- tKc1OJDjDIcHEoSvJtcgHKCRanpqRVpmTnA+IJJS3DwKInwqjgBpXmLCxJzizPTIVKnGBWlxH
- n7XYESAiCJjNI8uDZYTF9ilJUS5mVkYGAQ4ilILcrNLEGVf8UozsGoJMxrBLKdJzOvBG76K6D
- FTECLj6WqgCwuSURISTUwCW85n+Z4OML5qXjr85QCM4lHYleLjk+RZp28SuLg5JUfuyIdC1+d
- L81b43fkxswbb/1DqpuFNl+Ks2hYpMP961+SrnPf3/udU332HZs/7WLCtX+3j+rd//ApQFS88
- ezB7Fm/QzemO20Kfizn2pgSMku6QOyxa/THs4nrDZqW9B9atFl9+VdP8dDIzwm/GmxSXFfkn9
- /K6Jc/a8l3+0l+fzg3Gc4JvnKkTXj7qu1qJq6dq0pFg1T3XN2Sv3PXnPoZDS8SHoQ8FDA2X77
- 6+YHT9hsvWjzU6Nv5NLg1UXSDmNLN+Uv3/WpvYLu6fZ3btZYOsyCJ+2t85z+Wcugz/pHTu/iq
- VVHoX/5pjgzs6qcP5CmxFGckGmoxFxUnAgCvOHBoZAMAAA==
+ b=f9VPEi50sgqg7mF5x34pZW1BT4dj4gxbe+PSZ860Umo2MRh+ix5ly2lxFUvbOddkk
+ NIgcPXDUhXEdFIbJwICkXBX8jrT0CqqQ1m9K96qP7HA4QH1rXChzyIUZK98ghARFoA
+ 5GS0nsmlCDIoaNPwqBUXzpxY1d5VrkGTbzkms1wv0we3fo73jkx8k7NygMae+p2isq
+ f7uai8XreaRKr9i+Fy6mo4YR00CxzPC7QKLU4SpqbH2F0RM4JqFgmGV9dj0XSY5L3n
+ Ye0HOuhlv/8/STF3cSBKf0kBNnGVp7X+XTRflTh3sbprEdGUjMsuY4j0zsKrQeCmQ4
+ LIbCNSRthyNsg==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRWlGSWpSXmKPExsViZ8ORqPvTTTX
+ F4O9CQ4u1e/4wW6z4voPRgclj06pONo99v9exBjBFsWbmJeVXJLBm9H67y1ZwR7hifs9d5gbG
+ /wJdjFwcQgJbGCVOvjrGCOEsZ5KY0vmQBcLZyyhx7Uk7WxcjJwebgKbEs84FzCC2iICEREfDW
+ 3YQm1nATuLO4iawuLCAs8TU759ZQWwWAVWJU7vfMYLYvAKeEl+7poPZEgIKElMevgeq5+DgFP
+ CSaNnLCRIWAipZsP8KK0S5oMTJmU9YIMZLSBx88YIZolVJoq0VokZCoEKicfohJghbTeLquU3
+ MExgFZyFpn4WkfQEj0ypGs+LUorLUIl1DU72kosz0jJLcxMwcvcQq3US91FLd8tTiEl1DvcTy
+ Yr3U4mK94src5JwUvbzUkk2MwIBOKWaJ38F4re+v3iFGSQ4mJVHeSk7VFCG+pPyUyozE4oz4o
+ tKc1OJDjDIcHEoSvJtcgHKCRanpqRVpmTnA6IJJS3DwKInwqjgBpXmLCxJzizPTIVKnGBWlxH
+ n7XYESAiCJjNI8uDZYRF9ilJUS5mVkYGAQ4ilILcrNLEGVf8UozsGoJMxrBLKdJzOvBG76K6D
+ FTECLj6WqgCwuSURISTUwLfuv5SnLbXx9w1H/628vZ65878b3/essrce6/t+vn+7bF+bqn+HA
+ 7Sui55Ly9AwDK1dK+JFvpUlbYt+mG+X/n3BTRm/C+dSTdtZOsoHbTqs33q+bvPfE6pozIaYH7
+ 15eOzku1J5nR7clb3BHeHnbs/S5ax/WVq7cuuKoRtDy9vaIFAOWtbOFQoL0CzzU3zltDt/xQW
+ pl/+6VG38Uap67yb9w7pFHdrwu2cqyn/Y7PLNMN51svcjC0X+jBhvbBS+14LiDU64ptETtY49
+ n1Tv+MqNRwifm8oJLG45xtZxJ+HdD9LcZl0bPZ/6cFuG//57f9dy09Kk+122N1RyFqpsnTYnQ
+ X6BxQWrdVG67497MSizFGYmGWsxFxYkAg2qBNmMDAAA=
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-14.tower-728.messagelabs.com!1680164597!741309!1
-X-Originating-IP: [62.60.8.98]
+X-Msg-Ref: server-11.tower-585.messagelabs.com!1680164601!862!1
+X-Originating-IP: [62.60.8.97]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.104.1; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 24146 invoked from network); 30 Mar 2023 08:23:17 -0000
-Received: from unknown (HELO n03ukasimr03.n03.fujitsu.local) (62.60.8.98)
- by server-14.tower-728.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 30 Mar 2023 08:23:17 -0000
-Received: from n03ukasimr03.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id 6F1D17B;
- Thu, 30 Mar 2023 09:23:17 +0100 (BST)
+Received: (qmail 13148 invoked from network); 30 Mar 2023 08:23:21 -0000
+Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
+ by server-11.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 30 Mar 2023 08:23:21 -0000
+Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 68CCF1001A6;
+ Thu, 30 Mar 2023 09:23:21 +0100 (BST)
 Received: from R01UKEXCASM121.r01.fujitsu.local (R01UKEXCASM121
  [10.183.43.173])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id 63DE61B6;
- Thu, 30 Mar 2023 09:23:17 +0100 (BST)
+ by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 5C03A1001A2;
+ Thu, 30 Mar 2023 09:23:21 +0100 (BST)
 Received: from localhost.localdomain (10.167.215.131) by
  R01UKEXCASM121.r01.fujitsu.local (10.183.43.173) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Thu, 30 Mar 2023 09:23:15 +0100
+ (TLS) id 15.0.1497.42; Thu, 30 Mar 2023 09:23:19 +0100
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Thu, 30 Mar 2023 16:22:48 +0800
-Message-ID: <1680164569-12114-2-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Thu, 30 Mar 2023 16:22:49 +0800
+Message-ID: <1680164569-12114-3-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1680164569-12114-1-git-send-email-xuyang2018.jy@fujitsu.com>
 References: <1680164569-12114-1-git-send-email-xuyang2018.jy@fujitsu.com>
@@ -81,10 +82,9 @@ MIME-Version: 1.0
 X-Originating-IP: [10.167.215.131]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM121.r01.fujitsu.local (10.183.43.173)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] syscalls/statx10: Add basic test for
- STATX_DIOALIGN
+Subject: [LTP] [PATCH 3/3] lapi/stat.h: Remove deprecated STATX_ALL macro
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,145 +101,74 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-STATX_DIOALIGN is used to get stx_dio_mem_align and stx_dio_offset_align
-for files on fs that support direct io. We just check whether these
-value are nonzero because we don't know the underflying device details(ie
-whether dio faillback to bufferio or whether use loop device).
+Since kernel 5.10-rc1 commit 581701b7efd6 ("uapi: deprecate STATX_ALL"),
+this flag has been mark as deprecated.
 
-For struct statx member check, we only check stx_dio_mem_align because
-these two member is introduced toger in separate commit in kernel, so it is
-safe.
+Kernel should keep this macro for compatibility, but ltp doesn't think
+about it. So remove it.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- configure.ac                               |  2 +-
- runtest/syscalls                           |  1 +
- testcases/kernel/syscalls/statx/.gitignore |  1 +
- testcases/kernel/syscalls/statx/statx10.c  | 81 ++++++++++++++++++++++
- 4 files changed, 84 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/syscalls/statx/statx10.c
+ include/lapi/stat.h                       | 4 ----
+ testcases/kernel/syscalls/statx/statx06.c | 4 ++--
+ testcases/kernel/syscalls/statx/statx07.c | 6 +++---
+ 3 files changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 4c8763376..548288310 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -158,7 +158,7 @@ AC_CHECK_FUNCS(mkdtemp,[],AC_MSG_ERROR(mkdtemp() not found!))
- AC_CHECK_MEMBERS([struct fanotify_event_info_fid.fsid.__val],,,[#include <sys/fanotify.h>])
- AC_CHECK_MEMBERS([struct perf_event_mmap_page.aux_head],,,[#include <linux/perf_event.h>])
- AC_CHECK_MEMBERS([struct sigaction.sa_sigaction],[],[],[#include <signal.h>])
--AC_CHECK_MEMBERS([struct statx.stx_mnt_id],,,[
-+AC_CHECK_MEMBERS([struct statx.stx_mnt_id, struct statx.stx_dio_mem_align],,,[
- #define _GNU_SOURCE
- #include <sys/stat.h>
- ])
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 8b002e989..92123772c 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1769,6 +1769,7 @@ statx06 statx06
- statx07 statx07
- statx08 statx08
- statx09 statx09
-+statx10 statx10
+diff --git a/include/lapi/stat.h b/include/lapi/stat.h
+index c2db8a589..7c9a7a00c 100644
+--- a/include/lapi/stat.h
++++ b/include/lapi/stat.h
+@@ -188,10 +188,6 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
+ # define STATX_DIOALIGN		0x00002000U
+ #endif
  
- membarrier01 membarrier01
+-#ifndef STATX_ALL
+-# define STATX_ALL		0x00000fffU
+-#endif
+-
+ #ifndef STATX__RESERVED
+ # define STATX__RESERVED	0x80000000U
+ #endif
+diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
+index ce82b905b..60e736c5a 100644
+--- a/testcases/kernel/syscalls/statx/statx06.c
++++ b/testcases/kernel/syscalls/statx/statx06.c
+@@ -111,10 +111,10 @@ static void test_statx(unsigned int test_nr)
+ 	clock_wait_tick();
+ 	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
  
-diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-index 1cea43c0d..67341ff2d 100644
---- a/testcases/kernel/syscalls/statx/.gitignore
-+++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -7,3 +7,4 @@
- /statx07
- /statx08
- /statx09
-+/statx10
-diff --git a/testcases/kernel/syscalls/statx/statx10.c b/testcases/kernel/syscalls/statx/statx10.c
-new file mode 100644
-index 000000000..7a2c92ad2
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx10.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * It is a basic test for STATX_DIOALIGN mask.
-+ *
-+ * - STATX_DIOALIGN   Want stx_dio_mem_align and stx_dio_offset_align value
-+ *
-+ * Minimum Linux version required is v6.1.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <stdlib.h>
-+#include <stdbool.h>
-+#include "tst_test.h"
-+#include "lapi/stat.h"
-+
-+#ifdef HAVE_STRUCT_STATX_STX_DIO_MEM_ALIGN
-+#define MNTPOINT "mnt_point"
-+#define TESTFILE "testfile"
-+
-+static int fd = -1;
-+
-+static void verify_statx(void)
-+{
-+	struct statx buf;
-+
-+	memset(&buf, 0, sizeof(buf));
-+	TST_EXP_PASS(statx(AT_FDCWD, TESTFILE, 0, STATX_DIOALIGN, &buf),
-+		"statx(AT_FDCWD, %s, 0, STATX_DIOALIGN, &buf)", TESTFILE);
-+
-+	if (!(buf.stx_mask & STATX_DIOALIGN)) {
-+		tst_res(TCONF, "STATX_DIOALIGN is not supported until linux 6.1");
-+		return;
-+	}
-+
-+	if (buf.stx_dio_mem_align != 0)
-+		tst_res(TPASS, "stx_dio_mem_align:%u", buf.stx_dio_mem_align);
-+	else
-+		tst_res(TFAIL, "don't get stx_dio_mem_align on supported dio fs");
-+
-+	if (buf.stx_dio_offset_align != 0)
-+		tst_res(TPASS, "stx_dio_offset_align:%u", buf.stx_dio_offset_align);
-+	else
-+		tst_res(TFAIL, "don't get stx_dio_offset_align on supported dio fs");
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_FILE_PRINTF(TESTFILE, "AAAA");
-+	fd = open(TESTFILE, O_RDWR | O_DIRECT);
-+	if (fd == -1 && errno == EINVAL)
-+		tst_brk(TCONF, "The regular file is not on a filesystem that support DIO");
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd > -1)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = verify_statx,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.mount_device = 1,
-+	.all_filesystems = 1,
-+};
-+#else
-+TST_TEST_TCONF("test requires struct statx to have the stx_dio_mem_align fields");
-+#endif
+-	TEST(statx(AT_FDCWD, TEST_FILE, 0, STATX_ALL, &buff));
++	TEST(statx(AT_FDCWD, TEST_FILE, 0, STATX_BASIC_STATS | STATX_BTIME, &buff));
+ 	if (TST_RET != 0) {
+ 		tst_brk(TFAIL | TTERRNO,
+-			"statx(AT_FDCWD, %s, 0, STATX_ALL, &buff)",
++			"statx(AT_FDCWD, %s, 0, STATX_BASIC_STATS | STATX_BTIME, &buff)",
+ 			TEST_FILE);
+ 	}
+ 
+diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
+index b13c11f72..c798c7a10 100644
+--- a/testcases/kernel/syscalls/statx/statx07.c
++++ b/testcases/kernel/syscalls/statx/statx07.c
+@@ -62,15 +62,15 @@ static int get_mode(char *file_name, int flag_type, char *flag_name)
+ {
+ 	struct statx buf;
+ 
+-	TEST(statx(AT_FDCWD, file_name, flag_type, STATX_ALL, &buf));
++	TEST(statx(AT_FDCWD, file_name, flag_type, STATX_BASIC_STATS | STATX_BTIME, &buf));
+ 
+ 	if (TST_RET == -1) {
+ 		tst_brk(TFAIL | TST_ERR,
+-			"statx(AT_FDCWD, %s, %s, STATX_ALL, &buf)",
++			"statx(AT_FDCWD, %s, %s, STATX_BASIC_STATS | STATX_BTIME, &buf)",
+ 			file_name, flag_name);
+ 	}
+ 
+-	tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_ALL, &buf) = %o",
++	tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_BASIC_STATS | STATX_BTIME, &buf) = %o",
+ 		file_name, flag_name, buf.stx_mode);
+ 
+ 	return buf.stx_mode;
 -- 
 2.39.1
 
