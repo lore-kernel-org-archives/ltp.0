@@ -4,54 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFA6CC6FD1D
-	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 16:47:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E553CC6FD1D
+	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 23:57:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EDF233CCB8A
-	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 18:47:07 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 24FB13CC9B9
+	for <ltp@archiver.kernel.org>; Fri, 31 Mar 2023 01:57:23 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 095573CA2C2
- for <ltp@lists.linux.it>; Thu, 30 Mar 2023 18:46:58 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 41D3B3C2B4D
+ for <ltp@lists.linux.it>; Fri, 31 Mar 2023 01:57:12 +0200 (CEST)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
+ [IPv6:2607:f8b0:4864:20::549])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1052D200B86
- for <ltp@lists.linux.it>; Thu, 30 Mar 2023 18:46:57 +0200 (CEST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 49A59B829A3;
- Thu, 30 Mar 2023 16:46:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC7F2C4339B;
- Thu, 30 Mar 2023 16:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1680194815;
- bh=73at8LX0eY5/IoqC6e2icmouP88OUCRH9vwcTYUccVw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=lEh1tb9lbMtgH2gwXpat+5S/GfdrniYBudXZiQPrFUO5RxhTilvcJC2krt7yerF/s
- 8Y1LwNpRdk8lYPVDr2gtiO/959oahPVIPfGxpvWcQsb2ww5Rfre1lAHr9IxNRLCdeP
- GS5klBUGFhmt4UCwMoM/LnqP0F87YZ5SghqmTAxVCIisd89Ek+jou/rkktwWB3hMdw
- p90JMyemCQh5q3LTRRfRKMHbcEiAU73HRppChRbEtUEMLjPr1MMwQZ4rlQrl/sfu8+
- dHYMbV/1MugZ1KjWyKlmaE29s9DLC1z2LqxJNIr1rvkfeYr8qDcwljUG5QM0AwKNja
- +/UTTXv7c1frA==
-Date: Thu, 30 Mar 2023 09:46:53 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <20230330164653.GA881@sol.localdomain>
-References: <1680164569-12114-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1680164569-12114-2-git-send-email-xuyang2018.jy@fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1680164569-12114-2-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 978E01400076
+ for <ltp@lists.linux.it>; Fri, 31 Mar 2023 01:57:11 +0200 (CEST)
+Received: by mail-pg1-x549.google.com with SMTP id
+ d34-20020a630e22000000b005039e28b68cso5986540pgl.13
+ for <ltp@lists.linux.it>; Thu, 30 Mar 2023 16:57:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20210112; t=1680220630;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=7HUMd3u7NvZc9tVi0qb3RxGPxb0fBPZKaxMlebBDRps=;
+ b=U2ZYYPpn41IdKIszYhnPHYahlgHFTzOW0zZYRkrWGXtUfq8xpxpT0tPijF/F/Fiivl
+ HWq2HgK/WHJT9jgB8hc3f6p0zbV04QSLiW4ll1EDDSnQDCVrJN87wKHe8DMokWGKP+D+
+ dvG1og0yKldQ/4DyNuwTuwoShx4+4GNUcEd0zEkuASqK9Ttiqv8KuD6PYTWkkIK5gln7
+ FPqFL9VPboxCCKh+mKJMDp4M8R1kWW54N9oDZT6jJN3U+jdheEjxJJ7oK8cVfJDhzlLQ
+ wb9PYAJpMzToYa1rtT7bB7jiac0m0bhDsQYvOGYaraLyOTbTPLf8L+ag/soW1wDAe2cC
+ aH/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112; t=1680220630;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=7HUMd3u7NvZc9tVi0qb3RxGPxb0fBPZKaxMlebBDRps=;
+ b=zOkB5ZgiThkym9j4TRV+e8bsDWz4fOxrkidBiO0by+uW9OIkHdfiG0kbJjljEj7vKT
+ 5c502CEObXvL4yxgWunc8VlJBYfEZsv4YOLcIS79nb2uHu8/sYHhtniuSTgWVRrGgk0u
+ 1E2kG2U29bDBeAn9gcKiV+sVMP79NWbgMwLp+E53Kff7BrTgMBW8XZfxPyOUeG4HwhbF
+ /jUa7VxVOE7SXNhmVxFvvywJ+4VKuPlNuQ7dvjG3oY+86LD/lZdAr9tHio205RBy6J2s
+ jwuow31Bm3Nc7NLPqmz6T7wnyaJuIswa7QOF+NUBJX/5ZoZ3aEVSqJXrkRtYiPHbXL+3
+ rhsg==
+X-Gm-Message-State: AAQBX9cZJv/47vz/y93FO3ZPxeMCG4FuL2I5xIjbg5vkYseLllwKLJte
+ 6dUr1Z9s/x1cp0Jv7K4qYOjEUGYcTsD82ly45ChIyUHmKrLKQLp/lHbEFMqtuKV7Z+HlPl3fQ3F
+ qMAu1jftydcz83yGddphIGXSglNuEZ8JJ426BSy2oPt/3xldEHbFoCwt+
+X-Google-Smtp-Source: AKy350ZjUNT9tbRY6DhRWTWZ4Dvh4EJ0ogQMo/LGW1rA34dtABI6rgzpKJYk4DGVwd8Y/hRUg10qkljsJIw=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a17:902:7c17:b0:1a1:c83c:ba4c with SMTP id
+ x23-20020a1709027c1700b001a1c83cba4cmr9362761pll.13.1680220629625; Thu, 30
+ Mar 2023 16:57:09 -0700 (PDT)
+Date: Thu, 30 Mar 2023 23:57:01 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
+Message-ID: <20230330235702.2292418-1-edliaw@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] syscalls/statx10: Add basic test for
- STATX_DIOALIGN
+Subject: [LTP] [PATCH v1] setpgid02: use 1 instead of getpgid(1)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,96 +74,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team@android.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Yang,
+On Android, init does not setpgid, so getpgid(1) returns 0 and the third
+case of setting pgid to a different session's process group does not
+behave as expected.  Replace it with the expected value.
 
-On Thu, Mar 30, 2023 at 04:22:48PM +0800, Yang Xu wrote:
-> diff --git a/testcases/kernel/syscalls/statx/statx10.c b/testcases/kernel/syscalls/statx/statx10.c
-> new file mode 100644
-> index 000000000..7a2c92ad2
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/statx/statx10.c
-> @@ -0,0 +1,81 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
-> + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * It is a basic test for STATX_DIOALIGN mask.
-> + *
-> + * - STATX_DIOALIGN   Want stx_dio_mem_align and stx_dio_offset_align value
-> + *
-> + * Minimum Linux version required is v6.1.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +#include <stdlib.h>
-> +#include <stdbool.h>
-> +#include "tst_test.h"
-> +#include "lapi/stat.h"
-> +
-> +#ifdef HAVE_STRUCT_STATX_STX_DIO_MEM_ALIGN
-> +#define MNTPOINT "mnt_point"
-> +#define TESTFILE "testfile"
-> +
-> +static int fd = -1;
-> +
-> +static void verify_statx(void)
-> +{
-> +	struct statx buf;
-> +
-> +	memset(&buf, 0, sizeof(buf));
-> +	TST_EXP_PASS(statx(AT_FDCWD, TESTFILE, 0, STATX_DIOALIGN, &buf),
-> +		"statx(AT_FDCWD, %s, 0, STATX_DIOALIGN, &buf)", TESTFILE);
-> +
-> +	if (!(buf.stx_mask & STATX_DIOALIGN)) {
-> +		tst_res(TCONF, "STATX_DIOALIGN is not supported until linux 6.1");
-> +		return;
-> +	}
-> +
-> +	if (buf.stx_dio_mem_align != 0)
-> +		tst_res(TPASS, "stx_dio_mem_align:%u", buf.stx_dio_mem_align);
-> +	else
-> +		tst_res(TFAIL, "don't get stx_dio_mem_align on supported dio fs");
-> +
-> +	if (buf.stx_dio_offset_align != 0)
-> +		tst_res(TPASS, "stx_dio_offset_align:%u", buf.stx_dio_offset_align);
-> +	else
-> +		tst_res(TFAIL, "don't get stx_dio_offset_align on supported dio fs");
-> +}
+Signed-off-by: Edward Liaw <edliaw@google.com>
+---
+ testcases/kernel/syscalls/setpgid/setpgid02.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for writing a test for STATX_DIOALIGN!
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid02.c b/testcases/kernel/syscalls/setpgid/setpgid02.c
+index 4b63afee8..bf7b3176b 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid02.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid02.c
+@@ -44,7 +44,7 @@ static void setup(void)
+ 	 * Getting pgid of init/systemd process to use it as a
+ 	 * process group from a different session for EPERM test
+ 	 */
+-	init_pgid = SAFE_GETPGID(1);
++	init_pgid = 1;
+ }
+ 
+ static void run(unsigned int n)
+-- 
+2.40.0.348.gf938b09366-goog
 
-However, the above code isn't actually a valid test, since stx_dio_mem_align and
-stx_dio_offset_align will be 0 if the file doesn't support DIO.  This is
-documented in the statx(2) manual page.  Filesystems aren't guaranteed to
-support DIO, if they do, they aren't guaranteed to support it on all files.
-
-I think you might be assuming that STATX_DIOALIGN won't be set in stx_mask if
-DIO is unsupported on the file.  That's not quite correct.  If STATX_DIOALIGN is
-not set, that just means the filesystem doesn't support STATX_DIOALIGN.  In that
-case, DIO might or might not be supported on the file.  The filesystem just
-isn't making a statement one way or the other.
-
-I gave some thoughts on possible tests for STATX_DIOALIGN here:
-https://lore.kernel.org/fstests/Y7fU4pRA+LHhsMKj@sol.localdomain/
-Can you take a look at that?
-
-Thanks,
-
-- Eric
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
