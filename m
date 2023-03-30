@@ -4,87 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D025DC761AF
-	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 08:23:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 691E9C761AF
+	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 08:44:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 120383C0123
-	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 10:23:46 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 669493CC9A0
+	for <ltp@archiver.kernel.org>; Thu, 30 Mar 2023 10:44:45 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 25E833CC9B1
- for <ltp@lists.linux.it>; Thu, 30 Mar 2023 10:23:23 +0200 (CEST)
-Received: from mail3.bemta32.messagelabs.com (mail3.bemta32.messagelabs.com
- [195.245.230.82])
+ by picard.linux.it (Postfix) with ESMTPS id A381E3CA2AB
+ for <ltp@lists.linux.it>; Thu, 30 Mar 2023 07:24:04 +0200 (CEST)
+Received: from DM4PR02CU001-vft-obe.outbound.protection.outlook.com
+ (mail-centralusazlp170120005.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:c111::5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3DF98600973
- for <ltp@lists.linux.it>; Thu, 30 Mar 2023 10:23:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1680164602; i=@fujitsu.com;
- bh=9DxWK2tbYyu5/brN8GelV3mERG5UOKb+6PysFuVVIj4=;
- h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
- MIME-Version:Content-Type;
- b=f9VPEi50sgqg7mF5x34pZW1BT4dj4gxbe+PSZ860Umo2MRh+ix5ly2lxFUvbOddkk
- NIgcPXDUhXEdFIbJwICkXBX8jrT0CqqQ1m9K96qP7HA4QH1rXChzyIUZK98ghARFoA
- 5GS0nsmlCDIoaNPwqBUXzpxY1d5VrkGTbzkms1wv0we3fo73jkx8k7NygMae+p2isq
- f7uai8XreaRKr9i+Fy6mo4YR00CxzPC7QKLU4SpqbH2F0RM4JqFgmGV9dj0XSY5L3n
- Ye0HOuhlv/8/STF3cSBKf0kBNnGVp7X+XTRflTh3sbprEdGUjMsuY4j0zsKrQeCmQ4
- LIbCNSRthyNsg==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRWlGSWpSXmKPExsViZ8ORqPvTTTX
- F4O9CQ4u1e/4wW6z4voPRgclj06pONo99v9exBjBFsWbmJeVXJLBm9H67y1ZwR7hifs9d5gbG
- /wJdjFwcQgJbGCVOvjrGCOEsZ5KY0vmQBcLZyyhx7Uk7WxcjJwebgKbEs84FzCC2iICEREfDW
- 3YQm1nATuLO4iawuLCAs8TU759ZQWwWAVWJU7vfMYLYvAKeEl+7poPZEgIKElMevgeq5+DgFP
- CSaNnLCRIWAipZsP8KK0S5oMTJmU9YIMZLSBx88YIZolVJoq0VokZCoEKicfohJghbTeLquU3
- MExgFZyFpn4WkfQEj0ypGs+LUorLUIl1DU72kosz0jJLcxMwcvcQq3US91FLd8tTiEl1DvcTy
- Yr3U4mK94src5JwUvbzUkk2MwIBOKWaJ38F4re+v3iFGSQ4mJVHeSk7VFCG+pPyUyozE4oz4o
- tKc1OJDjDIcHEoSvJtcgHKCRanpqRVpmTnA6IJJS3DwKInwqjgBpXmLCxJzizPTIVKnGBWlxH
- n7XYESAiCJjNI8uDZYRF9ilJUS5mVkYGAQ4ilILcrNLEGVf8UozsGoJMxrBLKdJzOvBG76K6D
- FTECLj6WqgCwuSURISTUwLfuv5SnLbXx9w1H/628vZ65878b3/essrce6/t+vn+7bF+bqn+HA
- 7Sui55Ly9AwDK1dK+JFvpUlbYt+mG+X/n3BTRm/C+dSTdtZOsoHbTqs33q+bvPfE6pozIaYH7
- 15eOzku1J5nR7clb3BHeHnbs/S5ax/WVq7cuuKoRtDy9vaIFAOWtbOFQoL0CzzU3zltDt/xQW
- pl/+6VG38Uap67yb9w7pFHdrwu2cqyn/Y7PLNMN51svcjC0X+jBhvbBS+14LiDU64ptETtY49
- n1Tv+MqNRwifm8oJLG45xtZxJ+HdD9LcZl0bPZ/6cFuG//57f9dy09Kk+122N1RyFqpsnTYnQ
- X6BxQWrdVG67497MSizFGYmGWsxFxYkAg2qBNmMDAAA=
-X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-11.tower-585.messagelabs.com!1680164601!862!1
-X-Originating-IP: [62.60.8.97]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.104.1; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 13148 invoked from network); 30 Mar 2023 08:23:21 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-11.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 30 Mar 2023 08:23:21 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id 68CCF1001A6;
- Thu, 30 Mar 2023 09:23:21 +0100 (BST)
-Received: from R01UKEXCASM121.r01.fujitsu.local (R01UKEXCASM121
- [10.183.43.173])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id 5C03A1001A2;
- Thu, 30 Mar 2023 09:23:21 +0100 (BST)
-Received: from localhost.localdomain (10.167.215.131) by
- R01UKEXCASM121.r01.fujitsu.local (10.183.43.173) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Thu, 30 Mar 2023 09:23:19 +0100
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: <ltp@lists.linux.it>
-Date: Thu, 30 Mar 2023 16:22:49 +0800
-Message-ID: <1680164569-12114-3-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1680164569-12114-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1680164569-12114-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5E9CC1A00437
+ for <ltp@lists.linux.it>; Thu, 30 Mar 2023 07:24:03 +0200 (CEST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cSBGJqCOpOGSHY1l00CW0krjOcewKud7M+P0ipzX4d0VXMwjOf14OgRTf+2MV+HheCMNzKzK0bTM6FNtAaBeHl81RtIQLAWbpAGvJhNDlFemVPavjc9VHlYP0TrAg9DDmUkDy+z0zvx0X/5S+KWdbEDuvzTxmz1VGLfWyatTQ8whuix5C/OcCKxy/3GI2GYfU3X1I16l8BX/cUdoRuNJammQALpZc5JpW91l+DipXpUxQKdi6ORg8v/o4p+PaskYi8UWz4KQMyxVIYPBD+CoFSnpg0+CZ6khv/3HPpCZg98UtUAj4TaWqpynW8sDySj8VOMXOYJsHnan/vrvgbswgA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RZ+9MDeLwbOrGKyddRBUkaGg8lToaF4WjjNeSr6cRGA=;
+ b=FsP/BOTzu5Q5XEZ3jNz0ZQY3Li3aphddnwsP/NKhRxZ7NdOs4mBYmQT2miTUsKpYacQ5EeO6P3kVKqS64bVduXfouSy8RpSW/G4gAx253cPbeOXFiYNeNnnCEtKofmWtLCbeF15Gh7BTfM//tHA3G6A2/vRJWweJZYeTy+bBCdG0KTgzcJxl7ofEmN0xH8vNFBlVCLeF2dp1SiYMdP8NdAubbQC4aXM1RoAbqXET/hV7Y2tHOmOckbBduM4VuvafiHojcV3S9wNWQkOcFMZhgAnHLzMgeZsrqGw4j1DmP3r05huv5ZnyscQKqkbC5bZn51ZQp4VbKqQ8bhc/jWdsYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RZ+9MDeLwbOrGKyddRBUkaGg8lToaF4WjjNeSr6cRGA=;
+ b=q8Sh7F647qb4LVavdaDYKDCOXOVjXxZ7GPFe27wrbhY6GsSDufKkepsGfou/14vcnRrgJp/g4dO+B9A8vBAI/znslXEZLnWd0AcY/C4EKlGHCp7fh/RDC5QATLu9xqjvWjEWfZypt1I87ubj2P0pt7k+3riWE6k7YPwtxbsQ6ao=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+Received: from BL0PR05MB5409.namprd05.prod.outlook.com (2603:10b6:208:6e::17)
+ by MN2PR05MB7183.namprd05.prod.outlook.com (2603:10b6:208:196::27)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6222.30; Thu, 30 Mar
+ 2023 05:23:58 +0000
+Received: from BL0PR05MB5409.namprd05.prod.outlook.com
+ ([fe80::f634:136a:e2b9:a729]) by BL0PR05MB5409.namprd05.prod.outlook.com
+ ([fe80::f634:136a:e2b9:a729%3]) with mapi id 15.20.6222.028; Thu, 30 Mar 2023
+ 05:23:58 +0000
+To: ltp@lists.linux.it,
+	kashwindayan@vmware.com,
+	akaher@vmware.com
+Date: Thu, 30 Mar 2023 10:53:48 +0530
+Message-Id: <1680153828-28376-1-git-send-email-kashwindayan@vmware.com>
+X-Mailer: git-send-email 2.7.4
+X-ClientProxiedBy: BY3PR05CA0054.namprd05.prod.outlook.com
+ (2603:10b6:a03:39b::29) To BL0PR05MB5409.namprd05.prod.outlook.com
+ (2603:10b6:208:6e::17)
 MIME-Version: 1.0
-X-Originating-IP: [10.167.215.131]
-X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
- R01UKEXCASM121.r01.fujitsu.local (10.183.43.173)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL0PR05MB5409:EE_|MN2PR05MB7183:EE_
+X-MS-Office365-Filtering-Correlation-Id: d0aa7300-c354-4101-ecd7-08db30def685
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Dg8QlnnAfSgegsaWQjPzUo++Nadz+jjLNepo/CAMKBVZLsSgyrp4a1jHDOnm9YBnCzSEktTRLCiC9wdGn/lkp5rhSE0olJpOuN07dmZAXaFYI5sVXItyxkL5IfRg/VMYaHboujUs9DMepl05iWfQkc3NDiXhmkBK7JWt5hiFlv7NmG24mTxL8lcrCVPP7Crvw1DTL+chCwg9VKY3SEfnB7vv+hU1t6tgIxcbSN1KEq6GsDhoo9V+N8O+Wsvj+LoADiH1W0D+CsH7J0yLkriq46KI4zopEsI3DPUTjvwSfuMfbLzyPhmGUX3AUUiX4jd9DI1AK9xtlH8uV8RO1cQFTzrOh6jvn57E6BQHjvV1+DBIARuR3Ay4hEqjfykVoDiaEL1KQd4WtbU0yzpQswuLwBQDCWcdFoQHOWc8O5PB+X76Z1aWaQPE/lZ9jmFpiP/AuSf+A9hn9IVcx5JVUuSsysZVBChrD6spjfo/vWklV8glpeACpDOY4PX2CdiL91ymC9hff4u2reMkntEkTvK96aaJK46dOOQ7dXmdBobcj85SNHp+40ShRAAxvy8ls97Pig8T1uoGowlBTENEbTxj3BgPWx1XJBIhQvPdxlkhWpyuqwHxedSM0tKw1G4Co7Is
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BL0PR05MB5409.namprd05.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230028)(4636009)(366004)(39860400002)(346002)(136003)(376002)(396003)(451199021)(6512007)(26005)(41300700001)(6506007)(6666004)(186003)(6486002)(52116002)(83380400001)(2616005)(478600001)(6636002)(316002)(38350700002)(38100700002)(66476007)(66556008)(66946007)(8676002)(2906002)(4744005)(86362001)(36756003)(5660300002)(8936002);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1pH5HJSon2wzPBIGZbFEr9yeOPdpGwvFhwIh8sAMhJKDlog/dmuIHFSjDCgR?=
+ =?us-ascii?Q?FlAicJzVrlbV30yIz670NoleTNodAC7FS0Xl031dNmjyTO/5p8Dc4HuSKvyG?=
+ =?us-ascii?Q?eMebM89LuLGVnQN9gWH34hbLeWRwyUa9sKWUmpXaIB7yUiUobRMCcMAP9CQJ?=
+ =?us-ascii?Q?kldsp6t8rloqpupHIK8fFaPEbEum0oAbL8K+xb9+Iej2XJl418jmQ1klogs1?=
+ =?us-ascii?Q?T0BEVXauer9ZUD1Eufjeolxnj5MxUvXlNVaJii4Pr44t3uijP6sysBmMpCpR?=
+ =?us-ascii?Q?QN0P5Y9UWQtzGSXE0DV5NAQlkNHx5Bi8rZ2Vtm6h/s1NUYsKXuScZ6JKrXYa?=
+ =?us-ascii?Q?90tZ5K7R2a6aQT5akOI9Ojk51OzaW3K1mpf5S5xY4bm3B4MsBaPCS14PfPzG?=
+ =?us-ascii?Q?vppQ7taofukNyl/YqdxpDCHBZhzBpj4w/C2eCp6wQ+PMus6BCV4FL4ATqnwa?=
+ =?us-ascii?Q?M6YQEqc6SKNh4dh0um/QfxXVO2qrankVkXiQXDYrYqGFcmQK8r2qeeclhnHT?=
+ =?us-ascii?Q?m1vqYT3gwlX+CvjoA1TCeknufXMT4VQZGgCDSYgvL1z2jQf6nqkYXqrLDpc+?=
+ =?us-ascii?Q?tU+WmeOHwbro2vYFXXY5ZlhcVWexDkdA3w54f9GvMPt9VF488AZjLuWc1527?=
+ =?us-ascii?Q?X5mmayjAOTpC5HPKtPPkNOd5gjTXD4nwNefOkSF9cKyCpcZH99MO0tduasCN?=
+ =?us-ascii?Q?rnbbDlKkeji62UbcFma4vzr/XnkpLB0iifT2hOaUBta1DxV0veTnvi7h0T/r?=
+ =?us-ascii?Q?ayIBrARqCJfcEmEfTc1fb12AvbR4zrqQgMSd/L8t4GoNW0Y9mIaHob11S2NO?=
+ =?us-ascii?Q?V4Rgd1YC7b4joC4bR9TGmn1uU7nolPbZbnMOB+tH/ruHLkbvLzEkn5VJTVUk?=
+ =?us-ascii?Q?eH/6hzAM3AUkdqSM4mmYSpKWqkq70qimtfCVXpwNIMxhdtGzbc7TSS6o551N?=
+ =?us-ascii?Q?Js4jolksau64H+o6vn/HdYEX4A6z61ZLZ5l+dAWyenhIPv3u3Uwa5mjbfEno?=
+ =?us-ascii?Q?x0qGdX8PVcCwSsmyjz8Ck+h21TLg9ChvK+PSPMF/64wqV+wbsBlVkd+tDZmE?=
+ =?us-ascii?Q?H4f/d3OIWo/lN264pGRX9s0I01Jf1/VtcswWveJT+OUNNOyox5vdAIQfedfH?=
+ =?us-ascii?Q?VzvvEpnBKmcuirGsHQrYFzp9fioUOjjK/gVjyg+A49lChBRWPLJHG1pLlJd7?=
+ =?us-ascii?Q?sBWxrNz78maXFeD8rgavZa9qFNvOrh0Igidk4QkQhjd0VhQnMcERqyESUxf1?=
+ =?us-ascii?Q?rFJzaEr8VqXcm75Xjl4c3qT6i2+UQ/VGpmKdBGdVtisSiNJuFdJPreCwxAs3?=
+ =?us-ascii?Q?poVsVSZPXfZ6D+Dp0itIUbky1Hj77mQLmhzWqO3cI+Iozi/ecBombSf4W8Dc?=
+ =?us-ascii?Q?unFBCYL81FMDBEgfPPB+gDY/y8Mv4DR8D5mmaiymsExFlXXCulCeU30sTu9Z?=
+ =?us-ascii?Q?qIeJBPLeG6l5ZEpjrgLhJBmJQyFKk6rp7jnDqq6GitZhkO15K6aZKNjjZfxV?=
+ =?us-ascii?Q?DVhD6QCN95ZuOgsfQ4tjFs7xBfudmAOEqLekE4qwSjKm0MXLVBY4VoeXOnEV?=
+ =?us-ascii?Q?Gz9B+xNL3+6nX+JAGm/fugB4MeHI4U1WEL0VX5IC?=
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0aa7300-c354-4101-ecd7-08db30def685
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR05MB5409.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2023 05:23:58.2083 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8qPjt0XHIlfp2Wdx0l7O2n+le9P2Jcq/iU7jJGK7Rks5tn2xlRheZyyHEZtwbhiT95FoSukDDQ7RieBF2mhfFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR05MB7183
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] lapi/stat.h: Remove deprecated STATX_ALL macro
+X-Mailman-Approved-At: Thu, 30 Mar 2023 10:44:34 +0200
+Subject: [LTP] [PATCH] io_control01: Initialise the io_stats start structure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,81 +122,37 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Ashwin Dayanand Kamat via ltp <ltp@lists.linux.it>
+Reply-To: Ashwin Dayanand Kamat <kashwindayan@vmware.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since kernel 5.10-rc1 commit 581701b7efd6 ("uapi: deprecate STATX_ALL"),
-this flag has been mark as deprecated.
+struct io_stats start structure is a locally declared structure
+which when not initialised can be filled with junk values in some platforms
+like arm. These values are later compared and hence it leads to failure on
+photon arm platform. Fix is to memset the structure.
 
-Kernel should keep this macro for compatibility, but ltp doesn't think
-about it. So remove it.
-
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Signed-off by: Ashwin Dayanand Kamat <kashwindayan@vmware.com>
 ---
- include/lapi/stat.h                       | 4 ----
- testcases/kernel/syscalls/statx/statx06.c | 4 ++--
- testcases/kernel/syscalls/statx/statx07.c | 6 +++---
- 3 files changed, 5 insertions(+), 9 deletions(-)
+ testcases/kernel/controllers/io/io_control01.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/lapi/stat.h b/include/lapi/stat.h
-index c2db8a589..7c9a7a00c 100644
---- a/include/lapi/stat.h
-+++ b/include/lapi/stat.h
-@@ -188,10 +188,6 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
- # define STATX_DIOALIGN		0x00002000U
- #endif
+diff --git a/testcases/kernel/controllers/io/io_control01.c b/testcases/kernel/controllers/io/io_control01.c
+index c4e171af5..691196886 100644
+--- a/testcases/kernel/controllers/io/io_control01.c
++++ b/testcases/kernel/controllers/io/io_control01.c
+@@ -55,6 +55,7 @@ static void run(void)
+ 	char *buf = SAFE_MALLOC(MAX((size_t)BUFSIZ, pgsz));
+ 	struct io_stats start;
  
--#ifndef STATX_ALL
--# define STATX_ALL		0x00000fffU
--#endif
--
- #ifndef STATX__RESERVED
- # define STATX__RESERVED	0x80000000U
- #endif
-diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
-index ce82b905b..60e736c5a 100644
---- a/testcases/kernel/syscalls/statx/statx06.c
-+++ b/testcases/kernel/syscalls/statx/statx06.c
-@@ -111,10 +111,10 @@ static void test_statx(unsigned int test_nr)
- 	clock_wait_tick();
- 	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
- 
--	TEST(statx(AT_FDCWD, TEST_FILE, 0, STATX_ALL, &buff));
-+	TEST(statx(AT_FDCWD, TEST_FILE, 0, STATX_BASIC_STATS | STATX_BTIME, &buff));
- 	if (TST_RET != 0) {
- 		tst_brk(TFAIL | TTERRNO,
--			"statx(AT_FDCWD, %s, 0, STATX_ALL, &buff)",
-+			"statx(AT_FDCWD, %s, 0, STATX_BASIC_STATS | STATX_BTIME, &buff)",
- 			TEST_FILE);
- 	}
- 
-diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
-index b13c11f72..c798c7a10 100644
---- a/testcases/kernel/syscalls/statx/statx07.c
-+++ b/testcases/kernel/syscalls/statx/statx07.c
-@@ -62,15 +62,15 @@ static int get_mode(char *file_name, int flag_type, char *flag_name)
- {
- 	struct statx buf;
- 
--	TEST(statx(AT_FDCWD, file_name, flag_type, STATX_ALL, &buf));
-+	TEST(statx(AT_FDCWD, file_name, flag_type, STATX_BASIC_STATS | STATX_BTIME, &buf));
- 
- 	if (TST_RET == -1) {
- 		tst_brk(TFAIL | TST_ERR,
--			"statx(AT_FDCWD, %s, %s, STATX_ALL, &buf)",
-+			"statx(AT_FDCWD, %s, %s, STATX_BASIC_STATS | STATX_BTIME, &buf)",
- 			file_name, flag_name);
- 	}
- 
--	tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_ALL, &buf) = %o",
-+	tst_res(TINFO, "statx(AT_FDCWD, %s, %s, STATX_BASIC_STATS | STATX_BTIME, &buf) = %o",
- 		file_name, flag_name, buf.stx_mode);
- 
- 	return buf.stx_mode;
++	memset(&start, 0, sizeof(struct io_stats));
+ 	SAFE_CG_READ(tst_cg, "io.stat", buf, BUFSIZ - 1);
+ 	line = strtok_r(buf, "\n", &buf_ptr);
+ 	while (line) {
 -- 
-2.39.1
+2.39.0
 
 
 -- 
