@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A4AEC7618D
-	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 05:45:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE91BC6FD1D
+	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 05:45:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8F83E3CC7D8
-	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 07:45:14 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id B8FC83CD031
+	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 07:45:27 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C0193CC7D4
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 07:44:54 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 53DC33CC7EC
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 07:44:56 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 968CF2005FD
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 07:44:53 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 92E121A0071B
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 07:44:55 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B0A46203C1
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 05:44:52 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E83C522600
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 05:44:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1680587092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1680587094; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Nu8t0Ky6nLuaBF1ELwQlPN6kLwljcWJwI6zz8h0uyfs=;
- b=YndVRHYY8m4YPT0+ihpFH0SZ1cKQwz6WLSYymCOIxI7+GxBzCG+eZnCtloNilgcs08xcar
- vcpzYVINN0BB4Yx8/RA79Xq/6Q6bFobEFnQYP4tvuTfwu0VziZ6kSNyzkWCPw4QZvkvoP7
- VC4h4+jQ42d67EMhRzSX8EQ0NmiaT08=
+ bh=uVJ0uMBATfenLeErnWLUc8yjm9BTO4Yj4H23Kp/3Elg=;
+ b=bnEcMLRO1jTMbsgjwCPyABI/C1IJFKUSQZfwjRhXKFITjl3x/WLzTfVxfOpDF56vmEaNof
+ /KgGfGMZ3sXwbRap0jWX37gWhh59A7gGlgVTwLtqnYxHcWnu0XmKmAIgNw2byv5XfBUHZN
+ Crk9ihc29iQIXz4TdSAufPKFI+CYiuw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1680587092;
+ s=susede2_ed25519; t=1680587094;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Nu8t0Ky6nLuaBF1ELwQlPN6kLwljcWJwI6zz8h0uyfs=;
- b=8zKTQOUXMIB5RhQrmrZ+fGeyF4cQhH6uYEMBZS9DfwhHeAfKPyh7RXb/56GrZV/TmYDF3u
- 7/7dez/NQ3uGziCA==
+ bh=uVJ0uMBATfenLeErnWLUc8yjm9BTO4Yj4H23Kp/3Elg=;
+ b=5B1ea5NsWB0FqEgKBNMozla9kejfOydHDCLKvynfAtBF2C7UVx5XoOUIxJBuFqPRF1EAsK
+ KXnxnOPn3mFnTXCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5817D13416
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 05:44:52 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9805913416
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 05:44:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id PAReDFS5K2TgPwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id QqFLHFa5K2TmPwAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Tue, 04 Apr 2023 05:44:52 +0000
+ for <ltp@lists.linux.it>; Tue, 04 Apr 2023 05:44:54 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Tue,  4 Apr 2023 11:14:47 +0530
-Message-Id: <20230404054448.23095-2-akumar@suse.de>
+Date: Tue,  4 Apr 2023 11:14:48 +0530
+Message-Id: <20230404054448.23095-3-akumar@suse.de>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230404054448.23095-1-akumar@suse.de>
 References: <20230404054448.23095-1-akumar@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] getpgid02.c: Rewrite using new LTP API
+Subject: [LTP] [PATCH 3/3] getpgrp01: Convert to new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,144 +84,172 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/getpgid/getpgid02.c | 143 +++---------------
- 1 file changed, 20 insertions(+), 123 deletions(-)
+ testcases/kernel/syscalls/getpgrp/getpgrp01.c | 166 ++----------------
+ 1 file changed, 15 insertions(+), 151 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getpgid/getpgid02.c b/testcases/kernel/syscalls/getpgid/getpgid02.c
-index 92482e3ae..30d0129bc 100644
---- a/testcases/kernel/syscalls/getpgid/getpgid02.c
-+++ b/testcases/kernel/syscalls/getpgid/getpgid02.c
-@@ -1,137 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/testcases/kernel/syscalls/getpgrp/getpgrp01.c b/testcases/kernel/syscalls/getpgrp/getpgrp01.c
+index 61feba8d1..0d5f8db90 100644
+--- a/testcases/kernel/syscalls/getpgrp/getpgrp01.c
++++ b/testcases/kernel/syscalls/getpgrp/getpgrp01.c
+@@ -1,160 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
  /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
 - *
-- *   Copyright (c) International Business Machines  Corp., 2001
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
 - *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
 - *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ *   07/2001 Ported by Wayne Boyer
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
++ * AUTHOR: William Roske, CO-PILOT: Dave Fenner
 + * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
   */
- 
--/*
-- * NAME
-- * 	getpgid02.c
+-/* $Id: getpgrp01.c,v 1.6 2009/10/26 14:55:47 subrata_modak Exp $ */
+-/**********************************************************
 - *
-- * DESCRIPTION
-- *	Testcase to check the basic functionality of getpgid().
+- *    OS Test - Silicon Graphics, Inc.
 - *
-- * ALGORITHM
-- * 	test 1: Does getpgid(-99) and expects ESRCH.
-- * 	test 2: Searches an unused pid and expects ESRCH.
+- *    TEST IDENTIFIER	: getpgrp01
 - *
-- * USAGE:  <for command-line>
-- *  getpgid02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
+- *    EXECUTED BY	: anyone
 - *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-+/*\
-+ * [Description]
-  *
-- * RESTRICTIONS
-- *	none
-+ * Verify that getpgid(2) fails with errno ESRCH when
-+ * pid does not match any process.
-  */
--#define _GNU_SOURCE 1
- 
--#include <errno.h>
--#include <unistd.h>
--#include <stdarg.h>
--#include <sys/wait.h>
+- *    TEST TITLE	: Basic test for getpgrp(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- * 	1.) getpgrp(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- * 	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *$
+- *    DURATION
+- * 	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- * 	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- * 	None
+- *
+- *    INTERCASE DEPENDENCIES
+- * 	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the getpgrp(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	getpgrp(2).
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+-
 -#include <sys/types.h>
+-#include <fcntl.h>
+-#include <errno.h>
+-#include <signal.h>
+-#include <string.h>
 -#include "test.h"
-+#include "tst_test.h"
- 
--void setup(void);
--void cleanup(void);
-+static pid_t unused_pid;
-+static pid_t neg_pid = -99;
- 
--char *TCID = "getpgid02";
--int TST_TOTAL = 2;
 -
--int pgid_0, pgid_1;
--#define BADPID -99
+-void setup();
+-void cleanup();
 -
--struct test_case_t {
--	int *id;
--	int error;
--} TC[] = {
--	/* The pid value is negative */
--	{
--	&pgid_0, ESRCH},
--	    /* The pid value does not match any process */
--	{
--	&pgid_1, ESRCH}
--};
+-char *TCID = "getpgrp01";
+-int TST_TOTAL = 1;
 -
 -int main(int ac, char **av)
-+static void setup(void)
- {
+-{
 -	int lc;
--	int i;
--
+ 
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
+-
 -		tst_count = 0;
 -
--		/* loop through the test cases */
--		for (i = 0; i < TST_TOTAL; i++) {
+-		TEST(getpgrp());
 -
--			TEST(getpgid(*TC[i].id));
+-		if (TEST_RETURN == -1)
+-			tst_resm(TFAIL | TTERRNO, "getpgrp failed");
+-		else
+-			tst_resm(TPASS, "getpgrp returned %ld", TEST_RETURN);
 -
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded unexpectedly");
--				continue;
--			}
--
--			if (TEST_ERRNO == TC[i].error) {
--				tst_resm(TPASS, "expected failure - "
--					 "errno = %d : %s", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TFAIL, "unexpected error - %d : %s - "
--					 "expected %d", TEST_ERRNO,
--					 strerror(TEST_ERRNO), TC[i].error);
--			}
--		}
 -	}
--	cleanup();
--
--	tst_exit();
-+	unused_pid = tst_get_unused_pid();
- }
++/*\
++ * [Description]
++ *
++ * Verify that getpgrp(2) syscall executes successfully.
++ */
  
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- */
+-	cleanup();
+-	tst_exit();
+-}
++#include "tst_test.h"
+ 
 -void setup(void)
 +static void run(void)
  {
@@ -230,24 +257,14 @@ index 92482e3ae..30d0129bc 100644
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
--
--	pgid_0 = BADPID;
--
--	pgid_1 = tst_get_unused_pid(cleanup);
-+	TST_EXP_FAIL2(getpgid(neg_pid), ESRCH, "getpgid(%d)", neg_pid);
-+	TST_EXP_FAIL2(getpgid(unused_pid), ESRCH, "getpgid(%d)", unused_pid);
++	TST_EXP_POSITIVE(getpgrp());
++	TST_EXP_EQ_LI(TST_RET, SAFE_GETPGID(0));
  }
  
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
-- */
 -void cleanup(void)
 -{
--
 -}
 +static struct tst_test test = {
-+	.setup = setup,
 +	.test_all = run
 +};
 -- 
