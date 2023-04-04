@@ -4,61 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 921B5C761A6
-	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 11:29:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1898C761AF
+	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 13:37:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F0B223C9A3F
-	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 13:29:06 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 166453CA92F
+	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 15:37:04 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4A9233C990E
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 13:28:57 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id B33CE3C98FB
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 15:36:53 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C0EBA1400977
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 13:28:56 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0E4DF600693
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 15:36:52 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0F93422996;
- Tue,  4 Apr 2023 11:28:56 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4CF7F22B1E;
+ Tue,  4 Apr 2023 13:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1680607736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=WlqqjpNx1Rqk+x83t570+vNH1izvipoDdfaVMlAbZRg=;
- b=eEsLSnX8A1gfBxB8FOn8/tZDcpcym5y9ngONNqyQ+6AKimSY7eGPua/XEIqrN4G4LXb1cg
- yeISEIkKndlZZ8u9dAs1nBpBkv5S9oDeu9E9NXSH/q7YwFcCkNtPhKYKgOqazhHAXzh+HM
- CXpsjP97N/t4bLZaCWXRWjBVnE0UkaI=
+ t=1680615412;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xY/T00c/+UKh5R4TJ8JSCHEQaTmC3bkgQfoEB+5KH9A=;
+ b=my3PgxqKd6/xghcbr7KGiMiJuupP/dCDAvRzT89KNa/syYz0LQHqoK3lLP1GyCNwqXmOzL
+ HLP98O2Q/k5wCiMCJO4FlBknid02t8MT+WP61Hm546zeB05VRQEzWGK04whrdVmxPyl+mU
+ 5uH5z0e4fxGZFqawfaijmapE+61tmvo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1680607736;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=WlqqjpNx1Rqk+x83t570+vNH1izvipoDdfaVMlAbZRg=;
- b=J7+CJeRTgJIkNRIhnYCZAX3Vf0zQMQjLm3PmUzEYqzEpygveXOU5mw09EuUIv0AEpKQ/xv
- KuOr1vvpfjUmf/Ag==
+ s=susede2_ed25519; t=1680615412;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xY/T00c/+UKh5R4TJ8JSCHEQaTmC3bkgQfoEB+5KH9A=;
+ b=sgJHbpAdATzJkGlB5ZDuLYj2P3StAMezSuEGh2V4oE9RDiqUxuQj+eRm+DrFMC4F5GzaBV
+ oRQk2FFYOqbuFWAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D02AC1391A;
- Tue,  4 Apr 2023 11:28:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D2C01391A;
+ Tue,  4 Apr 2023 13:36:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id eS9pMfcJLGQefgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 04 Apr 2023 11:28:55 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id +C1UCfQnLGQhSQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 04 Apr 2023 13:36:52 +0000
+Date: Tue, 4 Apr 2023 15:36:50 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue,  4 Apr 2023 13:28:52 +0200
-Message-Id: <20230404112852.1271969-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.40.0
+To: Hao Zeng <zenghao@kylinos.cn>
+Message-ID: <20230404133650.GA1283114@pevik>
+References: <20230404022808.925841-1-zenghao@kylinos.cn>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230404022808.925841-1-zenghao@kylinos.cn>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] mmap20: Fix invalid address
+Subject: Re: [LTP] [PATCH] testcases:Fix the failure of shell script to get
+ path
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,40 +77,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Paulson Raja L <paulson@zilogic.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-1 << 7 (0x80) is defined as MAP_LOCKED on ppc64le and mips.
-Use 1 << 9 (0x200), which looks to be unused on all archs.
+> For example, in the file testcases/kernel/controllers/cpuset/cpuset_funcs.sh, if the path is obtained by
+> find "$CPUSET" -type d | sort | sed -n '2,$p' | tac | while read subdir, the escaped characters will be lost,
+> and by adding the -r option, the escaped characters will be kept as they are without escaping
+> The errors are as follows:
+> /opt/ltp/testcases/bin/cpuset_funcs.sh:line178: /dev/cpuset/machine.slice/machine-qemux2d157x2dzhx2dsxf.scope/vcpu7/tasks: The file or directory is not available
 
-Fixes: 2764e9e6a ("mmap20: New test for mmap() with MAP_SHARED_VALIDATE")
+Could you print the path how it looks like with ls:
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-NOTE: (1 << 10) would work as well.
+ls -l /dev/cpuset/machine.slice/
 
- testcases/kernel/syscalls/mmap/mmap20.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+FYI cgroup tests written in shell are broken by design, we write new tests in C.
+Not sure if these old tests are relevant enough to be rewritten into C.
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap20.c b/testcases/kernel/syscalls/mmap/mmap20.c
-index c346df5d1..5269179e5 100644
---- a/testcases/kernel/syscalls/mmap/mmap20.c
-+++ b/testcases/kernel/syscalls/mmap/mmap20.c
-@@ -20,7 +20,7 @@
- 
- #define TEST_FILE "file_to_mmap"
- #define TEST_FILE_SIZE 1024
--#define INVALID_FLAG (1 << 7)
-+#define INVALID_FLAG (1 << 9)
- 
- static int fd = -1;
- static void *addr;
--- 
-2.40.0
+...
+> +++ b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
+> @@ -312,7 +312,7 @@ generate_locate_test_makefile buildonly '.test' "$buildonly_compiler_args"
+>  generate_locate_test_makefile runnable '.run-test'
+>  generate_locate_test_makefile test-tools ''
 
+> -find . -name Makefile.1 -exec dirname {} \; | while read dir; do
+> +find . -name Makefile.1 -exec dirname {} \; | while read -r dir; do
+I don't think it's needed for open posix.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
