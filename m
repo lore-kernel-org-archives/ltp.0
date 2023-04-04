@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 218EDC761A6
-	for <ltp@archiver.kernel.org>; Mon,  3 Apr 2023 17:04:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFC36C76196
+	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 03:07:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9520A3CC87C
-	for <ltp@archiver.kernel.org>; Mon,  3 Apr 2023 19:04:57 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 9C1BA3CDCC2
+	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 05:07:52 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 35F073CC81A
- for <ltp@lists.linux.it>; Mon,  3 Apr 2023 19:04:47 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6EE101A001B9
- for <ltp@lists.linux.it>; Mon,  3 Apr 2023 19:04:46 +0200 (CEST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ by picard.linux.it (Postfix) with ESMTPS id EFE6F3CC816
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 05:07:41 +0200 (CEST)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 66D2161347;
- Mon,  3 Apr 2023 17:04:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1D31C433EF;
- Mon,  3 Apr 2023 17:04:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1680541483;
- bh=xZh0Eu5pO1R7ND0msox6nrDzIsZ7MWK/s65DTJY7KX8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=GjPmPRyVVQ6PS6UU3Yq2h/jNTFKNV+iupuBCEb7toIGHkirJkfe6eVxxuO6CkXjia
- 1EITsw7PlBc7ISGw9W4eApcqhAwDqzgwtlLMBBELA668WzT85WgrnkIBxtTJtNqOXi
- baWzd+8fmt8uQMa2lw6OwowtDouVX6QZOK1ppzH8gsYV7l48rC0O/3yHe7j9sSiWSv
- P0wtqYxUEpyQhfl9DZNhg57uBaNsQzIZ1HdFjATJ4IPnclSGb7zK/hYiT3C7Y1Ay6j
- PGfY8UTX3rSi3EmG8HS7bnYLqpilRymfBINTnTMYsD8GisRihKjfHEREITO9MD2RsG
- SKMAaC+tNNNJA==
-Date: Mon, 3 Apr 2023 17:04:42 +0000
-From: Eric Biggers <ebiggers@kernel.org>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <ZCsHKmFrUdBw3xEw@gmail.com>
-References: <7f06d661-cb57-cb8b-481b-cafafa92009b@fujitsu.com>
- <1680518676-2863-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1680518676-2863-3-git-send-email-xuyang2018.jy@fujitsu.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 902C060083C
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 05:07:37 +0200 (CEST)
+X-UUID: c5ffa00ae13d49cb8679f4b4a2a240aa-20230404
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.22, REQID:a5cef54c-9ee1-4899-9e35-d02ffffd1055, IP:10,
+ URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
+ ION:release,TS:20
+X-CID-INFO: VERSION:1.1.22, REQID:a5cef54c-9ee1-4899-9e35-d02ffffd1055, IP:10,
+ UR
+ L:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+ N:release,TS:20
+X-CID-META: VersionHash:120426c, CLOUDID:449931b5-beed-4dfc-bd9c-e1b22fa6ccc4,
+ B
+ ulkID:230404110732JCX7F15Z,BulkQuantity:0,Recheck:0,SF:24|17|19|44|102,TC:
+ nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI
+ :0,OSA:0,AV:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-UUID: c5ffa00ae13d49cb8679f4b4a2a240aa-20230404
+X-User: lienze@kylinos.cn
+Received: from localhost.localdomain [(210.12.40.82)] by mailgw
+ (envelope-from <lienze@kylinos.cn>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
+ with ESMTP id 617369895; Tue, 04 Apr 2023 11:07:30 +0800
+From: Enze Li <lienze@kylinos.cn>
+To: ltp@lists.linux.it
+Date: Tue,  4 Apr 2023 11:07:12 +0800
+Message-Id: <20230404030712.914700-1-lienze@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1680518676-2863-3-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 3/4] syscalls/statx11: Add basic test for
- STATX_DIOALIGN on blockdev
+Subject: [LTP] [PATCH] gitignore: ignore GNU Global output files
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,25 +63,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: enze.li@gmx.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Apr 03, 2023 at 06:44:35PM +0800, Yang Xu wrote:
-> +	TST_ASSERT_ULONG(sys_bdev_dma_path, buf.stx_dio_mem_align - 1);
-> +	TST_ASSERT_ULONG(sys_bdev_lgs_path, buf.stx_dio_offset_align);
+Update .gitignore to ignore GNU Global outputs.
 
-This test is tightly coupled to the kernel's current DIO restrictions on block
-devices.  These changed in v6.0, and they are subject to further change in the
-future.
+Signed-off-by: Enze Li <lienze@kylinos.cn>
+---
+ .gitignore | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-I guess that is fine for now because STATX_DIOALIGN is only in v6.1 and later
-anyway.  But, please leave a super clear comment that documents the assumptions
-this test is making.
+diff --git a/.gitignore b/.gitignore
+index 915d22104..c626d7153 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -48,6 +48,12 @@ autom4te.cache
+ cscope.*
+ ncscope.*
+ 
++# GNU Global outputs
++GPATH
++GTAGS
++GRTAGS
++GSYMS
++
+ .dep_modules
+ .gitattributes
+ .pc/
 
-- Eric
+base-commit: 906cbd9067511f70445886b764b2e5c77c12bc4f
+-- 
+2.25.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
