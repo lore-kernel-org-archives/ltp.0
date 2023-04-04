@@ -4,46 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A79A9C7618D
-	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 03:33:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11094C7618D
+	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 05:45:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 324FC3CD061
-	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 05:33:36 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 031803CC7E5
+	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 07:45:04 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3BEA43CC817
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 05:33:26 +0200 (CEST)
-Received: from m13115.mail.163.com (m13115.mail.163.com [220.181.13.115])
- by in-5.smtp.seeweb.it (Postfix) with ESMTP id 245BD600750
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 05:33:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
- Message-ID; bh=ImtI2RxM0W4nVTD9MUaer97EFYY6F0b1vweeYknApbs=; b=G
- qG3/hpMkH3kA9I94GHcWSo3RzgqXvushP+meoloKW87wKnGrbQR56a6GqGzF0DeT
- ppNLTqqC+5o1rUVjhGZnQZ4Md3CRZKEsOOLdReoIJutCvo36vP7emKDD+Oywr01m
- 7moJoFOOjYlDaLldkQs7oKRHTblfFKSq/m+th6yrBg=
-Received: from crawler2015$163.com ( [170.187.201.129] ) by
- ajax-webmail-wmsvr115 (Coremail) ; Tue, 4 Apr 2023 11:33:15 +0800 (CST)
-X-Originating-IP: [170.187.201.129]
-Date: Tue, 4 Apr 2023 11:33:15 +0800 (CST)
-From: =?GBK?B?1Pi6xg==?= <crawler2015@163.com>
+ by picard.linux.it (Postfix) with ESMTPS id EB89D3CC7D4
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 07:44:53 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 24F5B1400777
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 07:44:52 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 62DAC22600
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 05:44:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1680587090; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=UuT1CcgJLL+WzuV51kBY5TfFoaFhzU3xO2D7re/QpBE=;
+ b=CgfFlgxZ64SG6dIkMXPyAZGi3qyuCvOEXPeeY4ODmXJf0p4Gwli598mnfDyCtSmnrMwnuW
+ xnFgjP5wX0fQv4HRgFfUTtGALisDrY6ZdYKqKrOZKcSJ9pSvWWwxqpkk4KELiQZnGWuF9D
+ O+D43oDdVIKAfBkRlrLdMXlsMBhwHpQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1680587090;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=UuT1CcgJLL+WzuV51kBY5TfFoaFhzU3xO2D7re/QpBE=;
+ b=aI/Q9a/BhcnfttFKjULFkxbI522DdLgZeBFdIZpft1P7JV9OVbOgD6oengw/IPL6XfBPPv
+ 5eqyr9TNZnWFMdAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E94413416
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 05:44:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id YuVqNlG5K2TbPwAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Tue, 04 Apr 2023 05:44:49 +0000
+From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-X-NTES-SC: AL_QuyTAvmctkki4ymcbOkXnkoTj+Y3WsW5uPQh349XP5k0qSvf2gA6Zlt6InHE0dm3FAKqlDybdQB+8dV7eKt8RL5YAp/QWnONZupvQeSGK5Rl
+Date: Tue,  4 Apr 2023 11:14:46 +0530
+Message-Id: <20230404054448.23095-1-akumar@suse.de>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Message-ID: <6b2a7ceb.4466.1874a537430.Coremail.crawler2015@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: c8GowABHjUx8mitkXK8JAA--.36989W
-X-CM-SenderInfo: pfud4zthusiiqv6rljoofrz/xtbBMxxHAmI0jaaNRgABsd
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] testcases:Fix the failure of shell script to get path
+Subject: [LTP] [PATCH 1/3] getpgid01.c: Rewrite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -55,78 +71,199 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp-ower@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-
-
-From 9f372d2d4c9a9df9cda1a7afceddaa2acca27f03 Mon Sep 17 00:00:00 2001
-From: Hao Zeng <zenghao@kylinos.cn>
-Date: Fri, 31 Mar 2023 17:04:07 +0800
-Subject: [LTP] [PATCH] testcases:Fix the failure of shell script to get path
-
-For example, in the file testcases/kernel/controllers/cpuset/cpuset_funcs.sh, if the path is obtained by
-find "$CPUSET" -type d | sort | sed -n '2,$p' | tac | while read subdir, the escaped characters will be lost,
-and by adding the -r option, the escaped characters will be kept as they are without escaping
-The errors are as follows:
-/opt/ltp/testcases/bin/cpuset_funcs.sh:line178: /dev/cpuset/machine.slice/machine-qemux2d157x2dzhx2dsxf.scope/vcpu7/tasks: The file or directory is not available
-rmdir: delete '/dev/cpuset/machine.slice/machine-qemux2d157x2dzhx2dsxf.scope/vcpu7' Failure: The file or directory is not available
-cpuset_memory_pressure 1 TFAIL: Couldn't remove subdir -
-/opt/ltp/testcases/bin/cpuset_funcs.sh:line178: /dev/cpuset/machine.slice/machine-qemux2d157x2dzhx2dsxf.scope/vcpu7/tasks: The file or directory is not available
-rmdir: delete '/dev/cpuset/machine.slice/machine-qemux2d157x2dzhx2dsxf.scope/vcpu7' Failure: The file or directory is not available
-cpuset_memory_pressure 1 TFAIL: Couldn't remove subdir -
-
-Signed-off-by: Hao Zeng <zenghao@kylinos.cn>
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh | 2 +-
- testcases/kernel/controllers/cpuset/cpuset_funcs.sh          | 2 +-
- testcases/open_posix_testsuite/scripts/generate-makefiles.sh | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ testcases/kernel/syscalls/getpgid/getpgid01.c | 157 ++++--------------
+ 1 file changed, 30 insertions(+), 127 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh b/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh
-index ab73c801b..5cb6bb566 100755
---- a/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh
-+++ b/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh
-@@ -63,7 +63,7 @@ cleanup()
- 		return 0
+diff --git a/testcases/kernel/syscalls/getpgid/getpgid01.c b/testcases/kernel/syscalls/getpgid/getpgid01.c
+index 060486e7e..a5a9a813b 100644
+--- a/testcases/kernel/syscalls/getpgid/getpgid01.c
++++ b/testcases/kernel/syscalls/getpgid/getpgid01.c
+@@ -1,145 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ *   07/2001 Ported by Wayne Boyer
++ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-/*
+- * NAME
+- * 	getpgid01.c
+- *
+- * DESCRIPTION
+- *	Testcase to check the basic functionality of getpgid().
+- *
+- * ALGORITHM
+- * 	block1: Does getpgid(0), and checks for error.
+- * 	block2: Does getpgid(getpid()) and checks for error.
+- * 	block3: Does getpgid(getppid()) and checks for error.
+- * 	block4: Verifies that getpgid(getpgid(0)) == getpgid(0).
+- * 	block5: Does getpgid(1) and checks for error.
++/*\
++ * [Description]
+  *
+- * USAGE
+- * 	getpgid01
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	Expects that there are no EPERM limitations on getting the
+- *	process group ID from proc 1 (init).
++ * Verify the basic functionality of getpgid(2) syscall.
+  */
+-#define _GNU_SOURCE 1
+-
+-#include <errno.h>
+-#include <unistd.h>
+-#include <stdarg.h>
+-#include <sys/wait.h>
+-#include <sys/types.h>
+-#include "test.h"
+-
+-void setup(void);
+-void cleanup(void);
+ 
+-char *TCID = "getpgid01";
+-int TST_TOTAL = 1;
++#include "tst_test.h"
+ 
+-int main(int ac, char **av)
++static void run(void)
+ {
+-	int lc;
+-
+-	register int pgid_0, pgid_1;
+-	register int my_pid, my_ppid;
+-	int ex_stat;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
++	pid_t pid_1, ppid, child_pid;
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
++	pid_1 = SAFE_FORK();
++	if (!pid_1) {
++		child_pid = getpid();
++		ppid = getppid();
+ 
+-		if ((pgid_0 = FORK_OR_VFORK()) == -1)
+-			tst_brkm(TBROK, cleanup, "fork failed");
+-		if (pgid_0 > 0) {
+-			while ((pgid_0 = wait(&ex_stat)) != -1) ;
++		tst_res(TINFO, "getpid() in child = %d", child_pid);
++		tst_res(TINFO, "getppid() in child = %d", ppid);
++		tst_res(TINFO, "Running getpgid() in child");
+ 
+-			if (WEXITSTATUS(ex_stat) == 0)
+-				tst_resm(TPASS, "%s PASSED", TCID);
+-			else
+-				tst_resm(TFAIL, "%s FAILED", TCID);
++		TST_EXP_POSITIVE(getpgid(0));
++		TST_EXP_EQ_LI(TST_RET, ppid);
+ 
+-			exit(0);
+-		}
++		TST_EXP_POSITIVE(getpgid(child_pid), "getpgid(%d)", child_pid);
++		TST_EXP_EQ_LI(TST_RET, ppid);
+ 
+-		if ((pgid_0 = getpgid(0)) == -1)
+-			tst_resm(TFAIL | TERRNO, "getpgid(0) failed");
+-		else
+-			tst_resm(TPASS, "getpgid(0) PASSED");
++		TST_EXP_POSITIVE(getpgid(ppid), "getpgid(%d)", ppid);
++		TST_EXP_EQ_LI(TST_RET, ppid);
+ 
+-//block2:
+-		my_pid = getpid();
+-		if ((pgid_1 = getpgid(my_pid)) == -1)
+-			tst_resm(TFAIL | TERRNO, "getpgid(%d) failed", my_pid);
+-
+-		if (pgid_0 != pgid_1) {
+-			tst_resm(TFAIL, "getpgid(my_pid=%d) != getpgid(0) "
+-				 "[%d != %d]", my_pid, pgid_1, pgid_0);
+-		} else
+-			tst_resm(TPASS, "getpgid(getpid()) PASSED");
+-
+-//block3:
+-		my_ppid = getppid();
+-		if ((pgid_1 = getpgid(my_ppid)) == -1)
+-			tst_resm(TFAIL | TERRNO, "getpgid(%d) failed", my_ppid);
+-
+-		if (pgid_0 != pgid_1) {
+-			tst_resm(TFAIL, "getpgid(%d) != getpgid(0) [%d != %d]",
+-				 my_ppid, pgid_1, pgid_0);
+-		} else
+-			tst_resm(TPASS, "getpgid(getppid()) PASSED");
+-
+-//block4:
+-		if ((pgid_1 = getpgid(pgid_0)) < 0)
+-			tst_resm(TFAIL | TERRNO, "getpgid(%d) failed", pgid_0);
+-
+-		if (pgid_0 != pgid_1) {
+-			tst_resm(TFAIL, "getpgid(%d) != getpgid(0) [%d != %d]",
+-				 pgid_0, pgid_1, pgid_0);
+-		} else
+-			tst_resm(TPASS, "getpgid(%d) PASSED", pgid_0);
+-
+-//block5:
+-		if (getpgid(1) < 0)
+-			tst_resm(TFAIL | TERRNO, "getpgid(1) failed");
+-		else
+-			tst_resm(TPASS, "getpgid(1) PASSED");
++		TST_EXP_POSITIVE(getpgid(1));
++		TST_EXP_EQ_LI(TST_RET, 1);
  	}
+-	cleanup();
+-	tst_exit();
  
--	find $CPUCTL -type d | sort | sed -n '2,$p' | tac | while read tmpdir
-+	find $CPUCTL -type d | sort | sed -n '2,$p' | tac | while read -r tmpdir
- 	do
- 		while read tmppid
- 		do
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-index 87ba7da1f..0cfa0c17e 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-@@ -184,7 +184,7 @@ cleanup()
- 	echo $CHILDREN_VALUE > $CLONE_CHILDREN
- 	echo $SCHED_LB_VALUE > $SCHED_LB
++	tst_reap_children();
+ }
  
--	find "$CPUSET" -type d | sort | sed -n '2,$p' | tac | while read subdir
-+	find "$CPUSET" -type d | sort | sed -n '2,$p' | tac | while read -r subdir
- 	do
- 		while read pid
- 		do
-diff --git a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-index 0649c480f..f3af3cede 100755
---- a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-+++ b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-@@ -312,7 +312,7 @@ generate_locate_test_makefile buildonly '.test' "$buildonly_compiler_args"
- generate_locate_test_makefile runnable '.run-test'
- generate_locate_test_makefile test-tools ''
- 
--find . -name Makefile.1 -exec dirname {} \; | while read dir; do
-+find . -name Makefile.1 -exec dirname {} \; | while read -r dir; do
- 	if [ -f "$dir/Makefile.2" ]; then
- 		cat $dir/Makefile.1 $dir/Makefile.2 $dir/Makefile.3 > $dir/Makefile
- 	fi
+-void setup(void)
+-{
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-}
+-
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.test_all = run,
++	.forks_child = 1
++};
 -- 
-2.37.2
+2.40.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
