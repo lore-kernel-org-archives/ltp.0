@@ -4,83 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F431C761A6
-	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 10:37:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30568C761AF
+	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 10:37:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 96D2E3CAC2D
-	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 12:37:19 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 8033E3C9A41
+	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 12:37:30 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 718693C990C
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 12:37:08 +0200 (CEST)
-Received: from mail3.bemta32.messagelabs.com (mail3.bemta32.messagelabs.com
- [195.245.230.81])
+ by picard.linux.it (Postfix) with ESMTPS id 484333CAC2D
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 12:37:16 +0200 (CEST)
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
+ [195.245.231.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 090931A00813
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 12:37:06 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 654076000E0
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 12:37:15 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1680604625; i=@fujitsu.com;
- bh=rci7LyrQ9NiQh+gZgG14oCPt/4sULf5XmBrMH3T3uGw=;
- h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
- b=n4D8wM1QFA4pHpuJCtcT0SXaEz5cOixd0xC48fPALtQfjamxhajE80ena3ZvTIiAD
- tD+7DP8K4gyYo6rS0ghHrYeFxhDymgu8yaxI/YNjtv89Zbp9tb87RS55K/yDiUPb3M
- NEOLinq0qsMZZD1nCticJAYq1gJFoX05Q9JNVAmVbMvC1cWtYxhFy0Lt0lrEvDGyVI
- DllKsIUwkloLfMae+kznySAEiUcSxQWr2pdRtfflQwWjWA6DAzmjF8DtpNPjDVfTtd
- sFE9E8hCEIQ7bvH5YNr3TU+9b0FV3gXIqZ7QzuXUe/b/DWLst74nUPot+4HjUJX8SO
- Rsay7LY8daeFA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPIsWRWlGSWpSXmKPExsViZ8ORqHvxr3a
- KwcYL3BYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8axGWfYCn6qVGy/9YqtgbFJtouRi0NI4Cyj
- RPuqx4wQzgEmiQn3m9khnD2MEtd6frF0MXJysAloSjzrXMAMYosISEh0NLxlB7GZBdQllk/6x
- QRiCwtYSxxaNoUNxGYRUJF48+04WC+vgKfElgUnwGokBBQkpjx8zwwRF5Q4OfMJC8QcCYmDL1
- 4wQ9QoSbS1XmGFsCskGqcfgupVk7h6bhPzBEb+WUjaZyFpX8DItIrRrDi1qCy1SNfQVC+pKDM
- 9oyQ3MTNHL7FKN1EvtVS3PLW4RNdQL7G8WC+1uFivuDI3OSdFLy+1ZBMjMBxTilnidzBe6/ur
- d4hRkoNJSZT30UbtFCG+pPyUyozE4oz4otKc1OJDjDIcHEoSvHavgXKCRanpqRVpmTnA2IBJS
- 3DwKInwCv8BSvMWFyTmFmemQ6ROMSpKifMaASNKSAAkkVGaB9cGi8dLjLJSwryMDAwMQjwFqU
- W5mSWo8q8YxTkYlYR55/8CmsKTmVcCN/0V0GImoMWtURogi0sSEVJSDUyWleozS05ueW99ZZa
- 9yJ8i6bvr03mPb/qScfxk+5cNfK0CXEIOmi8+FkdLRysJaX4JenFPOPLU3OsPZ9Yfn6LtP2mT
- 2cO7L5PuPTffuGld087VKxPCpuuonJ0d+X/y61nOzPO91LVPmKzc9Dv5ybndKq4T8hIeHPIOD
- OdzlAwyWH/Kddn0fcfebjr2MOZPiarf78B/xRuLLt/eyRtdcuZCj1mp+M3knY2SjWo5l968Ne
- ha69ds+XGtSGsiV175pKR3XwoLep+v0aq7vyvj5Kz5cwyfH3OctEIhpVA1ytt/l41ow6PQKTO
- uLDBS1V2ysDfrQetslcmnb/C/W8q49Z/bxK+t85amrpqX2X3AZr7tLSWW4oxEQy3mouJEAKnz
- K61CAwAA
+ s=170520fj; t=1680604634; i=@fujitsu.com;
+ bh=h7FE9fc1fO+RQV8/sKQX2iE61uYWPUfG/9PPb3DYyRQ=;
+ h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+ MIME-Version:Content-Type;
+ b=NddImZxjqZllGR5rAq0UiFoSybAujC30/1pVxCkOiou50rB2eLVy8pj8cj1TcWKcZ
+ 2vmHbGWJ3wynDS3NhYZJoPxrBThNP0Y9h8CKX68NdmkyfJen3WUlAS/SxcSix92o+H
+ Cz9YANbj8QeH6EUczuX7SZjhNTr8vYx4gggfzFrZhPjvosqob3gRwvRDc+V4nB03h2
+ 7k7a3qXIIefaNRIUlZZUCGIgaNyuE1xffPh5XGm1EH6wf+2J1+Z3Blsov6++4NRVr6
+ DKDGEZbzMwHKZjirmKDwcmxuejTee1+0M2FTzdxjDFf72yK0a+8bTVmDuTxGphE+dl
+ UPg041fWT2XSA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKIsWRWlGSWpSXmKPExsViZ8ORpHvzr3a
+ KwbYvZhYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8bLnlPsBY9NK17vmMrWwLhFp4uRi0NI4BSj
+ xJaWbexdjJxAzl4mia1nSiESexglnp7sZARJsAloSjzrXMAMYosISEh0NLwFa2AWUJdYPukXU
+ xcjB4ewgLXE1818IGEWARWJA633WEBsXgFPiY7Fp8DGSAgoSEx5+B5sDKeAl8Sv5SuZIfZ6Sm
+ z+3M8IUS8ocXLmExaI8RISB1+8YIboVZJoa73CCmFXSDROP8QEYatJXD23iXkCo+AsJO2zkLQ
+ vYGRaxWhWnFpUllqka2iil1SUmZ5RkpuYmaOXWKWbqJdaqlueWlyia6SXWF6sl1pcrFdcmZuc
+ k6KXl1qyiREYuinFKi92MD7r+6t3iFGSg0lJlPfRRu0UIb6k/JTKjMTijPii0pzU4kOMMhwcS
+ hK8dq+BcoJFqempFWmZOcA4gklLcPAoifAK/wFK8xYXJOYWZ6ZDpE4xKkqJ8xoBo09IACSRUZ
+ oH1waL3UuMslLCvIwMDAxCPAWpRbmZJajyrxjFORiVhHnn/wKawpOZVwI3/RXQYiagxa1RGiC
+ LSxIRUlINTKXXbvDPreAybL92THbLvet2TE9Ttjy7V3M9dOLSmYKHcuckTTWMZkismXr9ozX7
+ 2anqaYGvz5l8/X3yHNdp7eOygQUrhBm2LF+wxqWqb9FC9TTP997mRxOjlhT+sOhdPUHiwwtmC
+ b9Apkns12f9+lVy9rJpn55wsyqnrOe0tVolSkazRYJfL/mR9ne56te3J45VcAUe+nfebeXESc
+ nCb+Yve64987LV5RCT2UH92htYunSn/1nBM9Vpk2R+45fWynYl7kPNxX+e6rxVe7/6dmF+Z9m
+ nCsW/uyNePWmdbZ2+7vqSxpKtPsVXViY3rD4uq3n/4JW97Zkyd7vaFlp02ic7F+od4p66pqBm
+ wVy/JD8lluKMREMt5qLiRACpsWPCWAMAAA==
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-6.tower-585.messagelabs.com!1680604624!545435!1
-X-Originating-IP: [62.60.8.97]
+X-Msg-Ref: server-6.tower-548.messagelabs.com!1680604633!19334!1
+X-Originating-IP: [62.60.8.98]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.104.1; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 25388 invoked from network); 4 Apr 2023 10:37:05 -0000
-Received: from unknown (HELO n03ukasimr01.n03.fujitsu.local) (62.60.8.97)
- by server-6.tower-585.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 4 Apr 2023 10:37:05 -0000
-Received: from n03ukasimr01.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTP id BA38F1001BE
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 11:37:04 +0100 (BST)
+Received: (qmail 15067 invoked from network); 4 Apr 2023 10:37:13 -0000
+Received: from unknown (HELO n03ukasimr03.n03.fujitsu.local) (62.60.8.98)
+ by server-6.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 4 Apr 2023 10:37:13 -0000
+Received: from n03ukasimr03.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id 91B071D1
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 11:37:13 +0100 (BST)
 Received: from R01UKEXCASM121.r01.fujitsu.local (R01UKEXCASM121
  [10.183.43.173])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by n03ukasimr01.n03.fujitsu.local (Postfix) with ESMTPS id ADB881001A5
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 11:37:04 +0100 (BST)
+ by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id 8693D1AF
+ for <ltp@lists.linux.it>; Tue,  4 Apr 2023 11:37:13 +0100 (BST)
 Received: from localhost.localdomain (10.167.215.131) by
  R01UKEXCASM121.r01.fujitsu.local (10.183.43.173) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Tue, 4 Apr 2023 11:37:03 +0100
+ (TLS) id 15.0.1497.42; Tue, 4 Apr 2023 11:37:11 +0100
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: <ltp@lists.linux.it>
-Date: Tue, 4 Apr 2023 18:36:31 +0800
-Message-ID: <1680604594-16596-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Tue, 4 Apr 2023 18:36:32 +0800
+Message-ID: <1680604594-16596-2-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1680604594-16596-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1680604594-16596-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.167.215.131]
 X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
  R01UKEXCASM121.r01.fujitsu.local (10.183.43.173)
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/4] syscalls/mlock01: Convert into new api
+Subject: [LTP] [PATCH 2/4] syscalls/mlock02: Convert into new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,23 +100,24 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Also use safe macros and TST_EXP_PASS macro.
+Also use safe_macro and TST_EXP_FAIL macro. And remove uclinux code.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/syscalls/mlock/mlock01.c | 159 +++++-----------------
- 1 file changed, 33 insertions(+), 126 deletions(-)
+ testcases/kernel/syscalls/mlock/mlock02.c | 190 ++++++----------------
+ 1 file changed, 51 insertions(+), 139 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mlock/mlock01.c b/testcases/kernel/syscalls/mlock/mlock01.c
-index 2338d4d56..0b079f8be 100644
---- a/testcases/kernel/syscalls/mlock/mlock01.c
-+++ b/testcases/kernel/syscalls/mlock/mlock01.c
-@@ -1,145 +1,52 @@
+diff --git a/testcases/kernel/syscalls/mlock/mlock02.c b/testcases/kernel/syscalls/mlock/mlock02.c
+index 50ee31d1c..921ddeeae 100644
+--- a/testcases/kernel/syscalls/mlock/mlock02.c
++++ b/testcases/kernel/syscalls/mlock/mlock02.c
+@@ -1,109 +1,46 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-- *
 - *   Copyright (c) International Business Machines  Corp., 2002
-- *
+- *	06/2002 Written by Paul Larson
++ * Copyright (c) International Business Machines Corp., 2002
+  *
 - *   This program is free software;  you can redistribute it and/or modify
 - *   it under the terms of the GNU General Public License as published by
 - *   the Free Software Foundation; either version 2 of the License, or
@@ -125,86 +129,71 @@ index 2338d4d56..0b079f8be 100644
 - *   the GNU General Public License for more details.
 - *
 - *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * NAME
-- * 	mlock01.c
-- *
-- * DESCRIPTION
-- * 	Test to see that mlock works
-- *$
-- * ALGORITHM
-- * 	test 1:
-- *		Call mlock with various valid addresses and lengths.  No
-- *		error should be returned
-- *
-- * USAGE:  <for command-line>
-- *         -c n    Run n copies concurrently
-- *         -e      Turn on errno logging
-- *         -f      Turn off functional testing
-- *         -h      Show this help screen
-- *         -i n    Execute test n times
-- *         -I x    Execute test for x seconds
-- *         -p      Pause for SIGUSR1 before starting
-- *         -P x    Pause for x seconds between iterations
-- *         -t      Turn on syscall timing
-+ * Copyright (c) International Business Machines Corp., 2002
-  *
-  * HISTORY
-  *	06/2002 Written by Paul Larson
-- *
-- * RESTRICTIONS
-- * 	None
+- *   along with this program;  if not, write to the Free Software Foundation,
+- *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * 06/2002 Written by Paul Larson
   */
--#include <errno.h>
--#include <unistd.h>
--#include <sys/mman.h>
--#include "test.h"
  
--void setup();
--void setup1(int);
--void cleanup();
+-/*
+- * Test Description:
+- *  Verify that,
+- *   1. mlock() fails with -1 return value and sets errno to ENOMEM,
+- *      if some of the specified address range does not correspond to
+- *      mapped pages in the address space of the process.
+- *   2. mlock() fails with -1 return value and sets errno to ENOMEM,
+- *      if (Linux  2.6.9  and  later)  the caller had a non-zero RLIMIT_MEMLOCK
+- *      soft resource limit, but tried to lock more memory than the limit
+- *      permitted.  This limit is not enforced if the process is privileged
+- *      (CAP_IPC_LOCK).
+- *   3. mlock() fails with -1 return value and sets errno to EPERM,
+- *      if (Linux 2.6.9 and later) the caller was not privileged (CAP_IPC_LOCK)
+- *      and its RLIMIT_MEMLOCK soft resource limit was 0.
 +/*\
 + * [Description]
 + *
-+ * Test mlock with various valid addresses and lengths.
-+ */
++ * Test for ENOMEM, EPERM errors.
++ *
++ * 1) mlock(2) fails with ENOMEM if some of the specified address range
++ *    does not correspond to mapped pages in the address space of
++ *    the process.
++ *
++ * 2) mlock(2) fails with ENOMEM if the caller had a non-zero RLIMIT_MEMLOCK
++ *    soft resource limit, but tried to lock more memory than the limit
++ *    permitted.  This limit is not enforced if the process is
++ *    privileged (CAP_IPC_LOCK).
++ *
++ * 3) mlock(2) fails with EPERM if the caller was not privileged (CAP_IPC_LOCK)
++ *    and its RLIMIT_MEMLOCK soft resource limit was 0.
+  */
  
--char *TCID = "mlock01";
--int TST_TOTAL = 4;
-+#include <stdlib.h>
+-#include <errno.h>
+ #include <unistd.h>
+ #include <sys/mman.h>
++#include <sys/types.h>
+ #include <pwd.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-char *TCID = "mlock02";
+-
+-#if !defined(UCLINUX)
+-
+-static void setup(void);
+-static void cleanup(void);
+-static void test_enomem1(void);
+-static void test_enomem2(void);
+-static void test_eperm(void);
+-static void mlock_verify(const void *, const size_t, const int);
 +#include "tst_test.h"
  
--void *addr1;
-+static void *addr;
+ static size_t len;
+ static struct rlimit original;
+ static struct passwd *ltpuser;
  
--struct test_case_t {
--	void **addr;
-+static struct tcase {
-+	char *msg;
- 	int len;
--	void (*setupfunc) ();
--} TC[] = {
--	/* mlock should return ENOMEM when some or all of the address
--	 * range pointed to by addr and len are not valid mapped pages
--	 * in the address space of the process
--	 */
--	{
--	&addr1, 1, setup1}, {
--	&addr1, 1024, setup1}, {
--	&addr1, 1024 * 1024, setup1}, {
--	&addr1, 1024 * 1024 * 10, setup1}
-+} tcases[] = {
-+	{"mlock 1 byte", 1},
-+	{"mlock 1024 bytes", 1024},
-+	{"mlock 1024 * 1024 bytes", 1024 * 1024},
-+	{"mlock 1024 * 1024 * 10 bytes", 1024 * 1024 * 10}
- };
- 
--#if !defined(UCLINUX)
+-static void (*test_func[])(void) = { test_enomem1, test_enomem2, test_eperm };
+-
+-int TST_TOTAL = ARRAY_SIZE(test_func);
 -
 -int main(int ac, char **av)
 -{
@@ -214,78 +203,147 @@ index 2338d4d56..0b079f8be 100644
 -
 -	setup();
 -
--	/*
--	 * FIXME (garrcoop): this should really test out whether or not the
--	 * process's mappable address space is indeed accessible by the
--	 * current user, instead of needing to be run by root all the time.
--	 */
--	tst_require_root();
--
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
 -		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			if (TC[i].setupfunc != NULL)
--				TC[i].setupfunc(TC[i].len);
--
--			TEST(mlock(*(TC[i].addr), TC[i].len));
--
--			/* I'm confused -- given the description above this
--			 * should fail as designed, but this application
--			 * */
--			if (TEST_RETURN == -1)
--				tst_resm(TFAIL | TTERRNO, "mlock failed");
--			else
--				tst_resm(TPASS, "mlock passed");
--		}
+-		for (i = 0; i < TST_TOTAL; i++)
+-			(*test_func[i])();
 -	}
 -
 -	cleanup();
--
 -	tst_exit();
+-}
+-
+-static void setup(void)
+-{
+-	tst_require_root();
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
+-
+-	len = getpagesize();
+-
+-	SAFE_GETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
+-}
+-
+ static void test_enomem1(void)
+ {
+ 	void *addr;
+-	struct rlimit rl;
+ 
+-	addr = SAFE_MMAP(cleanup, NULL, len, PROT_READ,
++	addr = SAFE_MMAP(NULL, len, PROT_READ,
+ 			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+-
+-	SAFE_MUNMAP(cleanup, addr, len);
+-
+-	mlock_verify(addr, len, ENOMEM);
++	SAFE_MUNMAP(addr, len);
++	TST_EXP_FAIL(mlock(addr, len), ENOMEM, "mlock(%p, %lu)", addr, len);
+ }
+ 
+ static void test_enomem2(void)
+@@ -113,20 +50,14 @@ static void test_enomem2(void)
+ 
+ 	rl.rlim_max = len - 1;
+ 	rl.rlim_cur = len - 1;
+-	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
+-
+-	addr = SAFE_MMAP(cleanup, NULL, len, PROT_READ,
++	SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &rl);
++	addr = SAFE_MMAP(NULL, len, PROT_READ,
+ 			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+-
+-	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+-
+-	mlock_verify(addr, len, ENOMEM);
+-
+-	SAFE_SETEUID(cleanup, 0);
+-
+-	SAFE_MUNMAP(cleanup, addr, len);
+-
+-	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
++	SAFE_SETEUID(ltpuser->pw_uid);
++	TST_EXP_FAIL(mlock(addr, len), ENOMEM, "mlock(%p, %lu)", addr, len);
++	SAFE_SETEUID(0);
++	SAFE_MUNMAP(addr, len);
++	SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &original);
+ }
+ 
+ static void test_eperm(void)
+@@ -136,51 +67,32 @@ static void test_eperm(void)
+ 
+ 	rl.rlim_max = 0;
+ 	rl.rlim_cur = 0;
+-	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &rl);
+-
+-	addr = SAFE_MMAP(cleanup, NULL, len, PROT_READ,
++	SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &rl);
++	addr = SAFE_MMAP(NULL, len, PROT_READ,
+ 			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+-
+-	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
+-
+-	mlock_verify(addr, len, EPERM);
+-
+-	SAFE_SETEUID(cleanup, 0);
+-
+-	SAFE_MUNMAP(cleanup, addr, len);
+-
+-	SAFE_SETRLIMIT(cleanup, RLIMIT_MEMLOCK, &original);
++	SAFE_SETEUID(ltpuser->pw_uid);
++	TST_EXP_FAIL(mlock(addr, len), EPERM, "mlock(%p, %lu)", addr, len);
++	SAFE_SETEUID(0);
++	SAFE_MUNMAP(addr, len);
++	SAFE_SETRLIMIT(RLIMIT_MEMLOCK, &original);
+ }
+ 
+-static void mlock_verify(const void *addr, const size_t len, const int error)
++static void run(void)
+ {
+-	TEST(mlock(addr, len));
+-
+-	if (TEST_RETURN != -1) {
+-		tst_resm(TFAIL, "mlock succeeded unexpectedly");
+-		return;
+-	}
+-
+-	if (TEST_ERRNO != error) {
+-		tst_resm(TFAIL | TTERRNO,
+-			 "mlock didn't fail as expected; expected - %d : %s",
+-			 error, strerror(error));
+-	} else {
+-		tst_resm(TPASS | TTERRNO, "mlock failed as expected");
+-	}
++	test_enomem1();
++	test_enomem2();
++	test_eperm();
+ }
+ 
+-static void cleanup(void)
+-{
 -}
 -
 -#else
 -
+-int TST_TOTAL = 1;
+-
 -int main(void)
-+static void do_mlock(unsigned int i)
++static void setup(void)
  {
 -	tst_brkm(TCONF, NULL, "test is not available on uClinux");
--}
--
++	ltpuser = SAFE_GETPWNAM("nobody");
++	len = getpagesize();
++	SAFE_GETRLIMIT(RLIMIT_MEMLOCK, &original);
+ }
+ 
 -#endif /* if !defined(UCLINUX) */
-+	struct tcase *tc = &tcases[i];
- 
--void setup(void)
--{
--	TEST_PAUSE;
-+	tst_res(TINFO, "%s", tc->msg);
-+	addr = SAFE_MALLOC(tc->len);
-+	TST_EXP_PASS(mlock(addr, tc->len), "mlock(%p, %d)", addr, tc->len);
-+	free(addr);
-+	addr = NULL;
- }
- 
--void setup1(int len)
-+static void cleanup(void)
- {
--	addr1 = malloc(len);
--	if (addr1 == NULL)
--		tst_brkm(TFAIL, cleanup, "malloc failed");
-+	if (addr)
-+		free(addr);
- }
- 
--void cleanup(void)
--{
--}
 +static struct tst_test test = {
 +	.needs_root = 1,
-+	.test = do_mlock,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.cleanup = cleanup,
++	.setup = setup,
++	.test_all = run,
 +};
 -- 
 2.39.1
