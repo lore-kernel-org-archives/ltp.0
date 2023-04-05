@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0978C7619A
-	for <ltp@archiver.kernel.org>; Wed,  5 Apr 2023 09:21:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C2B3C761AF
+	for <ltp@archiver.kernel.org>; Wed,  5 Apr 2023 09:23:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D92F93CDBDE
-	for <ltp@archiver.kernel.org>; Wed,  5 Apr 2023 11:21:31 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9065F3CCFEB
+	for <ltp@archiver.kernel.org>; Wed,  5 Apr 2023 11:23:50 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 101643CC771
- for <ltp@lists.linux.it>; Wed,  5 Apr 2023 11:21:21 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 3558C3CC771
+ for <ltp@lists.linux.it>; Wed,  5 Apr 2023 11:23:40 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3C68C600684
- for <ltp@lists.linux.it>; Wed,  5 Apr 2023 11:21:20 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A3C3110009C3
+ for <ltp@lists.linux.it>; Wed,  5 Apr 2023 11:23:38 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 26FED2065A;
- Wed,  5 Apr 2023 09:21:20 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 9376E2065A;
+ Wed,  5 Apr 2023 09:23:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1680686480; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1680686617; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=FaaFGAqJj9soTzFfYUYNiSDcXPrOPa0EBSwH2sbncTI=;
- b=gWvUMHvXaHtbURpc1WMfaCRKl2Ik5VVn/7gYihjNFneYZQvHCBPpxWFTQHjYvhWkL+4b4d
- DWoq0mZ0btaaA4Ts1zyHFIw+Kj8vVHDgG5eziGkPheYhUr8mC1uykJli/+Rtur5v8WhGj+
- XTO/XmX8dMLzqjvvLFnPQs+d5twflJA=
+ bh=V6WCTSQigK68rNz0o8rIyCaOb/uxtb40E3THkLJ4QUA=;
+ b=nM8RUHlbg8rZF9O0PS2wINB5IgGtQR5O+kn8L1sbYTZi4MyhlGeQVv/E1wKvGdVn3/OUHW
+ p2hO8YhtKrlZsIFArg5LdgxbKTwQM3yqS/Z0yvyAXap7IRaQdVSCIT3p6vnHYnUUWxXiTz
+ 3wTspoJ7yj+5Yueh5V9SklEI0sQ4cmU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1680686480;
+ s=susede2_ed25519; t=1680686617;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=FaaFGAqJj9soTzFfYUYNiSDcXPrOPa0EBSwH2sbncTI=;
- b=mxueVhPsYjOw8FsAl+XGHTu//mOKnxSB1rgOYASVjou2ukGFRXo/rTwn78Uepstzsfvt6S
- AIuomVoplr0FpRCQ==
+ bh=V6WCTSQigK68rNz0o8rIyCaOb/uxtb40E3THkLJ4QUA=;
+ b=G0JinavRxZBen3xIqEJavdYuJ2or67vju5NLmmK1wfWBjtWT8ftl0LOhjz/beOvjFHYfNh
+ kt7dLBsjNeF7t7CQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1468F13A31;
- Wed,  5 Apr 2023 09:21:20 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 76C7A13A31;
+ Wed,  5 Apr 2023 09:23:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 7aDKA5A9LWTaXgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 05 Apr 2023 09:21:20 +0000
-Date: Wed, 5 Apr 2023 11:22:32 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id g1nwGxk+LWTnXwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 05 Apr 2023 09:23:37 +0000
+Date: Wed, 5 Apr 2023 11:24:49 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <ZC092GCT+OvTHgUX@yuki>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZC0+YdMdB4p5dY8M@yuki>
 References: <20230308132335.29621-1-andrea.cervesato@suse.de>
  <20230308132335.29621-2-andrea.cervesato@suse.de>
- <20230314234000.GA10628@localhost>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230314234000.GA10628@localhost>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20230308132335.29621-2-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v1 1/3] Rewrite eventfd2_01 test using new LTP API
 X-BeenThere: ltp@lists.linux.it
@@ -83,21 +82,14 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > +static inline int eventfd2(unsigned int count, unsigned int flags)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret = tst_syscall(__NR_eventfd2, count, flags);
-> > +	if (ret == -1)
-> > +		tst_brk(TBROK | TERRNO, "eventfd2");
-> > +
-> > +	return ret;
-> > +}
-> Normally we need put file or store this file into some lib directory?
+Pushed with two minor changes, thanks.
 
-As long as there are no other testcases that will need this it's okay if
-this stays here.
+> +	TST_EXP_EXPR((flags & FD_CLOEXEC) > 0, "FD_CLOEXEC is set");
+                        ^
+			It's more C-like to do just (flags & FD_CLOEXEC)
+			here, i.e. drop the > 0
 
+			And use !(...) for the other case.
 -- 
 Cyril Hrubis
 chrubis@suse.cz
