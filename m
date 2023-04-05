@@ -4,54 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4766C76188
-	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 21:59:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A394C76188
+	for <ltp@archiver.kernel.org>; Wed,  5 Apr 2023 08:09:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 23C523CB7BF
-	for <ltp@archiver.kernel.org>; Tue,  4 Apr 2023 23:59:32 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 6A6A13C1047
+	for <ltp@archiver.kernel.org>; Wed,  5 Apr 2023 10:09:31 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D964C3C0162
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 23:59:22 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 40A023C1047
+ for <ltp@lists.linux.it>; Wed,  5 Apr 2023 10:09:20 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 40DCC6007A2
- for <ltp@lists.linux.it>; Tue,  4 Apr 2023 23:59:21 +0200 (CEST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id AD7B763597;
- Tue,  4 Apr 2023 21:59:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0734DC433EF;
- Tue,  4 Apr 2023 21:59:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1680645560;
- bh=QNgSjQvJITJMgoKj2i5Zz2ZqvZhvgavpxmMGI8Fys0w=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=j9KJ+s0UbSDBxtjcNdUVRZydP68m6SIZEUB3BR8aNnQkw+BSEePmlHaqTdbqTSGDY
- 44PPdXX+b0QO8hMmP5qEppst9RmolTO84W9IJphHBmoXPR2iBTB9MQMuzKlTPaV3ye
- 5VEkGPMwZ7xJQZXHFrFY5tDn4vzvi4RkA+aK8Xq4AqRGn6m+fSjllz9OCszsfmWjXW
- GBoEMIhhSW9JYoeRNNgUVMUsMhiva8N3CBjeHixqwo0CiAxXe0J5Bl6Dm3Giu7artN
- IH9O+ttzX0u43gX+CkIoHTU55NFpxpfM1C5VUBgXSShFmIWwUjGSqqdQpcg1aka3oL
- OwFxi8zh2w+ng==
-Date: Tue, 4 Apr 2023 14:59:18 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <20230404215918.GA1893@sol.localdomain>
-References: <ZCsHKmFrUdBw3xEw@gmail.com>
- <1680593430-14728-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1680593430-14728-3-git-send-email-xuyang2018.jy@fujitsu.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4E720600829
+ for <ltp@lists.linux.it>; Wed,  5 Apr 2023 10:09:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1680682158;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=VKX/LCn3kkkogBibNyIyMrjvQy6XyiZEuISttRg2m8E=;
+ b=dGxm/HED+YOHXTgLhm35UVW5KoLSTb7jUsrCHyeT9kfdpB+PoisIA1h9ViAjHliJm55Wku
+ CAPe1NXa5r2qs0hvpe4mGPUWUJJsqXOJ9xz9gz7V4BjniHRktl4q5jrnfsKkhgDQ/AvMt5
+ oDGAn00lN0mKOW+0X9PdC5MRgrLbotY=
+Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
+ [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-230-FAulqLnlNmCAsybGwNiPMw-1; Wed, 05 Apr 2023 04:09:17 -0400
+X-MC-Unique: FAulqLnlNmCAsybGwNiPMw-1
+Received: by mail-ua1-f69.google.com with SMTP id
+ u11-20020ab0554b000000b007692d9dfeabso2872925uaa.23
+ for <ltp@lists.linux.it>; Wed, 05 Apr 2023 01:09:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112; t=1680682157;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=VKX/LCn3kkkogBibNyIyMrjvQy6XyiZEuISttRg2m8E=;
+ b=nMECSt1Oht+c/b/9as5rab7rFso4nFgekCiiSHB16xxfi/HcnGYL87vRkI3U0KrpEU
+ CMm4BNJk1KZmWx0LMngVr5NxzTYLal44lS0WKTJvoMTIT1sFeY+4VQpYfJmhYDwdNh+l
+ J6nr9mZKlkVuSpmF+Xx01tm6IUwrSYRQJ7KWN8A90Uwv2J9PNP7Jrzucp5dtEv3Xr38H
+ woWQqIGl532evJZEVUnjbtk9uHAVA6iHzxvJ3JRm9JwDrGsgLBAlDEJtAm0SW35why7a
+ tCnPmOR0t+To06kEHxULpIlosWsUpZaX4kPFrj2eqZDe06e6IB+nKPJ7zNMpAlSipiUv
+ edwA==
+X-Gm-Message-State: AAQBX9ezeUqYyKLNbPiPLjjflV5gj2dpS+Ry6Aw92WWToWmm2jjjv7TT
+ pxt0vhO9n54l/lMmTRbCYsAXXbgdxvVqkSFEyB8YlDqMWHjmu5RHrAJWIRC65hMzhYxrAY8K+C4
+ uPmgttKZ+WW94u50ckJC+PvuIZCqd++X9HuM11w==
+X-Received: by 2002:a9f:305c:0:b0:68a:5c52:7f2b with SMTP id
+ i28-20020a9f305c000000b0068a5c527f2bmr3558110uab.1.1680682156909; 
+ Wed, 05 Apr 2023 01:09:16 -0700 (PDT)
+X-Google-Smtp-Source: AKy350Y7DK/1fJNgSljPH3NvesutT+ge6+dPOE4jKpVp5EiQlMli2SEnLK1frj85qV0gGEi84twLSVhX8n20P8EvZgo=
+X-Received: by 2002:a9f:305c:0:b0:68a:5c52:7f2b with SMTP id
+ i28-20020a9f305c000000b0068a5c527f2bmr3558095uab.1.1680682156466; Wed, 05 Apr
+ 2023 01:09:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1680593430-14728-3-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <20230404112852.1271969-1-pvorel@suse.cz>
+In-Reply-To: <20230404112852.1271969-1-pvorel@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 5 Apr 2023 10:09:16 +0200
+Message-ID: <CAASaF6xYZPL22Ba4FYCGR3uZQEr11DO=poeU_+8rHZARWOHKGg@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 3/4] syscalls/statx11: Add basic test for
- STATX_DIOALIGN on block device
+Subject: Re: [LTP] [PATCH 1/1] mmap20: Fix invalid address
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,81 +86,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Paulson Raja L <paulson@zilogic.com>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Yang,
-
-On Tue, Apr 04, 2023 at 03:30:29PM +0800, Yang Xu wrote:
-> +	/*
-> +	 * This test is tightly coupled to the kernel's current DIO restrictions
-> +	 * on block devices. The general rule of DIO needing to be aligned to the
-> +	 * block device's logical block size was recently relaxed to allow user buffers
-
-Please don't use the word "recently" in code comments like this.  It is vague,
-and what is "recent" now will no longer be recent in the future.
-
-> +
-> +	TST_EXP_PASS(statx(AT_FDCWD, tst_device->dev, 0, 0, &buf),
-> +		"statx(AT_FDCWD, %s, 0, STATX_DIOALIGN, &buf)", tst_device->dev);
-> +	TST_EXP_EQ_LU(buf.stx_dio_mem_align, 0);
-> +	TST_EXP_EQ_LU(buf.stx_dio_offset_align, 0);
-
-Like I mentioned on patch 2, this is not a valid test case because the contract
-of statx() allows it to return information that wasn't explicitly requested.
-
-> +static void setup(void)
-> +{
-> +	char *dev_name;
-> +	int dev_fd;
-> +
-> +	dev_fd = SAFE_OPEN(tst_device->dev, O_RDWR);
-> +	SAFE_IOCTL(dev_fd, BLKSSZGET, &logical_sector_size);
-> +	SAFE_CLOSE(dev_fd);
-> +
-> +	if (logical_sector_size <= 0)
-> +		tst_brk(TBROK, "BLKSSZGET returned invalid block size %i", logical_sector_size);
-> +
-> +	dev_name = basename((char *)tst_device->dev);
-> +	sprintf(sys_bdev_lgs_path, "/sys/block/%s/queue/logical_block_size", dev_name);
-> +	while (access(sys_bdev_lgs_path, F_OK) != 0) {
-> +		dev_name[strlen(dev_name)-1] = '\0';
-> +		sprintf(sys_bdev_lgs_path, "/sys/block/%s/queue/logical_block_size", dev_name);
-> +	}
-
-What does "lgs" stand for?
-
-Why are both BLKSSZGET and /sys/block/%s/queue/logical_block_size being used?
-Don't they provide exactly the same information?
-
-> +	if (access(sys_bdev_dma_path, F_OK) != 0)
-> +		tst_brk(TCONF, "dma_alignment syfsfile doesn't exist");
-> +}
-
-syfsfile => sysfs file
-
-> +static void cleanup(void)
-> +{
-> +	if (fd > -1)
-> +		SAFE_CLOSE(fd);
-> +}
-
-What is the purpose of the 'fd' variable?
-
-> +static struct tst_test test = {
-> +	.test_all = verify_statx,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.needs_root = 1,
-> +	.needs_device = 1,
-> +};
-
-Why does this test need root?
-
-- Eric
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBBcHIgNCwgMjAyMyBhdCAxOjI54oCvUE0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
+Y3o+IHdyb3RlOgo+Cj4gMSA8PCA3ICgweDgwKSBpcyBkZWZpbmVkIGFzIE1BUF9MT0NLRUQgb24g
+cHBjNjRsZSBhbmQgbWlwcy4KPiBVc2UgMSA8PCA5ICgweDIwMCksIHdoaWNoIGxvb2tzIHRvIGJl
+IHVudXNlZCBvbiBhbGwgYXJjaHMuCj4KPiBGaXhlczogMjc2NGU5ZTZhICgibW1hcDIwOiBOZXcg
+dGVzdCBmb3IgbW1hcCgpIHdpdGggTUFQX1NIQVJFRF9WQUxJREFURSIpCj4KPiBTaWduZWQtb2Zm
+LWJ5OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KClNob3VsZCB3b3JrLiBBbHRlcm5hdGl2
+ZSBpcyB3ZSBkb24ndCBtYXAgYSBmaWxlLCBhbmQgdGhlbiBhZGQgTUFQX1NZTkMgdG8gZmxhZ3Ms
+CndoaWNoIGxvb2tpbmcgYXQgTEVHQUNZX01BUF9NQVNLIHNob3VsZCBhbHNvIGdpdmUgdXMgLUVP
+UE5PVFNVUFAuCgpJJ2QgZ28gd2l0aCB0aGUgcGF0Y2gsIHdlIGNhbiB0d2VhayBpdCBsYXRlciBp
+ZiBzb21lb25lIGhhcyBiZXR0ZXIgaWRlYToKQWNrZWQtYnk6IEphbiBTdGFuY2VrIDxqc3RhbmNl
+a0ByZWRoYXQuY29tPgoKPiAtLS0KPiBOT1RFOiAoMSA8PCAxMCkgd291bGQgd29yayBhcyB3ZWxs
+Lgo+Cj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMjAuYyB8IDIgKy0KPiAg
+MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4KPiBkaWZmIC0t
+Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAyMC5jIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAyMC5jCj4gaW5kZXggYzM0NmRmNWQxLi41MjY5MTc5
+ZTUgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAyMC5j
+Cj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAyMC5jCj4gQEAgLTIw
+LDcgKzIwLDcgQEAKPgo+ICAjZGVmaW5lIFRFU1RfRklMRSAiZmlsZV90b19tbWFwIgo+ICAjZGVm
+aW5lIFRFU1RfRklMRV9TSVpFIDEwMjQKPiAtI2RlZmluZSBJTlZBTElEX0ZMQUcgKDEgPDwgNykK
+PiArI2RlZmluZSBJTlZBTElEX0ZMQUcgKDEgPDwgOSkKPgo+ICBzdGF0aWMgaW50IGZkID0gLTE7
+Cj4gIHN0YXRpYyB2b2lkICphZGRyOwo+IC0tCj4gMi40MC4wCj4KCgotLSAKTWFpbGluZyBsaXN0
+IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
