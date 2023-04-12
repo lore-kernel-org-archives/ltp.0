@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B41BC77B6E
-	for <ltp@archiver.kernel.org>; Wed, 12 Apr 2023 08:30:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95DB8C7619A
+	for <ltp@archiver.kernel.org>; Wed, 12 Apr 2023 08:53:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5E3E23CC630
-	for <ltp@archiver.kernel.org>; Wed, 12 Apr 2023 10:30:09 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id A03E33CC656
+	for <ltp@archiver.kernel.org>; Wed, 12 Apr 2023 10:52:58 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4A17A3C00DC
- for <ltp@lists.linux.it>; Wed, 12 Apr 2023 10:29:58 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id BD6BD3C00DC
+ for <ltp@lists.linux.it>; Wed, 12 Apr 2023 10:52:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 81EB710005D4
- for <ltp@lists.linux.it>; Wed, 12 Apr 2023 10:29:56 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F34591400500
+ for <ltp@lists.linux.it>; Wed, 12 Apr 2023 10:52:47 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 638431F897;
- Wed, 12 Apr 2023 08:29:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1681288196;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 62BE1218FC;
+ Wed, 12 Apr 2023 08:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1681289567; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=UflczxH8qgf3XHKRFIVhVfWb0Kqs7JcAiDGNkvmih0o=;
- b=QvU6BRMmWEN+EB8X69pldC5IhltXXhNrYdiquhGsldRCg2mlGaf6EsPJfkpWpwVSZ6Xr//
- 9EwvqRS+0FHG8bY6AvaN6rJY60Sufn4Yu9hDK00f/6vUI1IItCFMuEdkx4T1w2goE2gqZ7
- NSaSyD5QLmRxNkuXllCKBmeZb1PTFyM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1681288196;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=QovY0jVO50UY8r9HjQNNSfVHIvno4s8bnQiZtLummVM=;
+ b=X8qIKOsDU2s+sVJpRxvItxCLpHLRHJGlLoNqP98CBhm9Nl3s1vpy9V6wVUFWNMn5fHRyT3
+ VGKV2xmhHUu3dyMfN3BIeOBxePDpqAm5YKCJLMf7zU4/Gh0xuVoulcqTuEJoXqEbb58C6E
+ c7JKMb2eFBti+xUWmPx4c1wRJQVWMA8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1681289567;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=UflczxH8qgf3XHKRFIVhVfWb0Kqs7JcAiDGNkvmih0o=;
- b=mpJzpgOYHI7ZMFxHUkfw1Hnhz4lBzMLYAmvDk6KvNOo9yO/sDmXqYBlSi7YTE2MXnV+AjO
- BlzJexuhHJPrpQAA==
+ bh=QovY0jVO50UY8r9HjQNNSfVHIvno4s8bnQiZtLummVM=;
+ b=T1+lpZnlABSoTUXGSO/lqJD9BvJvuXWwxDfDNXHzybQcdhjs+PGjbQcFfjaoCV3iNC5ZEl
+ oupBJoEnBA2gWDCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 42FD2132C7;
- Wed, 12 Apr 2023 08:29:56 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D961813498;
+ Wed, 12 Apr 2023 08:52:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 10N0DwRsNmTAXAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 12 Apr 2023 08:29:56 +0000
-Date: Wed, 12 Apr 2023 10:29:54 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <20230412082954.GC1990988@pevik>
-References: <20230412082115.1990591-1-pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id AcxHK15xNmRtaAAAMHmgww
+ (envelope-from <akumar@suse.de>); Wed, 12 Apr 2023 08:52:46 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 12 Apr 2023 14:22:44 +0530
+Message-ID: <1809432.yOLanILp2W@localhost>
+Organization: SUSE
+In-Reply-To: <ZC1ToUKUUSG7s6S/@yuki>
+References: <20230404054448.23095-1-akumar@suse.de> <ZC1ToUKUUSG7s6S/@yuki>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230412082115.1990591-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] nfs/nfs08.sh: Add test for NFS cache
- invalidation
+Subject: Re: [LTP] [PATCH 1/3] getpgid01.c: Rewrite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,126 +76,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Cyril,
+Thank you for the review.
 
-[ Cc linux-nfs ML, sorry for the noise ]
+On Wednesday, April 5, 2023 4:25:29 PM IST you wrote:
+> Hi!
+> > +	pid_1 = SAFE_FORK();
+> > +	if (!pid_1) {
+> > +		child_pid = getpid();
+> > +		ppid = getppid();
+> >  
+> > -		if ((pgid_0 = FORK_OR_VFORK()) == -1)
+> > -			tst_brkm(TBROK, cleanup, "fork failed");
+> > -		if (pgid_0 > 0) {
+> > -			while ((pgid_0 = wait(&ex_stat)) != -1) ;
+> > +		tst_res(TINFO, "getpid() in child = %d", child_pid);
+> > +		tst_res(TINFO, "getppid() in child = %d", ppid);
+> > +		tst_res(TINFO, "Running getpgid() in child");
+> >  
+> > -			if (WEXITSTATUS(ex_stat) == 0)
+> > -				tst_resm(TPASS, "%s PASSED", TCID);
+> > -			else
+> > -				tst_resm(TFAIL, "%s FAILED", TCID);
+> > +		TST_EXP_POSITIVE(getpgid(0));
+> > +		TST_EXP_EQ_LI(TST_RET, ppid);
+> 
+> I do not think that this is correct, the previous code compared the
+> return value from getpgid(0) against the rest, not parent pid.
+I think I wrongly assumed the ppid to be pgid of itself and children processes.
+Thanks for pointing it point.
+> 
+> I guess that the best solution here would be to call getgid() in the
+I guess you meant getpgid() here?
+> parent and save that to a variable and use that for the comparsion in
+> the child.
+> 
+> 
 
-Kind regards,
-Petr
+Regards,
+Avinesh
 
-> v4 [1] of not yet upstreamed patch accidentally broke cache invalidation
-> for directories by clearing NFS_INO_INVALID_DATA inappropriately.
-> Although it was fixed in v5 [2] thus kernel was not actually broken,
-> it's better to prevent this in the future.
 
-> [1] https://lore.kernel.org/linux-nfs/167649314509.15170.15885497881041431304@noble.neil.brown.name/
-> [2] https://lore.kernel.org/linux-nfs/167943762461.8008.3152357340238024342@noble.neil.brown.name/
 
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> NOTE: although Neil suggested to test on ext2 to make the problems more
-> obvious (ext2 has low-resolution time stamps) and to use sleep, with
-> nfs_lib.sh LTP code it works without sleep and on all filesystems.
-
-> It'd require more changes in nfs_lib.sh to force ext2 only for nfs08.sh
-> (other tests are using the library). Not only it's needed, but I also
-> plan to switch nfs_lib.sh to use all available filesystems via
-> TST_ALL_FILESYSTEMS=1, therefore ext2 will be among tested filesystems
-> anyway.
-
-> Test fails also on all available NFS versions, thus using the same
-> approach as the other tests - test all versions, although not sure if
-> it's really needed. But test runs very quickly (unlike other nfs tests
-> it's not a stress test), thus I'd keep it.
-
-> NOTE: anybody trying to test this patch with TMPDIR (to test different
-> filesystems) test with this fix [1].
-
-> Kind regards,
-> Petr
-
-> [1] https://lore.kernel.org/ltp/20230412073953.1983857-1-pvorel@suse.cz/
-
->  runtest/net.nfs                           | 11 +++++++++++
->  testcases/network/nfs/nfs_stress/Makefile |  9 +--------
->  testcases/network/nfs/nfs_stress/nfs08.sh | 20 ++++++++++++++++++++
->  3 files changed, 32 insertions(+), 8 deletions(-)
->  create mode 100755 testcases/network/nfs/nfs_stress/nfs08.sh
-
-> diff --git a/runtest/net.nfs b/runtest/net.nfs
-> index 3249c35cb..72cf4b307 100644
-> --- a/runtest/net.nfs
-> +++ b/runtest/net.nfs
-> @@ -72,6 +72,17 @@ nfs4_ipv6_07 nfs07.sh -6 -v 4 -t tcp
->  nfs41_ipv6_07 nfs07.sh -6 -v 4.1 -t tcp
->  nfs42_ipv6_07 nfs07.sh -6 -v 4.2 -t tcp
-
-> +nfs3_08 nfs08.sh -v 3 -t udp
-> +nfs3t_08 nfs08.sh -v 3 -t tcp
-> +nfs4_08 nfs08.sh -v 4 -t tcp
-> +nfs41_08 nfs08.sh -v 4.1 -t tcp
-> +nfs42_08 nfs08.sh -v 4.2 -t tcp
-> +nfs3_ipv6_08 nfs08.sh -6 -v 3 -t udp
-> +nfs3t_ipv6_08 nfs08.sh -6 -v 3 -t tcp
-> +nfs4_ipv6_08 nfs08.sh -6 -v 4 -t tcp
-> +nfs41_ipv6_08 nfs08.sh -6 -v 4.1 -t tcp
-> +nfs42_ipv6_08 nfs08.sh -6 -v 4.2 -t tcp
-> +
->  nfslock3_01 nfslock01.sh -v 3 -t udp
->  nfslock3t_01 nfslock01.sh -v 3 -t tcp
->  nfslock4_01 nfslock01.sh -v 4 -t tcp
-> diff --git a/testcases/network/nfs/nfs_stress/Makefile b/testcases/network/nfs/nfs_stress/Makefile
-> index 8cd095867..5b396dede 100644
-> --- a/testcases/network/nfs/nfs_stress/Makefile
-> +++ b/testcases/network/nfs/nfs_stress/Makefile
-> @@ -9,13 +9,6 @@ include $(top_srcdir)/include/mk/testcases.mk
->  nfs04_create_file: CPPFLAGS += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
->  nfs05_make_tree: LDLIBS += -lpthread
-
-> -INSTALL_TARGETS		:= nfs_lib.sh \
-> -			   nfs01.sh \
-> -			   nfs02.sh \
-> -			   nfs03.sh \
-> -			   nfs04.sh \
-> -			   nfs05.sh \
-> -			   nfs06.sh \
-> -			   nfs07.sh
-> +INSTALL_TARGETS	:= *.sh
-
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/network/nfs/nfs_stress/nfs08.sh b/testcases/network/nfs/nfs_stress/nfs08.sh
-> new file mode 100755
-> index 000000000..8a0f40242
-> --- /dev/null
-> +++ b/testcases/network/nfs/nfs_stress/nfs08.sh
-> @@ -0,0 +1,20 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-or-later
-> +# Copyright (c) 2023 Petr Vorel <pvorel@suse.cz>
-> +# Test reproducer for broken NFS cache invalidation for directories.
-> +# Based on reproducer from Neil Brown <neilb@suse.de>
-> +
-> +TST_TESTFUNC="do_test"
-> +
-> +do_test()
-> +{
-> +	tst_res TINFO "testing NFS cache invalidation for directories"
-> +
-> +	touch 1
-> +	EXPECT_PASS 'ls | grep 1'
-> +	touch 2
-> +	EXPECT_PASS 'ls | grep 2'
-> +}
-> +
-> +. nfs_lib.sh
-> +tst_run
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
