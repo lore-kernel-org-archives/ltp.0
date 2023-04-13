@@ -4,78 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D31F3C77B61
-	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 08:52:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7A8CC77B6F
+	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 09:08:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5B04F3CC4DC
-	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 10:52:29 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id CF74C3CC4E1
+	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 11:08:17 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 483A03C6C4B
- for <ltp@lists.linux.it>; Thu, 13 Apr 2023 10:52:16 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 473FA3CAE7B
+ for <ltp@lists.linux.it>; Thu, 13 Apr 2023 11:08:07 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 50FC660043A
- for <ltp@lists.linux.it>; Thu, 13 Apr 2023 10:52:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1681375934;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=O9JZl17lXPwvTD76sknZtyNUWTiea94/g6kq7esRKqk=;
- b=FNkd3ylkAPgG4rln6HIMRHnYCfnBT8KSbTnfSfid5d1oWwcDmfRIB0V8ndUx4498WSRJoW
- 0Vur54rzUF3fBfgUyeKsMEqP/62PLqR/Ude2KG08q+apwt12g/JORymnyosyo2RTkoaeJF
- l+4/cKFtX+emj1Xnv52rcsnipB/Jo5w=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-509-tD-ZyyvPOIOHrvnAcJx1xw-1; Thu, 13 Apr 2023 04:52:13 -0400
-X-MC-Unique: tD-ZyyvPOIOHrvnAcJx1xw-1
-Received: by mail-wr1-f72.google.com with SMTP id
- r2-20020adfb1c2000000b002d92bb99383so2393964wra.23
- for <ltp@lists.linux.it>; Thu, 13 Apr 2023 01:52:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1681375931; x=1683967931;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=O9JZl17lXPwvTD76sknZtyNUWTiea94/g6kq7esRKqk=;
- b=fGZqx+K/JJ/JxVuW97ufZez2268REDJFlloFGuGae4VTU5ri6mQ+dIGlXtFyw2p/wW
- 2eW3w0ATTMI4iW61b0BFC35gO9q7tUw9gCu5dN0qW1zlTQfvCOK20tlUpWn76RT0VLAM
- OliMK8h64SR/8CisvYQN8fkKs/gLUYoJXjP4a/15aJ+tZxhKbDbRp4cBi9m50Z+NB6Nc
- XBDw2LYFi1L7YhwmtNQynGI9QzX0FlDqkvEKs1GhVrVbpdHkUKEgVIvKdf5/0EUlTvvD
- HQX8T8EbC1VtDUZmRECOLmW2ifnfnusMH3m64+YSRNsFGMGrr3IcegeT97aOxfu+LbHZ
- 2Lew==
-X-Gm-Message-State: AAQBX9e1VcK35T9M5t2uqDNYIND7kvjnD8HVD87k/+6svVz0MhvYvots
- Ch2P8mmNpUsjDwLgfuXqj+ovq/90kmbwZcDTgnkp6xlR/69fyAVNcLAgz+Y1YUVex1/t79+PWC7
- V91tFdsSpLjn5VZLEQRp5OBEMUvxvy1+tBjkITeaA
-X-Received: by 2002:a5d:5405:0:b0:2f5:6430:356 with SMTP id
- g5-20020a5d5405000000b002f564300356mr236580wrv.7.1681375931588; 
- Thu, 13 Apr 2023 01:52:11 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bziwM9HahxeOK6e2D9/082LetyWOdpJXF1Ms26y0uLyrZyD0Kuumf6ahJFiP+toVpYFGJUIe8W4/zXOOpiwIw=
-X-Received: by 2002:a5d:5405:0:b0:2f5:6430:356 with SMTP id
- g5-20020a5d5405000000b002f564300356mr236576wrv.7.1681375931297; Thu, 13 Apr
- 2023 01:52:11 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 49A3460083B
+ for <ltp@lists.linux.it>; Thu, 13 Apr 2023 11:08:05 +0200 (CEST)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+ by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 33D8AGtS014156; Thu, 13 Apr 2023 09:08:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=a7NMtouAsCVnQY5Sx/jqgfKHsF+toaAbYE+qO8TTMRk=;
+ b=aiC/VOEVRWhz87bRtrNlEZZXh3K+sBK9DtPiCKXekQTs+r6XU2qHdmWbDhftMZVHgIc3
+ 7n7xclK7Ck9K0HYEKP2zwiMTvQwwQmiFVDWkoaFugDAl6ucs5IGMzpti5eyCKMcNcJ5J
+ 3zH3jZI/XctiEdMnDObG0ixdWWGu6PmN3ONyETYR2Cu6dQaO+S9hfyl0DjD+x8NwCIVW
+ pLSbQg2xBE03igo7MBCye9+AV16D0UklHtQ7c3y4Wdv1TV4CIvXWn72vgdCTIOjCw/sE
+ yTkIPLMlj4FKc7cwZN15xaoroHXY3lU9EOmg8JAPFFac8qNIS5ukCeT7Hz2tIALReJqT Sw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3pxckcwuej-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 13 Apr 2023 09:08:03 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 33D7kD57032262;
+ Thu, 13 Apr 2023 09:08:03 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.102])
+ by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3pxckcwud7-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 13 Apr 2023 09:08:03 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+ by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33D1u5V4003629;
+ Thu, 13 Apr 2023 09:08:01 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3pu0m22w4u-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 13 Apr 2023 09:08:01 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
+ [10.20.54.103])
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 33D97vHq17629810
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 13 Apr 2023 09:07:57 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 915712004B;
+ Thu, 13 Apr 2023 09:07:57 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id EE9E820040;
+ Thu, 13 Apr 2023 09:07:55 +0000 (GMT)
+Received: from tarunpc.in.ibm.com (unknown [9.124.31.73])
+ by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Thu, 13 Apr 2023 09:07:55 +0000 (GMT)
+From: Tarun Sahu <tsahu@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Thu, 13 Apr 2023 14:37:53 +0530
+Message-Id: <20230413090753.883953-1-tsahu@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20230403155258.309714-1-teo.coupriediaz@arm.com>
-In-Reply-To: <20230403155258.309714-1-teo.coupriediaz@arm.com>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 13 Apr 2023 16:52:00 +0800
-Message-ID: <CAEemH2ejRNF2YQUCc1x2-csBU=+-vFRj73xPpWFfBgoziSPfrg@mail.gmail.com>
-To: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: bXkRNP6LmL1uZfEWsFP6t0cf7jd1-7Ni
+X-Proofpoint-GUID: LAK4Ikqt5vYuOHvfxjtlwnD6xSPgzGOa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-13_05,2023-04-12_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ lowpriorityscore=0
+ clxscore=1011 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2303200000 definitions=main-2304130083
 X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2] ipc/msgstress03: Assume all forks will run
- concurently
+Subject: [LTP] [PATCH] Hugetlb: Test to detect bug with freeing gigantic
+ hugetlb pages
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,29 +101,136 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: piyushs@linux.ibm.com, geetika@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+ rpalethorpe@suse.com, jaypatel@linux.ibm.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBBcHIgMywgMjAyMyBhdCAxMTo1M+KAr1BNIFRlbyBDb3VwcmllIERpYXogPHRlby5j
-b3VwcmllZGlhekBhcm0uY29tPgp3cm90ZToKCj4gSXQgYXBwZWFycyB0aGF0IG1zZ3N0cmVzczAz
-IGRvZXNuJ3QgYWNjb3VudCBmb3IgYWxsIFBJRHMgdGhhdCBpdHMgY2hpbGRyZW4KPiBjYW4gdXNl
-LCBhcyBpdCBleHBlY3RzIHRoZSB0YXNrcyB3aWxsIHRlcm1pbmF0ZSBxdWlja2x5IGFuZCBub3Qg
-cmVhY2gKPiB0aGUgUElEIGxpbWl0Lgo+IE9uIHNvbWUgc3lzdGVtcywgdGhpcyBhc3N1bXB0aW9u
-IGNhbiBiZSBpbnZhbGlkIGFuZCB0aGUgUElEIGxpbWl0Cj4gd2lsbCBiZSBoaXQuCj4gQ2hhbmdl
-IHRoZSBsaW1pdCB0byBhY2NvdW50IGZvciBhbGwgcG9zc2libGUgY2hpbGRyZW4gYXQgb25jZSwg
-a25vd25pbmcKPiB0aGF0IGVhY2ggY2hpbGQgd2lsbCBmb3JrIGFzIHdlbGwuCj4KPiBTaWduZWQt
-b2ZmLWJ5OiBUZW8gQ291cHJpZSBEaWF6IDx0ZW8uY291cHJpZWRpYXpAYXJtLmNvbT4KPiAtLS0K
-PiB2MjoKPiAgIC0gU2xpZ2h0bHkgY2hhbmdlIHRoZSBjb21wdXRhdGlvbiwga2luZCBvZiBzaW1p
-bGFyIHRvIHdoYXQgaXMgZG9uZQo+ICAgICBpbiBtc2dzdHJlc3MwNCwgdG8gbWFrZSB0aGUgd2Fy
-bmluZyBtYWtlIHNlbnNlIHdpdGggdGhlIGNoYW5nZS4KPiAgIC0gQWRkZWQgY29tbWVudCB0byBj
-bGFyaWZ5Lgo+Cj4gTWF5YmUgdGhlIG1lc3NhZ2UgY291bGQgYmUgcmVwaHJhc2VkIGVudGlyZWx5
-ID8gU29tZXRoaW5nIGFsb25nIHRoZSBsaW5lcwo+IG9mOiAiTWF4aW11bSBudW1iZXIgb2YgdXNl
-ZCBwcm9jZXNzZXMgaGlnaGVyIHRoYW4gbGltaXQgWy4uLl0iCj4KClllcywgSSB0aGluayBzbywg
-YXQgbGVhc3QgaXQgY2FuIGJlIHJld3JpdGVuIGJ5IG5ldyBBUEkuCkNvbnNpZGVyaW5nIGl0IGlz
-IGEgbXNnIHN0cmVzc2Z1bCB0ZXN0LCBjaG9vc2UgYSBwcm9wZXIKcmFuZ2UvbGltaXQgb2YgcHJl
-c3N1cmUgaXMgcXVpdGUgaW1wb3J0YW50LgoKQnR3LCBJIGhlbHAgbWVyZ2VkIHRoaXMgcGF0Y2gs
-IHRoYW5rcyEhCgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzog
-aHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Before kernel version 5.10-rc7, there was a bug that resulted in a
+"Bad Page State" error when freeing gigantic hugepages. This happened
+because the struct page entry compound_nr, which overlapped with
+page->mapping in the first tail page, was not cleared, causing the
+error. To ensure that this issue does not reoccur as struct page keeps
+changes and some fields are managed by folio, this test checks that
+freeing gigantic hugepages does not produce the above-mentioned error.
+
+Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+---
+ .../kernel/mem/hugetlb/hugemmap/hugemmap32.c  | 82 +++++++++++++++++++
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h    |  6 ++
+ 2 files changed, 88 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
+
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
+new file mode 100644
+index 000000000..3dbb42b1c
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
+@@ -0,0 +1,82 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2023, IBM Corporation.
++ * Author: Tarun Sahu
++ */
++
++/*\
++ * [Description]
++ *
++ * Before kernel version 5.10-rc7, there was a bug that resulted in a "Bad Page
++ * State" error when freeing gigantic hugepages. This happened because the
++ * struct page entry compound_nr, which overlapped with page->mapping in the
++ * first tail page, was not cleared, causing the error. To ensure that this
++ * issue does not reoccur as struct page keeps changing and some fields are
++ * managed by folio, this test checks that freeing gigantic hugepages does not
++ * produce the above-mentioned error.
++ */
++
++#define _GNU_SOURCE
++#include <dirent.h>
++
++#include <stdio.h>
++
++#include "hugetlb.h"
++
++#define PATH_GIGANTIC_HUGEPAGE "/sys/kernel/mm/hugepages"
++#define GIGANTIC_MIN_ORDER 10
++
++static int org_g_hpages;
++static char g_hpage_path[4096];
++
++static void run_test(void)
++{
++	SAFE_FILE_PRINTF(g_hpage_path, "%d", 1);
++	SAFE_FILE_PRINTF(g_hpage_path, "%d", 0);
++
++	if (tst_taint_check())
++		tst_res(TFAIL, "Freeing Gigantic pages resulted in Bad Page State bug.");
++	else
++		tst_res(TPASS, "Successfully freed the gigantic hugepages");
++}
++
++static void setup(void)
++{
++	DIR *dir;
++	struct dirent *ent;
++	char *hpage_size_str;
++	unsigned long hpage_size;
++
++	dir = SAFE_OPENDIR(PATH_GIGANTIC_HUGEPAGE);
++	while ((ent = SAFE_READDIR(dir)) != NULL) {
++		if (strstr(ent->d_name, "hugepages-") != NULL) {
++			hpage_size_str = ent->d_name + strlen("hugepages-");
++			hpage_size = atoi(hpage_size_str) * 1024;
++			if (is_hugetlb_gigantic(hpage_size)) {
++				sprintf(g_hpage_path, "%s/%s/%s",
++						PATH_GIGANTIC_HUGEPAGE, ent->d_name, "nr_hugepages");
++				break;
++			}
++		}
++	}
++	SAFE_CLOSEDIR(dir);
++	SAFE_FILE_LINES_SCANF(g_hpage_path, "%d", &org_g_hpages);
++}
++
++static void cleanup(void)
++{
++	SAFE_FILE_PRINTF(g_hpage_path, "%d", org_g_hpages);
++}
++
++static struct tst_test test = {
++	.tags = (struct tst_tag[]) {
++	    {"linux-git", "ba9c1201beaa"},
++	    {"linux-git", "7118fc2906e9"},
++	    {}
++	},
++	.needs_root = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.taint_check = TST_TAINT_B,
++};
+diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+index 241dab708..34fe08c24 100644
+--- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
++++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+@@ -39,6 +39,12 @@
+ # endif
+ #endif
+ 
++/* Check if hugetlb page is gigantic */
++static inline int is_hugetlb_gigantic(unsigned long hpage_size)
++{
++	return (hpage_size / getpagesize()) >> 11;
++}
++
+ /*
+  * to get the lower nine permission bits
+  * from shmid_ds.ipc_perm.mode
+-- 
+2.31.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
