@@ -4,69 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8312EC77B61
-	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 05:50:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9F3EC77B79
+	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 07:58:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3CC813CC4A9
-	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 07:50:20 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 42E283CC439
+	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 09:58:24 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BFF7D3CC3EE
- for <ltp@lists.linux.it>; Thu, 13 Apr 2023 07:49:59 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 572543C0041
+ for <ltp@lists.linux.it>; Thu, 13 Apr 2023 09:58:10 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 57891600791
- for <ltp@lists.linux.it>; Thu, 13 Apr 2023 07:49:58 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B38021FD66
- for <ltp@lists.linux.it>; Thu, 13 Apr 2023 05:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1681364997; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 44B731000952
+ for <ltp@lists.linux.it>; Thu, 13 Apr 2023 09:58:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1681372687;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=uVJ0uMBATfenLeErnWLUc8yjm9BTO4Yj4H23Kp/3Elg=;
- b=pph3mcsC3w/EkVy55icwKt6dUWOH3RaApq5cYxPRTekVw3ic6Qa7egQXLXlC9CDdBQQSkj
- jxYc9/45d8bws6aLU6TnSkJjxWORawq2hI7UbP1JzTyDr8rG/0FJx87qkGhaWVhKPm+XGT
- niKV08IE6p/Gcih0/RscSCbq4O0N5Dw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1681364997;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=uVJ0uMBATfenLeErnWLUc8yjm9BTO4Yj4H23Kp/3Elg=;
- b=T07ALh8fJXpJsQhAgw8wPoHqewjhdxWqRaW8HUz18rnYF0aio28QUCsaoPoWm3JmG17Mbn
- zhwFczCzxC56gvAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5557F138E3
- for <ltp@lists.linux.it>; Thu, 13 Apr 2023 05:49:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 5j8JCwWYN2TMUwAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 13 Apr 2023 05:49:57 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Thu, 13 Apr 2023 11:19:52 +0530
-Message-Id: <20230413054952.14607-2-akumar@suse.de>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230413054952.14607-1-akumar@suse.de>
-References: <20230413054952.14607-1-akumar@suse.de>
+ bh=VZrTqC8VzVxpPnwEG1SyoVHAt8oakg4YXVmtFMSjdyk=;
+ b=X7As0Nd11q4ZaJ6QCowlRfUORtmoEGrao4Vk9htr86T3iKmxciJgqNac0Bo0dTIkTZ6P3z
+ ATl9tOx/8YP3W3uAJsTa518Wy1qXQlT19SS8fC7xqyffCYZVYDved7YQsKoJjjnoiBmLpu
+ ucz+iPZzfSOT6NT7U9iOa6koXC5NuPA=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-360-9eILOcY0OF66GEkVPNVaZg-1; Thu, 13 Apr 2023 03:58:06 -0400
+X-MC-Unique: 9eILOcY0OF66GEkVPNVaZg-1
+Received: by mail-wm1-f70.google.com with SMTP id
+ d8-20020a05600c3ac800b003edf7d484d4so4435165wms.0
+ for <ltp@lists.linux.it>; Thu, 13 Apr 2023 00:58:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1681372685; x=1683964685;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=VZrTqC8VzVxpPnwEG1SyoVHAt8oakg4YXVmtFMSjdyk=;
+ b=LLAhFmldBPED9XdXptEHFTZLqcnDQxSN2V4oqUb6ri8bWB2YlPPtYIY6yL70SD8NTT
+ 7gQOaO/unJ9lgglS1uCLE8M4BtwcWaDYt0WPqk/PyAK+peAVZ3mEzKgMOF0Ez/GP3lPu
+ ITDmZNE5Pjw5rCeXhsSWp3gs1iGB3N2bKwQL2kETmb8AaXCshcNro+HcruuqbtiJX+TG
+ JTp9B91/mpu3mVzl5NfspZyutGdqlFPxmKC57Uc7esicZjyc1zJtzWeb97FVotS8V+P7
+ 0xVs2gq1ZkmfE3hTST/laWhsFpJCExwbm6tNhvGyGBHff6JkhTxJeL3c/inUV1XN/ILn
+ mFeA==
+X-Gm-Message-State: AAQBX9doB9cS0wYqKJPIZvS95KFLL82clI2GoDAMmRDy1NxzM5WYEcz+
+ PrdmKB1+jiveZ5NZbbPrGijqLqprzlkPwB5aa0S/UQ9hzVcfHZsHohQZiB0d8rzk3uxObzlmBcG
+ pt+1cmm9fAvJ+S9c0lRa9tccnW6c=
+X-Received: by 2002:a5d:6602:0:b0:2f6:39cd:d899 with SMTP id
+ n2-20020a5d6602000000b002f639cdd899mr53578wru.7.1681372684941; 
+ Thu, 13 Apr 2023 00:58:04 -0700 (PDT)
+X-Google-Smtp-Source: AKy350aUkKb2amypNVvGWZNKe/yzNYLGdB5TTRcjSKEjRDBbO0jiA69EeKyTThDLf44A6qddaUbzhCEQYdSQr3qmSXE=
+X-Received: by 2002:a5d:6602:0:b0:2f6:39cd:d899 with SMTP id
+ n2-20020a5d6602000000b002f639cdd899mr53575wru.7.1681372684616; Thu, 13 Apr
+ 2023 00:58:04 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20230412073953.1983857-1-pvorel@suse.cz>
+In-Reply-To: <20230412073953.1983857-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 13 Apr 2023 15:57:53 +0800
+Message-ID: <CAEemH2eGHMkUCZXJRmPBXM=qqVFA37eyEecNb8cn6j_F3dSO2g@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/2] getpgrp01: Convert to new LTP API
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 1/1] tst_test.sh: Remove possible double/trailing
+ slashes from TMPDIR
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,199 +86,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/getpgrp/getpgrp01.c | 166 ++----------------
- 1 file changed, 15 insertions(+), 151 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/getpgrp/getpgrp01.c b/testcases/kernel/syscalls/getpgrp/getpgrp01.c
-index 61feba8d1..0d5f8db90 100644
---- a/testcases/kernel/syscalls/getpgrp/getpgrp01.c
-+++ b/testcases/kernel/syscalls/getpgrp/getpgrp01.c
-@@ -1,160 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-+ * AUTHOR: William Roske, CO-PILOT: Dave Fenner
-+ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
--/* $Id: getpgrp01.c,v 1.6 2009/10/26 14:55:47 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: getpgrp01
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for getpgrp(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	1.) getpgrp(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *$
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- * 	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *    INTERCASE DEPENDENCIES
-- * 	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the getpgrp(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	getpgrp(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
--
--#include <sys/types.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <signal.h>
--#include <string.h>
--#include "test.h"
--
--void setup();
--void cleanup();
--
--char *TCID = "getpgrp01";
--int TST_TOTAL = 1;
--
--int main(int ac, char **av)
--{
--	int lc;
- 
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		TEST(getpgrp());
--
--		if (TEST_RETURN == -1)
--			tst_resm(TFAIL | TTERRNO, "getpgrp failed");
--		else
--			tst_resm(TPASS, "getpgrp returned %ld", TEST_RETURN);
--
--	}
-+/*\
-+ * [Description]
-+ *
-+ * Verify that getpgrp(2) syscall executes successfully.
-+ */
- 
--	cleanup();
--	tst_exit();
--}
-+#include "tst_test.h"
- 
--void setup(void)
-+static void run(void)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	TST_EXP_POSITIVE(getpgrp());
-+	TST_EXP_EQ_LI(TST_RET, SAFE_GETPGID(0));
- }
- 
--void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.test_all = run
-+};
--- 
-2.40.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gV2VkLCBBcHIgMTIsIDIwMjMgYXQgMzo0MOKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKCj4gTkZTIHRlc3RzIGhhdmUgcHJvYmxlbSB3aGVuIFRNUERJUiBwYXRoIGNv
+bnRhaW5zIGRvdWJsZSBzbGFzaGVzLAo+IGJlY2F1c2UgdGhleSBncmVwIGV4cG9ydGZzIG91dHB1
+dCB3aGljaCBpcyBub3JtYWxpemVkLgo+CgpJJ20gb2sgdG8gcmVtb3ZlIHJlZHVuZGFudCBzbGFz
+aGVzLCBJIGp1c3Qgd29uZGVyaW5nIHdoZXJlCmlzIHRoZSBzZWNvbmQgc2xhc2ggY29tZXMgZnJv
+bT8KSXMgdGhhdCBhZGRlZCBieSBhY2NpZGVudCB3aGVuIGVudiB2YXJpYWJsZSBkZWZpbml0aW9u
+PwoKPgo+IFByb2JsZW0gaXMgZWl0aGVyIHRyYWlsaW5nIHNsYXNoOgo+Cj4gJCBUTVBESVI9L3Zh
+ci90bXAvIG5mczAxLnNoIC10IHRjcAo+IC4uLgo+IG5mczAxIDEgVElORk86IE1vdW50aW5nIE5G
+UzogbW91bnQgLXYgLXQgbmZzIC1vIHByb3RvPXRjcCx2ZXJzPTMgMTAuMC4wLjI6L3Zhci90bXAv
+L0xUUF9uZnMwMS5zSXFtNExMUzR1LzMvdGNwCj4gL3Zhci90bXAvL0xUUF9uZnMwMS5zSXFtNExM
+UzR1LzMvMAo+IG5mczAxIDEgVElORk86IHN0YXJ0aW5nICduZnMwMV9vcGVuX2ZpbGVzIDEwMDAn
+Cj4gbmZzMDEgMSBUUEFTUzogdGVzdCBmaW5pc2hlZCBzdWNjZXNzZnVsbHkKPiBuZnMwMSAyIFRJ
+TkZPOiBDbGVhbmluZyB1cCB0ZXN0Y2FzZQo+IG5mczAxIDIgVElORk86IHJlbW90ZV9kaXI6ICcv
+dmFyL3RtcC8vTFRQX25mczAxLnNJcW00TExTNHUvMy90Y3AnCj4gZXhwb3J0ZnM6IENvdWxkIG5v
+dCBmaW5kICcqOi92YXIvdG1wLy9MVFBfbmZzMDEuc0lxbTRMTFM0dS8zL3RjcCcgdG8KPiB1bmV4
+cG9ydC4KPiBybTogY2Fubm90IHJlbW92ZSAnL3Zhci90bXAvL0xUUF9uZnMwMS5zSXFtNExMUzR1
+LzMvMCc6IERldmljZSBvciByZXNvdXJjZQo+IGJ1c3kKPiBybTogY2Fubm90IHJlbW92ZSAnL3Zh
+ci90bXAvL0xUUF9uZnMwMS5zSXFtNExMUzR1LzMvMCc6IElzIGEgZGlyZWN0b3J5Cj4KPiBvciBk
+b3VibGUgKG9yIG1vcmUpIHNsYXNoZXMgKGFueXdoZXJlIGluICRUTVBESVIpOgo+Cj4gJCBUTVBE
+SVI9L3Zhci8vdG1wIG5mczAxLnNoIC10IHRjcAo+IG5mczAxIDEgVElORk86IE1vdW50aW5nIE5G
+UzogbW91bnQgLXYgLXQgbmZzIC1vIHByb3RvPXRjcCx2ZXJzPTMgMTAuMC4wLjI6L3Zhci8vdG1w
+L0xUUF9uZnMwMS5xTmpTc29wVmJZLzMvdGNwCj4gL3Zhci8vdG1wL0xUUF9uZnMwMS5xTmpTc29w
+VmJZLzMvMAo+IG5mczAxIDEgVElORk86IHN0YXJ0aW5nICduZnMwMV9vcGVuX2ZpbGVzIDEwMDAn
+Cj4gbmZzMDEgMSBUUEFTUzogdGVzdCBmaW5pc2hlZCBzdWNjZXNzZnVsbHkKPiBuZnMwMSAyIFRJ
+TkZPOiBDbGVhbmluZyB1cCB0ZXN0Y2FzZQo+IG5mczAxIDIgVElORk86IHJlbW90ZV9kaXI6ICcv
+dmFyLy90bXAvTFRQX25mczAxLnFOalNzb3BWYlkvMy90Y3AnCj4gZXhwb3J0ZnM6IENvdWxkIG5v
+dCBmaW5kICcqOi92YXIvL3RtcC9MVFBfbmZzMDEucU5qU3NvcFZiWS8zL3RjcCcgdG8KPiB1bmV4
+cG9ydC4KPiBybTogY2Fubm90IHJlbW92ZSAnL3Zhci8vdG1wL0xUUF9uZnMwMS5xTmpTc29wVmJZ
+LzMvMCc6IERldmljZSBvciByZXNvdXJjZQo+IGJ1c3kKPiBybTogY2Fubm90IHJlbW92ZSAnL3Zh
+ci8vdG1wL0xUUF9uZnMwMS5xTmpTc29wVmJZLzMvMCc6IElzIGEgZGlyZWN0b3J5Cj4KPiBXaGls
+ZSB0aGlzIGNvdWxkIGJlIGhhbmRsZWQgaW4gbmZzX2xpYi5zaCwgaXQncyBiZXR0ZXIgdG8gc2F2
+ZSBpdCBmb3IKPiBhbGwgdGVzdHMuIEl0J3MgZWFzaWVyIHRvIG1vZGlmeSAkVFNUX1RNUERJUiwg
+YmVjYXVzZSB0aGUgcHJvYmxlbQo+IG5hcnJvd3MgZG93biB0byBkb3VibGUgc2xhc2guCj4KPiBT
+aWduZWQtb2ZmLWJ5OiBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4KPiAtLS0KPiAgdGVzdGNh
+c2VzL2xpYi90c3RfdGVzdC5zaCB8IDIgKysKPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
+cygrKQo+Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9saWIvdHN0X3Rlc3Quc2ggYi90ZXN0Y2Fz
+ZXMvbGliL3RzdF90ZXN0LnNoCj4gaW5kZXggYzgxN2VlYzc3Li40MmY2MGFiNTggMTAwNjQ0Cj4g
+LS0tIGEvdGVzdGNhc2VzL2xpYi90c3RfdGVzdC5zaAo+ICsrKyBiL3Rlc3RjYXNlcy9saWIvdHN0
+X3Rlc3Quc2gKPiBAQCAtNzIyLDYgKzcyMiw4IEBAIHRzdF9ydW4oKQo+ICAgICAgICAgICAgICAg
+ICBmaQo+Cj4gICAgICAgICAgICAgICAgIFRTVF9UTVBESVI9JChta3RlbXAgLWQgIiRUTVBESVIv
+TFRQXyRUU1RfSUQuWFhYWFhYWFhYWCIpCj4gKyAgICAgICAgICAgICAgICMgcmVtb3ZlIHBvc3Np
+YmxlIHRyYWlsaW5nIHNsYXNoIG9yIGRvdWJsZSBzbGFzaGVzIGZyb20KPiBUTVBESVIKPiArICAg
+ICAgICAgICAgICAgVFNUX1RNUERJUj0kKGVjaG8gIiRUU1RfVE1QRElSIiB8IHNlZCAnc34vXCt+
+L35nJykKPgo+ICAgICAgICAgICAgICAgICBjaG1vZCA3NzcgIiRUU1RfVE1QRElSIgo+Cj4gLS0K
+PiAyLjQwLjAKPgo+CgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZv
+OiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
