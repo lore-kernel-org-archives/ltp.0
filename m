@@ -4,44 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C76A9C77B6E
-	for <ltp@archiver.kernel.org>; Wed, 12 Apr 2023 11:46:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56CECC77B6C
+	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 05:50:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E74443CC63C
-	for <ltp@archiver.kernel.org>; Wed, 12 Apr 2023 13:46:27 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 8300E3CC439
+	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 07:50:07 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C634A3CA84C
- for <ltp@lists.linux.it>; Wed, 12 Apr 2023 13:46:16 +0200 (CEST)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-3.smtp.seeweb.it (Postfix) with ESMTP id CB9171A0088A
- for <ltp@lists.linux.it>; Wed, 12 Apr 2023 13:46:14 +0200 (CEST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9409FD75;
- Wed, 12 Apr 2023 04:46:56 -0700 (PDT)
-Received: from [10.1.197.61] (unknown [10.1.197.61])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 956373F73F;
- Wed, 12 Apr 2023 04:46:11 -0700 (PDT)
-Message-ID: <a35f8c15-e599-2366-82ff-3025158d14c9@arm.com>
-Date: Wed, 12 Apr 2023 12:45:49 +0100
+ by picard.linux.it (Postfix) with ESMTPS id CCB8B3C01AA
+ for <ltp@lists.linux.it>; Thu, 13 Apr 2023 07:49:56 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1786E20096A
+ for <ltp@lists.linux.it>; Thu, 13 Apr 2023 07:49:55 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 33E66218D9
+ for <ltp@lists.linux.it>; Thu, 13 Apr 2023 05:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1681364995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=eph5WPuIEeUVVZwBqH7OivQR40RTdlwCD6znuOBtugo=;
+ b=m9jAJSpZ2+iNlL+5RdNESGRrDyAmEzexx15BkQaB5WQxbeEDVQ33I3BeenHQ58K0Uopb9M
+ JeYMp60fkffCMKbNGooQQ1VRPYnCYENIfQATgIgb96qylubA4yeqsAFup0SaWgCzIgKi08
+ 9DpqrXPIVy0oyeHx57ju6u66wbB3I5g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1681364995;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=eph5WPuIEeUVVZwBqH7OivQR40RTdlwCD6znuOBtugo=;
+ b=t6gWhalhiALdD/P9FAyuQnHK2NRbCEo9QUXUIU8rhsSQKxI19cqjHgMQkZgN6725pvInyb
+ ZzKWdtAPghPt6EAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CB758138E3
+ for <ltp@lists.linux.it>; Thu, 13 Apr 2023 05:49:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id AR2pJwKYN2TBUwAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 13 Apr 2023 05:49:54 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Thu, 13 Apr 2023 11:19:51 +0530
+Message-Id: <20230413054952.14607-1-akumar@suse.de>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>
-References: <20230331000747.2294390-1-edliaw@google.com>
- <c766ddbe-f991-9304-0dec-ecf795a788db@arm.com>
- <CAG4es9VrznF_X=3msWZQfcKOjn-tu8s_rV4Kq_tVWde=JUWxtg@mail.gmail.com>
- <bef924f6-9b29-cf36-a15a-7edfe5a92e4d@arm.com>
- <20230411230548.GB1798729@pevik>
-From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-Organization: Arm Ltd.
-In-Reply-To: <20230411230548.GB1798729@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] setpgid02: use 1 instead of getpgid(1)
+Subject: [LTP] [PATCH v2 1/2] getpgid01.c: Rewrite using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -53,77 +71,199 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKCk9uIDEyLzA0LzIwMjMgMDA6MDUsIFBldHIgVm9yZWwgd3JvdGU6Cj4gSGkgYWxs
-LAo+Cj4gWyBDYyBBdmluZXNoLCB3aG8gYWxzbyBwb3N0ZWQgcmV2aWV3IF0KPgo+PiBPbiAxMS8w
-NC8yMDIzIDAwOjUxLCBFZHdhcmQgTGlhdyB3cm90ZToKPj4+IE9uIEZyaSwgQXByIDcsIDIwMjMg
-YXQgMzoxOOKAr0FNIFRlbyBDb3VwcmllIERpYXogPHRlby5jb3VwcmllZGlhekBhcm0uY29tPiB3
-cm90ZToKPj4+PiBIb3dldmVyLCBJIGhhdmUgZW5jb3VudGVyZWQgYW4gaXNzdWUgb24gdGhlIHNh
-bWUgY2hlY2sgb2YgdGhpcyB0ZXN0LAo+Pj4+IHVucmVsYXRlZCB0byBFZHdhcmQncyBpc3N1ZS4K
-Pj4+PiBJbmRlZWQsIG9uIHN5c3RlbXMgdGhhdCBydW4gdGhlIHNoZWxsIGFzIFBJRCAxIChmb3Ig
-ZXhhbXBsZSBhIGJhc2ljCj4+Pj4gYnVzeWJveCByb290ZnMpIHRoZSBFUEVSTSBjaGVjayB3b3Vs
-ZG4ndCB3b3JrLgo+Pj4+IFRoaXMgaXMgYmVjYXVzZSBMVFAgd291bGQgcnVuIHdpdGhpbiB0aGUg
-c2FtZSBzZXNzaW9uIElEIGFzIGluaXQsIHdoaWNoCj4+Pj4gd291bGQgYWxsb3cgdGhlIHRlc3Qg
-dG8gY2hhbmdlIHRoZSBQR0lEIGFuZCBub3QgdHJpZ2dlciB0aGUgRVBFUk0uCj4+Pj4gSSBhbSB3
-b3JraW5nIG9uIGEgcGF0Y2ggYW5kIHdhbnRlZCB0byBnZXQgc29tZSBpbnB1dC4gTXkgY3VycmVu
-dCBpZGVhCj4+Pj4gd291bGQgYmUgdG8gZm9yayBhIGNoaWxkIHRoYXQgd291bGQgY3JlYXRlIGEg
-bmV3IHNlc3Npb24gYW5kIHRyeSB0bwo+Pj4+IHNldHBnaWQoKSB0aGUgY2hpbGQuCj4+Pj4gVGhp
-cyB3b3VsZCBhbHNvIGFsbG93IHRvIHVzZSB0aGUgbWFpbiBwcm9jZXNzJyBQR0lELCBhcyBpdCB3
-b3VsZCBiZSBpbgo+Pj4+IGFub3RoZXIgc2Vzc2lvbiBmcm9tIHRoZSBjaGlsZCBhbnl3YXkuIFRo
-aXMgd291bGQgcmVtb3ZlIHRoZSBuZWVkIHRvCj4+Pj4gZ2V0cGdpZCgpIGluaXQsIHdoaWNoIGhv
-cGVmdWxseSBzaG91bGQgZml4IHlvdXIgaXNzdWUgb24gQW5kcm9pZCBhcyB3ZWxsLgo+Pj4gVGhh
-dCBtYWtlcyBzZW5zZSB0byBtZSwgYnV0IGl0IHNlZW1zIHRvIG1lIHRoYXQgc2V0cGdpZDAzIGlz
-IGFscmVhZHkKPj4+IHRlc3RpbmcgaXQgdGhhdCB3YXkuCj4+IEFoLCB5ZXMgaW5kZWVkIGl0IGlz
-IHRlc3RpbmcgaXQgZXhhY3RseSBsaWtlIHRoYXQuCj4gR29vZCBjYXRjaCEKPgo+Pj4+IEhvd2V2
-ZXIsIHRoaXMgYWRkcyBhIGxvdCBtb3JlIGNvbXBsZXhpdHkgaW4gdGhlIHRlc3Q6IG5lZWRpbmcg
-dG8gZm9yawo+Pj4+IGFuZCBzeW5jaHJvbml6ZSB3aXRoIHRoZSBjaGlsZCBhcyB0aGUgbWFpbiBw
-cm9jZXNzIG5lZWRzIHRvIHdhaXQgZm9yIHRoZQo+Pj4+IGNoaWxkIHRvIGNoYW5nZSBpdHMgc2Vz
-c2lvbiBJRCwgb3RoZXJ3aXNlIHRoZSB0ZXN0IHdvdWxkIGZhaWwuCj4+Pj4gRG8geW91IHRoaW5r
-IHRoaXMgaWRlYSBtYWtlcyBzZW5zZSA/IEkgd291bGQgc2VuZCBpdCBmb3IgcmV2aWV3IG9uY2Ug
-SQo+Pj4+IGlyb25lZCBvdXQgdGhlIHBhdGNoLgo+Pj4+IEFub3RoZXIgc29sdXRpb24gd291bGQg
-YmUgZm9yIExUUCB0byBjaGFuZ2UgaXRzIHNlc3Npb24gSUQgYnkgZGVmYXVsdCwKPj4+PiB3aGlj
-aCB3b3VsZCBwcmV2ZW50IHRoZSBuZWVkIGZvciBhIGNoYW5nZSB0byBzZXRwZ2lkMDIgb24gdG9w
-IG9mIEVkd2FyZCdzLgo+Pj4+IEhvd2V2ZXIsIEkgZG9uJ3QgZnVsbHkgdW5kZXJzdGFuZCB0aGUg
-cG9zc2libGUgY29uc2VxdWVuY2VzIG9mIGhhdmluZwo+Pj4+IExUUCBjaGFuZ2UgaXRzIFNJRCBm
-b3IgYWxsIHRlc3RzLgo+Pj4gQWx0ZXJuYXRpdmVseSwgbWF5YmUgaXQgY291bGQgYmUgcmV2ZXJ0
-ZWQgdG8gdXNpbmcgdGhlIGhhcmRjb2RlZCA5OTk5OQo+Pj4gYXMgYW4gaW52YWxpZCBQR0lEIGFz
-IGl0IHdhcyBiZWZvcmUgQXZpbmVzaCdzIHBhdGNoIG9yIHRoZSB0ZXN0IGNhc2UKPj4+IHJlbW92
-ZWQgYmVjYXVzZSBpdCBpcyBoYW5kbGVkIGluIHNldHBnaWQwMz8KPj4gSSBmZWVsIHRoYXQgaXQg
-d291bGQgbWFrZSBzZW5zZSB0byByZW1vdmUgdGhlIHRlc3QgY2FzZSBhcyBpdCdzIHRlc3RlZCBh
-cyBpcwo+PiBpbiBzZXRwZ2lkMDMuIEV2ZW4gdGhlIGNvbW1lbnRzIGZvciB0aGUgRVBFUk0gY2Fz
-ZXMgYXJlIGlkZW50aWNhbCBpbgo+PiBtZWFuaW5nLgo+IEkgZG9uJ3Qgd2FudCB0byBhZGQgYW4g
-dWx0aW1hdGUgYW5zd2VyIChub3Qgc3VyZSBteXNlbGYpLCBidXQgSU1ITyB0aGVzZQo+IHNldHBn
-aWQwMy5jIGFuZCBzZXRwZ2lkMDIuYyBhcmVuJ3QgdGhlIHNhbWUsIGJlY2F1c2Ugc2V0cGdpZDAz
-LmMgY2FsbHM6Cj4gMSkgdGhlIGZvcmsoKSB5b3UgbWVudGlvbmVkCj4gMikgc2V0c2lkKCkgKHZp
-YSBTQUZFX1NFVFNJRCgpKQo+Cj4gVGhlcmVmb3JlIHRoZSBFUEVSTSBtZWFuaW5nIGlzIHRoZSBz
-YW1lLCBJTUhPIHRoZSBjb2RlIHBhdGggaW4ga2VybmVsIGFuZCBsaWJjCj4gaXMgbm90IHRoZSBz
-YW1lLgpJIHNlZSwgdGhhdCdzIGZhaXIuIEkgd291bGQgdGVuZCB0byBhZ3JlZSB0aGVuIGFuZCBs
-ZWF2ZSBpdCBqdXN0IGZvciB0aGUgCnBvdGVudGlhbApkaWZmZXJlbmNlIGluIGNvdmVyYWdlLgo+
-PiBJZiBpdCBpcyB0byBiZSBrZXB0LCBJIHRoaW5rIGl0IGNvdWxkIGJlIGJldHRlciB0byB1c2Ug
-dGhlIGtlcm5lbCBwaWRfbWF4Cj4+IHJhdGhlciB0aGFuCj4+IGFuIGhhcmRjb2RlZCB2YWx1ZSAo
-Zm9yIGV4YW1wbGUgOTk5OTkgd291bGQgYmUgcG9zc2libGUgb24gbXkgbWFjaGluZSksIGJ1dAo+
-PiBJIGFncmVlIGl0IHdvdWxkIGJlIGZpbmUuCj4gQmFzZWQgdG8gZjI3OTdmYTQ0IGNvbW1pdCBt
-ZXNzYWdlIGFuZCBteSBtZW1vcnkgSSBndWVzcyBBdmluZXNoIHVzZWQgUElEIDEgYXMKPiB0aGF0
-J3MgMTAwJSBzdXJlIGl0J3MgZGlmZmVyZW50IGZyb20gd2hhdGV2ZXIgcHJvY2VzcyBncm91cCBj
-b3VsZCBMVFAgdGVzdCBoYXZlLgo+IEJ1dCBJTUhPIHRoYXQncyBub3QgbmVjZXNzYXJ5LCBiZWNh
-dXNlIFBHSUQgb2YgYm90aCBzZXRwZ2lkMDIgcHJvY2Vzc2VzIGlzCj4gYWx3YXlzIHRoZSBzYW1l
-IGFzIFBJRDoKPgo+ICQgcHMgeGFvIHVzZXIscGlkLHBwaWQscGdpZCxzaWQsY29tbSB8IGdyZXAg
-LWUgXlVTRVIgLWUgc2V0cGdpZDAyCj4gVVNFUiAgICAgICAgIFBJRCAgICBQUElEICAgIFBHSUQg
-ICAgIFNJRCBDT01NQU5ECj4gcGV2aWsgICAgMTgyMjA2MyAxODIwOTAwIDE4MjIwNjMgMTgyMDkw
-MCBzZXRwZ2lkMDIKPiBwZXZpayAgICAxODIyMDY0IDE4MjIwNjMgMTgyMjA2NCAxODIwOTAwIHNl
-dHBnaWQwMgo+Cj4gVGhlcmVmb3JlIGFueSBQSUQgd291bGQgd29yayA9PiBzdXJlLCBzY2Fubmlu
-ZyAvcHJvYy9zeXMva2VybmVsL3BpZF9tYXggTEdUTToKPiBTQUZFX0ZJTEVfU0NBTkYoIi9wcm9j
-L3N5cy9rZXJuZWwvcGlkX21heCIsICIlbHUiLCAmcGlkX21heCk7CklmIHRoZXJlIGFyZSBubyBv
-YmplY3Rpb25zIEkgd2lsbCBzZW5kIGEgcGF0Y2ggaW4gdGhlIGNvbWluZyBkYXlzIHRoZW4sIAp0
-aGFua3MuCj4KPj4gQWRkaW5nIFBldHIgVm9yZWwgdG8gQ0NzIGFzIGhlIHJldmlld2VkIEF2aW5l
-c2gncyBwYXRjaC4KPiBUaGFua3MhIEkgYWxyZWFkeSBwb3N0ZWQgbXkgcmV2aWV3LCBidXQgbWlz
-c2VkIGZvbGxvd2luZyBkaXNjdXNzaW9uLgo+Cj4gS2luZCByZWdhcmRzLAo+IFBldHIKTm8gd29y
-cmllcywgdGhhbmtzIGZvciBjaGltaW5nIGluLgpCZXN0IHJlZ2FyZHMKVMOpbwo+Cj4+PiBUaGFu
-a3MsCj4+PiBFZHdhcmQKPj4gVGhhbmtzIGZvciBjb21pbmcgYmFjayB0byBtZSwKPj4gQmVzdCBy
-ZWdhcmRzCj4+IFTDqW8KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
-eC5pdC9saXN0aW5mby9sdHAK
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ testcases/kernel/syscalls/getpgid/getpgid01.c | 156 ++++--------------
+ 1 file changed, 30 insertions(+), 126 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/getpgid/getpgid01.c b/testcases/kernel/syscalls/getpgid/getpgid01.c
+index 060486e7e..2c874d855 100644
+--- a/testcases/kernel/syscalls/getpgid/getpgid01.c
++++ b/testcases/kernel/syscalls/getpgid/getpgid01.c
+@@ -1,145 +1,49 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ *   07/2001 Ported by Wayne Boyer
++ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-/*
+- * NAME
+- * 	getpgid01.c
+- *
+- * DESCRIPTION
+- *	Testcase to check the basic functionality of getpgid().
+- *
+- * ALGORITHM
+- * 	block1: Does getpgid(0), and checks for error.
+- * 	block2: Does getpgid(getpid()) and checks for error.
+- * 	block3: Does getpgid(getppid()) and checks for error.
+- * 	block4: Verifies that getpgid(getpgid(0)) == getpgid(0).
+- * 	block5: Does getpgid(1) and checks for error.
++/*\
++ * [Description]
+  *
+- * USAGE
+- * 	getpgid01
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	Expects that there are no EPERM limitations on getting the
+- *	process group ID from proc 1 (init).
++ * Verify the basic functionality of getpgid(2) syscall.
+  */
+-#define _GNU_SOURCE 1
+-
+-#include <errno.h>
+-#include <unistd.h>
+-#include <stdarg.h>
+-#include <sys/wait.h>
+-#include <sys/types.h>
+-#include "test.h"
+ 
+-void setup(void);
+-void cleanup(void);
++#include "tst_test.h"
+ 
+-char *TCID = "getpgid01";
+-int TST_TOTAL = 1;
+-
+-int main(int ac, char **av)
++static void run(void)
+ {
+-	int lc;
+-
+-	register int pgid_0, pgid_1;
+-	register int my_pid, my_ppid;
+-	int ex_stat;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
++	pid_t pid_1, child_pid, pgid;
+ 
+-	setup();
++	pgid = getpgid(0);
++	tst_res(TINFO, "getpgid(0) in parent = %d", pgid);
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
++	pid_1 = SAFE_FORK();
++	if (!pid_1) {
++		child_pid = getpid();
+ 
+-		if ((pgid_0 = FORK_OR_VFORK()) == -1)
+-			tst_brkm(TBROK, cleanup, "fork failed");
+-		if (pgid_0 > 0) {
+-			while ((pgid_0 = wait(&ex_stat)) != -1) ;
++		tst_res(TINFO, "getpid() in child = %d", child_pid);
++		tst_res(TINFO, "Running getpgid() in child");
+ 
+-			if (WEXITSTATUS(ex_stat) == 0)
+-				tst_resm(TPASS, "%s PASSED", TCID);
+-			else
+-				tst_resm(TFAIL, "%s FAILED", TCID);
++		TST_EXP_POSITIVE(getpgid(0));
++		TST_EXP_EQ_LI(TST_RET, pgid);
+ 
+-			exit(0);
+-		}
++		TST_EXP_POSITIVE(getpgid(child_pid), "getpgid(%d)", child_pid);
++		TST_EXP_EQ_LI(TST_RET, pgid);
+ 
+-		if ((pgid_0 = getpgid(0)) == -1)
+-			tst_resm(TFAIL | TERRNO, "getpgid(0) failed");
+-		else
+-			tst_resm(TPASS, "getpgid(0) PASSED");
++		TST_EXP_POSITIVE(getpgid(pgid), "getpgid(%d)", pgid);
++		TST_EXP_EQ_LI(TST_RET, pgid);
+ 
+-//block2:
+-		my_pid = getpid();
+-		if ((pgid_1 = getpgid(my_pid)) == -1)
+-			tst_resm(TFAIL | TERRNO, "getpgid(%d) failed", my_pid);
+-
+-		if (pgid_0 != pgid_1) {
+-			tst_resm(TFAIL, "getpgid(my_pid=%d) != getpgid(0) "
+-				 "[%d != %d]", my_pid, pgid_1, pgid_0);
+-		} else
+-			tst_resm(TPASS, "getpgid(getpid()) PASSED");
+-
+-//block3:
+-		my_ppid = getppid();
+-		if ((pgid_1 = getpgid(my_ppid)) == -1)
+-			tst_resm(TFAIL | TERRNO, "getpgid(%d) failed", my_ppid);
+-
+-		if (pgid_0 != pgid_1) {
+-			tst_resm(TFAIL, "getpgid(%d) != getpgid(0) [%d != %d]",
+-				 my_ppid, pgid_1, pgid_0);
+-		} else
+-			tst_resm(TPASS, "getpgid(getppid()) PASSED");
+-
+-//block4:
+-		if ((pgid_1 = getpgid(pgid_0)) < 0)
+-			tst_resm(TFAIL | TERRNO, "getpgid(%d) failed", pgid_0);
+-
+-		if (pgid_0 != pgid_1) {
+-			tst_resm(TFAIL, "getpgid(%d) != getpgid(0) [%d != %d]",
+-				 pgid_0, pgid_1, pgid_0);
+-		} else
+-			tst_resm(TPASS, "getpgid(%d) PASSED", pgid_0);
+-
+-//block5:
+-		if (getpgid(1) < 0)
+-			tst_resm(TFAIL | TERRNO, "getpgid(1) failed");
+-		else
+-			tst_resm(TPASS, "getpgid(1) PASSED");
++		TST_EXP_POSITIVE(getpgid(1));
++		TST_EXP_EQ_LI(TST_RET, 1);
+ 	}
+-	cleanup();
+-	tst_exit();
+ 
++	tst_reap_children();
+ }
+ 
+-void setup(void)
+-{
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-}
+-
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.test_all = run,
++	.forks_child = 1
++};
+-- 
+2.40.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
