@@ -4,92 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A577AC77B6E
-	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 12:21:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD65EC77B6E
+	for <ltp@archiver.kernel.org>; Fri, 14 Apr 2023 04:03:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 459E93CC4EB
-	for <ltp@archiver.kernel.org>; Thu, 13 Apr 2023 14:21:10 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 101DE3CC57C
+	for <ltp@archiver.kernel.org>; Fri, 14 Apr 2023 06:03:19 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C20BA3CA262
- for <ltp@lists.linux.it>; Thu, 13 Apr 2023 14:20:58 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
+ by picard.linux.it (Postfix) with ESMTPS id 2CF8A3CC3F4
+ for <ltp@lists.linux.it>; Fri, 14 Apr 2023 06:03:05 +0200 (CEST)
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
+ [195.245.231.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 67CC6600778
- for <ltp@lists.linux.it>; Thu, 13 Apr 2023 14:20:56 +0200 (CEST)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33DCB38I012864; Thu, 13 Apr 2023 12:20:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=F/9ncbXamfc8HviqDIbWJtRmZ1okxWAFKJ1UC2RosdU=;
- b=TEreb2/1Cf5tfbAn7D4scaDWzuSIXjQo90g2hBe5XYk8dAseKegMx54X5a+bRIDzPlw5
- JKXhTr5OZrXeWmM3iBAfMabjFwRFhwBg5+ehdrcYvk37AewMj3Hq7SsqsJ0TP05z2qWD
- N/TMsePc1nMoVd4COGAmSQxHq1lvarpWJEnTf9TZKF5PBmIL/AqDg5ULIR1G3hZeP510
- Up3aVgG0U42riItfiKZmPRJ5qvsXL+6N13oF41tHeP0dCL/tMSYws+hCexfYSaqVNNkF
- FNPigvMK3fe8dbFyvBT/ifRzM0aCiq0chkeJX+DFNW1q6FcpLnLs6+L+Hjdw93rgqpRX oQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3pxhh4gc7r-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 13 Apr 2023 12:20:55 +0000
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
- by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 33DCC40d016302;
- Thu, 13 Apr 2023 12:20:55 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.99])
- by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3pxhh4gc6j-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 13 Apr 2023 12:20:55 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
- by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33D3CRd1026286;
- Thu, 13 Apr 2023 12:20:53 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3pu0m1b11h-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 13 Apr 2023 12:20:53 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
- [10.20.54.104])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 33DCKnxi16646842
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 13 Apr 2023 12:20:49 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 7DB7120049;
- Thu, 13 Apr 2023 12:20:49 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id C783120040;
- Thu, 13 Apr 2023 12:20:47 +0000 (GMT)
-Received: from tarunpc.in.ibm.com (unknown [9.124.31.73])
- by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Thu, 13 Apr 2023 12:20:47 +0000 (GMT)
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Thu, 13 Apr 2023 17:50:45 +0530
-Message-Id: <20230413122045.904933-1-tsahu@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 80A3B6008FB
+ for <ltp@lists.linux.it>; Fri, 14 Apr 2023 06:03:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1681444983; i=@fujitsu.com;
+ bh=WCRaNjIGtWodGNiJUFoq2IVVfjMwy+pENzFzCTXYNAQ=;
+ h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+ MIME-Version:Content-Type:Content-Transfer-Encoding;
+ b=bhzrXkF3yXhWFF8Gbd77mdzEkVbKhGrJK+CNob1oeV/4BF127tNNaxIVeq4H7ZYI7
+ O6rMOlB0qfeCR4KRAleOtzrInfYx7BfYK8MCcn2c1+VWw/QDRehlGIg4fygjHZuBiC
+ 0wp05f+SibG+dfcHbzaBWPplIUaKDYJTAdSmA48sOZIQhfYqS8vmad7NEw3F6CrpNO
+ j9hMkgKvgKTAcRo6AA81rlxqMtFXG7XteSOHoE7Nkm+AaZHss3Rs+MzNtYE8E4B43Y
+ YfanPm2SwKmx7U2bcMyoaVZkK9St4I7ud3wkHBlXHTXEHFlwlR3EKrTAbcagpew0ku
+ Inf8BHQ7/dn1w==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDIsWRWlGSWpSXmKPExsViZ8MxSbfsgkW
+ Kwb1rShYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa0Zb4z3WgnWmFS19r1kbGBdrdzFycggJnGWU
+ WPU/o4uRC8g+yCTxeMoJJghnH6PEhmmv2ECq2AQ0JZ51LmAGsUUEJCQ6Gt6yg9jMAuoSyyf9A
+ mrg4BAWMJG4udYfJMwioCqxbB1ECa+Ap0TTmklgtoSAgsSUh+/BxnAKBEo8mrKfFeKIAIlVHx
+ cyQ9QLSpyc+YQFYrymROv231Cr5CWat85mhpijJNHWeoUVwq6UaP3wiwXCVpO4em4T8wRGoVl
+ IRs1CMmoWklELGJlXMZoWpxaVpRbpmuglFWWmZ5TkJmbm6CVW6SbqpZbqlqcWl+ga6SWWF+ul
+ FhfrFVfmJuek6OWllmxiBAZ6SrHisR2M/3r/6h1ilORgUhLlLT5ikSLEl5SfUpmRWJwRX1Sak
+ 1p8iFGGg0NJgjfmLFBOsCg1PbUiLTMHGHUwaQkOHiUR3iiQVt7igsTc4sx0iNQpRkUpcd4H54
+ ESAiCJjNI8uDZYpF9ilJUS5mVkYGAQ4ilILcrNLEGVf8UozsGoJMzLegJoCk9mXgnc9FdAi5m
+ AFlfrgi0uSURISTUwLXzvee20xebfq6In1+kdlnoT0KLb28t9NWPv7y8iDOvF6y1O7lQ83a92
+ cmeq6sktBoKlz39zLp4lftJ+4aMNmgpiF7WbZmqF71OLk/TXFnug/94/9bxfo1lZ2AppY3uNI
+ +knS5SfXAzsvPf25YR28aUnDl9vntG1RENu2tHWOVUnTr1tLDv89Jg5g9+bi3MO/FvBwHB1vv
+ yMX/pxfzXcj0vs+3z+/4TCjh4fzfnXVJ+yXPkwf8OWj8zWezf2+0x4KhZ29HVWaKSp1smfF++
+ 80e57s223YnFH8bSHVnOqHM/JdrrFB/FHVoo+r5fPmFyRdXy7+1PxCGBKctI+VnfshHOQrxVD
+ pSCjj+yF779+KrEUZyQaajEXFScCAONVw+hvAwAA
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-23.tower-571.messagelabs.com!1681444982!204998!1
+X-Originating-IP: [62.60.8.146]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.104.2; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 32023 invoked from network); 14 Apr 2023 04:03:02 -0000
+Received: from unknown (HELO n03ukasimr02.n03.fujitsu.local) (62.60.8.146)
+ by server-23.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 14 Apr 2023 04:03:02 -0000
+Received: from n03ukasimr02.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTP id 3929E100467
+ for <ltp@lists.linux.it>; Fri, 14 Apr 2023 05:03:02 +0100 (BST)
+Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223
+ [10.182.185.121])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr02.n03.fujitsu.local (Postfix) with ESMTPS id 2D12F1000D7
+ for <ltp@lists.linux.it>; Fri, 14 Apr 2023 05:03:02 +0100 (BST)
+Received: from localhost.localdomain (10.167.215.131) by
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.42; Fri, 14 Apr 2023 05:03:00 +0100
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Fri, 14 Apr 2023 12:02:40 +0800
+Message-ID: <1681444960-20143-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <CAEemH2eTxhuQ+5YGMVbQwf9ZY1ttOHZxCySux-s0sDjXvhC4zw@mail.gmail.com>
+References: <CAEemH2eTxhuQ+5YGMVbQwf9ZY1ttOHZxCySux-s0sDjXvhC4zw@mail.gmail.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: GehoY4vNr4HB2BVveWgPRxAZ74S2f2Vu
-X-Proofpoint-GUID: CaDlHLiCoPsEF2gaDtW4vHF2y1nbxfsC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-13_08,2023-04-13_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501
- impostorscore=0 mlxlogscore=999 mlxscore=0 phishscore=0 adultscore=0
- spamscore=0 clxscore=1015 suspectscore=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2304130103
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Originating-IP: [10.167.215.131]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Hugetlb: Test to detect bug with freeing gigantic
- hugetlb pages
+Subject: [LTP] [RESEND] ipc/semget05: Convert into new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,139 +95,266 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: piyushs@linux.ibm.com, geetika@linux.ibm.com, aneesh.kumar@linux.ibm.com,
- rpalethorpe@suse.com, jaypatel@linux.ibm.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1991168225=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Before kernel version 5.10-rc7, there was a bug that resulted in a
-"Bad Page State" error when freeing gigantic hugepages. This happened
-because the struct page entry compound_nr, which overlapped with
-page->mapping in the first tail page, was not cleared, causing the
-error. To ensure that this issue does not reoccur as struct page keeps
-changes and some fields are managed by folio, this test checks that
-freeing gigantic hugepages does not produce the above-mentioned error.
+--===============1991168225==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Signed-off-by: Tarun Sahu <tsahu@linux.ibm.com>
+Use the same logic as shmget03 and msget03 to trigger ENOSPC error.
+
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- .../kernel/mem/hugetlb/hugemmap/hugemmap32.c  | 85 +++++++++++++++++++
- testcases/kernel/mem/hugetlb/lib/hugetlb.h    |  6 ++
- 2 files changed, 91 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
+ testcases/kernel/syscalls/ipc/semget/Makefile |   5 +-
+ .../kernel/syscalls/ipc/semget/semget05.c     | 187 ++++++------------
+ 2 files changed, 59 insertions(+), 133 deletions(-)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
-new file mode 100644
-index 000000000..6b90d2546
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
-@@ -0,0 +1,85 @@
+diff --git a/testcases/kernel/syscalls/ipc/semget/Makefile b/testcases/kernel/syscalls/ipc/semget/Makefile
+index 2f98c36ca..b1201281d 100644
+--- a/testcases/kernel/syscalls/ipc/semget/Makefile
++++ b/testcases/kernel/syscalls/ipc/semget/Makefile
+@@ -3,11 +3,10 @@
+ 
+ top_srcdir              ?= ../../../../..
+ 
+-LTPLIBS = ltpipc ltpnewipc
++LTPLIBS = ltpnewipc
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-semget01 semget02: LTPLDLIBS = -lltpnewipc
+-semget05: LTPLDLIBS = -lltpipc
++LTPLDLIBS = -lltpnewipc
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/semget/semget05.c b/testcases/kernel/syscalls/ipc/semget/semget05.c
+index f801cb8ed..38b0fad3c 100644
+--- a/testcases/kernel/syscalls/ipc/semget/semget05.c
++++ b/testcases/kernel/syscalls/ipc/semget/semget05.c
+@@ -1,152 +1,79 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2023, IBM Corporation.
-+ * Author: Tarun Sahu
-+ */
-+
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines Corp., 2001
+  */
+ 
+-/*
+- * NAME
+- *	semget05.c
 +/*\
 + * [Description]
-+ *
-+ * Before kernel version 5.10-rc7, there was a bug that resulted in a "Bad Page
-+ * State" error when freeing gigantic hugepages. This happened because the
-+ * struct page entry compound_nr, which overlapped with page->mapping in the
-+ * first tail page, was not cleared, causing the error. To ensure that this
-+ * issue does not reoccur as struct page keeps changing and some fields are
-+ * managed by folio, this test checks that freeing gigantic hugepages does not
-+ * produce the above-mentioned error.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <dirent.h>
-+
+  *
+- * DESCRIPTION
+- *	semget05 - test for ENOSPC error
++ * Test for ENOSPC error.
+  *
+- * ALGORITHM
+- *	create semaphore sets in a loop until the system limit is reached
+- *	loop if that option was specified
+- *	attempt to create yet another semaphore set
+- *	check the errno value
+- *	  issue a PASS message if we get ENOSPC
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	call cleanup
+- *
+- * USAGE:  <for command-line>
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *      07/2006 - Changes By Michael Reed
+- *                - Changed the value of MAXIDS for the specific machine by reading
+- *                  the system limit for SEMMNI - The maximum number of sempahore sets
+- *      03/2008 - Matthieu Fertré  (mfertre@irisa.fr)
+- *                - Fix concurrency issue. Create private semaphores to
+- *                  avoid conflict with concurrent processes.
+- *
+- * RESTRICTIONS
+- *	none
++ * ENOSPC - a semaphore set exceed the maximum number of semaphore sets(SEMMNI)
+  */
+ 
+-#include "ipcsem.h"
+-
+-char *TCID = "semget05";
+-int TST_TOTAL = 1;
+-
+-/*
+- * The MAXIDS value is somewhat arbitrary and may need to be increased
+- * depending on the system being tested.
+- */
+-
+-int MAXIDS = 2048;
+-
+-int *sem_id_arr = NULL;
+-int num_sems = 0;		/* count the semaphores created */
+-
+-int main(int ac, char **av)
 +#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/ipc.h>
++#include "lapi/sem.h"
++#include "tst_test.h"
++#include "libnewipc.h"
++#include "tst_safe_sysv_ipc.h"
 +
-+#include "hugetlb.h"
++static int *sem_id_arr;
++static int maxsems, array_cnt, used_cnt;
++static key_t semkey;
 +
-+#define PATH_GIGANTIC_HUGEPAGE "/sys/kernel/mm/hugepages"
-+#define GIGANTIC_MIN_ORDER 10
-+
-+static int org_g_hpages;
-+static char g_hpage_path[4096];
-+
-+static void run_test(void)
-+{
-+	if (FILE_PRINTF(g_hpage_path, "%d", 1))
-+		tst_brk(TCONF, "Can't update the gigantic hugepages.");
-+	SAFE_FILE_PRINTF(g_hpage_path, "%d", 0);
-+
-+	if (tst_taint_check())
-+		tst_res(TFAIL, "Freeing Gigantic pages resulted in Bad Page State bug.");
-+	else
-+		tst_res(TPASS, "Successfully freed the gigantic hugepages");
-+}
-+
++static void verify_semget(void)
+ {
+-	int lc;
+-	FILE *fp;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	/* Set the MAXIDS for the specific machine by reading the system limit
+-	 * for SEMMNI - The maximum number of sempahore sets
+-	 */
+-	fp = fopen("/proc/sys/kernel/sem", "r");
+-	if (fp != NULL) {
+-		int getmaxid;
+-		if (fscanf(fp, "%*d %*d %*d %d", &getmaxid) == 1)
+-			MAXIDS = getmaxid + 1;
+-		fclose(fp);
+-	}
+-
+-	sem_id_arr = malloc(sizeof(int) * MAXIDS);
+-	if (sem_id_arr == NULL)
+-		tst_brkm(TBROK, cleanup, "malloc failed");
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-
+-		TEST(semget(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA));
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "call succeeded when error expected");
+-			continue;
+-		}
+-
+-		switch (TEST_ERRNO) {
+-		case ENOSPC:
+-			tst_resm(TPASS, "expected failure - errno "
+-				 "= %d : %s", TEST_ERRNO, strerror(TEST_ERRNO));
+-			break;
+-		default:
+-			tst_resm(TFAIL, "unexpected error - %d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-			break;
+-		}
+-	}
+-
+-	cleanup();
+-
+-	tst_exit();
++	TST_EXP_FAIL2(semget(semkey + maxsems, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA),
++		ENOSPC, "semget(%i, %i, %i)", semkey + maxsems, PSEMS,
++		IPC_CREAT | IPC_EXCL | SEM_RA);
+ }
+ 
+-void setup(void)
 +static void setup(void)
-+{
-+	DIR *dir;
-+	struct dirent *ent;
-+	unsigned long hpage_size;
-+
-+	dir = SAFE_OPENDIR(PATH_GIGANTIC_HUGEPAGE);
-+	while ((ent = SAFE_READDIR(dir))) {
-+		if (strstr(ent->d_name, "hugepages-") != NULL) {
-+			if ((sscanf(ent->d_name, "hugepages-%lukB", &hpage_size) == 1) &&
-+				is_hugetlb_gigantic(hpage_size * 1024)) {
-+				sprintf(g_hpage_path, "%s/%s/%s", PATH_GIGANTIC_HUGEPAGE,
-+						ent->d_name, "nr_hugepages");
-+				break;
-+			}
-+		}
-+	}
-+	if (!g_hpage_path[0])
-+		tst_brk(TCONF, "Gigantic hugepages not supported");
-+
-+	SAFE_CLOSEDIR(dir);
-+	SAFE_FILE_LINES_SCANF(g_hpage_path, "%d", &org_g_hpages);
-+}
-+
+ {
+-	int sem_q;
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	int res, num;
+ 
+-	TEST_PAUSE;
++	semkey = GETIPCKEY();
++	used_cnt = GET_USED_ARRAYS();
++	tst_res(TINFO, "Current environment %d semaphore arrays are already in use",
++		used_cnt);
++	SAFE_FILE_SCANF("/proc/sys/kernel/sem", "%*d %*d %*d %d", &maxsems);
+ 
+-	tst_tmpdir();
+-
+-	while ((sem_q = semget(IPC_PRIVATE, PSEMS, IPC_CREAT | IPC_EXCL)) != -1) {
+-		sem_id_arr[num_sems++] = sem_q;
+-		if (num_sems == MAXIDS) {
+-			tst_brkm(TBROK, cleanup, "The maximum number of "
+-				 "semaphore ID's has been\n\t reached.  Please "
+-				 "increase the MAXIDS value in the test.");
+-		}
+-	}
++	sem_id_arr = SAFE_MALLOC((maxsems - used_cnt) * sizeof(int));
++	for (num = 0; num < maxsems - used_cnt; num++) {
++		res = semget(semkey + num, PSEMS, IPC_CREAT | IPC_EXCL | SEM_RA);
++		if (res == -1)
++			tst_brk(TBROK | TERRNO, "semget failed unexpectedly");
+ 
+-	if (errno != ENOSPC) {
+-		tst_brkm(TBROK, cleanup, "Didn't get ENOSPC in test setup"
+-			 " - errno = %d : %s", errno, strerror(errno));
++		sem_id_arr[array_cnt++] = res;
+ 	}
++	tst_res(TINFO, "The maximum number of semaphore arrays (%d) has been reached",
++		maxsems);
+ }
+ 
+-void cleanup(void)
 +static void cleanup(void)
-+{
-+	if (g_hpage_path[0])
-+		SAFE_FILE_PRINTF(g_hpage_path, "%d", org_g_hpages);
-+}
+ {
+-	int i;
++	int num;
+ 
+-	for (i = 0; i < num_sems; i++) {
+-		rm_sema(sem_id_arr[i]);
+-	}
++	if (!sem_id_arr)
++		return;
++
++	for (num = 0; num < array_cnt; num++)
++		SAFE_SEMCTL(sem_id_arr[num], PSEMS, IPC_RMID);
+ 
+ 	free(sem_id_arr);
+-	tst_rmdir();
+ }
 +
 +static struct tst_test test = {
-+	.tags = (struct tst_tag[]) {
-+	    {"linux-git", "ba9c1201beaa"},
-+	    {"linux-git", "7118fc2906e9"},
-+	    {}
-+	},
-+	.needs_root = 1,
++	.needs_tmpdir = 1,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.taint_check = TST_TAINT_B,
++	.test_all = verify_semget,
++	.save_restore = (const struct tst_path_val[]){
++		{"/proc/sys/kernel/sem", NULL, TST_SR_TCONF},
++		{}
++	}
 +};
-diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-index 241dab708..34fe08c24 100644
---- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-+++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
-@@ -39,6 +39,12 @@
- # endif
- #endif
- 
-+/* Check if hugetlb page is gigantic */
-+static inline int is_hugetlb_gigantic(unsigned long hpage_size)
-+{
-+	return (hpage_size / getpagesize()) >> 11;
-+}
-+
- /*
-  * to get the lower nine permission bits
-  * from shmid_ds.ipc_perm.mode
 -- 
-2.31.1
+2.39.1
+
+
+--===============1991168225==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1991168225==--
