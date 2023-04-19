@@ -4,87 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85093C77B73
-	for <ltp@archiver.kernel.org>; Wed, 19 Apr 2023 11:44:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 055ADC6FD18
+	for <ltp@archiver.kernel.org>; Wed, 19 Apr 2023 11:45:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 79B6D3CC015
-	for <ltp@archiver.kernel.org>; Wed, 19 Apr 2023 13:44:25 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 2FC9B3CC019
+	for <ltp@archiver.kernel.org>; Wed, 19 Apr 2023 13:45:31 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 50D6A3C1DA6
- for <ltp@lists.linux.it>; Wed, 19 Apr 2023 13:44:15 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 792E83C7E58
+ for <ltp@lists.linux.it>; Wed, 19 Apr 2023 13:45:20 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6E479200B8B
- for <ltp@lists.linux.it>; Wed, 19 Apr 2023 13:44:13 +0200 (CEST)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33JAaure018450; Wed, 19 Apr 2023 11:44:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : in-reply-to : references : date : message-id : content-type :
- mime-version; s=pp1; bh=NOxmAmY0XShBjuPi3nCky3NB708+zbrJLpNq0YTDDJA=;
- b=sn0/MelN0vxVRGNMlgbIgUvtklRloAM3bkYR+nf6ywsRuQfBb/FW3/TzYdFUVY0pXRYm
- BdXue3XFGiuWAz61pbvfo+CtAdGktwkRbjTZSMg9wN1UEHEQDzxD4TqoAnGcYh3ol862
- b1J+RDgNnZziBZPv/z6Daq0U9md5UFQThiFcmuuwLV2kXO76dAp8Wi0t0H8nNJrKp6+7
- TjA1F6KJXWVzBomoDKSWR77lx7hl6etyQMRpzDDNLF6VtWVFma+cJ58Yb5Puf04+LanB
- JzoxZ5khgu7M4ohdTGNAk7tef6WY1gRsgK4yg6icTMc53PpPr1m6JztHVzXZEygtRXpL tw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.102])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3q20sbydcf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 19 Apr 2023 11:44:11 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
- by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33IKe7R6019564;
- Wed, 19 Apr 2023 11:44:09 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3pyk6fjq0k-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 19 Apr 2023 11:44:09 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com
- [10.20.54.100])
- by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 33JBi6eJ28115508
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 19 Apr 2023 11:44:06 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 0BC1820040;
- Wed, 19 Apr 2023 11:44:06 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 9BD7820043;
- Wed, 19 Apr 2023 11:44:04 +0000 (GMT)
-Received: from tarunpc (unknown [9.124.31.73])
- by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Wed, 19 Apr 2023 11:44:04 +0000 (GMT)
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-In-Reply-To: <ZD0ZQOfKScJwZuVD@yuki>
-References: <20230413122045.904933-1-tsahu@linux.ibm.com>
- <ZD0ZQOfKScJwZuVD@yuki>
-Date: Wed, 19 Apr 2023 17:14:02 +0530
-Message-ID: <87ttxct7ul.fsf@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0x1fCzNQZzA2UCiZZgsSTpS97xvB6nOc
-X-Proofpoint-ORIG-GUID: 0x1fCzNQZzA2UCiZZgsSTpS97xvB6nOc
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 93F9D1000B5C
+ for <ltp@lists.linux.it>; Wed, 19 Apr 2023 13:45:19 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CD8DE1FD87;
+ Wed, 19 Apr 2023 11:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1681904718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=2cvY8+CsaovkifjPoPMsHd1N9yRl2PfQEmXXSlsqDas=;
+ b=MCScAv0un/AbSsRX2O53GOr6ktPqEdqieUNiEn5inyAaFrtADsIWj3NHxOeqvnOPpTRMZN
+ xpfRoxlfehjey21ES7/0jv6xlfQhUJ0wym75M4xNxZTt46ohtbLcIXLiWYQKzZHxL70zji
+ pmF6VSjtGnYGE3duvWVCHlMawKFaEfc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1681904718;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=2cvY8+CsaovkifjPoPMsHd1N9yRl2PfQEmXXSlsqDas=;
+ b=Z48XqhiV8enm5Ux15BeM+nWT0R1m6DjTVkEK9KPVdibjYwWUPRVYKbw8z81HEK/gnQnYyD
+ I+nmuu7jqJ8gRUDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12A5C13580;
+ Wed, 19 Apr 2023 11:45:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Eb2jNk3UP2SMZQAAMHmgww
+ (envelope-from <akumar@suse.de>); Wed, 19 Apr 2023 11:45:17 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Date: Wed, 19 Apr 2023 17:15:16 +0530
+Message-ID: <1827762.iFF2E32hkL@localhost>
+Organization: SUSE
+In-Reply-To: <1680604594-16596-3-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1680604594-16596-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1680604594-16596-3-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-19_06,2023-04-18_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 priorityscore=1501
- mlxlogscore=921 spamscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 phishscore=0 suspectscore=0 clxscore=1015
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2304190103
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Hugetlb: Test to detect bug with freeing
- gigantic hugetlb pages
+Subject: Re: [LTP] [PATCH 3/4] syscalls/mlock03: Convert into new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,132 +77,201 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: piyushs@linux.ibm.com, aneesh.kumar@linux.ibm.com, rpalethorpe@suse.com,
- geetika@linux.ibm.com, jaypatel@linux.ibm.com, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi,
 
-Thanks for looking at it.
-I agree to your comments, sent the v3. Also second commit tag was wrong.
-I changed it too.
+On Tuesday, April 4, 2023 4:06:33 PM IST Yang Xu wrote:
+> Also remove tst_require_root. Test mlock/munlock instead of mlock by default.
+> 
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/mlock/mlock03.c | 137 +++++++---------------
+>  1 file changed, 43 insertions(+), 94 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mlock/mlock03.c b/testcases/kernel/syscalls/mlock/mlock03.c
+> index 8bc65701c..0fc3fa8ed 100644
+> --- a/testcases/kernel/syscalls/mlock/mlock03.c
+> +++ b/testcases/kernel/syscalls/mlock/mlock03.c
+> @@ -1,119 +1,68 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+Original test only has GPLv2
 
-~Tarun
+>  /*
+> - * Stack size mapping is decreased through mlock/munlock call.
+> - *
+> - * This is to test kernel if it has a problem with shortening [stack]
+> - * mapping through several loops of mlock/munlock of /proc/self/maps.
+> - *
+> - * From:
+> - * munlock     76KiB bfef2000-bff05000 rw-p 00000000 00:00 0          [stack]
+> - *
+> - * To:
+> - * munlock     44KiB bfefa000-bff05000 rw-p 00000000 00:00 0          [stack]
+> - *
+> - * with more iterations - could drop to 0KiB.
+> - *
+>   * Copyright (C) 2010  Red Hat, Inc.
+> - * This program is free software; you can redistribute it and/or
+> - * modify it under the terms of version 2 of the GNU General Public
+> - * License as published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it would be useful,
+> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> - *
+> - * Further, this software is distributed without any warranty that it
+> - * is free of the rightful claim of any third person regarding
+> - * infringement or the like.  Any license provided herein, whether
+> - * implied or otherwise, applies only to this software file.  Patent
+> - * licenses, if any, provided herein do not apply to combinations of
+> - * this program with other software, or any other product whatsoever.
+> + */
+> +
+> +/*\
+> + * [Description]
+>   *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program; if not, write the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> - * 02110-1301, USA.
+> + * This case is designed to test kernel whether met a problem with shortening
+> + * [stack] mapping through several loops of mlock/munlock of /proc/self/maps.
+I don't understand how shortening of stack by calling to mlock/munlock
+for maps regions may work, so no comments on actual patch.
 
-> Hi!
->> +#define _GNU_SOURCE
->> +#include <dirent.h>
->> +
->> +#include <stdio.h>
->> +
->> +#include "hugetlb.h"
->> +
->> +#define PATH_GIGANTIC_HUGEPAGE "/sys/kernel/mm/hugepages"
->> +#define GIGANTIC_MIN_ORDER 10
->> +
->> +static int org_g_hpages;
->> +static char g_hpage_path[4096];
->> +
->> +static void run_test(void)
->> +{
->> +	if (FILE_PRINTF(g_hpage_path, "%d", 1))
->> +		tst_brk(TCONF, "Can't update the gigantic hugepages.");
->> +	SAFE_FILE_PRINTF(g_hpage_path, "%d", 0);
->> +
->> +	if (tst_taint_check())
->> +		tst_res(TFAIL, "Freeing Gigantic pages resulted in Bad Page State bug.");
->> +	else
->> +		tst_res(TPASS, "Successfully freed the gigantic hugepages");
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	DIR *dir;
->> +	struct dirent *ent;
->> +	unsigned long hpage_size;
->> +
->> +	dir = SAFE_OPENDIR(PATH_GIGANTIC_HUGEPAGE);
->                                  ^
-> 				 This is very minor, but there is
-> 				 nothing gigantic about the path, that's
-> 				 just sysfs hugepates directory, so I
-> 				 suppose that it should be just
-> 				 PATH_HUGEPAGE
->
->> +	while ((ent = SAFE_READDIR(dir))) {
->> +		if (strstr(ent->d_name, "hugepages-") != NULL) {
->
-> Isn't the strstr() here reduntant?
->
-> I as far as I can tell if the line in sscanf() will not match the call
-> will simply return 0.
->
->> +			if ((sscanf(ent->d_name, "hugepages-%lukB", &hpage_size) == 1) &&
->> +				is_hugetlb_gigantic(hpage_size * 1024)) {
->> +				sprintf(g_hpage_path, "%s/%s/%s", PATH_GIGANTIC_HUGEPAGE,
->> +						ent->d_name, "nr_hugepages");
->> +				break;
->> +			}
->> +		}
->> +	}
->> +	if (!g_hpage_path[0])
->> +		tst_brk(TCONF, "Gigantic hugepages not supported");
->> +
->> +	SAFE_CLOSEDIR(dir);
->> +	SAFE_FILE_LINES_SCANF(g_hpage_path, "%d", &org_g_hpages);
->> +}
->> +
->> +static void cleanup(void)
->> +{
->> +	if (g_hpage_path[0])
->> +		SAFE_FILE_PRINTF(g_hpage_path, "%d", org_g_hpages);
->> +}
->> +
->> +static struct tst_test test = {
->> +	.tags = (struct tst_tag[]) {
->> +	    {"linux-git", "ba9c1201beaa"},
->> +	    {"linux-git", "7118fc2906e9"},
->                             ^
-> 			    This has appears to be wrong. Shouldn't the
-> 			    last digit be 2 instead of 9?
->> +	    {}
->> +	},
->> +	.needs_root = 1,
->> +	.setup = setup,
->> +	.cleanup = cleanup,
->> +	.test_all = run_test,
->> +	.taint_check = TST_TAINT_B,
->> +};
->> diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
->> index 241dab708..34fe08c24 100644
->> --- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
->> +++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
->> @@ -39,6 +39,12 @@
->>  # endif
->>  #endif
->>  
->> +/* Check if hugetlb page is gigantic */
->> +static inline int is_hugetlb_gigantic(unsigned long hpage_size)
->> +{
->> +	return (hpage_size / getpagesize()) >> 11;
->> +}
->> +
->>  /*
->>   * to get the lower nine permission bits
->>   * from shmid_ds.ipc_perm.mode
->> -- 
->> 2.31.1
->> 
->
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
->
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+>   */
+> +
+>  #include <sys/mman.h>
+>  #include <stdio.h>
+>  #include <string.h>
+> -#include "test.h"
+> +#include <pwd.h>
+> +#include "tst_test.h"
+> +#include "tst_safe_stdio.h"
+>  
+>  #define KB 1024
+>  
+> -char *TCID = "mlock03";
+> -int TST_TOTAL = 1;
+> -
+> -static void setup(void);
+> -static void cleanup(void);
+> -
+> -int main(int argc, char *argv[])
+> +static void verify_mlock(void)
+>  {
+> -	int lc;
+>  	long from, to;
+>  	long first = -1, last = -1;
+>  	char b[KB];
+>  	FILE *fp;
+>  
+> -	tst_parse_opts(argc, argv, NULL, NULL);
+> -
+> -	setup();
+> +	fp = SAFE_FOPEN("/proc/self/maps", "r");
+> +	while (!feof(fp)) {
+> +		if (!fgets(b, KB - 1, fp))
+> +			break;
+> +		b[strlen(b) - 1] = '\0';
+> +		if (sscanf(b, "%lx-%lx", &from, &to) != 2) {
+> +			tst_res(TFAIL, "parse %s start and end address failed",
+> +					b);
+> +			continue;
+> +		}
+>  
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		fp = fopen("/proc/self/maps", "r");
+> -		if (fp == NULL)
+> -			tst_brkm(TBROK | TERRNO, cleanup, "fopen");
+> -		while (!feof(fp)) {
+> -			if (!fgets(b, KB - 1, fp))
+> -				break;
+> -			b[strlen(b) - 1] = '\0';
+> -			sscanf(b, "%lx-%lx", &from, &to);
+> +		/* Record the initial stack size. */
+> +		if (strstr(b, "[stack]") != NULL)
+> +			first = (to - from) / KB;
+>  
+> -			/* Record the initial stack size. */
+> -			if (lc == 0 && strstr(b, "[stack]") != NULL)
+> -				first = (to - from) / KB;
+> +		tst_res(TINFO, "mlock[%lx,%lx]", from, to);
+> +		if (mlock((const void *)from, to - from) == -1)
+> +			tst_res(TINFO | TERRNO, "mlock failed");
+>  
+> -			switch (lc & 1) {
+> -			case 0:
+> -				if (mlock((const void *)from, to - from) == -1)
+> -					tst_resm(TINFO | TERRNO,
+> -						 "mlock failed");
+> -				break;
+> -			case 1:
+> -				if (munlock((void *)from, to - from) == -1)
+> -					tst_resm(TINFO | TERRNO,
+> -						 "munlock failed");
+> -				break;
+> -			default:
+> -				break;
+> -			}
+> -			tst_resm(TINFO, "%s from %lx to %0lx",
+> -				 (lc & 1) ? "munlock" : "mlock", from, to);
+> +		tst_res(TINFO, "munlock [%lx,%lx]", from, to);
+> +		if (munlock((void *)from, to - from) == -1)
+> +			tst_res(TINFO | TERRNO, "munlock failed");
+>  
+> -			/* Record the final stack size. */
+> -			if (strstr(b, "[stack]") != NULL)
+> -				last = (to - from) / KB;
+> -		}
+> -		fclose(fp);
+> +		/* Record the final stack size. */
+> +		if (strstr(b, "[stack]") != NULL)
+> +			last = (to - from) / KB;
+>  	}
+> -	tst_resm(TINFO, "starting stack size is %ld", first);
+> -	tst_resm(TINFO, "final stack size is %ld", last);
+> +	SAFE_FCLOSE(fp);
+> +
+> +	tst_res(TINFO, "starting stack size is %ld", first);
+> +	tst_res(TINFO, "final stack size is %ld", last);
+>  	if (last < first)
+> -		tst_resm(TFAIL, "stack size is decreased.");
+> +		tst_res(TFAIL, "stack size is decreased.");
+>  	else
+> -		tst_resm(TPASS, "stack size is not decreased.");
+> -
+> -	cleanup();
+> -	tst_exit();
+> +		tst_res(TPASS, "stack size is not decreased.");
+>  }
+>  
+> -void setup(void)
+> -{
+> -	tst_require_root();
+> -
+> -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> -	TEST_PAUSE;
+> -}
+> -
+> -void cleanup(void)
+> -{
+> -}
+> +static struct tst_test test = {
+> +	.test_all = verify_mlock,
+> +};
+> 
+
+--
+Regards,
+Avinesh
+
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
