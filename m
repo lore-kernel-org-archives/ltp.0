@@ -4,35 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57C5EC77B73
-	for <ltp@archiver.kernel.org>; Thu, 20 Apr 2023 16:09:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E116BC77B72
+	for <ltp@archiver.kernel.org>; Thu, 20 Apr 2023 18:50:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4FE9E3CBF7C
-	for <ltp@archiver.kernel.org>; Thu, 20 Apr 2023 18:09:54 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 884BF3CBFE6
+	for <ltp@archiver.kernel.org>; Thu, 20 Apr 2023 20:50:39 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 56D483CBF72
- for <ltp@lists.linux.it>; Thu, 20 Apr 2023 18:09:22 +0200 (CEST)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-5.smtp.seeweb.it (Postfix) with ESMTP id 0BB0460083E
- for <ltp@lists.linux.it>; Thu, 20 Apr 2023 18:09:20 +0200 (CEST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F7611480
- for <ltp@lists.linux.it>; Thu, 20 Apr 2023 09:10:01 -0700 (PDT)
-Received: from e126380.arm.com (unknown [10.57.59.15])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 049103F6C4
- for <ltp@lists.linux.it>; Thu, 20 Apr 2023 09:09:16 -0700 (PDT)
-From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
-To: ltp@lists.linux.it
-Date: Thu, 20 Apr 2023 17:09:08 +0100
-Message-Id: <20230420160910.809091-1-teo.coupriediaz@arm.com>
-X-Mailer: git-send-email 2.34.1
+ by picard.linux.it (Postfix) with ESMTPS id 716FA3C288D
+ for <ltp@lists.linux.it>; Thu, 20 Apr 2023 20:50:28 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6E213600285
+ for <ltp@lists.linux.it>; Thu, 20 Apr 2023 20:50:27 +0200 (CEST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 33KIo15I012299; Thu, 20 Apr 2023 18:50:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=pp1; bh=Ak9dNIW+ezLdnn06IO9f95uet/E2seV4j4rfiixhQr8=;
+ b=DqLRwCR85XBHCMsY96K2FluG3bHn1nMzVKwwvC4SPxI1rfOEVSc6/qXZgx/nYVeVydZK
+ 09oexonvVwPsxTYcFR4yEBV6mp4zJP7Bx9/xTOFbdeW5H+/FIdDFkuM3sO63kZkr8NRV
+ g1zfk726yGeSPj1Psv4v1pdRHouKi7WQaT4VVlLubdXDzRCIV5sWw6DOKqSpSxtqDmJO
+ TBjmLYUtLNuYxThTALt6KKyGayTqdMoyl4t90yJI/msiDb+IVtsQ/tV2XZ8C+IZGwC9Q
+ ZrgjqEkKRDUwEhdSes8cSkPhxfcdrIeNQz/+HgTqZfEuTSNjX0xaSsttPH8t2KOBwtN4 xg== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.98])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3q3asbrjcd-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 20 Apr 2023 18:50:25 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+ by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33K1bZJT003566;
+ Thu, 20 Apr 2023 18:50:23 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+ by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3pykj6kkfp-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 20 Apr 2023 18:50:23 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
+ [10.20.54.106])
+ by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 33KIoJvR10224180
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 20 Apr 2023 18:50:20 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id D653020040;
+ Thu, 20 Apr 2023 18:50:19 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 14FE32004B;
+ Thu, 20 Apr 2023 18:50:16 +0000 (GMT)
+Received: from tarunpc (unknown [9.43.25.39])
+ by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+ Thu, 20 Apr 2023 18:50:15 +0000 (GMT)
+From: Tarun Sahu <tsahu@linux.ibm.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+In-Reply-To: <ZEECphsAzkd3MRrZ@yuki>
+References: <20230419114144.1219505-1-tsahu@linux.ibm.com>
+ <ZEECphsAzkd3MRrZ@yuki>
+Date: Fri, 21 Apr 2023 00:20:10 +0530
+Message-ID: <87wn261j8d.fsf@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: vAxqJ5eTGuPT3U-yLbM7Zp5l3SGlP2LF
+X-Proofpoint-ORIG-GUID: vAxqJ5eTGuPT3U-yLbM7Zp5l3SGlP2LF
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-20_15,2023-04-20_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 bulkscore=0
+ impostorscore=0 mlxlogscore=907 clxscore=1015 mlxscore=0
+ priorityscore=1501 spamscore=0 adultscore=0 lowpriorityscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2303200000 definitions=main-2304200154
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/2] setpgid: Test EPERM error paths more reliably
+Subject: Re: [LTP] [PATCH v3] Hugetlb: Test to detect bug with freeing
+ gigantic hugetlb pages
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -44,35 +97,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: piyushs@linux.ibm.com, aneesh.kumar@linux.ibm.com, rpalethorpe@suse.com,
+ geetika@linux.ibm.com, jaypatel@linux.ibm.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The current EPERM case in setpgid02 can fail in systems running the
-login shell as init (PID 1).
+Hi Cyril,
 
-Change the failing case to fail due to an invalid PGID instead of
-a different session, but add a case in setpgid03 to continue
-testing this error path in the kernel.
+> Hi!
+> I've added a .gitignore and runtest entry for the test and pushed,
+> (please do not forget about that next time)
+Sure, Will keep in mind. Thanks.
 
-This is because setpgid03 already has the necessary scaffolding ready
-by forking and synchronizing with a child that does setsid().
+~Tarun
 
-
-CI Build: https://github.com/Teo-CD/ltp/actions/runs/4756354740
-
-Teo Couprie Diaz (2):
-  setpgid02: Use pid_max as PGID for EPERM
-  setpgid03: Add test for PGID in different session
-
- testcases/kernel/syscalls/setpgid/setpgid02.c | 14 +++++++-------
- testcases/kernel/syscalls/setpgid/setpgid03.c |  4 ++++
- 2 files changed, 11 insertions(+), 7 deletions(-)
-
--- 
-2.34.1
-
+> thanks.
+>
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
+>
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
