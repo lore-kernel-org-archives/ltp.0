@@ -4,37 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B199EC77B72
-	for <ltp@archiver.kernel.org>; Thu, 20 Apr 2023 16:09:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCC01C77B72
+	for <ltp@archiver.kernel.org>; Thu, 20 Apr 2023 16:09:46 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 641EB3CBF91
-	for <ltp@archiver.kernel.org>; Thu, 20 Apr 2023 18:09:32 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id DC2F43CBFAD
+	for <ltp@archiver.kernel.org>; Thu, 20 Apr 2023 18:09:42 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 60F3E3CBF78
+ by picard.linux.it (Postfix) with ESMTPS id 58E1A3CBF77
  for <ltp@lists.linux.it>; Thu, 20 Apr 2023 18:09:22 +0200 (CEST)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by in-5.smtp.seeweb.it (Postfix) with ESMTP id EE1CE60082D
- for <ltp@lists.linux.it>; Thu, 20 Apr 2023 18:09:20 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTP id 4A735600846
+ for <ltp@lists.linux.it>; Thu, 20 Apr 2023 18:09:21 +0200 (CEST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 749A2152B
- for <ltp@lists.linux.it>; Thu, 20 Apr 2023 09:10:02 -0700 (PDT)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 474711595
+ for <ltp@lists.linux.it>; Thu, 20 Apr 2023 09:10:03 -0700 (PDT)
 Received: from e126380.arm.com (unknown [10.57.59.15])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0AAFA3F6C4
- for <ltp@lists.linux.it>; Thu, 20 Apr 2023 09:09:17 -0700 (PDT)
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DDF523F6C4
+ for <ltp@lists.linux.it>; Thu, 20 Apr 2023 09:09:18 -0700 (PDT)
 From: Teo Couprie Diaz <teo.coupriediaz@arm.com>
 To: ltp@lists.linux.it
-Date: Thu, 20 Apr 2023 17:09:09 +0100
-Message-Id: <20230420160910.809091-2-teo.coupriediaz@arm.com>
+Date: Thu, 20 Apr 2023 17:09:10 +0100
+Message-Id: <20230420160910.809091-3-teo.coupriediaz@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230420160910.809091-1-teo.coupriediaz@arm.com>
 References: <20230420160910.809091-1-teo.coupriediaz@arm.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] setpgid02: Use pid_max as PGID for EPERM
+Subject: [LTP] [PATCH v2 2/2] setpgid03: Add test for PGID in different
+ session
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -51,67 +53,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In some simple systems (like Busybox), the login shell might be run
-as init (PID 1).
-This leads to a case where LTP is run in the same session as init,
-thus setpgid is allowed to the PGID of init which results in a test fail.
-Indeed, the test retrieves the PGID of init to try and generate EPERM.
+The current test in setpgid03 generates EPERM because the child is
+a session leader, as it has called setsid().
+EPERM can also happen by trying to change to a PGID in another session.
+This was previously done in setpgid02, but it could fail on some systems.
 
-Instead get the PGID we use to generate EPERM from the kernel pid_max.
-It should not be used by any process, guaranteeing an invalid PGID
-and generating an EPERM error.
+setpgid03 provides a guaranteed way to generate this error by forking and
+setsid() in the child, so add a test for it here.
+
+Update the description to reflect this understanding.
 
 Signed-off-by: Teo Couprie Diaz <teo.coupriediaz@arm.com>
 ---
- testcases/kernel/syscalls/setpgid/setpgid02.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ testcases/kernel/syscalls/setpgid/setpgid03.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/setpgid/setpgid02.c b/testcases/kernel/syscalls/setpgid/setpgid02.c
-index 4b63afee8..b380d7df4 100644
---- a/testcases/kernel/syscalls/setpgid/setpgid02.c
-+++ b/testcases/kernel/syscalls/setpgid/setpgid02.c
-@@ -13,15 +13,15 @@
-  * - EINVAL when given pgid is less than 0.
-  * - ESRCH when pid is not the calling process and not a child of
-  * the calling process.
-- * - EPERM when an attempt was made to move a process into a process
-- * group in a different session.
-+ * - EPERM when an attempt was made to move a process into a nonexisting
-+ * process group.
-  */
+diff --git a/testcases/kernel/syscalls/setpgid/setpgid03.c b/testcases/kernel/syscalls/setpgid/setpgid03.c
+index b23d662e9..9ce2603d8 100644
+--- a/testcases/kernel/syscalls/setpgid/setpgid03.c
++++ b/testcases/kernel/syscalls/setpgid/setpgid03.c
+@@ -11,6 +11,8 @@
+  *
+  * Tests setpgid(2) errors:
+  *
++ * - EPERM The process specified by pid must not be a session leader.
++ *
+  * - EPERM The calling process, process specified by pid and the target
+  *         process group must be in the same session.
+  *
+@@ -43,6 +45,8 @@ static void run(void)
+ 	TST_CHECKPOINT_WAIT(0);
  
- #include <errno.h>
- #include <unistd.h>
- #include "tst_test.h"
+ 	TST_EXP_FAIL(setpgid(child_pid, getppid()), EPERM);
++	/* Child did setsid(), so its PGID is set to its PID. */
++	TST_EXP_FAIL(setpgid(0, child_pid), EPERM);
  
--static pid_t pgid, pid, ppid, init_pgid;
-+static pid_t pgid, pid, ppid, inval_pgid;
- static pid_t negative_pid = -1;
+ 	TST_CHECKPOINT_WAKE(0);
  
- static struct tcase {
-@@ -31,7 +31,7 @@ static struct tcase {
- } tcases[] = {
- 	{&pid, &negative_pid, EINVAL},
- 	{&ppid, &pgid, ESRCH},
--	{&pid, &init_pgid, EPERM}
-+	{&pid, &inval_pgid, EPERM}
- };
- 
- static void setup(void)
-@@ -41,10 +41,10 @@ static void setup(void)
- 	pgid = getpgrp();
- 
- 	/*
--	 * Getting pgid of init/systemd process to use it as a
--	 * process group from a different session for EPERM test
-+	 * pid_max would not be in use by another process and guarantees that
-+	 * it corresponds to an invalid PGID, generating EPERM.
- 	 */
--	init_pgid = SAFE_GETPGID(1);
-+	SAFE_FILE_SCANF("/proc/sys/kernel/pid_max", "%d\n", &inval_pgid);
- }
- 
- static void run(unsigned int n)
 -- 
 2.34.1
 
