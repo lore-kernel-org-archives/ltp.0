@@ -4,88 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E116BC77B72
-	for <ltp@archiver.kernel.org>; Thu, 20 Apr 2023 18:50:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE6FCC7618E
+	for <ltp@archiver.kernel.org>; Fri, 21 Apr 2023 01:27:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 884BF3CBFE6
-	for <ltp@archiver.kernel.org>; Thu, 20 Apr 2023 20:50:39 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id D1C073CBFCA
+	for <ltp@archiver.kernel.org>; Fri, 21 Apr 2023 03:27:17 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 716FA3C288D
- for <ltp@lists.linux.it>; Thu, 20 Apr 2023 20:50:28 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 040703CBF53
+ for <ltp@lists.linux.it>; Fri, 21 Apr 2023 03:27:07 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6E213600285
- for <ltp@lists.linux.it>; Thu, 20 Apr 2023 20:50:27 +0200 (CEST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33KIo15I012299; Thu, 20 Apr 2023 18:50:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : in-reply-to : references : date : message-id : content-type :
- mime-version; s=pp1; bh=Ak9dNIW+ezLdnn06IO9f95uet/E2seV4j4rfiixhQr8=;
- b=DqLRwCR85XBHCMsY96K2FluG3bHn1nMzVKwwvC4SPxI1rfOEVSc6/qXZgx/nYVeVydZK
- 09oexonvVwPsxTYcFR4yEBV6mp4zJP7Bx9/xTOFbdeW5H+/FIdDFkuM3sO63kZkr8NRV
- g1zfk726yGeSPj1Psv4v1pdRHouKi7WQaT4VVlLubdXDzRCIV5sWw6DOKqSpSxtqDmJO
- TBjmLYUtLNuYxThTALt6KKyGayTqdMoyl4t90yJI/msiDb+IVtsQ/tV2XZ8C+IZGwC9Q
- ZrgjqEkKRDUwEhdSes8cSkPhxfcdrIeNQz/+HgTqZfEuTSNjX0xaSsttPH8t2KOBwtN4 xg== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.98])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3q3asbrjcd-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 20 Apr 2023 18:50:25 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
- by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33K1bZJT003566;
- Thu, 20 Apr 2023 18:50:23 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
- by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3pykj6kkfp-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 20 Apr 2023 18:50:23 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
- [10.20.54.106])
- by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 33KIoJvR10224180
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 20 Apr 2023 18:50:20 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id D653020040;
- Thu, 20 Apr 2023 18:50:19 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 14FE32004B;
- Thu, 20 Apr 2023 18:50:16 +0000 (GMT)
-Received: from tarunpc (unknown [9.43.25.39])
- by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
- Thu, 20 Apr 2023 18:50:15 +0000 (GMT)
-From: Tarun Sahu <tsahu@linux.ibm.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-In-Reply-To: <ZEECphsAzkd3MRrZ@yuki>
-References: <20230419114144.1219505-1-tsahu@linux.ibm.com>
- <ZEECphsAzkd3MRrZ@yuki>
-Date: Fri, 21 Apr 2023 00:20:10 +0530
-Message-ID: <87wn261j8d.fsf@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vAxqJ5eTGuPT3U-yLbM7Zp5l3SGlP2LF
-X-Proofpoint-ORIG-GUID: vAxqJ5eTGuPT3U-yLbM7Zp5l3SGlP2LF
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0470420025A
+ for <ltp@lists.linux.it>; Fri, 21 Apr 2023 03:27:06 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8819721A30;
+ Fri, 21 Apr 2023 01:27:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1682040425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=LiF4DobEdQk8M6pfr6YL5wvnufQ1+l9OpLCS2YT4aNs=;
+ b=uXEH7BB+XmDjRLZRpVJV3htIgUFTD5A+bke1Z9iKRDvDUNZgO5LiHhx00cVnbqG6G4AV3W
+ MSvOJE0aPDJDUd3aMDXv4QY7/KSDwJ3F4jj1ri+eeH1htNLUhF6SGkHWmPMS2EnWNyqRON
+ GV00MvR8IwOMGA+7SpoB1ntIKbUHNQY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DAC6713584;
+ Fri, 21 Apr 2023 01:27:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id eI8bLGjmQWT7eAAAMHmgww
+ (envelope-from <wegao@suse.com>); Fri, 21 Apr 2023 01:27:04 +0000
+To: ltp@lists.linux.it
+Date: Thu, 20 Apr 2023 21:26:40 -0400
+Message-Id: <20230421012642.16625-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230419151849.13152-1-wegao@suse.com>
+References: <20230419151849.13152-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-20_15,2023-04-20_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 bulkscore=0
- impostorscore=0 mlxlogscore=907 clxscore=1015 mlxscore=0
- priorityscore=1501 spamscore=0 adultscore=0 lowpriorityscore=0
- phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2303200000 definitions=main-2304200154
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Hugetlb: Test to detect bug with freeing
- gigantic hugetlb pages
+Subject: [LTP] [PATCH v8 0/2] kill01: New case cgroup kill
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,30 +66,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: piyushs@linux.ibm.com, aneesh.kumar@linux.ibm.com, rpalethorpe@suse.com,
- geetika@linux.ibm.com, jaypatel@linux.ibm.com, ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Wei Gao (2):
+  kill01: New case cgroup kill
+  tst_cgroup.c: Add a cgroup pseudo controller
 
-> Hi!
-> I've added a .gitignore and runtest entry for the test and pushed,
-> (please do not forget about that next time)
-Sure, Will keep in mind. Thanks.
+ lib/tst_cgroup.c                              |  55 ++++---
+ runtest/controllers                           |   1 +
+ .../kernel/controllers/cgroup/kill/.gitignore |   1 +
+ .../kernel/controllers/cgroup/kill/Makefile   |   6 +
+ .../kernel/controllers/cgroup/kill/kill01.c   | 144 ++++++++++++++++++
+ 5 files changed, 188 insertions(+), 19 deletions(-)
+ create mode 100644 testcases/kernel/controllers/cgroup/kill/.gitignore
+ create mode 100644 testcases/kernel/controllers/cgroup/kill/Makefile
+ create mode 100644 testcases/kernel/controllers/cgroup/kill/kill01.c
 
-~Tarun
 
-> thanks.
->
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
->
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+base-commit: b67facdd9c3f0ef471d74dd59ac276139e63f4c4
+-- 
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
