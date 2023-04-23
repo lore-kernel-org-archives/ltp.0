@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0955DC7618E
-	for <ltp@archiver.kernel.org>; Sat, 22 Apr 2023 13:54:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63523C77B78
+	for <ltp@archiver.kernel.org>; Sun, 23 Apr 2023 02:27:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 274E13CBE52
-	for <ltp@archiver.kernel.org>; Sat, 22 Apr 2023 15:54:28 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 17EBB3CBE57
+	for <ltp@archiver.kernel.org>; Sun, 23 Apr 2023 04:27:42 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4CD8F3CBDE9
- for <ltp@lists.linux.it>; Sat, 22 Apr 2023 15:54:01 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 0A6933CAD0A
+ for <ltp@lists.linux.it>; Sun, 23 Apr 2023 04:27:28 +0200 (CEST)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id EA4016002B6
- for <ltp@lists.linux.it>; Sat, 22 Apr 2023 15:54:00 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 393B51F38D;
- Sat, 22 Apr 2023 13:54:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1682171640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=aE4BQR6SMvGF0pA2UqpU+i7IL1mbYkKtD5rQJJmr0QY=;
- b=Qd9gHE0BKLPQW+JF42VvkfuKgI6woBHzBU7mS0uoU3hKx5KreGIrpy4cuas2EzN3c4Wvw4
- TSj5g1/nJJxKE152p4VbVgM3JXwSAUHQaKIpSghgkfGy8PL8nKblgKKD4rZLvyYU9vSWqU
- Bb6KlJ4JQ+T261wnG0GefJO0YMUbzKY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6006313591;
- Sat, 22 Apr 2023 13:53:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +M72CvfmQ2TOLAAAMHmgww
- (envelope-from <wegao@suse.com>); Sat, 22 Apr 2023 13:53:59 +0000
-To: ltp@lists.linux.it
-Date: Sat, 22 Apr 2023 09:53:37 -0400
-Message-Id: <20230422135337.12087-3-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230422135337.12087-1-wegao@suse.com>
-References: <20230421012642.16625-1-wegao@suse.com>
- <20230422135337.12087-1-wegao@suse.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 91B2B2002D1
+ for <ltp@lists.linux.it>; Sun, 23 Apr 2023 04:27:22 +0200 (CEST)
+X-UUID: 98b568ead06945a997278978f2694d48-20230423
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.22, REQID:2e884932-2751-4ec9-8b35-5a8b72e44105, IP:10,
+ URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+ ON:release,TS:-4
+X-CID-INFO: VERSION:1.1.22, REQID:2e884932-2751-4ec9-8b35-5a8b72e44105, IP:10,
+ UR
+ L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+ :release,TS:-4
+X-CID-META: VersionHash:120426c, CLOUDID:2feed1eb-db6f-41fe-8b83-13fe7ed1ef52,
+ B
+ ulkID:230423102705IM8YRGR4,BulkQuantity:0,Recheck:0,SF:24|17|19|42|102,TC:
+ nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OS
+ I:0,OSA:0,AV:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-UUID: 98b568ead06945a997278978f2694d48-20230423
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+ (envelope-from <zenghao@kylinos.cn>) (Generic MTA)
+ with ESMTP id 275759830; Sun, 23 Apr 2023 10:27:05 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+ by mail.kylinos.cn (NSMail) with SMTP id 2FAD2E0084A1;
+ Sun, 23 Apr 2023 10:27:05 +0800 (CST)
+X-ns-mid: postfix-64449779-89884155
+Received: from zdzh5-QiTianM428-A376.. (unknown [172.20.12.253])
+ by mail.kylinos.cn (NSMail) with ESMTPA id 6D56AE0084A5;
+ Sun, 23 Apr 2023 10:27:03 +0800 (CST)
+From: Hao Zeng <zenghao@kylinos.cn>
+To: chrubis@suse.cz
+Date: Sun, 23 Apr 2023 10:27:02 +0800
+Message-Id: <20230423022702.3486141-1-zenghao@kylinos.cn>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v9 2/2] tst_cgroup.c: Add a cgroup pseudo controller
+Subject: [LTP] [PATCH v2] fs/doio:Use the snprintf function to prevent
+ buffer overflow
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,137 +69,102 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+Cc: Hao Zeng <zenghao@kylinos.cn>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-For new test case such as kill01.c no need specific controller, it just
-need LTP cgroup library start work, so we need add a "cgroup" pseudo
-controller.
+Use the snprintf function instead of sprintf in the write_log.c file
 
-Signed-off-by: Wei Gao <wegao@suse.com>
+Signed-off-by: Hao Zeng <zenghao@kylinos.cn>
 ---
- lib/tst_cgroup.c | 47 ++++++++++++++++++++++++++++++++---------------
- 1 file changed, 32 insertions(+), 15 deletions(-)
+ testcases/kernel/fs/doio/write_log.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-index 77575431d..ed3e0758f 100644
---- a/lib/tst_cgroup.c
-+++ b/lib/tst_cgroup.c
-@@ -94,9 +94,10 @@ enum cgroup_ctrl_indx {
- 	CTRL_MISC,
- 	CTRL_PERFEVENT,
- 	CTRL_DEBUG,
--	CTRL_RDMA
-+	CTRL_RDMA,
-+	CTRL_PSEUDO
- };
--#define CTRLS_MAX CTRL_RDMA
-+#define CTRLS_MAX CTRL_PSEUDO
+diff --git a/testcases/kernel/fs/doio/write_log.c b/testcases/kernel/fs/doio/write_log.c
+index e8ef9c7cb..44e6fd165 100644
+--- a/testcases/kernel/fs/doio/write_log.c
++++ b/testcases/kernel/fs/doio/write_log.c
+@@ -141,7 +141,7 @@ int wlog_open(struct wlog_file *wfile, int trunc, int mode)
  
- /* At most we can have one cgroup V1 tree for each controller and one
-  * (empty) v2 tree.
-@@ -259,6 +260,10 @@ static const struct cgroup_file rdma_ctrl_files[] = {
- 	{ }
- };
+ 	oflags = O_RDWR;
+ 	if ((wfile->w_rfd = open(wfile->w_file, oflags)) == -1) {
+-		sprintf(Wlog_Error_String,
++		snprintf(Wlog_Error_String, sizeof(Wlog_Error_String),
+ 			"Could not open write log - open(%s, %#o) failed:  %s\n",
+ 			wfile->w_file, oflags, strerror(errno));
+ 		close(wfile->w_afd);
+@@ -218,14 +218,14 @@ int wlog_record_write(struct wlog_file *wfile, struct wlog_rec *wrec,
+ 		reclen += 2;
  
-+static const struct cgroup_file pseudo_ctrl_files[] = {
-+	{ }
-+};
-+
- #define CTRL_NAME_MAX 31
- #define CGROUP_CTRL_MEMBER(x, y)[y] = { .ctrl_name = #x, .files = \
- 	x ## _ctrl_files, .ctrl_indx = y, NULL, 0 }
-@@ -282,6 +287,7 @@ static struct cgroup_ctrl controllers[] = {
- 	CGROUP_CTRL_MEMBER(perf_event, CTRL_PERFEVENT),
- 	CGROUP_CTRL_MEMBER(debug, CTRL_DEBUG),
- 	CGROUP_CTRL_MEMBER(rdma, CTRL_RDMA),
-+	CGROUP_CTRL_MEMBER(pseudo, CTRL_PSEUDO),
- 	{ }
- };
- 
-@@ -798,6 +804,10 @@ void tst_cg_require(const char *const ctrl_name,
- 	const char *const cgsc = "cgroup.subtree_control";
- 	struct cgroup_ctrl *const ctrl = cgroup_find_ctrl(ctrl_name);
- 	struct cgroup_root *root;
-+	int pseudo = !strcmp(ctrl->ctrl_name, "pseudo");
-+
-+	if (pseudo && options->needs_ver != TST_CG_V2)
-+		tst_brk(TCONF, "pseudo control only support needs_ver TST_CG_V2!");
- 
- 	if (!ctrl) {
- 		tst_brk(TBROK, "'%s' controller is unknown to LTP", ctrl_name);
-@@ -827,6 +837,9 @@ void tst_cg_require(const char *const ctrl_name,
- 	if (options->needs_ver != TST_CG_V2)
- 		cgroup_mount_v1(ctrl);
- 
-+	if (pseudo)
-+		ctrl->ctrl_root = roots;
-+
- 	if (!ctrl->ctrl_root) {
- 		tst_brk(TCONF,
- 			"'%s' controller required, but not available",
-@@ -849,13 +862,13 @@ mkdirs:
- 			ctrl->ctrl_name);
- 	}
- 
--	if (cgroup_ctrl_on_v2(ctrl)) {
-+	if (cgroup_ctrl_on_v2(ctrl) && !pseudo) {
- 		if (root->we_mounted_it) {
- 			SAFE_FILE_PRINTFAT(root->mnt_dir.dir_fd,
--					   cgsc, "+%s", ctrl->ctrl_name);
-+					cgsc, "+%s", ctrl->ctrl_name);
+ 		if (write(wfile->w_afd, wbuf, reclen) == -1) {
+-			sprintf(Wlog_Error_String,
++			snprintf(Wlog_Error_String, sizeof(Wlog_Error_String),
+ 				"Could not write log - write(%s, %s, %d) failed:  %s\n",
+ 				wfile->w_file, wbuf, reclen, strerror(errno));
+ 			return -1;
  		} else {
- 			tst_file_printfat(root->mnt_dir.dir_fd,
--					  cgsc, "+%s", ctrl->ctrl_name);
-+					cgsc, "+%s", ctrl->ctrl_name);
+ 			offset = lseek(wfile->w_afd, 0, SEEK_CUR) - reclen;
+ 			if (offset == -1) {
+-				sprintf(Wlog_Error_String,
++				snprintf(Wlog_Error_String, sizeof(Wlog_Error_String),
+ 					"Could not reposition file pointer - lseek(%s, 0, SEEK_CUR) failed:  %s\n",
+ 					wfile->w_file, strerror(errno));
+ 				return -1;
+@@ -233,13 +233,13 @@ int wlog_record_write(struct wlog_file *wfile, struct wlog_rec *wrec,
  		}
+ 	} else {
+ 		if ((lseek(wfile->w_rfd, offset, SEEK_SET)) == -1) {
+-			sprintf(Wlog_Error_String,
++			snprintf(Wlog_Error_String, sizeof(Wlog_Error_String),
+ 				"Could not reposition file pointer - lseek(%s, %ld, SEEK_SET) failed:  %s\n",
+ 				wfile->w_file, offset, strerror(errno));
+ 			return -1;
+ 		} else {
+ 			if ((write(wfile->w_rfd, wbuf, reclen)) == -1) {
+-				sprintf(Wlog_Error_String,
++				snprintf(Wlog_Error_String, sizeof(Wlog_Error_String),
+ 					"Could not write log - write(%s, %s, %d) failed:  %s\n",
+ 					wfile->w_file, wbuf, reclen,
+ 					strerror(errno));
+@@ -274,14 +274,14 @@ int wlog_scan_backward(struct wlog_file *wfile, int nrecs,
+ 	 */
+ 
+ 	if ((lseek(fd, 0, SEEK_END)) == -1) {
+-		sprintf(Wlog_Error_String,
++		snprintf(Wlog_Error_String, sizeof(Wlog_Error_String),
+ 			"Could not reposition file pointer - lseek(%s, 0, SEEK_END) failed:  %s\n",
+ 			wfile->w_file, strerror(errno));
+ 		return -1;
  	}
+ 	offset = lseek(fd, 0, SEEK_CUR);
+ 	if ((offset == -1)) {
+-		sprintf(Wlog_Error_String,
++		snprintf(Wlog_Error_String, sizeof(Wlog_Error_String),
+ 			"Could not reposition file pointer - lseek(%s, 0, SEEK_CUR) failed:  %s\n",
+ 			wfile->w_file, strerror(errno));
+ 		return -1;
+@@ -309,7 +309,7 @@ int wlog_scan_backward(struct wlog_file *wfile, int nrecs,
+ 		 * Move to the proper file offset, and read into buf
+ 		 */
+ 		if ((lseek(fd, offset, SEEK_SET)) == -1) {
+-			sprintf(Wlog_Error_String,
++			snprintf(Wlog_Error_String, sizeof(Wlog_Error_String),
+ 				"Could not reposition file pointer - lseek(%s, %d, SEEK_SET) failed:  %s\n",
+ 				wfile->w_file, offset, strerror(errno));
+ 			return -1;
+@@ -318,7 +318,7 @@ int wlog_scan_backward(struct wlog_file *wfile, int nrecs,
+ 		nbytes = read(fd, bufstart, bufend - bufstart - leftover);
  
-@@ -864,15 +877,17 @@ mkdirs:
- 	else
- 		root->ltp_dir.ctrl_field |= root->mnt_dir.ctrl_field;
- 
--	if (cgroup_ctrl_on_v2(ctrl)) {
--		SAFE_FILE_PRINTFAT(root->ltp_dir.dir_fd,
--				   cgsc, "+%s", ctrl->ctrl_name);
--	} else {
--		SAFE_FILE_PRINTFAT(root->ltp_dir.dir_fd,
--				   "cgroup.clone_children", "%d", 1);
-+	if (!pseudo) {
-+		if (cgroup_ctrl_on_v2(ctrl)) {
-+			SAFE_FILE_PRINTFAT(root->ltp_dir.dir_fd,
-+					cgsc, "+%s", ctrl->ctrl_name);
-+		} else {
-+			SAFE_FILE_PRINTFAT(root->ltp_dir.dir_fd,
-+					"cgroup.clone_children", "%d", 1);
- 
--		if (ctrl->ctrl_indx == CTRL_CPUSET)
--			cgroup_copy_cpuset(root);
-+			if (ctrl->ctrl_indx == CTRL_CPUSET)
-+				cgroup_copy_cpuset(root);
-+		}
- 	}
- 
- 	cgroup_dir_mk(&root->ltp_dir, cgroup_ltp_drain_dir, &root->drain_dir);
-@@ -1050,8 +1065,10 @@ static void cgroup_group_add_dir(const struct tst_cg_group *const parent,
- 		if (!parent || dir->dir_root->ver == TST_CG_V1)
- 			continue;
- 
--		SAFE_CG_PRINTF(parent, "cgroup.subtree_control",
--				   "+%s", ctrl->ctrl_name);
-+		if (strcmp(ctrl->ctrl_name, "pseudo")) {
-+			SAFE_CG_PRINTF(parent, "cgroup.subtree_control",
-+					"+%s", ctrl->ctrl_name);
-+		}
- 	}
- 
- 	for (i = 0; cg->dirs[i]; i++)
+ 		if (nbytes == -1) {
+-			sprintf(Wlog_Error_String,
++			snprintf(Wlog_Error_String, sizeof(Wlog_Error_String),
+ 				"Could not read history file at offset %d - read(%d, %p, %d) failed:  %s\n",
+ 				offset, fd, bufstart,
+ 				(int)(bufend - bufstart - leftover),
 -- 
-2.35.3
+2.37.2
 
 
 -- 
