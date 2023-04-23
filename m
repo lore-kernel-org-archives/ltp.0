@@ -4,50 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 671A5C7618E
-	for <ltp@archiver.kernel.org>; Sun, 23 Apr 2023 03:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C197C77B73
+	for <ltp@archiver.kernel.org>; Sun, 23 Apr 2023 06:46:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D210C3CBEF1
-	for <ltp@archiver.kernel.org>; Sun, 23 Apr 2023 05:05:05 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 82EDA3CBD0D
+	for <ltp@archiver.kernel.org>; Sun, 23 Apr 2023 08:46:56 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3024E3CB318
- for <ltp@lists.linux.it>; Sun, 23 Apr 2023 05:04:53 +0200 (CEST)
-Received: from m133.mail.163.com (m133.mail.163.com [220.181.13.3])
- by in-5.smtp.seeweb.it (Postfix) with ESMTP id EB73E600126
- for <ltp@lists.linux.it>; Sun, 23 Apr 2023 05:04:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
- Message-ID; bh=Q4N77wtG7I7GtdXb86/56pRZHGaddZQedYiDeWdFYsE=; b=L
- m41C9rjNZ+FurCKIyTMbeaY2tVrFSn71OX4DJU+46wfS6CGp3xO8oQz+nGIe76Yr
- r77+6qgi6zDZZqBKB0vQrrDsuAggOPXviS4X/ZN9KT2CQhjETRGy2OFHonKJc/bk
- pxwUfbbbbeP4nghiepdrdmNNWXDqYHpr4ZngRkyxvw=
-Received: from crawler2015$163.com ( [116.128.244.169] ) by
- ajax-webmail-wmsvr3 (Coremail) ; Sun, 23 Apr 2023 11:04:47 +0800 (CST)
-X-Originating-IP: [116.128.244.169]
-Date: Sun, 23 Apr 2023 11:04:47 +0800 (CST)
-From: zenghao  <crawler2015@163.com>
-To: "Cyril Hrubis" <chrubis@suse.cz>
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <ZEJyud8Yxb1QdZbh@yuki>
-References: <3620f7c2.2af5.18768f7ce86.Coremail.crawler2015@163.com>
- <ZEJyud8Yxb1QdZbh@yuki>
-X-NTES-SC: AL_QuyTAP6atkgj4SefYOkXnkoTj+Y3WsW5uPQh349XP5k0tindxj4eeG9sHljd3ey1IQKIoAi8SjFczehlVLR0Tr5NmpAflpf8l/FoVs0/BanE
+ by picard.linux.it (Postfix) with ESMTPS id 059143CB318
+ for <ltp@lists.linux.it>; Sun, 23 Apr 2023 08:46:46 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 677D2100049C
+ for <ltp@lists.linux.it>; Sun, 23 Apr 2023 08:46:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1682232403;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jc5gUnWdMB0zugVRpghZTVjUOFFxSeGbmPkaDFUmLBc=;
+ b=IpCwviF1k4mCdRhwhj+w6IlCM5pNdGqvhQl/OqUD8ejn0ZNjNHGyKlU0fpIn0Nm974cs9U
+ YZDiiWj3TUj3vhFZ8MdlCR6OVcXFcpE5JgYf6u3V8R3vyn2c7/3j5/U9XW6lOcV/OnsxhQ
+ JM1v1Ow2/kuvfpgrCRPRRpb/u17wp3M=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-463-k0Gs33OpNtSreu9eN2XKog-1; Sun, 23 Apr 2023 02:46:40 -0400
+X-MC-Unique: k0Gs33OpNtSreu9eN2XKog-1
+Received: by mail-wm1-f72.google.com with SMTP id
+ 5b1f17b1804b1-3f08900db79so10837455e9.2
+ for <ltp@lists.linux.it>; Sat, 22 Apr 2023 23:46:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1682232399; x=1684824399;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=jc5gUnWdMB0zugVRpghZTVjUOFFxSeGbmPkaDFUmLBc=;
+ b=JAc29d35pO0mwXWWuhUe5vifBptShLBy5BI/kcqPt3n9sVGCgnFlCYWt4IKSRxxLRW
+ wPTKXkWdKGvvADdJSc2N/H3wwtm0FkVsaUSzqfeOVySyNdKBbcLOAQ0KLZ510K9/mnJv
+ YHlssAIz2JyBVcKVi5IrsiofdQ4F6v404qq0IWNDm4QTL3fbWArIJZ6a7Qz/NtmjWFw2
+ Xt5W51LUx9RHJkLt5jxVJJHbDuCx/mnKerdMGBpPsengEAFuW8s1nqThHq5WxCq+6Ewf
+ oF6FygE6lqP0ku28zn5fJtMsZd1Fe8ZqdQ0Zz+KBbamINlXAHWCiSvDIEePznCPdRr9K
+ 5VZg==
+X-Gm-Message-State: AAQBX9dPIkCQahB7gvRVCdggXWvZdI4AMparMhhUAubDrAfZ58S7DFvj
+ nfJVH7QFzJeUzHA5RTSwdswYgwxf61nOZfdwbDma0U8NDuZIaHEUSHNTBgzO2yydwW1PTUhjEkK
+ fSNLZtAM0G+kmd4H8Z7kDtIkD9q8=
+X-Received: by 2002:a7b:c3d8:0:b0:3f1:7972:429d with SMTP id
+ t24-20020a7bc3d8000000b003f17972429dmr5286615wmj.18.1682232399744; 
+ Sat, 22 Apr 2023 23:46:39 -0700 (PDT)
+X-Google-Smtp-Source: AKy350Y0Td43Qxx2V/3THZdKys/MqCxyYvmriU2VPtLBisYaXPmxJa6r8sjbJHhFZbHQfPxViCIuijEpXVK37AUrTdU=
+X-Received: by 2002:a7b:c3d8:0:b0:3f1:7972:429d with SMTP id
+ t24-20020a7bc3d8000000b003f17972429dmr5286605wmj.18.1682232399438; Sat, 22
+ Apr 2023 23:46:39 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <6ccc9b47.2708.187ac1237a2.Coremail.crawler2015@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: A8GowAB3jq5PoERkwuwTAA--.55164W
-X-CM-SenderInfo: pfud4zthusiiqv6rljoofrz/xtbBdQ9aAlaEENciMAAAsl
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+References: <20230421012642.16625-1-wegao@suse.com>
+ <20230422135337.12087-1-wegao@suse.com>
+ <20230422135337.12087-3-wegao@suse.com>
+In-Reply-To: <20230422135337.12087-3-wegao@suse.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sun, 23 Apr 2023 14:46:28 +0800
+Message-ID: <CAEemH2fDJD=HpDQMGxkHQS_Of9bt99724no+cqmZiUPgyV2vCQ@mail.gmail.com>
+To: Wei Gao <wegao@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] Subject: [PATCH] fs/doio:Use the snprintf function to
- prevent buffer overflow
+Subject: Re: [LTP] [PATCH v9 2/2] tst_cgroup.c: Add a cgroup pseudo
+ controller
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -60,56 +89,49 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril, Thanks very much for your review!
-
-I have changed my email address to zenghao@kylinos.cn and provided V2.
-Thank you again for the correction, I will learn and correct it
-
-
-Best regards
--- Hao
-At 2023-04-21 19:25:45, "Cyril Hrubis" <chrubis@suse.cz> wrote:
->Hi!
->> From 044a942863dc0ac84701bc14d78f4d7fc0bb8dcb Mon Sep 17 00:00:00 2001
->> From: Hao Zeng <zenghao@kylinos.cn>
->> Date: Mon, 10 Apr 2023 09:17:34 +0800
->> Subject: [PATCH] fs/doio:Use the snprintf function to prevent buffer overflow
->>  Use the snprintf function instead of sprintf in the write_log.c file
->>  Signed-off-by: Hao Zeng <zenghao@kylinos.cn>
->
->The actual change looks good, however the patch is corrupted, looks like
->your email client replaced spaces 0x20 with unicode non-breakable spaces
->0xc2a0.
->
->See: https://www.kernel.org/doc/html/v4.10/process/email-clients.html
->
->> ---
->>  testcases/kernel/fs/doio/write_log.c | 20 ++++++++++----------
->>  1 file changed, 10 insertions(+), 10 deletions(-)
->> 
->> 
->> diff --git a/testcases/kernel/fs/doio/write_log.c b/testcases/kernel/fs/doio/write_log.c
->> index e8ef9c7cb..86297b01d 100644
->> --- a/testcases/kernel/fs/doio/write_log.c
->> +++ b/testcases/kernel/fs/doio/write_log.c
->> @@ -129,7 +129,7 @@ int wlog_open(struct wlog_file *wfile, int trunc, int mode)
->>  	umask(omask);
->>  
->>  	if (wfile->w_afd == -1) {
->> -		sprintf(Wlog_Error_String,
->> +		snprintf(Wlog_Error_String,sizeof(Wlog_Error_String),
->                                           ^
->					   There should be space after
->					   comma.
->
->-- 
->Cyril Hrubis
->chrubis@suse.cz
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgV2VpLAoKT24gU2F0LCBBcHIgMjIsIDIwMjMgYXQgOTo1NOKAr1BNIFdlaSBHYW8gdmlhIGx0
+cCA8bHRwQGxpc3RzLmxpbnV4Lml0PiB3cm90ZToKCj4gRm9yIG5ldyB0ZXN0IGNhc2Ugc3VjaCBh
+cyBraWxsMDEuYyBubyBuZWVkIHNwZWNpZmljIGNvbnRyb2xsZXIsIGl0IGp1c3QKPiBuZWVkIExU
+UCBjZ3JvdXAgbGlicmFyeSBzdGFydCB3b3JrLCBzbyB3ZSBuZWVkIGFkZCBhICJjZ3JvdXAiIHBz
+ZXVkbwo+IGNvbnRyb2xsZXIuCj4KPiBTaWduZWQtb2ZmLWJ5OiBXZWkgR2FvIDx3ZWdhb0BzdXNl
+LmNvbT4KPiAtLS0KPiAgbGliL3RzdF9jZ3JvdXAuYyB8IDQ3ICsrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAzMiBpbnNlcnRp
+b25zKCspLCAxNSBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9saWIvdHN0X2Nncm91cC5j
+IGIvbGliL3RzdF9jZ3JvdXAuYwo+IGluZGV4IDc3NTc1NDMxZC4uZWQzZTA3NThmIDEwMDY0NAo+
+IC0tLSBhL2xpYi90c3RfY2dyb3VwLmMKPiArKysgYi9saWIvdHN0X2Nncm91cC5jCj4gQEAgLTk0
+LDkgKzk0LDEwIEBAIGVudW0gY2dyb3VwX2N0cmxfaW5keCB7Cj4gICAgICAgICBDVFJMX01JU0Ms
+Cj4gICAgICAgICBDVFJMX1BFUkZFVkVOVCwKPiAgICAgICAgIENUUkxfREVCVUcsCj4gLSAgICAg
+ICBDVFJMX1JETUEKPiArICAgICAgIENUUkxfUkRNQSwKPiArICAgICAgIENUUkxfUFNFVURPCj4g
+IH07Cj4gLSNkZWZpbmUgQ1RSTFNfTUFYIENUUkxfUkRNQQo+ICsjZGVmaW5lIENUUkxTX01BWCBD
+VFJMX1BTRVVETwo+CgpJIHZvdGUgZm9yIGNvbnNpZGVyaW5nIHVzZSBvZiAnQ1RSTF9CQVNFJyAo
+c3VnZ2VzdGVkIGJ5IENyeWlsKSwKYmVjYXVzZSBoZXJlIHdlIGluZGVlZCB1c2UgdGhlIGJhc2lj
+IGZ1bmN0aW9uYWxpdHkgb2YgQ2dyb3VwVgogYnV0IG5vdCBhIHBzZXVkbyBjb250cm9sbGVyLgoK
+T3RoZXJ3aXNlLCB0aGUgcmVzdCBsb29rcyBnb29kIHRvIG1lLgoKPT09PT09PT09PT09PT09PT09
+PT09PT0KCkBDcnlpbCwgQFJpY2hhcmQKCkFwYXJ0IGZyb20gdGhhdCwgdGhlcmUgaXMgYW5vdGhl
+ciBwcm9ibGVtIHdpdGggdGhlIHRlc3QgbG9naWMKb2YgdGhpcyBsaWJyYXJ5LCB0aGF0IGl0IHBv
+dGVudGlhbGx5IG1peGVkIENncm91cCBWMSBhbmQgVjIKdG9nZXRoZXIgdG8gYmUgbW91bnRlZCBh
+dCB0aGUgc2FtZSB0aW1lLiBUaGUgc2NlbmFyaW8KaGFwcGVucyBvbmNlIHNvbWVvbmUganVzdCBy
+ZXF1ZXN0cyBDVFJMX0JBU0UKKG9yIGNvbnRyb2xsZXJzIG5vdCBtb3VudGVkKSBvbiBhIFYxLW1v
+dW50ZWQgc3lzdGVtLgoKVXBzdHJlYW0gYWx3YXlzIG9iamVjdGVkIHRvIGVuYWJsaW5nIENncm91
+cCBsaWtlIHRoYXQsCndoaWNoIGJyaW5ncyBtYW55IHVuZXhwZWN0ZWQgaXNzdWUgZHVyaW5nIHRo
+ZSB0ZXN0LgoKU28gSSB3b3VsZCBzdHJvbmdseSBzdWdnZXN0IGF2b2lkaW5nIExUUCBtb3VudCBW
+MSZWMgpldmVuIGlmIHRoZXJlIGlzIG5vIG92ZXJsYXAgaW4gY29udHJvbGxlcnMuCgpXaGljaCBz
+aG91bGQgYmUgYWNoaWV2ZWQgaW4gYSBzZXBhcmF0ZSBwYXRjaDoKKGRvY3VtZW50IHNob3VsZCBi
+ZSB1cGRhdGVkIGFzIHdlbGwpCgotLS0gYS9saWIvdHN0X2Nncm91cC5jCisrKyBiL2xpYi90c3Rf
+Y2dyb3VwLmMKQEAgLTgyOCwxMyArODI4LDE0IEBAIHZvaWQgdHN0X2NnX3JlcXVpcmUoY29uc3Qg
+Y2hhciAqY29uc3QgY3RybF9uYW1lLAogICAgICAgIGlmIChjdHJsLT5jdHJsX3Jvb3QpCiAgICAg
+ICAgICAgICAgICBnb3RvIG1rZGlyczsKCi0gICAgICAgaWYgKCFjZ3JvdXBfdjJfbW91bnRlZCgp
+ICYmIG9wdGlvbnMtPm5lZWRzX3ZlciAhPSBUU1RfQ0dfVjEpCisgICAgICAgaWYgKCFjZ3JvdXBf
+djJfbW91bnRlZCgpICYmIG9wdGlvbnMtPm5lZWRzX3ZlciAhPSBUU1RfQ0dfVjEKKyAgICAgICAg
+ICAgICAgICAgICAgICAgJiYgIWNncm91cF92MV9tb3VudGVkKCkpCiAgICAgICAgICAgICAgICBj
+Z3JvdXBfbW91bnRfdjIoKTsKCiAgICAgICAgaWYgKGN0cmwtPmN0cmxfcm9vdCkKICAgICAgICAg
+ICAgICAgIGdvdG8gbWtkaXJzOwoKLSAgICAgICBpZiAob3B0aW9ucy0+bmVlZHNfdmVyICE9IFRT
+VF9DR19WMikKKyAgICAgICBpZiAob3B0aW9ucy0+bmVlZHNfdmVyICE9IFRTVF9DR19WMiAmJiAh
+Y2dyb3VwX3YyX21vdW50ZWQoKSkKICAgICAgICAgICAgICAgIGNncm91cF9tb3VudF92MShjdHJs
+KTsKCiAgICAgICAgaWYgKHBzZXVkbykKCgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWls
+aW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
