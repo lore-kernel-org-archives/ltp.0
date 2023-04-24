@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8349FC7618E
-	for <ltp@archiver.kernel.org>; Mon, 24 Apr 2023 08:19:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05CB7C77B61
+	for <ltp@archiver.kernel.org>; Mon, 24 Apr 2023 08:49:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D77EC3CBCB2
-	for <ltp@archiver.kernel.org>; Mon, 24 Apr 2023 10:19:22 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 81AC73CBCB7
+	for <ltp@archiver.kernel.org>; Mon, 24 Apr 2023 10:49:02 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AE6273CA6A7
- for <ltp@lists.linux.it>; Mon, 24 Apr 2023 10:19:11 +0200 (CEST)
-Received: from esa20.fujitsucc.c3s2.iphmx.com (esa20.fujitsucc.c3s2.iphmx.com
- [216.71.158.65])
+ by picard.linux.it (Postfix) with ESMTPS id 31ADC3CA6A7
+ for <ltp@lists.linux.it>; Mon, 24 Apr 2023 10:48:51 +0200 (CEST)
+Received: from esa12.fujitsucc.c3s2.iphmx.com (esa12.fujitsucc.c3s2.iphmx.com
+ [216.71.156.125])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4CB50600061
- for <ltp@lists.linux.it>; Mon, 24 Apr 2023 10:19:09 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 081AE1A00162
+ for <ltp@lists.linux.it>; Mon, 24 Apr 2023 10:48:50 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1682324350; x=1713860350;
+ t=1682326131; x=1713862131;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=ou6J4rGyKdgddmrJ1T4S9X4RxLe7iYuGZgQ1v3Sz3v4=;
- b=f/E9j8h9XBA2pb1bpEYQF/7zRb8+No3r/JfAb9290JsTc9CJ9xYfi4qi
- SqtaIeMq7OZfjZ2LPgX0gCQgkC3HedKYEFUgFGPfIkZVWcjF7OUclwHDC
- oNEUVh9ysmhnlPo66CXynTuU4xmKEZMduYm92kf7pLgm6q2B+5bYp3U+v
- uW4Q4rBSz2+mwd8fau/ATfiStCzci3BABR/soRAe9DnXMI2ikCYCb6Ir6
- 5F6JYn9id9P+9DLE74/MadTnWAT914W172Zvb1Imh8rIGZROxytWModrr
- QSSQgC3q+qb+3ychn5/WoF/u7wBdzQAANMelBFBJ2EqRbHN8VpiwYMmBN Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="82675595"
-X-IronPort-AV: E=Sophos;i="5.99,222,1677510000"; d="scan'208";a="82675595"
-Received: from mail-os0jpn01lp2112.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.112])
+ bh=w65+sAseVd+TuR8E2Ul6RZdOOrHdKgbgNx/46XZAMPE=;
+ b=XgMdVLR5o6UDz3NJCGBNISYtH79bbIXJH+GjTbnWU5cDKtJ4k1wev852
+ qXtK8Yt0oWjmJaLcJFNOsN3N3TRsE2fHwfsmxPT20zY3FDWImQhdQ2aAb
+ oNSjCbVwV4LMHZwfnqVumN0LLwEG/Zcw4BqdZc0nMLUaHj75gJZGD7aXV
+ YcaIrctn69HFDIJ9QqN5CsmRlxJVrXJyRevb6j5K1pRXWNHcq6cKuWsHw
+ MshuZE1T1ZivKXvE1pTRmFnfpGwXnSpoMNNTZ868mdoHV4iYbrBi7klxH
+ eCuCqP4r0WaIJfg3hryxwjQoakg6DxSV1Ckt7px8Ahrb+BXV2hAI4xdHO Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="82988088"
+X-IronPort-AV: E=Sophos;i="5.99,222,1677510000"; d="scan'208";a="82988088"
+Received: from mail-os0jpn01lp2111.outbound.protection.outlook.com (HELO
+ JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.111])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Apr 2023 17:19:08 +0900
+ 24 Apr 2023 17:48:49 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TmSq63ORbkN6GsUdhYuGlwxwekPZXcoWQ0qHGNRY1fbRMAAqOPBZaHKhlr90BUazXcrpURXXDq6oStkQ3hMTxxGCQwvcxyYemZCkHi4ktl0LpWLPiTcuvRYUsSu8LLPZTDJef9K8DN+6ou5cmHjIIEB3j8mAW0EKTpoPcucd37NcST+1p5RrPVWYS5gPjZYk76jpcP3Cm0yXTRaCGPT+dO7d94AUcEJ/uK+U4cfOOong+f0oH5jXMteAVxWt5XaoBV+QCyc/Tv1wWMroTX2gYMfFQctGqMV9UmSQEbUoIqa6SFnB+41GXsRHc86friRVFc0lHTKSNddprGUeFR7ibA==
+ b=nJR7Ewf37nfSoih49fE2m5vzIiaS69RjVlUMn6Cmpc4Pth+IKB9/JRiD8fiwoXFP3qPMuNNWZ/HMV9BfWIIKAbpQ6Q3WxD1lEY8SQ4vMxpPSZupRu/iJ5smqqgO3ZtUWooKvSZS7g1yu/NF8Nh5rg1I2Lc1U4fg04FaQ7AfYbscbLFPFmDGh0U/zzELfBk3dyc4tpjFk2SU9kxNM49HGGruslK7eqiE+DWV+RvATmTeCfuYRXvm2miwG9Tz00PP0/SvRJ6sXGvQfg3jULLynGr8HP461lTHpnLfSYxSFuqAryk1GIa/kY11xQ1IGUPm8RNdHJkSJme/6HwBvgT/LXg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ou6J4rGyKdgddmrJ1T4S9X4RxLe7iYuGZgQ1v3Sz3v4=;
- b=a3z985BT/h7EoA1mcBdkOA/cTYgAcYBF4LDAixM8NCYBOpDOhmU2e+79tQcxsLy1rV9CRdzTaHMy+g4LtcoxzPSc4LVyuULPojw/Fa004qQPOOfsUzJVfZS8BH6I05bC9FEepixcsxBWbVhbJ4n8ZkD3QpI0jZbJYYj2/ukLscNvhun81zPoBVhX+hOKKLQiiGLzfQBXCl+R5G1/XqOOcdszw1qKOscT/QwnOt1Au/+U5f8RNs+QoSINGwJ1Hh/UdAshXAgcIN9t5305QrYmnmDnut2/Q8DepR6OPt4qkbm2PsVU9HDxR+R7NyOKjAFIugEU6qBJMyQJ8C2ixa+/wg==
+ bh=w65+sAseVd+TuR8E2Ul6RZdOOrHdKgbgNx/46XZAMPE=;
+ b=L9FNeB0mMB5Y7+V7CfG77gkHw21IBTO0MnWR1gkaWVctwcGT17qyqNMwPy40DZeezPNQJwxXdjW0EMJgy5fVqmXLkHovU+Ja0PeCUlPKBn61ZkjV9JhJ/5c/ur0c0RQuJN8yHY03Z/L3+0gl1ExGPRhH5oNJrmR2IgljCNjKP1MOOJWIlEcWxi43eUBGsrrod1OaGik2Xpvf2VqdK7+TwdjOUDJ3IWy3GG/ExSCGmCcTdxW0J9Kku9hTQMWLYRZOG0aO3qs7XA+zp9X3LkikBj8AiJoxCds+JiqUu4mBU58yd58AHlk8sIc2+Bz8izTTjT28i94JN9mlZe1UHxsp2Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
 Received: from TYWPR01MB10725.jpnprd01.prod.outlook.com (2603:1096:400:2a5::7)
- by TYWPR01MB8559.jpnprd01.prod.outlook.com (2603:1096:400:170::12)
+ by TYWPR01MB10823.jpnprd01.prod.outlook.com (2603:1096:400:2a7::8)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.33; Mon, 24 Apr
- 2023 08:19:05 +0000
+ 2023 08:48:45 +0000
 Received: from TYWPR01MB10725.jpnprd01.prod.outlook.com
  ([fe80::1eae:326d:abf5:e4e1]) by TYWPR01MB10725.jpnprd01.prod.outlook.com
  ([fe80::1eae:326d:abf5:e4e1%6]) with mapi id 15.20.6319.033; Mon, 24 Apr 2023
- 08:19:05 +0000
+ 08:48:45 +0000
 From: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>
 To: Avinesh Kumar <akumar@suse.de>
-Thread-Topic: [LTP] [PATCH 3/4] syscalls/mlock03: Convert into new api
-Thread-Index: AQHZZuF783nfEzLsGEqojZdVoK4EpK8ymw4AgAeiCoA=
-Date: Mon, 24 Apr 2023 08:19:05 +0000
-Message-ID: <99dea3f4-a0f3-de83-27eb-112a5c032a8d@fujitsu.com>
+Thread-Topic: [LTP] [PATCH 2/4] syscalls/mlock02: Convert into new api
+Thread-Index: AQHZZuF0Wl9Ebc9GOkakrhmzDznkYa8ylLqAgAewqQA=
+Date: Mon, 24 Apr 2023 08:48:45 +0000
+Message-ID: <18ca50d5-000b-7347-9433-e5c70f2f7ff1@fujitsu.com>
 References: <1680604594-16596-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1680604594-16596-3-git-send-email-xuyang2018.jy@fujitsu.com>
- <1827762.iFF2E32hkL@localhost>
-In-Reply-To: <1827762.iFF2E32hkL@localhost>
+ <1680604594-16596-2-git-send-email-xuyang2018.jy@fujitsu.com>
+ <24737443.iqJtK1OyCF@localhost>
+In-Reply-To: <24737443.iqJtK1OyCF@localhost>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -76,71 +75,71 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYWPR01MB10725:EE_|TYWPR01MB8559:EE_
-x-ms-office365-filtering-correlation-id: b2ff3010-f334-4963-9294-08db449c919d
+x-ms-traffictypediagnostic: TYWPR01MB10725:EE_|TYWPR01MB10823:EE_
+x-ms-office365-filtering-correlation-id: d42ebc28-f61c-4b55-e000-08db44a0b6d6
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zul+B3X3kPM5FLdg5wcYou9uWML80Swm8QliZP7nBdpiGM/RQhIkZsys57FuwJsujQST21LunKOlVrhUCuEaH4/xjQu1tEetADSPfyzfgrEb3VMSMHCM3jjWqUm3PHx3N/1GkgkQxaKDcs/8GlFkpKebeN4y9NJnWrZUm6tYCAH1ZmoIeaOwf/3s+XeKOQhcOZBDpjImDiQ7DY4gJxmfC8bBItrihVbqMZ7DNet1cHxZfP/Y6VQulvZKE4wK8qbACsBUyOSEJEJ3zfv29BolGpnsOMYSQfBpWbtTCILyF2zXRJxgH0g5AJvezzQjpcX055iherJpBkxDY7CDCCqrxZHdS573eBksGpk3bAWryJ0SeenECLoKt94s0xy6cD3w9FdY5JN+zU2CiYCVctci3ySrkDBY4Pl3D4mwycrk12tUY1eCJyc+j79cr9m2AulxaeDlJI6agHQqBGtqf4TyFyDfqFqeHDk7VmgbwAFj/6xBNeaJuSeLe0TLlnBQKfZvsG8SIInOuT0mZ0qhCMLOhB1ABvc0J7iRYNi5+9P7Ez9kgg3ouc4sgiZ0CeRd8d0cUWf5W8chmXjdsUbxH1N8WIvHwiZPk/iSn52UD6AI8YJcasTKL/H0sijjBpLIofT28quIRXb4wKKNlmVx7bNcOEB11WgpI/sJl3skdVW6kvkhP4p6jCppsCSQ9bgaVfrsRuNcIwoImQBnlefaNbW0/w==
+x-microsoft-antispam-message-info: wyik47sPodT9MmGG1c0Svuv2lutAt1PFLlcVy/b0BX9iG5Dog5+M+t5t7XUQObXakYCk4CReG8y1NpBG5IsDkSyMVnaiPL3F+3a2lenR6BsU5Nh3h0YtAvNI0NworRkydgmYQ6D+qWvDyWRUL42rX8ish+z8M3jOZpGn87Xdz92OoKBz/egkjbtgoIciGIQABymSfgvjg4o7EiuKt1SbqMBGVVoSHffUffl0wFPCLwStWj6nDAn55CRX6+zAqT/056x8vCqkaBfJin19Exk4Id2/9ihUccIVBp9dVoezMh08XxjGepVZH/V690DC4LFtfdnCYK9jgQyAkeKxjs923DPw2Vc/HeB2rPVB6t7snDieTxHN4kaReMzv5KlTj9NCLytPBZol7kB4BPX/dIb6AynuXjbpAUZaEdIGsAC5oUF0vAxO5UoWmgihT8U32aYJXZis3lVxFXJeOwU3L+lpK+onM7dK2jZ8a1Z2ij6BcEUSUR6BubWms0l/xnbwLYWPmwmv5LGHWJdfiDGQVoyBWn9rabcN3t39ScsoaNOEIgxXHEPidD+jbMLasjSWWlJqi5F+FZOzlL146x0/I2zsdpzvPjteJUnCAvmpIMmlGOCZ3zsLHuKGoxZ4FfRwMvB6AG+r1IL7sUn7O1c55C17SV7SyoqGg5B5tRph+mAWRmGIvqePFpT5dza8d0WLRjav
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:TYWPR01MB10725.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230028)(4636009)(136003)(366004)(39860400002)(396003)(346002)(376002)(451199021)(1590799018)(2906002)(71200400001)(6486002)(2616005)(6512007)(6506007)(26005)(53546011)(186003)(91956017)(76116006)(66946007)(66556008)(66476007)(66446008)(64756008)(8676002)(8936002)(316002)(41300700001)(6916009)(4326008)(478600001)(5660300002)(38070700005)(82960400001)(38100700002)(122000001)(85182001)(36756003)(86362001)(31696002)(83380400001)(31686004)(1580799015)(2004002)(45980500001);
+ SFS:(13230028)(4636009)(396003)(376002)(346002)(136003)(39860400002)(366004)(1590799018)(451199021)(2906002)(71200400001)(6486002)(2616005)(6512007)(6506007)(26005)(186003)(91956017)(76116006)(66946007)(66556008)(66476007)(66446008)(64756008)(8676002)(8936002)(316002)(41300700001)(6916009)(4326008)(478600001)(5660300002)(38070700005)(82960400001)(38100700002)(122000001)(85182001)(36756003)(86362001)(31696002)(558084003)(31686004)(1580799015)(45980500001);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aElyQWFXcnN2dTU3bnZaTWRyNFl3SVhIS3dYTmFmQlhQNnd4d2hmRjluOHhn?=
- =?utf-8?B?QmZlckxTbDZBb2Q2eEFnRDZ1Z202U1cwaXg4aU9pcVVzYlNzM25SWmVtcDM4?=
- =?utf-8?B?aEt5MitoUFdBbkt2eWFmYUU4SnI1Q2NjdXBzcSsvY0NqaWgxdHRiWSt3Tzd3?=
- =?utf-8?B?Z0Q5Q1RhUWpKOEVMZ0hqV1ZUSExuQW5hNnlXdjRXNFV4L0NCYjRJQ1JFcjM0?=
- =?utf-8?B?ZFJ0cldqcUhDS3lGZkdDUEQ2MkxXeHNoOU8wdnRQQ29oRlBVQk5BOHBXb2pI?=
- =?utf-8?B?bmwyUFQwTW00ZU1pRTc1eE9qVzl6UW1KWG8rNHhDTlFxdzcrMHNHS0daSU9z?=
- =?utf-8?B?ZTEvMWYvaWZWN1lzWTdiWHQwTXZYVFVXWE4rN1VHYU9sRkFDbE4rV292ajdL?=
- =?utf-8?B?NjhVemRpeGx4K2w2TDM2WUVWQm9yYzhGdmVGQVVnZmliblQ2SmxjTUpuWlI1?=
- =?utf-8?B?WXNrbmZrcXZtRUUvWVgyU2VMZkowcklWS0c1YU1VQzhySWhYeDJJUnBhd3dX?=
- =?utf-8?B?NkdFUGJuNmduZDVmVnYxYnIrNXFieUIxQkdDVk80OE9CeE1UdWRCdFpTeE5M?=
- =?utf-8?B?MzhBTTAxeWh1UW9JRG45TUtiSkJHRGVHSlN1dTJoV04vUHR0aGtSV0tqcjc1?=
- =?utf-8?B?UFFkUVBDL1NzbnRPYm45WUpEemxZUjBUdVozTjlHN0N3ai92YTdmc1FPanov?=
- =?utf-8?B?dXkxSkxmUmlsRlJhd1R0K3JVRkI0STcyQmhBbmhGL21EckJWeFdKRVcwNDRL?=
- =?utf-8?B?S05MZ1h5ZkxTQVVteGRXNml4aGV1dTAvWXFMOUZFS1N3YmpWOWdYbDdVY2E3?=
- =?utf-8?B?ODEvb3dxTXRWd3grcHV3UjduYkxVVm0yRUFBQ2xzaU93cUtmbTFzZXpleTFw?=
- =?utf-8?B?NUNmRWJVREtLS2MzenI1TlkwY3hMVG8wUzQ1NDd5MktYaXFSRVlRWDZidjZk?=
- =?utf-8?B?c29DdGJ2clFLcU1XRk1Xb0o5V0p5UERNQmx4NXliemhwc0V1OXpXUlh4b1FH?=
- =?utf-8?B?Q0tOcWtEb1lPSEIxRzF0bDl2eUY4eUsxVmh2aXdxUXJoY3BwYXk0M2IwMFJR?=
- =?utf-8?B?dnlNOWhoR3ZVT3lWNUNaQlFYQ1ZHMGhUNXFYVndiUmZYRkJ1TFByOVZvZEI2?=
- =?utf-8?B?VUFzZjgwcUN1bVpDdnkvTjFQa0lSLzFxL09KUERXNjNTaWhpQ1BHZE1xTFdz?=
- =?utf-8?B?S3ZZTjlzb0RGL1NxMDFFWTJxTi92b0dGVU1vZW44Y2xZVmp6Uzd6QmdLTVhW?=
- =?utf-8?B?SUN5Y0ova0I0Sng5YUFOL2RkYTdXUlJKdmtuY1h6d3ZHNkFsMUlDakpraGFD?=
- =?utf-8?B?V2JHUTF5cElCcSttV2VmVjFyZjJQNWdEbWxLTEdQT3JmUmtiR201WkFaaE54?=
- =?utf-8?B?RWtxNlg5QTNpR2hpVFhKOHZNQXZmZ1U0SUhIWElrdTFmS0Z3bTNEdUZtZ1J6?=
- =?utf-8?B?TllTRDdQb2FXT2pQRUdzMXU2cGgzRGc5NmhLcUpVUmFhTnZTMGdkQXZ5Y3Ax?=
- =?utf-8?B?bitvMnNGZlVvcmUrdWRNZFdQaE5yVmwvK3BKaFIwRGg5VGJVMUVmSTJwOWU2?=
- =?utf-8?B?bHJ6Mjk5eG80SytVeE5PSE0zd3FDUnpTaTd6ancvQ2dMVXZ5bGlsVDZYV2Ji?=
- =?utf-8?B?OXpCaDFFbGgrZWt6cGIwcHd4Rkh4STlhYTZCamoxOE1Fc2JkZ3VkSHJSM2lq?=
- =?utf-8?B?YzJPOE5wWTVHRDBCUjJLWFd2UjR2aVRZNEZ6V3NXVEh0L3d1R2xpWFhib2U3?=
- =?utf-8?B?NDZCOVZpNkU1RlB3STFRdmRFL3JISS9IeGQ0U1ozNUFhM2VZZGt4a21hMXZS?=
- =?utf-8?B?T1E2K1VsT2xGZC9MRXdvMitoTDN5N0xKcWtlNjZJMkQ3M2xCeXI2M2hiMWlX?=
- =?utf-8?B?YUhFZWV5NEZJMmdtZGZ3cjdZU0tpRVlTaWhBNWJCYW9FQ0lWb0EvSVViNzdW?=
- =?utf-8?B?WGJ4WmRwMi9BYXgyOUJ6T3FDdHdoVlJZNVJ3TVp5by9QVHR1WU5tbnE2K2VP?=
- =?utf-8?B?dlZWQzdvL3FJZVNrdXpJQ2JPRkVGYkdKclVhSDBOaFk4TE9yemJNVVIvLzUy?=
- =?utf-8?B?YWhFMDh3MGlkOXVUNU9DVXVnWnVScE5oUFBOSmpXbldFaUpMcjBuMWoyWkRt?=
- =?utf-8?B?aTY2RVE4NjdxR1R0R2xJWC9qNUJSNk5VWDQvSWMrTTV2azBpUkVDTDBlZFpF?=
- =?utf-8?B?RXc9PQ==?=
-Content-ID: <9986F1E4BB5B7A4E80BA75542B8F0F27@jpnprd01.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WkMrU2M0VDk4MGhRNndMdEwySGRTN0lGRzE0QTJ2QmlHdjl2N0JDUzhsK0x2?=
+ =?utf-8?B?ZmxaMVFGNnE3NmM3eTBIL0xweUJqMjNsb3BDYVZVODZVeXdjbUtETVJnUElm?=
+ =?utf-8?B?Tit1ODZJQ3dleGZCQlJPaGFYTTJFM0drRm11Nmk1cGJuUHBhTVdLYXlFL2hG?=
+ =?utf-8?B?ckR2aTFreUduek5wMWJsOFpzMW5YQmNRdHMrY3NuaXQ3NDl1TndnQktGZXFX?=
+ =?utf-8?B?THQ4cDVMc1dwSVNNcjZQdTNQZDNZMnV1VDlFV1BBc2ZTNzJ6dkJBYjNxUkdU?=
+ =?utf-8?B?Q0RWcDhacUpHODJ0dEhsYTA1L3FidGF2alp0Mjk4VkNoMDFqSUhIa3JPL0Ni?=
+ =?utf-8?B?aUprT3VZeCt1a3RnYkJHdC9scm1sV3A2cXRTaWdBOUE0b0pRNjRHWGh2L2FV?=
+ =?utf-8?B?ZkRLSkY1N3lSNUVsTExLc0dQS3BSSVpSM0EvQm1Kd1NYTTUyY3RwNUdueDZQ?=
+ =?utf-8?B?cFd6SnNrZ0NHU2M2aEVpV2hLQ2NFY2xqUU5uTkdpb3VOYldlYlMvZ3NXMHZr?=
+ =?utf-8?B?STQzYjRqN2JMQlRnczN3aWo0L2hSWVFaVCtSSlNpVEx5YjNuT21Cb3h0Zmt5?=
+ =?utf-8?B?c1B6THVTME1lNFlFRmx2ZkM1Rlh5NG1HNTVMUm5yeWJ4UDcvMzN4LzdxMnA0?=
+ =?utf-8?B?Unp3YzhIb1N5S1U1Z0ZSOUNmMjZHcVF6NFZ4Y29LNEdYZys1NEhkN3laaGdh?=
+ =?utf-8?B?K051azBiUHN6YnZ4cjNkRm5kQ09scHhEWStzNzQ3S0J1dGpWVEhPSCsvdndj?=
+ =?utf-8?B?MG8wTlJMK1JZNm9iWXk4SkxpOFc4NkpDU3ZqNnRMRjlad1hJSG9nTXYrZDc0?=
+ =?utf-8?B?eFpDNnYydTRtTHM5bUk5Z2VyZGovUTdkZ2RSTCtpcys4ZVljbFN3Y1h3OGp1?=
+ =?utf-8?B?UnE0OGNqdnF2V1NLUm5Jb1p3T2pBek16aVVSbjNnaVN3a0tuMWpHQ05hc25G?=
+ =?utf-8?B?VW5JbUtkNXpjbnZUZDNKa3dxWi9vYjZJM2lhalFpQjBLQzR1ZTJFSFc5a1p1?=
+ =?utf-8?B?MzA5MU5xRVVXNHFQL1pxKzNwRkVEVnZPUUVaU2x3TUwxL1hlZTFiN3FTdERR?=
+ =?utf-8?B?NDNaZVhNN0YzOEJSbVphb0ttUWlaMHJsaEZaazNFRkVFMnJZVDU3Q2JJQ1Jy?=
+ =?utf-8?B?eCtXcTFCZ1hUeXBQVDVLNFU4c01GUVp0L2s2SnI3R1NJVXRYV1RyZnhNbG95?=
+ =?utf-8?B?bmpSVUJIKy91cUM1QXpVMENyUDVTYTZ3UHVNS0ZkOGFwdi9hTXF5WXgxa0lS?=
+ =?utf-8?B?QUN5bnZpRFhIRjE0MTh0NFpPbEJmZGs3NENXL1JZa0VQUW9rcTBzMWs5YW5Z?=
+ =?utf-8?B?bTNVdFIxRkYvZm4rb2xjMm41eGMvQUQzcEtab0FTdnhjeE5BZFJHMGRoZ2Fo?=
+ =?utf-8?B?RUJMVXFYZmlZcGRsdFFYSE9VVTROdldhYkpSL1RkVXlQRHNma0daZHdUQ3Ns?=
+ =?utf-8?B?QU1QRVBvOS9Zc1FGNzZUdjIzanUwZUhrQ3BITDZNcmFlS1VxQWZQK0xUQ20x?=
+ =?utf-8?B?VGtqUEREdVdrUEVSdzM4R3FWSGJvaHlyOWhlZWs2K29iZ3MrcmdGbXRIV0R5?=
+ =?utf-8?B?aFRsa3FkSy8rYTM0dnErU1o0eHBaSDlWM3hYNUw5Q0VOMEVGQVB5SFd1Zi84?=
+ =?utf-8?B?alVINFgyTWxlZVBkalF6WEhCOGxBa0FQTmdSOVBwWllYY1RqeFJLRVgwQy8v?=
+ =?utf-8?B?bVpwUk03ZWcycVRkVTd3b1pXRkdyd1ZKd3hlSHZNU3g5VmlNbzdGTng5dXky?=
+ =?utf-8?B?eVpXdVVGZk5MU3YyeUlvKzZTUjduZitzZkZraXEvWWt0Q0U5YUpqOTVPeG9H?=
+ =?utf-8?B?anpaKzdhZ1VZN2NIaGtzdlhsQm15QldxYytHem9TVlQ0T3VDWG1UNE9RRFR3?=
+ =?utf-8?B?RHNXQ2c1V01BUnZSOE1SdEFoaEc2UWtwalhpbEo3MVZXYnhaeWFWTCs4V3Bv?=
+ =?utf-8?B?Wno0dGlUMzlPdW5MdXprNG11OEFwUjEyNnFuQlNzV2g5YUhVbGlTSGNZWmxU?=
+ =?utf-8?B?ODNiOFNmQ2J0clFHcXJoNC9CV3JjZXlBbmd2QzQyMGpVVlNzOE1oZzhGV2xv?=
+ =?utf-8?B?dXlzU2xTNjhvK0M2VEtvNnRSbHNDR3RNcFJ1M1VJcDFyYzBJM0FsUkFWM0xa?=
+ =?utf-8?B?dWFyd3UzdVhXSmtEUnczOVFVVlg4MkQrYkpUR3BuakJqTUZiSm9jd1JKc2ZS?=
+ =?utf-8?B?RFE9PQ==?=
+Content-ID: <6A9F719B5148E646874694D4EDB8EE4C@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: ErX1qPG+CfraNI8QQtIwcTANGVG6vhJZjIBSF0oEgEvBj3h+wSTi3OizgcwBSDAIN26MDSs5RaKEHRYxlJMQghAXv1lB0oMSXPdrxoxn+xF/x4Imp1TKgUKQp46kBcTwzNhkGOphQkeCHPWf69lIYY/0fYwVE4vB2YQH8JSZ5IvjHyPFDxmK4DislEScxm4MfSRzbusojaMrgl3Uk3GH53W8p/EyrABixyGXl8UG4o6sI3/8RgvYY35XI/WRjX4fQp7YEbT1AubKXEIb1gFTS06HsFQLQEGhBqR7VURjL2l3KRmL9z5dnt0A9+QvOi0WkTygXDaBKgoswa+340QmEFSheea0leFSGqeVg6fzglPnjKTD+Da98w4+KrElOuJj32D/b2H032c35gnCtMPHohVlluR2ejruP9PMpUgou1cijC/sLnflQhzMkUoiDWKWH+TzmjsgFIqWe0XhjtEWmxdRmsnmhUJ70Ts2+oEg9my4cknqS9k2AijPAjDrJbEdU+wfFOBXUxjRsc5u79XGIuK68sFTGUgkd38kZEtueLpWU55J89MEX7zyczSeb9VtA3e+CZPKM5M4n5bYYQSH55prJu+q09G91r1f9c7Q/FVu72qjBiIZBHw+ZWjLzCzNZoIs6Sjopy/XVuiuMdSt025y4CA1Nu7LQwmRgQv7KdhE6koImSXrMIucj9MJyFv5FxGPeDEVFXJ+UHRyBGauIlELK73eGHFmw8vttZbb7tHEgtWJDg5ujyNy1Z0BW+BRmiRZPkBhJdrDpF5nihUpyhAV3TCJndpvzc6dcIeGeMA=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: MaesS799Ygqm/+LeBzQUkQXZf3YUJYp1BXtXg4o3lE5nFH5PpiwS3mVP3E5TbD6vlPiweUA6EphXgAeqB7R3jDj5YMsaRXvuamrVDv4CvHq/S7RW954AM/6LqQHlSq+JBR0bfviR5f883DU+pm7j4+J+nDeXKfmeg2aj4T54u7EGh1+aeIgFTUFsN3b/nNTcjPxiecx+74R84Vpwmop7LLwNURup08JE3UFb3fXa4/2LOiv/fVP/Ey3LvTRrD4kKzArZBaKoUpdGyHZoHIgh3oyT6ztnZMeTbvhZFyFUskNIuspJq4I73CZc4pBDKM4uEcML0YFdHY17NowSHL9MSG0TQ3JyOJsPNAfR18uwo3vhD6HjCQgr8KRiDxOAub9JnMIQ/qWtwiQDl0q6u8VjTRod9eAjj3ajweK/Q+ssSMOtvcybpagPrxPH3JSSvt27QbVBhABSzrxJdkY8ybeYgpW9GjSeTxgJNsMwur+lfG5bKWOlTfUUQMJ/NHrQGrF2UUWGwlR2rMv/L09tBaeP5WUXb+tVgM1o4fTu3Kzk8UgCQ5zYqeAQELCmwQWOhyu58RvzWh81g2nuvbYO0gKJxABET0xc4Yx+OyzElTydFjkYi0JoW+H2XWUteGSqRzyLSmIkU8+8tjpByqWXXhDykqi9ZBFR5qG3F9vrUlRAQg1nq/LKyhlNCZtR2N0O45jKG6SFmxgIyJkdnJGrR3YyfrO/uOVS6r0KVb5e8HmItwHQBjosQ6T8oGO0yeQcTZieR2ORaZx5+dmdWM6JGd9H6Rfyiu6Tl84ujwJkym6XwJo=
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TYWPR01MB10725.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2ff3010-f334-4963-9294-08db449c919d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2023 08:19:05.1073 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d42ebc28-f61c-4b55-e000-08db44a0b6d6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2023 08:48:45.5670 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: omSPtLzvxeYzEC+9hQ9VC8VvmnJ9Jc6G75yWQnvh4fs/0Cv5kqaBSpXRddV6EQBEVlEY3sPq54+74pmlUJ1R3bYgj6mxV/haw5RlTSmjwSg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB8559
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-userprincipalname: YGpOUasIP4pr6CbG9U1TybtFOvE6E2bKQ91YY+B0egr+79iYnsI/WCa/yt1i2hPFVgiUAe7Va53Hoh9taQLnE04Qa4O/y/cRRSa15uAqIc4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB10823
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/4] syscalls/mlock03: Convert into new api
+Subject: Re: [LTP] [PATCH 2/4] syscalls/mlock02: Convert into new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -158,202 +157,14 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi  Avinesh
+Hi Avinesh
 
-> Hi,
-> 
-> On Tuesday, April 4, 2023 4:06:33 PM IST Yang Xu wrote:
->> Also remove tst_require_root. Test mlock/munlock instead of mlock by default.
->>
->> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
->> ---
->>   testcases/kernel/syscalls/mlock/mlock03.c | 137 +++++++---------------
->>   1 file changed, 43 insertions(+), 94 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/mlock/mlock03.c b/testcases/kernel/syscalls/mlock/mlock03.c
->> index 8bc65701c..0fc3fa8ed 100644
->> --- a/testcases/kernel/syscalls/mlock/mlock03.c
->> +++ b/testcases/kernel/syscalls/mlock/mlock03.c
->> @@ -1,119 +1,68 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
-> Original test only has GPLv2
+> Reviewed-by: Avinesh Kumar <akumar@suse.de>
 
-Good catch.
-> 
->>   /*
->> - * Stack size mapping is decreased through mlock/munlock call.
->> - *
->> - * This is to test kernel if it has a problem with shortening [stack]
->> - * mapping through several loops of mlock/munlock of /proc/self/maps.
->> - *
->> - * From:
->> - * munlock     76KiB bfef2000-bff05000 rw-p 00000000 00:00 0          [stack]
->> - *
->> - * To:
->> - * munlock     44KiB bfefa000-bff05000 rw-p 00000000 00:00 0          [stack]
->> - *
->> - * with more iterations - could drop to 0KiB.
->> - *
->>    * Copyright (C) 2010  Red Hat, Inc.
->> - * This program is free software; you can redistribute it and/or
->> - * modify it under the terms of version 2 of the GNU General Public
->> - * License as published by the Free Software Foundation.
->> - *
->> - * This program is distributed in the hope that it would be useful,
->> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
->> - *
->> - * Further, this software is distributed without any warranty that it
->> - * is free of the rightful claim of any third person regarding
->> - * infringement or the like.  Any license provided herein, whether
->> - * implied or otherwise, applies only to this software file.  Patent
->> - * licenses, if any, provided herein do not apply to combinations of
->> - * this program with other software, or any other product whatsoever.
->> + */
->> +
->> +/*\
->> + * [Description]
->>    *
->> - * You should have received a copy of the GNU General Public License
->> - * along with this program; if not, write the Free Software
->> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
->> - * 02110-1301, USA.
->> + * This case is designed to test kernel whether met a problem with shortening
->> + * [stack] mapping through several loops of mlock/munlock of /proc/self/maps.
-> I don't understand how shortening of stack by calling to mlock/munlock
-> for maps regions may work, so no comments on actual patch.
-
-It doesn't related to shortening [stack] mapping. I also see kernel org 
-that doesn't have similar bug.
-
-Perhaps we can remove this case.
-
+Thanks for your review, I have merged the 1/4 and 2/4 patch.
 
 Best Regards
 Yang Xu
->  
->>    */
->> +
->>   #include <sys/mman.h>
->>   #include <stdio.h>
->>   #include <string.h>
->> -#include "test.h"
->> +#include <pwd.h>
->> +#include "tst_test.h"
->> +#include "tst_safe_stdio.h"
->>   
->>   #define KB 1024
->>   
->> -char *TCID = "mlock03";
->> -int TST_TOTAL = 1;
->> -
->> -static void setup(void);
->> -static void cleanup(void);
->> -
->> -int main(int argc, char *argv[])
->> +static void verify_mlock(void)
->>   {
->> -	int lc;
->>   	long from, to;
->>   	long first = -1, last = -1;
->>   	char b[KB];
->>   	FILE *fp;
->>   
->> -	tst_parse_opts(argc, argv, NULL, NULL);
->> -
->> -	setup();
->> +	fp = SAFE_FOPEN("/proc/self/maps", "r");
->> +	while (!feof(fp)) {
->> +		if (!fgets(b, KB - 1, fp))
->> +			break;
->> +		b[strlen(b) - 1] = '\0';
->> +		if (sscanf(b, "%lx-%lx", &from, &to) != 2) {
->> +			tst_res(TFAIL, "parse %s start and end address failed",
->> +					b);
->> +			continue;
->> +		}
->>   
->> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
->> -		fp = fopen("/proc/self/maps", "r");
->> -		if (fp == NULL)
->> -			tst_brkm(TBROK | TERRNO, cleanup, "fopen");
->> -		while (!feof(fp)) {
->> -			if (!fgets(b, KB - 1, fp))
->> -				break;
->> -			b[strlen(b) - 1] = '\0';
->> -			sscanf(b, "%lx-%lx", &from, &to);
->> +		/* Record the initial stack size. */
->> +		if (strstr(b, "[stack]") != NULL)
->> +			first = (to - from) / KB;
->>   
->> -			/* Record the initial stack size. */
->> -			if (lc == 0 && strstr(b, "[stack]") != NULL)
->> -				first = (to - from) / KB;
->> +		tst_res(TINFO, "mlock[%lx,%lx]", from, to);
->> +		if (mlock((const void *)from, to - from) == -1)
->> +			tst_res(TINFO | TERRNO, "mlock failed");
->>   
->> -			switch (lc & 1) {
->> -			case 0:
->> -				if (mlock((const void *)from, to - from) == -1)
->> -					tst_resm(TINFO | TERRNO,
->> -						 "mlock failed");
->> -				break;
->> -			case 1:
->> -				if (munlock((void *)from, to - from) == -1)
->> -					tst_resm(TINFO | TERRNO,
->> -						 "munlock failed");
->> -				break;
->> -			default:
->> -				break;
->> -			}
->> -			tst_resm(TINFO, "%s from %lx to %0lx",
->> -				 (lc & 1) ? "munlock" : "mlock", from, to);
->> +		tst_res(TINFO, "munlock [%lx,%lx]", from, to);
->> +		if (munlock((void *)from, to - from) == -1)
->> +			tst_res(TINFO | TERRNO, "munlock failed");
->>   
->> -			/* Record the final stack size. */
->> -			if (strstr(b, "[stack]") != NULL)
->> -				last = (to - from) / KB;
->> -		}
->> -		fclose(fp);
->> +		/* Record the final stack size. */
->> +		if (strstr(b, "[stack]") != NULL)
->> +			last = (to - from) / KB;
->>   	}
->> -	tst_resm(TINFO, "starting stack size is %ld", first);
->> -	tst_resm(TINFO, "final stack size is %ld", last);
->> +	SAFE_FCLOSE(fp);
->> +
->> +	tst_res(TINFO, "starting stack size is %ld", first);
->> +	tst_res(TINFO, "final stack size is %ld", last);
->>   	if (last < first)
->> -		tst_resm(TFAIL, "stack size is decreased.");
->> +		tst_res(TFAIL, "stack size is decreased.");
->>   	else
->> -		tst_resm(TPASS, "stack size is not decreased.");
->> -
->> -	cleanup();
->> -	tst_exit();
->> +		tst_res(TPASS, "stack size is not decreased.");
->>   }
->>   
->> -void setup(void)
->> -{
->> -	tst_require_root();
->> -
->> -	tst_sig(FORK, DEF_HANDLER, cleanup);
->> -	TEST_PAUSE;
->> -}
->> -
->> -void cleanup(void)
->> -{
->> -}
->> +static struct tst_test test = {
->> +	.test_all = verify_mlock,
->> +};
->>
 > 
 > --
 > Regards,
