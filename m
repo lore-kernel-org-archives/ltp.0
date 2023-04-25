@@ -4,58 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 212C5C77B61
-	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 03:29:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28FD7C6FD18
+	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 09:12:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 13D6B3CE9FD
-	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 05:29:16 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id DC9ED3CBBE9
+	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 11:12:35 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 47ACF3CB302
- for <ltp@lists.linux.it>; Tue, 25 Apr 2023 05:29:04 +0200 (CEST)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+ by picard.linux.it (Postfix) with ESMTPS id E8E3D3CBBB7
+ for <ltp@lists.linux.it>; Tue, 25 Apr 2023 11:12:25 +0200 (CEST)
+Received: from mail1.bemta32.messagelabs.com (mail1.bemta32.messagelabs.com
+ [195.245.230.66])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 777091400538
- for <ltp@lists.linux.it>; Tue, 25 Apr 2023 05:29:00 +0200 (CEST)
-X-UUID: b99cefd8e11a46d9a26937e1a1238b14-20230425
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.22, REQID:a6d69fee-2775-4c4d-8c78-7a0b218adf87, IP:10,
- URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
- TION:release,TS:-30
-X-CID-INFO: VERSION:1.1.22, REQID:a6d69fee-2775-4c4d-8c78-7a0b218adf87, IP:10,
- UR
- L:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
- ON:release,TS:-30
-X-CID-META: VersionHash:120426c, CLOUDID:ce3466a2-8fcb-430b-954a-ba3f00fa94a5,
- B
- ulkID:230425112855GBB3V8OE,BulkQuantity:0,Recheck:0,SF:24|17|19|44|102,TC:
- nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OS
- I:0,OSA:0,AV:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-UUID: b99cefd8e11a46d9a26937e1a1238b14-20230425
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
- (envelope-from <zenghao@kylinos.cn>) (Generic MTA)
- with ESMTP id 375452005; Tue, 25 Apr 2023 11:28:54 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
- by mail.kylinos.cn (NSMail) with SMTP id BBFC9E0084A1;
- Tue, 25 Apr 2023 11:28:54 +0800 (CST)
-X-ns-mid: postfix-644748F6-66525442
-Received: from zdzh5-QiTianM428-A376.. (unknown [172.20.12.253])
- by mail.kylinos.cn (NSMail) with ESMTPA id 4291DE0084A1;
- Tue, 25 Apr 2023 11:28:53 +0800 (CST)
-From: Hao Zeng <zenghao@kylinos.cn>
-To: chrubis@suse.cz
-Date: Tue, 25 Apr 2023 11:28:52 +0800
-Message-Id: <20230425032852.4095325-1-zenghao@kylinos.cn>
-X-Mailer: git-send-email 2.37.2
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EA9BB2001B1
+ for <ltp@lists.linux.it>; Tue, 25 Apr 2023 11:12:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1682413942; i=@fujitsu.com;
+ bh=sbx1pX5PV9R47z3QLem1lUi27ficEfyvqBXnVqoOq5k=;
+ h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type;
+ b=hLaeOjbmEHdvnOcMXZlqQjDhFBAHGtQB3DANfg0Rw2zc1AGAq+wuhJGGBQWrjD5yW
+ czI1XNKIXCC4W7iwC+ngFo0DdfolztD/G8OUzlA8p6b2qJ+yu8D7VrJXpQ6IIcU1ld
+ FV63Uu7iGWgBefHV/BblOETE3XrXM+pArIqllmzC7TibsEEaqGICSdasTbz+ObyhZm
+ xQWy7rJDax6PUdsPY+jcitPbDCQLlid/ZBdsZPhgh8R9G/qs1qRqXBhaOfbu6FO3tM
+ dzviB+1tSxdTCTK1naEKgTXPGgHGsD0Sz+rOCfbiSsjBCSuwyd1Njrn2laqrg9n7dR
+ S1aA0pzSUr/Og==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBIsWRWlGSWpSXmKPExsViZ8OxWbd0pnu
+ Kwfq30hYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8aDGVeYCm7bVsz794+lgXGCSRcjF4eQwClG
+ ibZj+9ghnL1MEq2vpgE5nEDOPkaJy08TQGw2AU2JZ50LmEFsEQEJiY6Gt2A1zALqEssn/WICs
+ YUFIiRWbDwJVMPBwSKgKjF9jx1ImFfAU+LHq+1g5RICChJTHr5nhogLSpyc+YQFYoyExMEXL5
+ ghapQk2lqvsELYlRKtH36xQNhqElfPbWKewMg/C0n7LCTtCxiZVjGaFqcWlaUW6ZroJRVlpme
+ U5CZm5uglVukm6qWW6panFpfoGuollhfrpRYX6xVX5ibnpOjlpZZsYgQGYkoxQ+QOxvs7/+od
+ YpTkYFIS5eUKc0sR4kvKT6nMSCzOiC8qzUktPsQow8GhJMHrOs09RUiwKDU9tSItMwcYFTBpC
+ Q4eJRHekFagNG9xQWJucWY6ROoUoy7Hpn1dB5iFWPLy81KlxHkTpgMVCYAUZZTmwY2AReglRl
+ kpYV5GBgYGIZ6C1KLczBJU+VeM4hyMSsK882YATeHJzCuB2/QK6AgmoCN2cbuAHFGSiJCSamA
+ SOfdcmc94NseabQe/6jnqLIl46LIvZM12a66lbdLLMoRSWdIU2xttPgpf1/f9+2/Jw9bNnxSV
+ DOZffvxIvEa+vCjYa0H6tpcKadEXNsyW+3tzl9+OyNP/Wc4dkp5168DyyHc6gdPTDvL981LlM
+ P73LXuD+Zo5W3a/5O+4Fb8xJeqhxlXu+3Z31D6fefLL49DcnP8cm5OrTuXqBjOH23++2fKBN+
+ 9w4LntemeV0vqv6zPdfWL0ccle5t99OYqulaKBhR5PxUN/Wyvc2fXnFssG859at779zc26wbR
+ EQ3GfmtKXnAj7NJ7vzXeOr5k8a9sndddDHAGzJhWzyJ3+s+QD64OMCXeDbu7bbDkvanFekRJL
+ cUaioRZzUXEiAIS8zeFLAwAA
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-20.tower-587.messagelabs.com!1682413941!117297!1
+X-Originating-IP: [62.60.8.179]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.105.2; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 20951 invoked from network); 25 Apr 2023 09:12:21 -0000
+Received: from unknown (HELO n03ukasimr04.n03.fujitsu.local) (62.60.8.179)
+ by server-20.tower-587.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 25 Apr 2023 09:12:21 -0000
+Received: from n03ukasimr04.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTP id 139C1156
+ for <ltp@lists.linux.it>; Tue, 25 Apr 2023 10:12:21 +0100 (BST)
+Received: from R01UKEXCASM223.r01.fujitsu.local (R01UKEXCASM223
+ [10.182.185.121])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by n03ukasimr04.n03.fujitsu.local (Postfix) with ESMTPS id 071837B
+ for <ltp@lists.linux.it>; Tue, 25 Apr 2023 10:12:21 +0100 (BST)
+Received: from localhost.localdomain (10.167.215.131) by
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.42; Tue, 25 Apr 2023 10:12:19 +0100
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: <ltp@lists.linux.it>
+Date: Tue, 25 Apr 2023 17:12:09 +0800
+Message-ID: <1682413930-19764-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Originating-IP: [10.167.215.131]
+X-ClientProxiedBy: G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) To
+ R01UKEXCASM223.r01.fujitsu.local (10.182.185.121)
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] fs/doio:Use the snprintf function to prevent buffer
+Subject: [LTP] [PATCH 1/2] rpc/rpc-tirpc: Fix compile error on clang when
+ using clnt_broadcast
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,89 +94,163 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Hao Zeng <zenghao@kylinos.cn>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VXNlIHRoZSBzbnByaW50ZiBmdW5jdGlvbiBpbnN0ZWFkIG9mIHNwcmludGYgaW4gdGhlIHdyaXRl
-X2xvZy5jIGZpbGUKQ2hhbmdlIHRoZSBXbG9nX0Vycm9yX1N0cmluZyBmcm9tIDI1NiB0byAyMDQ4
-IHRvIHNvbHZlIHRoZSBmb2xsb3dpbmcgY29tcGlsYXRpb24gQWxhcm0gcHJvYmxlbe+8mgp3YXJu
-aW5nOiDigJglc+KAmSBkaXJlY3RpdmUgb3V0cHV0IG1heSBiZSB0cnVuY2F0ZWQgd3JpdGluZyB1
-cCB0byAxMDIzIGJ5dGVzIGludG8gYSByZWdpb24gb2Ygc2l6ZSAyMjgKClNpZ25lZC1vZmYtYnk6
-IEhhbyBaZW5nIDx6ZW5naGFvQGt5bGlub3MuY24+ClN1Z2dlc3RlZC1ieTogQ3lyaWwgSHJ1Ymlz
-IDxjaHJ1YmlzQHN1c2UuY3o+Ci0tLQogdGVzdGNhc2VzL2tlcm5lbC9mcy9kb2lvL3dyaXRlX2xv
-Zy5jIHwgMjIgKysrKysrKysrKystLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDExIGluc2Vy
-dGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
-ZnMvZG9pby93cml0ZV9sb2cuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZG9pby93cml0ZV9sb2cu
-YwppbmRleCBlOGVmOWM3Y2IuLmMwNjY3N2ZjNiAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5l
-bC9mcy9kb2lvL3dyaXRlX2xvZy5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZG9pby93cml0
-ZV9sb2cuYwpAQCAtODcsNyArODcsNyBAQAogLyojZGVmaW5lIFBBVEhfTUFYIHBhdGhjb25mKCIv
-IiwgX1BDX1BBVEhfTUFYKSovCiAjZW5kaWYKIAotY2hhciBXbG9nX0Vycm9yX1N0cmluZ1syNTZd
-OworY2hhciBXbG9nX0Vycm9yX1N0cmluZ1syMDQ4XTsKIAogI2lmIF9fU1REQ19fCiBzdGF0aWMg
-aW50IHdsb2dfcmVjX3BhY2soc3RydWN0IHdsb2dfcmVjICp3cmVjLCBjaGFyICpidWYsIGludCBm
-bGFnKTsKQEAgLTEyOSw3ICsxMjksNyBAQCBpbnQgd2xvZ19vcGVuKHN0cnVjdCB3bG9nX2ZpbGUg
-KndmaWxlLCBpbnQgdHJ1bmMsIGludCBtb2RlKQogCXVtYXNrKG9tYXNrKTsKIAogCWlmICh3Zmls
-ZS0+d19hZmQgPT0gLTEpIHsKLQkJc3ByaW50ZihXbG9nX0Vycm9yX1N0cmluZywKKwkJc25wcmlu
-dGYoV2xvZ19FcnJvcl9TdHJpbmcsIHNpemVvZihXbG9nX0Vycm9yX1N0cmluZyksCiAJCQkiQ291
-bGQgbm90IG9wZW4gd3JpdGVfbG9nIC0gb3BlbiglcywgJSNvLCAlI28pIGZhaWxlZDogICVzXG4i
-LAogCQkJd2ZpbGUtPndfZmlsZSwgb2ZsYWdzLCBtb2RlLCBzdHJlcnJvcihlcnJubykpOwogCQly
-ZXR1cm4gLTE7CkBAIC0xNDEsNyArMTQxLDcgQEAgaW50IHdsb2dfb3BlbihzdHJ1Y3Qgd2xvZ19m
-aWxlICp3ZmlsZSwgaW50IHRydW5jLCBpbnQgbW9kZSkKIAogCW9mbGFncyA9IE9fUkRXUjsKIAlp
-ZiAoKHdmaWxlLT53X3JmZCA9IG9wZW4od2ZpbGUtPndfZmlsZSwgb2ZsYWdzKSkgPT0gLTEpIHsK
-LQkJc3ByaW50ZihXbG9nX0Vycm9yX1N0cmluZywKKwkJc25wcmludGYoV2xvZ19FcnJvcl9TdHJp
-bmcsIHNpemVvZihXbG9nX0Vycm9yX1N0cmluZyksCiAJCQkiQ291bGQgbm90IG9wZW4gd3JpdGUg
-bG9nIC0gb3BlbiglcywgJSNvKSBmYWlsZWQ6ICAlc1xuIiwKIAkJCXdmaWxlLT53X2ZpbGUsIG9m
-bGFncywgc3RyZXJyb3IoZXJybm8pKTsKIAkJY2xvc2Uod2ZpbGUtPndfYWZkKTsKQEAgLTIxOCwx
-NCArMjE4LDE0IEBAIGludCB3bG9nX3JlY29yZF93cml0ZShzdHJ1Y3Qgd2xvZ19maWxlICp3Zmls
-ZSwgc3RydWN0IHdsb2dfcmVjICp3cmVjLAogCQlyZWNsZW4gKz0gMjsKIAogCQlpZiAod3JpdGUo
-d2ZpbGUtPndfYWZkLCB3YnVmLCByZWNsZW4pID09IC0xKSB7Ci0JCQlzcHJpbnRmKFdsb2dfRXJy
-b3JfU3RyaW5nLAorCQkJc25wcmludGYoV2xvZ19FcnJvcl9TdHJpbmcsIHNpemVvZihXbG9nX0Vy
-cm9yX1N0cmluZyksCiAJCQkJIkNvdWxkIG5vdCB3cml0ZSBsb2cgLSB3cml0ZSglcywgJXMsICVk
-KSBmYWlsZWQ6ICAlc1xuIiwKIAkJCQl3ZmlsZS0+d19maWxlLCB3YnVmLCByZWNsZW4sIHN0cmVy
-cm9yKGVycm5vKSk7CiAJCQlyZXR1cm4gLTE7CiAJCX0gZWxzZSB7CiAJCQlvZmZzZXQgPSBsc2Vl
-ayh3ZmlsZS0+d19hZmQsIDAsIFNFRUtfQ1VSKSAtIHJlY2xlbjsKIAkJCWlmIChvZmZzZXQgPT0g
-LTEpIHsKLQkJCQlzcHJpbnRmKFdsb2dfRXJyb3JfU3RyaW5nLAorCQkJCXNucHJpbnRmKFdsb2df
-RXJyb3JfU3RyaW5nLCBzaXplb2YoV2xvZ19FcnJvcl9TdHJpbmcpLAogCQkJCQkiQ291bGQgbm90
-IHJlcG9zaXRpb24gZmlsZSBwb2ludGVyIC0gbHNlZWsoJXMsIDAsIFNFRUtfQ1VSKSBmYWlsZWQ6
-ICAlc1xuIiwKIAkJCQkJd2ZpbGUtPndfZmlsZSwgc3RyZXJyb3IoZXJybm8pKTsKIAkJCQlyZXR1
-cm4gLTE7CkBAIC0yMzMsMTMgKzIzMywxMyBAQCBpbnQgd2xvZ19yZWNvcmRfd3JpdGUoc3RydWN0
-IHdsb2dfZmlsZSAqd2ZpbGUsIHN0cnVjdCB3bG9nX3JlYyAqd3JlYywKIAkJfQogCX0gZWxzZSB7
-CiAJCWlmICgobHNlZWsod2ZpbGUtPndfcmZkLCBvZmZzZXQsIFNFRUtfU0VUKSkgPT0gLTEpIHsK
-LQkJCXNwcmludGYoV2xvZ19FcnJvcl9TdHJpbmcsCisJCQlzbnByaW50ZihXbG9nX0Vycm9yX1N0
-cmluZywgc2l6ZW9mKFdsb2dfRXJyb3JfU3RyaW5nKSwKIAkJCQkiQ291bGQgbm90IHJlcG9zaXRp
-b24gZmlsZSBwb2ludGVyIC0gbHNlZWsoJXMsICVsZCwgU0VFS19TRVQpIGZhaWxlZDogICVzXG4i
-LAogCQkJCXdmaWxlLT53X2ZpbGUsIG9mZnNldCwgc3RyZXJyb3IoZXJybm8pKTsKIAkJCXJldHVy
-biAtMTsKIAkJfSBlbHNlIHsKIAkJCWlmICgod3JpdGUod2ZpbGUtPndfcmZkLCB3YnVmLCByZWNs
-ZW4pKSA9PSAtMSkgewotCQkJCXNwcmludGYoV2xvZ19FcnJvcl9TdHJpbmcsCisJCQkJc25wcmlu
-dGYoV2xvZ19FcnJvcl9TdHJpbmcsIHNpemVvZihXbG9nX0Vycm9yX1N0cmluZyksCiAJCQkJCSJD
-b3VsZCBub3Qgd3JpdGUgbG9nIC0gd3JpdGUoJXMsICVzLCAlZCkgZmFpbGVkOiAgJXNcbiIsCiAJ
-CQkJCXdmaWxlLT53X2ZpbGUsIHdidWYsIHJlY2xlbiwKIAkJCQkJc3RyZXJyb3IoZXJybm8pKTsK
-QEAgLTI3NCwxNCArMjc0LDE0IEBAIGludCB3bG9nX3NjYW5fYmFja3dhcmQoc3RydWN0IHdsb2df
-ZmlsZSAqd2ZpbGUsIGludCBucmVjcywKIAkgKi8KIAogCWlmICgobHNlZWsoZmQsIDAsIFNFRUtf
-RU5EKSkgPT0gLTEpIHsKLQkJc3ByaW50ZihXbG9nX0Vycm9yX1N0cmluZywKKwkJc25wcmludGYo
-V2xvZ19FcnJvcl9TdHJpbmcsIHNpemVvZihXbG9nX0Vycm9yX1N0cmluZyksCiAJCQkiQ291bGQg
-bm90IHJlcG9zaXRpb24gZmlsZSBwb2ludGVyIC0gbHNlZWsoJXMsIDAsIFNFRUtfRU5EKSBmYWls
-ZWQ6ICAlc1xuIiwKIAkJCXdmaWxlLT53X2ZpbGUsIHN0cmVycm9yKGVycm5vKSk7CiAJCXJldHVy
-biAtMTsKIAl9CiAJb2Zmc2V0ID0gbHNlZWsoZmQsIDAsIFNFRUtfQ1VSKTsKIAlpZiAoKG9mZnNl
-dCA9PSAtMSkpIHsKLQkJc3ByaW50ZihXbG9nX0Vycm9yX1N0cmluZywKKwkJc25wcmludGYoV2xv
-Z19FcnJvcl9TdHJpbmcsIHNpemVvZihXbG9nX0Vycm9yX1N0cmluZyksCiAJCQkiQ291bGQgbm90
-IHJlcG9zaXRpb24gZmlsZSBwb2ludGVyIC0gbHNlZWsoJXMsIDAsIFNFRUtfQ1VSKSBmYWlsZWQ6
-ICAlc1xuIiwKIAkJCXdmaWxlLT53X2ZpbGUsIHN0cmVycm9yKGVycm5vKSk7CiAJCXJldHVybiAt
-MTsKQEAgLTMwOSw3ICszMDksNyBAQCBpbnQgd2xvZ19zY2FuX2JhY2t3YXJkKHN0cnVjdCB3bG9n
-X2ZpbGUgKndmaWxlLCBpbnQgbnJlY3MsCiAJCSAqIE1vdmUgdG8gdGhlIHByb3BlciBmaWxlIG9m
-ZnNldCwgYW5kIHJlYWQgaW50byBidWYKIAkJICovCiAJCWlmICgobHNlZWsoZmQsIG9mZnNldCwg
-U0VFS19TRVQpKSA9PSAtMSkgewotCQkJc3ByaW50ZihXbG9nX0Vycm9yX1N0cmluZywKKwkJCXNu
-cHJpbnRmKFdsb2dfRXJyb3JfU3RyaW5nLCBzaXplb2YoV2xvZ19FcnJvcl9TdHJpbmcpLAogCQkJ
-CSJDb3VsZCBub3QgcmVwb3NpdGlvbiBmaWxlIHBvaW50ZXIgLSBsc2VlayglcywgJWQsIFNFRUtf
-U0VUKSBmYWlsZWQ6ICAlc1xuIiwKIAkJCQl3ZmlsZS0+d19maWxlLCBvZmZzZXQsIHN0cmVycm9y
-KGVycm5vKSk7CiAJCQlyZXR1cm4gLTE7CkBAIC0zMTgsNyArMzE4LDcgQEAgaW50IHdsb2dfc2Nh
-bl9iYWNrd2FyZChzdHJ1Y3Qgd2xvZ19maWxlICp3ZmlsZSwgaW50IG5yZWNzLAogCQluYnl0ZXMg
-PSByZWFkKGZkLCBidWZzdGFydCwgYnVmZW5kIC0gYnVmc3RhcnQgLSBsZWZ0b3Zlcik7CiAKIAkJ
-aWYgKG5ieXRlcyA9PSAtMSkgewotCQkJc3ByaW50ZihXbG9nX0Vycm9yX1N0cmluZywKKwkJCXNu
-cHJpbnRmKFdsb2dfRXJyb3JfU3RyaW5nLCBzaXplb2YoV2xvZ19FcnJvcl9TdHJpbmcpLAogCQkJ
-CSJDb3VsZCBub3QgcmVhZCBoaXN0b3J5IGZpbGUgYXQgb2Zmc2V0ICVkIC0gcmVhZCglZCwgJXAs
-ICVkKSBmYWlsZWQ6ICAlc1xuIiwKIAkJCQlvZmZzZXQsIGZkLCBidWZzdGFydCwKIAkJCQkoaW50
-KShidWZlbmQgLSBidWZzdGFydCAtIGxlZnRvdmVyKSwKLS0gCjIuMzcuMgoKCi0tIApNYWlsaW5n
-IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+When clang upgrade to 16.0.0-2.fc38, these case will report
+incompatible-function-pointer-types  error as below:
+
+rpc_clnt_broadcast_complex.c:81:46: error: incompatible function pointer types passing
+'bool_t (char *, struct sockaddr_in *)' (aka 'int (char *, struct sockaddr_in *)') to
+parameter of type 'resultproc_t' (aka 'int (*)(char *, ...)') [-Wincompatible-function-pointer-types]
+(xdrproc_t) xdr_int, (char *)&varRec, eachResult);
+
+the clnt_broadcase declare as below:
+extern enum clnt_stat   clnt_broadcast(u_long, u_long, u_long,
+                                         xdrproc_t, void *,
+                                         xdrproc_t, void *,
+                                         resultproc_t);
+
+so we should add resultproc_t cast like tirpc_simple_rpc_broadcast[1] does.
+
+[1]https://github.com/linux-test-project/ltp/blob/master/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_simple_rpc_broadcast/tirpc_rpc_broadcast_complex.c#L84
+
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ .../rpc_clnt_broadcast.c                          |  3 ++-
+ .../rpc_clnt_broadcast_complex.c                  |  3 ++-
+ .../rpc_clnt_broadcast_dataint.c                  | 15 ++++++++++-----
+ .../rpc_clnt_broadcast_performance.c              |  2 +-
+ .../rpc_clnt_broadcast_scalability.c              |  2 +-
+ .../rpc_clnt_broadcast_stress.c                   |  2 +-
+ 6 files changed, 17 insertions(+), 10 deletions(-)
+
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast.c
+index 5f024f113..80d5f045a 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast.c
+@@ -59,7 +59,8 @@ int main(int argn, char *argc[])
+ 	//Call broadcast routine
+ 	cs = clnt_broadcast(progNum, VERSNUM, PROCNUM,
+ 			    (xdrproc_t) xdr_int, (char *)&varSnd,
+-			    (xdrproc_t) xdr_int, (char *)&varRec, eachResult);
++			    (xdrproc_t) xdr_int, (char *)&varRec,
++			    (resultproc_t) eachResult);
+ 
+ 	test_status = (cs == RPC_SUCCESS) ? 0 : 1;
+ 
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_complex.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_complex.c
+index c6e55cd81..e1bb8fcc5 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_complex.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_complex.c
+@@ -78,7 +78,8 @@ int main(int argn, char *argc[])
+ 	//Call broadcast routine
+ 	cs = clnt_broadcast(progNum, VERSNUM, PROCNUM,
+ 			    (xdrproc_t) xdr_int, (char *)&varSnd,
+-			    (xdrproc_t) xdr_int, (char *)&varRec, eachResult);
++			    (xdrproc_t) xdr_int, (char *)&varRec,
++			    (resultproc_t) eachResult);
+ 
+ 	if (currentAnswer == maxAnswer)
+ 		test_status = 0;
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_dataint.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_dataint.c
+index fdf1e31a2..e1f7bcb6a 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_dataint.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_dataint.c
+@@ -72,7 +72,8 @@ int main(int argn, char *argc[])
+ 
+ 	clnt_broadcast(progNum, VERSNUM, INTPROCNUM,
+ 		       (xdrproc_t) xdr_int, (char *)&intSnd,
+-		       (xdrproc_t) xdr_int, (char *)&intRec, eachResult);
++		       (xdrproc_t) xdr_int, (char *)&intRec,
++		       (resultproc_t) eachResult);
+ 
+ 	if (intSnd != intRec)
+ 		test_status = 1;
+@@ -84,7 +85,8 @@ int main(int argn, char *argc[])
+ 
+ 	clnt_broadcast(progNum, VERSNUM, INTPROCNUM,
+ 		       (xdrproc_t) xdr_int, (char *)&intSnd,
+-		       (xdrproc_t) xdr_int, (char *)&intRec, eachResult);
++		       (xdrproc_t) xdr_int, (char *)&intRec,
++		       (resultproc_t) eachResult);
+ 
+ 	if (intSnd != intRec)
+ 		test_status = 1;
+@@ -96,7 +98,8 @@ int main(int argn, char *argc[])
+ 
+ 	clnt_broadcast(progNum, VERSNUM, LNGPROCNUM,
+ 		       (xdrproc_t) xdr_long, (char *)&lngSnd,
+-		       (xdrproc_t) xdr_long, (char *)&lngRec, eachResult);
++		       (xdrproc_t) xdr_long, (char *)&lngRec,
++		       (resultproc_t) eachResult);
+ 
+ 	if (lngSnd != lngRec)
+ 		test_status = 1;
+@@ -108,7 +111,8 @@ int main(int argn, char *argc[])
+ 
+ 	clnt_broadcast(progNum, VERSNUM, LNGPROCNUM,
+ 		       (xdrproc_t) xdr_double, (char *)&dblSnd,
+-		       (xdrproc_t) xdr_double, (char *)&dblRec, eachResult);
++		       (xdrproc_t) xdr_double, (char *)&dblRec,
++		       (resultproc_t) eachResult);
+ 
+ 	if (dblSnd != dblRec)
+ 		test_status = 1;
+@@ -121,7 +125,8 @@ int main(int argn, char *argc[])
+ 
+ 	clnt_broadcast(progNum, VERSNUM, LNGPROCNUM,
+ 		       (xdrproc_t) xdr_wrapstring, (char *)&strSnd,
+-		       (xdrproc_t) xdr_wrapstring, (char *)&strRec, eachResult);
++		       (xdrproc_t) xdr_wrapstring, (char *)&strRec,
++		       (resultproc_t) eachResult);
+ 
+ 	if (strcmp(strSnd, strRec))
+ 		test_status = 1;
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_performance.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_performance.c
+index 11ba64fab..d733e72ef 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_performance.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_performance.c
+@@ -114,7 +114,7 @@ int main(int argn, char *argc[])
+ 		cs = clnt_broadcast(progNum, VERSNUM, PROCNUM,
+ 				    (xdrproc_t) xdr_int, (char *)&varSnd,
+ 				    (xdrproc_t) xdr_int, (char *)&varRec,
+-				    eachResult);
++				    (resultproc_t) eachResult);
+ 
+ 		if (cs != RPC_SUCCESS)
+ 			clnt_perrno(cs);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_scalability.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_scalability.c
+index 57ea25349..4455c1173 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_scalability.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_scalability.c
+@@ -114,7 +114,7 @@ int main(int argn, char *argc[])
+ 		cs = clnt_broadcast(progNum, VERSNUM, PROCNUM,
+ 				    (xdrproc_t) xdr_int, (char *)&varSnd,
+ 				    (xdrproc_t) xdr_int, (char *)&varRec,
+-				    eachResult);
++				    (resultproc_t) eachResult);
+ 
+ 		if (cs != RPC_SUCCESS)
+ 			clnt_perrno(cs);
+diff --git a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_stress.c b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_stress.c
+index d5d7d85d1..933305482 100644
+--- a/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_stress.c
++++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_broadc_clnt_broadcast/rpc_clnt_broadcast_stress.c
+@@ -65,7 +65,7 @@ int main(int argn, char *argc[])
+ 		cs = clnt_broadcast(progNum, VERSNUM, PROCNUM,
+ 				    (xdrproc_t) xdr_int, (char *)&varSnd,
+ 				    (xdrproc_t) xdr_int, (char *)&varRec,
+-				    eachResult);
++				    (resultproc_t) eachResult);
+ 		if (cs == RPC_SUCCESS)
+ 			nbOk++;
+ 	}
+-- 
+2.39.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
