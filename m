@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3E92C6FD18
-	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 13:48:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05346C6FD18
+	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 14:02:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9786E3CE514
-	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 15:48:48 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 2C5AC3CBC05
+	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 16:02:31 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A96103C26E5
- for <ltp@lists.linux.it>; Tue, 25 Apr 2023 15:48:38 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id BAC593CBC05
+ for <ltp@lists.linux.it>; Tue, 25 Apr 2023 16:02:21 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B63B3140054D
- for <ltp@lists.linux.it>; Tue, 25 Apr 2023 15:48:37 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BDAF3140054C
+ for <ltp@lists.linux.it>; Tue, 25 Apr 2023 16:02:20 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B89AB218F3;
- Tue, 25 Apr 2023 13:48:36 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B5105218F4;
+ Tue, 25 Apr 2023 14:02:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1682430516;
+ t=1682431339;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ly1K0MR8MjIa94b4ETRQvvkIve4c9iSDLVFwD1alVb8=;
- b=i5BT/W1wsTXy53d1Jk8GhWOePYTxCVlGYHCb0OWOp7PjlP2xz9GAL9qsEIHGqWgBefE9RR
- CWh68A65LUqEeUmP8Too/YtBlDDO/utquAH14nswRGU07zQjZdunJm1QaqDBYY68KXK8HC
- +ls+x9gGeFGOW9x4o24PwkugEgUvBsg=
+ bh=MifcvhkTWepsks0XwtfraFxaVWSpVWmpmpsTx6nmD0I=;
+ b=Vrjn/6HHf6KIcb1QSKUA/BR9I4fcJh5/n5rb5j1/bo1tW4kDXHqY/vMpVBGDn57fbuxMkY
+ SZeDk1RHzFjR0mVTH8+8adXvh3BONED+KdB5teydC6tZOrscO2xZajwSPX7zIugbw7zw+O
+ i2QZLZKALxOtWIS4F2paT/qhDrxkod0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1682430516;
+ s=susede2_ed25519; t=1682431339;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ly1K0MR8MjIa94b4ETRQvvkIve4c9iSDLVFwD1alVb8=;
- b=24axBht5ee7JHCB9PEx/hTX6XPwcHWHayeHk7qH2duT4EsG4MnTkzv4QVLhHnIuKzViUON
- ygk1GLt02xc2ILCQ==
+ bh=MifcvhkTWepsks0XwtfraFxaVWSpVWmpmpsTx6nmD0I=;
+ b=Ed1cZ47QCDgAv3RFLjYMPMee0cMvkYjlg/cDhputj6Nshs9KysEstumzSU3do52lG7U7la
+ mRd3vdv1JMQH0nBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F7BC13466;
- Tue, 25 Apr 2023 13:48:36 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6906413466;
+ Tue, 25 Apr 2023 14:02:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id S3lHGzTaR2SbIgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 25 Apr 2023 13:48:36 +0000
-Date: Tue, 25 Apr 2023 15:48:45 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id f5aoFWvdR2RgKwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 25 Apr 2023 14:02:19 +0000
+Date: Tue, 25 Apr 2023 16:02:27 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20230425134845.GA3014439@pevik>
-References: <20230412082115.1990591-1-pvorel@suse.cz>
- <ZEfRrOpPwkLuBQw5@rei>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Message-ID: <20230425140227.GB3014439@pevik>
+References: <1682413930-19764-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZEfRrOpPwkLuBQw5@rei>
+In-Reply-To: <1682413930-19764-1-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] nfs/nfs08.sh: Add test for NFS cache
- invalidation
+Subject: Re: [LTP] [PATCH 1/2] rpc/rpc-tirpc: Fix compile error on clang
+ when using clnt_broadcast
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,77 +78,42 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: NeilBrown <neilb@suse.de>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > v4 [1] of not yet upstreamed patch accidentally broke cache invalidation
-> > for directories by clearing NFS_INO_INVALID_DATA inappropriately.
-> > Although it was fixed in v5 [2] thus kernel was not actually broken,
-> > it's better to prevent this in the future.
+Hi Xu,
 
-> > [1] https://lore.kernel.org/linux-nfs/167649314509.15170.15885497881041431304@noble.neil.brown.name/
-> > [2] https://lore.kernel.org/linux-nfs/167943762461.8008.3152357340238024342@noble.neil.brown.name/
+> When clang upgrade to 16.0.0-2.fc38, these case will report
+> incompatible-function-pointer-types  error as below:
 
-...
-> > --- /dev/null
-> > +++ b/testcases/network/nfs/nfs_stress/nfs08.sh
-> > @@ -0,0 +1,20 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0-or-later
-> > +# Copyright (c) 2023 Petr Vorel <pvorel@suse.cz>
-> > +# Test reproducer for broken NFS cache invalidation for directories.
-> > +# Based on reproducer from Neil Brown <neilb@suse.de>
-> > +
-> > +TST_TESTFUNC="do_test"
-> > +
-> > +do_test()
-> > +{
-> > +	tst_res TINFO "testing NFS cache invalidation for directories"
-> > +
-> > +	touch 1
-> > +	EXPECT_PASS 'ls | grep 1'
-> > +
-> > +	touch 2
-> > +	EXPECT_PASS 'ls | grep 2'
-> > +}
+> rpc_clnt_broadcast_complex.c:81:46: error: incompatible function pointer types passing
+> 'bool_t (char *, struct sockaddr_in *)' (aka 'int (char *, struct sockaddr_in *)') to
+> parameter of type 'resultproc_t' (aka 'int (*)(char *, ...)') [-Wincompatible-function-pointer-types]
+> (xdrproc_t) xdr_int, (char *)&varRec, eachResult);
 
-> I do not get how this actually detects case invalidation, it probably
-> does, but slightly better description how this actually excercises the
-> case would help.
+> the clnt_broadcase declare as below:
+> extern enum clnt_stat   clnt_broadcast(u_long, u_long, u_long,
+>                                          xdrproc_t, void *,
+>                                          xdrproc_t, void *,
+>                                          resultproc_t);
 
-The behavior is:
+> so we should add resultproc_t cast like tirpc_simple_rpc_broadcast[1] does.
 
-"touch 1" asks for data invalidation (new file created), therefore following ls
-(EXPECT_PASS 'ls | grep 1') fills the cache.  "touch 2" should again ask for
-data invalidation, but it the unfixed v4 version of the patch it did not
-resulted to cache invalidation.  Therefore second ls (EXPECT_PASS 'ls | grep 2')
-shows just 1, but not 2. i.e. in the affected kernel only second ls failed,
-but obviously both should be checked (nobody knows how another bug on cache
-invalidation will behave).
+> [1]https://github.com/linux-test-project/ltp/blob/master/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_simple_rpc_broadcast/tirpc_rpc_broadcast_complex.c#L84
 
-I can add the description above to the commit message and adjust the comment in
-the file.
+Thank you for fixing this!
+
+nit: I'd just mention tirpc_rpc_broadcast_complex.c in rpc_broadcast() call
+does. (there is only single file, link will sooner or later point to the
+different place, ...)
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
 Kind regards,
 Petr
-
-diff --git testcases/network/nfs/nfs_stress/nfs08.sh testcases/network/nfs/nfs_stress/nfs08.sh
-index 8a0f40242..691e221d4 100755
---- testcases/network/nfs/nfs_stress/nfs08.sh
-+++ testcases/network/nfs/nfs_stress/nfs08.sh
-@@ -2,6 +2,8 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
- # Copyright (c) 2023 Petr Vorel <pvorel@suse.cz>
- # Test reproducer for broken NFS cache invalidation for directories.
-+# Kernel patch caused broken cache invalidation, which caused the second 'ls'
-+# did not show '2'.
- # Based on reproducer from Neil Brown <neilb@suse.de>
- 
- TST_TESTFUNC="do_test"
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
