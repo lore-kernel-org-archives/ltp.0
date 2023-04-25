@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05346C6FD18
-	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 14:02:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48AB7C77B61
+	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 14:05:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2C5AC3CBC05
-	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 16:02:31 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 8EEC33CE517
+	for <ltp@archiver.kernel.org>; Tue, 25 Apr 2023 16:05:14 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BAC593CBC05
- for <ltp@lists.linux.it>; Tue, 25 Apr 2023 16:02:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 81E273CBC05
+ for <ltp@lists.linux.it>; Tue, 25 Apr 2023 16:05:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BDAF3140054C
- for <ltp@lists.linux.it>; Tue, 25 Apr 2023 16:02:20 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F2F67600660
+ for <ltp@lists.linux.it>; Tue, 25 Apr 2023 16:05:02 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B5105218F4;
- Tue, 25 Apr 2023 14:02:19 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 175A31FD9D;
+ Tue, 25 Apr 2023 14:05:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1682431339;
+ t=1682431502;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MifcvhkTWepsks0XwtfraFxaVWSpVWmpmpsTx6nmD0I=;
- b=Vrjn/6HHf6KIcb1QSKUA/BR9I4fcJh5/n5rb5j1/bo1tW4kDXHqY/vMpVBGDn57fbuxMkY
- SZeDk1RHzFjR0mVTH8+8adXvh3BONED+KdB5teydC6tZOrscO2xZajwSPX7zIugbw7zw+O
- i2QZLZKALxOtWIS4F2paT/qhDrxkod0=
+ bh=9LUcykkrm0kLoARgbkXEHbLMyrDWygJXG2Dvnw0akXA=;
+ b=1J1sHXskODD/HJ2+iJOdQq099zK2iyqI8+SmLVynEDZStDFe5WJjW2zMS5M/H2uFtAmc4A
+ Z8spvdFYJfVWqU1OJ9Y4a5Djs53B2XdDlrqlpxZ5vUdtGI96nGQzAedcAuD0Wk1QoGQO8J
+ umTWzaY/Qp4+zy/gy6l78Nc59PGPWuM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1682431339;
+ s=susede2_ed25519; t=1682431502;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=MifcvhkTWepsks0XwtfraFxaVWSpVWmpmpsTx6nmD0I=;
- b=Ed1cZ47QCDgAv3RFLjYMPMee0cMvkYjlg/cDhputj6Nshs9KysEstumzSU3do52lG7U7la
- mRd3vdv1JMQH0nBA==
+ bh=9LUcykkrm0kLoARgbkXEHbLMyrDWygJXG2Dvnw0akXA=;
+ b=jr72QX5cyn1nizjdE1E/dvnMCny7zUtoKUL2u8ZbQy/rfX1QtWo3vXEp6FJjS2HnZpU6Vi
+ UHeNOuOM2wcFuSCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6906413466;
- Tue, 25 Apr 2023 14:02:19 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D828113466;
+ Tue, 25 Apr 2023 14:05:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id f5aoFWvdR2RgKwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 25 Apr 2023 14:02:19 +0000
-Date: Tue, 25 Apr 2023 16:02:27 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id lCDTMQ3eR2THLAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 25 Apr 2023 14:05:01 +0000
+Date: Tue, 25 Apr 2023 16:05:10 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <20230425140227.GB3014439@pevik>
+Message-ID: <20230425140510.GC3014439@pevik>
 References: <1682413930-19764-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1682413930-19764-2-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1682413930-19764-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <1682413930-19764-2-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] rpc/rpc-tirpc: Fix compile error on clang
- when using clnt_broadcast
+Subject: Re: [LTP] [PATCH 2/2] rpc/rpc-tirpc: Fix compile error on clang
+ when using registerrpc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,32 +87,22 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Xu,
 
-> When clang upgrade to 16.0.0-2.fc38, these case will report
-> incompatible-function-pointer-types  error as below:
-
-> rpc_clnt_broadcast_complex.c:81:46: error: incompatible function pointer types passing
-> 'bool_t (char *, struct sockaddr_in *)' (aka 'int (char *, struct sockaddr_in *)') to
-> parameter of type 'resultproc_t' (aka 'int (*)(char *, ...)') [-Wincompatible-function-pointer-types]
-> (xdrproc_t) xdr_int, (char *)&varRec, eachResult);
-
-> the clnt_broadcase declare as below:
-> extern enum clnt_stat   clnt_broadcast(u_long, u_long, u_long,
->                                          xdrproc_t, void *,
->                                          xdrproc_t, void *,
->                                          resultproc_t);
-
-> so we should add resultproc_t cast like tirpc_simple_rpc_broadcast[1] does.
-
-> [1]https://github.com/linux-test-project/ltp/blob/master/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_simple_rpc_broadcast/tirpc_rpc_broadcast_complex.c#L84
-
-Thank you for fixing this!
-
-nit: I'd just mention tirpc_rpc_broadcast_complex.c in rpc_broadcast() call
-does. (there is only single file, link will sooner or later point to the
-different place, ...)
+> +++ b/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/rpc/rpc_regunreg_registerrpc/rpc_registerrpc.c
+> @@ -68,8 +68,8 @@ int main(int argn, char *argc[])
 
 Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
+>  	//call routine
+>  	rslt =
+> -	    registerrpc(progNum, VERSNUM, PROCNUM, simplePing, xdr_int,
+> -			xdr_int);
+> +	    registerrpc(progNum, VERSNUM, PROCNUM, simplePing,
+> +			(xdrproc_t) xdr_int, (xdrproc_t) xdr_int);
+
+Maybe just put rslt = on the same line (to fix often broken style a bit?)
+
+rslt = registerrpc(progNum, VERSNUM, PROCNUM, simplePing,
+		(xdrproc_t) xdr_int, (xdrproc_t) xdr_int);
 Kind regards,
 Petr
 
