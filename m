@@ -4,61 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06661C77B60
-	for <ltp@archiver.kernel.org>; Wed, 26 Apr 2023 07:52:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79C13C77B60
+	for <ltp@archiver.kernel.org>; Wed, 26 Apr 2023 07:56:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 17E873CBFB1
-	for <ltp@archiver.kernel.org>; Wed, 26 Apr 2023 09:52:22 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 370EE3CBB62
+	for <ltp@archiver.kernel.org>; Wed, 26 Apr 2023 09:56:49 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BE0883C8DAE
- for <ltp@lists.linux.it>; Wed, 26 Apr 2023 09:52:11 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 634123C8DAE
+ for <ltp@lists.linux.it>; Wed, 26 Apr 2023 09:56:37 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 06ECB60096B
- for <ltp@lists.linux.it>; Wed, 26 Apr 2023 09:52:10 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 26A4D1A000B0
+ for <ltp@lists.linux.it>; Wed, 26 Apr 2023 09:56:36 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E960E21A0C;
- Wed, 26 Apr 2023 07:52:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1682495529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=8fL9TTa1gTBQln3qmWvErjPpVdFlCX4GSGS/lWzfca8=;
- b=VdN7DUpn/SJZbacmt+bCpBp76iFSeI3rQONi7szEtr7eJEKVw+skASsPp1HQN4NoHEeKCx
- jrvP+af2nvrX8VsYwYbo8M3IrezAuQ+SOSmAW9oRaIs/UG2hAmmYzdbBBBa7iCNQM4vDwD
- MEKOGSfFjduPePLDKfbnjXQdHaQlpeE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1682495529;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1B49C21A04;
+ Wed, 26 Apr 2023 07:56:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1682495795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GNMCwmw3gEWn3DZdtiSw/tddogfaAIQRHkmCZdadb/o=;
+ b=QzagL7ggSMTy0m9zJPYikVXzB+MMjCNm8tiSMe0U/dg2U8IqZEI0OVC5oXcZI1/AVAkhhV
+ uO9B0J0eR/7S5OfRzxKS3VjzUp7+BvhrXTF5zOSjVYxcMspeD6yHczQqvCI7NrSGvOq2gz
+ kqeZEwZK5Amy4rnbubh1+gWIGaXh7TQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1682495795;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=8fL9TTa1gTBQln3qmWvErjPpVdFlCX4GSGS/lWzfca8=;
- b=Q/GMQv2qswxKDhKMjZov2+ihqdrgDPOXmhYcpuN86UQgH6zTKD4fkXr9vpFbzn7+v2qiNm
- M9gjMkLmHBaEC1DA==
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GNMCwmw3gEWn3DZdtiSw/tddogfaAIQRHkmCZdadb/o=;
+ b=4d0iBQqBKEFH24J0e+GXEaG5gl5z2KUv9Mp/gfn08eRL/RDTFhTwyKehh7zVqLU8q+DNlj
+ fKNuR2X+0J5FgGCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CB36413421;
- Wed, 26 Apr 2023 07:52:09 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0885913421;
+ Wed, 26 Apr 2023 07:56:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Y9gFMCnYSGQLBAAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Wed, 26 Apr 2023 07:52:09 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Wed, 26 Apr 2023 09:49:50 +0200
-Message-Id: <20230426074950.8807-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+ by imap2.suse-dmz.suse.de with ESMTPSA id OTYJAjPZSGTeBgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 26 Apr 2023 07:56:35 +0000
+Date: Wed, 26 Apr 2023 09:57:38 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <ZEjZcgJMluP0eEie@yuki>
+References: <20230421145746.5704-1-mdoucha@suse.cz>
+ <20230421145746.5704-3-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230421145746.5704-3-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Support return value in TST_* macros
+Subject: Re: [LTP] [PATCH 3/5] KVM: Fix infinite loop in ptr2hex()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,175 +76,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it, nstange@suse.de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi!
+> Contrary to the C standard, (x >> 64) is equivalent to (x >> 0) on x86.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- include/tst_test_macros.h | 69 +++++++++++++++++++++++++++------------
- 1 file changed, 48 insertions(+), 21 deletions(-)
+As far as I can tell right shift larger than the left operand size are
+undefined, at least in C99.
 
-diff --git a/include/tst_test_macros.h b/include/tst_test_macros.h
-index 231c04951..acc2d1bff 100644
---- a/include/tst_test_macros.h
-+++ b/include/tst_test_macros.h
-@@ -74,45 +74,60 @@ extern void *TST_RET_PTR;
- 	} while (0)
- 
- #define TST_EXP_POSITIVE(SCALL, ...)                                           \
--	do {                                                                   \
-+	({                                                                     \
- 		TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__);               \
- 		                                                               \
- 		if (TST_PASS) {                                                \
- 			TST_MSGP_(TPASS, " returned %ld",                      \
- 			          TST_RET, #SCALL, ##__VA_ARGS__);             \
- 		}                                                              \
--	} while (0)
-+		                                                               \
-+		TST_RET;                                                       \
-+	})
- 
--#define TST_EXP_FD_SILENT(SCALL, ...)	TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__)
-+#define TST_EXP_FD_SILENT(SCALL, ...)                                          \
-+	({                                                                     \
-+		TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__);               \
-+		TST_RET;                                                       \
-+	})
- 
- #define TST_EXP_FD(SCALL, ...)                                                 \
--	do {                                                                   \
-+	({                                                                     \
- 		TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__);               \
- 		                                                               \
- 		if (TST_PASS)                                                  \
- 			TST_MSGP_(TPASS, " returned fd %ld", TST_RET,          \
- 				#SCALL, ##__VA_ARGS__);                        \
--	} while (0)
-+		                                                               \
-+		TST_RET;                                                       \
-+	})
- 
--#define TST_EXP_FD_OR_FAIL(SCALL, ERRNO, ...)                                    \
--	do {                                                                   \
-+#define TST_EXP_FD_OR_FAIL(SCALL, ERRNO, ...)                                  \
-+	({                                                                     \
- 		if (ERRNO)                                                     \
- 			TST_EXP_FAIL(SCALL, ERRNO, ##__VA_ARGS__);             \
- 		else                                                           \
- 			TST_EXP_FD(SCALL, ##__VA_ARGS__);                      \
- 		                                                               \
--	} while (0)
-+		TST_RET;                                                       \
-+	})
- 
--#define TST_EXP_PID_SILENT(SCALL, ...)	TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__)
-+#define TST_EXP_PID_SILENT(SCALL, ...)                                         \
-+	({                                                                     \
-+		TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__);               \
-+		TST_RET;                                                       \
-+	})
- 
- #define TST_EXP_PID(SCALL, ...)                                                \
--	do {                                                                   \
-+	({                                                                     \
- 		TST_EXP_POSITIVE_(SCALL, #SCALL, ##__VA_ARGS__);               \
- 									       \
- 		if (TST_PASS)                                                  \
- 			TST_MSGP_(TPASS, " returned pid %ld", TST_RET,         \
- 				#SCALL, ##__VA_ARGS__);                        \
--	} while (0)
-+		                                                               \
-+		TST_RET;                                                       \
-+	})
- 
- #define TST_EXP_VAL_SILENT_(SCALL, VAL, SSCALL, ...)                           \
- 	do {                                                                   \
-@@ -128,18 +143,20 @@ extern void *TST_RET_PTR;
- 		                                                               \
- 		TST_PASS = 1;                                                  \
- 		                                                               \
-+		TST_RET;                                                       \
- 	} while (0)
- 
- #define TST_EXP_VAL_SILENT(SCALL, VAL, ...) TST_EXP_VAL_SILENT_(SCALL, VAL, #SCALL, ##__VA_ARGS__)
- 
- #define TST_EXP_VAL(SCALL, VAL, ...)                                           \
--	do {                                                                   \
-+	({                                                                     \
- 		TST_EXP_VAL_SILENT_(SCALL, VAL, #SCALL, ##__VA_ARGS__);        \
- 		                                                               \
- 		if (TST_PASS)                                                  \
- 			TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);     \
--			                                                       \
--	} while(0)
-+		                                                               \
-+		TST_RET;                                                       \
-+	})
- 
- #define TST_EXP_PASS_SILENT_(SCALL, SSCALL, ...)                               \
- 	do {                                                                   \
-@@ -163,15 +180,21 @@ extern void *TST_RET_PTR;
-                                                                                \
- 	} while (0)
- 
--#define TST_EXP_PASS_SILENT(SCALL, ...) TST_EXP_PASS_SILENT_(SCALL, #SCALL, ##__VA_ARGS__)
-+#define TST_EXP_PASS_SILENT(SCALL, ...)                                        \
-+	({                                                                     \
-+		TST_EXP_PASS_SILENT_(SCALL, #SCALL, ##__VA_ARGS__);            \
-+		TST_RET;                                                       \
-+	})
- 
- #define TST_EXP_PASS(SCALL, ...)                                               \
--	do {                                                                   \
-+	({                                                                     \
- 		TST_EXP_PASS_SILENT_(SCALL, #SCALL, ##__VA_ARGS__);            \
- 		                                                               \
- 		if (TST_PASS)                                                  \
- 			TST_MSG_(TPASS, " passed", #SCALL, ##__VA_ARGS__);     \
--	} while (0)                                                            \
-+		                                                               \
-+		TST_RET;                                                       \
-+	})
- 
- #define TST_EXP_FAIL_SILENT_(PASS_COND, SCALL, SSCALL, ERRNO, ...)             \
- 	do {                                                                   \
-@@ -200,20 +223,24 @@ extern void *TST_RET_PTR;
- 	} while (0)
- 
- #define TST_EXP_FAIL(SCALL, ERRNO, ...)                                        \
--	do {                                                                   \
-+	({                                                                     \
- 		TST_EXP_FAIL_SILENT_(TST_RET == 0, SCALL, #SCALL,              \
- 			ERRNO, ##__VA_ARGS__);                                 \
- 		if (TST_PASS)                                                  \
- 			TST_MSG_(TPASS | TTERRNO, " ", #SCALL, ##__VA_ARGS__); \
--	} while (0)
-+		                                                               \
-+		TST_RET;                                                       \
-+	})
- 
- #define TST_EXP_FAIL2(SCALL, ERRNO, ...)                                       \
--	do {                                                                   \
-+	({                                                                     \
- 		TST_EXP_FAIL_SILENT_(TST_RET >= 0, SCALL, #SCALL,              \
- 			ERRNO, ##__VA_ARGS__);                                 \
- 		if (TST_PASS)                                                  \
- 			TST_MSG_(TPASS | TTERRNO, " ", #SCALL, ##__VA_ARGS__); \
--	} while (0)
-+		                                                               \
-+		TST_RET;                                                       \
-+	})
- 
- #define TST_EXP_FAIL_SILENT(SCALL, ERRNO, ...) \
- 	TST_EXP_FAIL_SILENT_(TST_RET == 0, SCALL, #SCALL, ERRNO, ##__VA_ARGS__)
+Other than that the patch looks good.
+
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
+> This can cause infinite loop in ptr2hex() if the highest nibble
+> in the second argument is non-zero. Use temporary variable to avoid
+> bit-shifting by large values.
+> 
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
+>  testcases/kernel/kvm/lib_guest.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/kvm/lib_guest.c b/testcases/kernel/kvm/lib_guest.c
+> index d237293fc..d3b2ac3d5 100644
+> --- a/testcases/kernel/kvm/lib_guest.c
+> +++ b/testcases/kernel/kvm/lib_guest.c
+> @@ -82,7 +82,7 @@ char *ptr2hex(char *dest, uintptr_t val)
+>  	uintptr_t tmp;
+>  	char *ret = dest;
+>  
+> -	for (i = 4; val >> i; i += 4)
+> +	for (i = 4, tmp = val >> 4; tmp; i += 4, tmp >>= 4)
+>  		;
+>  
+>  	do {
+> -- 
+> 2.40.0
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
 -- 
-2.35.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
