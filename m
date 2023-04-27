@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE768C77B73
-	for <ltp@archiver.kernel.org>; Thu, 27 Apr 2023 12:08:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4B47C77B73
+	for <ltp@archiver.kernel.org>; Thu, 27 Apr 2023 12:08:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6EEDF3CE4B4
-	for <ltp@archiver.kernel.org>; Thu, 27 Apr 2023 14:08:38 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D7AE83CE94F
+	for <ltp@archiver.kernel.org>; Thu, 27 Apr 2023 14:08:49 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 536FD3CE4AD
- for <ltp@lists.linux.it>; Thu, 27 Apr 2023 14:08:06 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 73C503CE4A7
+ for <ltp@lists.linux.it>; Thu, 27 Apr 2023 14:08:13 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4FB3320004F
- for <ltp@lists.linux.it>; Thu, 27 Apr 2023 14:08:05 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D5834140004C
+ for <ltp@lists.linux.it>; Thu, 27 Apr 2023 14:08:11 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6F21A21B00
- for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 00A9A21AFE
+ for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1682597285; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1682597291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=m+0p7LA5lY0DQhZjUUOzBsWPSvEplj7V2SvQSWSawYI=;
- b=sS4ZZNRY1Q8kFOYLd5NeE8P56W7E5XHRjXo1SWiYzcI65FV8ZbFhxiXpr3T1CpRutcVpT8
- FrFdbcACOkSuSCBJXLqeTyKL6BCyhJ64MnZ1BU497MnjLLyAawGJpH07c7RfrdBLSXqWxc
- xlGVTpE3wVP6gqrDgRgoYgKWqajfWlE=
+ bh=lMy8VmdZ0HDkrkU8zqVfFx7vz/AckULkv+nWb3o7kWQ=;
+ b=O62NOhwfhCip19+ho8AF5bvx0ff2cQs1P7wBqr3aa1hcHbbvYwBS44sbn9ozrEiZhLDNPg
+ H7rKFU0sf7MnPbscJnEJC+KNBCVHzcFXJSftluBNbOc7NOcT1r6wc5l+MWZ8Bs6Qv20qFt
+ uBQT591K8RCNMIYQAF8n3K62QKL3J58=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1682597285;
+ s=susede2_ed25519; t=1682597291;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=m+0p7LA5lY0DQhZjUUOzBsWPSvEplj7V2SvQSWSawYI=;
- b=srBHTGIJZzwmVV6KxUr43Zbsk+rIMHOrwGkGnwIQvTEJOaKJXYyB9GXYKrbAY03KJ/0MjQ
- hlqkS2C56dZF19AQ==
+ bh=lMy8VmdZ0HDkrkU8zqVfFx7vz/AckULkv+nWb3o7kWQ=;
+ b=2eUtbXI0fa3JUALRrh+5+b/FxOS15ACC9hMnUjlnEU+wdV0EG+g2UAkPXrl4EWoIaTXhL5
+ 6wMAuck3Ru4Kh8CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 19D1313910
- for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:04 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F4FA13910
+ for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id X7X1N6RlSmR5SwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id 1P4+HaplSmSPSwAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:04 +0000
+ for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:10 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 27 Apr 2023 17:37:57 +0530
-Message-Id: <20230427120800.27849-2-akumar@suse.de>
+Date: Thu, 27 Apr 2023 17:37:59 +0530
+Message-Id: <20230427120800.27849-4-akumar@suse.de>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230427120800.27849-1-akumar@suse.de>
 References: <20230427120800.27849-1-akumar@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/5] dup02.c: Simplify using TST_EXP macro and doc
- rewording
+Subject: [LTP] [PATCH 4/5] dup04.c: use TST_EXP_FD macro and make check fixes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,60 +83,89 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
++ updade copyright
+
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/dup/dup02.c | 29 +++++----------------------
- 1 file changed, 5 insertions(+), 24 deletions(-)
+ testcases/kernel/syscalls/dup/dup04.c | 44 ++++++++-------------------
+ 1 file changed, 12 insertions(+), 32 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/dup/dup02.c b/testcases/kernel/syscalls/dup/dup02.c
-index 528bcdbc1..1bb1d5be3 100644
---- a/testcases/kernel/syscalls/dup/dup02.c
-+++ b/testcases/kernel/syscalls/dup/dup02.c
-@@ -8,11 +8,9 @@
+diff --git a/testcases/kernel/syscalls/dup/dup04.c b/testcases/kernel/syscalls/dup/dup04.c
+index 8d45f7a9c..053fb40c2 100644
+--- a/testcases/kernel/syscalls/dup/dup04.c
++++ b/testcases/kernel/syscalls/dup/dup04.c
+@@ -1,12 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *
+  * 06/1994 AUTHOR: Richard Logan CO-PILOT: William Roske
++ * Copyright (c) 2023 SUSE LLC
   */
+ 
  /*\
-  * [Description]
-- * Negative test for dup(2) with bad fds.
+- * [DESCRIPTION]
++ * [Description]
   *
-- * [Algorithm]
-- * Call dup(2) with invalid argument and make sure it returns -1 with errno set
-- * to EBADF.
-+ * Verify that dup(2) syscall fails with errno EBADF when called with
-+ * invalid value for oldfd argument.
+  * Basic test for dup(2) of a system pipe descriptor.
   */
+@@ -17,38 +17,18 @@
  
  #include "tst_test.h"
-@@ -29,27 +27,10 @@ static void run(unsigned int n)
+ 
+-int fd[2];
++static int fd[2];
+ 
+ static void run(void)
  {
- 	struct tcase *tc = &tcases[n];
- 
--	TEST(dup(tc->fd));
-+	TST_EXP_FAIL2(dup(tc->fd), tc->expected_errno, "dup(%d)", tc->fd);
- 
--	if (TST_RET < -1) {
--		tst_res(TFAIL | TTERRNO, "Invalid dup() return value %ld",
--			TST_RET);
--		return;
+-	TEST(dup(fd[0]));
+-
+-	if (TST_RET == -1)
+-		tst_res(TFAIL | TTERRNO,
+-			 "dup of read side of pipe failed");
+-	else {
+-		tst_res(TPASS,
+-			 "dup(%d) read side of syspipe returned %ld",
+-			 fd[0], TST_RET);
+-
+-		SAFE_CLOSE(TST_RET);
 -	}
+-
+-	TEST(dup(fd[1]));
 -
 -	if (TST_RET == -1) {
--		if (tc->expected_errno == TST_ERR) {
--			tst_res(TPASS | TTERRNO, "dup(%d) failed as expected",
--				tc->fd);
--		} else {
--			tst_res(TFAIL | TTERRNO, "dup(%d) failed unexpectedly",
--				tc->fd);
--		}
--		return;
--	}
+-		tst_res(TFAIL | TTERRNO,
+-			 "dup of write side of pipe failed");
+-	} else {
+-		tst_res(TPASS,
+-			 "dup(%d) write side of syspipe returned %ld",
+-			 fd[1], TST_RET);
 -
--	tst_res(TFAIL, "dup(%d) succeeded unexpectedly", tc->fd);
--	SAFE_CLOSE(TST_RET);
-+	if (TST_RET != -1)
-+		SAFE_CLOSE(TST_RET);
+-		SAFE_CLOSE(TST_RET);
+-	}
++	TST_EXP_FD(dup(fd[0]), "dup(%d) read end of the pipe", fd[0]);
++	SAFE_CLOSE(TST_RET);
++
++	TST_EXP_FD(dup(fd[1]), "dup(%d) write end of the pipe", fd[1]);
++	SAFE_CLOSE(TST_RET);
+ }
+ 
+-void setup(void)
++static void setup(void)
+ {
+ 	fd[0] = -1;
+ 
+@@ -56,7 +36,7 @@ void setup(void)
  }
  
  static struct tst_test test = {
+-        .test_all = run,
+-        .setup = setup,
+-        .needs_tmpdir = 1,
++	.test_all = run,
++	.setup = setup,
++	.needs_tmpdir = 1,
+ };
 -- 
 2.40.0
 
