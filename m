@@ -4,63 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE36CC77B73
-	for <ltp@archiver.kernel.org>; Thu, 27 Apr 2023 12:08:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49493C77B73
+	for <ltp@archiver.kernel.org>; Thu, 27 Apr 2023 12:08:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9AF6C3CE4C6
-	for <ltp@archiver.kernel.org>; Thu, 27 Apr 2023 14:08:14 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id D5D1E3CE4C7
+	for <ltp@archiver.kernel.org>; Thu, 27 Apr 2023 14:08:26 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 713DA3CBA98
- for <ltp@lists.linux.it>; Thu, 27 Apr 2023 14:08:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 398803CE4C9
+ for <ltp@lists.linux.it>; Thu, 27 Apr 2023 14:08:09 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8661810004BF
- for <ltp@lists.linux.it>; Thu, 27 Apr 2023 14:08:03 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1B5BD1A00A34
+ for <ltp@lists.linux.it>; Thu, 27 Apr 2023 14:08:08 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C774821B01
- for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 59DA321AFD
+ for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1682597282; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zLbjsq3uCMIUgtGRJdfv59Tk2swWok93BwosHgWfXIg=;
- b=DUZtWfQbo6TvYuzNM6jQI3ooXmVSSYxRr9VcNpAN2t2MOVNui4UVNzMs6lk6GtUywh9dSe
- ONfQkDWcQG/v8SROsMnEv8yLzIA774jiCvbjctt0gsNVRZMX0toDfhRG3uGMwv/T5knXLr
- vNBl2pWHDtszefx15Crfxknqx41Bb60=
+ t=1682597288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=gBhhfUqGQ/kdzW9oPDed9ZfEjiCGZBIreRVs2LkQZFI=;
+ b=P1tXNwZ5YEOq4io4XMKloUnzs2cyzC9Dxht5s3dp1JpLxQqAK84n0iJA6XAppNRUgihOda
+ Nan2XLq95PKSaM/Tn/RCxFbd3eEPr3Edvgw8ul2kqFNkR1wVe7wIweNml7WavoItlehGx3
+ TJnR+WKixzwUNRu++DTmi5ea9HAiAAg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1682597282;
+ s=susede2_ed25519; t=1682597288;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zLbjsq3uCMIUgtGRJdfv59Tk2swWok93BwosHgWfXIg=;
- b=M1JxfhHcDMMY/D6I1zjkLXq8fJ1t2iV8ZXz97aUW6HcoM4HR/JgYsAqzj+QtqpC7a2RSfQ
- Bjb9rY/TGs4li2AQ==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=gBhhfUqGQ/kdzW9oPDed9ZfEjiCGZBIreRVs2LkQZFI=;
+ b=+Osl4GummjqjuXNn50yF6l1oDkd4+mBBXo17u950rLlA/FxYfIPuCtYf32AY4L4LAjv8gw
+ qoAYuNfTIOrxTjAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7070C13910
- for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:02 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F1C9513910
+ for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id u2nLEaJlSmRvSwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id s0trMadlSmSDSwAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:02 +0000
+ for <ltp@lists.linux.it>; Thu, 27 Apr 2023 12:08:07 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 27 Apr 2023 17:37:56 +0530
-Message-Id: <20230427120800.27849-1-akumar@suse.de>
+Date: Thu, 27 Apr 2023 17:37:58 +0530
+Message-Id: <20230427120800.27849-3-akumar@suse.de>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230427120800.27849-1-akumar@suse.de>
+References: <20230427120800.27849-1-akumar@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/5] dup01.c: use TST_EXP_FD macro and add inode check
+Subject: [LTP] [PATCH 3/5] dup03.c: use TST_EXP macro and make check fixes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,62 +83,76 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-- simplify using TST_EXP_FD() macro
-- add inode comparison check for the newly allocated file descriptor
-- add test description
+- use TST_EXP_FAIL2() macro for expected failure check
+- make check fixes: change vars to static
+- reword doc comment
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/dup/dup01.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ testcases/kernel/syscalls/dup/dup03.c | 34 +++++++--------------------
+ 1 file changed, 8 insertions(+), 26 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/dup/dup01.c b/testcases/kernel/syscalls/dup/dup01.c
-index 74e24cc02..ce6f39ed3 100644
---- a/testcases/kernel/syscalls/dup/dup01.c
-+++ b/testcases/kernel/syscalls/dup/dup01.c
-@@ -7,27 +7,32 @@
+diff --git a/testcases/kernel/syscalls/dup/dup03.c b/testcases/kernel/syscalls/dup/dup03.c
+index 0e99813f4..d59e61f2b 100644
+--- a/testcases/kernel/syscalls/dup/dup03.c
++++ b/testcases/kernel/syscalls/dup/dup03.c
+@@ -6,48 +6,30 @@
+  */
+ /*\
+  * [Description]
+- * Negative test for dup(2) (too many fds).
   *
+- * [Algorithm]
+- * Open the maximum allowed number of file descriptors and then try to call
+- * dup() once more and verify it fails with EMFILE.
++ * Verify that dup(2) syscall fails with errno EMFILE when the per-process
++ * limit on the number of open file descriptors has been reached.
   */
  
-+/*\
-+ * [Description]
-+ *
-+ * Verify that dup(2) syscall executes successfully and allocates
-+ * a new file descriptor which refers to the same open file as oldfd.
-+ */
-+
+ #include <stdlib.h>
  #include "tst_test.h"
  
- static int fd;
-+static struct stat buf1, buf2;
+-int *fd;
+-int nfds;
++static int *fd;
++static int nfds;
  
- static void verify_dup(void)
+ static void run(void)
  {
--	TEST(dup(fd));
--
+-	TEST(dup(fd[0]));
++	TST_EXP_FAIL2(dup(fd[0]), EMFILE, "dup(%d)", fd[0]);
+ 
 -	if (TST_RET < -1) {
 -		tst_res(TFAIL, "Invalid dup() return value %ld", TST_RET);
--	} else if (TST_RET == -1) {
--		tst_res(TFAIL | TTERRNO, "dup(%d) Failed", fd);
--	} else {
--		tst_res(TPASS, "dup(%d) returned %ld", fd, TST_RET);
--		SAFE_CLOSE(TST_RET);
+-		return;
 -	}
-+	TST_EXP_FD(dup(fd), "dup(%d)", fd);
-+
-+	SAFE_FSTAT(TST_RET, &buf2);
-+	TST_EXP_EQ_LU(buf1.st_ino, buf2.st_ino);
-+
-+	SAFE_CLOSE(TST_RET);
+-
+-	if (TST_RET == -1) {
+-		if (TST_ERR == EMFILE)
+-			tst_res(TPASS | TTERRNO, "dup() failed as expected");
+-		else
+-			tst_res(TFAIL | TTERRNO, "dup() failed unexpectedly");
+-		return;
+-	}
+-
+-	tst_res(TFAIL, "dup() succeeded unexpectedly");
+-	SAFE_CLOSE(TST_RET);
++	if (TST_RET != -1)
++		SAFE_CLOSE(TST_RET);
  }
  
  static void setup(void)
  {
- 	fd = SAFE_OPEN("dupfile", O_RDWR | O_CREAT, 0700);
-+	SAFE_FSTAT(fd, &buf1);
- }
+ 	long maxfds;
  
- static void cleanup(void)
+-	maxfds = sysconf(_SC_OPEN_MAX);
+-	if (maxfds == -1)
+-		tst_brk(TBROK, "sysconf(_SC_OPEN_MAX) failed");
+-
++	maxfds = SAFE_SYSCONF(_SC_OPEN_MAX);
+ 	fd = SAFE_MALLOC(maxfds * sizeof(int));
+ 
+ 	fd[0] = SAFE_OPEN("dupfile", O_RDWR | O_CREAT, 0700);
 -- 
 2.40.0
 
