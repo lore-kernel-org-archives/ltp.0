@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44245C77B60
-	for <ltp@archiver.kernel.org>; Fri, 28 Apr 2023 10:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07CD9C77B60
+	for <ltp@archiver.kernel.org>; Fri, 28 Apr 2023 10:24:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6AEF13CBA82
-	for <ltp@archiver.kernel.org>; Fri, 28 Apr 2023 12:13:01 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id EA5303CB36F
+	for <ltp@archiver.kernel.org>; Fri, 28 Apr 2023 12:24:47 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 164B83CA6A7
- for <ltp@lists.linux.it>; Fri, 28 Apr 2023 12:12:50 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 419293C08CE
+ for <ltp@lists.linux.it>; Fri, 28 Apr 2023 12:24:37 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8510C6009CA
- for <ltp@lists.linux.it>; Fri, 28 Apr 2023 12:12:49 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5801A1A00706
+ for <ltp@lists.linux.it>; Fri, 28 Apr 2023 12:24:36 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A4C7B21EF6;
- Fri, 28 Apr 2023 10:12:49 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 70C0121C69;
+ Fri, 28 Apr 2023 10:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1682676769; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1682677476; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GZIbsF0Wpeb22klgV7HcXstSZWmXyLLsGmLFbGX/Kgw=;
- b=BNW7gQFw+BlC6gIPoLGYA3UfQVTJzgs5rLJcZIW7NXpOmqgweSwNUfK5MmJcJKIipudoIx
- HjtIoifAdfDZgcGc56DT2xZXdwBw7voyZKfjtIs/vLdrIHHmZiD9ZceIWEp+aVp2Mc+exH
- nU16biJmbAo1xNkcjCKO8UTVdMuaAXo=
+ bh=f9SK3FiitLGNpkdsLnpeSkpROtukVmIkx3DplzL+sBY=;
+ b=Bir7D7EqiZh9gTaAA+/M0OZ6VYE9wRJTQDnRmTGpv1F+Jn3ZKwS+XADjJUDdQSE2LQdYXo
+ Wl0tqSNKYXbbh0rxXWAJRmnyNQiGKiXtgiP7HlWynzITrArtnEPWFWZPXiqanERdjZl517
+ lNUgHFo/0BgkBjEA/VIPiWTP6hcY+I8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1682676769;
+ s=susede2_ed25519; t=1682677476;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GZIbsF0Wpeb22klgV7HcXstSZWmXyLLsGmLFbGX/Kgw=;
- b=XGAWU1V5PQZuhVaxXEWHpwQxIUN/+2yS+ae+puinQs38F5bsoZvf/xMvlcQvv2Ev0eXQJi
- qB54cW4msAHUA0CQ==
+ bh=f9SK3FiitLGNpkdsLnpeSkpROtukVmIkx3DplzL+sBY=;
+ b=x7F5C+rUgxiybKPWRqh0ps4HhUgZ98IVth4OnIqhty+w2MCp7hUDzw/VcivD4TuPypEVKu
+ TmX/+879S5TB8HAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89FA81390E;
- Fri, 28 Apr 2023 10:12:49 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 592121390E;
+ Fri, 28 Apr 2023 10:24:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id PyDmICGcS2TtLgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 28 Apr 2023 10:12:49 +0000
-Date: Fri, 28 Apr 2023 12:13:55 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id PdRuFOSeS2TnNgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 28 Apr 2023 10:24:36 +0000
+Date: Fri, 28 Apr 2023 12:25:41 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Sowmya TI <reachmesowmyati@gmail.com>
-Message-ID: <ZEucY9k5wdtvab/i@yuki>
-References: <20230427175515.1514-1-reachmesowmyati@gmail.com>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <ZEufJa+TyZdY9gsq@yuki>
+References: <20230428084922.9834-1-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230427175515.1514-1-reachmesowmyati@gmail.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+In-Reply-To: <20230428084922.9834-1-liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] cpuset_regression_test.sh: Renamed the test
- function
+Subject: Re: [LTP] [RFC PATCH] tst_cgroup: Avoid mixing mounts V1 and V2
+ simultaneously
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,7 +83,24 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-I've added a short description for the commit and pushed, thanks.
+> There is a tiny problem with the test logic of this tst_cgroup library,
+> that it potentially mixes Cgroup V1 and V2 together to be mounted at
+> the same time. The scenario happens once people just requests CTRL_BASE
+> (or a V2 controller not enabled) on a only V1-mounted system.
+>
+> Cgroup community always objected to enabling Cgroup like that (V1&V2),
+> which may bring unexpected issues along the way.
+> 
+> So this patch cancels LTP mount V1&V2 simultaneously even if there is
+> no overlap in specific controller files.
+
+Isn't this the point of the library, to be able to use mixed V1 and V2
+setup? As far as I understand it the only limitation is that we can bind
+a controllter to either V1 or V2 but not both.
+
+Also as far as I can tell, there is pleny of distributions out there at
+the moment where the default is split between V1 and V2 both mounted at
+the same time.
 
 -- 
 Cyril Hrubis
