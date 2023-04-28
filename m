@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3434C77B61
-	for <ltp@archiver.kernel.org>; Fri, 28 Apr 2023 13:06:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B463CC77B60
+	for <ltp@archiver.kernel.org>; Fri, 28 Apr 2023 13:12:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 96D0C3CBA5D
-	for <ltp@archiver.kernel.org>; Fri, 28 Apr 2023 15:06:26 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 28B313CBA90
+	for <ltp@archiver.kernel.org>; Fri, 28 Apr 2023 15:12:29 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F04783CBA25
- for <ltp@lists.linux.it>; Fri, 28 Apr 2023 15:06:17 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id B2E0C3CBA25
+ for <ltp@lists.linux.it>; Fri, 28 Apr 2023 15:12:20 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4FBAB1A003EC
- for <ltp@lists.linux.it>; Fri, 28 Apr 2023 15:06:16 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A93CC600A65
+ for <ltp@lists.linux.it>; Fri, 28 Apr 2023 15:12:19 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9C68421B40;
- Fri, 28 Apr 2023 13:06:15 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 021DD21F4A;
+ Fri, 28 Apr 2023 13:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1682687175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1682687537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VWy69ovS00ypTNvLoesyfBAcRF7OGjVIPTSfNopHiB4=;
- b=mJjeUNFYL1jgsiIuMuHyfakFrpHDw7XyRegJcodo7zuqoIKuz8I2iwBhMF58qBwRC/VeLM
- +hToN/qfXcsmiiOMFmFfIYHsNlHHksO1YVOSdFo1Ry9CI5T69QpJf3FTC/NP0HJtKMt+yp
- HqkRzAXKG7W8xWi3jTRXwqfq4z3KrZk=
+ bh=8JKnVsz8wGP0p0WnaCP0mvfxlRDBPf1RnT+NnWU5+tU=;
+ b=q6jX89ilR1TUD/f9mtkevvZCO+oAke/0uyIv4jcmyU98e+FGYnWKMZsvFnekzZBctsBakc
+ y5qcks5qhWsfL80VcrlzgCPNQC71kZWHiXeKoyFy8Vje4hxxNieKKKbU0RrVqQioru3aTA
+ +OIi03RQfcM+k72v8slLfdxmneo1h/M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1682687175;
+ s=susede2_ed25519; t=1682687537;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=VWy69ovS00ypTNvLoesyfBAcRF7OGjVIPTSfNopHiB4=;
- b=0sZSjKwWNAPeXWhaTaiR+BWjgqEiVgQtapIG4EdiNFKs5ik5nHjeNMCwg7LmrI5QegmdCE
- PKU+uB9zluUkMzCQ==
+ bh=8JKnVsz8wGP0p0WnaCP0mvfxlRDBPf1RnT+NnWU5+tU=;
+ b=EhPTB0yxrjau86K9hsfIWwE1H+RULnOF3cVQD6vMsNLBKI446Z5lq0RDLH4FlyzzJASywM
+ 9Lqdqd1CYgB3VhDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89915138FA;
- Fri, 28 Apr 2023 13:06:15 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C8C0138FA;
+ Fri, 28 Apr 2023 13:12:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ZddwIMfES2QVEQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 28 Apr 2023 13:06:15 +0000
-Date: Fri, 28 Apr 2023 15:07:21 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id yxo0JjDGS2RJFAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 28 Apr 2023 13:12:16 +0000
+Date: Fri, 28 Apr 2023 15:13:22 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZEvFCTEO1mAxN5tB@yuki>
-References: <20230314134242.9203-1-andrea.cervesato@suse.de>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <ZEvGchayVsZfrAH5@yuki>
+References: <20230428084922.9834-1-liwang@redhat.com> <ZEufJa+TyZdY9gsq@yuki>
+ <CAEemH2fcvpRLS7-rdpiGt-fqEwXCiAb-jpRdisb33axhdP3CoA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230314134242.9203-1-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+In-Reply-To: <CAEemH2fcvpRLS7-rdpiGt-fqEwXCiAb-jpRdisb33axhdP3CoA@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Remove ltp_clone_quick usage from pidns suite
+Subject: Re: [LTP] [RFC PATCH] tst_cgroup: Avoid mixing mounts V1 and V2
+ simultaneously
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,54 +84,23 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> diff --git a/testcases/kernel/containers/pidns/pidns02.c b/testcases/kernel/containers/pidns/pidns02.c
-> index b8913d3f6..5372aeef9 100644
-> --- a/testcases/kernel/containers/pidns/pidns02.c
-> +++ b/testcases/kernel/containers/pidns/pidns02.c
-> @@ -7,7 +7,7 @@
->  /*\
->   * [Description]
->   *
-> - * Clone a process with CLONE_NEWNS flag and check:
-> + * Clone a process with CLONE_NEWPID flag and check:
->   *
->   * - child session ID must be 1
->   * - parent process group ID must be 1
-> @@ -16,29 +16,35 @@
->  #include "tst_test.h"
->  #include "lapi/sched.h"
->  
-> -static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
-> +static void child_func(void)
->  {
->  	pid_t sid, pgid;
->  
-> +	SAFE_SETSID();
+> That's the original design. We tried to keep flexible but ignored
+> one exception V1 mounts all controllers and V2 only basic mount.
+> (No controllers conflict in this mounting).
+> 
+> From my observation, if a system(e.g. RHEL8) only announces
+> Cgroup V1 support but does not guarantee V2 to be used.
+> A test required 'CTRL_BASE' could mount V2 success but
+> that V2 is only part work and test will get TBROK.
+> We are unable to say this situation is a bug.
 
-Can we please avoid the setsid() here? Once we do that we do not
-actually test that the sid and pgid are initialized to something
-meaningful. It makes much more sense to check if sid and pgid are 0,
-since init process has no parent and ppid is 0 then also the sid and
-pgid may make sense to be initialized to 0 since they are "inherited"
-from nonexistent parent.
+So the V2 does not actually work unless there is at least one controller
+enabled? That sounds like a bug to me, my system actually uses v1
+controllers and unified hierarchy at the same time. The unified
+hierarchy is used to group deamon processes and kill them with the
+cgropu.kill if needed.
 
-Or we can as well do:
-
-	TST_EXP_EQ_LI(getsid(0), 0);
-	TST_EXP_EQ_LI(getpgid(0), 0);
-
-	tst_res(TINFO, "setsid()");
-	SAFE_SETSID();
-
-	TST_EXP_EQ_LI(getsid(0), 1);
-	TST_EXP_EQ_LI(getpgid(0), 1);
-
-That way we check both the initial values and that setsid works as
-expected.
-
-The rest looks good. With the pidns02.c fixed:
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+What exactly happens on your system?
 
 -- 
 Cyril Hrubis
