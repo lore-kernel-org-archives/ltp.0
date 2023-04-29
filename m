@@ -4,68 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47FAFC77B61
-	for <ltp@archiver.kernel.org>; Fri, 28 Apr 2023 17:03:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7A46C77B60
+	for <ltp@archiver.kernel.org>; Sat, 29 Apr 2023 06:48:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 987A93CBA73
-	for <ltp@archiver.kernel.org>; Fri, 28 Apr 2023 19:03:31 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 90DE23CBA84
+	for <ltp@archiver.kernel.org>; Sat, 29 Apr 2023 08:48:06 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 465793CB36F
- for <ltp@lists.linux.it>; Fri, 28 Apr 2023 19:03:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 321B83CB2CD
+ for <ltp@lists.linux.it>; Sat, 29 Apr 2023 08:47:57 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3DD2E20005C
- for <ltp@lists.linux.it>; Fri, 28 Apr 2023 19:03:20 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 34F6921F99;
- Fri, 28 Apr 2023 17:03:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1682701400;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D00CA1A004D5
+ for <ltp@lists.linux.it>; Sat, 29 Apr 2023 08:47:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1682750874;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=duqkXDQT6vCgcBPcLRSqqPs8Y5m0pBlhoyWC7x8UENQ=;
- b=PPD1/2wsbqe2WOXLPqodXtsQ3+rGpluLREqRU7LxBgFYgvifQB2u6/UVG8TVjCJQiJvaSB
- EexdCtXzQmlMFhfEy7P/1Fg5c+M9uJTlRGb+UTRXX7ADuaSYnDd/p5UuR4txLgFHqHWMMd
- c5xryRHJyUXXs8F+/IZdTtJOM4QIyr8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1682701400;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=duqkXDQT6vCgcBPcLRSqqPs8Y5m0pBlhoyWC7x8UENQ=;
- b=g9pZ1q0c8/tj+19OyO5P6H0GIAU1kVCx6C24KtgPmdAozNf2UGdQgFruBOHR1euuJglpan
- j8lokVjIBYzGgqBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E20AF1390E;
- Fri, 28 Apr 2023 17:03:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id TuGqNFf8S2THDAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 28 Apr 2023 17:03:19 +0000
-Date: Fri, 28 Apr 2023 19:03:30 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <20230428170330.GA3536627@pevik>
-References: <20230428160038.3534905-1-pvorel@suse.cz>
- <20230428160038.3534905-4-pvorel@suse.cz>
+ bh=6lsleHpN1GtHYGqEDgD3sY94ev0vpxm0AyaUJqSATYc=;
+ b=MXQd9rIZpthsjCzZygDUK0elGheYQpRnNzfrHEvdJxZDiY2zMXFze+ZSIqQ4CsKxjQ5tiO
+ ZSfsjGIjtJKg9XGdnjUEK8AAsIiQ5JjzlK8f3x6zUngj03qcdaMxESYLb79ryzZ0l93Itw
+ UF+mG+Xw7FLODqwYGK6I/D7M/mCZ3no=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-39-YKiwvCBaM_CAP4C6NbilUg-1; Sat, 29 Apr 2023 02:47:52 -0400
+X-MC-Unique: YKiwvCBaM_CAP4C6NbilUg-1
+Received: by mail-lf1-f72.google.com with SMTP id
+ 2adb3069b0e04-4eff7227f49so451033e87.2
+ for <ltp@lists.linux.it>; Fri, 28 Apr 2023 23:47:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1682750869; x=1685342869;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=6lsleHpN1GtHYGqEDgD3sY94ev0vpxm0AyaUJqSATYc=;
+ b=gfTjm2DNzZxvrKoaUXuPea6hzo3ax7hx7Q5Qo3w5FZOEf0c++f67LCtn/CJ9n5YP8o
+ cM2fdusplPbyn5N5Wf+8qUo5C/0lZsyviP8ItvtKbI9AQhxT/XpsdkTzbaJo0hdz8Ujz
+ bnJP6/BJRKvu++EHPcPoXP2oexi9bvYjwv6u+nhyq7qQxjPBGGmO32iGTpTF5YaTEeXN
+ 2g8vsgma0SjXlJFWarPRK0pn8Z1T4G/p2CvQtp6YJ990c0KRLDFimHF3iCJSYpE/LwZK
+ pRVTK2zEPfbKH6/oYjZjptPNsy8gWrplz5BlM330NQfmjslnp7Bj+z+93Lqk6mtnUB8V
+ 4z0w==
+X-Gm-Message-State: AC+VfDzq7QuuciTTefN4INR/kE9a/498YOUStnqTdtTfureO1lQp+Ogy
+ p+pQEonhYsE2rU2C5Gsvs4ResrQe5xhwfcUbS+kglKoyt0KGNqP2jXoPEZfZe2zAXosWqZfPsz6
+ NKlMHWxxk/xxboY+A0es83/C1sn0=
+X-Received: by 2002:ac2:46c7:0:b0:4dc:4b92:dbc4 with SMTP id
+ p7-20020ac246c7000000b004dc4b92dbc4mr2165032lfo.14.1682750868916; 
+ Fri, 28 Apr 2023 23:47:48 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ7/I/tALeuEMj2oZZXctYivmMAZow74jfs03a7t8WlcorUpu8EcFJeVDoNUK303EkIEj7FWX4iTuSZqmk/XMFE=
+X-Received: by 2002:ac2:46c7:0:b0:4dc:4b92:dbc4 with SMTP id
+ p7-20020ac246c7000000b004dc4b92dbc4mr2165019lfo.14.1682750868614; Fri, 28 Apr
+ 2023 23:47:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230428160038.3534905-4-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+References: <20230428084922.9834-1-liwang@redhat.com> <ZEufJa+TyZdY9gsq@yuki>
+ <CAEemH2fcvpRLS7-rdpiGt-fqEwXCiAb-jpRdisb33axhdP3CoA@mail.gmail.com>
+ <ZEvGchayVsZfrAH5@yuki>
+ <CAEemH2femWH5U98nvsnCR2OrZee1aBjGY7nnS3PX95u2NX6QgQ@mail.gmail.com>
+In-Reply-To: <CAEemH2femWH5U98nvsnCR2OrZee1aBjGY7nnS3PX95u2NX6QgQ@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Sat, 29 Apr 2023 14:47:36 +0800
+Message-ID: <CAEemH2cFjq8d9ce-GKDwQWsXCMnbNCMTRpoZd37tcGj477AK9Q@mail.gmail.com>
+To: Cyril Hrubis <chrubis@suse.cz>, Wei Gao <wegao@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/4] nfs05.sh: Lower down the default values
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [RFC PATCH] tst_cgroup: Avoid mixing mounts V1 and V2
+ simultaneously
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,68 +89,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
-
-> nfs05_make_tree.c runs make which needs on Btrfs quite a lot of
-> temporary space. This is a preparation for the next commit which
-> start using all filesystems via TST_ALL_FILESYSTEMS=1. Currently we use
-> 300 MB, which was not enough for Btrfs:
-
-Also, based on this detection we could add support for tst_device acquire SIZE
-into tst_test.sh to support more than the default 300 MB (as we see the actual
-use is obviously less for some filesystems). This would need to check size with
-tst_fs_has_free.
-
-Even we don't add this feature, it'd be more friendly to check for space
-before creating the loop device:
-
-if ! tst_fs_has_free $TST_TMPDIR 300MB; then
-	tst_brkm TCONF "Insufficient disk space to create a backing file for loop device"
-fi
-
-To be honest, I'd like to merge this patchset first, the rest can wait after the
-release.
-
-Kind regards,
-Petr
-
-> Filesystem     Type      Size  Used Avail Use% Mounted on
-> /dev/loop0     btrfs     300M   62M   20K 100% /tmp/LTP_nfs05.Vau10kcszO/mntpoint
-
-> After lowering the default values 96% (58M) is being used.
-
-> Proper solution would be to detect available size in nfs05_make_tree.c
-> and lower down values based on free space.
-
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> New in v4.
-
->  testcases/network/nfs/nfs_stress/nfs05.sh | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-
-> diff --git a/testcases/network/nfs/nfs_stress/nfs05.sh b/testcases/network/nfs/nfs_stress/nfs05.sh
-> index c18ef1ab4..34151b67a 100755
-> --- a/testcases/network/nfs/nfs_stress/nfs05.sh
-> +++ b/testcases/network/nfs/nfs_stress/nfs05.sh
-> @@ -8,8 +8,8 @@
-
->  # Created by: Robbie Williamson (robbiew@us.ibm.com)
-
-> -DIR_NUM=${DIR_NUM:-"10"}
-> -FILE_NUM=${FILE_NUM:-"30"}
-> +DIR_NUM=${DIR_NUM:-"8"}
-> +FILE_NUM=${FILE_NUM:-"28"}
->  THREAD_NUM=${THREAD_NUM:-"8"}
->  TST_NEEDS_CMDS="make gcc"
->  TST_TESTFUNC="do_test"
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgQ3lyaWwsCgpPbiBGcmksIEFwciAyOCwgMjAyMyBhdCA5OjMw4oCvUE0gTGkgV2FuZyA8bGl3
+YW5nQHJlZGhhdC5jb20+IHdyb3RlOgoKPgo+Cj4gT24gRnJpLCBBcHIgMjgsIDIwMjMgYXQgOTox
+MuKAr1BNIEN5cmlsIEhydWJpcyA8Y2hydWJpc0BzdXNlLmN6PiB3cm90ZToKPgo+PiBIaSEKPj4g
+PiBUaGF0J3MgdGhlIG9yaWdpbmFsIGRlc2lnbi4gV2UgdHJpZWQgdG8ga2VlcCBmbGV4aWJsZSBi
+dXQgaWdub3JlZAo+PiA+IG9uZSBleGNlcHRpb24gVjEgbW91bnRzIGFsbCBjb250cm9sbGVycyBh
+bmQgVjIgb25seSBiYXNpYyBtb3VudC4KPj4gPiAoTm8gY29udHJvbGxlcnMgY29uZmxpY3QgaW4g
+dGhpcyBtb3VudGluZykuCj4+ID4KPj4gPiBGcm9tIG15IG9ic2VydmF0aW9uLCBpZiBhIHN5c3Rl
+bShlLmcuIFJIRUw4KSBvbmx5IGFubm91bmNlcwo+PiA+IENncm91cCBWMSBzdXBwb3J0IGJ1dCBk
+b2VzIG5vdCBndWFyYW50ZWUgVjIgdG8gYmUgdXNlZC4KPj4gPiBBIHRlc3QgcmVxdWlyZWQgJ0NU
+UkxfQkFTRScgY291bGQgbW91bnQgVjIgc3VjY2VzcyBidXQKPj4gPiB0aGF0IFYyIGlzIG9ubHkg
+cGFydCB3b3JrIGFuZCB0ZXN0IHdpbGwgZ2V0IFRCUk9LLgo+PiA+IFdlIGFyZSB1bmFibGUgdG8g
+c2F5IHRoaXMgc2l0dWF0aW9uIGlzIGEgYnVnLgo+Pgo+PiBTbyB0aGUgVjIgZG9lcyBub3QgYWN0
+dWFsbHkgd29yayB1bmxlc3MgdGhlcmUgaXMgYXQgbGVhc3Qgb25lIGNvbnRyb2xsZXIKPj4gZW5h
+YmxlZD8gVGhhdCBzb3VuZHMgbGlrZSBhIGJ1ZyB0byBtZSwgbXkgc3lzdGVtIGFjdHVhbGx5IHVz
+ZXMgdjEKPj4gY29udHJvbGxlcnMgYW5kIHVuaWZpZWQgaGllcmFyY2h5IGF0IHRoZSBzYW1lIHRp
+bWUuIFRoZSB1bmlmaWVkCj4+IGhpZXJhcmNoeSBpcyB1c2VkIHRvIGdyb3VwIGRlYW1vbiBwcm9j
+ZXNzZXMgYW5kIGtpbGwgdGhlbSB3aXRoIHRoZQo+PiBjZ3JvcHUua2lsbCBpZiBuZWVkZWQuCj4K
+Pgo+IEhtbSwgbGV0IG1lIGludmVzdGlnYXRlLi4uCj4KCkFmdGVyIHRhbGtpbmcgd2l0aCBvdXIg
+Q2dyb3VwIGNvbGxlYWd1ZXMuIEkndmUgYmVlbiB0b2xkIHRoYXQgb24gbXkgUkhFTDgsCnRoZSAn
+Y2dyb3VwLmtpbGwnIGlzIHRvbyBuZXcgdG8gaGF2ZS4KClRoZSBkZWZhdWx0IENncm91cCBpcyBW
+MSBhbmQgaWYgd2Ugd2FudCBWMiBzaW5nbHksICBpdCBjb3VsZCBiZSBleHBsaWNpdGx5CmVuYWJs
+ZWQKdmlhICJzeXN0ZW1kLnVuaWZpZWRfY2dyb3VwX2hpZXJhcmNoeT0xIiBrZXJuZWwgcGFyYW1l
+dGVycy4gQnV0IHNvIGZhciBWMgppcyBub3Qgc3VwcG9ydGluZyBzdWNoIGEgbmV3IGZlYXR1cmUu
+IFRoYXQncyB3aHkgSSBjb3VsZG4ndCBmaW5kCidjZ3JvdXAua2lsbCcKYWZ0ZXIgbW91bnRpbmcg
+VjIgb24gUkhFTDguCgpBbmQgdGhlIG1haW5saW5lIGtlcm5lbCBtZXJnZXMgdGhpcyBmZWF0dXJl
+IHNpbmNlIHY1LjE0LgokIGdpdCBkZXNjcmliZSAtLWNvbnRhaW5zIDY2MWVlNjI4MDkzMTU0OGYK
+djUuMTQtcmMxfjEwOF4yfjgKClNvLCB0aGUgcHJvYmxlbSBpcyBub3QgY2F1c2VkIGJ5IG1peGlu
+ZyBWMSBhbmQgVjIuIEkgbWlzdW5kZXJzdG9vZCBpdApiZWZvcmUuCgpQbGVhc2UgaWdub3JlIG15
+IHBhdGNoLCB0aGUgcHJvYmxlbSBjYW4gYmUgcmVzb2x2ZWQgYnk6CgorICAgICAgIGlmICghU0FG
+RV9DR19IQVMoY2dfY2hpbGRfdGVzdF9zaW1wbGUsICJjZ3JvdXAua2lsbCIpKSB7CisgICAgICAg
+ICAgICAgICBjZ19jaGlsZF90ZXN0X3NpbXBsZSA9CnRzdF9jZ19ncm91cF9ybShjZ19jaGlsZF90
+ZXN0X3NpbXBsZSk7CisgICAgICAgICAgICAgICB0c3RfYnJrKFRDT05GLCAiY2dyb3VwLmtpbGwg
+aXMgbm90IHN1cHBvcnRlZCBvbiB5b3VyCmRpc3RyaWJ1dGlvbiIpOworICAgICAgIH0KKwoKdG8g
+c2tpcCB0aGUgdGVzdCBncmFjZWZ1bGx5IGlmIHRoZXJlIGlzIG5vICdjZ3JvdXAua2lsbCcgaW50
+ZXJmYWNlLgoodGh1cyBHQU8gV2VpIG5lZWRzIHRvIHJlYmFzZSBoaXMgcGF0Y2ggYWdhaW4pCgot
+LSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
+LmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
