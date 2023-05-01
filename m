@@ -4,144 +4,149 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49E0AC77B73
-	for <ltp@archiver.kernel.org>; Mon,  1 May 2023 13:57:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BA10C77B61
+	for <ltp@archiver.kernel.org>; Mon,  1 May 2023 14:10:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D00F23CC968
-	for <ltp@archiver.kernel.org>; Mon,  1 May 2023 15:57:41 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id B77AC3CD938
+	for <ltp@archiver.kernel.org>; Mon,  1 May 2023 16:10:28 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4E1063CB920
- for <ltp@lists.linux.it>; Mon,  1 May 2023 15:57:28 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by picard.linux.it (Postfix) with ESMTPS id 00A6F3CB8C8
+ for <ltp@lists.linux.it>; Mon,  1 May 2023 16:10:13 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 76822600543
- for <ltp@lists.linux.it>; Mon,  1 May 2023 15:57:13 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 73F9E1000649
+ for <ltp@lists.linux.it>; Mon,  1 May 2023 16:10:06 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1682949437; x=1714485437;
+ t=1682950207; x=1714486207;
  h=date:from:to:cc:subject:message-id:mime-version;
- bh=PQaySiOqOZcQAtuS28eKWRmm184PHVU9hTq9Zcjxjn8=;
- b=fi30wRPqKjrH3KiVwdknevX8mxlUFo2vPSUJdBx6yZqRZktm8YYAsIP2
- Pd8y3SS0Qqf4k+rL40Eyw5eTwnelgVNHTEr8gbWJqvoV9rjRXBHWMILZ8
- ACWZNvLWlskAP21AbgR+ni6T2v4bhpfxN8ZZE5e6395h/M69KRsOS+NpJ
- QRZX4jCb66xpToqWeiWUq/aJHDe21cHpy85chG7Zp3tv2uHDIJH1QDz7t
- qv6gq30pnZPLWNIKNgFzksj0VYP8jzgfUAElHh2qN2GEkGzKKO6Mx8eFq
- bhvGAxHppr54npKPmwqBsTg5XkOyM+SUlqDLr23RY8lXn4L/IUsaUn9kJ Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10697"; a="350217357"
+ bh=94femwfVCtAkxoT53DCQQdLDH84z3gP9blcLvh0Hsto=;
+ b=glLMDmb6GMBqBjFufB0PEJvwHUPB02B3yIBk5fDyTKZ9DpkkXz8in9Mi
+ AGMFl96jKlEQQGtWtPwvnPQaaHnIcrr2TTl8nqFuzF1ztyJ7WJZYKikB+
+ mCKuIe342+E07HZYZvYJxTi1TO3nRvIRWAOo1y2nM35BzBYRRj8YYHpsq
+ go5AMcKfU3B90K2DlrCqK30uMIztkCGllyEOSKTZJe4ULSjpgrVCre74l
+ 8Qu+IfAkSGmyIAjLUXcF9X1FQ98evNdli5cnPQWAgMwnAqEVuKhAAexhj
+ MQy63CHEbP93nfXmgSQc6JILIlrhThzOZCooirwubKi/ME8vDAY+lMDKI Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10697"; a="346956078"
 X-IronPort-AV: E=Sophos;i="5.99,241,1677571200"; 
- d="xz'341?yaml'341?scan'341,208,341";a="350217357"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 May 2023 06:57:01 -0700
+ d="xz'341?yaml'341?scan'341,208,341";a="346956078"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 May 2023 07:09:55 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10697"; a="695796763"
+X-IronPort-AV: E=McAfee;i="6600,9927,10697"; a="839888675"
 X-IronPort-AV: E=Sophos;i="5.99,241,1677571200"; 
- d="xz'341?yaml'341?scan'341,208,341";a="695796763"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
- by orsmga002.jf.intel.com with ESMTP; 01 May 2023 06:56:53 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ d="xz'341?yaml'341?scan'341,208,341";a="839888675"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+ by fmsmga001.fm.intel.com with ESMTP; 01 May 2023 07:09:55 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 1 May 2023 06:56:52 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ 15.1.2507.23; Mon, 1 May 2023 07:09:54 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Mon, 1 May 2023 07:09:53 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
  fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Mon, 1 May 2023 06:56:52 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ 15.1.2507.23 via Frontend Transport; Mon, 1 May 2023 07:09:53 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.42) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Mon, 1 May 2023 06:56:51 -0700
+ 15.1.2507.23; Mon, 1 May 2023 07:09:53 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PYI4LYUf48JZ3lj61dBEh0+v0V7MMSXqvvsj1mSth7Xqr82n1oqrl2cVIdavy7G/Us+/rAmGdeMFmpOL3pOQkA937YG3VuZwGVQBRw3jjLf9+o4P8Q4O79fCs/2PlwIwr9ob62qccIraVVBAna/8OPQR1chjSXFjVhInb30MtlCr6bi5ZhLi+Y5BkvSfLyBOg95m7Flhsmvl6vHuBzKgQjPY9Q1k/+2J4SdoGukpa78DmNV8XyldVKoVGxl4LfQKtqv4UamgAnt/AO5Iv7o2SEoJy+AEiWwPUK6vMG4gk0x7+Ufi7EwjHTPmPn+YrU0q3eNrTxVjBu3Flq5QMotUsg==
+ b=TkpXcQ1YIAT0G2RTbDbYO+P6wnEG04an5fMqnJg8MpLtTLBtzyfPHz5H8RRbL3a/C16ltSXaZFCkZpWtnzKHtRW/rp/8SkwP2erahcRYdaX7cAEboIfk/nLKBuSLDrqykVJrdGGNdNKndutkJu4dtTFw8WU9hINM5gPZqs+YOx9ckHHxGM63Abc+y76TkgKyRCpLs+/MEzSewb+phX3+TDeYcA0UwJ3QGjalXqKXLTdQrc78xWNBF84ymbDQZivH8Csc1fkl8sahoIASRvEoqbT+6pLDE7zV9mDmnZwJ5OhsIkMXk++farkET6ElUEvt87l5pMnn99kM/IjskdBppw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GvaOfuIOOJM2IlydhmlQOS79N+9Hd/apVSZFrBEL6/c=;
- b=jIP9uciUOQ8ssP7IkvgswRu0uoS5pzxMfjAiSqgMzU2FlkIJ2Avel+BYc3KBpF8qXS4xB+xCl6VDEYb/QL++5aiElLIy3SNwC+RdJjyg2HjAqJ/BohAF7uwgmGbSgEyIpk5OamzvVD5UruO5I6eyfH4Ygja6T0Z0OO5+tkgF8h5YePMLYtK/ksIlnazZHZtS8k7r9ryyp8Bk8N7rUJ8YMK7fubmrGCoeNwLDCRtOh6FGjrOzIqq0eHmwOpOiq/rOSj4dWIgSb70Yf33v11UyHSGvo3FnxJ93PbDmG8rqU6mi5jKgqwRognn5U61UPdLn6jWeVsPpR9WrWtYRfexqoQ==
+ bh=HwBLJUVNBNcqLTu8xFDbw2jFebRMc9w0l/yjZMNx1JQ=;
+ b=ha77ZYV3cT30/P9rRvSkIDsnJ9IXVoQvampLEtq3Xwtd3CV+7U6Zu2eLYEk8TtNwm++tqpicSV1Cs4aUc41wFJrOfSYD0CagmOd0A6qcbX2ibxOOACoNQ8s75dj+wLTW76P8NiuG2TF3Z3CeK3ukRmLVqh6epb61p5XuKAYApuWhfzSDEGw/c02mguTHMcVJOSR7NoYZTXBU1JODB5iSXdfRrdGXs1mk5zyaUBmyTC7q+4JporNhYTpw2ZJbPAo8itorVs5bT+QBdfwg+U81Nv+s9OC/pRZzbhR57vHfkZEL902WOv2d8W9eBTLc+EIX08AFtS+i8aKdc8Cd7qJ+7Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
- by CY8PR11MB7687.namprd11.prod.outlook.com (2603:10b6:930:74::14)
+ by SA3PR11MB7656.namprd11.prod.outlook.com (2603:10b6:806:320::7)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.30; Mon, 1 May
- 2023 13:56:48 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.32; Mon, 1 May
+ 2023 14:09:48 +0000
 Received: from PH8PR11MB6779.namprd11.prod.outlook.com
  ([fe80::e073:f89a:39f9:bbf]) by PH8PR11MB6779.namprd11.prod.outlook.com
  ([fe80::e073:f89a:39f9:bbf%6]) with mapi id 15.20.6340.029; Mon, 1 May 2023
- 13:56:47 +0000
-Date: Mon, 1 May 2023 21:56:38 +0800
+ 14:09:48 +0000
+Date: Mon, 1 May 2023 22:09:38 +0800
 From: kernel test robot <oliver.sang@intel.com>
-To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Message-ID: <202305012111.e6c28043-oliver.sang@intel.com>
-Content-Type: multipart/mixed; boundary="F3vYzJWACDojeQVW"
+To: Jeff Layton <jlayton@kernel.org>
+Message-ID: <202305012130.cc1e2351-oliver.sang@intel.com>
+Content-Type: multipart/mixed; boundary="PHUGj3PURc/sBqn5"
 Content-Disposition: inline
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-ClientProxiedBy: SG2PR06CA0184.apcprd06.prod.outlook.com (2603:1096:4:1::16)
+X-ClientProxiedBy: SG2P153CA0022.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::9)
  To PH8PR11MB6779.namprd11.prod.outlook.com
  (2603:10b6:510:1ca::17)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|CY8PR11MB7687:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed6044f2-4ea2-41a2-6e25-08db4a4be776
+X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|SA3PR11MB7656:EE_
+X-MS-Office365-Filtering-Correlation-Id: b5ece585-ef92-4dea-c0d9-08db4a4db891
 X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1gkqSm6HlwnoRKcRy0ZTBbeNrEk8jiSyFbABeG7Y5+3IZx8PBGX+0DIzQuVi1i0aZKb1sgCkeeNSBJkgNIy2OpaMpd7Mgi1hB3NZODhIpJ9h3p6/fr00wKV57qlazM0xzBRbLZMG4b8JAQ/i2Gtw4jzpoVjEUhXG4WxZ8QvlnCLy9GQeyEMMXIPGzldGj6au+1WOhTvKVzrmVkEM4JK2fisgBqConOQQ4J9ihfHUlvTXIqvkfyUFJYw3cIHrq/GR+L4v1EJya/7/CjIUAs72WC/8R+bbUwrPc0V0gncuqVKqxxLsJOXwqNa4akMfeYc6eiwwE6NbqBMqxr4T1zf7+rDxbS3MNYUpR01YBiMTbPj1XjImzNFKV4I/4711t/xMHip7qVPTp/wTNlAVOcdGyEZ1ZWuSnH59YSni++zK+sSlbHfv4rbysUOi+GZ/bSTheXOaOjTsBknfAkxtq3d6wZ7lnnlTmbUQwk4eScExPG4nk5U5ocFO8XzW113c/kCZUhYj5IcmSoS0xNltwenBin8OLHBVgYNT7tvaETh5GEhgjZewAdcX5Y9F+jEGN4vXjH1FooexEgVSdPa1Ts59KQ5Rn+4lkYyF58nuQjOrlNPOL94Cr83HQVNVA5IdPTMVKtkOL9c3NhOs4dys2eWn9M4qN+aTZFJ3frPcQx+au4s=
+X-Microsoft-Antispam-Message-Info: DlcvpLBaQqtMs4EeHsYt8Z3IoPIIr38ZTMP1qZJkRqchbtOcdJ7Tpp/zBFiy7r2GcoIPzjchx1/iJlpkYHN+f8jhCzd91HwMajoh1N+NLUCaAth89xonNlrFAeqpd3ZCBGQL1ND7ouUNSagfAijLBPboXhLcsLZWq70xOWllinifdhwoW+gY+3PCImZdP0HXPDcqTKel5c5s2nyQ5mEIjGOjGYiU42iiPMQ5APNGZSKfVUxFIoF6qkJVRRO7RarwGLHPABlsNRb8/Z3j+Dl2t78xy55Tadrf7ICsaqIMJsUCMA9jyiny5Cg5yE+54DLw2zE/UZI5zQlfMBWXyzZLqV3SL1a8MPpoyVY88YPBjdkoK7LColaKZGILfcO8dDPM4RPHMKA4nue37C1YVsSF4lWdl4BAdG5V5mQjh4T8LgwhzD4o4uu3tnB/suuyqBeKiJQyXWfCBTxBeRtZ9r0bhgEPv1pWsrBFa9uKRLJlhKw/0U2xo0LkCIzWRGHYd7sI6LXG3KNy/toKPQ4tPpI/HZAL45qkZZmqf8dqPHjVmLKvKqW4jPtikOLL9moGljpy2qfTZshcEhpSjzRNkXWvbB3oCTxs0zefkXlchZpT7t4h5ndhEP6Sc0y6w00H3B/MnCSLu9qOv62jykVPVi72zw==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:PH8PR11MB6779.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230028)(376002)(346002)(366004)(396003)(136003)(39860400002)(451199021)(66946007)(66556008)(6916009)(66476007)(4326008)(186003)(316002)(82960400001)(21490400003)(6486002)(478600001)(44144004)(36756003)(6666004)(86362001)(966005)(6512007)(6506007)(26005)(1076003)(2906002)(2616005)(38100700002)(83380400001)(5660300002)(235185007)(8676002)(8936002)(41300700001)(2700100001)(505234007);
+ SFS:(13230028)(346002)(396003)(376002)(39860400002)(366004)(136003)(451199021)(107886003)(966005)(44144004)(6486002)(2906002)(83380400001)(86362001)(36756003)(21490400003)(2616005)(4326008)(1076003)(6512007)(66476007)(66946007)(8936002)(478600001)(8676002)(6916009)(6666004)(66556008)(6506007)(316002)(5660300002)(235185007)(82960400001)(41300700001)(186003)(26005)(38100700002)(2700100001);
  DIR:OUT; SFP:1102; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?p1hlR7aY9GUgFBaVqaOiaK0BlMMemBiLaxK5i67bj7yQg58kHbV24QdOKV44?=
- =?us-ascii?Q?l4a/qnZ99neML2/Slj+6BZYY30lJVXX0CBL1oZfD0Px+vaTLUqcciEJKMmkG?=
- =?us-ascii?Q?K3bcyMvbsaEvRq/9iltgoCB4drMaqcx7t2VV0/dk00FU1TlAHbsYH1QJREoH?=
- =?us-ascii?Q?DJuaFe5ODMTOdMv3UEvBeeHSz7pEhv/l33mc9BaA0+BFsoJvgSaa+A6Z7WoW?=
- =?us-ascii?Q?lBlDyQguAtLyGa42GhAA+BWEwvq3OmWviXJeLH0ybKGk2vRDfyKSgbFAmFab?=
- =?us-ascii?Q?cbviq9e562sVC9CFC/MwOdQ3xEgC/rMDiNNsljhLG7p5jsByTpOK10YieAEI?=
- =?us-ascii?Q?wlOwOhtlD4eybgBLVhjcjLptCtQOon6yypkEzL/aozTe2zPaMoGmt+bmaYyb?=
- =?us-ascii?Q?bFpcQOe4L8Vpd1KVlEM53u7lcgfVVD+AuqJNT3Zfj6oqY+pOqNpys0pOCZQe?=
- =?us-ascii?Q?Orly1AVa3nhBy5r7r6LMYEjN+eDyVZ7ujCfcnAfV/Mbce3R6XBB5UvEFMsDn?=
- =?us-ascii?Q?l2/yjJjtCrhLk8USCF8dAnSVFvIRGY4T5iDu354iBcStBCgvqyL0NY6bR2RB?=
- =?us-ascii?Q?Hz4SrWTvmMaYHZ9MZJp0dWto5+42tH5zbLjEUPhfPpSR7UaOsH0g9KyqZSGi?=
- =?us-ascii?Q?0FKs9sifVx+gzvQJD6YZ7JVIpExmI61vf3fXe+shQXBhXPPrwpRWLGwh2Ihz?=
- =?us-ascii?Q?+DWOX0tts3en9KfXn7FJ5TjTEpzJO93eAhB+x1fecOA+Zp4V0Kfjf6N7LE9O?=
- =?us-ascii?Q?Vh/xS+QcLfk694CG2g9KWxSdR/d/SSFxpFkBs/5euT154SK+MJkMo9Wrf1Cd?=
- =?us-ascii?Q?VtCzWNWO5NNJEiSDUDro32blQfkxkX9Zvu97fvoNRj8t5EuBqCVaOUiQ6mYR?=
- =?us-ascii?Q?ysLpk3sYUCdMqKvUvFP/28IzBbxYFxblyVjf6YSrGY8ypeqh3Rd1XP70aUT6?=
- =?us-ascii?Q?S8pMHFf3CcLqZ5QTiAMCiLBFgTBGD4xH4fj6HuKFvr4xnH6tyQncfjAxtO8d?=
- =?us-ascii?Q?lapGYe87bjiJ6bU048h9GcFKyj04NxymXubpl/GJpnUm4jV19j24D2IyhQHn?=
- =?us-ascii?Q?xhDm3d/l6BxlASiFlm/0kAYrSMjHVnXBDx0oqXw7q/3vrPKNN6dGn3YOoSL1?=
- =?us-ascii?Q?uXa+KUDf30leI35l+g4YO+MXyBFVljWB0vBvgvxlbaxXeWOcVh1FoA0oZp/Y?=
- =?us-ascii?Q?nnbeJ21LBluf1MtmGWRFLzdUauEVmB0/AQYSFmtdkELp9MHOh3OD5MCx+ROe?=
- =?us-ascii?Q?R0tXx5ZTwG3IX7lkGyHuVS5P5py3NS4bLpw0c2LQuJnGiAuH0ulopbYetZou?=
- =?us-ascii?Q?qSoa8xABrUMvH3RXZ93YUWbb0pcKNlKlh8uQkwYJdGyrYsx562rrpzxaNkY2?=
- =?us-ascii?Q?tBN+ss6lQ/Xn/Lgt9SsqlFMi8/9PIVGf2S6kuqJM0j3JHtp/mGaTMsEnQ7bC?=
- =?us-ascii?Q?Brod2a5yUwcvDz8/bgpInu/BG7WiaPBW/4YY2RGr4YcuEhdV2Jtj63U8zTJP?=
- =?us-ascii?Q?SV3gLkMN/GBXjTDGo/da3xlkLKYzFWGEyBp8qzqqba8zWbESTCtn7vnLhHIE?=
- =?us-ascii?Q?bcj3WWukjEsLRLDwcZ97aahlxVlDL4Ezz7df63Kz?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed6044f2-4ea2-41a2-6e25-08db4a4be776
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+iuV28oerDy6QN7n2XgiweEvkfD5oLwAxGI86VjB9IyqBBSkj/Uke05Rxi/o?=
+ =?us-ascii?Q?aLxxnccov/bAJKByXjNb3o3jdTm5CiGpthy9mUFWS4I81hEKCQbOdp0uSo8W?=
+ =?us-ascii?Q?QhZbgajmxqEHWrRXyHHG3YBwJZcw8jIlyqfxgBmDMM1w9hv7GN1gGgEYgLbU?=
+ =?us-ascii?Q?d+AxkCMdxSwV/7xZN1dZ8jJTf3iw03yjYRZevd2c3H78ISQJk4dfln7XFhOB?=
+ =?us-ascii?Q?aojrxwMHlfV+rRc6ZO/f4BozRgURXsETXoeizg37BMuZlq49sE9TJm/ICJ+Z?=
+ =?us-ascii?Q?//jPwg+lmWyvr45npyobLH66S2SXtfpBTnZm4fz5rhpBXvvh6JF9UZDcLdez?=
+ =?us-ascii?Q?3v4S8/EnGd5EG6XAhKIhgHvOnDG2sRkG1DccAKCGoUchJPyz98c5Mt0jKoeA?=
+ =?us-ascii?Q?m7nHIexyz8zn067Nc+zxWKu0n1LnnTarywG8E6VA4tHF0pmp2Z7mIPTtFWqK?=
+ =?us-ascii?Q?GMlYttLnrRr0ZPlrBFqo822MldnGm6mQTmTNLIMDjZBNwRPNoJAMQCPSK5qZ?=
+ =?us-ascii?Q?xRAObnjeNvPYTZP/+Oyx3f0Dca4kzfRItSn1N+/cr+5c8malDbvqnZQKvOTP?=
+ =?us-ascii?Q?sIpuoS+d18UtCO/O+Sl9cJyX67kzj3vu5QUAxTXN/k8Se4mIywC+rJxCOp/X?=
+ =?us-ascii?Q?JdzLsxDDlJEePWSAp0Ur2JzH8M4LYgGacQHRpYpjFBEr3qXiuzPPtcTpPVq1?=
+ =?us-ascii?Q?Aumir9xUMq58VIWqhbqS4OEL2sVCXiHrlavqR6ap5EKN1QUxMM78Lnl1D2PR?=
+ =?us-ascii?Q?uc4MX3UzRl4wI0KsqnzM/gn9MJSmrXS1pQUmEjpL7Srb88WNHukZkRmw8TJN?=
+ =?us-ascii?Q?b5F2qGXArD+JpJyewSgw5iOHwh93rEN1ZTsbG6E4jPQBOWG10tSZRw8YF/Tq?=
+ =?us-ascii?Q?cdRU5Y/bueeXNN6LzgcSDiJ/etVaFoZnIWeSjY654avlJPp4wPPFZG3rlgnc?=
+ =?us-ascii?Q?OMKjaq+2opXy1iYyJl+FEJm2NZCeVdcs9bDGmLChxVjOpqZ/dAbaIsdwKhgO?=
+ =?us-ascii?Q?wl3idTPP7ZeBQCysomj1P0bGQB6xz4IM2yfrXUruDupOE7fxyU/ddcGsfqXt?=
+ =?us-ascii?Q?S0wiGriLc4yl1y+R5W4GyfhwxbTQWqHRvrONVaNxmA6eUtVC/Y0k/u13Ia4I?=
+ =?us-ascii?Q?+dfA8VkDR9wf8BIjCaTJhTZdHc/q+3Yt0kkwCeWR+NoUcgMNq66s7LchpELN?=
+ =?us-ascii?Q?bLdtef1WOf6oNFXXZTf6Jhs70iX34eFguQEKk4Fo8+gRqosQr8u2fZtd88kQ?=
+ =?us-ascii?Q?ZpOHve7ZIcuDp6WUVWBz4xVe8PgMmvse7V2vA0Cn2b4N7uBndQ8RqU8w0fJc?=
+ =?us-ascii?Q?fJ4lyoY7RZIdPhOywjmwNnYKcGIXzxo0XRTY59ZbA2nEgctdExY553/rdqGV?=
+ =?us-ascii?Q?g7I2a7j9Z+09ERJv/CaFRhdxZ9V3BRYdmZBzHXi4LuSIH75i4ZphpFVCg9/E?=
+ =?us-ascii?Q?xWywbqwB3KfPqupY8OPGbXytnQwt4NX38eRQ3JPtgLPEkWXgrINsS6IfHJVS?=
+ =?us-ascii?Q?hxftLJ4oGW2iDxklfIJabHDdRQv2vws27mLgj3NScNklhTi/WDjUrLl3Rvyy?=
+ =?us-ascii?Q?hwJwPOPYd1jqWB1o5W86nuIRJRHAlN6sVHXqAulyMBlc3wOcyLRBiPBr4DmE?=
+ =?us-ascii?Q?mw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5ece585-ef92-4dea-c0d9-08db4a4db891
 X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2023 13:56:47.7474 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2023 14:09:48.6753 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g14CmijQaHJ2rBUtOrZNVDlDJUaKgGaPeaa5P5T0POEZMi428duOB+w/17W6QBVRGaQIktWlBL7wkfepGg9ZlQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7687
+X-MS-Exchange-CrossTenant-UserPrincipalName: eo3/yaK77flLO+WcdGtNw/a/E1m2tHurK6SigYO4bFChqpubRoLSCL2MmiRIXu9uN5vBwic2laXs6B/JKG2AbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB7656
 X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: [LTP] [linus:master] [thermal] ebf5197102:
- BUG:KASAN:global-out-of-bounds_in_param_get_int
+Subject: [LTP] [jlayton:ctime] [ext4]  ff9aaf58e8: ltp.statx06.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -153,27 +158,22 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkp@intel.com, linux-pm@vger.kernel.org,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-kernel@vger.kernel.org,
- oliver.sang@intel.com, oe-lkp@lists.linux.dev, ltp@lists.linux.it
+Cc: oe-lkp@lists.linux.dev, linux-ext4@vger.kernel.org, oliver.sang@intel.com,
+ lkp@intel.com, ltp@lists.linux.it
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
---F3vYzJWACDojeQVW
+--PHUGj3PURc/sBqn5
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
 
 
 Hello,
 
-kernel test robot noticed "BUG:KASAN:global-out-of-bounds_in_param_get_int" on:
+kernel test robot noticed "ltp.statx06.fail" on:
 
-commit: ebf519710218814cf827adbf9111af081344c969 ("thermal: intel: powerclamp: Add two module parameters")
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-
-[test failed on linus/master 825a0714d2b3883d4f8ff64f6933fb73ee3f1834]
-[test failed on linux-next/master 92e815cf07ed24ee1c51b122f24ffcf2964b4b13]
-[test failed on fix commit ae817e618d4b5d221daae34d32a39476e4bdcb36]
+commit: ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1 ("ext4: convert to multigrain timestamps")
+https://git.kernel.org/cgit/linux/kernel/git/jlayton/linux.git ctime
 
 in testcase: ltp
 version: ltp-x86_64-14c1f76-1_20230429
@@ -181,87 +181,62 @@ with following parameters:
 
 	disk: 1HDD
 	fs: xfs
-	test: fs-02
+	test: syscalls-04
 
 test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
 test-url: http://linux-test-project.github.io/
 
 
 compiler: gcc-11
-test machine: 8 threads Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz (Skylake) with 16G memory
+test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz (Skylake) with 32G memory
 
 (please refer to attached dmesg/kmsg for entire log/backtrace)
 
 
 
+
 If you fix the issue, kindly add following tag
 | Reported-by: kernel test robot <oliver.sang@intel.com>
-| Link: https://lore.kernel.org/oe-lkp/202305012111.e6c28043-oliver.sang@intel.com
+| Link: https://lore.kernel.org/oe-lkp/202305012130.cc1e2351-oliver.sang@intel.com
 
 
-[  352.566353][ T8555] ==================================================================
-[  352.574251][ T8555] BUG: KASAN: global-out-of-bounds in param_get_int+0x7b/0x90
-[  352.581539][ T8555] Read of size 4 at addr ffffffffa04fa4a0 by task read_all/8555
-[  352.588988][ T8555]
-[  352.591169][ T8555] CPU: 4 PID: 8555 Comm: read_all Tainted: G S                 6.2.0-rc5-00083-gebf519710218 #1
-[  352.601391][ T8555] Hardware name: HP HP Z240 SFF Workstation/802E, BIOS N51 Ver. 01.63 10/05/2017
-[  352.610305][ T8555] Call Trace:
-[  352.613441][ T8555]  <TASK>
-[  352.616229][ T8555]  dump_stack_lvl+0x38/0x48
-[  352.616993][  T309] read_all.c:447: TINFO: Worker 8543 (6): Stuck for 2242278us, restarting it
-[  352.620567][ T8555]  print_address_description+0x87/0x2a1
-[  352.620573][ T8555]  print_report+0x103/0x1e9
-[  352.629148][  T309]
-[  352.635544][ T8555]  ? kasan_addr_to_slab+0xd/0xa0
-[  352.635548][ T8555]  ? param_get_int+0x7b/0x90
-[  352.635551][ T8555]  kasan_report+0xb2/0xe0
-[  352.635554][ T8555]  ? param_get_int+0x7b/0x90
-[  352.635557][ T8555]  param_get_int+0x7b/0x90
-[  352.664152][ T8555]  param_attr_show+0x132/0x1f0
-[  352.668762][ T8555]  ? __mutex_lock_slowpath+0x10/0x10
-[  352.673882][ T8555]  module_attr_show+0x42/0x70
-[  352.678403][ T8555]  sysfs_kf_seq_show+0x1ff/0x3d0
-[  352.683183][ T8555]  seq_read_iter+0x3f2/0xff0
-[  352.687610][ T8555]  ? fsnotify_perm+0x13b/0x4a0
-[  352.692821][ T8555]  ? kasan_save_free_info+0x2e/0x40
-[  352.697855][ T8555]  vfs_read+0x577/0x800
-[  352.701855][ T8555]  ? kernel_read+0x130/0x130
-[  352.706288][ T8555]  ? build_open_flags+0x450/0x450
-[  352.711152][ T8555]  ? rseq_get_rseq_cs+0x5d0/0x5d0
-[  352.716013][ T8555]  ? task_work_run+0x156/0x220
-[  352.720633][ T8555]  ? __fget_light+0x51/0x220
-[  352.725076][ T8555]  ksys_read+0xf1/0x1c0
-[  352.729066][ T8555]  ? __ia32_sys_pwrite64+0x1e0/0x1e0
-[  352.734189][ T8555]  ? switch_fpu_return+0xeb/0x1e0
-[  352.739048][ T8555]  do_syscall_64+0x39/0x80
-[  352.743309][ T8555]  entry_SYSCALL_64_after_hwframe+0x5e/0xc8
-[  352.749037][ T8555] RIP: 0033:0x7fd8b5b0303d
-[  352.753299][ T8555] Code: 31 c0 e9 c6 fe ff ff 50 48 8d 3d a6 55 0a 00 e8 39 fe 01 00 66 0f 1f 84 00 00 00 00 00 80 3d a1 25 0e 00 00 74 17 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 5b c3 66 2e 0f 1f 84 00 00 00 00 00 48 83 ec
-[  352.772668][ T8555] RSP: 002b:00007ffdba193298 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[  352.780892][ T8555] RAX: ffffffffffffffda RBX: 00007fd8b59f8028 RCX: 00007fd8b5b0303d
-[  352.788678][ T8555] RDX: 00000000000003ff RSI: 00007ffdba193360 RDI: 000000000000000a
-[  352.796465][ T8555] RBP: 000055d829ca77e8 R08: 0000000000000000 R09: 00007ffdba192a30
-[  352.804260][ T8555] R10: 00007ffdba1cb170 R11: 0000000000000246 R12: 000055d829c96012
-[  352.812052][ T8555] R13: 000000000000000a R14: 0000000000000060 R15: 00007fd8b59f4000
-[  352.819844][ T8555]  </TASK>
-[  352.822720][ T8555]
-[  352.824903][ T8555] The buggy address belongs to the variable:
-[  352.830711][ T8555]  max_idle+0x0/0xffffffffffffcb60 [intel_powerclamp]
-[  352.837305][ T8555]
-[  352.839490][ T8555] Memory state around the buggy address:
-[  352.844960][ T8555]  ffffffffa04fa380: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 f9
-[  352.852845][ T8555]  ffffffffa04fa400: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
-[  352.860719][ T8555] >ffffffffa04fa480: f9 f9 f9 f9 01 f9 f9 f9 f9 f9 f9 f9 00 00 00 00
-[  352.868593][ T8555]                                ^
-[  352.873532][ T8555]  ffffffffa04fa500: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
-[  352.881422][ T8555]  ffffffffa04fa580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  352.889293][ T8555] ==================================================================
-[  352.897201][ T8555] Disabling lock debugging due to kernel taint
-[  352.908094][  T309] read_all.c:383: TINFO: Worker 8543 (6): Last popped '/sys/module/intel_powerclamp/parameters/window_size'
-[  352.908106][  T309]
-[  352.938523][  T309] read_all.c:687: TPASS: Finished reading files
-[  352.938533][  T309]
-[  352.938661][ T3642] LTP: starting fs_racer (fs_racer.sh -t 5)
+
+<<<test_start>>>
+tag=statx06 stime=1682919030
+cmdline="statx06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts='-I 256' extra opts=''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+statx06.c:136: TFAIL: Birth time < before time
+statx06.c:138: TFAIL: Modified time > after_time
+statx06.c:136: TFAIL: Access time < before time
+statx06.c:136: TFAIL: Change time < before time
+
+Summary:
+passed   0
+failed   4
+broken   0
+skipped  0
+warnings 0
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=5
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20230127-165-gbd512e733
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20230127-165-gbd512e733
+       ###############################################################
+
 
 
 
@@ -284,14 +259,13 @@ https://github.com/intel/lkp-tests
 
 
 
---F3vYzJWACDojeQVW
+--PHUGj3PURc/sBqn5
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: attachment;
-	filename="config-6.2.0-rc5-00083-gebf519710218"
+Content-Disposition: attachment; filename="config-6.3.0-00004-gff9aaf58e816"
 
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86_64 6.2.0-rc5 Kernel Configuration
+# Linux/x86_64 6.3.0 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="gcc-11 (Debian 11.3.0-12) 11.3.0"
 CONFIG_CC_IS_GCC=y
@@ -397,7 +371,7 @@ CONFIG_CONTEXT_TRACKING_USER=y
 # CONFIG_CONTEXT_TRACKING_USER_FORCE is not set
 CONFIG_NO_HZ=y
 CONFIG_HIGH_RES_TIMERS=y
-CONFIG_CLOCKSOURCE_WATCHDOG_MAX_SKEW_US=100
+CONFIG_CLOCKSOURCE_WATCHDOG_MAX_SKEW_US=125
 # end of Timers subsystem
 
 CONFIG_BPF=y
@@ -479,7 +453,6 @@ CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH=y
 CONFIG_CC_HAS_INT128=y
 CONFIG_CC_IMPLICIT_FALLTHROUGH="-Wimplicit-fallthrough=5"
 CONFIG_GCC11_NO_ARRAY_BOUNDS=y
-CONFIG_GCC12_NO_ARRAY_BOUNDS=y
 CONFIG_CC_NO_ARRAY_BOUNDS=y
 CONFIG_ARCH_SUPPORTS_INT128=y
 CONFIG_NUMA_BALANCING=y
@@ -495,6 +468,7 @@ CONFIG_CGROUP_SCHED=y
 CONFIG_FAIR_GROUP_SCHED=y
 CONFIG_CFS_BANDWIDTH=y
 CONFIG_RT_GROUP_SCHED=y
+CONFIG_SCHED_MM_CID=y
 CONFIG_CGROUP_PIDS=y
 CONFIG_CGROUP_RDMA=y
 CONFIG_CGROUP_FREEZER=y
@@ -927,7 +901,7 @@ CONFIG_CPU_IDLE=y
 # CONFIG_CPU_IDLE_GOV_LADDER is not set
 CONFIG_CPU_IDLE_GOV_MENU=y
 # CONFIG_CPU_IDLE_GOV_TEO is not set
-# CONFIG_CPU_IDLE_GOV_HALTPOLL is not set
+CONFIG_CPU_IDLE_GOV_HALTPOLL=y
 CONFIG_HALTPOLL_CPUIDLE=y
 # end of CPU Idle
 
@@ -975,6 +949,7 @@ CONFIG_HAVE_KVM_IRQ_BYPASS=y
 CONFIG_HAVE_KVM_NO_POLL=y
 CONFIG_KVM_XFER_TO_GUEST_WORK=y
 CONFIG_HAVE_KVM_PM_NOTIFIER=y
+CONFIG_KVM_GENERIC_HARDWARE_ENABLING=y
 CONFIG_VIRTUALIZATION=y
 CONFIG_KVM=m
 # CONFIG_KVM_WERROR is not set
@@ -986,6 +961,7 @@ CONFIG_AS_AVX512=y
 CONFIG_AS_SHA1_NI=y
 CONFIG_AS_SHA256_NI=y
 CONFIG_AS_TPAUSE=y
+CONFIG_AS_GFNI=y
 
 #
 # General architecture-dependent options
@@ -1196,7 +1172,6 @@ CONFIG_MSDOS_PARTITION=y
 CONFIG_EFI_PARTITION=y
 # end of Partition Types
 
-CONFIG_BLOCK_COMPAT=y
 CONFIG_BLK_MQ_PCI=y
 CONFIG_BLK_MQ_VIRTIO=y
 CONFIG_BLK_PM=y
@@ -1268,6 +1243,7 @@ CONFIG_ZBUD=y
 # CONFIG_Z3FOLD is not set
 CONFIG_ZSMALLOC=y
 CONFIG_ZSMALLOC_STAT=y
+CONFIG_ZSMALLOC_CHAIN_SIZE=8
 
 #
 # SLAB allocator options
@@ -1520,6 +1496,7 @@ CONFIG_NF_CONNTRACK_EVENTS=y
 CONFIG_NF_CONNTRACK_TIMEOUT=y
 CONFIG_NF_CONNTRACK_TIMESTAMP=y
 CONFIG_NF_CONNTRACK_LABELS=y
+CONFIG_NF_CONNTRACK_OVS=y
 CONFIG_NF_CT_PROTO_DCCP=y
 CONFIG_NF_CT_PROTO_GRE=y
 CONFIG_NF_CT_PROTO_SCTP=y
@@ -1753,7 +1730,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
 CONFIG_IP_NF_TARGET_NETMAP=m
 CONFIG_IP_NF_TARGET_REDIRECT=m
 CONFIG_IP_NF_MANGLE=m
-# CONFIG_IP_NF_TARGET_CLUSTERIP is not set
 CONFIG_IP_NF_TARGET_ECN=m
 CONFIG_IP_NF_TARGET_TTL=m
 CONFIG_IP_NF_RAW=m
@@ -1863,7 +1839,6 @@ CONFIG_NET_SCHED=y
 #
 # Queueing/Scheduling
 #
-CONFIG_NET_SCH_CBQ=m
 CONFIG_NET_SCH_HTB=m
 CONFIG_NET_SCH_HFSC=m
 CONFIG_NET_SCH_PRIO=m
@@ -1875,9 +1850,9 @@ CONFIG_NET_SCH_TEQL=m
 CONFIG_NET_SCH_TBF=m
 # CONFIG_NET_SCH_CBS is not set
 # CONFIG_NET_SCH_ETF is not set
+CONFIG_NET_SCH_MQPRIO_LIB=m
 # CONFIG_NET_SCH_TAPRIO is not set
 CONFIG_NET_SCH_GRED=m
-CONFIG_NET_SCH_DSMARK=m
 CONFIG_NET_SCH_NETEM=m
 CONFIG_NET_SCH_DRR=m
 CONFIG_NET_SCH_MQPRIO=m
@@ -1907,14 +1882,11 @@ CONFIG_DEFAULT_NET_SCH="fq_codel"
 #
 CONFIG_NET_CLS=y
 CONFIG_NET_CLS_BASIC=m
-CONFIG_NET_CLS_TCINDEX=m
 CONFIG_NET_CLS_ROUTE4=m
 CONFIG_NET_CLS_FW=m
 CONFIG_NET_CLS_U32=m
 CONFIG_CLS_U32_PERF=y
 CONFIG_CLS_U32_MARK=y
-CONFIG_NET_CLS_RSVP=m
-CONFIG_NET_CLS_RSVP6=m
 CONFIG_NET_CLS_FLOW=m
 CONFIG_NET_CLS_CGROUP=y
 CONFIG_NET_CLS_BPF=m
@@ -2254,7 +2226,6 @@ CONFIG_PARPORT_PC=m
 CONFIG_PARPORT_SERIAL=m
 # CONFIG_PARPORT_PC_FIFO is not set
 # CONFIG_PARPORT_PC_SUPERIO is not set
-# CONFIG_PARPORT_AX88796 is not set
 CONFIG_PARPORT_1284=y
 CONFIG_PNP=y
 # CONFIG_PNP_DEBUG_MESSAGES is not set
@@ -2267,7 +2238,6 @@ CONFIG_BLK_DEV=y
 CONFIG_BLK_DEV_NULL_BLK=m
 # CONFIG_BLK_DEV_FD is not set
 CONFIG_CDROM=m
-# CONFIG_PARIDE is not set
 # CONFIG_BLK_DEV_PCIESSD_MTIP32XX is not set
 CONFIG_ZRAM=m
 CONFIG_ZRAM_DEF_COMP_LZORLE=y
@@ -2370,7 +2340,6 @@ CONFIG_INTEL_MEI_ME=m
 # CONFIG_MISC_ALCOR_PCI is not set
 # CONFIG_MISC_RTSX_PCI is not set
 # CONFIG_MISC_RTSX_USB is not set
-# CONFIG_HABANA_AI is not set
 # CONFIG_UACCE is not set
 CONFIG_PVPANIC=y
 # CONFIG_PVPANIC_MMIO is not set
@@ -2574,6 +2543,7 @@ CONFIG_ATA_PIIX=m
 # CONFIG_PATA_NS87410 is not set
 # CONFIG_PATA_OPTI is not set
 # CONFIG_PATA_RZ1000 is not set
+# CONFIG_PATA_PARPORT is not set
 
 #
 # Generic fallback / legacy drivers
@@ -2801,6 +2771,7 @@ CONFIG_NET_VENDOR_MICROSOFT=y
 # CONFIG_MICROSOFT_MANA is not set
 CONFIG_NET_VENDOR_MYRI=y
 # CONFIG_MYRI10GE is not set
+# CONFIG_FEALNX is not set
 CONFIG_NET_VENDOR_NI=y
 # CONFIG_NI_XGE_MANAGEMENT_ENET is not set
 CONFIG_NET_VENDOR_NATSEMI=y
@@ -2927,6 +2898,7 @@ CONFIG_AX88796B_PHY=y
 # CONFIG_NATIONAL_PHY is not set
 # CONFIG_NXP_C45_TJA11XX_PHY is not set
 # CONFIG_NXP_TJA11XX_PHY is not set
+# CONFIG_NCN26000_PHY is not set
 # CONFIG_QSEMI_PHY is not set
 CONFIG_REALTEK_PHY=y
 # CONFIG_RENESAS_PHY is not set
@@ -3236,12 +3208,14 @@ CONFIG_SERIAL_8250_PNP=y
 # CONFIG_SERIAL_8250_FINTEK is not set
 CONFIG_SERIAL_8250_CONSOLE=y
 CONFIG_SERIAL_8250_DMA=y
+CONFIG_SERIAL_8250_PCILIB=y
 CONFIG_SERIAL_8250_PCI=y
 CONFIG_SERIAL_8250_EXAR=y
 CONFIG_SERIAL_8250_NR_UARTS=64
 CONFIG_SERIAL_8250_RUNTIME_UARTS=4
 CONFIG_SERIAL_8250_EXTENDED=y
 CONFIG_SERIAL_8250_MANY_PORTS=y
+# CONFIG_SERIAL_8250_PCI1XXXX is not set
 CONFIG_SERIAL_8250_SHARE_IRQ=y
 # CONFIG_SERIAL_8250_DETECT_IRQ is not set
 CONFIG_SERIAL_8250_RSA=y
@@ -3640,7 +3614,6 @@ CONFIG_POWER_RESET=y
 CONFIG_POWER_SUPPLY=y
 # CONFIG_POWER_SUPPLY_DEBUG is not set
 CONFIG_POWER_SUPPLY_HWMON=y
-# CONFIG_PDA_POWER is not set
 # CONFIG_IP5XXX_POWER is not set
 # CONFIG_TEST_POWER is not set
 # CONFIG_CHARGER_ADP5061 is not set
@@ -3759,6 +3732,7 @@ CONFIG_SENSORS_MAX6639=m
 CONFIG_SENSORS_MAX6650=m
 CONFIG_SENSORS_MAX6697=m
 # CONFIG_SENSORS_MAX31790 is not set
+# CONFIG_SENSORS_MC34VR500 is not set
 CONFIG_SENSORS_MCP3021=m
 # CONFIG_SENSORS_TC654 is not set
 # CONFIG_SENSORS_TPS23861 is not set
@@ -3996,7 +3970,6 @@ CONFIG_MFD_CORE=y
 # CONFIG_MFD_MC13XXX_SPI is not set
 # CONFIG_MFD_MC13XXX_I2C is not set
 # CONFIG_MFD_MP2629 is not set
-# CONFIG_HTC_PASIC3 is not set
 # CONFIG_MFD_INTEL_QUARK_I2C_GPIO is not set
 CONFIG_LPC_ICH=m
 CONFIG_LPC_SCH=m
@@ -4066,7 +4039,7 @@ CONFIG_MFD_VX855=m
 # CONFIG_MFD_WM8350_I2C is not set
 # CONFIG_MFD_WM8994 is not set
 # CONFIG_MFD_ATC260X_I2C is not set
-# CONFIG_MFD_INTEL_M10_BMC is not set
+# CONFIG_MFD_INTEL_M10_BMC_SPI is not set
 # end of Multifunction device drivers
 
 # CONFIG_REGULATOR is not set
@@ -4158,7 +4131,6 @@ CONFIG_INTEL_GTT=m
 CONFIG_VGA_SWITCHEROO=y
 CONFIG_DRM=m
 CONFIG_DRM_MIPI_DSI=y
-CONFIG_DRM_USE_DYNAMIC_DEBUG=y
 CONFIG_DRM_KMS_HELPER=m
 # CONFIG_DRM_DEBUG_DP_MST_TOPOLOGY_REFS is not set
 # CONFIG_DRM_DEBUG_MODESET_LOCK is not set
@@ -4245,6 +4217,8 @@ CONFIG_DRM_PANEL=y
 #
 # Display Panels
 #
+# CONFIG_DRM_PANEL_AUO_A030JTN01 is not set
+# CONFIG_DRM_PANEL_ORISETECH_OTA5601A is not set
 # CONFIG_DRM_PANEL_RASPBERRYPI_TOUCHSCREEN is not set
 # CONFIG_DRM_PANEL_WIDECHIPS_WS2401 is not set
 # end of Display Panels
@@ -4368,6 +4342,7 @@ CONFIG_LCD_PLATFORM=m
 # CONFIG_LCD_OTM3225A is not set
 CONFIG_BACKLIGHT_CLASS_DEVICE=y
 # CONFIG_BACKLIGHT_KTD253 is not set
+# CONFIG_BACKLIGHT_KTZ8866 is not set
 # CONFIG_BACKLIGHT_PWM is not set
 CONFIG_BACKLIGHT_APPLE=m
 # CONFIG_BACKLIGHT_QCOM_WLED is not set
@@ -4407,10 +4382,7 @@ CONFIG_LOGO_LINUX_CLUT224=y
 
 # CONFIG_DRM_ACCEL is not set
 # CONFIG_SOUND is not set
-
-#
-# HID support
-#
+CONFIG_HID_SUPPORT=y
 CONFIG_HID=y
 CONFIG_HID_BATTERY_STRENGTH=y
 CONFIG_HIDRAW=y
@@ -4446,6 +4418,7 @@ CONFIG_HID_DRAGONRISE=m
 # CONFIG_HID_ELAN is not set
 CONFIG_HID_ELECOM=m
 # CONFIG_HID_ELO is not set
+# CONFIG_HID_EVISION is not set
 CONFIG_HID_EZKEY=m
 # CONFIG_HID_FT260 is not set
 CONFIG_HID_GEMBIRD=m
@@ -4542,6 +4515,12 @@ CONFIG_HID_ALPS=m
 # end of Special HID drivers
 
 #
+# HID-BPF support
+#
+# CONFIG_HID_BPF is not set
+# end of HID-BPF support
+
+#
 # USB HID support
 #
 CONFIG_USB_HID=y
@@ -4549,11 +4528,8 @@ CONFIG_USB_HID=y
 # CONFIG_USB_HIDDEV is not set
 # end of USB HID support
 
-#
-# I2C HID support
-#
+CONFIG_I2C_HID=m
 # CONFIG_I2C_HID_ACPI is not set
-# end of I2C HID support
 
 #
 # Intel ISH HID support
@@ -4566,7 +4542,6 @@ CONFIG_USB_HID=y
 #
 # CONFIG_AMD_SFH_HID is not set
 # end of AMD SFH HID Support
-# end of HID support
 
 CONFIG_USB_OHCI_LITTLE_ENDIAN=y
 CONFIG_USB_SUPPORT=y
@@ -4727,6 +4702,7 @@ CONFIG_UCSI_ACPI=y
 # USB Type-C Multiplexer/DeMultiplexer Switch support
 #
 # CONFIG_TYPEC_MUX_FSA4480 is not set
+# CONFIG_TYPEC_MUX_GPIO_SBU is not set
 # CONFIG_TYPEC_MUX_PI3USB30532 is not set
 # end of USB Type-C Multiplexer/DeMultiplexer Switch support
 
@@ -4967,7 +4943,6 @@ CONFIG_RTC_DRV_M48T59=m
 CONFIG_RTC_DRV_MSM6242=m
 CONFIG_RTC_DRV_BQ4802=m
 CONFIG_RTC_DRV_RP5C01=m
-CONFIG_RTC_DRV_V3020=m
 
 #
 # on-CPU RTC drivers
@@ -4993,6 +4968,7 @@ CONFIG_INTEL_IDMA64=m
 # CONFIG_INTEL_IDXD_COMPAT is not set
 CONFIG_INTEL_IOATDMA=m
 # CONFIG_PLX_DMA is not set
+# CONFIG_XILINX_XDMA is not set
 # CONFIG_AMD_PTDMA is not set
 # CONFIG_QCOM_HIDMA_MGMT is not set
 # CONFIG_QCOM_HIDMA is not set
@@ -5000,7 +4976,6 @@ CONFIG_DW_DMAC_CORE=y
 CONFIG_DW_DMAC=m
 CONFIG_DW_DMAC_PCI=y
 # CONFIG_DW_EDMA is not set
-# CONFIG_DW_EDMA_PCIE is not set
 CONFIG_HSU_DMA=y
 # CONFIG_SF_PDMA is not set
 # CONFIG_INTEL_LDMA is not set
@@ -5040,7 +5015,6 @@ CONFIG_VFIO_PCI_INTX=y
 CONFIG_VFIO_PCI=m
 # CONFIG_VFIO_PCI_VGA is not set
 # CONFIG_VFIO_PCI_IGD is not set
-CONFIG_VFIO_MDEV=m
 CONFIG_IRQ_BYPASS_MANAGER=m
 # CONFIG_VIRT_DRIVERS is not set
 CONFIG_VIRTIO_ANCHOR=y
@@ -5223,6 +5197,7 @@ CONFIG_INTEL_IOMMU_SVM=y
 # CONFIG_INTEL_IOMMU_DEFAULT_ON is not set
 CONFIG_INTEL_IOMMU_FLOPPY_WA=y
 CONFIG_INTEL_IOMMU_SCALABLE_MODE_DEFAULT_ON=y
+CONFIG_INTEL_IOMMU_PERF_EVENTS=y
 # CONFIG_IOMMUFD is not set
 CONFIG_IRQ_REMAP=y
 CONFIG_HYPERV_IOMMU=y
@@ -5276,6 +5251,8 @@ CONFIG_HYPERV_IOMMU=y
 # Enable LiteX SoC Builder specific drivers
 #
 # end of Enable LiteX SoC Builder specific drivers
+
+# CONFIG_WPCM450_SOC is not set
 
 #
 # Qualcomm SoC drivers
@@ -5409,6 +5386,7 @@ CONFIG_INTEL_TH_PTI=m
 CONFIG_DCACHE_WORD_ACCESS=y
 # CONFIG_VALIDATE_FS_PARSER is not set
 CONFIG_FS_IOMAP=y
+CONFIG_LEGACY_DIRECT_IO=y
 CONFIG_EXT2_FS=m
 # CONFIG_EXT2_FS_XATTR is not set
 # CONFIG_EXT3_FS is not set
@@ -5491,6 +5469,8 @@ CONFIG_OVERLAY_FS=m
 #
 # Caches
 #
+CONFIG_NETFS_SUPPORT=m
+# CONFIG_NETFS_STATS is not set
 # CONFIG_FSCACHE is not set
 # end of Caches
 
@@ -5618,7 +5598,7 @@ CONFIG_ROOT_NFS=y
 CONFIG_NFS_USE_KERNEL_DNS=y
 CONFIG_NFS_DEBUG=y
 CONFIG_NFS_DISABLE_UDP_SUPPORT=y
-CONFIG_NFS_V4_2_READ_PLUS=y
+# CONFIG_NFS_V4_2_READ_PLUS is not set
 CONFIG_NFSD=m
 # CONFIG_NFSD_V2 is not set
 CONFIG_NFSD_V3_ACL=y
@@ -5639,7 +5619,11 @@ CONFIG_SUNRPC=y
 CONFIG_SUNRPC_GSS=m
 CONFIG_SUNRPC_BACKCHANNEL=y
 CONFIG_RPCSEC_GSS_KRB5=m
-# CONFIG_SUNRPC_DISABLE_INSECURE_ENCTYPES is not set
+CONFIG_RPCSEC_GSS_KRB5_CRYPTOSYSTEM=y
+# CONFIG_RPCSEC_GSS_KRB5_ENCTYPES_DES is not set
+CONFIG_RPCSEC_GSS_KRB5_ENCTYPES_AES_SHA1=y
+# CONFIG_RPCSEC_GSS_KRB5_ENCTYPES_CAMELLIA is not set
+# CONFIG_RPCSEC_GSS_KRB5_ENCTYPES_AES_SHA2 is not set
 CONFIG_SUNRPC_DEBUG=y
 # CONFIG_CEPH_FS is not set
 CONFIG_CIFS=m
@@ -6005,6 +5989,8 @@ CONFIG_CRYPTO_TWOFISH_X86_64=m
 CONFIG_CRYPTO_TWOFISH_X86_64_3WAY=m
 CONFIG_CRYPTO_TWOFISH_AVX_X86_64=m
 # CONFIG_CRYPTO_ARIA_AESNI_AVX_X86_64 is not set
+# CONFIG_CRYPTO_ARIA_AESNI_AVX2_X86_64 is not set
+# CONFIG_CRYPTO_ARIA_GFNI_AVX512_X86_64 is not set
 CONFIG_CRYPTO_CHACHA20_X86_64=m
 # CONFIG_CRYPTO_AEGIS128_AESNI_SSE2 is not set
 # CONFIG_CRYPTO_NHPOLY1305_SSE2 is not set
@@ -6227,6 +6213,7 @@ CONFIG_DEBUG_INFO_COMPRESSED_NONE=y
 # CONFIG_DEBUG_INFO_COMPRESSED_ZLIB is not set
 # CONFIG_DEBUG_INFO_SPLIT is not set
 CONFIG_PAHOLE_HAS_SPLIT_BTF=y
+CONFIG_PAHOLE_HAS_LANG_EXCLUDE=y
 # CONFIG_GDB_SCRIPTS is not set
 CONFIG_FRAME_WARN=8192
 CONFIG_STRIP_ASM_SYMS=y
@@ -6294,10 +6281,10 @@ CONFIG_ARCH_HAS_DEBUG_WX=y
 # CONFIG_DEBUG_WX is not set
 CONFIG_GENERIC_PTDUMP=y
 # CONFIG_PTDUMP_DEBUGFS is not set
-# CONFIG_DEBUG_OBJECTS is not set
-# CONFIG_SHRINKER_DEBUG is not set
 CONFIG_HAVE_DEBUG_KMEMLEAK=y
 # CONFIG_DEBUG_KMEMLEAK is not set
+# CONFIG_DEBUG_OBJECTS is not set
+# CONFIG_SHRINKER_DEBUG is not set
 # CONFIG_DEBUG_STACK_USAGE is not set
 # CONFIG_SCHED_STACK_END_CHECK is not set
 CONFIG_ARCH_HAS_DEBUG_VM_PGTABLE=y
@@ -6375,6 +6362,7 @@ CONFIG_LOCK_TORTURE_TEST=m
 # CONFIG_CSD_LOCK_WAIT_DEBUG is not set
 # end of Lock Debugging (spinlocks, mutexes, etc...)
 
+# CONFIG_NMI_CHECK_CPU is not set
 # CONFIG_DEBUG_IRQFLAGS is not set
 CONFIG_STACKTRACE=y
 # CONFIG_WARN_ALL_UNSEEDED_RANDOM is not set
@@ -6402,6 +6390,7 @@ CONFIG_RCU_TORTURE_TEST=m
 # CONFIG_RCU_REF_SCALE_TEST is not set
 CONFIG_RCU_CPU_STALL_TIMEOUT=60
 CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=0
+# CONFIG_RCU_CPU_STALL_CPUTIME is not set
 # CONFIG_RCU_TRACE is not set
 # CONFIG_RCU_EQS_DEBUG is not set
 # end of RCU Debugging
@@ -6531,6 +6520,7 @@ CONFIG_ARCH_HAS_KCOV=y
 CONFIG_CC_HAS_SANCOV_TRACE_PC=y
 # CONFIG_KCOV is not set
 CONFIG_RUNTIME_TESTING_MENU=y
+# CONFIG_TEST_DHRY is not set
 # CONFIG_LKDTM is not set
 # CONFIG_TEST_MIN_HEAP is not set
 # CONFIG_TEST_DIV64 is not set
@@ -6585,7 +6575,7 @@ CONFIG_ARCH_USE_MEMTEST=y
 # end of Rust hacking
 # end of Kernel hacking
 
---F3vYzJWACDojeQVW
+--PHUGj3PURc/sBqn5
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: attachment; filename="job-script"
 
@@ -6597,26 +6587,26 @@ export_top_env()
 	export testcase='ltp'
 	export category='functional'
 	export need_memory='4G'
-	export job_origin='ltp-part4.yaml'
+	export job_origin='ltp-syscalls.yaml'
 	export queue_cmdline_keys='branch
 commit
 kbuild_queue_analysis'
 	export queue='validate'
-	export testbox='lkp-skl-d07'
-	export tbox_group='lkp-skl-d07'
-	export submit_id='644e69dc9133279da09aef45'
-	export job_file='/lkp/jobs/scheduled/lkp-skl-d07/ltp-1HDD-xfs-fs-02-debian-12-x86_64-20220629.cgz-ebf519710218814cf827adbf9111af081344c969-20230430-40352-adrgyj-2.yaml'
-	export id='7077933b96fbf93a3d38c465a637179bb7b8d992'
+	export testbox='lkp-skl-d02'
+	export tbox_group='lkp-skl-d02'
+	export submit_id='644f493bcdea15381fe8ae56'
+	export job_file='/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-xfs-syscalls-04-debian-12-x86_64-20220629.cgz-ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1-20230501-14367-1z0xmo-3.yaml'
+	export id='04e47df38c75529a79ac6269a15d9bc1fd58b8c0'
 	export queuer_version='/zday/lkp'
 	export model='Skylake'
-	export nr_cpu=8
-	export memory='16G'
+	export nr_cpu=4
+	export memory='32G'
 	export nr_ssd_partitions=1
 	export nr_hdd_partitions=4
-	export hdd_partitions='/dev/disk/by-id/ata-ST2000DM001-1ER164_Z4Z98KSZ-part*'
-	export ssd_partitions='/dev/disk/by-id/ata-INTEL_SSDSC2BW480H6_CVTR612406D5480EGN-part2'
-	export rootfs_partition='/dev/disk/by-id/ata-INTEL_SSDSC2BW480H6_CVTR612406D5480EGN-part1'
-	export brand='Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz'
+	export hdd_partitions='/dev/disk/by-id/wwn-0x5000c500746fa0cc-part*'
+	export ssd_partitions='/dev/disk/by-id/wwn-0x55cd2e41514d5105-part2'
+	export rootfs_partition='/dev/disk/by-id/wwn-0x55cd2e41514d5105-part1'
+	export brand='Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz'
 	export need_kconfig='BLK_DEV_SD
 SCSI
 {"BLOCK"=>"y"}
@@ -6633,34 +6623,38 @@ BLK_DEV_LOOP
 {"MINIX_FS"=>"m"}
 {"EXPERT"=>"y"}
 {"CHECKPOINT_RESTORE"=>"y"}'
-	export commit='ebf519710218814cf827adbf9111af081344c969'
+	export commit='ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1'
+	export need_kconfig_hw='{"PTP_1588_CLOCK"=>"y"}
+{"E1000E"=>"y"}
+SATA_AHCI
+DRM_I915'
 	export ucode='0xf0'
 	export rootfs='debian-12-x86_64-20220629.cgz'
 	export initrds='linux_headers'
 	export kconfig='x86_64-rhel-8.3-ltp'
-	export enqueue_time='2023-04-30 21:15:08 +0800'
-	export _id='644e69f49133279da09aef46'
-	export _rt='/result/ltp/1HDD-xfs-fs-02/lkp-skl-d07/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969'
+	export enqueue_time='2023-05-01 13:08:11 +0800'
+	export _id='644f4952cdea15381fe8ae58'
+	export _rt='/result/ltp/1HDD-xfs-syscalls-04/lkp-skl-d02/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1'
 	export user='lkp'
 	export compiler='gcc-11'
 	export LKP_SERVER='internal-lkp-server'
 	export head_commit='a4dd1bd5d4d552e5483afb4d056c3baf9ae2d05c'
 	export base_commit='457391b0380335d5e9a5babdec90ac53928b23b4'
-	export branch='linus/master'
-	export result_root='/result/ltp/1HDD-xfs-fs-02/lkp-skl-d07/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/1'
-	export scheduler_version='/lkp/lkp/.src-20230430-200127'
+	export branch='jlayton/ctime'
+	export result_root='/result/ltp/1HDD-xfs-syscalls-04/lkp-skl-d02/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/2'
+	export scheduler_version='/lkp/lkp/src'
 	export arch='x86_64'
 	export max_uptime=1200
 	export initrd='/osimage/debian/debian-12-x86_64-20220629.cgz'
 	export bootloader_append='root=/dev/ram0
-RESULT_ROOT=/result/ltp/1HDD-xfs-fs-02/lkp-skl-d07/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/1
-BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/vmlinuz-6.2.0-rc5-00083-gebf519710218
-branch=linus/master
-job=/lkp/jobs/scheduled/lkp-skl-d07/ltp-1HDD-xfs-fs-02-debian-12-x86_64-20220629.cgz-ebf519710218814cf827adbf9111af081344c969-20230430-40352-adrgyj-2.yaml
+RESULT_ROOT=/result/ltp/1HDD-xfs-syscalls-04/lkp-skl-d02/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/2
+BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/vmlinuz-6.3.0-00004-gff9aaf58e816
+branch=jlayton/ctime
+job=/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-xfs-syscalls-04-debian-12-x86_64-20220629.cgz-ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1-20230501-14367-1z0xmo-3.yaml
 user=lkp
 ARCH=x86_64
 kconfig=x86_64-rhel-8.3-ltp
-commit=ebf519710218814cf827adbf9111af081344c969
+commit=ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1
 initcall_debug
 nmi_watchdog=0
 max_uptime=1200
@@ -6687,22 +6681,22 @@ earlyprintk=ttyS0,115200
 console=ttyS0,115200
 vga=normal
 rw'
-	export modules_initrd='/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/modules.cgz'
-	export linux_headers_initrd='/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/linux-headers.cgz'
+	export modules_initrd='/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/modules.cgz'
+	export linux_headers_initrd='/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/linux-headers.cgz'
 	export bm_initrd='/osimage/deps/debian-12-x86_64-20220629.cgz/run-ipconfig_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/lkp_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/rsync-rootfs_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/fs_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/ltp_20230429.cgz,/osimage/pkg/debian-12-x86_64-20220629.cgz/ltp-x86_64-14c1f76-1_20230429.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/hw_20230326.cgz'
 	export ucode_initrd='/osimage/ucode/intel-ucode-20230406.cgz'
 	export lkp_initrd='/osimage/user/lkp/lkp-x86_64.cgz'
 	export site='lkp-wsx01'
 	export LKP_CGI_PORT=80
 	export LKP_CIFS_PORT=139
-	export last_kernel='6.3.0'
+	export last_kernel='6.3.0-15139-ga4dd1bd5d4d5'
 	export repeat_to=6
 	export schedule_notify_address=
-	export stop_repeat_if_found='dmesg.BUG:KASAN:global-out-of-bounds_in_param_get_int'
+	export stop_repeat_if_found='ltp.statx06.fail'
 	export kbuild_queue_analysis=1
-	export kernel='/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/vmlinuz-6.2.0-rc5-00083-gebf519710218'
-	export dequeue_time='2023-04-30 21:18:18 +0800'
-	export job_initrd='/lkp/jobs/scheduled/lkp-skl-d07/ltp-1HDD-xfs-fs-02-debian-12-x86_64-20220629.cgz-ebf519710218814cf827adbf9111af081344c969-20230430-40352-adrgyj-2.cgz'
+	export kernel='/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/vmlinuz-6.3.0-00004-gff9aaf58e816'
+	export dequeue_time='2023-05-01 13:24:57 +0800'
+	export job_initrd='/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-xfs-syscalls-04-debian-12-x86_64-20220629.cgz-ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1-20230501-14367-1z0xmo-3.cgz'
 
 	[ -n "$LKP_SRC" ] ||
 	export LKP_SRC=/lkp/${user:-lkp}/src
@@ -6728,7 +6722,7 @@ run_job()
 	run_monitor $LKP_SRC/monitors/wrapper oom-killer
 	run_monitor $LKP_SRC/monitors/plain/watchdog
 
-	run_test test='fs-02' $LKP_SRC/tests/wrapper ltp
+	run_test test='syscalls-04' $LKP_SRC/tests/wrapper ltp
 }
 
 extract_stats()
@@ -6736,7 +6730,7 @@ extract_stats()
 	export stats_part_begin=
 	export stats_part_end=
 
-	env test='fs-02' $LKP_SRC/stats/wrapper ltp
+	env test='syscalls-04' $LKP_SRC/stats/wrapper ltp
 	$LKP_SRC/stats/wrapper kmsg
 	$LKP_SRC/stats/wrapper meminfo
 
@@ -6750,16 +6744,34 @@ extract_stats()
 
 "$@"
 
---F3vYzJWACDojeQVW
+--PHUGj3PURc/sBqn5
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: attachment; filename="ltp"
 Content-Transfer-Encoding: quoted-printable
 
 /usr/bin/mkisofs
-2023-04-30 13:20:55 ln -sf /usr/sbin/iptables-nft /usr/bin/iptables
-2023-04-30 13:20:55 ln -sf /usr/sbin/ip6tables-nft /usr/bin/ip6tables
-2023-04-30 13:20:55 export LTP_RUNTIME_MUL=3D2
-2023-04-30 13:20:55 ./runltp -f fs-02
+2023-05-01 05:28:20 ln -sf /usr/sbin/iptables-nft /usr/bin/iptables
+2023-05-01 05:28:20 ln -sf /usr/sbin/ip6tables-nft /usr/bin/ip6tables
+make: Entering directory '/usr/src/linux-headers-x86_64-rhel-8.3-ltp-ff9aaf=
+58e816635c454fbe9e9ece94b0eee6f0b1-bpf'
+  CC [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod.o
+  CC [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod_dep.o
+  MODPOST /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/Modul=
+e.symvers
+  CC [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod.mod.o
+  CC [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod_dep.mod.o
+  LD [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod.ko
+  LD [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod_dep.ko
+make: Leaving directory '/usr/src/linux-headers-x86_64-rhel-8.3-ltp-ff9aaf5=
+8e816635c454fbe9e9ece94b0eee6f0b1-bpf'
+2023-05-01 05:28:23 export LTP_RUNTIME_MUL=3D2
+2023-05-01 05:28:23 ./runltp -f syscalls-04 -d /fs/sda1/tmpdir
 INFO: creating /lkp/benchmarks/ltp/output directory
 INFO: creating /lkp/benchmarks/ltp/results directory
 Checking for required user/group ids
@@ -6784,25 +6796,25 @@ SUPPORT_URL=3D"https://www.debian.org/support"
 BUG_REPORT_URL=3D"https://bugs.debian.org/"
 
 uname:
-Linux lkp-skl-d07 6.2.0-rc5-00083-gebf519710218 #1 SMP Sun Apr 30 20:42:55 =
-CST 2023 x86_64 GNU/Linux
+Linux lkp-skl-d02 6.3.0-00004-gff9aaf58e816 #1 SMP Mon May  1 12:44:08 CST =
+2023 x86_64 GNU/Linux
 
 /proc/cmdline
- ip=3D::::lkp-skl-d07::dhcp root=3D/dev/ram0 RESULT_ROOT=3D/result/ltp/1HDD=
--xfs-fs-02/lkp-skl-d07/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gc=
-c-11/ebf519710218814cf827adbf9111af081344c969/1 BOOT_IMAGE=3D/pkg/linux/x86=
-_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/vmlinuz-6.=
-2.0-rc5-00083-gebf519710218 branch=3Dlinus/master job=3D/lkp/jobs/scheduled=
-/lkp-skl-d07/ltp-1HDD-xfs-fs-02-debian-12-x86_64-20220629.cgz-ebf5197102188=
-14cf827adbf9111af081344c969-20230430-40352-adrgyj-2.yaml user=3Dlkp ARCH=3D=
-x86_64 kconfig=3Dx86_64-rhel-8.3-ltp commit=3Debf519710218814cf827adbf9111a=
-f081344c969 initcall_debug nmi_watchdog=3D0 max_uptime=3D1200 LKP_SERVER=3D=
-internal-lkp-server nokaslr selinux=3D0 debug apic=3Ddebug sysrq_always_ena=
-bled rcupdate.rcu_cpu_stall_timeout=3D100 net.ifnames=3D0 printk.devkmsg=3D=
-on panic=3D-1 softlockup_panic=3D1 nmi_watchdog=3Dpanic oops=3Dpanic load_r=
-amdisk=3D2 prompt_ramdisk=3D0 drbd.minor_count=3D8 systemd.log_level=3Derr =
-ignore_loglevel console=3Dtty0 earlyprintk=3DttyS0,115200 console=3DttyS0,1=
-15200 vga=3Dnormal rw
+ip=3D::::lkp-skl-d02::dhcp root=3D/dev/ram0 RESULT_ROOT=3D/result/ltp/1HDD-=
+xfs-syscalls-04/lkp-skl-d02/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-l=
+tp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/2 BOOT_IMAGE=3D/pkg/linu=
+x/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/vmlin=
+uz-6.3.0-00004-gff9aaf58e816 branch=3Djlayton/ctime job=3D/lkp/jobs/schedul=
+ed/lkp-skl-d02/ltp-1HDD-xfs-syscalls-04-debian-12-x86_64-20220629.cgz-ff9aa=
+f58e816635c454fbe9e9ece94b0eee6f0b1-20230501-14367-1z0xmo-3.yaml user=3Dlkp=
+ ARCH=3Dx86_64 kconfig=3Dx86_64-rhel-8.3-ltp commit=3Dff9aaf58e816635c454fb=
+e9e9ece94b0eee6f0b1 initcall_debug nmi_watchdog=3D0 max_uptime=3D1200 LKP_S=
+ERVER=3Dinternal-lkp-server nokaslr selinux=3D0 debug apic=3Ddebug sysrq_al=
+ways_enabled rcupdate.rcu_cpu_stall_timeout=3D100 net.ifnames=3D0 printk.de=
+vkmsg=3Don panic=3D-1 softlockup_panic=3D1 nmi_watchdog=3Dpanic oops=3Dpani=
+c load_ramdisk=3D2 prompt_ramdisk=3D0 drbd.minor_count=3D8 systemd.log_leve=
+l=3Derr ignore_loglevel console=3Dtty0 earlyprintk=3DttyS0,115200 console=
+=3DttyS0,115200 vga=3Dnormal rw
 
 Gnu C                  gcc (Debian 12.2.0-14) 12.2.0
 Clang                =20
@@ -6821,21 +6833,21 @@ iputils                20221126
 ethtool                6.1
 Kbd                    loadkeys:
 Sh-utils               9.1
-Modules Loaded         xfs dm_mod intel_rapl_msr intel_rapl_common btrfs bl=
-ake2b_generic xor raid6_pq zstd_compress libcrc32c x86_pkg_temp_thermal sd_=
-mod intel_powerclamp i915 t10_pi coretemp crc64_rocksoft_generic kvm_intel =
-crc64_rocksoft crc64 sg drm_buddy kvm intel_gtt ipmi_devintf ipmi_msghandle=
-r irqbypass crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel =
-sha512_ssse3 drm_display_helper rapl drm_kms_helper mei_wdt syscopyarea ahc=
-i intel_cstate binfmt_misc mei_me sysfillrect libahci sysimgblt i2c_i801 wm=
-i_bmof intel_uncore libata video serio_raw ttm mei intel_pch_thermal i2c_sm=
-bus intel_pmc_core acpi_pad wmi tpm_infineon drm fuse ip_tables
+Modules Loaded         xfs dm_mod intel_rapl_msr btrfs intel_rapl_common bl=
+ake2b_generic xor x86_pkg_temp_thermal intel_powerclamp raid6_pq coretemp z=
+std_compress libcrc32c kvm_intel ipmi_devintf sd_mod ipmi_msghandler kvm t1=
+0_pi i915 irqbypass crct10dif_pclmul crc64_rocksoft_generic crc32_pclmul cr=
+c64_rocksoft crc64 crc32c_intel sg drm_buddy intel_gtt ghash_clmulni_intel =
+drm_display_helper sha512_ssse3 drm_kms_helper syscopyarea sysfillrect binf=
+mt_misc mei_wdt sysimgblt ahci rapl intel_cstate wmi_bmof libahci intel_pch=
+_thermal ttm mei_me i2c_i801 intel_uncore libata i2c_smbus mei video wmi ac=
+pi_pad intel_pmc_core drm fuse ip_tables
 
 free reports:
                total        used        free      shared  buff/cache   avai=
 lable
-Mem:        14038988     1133728     9789164        5664     3116096     96=
-87400
+Mem:        28511784     1564976    23830284        5704     3116524    236=
+52612
 Swap:              0           0           0
 
 cpuinfo:
@@ -6843,76 +6855,78 @@ Architecture:                    x86_64
 CPU op-mode(s):                  32-bit, 64-bit
 Address sizes:                   39 bits physical, 48 bits virtual
 Byte Order:                      Little Endian
-CPU(s):                          8
-On-line CPU(s) list:             0-7
+CPU(s):                          4
+On-line CPU(s) list:             0-3
 Vendor ID:                       GenuineIntel
 BIOS Vendor ID:                  Intel(R) Corporation
-Model name:                      Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
-BIOS Model name:                 Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz To=
- Be Filled By O.E.M. CPU @ 3.4GHz
-BIOS CPU family:                 198
+Model name:                      Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz
+BIOS Model name:                 Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz  C=
+PU @ 3.3GHz
+BIOS CPU family:                 205
 CPU family:                      6
 Model:                           94
-Thread(s) per core:              2
+Thread(s) per core:              1
 Core(s) per socket:              4
 Socket(s):                       1
 Stepping:                        3
-CPU(s) scaling MHz:              100%
-CPU max MHz:                     3400.0000
+CPU(s) scaling MHz:              95%
+CPU max MHz:                     3600.0000
 CPU min MHz:                     800.0000
-BogoMIPS:                        6799.81
+BogoMIPS:                        6399.96
 Flags:                           fpu vme de pse tsc msr pae mce cx8 apic se=
 p mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm p=
 be syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_=
 good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monit=
 or ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 =
 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm ab=
-m 3dnowprefetch cpuid_fault epb invpcid_single pti tpr_shadow vnmi flexprio=
-rity ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpc=
-id rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsav=
-es dtherm arat pln pts hwp hwp_notify hwp_act_window hwp_epp
+m 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr=
+_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 sme=
+p bmi2 erms invpcid mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec=
+ xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_e=
+pp md_clear flush_l1d arch_capabilities
 Virtualization:                  VT-x
 L1d cache:                       128 KiB (4 instances)
 L1i cache:                       128 KiB (4 instances)
 L2 cache:                        1 MiB (4 instances)
-L3 cache:                        8 MiB (1 instance)
+L3 cache:                        6 MiB (1 instance)
 NUMA node(s):                    1
-NUMA node0 CPU(s):               0-7
+NUMA node0 CPU(s):               0-3
 Vulnerability Itlb multihit:     KVM: Mitigation: VMX disabled
 Vulnerability L1tf:              Mitigation; PTE Inversion; VMX conditional=
- cache flushes, SMT vulnerable
-Vulnerability Mds:               Vulnerable: Clear CPU buffers attempted, n=
-o microcode; SMT vulnerable
+ cache flushes, SMT disabled
+Vulnerability Mds:               Mitigation; Clear CPU buffers; SMT disable=
+d
 Vulnerability Meltdown:          Mitigation; PTI
-Vulnerability Mmio stale data:   Vulnerable: Clear CPU buffers attempted, n=
-o microcode; SMT vulnerable
-Vulnerability Retbleed:          Vulnerable
-Vulnerability Spec store bypass: Vulnerable
+Vulnerability Mmio stale data:   Mitigation; Clear CPU buffers; SMT disable=
+d
+Vulnerability Retbleed:          Mitigation; IBRS
+Vulnerability Spec store bypass: Mitigation; Speculative Store Bypass disab=
+led via prctl
 Vulnerability Spectre v1:        Mitigation; usercopy/swapgs barriers and _=
 _user pointer sanitization
-Vulnerability Spectre v2:        Vulnerable, STIBP: disabled, RSB filling, =
-PBRSB-eIBRS: Not affected
-Vulnerability Srbds:             Vulnerable: No microcode
-Vulnerability Tsx async abort:   Vulnerable: Clear CPU buffers attempted, n=
-o microcode; SMT vulnerable
+Vulnerability Spectre v2:        Mitigation; IBRS, IBPB conditional, STIBP =
+disabled, RSB filling, PBRSB-eIBRS Not affected
+Vulnerability Srbds:             Mitigation; Microcode
+Vulnerability Tsx async abort:   Not affected
 
 available filesystems:
 autofs bdev binfmt_misc bpf btrfs cgroup cgroup2 configfs cpuset debugfs de=
-vpts devtmpfs ext3 ext4 fuse fuseblk fusectl hugetlbfs mqueue nfs nfs4 pipe=
-fs proc pstore ramfs rpc_pipefs securityfs sockfs sysfs tmpfs tracefs xfs
+vpts devtmpfs efivarfs ext3 ext4 fuse fuseblk fusectl hugetlbfs mqueue nfs =
+nfs4 pipefs proc pstore ramfs rpc_pipefs securityfs sockfs sysfs tmpfs trac=
+efs xfs
 
 mounted filesystems (/proc/mounts):
 rootfs / rootfs rw 0 0
 proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
 sysfs /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0
-devtmpfs /dev devtmpfs rw,nosuid,size=3D4096k,nr_inodes=3D1620426,mode=3D75=
+devtmpfs /dev devtmpfs rw,nosuid,size=3D4096k,nr_inodes=3D3429580,mode=3D75=
 5 0 0
 securityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime =
 0 0
 tmpfs /dev/shm tmpfs rw,nosuid,nodev 0 0
 devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid=3D5,mode=3D620,ptmxmod=
 e=3D000 0 0
-tmpfs /run tmpfs rw,nosuid,nodev,size=3D2807800k,nr_inodes=3D819200,mode=3D=
+tmpfs /run tmpfs rw,nosuid,nodev,size=3D5702360k,nr_inodes=3D819200,mode=3D=
 755 0 0
 tmpfs /run/lock tmpfs rw,nosuid,nodev,noexec,relatime,size=3D5120k 0 0
 cgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate,m=
@@ -6920,26 +6934,26 @@ emory_recursiveprot 0 0
 pstore /sys/fs/pstore pstore rw,nosuid,nodev,noexec,relatime 0 0
 bpf /sys/fs/bpf bpf rw,nosuid,nodev,noexec,relatime,mode=3D700 0 0
 systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd=3D30,pgrp=3D1,time=
-out=3D0,minproto=3D5,maxproto=3D5,direct,pipe_ino=3D5857 0 0
+out=3D0,minproto=3D5,maxproto=3D5,direct,pipe_ino=3D27099 0 0
 hugetlbfs /dev/hugepages hugetlbfs rw,relatime,pagesize=3D2M 0 0
 mqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime 0 0
 debugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime 0 0
 tracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0
+configfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime 0 0
 fusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime 0 =
 0
-configfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime 0 0
-ramfs /run/credentials/systemd-sysctl.service ramfs ro,nosuid,nodev,noexec,=
-relatime,mode=3D700 0 0
 ramfs /run/credentials/systemd-sysusers.service ramfs ro,nosuid,nodev,noexe=
 c,relatime,mode=3D700 0 0
+ramfs /run/credentials/systemd-sysctl.service ramfs ro,nosuid,nodev,noexec,=
+relatime,mode=3D700 0 0
 ramfs /run/credentials/systemd-tmpfiles-setup-dev.service ramfs ro,nosuid,n=
 odev,noexec,relatime,mode=3D700 0 0
-binfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc rw,nosuid,nodev,noexec,rel=
-atime 0 0
 ramfs /run/credentials/systemd-tmpfiles-setup.service ramfs ro,nosuid,nodev=
 ,noexec,relatime,mode=3D700 0 0
 sunrpc /run/rpc_pipefs rpc_pipefs rw,relatime 0 0
-tmp /tmp tmpfs rw,relatime 0 0
+binfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc rw,nosuid,nodev,noexec,rel=
+atime 0 0
+tmp /tmp tmpfs rw 0 0
 /dev/sdb1 /opt/rootfs btrfs rw,relatime,ssd,discard=3Dasync,space_cache,sub=
 volid=3D5,subvol=3D/ 0 0
 /dev/sda1 /fs/sda1 xfs rw,relatime,attr2,inode64,logbufs=3D8,logbsize=3D32k=
@@ -6948,12 +6962,12 @@ volid=3D5,subvol=3D/ 0 0
 mounted filesystems (df):
 Filesystem     Type      Size  Used Avail Use% Mounted on
 devtmpfs       devtmpfs  4.0M     0  4.0M   0% /dev
-tmpfs          tmpfs     6.7G     0  6.7G   0% /dev/shm
-tmpfs          tmpfs     2.7G  624K  2.7G   1% /run
+tmpfs          tmpfs      14G     0   14G   0% /dev/shm
+tmpfs          tmpfs     5.5G  636K  5.5G   1% /run
 tmpfs          tmpfs     5.0M     0  5.0M   0% /run/lock
-tmp            tmpfs     6.7G  496K  6.7G   1% /tmp
-/dev/sdb1      btrfs     200G  6.2G  193G   4% /opt/rootfs
-/dev/sda1      xfs       200G  237M  200G   1% /fs/sda1
+tmp            tmpfs      14G  492K   14G   1% /tmp
+/dev/sdb1      btrfs     300G  7.1G  292G   3% /opt/rootfs
+/dev/sda1      xfs       400G  441M  400G   1% /fs/sda1
 
 AppArmor disabled
 
@@ -6961,300 +6975,503 @@ SELinux mode: unknown
 no big block device was specified on commandline.
 Tests which require a big block device are disabled.
 You can specify it with option -z
-COMMAND:    /lkp/benchmarks/ltp/bin/ltp-pan   -e -S   -a 3509     -n 3509 -=
-p -f /tmp/ltp-TeBTVsDKnR/alltests -l /lkp/benchmarks/ltp/results/LTP_RUN_ON=
--2023_04_30-13h_20m_55s.log  -C /lkp/benchmarks/ltp/output/LTP_RUN_ON-2023_=
-04_30-13h_20m_55s.failed -T /lkp/benchmarks/ltp/output/LTP_RUN_ON-2023_04_3=
-0-13h_20m_55s.tconf
-LOG File: /lkp/benchmarks/ltp/results/LTP_RUN_ON-2023_04_30-13h_20m_55s.log
-FAILED COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2023_04_30-13h_2=
-0m_55s.failed
-TCONF COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2023_04_30-13h_20=
-m_55s.tconf
+COMMAND:    /lkp/benchmarks/ltp/bin/ltp-pan   -e -S   -a 3861     -n 3861 -=
+p -f /fs/sda1/tmpdir/ltp-EImq3EPOiZ/alltests -l /lkp/benchmarks/ltp/results=
+/LTP_RUN_ON-2023_05_01-05h_28m_23s.log  -C /lkp/benchmarks/ltp/output/LTP_R=
+UN_ON-2023_05_01-05h_28m_23s.failed -T /lkp/benchmarks/ltp/output/LTP_RUN_O=
+N-2023_05_01-05h_28m_23s.tconf
+LOG File: /lkp/benchmarks/ltp/results/LTP_RUN_ON-2023_05_01-05h_28m_23s.log
+FAILED COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2023_05_01-05h_2=
+8m_23s.failed
+TCONF COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2023_05_01-05h_28=
+m_23s.tconf
 Running tests.......
 <<<test_start>>>
-tag=3Dgf02 stime=3D1682860856
-cmdline=3D"growfiles -W gf02 -b -e 1 -L 10 -i 100 -I p -S 2 -u -f gf03_ -d =
-$TMPDIR"
+tag=3Daccess01 stime=3D1682918903
+cmdline=3D"access01"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-gf02        1  TPASS  :  Test passed
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+access01.c:240: TPASS: access(accessfile_rwx, F_OK) as root passed
+access01.c:240: TPASS: access(accessfile_rwx, F_OK) as nobody passed
+access01.c:240: TPASS: access(accessfile_rwx, X_OK) as root passed
+access01.c:240: TPASS: access(accessfile_rwx, X_OK) as nobody passed
+access01.c:240: TPASS: access(accessfile_rwx, W_OK) as root passed
+access01.c:240: TPASS: access(accessfile_rwx, W_OK) as nobody passed
+access01.c:240: TPASS: access(accessfile_rwx, R_OK) as root passed
+access01.c:240: TPASS: access(accessfile_rwx, R_OK) as nobody passed
+access01.c:240: TPASS: access(accessfile_rwx, R_OK|W_OK) as root passed
+access01.c:240: TPASS: access(accessfile_rwx, R_OK|W_OK) as nobody passed
+access01.c:240: TPASS: access(accessfile_rwx, R_OK|X_OK) as root passed
+access01.c:240: TPASS: access(accessfile_rwx, R_OK|X_OK) as nobody passed
+access01.c:240: TPASS: access(accessfile_rwx, W_OK|X_OK) as root passed
+access01.c:240: TPASS: access(accessfile_rwx, W_OK|X_OK) as nobody passed
+access01.c:240: TPASS: access(accessfile_rwx, R_OK|W_OK|X_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessfile_rwx, R_OK|W_OK|X_OK) as nobody pas=
+sed
+access01.c:240: TPASS: access(accessfile_x, X_OK) as root passed
+access01.c:240: TPASS: access(accessfile_x, X_OK) as nobody passed
+access01.c:240: TPASS: access(accessfile_w, W_OK) as root passed
+access01.c:240: TPASS: access(accessfile_w, W_OK) as nobody passed
+access01.c:240: TPASS: access(accessfile_r, R_OK) as root passed
+access01.c:240: TPASS: access(accessfile_r, R_OK) as nobody passed
+access01.c:237: TPASS: access(accessfile_r, X_OK) as root : EACCES (13)
+access01.c:237: TPASS: access(accessfile_r, X_OK) as nobody : EACCES (13)
+access01.c:237: TPASS: access(accessfile_r, W_OK) as nobody : EACCES (13)
+access01.c:237: TPASS: access(accessfile_w, R_OK) as nobody : EACCES (13)
+access01.c:237: TPASS: access(accessfile_w, X_OK) as root : EACCES (13)
+access01.c:237: TPASS: access(accessfile_w, X_OK) as nobody : EACCES (13)
+access01.c:237: TPASS: access(accessfile_x, R_OK) as nobody : EACCES (13)
+access01.c:237: TPASS: access(accessfile_x, W_OK) as nobody : EACCES (13)
+access01.c:237: TPASS: access(accessfile_r, W_OK|X_OK) as root : EACCES (13=
+)
+access01.c:237: TPASS: access(accessfile_r, W_OK|X_OK) as nobody : EACCES (=
+13)
+access01.c:237: TPASS: access(accessfile_r, R_OK|X_OK) as root : EACCES (13=
+)
+access01.c:237: TPASS: access(accessfile_r, R_OK|X_OK) as nobody : EACCES (=
+13)
+access01.c:237: TPASS: access(accessfile_r, R_OK|W_OK) as nobody : EACCES (=
+13)
+access01.c:237: TPASS: access(accessfile_r, R_OK|W_OK|X_OK) as root : EACCE=
+S (13)
+access01.c:237: TPASS: access(accessfile_r, R_OK|W_OK|X_OK) as nobody : EAC=
+CES (13)
+access01.c:237: TPASS: access(accessfile_w, W_OK|X_OK) as root : EACCES (13=
+)
+access01.c:237: TPASS: access(accessfile_w, W_OK|X_OK) as nobody : EACCES (=
+13)
+access01.c:237: TPASS: access(accessfile_w, R_OK|X_OK) as root : EACCES (13=
+)
+access01.c:237: TPASS: access(accessfile_w, R_OK|X_OK) as nobody : EACCES (=
+13)
+access01.c:237: TPASS: access(accessfile_w, R_OK|W_OK) as nobody : EACCES (=
+13)
+access01.c:237: TPASS: access(accessfile_w, R_OK|W_OK|X_OK) as root : EACCE=
+S (13)
+access01.c:237: TPASS: access(accessfile_w, R_OK|W_OK|X_OK) as nobody : EAC=
+CES (13)
+access01.c:237: TPASS: access(accessfile_x, W_OK|X_OK) as nobody : EACCES (=
+13)
+access01.c:237: TPASS: access(accessfile_x, R_OK|X_OK) as nobody : EACCES (=
+13)
+access01.c:237: TPASS: access(accessfile_x, R_OK|W_OK) as nobody : EACCES (=
+13)
+access01.c:237: TPASS: access(accessfile_x, R_OK|W_OK|X_OK) as nobody : EAC=
+CES (13)
+access01.c:240: TPASS: access(accessfile_r, W_OK) as root passed
+access01.c:240: TPASS: access(accessfile_r, R_OK|W_OK) as root passed
+access01.c:240: TPASS: access(accessfile_w, R_OK) as root passed
+access01.c:240: TPASS: access(accessfile_w, R_OK|W_OK) as root passed
+access01.c:240: TPASS: access(accessfile_x, R_OK) as root passed
+access01.c:240: TPASS: access(accessfile_x, W_OK) as root passed
+access01.c:240: TPASS: access(accessfile_x, R_OK|W_OK) as root passed
+access01.c:240: TPASS: access(accessdir_r/accessfile_r, F_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_r/accessfile_r, R_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_r/accessfile_r, W_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_r/accessfile_w, F_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_r/accessfile_w, R_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_r/accessfile_w, W_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_r/accessfile_x, F_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_r/accessfile_x, R_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_r/accessfile_x, W_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_r/accessfile_x, X_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_w/accessfile_r, F_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_w/accessfile_r, R_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_w/accessfile_r, W_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_w/accessfile_w, F_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_w/accessfile_w, R_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_w/accessfile_w, W_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_w/accessfile_x, F_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_w/accessfile_x, R_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_w/accessfile_x, W_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_w/accessfile_x, X_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_r, F_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_r, F_OK) as nobody pas=
+sed
+access01.c:240: TPASS: access(accessdir_x/accessfile_r, R_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_r, R_OK) as nobody pas=
+sed
+access01.c:240: TPASS: access(accessdir_x/accessfile_r, W_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_w, F_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_w, F_OK) as nobody pas=
+sed
+access01.c:240: TPASS: access(accessdir_x/accessfile_w, R_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_w, W_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_w, W_OK) as nobody pas=
+sed
+access01.c:240: TPASS: access(accessdir_x/accessfile_x, F_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_x, F_OK) as nobody pas=
+sed
+access01.c:240: TPASS: access(accessdir_x/accessfile_x, R_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_x, W_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_x, X_OK) as root passe=
+d
+access01.c:240: TPASS: access(accessdir_x/accessfile_x, X_OK) as nobody pas=
+sed
+access01.c:240: TPASS: access(accessdir_rw/accessfile_r, F_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rw/accessfile_r, R_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rw/accessfile_r, W_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rw/accessfile_w, F_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rw/accessfile_w, R_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rw/accessfile_w, W_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rw/accessfile_x, F_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rw/accessfile_x, R_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rw/accessfile_x, W_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rw/accessfile_x, X_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_r, F_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_r, F_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_r, R_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_r, R_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_r, W_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_w, F_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_w, F_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_w, R_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_w, W_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_w, W_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_x, F_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_x, F_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_x, R_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_x, W_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_x, X_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_rx/accessfile_x, X_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_r, F_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_r, F_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_r, R_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_r, R_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_r, W_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_w, F_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_w, F_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_w, R_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_w, W_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_w, W_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_x, F_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_x, F_OK) as nobody pa=
+ssed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_x, R_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_x, W_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_x, X_OK) as root pass=
+ed
+access01.c:240: TPASS: access(accessdir_wx/accessfile_x, X_OK) as nobody pa=
+ssed
+access01.c:237: TPASS: access(accessdir_r/accessfile_r, F_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_r, R_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_r, W_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_r, X_OK) as root : EAC=
+CES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_r, X_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_w, F_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_w, R_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_w, W_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_w, X_OK) as root : EAC=
+CES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_w, X_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_x, F_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_x, R_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_x, W_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_r/accessfile_x, X_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_r, F_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_r, R_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_r, W_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_r, X_OK) as root : EAC=
+CES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_r, X_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_w, F_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_w, R_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_w, W_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_w, X_OK) as root : EAC=
+CES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_w, X_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_x, F_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_x, R_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_x, W_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_w/accessfile_x, X_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_x/accessfile_r, W_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_x/accessfile_r, X_OK) as root : EAC=
+CES (13)
+access01.c:237: TPASS: access(accessdir_x/accessfile_r, X_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_x/accessfile_w, R_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_x/accessfile_w, X_OK) as root : EAC=
+CES (13)
+access01.c:237: TPASS: access(accessdir_x/accessfile_w, X_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_x/accessfile_x, R_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_x/accessfile_x, W_OK) as nobody : E=
+ACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_r, F_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_r, R_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_r, W_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_r, X_OK) as root : EA=
+CCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_r, X_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_w, F_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_w, R_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_w, W_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_w, X_OK) as root : EA=
+CCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_w, X_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_x, F_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_x, R_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_x, W_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rw/accessfile_x, X_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rx/accessfile_r, W_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rx/accessfile_r, X_OK) as root : EA=
+CCES (13)
+access01.c:237: TPASS: access(accessdir_rx/accessfile_r, X_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rx/accessfile_w, R_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rx/accessfile_w, X_OK) as root : EA=
+CCES (13)
+access01.c:237: TPASS: access(accessdir_rx/accessfile_w, X_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rx/accessfile_x, R_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_rx/accessfile_x, W_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_wx/accessfile_r, W_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_wx/accessfile_r, X_OK) as root : EA=
+CCES (13)
+access01.c:237: TPASS: access(accessdir_wx/accessfile_r, X_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_wx/accessfile_w, R_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_wx/accessfile_w, X_OK) as root : EA=
+CCES (13)
+access01.c:237: TPASS: access(accessdir_wx/accessfile_w, X_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_wx/accessfile_x, R_OK) as nobody : =
+EACCES (13)
+access01.c:237: TPASS: access(accessdir_wx/accessfile_x, W_OK) as nobody : =
+EACCES (13)
+
+Summary:
+passed   199
+failed   0
+broken   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
 duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D0 cstime=3D2
+cutime=3D2 cstime=3D7
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dgf03 stime=3D1682860856
-cmdline=3D"growfiles -W gf03 -b -e 1 -g 1 -i 1 -S 150 -u -f gf05_ -d $TMPDI=
-R"
+tag=3Dbpf_prog06 stime=3D1682918903
+cmdline=3D"bpf_prog06"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-gf03        1  TPASS  :  Test passed
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+bpf_common.c:16: TINFO: Raising RLIMIT_MEMLOCK to 10485760
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+tst_capability.c:29: TINFO: Dropping CAP_BPF(39)
+bpf_common.c:39: TCONF: Hint: check also /proc/sys/kernel/unprivileged_bpf_=
+disabled
+bpf_common.c:40: TCONF: bpf() requires CAP_SYS_ADMIN or CAP_BPF on this sys=
+tem: EPERM (1)
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  2
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D9 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D1 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dcapset04 stime=3D1682918912
+cmdline=3D"capset04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+capset04.c:27: TINFO: Test capset() for a different process
+capset04.c:31: TPASS: capset() : EPERM (1)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dchown03_16 stime=3D1682918912
+cmdline=3D"chown03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/chown/../utils/compat_tst_16=
+.h:153: TCONF: 16-bit version of chown() is not supported on your platform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dchroot01 stime=3D1682918912
+cmdline=3D"chroot01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+chroot01.c:23: TPASS: unprivileged chroot() : EPERM (1)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
 duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
 cutime=3D0 cstime=3D1
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dgf12 stime=3D1682860856
-cmdline=3D"mkfifo $TMPDIR/gffifo17; growfiles -b -W gf12 -e 1 -u -i 0 -L 30=
- $TMPDIR/gffifo17"
+tag=3Dclock_nanosleep03 stime=3D1682918912
+cmdline=3D"clock_nanosleep03"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-gf12        1  TPASS  :  Test passed
-<<<execution_status>>>
-initiation_status=3D"ok"
-duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D0 cstime=3D1
-<<<test_end>>>
-<<<test_start>>>
-tag=3Dgf26 stime=3D1682860856
-cmdline=3D"growfiles -W gf26 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -r 128-327=
-68:128 -R 512-64000 -T 4 -f gfsmallio-$$ -d $TMPDIR"
-contacts=3D""
-analysis=3Dexit
-<<<test_output>>>
-gf26        1  TPASS  :  Test passed
-<<<execution_status>>>
-initiation_status=3D"ok"
-duration=3D27 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D1931 cstime=3D707
-<<<test_end>>>
-<<<test_start>>>
-tag=3Dgf27 stime=3D1682860883
-cmdline=3D"growfiles -W gf27 -b -D 0 -w -g 8b -C 1 -b -i 1000 -u -f gfspars=
-e-1-$$ -d $TMPDIR"
-contacts=3D""
-analysis=3Dexit
-<<<test_output>>>
-gf27        1  TPASS  :  Test passed
-<<<execution_status>>>
-initiation_status=3D"ok"
-duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D1 cstime=3D3
-<<<test_end>>>
-<<<test_start>>>
-tag=3Dgf29 stime=3D1682860883
-cmdline=3D"growfiles -W gf29 -b -D 0 -r 1-4096 -R 0-33554432 -i 0 -L 60 -C =
-1 -u -f gfsparse-3-$$ -d $TMPDIR"
-contacts=3D""
-analysis=3Dexit
-<<<test_output>>>
-gf29        1  TPASS  :  Test passed
-<<<execution_status>>>
-initiation_status=3D"ok"
-duration=3D61 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D2272 cstime=3D3534
-<<<test_end>>>
-<<<test_start>>>
-tag=3Dgf30 stime=3D1682860944
-cmdline=3D"growfiles -W gf30 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -o O_RDWR,=
-O_CREAT,O_SYNC -g 20480 -T 10 -t 20480 -f gf-sync-$$ -d $TMPDIR"
-contacts=3D""
-analysis=3Dexit
-<<<test_output>>>
-gf30        1  TPASS  :  Test passed
-<<<execution_status>>>
-initiation_status=3D"ok"
-duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D0 cstime=3D1
-<<<test_end>>>
-<<<test_start>>>
-tag=3Diogen01 stime=3D1682860944
-cmdline=3D"export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv =
--n 2 500b:$TMPDIR/doio.f1.$$ 1000b:$TMPDIR/doio.f2.$$"
-contacts=3D""
-analysis=3Dexit
-<<<test_output>>>
-/lkp/benchmarks/ltp/testcases/bin/iogen -N iogen01 -i 120s -s read,write 50=
-0b:/tmp/ltp-TeBTVsDKnR/doio.f1.3955 1000b:/tmp/ltp-TeBTVsDKnR/doio.f2.3955 =
-| /lkp/benchmarks/ltp/testcases/bin/doio -N iogen01 -a -v -n 2 -k
-
-iogen(iogen01) starting up with the following:
-
-Out-pipe:              stdout
-Iterations:            120 seconds
-Seed:                  3962
-Offset-Mode:           sequential
-Overlap Flag:          off
-Mintrans:              1           (1 blocks)
-Maxtrans:              131072      (256 blocks)
-O_RAW/O_SSD Multiple:  (Determined by device)
-Syscalls:              read write=20
-Aio completion types:  none=20
-Flags:                 buffered sync=20
-
-Test Files: =20
-
-Path                                          Length    iou   raw iou file
-                                              (bytes) (bytes) (bytes) type
----------------------------------------------------------------------------=
---
-/tmp/ltp-TeBTVsDKnR/doio.f1.3955               256000       1     512 regul=
-ar
-/tmp/ltp-TeBTVsDKnR/doio.f2.3955               512000       1     512 regul=
-ar
-iogen01     1  TPASS  :  Test passed
-Test passed
-<<<execution_status>>>
-initiation_status=3D"ok"
-duration=3D121 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D3961 cstime=3D22827
-<<<test_end>>>
-<<<test_start>>>
-tag=3Dfs_inod01 stime=3D1682861065
-cmdline=3D"fs_inod $TMPDIR 10 10 10"
-contacts=3D""
-analysis=3Dexit
-<<<test_output>>>
-FS_INODE: File system stress - inode allocation/deallocation
-Volume under test: /tmp/ltp-TeBTVsDKnR
-Number of subdirectories: 10
-Number of files: 10
-Number of loops: 10
-Execution begins=20
-Sun Apr 30 13:24:25 UTC 2023
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-MULTIPLE PROCESSES CREATING AND DELETING FILES
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: creating dir2 subdirectories
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir0
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir1
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir2
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir3
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir4
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir5
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir6
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir7
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir8
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir9
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: creating dir1 subdirectories & f=
-iles
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir0
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir1
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir2
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir3
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir4
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir5
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir6
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir7
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir8
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: mkdir dir9
-Executing loop 1 of 10...
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-Executing loop 2 of 10...
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-Executing loop 3 of 10...
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-Executing loop 4 of 10...
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-Executing loop 5 of 10...
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-Executing loop 6 of 10...
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-Executing loop 7 of 10...
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-Executing loop 8 of 10...
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-Executing loop 9 of 10...
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-Executing loop 10 of 10...
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir1 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & creating files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: cd ../dir2 & removing files
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: touch files [0-10]/file10[0-10]
-/lkp/benchmarks/ltp/testcases/bin/fs_inod: rm files [0-10]/file10[0-10]
-Execution completed
-Sun Apr 30 13:24:31 UTC 2023
-<<<execution_status>>>
-initiation_status=3D"ok"
-duration=3D6 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D38 cstime=3D545
-<<<test_end>>>
-<<<test_start>>>
-tag=3Dlinker01 stime=3D1682861071
-cmdline=3D"linktest.sh"
-contacts=3D""
-analysis=3Dexit
-<<<test_output>>>
-linktest 1 TINFO: timeout per run is 0h 5m 0s
-linktest 1 TINFO: test symbolic link, limit: 1000
-linktest 1 TPASS: errors: 0
-linktest 1 TINFO: test hard link, limit: 1000
-linktest 1 TPASS: errors: 0
+tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clock_nanosleep03.c:52: TINFO: Testing variant: vDSO or syscall with libc s=
+pec
+clock_nanosleep03.c:99: TPASS: clock_nanosleep() slept correctly 100436
+clock_nanosleep03.c:52: TINFO: Testing variant: syscall with old kernel spe=
+c
+clock_nanosleep03.c:99: TPASS: clock_nanosleep() slept correctly 100508
 
 Summary:
 passed   2
@@ -7264,116 +7481,4207 @@ skipped  0
 warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
-duration=3D4 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D20 cstime=3D379
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dstream03 stime=3D1682861075
-cmdline=3D"stream03"
+tag=3Dclock_gettime01 stime=3D1682918912
+cmdline=3D"clock_gettime01"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-stream03    1  TPASS  :  Test passed in block0.
-stream03    2  TPASS  :  Test passed in block1.
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clock_gettime01.c:78: TINFO: Testing variant: vDSO or syscall with libc spe=
+c
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_REALTIME passed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_MONOTONIC passe=
+d
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_PROCESS_CPUTIME=
+_ID passed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_THREAD_CPUTIME_=
+ID passed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_REALTIME_COARSE=
+ passed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_MONOTONIC_COARS=
+E passed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_MONOTONIC_RAW p=
+assed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_BOOTTIME passed
+clock_gettime01.c:78: TINFO: Testing variant: syscall with old kernel spec
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_REALTIME passed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_MONOTONIC passe=
+d
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_PROCESS_CPUTIME=
+_ID passed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_THREAD_CPUTIME_=
+ID passed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_REALTIME_COARSE=
+ passed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_MONOTONIC_COARS=
+E passed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_MONOTONIC_RAW p=
+assed
+clock_gettime01.c:111: TPASS: clock_gettime(2): clock CLOCK_BOOTTIME passed
+
+Summary:
+passed   16
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D2 cstime=3D21
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dclock_settime02 stime=3D1682918912
+cmdline=3D"clock_settime02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clock_settime02.c:106: TINFO: Testing variant: syscall with old kernel spec
+clock_settime02.c:150: TPASS: clock_settime(CLOCK_REALTIME): failed as expe=
+cted: EFAULT (14)
+clock_settime02.c:150: TPASS: clock_settime(CLOCK_REALTIME): failed as expe=
+cted: EINVAL (22)
+clock_settime02.c:150: TPASS: clock_settime(CLOCK_REALTIME): failed as expe=
+cted: EINVAL (22)
+clock_settime02.c:150: TPASS: clock_settime(CLOCK_REALTIME): failed as expe=
+cted: EINVAL (22)
+clock_settime02.c:150: TPASS: clock_settime(CLOCK_MONOTONIC): failed as exp=
+ected: EINVAL (22)
+clock_settime02.c:150: TPASS: clock_settime(INVALID/UNKNOWN CLOCK): failed =
+as expected: EINVAL (22)
+clock_settime02.c:150: TPASS: clock_settime(INVALID/UNKNOWN CLOCK): failed =
+as expected: EINVAL (22)
+clock_settime02.c:150: TPASS: clock_settime(CLOCK_MONOTONIC_COARSE): failed=
+ as expected: EINVAL (22)
+clock_settime02.c:150: TPASS: clock_settime(CLOCK_MONOTONIC_RAW): failed as=
+ expected: EINVAL (22)
+clock_settime02.c:150: TPASS: clock_settime(CLOCK_BOOTTIME): failed as expe=
+cted: EINVAL (22)
+clock_settime02.c:150: TPASS: clock_settime(CLOCK_PROCESS_CPUTIME_ID): fail=
+ed as expected: EINVAL (22)
+clock_settime02.c:150: TPASS: clock_settime(CLOCK_THREAD_CPUTIME_ID): faile=
+d as expected: EINVAL (22)
+
+Summary:
+passed   12
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dclone02 stime=3D1682918912
+cmdline=3D"clone02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+clone02     1  TPASS  :  Test Passed
+clone02     2  TPASS  :  Test Passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dclone04 stime=3D1682918912
+cmdline=3D"clone04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clone04.c:39: TPASS: NULL stack : EINVAL (22)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
 duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
 cutime=3D0 cstime=3D0
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dftest01 stime=3D1682861075
-cmdline=3D"ftest01"
+tag=3Dclone08 stime=3D1682918912
+cmdline=3D"clone08"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-ftest01     1  TPASS  :  Test passed in fork and wait.
-ftest01     2  TPASS  :  Test passed.
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clone08.c:62: TINFO: running CLONE_PARENT
+clone08.c:106: TPASS: clone and forked child has the same parent
+clone08.c:62: TINFO: running CLONE_CHILD_SETTID
+clone08.c:124: TPASS: clone() correctly set ctid
+clone08.c:62: TINFO: running CLONE_PARENT_SETTID
+clone08.c:134: TPASS: clone() correctly set ptid
+clone08.c:62: TINFO: running CLONE_THREAD
+clone08.c:179: TPASS: clone has the same thread id
+clone08.c:169: TPASS: futex exit on ctid change, ctid: 0
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
 duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D4 cstime=3D20
+cutime=3D0 cstime=3D1
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dftest02 stime=3D1682861075
-cmdline=3D"ftest02"
+tag=3Dclose_range01 stime=3D1682918912
+cmdline=3D"close_range01"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-ftest02     1  TPASS  :  Test passed in fork-wait part.
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:55: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:55: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:55: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:55: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:55: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:55: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:116: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:120: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:55: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:42: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext2 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+close_range01.c:136: TINFO: Plain close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:140: TINFO: Set UNSHARE and close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:144: TINFO: Set CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:148: TINFO: Set UNSHARE and CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext3 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+close_range01.c:136: TINFO: Plain close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:140: TINFO: Set UNSHARE and close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:144: TINFO: Set CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:148: TINFO: Set UNSHARE and CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext4 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+close_range01.c:136: TINFO: Plain close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:140: TINFO: Set UNSHARE and close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:144: TINFO: Set CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:148: TINFO: Set UNSHARE and CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on xfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+close_range01.c:136: TINFO: Plain close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:140: TINFO: Set UNSHARE and close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:144: TINFO: Set CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:148: TINFO: Set UNSHARE and CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extra op=
+ts=3D''
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+close_range01.c:136: TINFO: Plain close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:140: TINFO: Set UNSHARE and close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:144: TINFO: Set CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:148: TINFO: Set UNSHARE and CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on vfat =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts=3D'' extra opt=
+s=3D''
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+close_range01.c:136: TINFO: Plain close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:140: TINFO: Set UNSHARE and close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:144: TINFO: Set CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:148: TINFO: Set UNSHARE and CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ntfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ntfs opts=3D'' extra opt=
+s=3D''
+The partition start sector was not specified for /dev/loop0 and it could no=
+t be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it cou=
+ld not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be ob=
+tained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sec=
+tors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:1107: TINFO: Trying FUSE...
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+close_range01.c:136: TINFO: Plain close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:140: TINFO: Set UNSHARE and close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:144: TINFO: Set CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:148: TINFO: Set UNSHARE and CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on tmpfs =3D=3D=3D
+tst_test.c:1093: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1074: TINFO: Limiting tmpfs size to 32MB
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+close_range01.c:136: TINFO: Plain close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:140: TINFO: Set UNSHARE and close range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:144: TINFO: Set CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+close_range01.c:148: TINFO: Set UNSHARE and CLOEXEC on range
+close_range01.c:190: TPASS: No kernel taints
+
+Summary:
+passed   32
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D13 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D10 cstime=3D743
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dconnect02 stime=3D1682918925
+cmdline=3D"connect02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+connect02.c:125: TPASS: Nothing bad happened, probably
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
 duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D29
+<<<test_end>>>
+<<<test_start>>>
+tag=3Ddelete_module01 stime=3D1682918925
+cmdline=3D"delete_module01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
+tst_lockdown.c:60: TINFO: Unable to determine system lockdown state
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+delete_module01.c:40: TPASS: delete_module() successful
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D5
+<<<test_end>>>
+<<<test_start>>>
+tag=3Ddup01 stime=3D1682918926
+cmdline=3D"dup01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+dup01.c:23: TPASS: dup(4) returned 5
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Ddup07 stime=3D1682918926
+cmdline=3D"dup07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+dup07       1  TPASS  :  Passed in read mode.
+dup07       2  TPASS  :  Passed in write mode.
+dup07       3  TPASS  :  Passed in read/write mode.
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Ddup3_01 stime=3D1682918926
+cmdline=3D"dup3_01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+dup3_01.c:56: TPASS: dup3(1, 4, 0) set close-on-exec flag
+dup3_01.c:49: TPASS: dup3(1, 4, O_CLOEXEC) set close-on-exec flag
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Depoll_create1_02 stime=3D1682918926
+cmdline=3D"epoll_create1_02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+epoll_create1_02.c:31: TPASS: epoll_create1(-1) : EINVAL (22)
+epoll_create1_02.c:31: TPASS: epoll_create1(EPOLL_CLOEXEC+1) : EINVAL (22)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Depoll_pwait04 stime=3D1682918926
+cmdline=3D"epoll_pwait04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+epoll_pwait_var.h:38: TINFO: Test epoll_pwait()
+epoll_pwait04.c:25: TPASS: with an invalid sigmask pointer : EFAULT (14)
+epoll_pwait_var.h:40: TINFO: Test epoll_pwait2()
+epoll_pwait04.c:25: TPASS: with an invalid sigmask pointer : EFAULT (14)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dexecl01 stime=3D1682918926
+cmdline=3D"execl01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+execl01_child.c:20: TPASS: execl01_child executed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dexecvp01 stime=3D1682918926
+cmdline=3D"execvp01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+execvp01_child.c:20: TPASS: execvp01_child executed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfchown04_16 stime=3D1682918926
+cmdline=3D"fchown04_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/fchown/../utils/compat_tst_1=
+6.h:143: TCONF: 16-bit version of fchown() is not supported on your platfor=
+m
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D1 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfchownat02 stime=3D1682918926
+cmdline=3D"fchownat02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fchownat02    1  TPASS  :  fchownat() test AT_SYMLINK_NOFOLLOW success
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfcntl08_64 stime=3D1682918926
+cmdline=3D"fcntl08_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fcntl08     1  TPASS  :  fcntl returned 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfcntl14_64 stime=3D1682918926
+cmdline=3D"fcntl14_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fcntl14     0  TINFO  :  Enter block 1: without mandatory locking
+fcntl14     1  TPASS  :  testcase:1 PASSED
+fcntl14     2  TPASS  :  testcase:2 PASSED
+fcntl14     3  TPASS  :  testcase:3 PASSED
+fcntl14     4  TPASS  :  testcase:4 PASSED
+fcntl14     5  TPASS  :  testcase:5 PASSED
+fcntl14     6  TPASS  :  testcase:6 PASSED
+fcntl14     7  TPASS  :  testcase:7 PASSED
+fcntl14     8  TPASS  :  testcase:8 PASSED
+fcntl14     9  TPASS  :  testcase:9 PASSED
+fcntl14    10  TPASS  :  testcase:10 PASSED
+fcntl14    11  TPASS  :  testcase:11 PASSED
+fcntl14    12  TPASS  :  testcase:12 PASSED
+fcntl14    13  TPASS  :  testcase:13 PASSED
+fcntl14    14  TPASS  :  testcase:14 PASSED
+fcntl14    15  TPASS  :  testcase:15 PASSED
+fcntl14    16  TPASS  :  testcase:16 PASSED
+fcntl14    17  TPASS  :  testcase:17 PASSED
+fcntl14    18  TPASS  :  testcase:18 PASSED
+fcntl14    19  TPASS  :  testcase:19 PASSED
+fcntl14    20  TPASS  :  testcase:20 PASSED
+fcntl14    21  TPASS  :  testcase:21 PASSED
+fcntl14    22  TPASS  :  testcase:22 PASSED
+fcntl14    23  TPASS  :  testcase:23 PASSED
+fcntl14    24  TPASS  :  testcase:24 PASSED
+fcntl14    25  TPASS  :  testcase:25 PASSED
+fcntl14    26  TPASS  :  testcase:26 PASSED
+fcntl14    27  TPASS  :  testcase:27 PASSED
+fcntl14    28  TPASS  :  testcase:28 PASSED
+fcntl14    29  TPASS  :  testcase:29 PASSED
+fcntl14    30  TPASS  :  testcase:30 PASSED
+fcntl14    31  TPASS  :  testcase:31 PASSED
+fcntl14    32  TPASS  :  testcase:32 PASSED
+fcntl14    33  TPASS  :  testcase:33 PASSED
+fcntl14    34  TPASS  :  testcase:34 PASSED
+fcntl14    35  TPASS  :  testcase:35 PASSED
+fcntl14    36  TPASS  :  testcase:36 PASSED
+fcntl14    37  TPASS  :  Block 1, test 1 PASSED
+fcntl14    38  TPASS  :  testcase:37 PASSED
+fcntl14    39  TPASS  :  testcase:38 PASSED
+fcntl14    40  TPASS  :  testcase:39 PASSED
+fcntl14    41  TPASS  :  testcase:40 PASSED
+fcntl14    42  TPASS  :  testcase:41 PASSED
+fcntl14    43  TPASS  :  testcase:42 PASSED
+fcntl14    44  TPASS  :  testcase:43 PASSED
+fcntl14    45  TPASS  :  testcase:44 PASSED
+fcntl14    46  TPASS  :  testcase:45 PASSED
+fcntl14    47  TPASS  :  Block 1, test 2 PASSED
+fcntl14     0  TINFO  :  Exit block 1
+fcntl14     0  TINFO  :  Enter block 2: with mandatory locking
+fcntl14    48  TPASS  :  testcase:1 PASSED
+fcntl14    49  TPASS  :  testcase:2 PASSED
+fcntl14    50  TPASS  :  testcase:3 PASSED
+fcntl14    51  TPASS  :  testcase:4 PASSED
+fcntl14    52  TPASS  :  testcase:5 PASSED
+fcntl14    53  TPASS  :  testcase:6 PASSED
+fcntl14    54  TPASS  :  testcase:7 PASSED
+fcntl14    55  TPASS  :  testcase:8 PASSED
+fcntl14    56  TPASS  :  testcase:9 PASSED
+fcntl14    57  TPASS  :  testcase:10 PASSED
+fcntl14    58  TPASS  :  testcase:11 PASSED
+fcntl14    59  TPASS  :  testcase:12 PASSED
+fcntl14    60  TPASS  :  testcase:13 PASSED
+fcntl14    61  TPASS  :  testcase:14 PASSED
+fcntl14    62  TPASS  :  testcase:15 PASSED
+fcntl14    63  TPASS  :  testcase:16 PASSED
+fcntl14    64  TPASS  :  testcase:17 PASSED
+fcntl14    65  TPASS  :  testcase:18 PASSED
+fcntl14    66  TPASS  :  testcase:19 PASSED
+fcntl14    67  TPASS  :  testcase:20 PASSED
+fcntl14    68  TPASS  :  testcase:21 PASSED
+fcntl14    69  TPASS  :  testcase:22 PASSED
+fcntl14    70  TPASS  :  testcase:23 PASSED
+fcntl14    71  TPASS  :  testcase:24 PASSED
+fcntl14    72  TPASS  :  testcase:25 PASSED
+fcntl14    73  TPASS  :  testcase:26 PASSED
+fcntl14    74  TPASS  :  testcase:27 PASSED
+fcntl14    75  TPASS  :  testcase:28 PASSED
+fcntl14    76  TPASS  :  testcase:29 PASSED
+fcntl14    77  TPASS  :  testcase:30 PASSED
+fcntl14    78  TPASS  :  testcase:31 PASSED
+fcntl14    79  TPASS  :  testcase:32 PASSED
+fcntl14    80  TPASS  :  testcase:33 PASSED
+fcntl14    81  TPASS  :  testcase:34 PASSED
+fcntl14    82  TPASS  :  testcase:35 PASSED
+fcntl14    83  TPASS  :  testcase:36 PASSED
+fcntl14    84  TPASS  :  Block 2, test 1 PASSED
+fcntl14    85  TPASS  :  testcase:37 PASSED
+fcntl14    86  TPASS  :  testcase:38 PASSED
+fcntl14    87  TPASS  :  testcase:39 PASSED
+fcntl14    88  TPASS  :  testcase:40 PASSED
+fcntl14    89  TPASS  :  testcase:41 PASSED
+fcntl14    90  TPASS  :  testcase:42 PASSED
+fcntl14    91  TPASS  :  testcase:43 PASSED
+fcntl14    92  TPASS  :  testcase:44 PASSED
+fcntl14    93  TPASS  :  testcase:45 PASSED
+fcntl14    94  TPASS  :  Block 2, test 2 PASSED
+fcntl14     0  TINFO  :  Exit block 2
+fcntl14     0  TINFO  :  Enter block 3
+fcntl14    95  TPASS  :  Test with negative whence locking PASSED
+fcntl14     0  TINFO  :  Exit block 3
+fcntl14     0  TINFO  :  Enter block 4
+fcntl14    96  TPASS  :  Test of locks on file PASSED
+fcntl14     0  TINFO  :  Exit block 4
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D5 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D4 cstime=3D12
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfcntl23_64 stime=3D1682918931
+cmdline=3D"fcntl23_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fcntl23     1  TPASS  :  fcntl(tfile_4529, F_SETLEASE, F_RDLCK)
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfcntl37_64 stime=3D1682918931
+cmdline=3D"fcntl37_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_capability.c:29: TINFO: Dropping CAP_SYS_RESOURCE(24)
+fcntl37.c:41: TINFO: F_SETPIPE_SZ and size is beyond 1<<31
+fcntl37.c:49: TPASS: F_SETPIPE_SZ failed as expected: EINVAL (22)
+fcntl37.c:41: TINFO: F_SETPIPE_SZ and size < data stored in pipe
+fcntl37.c:49: TPASS: F_SETPIPE_SZ failed as expected: EBUSY (16)
+fcntl37.c:41: TINFO: F_SETPIPE_SZ and size is over limit for unpriviledged =
+user
+fcntl37.c:49: TPASS: F_SETPIPE_SZ failed as expected: EPERM (1)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfdatasync01 stime=3D1682918931
+cmdline=3D"fdatasync01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fdatasync01    1  TPASS  :  fdatasync() successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfdatasync02 stime=3D1682918931
+cmdline=3D"fdatasync02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fdatasync02    1  TPASS  :  Expected failure for invalid file descriptor, e=
+rrno: 9
+fdatasync02    2  TPASS  :  Expected failure for file descriptor to a speci=
+al file, errno: 22
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dflock02 stime=3D1682918931
+cmdline=3D"flock02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+flock02.c:46: TPASS: flock() failed expectedly: EBADF (9)
+flock02.c:46: TPASS: flock() failed expectedly: EINVAL (22)
+flock02.c:46: TPASS: flock() failed expectedly: EINVAL (22)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dflock04 stime=3D1682918931
+cmdline=3D"flock04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+flock04.c:61: TPASS: Parent had shared lock
+flock04.c:35: TPASS:  Child acquiring shared lock got 0
+flock04.c:38: TPASS:  Child acquiring exclusive lock got -1
+flock04.c:61: TPASS: Parent had exclusive lock
+flock04.c:38: TPASS:  Child acquiring shared lock got -1
+flock04.c:38: TPASS:  Child acquiring exclusive lock got -1
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfmtmsg01 stime=3D1682918931
+cmdline=3D"fmtmsg01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fmtms01     1  TPASS  :  Test passed
+fmtms01     2  TPASS  :  Test passed
+fmtms01     3  TPASS  :  Test passed
+fmtms01     4  TPASS  :  Test passed
+fmtms01     5  TPASS  :  Test passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfork01 stime=3D1682918932
+cmdline=3D"fork01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+fork01.c:47: TPASS: correct child status returned 42
+fork01.c:50: TPASS: child_pid =3D=3D pid (4545)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfsopen02 stime=3D1682918932
+cmdline=3D"fsopen02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+fsopen02.c:49: TPASS: invalid-fs: fsopen() failed as expected: ENODEV (19)
+fsopen02.c:49: TPASS: invalid-flags: fsopen() failed as expected: EINVAL (2=
+2)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfstatat01 stime=3D1682918932
+cmdline=3D"fstatat01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fstatat01    1  TPASS  :  fstatat failed as expected: TEST_ERRNO=3DSUCCESS(=
+0): Success
+fstatat01    2  TPASS  :  fstatat failed as expected: TEST_ERRNO=3DSUCCESS(=
+0): Success
+fstatat01    3  TPASS  :  fstatat failed as expected: TEST_ERRNO=3DENOTDIR(=
+20): Not a directory
+fstatat01    4  TPASS  :  fstatat failed as expected: TEST_ERRNO=3DEBADF(9)=
+: Bad file descriptor
+fstatat01    5  TPASS  :  fstatat failed as expected: TEST_ERRNO=3DEINVAL(2=
+2): Invalid argument
+fstatat01    6  TPASS  :  fstatat failed as expected: TEST_ERRNO=3DSUCCESS(=
+0): Success
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfsync02 stime=3D1682918932
+cmdline=3D"fsync02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 12m 30s
+fsync02.c:103: TPASS: fsync succeeded in an acceptable amount of time
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D59
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfsync04 stime=3D1682918933
+cmdline=3D"fsync04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:55: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:55: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:55: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:55: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:55: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:55: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:116: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:120: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:55: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:157: TINFO: Skipping tmpfs as requested by the tes=
+t
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext2 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+fsync04.c:50: TPASS: Test file synced to device
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext3 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+fsync04.c:50: TPASS: Test file synced to device
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext4 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+fsync04.c:50: TPASS: Test file synced to device
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on xfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+fsync04.c:50: TPASS: Test file synced to device
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extra op=
+ts=3D''
+fsync04.c:50: TPASS: Test file synced to device
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on vfat =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts=3D'' extra opt=
+s=3D''
+fsync04.c:50: TPASS: Test file synced to device
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ntfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ntfs opts=3D'' extra opt=
+s=3D''
+The partition start sector was not specified for /dev/loop0 and it could no=
+t be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it cou=
+ld not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be ob=
+tained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sec=
+tors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:1107: TINFO: Trying FUSE...
+fsync04.c:50: TPASS: Test file synced to device
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D17 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D7 cstime=3D949
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetdomainname01 stime=3D1682918950
+cmdline=3D"getdomainname01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+getdomainname01.c:25: TPASS: getdomainname(domain_name, sizeof(domain_name)=
+) passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgeteuid01_16 stime=3D1682918950
+cmdline=3D"geteuid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+geteuid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls=
+/geteuid/../utils/compat_16.h:107: 16-bit version of geteuid() is not suppo=
+rted on your platform
+geteuid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls=
+/geteuid/../utils/compat_16.h:107: Remaining cases not appropriate for conf=
+iguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetitimer01 stime=3D1682918950
+cmdline=3D"getitimer01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+getitimer01.c:45: TINFO: tc->which =3D ITIMER_REAL
+getitimer01.c:51: TINFO: Test begin time: 1682918950.776186s
+getitimer01.c:54: TPASS: getitimer(tc->which, value) passed
+getitimer01.c:55: TPASS: value->it_value.tv_sec =3D=3D 0 (0)
+getitimer01.c:56: TPASS: value->it_value.tv_usec =3D=3D 0 (0)
+getitimer01.c:57: TPASS: value->it_interval.tv_sec =3D=3D 0 (0)
+getitimer01.c:58: TPASS: value->it_interval.tv_usec =3D=3D 0 (0)
+getitimer01.c:61: TPASS: setitimer(tc->which, value, NULL) passed
+getitimer01.c:64: TPASS: getitimer(tc->which, value) passed
+getitimer01.c:66: TPASS: value->it_interval.tv_sec =3D=3D SEC (100)
+getitimer01.c:67: TPASS: value->it_interval.tv_usec =3D=3D USEC (10000)
+getitimer01.c:69: TINFO: value->it_value.tv_sec=3D100, value->it_value.tv_u=
+sec=3D9996
+getitimer01.c:91: TPASS: timer value is within the expected range
+getitimer01.c:97: TINFO: Test end time: 1682918950.776258s
+getitimer01.c:45: TINFO: tc->which =3D ITIMER_VIRTUAL
+getitimer01.c:54: TPASS: getitimer(tc->which, value) passed
+getitimer01.c:55: TPASS: value->it_value.tv_sec =3D=3D 0 (0)
+getitimer01.c:56: TPASS: value->it_value.tv_usec =3D=3D 0 (0)
+getitimer01.c:57: TPASS: value->it_interval.tv_sec =3D=3D 0 (0)
+getitimer01.c:58: TPASS: value->it_interval.tv_usec =3D=3D 0 (0)
+getitimer01.c:61: TPASS: setitimer(tc->which, value, NULL) passed
+getitimer01.c:64: TPASS: getitimer(tc->which, value) passed
+getitimer01.c:66: TPASS: value->it_interval.tv_sec =3D=3D SEC (100)
+getitimer01.c:67: TPASS: value->it_interval.tv_usec =3D=3D USEC (10000)
+getitimer01.c:69: TINFO: value->it_value.tv_sec=3D100, value->it_value.tv_u=
+sec=3D11000
+getitimer01.c:91: TPASS: timer value is within the expected range
+getitimer01.c:45: TINFO: tc->which =3D ITIMER_PROF
+getitimer01.c:54: TPASS: getitimer(tc->which, value) passed
+getitimer01.c:55: TPASS: value->it_value.tv_sec =3D=3D 0 (0)
+getitimer01.c:56: TPASS: value->it_value.tv_usec =3D=3D 0 (0)
+getitimer01.c:57: TPASS: value->it_interval.tv_sec =3D=3D 0 (0)
+getitimer01.c:58: TPASS: value->it_interval.tv_usec =3D=3D 0 (0)
+getitimer01.c:61: TPASS: setitimer(tc->which, value, NULL) passed
+getitimer01.c:64: TPASS: getitimer(tc->which, value) passed
+getitimer01.c:66: TPASS: value->it_interval.tv_sec =3D=3D SEC (100)
+getitimer01.c:67: TPASS: value->it_interval.tv_usec =3D=3D USEC (10000)
+getitimer01.c:69: TINFO: value->it_value.tv_sec=3D100, value->it_value.tv_u=
+sec=3D11000
+getitimer01.c:91: TPASS: timer value is within the expected range
+
+Summary:
+passed   30
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetitimer02 stime=3D1682918950
+cmdline=3D"getitimer02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+getitimer02.c:51: TPASS: sys_getitimer(tc->which, *(tc->val)) : EFAULT (14)
+getitimer02.c:51: TPASS: sys_getitimer(tc->which, *(tc->val)) : EFAULT (14)
+getitimer02.c:51: TPASS: sys_getitimer(tc->which, *(tc->val)) : EINVAL (22)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetresgid03_16 stime=3D1682918950
+cmdline=3D"getresgid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+getresgid03    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+getresgid/../utils/compat_16.h:151: 16-bit version of getresgid() is not su=
+pported on your platform
+getresgid03    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+getresgid/../utils/compat_16.h:151: Remaining cases not appropriate for con=
+figuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetresuid03_16 stime=3D1682918950
+cmdline=3D"getresuid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+getresuid03    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+getresuid/../utils/compat_16.h:141: 16-bit version of getresuid() is not su=
+pported on your platform
+getresuid03    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+getresuid/../utils/compat_16.h:141: Remaining cases not appropriate for con=
+figuration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dget_mempolicy02 stime=3D1682918950
+cmdline=3D"get_mempolicy02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_numa.c:200: TINFO: Found 1 NUMA memory nodes
+get_mempolicy02.c:78: TPASS: policy: MPOL_DEFAULT, invalid address : EFAULT=
+ (14)
+get_mempolicy02.c:78: TPASS: policy: MPOL_DEFAULT, invalid flags, no target=
+ : EINVAL (22)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetsid01 stime=3D1682918950
+cmdline=3D"getsid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+getsid01.c:41: TPASS: p_sid =3D=3D c_sid (228)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetsockopt02 stime=3D1682918950
+cmdline=3D"getsockopt02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+getsockopt02.c:66: TPASS: Test passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetxattr03 stime=3D1682918950
+cmdline=3D"getxattr03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+getxattr03    1  TPASS  :  getxattr(2) returned correct value
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dioctl_loop07 stime=3D1682918950
+cmdline=3D"ioctl_loop07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+ioctl_loop07.c:128: TINFO: original loop size 2048 sectors
+ioctl_loop07.c:86: TINFO: When sizelimit is greater than loopsize by using =
+LOOP_SET_STATUS64
+ioctl_loop07.c:65: TPASS: /sys/block/loop0/size =3D 2048
+ioctl_loop07.c:66: TPASS: /sys/block/loop0/loop/sizelimit =3D 4194304
+ioctl_loop07.c:69: TPASS: LOOP_GET_STATUS64 gets correct lo_sizelimit(41943=
+04)
+ioctl_loop07.c:86: TINFO: When sizelimit is less than loopsize by using LOO=
+P_SET_STATUS64
+ioctl_loop07.c:65: TPASS: /sys/block/loop0/size =3D 1024
+ioctl_loop07.c:66: TPASS: /sys/block/loop0/loop/sizelimit =3D 524288
+ioctl_loop07.c:69: TPASS: LOOP_GET_STATUS64 gets correct lo_sizelimit(52428=
+8)
+ioctl_loop07.c:86: TINFO: When sizelimit is greater than loopsize by using =
+LOOP_CONFIGURE
+ioctl_loop07.c:65: TPASS: /sys/block/loop0/size =3D 2048
+ioctl_loop07.c:66: TPASS: /sys/block/loop0/loop/sizelimit =3D 4194304
+ioctl_loop07.c:69: TPASS: LOOP_GET_STATUS64 gets correct lo_sizelimit(41943=
+04)
+ioctl_loop07.c:86: TINFO: When sizelimit is less than loopsize by using LOO=
+P_CONFIGURE
+ioctl_loop07.c:65: TPASS: /sys/block/loop0/size =3D 1024
+ioctl_loop07.c:66: TPASS: /sys/block/loop0/loop/sizelimit =3D 524288
+ioctl_loop07.c:69: TPASS: LOOP_GET_STATUS64 gets correct lo_sizelimit(52428=
+8)
+
+Summary:
+passed   12
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
 cutime=3D0 cstime=3D5
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dftest04 stime=3D1682861075
-cmdline=3D"ftest04"
+tag=3Dioctl_ns03 stime=3D1682918951
+cmdline=3D"ioctl_ns03"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-ftest04     1  TPASS  :  Test passed.
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+ioctl_ns03.c:43: TPASS: NS_GET_OWNER_UID fails, UTS namespace
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
 duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D1 cstime=3D18
+cutime=3D0 cstime=3D1
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dftest07 stime=3D1682861075
-cmdline=3D"ftest07"
+tag=3Dinotify11 stime=3D1682918951
+cmdline=3D"inotify11"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-ftest07     1  TPASS  :  Test passed.
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+inotify11.c:104: TPASS: Got 9999 IN_DELETE events
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D3 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D8 cstime=3D228
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfanotify09 stime=3D1682918954
+cmdline=3D"fanotify09"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+fanotify09.c:376: TINFO: Test #0: Events on non-dir child with both parent =
+and mount marks
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:476: TPASS: group 1 got no event as expected
+fanotify09.c:476: TPASS: group 2 got no event as expected
+fanotify09.c:376: TINFO: Test #1: Events on non-dir child and subdir with b=
+oth parent and mount marks
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testdir
+fanotify09.c:476: TPASS: group 1 got no event as expected
+fanotify09.c:476: TPASS: group 2 got no event as expected
+fanotify09.c:376: TINFO: Test #2: Events on non-dir child and parent with b=
+oth parent and mount marks
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint
+fanotify09.c:476: TPASS: group 1 got no event as expected
+fanotify09.c:476: TPASS: group 2 got no event as expected
+fanotify09.c:376: TINFO: Test #3: Events on non-dir child and subdir with b=
+oth parent and subdir marks
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testdir
+fanotify09.c:476: TPASS: group 1 got no event as expected
+fanotify09.c:476: TPASS: group 2 got no event as expected
+fanotify09.c:376: TINFO: Test #4: Events on non-dir children with both pare=
+nt and mount marks
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:310: TPASS: group 1 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:310: TPASS: group 2 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:376: TINFO: Test #5: Events on non-dir child with both parent =
+and mount marks and filename info
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D-1 filen=
+ame=3Dtfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D-1 file=
+name=3Dtestfile
+fanotify09.c:310: TPASS: group 1 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:310: TPASS: group 2 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:376: TINFO: Test #6: Events on non-dir child with ignore mask =
+on parent
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D10, mf=
+lags=3D0) in /proc/4758/fdinfo/5
+fanotify09.c:476: TPASS: group 1 got no event as expected
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D10, mf=
+lags=3D0) in /proc/4758/fdinfo/6
+fanotify09.c:476: TPASS: group 2 got no event as expected
+fanotify09.c:376: TINFO: Test #7: Events on non-dir children with surviving=
+ ignore mask on parent
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D10, mf=
+lags=3D40) in /proc/4758/fdinfo/5
+fanotify09.c:310: TPASS: group 1 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D10, mf=
+lags=3D40) in /proc/4758/fdinfo/6
+fanotify09.c:310: TPASS: group 2 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:376: TINFO: Test #8: Events on dir with ignore mask that does =
+not apply to dirs
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D10, mf=
+lags=3D440) in /proc/4758/fdinfo/5
+fanotify09.c:310: TPASS: group 1 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D10, mf=
+lags=3D440) in /proc/4758/fdinfo/6
+fanotify09.c:310: TPASS: group 2 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint
+fanotify09.c:376: TINFO: Test #9: Events on dir with ignore mask that does =
+apply to dirs
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D400000=
+10, mflags=3D440) in /proc/4758/fdinfo/5
+fanotify09.c:476: TPASS: group 1 got no event as expected
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D400000=
+10, mflags=3D440) in /proc/4758/fdinfo/6
+fanotify09.c:476: TPASS: group 2 got no event as expected
+fanotify09.c:376: TINFO: Test #10: Events on child with ignore mask on pare=
+nt that does not apply to children
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D10, mf=
+lags=3D440) in /proc/4758/fdinfo/5
+fanotify09.c:310: TPASS: group 1 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D10, mf=
+lags=3D440) in /proc/4758/fdinfo/6
+fanotify09.c:310: TPASS: group 2 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:376: TINFO: Test #11: Events on child with ignore mask on pare=
+nt that does apply to children
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testfile
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D800001=
+0, mflags=3D440) in /proc/4758/fdinfo/5
+fanotify09.c:476: TPASS: group 1 got no event as expected
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D800001=
+0, mflags=3D440) in /proc/4758/fdinfo/6
+fanotify09.c:476: TPASS: group 2 got no event as expected
+fanotify09.c:376: TINFO: Test #12: Events on subdir with ignore mask on par=
+ent that does not apply to children
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testdir
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D400000=
+10, mflags=3D440) in /proc/4758/fdinfo/5
+fanotify09.c:310: TPASS: group 1 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testdir
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D400000=
+10, mflags=3D440) in /proc/4758/fdinfo/6
+fanotify09.c:310: TPASS: group 2 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testdir
+fanotify09.c:376: TINFO: Test #13: Events on subdir with ignore mask on par=
+ent that does not apply to dirs
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testdir
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D800001=
+0, mflags=3D440) in /proc/4758/fdinfo/5
+fanotify09.c:310: TPASS: group 1 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testdir
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D800001=
+0, mflags=3D440) in /proc/4758/fdinfo/6
+fanotify09.c:310: TPASS: group 2 got event: mask 10 pid=3D4758 fd=3D7 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testdir
+fanotify09.c:376: TINFO: Test #14: Events on subdir with ignore mask on par=
+ent that does apply to subdirs
+fanotify09.c:310: TPASS: group 0 got event: mask 2 pid=3D4758 fd=3D7 filena=
+me=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/tfile_4758
+fanotify09.c:310: TPASS: group 0 got event: mask 10 pid=3D4758 fd=3D8 filen=
+ame=3D/fs/sda1/tmpdir/ltp-EImq3EPOiZ/LTP_fanXoVDkY/mntpoint/testdir
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D480000=
+10, mflags=3D440) in /proc/4758/fdinfo/5
+fanotify09.c:476: TPASS: group 1 got no event as expected
+fanotify09.c:290: TPASS: Found mark with ignore mask (ignored_mask=3D480000=
+10, mflags=3D440) in /proc/4758/fdinfo/6
+fanotify09.c:476: TPASS: group 2 got no event as expected
+
+Summary:
+passed   76
+failed   0
+broken   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
 duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D5 cstime=3D55
+cutime=3D0 cstime=3D6
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dftest08 stime=3D1682861075
-cmdline=3D"ftest08"
+tag=3Dfanotify17 stime=3D1682918954
+cmdline=3D"fanotify17"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-ftest08     1  TPASS  :  Test passed.
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+fanotify17.c:240: TINFO: max_fanotify_groups=3D128 max_fanotify_marks=3D225=
+119
+fanotify17.c:174: TINFO: Test #0: Global groups limit in init user ns
+fanotify17.c:130: TPASS: Created 128 groups - below groups limit (128)
+fanotify17.c:174: TINFO: Test #1: Global groups limit in privileged user ns
+fanotify17.c:130: TPASS: Created 128 groups - below groups limit (128)
+fanotify17.c:174: TINFO: Test #2: Local groups limit in unprivileged user n=
+s
+fanotify17.c:130: TPASS: Created 10 groups - below groups limit (10)
+fanotify17.c:174: TINFO: Test #3: Local marks limit in unprivileged user ns
+fanotify17.c:122: TPASS: Created 10 marks - below marks limit (10)
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D6
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dkeyctl06 stime=3D1682918955
+cmdline=3D"keyctl06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+keyctl06.c:59: TPASS: KEYCTL_READ returned full count but didn't overrun th=
+e buffer
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
 duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D1 cstime=3D18
+cutime=3D0 cstime=3D1
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dread_all_sys stime=3D1682861075
-cmdline=3D"read_all -d /sys -q -r 3"
+tag=3Dkcmp01 stime=3D1682918955
+cmdline=3D"kcmp01"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-tst_test.c:1558: TINFO: Timeout per run is 0h 03m 50s
-read_all.c:568: TINFO: Worker timeout set to 10% of max_runtime: 2000ms
-read_all.c:447: TINFO: Worker 8526 (0): Stuck for 3152213us, restarting it
-read_all.c:447: TINFO: Worker 8527 (1): Stuck for 3154778us, restarting it
-read_all.c:447: TINFO: Worker 8528 (2): Stuck for 3154575us, restarting it
-read_all.c:447: TINFO: Worker 8529 (3): Stuck for 3154583us, restarting it
-read_all.c:447: TINFO: Worker 8530 (4): Stuck for 3154587us, restarting it
-read_all.c:447: TINFO: Worker 8531 (5): Stuck for 3154589us, restarting it
-read_all.c:447: TINFO: Worker 8532 (6): Stuck for 3154344us, restarting it
-read_all.c:383: TINFO: Worker 8532 (6): Last popped '/sys/devices/pnp0/00:0=
-a/tpm/tpm0/active'
-read_all.c:383: TINFO: Worker 8528 (2): Last popped '/sys/devices/pnp0/00:0=
-a/tpm/tpm0/ppi/tcg_operations'
-read_all.c:383: TINFO: Worker 8527 (1): Last popped '/sys/devices/pnp0/00:0=
-a/tpm/tpm0/ppi/tcg_operations'
-read_all.c:383: TINFO: Worker 8526 (0): Last popped '/sys/devices/pnp0/00:0=
-a/tpm/tpm0/ppi/tcg_operations'
-read_all.c:383: TINFO: Worker 8531 (5): Last popped '/sys/devices/pnp0/00:0=
-a/tpm/tpm0/ppi/vs_operations'
-read_all.c:383: TINFO: Worker 8529 (3): Last popped '/sys/devices/pnp0/00:0=
-a/tpm/tpm0/ppi/vs_operations'
-read_all.c:383: TINFO: Worker 8530 (4): Last popped '/sys/devices/pnp0/00:0=
-a/tpm/tpm0/ppi/vs_operations'
-read_all.c:447: TINFO: Worker 8543 (6): Stuck for 2242278us, restarting it
-read_all.c:383: TINFO: Worker 8543 (6): Last popped '/sys/module/intel_powe=
-rclamp/parameters/window_size'
-read_all.c:687: TPASS: Finished reading files
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+kcmp01.c:86: TPASS: kcmp() returned the expected value
+kcmp01.c:86: TPASS: kcmp() returned the expected value
+kcmp01.c:86: TPASS: kcmp() returned the expected value
+kcmp01.c:86: TPASS: kcmp() returned the expected value
+kcmp01.c:86: TPASS: kcmp() returned the expected value
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dkill08 stime=3D1682918955
+cmdline=3D"kill08"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+kill08      1  TPASS  :  received expected signal 9
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dkill09 stime=3D1682918955
+cmdline=3D"kill09"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+kill09      1  TPASS  :  kill(4793, SIGKILL) returned 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dlchown01_16 stime=3D1682918955
+cmdline=3D"lchown01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+lchown01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+lchown/../utils/compat_16.h:161: 16-bit version of lchown() is not supporte=
+d on your platform
+lchown01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+lchown/../utils/compat_16.h:161: Remaining cases not appropriate for config=
+uration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dlchown02_16 stime=3D1682918955
+cmdline=3D"lchown02_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+lchown02_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+lchown/../utils/compat_16.h:161: 16-bit version of lchown() is not supporte=
+d on your platform
+lchown02_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/=
+lchown/../utils/compat_16.h:161: Remaining cases not appropriate for config=
+uration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dlgetxattr01 stime=3D1682918955
+cmdline=3D"lgetxattr01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+lgetxattr01.c:77: TPASS: lgetxattr() got expected value
+lgetxattr01.c:90: TPASS: lgetxattr() failed as expected: ENODATA (61)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dlgetxattr02 stime=3D1682918955
+cmdline=3D"lgetxattr02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+lgetxattr02.c:63: TPASS: lgetxattr() failed as expected: ENODATA (61)
+lgetxattr02.c:63: TPASS: lgetxattr() failed as expected: ERANGE (34)
+lgetxattr02.c:63: TPASS: lgetxattr() failed as expected: EFAULT (14)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dlink04 stime=3D1682918955
+cmdline=3D"link04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+link04.c:90: TPASS: link(<non-existent file>, <nefile>): ENOENT (2)
+link04.c:90: TPASS: link(<path is empty string>, <nefile>): ENOENT (2)
+link04.c:90: TPASS: link(<path contains a non-existent file>, <nefile>): EN=
+OENT (2)
+link04.c:90: TPASS: link(<path contains a regular file>, <nefile>): ENOTDIR=
+ (20)
+link04.c:90: TPASS: link(<pathname too long>, <nefile>): ENAMETOOLONG (36)
+link04.c:90: TPASS: link(<invalid address>, <nefile>): EFAULT (14)
+link04.c:90: TPASS: link(<regfile>, <empty string>): ENOENT (2)
+link04.c:90: TPASS: link(<regfile>, <path contains a non-existent file>): E=
+NOENT (2)
+link04.c:90: TPASS: link(<regfile>, <path contains a regular file>): ENOENT=
+ (2)
+link04.c:90: TPASS: link(<regfile>, <pathname too long>): ENAMETOOLONG (36)
+link04.c:90: TPASS: link(<regfile>, <invalid address>): EFAULT (14)
+link04.c:90: TPASS: link(<regfile>, <regfile2>): EEXIST (17)
+link04.c:90: TPASS: link(<Write access diretory>, <newpath>): EACCES (13)
+link04.c:90: TPASS: link(<Search access diretory>, <dir2/testdir_1/new_tfil=
+e_2>): EACCES (13)
+
+Summary:
+passed   14
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dlink05 stime=3D1682918955
+cmdline=3D"link05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+link05.c:54: TPASS: link(lkfile_4803, lkfile_4803[1-1000]) ret 0 for 1000 f=
+iles, stat linkcounts match 1000
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D11
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dlstat02 stime=3D1682918955
+cmdline=3D"lstat02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+lstat02.c:72: TPASS: lstat() failed as expected: EACCES (13)
+lstat02.c:72: TPASS: lstat() failed as expected: ENOENT (2)
+lstat02.c:72: TPASS: lstat() failed as expected: EFAULT (14)
+lstat02.c:72: TPASS: lstat() failed as expected: ENAMETOOLONG (36)
+lstat02.c:72: TPASS: lstat() failed as expected: ENOTDIR (20)
+lstat02.c:72: TPASS: lstat() failed as expected: ELOOP (40)
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmemcpy01 stime=3D1682918955
+cmdline=3D"memcpy01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+memcpy01.c:89: TPASS: Test passed
+memcpy01.c:89: TPASS: Test passed
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmknod01 stime=3D1682918955
+cmdline=3D"mknod01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+mknod01.c:39: TPASS: mknod(PATH, 100777, 0) passed
+mknod01.c:39: TPASS: mknod(PATH, 10777, 0) passed
+mknod01.c:39: TPASS: mknod(PATH, 20777, 259) passed
+mknod01.c:39: TPASS: mknod(PATH, 60777, 259) passed
+mknod01.c:39: TPASS: mknod(PATH, 104700, 0) passed
+mknod01.c:39: TPASS: mknod(PATH, 102700, 0) passed
+mknod01.c:39: TPASS: mknod(PATH, 106700, 0) passed
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmknod07 stime=3D1682918955
+cmdline=3D"mknod07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+mknod07     0  TINFO  :  Found free device 0 '/dev/loop0'
+mknod07     0  TINFO  :  Formatting /dev/loop0 with ext2 opts=3D'' extra op=
+ts=3D''
+mknod07     1  TPASS  :  mknod failed as expected: TEST_ERRNO=3DEACCES(13):=
+ Permission denied
+mknod07     2  TPASS  :  mknod failed as expected: TEST_ERRNO=3DEACCES(13):=
+ Permission denied
+mknod07     3  TPASS  :  mknod failed as expected: TEST_ERRNO=3DEPERM(1): O=
+peration not permitted
+mknod07     4  TPASS  :  mknod failed as expected: TEST_ERRNO=3DEPERM(1): O=
+peration not permitted
+mknod07     5  TPASS  :  mknod failed as expected: TEST_ERRNO=3DEROFS(30): =
+Read-only file system
+mknod07     6  TPASS  :  mknod failed as expected: TEST_ERRNO=3DELOOP(40): =
+Too many levels of symbolic links
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmmap06 stime=3D1682918955
+cmdline=3D"mmap06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mmap06      1  TPASS  :  mmap failed with EACCES
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmmap07 stime=3D1682918955
+cmdline=3D"mmap07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mmap07      1  TPASS  :  mmap failed with EACCES
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmount06 stime=3D1682918955
+cmdline=3D"mount06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+mount06     0  TINFO  :  Found free device 0 '/dev/loop0'
+mount06     0  TINFO  :  Formatting /dev/loop0 with ext2 opts=3D'' extra op=
+ts=3D''
+mount06     1  TPASS  :  move mount is ok
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmount_setattr01 stime=3D1682918956
+cmdline=3D"mount_setattr01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:55: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:55: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:55: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:55: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:55: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:55: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:116: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:120: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:55: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:165: TINFO: Skipping FUSE based ntfs as requested =
+by the test
+tst_supported_fs_types.c:90: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:42: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext2 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_RDONLY is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSUID is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODEV is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOEXEC is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSYMFOLLOW is actually set as exp=
+ected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODIRATIME is actually set as expe=
+cted
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext3 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_RDONLY is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSUID is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODEV is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOEXEC is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSYMFOLLOW is actually set as exp=
+ected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODIRATIME is actually set as expe=
+cted
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext4 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_RDONLY is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSUID is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODEV is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOEXEC is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSYMFOLLOW is actually set as exp=
+ected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODIRATIME is actually set as expe=
+cted
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on xfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_RDONLY is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSUID is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODEV is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOEXEC is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSYMFOLLOW is actually set as exp=
+ected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODIRATIME is actually set as expe=
+cted
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extra op=
+ts=3D''
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_RDONLY is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSUID is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODEV is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOEXEC is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSYMFOLLOW is actually set as exp=
+ected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODIRATIME is actually set as expe=
+cted
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on vfat =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts=3D'' extra opt=
+s=3D''
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_RDONLY is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSUID is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODEV is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOEXEC is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSYMFOLLOW is actually set as exp=
+ected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODIRATIME is actually set as expe=
+cted
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on tmpfs =3D=3D=3D
+tst_test.c:1093: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1074: TINFO: Limiting tmpfs size to 32MB
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_RDONLY is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSUID is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODEV is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOEXEC is actually set as expected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NOSYMFOLLOW is actually set as exp=
+ected
+mount_setattr01.c:109: TPASS: MOUNT_ATTR_NODIRATIME is actually set as expe=
+cted
+
+Summary:
+passed   42
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D2 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D4 cstime=3D47
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmq_timedreceive01 stime=3D1682918958
+cmdline=3D"mq_timedreceive01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+mq_timedreceive01.c:140: TINFO: Testing variant: vDSO or syscall with libc =
+spec
+mq_timedreceive01.c:223: TPASS: mq_timedreceive() returned 0, priority 0, l=
+ength: 8192
+mq_timedreceive01.c:223: TPASS: mq_timedreceive() returned 1, priority 0, l=
+ength: 8192
+mq_timedreceive01.c:223: TPASS: mq_timedreceive() returned 8192, priority 0=
+, length: 8192
+mq_timedreceive01.c:223: TPASS: mq_timedreceive() returned 1, priority 3276=
+7, length: 8192
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/mq_timedreceive/../utils/mq.=
+h:70: TINFO: receive 1/1 message
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EMSGSI=
+ZE (90)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EBADF =
+(9)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EBADF =
+(9)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EBADF =
+(9)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EAGAIN=
+/EWOULDBLOCK (11)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EINVAL=
+ (22)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EINVAL=
+ (22)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EINVAL=
+ (22)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: ETIMED=
+OUT (110)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EINTR =
+(4)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EFAULT=
+ (14)
+mq_timedreceive01.c:140: TINFO: Testing variant: syscall with old kernel sp=
+ec
+mq_timedreceive01.c:223: TPASS: mq_timedreceive() returned 0, priority 0, l=
+ength: 8192
+mq_timedreceive01.c:223: TPASS: mq_timedreceive() returned 1, priority 0, l=
+ength: 8192
+mq_timedreceive01.c:223: TPASS: mq_timedreceive() returned 8192, priority 0=
+, length: 8192
+mq_timedreceive01.c:223: TPASS: mq_timedreceive() returned 1, priority 3276=
+7, length: 8192
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/mq_timedreceive/../utils/mq.=
+h:70: TINFO: receive 1/1 message
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EMSGSI=
+ZE (90)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EBADF =
+(9)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EBADF =
+(9)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EBADF =
+(9)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EAGAIN=
+/EWOULDBLOCK (11)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EINVAL=
+ (22)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EINVAL=
+ (22)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EINVAL=
+ (22)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: ETIMED=
+OUT (110)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EINTR =
+(4)
+mq_timedreceive01.c:197: TPASS: mq_timedreceive() failed expectedly: EFAULT=
+ (14)
+
+Summary:
+passed   30
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmremap02 stime=3D1682918958
+cmdline=3D"mremap02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mremap02    1  TPASS  :  mremap() Failed, 'invalid argument specified' - er=
+rno 22
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmsgctl04 stime=3D1682918958
+cmdline=3D"msgctl04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+msgctl04.c:103: TINFO: Testing variant: libc msgctl()
+msgctl04.c:79: TPASS: msgctl(1, 2, 0x557815c17d60) : EACCES (13)
+msgctl04.c:75: TCONF: EFAULT is skipped for libc variant
+msgctl04.c:75: TCONF: EFAULT is skipped for libc variant
+msgctl04.c:79: TPASS: msgctl(2, -1, 0x557815c17d60) : EINVAL (22)
+msgctl04.c:79: TPASS: msgctl(-1, 2, 0x557815c17d60) : EINVAL (22)
+msgctl04.c:79: TPASS: msgctl(-1, 1, 0x557815c17d60) : EINVAL (22)
+msgctl04.c:79: TPASS: msgctl(0, 0, (nil)) : EPERM (1)
+msgctl04.c:103: TINFO: Testing variant: __NR_msgctl syscall
+msgctl04.c:79: TPASS: msgctl(4, 2, 0x557815c17d60) : EACCES (13)
+msgctl04.c:79: TPASS: msgctl(5, 2, 0xffffffffffffffff) : EFAULT (14)
+msgctl04.c:79: TPASS: msgctl(5, 1, 0xffffffffffffffff) : EFAULT (14)
+msgctl04.c:79: TPASS: msgctl(5, -1, 0x557815c17d60) : EINVAL (22)
+msgctl04.c:79: TPASS: msgctl(-1, 2, 0x557815c17d60) : EINVAL (22)
+msgctl04.c:79: TPASS: msgctl(-1, 1, 0x557815c17d60) : EINVAL (22)
+msgctl04.c:79: TPASS: msgctl(3, 0, (nil)) : EPERM (1)
+
+Summary:
+passed   12
+failed   0
+broken   0
+skipped  2
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmsgget01 stime=3D1682918958
+cmdline=3D"msgget01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+msgget01.c:46: TPASS: message received =3D message sent
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmsgrcv01 stime=3D1682918958
+cmdline=3D"msgrcv01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+msgrcv01.c:38: TPASS: message received(hello) =3D message sent(hello)
+msgrcv01.c:46: TPASS: queue bytes and number of queues matched
+msgrcv01.c:50: TPASS: PID of last msgrcv(2) matched
+msgrcv01.c:55: TPASS: msg_rtime =3D 1682918958 in [1682918958, 1682918958]
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmunmap03 stime=3D1682918958
+cmdline=3D"munmap03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+munmap03    1  TPASS  :  failed as expected: TEST_ERRNO=3DEINVAL(22): Inval=
+id argument
+munmap03    2  TPASS  :  failed as expected: TEST_ERRNO=3DEINVAL(22): Inval=
+id argument
+munmap03    3  TPASS  :  failed as expected: TEST_ERRNO=3DEINVAL(22): Inval=
+id argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dnice02 stime=3D1682918958
+cmdline=3D"nice02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+nice02.c:49: TPASS: nice(50) passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dnice03 stime=3D1682918958
+cmdline=3D"nice03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+nice03.c:53: TPASS: nice(2) passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dopen08 stime=3D1682918958
+cmdline=3D"open08"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+open08.c:52: TPASS: O_CREAT | O_EXCL : EEXIST (17)
+open08.c:52: TPASS: O_RDWR : EISDIR (21)
+open08.c:52: TPASS: O_DIRECTORY : ENOTDIR (20)
+open08.c:52: TPASS: O_RDWR : ENAMETOOLONG (36)
+open08.c:52: TPASS: O_WRONLY : EACCES (13)
+open08.c:52: TPASS: O_CREAT : EFAULT (14)
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dopen09 stime=3D1682918958
+cmdline=3D"open09"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+open09      1  TPASS  :  Test passed in O_WRONLY.
+open09      2  TPASS  :  Test passed in O_RDONLY.
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dopenat02 stime=3D1682918958
+cmdline=3D"openat02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+openat02    1  TPASS  :  test O_APPEND for openat success
+openat02    2  TPASS  :  test O_CLOEXEC for openat success
+openat02    3  TPASS  :  test O_LARGEFILE for openat success
+openat02    4  TCONF  :  openat02.c:222: test O_NOATIME flag for openat nee=
+ds filesystems which are mounted without noatime and relatime
+openat02    5  TPASS  :  test O_NOFOLLOW for openat success
+openat02    6  TPASS  :  test O_TRUNC for openat success
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dopenat202 stime=3D1682918958
+cmdline=3D"openat202"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+openat202.c:58: TPASS: open /proc/version: openat2() passed
+openat202.c:58: TPASS: open magiclinks: openat2() passed
+openat202.c:58: TPASS: open symlinks: openat2() passed
+openat202.c:73: TPASS: resolve-no-xdev: openat2() failed as expected: EXDEV=
+ (18)
+openat202.c:73: TPASS: resolve-no-magiclinks: openat2() failed as expected:=
+ ELOOP (40)
+openat202.c:73: TPASS: resolve-no-symlinks: openat2() failed as expected: E=
+LOOP (40)
+openat202.c:73: TPASS: resolve-beneath: openat2() failed as expected: EXDEV=
+ (18)
+openat202.c:73: TPASS: resolve-beneath: openat2() failed as expected: EXDEV=
+ (18)
+openat202.c:73: TPASS: resolve-no-in-root: openat2() failed as expected: EN=
+OENT (2)
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dopen_by_handle_at02 stime=3D1682918958
+cmdline=3D"open_by_handle_at02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+open_by_handle_at02.c:98: TPASS: invalid-dfd: open_by_handle_at() failed as=
+ expected: EBADF (9)
+open_by_handle_at02.c:98: TPASS: stale-dfd: open_by_handle_at() failed as e=
+xpected: ESTALE (116)
+open_by_handle_at02.c:98: TPASS: invalid-file-handle: open_by_handle_at() f=
+ailed as expected: EFAULT (14)
+open_by_handle_at02.c:98: TPASS: high-file-handle-size: open_by_handle_at()=
+ failed as expected: EINVAL (22)
+open_by_handle_at02.c:98: TPASS: zero-file-handle-size: open_by_handle_at()=
+ failed as expected: EINVAL (22)
+tst_capability.c:29: TINFO: Dropping CAP_DAC_READ_SEARCH(2)
+tst_capability.c:41: TINFO: Permitting CAP_DAC_READ_SEARCH(2)
+open_by_handle_at02.c:98: TPASS: no-capability: open_by_handle_at() failed =
+as expected: EPERM (1)
+open_by_handle_at02.c:98: TPASS: symlink: open_by_handle_at() failed as exp=
+ected: ELOOP (40)
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmincore01 stime=3D1682918958
+cmdline=3D"mincore01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mincore01    1  TPASS  :  failed as expected: TEST_ERRNO=3DEINVAL(22): Inva=
+lid argument
+mincore01    2  TPASS  :  failed as expected: TEST_ERRNO=3DEFAULT(14): Bad =
+address
+mincore01    3  TPASS  :  failed as expected: TEST_ERRNO=3DENOMEM(12): Cann=
+ot allocate memory
+mincore01    4  TPASS  :  failed as expected: TEST_ERRNO=3DENOMEM(12): Cann=
+ot allocate memory
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmadvise03 stime=3D1682918958
+cmdline=3D"madvise03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+madvise03.c:42: TPASS: There are zero-fill-on-demand pages for anonymous pr=
+ivate mappings
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dnewuname01 stime=3D1682918958
+cmdline=3D"newuname01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+newuname01    1  TPASS  :  newuname call succeed: return value =3D 0=20
+newuname01    0  TINFO  :  This system is Linux
+newuname01    0  TINFO  :  The system infomation is :
+newuname01    0  TINFO  :  System is Linux on x86_64 hardware
+newuname01    0  TINFO  :  Nodename is lkp-skl-d02
+newuname01    0  TINFO  :  Version is 6.3.0-00004-gff9aaf58e816, #1 SMP Mon=
+ May  1 12:44:08 CST 2023
+newuname01    0  TINFO  :  Domainname is (none)=20
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpipe02 stime=3D1682918958
+cmdline=3D"pipe02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pipe02.c:86: TPASS: Child killed by SIGPIPE
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpipe03 stime=3D1682918958
+cmdline=3D"pipe03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pipe03.c:29: TPASS: expected failure writing to read end of pipe: EBADF (9)
+pipe03.c:38: TPASS: expected failure reading from write end of pipe: EBADF =
+(9)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpivot_root01 stime=3D1682918958
+cmdline=3D"pivot_root01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pivot_root01.c:156: TPASS: pivot_root succeeded
+pivot_root01.c:171: TPASS: pivot_root failed as expectedly: EBUSY (16)
+pivot_root01.c:171: TPASS: pivot_root failed as expectedly: EINVAL (22)
+pivot_root01.c:171: TPASS: pivot_root failed as expectedly: ENOTDIR (20)
+pivot_root01.c:171: TPASS: pivot_root failed as expectedly: EPERM (1)
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpoll02 stime=3D1682918958
+cmdline=3D"poll02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_timer_test.c:357: TINFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:369: TINFO: prctl(PR_GET_TIMERSLACK) =3D 50us
+tst_test.c:1566: TINFO: Updating max runtime to 0h 00m 09s
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 48s
+tst_timer_test.c:263: TINFO: poll() sleeping for 1000us 500 iterations, thr=
+eshold 450.01us
+tst_timer_test.c:305: TINFO: min 1034us, max 1071us, median 1055us, trunc m=
+ean 1054.12us (discarded 25)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: poll() sleeping for 2000us 500 iterations, thr=
+eshold 450.01us
+tst_timer_test.c:305: TINFO: min 2020us, max 2069us, median 2055us, trunc m=
+ean 2054.09us (discarded 25)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: poll() sleeping for 5000us 300 iterations, thr=
+eshold 450.04us
+tst_timer_test.c:305: TINFO: min 5015us, max 5067us, median 5055us, trunc m=
+ean 5054.01us (discarded 15)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: poll() sleeping for 10000us 100 iterations, th=
+reshold 450.33us
+tst_timer_test.c:305: TINFO: min 10015us, max 10068us, median 10056us, trun=
+c mean 10054.39us (discarded 5)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: poll() sleeping for 25000us 50 iterations, thr=
+eshold 451.29us
+tst_timer_test.c:305: TINFO: min 25015us, max 25061us, median 25056us, trun=
+c mean 25054.44us (discarded 2)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: poll() sleeping for 100000us 10 iterations, th=
+reshold 537.00us
+tst_timer_test.c:305: TINFO: min 100107us, max 100122us, median 100107us, t=
+runc mean 100107.56us (discarded 1)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: poll() sleeping for 1000000us 2 iterations, th=
+reshold 4400.00us
+tst_timer_test.c:305: TINFO: min 1000187us, max 1000996us, median 1000187us=
+, trunc mean 1000187.00us (discarded 1)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D9 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dprctl03 stime=3D1682918967
+cmdline=3D"prctl03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+prctl03.c:80: TPASS: prctl(PR_SET_CHILD_SUBREAPER) succeeded
+prctl03.c:52: TPASS: prctl(PR_GET_CHILD_SUBREAPER) got expected 0
+prctl03.c:95: TPASS: PPID of orphaned process was reparented
+prctl03.c:107: TPASS: wait() got orphaned process, pid 5004, status 0
+prctl03.c:115: TPASS: received SIGCHLD from orphaned process
+prctl03.c:52: TPASS: prctl(PR_GET_CHILD_SUBREAPER) got expected 1
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dprctl05 stime=3D1682918967
+cmdline=3D"prctl05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+prctl05.c:50: TPASS: prctl(PR_SET_NAME, 'prctl05_test') succeeded
+prctl05.c:64: TPASS: prctl(PR_GET_NAME) succeeded, thread name is prctl05_t=
+est
+prctl05.c:69: TPASS: /proc/self/task/5006/comm =3D 'prctl05_test'
+prctl05.c:70: TPASS: /proc/self/comm =3D 'prctl05_test'
+prctl05.c:50: TPASS: prctl(PR_SET_NAME, 'prctl05_test_xxxxx') succeeded
+prctl05.c:64: TPASS: prctl(PR_GET_NAME) succeeded, thread name is prctl05_t=
+est_xx
+prctl05.c:69: TPASS: /proc/self/task/5006/comm =3D 'prctl05_test_xx'
+prctl05.c:70: TPASS: /proc/self/comm =3D 'prctl05_test_xx'
+
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dprctl09 stime=3D1682918967
+cmdline=3D"prctl09"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_timer_test.c:357: TINFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:369: TINFO: prctl(PR_GET_TIMERSLACK) =3D 200us
+tst_test.c:1566: TINFO: Updating max runtime to 0h 00m 09s
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 48s
+tst_timer_test.c:263: TINFO: prctl() sleeping for 1000us 500 iterations, th=
+reshold 600.01us
+tst_timer_test.c:305: TINFO: min 1147us, max 1407us, median 1205us, trunc m=
+ean 1198.24us (discarded 25)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: prctl() sleeping for 2000us 500 iterations, th=
+reshold 600.01us
+tst_timer_test.c:305: TINFO: min 2106us, max 2217us, median 2205us, trunc m=
+ean 2198.14us (discarded 25)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: prctl() sleeping for 5000us 300 iterations, th=
+reshold 600.04us
+tst_timer_test.c:305: TINFO: min 5116us, max 5209us, median 5205us, trunc m=
+ean 5198.16us (discarded 15)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: prctl() sleeping for 10000us 100 iterations, t=
+hreshold 600.33us
+tst_timer_test.c:305: TINFO: min 10110us, max 10218us, median 10206us, trun=
+c mean 10197.78us (discarded 5)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: prctl() sleeping for 25000us 50 iterations, th=
+reshold 601.29us
+tst_timer_test.c:305: TINFO: min 25126us, max 25211us, median 25206us, trun=
+c mean 25197.46us (discarded 2)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: prctl() sleeping for 100000us 10 iterations, t=
+hreshold 637.00us
+tst_timer_test.c:305: TINFO: min 100124us, max 100208us, median 100207us, t=
+runc mean 100193.11us (discarded 1)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: prctl() sleeping for 1000000us 2 iterations, t=
+hreshold 4400.00us
+tst_timer_test.c:305: TINFO: min 1000126us, max 1000215us, median 1000126us=
+, trunc mean 1000126.00us (discarded 1)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D8 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpread02 stime=3D1682918975
+cmdline=3D"pread02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pread02.c:44: TPASS: pread(4, 1024, 0) file descriptor is a PIPE or FIFO : =
+ESPIPE (29)
+pread02.c:44: TPASS: pread(6, 1024, -1) specified offset is negative : EINV=
+AL (22)
+pread02.c:44: TPASS: pread(7, 1024, 0) file descriptor is a directory : EIS=
+DIR (21)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpreadv01_64 stime=3D1682918975
+cmdline=3D"preadv01_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+preadv01.c:80: TPASS: Preadv(2) read 64 bytes successfully with content 'a'=
+ expectedly
+preadv01.c:80: TPASS: Preadv(2) read 64 bytes successfully with content 'a'=
+ expectedly
+preadv01.c:80: TPASS: Preadv(2) read 32 bytes successfully with content 'b'=
+ expectedly
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpreadv02_64 stime=3D1682918975
+cmdline=3D"preadv02_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+preadv02.c:89: TPASS: preadv() failed as expected: EINVAL (22)
+preadv02.c:89: TPASS: preadv() failed as expected: EINVAL (22)
+preadv02.c:89: TPASS: preadv() failed as expected: EINVAL (22)
+preadv02.c:89: TPASS: preadv() failed as expected: EFAULT (14)
+preadv02.c:89: TPASS: preadv() failed as expected: EBADF (9)
+preadv02.c:89: TPASS: preadv() failed as expected: EBADF (9)
+preadv02.c:89: TPASS: preadv() failed as expected: EISDIR (21)
+preadv02.c:89: TPASS: preadv() failed as expected: ESPIPE (29)
+
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dprot_hsymlinks stime=3D1682918975
+cmdline=3D"prot_hsymlinks"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+prot_hsymlinks    0  TINFO  :   --- HARDLINKS AND SYMLINKS RESTRICTIONS TES=
+T ---
+prot_hsymlinks    1  TPASS  :  Expect: can follow symlink '.../link_1', own=
+er 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks    2  TPASS  :  Expect: can follow symlink '.../link_1', own=
+er 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks    3  TPASS  :  Expect: can follow symlink '.../link_2', own=
+er 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks    4  TPASS  :  Expect: can follow symlink '.../link_2', own=
+er 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks    5  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_3', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks    6  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_3', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks    7  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_4', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks    8  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_4', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks    9  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_5', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   10  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_5', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   11  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_6', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   12  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_6', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   13  TPASS  :  Expect: can create hardlink '.../root.hs' to=
+ '.../link_7', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   14  TPASS  :  Expect: can't create hardlink '.../root.hs' =
+to '.../link_8', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   15  TPASS  :  Expect: can create hardlink '.../root.hs' to=
+ '.../tmp_root/link_9', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   16  TPASS  :  Expect: can't create hardlink '.../root.hs' =
+to '.../tmp_root/link_10', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   17  TPASS  :  Expect: can create hardlink '.../root.hs' to=
+ '.../tmp_hsym/link_11', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   18  TPASS  :  Expect: can't create hardlink '.../root.hs' =
+to '.../tmp_hsym/link_12', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   19  TPASS  :  Expect: can follow symlink '.../link_13', ow=
+ner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   20  TPASS  :  Expect: can follow symlink '.../link_13', ow=
+ner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   21  TPASS  :  Expect: can follow symlink '.../link_14', ow=
+ner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   22  TPASS  :  Expect: can follow symlink '.../link_14', ow=
+ner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   23  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_15', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   24  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_15', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   25  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_16', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   26  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_16', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   27  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_17', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   28  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_17', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   29  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_18', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   30  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_18', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   31  TPASS  :  Expect: can create hardlink '.../root.hs_w' =
+to '.../link_19', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   32  TPASS  :  Expect: can create hardlink '.../root.hs_w' =
+to '.../link_20', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks   33  TPASS  :  Expect: can create hardlink '.../root.hs_w' =
+to '.../tmp_root/link_21', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   34  TPASS  :  Expect: can create hardlink '.../root.hs_w' =
+to '.../tmp_root/link_22', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks   35  TPASS  :  Expect: can create hardlink '.../root.hs_w' =
+to '.../tmp_hsym/link_23', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   36  TPASS  :  Expect: can create hardlink '.../root.hs_w' =
+to '.../tmp_hsym/link_24', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks   37  TPASS  :  Expect: can follow symlink '.../link_25', ow=
+ner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   38  TPASS  :  Expect: can follow symlink '.../link_25', ow=
+ner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   39  TPASS  :  Expect: can follow symlink '.../link_26', ow=
+ner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   40  TPASS  :  Expect: can follow symlink '.../link_26', ow=
+ner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   41  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_27', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   42  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_27', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   43  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_28', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   44  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_28', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   45  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_29', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   46  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_29', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   47  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_30', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   48  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_30', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   49  TPASS  :  Expect: can follow symlink '.../link_31', ow=
+ner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   50  TPASS  :  Expect: can follow symlink '.../link_31', ow=
+ner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   51  TPASS  :  Expect: can follow symlink '.../link_32', ow=
+ner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   52  TPASS  :  Expect: can follow symlink '.../link_32', ow=
+ner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   53  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_33', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   54  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_33', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   55  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_34', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   56  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_34', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   57  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_35', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   58  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_35', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   59  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_36', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   60  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_36', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   61  TPASS  :  Expect: can create hardlink '.../root/local_=
+root.hs' to '.../link_37', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   62  TPASS  :  Expect: can't create hardlink '.../root/loca=
+l_root.hs' to '.../link_38', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   63  TPASS  :  Expect: can create hardlink '.../root/local_=
+root.hs' to '.../tmp_root/link_39', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   64  TPASS  :  Expect: can't create hardlink '.../root/loca=
+l_root.hs' to '.../tmp_root/link_40', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   65  TPASS  :  Expect: can create hardlink '.../root/local_=
+root.hs' to '.../tmp_hsym/link_41', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   66  TPASS  :  Expect: can't create hardlink '.../root/loca=
+l_root.hs' to '.../tmp_hsym/link_42', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   67  TPASS  :  Expect: can follow symlink '.../link_43', ow=
+ner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   68  TPASS  :  Expect: can follow symlink '.../link_43', ow=
+ner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   69  TPASS  :  Expect: can follow symlink '.../link_44', ow=
+ner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   70  TPASS  :  Expect: can follow symlink '.../link_44', ow=
+ner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   71  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_45', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   72  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_45', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   73  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_46', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   74  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_46', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   75  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_47', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   76  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_47', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   77  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_48', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   78  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_48', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   79  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot.hs' to '.../link_49', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   80  TPASS  :  Expect: can't create hardlink '.../tmp_root/=
+root.hs' to '.../link_50', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   81  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot.hs' to '.../tmp_root/link_51', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   82  TPASS  :  Expect: can't create hardlink '.../tmp_root/=
+root.hs' to '.../tmp_root/link_52', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   83  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot.hs' to '.../tmp_hsym/link_53', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   84  TPASS  :  Expect: can't create hardlink '.../tmp_root/=
+root.hs' to '.../tmp_hsym/link_54', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks   85  TPASS  :  Expect: can follow symlink '.../link_55', ow=
+ner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   86  TPASS  :  Expect: can follow symlink '.../link_55', ow=
+ner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   87  TPASS  :  Expect: can follow symlink '.../link_56', ow=
+ner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   88  TPASS  :  Expect: can follow symlink '.../link_56', ow=
+ner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   89  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_57', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   90  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_57', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   91  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_58', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks   92  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_58', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks   93  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_59', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   94  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_59', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   95  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_60', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks   96  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_60', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks   97  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot.hs_w' to '.../link_61', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks   98  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot.hs_w' to '.../link_62', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks   99  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot.hs_w' to '.../tmp_root/link_63', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  100  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot.hs_w' to '.../tmp_root/link_64', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks  101  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot.hs_w' to '.../tmp_hsym/link_65', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  102  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot.hs_w' to '.../tmp_hsym/link_66', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks  103  TPASS  :  Expect: can follow symlink '.../link_67', ow=
+ner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  104  TPASS  :  Expect: can follow symlink '.../link_67', ow=
+ner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  105  TPASS  :  Expect: can follow symlink '.../link_68', ow=
+ner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  106  TPASS  :  Expect: can follow symlink '.../link_68', ow=
+ner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  107  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_69', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  108  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_69', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  109  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_70', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  110  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_70', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  111  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_71', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  112  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_71', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  113  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_72', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  114  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_72', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  115  TPASS  :  Expect: can follow symlink '.../link_73', ow=
+ner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  116  TPASS  :  Expect: can follow symlink '.../link_73', ow=
+ner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  117  TPASS  :  Expect: can follow symlink '.../link_74', ow=
+ner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  118  TPASS  :  Expect: can follow symlink '.../link_74', ow=
+ner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  119  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_75', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  120  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_75', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  121  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_76', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  122  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_76', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  123  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_77', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  124  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_77', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  125  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_78', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  126  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_78', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  127  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot/local_root.hs' to '.../link_79', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  128  TPASS  :  Expect: can't create hardlink '.../tmp_root/=
+root/local_root.hs' to '.../link_80', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  129  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot/local_root.hs' to '.../tmp_root/link_81', owner 'root', curr.user 'root'=
+, w(1)
+prot_hsymlinks  130  TPASS  :  Expect: can't create hardlink '.../tmp_root/=
+root/local_root.hs' to '.../tmp_root/link_82', owner 'root', curr.user 'hsy=
+m', w(0)
+prot_hsymlinks  131  TPASS  :  Expect: can create hardlink '.../tmp_root/ro=
+ot/local_root.hs' to '.../tmp_hsym/link_83', owner 'root', curr.user 'root'=
+, w(1)
+prot_hsymlinks  132  TPASS  :  Expect: can't create hardlink '.../tmp_root/=
+root/local_root.hs' to '.../tmp_hsym/link_84', owner 'root', curr.user 'hsy=
+m', w(0)
+prot_hsymlinks  133  TPASS  :  Expect: can follow symlink '.../link_85', ow=
+ner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  134  TPASS  :  Expect: can follow symlink '.../link_85', ow=
+ner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  135  TPASS  :  Expect: can follow symlink '.../link_86', ow=
+ner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  136  TPASS  :  Expect: can follow symlink '.../link_86', ow=
+ner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  137  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_87', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  138  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_87', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  139  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_88', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  140  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_88', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  141  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_89', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  142  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_89', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  143  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_90', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  144  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_90', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  145  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot.hs' to '.../link_91', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  146  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/=
+root.hs' to '.../link_92', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  147  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot.hs' to '.../tmp_root/link_93', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  148  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/=
+root.hs' to '.../tmp_root/link_94', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  149  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot.hs' to '.../tmp_hsym/link_95', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  150  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/=
+root.hs' to '.../tmp_hsym/link_96', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  151  TPASS  :  Expect: can follow symlink '.../link_97', ow=
+ner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  152  TPASS  :  Expect: can follow symlink '.../link_97', ow=
+ner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  153  TPASS  :  Expect: can follow symlink '.../link_98', ow=
+ner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  154  TPASS  :  Expect: can follow symlink '.../link_98', ow=
+ner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  155  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_99', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  156  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_99', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  157  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_100', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  158  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_100', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  159  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_101', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  160  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_101', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  161  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_102', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  162  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_102', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  163  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot.hs_w' to '.../link_103', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  164  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot.hs_w' to '.../link_104', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks  165  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot.hs_w' to '.../tmp_root/link_105', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  166  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot.hs_w' to '.../tmp_root/link_106', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks  167  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot.hs_w' to '.../tmp_hsym/link_107', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  168  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot.hs_w' to '.../tmp_hsym/link_108', owner 'root', curr.user 'hsym', w(1)
+prot_hsymlinks  169  TPASS  :  Expect: can follow symlink '.../link_109', o=
+wner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  170  TPASS  :  Expect: can follow symlink '.../link_109', o=
+wner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  171  TPASS  :  Expect: can follow symlink '.../link_110', o=
+wner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  172  TPASS  :  Expect: can follow symlink '.../link_110', o=
+wner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  173  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_111', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  174  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_111', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  175  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_112', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  176  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_112', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  177  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_113', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  178  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_113', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  179  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_114', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  180  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_114', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  181  TPASS  :  Expect: can follow symlink '.../link_115', o=
+wner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  182  TPASS  :  Expect: can follow symlink '.../link_115', o=
+wner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  183  TPASS  :  Expect: can follow symlink '.../link_116', o=
+wner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  184  TPASS  :  Expect: can follow symlink '.../link_116', o=
+wner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  185  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_117', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  186  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_117', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  187  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_118', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  188  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_118', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  189  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_119', owner 'root', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  190  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_119', owner 'root', src.owner 'root', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  191  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_120', owner 'hsym', src.owner 'root', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  192  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_120', owner 'hsym', src.owner 'root', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  193  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot/local_root.hs' to '.../link_121', owner 'root', curr.user 'root', w(1)
+prot_hsymlinks  194  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/=
+root/local_root.hs' to '.../link_122', owner 'root', curr.user 'hsym', w(0)
+prot_hsymlinks  195  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot/local_root.hs' to '.../tmp_root/link_123', owner 'root', curr.user 'root=
+', w(1)
+prot_hsymlinks  196  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/=
+root/local_root.hs' to '.../tmp_root/link_124', owner 'root', curr.user 'hs=
+ym', w(0)
+prot_hsymlinks  197  TPASS  :  Expect: can create hardlink '.../tmp_hsym/ro=
+ot/local_root.hs' to '.../tmp_hsym/link_125', owner 'root', curr.user 'root=
+', w(1)
+prot_hsymlinks  198  TPASS  :  Expect: can't create hardlink '.../tmp_hsym/=
+root/local_root.hs' to '.../tmp_hsym/link_126', owner 'root', curr.user 'hs=
+ym', w(0)
+prot_hsymlinks  199  TPASS  :  Expect: can follow symlink '.../link_127', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  200  TPASS  :  Expect: can follow symlink '.../link_127', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  201  TPASS  :  Expect: can follow symlink '.../link_128', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  202  TPASS  :  Expect: can follow symlink '.../link_128', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  203  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_129', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  204  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_129', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  205  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_130', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  206  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_130', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  207  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_131', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  208  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_131', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  209  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_132', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  210  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_132', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  211  TPASS  :  Expect: can create hardlink '.../hsym.hs' to=
+ '.../link_133', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  212  TPASS  :  Expect: can create hardlink '.../hsym.hs' to=
+ '.../link_134', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  213  TPASS  :  Expect: can create hardlink '.../hsym.hs' to=
+ '.../tmp_root/link_135', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  214  TPASS  :  Expect: can create hardlink '.../hsym.hs' to=
+ '.../tmp_root/link_136', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  215  TPASS  :  Expect: can create hardlink '.../hsym.hs' to=
+ '.../tmp_hsym/link_137', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  216  TPASS  :  Expect: can create hardlink '.../hsym.hs' to=
+ '.../tmp_hsym/link_138', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  217  TPASS  :  Expect: can follow symlink '.../link_139', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  218  TPASS  :  Expect: can follow symlink '.../link_139', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  219  TPASS  :  Expect: can follow symlink '.../link_140', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  220  TPASS  :  Expect: can follow symlink '.../link_140', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  221  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_141', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  222  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_141', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  223  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_142', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  224  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_142', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  225  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_143', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  226  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_143', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  227  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_144', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  228  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_144', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  229  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' =
+to '.../link_145', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  230  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' =
+to '.../link_146', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  231  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' =
+to '.../tmp_root/link_147', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  232  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' =
+to '.../tmp_root/link_148', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  233  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' =
+to '.../tmp_hsym/link_149', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  234  TPASS  :  Expect: can create hardlink '.../hsym.hs_w' =
+to '.../tmp_hsym/link_150', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  235  TPASS  :  Expect: can follow symlink '.../link_151', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  236  TPASS  :  Expect: can follow symlink '.../link_151', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  237  TPASS  :  Expect: can follow symlink '.../link_152', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  238  TPASS  :  Expect: can follow symlink '.../link_152', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  239  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_153', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  240  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_153', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  241  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_154', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  242  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_154', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  243  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_155', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  244  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_155', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  245  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_156', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  246  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_156', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  247  TPASS  :  Expect: can follow symlink '.../link_157', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  248  TPASS  :  Expect: can follow symlink '.../link_157', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  249  TPASS  :  Expect: can follow symlink '.../link_158', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  250  TPASS  :  Expect: can follow symlink '.../link_158', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  251  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_159', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  252  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_159', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  253  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_160', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  254  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_160', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  255  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_161', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  256  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_161', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  257  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_162', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  258  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_162', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  259  TPASS  :  Expect: can create hardlink '.../hsym/local_=
+hsym.hs' to '.../link_163', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  260  TPASS  :  Expect: can create hardlink '.../hsym/local_=
+hsym.hs' to '.../link_164', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  261  TPASS  :  Expect: can create hardlink '.../hsym/local_=
+hsym.hs' to '.../tmp_root/link_165', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  262  TPASS  :  Expect: can create hardlink '.../hsym/local_=
+hsym.hs' to '.../tmp_root/link_166', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  263  TPASS  :  Expect: can create hardlink '.../hsym/local_=
+hsym.hs' to '.../tmp_hsym/link_167', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  264  TPASS  :  Expect: can create hardlink '.../hsym/local_=
+hsym.hs' to '.../tmp_hsym/link_168', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  265  TPASS  :  Expect: can follow symlink '.../link_169', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  266  TPASS  :  Expect: can follow symlink '.../link_169', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  267  TPASS  :  Expect: can follow symlink '.../link_170', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  268  TPASS  :  Expect: can follow symlink '.../link_170', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  269  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_171', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  270  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_171', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  271  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_172', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  272  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_172', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  273  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_173', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  274  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_173', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  275  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_174', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  276  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_174', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  277  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs' to '.../link_175', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  278  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs' to '.../link_176', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  279  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs' to '.../tmp_root/link_177', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  280  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs' to '.../tmp_root/link_178', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  281  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs' to '.../tmp_hsym/link_179', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  282  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs' to '.../tmp_hsym/link_180', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  283  TPASS  :  Expect: can follow symlink '.../link_181', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  284  TPASS  :  Expect: can follow symlink '.../link_181', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  285  TPASS  :  Expect: can follow symlink '.../link_182', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  286  TPASS  :  Expect: can follow symlink '.../link_182', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  287  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_183', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  288  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_183', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  289  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_184', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  290  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_184', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  291  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_185', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  292  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_185', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  293  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_186', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  294  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_186', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  295  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs_w' to '.../link_187', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  296  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs_w' to '.../link_188', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  297  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs_w' to '.../tmp_root/link_189', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  298  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs_w' to '.../tmp_root/link_190', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  299  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs_w' to '.../tmp_hsym/link_191', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  300  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym.hs_w' to '.../tmp_hsym/link_192', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  301  TPASS  :  Expect: can follow symlink '.../link_193', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  302  TPASS  :  Expect: can follow symlink '.../link_193', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  303  TPASS  :  Expect: can follow symlink '.../link_194', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  304  TPASS  :  Expect: can follow symlink '.../link_194', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  305  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_195', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  306  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_195', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  307  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_196', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  308  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_196', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  309  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_197', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  310  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_197', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  311  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_198', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  312  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_198', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  313  TPASS  :  Expect: can follow symlink '.../link_199', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  314  TPASS  :  Expect: can follow symlink '.../link_199', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  315  TPASS  :  Expect: can follow symlink '.../link_200', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  316  TPASS  :  Expect: can follow symlink '.../link_200', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  317  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_201', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  318  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_201', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  319  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_202', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  320  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_202', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  321  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_203', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  322  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_203', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  323  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_204', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  324  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_204', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  325  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym/local_hsym.hs' to '.../link_205', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  326  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym/local_hsym.hs' to '.../link_206', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  327  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym/local_hsym.hs' to '.../tmp_root/link_207', owner 'hsym', curr.user 'root=
+', w(1)
+prot_hsymlinks  328  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym/local_hsym.hs' to '.../tmp_root/link_208', owner 'hsym', curr.user 'hsym=
+', w(1)
+prot_hsymlinks  329  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym/local_hsym.hs' to '.../tmp_hsym/link_209', owner 'hsym', curr.user 'root=
+', w(1)
+prot_hsymlinks  330  TPASS  :  Expect: can create hardlink '.../tmp_root/hs=
+ym/local_hsym.hs' to '.../tmp_hsym/link_210', owner 'hsym', curr.user 'hsym=
+', w(1)
+prot_hsymlinks  331  TPASS  :  Expect: can follow symlink '.../link_211', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  332  TPASS  :  Expect: can follow symlink '.../link_211', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  333  TPASS  :  Expect: can follow symlink '.../link_212', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  334  TPASS  :  Expect: can follow symlink '.../link_212', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  335  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_213', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  336  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_213', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  337  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_214', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  338  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_214', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  339  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_215', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  340  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_215', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  341  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_216', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  342  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_216', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  343  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs' to '.../link_217', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  344  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs' to '.../link_218', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  345  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs' to '.../tmp_root/link_219', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  346  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs' to '.../tmp_root/link_220', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  347  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs' to '.../tmp_hsym/link_221', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  348  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs' to '.../tmp_hsym/link_222', owner 'hsym', curr.user 'hsym', w(1)
+prot_hsymlinks  349  TPASS  :  Expect: can follow symlink '.../link_223', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  350  TPASS  :  Expect: can follow symlink '.../link_223', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  351  TPASS  :  Expect: can follow symlink '.../link_224', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  352  TPASS  :  Expect: can follow symlink '.../link_224', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  353  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_225', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  354  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_225', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  355  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_226', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  356  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_226', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  357  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_227', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  358  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_227', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  359  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_228', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  360  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_228', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  361  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs_w' to '.../link_229', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  362  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs_w' to '.../link_230', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  363  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs_w' to '.../tmp_root/link_231', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  364  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs_w' to '.../tmp_root/link_232', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  365  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs_w' to '.../tmp_hsym/link_233', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  366  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym.hs_w' to '.../tmp_hsym/link_234', owner 'hsym', curr.user 'hsym', w(0)
+prot_hsymlinks  367  TPASS  :  Expect: can follow symlink '.../link_235', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  368  TPASS  :  Expect: can follow symlink '.../link_235', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  369  TPASS  :  Expect: can follow symlink '.../link_236', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  370  TPASS  :  Expect: can follow symlink '.../link_236', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  371  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_237', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  372  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_237', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  373  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_238', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  374  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_238', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  375  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_239', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  376  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_239', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  377  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_240', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  378  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_240', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  379  TPASS  :  Expect: can follow symlink '.../link_241', o=
+wner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  380  TPASS  :  Expect: can follow symlink '.../link_241', o=
+wner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  381  TPASS  :  Expect: can follow symlink '.../link_242', o=
+wner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  382  TPASS  :  Expect: can follow symlink '.../link_242', o=
+wner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  383  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_243', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'root'
+prot_hsymlinks  384  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_243', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  385  TPASS  :  Expect: can't follow symlink '.../tmp_root/l=
+ink_244', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'root=
+'
+prot_hsymlinks  386  TPASS  :  Expect: can follow symlink '.../tmp_root/lin=
+k_244', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'root'
+prot_hsymlinks  387  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_245', owner 'root', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  388  TPASS  :  Expect: can't follow symlink '.../tmp_hsym/l=
+ink_245', owner 'root', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym=
+'
+prot_hsymlinks  389  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_246', owner 'hsym', src.owner 'hsym', curr.user 'root', dir.owner 'hsym'
+prot_hsymlinks  390  TPASS  :  Expect: can follow symlink '.../tmp_hsym/lin=
+k_246', owner 'hsym', src.owner 'hsym', curr.user 'hsym', dir.owner 'hsym'
+prot_hsymlinks  391  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym/local_hsym.hs' to '.../link_247', owner 'hsym', curr.user 'root', w(1)
+prot_hsymlinks  392  TPASS  :  Expect: can create huserdel: hsym mail spool=
+ (/var/mail/hsym) not found
+userdel: hsym home directory (/home/hsym) not found
+ardlink '.../tmp_hsym/hsym/local_hsym.hs' to '.../link_248', owner 'hsym', =
+curr.user 'hsym', w(1)
+prot_hsymlinks  393  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym/local_hsym.hs' to '.../tmp_root/link_249', owner 'hsym', curr.user 'root=
+', w(1)
+prot_hsymlinks  394  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym/local_hsym.hs' to '.../tmp_root/link_250', owner 'hsym', curr.user 'hsym=
+', w(1)
+prot_hsymlinks  395  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym/local_hsym.hs' to '.../tmp_hsym/link_251', owner 'hsym', curr.user 'root=
+', w(1)
+prot_hsymlinks  396  TPASS  :  Expect: can create hardlink '.../tmp_hsym/hs=
+ym/local_hsym.hs' to '.../tmp_hsym/link_252', owner 'hsym', curr.user 'hsym=
+', w(1)
+prot_hsymlinks    0  TINFO  :  All test-cases have been completed, summary:=
+ - symlinks  test:	PASS - hardlinks test:	PASS
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D15
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dptrace08 stime=3D1682918976
+cmdline=3D"ptrace08"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kernel.c:87: TINFO: uname.machine=3Dx86_64 kernel is 64bit
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+ptrace08.c:70: TINFO: Trying address 0xffff800000000000
+ptrace08.c:104: TPASS: ptrace() breakpoint with kernel addr failed: EINVAL =
+(22)
+ptrace08.c:70: TINFO: Trying address 0xffffffffffffffff
+ptrace08.c:104: TPASS: ptrace() breakpoint with kernel addr failed: EINVAL =
+(22)
+ptrace08.c:70: TINFO: Trying address 0xffffbfffffffffff
+ptrace08.c:104: TPASS: ptrace() breakpoint with kernel addr failed: EINVAL =
+(22)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpwritev01 stime=3D1682918976
+cmdline=3D"pwritev01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pwritev01.c:84: TPASS: writev() wrote 64 bytes successfully with content 'a=
+' expectedly=20
+pwritev01.c:84: TPASS: writev() wrote 64 bytes successfully with content 'a=
+' expectedly=20
+pwritev01.c:84: TPASS: writev() wrote 64 bytes successfully with content 'a=
+' expectedly=20
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpwritev01_64 stime=3D1682918976
+cmdline=3D"pwritev01_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pwritev01.c:84: TPASS: writev() wrote 64 bytes successfully with content 'a=
+' expectedly=20
+pwritev01.c:84: TPASS: writev() wrote 64 bytes successfully with content 'a=
+' expectedly=20
+pwritev01.c:84: TPASS: writev() wrote 64 bytes successfully with content 'a=
+' expectedly=20
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dquotactl03 stime=3D1682918976
+cmdline=3D"quotactl03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+quotactl_syscall_var.h:27: TINFO: Test quotactl()
+quotactl03.c:61: TPASS: quotactl() failed with ENOENT as expected
+quotactl_syscall_var.h:29: TINFO: Test quotactl_fd()
+quotactl03.c:61: TPASS: quotactl() failed with ENOENT as expected
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D8
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dreadlink01A stime=3D1682918976
+cmdline=3D"symlink01 -T readlink01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+readlink01    1  TPASS  :  Reading of symbolic link file contents checks ou=
+t ok
+readlink01    2  TPASS  :  Reading of symbolic link file contents checks ou=
+t ok
+readlink01    3  TPASS  :  Reading a symbolic link which exceeds maximum pa=
+thname error is caught
+readlink01    4  TPASS  :  Reading a nonsymbolic link file error condition =
+is caught.  EINVAL is returned
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dreboot02 stime=3D1682918976
+cmdline=3D"reboot02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+reboot02.c:40: TPASS: INVALID_CMD : EINVAL (22)
+reboot02.c:46: TPASS: LINUX_REBOOT_CMD_CAD_ON : EPERM (1)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dremap_file_pages01 stime=3D1682918976
+cmdline=3D"remap_file_pages01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+remap_file_pages01    1  TPASS  :  Non-Linear shm file OK
+remap_file_pages01    2  TPASS  :  Non-Linear /tmp/ file OK
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dremap_file_pages02 stime=3D1682918976
+cmdline=3D"remap_file_pages02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+remap_file_pages02.c:85: TPASS: remap_file_pages(2) start is not valid MAP_=
+SHARED mapping: EINVAL (22)
+remap_file_pages02.c:85: TPASS: remap_file_pages(2) start is invalid: EINVA=
+L (22)
+remap_file_pages02.c:85: TPASS: remap_file_pages(2) size is invalid: EINVAL=
+ (22)
+remap_file_pages02.c:85: TPASS: remap_file_pages(2) prot is invalid: EINVAL=
+ (22)
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Drename04 stime=3D1682918976
+cmdline=3D"rename04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:55: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:55: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:55: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:55: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:55: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:55: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:116: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:120: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:55: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:42: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext2 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+rename04.c:36: TPASS: rename() failed as expected: ENOTEMPTY (39)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext3 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+rename04.c:36: TPASS: rename() failed as expected: ENOTEMPTY (39)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext4 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+rename04.c:36: TPASS: rename() failed as expected: ENOTEMPTY (39)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on xfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+rename04.c:36: TPASS: rename() failed as expected: EEXIST (17)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extra op=
+ts=3D''
+rename04.c:36: TPASS: rename() failed as expected: ENOTEMPTY (39)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on vfat =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts=3D'' extra opt=
+s=3D''
+rename04.c:36: TPASS: rename() failed as expected: ENOTEMPTY (39)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ntfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ntfs opts=3D'' extra opt=
+s=3D''
+The partition start sector was not specified for /dev/loop0 and it could no=
+t be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it cou=
+ld not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be ob=
+tained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sec=
+tors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:1107: TINFO: Trying FUSE...
+rename04.c:36: TPASS: rename() failed as expected: ENOTEMPTY (39)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on tmpfs =3D=3D=3D
+tst_test.c:1093: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1074: TINFO: Limiting tmpfs size to 32MB
+rename04.c:36: TPASS: rename() failed as expected: ENOTEMPTY (39)
+
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D12 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D6 cstime=3D744
+<<<test_end>>>
+<<<test_start>>>
+tag=3Drenameat201 stime=3D1682918988
+cmdline=3D"renameat201"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+renameat201    1  TPASS  :  renameat2() returned the expected value: TEST_E=
+RRNO=3DEEXIST(17): File exists
+renameat201    2  TPASS  :  renameat2() returned the expected value: TEST_E=
+RRNO=3DSUCCESS(0): Success
+renameat201    3  TPASS  :  renameat2() returned the expected value: TEST_E=
+RRNO=3DENOENT(2): No such file or directory
+renameat201    4  TPASS  :  renameat2() returned the expected value: TEST_E=
+RRNO=3DSUCCESS(0): Success
+renameat201    5  TPASS  :  renameat2() returned the expected value: TEST_E=
+RRNO=3DEINVAL(22): Invalid argument
+renameat201    6  TPASS  :  renameat2() returned the expected value: TEST_E=
+RRNO=3DEINVAL(22): Invalid argument
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Drmdir02 stime=3D1682918988
+cmdline=3D"rmdir02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+rmdir02.c:92: TPASS: rmdir() failed as expected: ENOTEMPTY (39)
+rmdir02.c:92: TPASS: rmdir() failed as expected: ENAMETOOLONG (36)
+rmdir02.c:92: TPASS: rmdir() failed as expected: ENOENT (2)
+rmdir02.c:92: TPASS: rmdir() failed as expected: ENOTDIR (20)
+rmdir02.c:92: TPASS: rmdir() failed as expected: EFAULT (14)
+rmdir02.c:92: TPASS: rmdir() failed as expected: ELOOP (40)
+rmdir02.c:92: TPASS: rmdir() failed as expected: EROFS (30)
+rmdir02.c:92: TPASS: rmdir() failed as expected: EBUSY (16)
+rmdir02.c:92: TPASS: rmdir() failed as expected: EINVAL (22)
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Drt_tgsigqueueinfo01 stime=3D1682918988
+cmdline=3D"rt_tgsigqueueinfo01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+rt_tgsigqueueinfo01.c:65: TPASS: Test signal to self succeeded
+rt_tgsigqueueinfo01.c:96: TPASS: Test signal to different thread succeeded
+rt_tgsigqueueinfo01.c:96: TPASS: Test signal to different thread succeeded
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsched_rr_get_interval02 stime=3D1682918988
+cmdline=3D"sched_rr_get_interval02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+sched_rr_get_interval02.c:34: TINFO: Testing variant: vDSO or syscall with =
+libc spec
+sched_rr_get_interval02.c:52: TPASS: sched_rr_get_interval() passed
+sched_rr_get_interval02.c:34: TINFO: Testing variant: syscall with old kern=
+el spec
+sched_rr_get_interval02.c:52: TPASS: sched_rr_get_interval() passed
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsched_setparam02 stime=3D1682918988
+cmdline=3D"sched_setparam02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+sched_setparam02.c:59: TINFO: Testing libc variant
+sched_setparam02.c:50: TPASS: got expected priority 5
+sched_setparam02.c:50: TPASS: got expected priority 5
+sched_setparam02.c:50: TPASS: got expected priority 0
+sched_setparam02.c:59: TINFO: Testing syscall variant
+sched_setparam02.c:50: TPASS: got expected priority 5
+sched_setparam02.c:50: TPASS: got expected priority 5
+sched_setparam02.c:50: TPASS: got expected priority 0
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsched_setscheduler02 stime=3D1682918988
+cmdline=3D"sched_setscheduler02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+sched_setscheduler02.c:34: TINFO: Testing libc variant
+sched_setscheduler02.c:48: TPASS: sched_setscheduler(0, SCHED_FIFO, 1) : EP=
+ERM (1)
+sched_setscheduler02.c:34: TINFO: Testing syscall variant
+sched_setscheduler02.c:48: TPASS: sched_setscheduler(0, SCHED_FIFO, 1) : EP=
+ERM (1)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsched_setaffinity01 stime=3D1682918988
+cmdline=3D"sched_setaffinity01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+sched_setaffinity01.c:83: TPASS: sched_setaffinity() failed: EFAULT (14)
+sched_setaffinity01.c:83: TPASS: sched_setaffinity() failed: EINVAL (22)
+sched_setaffinity01.c:83: TPASS: sched_setaffinity() failed: ESRCH (3)
+sched_setaffinity01.c:83: TPASS: sched_setaffinity() failed: EPERM (1)
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsched_getaffinity01 stime=3D1682918988
+cmdline=3D"sched_getaffinity01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+sched_getaffinity01.c:88: TINFO: system has 4 processor(s).
+sched_getaffinity01.c:76: TPASS: cpuset size =3D 128, enabled cpus 4
+sched_getaffinity01.c:39: TPASS: sched_getaffinity() failed: EFAULT (14)
+sched_getaffinity01.c:39: TPASS: sched_getaffinity() failed: EINVAL (22)
+sched_getaffinity01.c:39: TPASS: sched_getaffinity() failed: ESRCH (3)
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dselect03 stime=3D1682918988
+cmdline=3D"select03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+select_var.h:109: TINFO: Testing libc select()
+select03.c:65: TPASS: Negative nfds: select() failed as expected: EINVAL (2=
+2)
+select03.c:65: TPASS: Invalid readfds: select() failed as expected: EBADF (=
+9)
+select03.c:65: TPASS: Invalid writefds: select() failed as expected: EBADF =
+(9)
+select03.c:65: TPASS: Invalid exceptfds: select() failed as expected: EBADF=
+ (9)
+select03.c:65: TPASS: Faulty readfds: select() failed as expected: EFAULT (=
+14)
+select03.c:65: TPASS: Faulty writefds: select() failed as expected: EFAULT =
+(14)
+select03.c:65: TPASS: Faulty exceptfds: select() failed as expected: EFAULT=
+ (14)
+select03.c:86: TPASS: Faulty timeout: select() killed by signal
+select_var.h:112: TINFO: Testing SYS_select syscall
+select03.c:65: TPASS: Negative nfds: select() failed as expected: EINVAL (2=
+2)
+select03.c:65: TPASS: Invalid readfds: select() failed as expected: EBADF (=
+9)
+select03.c:65: TPASS: Invalid writefds: select() failed as expected: EBADF =
+(9)
+select03.c:65: TPASS: Invalid exceptfds: select() failed as expected: EBADF=
+ (9)
+select03.c:65: TPASS: Faulty readfds: select() failed as expected: EFAULT (=
+14)
+select03.c:65: TPASS: Faulty writefds: select() failed as expected: EFAULT =
+(14)
+select03.c:65: TPASS: Faulty exceptfds: select() failed as expected: EFAULT=
+ (14)
+select03.c:65: TPASS: Faulty timeout: select() failed as expected: EFAULT (=
+14)
+select_var.h:115: TINFO: Testing SYS_pselect6 syscall
+select03.c:65: TPASS: Negative nfds: select() failed as expected: EINVAL (2=
+2)
+select03.c:65: TPASS: Invalid readfds: select() failed as expected: EBADF (=
+9)
+select03.c:65: TPASS: Invalid writefds: select() failed as expected: EBADF =
+(9)
+select03.c:65: TPASS: Invalid exceptfds: select() failed as expected: EBADF=
+ (9)
+select03.c:65: TPASS: Faulty readfds: select() failed as expected: EFAULT (=
+14)
+select03.c:65: TPASS: Faulty writefds: select() failed as expected: EFAULT =
+(14)
+select03.c:65: TPASS: Faulty exceptfds: select() failed as expected: EFAULT=
+ (14)
+select03.c:65: TPASS: Faulty timeout: select() failed as expected: EFAULT (=
+14)
+select_var.h:118: TINFO: Testing SYS_pselect6 time64 syscall
+select_var.h:83: TCONF: __NR_pselect6 time64 variant not supported
+select_var.h:83: TCONF: __NR_pselect6 time64 variant not supported
+select_var.h:83: TCONF: __NR_pselect6 time64 variant not supported
+select_var.h:83: TCONF: __NR_pselect6 time64 variant not supported
+select_var.h:83: TCONF: __NR_pselect6 time64 variant not supported
+select_var.h:83: TCONF: __NR_pselect6 time64 variant not supported
+select_var.h:83: TCONF: __NR_pselect6 time64 variant not supported
+select_var.h:83: TCONF: __NR_pselect6 time64 variant not supported
+select_var.h:121: TINFO: Testing SYS__newselect syscall
+select_var.h:89: TCONF: syscall(-1) __NR__newselect not supported on your a=
+rch
+select_var.h:89: TCONF: syscall(-1) __NR__newselect not supported on your a=
+rch
+select_var.h:89: TCONF: syscall(-1) __NR__newselect not supported on your a=
+rch
+select_var.h:89: TCONF: syscall(-1) __NR__newselect not supported on your a=
+rch
+select_var.h:89: TCONF: syscall(-1) __NR__newselect not supported on your a=
+rch
+select_var.h:89: TCONF: syscall(-1) __NR__newselect not supported on your a=
+rch
+select_var.h:89: TCONF: syscall(-1) __NR__newselect not supported on your a=
+rch
+select_var.h:89: TCONF: syscall(-1) __NR__newselect not supported on your a=
+rch
+
+Summary:
+passed   24
+failed   0
+broken   0
+skipped  16
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D2 cstime=3D6
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsemctl05 stime=3D1682918988
+cmdline=3D"semctl05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+semctl05.c:44: TPASS: semctl() with the value to set is less than zero : ER=
+ANGE (34)
+semctl05.c:44: TPASS: semctl() with the value to set are too large : ERANGE=
+ (34)
+semctl05.c:44: TPASS: semctl() with the value to set is too large : ERANGE =
+(34)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile02 stime=3D1682918988
+cmdline=3D"sendfile02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+sendfile02.c:80: TPASS: sendfile() with with offset =3D 0
+sendfile02.c:80: TPASS: sendfile() with with offset =3D 2
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendfile09_64 stime=3D1682918988
+cmdline=3D"sendfile09_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 06m 30s
+sendfile09.c:88: TPASS: sendfile() with offset at 0
+sendfile09.c:88: TPASS: sendfile() with offset at 3GB
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D2 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D199
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsendmsg03 stime=3D1682918990
+cmdline=3D"sendmsg03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1558: TINFO: Timeout per run is 0h 07m 30s
+../../../../include/tst_fuzzy_sync.h:484: TINFO: Minimum sampling period en=
+ded
+../../../../include/tst_fuzzy_sync.h:307: TINFO: loop =3D 1024, delay_bias =
+=3D 0
+../../../../include/tst_fuzzy_sync.h:295: TINFO: start_a - start_b: { avg =
+=3D   -59ns, avg_dev =3D     4ns, dev_ratio =3D 0.07 }
+../../../../include/tst_fuzzy_sync.h:295: TINFO: end_a - start_a  : { avg =
+=3D 23432ns, avg_dev =3D  3071ns, dev_ratio =3D 0.13 }
+../../../../include/tst_fuzzy_sync.h:295: TINFO: end_b - start_b  : { avg =
+=3D  1504ns, avg_dev =3D    83ns, dev_ratio =3D 0.06 }
+../../../../include/tst_fuzzy_sync.h:295: TINFO: end_a - end_b    : { avg =
+=3D 21869ns, avg_dev =3D  3018ns, dev_ratio =3D 0.14 }
+../../../../include/tst_fuzzy_sync.h:295: TINFO: spins            : { avg =
+=3D 12471  , avg_dev =3D   462  , dev_ratio =3D 0.04 }
+../../../../include/tst_fuzzy_sync.h:494: TINFO: Reached deviation ratios <=
+ 0.10, introducing randomness
+../../../../include/tst_fuzzy_sync.h:497: TINFO: Delay range is [-970, 1367=
+3]
+../../../../include/tst_fuzzy_sync.h:307: TINFO: loop =3D 1059, delay_bias =
+=3D 0
+../../../../include/tst_fuzzy_sync.h:295: TINFO: start_a - start_b: { avg =
+=3D   -54ns, avg_dev =3D     5ns, dev_ratio =3D 0.09 }
+../../../../include/tst_fuzzy_sync.h:295: TINFO: end_a - start_a  : { avg =
+=3D 20808ns, avg_dev =3D   397ns, dev_ratio =3D 0.02 }
+../../../../include/tst_fuzzy_sync.h:295: TINFO: end_b - start_b  : { avg =
+=3D  1477ns, avg_dev =3D     4ns, dev_ratio =3D 0.00 }
+../../../../include/tst_fuzzy_sync.h:295: TINFO: end_a - end_b    : { avg =
+=3D 19278ns, avg_dev =3D   396ns, dev_ratio =3D 0.02 }
+../../../../include/tst_fuzzy_sync.h:295: TINFO: spins            : { avg =
+=3D 12668  , avg_dev =3D   296  , dev_ratio =3D 0.02 }
+../../../../include/tst_fuzzy_sync.h:654: TINFO: Exceeded execution loops, =
+requesting exit
+sendmsg03.c:98: TPASS: Nothing bad happened, probably
 
 Summary:
 passed   1
@@ -7384,45 +11692,258 @@ warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
 duration=3D6 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D163 cstime=3D861
+cutime=3D642 cstime=3D504
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dfs_racer stime=3D1682861081
-cmdline=3D"fs_racer.sh -t 5"
+tag=3Dsetfsgid01 stime=3D1682918996
+cmdline=3D"setfsgid01"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-383556
-260872
-946562
-456617
-1710318
-1769402
-1175756
-1419660
-1364543
-1448286
-1578966
-1472273
-590960
-1061983
-1588061
-"Cleaning up"
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+setfsgid01.c:39: TPASS: SETFSGID(nobody_gid) passed
+setfsgid01.c:40: TPASS: SETFSGID(-1) passed
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
 <<<execution_status>>>
 initiation_status=3D"ok"
-duration=3D5 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D255 cstime=3D3243
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
 <<<test_end>>>
 <<<test_start>>>
-tag=3Dsquashfs01 stime=3D1682861086
-cmdline=3D"squashfs01"
+tag=3Dsetfsgid01_16 stime=3D1682918996
+cmdline=3D"setfsgid01_16"
 contacts=3D""
 analysis=3Dexit
 <<<test_output>>>
-tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
-tst_test.c:1558: TINFO: Timeout per run is 0h 00m 30s
-squashfs01.c:54: TINFO: Test squashfs sanity check regressions
-squashfs01.c:97: TPASS: Regression not detected
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setfsgid/../utils/compat_tst=
+_16.h:119: TCONF: 16-bit version of setfsgid() is not supported on your pla=
+tform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetfsuid04_16 stime=3D1682918996
+cmdline=3D"setfsuid04_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+setfsuid04_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsuid/../utils/compat_16.h:117: 16-bit version of setfsuid() is not su=
+pported on your platform
+setfsuid04_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscall=
+s/setfsuid/../utils/compat_16.h:117: Remaining cases not appropriate for co=
+nfiguration
+setfsuid04_16    0  TINFO  :  Child process returned TCONF
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetgid03_16 stime=3D1682918996
+cmdline=3D"setgid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setgid/../utils/compat_tst_1=
+6.h:94: TCONF: 16-bit version of setgid() is not supported on your platform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetregid01_16 stime=3D1682918996
+cmdline=3D"setregid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setregid/../utils/compat_tst=
+_16.h:128: TCONF: 16-bit version of setregid() is not supported on your pla=
+tform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresgid03_16 stime=3D1682918996
+cmdline=3D"setresgid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setresgid/../utils/compat_ts=
+t_16.h:138: TCONF: 16-bit version of setresgid() is not supported on your p=
+latform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid03 stime=3D1682918996
+cmdline=3D"setresuid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+setresuid03.c:61: TPASS: setresuid(other, -1, -1) : EPERM (1)
+setresuid03.c:61: TPASS: setresuid(-1, -1, other) : EPERM (1)
+setresuid03.c:61: TPASS: setresuid(-1, other, -1) : EPERM (1)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid03_16 stime=3D1682918996
+cmdline=3D"setresuid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setresuid/../utils/compat_ts=
+t_16.h:133: TCONF: 16-bit version of setresuid() is not supported on your p=
+latform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetresuid05 stime=3D1682918996
+cmdline=3D"setresuid05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+setresuid05.c:33: TPASS: SETRESUID(-1, ltpuser->pw_uid, -1) passed
+setresuid05.c:38: TPASS: ltpuser->pw_uid =3D=3D buf.st_uid (65534)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid01 stime=3D1682918996
+cmdline=3D"setreuid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+setreuid01.c:29: TPASS: SETREUID(-1, -1) passed
+setreuid01.c:30: TPASS: SETREUID(-1, euid) passed
+setreuid01.c:31: TPASS: SETREUID(ruid, -1) passed
+setreuid01.c:32: TPASS: SETREUID(-1, ruid) passed
+setreuid01.c:33: TPASS: SETREUID(euid, -1) passed
+setreuid01.c:34: TPASS: SETREUID(euid, euid) passed
+setreuid01.c:35: TPASS: SETREUID(ruid, ruid) passed
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetreuid04_16 stime=3D1682918996
+cmdline=3D"setreuid04_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/setreuid/../utils/compat_tst=
+_16.h:124: TCONF: 16-bit version of setreuid() is not supported on your pla=
+tform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetsockopt07 stime=3D1682918996
+cmdline=3D"setsockopt07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1558: TINFO: Timeout per run is 0h 07m 30s
+../../../../include/tst_fuzzy_sync.h:654: TINFO: Exceeded execution loops, =
+requesting exit
+setsockopt07.c:113: TPASS: Cannot reproduce bug
 
 Summary:
 passed   1
@@ -7430,13 +11951,911 @@ failed   0
 broken   0
 skipped  0
 warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D12 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D680 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsetxattr03 stime=3D1682919008
+cmdline=3D"setxattr03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+setxattr03.c:98: TPASS: Set attr to immutable file: EPERM (1)
+setxattr03.c:98: TPASS: Set attr to append-only file: EPERM (1)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmat01 stime=3D1682919008
+cmdline=3D"shmat01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+shmat01.c:124: TPASS: shmat() succeeded to attach NULL address
+shmat01.c:124: TPASS: shmat() succeeded to attach aligned address
+shmat01.c:124: TPASS: shmat() succeeded to attach unaligned address with SH=
+M_RND
+tst_coredump.c:30: TINFO: Avoid dumping corefile for process(pid=3D5412)
+shmat01.c:124: TPASS: shmat() succeeded to attach aligned address with SHM_=
+READONLY, and got SIGSEGV on write
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D5
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dshmctl04 stime=3D1682919008
+cmdline=3D"shmctl04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+shmctl04.c:119: TINFO: Test SHM_STAT_ANY with nobody user
+shmctl04.c:135: TPASS: SHM_INFO returned valid index 3 maps to shmid 3
+shmctl04.c:146: TPASS: Counted used =3D 2
+shmctl04.c:85: TPASS: used_ids =3D 2
+shmctl04.c:92: TPASS: shm_rss =3D 1007
+shmctl04.c:99: TPASS: shm_swp =3D 0
+shmctl04.c:106: TPASS: shm_tot =3D 1008
+shmctl04.c:119: TINFO: Test SHM_STAT_ANY with root user
+shmctl04.c:135: TPASS: SHM_INFO returned valid index 3 maps to shmid 3
+shmctl04.c:146: TPASS: Counted used =3D 2
+shmctl04.c:85: TPASS: used_ids =3D 2
+shmctl04.c:92: TPASS: shm_rss =3D 1007
+shmctl04.c:99: TPASS: shm_swp =3D 0
+shmctl04.c:106: TPASS: shm_tot =3D 1008
+
+Summary:
+passed   12
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsigaltstack01 stime=3D1682919008
+cmdline=3D"sigaltstack01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+sigaltstack01    1  TPASS  :  Functionality of sigaltstack() successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsighold02 stime=3D1682919008
+cmdline=3D"sighold02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+sighold02.c:78: TPASS: all signals were hold
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsignal01 stime=3D1682919008
+cmdline=3D"signal01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+signal01.c:56: TPASS: (long)signal(SIGKILL, tc->sighandler) : EINVAL (22)
+signal01.c:56: TPASS: (long)signal(SIGKILL, tc->sighandler) : EINVAL (22)
+signal01.c:56: TPASS: (long)signal(SIGKILL, tc->sighandler) : EINVAL (22)
+signal01.c:70: TPASS: WTERMSIG(res) =3D=3D SIGKILL (9)
+signal01.c:70: TPASS: WTERMSIG(res) =3D=3D SIGKILL (9)
+signal01.c:70: TPASS: WTERMSIG(res) =3D=3D SIGKILL (9)
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsocketcall03 stime=3D1682919008
+cmdline=3D"socketcall03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+socketcall03.c:32: TCONF: syscall(-1) __NR_socketcall not supported on your=
+ arch
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat02 stime=3D1682919008
+cmdline=3D"stat02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+stat02.c:67: TPASS: File size reported as expected
+stat02.c:67: TPASS: File size reported as expected
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat02_64 stime=3D1682919008
+cmdline=3D"stat02_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+stat02.c:67: TPASS: File size reported as expected
+stat02.c:67: TPASS: File size reported as expected
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstat03 stime=3D1682919008
+cmdline=3D"stat03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+stat03.c:49: TPASS: stat(tc->pathname, &stat_buf) : EACCES (13)
+stat03.c:49: TPASS: stat(tc->pathname, &stat_buf) : EFAULT (14)
+stat03.c:49: TPASS: stat(tc->pathname, &stat_buf) : ENAMETOOLONG (36)
+stat03.c:49: TPASS: stat(tc->pathname, &stat_buf) : ENOENT (2)
+stat03.c:49: TPASS: stat(tc->pathname, &stat_buf) : ENOTDIR (20)
+stat03.c:49: TPASS: stat(tc->pathname, &stat_buf) : ELOOP (40)
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatfs01 stime=3D1682919008
+cmdline=3D"statfs01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:55: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:55: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:55: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:55: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:55: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:55: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:116: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:120: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:55: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:42: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext2 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+statfs01.c:33: TPASS: statfs(TEMP_FILE, &buf) passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext3 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+statfs01.c:33: TPASS: statfs(TEMP_FILE, &buf) passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext4 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+statfs01.c:33: TPASS: statfs(TEMP_FILE, &buf) passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on xfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+statfs01.c:33: TPASS: statfs(TEMP_FILE, &buf) passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extra op=
+ts=3D''
+statfs01.c:33: TPASS: statfs(TEMP_FILE, &buf) passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on vfat =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts=3D'' extra opt=
+s=3D''
+statfs01.c:33: TPASS: statfs(TEMP_FILE, &buf) passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ntfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ntfs opts=3D'' extra opt=
+s=3D''
+The partition start sector was not specified for /dev/loop0 and it could no=
+t be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it cou=
+ld not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be ob=
+tained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sec=
+tors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:1107: TINFO: Trying FUSE...
+statfs01.c:33: TPASS: statfs(TEMP_FILE, &buf) passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on tmpfs =3D=3D=3D
+tst_test.c:1093: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1074: TINFO: Limiting tmpfs size to 32MB
+statfs01.c:33: TPASS: statfs(TEMP_FILE, &buf) passed
+
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D12 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D7 cstime=3D751
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatvfs02 stime=3D1682919020
+cmdline=3D"statvfs02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+statvfs02.c:63: TPASS: statvfs(tc->path, tc->buf) : EFAULT (14)
+statvfs02.c:63: TPASS: statvfs(tc->path, tc->buf) : ELOOP (40)
+statvfs02.c:63: TPASS: statvfs(tc->path, tc->buf) : ENAMETOOLONG (36)
+statvfs02.c:63: TPASS: statvfs(tc->path, tc->buf) : ENOENT (2)
+statvfs02.c:63: TPASS: statvfs(tc->path, tc->buf) : ENOTDIR (20)
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dswapon03 stime=3D1682919020
+cmdline=3D"swapon03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_ioctl.c:30: TINFO: FIBMAP ioctl is supported
+Successfully created 23 swapfiles
+swapon03.c:52: TPASS: swapon(2) got expected failure (1),
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D2 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D5 cstime=3D82
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsync_file_range01 stime=3D1682919022
+cmdline=3D"sync_file_range01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+sync_file_range01.c:79: TPASS: sync_file_range(-1, 0, 1, 2) : EBADF (9)
+sync_file_range01.c:79: TPASS: sync_file_range(5, 0, 1, 4) : ESPIPE (29)
+sync_file_range01.c:79: TPASS: sync_file_range(4, -1, 1, 1) : EINVAL (22)
+sync_file_range01.c:79: TPASS: sync_file_range(4, 0, -1, 2) : EINVAL (22)
+sync_file_range01.c:79: TPASS: sync_file_range(4, 0, 1, 8) : EINVAL (22)
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysfs02 stime=3D1682919022
+cmdline=3D"sysfs02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+sysfs02.c:25: TPASS: sysfs(2,0,buf) passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dsysfs04 stime=3D1682919022
+cmdline=3D"sysfs04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+sysfs04.c:22: TPASS: sysfs(INVALID_OPTION) : EINVAL (22)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimes03 stime=3D1682919022
+cmdline=3D"times03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+times03.c:89: TPASS: buf1.tms_utime <=3D 5
+times03.c:94: TPASS: buf1.tms_stime <=3D 5
+times03.c:105: TPASS: buf2.tms_utime =3D 213
+times03.c:111: TPASS: buf1.tms_utime (0) < buf2.tms_utime (213)
+times03.c:118: TPASS: buf2.tms_stime =3D 159
+times03.c:124: TPASS: buf1.tms_stime (0) < buf2.tms_stime (159)
+times03.c:131: TPASS: buf2.tms_cutime =3D 0
+times03.c:136: TPASS: buf2.tms_cstime =3D 0
+times03.c:155: TPASS: buf2.tms_utime (213) <=3D buf3.tms_utime (213)
+times03.c:163: TPASS: buf2.tms_stime (159) <=3D buf3.tms_stime (159)
+times03.c:170: TPASS: buf3.tms_cutime =3D 225
+times03.c:175: TPASS: buf3.tms_cstime =3D 173
+
+Summary:
+passed   12
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D8 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D438 cstime=3D334
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtimer_getoverrun01 stime=3D1682919030
+cmdline=3D"timer_getoverrun01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+timer_getoverrun01    1  TPASS  :  timer_getoverrun(CLOCK_REALTIME) Passed
+timer_getoverrun01    2  TPASS  :  timer_gettime(-1) Failed: EINVAL
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtkill02 stime=3D1682919030
+cmdline=3D"tkill02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tkill02.c:45: TPASS: tst_syscall(__NR_tkill) expecting EINVAL : EINVAL (22)
+tkill02.c:45: TPASS: tst_syscall(__NR_tkill) expecting ESRCH : ESRCH (3)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dtruncate03 stime=3D1682919030
+cmdline=3D"truncate03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+truncate03.c:120: TPASS: truncate(tc->pathname, tc->length) : EACCES (13)
+truncate03.c:120: TPASS: truncate(tc->pathname, tc->length) : ENOTDIR (20)
+truncate03.c:120: TPASS: truncate(tc->pathname, tc->length) : EFAULT (14)
+truncate03.c:120: TPASS: truncate(tc->pathname, tc->length) : ENAMETOOLONG =
+(36)
+truncate03.c:120: TPASS: truncate(tc->pathname, tc->length) : ENOENT (2)
+truncate03.c:120: TPASS: truncate(tc->pathname, tc->length) : EISDIR (21)
+truncate03.c:120: TPASS: truncate(tc->pathname, tc->length) : EFBIG (27)
+truncate03.c:120: TPASS: truncate(tc->pathname, tc->length) : ELOOP (40)
+
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dumask01 stime=3D1682919030
+cmdline=3D"umask01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+umask01.c:57: TPASS: All files created with correct mode
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D6
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dunlink05 stime=3D1682919030
+cmdline=3D"unlink05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+unlink05.c:61: TPASS: unlink(file) succeeded
+unlink05.c:61: TPASS: unlink(fifo) succeeded
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dumount2_02 stime=3D1682919030
+cmdline=3D"umount2_02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+umount2_02.c:84: TINFO: Testing umount2() with MNT_EXPIRE | MNT_FORCE expec=
+ted EINVAL
+umount2_02.c:90: TPASS: umount2_retry(mntpoint, 5) : EINVAL (22)
+umount2_02.c:84: TINFO: Testing umount2() with MNT_EXPIRE | MNT_DETACH expe=
+cted EINVAL
+umount2_02.c:90: TPASS: umount2_retry(mntpoint, 6) : EINVAL (22)
+umount2_02.c:84: TINFO: Testing umount2(initial call) with MNT_EXPIRE expec=
+ted EAGAIN
+umount2_02.c:90: TPASS: umount2_retry(mntpoint, 4) : EAGAIN/EWOULDBLOCK (11=
+)
+umount2_02.c:84: TINFO: Testing umount2(after access) with MNT_EXPIRE expec=
+ted EAGAIN
+umount2_02.c:90: TPASS: umount2_retry(mntpoint, 4) : EAGAIN/EWOULDBLOCK (11=
+)
+umount2_02.c:84: TINFO: Testing umount2(second call) with MNT_EXPIRE expect=
+ed success
+umount2_02.c:93: TPASS: umount2_retry(mntpoint, 4) passed
+umount2_02.c:84: TINFO: Testing umount2(symlink) with UMOUNT_NOFOLLOW expec=
+ted EINVAL
+umount2_02.c:90: TPASS: umount2_retry(symlink, 8) : EINVAL (22)
+umount2_02.c:84: TINFO: Testing umount2(mntpoint) with UMOUNT_NOFOLLOW expe=
+cted success
+umount2_02.c:93: TPASS: umount2_retry(mntpoint, 8) passed
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D6
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dustat01 stime=3D1682919030
+cmdline=3D"ustat01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+ustat01.c:31: TPASS: ustat(2) passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dutime01A stime=3D1682919030
+cmdline=3D"symlink01 -T utime01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+utime01     1  TPASS  :  utime(2) change of object file access and modify t=
+imes through symbolic link file is ok
+utime01     2  TPASS  :  utime(2) error when accessing non-existent object =
+through symbolic link is caught
+utime01     3  TPASS  :  Nested symbolic link access condition caught.  ELO=
+OP is returned
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dvmsplice01 stime=3D1682919030
+cmdline=3D"vmsplice01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_test.c:1310: TINFO: xfs is supported by the test
+vmsplice01.c:44: TPASS: Written data has been read back correctly
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dwaitpid03 stime=3D1682919030
+cmdline=3D"waitpid03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+waitpid03    1  TPASS  :  Got correct child PID
+waitpid03    2  TPASS  :  Condition 2 test passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dwaitpid04 stime=3D1682919030
+cmdline=3D"waitpid04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+waitpid04    1  TPASS  :  condition 1 test passed
+waitpid04    2  TPASS  :  condition 2 test passed
+waitpid04    3  TPASS  :  condition 3 test passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dwaitid02 stime=3D1682919030
+cmdline=3D"waitid02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+waitid02.c:21: TPASS: waitid(P_ALL, 0, infop, WNOHANG) : EINVAL (22)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dwaitid10 stime=3D1682919030
+cmdline=3D"waitid10"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+waitid10.c:64: TINFO: Raising RLIMIT_CORE rlim_cur=3D0 -> -1
+waitid10.c:36: TPASS: waitid(P_ALL, 0, infop, WEXITED) passed
+waitid10.c:37: TPASS: infop->si_pid =3D=3D pidchild (5832)
+waitid10.c:38: TPASS: infop->si_status =3D=3D SIGFPE (8)
+waitid10.c:39: TPASS: infop->si_signo =3D=3D SIGCHLD (17)
+waitid10.c:42: TPASS: infop->si_code =3D=3D CLD_DUMPED (3)
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dwrite02 stime=3D1682919030
+cmdline=3D"write02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+write02.c:25: TPASS: write(fd, NULL, 0) =3D=3D 0
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dwrite04 stime=3D1682919030
+cmdline=3D"write04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+write04.c:31: TPASS: write(wfd, wbuf, sizeof(wbuf)) : EAGAIN/EWOULDBLOCK (1=
+1)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dwritev01 stime=3D1682919030
+cmdline=3D"writev01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+writev01.c:124: TPASS: invalid iov_len, expected: -1 (EINVAL), got: -1 (EIN=
+VAL)
+writev01.c:124: TPASS: invalid fd, expected: -1 (EBADF), got: -1 (EBADF)
+writev01.c:124: TPASS: invalid iovcnt, expected: -1 (EINVAL), got: -1 (EINV=
+AL)
+writev01.c:129: TPASS: zero iovcnt, expected: 0, got: 0
+writev01.c:129: TPASS: NULL and zero length iovec, expected: 64, got: 64
+writev01.c:124: TPASS: write to closed pipe, expected: -1 (EPIPE), got: -1 =
+(EPIPE)
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfutex_cmp_requeue02 stime=3D1682919030
+cmdline=3D"futex_cmp_requeue02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+futex_cmp_requeue02.c:71: TINFO: Testing variant: syscall with old kernel s=
+pec
+futex_cmp_requeue02.c:64: TPASS: futex_cmp_requeue() failed as expected: EI=
+NVAL (22)
+futex_cmp_requeue02.c:64: TPASS: futex_cmp_requeue() failed as expected: EI=
+NVAL (22)
+futex_cmp_requeue02.c:64: TPASS: futex_cmp_requeue() failed as expected: EA=
+GAIN/EWOULDBLOCK (11)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmemfd_create04 stime=3D1682919030
+cmdline=3D"memfd_create04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+memfd_create04.c:66: TINFO: Attempt to create file using 64kB huge page siz=
+e
+memfd_create04.c:73: TPASS: Test failed as expected
+memfd_create04.c:66: TINFO: Attempt to create file using 512kB huge page si=
+ze
+memfd_create04.c:73: TPASS: Test failed as expected
+memfd_create04.c:66: TINFO: Attempt to create file using 2048kB huge page s=
+ize
+memfd_create04.c:80: TPASS: memfd_create succeeded for 2048kB page size
+memfd_create04.c:66: TINFO: Attempt to create file using 8192kB huge page s=
+ize
+memfd_create04.c:73: TPASS: Test failed as expected
+memfd_create04.c:66: TINFO: Attempt to create file using 16384kB huge page =
+size
+memfd_create04.c:73: TPASS: Test failed as expected
+memfd_create04.c:66: TINFO: Attempt to create file using 262144kB huge page=
+ size
+memfd_create04.c:73: TPASS: Test failed as expected
+memfd_create04.c:66: TINFO: Attempt to create file using 1048576kB huge pag=
+e size
+memfd_create04.c:80: TPASS: memfd_create succeeded for 1048576kB page size
+memfd_create04.c:66: TINFO: Attempt to create file using 2097152kB huge pag=
+e size
+memfd_create04.c:73: TPASS: Test failed as expected
+memfd_create04.c:66: TINFO: Attempt to create file using 16777216kB huge pa=
+ge size
+memfd_create04.c:73: TPASS: Test failed as expected
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dstatx06 stime=3D1682919030
+cmdline=3D"statx06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'-I 256' ext=
+ra opts=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+statx06.c:136: TFAIL: Birth time < before time
+statx06.c:138: TFAIL: Modified time > after_time
+statx06.c:136: TFAIL: Access time < before time
+statx06.c:136: TFAIL: Change time < before time
+
+Summary:
+passed   0
+failed   4
+broken   0
+skipped  0
+warnings 0
 incrementing stop
 <<<execution_status>>>
 initiation_status=3D"ok"
-duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
-cutime=3D4 cstime=3D32
+duration=3D1 termination_type=3Dexited termination_id=3D1 corefile=3Dno
+cutime=3D0 cstime=3D5
 <<<test_end>>>
-INFO: ltp-pan reported all tests PASS
+INFO: ltp-pan reported some tests FAIL
 LTP Version: 20230127-165-gbd512e733
 
        ###############################################################
@@ -7446,13 +12865,13 @@ LTP Version: 20230127-165-gbd512e733
        ###############################################################
 
 
---F3vYzJWACDojeQVW
+--PHUGj3PURc/sBqn5
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: attachment; filename="job.yaml"
 
 ---
 
-#! jobs/ltp-part4.yaml
+#! jobs/ltp-syscalls.yaml
 suite: ltp
 testcase: ltp
 category: functional
@@ -7460,38 +12879,38 @@ need_memory: 4G
 disk: 1HDD
 fs: xfs
 ltp:
-  test: fs-02
-job_origin: ltp-part4.yaml
+  test: syscalls-04
+job_origin: ltp-syscalls.yaml
 
 #! queue options
 queue_cmdline_keys:
 - branch
 - commit
 queue: bisect
-testbox: lkp-skl-d07
-tbox_group: lkp-skl-d07
-submit_id: 644e60799133279aa1936f03
-job_file: "/lkp/jobs/scheduled/lkp-skl-d07/ltp-1HDD-xfs-fs-02-debian-12-x86_64-20220629.cgz-ebf519710218814cf827adbf9111af081344c969-20230430-39585-1x3zii5-0.yaml"
-id: 3a56d8f4f7e0d097a6e6cb96113b0b6ee784fdc3
+testbox: lkp-skl-d02
+tbox_group: lkp-skl-d02
+submit_id: 644f4131cdea15342caa2568
+job_file: "/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-xfs-syscalls-04-debian-12-x86_64-20220629.cgz-ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1-20230501-13356-1o10bq1-0.yaml"
+id: 20927943d0c8bedc9cbd4e08d81679f5f5d375ae
 queuer_version: "/zday/lkp"
 
-#! /db/releases/20230426151736/lkp-src/hosts/lkp-skl-d07
+#! /db/releases/20230425221759/lkp-src/hosts/lkp-skl-d02
 model: Skylake
-nr_cpu: 8
-memory: 16G
+nr_cpu: 4
+memory: 32G
 nr_ssd_partitions: 1
 nr_hdd_partitions: 4
-hdd_partitions: "/dev/disk/by-id/ata-ST2000DM001-1ER164_Z4Z98KSZ-part*"
-ssd_partitions: "/dev/disk/by-id/ata-INTEL_SSDSC2BW480H6_CVTR612406D5480EGN-part2"
-rootfs_partition: "/dev/disk/by-id/ata-INTEL_SSDSC2BW480H6_CVTR612406D5480EGN-part1"
-brand: Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+hdd_partitions: "/dev/disk/by-id/wwn-0x5000c500746fa0cc-part*"
+ssd_partitions: "/dev/disk/by-id/wwn-0x55cd2e41514d5105-part2"
+rootfs_partition: "/dev/disk/by-id/wwn-0x55cd2e41514d5105-part1"
+brand: Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz
 
-#! /db/releases/20230426151736/lkp-src/include/category/functional
+#! /db/releases/20230425221759/lkp-src/include/category/functional
 kmsg:
 heartbeat:
 meminfo:
 
-#! /db/releases/20230426151736/lkp-src/include/disk/nr_hdd
+#! /db/releases/20230425221759/lkp-src/include/disk/nr_hdd
 need_kconfig:
 - BLK_DEV_SD
 - SCSI
@@ -7510,22 +12929,27 @@ need_kconfig:
 - EXPERT: y
 - CHECKPOINT_RESTORE: y
 
-#! /db/releases/20230426151736/lkp-src/include/queue/cyclic
-commit: ebf519710218814cf827adbf9111af081344c969
+#! /db/releases/20230425221759/lkp-src/include/queue/cyclic
+commit: ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1
 
-#! /db/releases/20230426151736/lkp-src/include/testbox/lkp-skl-d07
+#! /db/releases/20230425221759/lkp-src/include/testbox/lkp-skl-d02
+need_kconfig_hw:
+- PTP_1588_CLOCK: y
+- E1000E: y
+- SATA_AHCI
+- DRM_I915
 ucode: '0xf0'
 
-#! /db/releases/20230426151736/lkp-src/include/fs/OTHERS
+#! /db/releases/20230425221759/lkp-src/include/fs/OTHERS
 
-#! /db/releases/20230426151736/lkp-src/include/ltp
+#! /db/releases/20230425221759/lkp-src/include/ltp
 rootfs: debian-12-x86_64-20220629.cgz
 initrds:
 - linux_headers
 kconfig: x86_64-rhel-8.3-ltp
-enqueue_time: 2023-04-30 20:35:06.043511756 +08:00
-_id: 644e60799133279aa1936f03
-_rt: "/result/ltp/1HDD-xfs-fs-02/lkp-skl-d07/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969"
+enqueue_time: 2023-05-01 12:33:53.799051155 +08:00
+_id: 644f4131cdea15342caa2568
+_rt: "/result/ltp/1HDD-xfs-syscalls-04/lkp-skl-d02/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1"
 
 #! schedule options
 user: lkp
@@ -7534,21 +12958,21 @@ LKP_SERVER: internal-lkp-server
 head_commit: a4dd1bd5d4d552e5483afb4d056c3baf9ae2d05c
 base_commit: 457391b0380335d5e9a5babdec90ac53928b23b4
 branch: linux-devel/devel-hourly-20230428-132559
-result_root: "/result/ltp/1HDD-xfs-fs-02/lkp-skl-d07/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/0"
-scheduler_version: "/lkp/lkp/.src-20230430-200127"
+result_root: "/result/ltp/1HDD-xfs-syscalls-04/lkp-skl-d02/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/0"
+scheduler_version: "/lkp/lkp/src"
 arch: x86_64
 max_uptime: 1200
 initrd: "/osimage/debian/debian-12-x86_64-20220629.cgz"
 bootloader_append:
 - root=/dev/ram0
-- RESULT_ROOT=/result/ltp/1HDD-xfs-fs-02/lkp-skl-d07/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/0
-- BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/vmlinuz-6.2.0-rc5-00083-gebf519710218
+- RESULT_ROOT=/result/ltp/1HDD-xfs-syscalls-04/lkp-skl-d02/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/0
+- BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/vmlinuz-6.3.0-00004-gff9aaf58e816
 - branch=linux-devel/devel-hourly-20230428-132559
-- job=/lkp/jobs/scheduled/lkp-skl-d07/ltp-1HDD-xfs-fs-02-debian-12-x86_64-20220629.cgz-ebf519710218814cf827adbf9111af081344c969-20230430-39585-1x3zii5-0.yaml
+- job=/lkp/jobs/scheduled/lkp-skl-d02/ltp-1HDD-xfs-syscalls-04-debian-12-x86_64-20220629.cgz-ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1-20230501-13356-1o10bq1-0.yaml
 - user=lkp
 - ARCH=x86_64
 - kconfig=x86_64-rhel-8.3-ltp
-- commit=ebf519710218814cf827adbf9111af081344c969
+- commit=ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1
 - initcall_debug
 - nmi_watchdog=0
 - max_uptime=1200
@@ -7577,33 +13001,33 @@ bootloader_append:
 - rw
 
 #! runtime status
-modules_initrd: "/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/modules.cgz"
-linux_headers_initrd: "/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/linux-headers.cgz"
-bm_initrd: "/osimage/deps/debian-12-x86_64-20220629.cgz/run-ipconfig_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/lkp_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/rsync-rootfs_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/fs_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/ltp_20230429.cgz,/osimage/pkg/debian-12-x86_64-20220629.cgz/ltp-x86_64-14c1f76-1_20230429.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/hw_20230326.cgz"
+modules_initrd: "/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/modules.cgz"
+linux_headers_initrd: "/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/linux-headers.cgz"
+bm_initrd: "/osimage/deps/debian-12-x86_64-20220629.cgz/lkp_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/run-ipconfig_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/rsync-rootfs_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/fs_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/ltp_20230429.cgz,/osimage/pkg/debian-12-x86_64-20220629.cgz/ltp-x86_64-14c1f76-1_20230429.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/hw_20230326.cgz"
 ucode_initrd: "/osimage/ucode/intel-ucode-20230406.cgz"
 lkp_initrd: "/osimage/user/lkp/lkp-x86_64.cgz"
 site: lkp-wsx01
 
-#! /db/releases/20230428163404/lkp-src/include/site/lkp-wsx01
+#! /db/releases/20230429150311/lkp-src/include/site/lkp-wsx01
 LKP_CGI_PORT: 80
 LKP_CIFS_PORT: 139
 oom-killer:
 watchdog:
-last_kernel: 4.20.0
+last_kernel: 6.3.0-rc5-00006-gdba07749a8f5
 schedule_notify_address:
 
 #! user overrides
-kernel: "/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ebf519710218814cf827adbf9111af081344c969/vmlinuz-6.2.0-rc5-00083-gebf519710218"
-dequeue_time: 2023-04-30 20:51:55.413574506 +08:00
+kernel: "/pkg/linux/x86_64-rhel-8.3-ltp/gcc-11/ff9aaf58e816635c454fbe9e9ece94b0eee6f0b1/vmlinuz-6.3.0-00004-gff9aaf58e816"
+dequeue_time: 2023-05-01 12:53:51.463848307 +08:00
 
-#! /cephfs/db/releases/20230430200016/lkp-src/include/site/lkp-wsx01
+#! /db/releases/20230430200016/lkp-src/include/site/lkp-wsx01
 job_state: finished
-loadavg: 5.16 2.26 0.96 1/260 13429
-start_time: '1682859274'
-end_time: '1682859511'
+loadavg: 2.38 1.32 0.56 2/232 5959
+start_time: '1682917071'
+end_time: '1682917202'
 version: "/lkp/lkp/.src-20230430-200205:236b18d8fe13:46412388565a"
 
---F3vYzJWACDojeQVW
+--PHUGj3PURc/sBqn5
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: attachment; filename="reproduce"
 
@@ -7616,9 +13040,9 @@ mount -t xfs -o inode64 /dev/sda1 /fs/sda1
 ln -sf /usr/sbin/iptables-nft /usr/bin/iptables
 ln -sf /usr/sbin/ip6tables-nft /usr/bin/ip6tables
 export LTP_RUNTIME_MUL=2
-./runltp -f fs-02
+./runltp -f syscalls-04 -d /fs/sda1/tmpdir
 
---F3vYzJWACDojeQVW
+--PHUGj3PURc/sBqn5
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -7628,4 +13052,4 @@ Content-Disposition: inline
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
 
---F3vYzJWACDojeQVW--
+--PHUGj3PURc/sBqn5--
