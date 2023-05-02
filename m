@@ -4,61 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6244C77B7E
-	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 09:40:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFF1FC77B7E
+	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 10:12:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 12B5B3CD920
-	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 11:39:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 365B83CD918
+	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 12:12:41 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EBD843CB8C4
- for <ltp@lists.linux.it>; Tue,  2 May 2023 11:39:47 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id A16AC3CB8AC
+ for <ltp@lists.linux.it>; Tue,  2 May 2023 12:12:31 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D8C0B60043A
- for <ltp@lists.linux.it>; Tue,  2 May 2023 11:39:46 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 97BF1600055
+ for <ltp@lists.linux.it>; Tue,  2 May 2023 12:12:29 +0200 (CEST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E1BE122303;
- Tue,  2 May 2023 09:39:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1683020385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=NJemPZh55/O4LEdFpyPzfmEtAhRWSS+bBE0rUpv0j3E=;
- b=gkA2trIvmJ02T1mTJJx/aBiiGtuJeYngXZLu6vKNC1a0cF1IV75xNeCVyJWXF3RWxFcvpt
- 4xV56eIzMZICxStridznqQSAoak7e+LHpEs8lQvgABkKq+8JGfHtbTcMNJibpd2OaRoN+g
- JMM3xfVsJfOQVHBtlc15BI75o6tOS8Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1683020385;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=NJemPZh55/O4LEdFpyPzfmEtAhRWSS+bBE0rUpv0j3E=;
- b=C8jJ2tkiH5F0dhV193wLQb4EQqyZdneCmhrzoV0p3Qd72qNcg8VxFdu+TqUUZ5DuuOUU1g
- 7DYeieNOFTuIVMAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A5A07139C3;
- Tue,  2 May 2023 09:39:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ABC9ImHaUGQjXAAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Tue, 02 May 2023 09:39:45 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Tue,  2 May 2023 11:37:24 +0200
-Message-Id: <20230502093724.4879-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 73A7861E5C;
+ Tue,  2 May 2023 10:12:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8B07C433EF;
+ Tue,  2 May 2023 10:12:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1683022346;
+ bh=aM94D7DjS72A/xp1gAzDQwrhIU7LM7u1+sqKjvi5MHk=;
+ h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+ b=eLxA1yXf39CWFW9N6n3/xRGGcd/EQyeBUrgZcgthpSDgueB/Td+pzErg6LRLJG6cW
+ 0XUhgGKXEz++uqaciP6qgrDZL6x0NYjUnLRlt54TgRjEB5fQyqAZ1WQ9cnPCwy3Nx1
+ oLdsYIDvkvI7DCVgxSg0bk9sBTVIZ8Qe2BBQfVRDFx34ENNLVWiaAV7QgRW2rb3vuE
+ 6h9uZqfoQEZYcLyeiSDjlJ14aQea/M7XJx+8Zgks4fxnXglZlaCL5iLF6CeI/HQc6G
+ 8To9CcfpiGx4cU1jkv1qPoIuDw7X7ZpK9DRH8BdBYs2o7gP8ESDOk2SIQYdxfVRX/X
+ FudCgXb+t2LJw==
+Message-ID: <500fc91b75ef67263825cf3410a8a66c7bc0fd85.camel@kernel.org>
+From: Jeff Layton <jlayton@kernel.org>
+To: Dave Chinner <david@fromorbit.com>
+Date: Tue, 02 May 2023 06:12:24 -0400
+In-Reply-To: <20230502003929.GG2155823@dread.disaster.area>
+References: <202305012130.cc1e2351-oliver.sang@intel.com>
+ <0dc1a9d7f2b99d2bfdcabb7adc51d7c0b0c81457.camel@kernel.org>
+ <20230502003929.GG2155823@dread.disaster.area>
+User-Agent: Evolution 3.48.1 (3.48.1-1.fc38) 
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] Remove ltp_clone_quick usage from pidns suite
+Subject: Re: [LTP] [jlayton:ctime] [ext4]  ff9aaf58e8: ltp.statx06.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,325 +62,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Christian Brauner <brauner@kernel.org>, lkp@intel.com,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+ linux-ext4@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+On Tue, 2023-05-02 at 10:39 +1000, Dave Chinner wrote:
+> On Mon, May 01, 2023 at 12:05:17PM -0400, Jeff Layton wrote:
+> > On Mon, 2023-05-01 at 22:09 +0800, kernel test robot wrote:
+> > The test does this:
+> > 
+> >         SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &before_time);
+> >         clock_wait_tick();
+> >         tc->operation();
+> >         clock_wait_tick();
+> >         SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
+> > 
+> > ...and with that, I usually end up with before/after_times that are 1ns
+> > apart, since my machine is reporting a 1ns granularity.
+> > 
+> > The first problem is that the coarse grained timestamps represent the
+> > lower bound of what time could end up in the inode. With multigrain
+> > ctimes, we can end up grabbing a fine-grained timestamp to store in the
+> > inode that will be later than either coarse grained time that was
+> > fetched.
+> > 
+> > That's easy enough to fix -- grab a coarse time for "before" and a fine-
+> > grained time for "after".
+> > 
+> > The clock_getres function though returns that it has a 1ns granularity
+> > (since it does). With multigrain ctimes, we no longer have that at the
+> > filesystem level. It's a 2ns granularity now (as we need the lowest bit
+> > for the flag).
+> 
+> Why are you even using the low bit for this? Nanosecond resolution
+> only uses 30 bits, leaving the upper two bits of a 32 bit tv_nsec
+> field available for internal status bits. As long as we mask out the
+> internal bits when reading the VFS timestamp tv_nsec field, then
+> we don't need to change the timestamp resolution, right?
+> 
 
-Replaced ltp_clone_quick with SAFE_CLONE inside the pidns testing
-suite. Fixed also errors in pidns0[12] where in previous patches we
-used CLONE_NEWNS instead of CLONE_NEWPID.
+Yeah, that should work. Let me give that a shot on the next pass.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
-Changed pidns02 to make sure setsid is applied
-
- testcases/kernel/containers/pidns/pidns01.c | 24 +++++++++-------
- testcases/kernel/containers/pidns/pidns02.c | 31 ++++++++++++---------
- testcases/kernel/containers/pidns/pidns03.c | 18 +++++++-----
- testcases/kernel/containers/pidns/pidns12.c | 22 +++++++++------
- testcases/kernel/containers/pidns/pidns20.c | 28 +++++++++++--------
- 5 files changed, 74 insertions(+), 49 deletions(-)
-
-diff --git a/testcases/kernel/containers/pidns/pidns01.c b/testcases/kernel/containers/pidns/pidns01.c
-index 5080b6fad..6b5ec48ac 100644
---- a/testcases/kernel/containers/pidns/pidns01.c
-+++ b/testcases/kernel/containers/pidns/pidns01.c
-@@ -8,7 +8,7 @@
- /*\
-  * [Description]
-  *
-- * Clone a process with CLONE_NEWNS flag and check:
-+ * Clone a process with CLONE_NEWPID flag and check:
-  *
-  * - child process ID must be 1
-  * - parent process ID must be 0
-@@ -17,29 +17,33 @@
- #include "tst_test.h"
- #include "lapi/sched.h"
- 
--static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
-+static void child_func(void)
- {
- 	pid_t cpid, ppid;
- 
- 	cpid = getpid();
- 	ppid = getppid();
- 
--	TST_EXP_PASS(cpid == 1);
--	TST_EXP_PASS(ppid == 0);
--
--	return 0;
-+	TST_EXP_EQ_LI(cpid, 1);
-+	TST_EXP_EQ_LI(ppid, 0);
- }
- 
- static void run(void)
- {
--	int ret;
-+	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
- 
--	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
--	if (ret < 0)
--		tst_brk(TBROK | TERRNO, "clone failed");
-+	if (!SAFE_CLONE(&args)) {
-+		child_func();
-+		return;
-+	}
- }
- 
- static struct tst_test test = {
- 	.test_all = run,
- 	.needs_root = 1,
-+	.forks_child = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_PID_NS",
-+		NULL,
-+	},
- };
-diff --git a/testcases/kernel/containers/pidns/pidns02.c b/testcases/kernel/containers/pidns/pidns02.c
-index b8913d3f6..07eda0c3a 100644
---- a/testcases/kernel/containers/pidns/pidns02.c
-+++ b/testcases/kernel/containers/pidns/pidns02.c
-@@ -7,7 +7,7 @@
- /*\
-  * [Description]
-  *
-- * Clone a process with CLONE_NEWNS flag and check:
-+ * Clone a process with CLONE_NEWPID flag and check:
-  *
-  * - child session ID must be 1
-  * - parent process group ID must be 1
-@@ -16,29 +16,34 @@
- #include "tst_test.h"
- #include "lapi/sched.h"
- 
--static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
-+static void child_func(void)
- {
--	pid_t sid, pgid;
-+	TST_EXP_EQ_LI(getsid(0), 0);
-+	TST_EXP_EQ_LI(getpgid(0), 0);
- 
--	sid = getsid(0);
--	pgid = getpgid(0);
-+	tst_res(TINFO, "setsid()");
-+	SAFE_SETSID();
- 
--	TST_EXP_PASS(sid == 1);
--	TST_EXP_PASS(pgid == 1);
--
--	return 0;
-+	TST_EXP_EQ_LI(getsid(0), 1);
-+	TST_EXP_EQ_LI(getpgid(0), 1);
- }
- 
- static void run(void)
- {
--	int ret;
-+	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
- 
--	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
--	if (ret < 0)
--		tst_brk(TBROK | TERRNO, "clone failed");
-+	if (!SAFE_CLONE(&args)) {
-+		child_func();
-+		return;
-+	}
- }
- 
- static struct tst_test test = {
- 	.test_all = run,
- 	.needs_root = 1,
-+	.forks_child = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_PID_NS",
-+		NULL,
-+	},
- };
-diff --git a/testcases/kernel/containers/pidns/pidns03.c b/testcases/kernel/containers/pidns/pidns03.c
-index 122ba7891..d0d26c8a5 100644
---- a/testcases/kernel/containers/pidns/pidns03.c
-+++ b/testcases/kernel/containers/pidns/pidns03.c
-@@ -17,7 +17,7 @@
- 
- #define PROCDIR "proc"
- 
--static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
-+static void child_func(void)
- {
- 	char proc_self[10];
- 
-@@ -28,8 +28,6 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
- 	SAFE_UMOUNT(PROCDIR);
- 
- 	TST_EXP_PASS(strcmp(proc_self, "1"), PROCDIR"/self contains 1:");
--
--	return 0;
- }
- 
- static void setup(void)
-@@ -45,11 +43,12 @@ static void cleanup(void)
- 
- static void run(void)
- {
--	int ret;
-+	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
- 
--	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, NULL);
--	if (ret < 0)
--		tst_brk(TBROK | TERRNO, "clone failed");
-+	if (!SAFE_CLONE(&args)) {
-+		child_func();
-+		return;
-+	}
- }
- 
- static struct tst_test test = {
-@@ -57,5 +56,10 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.needs_root = 1,
-+	.forks_child = 1,
- 	.needs_tmpdir = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_PID_NS",
-+		NULL,
-+	},
- };
-diff --git a/testcases/kernel/containers/pidns/pidns12.c b/testcases/kernel/containers/pidns/pidns12.c
-index fb1ec90ca..ab035f33d 100644
---- a/testcases/kernel/containers/pidns/pidns12.c
-+++ b/testcases/kernel/containers/pidns/pidns12.c
-@@ -25,7 +25,7 @@ static void child_signal_handler(LTP_ATTRIBUTE_UNUSED int sig, siginfo_t *si, LT
- 	sig_pid = si->si_pid;
- }
- 
--static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
-+static void child_func(void)
- {
- 	struct sigaction sa;
- 
-@@ -41,21 +41,22 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
- 	TST_CHECKPOINT_WAKE_AND_WAIT(0);
- 
- 	TST_EXP_EQ_LI(sig_pid, 0);
--
--	return 0;
- }
- 
- static void run(void)
- {
--	int ret;
-+	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
-+	int pid;
- 
--	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, NULL);
--	if (ret < 0)
--		tst_brk(TBROK | TERRNO, "clone failed");
-+	pid = SAFE_CLONE(&args);
-+	if (!pid) {
-+		child_func();
-+		return;
-+	}
- 
- 	TST_CHECKPOINT_WAIT(0);
- 
--	SAFE_KILL(ret, SIGUSR1);
-+	SAFE_KILL(pid, SIGUSR1);
- 
- 	TST_CHECKPOINT_WAKE(0);
- }
-@@ -63,5 +64,10 @@ static void run(void)
- static struct tst_test test = {
- 	.test_all = run,
- 	.needs_root = 1,
-+	.forks_child = 1,
- 	.needs_checkpoints = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_PID_NS",
-+		NULL,
-+	},
- };
-diff --git a/testcases/kernel/containers/pidns/pidns20.c b/testcases/kernel/containers/pidns/pidns20.c
-index 9f369699a..4d0924c4e 100644
---- a/testcases/kernel/containers/pidns/pidns20.c
-+++ b/testcases/kernel/containers/pidns/pidns20.c
-@@ -26,7 +26,7 @@ static void child_signal_handler(LTP_ATTRIBUTE_UNUSED int sig, siginfo_t *si, LT
- 	signals++;
- }
- 
--static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
-+static void child_func(void)
- {
- 	struct sigaction sa;
- 	sigset_t newset;
-@@ -37,7 +37,7 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
- 
- 	if (cpid != 1 || ppid != 0) {
- 		tst_res(TFAIL, "Got unexpected result of cpid=%d ppid=%d", cpid, ppid);
--		return 0;
-+		return;
- 	}
- 
- 	SAFE_SIGEMPTYSET(&newset);
-@@ -56,30 +56,31 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
- 
- 	if (signals != 1) {
- 		tst_res(TFAIL, "Received %d signals", signals);
--		return 0;
-+		return;
- 	}
- 
- 	if (last_signo != SIGUSR1) {
- 		tst_res(TFAIL, "Received %s signal", tst_strsig(last_signo));
--		return 0;
-+		return;
- 	}
- 
- 	tst_res(TPASS, "Received SIGUSR1 signal after unblock");
--
--	return 0;
- }
- 
- static void run(void)
- {
--	int ret;
-+	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
-+	int pid;
- 
--	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, NULL);
--	if (ret < 0)
--		tst_brk(TBROK | TERRNO, "clone failed");
-+	pid = SAFE_CLONE(&args);
-+	if (!pid) {
-+		child_func();
-+		return;
-+	}
- 
- 	TST_CHECKPOINT_WAIT(0);
- 
--	SAFE_KILL(ret, SIGUSR1);
-+	SAFE_KILL(pid, SIGUSR1);
- 
- 	TST_CHECKPOINT_WAKE(0);
- }
-@@ -87,5 +88,10 @@ static void run(void)
- static struct tst_test test = {
- 	.test_all = run,
- 	.needs_root = 1,
-+	.forks_child = 1,
- 	.needs_checkpoints = 1,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_PID_NS",
-+		NULL,
-+	},
- };
+Thanks,
 -- 
-2.35.3
-
+Jeff Layton <jlayton@kernel.org>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
