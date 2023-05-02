@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62524C77B73
-	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 13:41:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3801C77B7E
+	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 14:12:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 180D13CB97C
-	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 15:41:46 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 855A03CD923
+	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 16:12:37 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9BD193CB8CE
- for <ltp@lists.linux.it>; Tue,  2 May 2023 15:41:35 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 640BF3CB8C4
+ for <ltp@lists.linux.it>; Tue,  2 May 2023 16:12:28 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6F17A1000455
- for <ltp@lists.linux.it>; Tue,  2 May 2023 15:41:33 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BCAE720032E
+ for <ltp@lists.linux.it>; Tue,  2 May 2023 16:12:27 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7AC172208E;
- Tue,  2 May 2023 13:41:33 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DD00E21E09;
+ Tue,  2 May 2023 14:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683034893;
+ t=1683036745;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aC50C3cuRaMuVOl+QWShRVwCtZbIE/6U+kD41Yvzm+4=;
- b=o9X9PrrNxLgFqfbqMX2zIL0Sx+w/1a4dqjydIEtZi4aQlRssKJiizLCGiVHP/vNyve2i70
- amVHBbZE1+CDtwkk9+i2wH95LhUfoLkD/9FXZtXC4157w/CjdFL/09Xm89faXcC0PbGs2H
- ZFZ7N2GTiPTHJ7EAlclFoIs5JU1J890=
+ bh=iPPhEryjS+2KFmFoFOeU2yODQALj3M6oDxhL206TOj8=;
+ b=JT8oFb7d93Sy4HePnjk7QbvdbbeK61OcsBN5l6RLkT28T02cnCx2bF7EF3JzwdQbFFg6TD
+ TNlauWJxN+BrsirVnr8ig9x1eVuvUNHYLjn7YW61885QItm7vE31S29U1rfgzWXrWdifrH
+ OQgFcRvVi/m/nxJ7O5wfC4P5iNKTvhU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683034893;
+ s=susede2_ed25519; t=1683036745;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aC50C3cuRaMuVOl+QWShRVwCtZbIE/6U+kD41Yvzm+4=;
- b=f3KxuUqy1ya73FWAEFLDFxoDCtKkzAENzw3q5GPlQtg5fN2N+Cuijqfq8iw+i7CidXTZDb
- J2MI703NGxSX8zAQ==
+ bh=iPPhEryjS+2KFmFoFOeU2yODQALj3M6oDxhL206TOj8=;
+ b=E7TKQbY8fNFGTQ+6yGyMaHCIDajy1b/h4Zctk2XAw7DTldXkvvyEtSAOtdcJJY5/tEGTuD
+ 2GuXqfA1k3zSv+Bg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 21F77134FB;
- Tue,  2 May 2023 13:41:33 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B5FC6139C3;
+ Tue,  2 May 2023 14:12:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id GbPyBg0TUWR4YwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 02 May 2023 13:41:33 +0000
-Date: Tue, 2 May 2023 15:41:46 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8k3DKkkaUWTwdQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 02 May 2023 14:12:25 +0000
+Date: Tue, 2 May 2023 16:12:38 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Jeff Layton <jlayton@kernel.org>
-Message-ID: <20230502134146.GA3654451@pevik>
-References: <20230502075921.3614794-1-pvorel@suse.cz>
- <d441b9f9dfcbb4719d97c7b3b5950dfeeb8913d2.camel@kernel.org>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20230502141238.GA3664328@pevik>
+References: <20230424103056.6017-1-wegao@suse.com>
+ <20230430060419.12045-1-wegao@suse.com>
+ <20230502103248.GB3631203@pevik> <ZFD5n4x6fdNkMuyj@localhost>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <d441b9f9dfcbb4719d97c7b3b5950dfeeb8913d2.camel@kernel.org>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <ZFD5n4x6fdNkMuyj@localhost>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] nfslock01.sh: Don't test on NFS v3 on TCP
+Subject: Re: [LTP] [PATCH v3] recvmsg01: Refactor using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,108 +78,18 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
- linux-nfs@vger.kernel.org, NeilBrown <neilb@suse.de>,
- Steve Dickson <steved@redhat.com>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Wei,
 
-[ Cc Steve, Alexey, Nikita - hope the new address is the correct,
-because nikita.yushchenko@virtuozzo.com is dead ]
-
-> On Tue, 2023-05-02 at 09:59 +0200, Petr Vorel wrote:
-> > nfs_flock (run via nfslock01.sh) is known to fail on NFS v3 [1]:
-
-> >     not unsharing /var makes AF_UNIX socket for host's rpcbind to become
-> >     available inside ltp_ns. Then, at NFS v3 mount time, kernel creates
-> >     an instance of lockd for ltp_ns, and ports for that instance leak to
-> >     host's rpcbind and overwrite ports for lockd already active for root
-> >     namespace. This breaks nfs3 file locking.
-
-
-> Yeccchhh...that is pretty nasty.
-
-> rpcbind was obviously written in a time before namespaces were even a
-> thought to anyone. I wonder if there is something we can do in rpcbind
-> itself to guard against these sorts of shenanigans? Probably not, I
-> guess...
-
-Maybe Steve or Neil have some idea.
-
-> Is /var shared between namespaces in this test for some particular
-> reason?
-
-I hope I got , we talk about /var/run/netns/ltp_ns, which is symlink to
-/proc/$pid/ns/net. Or is it really about /run/rpcbind.sock vs
-/var/run/rpcbind.sock?
-
-/var/run/netns/<NETNS> file is something created by ip:
-
-#define NETNS_RUN_DIR "/var/run/netns" [1]
-
-NETNS_RUN_DIR?=/var/run/netns [2]
-
-man ip-netns(8) [3]
-       By convention a named network namespace is an object at
-       /var/run/netns/NAME that can be opened. The file descriptor
-       resulting from opening /var/run/netns/NAME refers to the
-       specified network namespace. Holding that file descriptor open
-       keeps the network namespace alive. The file descriptor can be
-       used with the setns(2) system call to change the network
-       namespace associated with a task.
-
-LTP used to use ip for creating namespaces. Later Alexey added reused custom
-LTP code ns_exec.c and ns_ifmove.c [4] (NOTE: these were recently renamed to
-tst_ns_exec.c and tst_ns_ifmove.c and moved) in order to allow to reuse already
-defined namespaces. This change did the symlink from /proc/$pid/ns/net
-/var/run/netns/ltp_ns, to keep the convention.
-
-> > Before bd512e733 ("nfs_flock: fail the test if lock/unlock ops fail")
-> > it run indefinitely with "unhandled error -107":
-> > [ 2840.099565] lockd: cannot monitor 10.0.0.2
-> > [ 2840.109353] lockd: cannot monitor 10.0.0.2
-> > [ 2843.286811] xs_tcp_setup_socket: connect returned unhandled error -107
-> > [ 2850.198791] xs_tcp_setup_socket: connect returned unhandled error -107
-
-> > bd512e733 caused an early abort (therefore only "cannot monitor 10.0.0.2"
-> > appears).
-
-> > Although there is suggestion, how to fix the problem in kernel [2]:
-
-> >     > Maybe rpcb_create_local() shall detect that it is not in root
-> >     > netns, and only try AF_INET connection to > localhost in that case.
-
-> >     That would be simple and might be sensible.  IF changing the AF_UNIX
-> >     path to "/run/rpcbind.sock" isn't sufficient, then testing for the
-> >     root_ns is probably the best second option.
-
-
-> Was it determined that changing the location of the socket wasn't
-> sufficient to fix this? FWIW, My Fedora 38 machine seems to listen on
-> that socket already:
-
->     [Socket]
->     ListenStream=/run/rpcbind.sock
-
-NOTE both openSUSE Tumbleweed and Debian 11 (bullseye), on which I'm able to
-detect the problem (IMHO it would be reproducible on the most of distros) have:
-* /var/run is symlink to /run
-* use /run/rpcbind.lock (have patch to change /var/run/rpcbind.lock to
-  /run/rpcbind.lock [5] [6] @Steve shouldn't be this patch accepted as the default?)
+thanks a lot, merged with fixes I proposed!
 
 Kind regards,
 Petr
-
-[1] https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/include/namespace.h#n12
-[2] https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/Makefile#n20
-[3] https://man7.org/linux/man-pages/man8/ip-netns.8.html
-[4] https://github.com/linux-test-project/ltp/commit/3fb501e04c61fb3d6b6b82011919572a87425cf9
-[5] https://build.opensuse.org/package/view_file/network/rpcbind/0001-change-lockingdir-to-run.patch?expand=1
-[6] https://salsa.debian.org/debian/rpcbind/-/blob/master/debian/patches/run-migration
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
