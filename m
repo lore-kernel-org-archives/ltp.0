@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BFB3C77B73
-	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 14:32:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7036C77B73
+	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 14:37:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D7CB53CB8EA
-	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 16:32:05 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id F3D653CB8EA
+	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 16:37:08 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 480F33C288D
- for <ltp@lists.linux.it>; Tue,  2 May 2023 16:31:56 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 80F013C288D
+ for <ltp@lists.linux.it>; Tue,  2 May 2023 16:37:00 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A538E1400069
- for <ltp@lists.linux.it>; Tue,  2 May 2023 16:31:55 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7A2E52002D2
+ for <ltp@lists.linux.it>; Tue,  2 May 2023 16:36:59 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D5CD721DB6;
- Tue,  2 May 2023 14:31:54 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B8D631FD63;
+ Tue,  2 May 2023 14:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683037914;
+ t=1683038218;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZrMZF2WJRLM5IM92aEI8+E6p6CMvabxhYw7QwvuOFR8=;
- b=iakxnvgZj5EkXiJkotTQxR/k0E+Kej5J8CUDcKhhnjZSKCA4oye/W6JzasrdFQtZGE46JS
- Gcam1j4hJNot7Byfom+7uudYON11muFhqjI4u1jaORjgyjjoCpgkCSNDXh/IWF6AWeQe6C
- lT9hc40q0mebvadl5BCsgXDxSHbIusE=
+ bh=/eqJnyIlI7P5CUtE30RtyzWEUtUkEAjQ7K6lq5U9pig=;
+ b=rh8op1lJwIsvN36kMtpIEp/+Z4cF0Lvu2Nx2R6Yu3f7dHngtjswtKKVhUVsYCa+RmtD2D/
+ nsDSYrX9SiO4z6UDs0aDtHcbq7P3sSUIAFVNnkIg6PpDH5FOp7UFhhuzL5IkYKIsNAdsDQ
+ WVvq9/tM3nNerOakoG/fOBOOHGXtoNk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683037914;
+ s=susede2_ed25519; t=1683038218;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ZrMZF2WJRLM5IM92aEI8+E6p6CMvabxhYw7QwvuOFR8=;
- b=b5KlUdk6RGwKX1pHlUeiEGtIssFtDB0CmdIc9hVjStQP2qy4oTiUCBW8yROKX2U3RV/SSW
- ATpkCYSJo3Wo5KAQ==
+ bh=/eqJnyIlI7P5CUtE30RtyzWEUtUkEAjQ7K6lq5U9pig=;
+ b=7+A9gibxWccRV6tx4oU+QHrA/XvGFmIFAKPJEL7g/l3EC4lW9BAkLRxf7hPhGd2PFWtN6c
+ pOGRFQN97pNSkjBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8616F139C3;
- Tue,  2 May 2023 14:31:54 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D389139C3;
+ Tue,  2 May 2023 14:36:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id I1vTHdoeUWR7AgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 02 May 2023 14:31:54 +0000
-Date: Tue, 2 May 2023 16:32:07 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8nm5HwogUWRrBQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 02 May 2023 14:36:58 +0000
+Date: Tue, 2 May 2023 16:37:11 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20230502143207.GE3666374@pevik>
-References: <20230421145746.5704-1-mdoucha@suse.cz>
- <20230421145746.5704-5-mdoucha@suse.cz>
- <422cfce1-3ca7-3aca-ee98-ebfe96e60bec@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20230502143711.GA3665733@pevik>
+References: <ZEjsKC6ESB1+mM0H@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <422cfce1-3ca7-3aca-ee98-ebfe96e60bec@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+In-Reply-To: <ZEjsKC6ESB1+mM0H@rei>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 5/5] Add test for CVE 2021-3653
+Subject: Re: [LTP] LTP release preparations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,17 +82,34 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+Hi all,
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+* IMHO Martin's KVM patchset should be merged
+https://patchwork.ozlabs.org/project/ltp/list/?series=351921&state=*
 
-> Sorry, I forgot to update .gitignore and add the test to the KVM runfile.
-> I'll send a v2 for the last patch either when the first four patches get
-> merged or together with any other fixes.
-+1, please anybody who merges this don't forget to add 2 two changes.
+* nfslock01.sh: Don't test on NFS v3 on TCP
+https://patchwork.ozlabs.org/project/ltp/patch/20230502075921.3614794-1-pvorel@suse.cz/
+=> IMHO should go in to increase NFS tests stability
+
+* NFS: test on all filesystems
+https://patchwork.ozlabs.org/project/ltp/list/?series=352840&state=*
 
 Kind regards,
 Petr
+
+> Hi!
+> I would like to start with LTP pre-release preparations a bit sooner
+> than usuall, since quite a lot of things have accumulated in May, e.g.
+> there is a SUSE Labs conference right in the middle of the month.
+
+> I would like to start with reviewe of patches that should go in now,
+> freeze the git somewhere at the end of the first week of May and aim for
+> a release somewhere in the middle of the month. Does that sound Ok to
+> everyone?
+
+> Either way if you have patches that should land in the upcomming
+> release, please point them out now, so that we have a chance to review
+> them.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
