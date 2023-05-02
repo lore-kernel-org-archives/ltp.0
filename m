@@ -4,66 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5F2BC7EE21
-	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 09:22:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6244C77B7E
+	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 09:40:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CF2503CB8E8
-	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 11:22:42 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 12B5B3CD920
+	for <ltp@archiver.kernel.org>; Tue,  2 May 2023 11:39:59 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 867C53CB8C4
- for <ltp@lists.linux.it>; Tue,  2 May 2023 11:22:32 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id EBD843CB8C4
+ for <ltp@lists.linux.it>; Tue,  2 May 2023 11:39:47 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C30BC2001B4
- for <ltp@lists.linux.it>; Tue,  2 May 2023 11:22:31 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D8C0B60043A
+ for <ltp@lists.linux.it>; Tue,  2 May 2023 11:39:46 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 00D3D1F381;
- Tue,  2 May 2023 09:22:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683019351;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HlSlKBRy8U4tZdp9g9mjvciVbDmDSq6CApVKyfK0Rhs=;
- b=QU9Caqgn9In4oKCHfIvU1gYuH7GXML8HEkSK80d8BiD+IXh8OpCjygd90ysTmzL97usH5h
- niPs9ZhNcas5g/UqxkYaRqvO5U0NVQXENRIKcGVh/Ei8uZlqM//Dp5ZBlHh8pAxoskdb8w
- oEAuZmszHKlHdyNr4U1QHRHz7tNpgOI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683019351;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HlSlKBRy8U4tZdp9g9mjvciVbDmDSq6CApVKyfK0Rhs=;
- b=KO9E6gWYN5folnmyNWc30iFydA6scrIZEE46mC8rbRCqvMog8rHuSOYRpMeZZePQR6sk3+
- DPYTeiNMO/u5RGAA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E1BE122303;
+ Tue,  2 May 2023 09:39:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1683020385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=NJemPZh55/O4LEdFpyPzfmEtAhRWSS+bBE0rUpv0j3E=;
+ b=gkA2trIvmJ02T1mTJJx/aBiiGtuJeYngXZLu6vKNC1a0cF1IV75xNeCVyJWXF3RWxFcvpt
+ 4xV56eIzMZICxStridznqQSAoak7e+LHpEs8lQvgABkKq+8JGfHtbTcMNJibpd2OaRoN+g
+ JMM3xfVsJfOQVHBtlc15BI75o6tOS8Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1683020385;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=NJemPZh55/O4LEdFpyPzfmEtAhRWSS+bBE0rUpv0j3E=;
+ b=C8jJ2tkiH5F0dhV193wLQb4EQqyZdneCmhrzoV0p3Qd72qNcg8VxFdu+TqUUZ5DuuOUU1g
+ 7DYeieNOFTuIVMAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B9A88139C3;
- Tue,  2 May 2023 09:22:30 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A5A07139C3;
+ Tue,  2 May 2023 09:39:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id mriOK1bWUGRoUgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 02 May 2023 09:22:30 +0000
-Date: Tue, 2 May 2023 11:22:43 +0200
-From: Petr Vorel <pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ABC9ImHaUGQjXAAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Tue, 02 May 2023 09:39:45 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Message-ID: <20230502092243.GA3625868@pevik>
-References: <20230502075921.3614794-1-pvorel@suse.cz>
+Date: Tue,  2 May 2023 11:37:24 +0200
+Message-Id: <20230502093724.4879-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230502075921.3614794-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] nfslock01.sh: Don't test on NFS v3 on TCP
+Subject: [LTP] [PATCH v3] Remove ltp_clone_quick usage from pidns suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,104 +70,325 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-> Subject: [LTP] [PATCH 1/1] nfslock01.sh: Don't test on NFS v3 on TCP
+Replaced ltp_clone_quick with SAFE_CLONE inside the pidns testing
+suite. Fixed also errors in pidns0[12] where in previous patches we
+used CLONE_NEWNS instead of CLONE_NEWPID.
 
-Obviously, the subject should not contain "on TCP" (first, I removed only TCP
-entries in runtest file, but because I expect it would be problematic also on
-UDP). Also tst_brk TCONF does not check TCP/UDP either (only NFS v3).
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Changed pidns02 to make sure setsid is applied
 
-I'll update that before merge (don't send new version).
+ testcases/kernel/containers/pidns/pidns01.c | 24 +++++++++-------
+ testcases/kernel/containers/pidns/pidns02.c | 31 ++++++++++++---------
+ testcases/kernel/containers/pidns/pidns03.c | 18 +++++++-----
+ testcases/kernel/containers/pidns/pidns12.c | 22 +++++++++------
+ testcases/kernel/containers/pidns/pidns20.c | 28 +++++++++++--------
+ 5 files changed, 74 insertions(+), 49 deletions(-)
 
-Kind regards,
-Petr
+diff --git a/testcases/kernel/containers/pidns/pidns01.c b/testcases/kernel/containers/pidns/pidns01.c
+index 5080b6fad..6b5ec48ac 100644
+--- a/testcases/kernel/containers/pidns/pidns01.c
++++ b/testcases/kernel/containers/pidns/pidns01.c
+@@ -8,7 +8,7 @@
+ /*\
+  * [Description]
+  *
+- * Clone a process with CLONE_NEWNS flag and check:
++ * Clone a process with CLONE_NEWPID flag and check:
+  *
+  * - child process ID must be 1
+  * - parent process ID must be 0
+@@ -17,29 +17,33 @@
+ #include "tst_test.h"
+ #include "lapi/sched.h"
+ 
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+ 	pid_t cpid, ppid;
+ 
+ 	cpid = getpid();
+ 	ppid = getppid();
+ 
+-	TST_EXP_PASS(cpid == 1);
+-	TST_EXP_PASS(ppid == 0);
+-
+-	return 0;
++	TST_EXP_EQ_LI(cpid, 1);
++	TST_EXP_EQ_LI(ppid, 0);
+ }
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
+ 
+-	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK | TERRNO, "clone failed");
++	if (!SAFE_CLONE(&args)) {
++		child_func();
++		return;
++	}
+ }
+ 
+ static struct tst_test test = {
+ 	.test_all = run,
+ 	.needs_root = 1,
++	.forks_child = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_PID_NS",
++		NULL,
++	},
+ };
+diff --git a/testcases/kernel/containers/pidns/pidns02.c b/testcases/kernel/containers/pidns/pidns02.c
+index b8913d3f6..07eda0c3a 100644
+--- a/testcases/kernel/containers/pidns/pidns02.c
++++ b/testcases/kernel/containers/pidns/pidns02.c
+@@ -7,7 +7,7 @@
+ /*\
+  * [Description]
+  *
+- * Clone a process with CLONE_NEWNS flag and check:
++ * Clone a process with CLONE_NEWPID flag and check:
+  *
+  * - child session ID must be 1
+  * - parent process group ID must be 1
+@@ -16,29 +16,34 @@
+ #include "tst_test.h"
+ #include "lapi/sched.h"
+ 
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+-	pid_t sid, pgid;
++	TST_EXP_EQ_LI(getsid(0), 0);
++	TST_EXP_EQ_LI(getpgid(0), 0);
+ 
+-	sid = getsid(0);
+-	pgid = getpgid(0);
++	tst_res(TINFO, "setsid()");
++	SAFE_SETSID();
+ 
+-	TST_EXP_PASS(sid == 1);
+-	TST_EXP_PASS(pgid == 1);
+-
+-	return 0;
++	TST_EXP_EQ_LI(getsid(0), 1);
++	TST_EXP_EQ_LI(getpgid(0), 1);
+ }
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
+ 
+-	ret = ltp_clone_quick(CLONE_NEWNS | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK | TERRNO, "clone failed");
++	if (!SAFE_CLONE(&args)) {
++		child_func();
++		return;
++	}
+ }
+ 
+ static struct tst_test test = {
+ 	.test_all = run,
+ 	.needs_root = 1,
++	.forks_child = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_PID_NS",
++		NULL,
++	},
+ };
+diff --git a/testcases/kernel/containers/pidns/pidns03.c b/testcases/kernel/containers/pidns/pidns03.c
+index 122ba7891..d0d26c8a5 100644
+--- a/testcases/kernel/containers/pidns/pidns03.c
++++ b/testcases/kernel/containers/pidns/pidns03.c
+@@ -17,7 +17,7 @@
+ 
+ #define PROCDIR "proc"
+ 
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+ 	char proc_self[10];
+ 
+@@ -28,8 +28,6 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ 	SAFE_UMOUNT(PROCDIR);
+ 
+ 	TST_EXP_PASS(strcmp(proc_self, "1"), PROCDIR"/self contains 1:");
+-
+-	return 0;
+ }
+ 
+ static void setup(void)
+@@ -45,11 +43,12 @@ static void cleanup(void)
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
+ 
+-	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK | TERRNO, "clone failed");
++	if (!SAFE_CLONE(&args)) {
++		child_func();
++		return;
++	}
+ }
+ 
+ static struct tst_test test = {
+@@ -57,5 +56,10 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.needs_root = 1,
++	.forks_child = 1,
+ 	.needs_tmpdir = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_PID_NS",
++		NULL,
++	},
+ };
+diff --git a/testcases/kernel/containers/pidns/pidns12.c b/testcases/kernel/containers/pidns/pidns12.c
+index fb1ec90ca..ab035f33d 100644
+--- a/testcases/kernel/containers/pidns/pidns12.c
++++ b/testcases/kernel/containers/pidns/pidns12.c
+@@ -25,7 +25,7 @@ static void child_signal_handler(LTP_ATTRIBUTE_UNUSED int sig, siginfo_t *si, LT
+ 	sig_pid = si->si_pid;
+ }
+ 
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+ 	struct sigaction sa;
+ 
+@@ -41,21 +41,22 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ 	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+ 
+ 	TST_EXP_EQ_LI(sig_pid, 0);
+-
+-	return 0;
+ }
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	int pid;
+ 
+-	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK | TERRNO, "clone failed");
++	pid = SAFE_CLONE(&args);
++	if (!pid) {
++		child_func();
++		return;
++	}
+ 
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+-	SAFE_KILL(ret, SIGUSR1);
++	SAFE_KILL(pid, SIGUSR1);
+ 
+ 	TST_CHECKPOINT_WAKE(0);
+ }
+@@ -63,5 +64,10 @@ static void run(void)
+ static struct tst_test test = {
+ 	.test_all = run,
+ 	.needs_root = 1,
++	.forks_child = 1,
+ 	.needs_checkpoints = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_PID_NS",
++		NULL,
++	},
+ };
+diff --git a/testcases/kernel/containers/pidns/pidns20.c b/testcases/kernel/containers/pidns/pidns20.c
+index 9f369699a..4d0924c4e 100644
+--- a/testcases/kernel/containers/pidns/pidns20.c
++++ b/testcases/kernel/containers/pidns/pidns20.c
+@@ -26,7 +26,7 @@ static void child_signal_handler(LTP_ATTRIBUTE_UNUSED int sig, siginfo_t *si, LT
+ 	signals++;
+ }
+ 
+-static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
++static void child_func(void)
+ {
+ 	struct sigaction sa;
+ 	sigset_t newset;
+@@ -37,7 +37,7 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ 
+ 	if (cpid != 1 || ppid != 0) {
+ 		tst_res(TFAIL, "Got unexpected result of cpid=%d ppid=%d", cpid, ppid);
+-		return 0;
++		return;
+ 	}
+ 
+ 	SAFE_SIGEMPTYSET(&newset);
+@@ -56,30 +56,31 @@ static int child_func(LTP_ATTRIBUTE_UNUSED void *arg)
+ 
+ 	if (signals != 1) {
+ 		tst_res(TFAIL, "Received %d signals", signals);
+-		return 0;
++		return;
+ 	}
+ 
+ 	if (last_signo != SIGUSR1) {
+ 		tst_res(TFAIL, "Received %s signal", tst_strsig(last_signo));
+-		return 0;
++		return;
+ 	}
+ 
+ 	tst_res(TPASS, "Received SIGUSR1 signal after unblock");
+-
+-	return 0;
+ }
+ 
+ static void run(void)
+ {
+-	int ret;
++	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	int pid;
+ 
+-	ret = ltp_clone_quick(CLONE_NEWPID | SIGCHLD, child_func, NULL);
+-	if (ret < 0)
+-		tst_brk(TBROK | TERRNO, "clone failed");
++	pid = SAFE_CLONE(&args);
++	if (!pid) {
++		child_func();
++		return;
++	}
+ 
+ 	TST_CHECKPOINT_WAIT(0);
+ 
+-	SAFE_KILL(ret, SIGUSR1);
++	SAFE_KILL(pid, SIGUSR1);
+ 
+ 	TST_CHECKPOINT_WAKE(0);
+ }
+@@ -87,5 +88,10 @@ static void run(void)
+ static struct tst_test test = {
+ 	.test_all = run,
+ 	.needs_root = 1,
++	.forks_child = 1,
+ 	.needs_checkpoints = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_PID_NS",
++		NULL,
++	},
+ };
+-- 
+2.35.3
 
-> nfs_flock (run via nfslock01.sh) is known to fail on NFS v3 [1]:
-
->     not unsharing /var makes AF_UNIX socket for host's rpcbind to become
->     available inside ltp_ns. Then, at NFS v3 mount time, kernel creates
->     an instance of lockd for ltp_ns, and ports for that instance leak to
->     host's rpcbind and overwrite ports for lockd already active for root
->     namespace. This breaks nfs3 file locking.
-
-> Before bd512e733 ("nfs_flock: fail the test if lock/unlock ops fail")
-> it run indefinitely with "unhandled error -107":
-> [ 2840.099565] lockd: cannot monitor 10.0.0.2
-> [ 2840.109353] lockd: cannot monitor 10.0.0.2
-> [ 2843.286811] xs_tcp_setup_socket: connect returned unhandled error -107
-> [ 2850.198791] xs_tcp_setup_socket: connect returned unhandled error -107
-
-> bd512e733 caused an early abort (therefore only "cannot monitor 10.0.0.2"
-> appears).
-
-> Although there is suggestion, how to fix the problem in kernel [2]:
-
->     > Maybe rpcb_create_local() shall detect that it is not in root
->     > netns, and only try AF_INET connection to > localhost in that case.
-
->     That would be simple and might be sensible.  IF changing the AF_UNIX
->     path to "/run/rpcbind.sock" isn't sufficient, then testing for the
->     root_ns is probably the best second option.
-
-> Until it's implemented, it's better to:
-> * don't test on NFS v3 on both TCP and UDP (remove from the runtest file)
-> * skip the test with TCONF in case version 3 is passed on command line
-
-> NOTE: Tested only on TCP (UDP is disabled in kernel by default via
-> NFS_DISABLE_UDP_SUPPORT).
-
-> [1] https://lore.kernel.org/ltp/YebcNQg0u5cU1QyQ@pevik/
-> [2] https://lore.kernel.org/ltp/164254401568.24166.883582030601071761@noble.neil.brown.name/
-
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  runtest/net.nfs                              | 4 ----
->  testcases/network/nfs/nfslock01/nfslock01.sh | 6 ++++++
->  2 files changed, 6 insertions(+), 4 deletions(-)
-
-> diff --git a/runtest/net.nfs b/runtest/net.nfs
-> index 72cf4b307..a73956015 100644
-> --- a/runtest/net.nfs
-> +++ b/runtest/net.nfs
-> @@ -83,13 +83,9 @@ nfs4_ipv6_08 nfs08.sh -6 -v 4 -t tcp
->  nfs41_ipv6_08 nfs08.sh -6 -v 4.1 -t tcp
->  nfs42_ipv6_08 nfs08.sh -6 -v 4.2 -t tcp
-
-> -nfslock3_01 nfslock01.sh -v 3 -t udp
-> -nfslock3t_01 nfslock01.sh -v 3 -t tcp
->  nfslock4_01 nfslock01.sh -v 4 -t tcp
->  nfslock41_01 nfslock01.sh -v 4.1 -t tcp
->  nfslock42_01 nfslock01.sh -v 4.2 -t tcp
-> -nfslock3_ipv6_01 nfslock01.sh -6 -v 3 -t udp
-> -nfslock3t_ipv6_01 nfslock01.sh -6 -v 3 -t tcp
->  nfslock4_ipv6_01 nfslock01.sh -6 -v 4 -t tcp
->  nfslock41_ipv6_01 nfslock01.sh -6 -v 4.1 -t tcp
->  nfslock42_ipv6_01 nfslock01.sh -6 -v 4.2 -t tcp
-> diff --git a/testcases/network/nfs/nfslock01/nfslock01.sh b/testcases/network/nfs/nfslock01/nfslock01.sh
-> index fbcc3c00f..78904281b 100755
-> --- a/testcases/network/nfs/nfslock01/nfslock01.sh
-> +++ b/testcases/network/nfs/nfslock01/nfslock01.sh
-> @@ -15,6 +15,12 @@ TST_TESTFUNC="do_test"
-
->  do_setup()
->  {
-> +	local i
-> +
-> +	for i in $VERSION; do
-> +		[ "$v" = 3 ] && tst_brk TCONF "Test is known to fail on NFSv3"
-> +	done
-> +
->  	nfs_setup
-
->  	tst_res TINFO "creating test files"
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
