@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66B8AC77B78
-	for <ltp@archiver.kernel.org>; Wed,  3 May 2023 09:16:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA0C0C77B7F
+	for <ltp@archiver.kernel.org>; Wed,  3 May 2023 09:33:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7617D3CD8E5
-	for <ltp@archiver.kernel.org>; Wed,  3 May 2023 11:16:02 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 675383CD8FD
+	for <ltp@archiver.kernel.org>; Wed,  3 May 2023 11:33:16 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8D5DC3CB7DF
- for <ltp@lists.linux.it>; Wed,  3 May 2023 11:15:52 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 9CD8B3CB794
+ for <ltp@lists.linux.it>; Wed,  3 May 2023 11:33:07 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 111B3100043C
- for <ltp@lists.linux.it>; Wed,  3 May 2023 11:15:51 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B811E600258
+ for <ltp@lists.linux.it>; Wed,  3 May 2023 11:33:06 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CC73520190;
- Wed,  3 May 2023 09:15:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E43D4201B3;
+ Wed,  3 May 2023 09:33:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683105350; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1683106385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/F5R5GpuFPnXnfvZfrijv7DtSyPwTeFWupVjdT03QvQ=;
- b=FJJ3n1ahNYveUKI77xAat5v5p0GEE2Gym+As5WNaaB06PjLys40SGjj+nvPtfNXxXCnRRx
- JTJF25jt6rDuIYHEdHsT3KiJ/GllTbwcUG+5fs1lI46REaj5mw5jN7IU3E2fTmHe/4rMvq
- QVKYSmp3KesVTY+YRf9gTYopwJTHjQ8=
+ bh=OKDQe6eNfuV1RjzYMf+Ofaz17xlFFdjPumqKu3hnqbU=;
+ b=pqw4V/UXGlE4gFG1khniQ5b7rQXfNxsCd46npKiBb6ZTJF9sGCQ0p6dZZSGMzoGijViFXN
+ z5EDcWpAPgTNifXT11VWniQCt+15z7K4IzT+daLQUC91SzaQop6CNt2segs1bOg9pG5kfY
+ N79ZeD7XczOtNBhjVzVBr5EYPQ5p7G4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683105350;
+ s=susede2_ed25519; t=1683106385;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/F5R5GpuFPnXnfvZfrijv7DtSyPwTeFWupVjdT03QvQ=;
- b=+cVdKSUpXTC1kOgbP55OBsh2sT9tzEdvN41LxxUCQ50awSpo40qyiWMliul4+UqD7h8cHw
- +IkKYrquE+TendBA==
+ bh=OKDQe6eNfuV1RjzYMf+Ofaz17xlFFdjPumqKu3hnqbU=;
+ b=19fY8e0RD7edK5ouZNW/wRBPi4qKZLXQCea7uimMcxzjn14pUzZNtNPUae4NyLCj37gO4k
+ DxFMkkPUoqSYpeCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B18F713584;
- Wed,  3 May 2023 09:15:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D1D301331F;
+ Wed,  3 May 2023 09:33:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qKvdKUYmUmQyDgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 03 May 2023 09:15:50 +0000
-Date: Wed, 3 May 2023 11:13:58 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id tY00MlEqUmRwFwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 03 May 2023 09:33:05 +0000
+Date: Wed, 3 May 2023 11:31:13 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZFIl1u0RuSEmFeZO@rei>
-References: <20230502093724.4879-1-andrea.cervesato@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZFIp4Sulcy20GWkc@rei>
+References: <ZEjsKC6ESB1+mM0H@rei>
+ <20230502143711.GA3665733@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230502093724.4879-1-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+In-Reply-To: <20230502143711.GA3665733@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Remove ltp_clone_quick usage from pidns suite
+Subject: Re: [LTP] LTP release preparations
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,7 +82,22 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-Applied, thanks.
+> * IMHO Martin's KVM patchset should be merged
+> https://patchwork.ozlabs.org/project/ltp/list/?series=351921&state=*
+
+Feel free to merge with my ack as long as it passes basic testsing.
+
+> * nfslock01.sh: Don't test on NFS v3 on TCP
+> https://patchwork.ozlabs.org/project/ltp/patch/20230502075921.3614794-1-pvorel@suse.cz/
+> => IMHO should go in to increase NFS tests stability
+
+The discussion around it sounds like this is a kernel problem after all.
+
+> * NFS: test on all filesystems
+> https://patchwork.ozlabs.org/project/ltp/list/?series=352840&state=*
+
+This is rather big change, is this important enough to get it in just
+before the git freeze?
 
 -- 
 Cyril Hrubis
