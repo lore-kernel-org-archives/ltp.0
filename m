@@ -4,70 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 934F0C77B75
-	for <ltp@archiver.kernel.org>; Wed,  3 May 2023 10:08:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9B75C77B78
+	for <ltp@archiver.kernel.org>; Wed,  3 May 2023 12:42:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E72613CB8EA
-	for <ltp@archiver.kernel.org>; Wed,  3 May 2023 12:08:13 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 1F0763CC872
+	for <ltp@archiver.kernel.org>; Wed,  3 May 2023 14:42:39 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 021363CB81E
- for <ltp@lists.linux.it>; Wed,  3 May 2023 12:08:03 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 1BA5E3CB84B
+ for <ltp@lists.linux.it>; Wed,  3 May 2023 14:42:28 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3FE096007B7
- for <ltp@lists.linux.it>; Wed,  3 May 2023 12:08:02 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0CC641400200
+ for <ltp@lists.linux.it>; Wed,  3 May 2023 14:42:27 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 86ED9201FB;
- Wed,  3 May 2023 10:08:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EFB3C227AF;
+ Wed,  3 May 2023 12:42:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683108482;
+ t=1683117746;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MhPsvIP/Fl+OgQ3SSydGb9NzwtjpVSqpig6DpUyvgs4=;
- b=U4HMnoGzjneJMvxLGbJL7hFumNEzo7qN8humBtlp6gD4DAQSqnsf/tyyZIYgtNUhC7sHmR
- 2kgHUUZxrFkhaHNQHBLwekWVYQ6zrvU85Qvw1M/zDd0eafOriQk4xVSMHmM3MBSouw+tJf
- hLkFKFssXlZPOI5lT5jPVDZH/krdhEs=
+ bh=/pHugXZCJS8XYixzC4ipH8zYIALT+StGE2nP+eyoe/0=;
+ b=LGxEZZJaxJSmsYhhfgFVdeyrolLmk3TvtlupGyAgNy8PKxajD8Qc8QFWTYCg8LrRXf5q5c
+ rdpfKTY7lErSiwgFUiL1RIlwpQMs/dAz2PYS+7GMS5lWYdeZOrHjYXSczuX3X7gmNEBX5M
+ NINeQUhHlqlx2y27gXRaeR4NJC8yFOk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683108482;
+ s=susede2_ed25519; t=1683117746;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=MhPsvIP/Fl+OgQ3SSydGb9NzwtjpVSqpig6DpUyvgs4=;
- b=MR+GCoYfaGGj4hPX4H8TdSQ2w0ik6zkjL9cKlRAAFnC87OMovi4eZCPeROSLKNnTV4xaFA
- 3MC+wJz+yyvM1pDw==
+ bh=/pHugXZCJS8XYixzC4ipH8zYIALT+StGE2nP+eyoe/0=;
+ b=XvcdUHDAyS5XnPMQL6U8KUKswplBNspZOVJ4juSdJshm1Ceg8P0uNUf+CwTuwkKGUge68t
+ /uoEBhptln2MOwAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33C4D1331F;
- Wed,  3 May 2023 10:08:02 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB7461331F;
+ Wed,  3 May 2023 12:42:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ewrXB4IyUmRWKwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 03 May 2023 10:08:02 +0000
-Date: Wed, 3 May 2023 12:08:15 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id FO1lLLJWUmRSBgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 03 May 2023 12:42:26 +0000
+Date: Wed, 3 May 2023 14:42:40 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it, NeilBrown <neilb@suse.de>,
-	linux-nfs@vger.kernel.org
-Message-ID: <20230503100815.GA3716045@pevik>
-References: <20230428160038.3534905-1-pvorel@suse.cz>
- <20230428160038.3534905-4-pvorel@suse.cz>
- <20230428170330.GA3536627@pevik>
+To: Martin Doucha <mdoucha@suse.cz>, ltp@lists.linux.it
+Message-ID: <20230503124240.GA3738345@pevik>
+References: <20230421145746.5704-1-mdoucha@suse.cz>
+ <20230421145746.5704-5-mdoucha@suse.cz>
+ <422cfce1-3ca7-3aca-ee98-ebfe96e60bec@suse.cz>
+ <20230502143207.GE3666374@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230428170330.GA3536627@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <20230502143207.GE3666374@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 3/4] nfs05.sh: Lower down the default values
+Subject: Re: [LTP] [PATCH 5/5] Add test for CVE 2021-3653
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,84 +82,27 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Nicolai Stange <nstange@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
-
-> Hi all,
-
-> > nfs05_make_tree.c runs make which needs on Btrfs quite a lot of
-> > temporary space. This is a preparation for the next commit which
-> > start using all filesystems via TST_ALL_FILESYSTEMS=1. Currently we use
-> > 300 MB, which was not enough for Btrfs:
-
-> Also, based on this detection we could add support for tst_device acquire SIZE
-> into tst_test.sh to support more than the default 300 MB (as we see the actual
-> use is obviously less for some filesystems). This would need to check size with
-> tst_fs_has_free.
-
-> Even we don't add this feature, it'd be more friendly to check for space
-> before creating the loop device:
-
-> if ! tst_fs_has_free $TST_TMPDIR 300MB; then
-> 	tst_brkm TCONF "Insufficient disk space to create a backing file for loop device"
-> fi
-
-> To be honest, I'd like to merge this patchset first, the rest can wait after the
-> release.
-
-> Kind regards,
-> Petr
-
-> > Filesystem     Type      Size  Used Avail Use% Mounted on
-> > /dev/loop0     btrfs     300M   62M   20K 100% /tmp/LTP_nfs05.Vau10kcszO/mntpoint
-
-> > After lowering the default values 96% (58M) is being used.
-
-> > Proper solution would be to detect available size in nfs05_make_tree.c
-> > and lower down values based on free space.
-
-> > Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> > ---
-> > New in v4.
-
-> >  testcases/network/nfs/nfs_stress/nfs05.sh | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-
-> > diff --git a/testcases/network/nfs/nfs_stress/nfs05.sh b/testcases/network/nfs/nfs_stress/nfs05.sh
-> > index c18ef1ab4..34151b67a 100755
-> > --- a/testcases/network/nfs/nfs_stress/nfs05.sh
-> > +++ b/testcases/network/nfs/nfs_stress/nfs05.sh
-> > @@ -8,8 +8,8 @@
-
-> >  # Created by: Robbie Williamson (robbiew@us.ibm.com)
-
-> > -DIR_NUM=${DIR_NUM:-"10"}
-> > -FILE_NUM=${FILE_NUM:-"30"}
-> > +DIR_NUM=${DIR_NUM:-"8"}
-> > +FILE_NUM=${FILE_NUM:-"28"}
-
-In the end these values are needed, when testing on systems with 64KB page size:
-
-DIR_NUM=${DIR_NUM:-"5"}
-FILE_NUM=${FILE_NUM:-"20"}
-THREAD_NUM=${THREAD_NUM:-"5"}
-
-Looking at PAGE_SIZE_LESS_THAN_256KB, CONFIG_PAGE_SIZE_LESS_THAN_256KB (option
-for all archs) and checking arch dependent configs I see that there can be 4KB,
-8KB, 16KB, 32KB, 64KB, 256KB (each arch allows only some of them). Also
-filesystems evolve, thus finding safe value for *all* filesystems on different
-page sizes on different kernel versions might be a bit complicated.
-
-Kind regards,
-Petr
-
-> >  THREAD_NUM=${THREAD_NUM:-"8"}
-> >  TST_NEEDS_CMDS="make gcc"
-> >  TST_TESTFUNC="do_test"
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgTWFydGluLAoKYmVjYXVzZSBOaWNvbGFpIGlzIGJ1c3ksIHBhdGNoZXMgbG9va3MgZ29vZCBh
+bmQgQ3lyaWwgYWxzbyBhY2tlZCB0aGVtIFsxXSwgSQptZXJnZSBmaXJzdCBmb3VyIHBhdGNoZXMu
+CgpUaGUgdGVzdCBpdHNlbGYgaW50cm9kdWNlcyB3YXJuaW5ncy4gQ291bGQgeW91IHBsZWFzZSBo
+YXZlIGxvb2sgaWYgdGhleSBjb3VsZCBiZQplYXNpbHkgZml4ZWQ/Cgprdm1fc3ZtMDEuYzogSW4g
+ZnVuY3Rpb24g4oCYZ3Vlc3RfbWFpbuKAmToKa3ZtX3N2bTAxLmM6NDI6MTM6IHdhcm5pbmc6IGFy
+cmF5IHN1YnNjcmlwdCAwIGlzIG91dHNpZGUgYXJyYXkgYm91bmRzIG9mIOKAmHVpbnQzMl90WzBd
+4oCZIHtha2Eg4oCYdW5zaWduZWQgaW50W13igJl9IFstV2FycmF5LWJvdW5kc10KICAgNDIgfCAg
+ICAgICAgIGlmICgqYXZpY19wdHIgIT0gMHhhYWFhYWFhYSkKICAgICAgfCAgICAgICAgICAgICBe
+fn5+fn5+fn4Ka3ZtX3N2bTAxLmM6NDU6OTogd2FybmluZzogYXJyYXkgc3Vic2NyaXB0IDAgaXMg
+b3V0c2lkZSBhcnJheSBib3VuZHMgb2Yg4oCYdWludDMyX3RbMF3igJkge2FrYSDigJh1bnNpZ25l
+ZCBpbnRbXeKAmX0gWy1XYXJyYXktYm91bmRzXQogICA0NSB8ICAgICAgICAgKmF2aWNfcHRyID0g
+QVZJQ19URVNUX1ZBTDsKICAgICAgfCAgICAgICAgIF5+fn5+fn5+fgprdm1fc3ZtMDEuYzogSW4g
+ZnVuY3Rpb24g4oCYbWFpbuKAmToKa3ZtX3N2bTAxLmM6OTM6MTM6IHdhcm5pbmc6IGFycmF5IHN1
+YnNjcmlwdCAwIGlzIG91dHNpZGUgYXJyYXkgYm91bmRzIG9mIOKAmHVpbnQzMl90WzBd4oCZIHth
+a2Eg4oCYdW5zaWduZWQgaW50W13igJl9IFstV2FycmF5LWJvdW5kc10KICAgOTMgfCAgICAgICAg
+IGlmICgqYXZpY19wdHIgIT0gQVZJQ19URVNUX1ZBTCkgewoKS2luZCByZWdhcmRzLApQZXRyCgpb
+MV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbHRwL1pGSXA0U3VsY3kyMEdXa2NAcmVpLwoKLS0g
+Ck1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
