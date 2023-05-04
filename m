@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AEC3C77B78
-	for <ltp@archiver.kernel.org>; Thu,  4 May 2023 13:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDA5CC77B78
+	for <ltp@archiver.kernel.org>; Thu,  4 May 2023 13:57:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 800B13CD8B1
-	for <ltp@archiver.kernel.org>; Thu,  4 May 2023 15:43:39 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id AA09B3CE0E8
+	for <ltp@archiver.kernel.org>; Thu,  4 May 2023 15:57:24 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A7BD83CB749
- for <ltp@lists.linux.it>; Thu,  4 May 2023 15:43:29 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id BFDE73CB749
+ for <ltp@lists.linux.it>; Thu,  4 May 2023 15:57:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E5BE4200AD9
- for <ltp@lists.linux.it>; Thu,  4 May 2023 15:43:28 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 211F4200AF1
+ for <ltp@lists.linux.it>; Thu,  4 May 2023 15:57:13 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F026A1F86B;
- Thu,  4 May 2023 13:43:27 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4991B223B7;
+ Thu,  4 May 2023 13:57:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683207807; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1683208633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NyFVbQ3479XZKv2SAiElZpsio4ux9vT76y5EYw8yCIQ=;
- b=CzOWQT1Wn7XknFQY0q4pknYz1TnQG2IZuHo4YL8zbnkj3QBOSsqhvt7Tp53e+gTUKk7Qad
- HsdyrhTg6lp+2NheRXjkLCw3kZgDq668IL5op4gVxvBWfIz2rrYu4OLMSzlIso1OO0Jzf+
- VPl9rioSj2i+aL4w+O8quLRY8T2rcME=
+ bh=yErvE/CQwOKfoZxtMaL3WaZmx5CmbYeLnDjk1/0iieY=;
+ b=GQlbHpOvT6jfcvutjjEtcxveT0343g2wKji2LOA1q9Ro2Yjy+JEBD+JEBTtY55dGVIHpHb
+ kkD5yk8m+9WaECk6D22d0omo7ZaKNJuynftCGCGGFssF5MomJexWCGMkIVZ7ZmCfyn5ZYJ
+ Zn15E44qvBr5PN6W3GKOaLTqhXNPF2U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683207807;
+ s=susede2_ed25519; t=1683208633;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NyFVbQ3479XZKv2SAiElZpsio4ux9vT76y5EYw8yCIQ=;
- b=olU3wS7dXiKmFd2NwnAok4rwAuBO13OkEETU961X5skjm6AIHd76zXgFbFzpBz9WZOLhYA
- Z/CFNd1Gu7iemNAg==
+ bh=yErvE/CQwOKfoZxtMaL3WaZmx5CmbYeLnDjk1/0iieY=;
+ b=n95AYjdMrNMoqtzuoQ75ehRY8kt/RKepUDvTkP0FJIPhCRyBEle9DiiiKreXPChv0u0Hgm
+ i4QCY2M86YMvsQDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DBB0A13444;
- Thu,  4 May 2023 13:43:27 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3529113444;
+ Thu,  4 May 2023 13:57:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 1VOBNH+2U2SnZwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 04 May 2023 13:43:27 +0000
-Date: Thu, 4 May 2023 15:44:30 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id tfmBC7m5U2SHbwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 04 May 2023 13:57:13 +0000
+Date: Thu, 4 May 2023 15:58:15 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZFO2vmWk-tvrZoQQ@yuki>
-References: <ZEjsKC6ESB1+mM0H@rei> <20230502143711.GA3665733@pevik>
- <ZFIp4Sulcy20GWkc@rei> <20230504131706.GA3826382@pevik>
+Message-ID: <ZFO597l50v9PEQPP@yuki>
+References: <20230504131414.3826283-1-pvorel@suse.cz>
+ <20230504131414.3826283-2-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230504131706.GA3826382@pevik>
+In-Reply-To: <20230504131414.3826283-2-pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP release preparations
+Subject: Re: [LTP] [PATCH v5 1/5] nfs_lib.sh: Cleanup local and remote
+ directories setup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,35 +76,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org,
+ Jeff Layton <jlayton@kernel.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > > * nfslock01.sh: Don't test on NFS v3 on TCP
-> > > https://patchwork.ozlabs.org/project/ltp/patch/20230502075921.3614794-1-pvorel@suse.cz/
-> > > => IMHO should go in to increase NFS tests stability
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/network/nfs/nfs_stress/nfs_lib.sh | 52 ++++++++++++++-------
+>  1 file changed, 34 insertions(+), 18 deletions(-)
 > 
-> > The discussion around it sounds like this is a kernel problem after all.
-> 
-> I didn't get if we want to keep this *not* merged.
+> diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> index af7d46a21..1b5604ab5 100644
+> --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+> @@ -1,6 +1,6 @@
+>  #!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0-or-later
+> -# Copyright (c) Linux Test Project, 2016-2022
+> +# Copyright (c) Linux Test Project, 2016-2023
+>  # Copyright (c) 2015-2018 Oracle and/or its affiliates. All Rights Reserved.
+>  # Copyright (c) International Business Machines  Corp., 2001
+>  
+> @@ -53,6 +53,24 @@ get_socket_type()
+>  	done
+>  }
+>  
+> +# directory mounted by NFS client
+> +get_local_dir()
+> +{
+> +	local v="$1"
+> +	local n="$2"
+> +
+> +	echo "$TST_TMPDIR/$v/$n"
+> +}
+> +
+> +# directory on NFS server
+> +get_remote_dir()
+> +{
+> +	local v="$1"
+> +	local n="$2"
+> +
+> +	echo "$TST_TMPDIR/$v/$n"
+> +}
 
-That goes against "do not work around real bugs in tests", if possible I
-wouldn't apply any workarounds even if there is no upstream fix yet,
-maybe just a message that this is a known bug.
-
-> > > * NFS: test on all filesystems
-> > > https://patchwork.ozlabs.org/project/ltp/list/?series=352840&state=*
-> 
-> > This is rather big change, is this important enough to get it in just
-> > before the git freeze?
-> 
-> There is v5 which tests only btrfs, ext4 and xfs. That should be safe to merge.
-> https://patchwork.ozlabs.org/project/ltp/list/?series=353495
-
-I will have a look.
+It's a bit puzzling why we have two identical functions with a different
+name...
 
 -- 
 Cyril Hrubis
