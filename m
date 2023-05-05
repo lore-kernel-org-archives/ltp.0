@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38D39C77B7C
-	for <ltp@archiver.kernel.org>; Thu,  4 May 2023 23:23:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C54F8C77B7D
+	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 04:55:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 433863CB7DF
-	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 01:23:35 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id EAC8D3CD84C
+	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 06:55:48 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7201F3CB73D
- for <ltp@lists.linux.it>; Fri,  5 May 2023 01:23:24 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 0E2EC3CB32D
+ for <ltp@lists.linux.it>; Fri,  5 May 2023 06:55:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 925DE1A00E1C
- for <ltp@lists.linux.it>; Fri,  5 May 2023 01:23:23 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CBB1C1400FB4
+ for <ltp@lists.linux.it>; Fri,  5 May 2023 06:55:38 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9F7D91F8AC;
- Thu,  4 May 2023 23:23:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683242602;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 20A791F88E;
+ Fri,  5 May 2023 04:55:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1683262536; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zaneZCzLHe2XdnsH4lPL0wIwELwlgOzMooh7hxWageI=;
- b=nFv39AaOWGJB+VAT0td8TaJf5u2s3yKV3yV2w2QXDBN5lanGHnR2SkEPqquaP1wLrS+dkw
- j3hq2/NmP9SzTGN7djtJvExMt+UzgT8mlqnYPdRZXaP6Kv2r/c8h7Nep6E3dqQRUfxxQyN
- vk+VEIMC3PEH4+e6oguym6K9+WWInZM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683242602;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ bh=tXv/curpsa7B7pnkWt4C1gv2afS2XeJZhDT6LHjswoI=;
+ b=WWW2APnVswEV0NJRQhR8YycCRiLMMEN/K9S0CWXE3dTO5d9mr48MDuAanrZ9yxb6l/0A5O
+ 1CWPIQr67zp6f2TlPNS4rUt7ehIBEwahfZ/5a25qzLmpdaeGQY634FlnR2fYehI59BEFF3
+ UXxAftG07unWeOsKJW/KHZpPVCZO/Dg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1683262536;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zaneZCzLHe2XdnsH4lPL0wIwELwlgOzMooh7hxWageI=;
- b=4MgubCgX+U5tflTf3Ar9RfjdX0PwGrbO5mNNcPzJCny4WmStXAbjMskfvxI+wLkhUUa5VV
- Y4T/rXNkVE3LoYDw==
+ bh=tXv/curpsa7B7pnkWt4C1gv2afS2XeJZhDT6LHjswoI=;
+ b=/QLOFiS7+dbZzw6szmBoHd3sWogwIBRle31LRVr5O+MuyZT8GYv9IXERcaAl5x9DMFo0iw
+ iBjjvAxPQGVwSUDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 76369133F7;
- Thu,  4 May 2023 23:23:22 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 95F9013488;
+ Fri,  5 May 2023 04:55:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id CWyYGmo+VGTzaQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 04 May 2023 23:23:22 +0000
-Date: Fri, 5 May 2023 01:23:21 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>, ltp@lists.linux.it,
- NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org,
- Jeff Layton <jlayton@kernel.org>
-Message-ID: <20230504232321.GA25208@pevik>
-References: <20230504131414.3826283-1-pvorel@suse.cz>
- <20230504131414.3826283-6-pvorel@suse.cz> <ZFO6ywouPkmNKtkr@yuki>
- <20230504220037.GB4244@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id VUbXGkeMVGTdXQAAMHmgww
+ (envelope-from <akumar@suse.de>); Fri, 05 May 2023 04:55:35 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 05 May 2023 10:25:33 +0530
+Message-ID: <18916633.A95A5DKvIM@localhost>
+Organization: SUSE
+In-Reply-To: <20230502111813.GA3640896@pevik>
+References: <20230427120800.27849-1-akumar@suse.de>
+ <20230502111813.GA3640896@pevik>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230504220037.GB4244@pevik>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 5/5] nfs: Run on btrfs, ext4, xfs
+Subject: Re: [LTP] [PATCH 1/5] dup01.c: use TST_EXP_FD macro and add inode
+ check
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,95 +79,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Petr,
 
-...
-> Tomorrow I'll test this:
+> > +	TST_EXP_FD(dup(fd), "dup(%d)", fd);
+> 
+> IMHO only this is enough:
+> TST_EXP_FD(dup(fd));
+> 
+okay, please update when you merge, if everything else is fine.
 
-> check_umount()
-> {
-> 	local i
-> 	local dir="$1"
-> 	local type="${2:-lhost}"
-> 	local cmd="grep -q $dir /proc/mounts"
+Thank you,
+Avinesh
 
-> 	for i in $(seq 50); do
-> 		if [ "$type" = "lhost" ]; then
-> 			$cmd || return
-> 		else
-> 			tst_rhost_run -c "$cmd" || return
-> 		fi
-> 		tst_sleep 100ms
-> 		tst_res TWARN "failed to umount '$dir'"
-> 	done
-> }
 
-> 	for i in $VERSION; do
-> 		local_dir="$(get_local_dir $i $n)"
-> 		grep -q "$local_dir" /proc/mounts && umount $local_dir
 
-> 		# instead of 'sleep 2' below check here:
-> 		check_umount "$local_dir"
-
-> 		n=$(( n + 1 ))
-> 	done
-
-> 	n=0
-> 	for i in $VERSION; do
-> 		type=$(get_socket_type $n)
-> 		remote_dir="$(get_remote_dir $i $type)"
-
-> 		if tst_net_use_netns; then
-> 			if test -d $remote_dir; then
-> 				exportfs -u *:$remote_dir
-> 				check_umount "$remote_dir" # instead of sleep 1
-> 				rm -rf $remote_dir
-> 			fi
-> 		else
-> 			tst_rhost_run -c "test -d $remote_dir && exportfs -u *:$remote_dir"
-> 			check_umount "$remote_dir" rhost # instead of sleep 1
-> 			tst_rhost_run -c "test -d $remote_dir && rm -rf $remote_dir"
-> 		fi
-
-> 		n=$(( n + 1 ))
-> 	done
-
-I tried various code (not only the one - wrong - above), but nothing works.
-With fuser -vm, I wonder if there is some bug in older nfs versions:
-
-                     USER        PID ACCESS COMMAND
-/tmp/LTP_nfs08.fncaxJum2W/mntpoint/4/tcp:
-                     root     kernel mount /tmp/LTP_nfs08.fncaxJum2W/mntpoint
-                     root     kernel knfsd /tmp/LTP_nfs08.fncaxJum2W/mntpoint/4
-
-Looking at c6c7f2a84da4 ("nfsd: Ensure knfsd shuts down when the "nfsd" pseudofs
-is unmounted"), maybe there are other bugs, which causes files are used.
-
-I also tried to use /proc/fs/nfsd/unlock_filesystem and
-/proc/fs/nfsd/write_unlock_ip which made things better a bit (6.2.12), but still
-it's not 100% solution. Also, "Release all locks on a local file system"
-(unlock_filesystem) and Release all locks used by a client (write_unlock_ip) are
-unlikely what I'm searching.
-
-		umount $local_dir
-		echo "$local_dir" > /proc/fs/nfsd/unlock_filesystem
-		# $(tst_ipaddr rhost) => IP of the server
-		echo "$(tst_ipaddr rhost)" > /proc/fs/nfsd/write_unlock_ip
-		...
-
-		exportfs -u *:$remote_dir
-		echo "$remote_dir" > /proc/fs/nfsd/unlock_filesystem
-
-=> any hint is welcome.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
