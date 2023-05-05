@@ -4,70 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D744CC77B75
-	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 10:44:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A42C77B7C
+	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 10:45:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9081F3CB6E0
-	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 12:44:54 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id A336C3CB690
+	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 12:45:06 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A8083CB671
- for <ltp@lists.linux.it>; Fri,  5 May 2023 12:44:40 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 2122F3CB6CD
+ for <ltp@lists.linux.it>; Fri,  5 May 2023 12:44:56 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1EA01200D34
- for <ltp@lists.linux.it>; Fri,  5 May 2023 12:44:39 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 32354600695
+ for <ltp@lists.linux.it>; Fri,  5 May 2023 12:44:54 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1020C1F8C1;
- Fri,  5 May 2023 10:44:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683283479;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5mcKZoU9sFVN/fiGmifVNNWu7VXyrMMMjFsjIqNI7M0=;
- b=V/lgxkh71tCBx8d3VztqKsVW+DAbzVyutGyv3pKTXT2SsCj49g0hOHPvRkzODw3l6g/O43
- CqMaSeDOiRgSi1yZkxaLkSECsefjY0r3SkDMNpEpRknzdw4gyUulX3U+C7HLcSk7SZAC09
- +s2DzkmDjWI4BfFUSzVyJdDcr4q9W+0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683283479;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=5mcKZoU9sFVN/fiGmifVNNWu7VXyrMMMjFsjIqNI7M0=;
- b=W/wRj+Kw6VsTxZWh4QehT+gp8LgsgwEAjP1bU3vo/vmqGqmjBjyMeBhL+3+y1I5f2/mQ2F
- gYYnyLCJRzXAdvCw==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 050D52231C
+ for <ltp@lists.linux.it>; Fri,  5 May 2023 10:44:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1683283494; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=FBepsudVXHWpqAOornySCD7SCOPajRuG9ieKPggmpkE=;
+ b=EgjYOa2N3A0gIA5BJH/5+K+WJB12lYsZ72+s4B3IN7/szj5YuTiFpo4uZKnCXDTHArkRlA
+ D4KIrAN7GTQe8QGN2KedMkFwN24LiYSFm78Lf6xGQAi55oLQ+RCUckHjdID611g8KpZ70g
+ FSdmaxoBBt/mN0dfKfncHYMpJz3iVhs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1683283494;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=FBepsudVXHWpqAOornySCD7SCOPajRuG9ieKPggmpkE=;
+ b=/Yj8l6Zx2wKhXO8PcWlfY6kNr9jpA2SXD18Rir/TldEPBc+EkvKVZwem9BhK7IdfC8EWV+
+ 8re1OpwsHkkIxUCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 53E7F13513;
- Fri,  5 May 2023 10:44:38 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A45F313513
+ for <ltp@lists.linux.it>; Fri,  5 May 2023 10:44:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 8/lRDRbeVGRWAgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 05 May 2023 10:44:38 +0000
-Date: Fri, 5 May 2023 12:44:36 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20230505104436.GA31237@pevik>
-References: <20230504131414.3826283-1-pvorel@suse.cz>
- <20230504131414.3826283-2-pvorel@suse.cz> <ZFO597l50v9PEQPP@yuki>
- <20230504211634.GA4244@pevik> <ZFTdp3wAO4qbpUjS@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 2y2VHiXeVGR5AgAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Fri, 05 May 2023 10:44:53 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Fri,  5 May 2023 16:14:51 +0530
+Message-Id: <20230505104451.21970-1-akumar@suse.de>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZFTdp3wAO4qbpUjS@yuki>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5 1/5] nfs_lib.sh: Cleanup local and remote
- directories setup
+Subject: [LTP] [PATCH] update README.md
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,30 +72,35 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org,
- Jeff Layton <jlayton@kernel.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+as we no longer have the file doc/mini-howto-building-ltp-from-git.txt
 
-> Hi!
-> > > It's a bit puzzling why we have two identical functions with a different
-> > > name...
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ README.md | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> > It's a preparation for TST_ALL_FILESYSTEMS=1 where the location changes.
-> > I can squash this into that commit where it changes.
+diff --git a/README.md b/README.md
+index d7cb4d346..68f6ec897 100644
+--- a/README.md
++++ b/README.md
+@@ -101,8 +101,7 @@ $ make install
+ ```
+ 
+ This will install LTP to `/opt/ltp`.
+-* If you have a problem see `doc/mini-howto-building-ltp-from-git.txt`.
+-* If you still have a problem see `INSTALL` and `./configure --help`.
++* If you have a problem see `INSTALL` and `./configure --help`.
+ * Failing that, ask for help on the mailing list or Github.
+ 
+ Some tests will be disabled if the configure script can not find their build
+-- 
+2.40.0
 
-> That is the missing bit. No need to squash maybe just note that the
-> directory will change in the last commit of the patchset.
-
-+1 (I intended and obviously forgot).
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
