@@ -4,56 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22A0DC77B7C
-	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 08:17:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E95EC77B7C
+	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 10:41:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3738B3CB6DB
-	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 10:17:12 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 512893CB6EA
+	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 12:41:57 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5E68B3CB67E
- for <ltp@lists.linux.it>; Fri,  5 May 2023 10:17:01 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 6ED293CB671
+ for <ltp@lists.linux.it>; Fri,  5 May 2023 12:41:47 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id AFE7414010E4
- for <ltp@lists.linux.it>; Fri,  5 May 2023 10:16:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1683274618; x=1714810618;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=s3xc3S5WrOG07WeSgm456EQJetSGa6jQJ1cON4cw2Mk=;
- b=Mrsf+cyLz/lC4lzXckXlNHQIbEjzlBkQhVOhQBnXLKBGw8yU6XDTO4zC
- myL5sepOiNU/KLBcvP411gsyCjXgRRnLPucMQ7ahtyczP+/tG3X2MUj9r
- heubgTbQfLruHCcaR/G9vadrcsoUid/I9hwgh76Jn9PjNOZo72NCHInYz
- owvWaljqwEFvqiVBAwPeVPck3S30AwunRGuhR7JjOOohz9EmBGt7EDcUt
- V0jR8GI8oF3Qw6VyJnt1KcBdhP0iEeYEMcBDEXYw7uHYyOVnWxv6F2sO9
- vLW5hlgZdSmszbKL93Ju9zXXsWqxgpyStF220sV2YPeRfr1/p+y5TGqN7 g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10700"; a="349196584"
-X-IronPort-AV: E=Sophos;i="5.99,251,1677571200"; d="scan'208";a="349196584"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 May 2023 01:16:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10700"; a="674947837"
-X-IronPort-AV: E=Sophos;i="5.99,251,1677571200"; d="scan'208";a="674947837"
-Received: from xpf.sh.intel.com ([10.239.182.130])
- by orsmga006.jf.intel.com with ESMTP; 05 May 2023 01:16:45 -0700
-From: Pengfei Xu <pengfei.xu@intel.com>
-To: ltp@lists.linux.it
-Date: Fri,  5 May 2023 16:18:43 +0800
-Message-Id: <efa47acd652c93a54fb66e17183524b54e561533.1683274510.git.pengfei.xu@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1683274510.git.pengfei.xu@intel.com>
-References: <cover.1683274510.git.pengfei.xu@intel.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E61216019AB
+ for <ltp@lists.linux.it>; Fri,  5 May 2023 12:41:46 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 914112216F;
+ Fri,  5 May 2023 10:41:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1683283305; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Yv5avKygEKTSSLv3g87KeqR+dkSWiqbpFDaM6k01oVU=;
+ b=fGQdMOAVofQeamXwqjA2YXKc93EAWTFarli3pylk3yMl0Cfrj4Xpri3f3cR0nznp22GZnA
+ 4sCpBUBzNZ6zZAtHhnVIW8dfdBpSB0xWCOgDp9qZgroO3/m6fkeTrIiwJJVQCtBpnzq/Ea
+ EL0Lja2xJGBZ8RWbUwkBq7EblyQ8oMo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1683283305;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Yv5avKygEKTSSLv3g87KeqR+dkSWiqbpFDaM6k01oVU=;
+ b=Y/GmTwvbMaZ7AfzTZ1tWXqKTqL/L/RbrWWJQ7lfXc3J5O9/f3GnbhnATcCX1X5frq5B4DM
+ TLD0i3+PZw1yQ1Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 79BD613513;
+ Fri,  5 May 2023 10:41:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8S7+HGndVGTKfwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 05 May 2023 10:41:45 +0000
+Date: Fri, 5 May 2023 12:42:47 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZFTdp3wAO4qbpUjS@yuki>
+References: <20230504131414.3826283-1-pvorel@suse.cz>
+ <20230504131414.3826283-2-pvorel@suse.cz> <ZFO597l50v9PEQPP@yuki>
+ <20230504211634.GA4244@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230504211634.GA4244@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 1/1] libs: libltpnuma: Fix one fake failure when
- CXL(Compute eXpress Link) node memory is not used
+Subject: Re: [LTP] [PATCH v5 1/5] nfs_lib.sh: Cleanup local and remote
+ directories setup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,94 +77,26 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Heng Su <heng.su@intel.com>, rpalethorpe@suse.com
+Cc: NeilBrown <neilb@suse.de>, linux-nfs@vger.kernel.org,
+ Jeff Layton <jlayton@kernel.org>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Intel sapphire rapids server, BIOS could allocate one memory block for CXL
-node when the server boot up, and this node "MemUsed" is 0 when CXL is not
-used like as follow:
-"
-cat /sys/devices/system/node/node2/meminfo
-Node 2 MemTotal:        4194304 kB
-Node 2 MemFree:         4194304 kB
-Node 2 MemUsed:               0 kB
-...
-"
+Hi!
+> > It's a bit puzzling why we have two identical functions with a different
+> > name...
+> 
+> It's a preparation for TST_ALL_FILESYSTEMS=1 where the location changes.
+> I can squash this into that commit where it changes.
 
-And it caused get_mempolicy01/02 and set_mempolicy01/02/03/04 cases to fail
-like as follow sample:
-"
-tag=get_mempolicy01 stime=1683272855
-cmdline="get_mempolicy01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-incrementing stop
-tst_test.c:1560: TINFO: Timeout per run is 0h 00m 30s
-tst_numa.c:200: TINFO: Found 3 NUMA memory nodes
-tst_numa.c:165: TWARN: Failed to parse '/sys/devices/system/node/node2/meminfo'
-get_mempolicy01.c:188: TINFO: test #1: policy: MPOL_DEFAULT, no target
-get_mempolicy01.c:191: TPASS: policy: MPOL_DEFAULT, no target passed
-get_mempolicy01.c:188: TINFO: test #2: policy: MPOL_BIND
-get_mempolicy01.c:191: TPASS: policy: MPOL_BIND passed
-get_mempolicy01.c:188: TINFO: test #3: policy: MPOL_INTERLEAVE
-get_mempolicy01.c:191: TPASS: policy: MPOL_INTERLEAVE passed
-get_mempolicy01.c:188: TINFO: test #4: policy: MPOL_PREFERRED, no target
-get_mempolicy01.c:191: TPASS: policy: MPOL_PREFERRED, no target passed
-get_mempolicy01.c:188: TINFO: test #5: policy: MPOL_PREFERRED
-get_mempolicy01.c:191: TPASS: policy: MPOL_PREFERRED passed
-get_mempolicy01.c:188: TINFO: test #6: policy: MPOL_DEFAULT, flags: MPOL_F_ADDR, no target
-get_mempolicy01.c:191: TPASS: policy: MPOL_DEFAULT, flags: MPOL_F_ADDR, no target passed
-get_mempolicy01.c:188: TINFO: test #7: policy: MPOL_BIND, flags: MPOL_F_ADDR
-get_mempolicy01.c:191: TPASS: policy: MPOL_BIND, flags: MPOL_F_ADDR passed
-get_mempolicy01.c:188: TINFO: test #8: policy: MPOL_INTERLEAVE, flags: MPOL_F_ADDR
-get_mempolicy01.c:191: TPASS: policy: MPOL_INTERLEAVE, flags: MPOL_F_ADDR passed
-get_mempolicy01.c:188: TINFO: test #9: policy: MPOL_PREFERRED, flags: MPOL_F_ADDR, no target
-get_mempolicy01.c:191: TPASS: policy: MPOL_PREFERRED, flags: MPOL_F_ADDR, no target passed
-get_mempolicy01.c:188: TINFO: test #10: policy: MPOL_PREFERRED, flags: MPOL_F_ADDR
-get_mempolicy01.c:191: TPASS: policy: MPOL_PREFERRED, flags: MPOL_F_ADDR passed
+That is the missing bit. No need to squash maybe just note that the
+directory will change in the last commit of the patchset.
 
-Summary:
-passed   10
-failed   0
-broken   0
-skipped  0
-warnings 1
-...
---------                                           ------     ----------
-get_mempolicy01                                    FAIL       4
-"
-So fixed the fake failure when CXL node memory is not being used.
-
-Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
----
- libs/libltpnuma/tst_numa.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/libs/libltpnuma/tst_numa.c b/libs/libltpnuma/tst_numa.c
-index ef4c8e879..f6f577657 100644
---- a/libs/libltpnuma/tst_numa.c
-+++ b/libs/libltpnuma/tst_numa.c
-@@ -161,8 +161,11 @@ static int node_has_enough_memory(int node, size_t min_kb)
- 
- 	fclose(fp);
- 
--	if (!mem_total || !mem_used) {
--		tst_res(TWARN, "Failed to parse '%s'", path);
-+	tst_res(TINFO,"Node%i: mem_total:%ld kB, mem_used:%ld kB", node,
-+	        mem_total, mem_used);
-+
-+	if (!mem_total) {
-+		tst_res(TWARN, "Failed to parse '%s', MemTotal is 0", path);
- 		return 0;
- 	}
- 
 -- 
-2.31.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
