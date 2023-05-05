@@ -4,61 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 760E1C77B7F
-	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 16:28:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64EFEC77B7C
+	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 16:34:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 30ACE3CB6AC
-	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 18:28:42 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id AD9EE3CB6C3
+	for <ltp@archiver.kernel.org>; Fri,  5 May 2023 18:34:16 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B77C23CB67E
- for <ltp@lists.linux.it>; Fri,  5 May 2023 18:28:33 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id A83DF3CB678
+ for <ltp@lists.linux.it>; Fri,  5 May 2023 18:34:06 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 168A2601BC5
- for <ltp@lists.linux.it>; Fri,  5 May 2023 18:28:32 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 554F321C38;
- Fri,  5 May 2023 16:28:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683304112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ftM8YDWYSazkNgAt3x2BvHZq+FBZcGXJuzP/Ysk5W4s=;
- b=f832s8dUKOLCDWgNOBeeGpoaO8E1C+2IvIC1xD116mV6VsBOx7aTlBPSR0cZuX4E28gn4F
- KxdDyJJn1/5TmFDcX1I+6FU6JkTFnDEQYrd5c9oXFTGRmgi+MpXeLinISherc7Xc3yEjdj
- VUF6a0bPSkhunPMSHBozjWTkt1AsGqQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683304112;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ftM8YDWYSazkNgAt3x2BvHZq+FBZcGXJuzP/Ysk5W4s=;
- b=q1UmR6kR1O7urHPc+cFF3qeRqzeG28zEysl4EDFzJAbm+mIPHrc2xXLBfq/WwK7mYvbgri
- AB9GW80FeOBc0EAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0F53313488;
- Fri,  5 May 2023 16:28:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id nd4UALAuVWR/KgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 05 May 2023 16:28:32 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri,  5 May 2023 18:28:22 +0200
-Message-Id: <20230505162822.15676-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.40.1
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3718C1A0099F
+ for <ltp@lists.linux.it>; Fri,  5 May 2023 18:34:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1683304443;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=UdD+jmiH4jfybCqbNb/dr3i/jQ5jREXILe+954hqmto=;
+ b=U45jroW0H4CqEkRH4HTZEWVKHhLiCjyzIghUvAXyKdSyPk+RQGT+mY4ItMYVJglfTwvUPO
+ QGS2i3CUL3tif7t94nXxtORD4ZjwPdLmGg/PYxeU7BvAY9sK26XIlYjGgMAg7yVo+D/psP
+ Tb5LSvua0YltOQkkW44B1uQzefyXQW8=
+Received: from mail-vk1-f200.google.com (mail-vk1-f200.google.com
+ [209.85.221.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-303-RTNcAMr9OBa3AfXWOipFzA-1; Fri, 05 May 2023 12:33:59 -0400
+X-MC-Unique: RTNcAMr9OBa3AfXWOipFzA-1
+Received: by mail-vk1-f200.google.com with SMTP id
+ 71dfb90a1353d-4409621e78bso467261e0c.2
+ for <ltp@lists.linux.it>; Fri, 05 May 2023 09:33:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1683304439; x=1685896439;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=UdD+jmiH4jfybCqbNb/dr3i/jQ5jREXILe+954hqmto=;
+ b=b/TKok4JHMdGOc+dUvPdcI1qSEGUVOQIxs0qvE/pa1cDzlZH/wLq726fnk+xVCmrj4
+ mLBMobCmadoirQno3GuRGCMHIXkBFoAa8e4/pqCMTmL/7KpbWkQOGWQrUOL3FFwF89NG
+ S5K5SgP4JQYRSVp39itSZ8DnnMSDdVscmNN5SfFQT4+V8f/9NLQj9c9SwGZaCkB9Nvjs
+ KNXHLYNr591TekYZQCoYiLMXaKGKqJch0Ip5q1S+JMKW8kOIHChprGKAtb3uJCR1EXjA
+ ma1dZ9lHmBzx/kOrm8+0ilYg8Hg8MGDSar8c0w0eVdmjxJ5roYbyemEjI4RUWBvGzIBm
+ uMXQ==
+X-Gm-Message-State: AC+VfDxD14QGeK/FW8WKnkWS5LLOzxSDK3vmzqHhJo+KTr4UyBvRfBrW
+ V/abBHRumGSg11l4Q49IsDXVzRv+8NuEab4qy6lwwS6GNjrConc+BNQhkTYuNdd38HkLQW4PkRs
+ SKkRM4YZJNyPYaTj699frvRn6/kw=
+X-Received: by 2002:a67:f353:0:b0:434:8479:1812 with SMTP id
+ p19-20020a67f353000000b0043484791812mr285788vsm.18.1683304439502; 
+ Fri, 05 May 2023 09:33:59 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5jgjnDPStsy2ywv0JgWIVWfJVq7FhYcjuIa3rgcdLWz4WzwassEpdpJLcpBXGuT2Nws65QbOOxhOA4nxWOCXY=
+X-Received: by 2002:a67:f353:0:b0:434:8479:1812 with SMTP id
+ p19-20020a67f353000000b0043484791812mr285785vsm.18.1683304439224; Fri, 05 May
+ 2023 09:33:59 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+References: <20230505162822.15676-1-pvorel@suse.cz>
+In-Reply-To: <20230505162822.15676-1-pvorel@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 5 May 2023 18:34:36 +0200
+Message-ID: <CAASaF6w=6dOVtH_FYrMuUQPOrwXdMHM_dHD7e-74KHHaimeQWg@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] endian_switch01: Add HAVE_GETAUXVAL guarder
+Subject: Re: [LTP] [PATCH] endian_switch01: Add HAVE_GETAUXVAL guarder
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,80 +86,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Petr Vorel <petr.vorel@gmail.com>
-
-This fixes compilation on uClibc / uClibc-ng (and also older glibc),
-which does not provide this header.
-
-Fixes: 03b76a20c ("endian_switch01.c: drop unused main4()")
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
----
-Hi Jan,
-
-can you please have a look, I'd prefer to merge this before release
-(build fix on Buildroot).
-
-Kind regards,
-Petr
-
- testcases/kernel/syscalls/switch/endian_switch01.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/switch/endian_switch01.c b/testcases/kernel/syscalls/switch/endian_switch01.c
-index d965aed56..fac9e2382 100644
---- a/testcases/kernel/syscalls/switch/endian_switch01.c
-+++ b/testcases/kernel/syscalls/switch/endian_switch01.c
-@@ -2,7 +2,7 @@
- /*
-  * Copyright (c) International Business Machines Corp., 2008
-  * Copyright (c) Paul Mackerras, IBM Corp., 2008
-- * Copyright (c) 2018 Linux Test Project
-+ * Copyright (c) 2018-2023 Linux Test Project
-  */
- 
- /*
-@@ -15,16 +15,20 @@
- #include <stdlib.h>
- #include <unistd.h>
- #include <elf.h>
--#include <sys/auxv.h>
- #include <sys/types.h>
- #include <sys/wait.h>
-+
- #include "tst_test.h"
- 
- #if defined(__powerpc64__) || defined(__powerpc__)
-+
- # ifndef PPC_FEATURE_TRUE_LE
--# define PPC_FEATURE_TRUE_LE              0x00000002
-+#  define PPC_FEATURE_TRUE_LE              0x00000002
- # endif
- 
-+# ifdef HAVE_GETAUXVAL
-+#  include <sys/auxv.h>
-+
- /*
-  * Make minimal call to 0x1ebe. If we get ENOSYS then syscall is not
-  * available, likely because of:
-@@ -98,6 +102,10 @@ static struct tst_test test = {
- 	.forks_child = 1,
- };
- 
-+# else
-+TST_TEST_TCONF("Toolchain does not have <sys/auxv.h>");
-+# endif /* HAVE_GETAUXVAL */
-+
- #else /* defined (__powerpc64__) || (__powerpc__) */
- TST_TEST_TCONF("This system does not support running of switch() syscall");
- #endif
--- 
-2.40.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gRnJpLCBNYXkgNSwgMjAyMyBhdCA2OjI44oCvUE0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
+Y3o+IHdyb3RlOgo+Cj4gRnJvbTogUGV0ciBWb3JlbCA8cGV0ci52b3JlbEBnbWFpbC5jb20+Cj4K
+PiBUaGlzIGZpeGVzIGNvbXBpbGF0aW9uIG9uIHVDbGliYyAvIHVDbGliYy1uZyAoYW5kIGFsc28g
+b2xkZXIgZ2xpYmMpLAo+IHdoaWNoIGRvZXMgbm90IHByb3ZpZGUgdGhpcyBoZWFkZXIuCj4KPiBG
+aXhlczogMDNiNzZhMjBjICgiZW5kaWFuX3N3aXRjaDAxLmM6IGRyb3AgdW51c2VkIG1haW40KCki
+KQo+IFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHBldHIudm9yZWxAZ21haWwuY29tPgo+IC0t
+LQo+IEhpIEphbiwKPgo+IGNhbiB5b3UgcGxlYXNlIGhhdmUgYSBsb29rLCBJJ2QgcHJlZmVyIHRv
+IG1lcmdlIHRoaXMgYmVmb3JlIHJlbGVhc2UKPiAoYnVpbGQgZml4IG9uIEJ1aWxkcm9vdCkuCgpM
+b29rcyByZWFzb25hYmxlIChvbiBteSBwaG9uZSksIGFjay4KCj4KPiBLaW5kIHJlZ2FyZHMsCj4g
+UGV0cgo+Cj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3dpdGNoL2VuZGlhbl9zd2l0Y2gw
+MS5jIHwgMTQgKysrKysrKysrKystLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDExIGluc2VydGlvbnMo
+KyksIDMgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9zd2l0Y2gvZW5kaWFuX3N3aXRjaDAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3N3aXRjaC9lbmRpYW5fc3dpdGNoMDEuYwo+IGluZGV4IGQ5NjVhZWQ1Ni4uZmFjOWUyMzgyIDEw
+MDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3dpdGNoL2VuZGlhbl9zd2l0
+Y2gwMS5jCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zd2l0Y2gvZW5kaWFuX3N3
+aXRjaDAxLmMKPiBAQCAtMiw3ICsyLDcgQEAKPiAgLyoKPiAgICogQ29weXJpZ2h0IChjKSBJbnRl
+cm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnAuLCAyMDA4Cj4gICAqIENvcHlyaWdodCAo
+YykgUGF1bCBNYWNrZXJyYXMsIElCTSBDb3JwLiwgMjAwOAo+IC0gKiBDb3B5cmlnaHQgKGMpIDIw
+MTggTGludXggVGVzdCBQcm9qZWN0Cj4gKyAqIENvcHlyaWdodCAoYykgMjAxOC0yMDIzIExpbnV4
+IFRlc3QgUHJvamVjdAo+ICAgKi8KPgo+ICAvKgo+IEBAIC0xNSwxNiArMTUsMjAgQEAKPiAgI2lu
+Y2x1ZGUgPHN0ZGxpYi5oPgo+ICAjaW5jbHVkZSA8dW5pc3RkLmg+Cj4gICNpbmNsdWRlIDxlbGYu
+aD4KPiAtI2luY2x1ZGUgPHN5cy9hdXh2Lmg+Cj4gICNpbmNsdWRlIDxzeXMvdHlwZXMuaD4KPiAg
+I2luY2x1ZGUgPHN5cy93YWl0Lmg+Cj4gKwo+ICAjaW5jbHVkZSAidHN0X3Rlc3QuaCIKPgo+ICAj
+aWYgZGVmaW5lZChfX3Bvd2VycGM2NF9fKSB8fCBkZWZpbmVkKF9fcG93ZXJwY19fKQo+ICsKPiAg
+IyBpZm5kZWYgUFBDX0ZFQVRVUkVfVFJVRV9MRQo+IC0jIGRlZmluZSBQUENfRkVBVFVSRV9UUlVF
+X0xFICAgICAgICAgICAgICAweDAwMDAwMDAyCj4gKyMgIGRlZmluZSBQUENfRkVBVFVSRV9UUlVF
+X0xFICAgICAgICAgICAgICAweDAwMDAwMDAyCj4gICMgZW5kaWYKPgo+ICsjIGlmZGVmIEhBVkVf
+R0VUQVVYVkFMCj4gKyMgIGluY2x1ZGUgPHN5cy9hdXh2Lmg+Cj4gKwo+ICAvKgo+ICAgKiBNYWtl
+IG1pbmltYWwgY2FsbCB0byAweDFlYmUuIElmIHdlIGdldCBFTk9TWVMgdGhlbiBzeXNjYWxsIGlz
+IG5vdAo+ICAgKiBhdmFpbGFibGUsIGxpa2VseSBiZWNhdXNlIG9mOgo+IEBAIC05OCw2ICsxMDIs
+MTAgQEAgc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0ID0gewo+ICAgICAgICAgLmZvcmtzX2No
+aWxkID0gMSwKPiAgfTsKPgo+ICsjIGVsc2UKPiArVFNUX1RFU1RfVENPTkYoIlRvb2xjaGFpbiBk
+b2VzIG5vdCBoYXZlIDxzeXMvYXV4di5oPiIpOwo+ICsjIGVuZGlmIC8qIEhBVkVfR0VUQVVYVkFM
+ICovCj4gKwo+ICAjZWxzZSAvKiBkZWZpbmVkIChfX3Bvd2VycGM2NF9fKSB8fCAoX19wb3dlcnBj
+X18pICovCj4gIFRTVF9URVNUX1RDT05GKCJUaGlzIHN5c3RlbSBkb2VzIG5vdCBzdXBwb3J0IHJ1
+bm5pbmcgb2Ygc3dpdGNoKCkgc3lzY2FsbCIpOwo+ICAjZW5kaWYKPiAtLQo+IDIuNDAuMQo+CgoK
+LS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0
+cAo=
