@@ -4,68 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E588C77B7F
-	for <ltp@archiver.kernel.org>; Sat,  6 May 2023 18:55:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32EFEC77B7C
+	for <ltp@archiver.kernel.org>; Sun,  7 May 2023 14:23:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 418BB3CD818
-	for <ltp@archiver.kernel.org>; Sat,  6 May 2023 20:55:36 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 311A93CB5E8
+	for <ltp@archiver.kernel.org>; Sun,  7 May 2023 16:23:34 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A9AB23C9BF5
- for <ltp@lists.linux.it>; Sat,  6 May 2023 20:55:26 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id CAC773C9922
+ for <ltp@lists.linux.it>; Sun,  7 May 2023 16:23:24 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CA78A10004BA
- for <ltp@lists.linux.it>; Sat,  6 May 2023 20:55:25 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C0F5E14001F0
+ for <ltp@lists.linux.it>; Sun,  7 May 2023 16:23:23 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AD52022731;
- Sat,  6 May 2023 18:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683399324;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D1826222A7;
+ Sun,  7 May 2023 14:23:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1683469402; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Gb9NGsgzALxaHxtuQmozkFfUkuskCQz/PF1NJq1NVL4=;
- b=VQ5ngD5d8YZHJwk4+tQ8CuOrqFcM0iqoF6+hfMbYUsGBpoRakKl78uwPH2sao9Pq0orTCE
- OP7zGeJCrf/drtjudMmeykN42goXZh3gnZGQH9S6uBLp2KXEe+tkjzDTujP7lq15n1bDJa
- vXWGH8vy93sVq7Ek6077aiT2Jm2wzVQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683399324;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Gb9NGsgzALxaHxtuQmozkFfUkuskCQz/PF1NJq1NVL4=;
- b=sjDf7A38dWDkC5bj7Eg+9UKp5jmQXtV5izDmSqCI+UPterhXXLfTqq2IMzypki9VbLBXCc
- MIXL3B5eCgaBFKAQ==
+ bh=2LOpmKhFq6F3+NNn4po+bGfrgVluEXhNlc3fHsiqayo=;
+ b=qRlNXl9ZyrW7KQuTTnFjR6Q21coEd1SiouOenR8x9eduKMK3sw2My29BkUJ7F1iVUe7xGI
+ /tqbknHuDq6fxhaFJHu7sZ2MWywALiO8ru2e+tJZ4SjLmJ/WViNn9ByFOKt2hVjsE7gsdm
+ 6rytzNoTD/VGnH8bwf9r/8gPsWGKKJE=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 56C07134FB;
- Sat,  6 May 2023 18:55:24 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C95B1358F;
+ Sun,  7 May 2023 14:23:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id o/hiEJyiVmRmJQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Sat, 06 May 2023 18:55:24 +0000
-Date: Sat, 6 May 2023 20:55:22 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Hao Zeng <zenghao@kylinos.cn>
-Message-ID: <20230506185522.GA105601@pevik>
-References: <20230506092702.203395-1-zenghao@kylinos.cn>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8VMCNFe0V2ROfgAAMHmgww
+ (envelope-from <wegao@suse.com>); Sun, 07 May 2023 14:23:19 +0000
+To: ltp@lists.linux.it
+Date: Sun,  7 May 2023 10:22:09 -0400
+Message-Id: <20230507142209.17815-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230321110337.22970-1-wegao@suse.com>
+References: <20230321110337.22970-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230506092702.203395-1-zenghao@kylinos.cn>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] testcases:Fix the failure of shell script to
- get path
+Subject: [LTP] [PATCH v2] starvation.c: New case for sched starvation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,68 +66,165 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Hao,
+Signed-off-by: Wei Gao <wegao@suse.com>
 
-> For example:
-> in the file testcases/kernel/controllers/cpuset/cpuset_funcs.sh,
-> if the path is obtained by
-> find "$CPUSET" -type d | sort | sed -n '2,$p' | tac | while read subdir,
-> the escaped characters will be lost,and by adding the -r option,
-> the escaped characters will be kept as they are without escaping
-> The errors are as follows:
-> /opt/ltp/testcases/bin/cpuset_funcs.sh:line178:
-> /dev/cpuset/machine.slice/machine-qemux2d157x2dzhx2dsxf.scope/vcpu7/tasks:
-> The file or directory is not available
-> rmdir: delete
-> '/dev/cpuset/machine.slice/machine-qemux2d157x2dzhx2dsxf.scope/vcpu7'
-> Failure: The file or directory is not available
-> cpuset_memory_pressure 1 TFAIL: Couldn't remove subdir -
-> /opt/ltp/testcases/bin/cpuset_funcs.sh:line178:
-> /dev/cpuset/machine.slice/machine-qemux2d157x2dzhx2dsxf.scope/vcpu7/tasks:
-> The file or directory is not available
-> rmdir: delete
-> '/dev/cpuset/machine.slice/machine-qemux2d157x2dzhx2dsxf.scope/vcpu7'
-> Failure: The file or directory is not available
-> cpuset_memory_pressure 1 TFAIL: Couldn't remove subdir -
+Add scheduller thread starvation test case base following link:
+https://lwn.net/ml/linux-kernel/9fd2c37a05713c206dcbd5866f67ce779f315e9e.camel@gmx.de/
+---
+ runtest/sched                                 |   1 +
+ .../kernel/sched/cfs-scheduler/.gitignore     |   1 +
+ .../kernel/sched/cfs-scheduler/starvation.c   | 112 ++++++++++++++++++
+ 3 files changed, 114 insertions(+)
+ create mode 100644 testcases/kernel/sched/cfs-scheduler/starvation.c
 
-> Signed-off-by: Hao Zeng <zenghao@kylinos.cn>
-> Suggested-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/kernel/controllers/cpuset/cpuset_funcs.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+diff --git a/runtest/sched b/runtest/sched
+index 592898723..172fe4174 100644
+--- a/runtest/sched
++++ b/runtest/sched
+@@ -9,6 +9,7 @@ trace_sched01		trace_sched -c 1
+ cfs_bandwidth01 cfs_bandwidth01 -i 5
+ hackbench01 hackbench 50 process 1000
+ hackbench02 hackbench 20 thread 1000
++starvation starvation
+ 
+ sched_cli_serv run_sched_cliserv.sh
+ # Run this stress test for 2 minutes
+diff --git a/testcases/kernel/sched/cfs-scheduler/.gitignore b/testcases/kernel/sched/cfs-scheduler/.gitignore
+index c5dacd6ef..e86178f80 100644
+--- a/testcases/kernel/sched/cfs-scheduler/.gitignore
++++ b/testcases/kernel/sched/cfs-scheduler/.gitignore
+@@ -1,2 +1,3 @@
+ /hackbench
+ cfs_bandwidth01
++/starvation
+diff --git a/testcases/kernel/sched/cfs-scheduler/starvation.c b/testcases/kernel/sched/cfs-scheduler/starvation.c
+new file mode 100644
+index 000000000..5a3655a3f
+--- /dev/null
++++ b/testcases/kernel/sched/cfs-scheduler/starvation.c
+@@ -0,0 +1,112 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/* Copyright 2023 Mike Galbraith <efault-AT-gmx.de> */
++/* Copyright 2023 Wei Gao <wegao@suse.com> */
++/*\
++ *
++ * [Description]
++ *
++ * Thread starvation test.
++ * This case copy from following link:
++ * https://lore.kernel.org/lkml/9fd2c37a05713c206dcbd5866f67ce779f315e9e.camel@gmx.de/
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <signal.h>
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <stdlib.h>
++#include <sched.h>
++
++#include "tst_test.h"
++
++static char *str_loop;
++static long loop = 10000000;
++static char *str_timeout;
++static int timeout = 240;
++
++static int wait_for_pid(pid_t pid)
++{
++	int status, ret;
++
++again:
++	ret = waitpid(pid, &status, 0);
++	if (ret == -1) {
++		if (errno == EINTR)
++			goto again;
++
++		return -1;
++	}
++
++	if (WIFSIGNALED(status))
++		return 0;
++
++	return -1;
++}
++
++static void setup(void)
++{
++	cpu_set_t mask;
++
++	CPU_ZERO(&mask);
++
++	CPU_SET(0, &mask);
++
++	TST_EXP_POSITIVE(sched_setaffinity(0, sizeof(mask), &mask));
++
++	if (tst_parse_long(str_loop, &loop, 1, LONG_MAX))
++		tst_brk(TBROK, "Invalid number of loop number '%s'", str_loop);
++
++	if (tst_parse_int(str_timeout, &timeout, 1, INT_MAX))
++		tst_brk(TBROK, "Invalid number of timeout '%s'", str_timeout);
++
++	tst_set_max_runtime(timeout);
++}
++
++static void handler(int sig LTP_ATTRIBUTE_UNUSED)
++{
++	if (loop > 0)
++		--loop;
++}
++
++static void child(void)
++{
++	pid_t ppid = getppid();
++
++	TST_CHECKPOINT_WAIT(0);
++
++	while (1)
++		SAFE_KILL(ppid, SIGUSR1);
++}
++
++static void do_test(void)
++{
++	pid_t child_pid;
++
++	child_pid = SAFE_FORK();
++
++	if (!child_pid)
++		child();
++
++	SAFE_SIGNAL(SIGUSR1, handler);
++	TST_CHECKPOINT_WAKE(0);
++
++	while (loop)
++		sleep(1);
++
++	SAFE_KILL(child_pid, SIGTERM);
++	TST_EXP_PASS(wait_for_pid(child_pid));
++}
++
++static struct tst_test test = {
++	.test_all = do_test,
++	.setup = setup,
++	.forks_child = 1,
++	.options = (struct tst_option[]) {
++		{"l:", &str_loop, "Number of loops (default 10000000)"},
++		{"t:", &str_timeout, "Max timeout (default 240s)"},
++		{}
++	},
++	.needs_checkpoints = 1,
++};
+-- 
+2.35.3
 
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> index 87ba7da1f..0cfa0c17e 100755
-> --- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> @@ -184,7 +184,7 @@ cleanup()
->  	echo $CHILDREN_VALUE > $CLONE_CHILDREN
->  	echo $SCHED_LB_VALUE > $SCHED_LB
-
-> -	find "$CPUSET" -type d | sort | sed -n '2,$p' | tac | while read subdir
-> +	find "$CPUSET" -type d | sort | sed -n '2,$p' | tac | while read -r subdir
-
-Is it testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh working
-without -r ? I'd expect it'd be also needed (it was in your v1 patch [1]).
-
-I only didn't want to take
-testcases/open_posix_testsuite/scripts/generate-makefiles.sh because it does not
-work with /dev/cpuset/.
-
-Kind regards,
-Petr
-
-[1] https://lore.kernel.org/ltp/6b2a7ceb.4466.1874a537430.Coremail.crawler2015@163.com/
->  	do
->  		while read pid
->  		do
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
