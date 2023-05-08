@@ -4,61 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA048C77B7F
-	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 08:48:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F937C77B73
+	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 09:32:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8E4463CD741
-	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 10:48:54 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id D818D3CB564
+	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 11:32:09 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F020C3C0238
- for <ltp@lists.linux.it>; Mon,  8 May 2023 10:48:41 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 068903CB55F
+ for <ltp@lists.linux.it>; Mon,  8 May 2023 11:31:58 +0200 (CEST)
+Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
+ [195.245.231.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 49E0720006D
- for <ltp@lists.linux.it>; Mon,  8 May 2023 10:48:39 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5446A10005B4
+ for <ltp@lists.linux.it>; Mon,  8 May 2023 11:31:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=170520fj; t=1683538316; i=@fujitsu.com;
+ bh=W8Z2Rj2+L6oKNP5/uciwFgaaR5FONyrqgdwB2YQqTI0=;
+ h=From:To:Cc:Subject:Date:Message-Id;
+ b=fldCnMI+8y5XIfv0U6dpN72tHrM9U8en3FjU9t4nPxlG31r03WrKsENylGVDAh+fM
+ d5rBj1KIs7rG6Q8bfLEwNMIj7XTSeR3E6Lg7CUw7efrRPL2/lm8WpJoI13JUf3XLs9
+ GoKHM0d6VjNXh0K4PX1N8nfXrQctq95owioekgPMupiC+amWsZ+p6giF6jdJYz9z1z
+ h8OhJALOjkkFabHiNwOz1rG8AwcXb4zrbXsvgPHVHFPkpALI4w2A/4xgY2+3xmmD0T
+ jDHUHCai6gFO8w3lmlW9gMOLbSfeoMmoTbkvwGR1uiQUWuufsmoT4EMRC0TtLIxaSS
+ GkBFx3kNhGAhw==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGLMWRWlGSWpSXmKPExsViZ8ORpNt9MCL
+ FoHupucWK7zsYHRg99v1exxrAGMWamZeUX5HAmtHy6TZzwT/Nik/Hr7E1MD5Q7GLk4hAS2Mgo
+ sWT/fxYIZzqTxNTZ35i6GDk52AQ0JZ51LmAGsUUExCSub3jFCmIzC6hLfD3+CCwuLGAl8WXCG
+ rB6FgFViXk3/oLFeQU8JPY+WgAWlxBQkJjy8D0zhK0mcfXcJuYJjFwLGBlWMZoVpxaVpRbpGh
+ rrJRVlpmeU5CZm5uglVukm6qWW6panFpfoGukllhfrpRYX6xVX5ibnpOjlpZZsYgR6OaVYfe8
+ Oxv27/uodYpTkYFIS5TU9GJYixJeUn1KZkVicEV9UmpNafIhRhoNDSYK3bVtEipBgUWp6akVa
+ Zg4w4GDSEhw8SiK8pzYCpXmLCxJzizPTIVKnGHU5zq+7tJdZiCUvPy9VSpz32X6gIgGQoozSP
+ LgRsOC/xCgrJczLyMDAIMRTkFqUm1mCKv+KUZyDUUmY1wtkCk9mXgncpldARzABHeF/ORzkiJ
+ JEhJRUA1Nqw6W2PMPNZYs7Y02b2lnKZVdmPLK+cubvrfWnvdzYGUsYVcy1VV/5NbxnvnrigNW
+ EauZN5g/5fyxyStSs7TtzcEtEX0KTQf4lXusWB6XsLN1tK59qPWqVMZW64zj7gNDavQ+yA/a4
+ 7PwaXtl6JyWk96aK+sKExBf9+xh1Ph+zNZBOZbf9Ou2zSWkehyXrrWiHr53dpRtz76hYHAu4a
+ e6k2tdXuL332qJfdS7lVhNe71+07K5DY0B38cQtdpIZ34Idzy8Njnry+Whi2zq+7a5H8nbLPm
+ x4u6t08+EUbVuH4o3vzt9lsEoNTH2Y80tzrunmqDcqvEeu63QZ7tu9Qsdk0/2IOzscdzXff1E
+ 7W4mlOCPRUIu5qDgRADH4Ltn5AgAA
+X-Env-Sender: xuyang2018.jy@fujitsu.com
+X-Msg-Ref: server-7.tower-571.messagelabs.com!1683538315!411472!1
+X-Originating-IP: [62.60.8.98]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.105.2; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 17090 invoked from network); 8 May 2023 09:31:55 -0000
+Received: from unknown (HELO n03ukasimr03.n03.fujitsu.local) (62.60.8.98)
+ by server-7.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 8 May 2023 09:31:55 -0000
+Received: from n03ukasimr03.n03.fujitsu.local (localhost [127.0.0.1])
+ by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id 9BE5C1CF;
+ Mon,  8 May 2023 10:31:55 +0100 (BST)
+Received: from localhost.localdomain (unknown [10.167.215.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5050E21E6F;
- Mon,  8 May 2023 08:48:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1683535719; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=LUhRm0OYDixf2cm+gACLn4iBR1U6XfbY6TDgFkMS89I=;
- b=zibTCXI7Sj6N75aFxjHr8/cD0T8XZIdQap+gDSuJFBquvVD4iQZtP76WaBrlwdg0ql9QYf
- dWqL+zil7VxeotkMGhkyhqK8r2EbYG50s7zx5yPe3TbfVL+f7mbft3K+tt/aujQcS5TgSp
- A72OYcPMyRJOqBE/26gmwEdqjbnCWzA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1683535719;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=LUhRm0OYDixf2cm+gACLn4iBR1U6XfbY6TDgFkMS89I=;
- b=GQ+KbzZgBWe+0dSw9OrGvO1MHldEVn5XGtjleGtxuSiXSiIJFE4PjEjjPHuKYudNPWuHTG
- uL3diftraFoUpRDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 332C413499;
- Mon,  8 May 2023 08:48:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id tfcEC2e3WGS3WgAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Mon, 08 May 2023 08:48:39 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
+ by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id AEB7E1C2;
+ Mon,  8 May 2023 10:31:54 +0100 (BST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Mon,  8 May 2023 10:46:16 +0200
-Message-Id: <20230508084616.21322-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
+Date: Mon,  8 May 2023 17:31:50 +0800
+Message-Id: <1683538310-9085-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Remove libclone dependency from pidns05 test
+Subject: [LTP] [PATCH v3] syscalls/mlock03: Convert into new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,360 +83,197 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+This case is a regression test on old RHEL5.6.
+You can see the following url:
+https://bugzilla.redhat.com/show_bug.cgi?id=643426
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Still keep this case is meaningful because we can test
+whether kernel has bug on stack guard page reporting
+through /proc/self/maps in the future.
+
+Also remove tst_require_root. Test mlock/munlock instead
+of mlock by default.
+
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/containers/pidns/pidns05.c | 291 ++++++--------------
- 1 file changed, 79 insertions(+), 212 deletions(-)
+ testcases/kernel/syscalls/mlock/mlock03.c | 131 ++++++++--------------
+ 1 file changed, 47 insertions(+), 84 deletions(-)
 
-diff --git a/testcases/kernel/containers/pidns/pidns05.c b/testcases/kernel/containers/pidns/pidns05.c
-index 79e146e36..ebf962e0b 100644
---- a/testcases/kernel/containers/pidns/pidns05.c
-+++ b/testcases/kernel/containers/pidns/pidns05.c
-@@ -1,256 +1,123 @@
+diff --git a/testcases/kernel/syscalls/mlock/mlock03.c b/testcases/kernel/syscalls/mlock/mlock03.c
+index 8bc65701c..429fb1c2a 100644
+--- a/testcases/kernel/syscalls/mlock/mlock03.c
++++ b/testcases/kernel/syscalls/mlock/mlock03.c
+@@ -1,5 +1,16 @@
 +// SPDX-License-Identifier: GPL-2.0
  /*
--* Copyright (c) International Business Machines Corp., 2007
--* This program is free software; you can redistribute it and/or modify
--* it under the terms of the GNU General Public License as published by
--* the Free Software Foundation; either version 2 of the License, or
--* (at your option) any later version.
--* This program is distributed in the hope that it will be useful
--* but WITHOUT ANY WARRANTY; without even the implied warranty of
--* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
--* the GNU General Public License for more details.
--* You should have received a copy of the GNU General Public License
--* along with this program; if not, write to the Free Software
--* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--*
--***************************************************************************
--*
--* Assertion:
--*   a) Create a  container.
--*   b) Create many levels of child containers inside this container.
--*   c) Now do kill -9 init , outside of the container.
--*   d) This should kill all the child containers.
--*      (containers created at the level below)
--*
--* Description:
--* 1. Parent process clone a process with flag CLONE_NEWPID
--* 2. The container will recursively loop and creates 4 more containers.
--* 3. All the container init's  goes into sleep(), waiting to be terminated.
--* 4. The parent process will kill child[3] by passing SIGKILL
--* 5. Now parent process, verifies the child containers 4 & 5 are destroyed.
--* 6. If they are killed then
--*	Test passed
--*  else Test failed.
--*
--* Test Name: pidns05
--*
--* History:
--*
--* FLAG DATE		NAME				DESCRIPTION
--* 31/10/08  Veerendra C <vechandr@in.ibm.com>	Verifies killing of NestedCont's
--*
--*******************************************************************************/
--#define _GNU_SOURCE 1
-+ * Copyright (c) International Business Machines Corp., 2007
-+ *		08/10/08 Veerendra C <vechandr@in.ibm.com>
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ * Copyright (C) 2010  Red Hat, Inc.
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * Clone a process with CLONE_NEWPID flag and create many levels of child
-+ * containers. Then kill container init process from parent and check if all
-+ * containers have been killed.
-+ */
++ * This case is a regression test on old RHEL5.
++ *
+  * Stack size mapping is decreased through mlock/munlock call.
++ * See the following url:
++ * https://bugzilla.redhat.com/show_bug.cgi?id=643426
+  *
+  * This is to test kernel if it has a problem with shortening [stack]
+  * mapping through several loops of mlock/munlock of /proc/self/maps.
+@@ -11,109 +22,61 @@
+  * munlock     44KiB bfefa000-bff05000 rw-p 00000000 00:00 0          [stack]
+  *
+  * with more iterations - could drop to 0KiB.
+- *
+- * Copyright (C) 2010  Red Hat, Inc.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
+  */
 +
- #include <sys/wait.h>
--#include <assert.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <string.h>
--#include <errno.h>
--#include "pidns_helper.h"
+ #include <sys/mman.h>
+ #include <stdio.h>
+ #include <string.h>
 -#include "test.h"
--#include "safe_macros.h"
++#include <pwd.h>
 +#include "tst_test.h"
-+#include "lapi/sched.h"
++#include "tst_safe_stdio.h"
  
--#define INIT_PID	1
--#define CINIT_PID	1
--#define PARENT_PID	0
- #define MAX_DEPTH	5
+ #define KB 1024
  
--char *TCID = "pidns05";
+-char *TCID = "mlock03";
 -int TST_TOTAL = 1;
--int fd[2];
-+static struct tst_clone_args clone_args = {
-+	.flags = CLONE_NEWPID,
-+	.exit_signal = SIGCHLD
-+};
-+static pid_t pid_max;
- 
--int max_pid(void)
-+static void child_func(int *level)
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-int main(int argc, char *argv[])
++static void verify_mlock(void)
  {
--	FILE *fp;
--	int ret;
-+	pid_t cpid, ppid;
-+
-+	cpid = getpid();
-+	ppid = getppid();
-+
-+	TST_EXP_EQ_LI(cpid, 1);
-+	TST_EXP_EQ_LI(ppid, 0);
+-	int lc;
+ 	long from, to;
+ 	long first = -1, last = -1;
+ 	char b[KB];
+ 	FILE *fp;
  
--	fp = fopen("/proc/sys/kernel/pid_max", "r");
--	if (fp != NULL) {
--		fscanf(fp, "%d", &ret);
--		fclose(fp);
--	} else {
--		tst_resm(TBROK, "Cannot open /proc/sys/kernel/pid_max");
--		ret = -1;
-+	if (*level >= MAX_DEPTH) {
-+		TST_CHECKPOINT_WAKE(0);
-+		return;
- 	}
--	return ret;
-+
-+	(*level)++;
-+
-+	if (!SAFE_CLONE(&clone_args)) {
-+		child_func(level);
-+		return;
-+	}
-+
-+	pause();
- }
- 
--/* find_cinit_pids() iteratively finds the pid's having same PGID as its parent.
-- * Input parameter - Accepts pointer to pid_t : To copy the pid's matching.
-- * Returns - the number of pids matched.
--*/
--int find_cinit_pids(pid_t * pids)
-+static int find_cinit_pids(pid_t *pids)
- {
--	int next = 0, pid_max, i;
-+	int i;
-+	int next = 0;
- 	pid_t parentpid, pgid, pgid2;
- 
--	pid_max = max_pid();
- 	parentpid = getpid();
- 	pgid = getpgid(parentpid);
- 
--	/* The loop breaks, when the loop counter reaches the parentpid value */
--	for (i = parentpid + 1; i != parentpid; i++) {
--		if (i > pid_max)
--			i = 2;
+-	tst_parse_opts(argc, argv, NULL, NULL);
 -
-+	for (i = parentpid + 1; i < pid_max; i++) {
- 		pgid2 = getpgid(i);
-+
- 		if (pgid2 == pgid) {
- 			pids[next] = i;
- 			next++;
- 		}
- 	}
-+
- 	return next;
- }
- 
--/*
--* create_nested_container() Recursively create MAX_DEPTH nested containers
--*/
--int create_nested_container(void *vtest)
-+static void setup(void)
- {
--	int exit_val;
--	int ret, count, *level;
--	pid_t cpid, ppid;
--	cpid = getpid();
--	ppid = getppid();
--	char mesg[] = "Nested Containers are created";
--
--	level = (int *)vtest;
--	count = *level;
--
--	/* Child process closes up read side of pipe */
--	close(fd[0]);
--
--	/* Comparing the values to make sure pidns is created correctly */
--	if (cpid != CINIT_PID || ppid != PARENT_PID) {
--		printf("Got unexpected cpid and/or ppid (cpid=%d ppid=%d)\n",
--		       cpid, ppid);
--		exit_val = 1;
--	}
--	if (count > 1) {
--		count--;
--		ret = do_clone_unshare_test(T_CLONE, CLONE_NEWPID,
--					    create_nested_container,
--					    (void *)&count);
--		if (ret == -1) {
--			printf("clone failed; errno = %d : %s\n",
--			       ret, strerror(ret));
--			exit_val = 1;
--		} else
--			exit_val = 0;
--	} else {
--		/* Sending mesg, 'Nested containers created' through the pipe */
--		write(fd[1], mesg, (strlen(mesg) + 1));
--		exit_val = 0;
--	}
--
--	close(fd[1]);
--	pause();
--
--	return exit_val;
-+	SAFE_FILE_SCANF("/proc/sys/kernel/pid_max", "%d\n", &pid_max);
- }
- 
--void kill_nested_containers()
-+static void run(void)
- {
--	int orig_count, new_count, status = 0, i;
--	pid_t pids[MAX_DEPTH];
-+	int i, status, children;
-+	int level = 0;
- 	pid_t pids_new[MAX_DEPTH];
-+	pid_t pids[MAX_DEPTH];
-+	pid_t pid;
- 
--	orig_count = find_cinit_pids(pids);
--	kill(pids[MAX_DEPTH - 3], SIGKILL);
--	sleep(1);
--
--	/* After killing child container, getting the New PID list */
--	new_count = find_cinit_pids(pids_new);
--
--	/* Verifying that the child containers were destroyed when parent is killed */
--	if (orig_count - 2 != new_count)
--		status = -1;
--
--	for (i = 0; i < new_count; i++) {
--		if (pids[i] != pids_new[i])
--			status = -1;
-+	pid = SAFE_CLONE(&clone_args);
-+	if (!pid) {
-+		child_func(&level);
-+		return;
- 	}
- 
--	if (status == 0)
--		tst_resm(TPASS, "The number of containers killed are %d",
--			 orig_count - new_count);
--	else
--		tst_resm(TFAIL, "Failed to kill the sub-containers of "
--			 "the container %d", pids[MAX_DEPTH - 3]);
--
--	/* Loops through the containers created to exit from sleep() */
--	for (i = 0; i < MAX_DEPTH; i++) {
--		kill(pids[i], SIGKILL);
--		waitpid(pids[i], &status, 0);
--	}
--}
-+	TST_CHECKPOINT_WAIT(0);
- 
--static void setup(void)
--{
--	tst_require_root();
--	check_newpid();
--}
-+	find_cinit_pids(pids);
- 
--int main(void)
--{
--	int ret, nbytes, status;
--	char readbuffer[80];
--	pid_t pid, pgid;
--	int count = MAX_DEPTH;
-+	SAFE_KILL(pids[0], SIGKILL);
- 
 -	setup();
-+	TST_RETRY_FUNC(waitpid(0, &status, WNOHANG), TST_RETVAL_NOTNULL);
- 
--	/*
--	 * XXX (garrcoop): why in the hell is this fork-wait written this way?
--	 * This doesn't add up with the pattern used for the rest of the tests,
--	 * so I'm pretty damn sure this test is written incorrectly.
--	 */
--	pid = fork();
--	if (pid == -1) {
--		tst_brkm(TBROK | TERRNO, NULL, "fork failed");
--	} else if (pid != 0) {
--		/*
--		 * NOTE: use waitpid so that we know we're waiting for the
--		 * _top-level_ child instead of a spawned subcontainer.
--		 *
--		 * XXX (garrcoop): Might want to mask SIGCHLD in the top-level
--		 * child too, or not *shrugs*.
--		 */
--		if (waitpid(pid, &status, 0) == -1) {
--			perror("wait failed");
--		}
--		if (WIFEXITED(status))
--			exit(WEXITSTATUS(status));
--		else
--			exit(status);
--	}
-+	children = find_cinit_pids(pids_new);
- 
--	/* To make all the containers share the same PGID as its parent */
--	setpgid(0, 0);
-+	if (children > 0) {
-+		tst_res(TFAIL, "%d children left after sending SIGKILL", children);
- 
--	pid = getpid();
--	pgid = getpgid(pid);
--	SAFE_PIPE(NULL, fd);
-+		for (i = 0; i < MAX_DEPTH; i++) {
-+			kill(pids[i], SIGKILL);
-+			waitpid(pids[i], &status, 0);
++	fp = SAFE_FOPEN("/proc/self/maps", "r");
++	while (!feof(fp)) {
++		if (!fgets(b, KB - 1, fp))
++			break;
++		b[strlen(b) - 1] = '\0';
++		if (sscanf(b, "%lx-%lx", &from, &to) != 2) {
++			tst_brk(TBROK, "parse %s start and end address failed",
++					b);
++			continue;
 +		}
  
--	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWPID,
--				   create_nested_container, (void *)&count));
--	if (TEST_RETURN == -1) {
--		tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
-+		return;
- 	}
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		fp = fopen("/proc/self/maps", "r");
+-		if (fp == NULL)
+-			tst_brkm(TBROK | TERRNO, cleanup, "fopen");
+-		while (!feof(fp)) {
+-			if (!fgets(b, KB - 1, fp))
+-				break;
+-			b[strlen(b) - 1] = '\0';
+-			sscanf(b, "%lx-%lx", &from, &to);
++		/* Record the initial stack size. */
++		if (strstr(b, "[stack]") != NULL)
++			first = (to - from) / KB;
  
--	close(fd[1]);
--	/* Waiting for the MAX_DEPTH number of containers to be created */
--	nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
--	close(fd[0]);
--	if (nbytes > 0)
--		tst_resm(TINFO, " %d %s", MAX_DEPTH, readbuffer);
--	else
--		tst_brkm(TFAIL, NULL, "unable to create %d containers",
--			 MAX_DEPTH);
--
--	/* Kill the container created */
--	kill_nested_containers();
--
--	tst_exit();
-+	tst_res(TPASS, "No children left after sending SIGKILL to the first child");
- }
+-			/* Record the initial stack size. */
+-			if (lc == 0 && strstr(b, "[stack]") != NULL)
+-				first = (to - from) / KB;
++		tst_res(TINFO, "mlock[%lx,%lx]", from, to);
++		if (mlock((const void *)from, to - from) == -1)
++			tst_res(TINFO | TERRNO, "mlock failed");
+ 
+-			switch (lc & 1) {
+-			case 0:
+-				if (mlock((const void *)from, to - from) == -1)
+-					tst_resm(TINFO | TERRNO,
+-						 "mlock failed");
+-				break;
+-			case 1:
+-				if (munlock((void *)from, to - from) == -1)
+-					tst_resm(TINFO | TERRNO,
+-						 "munlock failed");
+-				break;
+-			default:
+-				break;
+-			}
+-			tst_resm(TINFO, "%s from %lx to %0lx",
+-				 (lc & 1) ? "munlock" : "mlock", from, to);
++		tst_res(TINFO, "munlock [%lx,%lx]", from, to);
++		if (munlock((void *)from, to - from) == -1)
++			tst_res(TINFO | TERRNO, "munlock failed");
+ 
+-			/* Record the final stack size. */
+-			if (strstr(b, "[stack]") != NULL)
+-				last = (to - from) / KB;
+-		}
+-		fclose(fp);
++		/* Record the final stack size. */
++		if (strstr(b, "[stack]") != NULL)
++			last = (to - from) / KB;
+ 	}
+-	tst_resm(TINFO, "starting stack size is %ld", first);
+-	tst_resm(TINFO, "final stack size is %ld", last);
++	SAFE_FCLOSE(fp);
 +
++	tst_res(TINFO, "starting stack size is %ld", first);
++	tst_res(TINFO, "final stack size is %ld", last);
+ 	if (last < first)
+-		tst_resm(TFAIL, "stack size is decreased.");
++		tst_res(TFAIL, "stack size is decreased.");
+ 	else
+-		tst_resm(TPASS, "stack size is not decreased.");
+-
+-	cleanup();
+-	tst_exit();
++		tst_res(TPASS, "stack size is not decreased.");
+ }
+ 
+-void setup(void)
+-{
+-	tst_require_root();
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	TEST_PAUSE;
+-}
+-
+-void cleanup(void)
+-{
+-}
 +static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.needs_root = 1,
-+	.needs_checkpoints = 1,
-+	.forks_child = 1,
++	.test_all = verify_mlock,
 +};
 -- 
-2.35.3
+2.39.1
 
 
 -- 
