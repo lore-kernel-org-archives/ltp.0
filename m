@@ -4,149 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E84B4C77B7F
-	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 08:30:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA048C77B7F
+	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 08:48:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BC6663CB56A
-	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 10:30:23 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 8E4463CD741
+	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 10:48:54 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A10823C0238
- for <ltp@lists.linux.it>; Mon,  8 May 2023 10:30:13 +0200 (CEST)
-Received: from esa1.fujitsucc.c3s2.iphmx.com (esa1.fujitsucc.c3s2.iphmx.com
- [68.232.152.245])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id F020C3C0238
+ for <ltp@lists.linux.it>; Mon,  8 May 2023 10:48:41 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 86C696005C1
- for <ltp@lists.linux.it>; Mon,  8 May 2023 10:30:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1683534612; x=1715070612;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=s2f7fwnJ+TtsjeXDuGOG7y5Nbry0Hpm4+fCRKI8OQyU=;
- b=Csdg+FUt/NHq1BQw5wKfTkBQFSrtz6juR2HcVB8lDWe5Awlm6FeoRp8D
- CyNWEdGK8hLdOFgv2Ka4/Xot1MttMVsqpA8ElfUO8NHpNUfB+Uk1M/fQZ
- 4a7506PQgTnL/4+nHY4q2nd/tA3C61pT86n1Mpcx+W5bY+/Mz4DnMyfAu
- CD9r3bBr9C69W2sbTMKoKPs8ruTzQq7s5ypjamxMcpWjpA3Di+oZV7uc6
- rmwRvwF2wbBDQK/CxbggfK42TPaht6vFJ8A6h7NCmS+h7D03gQiE2Ffaf
- ybAwHDBfdgTQ3w9mAYCUmJKc8uqpSTMszImz1DV1sK1KU9axTdOdI5fMH Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10703"; a="91968701"
-X-IronPort-AV: E=Sophos;i="5.99,258,1677510000"; d="scan'208";a="91968701"
-Received: from mail-os0jpn01lp2106.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.106])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 May 2023 17:30:10 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kNYbWOYyI1xZAjS+8SOBbKXJ4OJ2skroqs/RWaVEzmoNfI/u4bToSH2Jc3Z0rEmwI9cwEiDWigB6k3iNytxNOqjyX2MPseNATGLHD4mhpLexLAfylQLrTFlb1SlTDjeTYrOV+HMXebXax4wxhyx6V4aGMOCXBtP/aGHwvte8l/CnJVtvwCSDmVgpVkTGYh34WmaPqvR9oE4UmlDbs3hYPUBxmaRn5Ec7eO8fBdG6oP3cDrQjwHFcMkUScynooV3Sptc4857QkqSPbBnL1odOM5SafeJuu8wSw5+6t6eHF9fo7jVuYqNROb/xupSICjK3xn+qbQW0kz+ZDLzh80EPtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s2f7fwnJ+TtsjeXDuGOG7y5Nbry0Hpm4+fCRKI8OQyU=;
- b=eVthkZnr3FFBIth5UCxUXgKFfNgFMzy+v5LSJqRcElMprgYwUiR+uzOa94R6OF469QF4RJJnEGZovJmn+BQuDm83imZzxfz8yRA3sSFAfgwLnMi8ORdWSwVyR5rV1vm5UQGWg+fhuwPQxMsT0fvQLAkOKdpyVQxPUNhOBdNINoI+x/KDclUFzy3DKw1DAIp7crjhEihGz77pjGI88sLv4DxMq4FL5wLxv6w/80bD1NCM/QlSEt/R3t11LdUqgn5QimCB2g2trtF3bqAGs187a4B9qKhK+PeMsmb/upA4SgKpIxzdV9Y+MeSeBs7WbDrxwW0e6P/VmVHLrcc36TZABg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TYWPR01MB10725.jpnprd01.prod.outlook.com (2603:1096:400:2a5::7)
- by TY3PR01MB10906.jpnprd01.prod.outlook.com (2603:1096:400:3af::14)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.32; Mon, 8 May
- 2023 08:30:04 +0000
-Received: from TYWPR01MB10725.jpnprd01.prod.outlook.com
- ([fe80::1eae:326d:abf5:e4e1]) by TYWPR01MB10725.jpnprd01.prod.outlook.com
- ([fe80::1eae:326d:abf5:e4e1%6]) with mapi id 15.20.6363.032; Mon, 8 May 2023
- 08:30:04 +0000
-From: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>
-To: Eric Biggers <ebiggers@kernel.org>
-Thread-Topic: [LTP] [PATCH v4 2/4] syscalls/statx10: Add basic test for
- STATX_DIOALIGN on regular file
-Thread-Index: AQHZaEpelwVUoZfRMk6Q/iAgJbfD1K8+Rj0AgABS04CABz+TAIAKY/oAgAABYIA=
-Date: Mon, 8 May 2023 08:30:04 +0000
-Message-ID: <74e71028-7c61-17e5-391d-65406d25b532@fujitsu.com>
-References: <20230404215918.GA1893@sol.localdomain>
- <1680759622-8738-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1680759622-8738-2-git-send-email-xuyang2018.jy@fujitsu.com>
- <20230426220654.GD58528@sol.localdomain>
- <b1f3f7ee-6f90-172c-520a-fd6ddc23363f@fujitsu.com>
- <20230501174442.GA1224@sol.localdomain>
- <9b44e391-6c5d-2671-1adc-69efd6577160@fujitsu.com>
-In-Reply-To: <9b44e391-6c5d-2671-1adc-69efd6577160@fujitsu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYWPR01MB10725:EE_|TY3PR01MB10906:EE_
-x-ms-office365-filtering-correlation-id: 69032f69-4715-4704-f611-08db4f9e6c3d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4pXJfs5Yq/rKeRrflZHD3qOaBxXK69El2a6Yi3a505PJ50b76T0h/g0cvhAy5Z0Ap+CEQrBn/tQ4ug2O2s9Qq3jXsGGuqtvVir7MSgg5xVEs7n6aAfjs+FVGlYllrYL3JqTxOKXUoI5f5kxR/aFIarcreP9FDs7yKECee0PcDlnAv0rqRyWy3RSJnqCUcysrV9Ozv+9lHc8D5odQzKLB05qvxoQnGS/+fTfXloXBMkuK6BNW7crRSghOuOAr2dk3nb2wU0liPCw1rDYdi0PJkadIa0Jw3Rd8LZWSnSWbJB5/5WtAkg561eJv7PaRh2b+5z3BzgGr6BF7KS70IYiLzSixQwkErYOV3k3Hta5QK3hIUClSAg84t18/OOV65EwBw91eYkGK+Kzy+l1xg0WsnX2aEd3mDLeVx8WjCPJ6qg/muGPikR4YuWcVxZX+yya+vedJYtrTp4KnFtQiCp1T67LZczyP7L/0zWQkR19fnfL1dR1GoWVqpzSQIE79ENyNgAcKRjSRRrnWiG/hHRELLWnaoEZ2/F5l6VdIbGfWlzVFrRl8MwNpYmVA5Rl5t9AzG5zy2FebpDoiaV/gD1m0MMPtcUJAcRS7k7Go/k1J9IeqjiZobIFZmKE9gLia7I50L99tzm67Gproh0PXAvFbDKq/nPyTTHFwDlwWcN8NHO17lKK8VKWxoudQMx9ave2t
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TYWPR01MB10725.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230028)(4636009)(39860400002)(136003)(396003)(366004)(346002)(376002)(1590799018)(451199021)(91956017)(31686004)(76116006)(64756008)(5660300002)(6916009)(4326008)(66446008)(478600001)(66556008)(8676002)(8936002)(66476007)(66946007)(2906002)(71200400001)(316002)(41300700001)(1580799015)(6486002)(6506007)(26005)(6512007)(186003)(82960400001)(2616005)(36756003)(85182001)(38070700005)(558084003)(38100700002)(31696002)(86362001)(122000001)(45980500001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U21kV2ZXOWJ1RUFMRFVCa01YdUM0MlNhcy9JU2VuNnhrT2M5eXVCdlkwOXRu?=
- =?utf-8?B?Y1dCeGNtdHVJd2Q0Ky82VUVLMzdDL0ErN0VicnFjdTk2T2xEV05FWURUWC9r?=
- =?utf-8?B?ZXJwSjVSQUs1YjZSUmpwNWdkR21mUGN6bCtXQWdOZ3p5R3ZJeEJNbXpheHN4?=
- =?utf-8?B?RXhUTTNYY1hEU3E2dno4UVFlMVN1NDlpZEZDdHRxNkVsblNqSGpEQkcyMUxH?=
- =?utf-8?B?UHlYMzBHSmJIRWh1Y3ErVGlwaDZtYk1rZXBtQ3M0ZWFhaFNZeDZlaDJXN0Fy?=
- =?utf-8?B?STltOS9Rdy92bTRTanRhZmdmNUFXeVd2QmNiZWVlUTRSVlIwUXlmTUhabmFF?=
- =?utf-8?B?M1BxaFpsanltZ0VhTkhjWkhVNG1ZaERhSEp1MGdpYXJrazA4SC8vR01kOER5?=
- =?utf-8?B?c3BaTXJhbE84VDc5VEhwYWdtQ1M1UTZibzUxVXRGMUpNZHR6aElFNjZmWkpX?=
- =?utf-8?B?NlZSclBpYzhJUy9yN0xldWFjQlc0MEdBeUVBaVU4NVlvOStmTXVpSHV2eEJq?=
- =?utf-8?B?V3VPTWI0QzdoQ3gvT0pibitCM0xRUFJwUFpwR0I1aXFrS0RqNWgzT0xJZmN4?=
- =?utf-8?B?VElySzNSa0FyNDRyR3Mxa2ZidHowSnpQM21HMVd4ekRuNG13aVMvMmg1Y0ZG?=
- =?utf-8?B?NzlURVJnM3dMcXdnSDFZMzlIOFU2NitYeWY1bjAvQndjMEQ2eEJYdzFXa1Jx?=
- =?utf-8?B?RVhvVVhBeGx0blNiTjlxQ21iRWJDZzFGdVdQWjNJV2xxTktWUE80aHdqSk1X?=
- =?utf-8?B?RmNGaFFxc1pXZHFFOGUzNGZjME9aZlBDQzV5RUxudnQyRmIzbE40aEE4TTZZ?=
- =?utf-8?B?Z2oyUUtjWGJXZWUrNjdsM1YzTExGeHUxK1dJZGZVS3F3SnU1dk0zT0M0ZGNo?=
- =?utf-8?B?b0g5bkt4K2J1VndiNVhTZklYemZsUGVvTFQvNHlHWVdGS0lDTGhlTjJEMkhx?=
- =?utf-8?B?SW5UeXltVHlVZm9QNG1FTDY2ZDd4aTBYbG1OVGdVeW0zNlozcWNENm1JSThm?=
- =?utf-8?B?M2FadHBzeWZzTGZRU1g0a3pMUHZsZERCTW5uYmhBb2lHRzBPOUVldHhOd0pB?=
- =?utf-8?B?YTZ3VnlJcE1BaVNydjVCRDN0bEhsMmRLcGZzc3J0K2RpSnF1OGp6Y3JST1Jj?=
- =?utf-8?B?dk84Z05TZGs4WUp6UTkzQXVna2ZNM29pNHFVWThpem50ZWlVeTYxWEpIUGFD?=
- =?utf-8?B?NllablpSQnYyZXYzekdkQThKc0hwSFpuNHRlckZjVjNsSGVKcDJtRXg4VGor?=
- =?utf-8?B?ajFqNVBEc0FhVmJTbVU0NWpsZ3RqSEZIZ0ZDOWlmUmt5a1hncGxCV0VDR0tV?=
- =?utf-8?B?ZTQzUWM1T0tVYVZieU9BYlA4RmVnd1l2aFpBVW9tQldkaWFtQ2U4M0ZrZS9B?=
- =?utf-8?B?TDlJL2h3SWhqcjIxdDZ5MnNsMmdDZ2RCV2F4V2dyUkZYNjE5Y2NneUMrMjZl?=
- =?utf-8?B?eitRcE4vVW84KzRKWkp6aXRPYURFQmp5QktzNURMQWdCUWhybk9weTNOcVJG?=
- =?utf-8?B?M3ZYT0Q5d0VkdWg1WURpd1NINk1lWVVBTFBOY0o2cExmZkFkWW90eDhQWkRW?=
- =?utf-8?B?ZWxpNkVQVlQ5b3oxTjFwRmE1NFZKZHpNOGJMTGtJcng4Z2wxUG1NMFlvWkFa?=
- =?utf-8?B?RTYvekFMb2llOWhHYUlDR3NYNWorWUU3Zm9oSUNrUXN1MFVvNUp0RUs2UUM1?=
- =?utf-8?B?c0ZUUVdLSndadDY5WDJGL2F2dmVybHdyWU5yZDlObVRXT3IxUTk1NkMwVDFu?=
- =?utf-8?B?dGNrYVFBREowWDFWYkhDbXZaS2pjRk56cHZCSHh3YmRWaWgycHJMazBMMTYx?=
- =?utf-8?B?KzRjZlBVc29lWC9yTW5jbjBmMzB5ZHR5eGxEN2c0S0YwS0dWYlVPK0kxNzEv?=
- =?utf-8?B?a1M0c0VHTys5QmhVaXlKQndjbEZMT3Mwa3Z2Qk5DbjJhZXZsZjlETUl6SHM5?=
- =?utf-8?B?QTVlT0VuSU1uS1FTSkI0dFZZU0xTMy9kV3ZpcmxDOU9FWm9hMnhZR2Y4TXE5?=
- =?utf-8?B?aDRUa0s5T3BuQ2UwSTlkbTU4SE10T21MZXN1K0JvUGpJbG9XWm41OVJrc0lt?=
- =?utf-8?B?Y0xxQUxXUXNwUzlmRG9NRlRLZHVRL3J0U210Sk1hY1dIb0VNMGJqVWExdERq?=
- =?utf-8?B?WWc1Y2dEa3JzOXF6eDQ2NGo0cWU0cDlTVys3WXRrMGFwOGV2SDc4L0R6WTJa?=
- =?utf-8?B?d1E9PQ==?=
-Content-ID: <F3D16A002728364F978A76EA5A5B1215@jpnprd01.prod.outlook.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 49E0720006D
+ for <ltp@lists.linux.it>; Mon,  8 May 2023 10:48:39 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5050E21E6F;
+ Mon,  8 May 2023 08:48:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1683535719; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=LUhRm0OYDixf2cm+gACLn4iBR1U6XfbY6TDgFkMS89I=;
+ b=zibTCXI7Sj6N75aFxjHr8/cD0T8XZIdQap+gDSuJFBquvVD4iQZtP76WaBrlwdg0ql9QYf
+ dWqL+zil7VxeotkMGhkyhqK8r2EbYG50s7zx5yPe3TbfVL+f7mbft3K+tt/aujQcS5TgSp
+ A72OYcPMyRJOqBE/26gmwEdqjbnCWzA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1683535719;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=LUhRm0OYDixf2cm+gACLn4iBR1U6XfbY6TDgFkMS89I=;
+ b=GQ+KbzZgBWe+0dSw9OrGvO1MHldEVn5XGtjleGtxuSiXSiIJFE4PjEjjPHuKYudNPWuHTG
+ uL3diftraFoUpRDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 332C413499;
+ Mon,  8 May 2023 08:48:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id tfcEC2e3WGS3WgAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 08 May 2023 08:48:39 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Mon,  8 May 2023 10:46:16 +0200
+Message-Id: <20230508084616.21322-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: R4TiEpGDSELDT3PKxjWshaKFsIbkmO2f+XtTlX08O7JvuKnn+MdV0sF8y0b2SV0H+7l2jcQKErDjv2ZUIr6r/xXKXzvyOuBHUFK2xYpSHn+wUBtjwqcI3qA52r/VR4m42j4681a/YjTf44P3JxyQrhG3ANsnAWrzWLzSU7QK48i7xgivvTcwXf6S3QCOEQd4/6LDjij0MHIGI9Gzq4Y8lhmmc/loV4EPFC1xk55vw975PRuQok48WIa2w539IHQePY/CEFbO8wjhze9BnTUTmLU3Bq08P5wxQv6MPQj3Uykeiyp37n1xJIzsGTY6yvlf0tj7n6GHHAD6NY7zK+zJqpjSIWj5OVZyCX54gT2Qm/yqQqy4BMtiz/qJWFni0NaiB2lv5aY6XSfsFcDl4ieBXXRjuZrDAh9U2JQzi7Rav51U5tpqQdSh0IYx8c3SWDLp6qB0LeWRTrqLSXXgzb778en1wGwMnIV54osj+tp7gUgXo5I+XzW2UzKZPT82ngwcxsHT/x9praNaMb9VMzjx9OsB7khlvEmC1QkaotbDr6NChspUDNS+sOq/HyJOQGBJwcwXd3KjDs+APOuiTgUuzwId8fkE8CW07Q26CymS6cgKHSlZftMdu+AoKZT5LFRLQSpwbNUZz3TIqtZjB6kZ3WrZDgECYgHmTR3VB7Ml5aqrtqxtaaAGVk7vBd34PVmQ9BxvBi9XqNAw1zUHiY3iMeZUL9BzlhhPdvezw14urzWZKxRbI36ZH4uQv6hzKr3898LLd2m2wpY8BErLfYrE/27nsvv9tbX+iIE8OAZKfW4=
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYWPR01MB10725.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69032f69-4715-4704-f611-08db4f9e6c3d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2023 08:30:04.2259 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: L74GrXSoN3qwB8RdQjhyu79jIONf0FE3kmYxKw5rA7PScBuWr9IhaoT3PEniZhru+P84IXL4sd0uzgrX3Oq+cqCxcrzM6DPzjtYRpCMffzI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB10906
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 2/4] syscalls/statx10: Add basic test for
- STATX_DIOALIGN on regular file
+Subject: [LTP] [PATCH v1] Remove libclone dependency from pidns05 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -158,22 +70,361 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ testcases/kernel/containers/pidns/pidns05.c | 291 ++++++--------------
+ 1 file changed, 79 insertions(+), 212 deletions(-)
 
-on 2023/05/08 16:25, Yang Xu (Fujitsu) wrote:
-> IMO, to change ltp owner header to avoid use <sys/mount.h> seems
-> difficulty.
+diff --git a/testcases/kernel/containers/pidns/pidns05.c b/testcases/kernel/containers/pidns/pidns05.c
+index 79e146e36..ebf962e0b 100644
+--- a/testcases/kernel/containers/pidns/pidns05.c
++++ b/testcases/kernel/containers/pidns/pidns05.c
+@@ -1,256 +1,123 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+-* Copyright (c) International Business Machines Corp., 2007
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-* This program is distributed in the hope that it will be useful
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-*
+-***************************************************************************
+-*
+-* Assertion:
+-*   a) Create a  container.
+-*   b) Create many levels of child containers inside this container.
+-*   c) Now do kill -9 init , outside of the container.
+-*   d) This should kill all the child containers.
+-*      (containers created at the level below)
+-*
+-* Description:
+-* 1. Parent process clone a process with flag CLONE_NEWPID
+-* 2. The container will recursively loop and creates 4 more containers.
+-* 3. All the container init's  goes into sleep(), waiting to be terminated.
+-* 4. The parent process will kill child[3] by passing SIGKILL
+-* 5. Now parent process, verifies the child containers 4 & 5 are destroyed.
+-* 6. If they are killed then
+-*	Test passed
+-*  else Test failed.
+-*
+-* Test Name: pidns05
+-*
+-* History:
+-*
+-* FLAG DATE		NAME				DESCRIPTION
+-* 31/10/08  Veerendra C <vechandr@in.ibm.com>	Verifies killing of NestedCont's
+-*
+-*******************************************************************************/
+-#define _GNU_SOURCE 1
++ * Copyright (c) International Business Machines Corp., 2007
++ *		08/10/08 Veerendra C <vechandr@in.ibm.com>
++ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Clone a process with CLONE_NEWPID flag and create many levels of child
++ * containers. Then kill container init process from parent and check if all
++ * containers have been killed.
++ */
++
+ #include <sys/wait.h>
+-#include <assert.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <errno.h>
+-#include "pidns_helper.h"
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
++#include "lapi/sched.h"
+ 
+-#define INIT_PID	1
+-#define CINIT_PID	1
+-#define PARENT_PID	0
+ #define MAX_DEPTH	5
+ 
+-char *TCID = "pidns05";
+-int TST_TOTAL = 1;
+-int fd[2];
++static struct tst_clone_args clone_args = {
++	.flags = CLONE_NEWPID,
++	.exit_signal = SIGCHLD
++};
++static pid_t pid_max;
+ 
+-int max_pid(void)
++static void child_func(int *level)
+ {
+-	FILE *fp;
+-	int ret;
++	pid_t cpid, ppid;
++
++	cpid = getpid();
++	ppid = getppid();
++
++	TST_EXP_EQ_LI(cpid, 1);
++	TST_EXP_EQ_LI(ppid, 0);
+ 
+-	fp = fopen("/proc/sys/kernel/pid_max", "r");
+-	if (fp != NULL) {
+-		fscanf(fp, "%d", &ret);
+-		fclose(fp);
+-	} else {
+-		tst_resm(TBROK, "Cannot open /proc/sys/kernel/pid_max");
+-		ret = -1;
++	if (*level >= MAX_DEPTH) {
++		TST_CHECKPOINT_WAKE(0);
++		return;
+ 	}
+-	return ret;
++
++	(*level)++;
++
++	if (!SAFE_CLONE(&clone_args)) {
++		child_func(level);
++		return;
++	}
++
++	pause();
+ }
+ 
+-/* find_cinit_pids() iteratively finds the pid's having same PGID as its parent.
+- * Input parameter - Accepts pointer to pid_t : To copy the pid's matching.
+- * Returns - the number of pids matched.
+-*/
+-int find_cinit_pids(pid_t * pids)
++static int find_cinit_pids(pid_t *pids)
+ {
+-	int next = 0, pid_max, i;
++	int i;
++	int next = 0;
+ 	pid_t parentpid, pgid, pgid2;
+ 
+-	pid_max = max_pid();
+ 	parentpid = getpid();
+ 	pgid = getpgid(parentpid);
+ 
+-	/* The loop breaks, when the loop counter reaches the parentpid value */
+-	for (i = parentpid + 1; i != parentpid; i++) {
+-		if (i > pid_max)
+-			i = 2;
+-
++	for (i = parentpid + 1; i < pid_max; i++) {
+ 		pgid2 = getpgid(i);
++
+ 		if (pgid2 == pgid) {
+ 			pids[next] = i;
+ 			next++;
+ 		}
+ 	}
++
+ 	return next;
+ }
+ 
+-/*
+-* create_nested_container() Recursively create MAX_DEPTH nested containers
+-*/
+-int create_nested_container(void *vtest)
++static void setup(void)
+ {
+-	int exit_val;
+-	int ret, count, *level;
+-	pid_t cpid, ppid;
+-	cpid = getpid();
+-	ppid = getppid();
+-	char mesg[] = "Nested Containers are created";
+-
+-	level = (int *)vtest;
+-	count = *level;
+-
+-	/* Child process closes up read side of pipe */
+-	close(fd[0]);
+-
+-	/* Comparing the values to make sure pidns is created correctly */
+-	if (cpid != CINIT_PID || ppid != PARENT_PID) {
+-		printf("Got unexpected cpid and/or ppid (cpid=%d ppid=%d)\n",
+-		       cpid, ppid);
+-		exit_val = 1;
+-	}
+-	if (count > 1) {
+-		count--;
+-		ret = do_clone_unshare_test(T_CLONE, CLONE_NEWPID,
+-					    create_nested_container,
+-					    (void *)&count);
+-		if (ret == -1) {
+-			printf("clone failed; errno = %d : %s\n",
+-			       ret, strerror(ret));
+-			exit_val = 1;
+-		} else
+-			exit_val = 0;
+-	} else {
+-		/* Sending mesg, 'Nested containers created' through the pipe */
+-		write(fd[1], mesg, (strlen(mesg) + 1));
+-		exit_val = 0;
+-	}
+-
+-	close(fd[1]);
+-	pause();
+-
+-	return exit_val;
++	SAFE_FILE_SCANF("/proc/sys/kernel/pid_max", "%d\n", &pid_max);
+ }
+ 
+-void kill_nested_containers()
++static void run(void)
+ {
+-	int orig_count, new_count, status = 0, i;
+-	pid_t pids[MAX_DEPTH];
++	int i, status, children;
++	int level = 0;
+ 	pid_t pids_new[MAX_DEPTH];
++	pid_t pids[MAX_DEPTH];
++	pid_t pid;
+ 
+-	orig_count = find_cinit_pids(pids);
+-	kill(pids[MAX_DEPTH - 3], SIGKILL);
+-	sleep(1);
+-
+-	/* After killing child container, getting the New PID list */
+-	new_count = find_cinit_pids(pids_new);
+-
+-	/* Verifying that the child containers were destroyed when parent is killed */
+-	if (orig_count - 2 != new_count)
+-		status = -1;
+-
+-	for (i = 0; i < new_count; i++) {
+-		if (pids[i] != pids_new[i])
+-			status = -1;
++	pid = SAFE_CLONE(&clone_args);
++	if (!pid) {
++		child_func(&level);
++		return;
+ 	}
+ 
+-	if (status == 0)
+-		tst_resm(TPASS, "The number of containers killed are %d",
+-			 orig_count - new_count);
+-	else
+-		tst_resm(TFAIL, "Failed to kill the sub-containers of "
+-			 "the container %d", pids[MAX_DEPTH - 3]);
+-
+-	/* Loops through the containers created to exit from sleep() */
+-	for (i = 0; i < MAX_DEPTH; i++) {
+-		kill(pids[i], SIGKILL);
+-		waitpid(pids[i], &status, 0);
+-	}
+-}
++	TST_CHECKPOINT_WAIT(0);
+ 
+-static void setup(void)
+-{
+-	tst_require_root();
+-	check_newpid();
+-}
++	find_cinit_pids(pids);
+ 
+-int main(void)
+-{
+-	int ret, nbytes, status;
+-	char readbuffer[80];
+-	pid_t pid, pgid;
+-	int count = MAX_DEPTH;
++	SAFE_KILL(pids[0], SIGKILL);
+ 
+-	setup();
++	TST_RETRY_FUNC(waitpid(0, &status, WNOHANG), TST_RETVAL_NOTNULL);
+ 
+-	/*
+-	 * XXX (garrcoop): why in the hell is this fork-wait written this way?
+-	 * This doesn't add up with the pattern used for the rest of the tests,
+-	 * so I'm pretty damn sure this test is written incorrectly.
+-	 */
+-	pid = fork();
+-	if (pid == -1) {
+-		tst_brkm(TBROK | TERRNO, NULL, "fork failed");
+-	} else if (pid != 0) {
+-		/*
+-		 * NOTE: use waitpid so that we know we're waiting for the
+-		 * _top-level_ child instead of a spawned subcontainer.
+-		 *
+-		 * XXX (garrcoop): Might want to mask SIGCHLD in the top-level
+-		 * child too, or not *shrugs*.
+-		 */
+-		if (waitpid(pid, &status, 0) == -1) {
+-			perror("wait failed");
+-		}
+-		if (WIFEXITED(status))
+-			exit(WEXITSTATUS(status));
+-		else
+-			exit(status);
+-	}
++	children = find_cinit_pids(pids_new);
+ 
+-	/* To make all the containers share the same PGID as its parent */
+-	setpgid(0, 0);
++	if (children > 0) {
++		tst_res(TFAIL, "%d children left after sending SIGKILL", children);
+ 
+-	pid = getpid();
+-	pgid = getpgid(pid);
+-	SAFE_PIPE(NULL, fd);
++		for (i = 0; i < MAX_DEPTH; i++) {
++			kill(pids[i], SIGKILL);
++			waitpid(pids[i], &status, 0);
++		}
+ 
+-	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWPID,
+-				   create_nested_container, (void *)&count));
+-	if (TEST_RETURN == -1) {
+-		tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
++		return;
+ 	}
+ 
+-	close(fd[1]);
+-	/* Waiting for the MAX_DEPTH number of containers to be created */
+-	nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
+-	close(fd[0]);
+-	if (nbytes > 0)
+-		tst_resm(TINFO, " %d %s", MAX_DEPTH, readbuffer);
+-	else
+-		tst_brkm(TFAIL, NULL, "unable to create %d containers",
+-			 MAX_DEPTH);
+-
+-	/* Kill the container created */
+-	kill_nested_containers();
+-
+-	tst_exit();
++	tst_res(TPASS, "No children left after sending SIGKILL to the first child");
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.needs_root = 1,
++	.needs_checkpoints = 1,
++	.forks_child = 1,
++};
+-- 
+2.35.3
 
-<sys/mount.h> => <sys/stat.h>
-
-Best Regards
-Yang Xu
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
