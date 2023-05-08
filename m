@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F937C77B73
-	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 09:32:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 433C4C77B7F
+	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 09:57:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D818D3CB564
-	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 11:32:09 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 1D6513CD77A
+	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 11:57:55 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 068903CB55F
- for <ltp@lists.linux.it>; Mon,  8 May 2023 11:31:58 +0200 (CEST)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.1])
+ by picard.linux.it (Postfix) with ESMTPS id B33C73C0189
+ for <ltp@lists.linux.it>; Mon,  8 May 2023 11:57:44 +0200 (CEST)
+Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com
+ [85.158.142.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5446A10005B4
- for <ltp@lists.linux.it>; Mon,  8 May 2023 11:31:56 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8B56E2001A6
+ for <ltp@lists.linux.it>; Mon,  8 May 2023 11:57:43 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1683538316; i=@fujitsu.com;
- bh=W8Z2Rj2+L6oKNP5/uciwFgaaR5FONyrqgdwB2YQqTI0=;
+ s=170520fj; t=1683539862; i=@fujitsu.com;
+ bh=zxBlC0KPRs8Qt50mIz1E6anATi/gAJH0Vxo2P1Ya+HY=;
  h=From:To:Cc:Subject:Date:Message-Id;
- b=fldCnMI+8y5XIfv0U6dpN72tHrM9U8en3FjU9t4nPxlG31r03WrKsENylGVDAh+fM
- d5rBj1KIs7rG6Q8bfLEwNMIj7XTSeR3E6Lg7CUw7efrRPL2/lm8WpJoI13JUf3XLs9
- GoKHM0d6VjNXh0K4PX1N8nfXrQctq95owioekgPMupiC+amWsZ+p6giF6jdJYz9z1z
- h8OhJALOjkkFabHiNwOz1rG8AwcXb4zrbXsvgPHVHFPkpALI4w2A/4xgY2+3xmmD0T
- jDHUHCai6gFO8w3lmlW9gMOLbSfeoMmoTbkvwGR1uiQUWuufsmoT4EMRC0TtLIxaSS
- GkBFx3kNhGAhw==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGLMWRWlGSWpSXmKPExsViZ8ORpNt9MCL
- FoHupucWK7zsYHRg99v1exxrAGMWamZeUX5HAmtHy6TZzwT/Nik/Hr7E1MD5Q7GLk4hAS2Mgo
- sWT/fxYIZzqTxNTZ35i6GDk52AQ0JZ51LmAGsUUExCSub3jFCmIzC6hLfD3+CCwuLGAl8WXCG
- rB6FgFViXk3/oLFeQU8JPY+WgAWlxBQkJjy8D0zhK0mcfXcJuYJjFwLGBlWMZoVpxaVpRbpGh
- rrJRVlpmeU5CZm5uglVukm6qWW6panFpfoGukllhfrpRYX6xVX5ibnpOjlpZZsYgR6OaVYfe8
- Oxv27/uodYpTkYFIS5TU9GJYixJeUn1KZkVicEV9UmpNafIhRhoNDSYK3bVtEipBgUWp6akVa
- Zg4w4GDSEhw8SiK8pzYCpXmLCxJzizPTIVKnGHU5zq+7tJdZiCUvPy9VSpz32X6gIgGQoozSP
- LgRsOC/xCgrJczLyMDAIMRTkFqUm1mCKv+KUZyDUUmY1wtkCk9mXgncpldARzABHeF/ORzkiJ
- JEhJRUA1Nqw6W2PMPNZYs7Y02b2lnKZVdmPLK+cubvrfWnvdzYGUsYVcy1VV/5NbxnvnrigNW
- EauZN5g/5fyxyStSs7TtzcEtEX0KTQf4lXusWB6XsLN1tK59qPWqVMZW64zj7gNDavQ+yA/a4
- 7PwaXtl6JyWk96aK+sKExBf9+xh1Ph+zNZBOZbf9Ou2zSWkehyXrrWiHr53dpRtz76hYHAu4a
- e6k2tdXuL332qJfdS7lVhNe71+07K5DY0B38cQtdpIZ34Idzy8Njnry+Whi2zq+7a5H8nbLPm
- x4u6t08+EUbVuH4o3vzt9lsEoNTH2Y80tzrunmqDcqvEeu63QZ7tu9Qsdk0/2IOzscdzXff1E
- 7W4mlOCPRUIu5qDgRADH4Ltn5AgAA
+ b=vnl3YxocXHxAGDnPpXugks9vaUmieCvpT4vX6c/qZNMnILfbjhh8f5caFf511iVW5
+ zyY5QFnYLpOQm6xPIFPEa8FVUkWMIquTaSIEUcLjCCsLBF32e6oxAw7SjEWTVGUFnB
+ aqwdBpXAkgxBUvQ0pPw276Gcg8QJ/Kn60Ulopc+2Xdz0192AvzgqpUcTyu3ZwhqwHj
+ VPpIzfgsYk+Kd+8b+C2Uq5F4z/MaFowpb9NBIQlRAp7eMS7vqPgsbcrxdPpInlNfG7
+ KeIO4BOw5XO3SVwZeauhFFBoQ0XXCNITLnUSIn6I4dZa9CV5woD2geMHuS73ARwA9e
+ nPT6s9KIvtP+A==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFLMWRWlGSWpSXmKPExsViZ8ORpDvteES
+ KwYspLBYrvu9gdGD02Pd7HWsAYxRrZl5SfkUCa8b+iTfYCl7oVLyb/JuxgfGwehcjF4eQwEZG
+ iQN935kgnOlMEkvanrF1MXJysAloSjzrXMAMYosIiElc3/CKFcRmFlCX+Hr8EVhcWMBd4um7H
+ 2D1LAKqEq9vdzOB2LwCHhInOz+DxSUEFCSmPHzPDGGrSVw9t4l5AiPXAkaGVYxmxalFZalFus
+ Z6SUWZ6RkluYmZOXqJVbqJeqmlunn5RSUZuoZ6ieXFeqnFxXrFlbnJOSl6eaklmxiBXk4pTnb
+ dwXhh51+9Q4ySHExKorymB8NShPiS8lMqMxKLM+KLSnNSiw8xynBwKEnwtm2LSBESLEpNT61I
+ y8wBBhxMWoKDR0mEV/YIUJq3uCAxtzgzHSJ1ilFRSpw37ChQQgAkkVGaB9cGC/JLjLJSwryMD
+ AwMQjwFqUW5mSWo8q8YxTkYlYR5q0HG82TmlcBNfwW0mAlosf/lcJDFJYkIKakGpvnB622Yb0
+ YeXKUTtSGs7PuLzzU7nuflHfvu+E70esUE85Wr90Xrap/8nSHm8TxFY+bJqs0F0TJ2pwNT9ng
+ /lL8bITDXYeWGqVe/TeFU5jv3aUYev9b1hF0mhoEpxlclQsRCfnf1h79RZjjaoFYcWf7i5e3k
+ BF6OtS/eH3DKDOV3ScydeP+7S137Bv4Vb4R2rxGOfMFaLzMjfOq6L1tvXLr3/Ne1hJyn81/Ex
+ cd4J7VK1vlfddBwUWTvM1zml7512ryuVTbdEZPto5fG5l8qLE9mT3DZ7mi0YDn7pkkdNeycc7
+ QeXerqdwtwKz18VnDj069PnQQ2tvIUeBnv0v2Y0TL3sXHOnkOBa8yqj7B/UGIpzkg01GIuKk4
+ EANffZ3XtAgAA
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-7.tower-571.messagelabs.com!1683538315!411472!1
+X-Msg-Ref: server-5.tower-745.messagelabs.com!1683539861!490687!1
 X-Originating-IP: [62.60.8.98]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
 X-StarScan-Version: 9.105.2; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 17090 invoked from network); 8 May 2023 09:31:55 -0000
+Received: (qmail 304 invoked from network); 8 May 2023 09:57:42 -0000
 Received: from unknown (HELO n03ukasimr03.n03.fujitsu.local) (62.60.8.98)
- by server-7.tower-571.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 8 May 2023 09:31:55 -0000
+ by server-5.tower-745.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 8 May 2023 09:57:42 -0000
 Received: from n03ukasimr03.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id 9BE5C1CF;
- Mon,  8 May 2023 10:31:55 +0100 (BST)
+ by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id 7AFE61C2;
+ Mon,  8 May 2023 10:57:41 +0100 (BST)
 Received: from localhost.localdomain (unknown [10.167.215.131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id AEB7E1C2;
- Mon,  8 May 2023 10:31:54 +0100 (BST)
+ by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id 9DFF21CF;
+ Mon,  8 May 2023 10:57:40 +0100 (BST)
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Mon,  8 May 2023 17:31:50 +0800
-Message-Id: <1683538310-9085-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Mon,  8 May 2023 17:57:35 +0800
+Message-Id: <1683539855-9414-1-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] syscalls/mlock03: Convert into new api
+Subject: [LTP] [PATCH] include/lapi: Move AT_* related macros to fcntl header
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,189 +90,203 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This case is a regression test on old RHEL5.6.
-You can see the following url:
-https://bugzilla.redhat.com/show_bug.cgi?id=643426
-
-Still keep this case is meaningful because we can test
-whether kernel has bug on stack guard page reporting
-through /proc/self/maps in the future.
-
-Also remove tst_require_root. Test mlock/munlock instead
-of mlock by default.
+These AT* macro is belong to fcntl.h instead of stat.h.
+So move them.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/syscalls/mlock/mlock03.c | 131 ++++++++--------------
- 1 file changed, 47 insertions(+), 84 deletions(-)
+ include/lapi/fcntl.h                          | 32 +++++++++++++----
+ include/lapi/stat.h                           | 36 -------------------
+ .../syscalls/mount_setattr/mount_setattr01.c  |  2 +-
+ testcases/kernel/syscalls/statx/statx01.c     |  1 +
+ testcases/kernel/syscalls/statx/statx02.c     |  1 +
+ testcases/kernel/syscalls/statx/statx05.c     |  1 +
+ testcases/kernel/syscalls/statx/statx07.c     |  1 +
+ testcases/kernel/syscalls/statx/statx08.c     |  1 +
+ testcases/kernel/syscalls/statx/statx09.c     |  1 +
+ 9 files changed, 33 insertions(+), 43 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mlock/mlock03.c b/testcases/kernel/syscalls/mlock/mlock03.c
-index 8bc65701c..429fb1c2a 100644
---- a/testcases/kernel/syscalls/mlock/mlock03.c
-+++ b/testcases/kernel/syscalls/mlock/mlock03.c
-@@ -1,5 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-+ * Copyright (C) 2010  Red Hat, Inc.
-+ */
+diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
+index f17220737..8fc92c521 100644
+--- a/include/lapi/fcntl.h
++++ b/include/lapi/fcntl.h
+@@ -87,20 +87,40 @@
+ # define AT_FDCWD -100
+ #endif
+ 
++#ifndef AT_SYMLINK_NOFOLLOW
++# define AT_SYMLINK_NOFOLLOW 	0x100
++#endif
 +
-+/*\
-+ * [Description]
-+ *
-+ * This case is a regression test on old RHEL5.
-+ *
-  * Stack size mapping is decreased through mlock/munlock call.
-+ * See the following url:
-+ * https://bugzilla.redhat.com/show_bug.cgi?id=643426
-  *
-  * This is to test kernel if it has a problem with shortening [stack]
-  * mapping through several loops of mlock/munlock of /proc/self/maps.
-@@ -11,109 +22,61 @@
-  * munlock     44KiB bfefa000-bff05000 rw-p 00000000 00:00 0          [stack]
-  *
-  * with more iterations - could drop to 0KiB.
-- *
-- * Copyright (C) 2010  Red Hat, Inc.
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of version 2 of the GNU General Public
-- * License as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it
-- * is free of the rightful claim of any third person regarding
-- * infringement or the like.  Any license provided herein, whether
-- * implied or otherwise, applies only to this software file.  Patent
-- * licenses, if any, provided herein do not apply to combinations of
-- * this program with other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-- * 02110-1301, USA.
-  */
++#ifndef AT_REMOVEDIR
++# define AT_REMOVEDIR 		0x200
++#endif
 +
- #include <sys/mman.h>
- #include <stdio.h>
+ #ifndef AT_SYMLINK_FOLLOW
+-# define AT_SYMLINK_FOLLOW 0x400
++# define AT_SYMLINK_FOLLOW	0x400
+ #endif
+ 
+-#ifndef AT_SYMLINK_NOFOLLOW
+-# define AT_SYMLINK_NOFOLLOW 0x100
++#ifndef AT_NO_AUTOMOUNT
++# define AT_NO_AUTOMOUNT	0x800
+ #endif
+ 
+ #ifndef AT_EMPTY_PATH
+-# define AT_EMPTY_PATH 0x1000
++# define AT_EMPTY_PATH		0x1000
+ #endif
+ 
+-#ifndef AT_REMOVEDIR
+-# define AT_REMOVEDIR 0x200
++#ifndef AT_STATX_SYNC_AS_STAT
++# define AT_STATX_SYNC_AS_STAT	0x0000
++#endif
++
++#ifndef AT_STATX_FORCE_SYNC
++# define AT_STATX_FORCE_SYNC	0x2000
++#endif
++
++#ifndef AT_STATX_DONT_SYNC
++# define AT_STATX_DONT_SYNC	0x4000
++#endif
++
++#ifndef AT_STATX_SYNC_TYPE
++# define AT_STATX_SYNC_TYPE	0x6000
+ #endif
+ 
+ #ifndef O_NOATIME
+diff --git a/include/lapi/stat.h b/include/lapi/stat.h
+index ce1f2b678..590ccd111 100644
+--- a/include/lapi/stat.h
++++ b/include/lapi/stat.h
+@@ -227,40 +227,4 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
+ # define STATX_ATTR_VERITY	0x00100000
+ #endif
+ 
+-#ifndef AT_SYMLINK_NOFOLLOW
+-# define AT_SYMLINK_NOFOLLOW	0x100
+-#endif
+-
+-#ifndef AT_REMOVEDIR
+-# define AT_REMOVEDIR		0x200
+-#endif
+-
+-#ifndef AT_SYMLINK_FOLLOW
+-# define AT_SYMLINK_FOLLOW	0x400
+-#endif
+-
+-#ifndef AT_NO_AUTOMOUNT
+-# define AT_NO_AUTOMOUNT	0x800
+-#endif
+-
+-#ifndef AT_EMPTY_PATH
+-# define AT_EMPTY_PATH		0x1000
+-#endif
+-
+-#ifndef AT_STATX_SYNC_TYPE
+-# define AT_STATX_SYNC_TYPE	0x6000
+-#endif
+-
+-#ifndef AT_STATX_SYNC_AS_STAT
+-# define AT_STATX_SYNC_AS_STAT	0x0000
+-#endif
+-
+-#ifndef AT_STATX_FORCE_SYNC
+-# define AT_STATX_FORCE_SYNC	0x2000
+-#endif
+-
+-#ifndef AT_STATX_DONT_SYNC
+-# define AT_STATX_DONT_SYNC	0x4000
+-#endif
+-
+ #endif /* LAPI_STAT_H__ */
+diff --git a/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
+index 83746b878..616ec5341 100644
+--- a/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
++++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
+@@ -32,7 +32,7 @@
+ #include <sys/statvfs.h>
+ #include "tst_test.h"
+ #include "lapi/fsmount.h"
+-#include "lapi/stat.h"
++#include "lapi/fcntl.h"
+ 
+ #define MNTPOINT        "mntpoint"
+ #define OT_MNTPOINT     "ot_mntpoint"
+diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
+index 68f56549f..f9c2748d2 100644
+--- a/testcases/kernel/syscalls/statx/statx01.c
++++ b/testcases/kernel/syscalls/statx/statx01.c
+@@ -33,6 +33,7 @@
+ #include "tst_test.h"
+ #include "tst_safe_macros.h"
+ #include "lapi/stat.h"
++#include "lapi/fcntl.h"
+ #include "tst_safe_stdio.h"
  #include <string.h>
--#include "test.h"
-+#include <pwd.h>
-+#include "tst_test.h"
-+#include "tst_safe_stdio.h"
+ #include <inttypes.h>
+diff --git a/testcases/kernel/syscalls/statx/statx02.c b/testcases/kernel/syscalls/statx/statx02.c
+index a8e868d7a..5ed80894d 100644
+--- a/testcases/kernel/syscalls/statx/statx02.c
++++ b/testcases/kernel/syscalls/statx/statx02.c
+@@ -28,6 +28,7 @@
+ #include "tst_test.h"
+ #include "tst_safe_macros.h"
+ #include "lapi/stat.h"
++#include "lapi/fcntl.h"
  
- #define KB 1024
+ #define TESTFILE "test_temp"
+ #define LINK_FILE "test_temp_ln"
+diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
+index f62dadd5c..9781b3e70 100644
+--- a/testcases/kernel/syscalls/statx/statx05.c
++++ b/testcases/kernel/syscalls/statx/statx05.c
+@@ -27,6 +27,7 @@
+ #include "tst_test.h"
+ #include "lapi/fs.h"
+ #include "lapi/stat.h"
++#include "lapi/fcntl.h"
  
--char *TCID = "mlock03";
--int TST_TOTAL = 1;
--
--static void setup(void);
--static void cleanup(void);
--
--int main(int argc, char *argv[])
-+static void verify_mlock(void)
- {
--	int lc;
- 	long from, to;
- 	long first = -1, last = -1;
- 	char b[KB];
- 	FILE *fp;
+ #define MNTPOINT "mnt_point"
+ #define TESTDIR_FLAGGED MNTPOINT"/test_dir1"
+diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
+index b13c11f72..f688b1b0f 100644
+--- a/testcases/kernel/syscalls/statx/statx07.c
++++ b/testcases/kernel/syscalls/statx/statx07.c
+@@ -39,6 +39,7 @@
+ #include <sys/mount.h>
+ #include "tst_test.h"
+ #include "lapi/stat.h"
++#include "lapi/fcntl.h"
  
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
-+	fp = SAFE_FOPEN("/proc/self/maps", "r");
-+	while (!feof(fp)) {
-+		if (!fgets(b, KB - 1, fp))
-+			break;
-+		b[strlen(b) - 1] = '\0';
-+		if (sscanf(b, "%lx-%lx", &from, &to) != 2) {
-+			tst_brk(TBROK, "parse %s start and end address failed",
-+					b);
-+			continue;
-+		}
+ #define MODE(X) (X & (~S_IFMT))
+ #define FLAG_NAME(x) .flag = x, .flag_name = #x
+diff --git a/testcases/kernel/syscalls/statx/statx08.c b/testcases/kernel/syscalls/statx/statx08.c
+index 10b1ca460..64b36986d 100644
+--- a/testcases/kernel/syscalls/statx/statx08.c
++++ b/testcases/kernel/syscalls/statx/statx08.c
+@@ -26,6 +26,7 @@
+ #include "lapi/fs.h"
+ #include <stdlib.h>
+ #include "lapi/stat.h"
++#include "lapi/fcntl.h"
  
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		fp = fopen("/proc/self/maps", "r");
--		if (fp == NULL)
--			tst_brkm(TBROK | TERRNO, cleanup, "fopen");
--		while (!feof(fp)) {
--			if (!fgets(b, KB - 1, fp))
--				break;
--			b[strlen(b) - 1] = '\0';
--			sscanf(b, "%lx-%lx", &from, &to);
-+		/* Record the initial stack size. */
-+		if (strstr(b, "[stack]") != NULL)
-+			first = (to - from) / KB;
+ #define MOUNT_POINT "mntpoint"
+ #define TESTDIR_FLAGGED MOUNT_POINT"/test_dir1"
+diff --git a/testcases/kernel/syscalls/statx/statx09.c b/testcases/kernel/syscalls/statx/statx09.c
+index aea329e08..c03d2c91e 100644
+--- a/testcases/kernel/syscalls/statx/statx09.c
++++ b/testcases/kernel/syscalls/statx/statx09.c
+@@ -24,6 +24,7 @@
+ #include "lapi/fs.h"
+ #include "lapi/fsverity.h"
+ #include "lapi/stat.h"
++#include "lapi/fcntl.h"
+ #include <inttypes.h>
  
--			/* Record the initial stack size. */
--			if (lc == 0 && strstr(b, "[stack]") != NULL)
--				first = (to - from) / KB;
-+		tst_res(TINFO, "mlock[%lx,%lx]", from, to);
-+		if (mlock((const void *)from, to - from) == -1)
-+			tst_res(TINFO | TERRNO, "mlock failed");
- 
--			switch (lc & 1) {
--			case 0:
--				if (mlock((const void *)from, to - from) == -1)
--					tst_resm(TINFO | TERRNO,
--						 "mlock failed");
--				break;
--			case 1:
--				if (munlock((void *)from, to - from) == -1)
--					tst_resm(TINFO | TERRNO,
--						 "munlock failed");
--				break;
--			default:
--				break;
--			}
--			tst_resm(TINFO, "%s from %lx to %0lx",
--				 (lc & 1) ? "munlock" : "mlock", from, to);
-+		tst_res(TINFO, "munlock [%lx,%lx]", from, to);
-+		if (munlock((void *)from, to - from) == -1)
-+			tst_res(TINFO | TERRNO, "munlock failed");
- 
--			/* Record the final stack size. */
--			if (strstr(b, "[stack]") != NULL)
--				last = (to - from) / KB;
--		}
--		fclose(fp);
-+		/* Record the final stack size. */
-+		if (strstr(b, "[stack]") != NULL)
-+			last = (to - from) / KB;
- 	}
--	tst_resm(TINFO, "starting stack size is %ld", first);
--	tst_resm(TINFO, "final stack size is %ld", last);
-+	SAFE_FCLOSE(fp);
-+
-+	tst_res(TINFO, "starting stack size is %ld", first);
-+	tst_res(TINFO, "final stack size is %ld", last);
- 	if (last < first)
--		tst_resm(TFAIL, "stack size is decreased.");
-+		tst_res(TFAIL, "stack size is decreased.");
- 	else
--		tst_resm(TPASS, "stack size is not decreased.");
--
--	cleanup();
--	tst_exit();
-+		tst_res(TPASS, "stack size is not decreased.");
- }
- 
--void setup(void)
--{
--	tst_require_root();
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
--}
--
--void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.test_all = verify_mlock,
-+};
+ #define MNTPOINT "mnt_point"
 -- 
 2.39.1
 
