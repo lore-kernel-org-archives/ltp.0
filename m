@@ -4,78 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39C63C77B7F
-	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 12:32:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6496FC77B7F
+	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 13:49:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A7CB43CD749
-	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 14:31:59 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id A80923CD74A
+	for <ltp@archiver.kernel.org>; Mon,  8 May 2023 15:49:20 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2215F3CB56A
- for <ltp@lists.linux.it>; Mon,  8 May 2023 14:31:48 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 2D7FE3CB55D
+ for <ltp@lists.linux.it>; Mon,  8 May 2023 15:49:11 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2DF7A6005D8
- for <ltp@lists.linux.it>; Mon,  8 May 2023 14:31:47 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 00B3D140044A
+ for <ltp@lists.linux.it>; Mon,  8 May 2023 15:49:09 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1683549106;
+ s=mimecast20190719; t=1683553748;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=lt4o7WicPvsXDxZXMq0/gyE1pPMo9+7yigo1mMvFpXg=;
- b=UHWLRIBC7/sApdInUBRY5ydQ9LbzPrWnOR0QkKvhPkk8F0UmtuXjklsgw939rG7IATPgoN
- jQSJHRBcBYSLjm3tDGceyMxsnguZhSggV9sCGdOcOeG8o5UE1oKFxIdxGNqxJZ+nqPTHz5
- kOqdYXYYqjartwJsYoJNqZnIlDOyQgM=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-380-b9V9vTD2NFqN3ce8ECtYRA-1; Mon, 08 May 2023 08:31:44 -0400
-X-MC-Unique: b9V9vTD2NFqN3ce8ECtYRA-1
-Received: by mail-lj1-f200.google.com with SMTP id
- 38308e7fff4ca-2ac89cef5e8so16615051fa.1
- for <ltp@lists.linux.it>; Mon, 08 May 2023 05:31:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1683549102; x=1686141102;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=O2fuQjUhkX70Grb11EjMql0ubu1ictedXXOD7kqam6A=;
- b=DMdG1xluxoWjt7A1rkhTP9IPPpL3J2KQXYIuFGkoGD5OdYlu4zMoSp2nN1JODTzZbr
- qZahVrLn0Tsx718urpAql8Hio0bZx44jJV1vN55IU9yYJBPyYrq+FcBjtoabG1yMirba
- ZRpNhJv9R5a5R+fh+P3F7KE+oYoFbet4S7YjlNLy7i8nescj6u2UDGYv9E9cCy0LKr07
- QOiznxGJqoc82ChDtQuKKFo5bhkpstvZU/wWn7GZTUex/b7Iq110pZMjflJzwwXu7lHF
- oFDe6SOeYun1U2CfWe1imNAlLAJ14CYY2xAg2zFO5wrW5o/bTMPzEMsPu3OL7ueBl5GF
- nx3A==
-X-Gm-Message-State: AC+VfDyDFJNRwlrQ6aqEqFsopLAj04tmBo6hBWmtISxvQzYWsIRe97Jl
- MPp/0hsci1ZVM/d2e/NiOQC9g4oT5E/a9haTtK4j43JhIPd7fgLFm6T1vhlAuYEfjfZEW3+Th9I
- x2Lxg5FTkNUk2oz0sMMDDUWFYzNI=
-X-Received: by 2002:a2e:97d7:0:b0:2aa:3cee:c174 with SMTP id
- m23-20020a2e97d7000000b002aa3ceec174mr2779998ljj.13.1683549102544; 
- Mon, 08 May 2023 05:31:42 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6d2Lf5DTyZUFi2B80FAA978hQ5ZLUa540EOe1mi91S3ZYZN42FTVJS5Zbvyqq7Dir6uU2zFMAFRWsyqitaTVM=
-X-Received: by 2002:a2e:97d7:0:b0:2aa:3cee:c174 with SMTP id
- m23-20020a2e97d7000000b002aa3ceec174mr2779994ljj.13.1683549102235; Mon, 08
- May 2023 05:31:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZEjsKC6ESB1+mM0H@rei>
- <CAEemH2dESMRqQwLPvf7t20et6i9bG_uzS7OUVEy53TpWkqsFWQ@mail.gmail.com>
-In-Reply-To: <CAEemH2dESMRqQwLPvf7t20et6i9bG_uzS7OUVEy53TpWkqsFWQ@mail.gmail.com>
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Il1Z827e8FWzQH1jaub7wC4FsnPixjZ+pcbjl1HzJQc=;
+ b=e3b+I5aN8MYYu/nCAggsd+SKzMmVDIguAYI9Tr9JZL9zjthHPy7JHOUo/6qjdd1ELPNYUG
+ 35zMJMngQBAtYCmG0WWW0gjgSZEbKs3otajlDes6mwgoU9V/cDy3lfBFmwSfyQbq7HehWY
+ tFx2QzAMzOjj5+SK6lFKc714wnGJdKY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-606-FBtjHzVnN1-YogOfTczdqQ-1; Mon, 08 May 2023 09:49:06 -0400
+X-MC-Unique: FBtjHzVnN1-YogOfTczdqQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.3])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4AFD88995AD
+ for <ltp@lists.linux.it>; Mon,  8 May 2023 13:49:06 +0000 (UTC)
+Received: from fedora-laptop.redhat.com (ovpn-12-196.pek2.redhat.com
+ [10.72.12.196])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 443F41121314
+ for <ltp@lists.linux.it>; Mon,  8 May 2023 13:49:04 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 8 May 2023 20:31:30 +0800
-Message-ID: <CAEemH2dUGD_0R-RH7bS4U_qPD+G_na51TaYyNtw3Yt=uQx9nTQ@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon,  8 May 2023 21:49:03 +0800
+Message-Id: <20230508134903.83591-1-liwang@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] LTP release preparations
+Subject: [LTP] [PATCH] hugemmap32: guarantee enough memory for gigantic
+ hugepage
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,44 +69,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi All,
+  To get rid of warning on ppc64le:
 
-Li Wang <liwang@redhat.com> wrote:
+    hugemmap32.c:34: TWARN: Failed to close FILE
+         '/sys/kernel/mm/hugepages/hugepages-16777216kB/nr_hugepages'
+    hugemmap32.c:35: TCONF: Can't update the gigantic hugepages.
+    hugemmap32.c:69: TWARN: Failed to close FILE
+         '/sys/kernel/mm/hugepages/hugepages-16777216kB/nr_hugepages': EINVAL (22)
 
+  # ll /sys/kernel/mm/hugepages/
+  total 0
+  drwxr-xr-x. 2 root root 0 May  4 02:02 hugepages-16384kB
+  drwxr-xr-x. 2 root root 0 May  4 02:02 hugepages-16777216kB
 
-> More widely LTP pre-release test will be deployed base on RHEL products
-> as well.
->
+  # cat /proc/meminfo | grep -i Hugepagesize
+  Hugepagesize:      16384 kB
 
-I have completed the LTP pre-release test against RHEL 8 and 9,
-all looks good except one test warning as below, but I suppose
-it's a tiny problem caused by the ppc64le configuration.
+  # free -h
+                 total        used        free      shared  buff/cache   available
+  Mem:           7.4Gi       1.1Gi       992Mi        13Mi       5.9Gi       6.3Gi
+  Swap:          4.0Gi          0B       4.0Gi
 
-This only observed on ppc64le arch:
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-3 cmdline="hugemmap32"
-
-     4	contacts=""
-     5	analysis=exit
-     6	<<<test_output>>>
-     7	tst_test.c:1558: TINFO: Timeout per run is 0h 01m 00s
-     8	hugemmap32.c:34: TWARN: Failed to close FILE
-'/sys/kernel/mm/hugepages/hugepages-16777216kB/nr_hugepages'
-     9	hugemmap32.c:35: TCONF: Can't update the gigantic hugepages.
-
-10 hugemmap32.c:69: TWARN: Failed to close FILE
-'/sys/kernel/mm/hugepages/hugepages-16777216kB/nr_hugepages': EINVAL (22)
-
-
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
+index 34b322bfa..7ff23b236 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap32.c
+@@ -60,6 +60,12 @@ static void setup(void)
+ 		tst_brk(TCONF, "Gigantic hugepages not supported");
+ 
+ 	SAFE_CLOSEDIR(dir);
++
++	if (tst_available_mem() < (long long)hpage_size) {
++		g_hpage_path[0] = '\0';
++		tst_brk(TCONF, "No enough memory for gigantic hugepage reserving");
++	}
++
+ 	SAFE_FILE_LINES_SCANF(g_hpage_path, "%d", &org_g_hpages);
+ }
+ 
 -- 
-Regards,
-Li Wang
+2.40.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
