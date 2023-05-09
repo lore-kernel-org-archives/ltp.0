@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05430C7EE2A
-	for <ltp@archiver.kernel.org>; Tue,  9 May 2023 09:15:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54C32C77B75
+	for <ltp@archiver.kernel.org>; Tue,  9 May 2023 09:15:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 462F23CD721
-	for <ltp@archiver.kernel.org>; Tue,  9 May 2023 11:15:10 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 334883CD722
+	for <ltp@archiver.kernel.org>; Tue,  9 May 2023 11:15:27 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AB3573C0238
- for <ltp@lists.linux.it>; Tue,  9 May 2023 11:15:01 +0200 (CEST)
-Received: from mail1.bemta34.messagelabs.com (mail1.bemta34.messagelabs.com
- [195.245.231.1])
+ by picard.linux.it (Postfix) with ESMTPS id 9C9093C0238
+ for <ltp@lists.linux.it>; Tue,  9 May 2023 11:15:17 +0200 (CEST)
+Received: from mail1.bemta37.messagelabs.com (mail1.bemta37.messagelabs.com
+ [85.158.142.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CE27E10007C8
- for <ltp@lists.linux.it>; Tue,  9 May 2023 11:15:00 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A3E70200740
+ for <ltp@lists.linux.it>; Tue,  9 May 2023 11:15:16 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
- s=170520fj; t=1683623700; i=@fujitsu.com;
- bh=l30O1QwijtNJvzOYFLvAfa9gmNypq7F5WmsyeaMtcSk=;
+ s=170520fj; t=1683623715; i=@fujitsu.com;
+ bh=UYiLI2jWT9HymaowsBvi64I3g5Z5Q94bU0ZUWgnVsxU=;
  h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References;
- b=QuEBT4ko3ks0KJ+4gZSSAhYrsi730eBMp1hZDW7RK0S+kwc43TNIf5bIj+PfcZF1/
- zYrjIlddPVPfK8c09YsQRfH5tPrS/oFVVRbO2YXoWoSGzTw6gpcYu0g5cuenuNvSIb
- fVPNiiIkAtDg/AME2hP1YTeN1ujzNFQ/jgxj82U9NTz/l5g27sxlQsiSZ2ShkSs2yX
- +Vh7GwAazO0mI9yis6lPZGcn0rZeKNLta/xPD4Gpl/yCZdxxbqv3xIGDWI4DECYF1p
- CeENGwnK/ZunIy8JgW5EZHatiExwUKy1zDaRumF6y8nIyjwMlrqZEzhBqhhEh+mPNl
- egWavdKH5zBDA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNLMWRWlGSWpSXmKPExsViZ8ORpCvMH5V
- i8PCvgsXaPX+YLVZ838HowOSxaVUnm8e+3+tYA5iiWDPzkvIrElgz1u7oZC5YxFlxY3oTcwPj
- Q/YuRi4OIYGNjBIflz1hgXCmMUlMnXCItYuRk4NNQFPiWecCZhBbREBM4vqGV2BxZgFbiZfHt
- zKC2MICFhJz+xaAxVkEVCUuPp8MZvMKeEr8n/4erFdCQEFiykMIm1PAS2Ju2wswWwio5k3XJF
- aIGjWJq+c2MU9g5FnAyLCK0bQ4tagstUjXRC+pKDM9oyQ3MTNHL7FKN1EvtVS3PLW4RNdIL7G
- 8WC+1uFivuDI3OSdFLy+1ZBMjMExSipU6djBe3/lX7xCjJAeTkihv177IFCG+pPyUyozE4oz4
- otKc1OJDjDIcHEoSvA94olKEBItS01Mr0jJzgCELk5bg4FES4T3BApTmLS5IzC3OTIdInWJUl
- BLnLecFSgiAJDJK8+DaYHFyiVFWSpiXkYGBQYinILUoN7MEVf4VozgHo5Iw70SQKTyZeSVw01
- 8BLWYCWux/ORxkcUkiQkqqgalLndP+Be9uJpWiXV3zRYJ7tbuYf6zdd4x/XV7IGZWvYnM2pBj
- uPFl3xvqa0peFYQuKa0MOi7OW/JOqqVds6FJrEIp0TSmb8vuc/Kl7uyTUPwre5Cie0sqRLCUa
- LRxUfrzAVt5b7+HPZdXhjx/+DQ47KnLKt7LOOPxi8At9zxcTpkW68pbcefrrjpPoD5EZPf/2F
- Oa41jE/l7VrcFcyOuxsc2L6tEu2fH8qv3uf5tdOOKv+Zv+Z5fu3KB5TEVXgyI7wuMWw9kNC5h
- GG4MlWJdNvOh2/yL5v+8OVT04kFr58teRpb8M6vpe3WHQOaRzzWCis+TLxfnB19xSPU/+vq2y
- WvDR7hUq3ezBDe+zKRCWW4oxEQy3mouJEAKc7QvEOAwAA
+ b=eR1dLosMqv960og2BTUKYzHxO48sIqIE3YBZ6Y9f1B1QurtSHJRfFTzu14ULgIZnQ
+ clFVr9/UkumzsoVuGn7FLglKfefaw4wrP0hfSiQdUsPOZBbuAA95o85XBKO9gtyYrl
+ EVnN0qnntvO9f+3xn84uLnF53Qk3lad3g/ElGjqGTJCVpyKa2ADlsfSghJvXxKycVi
+ I3wst/DVdzvt2CXGQX9W8k43/PI2fZEaRr6D7+YhjS2oO3dMXUcx8xfQ4xwBXMShXy
+ kM0tHr99kNL4163Km/K/WaZWyz8l7WQGbr8Qw6Kl/urrRXFTXutEVbz3e5NstECNoD
+ AWbJ13CvoA/ig==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeJIrShJLcpLzFFi42Kxs+FI0lXmj0o
+ xuH9ZwGLtnj/MFiu+72B0YPLYtKqTzWPf73WsAUxRrJl5SfkVCawZy4/lFFwTqeif/JK5gfGU
+ YBcjF4eQwEZGiea589ghnGlMEmendgE5nBxsApoSzzoXMIPYIgJiEtc3vGIFsZkFbCVeHt/KC
+ GILC7hKND2bClbDIqAqMfnEC7A4r4CnxJo1bWC2hICCxJSH78FqOAW8JOa2vQCzhYBq3nRNYo
+ WoUZO4em4T8wRGngWMDKsYzYtTi8pSi3QNDfWSijLTM0pyEzNz9BKrdBP1Ukt18/KLSjJ0DfU
+ Sy4v1UouL9Yorc5NzUvTyUks2MQIDJaU4cf0Oxq27/uodYpTkYFIS5e3aF5kixJeUn1KZkVic
+ EV9UmpNafIhRhoNDSYL3AU9UipBgUWp6akVaZg4waGHSEhw8SiK8J1iA0rzFBYm5xZnpEKlTj
+ Locm/Z1HWAWYsnLz0uVEuct5wUqEgApyijNgxsBi6BLjLJSwryMDAwMQjwFqUW5mSWo8q8YxT
+ kYlYR5J4JM4cnMK4Hb9AroCCagI/wvh4McUZKIkJJqYCrPmDe3bMmczku7d7NtnCjxddcntkm
+ f3j8OmjpzmY3O8ntzG7aW1W+/d2qrRorWmY6fs63VAz3yFy0PrpOWnzA7LHXO04xlazpLD/c9
+ n/Vjp7Fyg0JueA6DyY65np9bpY7OEOmYxNi16/+Vax/8Vx3MLFArXSkwc3ut7YE7Ww1mt7xlW
+ 6UXbMh5PDjaLvTFCcUJ8Zklnx9x3q8yFQhZUnS85VEE37ps5rRHFke7dvQlCx/l+6LvON0kXz
+ Vrwrmr+9qm93BcMRB7fKf71bx7MefKZZZsuM/ds2RrQMPF/b/UPRqWLVMTU55rcSfa7BZXHN8
+ 3zmMHEt+EZS5YlFHANYHfJMhFapYxV9P5y5O8LMOUWIozEg21mIuKEwGHFlVsGwMAAA==
 X-Env-Sender: xuyang2018.jy@fujitsu.com
-X-Msg-Ref: server-8.tower-548.messagelabs.com!1683623699!42629!1
+X-Msg-Ref: server-14.tower-728.messagelabs.com!1683623714!585026!1
 X-Originating-IP: [62.60.8.98]
 X-SYMC-ESS-Client-Auth: outbound-route-from=pass
 X-StarScan-Received: 
-X-StarScan-Version: 9.105.3; banners=-,-,-
+X-StarScan-Version: 9.105.2; banners=-,-,-
 X-VirusChecked: Checked
-Received: (qmail 2940 invoked from network); 9 May 2023 09:14:59 -0000
+Received: (qmail 20631 invoked from network); 9 May 2023 09:15:15 -0000
 Received: from unknown (HELO n03ukasimr03.n03.fujitsu.local) (62.60.8.98)
- by server-8.tower-548.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 9 May 2023 09:14:59 -0000
+ by server-14.tower-728.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 9 May 2023 09:15:15 -0000
 Received: from n03ukasimr03.n03.fujitsu.local (localhost [127.0.0.1])
- by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id 4386D1B1;
- Tue,  9 May 2023 10:14:59 +0100 (BST)
+ by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTP id B1A021B1;
+ Tue,  9 May 2023 10:15:14 +0100 (BST)
 Received: from localhost.localdomain (unknown [10.167.215.131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id 474A37B;
- Tue,  9 May 2023 10:14:58 +0100 (BST)
+ by n03ukasimr03.n03.fujitsu.local (Postfix) with ESMTPS id B68ED7B;
+ Tue,  9 May 2023 10:15:13 +0100 (BST)
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Tue,  9 May 2023 17:14:04 +0800
-Message-Id: <1683623648-22778-3-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Tue,  9 May 2023 17:14:05 +0800
+Message-Id: <1683623648-22778-4-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1683623648-22778-1-git-send-email-xuyang2018.jy@fujitsu.com>
 References: <1683623648-22778-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 3/7] lapi/stat.h: Simplify definition
+Subject: [LTP] [PATCH v5 4/7] syscalls/statx01: Relax mnt_id test condition
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,56 +92,92 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Before this patch, we test stx_mnt_id only when glibc's statx struct has
+this member. Now, if glibc miss this filed, we will use __spare2[0], see
+url[1]. If glibc miss statx struct, we will use ltp owner definition.
+
+[1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fa2fcf4f
+
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- include/lapi/stat.h | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ testcases/kernel/syscalls/statx/statx01.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/include/lapi/stat.h b/include/lapi/stat.h
-index 6ed4b6637..e247c2159 100644
---- a/include/lapi/stat.h
-+++ b/include/lapi/stat.h
-@@ -11,6 +11,8 @@
- #include <stdint.h>
- #include <unistd.h>
- #include "lapi/syscalls.h"
-+#include <sys/stat.h>
-+
- /*
-  * Timestamp structure for the timestamps in struct statx.
-  *
-@@ -21,9 +23,7 @@
-  *
-  * __reserved is held in case we need a yet finer resolution.
-  */
--#if defined(HAVE_STRUCT_STATX_TIMESTAMP)
--#include <sys/stat.h>
--#else
-+#ifndef HAVE_STRUCT_STATX_TIMESTAMP
- struct statx_timestamp {
- 	int64_t tv_sec;
- 	uint32_t tv_nsec;
-@@ -67,9 +67,7 @@ struct statx_timestamp {
-  * will have values installed for compatibility purposes so that stat() and
-  * co. can be emulated in userspace.
-  */
--#if defined(HAVE_STRUCT_STATX)
--#include <sys/stat.h>
--#else
-+#ifndef HAVE_STRUCT_STATX
- struct statx {
- 	/* 0x00 */
- 	uint32_t	stx_mask;
-@@ -106,8 +104,7 @@ struct statx {
- };
- #endif
+diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
+index f9c2748d2..08b26f77b 100644
+--- a/testcases/kernel/syscalls/statx/statx01.c
++++ b/testcases/kernel/syscalls/statx/statx01.c
+@@ -49,20 +49,25 @@
  
--#if !defined(HAVE_STATX)
--
-+#ifndef HAVE_STATX
- /*
-  * statx: wrapper function of statx
-  *
+ static int file_fd = -1;
+ 
+-#ifdef HAVE_STRUCT_STATX_STX_MNT_ID
+ static void test_mnt_id(struct statx *buf)
+ {
+ 	FILE *file;
+ 	char line[PATH_MAX];
+ 	int pid, flag = 0;
+ 	unsigned int line_mjr, line_mnr;
+-	uint64_t mnt_id;
++	uint64_t mnt_id, stx_mnt_id;
+ 
+ 	if (!(buf->stx_mask & STATX_MNT_ID)) {
+ 		tst_res(TCONF, "stx_mnt_id is not supported until linux 5.8");
+ 		return;
+ 	}
+ 
++#if defined(HAVE_STRUCT_STATX) && !defined(HAVE_STRUCT_STATX_STX_MNT_ID)
++	stx_mnt_id = buf->__spare2[0];
++#else
++	stx_mnt_id = buf->stx_mnt_id;
++#endif
++
+ 	file = SAFE_FOPEN("/proc/self/mountinfo", "r");
+ 
+ 	while (fgets(line, sizeof(line), file)) {
+@@ -70,12 +75,12 @@ static void test_mnt_id(struct statx *buf)
+ 			continue;
+ 
+ 		if (line_mjr == buf->stx_dev_major && line_mnr == buf->stx_dev_minor) {
+-			if (buf->stx_mnt_id == mnt_id) {
++			if (stx_mnt_id == mnt_id) {
+ 				flag = 1;
+ 				break;
+ 			}
+ 			tst_res(TINFO, "%s doesn't contain %"PRIu64" %d:%d",
+-				line, (uint64_t)buf->stx_mnt_id, buf->stx_dev_major, buf->stx_dev_minor);
++				line, (uint64_t)stx_mnt_id, buf->stx_dev_major, buf->stx_dev_minor);
+ 		}
+ 	}
+ 
+@@ -88,13 +93,12 @@ static void test_mnt_id(struct statx *buf)
+ 	else
+ 		tst_res(TFAIL,
+ 			"statx.stx_mnt_id(%"PRIu64") doesn't exist in /proc/self/mountinfo",
+-			(uint64_t)buf->stx_mnt_id);
++			(uint64_t)stx_mnt_id);
+ 
+ 	pid = getpid();
+ 	snprintf(line, PATH_MAX, "/proc/%d/fdinfo/%d", pid, file_fd);
+-	TST_ASSERT_FILE_INT(line, "mnt_id:", buf->stx_mnt_id);
++	TST_ASSERT_FILE_INT(line, "mnt_id:", stx_mnt_id);
+ }
+-#endif
+ 
+ static void test_normal_file(void)
+ {
+@@ -147,11 +151,7 @@ static void test_normal_file(void)
+ 		tst_res(TFAIL, "stx_nlink(%u) is different from expected(1)",
+ 			buff.stx_nlink);
+ 
+-#ifdef HAVE_STRUCT_STATX_STX_MNT_ID
+ 	test_mnt_id(&buff);
+-#else
+-	tst_res(TCONF, "stx_mnt_id is not defined in struct statx");
+-#endif
+ }
+ 
+ static void test_device_file(void)
 -- 
 2.39.1
 
