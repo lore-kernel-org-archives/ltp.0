@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 502E0C7EE22
-	for <ltp@archiver.kernel.org>; Tue,  9 May 2023 05:53:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 672C4C77B7C
+	for <ltp@archiver.kernel.org>; Tue,  9 May 2023 08:50:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 868CA3CD6EC
-	for <ltp@archiver.kernel.org>; Tue,  9 May 2023 07:53:11 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 03D313CB547
+	for <ltp@archiver.kernel.org>; Tue,  9 May 2023 10:50:11 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 129A73C25BE
- for <ltp@lists.linux.it>; Tue,  9 May 2023 07:53:01 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id B23583C0238
+ for <ltp@lists.linux.it>; Tue,  9 May 2023 10:50:00 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F188860070D
- for <ltp@lists.linux.it>; Tue,  9 May 2023 07:53:00 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 33A371000413
+ for <ltp@lists.linux.it>; Tue,  9 May 2023 10:49:59 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 69DBD21A6D;
- Tue,  9 May 2023 05:52:58 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F08AA1F8B3;
+ Tue,  9 May 2023 08:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1683611578;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1683622198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Yt/0ZE7GGTqI6gECQ2dHVLUjeBS5apTMxiBd6Riikb8=;
- b=e/v+mTTWBJIy62Jb5EJicqYuSE34L/ZdGvJ/ItT/HceYDAoco1gtKeLlwCCBDJOf7QNvY1
- MV1CCtpBf23HfDkAmUcXzt71jUzyrullfCkU2/HbIJKZ6WwzJjXQ+DvUvVjAsigjReQLJr
- /sMQdaM7XsxHFGk79U2Y1IAb9IBVw/M=
+ bh=LLaoy6jL7/7ySyO7QwVd4Vs7kgVzQHA6jYyEo5T8Xak=;
+ b=IhvzR7zGy6528o2Ba572dPIf02M7AqEVMKjaooJxFzcJRgH6OiSSDFhYPPHr3Ksbj31tVP
+ 8AVw0mT5PhJogpZoxOfXyk11Ithbr1gr9p7aSAgeBDvTUvgfNKGxypfcr0Gep4fwR0KiQj
+ 5nKOomKCSmx05czzY3GbphX+Ug76CLU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1683611578;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1683622198;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Yt/0ZE7GGTqI6gECQ2dHVLUjeBS5apTMxiBd6Riikb8=;
- b=V/veJRziWRDLzNSZGWW6WVKs/2xyE4jL5MeCyn1o2d6Vsk884xTmYh1bk+rEik2tJQxCPA
- FMpX4QzW0/pXdpCg==
+ bh=LLaoy6jL7/7ySyO7QwVd4Vs7kgVzQHA6jYyEo5T8Xak=;
+ b=6OrLDTwfgFTOAV7dEU9me/fs0RTCLCm5Na0Duu/tU8ixNcuUCGF6uW9B/KFsONTD025HpL
+ QyAiyexoWZuTDABA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 535FB1346B;
- Tue,  9 May 2023 05:52:58 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D421D13581;
+ Tue,  9 May 2023 08:49:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 3DJFE7rfWWSIegAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 09 May 2023 05:52:58 +0000
-Date: Tue, 9 May 2023 07:52:56 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20230509055256.GB128837@pevik>
-References: <20230321110337.22970-1-wegao@suse.com>
- <20230505173137.GB31348@pevik> <ZFe1VgRXMggwVwV3@localhost>
+ by imap2.suse-dmz.suse.de with ESMTPSA id W9RsMzYJWmSKUAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 09 May 2023 08:49:58 +0000
+Date: Tue, 9 May 2023 10:50:57 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZFoJcdgwIzvoZOSR@yuki>
+References: <20230505104451.21970-1-akumar@suse.de>
+ <20230505163749.GB28229@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZFe1VgRXMggwVwV3@localhost>
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+In-Reply-To: <20230505163749.GB28229@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] starvation.c: New case for sched starvation
+Subject: Re: [LTP] [PATCH] update README.md
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,66 +76,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Fri, May 05, 2023 at 07:31:37PM +0200, Petr Vorel wrote:
-> > Hi Wei,
+Hi!
+> > as we no longer have the file doc/mini-howto-building-ltp-from-git.txt
+> Thanks for fixing my error. I dared to merge it as it's just trivial
+> documentation fix.
 
-> > > +static struct tst_test test = {
-> > > +	.test_all = do_test,
-> > > +	.setup = setup,
-> > > +	.forks_child = 1,
-> > > +	.needs_checkpoints = 1,
-> > > +	.max_runtime = 120,
-> > Are you sure 2 min is enough? Maybe we need to use tst_remaining_runtime() to
-> > check if we're not running out of time.
+Documentation fixes are always OK even during the git freeze, since they
+cannot cause regressions.
 
-> Seems difficult to check with tst_remaining_runtime since i can use code such as:
-> while(tst_remaining_runtime()) 
-> 	wait_for_pid();
-
-If you don't know how to use tst_remaining_runtime() how about getting
-inspiration from lib/newlib_tests/test_runtime01.c ?
-
-static void run(void)
-{
-	int runtime;
-
-	tst_res(TINFO, "...");
-
-	do {
-		runtime = tst_remaining_runtime();
-		tst_res(TINFO, "Remaining runtime %d", runtime);
-		sleep(1);
-	} while (runtime);
-
-	tst_res(TPASS, "Test passed");
-}
-
-static struct tst_test test = {
-	.test_all = run,
-	.max_runtime = 120,
-};
-
-=> Also, it's a question, how long should the test be running.
-Is it worth to be running for 2 mins? It's kind of stress test, right?
-But even that wouldn't be 30 sec enough?
-
-Kind regards,
-Petr
-
-> > Also, if we set getopt to choose number of options, we'd need to adjust it by
-> > tst_set_max_runtime().
-
-> > Kind regards,
-> > Petr
-
-> > > +};
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
