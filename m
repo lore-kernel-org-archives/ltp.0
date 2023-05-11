@@ -4,78 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18889C77B7C
-	for <ltp@archiver.kernel.org>; Thu, 11 May 2023 12:20:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 313B4C7EE26
+	for <ltp@archiver.kernel.org>; Thu, 11 May 2023 13:15:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DEB9D3CE05C
-	for <ltp@archiver.kernel.org>; Thu, 11 May 2023 14:20:20 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 1227D3CD5F6
+	for <ltp@archiver.kernel.org>; Thu, 11 May 2023 15:15:55 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DC7C43CB4A5
- for <ltp@lists.linux.it>; Thu, 11 May 2023 14:20:09 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 95A073CA0CC
+ for <ltp@lists.linux.it>; Thu, 11 May 2023 15:15:44 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E6CF66007B2
- for <ltp@lists.linux.it>; Thu, 11 May 2023 14:20:08 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 4AEEC1400339
+ for <ltp@lists.linux.it>; Thu, 11 May 2023 15:15:42 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1683807607;
+ s=mimecast20190719; t=1683810941;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=npe7GIAUyRZvRRhyssxbgR8hUUIN9mtyJ7+y8imruS8=;
- b=b8SBgUUu8/Y4ywsUvsIfXv1fmuDCxxJzmPPEbVWZjQ9/cAGa49tEvriY+eueSaYLPaDD1B
- 7YTXZZhmT4u8vSjbDKmc1gxxB4pUkSNk2SS7+Ujxwrd65uH5kVvrs6kGce4lYfVBqM80bn
- bHBIbqsebgC5dy3n5GZYxvLOFK4nP7o=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=h7GdN215yNA43SzrNgI0qnS3dew63bkmnn0zBwKGt4M=;
+ b=fUFyJIlY9GAVnYY6cuWM5XlBOnPtxpz8BcDrc7Aiw1w2vdMIHXkuIDWiRrDCe7wZ2EY27G
+ wJfHS9D6aAfYKP2pXknmJM/FS23eJqwWfOttsXc/wsecOjtLohGR0ahn8uvebdPLeoGrWz
+ D1TA4DyD8MnOMRoAFCkItgeXPcGZ6AE=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-197-IJiyLzaVNyCzrqQWd5CCjw-1; Thu, 11 May 2023 08:20:05 -0400
-X-MC-Unique: IJiyLzaVNyCzrqQWd5CCjw-1
-Received: by mail-lj1-f200.google.com with SMTP id
- 38308e7fff4ca-2adaf72737eso11036161fa.0
- for <ltp@lists.linux.it>; Thu, 11 May 2023 05:20:05 -0700 (PDT)
+ us-mta-92-Wm-YeEYtMN6-l_LTWusAnw-1; Thu, 11 May 2023 09:15:38 -0400
+X-MC-Unique: Wm-YeEYtMN6-l_LTWusAnw-1
+Received: by mail-qv1-f70.google.com with SMTP id
+ 6a1803df08f44-621189941cdso8487406d6.1
+ for <ltp@lists.linux.it>; Thu, 11 May 2023 06:15:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1683807604; x=1686399604;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=npe7GIAUyRZvRRhyssxbgR8hUUIN9mtyJ7+y8imruS8=;
- b=GT/IVi/iL4Wa/4jScSJ4lFL/2GwRw9A2PW6vYH1rpzQ+s3nYljdzxeiCZRQKXfadRQ
- uslEAcVJPWhNMIlG8aHC5ALtURYmP5lXzbw6ZvAsSp9aE4hXleRFWUO1mK4I6bMjcuYg
- NQqYmZEGZSNBA1v6nghEbopTu1yKyn0bUND5BEaD+xIvPEQ+wYBwQA4cP36XX9T+MPXq
- 3y3uYgGUiLx6K+hxDSypngIa8JgelItaL22l9zOz6B2k3lC9KBwdnyxr/q+CNEJTsnCa
- KZSB602nSuLU4WiSCpYsw4b8BaoOJTSG336pQR8ZTsan+TbneYaPpxfCxbS87hRFjUrY
- NWpw==
-X-Gm-Message-State: AC+VfDxMD2zp8XraVX9J2bjj7acHvlzr/TfPSB7ot9rYJavg7k15GuA/
- 6j8jFn2X6uexcclqf09mHjrrfWRfMwoL3djXDxYUSsqzzyNFuYRBMxMO0AYoqw47cXfV2oWTHdK
- 8lfwfkOu0IoGgn94GCEkAhva4YAo=
-X-Received: by 2002:a2e:9d03:0:b0:2a7:a616:c39 with SMTP id
- t3-20020a2e9d03000000b002a7a6160c39mr3064815lji.48.1683807604045; 
- Thu, 11 May 2023 05:20:04 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6UBhbHXtxXNcPtjWONJTVqEsrO0NXmMNTWKsks0zOUN3luk+2zRpUCqDhUTnTn2c73p2A25wRpRQx7SykAvBs=
-X-Received: by 2002:a2e:9d03:0:b0:2a7:a616:c39 with SMTP id
- t3-20020a2e9d03000000b002a7a6160c39mr3064808lji.48.1683807603695; Thu, 11 May
- 2023 05:20:03 -0700 (PDT)
+ d=1e100.net; s=20221208; t=1683810937; x=1686402937;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=h7GdN215yNA43SzrNgI0qnS3dew63bkmnn0zBwKGt4M=;
+ b=lWtqn1QM6hl+d+w9qHl/SNjd80jpQcT55zKNtBZgXYTIKRm0b75WWaxtb/IcCNJai5
+ 42KdhR+2Du4A6XxtrdBhleuELyES5lKNNM/jzw46EZRxY8wtZ20IJgXCGF05fmJ6+Coo
+ izDuz4l4ptLW4ixF2WkOZrNaTkDenuctHWFtZXH6K6muA3r9H1dR6kYT1LzKw+ZiRTrj
+ dm4ymcLli58qyA8bx127u4KKsv+Gwmh7VxXm+YfTWnGiGwTKMN7RFlvLhD/K2otlVYT+
+ jzfMnSlvC34PSKVdKsmSCEWtLQJ78+h/6C/UDKetc+1dqMKKaUpjwSheCrMT/1CUzLbD
+ eSDg==
+X-Gm-Message-State: AC+VfDzWpciFAOu0p81vD32C4lZx8msWCf2AgeHL4PbX/x7FhSpbi+9X
+ 58BuojuRWVOXc7Dioc6kEfeZZ2AOWVQUJgLVTlwupbxFMQCj7d8xfUJsY4Thba4Fu0v3vXKQ0ER
+ zEklIuhF5758=
+X-Received: by 2002:a05:6214:4017:b0:61b:6b8e:16e0 with SMTP id
+ kd23-20020a056214401700b0061b6b8e16e0mr27925084qvb.1.1683810937688; 
+ Thu, 11 May 2023 06:15:37 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ7QrDuh1/3VnUeK77k+XBHREIqjDJBgvF7m/Cgt+2BZot4AWIC4wi4ZCroOdjQoYSYMlcYXjA==
+X-Received: by 2002:a05:6214:4017:b0:61b:6b8e:16e0 with SMTP id
+ kd23-20020a056214401700b0061b6b8e16e0mr27925049qvb.1.1683810937318; 
+ Thu, 11 May 2023 06:15:37 -0700 (PDT)
+Received: from [172.31.1.12] ([70.109.154.41])
+ by smtp.gmail.com with ESMTPSA id
+ m7-20020a05620a13a700b00758c1bd6d9esm969296qki.133.2023.05.11.06.15.36
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 11 May 2023 06:15:36 -0700 (PDT)
+Message-ID: <76403fb4-87f2-88cb-ab0c-ba63feacbeee@redhat.com>
+Date: Thu, 11 May 2023 09:15:35 -0400
 MIME-Version: 1.0
-References: <20230508134903.83591-1-liwang@redhat.com>
- <cdd66dfb-b9a1-2a58-abe0-895def28d2ed@suse.cz>
-In-Reply-To: <cdd66dfb-b9a1-2a58-abe0-895def28d2ed@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 11 May 2023 20:19:51 +0800
-Message-ID: <CAEemH2dRVgPxw0TV40M_xgbwPezR1eehooV9ksazbATrPpBqAA@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+To: Petr Vorel <pvorel@suse.cz>
+References: <20230504101619.GA3801922@pevik>
+From: Steve Dickson <steved@redhat.com>
+In-Reply-To: <20230504101619.GA3801922@pevik>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+Content-Language: en-US
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] hugemmap32: guarantee enough memory for gigantic
- hugepage
+Subject: Re: [LTP] LTP: tirpc_rpcb_rmtcall is failing
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,53 +94,105 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: linux-nfs@vger.kernel.org, ltp@lists.linux.it,
+ libtirpc-devel@lists.sourceforge.net
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBNYXkgMTEsIDIwMjMgYXQgNzoxMOKAr1BNIE1hcnRpbiBEb3VjaGEgPG1kb3VjaGFA
-c3VzZS5jej4gd3JvdGU6Cgo+IEhpLAo+Cj4gT24gMDguIDA1LiAyMyAxNTo0OSwgTGkgV2FuZyB3
-cm90ZToKPiA+ICAgIFRvIGdldCByaWQgb2Ygd2FybmluZyBvbiBwcGM2NGxlOgo+ID4KPiA+ICAg
-ICAgaHVnZW1tYXAzMi5jOjM0OiBUV0FSTjogRmFpbGVkIHRvIGNsb3NlIEZJTEUKPiA+ICAgICAg
-ICAgICAnL3N5cy9rZXJuZWwvbW0vaHVnZXBhZ2VzL2h1Z2VwYWdlcy0xNjc3NzIxNmtCL25yX2h1
-Z2VwYWdlcycKPiA+ICAgICAgaHVnZW1tYXAzMi5jOjM1OiBUQ09ORjogQ2FuJ3QgdXBkYXRlIHRo
-ZSBnaWdhbnRpYyBodWdlcGFnZXMuCj4gPiAgICAgIGh1Z2VtbWFwMzIuYzo2OTogVFdBUk46IEZh
-aWxlZCB0byBjbG9zZSBGSUxFCj4gPiAgICAgICAgICAgJy9zeXMva2VybmVsL21tL2h1Z2VwYWdl
-cy9odWdlcGFnZXMtMTY3NzcyMTZrQi9ucl9odWdlcGFnZXMnOgo+IEVJTlZBTCAoMjIpCj4gPgo+
-ID4gICAgIyBsbCAvc3lzL2tlcm5lbC9tbS9odWdlcGFnZXMvCj4gPiAgICB0b3RhbCAwCj4gPiAg
-ICBkcnd4ci14ci14LiAyIHJvb3Qgcm9vdCAwIE1heSAgNCAwMjowMiBodWdlcGFnZXMtMTYzODRr
-Qgo+ID4gICAgZHJ3eHIteHIteC4gMiByb290IHJvb3QgMCBNYXkgIDQgMDI6MDIgaHVnZXBhZ2Vz
-LTE2Nzc3MjE2a0IKPiA+Cj4gPiAgICAjIGNhdCAvcHJvYy9tZW1pbmZvIHwgZ3JlcCAtaSBIdWdl
-cGFnZXNpemUKPiA+ICAgIEh1Z2VwYWdlc2l6ZTogICAgICAxNjM4NCBrQgo+ID4KPiA+ICAgICMg
-ZnJlZSAtaAo+ID4gICAgICAgICAgICAgICAgICAgdG90YWwgICAgICAgIHVzZWQgICAgICAgIGZy
-ZWUgICAgICBzaGFyZWQgIGJ1ZmYvY2FjaGUKPiAgYXZhaWxhYmxlCj4gPiAgICBNZW06ICAgICAg
-ICAgICA3LjRHaSAgICAgICAxLjFHaSAgICAgICA5OTJNaSAgICAgICAgMTNNaSAgICAgICA1LjlH
-aQo+ICAgICAgNi4zR2kKPiA+ICAgIFN3YXA6ICAgICAgICAgIDQuMEdpICAgICAgICAgIDBCICAg
-ICAgIDQuMEdpCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5j
-b20+Cj4gPiAtLS0KPiA+ICAgdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlbW1hcC9o
-dWdlbW1hcDMyLmMgfCA2ICsrKysrKwo+ID4gICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25z
-KCspCj4gPgo+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVn
-ZW1tYXAvaHVnZW1tYXAzMi5jCj4gYi90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2Vt
-bWFwL2h1Z2VtbWFwMzIuYwo+ID4gaW5kZXggMzRiMzIyYmZhLi43ZmYyM2IyMzYgMTAwNjQ0Cj4g
-PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VtbWFwL2h1Z2VtbWFwMzIu
-Ywo+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYi9odWdlbW1hcC9odWdlbW1h
-cDMyLmMKPiA+IEBAIC02MCw2ICs2MCwxMiBAQCBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQo+ID4g
-ICAgICAgICAgICAgICB0c3RfYnJrKFRDT05GLCAiR2lnYW50aWMgaHVnZXBhZ2VzIG5vdCBzdXBw
-b3J0ZWQiKTsKPiA+Cj4gPiAgICAgICBTQUZFX0NMT1NFRElSKGRpcik7Cj4gPiArCj4gPiArICAg
-ICBpZiAodHN0X2F2YWlsYWJsZV9tZW0oKSA8IChsb25nIGxvbmcpaHBhZ2Vfc2l6ZSkgewo+ID4g
-KyAgICAgICAgICAgICBnX2hwYWdlX3BhdGhbMF0gPSAnXDAnOwo+ID4gKyAgICAgICAgICAgICB0
-c3RfYnJrKFRDT05GLCAiTm8gZW5vdWdoIG1lbW9yeSBmb3IgZ2lnYW50aWMgaHVnZXBhZ2UKPiBy
-ZXNlcnZpbmciKTsKPiA+ICsgICAgIH0KPiA+ICsKPiA+ICAgICAgIFNBRkVfRklMRV9MSU5FU19T
-Q0FORihnX2hwYWdlX3BhdGgsICIlZCIsICZvcmdfZ19ocGFnZXMpOwo+ID4gICB9Cj4KPiBJIGFs
-c28gcmVjb21tZW5kIGNhbGxpbmcKPiBTQUZFX0ZJTEVfUFJJTlRGKCIvcHJvYy9zeXMvdm0vZHJv
-cF9jYWNoZXMiLCAiMyIpOwo+Cj4gSXQgZG9lc24ndCB3aGV0aGVyIHlvdSBkbyBpdCBiZWZvcmUg
-b3IgYWZ0ZXIgdHN0X2F2YWlsYWJsZV9tZW0oKSBzaW5jZQo+IGNhY2hlcyBjb3VudCBhcyBhdmFp
-bGFibGUuCj4KCkdvb2QgcG9pbnQsIGNvdWxkIHlvdSBzZW5kIGEgcGF0Y2ggb3IgZGVsYXkgdGhp
-cyB3b3JrIGFmdGVyIHJlbGVhc2UgYXMgd2VsbD8KCgoKPgo+IC0tCj4gTWFydGluIERvdWNoYSAg
-IG1kb3VjaGFAc3VzZS5jego+IFFBIEVuZ2luZWVyIGZvciBTb2Z0d2FyZSBNYWludGVuYW5jZQo+
-IFNVU0UgTElOVVgsIHMuci5vLgo+IENPUlNPIElJYQo+IEtyaXppa292YSAxNDgvMzQKPiAxODYg
-MDAgUHJhZ3VlIDgKPiBDemVjaCBSZXB1YmxpYwo+Cj4KCi0tIApSZWdhcmRzLApMaSBXYW5nCgot
-LSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
-Cg==
+Hello Petr,
+
+On 5/4/23 6:16 AM, Petr Vorel wrote:
+> Hi Steve,
+> 
+> tirpc_rpcb_rmtcall is failing. I was able to reproduce it on
+> * openSUSE Tumbleweed with libtirpc 1.3.3
+> * Debian stable  11 (bullseye) with libtirpc 1.3.1-1
+> 
+> OTOH SLE 15-SP4 with libtirpc 1.2.6 is working.
+> 
+> PATH="/opt/ltp/testcases/bin:$PATH" rpc_test.sh -s tirpc_svc_4 -c tirpc_rpcb_rmtcall
+> rpc_test 1 TINFO: initialize 'lhost' 'ltp_ns_veth2' interface
+> rpc_test 1 TINFO: add local addr 10.0.0.2/24
+> rpc_test 1 TINFO: add local addr fd00:1:1:1::2/64
+> rpc_test 1 TINFO: initialize 'rhost' 'ltp_ns_veth1' interface
+> rpc_test 1 TINFO: add remote addr 10.0.0.1/24
+> rpc_test 1 TINFO: add remote addr fd00:1:1:1::1/64
+> rpc_test 1 TINFO: Network config (local -- remote):
+> rpc_test 1 TINFO: ltp_ns_veth2 -- ltp_ns_veth1
+> rpc_test 1 TINFO: 10.0.0.2/24 -- 10.0.0.1/24
+> rpc_test 1 TINFO: fd00:1:1:1::2/64 -- fd00:1:1:1::1/64
+> rpc_test 1 TINFO: timeout per run is 0h 5m 0s
+> rpc_test 1 TINFO: check registered RPC with rpcinfo
+> rpc_test 1 TINFO: registered RPC:
+>     program vers proto   port  service
+>      100000    4   tcp    111  portmapper
+>      100000    3   tcp    111  portmapper
+>      100000    2   tcp    111  portmapper
+>      100000    4   udp    111  portmapper
+>      100000    3   udp    111  portmapper
+>      100000    2   udp    111  portmapper
+>      100005    1   udp  20048  mountd
+>      100005    1   tcp  20048  mountd
+>      100005    2   udp  20048  mountd
+>      100005    2   tcp  20048  mountd
+>      100005    3   udp  20048  mountd
+>      100005    3   tcp  20048  mountd
+>      100024    1   udp  37966  status
+>      100024    1   tcp  43643  status
+>      100003    3   tcp   2049  nfs
+>      100003    4   tcp   2049  nfs
+>      100227    3   tcp   2049  nfs_acl
+>      100021    1   udp  59603  nlockmgr
+>      100021    3   udp  59603  nlockmgr
+>      100021    4   udp  59603  nlockmgr
+>      100021    1   tcp  39145  nlockmgr
+>      100021    3   tcp  39145  nlockmgr
+>      100021    4   tcp  39145  nlockmgr
+> rpc_test 1 TINFO: using libtirpc: yes
+> rpc_test 1 TFAIL: tirpc_rpcb_rmtcall 10.0.0.2 536875000 failed unexpectedly
+> 1
+> 
+> The problem is in tirpc_rpcb_rmtcall.c [1], which calls rpcb_rmtcall(), which
+> returns 1 (I suppose RPC_CANTENCODEARGS - can't encode arguments - enum
+> clnt_stat from tirpc/rpc/clnt_stat.h):
+> 
+> 	cs = rpcb_rmtcall(nconf, argc[1], progNum, VERSNUM, PROCNUM,
+> 			  (xdrproc_t) xdr_int, (char *)&var_snd,
+> 			  (xdrproc_t) xdr_int, (char *)&var_rec, tv, &svcaddr);
+> 
+> 	test_status = (cs == RPC_SUCCESS) ? 0 : 1;
+> 
+> 	//This last printf gives the result status to the tests suite
+> 	//normally should be 0: test has passed or 1: test has failed
+> 	printf("%d\n", test_status);
+> 
+> 	return test_status;
+> 
+> Any idea what could be wrong with these very old tests?
+No... No idea... but I'm unable to reproduce it. It appears
+you are using different repo that the one I found on
+github [1]. But...
+
+Looking code, RPC_CANTENCODEARGS is returned when
+there is an xdr problem which might means a
+memory problem??
+
+With that said... commits 21718bbb^..fa153d63 did
+make a lot of changes in the locking and cache
+management.
+
+steved.
+
+[1] https://github.com/linux-test-project/ltp
+> 
+> Kind regards,
+> Petr
+> 
+> [1] https://github.com/linux-test-project/ltp/blob/12765c115f11026c090ab0ee5dd79b38d95ef31f/testcases/network/rpc/rpc-tirpc/tests_pack/rpc_suite/tirpc/tirpc_expertlevel_rpcb_rmtcall/tirpc_rpcb_rmtcall.c#L91-L93
+> 
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
