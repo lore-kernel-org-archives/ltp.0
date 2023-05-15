@@ -4,43 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70D3FC7EE22
-	for <ltp@archiver.kernel.org>; Mon, 15 May 2023 07:12:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41467C7EE22
+	for <ltp@archiver.kernel.org>; Mon, 15 May 2023 07:12:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 32E583CDD71
-	for <ltp@archiver.kernel.org>; Mon, 15 May 2023 09:12:36 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 076743CDD6F
+	for <ltp@archiver.kernel.org>; Mon, 15 May 2023 09:12:48 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8B8783CD4DC
- for <ltp@lists.linux.it>; Mon, 15 May 2023 09:11:48 +0200 (CEST)
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
- [139.138.37.100])
+ by picard.linux.it (Postfix) with ESMTPS id 9E3703CD4E3
+ for <ltp@lists.linux.it>; Mon, 15 May 2023 09:11:52 +0200 (CEST)
+Received: from esa9.hc1455-7.c3s2.iphmx.com (esa9.hc1455-7.c3s2.iphmx.com
+ [139.138.36.223])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 733CC1400330
- for <ltp@lists.linux.it>; Mon, 15 May 2023 09:11:47 +0200 (CEST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="96161853"
-X-IronPort-AV: E=Sophos;i="5.99,275,1677510000"; d="scan'208";a="96161853"
-Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
- by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2023 16:11:45 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
- [192.168.83.67])
- by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 6F498C68E1
- for <ltp@lists.linux.it>; Mon, 15 May 2023 16:11:43 +0900 (JST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8C6886005CB
+ for <ltp@lists.linux.it>; Mon, 15 May 2023 09:11:50 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="104898090"
+X-IronPort-AV: E=Sophos;i="5.99,275,1677510000"; d="scan'208";a="104898090"
+Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
+ by esa9.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 May 2023 16:11:46 +0900
+Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
+ [192.168.87.61])
+ by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id F07A0EDEA8
+ for <ltp@lists.linux.it>; Mon, 15 May 2023 16:11:44 +0900 (JST)
 Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
  [192.51.206.22])
- by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id B9F71D5070
- for <ltp@lists.linux.it>; Mon, 15 May 2023 16:11:42 +0900 (JST)
+ by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 286B8D5B3A
+ for <ltp@lists.linux.it>; Mon, 15 May 2023 16:11:44 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.215.131])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 2A51630C41B;
- Mon, 15 May 2023 16:11:42 +0900 (JST)
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 973E637C45;
+ Mon, 15 May 2023 16:11:43 +0900 (JST)
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Mon, 15 May 2023 15:11:19 +0800
-Message-Id: <1684134680-6190-5-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Mon, 15 May 2023 15:11:20 +0800
+Message-Id: <1684134680-6190-6-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1684134680-6190-1-git-send-email-xuyang2018.jy@fujitsu.com>
 References: <1684134680-6190-1-git-send-email-xuyang2018.jy@fujitsu.com>
@@ -48,18 +49,19 @@ X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27626.005
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27626.005
-X-TMASE-Result: 10--23.226800-10.000000
-X-TMASE-MatchedRID: Kkkx1MdXpTzyaWDdlFBzB4HfzWJnn0eo8SkdpG2/n9c6FHRWx2FGsOIj
- 0uEwk0o6sThZ10FHnFHfQQLUEQSyKcJLU14K+zeoGYJhRh6sseuZmLDnd2pI33YdkYOuyxVSypt
- 8WTCPE+i+RCxnIvo2nV+wX0SqSP+34FG4Cyz4VuYReM8i8p3vgFQQ0EgzIoPRZTDoyKs07HoGMx
- mLVbWqwUx4fB7mBFckfwz9PrG/liIqvhmfWR8SIQrcxrzwsv5uH4pppXAAbjcnyU5/nZpxUBplb
- nRIZ6aE1xUJL0v9L4maiaqz4Y6rSSpe4ofkluPsWTWEh5N2a9EINPeazpADxBMabDrZlAepfdi+
- 0/fshTiaIuBZNVsPT4Ay6p60ZV62fJ5/bZ6npdiQZS2ujCtcuA==
+X-TMASE-Result: 10--18.727900-10.000000
+X-TMASE-MatchedRID: dEuj5lzoN6Y0b21ExFN2+hFbgtHjUWLy+VJ6lZyB0s8TMFL8shgf91h/
+ NuUojaGGGIr2zyxIm4zyCZGzF+DOCba2Vh2jQ2eEOIQ9GP2P2u/lsyZ05iz8bzoUdFbHYUawjdx
+ 5FdhImgMi+t+0AiFaYvL3NxFKQpq1PjGcaJx+0AEZgmFGHqyx6x+KaaVwAG43J8lOf52acVAaZW
+ 50SGemhLX80TaNz00Ya5pnQWY12EgqXuKH5Jbj7Fk1hIeTdmvRSLyuC617NWlGMWj5IurYalVxc
+ /d4wt8XtHjg2Z6JaYQKRuKRI67R4IgaBXLWjoTfxi///JpaHQMXivwflisSrAbxceezd6S1rLaE
+ LwoCkYuOsnMig9C4zBUdpx4K1EAjNyl1nd9CIt0URSScn+QSXt0H8LFZNFG7/nnwJ52QYi+pygC
+ GKFPC+BeYl5uS2QAg
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 5/6] syscalls/statx10: Add basic test for
- STATX_DIOALIGN on regular file
+Subject: [LTP] [PATCH v6 6/6] syscalls/statx11: Add basic test for
+ STATX_DIOALIGN on block device
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,70 +79,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-STATX_DIOALIGN is used to get stx_dio_mem_align and stx_dio_offset_align
-for files on fs that support direct io. We just check whether these
-value are nonzero on ext4 and xfs.
+Since STATX_DIOLAIGN is only supported on regular file and block device,
+so this case is used to test the latter.
 
-On ext4, files that use certain filesystem features (data journalling,
-encryption, and verity) fall back to buffered I/O. But ltp creates own
-filesystem by enabling mount_device in tst_test struct. If we set block
-device to LTP_DEV environment, we use this block device to mount by using
-default mount option. Otherwise, use loop device to simuate it. So it can
-avoid these above situations and don't fall back to buffered I/O.
+This test is tightly coupled to the kernel's current DIO restrictions on block
+devices.  These changed in v6.0, and they are subject to further change in the
+future.
 
-For struct statx member check, we only check stx_dio_mem_align because
-these two member is introduced together in separate commit in kernel, so it
-is safe.
+It is fine for now because STATX_DIOALIGN is only in v6.1 and later
+anyway.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- configure.ac                               |  2 +-
  runtest/syscalls                           |  1 +
  testcases/kernel/syscalls/statx/.gitignore |  1 +
- testcases/kernel/syscalls/statx/statx10.c  | 93 ++++++++++++++++++++++
- 4 files changed, 96 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/syscalls/statx/statx10.c
+ testcases/kernel/syscalls/statx/statx11.c  | 89 ++++++++++++++++++++++
+ 3 files changed, 91 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/statx/statx11.c
 
-diff --git a/configure.ac b/configure.ac
-index 4c8763376..548288310 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -158,7 +158,7 @@ AC_CHECK_FUNCS(mkdtemp,[],AC_MSG_ERROR(mkdtemp() not found!))
- AC_CHECK_MEMBERS([struct fanotify_event_info_fid.fsid.__val],,,[#include <sys/fanotify.h>])
- AC_CHECK_MEMBERS([struct perf_event_mmap_page.aux_head],,,[#include <linux/perf_event.h>])
- AC_CHECK_MEMBERS([struct sigaction.sa_sigaction],[],[],[#include <signal.h>])
--AC_CHECK_MEMBERS([struct statx.stx_mnt_id],,,[
-+AC_CHECK_MEMBERS([struct statx.stx_mnt_id, struct statx.stx_dio_mem_align],,,[
- #define _GNU_SOURCE
- #include <sys/stat.h>
- ])
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 9c23a4248..e2548dae5 100644
+index e2548dae5..e5ad2c2f9 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -1765,6 +1765,7 @@ statx06 statx06
- statx07 statx07
+@@ -1766,6 +1766,7 @@ statx07 statx07
  statx08 statx08
  statx09 statx09
-+statx10 statx10
+ statx10 statx10
++statx11 statx11
  
  membarrier01 membarrier01
  
 diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-index 1cea43c0d..67341ff2d 100644
+index 67341ff2d..48ac4078b 100644
 --- a/testcases/kernel/syscalls/statx/.gitignore
 +++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -7,3 +7,4 @@
- /statx07
+@@ -8,3 +8,4 @@
  /statx08
  /statx09
-+/statx10
-diff --git a/testcases/kernel/syscalls/statx/statx10.c b/testcases/kernel/syscalls/statx/statx10.c
+ /statx10
++/statx11
+diff --git a/testcases/kernel/syscalls/statx/statx11.c b/testcases/kernel/syscalls/statx/statx11.c
 new file mode 100644
-index 000000000..513a8c262
+index 000000000..653050855
 --- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx10.c
-@@ -0,0 +1,93 @@
++++ b/testcases/kernel/syscalls/statx/statx11.c
+@@ -0,0 +1,89 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
@@ -150,41 +133,34 @@ index 000000000..513a8c262
 +/*\
 + * [Description]
 + *
-+ * It is a basic test for STATX_DIOALIGN mask on ext4 and xfs filesystem.
++ * It is a basic test for STATX_DIOALIGN mask on block device.
 + *
 + * - STATX_DIOALIGN   Want stx_dio_mem_align and stx_dio_offset_align value
 + *
-+ * Check these two values are nonzero under dio situation when STATX_DIOALIGN
-+ * in the request mask.
-+ *
-+ * On ext4, files that use certain filesystem features (data journaling,
-+ * encryption, and verity) fall back to buffered I/O. But ltp creates own
-+ * filesystem by enabling mount_device in tst_test struct. If we set block
-+ * device to LTP_DEV environment, we use this block device to mount by using
-+ * default mount option. Otherwise, use loop device to simuate it. So it can
-+ * avoid these above situations and don't fall back to buffered I/O.
++ * These two values are tightly coupled to the kernel's current DIO
++ * restrictions on block devices.
 + *
 + * Minimum Linux version required is v6.1.
 + */
 +
 +#define _GNU_SOURCE
 +#include <sys/types.h>
++#include <sys/mount.h>
 +#include <unistd.h>
 +#include <stdlib.h>
 +#include <stdbool.h>
++#include <stdio.h>
 +#include "tst_test.h"
 +#include "lapi/stat.h"
-+#include "lapi/fcntl.h"
 +
-+#define MNTPOINT "mnt_point"
-+#define TESTFILE "testfile"
++static char sys_bdev_dma_path[1024], sys_bdev_logical_path[1024];
 +
 +static void verify_statx(void)
 +{
 +	struct statx buf;
 +
-+	TST_EXP_PASS_SILENT(statx(AT_FDCWD, TESTFILE, 0, STATX_DIOALIGN, &buf),
-+		"statx(AT_FDCWD, %s, 0, STATX_DIOALIGN, &buf)", TESTFILE);
++	TST_EXP_PASS_SILENT(statx(AT_FDCWD, tst_device->dev, 0, STATX_DIOALIGN, &buf),
++		"statx(AT_FDCWD, %s, 0, STATX_DIOALIGN, &buf)", tst_device->dev);
 +
 +	if (!(buf.stx_mask & STATX_DIOALIGN)) {
 +		tst_res(TCONF, "Filesystem does not support STATX_DIOALIGN");
@@ -192,15 +168,17 @@ index 000000000..513a8c262
 +	}
 +
 +#ifdef HAVE_STRUCT_STATX_STX_DIO_MEM_ALIGN
-+	if (buf.stx_dio_mem_align != 0)
-+		tst_res(TPASS, "stx_dio_mem_align:%u", buf.stx_dio_mem_align);
-+	else
-+		tst_res(TFAIL, "stx_dio_mem_align was 0, but DIO should be supported");
-+
-+	if (buf.stx_dio_offset_align != 0)
-+		tst_res(TPASS, "stx_dio_offset_align:%u", buf.stx_dio_offset_align);
-+	else
-+		tst_res(TFAIL, "stx_dio_offset_align was 0, but DIO should be supported");
++	/*
++	 * This test is tightly coupled to the kernel's current DIO restrictions
++	 * on block devices. The general rule of DIO needing to be aligned to the
++	 * block device's logical block size was relaxed to allow user buffers
++	 * (but not file offsets) aligned to the DMA alignment instead. See v6.0
++	 * commit bf8d08532bc1 ("iomap: add support for dma aligned direct-io") and
++	 * they are subject to further change in the future.
++	 * Also can see commit 2d985f8c6b9 ("vfs: support STATX_DIOALIGN on block devices).
++	 */
++	TST_ASSERT_ULONG(sys_bdev_dma_path, buf.stx_dio_mem_align - 1);
++	TST_ASSERT_ULONG(sys_bdev_logical_path, buf.stx_dio_offset_align);
 +#else
 +	tst_res(TCONF, "glibc statx struct miss stx_dio_mem_align field");
 +#endif
@@ -208,31 +186,32 @@ index 000000000..513a8c262
 +
 +static void setup(void)
 +{
-+	int fd = -1;
++	char full_name[256];
++	char *dev_name;
 +
-+	if (strcmp(tst_device->fs_type, "xfs") && strcmp(tst_device->fs_type, "ext4"))
-+		tst_brk(TCONF, "This test only supports ext4 and xfs");
++	strcpy(full_name, tst_device->dev);
++	dev_name = SAFE_BASENAME(full_name);
++	sprintf(sys_bdev_logical_path, "/sys/block/%s/queue/logical_block_size", dev_name);
 +
-+	SAFE_FILE_PRINTF(TESTFILE, "AAAA");
-+	fd = open(TESTFILE, O_RDWR | O_DIRECT);
-+	if (fd == -1) {
-+		if (errno == EINVAL)
-+			tst_brk(TCONF,
-+				"The regular file is not on a filesystem that support DIO");
-+		else
-+			tst_brk(TBROK | TERRNO,
-+				"The regular file is open with O_RDWR | O_DIRECT failed");
++	/*
++	 * Since /sys/block/%s/queue doesn't exist for partition, we need to
++	 * use a while to search block device instead of partition.
++	 */
++	while (access(sys_bdev_logical_path, F_OK) != 0) {
++		dev_name[strlen(dev_name)-1] = '\0';
++		sprintf(sys_bdev_logical_path, "/sys/block/%s/queue/logical_block_size", dev_name);
 +	}
-+	SAFE_CLOSE(fd);
++
++	sprintf(sys_bdev_dma_path, "/sys/block/%s/queue/dma_alignment", dev_name);
++	if (access(sys_bdev_dma_path, F_OK) != 0)
++		tst_brk(TCONF, "dma_alignment sysfs file doesn't exist");
 +}
 +
 +static struct tst_test test = {
 +	.test_all = verify_statx,
 +	.setup = setup,
++	.needs_device = 1,
 +	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.mount_device = 1,
-+	.all_filesystems = 1,
 +};
 -- 
 2.39.1
