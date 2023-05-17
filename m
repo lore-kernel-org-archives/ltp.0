@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2097C77B7D
-	for <ltp@archiver.kernel.org>; Wed, 17 May 2023 15:37:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBA8EC77B7D
+	for <ltp@archiver.kernel.org>; Wed, 17 May 2023 15:37:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6583F3CEE40
-	for <ltp@archiver.kernel.org>; Wed, 17 May 2023 17:37:23 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 6CB083CF266
+	for <ltp@archiver.kernel.org>; Wed, 17 May 2023 17:37:33 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 757D83CD47E
+ by picard.linux.it (Postfix) with ESMTPS id 8D01F3CB2D4
  for <ltp@lists.linux.it>; Wed, 17 May 2023 17:36:44 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EDE301A009B6
- for <ltp@lists.linux.it>; Wed, 17 May 2023 17:36:43 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0F982600879
+ for <ltp@lists.linux.it>; Wed, 17 May 2023 17:36:44 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5384D226C9;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A2C93226CD;
  Wed, 17 May 2023 15:36:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1684337803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Gd4UY/AgUNs7s7B35irRF37BOwIlZk7Rf5x7qcGSvR4=;
- b=rrTr0QmGA+4IAqIm6B622Ie9w7vwt0E3yY1MOHgVn276MJAGTiYqJ/ZL3WHkxwuPLLPivL
- zELw2/gWzrYArmKXBA1c35jWhr1qubRARPe0tlC2W0RZXWZ5mJ/GU4jk8LCcNsFbh8Jw/F
- 8GHqErhaLwCwrwlxowDdhXWsZRhQ0mE=
+ bh=dhEQNIGFmbcJ2AZl5IXTRc9lLiYDHKWPdvOURiPnvV4=;
+ b=IHxFskLvPRa8GIfAUSqXKUs4DNVRFF19SxcNNxiaqFZuud9FF1wZLr1IMbuBLjUVvprVKh
+ a2l64vfCZjin2UrYH3Z+mQnvUQ3hg2A7tR3CIrrWG3FJHEJplcraL3eIOWh/iEj1XnT8Nu
+ CvBT65l4aoO/NRUTpWr32MgK/cxNFAg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1684337803;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Gd4UY/AgUNs7s7B35irRF37BOwIlZk7Rf5x7qcGSvR4=;
- b=lqIt/kGPQHirqiQleHV4a/TF3iwI83/i+L3eSg2n9vYdMWI/U9xEsGM2ldsIVTxWHRqY01
- Ui+LFF8+WYot0BCg==
+ bh=dhEQNIGFmbcJ2AZl5IXTRc9lLiYDHKWPdvOURiPnvV4=;
+ b=tsgdzX351ys7FD6lQnuqOz9j4ZAbfEdd4flG5EezCSamxyC4nNK3kqdceBFbPvqkefNZ2R
+ IRwSJRPxYnludJCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F88E139F5;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E9A613A5E;
  Wed, 17 May 2023 15:36:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qA6fDov0ZGSTCgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id IJL5IYv0ZGSTCgAAMHmgww
  (envelope-from <mdoucha@suse.cz>); Wed, 17 May 2023 15:36:43 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: Nicolai Stange <nstange@suse.de>,
 	ltp@lists.linux.it
-Date: Wed, 17 May 2023 17:36:39 +0200
-Message-Id: <20230517153642.26919-5-mdoucha@suse.cz>
+Date: Wed, 17 May 2023 17:36:42 +0200
+Message-Id: <20230517153642.26919-8-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230517153642.26919-1-mdoucha@suse.cz>
 References: <20230517153642.26919-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 4/7] KVM: Add async communication helper functions
+Subject: [LTP] [PATCH 7/7] Add KVM test for CPU lockup through malicous SVM
+ guest
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,153 +83,220 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Some KVM tests need to communicate with VM controller program
-without stopping guest execution. Add guest helper functions
-for sending asynchronous guest signal to host and waiting for host
-to acknowledge the signal. Add host helper functions for waiting
-for guest signal and acknowledging it.
-
-Test programs using these functions must have at least two host threads.
-
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/kernel/kvm/include/kvm_common.h |  8 ++++++++
- testcases/kernel/kvm/include/kvm_guest.h  | 14 +++++++++++++
- testcases/kernel/kvm/include/kvm_host.h   | 15 ++++++++++++++
- testcases/kernel/kvm/lib_guest.c          | 16 +++++++++++++++
- testcases/kernel/kvm/lib_host.c           | 24 +++++++++++++++++++++++
- 5 files changed, 77 insertions(+)
 
-diff --git a/testcases/kernel/kvm/include/kvm_common.h b/testcases/kernel/kvm/include/kvm_common.h
-index 4e81d8302..377e3f6aa 100644
---- a/testcases/kernel/kvm/include/kvm_common.h
-+++ b/testcases/kernel/kvm/include/kvm_common.h
-@@ -10,6 +10,14 @@
+The reproducer was verified on vulnerable SLE kernels.
+
+ runtest/kvm                      |   1 +
+ testcases/kernel/kvm/.gitignore  |   1 +
+ testcases/kernel/kvm/Makefile    |   3 +
+ testcases/kernel/kvm/kvm_svm03.c | 164 +++++++++++++++++++++++++++++++
+ 4 files changed, 169 insertions(+)
+ create mode 100644 testcases/kernel/kvm/kvm_svm03.c
+
+diff --git a/runtest/kvm b/runtest/kvm
+index 59e410beb..4094a21a8 100644
+--- a/runtest/kvm
++++ b/runtest/kvm
+@@ -1,3 +1,4 @@
+ kvm_pagefault01 kvm_pagefault01
+ kvm_svm01 kvm_svm01
+ kvm_svm02 kvm_svm02
++kvm_svm03 kvm_svm03
+diff --git a/testcases/kernel/kvm/.gitignore b/testcases/kernel/kvm/.gitignore
+index c757cd3f4..9638a6fc7 100644
+--- a/testcases/kernel/kvm/.gitignore
++++ b/testcases/kernel/kvm/.gitignore
+@@ -1,3 +1,4 @@
+ /kvm_pagefault01
+ /kvm_svm01
+ /kvm_svm02
++/kvm_svm03
+diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
+index e12cb4e98..03d754420 100644
+--- a/testcases/kernel/kvm/Makefile
++++ b/testcases/kernel/kvm/Makefile
+@@ -48,6 +48,9 @@ endif
+ lib_guest.o $(ARCH_OBJ): CPPFLAGS	:= $(GUEST_CPPFLAGS)
+ lib_guest.o $(ARCH_OBJ): CFLAGS		:= $(GUEST_CFLAGS)
  
- #define KVM_TNONE	-1	/* "No result" status value */
- 
-+/*
-+ * Result value for asynchronous notifications between guest and host.
-+ * Do not use this value directly. Call tst_signal_host() or tst_wait_host()
-+ * in guest code. The notification must be handled by another host thread
-+ * and then the result value must be reset to KVM_TNONE.
-+ */
-+#define KVM_TSYNC	0xfe
++kvm_svm03: CFLAGS += -pthread
++kvm_svm03: LDLIBS += -pthread -lrt
 +
- /*
-  * Result value indicating end of test. If the test program exits using
-  * the HLT instruction with any valid result value other than KVM_TEXIT or
-diff --git a/testcases/kernel/kvm/include/kvm_guest.h b/testcases/kernel/kvm/include/kvm_guest.h
-index ec13c5845..96f246155 100644
---- a/testcases/kernel/kvm/include/kvm_guest.h
-+++ b/testcases/kernel/kvm/include/kvm_guest.h
-@@ -64,6 +64,20 @@ void tst_brk_(const char *file, const int lineno, int result,
- 	const char *message) __attribute__((noreturn));
- #define tst_brk(result, msg) tst_brk_(__FILE__, __LINE__, (result), (msg))
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
  
+ %-payload.o: %.c lib_guest.o $(ARCH_OBJ)
+diff --git a/testcases/kernel/kvm/kvm_svm03.c b/testcases/kernel/kvm/kvm_svm03.c
+new file mode 100644
+index 000000000..365df789e
+--- /dev/null
++++ b/testcases/kernel/kvm/kvm_svm03.c
+@@ -0,0 +1,164 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Send asynchronous notification to host without stopping VM execution and
-+ * return immediately. The notification must be handled by another host thread.
-+ * The data argument will be passed to host in test_result->file_addr and
-+ * can be used to send additional data both ways.
++ * Copyright (C) 2023 SUSE LLC
++ * Author: Nicolai Stange <nstange@suse.de>
++ * LTP port: Martin Doucha <mdoucha@suse.cz>
 + */
-+void tst_signal_host(void *data);
 +
-+/*
-+ * Call tst_signal_host(data) and wait for host to call
-+ * tst_kvm_clear_guest_signal().
++/*\
++ * Check that KVM correctly intercepts the CLGI instruction in a nested
++ * virtual machine even when the parent guest disables intercept.
++ * If KVM does not override the disabled intercept, it'll allow the nested VM
++ * to hold the physical CPU indefinitely and potentially perform a denial
++ * of service attack against the host kernel. CPU lockup fixed in:
++ *
++ *  commit 91b7130cb6606d8c6b3b77e54426b3f3a83f48b1
++ *  Author: Paolo Bonzini <pbonzini@redhat.com>
++ *  Date:   Fri May 22 12:28:52 2020 -0400
++ *
++ *  KVM: SVM: preserve VGIF across VMCB switch
 + */
-+void tst_wait_host(void *data);
 +
- void *tst_heap_alloc_aligned(size_t size, size_t align);
- void *tst_heap_alloc(size_t size);
- 
-diff --git a/testcases/kernel/kvm/include/kvm_host.h b/testcases/kernel/kvm/include/kvm_host.h
-index 2359944fd..cbbdadc06 100644
---- a/testcases/kernel/kvm/include/kvm_host.h
-+++ b/testcases/kernel/kvm/include/kvm_host.h
-@@ -134,4 +134,19 @@ void tst_kvm_run_instance(struct tst_kvm_instance *inst);
-  */
- void tst_kvm_destroy_instance(struct tst_kvm_instance *inst);
- 
-+/*
-+ * Wait for given VM to call tst_signal_host() or tst_wait_host(). Timeout
-+ * value is in seconds. Zero means no wait, negative value means wait forever.
-+ * Note that the actual wait time may be up to 1 second shorter due to time()
-+ * granularity. Returns 0 if signal was received, KVM_TEXIT if the VM exited
-+ * without sending a signal, or -1 if timeout was reached.
-+ */
-+int tst_kvm_wait_guest(struct tst_kvm_instance *inst, int timeout);
++#include "kvm_test.h"
 +
-+/*
-+ * Clear VM signal sent by tst_signal_host(). If the VM is waiting
-+ * in tst_wait_host(), this function will signal the VM to resume execution.
-+ */
-+void tst_kvm_clear_guest_signal(struct tst_kvm_instance *inst);
++#ifdef COMPILE_PAYLOAD
++#if defined(__i386__) || defined(__x86_64__)
 +
- #endif /* KVM_HOST_H_ */
-diff --git a/testcases/kernel/kvm/lib_guest.c b/testcases/kernel/kvm/lib_guest.c
-index d3b2ac3d5..f3e21d3d6 100644
---- a/testcases/kernel/kvm/lib_guest.c
-+++ b/testcases/kernel/kvm/lib_guest.c
-@@ -155,6 +155,22 @@ void tst_brk_(const char *file, const int lineno, int result,
- 	kvm_exit();
- }
- 
-+void tst_signal_host(void *data)
++#include "kvm_x86_svm.h"
++
++/* Disable global interrupts */
++static int guest_clgi(void)
 +{
-+	test_result->file_addr = (uintptr_t)data;
-+	test_result->result = KVM_TSYNC;
++	int ret, *result = (int *)KVM_RESULT_BASEADDR;
++
++	/*
++	 * Make sure that result page is present in memory. CLGI may disable
++	 * page fault handling on the current CPU. The actual value
++	 * at that address is irrelevant.
++	 */
++	ret = *result;
++
++	/* Disable global interrupts */
++	asm ("clgi");
++
++	/* Signal host to kill the VM and wait */
++	tst_wait_host(NULL);
++	return ret;
 +}
 +
-+void tst_wait_host(void *data)
++void main(void)
 +{
-+	volatile int32_t *vres = &test_result->result;
++	struct kvm_svm_vcpu *vcpu;
 +
-+	tst_signal_host(data);
++	kvm_init_svm();
++	vcpu = kvm_create_svm_vcpu(guest_clgi, 1);
++	kvm_vmcb_set_intercept(vcpu->vmcb, SVM_INTERCEPT_CLGI, 0);
++	kvm_svm_vmrun(vcpu);
 +
-+	while (*vres != KVM_TNONE)
-+		;
++	if (vcpu->vmcb->exitcode != SVM_EXIT_HLT)
++		tst_brk(TBROK, "Nested VM exited unexpectedly");
 +}
 +
- void tst_handle_interrupt(struct kvm_interrupt_frame *ifrm, long vector,
- 	unsigned long errcode)
- {
-diff --git a/testcases/kernel/kvm/lib_host.c b/testcases/kernel/kvm/lib_host.c
-index 2782e68b0..a5f05449c 100644
---- a/testcases/kernel/kvm/lib_host.c
-+++ b/testcases/kernel/kvm/lib_host.c
-@@ -272,6 +272,30 @@ void tst_kvm_destroy_instance(struct tst_kvm_instance *inst)
- 	memset(inst->ram, 0, sizeof(inst->ram));
- }
- 
-+int tst_kvm_wait_guest(struct tst_kvm_instance *inst, int timeout)
++#else /* defined(__i386__) || defined(__x86_64__) */
++TST_TEST_TCONF("Test supported only on x86");
++#endif /* defined(__i386__) || defined(__x86_64__) */
++
++#else /* COMPILE_PAYLOAD */
++
++#include <pthread.h>
++#include "tst_safe_pthread.h"
++#include "tst_safe_clocks.h"
++
++static struct tst_kvm_instance test_vm = { .vm_fd = -1 };
++static pthread_mutex_t mutex;
++
++static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
 +{
-+	volatile struct tst_kvm_result *result = inst->result;
-+	int32_t res;
-+	time_t start = time(NULL);
 +
-+	while ((res = result->result) != KVM_TSYNC) {
-+		if (res == KVM_TEXIT)
-+			return res;
++}
 +
-+		if (timeout >= 0 && start + timeout <= time(NULL))
-+			return -1;
++static void *vm_thread(void *arg)
++{
++	SAFE_PTHREAD_MUTEX_LOCK(&mutex);
++	tst_kvm_run_instance(&test_vm, EINTR);
++	SAFE_PTHREAD_MUTEX_UNLOCK(&mutex);
++	return arg;
++}
 +
-+		usleep(1000);
++static void setup(void)
++{
++	struct sigaction sa = { .sa_handler = sighandler };
++	pthread_mutexattr_t attr;
++
++	SAFE_PTHREAD_MUTEXATTR_INIT(&attr);
++	SAFE_PTHREAD_MUTEXATTR_SETTYPE(&attr, PTHREAD_MUTEX_NORMAL);
++	SAFE_PTHREAD_MUTEX_INIT(&mutex, &attr);
++	SAFE_PTHREAD_MUTEXATTR_DESTROY(&attr);
++	SAFE_SIGACTION(SIGUSR1, &sa, NULL);
++}
++
++static void run(void)
++{
++	struct timespec timeout;
++	pthread_t tid;
++	int ret;
++
++	tst_kvm_create_instance(&test_vm, DEFAULT_RAM_SIZE);
++
++	SAFE_PTHREAD_CREATE(&tid, NULL, vm_thread, NULL);
++	ret = tst_kvm_wait_guest(&test_vm, 2);
++
++	if (ret == KVM_TEXIT) {
++		SAFE_PTHREAD_JOIN(tid, NULL);
++		tst_brk(TCONF, "Guest exited early");
 +	}
 +
-+	return 0;
++	if (ret)
++		tst_brk(TBROK, "Wait for guest initialization timed out");
++
++	SAFE_PTHREAD_KILL(tid, SIGUSR1);
++	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &timeout);
++	timeout.tv_sec += 2;
++
++	if (SAFE_PTHREAD_MUTEX_TIMEDLOCK(&mutex, &timeout)) {
++		tst_kvm_clear_guest_signal(&test_vm);
++		tst_res(TFAIL, "VM thread does not respond to signals");
++	} else {
++		SAFE_PTHREAD_MUTEX_UNLOCK(&mutex);
++		tst_res(TPASS, "VM thread was interrupted by signal");
++	}
++
++	SAFE_PTHREAD_JOIN(tid, NULL);
++	tst_kvm_destroy_instance(&test_vm);
++	tst_free_all();
 +}
 +
-+void tst_kvm_clear_guest_signal(struct tst_kvm_instance *inst)
++static void cleanup(void)
 +{
-+	inst->result->result = KVM_TNONE;
++	/* VM is likely still running, cannot clean up anything */
++	if (SAFE_PTHREAD_MUTEX_TRYLOCK(&mutex))
++		return;
++
++	if (!SAFE_PTHREAD_MUTEX_UNLOCK(&mutex))
++		SAFE_PTHREAD_MUTEX_DESTROY(&mutex);
++
++	tst_kvm_destroy_instance(&test_vm);
 +}
 +
- void tst_kvm_setup(void)
- {
- 
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.min_cpus = 2,
++	.supported_archs = (const char *const []) {
++		"x86_64",
++		"x86",
++		NULL
++	},
++	.tags = (struct tst_tag[]){
++		{"linux-git", "91b7130cb660"},
++		{}
++	}
++};
++
++#endif /* COMPILE_PAYLOAD */
 -- 
 2.40.0
 
