@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EA52C77B7A
-	for <ltp@archiver.kernel.org>; Thu, 18 May 2023 06:01:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C814C7EE24
+	for <ltp@archiver.kernel.org>; Thu, 18 May 2023 06:11:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 30EB63CD434
-	for <ltp@archiver.kernel.org>; Thu, 18 May 2023 08:01:07 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 6BD8C3CB28E
+	for <ltp@archiver.kernel.org>; Thu, 18 May 2023 08:11:10 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 678B03CB289
- for <ltp@lists.linux.it>; Thu, 18 May 2023 08:00:57 +0200 (CEST)
-Received: from esa8.fujitsucc.c3s2.iphmx.com (esa8.fujitsucc.c3s2.iphmx.com
- [68.232.159.88])
+ by picard.linux.it (Postfix) with ESMTPS id 759F63CB289
+ for <ltp@lists.linux.it>; Thu, 18 May 2023 08:11:00 +0200 (CEST)
+Received: from esa12.fujitsucc.c3s2.iphmx.com (esa12.fujitsucc.c3s2.iphmx.com
+ [216.71.156.125])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id D2ED21A009BA
- for <ltp@lists.linux.it>; Thu, 18 May 2023 08:00:55 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 82FE61400DC9
+ for <ltp@lists.linux.it>; Thu, 18 May 2023 08:10:59 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1684389655; x=1715925655;
+ t=1684390259; x=1715926259;
  h=from:to:subject:date:message-id:references:in-reply-to:
  content-id:content-transfer-encoding:mime-version;
- bh=zhV8rITsUjMFVPEUZr9LabRD+XmYnwrKYnGgQ6/hNkw=;
- b=PPKHGUL7TyWR9AG/yqvjZduqF//jauHCGsYFjmAN27E79VFgViB4saJb
- rum4qN0li913mpHMs3POpOKzGGIFK7yqIqlSbXzp0cpu7usizSjTul/5x
- X5EHVbxViNNT6k7YLVoN4Up8rZHSzceVlTp/jW6/yqo8neqwjAUbHhO/K
- aSDa9BEGBHrhs+QADElj5/TLJxns+/8iHx2LLchFCxGg24T6loYtN2Dq1
- 2X//wkXIuojhl04hgEgqH+0jD7YMJcXRbRmV9gZmAkxFJYsBvf7Hagwzo
- jBc509hIbtD61GVJCG+/VGtx5m16oD2x59IiqzA4ByVJGQbQ7ogLwGiqq w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="84755753"
-X-IronPort-AV: E=Sophos;i="5.99,284,1677510000"; d="scan'208";a="84755753"
-Received: from mail-os0jpn01lp2111.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.111])
+ bh=+SWPAtX/72ujWVqHDEK8tcrFwKBSZkprE28n+Uck4Ic=;
+ b=rXdn1nlBnjoeEF8lp87YwfQM1bBKx3DIyU0WhtCnqa79XWM07G7Fk2GS
+ 0ZdrmFDPYDU/W5aWZ9AuJMHGidcdjGxEsT3pyfIAO1K24kaU3drrqnind
+ pDQ/H6v5LDWJox3AebMjbHjMwF6gTF5IRq1DvMAE1FjKxCZaagbLp0IJs
+ YYLrgmI6mDdknCMCDiW56hGecJs75kCngDkCbcGCHemzBMZLQZeCZjDe7
+ zvNSmF48S3zQBVCqa1ZwVtEyGi2RTnYkfk9zlknk35yoIx7phAwR4hf+k
+ VjM6SuOz54VxksJAD55lAHSEc3H1l5IhBFjCtux1PnMCFSr0CMtJMDx0z Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="84855315"
+X-IronPort-AV: E=Sophos;i="5.99,284,1677510000"; d="scan'208";a="84855315"
+Received: from mail-os0jpn01lp2106.outbound.protection.outlook.com (HELO
+ JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.106])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 May 2023 15:00:52 +0900
+ 18 May 2023 15:10:57 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ArHcRXDuVMzrANztgD/dwCB0K1tvBa7xSFXd/PHtTJO4V/hpy4j69kZo/E75LEowSqQOzqQS9KjzeieSz13rGzNPW6Bv9gYn6K5n3rkZhupWICazFNl9aQxG2Pp/JaYJ2eH3hca4y96Ni03A4GLA32RJmY3KvXwx3IVmBXhVD3tucLD8BdhgX1xgGEhBXeBLYoqV+NuxBepqgMsSek8OwBIaBYynZdzmZnZo06Zan5Gelagsjj5j4PTXG6HvPLUZIJz6Ec//VKomFMYLoUYeW2lZUsPA0mUrPpop1MkyZQFdOVX0YhiVmyVo1MXNoyi6tNLzp7Xy7+J6jm5ilE11Lw==
+ b=R4Jr4lO29lYdWcBhrhmqs43i0fasVfUnYCGdXgBaeTL3VAw/nB3Q9qk4kdgsQSW6PKnY49YFPmV7oKFNCAcS1qwcBOFxq58Sg4qkKuUlanBtj2Rxl4SW24huhvDpv7f/uv3Kj+DWSlc6Xkzq4K1cDGUjS4nwTxQT5GM5RSVcxJ6rYjze2ikXqaMTJDbq/EmRlurkfaVbviNQ851Z2sJ/fT7ygDgxTk8h8KOIvXgBV7fx6b5MRzsZ6JKOe6aU65MC4wp5JMOp9O+8VnJzBM36otmm/ACodgBNXTXbxY6WkN1kxFIpn546/J3MG14ntv7ZLpv9POOqlJei/8+JsvZ6/w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zhV8rITsUjMFVPEUZr9LabRD+XmYnwrKYnGgQ6/hNkw=;
- b=VU09ds84Vx+lg13A3ykjcDlPsIEq1szBx5d6tDNFtELxwdtbDf2DxSsI5qFk1srVGNshx+nfkD1+Ol163sKOjyK/QISfadNzzds+UqE76GaB03n5WylwffIniNInTqTbwN0CGHcAtKf9xFztx8osA06MHwv5gggMnvxR4+aeWZi95I5+7hhd9VnOBW9PaXaME/p95z+TIaF8tJMgr5VAajHfa1WrdKq9IzMjZbAxNyZw44lBDGMF167x8ffnOLTNJA2IYscs5jEwTWhxiL3WisLVEXDxElKRSTy1Zd+0Bk5ytrTLVymIvmH/1qN9UyaxqWhjCT2EFgBHVoiMz0zWKw==
+ bh=+SWPAtX/72ujWVqHDEK8tcrFwKBSZkprE28n+Uck4Ic=;
+ b=Ssp4SJ4rmnKl6XUHmF6ZuLOpZk2aN7l/UOfWrxW4ZW9sGCY4OC1n+iOkYsXgGZcwUHrpfhP6YACIIyaRJ3bcSq0b0i0fw0KyH0I8yXFCL/DL83E1y3XfaaHayB2+YSz8R/oHWTTvNSXKVie3Q7RlIyx9aqa8O41NPMpgD+hB5N3Q5bmcAA03j6mcvngTWAEw+4xyU++h2annhYNebMA45SiBquWcJsWgdNJqSFl8jv5pwLNmeonsufJuOWRH33h70DeZ3KLDZrobsK6BrAt53zZXl6/l3M9hwnGLovGZRkqBUqwCg54g/eoa02nik7NmTrjSXiCPvIR5DRz/MLssBw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
 Received: from OS3PR01MB9499.jpnprd01.prod.outlook.com (2603:1096:604:1c8::5)
- by TY1PR01MB10659.jpnprd01.prod.outlook.com (2603:1096:400:326::12)
+ by OSYPR01MB5400.jpnprd01.prod.outlook.com (2603:1096:604:8d::12)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.34; Thu, 18 May
- 2023 06:00:49 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.19; Thu, 18 May
+ 2023 06:10:54 +0000
 Received: from OS3PR01MB9499.jpnprd01.prod.outlook.com
  ([fe80::a883:7aee:71d:b4a1]) by OS3PR01MB9499.jpnprd01.prod.outlook.com
  ([fe80::a883:7aee:71d:b4a1%3]) with mapi id 15.20.6387.030; Thu, 18 May 2023
- 06:00:49 +0000
+ 06:10:54 +0000
 From: "Xiao Yang (Fujitsu)" <yangx.jy@fujitsu.com>
 To: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>, "ltp@lists.linux.it"
  <ltp@lists.linux.it>
-Thread-Topic: [LTP] [PATCH v6 1/6] include/lapi: Move AT_* related macros to
- fcntl header
-Thread-Index: AQHZhvyUJXIjZRnl1kCB7quBcgvZsq9fjjMA
-Date: Thu, 18 May 2023 06:00:49 +0000
-Message-ID: <2481a69d-7bc6-1644-79ef-821313abb4f5@fujitsu.com>
+Thread-Topic: [LTP] [PATCH v6 2/6] lapi/stat.h: Add STATX_DIOALIGN related
+ definition
+Thread-Index: AQHZhvyNTXA4YakoCUuGFr9S9ScLKa9fkQeA
+Date: Thu, 18 May 2023 06:10:54 +0000
+Message-ID: <7ac7fa23-99f2-69ce-a0cb-25387682f046@fujitsu.com>
 References: <1684134680-6190-1-git-send-email-xuyang2018.jy@fujitsu.com>
-In-Reply-To: <1684134680-6190-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1684134680-6190-2-git-send-email-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <1684134680-6190-2-git-send-email-xuyang2018.jy@fujitsu.com>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -75,72 +76,72 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS3PR01MB9499:EE_|TY1PR01MB10659:EE_
-x-ms-office365-filtering-correlation-id: 8e874b72-9118-4dcb-c117-08db57653b11
+x-ms-traffictypediagnostic: OS3PR01MB9499:EE_|OSYPR01MB5400:EE_
+x-ms-office365-filtering-correlation-id: 18a0422d-3e72-4753-971f-08db5766a392
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9se2baPdwXSTuoUiaWAhfcAHOV/igTCHIElPpHiXcc4BdtyNJOnIkX63EGbjz6cM5DUZ6tCrIkgcFNwjX8OkcdXeTqstsaVEyzlaxN75K9wdiohIwM0XNi9Zy19I5cqieEGvYdHxE8+tz7WxjxHZlU5rNJJwRJEdOb7FydZ8zHZ0g74sKf5R2Gvy4socUtmnrc0dN6/w/fixUtr1di/+dyHA3MQmRHog/f/rFzXVe1ZUvP7Odr4kTBaf7Civxr13SGp0q5iXXaID7elgnCB0rM6DlcoTOuOrLOQc+FjZZSfERONtRS0vlPH+EQtpTXEvSST8ntb6mMYXPVF+dsaSqKYfCNNTcHEQ11LBznYaWSm57K4Gwcm8mSc+BpPoFnukokirz6MKifTNvFyi2stNQ/HlfJWDRoF1Eqde8IpFUlxaAYEyaOSfEQkLAlIY3BNR4sMBT30TF1B3fmKcZWpGiyOwpMJGLCgAsNPcr4BnH5LBFcIgvXtleBpunTxHk2MpD0N5RhjyN9z4JTMmdWh6s+eTAdFgm4atwQQb5q4lOa8oNAj4ogfKkDmQKijTf7CcYTKV7rHFNmwJJ0sRtywFDo9CGdo3nGzVuGlLmHwKFFD22Hp0cfmlL21rXjWZEWm0Pge/JM2at1S5XAq5p4hnvh1p/kcCk2krZxxTHD1aaVvLhDY4OzEkrmHTMoSGAIL+
+x-microsoft-antispam-message-info: vn8hCf6zVaHtOMVlWnZU+AFmkOGmVOd3G7xcKQKObr1eFG6UBU8b8fA0lluGFpFg2pVm/fUZfMWXagEwafThLdyKy7lf1HM2Oz6JhmIWhypSWC4HgXn6bHvYtoTEP9upC6RbW+Q0x660Lq/GmJxxgNHaEUxWzN51tVXcuk6VukGAePX1n/iI/V2gK+ZxfVrBzJk2MesMyeoDq9MMgVTOviZBJwnyuxk2pvc6SZ9xk0Yq15PYI/SM5RWWbuGE7K4stpdq+VsYBSQWDXtMojH6zaiXkG6BxWbzVXdinKD8ijdQej/9j19bHGufMhV4bBEWpygyKAAzT0JTkuVBwl/H53A9VfqPaIxRWwSuEpYaP4EfvwmcBEGWG0V55wYm0EeVmfJ4x90XmvQDViBj39n11gjQcrZFy4RTC4/0+UbsEAf9rQZBrPkHgEnKZPW/yad+8LhNpxZJBVmxDixfMWpsTxmeB/DlC8G5nMgkGIUU16T1awQHRANLGwviJYWNZbknf1AJM5Nbu2cobh5SapTKRphtobgC0LyCD0SUkgIqwig8AyMXZ46Np9aOPHY3Y+RiZf36o5xU6QK7NsSNRhxm9IeqLQ1nI7mrn9zoTk4vNoMjYRRXZQjFG1+3qsfJt5dlkxbuJwRgf8X7lcFYBJF1v/IoP++u0c60SG8NGxWJNhHIjcvhGeqa7HxfOIvtS0Xl
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:OS3PR01MB9499.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230028)(4636009)(396003)(346002)(366004)(376002)(39860400002)(136003)(451199021)(1590799018)(5660300002)(8936002)(8676002)(83380400001)(2616005)(2906002)(122000001)(186003)(38100700002)(36756003)(82960400001)(86362001)(38070700005)(31696002)(478600001)(26005)(53546011)(6506007)(110136005)(71200400001)(316002)(6512007)(85182001)(66476007)(76116006)(66556008)(64756008)(91956017)(66946007)(66446008)(6486002)(31686004)(41300700001)(1580799015)(45980500001);
+ SFS:(13230028)(4636009)(396003)(39860400002)(136003)(346002)(376002)(366004)(451199021)(1590799018)(110136005)(478600001)(38070700005)(31686004)(316002)(66946007)(76116006)(66556008)(66446008)(66476007)(64756008)(71200400001)(82960400001)(6486002)(91956017)(122000001)(1580799015)(6512007)(38100700002)(41300700001)(26005)(86362001)(31696002)(186003)(8676002)(8936002)(5660300002)(6506007)(36756003)(85182001)(53546011)(4744005)(2906002)(2616005)(83380400001)(45980500001);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?c0wrYndUUGRnaVpvKzA3SmVlbW9QT3JNQlM5Q29FbUZHTC9aQWpxbXM4Um10?=
- =?utf-8?B?MjNtb2JuZkd2NWV4WE9rTEFVVVh3b1AxN2JmMlZCS2UvREIrOElBTHB0aG1n?=
- =?utf-8?B?b2JXWVNOQSt0WldWL1o5TE1yVkxxa0RiN0RnT1UvRWk1Q29oYUtpdHd6anAw?=
- =?utf-8?B?U3NhV0Jlb1N4emZLcWdMbnRZeGkwQXdXWlNyc0RLTklCT3VoMVV2S1dyQlZ6?=
- =?utf-8?B?RC9MSkRmSExrd0lpT3dzQVZnOEF0b1ZSNDdONXNIOFVzcmV2VWEzNXo4eS92?=
- =?utf-8?B?N084ZjNpTy8rOHdmMEZVMHNSQkI5THhNZGl5c0VnV3plUHJRUTBVRk1KZVE2?=
- =?utf-8?B?T3JkakxBc0dQcm1ocmcxRmxOaDREaTdIODVnYU9yUFZSSGhzVXdWaE4zamph?=
- =?utf-8?B?cC9DWjJsbHlRaW9EQTFuUHNFQnh0OGFVSnVUL2tjV0k2QVg1dGFEVDUzNnpE?=
- =?utf-8?B?WTZWV1ptcmZIaE1Qa1phb2RMMkN2bncraCtsa0ZjUmxBdGhneGJPUTNRbnFa?=
- =?utf-8?B?Y0R4MnlFOUlqa2VZZGlkSy82YllrNWt4OUIzaUloSW11WnREL1F5VjRMaCtX?=
- =?utf-8?B?RU85bjNnRTYrc2t2a0lOOFkxSythelZ3R2orNTAwZ3JwcDNUdjI0ZjZORzM1?=
- =?utf-8?B?ZVh3TUpHdEdRZzhtUlB2bTUvT3k2djltZHhSWGo4RHNjekRWVGJBZHc2UGtz?=
- =?utf-8?B?Ym9CK0U0ZEhobnZyeWVlR0dIalF5Zk9hYXNtbFRkNTBia1p5WHREY01oZEgr?=
- =?utf-8?B?RUNaTlhycVVoTjVMWmxTY2NhK1AzTmQwYlQvdXFsMEd2UTZ3Yk1BSnk4d2hs?=
- =?utf-8?B?UnZ0WWQyWWFhY1p5dHVxQ2R1MUFvU0xITVpBYzZKMVRnQXFQaFU5OTczSGJl?=
- =?utf-8?B?MVZ5Ymg1MVVnbHRjZ0lyQ1U2ZUJBYWtOOW84TXUwaWNaUVFzZkxaeWFaa0h2?=
- =?utf-8?B?ZjJLd3l6NFUrWTQrWklqQXBzWGExL2JyTjhxZ09haldqZEswUUZCSFpCQWpD?=
- =?utf-8?B?SG9hZDVzMUVrbHRxWHJUbFV5ZzV6WnRBZ256NXlXY0pvV2FhNTBrNDZXSERU?=
- =?utf-8?B?SWF2QmdxdXJ6ZFVSUStzd3NtUng1cEtZeUdzOHZGU2NlSTUyV2lldjUwY0hW?=
- =?utf-8?B?OGR1MlVaVFNkKzBoRmZacHFPdTg5THBEMXhQK3ZGTWFuZVNyeTNrcFU5Z0xH?=
- =?utf-8?B?WUtIZWt3V29jWGwxMmIxK1VhbHdlZ01MTkVOVlk2WUIvRkpybCtFbkhLTmhN?=
- =?utf-8?B?T0hkYnJUamFvYm9uZ2xpQk5UNkxEZWV5YUtzei85bFFndmlhSWNkOFBzdkhx?=
- =?utf-8?B?cjdlK1IvamI1RElUZ1piM2syblExZ0lSSzFubHU1am1hMVo0SHFHSTRrZnRj?=
- =?utf-8?B?YTc5aVNqYTZIRDZWVWhVa0hOdEtZOXlMV3hMSkZMaUk5UWxnTXp4YXExVnUw?=
- =?utf-8?B?UG1RTi8yalh5UWc5QWk5OXNqekg2VGVyamtodlJqL2RVV1hHS3A0cFlCT0hm?=
- =?utf-8?B?U3NhTkc0WmZuQlpLYlFZd21GbkZXZUhUOWFqUUhYVWo0TGdYRGtiVzB5cjFt?=
- =?utf-8?B?RmtmeDJlNzZacVYrT2xDb3I2OTZtdVMrWitKdG4wUkRDcjFoQ0J3blVJMVBu?=
- =?utf-8?B?ZXZIVFBhcnRpZjI5dmcvNERvaXgwRTJJTktHVW4zazM0SmhUTW52VVFKMzIy?=
- =?utf-8?B?RVJHazF6Y1U5NldqYktaaTFFa3g2TXdmMWF4ZUtuTjJKbFNYWHBxR2RoKzFi?=
- =?utf-8?B?ei9ZT0ZxMlNTWWJwcURWeGVlKzgyZFppRjFZMkI5QkVuRnBrOFVnL2dlNHNX?=
- =?utf-8?B?eVpsUmNWMnBiS2NPTHhFVFBRUmxIV2tnWDN2VU5ZNExmKzNEYXE4c2thUnZT?=
- =?utf-8?B?RFhVVE4xMVFDSjhYYXdHbk0rVHBPNXZzZ3FWMWRDL3NramxDejJGbUJRRFVj?=
- =?utf-8?B?SGQ5dDVpSjN3Nkx1emIwTzY0b2dneXdnZURSSncvanljdUNXYy9BVjFnZ0FR?=
- =?utf-8?B?K25SQytwNGY4TGJiUllMSnhZT29xZnR2MjVxcmwxWktxc3dzQkhsYjBBbDJP?=
- =?utf-8?B?VHNWNzdEdFIxOXlvTGtoTU1RS24yaUtSY1I4RFVUNjdtS0dIQTdMOHhhSmJn?=
- =?utf-8?B?cUJabVRpb3ZpUGI5QkJoNXpOUVQ5VWRZMW5raVIwMXdBbVQwTFl1dW1Qd2Mv?=
- =?utf-8?B?bHc9PQ==?=
-Content-ID: <3202736DFEC9BA418ACD8756DAA4DB9C@jpnprd01.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?clArYXB1MzdRMTMvcWIvd1NYT1VPK1J2TFVyR2xVVDZjRWN6eFNFUGh2Y0F0?=
+ =?utf-8?B?MjNWN2xPU3MxTHNJRHpENUNPeTl5K1NRV3JrWTdnSlpyT0tQUldobmxNNkJn?=
+ =?utf-8?B?aFpZbmU1QlRBQUtLcE11SWNteFhUYS93UU9SN1R6NEtZaTQ3a0RPbWE2YWZB?=
+ =?utf-8?B?NGMvV1FpVlVnWElHY3JTMjlHdjhaMGloSm5nZGVPaU94VHo4aVp2ZFZsd2NJ?=
+ =?utf-8?B?V3NDS0hnV3o1YWY1WEQrRTFieW5Wa1lwQjJ3Wm5ocGE4MEJ2VUw0Zk9IcDZ6?=
+ =?utf-8?B?a1hPVGRUUFRZL1ZtY1hZcUxsUU1Uc0JmSEEzT0ZYemoxL3V1VTZiTTg4UTFn?=
+ =?utf-8?B?ZlRlRVcvbG1UYUloWEhkQWk5OXJVYW9WcmZScGpLekhsMFVtQkRIN3JhdE9o?=
+ =?utf-8?B?bDdJZWsyeDNkbjVuc3pyVDJ6UDZVdmcxMUowM01KQlJHdW5xaGtBbWc1K3hi?=
+ =?utf-8?B?Y3hXd0IxUTl3UitOMmZkL1RNSUpxTGZFMExPZDdLdXJaM2c0bS9VY0h2TDNI?=
+ =?utf-8?B?SFF0bjJ4V1Qrbk4wMzh4bVk0N2lYQnZzM0pBTjFsdE9qTEd5bDI1YjFVdlpm?=
+ =?utf-8?B?MU1XKzQ5d2tFM2hRL0l5QkdJdHd0WXdPMEZhVGJxK3R2VkR6L2YwL0FETTJH?=
+ =?utf-8?B?VUIrcEhuUzIxYjRnL3Buejh5M09MYk9WME15QnRxdzRvNzdVTmZheUtqOUt3?=
+ =?utf-8?B?Q2JTcUhuMGMreFVNUlh4bDlyYzFiSmVEWW9tZG1zRHhXVmtyMmNxNGM1VUdX?=
+ =?utf-8?B?VC8wSVpVWEdzYm5XNzNQUUp3cUR4LzI2WXhqZk9WL3E0TlpZYnI0Y2Q0Vk1N?=
+ =?utf-8?B?bDJjNi9nWHVGamMxR215NklpNzNDUExjdGdUaTZRZ2NiNjNoUlo0aEpuM1VC?=
+ =?utf-8?B?TUdyNUI0YTBBbzlIM3RuZlF5SlN2T1FLYXBlcVZmbkhZTnA2S3ltYmwrMHo5?=
+ =?utf-8?B?Ym04K1VyRy9EVnd2QWVXNTFwcWN1TEdLbmk4aXdmZnNDWk1tNzZIcWlicE00?=
+ =?utf-8?B?Um4vRHdZTTYwV2hFVTZteThuRXVROTc5ZWVaTDFsZFE4ZmtjY2FrNytUTUNp?=
+ =?utf-8?B?QWgrMzR3OGplZVNWL1dMWnhBQ202SFd0TVQzSWhwZXFmOUFzdVp0M05BQVMr?=
+ =?utf-8?B?ZTEwZHdxRmRvWkdRZk1Ia1dCZzNlSysxYUl3cVNaeHZuc0RrM1hveTAvbnRG?=
+ =?utf-8?B?OG1hQ2ZOMmcveFREY0ozTFpqbS81V0h6aVN4eDRML2RvYXJhaG5KcUdVRFFL?=
+ =?utf-8?B?cE1hNVR5QldSU0hXbEtyMlN1YTVxMGxjb1dVZzd5MkdMTFl2VTJlWlR4cE5Q?=
+ =?utf-8?B?RmwrNU5OS09zcE0vTUpSbW44Umk0ZllvYitUTGtLSnlPUG1vcC9mYXk0Z1Yy?=
+ =?utf-8?B?RlUwVDQ0NGxudDE5Qkc1TkVRZC9zOFFDREpKS3l5NUxrMUhJNys5TFFxQXVk?=
+ =?utf-8?B?dWZWZUg4KzR2Q0hTblpBMGpJbVdEOTNyeU9QTHQzQ2hFMnhtUEZLVUdNZWw2?=
+ =?utf-8?B?SS9YQnZjUjh1MkRRK0g1aytmaEY1ekRyYTh6blg4U2phVDg5MFhibXVZcndL?=
+ =?utf-8?B?WHFHTEJ1ZVVDcXRhTnV2ajJCY2ZnRmh3TFhnZitSZWdpWExhL2VDL1E4aXFm?=
+ =?utf-8?B?WG9POHFlK0F0a2RLcDdoVUs0UjlHRkVJZmZ4bmVHeHlOMDk2TWlHWC9wd0VY?=
+ =?utf-8?B?cGpiSnVpTEV6M2tOUVRia1pHejZOS2JhQWlIRUU1VHJKK3hacjBHMGJwT0pi?=
+ =?utf-8?B?azBlVDlVaC9TWXhoMmkycWpzUmEvZG5sdGZ1cmVCZDNaYVhVWVZKRjIzaS9N?=
+ =?utf-8?B?OUdEOU1HbmxGSWFvaUJNTGNtcmxzb01pY295c3FhN0tJNTZoYTRTNnhkTk82?=
+ =?utf-8?B?cVdzUmd2Z0l6NlVNc3VnS1JoR3RURVVWM2lIU3c1alRJUlRCb1pOVVk4VHZ0?=
+ =?utf-8?B?U3RmN0M4ZHp2Qk5GbDlQeFNXYmVEMmtUWWxWRnNUQnVtbHdDVWRIR2dGQU5O?=
+ =?utf-8?B?WUNldWVINHlkTzd6a2ZnUmprT0VDMUl6djBpYldUOHRzT2owQ0lmcXNacVVN?=
+ =?utf-8?B?TVdCcUFYN3ZQL2RXQXozaUNjWVFyOEFTSXlPcCtsNXhyL3hkRDVBdWkzZmMw?=
+ =?utf-8?B?WnJVQUxReG0rWWgwbFAyY3hGNHRUNitQKzh2bVNJNUtYTUdpZjU3NUx0L0VI?=
+ =?utf-8?B?NFE9PQ==?=
+Content-ID: <9EEA6AFE1B32D04DB0F9F432AD84D4B8@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: oF4JvNaLtBIFr1Wi+1MEFHYKWrXzejDy2Bt50V3mcu1EggQGoPPJjGdxhHIX6hoPo+0Wt4GwWzAtpGxmqYSNMpJMhe9axNZFrMEfO5vFsxSqnDSxxe7w/Q2/oK8+qwzqfw4XWmvSvX362gx0wU8ux2PgFdZlnV20F7CvmalMaA2sZe5C2iUShw77EuiM8WCN2yp/jieBw7iNYUZrsVSAtEPp0KzeYEQi3U1sO+xE6uLpLdBC6TuTkKJSODTHfTcO+/T9Dl/xUDltUi6v179pF2soLI/GGw3GyRY1Ye26lT1MdN7VpvGWIL/ScqnEN8zMV0nhYySRkG3HWEPRjVbynI2AOTmq4ZmB5SfIZE6qqctZDs8hVWJxQBfFJcwi0rdgi0KWjV3iNwONQsy/yTOPFFd/XM+f0wXg5cv9SqKWJ6QGrKvShlCOAivfYYG4LriEqxJGTAV2jCqqLf62eCCk3BqEQ2WlWJU1A3CZDSC3jyVoy2aIqXjwxS6mRVEtjvUw883uhxeTKriTj5r4sPQIL4hbejTGGB4WyGJU7VF1DGpaM7UKXSM7oeheKCVthlxjARrg2msCTLn5PF5ckmyZA9IBjgCXYl7aUjqSR5MGO93CHgJZXr++SjMlGdiCsBgyeO6gEf+Bzx9csHVKvYQENYoQHSf3dm/097O0us6bAFAdTASgYtE1WKx8RX2tx9VFQSq6Yqm4q8qOHemyWCT2UVF0QnvwSohGgYks9zZ2TON9wPZGyB1H60YEpxT0Vt6SRhXUIwetnmE8cWoq4BE/SA==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: BdXUEqqXGi28ZLB+M0MKKG6JyYLZi/iLiHmFddOvA5GTeQv9Bo+17oBY1Ab1RqXGYhzJFXGBDeNhiy09CJPp5jh1vr/M+Iiarlq4Gh9TP0ovmIOCa8/pxiCWDqCjMacgxXI0Bm6+LmBSdcCgnlY07htVqWsQFKl7kEjJMD1lDkUpgLreBkuRveQV549ol4rDkvevtd1iabJ+8NyeydQ2X0JAeTmBlIAGWynnIQRambuUhIPy1LxR9qpd6yCR2jxKuYgmhMXPQ8rmzh51ECj8vEaPEzk4GCyjgoue2VVt/op3/x6p9m3TRXmduJ/IEdxQ5pdPQlNjXFj/syFbTx6i98TBcGE8P660nZR1VCYGixJ0/23R/vjwo+T1zkmuIrNbsZHskKGmQPnEIRpWeBN8FbYc/cEGFWWe5CCY/mdxcKpTQgd7w8Tj7qi057tW54AV5jW9Kapxhd3OjEbDqsGenzr2+Kwt2hBx6BvvmbYSvotxv+MyBlt+3EJypN1md7Tb1mrVjSj+tbkSKX5WO6kGCTIL+0FnjB8GHyY6DC5J8xf1FVC6jZhZvKZmzTucdIQ+MbcE7dk6wU0E0qqIxCUO8hhL1epJHkJSec/p/VFfRru9Z1Fy+9GRsCVd+JST6aYUseJIBA76CZz3c7k3RH9myt4FccXBfeR7cDwhqkYbNmMlgLWwl7vuDybZAqkUaO4kbOyFZvLyuBQzDRlCtdE54W/Ei6j7sSMGl+hb1lIfuGR0H3Y6r2hRWgDkIaPoDx1Te53tFoHvo9s1IRIxuA2Qpg==
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB9499.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e874b72-9118-4dcb-c117-08db57653b11
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2023 06:00:49.6815 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18a0422d-3e72-4753-971f-08db5766a392
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2023 06:10:54.5572 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: msLbxd16Qam7L1ttDjQ7DNYduvGjuXsLAVRDBltbJoGTvPJ0VAW+6SpTIqAV7gLCkfDneuRCZOVdNMPF4oQSlw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY1PR01MB10659
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-userprincipalname: hLRljQvjNlP06XdvO3KiDs/svczAttD99cOrPHJB3WjIBWuwFsfx6RKWN4voYeqZFqsKeJczG3F2O0TgM12llw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSYPR01MB5400
+X-Virus-Scanned: clamav-milter 0.102.4 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 1/6] include/lapi: Move AT_* related macros to
- fcntl header
+Subject: Re: [LTP] [PATCH v6 2/6] lapi/stat.h: Add STATX_DIOALIGN related
+ definition
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -157,218 +158,50 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 2023/5/15 15:11, Yang Xu wrote:
-> These AT* macro is belong to fcntl.h instead of stat.h.
-> So move them.
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-> ---
->   include/lapi/fcntl.h                          | 32 +++++++++++++----
->   include/lapi/stat.h                           | 36 -------------------
->   .../syscalls/mount_setattr/mount_setattr01.c  |  2 +-
->   testcases/kernel/syscalls/statx/statx01.c     |  1 +
->   testcases/kernel/syscalls/statx/statx02.c     |  1 +
->   testcases/kernel/syscalls/statx/statx05.c     |  1 +
->   testcases/kernel/syscalls/statx/statx07.c     |  1 +
->   testcases/kernel/syscalls/statx/statx08.c     |  1 +
->   testcases/kernel/syscalls/statx/statx09.c     |  1 +
->   9 files changed, 33 insertions(+), 43 deletions(-)
-> 
-> diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
-> index f17220737..8fc92c521 100644
-> --- a/include/lapi/fcntl.h
-> +++ b/include/lapi/fcntl.h
-> @@ -87,20 +87,40 @@
->   # define AT_FDCWD -100
->   #endif
->   
-> +#ifndef AT_SYMLINK_NOFOLLOW
-> +# define AT_SYMLINK_NOFOLLOW 	0x100
-> +#endif
-> +
-> +#ifndef AT_REMOVEDIR
-> +# define AT_REMOVEDIR 		0x200
-> +#endif
-> +
->   #ifndef AT_SYMLINK_FOLLOW
-> -# define AT_SYMLINK_FOLLOW 0x400
-> +# define AT_SYMLINK_FOLLOW	0x400
->   #endif
->   
-> -#ifndef AT_SYMLINK_NOFOLLOW
-> -# define AT_SYMLINK_NOFOLLOW 0x100
-> +#ifndef AT_NO_AUTOMOUNT
-> +# define AT_NO_AUTOMOUNT	0x800
->   #endif
->   
->   #ifndef AT_EMPTY_PATH
-> -# define AT_EMPTY_PATH 0x1000
-> +# define AT_EMPTY_PATH		0x1000
->   #endif
->   
-> -#ifndef AT_REMOVEDIR
-> -# define AT_REMOVEDIR 0x200
-> +#ifndef AT_STATX_SYNC_AS_STAT
-> +# define AT_STATX_SYNC_AS_STAT	0x0000
-> +#endif
-> +
-> +#ifndef AT_STATX_FORCE_SYNC
-> +# define AT_STATX_FORCE_SYNC	0x2000
-> +#endif
-> +
-> +#ifndef AT_STATX_DONT_SYNC
-> +# define AT_STATX_DONT_SYNC	0x4000
-> +#endif
-> +
-> +#ifndef AT_STATX_SYNC_TYPE
-> +# define AT_STATX_SYNC_TYPE	0x6000
->   #endif
->   
->   #ifndef O_NOATIME
-> diff --git a/include/lapi/stat.h b/include/lapi/stat.h
-> index ce1f2b678..590ccd111 100644
-> --- a/include/lapi/stat.h
-> +++ b/include/lapi/stat.h
-> @@ -227,40 +227,4 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
->   # define STATX_ATTR_VERITY	0x00100000
->   #endif
->   
-> -#ifndef AT_SYMLINK_NOFOLLOW
-> -# define AT_SYMLINK_NOFOLLOW	0x100
-> -#endif
-> -
-> -#ifndef AT_REMOVEDIR
-> -# define AT_REMOVEDIR		0x200
-> -#endif
-> -
-> -#ifndef AT_SYMLINK_FOLLOW
-> -# define AT_SYMLINK_FOLLOW	0x400
-> -#endif
-> -
-> -#ifndef AT_NO_AUTOMOUNT
-> -# define AT_NO_AUTOMOUNT	0x800
-> -#endif
-> -
-> -#ifndef AT_EMPTY_PATH
-> -# define AT_EMPTY_PATH		0x1000
-> -#endif
-> -
-> -#ifndef AT_STATX_SYNC_TYPE
-> -# define AT_STATX_SYNC_TYPE	0x6000
-> -#endif
-> -
-> -#ifndef AT_STATX_SYNC_AS_STAT
-> -# define AT_STATX_SYNC_AS_STAT	0x0000
-> -#endif
-> -
-> -#ifndef AT_STATX_FORCE_SYNC
-> -# define AT_STATX_FORCE_SYNC	0x2000
-> -#endif
-> -
-> -#ifndef AT_STATX_DONT_SYNC
-> -# define AT_STATX_DONT_SYNC	0x4000
-> -#endif
-> -
->   #endif /* LAPI_STAT_H__ */
-> diff --git a/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
-> index 83746b878..616ec5341 100644
-> --- a/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
-> +++ b/testcases/kernel/syscalls/mount_setattr/mount_setattr01.c
-> @@ -32,7 +32,7 @@
->   #include <sys/statvfs.h>
->   #include "tst_test.h"
->   #include "lapi/fsmount.h"
-> -#include "lapi/stat.h"
-> +#include "lapi/fcntl.h"Hi Xu
+Hi Xu
 
-It seems unnecessary here because "lapi/fsmount.h" has included 
-"lapi/fcntl.h".
-
->   
->   #define MNTPOINT        "mntpoint"
->   #define OT_MNTPOINT     "ot_mntpoint"
-> diff --git a/testcases/kernel/syscalls/statx/statx01.c b/testcases/kernel/syscalls/statx/statx01.c
-> index 68f56549f..f9c2748d2 100644
-> --- a/testcases/kernel/syscalls/statx/statx01.c
-> +++ b/testcases/kernel/syscalls/statx/statx01.c
-> @@ -33,6 +33,7 @@
->   #include "tst_test.h"
->   #include "tst_safe_macros.h"
->   #include "lapi/stat.h"
-> +#include "lapi/fcntl.h"
->   #include "tst_safe_stdio.h"
->   #include <string.h>
->   #include <inttypes.h>
-> diff --git a/testcases/kernel/syscalls/statx/statx02.c b/testcases/kernel/syscalls/statx/statx02.c
-> index a8e868d7a..5ed80894d 100644
-> --- a/testcases/kernel/syscalls/statx/statx02.c
-> +++ b/testcases/kernel/syscalls/statx/statx02.c
-> @@ -28,6 +28,7 @@
->   #include "tst_test.h"
->   #include "tst_safe_macros.h"
->   #include "lapi/stat.h"
-> +#include "lapi/fcntl.h"
->   
->   #define TESTFILE "test_temp"
->   #define LINK_FILE "test_temp_ln"
-
-I hope we can add "lapi/fcntl.h" for all statx tests because AT_FDCWD 
-macro which may not be defined is used by all tests.
-
-> diff --git a/testcases/kernel/syscalls/statx/statx05.c b/testcases/kernel/syscalls/statx/statx05.c
-> index f62dadd5c..9781b3e70 100644
-> --- a/testcases/kernel/syscalls/statx/statx05.c
-> +++ b/testcases/kernel/syscalls/statx/statx05.c
-> @@ -27,6 +27,7 @@
->   #include "tst_test.h"
->   #include "lapi/fs.h"
->   #include "lapi/stat.h"
-> +#include "lapi/fcntl.h"
->   
->   #define MNTPOINT "mnt_point"
->   #define TESTDIR_FLAGGED MNTPOINT"/test_dir1"
-> diff --git a/testcases/kernel/syscalls/statx/statx07.c b/testcases/kernel/syscalls/statx/statx07.c
-> index b13c11f72..f688b1b0f 100644
-> --- a/testcases/kernel/syscalls/statx/statx07.c
-> +++ b/testcases/kernel/syscalls/statx/statx07.c
-> @@ -39,6 +39,7 @@
->   #include <sys/mount.h>
->   #include "tst_test.h"
->   #include "lapi/stat.h"
-> +#include "lapi/fcntl.h"
->   
->   #define MODE(X) (X & (~S_IFMT))
->   #define FLAG_NAME(x) .flag = x, .flag_name = #x
-> diff --git a/testcases/kernel/syscalls/statx/statx08.c b/testcases/kernel/syscalls/statx/statx08.c
-> index 10b1ca460..64b36986d 100644
-> --- a/testcases/kernel/syscalls/statx/statx08.c
-> +++ b/testcases/kernel/syscalls/statx/statx08.c
-> @@ -26,6 +26,7 @@
->   #include "lapi/fs.h"
->   #include <stdlib.h>
->   #include "lapi/stat.h"
-> +#include "lapi/fcntl.h"
->   
->   #define MOUNT_POINT "mntpoint"
->   #define TESTDIR_FLAGGED MOUNT_POINT"/test_dir1"
-> diff --git a/testcases/kernel/syscalls/statx/statx09.c b/testcases/kernel/syscalls/statx/statx09.c
-> index aea329e08..c03d2c91e 100644
-> --- a/testcases/kernel/syscalls/statx/statx09.c
-> +++ b/testcases/kernel/syscalls/statx/statx09.c
-> @@ -24,6 +24,7 @@
->   #include "lapi/fs.h"
->   #include "lapi/fsverity.h"
->   #include "lapi/stat.h"
-> +#include "lapi/fcntl.h"
->   #include <inttypes.h>
->   
->   #define MNTPOINT "mnt_point"
-
-Other than that looks good to me.
+LGTM.
 Reviewed-by: Xiao Yang <yangx.jy@fujitsu.com>
 
 Best Regards,
 Xiao Yang
+
+On 2023/5/15 15:11, Yang Xu wrote:
+> Also add missing stx_mnt_id.
+> 
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>   include/lapi/stat.h | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/lapi/stat.h b/include/lapi/stat.h
+> index 590ccd111..6ed4b6637 100644
+> --- a/include/lapi/stat.h
+> +++ b/include/lapi/stat.h
+> @@ -97,7 +97,11 @@ struct statx {
+>   	uint32_t	stx_dev_major;
+>   	uint32_t	stx_dev_minor;
+>   	/* 0x90 */
+> -	uint64_t	__spare2[14];
+> +	uint64_t	stx_mnt_id;
+> +	uint32_t	stx_dio_mem_align;
+> +	uint32_t	stx_dio_offset_align;
+> +	/* 0xa0 */
+> +	uint64_t	__spare3[12];
+>   	/* 0x100 */
+>   };
+>   #endif
+> @@ -180,6 +184,10 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
+>   # define STATX_MNT_ID		0x00001000U
+>   #endif
+>   
+> +#ifndef STATX_DIOALIGN
+> +# define STATX_DIOALIGN		0x00002000U
+> +#endif
+> +
+>   #ifndef STATX_ALL
+>   # define STATX_ALL		0x00000fffU
+>   #endif
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
