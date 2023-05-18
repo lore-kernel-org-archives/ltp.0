@@ -4,38 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8797AC77B7D
-	for <ltp@archiver.kernel.org>; Thu, 18 May 2023 08:00:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2052EC7EE22
+	for <ltp@archiver.kernel.org>; Thu, 18 May 2023 08:28:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0C7AA3CDC19
-	for <ltp@archiver.kernel.org>; Thu, 18 May 2023 10:00:04 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 0C91E3CDC1D
+	for <ltp@archiver.kernel.org>; Thu, 18 May 2023 10:28:03 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AF5A43CB28E
- for <ltp@lists.linux.it>; Thu, 18 May 2023 09:59:33 +0200 (CEST)
-Received: from relay.virtuozzo.com (relay.virtuozzo.com [130.117.225.111])
+ by picard.linux.it (Postfix) with ESMTPS id 013DA3CB29C
+ for <ltp@lists.linux.it>; Thu, 18 May 2023 10:27:52 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 137581A00099
- for <ltp@lists.linux.it>; Thu, 18 May 2023 09:59:32 +0200 (CEST)
-Received: from [172.29.16.86] (helo=finist-vl9.sw.ru)
- by relay.virtuozzo.com with esmtp (Exim 4.96)
- (envelope-from <khorenko@virtuozzo.com>) id 1pzYWe-00BNpU-1V;
- Thu, 18 May 2023 09:59:31 +0200
-To: ltp@lists.linux.it
-Date: Thu, 18 May 2023 10:59:30 +0300
-Message-Id: <20230518075931.1344979-2-khorenko@virtuozzo.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230518075931.1344979-1-khorenko@virtuozzo.com>
-References: <20230518075931.1344979-1-khorenko@virtuozzo.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2B74E600801
+ for <ltp@lists.linux.it>; Thu, 18 May 2023 10:27:51 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5F2791F74D;
+ Thu, 18 May 2023 08:27:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1684398471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=G42JUmhmz60od1HztAQvt/RGw8pFCo+d7rOWCOMYFZs=;
+ b=e5KZB0oF/m6ZQH1cQTYpOnqp7oBJqHGzDP6tuabOMLEGr5Lm5Le36JNhKpGCiwXEK9s/rB
+ BO+qeCFmrMCMqtS8ujw2+VZZ6YwWPMAG/Ow4d2c4z++PiqbBXBfz4HQpn2phBkfprTXZNB
+ wf46Wptm2XyoGyTTrCuT+fiUzoX0H08=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1684398471;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=G42JUmhmz60od1HztAQvt/RGw8pFCo+d7rOWCOMYFZs=;
+ b=MGOYriwyJCbAdOq91KXmUP7b8pIx2pb3BLL0qct3UHxr0MhKJ4cT45RLeWFy6wb3P0gkAl
+ LvNw9bfPOChyGnBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 332D91390B;
+ Thu, 18 May 2023 08:27:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id kkB8CofhZWSOOQAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 18 May 2023 08:27:51 +0000
+Message-ID: <f7f3ffc0-2455-b7ab-531b-04d7974c7164@suse.cz>
+Date: Thu, 18 May 2023 10:27:50 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 0.102.4 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+To: Petr Vorel <pvorel@suse.cz>
+References: <20230517153642.26919-1-mdoucha@suse.cz>
+ <20230517153642.26919-2-mdoucha@suse.cz> <20230517220827.GA8914@pevik>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20230517220827.GA8914@pevik>
+X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] scsi_debug/tlibio/lio_write_buffer: Always
- return total amount of written bytes
+Subject: Re: [LTP] [PATCH 1/7] KVM: Add VMSAVE/VMLOAD intercept constants
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -47,69 +80,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Konstantin Khorenko via ltp <ltp@lists.linux.it>
-Reply-To: Konstantin Khorenko <khorenko@virtuozzo.com>
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it, Nicolai Stange <nstange@suse.de>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Sometimes we got failures like:
- growfiles(gf217): 65884 growfiles.c/2262: 104203 tlibio.c/744 write(3, buf, 5000) returned=2288
- growfiles(gf217): 65884 growfiles.c/1765: 104203 Hit max errors value of 1
- gf217       1  TFAIL  :  growfiles.c:134: Test failed
+On 18. 05. 23 0:08, Petr Vorel wrote:
+> Hi Martin,
+> 
+>> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+>> ---
+>>   testcases/kernel/kvm/include/kvm_x86_svm.h | 5 +++++
+>>   1 file changed, 5 insertions(+)
+> 
+>> diff --git a/testcases/kernel/kvm/include/kvm_x86_svm.h b/testcases/kernel/kvm/include/kvm_x86_svm.h
+>> index 965d1e716..3eb832849 100644
+>> --- a/testcases/kernel/kvm/include/kvm_x86_svm.h
+>> +++ b/testcases/kernel/kvm/include/kvm_x86_svm.h
+>> @@ -37,10 +37,15 @@
+>>   /* SVM event intercept IDs */
+>>   #define SVM_INTERCEPT_HLT 0x78
+>>   #define SVM_INTERCEPT_VMRUN 0x80
+>> +#define SVM_INTERCEPT_VMLOAD 0x82
+>> +#define SVM_INTERCEPT_VMSAVE 0x83
+>>   #define SVM_INTERCEPT_MAX 0x95
+> 
+>>   /* SVM vmrun exit codes */
+>>   #define SVM_EXIT_HLT 0x78
+>> +#define SVM_EXIT_VMRUN 0x80
+>> +#define SVM_EXIT_VMLOAD 0x82
+>> +#define SVM_EXIT_VMSAVE 0x83
+> It looks like these three aren't used anywhere.
 
-Which looked strange as partial write is something usual and valid.
-It turned out that lio_write_buffer() has the code cycle writes in case
-of a partial write happens, but it anyway returns the amount of bytes
-written by the LAST write.
+Yes, the SVM_EXIT_* constants are not used. I originally wanted to use 
+them in one of the checks but then decided against it. But let's keep 
+them anyway since they'll be needed to handle the intercepts in future 
+tests.
 
-And upper growfile() consider the returned amount from
-lio_write_buffer() to be less than it tried to write and fails the
-testcase.
-
-Fix lio_write_buffer() to always return total bytes written, even in
-case partial writes.
-
-Signed-off-by: Konstantin Khorenko <khorenko@virtuozzo.com>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
----
- lib/tlibio.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/lib/tlibio.c b/lib/tlibio.c
-index 79883913a..b029e5883 100644
---- a/lib/tlibio.c
-+++ b/lib/tlibio.c
-@@ -539,6 +539,10 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 		long wrd)	/* to allow future features, use zero for now */
- {
- 	int ret = 0;		/* syscall return or used to get random method */
-+	/* as we cycle writes in case of partial writes, we have to report up
-+	 * total bytes written
-+	 */
-+	int totally_written = 0;
- 	char *io_type;		/* Holds string of type of io */
- 	int omethod = method;
- 	int listio_cmd;		/* Holds the listio/lio_listio cmd */
-@@ -745,13 +749,14 @@ int lio_write_buffer(int fd,		/* open file descriptor */
- 						fd, size, ret);
- 					size -= ret;
- 					buffer += ret;
-+					totally_written += ret;
- 				} else {
- 					if (Debug_level > 1)
- 						printf
- 						    ("DEBUG %s/%d: write completed without error (ret %d)\n",
- 						     __FILE__, __LINE__, ret);
- 
--					return ret;
-+					return totally_written + ret;
- 				}
- 			}
- 			wait4sync_io(fd, 0);
 -- 
-2.31.1
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 
 -- 
