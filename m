@@ -4,66 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F7D7C77B7A
-	for <ltp@archiver.kernel.org>; Fri, 19 May 2023 09:17:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72B05C77B75
+	for <ltp@archiver.kernel.org>; Fri, 19 May 2023 10:08:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 779CE3CD3FF
-	for <ltp@archiver.kernel.org>; Fri, 19 May 2023 11:17:53 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id DC32B3CD40E
+	for <ltp@archiver.kernel.org>; Fri, 19 May 2023 12:08:05 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 647AF3CD3FB
- for <ltp@lists.linux.it>; Fri, 19 May 2023 11:17:34 +0200 (CEST)
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com
- [IPv6:2607:f8b0:4864:20::a2c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 206D83CB263
+ for <ltp@lists.linux.it>; Fri, 19 May 2023 12:07:55 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B9257600155
- for <ltp@lists.linux.it>; Fri, 19 May 2023 11:17:33 +0200 (CEST)
-Received: by mail-vk1-xa2c.google.com with SMTP id
- 71dfb90a1353d-456d0287ec1so799371e0c.1
- for <ltp@lists.linux.it>; Fri, 19 May 2023 02:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1684487852; x=1687079852;
- h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
- :date:message-id:reply-to;
- bh=FjkRsaO51J+3h62ljii2sgaVK4RT4W9ZpTfAcGqp1pg=;
- b=q982RWsrY//sxZXwnVuCUIoDXyNwhOtyjSNdroAGncPmIatXf2X6FBJxj0RsCbzOr8
- PQhA9R3Ec4/8zyOkNse/4qWIL1q9qkqPvfv5UcsKswD9EaqI0mcJhI2J8K3DwUBQQhGi
- 4EQi7mDme6k522YLsoCpU12Ysp0nbGZqgnV8/IGBt0lJLYAPHf5GJjdkzmYCVpZbiC3D
- Pxv2CERstitSHawdj+6hjn7KqWQTusyRevJIzKgwBydZv96sk8AZ70LGs9JgNFlTyvG8
- jnJm9mSkSVY4NoajpnbDw5F9GeLwoheTmEt3il/W8K+W7cKYjNKzGN+TpoFVrlNhfY+5
- dPSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1684487852; x=1687079852;
- h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=FjkRsaO51J+3h62ljii2sgaVK4RT4W9ZpTfAcGqp1pg=;
- b=QmOzPkTL8Eq56pNkuEzDMO/Z3ujqFRh1v4joWCCVfE5Tr8TODRMotXUGNWn8Lt+nDb
- JMqvqg07sn+avrr1dWWRJ1aRUKgMQjGbtjQfOvs5ogNWONXO8K3kSNWu6d65zpoV0GHM
- jap6cbFKfu+5gV2g1f4+f+NxaFJkVpYY+iPdxOezW7M6fwdVLd5vEqWrb7VtEknGnlxv
- +Sb5jNfC2WwLs2n5GCThiHN4q+YLlJIn/HxZk0SNY14IFOiHoE+aOVyFBeqN3h7zC/yf
- hadcEq96grLA5iORmJ2fVqXBBkNlTRfBGTR3XWV4euLcmW/6wxCKQHMsLs9K2KEK+6AZ
- JY5A==
-X-Gm-Message-State: AC+VfDyYUl9ETEinFXORVsK3ptNGrp/nx0n8wfLU1m8f8egwEZ4xltCa
- YVSMP/LO/nKRJvVAXi2MdIhfgeCsKkLpyyFwbaKaKQ==
-X-Google-Smtp-Source: ACHHUZ6FIvI8GJGjhJKl+w6GLlSXbVimRzZmRuLgK82KaqjxlnxJtZrYpsZP2DgLh3JBOcPn7qFNq8Luweco+Xkd/BM=
-X-Received: by 2002:a1f:3f03:0:b0:453:8f1c:eb31 with SMTP id
- m3-20020a1f3f03000000b004538f1ceb31mr278701vka.14.1684487852406; Fri, 19 May
- 2023 02:17:32 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3F97C1000D34
+ for <ltp@lists.linux.it>; Fri, 19 May 2023 12:07:54 +0200 (CEST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 58F5261717;
+ Fri, 19 May 2023 10:07:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76BADC433D2;
+ Fri, 19 May 2023 10:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1684490872;
+ bh=ErpNX8MfnBhLkqUmYyUGRkGWNEqA9sLH6OQwiqLpoyc=;
+ h=Subject:From:To:Date:In-Reply-To:References:From;
+ b=WYh8RBFOvz/J2Deh1sUG6sQZv9Nus1qZFyt/B3rR189MwoWNgC95nUamRAk19zlu/
+ D47yL+RcmhylZylN/+aKDftfP+mWbOPT6U7TJsAlzfFojyQbuwbZnBqvR26VMJnqyV
+ AmmCQl36t9yZtbYyRECwPDEmYTfU79qyBtt1hWN3IMYx+1oHekrGDYqu7ZBzc6hM9q
+ ya89X8B9TOayZ8/WqoNJHLlGLIjS52oYcM5LM2LGmuCn0QfiUDv78hNfnorqkp+u4H
+ FHxPW1fsZ6/YqolfTAlxyaDHI6fGibqfPnNKRH+K8DFdBUabFvlHHP5BT63VpoCcMS
+ qxAa9/7mgxH0Q==
+Message-ID: <c6c0ae90df044b883ed65ba1896db8b51dfa70d4.camel@kernel.org>
+From: Jeff Layton <jlayton@kernel.org>
+To: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>, "ltp@lists.linux.it"
+ <ltp@lists.linux.it>
+Date: Fri, 19 May 2023 06:07:51 -0400
+In-Reply-To: <68340cb2-87e1-ff17-2db8-5610beba761b@fujitsu.com>
+References: <20230518113216.126233-1-jlayton@kernel.org>
+ <68340cb2-87e1-ff17-2db8-5610beba761b@fujitsu.com>
+User-Agent: Evolution 3.48.1 (3.48.1-1.fc38) 
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Fri, 19 May 2023 14:47:21 +0530
-Message-ID: <CA+G9fYs-Bc6wZKx+Fz4gFBQhkfRi+pQCnij5Kh3zhHU31mmGgQ@mail.gmail.com>
-To: open list <linux-kernel@vger.kernel.org>, LTP List <ltp@lists.linux.it>, 
- lkft-triage@lists.linaro.org
-X-Virus-Scanned: clamav-milter 0.102.4 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] LTP: io_uring01 io_uring02 fails on compat mode - 64-bit
- kernel and 32-bit userspace
+Subject: Re: [LTP] [PATCH] syscalls/statx06: use a fine-grained timestamp
+ for the second time fetch
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,43 +62,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ardb@kernel.org>,
- Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-LTP running on compat mode where the tests run on
-64-bit kernel and 32-bit userspace are noticed on a list of failures.
+On Fri, 2023-05-19 at 09:16 +0000, Yang Xu (Fujitsu) wrote:
+> 
+> on 2023/05/18 19:32, Jeff Layton wrote:
+> > I have a patchset in progress to change the kernel to sometimes use
+> > fine-grained timestamps for the mtime/ctime. With this, the statx06 test
+> > sometimes fails.
+> > 
+> > Change the test to grab a fine-grained timestamp for the "after" value,
+> > which fixes the issue.
+> 
+> Now, it is not a right time to review this patch,  I prefer to review 
+> this when your kernel patchset is merged into linux master or 
+> linux-next. Then we can add a comment or a kernel commit id to explain 
+> this..
+> 
+> 
 
-What would be the best way to handle this rare combination of failures ?
+Fair enough. I don't think there is any issue with taking this patch in
+earlier however.
 
-* qemu_x86_64-compat
-   - io_uring01
-   - io_uring02
+The problem with this test is that it makes the assumption that coarse-
+grained timestamps are sufficient to bracket a filesystem operation.
+While that has largely been true in the past, it's certainly not
+specified by any standard.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > 
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >   testcases/kernel/syscalls/statx/statx06.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/testcases/kernel/syscalls/statx/statx06.c b/testcases/kernel/syscalls/statx/statx06.c
+> > index ce82b905bebd..fa75982b0901 100644
+> > --- a/testcases/kernel/syscalls/statx/statx06.c
+> > +++ b/testcases/kernel/syscalls/statx/statx06.c
+> > @@ -109,7 +109,7 @@ static void test_statx(unsigned int test_nr)
+> >   	clock_wait_tick();
+> >   	tc->operation();
+> >   	clock_wait_tick();
+> > -	SAFE_CLOCK_GETTIME(CLOCK_REALTIME_COARSE, &after_time);
+> > +	SAFE_CLOCK_GETTIME(CLOCK_REALTIME, &after_time);
+> >   
+> >   	TEST(statx(AT_FDCWD, TEST_FILE, 0, STATX_ALL, &buff));
+> >   	if (TST_RET != 0) {
 
-tst_buffers.c:55: TINFO: Test is using guarded buffers
-tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
-io_uring01.c:80: TPASS: io_uring_setup() passed
-io_uring01.c:89: TBROK: mmap((nil),388,3,32769,3,0) failed: ENOMEM (12)
-
-tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
-io_uring02.c:213: TBROK: mmap((nil),18752,3,32769,5,0) failed: ENOMEM (12)
-
-
-log:
-----
-
- - https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v6.4-rc1-71-g105131df9c3b/testrun/16883235/suite/ltp-syscalls/test/io_uring02/log
- - https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v6.4-rc1-71-g105131df9c3b/testrun/16883235/suite/ltp-syscalls/test/io_uring01/history/
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Jeff Layton <jlayton@kernel.org>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
