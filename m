@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E79CC77B75
-	for <ltp@archiver.kernel.org>; Fri, 19 May 2023 06:48:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B103C77B7A
+	for <ltp@archiver.kernel.org>; Fri, 19 May 2023 09:06:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 28E733CD40C
-	for <ltp@archiver.kernel.org>; Fri, 19 May 2023 08:48:30 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id B31253CB27E
+	for <ltp@archiver.kernel.org>; Fri, 19 May 2023 11:06:40 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E1DEF3CB241
- for <ltp@lists.linux.it>; Fri, 19 May 2023 08:48:18 +0200 (CEST)
-Received: from esa12.fujitsucc.c3s2.iphmx.com (esa12.fujitsucc.c3s2.iphmx.com
- [216.71.156.125])
+ by picard.linux.it (Postfix) with ESMTPS id 1BA073CB25D
+ for <ltp@lists.linux.it>; Fri, 19 May 2023 11:06:28 +0200 (CEST)
+Received: from esa20.fujitsucc.c3s2.iphmx.com (esa20.fujitsucc.c3s2.iphmx.com
+ [216.71.158.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1B46560022B
- for <ltp@lists.linux.it>; Fri, 19 May 2023 08:48:17 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4B09110009F7
+ for <ltp@lists.linux.it>; Fri, 19 May 2023 11:06:26 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1684478898; x=1716014898;
+ t=1684487188; x=1716023188;
  h=from:to:subject:date:message-id:references:in-reply-to:
  content-id:content-transfer-encoding:mime-version;
- bh=6t+WrFgU4a4b/mnbNDSbx/WM/221HwOQjPyVVAguJ9o=;
- b=fXenijnkphbS5zslcsiDwPorbOUXBnaqEbrdsjVqE202Ke9065V7j3fZ
- 4ZizodXs+jRNBYkZdSuM99t8myp36PAfkMpjlkbMcapyBJoHiu2a3cmpu
- U6WVnZWrU4Uq0uHmU4SyuTrydG1Lo521oMMn6mjKDPDO4cnfw7JgqUSBC
- I8RFX2rb7Q/UlVonfNNfcT1dixtcIbynZhH1Rjo60/O4QQd0/feHDrMpb
- fhMZA5wvgrlO7P8Z4WpwujQRCYQbnNrzGgs4rtWjKtwhocMSXRKuJgdqo
- RfW+qon1Nokw4QCzusGWjqxq26CV1jAKXE0GGM6uhQ6GU7kmCUPuXthIk Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="84958147"
-X-IronPort-AV: E=Sophos;i="6.00,175,1681138800"; d="scan'208";a="84958147"
-Received: from mail-tycjpn01lp2170.outbound.protection.outlook.com (HELO
- JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.170])
+ bh=FhWKX6s2O5uzQplSYCNZMkRGkWc7wAlBAIiRyY3J+FQ=;
+ b=IOjUleu4Y+Du5UoKNRFD3su4ALpSPjT5F6fymQ3RU49/19SzB4Nemfmx
+ yv2gG+Dzgm5tfXQLz2du3O2keomvYGIhPuOSJkN+UEcNFtLXPoX96qhdP
+ Lp0dkgaLM0FQT5/xJUr+1fFYkLPHKjhvlUKUNZOsMLVgYkFQy6l8fywxS
+ 1HuzDlUN2ENqsDSnsWLS5Nk3Fkgaoir0AXFrR6IYXAGAf7qVkIH6wEfvO
+ Vh6RHl0gvjGYCkvG0GvKZioRRyOZQRuJQb9TKk2BeUXJpsIt2k45T42Pu
+ d4LB8OPn2HBhuOn716QfFXpEcIPcAdaDQhlnhVe3oQfNgQO2I0HkySMeZ w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="84677088"
+X-IronPort-AV: E=Sophos;i="6.00,176,1681138800"; d="scan'208";a="84677088"
+Received: from mail-os0jpn01lp2108.outbound.protection.outlook.com (HELO
+ JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.108])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 May 2023 15:48:16 +0900
+ 19 May 2023 18:06:26 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NxF70OPxdw43x3fCdzpSKba5CO092cKDXhX25qzUmtHDGQPOZUuS17PxRwa7V0IAObBoCjK7f/8sDfn4BX3tLYSpGgRZ+6aVV+UaB47SU+ccZNg5s2EhuNSIKF5FkkzYleGiFHQr/4OEM2J8cZr9SEDluvU9U3lM5u7LoF7GF8brI1oudylQQyN3y4uiHrCpPapQigvXP7UbqPOhu5I+q+0Iartqa79EvCFbkDGTxJQEv4yhb+YmdM+59qwp6IfxZ7Oz6EmZhDWUCN6IyW5Iv1B9VaYV4HhvteYVxGOKr+f0FhX+KSt78B3P7ewuVN7UgbtomLBZLEichxv+LGuN4Q==
+ b=DT5ozXdwDdrXaWPiQAKAkR76zNUw1Gcq9Dd3fcbee/vbvW0Id0MetsZOfGhdi/m+TQUcvcd67uHb9SQ1vCU754kHaQ6eyJB37fVPbWMN232xRegJIEU6BG2ZzDIciYwIuTxeg+76XdDXJq85y3GN6g1ev5n44iZl8dX4MfMeTEJrEukTwKg1xbu35YyboQ+gUtEtm9nSjrHbIJ5ZCFK/bu9koqU9WvRmln6IjIWDzmB6I4YDHYOUi113V8AjDsqXPqAxV7XiX7Hl2kJm+xUDNr842zTDeW2BgE+PF0Gul9ZPOax+bNBK0BqovjHqKdGvdrRyeVyxnWurClykCqTuSw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6t+WrFgU4a4b/mnbNDSbx/WM/221HwOQjPyVVAguJ9o=;
- b=FrrEgeWzd1tnUSFk+VuIm3EisW5H285q6CYjaTC6yUONfNxFe8IOJazlHu0UGkRcjVIPkGxMR8xxXQTQQTUpncUhILtOfc+Aacgd4bhA/mqX95cb9p9+jAUV63iE4aqwWZ4lNXgjDWVHn6RQE5Vp2zRdTgTq/SZJa79CZ3i0XndCDRUWu6m3BLhlzVmyn6gQOkh0EtHA60MC4omwN28MwDRQAfX6c4muH0hrNzBsPpSbo54hcoQHwp8Dy4JZF7/w4fClOa3dgFA4J0qeOeEkdpcsnvuBGP4N6pKCogRfV7/oQWbjiMpFBSiuBmemtknqCCHvIwD5VlvuS/djlNlPfQ==
+ bh=FhWKX6s2O5uzQplSYCNZMkRGkWc7wAlBAIiRyY3J+FQ=;
+ b=fP6WAw+HxzHVOBjT+qTsZx4jcAZdoQv+2jS2ndT/gvBoNln9qYb/pvGhxRLG2SIMb8t+8Fa2t8rUo98qB4c1DPUUj1GU7vEeJJA+LNwyFDV4CbdJ8S2hZgaZWxk1guYUE41wcihdeuWEbAdZL6ymOs2VE/tNJaxPRdmqIy9wFcgiTnOLtLZ8081QJqCgaQMDnEvtpQh1a0m9lPekvvqNckwI35FyaXM/ZBrYz8n1oo/BD3XWsy47eLP2JKxnGW/3qLqloy+k+ld99Q6dWKZNjSy45qrn3wfGi44hjIdyfZ8kDQkTgKDyg1FlnJkIyLkJKmiuBzKEMsX82R1sFvAJ8g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
 Received: from TYWPR01MB10725.jpnprd01.prod.outlook.com (2603:1096:400:2a5::7)
- by OS0PR01MB5426.jpnprd01.prod.outlook.com (2603:1096:604:96::10)
+ by TYCPR01MB5630.jpnprd01.prod.outlook.com (2603:1096:400:46::12)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.21; Fri, 19 May
- 2023 06:48:12 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.20; Fri, 19 May
+ 2023 09:06:22 +0000
 Received: from TYWPR01MB10725.jpnprd01.prod.outlook.com
  ([fe80::1eae:326d:abf5:e4e1]) by TYWPR01MB10725.jpnprd01.prod.outlook.com
  ([fe80::1eae:326d:abf5:e4e1%5]) with mapi id 15.20.6411.021; Fri, 19 May 2023
- 06:48:12 +0000
+ 09:06:22 +0000
 From: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>
 To: "Xiao Yang (Fujitsu)" <yangx.jy@fujitsu.com>, "ltp@lists.linux.it"
  <ltp@lists.linux.it>
-Thread-Topic: [LTP] [PATCH v6 2/6] lapi/stat.h: Add STATX_DIOALIGN related
- definition
-Thread-Index: AQHZhvx6+pRS023DxEGtBl6rEmdxbq9fkQgAgAGWpwCAAAYZgA==
-Date: Fri, 19 May 2023 06:48:12 +0000
-Message-ID: <132ed4e6-62fb-a088-d02f-446fcf623141@fujitsu.com>
+Thread-Topic: [LTP] [PATCH v6 6/6] syscalls/statx11: Add basic test for
+ STATX_DIOALIGN on block device
+Thread-Index: AQHZhvyB8eeOeRn+WUy36WgWbA+8ca9hJ0OAgAAtHYA=
+Date: Fri, 19 May 2023 09:06:21 +0000
+Message-ID: <7f8577a2-9aa5-2a09-9aa2-418d5c5d1d1b@fujitsu.com>
 References: <1684134680-6190-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1684134680-6190-2-git-send-email-xuyang2018.jy@fujitsu.com>
- <7ac7fa23-99f2-69ce-a0cb-25387682f046@fujitsu.com>
- <33871b58-c338-3099-30b4-310cffcca1d3@fujitsu.com>
-In-Reply-To: <33871b58-c338-3099-30b4-310cffcca1d3@fujitsu.com>
+ <1684134680-6190-6-git-send-email-xuyang2018.jy@fujitsu.com>
+ <c90e3176-0b2c-f5d8-5314-984123d40029@fujitsu.com>
+In-Reply-To: <c90e3176-0b2c-f5d8-5314-984123d40029@fujitsu.com>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -78,72 +77,72 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYWPR01MB10725:EE_|OS0PR01MB5426:EE_
-x-ms-office365-filtering-correlation-id: 1608ef43-f9e9-489e-9f41-08db583503f0
+x-ms-traffictypediagnostic: TYWPR01MB10725:EE_|TYCPR01MB5630:EE_
+x-ms-office365-filtering-correlation-id: 15d561ce-d6e7-4513-16cd-08db584850c7
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +pofOfSoKQZneae90PwT2F6IYB7S7czi/PaADWJhUzBmfGS/sI9VBotGLHQjtuFrja+hiNU2dy/nBdWpb3wrkXp0X56H5pQLZsNAbBDAk+oxH+yDjG571cvXnH3w1Y7sTwpSZiCbikXdzNFDYiXhM3W8yGeaTseDtHSagyD/pqFZNvywwDqu/cludItUiJx/eaMSQwTmSMAhBQZC7zG8eeTpZtc/gn5DT7AA5U0om+/33lSUYrx4+h5ygGKBt4stUcDyk+W7cmpahjmrrhMxORr9TGyOI3AUUaeWZFCd12+D3jrdeRe55l4YmE+G07uWY7XrUSSPuHkYUMv0NwaO9I8XGKzZH3TzST5r0QGgzcx1OP51JjsDr9C8R6A/eP1kSPurFqSJSCIo7ckrlIiEHVzgwaWY3eJRXnPQUfN/6i9wrt6ul+TjX7wIYO4MK6gHba0QrjMk1+mq8mx83Bx65hVZiqgt3nPuxfGM5bFO433yVXh/aft0is1TAH33o5iVDIO3HtOjbd2Ss0dqJqWX1RT8W7HRHFA6aUUmoXk9+f1EywcIsgkJ6p+lQfMYBSRxCuKVz3dJEgA4MC+fd3SCN2DL6Ny+aptq2DwITb/jZOjX0QKV41ZSDLnH/k/Fl1J8pZ0DV8T5gNiakYGsKHuSTlKOJ7LM7bZ1BAyiMqG2DDLJifMpQMA8EEOPnepWfBpV
+x-microsoft-antispam-message-info: Bk/CzGJ//yMIabCgcwYEdjvyUKcow+3TvlwsOKdXkPoywNvpxp1y1JBIL7tZKN6LxZtTtI/pciImR79j/8BKS9q7RBQVo+T9STlgQheFqWFpR7SPdFDCsugtxb2zVoEMsEp9EMubs12rYTRZ5x9LV1eQ+JKMJxbcBz2Lh+dlY0yP0PzAqf19C6XTqUbjfPl2Yd3D591XJynPGrfedQIz/mLkiN5bjFo9XDysnla+uaWACXdJlp+EJBPIZpdLOWB55DRshC8h7bKma8HOrKOZb8jKUqC/hjYJ3yZEHaMwelBGaCY8KKINYtjaCxfCvrzztIyTnQQrK3+s5qCnnGG7TgIvWbfrQDlyA9SAImsYIrW2Dg6QnV7QuCGDbJ1m7bNU3zw5Pwx7Lwr5V2l+H6IZdOtEPeJB1iOq7d1gsqvNwjlU/YA5fWSDXBpmiY48EKicFNSWmVK0L9td9hZ0FN3CtSONR4QeipcuYUMfFNrD00Z6cHcqBj7buku6CuuzjodlZSEV0j6PDJn8Quq9k6tAE9gdYSQYNqC0S4l875ZWSt8F3gd7K8e99iDmduzlRlsae/IzqH8pEpB6RQH2yRK8x+SutMY2JxRIyhrnW6HyNA3+wuJP4zPr2YvSNNS+ohpDGfuerD3URCVmtRGFknf7sCpUuUBBPV1hSR/pd40LhgokZD9C9NxZDMptHC1TZMFr
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:TYWPR01MB10725.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230028)(4636009)(376002)(136003)(396003)(366004)(39860400002)(346002)(1590799018)(451199021)(316002)(86362001)(31696002)(110136005)(8676002)(8936002)(91956017)(5660300002)(66946007)(31686004)(41300700001)(38070700005)(122000001)(38100700002)(82960400001)(2906002)(478600001)(66476007)(66446008)(76116006)(64756008)(66556008)(1580799015)(71200400001)(6486002)(6506007)(83380400001)(26005)(53546011)(6512007)(186003)(2616005)(36756003)(85182001)(45980500001);
+ SFS:(13230028)(4636009)(136003)(366004)(346002)(376002)(39860400002)(396003)(1590799018)(451199021)(71200400001)(6486002)(41300700001)(38100700002)(36756003)(26005)(6506007)(53546011)(6512007)(83380400001)(5660300002)(85182001)(2616005)(186003)(38070700005)(2906002)(31696002)(86362001)(8936002)(122000001)(8676002)(82960400001)(478600001)(66556008)(66946007)(76116006)(64756008)(66476007)(66446008)(91956017)(110136005)(31686004)(1580799015)(316002)(45980500001);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NFBVYkd1WTdOSXVWTDVnUG0xakZHTy84VWEyTmcrc0dQN2J1UGtWRWx1ZG5W?=
- =?utf-8?B?TkR2V2I4ajlXYXBIczNxSG1BUFd1QWZLKzY5cnFaUFluelN5TEkyMDMzOFRm?=
- =?utf-8?B?RXpVYkRyR3V2OWozWGkxYVJqS2dUQ1duNzJ2RU95OGhwbjhYSjQ0c3VKRmxL?=
- =?utf-8?B?ckpIY1N3cUF6WEwvYWdOZUNnMUI5aXF0ZWFKVUxOQWp5MTU0eTI4a0FOb1Z3?=
- =?utf-8?B?VEFhakdydTlCUmNTUWw0VFU2cXNHQnlVRkJWWTJXWG1XV3B0eWhOMmxQM1I1?=
- =?utf-8?B?UjZXd3RyeTZjSzRPZmVVbWFXRUVadlpPWFVQUS9BMWQvYUtKcDdZVjhYSFI2?=
- =?utf-8?B?RzZPUHZoRGl1MFh6WnJLQmZHMjlySzhIaU1jTDZPNnVsS08rTUlLdFRPM1BQ?=
- =?utf-8?B?MTRnU0Eyamo4R2IxQng3dC9MdG14eWZOWGlsQWxaaUdVRDF1eHpXTUlkc0Fv?=
- =?utf-8?B?SEFUbzFOTU5TTm5ienNqMjdmR1ROb3BHZlQ3bytTVXNrd1p0aVJHYTIrbzhK?=
- =?utf-8?B?RjNkV3FtVUZTN1N3N3VjVnVWK3RpR25zT3FuUnZEV3o4V1pRSkdBUmxpejJz?=
- =?utf-8?B?OFBIbzlxTzh5ZDBrVmk4U1QxTmdOSDZoVGJtdWZ1b010cW1CeVBFa3N0aWsv?=
- =?utf-8?B?cVhQc3pMTitTdklvUlZrcXhnVGdXRHVnbUE2aWd1Z2twbVpsZUwyMzBjaHFS?=
- =?utf-8?B?UlhHTjZ6dTRGVDBIV1dNeVZscjlTSGJmd0dBdXowMUhNdE9EWmZwOW42akhH?=
- =?utf-8?B?MDJ6Q1V5NW5GenRWM2dpMUJNMXdkWlFFVVlCRTVmRE9hNU1MSDUveGtueXU4?=
- =?utf-8?B?UXBpOURmZVpzeG9Sdi9DNmd2SVFyUXZmbmIrY1lVYjdudFYxMjRUdWtTNHlJ?=
- =?utf-8?B?QlBTMTkxcHM2YmdEWWpJeU1ScmFOQVZINDBKTURlcGVMOWx4a1N1SWRKWGhy?=
- =?utf-8?B?ZkdDZGZhV0t2RUMraENTemhBSWlJeXNPdnBCdy9ndVFQWG1hVHBtSVRmTWlo?=
- =?utf-8?B?WHM4OVhiL013dkk2bStBR21vbGFKRGJxQkpjM25RelBDSkRtNVNyTnNpditN?=
- =?utf-8?B?ZGNBci9yMUsyWGlVKzJPZGlRdU1Pd0dpR1B3SndWU2JOcGNmRUE4YWdsbG1K?=
- =?utf-8?B?Mkk4eHg2dnVxcWZvbnFhYkJoK1h6ZHVBNStnUlJva3QzWW96M3hGbXBtT2dI?=
- =?utf-8?B?QWkzQ3RMbGQvSEhpcWNKT0p6YmR3V05GS2x1MFZIVnRkNk9yM01BR3ZicHA5?=
- =?utf-8?B?MngzcUNuTjN4RVNyYWtERk0wMFFxL2pUU2FQV3luR0ZUV3k0K1lLc3VkWUt5?=
- =?utf-8?B?cTBDV2J5RlpGMDRjN2NFb1Y5eGZLL2ZleVV6dGtROUp4RnFwNkF5VzFDT1JS?=
- =?utf-8?B?dWVPWmpkb1hRVUdpME90azdFdDVJZ0YrL0JtVkJHMHZxT3lyOGJEbDl0QzZM?=
- =?utf-8?B?VVZtU0xBU25qZjVQUG15UEltbXIzcGs1d1RBK0pialdyVllvaUNhUGxFMklV?=
- =?utf-8?B?V2JaanZjRnV4QmcrUWlHWmMreFVKa3dGRXAzRHczUHp4SkNkWGh1ZXhob3dn?=
- =?utf-8?B?c2tZY21heFAzNFRyTVhxbEpCditpdnFwcE44cndITUtwMUpvbjFmbGJLYktz?=
- =?utf-8?B?WmlnWE43bHlCYTI3M0hMK3oxWndXVVd6TGJBdEVjTTgyN2hhamd4cGhUellZ?=
- =?utf-8?B?V09zVEpidzYwTVhJckxVRXVCUHZ5R0lsSmYyaDd1ekJFcEZwR21BMTd2STli?=
- =?utf-8?B?ZEJFYXF6UmhxMjZKT3g5Z0lmZmh5SkFIOW9xMzN0WFhhWUF0aUpJOUJENXBT?=
- =?utf-8?B?cFlqaVArYWkvTFdGcWswMkc4MHQ3bCt0RTRrNkhUd0lSZ0dvZHQrL0pPdlNL?=
- =?utf-8?B?RkV2ZTFSZHhxd1k4UXMraVY4enlxbVVXcDlhemhjMzNjLy81d2dheWFvN3Bj?=
- =?utf-8?B?SnRDS25ucHgyR0UxWi9nM0JRMWxBY3VSdDRsQVJLNkh1bGR6WXlTVW1rR2Fs?=
- =?utf-8?B?SG9MSE5uUUZ0VnVlNkRqUS9odktBcjdCY1gvZi9TOGVwYkgzK3dGQ2NXYTkx?=
- =?utf-8?B?M0tIV2tROVBvT1dNVFpqWW15R0tMQm42cTRIWjZuZE1YaVdvUXBIcXdqOFR4?=
- =?utf-8?B?a3NUdzBIR1R6bnlaTnI3akF2aWppUHBQMkxFRFBPQmdtOHA5Znd6TUhzWTZ2?=
- =?utf-8?B?b2c9PQ==?=
-Content-ID: <34E07CFC782FD945A42239C8135BDF85@jpnprd01.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MEU4MGNwaDFCa3VjNkRpYytqTXk2QUxTMURqcVl4ZjJHbWFHRUh3bkFvdjhh?=
+ =?utf-8?B?K0p1S0FHNXArdDVFbnp1OVRGRkpGMmpHYVZxYUhra1RReXRpR21vZTNJeDVK?=
+ =?utf-8?B?MGxQMVNDbU5CZ0ZKWkhnZVlDZUpHV096d2k3M1NIVWdweTlVaEJhazhhZ1Ro?=
+ =?utf-8?B?Mjl0WWtSR09wM0NUdEhFNWV4aU5mZVhBVkQzYkpZeXFYa2dSblp1ZGU5TlNh?=
+ =?utf-8?B?dm1NWEZ4Nk5Oc1h2S1FiZjNUc2UwREkxZ0tBSmpUTTBPekFtSEN5NEpnODFm?=
+ =?utf-8?B?WXcyRG1KZ2hNeWpmQlkxVFRLMXBxQktkb0Zqb1I4NnRiMGJvb28yMWlwdDI3?=
+ =?utf-8?B?YjlHa1djb1RIM2NVL0kzL3RLL1JDVzVvUS9JT0o1TDhVRHYvZUZyaFlTWHFn?=
+ =?utf-8?B?dnd2ZFoyMjFIZWpUd1ZBNWVIOGNheFZYd3U1MHVnckhJZU5Xb3JKM3NQQi9D?=
+ =?utf-8?B?YW1ZMmY3SWNQbWNVSGM1U285cmpqRFhrSWpob3hFQWRUZlVHaDVoNSt2MUVs?=
+ =?utf-8?B?a0tHZ2NiT3laZ3ZQcXJ1bC9hUWh0ZFFUZElrYXl0UmxETmlJWnpRTFl5d3lm?=
+ =?utf-8?B?VC8zUVRMUkNmV0pJQnNWdXUvbkRTWVVBUXNZU0JXTzBlM0dLcS9GbTh4WlZ2?=
+ =?utf-8?B?eXBycjJNRmNjdFZMOVJ3OU10UVIyeWpCQnNGZDFXOEdvZ0c1eUFrNncwUWNR?=
+ =?utf-8?B?c2J6dmhZTnhJdU0wVTNlVXMwUlZpdncrQ2VkMnhnRlk2SGZWRDU3T0ZVdlZS?=
+ =?utf-8?B?Ti9rSDIzN2Vkay9XK29WL2Z4bFVnYjBQOUJHeFdTaVVxQVVVN01Od0xIMHFK?=
+ =?utf-8?B?Y2NNTTJTOHhvWnBjaHNzUVBENVZsbFQvZ0cxd1hFUE1ScVpJSkcwMVBrMmZL?=
+ =?utf-8?B?S1FZckpwUFkzRldYYzREaU90OGhPYkg4Zms3d2hWbXpLSXlqVVBwcE5acllI?=
+ =?utf-8?B?Mm9iYjIxQnBuQkxZSWJyYng1VVdSdnlKR05lWFllT2lNeHZrRUU4Nlg4ckp2?=
+ =?utf-8?B?Q2lIL1BMNXhjMjExZ0lpK0N4RTFENnpocS9lNkVsZGcySE1yRTN5Q2piZFNZ?=
+ =?utf-8?B?R2ZodVAyNWZ6UDZGcDRUUnhFOVdyOE12TEN3NFVtaHZ0WEZtR2cxZkZSS2dZ?=
+ =?utf-8?B?WVAwaFhnZkZaNGU2THhMWGNSTnkySUFQNm1HL3Nvc3llM2IyWnA3VW1sdEpt?=
+ =?utf-8?B?ZVE2ZWYvOElyMXc1V211b1VIaHBwV2hIamVJOStwa3kxME5nTisvYlMySW9X?=
+ =?utf-8?B?SWZQaXR3bkM1MG9lS1Y4SlFZdXA0MU0yci9KS2FzWkpvMHZwV2FlR04xRXdQ?=
+ =?utf-8?B?d2Z3S0JrbDBNMld0MkpseTNhWVVNaFpqWmlMb1lmNm9DK2d5UlYybVZQbldk?=
+ =?utf-8?B?UlBUQS9lbTdVSGREelJGUkhvU1pJdXdBZ0ZzeWlnRmp5V1lyb25KV3NzK0dt?=
+ =?utf-8?B?dDVxVEZzNklubTdwVUgzMEdZTzVOK1BCaGF1UWlYZTdpbXRJSnNLRitiZjg1?=
+ =?utf-8?B?NzJHUVc3MXpSRlc0d0JmYmNNVlB2bWVoZkMrMlkvdDJEdWtJTGlLeU1UTzhN?=
+ =?utf-8?B?eW81VzgxOWhUSzVBeXFWU2lvbG82UWNqdnRVU0xNUDNOTllxcTBDMWk5RURp?=
+ =?utf-8?B?a3JYYTE5SGhhTGEyM2hmYTBxVUFxVWhhTkx6aGY5L3RXVlI3MXloazZJV21w?=
+ =?utf-8?B?Uk04QTdKSEFzSDAveFdjeTArMFVLZkNFeFl4dUcySGJQcHpRa3hWQzlxa2pl?=
+ =?utf-8?B?YTFkMXhXY1EzN1l2WHBwbFV6QjdBc001cVJLd0tOeFhGbVR3bUdNTjIxM1hm?=
+ =?utf-8?B?SDE5am5WZUE3NGZlZGRFTnE3ZSs3Rks2ZkF5NUlTdHUxWDMyZHpLWTZrNWFI?=
+ =?utf-8?B?VHErWVRaWkpHVVRyVlV6eG55cFNJSWJtdUhoWUxlenZPSDBuYXprSUVTT1I3?=
+ =?utf-8?B?aHFXMWhPUjNOd1F5MGdnNCtzU0RSRXhnRldmSzZUbVhaSmZJSTd2L2xaRFlr?=
+ =?utf-8?B?QzJxUHBHTmxheURJU1dqMGMwRmYvNWhhNy9QZGczMldDS3pWSDdhekxCaUJo?=
+ =?utf-8?B?MEZZUWhLRkRGaENrTVZ2a2tzRVV1WHZtdXFqZ1p1bjV1SHRSWk0zRGFHQlhL?=
+ =?utf-8?B?VERlSU9FRjhlM0ozcmFGVnlSRnFiMncxcC9HaDZpWjhTRE5VOFVTbXJ3a3RN?=
+ =?utf-8?B?K3c9PQ==?=
+Content-ID: <0242550EBA9C614FBC9755AD10C124D4@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: nEBPpRpW0vcKR80fDDxv3ltWIl9G1z0BJJxn6jmpfxNjTSLVXcsihx0enyUlANChhmAPu0raUf2QVaKrkRCKC9m16BvmwX5nmwwwbKMo/EtSFBfHyE4p0aHtF0b3/r4hUPQzsmvFaUUf6pX/ALox1Ae1XGtXOA7QA9PqQksgV5LgzZLdiN7qX6oyNQzB10Pe3PVbBz+FdD8ik/0J4pvORPInqC6NfNUh2qrlwZ+5dbaldY17fb6rloZhP8FyCHS1Kjo5lR+brWlQ+AGSqEpTO9WeXXDWtUpshqOmZeq4+8t9N5Y66SQDDjMuDOaf2CwwlXsDjc+BOgtn5MVj9wblKS7uoh7vegJHNTTWw5qjCUyH+Wh6E34wuINBGqZaz1IN8Qn5yXWY6xW08yLKN7x06/4G6TYx7p4tu00Wz4uZGxL0OyNnPazx932c5eYLFjT66kaero9z8bcs2JAriKjPgtAypnxYcbxeLAbPu6HdG/fhcgq945OgCbq4FGW/eRtlAbwvEAN/dnphvlW4JjdrvK3fJ76yZMUPYoiJh4Y3AAIP/ugX4cvJk9gvBQd3bWC7PUVc1dZmGUJWm8qEKOLQuzqTqYwhW0f4U0aVIDEQ8ns8Ox/BMnpC4hVQ7B8T0/6zfXA7q2Iadu31F2MwFfMv2wTgaM/g2mw1kuLPLDIrgP26pdaFupgWpLSk05Y6w5h5YzDemioZ+WEnsuyWri1JWEjPj+I3NR35C0CjMS8fPCsNjzinBY03kd52lNzygt+VhfLv9XWrH7xMc5CMfd+9KQ==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: JW27f8AqcIU50A//M40Yc9SaPsHoouIFBQTDParJ8ghGLDEL07PTkjmBAVO9QjXSbisQuUIZlzsbs2DmTVUAthToCZWFgnSmkonCASLDc6w8PPiwkYTt57vntGgInNJvqrSIWD9G5Mbq4RdufE5kDLVAmGWmDgAmwikat5aaKQwSfGpsu1jOhI3yPTjhGlB3jh0mvSaxYI3XdXTpB8QPiNBBXPhXv17YBTfK0VKKCIOpZJn1QVL6glAXFWchWMGGrckd6m9VqWZ67vkDP/bz2D1QmvlXG7whp5nsDP9/k8mNGJcUkdZTtRf5ZAAqnUyeg9XnJXC87toTOLIhc8qhxYpYspA1Vu5GPy9JJ6ouhLqdxmvmNCUfAvdyLAzKw9QbPDkUDBulINaqDf3dvIA20m0aP9uuT1AI10npXCg0OZrl12+yY/L8e6xkuwxmHe37tnE1BHnQhYjLL8mIN+7Z9eod1oElOjLvZ198vwSk/QY1WGbrWyqMYh7aLqOOCnnuNifKbvV2gRns0VsxSkPGNL6CNWjMsmPIxAI+c2x7jMCNrtrOJQ7XUorN/MiuiDL6Yy4BeZrAYY+LawcRnxxKvahOCvm/8ufliwx4U+WIPpbHXKw/ipI53SV2prUMiNYVZZrLuTtHTgA3pHm7XRbxmSzP6hZLqTyr/Xjq8UuGwACL44MmpICV8IH8Cu4C4qoEiZAjb+bKamIK731b+s2IdFglUB8j8NoscuXBR0TltytJipa5FCtU2/UJULONHQ3DJOvPQo9jvzXXIRsHA+PYxA==
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TYWPR01MB10725.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1608ef43-f9e9-489e-9f41-08db583503f0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 May 2023 06:48:12.5511 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 15d561ce-d6e7-4513-16cd-08db584850c7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 May 2023 09:06:21.9021 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3jC4HH+18r8vW5E0Jsf4TkmUk61aO3iNz+D8LSfHFSZ7dUyzV9AebVhVkAmMq9kFicHEP9p278U8kzb99jDbAfLbN/J51M1AtKJbNZsMmPk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5426
-X-Virus-Scanned: clamav-milter 0.102.4 at in-2.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-userprincipalname: AWm/bpbvazhwy8fFZ0wKMQj3Iy+0yLskMgWYB/fLmQxGcWuA4+dmA2xx5wWa7uOI9LfRHXtE6pxJjAKAgNa4SwspspzZnlqny51oeP2zCqE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB5630
+X-Virus-Scanned: clamav-milter 0.102.4 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v6 2/6] lapi/stat.h: Add STATX_DIOALIGN related
- definition
+Subject: Re: [LTP] [PATCH v6 6/6] syscalls/statx11: Add basic test for
+ STATX_DIOALIGN on block device
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -155,38 +154,163 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-DQoNCm9uIDIwMjMvMDUvMTkgMTQ6MjYsIFlhbmcsIFhpYW8v5p2oIOaZkyB3cm90ZToNCj4gT24g
-MjAyMy81LzE4IDE0OjEwLCBYaWFvIFlhbmcgKEZ1aml0c3UpIHdyb3RlOg0KPj4gSGkgWHUNCj4+
-DQo+PiBMR1RNLg0KPj4gUmV2aWV3ZWQtYnk6IFhpYW8gWWFuZyA8eWFuZ3guanlAZnVqaXRzdS5j
-b20+DQo+Pg0KPj4gQmVzdCBSZWdhcmRzLA0KPj4gWGlhbyBZYW5nDQo+Pg0KPj4gT24gMjAyMy81
-LzE1IDE1OjExLCBZYW5nIFh1IHdyb3RlOg0KPj4+IEFsc28gYWRkIG1pc3Npbmcgc3R4X21udF9p
-ZC4NCj4+Pg0KPj4+IFNpZ25lZC1vZmYtYnk6IFlhbmcgWHUgPHh1eWFuZzIwMTguanlAZnVqaXRz
-dS5jb20+DQo+Pj4gLS0tDQo+Pj4gICAgIGluY2x1ZGUvbGFwaS9zdGF0LmggfCAxMCArKysrKysr
-KystDQo+Pj4gICAgIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24o
-LSkNCj4+Pg0KPj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xhcGkvc3RhdC5oIGIvaW5jbHVkZS9s
-YXBpL3N0YXQuaA0KPj4+IGluZGV4IDU5MGNjZDExMS4uNmVkNGI2NjM3IDEwMDY0NA0KPj4+IC0t
-LSBhL2luY2x1ZGUvbGFwaS9zdGF0LmgNCj4+PiArKysgYi9pbmNsdWRlL2xhcGkvc3RhdC5oDQo+
-Pj4gQEAgLTk3LDcgKzk3LDExIEBAIHN0cnVjdCBzdGF0eCB7DQo+Pj4gICAgIAl1aW50MzJfdAlz
-dHhfZGV2X21ham9yOw0KPj4+ICAgICAJdWludDMyX3QJc3R4X2Rldl9taW5vcjsNCj4+PiAgICAg
-CS8qIDB4OTAgKi8NCj4+PiAtCXVpbnQ2NF90CV9fc3BhcmUyWzE0XTsNCj4+PiArCXVpbnQ2NF90
-CXN0eF9tbnRfaWQ7DQo+Pj4gKwl1aW50MzJfdAlzdHhfZGlvX21lbV9hbGlnbjsNCj4+PiArCXVp
-bnQzMl90CXN0eF9kaW9fb2Zmc2V0X2FsaWduOw0KPj4+ICsJLyogMHhhMCAqLw0KPj4+ICsJdWlu
-dDY0X3QJX19zcGFyZTNbMTJdOw0KPiBIaSBYdSwNCj4gDQo+IEFmdGVyIGxvb2tpbmcgaW50byB0
-aGUgbG9naWMgb2Ygc3RhdHgxMCBhbmQgc3RhdHgxMSwgSSB0aGluayBpdCdzDQo+IHVubmVjZXNz
-YXJ5IHRvIGFkZCB0aGVzZSBuZXcgbWVtYmVycyBpbnRvIHN0cnVjdCBzdGF0eC4NCg0KQWdyZWUu
-IExldCBnbGliYyBkZWNpZGUgd2hldGhlciB0byBydW4gdGhlc2UgY2FzZXMgc291bmRzIG1vcmUg
-bWVhaW5nZnVsIA0KYW5kIGNsZWFuLCB3aWxsIHJlbW92ZSBpdC4NCg0KQmVzdCBSZWdhcmRzDQpZ
-YW5nIFh1DQo+IA0KPiBCZXN0IFJlZ2FyZHMsDQo+IFhpYW8gWWFuZw0KPiANCj4+PiAgICAgCS8q
-IDB4MTAwICovDQo+Pj4gICAgIH07DQo+Pj4gICAgICNlbmRpZg0KPj4+IEBAIC0xODAsNiArMTg0
-LDEwIEBAIHN0YXRpYyBpbmxpbmUgaW50IHN0YXR4KGludCBkaXJmZCwgY29uc3QgY2hhciAqcGF0
-aG5hbWUsIHVuc2lnbmVkIGludCBmbGFncywNCj4+PiAgICAgIyBkZWZpbmUgU1RBVFhfTU5UX0lE
-CQkweDAwMDAxMDAwVQ0KPj4+ICAgICAjZW5kaWYNCj4+PiAgICAgDQo+Pj4gKyNpZm5kZWYgU1RB
-VFhfRElPQUxJR04NCj4+PiArIyBkZWZpbmUgU1RBVFhfRElPQUxJR04JCTB4MDAwMDIwMDBVDQo+
-Pj4gKyNlbmRpZg0KPj4+ICsNCj4+PiAgICAgI2lmbmRlZiBTVEFUWF9BTEwNCj4+PiAgICAgIyBk
-ZWZpbmUgU1RBVFhfQUxMCQkweDAwMDAwZmZmVQ0KPj4+ICAgICAjZW5kaWYKCi0tIApNYWlsaW5n
-IGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi Yang
+
+
+I have modified this patch set as you suggested and merged.
+
+Thanks for your review.
+
+Best Regards
+Yang Xu
+> Hi Xu
+> 
+> LGTM.
+> Reviewed-by: Xiao Yang <yangx.jy@fujitsu.com>
+> 
+> Best Regards,
+> Xiao Yang
+> 
+> On 2023/5/15 15:11, Yang Xu wrote:
+>> Since STATX_DIOLAIGN is only supported on regular file and block device,
+>> so this case is used to test the latter.
+>>
+>> This test is tightly coupled to the kernel's current DIO restrictions on block
+>> devices.  These changed in v6.0, and they are subject to further change in the
+>> future.
+>>
+>> It is fine for now because STATX_DIOALIGN is only in v6.1 and later
+>> anyway.
+>>
+>> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+>> ---
+>>    runtest/syscalls                           |  1 +
+>>    testcases/kernel/syscalls/statx/.gitignore |  1 +
+>>    testcases/kernel/syscalls/statx/statx11.c  | 89 ++++++++++++++++++++++
+>>    3 files changed, 91 insertions(+)
+>>    create mode 100644 testcases/kernel/syscalls/statx/statx11.c
+>>
+>> diff --git a/runtest/syscalls b/runtest/syscalls
+>> index e2548dae5..e5ad2c2f9 100644
+>> --- a/runtest/syscalls
+>> +++ b/runtest/syscalls
+>> @@ -1766,6 +1766,7 @@ statx07 statx07
+>>    statx08 statx08
+>>    statx09 statx09
+>>    statx10 statx10
+>> +statx11 statx11
+>>    
+>>    membarrier01 membarrier01
+>>    
+>> diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
+>> index 67341ff2d..48ac4078b 100644
+>> --- a/testcases/kernel/syscalls/statx/.gitignore
+>> +++ b/testcases/kernel/syscalls/statx/.gitignore
+>> @@ -8,3 +8,4 @@
+>>    /statx08
+>>    /statx09
+>>    /statx10
+>> +/statx11
+>> diff --git a/testcases/kernel/syscalls/statx/statx11.c b/testcases/kernel/syscalls/statx/statx11.c
+>> new file mode 100644
+>> index 000000000..653050855
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/statx/statx11.c
+>> @@ -0,0 +1,89 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
+>> + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
+>> + */
+>> +
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * It is a basic test for STATX_DIOALIGN mask on block device.
+>> + *
+>> + * - STATX_DIOALIGN   Want stx_dio_mem_align and stx_dio_offset_align value
+>> + *
+>> + * These two values are tightly coupled to the kernel's current DIO
+>> + * restrictions on block devices.
+>> + *
+>> + * Minimum Linux version required is v6.1.
+>> + */
+>> +
+>> +#define _GNU_SOURCE
+>> +#include <sys/types.h>
+>> +#include <sys/mount.h>
+>> +#include <unistd.h>
+>> +#include <stdlib.h>
+>> +#include <stdbool.h>
+>> +#include <stdio.h>
+>> +#include "tst_test.h"
+>> +#include "lapi/stat.h"
+>> +
+>> +static char sys_bdev_dma_path[1024], sys_bdev_logical_path[1024];
+>> +
+>> +static void verify_statx(void)
+>> +{
+>> +	struct statx buf;
+>> +
+>> +	TST_EXP_PASS_SILENT(statx(AT_FDCWD, tst_device->dev, 0, STATX_DIOALIGN, &buf),
+>> +		"statx(AT_FDCWD, %s, 0, STATX_DIOALIGN, &buf)", tst_device->dev);
+>> +
+>> +	if (!(buf.stx_mask & STATX_DIOALIGN)) {
+>> +		tst_res(TCONF, "Filesystem does not support STATX_DIOALIGN");
+>> +		return;
+>> +	}
+>> +
+>> +#ifdef HAVE_STRUCT_STATX_STX_DIO_MEM_ALIGN
+>> +	/*
+>> +	 * This test is tightly coupled to the kernel's current DIO restrictions
+>> +	 * on block devices. The general rule of DIO needing to be aligned to the
+>> +	 * block device's logical block size was relaxed to allow user buffers
+>> +	 * (but not file offsets) aligned to the DMA alignment instead. See v6.0
+>> +	 * commit bf8d08532bc1 ("iomap: add support for dma aligned direct-io") and
+>> +	 * they are subject to further change in the future.
+>> +	 * Also can see commit 2d985f8c6b9 ("vfs: support STATX_DIOALIGN on block devices).
+>> +	 */
+>> +	TST_ASSERT_ULONG(sys_bdev_dma_path, buf.stx_dio_mem_align - 1);
+>> +	TST_ASSERT_ULONG(sys_bdev_logical_path, buf.stx_dio_offset_align);
+>> +#else
+>> +	tst_res(TCONF, "glibc statx struct miss stx_dio_mem_align field");
+>> +#endif
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	char full_name[256];
+>> +	char *dev_name;
+>> +
+>> +	strcpy(full_name, tst_device->dev);
+>> +	dev_name = SAFE_BASENAME(full_name);
+>> +	sprintf(sys_bdev_logical_path, "/sys/block/%s/queue/logical_block_size", dev_name);
+>> +
+>> +	/*
+>> +	 * Since /sys/block/%s/queue doesn't exist for partition, we need to
+>> +	 * use a while to search block device instead of partition.
+>> +	 */
+>> +	while (access(sys_bdev_logical_path, F_OK) != 0) {
+>> +		dev_name[strlen(dev_name)-1] = '\0';
+>> +		sprintf(sys_bdev_logical_path, "/sys/block/%s/queue/logical_block_size", dev_name);
+>> +	}
+>> +
+>> +	sprintf(sys_bdev_dma_path, "/sys/block/%s/queue/dma_alignment", dev_name);
+>> +	if (access(sys_bdev_dma_path, F_OK) != 0)
+>> +		tst_brk(TCONF, "dma_alignment sysfs file doesn't exist");
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.test_all = verify_statx,
+>> +	.setup = setup,
+>> +	.needs_device = 1,
+>> +	.needs_root = 1,
+>> +};
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
