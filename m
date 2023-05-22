@@ -4,60 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B63ACC77B73
-	for <ltp@archiver.kernel.org>; Mon, 22 May 2023 09:45:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89058C77B73
+	for <ltp@archiver.kernel.org>; Mon, 22 May 2023 14:40:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 910D03CD38D
-	for <ltp@archiver.kernel.org>; Mon, 22 May 2023 11:45:19 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 8B8823CD3A6
+	for <ltp@archiver.kernel.org>; Mon, 22 May 2023 16:40:33 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 080B33CB0E7
- for <ltp@lists.linux.it>; Mon, 22 May 2023 11:45:08 +0200 (CEST)
-Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
- [139.138.36.225])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id B9E973CB0C9
+ for <ltp@lists.linux.it>; Mon, 22 May 2023 16:40:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 037041400967
- for <ltp@lists.linux.it>; Mon, 22 May 2023 11:45:07 +0200 (CEST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10717"; a="105202912"
-X-IronPort-AV: E=Sophos;i="6.00,184,1681138800"; d="scan'208";a="105202912"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
- by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 May 2023 18:45:05 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
- [192.168.83.64])
- by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 614A1DB390
- for <ltp@lists.linux.it>; Mon, 22 May 2023 18:45:03 +0900 (JST)
-Received: from kws-ab2.gw.nic.fujitsu.com (kws-ab2.gw.nic.fujitsu.com
- [192.51.206.12])
- by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 967C8CFBC2
- for <ltp@lists.linux.it>; Mon, 22 May 2023 18:45:02 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.215.131])
- by kws-ab2.gw.nic.fujitsu.com (Postfix) with ESMTP id CC6B5234011D;
- Mon, 22 May 2023 18:45:01 +0900 (JST)
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: ltp@lists.linux.it
-Date: Mon, 22 May 2023 17:44:02 +0800
-Message-Id: <1684748642-6373-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27642.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27642.006
-X-TMASE-Result: 10--17.403400-10.000000
-X-TMASE-MatchedRID: GQw6Xh/XS6XdsvR3yreVDazGfgakLdjaSuH+GfgmQGc6FHRWx2FGsI3c
- eRXYSJoDIvrftAIhWmLy9zcRSkKatUMs9ucSNhdqCtzGvPCy/m5SuvtBzlaEqFH3rkvzbWPM4Ib
- z3CH3vCeIuA1iha0SDpu91RWVjlmQxBNI9kTkfyBZNYSHk3Zr0Ui8rgutezVpRjFo+SLq2Gq/jz
- 9RTmfNFGlLidO65FEMcVGXNGTKHf7QVDF+NEc7OJ4CIKY/Hg3AGdQnQSTrKGPEQdG7H66TyOk/y
- 0w7JiZo
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id F1C402005DE
+ for <ltp@lists.linux.it>; Mon, 22 May 2023 16:40:22 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9460321D24;
+ Mon, 22 May 2023 14:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1684766421; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1WjZgynBcIC4h5iTaS7FblodZYuzhhbmba9yw11HFlE=;
+ b=FWlWgfVR8eC4nVOgsaqKJA2ODPrSJMS0ac+l33pDqNT1gx2sY30QcwWhcBCnuTOMI1QW1F
+ GJnNpTVnj30iBdS+5nSeBoVGG+RHBXn6K3Rv3SoviDWvgFZAyzwI/4m40aXwjmozLd/STc
+ Rn+fxBI2EWq2BGo1gP6YV8rzKqA7mvc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1684766421;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1WjZgynBcIC4h5iTaS7FblodZYuzhhbmba9yw11HFlE=;
+ b=pGFfLS97eHAqkpKxPU1N1NarhrR7MMWkFsMmS8ROge/KF/BSaxtUkQU57GRM2APGKK6ZBn
+ LVZ0+m+qitSqoUDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F58A13776;
+ Mon, 22 May 2023 14:40:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id G1LjHNV+a2SvJgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 22 May 2023 14:40:21 +0000
+Date: Mon, 22 May 2023 16:41:30 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <ZGt_GrwbwPJChf6P@yuki>
+References: <20230510124206.19627-1-andrea.cervesato@suse.de>
+ <20230510124206.19627-4-andrea.cervesato@suse.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230510124206.19627-4-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/statx12: Add basic test for
- STATX_ATTR_MOUNT_ROOT flag
+Subject: Re: [LTP] [PATCH v7 3/6] Refactor mqns_03 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,170 +75,216 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-MIME-Version: 1.0
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This flag was introduced since kernel 5.10 and was used to indicates
-whether the path or fd refers to the root of a mount or not.
+Hi!
+> +#include "tst_test.h"
+> +#include "lapi/sched.h"
+> +#include "tst_safe_posix_ipc.h"
+> +#include "tst_safe_stdio.h"
+> +
+> +#define CHECK_MQ_OPEN_RET(x) ((x) >= 0 || ((x) == -1 && errno != EMFILE))
+> +
+> +#define MQNAME1 "/MQ1"
+> +#define MQNAME2 "/MQ2"
+> +
+> +static char *str_op;
+> +static char *devdir;
+> +static char *mqueue1;
+> +static char *mqueue2;
+> +static int *mq_freed1;
+> +static int *mq_freed2;
+> +
+> +static void check_mqueue(void)
+>  {
+> -	char buf[30];
+> -	mqd_t mqd;
+>  	int rc;
+> +	mqd_t mqd;
+>  	struct stat statbuf;
+>  
+> -	(void) vtest;
+> +	tst_res(TINFO, "Creating %s mqueue from within child process", MQNAME1);
+>  
+> -	close(p1[1]);
+> -	close(p2[0]);
+> +	mqd = TST_RETRY_FUNC(
+> +		mq_open(MQNAME1, O_RDWR | O_CREAT | O_EXCL, 0777, NULL),
+> +		CHECK_MQ_OPEN_RET);
+> +	if (mqd == -1)
+> +		tst_brk(TBROK | TERRNO, "mq_open failed");
+>  
+> -	if (read(p1[0], buf, 3) != 3) {	/* go */
+> -		perror("read failed");
+> -		exit(1);
+> -	}
+> +	SAFE_MQ_CLOSE(mqd);
+> +	tst_atomic_inc(mq_freed1);
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- include/lapi/stat.h                        |   4 +
- runtest/syscalls                           |   1 +
- testcases/kernel/syscalls/statx/.gitignore |   1 +
- testcases/kernel/syscalls/statx/statx12.c  | 101 +++++++++++++++++++++
- 4 files changed, 107 insertions(+)
- create mode 100644 testcases/kernel/syscalls/statx/statx12.c
+I do not think that we need atomicity here, the cleanup code does not
+run concurently at all as the cleanup in the parent is triggered after
+the child did exit. I suppose that instead we need to set the mq_freed
+to be volatile because it's shared memory which may change at any
+change, so we need to tell that to the compiler.
 
-diff --git a/include/lapi/stat.h b/include/lapi/stat.h
-index c7e6fdac0..3606c9eb0 100644
---- a/include/lapi/stat.h
-+++ b/include/lapi/stat.h
-@@ -221,6 +221,10 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
- # define STATX_ATTR_AUTOMOUNT	0x00001000
- #endif
- 
-+#ifndef STATX_ATTR_MOUNT_ROOT
-+# define STATX_ATTR_MOUNT_ROOT	0x00002000
-+#endif
-+
- #ifndef STATX_ATTR_VERITY
- # define STATX_ATTR_VERITY	0x00100000
- #endif
-diff --git a/runtest/syscalls b/runtest/syscalls
-index e5ad2c2f9..0c1993421 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1767,6 +1767,7 @@ statx08 statx08
- statx09 statx09
- statx10 statx10
- statx11 statx11
-+statx12 statx12
- 
- membarrier01 membarrier01
- 
-diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
-index 48ac4078b..f6a423eed 100644
---- a/testcases/kernel/syscalls/statx/.gitignore
-+++ b/testcases/kernel/syscalls/statx/.gitignore
-@@ -9,3 +9,4 @@
- /statx09
- /statx10
- /statx11
-+/statx12
-diff --git a/testcases/kernel/syscalls/statx/statx12.c b/testcases/kernel/syscalls/statx/statx12.c
-new file mode 100644
-index 000000000..ae6bbb1e2
---- /dev/null
-+++ b/testcases/kernel/syscalls/statx/statx12.c
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
-+ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * It is a basic test for STATX_ATTR_MOUNT_ROOT flag.
-+ *
-+ * This flag indicates whether the path or fd refers to the root of a mount
-+ * or not.
-+ *
-+ * Minimum Linux version required is v5.10.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/mount.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <stdbool.h>
-+#include <stdio.h>
-+#include "tst_test.h"
-+#include "lapi/stat.h"
-+
-+#define MNTPOINT "mntpoint"
-+#define TESTFILE MNTPOINT"/testfile"
-+
-+static int dir_fd = -1, file_fd = -1;
-+
-+static struct tcase {
-+	const char *path;
-+	int mnt_root;
-+	int flag;
-+	int *fd;
-+} tcases[] = {
-+	{MNTPOINT, 1, 1, &dir_fd},
-+	{MNTPOINT, 1, 0, &dir_fd},
-+	{TESTFILE, 0, 1, &file_fd},
-+	{TESTFILE, 0, 0, &file_fd}
-+};
-+
-+static void verify_statx(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	struct statx buf;
-+
-+	if (tc->flag) {
-+		tst_res(TINFO, "Testing %s with STATX_ATTR_MOUNT_ROOT by path",
-+				tc->path);
-+
-+		TST_EXP_PASS_SILENT(statx(AT_FDCWD, tc->path, 0, 0, &buf),
-+			"statx(AT_FDCWD, %s, 0, 0, &buf)", tc->path);
-+	} else {
-+		tst_res(TINFO, "Testing %s with STATX_ATTR_MOUNT_ROOT by fd",
-+				tc->path);
-+		TST_EXP_PASS_SILENT(statx(*tc->fd, "", AT_EMPTY_PATH, 0, &buf),
-+			"statx(%d, "", 0, 0, &buf)", *tc->fd);
-+	}
-+
-+	if (!(buf.stx_attributes_mask & STATX_ATTR_MOUNT_ROOT)) {
-+		tst_res(TCONF, "Filesystem does not support STATX_ATTR_MOUNT_ROOT");
-+		return;
-+	}
-+
-+	if (buf.stx_attributes & STATX_ATTR_MOUNT_ROOT) {
-+		tst_res(tc->mnt_root ? TPASS : TFAIL,
-+			"STATX_ATTR_MOUNT_ROOT flag is set");
-+	} else {
-+		tst_res(tc->mnt_root ? TFAIL : TPASS,
-+			"STATX_ATTR_MOUNT_ROOT flag is not set");
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_CREAT(TESTFILE, 0755);
-+	dir_fd = SAFE_OPEN(MNTPOINT, O_DIRECTORY);
-+	file_fd = SAFE_OPEN(TESTFILE, O_RDWR);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (dir_fd > -1)
-+		SAFE_CLOSE(dir_fd);
-+	if (file_fd > -1)
-+		SAFE_CLOSE(file_fd);
-+}
-+
-+static struct tst_test test = {
-+	.test = verify_statx,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.mntpoint = MNTPOINT,
-+	.mount_device = 1,
-+	.all_filesystems = 1,
-+	.needs_root = 1,
-+	.tcnt = ARRAY_SIZE(tcases)
-+};
+> -	mqd = tst_syscall(__NR_mq_open, NOSLASH_MQ1, O_RDWR | O_CREAT | O_EXCL,
+> -		0755, NULL);
+> -	if (mqd == -1) {
+> -		write(p2[1], "mqfail", 7);
+> -		exit(1);
+> -	}
+> +	tst_res(TINFO, "Mount %s from within child process", devdir);
+>  
+> -	mq_close(mqd);
+> +	SAFE_MOUNT("mqueue", devdir, "mqueue", 0, NULL);
+>  
+> -	rc = mount("mqueue", DEV_MQUEUE2, "mqueue", 0, NULL);
+> -	if (rc == -1) {
+> -		write(p2[1], "mount1", 7);
+> -		exit(1);
+> -	}
+> +	SAFE_STAT(mqueue1, &statbuf);
+> +	tst_res(TPASS, "%s exists at first mount", mqueue1);
+>  
+> -	rc = stat(FNAM1, &statbuf);
+> -	if (rc == -1) {
+> -		write(p2[1], "stat1", 6);
+> -		exit(1);
+> -	}
+> +	tst_res(TINFO, "Creating %s from within child process", mqueue2);
+>  
+> -	rc = creat(FNAM2, 0755);
+> -	if (rc == -1) {
+> -		write(p2[1], "creat", 6);
+> -		exit(1);
+> -	}
+> +	rc = SAFE_CREAT(mqueue2, 0755);
+> +	SAFE_CLOSE(rc);
+> +	tst_atomic_inc(mq_freed2);
+>  
+> -	close(rc);
+> +	tst_res(TINFO, "Mount %s from within child process a second time", devdir);
+>  
+> -	rc = umount(DEV_MQUEUE2);
+> -	if (rc == -1) {
+> -		write(p2[1], "umount", 7);
+> -		exit(1);
+> -	}
+> +	SAFE_UMOUNT(devdir);
+> +	SAFE_MOUNT("mqueue", devdir, "mqueue", 0, NULL);
+>  
+> -	rc = mount("mqueue", DEV_MQUEUE2, "mqueue", 0, NULL);
+> -	if (rc == -1) {
+> -		write(p2[1], "mount2", 7);
+> -		exit(1);
+> -	}
+> +	SAFE_STAT(mqueue1, &statbuf);
+> +	tst_res(TPASS, "%s exists at second mount", mqueue1);
+>  
+> -	rc = stat(FNAM1, &statbuf);
+> -	if (rc == -1) {
+> -		write(p2[1], "stat2", 7);
+> -		exit(1);
+> -	}
+> +	SAFE_STAT(mqueue2, &statbuf);
+> +	tst_res(TPASS, "%s exists at second mount", mqueue2);
+>  
+> -	rc = stat(FNAM2, &statbuf);
+> -	if (rc == -1) {
+> -		write(p2[1], "stat3", 7);
+> -		exit(1);
+> -	}
+> +	SAFE_UMOUNT(devdir);
+> +
+> +	SAFE_MQ_UNLINK(MQNAME1);
+> +	tst_atomic_store(0, mq_freed1);
+>  
+> -	write(p2[1], "done", 5);
+> +	SAFE_MQ_UNLINK(MQNAME2);
+> +	tst_atomic_store(0, mq_freed2);
+> +}
+>  
+> -	exit(0);
+> +static void run(void)
+> +{
+> +	const struct tst_clone_args clone_args = { CLONE_NEWIPC, SIGCHLD };
+> +
+> +	if (str_op && !strcmp(str_op, "clone")) {
+> +		tst_res(TINFO, "Spawning isolated process");
+> +
+> +		if (!SAFE_CLONE(&clone_args)) {
+> +			check_mqueue();
+> +			return;
+> +		}
+> +	} else if (str_op && !strcmp(str_op, "unshare")) {
+> +		tst_res(TINFO, "Spawning unshared process");
+> +
+> +		if (!SAFE_FORK()) {
+> +			SAFE_UNSHARE(CLONE_NEWIPC);
+> +			check_mqueue();
+> +			return;
+> +		}
+> +	}
+>  }
+>  
+>  static void setup(void)
+>  {
+> -	tst_require_root();
+> -	check_mqns();
+> +	char *tmpdir;
+> +
+> +	if (!str_op)
+> +		tst_brk(TCONF, "Please specify clone|unshare child isolation");
+> +
+> +	tmpdir = tst_get_tmpdir();
+> +
+> +	SAFE_ASPRINTF(&devdir, "%s/mqueue", tmpdir);
+> +	SAFE_MKDIR(devdir, 0755);
+> +
+> +	SAFE_ASPRINTF(&mqueue1, "%s" MQNAME1, devdir);
+> +	SAFE_ASPRINTF(&mqueue2, "%s" MQNAME2, devdir);
+> +
+> +	mq_freed1 = SAFE_MMAP(NULL,
+> +		sizeof(int),
+> +		PROT_READ | PROT_WRITE,
+> +		MAP_SHARED | MAP_ANONYMOUS,
+> +		-1, 0);
+> +
+> +	mq_freed2 = SAFE_MMAP(NULL,
+> +		sizeof(int),
+> +		PROT_READ | PROT_WRITE,
+> +		MAP_SHARED | MAP_ANONYMOUS,
+> +		-1, 0);
+
+So here you are allocating two pages of memory for something that is
+basically two bitflags. Can you at least change this to a single mmap()
+something as:
+
+static int *mq_freed;
+
+	mq_freed = SAFE_MMAP(NULL, 2 * sizeof(int), ...)
+
+
+	mq_freed[0] = 1;
+	...
+
+Moreover since we can actually stat()/access() the mqueue we can as well
+check for the existence of the devdir in the cleanup and only remove it
+if it exists in the filesystem.
+
+Also I would be more afraid of the mqueue filesystem being mounted in
+the temp directory if we trigger a failure between one of the
+mount()/umount() calls, so we should as well check if it's mounted in
+the cleanup and attempt to umount it.
+
+
 -- 
-2.39.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
