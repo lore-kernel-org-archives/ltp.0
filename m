@@ -4,68 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27BC5C77B73
-	for <ltp@archiver.kernel.org>; Mon, 22 May 2023 08:45:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B63ACC77B73
+	for <ltp@archiver.kernel.org>; Mon, 22 May 2023 09:45:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 632393CD39C
-	for <ltp@archiver.kernel.org>; Mon, 22 May 2023 10:45:14 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 910D03CD38D
+	for <ltp@archiver.kernel.org>; Mon, 22 May 2023 11:45:19 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B6CA13CB179
- for <ltp@lists.linux.it>; Sun, 21 May 2023 10:44:23 +0200 (CEST)
-Received: from mail.cs.ucla.edu (mail.cs.ucla.edu [131.179.128.66])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 080B33CB0E7
+ for <ltp@lists.linux.it>; Mon, 22 May 2023 11:45:08 +0200 (CEST)
+Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
+ [139.138.36.225])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 190C01A00707
- for <ltp@lists.linux.it>; Sun, 21 May 2023 10:44:22 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by mail.cs.ucla.edu (Postfix) with ESMTP id 48BD73C02213D;
- Sun, 21 May 2023 01:44:21 -0700 (PDT)
-Received: from mail.cs.ucla.edu ([127.0.0.1])
- by localhost (mail.cs.ucla.edu [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id IYPGi4LlAL37; Sun, 21 May 2023 01:44:20 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
- by mail.cs.ucla.edu (Postfix) with ESMTP id BD91B3C09FA29;
- Sun, 21 May 2023 01:44:20 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.cs.ucla.edu BD91B3C09FA29
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cs.ucla.edu;
- s=9D0B346E-2AEB-11ED-9476-E14B719DCE6C; t=1684658660;
- bh=sL/RPzLJDsRdyhXITfgA2EKT2gjftU43L/9bE3slwBU=;
- h=Message-ID:Date:MIME-Version:To:From;
- b=fIXO5TOQZo7Gu1DK+lejqUeUK8H2Te+Kec6xAsGUtDMFEPMG/q3IoX99UuTnpcgpW
- OwWv4VwtEH//1nR7F6cbtF+0aR6wDeyNZX2ehY4hdayPL+fbWaxpvFY194/TjEYLoo
- h9XtCUo+UlxQECT2a5dAKVE4NkqvY3csQ79pbQvMepSjsXDIn7UlNKwpycSHSPiiBF
- S4V8e0xvKqZ203FqxDKUIbF4BAdk/OmZw2KnuBebIBJQNWIH0AweAan/+j0nmXlURU
- /tnMnxm+bQ2nXl8/x2qNDbtBm2jUiBi0BZxPqBpoexw8j4vE238YhpMde46uSuM6zS
- dhPSgi7AhF97A==
-Received: from mail.cs.ucla.edu ([127.0.0.1])
- by localhost (mail.cs.ucla.edu [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id qu4112sjTa3n; Sun, 21 May 2023 01:44:20 -0700 (PDT)
-Received: from [192.168.1.9] (cpe-172-91-119-151.socal.res.rr.com
- [172.91.119.151])
- by mail.cs.ucla.edu (Postfix) with ESMTPSA id 78AA53C02213D;
- Sun, 21 May 2023 01:44:20 -0700 (PDT)
-Message-ID: <94bbcea2-0a29-b4d6-ad5e-7615bc239941@cs.ucla.edu>
-Date: Sun, 21 May 2023 01:44:20 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Content-Language: en-US
-To: Andreas Schwab <schwab@linux-m68k.org>
-References: <lxnjka-9sevacf455zj-1fthj246gvr4-712jsi8w59t4969pqyxmxkaq-l3n4z6dp0ybpuvpiuudtnfot-dl7onwkii2tq8gtprte6cu4fgip6f-ikuh33-a5p9ixcl44cx2h7mimcgl3xt-13bjom.1684553069255@email.android.com>
- <0cb83efa85ae32d956f81e6b9d4966c38fd54bcb.camel@xry111.site>
- <1c688849-f992-029e-30e8-8990c311c8a3@cs.ucla.edu>
- <87zg5yqec3.fsf@linux-m68k.org>
-From: Paul Eggert <eggert@cs.ucla.edu>
-Organization: UCLA Computer Science Department
-In-Reply-To: <87zg5yqec3.fsf@linux-m68k.org>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 037041400967
+ for <ltp@lists.linux.it>; Mon, 22 May 2023 11:45:07 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10717"; a="105202912"
+X-IronPort-AV: E=Sophos;i="6.00,184,1681138800"; d="scan'208";a="105202912"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+ by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 May 2023 18:45:05 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
+ [192.168.83.64])
+ by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 614A1DB390
+ for <ltp@lists.linux.it>; Mon, 22 May 2023 18:45:03 +0900 (JST)
+Received: from kws-ab2.gw.nic.fujitsu.com (kws-ab2.gw.nic.fujitsu.com
+ [192.51.206.12])
+ by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 967C8CFBC2
+ for <ltp@lists.linux.it>; Mon, 22 May 2023 18:45:02 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.215.131])
+ by kws-ab2.gw.nic.fujitsu.com (Postfix) with ESMTP id CC6B5234011D;
+ Mon, 22 May 2023 18:45:01 +0900 (JST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: ltp@lists.linux.it
+Date: Mon, 22 May 2023 17:44:02 +0800
+Message-Id: <1684748642-6373-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27642.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27642.006
+X-TMASE-Result: 10--17.403400-10.000000
+X-TMASE-MatchedRID: GQw6Xh/XS6XdsvR3yreVDazGfgakLdjaSuH+GfgmQGc6FHRWx2FGsI3c
+ eRXYSJoDIvrftAIhWmLy9zcRSkKatUMs9ucSNhdqCtzGvPCy/m5SuvtBzlaEqFH3rkvzbWPM4Ib
+ z3CH3vCeIuA1iha0SDpu91RWVjlmQxBNI9kTkfyBZNYSHk3Zr0Ui8rgutezVpRjFo+SLq2Gq/jz
+ 9RTmfNFGlLidO65FEMcVGXNGTKHf7QVDF+NEc7OJ4CIKY/Hg3AGdQnQSTrKGPEQdG7H66TyOk/y
+ 0w7JiZo
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 22 May 2023 10:44:30 +0200
-Subject: Re: [LTP] [PATCH] Increase judgment on buf.
+Subject: [LTP] [PATCH] syscalls/statx12: Add basic test for
+ STATX_ATTR_MOUNT_ROOT flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,22 +69,170 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
- Peng Fan <fanpeng@loongson.cn>, Carlos O'Donell <carlos@redhat.com>,
- Xi Ruoyao <xry111@xry111.site>,
- Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
- lixing <lixing@loongson.cn>, ltp@lists.linux.it
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 2023-05-21 01:27, Andreas Schwab wrote:
->> +	if (tcases[tc_num].exp_err == EFAULT && WIFSIGNALED(status)) {
-> Can this condition ever be true?
+This flag was introduced since kernel 5.10 and was used to indicates
+whether the path or fd refers to the root of a mount or not.
 
-I don't see why not, if fstat(fd_ok, 0) does a SIGABRT or similar. But 
-perhaps we're interpreting "Can" differently.
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ include/lapi/stat.h                        |   4 +
+ runtest/syscalls                           |   1 +
+ testcases/kernel/syscalls/statx/.gitignore |   1 +
+ testcases/kernel/syscalls/statx/statx12.c  | 101 +++++++++++++++++++++
+ 4 files changed, 107 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/statx/statx12.c
+
+diff --git a/include/lapi/stat.h b/include/lapi/stat.h
+index c7e6fdac0..3606c9eb0 100644
+--- a/include/lapi/stat.h
++++ b/include/lapi/stat.h
+@@ -221,6 +221,10 @@ static inline int statx(int dirfd, const char *pathname, unsigned int flags,
+ # define STATX_ATTR_AUTOMOUNT	0x00001000
+ #endif
+ 
++#ifndef STATX_ATTR_MOUNT_ROOT
++# define STATX_ATTR_MOUNT_ROOT	0x00002000
++#endif
++
+ #ifndef STATX_ATTR_VERITY
+ # define STATX_ATTR_VERITY	0x00100000
+ #endif
+diff --git a/runtest/syscalls b/runtest/syscalls
+index e5ad2c2f9..0c1993421 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1767,6 +1767,7 @@ statx08 statx08
+ statx09 statx09
+ statx10 statx10
+ statx11 statx11
++statx12 statx12
+ 
+ membarrier01 membarrier01
+ 
+diff --git a/testcases/kernel/syscalls/statx/.gitignore b/testcases/kernel/syscalls/statx/.gitignore
+index 48ac4078b..f6a423eed 100644
+--- a/testcases/kernel/syscalls/statx/.gitignore
++++ b/testcases/kernel/syscalls/statx/.gitignore
+@@ -9,3 +9,4 @@
+ /statx09
+ /statx10
+ /statx11
++/statx12
+diff --git a/testcases/kernel/syscalls/statx/statx12.c b/testcases/kernel/syscalls/statx/statx12.c
+new file mode 100644
+index 000000000..ae6bbb1e2
+--- /dev/null
++++ b/testcases/kernel/syscalls/statx/statx12.c
+@@ -0,0 +1,101 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
++ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * It is a basic test for STATX_ATTR_MOUNT_ROOT flag.
++ *
++ * This flag indicates whether the path or fd refers to the root of a mount
++ * or not.
++ *
++ * Minimum Linux version required is v5.10.
++ */
++
++#define _GNU_SOURCE
++#include <sys/types.h>
++#include <sys/mount.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <stdbool.h>
++#include <stdio.h>
++#include "tst_test.h"
++#include "lapi/stat.h"
++
++#define MNTPOINT "mntpoint"
++#define TESTFILE MNTPOINT"/testfile"
++
++static int dir_fd = -1, file_fd = -1;
++
++static struct tcase {
++	const char *path;
++	int mnt_root;
++	int flag;
++	int *fd;
++} tcases[] = {
++	{MNTPOINT, 1, 1, &dir_fd},
++	{MNTPOINT, 1, 0, &dir_fd},
++	{TESTFILE, 0, 1, &file_fd},
++	{TESTFILE, 0, 0, &file_fd}
++};
++
++static void verify_statx(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++	struct statx buf;
++
++	if (tc->flag) {
++		tst_res(TINFO, "Testing %s with STATX_ATTR_MOUNT_ROOT by path",
++				tc->path);
++
++		TST_EXP_PASS_SILENT(statx(AT_FDCWD, tc->path, 0, 0, &buf),
++			"statx(AT_FDCWD, %s, 0, 0, &buf)", tc->path);
++	} else {
++		tst_res(TINFO, "Testing %s with STATX_ATTR_MOUNT_ROOT by fd",
++				tc->path);
++		TST_EXP_PASS_SILENT(statx(*tc->fd, "", AT_EMPTY_PATH, 0, &buf),
++			"statx(%d, "", 0, 0, &buf)", *tc->fd);
++	}
++
++	if (!(buf.stx_attributes_mask & STATX_ATTR_MOUNT_ROOT)) {
++		tst_res(TCONF, "Filesystem does not support STATX_ATTR_MOUNT_ROOT");
++		return;
++	}
++
++	if (buf.stx_attributes & STATX_ATTR_MOUNT_ROOT) {
++		tst_res(tc->mnt_root ? TPASS : TFAIL,
++			"STATX_ATTR_MOUNT_ROOT flag is set");
++	} else {
++		tst_res(tc->mnt_root ? TFAIL : TPASS,
++			"STATX_ATTR_MOUNT_ROOT flag is not set");
++	}
++}
++
++static void setup(void)
++{
++	SAFE_CREAT(TESTFILE, 0755);
++	dir_fd = SAFE_OPEN(MNTPOINT, O_DIRECTORY);
++	file_fd = SAFE_OPEN(TESTFILE, O_RDWR);
++}
++
++static void cleanup(void)
++{
++	if (dir_fd > -1)
++		SAFE_CLOSE(dir_fd);
++	if (file_fd > -1)
++		SAFE_CLOSE(file_fd);
++}
++
++static struct tst_test test = {
++	.test = verify_statx,
++	.setup = setup,
++	.cleanup = cleanup,
++	.mntpoint = MNTPOINT,
++	.mount_device = 1,
++	.all_filesystems = 1,
++	.needs_root = 1,
++	.tcnt = ARRAY_SIZE(tcases)
++};
+-- 
+2.39.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
