@@ -4,66 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3FE1C77B73
-	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 08:27:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF02CC7EE2C
+	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 08:27:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 810543CB279
-	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 10:27:07 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id F0CEE3CD29C
+	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 10:27:53 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BEF5B3C9956
- for <ltp@lists.linux.it>; Wed, 24 May 2023 10:26:56 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 9B4253C04A5
+ for <ltp@lists.linux.it>; Tue, 23 May 2023 17:09:55 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 00B316008F9
- for <ltp@lists.linux.it>; Wed, 24 May 2023 10:26:55 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8C9D1223B6;
- Wed, 24 May 2023 08:26:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1684916813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IvJjaGH95K4LBrNd9oCcXpl0PSXHUafxCmRq+Dazue0=;
- b=bRK4vPiOjGMESdqLN766B76xv4GAkzhXrFB2bDIa68/4XmHIp/AwsEPC7BDGXw9/bJGEkj
- h8c7NqEllr6XaG89YjXVK+XDD2DNDzclHcwdpCe68EBkUHoyKpejV2AI3HjvFMy7LaggTg
- UgpagKOgX4sPNcc3FgIZ3IQ4hSXFwtY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1684916813;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=IvJjaGH95K4LBrNd9oCcXpl0PSXHUafxCmRq+Dazue0=;
- b=T5B/tsHDpgdxrgtUY8fCBu0lRC4REfAdXwR9dCDe09EDnXangZwN++U6RWIx88r8yXumXv
- YNC44VAM4FWvENDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 76CF7133E6;
- Wed, 24 May 2023 08:26:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id lMneG03KbWTLXAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 24 May 2023 08:26:53 +0000
-Date: Wed, 24 May 2023 10:28:03 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZG3Kk5KbhtRdktYL@yuki>
-References: <20230508084616.21322-1-andrea.cervesato@suse.de>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D23F720093E
+ for <ltp@lists.linux.it>; Tue, 23 May 2023 17:09:54 +0200 (CEST)
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-3f6094cb26eso11497505e9.2
+ for <ltp@lists.linux.it>; Tue, 23 May 2023 08:09:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=tessares.net; s=google; t=1684854594; x=1687446594;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=E8b9MpzTCglN7HI+qZ7EYTlHwVoKr0imEe2dKuGSUUc=;
+ b=oedF/OpaSzR0ty3V7END7dGpEbKtM9xZFqWV75o4kqKtimqL14VCIbfzEeX2RK4svX
+ vxTe8PsCutukTy7lfsL2C1C8OdHQyQqAqIO+2v6etis6aieDlewgAvQqdy7iKuxlj/ze
+ kJSKUdJlLYTMdPLGgElYQ2/WJGcCBsw6Zm9GKGycBR9BZs7CKmHF3darLzJ4fUWT8Kwm
+ lXO6X85FLpXKuoYLk07ZsOJCr/3NiJqFywVt+zDzED0lLsFJ+vPYkvCeA4sZDPv+roE+
+ XUZfldjTcau4V7yYACc2RTLfe1c4FXOeA7qaJjwDEVo28mmoB2g0YCB/G3MW2i6gG6l+
+ Dgqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1684854594; x=1687446594;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=E8b9MpzTCglN7HI+qZ7EYTlHwVoKr0imEe2dKuGSUUc=;
+ b=Kw6VkagFPCs+Q87rHweKfEFQvscVdyYfvTI0r5/BOgX7OBerYu9ghWZ9hWZN07zjvQ
+ HaR7OYyFSNY5bb2G9e6i/1xHYCE1qObkqiBQQnnCNev4kKWcfJqCUT2YBq4rlnK8V7Zb
+ WLMfB2ODLvw5o1uN1m+WZx9A0ziKkXwkp+BbV+v+NRYzjWQWhhuWUV3lqSNp7YGnCnv3
+ eZock7WuB/+z9jrD0r0b/MLmgp8nqaE+E5whaWpezZfDkpFwz8DBppbKAm76A+7Ccps/
+ qKR/Zv+x5Q/36fuSxChYZXxY+goFXMlLhFY3ksTUhSUtoNLcKPRnVNTaLfUtkugebFME
+ jyAw==
+X-Gm-Message-State: AC+VfDxORwYzpJgoJy/q6rkEwkEUWIe8hV4i+iWJ37TcSM8afAwpwAGh
+ Lh96m+ZpLeQS8/maKxjEMwzakQ==
+X-Google-Smtp-Source: ACHHUZ53ALZt8ITA9PYkpa+ddvkzqMUvuxLGadsY4TgcTyLDpTXlK3mlv8nuCJzmyUKUbpLaMhQxSw==
+X-Received: by 2002:a1c:7716:0:b0:3f6:f56:5e82 with SMTP id
+ t22-20020a1c7716000000b003f60f565e82mr717086wmi.3.1684854594086; 
+ Tue, 23 May 2023 08:09:54 -0700 (PDT)
+Received: from ?IPV6:2a02:578:8593:1200:6cb1:7d36:3be3:30d?
+ ([2a02:578:8593:1200:6cb1:7d36:3be3:30d])
+ by smtp.gmail.com with ESMTPSA id
+ n6-20020a7bcbc6000000b003f42d8dd7ffsm11930110wmi.19.2023.05.23.08.09.52
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 23 May 2023 08:09:53 -0700 (PDT)
+Message-ID: <457ea968-b2dd-1a9b-7eab-0b0ec825304d@tessares.net>
+Date: Tue, 23 May 2023 17:09:52 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230508084616.21322-1-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Content-Language: en-GB
+To: Naresh Kamboju <naresh.kamboju@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20230522190405.880733338@linuxfoundation.org>
+ <CA+G9fYs4zoTUQUnkvncEpPWvfGD6sDSXi94KXji+udMrvfm5Rg@mail.gmail.com>
+In-Reply-To: <CA+G9fYs4zoTUQUnkvncEpPWvfGD6sDSXi94KXji+udMrvfm5Rg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Remove libclone dependency from pidns05 test
+X-Mailman-Approved-At: Wed, 24 May 2023 10:27:44 +0200
+Subject: Re: [LTP] [PATCH 6.1 000/292] 6.1.30-rc1 review
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,243 +87,85 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Matthieu Baerts via ltp <ltp@lists.linux.it>
+Reply-To: Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc: f.fainelli@gmail.com, rwarsow@gmx.de, pavel@denx.de, shuah@kernel.org,
+ LTP List <ltp@lists.linux.it>, patches@lists.linux.dev, stable@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ srw@sladewatkins.net, patches@kernelci.org,
+ MPTCP Upstream <mptcp@lists.linux.dev>, akpm@linux-foundation.org,
+ jonathanh@nvidia.com, torvalds@linux-foundation.org,
+ sudipm.mukherjee@gmail.com, linux@roeck-us.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +// SPDX-License-Identifier: GPL-2.0
-
-The original test was GPL-2.0-or-later, please pay a bit more attention
-on the licenses, it's tedious and boring but it helps us avoid a trouble
-in the long term.
-
-> -	/* The loop breaks, when the loop counter reaches the parentpid value */
-> -	for (i = parentpid + 1; i != parentpid; i++) {
-> -		if (i > pid_max)
-> -			i = 2;
-> -
-> +	for (i = parentpid + 1; i < pid_max; i++) {
->  		pgid2 = getpgid(i);
-
-I do not think that this change is correct. The difference is that if
-parentpid is close to pid_max the child pids would "overflow".
-
-I suppose the easiest solution is to scan everything from 2 to pid_max
-instead of depending on signed overflow, which I think is undefined to
-begin with.
-
->  		if (pgid2 == pgid) {
->  			pids[next] = i;
->  			next++;
->  		}
->  	}
-> +
->  	return next;
->  }
->  
-> -/*
-> -* create_nested_container() Recursively create MAX_DEPTH nested containers
-> -*/
-> -int create_nested_container(void *vtest)
-> +static void setup(void)
->  {
-> -	int exit_val;
-> -	int ret, count, *level;
-> -	pid_t cpid, ppid;
-> -	cpid = getpid();
-> -	ppid = getppid();
-> -	char mesg[] = "Nested Containers are created";
-> -
-> -	level = (int *)vtest;
-> -	count = *level;
-> -
-> -	/* Child process closes up read side of pipe */
-> -	close(fd[0]);
-> -
-> -	/* Comparing the values to make sure pidns is created correctly */
-> -	if (cpid != CINIT_PID || ppid != PARENT_PID) {
-> -		printf("Got unexpected cpid and/or ppid (cpid=%d ppid=%d)\n",
-> -		       cpid, ppid);
-> -		exit_val = 1;
-> -	}
-> -	if (count > 1) {
-> -		count--;
-> -		ret = do_clone_unshare_test(T_CLONE, CLONE_NEWPID,
-> -					    create_nested_container,
-> -					    (void *)&count);
-> -		if (ret == -1) {
-> -			printf("clone failed; errno = %d : %s\n",
-> -			       ret, strerror(ret));
-> -			exit_val = 1;
-> -		} else
-> -			exit_val = 0;
-> -	} else {
-> -		/* Sending mesg, 'Nested containers created' through the pipe */
-> -		write(fd[1], mesg, (strlen(mesg) + 1));
-> -		exit_val = 0;
-> -	}
-> -
-> -	close(fd[1]);
-> -	pause();
-> -
-> -	return exit_val;
-> +	SAFE_FILE_SCANF("/proc/sys/kernel/pid_max", "%d\n", &pid_max);
->  }
->  
-> -void kill_nested_containers()
-> +static void run(void)
->  {
-> -	int orig_count, new_count, status = 0, i;
-> -	pid_t pids[MAX_DEPTH];
-> +	int i, status, children;
-> +	int level = 0;
->  	pid_t pids_new[MAX_DEPTH];
-> +	pid_t pids[MAX_DEPTH];
-> +	pid_t pid;
->  
-> -	orig_count = find_cinit_pids(pids);
-> -	kill(pids[MAX_DEPTH - 3], SIGKILL);
-> -	sleep(1);
-> -
-> -	/* After killing child container, getting the New PID list */
-> -	new_count = find_cinit_pids(pids_new);
-> -
-> -	/* Verifying that the child containers were destroyed when parent is killed */
-> -	if (orig_count - 2 != new_count)
-> -		status = -1;
-> -
-> -	for (i = 0; i < new_count; i++) {
-> -		if (pids[i] != pids_new[i])
-> -			status = -1;
-> +	pid = SAFE_CLONE(&clone_args);
-> +	if (!pid) {
-> +		child_func(&level);
-> +		return;
->  	}
->  
-> -	if (status == 0)
-> -		tst_resm(TPASS, "The number of containers killed are %d",
-> -			 orig_count - new_count);
-> -	else
-> -		tst_resm(TFAIL, "Failed to kill the sub-containers of "
-> -			 "the container %d", pids[MAX_DEPTH - 3]);
-> -
-> -	/* Loops through the containers created to exit from sleep() */
-> -	for (i = 0; i < MAX_DEPTH; i++) {
-> -		kill(pids[i], SIGKILL);
-> -		waitpid(pids[i], &status, 0);
-> -	}
-> -}
-> +	TST_CHECKPOINT_WAIT(0);
->  
-> -static void setup(void)
-> -{
-> -	tst_require_root();
-> -	check_newpid();
-> -}
-> +	find_cinit_pids(pids);
->  
-> -int main(void)
-> -{
-> -	int ret, nbytes, status;
-> -	char readbuffer[80];
-> -	pid_t pid, pgid;
-> -	int count = MAX_DEPTH;
-> +	SAFE_KILL(pids[0], SIGKILL);
-
-Why do we do the find_cinit_pids() here and kill(pids[0], ...) shouldn't
-we just use the pid from the clone above?
-
-> -	setup();
-> +	TST_RETRY_FUNC(waitpid(0, &status, WNOHANG), TST_RETVAL_NOTNULL);
-
-Why are we wrapping WNOHANG call to waitpid into RETRY_FUNC? Just do
-SAFE_WAITPID() without the WNOHANG.
-
-Are you trying to collect all children here? That will not work at all
-with the retry func, as it will exit on first succesful waitpid.
-
-The original code did waitpid() for the top level child only here if you
-want to wait all of them, you have to loop with WNOHANG and you can
-count them in the loop as well...
-
-> -	/*
-> -	 * XXX (garrcoop): why in the hell is this fork-wait written this way?
-> -	 * This doesn't add up with the pattern used for the rest of the tests,
-> -	 * so I'm pretty damn sure this test is written incorrectly.
-> -	 */
-> -	pid = fork();
-> -	if (pid == -1) {
-> -		tst_brkm(TBROK | TERRNO, NULL, "fork failed");
-> -	} else if (pid != 0) {
-> -		/*
-> -		 * NOTE: use waitpid so that we know we're waiting for the
-> -		 * _top-level_ child instead of a spawned subcontainer.
-> -		 *
-> -		 * XXX (garrcoop): Might want to mask SIGCHLD in the top-level
-> -		 * child too, or not *shrugs*.
-> -		 */
-> -		if (waitpid(pid, &status, 0) == -1) {
-> -			perror("wait failed");
-> -		}
-> -		if (WIFEXITED(status))
-> -			exit(WEXITSTATUS(status));
-> -		else
-> -			exit(status);
-> -	}
-> +	children = find_cinit_pids(pids_new);
->  
-> -	/* To make all the containers share the same PGID as its parent */
-> -	setpgid(0, 0);
-> +	if (children > 0) {
-> +		tst_res(TFAIL, "%d children left after sending SIGKILL", children);
->  
-> -	pid = getpid();
-> -	pgid = getpgid(pid);
-> -	SAFE_PIPE(NULL, fd);
-> +		for (i = 0; i < MAX_DEPTH; i++) {
-> +			kill(pids[i], SIGKILL);
-> +			waitpid(pids[i], &status, 0);
-> +		}
->  
-> -	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWPID,
-> -				   create_nested_container, (void *)&count));
-> -	if (TEST_RETURN == -1) {
-> -		tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
-> +		return;
->  	}
->  
-> -	close(fd[1]);
-> -	/* Waiting for the MAX_DEPTH number of containers to be created */
-> -	nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
-> -	close(fd[0]);
-> -	if (nbytes > 0)
-> -		tst_resm(TINFO, " %d %s", MAX_DEPTH, readbuffer);
-> -	else
-> -		tst_brkm(TFAIL, NULL, "unable to create %d containers",
-> -			 MAX_DEPTH);
-> -
-> -	/* Kill the container created */
-> -	kill_nested_containers();
-> -
-> -	tst_exit();
-> +	tst_res(TPASS, "No children left after sending SIGKILL to the first child");
->  }
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.needs_root = 1,
-> +	.needs_checkpoints = 1,
-> +	.forks_child = 1,
-> +};
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgTmFyZXNoLAoKT24gMjMvMDUvMjAyMyAxNjo1MiwgTmFyZXNoIEthbWJvanUgd3JvdGU6Cj4g
+T24gVHVlLCAyMyBNYXkgMjAyMyBhdCAwMDo1MywgR3JlZyBLcm9haC1IYXJ0bWFuCj4gPGdyZWdr
+aEBsaW51eGZvdW5kYXRpb24ub3JnPiB3cm90ZToKPj4KPj4gVGhpcyBpcyB0aGUgc3RhcnQgb2Yg
+dGhlIHN0YWJsZSByZXZpZXcgY3ljbGUgZm9yIHRoZSA2LjEuMzAgcmVsZWFzZS4KPj4gVGhlcmUg
+YXJlIDI5MiBwYXRjaGVzIGluIHRoaXMgc2VyaWVzLCBhbGwgd2lsbCBiZSBwb3N0ZWQgYXMgYSBy
+ZXNwb25zZQo+PiB0byB0aGlzIG9uZS4gIElmIGFueW9uZSBoYXMgYW55IGlzc3VlcyB3aXRoIHRo
+ZXNlIGJlaW5nIGFwcGxpZWQsIHBsZWFzZQo+PiBsZXQgbWUga25vdy4KPj4KPj4gUmVzcG9uc2Vz
+IHNob3VsZCBiZSBtYWRlIGJ5IFdlZCwgMjQgTWF5IDIwMjMgMTk6MDM6MjUgKzAwMDAuCj4+IEFu
+eXRoaW5nIHJlY2VpdmVkIGFmdGVyIHRoYXQgdGltZSBtaWdodCBiZSB0b28gbGF0ZS4KPj4KPj4g
+VGhlIHdob2xlIHBhdGNoIHNlcmllcyBjYW4gYmUgZm91bmQgaW4gb25lIHBhdGNoIGF0Ogo+PiAg
+ICAgICAgIGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvcHViL2xpbnV4L2tlcm5lbC92Ni54L3N0YWJs
+ZS1yZXZpZXcvcGF0Y2gtNi4xLjMwLXJjMS5nego+PiBvciBpbiB0aGUgZ2l0IHRyZWUgYW5kIGJy
+YW5jaCBhdDoKPj4gICAgICAgICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tl
+cm5lbC9naXQvc3RhYmxlL2xpbnV4LXN0YWJsZS1yYy5naXQgbGludXgtNi4xLnkKPj4gYW5kIHRo
+ZSBkaWZmc3RhdCBjYW4gYmUgZm91bmQgYmVsb3cuCj4+Cj4+IHRoYW5rcywKPj4KPj4gZ3JlZyBr
+LWgKPiAKPiAKPiBSZXN1bHRzIGZyb20gTGluYXJv4oCZcyB0ZXN0IGZhcm0uCj4gTm8gcmVncmVz
+c2lvbnMgb24gYXJtNjQsIGFybSwgeDg2XzY0LCBhbmQgaTM4Ni4KPiAKPiBUZXN0ZWQtYnk6IExp
+bnV4IEtlcm5lbCBGdW5jdGlvbmFsIFRlc3RpbmcgPGxrZnRAbGluYXJvLm9yZz4KCiguLi4pCgo+
+IHNlbGZ0ZXN0czogbmV0L21wdGNwOiBkaWFnLnNoIHN0YXJ0ZWQgZmFpbGluZyBvbiA2LjEuMzAt
+cmMxIGJ1dAo+IHBhc3NlZCBvbiA2LjMuNC1yYzEuIFRoaXMgaXMgZHVlIHRvIGNoYW5nZXMgaW4g
+bGF0ZXN0IGtzZWxmdGVzdAo+ICg2LjMpIHJ1bm5pbmcgb24gNi4xLgo+IAo+IHRlc3QgbG9nczoK
+PiA9PT09PT09Cj4gIyBzZWxmdGVzdHM6IG5ldC9tcHRjcDogZGlhZy5zaAo+ICMgbm8gbXNrIG9u
+IG5ldG5zIGNyZWF0aW9uICAgICAgICAgICAgICAgICAgICAgICAgICBbICBvayAgXQo+ICMgbGlz
+dGVuIG1hdGNoIGZvciBkcG9ydCAxMDAwMCAgICAgICAgICAgICAgICAgICAgICBbICBvayAgXQo+
+ICMgbGlzdGVuIG1hdGNoIGZvciBzcG9ydCAxMDAwMCAgICAgICAgICAgICAgICAgICAgICBbICBv
+ayAgXQo+ICMgbGlzdGVuIG1hdGNoIGZvciBzYWRkciBhbmQgc3BvcnQgICAgICAgICAgICAgICAg
+ICBbICBvayAgXQo+ICMgYWxsIGxpc3RlbiBzb2NrZXRzICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBbICBvayAgXQo+ICMgYWZ0ZXIgTVBDIGhhbmRzaGFrZSAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBbICBvayAgXQo+ICMgLi4uLmNoayByZW1vdGVfa2V5ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBbICBvayAgXQo+ICMgLi4uLmNoayBubyBmYWxsYmFjayAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBbICBvayAgXQo+ICMgLi4uLmNoayAyIG1zayBpbiB1
+c2UgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBbIGZhaWwgXSBleHBlY3RlZCAyIGZvdW5k
+IDAKPiAjIC4uLi5jaGsgMCBtc2sgaW4gdXNlIGFmdGVyIGZsdXNoICAgICAgICAgICAgICAgICAg
+WyAgb2sgIF0KPiAjIGNoZWNrIGZhbGxiYWNrICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgWyAgb2sgIF0KPiAjIC4uLi5jaGsgMSBtc2sgaW4gdXNlICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgWyBmYWlsIF0gZXhwZWN0ZWQgMSBmb3VuZCAwCj4gIyAuLi4uY2hrIDAgbXNr
+IGluIHVzZSBhZnRlciBmbHVzaCAgICAgICAgICAgICAgICAgIFsgIG9rICBdCj4gIyBtYW55IG1z
+ayBzb2NrZXQgcHJlc2VudCAgICAgICAgICAgICAgICAgICAgICAgICAgIFsgIG9rICBdCj4gIyAu
+Li4uY2hrIG1hbnkgbXNrIGluIHVzZSAgICAgICAgICAgICAgICAgICAgICAgICAgIFsgZmFpbCBd
+IGV4cGVjdGVkCj4gMjU0IGZvdW5kIDAKPiAjIC4uLi5jaGsgMCBtc2sgaW4gdXNlIGFmdGVyIGZs
+dXNoICAgICAgICAgICAgICAgICAgWyAgb2sgIF0KPiBub3Qgb2sgNCBzZWxmdGVzdHM6IG5ldC9t
+cHRjcDogZGlhZy5zaCAjIGV4aXQ9MTEKPiAKPiBsb2dzOgo+ICAtIGh0dHBzOi8vcWEtcmVwb3J0
+cy5saW5hcm8ub3JnL2xrZnQvbGludXgtc3RhYmxlLXJjLWxpbnV4LTYuMS55L2J1aWxkL3Y2LjEu
+MjktMjkzLWdlMDBhM2Q5NmY3NTYvdGVzdHJ1bi8xNzE2Mzk3Ny9zdWl0ZS9rc2VsZnRlc3QtbmV0
+LW1wdGNwL3Rlc3QvbmV0X21wdGNwX2RpYWdfc2gvaGlzdG9yeS8KPiAgLSBodHRwczovL3FhLXJl
+cG9ydHMubGluYXJvLm9yZy9sa2Z0L2xpbnV4LXN0YWJsZS1yYy1saW51eC02LjEueS9idWlsZC92
+Ni4xLjI5LTI5My1nZTAwYTNkOTZmNzU2L3Rlc3RydW4vMTcxNjM5Nzcvc3VpdGUva3NlbGZ0ZXN0
+LW5ldC1tcHRjcC90ZXN0L25ldF9tcHRjcF9kaWFnX3NoL2RldGFpbHMvCgpUaGFuayB5b3UgZm9y
+IGxvb2tpbmcgYXQgdGhlc2UgTVBUQ1Agc2VsZnRlc3RzIGFuZCBmb3IgaGF2aW5nIHJlcG9ydGVk
+CnRoZXNlIGlzc3Vlcy4KCldlIGFyZSBsb29raW5nIGF0IGhhdmluZyBNUFRDUCBzZWxmdGVzdHMg
+c3VwcG9ydGluZyBwcmV2aW91cyBrZXJuZWwKdmVyc2lvbnMgYnV0IHRoYXQncyBub3QgZWFzeSBi
+ZWNhdXNlIG91ciBzZWxmdGVzdHMgYXJlIHZlcmlmeWluZyBzb21lCmludGVybmFsIGJlaGF2aW91
+cnMsIG5vdCBqdXN0IHdoYXQgaXMgZXhwb3NlZCB0byB0aGUgdUFQSSwgZS5nLiB3aGF0Cm5ldHdv
+cmsgcGFja2V0cyBhcmUgYmVpbmcgc2VudCwgZXRjLi4gQWxzbywgc29tZSBzb2NrZXQgb3B0aW9u
+cyBhbmQKY291bnRlcnMgLS0gbGlrZSB3aGF0IHlvdSByZXBvcnRlZCBoZXJlIGFib3ZlIHdpdGgg
+ZGlhZy5zaCAtLSB3ZXJlCnJldHVybmluZyAwIGJlZm9yZSBiZWluZyBpbXBsZW1lbnRlZCBpbiBN
+UFRDUDogc28gd2UgbmVlZCB0byBhY2NlcHQgdGhhdAp0aGVzZSBjb3VudGVycyBtaWdodCBub3Qg
+d29yaywgdGhhdCdzIG5vdCBpZGVhbCBmb3IgYSB0ZXN0IHRoYXQgd2FudHMgdG8KY2hlY2sgaWYg
+dGhleSB3b3JrIDopCgpBbnl3YXksIGZvciB0aG9zZSB3aG8gd2FudHMgdG8gZm9sbG93IHRoZSBl
+dm9sdXRpb24sIHBhdGNoZXMgaGF2ZSBiZWVuCnNoYXJlZCBvbiBvdXIgbWFpbGluZyBsaXN0OgoK
+ICBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbXB0Y3AvbGlzdC8/c2VyaWVz
+PTc0OTg2OCZzdGF0ZT0qCiAgaHR0cHM6Ly9naXRodWIuY29tL211bHRpcGF0aC10Y3AvbXB0Y3Bf
+bmV0LW5leHQvY29tbWl0cy83MjIwYzRjMjJiODgKICBodHRwczovL2dpdGh1Yi5jb20vbXVsdGlw
+YXRoLXRjcC9tcHRjcF9uZXQtbmV4dC9pc3N1ZXMvMzY4CgpDaGVlcnMsCk1hdHQKLS0gClRlc3Nh
+cmVzIHwgQmVsZ2l1bSB8IEh5YnJpZCBBY2Nlc3MgU29sdXRpb25zCnd3dy50ZXNzYXJlcy5uZXQK
+Ci0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9s
+dHAK
