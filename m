@@ -4,66 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B2A1C7EE23
-	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 09:02:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 809A1C77B73
+	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 09:39:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 47E063CD2EB
-	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 11:02:55 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id A85C73CECBF
+	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 11:39:47 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F24693CD2D2
- for <ltp@lists.linux.it>; Wed, 24 May 2023 11:02:38 +0200 (CEST)
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com
- [IPv6:2607:f8b0:4864:20::e35])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id B2F533CAD6B
+ for <ltp@lists.linux.it>; Wed, 24 May 2023 11:39:37 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0A4416002B6
- for <ltp@lists.linux.it>; Wed, 24 May 2023 11:02:38 +0200 (CEST)
-Received: by mail-vs1-xe35.google.com with SMTP id
- ada2fe7eead31-437de2001bdso208908137.3
- for <ltp@lists.linux.it>; Wed, 24 May 2023 02:02:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1684918957; x=1687510957;
- h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
- :date:message-id:reply-to;
- bh=RTouH8humuwEe3jhOEhDHis1lZOubi2q4klrpBIze/U=;
- b=RFA8daYwBWmfkcW7ZdlMoh9q8jXWhk91EKEnZbuLH2ww4Nj2mdLPJiidediuUUJoz/
- pNaiQASGTU6EMcpwRURbd7snx8zTCaS0TLLmeCmd5VVPI9bMWs5lShlji/B+rDUbKU/N
- YheUhd+Cet2j0716L3itGxdculE4c6dZ70KsS88oZhSOgi3Y5iWNrcbvJVtFkHG+vF2K
- vu2zQcys2UaCgEZqxucQvkRU4cDKI7d7vz6QLecjLWNMRA/TE86ulUoLXyHy7fxASDR5
- OSgmMS70V+EGJ143QzO3SlPl1lInMtw/LYaY70hGZylS9MRzx50mmO004dbpaYT/6DaY
- evEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1684918957; x=1687510957;
- h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=RTouH8humuwEe3jhOEhDHis1lZOubi2q4klrpBIze/U=;
- b=Zz7adAcqCOngY4L2aftzZbdQeoi2PQpmod+2b5IGkB/jMMoEV4LGnCEdFjLhgmHp/r
- 0E5ESXU+GeQ2mfZZNJbI6t8xldTOuFLQz1YpIsEZwznZYWj7oCPcoIUvzJ5HeMM1r1I+
- TjIVZeoq75fdYQv2lQ8p9DyxVRRlLvXC5wv+E8+KSx9qq5Jkaxg3fln/B9N8Pr/TpQ79
- gWUY2D3iAoJzgtRkVKHeCTA7+ivgTcn7CSX38N9Ixan/agwyt7vOBhIwtIMD05YGTBvZ
- Xg1lqfEti5do4NcqikmxPK47UARkQR4Dp11kAEWmt+XiJlHODzMUiAFVfT+mYyY2EPmb
- 8F2Q==
-X-Gm-Message-State: AC+VfDxGsbJNFhH5EH8Sa+qOhMuVRjzt4lw9Pra+63Aq4uZuZNXEjMMr
- F6RZ51RY1udmT7iTY5YZsdWz6jNP7Hnvb3HpqAPwEA==
-X-Google-Smtp-Source: ACHHUZ5mYHmvjrTJf9pzrN6SHCUoIJwJqM1u3knIm8Y7zR2jMuag8dfjN1UMmcYTJB/rkkRjgzV2d46lensdPw+3dSc=
-X-Received: by 2002:a67:bc03:0:b0:439:6581:2ed8 with SMTP id
- t3-20020a67bc03000000b0043965812ed8mr490817vsn.31.1684918956760; Wed, 24 May
- 2023 02:02:36 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A91EC6008E5
+ for <ltp@lists.linux.it>; Wed, 24 May 2023 11:39:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1684921175;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=exhZLLeYOl0I98Y7PdtDJ9L5qUTb6vYG8og2rcSHQ6s=;
+ b=CZptRejxq4VR4ouGlfCq6T0OxllM19AdvpzCl2Ocn9FTAQRiQDwrTRObr1zXt2nkNegyU8
+ xhLq3TWkVe6fqaxhjvErl0YifNG6s46jsU6g30LMMlR77uLCtGaZ3K0VNwcfaoWrl3Po7u
+ MbJskl3xGLe3SBpSLWNkDTv0CJmxN3g=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-538-7WwqR2baOo-N5Y-wBW__OA-1; Wed, 24 May 2023 05:39:33 -0400
+X-MC-Unique: 7WwqR2baOo-N5Y-wBW__OA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.8])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1C6DC80027F
+ for <ltp@lists.linux.it>; Wed, 24 May 2023 09:39:33 +0000 (UTC)
+Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
+ [10.66.145.229])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 2BB20C164ED
+ for <ltp@lists.linux.it>; Wed, 24 May 2023 09:39:31 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Wed, 24 May 2023 17:39:29 +0800
+Message-Id: <20230524093930.43971-1-liwang@redhat.com>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 24 May 2023 14:32:25 +0530
-Message-ID: <CA+G9fYuGT0esjqBT9=xCTtWKV1DxYspXTtM5gqprbDKiTrb7qQ@mail.gmail.com>
-To: open list <linux-kernel@vger.kernel.org>,
- linux-stable <stable@vger.kernel.org>, 
- LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] LTP: tracing: RIP: 0010:security_inode_permission+0x5/0x70
+Subject: [LTP] [RFC PATCH 1/2] lib: add support for kinds of hpsize
+ reservation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,116 +69,174 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
- Christian Brauner <brauner@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Masami Hiramatsu <mhiramat@kernel.org>, linux-fsdevel@vger.kernel.org,
- Dan Carpenter <dan.carpenter@linaro.org>, Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-While running LTP tracing tests on qemu-x86_64 following kernel crash noticed
-with stable-rc 6.3.4-rc2.
+Typically when we make use of huge page via LTP library, .hugepages choose
+the default hugepage size, but this can not satisfy all scenarios.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+So this patch introduces applying a specified hpsize huge page for user.
 
-FAILED COMMAND File:
-/lava-1/0/tests/0_ltp-tracing/automated/linux/ltp/output/LTP_tracing.failed
-TCONF COMMAND File: /opt/ltp/output/LTP_RUN_ON-LTP_tracing.log.tconf
-Running tests.......
+There is nothing that needs to change for the existing test cases which
+already using .hugepages, it only needs to fill one more field in the
+structure of .hugepages if a different hpsize is required.
 
-<4>[   57.932577] int3: 0000 [#1] PREEMPT SMP PTI
-<4>[   57.933090] CPU: 0 PID: 138 Comm: systemd-udevd Not tainted 6.3.4-rc2 #1
-<4>[   57.933243] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS 1.14.0-2 04/01/2014
-<4>[   57.933447] RIP: 0010:security_inode_permission+0x5/0x70
-<4>[   57.934163] Code: c0 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00
-00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66
-0f 1f 00 e8 <e7> 8d 64 18 f6 47 0d 02 75 50 55 48 89 e5 41 55 41 89 f5
-41 54 49
-<4>[   57.934257] RSP: 0018:ffffa300c050bca0 EFLAGS: 00000246
-<4>[   57.934363] RAX: 00000000000041ed RBX: ffff9bda012805c0 RCX:
-0000000000000000
-<4>[   57.934390] RDX: ffff9bda01f6df00 RSI: 0000000000000081 RDI:
-ffff9bda012805c0
-<4>[   57.934415] RBP: ffffa300c050bcd0 R08: ffffa300c050bd80 R09:
-00000000ffffff9c
-<4>[   57.934440] R10: 0000000000000fe0 R11: ffc9d09b99d09993 R12:
-0000000000000081
-<4>[   57.934465] R13: 0000000000000000 R14: ffffffffa958f970 R15:
-2f2f2f2f2f2f2f2f
-<4>[   57.934544] FS:  00007fb89665f800(0000)
-GS:ffff9bda7bc00000(0000) knlGS:0000000000000000
-<4>[   57.934578] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-<4>[   57.934604] CR2: 00007f60c9b0e000 CR3: 0000000104402000 CR4:
-00000000000006f0
-<4>[   57.934793] Call Trace:
-<4>[   57.934958]  <TASK>
-<4>[   57.935082]  ? inode_permission+0x70/0x1a0
-<4>[   57.935235]  link_path_walk.part.0.constprop.0+0xdd/0x3b0
-<4>[   57.935360]  path_lookupat+0x3e/0x190
-<4>[   57.935426]  filename_lookup+0xe8/0x1f0
-<4>[   57.935638]  user_path_at_empty+0x42/0x60
-<4>[   57.935692]  do_fchmodat+0x5f/0xc0
-<4>[   57.935809]  __x64_sys_chmod+0x1f/0x30
-<4>[   57.935845]  do_syscall_64+0x3e/0x90
-<4>[   57.935886]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-<4>[   57.935996] RIP: 0033:0x7fb8964fbd6b
-<4>[   57.936393] Code: ff ff ff ff eb e6 66 0f 1f 84 00 00 00 00 00
-f3 0f 1e fa b8 5f 00 00 00 0f 05 c3 0f 1f 40 00 f3 0f 1e fa b8 5a 00
-00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 85 40 0f 00 f7 d8 64
-89 01 48
-<4>[   57.936422] RSP: 002b:00007ffcf4c2aa38 EFLAGS: 00000202
-ORIG_RAX: 000000000000005a
-<4>[   57.936471] RAX: ffffffffffffffda RBX: 0000000000000190 RCX:
-00007fb8964fbd6b
-<4>[   57.936490] RDX: 00007ffcf4c2aa4f RSI: 0000000000000190 RDI:
-00007ffcf4c2aa40
-<4>[   57.936504] RBP: 0000000000000190 R08: 0000000000000000 R09:
-00007ffcf4c2a8e0
-<4>[   57.936528] R10: 0000000000000000 R11: 0000000000000202 R12:
-00007ffcf4c2aa40
-<4>[   57.936542] R13: 0000000000000005 R14: 0000000000000000 R15:
-0000000000000001
-<4>[   57.936754]  </TASK>
-<4>[   57.936853] Modules linked in:
-<4>[   57.962890] ---[ end trace 0000000000000000 ]---
-<4>[   57.963006] RIP: 0010:security_inode_permission+0x5/0x70
-<4>[   57.963080] Code: c0 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00
-00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66
-0f 1f 00 e8 <e7> 8d 64 18 f6 47 0d 02 75 50 55 48 89 e5 41 55 41 89 f5
-41 54 49
-<4>[   57.963105] RSP: 0018:ffffa300c050bca0 EFLAGS: 00000246
-<4>[   57.963145] RAX: 00000000000041ed RBX: ffff9bda012805c0 RCX:
-0000000000000000
-<4>[   57.963163] RDX: ffff9bda01f6df00 RSI: 0000000000000081 RDI:
-ffff9bda012805c0
-<4>[   57.963180] RBP: ffffa300c050bcd0 R08: ffffa300c050bd80 R09:
-00000000ffffff9c
-<4>[   57.963195] R10: 0000000000000fe0 R11: ffc9d09b99d09993 R12:
-0000000000000081
-<4>[   57.963209] R13: 0000000000000000 R14: ffffffffa958f970 R15:
-2f2f2f2f2f2f2f2f
-<4>[   57.963226] FS:  00007fb89665f800(0000)
-GS:ffff9bda7bc00000(0000) knlGS:0000000000000000
-<4>[   57.963246] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-<4>[   57.963261] CR2: 00007f60c9b0e000 CR3: 0000000104402000 CR4:
-00000000000006f0
-<0>[   57.963444] Kernel panic - not syncing: Fatal exception in interrupt
-<0>[   57.964629] Kernel Offset: 0x26600000 from 0xffffffff81000000
-(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+e.g.
 
+    static struct tst_test test = {
+	.needs_root = 1,
+	...
+	.hugepages = {2, TST_NEEDS, 1048576},
+    };
 
-links,
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.3.y/build/v6.3.3-364-ga37c304c022d/testrun/17168198/suite/log-parser-test/tests/
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.3.y/build/v6.3.3-364-ga37c304c022d/testrun/17168198/suite/log-parser-test/test/check-kernel-panic/log
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2QCeudZ18KF3RXw3A5qfr5lPC2N/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2QCeudZ18KF3RXw3A5qfr5lPC2N/config
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ doc/c-test-api.txt     | 37 +++++++++++++++++++++++++++++++++++--
+ include/tst_hugepage.h |  1 +
+ lib/tst_hugepage.c     | 23 +++++++++++++++++------
+ 3 files changed, 53 insertions(+), 8 deletions(-)
 
---
-Linaro LKFT
-https://lkft.linaro.org
+diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+index dcb6e1ba8..45610474c 100644
+--- a/doc/c-test-api.txt
++++ b/doc/c-test-api.txt
+@@ -2034,9 +2034,15 @@ For full documentation see the comments in 'include/tst_fuzzy_sync.h'.
+ ~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ Many of the LTP tests need to use hugepage in their testing, this allows the
+-test can reserve hugepages from system via '.hugepages = {xx, TST_REQUEST}'.
++test can reserve specify size of hugepages from system via:
++  '.hugepages = {xx, TST_REQUEST, yy}'.
+ 
+-We achieved two policies for reserving hugepages:
++xx: This is used to set how many pages we wanted.
++
++yy: This is used to specify the size of the hugepage.
++    (If not set it will use the default hugepage size)
++
++Two policies for reserving hugepages:
+ 
+ TST_REQUEST:
+   It will try the best to reserve available huge pages and return the number
+@@ -2103,6 +2109,33 @@ struct tst_test test = {
+ };
+ -------------------------------------------------------------------------------
+ 
++or,
++
++[source,c]
++-------------------------------------------------------------------------------
++#include "tst_test.h"
++
++static void run(void)
++{
++	...
++}
++
++static void setup(void)
++{
++	/*
++	 * Specify hpsize reserved automatically in the library
++	 * $ echo 2 > /sys/kernel/mm//hugepages/hugepages-1048576kB/nr_hugepages
++	 * Do check if 2 hpages are reserved correctly in there
++	 */
++}
++
++struct tst_test test = {
++	.test_all = run,
++	.hugepages = {2, TST_NEEDS, 1048576},
++	...
++};
++-------------------------------------------------------------------------------
++
+ 1.35 Checking for required commands
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+diff --git a/include/tst_hugepage.h b/include/tst_hugepage.h
+index 46327c79a..e96bfbe53 100644
+--- a/include/tst_hugepage.h
++++ b/include/tst_hugepage.h
+@@ -27,6 +27,7 @@ enum tst_hp_policy {
+ struct tst_hugepage {
+ 	const unsigned long number;
+ 	enum  tst_hp_policy policy;
++	const unsigned long hpsize;
+ };
+ 
+ /*
+diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
+index 728a8c3ec..b6706d412 100644
+--- a/lib/tst_hugepage.c
++++ b/lib/tst_hugepage.c
+@@ -5,6 +5,7 @@
+ 
+ #define TST_NO_DEFAULT_MAIN
+ 
++#include <stdio.h>
+ #include "tst_test.h"
+ #include "tst_hugepage.h"
+ 
+@@ -22,9 +23,10 @@ size_t tst_get_hugepage_size(void)
+ 
+ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+ {
+-	unsigned long val, max_hpages;
++	unsigned long val, max_hpages, hpsize;
++	char hugepage_path[PATH_MAX];
+ 	struct tst_path_val pvl = {
+-		.path = PATH_NR_HPAGES,
++		.path = hugepage_path,
+ 		.val = NULL,
+ 		.flags = TST_SR_SKIP_MISSING | TST_SR_TCONF_RO
+ 	};
+@@ -41,6 +43,13 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+ 	else
+ 		tst_hugepages = hp->number;
+ 
++	if (hp->hpsize)
++		hpsize = hp->hpsize;
++	else
++		hpsize = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE);
++
++	sprintf(hugepage_path, PATH_HUGEPAGES"/hugepages-%lukB/nr_hugepages", hpsize);
++
+ 	if (hp->number == TST_NO_HUGEPAGES) {
+ 		tst_hugepages = 0;
+ 		goto set_hugepages;
+@@ -52,7 +61,7 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+ 		goto set_hugepages;
+ 	}
+ 
+-	max_hpages = SAFE_READ_MEMINFO("MemFree:") / SAFE_READ_MEMINFO("Hugepagesize:");
++	max_hpages = SAFE_READ_MEMINFO("MemFree:") / hpsize;
+ 	if (tst_hugepages > max_hpages) {
+ 		tst_res(TINFO, "Requested number(%lu) of hugepages is too large, "
+ 				"limiting to 80%% of the max hugepage count %lu",
+@@ -65,14 +74,16 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+ 
+ set_hugepages:
+ 	tst_sys_conf_save(&pvl);
+-	SAFE_FILE_PRINTF(PATH_NR_HPAGES, "%lu", tst_hugepages);
+-	SAFE_FILE_SCANF(PATH_NR_HPAGES, "%lu", &val);
++
++	SAFE_FILE_PRINTF(hugepage_path, "%lu", tst_hugepages);
++	SAFE_FILE_SCANF(hugepage_path, "%lu", &val);
++
+ 	if (val != tst_hugepages)
+ 		tst_brk(TCONF, "nr_hugepages = %lu, but expect %lu. "
+ 				"Not enough hugepages for testing.",
+ 				val, tst_hugepages);
+ 
+-	if (hp->policy == TST_NEEDS) {
++	if ((hp->policy == TST_NEEDS) && (!hp->hpsize)) {
+ 		unsigned long free_hpages = SAFE_READ_MEMINFO("HugePages_Free:");
+ 		if (hp->number > free_hpages)
+ 			tst_brk(TCONF, "free_hpages = %lu, but expect %lu. "
+-- 
+2.40.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
