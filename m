@@ -4,71 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48C38C7EE23
-	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 12:28:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E681BC77B7A
+	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 12:54:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 773A63CECE8
-	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 14:28:34 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 84F353CECCA
+	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 14:54:35 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E48313CAD6B
- for <ltp@lists.linux.it>; Wed, 24 May 2023 14:28:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 363B53CB8BD
+ for <ltp@lists.linux.it>; Wed, 24 May 2023 14:54:24 +0200 (CEST)
+Received: from eu-smtp-delivery-151.mimecast.com
+ (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6C12E6008C3
- for <ltp@lists.linux.it>; Wed, 24 May 2023 14:28:21 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C85D4220B7;
- Wed, 24 May 2023 12:28:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1684931300;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uqneP8+ACJXQPpolhYvRCej1uXnGgg2ltThC+aR7pF0=;
- b=AWy0+bGp37wB7OCHZiqLmpA4CLRaCyB4d1K7gNOIuwoj4QSXK1LknGSarvwMKMKIn0JOm1
- dSxtiwu0U4Xky03vaQuM/O3+rKScX4gqr/biQmSPc6NJHvyPgzPG769898FDeySSdhRdhd
- Ez4z32JGadySrVu6dzW98Qa10zS85ak=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1684931300;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=uqneP8+ACJXQPpolhYvRCej1uXnGgg2ltThC+aR7pF0=;
- b=2uSD2KJNQBhUEUfGIOsmOt+pR+VETME3yf1lW7Hy+ph5OV4CU+Vw4YWlIg/uYWYtCwSUrg
- vkqLjDb3PYSsT0Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 96F2813425;
- Wed, 24 May 2023 12:28:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id TYkwI+QCbmRzZwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 24 May 2023 12:28:20 +0000
-Date: Wed, 24 May 2023 14:28:18 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Jeff Layton <jlayton@kernel.org>
-Message-ID: <20230524122818.GA691716@pevik>
-References: <20230518113216.126233-1-jlayton@kernel.org>
- <68340cb2-87e1-ff17-2db8-5610beba761b@fujitsu.com>
- <c6c0ae90df044b883ed65ba1896db8b51dfa70d4.camel@kernel.org>
- <ZG3O0Oe2zlezT0ew@yuki>
- <b35f343590352d0c669a017428e815e54e49a9ca.camel@kernel.org>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B5A041000987
+ for <ltp@lists.linux.it>; Wed, 24 May 2023 14:54:23 +0200 (CEST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-239-Yfj8il36OwiJ2kUaRuBpBw-1; Wed, 24 May 2023 13:54:21 +0100
+X-MC-Unique: Yfj8il36OwiJ2kUaRuBpBw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 24 May
+ 2023 13:54:20 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 24 May 2023 13:54:20 +0100
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Arnd Bergmann' <arnd@arndb.de>, Naresh Kamboju
+ <naresh.kamboju@linaro.org>, open list <linux-kernel@vger.kernel.org>,
+ linux-stable <stable@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, "LTP
+ List" <ltp@lists.linux.it>, "lkft-triage@lists.linaro.org"
+ <lkft-triage@lists.linaro.org>, X86 ML <x86@kernel.org>
+Thread-Topic: qemu-x86_64 compat: LTP: controllers: RIP: 0010:__alloc_pages
+Thread-Index: AQHZjjGxuHnxTw0F/kqC+Nbr0ednxK9pYAcQ
+Date: Wed, 24 May 2023 12:54:20 +0000
+Message-ID: <8414a2adfee94b589458766b52f49421@AcuMS.aculab.com>
+References: <CA+G9fYvVZ9WF-2zfrYeo3xnWNra0QGxLzei+b4yANZwEvr5CYw@mail.gmail.com>
+ <3a055da0-fd88-4ec0-b006-9ccd382e9cc6@app.fastmail.com>
+In-Reply-To: <3a055da0-fd88-4ec0-b006-9ccd382e9cc6@app.fastmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <b35f343590352d0c669a017428e815e54e49a9ca.camel@kernel.org>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/statx06: use a fine-grained timestamp
- for the second time fetch
+Subject: Re: [LTP] qemu-x86_64 compat: LTP: controllers: RIP:
+ 0010:__alloc_pages
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,24 +70,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>, Ingo Molnar <mingo@redhat.com>,
+ Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+From: Arnd Bergmann
+> Sent: 24 May 2023 12:18
+> 
+> On Wed, May 24, 2023, at 11:02, Naresh Kamboju wrote:
+> > While running LTP controllers following kernel crash noticed on qemu-x86_64
+> > compat mode with stable-rc 6.3.4-rc2.
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >
+> >  Linux version 6.3.4-rc2 (tuxmake@tuxmake) (x86_64-linux-gnu-gcc
+> > (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40) #1
+> > SMP PREEMPT_DYNAMIC @1684862676
+> > ..
+> > ./runltp -f controllers
+> > ...
+> > cpuset_inherit 11 TPASS: cpus: Inherited information is right!
+> > cpuset_inherit 13 TPASS: mems: Inherited information is right!
+> > <4>[ 1130.117922] int3: 0000 [#1] PREEMPT SMP PTI
+> > <4>[ 1130.118132] CPU: 0 PID: 32748 Comm: cpuset_inherit_ Not tainted
+> > 6.3.4-rc2 #1
+> > <4>[ 1130.118216] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+> > BIOS 1.14.0-2 04/01/2014
+> > <4>[ 1130.118320] RIP: 0010:__alloc_pages+0xeb/0x340
+> > <4>[ 1130.118605] Code: 48 c1 e0 04 48 8d 84 01 00 13 00 00 48 89 45
+> > a8 8b 05 d9 31 cf 01 85 c0 0f 85 05 02 00 00 89 d8 c1 e8 03 83 e0 03
+> > 89 45 c0 66 <90> 41 89 df 41 be 01 00 00 00 f6 c7 04 75 66 44 89 e6 89
+> > df e8 ec
+> 
+> I haven't figured out what is going on here, but I tracked down
+> the trapping instruction <90> to the middle of the 'xchg   %ax,%ax'
+> two-byte nop in:
+> 
+> ffffffff814218f4:       83 e0 03                and    $0x3,%eax
+> ffffffff814218f7:       89 45 c0                mov    %eax,-0x40(%rbp)
+> ffffffff814218fa:       66 90                   xchg   %ax,%ax
+> ffffffff814218fc:       41 89 df                mov    %ebx,%r15d
+> ffffffff814218ff:       41 be 01 00 00 00       mov    $0x1,%r14d
+> 
+> which in turn is the cpusets_enabled() check in prepare_alloc_pages().
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Does that code actually match the call/return stack?
 
-> Thanks, and yes. This should be safe to apply now even if the kernel
-> patch series never goes in.
+It is pretty much impossible to get a trap on an 0x90 byte.
+I think you'd need to jump to it and then get a page fault.
 
-I'd be ok to merge this now. Xu, please let me know if you're against.
+So I bet that isn't the code that was actually being executed.
+So either the fault address is garbage or something horrid(tm)
+has happened to the page tables.
 
-Kind regards,
-Petr
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
