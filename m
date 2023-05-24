@@ -4,67 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43F4AC77B73
-	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 11:31:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48C38C7EE23
+	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 12:28:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6CBEA3CEFCA
-	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 13:31:49 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 773A63CECE8
+	for <ltp@archiver.kernel.org>; Wed, 24 May 2023 14:28:34 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 927473CAC01
- for <ltp@lists.linux.it>; Wed, 24 May 2023 13:31:39 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id E48313CAD6B
+ for <ltp@lists.linux.it>; Wed, 24 May 2023 14:28:21 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AF88010009B8
- for <ltp@lists.linux.it>; Wed, 24 May 2023 13:31:38 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6C12E6008C3
+ for <ltp@lists.linux.it>; Wed, 24 May 2023 14:28:21 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A06FA222BF;
- Wed, 24 May 2023 11:31:37 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C85D4220B7;
+ Wed, 24 May 2023 12:28:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1684927897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1684931300;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=WhtheA/Gzw9ZBNNVZW5R7hvu64pufOsIiq+9Wxeew6w=;
- b=yaEmWV91uf9kFNZVSdwCR4ztkwEzW569EA78TK2s1YpmSCk2G/OcFo4QTL+cl4r99DaM9D
- GUUAJMXFpG52ncpystMX4EUZixq4KVqQcHdQ9tH9PUPiiJtoSV5nQL9hHWhyZgBVeOXnVF
- 3C8piEzc8ZspkJSibAR5EWqKQmzCmhw=
+ bh=uqneP8+ACJXQPpolhYvRCej1uXnGgg2ltThC+aR7pF0=;
+ b=AWy0+bGp37wB7OCHZiqLmpA4CLRaCyB4d1K7gNOIuwoj4QSXK1LknGSarvwMKMKIn0JOm1
+ dSxtiwu0U4Xky03vaQuM/O3+rKScX4gqr/biQmSPc6NJHvyPgzPG769898FDeySSdhRdhd
+ Ez4z32JGadySrVu6dzW98Qa10zS85ak=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1684927897;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1684931300;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=WhtheA/Gzw9ZBNNVZW5R7hvu64pufOsIiq+9Wxeew6w=;
- b=IWt0IOG3fSUbfiZwva2e35cH8bCx65a6TP4dEfu5vqXHyWpU94jKn5TXlqBtiPMBWZ6Wqo
- bHlt31ywkP0EXEBw==
+ bh=uqneP8+ACJXQPpolhYvRCej1uXnGgg2ltThC+aR7pF0=;
+ b=2uSD2KJNQBhUEUfGIOsmOt+pR+VETME3yf1lW7Hy+ph5OV4CU+Vw4YWlIg/uYWYtCwSUrg
+ vkqLjDb3PYSsT0Dw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 818D7133E6;
- Wed, 24 May 2023 11:31:37 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 96F2813425;
+ Wed, 24 May 2023 12:28:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id nmgMHpn1bWQDRwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 24 May 2023 11:31:37 +0000
-Date: Wed, 24 May 2023 13:32:47 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Arnd Bergmann <arnd@arndb.de>
-Message-ID: <ZG3130X0GO9eNJfc@yuki>
-References: <CA+G9fYvGM6a3wct+_o0z-B=k1ZBg1FuBBpfLH71ULihnTo5RrQ@mail.gmail.com>
- <dca09245-5b59-438b-b7d6-c65db7a84a85@app.fastmail.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id TYkwI+QCbmRzZwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 24 May 2023 12:28:20 +0000
+Date: Wed, 24 May 2023 14:28:18 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Jeff Layton <jlayton@kernel.org>
+Message-ID: <20230524122818.GA691716@pevik>
+References: <20230518113216.126233-1-jlayton@kernel.org>
+ <68340cb2-87e1-ff17-2db8-5610beba761b@fujitsu.com>
+ <c6c0ae90df044b883ed65ba1896db8b51dfa70d4.camel@kernel.org>
+ <ZG3O0Oe2zlezT0ew@yuki>
+ <b35f343590352d0c669a017428e815e54e49a9ca.camel@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <dca09245-5b59-438b-b7d6-c65db7a84a85@app.fastmail.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+In-Reply-To: <b35f343590352d0c669a017428e815e54e49a9ca.camel@kernel.org>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP: syscalls: statx06.c:138: TFAIL: Modified time >
- after_time
+Subject: Re: [LTP] [PATCH] syscalls/statx06: use a fine-grained timestamp
+ for the second time fetch
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,47 +80,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
- Christian Brauner <brauner@kernel.org>, Jeff Layton <jlayton@kernel.org>,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
- LTP List <ltp@lists.linux.it>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > [ 1192.088987] loop0: detected capacity change from 0 to 614400
-> > tst_device.c:93: TINFO: Found free device 0 '/dev/loop0'
-> > tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts='-I 256'
-> > extra opts=''
-> > mke2fs 1.46.5 (30-Dec-2021)
-> > [ 1192.337350] EXT4-fs (loop0): mounted filesystem
-> > dfe9283c-5d2f-43f8-840e-a2bbbff5b202 r/w with ordered data mode. Quota
-> > mode: none.
-> > tst_test.c:1558: TINFO: Timeout per run is 0h 05m 00s
-> >
-> > statx06.c:140: TPASS: Birth time Passed
-> > statx06.c:138: TFAIL: Modified time > after_time
-> > statx06.c:140: TPASS: Access time Passed
-> > statx06.c:140: TPASS: Change time Passed
-> 
-> I found a description in
-> 
-> https://lwn.net/ml/linux-kernel/20230503142037.153531-1-jlayton@kernel.org/
-> 
-> which indicates that this is expected. Added Jeff to Cc in case
-> I'm misreading his explanation.
+Hi all,
 
-We even have in-flight patch from Jeff to fix the test with fine-grained
-timestamps in LTP:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-http://patchwork.ozlabs.org/project/ltp/patch/20230518113216.126233-1-jlayton@kernel.org/
+> Thanks, and yes. This should be safe to apply now even if the kernel
+> patch series never goes in.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I'd be ok to merge this now. Xu, please let me know if you're against.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
