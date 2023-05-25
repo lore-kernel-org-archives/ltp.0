@@ -4,56 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95D96C7EE31
-	for <ltp@archiver.kernel.org>; Thu, 25 May 2023 06:57:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AE78C77B7A
+	for <ltp@archiver.kernel.org>; Thu, 25 May 2023 06:58:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7599F3CD1A3
-	for <ltp@archiver.kernel.org>; Thu, 25 May 2023 08:57:54 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id B61833CD191
+	for <ltp@archiver.kernel.org>; Thu, 25 May 2023 08:58:05 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 902053CB92C
- for <ltp@lists.linux.it>; Wed, 24 May 2023 22:26:06 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by picard.linux.it (Postfix) with ESMTPS id 7C3033C72B7
+ for <ltp@lists.linux.it>; Thu, 25 May 2023 02:22:01 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BAAAE1400B8C
+ for <ltp@lists.linux.it>; Thu, 25 May 2023 02:21:56 +0200 (CEST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4CB781A000A9
- for <ltp@lists.linux.it>; Wed, 24 May 2023 22:26:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1684959964; x=1716495964;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=voU8Ho1N9K6r5Hlb6VgigeAjmWQok0HyKnAXkSDSFtU=;
- b=OgzxY9sA1AxfKxz3STyLMIAGQiZjTqRDlfifZfumosOFihjN0QyPK0Oi
- X33jzKTymTrGN4KN1jo9ZGHjzf0hwf68nRpohyaG6m1N0dCbkPPtQ1pY8
- njHI8Zb3Wg9PAZJWP8LXgkmPioDEM7VF7sEoUWtGG3rlYiGZhzbgBsXDW
- u9kZeDS5JkShIaVYKcMnGyn9R62qJMpNB7YCnYeJpAUuc55EmQq3N2Zd8
- 48qRGXP64OM5AGVMxLJxlheEggX7f63ltDrS7gN/5kSXGID04ZJ1Kxzyp
- rXOGz/YncDKBwLbhTVymdEDDaJ08v06FpTatIWftC/4gSRrJ9VVjEYQBl g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10720"; a="333304930"
-X-IronPort-AV: E=Sophos;i="6.00,190,1681196400"; d="scan'208";a="333304930"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 May 2023 13:26:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10720"; a="878812803"
-X-IronPort-AV: E=Sophos;i="6.00,190,1681196400"; d="scan'208";a="878812803"
-Received: from kmevada-mobl.amr.corp.intel.com (HELO
- rpedgeco-desk4.amr.corp.intel.com) ([10.209.81.107])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 May 2023 13:26:00 -0700
-From: Rick Edgecombe <rick.p.edgecombe@intel.com>
-To: ltp@lists.linux.it
-Date: Wed, 24 May 2023 13:25:16 -0700
-Message-Id: <20230524202516.2190903-1-rick.p.edgecombe@intel.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 65D1863953;
+ Thu, 25 May 2023 00:21:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BA5CC433D2;
+ Thu, 25 May 2023 00:21:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1684974113;
+ bh=yXi9V0/F6k9EKbphV/OOXmADbsUSWa4D9vfJH+/4NEE=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=b85qzx/Y6QIzJImaX2xXMmXsF7Z+KFvCmv+XBtosojGt7urQ95dBTES9SOK4dIDNK
+ aTYp9WEI03JdixtUndCywEEimskEtuq5LFZODVU+q/DqsZBO3SobLqi5vIQ/v6ZdLA
+ SNUmmuVAxcMSc/+6VvwzOH1iIvVuw4FJbh4OWvw+cd6ReQbTAdSXeBpIc4wHAb5moF
+ 2Zl/1TEMtMKuE7hXsf3AvQAvlKS71+KeXt1yjsNhKt8inRFReMpFsXE2pDdPSY0E0z
+ aRiVkJb/DTLhLt+QuzgSx0OfT3cR1eKGN49DbpzNEiD9YVmMJaFD93ohgCnjLNj8No
+ GtJoYQAEf2opw==
+Date: Thu, 25 May 2023 08:21:48 +0800
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Christian Brauner <brauner@kernel.org>
+Message-Id: <20230525082148.af95df069c337fa570f24331@kernel.org>
+In-Reply-To: <20230524-windhund-karikatur-354025f2ef1c@brauner>
+References: <CA+G9fYuGT0esjqBT9=xCTtWKV1DxYspXTtM5gqprbDKiTrb7qQ@mail.gmail.com>
+ <20230524-windhund-karikatur-354025f2ef1c@brauner>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Thu, 25 May 2023 08:57:44 +0200
-Subject: [LTP] [PATCH] security/stack_clash: Add test for mmap() minding gap
+Subject: Re: [LTP] LTP: tracing: RIP: 0010:security_inode_permission+0x5/0x70
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,184 +63,140 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: rick.p.edgecombe@intel.com, Liam.Howlett@oracle.com
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Arnd Bergmann <arnd@arndb.de>,
+ open list <linux-kernel@vger.kernel.org>,
+ linux-stable <stable@vger.kernel.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, lkft-triage@lists.linaro.org,
+ linux-fsdevel@vger.kernel.org,
+ Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+ LTP List <ltp@lists.linux.it>, Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The existing stack_clash test only verifies if the stack can grow too close
-to an existing mapping. It doesn't test if mmap() will place new mappings
-in the gap.
+On Wed, 24 May 2023 12:39:40 +0200
+Christian Brauner <brauner@kernel.org> wrote:
 
-Add a test for this. Have it fill all the empty regions below the stack
-with PROT_NONE mappings. Do this by searching /proc/pid/maps for the
-gaps. The code for parsing this is based on the existing
-read_stack_addr_from_proc() in the file.
+> On Wed, May 24, 2023 at 02:32:25PM +0530, Naresh Kamboju wrote:
+> > While running LTP tracing tests on qemu-x86_64 following kernel crash noticed
+> > with stable-rc 6.3.4-rc2.
+> > 
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > 
+> > FAILED COMMAND File:
+> > /lava-1/0/tests/0_ltp-tracing/automated/linux/ltp/output/LTP_tracing.failed
+> > TCONF COMMAND File: /opt/ltp/output/LTP_RUN_ON-LTP_tracing.log.tconf
+> > Running tests.......
+> 
+> No idea and seems very odd. Only thing I see is that there's ftrace
+> regression testing running while the crash happens.
 
-With all lower spaces taken by the PROT_NONE mappings, the search down
-path will then fail for new mmap()s. So mmap() will search up and find the
-gap just before the stack. If it picks it then the mapping is in the guard
-region, so fail the test.
+It sounds like there is a timing issue on int3 self-modifying code @ alternative.c
+ftrace@x86 uses it for arming/disarming mcount(fentry) call.
+I would like to know what is the actual command to run it. The above files are
+local file, and no actual commands recorded in the full log.
 
-This logic is somewhat x86_64 specific, but may work for other
-architectures. Make it be x86_64 for now, but document the assumptions so
-that others can be added after more verification.
+Thank you,
 
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
----
+> 
+> > 
+> > <4>[   57.932577] int3: 0000 [#1] PREEMPT SMP PTI
+> > <4>[   57.933090] CPU: 0 PID: 138 Comm: systemd-udevd Not tainted 6.3.4-rc2 #1
+> > <4>[   57.933243] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+> > BIOS 1.14.0-2 04/01/2014
+> > <4>[   57.933447] RIP: 0010:security_inode_permission+0x5/0x70
+> > <4>[   57.934163] Code: c0 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00
+> > 00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66
+> > 0f 1f 00 e8 <e7> 8d 64 18 f6 47 0d 02 75 50 55 48 89 e5 41 55 41 89 f5
+> > 41 54 49
+> > <4>[   57.934257] RSP: 0018:ffffa300c050bca0 EFLAGS: 00000246
+> > <4>[   57.934363] RAX: 00000000000041ed RBX: ffff9bda012805c0 RCX:
+> > 0000000000000000
+> > <4>[   57.934390] RDX: ffff9bda01f6df00 RSI: 0000000000000081 RDI:
+> > ffff9bda012805c0
+> > <4>[   57.934415] RBP: ffffa300c050bcd0 R08: ffffa300c050bd80 R09:
+> > 00000000ffffff9c
+> > <4>[   57.934440] R10: 0000000000000fe0 R11: ffc9d09b99d09993 R12:
+> > 0000000000000081
+> > <4>[   57.934465] R13: 0000000000000000 R14: ffffffffa958f970 R15:
+> > 2f2f2f2f2f2f2f2f
+> > <4>[   57.934544] FS:  00007fb89665f800(0000)
+> > GS:ffff9bda7bc00000(0000) knlGS:0000000000000000
+> > <4>[   57.934578] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > <4>[   57.934604] CR2: 00007f60c9b0e000 CR3: 0000000104402000 CR4:
+> > 00000000000006f0
+> > <4>[   57.934793] Call Trace:
+> > <4>[   57.934958]  <TASK>
+> > <4>[   57.935082]  ? inode_permission+0x70/0x1a0
+> > <4>[   57.935235]  link_path_walk.part.0.constprop.0+0xdd/0x3b0
+> > <4>[   57.935360]  path_lookupat+0x3e/0x190
+> > <4>[   57.935426]  filename_lookup+0xe8/0x1f0
+> > <4>[   57.935638]  user_path_at_empty+0x42/0x60
+> > <4>[   57.935692]  do_fchmodat+0x5f/0xc0
+> > <4>[   57.935809]  __x64_sys_chmod+0x1f/0x30
+> > <4>[   57.935845]  do_syscall_64+0x3e/0x90
+> > <4>[   57.935886]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> > <4>[   57.935996] RIP: 0033:0x7fb8964fbd6b
+> > <4>[   57.936393] Code: ff ff ff ff eb e6 66 0f 1f 84 00 00 00 00 00
+> > f3 0f 1e fa b8 5f 00 00 00 0f 05 c3 0f 1f 40 00 f3 0f 1e fa b8 5a 00
+> > 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 85 40 0f 00 f7 d8 64
+> > 89 01 48
+> > <4>[   57.936422] RSP: 002b:00007ffcf4c2aa38 EFLAGS: 00000202
+> > ORIG_RAX: 000000000000005a
+> > <4>[   57.936471] RAX: ffffffffffffffda RBX: 0000000000000190 RCX:
+> > 00007fb8964fbd6b
+> > <4>[   57.936490] RDX: 00007ffcf4c2aa4f RSI: 0000000000000190 RDI:
+> > 00007ffcf4c2aa40
+> > <4>[   57.936504] RBP: 0000000000000190 R08: 0000000000000000 R09:
+> > 00007ffcf4c2a8e0
+> > <4>[   57.936528] R10: 0000000000000000 R11: 0000000000000202 R12:
+> > 00007ffcf4c2aa40
+> > <4>[   57.936542] R13: 0000000000000005 R14: 0000000000000000 R15:
+> > 0000000000000001
+> > <4>[   57.936754]  </TASK>
+> > <4>[   57.936853] Modules linked in:
+> > <4>[   57.962890] ---[ end trace 0000000000000000 ]---
+> > <4>[   57.963006] RIP: 0010:security_inode_permission+0x5/0x70
+> > <4>[   57.963080] Code: c0 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00
+> > 00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66
+> > 0f 1f 00 e8 <e7> 8d 64 18 f6 47 0d 02 75 50 55 48 89 e5 41 55 41 89 f5
+> > 41 54 49
+> > <4>[   57.963105] RSP: 0018:ffffa300c050bca0 EFLAGS: 00000246
+> > <4>[   57.963145] RAX: 00000000000041ed RBX: ffff9bda012805c0 RCX:
+> > 0000000000000000
+> > <4>[   57.963163] RDX: ffff9bda01f6df00 RSI: 0000000000000081 RDI:
+> > ffff9bda012805c0
+> > <4>[   57.963180] RBP: ffffa300c050bcd0 R08: ffffa300c050bd80 R09:
+> > 00000000ffffff9c
+> > <4>[   57.963195] R10: 0000000000000fe0 R11: ffc9d09b99d09993 R12:
+> > 0000000000000081
+> > <4>[   57.963209] R13: 0000000000000000 R14: ffffffffa958f970 R15:
+> > 2f2f2f2f2f2f2f2f
+> > <4>[   57.963226] FS:  00007fb89665f800(0000)
+> > GS:ffff9bda7bc00000(0000) knlGS:0000000000000000
+> > <4>[   57.963246] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > <4>[   57.963261] CR2: 00007f60c9b0e000 CR3: 0000000104402000 CR4:
+> > 00000000000006f0
+> > <0>[   57.963444] Kernel panic - not syncing: Fatal exception in interrupt
+> > <0>[   57.964629] Kernel Offset: 0x26600000 from 0xffffffff81000000
+> > (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+> > 
+> > 
+> > links,
+> >  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.3.y/build/v6.3.3-364-ga37c304c022d/testrun/17168198/suite/log-parser-test/tests/
+> >  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.3.y/build/v6.3.3-364-ga37c304c022d/testrun/17168198/suite/log-parser-test/test/check-kernel-panic/log
+> >  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2QCeudZ18KF3RXw3A5qfr5lPC2N/
+> >  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2QCeudZ18KF3RXw3A5qfr5lPC2N/config
+> > 
+> > --
+> > Linaro LKFT
+> > https://lkft.linaro.org
 
-Hi,
 
-There was recently a regression around mmap placement and mmap guard
-gaps. Today the stack clash test only tests if the gap can expand too
-close to an adjacent mapping, but not if it mappings can be placed in the
-gap. Can we enhance the test to also verifiy the latter?
-
-Thanks,
-
-Rick
-
- testcases/cve/stack_clash.c | 95 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
-
-diff --git a/testcases/cve/stack_clash.c b/testcases/cve/stack_clash.c
-index cd7f148c2..bbd28b4f1 100644
---- a/testcases/cve/stack_clash.c
-+++ b/testcases/cve/stack_clash.c
-@@ -18,6 +18,10 @@
-  * to infinity and preallocate REQ_STACK_SIZE bytes of stack so that no calls
-  * after `mmap` are moving stack further.
-  *
-+ * If the architecture meets certain requirements (See not above
-+ * CAN_DO_PLACEMENT_TEST), then the test also verifies that new mmap()s can't
-+ * be placed in the stack's guard gap.
-+ *
-  * [1] https://blog.qualys.com/securitylabs/2017/06/19/the-stack-clash
-  * [2] https://bugzilla.novell.com/show_bug.cgi?id=CVE-2017-1000364
-  */
-@@ -45,6 +49,22 @@ static int STACK_GROWSDOWN;
- 
- #define EXIT_TESTBROKE		TBROK
- 
-+/*
-+ * The mmap placement part of the test works by forcing a bottom up search.
-+ * The assumptions are that the stack grows down (start gap) and either:
-+ *   1. The default search is top down, and will switch to bottom up if
-+ *      space is exhausted.
-+ *   2. The default search is bottom up and the stack is above mmap base
-+ *
-+ * Case 1 has been verified on x86_64, so only do the test on this
-+ * architecture until more have been verified.
-+ */
-+#ifdef __x86_64__
-+#define CAN_DO_PLACEMENT_TEST	1
-+#else
-+#define CAN_DO_PLACEMENT_TEST	0
-+#endif
-+
- void exhaust_stack_into_sigsegv(void)
- {
- 	volatile char * ptr = alloca(FRAME_SIZE - sizeof(long));
-@@ -78,6 +98,57 @@ void segv_handler(int sig, siginfo_t *info, void *data LTP_ATTRIBUTE_UNUSED)
- 		_exit(EXIT_SUCCESS);
- }
- 
-+static void force_bottom_up(void)
-+{
-+	FILE *fh;
-+	char buf[1024];
-+	unsigned long start, end, size, lastend = 0;
-+
-+	fh = SAFE_FOPEN("/proc/sys/vm/mmap_min_addr", "r");
-+
-+	/* start filling from mmap_min_addr */
-+	if (fscanf(fh, "%lu", &lastend) != 1) {
-+		SAFE_FCLOSE(fh);
-+		tst_brk(TBROK | TERRNO, "fscanf");
-+		return;
-+	}
-+
-+	SAFE_FCLOSE(fh);
-+
-+	fh = SAFE_FOPEN("/proc/self/maps", "r");
-+
-+	while (!feof(fh)) {
-+		if (fgets(buf, sizeof(buf), fh) == NULL)
-+			goto out;
-+
-+		if (sscanf(buf, "%lx-%lx", &start, &end) != 2) {
-+			tst_brk(TBROK | TERRNO, "sscanf");
-+			goto out;
-+		}
-+
-+		size = start - lastend;
-+
-+		/* Skip the PROT_NONE that was just added (!size). */
-+		if (!size) {
-+			lastend = end;
-+			continue;
-+		}
-+
-+		/* If the next area is the stack, quit. */
-+		if (!!strstr(buf, "[stack]"))
-+			break;
-+
-+		/* This is not cleaned up. */
-+		SAFE_MMAP((void *)lastend, size, PROT_NONE,
-+			  MAP_ANON|MAP_PRIVATE|MAP_FIXED_NOREPLACE, -1, 0);
-+
-+		lastend = end;
-+	}
-+
-+out:
-+	SAFE_FCLOSE(fh);
-+}
-+
- unsigned long read_stack_addr_from_proc(unsigned long *stack_size)
- {
- 	FILE *fh;
-@@ -130,6 +201,26 @@ void __attribute__((noinline)) preallocate_stack(unsigned long required)
- 	garbage[0] = garbage[required - 1] = '\0';
- }
- 
-+static void do_mmap_placement_test(unsigned long stack_addr, unsigned long gap)
-+{
-+	void *map_test_gap;
-+
-+	force_bottom_up();
-+
-+	/*
-+	 * fill_gaps_with_prot_none() used up all the spaces below the stack. The
-+	 * search down path should fail, and search up might take a look at the guard
-+	 * gap region. If it avoids it, the allocation will be above the stack. If
-+	 * it uses it, the allocation will be in the gap and the test should fail.
-+	 */
-+	map_test_gap = SAFE_MMAP(0, MAPPED_LEN,
-+				 PROT_READ|PROT_WRITE, MAP_ANON|MAP_PRIVATE, 0, 0);
-+
-+	if (stack_addr - gap <= (unsigned long)map_test_gap &&
-+		(unsigned long)map_test_gap <= stack_addr)
-+		_exit(EXIT_FAILURE);
-+}
-+
- void do_child(void)
- {
- 	unsigned long stack_addr, stack_size;
-@@ -179,6 +270,10 @@ void do_child(void)
- 	dump_proc_self_maps();
- #endif
- 
-+	if (CAN_DO_PLACEMENT_TEST)
-+		do_mmap_placement_test(stack_addr, gap);
-+
-+	/* Now see if it can grow too close to an adjacent region. */
- 	exhaust_stack_into_sigsegv();
- }
- 
 -- 
-2.34.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
