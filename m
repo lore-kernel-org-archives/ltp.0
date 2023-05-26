@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DF27C7EE23
-	for <ltp@archiver.kernel.org>; Fri, 26 May 2023 14:26:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6307DC7EE23
+	for <ltp@archiver.kernel.org>; Fri, 26 May 2023 14:28:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AB9D63CEC8E
-	for <ltp@archiver.kernel.org>; Fri, 26 May 2023 16:26:03 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 1E25A3CE7A0
+	for <ltp@archiver.kernel.org>; Fri, 26 May 2023 16:27:58 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 979C23C995F
- for <ltp@lists.linux.it>; Fri, 26 May 2023 16:25:51 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id C7AE13C995F
+ for <ltp@lists.linux.it>; Fri, 26 May 2023 16:27:48 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F41BB600D21
- for <ltp@lists.linux.it>; Fri, 26 May 2023 16:25:50 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 523D7600D20
+ for <ltp@lists.linux.it>; Fri, 26 May 2023 16:27:47 +0200 (CEST)
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D236B1FD76;
- Fri, 26 May 2023 14:25:49 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7D1801FD8E;
+ Fri, 26 May 2023 14:27:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1685111149;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1685111267;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PUa/YoSa5krRx265/570CJieGksWRw4xXXtIHv+UlwI=;
- b=IgoVNHx1+iJ44uJHv4OvZbaIdwmtYOOfTZUihGWtJmcXCo4IE7Zbv877XP0zDnQV8XzNcP
- HurzUpLN5+QugM6bH64OO+qQzjYagaIDTRILvlWuIKptmz+vu8XSuYuPVOgIOMSL7IkXuy
- dkGg6BR+edII+dsjc1nwp76svHO2CBo=
+ bh=rkupZFUyPSYAyyygMvhPgYhiigucsIWAQ0eZpYqTexE=;
+ b=z5WWI/B3RKBTfhDuIlvfKijkCogKKjG5wKAnkFlbaVexHiGcC/IDGL3Wzvo2iBx+Wo376Q
+ cdTvnqN52e3POguiprO8qMg5lQtK5YJvOc2vg+0NRRpACY86gAGakiMs/u6doH9PWEn/SH
+ hwx87A6jjG621KRbh9BuR9CYh+C3Mpk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1685111149;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1685111267;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PUa/YoSa5krRx265/570CJieGksWRw4xXXtIHv+UlwI=;
- b=2BFER552F3l2kOHKxUf8XvuXTQAfesvJC20XD7homQCTSyvMXMBaktKnjnx5a/nwFbmKXn
- Q8K15SJvJwq34vAg==
+ bh=rkupZFUyPSYAyyygMvhPgYhiigucsIWAQ0eZpYqTexE=;
+ b=RVJM5DmLIY8KbXNYB1Pvho3qTAB8XWzYkwllTyMWfsXWY2oc+17Nww9E7FVJ/2IMU8TddP
+ ewQmLowLWzc/N9BA==
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 704CD134AB;
- Fri, 26 May 2023 14:25:49 +0000 (UTC)
+ by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 19648134AB;
+ Fri, 26 May 2023 14:27:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap1.suse-dmz.suse.de with ESMTPSA id TQuEFG3BcGRJeAAAGKfGzw
- (envelope-from <pvorel@suse.cz>); Fri, 26 May 2023 14:25:49 +0000
-Date: Fri, 26 May 2023 16:25:47 +0200
+ by imap1.suse-dmz.suse.de with ESMTPSA id eA+RAuPBcGS7eAAAGKfGzw
+ (envelope-from <pvorel@suse.cz>); Fri, 26 May 2023 14:27:47 +0000
+Date: Fri, 26 May 2023 16:27:45 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20230526142547.GA812267@pevik>
-References: <20230525080934.54793-1-liwang@redhat.com>
- <20230525080934.54793-2-liwang@redhat.com>
+To: Martin Doucha <mdoucha@suse.cz>, ltp@lists.linux.it,
+ Nicolai Stange <nstange@suse.de>, Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20230526142745.GA813136@pevik>
+References: <20230526133435.7369-1-mdoucha@suse.cz>
+ <20230526133435.7369-3-mdoucha@suse.cz>
+ <20230526140759.GA805411@pevik> <20230526141001.GA810612@pevik>
+ <20230526141445.GB810612@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230525080934.54793-2-liwang@redhat.com>
+In-Reply-To: <20230526141445.GB810612@pevik>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] cleanup: changing FILE_PRINTF to
- SAFE_FILE_PRINTF
+Subject: Re: [LTP] [PATCH v2 2/7] Add test for CVE 2021-3656
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,46 +80,44 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Hi all,
 
-> SAFE_MACROS() used in cleanup do not exit the test anymore since:
-> commit 6440c5d0d15 (newlib: Allow SAFE_MACROS to be called from cleanup)
+Martin sent patch which fixed it.
 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c | 4 ++--
->  testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c  | 2 +-
->  testcases/kernel/syscalls/fcntl/fcntl33.c               | 2 +-
->  testcases/kernel/syscalls/readahead/readahead02.c       | 2 +-
->  4 files changed, 5 insertions(+), 5 deletions(-)
+I'm going to merge whole patchset.
 
-> diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-> index 67917b3fe..0a56519a1 100644
-> --- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-> +++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-> @@ -78,10 +78,10 @@ static void check_set_turbo(char *file, char *off)
-
->  static void cleanup(void)
->  {
-> -	FILE_PRINTF(cdrv[id].file, "%d", boost_value);
-> +	SAFE_FILE_PRINTF(cleanup, cdrv[id].file, "%d", boost_value);
-
-testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c uses old API,
-IMHO not affected by 6440c5d0d15. Therefore we should postpone this till it's
-converted to the new API.
-
-The rest LGTM.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Thanks!
 
 Kind regards,
 Petr
+
+diff --git a/testcases/kernel/kvm/kvm_svm02.c b/testcases/kernel/kvm/kvm_svm02.c
+index e6ff5e874..5d2e2ce37 100644
+--- a/testcases/kernel/kvm/kvm_svm02.c
++++ b/testcases/kernel/kvm/kvm_svm02.c
+@@ -34,7 +34,7 @@ static void *vmsave_buf;
+ static int guest_vmload(void)
+ {
+        asm (
+-               "vmload\n"
++               "vmload %0\n"
+                :
+                : "a" (vmsave_buf)
+        );
+@@ -45,7 +45,7 @@ static int guest_vmload(void)
+ static int guest_vmsave(void)
+ {
+        asm (
+-               "vmsave\n"
++               "vmsave %0\n"
+                :
+                : "a" (vmsave_buf)
+        );
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
