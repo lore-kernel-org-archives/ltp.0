@@ -4,60 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9690DC77B7A
-	for <ltp@archiver.kernel.org>; Tue, 30 May 2023 09:30:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9967C77B73
+	for <ltp@archiver.kernel.org>; Tue, 30 May 2023 12:07:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5396C3CCD64
-	for <ltp@archiver.kernel.org>; Tue, 30 May 2023 11:30:34 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 486413CCFAA
+	for <ltp@archiver.kernel.org>; Tue, 30 May 2023 14:07:53 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D8E333CBD8D
- for <ltp@lists.linux.it>; Tue, 30 May 2023 11:30:23 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id BDBC93C9F12
+ for <ltp@lists.linux.it>; Tue, 30 May 2023 14:07:42 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B63F91A0098C
- for <ltp@lists.linux.it>; Tue, 30 May 2023 11:30:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1685439021;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=mPMhq3jdLwiNVJnViT1PdReGwfV0HdGCv6wKpE6XwJo=;
- b=Y8rfHr1tf6yCn4VcG84UOFfX8WxFPvL8/uM+hxx5Hf4SmExettXgdXGs2RFtRbTpofffE6
- Y+XRxRql87q3vmL5DMoH1F+VqHAdOzpzxmE2k2qLAF3HvfGTaEIF4y93KvMNyfiZPEvzx3
- KEli7nrZVDEAXZ06KKGpT6VS74lI3o4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-670-nitjfSQfMbytuO6A0jrryg-1; Tue, 30 May 2023 05:30:16 -0400
-X-MC-Unique: nitjfSQfMbytuO6A0jrryg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
- [10.11.54.10])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id AAE021000924
+ for <ltp@lists.linux.it>; Tue, 30 May 2023 14:07:40 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6086E8007D9;
- Tue, 30 May 2023 09:30:16 +0000 (UTC)
-Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
- [10.66.145.229])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 30FA1492B0A;
- Tue, 30 May 2023 09:30:13 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DAD8D1F889;
+ Tue, 30 May 2023 12:07:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1685448459; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=mt9e3CxaiL7j4lD8DRj5sP9Gi2fxNEK9hITxp982kCI=;
+ b=bC4fdqmzuoINCJli6xQCBjZqoYWC0Xr5Z9EqCyGEP9C2GH44pogx/jk//Zy6b1Ps689d9p
+ IoqIkSUR6j7v1EDwpy1Z87JlROiggED28J4GaMbI7ZuoSiqmbWt6kC+rtIo/WWPSUMhQ0I
+ pR1ir9rFXjmUsPYLrKriksMT3nDwSCw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 066E213597;
+ Tue, 30 May 2023 12:07:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id HWKgMArndWRFEgAAMHmgww
+ (envelope-from <wegao@suse.com>); Tue, 30 May 2023 12:07:38 +0000
 To: ltp@lists.linux.it
-Date: Tue, 30 May 2023 17:30:12 +0800
-Message-Id: <20230530093012.35470-1-liwang@redhat.com>
+Date: Tue, 30 May 2023 08:07:23 -0400
+Message-Id: <20230530120723.29745-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230316072231.19157-3-wegao@suse.com>
+References: <20230316072231.19157-3-wegao@suse.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] shmget02: reduce the shmmax test value in compat mode
+Subject: [LTP] [v5,2/2] semop04: Refactor with new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,64 +67,235 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux Kernel Functional Testing <lkft@linaro.org>,
- Manfred Spraul <manfred@colorfullife.com>, Arnd Bergmann <arnd@arndb.de>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-As Arnd Bergmann pointed out that SHMMAX being defined as
-(ULONG_MAX - (1UL << 24)), so the kernel would likely use
-a large 64-bit value, while the 32-bit user space uses a
-much smaller limit.
 
-It finally results in ENOMEM failure:
-  shmget02.c:95: TFAIL: shmget(1644199826, 4278190080, 1536)
-                 expected EINVAL: ENOMEM (12)
-
-With suggest by Manfred Spraul we could reduce the value
-of '/proc/sys/kernel/shmmax' in compat mode and only test
-the overflow behavior with default+1.
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Signed-off-by: Li Wang <liwang@redhat.com>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Manfred Spraul <manfred@colorfullife.com>
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- testcases/kernel/syscalls/ipc/shmget/shmget02.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ testcases/kernel/syscalls/ipc/semop/semop04.c | 155 +++++-------------
+ 1 file changed, 45 insertions(+), 110 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-index 7989ef33e..faf633ad4 100644
---- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-+++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
-@@ -56,7 +56,11 @@ static struct tcase {
- 	{&shmkey1, SHM_SIZE, IPC_EXCL, 0, 0, ENOENT},
- 	{&shmkey, SHM_SIZE, IPC_CREAT | IPC_EXCL, 0, 0, EEXIST},
- 	{&shmkey1, SHMMIN - 1, IPC_CREAT | IPC_EXCL, 0, 0, EINVAL},
-+#ifdef TST_ABI32
-+	{&shmkey1, 8192 + 1, IPC_CREAT | IPC_EXCL, 0, 0, EINVAL},
-+#else
- 	{&shmkey1, SHMMAX + 1, IPC_CREAT | IPC_EXCL, 0, 0, EINVAL},
-+#endif
- 	{&shmkey, SHM_SIZE * 2, IPC_EXCL, 0, 0, EINVAL},
- 	{&shmkey, SHM_SIZE, SHM_RD, 1, 0, EACCES},
- 	{&shmkey1, SHM_SIZE, IPC_CREAT | SHM_HUGETLB, 0, 1, EPERM},
-@@ -149,4 +153,10 @@ static struct tst_test test = {
- 	.test = do_test,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.hugepages = {TST_NO_HUGEPAGES},
-+#ifdef TST_ABI32
-+	.save_restore = (const struct tst_path_val[]) {
-+		{"/proc/sys/kernel/shmmax", "8192", TST_SR_TBROK},
-+		{}
-+	},
-+#endif
- };
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop04.c b/testcases/kernel/syscalls/ipc/semop/semop04.c
+index 582624d60..dee09d9fd 100644
+--- a/testcases/kernel/syscalls/ipc/semop/semop04.c
++++ b/testcases/kernel/syscalls/ipc/semop/semop04.c
+@@ -1,164 +1,99 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (C) 2003-2023 Linux Test Project, Inc.
++ * Author: 2001 Paul Larson <plars@us.ibm.com>
++ * Modified: 2001 Manoj Iyer <manjo@ausin.ibm.com>
+  */
+ 
+-/*
+- *  FILE        : sem01.c
+- *  DESCRIPTION : Creates a semaphore and two processes.  The processes
+- *                each go through a loop where they semdown, delay for a
+- *                random amount of time, and semup, so they will almost
+- *                always be fighting for control of the semaphore.
+- *  HISTORY:
+- *    01/15/2001 Paul Larson (plars@us.ibm.com)
+- *      -written
+- *    11/09/2001 Manoj Iyer (manjo@ausin.ibm.com)
+- *    Modified.
+- *    - Removed compiler warnings.
+- *      added exit to the end of function main()
++/*\
++ * [Description]
+  *
++ * Creates a semaphore and two processes.  The processes
++ * each go through a loop where they semdown, delay for a
++ * random amount of time, and semup, so they will almost
++ * always be fighting for control of the semaphore.
+  */
+ 
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <errno.h>
+ #include <sys/types.h>
+-#include <sys/wait.h>
+ #include <sys/ipc.h>
+ #include "lapi/sem.h"
++#include "tst_test.h"
++#include "tst_safe_sysv_ipc.h"
+ 
+-int verbose = 0;
+-int loops = 100;
+-int errors = 0;
++#define LOOPS 1000
+ 
+-int semup(int semid)
++static void semup(int semid)
+ {
+ 	struct sembuf semops;
++
+ 	semops.sem_num = 0;
+ 	semops.sem_op = 1;
+ 	semops.sem_flg = SEM_UNDO;
+-	if (semop(semid, &semops, 1) == -1) {
+-		perror("semup");
+-		errors++;
+-		return 1;
+-	}
+-	return 0;
++
++	SAFE_SEMOP(semid, &semops, 1);
+ }
+ 
+-int semdown(int semid)
++static void semdown(int semid)
+ {
+ 	struct sembuf semops;
++
+ 	semops.sem_num = 0;
+ 	semops.sem_op = -1;
+ 	semops.sem_flg = SEM_UNDO;
+-	if (semop(semid, &semops, 1) == -1) {
+-		perror("semdown");
+-		errors++;
+-		return 1;
+-	}
+-	return 0;
++
++	SAFE_SEMOP(semid, &semops, 1);
+ }
+ 
+-void delayloop()
++static void delayloop(void)
+ {
+ 	int delay;
++
+ 	delay = 1 + ((100.0 * rand()) / RAND_MAX);
+-	if (verbose)
+-		printf("in delay function for %d microseconds\n", delay);
+ 	usleep(delay);
+ }
+ 
+-void mainloop(int semid)
++static void mainloop(int semid)
+ {
+ 	int i;
+-	for (i = 0; i < loops; i++) {
+-		if (semdown(semid)) {
+-			printf("semdown failed\n");
+-		}
+-		if (verbose)
+-			printf("sem is down\n");
++
++	for (i = 0; i < LOOPS; i++) {
++		semdown(semid);
+ 		delayloop();
+-		if (semup(semid)) {
+-			printf("semup failed\n");
+-		}
+-		if (verbose)
+-			printf("sem is up\n");
++		semup(semid);
+ 	}
+ }
+ 
+-int main(int argc, char *argv[])
++static void run(void)
+ {
+-	int semid, opt;
++	int semid;
+ 	union semun semunion;
+-	extern char *optarg;
+ 	pid_t pid;
+-	int chstat;
+-
+-	while ((opt = getopt(argc, argv, "l:vh")) != EOF) {
+-		switch ((char)opt) {
+-		case 'l':
+-			loops = atoi(optarg);
+-			break;
+-		case 'v':
+-			verbose = 1;
+-			break;
+-		case 'h':
+-		default:
+-			printf("Usage: -l loops [-v]\n");
+-			exit(1);
+-		}
+-	}
+ 
+ 	/* set up the semaphore */
+-	if ((semid = semget((key_t) 9142, 1, 0666 | IPC_CREAT)) < 0) {
+-		printf("error in semget()\n");
+-		exit(-1);
+-	}
++	semid = SAFE_SEMGET((key_t) 9142, 1, 0666 | IPC_CREAT);
++
+ 	semunion.val = 1;
+-	if (semctl(semid, 0, SETVAL, semunion) == -1) {
+-		printf("error in semctl\n");
+-	}
+ 
+-	if ((pid = fork()) < 0) {
+-		printf("fork error\n");
+-		exit(-1);
+-	}
++	SAFE_SEMCTL(semid, 0, SETVAL, semunion);
++
++	pid = SAFE_FORK();
++
+ 	if (pid) {
+-		/* parent */
+ 		srand(pid);
+ 		mainloop(semid);
+-		waitpid(pid, &chstat, 0);
+-		if (!WIFEXITED(chstat)) {
+-			printf("child exited with status\n");
+-			exit(-1);
+-		}
+-		if (semctl(semid, 0, IPC_RMID, semunion) == -1) {
+-			printf("error in semctl\n");
+-		}
+-		if (errors) {
+-			printf("FAIL: there were %d errors\n", errors);
+-		} else {
+-			printf("PASS: error count is 0\n");
+-		}
+-		exit(errors);
++		tst_reap_children();
++		SAFE_SEMCTL(semid, 0, IPC_RMID, semunion);
++		tst_res(TPASS, "Semaphore up/down check success");
+ 	} else {
+-		/* child */
+ 		mainloop(semid);
+ 	}
+-	exit(0);
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.forks_child = 1,
++};
 -- 
-2.40.1
+2.35.3
 
 
 -- 
