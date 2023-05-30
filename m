@@ -4,68 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A991C7EE23
-	for <ltp@archiver.kernel.org>; Mon, 29 May 2023 18:35:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 535B6C77B7E
+	for <ltp@archiver.kernel.org>; Tue, 30 May 2023 01:26:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D0ABA3CE733
-	for <ltp@archiver.kernel.org>; Mon, 29 May 2023 20:35:07 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 4FD313CD0C5
+	for <ltp@archiver.kernel.org>; Tue, 30 May 2023 03:26:15 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 29E033CCFCB
- for <ltp@lists.linux.it>; Mon, 29 May 2023 20:34:57 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 902F83CCFCB
+ for <ltp@lists.linux.it>; Tue, 30 May 2023 03:26:04 +0200 (CEST)
+Received: from smtpbgeu1.qq.com (smtpbgeu1.qq.com [52.59.177.22])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 80711600747
- for <ltp@lists.linux.it>; Mon, 29 May 2023 20:34:56 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A5B211F8B2;
- Mon, 29 May 2023 18:34:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1685385295;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pdPjBA9r0eqakY+xCdDy/QndyJ1Rtro6SCaz2U1o/uw=;
- b=DMCND/0VaL+JTlCdIclWYQQ7zuh+RHqBSc8A1uEd3Qnlx68MZlnXRNovbV+vSj4b4MUE9h
- 4Xvl/hRHJRhJB/5L3aWtT7Yj5Sv75/Km749I20vkXFrqKOm9SrZTNtHss+mKWG6625pKad
- 0XliBJyOPe0LQbC2Ifdr03m5enVH7o8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1685385295;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=pdPjBA9r0eqakY+xCdDy/QndyJ1Rtro6SCaz2U1o/uw=;
- b=sE+SH1QJee3U3voM1/HrQvi0jb+iCsHd2lVaBh46boDDglPffwRy6v/CiE4sihaRzh4VlV
- NkxzsSgBR5N6LRBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8164513466;
- Mon, 29 May 2023 18:34:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id cmZ5HU/wdGSlcQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 29 May 2023 18:34:55 +0000
-Date: Mon, 29 May 2023 20:34:53 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20230529183453.GC17253@pevik>
-References: <20230302071555.18420-1-wegao@suse.com>
- <20230316072231.19157-1-wegao@suse.com>
- <20230316072231.19157-3-wegao@suse.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4F748200747
+ for <ltp@lists.linux.it>; Tue, 30 May 2023 03:26:00 +0200 (CEST)
+X-QQ-mid: bizesmtp84t1685409954t7699f6f
+Received: from [10.7.13.54] ( [113.200.76.118])
+ by bizesmtp.qq.com (ESMTP) with SMTP id 0
+ for <ltp@lists.linux.it>; Tue, 30 May 2023 09:25:53 +0800 (CST)
+X-QQ-SSF: 01400000000000C0G000000A0000000
+X-QQ-FEAT: QityeSR92A1w2fXV+8D6LFsvdklMKDVsOfbJNOVvlsGXTkCVLPm/78SQX1pGZ
+ 5cut3HRBYNJGgXmlbwtSHzE0S+FxmHAM3wLPXkk9MhGHouzzoX8Wwv3TVfPuo9vDc2pS9Rx
+ 1NufJZ8W206e+2+2eIorLBGJZRc3/e3Z/KaamH9KaWTy3kXNARmrGcGCOGulLH4u6+CpfoC
+ 29Dkqae/yu+mU9a0W0KpVy1PHduygzobA6ErXRrpGIn7w2sXy1mAzBViT/uCZi/LhZeuuY3
+ IatbYwTFqNPsN82GiWhUsSu57xMWj4o1Nvt4kipLN02d6FhKHuXfijq/uEqY5OWRiO/k5H5
+ kjay8ONXruS48lKZ0RvhrSUIMvb+dxBDo+bKMCShGTfVgntVtxuJqCP794rHhbJE/aqoU0g
+ dXHcDfJFWFA=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 17679203008210828190
+Message-ID: <F72A2833ADC15945+1885e249-0a26-f69e-9986-4e2f91be8ef2@uniontech.com>
+Date: Tue, 30 May 2023 09:25:53 +0800
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230316072231.19157-3-wegao@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+To: ltp@lists.linux.it
+From: Gou Hao <gouhao@uniontech.com>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz7a-0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4 2/2] semop04:Refactor with new API
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: [LTP] Question about oom02 testcase
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,195 +58,100 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei
-
-nit: in subject we use space after colon (readability): 
-"semop04:Refactor with new API" => "semop04: Refactor with new API"
-
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  testcases/kernel/syscalls/ipc/semop/semop04.c | 159 ++++++------------
->  1 file changed, 56 insertions(+), 103 deletions(-)
-
-> diff --git a/testcases/kernel/syscalls/ipc/semop/semop04.c b/testcases/kernel/syscalls/ipc/semop/semop04.c
-> index 582624d60..589d9b0b4 100644
-> --- a/testcases/kernel/syscalls/ipc/semop/semop04.c
-> +++ b/testcases/kernel/syscalls/ipc/semop/semop04.c
-> @@ -1,36 +1,19 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> + * Copyright (c) International Business Machines  Corp., 2001
-> + * Copyright (C) 2003-2023 Linux Test Project, Inc.
-> + * Author: 2001 Paul Larson <plars@us.ibm.com>
-> + * Modified: 2001 Manoj Iyer <manjo@ausin.ibm.com>
->   *
-nit: Please remove this line with just star ('*'), when it follows */
-
-> - *   Copyright (c) International Business Machines  Corp., 2001
-> - *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> - *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
->   */
-
-> -/*
-> - *  FILE        : sem01.c
-> - *  DESCRIPTION : Creates a semaphore and two processes.  The processes
-> - *                each go through a loop where they semdown, delay for a
-> - *                random amount of time, and semup, so they will almost
-> - *                always be fighting for control of the semaphore.
-> - *  HISTORY:
-> - *    01/15/2001 Paul Larson (plars@us.ibm.com)
-> - *      -written
-> - *    11/09/2001 Manoj Iyer (manjo@ausin.ibm.com)
-> - *    Modified.
-> - *    - Removed compiler warnings.
-> - *      added exit to the end of function main()
-> +/*\
-> + * [Description]
->   *
-> + * Creates a semaphore and two processes.  The processes
-> + * each go through a loop where they semdown, delay for a
-> + * random amount of time, and semup, so they will almost
-> + * always be fighting for control of the semaphore.
->   */
-
->  #include <unistd.h>
-> @@ -41,124 +24,94 @@
->  #include <sys/wait.h>
-nit: I'd remove this (we no longer use waitpid()).
-Also I'd remove <errno.h> (IMHO no errno is used).
-
->  #include <sys/ipc.h>
->  #include "lapi/sem.h"
-> +#include "tst_test.h"
-> +#include "tst_safe_sysv_ipc.h"
-
-> -int verbose = 0;
-> -int loops = 100;
-> -int errors = 0;
-> +static int loops = 100;
-> +static char *opt_loops_str;
-I'm not sure if this worth to have opt for loops.
-I'd just define it:
-#define LOOPS 1000
-and not allow to overwrite (even with 1000 it's fast).
-
-> -int semup(int semid)
-> +static void semup(int semid)
->  {
->  	struct sembuf semops;
-> +
->  	semops.sem_num = 0;
->  	semops.sem_op = 1;
->  	semops.sem_flg = SEM_UNDO;
-> -	if (semop(semid, &semops, 1) == -1) {
-> -		perror("semup");
-> -		errors++;
-> -		return 1;
-> -	}
-> -	return 0;
-> +
-> +	SAFE_SEMOP(semid, &semops, 1);
->  }
-
-> -int semdown(int semid)
-> +static void semdown(int semid)
->  {
->  	struct sembuf semops;
-> +
->  	semops.sem_num = 0;
->  	semops.sem_op = -1;
->  	semops.sem_flg = SEM_UNDO;
-> -	if (semop(semid, &semops, 1) == -1) {
-> -		perror("semdown");
-> -		errors++;
-> -		return 1;
-> -	}
-> -	return 0;
-> +
-> +	SAFE_SEMOP(semid, &semops, 1);
->  }
-
-> -void delayloop()
-> +static void delayloop(void)
->  {
->  	int delay;
-> +
->  	delay = 1 + ((100.0 * rand()) / RAND_MAX);
-> -	if (verbose)
-> -		printf("in delay function for %d microseconds\n", delay);
->  	usleep(delay);
->  }
-
->  void mainloop(int semid)
-This should also be static.
-
->  {
->  	int i;
-...
-> +	SAFE_SEMCTL(semid, 0, SETVAL, semunion);
-> +
-> +	pid = SAFE_FORK();
-> +
->  	if (pid) {
->  		/* parent */
-Please remove this obvious comment.
->  		srand(pid);
->  		mainloop(semid);
-...
-> +		tst_reap_children();
-> +		SAFE_SEMCTL(semid, 0, IPC_RMID, semunion);
-> +		tst_res(TPASS, "Semaphore up/down check success");
->  	} else {
->  		/* child */
-And this one.
->  		mainloop(semid);
->  	}
-> -	exit(0);
->  }
-> +
-> +static void setup(void)
-> +{
-> +	if (opt_loops_str)
-> +		loops = SAFE_STRTOL(opt_loops_str, 1, INT_MAX);
-> +}
-This is to be removed.
-
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.setup = setup,
-> +	.forks_child = 1,
-> +	.options = (struct tst_option[]) {
-> +		{"l:", &opt_loops_str, "Internal loops for semup/down"},
-> +		{}
-This is going to be removed.
-> +	},
-> +	.needs_root = 1,
-Do we really need root? I guess no.
-
-Kind regards,
-Petr
-
-> +};
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+aGVsbG8gZXZlcnlvbmUsCgpSZWNlbnRseSwga2VybmVsIHJlc3RhcnRlZCB3aGlsZSBJIHdhcyBy
+dW5uaW5nIG9vbTAyLgpsb2c6CmBgYApbNDgwMTU2Ljk1MDEwMF0gVGFza3Mgc3RhdGUgKG1lbW9y
+eSB2YWx1ZXMgaW4gcGFnZXMpOgpbNDgwMTU2Ljk1MDEwMV0gW8KgIHBpZMKgIF3CoMKgIHVpZMKg
+IHRnaWQgdG90YWxfdm3CoMKgwqDCoMKgIHJzcyBwZ3RhYmxlc19ieXRlcyAKc3dhcGVudHMgb29t
+X3Njb3JlX2FkaiBuYW1lCls0ODAxNTYuOTUwMzAyXSBbwqDCoCAyNTc4XcKgwqDCoCA4McKgIDI1
+NzjCoMKgwqDCoMKgIDUyM8KgwqDCoMKgwqDCoMKgIDAgMzkzMjE2wqDCoMKgwqDCoMKgwqAgCjbC
+oMKgwqDCoMKgwqDCoMKgwqAgLTkwMCBkYnVzLWRhZW1vbgpbNDgwMTU2Ljk1MDMwOV0gW8KgwqAg
+MjY0OF3CoMKgIDE3MsKgIDI1OTbCoMKgwqDCoCAyNDM1wqDCoMKgwqDCoMKgwqAgMCAzOTMyMTbC
+oMKgwqDCoMKgwqDCoCAKNcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAwIHJ0a2l0LWRhZW1vbgpb
+NDgwMTU2Ljk1MDMyMl0gW8KgwqAgNTI1Nl3CoMKgwqDCoCAwwqAgMjgyNsKgwqDCoCAyNTQxMcKg
+wqDCoMKgwqDCoMKgIDAgNTg5ODI0wqDCoMKgwqDCoMKgwqAgCjDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgMCBEZXRlY3RUaHJlYWQKWzQ4MDE1Ni45NTAzMjhdIFvCoMKgIDU0MDRdwqDCoMKgwqAg
+MMKgIDU0MDTCoMKgwqDCoMKgIDQxMsKgwqDCoMKgwqDCoMKgIDIgMzkzMjE2wqDCoMKgwqDCoMKg
+IAo2NMKgwqDCoMKgwqDCoMKgwqAgLTEwMDAgc3NoZApbNDgwMTU2Ljk1MDM1N10gW8KgIDEwNTE4
+XcKgwqDCoMKgIDAgMTA1MTjCoMKgwqDCoCAyNTg2wqDCoMKgwqDCoMKgwqAgMCAzOTMyMTbCoMKg
+wqDCoMKgwqAgCjEwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDAgYXQtc3BpMi1yZWdpc3RyCls0
+ODAxNTYuOTUwMzYxXSBbwqAgMTA1NTNdwqDCoMKgwqAgMCAxMDU1McKgwqDCoCAxMDU0M8KgwqDC
+oMKgwqDCoMKgIDAgNDU4NzUywqDCoMKgwqDCoMKgwqAgCjnCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgMCBRWGNiRXZlbnRRdWV1ZQpbNDgwMTU2Ljk1MDM2NV0gW8KgIDEwODY3XcKgwqDCoMKgIDAg
+MTA1NjfCoMKgwqAgMTc1NznCoMKgwqDCoMKgwqDCoCAwIDU4OTgyNMKgwqDCoMKgwqDCoCAKMTbC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMCBRWGNiRXZlbnRRdWV1ZQpbNDgwMTU2Ljk1MDM3MF0g
+W8KgIDEwOTI4XcKgwqDCoMKgIDAgMTA5MjHCoMKgwqDCoCA2OTk5wqDCoMKgwqDCoMKgwqAgMCA0
+NTg3NTLCoMKgwqDCoMKgwqAgCjE3wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDAgUVhjYkV2ZW50
+UXVldWUKWzQ4MDE1Ni45NTAzOTBdIFvCoCAxMTg4Ml3CoMKgwqDCoCAwIDExODExwqDCoMKgwqAg
+NzM3N8KgwqDCoMKgwqDCoMKgIDAgNDU4NzUywqDCoMKgwqDCoMKgIAoxMMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCAwIFFYY2JFdmVudFF1ZXVlCls0ODAxNTYuOTUwMzk0XSBbwqAgMTIwNTJdwqDC
+oMKgwqAgMCAxMjA1MsKgwqDCoMKgIDU4MjPCoMKgwqDCoMKgwqDCoCAwIDQ1ODc1MsKgwqDCoMKg
+wqDCoCAKMjHCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMCBmY2l0eApbNDgwMTU2Ljk1MDQwNF0g
+W8KgIDEyMTE1XcKgwqDCoMKgIDAgMTIxMTTCoMKgwqAgMTE2NzjCoMKgwqDCoMKgwqDCoCAwIDUy
+NDI4OMKgwqDCoMKgwqDCoCAKMjHCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMCBRWGNiRXZlbnRR
+dWV1ZQpbNDgwMTU2Ljk1MDQwOF0gWyAxMDE1NThdwqDCoMKgwqAgMCAxMDE1NTjCoMKgwqDCoCAz
+NTQ5wqDCoMKgwqDCoMKgwqAgMCAzOTMyMTbCoMKgwqDCoMKgwqDCoCAKMMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCAwIHJ1bmx0cApbNDgwMTU2Ljk1MDQ4Nl0gWzEwNjg4NjRdwqDCoMKgwqAgMCAx
+MDY4ODY0wqDCoMKgwqDCoCA3NzHCoMKgwqDCoMKgwqDCoCA2IDMyNzY4MMKgwqDCoMKgwqDCoCAK
+ODXCoMKgwqDCoMKgwqDCoMKgIC0xMDAwIHN5c3RlbWQtdWRldmQKWzQ4MDE1Ni45NTA1NTJdIFsx
+MDM1NjM5XcKgwqDCoMKgIDAgMTAzNTYzOcKgwqDCoMKgwqDCoCA1MsKgwqDCoMKgwqDCoMKgIDAg
+MzkzMjE2wqDCoMKgwqDCoMKgIAoxNMKgwqDCoMKgwqDCoMKgwqAgLTEwMDAgb29tMDIKWzQ4MDE1
+Ni45NTA1NTZdIFsxMDM1NjQwXcKgwqDCoMKgIDAgMTAzNTY0MMKgwqDCoMKgwqDCoCA1MsKgwqDC
+oMKgwqDCoMKgIDAgMzkzMjE2wqDCoMKgwqDCoMKgIAoyM8KgwqDCoMKgwqDCoMKgwqAgLTEwMDAg
+b29tMDIKWzQ4MDE1Ni45NTA1NjFdIFsxMDM2MDY1XcKgwqDCoMKgIDAgMTAzNjA2NcKgwqDCoMKg
+wqAgNDkzwqDCoMKgwqDCoMKgIDYwIDM5MzIxNsKgwqDCoMKgwqDCoMKgIAowwqDCoMKgwqDCoMKg
+wqDCoMKgIC0yNTAgc3lzdGVtZC1qb3VybmFsCls0ODAxNTYuOTUwNTY1XSBbMTAzNjA4N13CoMKg
+wqDCoCAwIDEwMzYwNzPCoCA2MjU4NzM5wqAgMzU0Mzk0MiAKMzc4MTQyNzLCoMKgwqDCoMKgwqDC
+oCAwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDAgb29tMDIKWzQ4MDE1Ni45NTA1NzJdIE91dCBv
+ZiBtZW1vcnkgYW5kIG5vIGtpbGxhYmxlIHByb2Nlc3Nlcy4uLgpbNDgwMTU2Ljk1MDU3NV0gS2Vy
+bmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IFN5c3RlbSBpcyBkZWFkbG9ja2VkIG9uIG1lbW9yeQpg
+YGAKCm9vbTAyLTEwMzYwNzMgaGFzIGJlZW4ga2lsbGVkIGJlZm9yZSBjcmFzaC4KbG9nOgpgYGAK
+WzQ4MDE1Mi4yNDI1MDZdIFsxMDM1MTc3XcKgwqDCoMKgIDAgMTAzNTE3N8KgwqDCoMKgIDQ3NzPC
+oMKgwqDCoMKgwqAgMjAgMzkzMjE2wqDCoMKgwqDCoCAKMTE1wqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIDAgc3NzZF9uc3MKWzQ4MDE1Mi4yNDI1MTBdIFsxMDM1Mzc2XcKgwqDCoMKgIDAgMTAzNTM3
+NsKgwqDCoCAyNTUwMMKgwqDCoMKgwqAgMzkxIDU4OTgyNMKgwqDCoMKgwqAgCjYwMsKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCAwIHR1bmVkCls0ODAxNTIuMjQyNTE0XSBbMTAzNTYzOV3CoMKgwqDC
+oCAwIDEwMzU2MznCoMKgwqDCoMKgwqAgNTLCoMKgwqDCoMKgwqDCoCAwIDM5MzIxNsKgwqDCoMKg
+wqDCoCAKMTTCoMKgwqDCoMKgwqDCoMKgIC0xMDAwIG9vbTAyCls0ODAxNTIuMjQyNTE3XSBbMTAz
+NTY0MF3CoMKgwqDCoCAwIDEwMzU2NDDCoMKgwqDCoMKgwqAgNTLCoMKgwqDCoMKgwqDCoCAwIDM5
+MzIxNsKgwqDCoMKgwqDCoCAKMTnCoMKgwqDCoMKgwqDCoMKgIC0xMDAwIG9vbTAyCls0ODAxNTIu
+MjQyNTIyXSBbMTAzNjA2NV3CoMKgwqDCoCAwIDEwMzYwNjXCoMKgwqDCoMKgIDQ5M8KgwqDCoMKg
+wqAgMTE0IDM5MzIxNsKgwqDCoMKgwqDCoCAKNjLCoMKgwqDCoMKgwqDCoMKgwqAgLTI1MCBzeXN0
+ZW1kLWpvdXJuYWwKWzQ4MDE1Mi4yNDI1MjVdIFsxMDM2MDczXcKgwqDCoMKgIDAgMTAzNjA3M8Kg
+IDYyNTg3MznCoCAzNTQwMzE0IDM3ODE0MjcywqDCoMKgwqDCoCAKMTA0wqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIDAgb29tMDIKWzQ4MDE1Mi4yNDI1MjldIE91dCBvZiBtZW1vcnk6IEtpbGwgcHJv
+Y2VzcyAxMDM2MDczIChvb20wMikgc2NvcmUgNzU1IG9yIApzYWNyaWZpY2UgY2hpbGQKWzQ4MDE1
+Mi4yNDM4NjldIEtpbGxlZCBwcm9jZXNzIDEwMzYwNzMgKG9vbTAyKSB0b3RhbC12bTo0MDA1NTky
+OTZrQiwgCmFub24tcnNzOjIyNjU3ODM2OGtCLCBmaWxlLXJzczoxNzI4a0IsIHNobWVtLXJzczow
+a0IKWzQ4MDE1Mi4zNjU4MDRdIG9vbV9yZWFwZXI6IHJlYXBlZCBwcm9jZXNzIDEwMzYwNzMgKG9v
+bTAyKSwgbm93IAphbm9uLXJzczoyMjY1OTQwNDhrQiwgZmlsZS1yc3M6MGtCLCBzaG1lbS1yc3M6
+MGtCCmBgYApidXQgaXRzIG1lbW9yeSBjYW4gbm90IGJlIHJlY2xhaW1lZC5JIGFkZCB0cmFjZS1s
+b2cgdG8gb29tX3JlYXBlciBjb2RlIAppbiBrZXJuZWwsCkkgZm91bmQgdGhhdCB0aGVyZSBpcyBh
+IGxhcmdlIHJhbmdlIHZtYSBpbiB0aGUgbWVtb3J5IHRoYXQgY2Fubm90IGJlIApyZWNsYWltZWQs
+IGFuZCB0aGUgdm1hIGhhcyB0aGXCoCBgVk1fTE9DS0VEYCBmbGFnLCBzbyBjYW5ub3QgYmUgcmVj
+bGFpbWVkIAppbW1lZGlhdGVseS4KYGBgbG9nCiDCoMKgwqDCoMKgIG9vbV9yZWFwZXItNTfCoMKg
+wqAgWzAwN10gLi4uLsKgwqAgMTI2LjA2MzU4MTogX19vb21fcmVhcF90YXNrX21tOiBnaDogCnZt
+YSBpcyBhbm9uOjEwNDg2OTEsIHJhbmdlPTY1NTM2CiDCoMKgwqDCoMKgIG9vbV9yZWFwZXItNTfC
+oMKgwqAgWzAwN10gLi4uLsKgwqAgMTI2LjA2MzU4MTogX19vb21fcmVhcF90YXNrX21tOiBnaDog
+CnZtYSBpcyBhbm9uOjEwNDg2OTEsIHJhbmdlPTE5NjYwOAogwqDCoMKgwqDCoCBvb21fcmVhcGVy
+LTU3wqDCoMKgIFswMDddIC4uLi7CoMKgIDEyNi4wNjM1ODI6IF9fb29tX3JlYXBfdGFza19tbTog
+Z2g6IAp2bWEgY29udGludWU6IDEwNTY4ODMsIHJhbmdlOjMyMjEyMjU0NzIKIMKgwqDCoMKgwqAg
+b29tX3JlYXBlci01N8KgwqDCoCBbMDA3XSAuLi4uwqDCoCAxMjYuMDYzNTgzOiBfX29vbV9yZWFw
+X3Rhc2tfbW06IGdoOiAKdm1hIGlzIGFub246MTEyLCByYW5nZT02NTUzNgogwqDCoMKgwqDCoCBv
+b21fcmVhcGVyLTU3wqDCoMKgIFswMDddIC4uLi7CoMKgIDEyNi4wNjM1ODQ6IF9fb29tX3JlYXBf
+dGFza19tbTogZ2g6IAp2bWEgaXMgYW5vbjoxMDQ4NjkxLCByYW5nZT04Mzg4NjA4CmBgYApgdm1h
+IGNvbnRpbnVlOiAxMDU2ODgzLCByYW5nZTozMjIxMjI1NDcyYCBpcyB0aGUgbWVtb3J5IHRoYXQg
+Y2FuIG5vdCAKcmVjbGFpbXMuIDEwNTc4ODMoMHgxMDIwNzMpIGlzIHZtYS0+dm1fZmxhZ3MsIGl0
+IGhhcyBWTV9MT0NLRURgIGZsYWcKCm9vbTAyIGNyZWF0ZWQgYG5yX2NwdWAgdGhyZWFkcyBhbmQg
+dXNlZCBtbWFwIHRvIGFsbG9jYXRlIG1lbW9yeS4gbW1hcCAKd2lsbCBtZXJnZSBjb250aW51b3Vz
+IHZtYSBpbnRvIG9uZSwKc28gYXMgbG9uZyBhcyBvbmUgdGhyZWFkIGlzIHN0aWxsIHJ1bm5pbmcs
+IHRoZSBlbnRpcmUgdm1hIHdpbGwgbm90IGJlIApyZWxlYXNlZC4KCkluIGV4dHJlbWUgY2FzZXMs
+IGNyYXNoZXMgbWF5IG9jY3VyIGR1ZSB0byB0aGUgbGFjayBvZiBtZW1vcnkgcmVjbGFtYXRpb24u
+CgpNeSBxdWVzdGlvbiBpcyB0aGF0IHRoZSBjcmFzaCBpbiB0aGlzIGNhc2UgaXMgYSBub3JtYWwg
+c2l0dWF0aW9uIG9yIGEgCmJ1ZyAoa2VybmVsIG9yIGx0cCBidWcpID8KCi0tIAp0aGFua3MsCkdv
+dSBIYW8KCi0tIAp0aGFua3MsCkdvdSBIYW8KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6
+Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
