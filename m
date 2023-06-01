@@ -4,78 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20367C7EE23
-	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 10:50:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE076C77B7A
+	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 10:51:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3B6023CEA34
-	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 12:50:31 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id A09353CEA41
+	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 12:51:47 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6BA0F3CCEF6
- for <ltp@lists.linux.it>; Thu,  1 Jun 2023 12:50:19 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 476953CBCFB
+ for <ltp@lists.linux.it>; Thu,  1 Jun 2023 12:51:34 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4D897600F83
- for <ltp@lists.linux.it>; Thu,  1 Jun 2023 12:50:17 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D60AD200C2D
+ for <ltp@lists.linux.it>; Thu,  1 Jun 2023 12:51:33 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1685616616;
+ s=mimecast20190719; t=1685616692;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=d7yCA3rk838KNRyGlROiCR0sVBgxv8GNVgLmCANXKUg=;
- b=hmA936yGlCx6pvJPdlrgb0ARMRlEL5rvPSEpMZCq3kN/wrssQHVTRt8Qx40Yx6mnsopCFd
- Idlk8qJzcEY1aDFYpT2mYLdvBJqBtGSxY2nCqexRKAY2fqsayQiHe405rA7KDV7DyzI1ru
- Xfd6BiQTcgwAtMNx0Zva9wGdaZi38xg=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-288-X_W5hepaNTOgHoYoyDOHEw-1; Thu, 01 Jun 2023 06:50:15 -0400
-X-MC-Unique: X_W5hepaNTOgHoYoyDOHEw-1
-Received: by mail-lj1-f199.google.com with SMTP id
- 38308e7fff4ca-2b12d76e029so5817541fa.0
- for <ltp@lists.linux.it>; Thu, 01 Jun 2023 03:50:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1685616613; x=1688208613;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=d7yCA3rk838KNRyGlROiCR0sVBgxv8GNVgLmCANXKUg=;
- b=F1W6mXHH7m1aseFlWKfMx5cGM1id/EArqohLkG1SaqPcNzf4P9iwePleQ8ViGQ/03C
- 3eTtwwJaiSueqeBmV2M2RdXJTSHuJyAl0kKnRx6q3sVcnkXAL/8YlzkOU93NUzA7iEQf
- RtNfZOcxW4CHAYAV0wPzPq5AHDmjoM1AmLUNT5SoSMl/lvXVqbiivJZOCw+FJuxxjKpk
- p1ebH+b79VhI1FSB4r07FKgP8x0VQNkKyDx2d7NP95MRpFW0zJiEeqn7gJ7En/ZYXaHX
- LjaSbVn+AJpbdw+8ciFHnMSW7KkK/1um3b/EhnPSThT8vb9mWbpH5030Hjq3zAnlV4OC
- 0pBQ==
-X-Gm-Message-State: AC+VfDwJRjnbyeQo+YjCGHQ9SOPIWxUpo2AhEcRtb0GgB3T8IRM2RmyM
- 1R+rbexE69Wqf8e+SN+tK85eaa7cEhGfgSRHbJk0ANi1qv/vPOZOdTXSygeHkq5QVEwgVRhx6c2
- C7nCkddy1gRi4iPIzDOszujXLCp/Bcqi6tfTpM7GrpPs=
-X-Received: by 2002:a2e:93c6:0:b0:2ad:ae71:4f21 with SMTP id
- p6-20020a2e93c6000000b002adae714f21mr4883871ljh.48.1685616612969; 
- Thu, 01 Jun 2023 03:50:12 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5vvsG+EkuofpjaWqqKkJrIsh+jECjtP1JOPWd51WF3lp7s5+B3FENuDmHku71Zt9j4tTMjzAvsQX4dB0LNaP4=
-X-Received: by 2002:a2e:93c6:0:b0:2ad:ae71:4f21 with SMTP id
- p6-20020a2e93c6000000b002adae714f21mr4883853ljh.48.1685616612630; Thu, 01 Jun
- 2023 03:50:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <F72A2833ADC15945+1885e249-0a26-f69e-9986-4e2f91be8ef2@uniontech.com>
- <CAEemH2fnzLYTcMfukmmQvcY0n6LgEgm2fg1LdDuYLu90qcokxg@mail.gmail.com>
- <DAE5730A87C45237+83185f6c-2aa7-837f-79bb-e689e52556f6@uniontech.com>
-In-Reply-To: <DAE5730A87C45237+83185f6c-2aa7-837f-79bb-e689e52556f6@uniontech.com>
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=SPmjad0oZi3z4POnlJdxLqKisF0qUWwIb15l3sRcrTI=;
+ b=YSE8oXr+KNX2+/sIUsoKc0BWr6ePBEa/n31QTs6RqwLnaxkZoSDlX/zuyBOi06rR7fbm3n
+ PT8f+KS0jlcGkS9QJvMlW7cUqx2PICl0DRfsxmcLXu9piXVA2vHT5lRFHLW/huIHBE2SYy
+ 4GsnlGGlInP9V46X4JwLR3TJ0c9VitU=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-502-ncpI5oWoPR6MgUBBQlbrxQ-1; Thu, 01 Jun 2023 06:51:30 -0400
+X-MC-Unique: ncpI5oWoPR6MgUBBQlbrxQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.2])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8C0F53C025A2
+ for <ltp@lists.linux.it>; Thu,  1 Jun 2023 10:51:30 +0000 (UTC)
+Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
+ [10.66.145.229])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 52EEB40C6EC4
+ for <ltp@lists.linux.it>; Thu,  1 Jun 2023 10:51:29 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 1 Jun 2023 18:50:00 +0800
-Message-ID: <CAEemH2d8m-8pJSKjOZZzmjnvoKgGcW+GTPE3=jRmkhw0fHgM0A@mail.gmail.com>
-To: CAEemH2fnzLYTcMfukmmQvcY0n6LgEgm2fg1LdDuYLu90qcokxg@mail.gmail.com
+To: ltp@lists.linux.it
+Date: Thu,  1 Jun 2023 18:51:27 +0800
+Message-Id: <20230601105127.55155-1-liwang@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] Question about oom02 testcase
+Subject: [LTP] [PATCH] mem: make use of save_restore to simplify code
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,115 +68,361 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux-MM <linux-mm@kvack.org>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBKdW4gMSwgMjAyMyBhdCA1OjQ24oCvUE0gR291IEhhbyA8Z291aGFvQHVuaW9udGVj
-aC5jb20+IHdyb3RlOgoKPiBPbiA2LzEvMjMgMTY6MTgsIExpIFdhbmcgd3JvdGU6Cj4KPiBIaSBI
-YW8sCj4KPiBUaGFua3MgZm9yIHJlcG9ydGluZyB0aGlzLCBjb21tZW50cyBzZWUgYmVsb3cuCj4K
-PiBPbiBUdWUsIE1heSAzMCwgMjAyMyBhdCA5OjI24oCvQU0gR291IEhhbyA8Z291aGFvQHVuaW9u
-dGVjaC5jb20+IHdyb3RlOgo+Cj4+IGhlbGxvIGV2ZXJ5b25lLAo+Pgo+PiBSZWNlbnRseSwga2Vy
-bmVsIHJlc3RhcnRlZCB3aGlsZSBJIHdhcyBydW5uaW5nIG9vbTAyLgo+PiBsb2c6Cj4+IGBgYAo+
-PiBbNDgwMTU2Ljk1MDEwMF0gVGFza3Mgc3RhdGUgKG1lbW9yeSB2YWx1ZXMgaW4gcGFnZXMpOgo+
-PiBbNDgwMTU2Ljk1MDEwMV0gWyAgcGlkICBdICAgdWlkICB0Z2lkIHRvdGFsX3ZtICAgICAgcnNz
-IHBndGFibGVzX2J5dGVzCj4+IHN3YXBlbnRzIG9vbV9zY29yZV9hZGogbmFtZQo+PiBbNDgwMTU2
-Ljk1MDMwMl0gWyAgIDI1NzhdICAgIDgxICAyNTc4ICAgICAgNTIzICAgICAgICAwIDM5MzIxNgo+
-PiA2ICAgICAgICAgIC05MDAgZGJ1cy1kYWVtb24KPj4gWzQ4MDE1Ni45NTAzMDldIFsgICAyNjQ4
-XSAgIDE3MiAgMjU5NiAgICAgMjQzNSAgICAgICAgMCAzOTMyMTYKPj4gNSAgICAgICAgICAgICAw
-IHJ0a2l0LWRhZW1vbgo+PiBbNDgwMTU2Ljk1MDMyMl0gWyAgIDUyNTZdICAgICAwICAyODI2ICAg
-IDI1NDExICAgICAgICAwIDU4OTgyNAo+PiAwICAgICAgICAgICAgIDAgRGV0ZWN0VGhyZWFkCj4+
-IFs0ODAxNTYuOTUwMzI4XSBbICAgNTQwNF0gICAgIDAgIDU0MDQgICAgICA0MTIgICAgICAgIDIg
-MzkzMjE2Cj4+IDY0ICAgICAgICAgLTEwMDAgc3NoZAo+PiBbNDgwMTU2Ljk1MDM1N10gWyAgMTA1
-MThdICAgICAwIDEwNTE4ICAgICAyNTg2ICAgICAgICAwIDM5MzIxNgo+PiAxMCAgICAgICAgICAg
-ICAwIGF0LXNwaTItcmVnaXN0cgo+PiBbNDgwMTU2Ljk1MDM2MV0gWyAgMTA1NTNdICAgICAwIDEw
-NTUxICAgIDEwNTQzICAgICAgICAwIDQ1ODc1Mgo+PiA5ICAgICAgICAgICAgIDAgUVhjYkV2ZW50
-UXVldWUKPj4gWzQ4MDE1Ni45NTAzNjVdIFsgIDEwODY3XSAgICAgMCAxMDU2NyAgICAxNzU3OSAg
-ICAgICAgMCA1ODk4MjQKPj4gMTYgICAgICAgICAgICAgMCBRWGNiRXZlbnRRdWV1ZQo+PiBbNDgw
-MTU2Ljk1MDM3MF0gWyAgMTA5MjhdICAgICAwIDEwOTIxICAgICA2OTk5ICAgICAgICAwIDQ1ODc1
-Mgo+PiAxNyAgICAgICAgICAgICAwIFFYY2JFdmVudFF1ZXVlCj4+IFs0ODAxNTYuOTUwMzkwXSBb
-ICAxMTg4Ml0gICAgIDAgMTE4MTEgICAgIDczNzcgICAgICAgIDAgNDU4NzUyCj4+IDEwICAgICAg
-ICAgICAgIDAgUVhjYkV2ZW50UXVldWUKPj4gWzQ4MDE1Ni45NTAzOTRdIFsgIDEyMDUyXSAgICAg
-MCAxMjA1MiAgICAgNTgyMyAgICAgICAgMCA0NTg3NTIKPj4gMjEgICAgICAgICAgICAgMCBmY2l0
-eAo+PiBbNDgwMTU2Ljk1MDQwNF0gWyAgMTIxMTVdICAgICAwIDEyMTE0ICAgIDExNjc4ICAgICAg
-ICAwIDUyNDI4OAo+PiAyMSAgICAgICAgICAgICAwIFFYY2JFdmVudFF1ZXVlCj4+IFs0ODAxNTYu
-OTUwNDA4XSBbIDEwMTU1OF0gICAgIDAgMTAxNTU4ICAgICAzNTQ5ICAgICAgICAwIDM5MzIxNgo+
-PiAwICAgICAgICAgICAgIDAgcnVubHRwCj4+IFs0ODAxNTYuOTUwNDg2XSBbMTA2ODg2NF0gICAg
-IDAgMTA2ODg2NCAgICAgIDc3MSAgICAgICAgNiAzMjc2ODAKPj4gODUgICAgICAgICAtMTAwMCBz
-eXN0ZW1kLXVkZXZkCj4+IFs0ODAxNTYuOTUwNTUyXSBbMTAzNTYzOV0gICAgIDAgMTAzNTYzOSAg
-ICAgICA1MiAgICAgICAgMCAzOTMyMTYKPj4gMTQgICAgICAgICAtMTAwMCBvb20wMgo+PiBbNDgw
-MTU2Ljk1MDU1Nl0gWzEwMzU2NDBdICAgICAwIDEwMzU2NDAgICAgICAgNTIgICAgICAgIDAgMzkz
-MjE2Cj4+IDIzICAgICAgICAgLTEwMDAgb29tMDIKPj4gWzQ4MDE1Ni45NTA1NjFdIFsxMDM2MDY1
-XSAgICAgMCAxMDM2MDY1ICAgICAgNDkzICAgICAgIDYwIDM5MzIxNgo+PiAwICAgICAgICAgIC0y
-NTAgc3lzdGVtZC1qb3VybmFsCj4+IFs0ODAxNTYuOTUwNTY1XSBbMTAzNjA4N10gICAgIDAgMTAz
-NjA3MyAgNjI1ODczOSAgMzU0Mzk0Mgo+PiAzNzgxNDI3MiAgICAgICAgMCAgICAgICAgICAgICAw
-IG9vbTAyCj4+IFs0ODAxNTYuOTUwNTcyXSBPdXQgb2YgbWVtb3J5IGFuZCBubyBraWxsYWJsZSBw
-cm9jZXNzZXMuLi4KPj4gWzQ4MDE1Ni45NTA1NzVdIEtlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5n
-OiBTeXN0ZW0gaXMgZGVhZGxvY2tlZCBvbiBtZW1vcnkKPj4gYGBgCj4+Cj4+IG9vbTAyLTEwMzYw
-NzMgaGFzIGJlZW4ga2lsbGVkIGJlZm9yZSBjcmFzaC4KPj4gbG9nOgo+PiBgYGAKPj4gWzQ4MDE1
-Mi4yNDI1MDZdIFsxMDM1MTc3XSAgICAgMCAxMDM1MTc3ICAgICA0NzczICAgICAgIDIwIDM5MzIx
-Ngo+PiAxMTUgICAgICAgICAgICAgMCBzc3NkX25zcwo+PiBbNDgwMTUyLjI0MjUxMF0gWzEwMzUz
-NzZdICAgICAwIDEwMzUzNzYgICAgMjU1MDAgICAgICAzOTEgNTg5ODI0Cj4+IDYwMiAgICAgICAg
-ICAgICAwIHR1bmVkCj4+IFs0ODAxNTIuMjQyNTE0XSBbMTAzNTYzOV0gICAgIDAgMTAzNTYzOSAg
-ICAgICA1MiAgICAgICAgMCAzOTMyMTYKPj4gMTQgICAgICAgICAtMTAwMCBvb20wMgo+PiBbNDgw
-MTUyLjI0MjUxN10gWzEwMzU2NDBdICAgICAwIDEwMzU2NDAgICAgICAgNTIgICAgICAgIDAgMzkz
-MjE2Cj4+IDE5ICAgICAgICAgLTEwMDAgb29tMDIKPj4gWzQ4MDE1Mi4yNDI1MjJdIFsxMDM2MDY1
-XSAgICAgMCAxMDM2MDY1ICAgICAgNDkzICAgICAgMTE0IDM5MzIxNgo+PiA2MiAgICAgICAgICAt
-MjUwIHN5c3RlbWQtam91cm5hbAo+PiBbNDgwMTUyLjI0MjUyNV0gWzEwMzYwNzNdICAgICAwIDEw
-MzYwNzMgIDYyNTg3MzkgIDM1NDAzMTQgMzc4MTQyNzIKPj4gMTA0ICAgICAgICAgICAgIDAgb29t
-MDIKPj4gWzQ4MDE1Mi4yNDI1MjldIE91dCBvZiBtZW1vcnk6IEtpbGwgcHJvY2VzcyAxMDM2MDcz
-IChvb20wMikgc2NvcmUgNzU1IG9yCj4+IHNhY3JpZmljZSBjaGlsZAo+PiBbNDgwMTUyLjI0Mzg2
-OV0gS2lsbGVkIHByb2Nlc3MgMTAzNjA3MyAob29tMDIpIHRvdGFsLXZtOjQwMDU1OTI5NmtCLAo+
-PiBhbm9uLXJzczoyMjY1NzgzNjhrQiwgZmlsZS1yc3M6MTcyOGtCLCBzaG1lbS1yc3M6MGtCCj4+
-IFs0ODAxNTIuMzY1ODA0XSBvb21fcmVhcGVyOiByZWFwZWQgcHJvY2VzcyAxMDM2MDczIChvb20w
-MiksIG5vdwo+PiBhbm9uLXJzczoyMjY1OTQwNDhrQiwgZmlsZS1yc3M6MGtCLCBzaG1lbS1yc3M6
-MGtCCj4+IGBgYAo+PiBidXQgaXRzIG1lbW9yeSBjYW4gbm90IGJlIHJlY2xhaW1lZC5JIGFkZCB0
-cmFjZS1sb2cgdG8gb29tX3JlYXBlciBjb2RlCj4+IGluIGtlcm5lbCwKPj4gSSBmb3VuZCB0aGF0
-IHRoZXJlIGlzIGEgbGFyZ2UgcmFuZ2Ugdm1hIGluIHRoZSBtZW1vcnkgdGhhdCBjYW5ub3QgYmUK
-Pj4gcmVjbGFpbWVkLCBhbmQgdGhlIHZtYSBoYXMgdGhlICBgVk1fTE9DS0VEYCBmbGFnLCBzbyBj
-YW5ub3QgYmUgcmVjbGFpbWVkCj4+IGltbWVkaWF0ZWx5Lgo+PiBgYGBsb2cKPj4gICAgICAgIG9v
-bV9yZWFwZXItNTcgICAgWzAwN10gLi4uLiAgIDEyNi4wNjM1ODE6IF9fb29tX3JlYXBfdGFza19t
-bTogZ2g6Cj4+IHZtYSBpcyBhbm9uOjEwNDg2OTEsIHJhbmdlPTY1NTM2Cj4+ICAgICAgICBvb21f
-cmVhcGVyLTU3ICAgIFswMDddIC4uLi4gICAxMjYuMDYzNTgxOiBfX29vbV9yZWFwX3Rhc2tfbW06
-IGdoOgo+PiB2bWEgaXMgYW5vbjoxMDQ4NjkxLCByYW5nZT0xOTY2MDgKPj4gICAgICAgIG9vbV9y
-ZWFwZXItNTcgICAgWzAwN10gLi4uLiAgIDEyNi4wNjM1ODI6IF9fb29tX3JlYXBfdGFza19tbTog
-Z2g6Cj4+IHZtYSBjb250aW51ZTogMTA1Njg4MywgcmFuZ2U6MzIyMTIyNTQ3Mgo+PiAgICAgICAg
-b29tX3JlYXBlci01NyAgICBbMDA3XSAuLi4uICAgMTI2LjA2MzU4MzogX19vb21fcmVhcF90YXNr
-X21tOiBnaDoKPj4gdm1hIGlzIGFub246MTEyLCByYW5nZT02NTUzNgo+PiAgICAgICAgb29tX3Jl
-YXBlci01NyAgICBbMDA3XSAuLi4uICAgMTI2LjA2MzU4NDogX19vb21fcmVhcF90YXNrX21tOiBn
-aDoKPj4gdm1hIGlzIGFub246MTA0ODY5MSwgcmFuZ2U9ODM4ODYwOAo+PiBgYGAKPj4gYHZtYSBj
-b250aW51ZTogMTA1Njg4MywgcmFuZ2U6MzIyMTIyNTQ3MmAgaXMgdGhlIG1lbW9yeSB0aGF0IGNh
-biBub3QKPj4gcmVjbGFpbXMuIDEwNTc4ODMoMHgxMDIwNzMpIGlzIHZtYS0+dm1fZmxhZ3MsIGl0
-IGhhcyBWTV9MT0NLRURgIGZsYWcKPj4KPj4gb29tMDIgY3JlYXRlZCBgbnJfY3B1YCB0aHJlYWRz
-IGFuZCB1c2VkIG1tYXAgdG8gYWxsb2NhdGUgbWVtb3J5LiBtbWFwCj4+IHdpbGwgbWVyZ2UgY29u
-dGludW91cyB2bWEgaW50byBvbmUsCj4+IHNvIGFzIGxvbmcgYXMgb25lIHRocmVhZCBpcyBzdGls
-bCBydW5uaW5nLCB0aGUgZW50aXJlIHZtYSB3aWxsIG5vdCBiZQo+PiByZWxlYXNlZC4KPj4KPj4g
-SW4gZXh0cmVtZSBjYXNlcywgY3Jhc2hlcyBtYXkgb2NjdXIgZHVlIHRvIHRoZSBsYWNrIG9mIG1l
-bW9yeSByZWNsYW1hdGlvbi4KPj4KPj4gTXkgcXVlc3Rpb24gaXMgdGhhdCB0aGUgY3Jhc2ggaW4g
-dGhpcyBjYXNlIGlzIGEgbm9ybWFsIHNpdHVhdGlvbiBvciBhCj4+IGJ1ZyAoa2VybmVsIG9yIGx0
-cCBidWcpID8KPj4KPgo+Cj4gVGhlICBsdHAtb29tIHRlc3QgaXMgb3JpZ2luYWxseSBkZXNpZ25l
-ZCB0byB2ZXJpZnkgT09NIG1lY2hhbmlzbQo+IHdvcmtzIGZvciBtZW1vcnkgYWxsb2NhdGluZyBp
-biB0aHJlZSB0eXBlcyAobm9ybWFsLCBtbG9jaywga3NtKQo+IGFsbCBhcyBleHBlY3RlZC4KPgo+
-IFllcywgeW91ciBhbmFseXNpcyBpcyByZWFzb25hYmxlIHRvIHNvbWUgZGVncmVlLCBvb21fcmVh
-cGVyCj4gbWlnaHQgbm90IHJlY2xhaW0gdGhlIFZNQSB3aXRoIGxvY2tlZCBwYWdlcyAgZXZlbiBh
-ZnRlciB0aGUKPiBwcm9jZXNzIHRlcm1pbmF0aW9uLgo+Cj4gQnV0IHRoZSBleGFjdCBiZWhhdmlv
-ciBvZiB0aGUgb29tX3JlYXBlciBhbmQgdGhlIGNvbmRpdGlvbnMgdW5kZXIKPiB3aGljaCBpdCBj
-YW4gb3IgY2Fubm90IHJlY2xhaW0gVk1BcyBtYXkgdmFyeSBkZXBlbmRpbmcgb24gdGhlCj4gc3Bl
-Y2lmaWMga2VybmVsIHZlcnNpb24gYW5kIGNvbmZpZ3VyYXRpb24uIFNvIHdlIHNob3VsZG4ndCBz
-aW1wbHkKPiByZWdhcmQgdGhlIHN5c3RlbSBwYW5pYyBhcyBhIEtlcm5lbCBvciBMVFAgZGVmZWN0
-Lgo+IEFuZCBCVFcsIHdoYXQgaXMgeW91ciB0ZXN0ZWQga2VybmVsIHZlcnNpb24/Cj4KPiBoaSBM
-aSBXYW5nLAo+Cj4gVGhhbmsgeW91IGZvciB5b3VyIHJlcGx5Lgo+Cj4gTXkga2VybmVsIHZlcnNp
-b24gaXMgNC4xOSwgYnV0IGl0J3Mgbm90IGEgY29tbXVuaXR5IHZlcnNpb24uCj4KPiBJIGhhdmUg
-b25seSBlbmNvdW50ZXJlZCB0aGUgY3Jhc2ggb25jZSwgYW5kIG1vc3Qgb2YgdGhlIHRpbWUgb29t
-X3JlYXBlcgo+IGNhbiBoYW5kbGUgaXQgd2VsbC4KPgo+IEkgdHJpZWQgdG8gZmluZCBhIG1ldGhv
-ZCBvciBmbGFnIHRvIHByZXZlbnQgdm1hIG1lcmdpbmcgZHVyaW5nIG1tYXAsIGJ1dAo+IGNvdWxk
-bid0IGZpbmQgaXQuCj4KClRoYXQgYWxzbyBtaWdodCBiZSByZWxhdGVkIHRvIHRoZSB2YWx1ZSBv
-ZiBvdmVyY29tbWl0X21lbW9yeSwKaWYgd2Ugc2V0IDIgKHN0cmljdCBtb2RlKSB0byBpdCwgdGhl
-IG9vbV9yZWFwZXIgY2FuIHJlY2xhaW0gVk1fTE9DS0VECm1lbW9yeSBtb3JlIGFnZ3Jlc3NpdmVs
-eS4KCkJ1dCBpbiBvb20wMiBhcyB5b3UgY2FuIHNlZSwgaXQgaXMgc2V0IHRvIDEgKGFsd2F5cyBt
-b2RlKSBmb3IgdGhlCndob2xlIHRlc3QsIHRoYXQgbWlnaHQgYmUgdGhlIHJlYXNvbiB5b3VyIHN5
-c3RlbSBjYW4ndCByZWNvdmVyIGZyb20Kb3ZlcmNvbW1pdCBhbmQgZmluYWxseSBjcmFzaGVkLgoK
-Ci0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
-dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/mem/include/mem.h            |  1 -
+ testcases/kernel/mem/lib/mem.c                |  2 --
+ testcases/kernel/mem/oom/oom01.c              | 17 ++++------------
+ testcases/kernel/mem/oom/oom02.c              | 14 ++++---------
+ testcases/kernel/mem/oom/oom03.c              | 14 ++++---------
+ testcases/kernel/mem/oom/oom04.c              | 14 ++++---------
+ testcases/kernel/mem/oom/oom05.c              | 14 ++++---------
+ testcases/kernel/mem/tunable/max_map_count.c  |  9 ++++-----
+ .../kernel/mem/tunable/min_free_kbytes.c      |  8 ++++----
+ .../kernel/mem/tunable/overcommit_memory.c    | 20 +++++--------------
+ 10 files changed, 33 insertions(+), 80 deletions(-)
+
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 776809113..cdc3ca146 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -42,7 +42,6 @@ static inline void clean_node(unsigned long *array)
+ #define MLOCK			2
+ #define KSM			3
+ 
+-extern long overcommit;
+ void oom(int testcase, int lite, int retcode, int allow_sigkill);
+ void testoom(int mempolicy, int lite, int retcode, int allow_sigkill);
+ 
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 8ddd7adf7..fbfeef026 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -27,8 +27,6 @@
+ 
+ /* OOM */
+ 
+-long overcommit = -1;
+-
+ static int alloc_mem(long int length, int testcase)
+ {
+ 	char *s;
+diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
+index 9f7d76587..b13699898 100644
+--- a/testcases/kernel/mem/oom/oom01.c
++++ b/testcases/kernel/mem/oom/oom01.c
+@@ -49,22 +49,13 @@ static void verify_oom(void)
+ 	testoom(0, 0, ENOMEM, 1);
+ }
+ 
+-static void setup(void)
+-{
+-	overcommit = get_sys_tune("overcommit_memory");
+-}
+-
+-static void cleanup(void)
+-{
+-	if (overcommit != -1)
+-		set_sys_tune("overcommit_memory", overcommit, 0);
+-}
+-
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.max_runtime = TST_UNLIMITED_RUNTIME,
+-	.setup = setup,
+-	.cleanup = cleanup,
+ 	.test_all = verify_oom,
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/vm/overcommit_memory", NULL, TST_SR_TBROK},
++		{}
++	},
+ };
+diff --git a/testcases/kernel/mem/oom/oom02.c b/testcases/kernel/mem/oom/oom02.c
+index b3719f723..8d565d12a 100644
+--- a/testcases/kernel/mem/oom/oom02.c
++++ b/testcases/kernel/mem/oom/oom02.c
+@@ -56,15 +56,6 @@ static void setup(void)
+ {
+ 	if (!is_numa(NULL, NH_MEMS, 2))
+ 		tst_brk(TCONF, "The case need a NUMA system.");
+-
+-	overcommit = get_sys_tune("overcommit_memory");
+-	set_sys_tune("overcommit_memory", 1, 1);
+-}
+-
+-static void cleanup(void)
+-{
+-	if (overcommit != -1)
+-		set_sys_tune("overcommit_memory", overcommit, 0);
+ }
+ 
+ static struct tst_test test = {
+@@ -72,8 +63,11 @@ static struct tst_test test = {
+ 	.forks_child = 1,
+         .max_runtime = TST_UNLIMITED_RUNTIME,
+ 	.setup = setup,
+-	.cleanup = cleanup,
+ 	.test_all = verify_oom,
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/vm/overcommit_memory", "1", TST_SR_TBROK},
++		{}
++	},
+ };
+ 
+ #else
+diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
+index 0882c9bbe..778055d03 100644
+--- a/testcases/kernel/mem/oom/oom03.c
++++ b/testcases/kernel/mem/oom/oom03.c
+@@ -79,27 +79,21 @@ static void verify_oom(void)
+ 
+ static void setup(void)
+ {
+-	overcommit = get_sys_tune("overcommit_memory");
+-	set_sys_tune("overcommit_memory", 1, 1);
+-
+ 	SAFE_CG_PRINTF(tst_cg, "cgroup.procs", "%d", getpid());
+ 	SAFE_CG_PRINTF(tst_cg, "memory.max", "%lu", TESTMEM);
+ }
+ 
+-static void cleanup(void)
+-{
+-	if (overcommit != -1)
+-		set_sys_tune("overcommit_memory", overcommit, 0);
+-}
+-
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.max_runtime = TST_UNLIMITED_RUNTIME,
+ 	.setup = setup,
+-	.cleanup = cleanup,
+ 	.test_all = verify_oom,
+ 	.needs_cgroup_ctrls = (const char *const []){ "memory", NULL },
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/vm/overcommit_memory", "1", TST_SR_TBROK},
++		{}
++	},
+ };
+ 
+ #else
+diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
+index ad39f7e77..d27d9d9e7 100644
+--- a/testcases/kernel/mem/oom/oom04.c
++++ b/testcases/kernel/mem/oom/oom04.c
+@@ -65,9 +65,6 @@ static void setup(void)
+ 	if (!is_numa(NULL, NH_MEMS, 1))
+ 		tst_brk(TCONF, "requires NUMA with at least 1 node");
+ 
+-	overcommit = get_sys_tune("overcommit_memory");
+-	set_sys_tune("overcommit_memory", 1, 1);
+-
+ 	/*
+ 	 * Some nodes do not contain memory, so use
+ 	 * get_allowed_nodes(NH_MEMS) to get a memory
+@@ -82,20 +79,17 @@ static void setup(void)
+ 	SAFE_CG_PRINTF(tst_cg, "cgroup.procs", "%d", getpid());
+ }
+ 
+-static void cleanup(void)
+-{
+-	if (overcommit != -1)
+-		set_sys_tune("overcommit_memory", overcommit, 0);
+-}
+-
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.max_runtime = TST_UNLIMITED_RUNTIME,
+ 	.setup = setup,
+-	.cleanup = cleanup,
+ 	.test_all = verify_oom,
+ 	.needs_cgroup_ctrls = (const char *const []){ "cpuset", NULL },
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/vm/overcommit_memory", "1", TST_SR_TBROK},
++		{}
++	},
+ };
+ 
+ #else
+diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
+index e31146e7a..eb1a64267 100644
+--- a/testcases/kernel/mem/oom/oom05.c
++++ b/testcases/kernel/mem/oom/oom05.c
+@@ -85,9 +85,6 @@ void setup(void)
+ 	if (!is_numa(NULL, NH_MEMS, 1))
+ 		tst_brk(TCONF, "requires NUMA with at least 1 node");
+ 
+-	overcommit = get_sys_tune("overcommit_memory");
+-	set_sys_tune("overcommit_memory", 1, 1);
+-
+ 	/*
+ 	 * Some nodes do not contain memory, so use
+ 	 * get_allowed_nodes(NH_MEMS) to get a memory
+@@ -104,22 +101,19 @@ void setup(void)
+ 	SAFE_CG_PRINTF(tst_cg, "memory.max", "%lu", TESTMEM);
+ }
+ 
+-void cleanup(void)
+-{
+-	if (overcommit != -1)
+-		set_sys_tune("overcommit_memory", overcommit, 0);
+-}
+-
+ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.forks_child = 1,
+ 	.max_runtime = TST_UNLIMITED_RUNTIME,
+ 	.setup = setup,
+-	.cleanup = cleanup,
+ 	.test_all = verify_oom,
+ 	.needs_cgroup_ctrls = (const char *const []){
+ 		"memory", "cpuset", NULL
+ 	},
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/vm/overcommit_memory", "1", TST_SR_TBROK},
++		{}
++	},
+ };
+ 
+ #else
+diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
+index caf8972e0..82a69a61e 100644
+--- a/testcases/kernel/mem/tunable/max_map_count.c
++++ b/testcases/kernel/mem/tunable/max_map_count.c
+@@ -54,21 +54,16 @@
+ #define MAX_MAP_COUNT		65536L
+ 
+ static long old_max_map_count = -1;
+-static long old_overcommit = -1;
+ 
+ static void setup(void)
+ {
+ 	SAFE_ACCESS(PATH_SYSVM "max_map_count", F_OK);
+ 
+ 	old_max_map_count = get_sys_tune("max_map_count");
+-	old_overcommit = get_sys_tune("overcommit_memory");
+-	set_sys_tune("overcommit_memory", 0, 1);
+ }
+ 
+ static void cleanup(void)
+ {
+-	if (old_overcommit != -1)
+-		set_sys_tune("overcommit_memory", old_overcommit, 0);
+ 	if (old_max_map_count != -1)
+ 		set_sys_tune("max_map_count", old_max_map_count, 0);
+ }
+@@ -213,4 +208,8 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = max_map_count_test,
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/vm/overcommit_memory", "0", TST_SR_TBROK},
++		{}
++	},
+ };
+diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
+index eab6c8b2e..dd07a0323 100644
+--- a/testcases/kernel/mem/tunable/min_free_kbytes.c
++++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
+@@ -41,7 +41,6 @@
+ 
+ volatile int end;
+ static long default_tune = -1;
+-static long orig_overcommit = -1;
+ static unsigned long total_mem;
+ 
+ static void test_tune(unsigned long overcommit_policy);
+@@ -217,15 +216,12 @@ static void setup(void)
+ 	total_mem = SAFE_READ_MEMINFO("MemTotal:") + SAFE_READ_MEMINFO("SwapTotal:");
+ 
+ 	default_tune = get_sys_tune("min_free_kbytes");
+-	orig_overcommit = get_sys_tune("overcommit_memory");
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (default_tune != -1)
+ 		set_sys_tune("min_free_kbytes", default_tune, 0);
+-	if (orig_overcommit != -1)
+-		set_sys_tune("overcommit_memory", orig_overcommit, 0);
+ }
+ 
+ static struct tst_test test = {
+@@ -235,4 +231,8 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = min_free_kbytes_test,
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/vm/overcommit_memory", NULL, TST_SR_TBROK},
++		{}
++	},
+ };
+diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
+index 7fe8fe14c..ffb7a6d9d 100644
+--- a/testcases/kernel/mem/tunable/overcommit_memory.c
++++ b/testcases/kernel/mem/tunable/overcommit_memory.c
+@@ -70,7 +70,6 @@
+ #define EXPECT_FAIL		1
+ 
+ static char *R_opt;
+-static long old_overcommit_memory = -1;
+ static long old_overcommit_ratio = -1;
+ static long overcommit_ratio;
+ static long sum_total;
+@@ -90,16 +89,11 @@ static void setup(void)
+ 	long mem_total, swap_total;
+ 	struct rlimit lim;
+ 
+-	if (access(PATH_SYSVM "overcommit_memory", F_OK) == -1 ||
+-	    access(PATH_SYSVM "overcommit_ratio", F_OK) == -1)
+-		tst_brk(TCONF, "system doesn't support overcommit_memory");
+-
+ 	if (R_opt)
+ 		overcommit_ratio = SAFE_STRTOL(R_opt, 0, LONG_MAX);
+ 	else
+ 		overcommit_ratio = DEFAULT_OVER_RATIO;
+ 
+-	old_overcommit_memory = get_sys_tune("overcommit_memory");
+ 	old_overcommit_ratio = get_sys_tune("overcommit_ratio");
+ 
+ 	mem_total = SAFE_READ_MEMINFO("MemTotal:");
+@@ -128,14 +122,6 @@ static void setup(void)
+ 	tst_res(TINFO, "TotalBatchSize is %ld kB", total_batch_size);
+ }
+ 
+-static void cleanup(void)
+-{
+-	if (old_overcommit_memory != -1)
+-		set_sys_tune("overcommit_memory", old_overcommit_memory, 0);
+-	if (old_overcommit_ratio != -1)
+-		set_sys_tune("overcommit_ratio", old_overcommit_ratio, 0);
+-}
+-
+ static void overcommit_memory_test(void)
+ {
+ 
+@@ -269,6 +255,10 @@ static struct tst_test test = {
+ 		{}
+ 	},
+ 	.setup = setup,
+-	.cleanup = cleanup,
+ 	.test_all = overcommit_memory_test,
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/vm/overcommit_memory", NULL, TST_SR_TBROK},
++		{"/proc/sys/vm/overcommit_ratio", NULL, TST_SR_TBROK},
++		{}
++	},
+ };
+-- 
+2.40.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
