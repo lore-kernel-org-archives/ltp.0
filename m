@@ -4,76 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D989AC77B7A
-	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 08:19:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F045C7EE23
+	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 08:54:41 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 479583CCE54
-	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 10:19:23 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 1B7933CCEEF
+	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 10:54:39 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1966F3CC84B
- for <ltp@lists.linux.it>; Thu,  1 Jun 2023 10:19:12 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 532383CCE35
+ for <ltp@lists.linux.it>; Thu,  1 Jun 2023 10:54:29 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 010BD601115
- for <ltp@lists.linux.it>; Thu,  1 Jun 2023 10:19:10 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 02C2B1400063
+ for <ltp@lists.linux.it>; Thu,  1 Jun 2023 10:54:28 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1685607549;
+ s=mimecast20190719; t=1685609667;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=aDw5Trz5I3p6fZ4n4gS1JsJ/d/GgmnkZjpJWGQzsPHY=;
- b=IDeQz7Pqv2g51TQ1KrQmlRlb4ZeZAg9etX7DfrgsHL0K+VLzBPnvr3r9CIArjZWaWM1q97
- CmWYwh9M1QKJDKLi+alMxhKfk3pG04YXr8oyH4rAK0WclqcBeUQWIjp5Zljws6JpoOZwXR
- daKvoyYIp/pVqtPps5DbA7D8CrOCFzg=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-612-pOPc-nSfMH2wv37EHobo6Q-1; Thu, 01 Jun 2023 04:19:05 -0400
-X-MC-Unique: pOPc-nSfMH2wv37EHobo6Q-1
-Received: by mail-lf1-f69.google.com with SMTP id
- 2adb3069b0e04-4f3a9670ae0so366550e87.2
- for <ltp@lists.linux.it>; Thu, 01 Jun 2023 01:19:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1685607543; x=1688199543;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=aDw5Trz5I3p6fZ4n4gS1JsJ/d/GgmnkZjpJWGQzsPHY=;
- b=U+wtO0uKiBd7cG27kluPYoPCOBsNEMgsbcFZxGY1TGSR2kVv6Z2H6+wMR4xjhcMQdv
- x5WwBDgFPe5OdsGRJQiWwEy5sFvU9qS3bZ6GspnQ1Xkj5UulJEkNCjtDFRs93CcPQ9cV
- 45c0J+wY2f37+kLlYOrrfcEtYjU07kfqED1fT4uXyfzzl/X4kbPzhSEUs+4enwz6r+Wq
- c8a94T8tbltLfUmWra3tS9VdZTVBwggU7gDsf6MEAenr1s/nHfwCdXdV+x6ItG4cWgt0
- IZ10Pa9upOoOV4cweNJeSq3gpgTS3fAY3r+xOaGGM/xXf0y0ejCa8a0LA85tTLvYaT9z
- 0MgQ==
-X-Gm-Message-State: AC+VfDzAX7ghP8Fq8CWWTxbT/0MT3lD/QgC864TBOxCfy+ku/1gYS4xm
- bZTNCqEJ8pU43EsPE2LSWAbL9EU+1j/55MW7/k4p5H7S8w9zlhfumoqzi1tKHJk5LVGoWDEDjr6
- iGOV0Oj8fKxIGrbeb3T+OICL3WIBdDWlCRoLdKyKqtdg=
-X-Received: by 2002:a05:651c:cc:b0:2af:2fb0:9226 with SMTP id
- 12-20020a05651c00cc00b002af2fb09226mr4678990ljr.41.1685607543477; 
- Thu, 01 Jun 2023 01:19:03 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ4UFQ6MbIBDpeYNH0aQ2rc3Mc2HKDLppDaUbNB18mmt/vZuxK7vPJcbio9EgKqUCyPfq2bdOieszkO0nm75+H8=
-X-Received: by 2002:a05:651c:cc:b0:2af:2fb0:9226 with SMTP id
- 12-20020a05651c00cc00b002af2fb09226mr4678977ljr.41.1685607543173; Thu, 01 Jun
- 2023 01:19:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <F72A2833ADC15945+1885e249-0a26-f69e-9986-4e2f91be8ef2@uniontech.com>
-In-Reply-To: <F72A2833ADC15945+1885e249-0a26-f69e-9986-4e2f91be8ef2@uniontech.com>
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Pj/a/fqPa6+VuFYydtt1Ydwxc01UKmQ9WR4BQ4cQfIc=;
+ b=Tju5NTedPFwIuei8alErhhC8f+DuD27cvj6ASlwG4nhg+InVfpCR8+/xkj4wvfiC4yyE2F
+ +MEHSPwoZK9ajPlGk4aGlc4IqRNXK3B3R37Lc3vSuipC2aj/zk/0Ol90F6+d1wj/XZt1yZ
+ hScru9L6eg1tTingb2qVmyaI0V+UXh0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-64-6I5-nOhwN8u4iXKzSsEZBw-1; Thu, 01 Jun 2023 04:54:25 -0400
+X-MC-Unique: 6I5-nOhwN8u4iXKzSsEZBw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.3])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 55327800159
+ for <ltp@lists.linux.it>; Thu,  1 Jun 2023 08:54:25 +0000 (UTC)
+Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
+ [10.66.145.229])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 65214112132C
+ for <ltp@lists.linux.it>; Thu,  1 Jun 2023 08:54:24 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 1 Jun 2023 16:18:51 +0800
-Message-ID: <CAEemH2fnzLYTcMfukmmQvcY0n6LgEgm2fg1LdDuYLu90qcokxg@mail.gmail.com>
-To: Gou Hao <gouhao@uniontech.com>
+To: ltp@lists.linux.it
+Date: Thu,  1 Jun 2023 16:54:22 +0800
+Message-Id: <20230601085422.52874-1-liwang@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] Question about oom02 testcase
+Subject: [LTP] [PATCH] include: remove outdated ipcshm.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,100 +69,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Linux-MM <linux-mm@kvack.org>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgSGFvLAoKVGhhbmtzIGZvciByZXBvcnRpbmcgdGhpcywgY29tbWVudHMgc2VlIGJlbG93LgoK
-T24gVHVlLCBNYXkgMzAsIDIwMjMgYXQgOToyNuKAr0FNIEdvdSBIYW8gPGdvdWhhb0B1bmlvbnRl
-Y2guY29tPiB3cm90ZToKCj4gaGVsbG8gZXZlcnlvbmUsCj4KPiBSZWNlbnRseSwga2VybmVsIHJl
-c3RhcnRlZCB3aGlsZSBJIHdhcyBydW5uaW5nIG9vbTAyLgo+IGxvZzoKPiBgYGAKPiBbNDgwMTU2
-Ljk1MDEwMF0gVGFza3Mgc3RhdGUgKG1lbW9yeSB2YWx1ZXMgaW4gcGFnZXMpOgo+IFs0ODAxNTYu
-OTUwMTAxXSBbICBwaWQgIF0gICB1aWQgIHRnaWQgdG90YWxfdm0gICAgICByc3MgcGd0YWJsZXNf
-Ynl0ZXMKPiBzd2FwZW50cyBvb21fc2NvcmVfYWRqIG5hbWUKPiBbNDgwMTU2Ljk1MDMwMl0gWyAg
-IDI1NzhdICAgIDgxICAyNTc4ICAgICAgNTIzICAgICAgICAwIDM5MzIxNgo+IDYgICAgICAgICAg
-LTkwMCBkYnVzLWRhZW1vbgo+IFs0ODAxNTYuOTUwMzA5XSBbICAgMjY0OF0gICAxNzIgIDI1OTYg
-ICAgIDI0MzUgICAgICAgIDAgMzkzMjE2Cj4gNSAgICAgICAgICAgICAwIHJ0a2l0LWRhZW1vbgo+
-IFs0ODAxNTYuOTUwMzIyXSBbICAgNTI1Nl0gICAgIDAgIDI4MjYgICAgMjU0MTEgICAgICAgIDAg
-NTg5ODI0Cj4gMCAgICAgICAgICAgICAwIERldGVjdFRocmVhZAo+IFs0ODAxNTYuOTUwMzI4XSBb
-ICAgNTQwNF0gICAgIDAgIDU0MDQgICAgICA0MTIgICAgICAgIDIgMzkzMjE2Cj4gNjQgICAgICAg
-ICAtMTAwMCBzc2hkCj4gWzQ4MDE1Ni45NTAzNTddIFsgIDEwNTE4XSAgICAgMCAxMDUxOCAgICAg
-MjU4NiAgICAgICAgMCAzOTMyMTYKPiAxMCAgICAgICAgICAgICAwIGF0LXNwaTItcmVnaXN0cgo+
-IFs0ODAxNTYuOTUwMzYxXSBbICAxMDU1M10gICAgIDAgMTA1NTEgICAgMTA1NDMgICAgICAgIDAg
-NDU4NzUyCj4gOSAgICAgICAgICAgICAwIFFYY2JFdmVudFF1ZXVlCj4gWzQ4MDE1Ni45NTAzNjVd
-IFsgIDEwODY3XSAgICAgMCAxMDU2NyAgICAxNzU3OSAgICAgICAgMCA1ODk4MjQKPiAxNiAgICAg
-ICAgICAgICAwIFFYY2JFdmVudFF1ZXVlCj4gWzQ4MDE1Ni45NTAzNzBdIFsgIDEwOTI4XSAgICAg
-MCAxMDkyMSAgICAgNjk5OSAgICAgICAgMCA0NTg3NTIKPiAxNyAgICAgICAgICAgICAwIFFYY2JF
-dmVudFF1ZXVlCj4gWzQ4MDE1Ni45NTAzOTBdIFsgIDExODgyXSAgICAgMCAxMTgxMSAgICAgNzM3
-NyAgICAgICAgMCA0NTg3NTIKPiAxMCAgICAgICAgICAgICAwIFFYY2JFdmVudFF1ZXVlCj4gWzQ4
-MDE1Ni45NTAzOTRdIFsgIDEyMDUyXSAgICAgMCAxMjA1MiAgICAgNTgyMyAgICAgICAgMCA0NTg3
-NTIKPiAyMSAgICAgICAgICAgICAwIGZjaXR4Cj4gWzQ4MDE1Ni45NTA0MDRdIFsgIDEyMTE1XSAg
-ICAgMCAxMjExNCAgICAxMTY3OCAgICAgICAgMCA1MjQyODgKPiAyMSAgICAgICAgICAgICAwIFFY
-Y2JFdmVudFF1ZXVlCj4gWzQ4MDE1Ni45NTA0MDhdIFsgMTAxNTU4XSAgICAgMCAxMDE1NTggICAg
-IDM1NDkgICAgICAgIDAgMzkzMjE2Cj4gMCAgICAgICAgICAgICAwIHJ1bmx0cAo+IFs0ODAxNTYu
-OTUwNDg2XSBbMTA2ODg2NF0gICAgIDAgMTA2ODg2NCAgICAgIDc3MSAgICAgICAgNiAzMjc2ODAK
-PiA4NSAgICAgICAgIC0xMDAwIHN5c3RlbWQtdWRldmQKPiBbNDgwMTU2Ljk1MDU1Ml0gWzEwMzU2
-MzldICAgICAwIDEwMzU2MzkgICAgICAgNTIgICAgICAgIDAgMzkzMjE2Cj4gMTQgICAgICAgICAt
-MTAwMCBvb20wMgo+IFs0ODAxNTYuOTUwNTU2XSBbMTAzNTY0MF0gICAgIDAgMTAzNTY0MCAgICAg
-ICA1MiAgICAgICAgMCAzOTMyMTYKPiAyMyAgICAgICAgIC0xMDAwIG9vbTAyCj4gWzQ4MDE1Ni45
-NTA1NjFdIFsxMDM2MDY1XSAgICAgMCAxMDM2MDY1ICAgICAgNDkzICAgICAgIDYwIDM5MzIxNgo+
-IDAgICAgICAgICAgLTI1MCBzeXN0ZW1kLWpvdXJuYWwKPiBbNDgwMTU2Ljk1MDU2NV0gWzEwMzYw
-ODddICAgICAwIDEwMzYwNzMgIDYyNTg3MzkgIDM1NDM5NDIKPiAzNzgxNDI3MiAgICAgICAgMCAg
-ICAgICAgICAgICAwIG9vbTAyCj4gWzQ4MDE1Ni45NTA1NzJdIE91dCBvZiBtZW1vcnkgYW5kIG5v
-IGtpbGxhYmxlIHByb2Nlc3Nlcy4uLgo+IFs0ODAxNTYuOTUwNTc1XSBLZXJuZWwgcGFuaWMgLSBu
-b3Qgc3luY2luZzogU3lzdGVtIGlzIGRlYWRsb2NrZWQgb24gbWVtb3J5Cj4gYGBgCj4KPiBvb20w
-Mi0xMDM2MDczIGhhcyBiZWVuIGtpbGxlZCBiZWZvcmUgY3Jhc2guCj4gbG9nOgo+IGBgYAo+IFs0
-ODAxNTIuMjQyNTA2XSBbMTAzNTE3N10gICAgIDAgMTAzNTE3NyAgICAgNDc3MyAgICAgICAyMCAz
-OTMyMTYKPiAxMTUgICAgICAgICAgICAgMCBzc3NkX25zcwo+IFs0ODAxNTIuMjQyNTEwXSBbMTAz
-NTM3Nl0gICAgIDAgMTAzNTM3NiAgICAyNTUwMCAgICAgIDM5MSA1ODk4MjQKPiA2MDIgICAgICAg
-ICAgICAgMCB0dW5lZAo+IFs0ODAxNTIuMjQyNTE0XSBbMTAzNTYzOV0gICAgIDAgMTAzNTYzOSAg
-ICAgICA1MiAgICAgICAgMCAzOTMyMTYKPiAxNCAgICAgICAgIC0xMDAwIG9vbTAyCj4gWzQ4MDE1
-Mi4yNDI1MTddIFsxMDM1NjQwXSAgICAgMCAxMDM1NjQwICAgICAgIDUyICAgICAgICAwIDM5MzIx
-Ngo+IDE5ICAgICAgICAgLTEwMDAgb29tMDIKPiBbNDgwMTUyLjI0MjUyMl0gWzEwMzYwNjVdICAg
-ICAwIDEwMzYwNjUgICAgICA0OTMgICAgICAxMTQgMzkzMjE2Cj4gNjIgICAgICAgICAgLTI1MCBz
-eXN0ZW1kLWpvdXJuYWwKPiBbNDgwMTUyLjI0MjUyNV0gWzEwMzYwNzNdICAgICAwIDEwMzYwNzMg
-IDYyNTg3MzkgIDM1NDAzMTQgMzc4MTQyNzIKPiAxMDQgICAgICAgICAgICAgMCBvb20wMgo+IFs0
-ODAxNTIuMjQyNTI5XSBPdXQgb2YgbWVtb3J5OiBLaWxsIHByb2Nlc3MgMTAzNjA3MyAob29tMDIp
-IHNjb3JlIDc1NSBvcgo+IHNhY3JpZmljZSBjaGlsZAo+IFs0ODAxNTIuMjQzODY5XSBLaWxsZWQg
-cHJvY2VzcyAxMDM2MDczIChvb20wMikgdG90YWwtdm06NDAwNTU5Mjk2a0IsCj4gYW5vbi1yc3M6
-MjI2NTc4MzY4a0IsIGZpbGUtcnNzOjE3MjhrQiwgc2htZW0tcnNzOjBrQgo+IFs0ODAxNTIuMzY1
-ODA0XSBvb21fcmVhcGVyOiByZWFwZWQgcHJvY2VzcyAxMDM2MDczIChvb20wMiksIG5vdwo+IGFu
-b24tcnNzOjIyNjU5NDA0OGtCLCBmaWxlLXJzczowa0IsIHNobWVtLXJzczowa0IKPiBgYGAKPiBi
-dXQgaXRzIG1lbW9yeSBjYW4gbm90IGJlIHJlY2xhaW1lZC5JIGFkZCB0cmFjZS1sb2cgdG8gb29t
-X3JlYXBlciBjb2RlCj4gaW4ga2VybmVsLAo+IEkgZm91bmQgdGhhdCB0aGVyZSBpcyBhIGxhcmdl
-IHJhbmdlIHZtYSBpbiB0aGUgbWVtb3J5IHRoYXQgY2Fubm90IGJlCj4gcmVjbGFpbWVkLCBhbmQg
-dGhlIHZtYSBoYXMgdGhlICBgVk1fTE9DS0VEYCBmbGFnLCBzbyBjYW5ub3QgYmUgcmVjbGFpbWVk
-Cj4gaW1tZWRpYXRlbHkuCj4gYGBgbG9nCj4gICAgICAgIG9vbV9yZWFwZXItNTcgICAgWzAwN10g
-Li4uLiAgIDEyNi4wNjM1ODE6IF9fb29tX3JlYXBfdGFza19tbTogZ2g6Cj4gdm1hIGlzIGFub246
-MTA0ODY5MSwgcmFuZ2U9NjU1MzYKPiAgICAgICAgb29tX3JlYXBlci01NyAgICBbMDA3XSAuLi4u
-ICAgMTI2LjA2MzU4MTogX19vb21fcmVhcF90YXNrX21tOiBnaDoKPiB2bWEgaXMgYW5vbjoxMDQ4
-NjkxLCByYW5nZT0xOTY2MDgKPiAgICAgICAgb29tX3JlYXBlci01NyAgICBbMDA3XSAuLi4uICAg
-MTI2LjA2MzU4MjogX19vb21fcmVhcF90YXNrX21tOiBnaDoKPiB2bWEgY29udGludWU6IDEwNTY4
-ODMsIHJhbmdlOjMyMjEyMjU0NzIKPiAgICAgICAgb29tX3JlYXBlci01NyAgICBbMDA3XSAuLi4u
-ICAgMTI2LjA2MzU4MzogX19vb21fcmVhcF90YXNrX21tOiBnaDoKPiB2bWEgaXMgYW5vbjoxMTIs
-IHJhbmdlPTY1NTM2Cj4gICAgICAgIG9vbV9yZWFwZXItNTcgICAgWzAwN10gLi4uLiAgIDEyNi4w
-NjM1ODQ6IF9fb29tX3JlYXBfdGFza19tbTogZ2g6Cj4gdm1hIGlzIGFub246MTA0ODY5MSwgcmFu
-Z2U9ODM4ODYwOAo+IGBgYAo+IGB2bWEgY29udGludWU6IDEwNTY4ODMsIHJhbmdlOjMyMjEyMjU0
-NzJgIGlzIHRoZSBtZW1vcnkgdGhhdCBjYW4gbm90Cj4gcmVjbGFpbXMuIDEwNTc4ODMoMHgxMDIw
-NzMpIGlzIHZtYS0+dm1fZmxhZ3MsIGl0IGhhcyBWTV9MT0NLRURgIGZsYWcKPgo+IG9vbTAyIGNy
-ZWF0ZWQgYG5yX2NwdWAgdGhyZWFkcyBhbmQgdXNlZCBtbWFwIHRvIGFsbG9jYXRlIG1lbW9yeS4g
-bW1hcAo+IHdpbGwgbWVyZ2UgY29udGludW91cyB2bWEgaW50byBvbmUsCj4gc28gYXMgbG9uZyBh
-cyBvbmUgdGhyZWFkIGlzIHN0aWxsIHJ1bm5pbmcsIHRoZSBlbnRpcmUgdm1hIHdpbGwgbm90IGJl
-Cj4gcmVsZWFzZWQuCj4KPiBJbiBleHRyZW1lIGNhc2VzLCBjcmFzaGVzIG1heSBvY2N1ciBkdWUg
-dG8gdGhlIGxhY2sgb2YgbWVtb3J5IHJlY2xhbWF0aW9uLgo+Cj4gTXkgcXVlc3Rpb24gaXMgdGhh
-dCB0aGUgY3Jhc2ggaW4gdGhpcyBjYXNlIGlzIGEgbm9ybWFsIHNpdHVhdGlvbiBvciBhCj4gYnVn
-IChrZXJuZWwgb3IgbHRwIGJ1ZykgPwo+CgoKVGhlICBsdHAtb29tIHRlc3QgaXMgb3JpZ2luYWxs
-eSBkZXNpZ25lZCB0byB2ZXJpZnkgT09NIG1lY2hhbmlzbQp3b3JrcyBmb3IgbWVtb3J5IGFsbG9j
-YXRpbmcgaW4gdGhyZWUgdHlwZXMgKG5vcm1hbCwgbWxvY2ssIGtzbSkKYWxsIGFzIGV4cGVjdGVk
-LgoKWWVzLCB5b3VyIGFuYWx5c2lzIGlzIHJlYXNvbmFibGUgdG8gc29tZSBkZWdyZWUsIG9vbV9y
-ZWFwZXIKbWlnaHQgbm90IHJlY2xhaW0gdGhlIFZNQSB3aXRoIGxvY2tlZCBwYWdlcyAgZXZlbiBh
-ZnRlciB0aGUKcHJvY2VzcyB0ZXJtaW5hdGlvbi4KCkJ1dCB0aGUgZXhhY3QgYmVoYXZpb3Igb2Yg
-dGhlIG9vbV9yZWFwZXIgYW5kIHRoZSBjb25kaXRpb25zIHVuZGVyCndoaWNoIGl0IGNhbiBvciBj
-YW5ub3QgcmVjbGFpbSBWTUFzIG1heSB2YXJ5IGRlcGVuZGluZyBvbiB0aGUKc3BlY2lmaWMga2Vy
-bmVsIHZlcnNpb24gYW5kIGNvbmZpZ3VyYXRpb24uIFNvIHdlIHNob3VsZG4ndCBzaW1wbHkKcmVn
-YXJkIHRoZSBzeXN0ZW0gcGFuaWMgYXMgYSBLZXJuZWwgb3IgTFRQIGRlZmVjdC4KQW5kIEJUVywg
-d2hhdCBpcyB5b3VyIHRlc3RlZCBrZXJuZWwgdmVyc2lvbj8KCgotLSAKUmVnYXJkcywKTGkgV2Fu
-ZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZv
-L2x0cAo=
+Since it has been replaced by libnewipc.h header file, and
+there has no inclusion in any LTP tests, so let's remove it.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ include/ipcshm.h | 54 ------------------------------------------------
+ 1 file changed, 54 deletions(-)
+ delete mode 100644 include/ipcshm.h
+
+diff --git a/include/ipcshm.h b/include/ipcshm.h
+deleted file mode 100644
+index 08307d4ab..000000000
+--- a/include/ipcshm.h
++++ /dev/null
+@@ -1,54 +0,0 @@
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * ipcshm.h - common definitions for the IPC shared memory tests
+- */
+-
+-#ifndef __IPCSHM_H
+-#define __IPCSHM_H
+-
+-#include <errno.h>
+-#include <sys/wait.h>
+-#include <sys/ipc.h>
+-#include <sys/shm.h>
+-
+-#include "test.h"
+-
+-void cleanup(void);
+-void setup(void);
+-
+-#define SHM_RD	0400
+-#define SHM_WR	0200
+-#define SHM_RW	SHM_RD | SHM_WR
+-
+-#define SHM_SIZE	2048	/* a resonable size for a memory segment */
+-#define INT_SIZE	4	/* instead of sizeof(int) */
+-
+-#define MODE_MASK	0x01FF	/* to get the lower nine permission bits */
+-				/* from shmid_ds.ipc_perm.mode		 */
+-
+-key_t shmkey;			/* an IPC key generated by ftok() */
+-
+-void rm_shm(int shm_id);
+-
+-int getipckey();
+-int getuserid(char*);
+-
+-#endif /* ipcshm.h */
+-- 
+2.40.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
