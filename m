@@ -4,62 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7D36C7EE29
-	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 11:22:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD451C77B7E
+	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 14:59:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E01C43CEA54
-	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 13:22:29 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
- (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6736A3CCF04
- for <ltp@lists.linux.it>; Thu,  1 Jun 2023 13:22:20 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+	by picard.linux.it (Postfix) with ESMTP id E6AB73CEA52
+	for <ltp@archiver.kernel.org>; Thu,  1 Jun 2023 16:59:16 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+ by picard.linux.it (Postfix) with ESMTP id 58EAB3CCF15
+ for <ltp@lists.linux.it>; Thu,  1 Jun 2023 16:59:07 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 98E8A1000D23
- for <ltp@lists.linux.it>; Thu,  1 Jun 2023 13:22:19 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 236D11A0BC36
+ for <ltp@lists.linux.it>; Thu,  1 Jun 2023 16:51:50 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 458931F86C
- for <ltp@lists.linux.it>; Thu,  1 Jun 2023 11:22:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1685618538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=yZbej2OTEWnQNgVYDG++9TOXQck1L91xPkeGhwFJUx4=;
- b=XXGOolmEffrGdPSXACVgpxdFUjS5eLzZ1E1dwXKxTm92wmvLocznCpDrpwpT+QCYkLZcjk
- s4WFpdHiRitTBHLpXhnn296fMd1mW0yb8L7Gohnwpd7lDsIeHexCg0LU1agQU9BWZd2keg
- p0slIrQyd7xGMcjB/3/kgB/+sT6f6wE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1685618538;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=yZbej2OTEWnQNgVYDG++9TOXQck1L91xPkeGhwFJUx4=;
- b=fBsDwo424vzXRBKpnFB9cXmtnC4S1a5/xrCG3yYnWz9Mte8ELdwktzpoHKDOvGF6WxGSk9
- acVlyIezQlJUwXBQ==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2D95A1FDAD;
+ Thu,  1 Jun 2023 14:51:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1685631110; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZKxrRIvSXtn9qcBY6fHNSrCJnvLrpVeau35OUTuPU8Q=;
+ b=QzRtgQHZHdf1mb5X5RdXFanlEw70JUpZx4rcD3f4S5mNfCfzhldkRR9GB3zcjFD2cwKkxB
+ dh6voO8RK23LoFO1Nf0XtlFZdJSIXeRDi7ZynOkwVmT+IPAZjh+TGVFP+o2aP1KuPPEWBm
+ ev2vtVOkoWoW/qTIoQSbjLGzH/otku0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1685631110;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZKxrRIvSXtn9qcBY6fHNSrCJnvLrpVeau35OUTuPU8Q=;
+ b=rUR5LPgFia2WyFZuBD60plYY2XwNkChSWJDyMdWyN7T0zHgcQIj6rxQa0M6L715UXjo2gY
+ CqCV5nZBGn6TKHBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BFC1313441
- for <ltp@lists.linux.it>; Thu,  1 Jun 2023 11:22:17 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08246139B7;
+ Thu,  1 Jun 2023 14:51:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4Z6QIGl/eGS5ZQAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 01 Jun 2023 11:22:17 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Thu,  1 Jun 2023 16:52:14 +0530
-Message-Id: <20230601112214.18193-1-akumar@suse.de>
-X-Mailer: git-send-email 2.40.1
+ by imap2.suse-dmz.suse.de with ESMTPSA id F58tAYaweGR2WgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 01 Jun 2023 14:51:50 +0000
+Message-ID: <3482c8d1-4113-eac2-6eda-cc1bcc59b367@suse.cz>
+Date: Thu, 1 Jun 2023 16:51:49 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+To: Li Wang <liwang@redhat.com>, ltp@lists.linux.it
+References: <8d3e09cc-3d3b-aa8f-1369-28476183b3c9@suse.cz>
+ <20230601091614.53228-1-liwang@redhat.com>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20230601091614.53228-1-liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] fcntl30.c: Convert the test to new LTP API
+Subject: Re: [LTP] [PATCH v2] shmget02: reduce the shmmax test value in
+ compat mode
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,162 +77,81 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Cc: Linux Kernel Functional Testing <lkft@linaro.org>,
+ Manfred Spraul <manfred@colorfullife.com>, Arnd Bergmann <arnd@arndb.de>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/fcntl/fcntl30.c | 112 +++++++---------------
- 1 file changed, 36 insertions(+), 76 deletions(-)
+Hi,
+this looks good, just one minor note at the end.
 
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl30.c b/testcases/kernel/syscalls/fcntl/fcntl30.c
-index c4c3f81f1..62cc39e73 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl30.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl30.c
-@@ -1,103 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) 2014 Fujitsu Ltd.
-  * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
- 
--/*
-- * Description:
-- * Verify that,
-- *     Basic test for fcntl(2) using F_SETPIPE_SZ, F_GETPIPE_SZ argument.
-+/*\
-+ * [Description]
-+ *
-+ * Verify that, fetching and changing the capacity of a pipe works as
-+ * expected with fcntl(2) syscall using F_GETPIPE_SZ, F_SETPIPE_SZ arguments.
-  */
- 
- 
--#include <stdio.h>
--#include <errno.h>
--#include <unistd.h>
--#include <string.h>
--#include <signal.h>
--#include <sys/types.h>
--#include <pwd.h>
--
--#include "test.h"
--#include "safe_macros.h"
-+#include "tst_test.h"
- #include "lapi/fcntl.h"
- 
--char *TCID = "fcntl30";
--int TST_TOTAL = 1;
-+static int fds[2];
-+static int max_size_unpriv;
- 
--static void setup(void);
--static void cleanup(void);
--
--int main(int ac, char **av)
-+static void run(void)
- {
--	int lc;
--	int pipe_fds[2], test_fd;
--	int orig_pipe_size, new_pipe_size;
--
--
--	tst_parse_opts(ac, av, NULL, NULL);
-+	int orig_size, new_size;
- 
--	setup();
-+	SAFE_PIPE(fds);
- 
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
-+	TST_EXP_POSITIVE(fcntl(fds[1], F_GETPIPE_SZ));
- 
--		SAFE_PIPE(cleanup, pipe_fds);
--		test_fd = pipe_fds[1];
-+	orig_size = TST_RET;
-+	new_size = orig_size * 2;
- 
--		TEST(fcntl(test_fd, F_GETPIPE_SZ));
--		if (TEST_RETURN < 0) {
--			tst_brkm(TFAIL | TTERRNO, cleanup,
--				 "fcntl get pipe size failed");
--		}
-+	if (new_size > max_size_unpriv)
-+		tst_brk(TBROK, "Requested pipe size above the allowed limit %d", max_size_unpriv);
- 
--		orig_pipe_size = TEST_RETURN;
--		new_pipe_size = orig_pipe_size * 2;
--		TEST(fcntl(test_fd, F_SETPIPE_SZ, new_pipe_size));
--		if (TEST_RETURN < 0) {
--			tst_brkm(TFAIL | TTERRNO, cleanup,
--				 "fcntl test F_SETPIPE_SZ failed");
--		}
-+	TST_EXP_POSITIVE(fcntl(fds[1], F_SETPIPE_SZ, new_size));
-+	TST_EXP_POSITIVE(fcntl(fds[1], F_GETPIPE_SZ));
-+	TST_EXP_EXPR(TST_RET >= new_size,
-+				"new pipe size (%ld) >= requested size (%d)",
-+				TST_RET, new_size);
- 
--		TEST(fcntl(test_fd, F_GETPIPE_SZ));
--		if (TEST_RETURN < 0) {
--			tst_brkm(TFAIL | TTERRNO, cleanup,
--				 "fcntl test F_GETPIPE_SZ failed");
--		}
--		tst_resm(TINFO, "orig_pipe_size: %d new_pipe_size: %d",
--			 orig_pipe_size, new_pipe_size);
--		if (TEST_RETURN >= new_pipe_size) {
--			tst_resm(TPASS, "fcntl test F_GETPIPE_SZ and F_SETPIPE_SZ passed");
--		} else {
--			tst_resm(TFAIL, "fcntl test F_GETPIPE_SZ and F_SETPIPE_SZ failed");
--		}
--		SAFE_CLOSE(cleanup, pipe_fds[0]);
--		SAFE_CLOSE(cleanup, pipe_fds[1]);
--	}
--
--	cleanup();
--	tst_exit();
-+	SAFE_CLOSE(fds[0]);
-+	SAFE_CLOSE(fds[1]);
- }
- 
- static void setup(void)
- {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	SAFE_FILE_SCANF("/proc/sys/fs/pipe-max-size", "%d",	&max_size_unpriv);
- }
- 
- static void cleanup(void)
- {
-+	if (fds[0] > 0)
-+		SAFE_CLOSE(fds[0]);
-+	if (fds[1] > 0)
-+		SAFE_CLOSE(fds[1]);
- }
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup
-+};
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
+
+On 01. 06. 23 11:16, Li Wang wrote:
+> As Arnd Bergmann pointed out that SHMMAX being defined as
+> (ULONG_MAX - (1UL << 24)), so the kernel would likely use
+> a large 64-bit value, while the 32-bit user space uses a
+> much smaller limit.
+> 
+> It finally results in ENOMEM failure:
+>    shmget02.c:95: TFAIL: shmget(1644199826, 4278190080, 1536)
+>                   expected EINVAL: ENOMEM (12)
+> 
+> With suggest by Manfred Spraul we could reduce the value
+> of '/proc/sys/kernel/shmmax' in compat mode and only test
+> the overflow behavior with default+1.
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Manfred Spraul <manfred@colorfullife.com>
+> ---
+> 
+> Notes:
+>      v1 --> v2
+>      	* remove the conditional compilation for 32bit
+> 
+>   testcases/kernel/syscalls/ipc/shmget/shmget02.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/ipc/shmget/shmget02.c b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+> index 7989ef33e..e053b98d2 100644
+> --- a/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+> +++ b/testcases/kernel/syscalls/ipc/shmget/shmget02.c
+> @@ -56,7 +56,7 @@ static struct tcase {
+>   	{&shmkey1, SHM_SIZE, IPC_EXCL, 0, 0, ENOENT},
+>   	{&shmkey, SHM_SIZE, IPC_CREAT | IPC_EXCL, 0, 0, EEXIST},
+>   	{&shmkey1, SHMMIN - 1, IPC_CREAT | IPC_EXCL, 0, 0, EINVAL},
+> -	{&shmkey1, SHMMAX + 1, IPC_CREAT | IPC_EXCL, 0, 0, EINVAL},
+> +	{&shmkey1, 8192 + 1, IPC_CREAT | IPC_EXCL, 0, 0, EINVAL},
+>   	{&shmkey, SHM_SIZE * 2, IPC_EXCL, 0, 0, EINVAL},
+>   	{&shmkey, SHM_SIZE, SHM_RD, 1, 0, EACCES},
+>   	{&shmkey1, SHM_SIZE, IPC_CREAT | SHM_HUGETLB, 0, 1, EPERM},
+> @@ -149,4 +149,8 @@ static struct tst_test test = {
+>   	.test = do_test,
+>   	.tcnt = ARRAY_SIZE(tcases),
+>   	.hugepages = {TST_NO_HUGEPAGES},
+> +	.save_restore = (const struct tst_path_val[]) {
+> +		{"/proc/sys/kernel/shmmax", "8192", TST_SR_TBROK},
+> +		{}
+> +	},
+>   };
+
+/proc/sys/kernel/shmmax can be disabled by CONFIG_SYSVIPC_SYSCTL, 
+although that would be rare. I think the save_restore flags should be 
+TST_SR_TCONF_MISSING | TST_SR_TBROK_RO. This can be changed during merge.
+
 -- 
-2.40.1
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 
 -- 
