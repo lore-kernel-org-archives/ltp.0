@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6FF0C7EE24
-	for <ltp@archiver.kernel.org>; Fri,  2 Jun 2023 09:54:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47AD3C7EE24
+	for <ltp@archiver.kernel.org>; Fri,  2 Jun 2023 09:57:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7B5943CCEEF
-	for <ltp@archiver.kernel.org>; Fri,  2 Jun 2023 11:54:52 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id F3E753CCEEF
+	for <ltp@archiver.kernel.org>; Fri,  2 Jun 2023 11:57:17 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 222FA3CCDD8
- for <ltp@lists.linux.it>; Fri,  2 Jun 2023 11:54:42 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id DC4123CCDD8
+ for <ltp@lists.linux.it>; Fri,  2 Jun 2023 11:57:07 +0200 (CEST)
 Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com
  [207.54.90.47])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 520A81A00439
- for <ltp@lists.linux.it>; Fri,  2 Jun 2023 11:54:40 +0200 (CEST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="119122168"
-X-IronPort-AV: E=Sophos;i="6.00,212,1681138800"; d="scan'208";a="119122168"
-Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8FCE11400457
+ for <ltp@lists.linux.it>; Fri,  2 Jun 2023 11:57:06 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="119122301"
+X-IronPort-AV: E=Sophos;i="6.00,212,1681138800"; d="scan'208";a="119122301"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
  by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jun 2023 18:54:39 +0900
-Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com
- [192.168.87.60])
- by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id A219DD424F
- for <ltp@lists.linux.it>; Fri,  2 Jun 2023 18:54:36 +0900 (JST)
+ 02 Jun 2023 18:57:04 +0900
+Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com
+ [192.168.83.65])
+ by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 55F70C68E4
+ for <ltp@lists.linux.it>; Fri,  2 Jun 2023 18:57:02 +0900 (JST)
 Received: from aks-ab1.gw.nic.fujitsu.com (aks-ab1.gw.nic.fujitsu.com
  [192.51.207.11])
- by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id C59F9D9A8B
- for <ltp@lists.linux.it>; Fri,  2 Jun 2023 18:54:35 +0900 (JST)
+ by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 8C5E0D5EA3
+ for <ltp@lists.linux.it>; Fri,  2 Jun 2023 18:57:01 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.215.131])
- by aks-ab1.gw.nic.fujitsu.com (Postfix) with ESMTP id EEF732FC8341;
- Fri,  2 Jun 2023 18:54:34 +0900 (JST)
+ by aks-ab1.gw.nic.fujitsu.com (Postfix) with ESMTP id A7F8E2FC69FB;
+ Fri,  2 Jun 2023 18:57:00 +0900 (JST)
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Fri,  2 Jun 2023 17:53:51 +0800
-Message-Id: <1685699631-4671-2-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Fri,  2 Jun 2023 17:55:55 +0800
+Message-Id: <1685699755-4766-1-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1685699631-4671-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1685699631-4671-1-git-send-email-xuyang2018.jy@fujitsu.com>
+MIME-Version: 1.0
 X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27666.006
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27666.006
-X-TMASE-Result: 10--24.658100-10.000000
-X-TMASE-MatchedRID: gfPLl/E7ZuUKK0r2G9VU7k7nLUqYrlslFIuBIWrdOeOU8ftiyKjZreCG
- 89wh97wnaj3ypNjZX+1WTBAeKqaX9Spe4ofkluPsqug9vIA2WODZobCTg4s1LL54YCapH5tAXsR
- 1Vlexc+/4XJPAGTaiPAeWR71HtRmwaEsmopAJRAldhZyafgPiqzEvENg7dSUMUYkZd9+4t296+4
- Y3holm5YnfCN7LFTxDeoRDfBlv2T/Ko0CaSbP6EDz6L+U/pejxtOtXYgbXjdfG5dXdQTj2OFRG1
- tpaU7lUwR5/YsCEtnP+7Vem91xE3wZhlKhs1jTDSs47mbT7SASOVGny5q72hjzNRqQN9SIrZEh6
- 0BrOMi1tqA7rUOit0yDLhawxlpdkVPVUF2N3LyOGp0fwr2DvF3O1oaQ51CuNd/Ex8BlUR52bJQP
- XTpvU5poi4Fk1Ww9PgDLqnrRlXrZ8nn9tnqel2JBlLa6MK1y4
+X-TMASE-Result: 10--2.123800-10.000000
+X-TMASE-MatchedRID: 24Sf70/zn6qhhjsqgSuNbxF4zyLyne+AVBDQSDMig9HEosIs7IJbkIh+
+ mL+ciFCpbnRB47KLJ1QzLmfGY6iDkX5uUfhNvnKzOWUWxTQJdI8UZYubbUj2DLt4BAaULwAVJf5
+ otvavOZf9vT5evMX4tM0lquesZhhHpljg/F9ExYTFVAV8vDjN/6n/3nyhTdZwZYqF36J/b8ZjaQ
+ GYA98fM/sRZb2bIX9Ww06evX0vRhJVnAszo0EfNLrbxxduc6FPv1wCVBblimutuWYz9oVoL2tgc
+ kGXH2knxdZk3h//tzkDfZ2MQc5Ymnzh4vqEo4GEngIgpj8eDcByZ8zcONpAscRB0bsfrpPIcSqb
+ xBgG0w7vCc/rjI9C+jGrCVPFEdZvTyNC1c6am3IFdR/vblG5BTW7lwZjG9qX7T34oPpSbabv9mw
+ 2z9YBSrXIF+5Zx9tOoJSTU+6ceilB73EZz7XBCOp1XUG/h2MOieWdV7FfKATLbAp0fm+COw==
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] syscalls/munlock02: Convert into new api
+Subject: [LTP] [PATCH] syscalls/fork03: Convert into new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,257 +70,84 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-1.remove uclinux and ia64 code
-2.use safe_macro macro
-
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- testcases/kernel/syscalls/munlock/munlock02.c | 212 +++---------------
- 1 file changed, 31 insertions(+), 181 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/munlock/munlock02.c b/testcases/kernel/syscalls/munlock/munlock02.c
-index 75906a1df..f51c3d21f 100644
---- a/testcases/kernel/syscalls/munlock/munlock02.c
-+++ b/testcases/kernel/syscalls/munlock/munlock02.c
-@@ -1,198 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-+ * AUTHOR: Nirmala Devi Dhanasekar <nirmala.devi@wipro.com>
-  */
--/**************************************************************************
-- *
-- *    TEST IDENTIFIER	: munlock02
-- *
-- *    EXECUTED BY	: root / superuser
-- *
-- *    TEST TITLE	: Test for checking basic error conditions for
-- * 	   		  munlock(2)
-- *
-- *    TEST CASE TOTAL	: 2
-- *
-- *    AUTHOR		: Nirmala Devi Dhanasekar <nirmala.devi@wipro.com>
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    DESCRIPTION
-- * 	Check for basic errors returned by munlock(2) system call.
-- *
-- * 	Verify that munlock(2) returns -1 and sets errno to
-- *
-- * 	1) ENOMEM - Some of the specified address range does not correspond to
-- *			mapped pages in the address space of the process.
-- *
-- * 	Setup:
-- *	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- *	  Do necessary setup for each test.
-- *	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-+
-+/*\
-+ * [Description]
-  *
-- * USAGE:  <for command-line>
-- *  munlock02 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
-- *		where,		-c n : Run n copies concurrently
-- *				-e   : Turn on errno logging.
-- *				-h   : Show this help screen
-- *				-i n : Execute test n times.
-- *				-I x : Execute test for x seconds.
-- *				-p   : Pause for SIGUSR1 before starting
-- *				-P x : Pause for x seconds between iterations.
-- *				-t   : Turn on syscall timing.
-+ * Test for ENOMEM error.
-  *
-- * RESTRICTIONS
-- *	Test must run as root.
-- *****************************************************************************/
--#include <errno.h>
--#include <unistd.h>
--#include <sys/mman.h>
--#include <pwd.h>
--#include "test.h"
--
--void setup();
--void cleanup();
--
--char *TCID = "munlock02";
--int TST_TOTAL = 1;
--
--#define LEN	1024
--
--void *addr1;
-+ * munlock(2) fails with ENOMEM if some of the specified address range
-+ * does not correspond to mapped pages in the address space of the
-+ * process.
-+ */
- 
--struct test_case_t {
--	void *addr;
--	int len;
--	int error;
--	char *edesc;
--} TC[] = {
--	{
--NULL, 0, ENOMEM, "address range out of address space"},};
-+#include <sys/mman.h>
-+#include "tst_test.h"
- 
--#if !defined(UCLINUX)
-+static size_t len, pg_size;
-+static void *addr;
- 
--int main(int ac, char **av)
-+static void run(void)
- {
--	int lc, i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	/* check looping state */
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--		for (i = 0; i < TST_TOTAL; i++) {
--#ifdef __ia64__
--			TC[0].len = 8 * getpagesize();
--#endif
--			TEST(munlock(TC[i].addr, TC[i].len));
--
--			/* check return code */
--			if (TEST_RETURN == -1) {
--				if (TEST_ERRNO != TC[i].error)
--					tst_brkm(TFAIL, cleanup,
--						 "munlock() Failed with wrong "
--						 "errno, expected errno=%s, "
--						 "got errno=%d : %s",
--						 TC[i].edesc, TEST_ERRNO,
--						 strerror(TEST_ERRNO));
--				else
--					tst_resm(TPASS,
--						 "expected failure - errno "
--						 "= %d : %s",
--						 TEST_ERRNO,
--						 strerror(TEST_ERRNO));
--			} else {
--				tst_brkm(TFAIL, cleanup,
--					 "munlock() Failed, expected "
--					 "return value=-1, got %ld",
--					 TEST_RETURN);
--			}
--		}
--	}
--
--	/* cleanup and exit */
--	cleanup();
--
--	tst_exit();
-+	TST_EXP_FAIL(munlock(addr, len), ENOMEM, "munlock(%p, %lu)",
-+		      addr, len);
- }
- 
--/* setup() - performs all ONE TIME setup for this test. */
--
--void setup(void)
-+static void setup(void)
- {
--
--	char *address;
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TC[0].len = 8 * getpagesize();
--	address = mmap(0, TC[0].len, PROT_READ | PROT_WRITE,
--		       MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (address == MAP_FAILED)
--		tst_brkm(TFAIL, cleanup, "mmap_failed");
--	memset(address, 0x20, TC[0].len);
--	TEST(mlock(address, TC[0].len));
--
--	/* check return code */
--	if (TEST_RETURN == -1) {
--		tst_brkm(TFAIL | TTERRNO, cleanup,
--			 "mlock(%p, %d) Failed with return=%ld", address,
--			 TC[0].len, TEST_RETURN);
--	}
--	TC[0].addr = address;
-+	pg_size = getpagesize();
-+	len = 8 * pg_size;
-+	addr = SAFE_MMAP(NULL, len, PROT_READ | PROT_WRITE,
-+			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-+	memset(addr, 0x20, len);
-+	SAFE_MLOCK(addr, len);
- 	/*
- 	 * unmap part of the area, to create the condition for ENOMEM
- 	 */
--	address += 2 * getpagesize();
--	munmap(address, 4 * getpagesize());
--
--	TEST_PAUSE;
--
--	return;
--}
--
--#else
--
--int main(void)
--{
--	tst_resm(TINFO, "test is not available on uClinux");
--	tst_exit();
-+	addr += 2 * pg_size;
-+	SAFE_MUNMAP(addr, 4 * pg_size);
- }
- 
--#endif /* if !defined(UCLINUX) */
--
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- */
--void cleanup(void)
--{
--	return;
--}
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.setup = setup,
-+	.test_all = run,
-+};
--- 
-2.39.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+U2lnbmVkLW9mZi1ieTogWWFuZyBYdSA8eHV5YW5nMjAxOC5qeUBmdWppdHN1LmNvbT4KLS0tCiB0
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZvcmsvZm9yazAzLmMgfCAxNDYgKysrKysrKy0tLS0t
+LS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgNDQgaW5zZXJ0aW9ucygrKSwgMTAyIGRlbGV0
+aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZm9yay9mb3Jr
+MDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZm9yay9mb3JrMDMuYwppbmRleCAyNWIz
+NmM4OTcuLjA3MmYxMjc5NyAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9m
+b3JrL2ZvcmswMy5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZm9yay9mb3JrMDMu
+YwpAQCAtMSwxMTkgKzEsNjEgQEAKKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4w
+LW9yLWxhdGVyCiAvKgorICogQ29weXJpZ2h0IChjKSBJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1h
+Y2hpbmVzIENvcnAuLCAyMDAxCiAgKgotICogICBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwg
+QnVzaW5lc3MgTWFjaGluZXMgIENvcnAuLCAyMDAxCi0gKgotICogICBUaGlzIHByb2dyYW0gaXMg
+ZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKLSAq
+ICAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBh
+cyBwdWJsaXNoZWQgYnkKLSAqICAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVy
+IHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwgb3IKLSAqICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkg
+bGF0ZXIgdmVyc2lvbi4KLSAqCi0gKiAgIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0
+aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAotICogICBidXQgV0lUSE9VVCBBTlkgV0FS
+UkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKLSAqICAgTUVSQ0hB
+TlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlCi0gKiAg
+IHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgotICoKLSAq
+ICAgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVi
+bGljIExpY2Vuc2UKLSAqICAgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07ICBpZiBub3QsIHdyaXRl
+IHRvIHRoZSBGcmVlIFNvZnR3YXJlCi0gKiAgIEZvdW5kYXRpb24sIEluYy4sIDUxIEZyYW5rbGlu
+IFN0cmVldCwgRmlmdGggRmxvb3IsIEJvc3RvbiwgTUEgMDIxMTAtMTMwMSBVU0EKKyAqIEFVVEhP
+UgorICrCoMKgwqDCoMKgIDA3LzIwMDEgUG9ydGVkIGJ5IFdheW5lIEJveWVyCiAgKi8KIAotLyoK
+LSAqIE5BTUUKLSAqCWZvcmswMy5jCi0gKgotICogREVTQ1JJUFRJT04KLSAqCUNoZWNrIHRoYXQg
+Y2hpbGQgY2FuIHVzZSBhIGxhcmdlIHRleHQgc3BhY2UgYW5kIGRvIGEgbGFyZ2UKLSAqCW51bWJl
+ciBvZiBvcGVyYXRpb25zLgotICoKLSAqIEFMR09SSVRITQotICoJRm9yayBvbmUgcHJvY2Vzcywg
+Y2hlY2sgZm9yIHBpZCA9PSAwIGluIGNoaWxkLgotICoJQ2hlY2sgZm9yIHBpZCA+IDAgaW4gcGFy
+ZW50IGFmdGVyIHdhaXQuCi0gKgotICogVVNBR0UKLSAqCWZvcmswMworLypcCisgKltEZXNjcmlw
+dGlvbl0KICAqCi0gKiBISVNUT1JZCi0gKgkwNy8yMDAxIFBvcnRlZCBieSBXYXluZSBCb3llcgot
+ICoKLSAqIFJFU1RSSUNUSU9OUwotICoJTm9uZQorICogQ2hlY2sgdGhhdCBjaGlsZCBwcm9jZXNz
+IGNhbiB1c2UgYSBsYXJnZSB0ZXh0IHNwYWNlIGFuZCBkbyBhIGxhcmdlIG51bWJlcgorICogb2Yg
+b3BlcmF0aW9ucy4gSW4gdGhpcyBzaXR1YXRpb24sIENoZWNrIGZvciBwaWQgPT0gMCBpbiBjaGls
+ZCBhbmQgY2hlY2sKKyAqIGZvciBwaWQgPiAwIGluIHBhcmVudCBhZnRlciB3YWl0LgogICovCiAK
+ICNpbmNsdWRlIDxzeXMvdHlwZXMuaD4KKyNpbmNsdWRlIDx1bmlzdGQuaD4KICNpbmNsdWRlIDxz
+eXMvd2FpdC5oPgotI2luY2x1ZGUgPHN0ZGlvLmg+Ci0jaW5jbHVkZSAidGVzdC5oIgotCi1jaGFy
+ICpUQ0lEID0gImZvcmswMyI7Ci1pbnQgVFNUX1RPVEFMID0gMTsKLQotc3RhdGljIHZvaWQgc2V0
+dXAodm9pZCk7Ci1zdGF0aWMgdm9pZCBjbGVhbnVwKHZvaWQpOworI2luY2x1ZGUgPHN0ZGxpYi5o
+PgorI2luY2x1ZGUgInRzdF90ZXN0LmgiCiAKLWludCBtYWluKGludCBhYywgY2hhciAqKmF2KQor
+c3RhdGljIHZvaWQgdmVyaWZ5X2Zvcmsodm9pZCkKIHsKIAlmbG9hdCBmbDEsIGZsMjsKLQlpbnQg
+aTsKLQlpbnQgcGlkMSwgcGlkMiwgc3RhdHVzOwotCi0JaW50IGxjOwotCi0JdHN0X3BhcnNlX29w
+dHMoYWMsIGF2LCBOVUxMLCBOVUxMKTsKLQotCXNldHVwKCk7Ci0KLQlmb3IgKGxjID0gMDsgVEVT
+VF9MT09QSU5HKGxjKTsgbGMrKykgewotCQl0c3RfY291bnQgPSAwOwotCQlwaWQxID0gZm9yaygp
+OwotCQlpZiAocGlkMSA9PSAtMSkKLQkJCXRzdF9icmttKFRCUk9LLCBjbGVhbnVwLCAiZm9yaygp
+IGZhaWxlZCIpOwotCi0JCWlmIChwaWQxID09IDApIHsKLQkJCS8qIGNoaWxkIHVzZXMgc29tZSBj
+cHUgY3ljbGVzICovCi0JCQlmb3IgKGkgPSAxOyBpIDwgMzI3Njc7IGkrKykgewotCQkJCWZsMSA9
+IDAuMDAwMDAxOwotCQkJCWZsMSA9IGZsMiA9IDAuMDAwMDAxOwotCQkJCWZsMSA9IGZsMSAqIDEw
+LjA7Ci0JCQkJZmwyID0gZmwxIC8gMS4yMzIzMjM7Ci0JCQkJZmwxID0gZmwyIC0gZmwyOwotCQkJ
+CWZsMSA9IGZsMjsKLQkJCX0KLQotCQkJLyogUGlkIG11c3QgYWx3YXlzIGJlIHplcm8gaW4gY2hp
+bGQgICovCi0JCQlpZiAocGlkMSAhPSAwKQotCQkJCWV4aXQoMSk7Ci0JCQllbHNlCi0JCQkJZXhp
+dCgwKTsKLQkJfSBlbHNlIHsKLQkJCXRzdF9yZXNtKFRJTkZPLCAicHJvY2VzcyBpZCBpbiBwYXJl
+bnQgb2YgY2hpbGQgZnJvbSAiCi0JCQkJICJmb3JrIDogJWQiLCBwaWQxKTsKLQkJCXBpZDIgPSB3
+YWl0KCZzdGF0dXMpOwkvKiB3YWl0IGZvciBjaGlsZCAqLwotCi0JCQlpZiAocGlkMSAhPSBwaWQy
+KSB7Ci0JCQkJdHN0X3Jlc20oVEZBSUwsICJwaWRzIGRvbid0IG1hdGNoIDogJWQgdnMgJWQiLAot
+CQkJCQkgcGlkMSwgcGlkMik7Ci0JCQkJY29udGludWU7Ci0JCQl9Ci0KLQkJCWlmICgoc3RhdHVz
+ID4+IDgpICE9IDApIHsKLQkJCQl0c3RfcmVzbShURkFJTCwgImNoaWxkIGV4aXRlZCB3aXRoIGZh
+aWx1cmUiKTsKLQkJCQljb250aW51ZTsKLQkJCX0KLQotCQkJdHN0X3Jlc20oVFBBU1MsICJ0ZXN0
+IDEgUEFTU0VEIik7CisJaW50IHBpZDEsIHBpZDIsIHN0YXR1cywgaTsKKworCXBpZDEgPSBTQUZF
+X0ZPUksoKTsKKwlpZiAoIXBpZDEpIHsKKwkJLyogY2hpbGQgdXNlcyBzb21lIGNwdSB0aW1lIHNs
+aWNlcyAqLworCQlmb3IgKGkgPSAxOyBpIDwgMzI3Njc7IGkrKykgeworCQkJZmwxID0gMC4wMDAw
+MDE7CisJCQlmbDEgPSBmbDIgPSAwLjAwMDAwMTsKKwkJCWZsMSA9IGZsMSAqIDEwLjA7CisJCQlm
+bDIgPSBmbDEgLyAxLjIzMjMyMzsKKwkJCWZsMSA9IGZsMiAtIGZsMjsKKwkJCWZsMSA9IGZsMjsK
+IAkJfQorCQlpZiAoIXBpZDEpCisJCQlleGl0KDApOworCQllbHNlCisJCQlleGl0KDEpOwogCX0K
+IAotCWNsZWFudXAoKTsKLQl0c3RfZXhpdCgpOwotfQotCi1zdGF0aWMgdm9pZCBzZXR1cCh2b2lk
+KQotewotCXRzdF9zaWcoRk9SSywgREVGX0hBTkRMRVIsIGNsZWFudXApOwotCVRFU1RfUEFVU0U7
+CisJdHN0X3JlcyhUSU5GTywgInByb2Nlc3MgaWQgaW4gcGFyZW50IG9mIGNoaWxkIGZyb20gZm9y
+ayA6ICVkIiwgcGlkMSk7CisJcGlkMiA9IFNBRkVfV0FJVCgmc3RhdHVzKTsKKwlpZiAocGlkMSAh
+PSBwaWQyKSB7CisJCXRzdF9yZXMoVEZBSUwsICJwaWRzIGRvbid0IG1hdGNoIDogJWQgdnMgJWQi
+LCBwaWQxLCBwaWQyKTsKKwkJcmV0dXJuOworCX0KKwlpZiAoKHN0YXR1cyA+PiA4KSAhPSAwKSB7
+CisJCXRzdF9yZXMoVEZBSUwsICJjaGlsZCBleGl0ZWQgd2l0aCBmYWlsdXJlIik7CisJCXJldHVy
+bjsKKwl9CisJdHN0X3JlcyhUUEFTUywgInRlc3QgUEFTU0VEIik7CiB9CiAKLXN0YXRpYyB2b2lk
+IGNsZWFudXAodm9pZCkKLXsKLX0KK3N0YXRpYyBzdHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKKwku
+dGVzdF9hbGwgPSB2ZXJpZnlfZm9yaywKKwkuZm9ya3NfY2hpbGQgPSAxLAorfTsKLS0gCjIuMzku
+MQoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5m
+by9sdHAK
