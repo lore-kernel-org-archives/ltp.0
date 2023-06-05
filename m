@@ -4,51 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A20DEB64D9
-	for <ltp@archiver.kernel.org>; Mon, 19 Jun 2023 07:58:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86876EB64DA
+	for <ltp@archiver.kernel.org>; Mon, 19 Jun 2023 07:58:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 612E63CB833
-	for <ltp@archiver.kernel.org>; Mon, 19 Jun 2023 09:58:27 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 3FAD13CB80D
+	for <ltp@archiver.kernel.org>; Mon, 19 Jun 2023 09:58:39 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F05D13CB563
+ by picard.linux.it (Postfix) with ESMTPS id 3E9DC3CB4BD
  for <ltp@lists.linux.it>; Mon,  5 Jun 2023 06:41:36 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3FF181A006A4
- for <ltp@lists.linux.it>; Mon,  5 Jun 2023 06:41:35 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 433A91A006BB
+ for <ltp@lists.linux.it>; Mon,  5 Jun 2023 06:41:36 +0200 (CEST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 536E26114B;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B73E060C56;
+ Mon,  5 Jun 2023 04:41:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0DE9C4339B;
  Mon,  5 Jun 2023 04:41:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50AE5C433D2;
- Mon,  5 Jun 2023 04:41:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1685940092;
- bh=3aJhbsgcAbjTn1Ueo2xwDp1hgCFxVtnDWvkwiS9igxU=;
- h=From:To:Cc:Subject:Date:From;
- b=oB4qMAeje807BWXjWY4Y2ZBb9rXk1HOmNzHgYBjnDiSC114KkYtU6JuGdzCTAXVCx
- RAtGyQPQFD1CJnnyQsJpZTXddQuJ8FRbdOV9r14TiPiGrh8uohKRMhWw3Rzd/n9umN
- vjhnD9HHCbWaYUlfk8B+neJP8LpFu2cunzb0MssjZy+yvoO3+6GtRDc0j9dy/Piapl
- yUxnp+saPweTwcrVGYcbrt9lStm84IQjRi9p8uEUEIVEb4qEIcdPHjCLOioGS3foF8
- 8rTaT7mia/kPujV3vqfJTB6BxI9V81nihXI+BdnnaB8Rh9q8UJRC3rrG4kyPOPYEkh
- CU0yK10fjJmpw==
+ s=k20201202; t=1685940094;
+ bh=LEpVpPKWYJm4F/1zu3FBl+m4etzbcVjCV4qKtbsx1KM=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=l/VJM5thT7aE9nfnCFdUO7ajlZEckDkRjrSqVrawowVvGbj5UxlCOItaEaUgzgDOd
+ WN2FffiLKhJS02ZPlzAofPloFtkevQRrihEZ0L9y5l7RnOkT4nCpJQcAqwmZek5Uw7
+ 0WKTTA82gnValy3cGVo5PndTttG67SSCAumzIWfguXOdKXIg8Ive5V8JAembx6pLGW
+ ygxxbG5uPeQgS0qLy+XmpQuS6ss7Duv8J+axbWTKDye067NLnDFoYMNNJIcMhCHHYB
+ tnnzQodQhOExa4os5Gco25VEi/JVYaRTA16V2pt9gY9K2R0XaSTGzM3ljnzT33Cm/H
+ Lvk6h8NVu9o9w==
 From: Damien Le Moal <dlemoal@kernel.org>
 To: ltp <ltp@lists.linux.it>,
 	Linus Walleij <linus.walleij@linaro.org>
-Date: Mon,  5 Jun 2023 13:41:29 +0900
-Message-Id: <20230605044131.798383-1-dlemoal@kernel.org>
+Date: Mon,  5 Jun 2023 13:41:31 +0900
+Message-Id: <20230605044131.798383-3-dlemoal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230605044131.798383-1-dlemoal@kernel.org>
+References: <20230605044131.798383-1-dlemoal@kernel.org>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Mon, 19 Jun 2023 09:58:05 +0200
-Subject: [LTP] [PATCH 0/2] Improve ioprio tests
+Subject: [LTP] [PATCH 2/2] ioprio: Use IOPRIO_PRIO_NUM to check prio range
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,30 +68,47 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The ioprio syscall tests rely on ltp internal definitions of the
-IOPRIO_XXX() macro defining priority classes and levels. With changes
-to the ioprio API to support command duration limits, these internal
-definitions are incomplete, causing test case ioprio_set03 to fail.
+Use the macro IOPRIO_PRIO_NUM in prio_in_range() to check the upper
+bound of the valid range for priority levels. Similarly, in the test
+case ioprio_set03, use this macro to check for failures when the user
+attempts using a priority level out of range.
 
-Avoid this issue by having the iprio tests use the kernel header file
-definitions if that header exists. This enables additional checks in
-the header file [1] which restores the expected results with test
-ioprio_set03.
+Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
+---
+ testcases/kernel/syscalls/ioprio/ioprio.h       | 4 ++--
+ testcases/kernel/syscalls/ioprio/ioprio_set03.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-[1] https://lore.kernel.org/linux-block/20230530061307.525644-1-dlemoal@kernel.org/
-
-Note: a review of this patch on the kernel block mailing list would be
-very appreciated.
-
-Damien Le Moal (2):
-  ioprio: use ioprio.h kernel header if it exists
-  ioprio: Use IOPRIO_PRIO_NUM to check prio range
-
- configure.ac                                  |  1 +
- testcases/kernel/syscalls/ioprio/ioprio.h     | 33 ++++++++++++++-----
- .../kernel/syscalls/ioprio/ioprio_set03.c     |  2 +-
- 3 files changed, 26 insertions(+), 10 deletions(-)
-
+diff --git a/testcases/kernel/syscalls/ioprio/ioprio.h b/testcases/kernel/syscalls/ioprio/ioprio.h
+index 6ca134a54..c2115bf20 100644
+--- a/testcases/kernel/syscalls/ioprio/ioprio.h
++++ b/testcases/kernel/syscalls/ioprio/ioprio.h
+@@ -61,10 +61,10 @@ static inline int sys_ioprio_set(int which, int who, int ioprio)
+ 	return tst_syscall(__NR_ioprio_set, which, who, ioprio);
+ }
+ 
+-/* Priority range from 0 (highest) to 7 (lowest) */
++/* Priority range from 0 (highest) to IOPRIO_PRIO_NUM (lowest) */
+ static inline int prio_in_range(int prio)
+ {
+-	if ((prio < 0) || (prio > 7))
++	if ((prio < 0) || (prio >= IOPRIO_PRIO_NUM))
+ 		return 0;
+ 	return 1;
+ }
+diff --git a/testcases/kernel/syscalls/ioprio/ioprio_set03.c b/testcases/kernel/syscalls/ioprio/ioprio_set03.c
+index b2c962a6f..d6b44df85 100644
+--- a/testcases/kernel/syscalls/ioprio/ioprio_set03.c
++++ b/testcases/kernel/syscalls/ioprio/ioprio_set03.c
+@@ -27,7 +27,7 @@ static void run(void)
+ 	sys_ioprio_set(IOPRIO_WHO_PROCESS, 0,
+ 		       IOPRIO_PRIO_VALUE(class, 4));
+ 	TEST(sys_ioprio_set(IOPRIO_WHO_PROCESS, 0,
+-			    IOPRIO_PRIO_VALUE(class, 8)));
++			    IOPRIO_PRIO_VALUE(class, IOPRIO_PRIO_NUM)));
+ 	if (TST_RET == -1) {
+ 		ioprio_check_setting(class, 4, 1);
+ 		if (errno == EINVAL)
 -- 
 2.40.1
 
