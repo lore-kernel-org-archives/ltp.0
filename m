@@ -4,77 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8673C7EE23
-	for <ltp@archiver.kernel.org>; Mon,  5 Jun 2023 07:12:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F283C77B73
+	for <ltp@archiver.kernel.org>; Mon,  5 Jun 2023 08:40:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A85D63CB87A
-	for <ltp@archiver.kernel.org>; Mon,  5 Jun 2023 09:12:50 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id CE6CC3CCB5E
+	for <ltp@archiver.kernel.org>; Mon,  5 Jun 2023 10:40:01 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F2AF43CB700
- for <ltp@lists.linux.it>; Mon,  5 Jun 2023 09:12:40 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id CBFDA3CB839
+ for <ltp@lists.linux.it>; Mon,  5 Jun 2023 10:39:50 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 610BE1A0070E
- for <ltp@lists.linux.it>; Mon,  5 Jun 2023 09:12:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1685949158;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2F25D140096C
+ for <ltp@lists.linux.it>; Mon,  5 Jun 2023 10:39:49 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 373681F8BB;
+ Mon,  5 Jun 2023 08:39:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1685954389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KTKINMpPpikl0DvSq0T7z+cQh1YXUxPQ7kVmyweKse0=;
- b=aK7UOG49A1HmGld7bUWBUwcO2hqF8WKL9nF3h5MuVP/NQY6eQYFFxrLtzCtvfLVls5f0R5
- k9YNy31oI/6+1+HdN70JP4pHVRgCLJJRN3tA8LsEVHYVG/AjnqPspm7f6X6dJNdRc6B3wO
- 6HOSNzNxP2FRJODqs02doFtpjydbac4=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-199-e_r6LSl2PUSczU5LFcGjBg-1; Mon, 05 Jun 2023 03:12:37 -0400
-X-MC-Unique: e_r6LSl2PUSczU5LFcGjBg-1
-Received: by mail-lj1-f198.google.com with SMTP id
- 38308e7fff4ca-2b1b122976fso17304161fa.3
- for <ltp@lists.linux.it>; Mon, 05 Jun 2023 00:12:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1685949155; x=1688541155;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=KTKINMpPpikl0DvSq0T7z+cQh1YXUxPQ7kVmyweKse0=;
- b=AH9bcj6kCy4BM1jnF8iWScipEJ3sRPaQf+Al/Z8U7myCyhHxAkRLy7yn1GZmnoabDr
- L55rinpFndVsoNYdX3Ow1L2VtAfw3YFKimpctPH34wjnj1TIlS+MyjdAeJlSBHrH7Z3C
- p3hXowUahI0/a7DyvU8C8mtK6X5BLbtsDjWZJufpUVobb/Ql5kYJa/aY1IXjKQv64hhh
- xVKGvS1O8pOcRLPBzCshQLPh30l2O7eqwlAVf54DdM4c5FJS0m4IZkd5EhbAUpwddjCl
- vv0h+d/B2cr9bDpsy0cDx3LjLLgO3g/pui/wPns3NVp7fprlLvy5vjZFxOcmBuLgpPUU
- C/ww==
-X-Gm-Message-State: AC+VfDyC6NK8K0E8BQ8UlvKsYsuF0DTeaR6iYdjaZAER7nCH8iWiSwYg
- 5oTC5U2vuTIiEZQ7LB0MrktzNhMyxLWj8Kkhly7BQXBTlHWBrTB5WjgkhI15dMvUqdufLuKv/NJ
- n0BnzCmazH1HY2tnHIMtu9f68WW0=
-X-Received: by 2002:a2e:8699:0:b0:2b1:c4f9:c342 with SMTP id
- l25-20020a2e8699000000b002b1c4f9c342mr1688924lji.33.1685949155807; 
- Mon, 05 Jun 2023 00:12:35 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ4rE0r0TMqIPWB9DHb82j9HVy1oZ5HFXZd2DEA0vnfZcSO67CLU9tSRhrrqwA6xHaM4F7RVQcgNTZy9G/3MvTY=
-X-Received: by 2002:a2e:8699:0:b0:2b1:c4f9:c342 with SMTP id
- l25-20020a2e8699000000b002b1c4f9c342mr1688918lji.33.1685949155456; Mon, 05
- Jun 2023 00:12:35 -0700 (PDT)
+ bh=IAXXgXmCQeyPcwkUZtAf3JCVtl3wbohizfsL8KtPm0k=;
+ b=c6Wl3Ie4ipqBKxjeXqL6v+5E2+U/wzauRmDkgoZTVKYkobz0nEc4C5VN5v3pU6Bbvaf/56
+ Vd3VHsXTddl2hnMcNOe1qo78796NPD16Z3/4XRMKSQYVxCA8J4N3blHe+Xoi4M/9Oct93H
+ 7qOUWYeDlMD2Mn5WMlZzjQpgiPcT90w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1685954389;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=IAXXgXmCQeyPcwkUZtAf3JCVtl3wbohizfsL8KtPm0k=;
+ b=UMGJoT928UaO5eBlHaB+4u5fEV7J3Beh5kgWdZD8hHQfTg3jFM29z5ogJlPmqscZz0oZwn
+ NdauSVkOjgf/e0Dg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 257FD139C8;
+ Mon,  5 Jun 2023 08:39:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 5OZMCFWffWQODwAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Mon, 05 Jun 2023 08:39:49 +0000
+Message-ID: <233a0f31-e4de-de65-4752-d43cb1ae3c1f@suse.cz>
+Date: Mon, 5 Jun 2023 10:39:48 +0200
 MIME-Version: 1.0
-References: <1685699631-4671-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1685699631-4671-2-git-send-email-xuyang2018.jy@fujitsu.com>
-In-Reply-To: <1685699631-4671-2-git-send-email-xuyang2018.jy@fujitsu.com>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 5 Jun 2023 15:12:23 +0800
-Message-ID: <CAEemH2dPR8yFw7tY6G7jq2-bCO--gh0F_PARQPqX1O7EhrPtQg@mail.gmail.com>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+To: Murphy Zhou <jencce.kernel@gmail.com>, ltp@lists.linux.it
+References: <20230604095117.3543342-1-jencce.kernel@gmail.com>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20230604095117.3543342-1-jencce.kernel@gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 2/2] syscalls/munlock02: Convert into new api
+Subject: Re: [LTP] [PATCH] SAFE_MOUNT: print debug info about mounting
+ operation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,18 +79,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+Hi,
 
+On 04. 06. 23 11:51, Murphy Zhou wrote:
+> Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
+> ---
+>   lib/safe_macros.c | 17 +++++++++++++++++
+>   1 file changed, 17 insertions(+)
+> 
+> diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+> index af6dd0716..a66285a0e 100644
+> --- a/lib/safe_macros.c
+> +++ b/lib/safe_macros.c
+> @@ -898,7 +898,24 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
+>   	       const void *data)
+>   {
+>   	int rval = -1;
+> +	char cdir[PATH_MAX], mpath[PATH_MAX];
+>   
+> +	if (!getcwd(cdir, PATH_MAX)) {
+> +		tst_resm(TWARN | TERRNO, "Failed to find current directory");
+> +		return 0;
+
+You return success when nothing was mounted. That is clearly wrong. 
+Either call tst_brkm_(... TBROK ...) if the failure is so serious that 
+the test cannot continue, or don't return at all.
+
+> +	}
+> +
+> +	rval = snprintf(mpath, PATH_MAX, "%s/%s", cdir, target);
+
+The C library has a function for resolving paths: realpath(). Please use 
+that.
+
+> +	if (rval < 0 || rval >= PATH_MAX) {
+> +		tst_resm(TWARN | TERRNO,
+> +			 "snprintf() should have returned %d instead of %d",
+> +			 PATH_MAX, rval);
+> +		return 0;
+
+Returning here is also wrong.
+
+> +	}
+> +
+> +	tst_resm_(file, lineno, TINFO,
+> +		"Mounting %s to %s fstyp=%s flags=%x",
+> +		source, mpath, filesystemtype, mountflags);
+>   	/*
+>   	 * Don't try using the kernel's NTFS driver when mounting NTFS, since
+>   	 * the kernel's NTFS driver doesn't have proper write support.
 
 -- 
-Regards,
-Li Wang
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
