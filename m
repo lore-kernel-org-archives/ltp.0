@@ -4,67 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DAAEEB64D7
-	for <ltp@archiver.kernel.org>; Fri, 16 Jun 2023 12:30:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 245A1EB64DB
+	for <ltp@archiver.kernel.org>; Mon, 19 Jun 2023 07:58:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 67AFD3CBEFE
-	for <ltp@archiver.kernel.org>; Fri, 16 Jun 2023 14:30:23 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 2CF5B3CB895
+	for <ltp@archiver.kernel.org>; Mon, 19 Jun 2023 09:58:16 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 109B73CB67C
- for <ltp@lists.linux.it>; Fri, 16 Jun 2023 14:30:12 +0200 (CEST)
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com
- [IPv6:2607:f8b0:4864:20::b2a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id CCBCF3CB4BD
+ for <ltp@lists.linux.it>; Mon,  5 Jun 2023 06:41:36 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F0C5A140097D
- for <ltp@lists.linux.it>; Fri, 16 Jun 2023 14:30:11 +0200 (CEST)
-Received: by mail-yb1-xb2a.google.com with SMTP id
- 3f1490d57ef6-bcde2b13fe2so530613276.3
- for <ltp@lists.linux.it>; Fri, 16 Jun 2023 05:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1686918611; x=1689510611;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=GsVm603uRWJyZSIAWYZBVf4Mhzum8dhi/mqMDn2hjUc=;
- b=fZglppOz6VP4VVIz3nR6ifWEVzzjE9E4aMIMTSZZswaQHFCSpJSSvGImHD3XlLyV30
- sKG38TMDvVdA+DXPQCq4klGKJ9pThrc+a7L8IlxEjQFlCEXd9VarIKlyeS83uQiVwhyu
- oG/jkoZcMdtcsZj2LqQLfwn7gvyCTDxAIJ906NTWkKywb9REO5oxe7uWp7ORwn2LaCtk
- MIzQoIiHxosga8qHB9OT5QpwHze2WfCKJ+7xaMEd1BeibAuAUZ1CnWs6gyMpJshi8s/n
- v7MPJa1OwLOBHiJPPOv8mV/mtra60bMEvcU6bp3v/6AhF9QDaW4XIWHZ3VBotfrUzCD4
- asSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1686918611; x=1689510611;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=GsVm603uRWJyZSIAWYZBVf4Mhzum8dhi/mqMDn2hjUc=;
- b=FY6NTwTCd9ukGcd85O8uw/w2KcWLJXIhAyJo2x8XMZInGZlqqNDFpboHCMiWN6a1WD
- fYBJhez0TePA2ksOiaaUOpQ1G1ZYzCNKIsfdtBwRGs57w2niGUUne8sRKi5wWvuR2FBY
- LDMZ9skH426gN2Pp4T+l/fJOd63E7TYvlWV+QdADfAFSeHUmg7H8a1vkkrZFdt7MzcN6
- oUtEBEpEl237qUoQAgw9JYBefvmC+25LU6/Yj6QcX6gN78EBVMCIMiJXLOUing6hEQ/w
- AP1QUcnBwRleWYO6Pr1K9S9qtFSGZWP20+fSE3j3CgHWdCxjsMoL8ZWVADtsi2FQBSYB
- HL+A==
-X-Gm-Message-State: AC+VfDzA+mETeKrGEHURWa4d5ylH05rr927/wPkvUdpjWaAjftROcuvy
- MnnQpfjnV2Q4WUxmSpC9G/MVcNHq8Cr/SVgpDF3JcIN/
-X-Google-Smtp-Source: ACHHUZ6FsNDhHamtdP0Ol0HyH5NTL+hjIyD07scr0Nc3WAt6aoSFzs2MVPIiellQd6dgSQ3dHM3/bMxCKVtt6pHvpvg=
-X-Received: by 2002:a25:d711:0:b0:be4:9f84:d1bb with SMTP id
- o17-20020a25d711000000b00be49f84d1bbmr1096134ybg.11.1686918610704; Fri, 16
- Jun 2023 05:30:10 -0700 (PDT)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DE87E140051D
+ for <ltp@lists.linux.it>; Mon,  5 Jun 2023 06:41:35 +0200 (CEST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0E89061D72;
+ Mon,  5 Jun 2023 04:41:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06764C433EF;
+ Mon,  5 Jun 2023 04:41:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1685940093;
+ bh=0A3OuK1ZjuhezJ/l5wHs/N9Yji6YIpoqf3xChLrwsjU=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=ugZ58vTDkRASZZIYOubWtcU2pO3WoUDzstD7j4oSlw7baGoXsiwXGwaTW+L/by7YB
+ 9MCNfOoREySk9QLGZvTRQDZ74thP2cMekLvmjsiMUS9fED/JFUwcqC8u7z4QHFj1i9
+ 0DG6B6VOnno5juNSe0t/P+7RHqI26eWTsk9P39vB72qU9OInK93YHHtDMUgtnCBtis
+ MIY5AnmJrFFlLANt/+Di04A4AQRhK5U5chR6MXUvCfdcQXfrwr9tX4TYgXoV/aDAHo
+ B8BTE5pC+8F/evzQXMhuPk6tAnJXsj3bABvM/CXL28aHFPiKuDtShrqWnXSzbyoi6x
+ Jlpy94CTCQIhg==
+From: Damien Le Moal <dlemoal@kernel.org>
+To: ltp <ltp@lists.linux.it>,
+	Linus Walleij <linus.walleij@linaro.org>
+Date: Mon,  5 Jun 2023 13:41:30 +0900
+Message-Id: <20230605044131.798383-2-dlemoal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230605044131.798383-1-dlemoal@kernel.org>
+References: <20230605044131.798383-1-dlemoal@kernel.org>
 MIME-Version: 1.0
-References: <20230615075307.157688-1-liwang@redhat.com>
-In-Reply-To: <20230615075307.157688-1-liwang@redhat.com>
-From: Murphy Zhou <jencce.kernel@gmail.com>
-Date: Fri, 16 Jun 2023 20:29:59 +0800
-Message-ID: <CADJHv_uHkMiWf3kgp0A4tM2VYNH3-N9xcvCjjQEk1M18zo2Now@mail.gmail.com>
-To: Li Wang <liwang@redhat.com>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] tst_fill_fs: drop safe_macro from fill_flat_vec
+X-Mailman-Approved-At: Mon, 19 Jun 2023 09:58:05 +0200
+Subject: [LTP] [PATCH 1/2] ioprio: use ioprio.h kernel header if it exists
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,67 +61,89 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Shizhao Chen <shichen@redhat.com>,
- Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it,
- Dave Chinner <dchinner@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Niklas Cassel <niklas.cassel@wdc.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBKdW4gMTUsIDIwMjMgYXQgMzo1M+KAr1BNIExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
-Y29tPiB3cm90ZToKPgo+IExUUCBmc19maWxsIGlzIHRyeWluZyB0byBzcGF3biBuQ1BVUyB0aHJl
-YWQgdG8gY3JlYXRlIGNvcnJlc3BvbmRpbmcKPiBzdWJkaXJlY3RvcmllcyBhbmQgY29tcGxldGVs
-eSBmaWxsIHRoZW0uIEJ1dCBpbiB0aGUgaW52b2tlIGZ1bmN0aW9uCj4gdHN0X2ZpbGxfZnMoLCBU
-U1RfRklMTF9CTE9DS1MpIC0+IGZpbGxfZmxhdF92ZWMoKSB3aGljaCBoYXMgU0FGRV9NQUNST3MK
-PiB0byBicmVhayB0aGUgb3BlbiBiZWhhdmlvciBvbmNlIGZzIGlzIGZpbGxlZCB3aXRoIEVOT1NQ
-QyByZXR1cm4uCj4KPiBUaGUgZmFpbHVyZSBsaWtlIHRoZXJlIGFyZW4ndCBlbm91Z2ggZnJlZSBp
-bm9kZXMgaW4gdGhlIGZpbGVzeXN0ZW0gZm9yCj4gdGhlIHRzdF9mc19maWxsIHRlc3QgcHJvZ3Jh
-bSB0byBjcmVhdGUgaXQncyBzZXQgb2YgIkFPRiIgZGF0YSBmaWxlcy4KPgo+ICAgNDEwOCAgdHN0
-X3Rlc3QuYzoxNjM0OiBUSU5GTzogPT09IFRlc3Rpbmcgb24geGZzID09PQo+ICAgNDEwOSAgdHN0
-X3Rlc3QuYzoxMDk0OiBUSU5GTzogRm9ybWF0dGluZyAvZGV2L2xvb3AwIHdpdGggeGZzIG9wdHM9
-JycgZXh0cmEgb3B0cz0nJwo+ICAgNDExMCAgZnNfZmlsbC5jOjEwODogVElORk86IFJ1bm5pbmcg
-OTggd3JpdGVyIHRocmVhZHMKPiAgIDQxMTEgIHRzdF9maWxsX2ZzLmM6Nzc6IFRCUk9LOiBvcGVu
-YXQoODk8L21udC90ZXN0YXJlYS9sdHAtd0dnMFhOU0hjci9MVFBfZnNfWEx4ckxoL21udHBvaW50
-L3RocmVhZDg0PiwgJ0FPRicsIDEwMSwgNjAwKTogRU5PU1BDICgyOCkKPiAgIDQxMTIgIHRzdF9m
-aWxsX2ZzLmM6Nzc6IFRCUk9LOiBvcGVuYXQoODc8L21udC90ZXN0YXJlYS9sdHAtd0dnMFhOU0hj
-ci9MVFBfZnNfWEx4ckxoL21udHBvaW50L3RocmVhZDgzPiwgJ0FPRicsIDEwMSwgNjAwKTogRU5P
-U1BDICgyOCkKPiAgIDQxMTMgIHRzdF9maWxsX2ZzLmM6Nzc6IFRXQVJOOiBvcGVuYXQoODU8L21u
-dC90ZXN0YXJlYS9sdHAtd0dnMFhOU0hjci9MVFBfZnNfWEx4ckxoL21udHBvaW50L3RocmVhZDgy
-PiwgJ0FPRicsIDEwMSwgNjAwKTogRU5PU1BDICgyOCkKPiAgIDQxMTQgIHRzdF9maWxsX2ZzLmM6
-Nzc6IFRXQVJOOiBvcGVuYXQoMzwvbW50L3Rlc3RhcmVhL2x0cC13R2cwWE5TSGNyL0xUUF9mc19Y
-THhyTGgvbW50cG9pbnQvdGhyZWFkODE+LCAnQU9GJywgMTAxLCA2MDApOiBFTk9TUEMgKDI4KQo+
-Cj4gVGhpcyBwYXRjaCBpcyBqdXN0IHRvIGNvbnZlcnQgdGhlIGZpbGxfZmxhdF92ZWMoKSB0byBp
-Z25vcmUgRU5PU1BDIGxpa2UKPiBmaWxsX3JhbmRvbWUoKSBpbiBvcGVuaW5nIHN1YmRpcmVjdG9y
-aWVzLgoKTG9va3MgZ29vZCB0byBtZS4gVGhhbmtzIGZvciBmaXhpbmcgaXQhCgpNdXJwaHkKPgo+
-IFJlcG9ydGVkLWJ5OiBTaGl6aGFvIENoZW4gPHNoaWNoZW5AcmVkaGF0LmNvbT4KPiBTaWduZWQt
-b2ZmLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0LmNvbT4KPiBDYzogRGF2ZSBDaGlubmVyIDxk
-Y2hpbm5lckByZWRoYXQuY29tPgo+IENjOiBSaWNoYXJkIFBhbGV0aG9ycGUgPHJwYWxldGhvcnBl
-QHN1c2UuY29tPgo+IC0tLQo+ICBsaWIvdHN0X2ZpbGxfZnMuYyB8IDIxICsrKysrKysrKysrKysr
-KysrKystLQo+ICAxIGZpbGUgY2hhbmdlZCwgMTkgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMo
-LSkKPgo+IGRpZmYgLS1naXQgYS9saWIvdHN0X2ZpbGxfZnMuYyBiL2xpYi90c3RfZmlsbF9mcy5j
-Cj4gaW5kZXggYjlkMjk3NTVhLi4yNDNlYjI3OWYgMTAwNjQ0Cj4gLS0tIGEvbGliL3RzdF9maWxs
-X2ZzLmMKPiArKysgYi9saWIvdHN0X2ZpbGxfZnMuYwo+IEBAIC03MywxMiArNzMsMjkgQEAgdm9p
-ZCBmaWxsX3JhbmRvbShjb25zdCBjaGFyICpwYXRoLCBpbnQgdmVyYm9zZSkKPgo+ICB2b2lkIGZp
-bGxfZmxhdF92ZWMoY29uc3QgY2hhciAqcGF0aCwgaW50IHZlcmJvc2UpCj4gIHsKPiAtICAgICAg
-IGludCBkaXIgPSBTQUZFX09QRU4ocGF0aCwgT19QQVRIIHwgT19ESVJFQ1RPUlkpOwo+IC0gICAg
-ICAgaW50IGZkID0gU0FGRV9PUEVOQVQoZGlyLCAiQU9GIiwgT19XUk9OTFkgfCBPX0NSRUFULCAw
-NjAwKTsKPiArICAgICAgIGludCBkaXIsIGZkOwo+ICAgICAgICAgc3RydWN0IGlvdmVjIGlvdls1
-MTJdOwo+ICAgICAgICAgaW50IGlvdmNudCA9IEFSUkFZX1NJWkUoaW92KTsKPiAgICAgICAgIGlu
-dCByZXRyaWVzID0gMzsKPgo+ICsgICAgICAgZGlyID0gb3BlbihwYXRoLCBPX1BBVEggfCBPX0RJ
-UkVDVE9SWSk7Cj4gKyAgICAgICBpZiAoZGlyID09IC0xKSB7Cj4gKyAgICAgICAgICAgICAgIGlm
-IChlcnJubyA9PSBFTk9TUEMpIHsKPiArICAgICAgICAgICAgICAgICAgICAgICB0c3RfcmVzKFRJ
-TkZPIHwgVEVSUk5PLCAib3BlbigpIik7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJu
-Owo+ICsgICAgICAgICAgICAgICB9Cj4gKyAgICAgICAgICAgICAgIHRzdF9icmsoVEJST0sgfCBU
-RVJSTk8sICJvcGVuKCVzLCAlZCkgZmFpbGVkIiwgcGF0aCwgT19QQVRIIHwgT19ESVJFQ1RPUlkp
-Owo+ICsgICAgICAgfQo+ICsKPiArICAgICAgIGZkID0gb3BlbmF0KGRpciwgIkFPRiIsIE9fV1JP
-TkxZIHwgT19DUkVBVCwgMDYwMCk7Cj4gKyAgICAgICBpZiAoZmQgPT0gLTEpIHsKPiArICAgICAg
-ICAgICAgICAgaWYgKGVycm5vID09IEVOT1NQQykgewo+ICsgICAgICAgICAgICAgICAgICAgICAg
-IHRzdF9yZXMoVElORk8gfCBURVJSTk8sICJvcGVuYXQoKSIpOwo+ICsgICAgICAgICAgICAgICAg
-ICAgICAgIHJldHVybjsKPiArICAgICAgICAgICAgICAgfQo+ICsgICAgICAgICAgICAgICB0c3Rf
-YnJrKFRCUk9LIHwgVEVSUk5PLCAib3BlbmF0KCVzLCAlZCwgMDYwMCkgZmFpbGVkIiwgZGlyLCBP
-X1BBVEggfCBPX0RJUkVDVE9SWSk7Cj4gKyAgICAgICB9Cj4gKwo+ICAgICAgICAgU0FGRV9DTE9T
-RShkaXIpOwo+Cj4gICAgICAgICBmb3IgKGludCBpID0gMDsgaSA8IGlvdmNudDsgaSsrKSB7Cj4g
-LS0KPiAyLjQwLjEKPgo+Cj4gLS0KPiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5s
-aW51eC5pdC9saXN0aW5mby9sdHAKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0
-cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+For the ioprio system call test cases, avoid blindly defining the
+IOPRIO_XXX macro internally and instead use the kernel user API header
+file if it exists. Given that the definitions in this header file have
+changed over time, make sure to test for the existence of the macro
+IOPRIO_PRIO_LEVEL macro and define it if it does not exist. Similarly,
+use IOPRIO_NR_LEVELS to define IOPRIO_PRIO_NUM if that macro exists.
+
+Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
+---
+ configure.ac                              |  1 +
+ testcases/kernel/syscalls/ioprio/ioprio.h | 29 +++++++++++++++++------
+ 2 files changed, 23 insertions(+), 7 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 548288310..e4aa2cadf 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -56,6 +56,7 @@ AC_CHECK_HEADERS_ONCE([ \
+     linux/if_ether.h \
+     linux/if_packet.h \
+     linux/io_uring.h \
++    linux/ioprio.h \
+     linux/keyctl.h \
+     linux/mempolicy.h \
+     linux/module.h \
+diff --git a/testcases/kernel/syscalls/ioprio/ioprio.h b/testcases/kernel/syscalls/ioprio/ioprio.h
+index c74380475..6ca134a54 100644
+--- a/testcases/kernel/syscalls/ioprio/ioprio.h
++++ b/testcases/kernel/syscalls/ioprio/ioprio.h
+@@ -6,6 +6,12 @@
+ #ifndef LTP_IOPRIO_H
+ #define LTP_IOPRIO_H
+ 
++#ifdef HAVE_LINUX_IOPRIO_H
++
++# include <linux/ioprio.h>
++
++#else
++
+ enum {
+ 	IOPRIO_CLASS_NONE = 0,
+ 	IOPRIO_CLASS_RT,
+@@ -19,15 +25,24 @@ enum {
+ 	IOPRIO_WHO_USER,
+ };
+ 
+-/* The I/O scheduler classes have 8 priorities 0..7 except for the IDLE class */
+-#define IOPRIO_PRIO_NUM		8
++# define IOPRIO_CLASS_SHIFT	(13)
++# define IOPRIO_PRIO_MASK	((1UL << IOPRIO_CLASS_SHIFT) - 1)
++
++# define IOPRIO_PRIO_CLASS(data)	((data) >> IOPRIO_CLASS_SHIFT)
++# define IOPRIO_PRIO_VALUE(class, data)	(((class) << IOPRIO_CLASS_SHIFT) | data)
+ 
+-#define IOPRIO_CLASS_SHIFT	(13)
+-#define IOPRIO_PRIO_MASK	((1UL << IOPRIO_CLASS_SHIFT) - 1)
++#endif
++
++/* The RT and BE I/O priority classes have 8 priority levels 0..7 */
++#ifdef IOPRIO_NR_LEVELS
++# define IOPRIO_PRIO_NUM		IOPRIO_NR_LEVELS
++#else
++# define IOPRIO_PRIO_NUM		8
++#endif
+ 
+-#define IOPRIO_PRIO_CLASS(data)	((data) >> IOPRIO_CLASS_SHIFT)
+-#define IOPRIO_PRIO_LEVEL(data)	((data) & IOPRIO_PRIO_MASK)
+-#define IOPRIO_PRIO_VALUE(class, data)	(((class) << IOPRIO_CLASS_SHIFT) | data)
++#ifndef IOPRIO_PRIO_LEVEL
++# define IOPRIO_PRIO_LEVEL(data)	((data) & IOPRIO_PRIO_MASK)
++#endif
+ 
+ static const char * const to_class_str[] = {
+ 	[IOPRIO_CLASS_NONE] = "NONE",
+-- 
+2.40.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
