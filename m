@@ -4,71 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01392C77B73
-	for <ltp@archiver.kernel.org>; Sun,  4 Jun 2023 09:51:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29757C77B73
+	for <ltp@archiver.kernel.org>; Mon,  5 Jun 2023 06:30:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 70F243CCC0C
-	for <ltp@archiver.kernel.org>; Sun,  4 Jun 2023 11:51:33 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 42DC83CB84E
+	for <ltp@archiver.kernel.org>; Mon,  5 Jun 2023 08:30:30 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2980F3CB881
- for <ltp@lists.linux.it>; Sun,  4 Jun 2023 11:51:23 +0200 (CEST)
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com
- [IPv6:2607:f8b0:4864:20::f2b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id F3AE33CB804
+ for <ltp@lists.linux.it>; Mon,  5 Jun 2023 08:30:19 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 4821E600705
- for <ltp@lists.linux.it>; Sun,  4 Jun 2023 11:51:23 +0200 (CEST)
-Received: by mail-qv1-xf2b.google.com with SMTP id
- 6a1803df08f44-6261367d2f1so29624706d6.3
- for <ltp@lists.linux.it>; Sun, 04 Jun 2023 02:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1685872282; x=1688464282;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=zYzanZ3RY4epTMb+rA9DzLCzNCNbAajOhuDfDo/mPuc=;
- b=SolBnglG+hyGPA6JLFWlosgaSKzQxj+klsUFo/+pGnxK3gyt49nNSZ5EZ+RT6zstvi
- nfWIzvZ/rKZmg9EVOoGqtkRpG56QER/drAT4csLwan5aTAAbHKzwBJCPSdo+YiQKot0Q
- YVq9+w16ArLqkmjnyw4rSekH4RTgXCiMlX5uI5iyQi5wM/gaUMW/sMXH6rH92xN7oBsj
- FyoLgLRO/0AIikn8iCHmeeND/QHSStR+eRVUtI4Zz4QdsQLUSZZKW8Le52jNnGphz+/b
- uZQuZAbLKXQI7jMl5hofDrqY4Z4xgi/ShMpxCGVCIVwm7Xg8q7lz/rN1iIKL4TruVo3Q
- 6oOw==
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BF3C91A0079C
+ for <ltp@lists.linux.it>; Mon,  5 Jun 2023 08:30:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1685946616;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/QeCD4OX5XGbqTh9WySB0nXDPgk5rwEcVga8FOA5gnk=;
+ b=RC7fX/DzMHk4sewlNWBBpK61Qg1709K6d1HTYyZBC3y07QCFlwPlijJWn3IBmb9Q58lmmw
+ CcZtreGbU4ZZY72ik2raPzl8Xb3oPe3LvMQ9/zFMmtZTIx4ckreee+eT3f8n4YN5d58oQf
+ 5mijO1R2QmR9Ik0gfnzoUBnPfph0UeE=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-41-DV8KNeJEO9GYZBkvMMhWrA-1; Mon, 05 Jun 2023 02:30:14 -0400
+X-MC-Unique: DV8KNeJEO9GYZBkvMMhWrA-1
+Received: by mail-lj1-f200.google.com with SMTP id
+ 38308e7fff4ca-2b168e97cdfso30356141fa.2
+ for <ltp@lists.linux.it>; Sun, 04 Jun 2023 23:30:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1685872282; x=1688464282;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=zYzanZ3RY4epTMb+rA9DzLCzNCNbAajOhuDfDo/mPuc=;
- b=X+JWIA1dU+7w7qnDfILup2y2ZxoRqwtQrfMHViRBK0oeo5Qu5s6W176d6ZyB34oIBe
- AH09aa/Zls2X8CxpxpYgRbOwuGIz2PcTypPuDa3pFfgUTjafFSqu+ZYN2EuidxcIBvRk
- SZ1E5JO9TDkog4fBF5mwTLFikq/pwjpG0092Cw6YQBZCA+LNIPmP+Vvg6WjWvcqCkR0j
- sGlO/iCluMJ+eMbDAoRks4oa6z+hHSycA1g3TpJCBLu6ZYkFNM8jjwz+03WAix+Ie8Sg
- EAUQIW0YUNjpfdJ4ZAhmlkkGz0WOcl0HfX0ISXATS0FtawtIJro9hJMYgV7VThps5YCt
- MQiw==
-X-Gm-Message-State: AC+VfDwD8NVYwZNqyT/pQL5/GiZja5naY+25S7kuKsl4qUfj0sdpCSzx
- HzCHnvo+EWgs55I4oRwyPVAtjiF2kMw=
-X-Google-Smtp-Source: ACHHUZ7sAWyv4WhpgflXCJDwijSNKBJT2znDTX+fFWa8JRd3yLGcce+2N7lh3xq/95OjmYtWmp855Q==
-X-Received: by 2002:a05:6214:cce:b0:623:638e:aa20 with SMTP id
- 14-20020a0562140cce00b00623638eaa20mr4444280qvx.51.1685872282058; 
- Sun, 04 Jun 2023 02:51:22 -0700 (PDT)
-Received: from xzhouw.hosts.qa.psi.rdu2.redhat.com ([66.187.232.127])
- by smtp.gmail.com with ESMTPSA id
- d21-20020a0caa15000000b0061b2a2f949bsm3141335qvb.61.2023.06.04.02.51.21
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 04 Jun 2023 02:51:21 -0700 (PDT)
-From: Murphy Zhou <jencce.kernel@gmail.com>
-To: ltp@lists.linux.it
-Date: Sun,  4 Jun 2023 17:51:17 +0800
-Message-Id: <20230604095117.3543342-1-jencce.kernel@gmail.com>
-X-Mailer: git-send-email 2.31.1
+ d=1e100.net; s=20221208; t=1685946613; x=1688538613;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=/QeCD4OX5XGbqTh9WySB0nXDPgk5rwEcVga8FOA5gnk=;
+ b=XLItVDY7BNFlz1fEdoBBYlWU5OTmGco/f0iMQ5H7B1jeW4Xhh/7vk3PQZ2YH7ofbED
+ NTsjnBWKSJZ0FU7Tfw5YEl647M6khwayonGDt5GR/ZFGN6KhzkQFXcZhzLeHD2lcB4Qe
+ quPES3ACv5IMR5t1uoZltZDnrARqWe+zLLzOihJSChqYQmVTF5AlxoTKptFNolVQdgUG
+ 41mEe4q7QDCdep/uNXgIVyxuptN4VW4o0kWn93T3uU48LU0uL8tJQB+DGgJPHk/ZQuin
+ 03GdaCl3iJKxzB9yX4daNLDCj25SVGh6pK897lYxD4o4D0pyEhwaH1/iY4Hy7o43UKst
+ uWkw==
+X-Gm-Message-State: AC+VfDw6OyBDuPYX3Pch/oaf2gJe+I3as0dWN1XfGCTIcUIGg0cTI1EQ
+ HnssXoqE9eqfZLChHYlJOAHW1gmgnVfOX9o7cxNwq5xb2iJ5B/8ep2KF7BCLnd4aOreY+of57oI
+ FlGRgbMgTYf4EPG1XVMm/HJZGJwA=
+X-Received: by 2002:a2e:3a14:0:b0:2ae:e214:482f with SMTP id
+ h20-20020a2e3a14000000b002aee214482fmr3518089lja.52.1685946613271; 
+ Sun, 04 Jun 2023 23:30:13 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ4oG4QzphYZYUmolflEbwGyPxnwUzZ8/GFj2lJT4e4GVbnhH/UUWTWnugOT4a2vnjkkrxe2h04s0giBIoDebVc=
+X-Received: by 2002:a2e:3a14:0:b0:2ae:e214:482f with SMTP id
+ h20-20020a2e3a14000000b002aee214482fmr3518078lja.52.1685946612955; Sun, 04
+ Jun 2023 23:30:12 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+References: <20230604095117.3543342-1-jencce.kernel@gmail.com>
+In-Reply-To: <20230604095117.3543342-1-jencce.kernel@gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 5 Jun 2023 14:30:00 +0800
+Message-ID: <CAEemH2ePfF5hgGQkaBZ=CQ0A=TH6YE3GPgpspCgOPvsyn2Y+nQ@mail.gmail.com>
+To: Murphy Zhou <jencce.kernel@gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] SAFE_MOUNT: print debug info about mounting operation
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] SAFE_MOUNT: print debug info about mounting
+ operation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,48 +87,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
----
- lib/safe_macros.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index af6dd0716..a66285a0e 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -898,7 +898,24 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
- 	       const void *data)
- {
- 	int rval = -1;
-+	char cdir[PATH_MAX], mpath[PATH_MAX];
- 
-+	if (!getcwd(cdir, PATH_MAX)) {
-+		tst_resm(TWARN | TERRNO, "Failed to find current directory");
-+		return 0;
-+	}
-+
-+	rval = snprintf(mpath, PATH_MAX, "%s/%s", cdir, target);
-+	if (rval < 0 || rval >= PATH_MAX) {
-+		tst_resm(TWARN | TERRNO,
-+			 "snprintf() should have returned %d instead of %d",
-+			 PATH_MAX, rval);
-+		return 0;
-+	}
-+
-+	tst_resm_(file, lineno, TINFO,
-+		"Mounting %s to %s fstyp=%s flags=%x",
-+		source, mpath, filesystemtype, mountflags);
- 	/*
- 	 * Don't try using the kernel's NTFS driver when mounting NTFS, since
- 	 * the kernel's NTFS driver doesn't have proper write support.
--- 
-2.31.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgTXVycGh5LAoKVGhpcyBpcyBoZWxwZnVsIGZvciBrbm93aW5nIHRoZSBtb3VudCBpbmZvLgoK
+QnV0IGFzIFNBRkVfTU9VTlQgaXMgbm90IG9ubHkgdXNlZCBmb3IgcmVsYXRpdmUgcGF0aCBidXQK
+bW91bnQgYWJzb2x1dGUgcGF0aCwgc28gd2UnZCBiZXR0ZXIgZGV0ZXJtaW5lIHdoYXQgdGhlICcq
+dGFyZ2V0JwpwYXRoIHR5cGUuCgpIb3cgYWJvdXQgY2hhbmdpbmcgdG8gYmVsb3c6CgogICAgICAg
+aWYgKHRhcmdldFswXSA9PSAnLycpIHsKICAgICAgICAgICAgICAgc3RybmNweShtcGF0aCwgdGFy
+Z2V0LCBQQVRIX01BWC0xKTsKICAgICAgICAgICAgICAgbXBhdGhbUEFUSF9NQVgtMV0gPSAnXDAn
+OwogICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgLi4uLiB5b3VyIHJlbGF0aXZlIHBhdGgg
+Y29kZSAuLi4KICAgICAgIH0KCiAgICAgICB0c3RfcmVzbV8oZmlsZSwgbGluZW5vLCBUSU5GTywK
+ICAgICAgICAgICAgICAgIk1vdW50aW5nICVzIHRvICVzIGZzdHlwPSVzIGZsYWdzPSV4IiwKICAg
+ICAgICAgICAgICAgc291cmNlLCBtcGF0aCwgZmlsZXN5c3RlbXR5cGUsIG1vdW50ZmxhZ3MpOwoK
+Ck9uIFN1biwgSnVuIDQsIDIwMjMgYXQgNTo1MeKAr1BNIE11cnBoeSBaaG91IDxqZW5jY2Uua2Vy
+bmVsQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IFNpZ25lZC1vZmYtYnk6IE11cnBoeSBaaG91IDxqZW5j
+Y2Uua2VybmVsQGdtYWlsLmNvbT4KPiAtLS0KPiAgbGliL3NhZmVfbWFjcm9zLmMgfCAxNyArKysr
+KysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKQo+Cj4gZGlm
+ZiAtLWdpdCBhL2xpYi9zYWZlX21hY3Jvcy5jIGIvbGliL3NhZmVfbWFjcm9zLmMKPiBpbmRleCBh
+ZjZkZDA3MTYuLmE2NjI4NWEwZSAxMDA2NDQKPiAtLS0gYS9saWIvc2FmZV9tYWNyb3MuYwo+ICsr
+KyBiL2xpYi9zYWZlX21hY3Jvcy5jCj4gQEAgLTg5OCw3ICs4OTgsMjQgQEAgaW50IHNhZmVfbW91
+bnQoY29uc3QgY2hhciAqZmlsZSwgY29uc3QgaW50IGxpbmVubywKPiB2b2lkICgqY2xlYW51cF9m
+bikodm9pZCksCj4gICAgICAgICAgICAgICAgY29uc3Qgdm9pZCAqZGF0YSkKPiAgewo+ICAgICAg
+ICAgaW50IHJ2YWwgPSAtMTsKPiArICAgICAgIGNoYXIgY2RpcltQQVRIX01BWF0sIG1wYXRoW1BB
+VEhfTUFYXTsKPgo+ICsgICAgICAgaWYgKCFnZXRjd2QoY2RpciwgUEFUSF9NQVgpKSB7Cj4gKyAg
+ICAgICAgICAgICAgIHRzdF9yZXNtKFRXQVJOIHwgVEVSUk5PLCAiRmFpbGVkIHRvIGZpbmQgY3Vy
+cmVudAo+IGRpcmVjdG9yeSIpOwo+ICsgICAgICAgICAgICAgICByZXR1cm4gMDsKPiArICAgICAg
+IH0KPiArCj4gKyAgICAgICBydmFsID0gc25wcmludGYobXBhdGgsIFBBVEhfTUFYLCAiJXMvJXMi
+LCBjZGlyLCB0YXJnZXQpOwo+ICsgICAgICAgaWYgKHJ2YWwgPCAwIHx8IHJ2YWwgPj0gUEFUSF9N
+QVgpIHsKPiArICAgICAgICAgICAgICAgdHN0X3Jlc20oVFdBUk4gfCBURVJSTk8sCj4gKyAgICAg
+ICAgICAgICAgICAgICAgICAgICJzbnByaW50ZigpIHNob3VsZCBoYXZlIHJldHVybmVkICVkIGlu
+c3RlYWQgb2YKPiAlZCIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgIFBBVEhfTUFYLCBydmFs
+KTsKPiArICAgICAgICAgICAgICAgcmV0dXJuIDA7Cj4gKyAgICAgICB9Cj4gKwoKKyAgICAgICB0
+c3RfcmVzbV8oZmlsZSwgbGluZW5vLCBUSU5GTywKPiArICAgICAgICAgICAgICAgIk1vdW50aW5n
+ICVzIHRvICVzIGZzdHlwPSVzIGZsYWdzPSV4IiwKPiArICAgICAgICAgICAgICAgc291cmNlLCBt
+cGF0aCwgZmlsZXN5c3RlbXR5cGUsIG1vdW50ZmxhZ3MpOwo+ICAgICAgICAgLyoKPiAgICAgICAg
+ICAqIERvbid0IHRyeSB1c2luZyB0aGUga2VybmVsJ3MgTlRGUyBkcml2ZXIgd2hlbiBtb3VudGlu
+ZyBOVEZTLAo+IHNpbmNlCj4gICAgICAgICAgKiB0aGUga2VybmVsJ3MgTlRGUyBkcml2ZXIgZG9l
+c24ndCBoYXZlIHByb3BlciB3cml0ZSBzdXBwb3J0Lgo+IC0tCj4gMi4zMS4xCj4KPgo+IC0tCj4g
+TWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCj4K
+PgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9s
+aXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
