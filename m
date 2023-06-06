@@ -4,59 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A33CBC77B7A
-	for <ltp@archiver.kernel.org>; Tue,  6 Jun 2023 07:19:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C28B7C7EE2A
+	for <ltp@archiver.kernel.org>; Tue,  6 Jun 2023 07:35:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3C4D73CCAC6
-	for <ltp@archiver.kernel.org>; Tue,  6 Jun 2023 09:19:40 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 49B9E3CB6F3
+	for <ltp@archiver.kernel.org>; Tue,  6 Jun 2023 09:35:57 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 789093CB526
- for <ltp@lists.linux.it>; Tue,  6 Jun 2023 09:19:30 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 34D303CB124
+ for <ltp@lists.linux.it>; Tue,  6 Jun 2023 09:35:47 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7294760069D
- for <ltp@lists.linux.it>; Tue,  6 Jun 2023 09:19:29 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 63EA420009A
+ for <ltp@lists.linux.it>; Tue,  6 Jun 2023 09:35:46 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1686035967;
+ s=mimecast20190719; t=1686036945;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=+ZDegfh2aWp1mIahwXEWe5RUVD42djPCgCxMMf/IVWw=;
- b=Kox7glrxvwAfXXNZDyk35cZOVV2GnVdA9yKVGRqF/e5houRQ5B7/laMBO1GfGsuGcljZHI
- CQhgtxx7Y74x28SP5935BrpcMTAoL1S8AIpEJrwOGyN43v+Y8SFWSyF7rqyb4zzgXXjqIW
- 8Jbv6mWe8sVR5HGKmRaHiwIbHVo48BM=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-154-cMRo2jSXNHSpEPKtIwloxg-1; Tue, 06 Jun 2023 03:19:26 -0400
-X-MC-Unique: cMRo2jSXNHSpEPKtIwloxg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com
- [10.11.54.4])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8A88F3C0F425
- for <ltp@lists.linux.it>; Tue,  6 Jun 2023 07:19:25 +0000 (UTC)
-Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
- [10.66.145.229])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 9B8182026D49
- for <ltp@lists.linux.it>; Tue,  6 Jun 2023 07:19:24 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-To: ltp@lists.linux.it
-Date: Tue,  6 Jun 2023 15:19:22 +0800
-Message-Id: <20230606071922.89447-1-liwang@redhat.com>
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xmQebgeuQyA/flpWa7oL90x9AemJ8SVzj2eLaJn8zSQ=;
+ b=WkV7LjNfVqVeBPCMk6S15vWLg99hJN8f3YkduNIlMp+rzd0bKOCBifun1SM7Xwj5Ujym0Z
+ vXcwfDoELpgKZZDhYLf/PvqYcV6EEkzFt29qryRynsRb1vZs41ZRc+PUim3kvwbSCkg6/T
+ qXXCL0I1rqG0XZD6wFBT8H8CKFb9FSc=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-629-2kNWukmoNTqeqvM3_Ll_oQ-1; Tue, 06 Jun 2023 03:35:44 -0400
+X-MC-Unique: 2kNWukmoNTqeqvM3_Ll_oQ-1
+Received: by mail-lf1-f69.google.com with SMTP id
+ 2adb3069b0e04-4f618172ed6so2099155e87.3
+ for <ltp@lists.linux.it>; Tue, 06 Jun 2023 00:35:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1686036942; x=1688628942;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=xmQebgeuQyA/flpWa7oL90x9AemJ8SVzj2eLaJn8zSQ=;
+ b=dNlF5hFxAz/phvcaSYKO1tYtdqFcpLtd/J8oLjLHoigBHojbgMHSHaJa9kQvzYADQY
+ v3rNGGkAjYX2cmwJzBgTGlDrfcVih8LAMV+VleWqtg/0eLpk4Ia9RWEc2kReMoDBmGiD
+ BrxKxbnor/GDQmoDBF5mqkorTWr/3G3R12tdh92JW8w23iyx06SYU9ANFofZVD5TKK29
+ pb3jW5PfqvyDfXFCDoogtoT6eM1tT3hFmJE/0Eivnk6r0HfnP8rwDvCERG8lW0ir0C4E
+ 0jPvcZZ18vvWsvb7KG1pdyJKmiDSLOwAxeFUxfDnfNLTKSQjRpVXrdrSUdjG4rA5oz0j
+ y0Uw==
+X-Gm-Message-State: AC+VfDz1ff+YnRMDMEeEd6jo3k/tpTMNXjluHaiEtsWTgni3hXrzhGpl
+ aBvXPtvH2a8xGN36JDENtq/wKdybdgCEryI8QvugySGK2cwgbVykxUk8EAKm6lVyv7kOzvvuNve
+ WFxeHre1iWO3L94X9314t46hfsrY=
+X-Received: by 2002:ac2:5390:0:b0:4ea:f632:4738 with SMTP id
+ g16-20020ac25390000000b004eaf6324738mr633308lfh.6.1686036942695; 
+ Tue, 06 Jun 2023 00:35:42 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ7GubIWJIIgbCr27gUV6lDUrQTImHz2o1X4fXotxM8bRXa+2k4xqfYVDF5V+iYO+65wL8ekm0qgsQ4DQ6fp6mI=
+X-Received: by 2002:ac2:5390:0:b0:4ea:f632:4738 with SMTP id
+ g16-20020ac25390000000b004eaf6324738mr633301lfh.6.1686036942338; Tue, 06 Jun
+ 2023 00:35:42 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+References: <20230606065100.3873610-1-jencce.kernel@gmail.com>
+In-Reply-To: <20230606065100.3873610-1-jencce.kernel@gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 6 Jun 2023 15:35:30 +0800
+Message-ID: <CAEemH2dE6tGeMWvGVsfQpu5kLi+3cDhzzDYWpXDU1=2T3bpyLg@mail.gmail.com>
+To: Murphy Zhou <jencce.kernel@gmail.com>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] readahead02: set dynamic run time
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] fcntl: fix lock type interpretation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,59 +85,17 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The readahead time-consuming is quit depending on the platform IO
-speed, test get timeout once the default max_runtime is used up.
+Thanks for fixing this, pushed.
 
-  readahead02.c:223: TINFO: Test #1: readahead on overlayfs file
-  ...
-  readahead02.c:286: TINFO: read_testfile(0) took: 63382903 usec
-  readahead02.c:287: TINFO: read_testfile(1) took: 47943122 usec
-  ...
-  readahead02.c:312: TPASS: using cache as expected
-  readahead02.c:223: TINFO: Test #2: POSIX_FADV_WILLNEED on file
-  readahead02.c:128: TINFO: creating test file of size: 67108864
-  readahead02.c:241: TINFO: read_testfile(0)
-  Test timeouted, sending SIGKILL!
-
-Let's raise the maximum runtime dynamically.
-
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/readahead/readahead02.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index b6c097b31..dc03c5931 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -318,6 +318,19 @@ static void test_readahead(unsigned int n)
- 		tst_res(TCONF, "Page cache on your system is too small "
- 			"to hold whole testfile.");
- 	}
-+
-+	/*
-+	 * The time consuming of readahead quite depending on the platform IO
-+	 * speed, sometime test timeout when the default max_runtime is used up.
-+	 *
-+	 *  readahead02.c:221: TINFO: Test #2: POSIX_FADV_WILLNEED on file
-+	 *  readahead02.c:285: TINFO: read_testfile(0) took: 26317623 usec
-+	 *  readahead02.c:286: TINFO: read_testfile(1) took: 26101484 usec
-+	 *
-+	 * Here raise the maximum runtime dynamically.
-+	 */
-+	if ((tc+1)->readahead)
-+		tst_set_max_runtime(test.max_runtime + (usec + usec_ra) / 1000000);
- }
- 
- 
 -- 
-2.40.1
-
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
