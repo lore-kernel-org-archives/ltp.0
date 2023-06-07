@@ -4,69 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BB07C7EE29
-	for <ltp@archiver.kernel.org>; Wed,  7 Jun 2023 06:45:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CF75C7EE25
+	for <ltp@archiver.kernel.org>; Wed,  7 Jun 2023 12:37:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EA2753CC9A1
-	for <ltp@archiver.kernel.org>; Wed,  7 Jun 2023 08:45:00 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 096E63CC9AF
+	for <ltp@archiver.kernel.org>; Wed,  7 Jun 2023 14:37:11 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 891713CAEBC
- for <ltp@lists.linux.it>; Wed,  7 Jun 2023 08:44:52 +0200 (CEST)
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com
- [IPv6:2607:f8b0:4864:20::b2b])
+ by picard.linux.it (Postfix) with ESMTPS id 4206A3CA0BA
+ for <ltp@lists.linux.it>; Wed,  7 Jun 2023 14:37:01 +0200 (CEST)
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com
+ [IPv6:2607:f8b0:4864:20::72a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 06D681A00994
- for <ltp@lists.linux.it>; Wed,  7 Jun 2023 08:44:52 +0200 (CEST)
-Received: by mail-yb1-xb2b.google.com with SMTP id
- 3f1490d57ef6-bb15165ba06so6157264276.2
- for <ltp@lists.linux.it>; Tue, 06 Jun 2023 23:44:51 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B06FD600BB5
+ for <ltp@lists.linux.it>; Wed,  7 Jun 2023 14:37:00 +0200 (CEST)
+Received: by mail-qk1-x72a.google.com with SMTP id
+ af79cd13be357-75d4a4cf24aso402775585a.1
+ for <ltp@lists.linux.it>; Wed, 07 Jun 2023 05:37:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1686120291; x=1688712291;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=fC9SzG1Jo8qjlDTqATejRPZaFzA1EFcsPGNeaBVVYeY=;
- b=s4wZyUtcdGEbP9iGON8a+hSmXUVFeLt84/4JidJTM4UxUSbVkw+b6UsKH6Y3ydtQxv
- 1x2UqSm2D5oZdQaFIdtXslWPG01xfp00bFSJUYYT1128Dgo9XKtZxEC1HxzrlLwILmgD
- q3Uzck/tCPhOXg8pcW31D43InCPxaXIh3PFS6rkPQDN/RxVB2pj6chsjUAu5QpP3hpPc
- tR2pm7P5dkXet+/kuO70YX3I7w38UMDQhjqPs0xM1DSxuIazjyNTHIivvb/8KFbdRLFV
- PMHaCX0nJuliU4P25QzD/bOxk3WON5dGIxZrnX3/Fw6/BkG+hFa3VkzDCk1fqHcZgQkx
- qRTw==
+ d=gmail.com; s=20221208; t=1686141419; x=1688733419;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to;
+ bh=zek13B09uUSNSqpt+aEITUic0aTGgenqBMU1jPaZuWU=;
+ b=ZOiyS8Q7tfr88dukyy3i70Ih2GImb5I4nwHOj69FnZ/LrytB0H1aq8T83h1nSGTL25
+ c6eAu9nOg1BVGqG3S1bcXf5RkzY1ygtq2WbPYkCANPM2aAY48cLkC6z0E9zSyA/cHdda
+ ym638Nlg0mllKTelMEVYWQMDE2Bge2XRzlkA45DBX2TK+flJkJ57sVxf93tRkJRCsqnr
+ F8fXPbiK895BEAsMhJOj7dYkXkNyrG8yC3f9vB7m3wFCHRK7eWlKB7l0oBy59g9u8Lsp
+ xtdRd55OsswTqamKsNCvKS3TJMn8hfgSNLegkYL73cKBvWreBRl1BUXtnxKCZqlnSyDz
+ 06gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1686120291; x=1688712291;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=fC9SzG1Jo8qjlDTqATejRPZaFzA1EFcsPGNeaBVVYeY=;
- b=WIlZw6fcYwotmKdy9pZ184jCz7Dk3meYQAmMW2cLbGOfMWCgBVAR4DCOB8+owb7J3C
- 6WRpfNiBGuhcLemL7QqxFmEAIZcva5BtZgw2FTKTyQt5JnZQilOC5sL36HtTfKSjPuNP
- d9SQNTbCtwepgB4uxvFYDS13pOdzWWO59yWBTiK+/mSy/IMdZM3NyW7GukNJpigDTrMK
- F0IeJKkrrHqb+fVKnA/hXP+9OC+2vnsop1JN1Nh7dle/R//9pmtQJGKUH88si0e5UZbD
- JoyVZJi+05St0p3N2vi7/R3/K65MhKrn+HaB31B9cEcX1mP64DOy2JDCFWeGPfVFVEJY
- o5gA==
-X-Gm-Message-State: AC+VfDyYzSYM+1caR+Psk1K8oSuIYiqSFzHwK0M9mTVlvOXCL6BkOgsq
- WIvbXeG9kWQsNcR5rBuRZpI1eKjrCUA+SwVGIwWyOg==
-X-Google-Smtp-Source: ACHHUZ7GutXQbFHKPBbnEZhSxHDelFdRAHkdL659bT3tnP1IThx27uF/5LWXicgUOyfdyOXVzs6nARvomHKEBUYhWsk=
-X-Received: by 2002:a25:d056:0:b0:bac:854f:abbd with SMTP id
- h83-20020a25d056000000b00bac854fabbdmr4849436ybg.64.1686120290847; Tue, 06
- Jun 2023 23:44:50 -0700 (PDT)
+ d=1e100.net; s=20221208; t=1686141419; x=1688733419;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=zek13B09uUSNSqpt+aEITUic0aTGgenqBMU1jPaZuWU=;
+ b=R/bfsBW7K8fmDkNKrNNqnjfJogIzKRNxBTUhf97WbNhYGCYy/UKEuaEVAlb0JIX3k5
+ 479vyySYgqDb+A2RdeqIqz4hss+pWdrOUlNFoPrKEIeesJrKJvv/iaAIwQviuxJD4/Zy
+ mDEs3NJtAxWZcTTvoIIf/57eamixsXiX79VplNFr2pRILBUiy1f9A1seVKMELlUvNgUw
+ 5MSTYJD2WwfVqiywyTR/cspofjJe2BQbiUE5hkJkPhC9vWCy4g59Y2+PUFwhAbpZIH7K
+ 9bgkK0yPMdsDkFxlqxYMcpEHzVM5hqmpq0P2wzKim1k9sJq1oPaXoOueKoZSFTY2MnGy
+ 0Wvg==
+X-Gm-Message-State: AC+VfDxPOoIRWIZgMTgfL7sSTf8qDayADFmjEdcDfkbmuqradhd+OCes
+ VyF577TulyW9iP+uOXen9BKNElSHYBs=
+X-Google-Smtp-Source: ACHHUZ5m2i6k1Y92kxalyUXruP8Oa3x15flYk6TbyLkAQY0HemT0DymN2+TeABgW8YJFcNNcI7dOow==
+X-Received: by 2002:a05:620a:2856:b0:75b:23a0:d9f6 with SMTP id
+ h22-20020a05620a285600b0075b23a0d9f6mr1738825qkp.76.1686141419155; 
+ Wed, 07 Jun 2023 05:36:59 -0700 (PDT)
+Received: from xzhouw.hosts.qa.psi.rdu2.redhat.com ([66.187.232.127])
+ by smtp.gmail.com with ESMTPSA id
+ o20-20020a0cf4d4000000b00606750abaf9sm6081438qvm.136.2023.06.07.05.36.58
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 07 Jun 2023 05:36:58 -0700 (PDT)
+From: Murphy Zhou <jencce.kernel@gmail.com>
+To: ltp@lists.linux.it
+Date: Wed,  7 Jun 2023 20:36:53 +0800
+Message-Id: <20230607123653.3897079-1-jencce.kernel@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20230605044131.798383-1-dlemoal@kernel.org>
- <20230605044131.798383-3-dlemoal@kernel.org>
-In-Reply-To: <20230605044131.798383-3-dlemoal@kernel.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 7 Jun 2023 08:44:39 +0200
-Message-ID: <CACRpkdaBinsAofvQgLZ5u8ScR0+yWPnQCf6E7CPtn598PN0eoQ@mail.gmail.com>
-To: Damien Le Moal <dlemoal@kernel.org>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] ioprio: Use IOPRIO_PRIO_NUM to check prio
- range
+Subject: [LTP] [PATCH v2] safe_mount: safe_umount: print debug info about
+ the operation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,19 +80,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Niklas Cassel <niklas.cassel@wdc.com>, ltp <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBKdW4gNSwgMjAyMyBhdCA2OjQx4oCvQU0gRGFtaWVuIExlIE1vYWwgPGRsZW1vYWxA
-a2VybmVsLm9yZz4gd3JvdGU6Cgo+IFVzZSB0aGUgbWFjcm8gSU9QUklPX1BSSU9fTlVNIGluIHBy
-aW9faW5fcmFuZ2UoKSB0byBjaGVjayB0aGUgdXBwZXIKPiBib3VuZCBvZiB0aGUgdmFsaWQgcmFu
-Z2UgZm9yIHByaW9yaXR5IGxldmVscy4gU2ltaWxhcmx5LCBpbiB0aGUgdGVzdAo+IGNhc2UgaW9w
-cmlvX3NldDAzLCB1c2UgdGhpcyBtYWNybyB0byBjaGVjayBmb3IgZmFpbHVyZXMgd2hlbiB0aGUg
-dXNlcgo+IGF0dGVtcHRzIHVzaW5nIGEgcHJpb3JpdHkgbGV2ZWwgb3V0IG9mIHJhbmdlLgo+Cj4g
-U2lnbmVkLW9mZi1ieTogRGFtaWVuIExlIE1vYWwgPGRsZW1vYWxAa2VybmVsLm9yZz4KClJldmll
-d2VkLWJ5OiBMaW51cyBXYWxsZWlqIDxsaW51cy53YWxsZWlqQGxpbmFyby5vcmc+CgpZb3VycywK
-TGludXMgV2FsbGVpagoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4
-Lml0L2xpc3RpbmZvL2x0cAo=
+Make the source and the target to mount/umount visible. It's
+good for debugging.
+
+Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
+---
+ lib/safe_macros.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index af6dd0716..6add92f06 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -898,7 +898,15 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
+ 	       const void *data)
+ {
+ 	int rval = -1;
++	char mpath[PATH_MAX];
+ 
++	if (!realpath(target, mpath))
++		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
++			"realpath(%s, s) failed", target);
++
++	tst_resm_(file, lineno, TINFO,
++		"Mounting %s to %s fstyp=%s flags=%lx",
++		source, mpath, filesystemtype, mountflags);
+ 	/*
+ 	 * Don't try using the kernel's NTFS driver when mounting NTFS, since
+ 	 * the kernel's NTFS driver doesn't have proper write support.
+@@ -948,6 +956,13 @@ int safe_umount(const char *file, const int lineno, void (*cleanup_fn)(void),
+ 		const char *target)
+ {
+ 	int rval;
++	char mpath[PATH_MAX];
++
++	if (!realpath(target, mpath))
++		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
++			"realpath(%s, s) failed", target);
++
++	tst_resm_(file, lineno, TINFO, "Umounting %s", mpath);
+ 
+ 	rval = tst_umount(target);
+ 
+-- 
+2.31.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
