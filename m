@@ -4,71 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CF75C7EE25
-	for <ltp@archiver.kernel.org>; Wed,  7 Jun 2023 12:37:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B7E0C7EE25
+	for <ltp@archiver.kernel.org>; Wed,  7 Jun 2023 14:45:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 096E63CC9AF
-	for <ltp@archiver.kernel.org>; Wed,  7 Jun 2023 14:37:11 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 6D0173CCE09
+	for <ltp@archiver.kernel.org>; Wed,  7 Jun 2023 16:45:30 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4206A3CA0BA
- for <ltp@lists.linux.it>; Wed,  7 Jun 2023 14:37:01 +0200 (CEST)
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com
- [IPv6:2607:f8b0:4864:20::72a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 1C7563CAEF8
+ for <ltp@lists.linux.it>; Wed,  7 Jun 2023 16:45:20 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B06FD600BB5
- for <ltp@lists.linux.it>; Wed,  7 Jun 2023 14:37:00 +0200 (CEST)
-Received: by mail-qk1-x72a.google.com with SMTP id
- af79cd13be357-75d4a4cf24aso402775585a.1
- for <ltp@lists.linux.it>; Wed, 07 Jun 2023 05:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1686141419; x=1688733419;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=zek13B09uUSNSqpt+aEITUic0aTGgenqBMU1jPaZuWU=;
- b=ZOiyS8Q7tfr88dukyy3i70Ih2GImb5I4nwHOj69FnZ/LrytB0H1aq8T83h1nSGTL25
- c6eAu9nOg1BVGqG3S1bcXf5RkzY1ygtq2WbPYkCANPM2aAY48cLkC6z0E9zSyA/cHdda
- ym638Nlg0mllKTelMEVYWQMDE2Bge2XRzlkA45DBX2TK+flJkJ57sVxf93tRkJRCsqnr
- F8fXPbiK895BEAsMhJOj7dYkXkNyrG8yC3f9vB7m3wFCHRK7eWlKB7l0oBy59g9u8Lsp
- xtdRd55OsswTqamKsNCvKS3TJMn8hfgSNLegkYL73cKBvWreBRl1BUXtnxKCZqlnSyDz
- 06gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1686141419; x=1688733419;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=zek13B09uUSNSqpt+aEITUic0aTGgenqBMU1jPaZuWU=;
- b=R/bfsBW7K8fmDkNKrNNqnjfJogIzKRNxBTUhf97WbNhYGCYy/UKEuaEVAlb0JIX3k5
- 479vyySYgqDb+A2RdeqIqz4hss+pWdrOUlNFoPrKEIeesJrKJvv/iaAIwQviuxJD4/Zy
- mDEs3NJtAxWZcTTvoIIf/57eamixsXiX79VplNFr2pRILBUiy1f9A1seVKMELlUvNgUw
- 5MSTYJD2WwfVqiywyTR/cspofjJe2BQbiUE5hkJkPhC9vWCy4g59Y2+PUFwhAbpZIH7K
- 9bgkK0yPMdsDkFxlqxYMcpEHzVM5hqmpq0P2wzKim1k9sJq1oPaXoOueKoZSFTY2MnGy
- 0Wvg==
-X-Gm-Message-State: AC+VfDxPOoIRWIZgMTgfL7sSTf8qDayADFmjEdcDfkbmuqradhd+OCes
- VyF577TulyW9iP+uOXen9BKNElSHYBs=
-X-Google-Smtp-Source: ACHHUZ5m2i6k1Y92kxalyUXruP8Oa3x15flYk6TbyLkAQY0HemT0DymN2+TeABgW8YJFcNNcI7dOow==
-X-Received: by 2002:a05:620a:2856:b0:75b:23a0:d9f6 with SMTP id
- h22-20020a05620a285600b0075b23a0d9f6mr1738825qkp.76.1686141419155; 
- Wed, 07 Jun 2023 05:36:59 -0700 (PDT)
-Received: from xzhouw.hosts.qa.psi.rdu2.redhat.com ([66.187.232.127])
- by smtp.gmail.com with ESMTPSA id
- o20-20020a0cf4d4000000b00606750abaf9sm6081438qvm.136.2023.06.07.05.36.58
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 07 Jun 2023 05:36:58 -0700 (PDT)
-From: Murphy Zhou <jencce.kernel@gmail.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 78CA1600AF9
+ for <ltp@lists.linux.it>; Wed,  7 Jun 2023 16:45:19 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 46D8D219F2
+ for <ltp@lists.linux.it>; Wed,  7 Jun 2023 14:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1686149118; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=lXUKPPD94v0hYcns1uOsZD/q4JhXleUgpsYsNsYWmPg=;
+ b=p3BMcdYZrEQBkT/JvbghuM3STVtQEzn7czXqL79DVlVh48HosIQru4sgyw3NAAzjtK/ADL
+ 7/+PQss31ZJe1I2MAzUu2++RwA3ywtFc1Pe4D3PIh+ncSKH8Gb1HUKYvDMf2iscgqFokWh
+ PKpQ76kBe1tHcYXyYSa423Mh/r3npK0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1686149118;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=lXUKPPD94v0hYcns1uOsZD/q4JhXleUgpsYsNsYWmPg=;
+ b=GAL61+Ko2X9vpJlyn5beNalZlVl4Gwfjm0r7r1lZC+CsGP90EKHRTEs0lrx/1kuObpXS/V
+ oYjOX2cP1l1I4TBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 36C2613776
+ for <ltp@lists.linux.it>; Wed,  7 Jun 2023 14:45:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id XrSNDP6XgGQeFgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Wed, 07 Jun 2023 14:45:18 +0000
+From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed,  7 Jun 2023 20:36:53 +0800
-Message-Id: <20230607123653.3897079-1-jencce.kernel@gmail.com>
-X-Mailer: git-send-email 2.31.1
+Date: Wed,  7 Jun 2023 16:45:17 +0200
+Message-Id: <20230607144517.24972-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] safe_mount: safe_umount: print debug info about
- the operation
+Subject: [LTP] [PATCH] syscalls/madvise11: Ignore unpoison failure under
+ kernel lockdown
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,50 +77,49 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Make the source and the target to mount/umount visible. It's
-good for debugging.
+When newer kernels are under lockdown, the unpoison-pfn sysfile
+still appears writable to root but open() will always return EPERM.
+This causes madvise11 to fail with TWARN during cleanup when run
+with SecureBoot enabled.
 
-Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
+Ignore the open(unpoison-pfn) failure due to lockdown and exit
+successfully without cleanup. The test should not be skipped because
+the leftover soft-offlined pages can trigger failures in later tests
+and indirectly expose kernel bugs in hwpoison.
+
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- lib/safe_macros.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ testcases/kernel/syscalls/madvise/madvise11.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index af6dd0716..6add92f06 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -898,7 +898,15 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
- 	       const void *data)
- {
- 	int rval = -1;
-+	char mpath[PATH_MAX];
+diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
+index 2cb45d00a..e63e28f8a 100644
+--- a/testcases/kernel/syscalls/madvise/madvise11.c
++++ b/testcases/kernel/syscalls/madvise/madvise11.c
+@@ -323,7 +323,20 @@ static int open_unpoison_pfn(void)
+ 	if (!mnt)
+ 		return -1;
  
-+	if (!realpath(target, mpath))
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"realpath(%s, s) failed", target);
+-	return SAFE_OPEN(debugfs_fp, O_WRONLY);
++	TEST(open(debugfs_fp, O_WRONLY));
 +
-+	tst_resm_(file, lineno, TINFO,
-+		"Mounting %s to %s fstyp=%s flags=%lx",
-+		source, mpath, filesystemtype, mountflags);
- 	/*
- 	 * Don't try using the kernel's NTFS driver when mounting NTFS, since
- 	 * the kernel's NTFS driver doesn't have proper write support.
-@@ -948,6 +956,13 @@ int safe_umount(const char *file, const int lineno, void (*cleanup_fn)(void),
- 		const char *target)
- {
- 	int rval;
-+	char mpath[PATH_MAX];
++	if (TST_RET == -1 && TST_ERR == EPERM && tst_lockdown_enabled()) {
++		tst_res(TINFO,
++			"Cannot restore soft-offlined memory due to lockdown");
++		return TST_RET;
++	}
 +
-+	if (!realpath(target, mpath))
-+		tst_brkm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"realpath(%s, s) failed", target);
++	if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "open(%s) failed", debugfs_fp);
++	else if (TST_RET < 0)
++		tst_brk(TBROK | TTERRNO, "Invalid open() return value");
 +
-+	tst_resm_(file, lineno, TINFO, "Umounting %s", mpath);
++	return TST_RET;
+ }
  
- 	rval = tst_umount(target);
- 
+ /*
 -- 
-2.31.1
+2.40.0
 
 
 -- 
