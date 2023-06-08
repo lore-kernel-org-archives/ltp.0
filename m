@@ -4,72 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F221EC7EE29
-	for <ltp@archiver.kernel.org>; Thu,  8 Jun 2023 07:40:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A12FC7EE25
+	for <ltp@archiver.kernel.org>; Thu,  8 Jun 2023 09:14:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D1CC3CB2E7
-	for <ltp@archiver.kernel.org>; Thu,  8 Jun 2023 09:40:06 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id B26033CB2C6
+	for <ltp@archiver.kernel.org>; Thu,  8 Jun 2023 11:14:44 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2D9063CA775
- for <ltp@lists.linux.it>; Thu,  8 Jun 2023 09:39:53 +0200 (CEST)
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com
- [IPv6:2607:f8b0:4864:20::b2a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id D71AB3C9EE7
+ for <ltp@lists.linux.it>; Thu,  8 Jun 2023 11:14:33 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C5CB61000B5C
- for <ltp@lists.linux.it>; Thu,  8 Jun 2023 09:39:52 +0200 (CEST)
-Received: by mail-yb1-xb2a.google.com with SMTP id
- 3f1490d57ef6-bacf9edc87bso387127276.1
- for <ltp@lists.linux.it>; Thu, 08 Jun 2023 00:39:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1686209991; x=1688801991;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=yz/E2VWJ5V3HmEgOLYeR6IO/Q/HhuRBlj6aoRXxOxo4=;
- b=glVQPU/JJY4wNO75UJD7HcBgLNtbUILiRQGfF0zAawopjZY07YL/1AG+EjFXQ7Jo0V
- 8qs10z7gcC+Bku7EiFjtnrkniWfppmSiAXy0rsIm18kvu7Mu6JuKKxSBHzLk3hJqxDF5
- +vBy5sTXhVYxk6xOucgdOSSd3q5JpcL9Ggx89qgQABXobs+tsdUobL0u5WJrmYOSuRy6
- Yl5C9wnXNVgUD6g6b0QQbToxIAdUUfx7trdZhlg14qIblipe+Cn+zf4da0c97L0SRvt3
- TBOIwk2FUKz0sYlN/IyWQt0vRnzxa/I77lE5kcbOgzy/6ONCpqTFvTMEmhr+UydjDGBQ
- OVsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1686209991; x=1688801991;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=yz/E2VWJ5V3HmEgOLYeR6IO/Q/HhuRBlj6aoRXxOxo4=;
- b=HCX9ABtcDxhQXkodA5GJViJldAjY/6kFwCFIc0Xd68tokiriSrOWIi+x5d0wny9v/k
- g27iXbFe8XEvPGYgglmFS8aOuwUkN34PTCqsH6QOyk3meS6jU2NRLT0AvN+szCgDcek9
- 9bAH2dJdDYoh3bVGYV1/93QfVGJHHU4lOLw40GkSr/FjxU8X/4Usi6Rlf88y3EY6WzNv
- qX6vzmrKif9waw+XEzr8RDYK5j89U8b665iKy5w/CL47swr4HUDgZR0SUGJrd31MztQK
- CjXfgNoz8dWFWWeicULCM2pu5NMoe5EDxWBQujLKJXrT46Iz/ut15NoiLKegllksEuMZ
- KhFA==
-X-Gm-Message-State: AC+VfDwLLPI1OUMuW+7ebaAzD03w5leQA9rvkQ6cEyIN+DGIpknAu3ou
- iTkMfmZSTwJWTIPmUEyE4HUaGxOVE74M5zTTGfer5A==
-X-Google-Smtp-Source: ACHHUZ6tMgsx1WYGP+3Yfxf+SNvqyT5E83oYjRNnnFZ3V7w6/SvTIQ9BriJaB2cdGlTcLg7grFYrKew/RaX382uuyXE=
-X-Received: by 2002:a0d:cd04:0:b0:568:f405:cbfe with SMTP id
- p4-20020a0dcd04000000b00568f405cbfemr8727360ywd.47.1686209991542; Thu, 08 Jun
- 2023 00:39:51 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8E3311000B78
+ for <ltp@lists.linux.it>; Thu,  8 Jun 2023 11:14:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1686215671;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=QbqBfe8iGdckh7iJJ358rNk4jiX8haoSxkKSFsYyJ/4=;
+ b=HtY/vfpHCPMPfuYXTr+PTVXsC92PYgNrCQqd6vlJmnSNd088U2kWEiq6jjs85FBPYcUO2G
+ IfLQModB/Lrsbdvb1zESf20P4Gz5RYQlTqyNOT7hrtg83cguhU7QPitA2NuN3EfL6adkhH
+ oqksu7U+qojlIrxDt9JLO2Tsg+wjtBU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-596-qaFtH4cZNcKOjPgtrZ3TIw-1; Thu, 08 Jun 2023 05:14:29 -0400
+X-MC-Unique: qaFtH4cZNcKOjPgtrZ3TIw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.5])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 63C33811E96
+ for <ltp@lists.linux.it>; Thu,  8 Jun 2023 09:14:29 +0000 (UTC)
+Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
+ [10.66.145.229])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 7596B9E8D
+ for <ltp@lists.linux.it>; Thu,  8 Jun 2023 09:14:28 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu,  8 Jun 2023 17:14:26 +0800
+Message-Id: <20230608091426.107673-1-liwang@redhat.com>
 MIME-Version: 1.0
-References: <20230605044131.798383-1-dlemoal@kernel.org>
- <20230605044131.798383-3-dlemoal@kernel.org>
- <CACRpkdaBinsAofvQgLZ5u8ScR0+yWPnQCf6E7CPtn598PN0eoQ@mail.gmail.com>
- <0347361d-1676-3fb3-da73-da54657ad8f9@kernel.org>
-In-Reply-To: <0347361d-1676-3fb3-da73-da54657ad8f9@kernel.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 8 Jun 2023 09:39:40 +0200
-Message-ID: <CACRpkdaD3xM=Z0xTzHa+yH-wZ+LyhrSb3ZzGzkGdnboCaHw_+A@mail.gmail.com>
-To: Damien Le Moal <dlemoal@kernel.org>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] ioprio: Use IOPRIO_PRIO_NUM to check prio
- range
+Subject: [LTP] [PATCH] preadv203: guarantee the subloop exit timely
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,19 +69,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Niklas Cassel <niklas.cassel@wdc.com>, ltp <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBKdW4gOCwgMjAyMyBhdCAyOjU14oCvQU0gRGFtaWVuIExlIE1vYWwgPGRsZW1vYWxA
-a2VybmVsLm9yZz4gd3JvdGU6Cgo+IFRoYW5rcyBMaW51cyAhCj4KPiBNYXkgSSBhbHNvIGFzayBm
-b3IgeW91ciByZXZpZXcgb2YgdGhlIGtlcm5lbCBpb3ByaW8gQVBJIHBhdGNoID8KPiBJdCBpcyBo
-ZXJlOgo+Cj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtYmxvY2svMjAyMzA1MzAwNjEz
-MDcuNTI1NjQ0LTEtZGxlbW9hbEBrZXJuZWwub3JnLwoKU2FkbHkgSSBkb24ndCBoYXZlIHRoaXMg
-cGF0Y2ggaW4gbXkgaW5ib3gsIGJlY2F1c2UgaXQgYXBwZWFycyBJIGZlbGwKb2ZmIHRoZSBibG9j
-ayBtYWlsaW5nIGxpc3QgYW5kIHdhc24ndCBvbiBUbyBvciBDYy4gSWYgeW91IHJlc2VuZAp0aGVu
-IGluY2x1ZGUgbWUgb24gQ0MgYW5kIEknbGwgaGF2ZSBhIGxvb2shCgpZb3VycywKTGludXMgV2Fs
-bGVpagoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3Rp
-bmZvL2x0cAo=
+We observed that timeout is still occasionally happening even with
+introducing the tst_remaining_runtime. The likely reason is that
+writer_thread needs more time in subloop.
+
+Here exit it instantly when stop set to 1.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/preadv2/preadv203.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/preadv2/preadv203.c b/testcases/kernel/syscalls/preadv2/preadv203.c
+index 25c6e1c2e..c87deb674 100644
+--- a/testcases/kernel/syscalls/preadv2/preadv203.c
++++ b/testcases/kernel/syscalls/preadv2/preadv203.c
+@@ -159,7 +159,7 @@ static void *writer_thread(void *unused)
+ 	while (!stop) {
+ 		int fd = fds[random() % FILES];
+ 
+-		for (j = 0; j < CHUNKS; j++) {
++		for (j = 0; j < CHUNKS && !stop; j++) {
+ 			memset(buf, '0' + j, sizeof(buf));
+ 
+ 			off_t off = CHUNK_SZ * j;
+-- 
+2.40.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
