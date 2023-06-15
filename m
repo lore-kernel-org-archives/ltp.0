@@ -4,43 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B6F7EB64D9
-	for <ltp@archiver.kernel.org>; Thu, 15 Jun 2023 09:40:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90FEEEB64D9
+	for <ltp@archiver.kernel.org>; Thu, 15 Jun 2023 14:28:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 87B253CC5C2
-	for <ltp@archiver.kernel.org>; Thu, 15 Jun 2023 11:40:04 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id BB2163CE3AD
+	for <ltp@archiver.kernel.org>; Thu, 15 Jun 2023 16:28:00 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 143B13CA927
- for <ltp@lists.linux.it>; Thu, 15 Jun 2023 11:39:53 +0200 (CEST)
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
- [60.248.80.70])
+ by picard.linux.it (Postfix) with ESMTPS id 616CC3CA927
+ for <ltp@lists.linux.it>; Thu, 15 Jun 2023 16:27:51 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 390696006D1
- for <ltp@lists.linux.it>; Thu, 15 Jun 2023 11:39:50 +0200 (CEST)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
- by Atcsqr.andestech.com with ESMTP id 35F9dcfN080659;
- Thu, 15 Jun 2023 17:39:38 +0800 (+08)
- (envelope-from dylan@andestech.com)
-Received: from atctrx.andestech.com (10.0.15.173) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Thu, 15 Jun 2023
- 17:39:36 +0800
-From: Dylan Jhong <dylan@andestech.com>
-To: <ltp@lists.linux.it>
-Date: Thu, 15 Jun 2023 17:39:33 +0800
-Message-ID: <20230615093933.3185297-1-dylan@andestech.com>
-X-Mailer: git-send-email 2.34.1
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CE6B410005B4
+ for <ltp@lists.linux.it>; Thu, 15 Jun 2023 16:27:50 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3AB2D1FE0F;
+ Thu, 15 Jun 2023 14:27:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1686839268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BKwUYDyW1XBAw5a1zLVgpdcFHiSa23f/19dTNlrwrJo=;
+ b=vXWyTq1NTaCg1KF7nX0hW5ctED26r49SlKD9Z8ZNra+FSGX1050kSmL3ExxJvttznHeEjT
+ 6gqRPbqauND3JDK+C7NNZApMz4SPDSVW+bAXsAqnAyvbmutWf1hfbkMffZ1pSNpHXoZ3ja
+ NS9vu6CnF7+wWvfGsB7o7j6QZiDDlnA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1686839268;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BKwUYDyW1XBAw5a1zLVgpdcFHiSa23f/19dTNlrwrJo=;
+ b=i4rPU4ZD7fk2271ejpWW6xbL9VaK70iiOhe7ipZkUfihv+a3G/8gqcIJ97jlSTF1sWxJvN
+ 6I6Kz0odfIbfdhCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1F61613A32;
+ Thu, 15 Jun 2023 14:27:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Dr+oBuQfi2TLdAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 15 Jun 2023 14:27:48 +0000
+Message-ID: <f847e7db-f894-4ce8-6ea5-95817531ea89@suse.cz>
+Date: Thu, 15 Jun 2023 16:27:47 +0200
 MIME-Version: 1.0
-X-Originating-IP: [10.0.15.173]
-X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 35F9dcfN080659
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+To: Hongchen Zhang <zhanghongchen@loongson.cn>, Cyril Hrubis
+ <chrubis@suse.cz>, Petr Vorel <petr.vorel@gmail.com>
+References: <20230609012740.19097-1-zhanghongchen@loongson.cn>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20230609012740.19097-1-zhanghongchen@loongson.cn>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] hugeshmctl02: Skipped EFAULT tests for libc variant
+Subject: Re: [LTP] [PATCH] cpuset_memory_spread: change lowerlimit to 5000kb
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -52,105 +79,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: minachou@andestech.com, tim609@andestech.com, x5710999x@gmail.com
-Content-Type: text/plain; charset="us-ascii"
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-When testing hugeshmctl02 under the 32bit architecture, a segmentation fault
-will occur. This patch will skip EFAULT tests for libc variant.
+Hi,
 
-Hugeshmctl02 will intentionally pass "(struct shmid_ds *)-1" to shmctl(), but
-glibc will perform an additional conversion function when the architecture is
-32bit, which will try to copy all items in (struct shmid_ds *) to another
-structure[*1]. In the process of copying, it is necessary to dereference
-"(struct shmid_ds *)-1", resulting in segmentation fault.
+On 09. 06. 23 3:27, Hongchen Zhang wrote:
+> When I test the cpuset_memory_spread case,this case FAIL too often.
+> After dig into the code, I find out that the fowlloing things trigger
+> the FAIL:
+> 1) random events,the probability is very small and can be ignored
+> 2) get_meminfo which before send signal to test_pid
+> 3) account_memsinfo before result_check
+> 
+> About 2) and 3), we can increase the value of lowerlimit to keep
+> the result as SUCCESS.After my testing, 5000kb is a reasonable value.
 
-The LTP also has similar problems before, this patch is reference from the
-shmctl03 patch[*2].
+we're also seeing these failures but only on architectures like PowerPC 
+with pagesize higher than the usual 4KB. On which architectures do you 
+see failures and what's the pagesize there?
 
-[*1]: https://github.com/bminor/glibc/blob/master/sysdeps/unix/sysv/linux/shmctl.c#L37
-[*2]: https://github.com/linux-test-project/ltp/commit/a5a80aa8485a7cb017f96aba8d7b5ea79f1ba4d4
+> Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+> ---
+>   .../cpuset_memory_spread_test/cpuset_memory_spread_testset.sh   | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+> index e2767ef05..d33468525 100755
+> --- a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+> +++ b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+> @@ -38,7 +38,7 @@ nr_mems=$N_NODES
+>   # on which it is running. The other nodes' slab space has littler change.(less
+>   # than 1000 kb).
+>   upperlimit=10000
+> -lowerlimit=2000
+> +lowerlimit=5000
+>   
+>   cpus_all="$(seq -s, 0 $((nr_cpus-1)))"
+>   mems_all="$(seq -s, 0 $((nr_mems-1)))"
 
-Signed-off-by: Dylan Jhong <dylan@andestech.com>
----
- .../mem/hugetlb/hugeshmctl/hugeshmctl02.c     | 35 ++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-index 0bc9ffd74..e9c2e9fc8 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-@@ -27,6 +27,7 @@
- #include <pwd.h>
- #include <limits.h>
- #include "hugetlb.h"
-+#include "lapi/syscalls.h"
- 
- static size_t shm_size;
- static int shm_id_1 = -1;
-@@ -50,9 +51,37 @@ struct tcase {
- 	{&shm_id_2, -1, &buf, EINVAL},
- };
- 
-+static int libc_shmctl(int shmid, int cmd, void *buf)
-+{
-+	return shmctl(shmid, cmd, buf);
-+}
-+
-+static int sys_shmctl(int shmid, int cmd, void *buf)
-+{
-+	return tst_syscall(__NR_shmctl, shmid, cmd, buf);
-+}
-+
-+static struct test_variants
-+{
-+	int (*shmctl)(int shmid, int cmd, void *buf);
-+	char *desc;
-+} variants[] = {
-+	{ .shmctl = libc_shmctl, .desc = "libc shmctl()"},
-+#if (__NR_shmctl != __LTP__NR_INVALID_SYSCALL)
-+	{ .shmctl = sys_shmctl,  .desc = "__NR_shmctl syscall"},
-+#endif
-+};
-+
- static void test_hugeshmctl(unsigned int i)
- {
--	TEST(shmctl(*(tcases[i].shmid), tcases[i].cmd, tcases[i].sbuf));
-+	struct test_variants *tv = &variants[tst_variant];
-+
-+	if (tcases[i].error == EFAULT && tv->shmctl == libc_shmctl) {
-+		tst_res(TCONF, "EFAULT is skipped for libc variant");
-+		return;
-+	}
-+
-+	TEST(tv->shmctl(*(tcases[i].shmid), tcases[i].cmd, tcases[i].sbuf));
- 	if (TST_RET != -1) {
- 		tst_res(TFAIL, "shmctl succeeded unexpectedly");
- 		return;
-@@ -70,8 +99,11 @@ static void test_hugeshmctl(unsigned int i)
- 
- static void setup(void)
- {
-+	struct test_variants *tv = &variants[tst_variant];
- 	long hpage_size;
- 
-+	tst_res(TINFO, "Testing variant: %s", tv->desc);
-+
- 	if (tst_hugepages == 0)
- 		tst_brk(TCONF, "No enough hugepages for testing.");
- 
-@@ -101,6 +133,7 @@ static void cleanup(void)
- 
- static struct tst_test test = {
- 	.test = test_hugeshmctl,
-+	.test_variants = ARRAY_SIZE(variants),
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.needs_root = 1,
- 	.needs_tmpdir = 1,
 -- 
-2.34.1
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 
 -- 
