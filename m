@@ -4,56 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E6BAC7EE29
-	for <ltp@archiver.kernel.org>; Fri,  9 Jun 2023 01:28:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71A85EB64D8
+	for <ltp@archiver.kernel.org>; Thu, 15 Jun 2023 01:25:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1431C3CBB6A
-	for <ltp@archiver.kernel.org>; Fri,  9 Jun 2023 03:28:25 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 927663CE451
+	for <ltp@archiver.kernel.org>; Thu, 15 Jun 2023 03:25:02 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F25533C9BD3
- for <ltp@lists.linux.it>; Fri,  9 Jun 2023 03:28:13 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
- by in-6.smtp.seeweb.it (Postfix) with ESMTP id 1B7741400FBC
- for <ltp@lists.linux.it>; Fri,  9 Jun 2023 03:28:09 +0200 (CEST)
-Received: from loongson.cn (unknown [10.180.13.185])
- by gateway (Coremail) with SMTP id _____8CxPuskgIJkvtQAAA--.2706S3;
- Fri, 09 Jun 2023 09:28:05 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.180.13.185])
- by localhost.localdomain (Coremail) with SMTP id
- AQAAf8DxK8oTgIJkw10JAA--.20505S2; 
- Fri, 09 Jun 2023 09:28:04 +0800 (CST)
-From: Hongchen Zhang <zhanghongchen@loongson.cn>
-To: Cyril Hrubis <chrubis@suse.cz>,
-	Petr Vorel <petr.vorel@gmail.com>
-Date: Fri,  9 Jun 2023 09:27:40 +0800
-Message-Id: <20230609012740.19097-1-zhanghongchen@loongson.cn>
-X-Mailer: git-send-email 2.20.1
+ by picard.linux.it (Postfix) with ESMTPS id BAF043CA927
+ for <ltp@lists.linux.it>; Thu, 15 Jun 2023 03:24:52 +0200 (CEST)
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com
+ [IPv6:2607:f8b0:4864:20::830])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 01A63256FC9
+ for <ltp@lists.linux.it>; Thu, 15 Jun 2023 03:24:51 +0200 (CEST)
+Received: by mail-qt1-x830.google.com with SMTP id
+ d75a77b69052e-3f9aa383527so25100311cf.1
+ for <ltp@lists.linux.it>; Wed, 14 Jun 2023 18:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20221208; t=1686792290; x=1689384290;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:from:to:cc:subject:date:message-id:reply-to;
+ bh=OWo64G3AvLJlw+0f7BhNnend17SE0KLI4wJ4x8UhzSA=;
+ b=q6wBprx3/bfpMP1P44y3P/WGNuZfWx1A5fcCm+tbYQhh5E6n/EV+ZCl0jw5CzFgH4P
+ /fO6RLhN44FBa35dlDE47j4yQnxMaCcexo6b8ARrgBLk4Q5HsP2u9RZgvGVdZzx/M1NP
+ HoIzQnNcx9K+x0Ee+f16VTYC/AE+XQu7k0Prp1+9v+7/PAcBacdURjIcbJD49eMVOwja
+ y2zG+QH2pitq5mhC1HOLSqVq9kndvp8GsC29ONckrHl/B7Sva9OCGssefnKmdGheR46A
+ 6dlzLVx0Soy42jEvOFMapk8s7/3IS0ZzyPp+tjfe0zgZ08RW5zxqkB8fNohGHMyz13FM
+ 6uJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1686792290; x=1689384290;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:to
+ :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=OWo64G3AvLJlw+0f7BhNnend17SE0KLI4wJ4x8UhzSA=;
+ b=ETREuH/O7GQm1qheJI9O68kfgvxr5WfGZakaSwHt9V9M/w+7GZnYzmCx2CnHd3k/iU
+ B+FGkSXD2Ki3XywX68AjILlkgVfEiT39qdzJnQYRvt1PBST0Isb8oRlaKJzINw5HFY7i
+ O1i0dsSrc2PgsxqrYD8dpmJDxD7AoHPQW6pGxd5KM87xXXkwNahV70wde3gDt9wYEz4x
+ fRVGPeK8Mp0ViGk1di8K8kLKwKZJ5pQaEyUZmWFx377xkxUZmesHtfkgiwMovv34Jlsl
+ Y/KiXSr51ML7JYUSXxNPty4LCP0pGbkGiaBrsIHEbTkjEamOpb9rg1gBbMjY/mO4/sFl
+ bUpA==
+X-Gm-Message-State: AC+VfDw4qhYRoXZ/xg9d0GeoBWxdmdr+YZphvXEmL8Q7L2UAjBES9/hG
+ VfXXWvz6lCI86hn8XEKunekSxA2XAwA=
+X-Google-Smtp-Source: ACHHUZ7hzaGCRCrZUv2iXXsGrqMqnra8J5CPHOkQFteXdBoe4maI7EzhWv+zYO9buIpy9zsKEIZVEA==
+X-Received: by 2002:a05:622a:11cd:b0:3f4:f210:95a9 with SMTP id
+ n13-20020a05622a11cd00b003f4f21095a9mr3885761qtk.64.1686792290487; 
+ Wed, 14 Jun 2023 18:24:50 -0700 (PDT)
+Received: from xzhouw.hosts.qa.psi.rdu2.redhat.com ([66.187.232.127])
+ by smtp.gmail.com with ESMTPSA id
+ ay9-20020a05622a228900b003f7a54fa72fsm5643172qtb.0.2023.06.14.18.24.50
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 14 Jun 2023 18:24:50 -0700 (PDT)
+From: Murphy Zhou <jencce.kernel@gmail.com>
+To: ltp@lists.linux.it
+Date: Thu, 15 Jun 2023 09:24:45 +0800
+Message-Id: <20230615012445.4184243-1-jencce.kernel@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-CM-TRANSID: AQAAf8DxK8oTgIJkw10JAA--.20505S2
-X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAQB2SAc4EZjwAFsT
-X-Coremail-Antispam: 1Uk129KBj93XoW7Ww1DZF47XFW3Wr43WF1xWFX_yoW8Gw4kpF
- 1fC3yDK3Z0qFnrCa1xC3Z0yr10va45XF48uFZxC3WDZrZxJa15CF18Jrs8JFyjqr1YgFyY
- ka4xCwsruasrJFbCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
- sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
- 0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
- IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
- e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
- 0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
- Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
- 8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AK
- xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
- vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
- jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
- x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
- 8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
- 0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UNvtZUUUUU=
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] cpuset_memory_spread: change lowerlimit to 5000kb
+Subject: [LTP] [PATCH v3] safe_mount: safe_umount: print debug info about
+ the operation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,42 +80,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, Hongchen Zhang <zhanghongchen@loongson.cn>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-When I test the cpuset_memory_spread case,this case FAIL too often.
-After dig into the code, I find out that the fowlloing things trigger
-the FAIL:
-1) random events,the probability is very small and can be ignored
-2) get_meminfo which before send signal to test_pid
-3) account_memsinfo before result_check
+Make the source and the target to mount/umount visible. It's
+good for debugging.
 
-About 2) and 3), we can increase the value of lowerlimit to keep
-the result as SUCCESS.After my testing, 5000kb is a reasonable value.
-
-Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
 ---
- .../cpuset_memory_spread_test/cpuset_memory_spread_testset.sh   | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v3:
+  Apply suggestions from Li and Martin. Thanks very much!
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-index e2767ef05..d33468525 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
-@@ -38,7 +38,7 @@ nr_mems=$N_NODES
- # on which it is running. The other nodes' slab space has littler change.(less
- # than 1000 kb).
- upperlimit=10000
--lowerlimit=2000
-+lowerlimit=5000
+ lib/safe_macros.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index af6dd0716..26f9136af 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -898,7 +898,16 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
+ 	       const void *data)
+ {
+ 	int rval = -1;
++	char mpath[PATH_MAX];
  
- cpus_all="$(seq -s, 0 $((nr_cpus-1)))"
- mems_all="$(seq -s, 0 $((nr_mems-1)))"
++	if (realpath(target, mpath)) {
++		tst_resm_(file, lineno, TINFO,
++			"Mounting %s to %s fstyp=%s flags=%lx",
++			source, mpath, filesystemtype, mountflags);
++	} else {
++		tst_resm_(file, lineno, TBROK | TERRNO, cleanup_fn,
++			"Cannot resolve the absolute path of %s", target);
++	}
+ 	/*
+ 	 * Don't try using the kernel's NTFS driver when mounting NTFS, since
+ 	 * the kernel's NTFS driver doesn't have proper write support.
+@@ -948,6 +957,14 @@ int safe_umount(const char *file, const int lineno, void (*cleanup_fn)(void),
+ 		const char *target)
+ {
+ 	int rval;
++	char mpath[PATH_MAX];
++
++	if (realpath(target, mpath)) {
++		tst_resm_(file, lineno, TINFO, "Umounting %s", mpath);
++	} else {
++		tst_resm_(file, lineno, TBROK | TERRNO, cleanup_fn,
++			"Cannot resolve the absolute path of %s", target);
++	}
+ 
+ 	rval = tst_umount(target);
+ 
 -- 
-2.33.0
+2.31.1
 
 
 -- 
