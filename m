@@ -4,71 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71A85EB64D8
-	for <ltp@archiver.kernel.org>; Thu, 15 Jun 2023 01:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C42FEB64D9
+	for <ltp@archiver.kernel.org>; Thu, 15 Jun 2023 07:53:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 927663CE451
-	for <ltp@archiver.kernel.org>; Thu, 15 Jun 2023 03:25:02 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id EAEC53CC5C2
+	for <ltp@archiver.kernel.org>; Thu, 15 Jun 2023 09:53:28 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BAF043CA927
- for <ltp@lists.linux.it>; Thu, 15 Jun 2023 03:24:52 +0200 (CEST)
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com
- [IPv6:2607:f8b0:4864:20::830])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A26B53CB39B
+ for <ltp@lists.linux.it>; Thu, 15 Jun 2023 09:53:18 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 01A63256FC9
- for <ltp@lists.linux.it>; Thu, 15 Jun 2023 03:24:51 +0200 (CEST)
-Received: by mail-qt1-x830.google.com with SMTP id
- d75a77b69052e-3f9aa383527so25100311cf.1
- for <ltp@lists.linux.it>; Wed, 14 Jun 2023 18:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1686792290; x=1689384290;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=OWo64G3AvLJlw+0f7BhNnend17SE0KLI4wJ4x8UhzSA=;
- b=q6wBprx3/bfpMP1P44y3P/WGNuZfWx1A5fcCm+tbYQhh5E6n/EV+ZCl0jw5CzFgH4P
- /fO6RLhN44FBa35dlDE47j4yQnxMaCcexo6b8ARrgBLk4Q5HsP2u9RZgvGVdZzx/M1NP
- HoIzQnNcx9K+x0Ee+f16VTYC/AE+XQu7k0Prp1+9v+7/PAcBacdURjIcbJD49eMVOwja
- y2zG+QH2pitq5mhC1HOLSqVq9kndvp8GsC29ONckrHl/B7Sva9OCGssefnKmdGheR46A
- 6dlzLVx0Soy42jEvOFMapk8s7/3IS0ZzyPp+tjfe0zgZ08RW5zxqkB8fNohGHMyz13FM
- 6uJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1686792290; x=1689384290;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=OWo64G3AvLJlw+0f7BhNnend17SE0KLI4wJ4x8UhzSA=;
- b=ETREuH/O7GQm1qheJI9O68kfgvxr5WfGZakaSwHt9V9M/w+7GZnYzmCx2CnHd3k/iU
- B+FGkSXD2Ki3XywX68AjILlkgVfEiT39qdzJnQYRvt1PBST0Isb8oRlaKJzINw5HFY7i
- O1i0dsSrc2PgsxqrYD8dpmJDxD7AoHPQW6pGxd5KM87xXXkwNahV70wde3gDt9wYEz4x
- fRVGPeK8Mp0ViGk1di8K8kLKwKZJ5pQaEyUZmWFx377xkxUZmesHtfkgiwMovv34Jlsl
- Y/KiXSr51ML7JYUSXxNPty4LCP0pGbkGiaBrsIHEbTkjEamOpb9rg1gBbMjY/mO4/sFl
- bUpA==
-X-Gm-Message-State: AC+VfDw4qhYRoXZ/xg9d0GeoBWxdmdr+YZphvXEmL8Q7L2UAjBES9/hG
- VfXXWvz6lCI86hn8XEKunekSxA2XAwA=
-X-Google-Smtp-Source: ACHHUZ7hzaGCRCrZUv2iXXsGrqMqnra8J5CPHOkQFteXdBoe4maI7EzhWv+zYO9buIpy9zsKEIZVEA==
-X-Received: by 2002:a05:622a:11cd:b0:3f4:f210:95a9 with SMTP id
- n13-20020a05622a11cd00b003f4f21095a9mr3885761qtk.64.1686792290487; 
- Wed, 14 Jun 2023 18:24:50 -0700 (PDT)
-Received: from xzhouw.hosts.qa.psi.rdu2.redhat.com ([66.187.232.127])
- by smtp.gmail.com with ESMTPSA id
- ay9-20020a05622a228900b003f7a54fa72fsm5643172qtb.0.2023.06.14.18.24.50
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 14 Jun 2023 18:24:50 -0700 (PDT)
-From: Murphy Zhou <jencce.kernel@gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 76C3D14060B9
+ for <ltp@lists.linux.it>; Thu, 15 Jun 2023 09:53:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1686815596;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=0nuLMINj+4FZiHL3iTg9F+E+5MjmUOhHHWPDDvLwmnc=;
+ b=ItnV0PYkpzYQoi1R3kx9UnujWesu0F6apQOcJjVLRJypojIGj3a6PgKiS7coRhCSXuPdjz
+ XZzO15KhzkB82asYBHaFVqeMiacjTdWMqoSpgw6zFrtHhnFLv4MWQAPrFdlhwHMOTTrZj2
+ dfrV5Hy5iFGodAPf7hSGGtsfJ2LMqfo=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-284-d5KKVR49PuWs47h52cGGvQ-1; Thu, 15 Jun 2023 03:53:11 -0400
+X-MC-Unique: d5KKVR49PuWs47h52cGGvQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.6])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4FE24299E764;
+ Thu, 15 Jun 2023 07:53:11 +0000 (UTC)
+Received: from liwang-workstation.lab.eng.nay.redhat.com (unknown
+ [10.66.145.229])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 6BE9C2166B37;
+ Thu, 15 Jun 2023 07:53:09 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
 To: ltp@lists.linux.it
-Date: Thu, 15 Jun 2023 09:24:45 +0800
-Message-Id: <20230615012445.4184243-1-jencce.kernel@gmail.com>
-X-Mailer: git-send-email 2.31.1
+Date: Thu, 15 Jun 2023 15:53:07 +0800
+Message-Id: <20230615075307.157688-1-liwang@redhat.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] safe_mount: safe_umount: print debug info about
- the operation
+Subject: [LTP] [PATCH] tst_fill_fs: drop safe_macro from fill_flat_vec
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,60 +69,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Shizhao Chen <shichen@redhat.com>,
+ Richard Palethorpe <rpalethorpe@suse.com>, Dave Chinner <dchinner@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Make the source and the target to mount/umount visible. It's
-good for debugging.
+LTP fs_fill is trying to spawn nCPUS thread to create corresponding
+subdirectories and completely fill them. But in the invoke function
+tst_fill_fs(, TST_FILL_BLOCKS) -> fill_flat_vec() which has SAFE_MACROs
+to break the open behavior once fs is filled with ENOSPC return.
 
-Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
+The failure like there aren't enough free inodes in the filesystem for
+the tst_fs_fill test program to create it's set of "AOF" data files.
+
+  4108	tst_test.c:1634: TINFO: === Testing on xfs ===
+  4109	tst_test.c:1094: TINFO: Formatting /dev/loop0 with xfs opts='' extra opts=''
+  4110	fs_fill.c:108: TINFO: Running 98 writer threads
+  4111	tst_fill_fs.c:77: TBROK: openat(89</mnt/testarea/ltp-wGg0XNSHcr/LTP_fs_XLxrLh/mntpoint/thread84>, 'AOF', 101, 600): ENOSPC (28)
+  4112	tst_fill_fs.c:77: TBROK: openat(87</mnt/testarea/ltp-wGg0XNSHcr/LTP_fs_XLxrLh/mntpoint/thread83>, 'AOF', 101, 600): ENOSPC (28)
+  4113	tst_fill_fs.c:77: TWARN: openat(85</mnt/testarea/ltp-wGg0XNSHcr/LTP_fs_XLxrLh/mntpoint/thread82>, 'AOF', 101, 600): ENOSPC (28)
+  4114	tst_fill_fs.c:77: TWARN: openat(3</mnt/testarea/ltp-wGg0XNSHcr/LTP_fs_XLxrLh/mntpoint/thread81>, 'AOF', 101, 600): ENOSPC (28)
+
+This patch is just to convert the fill_flat_vec() to ignore ENOSPC like
+fill_randome() in opening subdirectories.
+
+Reported-by: Shizhao Chen <shichen@redhat.com>
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Dave Chinner <dchinner@redhat.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 ---
-v3:
-  Apply suggestions from Li and Martin. Thanks very much!
+ lib/tst_fill_fs.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
- lib/safe_macros.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index af6dd0716..26f9136af 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -898,7 +898,16 @@ int safe_mount(const char *file, const int lineno, void (*cleanup_fn)(void),
- 	       const void *data)
- {
- 	int rval = -1;
-+	char mpath[PATH_MAX];
+diff --git a/lib/tst_fill_fs.c b/lib/tst_fill_fs.c
+index b9d29755a..243eb279f 100644
+--- a/lib/tst_fill_fs.c
++++ b/lib/tst_fill_fs.c
+@@ -73,12 +73,29 @@ void fill_random(const char *path, int verbose)
  
-+	if (realpath(target, mpath)) {
-+		tst_resm_(file, lineno, TINFO,
-+			"Mounting %s to %s fstyp=%s flags=%lx",
-+			source, mpath, filesystemtype, mountflags);
-+	} else {
-+		tst_resm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Cannot resolve the absolute path of %s", target);
-+	}
- 	/*
- 	 * Don't try using the kernel's NTFS driver when mounting NTFS, since
- 	 * the kernel's NTFS driver doesn't have proper write support.
-@@ -948,6 +957,14 @@ int safe_umount(const char *file, const int lineno, void (*cleanup_fn)(void),
- 		const char *target)
+ void fill_flat_vec(const char *path, int verbose)
  {
- 	int rval;
-+	char mpath[PATH_MAX];
+-	int dir = SAFE_OPEN(path, O_PATH | O_DIRECTORY);
+-	int fd = SAFE_OPENAT(dir, "AOF", O_WRONLY | O_CREAT, 0600);
++	int dir, fd;
+ 	struct iovec iov[512];
+ 	int iovcnt = ARRAY_SIZE(iov);
+ 	int retries = 3;
+ 
++	dir = open(path, O_PATH | O_DIRECTORY);
++	if (dir == -1) {
++		if (errno == ENOSPC) {
++			tst_res(TINFO | TERRNO, "open()");
++			return;
++		}
++		tst_brk(TBROK | TERRNO, "open(%s, %d) failed", path, O_PATH | O_DIRECTORY);
++	}
 +
-+	if (realpath(target, mpath)) {
-+		tst_resm_(file, lineno, TINFO, "Umounting %s", mpath);
-+	} else {
-+		tst_resm_(file, lineno, TBROK | TERRNO, cleanup_fn,
-+			"Cannot resolve the absolute path of %s", target);
++	fd = openat(dir, "AOF", O_WRONLY | O_CREAT, 0600);
++	if (fd == -1) {
++		if (errno == ENOSPC) {
++			tst_res(TINFO | TERRNO, "openat()");
++			return;
++		}
++		tst_brk(TBROK | TERRNO, "openat(%s, %d, 0600) failed", dir, O_PATH | O_DIRECTORY);
 +	}
++
+ 	SAFE_CLOSE(dir);
  
- 	rval = tst_umount(target);
- 
+ 	for (int i = 0; i < iovcnt; i++) {
 -- 
-2.31.1
+2.40.1
 
 
 -- 
