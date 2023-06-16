@@ -4,63 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFAD2EB64D7
-	for <ltp@archiver.kernel.org>; Fri, 16 Jun 2023 10:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91BB0EB64D7
+	for <ltp@archiver.kernel.org>; Fri, 16 Jun 2023 12:28:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ABE0E3CBEFE
-	for <ltp@archiver.kernel.org>; Fri, 16 Jun 2023 12:14:07 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0B7203CC889
+	for <ltp@archiver.kernel.org>; Fri, 16 Jun 2023 14:28:07 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 16BE73CBBCC
- for <ltp@lists.linux.it>; Fri, 16 Jun 2023 12:13:55 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
- by in-4.smtp.seeweb.it (Postfix) with ESMTP id C3B0F100093F
- for <ltp@lists.linux.it>; Fri, 16 Jun 2023 12:13:52 +0200 (CEST)
-Received: from loongson.cn (unknown [10.180.13.185])
- by gateway (Coremail) with SMTP id _____8DxAOndNYxkJfAFAA--.10936S3;
- Fri, 16 Jun 2023 18:13:50 +0800 (CST)
-Received: from [10.180.13.185] (unknown [10.180.13.185])
- by localhost.localdomain (Coremail) with SMTP id
- AQAAf8AxZuTdNYxk1i0dAA--.17250S3; 
- Fri, 16 Jun 2023 18:13:49 +0800 (CST)
-To: Martin Doucha <mdoucha@suse.cz>, Cyril Hrubis <chrubis@suse.cz>,
- Petr Vorel <petr.vorel@gmail.com>
-References: <20230609012740.19097-1-zhanghongchen@loongson.cn>
- <f847e7db-f894-4ce8-6ea5-95817531ea89@suse.cz>
- <5b76add3-4bdf-a1e3-d09c-734f2bdeb9f5@loongson.cn>
- <a4057bbd-1ff0-5bd4-8573-7872b23f20ce@suse.cz>
-From: Hongchen Zhang <zhanghongchen@loongson.cn>
-Message-ID: <8d553b8e-88ba-79c5-2dfe-893a82be1046@loongson.cn>
-Date: Fri, 16 Jun 2023 18:13:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by picard.linux.it (Postfix) with ESMTPS id CA8EE3CB67C
+ for <ltp@lists.linux.it>; Fri, 16 Jun 2023 14:27:56 +0200 (CEST)
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com
+ [IPv6:2607:f8b0:4864:20::b29])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 03179200980
+ for <ltp@lists.linux.it>; Fri, 16 Jun 2023 14:27:56 +0200 (CEST)
+Received: by mail-yb1-xb29.google.com with SMTP id
+ 3f1490d57ef6-bd5f59fb71dso583328276.3
+ for <ltp@lists.linux.it>; Fri, 16 Jun 2023 05:27:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20221208; t=1686918475; x=1689510475;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=qZIOeZQxRinJkYETFW7PV8FVIlGuGC79GHDg0uovKEo=;
+ b=hqtG3tuomyLU6f7k7InXeywLNdnKYhtPATcTNfIHo/b01F1QjIkTxffwNDH0mIEPuQ
+ hWOvi7jOdpLZ+NxpJPRyYL+iBH0+djQ8lk1D0J/I1pRV68J7J6KFA6HI5NWiN9/b9Kyl
+ 5aiyYGs2a3zyS2lTt6GTFSjPSlvr3zGlABTs5ymqDFBDizoHpkcSosxce6PiV69nIw/P
+ XtpWwThHGWuRrvrLisZi9YYImyTF8CqM8TINdCxP32+oNtGXHT1dTaJfiyRQNufzOwU2
+ 6prtFp8K4qB119lboWqfCfkTN3pVIWPHgkHT3K1BuChjwatysFDK5IR76OFOl0m2ahug
+ 2clQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1686918475; x=1689510475;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=qZIOeZQxRinJkYETFW7PV8FVIlGuGC79GHDg0uovKEo=;
+ b=cWERt97jlE9sP73O7ve/rv8zpAayrQEkhRrH7AgDzUPEEZf6klDn2cPrqHx5aZJm4c
+ 8FdrveVfkqcVd0MxsT9ekSbOIvwmbHeE3D7RZs6gMSc+taTehjwfgrY2GJoYtetr82ez
+ dO6KkWX3BKUlyw9ZJ1XdJ3+sCWyAl2GfSGitXcVQWFHIt7PKW5rYOJyI8vn16Muw3dg5
+ lcOqy2+76H2jHe2knA6tE+Atgki7xoFKbG22wT6NsLcEcurrDP2eIqECxTJ+Tf5DwXNn
+ IfyWp0ydLM6m0NPzyQ5GxcPMmQqgldemyp59tuYxyyDm6cBCnEZK4FIPf8QNw3qhz1N7
+ uYOQ==
+X-Gm-Message-State: AC+VfDzstc8KgXmBy00jKuC+/ZI0/dJMFMItRgwiD4nmrYxyGBoS7KAR
+ /Y6qvre/cV4D18ZH2pphrCDE0YiMWEmmR99q5szZIUug
+X-Google-Smtp-Source: ACHHUZ5Y5eSZ4tAV3PGZKeVqvdfRBEQRa9InDZhse+Py4ggjWVedRmtKgHivjD0NY4uxHbL5eUNh8mp8ekI0DswdwKQ=
+X-Received: by 2002:a25:ad44:0:b0:bcc:bf43:b969 with SMTP id
+ l4-20020a25ad44000000b00bccbf43b969mr1996816ybe.65.1686918474748; Fri, 16 Jun
+ 2023 05:27:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a4057bbd-1ff0-5bd4-8573-7872b23f20ce@suse.cz>
-Content-Language: en-US
-X-CM-TRANSID: AQAAf8AxZuTdNYxk1i0dAA--.17250S3
-X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAEB2SK-4IcRwABsL
-X-Coremail-Antispam: 1Uk129KBj93XoW7CFy7Ar4rGr1UJw4kWF4kuFX_yoW8GFWkpF
- Z7Ka4jqr1kGF47Cr4Iv3W2vryIyry5JF4UXrySgry7J3Z8uana9r18JrWY93ZrAwn3G3y0
- ka12qa9rWa43ZagCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
- sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
- 0xBIdaVrnRJUUU9ab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
- IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
- e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
- 0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
- xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
- 1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
- 67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
- AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C2
- 67AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
- 8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWU
- CwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
- 1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsG
- vfC2KfnxnUUI43ZEXa7IU1QVy3UUUUU==
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+References: <20230615012445.4184243-1-jencce.kernel@gmail.com>
+ <CAEemH2f2Rrco5fSMsmezY5sUJtM2vZpm619d5+v6Kjyhwcm1CQ@mail.gmail.com>
+ <2ee08acc-2b36-99ca-b891-0928a92ed4df@suse.cz>
+ <CAEemH2fy7gOBTB+idU051oQ1xR6vG=JH-L3a+wscXAJdMiZcTQ@mail.gmail.com>
+In-Reply-To: <CAEemH2fy7gOBTB+idU051oQ1xR6vG=JH-L3a+wscXAJdMiZcTQ@mail.gmail.com>
+From: Murphy Zhou <jencce.kernel@gmail.com>
+Date: Fri, 16 Jun 2023 20:27:43 +0800
+Message-ID: <CADJHv_s7F-LrvCo4tHf_VmxREoz4T18ah7-r2CHbwf6zRj0NzQ@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] cpuset_memory_spread: change lowerlimit to 5000kb
+Subject: Re: [LTP] [PATCH v3] safe_mount: safe_umount: print debug info
+ about the operation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,49 +82,44 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
-
-On 2023/6/16 pm 5:31, Martin Doucha wrote:
-> On 16. 06. 23 4:10, Hongchen Zhang wrote:
->> Hi Martin,
->>
->> On 2023/6/15 pm 10:27, Martin Doucha wrote:
->>> Hi,
->>>
->>> On 09. 06. 23 3:27, Hongchen Zhang wrote:
->>>> When I test the cpuset_memory_spread case,this case FAIL too often.
->>>> After dig into the code, I find out that the fowlloing things trigger
->>>> the FAIL:
->>>> 1) random events,the probability is very small and can be ignored
->>>> 2) get_meminfo which before send signal to test_pid
->>>> 3) account_memsinfo before result_check
->>>>
->>>> About 2) and 3), we can increase the value of lowerlimit to keep
->>>> the result as SUCCESS.After my testing, 5000kb is a reasonable value.
->>>
->>> we're also seeing these failures but only on architectures like 
->>> PowerPC with pagesize higher than the usual 4KB. On which 
->>> architectures do you see failures and what's the pagesize there?
->> I test on 3C5000+7A2000 machine, the architecture is LoongArch.The 
->> pagesize we used is 16KB.
-> 
-> So the underlying cause is the same - higher pagesize. That means the 
-> upperlimit, lowerlimit and DATAFILE size should be calculated from 
-> pagesize instead.IMO,upperlimit and DATAFILE size will not affect the result.
-Change the lowerlimit like following?
-lowerlimit = 2000kb*get_pagesize()/SIZE_4K;
-But I have no idea which formula can we use.
-Any suggestion?
-> 
-
-Best Regards
-Hongchen Zhang
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+TXkgYmFkLi4gSSBzaG91bGQgaGF2ZSBjaGFuZ2VkIGl0IHRvIFRJTkZPfFRFUlJOTy4uIFRoYW5r
+cyBhbGwhCgpPbiBGcmksIEp1biAxNiwgMjAyMyBhdCA1OjIz4oCvUE0gTGkgV2FuZyA8bGl3YW5n
+QHJlZGhhdC5jb20+IHdyb3RlOgo+Cj4KPgo+IE9uIEZyaSwgSnVuIDE2LCAyMDIzIGF0IDQ6Mzji
+gK9QTSBNYXJ0aW4gRG91Y2hhIDxtZG91Y2hhQHN1c2UuY3o+IHdyb3RlOgo+Pgo+PiBPbiAxNi4g
+MDYuIDIzIDQ6NTAsIExpIFdhbmcgd3JvdGU6Cj4+ID4gT24gVGh1LCBKdW4gMTUsIDIwMjMgYXQg
+OToyNOKAr0FNIE11cnBoeSBaaG91IDxqZW5jY2Uua2VybmVsQGdtYWlsLmNvbT4gd3JvdGU6Cj4+
+ID4KPj4gPj4gTWFrZSB0aGUgc291cmNlIGFuZCB0aGUgdGFyZ2V0IHRvIG1vdW50L3Vtb3VudCB2
+aXNpYmxlLiBJdCdzCj4+ID4+IGdvb2QgZm9yIGRlYnVnZ2luZy4KPj4gPj4KPj4gPj4gU2lnbmVk
+LW9mZi1ieTogTXVycGh5IFpob3UgPGplbmNjZS5rZXJuZWxAZ21haWwuY29tPgo+PiA+PiAtLS0K
+Pj4gPj4gdjM6Cj4+ID4+ICAgIEFwcGx5IHN1Z2dlc3Rpb25zIGZyb20gTGkgYW5kIE1hcnRpbi4g
+VGhhbmtzIHZlcnkgbXVjaCEKPj4gPj4KPj4gPj4gICBsaWIvc2FmZV9tYWNyb3MuYyB8IDE3ICsr
+KysrKysrKysrKysrKysrCj4+ID4+ICAgMSBmaWxlIGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKykK
+Pj4gPj4KPj4gPj4gZGlmZiAtLWdpdCBhL2xpYi9zYWZlX21hY3Jvcy5jIGIvbGliL3NhZmVfbWFj
+cm9zLmMKPj4gPj4gaW5kZXggYWY2ZGQwNzE2Li4yNmY5MTM2YWYgMTAwNjQ0Cj4+ID4+IC0tLSBh
+L2xpYi9zYWZlX21hY3Jvcy5jCj4+ID4+ICsrKyBiL2xpYi9zYWZlX21hY3Jvcy5jCj4+ID4+IEBA
+IC04OTgsNyArODk4LDE2IEBAIGludCBzYWZlX21vdW50KGNvbnN0IGNoYXIgKmZpbGUsIGNvbnN0
+IGludCBsaW5lbm8sCj4+ID4+IHZvaWQgKCpjbGVhbnVwX2ZuKSh2b2lkKSwKPj4gPj4gICAgICAg
+ICAgICAgICAgIGNvbnN0IHZvaWQgKmRhdGEpCj4+ID4+ICAgewo+PiA+PiAgICAgICAgICBpbnQg
+cnZhbCA9IC0xOwo+PiA+PiArICAgICAgIGNoYXIgbXBhdGhbUEFUSF9NQVhdOwo+PiA+Pgo+PiA+
+PiArICAgICAgIGlmIChyZWFscGF0aCh0YXJnZXQsIG1wYXRoKSkgewo+PiA+PiArICAgICAgICAg
+ICAgICAgdHN0X3Jlc21fKGZpbGUsIGxpbmVubywgVElORk8sCj4+ID4+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICJNb3VudGluZyAlcyB0byAlcyBmc3R5cD0lcyBmbGFncz0lbHgiLAo+PiA+PiAr
+ICAgICAgICAgICAgICAgICAgICAgICBzb3VyY2UsIG1wYXRoLCBmaWxlc3lzdGVtdHlwZSwgbW91
+bnRmbGFncyk7Cj4+ID4+ICsgICAgICAgfSBlbHNlIHsKPj4gPj4gKyAgICAgICAgICAgICAgIHRz
+dF9yZXNtXyhmaWxlLCBsaW5lbm8sIFRCUk9LIHwgVEVSUk5PLCBjbGVhbnVwX2ZuLAo+PiA+Pgo+
+PiA+Cj4+ID4gRm9yZ2V0IHRvIG1lbnRpb24gdGhhdCwgdGhpcyBzaG91bGQgYmUgdHN0X2Jya21f
+KC4uLCBUQlJPSyB8IFRFUlJOTywgLi4uKSwKPj4gPiBJIG1hbnVhbGx5IGZpeCBpdCBhbmQgcHVz
+aGVkLgo+Pgo+PiBJIHRob3VnaHQgbXkgcmV2aWV3IG9mIHRoZSB2MiBwYXRjaCB3YXMgY2xlYXIg
+ZW5vdWdoIHRoYXQgYm90aCBicmFuY2hlcwo+PiBvZiB0aGlzIGNvbmRpdGlvbiBzaG91bGQgY2Fs
+bCB0c3RfcmVzbV8oLi4uIFRJTkZPIC4uLikuIFRoZXJlIGlzIG5vCj4+IHJlYXNvbiB0byBmYWls
+IHRoZSB0ZXN0IGhlcmUuCj4KPgo+IEFoLCBzb3JyeSBmb3Igb3Zlcmxvb2tpbmcgdGhhdC4gSSBz
+YXcgaGVyZSB0aGF0IHVzZWQgdHN0X3Jlc21fKCAuLi5UQlJLIC4uLikKPiB3aGljaCBpcyBub3Qg
+dGhlIGNvcnJlY3QgdXNhZ2UuIFNvIEkgZ3Vlc3MgaGUgbWlnaHQgd2FudCB0c3RfYnJrbV8oKSwK
+PiBidXQgYW55d2F5IHlvdSBhcmUgcmlnaHQuIExldCdzIGZpeCBpdCBpbiBhIHNlcGFyYXRlIHBh
+dGNoLgo+Cj4KPiAtLQo+IFJlZ2FyZHMsCj4gTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZv
+OiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
