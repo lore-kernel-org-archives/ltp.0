@@ -4,80 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91876EB64D7
-	for <ltp@archiver.kernel.org>; Fri, 16 Jun 2023 09:23:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 333D4EB64DA
+	for <ltp@archiver.kernel.org>; Fri, 16 Jun 2023 09:31:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C588A3CBBFF
-	for <ltp@archiver.kernel.org>; Fri, 16 Jun 2023 11:23:33 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 08F4E3CC522
+	for <ltp@archiver.kernel.org>; Fri, 16 Jun 2023 11:31:52 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 106883CBAF3
- for <ltp@lists.linux.it>; Fri, 16 Jun 2023 11:23:22 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 4BB3B3CB0C9
+ for <ltp@lists.linux.it>; Fri, 16 Jun 2023 11:31:41 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E38F71A009AE
- for <ltp@lists.linux.it>; Fri, 16 Jun 2023 11:23:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1686907400;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A56361400323
+ for <ltp@lists.linux.it>; Fri, 16 Jun 2023 11:31:40 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B20191FDEB;
+ Fri, 16 Jun 2023 09:31:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1686907899; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=af356s1A1fML+hjsfl/hF7DN/WwK9wtt5gV+n+/qp/Y=;
- b=hPKrTCdsnmTdHqCkS8QU8jc3xmDucAw+NTo0nlP57loe+XXYQhP/AxMWw93r6Rx8Z5AV+s
- RSSHlT3WF1Dk7E1tGJjTJQ0aTJBM0VDIBYA01R53NVpHuAgjDLY5iOwIHqa4qt0wwh7oq0
- yWG57rFzSpNz+iqHwPeKCkav574AARc=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-442-KSJtw3ojO3qhx743_he9ww-1; Fri, 16 Jun 2023 05:23:17 -0400
-X-MC-Unique: KSJtw3ojO3qhx743_he9ww-1
-Received: by mail-lj1-f200.google.com with SMTP id
- 38308e7fff4ca-2b1bbe83720so3576441fa.0
- for <ltp@lists.linux.it>; Fri, 16 Jun 2023 02:23:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1686907395; x=1689499395;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=af356s1A1fML+hjsfl/hF7DN/WwK9wtt5gV+n+/qp/Y=;
- b=fqGELb3jcwtA2xT03d6F1Q+ACpHwTfXcEfHrL79cUnll8nfWDlhs7+LQwfuupCATCu
- Mfs6NblweTmYLw21LkK6/DOTLPrTxSqqo61WrC5tYUuf6QOwT5i9IVsEBpry4b6PkiJV
- 5307KD0+fqh3pIfi7n1ioYsZetF8ifdRTZN+i277mkHN6Cc7ssFw6YDnwf+/kEmlnBQK
- rTXyC3XbcAVF6CHKgyYcGWBJ5w9Kni6SPPpICopeaOWdLWPZ017ZZTwJRQTajJS0dmXj
- oIniJeXx+8RY62+7gv63Mvp/ia86oPvA9WXok/fvF1k4QCT8ZKxhWBVi3HnYhQnCuQoo
- a5eQ==
-X-Gm-Message-State: AC+VfDz7GC9LdZBeklib49VGbUEQKF6IyqTBF1ifp3OGFi2httXb4jVT
- 7j4q8IxS2ay97pXoM1qGaKK683zmYm9NnmenKwH24il5HenkCzhcHFUuQp1kJd9IyvmD3Bwwzac
- 4EabcSf8+YBkmpnNx+rvOl93W3HQ=
-X-Received: by 2002:a2e:9297:0:b0:2b3:451c:5998 with SMTP id
- d23-20020a2e9297000000b002b3451c5998mr1304198ljh.18.1686907395807; 
- Fri, 16 Jun 2023 02:23:15 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6DVFsSpWcaVkzSQQCaMJ/THtrKPRupX2Wn+Xs8OFoD45/0lR6DOlsDEcirqopLTF+MOfIXLrc4w+6GXRr2uU8=
-X-Received: by 2002:a2e:9297:0:b0:2b3:451c:5998 with SMTP id
- d23-20020a2e9297000000b002b3451c5998mr1304179ljh.18.1686907395439; Fri, 16
- Jun 2023 02:23:15 -0700 (PDT)
+ bh=NMD3aBe7euzXrJTvXeyLyAt2rW+RuXrIrJ77w0JK9dg=;
+ b=ZFzwfMy7g5BiN4dQPEZyMDwSrk5HCwZJ8DV3AauQdsYVgCOzKJbQNZfygPA2mc5oLhPCO5
+ KDCgrB2pVvsiZalSx6uc4ISlOHek7jF4ok4GK0dKxu+3Vm1alyy94Im6pS1500zuY5nTlf
+ mX0k3VBGOabzxQiNvJk/R5WEKh2N3uM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1686907899;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=NMD3aBe7euzXrJTvXeyLyAt2rW+RuXrIrJ77w0JK9dg=;
+ b=QzsbZRaufxZdf7qNDPHYng+XePgkGgaSr+dqx7yAi1Of3PsqF8+/ZEY6OL3IA0UQXi8mjI
+ bWzsS91mAcmT3VDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 983C3138E8;
+ Fri, 16 Jun 2023 09:31:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id bTpPJPsrjGQXTgAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Fri, 16 Jun 2023 09:31:39 +0000
+Message-ID: <a4057bbd-1ff0-5bd4-8573-7872b23f20ce@suse.cz>
+Date: Fri, 16 Jun 2023 11:31:39 +0200
 MIME-Version: 1.0
-References: <20230615012445.4184243-1-jencce.kernel@gmail.com>
- <CAEemH2f2Rrco5fSMsmezY5sUJtM2vZpm619d5+v6Kjyhwcm1CQ@mail.gmail.com>
- <2ee08acc-2b36-99ca-b891-0928a92ed4df@suse.cz>
-In-Reply-To: <2ee08acc-2b36-99ca-b891-0928a92ed4df@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 16 Jun 2023 17:23:03 +0800
-Message-ID: <CAEemH2fy7gOBTB+idU051oQ1xR6vG=JH-L3a+wscXAJdMiZcTQ@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Content-Language: en-US
+To: Hongchen Zhang <zhanghongchen@loongson.cn>, Cyril Hrubis
+ <chrubis@suse.cz>, Petr Vorel <petr.vorel@gmail.com>
+References: <20230609012740.19097-1-zhanghongchen@loongson.cn>
+ <f847e7db-f894-4ce8-6ea5-95817531ea89@suse.cz>
+ <5b76add3-4bdf-a1e3-d09c-734f2bdeb9f5@loongson.cn>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <5b76add3-4bdf-a1e3-d09c-734f2bdeb9f5@loongson.cn>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v3] safe_mount: safe_umount: print debug info
- about the operation
+Subject: Re: [LTP] [PATCH] cpuset_memory_spread: change lowerlimit to 5000kb
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,41 +82,47 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBKdW4gMTYsIDIwMjMgYXQgNDozOOKAr1BNIE1hcnRpbiBEb3VjaGEgPG1kb3VjaGFA
-c3VzZS5jej4gd3JvdGU6Cgo+IE9uIDE2LiAwNi4gMjMgNDo1MCwgTGkgV2FuZyB3cm90ZToKPiA+
-IE9uIFRodSwgSnVuIDE1LCAyMDIzIGF0IDk6MjTigK9BTSBNdXJwaHkgWmhvdSA8amVuY2NlLmtl
-cm5lbEBnbWFpbC5jb20+Cj4gd3JvdGU6Cj4gPgo+ID4+IE1ha2UgdGhlIHNvdXJjZSBhbmQgdGhl
-IHRhcmdldCB0byBtb3VudC91bW91bnQgdmlzaWJsZS4gSXQncwo+ID4+IGdvb2QgZm9yIGRlYnVn
-Z2luZy4KPiA+Pgo+ID4+IFNpZ25lZC1vZmYtYnk6IE11cnBoeSBaaG91IDxqZW5jY2Uua2VybmVs
-QGdtYWlsLmNvbT4KPiA+PiAtLS0KPiA+PiB2MzoKPiA+PiAgICBBcHBseSBzdWdnZXN0aW9ucyBm
-cm9tIExpIGFuZCBNYXJ0aW4uIFRoYW5rcyB2ZXJ5IG11Y2ghCj4gPj4KPiA+PiAgIGxpYi9zYWZl
-X21hY3Jvcy5jIHwgMTcgKysrKysrKysrKysrKysrKysKPiA+PiAgIDEgZmlsZSBjaGFuZ2VkLCAx
-NyBpbnNlcnRpb25zKCspCj4gPj4KPiA+PiBkaWZmIC0tZ2l0IGEvbGliL3NhZmVfbWFjcm9zLmMg
-Yi9saWIvc2FmZV9tYWNyb3MuYwo+ID4+IGluZGV4IGFmNmRkMDcxNi4uMjZmOTEzNmFmIDEwMDY0
-NAo+ID4+IC0tLSBhL2xpYi9zYWZlX21hY3Jvcy5jCj4gPj4gKysrIGIvbGliL3NhZmVfbWFjcm9z
-LmMKPiA+PiBAQCAtODk4LDcgKzg5OCwxNiBAQCBpbnQgc2FmZV9tb3VudChjb25zdCBjaGFyICpm
-aWxlLCBjb25zdCBpbnQgbGluZW5vLAo+ID4+IHZvaWQgKCpjbGVhbnVwX2ZuKSh2b2lkKSwKPiA+
-PiAgICAgICAgICAgICAgICAgY29uc3Qgdm9pZCAqZGF0YSkKPiA+PiAgIHsKPiA+PiAgICAgICAg
-ICBpbnQgcnZhbCA9IC0xOwo+ID4+ICsgICAgICAgY2hhciBtcGF0aFtQQVRIX01BWF07Cj4gPj4K
-PiA+PiArICAgICAgIGlmIChyZWFscGF0aCh0YXJnZXQsIG1wYXRoKSkgewo+ID4+ICsgICAgICAg
-ICAgICAgICB0c3RfcmVzbV8oZmlsZSwgbGluZW5vLCBUSU5GTywKPiA+PiArICAgICAgICAgICAg
-ICAgICAgICAgICAiTW91bnRpbmcgJXMgdG8gJXMgZnN0eXA9JXMgZmxhZ3M9JWx4IiwKPiA+PiAr
-ICAgICAgICAgICAgICAgICAgICAgICBzb3VyY2UsIG1wYXRoLCBmaWxlc3lzdGVtdHlwZSwgbW91
-bnRmbGFncyk7Cj4gPj4gKyAgICAgICB9IGVsc2Ugewo+ID4+ICsgICAgICAgICAgICAgICB0c3Rf
-cmVzbV8oZmlsZSwgbGluZW5vLCBUQlJPSyB8IFRFUlJOTywgY2xlYW51cF9mbiwKPiA+Pgo+ID4K
-PiA+IEZvcmdldCB0byBtZW50aW9uIHRoYXQsIHRoaXMgc2hvdWxkIGJlIHRzdF9icmttXyguLiwg
-VEJST0sgfCBURVJSTk8sCj4gLi4uKSwKPiA+IEkgbWFudWFsbHkgZml4IGl0IGFuZCBwdXNoZWQu
-Cj4KPiBJIHRob3VnaHQgbXkgcmV2aWV3IG9mIHRoZSB2MiBwYXRjaCB3YXMgY2xlYXIgZW5vdWdo
-IHRoYXQgYm90aCBicmFuY2hlcwo+IG9mIHRoaXMgY29uZGl0aW9uIHNob3VsZCBjYWxsIHRzdF9y
-ZXNtXyguLi4gVElORk8gLi4uKS4gVGhlcmUgaXMgbm8KPiByZWFzb24gdG8gZmFpbCB0aGUgdGVz
-dCBoZXJlLgo+CgpBaCwgc29ycnkgZm9yIG92ZXJsb29raW5nIHRoYXQuIEkgc2F3IGhlcmUgdGhh
-dCB1c2VkIHRzdF9yZXNtXyggLi4uVEJSSyAuLi4pCndoaWNoIGlzIG5vdCB0aGUgY29ycmVjdCB1
-c2FnZS4gU28gSSBndWVzcyBoZSBtaWdodCB3YW50IHRzdF9icmttXygpLApidXQgYW55d2F5IHlv
-dSBhcmUgcmlnaHQuIExldCdzIGZpeCBpdCBpbiBhIHNlcGFyYXRlIHBhdGNoLgoKCi0tIApSZWdh
-cmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXgu
-aXQvbGlzdGluZm8vbHRwCg==
+On 16. 06. 23 4:10, Hongchen Zhang wrote:
+> Hi Martin,
+> 
+> On 2023/6/15 pm 10:27, Martin Doucha wrote:
+>> Hi,
+>>
+>> On 09. 06. 23 3:27, Hongchen Zhang wrote:
+>>> When I test the cpuset_memory_spread case,this case FAIL too often.
+>>> After dig into the code, I find out that the fowlloing things trigger
+>>> the FAIL:
+>>> 1) random events,the probability is very small and can be ignored
+>>> 2) get_meminfo which before send signal to test_pid
+>>> 3) account_memsinfo before result_check
+>>>
+>>> About 2) and 3), we can increase the value of lowerlimit to keep
+>>> the result as SUCCESS.After my testing, 5000kb is a reasonable value.
+>>
+>> we're also seeing these failures but only on architectures like 
+>> PowerPC with pagesize higher than the usual 4KB. On which 
+>> architectures do you see failures and what's the pagesize there?
+> I test on 3C5000+7A2000 machine, the architecture is LoongArch.The 
+> pagesize we used is 16KB.
+
+So the underlying cause is the same - higher pagesize. That means the 
+upperlimit, lowerlimit and DATAFILE size should be calculated from 
+pagesize instead.
+
+-- 
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
