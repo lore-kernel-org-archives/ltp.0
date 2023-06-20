@@ -4,78 +4,148 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B157FEB64D9
-	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 02:51:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8E78EB64D7
+	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 05:59:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E26113CC63B
-	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 04:51:23 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 4E6163CACC1
+	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 07:59:25 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6D4EA3CB27B
- for <ltp@lists.linux.it>; Tue, 20 Jun 2023 04:51:11 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 733D13C9C7B
+ for <ltp@lists.linux.it>; Tue, 20 Jun 2023 07:59:05 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0CBEE200204
- for <ltp@lists.linux.it>; Tue, 20 Jun 2023 04:51:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1687229469;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=OyQoHrqr/7VEn9MfP+fkjUK049haAzZ0c7cDej49dK8=;
- b=IDP5gp/E/dQSFVhvtIXOrskLQlKki9zNuFEzkaSm4ai2TMbA9eFc0bhWZyKJTFRIKN0Qj1
- sR5LZjcohGO6UB1wWzJbPaH1hmhEnPCQHM/vIxwPsxLycrAQLgbeXoJkiqjTJFLY/xXxd6
- Vr9aHIHwfk3p1AAR5dH6wm9qXufBQV4=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-253-HAH8cGFGOwKj-8FIfosZdA-1; Mon, 19 Jun 2023 22:51:06 -0400
-X-MC-Unique: HAH8cGFGOwKj-8FIfosZdA-1
-Received: by mail-lj1-f198.google.com with SMTP id
- 38308e7fff4ca-2b46d6a2e75so14707531fa.1
- for <ltp@lists.linux.it>; Mon, 19 Jun 2023 19:51:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1687229465; x=1689821465;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=OyQoHrqr/7VEn9MfP+fkjUK049haAzZ0c7cDej49dK8=;
- b=Bjp2E7M0LcEhohKyttFHOQld0HuROyC9YZ9+TCzMwfC60aKjjTM+kAzvN9UTzdy+Yp
- QKHfAqsRGoxVh8jp6Jd59MyC809Fov44dBtDse8og4pdCbiGHxCfGv34vlVjMrDx2okU
- GH2hqQE76+YpwRciViEzn7C1GYTIludrAvtyiVgg/3m/xuHUQHvBDtRmdHEetpllmsyW
- 2Kla5WNqeLwrKt/apIlQuRLPDTUZaDlddG0+UqTMqXxOUrgehQxt3o8E4LPuwFR6HWoR
- Z0JovC0/Vz5YY9sb6fmGgQ28+z0ppb6oFBstxNdQz4lYvh71glC8M35FVJ18AzFtp/yw
- MDLw==
-X-Gm-Message-State: AC+VfDykh6WpQqkmI2kxbskWm7iX2sfuzeot+wF0yswVGMViH3VmWVn9
- HYQpstvjzykKT/4bwEpYI+glcMCwEj8u0hjuxwgeCzbh39Ox2RIovtvxnXaUVg6SmgXAoM/MizJ
- o4INeI4N7V9MngMPdKcd0ZKXrnm8=
-X-Received: by 2002:a2e:95c2:0:b0:2b3:43e6:4335 with SMTP id
- y2-20020a2e95c2000000b002b343e64335mr6901398ljh.11.1687229465399; 
- Mon, 19 Jun 2023 19:51:05 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ48fpqKU7W96cKmPTSfs9uHPk3byLCs/YPvPJQPRM3o9mof8phAJpv3DWoAAs3A02OzTy/wZ70duzOpcwIJH2w=
-X-Received: by 2002:a2e:95c2:0:b0:2b3:43e6:4335 with SMTP id
- y2-20020a2e95c2000000b002b343e64335mr6901392ljh.11.1687229464947; Mon, 19 Jun
- 2023 19:51:04 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BF6D21000230
+ for <ltp@lists.linux.it>; Tue, 20 Jun 2023 07:58:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1687240739; x=1718776739;
+ h=date:from:to:cc:subject:message-id:mime-version;
+ bh=A2rH1xJQ98DOBN0vLJXtpsxLS/JwGsoparoPRkhDMes=;
+ b=Qz/pE0TKT2HGCPrtS1m4z/drhlSeFlx+eL6vsFfyMMspds2csfkq6Mgn
+ zcSh/GVEP4HsiPsvJrUGSCGyxYPzpiO/KvDPlhxHuuQFI71ygFfT46J/i
+ ZL3vlOT3lZwcxsoH/NxIIVoZc/jwXHULLEaoIP6CEWqfoEIgJqDzsU7Nw
+ hczs7uv0ddc8OHaoCtJEx/a+9T5GeUoDCUWxS0imzdxlWAKvgOdKc4AE2
+ Ckdh594/lHz+PlzXW6h2zziHalSYZPifg+015kfx7kR3X0GfVk6S1JRcN
+ izLyv7r8JsencFd69u+2Z5tuuKMAWldfI1QUSYznUwArVljw/ie1ZkvoU g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="359776064"
+X-IronPort-AV: E=Sophos;i="6.00,256,1681196400"; 
+ d="xz'341?yaml'341?scan'341,208,341";a="359776064"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Jun 2023 22:58:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="717108981"
+X-IronPort-AV: E=Sophos;i="6.00,256,1681196400"; 
+ d="xz'341?yaml'341?scan'341,208,341";a="717108981"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+ by fmsmga007.fm.intel.com with ESMTP; 19 Jun 2023 22:58:52 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Mon, 19 Jun 2023 22:58:51 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Mon, 19 Jun 2023 22:58:50 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Mon, 19 Jun 2023 22:58:50 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Mon, 19 Jun 2023 22:58:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QMmsb26NJgaDqF3zVW9hQb/9nNpojDByNMJjOsAL5cuzftEvsl1lXKz9RSbaDyyF1VJdgbaiWbzjlNaIpvsknviJrpCs1az35yksxXtxMmvwziTKjh9YkOqIQXJ0W8x0q9EZkTrHHRMsUNC0RxkEP0/mN2Ke09C64hUPvl31SNm1tVliXKMWKP9q9UgJ9QBBisVJzjI1dRu+Mi5oCR2WxMXecMwCpsxN8Q9IqDevy21d/HT+T8JDBcqC7G89EfBcuamyyKDQYwPNhQUgv5OesaIng2H0JEAgw3bFthGo3MCRhc9EimK88+E50rYDEZpzpaCtDhqLuFogORmgQhHoBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2Rin5HwN2ybiFfUhQF9X8zwUB6MyBT5XJKlGnAXv+2M=;
+ b=MWKNh9PUM2cCUqJvdhrLxMe1ylKJMzUVkJLZWC80wCRAjTEp2ZKi910NIZnysqYwvUXt20Cw/cbmcdroKQCaoSU59i1qnAERQludyrcJSEXrDCAiJOvwm4GJ/VxXHuICz3OYf5gJIfkn/g66+YoZMu7pVeJyDCjqLVnIv91B01skvtrd/v1EX0cbix+yOvYlugLcHQCGpT7ieItg09Tac2qx7n28kA19aSpnPx+j7+4w4yA+EutXCutUHaXNmghR8fZdHPAsTv+l3UVqdTYmFj1apMRcO+lJhAerIcSIez6Uhi4IHkdo4uE9L3S8C1ixloo5fpw7L/Alc2Emamf6rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
+ by PH7PR11MB5817.namprd11.prod.outlook.com (2603:10b6:510:13a::14)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.38; Tue, 20 Jun
+ 2023 05:58:41 +0000
+Received: from PH8PR11MB6779.namprd11.prod.outlook.com
+ ([fe80::35cf:8518:48ea:b10a]) by PH8PR11MB6779.namprd11.prod.outlook.com
+ ([fe80::35cf:8518:48ea:b10a%6]) with mapi id 15.20.6455.028; Tue, 20 Jun 2023
+ 05:58:40 +0000
+Date: Tue, 20 Jun 2023 13:58:27 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Damien Le Moal <dlemoal@kernel.org>
+Message-ID: <202306192248.1ece4c29-oliver.sang@intel.com>
+Content-Type: multipart/mixed; boundary="jJwnjB4X99DgDJ7r"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: KU1PR03CA0048.apcprd03.prod.outlook.com
+ (2603:1096:802:19::36) To PH8PR11MB6779.namprd11.prod.outlook.com
+ (2603:10b6:510:1ca::17)
 MIME-Version: 1.0
-References: <20230619163255.234848-1-pvorel@suse.cz>
-In-Reply-To: <20230619163255.234848-1-pvorel@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 20 Jun 2023 10:50:53 +0800
-Message-ID: <CAEemH2dQsp17RL1fFODhOCSvRJ8N0=2BUi5_JtxO4d_ofcBx4w@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|PH7PR11MB5817:EE_
+X-MS-Office365-Filtering-Correlation-Id: bc6843c8-80db-4f7a-f58b-08db7153650b
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SjcP2ba2B2qIQHRw9S2aRJ0qkIvmUCxvExjcY9utKenX8mNzZ1SUJE5AhHeuwXr8QYMJ/DaQI5+rEFydfdbt8KG/gRxAOAX5VnV5xA2jnaAash9bXhvSPLkLJg2uRpGTTVt2IMe+ufmxd17ycbCtTjSDdJihyDaL6fLBDlzmWc6o0dL5frY7VmHDmQ46ZqKdHE3VMY5kr1zmhzdQBGNXKcMyyazzCUoXOMrzXmmkIVh2j5PoM7srgWiNEIDWgzOqu8f+rlfKr4DPoZuGc0rVzX/lx548meVhkVuyGy4gUNCGHIpKh6PJmjtilzyqyqgEj9oQAQb50v/+mUIw48VNSo0tPS71CX3W0o2xZ0cTfDlrYlsc9ihs0PAzLIno74xY++FBdgeo8wwWAc9pflNVgj89HppY/417Un6yAbXMK3hwLDT+hC4ZhxtYqWf6tDfN/sUV5UXjmt7MGwBdYHoKUz26lVmOYBgCVP5OxQe+kh+y/J9sxINGVDzg5USLJAN4zrP9Pjy5ohoKlEC8TCO2KHEpeZlWOwy/VyXWoip1b48sP2aK99X5h7Jf1i1w1vzpsebnIuG+0o/HCjy1LRiSVed6XlAYNf//27j9KFoePB4pWnpjRoXjVElb+FC9aklhyTMrLkYwHW4MtAPKUGLPkQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PH8PR11MB6779.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230028)(136003)(396003)(376002)(366004)(346002)(39860400002)(451199021)(66556008)(66946007)(66476007)(4326008)(6916009)(316002)(38100700002)(41300700001)(2906002)(8936002)(8676002)(5660300002)(235185007)(7416002)(186003)(21490400003)(107886003)(1076003)(6512007)(6506007)(26005)(83380400001)(2616005)(54906003)(82960400001)(6486002)(44144004)(36756003)(966005)(6666004)(86362001)(478600001)(2700100001);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Tf+mXvUUJLi7cLTBDIXtgS6yD5ZLWSQk48FUGRs309iQ+HBJh98twDMkhWBw?=
+ =?us-ascii?Q?yeZ+ZaxlVSkQExWR+RtQIOkWOF5tzKkOO7XgCryKDxVt7CvHxVzarCX92loA?=
+ =?us-ascii?Q?8pCkhDG1sx91Tyj1YC3oprcqc0fqqoZ9duFKmOK655oTH+WB5JtJ3+VRtznr?=
+ =?us-ascii?Q?WHzvHT4s1gGlcJFjpoZuzNdWg59u9b9qz3cD883Pb0kM89JXlcdafDf7G1ND?=
+ =?us-ascii?Q?x3nW97YiJIckOMNU8Axb67eMBw0Hk9tdxo1/AK/7J+Q+wW7M9pgKaM+X/its?=
+ =?us-ascii?Q?jPVuBmr1UmjhKm0Fj4DcfuR1d3HpXrkjPkffmi1MKHm+1u7/NKGMGb4cbnAK?=
+ =?us-ascii?Q?xDo5zIlmdUV0nyV7SHDN8HqLU2RPIN17d0WorgJo60dOz3nNtkxLnnswdymk?=
+ =?us-ascii?Q?3yTBSQAjf9nMHgBpF1UI504lp+578Z8pG5MTZfkyXYqTXkk7ApXd9vc26iUU?=
+ =?us-ascii?Q?hmj6ni1ZGZd7hjWVxU8nwYEJ4IaVjwERLFgPPv5f2LodUrYY4GcCIthhvZs4?=
+ =?us-ascii?Q?Tm9ffwSm+b8/hUxshDpBs+5Yxz+oOFmVgAFZzgn8baBRhVcbUAVHUMG4/C1f?=
+ =?us-ascii?Q?GKdhQthSPTK40/Hk+ze59ax079SF8mHniE2SMBsrM+YMyOTfGQ0TX6//qona?=
+ =?us-ascii?Q?2UtzuEuLJimSSDsxN2Xt24D++mvsl1YGitoqu90Oz3ZvWsBpOgNUN+siwDR/?=
+ =?us-ascii?Q?F5n7gxb3AYWbpUAUG+AI09LYV+HQfvww21YBS+PUT+s3VHSkzryjvT09r2UV?=
+ =?us-ascii?Q?bo8KiN99nIFQCUBtsxOV5a7My8arw8yarZG36AEm/XS9ZEYyPKlgJREPNEbY?=
+ =?us-ascii?Q?XNJ8ZhnzoEZzfI2kys0FqnM09ypTQSjm8xZXmv4OZpmqhv7Xso4PBJKQULc8?=
+ =?us-ascii?Q?+g8Z5qptj3lsBqEwaihV166DhSsVi6nFMoCnwRc5VuP63S7wzqOUhBtaHga3?=
+ =?us-ascii?Q?0ERV4gCPabe/jSSWU4ICzZCu15/dR5iLKlKTWE8NZeQ6Yj/QOkUlHaYRpVDm?=
+ =?us-ascii?Q?+nE4hTVtixXm574zN3fkbzPYcEH4bgeGLmkG7KnT+SXBT7IGxSFCbc3ld3ul?=
+ =?us-ascii?Q?tm79oZad8pu/GlCG3nAiF8X7BKPvHgxJdf58/gjQ5a+ySy16UA8dA2egbhhS?=
+ =?us-ascii?Q?hIH+JTC27Oeoyj1h5Dfatp6+pFbXdUdEviw7zrFeHmm1EJNKT47vYCEReTHq?=
+ =?us-ascii?Q?PX0VkHZ8pzyvi7Y0U47eI4+1FKQLACmRzTI8AmdPXXL4YJBh4cmdlU/HmEpm?=
+ =?us-ascii?Q?HBdq/ISOa9kMkzA2+7VvdmUXQBtwJGztyPAemR1Gee1bdn5INMniuuy4napH?=
+ =?us-ascii?Q?N37OdNiOFjzqYVX8iCnoFEnWeReekZN/uNQ+A5TMPNl8kM6MWmFKm6d1plZ6?=
+ =?us-ascii?Q?h/D/tDP41uh/yvE/WHKn2AfLDRxcK++59mlefLHDBwUMOvtJpUSOTv5faLXI?=
+ =?us-ascii?Q?kvLkJdk6hnAYL50U2p9MsKrerEEhbU8IFJD6XfCpxlNlVfmWe8wgVkKqS2fR?=
+ =?us-ascii?Q?Fh1VPh9dBQQ4fZ8VcssfSQ0cqMZ8i/C+bPineJpkBJZReGy/8na9W0L+5v1l?=
+ =?us-ascii?Q?YBFPDOnznL8TwXXDDkFt0wBjgBOGbfkG7KhgfuJRe0bQNQNMbf76f76dnmSB?=
+ =?us-ascii?Q?/w=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc6843c8-80db-4f7a-f58b-08db7153650b
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jun 2023 05:58:40.5676 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4hHGWRU2py5hQ2vTNZS+ShQtuAtbGkEX8gQroPaYJcrqM2Q5mUlXNIIhqWdRVssSDmrwDkzCLApArlfcOVs6WA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB5817
+X-OriginatorOrg: intel.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/1] ci: Don't test doc generation on Debian
- oldstable
+Subject: [LTP] [linux-next:master] [scsi] eca2040972: ltp.ioprio_set03.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,50 +157,10746 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: Niklas Cassel <niklas.cassel@wdc.com>, lkp@intel.com,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ Linux Memory Management List <linux-mm@kvack.org>, oliver.sang@intel.com,
+ Hannes Reinecke <hare@suse.de>, oe-lkp@lists.linux.dev,
+ Christoph Hellwig <hch@lst.de>, ltp@lists.linux.it
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKClRoYW5rcyBzbyBtdWNoIGZvciB0aGUgZGVidWdnaW5nIHdvcmsuCgpSZXZpZXdl
-ZC1ieTogTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+CgpPbiBUdWUsIEp1biAyMCwgMjAyMyBh
-dCAxMjozNuKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6PiB3cm90ZToKCj4gSFRNTCBn
-ZW5lcmF0aW9uIHdpdGggYXNjaWlkb2MgaXMgYnJva2VuIG9uIERlYmlhbiAxMSBidWxsc2V5ZQo+
-ICh0aGUgbmV3IERlYmlhbiBvbGRzdGFibGUpOgo+Cj4gYTJ4OiBFUlJPUjogInhzbHRwcm9jIiAt
-LXN0cmluZ3BhcmFtIHRvYy5zZWN0aW9uLmRlcHRoIDEgLS1zdHJpbmdwYXJhbQo+IGNhbGxvdXQu
-Z3JhcGhpY3MgMCAtLXN0cmluZ3BhcmFtIG5hdmlnLmdyYXBoaWNzIDAgLS1zdHJpbmdwYXJhbQo+
-IGFkbW9uLnRleHRsYWJlbCAxIC0tc3RyaW5ncGFyYW0gYWRtb24uZ3JhcGhpY3MgMCAtLXN0cmlu
-Z3BhcmFtCj4gY2h1bmsuc2VjdGlvbi5kZXB0aCAwICAtLW91dHB1dCAiL19fdy9sdHAvbHRwL2Rv
-Y3BhcnNlL21ldGFkYXRhLmh0bWwiCj4gIi9ldGMvYXNjaWlkb2MvZG9jYm9vay14c2wveGh0bWwu
-eHNsIgo+ICIvX193L2x0cC9sdHAvZG9jcGFyc2UvbWV0YWRhdGEueG1sIiByZXR1cm5lZCBub24t
-emVybyBleGl0IHN0YXR1cyA1Cj4KPiBGaXJzdCByZWFzb24gaXMgdGhhdCBkb2Nib29rMnggaXMg
-bmVlZGVkIHRvIGdldCByZXF1aXJlZCBYU0wgKGJyb2tlbgo+IGRlcGVuZGVuY3ksIHdoaWNoIGlz
-IGZpeGVkIG9uIG5ld2VyIERlYmlhbiB2ZXJzaW9ucykuCj4KPiBCdXQgZXZlbiB3aXRoIGl0IGJl
-aW5nIGluc3RhbGxlZCwgaXQgc3RpbGwgZG9lcyBub3Qgd29yayBvbiBHaXRIdWIKPiBBY3Rpb25z
-LCBkdWUgc29tZWhvdyBzcGVjaWFsIG5ldHdvcmssIGUuZy4gcGluZyA4LjguOC44IGRvZXMgbm90
-IHdvcmsKPiAoZmlyZXdhbGw/KSwgY29kZSB3b3JraW5nIGluIGRpc3RybyBydW5uaW5nIHZpYSBw
-b2RtYW4gbG9jYWxseSBmYWlscyBvbiBDSToKPgo+ICQgY2QgbWV0YWRhdGEgJiYgbWFrZQo+IGVy
-cm9yIDogVW5rbm93biBJTyBlcnJvcgo+IHdhcm5pbmc6IGZhaWxlZCB0byBsb2FkIGV4dGVybmFs
-IGVudGl0eSAiCj4gaHR0cDovL2RvY2Jvb2suc291cmNlZm9yZ2UubmV0L3JlbGVhc2UveHNsL2N1
-cnJlbnQveGh0bWwvZG9jYm9vay54c2wiCj4gY29tcGlsYXRpb24gZXJyb3I6IGZpbGUgL2V0Yy9h
-c2NpaWRvYy9kb2Nib29rLXhzbC94aHRtbC54c2wgbGluZSAxMgo+IGVsZW1lbnQgaW1wb3J0Cj4g
-eHNsOmltcG9ydCA6IHVuYWJsZSB0byBsb2FkCj4gaHR0cDovL2RvY2Jvb2suc291cmNlZm9yZ2Uu
-bmV0L3JlbGVhc2UveHNsL2N1cnJlbnQveGh0bWwvZG9jYm9vay54c2wKPgo+IEJlY2F1c2UgYXNj
-aWlkb2MgaXMgdGVzdGVkIG9uIG90aGVyIGRpc3Ryb3MsIHNpbXBseSByZW1vdmUgdGhlIHRlc3Qu
-Cj4KPiBSZXBvcnRlZC1ieTogTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+Cj4gU2lnbmVkLW9m
-Zi1ieTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4gLS0tCj4gIC5naXRodWIvd29ya2Zs
-b3dzL2NpLnltbCB8IDMgKy0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMiBk
-ZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS8uZ2l0aHViL3dvcmtmbG93cy9jaS55bWwgYi8u
-Z2l0aHViL3dvcmtmbG93cy9jaS55bWwKPiBpbmRleCBkOGU1ZGNhODYuLmQ3ZTlmMmRkMCAxMDA2
-NDQKPiAtLS0gYS8uZ2l0aHViL3dvcmtmbG93cy9jaS55bWwKPiArKysgYi8uZ2l0aHViL3dvcmtm
-bG93cy9jaS55bWwKPiBAQCAtMSw0ICsxLDQgQEAKPiAtIyBDb3B5cmlnaHQgKGMpIDIwMjEgUGV0
-ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4gKyMgQ29weXJpZ2h0IChjKSAyMDIxLTIwMjMgUGV0
-ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4KPiAgbmFtZTogIkNJOiBkb2NrZXIgYmFzZWQgYnVp
-bGRzIgo+ICBvbjogW3B1c2gsIHB1bGxfcmVxdWVzdF0KPiBAQCAtNzksNyArNzksNiBAQCBqb2Jz
-Ogo+ICAgICAgICAgICAgLSBjb250YWluZXI6ICJkZWJpYW46b2xkc3RhYmxlIgo+ICAgICAgICAg
-ICAgICBlbnY6Cj4gICAgICAgICAgICAgICAgQ0M6IGNsYW5nCj4gLSAgICAgICAgICAgICAgTUVU
-QURBVEE6IGFzY2lpZG9jLXBkZgo+Cj4gICAgICAgICAgICAtIGNvbnRhaW5lcjogIm9wZW5zdXNl
-L2xlYXAiCj4gICAgICAgICAgICAgIGVudjoKPiAtLQo+IDIuNDAuMQo+Cj4KCi0tIApSZWdhcmRz
-LApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQv
-bGlzdGluZm8vbHRwCg==
+--jJwnjB4X99DgDJ7r
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+
+
+
+Hello,
+
+kernel test robot noticed "ltp.ioprio_set03.fail" on:
+
+commit: eca2040972b411ec27483bf75dc8b84e730e88ff ("scsi: block: ioprio: Clean up interface definition")
+https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+
+[test failed on linux-next/master f7efed9f38f886edb450041b82a6f15d663c98f8]
+[test failed on fix commit 01584c1e233740519d0e11aa20daa323d26bf598]
+
+
+in testcase: ltp
+version: ltp-x86_64-14c1f76-1_20230520
+with following parameters:
+
+	disk: 1HDD
+	fs: xfs
+	test: syscalls-05
+
+
+
+compiler: gcc-12
+test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202306192248.1ece4c29-oliver.sang@intel.com
+
+
+
+<<<test_start>>>
+tag=ioprio_set03 stime=1687153195
+cmdline="ioprio_set03"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+ioprio_set03.c:39: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+ioprio_set03.c:47: TINFO: tested illegal priority with class NONE
+ioprio_set03.c:50: TPASS: returned correct error for wrong prio: EINVAL (22)
+
+Summary:
+passed   1
+failed   1
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=3
+<<<test_end>>>
+
+
+
+To reproduce:
+
+        git clone https://github.com/intel/lkp-tests.git
+        cd lkp-tests
+        sudo bin/lkp install job.yaml           # job file is attached in this email
+        bin/lkp split-job --compatible job.yaml # generate the yaml file for lkp run
+        sudo bin/lkp run generated-yaml-file
+
+        # if come across any failure that blocks the test,
+        # please remove ~/.lkp and /lkp dir to run from a clean state.
+
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+
+
+--jJwnjB4X99DgDJ7r
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: attachment;
+	filename="config-6.4.0-rc1-00001-geca2040972b4"
+
+#
+# Automatically generated file; DO NOT EDIT.
+# Linux/x86_64 6.4.0-rc1 Kernel Configuration
+#
+CONFIG_CC_VERSION_TEXT="gcc-12 (Debian 12.2.0-14) 12.2.0"
+CONFIG_CC_IS_GCC=y
+CONFIG_GCC_VERSION=120200
+CONFIG_CLANG_VERSION=0
+CONFIG_AS_IS_GNU=y
+CONFIG_AS_VERSION=24000
+CONFIG_LD_IS_BFD=y
+CONFIG_LD_VERSION=24000
+CONFIG_LLD_VERSION=0
+CONFIG_CC_CAN_LINK=y
+CONFIG_CC_CAN_LINK_STATIC=y
+CONFIG_CC_HAS_ASM_GOTO_OUTPUT=y
+CONFIG_CC_HAS_ASM_GOTO_TIED_OUTPUT=y
+CONFIG_TOOLS_SUPPORT_RELR=y
+CONFIG_CC_HAS_ASM_INLINE=y
+CONFIG_CC_HAS_NO_PROFILE_FN_ATTR=y
+CONFIG_PAHOLE_VERSION=125
+CONFIG_CONSTRUCTORS=y
+CONFIG_IRQ_WORK=y
+CONFIG_BUILDTIME_TABLE_SORT=y
+CONFIG_THREAD_INFO_IN_TASK=y
+
+#
+# General setup
+#
+CONFIG_INIT_ENV_ARG_LIMIT=32
+# CONFIG_COMPILE_TEST is not set
+# CONFIG_WERROR is not set
+CONFIG_LOCALVERSION=""
+CONFIG_LOCALVERSION_AUTO=y
+CONFIG_BUILD_SALT=""
+CONFIG_HAVE_KERNEL_GZIP=y
+CONFIG_HAVE_KERNEL_BZIP2=y
+CONFIG_HAVE_KERNEL_LZMA=y
+CONFIG_HAVE_KERNEL_XZ=y
+CONFIG_HAVE_KERNEL_LZO=y
+CONFIG_HAVE_KERNEL_LZ4=y
+CONFIG_HAVE_KERNEL_ZSTD=y
+CONFIG_KERNEL_GZIP=y
+# CONFIG_KERNEL_BZIP2 is not set
+# CONFIG_KERNEL_LZMA is not set
+# CONFIG_KERNEL_XZ is not set
+# CONFIG_KERNEL_LZO is not set
+# CONFIG_KERNEL_LZ4 is not set
+# CONFIG_KERNEL_ZSTD is not set
+CONFIG_DEFAULT_INIT=""
+CONFIG_DEFAULT_HOSTNAME="(none)"
+CONFIG_SYSVIPC=y
+CONFIG_SYSVIPC_SYSCTL=y
+CONFIG_SYSVIPC_COMPAT=y
+CONFIG_POSIX_MQUEUE=y
+CONFIG_POSIX_MQUEUE_SYSCTL=y
+CONFIG_WATCH_QUEUE=y
+CONFIG_CROSS_MEMORY_ATTACH=y
+# CONFIG_USELIB is not set
+CONFIG_AUDIT=y
+CONFIG_HAVE_ARCH_AUDITSYSCALL=y
+CONFIG_AUDITSYSCALL=y
+
+#
+# IRQ subsystem
+#
+CONFIG_GENERIC_IRQ_PROBE=y
+CONFIG_GENERIC_IRQ_SHOW=y
+CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK=y
+CONFIG_GENERIC_PENDING_IRQ=y
+CONFIG_GENERIC_IRQ_MIGRATION=y
+CONFIG_GENERIC_IRQ_INJECTION=y
+CONFIG_HARDIRQS_SW_RESEND=y
+CONFIG_IRQ_DOMAIN=y
+CONFIG_IRQ_DOMAIN_HIERARCHY=y
+CONFIG_GENERIC_MSI_IRQ=y
+CONFIG_IRQ_MSI_IOMMU=y
+CONFIG_GENERIC_IRQ_MATRIX_ALLOCATOR=y
+CONFIG_GENERIC_IRQ_RESERVATION_MODE=y
+CONFIG_IRQ_FORCED_THREADING=y
+CONFIG_SPARSE_IRQ=y
+# CONFIG_GENERIC_IRQ_DEBUGFS is not set
+# end of IRQ subsystem
+
+CONFIG_CLOCKSOURCE_WATCHDOG=y
+CONFIG_ARCH_CLOCKSOURCE_INIT=y
+CONFIG_CLOCKSOURCE_VALIDATE_LAST_CYCLE=y
+CONFIG_GENERIC_TIME_VSYSCALL=y
+CONFIG_GENERIC_CLOCKEVENTS=y
+CONFIG_GENERIC_CLOCKEVENTS_BROADCAST=y
+CONFIG_GENERIC_CLOCKEVENTS_MIN_ADJUST=y
+CONFIG_GENERIC_CMOS_UPDATE=y
+CONFIG_HAVE_POSIX_CPU_TIMERS_TASK_WORK=y
+CONFIG_POSIX_CPU_TIMERS_TASK_WORK=y
+CONFIG_CONTEXT_TRACKING=y
+CONFIG_CONTEXT_TRACKING_IDLE=y
+
+#
+# Timers subsystem
+#
+CONFIG_TICK_ONESHOT=y
+CONFIG_NO_HZ_COMMON=y
+# CONFIG_HZ_PERIODIC is not set
+# CONFIG_NO_HZ_IDLE is not set
+CONFIG_NO_HZ_FULL=y
+CONFIG_CONTEXT_TRACKING_USER=y
+# CONFIG_CONTEXT_TRACKING_USER_FORCE is not set
+CONFIG_NO_HZ=y
+CONFIG_HIGH_RES_TIMERS=y
+CONFIG_CLOCKSOURCE_WATCHDOG_MAX_SKEW_US=125
+# end of Timers subsystem
+
+CONFIG_BPF=y
+CONFIG_HAVE_EBPF_JIT=y
+CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
+
+#
+# BPF subsystem
+#
+CONFIG_BPF_SYSCALL=y
+CONFIG_BPF_JIT=y
+CONFIG_BPF_JIT_ALWAYS_ON=y
+CONFIG_BPF_JIT_DEFAULT_ON=y
+CONFIG_BPF_UNPRIV_DEFAULT_OFF=y
+# CONFIG_BPF_PRELOAD is not set
+# CONFIG_BPF_LSM is not set
+# end of BPF subsystem
+
+CONFIG_PREEMPT_BUILD=y
+# CONFIG_PREEMPT_NONE is not set
+CONFIG_PREEMPT_VOLUNTARY=y
+# CONFIG_PREEMPT is not set
+CONFIG_PREEMPT_COUNT=y
+CONFIG_PREEMPTION=y
+CONFIG_PREEMPT_DYNAMIC=y
+# CONFIG_SCHED_CORE is not set
+
+#
+# CPU/Task time and stats accounting
+#
+CONFIG_VIRT_CPU_ACCOUNTING=y
+CONFIG_VIRT_CPU_ACCOUNTING_GEN=y
+CONFIG_IRQ_TIME_ACCOUNTING=y
+CONFIG_HAVE_SCHED_AVG_IRQ=y
+CONFIG_BSD_PROCESS_ACCT=y
+CONFIG_BSD_PROCESS_ACCT_V3=y
+CONFIG_TASKSTATS=y
+CONFIG_TASK_DELAY_ACCT=y
+CONFIG_TASK_XACCT=y
+CONFIG_TASK_IO_ACCOUNTING=y
+# CONFIG_PSI is not set
+# end of CPU/Task time and stats accounting
+
+CONFIG_CPU_ISOLATION=y
+
+#
+# RCU Subsystem
+#
+CONFIG_TREE_RCU=y
+CONFIG_PREEMPT_RCU=y
+# CONFIG_RCU_EXPERT is not set
+CONFIG_TREE_SRCU=y
+CONFIG_TASKS_RCU_GENERIC=y
+CONFIG_TASKS_RCU=y
+CONFIG_TASKS_RUDE_RCU=y
+CONFIG_TASKS_TRACE_RCU=y
+CONFIG_RCU_STALL_COMMON=y
+CONFIG_RCU_NEED_SEGCBLIST=y
+CONFIG_RCU_NOCB_CPU=y
+# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
+# CONFIG_RCU_LAZY is not set
+# end of RCU Subsystem
+
+CONFIG_IKCONFIG=y
+CONFIG_IKCONFIG_PROC=y
+# CONFIG_IKHEADERS is not set
+CONFIG_LOG_BUF_SHIFT=20
+CONFIG_LOG_CPU_MAX_BUF_SHIFT=12
+# CONFIG_PRINTK_INDEX is not set
+CONFIG_HAVE_UNSTABLE_SCHED_CLOCK=y
+
+#
+# Scheduler features
+#
+# CONFIG_UCLAMP_TASK is not set
+# end of Scheduler features
+
+CONFIG_ARCH_SUPPORTS_NUMA_BALANCING=y
+CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH=y
+CONFIG_CC_HAS_INT128=y
+CONFIG_CC_IMPLICIT_FALLTHROUGH="-Wimplicit-fallthrough=5"
+CONFIG_GCC11_NO_ARRAY_BOUNDS=y
+CONFIG_CC_NO_ARRAY_BOUNDS=y
+CONFIG_ARCH_SUPPORTS_INT128=y
+CONFIG_NUMA_BALANCING=y
+CONFIG_NUMA_BALANCING_DEFAULT_ENABLED=y
+CONFIG_CGROUPS=y
+CONFIG_PAGE_COUNTER=y
+# CONFIG_CGROUP_FAVOR_DYNMODS is not set
+CONFIG_MEMCG=y
+CONFIG_MEMCG_KMEM=y
+CONFIG_BLK_CGROUP=y
+CONFIG_CGROUP_WRITEBACK=y
+CONFIG_CGROUP_SCHED=y
+CONFIG_FAIR_GROUP_SCHED=y
+CONFIG_CFS_BANDWIDTH=y
+CONFIG_RT_GROUP_SCHED=y
+CONFIG_SCHED_MM_CID=y
+CONFIG_CGROUP_PIDS=y
+CONFIG_CGROUP_RDMA=y
+CONFIG_CGROUP_FREEZER=y
+CONFIG_CGROUP_HUGETLB=y
+CONFIG_CPUSETS=y
+CONFIG_PROC_PID_CPUSET=y
+CONFIG_CGROUP_DEVICE=y
+CONFIG_CGROUP_CPUACCT=y
+CONFIG_CGROUP_PERF=y
+CONFIG_CGROUP_BPF=y
+# CONFIG_CGROUP_MISC is not set
+# CONFIG_CGROUP_DEBUG is not set
+CONFIG_SOCK_CGROUP_DATA=y
+CONFIG_NAMESPACES=y
+CONFIG_UTS_NS=y
+CONFIG_TIME_NS=y
+CONFIG_IPC_NS=y
+CONFIG_USER_NS=y
+CONFIG_PID_NS=y
+CONFIG_NET_NS=y
+CONFIG_CHECKPOINT_RESTORE=y
+CONFIG_SCHED_AUTOGROUP=y
+CONFIG_RELAY=y
+CONFIG_BLK_DEV_INITRD=y
+CONFIG_INITRAMFS_SOURCE=""
+CONFIG_RD_GZIP=y
+CONFIG_RD_BZIP2=y
+CONFIG_RD_LZMA=y
+CONFIG_RD_XZ=y
+CONFIG_RD_LZO=y
+CONFIG_RD_LZ4=y
+CONFIG_RD_ZSTD=y
+# CONFIG_BOOT_CONFIG is not set
+CONFIG_INITRAMFS_PRESERVE_MTIME=y
+CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y
+# CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
+CONFIG_LD_ORPHAN_WARN=y
+CONFIG_LD_ORPHAN_WARN_LEVEL="warn"
+CONFIG_SYSCTL=y
+CONFIG_HAVE_UID16=y
+CONFIG_SYSCTL_EXCEPTION_TRACE=y
+CONFIG_HAVE_PCSPKR_PLATFORM=y
+CONFIG_EXPERT=y
+CONFIG_UID16=y
+CONFIG_MULTIUSER=y
+CONFIG_SGETMASK_SYSCALL=y
+CONFIG_SYSFS_SYSCALL=y
+CONFIG_FHANDLE=y
+CONFIG_POSIX_TIMERS=y
+CONFIG_PRINTK=y
+CONFIG_BUG=y
+CONFIG_ELF_CORE=y
+CONFIG_PCSPKR_PLATFORM=y
+CONFIG_BASE_FULL=y
+CONFIG_FUTEX=y
+CONFIG_FUTEX_PI=y
+CONFIG_EPOLL=y
+CONFIG_SIGNALFD=y
+CONFIG_TIMERFD=y
+CONFIG_EVENTFD=y
+CONFIG_SHMEM=y
+CONFIG_AIO=y
+CONFIG_IO_URING=y
+CONFIG_ADVISE_SYSCALLS=y
+CONFIG_MEMBARRIER=y
+CONFIG_KALLSYMS=y
+# CONFIG_KALLSYMS_SELFTEST is not set
+CONFIG_KALLSYMS_ALL=y
+CONFIG_KALLSYMS_ABSOLUTE_PERCPU=y
+CONFIG_KALLSYMS_BASE_RELATIVE=y
+CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE=y
+CONFIG_KCMP=y
+CONFIG_RSEQ=y
+# CONFIG_DEBUG_RSEQ is not set
+# CONFIG_EMBEDDED is not set
+CONFIG_HAVE_PERF_EVENTS=y
+CONFIG_GUEST_PERF_EVENTS=y
+# CONFIG_PC104 is not set
+
+#
+# Kernel Performance Events And Counters
+#
+CONFIG_PERF_EVENTS=y
+# CONFIG_DEBUG_PERF_USE_VMALLOC is not set
+# end of Kernel Performance Events And Counters
+
+CONFIG_SYSTEM_DATA_VERIFICATION=y
+CONFIG_PROFILING=y
+CONFIG_TRACEPOINTS=y
+# end of General setup
+
+CONFIG_64BIT=y
+CONFIG_X86_64=y
+CONFIG_X86=y
+CONFIG_INSTRUCTION_DECODER=y
+CONFIG_OUTPUT_FORMAT="elf64-x86-64"
+CONFIG_LOCKDEP_SUPPORT=y
+CONFIG_STACKTRACE_SUPPORT=y
+CONFIG_MMU=y
+CONFIG_ARCH_MMAP_RND_BITS_MIN=28
+CONFIG_ARCH_MMAP_RND_BITS_MAX=32
+CONFIG_ARCH_MMAP_RND_COMPAT_BITS_MIN=8
+CONFIG_ARCH_MMAP_RND_COMPAT_BITS_MAX=16
+CONFIG_GENERIC_ISA_DMA=y
+CONFIG_GENERIC_CSUM=y
+CONFIG_GENERIC_BUG=y
+CONFIG_GENERIC_BUG_RELATIVE_POINTERS=y
+CONFIG_ARCH_MAY_HAVE_PC_FDC=y
+CONFIG_GENERIC_CALIBRATE_DELAY=y
+CONFIG_ARCH_HAS_CPU_RELAX=y
+CONFIG_ARCH_HIBERNATION_POSSIBLE=y
+CONFIG_ARCH_SUSPEND_POSSIBLE=y
+CONFIG_AUDIT_ARCH=y
+CONFIG_KASAN_SHADOW_OFFSET=0xdffffc0000000000
+CONFIG_HAVE_INTEL_TXT=y
+CONFIG_X86_64_SMP=y
+CONFIG_ARCH_SUPPORTS_UPROBES=y
+CONFIG_FIX_EARLYCON_MEM=y
+CONFIG_PGTABLE_LEVELS=5
+CONFIG_CC_HAS_SANE_STACKPROTECTOR=y
+
+#
+# Processor type and features
+#
+CONFIG_SMP=y
+CONFIG_X86_FEATURE_NAMES=y
+CONFIG_X86_X2APIC=y
+CONFIG_X86_MPPARSE=y
+# CONFIG_GOLDFISH is not set
+# CONFIG_X86_CPU_RESCTRL is not set
+CONFIG_X86_EXTENDED_PLATFORM=y
+# CONFIG_X86_NUMACHIP is not set
+# CONFIG_X86_VSMP is not set
+CONFIG_X86_UV=y
+# CONFIG_X86_GOLDFISH is not set
+# CONFIG_X86_INTEL_MID is not set
+CONFIG_X86_INTEL_LPSS=y
+# CONFIG_X86_AMD_PLATFORM_DEVICE is not set
+CONFIG_IOSF_MBI=y
+# CONFIG_IOSF_MBI_DEBUG is not set
+CONFIG_X86_SUPPORTS_MEMORY_FAILURE=y
+# CONFIG_SCHED_OMIT_FRAME_POINTER is not set
+CONFIG_HYPERVISOR_GUEST=y
+CONFIG_PARAVIRT=y
+# CONFIG_PARAVIRT_DEBUG is not set
+CONFIG_PARAVIRT_SPINLOCKS=y
+CONFIG_X86_HV_CALLBACK_VECTOR=y
+# CONFIG_XEN is not set
+CONFIG_KVM_GUEST=y
+CONFIG_ARCH_CPUIDLE_HALTPOLL=y
+# CONFIG_PVH is not set
+CONFIG_PARAVIRT_TIME_ACCOUNTING=y
+CONFIG_PARAVIRT_CLOCK=y
+# CONFIG_JAILHOUSE_GUEST is not set
+# CONFIG_ACRN_GUEST is not set
+# CONFIG_INTEL_TDX_GUEST is not set
+# CONFIG_MK8 is not set
+# CONFIG_MPSC is not set
+# CONFIG_MCORE2 is not set
+# CONFIG_MATOM is not set
+CONFIG_GENERIC_CPU=y
+CONFIG_X86_INTERNODE_CACHE_SHIFT=6
+CONFIG_X86_L1_CACHE_SHIFT=6
+CONFIG_X86_TSC=y
+CONFIG_X86_CMPXCHG64=y
+CONFIG_X86_CMOV=y
+CONFIG_X86_MINIMUM_CPU_FAMILY=64
+CONFIG_X86_DEBUGCTLMSR=y
+CONFIG_IA32_FEAT_CTL=y
+CONFIG_X86_VMX_FEATURE_NAMES=y
+CONFIG_PROCESSOR_SELECT=y
+CONFIG_CPU_SUP_INTEL=y
+# CONFIG_CPU_SUP_AMD is not set
+# CONFIG_CPU_SUP_HYGON is not set
+# CONFIG_CPU_SUP_CENTAUR is not set
+# CONFIG_CPU_SUP_ZHAOXIN is not set
+CONFIG_HPET_TIMER=y
+CONFIG_HPET_EMULATE_RTC=y
+CONFIG_DMI=y
+CONFIG_BOOT_VESA_SUPPORT=y
+CONFIG_MAXSMP=y
+CONFIG_NR_CPUS_RANGE_BEGIN=8192
+CONFIG_NR_CPUS_RANGE_END=8192
+CONFIG_NR_CPUS_DEFAULT=8192
+CONFIG_NR_CPUS=8192
+CONFIG_SCHED_CLUSTER=y
+CONFIG_SCHED_SMT=y
+CONFIG_SCHED_MC=y
+CONFIG_SCHED_MC_PRIO=y
+CONFIG_X86_LOCAL_APIC=y
+CONFIG_X86_IO_APIC=y
+CONFIG_X86_REROUTE_FOR_BROKEN_BOOT_IRQS=y
+CONFIG_X86_MCE=y
+CONFIG_X86_MCELOG_LEGACY=y
+CONFIG_X86_MCE_INTEL=y
+CONFIG_X86_MCE_THRESHOLD=y
+CONFIG_X86_MCE_INJECT=m
+
+#
+# Performance monitoring
+#
+CONFIG_PERF_EVENTS_INTEL_UNCORE=m
+CONFIG_PERF_EVENTS_INTEL_RAPL=m
+CONFIG_PERF_EVENTS_INTEL_CSTATE=m
+# end of Performance monitoring
+
+CONFIG_X86_16BIT=y
+CONFIG_X86_ESPFIX64=y
+CONFIG_X86_VSYSCALL_EMULATION=y
+CONFIG_X86_IOPL_IOPERM=y
+CONFIG_MICROCODE=y
+CONFIG_MICROCODE_INTEL=y
+CONFIG_MICROCODE_LATE_LOADING=y
+CONFIG_X86_MSR=y
+CONFIG_X86_CPUID=y
+CONFIG_X86_5LEVEL=y
+CONFIG_X86_DIRECT_GBPAGES=y
+# CONFIG_X86_CPA_STATISTICS is not set
+CONFIG_NUMA=y
+# CONFIG_AMD_NUMA is not set
+CONFIG_X86_64_ACPI_NUMA=y
+CONFIG_NUMA_EMU=y
+CONFIG_NODES_SHIFT=10
+CONFIG_ARCH_SPARSEMEM_ENABLE=y
+CONFIG_ARCH_SPARSEMEM_DEFAULT=y
+# CONFIG_ARCH_MEMORY_PROBE is not set
+CONFIG_ARCH_PROC_KCORE_TEXT=y
+CONFIG_ILLEGAL_POINTER_VALUE=0xdead000000000000
+CONFIG_X86_PMEM_LEGACY_DEVICE=y
+CONFIG_X86_PMEM_LEGACY=m
+CONFIG_X86_CHECK_BIOS_CORRUPTION=y
+# CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK is not set
+CONFIG_MTRR=y
+CONFIG_MTRR_SANITIZER=y
+CONFIG_MTRR_SANITIZER_ENABLE_DEFAULT=1
+CONFIG_MTRR_SANITIZER_SPARE_REG_NR_DEFAULT=1
+CONFIG_X86_PAT=y
+CONFIG_ARCH_USES_PG_UNCACHED=y
+CONFIG_X86_UMIP=y
+CONFIG_CC_HAS_IBT=y
+CONFIG_X86_KERNEL_IBT=y
+CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS=y
+CONFIG_X86_INTEL_TSX_MODE_OFF=y
+# CONFIG_X86_INTEL_TSX_MODE_ON is not set
+# CONFIG_X86_INTEL_TSX_MODE_AUTO is not set
+# CONFIG_X86_SGX is not set
+CONFIG_EFI=y
+CONFIG_EFI_STUB=y
+CONFIG_EFI_HANDOVER_PROTOCOL=y
+CONFIG_EFI_MIXED=y
+# CONFIG_EFI_FAKE_MEMMAP is not set
+CONFIG_EFI_RUNTIME_MAP=y
+# CONFIG_HZ_100 is not set
+# CONFIG_HZ_250 is not set
+# CONFIG_HZ_300 is not set
+CONFIG_HZ_1000=y
+CONFIG_HZ=1000
+CONFIG_SCHED_HRTICK=y
+CONFIG_KEXEC=y
+CONFIG_KEXEC_FILE=y
+CONFIG_ARCH_HAS_KEXEC_PURGATORY=y
+# CONFIG_KEXEC_SIG is not set
+CONFIG_CRASH_DUMP=y
+CONFIG_KEXEC_JUMP=y
+CONFIG_PHYSICAL_START=0x1000000
+CONFIG_RELOCATABLE=y
+CONFIG_RANDOMIZE_BASE=y
+CONFIG_X86_NEED_RELOCS=y
+CONFIG_PHYSICAL_ALIGN=0x200000
+CONFIG_DYNAMIC_MEMORY_LAYOUT=y
+CONFIG_RANDOMIZE_MEMORY=y
+CONFIG_RANDOMIZE_MEMORY_PHYSICAL_PADDING=0xa
+# CONFIG_ADDRESS_MASKING is not set
+CONFIG_HOTPLUG_CPU=y
+CONFIG_BOOTPARAM_HOTPLUG_CPU0=y
+# CONFIG_DEBUG_HOTPLUG_CPU0 is not set
+# CONFIG_COMPAT_VDSO is not set
+CONFIG_LEGACY_VSYSCALL_XONLY=y
+# CONFIG_LEGACY_VSYSCALL_NONE is not set
+# CONFIG_CMDLINE_BOOL is not set
+CONFIG_MODIFY_LDT_SYSCALL=y
+# CONFIG_STRICT_SIGALTSTACK_SIZE is not set
+CONFIG_HAVE_LIVEPATCH=y
+CONFIG_LIVEPATCH=y
+# end of Processor type and features
+
+CONFIG_CC_HAS_SLS=y
+CONFIG_CC_HAS_RETURN_THUNK=y
+CONFIG_CC_HAS_ENTRY_PADDING=y
+CONFIG_FUNCTION_PADDING_CFI=11
+CONFIG_FUNCTION_PADDING_BYTES=16
+CONFIG_SPECULATION_MITIGATIONS=y
+CONFIG_PAGE_TABLE_ISOLATION=y
+# CONFIG_RETPOLINE is not set
+CONFIG_CPU_IBRS_ENTRY=y
+# CONFIG_SLS is not set
+CONFIG_ARCH_HAS_ADD_PAGES=y
+CONFIG_ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE=y
+
+#
+# Power management and ACPI options
+#
+CONFIG_ARCH_HIBERNATION_HEADER=y
+CONFIG_SUSPEND=y
+CONFIG_SUSPEND_FREEZER=y
+# CONFIG_SUSPEND_SKIP_SYNC is not set
+CONFIG_HIBERNATE_CALLBACKS=y
+CONFIG_HIBERNATION=y
+CONFIG_HIBERNATION_SNAPSHOT_DEV=y
+CONFIG_PM_STD_PARTITION=""
+CONFIG_PM_SLEEP=y
+CONFIG_PM_SLEEP_SMP=y
+# CONFIG_PM_AUTOSLEEP is not set
+# CONFIG_PM_USERSPACE_AUTOSLEEP is not set
+# CONFIG_PM_WAKELOCKS is not set
+CONFIG_PM=y
+CONFIG_PM_DEBUG=y
+# CONFIG_PM_ADVANCED_DEBUG is not set
+# CONFIG_PM_TEST_SUSPEND is not set
+CONFIG_PM_SLEEP_DEBUG=y
+# CONFIG_DPM_WATCHDOG is not set
+# CONFIG_PM_TRACE_RTC is not set
+CONFIG_PM_CLK=y
+# CONFIG_WQ_POWER_EFFICIENT_DEFAULT is not set
+# CONFIG_ENERGY_MODEL is not set
+CONFIG_ARCH_SUPPORTS_ACPI=y
+CONFIG_ACPI=y
+CONFIG_ACPI_LEGACY_TABLES_LOOKUP=y
+CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC=y
+CONFIG_ACPI_SYSTEM_POWER_STATES_SUPPORT=y
+# CONFIG_ACPI_DEBUGGER is not set
+CONFIG_ACPI_SPCR_TABLE=y
+# CONFIG_ACPI_FPDT is not set
+CONFIG_ACPI_LPIT=y
+CONFIG_ACPI_SLEEP=y
+CONFIG_ACPI_REV_OVERRIDE_POSSIBLE=y
+CONFIG_ACPI_EC_DEBUGFS=m
+CONFIG_ACPI_AC=y
+CONFIG_ACPI_BATTERY=y
+CONFIG_ACPI_BUTTON=y
+CONFIG_ACPI_VIDEO=m
+CONFIG_ACPI_FAN=y
+CONFIG_ACPI_TAD=m
+CONFIG_ACPI_DOCK=y
+CONFIG_ACPI_CPU_FREQ_PSS=y
+CONFIG_ACPI_PROCESSOR_CSTATE=y
+CONFIG_ACPI_PROCESSOR_IDLE=y
+CONFIG_ACPI_CPPC_LIB=y
+CONFIG_ACPI_PROCESSOR=y
+CONFIG_ACPI_IPMI=m
+CONFIG_ACPI_HOTPLUG_CPU=y
+CONFIG_ACPI_PROCESSOR_AGGREGATOR=m
+CONFIG_ACPI_THERMAL=y
+CONFIG_ACPI_PLATFORM_PROFILE=m
+CONFIG_ARCH_HAS_ACPI_TABLE_UPGRADE=y
+CONFIG_ACPI_TABLE_UPGRADE=y
+# CONFIG_ACPI_DEBUG is not set
+CONFIG_ACPI_PCI_SLOT=y
+CONFIG_ACPI_CONTAINER=y
+CONFIG_ACPI_HOTPLUG_MEMORY=y
+CONFIG_ACPI_HOTPLUG_IOAPIC=y
+CONFIG_ACPI_SBS=m
+CONFIG_ACPI_HED=y
+# CONFIG_ACPI_CUSTOM_METHOD is not set
+CONFIG_ACPI_BGRT=y
+# CONFIG_ACPI_REDUCED_HARDWARE_ONLY is not set
+CONFIG_ACPI_NFIT=m
+# CONFIG_NFIT_SECURITY_DEBUG is not set
+CONFIG_ACPI_NUMA=y
+CONFIG_ACPI_HMAT=y
+CONFIG_HAVE_ACPI_APEI=y
+CONFIG_HAVE_ACPI_APEI_NMI=y
+CONFIG_ACPI_APEI=y
+CONFIG_ACPI_APEI_GHES=y
+CONFIG_ACPI_APEI_PCIEAER=y
+CONFIG_ACPI_APEI_MEMORY_FAILURE=y
+CONFIG_ACPI_APEI_EINJ=m
+# CONFIG_ACPI_APEI_ERST_DEBUG is not set
+# CONFIG_ACPI_DPTF is not set
+CONFIG_ACPI_WATCHDOG=y
+CONFIG_ACPI_EXTLOG=m
+CONFIG_ACPI_ADXL=y
+# CONFIG_ACPI_CONFIGFS is not set
+# CONFIG_ACPI_PFRUT is not set
+CONFIG_ACPI_PCC=y
+# CONFIG_ACPI_FFH is not set
+# CONFIG_PMIC_OPREGION is not set
+CONFIG_ACPI_PRMT=y
+CONFIG_X86_PM_TIMER=y
+
+#
+# CPU Frequency scaling
+#
+CONFIG_CPU_FREQ=y
+CONFIG_CPU_FREQ_GOV_ATTR_SET=y
+CONFIG_CPU_FREQ_GOV_COMMON=y
+CONFIG_CPU_FREQ_STAT=y
+CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE=y
+# CONFIG_CPU_FREQ_DEFAULT_GOV_POWERSAVE is not set
+# CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE is not set
+# CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL is not set
+CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
+CONFIG_CPU_FREQ_GOV_POWERSAVE=y
+CONFIG_CPU_FREQ_GOV_USERSPACE=y
+CONFIG_CPU_FREQ_GOV_ONDEMAND=y
+CONFIG_CPU_FREQ_GOV_CONSERVATIVE=y
+CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y
+
+#
+# CPU frequency scaling drivers
+#
+CONFIG_X86_INTEL_PSTATE=y
+# CONFIG_X86_PCC_CPUFREQ is not set
+# CONFIG_X86_AMD_PSTATE is not set
+# CONFIG_X86_AMD_PSTATE_UT is not set
+CONFIG_X86_ACPI_CPUFREQ=m
+# CONFIG_X86_POWERNOW_K8 is not set
+# CONFIG_X86_SPEEDSTEP_CENTRINO is not set
+CONFIG_X86_P4_CLOCKMOD=m
+
+#
+# shared options
+#
+CONFIG_X86_SPEEDSTEP_LIB=m
+# end of CPU Frequency scaling
+
+#
+# CPU Idle
+#
+CONFIG_CPU_IDLE=y
+# CONFIG_CPU_IDLE_GOV_LADDER is not set
+CONFIG_CPU_IDLE_GOV_MENU=y
+# CONFIG_CPU_IDLE_GOV_TEO is not set
+CONFIG_CPU_IDLE_GOV_HALTPOLL=y
+CONFIG_HALTPOLL_CPUIDLE=y
+# end of CPU Idle
+
+CONFIG_INTEL_IDLE=y
+# end of Power management and ACPI options
+
+#
+# Bus options (PCI etc.)
+#
+CONFIG_PCI_DIRECT=y
+CONFIG_PCI_MMCONFIG=y
+CONFIG_MMCONF_FAM10H=y
+# CONFIG_PCI_CNB20LE_QUIRK is not set
+# CONFIG_ISA_BUS is not set
+CONFIG_ISA_DMA_API=y
+# end of Bus options (PCI etc.)
+
+#
+# Binary Emulations
+#
+CONFIG_IA32_EMULATION=y
+# CONFIG_X86_X32_ABI is not set
+CONFIG_COMPAT_32=y
+CONFIG_COMPAT=y
+CONFIG_COMPAT_FOR_U64_ALIGNMENT=y
+# end of Binary Emulations
+
+CONFIG_HAVE_KVM=y
+CONFIG_HAVE_KVM_PFNCACHE=y
+CONFIG_HAVE_KVM_IRQCHIP=y
+CONFIG_HAVE_KVM_IRQFD=y
+CONFIG_HAVE_KVM_IRQ_ROUTING=y
+CONFIG_HAVE_KVM_DIRTY_RING=y
+CONFIG_HAVE_KVM_DIRTY_RING_TSO=y
+CONFIG_HAVE_KVM_DIRTY_RING_ACQ_REL=y
+CONFIG_HAVE_KVM_EVENTFD=y
+CONFIG_KVM_MMIO=y
+CONFIG_KVM_ASYNC_PF=y
+CONFIG_HAVE_KVM_MSI=y
+CONFIG_HAVE_KVM_CPU_RELAX_INTERCEPT=y
+CONFIG_KVM_VFIO=y
+CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT=y
+CONFIG_KVM_COMPAT=y
+CONFIG_HAVE_KVM_IRQ_BYPASS=y
+CONFIG_HAVE_KVM_NO_POLL=y
+CONFIG_KVM_XFER_TO_GUEST_WORK=y
+CONFIG_HAVE_KVM_PM_NOTIFIER=y
+CONFIG_KVM_GENERIC_HARDWARE_ENABLING=y
+CONFIG_VIRTUALIZATION=y
+CONFIG_KVM=m
+# CONFIG_KVM_WERROR is not set
+CONFIG_KVM_INTEL=m
+# CONFIG_KVM_AMD is not set
+CONFIG_KVM_SMM=y
+# CONFIG_KVM_XEN is not set
+CONFIG_AS_AVX512=y
+CONFIG_AS_SHA1_NI=y
+CONFIG_AS_SHA256_NI=y
+CONFIG_AS_TPAUSE=y
+CONFIG_AS_GFNI=y
+
+#
+# General architecture-dependent options
+#
+CONFIG_CRASH_CORE=y
+CONFIG_KEXEC_CORE=y
+CONFIG_HAVE_IMA_KEXEC=y
+CONFIG_HOTPLUG_SMT=y
+CONFIG_GENERIC_ENTRY=y
+CONFIG_KPROBES=y
+CONFIG_JUMP_LABEL=y
+# CONFIG_STATIC_KEYS_SELFTEST is not set
+# CONFIG_STATIC_CALL_SELFTEST is not set
+CONFIG_OPTPROBES=y
+CONFIG_KPROBES_ON_FTRACE=y
+CONFIG_UPROBES=y
+CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=y
+CONFIG_ARCH_USE_BUILTIN_BSWAP=y
+CONFIG_KRETPROBES=y
+CONFIG_KRETPROBE_ON_RETHOOK=y
+CONFIG_USER_RETURN_NOTIFIER=y
+CONFIG_HAVE_IOREMAP_PROT=y
+CONFIG_HAVE_KPROBES=y
+CONFIG_HAVE_KRETPROBES=y
+CONFIG_HAVE_OPTPROBES=y
+CONFIG_HAVE_KPROBES_ON_FTRACE=y
+CONFIG_ARCH_CORRECT_STACKTRACE_ON_KRETPROBE=y
+CONFIG_HAVE_FUNCTION_ERROR_INJECTION=y
+CONFIG_HAVE_NMI=y
+CONFIG_TRACE_IRQFLAGS_SUPPORT=y
+CONFIG_TRACE_IRQFLAGS_NMI_SUPPORT=y
+CONFIG_HAVE_ARCH_TRACEHOOK=y
+CONFIG_HAVE_DMA_CONTIGUOUS=y
+CONFIG_GENERIC_SMP_IDLE_THREAD=y
+CONFIG_ARCH_HAS_FORTIFY_SOURCE=y
+CONFIG_ARCH_HAS_SET_MEMORY=y
+CONFIG_ARCH_HAS_SET_DIRECT_MAP=y
+CONFIG_HAVE_ARCH_THREAD_STRUCT_WHITELIST=y
+CONFIG_ARCH_WANTS_DYNAMIC_TASK_STRUCT=y
+CONFIG_ARCH_WANTS_NO_INSTR=y
+CONFIG_HAVE_ASM_MODVERSIONS=y
+CONFIG_HAVE_REGS_AND_STACK_ACCESS_API=y
+CONFIG_HAVE_RSEQ=y
+CONFIG_HAVE_RUST=y
+CONFIG_HAVE_FUNCTION_ARG_ACCESS_API=y
+CONFIG_HAVE_HW_BREAKPOINT=y
+CONFIG_HAVE_MIXED_BREAKPOINTS_REGS=y
+CONFIG_HAVE_USER_RETURN_NOTIFIER=y
+CONFIG_HAVE_PERF_EVENTS_NMI=y
+CONFIG_HAVE_HARDLOCKUP_DETECTOR_PERF=y
+CONFIG_HAVE_PERF_REGS=y
+CONFIG_HAVE_PERF_USER_STACK_DUMP=y
+CONFIG_HAVE_ARCH_JUMP_LABEL=y
+CONFIG_HAVE_ARCH_JUMP_LABEL_RELATIVE=y
+CONFIG_MMU_GATHER_TABLE_FREE=y
+CONFIG_MMU_GATHER_RCU_TABLE_FREE=y
+CONFIG_MMU_GATHER_MERGE_VMAS=y
+CONFIG_MMU_LAZY_TLB_REFCOUNT=y
+CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG=y
+CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS=y
+CONFIG_HAVE_ALIGNED_STRUCT_PAGE=y
+CONFIG_HAVE_CMPXCHG_LOCAL=y
+CONFIG_HAVE_CMPXCHG_DOUBLE=y
+CONFIG_ARCH_WANT_COMPAT_IPC_PARSE_VERSION=y
+CONFIG_ARCH_WANT_OLD_COMPAT_IPC=y
+CONFIG_HAVE_ARCH_SECCOMP=y
+CONFIG_HAVE_ARCH_SECCOMP_FILTER=y
+CONFIG_SECCOMP=y
+CONFIG_SECCOMP_FILTER=y
+# CONFIG_SECCOMP_CACHE_DEBUG is not set
+CONFIG_HAVE_ARCH_STACKLEAK=y
+CONFIG_HAVE_STACKPROTECTOR=y
+CONFIG_STACKPROTECTOR=y
+CONFIG_STACKPROTECTOR_STRONG=y
+CONFIG_ARCH_SUPPORTS_LTO_CLANG=y
+CONFIG_ARCH_SUPPORTS_LTO_CLANG_THIN=y
+CONFIG_LTO_NONE=y
+CONFIG_ARCH_SUPPORTS_CFI_CLANG=y
+CONFIG_HAVE_ARCH_WITHIN_STACK_FRAMES=y
+CONFIG_HAVE_CONTEXT_TRACKING_USER=y
+CONFIG_HAVE_CONTEXT_TRACKING_USER_OFFSTACK=y
+CONFIG_HAVE_VIRT_CPU_ACCOUNTING_GEN=y
+CONFIG_HAVE_IRQ_TIME_ACCOUNTING=y
+CONFIG_HAVE_MOVE_PUD=y
+CONFIG_HAVE_MOVE_PMD=y
+CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE=y
+CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD=y
+CONFIG_HAVE_ARCH_HUGE_VMAP=y
+CONFIG_HAVE_ARCH_HUGE_VMALLOC=y
+CONFIG_ARCH_WANT_HUGE_PMD_SHARE=y
+CONFIG_HAVE_ARCH_SOFT_DIRTY=y
+CONFIG_HAVE_MOD_ARCH_SPECIFIC=y
+CONFIG_MODULES_USE_ELF_RELA=y
+CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK=y
+CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK=y
+CONFIG_SOFTIRQ_ON_OWN_STACK=y
+CONFIG_ARCH_HAS_ELF_RANDOMIZE=y
+CONFIG_HAVE_ARCH_MMAP_RND_BITS=y
+CONFIG_HAVE_EXIT_THREAD=y
+CONFIG_ARCH_MMAP_RND_BITS=28
+CONFIG_HAVE_ARCH_MMAP_RND_COMPAT_BITS=y
+CONFIG_ARCH_MMAP_RND_COMPAT_BITS=8
+CONFIG_HAVE_ARCH_COMPAT_MMAP_BASES=y
+CONFIG_PAGE_SIZE_LESS_THAN_64KB=y
+CONFIG_PAGE_SIZE_LESS_THAN_256KB=y
+CONFIG_HAVE_OBJTOOL=y
+CONFIG_HAVE_JUMP_LABEL_HACK=y
+CONFIG_HAVE_NOINSTR_HACK=y
+CONFIG_HAVE_NOINSTR_VALIDATION=y
+CONFIG_HAVE_UACCESS_VALIDATION=y
+CONFIG_HAVE_STACK_VALIDATION=y
+CONFIG_HAVE_RELIABLE_STACKTRACE=y
+CONFIG_OLD_SIGSUSPEND3=y
+CONFIG_COMPAT_OLD_SIGACTION=y
+CONFIG_COMPAT_32BIT_TIME=y
+CONFIG_HAVE_ARCH_VMAP_STACK=y
+CONFIG_VMAP_STACK=y
+CONFIG_HAVE_ARCH_RANDOMIZE_KSTACK_OFFSET=y
+CONFIG_RANDOMIZE_KSTACK_OFFSET=y
+# CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT is not set
+CONFIG_ARCH_HAS_STRICT_KERNEL_RWX=y
+CONFIG_STRICT_KERNEL_RWX=y
+CONFIG_ARCH_HAS_STRICT_MODULE_RWX=y
+CONFIG_STRICT_MODULE_RWX=y
+CONFIG_HAVE_ARCH_PREL32_RELOCATIONS=y
+CONFIG_ARCH_USE_MEMREMAP_PROT=y
+# CONFIG_LOCK_EVENT_COUNTS is not set
+CONFIG_ARCH_HAS_MEM_ENCRYPT=y
+CONFIG_HAVE_STATIC_CALL=y
+CONFIG_HAVE_STATIC_CALL_INLINE=y
+CONFIG_HAVE_PREEMPT_DYNAMIC=y
+CONFIG_HAVE_PREEMPT_DYNAMIC_CALL=y
+CONFIG_ARCH_WANT_LD_ORPHAN_WARN=y
+CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC=y
+CONFIG_ARCH_SUPPORTS_PAGE_TABLE_CHECK=y
+CONFIG_ARCH_HAS_ELFCORE_COMPAT=y
+CONFIG_ARCH_HAS_PARANOID_L1D_FLUSH=y
+CONFIG_DYNAMIC_SIGFRAME=y
+CONFIG_ARCH_HAS_NONLEAF_PMD_YOUNG=y
+
+#
+# GCOV-based kernel profiling
+#
+# CONFIG_GCOV_KERNEL is not set
+CONFIG_ARCH_HAS_GCOV_PROFILE_ALL=y
+# end of GCOV-based kernel profiling
+
+CONFIG_HAVE_GCC_PLUGINS=y
+CONFIG_GCC_PLUGINS=y
+# CONFIG_GCC_PLUGIN_LATENT_ENTROPY is not set
+CONFIG_FUNCTION_ALIGNMENT_4B=y
+CONFIG_FUNCTION_ALIGNMENT_16B=y
+CONFIG_FUNCTION_ALIGNMENT=16
+# end of General architecture-dependent options
+
+CONFIG_RT_MUTEXES=y
+CONFIG_BASE_SMALL=0
+CONFIG_MODULE_SIG_FORMAT=y
+CONFIG_MODULES=y
+# CONFIG_MODULE_DEBUG is not set
+CONFIG_MODULE_FORCE_LOAD=y
+CONFIG_MODULE_UNLOAD=y
+# CONFIG_MODULE_FORCE_UNLOAD is not set
+# CONFIG_MODULE_UNLOAD_TAINT_TRACKING is not set
+# CONFIG_MODVERSIONS is not set
+# CONFIG_MODULE_SRCVERSION_ALL is not set
+CONFIG_MODULE_SIG=y
+# CONFIG_MODULE_SIG_FORCE is not set
+CONFIG_MODULE_SIG_ALL=y
+# CONFIG_MODULE_SIG_SHA1 is not set
+# CONFIG_MODULE_SIG_SHA224 is not set
+CONFIG_MODULE_SIG_SHA256=y
+# CONFIG_MODULE_SIG_SHA384 is not set
+# CONFIG_MODULE_SIG_SHA512 is not set
+CONFIG_MODULE_SIG_HASH="sha256"
+CONFIG_MODULE_COMPRESS_NONE=y
+# CONFIG_MODULE_COMPRESS_GZIP is not set
+# CONFIG_MODULE_COMPRESS_XZ is not set
+# CONFIG_MODULE_COMPRESS_ZSTD is not set
+# CONFIG_MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS is not set
+CONFIG_MODPROBE_PATH="/sbin/modprobe"
+# CONFIG_TRIM_UNUSED_KSYMS is not set
+CONFIG_MODULES_TREE_LOOKUP=y
+CONFIG_BLOCK=y
+CONFIG_BLOCK_LEGACY_AUTOLOAD=y
+CONFIG_BLK_CGROUP_RWSTAT=y
+CONFIG_BLK_CGROUP_PUNT_BIO=y
+CONFIG_BLK_DEV_BSG_COMMON=y
+CONFIG_BLK_ICQ=y
+CONFIG_BLK_DEV_BSGLIB=y
+CONFIG_BLK_DEV_INTEGRITY=y
+CONFIG_BLK_DEV_INTEGRITY_T10=m
+# CONFIG_BLK_DEV_ZONED is not set
+CONFIG_BLK_DEV_THROTTLING=y
+# CONFIG_BLK_DEV_THROTTLING_LOW is not set
+CONFIG_BLK_WBT=y
+CONFIG_BLK_WBT_MQ=y
+# CONFIG_BLK_CGROUP_IOLATENCY is not set
+# CONFIG_BLK_CGROUP_IOCOST is not set
+# CONFIG_BLK_CGROUP_IOPRIO is not set
+CONFIG_BLK_DEBUG_FS=y
+# CONFIG_BLK_SED_OPAL is not set
+# CONFIG_BLK_INLINE_ENCRYPTION is not set
+
+#
+# Partition Types
+#
+# CONFIG_PARTITION_ADVANCED is not set
+CONFIG_MSDOS_PARTITION=y
+CONFIG_EFI_PARTITION=y
+# end of Partition Types
+
+CONFIG_BLK_MQ_PCI=y
+CONFIG_BLK_MQ_VIRTIO=y
+CONFIG_BLK_PM=y
+CONFIG_BLOCK_HOLDER_DEPRECATED=y
+CONFIG_BLK_MQ_STACKING=y
+
+#
+# IO Schedulers
+#
+CONFIG_MQ_IOSCHED_DEADLINE=y
+CONFIG_MQ_IOSCHED_KYBER=y
+CONFIG_IOSCHED_BFQ=y
+CONFIG_BFQ_GROUP_IOSCHED=y
+# CONFIG_BFQ_CGROUP_DEBUG is not set
+# end of IO Schedulers
+
+CONFIG_PREEMPT_NOTIFIERS=y
+CONFIG_PADATA=y
+CONFIG_ASN1=y
+CONFIG_UNINLINE_SPIN_UNLOCK=y
+CONFIG_ARCH_SUPPORTS_ATOMIC_RMW=y
+CONFIG_MUTEX_SPIN_ON_OWNER=y
+CONFIG_RWSEM_SPIN_ON_OWNER=y
+CONFIG_LOCK_SPIN_ON_OWNER=y
+CONFIG_ARCH_USE_QUEUED_SPINLOCKS=y
+CONFIG_QUEUED_SPINLOCKS=y
+CONFIG_ARCH_USE_QUEUED_RWLOCKS=y
+CONFIG_QUEUED_RWLOCKS=y
+CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE=y
+CONFIG_ARCH_HAS_SYNC_CORE_BEFORE_USERMODE=y
+CONFIG_ARCH_HAS_SYSCALL_WRAPPER=y
+CONFIG_FREEZER=y
+
+#
+# Executable file formats
+#
+CONFIG_BINFMT_ELF=y
+CONFIG_COMPAT_BINFMT_ELF=y
+CONFIG_ELFCORE=y
+CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS=y
+CONFIG_BINFMT_SCRIPT=y
+CONFIG_BINFMT_MISC=m
+CONFIG_COREDUMP=y
+# end of Executable file formats
+
+#
+# Memory Management options
+#
+CONFIG_ZPOOL=y
+CONFIG_SWAP=y
+CONFIG_ZSWAP=y
+# CONFIG_ZSWAP_DEFAULT_ON is not set
+# CONFIG_ZSWAP_COMPRESSOR_DEFAULT_DEFLATE is not set
+CONFIG_ZSWAP_COMPRESSOR_DEFAULT_LZO=y
+# CONFIG_ZSWAP_COMPRESSOR_DEFAULT_842 is not set
+# CONFIG_ZSWAP_COMPRESSOR_DEFAULT_LZ4 is not set
+# CONFIG_ZSWAP_COMPRESSOR_DEFAULT_LZ4HC is not set
+# CONFIG_ZSWAP_COMPRESSOR_DEFAULT_ZSTD is not set
+CONFIG_ZSWAP_COMPRESSOR_DEFAULT="lzo"
+CONFIG_ZSWAP_ZPOOL_DEFAULT_ZBUD=y
+# CONFIG_ZSWAP_ZPOOL_DEFAULT_Z3FOLD is not set
+# CONFIG_ZSWAP_ZPOOL_DEFAULT_ZSMALLOC is not set
+CONFIG_ZSWAP_ZPOOL_DEFAULT="zbud"
+CONFIG_ZBUD=y
+# CONFIG_Z3FOLD is not set
+CONFIG_ZSMALLOC=y
+CONFIG_ZSMALLOC_STAT=y
+CONFIG_ZSMALLOC_CHAIN_SIZE=8
+
+#
+# SLAB allocator options
+#
+# CONFIG_SLAB is not set
+CONFIG_SLUB=y
+# CONFIG_SLUB_TINY is not set
+CONFIG_SLAB_MERGE_DEFAULT=y
+CONFIG_SLAB_FREELIST_RANDOM=y
+# CONFIG_SLAB_FREELIST_HARDENED is not set
+# CONFIG_SLUB_STATS is not set
+CONFIG_SLUB_CPU_PARTIAL=y
+# end of SLAB allocator options
+
+CONFIG_SHUFFLE_PAGE_ALLOCATOR=y
+# CONFIG_COMPAT_BRK is not set
+CONFIG_SPARSEMEM=y
+CONFIG_SPARSEMEM_EXTREME=y
+CONFIG_SPARSEMEM_VMEMMAP_ENABLE=y
+CONFIG_SPARSEMEM_VMEMMAP=y
+CONFIG_ARCH_WANT_OPTIMIZE_VMEMMAP=y
+CONFIG_HAVE_FAST_GUP=y
+CONFIG_NUMA_KEEP_MEMINFO=y
+CONFIG_MEMORY_ISOLATION=y
+CONFIG_EXCLUSIVE_SYSTEM_RAM=y
+CONFIG_HAVE_BOOTMEM_INFO_NODE=y
+CONFIG_ARCH_ENABLE_MEMORY_HOTPLUG=y
+CONFIG_ARCH_ENABLE_MEMORY_HOTREMOVE=y
+CONFIG_MEMORY_HOTPLUG=y
+# CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE is not set
+CONFIG_MEMORY_HOTREMOVE=y
+CONFIG_MHP_MEMMAP_ON_MEMORY=y
+CONFIG_SPLIT_PTLOCK_CPUS=4
+CONFIG_ARCH_ENABLE_SPLIT_PMD_PTLOCK=y
+CONFIG_MEMORY_BALLOON=y
+CONFIG_BALLOON_COMPACTION=y
+CONFIG_COMPACTION=y
+CONFIG_COMPACT_UNEVICTABLE_DEFAULT=1
+CONFIG_PAGE_REPORTING=y
+CONFIG_MIGRATION=y
+CONFIG_DEVICE_MIGRATION=y
+CONFIG_ARCH_ENABLE_HUGEPAGE_MIGRATION=y
+CONFIG_ARCH_ENABLE_THP_MIGRATION=y
+CONFIG_CONTIG_ALLOC=y
+CONFIG_PHYS_ADDR_T_64BIT=y
+CONFIG_MMU_NOTIFIER=y
+CONFIG_KSM=y
+CONFIG_DEFAULT_MMAP_MIN_ADDR=4096
+CONFIG_ARCH_SUPPORTS_MEMORY_FAILURE=y
+CONFIG_MEMORY_FAILURE=y
+CONFIG_HWPOISON_INJECT=m
+CONFIG_ARCH_WANT_GENERAL_HUGETLB=y
+CONFIG_ARCH_WANTS_THP_SWAP=y
+CONFIG_TRANSPARENT_HUGEPAGE=y
+CONFIG_TRANSPARENT_HUGEPAGE_ALWAYS=y
+# CONFIG_TRANSPARENT_HUGEPAGE_MADVISE is not set
+CONFIG_THP_SWAP=y
+# CONFIG_READ_ONLY_THP_FOR_FS is not set
+CONFIG_NEED_PER_CPU_EMBED_FIRST_CHUNK=y
+CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK=y
+CONFIG_USE_PERCPU_NUMA_NODE_ID=y
+CONFIG_HAVE_SETUP_PER_CPU_AREA=y
+CONFIG_FRONTSWAP=y
+# CONFIG_CMA is not set
+# CONFIG_MEM_SOFT_DIRTY is not set
+CONFIG_GENERIC_EARLY_IOREMAP=y
+CONFIG_DEFERRED_STRUCT_PAGE_INIT=y
+CONFIG_PAGE_IDLE_FLAG=y
+CONFIG_IDLE_PAGE_TRACKING=y
+CONFIG_ARCH_HAS_CACHE_LINE_SIZE=y
+CONFIG_ARCH_HAS_CURRENT_STACK_POINTER=y
+CONFIG_ARCH_HAS_PTE_DEVMAP=y
+CONFIG_ARCH_HAS_ZONE_DMA_SET=y
+CONFIG_ZONE_DMA=y
+CONFIG_ZONE_DMA32=y
+CONFIG_ZONE_DEVICE=y
+CONFIG_GET_FREE_REGION=y
+CONFIG_DEVICE_PRIVATE=y
+CONFIG_VMAP_PFN=y
+CONFIG_ARCH_USES_HIGH_VMA_FLAGS=y
+CONFIG_ARCH_HAS_PKEYS=y
+CONFIG_VM_EVENT_COUNTERS=y
+# CONFIG_PERCPU_STATS is not set
+# CONFIG_GUP_TEST is not set
+# CONFIG_DMAPOOL_TEST is not set
+CONFIG_ARCH_HAS_PTE_SPECIAL=y
+CONFIG_SECRETMEM=y
+# CONFIG_ANON_VMA_NAME is not set
+# CONFIG_USERFAULTFD is not set
+# CONFIG_LRU_GEN is not set
+CONFIG_ARCH_SUPPORTS_PER_VMA_LOCK=y
+CONFIG_PER_VMA_LOCK=y
+
+#
+# Data Access Monitoring
+#
+# CONFIG_DAMON is not set
+# end of Data Access Monitoring
+# end of Memory Management options
+
+CONFIG_NET=y
+CONFIG_NET_INGRESS=y
+CONFIG_NET_EGRESS=y
+CONFIG_SKB_EXTENSIONS=y
+
+#
+# Networking options
+#
+CONFIG_PACKET=y
+CONFIG_PACKET_DIAG=m
+CONFIG_UNIX=y
+CONFIG_UNIX_SCM=y
+CONFIG_AF_UNIX_OOB=y
+CONFIG_UNIX_DIAG=m
+CONFIG_TLS=m
+CONFIG_TLS_DEVICE=y
+# CONFIG_TLS_TOE is not set
+CONFIG_XFRM=y
+CONFIG_XFRM_OFFLOAD=y
+CONFIG_XFRM_ALGO=y
+CONFIG_XFRM_USER=y
+# CONFIG_XFRM_USER_COMPAT is not set
+# CONFIG_XFRM_INTERFACE is not set
+CONFIG_XFRM_SUB_POLICY=y
+CONFIG_XFRM_MIGRATE=y
+CONFIG_XFRM_STATISTICS=y
+CONFIG_XFRM_AH=m
+CONFIG_XFRM_ESP=m
+CONFIG_XFRM_IPCOMP=m
+# CONFIG_NET_KEY is not set
+CONFIG_XDP_SOCKETS=y
+# CONFIG_XDP_SOCKETS_DIAG is not set
+CONFIG_NET_HANDSHAKE=y
+CONFIG_INET=y
+CONFIG_IP_MULTICAST=y
+CONFIG_IP_ADVANCED_ROUTER=y
+CONFIG_IP_FIB_TRIE_STATS=y
+CONFIG_IP_MULTIPLE_TABLES=y
+CONFIG_IP_ROUTE_MULTIPATH=y
+CONFIG_IP_ROUTE_VERBOSE=y
+CONFIG_IP_ROUTE_CLASSID=y
+CONFIG_IP_PNP=y
+CONFIG_IP_PNP_DHCP=y
+# CONFIG_IP_PNP_BOOTP is not set
+# CONFIG_IP_PNP_RARP is not set
+CONFIG_NET_IPIP=m
+CONFIG_NET_IPGRE_DEMUX=m
+CONFIG_NET_IP_TUNNEL=m
+CONFIG_NET_IPGRE=m
+CONFIG_NET_IPGRE_BROADCAST=y
+CONFIG_IP_MROUTE_COMMON=y
+CONFIG_IP_MROUTE=y
+CONFIG_IP_MROUTE_MULTIPLE_TABLES=y
+CONFIG_IP_PIMSM_V1=y
+CONFIG_IP_PIMSM_V2=y
+CONFIG_SYN_COOKIES=y
+CONFIG_NET_IPVTI=m
+CONFIG_NET_UDP_TUNNEL=m
+# CONFIG_NET_FOU is not set
+# CONFIG_NET_FOU_IP_TUNNELS is not set
+CONFIG_INET_AH=m
+CONFIG_INET_ESP=m
+CONFIG_INET_ESP_OFFLOAD=m
+# CONFIG_INET_ESPINTCP is not set
+CONFIG_INET_IPCOMP=m
+CONFIG_INET_TABLE_PERTURB_ORDER=16
+CONFIG_INET_XFRM_TUNNEL=m
+CONFIG_INET_TUNNEL=m
+CONFIG_INET_DIAG=m
+CONFIG_INET_TCP_DIAG=m
+CONFIG_INET_UDP_DIAG=m
+CONFIG_INET_RAW_DIAG=m
+# CONFIG_INET_DIAG_DESTROY is not set
+CONFIG_TCP_CONG_ADVANCED=y
+CONFIG_TCP_CONG_BIC=m
+CONFIG_TCP_CONG_CUBIC=y
+CONFIG_TCP_CONG_WESTWOOD=m
+CONFIG_TCP_CONG_HTCP=m
+CONFIG_TCP_CONG_HSTCP=m
+CONFIG_TCP_CONG_HYBLA=m
+CONFIG_TCP_CONG_VEGAS=m
+CONFIG_TCP_CONG_NV=m
+CONFIG_TCP_CONG_SCALABLE=m
+CONFIG_TCP_CONG_LP=m
+CONFIG_TCP_CONG_VENO=m
+CONFIG_TCP_CONG_YEAH=m
+CONFIG_TCP_CONG_ILLINOIS=m
+CONFIG_TCP_CONG_DCTCP=m
+# CONFIG_TCP_CONG_CDG is not set
+CONFIG_TCP_CONG_BBR=m
+CONFIG_DEFAULT_CUBIC=y
+# CONFIG_DEFAULT_RENO is not set
+CONFIG_DEFAULT_TCP_CONG="cubic"
+CONFIG_TCP_MD5SIG=y
+CONFIG_IPV6=y
+CONFIG_IPV6_ROUTER_PREF=y
+CONFIG_IPV6_ROUTE_INFO=y
+CONFIG_IPV6_OPTIMISTIC_DAD=y
+CONFIG_INET6_AH=m
+CONFIG_INET6_ESP=m
+CONFIG_INET6_ESP_OFFLOAD=m
+# CONFIG_INET6_ESPINTCP is not set
+CONFIG_INET6_IPCOMP=m
+CONFIG_IPV6_MIP6=m
+# CONFIG_IPV6_ILA is not set
+CONFIG_INET6_XFRM_TUNNEL=m
+CONFIG_INET6_TUNNEL=m
+CONFIG_IPV6_VTI=m
+CONFIG_IPV6_SIT=m
+CONFIG_IPV6_SIT_6RD=y
+CONFIG_IPV6_NDISC_NODETYPE=y
+CONFIG_IPV6_TUNNEL=m
+CONFIG_IPV6_GRE=m
+CONFIG_IPV6_MULTIPLE_TABLES=y
+# CONFIG_IPV6_SUBTREES is not set
+CONFIG_IPV6_MROUTE=y
+CONFIG_IPV6_MROUTE_MULTIPLE_TABLES=y
+CONFIG_IPV6_PIMSM_V2=y
+# CONFIG_IPV6_SEG6_LWTUNNEL is not set
+# CONFIG_IPV6_SEG6_HMAC is not set
+# CONFIG_IPV6_RPL_LWTUNNEL is not set
+# CONFIG_IPV6_IOAM6_LWTUNNEL is not set
+CONFIG_NETLABEL=y
+# CONFIG_MPTCP is not set
+CONFIG_NETWORK_SECMARK=y
+CONFIG_NET_PTP_CLASSIFY=y
+CONFIG_NETWORK_PHY_TIMESTAMPING=y
+CONFIG_NETFILTER=y
+CONFIG_NETFILTER_ADVANCED=y
+CONFIG_BRIDGE_NETFILTER=m
+
+#
+# Core Netfilter Configuration
+#
+CONFIG_NETFILTER_INGRESS=y
+CONFIG_NETFILTER_EGRESS=y
+CONFIG_NETFILTER_SKIP_EGRESS=y
+CONFIG_NETFILTER_NETLINK=m
+CONFIG_NETFILTER_FAMILY_BRIDGE=y
+CONFIG_NETFILTER_FAMILY_ARP=y
+CONFIG_NETFILTER_BPF_LINK=y
+# CONFIG_NETFILTER_NETLINK_HOOK is not set
+# CONFIG_NETFILTER_NETLINK_ACCT is not set
+CONFIG_NETFILTER_NETLINK_QUEUE=m
+CONFIG_NETFILTER_NETLINK_LOG=m
+CONFIG_NETFILTER_NETLINK_OSF=m
+CONFIG_NF_CONNTRACK=m
+CONFIG_NF_LOG_SYSLOG=m
+CONFIG_NETFILTER_CONNCOUNT=m
+CONFIG_NF_CONNTRACK_MARK=y
+CONFIG_NF_CONNTRACK_SECMARK=y
+CONFIG_NF_CONNTRACK_ZONES=y
+CONFIG_NF_CONNTRACK_PROCFS=y
+CONFIG_NF_CONNTRACK_EVENTS=y
+CONFIG_NF_CONNTRACK_TIMEOUT=y
+CONFIG_NF_CONNTRACK_TIMESTAMP=y
+CONFIG_NF_CONNTRACK_LABELS=y
+CONFIG_NF_CONNTRACK_OVS=y
+CONFIG_NF_CT_PROTO_DCCP=y
+CONFIG_NF_CT_PROTO_GRE=y
+CONFIG_NF_CT_PROTO_SCTP=y
+CONFIG_NF_CT_PROTO_UDPLITE=y
+CONFIG_NF_CONNTRACK_AMANDA=m
+CONFIG_NF_CONNTRACK_FTP=m
+CONFIG_NF_CONNTRACK_H323=m
+CONFIG_NF_CONNTRACK_IRC=m
+CONFIG_NF_CONNTRACK_BROADCAST=m
+CONFIG_NF_CONNTRACK_NETBIOS_NS=m
+CONFIG_NF_CONNTRACK_SNMP=m
+CONFIG_NF_CONNTRACK_PPTP=m
+CONFIG_NF_CONNTRACK_SANE=m
+CONFIG_NF_CONNTRACK_SIP=m
+CONFIG_NF_CONNTRACK_TFTP=m
+CONFIG_NF_CT_NETLINK=m
+CONFIG_NF_CT_NETLINK_TIMEOUT=m
+CONFIG_NF_CT_NETLINK_HELPER=m
+CONFIG_NETFILTER_NETLINK_GLUE_CT=y
+CONFIG_NF_NAT=m
+CONFIG_NF_NAT_AMANDA=m
+CONFIG_NF_NAT_FTP=m
+CONFIG_NF_NAT_IRC=m
+CONFIG_NF_NAT_SIP=m
+CONFIG_NF_NAT_TFTP=m
+CONFIG_NF_NAT_REDIRECT=y
+CONFIG_NF_NAT_MASQUERADE=y
+CONFIG_NF_NAT_OVS=y
+CONFIG_NETFILTER_SYNPROXY=m
+CONFIG_NF_TABLES=m
+CONFIG_NF_TABLES_INET=y
+CONFIG_NF_TABLES_NETDEV=y
+CONFIG_NFT_NUMGEN=m
+CONFIG_NFT_CT=m
+CONFIG_NFT_CONNLIMIT=m
+CONFIG_NFT_LOG=m
+CONFIG_NFT_LIMIT=m
+CONFIG_NFT_MASQ=m
+CONFIG_NFT_REDIR=m
+CONFIG_NFT_NAT=m
+# CONFIG_NFT_TUNNEL is not set
+CONFIG_NFT_QUEUE=m
+CONFIG_NFT_QUOTA=m
+CONFIG_NFT_REJECT=m
+CONFIG_NFT_REJECT_INET=m
+CONFIG_NFT_COMPAT=m
+CONFIG_NFT_HASH=m
+CONFIG_NFT_FIB=m
+CONFIG_NFT_FIB_INET=m
+# CONFIG_NFT_XFRM is not set
+CONFIG_NFT_SOCKET=m
+# CONFIG_NFT_OSF is not set
+# CONFIG_NFT_TPROXY is not set
+# CONFIG_NFT_SYNPROXY is not set
+CONFIG_NF_DUP_NETDEV=m
+CONFIG_NFT_DUP_NETDEV=m
+CONFIG_NFT_FWD_NETDEV=m
+CONFIG_NFT_FIB_NETDEV=m
+# CONFIG_NFT_REJECT_NETDEV is not set
+# CONFIG_NF_FLOW_TABLE is not set
+CONFIG_NETFILTER_XTABLES=y
+# CONFIG_NETFILTER_XTABLES_COMPAT is not set
+
+#
+# Xtables combined modules
+#
+CONFIG_NETFILTER_XT_MARK=m
+CONFIG_NETFILTER_XT_CONNMARK=m
+
+#
+# Xtables targets
+#
+CONFIG_NETFILTER_XT_TARGET_AUDIT=m
+CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
+CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+CONFIG_NETFILTER_XT_TARGET_CONNMARK=m
+CONFIG_NETFILTER_XT_TARGET_CONNSECMARK=m
+CONFIG_NETFILTER_XT_TARGET_CT=m
+CONFIG_NETFILTER_XT_TARGET_DSCP=m
+CONFIG_NETFILTER_XT_TARGET_HL=m
+CONFIG_NETFILTER_XT_TARGET_HMARK=m
+CONFIG_NETFILTER_XT_TARGET_IDLETIMER=m
+# CONFIG_NETFILTER_XT_TARGET_LED is not set
+CONFIG_NETFILTER_XT_TARGET_LOG=m
+CONFIG_NETFILTER_XT_TARGET_MARK=m
+CONFIG_NETFILTER_XT_NAT=m
+CONFIG_NETFILTER_XT_TARGET_NETMAP=m
+CONFIG_NETFILTER_XT_TARGET_NFLOG=m
+CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
+CONFIG_NETFILTER_XT_TARGET_NOTRACK=m
+CONFIG_NETFILTER_XT_TARGET_RATEEST=m
+CONFIG_NETFILTER_XT_TARGET_REDIRECT=m
+CONFIG_NETFILTER_XT_TARGET_MASQUERADE=m
+CONFIG_NETFILTER_XT_TARGET_TEE=m
+CONFIG_NETFILTER_XT_TARGET_TPROXY=m
+CONFIG_NETFILTER_XT_TARGET_TRACE=m
+CONFIG_NETFILTER_XT_TARGET_SECMARK=m
+CONFIG_NETFILTER_XT_TARGET_TCPMSS=m
+CONFIG_NETFILTER_XT_TARGET_TCPOPTSTRIP=m
+
+#
+# Xtables matches
+#
+CONFIG_NETFILTER_XT_MATCH_ADDRTYPE=m
+CONFIG_NETFILTER_XT_MATCH_BPF=m
+CONFIG_NETFILTER_XT_MATCH_CGROUP=m
+CONFIG_NETFILTER_XT_MATCH_CLUSTER=m
+CONFIG_NETFILTER_XT_MATCH_COMMENT=m
+CONFIG_NETFILTER_XT_MATCH_CONNBYTES=m
+CONFIG_NETFILTER_XT_MATCH_CONNLABEL=m
+CONFIG_NETFILTER_XT_MATCH_CONNLIMIT=m
+CONFIG_NETFILTER_XT_MATCH_CONNMARK=m
+CONFIG_NETFILTER_XT_MATCH_CONNTRACK=m
+CONFIG_NETFILTER_XT_MATCH_CPU=m
+CONFIG_NETFILTER_XT_MATCH_DCCP=m
+CONFIG_NETFILTER_XT_MATCH_DEVGROUP=m
+CONFIG_NETFILTER_XT_MATCH_DSCP=m
+CONFIG_NETFILTER_XT_MATCH_ECN=m
+CONFIG_NETFILTER_XT_MATCH_ESP=m
+CONFIG_NETFILTER_XT_MATCH_HASHLIMIT=m
+CONFIG_NETFILTER_XT_MATCH_HELPER=m
+CONFIG_NETFILTER_XT_MATCH_HL=m
+# CONFIG_NETFILTER_XT_MATCH_IPCOMP is not set
+CONFIG_NETFILTER_XT_MATCH_IPRANGE=m
+CONFIG_NETFILTER_XT_MATCH_IPVS=m
+# CONFIG_NETFILTER_XT_MATCH_L2TP is not set
+CONFIG_NETFILTER_XT_MATCH_LENGTH=m
+CONFIG_NETFILTER_XT_MATCH_LIMIT=m
+CONFIG_NETFILTER_XT_MATCH_MAC=m
+CONFIG_NETFILTER_XT_MATCH_MARK=m
+CONFIG_NETFILTER_XT_MATCH_MULTIPORT=m
+# CONFIG_NETFILTER_XT_MATCH_NFACCT is not set
+CONFIG_NETFILTER_XT_MATCH_OSF=m
+CONFIG_NETFILTER_XT_MATCH_OWNER=m
+CONFIG_NETFILTER_XT_MATCH_POLICY=m
+CONFIG_NETFILTER_XT_MATCH_PHYSDEV=m
+CONFIG_NETFILTER_XT_MATCH_PKTTYPE=m
+CONFIG_NETFILTER_XT_MATCH_QUOTA=m
+CONFIG_NETFILTER_XT_MATCH_RATEEST=m
+CONFIG_NETFILTER_XT_MATCH_REALM=m
+CONFIG_NETFILTER_XT_MATCH_RECENT=m
+CONFIG_NETFILTER_XT_MATCH_SCTP=m
+CONFIG_NETFILTER_XT_MATCH_SOCKET=m
+CONFIG_NETFILTER_XT_MATCH_STATE=m
+CONFIG_NETFILTER_XT_MATCH_STATISTIC=m
+CONFIG_NETFILTER_XT_MATCH_STRING=m
+CONFIG_NETFILTER_XT_MATCH_TCPMSS=m
+# CONFIG_NETFILTER_XT_MATCH_TIME is not set
+# CONFIG_NETFILTER_XT_MATCH_U32 is not set
+# end of Core Netfilter Configuration
+
+# CONFIG_IP_SET is not set
+CONFIG_IP_VS=m
+CONFIG_IP_VS_IPV6=y
+# CONFIG_IP_VS_DEBUG is not set
+CONFIG_IP_VS_TAB_BITS=12
+
+#
+# IPVS transport protocol load balancing support
+#
+CONFIG_IP_VS_PROTO_TCP=y
+CONFIG_IP_VS_PROTO_UDP=y
+CONFIG_IP_VS_PROTO_AH_ESP=y
+CONFIG_IP_VS_PROTO_ESP=y
+CONFIG_IP_VS_PROTO_AH=y
+CONFIG_IP_VS_PROTO_SCTP=y
+
+#
+# IPVS scheduler
+#
+CONFIG_IP_VS_RR=m
+CONFIG_IP_VS_WRR=m
+CONFIG_IP_VS_LC=m
+CONFIG_IP_VS_WLC=m
+CONFIG_IP_VS_FO=m
+CONFIG_IP_VS_OVF=m
+CONFIG_IP_VS_LBLC=m
+CONFIG_IP_VS_LBLCR=m
+CONFIG_IP_VS_DH=m
+CONFIG_IP_VS_SH=m
+# CONFIG_IP_VS_MH is not set
+CONFIG_IP_VS_SED=m
+CONFIG_IP_VS_NQ=m
+# CONFIG_IP_VS_TWOS is not set
+
+#
+# IPVS SH scheduler
+#
+CONFIG_IP_VS_SH_TAB_BITS=8
+
+#
+# IPVS MH scheduler
+#
+CONFIG_IP_VS_MH_TAB_INDEX=12
+
+#
+# IPVS application helper
+#
+CONFIG_IP_VS_FTP=m
+CONFIG_IP_VS_NFCT=y
+CONFIG_IP_VS_PE_SIP=m
+
+#
+# IP: Netfilter Configuration
+#
+CONFIG_NF_DEFRAG_IPV4=m
+CONFIG_NF_SOCKET_IPV4=m
+CONFIG_NF_TPROXY_IPV4=m
+CONFIG_NF_TABLES_IPV4=y
+CONFIG_NFT_REJECT_IPV4=m
+CONFIG_NFT_DUP_IPV4=m
+CONFIG_NFT_FIB_IPV4=m
+CONFIG_NF_TABLES_ARP=y
+CONFIG_NF_DUP_IPV4=m
+CONFIG_NF_LOG_ARP=m
+CONFIG_NF_LOG_IPV4=m
+CONFIG_NF_REJECT_IPV4=m
+CONFIG_NF_NAT_SNMP_BASIC=m
+CONFIG_NF_NAT_PPTP=m
+CONFIG_NF_NAT_H323=m
+CONFIG_IP_NF_IPTABLES=m
+CONFIG_IP_NF_MATCH_AH=m
+CONFIG_IP_NF_MATCH_ECN=m
+CONFIG_IP_NF_MATCH_RPFILTER=m
+CONFIG_IP_NF_MATCH_TTL=m
+CONFIG_IP_NF_FILTER=m
+CONFIG_IP_NF_TARGET_REJECT=m
+CONFIG_IP_NF_TARGET_SYNPROXY=m
+CONFIG_IP_NF_NAT=m
+CONFIG_IP_NF_TARGET_MASQUERADE=m
+CONFIG_IP_NF_TARGET_NETMAP=m
+CONFIG_IP_NF_TARGET_REDIRECT=m
+CONFIG_IP_NF_MANGLE=m
+CONFIG_IP_NF_TARGET_ECN=m
+CONFIG_IP_NF_TARGET_TTL=m
+CONFIG_IP_NF_RAW=m
+CONFIG_IP_NF_SECURITY=m
+CONFIG_IP_NF_ARPTABLES=m
+CONFIG_IP_NF_ARPFILTER=m
+CONFIG_IP_NF_ARP_MANGLE=m
+# end of IP: Netfilter Configuration
+
+#
+# IPv6: Netfilter Configuration
+#
+CONFIG_NF_SOCKET_IPV6=m
+CONFIG_NF_TPROXY_IPV6=m
+CONFIG_NF_TABLES_IPV6=y
+CONFIG_NFT_REJECT_IPV6=m
+CONFIG_NFT_DUP_IPV6=m
+CONFIG_NFT_FIB_IPV6=m
+CONFIG_NF_DUP_IPV6=m
+CONFIG_NF_REJECT_IPV6=m
+CONFIG_NF_LOG_IPV6=m
+CONFIG_IP6_NF_IPTABLES=m
+CONFIG_IP6_NF_MATCH_AH=m
+CONFIG_IP6_NF_MATCH_EUI64=m
+CONFIG_IP6_NF_MATCH_FRAG=m
+CONFIG_IP6_NF_MATCH_OPTS=m
+CONFIG_IP6_NF_MATCH_HL=m
+CONFIG_IP6_NF_MATCH_IPV6HEADER=m
+CONFIG_IP6_NF_MATCH_MH=m
+CONFIG_IP6_NF_MATCH_RPFILTER=m
+CONFIG_IP6_NF_MATCH_RT=m
+# CONFIG_IP6_NF_MATCH_SRH is not set
+# CONFIG_IP6_NF_TARGET_HL is not set
+CONFIG_IP6_NF_FILTER=m
+CONFIG_IP6_NF_TARGET_REJECT=m
+CONFIG_IP6_NF_TARGET_SYNPROXY=m
+CONFIG_IP6_NF_MANGLE=m
+CONFIG_IP6_NF_RAW=m
+CONFIG_IP6_NF_SECURITY=m
+CONFIG_IP6_NF_NAT=m
+CONFIG_IP6_NF_TARGET_MASQUERADE=m
+CONFIG_IP6_NF_TARGET_NPT=m
+# end of IPv6: Netfilter Configuration
+
+CONFIG_NF_DEFRAG_IPV6=m
+CONFIG_NF_TABLES_BRIDGE=m
+# CONFIG_NFT_BRIDGE_META is not set
+CONFIG_NFT_BRIDGE_REJECT=m
+# CONFIG_NF_CONNTRACK_BRIDGE is not set
+CONFIG_BRIDGE_NF_EBTABLES=m
+CONFIG_BRIDGE_EBT_BROUTE=m
+CONFIG_BRIDGE_EBT_T_FILTER=m
+CONFIG_BRIDGE_EBT_T_NAT=m
+CONFIG_BRIDGE_EBT_802_3=m
+CONFIG_BRIDGE_EBT_AMONG=m
+CONFIG_BRIDGE_EBT_ARP=m
+CONFIG_BRIDGE_EBT_IP=m
+CONFIG_BRIDGE_EBT_IP6=m
+CONFIG_BRIDGE_EBT_LIMIT=m
+CONFIG_BRIDGE_EBT_MARK=m
+CONFIG_BRIDGE_EBT_PKTTYPE=m
+CONFIG_BRIDGE_EBT_STP=m
+CONFIG_BRIDGE_EBT_VLAN=m
+CONFIG_BRIDGE_EBT_ARPREPLY=m
+CONFIG_BRIDGE_EBT_DNAT=m
+CONFIG_BRIDGE_EBT_MARK_T=m
+CONFIG_BRIDGE_EBT_REDIRECT=m
+CONFIG_BRIDGE_EBT_SNAT=m
+CONFIG_BRIDGE_EBT_LOG=m
+CONFIG_BRIDGE_EBT_NFLOG=m
+# CONFIG_BPFILTER is not set
+# CONFIG_IP_DCCP is not set
+CONFIG_IP_SCTP=m
+# CONFIG_SCTP_DBG_OBJCNT is not set
+# CONFIG_SCTP_DEFAULT_COOKIE_HMAC_MD5 is not set
+CONFIG_SCTP_DEFAULT_COOKIE_HMAC_SHA1=y
+# CONFIG_SCTP_DEFAULT_COOKIE_HMAC_NONE is not set
+CONFIG_SCTP_COOKIE_HMAC_MD5=y
+CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+CONFIG_INET_SCTP_DIAG=m
+# CONFIG_RDS is not set
+# CONFIG_TIPC is not set
+# CONFIG_ATM is not set
+# CONFIG_L2TP is not set
+CONFIG_STP=m
+CONFIG_GARP=m
+CONFIG_MRP=m
+CONFIG_BRIDGE=m
+CONFIG_BRIDGE_IGMP_SNOOPING=y
+CONFIG_BRIDGE_VLAN_FILTERING=y
+# CONFIG_BRIDGE_MRP is not set
+# CONFIG_BRIDGE_CFM is not set
+# CONFIG_NET_DSA is not set
+CONFIG_VLAN_8021Q=m
+CONFIG_VLAN_8021Q_GVRP=y
+CONFIG_VLAN_8021Q_MVRP=y
+CONFIG_LLC=m
+# CONFIG_LLC2 is not set
+# CONFIG_ATALK is not set
+# CONFIG_X25 is not set
+# CONFIG_LAPB is not set
+# CONFIG_PHONET is not set
+# CONFIG_6LOWPAN is not set
+# CONFIG_IEEE802154 is not set
+CONFIG_NET_SCHED=y
+
+#
+# Queueing/Scheduling
+#
+CONFIG_NET_SCH_HTB=m
+CONFIG_NET_SCH_HFSC=m
+CONFIG_NET_SCH_PRIO=m
+CONFIG_NET_SCH_MULTIQ=m
+CONFIG_NET_SCH_RED=m
+CONFIG_NET_SCH_SFB=m
+CONFIG_NET_SCH_SFQ=m
+CONFIG_NET_SCH_TEQL=m
+CONFIG_NET_SCH_TBF=m
+# CONFIG_NET_SCH_CBS is not set
+# CONFIG_NET_SCH_ETF is not set
+CONFIG_NET_SCH_MQPRIO_LIB=m
+# CONFIG_NET_SCH_TAPRIO is not set
+CONFIG_NET_SCH_GRED=m
+CONFIG_NET_SCH_NETEM=m
+CONFIG_NET_SCH_DRR=m
+CONFIG_NET_SCH_MQPRIO=m
+# CONFIG_NET_SCH_SKBPRIO is not set
+CONFIG_NET_SCH_CHOKE=m
+CONFIG_NET_SCH_QFQ=m
+CONFIG_NET_SCH_CODEL=m
+CONFIG_NET_SCH_FQ_CODEL=y
+# CONFIG_NET_SCH_CAKE is not set
+CONFIG_NET_SCH_FQ=m
+CONFIG_NET_SCH_HHF=m
+CONFIG_NET_SCH_PIE=m
+# CONFIG_NET_SCH_FQ_PIE is not set
+CONFIG_NET_SCH_INGRESS=m
+CONFIG_NET_SCH_PLUG=m
+# CONFIG_NET_SCH_ETS is not set
+CONFIG_NET_SCH_DEFAULT=y
+# CONFIG_DEFAULT_FQ is not set
+# CONFIG_DEFAULT_CODEL is not set
+CONFIG_DEFAULT_FQ_CODEL=y
+# CONFIG_DEFAULT_SFQ is not set
+# CONFIG_DEFAULT_PFIFO_FAST is not set
+CONFIG_DEFAULT_NET_SCH="fq_codel"
+
+#
+# Classification
+#
+CONFIG_NET_CLS=y
+CONFIG_NET_CLS_BASIC=m
+CONFIG_NET_CLS_ROUTE4=m
+CONFIG_NET_CLS_FW=m
+CONFIG_NET_CLS_U32=m
+CONFIG_CLS_U32_PERF=y
+CONFIG_CLS_U32_MARK=y
+CONFIG_NET_CLS_FLOW=m
+CONFIG_NET_CLS_CGROUP=y
+CONFIG_NET_CLS_BPF=m
+CONFIG_NET_CLS_FLOWER=m
+CONFIG_NET_CLS_MATCHALL=m
+CONFIG_NET_EMATCH=y
+CONFIG_NET_EMATCH_STACK=32
+CONFIG_NET_EMATCH_CMP=m
+CONFIG_NET_EMATCH_NBYTE=m
+CONFIG_NET_EMATCH_U32=m
+CONFIG_NET_EMATCH_META=m
+CONFIG_NET_EMATCH_TEXT=m
+# CONFIG_NET_EMATCH_CANID is not set
+# CONFIG_NET_EMATCH_IPT is not set
+CONFIG_NET_CLS_ACT=y
+CONFIG_NET_ACT_POLICE=m
+CONFIG_NET_ACT_GACT=m
+CONFIG_GACT_PROB=y
+CONFIG_NET_ACT_MIRRED=m
+CONFIG_NET_ACT_SAMPLE=m
+# CONFIG_NET_ACT_IPT is not set
+CONFIG_NET_ACT_NAT=m
+CONFIG_NET_ACT_PEDIT=m
+CONFIG_NET_ACT_SIMP=m
+CONFIG_NET_ACT_SKBEDIT=m
+CONFIG_NET_ACT_CSUM=m
+# CONFIG_NET_ACT_MPLS is not set
+CONFIG_NET_ACT_VLAN=m
+CONFIG_NET_ACT_BPF=m
+# CONFIG_NET_ACT_CONNMARK is not set
+# CONFIG_NET_ACT_CTINFO is not set
+CONFIG_NET_ACT_SKBMOD=m
+# CONFIG_NET_ACT_IFE is not set
+CONFIG_NET_ACT_TUNNEL_KEY=m
+# CONFIG_NET_ACT_GATE is not set
+# CONFIG_NET_TC_SKB_EXT is not set
+CONFIG_NET_SCH_FIFO=y
+CONFIG_DCB=y
+CONFIG_DNS_RESOLVER=m
+# CONFIG_BATMAN_ADV is not set
+CONFIG_OPENVSWITCH=m
+CONFIG_OPENVSWITCH_GRE=m
+CONFIG_VSOCKETS=m
+CONFIG_VSOCKETS_DIAG=m
+CONFIG_VSOCKETS_LOOPBACK=m
+CONFIG_VIRTIO_VSOCKETS=m
+CONFIG_VIRTIO_VSOCKETS_COMMON=m
+CONFIG_HYPERV_VSOCKETS=m
+CONFIG_NETLINK_DIAG=m
+CONFIG_MPLS=y
+CONFIG_NET_MPLS_GSO=y
+CONFIG_MPLS_ROUTING=m
+CONFIG_MPLS_IPTUNNEL=m
+CONFIG_NET_NSH=y
+# CONFIG_HSR is not set
+CONFIG_NET_SWITCHDEV=y
+CONFIG_NET_L3_MASTER_DEV=y
+# CONFIG_QRTR is not set
+# CONFIG_NET_NCSI is not set
+CONFIG_PCPU_DEV_REFCNT=y
+CONFIG_MAX_SKB_FRAGS=17
+CONFIG_RPS=y
+CONFIG_RFS_ACCEL=y
+CONFIG_SOCK_RX_QUEUE_MAPPING=y
+CONFIG_XPS=y
+CONFIG_CGROUP_NET_PRIO=y
+CONFIG_CGROUP_NET_CLASSID=y
+CONFIG_NET_RX_BUSY_POLL=y
+CONFIG_BQL=y
+CONFIG_BPF_STREAM_PARSER=y
+CONFIG_NET_FLOW_LIMIT=y
+
+#
+# Network testing
+#
+CONFIG_NET_PKTGEN=m
+CONFIG_NET_DROP_MONITOR=y
+# end of Network testing
+# end of Networking options
+
+# CONFIG_HAMRADIO is not set
+CONFIG_CAN=m
+CONFIG_CAN_RAW=m
+CONFIG_CAN_BCM=m
+CONFIG_CAN_GW=m
+# CONFIG_CAN_J1939 is not set
+# CONFIG_CAN_ISOTP is not set
+# CONFIG_BT is not set
+# CONFIG_AF_RXRPC is not set
+# CONFIG_AF_KCM is not set
+CONFIG_STREAM_PARSER=y
+# CONFIG_MCTP is not set
+CONFIG_FIB_RULES=y
+CONFIG_WIRELESS=y
+CONFIG_CFG80211=m
+# CONFIG_NL80211_TESTMODE is not set
+# CONFIG_CFG80211_DEVELOPER_WARNINGS is not set
+# CONFIG_CFG80211_CERTIFICATION_ONUS is not set
+CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=y
+CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=y
+CONFIG_CFG80211_DEFAULT_PS=y
+# CONFIG_CFG80211_DEBUGFS is not set
+CONFIG_CFG80211_CRDA_SUPPORT=y
+# CONFIG_CFG80211_WEXT is not set
+CONFIG_MAC80211=m
+CONFIG_MAC80211_HAS_RC=y
+CONFIG_MAC80211_RC_MINSTREL=y
+CONFIG_MAC80211_RC_DEFAULT_MINSTREL=y
+CONFIG_MAC80211_RC_DEFAULT="minstrel_ht"
+# CONFIG_MAC80211_MESH is not set
+CONFIG_MAC80211_LEDS=y
+CONFIG_MAC80211_DEBUGFS=y
+# CONFIG_MAC80211_MESSAGE_TRACING is not set
+# CONFIG_MAC80211_DEBUG_MENU is not set
+CONFIG_MAC80211_STA_HASH_MAX_SIZE=0
+CONFIG_RFKILL=m
+CONFIG_RFKILL_LEDS=y
+CONFIG_RFKILL_INPUT=y
+# CONFIG_RFKILL_GPIO is not set
+CONFIG_NET_9P=y
+CONFIG_NET_9P_FD=y
+CONFIG_NET_9P_VIRTIO=y
+# CONFIG_NET_9P_DEBUG is not set
+# CONFIG_CAIF is not set
+CONFIG_CEPH_LIB=m
+# CONFIG_CEPH_LIB_PRETTYDEBUG is not set
+CONFIG_CEPH_LIB_USE_DNS_RESOLVER=y
+# CONFIG_NFC is not set
+CONFIG_PSAMPLE=m
+# CONFIG_NET_IFE is not set
+CONFIG_LWTUNNEL=y
+CONFIG_LWTUNNEL_BPF=y
+CONFIG_DST_CACHE=y
+CONFIG_GRO_CELLS=y
+CONFIG_SOCK_VALIDATE_XMIT=y
+CONFIG_NET_SELFTESTS=y
+CONFIG_NET_SOCK_MSG=y
+CONFIG_PAGE_POOL=y
+CONFIG_PAGE_POOL_STATS=y
+CONFIG_FAILOVER=m
+CONFIG_ETHTOOL_NETLINK=y
+
+#
+# Device Drivers
+#
+CONFIG_HAVE_EISA=y
+# CONFIG_EISA is not set
+CONFIG_HAVE_PCI=y
+CONFIG_PCI=y
+CONFIG_PCI_DOMAINS=y
+CONFIG_PCIEPORTBUS=y
+CONFIG_HOTPLUG_PCI_PCIE=y
+CONFIG_PCIEAER=y
+CONFIG_PCIEAER_INJECT=m
+CONFIG_PCIE_ECRC=y
+CONFIG_PCIEASPM=y
+CONFIG_PCIEASPM_DEFAULT=y
+# CONFIG_PCIEASPM_POWERSAVE is not set
+# CONFIG_PCIEASPM_POWER_SUPERSAVE is not set
+# CONFIG_PCIEASPM_PERFORMANCE is not set
+CONFIG_PCIE_PME=y
+CONFIG_PCIE_DPC=y
+# CONFIG_PCIE_PTM is not set
+# CONFIG_PCIE_EDR is not set
+CONFIG_PCI_MSI=y
+CONFIG_PCI_QUIRKS=y
+# CONFIG_PCI_DEBUG is not set
+# CONFIG_PCI_REALLOC_ENABLE_AUTO is not set
+CONFIG_PCI_STUB=y
+CONFIG_PCI_PF_STUB=m
+CONFIG_PCI_ATS=y
+CONFIG_PCI_LOCKLESS_CONFIG=y
+CONFIG_PCI_IOV=y
+CONFIG_PCI_PRI=y
+CONFIG_PCI_PASID=y
+# CONFIG_PCI_P2PDMA is not set
+CONFIG_PCI_LABEL=y
+CONFIG_PCI_HYPERV=m
+# CONFIG_PCIE_BUS_TUNE_OFF is not set
+CONFIG_PCIE_BUS_DEFAULT=y
+# CONFIG_PCIE_BUS_SAFE is not set
+# CONFIG_PCIE_BUS_PERFORMANCE is not set
+# CONFIG_PCIE_BUS_PEER2PEER is not set
+CONFIG_VGA_ARB=y
+CONFIG_VGA_ARB_MAX_GPUS=64
+CONFIG_HOTPLUG_PCI=y
+CONFIG_HOTPLUG_PCI_ACPI=y
+CONFIG_HOTPLUG_PCI_ACPI_IBM=m
+# CONFIG_HOTPLUG_PCI_CPCI is not set
+CONFIG_HOTPLUG_PCI_SHPC=y
+
+#
+# PCI controller drivers
+#
+CONFIG_VMD=y
+CONFIG_PCI_HYPERV_INTERFACE=m
+
+#
+# Cadence-based PCIe controllers
+#
+# end of Cadence-based PCIe controllers
+
+#
+# DesignWare-based PCIe controllers
+#
+# CONFIG_PCI_MESON is not set
+# CONFIG_PCIE_DW_PLAT_HOST is not set
+# end of DesignWare-based PCIe controllers
+
+#
+# Mobiveil-based PCIe controllers
+#
+# end of Mobiveil-based PCIe controllers
+# end of PCI controller drivers
+
+#
+# PCI Endpoint
+#
+# CONFIG_PCI_ENDPOINT is not set
+# end of PCI Endpoint
+
+#
+# PCI switch controller drivers
+#
+# CONFIG_PCI_SW_SWITCHTEC is not set
+# end of PCI switch controller drivers
+
+# CONFIG_CXL_BUS is not set
+# CONFIG_PCCARD is not set
+# CONFIG_RAPIDIO is not set
+
+#
+# Generic Driver Options
+#
+CONFIG_AUXILIARY_BUS=y
+# CONFIG_UEVENT_HELPER is not set
+CONFIG_DEVTMPFS=y
+CONFIG_DEVTMPFS_MOUNT=y
+# CONFIG_DEVTMPFS_SAFE is not set
+CONFIG_STANDALONE=y
+CONFIG_PREVENT_FIRMWARE_BUILD=y
+
+#
+# Firmware loader
+#
+CONFIG_FW_LOADER=y
+CONFIG_FW_LOADER_DEBUG=y
+CONFIG_FW_LOADER_PAGED_BUF=y
+CONFIG_FW_LOADER_SYSFS=y
+CONFIG_EXTRA_FIRMWARE=""
+CONFIG_FW_LOADER_USER_HELPER=y
+# CONFIG_FW_LOADER_USER_HELPER_FALLBACK is not set
+# CONFIG_FW_LOADER_COMPRESS is not set
+CONFIG_FW_CACHE=y
+# CONFIG_FW_UPLOAD is not set
+# end of Firmware loader
+
+CONFIG_ALLOW_DEV_COREDUMP=y
+# CONFIG_DEBUG_DRIVER is not set
+# CONFIG_DEBUG_DEVRES is not set
+# CONFIG_DEBUG_TEST_DRIVER_REMOVE is not set
+CONFIG_HMEM_REPORTING=y
+# CONFIG_TEST_ASYNC_DRIVER_PROBE is not set
+CONFIG_GENERIC_CPU_AUTOPROBE=y
+CONFIG_GENERIC_CPU_VULNERABILITIES=y
+CONFIG_REGMAP=y
+CONFIG_REGMAP_I2C=m
+CONFIG_REGMAP_SPI=m
+CONFIG_DMA_SHARED_BUFFER=y
+# CONFIG_DMA_FENCE_TRACE is not set
+# CONFIG_FW_DEVLINK_SYNC_STATE_TIMEOUT is not set
+# end of Generic Driver Options
+
+#
+# Bus devices
+#
+# CONFIG_MHI_BUS is not set
+# CONFIG_MHI_BUS_EP is not set
+# end of Bus devices
+
+CONFIG_CONNECTOR=y
+CONFIG_PROC_EVENTS=y
+
+#
+# Firmware Drivers
+#
+
+#
+# ARM System Control and Management Interface Protocol
+#
+# end of ARM System Control and Management Interface Protocol
+
+CONFIG_EDD=m
+# CONFIG_EDD_OFF is not set
+CONFIG_FIRMWARE_MEMMAP=y
+CONFIG_DMIID=y
+CONFIG_DMI_SYSFS=y
+CONFIG_DMI_SCAN_MACHINE_NON_EFI_FALLBACK=y
+# CONFIG_ISCSI_IBFT is not set
+CONFIG_FW_CFG_SYSFS=y
+# CONFIG_FW_CFG_SYSFS_CMDLINE is not set
+CONFIG_SYSFB=y
+# CONFIG_SYSFB_SIMPLEFB is not set
+# CONFIG_GOOGLE_FIRMWARE is not set
+
+#
+# EFI (Extensible Firmware Interface) Support
+#
+CONFIG_EFI_ESRT=y
+CONFIG_EFI_VARS_PSTORE=y
+CONFIG_EFI_VARS_PSTORE_DEFAULT_DISABLE=y
+CONFIG_EFI_SOFT_RESERVE=y
+CONFIG_EFI_DXE_MEM_ATTRIBUTES=y
+CONFIG_EFI_RUNTIME_WRAPPERS=y
+# CONFIG_EFI_BOOTLOADER_CONTROL is not set
+# CONFIG_EFI_CAPSULE_LOADER is not set
+# CONFIG_EFI_TEST is not set
+# CONFIG_APPLE_PROPERTIES is not set
+# CONFIG_RESET_ATTACK_MITIGATION is not set
+# CONFIG_EFI_RCI2_TABLE is not set
+# CONFIG_EFI_DISABLE_PCI_DMA is not set
+CONFIG_EFI_EARLYCON=y
+CONFIG_EFI_CUSTOM_SSDT_OVERLAYS=y
+# CONFIG_EFI_DISABLE_RUNTIME is not set
+# CONFIG_EFI_COCO_SECRET is not set
+# end of EFI (Extensible Firmware Interface) Support
+
+CONFIG_UEFI_CPER=y
+CONFIG_UEFI_CPER_X86=y
+
+#
+# Tegra firmware driver
+#
+# end of Tegra firmware driver
+# end of Firmware Drivers
+
+# CONFIG_GNSS is not set
+# CONFIG_MTD is not set
+# CONFIG_OF is not set
+CONFIG_ARCH_MIGHT_HAVE_PC_PARPORT=y
+CONFIG_PARPORT=m
+CONFIG_PARPORT_PC=m
+CONFIG_PARPORT_SERIAL=m
+# CONFIG_PARPORT_PC_FIFO is not set
+# CONFIG_PARPORT_PC_SUPERIO is not set
+CONFIG_PARPORT_1284=y
+CONFIG_PNP=y
+# CONFIG_PNP_DEBUG_MESSAGES is not set
+
+#
+# Protocols
+#
+CONFIG_PNPACPI=y
+CONFIG_BLK_DEV=y
+CONFIG_BLK_DEV_NULL_BLK=m
+# CONFIG_BLK_DEV_FD is not set
+CONFIG_CDROM=m
+# CONFIG_BLK_DEV_PCIESSD_MTIP32XX is not set
+CONFIG_ZRAM=m
+CONFIG_ZRAM_DEF_COMP_LZORLE=y
+# CONFIG_ZRAM_DEF_COMP_LZO is not set
+CONFIG_ZRAM_DEF_COMP="lzo-rle"
+CONFIG_ZRAM_WRITEBACK=y
+# CONFIG_ZRAM_MEMORY_TRACKING is not set
+# CONFIG_ZRAM_MULTI_COMP is not set
+CONFIG_BLK_DEV_LOOP=m
+CONFIG_BLK_DEV_LOOP_MIN_COUNT=0
+# CONFIG_BLK_DEV_DRBD is not set
+CONFIG_BLK_DEV_NBD=m
+CONFIG_BLK_DEV_RAM=m
+CONFIG_BLK_DEV_RAM_COUNT=16
+CONFIG_BLK_DEV_RAM_SIZE=16384
+CONFIG_CDROM_PKTCDVD=m
+CONFIG_CDROM_PKTCDVD_BUFFERS=8
+# CONFIG_CDROM_PKTCDVD_WCACHE is not set
+# CONFIG_ATA_OVER_ETH is not set
+CONFIG_VIRTIO_BLK=m
+CONFIG_BLK_DEV_RBD=m
+# CONFIG_BLK_DEV_UBLK is not set
+
+#
+# NVME Support
+#
+CONFIG_NVME_CORE=m
+CONFIG_BLK_DEV_NVME=m
+CONFIG_NVME_MULTIPATH=y
+# CONFIG_NVME_VERBOSE_ERRORS is not set
+# CONFIG_NVME_HWMON is not set
+# CONFIG_NVME_FC is not set
+# CONFIG_NVME_TCP is not set
+# CONFIG_NVME_AUTH is not set
+# CONFIG_NVME_TARGET is not set
+# end of NVME Support
+
+#
+# Misc devices
+#
+# CONFIG_AD525X_DPOT is not set
+# CONFIG_DUMMY_IRQ is not set
+# CONFIG_IBM_ASM is not set
+# CONFIG_PHANTOM is not set
+CONFIG_TIFM_CORE=m
+CONFIG_TIFM_7XX1=m
+# CONFIG_ICS932S401 is not set
+CONFIG_ENCLOSURE_SERVICES=m
+# CONFIG_SGI_XP is not set
+CONFIG_HP_ILO=m
+# CONFIG_SGI_GRU is not set
+CONFIG_APDS9802ALS=m
+CONFIG_ISL29003=m
+CONFIG_ISL29020=m
+CONFIG_SENSORS_TSL2550=m
+CONFIG_SENSORS_BH1770=m
+CONFIG_SENSORS_APDS990X=m
+# CONFIG_HMC6352 is not set
+# CONFIG_DS1682 is not set
+# CONFIG_LATTICE_ECP3_CONFIG is not set
+# CONFIG_SRAM is not set
+# CONFIG_DW_XDATA_PCIE is not set
+# CONFIG_PCI_ENDPOINT_TEST is not set
+# CONFIG_XILINX_SDFEC is not set
+# CONFIG_C2PORT is not set
+
+#
+# EEPROM support
+#
+# CONFIG_EEPROM_AT24 is not set
+# CONFIG_EEPROM_AT25 is not set
+CONFIG_EEPROM_LEGACY=m
+CONFIG_EEPROM_MAX6875=m
+CONFIG_EEPROM_93CX6=m
+# CONFIG_EEPROM_93XX46 is not set
+# CONFIG_EEPROM_IDT_89HPESX is not set
+# CONFIG_EEPROM_EE1004 is not set
+# end of EEPROM support
+
+# CONFIG_CB710_CORE is not set
+
+#
+# Texas Instruments shared transport line discipline
+#
+# CONFIG_TI_ST is not set
+# end of Texas Instruments shared transport line discipline
+
+# CONFIG_SENSORS_LIS3_I2C is not set
+# CONFIG_ALTERA_STAPL is not set
+CONFIG_INTEL_MEI=m
+CONFIG_INTEL_MEI_ME=m
+# CONFIG_INTEL_MEI_TXE is not set
+# CONFIG_INTEL_MEI_GSC is not set
+# CONFIG_INTEL_MEI_HDCP is not set
+# CONFIG_INTEL_MEI_PXP is not set
+# CONFIG_VMWARE_VMCI is not set
+# CONFIG_GENWQE is not set
+# CONFIG_ECHO is not set
+# CONFIG_BCM_VK is not set
+# CONFIG_MISC_ALCOR_PCI is not set
+# CONFIG_MISC_RTSX_PCI is not set
+# CONFIG_MISC_RTSX_USB is not set
+# CONFIG_UACCE is not set
+CONFIG_PVPANIC=y
+# CONFIG_PVPANIC_MMIO is not set
+# CONFIG_PVPANIC_PCI is not set
+# CONFIG_GP_PCI1XXXX is not set
+# end of Misc devices
+
+#
+# SCSI device support
+#
+CONFIG_SCSI_MOD=y
+CONFIG_RAID_ATTRS=m
+CONFIG_SCSI_COMMON=y
+CONFIG_SCSI=y
+CONFIG_SCSI_DMA=y
+CONFIG_SCSI_NETLINK=y
+CONFIG_SCSI_PROC_FS=y
+
+#
+# SCSI support type (disk, tape, CD-ROM)
+#
+CONFIG_BLK_DEV_SD=m
+CONFIG_CHR_DEV_ST=m
+CONFIG_BLK_DEV_SR=m
+CONFIG_CHR_DEV_SG=m
+CONFIG_BLK_DEV_BSG=y
+CONFIG_CHR_DEV_SCH=m
+CONFIG_SCSI_ENCLOSURE=m
+CONFIG_SCSI_CONSTANTS=y
+CONFIG_SCSI_LOGGING=y
+CONFIG_SCSI_SCAN_ASYNC=y
+
+#
+# SCSI Transports
+#
+CONFIG_SCSI_SPI_ATTRS=m
+CONFIG_SCSI_FC_ATTRS=m
+CONFIG_SCSI_ISCSI_ATTRS=m
+CONFIG_SCSI_SAS_ATTRS=m
+CONFIG_SCSI_SAS_LIBSAS=m
+CONFIG_SCSI_SAS_ATA=y
+CONFIG_SCSI_SAS_HOST_SMP=y
+CONFIG_SCSI_SRP_ATTRS=m
+# end of SCSI Transports
+
+CONFIG_SCSI_LOWLEVEL=y
+# CONFIG_ISCSI_TCP is not set
+# CONFIG_ISCSI_BOOT_SYSFS is not set
+# CONFIG_SCSI_CXGB3_ISCSI is not set
+# CONFIG_SCSI_CXGB4_ISCSI is not set
+# CONFIG_SCSI_BNX2_ISCSI is not set
+# CONFIG_BE2ISCSI is not set
+# CONFIG_BLK_DEV_3W_XXXX_RAID is not set
+# CONFIG_SCSI_HPSA is not set
+# CONFIG_SCSI_3W_9XXX is not set
+# CONFIG_SCSI_3W_SAS is not set
+# CONFIG_SCSI_ACARD is not set
+# CONFIG_SCSI_AACRAID is not set
+# CONFIG_SCSI_AIC7XXX is not set
+# CONFIG_SCSI_AIC79XX is not set
+# CONFIG_SCSI_AIC94XX is not set
+# CONFIG_SCSI_MVSAS is not set
+# CONFIG_SCSI_MVUMI is not set
+# CONFIG_SCSI_ADVANSYS is not set
+# CONFIG_SCSI_ARCMSR is not set
+# CONFIG_SCSI_ESAS2R is not set
+CONFIG_MEGARAID_NEWGEN=y
+CONFIG_MEGARAID_MM=m
+CONFIG_MEGARAID_MAILBOX=m
+CONFIG_MEGARAID_LEGACY=m
+CONFIG_MEGARAID_SAS=m
+CONFIG_SCSI_MPT3SAS=m
+CONFIG_SCSI_MPT2SAS_MAX_SGE=128
+CONFIG_SCSI_MPT3SAS_MAX_SGE=128
+# CONFIG_SCSI_MPT2SAS is not set
+# CONFIG_SCSI_MPI3MR is not set
+# CONFIG_SCSI_SMARTPQI is not set
+# CONFIG_SCSI_HPTIOP is not set
+# CONFIG_SCSI_BUSLOGIC is not set
+# CONFIG_SCSI_MYRB is not set
+# CONFIG_SCSI_MYRS is not set
+# CONFIG_VMWARE_PVSCSI is not set
+CONFIG_HYPERV_STORAGE=m
+# CONFIG_LIBFC is not set
+# CONFIG_SCSI_SNIC is not set
+# CONFIG_SCSI_DMX3191D is not set
+# CONFIG_SCSI_FDOMAIN_PCI is not set
+CONFIG_SCSI_ISCI=m
+# CONFIG_SCSI_IPS is not set
+# CONFIG_SCSI_INITIO is not set
+# CONFIG_SCSI_INIA100 is not set
+# CONFIG_SCSI_PPA is not set
+# CONFIG_SCSI_IMM is not set
+# CONFIG_SCSI_STEX is not set
+# CONFIG_SCSI_SYM53C8XX_2 is not set
+# CONFIG_SCSI_IPR is not set
+# CONFIG_SCSI_QLOGIC_1280 is not set
+# CONFIG_SCSI_QLA_FC is not set
+# CONFIG_SCSI_QLA_ISCSI is not set
+# CONFIG_SCSI_LPFC is not set
+# CONFIG_SCSI_DC395x is not set
+# CONFIG_SCSI_AM53C974 is not set
+# CONFIG_SCSI_WD719X is not set
+CONFIG_SCSI_DEBUG=m
+# CONFIG_SCSI_PMCRAID is not set
+# CONFIG_SCSI_PM8001 is not set
+# CONFIG_SCSI_BFA_FC is not set
+# CONFIG_SCSI_VIRTIO is not set
+# CONFIG_SCSI_CHELSIO_FCOE is not set
+CONFIG_SCSI_DH=y
+CONFIG_SCSI_DH_RDAC=y
+CONFIG_SCSI_DH_HP_SW=y
+CONFIG_SCSI_DH_EMC=y
+CONFIG_SCSI_DH_ALUA=y
+# end of SCSI device support
+
+CONFIG_ATA=m
+CONFIG_SATA_HOST=y
+CONFIG_PATA_TIMINGS=y
+CONFIG_ATA_VERBOSE_ERROR=y
+CONFIG_ATA_FORCE=y
+CONFIG_ATA_ACPI=y
+# CONFIG_SATA_ZPODD is not set
+CONFIG_SATA_PMP=y
+
+#
+# Controllers with non-SFF native interface
+#
+CONFIG_SATA_AHCI=m
+CONFIG_SATA_MOBILE_LPM_POLICY=0
+CONFIG_SATA_AHCI_PLATFORM=m
+# CONFIG_AHCI_DWC is not set
+# CONFIG_SATA_INIC162X is not set
+# CONFIG_SATA_ACARD_AHCI is not set
+# CONFIG_SATA_SIL24 is not set
+CONFIG_ATA_SFF=y
+
+#
+# SFF controllers with custom DMA interface
+#
+# CONFIG_PDC_ADMA is not set
+# CONFIG_SATA_QSTOR is not set
+# CONFIG_SATA_SX4 is not set
+CONFIG_ATA_BMDMA=y
+
+#
+# SATA SFF controllers with BMDMA
+#
+CONFIG_ATA_PIIX=m
+# CONFIG_SATA_DWC is not set
+# CONFIG_SATA_MV is not set
+# CONFIG_SATA_NV is not set
+# CONFIG_SATA_PROMISE is not set
+# CONFIG_SATA_SIL is not set
+# CONFIG_SATA_SIS is not set
+# CONFIG_SATA_SVW is not set
+# CONFIG_SATA_ULI is not set
+# CONFIG_SATA_VIA is not set
+# CONFIG_SATA_VITESSE is not set
+
+#
+# PATA SFF controllers with BMDMA
+#
+# CONFIG_PATA_ALI is not set
+# CONFIG_PATA_AMD is not set
+# CONFIG_PATA_ARTOP is not set
+# CONFIG_PATA_ATIIXP is not set
+# CONFIG_PATA_ATP867X is not set
+# CONFIG_PATA_CMD64X is not set
+# CONFIG_PATA_CYPRESS is not set
+# CONFIG_PATA_EFAR is not set
+# CONFIG_PATA_HPT366 is not set
+# CONFIG_PATA_HPT37X is not set
+# CONFIG_PATA_HPT3X2N is not set
+# CONFIG_PATA_HPT3X3 is not set
+# CONFIG_PATA_IT8213 is not set
+# CONFIG_PATA_IT821X is not set
+# CONFIG_PATA_JMICRON is not set
+# CONFIG_PATA_MARVELL is not set
+# CONFIG_PATA_NETCELL is not set
+# CONFIG_PATA_NINJA32 is not set
+# CONFIG_PATA_NS87415 is not set
+# CONFIG_PATA_OLDPIIX is not set
+# CONFIG_PATA_OPTIDMA is not set
+# CONFIG_PATA_PDC2027X is not set
+# CONFIG_PATA_PDC_OLD is not set
+# CONFIG_PATA_RADISYS is not set
+# CONFIG_PATA_RDC is not set
+# CONFIG_PATA_SCH is not set
+# CONFIG_PATA_SERVERWORKS is not set
+# CONFIG_PATA_SIL680 is not set
+# CONFIG_PATA_SIS is not set
+# CONFIG_PATA_TOSHIBA is not set
+# CONFIG_PATA_TRIFLEX is not set
+# CONFIG_PATA_VIA is not set
+# CONFIG_PATA_WINBOND is not set
+
+#
+# PIO-only SFF controllers
+#
+# CONFIG_PATA_CMD640_PCI is not set
+# CONFIG_PATA_MPIIX is not set
+# CONFIG_PATA_NS87410 is not set
+# CONFIG_PATA_OPTI is not set
+# CONFIG_PATA_RZ1000 is not set
+# CONFIG_PATA_PARPORT is not set
+
+#
+# Generic fallback / legacy drivers
+#
+# CONFIG_PATA_ACPI is not set
+CONFIG_ATA_GENERIC=m
+# CONFIG_PATA_LEGACY is not set
+CONFIG_MD=y
+CONFIG_BLK_DEV_MD=y
+CONFIG_MD_AUTODETECT=y
+CONFIG_MD_LINEAR=m
+CONFIG_MD_RAID0=m
+CONFIG_MD_RAID1=m
+CONFIG_MD_RAID10=m
+CONFIG_MD_RAID456=m
+# CONFIG_MD_MULTIPATH is not set
+CONFIG_MD_FAULTY=m
+# CONFIG_BCACHE is not set
+CONFIG_BLK_DEV_DM_BUILTIN=y
+CONFIG_BLK_DEV_DM=m
+CONFIG_DM_DEBUG=y
+CONFIG_DM_BUFIO=m
+# CONFIG_DM_DEBUG_BLOCK_MANAGER_LOCKING is not set
+CONFIG_DM_BIO_PRISON=m
+CONFIG_DM_PERSISTENT_DATA=m
+# CONFIG_DM_UNSTRIPED is not set
+CONFIG_DM_CRYPT=m
+CONFIG_DM_SNAPSHOT=m
+CONFIG_DM_THIN_PROVISIONING=m
+CONFIG_DM_CACHE=m
+CONFIG_DM_CACHE_SMQ=m
+CONFIG_DM_WRITECACHE=m
+# CONFIG_DM_EBS is not set
+CONFIG_DM_ERA=m
+# CONFIG_DM_CLONE is not set
+CONFIG_DM_MIRROR=m
+CONFIG_DM_LOG_USERSPACE=m
+CONFIG_DM_RAID=m
+CONFIG_DM_ZERO=m
+CONFIG_DM_MULTIPATH=m
+CONFIG_DM_MULTIPATH_QL=m
+CONFIG_DM_MULTIPATH_ST=m
+# CONFIG_DM_MULTIPATH_HST is not set
+# CONFIG_DM_MULTIPATH_IOA is not set
+CONFIG_DM_DELAY=m
+# CONFIG_DM_DUST is not set
+CONFIG_DM_UEVENT=y
+CONFIG_DM_FLAKEY=m
+CONFIG_DM_VERITY=m
+# CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG is not set
+# CONFIG_DM_VERITY_FEC is not set
+CONFIG_DM_SWITCH=m
+CONFIG_DM_LOG_WRITES=m
+CONFIG_DM_INTEGRITY=m
+CONFIG_DM_AUDIT=y
+# CONFIG_TARGET_CORE is not set
+# CONFIG_FUSION is not set
+
+#
+# IEEE 1394 (FireWire) support
+#
+CONFIG_FIREWIRE=m
+CONFIG_FIREWIRE_OHCI=m
+CONFIG_FIREWIRE_SBP2=m
+CONFIG_FIREWIRE_NET=m
+# CONFIG_FIREWIRE_NOSY is not set
+# end of IEEE 1394 (FireWire) support
+
+CONFIG_MACINTOSH_DRIVERS=y
+CONFIG_MAC_EMUMOUSEBTN=y
+CONFIG_NETDEVICES=y
+CONFIG_MII=y
+CONFIG_NET_CORE=y
+# CONFIG_BONDING is not set
+CONFIG_DUMMY=m
+# CONFIG_WIREGUARD is not set
+# CONFIG_EQUALIZER is not set
+# CONFIG_NET_FC is not set
+# CONFIG_IFB is not set
+# CONFIG_NET_TEAM is not set
+# CONFIG_MACVLAN is not set
+# CONFIG_IPVLAN is not set
+# CONFIG_VXLAN is not set
+# CONFIG_GENEVE is not set
+# CONFIG_BAREUDP is not set
+# CONFIG_GTP is not set
+# CONFIG_AMT is not set
+# CONFIG_MACSEC is not set
+CONFIG_NETCONSOLE=m
+CONFIG_NETCONSOLE_DYNAMIC=y
+CONFIG_NETPOLL=y
+CONFIG_NET_POLL_CONTROLLER=y
+CONFIG_TUN=m
+# CONFIG_TUN_VNET_CROSS_LE is not set
+CONFIG_VETH=m
+CONFIG_VIRTIO_NET=m
+# CONFIG_NLMON is not set
+# CONFIG_NET_VRF is not set
+# CONFIG_VSOCKMON is not set
+# CONFIG_ARCNET is not set
+CONFIG_ETHERNET=y
+CONFIG_MDIO=y
+# CONFIG_NET_VENDOR_3COM is not set
+CONFIG_NET_VENDOR_ADAPTEC=y
+# CONFIG_ADAPTEC_STARFIRE is not set
+CONFIG_NET_VENDOR_AGERE=y
+# CONFIG_ET131X is not set
+CONFIG_NET_VENDOR_ALACRITECH=y
+# CONFIG_SLICOSS is not set
+CONFIG_NET_VENDOR_ALTEON=y
+# CONFIG_ACENIC is not set
+# CONFIG_ALTERA_TSE is not set
+CONFIG_NET_VENDOR_AMAZON=y
+# CONFIG_ENA_ETHERNET is not set
+# CONFIG_NET_VENDOR_AMD is not set
+CONFIG_NET_VENDOR_AQUANTIA=y
+# CONFIG_AQTION is not set
+CONFIG_NET_VENDOR_ARC=y
+CONFIG_NET_VENDOR_ASIX=y
+# CONFIG_SPI_AX88796C is not set
+CONFIG_NET_VENDOR_ATHEROS=y
+# CONFIG_ATL2 is not set
+# CONFIG_ATL1 is not set
+# CONFIG_ATL1E is not set
+# CONFIG_ATL1C is not set
+# CONFIG_ALX is not set
+# CONFIG_CX_ECAT is not set
+CONFIG_NET_VENDOR_BROADCOM=y
+# CONFIG_B44 is not set
+# CONFIG_BCMGENET is not set
+# CONFIG_BNX2 is not set
+# CONFIG_CNIC is not set
+# CONFIG_TIGON3 is not set
+# CONFIG_BNX2X is not set
+# CONFIG_SYSTEMPORT is not set
+# CONFIG_BNXT is not set
+CONFIG_NET_VENDOR_CADENCE=y
+# CONFIG_MACB is not set
+CONFIG_NET_VENDOR_CAVIUM=y
+# CONFIG_THUNDER_NIC_PF is not set
+# CONFIG_THUNDER_NIC_VF is not set
+# CONFIG_THUNDER_NIC_BGX is not set
+# CONFIG_THUNDER_NIC_RGX is not set
+CONFIG_CAVIUM_PTP=y
+# CONFIG_LIQUIDIO is not set
+# CONFIG_LIQUIDIO_VF is not set
+CONFIG_NET_VENDOR_CHELSIO=y
+# CONFIG_CHELSIO_T1 is not set
+# CONFIG_CHELSIO_T3 is not set
+# CONFIG_CHELSIO_T4 is not set
+# CONFIG_CHELSIO_T4VF is not set
+CONFIG_NET_VENDOR_CISCO=y
+# CONFIG_ENIC is not set
+CONFIG_NET_VENDOR_CORTINA=y
+CONFIG_NET_VENDOR_DAVICOM=y
+# CONFIG_DM9051 is not set
+# CONFIG_DNET is not set
+CONFIG_NET_VENDOR_DEC=y
+# CONFIG_NET_TULIP is not set
+CONFIG_NET_VENDOR_DLINK=y
+# CONFIG_DL2K is not set
+# CONFIG_SUNDANCE is not set
+CONFIG_NET_VENDOR_EMULEX=y
+# CONFIG_BE2NET is not set
+CONFIG_NET_VENDOR_ENGLEDER=y
+# CONFIG_TSNEP is not set
+CONFIG_NET_VENDOR_EZCHIP=y
+CONFIG_NET_VENDOR_FUNGIBLE=y
+# CONFIG_FUN_ETH is not set
+CONFIG_NET_VENDOR_GOOGLE=y
+# CONFIG_GVE is not set
+CONFIG_NET_VENDOR_HUAWEI=y
+# CONFIG_HINIC is not set
+CONFIG_NET_VENDOR_I825XX=y
+CONFIG_NET_VENDOR_INTEL=y
+# CONFIG_E100 is not set
+CONFIG_E1000=y
+CONFIG_E1000E=y
+CONFIG_E1000E_HWTS=y
+CONFIG_IGB=y
+CONFIG_IGB_HWMON=y
+# CONFIG_IGBVF is not set
+CONFIG_IXGBE=y
+CONFIG_IXGBE_HWMON=y
+# CONFIG_IXGBE_DCB is not set
+# CONFIG_IXGBE_IPSEC is not set
+# CONFIG_IXGBEVF is not set
+CONFIG_I40E=y
+# CONFIG_I40E_DCB is not set
+# CONFIG_I40EVF is not set
+# CONFIG_ICE is not set
+# CONFIG_FM10K is not set
+CONFIG_IGC=y
+# CONFIG_JME is not set
+CONFIG_NET_VENDOR_ADI=y
+# CONFIG_ADIN1110 is not set
+CONFIG_NET_VENDOR_LITEX=y
+CONFIG_NET_VENDOR_MARVELL=y
+# CONFIG_MVMDIO is not set
+# CONFIG_SKGE is not set
+# CONFIG_SKY2 is not set
+# CONFIG_OCTEON_EP is not set
+# CONFIG_PRESTERA is not set
+CONFIG_NET_VENDOR_MELLANOX=y
+# CONFIG_MLX4_EN is not set
+# CONFIG_MLX5_CORE is not set
+# CONFIG_MLXSW_CORE is not set
+# CONFIG_MLXFW is not set
+CONFIG_NET_VENDOR_MICREL=y
+# CONFIG_KS8842 is not set
+# CONFIG_KS8851 is not set
+# CONFIG_KS8851_MLL is not set
+# CONFIG_KSZ884X_PCI is not set
+CONFIG_NET_VENDOR_MICROCHIP=y
+# CONFIG_ENC28J60 is not set
+# CONFIG_ENCX24J600 is not set
+# CONFIG_LAN743X is not set
+# CONFIG_VCAP is not set
+CONFIG_NET_VENDOR_MICROSEMI=y
+CONFIG_NET_VENDOR_MICROSOFT=y
+# CONFIG_MICROSOFT_MANA is not set
+CONFIG_NET_VENDOR_MYRI=y
+# CONFIG_MYRI10GE is not set
+# CONFIG_FEALNX is not set
+CONFIG_NET_VENDOR_NI=y
+# CONFIG_NI_XGE_MANAGEMENT_ENET is not set
+CONFIG_NET_VENDOR_NATSEMI=y
+# CONFIG_NATSEMI is not set
+# CONFIG_NS83820 is not set
+CONFIG_NET_VENDOR_NETERION=y
+# CONFIG_S2IO is not set
+CONFIG_NET_VENDOR_NETRONOME=y
+# CONFIG_NFP is not set
+CONFIG_NET_VENDOR_8390=y
+# CONFIG_NE2K_PCI is not set
+CONFIG_NET_VENDOR_NVIDIA=y
+# CONFIG_FORCEDETH is not set
+CONFIG_NET_VENDOR_OKI=y
+# CONFIG_ETHOC is not set
+CONFIG_NET_VENDOR_PACKET_ENGINES=y
+# CONFIG_HAMACHI is not set
+# CONFIG_YELLOWFIN is not set
+CONFIG_NET_VENDOR_PENSANDO=y
+# CONFIG_IONIC is not set
+CONFIG_NET_VENDOR_QLOGIC=y
+# CONFIG_QLA3XXX is not set
+# CONFIG_QLCNIC is not set
+# CONFIG_NETXEN_NIC is not set
+# CONFIG_QED is not set
+CONFIG_NET_VENDOR_BROCADE=y
+# CONFIG_BNA is not set
+CONFIG_NET_VENDOR_QUALCOMM=y
+# CONFIG_QCOM_EMAC is not set
+# CONFIG_RMNET is not set
+CONFIG_NET_VENDOR_RDC=y
+# CONFIG_R6040 is not set
+CONFIG_NET_VENDOR_REALTEK=y
+# CONFIG_ATP is not set
+# CONFIG_8139CP is not set
+# CONFIG_8139TOO is not set
+CONFIG_R8169=y
+CONFIG_NET_VENDOR_RENESAS=y
+CONFIG_NET_VENDOR_ROCKER=y
+# CONFIG_ROCKER is not set
+CONFIG_NET_VENDOR_SAMSUNG=y
+# CONFIG_SXGBE_ETH is not set
+CONFIG_NET_VENDOR_SEEQ=y
+CONFIG_NET_VENDOR_SILAN=y
+# CONFIG_SC92031 is not set
+CONFIG_NET_VENDOR_SIS=y
+# CONFIG_SIS900 is not set
+# CONFIG_SIS190 is not set
+CONFIG_NET_VENDOR_SOLARFLARE=y
+# CONFIG_SFC is not set
+# CONFIG_SFC_FALCON is not set
+# CONFIG_SFC_SIENA is not set
+CONFIG_NET_VENDOR_SMSC=y
+# CONFIG_EPIC100 is not set
+# CONFIG_SMSC911X is not set
+# CONFIG_SMSC9420 is not set
+CONFIG_NET_VENDOR_SOCIONEXT=y
+CONFIG_NET_VENDOR_STMICRO=y
+# CONFIG_STMMAC_ETH is not set
+CONFIG_NET_VENDOR_SUN=y
+# CONFIG_HAPPYMEAL is not set
+# CONFIG_SUNGEM is not set
+# CONFIG_CASSINI is not set
+# CONFIG_NIU is not set
+CONFIG_NET_VENDOR_SYNOPSYS=y
+# CONFIG_DWC_XLGMAC is not set
+CONFIG_NET_VENDOR_TEHUTI=y
+# CONFIG_TEHUTI is not set
+CONFIG_NET_VENDOR_TI=y
+# CONFIG_TI_CPSW_PHY_SEL is not set
+# CONFIG_TLAN is not set
+CONFIG_NET_VENDOR_VERTEXCOM=y
+# CONFIG_MSE102X is not set
+CONFIG_NET_VENDOR_VIA=y
+# CONFIG_VIA_RHINE is not set
+# CONFIG_VIA_VELOCITY is not set
+CONFIG_NET_VENDOR_WANGXUN=y
+# CONFIG_NGBE is not set
+# CONFIG_TXGBE is not set
+CONFIG_NET_VENDOR_WIZNET=y
+# CONFIG_WIZNET_W5100 is not set
+# CONFIG_WIZNET_W5300 is not set
+CONFIG_NET_VENDOR_XILINX=y
+# CONFIG_XILINX_EMACLITE is not set
+# CONFIG_XILINX_AXI_EMAC is not set
+# CONFIG_XILINX_LL_TEMAC is not set
+# CONFIG_FDDI is not set
+# CONFIG_HIPPI is not set
+# CONFIG_NET_SB1000 is not set
+CONFIG_PHYLINK=y
+CONFIG_PHYLIB=y
+CONFIG_SWPHY=y
+# CONFIG_LED_TRIGGER_PHY is not set
+CONFIG_FIXED_PHY=y
+# CONFIG_SFP is not set
+
+#
+# MII PHY device drivers
+#
+# CONFIG_AMD_PHY is not set
+# CONFIG_ADIN_PHY is not set
+# CONFIG_ADIN1100_PHY is not set
+# CONFIG_AQUANTIA_PHY is not set
+CONFIG_AX88796B_PHY=y
+# CONFIG_BROADCOM_PHY is not set
+# CONFIG_BCM54140_PHY is not set
+# CONFIG_BCM7XXX_PHY is not set
+# CONFIG_BCM84881_PHY is not set
+# CONFIG_BCM87XX_PHY is not set
+# CONFIG_CICADA_PHY is not set
+# CONFIG_CORTINA_PHY is not set
+# CONFIG_DAVICOM_PHY is not set
+# CONFIG_ICPLUS_PHY is not set
+# CONFIG_LXT_PHY is not set
+# CONFIG_INTEL_XWAY_PHY is not set
+# CONFIG_LSI_ET1011C_PHY is not set
+# CONFIG_MARVELL_PHY is not set
+# CONFIG_MARVELL_10G_PHY is not set
+# CONFIG_MARVELL_88X2222_PHY is not set
+# CONFIG_MAXLINEAR_GPHY is not set
+# CONFIG_MEDIATEK_GE_PHY is not set
+# CONFIG_MICREL_PHY is not set
+# CONFIG_MICROCHIP_T1S_PHY is not set
+# CONFIG_MICROCHIP_PHY is not set
+# CONFIG_MICROCHIP_T1_PHY is not set
+# CONFIG_MICROSEMI_PHY is not set
+# CONFIG_MOTORCOMM_PHY is not set
+# CONFIG_NATIONAL_PHY is not set
+# CONFIG_NXP_CBTX_PHY is not set
+# CONFIG_NXP_C45_TJA11XX_PHY is not set
+# CONFIG_NXP_TJA11XX_PHY is not set
+# CONFIG_NCN26000_PHY is not set
+# CONFIG_QSEMI_PHY is not set
+CONFIG_REALTEK_PHY=y
+# CONFIG_RENESAS_PHY is not set
+# CONFIG_ROCKCHIP_PHY is not set
+# CONFIG_SMSC_PHY is not set
+# CONFIG_STE10XP is not set
+# CONFIG_TERANETICS_PHY is not set
+# CONFIG_DP83822_PHY is not set
+# CONFIG_DP83TC811_PHY is not set
+# CONFIG_DP83848_PHY is not set
+# CONFIG_DP83867_PHY is not set
+# CONFIG_DP83869_PHY is not set
+# CONFIG_DP83TD510_PHY is not set
+# CONFIG_VITESSE_PHY is not set
+# CONFIG_XILINX_GMII2RGMII is not set
+# CONFIG_MICREL_KS8995MA is not set
+# CONFIG_PSE_CONTROLLER is not set
+CONFIG_CAN_DEV=m
+CONFIG_CAN_VCAN=m
+# CONFIG_CAN_VXCAN is not set
+CONFIG_CAN_NETLINK=y
+CONFIG_CAN_CALC_BITTIMING=y
+# CONFIG_CAN_CAN327 is not set
+# CONFIG_CAN_KVASER_PCIEFD is not set
+CONFIG_CAN_SLCAN=m
+# CONFIG_CAN_C_CAN is not set
+# CONFIG_CAN_CC770 is not set
+# CONFIG_CAN_CTUCANFD_PCI is not set
+# CONFIG_CAN_IFI_CANFD is not set
+# CONFIG_CAN_M_CAN is not set
+# CONFIG_CAN_PEAK_PCIEFD is not set
+# CONFIG_CAN_SJA1000 is not set
+# CONFIG_CAN_SOFTING is not set
+
+#
+# CAN SPI interfaces
+#
+# CONFIG_CAN_HI311X is not set
+# CONFIG_CAN_MCP251X is not set
+# CONFIG_CAN_MCP251XFD is not set
+# end of CAN SPI interfaces
+
+#
+# CAN USB interfaces
+#
+# CONFIG_CAN_8DEV_USB is not set
+# CONFIG_CAN_EMS_USB is not set
+# CONFIG_CAN_ESD_USB is not set
+# CONFIG_CAN_ETAS_ES58X is not set
+# CONFIG_CAN_GS_USB is not set
+# CONFIG_CAN_KVASER_USB is not set
+# CONFIG_CAN_MCBA_USB is not set
+# CONFIG_CAN_PEAK_USB is not set
+# CONFIG_CAN_UCAN is not set
+# end of CAN USB interfaces
+
+# CONFIG_CAN_DEBUG_DEVICES is not set
+CONFIG_MDIO_DEVICE=y
+CONFIG_MDIO_BUS=y
+CONFIG_FWNODE_MDIO=y
+CONFIG_ACPI_MDIO=y
+CONFIG_MDIO_DEVRES=y
+# CONFIG_MDIO_BITBANG is not set
+# CONFIG_MDIO_BCM_UNIMAC is not set
+# CONFIG_MDIO_MVUSB is not set
+# CONFIG_MDIO_THUNDER is not set
+
+#
+# MDIO Multiplexers
+#
+
+#
+# PCS device drivers
+#
+# end of PCS device drivers
+
+# CONFIG_PLIP is not set
+# CONFIG_PPP is not set
+# CONFIG_SLIP is not set
+CONFIG_USB_NET_DRIVERS=y
+# CONFIG_USB_CATC is not set
+# CONFIG_USB_KAWETH is not set
+# CONFIG_USB_PEGASUS is not set
+# CONFIG_USB_RTL8150 is not set
+CONFIG_USB_RTL8152=y
+# CONFIG_USB_LAN78XX is not set
+CONFIG_USB_USBNET=y
+CONFIG_USB_NET_AX8817X=y
+CONFIG_USB_NET_AX88179_178A=y
+# CONFIG_USB_NET_CDCETHER is not set
+# CONFIG_USB_NET_CDC_EEM is not set
+# CONFIG_USB_NET_CDC_NCM is not set
+# CONFIG_USB_NET_HUAWEI_CDC_NCM is not set
+# CONFIG_USB_NET_CDC_MBIM is not set
+# CONFIG_USB_NET_DM9601 is not set
+# CONFIG_USB_NET_SR9700 is not set
+# CONFIG_USB_NET_SR9800 is not set
+# CONFIG_USB_NET_SMSC75XX is not set
+# CONFIG_USB_NET_SMSC95XX is not set
+# CONFIG_USB_NET_GL620A is not set
+# CONFIG_USB_NET_NET1080 is not set
+# CONFIG_USB_NET_PLUSB is not set
+# CONFIG_USB_NET_MCS7830 is not set
+# CONFIG_USB_NET_RNDIS_HOST is not set
+# CONFIG_USB_NET_CDC_SUBSET is not set
+# CONFIG_USB_NET_ZAURUS is not set
+# CONFIG_USB_NET_CX82310_ETH is not set
+# CONFIG_USB_NET_KALMIA is not set
+# CONFIG_USB_NET_QMI_WWAN is not set
+# CONFIG_USB_HSO is not set
+# CONFIG_USB_NET_INT51X1 is not set
+# CONFIG_USB_IPHETH is not set
+# CONFIG_USB_SIERRA_NET is not set
+# CONFIG_USB_NET_CH9200 is not set
+# CONFIG_USB_NET_AQC111 is not set
+# CONFIG_WLAN is not set
+# CONFIG_WAN is not set
+
+#
+# Wireless WAN
+#
+# CONFIG_WWAN is not set
+# end of Wireless WAN
+
+# CONFIG_VMXNET3 is not set
+# CONFIG_FUJITSU_ES is not set
+CONFIG_HYPERV_NET=y
+# CONFIG_NETDEVSIM is not set
+CONFIG_NET_FAILOVER=m
+# CONFIG_ISDN is not set
+
+#
+# Input device support
+#
+CONFIG_INPUT=y
+CONFIG_INPUT_LEDS=y
+CONFIG_INPUT_FF_MEMLESS=m
+CONFIG_INPUT_SPARSEKMAP=m
+# CONFIG_INPUT_MATRIXKMAP is not set
+CONFIG_INPUT_VIVALDIFMAP=y
+
+#
+# Userland interfaces
+#
+CONFIG_INPUT_MOUSEDEV=y
+# CONFIG_INPUT_MOUSEDEV_PSAUX is not set
+CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
+CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
+CONFIG_INPUT_JOYDEV=m
+CONFIG_INPUT_EVDEV=y
+# CONFIG_INPUT_EVBUG is not set
+
+#
+# Input Device Drivers
+#
+CONFIG_INPUT_KEYBOARD=y
+# CONFIG_KEYBOARD_ADP5588 is not set
+# CONFIG_KEYBOARD_ADP5589 is not set
+# CONFIG_KEYBOARD_APPLESPI is not set
+CONFIG_KEYBOARD_ATKBD=y
+# CONFIG_KEYBOARD_QT1050 is not set
+# CONFIG_KEYBOARD_QT1070 is not set
+# CONFIG_KEYBOARD_QT2160 is not set
+# CONFIG_KEYBOARD_DLINK_DIR685 is not set
+# CONFIG_KEYBOARD_LKKBD is not set
+# CONFIG_KEYBOARD_GPIO is not set
+# CONFIG_KEYBOARD_GPIO_POLLED is not set
+# CONFIG_KEYBOARD_TCA6416 is not set
+# CONFIG_KEYBOARD_TCA8418 is not set
+# CONFIG_KEYBOARD_MATRIX is not set
+# CONFIG_KEYBOARD_LM8323 is not set
+# CONFIG_KEYBOARD_LM8333 is not set
+# CONFIG_KEYBOARD_MAX7359 is not set
+# CONFIG_KEYBOARD_MCS is not set
+# CONFIG_KEYBOARD_MPR121 is not set
+# CONFIG_KEYBOARD_NEWTON is not set
+# CONFIG_KEYBOARD_OPENCORES is not set
+# CONFIG_KEYBOARD_SAMSUNG is not set
+# CONFIG_KEYBOARD_STOWAWAY is not set
+# CONFIG_KEYBOARD_SUNKBD is not set
+# CONFIG_KEYBOARD_TM2_TOUCHKEY is not set
+# CONFIG_KEYBOARD_XTKBD is not set
+# CONFIG_KEYBOARD_CYPRESS_SF is not set
+CONFIG_INPUT_MOUSE=y
+CONFIG_MOUSE_PS2=y
+CONFIG_MOUSE_PS2_ALPS=y
+CONFIG_MOUSE_PS2_BYD=y
+CONFIG_MOUSE_PS2_LOGIPS2PP=y
+CONFIG_MOUSE_PS2_SYNAPTICS=y
+CONFIG_MOUSE_PS2_SYNAPTICS_SMBUS=y
+CONFIG_MOUSE_PS2_CYPRESS=y
+CONFIG_MOUSE_PS2_LIFEBOOK=y
+CONFIG_MOUSE_PS2_TRACKPOINT=y
+CONFIG_MOUSE_PS2_ELANTECH=y
+CONFIG_MOUSE_PS2_ELANTECH_SMBUS=y
+CONFIG_MOUSE_PS2_SENTELIC=y
+# CONFIG_MOUSE_PS2_TOUCHKIT is not set
+CONFIG_MOUSE_PS2_FOCALTECH=y
+CONFIG_MOUSE_PS2_VMMOUSE=y
+CONFIG_MOUSE_PS2_SMBUS=y
+CONFIG_MOUSE_SERIAL=m
+# CONFIG_MOUSE_APPLETOUCH is not set
+# CONFIG_MOUSE_BCM5974 is not set
+CONFIG_MOUSE_CYAPA=m
+CONFIG_MOUSE_ELAN_I2C=m
+CONFIG_MOUSE_ELAN_I2C_I2C=y
+CONFIG_MOUSE_ELAN_I2C_SMBUS=y
+CONFIG_MOUSE_VSXXXAA=m
+# CONFIG_MOUSE_GPIO is not set
+CONFIG_MOUSE_SYNAPTICS_I2C=m
+# CONFIG_MOUSE_SYNAPTICS_USB is not set
+# CONFIG_INPUT_JOYSTICK is not set
+# CONFIG_INPUT_TABLET is not set
+# CONFIG_INPUT_TOUCHSCREEN is not set
+CONFIG_INPUT_MISC=y
+# CONFIG_INPUT_AD714X is not set
+# CONFIG_INPUT_BMA150 is not set
+# CONFIG_INPUT_E3X0_BUTTON is not set
+# CONFIG_INPUT_PCSPKR is not set
+# CONFIG_INPUT_MMA8450 is not set
+# CONFIG_INPUT_APANEL is not set
+# CONFIG_INPUT_GPIO_BEEPER is not set
+# CONFIG_INPUT_GPIO_DECODER is not set
+# CONFIG_INPUT_GPIO_VIBRA is not set
+# CONFIG_INPUT_ATLAS_BTNS is not set
+# CONFIG_INPUT_ATI_REMOTE2 is not set
+# CONFIG_INPUT_KEYSPAN_REMOTE is not set
+# CONFIG_INPUT_KXTJ9 is not set
+# CONFIG_INPUT_POWERMATE is not set
+# CONFIG_INPUT_YEALINK is not set
+# CONFIG_INPUT_CM109 is not set
+CONFIG_INPUT_UINPUT=y
+# CONFIG_INPUT_PCF8574 is not set
+# CONFIG_INPUT_PWM_BEEPER is not set
+# CONFIG_INPUT_PWM_VIBRA is not set
+# CONFIG_INPUT_GPIO_ROTARY_ENCODER is not set
+# CONFIG_INPUT_DA7280_HAPTICS is not set
+# CONFIG_INPUT_ADXL34X is not set
+# CONFIG_INPUT_IMS_PCU is not set
+# CONFIG_INPUT_IQS269A is not set
+# CONFIG_INPUT_IQS626A is not set
+# CONFIG_INPUT_IQS7222 is not set
+# CONFIG_INPUT_CMA3000 is not set
+# CONFIG_INPUT_IDEAPAD_SLIDEBAR is not set
+# CONFIG_INPUT_DRV260X_HAPTICS is not set
+# CONFIG_INPUT_DRV2665_HAPTICS is not set
+# CONFIG_INPUT_DRV2667_HAPTICS is not set
+CONFIG_RMI4_CORE=m
+CONFIG_RMI4_I2C=m
+CONFIG_RMI4_SPI=m
+CONFIG_RMI4_SMB=m
+CONFIG_RMI4_F03=y
+CONFIG_RMI4_F03_SERIO=m
+CONFIG_RMI4_2D_SENSOR=y
+CONFIG_RMI4_F11=y
+CONFIG_RMI4_F12=y
+CONFIG_RMI4_F30=y
+CONFIG_RMI4_F34=y
+# CONFIG_RMI4_F3A is not set
+CONFIG_RMI4_F55=y
+
+#
+# Hardware I/O ports
+#
+CONFIG_SERIO=y
+CONFIG_ARCH_MIGHT_HAVE_PC_SERIO=y
+CONFIG_SERIO_I8042=y
+CONFIG_SERIO_SERPORT=y
+# CONFIG_SERIO_CT82C710 is not set
+# CONFIG_SERIO_PARKBD is not set
+# CONFIG_SERIO_PCIPS2 is not set
+CONFIG_SERIO_LIBPS2=y
+CONFIG_SERIO_RAW=m
+CONFIG_SERIO_ALTERA_PS2=m
+# CONFIG_SERIO_PS2MULT is not set
+CONFIG_SERIO_ARC_PS2=m
+CONFIG_HYPERV_KEYBOARD=m
+# CONFIG_SERIO_GPIO_PS2 is not set
+# CONFIG_USERIO is not set
+# CONFIG_GAMEPORT is not set
+# end of Hardware I/O ports
+# end of Input device support
+
+#
+# Character devices
+#
+CONFIG_TTY=y
+CONFIG_VT=y
+CONFIG_CONSOLE_TRANSLATIONS=y
+CONFIG_VT_CONSOLE=y
+CONFIG_VT_CONSOLE_SLEEP=y
+CONFIG_HW_CONSOLE=y
+CONFIG_VT_HW_CONSOLE_BINDING=y
+CONFIG_UNIX98_PTYS=y
+# CONFIG_LEGACY_PTYS is not set
+CONFIG_LEGACY_TIOCSTI=y
+CONFIG_LDISC_AUTOLOAD=y
+
+#
+# Serial drivers
+#
+CONFIG_SERIAL_EARLYCON=y
+CONFIG_SERIAL_8250=y
+# CONFIG_SERIAL_8250_DEPRECATED_OPTIONS is not set
+CONFIG_SERIAL_8250_PNP=y
+# CONFIG_SERIAL_8250_16550A_VARIANTS is not set
+# CONFIG_SERIAL_8250_FINTEK is not set
+CONFIG_SERIAL_8250_CONSOLE=y
+CONFIG_SERIAL_8250_DMA=y
+CONFIG_SERIAL_8250_PCILIB=y
+CONFIG_SERIAL_8250_PCI=y
+CONFIG_SERIAL_8250_EXAR=y
+CONFIG_SERIAL_8250_NR_UARTS=64
+CONFIG_SERIAL_8250_RUNTIME_UARTS=4
+CONFIG_SERIAL_8250_EXTENDED=y
+CONFIG_SERIAL_8250_MANY_PORTS=y
+# CONFIG_SERIAL_8250_PCI1XXXX is not set
+CONFIG_SERIAL_8250_SHARE_IRQ=y
+# CONFIG_SERIAL_8250_DETECT_IRQ is not set
+CONFIG_SERIAL_8250_RSA=y
+CONFIG_SERIAL_8250_DWLIB=y
+CONFIG_SERIAL_8250_DW=y
+# CONFIG_SERIAL_8250_RT288X is not set
+CONFIG_SERIAL_8250_LPSS=y
+CONFIG_SERIAL_8250_MID=y
+CONFIG_SERIAL_8250_PERICOM=y
+
+#
+# Non-8250 serial port support
+#
+# CONFIG_SERIAL_MAX3100 is not set
+# CONFIG_SERIAL_MAX310X is not set
+# CONFIG_SERIAL_UARTLITE is not set
+CONFIG_SERIAL_CORE=y
+CONFIG_SERIAL_CORE_CONSOLE=y
+# CONFIG_SERIAL_JSM is not set
+# CONFIG_SERIAL_LANTIQ is not set
+# CONFIG_SERIAL_SCCNXP is not set
+# CONFIG_SERIAL_SC16IS7XX is not set
+# CONFIG_SERIAL_ALTERA_JTAGUART is not set
+# CONFIG_SERIAL_ALTERA_UART is not set
+CONFIG_SERIAL_ARC=m
+CONFIG_SERIAL_ARC_NR_PORTS=1
+# CONFIG_SERIAL_RP2 is not set
+# CONFIG_SERIAL_FSL_LPUART is not set
+# CONFIG_SERIAL_FSL_LINFLEXUART is not set
+# CONFIG_SERIAL_SPRD is not set
+# end of Serial drivers
+
+CONFIG_SERIAL_MCTRL_GPIO=y
+CONFIG_SERIAL_NONSTANDARD=y
+# CONFIG_MOXA_INTELLIO is not set
+# CONFIG_MOXA_SMARTIO is not set
+CONFIG_SYNCLINK_GT=m
+CONFIG_N_HDLC=m
+CONFIG_N_GSM=m
+CONFIG_NOZOMI=m
+# CONFIG_NULL_TTY is not set
+CONFIG_HVC_DRIVER=y
+# CONFIG_SERIAL_DEV_BUS is not set
+# CONFIG_TTY_PRINTK is not set
+CONFIG_PRINTER=m
+# CONFIG_LP_CONSOLE is not set
+CONFIG_PPDEV=m
+CONFIG_VIRTIO_CONSOLE=m
+CONFIG_IPMI_HANDLER=m
+CONFIG_IPMI_DMI_DECODE=y
+CONFIG_IPMI_PLAT_DATA=y
+CONFIG_IPMI_PANIC_EVENT=y
+CONFIG_IPMI_PANIC_STRING=y
+CONFIG_IPMI_DEVICE_INTERFACE=m
+CONFIG_IPMI_SI=m
+CONFIG_IPMI_SSIF=m
+CONFIG_IPMI_WATCHDOG=m
+CONFIG_IPMI_POWEROFF=m
+CONFIG_HW_RANDOM=y
+CONFIG_HW_RANDOM_TIMERIOMEM=m
+CONFIG_HW_RANDOM_INTEL=m
+# CONFIG_HW_RANDOM_AMD is not set
+# CONFIG_HW_RANDOM_BA431 is not set
+CONFIG_HW_RANDOM_VIA=m
+CONFIG_HW_RANDOM_VIRTIO=y
+# CONFIG_HW_RANDOM_XIPHERA is not set
+# CONFIG_APPLICOM is not set
+# CONFIG_MWAVE is not set
+CONFIG_DEVMEM=y
+CONFIG_NVRAM=y
+CONFIG_DEVPORT=y
+CONFIG_HPET=y
+CONFIG_HPET_MMAP=y
+# CONFIG_HPET_MMAP_DEFAULT is not set
+CONFIG_HANGCHECK_TIMER=m
+CONFIG_UV_MMTIMER=m
+CONFIG_TCG_TPM=y
+CONFIG_HW_RANDOM_TPM=y
+CONFIG_TCG_TIS_CORE=y
+CONFIG_TCG_TIS=y
+# CONFIG_TCG_TIS_SPI is not set
+# CONFIG_TCG_TIS_I2C is not set
+# CONFIG_TCG_TIS_I2C_CR50 is not set
+CONFIG_TCG_TIS_I2C_ATMEL=m
+CONFIG_TCG_TIS_I2C_INFINEON=m
+CONFIG_TCG_TIS_I2C_NUVOTON=m
+CONFIG_TCG_NSC=m
+CONFIG_TCG_ATMEL=m
+CONFIG_TCG_INFINEON=m
+CONFIG_TCG_CRB=y
+# CONFIG_TCG_VTPM_PROXY is not set
+# CONFIG_TCG_TIS_ST33ZP24_I2C is not set
+# CONFIG_TCG_TIS_ST33ZP24_SPI is not set
+CONFIG_TELCLOCK=m
+# CONFIG_XILLYBUS is not set
+# CONFIG_XILLYUSB is not set
+# end of Character devices
+
+#
+# I2C support
+#
+CONFIG_I2C=y
+CONFIG_ACPI_I2C_OPREGION=y
+CONFIG_I2C_BOARDINFO=y
+CONFIG_I2C_COMPAT=y
+CONFIG_I2C_CHARDEV=m
+CONFIG_I2C_MUX=m
+
+#
+# Multiplexer I2C Chip support
+#
+# CONFIG_I2C_MUX_GPIO is not set
+# CONFIG_I2C_MUX_LTC4306 is not set
+# CONFIG_I2C_MUX_PCA9541 is not set
+# CONFIG_I2C_MUX_PCA954x is not set
+# CONFIG_I2C_MUX_REG is not set
+CONFIG_I2C_MUX_MLXCPLD=m
+# end of Multiplexer I2C Chip support
+
+CONFIG_I2C_HELPER_AUTO=y
+CONFIG_I2C_SMBUS=m
+CONFIG_I2C_ALGOBIT=y
+CONFIG_I2C_ALGOPCA=m
+
+#
+# I2C Hardware Bus support
+#
+
+#
+# PC SMBus host controller drivers
+#
+# CONFIG_I2C_ALI1535 is not set
+# CONFIG_I2C_ALI1563 is not set
+# CONFIG_I2C_ALI15X3 is not set
+# CONFIG_I2C_AMD756 is not set
+# CONFIG_I2C_AMD8111 is not set
+# CONFIG_I2C_AMD_MP2 is not set
+CONFIG_I2C_I801=m
+CONFIG_I2C_ISCH=m
+CONFIG_I2C_ISMT=m
+CONFIG_I2C_PIIX4=m
+CONFIG_I2C_NFORCE2=m
+CONFIG_I2C_NFORCE2_S4985=m
+# CONFIG_I2C_NVIDIA_GPU is not set
+# CONFIG_I2C_SIS5595 is not set
+# CONFIG_I2C_SIS630 is not set
+CONFIG_I2C_SIS96X=m
+CONFIG_I2C_VIA=m
+CONFIG_I2C_VIAPRO=m
+
+#
+# ACPI drivers
+#
+CONFIG_I2C_SCMI=m
+
+#
+# I2C system bus drivers (mostly embedded / system-on-chip)
+#
+# CONFIG_I2C_CBUS_GPIO is not set
+CONFIG_I2C_DESIGNWARE_CORE=m
+# CONFIG_I2C_DESIGNWARE_SLAVE is not set
+CONFIG_I2C_DESIGNWARE_PLATFORM=m
+CONFIG_I2C_DESIGNWARE_BAYTRAIL=y
+# CONFIG_I2C_DESIGNWARE_PCI is not set
+# CONFIG_I2C_EMEV2 is not set
+# CONFIG_I2C_GPIO is not set
+# CONFIG_I2C_OCORES is not set
+CONFIG_I2C_PCA_PLATFORM=m
+CONFIG_I2C_SIMTEC=m
+# CONFIG_I2C_XILINX is not set
+
+#
+# External I2C/SMBus adapter drivers
+#
+# CONFIG_I2C_DIOLAN_U2C is not set
+# CONFIG_I2C_CP2615 is not set
+CONFIG_I2C_PARPORT=m
+# CONFIG_I2C_PCI1XXXX is not set
+# CONFIG_I2C_ROBOTFUZZ_OSIF is not set
+# CONFIG_I2C_TAOS_EVM is not set
+# CONFIG_I2C_TINY_USB is not set
+
+#
+# Other I2C/SMBus bus drivers
+#
+CONFIG_I2C_MLXCPLD=m
+# CONFIG_I2C_VIRTIO is not set
+# end of I2C Hardware Bus support
+
+CONFIG_I2C_STUB=m
+# CONFIG_I2C_SLAVE is not set
+# CONFIG_I2C_DEBUG_CORE is not set
+# CONFIG_I2C_DEBUG_ALGO is not set
+# CONFIG_I2C_DEBUG_BUS is not set
+# end of I2C support
+
+# CONFIG_I3C is not set
+CONFIG_SPI=y
+# CONFIG_SPI_DEBUG is not set
+CONFIG_SPI_MASTER=y
+# CONFIG_SPI_MEM is not set
+
+#
+# SPI Master Controller Drivers
+#
+# CONFIG_SPI_ALTERA is not set
+# CONFIG_SPI_AXI_SPI_ENGINE is not set
+# CONFIG_SPI_BITBANG is not set
+# CONFIG_SPI_BUTTERFLY is not set
+# CONFIG_SPI_CADENCE is not set
+# CONFIG_SPI_DESIGNWARE is not set
+# CONFIG_SPI_GPIO is not set
+# CONFIG_SPI_LM70_LLP is not set
+# CONFIG_SPI_MICROCHIP_CORE is not set
+# CONFIG_SPI_MICROCHIP_CORE_QSPI is not set
+# CONFIG_SPI_LANTIQ_SSC is not set
+# CONFIG_SPI_OC_TINY is not set
+# CONFIG_SPI_PCI1XXXX is not set
+# CONFIG_SPI_PXA2XX is not set
+# CONFIG_SPI_SC18IS602 is not set
+# CONFIG_SPI_SIFIVE is not set
+# CONFIG_SPI_MXIC is not set
+# CONFIG_SPI_XCOMM is not set
+# CONFIG_SPI_XILINX is not set
+# CONFIG_SPI_ZYNQMP_GQSPI is not set
+# CONFIG_SPI_AMD is not set
+
+#
+# SPI Multiplexer support
+#
+# CONFIG_SPI_MUX is not set
+
+#
+# SPI Protocol Masters
+#
+# CONFIG_SPI_SPIDEV is not set
+# CONFIG_SPI_LOOPBACK_TEST is not set
+# CONFIG_SPI_TLE62X0 is not set
+# CONFIG_SPI_SLAVE is not set
+CONFIG_SPI_DYNAMIC=y
+# CONFIG_SPMI is not set
+# CONFIG_HSI is not set
+CONFIG_PPS=y
+# CONFIG_PPS_DEBUG is not set
+
+#
+# PPS clients support
+#
+# CONFIG_PPS_CLIENT_KTIMER is not set
+CONFIG_PPS_CLIENT_LDISC=m
+CONFIG_PPS_CLIENT_PARPORT=m
+CONFIG_PPS_CLIENT_GPIO=m
+
+#
+# PPS generators support
+#
+
+#
+# PTP clock support
+#
+CONFIG_PTP_1588_CLOCK=y
+CONFIG_PTP_1588_CLOCK_OPTIONAL=y
+# CONFIG_DP83640_PHY is not set
+# CONFIG_PTP_1588_CLOCK_INES is not set
+CONFIG_PTP_1588_CLOCK_KVM=m
+# CONFIG_PTP_1588_CLOCK_IDT82P33 is not set
+# CONFIG_PTP_1588_CLOCK_IDTCM is not set
+# CONFIG_PTP_1588_CLOCK_VMW is not set
+# end of PTP clock support
+
+CONFIG_PINCTRL=y
+# CONFIG_DEBUG_PINCTRL is not set
+# CONFIG_PINCTRL_AMD is not set
+# CONFIG_PINCTRL_CY8C95X0 is not set
+# CONFIG_PINCTRL_MCP23S08 is not set
+# CONFIG_PINCTRL_SX150X is not set
+
+#
+# Intel pinctrl drivers
+#
+# CONFIG_PINCTRL_BAYTRAIL is not set
+# CONFIG_PINCTRL_CHERRYVIEW is not set
+# CONFIG_PINCTRL_LYNXPOINT is not set
+# CONFIG_PINCTRL_ALDERLAKE is not set
+# CONFIG_PINCTRL_BROXTON is not set
+# CONFIG_PINCTRL_CANNONLAKE is not set
+# CONFIG_PINCTRL_CEDARFORK is not set
+# CONFIG_PINCTRL_DENVERTON is not set
+# CONFIG_PINCTRL_ELKHARTLAKE is not set
+# CONFIG_PINCTRL_EMMITSBURG is not set
+# CONFIG_PINCTRL_GEMINILAKE is not set
+# CONFIG_PINCTRL_ICELAKE is not set
+# CONFIG_PINCTRL_JASPERLAKE is not set
+# CONFIG_PINCTRL_LAKEFIELD is not set
+# CONFIG_PINCTRL_LEWISBURG is not set
+# CONFIG_PINCTRL_METEORLAKE is not set
+# CONFIG_PINCTRL_SUNRISEPOINT is not set
+# CONFIG_PINCTRL_TIGERLAKE is not set
+# end of Intel pinctrl drivers
+
+#
+# Renesas pinctrl drivers
+#
+# end of Renesas pinctrl drivers
+
+CONFIG_GPIOLIB=y
+CONFIG_GPIOLIB_FASTPATH_LIMIT=512
+CONFIG_GPIO_ACPI=y
+# CONFIG_DEBUG_GPIO is not set
+CONFIG_GPIO_SYSFS=y
+CONFIG_GPIO_CDEV=y
+CONFIG_GPIO_CDEV_V1=y
+
+#
+# Memory mapped GPIO drivers
+#
+# CONFIG_GPIO_AMDPT is not set
+# CONFIG_GPIO_DWAPB is not set
+# CONFIG_GPIO_EXAR is not set
+# CONFIG_GPIO_GENERIC_PLATFORM is not set
+CONFIG_GPIO_ICH=m
+# CONFIG_GPIO_MB86S7X is not set
+# CONFIG_GPIO_VX855 is not set
+# CONFIG_GPIO_AMD_FCH is not set
+# end of Memory mapped GPIO drivers
+
+#
+# Port-mapped I/O GPIO drivers
+#
+# CONFIG_GPIO_F7188X is not set
+# CONFIG_GPIO_IT87 is not set
+# CONFIG_GPIO_SCH is not set
+# CONFIG_GPIO_SCH311X is not set
+# CONFIG_GPIO_WINBOND is not set
+# CONFIG_GPIO_WS16C48 is not set
+# end of Port-mapped I/O GPIO drivers
+
+#
+# I2C GPIO expanders
+#
+# CONFIG_GPIO_FXL6408 is not set
+# CONFIG_GPIO_MAX7300 is not set
+# CONFIG_GPIO_MAX732X is not set
+# CONFIG_GPIO_PCA953X is not set
+# CONFIG_GPIO_PCA9570 is not set
+# CONFIG_GPIO_PCF857X is not set
+# CONFIG_GPIO_TPIC2810 is not set
+# end of I2C GPIO expanders
+
+#
+# MFD GPIO expanders
+#
+# CONFIG_GPIO_ELKHARTLAKE is not set
+# end of MFD GPIO expanders
+
+#
+# PCI GPIO expanders
+#
+# CONFIG_GPIO_AMD8111 is not set
+# CONFIG_GPIO_BT8XX is not set
+# CONFIG_GPIO_ML_IOH is not set
+# CONFIG_GPIO_PCI_IDIO_16 is not set
+# CONFIG_GPIO_PCIE_IDIO_24 is not set
+# CONFIG_GPIO_RDC321X is not set
+# end of PCI GPIO expanders
+
+#
+# SPI GPIO expanders
+#
+# CONFIG_GPIO_MAX3191X is not set
+# CONFIG_GPIO_MAX7301 is not set
+# CONFIG_GPIO_MC33880 is not set
+# CONFIG_GPIO_PISOSR is not set
+# CONFIG_GPIO_XRA1403 is not set
+# end of SPI GPIO expanders
+
+#
+# USB GPIO expanders
+#
+# end of USB GPIO expanders
+
+#
+# Virtual GPIO drivers
+#
+# CONFIG_GPIO_AGGREGATOR is not set
+# CONFIG_GPIO_LATCH is not set
+# CONFIG_GPIO_MOCKUP is not set
+# CONFIG_GPIO_VIRTIO is not set
+# CONFIG_GPIO_SIM is not set
+# end of Virtual GPIO drivers
+
+# CONFIG_W1 is not set
+CONFIG_POWER_RESET=y
+# CONFIG_POWER_RESET_RESTART is not set
+CONFIG_POWER_SUPPLY=y
+# CONFIG_POWER_SUPPLY_DEBUG is not set
+CONFIG_POWER_SUPPLY_HWMON=y
+# CONFIG_IP5XXX_POWER is not set
+# CONFIG_TEST_POWER is not set
+# CONFIG_CHARGER_ADP5061 is not set
+# CONFIG_BATTERY_CW2015 is not set
+# CONFIG_BATTERY_DS2780 is not set
+# CONFIG_BATTERY_DS2781 is not set
+# CONFIG_BATTERY_DS2782 is not set
+# CONFIG_BATTERY_SAMSUNG_SDI is not set
+# CONFIG_BATTERY_SBS is not set
+# CONFIG_CHARGER_SBS is not set
+# CONFIG_MANAGER_SBS is not set
+# CONFIG_BATTERY_BQ27XXX is not set
+# CONFIG_BATTERY_MAX17040 is not set
+# CONFIG_BATTERY_MAX17042 is not set
+# CONFIG_CHARGER_MAX8903 is not set
+# CONFIG_CHARGER_LP8727 is not set
+# CONFIG_CHARGER_GPIO is not set
+# CONFIG_CHARGER_LT3651 is not set
+# CONFIG_CHARGER_LTC4162L is not set
+# CONFIG_CHARGER_MAX77976 is not set
+# CONFIG_CHARGER_BQ2415X is not set
+# CONFIG_CHARGER_BQ24257 is not set
+# CONFIG_CHARGER_BQ24735 is not set
+# CONFIG_CHARGER_BQ2515X is not set
+# CONFIG_CHARGER_BQ25890 is not set
+# CONFIG_CHARGER_BQ25980 is not set
+# CONFIG_CHARGER_BQ256XX is not set
+# CONFIG_BATTERY_GAUGE_LTC2941 is not set
+# CONFIG_BATTERY_GOLDFISH is not set
+# CONFIG_BATTERY_RT5033 is not set
+# CONFIG_CHARGER_RT9455 is not set
+# CONFIG_CHARGER_BD99954 is not set
+# CONFIG_BATTERY_UG3105 is not set
+CONFIG_HWMON=y
+CONFIG_HWMON_VID=m
+# CONFIG_HWMON_DEBUG_CHIP is not set
+
+#
+# Native drivers
+#
+CONFIG_SENSORS_ABITUGURU=m
+CONFIG_SENSORS_ABITUGURU3=m
+# CONFIG_SENSORS_AD7314 is not set
+CONFIG_SENSORS_AD7414=m
+CONFIG_SENSORS_AD7418=m
+CONFIG_SENSORS_ADM1025=m
+CONFIG_SENSORS_ADM1026=m
+CONFIG_SENSORS_ADM1029=m
+CONFIG_SENSORS_ADM1031=m
+# CONFIG_SENSORS_ADM1177 is not set
+CONFIG_SENSORS_ADM9240=m
+CONFIG_SENSORS_ADT7X10=m
+# CONFIG_SENSORS_ADT7310 is not set
+CONFIG_SENSORS_ADT7410=m
+CONFIG_SENSORS_ADT7411=m
+CONFIG_SENSORS_ADT7462=m
+CONFIG_SENSORS_ADT7470=m
+CONFIG_SENSORS_ADT7475=m
+# CONFIG_SENSORS_AHT10 is not set
+# CONFIG_SENSORS_AQUACOMPUTER_D5NEXT is not set
+# CONFIG_SENSORS_AS370 is not set
+CONFIG_SENSORS_ASC7621=m
+# CONFIG_SENSORS_AXI_FAN_CONTROL is not set
+CONFIG_SENSORS_K8TEMP=m
+CONFIG_SENSORS_APPLESMC=m
+CONFIG_SENSORS_ASB100=m
+CONFIG_SENSORS_ATXP1=m
+# CONFIG_SENSORS_CORSAIR_CPRO is not set
+# CONFIG_SENSORS_CORSAIR_PSU is not set
+# CONFIG_SENSORS_DRIVETEMP is not set
+CONFIG_SENSORS_DS620=m
+CONFIG_SENSORS_DS1621=m
+# CONFIG_SENSORS_DELL_SMM is not set
+CONFIG_SENSORS_I5K_AMB=m
+CONFIG_SENSORS_F71805F=m
+CONFIG_SENSORS_F71882FG=m
+CONFIG_SENSORS_F75375S=m
+CONFIG_SENSORS_FSCHMD=m
+# CONFIG_SENSORS_FTSTEUTATES is not set
+CONFIG_SENSORS_GL518SM=m
+CONFIG_SENSORS_GL520SM=m
+CONFIG_SENSORS_G760A=m
+# CONFIG_SENSORS_G762 is not set
+# CONFIG_SENSORS_HIH6130 is not set
+CONFIG_SENSORS_IBMAEM=m
+CONFIG_SENSORS_IBMPEX=m
+CONFIG_SENSORS_I5500=m
+CONFIG_SENSORS_CORETEMP=m
+CONFIG_SENSORS_IT87=m
+CONFIG_SENSORS_JC42=m
+# CONFIG_SENSORS_POWR1220 is not set
+CONFIG_SENSORS_LINEAGE=m
+# CONFIG_SENSORS_LTC2945 is not set
+# CONFIG_SENSORS_LTC2947_I2C is not set
+# CONFIG_SENSORS_LTC2947_SPI is not set
+# CONFIG_SENSORS_LTC2990 is not set
+# CONFIG_SENSORS_LTC2992 is not set
+CONFIG_SENSORS_LTC4151=m
+CONFIG_SENSORS_LTC4215=m
+# CONFIG_SENSORS_LTC4222 is not set
+CONFIG_SENSORS_LTC4245=m
+# CONFIG_SENSORS_LTC4260 is not set
+CONFIG_SENSORS_LTC4261=m
+# CONFIG_SENSORS_MAX1111 is not set
+# CONFIG_SENSORS_MAX127 is not set
+CONFIG_SENSORS_MAX16065=m
+CONFIG_SENSORS_MAX1619=m
+CONFIG_SENSORS_MAX1668=m
+CONFIG_SENSORS_MAX197=m
+# CONFIG_SENSORS_MAX31722 is not set
+# CONFIG_SENSORS_MAX31730 is not set
+# CONFIG_SENSORS_MAX31760 is not set
+# CONFIG_SENSORS_MAX6620 is not set
+# CONFIG_SENSORS_MAX6621 is not set
+CONFIG_SENSORS_MAX6639=m
+CONFIG_SENSORS_MAX6650=m
+CONFIG_SENSORS_MAX6697=m
+# CONFIG_SENSORS_MAX31790 is not set
+# CONFIG_SENSORS_MC34VR500 is not set
+CONFIG_SENSORS_MCP3021=m
+# CONFIG_SENSORS_TC654 is not set
+# CONFIG_SENSORS_TPS23861 is not set
+# CONFIG_SENSORS_MR75203 is not set
+# CONFIG_SENSORS_ADCXX is not set
+CONFIG_SENSORS_LM63=m
+# CONFIG_SENSORS_LM70 is not set
+CONFIG_SENSORS_LM73=m
+CONFIG_SENSORS_LM75=m
+CONFIG_SENSORS_LM77=m
+CONFIG_SENSORS_LM78=m
+CONFIG_SENSORS_LM80=m
+CONFIG_SENSORS_LM83=m
+CONFIG_SENSORS_LM85=m
+CONFIG_SENSORS_LM87=m
+CONFIG_SENSORS_LM90=m
+CONFIG_SENSORS_LM92=m
+CONFIG_SENSORS_LM93=m
+CONFIG_SENSORS_LM95234=m
+CONFIG_SENSORS_LM95241=m
+CONFIG_SENSORS_LM95245=m
+CONFIG_SENSORS_PC87360=m
+CONFIG_SENSORS_PC87427=m
+# CONFIG_SENSORS_NCT6683 is not set
+CONFIG_SENSORS_NCT6775_CORE=m
+CONFIG_SENSORS_NCT6775=m
+# CONFIG_SENSORS_NCT6775_I2C is not set
+# CONFIG_SENSORS_NCT7802 is not set
+# CONFIG_SENSORS_NCT7904 is not set
+# CONFIG_SENSORS_NPCM7XX is not set
+# CONFIG_SENSORS_NZXT_KRAKEN2 is not set
+# CONFIG_SENSORS_NZXT_SMART2 is not set
+# CONFIG_SENSORS_OCC_P8_I2C is not set
+# CONFIG_SENSORS_OXP is not set
+CONFIG_SENSORS_PCF8591=m
+# CONFIG_PMBUS is not set
+# CONFIG_SENSORS_SBTSI is not set
+# CONFIG_SENSORS_SBRMI is not set
+CONFIG_SENSORS_SHT15=m
+CONFIG_SENSORS_SHT21=m
+# CONFIG_SENSORS_SHT3x is not set
+# CONFIG_SENSORS_SHT4x is not set
+# CONFIG_SENSORS_SHTC1 is not set
+CONFIG_SENSORS_SIS5595=m
+CONFIG_SENSORS_DME1737=m
+CONFIG_SENSORS_EMC1403=m
+# CONFIG_SENSORS_EMC2103 is not set
+# CONFIG_SENSORS_EMC2305 is not set
+CONFIG_SENSORS_EMC6W201=m
+CONFIG_SENSORS_SMSC47M1=m
+CONFIG_SENSORS_SMSC47M192=m
+CONFIG_SENSORS_SMSC47B397=m
+CONFIG_SENSORS_SCH56XX_COMMON=m
+CONFIG_SENSORS_SCH5627=m
+CONFIG_SENSORS_SCH5636=m
+# CONFIG_SENSORS_STTS751 is not set
+# CONFIG_SENSORS_SMM665 is not set
+# CONFIG_SENSORS_ADC128D818 is not set
+CONFIG_SENSORS_ADS7828=m
+# CONFIG_SENSORS_ADS7871 is not set
+CONFIG_SENSORS_AMC6821=m
+CONFIG_SENSORS_INA209=m
+CONFIG_SENSORS_INA2XX=m
+# CONFIG_SENSORS_INA238 is not set
+# CONFIG_SENSORS_INA3221 is not set
+# CONFIG_SENSORS_TC74 is not set
+CONFIG_SENSORS_THMC50=m
+CONFIG_SENSORS_TMP102=m
+# CONFIG_SENSORS_TMP103 is not set
+# CONFIG_SENSORS_TMP108 is not set
+CONFIG_SENSORS_TMP401=m
+CONFIG_SENSORS_TMP421=m
+# CONFIG_SENSORS_TMP464 is not set
+# CONFIG_SENSORS_TMP513 is not set
+CONFIG_SENSORS_VIA_CPUTEMP=m
+CONFIG_SENSORS_VIA686A=m
+CONFIG_SENSORS_VT1211=m
+CONFIG_SENSORS_VT8231=m
+# CONFIG_SENSORS_W83773G is not set
+CONFIG_SENSORS_W83781D=m
+CONFIG_SENSORS_W83791D=m
+CONFIG_SENSORS_W83792D=m
+CONFIG_SENSORS_W83793=m
+CONFIG_SENSORS_W83795=m
+# CONFIG_SENSORS_W83795_FANCTRL is not set
+CONFIG_SENSORS_W83L785TS=m
+CONFIG_SENSORS_W83L786NG=m
+CONFIG_SENSORS_W83627HF=m
+CONFIG_SENSORS_W83627EHF=m
+# CONFIG_SENSORS_XGENE is not set
+
+#
+# ACPI drivers
+#
+CONFIG_SENSORS_ACPI_POWER=m
+CONFIG_SENSORS_ATK0110=m
+# CONFIG_SENSORS_ASUS_WMI is not set
+# CONFIG_SENSORS_ASUS_EC is not set
+CONFIG_THERMAL=y
+# CONFIG_THERMAL_NETLINK is not set
+# CONFIG_THERMAL_STATISTICS is not set
+CONFIG_THERMAL_EMERGENCY_POWEROFF_DELAY_MS=0
+CONFIG_THERMAL_HWMON=y
+CONFIG_THERMAL_ACPI=y
+CONFIG_THERMAL_WRITABLE_TRIPS=y
+CONFIG_THERMAL_DEFAULT_GOV_STEP_WISE=y
+# CONFIG_THERMAL_DEFAULT_GOV_FAIR_SHARE is not set
+# CONFIG_THERMAL_DEFAULT_GOV_USER_SPACE is not set
+CONFIG_THERMAL_GOV_FAIR_SHARE=y
+CONFIG_THERMAL_GOV_STEP_WISE=y
+CONFIG_THERMAL_GOV_BANG_BANG=y
+CONFIG_THERMAL_GOV_USER_SPACE=y
+# CONFIG_THERMAL_EMULATION is not set
+
+#
+# Intel thermal drivers
+#
+CONFIG_INTEL_POWERCLAMP=m
+CONFIG_X86_THERMAL_VECTOR=y
+CONFIG_INTEL_TCC=y
+CONFIG_X86_PKG_TEMP_THERMAL=m
+# CONFIG_INTEL_SOC_DTS_THERMAL is not set
+
+#
+# ACPI INT340X thermal drivers
+#
+# CONFIG_INT340X_THERMAL is not set
+# end of ACPI INT340X thermal drivers
+
+CONFIG_INTEL_PCH_THERMAL=m
+# CONFIG_INTEL_TCC_COOLING is not set
+# CONFIG_INTEL_HFI_THERMAL is not set
+# end of Intel thermal drivers
+
+CONFIG_WATCHDOG=y
+CONFIG_WATCHDOG_CORE=y
+# CONFIG_WATCHDOG_NOWAYOUT is not set
+CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED=y
+CONFIG_WATCHDOG_OPEN_TIMEOUT=0
+CONFIG_WATCHDOG_SYSFS=y
+# CONFIG_WATCHDOG_HRTIMER_PRETIMEOUT is not set
+
+#
+# Watchdog Pretimeout Governors
+#
+# CONFIG_WATCHDOG_PRETIMEOUT_GOV is not set
+
+#
+# Watchdog Device Drivers
+#
+CONFIG_SOFT_WATCHDOG=m
+CONFIG_WDAT_WDT=m
+# CONFIG_XILINX_WATCHDOG is not set
+# CONFIG_ZIIRAVE_WATCHDOG is not set
+# CONFIG_CADENCE_WATCHDOG is not set
+# CONFIG_DW_WATCHDOG is not set
+# CONFIG_MAX63XX_WATCHDOG is not set
+# CONFIG_ACQUIRE_WDT is not set
+# CONFIG_ADVANTECH_WDT is not set
+# CONFIG_ADVANTECH_EC_WDT is not set
+CONFIG_ALIM1535_WDT=m
+CONFIG_ALIM7101_WDT=m
+# CONFIG_EBC_C384_WDT is not set
+# CONFIG_EXAR_WDT is not set
+CONFIG_F71808E_WDT=m
+# CONFIG_SP5100_TCO is not set
+CONFIG_SBC_FITPC2_WATCHDOG=m
+# CONFIG_EUROTECH_WDT is not set
+CONFIG_IB700_WDT=m
+CONFIG_IBMASR=m
+# CONFIG_WAFER_WDT is not set
+CONFIG_I6300ESB_WDT=y
+CONFIG_IE6XX_WDT=m
+CONFIG_ITCO_WDT=y
+CONFIG_ITCO_VENDOR_SUPPORT=y
+CONFIG_IT8712F_WDT=m
+CONFIG_IT87_WDT=m
+CONFIG_HP_WATCHDOG=m
+CONFIG_HPWDT_NMI_DECODING=y
+# CONFIG_SC1200_WDT is not set
+# CONFIG_PC87413_WDT is not set
+CONFIG_NV_TCO=m
+# CONFIG_60XX_WDT is not set
+# CONFIG_CPU5_WDT is not set
+CONFIG_SMSC_SCH311X_WDT=m
+# CONFIG_SMSC37B787_WDT is not set
+# CONFIG_TQMX86_WDT is not set
+CONFIG_VIA_WDT=m
+CONFIG_W83627HF_WDT=m
+CONFIG_W83877F_WDT=m
+CONFIG_W83977F_WDT=m
+CONFIG_MACHZ_WDT=m
+# CONFIG_SBC_EPX_C3_WATCHDOG is not set
+CONFIG_INTEL_MEI_WDT=m
+# CONFIG_NI903X_WDT is not set
+# CONFIG_NIC7018_WDT is not set
+# CONFIG_MEN_A21_WDT is not set
+
+#
+# PCI-based Watchdog Cards
+#
+CONFIG_PCIPCWATCHDOG=m
+CONFIG_WDTPCI=m
+
+#
+# USB-based Watchdog Cards
+#
+# CONFIG_USBPCWATCHDOG is not set
+CONFIG_SSB_POSSIBLE=y
+# CONFIG_SSB is not set
+CONFIG_BCMA_POSSIBLE=y
+# CONFIG_BCMA is not set
+
+#
+# Multifunction device drivers
+#
+CONFIG_MFD_CORE=y
+# CONFIG_MFD_AS3711 is not set
+# CONFIG_MFD_SMPRO is not set
+# CONFIG_PMIC_ADP5520 is not set
+# CONFIG_MFD_AAT2870_CORE is not set
+# CONFIG_MFD_BCM590XX is not set
+# CONFIG_MFD_BD9571MWV is not set
+# CONFIG_MFD_AXP20X_I2C is not set
+# CONFIG_MFD_MADERA is not set
+# CONFIG_PMIC_DA903X is not set
+# CONFIG_MFD_DA9052_SPI is not set
+# CONFIG_MFD_DA9052_I2C is not set
+# CONFIG_MFD_DA9055 is not set
+# CONFIG_MFD_DA9062 is not set
+# CONFIG_MFD_DA9063 is not set
+# CONFIG_MFD_DA9150 is not set
+# CONFIG_MFD_DLN2 is not set
+# CONFIG_MFD_MC13XXX_SPI is not set
+# CONFIG_MFD_MC13XXX_I2C is not set
+# CONFIG_MFD_MP2629 is not set
+# CONFIG_MFD_INTEL_QUARK_I2C_GPIO is not set
+CONFIG_LPC_ICH=m
+CONFIG_LPC_SCH=m
+CONFIG_MFD_INTEL_LPSS=y
+CONFIG_MFD_INTEL_LPSS_ACPI=y
+CONFIG_MFD_INTEL_LPSS_PCI=y
+# CONFIG_MFD_INTEL_PMC_BXT is not set
+# CONFIG_MFD_IQS62X is not set
+# CONFIG_MFD_JANZ_CMODIO is not set
+# CONFIG_MFD_KEMPLD is not set
+# CONFIG_MFD_88PM800 is not set
+# CONFIG_MFD_88PM805 is not set
+# CONFIG_MFD_88PM860X is not set
+# CONFIG_MFD_MAX14577 is not set
+# CONFIG_MFD_MAX77693 is not set
+# CONFIG_MFD_MAX77843 is not set
+# CONFIG_MFD_MAX8907 is not set
+# CONFIG_MFD_MAX8925 is not set
+# CONFIG_MFD_MAX8997 is not set
+# CONFIG_MFD_MAX8998 is not set
+# CONFIG_MFD_MT6360 is not set
+# CONFIG_MFD_MT6370 is not set
+# CONFIG_MFD_MT6397 is not set
+# CONFIG_MFD_MENF21BMC is not set
+# CONFIG_MFD_OCELOT is not set
+# CONFIG_EZX_PCAP is not set
+# CONFIG_MFD_VIPERBOARD is not set
+# CONFIG_MFD_RETU is not set
+# CONFIG_MFD_PCF50633 is not set
+# CONFIG_MFD_SY7636A is not set
+# CONFIG_MFD_RDC321X is not set
+# CONFIG_MFD_RT4831 is not set
+# CONFIG_MFD_RT5033 is not set
+# CONFIG_MFD_RT5120 is not set
+# CONFIG_MFD_RC5T583 is not set
+# CONFIG_MFD_SI476X_CORE is not set
+CONFIG_MFD_SM501=m
+CONFIG_MFD_SM501_GPIO=y
+# CONFIG_MFD_SKY81452 is not set
+# CONFIG_MFD_SYSCON is not set
+# CONFIG_MFD_TI_AM335X_TSCADC is not set
+# CONFIG_MFD_LP3943 is not set
+# CONFIG_MFD_LP8788 is not set
+# CONFIG_MFD_TI_LMU is not set
+# CONFIG_MFD_PALMAS is not set
+# CONFIG_TPS6105X is not set
+# CONFIG_TPS65010 is not set
+# CONFIG_TPS6507X is not set
+# CONFIG_MFD_TPS65086 is not set
+# CONFIG_MFD_TPS65090 is not set
+# CONFIG_MFD_TI_LP873X is not set
+# CONFIG_MFD_TPS6586X is not set
+# CONFIG_MFD_TPS65910 is not set
+# CONFIG_MFD_TPS65912_I2C is not set
+# CONFIG_MFD_TPS65912_SPI is not set
+# CONFIG_TWL4030_CORE is not set
+# CONFIG_TWL6040_CORE is not set
+# CONFIG_MFD_WL1273_CORE is not set
+# CONFIG_MFD_LM3533 is not set
+# CONFIG_MFD_TQMX86 is not set
+CONFIG_MFD_VX855=m
+# CONFIG_MFD_ARIZONA_I2C is not set
+# CONFIG_MFD_ARIZONA_SPI is not set
+# CONFIG_MFD_WM8400 is not set
+# CONFIG_MFD_WM831X_I2C is not set
+# CONFIG_MFD_WM831X_SPI is not set
+# CONFIG_MFD_WM8350_I2C is not set
+# CONFIG_MFD_WM8994 is not set
+# CONFIG_MFD_ATC260X_I2C is not set
+# CONFIG_MFD_INTEL_M10_BMC_SPI is not set
+# end of Multifunction device drivers
+
+# CONFIG_REGULATOR is not set
+CONFIG_RC_CORE=m
+CONFIG_LIRC=y
+CONFIG_RC_MAP=m
+CONFIG_RC_DECODERS=y
+CONFIG_IR_IMON_DECODER=m
+CONFIG_IR_JVC_DECODER=m
+CONFIG_IR_MCE_KBD_DECODER=m
+CONFIG_IR_NEC_DECODER=m
+CONFIG_IR_RC5_DECODER=m
+CONFIG_IR_RC6_DECODER=m
+# CONFIG_IR_RCMM_DECODER is not set
+CONFIG_IR_SANYO_DECODER=m
+# CONFIG_IR_SHARP_DECODER is not set
+CONFIG_IR_SONY_DECODER=m
+# CONFIG_IR_XMP_DECODER is not set
+CONFIG_RC_DEVICES=y
+CONFIG_IR_ENE=m
+CONFIG_IR_FINTEK=m
+# CONFIG_IR_IGORPLUGUSB is not set
+# CONFIG_IR_IGUANA is not set
+# CONFIG_IR_IMON is not set
+# CONFIG_IR_IMON_RAW is not set
+CONFIG_IR_ITE_CIR=m
+# CONFIG_IR_MCEUSB is not set
+CONFIG_IR_NUVOTON=m
+# CONFIG_IR_REDRAT3 is not set
+CONFIG_IR_SERIAL=m
+CONFIG_IR_SERIAL_TRANSMITTER=y
+# CONFIG_IR_STREAMZAP is not set
+# CONFIG_IR_TOY is not set
+# CONFIG_IR_TTUSBIR is not set
+CONFIG_IR_WINBOND_CIR=m
+# CONFIG_RC_ATI_REMOTE is not set
+# CONFIG_RC_LOOPBACK is not set
+# CONFIG_RC_XBOX_DVD is not set
+
+#
+# CEC support
+#
+# CONFIG_MEDIA_CEC_SUPPORT is not set
+# end of CEC support
+
+CONFIG_MEDIA_SUPPORT=m
+CONFIG_MEDIA_SUPPORT_FILTER=y
+CONFIG_MEDIA_SUBDRV_AUTOSELECT=y
+
+#
+# Media device types
+#
+# CONFIG_MEDIA_CAMERA_SUPPORT is not set
+# CONFIG_MEDIA_ANALOG_TV_SUPPORT is not set
+# CONFIG_MEDIA_DIGITAL_TV_SUPPORT is not set
+# CONFIG_MEDIA_RADIO_SUPPORT is not set
+# CONFIG_MEDIA_SDR_SUPPORT is not set
+# CONFIG_MEDIA_PLATFORM_SUPPORT is not set
+# CONFIG_MEDIA_TEST_SUPPORT is not set
+# end of Media device types
+
+#
+# Media drivers
+#
+
+#
+# Drivers filtered as selected at 'Filter media drivers'
+#
+
+#
+# Media drivers
+#
+# CONFIG_MEDIA_USB_SUPPORT is not set
+# CONFIG_MEDIA_PCI_SUPPORT is not set
+# end of Media drivers
+
+#
+# Media ancillary drivers
+#
+# end of Media ancillary drivers
+
+#
+# Graphics support
+#
+CONFIG_APERTURE_HELPERS=y
+CONFIG_VIDEO_CMDLINE=y
+CONFIG_VIDEO_NOMODESET=y
+# CONFIG_AGP is not set
+CONFIG_INTEL_GTT=m
+CONFIG_VGA_SWITCHEROO=y
+CONFIG_DRM=m
+CONFIG_DRM_MIPI_DSI=y
+CONFIG_DRM_KMS_HELPER=m
+# CONFIG_DRM_DEBUG_DP_MST_TOPOLOGY_REFS is not set
+# CONFIG_DRM_DEBUG_MODESET_LOCK is not set
+CONFIG_DRM_FBDEV_EMULATION=y
+CONFIG_DRM_FBDEV_OVERALLOC=100
+# CONFIG_DRM_FBDEV_LEAK_PHYS_SMEM is not set
+CONFIG_DRM_LOAD_EDID_FIRMWARE=y
+CONFIG_DRM_DISPLAY_HELPER=m
+CONFIG_DRM_DISPLAY_DP_HELPER=y
+CONFIG_DRM_DISPLAY_HDCP_HELPER=y
+CONFIG_DRM_DISPLAY_HDMI_HELPER=y
+CONFIG_DRM_DP_AUX_CHARDEV=y
+# CONFIG_DRM_DP_CEC is not set
+CONFIG_DRM_TTM=m
+CONFIG_DRM_BUDDY=m
+CONFIG_DRM_VRAM_HELPER=m
+CONFIG_DRM_TTM_HELPER=m
+CONFIG_DRM_GEM_SHMEM_HELPER=m
+
+#
+# I2C encoder or helper chips
+#
+# CONFIG_DRM_I2C_CH7006 is not set
+# CONFIG_DRM_I2C_SIL164 is not set
+# CONFIG_DRM_I2C_NXP_TDA998X is not set
+# CONFIG_DRM_I2C_NXP_TDA9950 is not set
+# end of I2C encoder or helper chips
+
+#
+# ARM devices
+#
+# end of ARM devices
+
+# CONFIG_DRM_RADEON is not set
+# CONFIG_DRM_AMDGPU is not set
+# CONFIG_DRM_NOUVEAU is not set
+CONFIG_DRM_I915=m
+CONFIG_DRM_I915_FORCE_PROBE=""
+CONFIG_DRM_I915_CAPTURE_ERROR=y
+CONFIG_DRM_I915_COMPRESS_ERROR=y
+CONFIG_DRM_I915_USERPTR=y
+# CONFIG_DRM_I915_GVT_KVMGT is not set
+
+#
+# drm/i915 Debugging
+#
+# CONFIG_DRM_I915_WERROR is not set
+# CONFIG_DRM_I915_DEBUG is not set
+# CONFIG_DRM_I915_DEBUG_MMIO is not set
+# CONFIG_DRM_I915_SW_FENCE_DEBUG_OBJECTS is not set
+# CONFIG_DRM_I915_SW_FENCE_CHECK_DAG is not set
+# CONFIG_DRM_I915_DEBUG_GUC is not set
+# CONFIG_DRM_I915_SELFTEST is not set
+# CONFIG_DRM_I915_LOW_LEVEL_TRACEPOINTS is not set
+# CONFIG_DRM_I915_DEBUG_VBLANK_EVADE is not set
+# CONFIG_DRM_I915_DEBUG_RUNTIME_PM is not set
+# end of drm/i915 Debugging
+
+#
+# drm/i915 Profile Guided Optimisation
+#
+CONFIG_DRM_I915_REQUEST_TIMEOUT=20000
+CONFIG_DRM_I915_FENCE_TIMEOUT=10000
+CONFIG_DRM_I915_USERFAULT_AUTOSUSPEND=250
+CONFIG_DRM_I915_HEARTBEAT_INTERVAL=2500
+CONFIG_DRM_I915_PREEMPT_TIMEOUT=640
+CONFIG_DRM_I915_PREEMPT_TIMEOUT_COMPUTE=7500
+CONFIG_DRM_I915_MAX_REQUEST_BUSYWAIT=8000
+CONFIG_DRM_I915_STOP_TIMEOUT=100
+CONFIG_DRM_I915_TIMESLICE_DURATION=1
+# end of drm/i915 Profile Guided Optimisation
+
+# CONFIG_DRM_VGEM is not set
+# CONFIG_DRM_VKMS is not set
+# CONFIG_DRM_VMWGFX is not set
+# CONFIG_DRM_GMA500 is not set
+# CONFIG_DRM_UDL is not set
+CONFIG_DRM_AST=m
+# CONFIG_DRM_MGAG200 is not set
+CONFIG_DRM_QXL=m
+CONFIG_DRM_VIRTIO_GPU=m
+CONFIG_DRM_VIRTIO_GPU_KMS=y
+CONFIG_DRM_PANEL=y
+
+#
+# Display Panels
+#
+# CONFIG_DRM_PANEL_AUO_A030JTN01 is not set
+# CONFIG_DRM_PANEL_ORISETECH_OTA5601A is not set
+# CONFIG_DRM_PANEL_RASPBERRYPI_TOUCHSCREEN is not set
+# CONFIG_DRM_PANEL_WIDECHIPS_WS2401 is not set
+# end of Display Panels
+
+CONFIG_DRM_BRIDGE=y
+CONFIG_DRM_PANEL_BRIDGE=y
+
+#
+# Display Interface Bridges
+#
+# CONFIG_DRM_ANALOGIX_ANX78XX is not set
+# end of Display Interface Bridges
+
+# CONFIG_DRM_ETNAVIV is not set
+CONFIG_DRM_BOCHS=m
+CONFIG_DRM_CIRRUS_QEMU=m
+# CONFIG_DRM_GM12U320 is not set
+# CONFIG_DRM_PANEL_MIPI_DBI is not set
+# CONFIG_DRM_SIMPLEDRM is not set
+# CONFIG_TINYDRM_HX8357D is not set
+# CONFIG_TINYDRM_ILI9163 is not set
+# CONFIG_TINYDRM_ILI9225 is not set
+# CONFIG_TINYDRM_ILI9341 is not set
+# CONFIG_TINYDRM_ILI9486 is not set
+# CONFIG_TINYDRM_MI0283QT is not set
+# CONFIG_TINYDRM_REPAPER is not set
+# CONFIG_TINYDRM_ST7586 is not set
+# CONFIG_TINYDRM_ST7735R is not set
+# CONFIG_DRM_VBOXVIDEO is not set
+# CONFIG_DRM_GUD is not set
+# CONFIG_DRM_SSD130X is not set
+# CONFIG_DRM_HYPERV is not set
+# CONFIG_DRM_LEGACY is not set
+CONFIG_DRM_PANEL_ORIENTATION_QUIRKS=y
+
+#
+# Frame buffer Devices
+#
+CONFIG_FB_NOTIFY=y
+CONFIG_FB=y
+# CONFIG_FIRMWARE_EDID is not set
+CONFIG_FB_CFB_FILLRECT=y
+CONFIG_FB_CFB_COPYAREA=y
+CONFIG_FB_CFB_IMAGEBLIT=y
+CONFIG_FB_SYS_FILLRECT=m
+CONFIG_FB_SYS_COPYAREA=m
+CONFIG_FB_SYS_IMAGEBLIT=m
+# CONFIG_FB_FOREIGN_ENDIAN is not set
+CONFIG_FB_SYS_FOPS=m
+CONFIG_FB_DEFERRED_IO=y
+# CONFIG_FB_MODE_HELPERS is not set
+CONFIG_FB_TILEBLITTING=y
+
+#
+# Frame buffer hardware drivers
+#
+# CONFIG_FB_CIRRUS is not set
+# CONFIG_FB_PM2 is not set
+# CONFIG_FB_CYBER2000 is not set
+# CONFIG_FB_ARC is not set
+# CONFIG_FB_ASILIANT is not set
+# CONFIG_FB_IMSTT is not set
+# CONFIG_FB_VGA16 is not set
+# CONFIG_FB_UVESA is not set
+CONFIG_FB_VESA=y
+CONFIG_FB_EFI=y
+# CONFIG_FB_N411 is not set
+# CONFIG_FB_HGA is not set
+# CONFIG_FB_OPENCORES is not set
+# CONFIG_FB_S1D13XXX is not set
+# CONFIG_FB_NVIDIA is not set
+# CONFIG_FB_RIVA is not set
+# CONFIG_FB_I740 is not set
+# CONFIG_FB_LE80578 is not set
+# CONFIG_FB_MATROX is not set
+# CONFIG_FB_RADEON is not set
+# CONFIG_FB_ATY128 is not set
+# CONFIG_FB_ATY is not set
+# CONFIG_FB_S3 is not set
+# CONFIG_FB_SAVAGE is not set
+# CONFIG_FB_SIS is not set
+# CONFIG_FB_VIA is not set
+# CONFIG_FB_NEOMAGIC is not set
+# CONFIG_FB_KYRO is not set
+# CONFIG_FB_3DFX is not set
+# CONFIG_FB_VOODOO1 is not set
+# CONFIG_FB_VT8623 is not set
+# CONFIG_FB_TRIDENT is not set
+# CONFIG_FB_ARK is not set
+# CONFIG_FB_PM3 is not set
+# CONFIG_FB_CARMINE is not set
+# CONFIG_FB_SM501 is not set
+# CONFIG_FB_SMSCUFX is not set
+# CONFIG_FB_UDL is not set
+# CONFIG_FB_IBM_GXT4500 is not set
+# CONFIG_FB_VIRTUAL is not set
+# CONFIG_FB_METRONOME is not set
+# CONFIG_FB_MB862XX is not set
+CONFIG_FB_HYPERV=m
+# CONFIG_FB_SIMPLE is not set
+# CONFIG_FB_SSD1307 is not set
+# CONFIG_FB_SM712 is not set
+# end of Frame buffer Devices
+
+#
+# Backlight & LCD device support
+#
+CONFIG_LCD_CLASS_DEVICE=m
+# CONFIG_LCD_L4F00242T03 is not set
+# CONFIG_LCD_LMS283GF05 is not set
+# CONFIG_LCD_LTV350QV is not set
+# CONFIG_LCD_ILI922X is not set
+# CONFIG_LCD_ILI9320 is not set
+# CONFIG_LCD_TDO24M is not set
+# CONFIG_LCD_VGG2432A4 is not set
+CONFIG_LCD_PLATFORM=m
+# CONFIG_LCD_AMS369FG06 is not set
+# CONFIG_LCD_LMS501KF03 is not set
+# CONFIG_LCD_HX8357 is not set
+# CONFIG_LCD_OTM3225A is not set
+CONFIG_BACKLIGHT_CLASS_DEVICE=y
+# CONFIG_BACKLIGHT_KTD253 is not set
+# CONFIG_BACKLIGHT_KTZ8866 is not set
+# CONFIG_BACKLIGHT_PWM is not set
+CONFIG_BACKLIGHT_APPLE=m
+# CONFIG_BACKLIGHT_QCOM_WLED is not set
+# CONFIG_BACKLIGHT_SAHARA is not set
+# CONFIG_BACKLIGHT_ADP8860 is not set
+# CONFIG_BACKLIGHT_ADP8870 is not set
+# CONFIG_BACKLIGHT_LM3630A is not set
+# CONFIG_BACKLIGHT_LM3639 is not set
+CONFIG_BACKLIGHT_LP855X=m
+# CONFIG_BACKLIGHT_GPIO is not set
+# CONFIG_BACKLIGHT_LV5207LP is not set
+# CONFIG_BACKLIGHT_BD6107 is not set
+# CONFIG_BACKLIGHT_ARCXCNN is not set
+# end of Backlight & LCD device support
+
+CONFIG_HDMI=y
+
+#
+# Console display driver support
+#
+CONFIG_VGA_CONSOLE=y
+CONFIG_DUMMY_CONSOLE=y
+CONFIG_DUMMY_CONSOLE_COLUMNS=80
+CONFIG_DUMMY_CONSOLE_ROWS=25
+CONFIG_FRAMEBUFFER_CONSOLE=y
+# CONFIG_FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION is not set
+CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
+CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
+# CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER is not set
+# end of Console display driver support
+
+CONFIG_LOGO=y
+# CONFIG_LOGO_LINUX_MONO is not set
+# CONFIG_LOGO_LINUX_VGA16 is not set
+CONFIG_LOGO_LINUX_CLUT224=y
+# end of Graphics support
+
+# CONFIG_DRM_ACCEL is not set
+# CONFIG_SOUND is not set
+CONFIG_HID_SUPPORT=y
+CONFIG_HID=y
+CONFIG_HID_BATTERY_STRENGTH=y
+CONFIG_HIDRAW=y
+CONFIG_UHID=m
+CONFIG_HID_GENERIC=y
+
+#
+# Special HID drivers
+#
+CONFIG_HID_A4TECH=m
+# CONFIG_HID_ACCUTOUCH is not set
+CONFIG_HID_ACRUX=m
+# CONFIG_HID_ACRUX_FF is not set
+CONFIG_HID_APPLE=m
+# CONFIG_HID_APPLEIR is not set
+CONFIG_HID_ASUS=m
+CONFIG_HID_AUREAL=m
+CONFIG_HID_BELKIN=m
+# CONFIG_HID_BETOP_FF is not set
+# CONFIG_HID_BIGBEN_FF is not set
+CONFIG_HID_CHERRY=m
+# CONFIG_HID_CHICONY is not set
+# CONFIG_HID_CORSAIR is not set
+# CONFIG_HID_COUGAR is not set
+# CONFIG_HID_MACALLY is not set
+CONFIG_HID_CMEDIA=m
+# CONFIG_HID_CP2112 is not set
+# CONFIG_HID_CREATIVE_SB0540 is not set
+CONFIG_HID_CYPRESS=m
+CONFIG_HID_DRAGONRISE=m
+# CONFIG_DRAGONRISE_FF is not set
+# CONFIG_HID_EMS_FF is not set
+# CONFIG_HID_ELAN is not set
+CONFIG_HID_ELECOM=m
+# CONFIG_HID_ELO is not set
+# CONFIG_HID_EVISION is not set
+CONFIG_HID_EZKEY=m
+# CONFIG_HID_FT260 is not set
+CONFIG_HID_GEMBIRD=m
+CONFIG_HID_GFRM=m
+# CONFIG_HID_GLORIOUS is not set
+# CONFIG_HID_HOLTEK is not set
+# CONFIG_HID_VIVALDI is not set
+# CONFIG_HID_GT683R is not set
+CONFIG_HID_KEYTOUCH=m
+CONFIG_HID_KYE=m
+# CONFIG_HID_UCLOGIC is not set
+CONFIG_HID_WALTOP=m
+# CONFIG_HID_VIEWSONIC is not set
+# CONFIG_HID_VRC2 is not set
+# CONFIG_HID_XIAOMI is not set
+CONFIG_HID_GYRATION=m
+CONFIG_HID_ICADE=m
+CONFIG_HID_ITE=m
+CONFIG_HID_JABRA=m
+CONFIG_HID_TWINHAN=m
+CONFIG_HID_KENSINGTON=m
+CONFIG_HID_LCPOWER=m
+CONFIG_HID_LED=m
+CONFIG_HID_LENOVO=m
+# CONFIG_HID_LETSKETCH is not set
+CONFIG_HID_LOGITECH=m
+CONFIG_HID_LOGITECH_DJ=m
+CONFIG_HID_LOGITECH_HIDPP=m
+# CONFIG_LOGITECH_FF is not set
+# CONFIG_LOGIRUMBLEPAD2_FF is not set
+# CONFIG_LOGIG940_FF is not set
+# CONFIG_LOGIWHEELS_FF is not set
+CONFIG_HID_MAGICMOUSE=y
+# CONFIG_HID_MALTRON is not set
+# CONFIG_HID_MAYFLASH is not set
+# CONFIG_HID_MEGAWORLD_FF is not set
+# CONFIG_HID_REDRAGON is not set
+CONFIG_HID_MICROSOFT=m
+CONFIG_HID_MONTEREY=m
+CONFIG_HID_MULTITOUCH=m
+# CONFIG_HID_NINTENDO is not set
+CONFIG_HID_NTI=m
+# CONFIG_HID_NTRIG is not set
+CONFIG_HID_ORTEK=m
+CONFIG_HID_PANTHERLORD=m
+# CONFIG_PANTHERLORD_FF is not set
+# CONFIG_HID_PENMOUNT is not set
+CONFIG_HID_PETALYNX=m
+CONFIG_HID_PICOLCD=m
+CONFIG_HID_PICOLCD_FB=y
+CONFIG_HID_PICOLCD_BACKLIGHT=y
+CONFIG_HID_PICOLCD_LCD=y
+CONFIG_HID_PICOLCD_LEDS=y
+CONFIG_HID_PICOLCD_CIR=y
+CONFIG_HID_PLANTRONICS=m
+# CONFIG_HID_PXRC is not set
+# CONFIG_HID_RAZER is not set
+CONFIG_HID_PRIMAX=m
+# CONFIG_HID_RETRODE is not set
+# CONFIG_HID_ROCCAT is not set
+CONFIG_HID_SAITEK=m
+CONFIG_HID_SAMSUNG=m
+# CONFIG_HID_SEMITEK is not set
+# CONFIG_HID_SIGMAMICRO is not set
+# CONFIG_HID_SONY is not set
+CONFIG_HID_SPEEDLINK=m
+# CONFIG_HID_STEAM is not set
+CONFIG_HID_STEELSERIES=m
+CONFIG_HID_SUNPLUS=m
+CONFIG_HID_RMI=m
+CONFIG_HID_GREENASIA=m
+# CONFIG_GREENASIA_FF is not set
+CONFIG_HID_HYPERV_MOUSE=m
+CONFIG_HID_SMARTJOYPLUS=m
+# CONFIG_SMARTJOYPLUS_FF is not set
+CONFIG_HID_TIVO=m
+CONFIG_HID_TOPSEED=m
+# CONFIG_HID_TOPRE is not set
+CONFIG_HID_THINGM=m
+CONFIG_HID_THRUSTMASTER=m
+# CONFIG_THRUSTMASTER_FF is not set
+# CONFIG_HID_UDRAW_PS3 is not set
+# CONFIG_HID_U2FZERO is not set
+# CONFIG_HID_WACOM is not set
+CONFIG_HID_WIIMOTE=m
+CONFIG_HID_XINMO=m
+CONFIG_HID_ZEROPLUS=m
+# CONFIG_ZEROPLUS_FF is not set
+CONFIG_HID_ZYDACRON=m
+CONFIG_HID_SENSOR_HUB=y
+CONFIG_HID_SENSOR_CUSTOM_SENSOR=m
+CONFIG_HID_ALPS=m
+# CONFIG_HID_MCP2221 is not set
+# end of Special HID drivers
+
+#
+# HID-BPF support
+#
+# CONFIG_HID_BPF is not set
+# end of HID-BPF support
+
+#
+# USB HID support
+#
+CONFIG_USB_HID=y
+# CONFIG_HID_PID is not set
+# CONFIG_USB_HIDDEV is not set
+# end of USB HID support
+
+CONFIG_I2C_HID=m
+# CONFIG_I2C_HID_ACPI is not set
+# CONFIG_I2C_HID_OF is not set
+
+#
+# Intel ISH HID support
+#
+# CONFIG_INTEL_ISH_HID is not set
+# end of Intel ISH HID support
+
+#
+# AMD SFH HID Support
+#
+# CONFIG_AMD_SFH_HID is not set
+# end of AMD SFH HID Support
+
+CONFIG_USB_OHCI_LITTLE_ENDIAN=y
+CONFIG_USB_SUPPORT=y
+CONFIG_USB_COMMON=y
+# CONFIG_USB_LED_TRIG is not set
+# CONFIG_USB_ULPI_BUS is not set
+# CONFIG_USB_CONN_GPIO is not set
+CONFIG_USB_ARCH_HAS_HCD=y
+CONFIG_USB=y
+CONFIG_USB_PCI=y
+CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+
+#
+# Miscellaneous USB options
+#
+CONFIG_USB_DEFAULT_PERSIST=y
+# CONFIG_USB_FEW_INIT_RETRIES is not set
+# CONFIG_USB_DYNAMIC_MINORS is not set
+# CONFIG_USB_OTG is not set
+# CONFIG_USB_OTG_PRODUCTLIST is not set
+# CONFIG_USB_OTG_DISABLE_EXTERNAL_HUB is not set
+CONFIG_USB_LEDS_TRIGGER_USBPORT=y
+CONFIG_USB_AUTOSUSPEND_DELAY=2
+CONFIG_USB_MON=y
+
+#
+# USB Host Controller Drivers
+#
+# CONFIG_USB_C67X00_HCD is not set
+CONFIG_USB_XHCI_HCD=y
+# CONFIG_USB_XHCI_DBGCAP is not set
+CONFIG_USB_XHCI_PCI=y
+# CONFIG_USB_XHCI_PCI_RENESAS is not set
+# CONFIG_USB_XHCI_PLATFORM is not set
+CONFIG_USB_EHCI_HCD=y
+CONFIG_USB_EHCI_ROOT_HUB_TT=y
+CONFIG_USB_EHCI_TT_NEWSCHED=y
+CONFIG_USB_EHCI_PCI=y
+# CONFIG_USB_EHCI_FSL is not set
+# CONFIG_USB_EHCI_HCD_PLATFORM is not set
+# CONFIG_USB_OXU210HP_HCD is not set
+# CONFIG_USB_ISP116X_HCD is not set
+# CONFIG_USB_MAX3421_HCD is not set
+CONFIG_USB_OHCI_HCD=y
+CONFIG_USB_OHCI_HCD_PCI=y
+# CONFIG_USB_OHCI_HCD_PLATFORM is not set
+CONFIG_USB_UHCI_HCD=y
+# CONFIG_USB_SL811_HCD is not set
+# CONFIG_USB_R8A66597_HCD is not set
+# CONFIG_USB_HCD_TEST_MODE is not set
+
+#
+# USB Device Class drivers
+#
+# CONFIG_USB_ACM is not set
+# CONFIG_USB_PRINTER is not set
+# CONFIG_USB_WDM is not set
+# CONFIG_USB_TMC is not set
+
+#
+# NOTE: USB_STORAGE depends on SCSI but BLK_DEV_SD may
+#
+
+#
+# also be needed; see USB_STORAGE Help for more info
+#
+CONFIG_USB_STORAGE=m
+# CONFIG_USB_STORAGE_DEBUG is not set
+# CONFIG_USB_STORAGE_REALTEK is not set
+# CONFIG_USB_STORAGE_DATAFAB is not set
+# CONFIG_USB_STORAGE_FREECOM is not set
+# CONFIG_USB_STORAGE_ISD200 is not set
+# CONFIG_USB_STORAGE_USBAT is not set
+# CONFIG_USB_STORAGE_SDDR09 is not set
+# CONFIG_USB_STORAGE_SDDR55 is not set
+# CONFIG_USB_STORAGE_JUMPSHOT is not set
+# CONFIG_USB_STORAGE_ALAUDA is not set
+# CONFIG_USB_STORAGE_ONETOUCH is not set
+# CONFIG_USB_STORAGE_KARMA is not set
+# CONFIG_USB_STORAGE_CYPRESS_ATACB is not set
+# CONFIG_USB_STORAGE_ENE_UB6250 is not set
+# CONFIG_USB_UAS is not set
+
+#
+# USB Imaging devices
+#
+# CONFIG_USB_MDC800 is not set
+# CONFIG_USB_MICROTEK is not set
+# CONFIG_USBIP_CORE is not set
+
+#
+# USB dual-mode controller drivers
+#
+# CONFIG_USB_CDNS_SUPPORT is not set
+# CONFIG_USB_MUSB_HDRC is not set
+# CONFIG_USB_DWC3 is not set
+# CONFIG_USB_DWC2 is not set
+# CONFIG_USB_CHIPIDEA is not set
+# CONFIG_USB_ISP1760 is not set
+
+#
+# USB port drivers
+#
+# CONFIG_USB_SERIAL is not set
+
+#
+# USB Miscellaneous drivers
+#
+# CONFIG_USB_USS720 is not set
+# CONFIG_USB_EMI62 is not set
+# CONFIG_USB_EMI26 is not set
+# CONFIG_USB_ADUTUX is not set
+# CONFIG_USB_SEVSEG is not set
+# CONFIG_USB_LEGOTOWER is not set
+# CONFIG_USB_LCD is not set
+# CONFIG_USB_CYPRESS_CY7C63 is not set
+# CONFIG_USB_CYTHERM is not set
+# CONFIG_USB_IDMOUSE is not set
+# CONFIG_USB_APPLEDISPLAY is not set
+# CONFIG_APPLE_MFI_FASTCHARGE is not set
+# CONFIG_USB_SISUSBVGA is not set
+# CONFIG_USB_LD is not set
+# CONFIG_USB_TRANCEVIBRATOR is not set
+# CONFIG_USB_IOWARRIOR is not set
+# CONFIG_USB_TEST is not set
+# CONFIG_USB_EHSET_TEST_FIXTURE is not set
+# CONFIG_USB_ISIGHTFW is not set
+# CONFIG_USB_YUREX is not set
+# CONFIG_USB_EZUSB_FX2 is not set
+# CONFIG_USB_HUB_USB251XB is not set
+# CONFIG_USB_HSIC_USB3503 is not set
+# CONFIG_USB_HSIC_USB4604 is not set
+# CONFIG_USB_LINK_LAYER_TEST is not set
+# CONFIG_USB_CHAOSKEY is not set
+
+#
+# USB Physical Layer drivers
+#
+# CONFIG_NOP_USB_XCEIV is not set
+# CONFIG_USB_GPIO_VBUS is not set
+# CONFIG_USB_ISP1301 is not set
+# end of USB Physical Layer drivers
+
+# CONFIG_USB_GADGET is not set
+CONFIG_TYPEC=y
+# CONFIG_TYPEC_TCPM is not set
+CONFIG_TYPEC_UCSI=y
+# CONFIG_UCSI_CCG is not set
+CONFIG_UCSI_ACPI=y
+# CONFIG_UCSI_STM32G0 is not set
+# CONFIG_TYPEC_TPS6598X is not set
+# CONFIG_TYPEC_RT1719 is not set
+# CONFIG_TYPEC_STUSB160X is not set
+# CONFIG_TYPEC_WUSB3801 is not set
+
+#
+# USB Type-C Multiplexer/DeMultiplexer Switch support
+#
+# CONFIG_TYPEC_MUX_FSA4480 is not set
+# CONFIG_TYPEC_MUX_GPIO_SBU is not set
+# CONFIG_TYPEC_MUX_PI3USB30532 is not set
+# end of USB Type-C Multiplexer/DeMultiplexer Switch support
+
+#
+# USB Type-C Alternate Mode drivers
+#
+# CONFIG_TYPEC_DP_ALTMODE is not set
+# end of USB Type-C Alternate Mode drivers
+
+# CONFIG_USB_ROLE_SWITCH is not set
+CONFIG_MMC=m
+CONFIG_MMC_BLOCK=m
+CONFIG_MMC_BLOCK_MINORS=8
+CONFIG_SDIO_UART=m
+# CONFIG_MMC_TEST is not set
+
+#
+# MMC/SD/SDIO Host Controller Drivers
+#
+# CONFIG_MMC_DEBUG is not set
+CONFIG_MMC_SDHCI=m
+CONFIG_MMC_SDHCI_IO_ACCESSORS=y
+CONFIG_MMC_SDHCI_PCI=m
+CONFIG_MMC_RICOH_MMC=y
+CONFIG_MMC_SDHCI_ACPI=m
+CONFIG_MMC_SDHCI_PLTFM=m
+# CONFIG_MMC_SDHCI_F_SDH30 is not set
+# CONFIG_MMC_WBSD is not set
+# CONFIG_MMC_TIFM_SD is not set
+# CONFIG_MMC_SPI is not set
+# CONFIG_MMC_CB710 is not set
+# CONFIG_MMC_VIA_SDMMC is not set
+# CONFIG_MMC_VUB300 is not set
+# CONFIG_MMC_USHC is not set
+# CONFIG_MMC_USDHI6ROL0 is not set
+CONFIG_MMC_CQHCI=m
+# CONFIG_MMC_HSQ is not set
+# CONFIG_MMC_TOSHIBA_PCI is not set
+# CONFIG_MMC_MTK is not set
+# CONFIG_MMC_SDHCI_XENON is not set
+# CONFIG_SCSI_UFSHCD is not set
+# CONFIG_MEMSTICK is not set
+CONFIG_NEW_LEDS=y
+CONFIG_LEDS_CLASS=y
+# CONFIG_LEDS_CLASS_FLASH is not set
+# CONFIG_LEDS_CLASS_MULTICOLOR is not set
+# CONFIG_LEDS_BRIGHTNESS_HW_CHANGED is not set
+
+#
+# LED drivers
+#
+# CONFIG_LEDS_APU is not set
+CONFIG_LEDS_LM3530=m
+# CONFIG_LEDS_LM3532 is not set
+# CONFIG_LEDS_LM3642 is not set
+# CONFIG_LEDS_PCA9532 is not set
+# CONFIG_LEDS_GPIO is not set
+CONFIG_LEDS_LP3944=m
+# CONFIG_LEDS_LP3952 is not set
+# CONFIG_LEDS_LP50XX is not set
+# CONFIG_LEDS_PCA955X is not set
+# CONFIG_LEDS_PCA963X is not set
+# CONFIG_LEDS_DAC124S085 is not set
+# CONFIG_LEDS_PWM is not set
+# CONFIG_LEDS_BD2606MVV is not set
+# CONFIG_LEDS_BD2802 is not set
+CONFIG_LEDS_INTEL_SS4200=m
+CONFIG_LEDS_LT3593=m
+# CONFIG_LEDS_TCA6507 is not set
+# CONFIG_LEDS_TLC591XX is not set
+# CONFIG_LEDS_LM355x is not set
+# CONFIG_LEDS_IS31FL319X is not set
+
+#
+# LED driver for blink(1) USB RGB LED is under Special HID drivers (HID_THINGM)
+#
+CONFIG_LEDS_BLINKM=m
+CONFIG_LEDS_MLXCPLD=m
+# CONFIG_LEDS_MLXREG is not set
+# CONFIG_LEDS_USER is not set
+# CONFIG_LEDS_NIC78BX is not set
+# CONFIG_LEDS_TI_LMU_COMMON is not set
+
+#
+# Flash and Torch LED drivers
+#
+
+#
+# RGB LED drivers
+#
+
+#
+# LED Triggers
+#
+CONFIG_LEDS_TRIGGERS=y
+CONFIG_LEDS_TRIGGER_TIMER=m
+CONFIG_LEDS_TRIGGER_ONESHOT=m
+# CONFIG_LEDS_TRIGGER_DISK is not set
+CONFIG_LEDS_TRIGGER_HEARTBEAT=m
+CONFIG_LEDS_TRIGGER_BACKLIGHT=m
+# CONFIG_LEDS_TRIGGER_CPU is not set
+# CONFIG_LEDS_TRIGGER_ACTIVITY is not set
+CONFIG_LEDS_TRIGGER_DEFAULT_ON=m
+
+#
+# iptables trigger is under Netfilter config (LED target)
+#
+CONFIG_LEDS_TRIGGER_TRANSIENT=m
+CONFIG_LEDS_TRIGGER_CAMERA=m
+# CONFIG_LEDS_TRIGGER_PANIC is not set
+# CONFIG_LEDS_TRIGGER_NETDEV is not set
+# CONFIG_LEDS_TRIGGER_PATTERN is not set
+# CONFIG_LEDS_TRIGGER_AUDIO is not set
+# CONFIG_LEDS_TRIGGER_TTY is not set
+
+#
+# Simple LED drivers
+#
+# CONFIG_ACCESSIBILITY is not set
+# CONFIG_INFINIBAND is not set
+CONFIG_EDAC_ATOMIC_SCRUB=y
+CONFIG_EDAC_SUPPORT=y
+CONFIG_EDAC=y
+CONFIG_EDAC_LEGACY_SYSFS=y
+# CONFIG_EDAC_DEBUG is not set
+CONFIG_EDAC_GHES=y
+CONFIG_EDAC_E752X=m
+CONFIG_EDAC_I82975X=m
+CONFIG_EDAC_I3000=m
+CONFIG_EDAC_I3200=m
+CONFIG_EDAC_IE31200=m
+CONFIG_EDAC_X38=m
+CONFIG_EDAC_I5400=m
+CONFIG_EDAC_I7CORE=m
+CONFIG_EDAC_I5100=m
+CONFIG_EDAC_I7300=m
+CONFIG_EDAC_SBRIDGE=m
+CONFIG_EDAC_SKX=m
+# CONFIG_EDAC_I10NM is not set
+CONFIG_EDAC_PND2=m
+# CONFIG_EDAC_IGEN6 is not set
+CONFIG_RTC_LIB=y
+CONFIG_RTC_MC146818_LIB=y
+CONFIG_RTC_CLASS=y
+CONFIG_RTC_HCTOSYS=y
+CONFIG_RTC_HCTOSYS_DEVICE="rtc0"
+# CONFIG_RTC_SYSTOHC is not set
+# CONFIG_RTC_DEBUG is not set
+CONFIG_RTC_NVMEM=y
+
+#
+# RTC interfaces
+#
+CONFIG_RTC_INTF_SYSFS=y
+CONFIG_RTC_INTF_PROC=y
+CONFIG_RTC_INTF_DEV=y
+# CONFIG_RTC_INTF_DEV_UIE_EMUL is not set
+# CONFIG_RTC_DRV_TEST is not set
+
+#
+# I2C RTC drivers
+#
+# CONFIG_RTC_DRV_ABB5ZES3 is not set
+# CONFIG_RTC_DRV_ABEOZ9 is not set
+# CONFIG_RTC_DRV_ABX80X is not set
+CONFIG_RTC_DRV_DS1307=m
+# CONFIG_RTC_DRV_DS1307_CENTURY is not set
+CONFIG_RTC_DRV_DS1374=m
+# CONFIG_RTC_DRV_DS1374_WDT is not set
+CONFIG_RTC_DRV_DS1672=m
+CONFIG_RTC_DRV_MAX6900=m
+CONFIG_RTC_DRV_RS5C372=m
+CONFIG_RTC_DRV_ISL1208=m
+CONFIG_RTC_DRV_ISL12022=m
+CONFIG_RTC_DRV_X1205=m
+CONFIG_RTC_DRV_PCF8523=m
+# CONFIG_RTC_DRV_PCF85063 is not set
+# CONFIG_RTC_DRV_PCF85363 is not set
+CONFIG_RTC_DRV_PCF8563=m
+CONFIG_RTC_DRV_PCF8583=m
+CONFIG_RTC_DRV_M41T80=m
+CONFIG_RTC_DRV_M41T80_WDT=y
+CONFIG_RTC_DRV_BQ32K=m
+# CONFIG_RTC_DRV_S35390A is not set
+CONFIG_RTC_DRV_FM3130=m
+# CONFIG_RTC_DRV_RX8010 is not set
+CONFIG_RTC_DRV_RX8581=m
+CONFIG_RTC_DRV_RX8025=m
+CONFIG_RTC_DRV_EM3027=m
+# CONFIG_RTC_DRV_RV3028 is not set
+# CONFIG_RTC_DRV_RV3032 is not set
+# CONFIG_RTC_DRV_RV8803 is not set
+# CONFIG_RTC_DRV_SD3078 is not set
+
+#
+# SPI RTC drivers
+#
+# CONFIG_RTC_DRV_M41T93 is not set
+# CONFIG_RTC_DRV_M41T94 is not set
+# CONFIG_RTC_DRV_DS1302 is not set
+# CONFIG_RTC_DRV_DS1305 is not set
+# CONFIG_RTC_DRV_DS1343 is not set
+# CONFIG_RTC_DRV_DS1347 is not set
+# CONFIG_RTC_DRV_DS1390 is not set
+# CONFIG_RTC_DRV_MAX6916 is not set
+# CONFIG_RTC_DRV_R9701 is not set
+CONFIG_RTC_DRV_RX4581=m
+# CONFIG_RTC_DRV_RS5C348 is not set
+# CONFIG_RTC_DRV_MAX6902 is not set
+# CONFIG_RTC_DRV_PCF2123 is not set
+# CONFIG_RTC_DRV_MCP795 is not set
+CONFIG_RTC_I2C_AND_SPI=y
+
+#
+# SPI and I2C RTC drivers
+#
+CONFIG_RTC_DRV_DS3232=m
+CONFIG_RTC_DRV_DS3232_HWMON=y
+# CONFIG_RTC_DRV_PCF2127 is not set
+CONFIG_RTC_DRV_RV3029C2=m
+# CONFIG_RTC_DRV_RV3029_HWMON is not set
+# CONFIG_RTC_DRV_RX6110 is not set
+
+#
+# Platform RTC drivers
+#
+CONFIG_RTC_DRV_CMOS=y
+CONFIG_RTC_DRV_DS1286=m
+CONFIG_RTC_DRV_DS1511=m
+CONFIG_RTC_DRV_DS1553=m
+# CONFIG_RTC_DRV_DS1685_FAMILY is not set
+CONFIG_RTC_DRV_DS1742=m
+CONFIG_RTC_DRV_DS2404=m
+CONFIG_RTC_DRV_STK17TA8=m
+# CONFIG_RTC_DRV_M48T86 is not set
+CONFIG_RTC_DRV_M48T35=m
+CONFIG_RTC_DRV_M48T59=m
+CONFIG_RTC_DRV_MSM6242=m
+CONFIG_RTC_DRV_BQ4802=m
+CONFIG_RTC_DRV_RP5C01=m
+
+#
+# on-CPU RTC drivers
+#
+# CONFIG_RTC_DRV_FTRTC010 is not set
+
+#
+# HID Sensor RTC drivers
+#
+# CONFIG_RTC_DRV_GOLDFISH is not set
+CONFIG_DMADEVICES=y
+# CONFIG_DMADEVICES_DEBUG is not set
+
+#
+# DMA Devices
+#
+CONFIG_DMA_ENGINE=y
+CONFIG_DMA_VIRTUAL_CHANNELS=y
+CONFIG_DMA_ACPI=y
+# CONFIG_ALTERA_MSGDMA is not set
+CONFIG_INTEL_IDMA64=m
+# CONFIG_INTEL_IDXD is not set
+# CONFIG_INTEL_IDXD_COMPAT is not set
+CONFIG_INTEL_IOATDMA=m
+# CONFIG_PLX_DMA is not set
+# CONFIG_XILINX_XDMA is not set
+# CONFIG_AMD_PTDMA is not set
+# CONFIG_QCOM_HIDMA_MGMT is not set
+# CONFIG_QCOM_HIDMA is not set
+CONFIG_DW_DMAC_CORE=y
+CONFIG_DW_DMAC=m
+CONFIG_DW_DMAC_PCI=y
+# CONFIG_DW_EDMA is not set
+CONFIG_HSU_DMA=y
+# CONFIG_SF_PDMA is not set
+# CONFIG_INTEL_LDMA is not set
+
+#
+# DMA Clients
+#
+CONFIG_ASYNC_TX_DMA=y
+CONFIG_DMATEST=m
+CONFIG_DMA_ENGINE_RAID=y
+
+#
+# DMABUF options
+#
+CONFIG_SYNC_FILE=y
+# CONFIG_SW_SYNC is not set
+# CONFIG_UDMABUF is not set
+# CONFIG_DMABUF_MOVE_NOTIFY is not set
+# CONFIG_DMABUF_DEBUG is not set
+# CONFIG_DMABUF_SELFTESTS is not set
+# CONFIG_DMABUF_HEAPS is not set
+# CONFIG_DMABUF_SYSFS_STATS is not set
+# end of DMABUF options
+
+CONFIG_DCA=m
+# CONFIG_AUXDISPLAY is not set
+# CONFIG_PANEL is not set
+# CONFIG_UIO is not set
+CONFIG_VFIO=m
+CONFIG_VFIO_CONTAINER=y
+CONFIG_VFIO_IOMMU_TYPE1=m
+CONFIG_VFIO_NOIOMMU=y
+CONFIG_VFIO_VIRQFD=y
+CONFIG_VFIO_PCI_CORE=m
+CONFIG_VFIO_PCI_MMAP=y
+CONFIG_VFIO_PCI_INTX=y
+CONFIG_VFIO_PCI=m
+# CONFIG_VFIO_PCI_VGA is not set
+# CONFIG_VFIO_PCI_IGD is not set
+CONFIG_IRQ_BYPASS_MANAGER=m
+# CONFIG_VIRT_DRIVERS is not set
+CONFIG_VIRTIO_ANCHOR=y
+CONFIG_VIRTIO=y
+CONFIG_VIRTIO_PCI_LIB=y
+CONFIG_VIRTIO_PCI_LIB_LEGACY=y
+CONFIG_VIRTIO_MENU=y
+CONFIG_VIRTIO_PCI=y
+CONFIG_VIRTIO_PCI_LEGACY=y
+# CONFIG_VIRTIO_PMEM is not set
+CONFIG_VIRTIO_BALLOON=m
+# CONFIG_VIRTIO_MEM is not set
+CONFIG_VIRTIO_INPUT=m
+# CONFIG_VIRTIO_MMIO is not set
+CONFIG_VIRTIO_DMA_SHARED_BUFFER=m
+# CONFIG_VDPA is not set
+CONFIG_VHOST_IOTLB=m
+CONFIG_VHOST_TASK=y
+CONFIG_VHOST=m
+CONFIG_VHOST_MENU=y
+CONFIG_VHOST_NET=m
+CONFIG_VHOST_VSOCK=m
+# CONFIG_VHOST_CROSS_ENDIAN_LEGACY is not set
+
+#
+# Microsoft Hyper-V guest support
+#
+CONFIG_HYPERV=y
+# CONFIG_HYPERV_VTL_MODE is not set
+CONFIG_HYPERV_TIMER=y
+CONFIG_HYPERV_UTILS=m
+CONFIG_HYPERV_BALLOON=m
+# end of Microsoft Hyper-V guest support
+
+# CONFIG_GREYBUS is not set
+# CONFIG_COMEDI is not set
+# CONFIG_STAGING is not set
+# CONFIG_CHROME_PLATFORMS is not set
+# CONFIG_MELLANOX_PLATFORM is not set
+CONFIG_SURFACE_PLATFORMS=y
+# CONFIG_SURFACE3_WMI is not set
+# CONFIG_SURFACE_3_POWER_OPREGION is not set
+# CONFIG_SURFACE_GPE is not set
+# CONFIG_SURFACE_HOTPLUG is not set
+# CONFIG_SURFACE_PRO3_BUTTON is not set
+CONFIG_X86_PLATFORM_DEVICES=y
+CONFIG_ACPI_WMI=m
+CONFIG_WMI_BMOF=m
+# CONFIG_HUAWEI_WMI is not set
+# CONFIG_UV_SYSFS is not set
+CONFIG_MXM_WMI=m
+# CONFIG_NVIDIA_WMI_EC_BACKLIGHT is not set
+# CONFIG_XIAOMI_WMI is not set
+# CONFIG_GIGABYTE_WMI is not set
+# CONFIG_YOGABOOK_WMI is not set
+CONFIG_ACERHDF=m
+# CONFIG_ACER_WIRELESS is not set
+CONFIG_ACER_WMI=m
+# CONFIG_ADV_SWBUTTON is not set
+CONFIG_APPLE_GMUX=m
+CONFIG_ASUS_LAPTOP=m
+# CONFIG_ASUS_WIRELESS is not set
+# CONFIG_ASUS_WMI is not set
+# CONFIG_ASUS_TF103C_DOCK is not set
+# CONFIG_MERAKI_MX100 is not set
+CONFIG_EEEPC_LAPTOP=m
+# CONFIG_X86_PLATFORM_DRIVERS_DELL is not set
+CONFIG_AMILO_RFKILL=m
+CONFIG_FUJITSU_LAPTOP=m
+CONFIG_FUJITSU_TABLET=m
+# CONFIG_GPD_POCKET_FAN is not set
+# CONFIG_X86_PLATFORM_DRIVERS_HP is not set
+# CONFIG_WIRELESS_HOTKEY is not set
+# CONFIG_IBM_RTL is not set
+CONFIG_IDEAPAD_LAPTOP=m
+# CONFIG_LENOVO_YMC is not set
+CONFIG_SENSORS_HDAPS=m
+# CONFIG_THINKPAD_ACPI is not set
+# CONFIG_THINKPAD_LMI is not set
+# CONFIG_INTEL_ATOMISP2_PM is not set
+# CONFIG_INTEL_IFS is not set
+# CONFIG_INTEL_SAR_INT1092 is not set
+CONFIG_INTEL_PMC_CORE=m
+
+#
+# Intel Speed Select Technology interface support
+#
+# CONFIG_INTEL_SPEED_SELECT_INTERFACE is not set
+# end of Intel Speed Select Technology interface support
+
+CONFIG_INTEL_WMI=y
+# CONFIG_INTEL_WMI_SBL_FW_UPDATE is not set
+CONFIG_INTEL_WMI_THUNDERBOLT=m
+
+#
+# Intel Uncore Frequency Control
+#
+# CONFIG_INTEL_UNCORE_FREQ_CONTROL is not set
+# end of Intel Uncore Frequency Control
+
+CONFIG_INTEL_HID_EVENT=m
+CONFIG_INTEL_VBTN=m
+# CONFIG_INTEL_INT0002_VGPIO is not set
+CONFIG_INTEL_OAKTRAIL=m
+# CONFIG_INTEL_PUNIT_IPC is not set
+CONFIG_INTEL_RST=m
+# CONFIG_INTEL_SMARTCONNECT is not set
+CONFIG_INTEL_TURBO_MAX_3=y
+# CONFIG_INTEL_VSEC is not set
+# CONFIG_MSI_EC is not set
+CONFIG_MSI_LAPTOP=m
+CONFIG_MSI_WMI=m
+# CONFIG_PCENGINES_APU2 is not set
+# CONFIG_BARCO_P50_GPIO is not set
+CONFIG_SAMSUNG_LAPTOP=m
+CONFIG_SAMSUNG_Q10=m
+CONFIG_TOSHIBA_BT_RFKILL=m
+# CONFIG_TOSHIBA_HAPS is not set
+# CONFIG_TOSHIBA_WMI is not set
+CONFIG_ACPI_CMPC=m
+CONFIG_COMPAL_LAPTOP=m
+# CONFIG_LG_LAPTOP is not set
+CONFIG_PANASONIC_LAPTOP=m
+CONFIG_SONY_LAPTOP=m
+CONFIG_SONYPI_COMPAT=y
+# CONFIG_SYSTEM76_ACPI is not set
+CONFIG_TOPSTAR_LAPTOP=m
+# CONFIG_SERIAL_MULTI_INSTANTIATE is not set
+CONFIG_MLX_PLATFORM=m
+CONFIG_INTEL_IPS=m
+# CONFIG_INTEL_SCU_PCI is not set
+# CONFIG_INTEL_SCU_PLATFORM is not set
+# CONFIG_SIEMENS_SIMATIC_IPC is not set
+# CONFIG_WINMATE_FM07_KEYS is not set
+CONFIG_P2SB=y
+CONFIG_HAVE_CLK=y
+CONFIG_HAVE_CLK_PREPARE=y
+CONFIG_COMMON_CLK=y
+# CONFIG_LMK04832 is not set
+# CONFIG_COMMON_CLK_MAX9485 is not set
+# CONFIG_COMMON_CLK_SI5341 is not set
+# CONFIG_COMMON_CLK_SI5351 is not set
+# CONFIG_COMMON_CLK_SI544 is not set
+# CONFIG_COMMON_CLK_CDCE706 is not set
+# CONFIG_COMMON_CLK_CS2000_CP is not set
+# CONFIG_COMMON_CLK_PWM is not set
+# CONFIG_XILINX_VCU is not set
+# CONFIG_HWSPINLOCK is not set
+
+#
+# Clock Source drivers
+#
+CONFIG_CLKEVT_I8253=y
+CONFIG_I8253_LOCK=y
+CONFIG_CLKBLD_I8253=y
+# end of Clock Source drivers
+
+CONFIG_MAILBOX=y
+CONFIG_PCC=y
+# CONFIG_ALTERA_MBOX is not set
+CONFIG_IOMMU_IOVA=y
+CONFIG_IOMMU_API=y
+CONFIG_IOMMU_SUPPORT=y
+
+#
+# Generic IOMMU Pagetable Support
+#
+# end of Generic IOMMU Pagetable Support
+
+# CONFIG_IOMMU_DEBUGFS is not set
+# CONFIG_IOMMU_DEFAULT_DMA_STRICT is not set
+CONFIG_IOMMU_DEFAULT_DMA_LAZY=y
+# CONFIG_IOMMU_DEFAULT_PASSTHROUGH is not set
+CONFIG_IOMMU_DMA=y
+# CONFIG_AMD_IOMMU is not set
+CONFIG_DMAR_TABLE=y
+CONFIG_INTEL_IOMMU=y
+# CONFIG_INTEL_IOMMU_SVM is not set
+# CONFIG_INTEL_IOMMU_DEFAULT_ON is not set
+CONFIG_INTEL_IOMMU_FLOPPY_WA=y
+CONFIG_INTEL_IOMMU_SCALABLE_MODE_DEFAULT_ON=y
+CONFIG_INTEL_IOMMU_PERF_EVENTS=y
+# CONFIG_IOMMUFD is not set
+CONFIG_IRQ_REMAP=y
+CONFIG_HYPERV_IOMMU=y
+# CONFIG_VIRTIO_IOMMU is not set
+
+#
+# Remoteproc drivers
+#
+# CONFIG_REMOTEPROC is not set
+# end of Remoteproc drivers
+
+#
+# Rpmsg drivers
+#
+# CONFIG_RPMSG_QCOM_GLINK_RPM is not set
+# CONFIG_RPMSG_VIRTIO is not set
+# end of Rpmsg drivers
+
+# CONFIG_SOUNDWIRE is not set
+
+#
+# SOC (System On Chip) specific Drivers
+#
+
+#
+# Amlogic SoC drivers
+#
+# end of Amlogic SoC drivers
+
+#
+# Broadcom SoC drivers
+#
+# end of Broadcom SoC drivers
+
+#
+# NXP/Freescale QorIQ SoC drivers
+#
+# end of NXP/Freescale QorIQ SoC drivers
+
+#
+# fujitsu SoC drivers
+#
+# end of fujitsu SoC drivers
+
+#
+# i.MX SoC drivers
+#
+# end of i.MX SoC drivers
+
+#
+# Enable LiteX SoC Builder specific drivers
+#
+# end of Enable LiteX SoC Builder specific drivers
+
+# CONFIG_WPCM450_SOC is not set
+
+#
+# Qualcomm SoC drivers
+#
+# end of Qualcomm SoC drivers
+
+# CONFIG_SOC_TI is not set
+
+#
+# Xilinx SoC drivers
+#
+# end of Xilinx SoC drivers
+# end of SOC (System On Chip) specific Drivers
+
+# CONFIG_PM_DEVFREQ is not set
+# CONFIG_EXTCON is not set
+# CONFIG_MEMORY is not set
+# CONFIG_IIO is not set
+CONFIG_NTB=m
+# CONFIG_NTB_MSI is not set
+# CONFIG_NTB_AMD is not set
+# CONFIG_NTB_IDT is not set
+# CONFIG_NTB_INTEL is not set
+# CONFIG_NTB_EPF is not set
+# CONFIG_NTB_SWITCHTEC is not set
+# CONFIG_NTB_PINGPONG is not set
+# CONFIG_NTB_TOOL is not set
+# CONFIG_NTB_PERF is not set
+# CONFIG_NTB_TRANSPORT is not set
+CONFIG_PWM=y
+CONFIG_PWM_SYSFS=y
+# CONFIG_PWM_DEBUG is not set
+# CONFIG_PWM_CLK is not set
+# CONFIG_PWM_DWC is not set
+CONFIG_PWM_LPSS=m
+CONFIG_PWM_LPSS_PCI=m
+CONFIG_PWM_LPSS_PLATFORM=m
+# CONFIG_PWM_PCA9685 is not set
+
+#
+# IRQ chip support
+#
+# end of IRQ chip support
+
+# CONFIG_IPACK_BUS is not set
+# CONFIG_RESET_CONTROLLER is not set
+
+#
+# PHY Subsystem
+#
+# CONFIG_GENERIC_PHY is not set
+# CONFIG_USB_LGM_PHY is not set
+# CONFIG_PHY_CAN_TRANSCEIVER is not set
+
+#
+# PHY drivers for Broadcom platforms
+#
+# CONFIG_BCM_KONA_USB2_PHY is not set
+# end of PHY drivers for Broadcom platforms
+
+# CONFIG_PHY_PXA_28NM_HSIC is not set
+# CONFIG_PHY_PXA_28NM_USB2 is not set
+# CONFIG_PHY_INTEL_LGM_EMMC is not set
+# end of PHY Subsystem
+
+CONFIG_POWERCAP=y
+CONFIG_INTEL_RAPL_CORE=m
+CONFIG_INTEL_RAPL=m
+CONFIG_IDLE_INJECT=y
+# CONFIG_MCB is not set
+
+#
+# Performance monitor support
+#
+# end of Performance monitor support
+
+CONFIG_RAS=y
+# CONFIG_RAS_CEC is not set
+# CONFIG_USB4 is not set
+
+#
+# Android
+#
+# CONFIG_ANDROID_BINDER_IPC is not set
+# end of Android
+
+CONFIG_LIBNVDIMM=m
+CONFIG_BLK_DEV_PMEM=m
+CONFIG_ND_CLAIM=y
+CONFIG_ND_BTT=m
+CONFIG_BTT=y
+CONFIG_ND_PFN=m
+CONFIG_NVDIMM_PFN=y
+CONFIG_NVDIMM_DAX=y
+CONFIG_NVDIMM_KEYS=y
+# CONFIG_NVDIMM_SECURITY_TEST is not set
+CONFIG_DAX=y
+CONFIG_DEV_DAX=m
+CONFIG_DEV_DAX_PMEM=m
+CONFIG_DEV_DAX_HMEM=m
+CONFIG_DEV_DAX_HMEM_DEVICES=y
+CONFIG_DEV_DAX_KMEM=m
+CONFIG_NVMEM=y
+CONFIG_NVMEM_SYSFS=y
+
+#
+# Layout Types
+#
+# CONFIG_NVMEM_LAYOUT_SL28_VPD is not set
+# CONFIG_NVMEM_LAYOUT_ONIE_TLV is not set
+# end of Layout Types
+
+# CONFIG_NVMEM_RMEM is not set
+
+#
+# HW tracing support
+#
+# CONFIG_STM is not set
+# CONFIG_INTEL_TH is not set
+# end of HW tracing support
+
+# CONFIG_FPGA is not set
+# CONFIG_SIOX is not set
+# CONFIG_SLIMBUS is not set
+# CONFIG_INTERCONNECT is not set
+# CONFIG_COUNTER is not set
+# CONFIG_MOST is not set
+# CONFIG_PECI is not set
+# CONFIG_HTE is not set
+# end of Device Drivers
+
+#
+# File systems
+#
+CONFIG_DCACHE_WORD_ACCESS=y
+# CONFIG_VALIDATE_FS_PARSER is not set
+CONFIG_FS_IOMAP=y
+CONFIG_LEGACY_DIRECT_IO=y
+CONFIG_EXT2_FS=m
+# CONFIG_EXT2_FS_XATTR is not set
+# CONFIG_EXT3_FS is not set
+CONFIG_EXT4_FS=y
+CONFIG_EXT4_FS_POSIX_ACL=y
+CONFIG_EXT4_FS_SECURITY=y
+# CONFIG_EXT4_DEBUG is not set
+CONFIG_JBD2=y
+# CONFIG_JBD2_DEBUG is not set
+CONFIG_FS_MBCACHE=y
+# CONFIG_REISERFS_FS is not set
+# CONFIG_JFS_FS is not set
+CONFIG_XFS_FS=m
+CONFIG_XFS_SUPPORT_V4=y
+CONFIG_XFS_SUPPORT_ASCII_CI=y
+CONFIG_XFS_QUOTA=y
+CONFIG_XFS_POSIX_ACL=y
+CONFIG_XFS_RT=y
+CONFIG_XFS_DRAIN_INTENTS=y
+CONFIG_XFS_ONLINE_SCRUB=y
+# CONFIG_XFS_ONLINE_REPAIR is not set
+CONFIG_XFS_DEBUG=y
+CONFIG_XFS_ASSERT_FATAL=y
+# CONFIG_GFS2_FS is not set
+CONFIG_OCFS2_FS=m
+CONFIG_OCFS2_FS_O2CB=m
+CONFIG_OCFS2_FS_STATS=y
+CONFIG_OCFS2_DEBUG_MASKLOG=y
+# CONFIG_OCFS2_DEBUG_FS is not set
+CONFIG_BTRFS_FS=m
+CONFIG_BTRFS_FS_POSIX_ACL=y
+# CONFIG_BTRFS_FS_CHECK_INTEGRITY is not set
+# CONFIG_BTRFS_FS_RUN_SANITY_TESTS is not set
+# CONFIG_BTRFS_DEBUG is not set
+# CONFIG_BTRFS_ASSERT is not set
+# CONFIG_BTRFS_FS_REF_VERIFY is not set
+# CONFIG_NILFS2_FS is not set
+CONFIG_F2FS_FS=m
+CONFIG_F2FS_STAT_FS=y
+CONFIG_F2FS_FS_XATTR=y
+CONFIG_F2FS_FS_POSIX_ACL=y
+# CONFIG_F2FS_FS_SECURITY is not set
+# CONFIG_F2FS_CHECK_FS is not set
+# CONFIG_F2FS_FAULT_INJECTION is not set
+# CONFIG_F2FS_FS_COMPRESSION is not set
+CONFIG_F2FS_IOSTAT=y
+# CONFIG_F2FS_UNFAIR_RWSEM is not set
+CONFIG_FS_DAX=y
+CONFIG_FS_DAX_PMD=y
+CONFIG_FS_POSIX_ACL=y
+CONFIG_EXPORTFS=y
+CONFIG_EXPORTFS_BLOCK_OPS=y
+CONFIG_FILE_LOCKING=y
+CONFIG_FS_ENCRYPTION=y
+CONFIG_FS_ENCRYPTION_ALGS=y
+# CONFIG_FS_VERITY is not set
+CONFIG_FSNOTIFY=y
+CONFIG_DNOTIFY=y
+CONFIG_INOTIFY_USER=y
+CONFIG_FANOTIFY=y
+CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
+CONFIG_QUOTA=y
+CONFIG_QUOTA_NETLINK_INTERFACE=y
+# CONFIG_QUOTA_DEBUG is not set
+CONFIG_QUOTA_TREE=y
+# CONFIG_QFMT_V1 is not set
+CONFIG_QFMT_V2=y
+CONFIG_QUOTACTL=y
+CONFIG_AUTOFS4_FS=y
+CONFIG_AUTOFS_FS=y
+CONFIG_FUSE_FS=m
+CONFIG_CUSE=m
+# CONFIG_VIRTIO_FS is not set
+CONFIG_OVERLAY_FS=m
+# CONFIG_OVERLAY_FS_REDIRECT_DIR is not set
+# CONFIG_OVERLAY_FS_REDIRECT_ALWAYS_FOLLOW is not set
+# CONFIG_OVERLAY_FS_INDEX is not set
+# CONFIG_OVERLAY_FS_XINO_AUTO is not set
+# CONFIG_OVERLAY_FS_METACOPY is not set
+
+#
+# Caches
+#
+CONFIG_NETFS_SUPPORT=m
+# CONFIG_NETFS_STATS is not set
+# CONFIG_FSCACHE is not set
+# end of Caches
+
+#
+# CD-ROM/DVD Filesystems
+#
+# CONFIG_ISO9660_FS is not set
+CONFIG_UDF_FS=m
+# end of CD-ROM/DVD Filesystems
+
+#
+# DOS/FAT/EXFAT/NT Filesystems
+#
+CONFIG_FAT_FS=m
+CONFIG_MSDOS_FS=m
+CONFIG_VFAT_FS=m
+CONFIG_FAT_DEFAULT_CODEPAGE=437
+CONFIG_FAT_DEFAULT_IOCHARSET="ascii"
+# CONFIG_FAT_DEFAULT_UTF8 is not set
+# CONFIG_EXFAT_FS is not set
+# CONFIG_NTFS_FS is not set
+# CONFIG_NTFS3_FS is not set
+# end of DOS/FAT/EXFAT/NT Filesystems
+
+#
+# Pseudo filesystems
+#
+CONFIG_PROC_FS=y
+CONFIG_PROC_KCORE=y
+CONFIG_PROC_VMCORE=y
+CONFIG_PROC_VMCORE_DEVICE_DUMP=y
+CONFIG_PROC_SYSCTL=y
+CONFIG_PROC_PAGE_MONITOR=y
+CONFIG_PROC_CHILDREN=y
+CONFIG_PROC_PID_ARCH_STATUS=y
+CONFIG_KERNFS=y
+CONFIG_SYSFS=y
+CONFIG_TMPFS=y
+CONFIG_TMPFS_POSIX_ACL=y
+CONFIG_TMPFS_XATTR=y
+# CONFIG_TMPFS_INODE64 is not set
+CONFIG_HUGETLBFS=y
+CONFIG_HUGETLB_PAGE=y
+CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP=y
+# CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON is not set
+CONFIG_MEMFD_CREATE=y
+CONFIG_ARCH_HAS_GIGANTIC_PAGE=y
+CONFIG_CONFIGFS_FS=y
+CONFIG_EFIVAR_FS=y
+# end of Pseudo filesystems
+
+CONFIG_MISC_FILESYSTEMS=y
+# CONFIG_ORANGEFS_FS is not set
+# CONFIG_ADFS_FS is not set
+# CONFIG_AFFS_FS is not set
+# CONFIG_ECRYPT_FS is not set
+# CONFIG_HFS_FS is not set
+# CONFIG_HFSPLUS_FS is not set
+# CONFIG_BEFS_FS is not set
+# CONFIG_BFS_FS is not set
+# CONFIG_EFS_FS is not set
+CONFIG_CRAMFS=m
+CONFIG_CRAMFS_BLOCKDEV=y
+CONFIG_SQUASHFS=m
+# CONFIG_SQUASHFS_FILE_CACHE is not set
+CONFIG_SQUASHFS_FILE_DIRECT=y
+CONFIG_SQUASHFS_DECOMP_SINGLE=y
+# CONFIG_SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set
+CONFIG_SQUASHFS_COMPILE_DECOMP_SINGLE=y
+# CONFIG_SQUASHFS_COMPILE_DECOMP_MULTI is not set
+# CONFIG_SQUASHFS_COMPILE_DECOMP_MULTI_PERCPU is not set
+CONFIG_SQUASHFS_XATTR=y
+CONFIG_SQUASHFS_ZLIB=y
+# CONFIG_SQUASHFS_LZ4 is not set
+CONFIG_SQUASHFS_LZO=y
+CONFIG_SQUASHFS_XZ=y
+# CONFIG_SQUASHFS_ZSTD is not set
+# CONFIG_SQUASHFS_4K_DEVBLK_SIZE is not set
+# CONFIG_SQUASHFS_EMBEDDED is not set
+CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=3
+# CONFIG_VXFS_FS is not set
+CONFIG_MINIX_FS=m
+# CONFIG_OMFS_FS is not set
+# CONFIG_HPFS_FS is not set
+# CONFIG_QNX4FS_FS is not set
+# CONFIG_QNX6FS_FS is not set
+# CONFIG_ROMFS_FS is not set
+CONFIG_PSTORE=y
+CONFIG_PSTORE_DEFAULT_KMSG_BYTES=10240
+CONFIG_PSTORE_DEFLATE_COMPRESS=y
+# CONFIG_PSTORE_LZO_COMPRESS is not set
+# CONFIG_PSTORE_LZ4_COMPRESS is not set
+# CONFIG_PSTORE_LZ4HC_COMPRESS is not set
+# CONFIG_PSTORE_842_COMPRESS is not set
+# CONFIG_PSTORE_ZSTD_COMPRESS is not set
+CONFIG_PSTORE_COMPRESS=y
+CONFIG_PSTORE_DEFLATE_COMPRESS_DEFAULT=y
+CONFIG_PSTORE_COMPRESS_DEFAULT="deflate"
+# CONFIG_PSTORE_CONSOLE is not set
+# CONFIG_PSTORE_PMSG is not set
+# CONFIG_PSTORE_FTRACE is not set
+CONFIG_PSTORE_RAM=m
+# CONFIG_PSTORE_BLK is not set
+# CONFIG_SYSV_FS is not set
+# CONFIG_UFS_FS is not set
+# CONFIG_EROFS_FS is not set
+CONFIG_NETWORK_FILESYSTEMS=y
+CONFIG_NFS_FS=y
+# CONFIG_NFS_V2 is not set
+CONFIG_NFS_V3=y
+CONFIG_NFS_V3_ACL=y
+CONFIG_NFS_V4=m
+# CONFIG_NFS_SWAP is not set
+CONFIG_NFS_V4_1=y
+CONFIG_NFS_V4_2=y
+CONFIG_PNFS_FILE_LAYOUT=m
+CONFIG_PNFS_BLOCK=m
+CONFIG_PNFS_FLEXFILE_LAYOUT=m
+CONFIG_NFS_V4_1_IMPLEMENTATION_ID_DOMAIN="kernel.org"
+# CONFIG_NFS_V4_1_MIGRATION is not set
+CONFIG_NFS_V4_SECURITY_LABEL=y
+CONFIG_ROOT_NFS=y
+# CONFIG_NFS_USE_LEGACY_DNS is not set
+CONFIG_NFS_USE_KERNEL_DNS=y
+CONFIG_NFS_DEBUG=y
+CONFIG_NFS_DISABLE_UDP_SUPPORT=y
+# CONFIG_NFS_V4_2_READ_PLUS is not set
+CONFIG_NFSD=m
+# CONFIG_NFSD_V2 is not set
+CONFIG_NFSD_V3_ACL=y
+CONFIG_NFSD_V4=y
+CONFIG_NFSD_PNFS=y
+# CONFIG_NFSD_BLOCKLAYOUT is not set
+CONFIG_NFSD_SCSILAYOUT=y
+# CONFIG_NFSD_FLEXFILELAYOUT is not set
+# CONFIG_NFSD_V4_2_INTER_SSC is not set
+CONFIG_NFSD_V4_SECURITY_LABEL=y
+CONFIG_GRACE_PERIOD=y
+CONFIG_LOCKD=y
+CONFIG_LOCKD_V4=y
+CONFIG_NFS_ACL_SUPPORT=y
+CONFIG_NFS_COMMON=y
+CONFIG_NFS_V4_2_SSC_HELPER=y
+CONFIG_SUNRPC=y
+CONFIG_SUNRPC_GSS=m
+CONFIG_SUNRPC_BACKCHANNEL=y
+CONFIG_RPCSEC_GSS_KRB5=m
+CONFIG_RPCSEC_GSS_KRB5_CRYPTOSYSTEM=y
+# CONFIG_RPCSEC_GSS_KRB5_ENCTYPES_DES is not set
+CONFIG_RPCSEC_GSS_KRB5_ENCTYPES_AES_SHA1=y
+# CONFIG_RPCSEC_GSS_KRB5_ENCTYPES_CAMELLIA is not set
+# CONFIG_RPCSEC_GSS_KRB5_ENCTYPES_AES_SHA2 is not set
+CONFIG_SUNRPC_DEBUG=y
+# CONFIG_CEPH_FS is not set
+CONFIG_CIFS=m
+CONFIG_CIFS_STATS2=y
+CONFIG_CIFS_ALLOW_INSECURE_LEGACY=y
+CONFIG_CIFS_UPCALL=y
+CONFIG_CIFS_XATTR=y
+CONFIG_CIFS_POSIX=y
+CONFIG_CIFS_DEBUG=y
+# CONFIG_CIFS_DEBUG2 is not set
+# CONFIG_CIFS_DEBUG_DUMP_KEYS is not set
+CONFIG_CIFS_DFS_UPCALL=y
+# CONFIG_CIFS_SWN_UPCALL is not set
+# CONFIG_SMB_SERVER is not set
+CONFIG_SMBFS_COMMON=m
+# CONFIG_CODA_FS is not set
+# CONFIG_AFS_FS is not set
+# CONFIG_9P_FS is not set
+CONFIG_NLS=y
+CONFIG_NLS_DEFAULT="utf8"
+CONFIG_NLS_CODEPAGE_437=y
+CONFIG_NLS_CODEPAGE_737=m
+CONFIG_NLS_CODEPAGE_775=m
+CONFIG_NLS_CODEPAGE_850=m
+CONFIG_NLS_CODEPAGE_852=m
+CONFIG_NLS_CODEPAGE_855=m
+CONFIG_NLS_CODEPAGE_857=m
+CONFIG_NLS_CODEPAGE_860=m
+CONFIG_NLS_CODEPAGE_861=m
+CONFIG_NLS_CODEPAGE_862=m
+CONFIG_NLS_CODEPAGE_863=m
+CONFIG_NLS_CODEPAGE_864=m
+CONFIG_NLS_CODEPAGE_865=m
+CONFIG_NLS_CODEPAGE_866=m
+CONFIG_NLS_CODEPAGE_869=m
+CONFIG_NLS_CODEPAGE_936=m
+CONFIG_NLS_CODEPAGE_950=m
+CONFIG_NLS_CODEPAGE_932=m
+CONFIG_NLS_CODEPAGE_949=m
+CONFIG_NLS_CODEPAGE_874=m
+CONFIG_NLS_ISO8859_8=m
+CONFIG_NLS_CODEPAGE_1250=m
+CONFIG_NLS_CODEPAGE_1251=m
+CONFIG_NLS_ASCII=y
+CONFIG_NLS_ISO8859_1=m
+CONFIG_NLS_ISO8859_2=m
+CONFIG_NLS_ISO8859_3=m
+CONFIG_NLS_ISO8859_4=m
+CONFIG_NLS_ISO8859_5=m
+CONFIG_NLS_ISO8859_6=m
+CONFIG_NLS_ISO8859_7=m
+CONFIG_NLS_ISO8859_9=m
+CONFIG_NLS_ISO8859_13=m
+CONFIG_NLS_ISO8859_14=m
+CONFIG_NLS_ISO8859_15=m
+CONFIG_NLS_KOI8_R=m
+CONFIG_NLS_KOI8_U=m
+CONFIG_NLS_MAC_ROMAN=m
+CONFIG_NLS_MAC_CELTIC=m
+CONFIG_NLS_MAC_CENTEURO=m
+CONFIG_NLS_MAC_CROATIAN=m
+CONFIG_NLS_MAC_CYRILLIC=m
+CONFIG_NLS_MAC_GAELIC=m
+CONFIG_NLS_MAC_GREEK=m
+CONFIG_NLS_MAC_ICELAND=m
+CONFIG_NLS_MAC_INUIT=m
+CONFIG_NLS_MAC_ROMANIAN=m
+CONFIG_NLS_MAC_TURKISH=m
+CONFIG_NLS_UTF8=m
+# CONFIG_DLM is not set
+# CONFIG_UNICODE is not set
+CONFIG_IO_WQ=y
+# end of File systems
+
+#
+# Security options
+#
+CONFIG_KEYS=y
+# CONFIG_KEYS_REQUEST_CACHE is not set
+CONFIG_PERSISTENT_KEYRINGS=y
+CONFIG_TRUSTED_KEYS=y
+CONFIG_TRUSTED_KEYS_TPM=y
+CONFIG_ENCRYPTED_KEYS=y
+# CONFIG_USER_DECRYPTED_DATA is not set
+# CONFIG_KEY_DH_OPERATIONS is not set
+# CONFIG_KEY_NOTIFICATIONS is not set
+# CONFIG_SECURITY_DMESG_RESTRICT is not set
+CONFIG_SECURITY=y
+CONFIG_SECURITYFS=y
+CONFIG_SECURITY_NETWORK=y
+CONFIG_SECURITY_NETWORK_XFRM=y
+# CONFIG_SECURITY_PATH is not set
+CONFIG_INTEL_TXT=y
+CONFIG_LSM_MMAP_MIN_ADDR=65535
+CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR=y
+CONFIG_HARDENED_USERCOPY=y
+CONFIG_FORTIFY_SOURCE=y
+# CONFIG_STATIC_USERMODEHELPER is not set
+CONFIG_SECURITY_SELINUX=y
+CONFIG_SECURITY_SELINUX_BOOTPARAM=y
+CONFIG_SECURITY_SELINUX_DEVELOP=y
+CONFIG_SECURITY_SELINUX_AVC_STATS=y
+CONFIG_SECURITY_SELINUX_SIDTAB_HASH_BITS=9
+CONFIG_SECURITY_SELINUX_SID2STR_CACHE_SIZE=256
+# CONFIG_SECURITY_SMACK is not set
+# CONFIG_SECURITY_TOMOYO is not set
+# CONFIG_SECURITY_APPARMOR is not set
+# CONFIG_SECURITY_LOADPIN is not set
+CONFIG_SECURITY_YAMA=y
+# CONFIG_SECURITY_SAFESETID is not set
+# CONFIG_SECURITY_LOCKDOWN_LSM is not set
+# CONFIG_SECURITY_LANDLOCK is not set
+CONFIG_INTEGRITY=y
+CONFIG_INTEGRITY_SIGNATURE=y
+CONFIG_INTEGRITY_ASYMMETRIC_KEYS=y
+CONFIG_INTEGRITY_TRUSTED_KEYRING=y
+# CONFIG_INTEGRITY_PLATFORM_KEYRING is not set
+CONFIG_INTEGRITY_AUDIT=y
+CONFIG_IMA=y
+# CONFIG_IMA_KEXEC is not set
+CONFIG_IMA_MEASURE_PCR_IDX=10
+CONFIG_IMA_LSM_RULES=y
+CONFIG_IMA_NG_TEMPLATE=y
+# CONFIG_IMA_SIG_TEMPLATE is not set
+CONFIG_IMA_DEFAULT_TEMPLATE="ima-ng"
+CONFIG_IMA_DEFAULT_HASH_SHA1=y
+# CONFIG_IMA_DEFAULT_HASH_SHA256 is not set
+# CONFIG_IMA_DEFAULT_HASH_SHA512 is not set
+CONFIG_IMA_DEFAULT_HASH="sha1"
+CONFIG_IMA_WRITE_POLICY=y
+CONFIG_IMA_READ_POLICY=y
+CONFIG_IMA_APPRAISE=y
+# CONFIG_IMA_ARCH_POLICY is not set
+# CONFIG_IMA_APPRAISE_BUILD_POLICY is not set
+CONFIG_IMA_APPRAISE_BOOTPARAM=y
+# CONFIG_IMA_APPRAISE_MODSIG is not set
+CONFIG_IMA_TRUSTED_KEYRING=y
+# CONFIG_IMA_BLACKLIST_KEYRING is not set
+# CONFIG_IMA_LOAD_X509 is not set
+CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=y
+CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS=y
+# CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT is not set
+# CONFIG_IMA_DISABLE_HTABLE is not set
+# CONFIG_EVM is not set
+CONFIG_DEFAULT_SECURITY_SELINUX=y
+# CONFIG_DEFAULT_SECURITY_DAC is not set
+CONFIG_LSM="landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf"
+
+#
+# Kernel hardening options
+#
+
+#
+# Memory initialization
+#
+CONFIG_CC_HAS_AUTO_VAR_INIT_PATTERN=y
+CONFIG_CC_HAS_AUTO_VAR_INIT_ZERO_BARE=y
+CONFIG_CC_HAS_AUTO_VAR_INIT_ZERO=y
+# CONFIG_INIT_STACK_NONE is not set
+# CONFIG_INIT_STACK_ALL_PATTERN is not set
+CONFIG_INIT_STACK_ALL_ZERO=y
+# CONFIG_GCC_PLUGIN_STACKLEAK is not set
+# CONFIG_INIT_ON_ALLOC_DEFAULT_ON is not set
+# CONFIG_INIT_ON_FREE_DEFAULT_ON is not set
+CONFIG_CC_HAS_ZERO_CALL_USED_REGS=y
+# CONFIG_ZERO_CALL_USED_REGS is not set
+# end of Memory initialization
+
+CONFIG_RANDSTRUCT_NONE=y
+# CONFIG_RANDSTRUCT_FULL is not set
+# CONFIG_RANDSTRUCT_PERFORMANCE is not set
+# end of Kernel hardening options
+# end of Security options
+
+CONFIG_XOR_BLOCKS=m
+CONFIG_ASYNC_CORE=m
+CONFIG_ASYNC_MEMCPY=m
+CONFIG_ASYNC_XOR=m
+CONFIG_ASYNC_PQ=m
+CONFIG_ASYNC_RAID6_RECOV=m
+CONFIG_CRYPTO=y
+
+#
+# Crypto core or helper
+#
+CONFIG_CRYPTO_ALGAPI=y
+CONFIG_CRYPTO_ALGAPI2=y
+CONFIG_CRYPTO_AEAD=y
+CONFIG_CRYPTO_AEAD2=y
+CONFIG_CRYPTO_SKCIPHER=y
+CONFIG_CRYPTO_SKCIPHER2=y
+CONFIG_CRYPTO_HASH=y
+CONFIG_CRYPTO_HASH2=y
+CONFIG_CRYPTO_RNG=y
+CONFIG_CRYPTO_RNG2=y
+CONFIG_CRYPTO_RNG_DEFAULT=y
+CONFIG_CRYPTO_AKCIPHER2=y
+CONFIG_CRYPTO_AKCIPHER=y
+CONFIG_CRYPTO_KPP2=y
+CONFIG_CRYPTO_KPP=m
+CONFIG_CRYPTO_ACOMP2=y
+CONFIG_CRYPTO_MANAGER=y
+CONFIG_CRYPTO_MANAGER2=y
+CONFIG_CRYPTO_USER=m
+CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y
+CONFIG_CRYPTO_NULL=y
+CONFIG_CRYPTO_NULL2=y
+CONFIG_CRYPTO_PCRYPT=m
+CONFIG_CRYPTO_CRYPTD=y
+CONFIG_CRYPTO_AUTHENC=m
+# CONFIG_CRYPTO_TEST is not set
+CONFIG_CRYPTO_SIMD=y
+# end of Crypto core or helper
+
+#
+# Public-key cryptography
+#
+CONFIG_CRYPTO_RSA=y
+CONFIG_CRYPTO_DH=m
+# CONFIG_CRYPTO_DH_RFC7919_GROUPS is not set
+CONFIG_CRYPTO_ECC=m
+CONFIG_CRYPTO_ECDH=m
+# CONFIG_CRYPTO_ECDSA is not set
+# CONFIG_CRYPTO_ECRDSA is not set
+# CONFIG_CRYPTO_SM2 is not set
+# CONFIG_CRYPTO_CURVE25519 is not set
+# end of Public-key cryptography
+
+#
+# Block ciphers
+#
+CONFIG_CRYPTO_AES=y
+# CONFIG_CRYPTO_AES_TI is not set
+CONFIG_CRYPTO_ANUBIS=m
+# CONFIG_CRYPTO_ARIA is not set
+CONFIG_CRYPTO_BLOWFISH=m
+CONFIG_CRYPTO_BLOWFISH_COMMON=m
+CONFIG_CRYPTO_CAMELLIA=m
+CONFIG_CRYPTO_CAST_COMMON=m
+CONFIG_CRYPTO_CAST5=m
+CONFIG_CRYPTO_CAST6=m
+CONFIG_CRYPTO_DES=m
+CONFIG_CRYPTO_FCRYPT=m
+CONFIG_CRYPTO_KHAZAD=m
+CONFIG_CRYPTO_SEED=m
+CONFIG_CRYPTO_SERPENT=m
+CONFIG_CRYPTO_SM4=m
+CONFIG_CRYPTO_SM4_GENERIC=m
+CONFIG_CRYPTO_TEA=m
+CONFIG_CRYPTO_TWOFISH=m
+CONFIG_CRYPTO_TWOFISH_COMMON=m
+# end of Block ciphers
+
+#
+# Length-preserving ciphers and modes
+#
+# CONFIG_CRYPTO_ADIANTUM is not set
+CONFIG_CRYPTO_ARC4=m
+CONFIG_CRYPTO_CHACHA20=m
+CONFIG_CRYPTO_CBC=y
+CONFIG_CRYPTO_CFB=y
+CONFIG_CRYPTO_CTR=y
+CONFIG_CRYPTO_CTS=m
+CONFIG_CRYPTO_ECB=y
+# CONFIG_CRYPTO_HCTR2 is not set
+# CONFIG_CRYPTO_KEYWRAP is not set
+CONFIG_CRYPTO_LRW=m
+# CONFIG_CRYPTO_OFB is not set
+CONFIG_CRYPTO_PCBC=m
+CONFIG_CRYPTO_XTS=m
+# end of Length-preserving ciphers and modes
+
+#
+# AEAD (authenticated encryption with associated data) ciphers
+#
+# CONFIG_CRYPTO_AEGIS128 is not set
+# CONFIG_CRYPTO_CHACHA20POLY1305 is not set
+CONFIG_CRYPTO_CCM=m
+CONFIG_CRYPTO_GCM=y
+CONFIG_CRYPTO_SEQIV=y
+CONFIG_CRYPTO_ECHAINIV=m
+CONFIG_CRYPTO_ESSIV=m
+# end of AEAD (authenticated encryption with associated data) ciphers
+
+#
+# Hashes, digests, and MACs
+#
+CONFIG_CRYPTO_BLAKE2B=m
+CONFIG_CRYPTO_CMAC=m
+CONFIG_CRYPTO_GHASH=y
+CONFIG_CRYPTO_HMAC=y
+CONFIG_CRYPTO_MD4=m
+CONFIG_CRYPTO_MD5=y
+CONFIG_CRYPTO_MICHAEL_MIC=m
+# CONFIG_CRYPTO_POLY1305 is not set
+CONFIG_CRYPTO_RMD160=m
+CONFIG_CRYPTO_SHA1=y
+CONFIG_CRYPTO_SHA256=y
+CONFIG_CRYPTO_SHA512=y
+CONFIG_CRYPTO_SHA3=m
+CONFIG_CRYPTO_SM3=m
+CONFIG_CRYPTO_SM3_GENERIC=m
+# CONFIG_CRYPTO_STREEBOG is not set
+CONFIG_CRYPTO_VMAC=m
+CONFIG_CRYPTO_WP512=m
+CONFIG_CRYPTO_XCBC=m
+CONFIG_CRYPTO_XXHASH=m
+# end of Hashes, digests, and MACs
+
+#
+# CRCs (cyclic redundancy checks)
+#
+CONFIG_CRYPTO_CRC32C=y
+CONFIG_CRYPTO_CRC32=m
+CONFIG_CRYPTO_CRCT10DIF=y
+CONFIG_CRYPTO_CRC64_ROCKSOFT=m
+# end of CRCs (cyclic redundancy checks)
+
+#
+# Compression
+#
+CONFIG_CRYPTO_DEFLATE=y
+CONFIG_CRYPTO_LZO=y
+# CONFIG_CRYPTO_842 is not set
+# CONFIG_CRYPTO_LZ4 is not set
+# CONFIG_CRYPTO_LZ4HC is not set
+# CONFIG_CRYPTO_ZSTD is not set
+# end of Compression
+
+#
+# Random number generation
+#
+CONFIG_CRYPTO_ANSI_CPRNG=m
+CONFIG_CRYPTO_DRBG_MENU=y
+CONFIG_CRYPTO_DRBG_HMAC=y
+CONFIG_CRYPTO_DRBG_HASH=y
+CONFIG_CRYPTO_DRBG_CTR=y
+CONFIG_CRYPTO_DRBG=y
+CONFIG_CRYPTO_JITTERENTROPY=y
+# end of Random number generation
+
+#
+# Userspace interface
+#
+CONFIG_CRYPTO_USER_API=y
+# CONFIG_CRYPTO_USER_API_HASH is not set
+CONFIG_CRYPTO_USER_API_SKCIPHER=y
+CONFIG_CRYPTO_USER_API_RNG=y
+# CONFIG_CRYPTO_USER_API_RNG_CAVP is not set
+CONFIG_CRYPTO_USER_API_AEAD=y
+CONFIG_CRYPTO_USER_API_ENABLE_OBSOLETE=y
+# CONFIG_CRYPTO_STATS is not set
+# end of Userspace interface
+
+CONFIG_CRYPTO_HASH_INFO=y
+
+#
+# Accelerated Cryptographic Algorithms for CPU (x86)
+#
+# CONFIG_CRYPTO_CURVE25519_X86 is not set
+CONFIG_CRYPTO_AES_NI_INTEL=y
+CONFIG_CRYPTO_BLOWFISH_X86_64=m
+CONFIG_CRYPTO_CAMELLIA_X86_64=m
+CONFIG_CRYPTO_CAMELLIA_AESNI_AVX_X86_64=m
+CONFIG_CRYPTO_CAMELLIA_AESNI_AVX2_X86_64=m
+CONFIG_CRYPTO_CAST5_AVX_X86_64=m
+CONFIG_CRYPTO_CAST6_AVX_X86_64=m
+# CONFIG_CRYPTO_DES3_EDE_X86_64 is not set
+CONFIG_CRYPTO_SERPENT_SSE2_X86_64=m
+CONFIG_CRYPTO_SERPENT_AVX_X86_64=m
+CONFIG_CRYPTO_SERPENT_AVX2_X86_64=m
+# CONFIG_CRYPTO_SM4_AESNI_AVX_X86_64 is not set
+# CONFIG_CRYPTO_SM4_AESNI_AVX2_X86_64 is not set
+CONFIG_CRYPTO_TWOFISH_X86_64=m
+CONFIG_CRYPTO_TWOFISH_X86_64_3WAY=m
+CONFIG_CRYPTO_TWOFISH_AVX_X86_64=m
+# CONFIG_CRYPTO_ARIA_AESNI_AVX_X86_64 is not set
+# CONFIG_CRYPTO_ARIA_AESNI_AVX2_X86_64 is not set
+# CONFIG_CRYPTO_ARIA_GFNI_AVX512_X86_64 is not set
+CONFIG_CRYPTO_CHACHA20_X86_64=m
+# CONFIG_CRYPTO_AEGIS128_AESNI_SSE2 is not set
+# CONFIG_CRYPTO_NHPOLY1305_SSE2 is not set
+# CONFIG_CRYPTO_NHPOLY1305_AVX2 is not set
+# CONFIG_CRYPTO_BLAKE2S_X86 is not set
+# CONFIG_CRYPTO_POLYVAL_CLMUL_NI is not set
+# CONFIG_CRYPTO_POLY1305_X86_64 is not set
+CONFIG_CRYPTO_SHA1_SSSE3=y
+CONFIG_CRYPTO_SHA256_SSSE3=y
+CONFIG_CRYPTO_SHA512_SSSE3=m
+# CONFIG_CRYPTO_SM3_AVX_X86_64 is not set
+CONFIG_CRYPTO_GHASH_CLMUL_NI_INTEL=m
+CONFIG_CRYPTO_CRC32C_INTEL=m
+CONFIG_CRYPTO_CRC32_PCLMUL=m
+CONFIG_CRYPTO_CRCT10DIF_PCLMUL=m
+# end of Accelerated Cryptographic Algorithms for CPU (x86)
+
+# CONFIG_CRYPTO_HW is not set
+CONFIG_ASYMMETRIC_KEY_TYPE=y
+CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE=y
+CONFIG_X509_CERTIFICATE_PARSER=y
+# CONFIG_PKCS8_PRIVATE_KEY_PARSER is not set
+CONFIG_PKCS7_MESSAGE_PARSER=y
+# CONFIG_PKCS7_TEST_KEY is not set
+CONFIG_SIGNED_PE_FILE_VERIFICATION=y
+# CONFIG_FIPS_SIGNATURE_SELFTEST is not set
+
+#
+# Certificates for signature checking
+#
+CONFIG_MODULE_SIG_KEY="certs/signing_key.pem"
+CONFIG_MODULE_SIG_KEY_TYPE_RSA=y
+# CONFIG_MODULE_SIG_KEY_TYPE_ECDSA is not set
+CONFIG_SYSTEM_TRUSTED_KEYRING=y
+CONFIG_SYSTEM_TRUSTED_KEYS=""
+# CONFIG_SYSTEM_EXTRA_CERTIFICATE is not set
+# CONFIG_SECONDARY_TRUSTED_KEYRING is not set
+CONFIG_SYSTEM_BLACKLIST_KEYRING=y
+CONFIG_SYSTEM_BLACKLIST_HASH_LIST=""
+# CONFIG_SYSTEM_REVOCATION_LIST is not set
+# CONFIG_SYSTEM_BLACKLIST_AUTH_UPDATE is not set
+# end of Certificates for signature checking
+
+CONFIG_BINARY_PRINTF=y
+
+#
+# Library routines
+#
+CONFIG_RAID6_PQ=m
+CONFIG_RAID6_PQ_BENCHMARK=y
+# CONFIG_PACKING is not set
+CONFIG_BITREVERSE=y
+CONFIG_GENERIC_STRNCPY_FROM_USER=y
+CONFIG_GENERIC_STRNLEN_USER=y
+CONFIG_GENERIC_NET_UTILS=y
+CONFIG_CORDIC=m
+# CONFIG_PRIME_NUMBERS is not set
+CONFIG_RATIONAL=y
+CONFIG_GENERIC_PCI_IOMAP=y
+CONFIG_GENERIC_IOMAP=y
+CONFIG_ARCH_USE_CMPXCHG_LOCKREF=y
+CONFIG_ARCH_HAS_FAST_MULTIPLIER=y
+CONFIG_ARCH_USE_SYM_ANNOTATIONS=y
+
+#
+# Crypto library routines
+#
+CONFIG_CRYPTO_LIB_UTILS=y
+CONFIG_CRYPTO_LIB_AES=y
+CONFIG_CRYPTO_LIB_ARC4=m
+CONFIG_CRYPTO_LIB_GF128MUL=y
+CONFIG_CRYPTO_LIB_BLAKE2S_GENERIC=y
+CONFIG_CRYPTO_ARCH_HAVE_LIB_CHACHA=m
+CONFIG_CRYPTO_LIB_CHACHA_GENERIC=m
+# CONFIG_CRYPTO_LIB_CHACHA is not set
+# CONFIG_CRYPTO_LIB_CURVE25519 is not set
+CONFIG_CRYPTO_LIB_DES=m
+CONFIG_CRYPTO_LIB_POLY1305_RSIZE=11
+# CONFIG_CRYPTO_LIB_POLY1305 is not set
+# CONFIG_CRYPTO_LIB_CHACHA20POLY1305 is not set
+CONFIG_CRYPTO_LIB_SHA1=y
+CONFIG_CRYPTO_LIB_SHA256=y
+# end of Crypto library routines
+
+CONFIG_CRC_CCITT=y
+CONFIG_CRC16=y
+CONFIG_CRC_T10DIF=y
+CONFIG_CRC64_ROCKSOFT=m
+CONFIG_CRC_ITU_T=m
+CONFIG_CRC32=y
+# CONFIG_CRC32_SELFTEST is not set
+CONFIG_CRC32_SLICEBY8=y
+# CONFIG_CRC32_SLICEBY4 is not set
+# CONFIG_CRC32_SARWATE is not set
+# CONFIG_CRC32_BIT is not set
+CONFIG_CRC64=m
+# CONFIG_CRC4 is not set
+CONFIG_CRC7=m
+CONFIG_LIBCRC32C=m
+CONFIG_CRC8=m
+CONFIG_XXHASH=y
+# CONFIG_RANDOM32_SELFTEST is not set
+CONFIG_ZLIB_INFLATE=y
+CONFIG_ZLIB_DEFLATE=y
+CONFIG_LZO_COMPRESS=y
+CONFIG_LZO_DECOMPRESS=y
+CONFIG_LZ4_DECOMPRESS=y
+CONFIG_ZSTD_COMMON=y
+CONFIG_ZSTD_COMPRESS=m
+CONFIG_ZSTD_DECOMPRESS=y
+CONFIG_XZ_DEC=y
+CONFIG_XZ_DEC_X86=y
+CONFIG_XZ_DEC_POWERPC=y
+CONFIG_XZ_DEC_IA64=y
+CONFIG_XZ_DEC_ARM=y
+CONFIG_XZ_DEC_ARMTHUMB=y
+CONFIG_XZ_DEC_SPARC=y
+# CONFIG_XZ_DEC_MICROLZMA is not set
+CONFIG_XZ_DEC_BCJ=y
+# CONFIG_XZ_DEC_TEST is not set
+CONFIG_DECOMPRESS_GZIP=y
+CONFIG_DECOMPRESS_BZIP2=y
+CONFIG_DECOMPRESS_LZMA=y
+CONFIG_DECOMPRESS_XZ=y
+CONFIG_DECOMPRESS_LZO=y
+CONFIG_DECOMPRESS_LZ4=y
+CONFIG_DECOMPRESS_ZSTD=y
+CONFIG_GENERIC_ALLOCATOR=y
+CONFIG_REED_SOLOMON=m
+CONFIG_REED_SOLOMON_ENC8=y
+CONFIG_REED_SOLOMON_DEC8=y
+CONFIG_TEXTSEARCH=y
+CONFIG_TEXTSEARCH_KMP=m
+CONFIG_TEXTSEARCH_BM=m
+CONFIG_TEXTSEARCH_FSM=m
+CONFIG_INTERVAL_TREE=y
+CONFIG_XARRAY_MULTI=y
+CONFIG_ASSOCIATIVE_ARRAY=y
+CONFIG_HAS_IOMEM=y
+CONFIG_HAS_IOPORT=y
+CONFIG_HAS_IOPORT_MAP=y
+CONFIG_HAS_DMA=y
+CONFIG_DMA_OPS=y
+CONFIG_NEED_SG_DMA_LENGTH=y
+CONFIG_NEED_DMA_MAP_STATE=y
+CONFIG_ARCH_DMA_ADDR_T_64BIT=y
+CONFIG_SWIOTLB=y
+# CONFIG_DMA_API_DEBUG is not set
+# CONFIG_DMA_MAP_BENCHMARK is not set
+CONFIG_SGL_ALLOC=y
+CONFIG_CHECK_SIGNATURE=y
+CONFIG_CPUMASK_OFFSTACK=y
+# CONFIG_FORCE_NR_CPUS is not set
+CONFIG_CPU_RMAP=y
+CONFIG_DQL=y
+CONFIG_GLOB=y
+# CONFIG_GLOB_SELFTEST is not set
+CONFIG_NLATTR=y
+CONFIG_CLZ_TAB=y
+CONFIG_IRQ_POLL=y
+CONFIG_MPILIB=y
+CONFIG_SIGNATURE=y
+CONFIG_OID_REGISTRY=y
+CONFIG_UCS2_STRING=y
+CONFIG_HAVE_GENERIC_VDSO=y
+CONFIG_GENERIC_GETTIMEOFDAY=y
+CONFIG_GENERIC_VDSO_TIME_NS=y
+CONFIG_FONT_SUPPORT=y
+# CONFIG_FONTS is not set
+CONFIG_FONT_8x8=y
+CONFIG_FONT_8x16=y
+CONFIG_SG_POOL=y
+CONFIG_ARCH_HAS_PMEM_API=y
+CONFIG_MEMREGION=y
+CONFIG_ARCH_HAS_CPU_CACHE_INVALIDATE_MEMREGION=y
+CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE=y
+CONFIG_ARCH_HAS_COPY_MC=y
+CONFIG_ARCH_STACKWALK=y
+CONFIG_STACKDEPOT=y
+CONFIG_STACKDEPOT_ALWAYS_INIT=y
+CONFIG_SBITMAP=y
+# end of Library routines
+
+CONFIG_ASN1_ENCODER=y
+
+#
+# Kernel hacking
+#
+
+#
+# printk and dmesg options
+#
+CONFIG_PRINTK_TIME=y
+CONFIG_PRINTK_CALLER=y
+# CONFIG_STACKTRACE_BUILD_ID is not set
+CONFIG_CONSOLE_LOGLEVEL_DEFAULT=7
+CONFIG_CONSOLE_LOGLEVEL_QUIET=4
+CONFIG_MESSAGE_LOGLEVEL_DEFAULT=4
+CONFIG_BOOT_PRINTK_DELAY=y
+CONFIG_DYNAMIC_DEBUG=y
+CONFIG_DYNAMIC_DEBUG_CORE=y
+CONFIG_SYMBOLIC_ERRNAME=y
+CONFIG_DEBUG_BUGVERBOSE=y
+# end of printk and dmesg options
+
+CONFIG_DEBUG_KERNEL=y
+CONFIG_DEBUG_MISC=y
+
+#
+# Compile-time checks and compiler options
+#
+CONFIG_DEBUG_INFO=y
+CONFIG_AS_HAS_NON_CONST_LEB128=y
+# CONFIG_DEBUG_INFO_NONE is not set
+# CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT is not set
+CONFIG_DEBUG_INFO_DWARF4=y
+# CONFIG_DEBUG_INFO_DWARF5 is not set
+CONFIG_DEBUG_INFO_REDUCED=y
+CONFIG_DEBUG_INFO_COMPRESSED_NONE=y
+# CONFIG_DEBUG_INFO_COMPRESSED_ZLIB is not set
+# CONFIG_DEBUG_INFO_SPLIT is not set
+CONFIG_PAHOLE_HAS_SPLIT_BTF=y
+CONFIG_PAHOLE_HAS_LANG_EXCLUDE=y
+# CONFIG_GDB_SCRIPTS is not set
+CONFIG_FRAME_WARN=8192
+CONFIG_STRIP_ASM_SYMS=y
+# CONFIG_READABLE_ASM is not set
+# CONFIG_HEADERS_INSTALL is not set
+CONFIG_DEBUG_SECTION_MISMATCH=y
+CONFIG_SECTION_MISMATCH_WARN_ONLY=y
+# CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B is not set
+CONFIG_OBJTOOL=y
+# CONFIG_VMLINUX_MAP is not set
+# CONFIG_DEBUG_FORCE_WEAK_PER_CPU is not set
+# end of Compile-time checks and compiler options
+
+#
+# Generic Kernel Debugging Instruments
+#
+CONFIG_MAGIC_SYSRQ=y
+CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE=0x1
+CONFIG_MAGIC_SYSRQ_SERIAL=y
+CONFIG_MAGIC_SYSRQ_SERIAL_SEQUENCE=""
+CONFIG_DEBUG_FS=y
+CONFIG_DEBUG_FS_ALLOW_ALL=y
+# CONFIG_DEBUG_FS_DISALLOW_MOUNT is not set
+# CONFIG_DEBUG_FS_ALLOW_NONE is not set
+CONFIG_HAVE_ARCH_KGDB=y
+# CONFIG_KGDB is not set
+CONFIG_ARCH_HAS_UBSAN_SANITIZE_ALL=y
+CONFIG_UBSAN=y
+# CONFIG_UBSAN_TRAP is not set
+CONFIG_CC_HAS_UBSAN_BOUNDS=y
+CONFIG_UBSAN_BOUNDS=y
+CONFIG_UBSAN_ONLY_BOUNDS=y
+CONFIG_UBSAN_SHIFT=y
+# CONFIG_UBSAN_DIV_ZERO is not set
+# CONFIG_UBSAN_BOOL is not set
+# CONFIG_UBSAN_ENUM is not set
+# CONFIG_UBSAN_ALIGNMENT is not set
+CONFIG_UBSAN_SANITIZE_ALL=y
+# CONFIG_TEST_UBSAN is not set
+CONFIG_HAVE_ARCH_KCSAN=y
+CONFIG_HAVE_KCSAN_COMPILER=y
+# end of Generic Kernel Debugging Instruments
+
+#
+# Networking Debugging
+#
+# CONFIG_NET_DEV_REFCNT_TRACKER is not set
+# CONFIG_NET_NS_REFCNT_TRACKER is not set
+# CONFIG_DEBUG_NET is not set
+# end of Networking Debugging
+
+#
+# Memory Debugging
+#
+CONFIG_PAGE_EXTENSION=y
+# CONFIG_DEBUG_PAGEALLOC is not set
+CONFIG_SLUB_DEBUG=y
+# CONFIG_SLUB_DEBUG_ON is not set
+CONFIG_PAGE_OWNER=y
+# CONFIG_PAGE_TABLE_CHECK is not set
+# CONFIG_PAGE_POISONING is not set
+# CONFIG_DEBUG_PAGE_REF is not set
+# CONFIG_DEBUG_RODATA_TEST is not set
+CONFIG_ARCH_HAS_DEBUG_WX=y
+# CONFIG_DEBUG_WX is not set
+CONFIG_GENERIC_PTDUMP=y
+# CONFIG_PTDUMP_DEBUGFS is not set
+CONFIG_HAVE_DEBUG_KMEMLEAK=y
+CONFIG_DEBUG_KMEMLEAK=y
+CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE=16000
+# CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF is not set
+CONFIG_DEBUG_KMEMLEAK_AUTO_SCAN=y
+# CONFIG_PER_VMA_LOCK_STATS is not set
+# CONFIG_DEBUG_OBJECTS is not set
+# CONFIG_SHRINKER_DEBUG is not set
+# CONFIG_DEBUG_STACK_USAGE is not set
+# CONFIG_SCHED_STACK_END_CHECK is not set
+CONFIG_ARCH_HAS_DEBUG_VM_PGTABLE=y
+# CONFIG_DEBUG_VM is not set
+# CONFIG_DEBUG_VM_PGTABLE is not set
+CONFIG_ARCH_HAS_DEBUG_VIRTUAL=y
+# CONFIG_DEBUG_VIRTUAL is not set
+CONFIG_DEBUG_MEMORY_INIT=y
+# CONFIG_DEBUG_PER_CPU_MAPS is not set
+CONFIG_HAVE_ARCH_KASAN=y
+CONFIG_HAVE_ARCH_KASAN_VMALLOC=y
+CONFIG_CC_HAS_KASAN_GENERIC=y
+CONFIG_CC_HAS_WORKING_NOSANITIZE_ADDRESS=y
+CONFIG_KASAN=y
+CONFIG_KASAN_GENERIC=y
+# CONFIG_KASAN_OUTLINE is not set
+CONFIG_KASAN_INLINE=y
+CONFIG_KASAN_STACK=y
+CONFIG_KASAN_VMALLOC=y
+# CONFIG_KASAN_MODULE_TEST is not set
+CONFIG_HAVE_ARCH_KFENCE=y
+# CONFIG_KFENCE is not set
+CONFIG_HAVE_ARCH_KMSAN=y
+# end of Memory Debugging
+
+CONFIG_DEBUG_SHIRQ=y
+
+#
+# Debug Oops, Lockups and Hangs
+#
+CONFIG_PANIC_ON_OOPS=y
+CONFIG_PANIC_ON_OOPS_VALUE=1
+CONFIG_PANIC_TIMEOUT=0
+CONFIG_LOCKUP_DETECTOR=y
+CONFIG_SOFTLOCKUP_DETECTOR=y
+# CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC is not set
+CONFIG_HARDLOCKUP_DETECTOR_PERF=y
+CONFIG_HARDLOCKUP_CHECK_TIMESTAMP=y
+CONFIG_HARDLOCKUP_DETECTOR=y
+CONFIG_BOOTPARAM_HARDLOCKUP_PANIC=y
+CONFIG_DETECT_HUNG_TASK=y
+CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=480
+# CONFIG_BOOTPARAM_HUNG_TASK_PANIC is not set
+CONFIG_WQ_WATCHDOG=y
+# CONFIG_TEST_LOCKUP is not set
+# end of Debug Oops, Lockups and Hangs
+
+#
+# Scheduler Debugging
+#
+CONFIG_SCHED_DEBUG=y
+CONFIG_SCHED_INFO=y
+CONFIG_SCHEDSTATS=y
+# end of Scheduler Debugging
+
+# CONFIG_DEBUG_TIMEKEEPING is not set
+# CONFIG_DEBUG_PREEMPT is not set
+
+#
+# Lock Debugging (spinlocks, mutexes, etc...)
+#
+CONFIG_LOCK_DEBUGGING_SUPPORT=y
+# CONFIG_PROVE_LOCKING is not set
+# CONFIG_LOCK_STAT is not set
+# CONFIG_DEBUG_RT_MUTEXES is not set
+# CONFIG_DEBUG_SPINLOCK is not set
+# CONFIG_DEBUG_MUTEXES is not set
+# CONFIG_DEBUG_WW_MUTEX_SLOWPATH is not set
+# CONFIG_DEBUG_RWSEMS is not set
+# CONFIG_DEBUG_LOCK_ALLOC is not set
+CONFIG_DEBUG_ATOMIC_SLEEP=y
+# CONFIG_DEBUG_LOCKING_API_SELFTESTS is not set
+CONFIG_LOCK_TORTURE_TEST=m
+# CONFIG_WW_MUTEX_SELFTEST is not set
+# CONFIG_SCF_TORTURE_TEST is not set
+# CONFIG_CSD_LOCK_WAIT_DEBUG is not set
+# end of Lock Debugging (spinlocks, mutexes, etc...)
+
+# CONFIG_NMI_CHECK_CPU is not set
+# CONFIG_DEBUG_IRQFLAGS is not set
+CONFIG_STACKTRACE=y
+# CONFIG_WARN_ALL_UNSEEDED_RANDOM is not set
+# CONFIG_DEBUG_KOBJECT is not set
+
+#
+# Debug kernel data structures
+#
+CONFIG_DEBUG_LIST=y
+# CONFIG_DEBUG_PLIST is not set
+# CONFIG_DEBUG_SG is not set
+# CONFIG_DEBUG_NOTIFIERS is not set
+CONFIG_BUG_ON_DATA_CORRUPTION=y
+# CONFIG_DEBUG_MAPLE_TREE is not set
+# end of Debug kernel data structures
+
+# CONFIG_DEBUG_CREDENTIALS is not set
+
+#
+# RCU Debugging
+#
+CONFIG_TORTURE_TEST=m
+# CONFIG_RCU_SCALE_TEST is not set
+CONFIG_RCU_TORTURE_TEST=m
+# CONFIG_RCU_REF_SCALE_TEST is not set
+CONFIG_RCU_CPU_STALL_TIMEOUT=60
+CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=0
+# CONFIG_RCU_CPU_STALL_CPUTIME is not set
+# CONFIG_RCU_TRACE is not set
+# CONFIG_RCU_EQS_DEBUG is not set
+# end of RCU Debugging
+
+# CONFIG_DEBUG_WQ_FORCE_RR_CPU is not set
+# CONFIG_CPU_HOTPLUG_STATE_CONTROL is not set
+CONFIG_LATENCYTOP=y
+# CONFIG_DEBUG_CGROUP_REF is not set
+CONFIG_USER_STACKTRACE_SUPPORT=y
+CONFIG_NOP_TRACER=y
+CONFIG_HAVE_RETHOOK=y
+CONFIG_RETHOOK=y
+CONFIG_HAVE_FUNCTION_TRACER=y
+CONFIG_HAVE_FUNCTION_GRAPH_TRACER=y
+CONFIG_HAVE_DYNAMIC_FTRACE=y
+CONFIG_HAVE_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
+CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS=y
+CONFIG_HAVE_DYNAMIC_FTRACE_NO_PATCHABLE=y
+CONFIG_HAVE_FTRACE_MCOUNT_RECORD=y
+CONFIG_HAVE_SYSCALL_TRACEPOINTS=y
+CONFIG_HAVE_FENTRY=y
+CONFIG_HAVE_OBJTOOL_MCOUNT=y
+CONFIG_HAVE_OBJTOOL_NOP_MCOUNT=y
+CONFIG_HAVE_C_RECORDMCOUNT=y
+CONFIG_HAVE_BUILDTIME_MCOUNT_SORT=y
+CONFIG_BUILDTIME_MCOUNT_SORT=y
+CONFIG_TRACER_MAX_TRACE=y
+CONFIG_TRACE_CLOCK=y
+CONFIG_RING_BUFFER=y
+CONFIG_EVENT_TRACING=y
+CONFIG_CONTEXT_SWITCH_TRACER=y
+CONFIG_TRACING=y
+CONFIG_GENERIC_TRACER=y
+CONFIG_TRACING_SUPPORT=y
+CONFIG_FTRACE=y
+# CONFIG_BOOTTIME_TRACING is not set
+CONFIG_FUNCTION_TRACER=y
+CONFIG_FUNCTION_GRAPH_TRACER=y
+CONFIG_DYNAMIC_FTRACE=y
+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
+CONFIG_DYNAMIC_FTRACE_WITH_ARGS=y
+# CONFIG_FPROBE is not set
+CONFIG_FUNCTION_PROFILER=y
+CONFIG_STACK_TRACER=y
+# CONFIG_IRQSOFF_TRACER is not set
+# CONFIG_PREEMPT_TRACER is not set
+CONFIG_SCHED_TRACER=y
+CONFIG_HWLAT_TRACER=y
+# CONFIG_OSNOISE_TRACER is not set
+# CONFIG_TIMERLAT_TRACER is not set
+# CONFIG_MMIOTRACE is not set
+CONFIG_FTRACE_SYSCALLS=y
+CONFIG_TRACER_SNAPSHOT=y
+# CONFIG_TRACER_SNAPSHOT_PER_CPU_SWAP is not set
+CONFIG_BRANCH_PROFILE_NONE=y
+# CONFIG_PROFILE_ANNOTATED_BRANCHES is not set
+# CONFIG_BLK_DEV_IO_TRACE is not set
+CONFIG_KPROBE_EVENTS=y
+# CONFIG_KPROBE_EVENTS_ON_NOTRACE is not set
+CONFIG_UPROBE_EVENTS=y
+CONFIG_BPF_EVENTS=y
+CONFIG_DYNAMIC_EVENTS=y
+CONFIG_PROBE_EVENTS=y
+CONFIG_BPF_KPROBE_OVERRIDE=y
+CONFIG_FTRACE_MCOUNT_RECORD=y
+CONFIG_FTRACE_MCOUNT_USE_CC=y
+CONFIG_TRACING_MAP=y
+CONFIG_SYNTH_EVENTS=y
+# CONFIG_USER_EVENTS is not set
+CONFIG_HIST_TRIGGERS=y
+# CONFIG_TRACE_EVENT_INJECT is not set
+# CONFIG_TRACEPOINT_BENCHMARK is not set
+CONFIG_RING_BUFFER_BENCHMARK=m
+# CONFIG_TRACE_EVAL_MAP_FILE is not set
+# CONFIG_FTRACE_RECORD_RECURSION is not set
+# CONFIG_FTRACE_STARTUP_TEST is not set
+# CONFIG_FTRACE_SORT_STARTUP_TEST is not set
+# CONFIG_RING_BUFFER_STARTUP_TEST is not set
+# CONFIG_RING_BUFFER_VALIDATE_TIME_DELTAS is not set
+# CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+# CONFIG_SYNTH_EVENT_GEN_TEST is not set
+# CONFIG_KPROBE_EVENT_GEN_TEST is not set
+# CONFIG_HIST_TRIGGERS_DEBUG is not set
+# CONFIG_RV is not set
+CONFIG_PROVIDE_OHCI1394_DMA_INIT=y
+# CONFIG_SAMPLES is not set
+CONFIG_HAVE_SAMPLE_FTRACE_DIRECT=y
+CONFIG_HAVE_SAMPLE_FTRACE_DIRECT_MULTI=y
+CONFIG_ARCH_HAS_DEVMEM_IS_ALLOWED=y
+CONFIG_STRICT_DEVMEM=y
+# CONFIG_IO_STRICT_DEVMEM is not set
+
+#
+# x86 Debugging
+#
+CONFIG_EARLY_PRINTK_USB=y
+CONFIG_X86_VERBOSE_BOOTUP=y
+CONFIG_EARLY_PRINTK=y
+CONFIG_EARLY_PRINTK_DBGP=y
+CONFIG_EARLY_PRINTK_USB_XDBC=y
+# CONFIG_EFI_PGT_DUMP is not set
+# CONFIG_DEBUG_TLBFLUSH is not set
+CONFIG_HAVE_MMIOTRACE_SUPPORT=y
+# CONFIG_X86_DECODER_SELFTEST is not set
+CONFIG_IO_DELAY_0X80=y
+# CONFIG_IO_DELAY_0XED is not set
+# CONFIG_IO_DELAY_UDELAY is not set
+# CONFIG_IO_DELAY_NONE is not set
+CONFIG_DEBUG_BOOT_PARAMS=y
+# CONFIG_CPA_DEBUG is not set
+# CONFIG_DEBUG_ENTRY is not set
+# CONFIG_DEBUG_NMI_SELFTEST is not set
+# CONFIG_X86_DEBUG_FPU is not set
+# CONFIG_PUNIT_ATOM_DEBUG is not set
+CONFIG_UNWINDER_ORC=y
+# CONFIG_UNWINDER_FRAME_POINTER is not set
+# end of x86 Debugging
+
+#
+# Kernel Testing and Coverage
+#
+# CONFIG_KUNIT is not set
+# CONFIG_NOTIFIER_ERROR_INJECTION is not set
+CONFIG_FUNCTION_ERROR_INJECTION=y
+# CONFIG_FAULT_INJECTION is not set
+CONFIG_ARCH_HAS_KCOV=y
+CONFIG_CC_HAS_SANCOV_TRACE_PC=y
+# CONFIG_KCOV is not set
+CONFIG_RUNTIME_TESTING_MENU=y
+# CONFIG_TEST_DHRY is not set
+# CONFIG_LKDTM is not set
+# CONFIG_TEST_MIN_HEAP is not set
+# CONFIG_TEST_DIV64 is not set
+# CONFIG_BACKTRACE_SELF_TEST is not set
+# CONFIG_TEST_REF_TRACKER is not set
+# CONFIG_RBTREE_TEST is not set
+# CONFIG_REED_SOLOMON_TEST is not set
+# CONFIG_INTERVAL_TREE_TEST is not set
+# CONFIG_PERCPU_TEST is not set
+# CONFIG_ATOMIC64_SELFTEST is not set
+# CONFIG_ASYNC_RAID6_TEST is not set
+# CONFIG_TEST_HEXDUMP is not set
+# CONFIG_STRING_SELFTEST is not set
+# CONFIG_TEST_STRING_HELPERS is not set
+# CONFIG_TEST_KSTRTOX is not set
+# CONFIG_TEST_PRINTF is not set
+# CONFIG_TEST_SCANF is not set
+# CONFIG_TEST_BITMAP is not set
+# CONFIG_TEST_UUID is not set
+# CONFIG_TEST_XARRAY is not set
+# CONFIG_TEST_MAPLE_TREE is not set
+# CONFIG_TEST_RHASHTABLE is not set
+# CONFIG_TEST_IDA is not set
+# CONFIG_TEST_LKM is not set
+# CONFIG_TEST_BITOPS is not set
+# CONFIG_TEST_VMALLOC is not set
+# CONFIG_TEST_USER_COPY is not set
+# CONFIG_TEST_BPF is not set
+# CONFIG_TEST_BLACKHOLE_DEV is not set
+# CONFIG_FIND_BIT_BENCHMARK is not set
+# CONFIG_TEST_FIRMWARE is not set
+# CONFIG_TEST_SYSCTL is not set
+# CONFIG_TEST_UDELAY is not set
+# CONFIG_TEST_STATIC_KEYS is not set
+# CONFIG_TEST_DYNAMIC_DEBUG is not set
+# CONFIG_TEST_KMOD is not set
+# CONFIG_TEST_MEMCAT_P is not set
+# CONFIG_TEST_LIVEPATCH is not set
+# CONFIG_TEST_MEMINIT is not set
+# CONFIG_TEST_HMM is not set
+# CONFIG_TEST_FREE_PAGES is not set
+# CONFIG_TEST_FPU is not set
+# CONFIG_TEST_CLOCKSOURCE_WATCHDOG is not set
+CONFIG_ARCH_USE_MEMTEST=y
+# CONFIG_MEMTEST is not set
+# CONFIG_HYPERV_TESTING is not set
+# end of Kernel Testing and Coverage
+
+#
+# Rust hacking
+#
+# end of Rust hacking
+# end of Kernel hacking
+
+--jJwnjB4X99DgDJ7r
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: attachment; filename="job-script"
+
+#!/bin/sh
+
+export_top_env()
+{
+	export suite='ltp'
+	export testcase='ltp'
+	export category='functional'
+	export need_memory='4G'
+	export job_origin='ltp-syscalls.yaml'
+	export queue_cmdline_keys=
+	export queue='vip'
+	export testbox='lkp-ivb-d04'
+	export tbox_group='lkp-ivb-d04'
+	export submit_id='648fb43f0b9a9351afd6844e'
+	export job_file='/lkp/jobs/scheduled/lkp-ivb-d04/ltp-1HDD-xfs-syscalls-05-debian-12-x86_64-20220629.cgz-eca2040972b4-20230619-20911-zs0jaz-0.yaml'
+	export id='64b8bace98ccebe86dabbc1bc1ace1d9d8e48ad9'
+	export queuer_version='/lkp/xsang/.src-20230618-215932'
+	export model='Ivy Bridge'
+	export nr_node=1
+	export nr_cpu=4
+	export memory='8G'
+	export nr_ssd_partitions=1
+	export nr_hdd_partitions=4
+	export ssd_partitions='/dev/disk/by-id/ata-INTEL_SSDSC2KB240G8_BTYF836606UQ240AGN-part1'
+	export hdd_partitions='/dev/disk/by-id/ata-WDC_WD20EZRX-00D8PB0_WD-WCC4M0KTT6NK-part2 /dev/disk/by-id/ata-WDC_WD20EZRX-00D8PB0_WD-WCC4M0KTT6NK-part3 /dev/disk/by-id/ata-WDC_WD20EZRX-00D8PB0_WD-WCC4M0KTT6NK-part4 /dev/disk/by-id/ata-WDC_WD20EZRX-00D8PB0_WD-WCC4M0KTT6NK-part5'
+	export rootfs_partition='/dev/disk/by-id/ata-WDC_WD20EZRX-00D8PB0_WD-WCC4M0KTT6NK-part1'
+	export brand='Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz'
+	export commit='eca2040972b411ec27483bf75dc8b84e730e88ff'
+	export netconsole_port=6676
+	export ucode='0x21'
+	export need_kconfig_hw='{"R8169"=>"y"}
+SATA_AHCI
+DRM_I915'
+	export need_kconfig='BLK_DEV_SD
+SCSI
+{"BLOCK"=>"y"}
+SATA_AHCI
+SATA_AHCI_PLATFORM
+ATA
+{"PCI"=>"y"}
+XFS_FS
+BLK_DEV_LOOP
+{"CAN"=>"m"}
+{"CAN_DEV"=>"m"}
+{"CAN_RAW"=>"m"}
+{"CAN_VCAN"=>"m"}
+{"MINIX_FS"=>"m"}
+{"EXPERT"=>"y"}
+{"CHECKPOINT_RESTORE"=>"y"}'
+	export rootfs='debian-12-x86_64-20220629.cgz'
+	export initrds='linux_headers'
+	export kconfig='x86_64-rhel-8.3-ltp'
+	export enqueue_time='2023-06-19 09:49:51 +0800'
+	export _id='648fb43f0b9a9351afd6844e'
+	export _rt='/result/ltp/1HDD-xfs-syscalls-05/lkp-ivb-d04/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff'
+	export user='lkp'
+	export compiler='gcc-12'
+	export LKP_SERVER='internal-lkp-server'
+	export head_commit='893cfa9a0f01795705bee0039a0ce07f80b915d8'
+	export base_commit='858fd168a95c5b9669aac8db6c14a9aeab446375'
+	export branch='linux-next/master'
+	export result_root='/result/ltp/1HDD-xfs-syscalls-05/lkp-ivb-d04/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/3'
+	export scheduler_version='/lkp/lkp/src'
+	export arch='x86_64'
+	export max_uptime=1200
+	export initrd='/osimage/debian/debian-12-x86_64-20220629.cgz'
+	export bootloader_append='root=/dev/ram0
+RESULT_ROOT=/result/ltp/1HDD-xfs-syscalls-05/lkp-ivb-d04/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/3
+BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/vmlinuz-6.4.0-rc1-00001-geca2040972b4
+branch=linux-next/master
+job=/lkp/jobs/scheduled/lkp-ivb-d04/ltp-1HDD-xfs-syscalls-05-debian-12-x86_64-20220629.cgz-eca2040972b4-20230619-20911-zs0jaz-0.yaml
+user=lkp
+ARCH=x86_64
+kconfig=x86_64-rhel-8.3-ltp
+commit=eca2040972b411ec27483bf75dc8b84e730e88ff
+initcall_debug
+nmi_watchdog=0
+max_uptime=1200
+LKP_SERVER=internal-lkp-server
+nokaslr
+selinux=0
+debug
+apic=debug
+sysrq_always_enabled
+rcupdate.rcu_cpu_stall_timeout=100
+net.ifnames=0
+printk.devkmsg=on
+panic=-1
+softlockup_panic=1
+nmi_watchdog=panic
+oops=panic
+load_ramdisk=2
+prompt_ramdisk=0
+drbd.minor_count=8
+systemd.log_level=err
+ignore_loglevel
+console=tty0
+earlyprintk=ttyS0,115200
+console=ttyS0,115200
+vga=normal
+rw'
+	export modules_initrd='/pkg/linux/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/modules.cgz'
+	export linux_headers_initrd='/pkg/linux/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/linux-headers.cgz'
+	export bm_initrd='/osimage/deps/debian-12-x86_64-20220629.cgz/run-ipconfig_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/lkp_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/rsync-rootfs_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/fs_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/ltp_20230520.cgz,/osimage/pkg/debian-12-x86_64-20220629.cgz/ltp-x86_64-14c1f76-1_20230520.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/hw_20230326.cgz'
+	export ucode_initrd='/osimage/ucode/intel-ucode-20230406.cgz'
+	export lkp_initrd='/osimage/user/lkp/lkp-x86_64.cgz'
+	export site='inn'
+	export LKP_CGI_PORT=80
+	export LKP_CIFS_PORT=139
+	export last_kernel='4.20.0'
+	export kbuild_queue_analysis=1
+	export kernel='/pkg/linux/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/vmlinuz-6.4.0-rc1-00001-geca2040972b4'
+	export dequeue_time='2023-06-19 13:33:27 +0800'
+	export job_initrd='/lkp/jobs/scheduled/lkp-ivb-d04/ltp-1HDD-xfs-syscalls-05-debian-12-x86_64-20220629.cgz-eca2040972b4-20230619-20911-zs0jaz-0.cgz'
+
+	[ -n "$LKP_SRC" ] ||
+	export LKP_SRC=/lkp/${user:-lkp}/src
+}
+
+run_job()
+{
+	echo $$ > $TMP/run-job.pid
+
+	. $LKP_SRC/lib/http.sh
+	. $LKP_SRC/lib/job.sh
+	. $LKP_SRC/lib/env.sh
+
+	export_top_env
+
+	run_setup nr_hdd=1 $LKP_SRC/setup/disk
+
+	run_setup fs='xfs' $LKP_SRC/setup/fs
+
+	run_monitor $LKP_SRC/monitors/wrapper kmsg
+	run_monitor $LKP_SRC/monitors/wrapper heartbeat
+	run_monitor $LKP_SRC/monitors/wrapper meminfo
+	run_monitor $LKP_SRC/monitors/wrapper kmemleak
+	run_monitor $LKP_SRC/monitors/wrapper oom-killer
+	run_monitor $LKP_SRC/monitors/plain/watchdog
+
+	run_test test='syscalls-05' $LKP_SRC/tests/wrapper ltp
+}
+
+extract_stats()
+{
+	export stats_part_begin=
+	export stats_part_end=
+
+	env test='syscalls-05' $LKP_SRC/stats/wrapper ltp
+	$LKP_SRC/stats/wrapper kmsg
+	$LKP_SRC/stats/wrapper meminfo
+	$LKP_SRC/stats/wrapper kmemleak
+
+	$LKP_SRC/stats/wrapper time ltp.time
+	$LKP_SRC/stats/wrapper dmesg
+	$LKP_SRC/stats/wrapper kmsg
+	$LKP_SRC/stats/wrapper last_state
+	$LKP_SRC/stats/wrapper stderr
+	$LKP_SRC/stats/wrapper time
+}
+
+"$@"
+
+--jJwnjB4X99DgDJ7r
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: attachment; filename="ltp"
+Content-Transfer-Encoding: quoted-printable
+
+/usr/bin/mkisofs
+2023-06-19 05:37:54 ln -sf /usr/sbin/iptables-nft /usr/bin/iptables
+2023-06-19 05:37:54 ln -sf /usr/sbin/ip6tables-nft /usr/bin/ip6tables
+make: Entering directory '/usr/src/linux-headers-x86_64-rhel-8.3-ltp-eca204=
+0972b411ec27483bf75dc8b84e730e88ff-bpf'
+  CC [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod.o
+  CC [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod_dep.o
+  MODPOST /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/Modul=
+e.symvers
+  CC [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod.mod.o
+  CC [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod_dep.mod.o
+  LD [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod_dep.ko
+  LD [M]  /lkp/benchmarks/ltp/testcases/kernel/syscalls/delete_module/dummy=
+_del_mod.ko
+make: Leaving directory '/usr/src/linux-headers-x86_64-rhel-8.3-ltp-eca2040=
+972b411ec27483bf75dc8b84e730e88ff-bpf'
+2023-06-19 05:38:04 export LTP_RUNTIME_MUL=3D2
+2023-06-19 05:38:04 ./runltp -f syscalls-05 -d /fs/sda2/tmpdir
+INFO: creating /lkp/benchmarks/ltp/output directory
+INFO: creating /lkp/benchmarks/ltp/results directory
+Checking for required user/group ids
+
+'root' user id and group found.
+'nobody' user id and group found.
+'bin' user id and group found.
+'daemon' user id and group found.
+Users group found.
+Sys group found.
+Required users/groups exist.
+If some fields are empty or look unusual you may have an old version.
+Compare to the current minimal requirements in Documentation/Changes.
+
+/etc/os-release
+PRETTY_NAME=3D"Debian GNU/Linux bookworm/sid"
+NAME=3D"Debian GNU/Linux"
+VERSION_CODENAME=3Dbookworm
+ID=3Ddebian
+HOME_URL=3D"https://www.debian.org/"
+SUPPORT_URL=3D"https://www.debian.org/support"
+BUG_REPORT_URL=3D"https://bugs.debian.org/"
+
+uname:
+Linux lkp-ivb-d04 6.4.0-rc1-00001-geca2040972b4 #1 SMP PREEMPT_DYNAMIC Sun =
+Jun 18 23:01:16 CST 2023 x86_64 GNU/Linux
+
+/proc/cmdline
+ip=3D::::lkp-ivb-d04::dhcp root=3D/dev/ram0 RESULT_ROOT=3D/result/ltp/1HDD-=
+xfs-syscalls-05/lkp-ivb-d04/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-l=
+tp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/3 BOOT_IMAGE=3D/pkg/linu=
+x/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/vmlin=
+uz-6.4.0-rc1-00001-geca2040972b4 branch=3Dlinux-next/master job=3D/lkp/jobs=
+/scheduled/lkp-ivb-d04/ltp-1HDD-xfs-syscalls-05-debian-12-x86_64-20220629.c=
+gz-eca2040972b4-20230619-20911-zs0jaz-0.yaml user=3Dlkp ARCH=3Dx86_64 kconf=
+ig=3Dx86_64-rhel-8.3-ltp commit=3Deca2040972b411ec27483bf75dc8b84e730e88ff =
+initcall_debug nmi_watchdog=3D0 max_uptime=3D1200 LKP_SERVER=3Dinternal-lkp=
+-server nokaslr selinux=3D0 debug apic=3Ddebug sysrq_always_enabled rcupdat=
+e.rcu_cpu_stall_timeout=3D100 net.ifnames=3D0 printk.devkmsg=3Don panic=3D-=
+1 softlockup_panic=3D1 nmi_watchdog=3Dpanic oops=3Dpanic load_ramdisk=3D2 p=
+rompt_ramdisk=3D0 drbd.minor_count=3D8 systemd.log_level=3Derr ignore_logle=
+vel console=3Dtty0 earlyprintk=3DttyS0,115200 console=3DttyS0,115200 vga=3D=
+normal rw
+
+Gnu C                  gcc (Debian 12.2.0-14) 12.2.0
+Clang                =20
+Gnu make               4.3
+util-linux             2.38.1
+mount                  linux 2.38.1 (libmount 2.38.1: selinux, smack, btrfs=
+, verity, namespaces, assert, debug)
+modutils               30
+e2fsprogs              1.46.6-rc1
+Linux C Library        gnu/libc.so.6
+Dynamic linker (ldd)   2.36
+Procps                 3.3.17
+Net-tools              2.10
+iproute2               1.0.1
+iputils                20221126
+ethtool                6.1
+Kbd                    loadkeys:
+Sh-utils               9.1
+Modules Loaded         xfs dm_mod netconsole btrfs blake2b_generic xor raid=
+6_pq zstd_compress libcrc32c intel_rapl_msr intel_rapl_common x86_pkg_temp_=
+thermal intel_powerclamp coretemp kvm_intel sd_mod t10_pi crc64_rocksoft_ge=
+neric kvm irqbypass crc64_rocksoft crct10dif_pclmul crc64 sg crc32_pclmul i=
+pmi_devintf crc32c_intel i915 ipmi_msghandler ghash_clmulni_intel sha512_ss=
+se3 drm_buddy intel_gtt rapl wmi_bmof drm_display_helper drm_kms_helper sys=
+copyarea i2c_i801 ahci intel_cstate sysfillrect libahci sysimgblt intel_unc=
+ore libata i2c_smbus ttm mei_me lpc_ich mei video wmi binfmt_misc fuse drm =
+ip_tables
+
+free reports:
+               total        used        free      shared  buff/cache   avai=
+lable
+Mem:         6924892      894088     2901256        5444     3129548     28=
+27692
+Swap:              0           0           0
+
+cpuinfo:
+Architecture:                    x86_64
+CPU op-mode(s):                  32-bit, 64-bit
+Address sizes:                   36 bits physical, 48 bits virtual
+Byte Order:                      Little Endian
+CPU(s):                          4
+On-line CPU(s) list:             0-3
+Vendor ID:                       GenuineIntel
+BIOS Vendor ID:                  Intel(R) Corporation
+Model name:                      Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz
+BIOS Model name:                 Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz   =
+                     CPU @ 3.3GHz
+BIOS CPU family:                 206
+CPU family:                      6
+Model:                           58
+Thread(s) per core:              2
+Core(s) per socket:              2
+Socket(s):                       1
+Stepping:                        9
+CPU(s) scaling MHz:              100%
+CPU max MHz:                     3300.0000
+CPU min MHz:                     1600.0000
+BogoMIPS:                        6585.47
+Flags:                           fpu vme de pse tsc msr pae mce cx8 apic se=
+p mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm p=
+be syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xt=
+opology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vm=
+x est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer=
+ xsave avx f16c lahf_lm cpuid_fault epb pti ssbd ibrs ibpb stibp tpr_shadow=
+ flexpriority ept vpid fsgsbase smep erms xsaveopt dtherm arat pln pts vnmi=
+ md_clear flush_l1d
+Virtualization:                  VT-x
+L1d cache:                       64 KiB (2 instances)
+L1i cache:                       64 KiB (2 instances)
+L2 cache:                        512 KiB (2 instances)
+L3 cache:                        3 MiB (1 instance)
+NUMA node(s):                    1
+NUMA node0 CPU(s):               0-3
+Vulnerability Itlb multihit:     KVM: Mitigation: VMX disabled
+Vulnerability L1tf:              Mitigation; PTE Inversion; VMX conditional=
+ cache flushes, SMT vulnerable
+Vulnerability Mds:               Mitigation; Clear CPU buffers; SMT vulnera=
+ble
+Vulnerability Meltdown:          Mitigation; PTI
+Vulnerability Mmio stale data:   Unknown: No mitigations
+Vulnerability Retbleed:          Not affected
+Vulnerability Spec store bypass: Mitigation; Speculative Store Bypass disab=
+led via prctl
+Vulnerability Spectre v1:        Mitigation; usercopy/swapgs barriers and _=
+_user pointer sanitization
+Vulnerability Spectre v2:        Vulnerable, IBPB: conditional, IBRS_FW, ST=
+IBP: conditional, RSB filling, PBRSB-eIBRS: Not affected
+Vulnerability Srbds:             Not affected
+Vulnerability Tsx async abort:   Not affected
+
+available filesystems:
+autofs bdev binfmt_misc bpf btrfs cgroup cgroup2 configfs cpuset debugfs de=
+vpts devtmpfs efivarfs ext3 ext4 fuse fuseblk fusectl hugetlbfs mqueue nfs =
+nfs4 pipefs proc pstore ramfs rpc_pipefs securityfs sockfs sysfs tmpfs trac=
+efs xfs
+
+mounted filesystems (/proc/mounts):
+rootfs / rootfs rw 0 0
+proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
+sysfs /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0
+devtmpfs /dev devtmpfs rw,nosuid,size=3D4096k,nr_inodes=3D730086,mode=3D755=
+ 0 0
+securityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime =
+0 0
+tmpfs /dev/shm tmpfs rw,nosuid,nodev 0 0
+devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid=3D5,mode=3D620,ptmxmod=
+e=3D000 0 0
+tmpfs /run tmpfs rw,nosuid,nodev,size=3D1384980k,nr_inodes=3D819200,mode=3D=
+755 0 0
+tmpfs /run/lock tmpfs rw,nosuid,nodev,noexec,relatime,size=3D5120k 0 0
+cgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate,m=
+emory_recursiveprot 0 0
+pstore /sys/fs/pstore pstore rw,nosuid,nodev,noexec,relatime 0 0
+bpf /sys/fs/bpf bpf rw,nosuid,nodev,noexec,relatime,mode=3D700 0 0
+systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd=3D30,pgrp=3D1,time=
+out=3D0,minproto=3D5,maxproto=3D5,direct,pipe_ino=3D59772 0 0
+hugetlbfs /dev/hugepages hugetlbfs rw,relatime,pagesize=3D2M 0 0
+mqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime 0 0
+debugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime 0 0
+tracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0
+fusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime 0 =
+0
+ramfs /run/credentials/systemd-sysctl.service ramfs ro,nosuid,nodev,noexec,=
+relatime,mode=3D700 0 0
+configfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime 0 0
+ramfs /run/credentials/systemd-sysusers.service ramfs ro,nosuid,nodev,noexe=
+c,relatime,mode=3D700 0 0
+ramfs /run/credentials/systemd-tmpfiles-setup-dev.service ramfs ro,nosuid,n=
+odev,noexec,relatime,mode=3D700 0 0
+binfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc rw,nosuid,nodev,noexec,rel=
+atime 0 0
+ramfs /run/credentials/systemd-tmpfiles-setup.service ramfs ro,nosuid,nodev=
+,noexec,relatime,mode=3D700 0 0
+sunrpc /run/rpc_pipefs rpc_pipefs rw,relatime 0 0
+tmp /tmp tmpfs rw 0 0
+/dev/sda1 /opt/rootfs btrfs rw,relatime,space_cache,subvolid=3D5,subvol=3D/=
+ 0 0
+/dev/sda2 /fs/sda2 xfs rw,relatime,attr2,inode64,logbufs=3D8,logbsize=3D32k=
+,noquota 0 0
+
+mounted filesystems (df):
+Filesystem     Type      Size  Used Avail Use% Mounted on
+devtmpfs       devtmpfs  4.0M     0  4.0M   0% /dev
+tmpfs          tmpfs     3.4G     0  3.4G   0% /dev/shm
+tmpfs          tmpfs     1.4G  600K  1.4G   1% /run
+tmpfs          tmpfs     5.0M     0  5.0M   0% /run/lock
+tmp            tmpfs     3.4G  484K  3.4G   1% /tmp
+/dev/sda1      btrfs     400G  4.2G  394G   2% /opt/rootfs
+/dev/sda2      xfs       300G  339M  300G   1% /fs/sda2
+
+AppArmor disabled
+
+SELinux mode: unknown
+no big block device was specified on commandline.
+Tests which require a big block device are disabled.
+You can specify it with option -z
+COMMAND:    /lkp/benchmarks/ltp/bin/ltp-pan   -e -S   -a 3909     -n 3909 -=
+p -f /fs/sda2/tmpdir/ltp-tjez5FQjAm/alltests -l /lkp/benchmarks/ltp/results=
+/LTP_RUN_ON-2023_06_19-05h_38m_05s.log  -C /lkp/benchmarks/ltp/output/LTP_R=
+UN_ON-2023_06_19-05h_38m_05s.failed -T /lkp/benchmarks/ltp/output/LTP_RUN_O=
+N-2023_06_19-05h_38m_05s.tconf
+LOG File: /lkp/benchmarks/ltp/results/LTP_RUN_ON-2023_06_19-05h_38m_05s.log
+FAILED COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2023_06_19-05h_3=
+8m_05s.failed
+TCONF COMMAND File: /lkp/benchmarks/ltp/output/LTP_RUN_ON-2023_06_19-05h_38=
+m_05s.tconf
+Running tests.......
+<<<test_start>>>
+tag=3Dbpf_prog03 stime=3D1687153086
+cmdline=3D"bpf_prog03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+bpf_common.c:16: TINFO: Raising RLIMIT_MEMLOCK to 10485760
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+bpf_prog03.c:105: TPASS: Failed verification: EACCES (13)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dchdir01A stime=3D1687153086
+cmdline=3D"symlink01 -T chdir01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+chdir01     1  TPASS  :  chdir(2) to object file location through symbolic =
+link file is ok
+chdir01     2  TPASS  :  chdir(2) to non-existent object file location thro=
+ugh symbolic link file failed as expected
+chdir01     3  TPASS  :  Nested symbolic link access condition caught.  ELO=
+OP is returned
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dclock_adjtime02 stime=3D1687153086
+cmdline=3D"clock_adjtime02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clock_adjtime02.c:197: TINFO: Testing variant: syscall with old kernel spec
+clock_adjtime.h:160: TINFO: GET
+             mode: 0
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 10000
+         raw time: 1687153086(s) 818326(us)
+clock_adjtime.h:160: TINFO: TEST
+             mode: 0
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 10000
+         raw time: 1687153086(s) 818326(us)
+clock_adjtime02.c:184: TPASS: clock_adjtime(): failed as expected (mode=3D0=
+x0, uid=3D0)
+clock_adjtime.h:160: TINFO: GET
+             mode: 0
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 10000
+         raw time: 1687153086(s) 818370(us)
+clock_adjtime.h:160: TINFO: TEST
+             mode: 0
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 10000
+         raw time: 1687153086(s) 818370(us)
+clock_adjtime02.c:184: TPASS: clock_adjtime(): failed as expected (mode=3D0=
+x0, uid=3D0)
+clock_adjtime.h:160: TINFO: GET
+             mode: 0
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 10000
+         raw time: 1687153086(s) 818391(us)
+clock_adjtime02.c:184: TPASS: clock_adjtime(): failed as expected (mode=3D0=
+x403f, uid=3D0)
+clock_adjtime.h:160: TINFO: GET
+             mode: 0
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 10000
+         raw time: 1687153086(s) 818411(us)
+clock_adjtime.h:160: TINFO: TEST
+             mode: 16384
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 8999
+         raw time: 1687153086(s) 818411(us)
+clock_adjtime02.c:184: TPASS: clock_adjtime(): failed as expected (mode=3D0=
+x4000, uid=3D0)
+clock_adjtime.h:160: TINFO: GET
+             mode: 0
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 10000
+         raw time: 1687153086(s) 818432(us)
+clock_adjtime.h:160: TINFO: TEST
+             mode: 16384
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 11001
+         raw time: 1687153086(s) 818432(us)
+clock_adjtime02.c:184: TPASS: clock_adjtime(): failed as expected (mode=3D0=
+x4000, uid=3D0)
+clock_adjtime.h:160: TINFO: GET
+             mode: 0
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 10000
+         raw time: 1687153086(s) 818452(us)
+clock_adjtime.h:160: TINFO: TEST
+             mode: 16447
+           offset: 0
+        frequency: 0
+         maxerror: 16000000
+         esterror: 16000000
+           status: 64 (0x40)
+    time_constant: 2
+        precision: 1
+        tolerance: 32768000
+             tick: 10000
+         raw time: 1687153086(s) 818452(us)
+clock_adjtime02.c:184: TPASS: clock_adjtime(): failed as expected (mode=3D0=
+x403f, uid=3D65534)
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dclock_getres01 stime=3D1687153086
+cmdline=3D"clock_getres01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clock_getres01.c:62: TINFO: Testing variant: vDSO or syscall with libc spec
+clock_getres01.c:88: TPASS: clock_getres(REALTIME, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(MONOTONIC, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(PROCESS_CPUTIME_ID, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(THREAD_CPUTIME_ID, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_MONOTONIC_RAW, ...) succeede=
+d
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_REALTIME_COARSE, ...) succee=
+ded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_MONOTONIC_COARSE, ...) succe=
+eded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_BOOTTIME, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_REALTIME_ALARM, ...) succeed=
+ed
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_BOOTTIME_ALARM, ...) succeed=
+ed
+clock_getres01.c:88: TPASS: clock_getres(-1, ...) succeeded
+clock_getres01.c:62: TINFO: Testing variant: vDSO or syscall with libc spec=
+ with NULL res
+clock_getres01.c:88: TPASS: clock_getres(REALTIME, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(MONOTONIC, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(PROCESS_CPUTIME_ID, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(THREAD_CPUTIME_ID, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_MONOTONIC_RAW, ...) succeede=
+d
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_REALTIME_COARSE, ...) succee=
+ded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_MONOTONIC_COARSE, ...) succe=
+eded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_BOOTTIME, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_REALTIME_ALARM, ...) succeed=
+ed
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_BOOTTIME_ALARM, ...) succeed=
+ed
+clock_getres01.c:88: TPASS: clock_getres(-1, ...) succeeded
+clock_getres01.c:62: TINFO: Testing variant: syscall with old kernel spec
+clock_getres01.c:88: TPASS: clock_getres(REALTIME, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(MONOTONIC, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(PROCESS_CPUTIME_ID, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(THREAD_CPUTIME_ID, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_MONOTONIC_RAW, ...) succeede=
+d
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_REALTIME_COARSE, ...) succee=
+ded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_MONOTONIC_COARSE, ...) succe=
+eded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_BOOTTIME, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_REALTIME_ALARM, ...) succeed=
+ed
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_BOOTTIME_ALARM, ...) succeed=
+ed
+clock_getres01.c:88: TPASS: clock_getres(-1, ...) succeeded
+clock_getres01.c:62: TINFO: Testing variant: syscall with old kernel spec w=
+ith NULL res
+clock_getres01.c:88: TPASS: clock_getres(REALTIME, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(MONOTONIC, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(PROCESS_CPUTIME_ID, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(THREAD_CPUTIME_ID, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_MONOTONIC_RAW, ...) succeede=
+d
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_REALTIME_COARSE, ...) succee=
+ded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_MONOTONIC_COARSE, ...) succe=
+eded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_BOOTTIME, ...) succeeded
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_REALTIME_ALARM, ...) succeed=
+ed
+clock_getres01.c:88: TPASS: clock_getres(CLOCK_BOOTTIME_ALARM, ...) succeed=
+ed
+clock_getres01.c:88: TPASS: clock_getres(-1, ...) succeeded
+
+Summary:
+passed   44
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dclock_nanosleep01 stime=3D1687153086
+cmdline=3D"clock_nanosleep01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clock_nanosleep01.c:124: TINFO: Testing variant: vDSO or syscall with libc =
+spec
+clock_nanosleep01.c:139: TINFO: case NORMAL
+clock_nanosleep01.c:218: TPASS: clock_nanosleep() failed with: EINVAL (22)
+clock_nanosleep01.c:139: TINFO: case NORMAL
+clock_nanosleep01.c:218: TPASS: clock_nanosleep() failed with: EINVAL (22)
+clock_nanosleep01.c:139: TINFO: case NORMAL
+clock_nanosleep01.c:218: TPASS: clock_nanosleep() failed with: EINVAL (22)
+clock_nanosleep01.c:139: TINFO: case SEND_SIGINT
+clock_nanosleep01.c:208: TPASS: Timespec updated correctly
+clock_nanosleep01.c:218: TPASS: clock_nanosleep() failed with: EINTR (4)
+clock_nanosleep01.c:139: TINFO: case BAD_TS_ADDR_REQ
+clock_nanosleep01.c:143: TCONF: The libc wrapper may dereference req or rem
+clock_nanosleep01.c:139: TINFO: case BAD_TS_ADDR_REM
+clock_nanosleep01.c:143: TCONF: The libc wrapper may dereference req or rem
+clock_nanosleep01.c:124: TINFO: Testing variant: syscall with old kernel sp=
+ec
+clock_nanosleep01.c:139: TINFO: case NORMAL
+clock_nanosleep01.c:218: TPASS: clock_nanosleep() failed with: EINVAL (22)
+clock_nanosleep01.c:139: TINFO: case NORMAL
+clock_nanosleep01.c:218: TPASS: clock_nanosleep() failed with: EINVAL (22)
+clock_nanosleep01.c:139: TINFO: case NORMAL
+clock_nanosleep01.c:218: TPASS: clock_nanosleep() failed with: EOPNOTSUPP (=
+95)
+clock_nanosleep01.c:139: TINFO: case SEND_SIGINT
+clock_nanosleep01.c:208: TPASS: Timespec updated correctly
+clock_nanosleep01.c:218: TPASS: clock_nanosleep() failed with: EINTR (4)
+clock_nanosleep01.c:139: TINFO: case BAD_TS_ADDR_REQ
+clock_nanosleep01.c:218: TPASS: clock_nanosleep() failed with: EFAULT (14)
+clock_nanosleep01.c:139: TINFO: case BAD_TS_ADDR_REM
+clock_nanosleep01.c:218: TPASS: clock_nanosleep() failed with: EFAULT (14)
+
+Summary:
+passed   12
+failed   0
+broken   0
+skipped  2
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D2 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dclone03 stime=3D1687153088
+cmdline=3D"clone03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clone03.c:38: TPASS: pid(4071) passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dclone05 stime=3D1687153088
+cmdline=3D"clone05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clone05.c:48: TPASS: child_exited passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dclone09 stime=3D1687153088
+cmdline=3D"clone09"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clone09.c:59: TINFO: create clone in a new netns with 'CLONE_NEWNET' flag
+clone09.c:82: TPASS: sysctl params differ in new netns
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dclone302 stime=3D1687153088
+cmdline=3D"clone302"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+clone302.c:101: TPASS: invalid args: clone3() failed as expected: EFAULT (1=
+4)
+clone302.c:101: TPASS: zero size: clone3() failed as expected: EINVAL (22)
+clone302.c:101: TPASS: short size: clone3() failed as expected: EINVAL (22)
+clone302.c:101: TPASS: extra size: clone3() failed as expected: EFAULT (14)
+clone302.c:101: TPASS: sighand-no-VM: clone3() failed as expected: EINVAL (=
+22)
+clone302.c:101: TPASS: thread-no-sighand: clone3() failed as expected: EINV=
+AL (22)
+clone302.c:101: TPASS: fs-newns: clone3() failed as expected: EINVAL (22)
+clone302.c:101: TPASS: invalid pidfd: clone3() failed as expected: EFAULT (=
+14)
+clone302.c:101: TPASS: invalid signal: clone3() failed as expected: EINVAL =
+(22)
+clone302.c:101: TPASS: zero-stack-size: clone3() failed as expected: EINVAL=
+ (22)
+clone302.c:101: TPASS: invalid-stack: clone3() failed as expected: EINVAL (=
+22)
+
+Summary:
+passed   11
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dconnect01 stime=3D1687153088
+cmdline=3D"connect01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+connect01    1  TPASS  :  bad file descriptor successful
+connect01    2  TPASS  :  invalid socket buffer successful
+connect01    3  TPASS  :  invalid salen successful
+connect01    4  TPASS  :  invalid socket successful
+connect01    5  TPASS  :  already connected successful
+connect01    6  TPASS  :  connection refused successful
+connect01    7  TPASS  :  invalid address family successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Ddup06 stime=3D1687153088
+cmdline=3D"dup06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+dup06       1  TPASS  :  Test passed.
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Depoll01 stime=3D1687153088
+cmdline=3D"epoll-ltp"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+epoll01     0  TINFO  :  testing if epoll() system call works
+epoll01     0  TINFO  :  gettimeofday() works
+epoll01     0  TINFO  :  random number seeded with gettimeofday() [seed =3D=
+ 639294] works
+epoll01     0  TINFO  :  Testing epoll_create
+epoll01     1  TPASS  :  epoll_create with negative set size
+epoll01     2  TPASS  :  epoll_create with large set size (size =3D 2147483=
+647)
+epoll01     3  TPASS  :  epoll_create with large set size (size =3D 2147483=
+646)
+epoll01     4  TPASS  :  epoll_create with large set size (size =3D 2147483=
+645)
+epoll01     5  TPASS  :  epoll_create with large set size (size =3D 2147483=
+644)
+epoll01     6  TPASS  :  epoll_create with large set size (size =3D 2147483=
+643)
+epoll01     7  TPASS  :  epoll_create with large set size (size =3D 2147483=
+642)
+epoll01     8  TPASS  :  epoll_create with large set size (size =3D 2147483=
+641)
+epoll01     9  TPASS  :  epoll_create with large set size (size =3D 2147483=
+640)
+epoll01    10  TPASS  :  epoll_create with large set size (size =3D 2147483=
+639)
+epoll01    11  TPASS  :  epoll_create with large set size (size =3D 2147483=
+638)
+epoll01    12  TPASS  :  epoll_create with large set size (size =3D 2147483=
+637)
+epoll01    13  TPASS  :  epoll_create with large set size (size =3D 2147483=
+636)
+epoll01    14  TPASS  :  epoll_create with large set size (size =3D 2147483=
+635)
+epoll01    15  TPASS  :  epoll_create with large set size (size =3D 2147483=
+634)
+epoll01    16  TPASS  :  epoll_create with large set size (size =3D 2147483=
+633)
+epoll01    17  TPASS  :  epoll_create with large set size (size =3D 2147483=
+632)
+epoll01    18  TPASS  :  epoll_create with random large set size (size =3D =
+2106597162)
+epoll01    19  TPASS  :  epoll_create with random large set size (size =3D =
+1741785348)
+epoll01    20  TPASS  :  epoll_create with random large set size (size =3D =
+1035125229)
+epoll01    21  TPASS  :  epoll_create with random large set size (size =3D =
+414205396)
+epoll01    22  TPASS  :  epoll_create with random large set size (size =3D =
+1079757586)
+epoll01    23  TPASS  :  epoll_create with random large set size (size =3D =
+760609139)
+epoll01    24  TPASS  :  epoll_create with random large set size (size =3D =
+1011550322)
+epoll01    25  TPASS  :  epoll_create with random large set size (size =3D =
+656041651)
+epoll01    26  TPASS  :  epoll_create with random large set size (size =3D =
+2032931263)
+epoll01    27  TPASS  :  epoll_create with random large set size (size =3D =
+1729213347)
+epoll01    28  TPASS  :  epoll_create with random large set size (size =3D =
+649328074)
+epoll01    29  TPASS  :  epoll_create with random large set size (size =3D =
+115394127)
+epoll01    30  TPASS  :  epoll_create with random large set size (size =3D =
+1151020150)
+epoll01    31  TPASS  :  epoll_create with random large set size (size =3D =
+1175580231)
+epoll01    32  TPASS  :  epoll_create with random large set size (size =3D =
+1548361438)
+epoll01    33  TPASS  :  epoll_create with random large set size (size =3D =
+79374594)
+epoll01     0  TINFO  :  Summary: Of 33 tests, epoll_create failed 0 (100% =
+passed).
+epoll01     0  TINFO  :  Testing epoll_ctl
+epoll01     0  TINFO  :  Summary: Of 13824 tests, epoll_ctl failed 0 (100% =
+passed).
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D40 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D207 cstime=3D3466
+<<<test_end>>>
+<<<test_start>>>
+tag=3Depoll_wait02 stime=3D1687153128
+cmdline=3D"epoll_wait02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_timer_test.c:357: TINFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:369: TINFO: prctl(PR_GET_TIMERSLACK) =3D 50us
+tst_test.c:1566: TINFO: Updating max runtime to 0h 00m 09s
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 48s
+tst_timer_test.c:263: TINFO: epoll_wait() sleeping for 1000us 500 iteration=
+s, threshold 450.01us
+tst_timer_test.c:305: TINFO: min 1017us, max 1648us, median 1059us, trunc m=
+ean 1057.95us (discarded 25)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: epoll_wait() sleeping for 2000us 500 iteration=
+s, threshold 450.01us
+tst_timer_test.c:305: TINFO: min 2014us, max 3543us, median 2059us, trunc m=
+ean 2058.43us (discarded 25)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: epoll_wait() sleeping for 5000us 300 iteration=
+s, threshold 450.04us
+tst_timer_test.c:305: TINFO: min 5020us, max 6099us, median 5065us, trunc m=
+ean 5063.85us (discarded 15)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: epoll_wait() sleeping for 10000us 100 iteratio=
+ns, threshold 450.33us
+tst_timer_test.c:305: TINFO: min 10042us, max 10454us, median 10072us, trun=
+c mean 10069.64us (discarded 5)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: epoll_wait() sleeping for 25000us 50 iteration=
+s, threshold 451.29us
+tst_timer_test.c:305: TINFO: min 25028us, max 25103us, median 25073us, trun=
+c mean 25070.92us (discarded 2)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: epoll_wait() sleeping for 100000us 10 iteratio=
+ns, threshold 537.00us
+tst_timer_test.c:305: TINFO: min 100064us, max 100128us, median 100125us, t=
+runc mean 100117.89us (discarded 1)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: epoll_wait() sleeping for 1000000us 2 iteratio=
+ns, threshold 4400.00us
+tst_timer_test.c:305: TINFO: min 1000139us, max 1000998us, median 1000139us=
+, trunc mean 1000139.00us (discarded 1)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D8 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D7
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dexecle01 stime=3D1687153136
+cmdline=3D"execle01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+execle01_child.c:34: TPASS: execle01_child executed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D5
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dexecve04 stime=3D1687153136
+cmdline=3D"execve04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+execve04.c:50: TPASS: execve failed as expected: ETXTBSY (26)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D8
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dexecveat02 stime=3D1687153136
+cmdline=3D"execveat02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+execveat02.c:63: TPASS: execveat() fails as expected: EBADF (9)
+execveat02.c:63: TPASS: execveat() fails as expected: EINVAL (22)
+execveat02.c:63: TPASS: execveat() fails as expected: ELOOP (40)
+execveat02.c:63: TPASS: execveat() fails as expected: ENOTDIR (20)
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D16
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dposix_fadvise01 stime=3D1687153137
+cmdline=3D"posix_fadvise01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+posix_fadvise01.c:54: TPASS: call succeeded expectedly
+posix_fadvise01.c:54: TPASS: call succeeded expectedly
+posix_fadvise01.c:54: TPASS: call succeeded expectedly
+posix_fadvise01.c:54: TPASS: call succeeded expectedly
+posix_fadvise01.c:54: TPASS: call succeeded expectedly
+posix_fadvise01.c:54: TPASS: call succeeded expectedly
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfchmod06 stime=3D1687153137
+cmdline=3D"fchmod06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+fchmod06.c:48: TPASS: fchmod() failed expectedly: EPERM (1)
+fchmod06.c:48: TPASS: fchmod() failed expectedly: EBADF (9)
+fchmod06.c:48: TPASS: fchmod() failed expectedly: EROFS (30)
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfcntl05_64 stime=3D1687153137
+cmdline=3D"fcntl05_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+fcntl05.c:42: TPASS: fcntl(4, F_GETLK, &flocks) passed
+fcntl05.c:43: TPASS: flocks.l_type =3D=3D F_UNLCK (2)
+fcntl05.c:44: TPASS: flocks.l_whence =3D=3D SEEK_CUR (1)
+fcntl05.c:45: TPASS: flocks.l_start =3D=3D 0 (0)
+fcntl05.c:46: TPASS: flocks.l_len =3D=3D 0 (0)
+fcntl05.c:47: TPASS: flocks.l_pid =3D=3D pid (18096)
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfcntl11_64 stime=3D1687153137
+cmdline=3D"fcntl11_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fcntl11     0  TINFO  :  Enter block 1
+fcntl11     0  TINFO  :  Exit block 1
+fcntl11     0  TINFO  :  Enter block 2
+fcntl11     0  TINFO  :  Exit block 2
+fcntl11     0  TINFO  :  Enter block 3
+fcntl11     0  TINFO  :  Exit block 3
+fcntl11     0  TINFO  :  Enter block 4
+fcntl11     0  TINFO  :  Exit block 4
+fcntl11     0  TINFO  :  Enter block 5
+fcntl11     0  TINFO  :  Exit block 5
+fcntl11     0  TINFO  :  Enter block 6
+fcntl11     0  TINFO  :  Exit block 6
+fcntl11     0  TINFO  :  Enter block 7
+fcntl11     0  TINFO  :  Exit block 7
+fcntl11     0  TINFO  :  Enter block 8
+fcntl11     0  TINFO  :  Exit block 8
+fcntl11     0  TINFO  :  Enter block 9
+fcntl11     0  TINFO  :  Exit block 9
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfcntl19_64 stime=3D1687153137
+cmdline=3D"fcntl19_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fcntl19     0  TINFO  :  Enter block 1
+fcntl19     0  TINFO  :  Test block 1: PASSED
+fcntl19     0  TINFO  :  Exit block 1
+fcntl19     0  TINFO  :  Enter block 2
+fcntl19     0  TINFO  :  Test block 2: PASSED
+fcntl19     0  TINFO  :  Exit block 2
+fcntl19     0  TINFO  :  Enter block 3
+fcntl19     0  TINFO  :  Test block 3: PASSED
+fcntl19     0  TINFO  :  Exit block 3
+fcntl19     0  TINFO  :  Enter blcok 4
+fcntl19     0  TINFO  :  Test block 4: PASSED
+fcntl19     0  TINFO  :  Exit block 4
+fcntl19     0  TINFO  :  Enter block 5
+fcntl19     0  TINFO  :  Test block 5: PASSED
+fcntl19     0  TINFO  :  Exit block 5
+fcntl19     0  TINFO  :  Enter block 6
+fcntl19     0  TINFO  :  Test block 6: PASSED
+fcntl19     0  TINFO  :  Exit block 6
+fcntl19     0  TINFO  :  Enter block 7
+fcntl19     0  TINFO  :  Test block 7: PASSED
+fcntl19     0  TINFO  :  Exit block 7
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfcntl26_64 stime=3D1687153137
+cmdline=3D"fcntl26_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fcntl26     1  TPASS  :  fcntl(tfile_18104, F_SETLEASE, F_WRLCK)
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfcntl32_64 stime=3D1687153137
+cmdline=3D"fcntl32_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fcntl32     1  TPASS  :  fcntl(F_SETLEASE, F_WRLCK) failed as expected: TES=
+T_ERRNO=3DEAGAIN/EWOULDBLOCK(11): Resource temporarily unavailable
+fcntl32     2  TPASS  :  fcntl(F_SETLEASE, F_WRLCK) failed as expected: TES=
+T_ERRNO=3DEAGAIN/EWOULDBLOCK(11): Resource temporarily unavailable
+fcntl32     3  TPASS  :  fcntl(F_SETLEASE, F_WRLCK) failed as expected: TES=
+T_ERRNO=3DEAGAIN/EWOULDBLOCK(11): Resource temporarily unavailable
+fcntl32     4  TPASS  :  fcntl(F_SETLEASE, F_WRLCK) failed as expected: TES=
+T_ERRNO=3DEAGAIN/EWOULDBLOCK(11): Resource temporarily unavailable
+fcntl32     5  TPASS  :  fcntl(F_SETLEASE, F_WRLCK) failed as expected: TES=
+T_ERRNO=3DEAGAIN/EWOULDBLOCK(11): Resource temporarily unavailable
+fcntl32     6  TPASS  :  fcntl(F_SETLEASE, F_WRLCK) failed as expected: TES=
+T_ERRNO=3DEAGAIN/EWOULDBLOCK(11): Resource temporarily unavailable
+fcntl32     7  TPASS  :  fcntl(F_SETLEASE, F_WRLCK) failed as expected: TES=
+T_ERRNO=3DEAGAIN/EWOULDBLOCK(11): Resource temporarily unavailable
+fcntl32     8  TPASS  :  fcntl(F_SETLEASE, F_WRLCK) failed as expected: TES=
+T_ERRNO=3DEAGAIN/EWOULDBLOCK(11): Resource temporarily unavailable
+fcntl32     9  TPASS  :  fcntl(F_SETLEASE, F_WRLCK) failed as expected: TES=
+T_ERRNO=3DEAGAIN/EWOULDBLOCK(11): Resource temporarily unavailable
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dflistxattr02 stime=3D1687153137
+cmdline=3D"flistxattr02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+flistxattr02.c:66: TPASS: flistxattr() failed as expected: ERANGE (34)
+flistxattr02.c:66: TPASS: flistxattr() failed as expected: EBADF (9)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dflock03 stime=3D1687153137
+cmdline=3D"flock03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+flock03.c:73: TPASS: Parent: Initial attempt to flock() passed
+flock03.c:39: TPASS: CHILD: File locked by parent unlocked
+flock03.c:48: TPASS: Locking after unlock passed
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfork06 stime=3D1687153137
+cmdline=3D"fork06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fork06      0  TINFO  :  tries 1000
+fork06      0  TINFO  :  successes 1000
+fork06      0  TINFO  :  failures 0
+fork06      0  TINFO  :  There were no children to wait for
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D2 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D14 cstime=3D208
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfork07 stime=3D1687153139
+cmdline=3D"fork07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+fork07.c:48: TPASS: read the end of file correctly
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D30
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfork10 stime=3D1687153140
+cmdline=3D"fork10"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fork10      0  TINFO  :  fork child A
+fork10      1  TPASS  :  test 1 PASSED
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfork11 stime=3D1687153140
+cmdline=3D"fork11"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+fork11      1  TPASS  :  fork test passed, 100 processes
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D2 cstime=3D19
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfstatfs01_64 stime=3D1687153140
+cmdline=3D"fstatfs01_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:55: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:55: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:55: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:55: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:55: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:55: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:116: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:120: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:55: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:42: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext2 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+fstatfs01.c:37: TPASS: fstatfs() on a file passed
+fstatfs01.c:37: TPASS: fstatfs() on a pipe passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext3 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+fstatfs01.c:37: TPASS: fstatfs() on a file passed
+fstatfs01.c:37: TPASS: fstatfs() on a pipe passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext4 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+fstatfs01.c:37: TPASS: fstatfs() on a file passed
+fstatfs01.c:37: TPASS: fstatfs() on a pipe passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on xfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+fstatfs01.c:37: TPASS: fstatfs() on a file passed
+fstatfs01.c:37: TPASS: fstatfs() on a pipe passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extra op=
+ts=3D''
+fstatfs01.c:37: TPASS: fstatfs() on a file passed
+fstatfs01.c:37: TPASS: fstatfs() on a pipe passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on vfat =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts=3D'' extra opt=
+s=3D''
+fstatfs01.c:37: TPASS: fstatfs() on a file passed
+fstatfs01.c:37: TPASS: fstatfs() on a pipe passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ntfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ntfs opts=3D'' extra opt=
+s=3D''
+The partition start sector was not specified for /dev/loop0 and it could no=
+t be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it cou=
+ld not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be ob=
+tained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sec=
+tors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:1107: TINFO: Trying FUSE...
+fstatfs01.c:37: TPASS: fstatfs() on a file passed
+fstatfs01.c:37: TPASS: fstatfs() on a pipe passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on tmpfs =3D=3D=3D
+tst_test.c:1093: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1074: TINFO: Limiting tmpfs size to 32MB
+fstatfs01.c:37: TPASS: fstatfs() on a file passed
+fstatfs01.c:37: TPASS: fstatfs() on a pipe passed
+
+Summary:
+passed   16
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D35 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D7 cstime=3D2045
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfsync03 stime=3D1687153175
+cmdline=3D"fsync03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+fsync03.c:71: TPASS: fsync() failed as expected: EINVAL (22)
+fsync03.c:71: TPASS: fsync() failed as expected: EINVAL (22)
+fsync03.c:71: TPASS: fsync() failed as expected: EBADF (9)
+fsync03.c:71: TPASS: fsync() failed as expected: EBADF (9)
+fsync03.c:71: TPASS: fsync() failed as expected: EINVAL (22)
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dftruncate03_64 stime=3D1687153175
+cmdline=3D"ftruncate03_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+ftruncate03.c:58: TPASS: ftruncate() failed expectedly: EINVAL (22)
+ftruncate03.c:58: TPASS: ftruncate() failed expectedly: EINVAL (22)
+ftruncate03.c:58: TPASS: ftruncate() failed expectedly: EINVAL (22)
+ftruncate03.c:58: TPASS: ftruncate() failed expectedly: EBADF (9)
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfutimesat01 stime=3D1687153175
+cmdline=3D"futimesat01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+futimesat01    1  TPASS  :  futimesat() returned expected errno: TEST_ERRNO=
+=3DSUCCESS(0): Success
+futimesat01    2  TPASS  :  futimesat() returned expected errno: TEST_ERRNO=
+=3DSUCCESS(0): Success
+futimesat01    3  TPASS  :  futimesat() returned expected errno: TEST_ERRNO=
+=3DENOTDIR(20): Not a directory
+futimesat01    4  TPASS  :  futimesat() returned expected errno: TEST_ERRNO=
+=3DEBADF(9): Bad file descriptor
+futimesat01    5  TPASS  :  futimesat() returned expected errno: TEST_ERRNO=
+=3DSUCCESS(0): Success
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetegid01_16 stime=3D1687153175
+cmdline=3D"getegid01_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+getegid01_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls=
+/getegid/../utils/compat_16.h:112: 16-bit version of getegid() is not suppo=
+rted on your platform
+getegid01_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls=
+/getegid/../utils/compat_16.h:112: Remaining cases not appropriate for conf=
+iguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetgid01 stime=3D1687153176
+cmdline=3D"getgid01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+getgid01.c:26: TPASS: getgid returned as expectedly
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetgroups01 stime=3D1687153176
+cmdline=3D"getgroups01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+getgroups01    1  TPASS  :  getgroups failed as expected with EINVAL
+getgroups01    2  TPASS  :  getgroups did not modify the gidset array
+getgroups01    3  TPASS  :  getgroups failed as expected with EINVAL
+getgroups01    4  TPASS  :  getgroups(NGROUPS,gidset) returned 3 contains g=
+id 0 (from getgid)
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetgroups03_16 stime=3D1687153176
+cmdline=3D"getgroups03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+getgroups03_16    1  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/getgroups/../utils/compat_16.h:77: 16-bit version of setgroups() is not =
+supported on your platform
+getgroups03_16    2  TCONF  :  /tmp/lkp/ltp/src/ltp/testcases/kernel/syscal=
+ls/getgroups/../utils/compat_16.h:77: Remaining cases not appropriate for c=
+onfiguration
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetpagesize01 stime=3D1687153176
+cmdline=3D"getpagesize01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+getpagesize01.c:26: TPASS: getpagesize() passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetpriority02 stime=3D1687153176
+cmdline=3D"getpriority02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+getpriority02.c:57: TPASS: getpriority(-1, 0) fails as expected: EINVAL (22=
+)
+getpriority02.c:57: TPASS: getpriority(0, -1) fails as expected: ESRCH (3)
+getpriority02.c:57: TPASS: getpriority(1, -1) fails as expected: ESRCH (3)
+getpriority02.c:57: TPASS: getpriority(2, -1) fails as expected: ESRCH (3)
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetrlimit03 stime=3D1687153176
+cmdline=3D"getrlimit03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+getrlimit03.c:174: TPASS: __NR_prlimit64(0) and __NR_getrlimit(0) gave cons=
+istent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(1) and __NR_getrlimit(1) gave cons=
+istent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(2) and __NR_getrlimit(2) gave cons=
+istent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(3) and __NR_getrlimit(3) gave cons=
+istent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(4) and __NR_getrlimit(4) gave cons=
+istent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(5) and __NR_getrlimit(5) gave cons=
+istent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(6) and __NR_getrlimit(6) gave cons=
+istent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(7) and __NR_getrlimit(7) gave cons=
+istent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(8) and __NR_getrlimit(8) gave cons=
+istent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(9) and __NR_getrlimit(9) gave cons=
+istent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(10) and __NR_getrlimit(10) gave co=
+nsistent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(11) and __NR_getrlimit(11) gave co=
+nsistent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(12) and __NR_getrlimit(12) gave co=
+nsistent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(13) and __NR_getrlimit(13) gave co=
+nsistent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(14) and __NR_getrlimit(14) gave co=
+nsistent results
+getrlimit03.c:174: TPASS: __NR_prlimit64(15) and __NR_getrlimit(15) gave co=
+nsistent results
+
+Summary:
+passed   16
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dgetuid03_16 stime=3D1687153176
+cmdline=3D"getuid03_16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+/tmp/lkp/ltp/src/ltp/testcases/kernel/syscalls/getuid/../utils/compat_tst_1=
+6.h:89: TCONF: 16-bit version of getuid() is not supported on your platform
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dioctl_loop02 stime=3D1687153176
+cmdline=3D"ioctl_loop02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+ioctl_loop02.c:54: TINFO: Using LOOP_SET_FD to setup loopdevice
+ioctl_loop02.c:65: TPASS: /sys/block/loop0/ro =3D 1
+ioctl_loop02.c:66: TPASS: /sys/block/loop0/loop/backing_file =3D '/fs/sda2/=
+tmpdir/ltp-tjez5FQjAm/LTP_ioc2ActPF/test.img'
+ioctl_loop02.c:75: TPASS: lo_flags only has default LO_FLAGS_READ_ONLY flag
+ioctl_loop02.c:81: TPASS: Can not write data in RO mode: EPERM (1)
+ioctl_loop02.c:87: TPASS: LOOP_CHANGE_FD succeeded
+ioctl_loop02.c:88: TPASS: /sys/block/loop0/ro =3D 1
+ioctl_loop02.c:89: TPASS: /sys/block/loop0/loop/backing_file =3D '/fs/sda2/=
+tmpdir/ltp-tjez5FQjAm/LTP_ioc2ActPF/test1.img'
+ioctl_loop02.c:95: TPASS: LOOP_CHANGE_FD failed as expected: EINVAL (22)
+ioctl_loop02.c:54: TINFO: Using LOOP_CONFIGURE with read_only flag
+ioctl_loop02.c:65: TPASS: /sys/block/loop0/ro =3D 1
+ioctl_loop02.c:66: TPASS: /sys/block/loop0/loop/backing_file =3D '/fs/sda2/=
+tmpdir/ltp-tjez5FQjAm/LTP_ioc2ActPF/test.img'
+ioctl_loop02.c:75: TPASS: lo_flags only has default LO_FLAGS_READ_ONLY flag
+ioctl_loop02.c:81: TPASS: Can not write data in RO mode: EPERM (1)
+ioctl_loop02.c:87: TPASS: LOOP_CHANGE_FD succeeded
+ioctl_loop02.c:88: TPASS: /sys/block/loop0/ro =3D 1
+ioctl_loop02.c:89: TPASS: /sys/block/loop0/loop/backing_file =3D '/fs/sda2/=
+tmpdir/ltp-tjez5FQjAm/LTP_ioc2ActPF/test1.img'
+ioctl_loop02.c:95: TPASS: LOOP_CHANGE_FD failed as expected: EINVAL (22)
+
+Summary:
+passed   16
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D6
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dioctl_ns06 stime=3D1687153176
+cmdline=3D"ioctl_ns06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+ioctl_ns06.c:89: TPASS: child and parent are consistent
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dinotify_init1_02 stime=3D1687153176
+cmdline=3D"inotify_init1_02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+inotify_init1_02.c:26: TPASS: tst_syscall(__NR_inotify_init1, 0) returned f=
+d 4
+inotify_init1_02.c:29: TPASS: flags & O_NONBLOCK =3D=3D 0 (0)
+inotify_init1_02.c:32: TPASS: tst_syscall(__NR_inotify_init1, IN_NONBLOCK) =
+returned fd 4
+inotify_init1_02.c:35: TPASS: flags & O_NONBLOCK =3D=3D O_NONBLOCK (2048)
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dinotify08 stime=3D1687153176
+cmdline=3D"inotify08"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+inotify08.c:148: TINFO: mntpoint/ovl/test_file ino=3D28338, dev=3D0:42
+inotify08.c:159: TINFO: mntpoint/ovl/test_file ino=3D28338, dev=3D0:42
+inotify08.c:107: TPASS: get event: wd=3D1 mask=3D00000004 cookie=3D0     le=
+n=3D0=20
+inotify08.c:107: TPASS: get event: wd=3D1 mask=3D00000020 cookie=3D0     le=
+n=3D0=20
+inotify08.c:107: TPASS: get event: wd=3D1 mask=3D00000008 cookie=3D0     le=
+n=3D0=20
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D26
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dinotify12 stime=3D1687153177
+cmdline=3D"inotify12"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 50s
+inotify12.c:72: TINFO: Test #0: Watch for multi events
+inotify12.c:88: TPASS: Correct mask in inotify fdinfo
+inotify12.c:102: TPASS: Got 1st event as expected
+inotify12.c:133: TPASS: Got 2nd event as expected
+inotify12.c:72: TINFO: Test #1: Watch for single event
+inotify12.c:88: TPASS: Correct mask in inotify fdinfo
+inotify12.c:102: TPASS: Got 1st event as expected
+inotify12.c:138: TPASS: Got no more events as expected
+inotify12.c:72: TINFO: Test #2: Watch for events on linked file
+inotify12.c:88: TPASS: Correct mask in inotify fdinfo
+inotify12.c:102: TPASS: Got 1st event as expected
+inotify12.c:138: TPASS: Got no more events as expected
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfanotify05 stime=3D1687153177
+cmdline=3D"fanotify05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+fanotify05.c:201: TINFO: max_queued_events=3D16384
+fanotify05.c:114: TINFO: Test #0: Limited queue
+fanotify05.c:103: TINFO: Created 16385 files in 9375ms
+fanotify05.c:103: TINFO: Opened 16385 files in 744ms
+fanotify05.c:83: TINFO: Got event #0 filename=3Dfname_0
+fanotify05.c:178: TPASS: Got an overflow event: pid=3D0 fd=3D-1
+fanotify05.c:184: TINFO: Got 16385 events
+fanotify05.c:114: TINFO: Test #1: Unlimited queue
+fanotify05.c:103: TINFO: Created 16385 files in 716ms
+fanotify05.c:103: TINFO: Opened 16385 files in 804ms
+fanotify05.c:83: TINFO: Got event #0 filename=3Dfname_0
+fanotify05.c:142: TPASS: Overflow event not generated!
+
+fanotify05.c:184: TINFO: Got 25295 events
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D17 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D16 cstime=3D1313
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dfanotify12 stime=3D1687153194
+cmdline=3D"fanotify12"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+fanotify12.c:139: TINFO: Test #0: inode mark, FAN_OPEN events
+fanotify12.c:204: TPASS: Received event: mask=3D20, pid=3D19639, fd=3D5
+fanotify12.c:204: TPASS: Received event: mask=3D20, pid=3D19639, fd=3D6
+fanotify12.c:139: TINFO: Test #1: inode mark, FAN_OPEN_EXEC events
+fanotify12.c:204: TPASS: Received event: mask=3D1000, pid=3D19640, fd=3D5
+fanotify12.c:139: TINFO: Test #2: inode mark, FAN_OPEN | FAN_OPEN_EXEC even=
+ts
+fanotify12.c:204: TPASS: Received event: mask=3D20, pid=3D19641, fd=3D5
+fanotify12.c:204: TPASS: Received event: mask=3D1020, pid=3D19641, fd=3D6
+fanotify12.c:139: TINFO: Test #3: inode mark, FAN_OPEN events, ignore FAN_O=
+PEN_EXEC
+fanotify12.c:204: TPASS: Received event: mask=3D20, pid=3D19642, fd=3D5
+fanotify12.c:204: TPASS: Received event: mask=3D20, pid=3D19642, fd=3D6
+fanotify12.c:139: TINFO: Test #4: inode mark, FAN_OPEN_EXEC events, ignore =
+FAN_OPEN
+fanotify12.c:204: TPASS: Received event: mask=3D1000, pid=3D19643, fd=3D5
+fanotify12.c:139: TINFO: Test #5: inode mark, FAN_OPEN | FAN_OPEN_EXEC even=
+ts, ignore FAN_OPEN_EXEC
+fanotify12.c:204: TPASS: Received event: mask=3D20, pid=3D19644, fd=3D5
+fanotify12.c:204: TPASS: Received event: mask=3D20, pid=3D19644, fd=3D6
+
+Summary:
+passed   10
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D19
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dioperm01 stime=3D1687153195
+cmdline=3D"ioperm01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
+tst_lockdown.c:60: TINFO: Unable to determine system lockdown state
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+ioperm01.c:37: TPASS: ioperm() passed for port address 1021, returned 0
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D7
+<<<test_end>>>
+<<<test_start>>>
+tag=3Diopl02 stime=3D1687153195
+cmdline=3D"iopl02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
+tst_lockdown.c:60: TINFO: Unable to determine system lockdown state
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+iopl02.c:42: TPASS: Expected failure for Invalid privilege level, errno: 22=
+: EINVAL (22)
+iopl02.c:42: TPASS: Expected failure for Non super-user, errno: 1: EPERM (1=
+)
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D8
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dioprio_set03 stime=3D1687153195
+cmdline=3D"ioprio_set03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+ioprio_set03.c:39: TFAIL: ioprio_set IOPRIO_CLASS_BE prio 8 should not work
+ioprio_set03.c:47: TINFO: tested illegal priority with class NONE
+ioprio_set03.c:50: TPASS: returned correct error for wrong prio: EINVAL (22=
+)
+
+Summary:
+passed   1
+failed   1
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dio_destroy02 stime=3D1687153195
+cmdline=3D"io_destroy02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+io_destroy02.c:28: TPASS: io_destroy() with an invalid ctx : EINVAL (22)
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D8
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dio_pgetevents01 stime=3D1687153195
+cmdline=3D"io_pgetevents01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+io_pgetevents01.c:28: TINFO: Testing variant: syscall with old kernel spec
+io_pgetevents01.c:62: TPASS: io_pgetevents() works as expected
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dio_submit03 stime=3D1687153195
+cmdline=3D"io_submit03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+io_submit03.c:106: TPASS: io_submit() with invalid ctx : EINVAL (22)
+io_submit03.c:106: TPASS: io_submit() with invalid nr : EINVAL (22)
+io_submit03.c:106: TPASS: io_submit() with invalid iocbpp pointer : EFAULT =
+(14)
+io_submit03.c:106: TPASS: io_submit() with NULL iocb pointers : EFAULT (14)
+io_submit03.c:106: TPASS: io_submit() with invalid fd : EBADF (9)
+io_submit03.c:106: TPASS: io_submit() with readonly fd for write : EBADF (9=
+)
+io_submit03.c:106: TPASS: io_submit() with writeonly fd for read : EBADF (9=
+)
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D9
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dkeyctl07 stime=3D1687153195
+cmdline=3D"keyctl07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+keyctl07.c:62: TINFO: trying to read from the negative key...
+keyctl07.c:72: TPASS: KEYCTL_READ on negative key expectedly failed with EN=
+OKEY
+keyctl07.c:88: TPASS: didn't crash while reading from negative key
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dlchown01 stime=3D1687153195
+cmdline=3D"lchown01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+lchown01    1  TPASS  :  lchown() succeeds to Change Owner/Group ids of sli=
+nk_file
+lchown01    2  TPASS  :  lchown() succeeds to Change Owner id only of slink=
+_file
+lchown01    3  TPASS  :  lchown() succeeds to Change Owner/Group ids of sli=
+nk_file
+lchown01    4  TPASS  :  lchown() succeeds to Change Group id only of slink=
+_file
+lchown01    5  TPASS  :  lchown() succeeds to Change Group/Group ids of sli=
+nk_file
+lchown01    6  TPASS  :  lchown() succeeds to Change none of slink_file
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dlink02 stime=3D1687153195
+cmdline=3D"link02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+link02.c:26: TPASS: link(OLDPATH, NEWPATH) passed
+link02.c:35: TPASS: link(oldpath,newpath) returned 0 and stat link counts m=
+atch
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dlink03 stime=3D1687153195
+cmdline=3D"link03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+link03      1  TPASS  :  link() passed and linkcounts=3D10 match
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dllseek01 stime=3D1687153195
+cmdline=3D"llseek01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+llseek01.c:32: TPASS: lseek() can set file pointer position larger than fil=
+e size limit
+llseek01.c:37: TPASS: write failed after file size limit
+llseek01.c:43: TPASS: lseek() can set file pointer position under filer siz=
+e limit
+llseek01.c:48: TPASS: write succcessfully under file size limit
+llseek01.c:53: TPASS: write failed after file size limit
+
+Summary:
+passed   5
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmallinfo2_01 stime=3D1687153195
+cmdline=3D"mallinfo2_01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+mallinfo2_01.c:39: TPASS: hblkhd member of struct mallinfo2 doesn't overflo=
+w
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmemset01 stime=3D1687153195
+cmdline=3D"memset01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+memset01.c:69: TPASS: Test passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmemcmp01 stime=3D1687153195
+cmdline=3D"memcmp01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+memcmp01.c:100: TPASS: Test passed
+memcmp01.c:100: TPASS: Test passed
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmlockall03 stime=3D1687153196
+cmdline=3D"mlockall03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mlockall03    1  TPASS  :  expected failure - errno =3D 12 : Cannot allocat=
+e memory
+mlockall03    2  TPASS  :  expected failure - errno =3D 1 : Operation not p=
+ermitted
+mlockall03    3  TPASS  :  expected failure - errno =3D 22 : Invalid argume=
+nt
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmknod06 stime=3D1687153196
+cmdline=3D"mknod06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mknod06     1  TPASS  :  mknod() fails, Specified node already exists, errn=
+o:17
+mknod06     2  TPASS  :  mknod() fails, Invalid address, errno:14
+mknod06     3  TPASS  :  mknod() fails, Non-existent file, errno:2
+mknod06     4  TPASS  :  mknod() fails, Pathname is empty, errno:2
+mknod06     5  TPASS  :  mknod() fails, Pathname too long, errno:36
+mknod06     6  TPASS  :  mknod() fails, Path contains regular file, errno:2=
+0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmmap01 stime=3D1687153196
+cmdline=3D"mmap01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mmap01      1  TPASS  :  Functionality of mmap() successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D8
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmmap16 stime=3D1687153196
+cmdline=3D"mmap16"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'-b 1024' ex=
+tra opts=3D'10240'
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+mmap16.c:151: TPASS: bug is not reproduced
+mmap16.c:151: TPASS: bug is not reproduced
+mmap16.c:151: TPASS: bug is not reproduced
+mmap16.c:151: TPASS: bug is not reproduced
+mmap16.c:151: TPASS: bug is not reproduced
+mmap16.c:151: TPASS: bug is not reproduced
+mmap16.c:151: TPASS: bug is not reproduced
+mmap16.c:151: TPASS: bug is not reproduced
+mmap16.c:151: TPASS: bug is not reproduced
+mmap16.c:151: TPASS: bug is not reproduced
+
+Summary:
+passed   10
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D6 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D3 cstime=3D413
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmmap17 stime=3D1687153202
+cmdline=3D"mmap17"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+mmap17.c:72: TPASS: mmap set errno to EEXIST as expected
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmount01 stime=3D1687153202
+cmdline=3D"mount01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+mount01     0  TINFO  :  Found free device 0 '/dev/loop0'
+mount01     0  TINFO  :  Formatting /dev/loop0 with ext2 opts=3D'' extra op=
+ts=3D''
+mount01     1  TPASS  :  mount(2) passed=20
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D8
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmount07 stime=3D1687153203
+cmdline=3D"mount07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:55: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:55: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:55: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:55: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:55: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:157: TINFO: Skipping vfat as requested by the test
+tst_supported_fs_types.c:157: TINFO: Skipping exfat as requested by the tes=
+t
+tst_supported_fs_types.c:157: TINFO: Skipping ntfs as requested by the test
+tst_supported_fs_types.c:90: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:42: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext2 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+mount07.c:145: TINFO: Testing behaviour when not setting MS_NOSYMFOLLOW
+mount07.c:55: TPASS: open(link_file, 0, O_RDWR) returned fd 4
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:110: TPASS: ST_NOSYMFOLLOW not set on mntpoint
+mount07.c:153: TINFO: Testing behaviour when setting MS_NOSYMFOLLOW
+mount07.c:52: TPASS: open(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntp=
+oint/link_file, 0, O_RDWR) : ELOOP (40)
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:107: TPASS: ST_NOSYMFOLLOW set on mntpoint
+tst_device.c:442: TINFO: No device is mounted at mntpoint
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext3 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+mount07.c:145: TINFO: Testing behaviour when not setting MS_NOSYMFOLLOW
+mount07.c:55: TPASS: open(link_file, 0, O_RDWR) returned fd 4
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:110: TPASS: ST_NOSYMFOLLOW not set on mntpoint
+mount07.c:153: TINFO: Testing behaviour when setting MS_NOSYMFOLLOW
+mount07.c:52: TPASS: open(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntp=
+oint/link_file, 0, O_RDWR) : ELOOP (40)
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:107: TPASS: ST_NOSYMFOLLOW set on mntpoint
+tst_device.c:442: TINFO: No device is mounted at mntpoint
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext4 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+mount07.c:145: TINFO: Testing behaviour when not setting MS_NOSYMFOLLOW
+mount07.c:55: TPASS: open(link_file, 0, O_RDWR) returned fd 4
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:110: TPASS: ST_NOSYMFOLLOW not set on mntpoint
+mount07.c:153: TINFO: Testing behaviour when setting MS_NOSYMFOLLOW
+mount07.c:52: TPASS: open(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntp=
+oint/link_file, 0, O_RDWR) : ELOOP (40)
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:107: TPASS: ST_NOSYMFOLLOW set on mntpoint
+tst_device.c:442: TINFO: No device is mounted at mntpoint
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on xfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+mount07.c:145: TINFO: Testing behaviour when not setting MS_NOSYMFOLLOW
+mount07.c:55: TPASS: open(link_file, 0, O_RDWR) returned fd 4
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:110: TPASS: ST_NOSYMFOLLOW not set on mntpoint
+mount07.c:153: TINFO: Testing behaviour when setting MS_NOSYMFOLLOW
+mount07.c:52: TPASS: open(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntp=
+oint/link_file, 0, O_RDWR) : ELOOP (40)
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:107: TPASS: ST_NOSYMFOLLOW set on mntpoint
+tst_device.c:442: TINFO: No device is mounted at mntpoint
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extra op=
+ts=3D''
+mount07.c:145: TINFO: Testing behaviour when not setting MS_NOSYMFOLLOW
+mount07.c:55: TPASS: open(link_file, 0, O_RDWR) returned fd 4
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:110: TPASS: ST_NOSYMFOLLOW not set on mntpoint
+mount07.c:153: TINFO: Testing behaviour when setting MS_NOSYMFOLLOW
+mount07.c:52: TPASS: open(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntp=
+oint/link_file, 0, O_RDWR) : ELOOP (40)
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:107: TPASS: ST_NOSYMFOLLOW set on mntpoint
+tst_device.c:442: TINFO: No device is mounted at mntpoint
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on tmpfs =3D=3D=3D
+tst_test.c:1093: TINFO: Skipping mkfs for TMPFS filesystem
+mount07.c:145: TINFO: Testing behaviour when not setting MS_NOSYMFOLLOW
+mount07.c:55: TPASS: open(link_file, 0, O_RDWR) returned fd 4
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:110: TPASS: ST_NOSYMFOLLOW not set on mntpoint
+mount07.c:153: TINFO: Testing behaviour when setting MS_NOSYMFOLLOW
+mount07.c:52: TPASS: open(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntp=
+oint/link_file, 0, O_RDWR) : ELOOP (40)
+mount07.c:67: TPASS: readlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/=
+mntpoint/link_file, buf, 4096) returned 63
+mount07.c:73: TPASS: readlink strcmp succeeded
+mount07.c:90: TPASS: realpath strcmp succeeded
+mount07.c:96: TPASS: symlink(/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/m=
+ntpoint/test_file, /fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_mouVp2PHc/mntpoint/te=
+mp_link_file) passed
+mount07.c:98: TPASS: unlink(temp_link_file) passed
+mount07.c:107: TPASS: ST_NOSYMFOLLOW set on mntpoint
+tst_device.c:442: TINFO: No device is mounted at mntpoint
+
+Summary:
+passed   84
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D2 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D4 cstime=3D79
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmove_mount01 stime=3D1687153205
+cmdline=3D"move_mount01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:55: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:55: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:55: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:55: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:55: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:55: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:116: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:120: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:55: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:165: TINFO: Skipping FUSE based ntfs as requested =
+by the test
+tst_supported_fs_types.c:90: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:42: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext2 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_EMPTY_PATH: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_EMPTY_PATH: move_mount() passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext3 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_EMPTY_PATH: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_EMPTY_PATH: move_mount() passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext4 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_EMPTY_PATH: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_EMPTY_PATH: move_mount() passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on xfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_EMPTY_PATH: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_EMPTY_PATH: move_mount() passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extra op=
+ts=3D''
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_EMPTY_PATH: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_EMPTY_PATH: move_mount() passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on vfat =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts=3D'' extra opt=
+s=3D''
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_EMPTY_PATH: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_EMPTY_PATH: move_mount() passed
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on tmpfs =3D=3D=3D
+tst_test.c:1093: TINFO: Skipping mkfs for TMPFS filesystem
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_F_EMPTY_PATH: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_SYMLINKS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_AUTOMOUNTS: move_mount() passed
+move_mount01.c:70: TPASS: Flag MOVE_MOUNT_T_EMPTY_PATH: move_mount() passed
+
+Summary:
+passed   42
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D7 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D5 cstime=3D201
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmprotect05 stime=3D1687153212
+cmdline=3D"mprotect05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+mprotect05.c:49: TPASS: test passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmq_open01 stime=3D1687153212
+cmdline=3D"mq_open01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+mq_open01.c:226: TINFO: queue name "/test_mqueue"
+mq_open01.c:255: TPASS: NORMAL returned: 5: SUCCESS (0)
+mq_open01.c:226: TINFO: queue name "/test_mqueue"
+mq_open01.c:255: TPASS: NORMAL returned: 5: SUCCESS (0)
+mq_open01.c:226: TINFO: queue name "/caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+mq_open01.c:255: TPASS: NORMAL returned: 5: SUCCESS (0)
+mq_open01.c:226: TINFO: queue name "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+mq_open01.c:272: TPASS: NORMAL returned: -1: ENAMETOOLONG (36)
+mq_open01.c:226: TINFO: queue name ""
+mq_open01.c:272: TPASS: NORMAL returned: -1: EINVAL (22)
+mq_open01.c:226: TINFO: queue name "/test_mqueue"
+mq_open01.c:272: TPASS: NORMAL returned: -1: EACCES (13)
+mq_open01.c:226: TINFO: queue name "/test_mqueue"
+mq_open01.c:272: TPASS: NORMAL returned: -1: EEXIST (17)
+mq_open01.c:226: TINFO: queue name "/test_mqueue"
+mq_open01.c:272: TPASS: NO_FILE returned: -1: EMFILE (24)
+mq_open01.c:226: TINFO: queue name "/notexist"
+mq_open01.c:272: TPASS: NORMAL returned: -1: ENOENT (2)
+mq_open01.c:226: TINFO: queue name "/test_mqueue"
+mq_open01.c:272: TPASS: NO_SPACE returned: -1: ENOSPC (28)
+
+Summary:
+passed   10
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmremap03 stime=3D1687153212
+cmdline=3D"mremap03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mremap03    1  TPASS  :  mremap() Fails, 'old region not mapped', errno 14
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmsgctl05 stime=3D1687153212
+cmdline=3D"msgctl05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1137: TCONF: test requires struct msqid64_ds to have the time_hi=
+gh fields
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmsgstress03 stime=3D1687153212
+cmdline=3D"msgstress03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+msgstress03    0  TINFO  :  Cannot read session user limits from '/sys/fs/c=
+group/user.slice/user-0.slice/pids.max'
+msgstress03    0  TINFO  :  Cannot read session user limits from '/sys/fs/c=
+group/pids/user.slice/user-0.slice/pids.max'
+msgstress03    1  TPASS  :  Test ran successfully!
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D882 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D13575 cstime=3D291082
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmsgrcv08 stime=3D1687154094
+cmdline=3D"msgrcv08"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+msgrcv08.c:60: TPASS: No regression found.
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmsgsnd02 stime=3D1687154094
+cmdline=3D"msgsnd02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+msgsnd02.c:64: TPASS: msgsnd(2260993, 0x5607628a76e0, 1024, 0) : EACCES (13=
+)
+msgsnd02.c:64: TPASS: msgsnd(2260993, (nil), 1024, 0) : EFAULT (14)
+msgsnd02.c:64: TPASS: msgsnd(-1, 0x5607628a76e0, 1024, 0) : EINVAL (22)
+msgsnd02.c:64: TPASS: msgsnd(2260993, 0x5607628a7ae8, 1024, 0) : EINVAL (22=
+)
+msgsnd02.c:64: TPASS: msgsnd(2260993, 0x5607628a7ef0, 1024, 0) : EINVAL (22=
+)
+msgsnd02.c:64: TPASS: msgsnd(2260993, 0x5607628a76e0, -1, 0) : EINVAL (22)
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmunmap02 stime=3D1687154094
+cmdline=3D"munmap02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+munmap02    1  TPASS  :  Functionality of munmap() successful
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dnanosleep01 stime=3D1687154094
+cmdline=3D"nanosleep01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_timer_test.c:357: TINFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:369: TINFO: prctl(PR_GET_TIMERSLACK) =3D 50us
+tst_test.c:1566: TINFO: Updating max runtime to 0h 00m 09s
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 48s
+tst_timer_test.c:263: TINFO: nanosleep() sleeping for 1000us 500 iterations=
+, threshold 450.01us
+tst_timer_test.c:305: TINFO: min 1014us, max 5065us, median 1060us, trunc m=
+ean 1058.86us (discarded 25)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: nanosleep() sleeping for 2000us 500 iterations=
+, threshold 450.01us
+tst_timer_test.c:305: TINFO: min 2010us, max 2195us, median 2057us, trunc m=
+ean 2055.71us (discarded 25)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: nanosleep() sleeping for 5000us 300 iterations=
+, threshold 450.04us
+tst_timer_test.c:305: TINFO: min 5010us, max 5084us, median 5057us, trunc m=
+ean 5055.45us (discarded 15)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: nanosleep() sleeping for 10000us 100 iteration=
+s, threshold 450.33us
+tst_timer_test.c:305: TINFO: min 10011us, max 10071us, median 10058us, trun=
+c mean 10057.28us (discarded 5)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: nanosleep() sleeping for 25000us 50 iterations=
+, threshold 451.29us
+tst_timer_test.c:305: TINFO: min 25010us, max 25069us, median 25058us, trun=
+c mean 25057.69us (discarded 2)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: nanosleep() sleeping for 100000us 10 iteration=
+s, threshold 537.00us
+tst_timer_test.c:305: TINFO: min 100058us, max 100066us, median 100058us, t=
+runc mean 100059.00us (discarded 1)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: nanosleep() sleeping for 1000000us 2 iteration=
+s, threshold 4400.00us
+tst_timer_test.c:305: TINFO: min 1000064us, max 1000065us, median 1000064us=
+, trunc mean 1000064.00us (discarded 1)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D8 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D8
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dnanosleep02 stime=3D1687154102
+cmdline=3D"nanosleep02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+nanosleep02.c:57: TPASS: nanosleep() returned -1, set errno to EINTR
+nanosleep02.c:70: TPASS: nanosleep() slept for 1000137us, remaining time di=
+fference 104us
+
+Summary:
+passed   2
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dnanosleep04 stime=3D1687154103
+cmdline=3D"nanosleep04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+nanosleep04.c:45: TPASS: nanosleep() failed with EINVAL
+nanosleep04.c:45: TPASS: nanosleep() failed with EINVAL
+nanosleep04.c:45: TPASS: nanosleep() failed with EINVAL
+
+Summary:
+passed   3
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dnice04 stime=3D1687154103
+cmdline=3D"nice04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+nice04.c:37: TPASS: nice(-10) failed with EPERM
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D1
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dnice05 stime=3D1687154103
+cmdline=3D"nice05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 36s
+nice05.c:132: TINFO: Nice low thread CPU time: 3.305670951 s
+nice05.c:134: TINFO: Nice high thread CPU time: 2.663355128 s
+nice05.c:142: TPASS: executes more cycles than the high nice thread, delta:=
+ 642315823 ns
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D6 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D596 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dopenat03 stime=3D1687154109
+cmdline=3D"openat03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+openat03    0  TINFO  :  creating a file with O_TMPFILE flag
+openat03    0  TINFO  :  writing data to the file
+openat03    0  TINFO  :  file size is '4096'
+openat03    0  TINFO  :  looking for the file in '.'
+openat03    0  TINFO  :  file not found, OK
+openat03    0  TINFO  :  renaming '/fs/sda2/tmpdir/ltp-tjez5FQjAm/LTP_opeET=
+0gjo/#134 (deleted)' -> 'tmpfile'
+openat03    0  TINFO  :  found a file: tmpfile
+openat03    1  TPASS  :  single file tests passed
+openat03    0  TINFO  :  create files in multiple directories
+openat03    0  TINFO  :  removing test directories
+openat03    0  TINFO  :  writing/reading temporary files
+openat03    0  TINFO  :  closing temporary files
+openat03    2  TPASS  :  multiple files tests passed
+openat03    0  TINFO  :  create multiple directories, link files into them
+openat03    0  TINFO  :  and check file permissions
+openat03    0  TINFO  :  remove files, directories
+openat03    3  TPASS  :  file permission tests passed
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D23
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dopenat201 stime=3D1687154110
+cmdline=3D"openat201"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+openat201.c:80: TPASS: openat2() passed (0)
+openat201.c:80: TPASS: openat2() passed (1)
+openat201.c:80: TPASS: openat2() passed (2)
+openat201.c:80: TPASS: openat2() passed (3)
+openat201.c:80: TPASS: openat2() passed (4)
+openat201.c:80: TPASS: openat2() passed (5)
+openat201.c:80: TPASS: openat2() passed (6)
+openat201.c:80: TPASS: openat2() passed (7)
+openat201.c:80: TPASS: openat2() passed (8)
+openat201.c:80: TPASS: openat2() passed (9)
+openat201.c:80: TPASS: openat2() passed (10)
+openat201.c:80: TPASS: openat2() passed (11)
+openat201.c:80: TPASS: openat2() passed (12)
+openat201.c:80: TPASS: openat2() passed (13)
+openat201.c:80: TPASS: openat2() passed (14)
+openat201.c:80: TPASS: openat2() passed (15)
+
+Summary:
+passed   16
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dopen_by_handle_at01 stime=3D1687154110
+cmdline=3D"open_by_handle_at01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+open_by_handle_at01.c:101: TPASS: open_by_handle_at() passed (0)
+open_by_handle_at01.c:101: TPASS: open_by_handle_at() passed (1)
+open_by_handle_at01.c:101: TPASS: open_by_handle_at() passed (2)
+open_by_handle_at01.c:101: TPASS: open_by_handle_at() passed (3)
+open_by_handle_at01.c:101: TPASS: open_by_handle_at() passed (4)
+open_by_handle_at01.c:101: TPASS: open_by_handle_at() passed (5)
+open_by_handle_at01.c:101: TPASS: open_by_handle_at() passed (6)
+open_by_handle_at01.c:101: TPASS: open_by_handle_at() passed (7)
+open_by_handle_at01.c:101: TPASS: open_by_handle_at() passed (8)
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmincore02 stime=3D1687154110
+cmdline=3D"mincore02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mincore02    1  TPASS  :  4 pages locked, 4 pages in-core
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dmadvise07 stime=3D1687154110
+cmdline=3D"madvise07"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+madvise07.c:43: TINFO: mmap(0, 4096, PROT_READ | PROT_WRITE, MAP_ANONYMOUS =
+| MAP_PRIVATE, -1, 0)
+madvise07.c:54: TINFO: madvise(0x7f859dec3000, 4096, MADV_HWPOISON)
+madvise07.c:83: TPASS: Received SIGBUS after accessing poisoned page
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D6
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpersonality02 stime=3D1687154110
+cmdline=3D"personality02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+personality02    1  TPASS  :  Timeout wasn't modified
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpipe04 stime=3D1687154110
+cmdline=3D"pipe04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+pipe04      1  TPASS  :  Child 1 killed while writing to a pipe
+pipe04      2  TPASS  :  Child 2 killed while writing to a pipe
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpipe05 stime=3D1687154110
+cmdline=3D"pipe05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+pipe05      1  TPASS  :  expected failure - errno =3D 14 : Bad address
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpipe12 stime=3D1687154110
+cmdline=3D"pipe12"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pipe12.c:45: TINFO: Write to full pipe
+pipe12.c:54: TPASS: write failed as expected: EAGAIN/EWOULDBLOCK (11)
+pipe12.c:69: TPASS: write 65536 bytes
+pipe12.c:45: TINFO: Write to non-empty pipe
+pipe12.c:64: TPASS: write succeeded as expectedly
+pipe12.c:74: TPASS: write 61441 bytes
+pipe12.c:45: TINFO: Write to empty pipe
+pipe12.c:64: TPASS: write succeeded as expectedly
+pipe12.c:69: TPASS: write 65536 bytes
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpipe13 stime=3D1687154110
+cmdline=3D"pipe13"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pipe13.c:50: TINFO: Creating 2 child processes
+pipe13.c:91: TPASS: Closed pipe waked up everyone
+pipe13.c:50: TINFO: Creating 10 child processes
+pipe13.c:91: TPASS: Closed pipe waked up everyone
+pipe13.c:50: TINFO: Creating 27 child processes
+pipe13.c:91: TPASS: Closed pipe waked up everyone
+pipe13.c:50: TINFO: Creating 100 child processes
+pipe13.c:91: TPASS: Closed pipe waked up everyone
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D3 cstime=3D52
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dprctl02 stime=3D1687154110
+cmdline=3D"prctl02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+tst_capability.c:29: TINFO: Dropping CAP_SETPCAP(8)
+prctl02.c:116: TINFO: Test #0: invalid option
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #1: PR_SET_PDEATHSIG
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #2: PR_SET_DUMPABLE
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #3: PR_SET_NAME
+prctl02.c:162: TPASS: prctl() failed as expected: EFAULT (14)
+prctl02.c:116: TINFO: Test #4: PR_SET_SECCOMP
+prctl02.c:162: TPASS: prctl() failed as expected: EFAULT (14)
+prctl02.c:116: TINFO: Test #5: PR_SET_SECCOMP
+prctl02.c:162: TPASS: prctl() failed as expected: EACCES (13)
+prctl02.c:116: TINFO: Test #6: PR_SET_TIMING
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #7: PR_SET_NO_NEW_PRIVS
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #8: PR_SET_NO_NEW_PRIVS
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #9: PR_GET_NO_NEW_PRIVS
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #10: PR_SET_THP_DISABLE
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #11: PR_GET_THP_DISABLE
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #12: PR_CAP_AMBIENT
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #13: PR_CAP_AMBIENT
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #14: PR_CAP_AMBIENT
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #15: PR_GET_SPECULATION_CTRL
+prctl02.c:162: TPASS: prctl() failed as expected: EINVAL (22)
+prctl02.c:116: TINFO: Test #16: PR_SET_SECUREBITS
+prctl02.c:162: TPASS: prctl() failed as expected: EPERM (1)
+prctl02.c:116: TINFO: Test #17: PR_CAPBSET_DROP
+prctl02.c:162: TPASS: prctl() failed as expected: EPERM (1)
+
+Summary:
+passed   18
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dprctl04 stime=3D1687154110
+cmdline=3D"prctl04"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+prctl04.c:225: TINFO: kernel supports PR_GET/SET_SECCOMP
+prctl04.c:233: TINFO: kernel supports SECCOMP_MODE_FILTER
+prctl04.c:135: TPASS: prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_STRICT succee=
+d
+prctl04.c:209: TPASS: SECCOMP_MODE_STRICT doesn't permit GET_SECCOMP call
+prctl04.c:143: TPASS: SECCOMP_MODE_STRICT permits read(2) write(2) and _exi=
+t(2)
+prctl04.c:209: TPASS: SECCOMP_MODE_STRICT doesn't permit close(2)
+prctl04.c:176: TPASS: prctl(PR_SET_SECCOMP) sets SECCOMP_MODE_FILTER succee=
+d
+prctl04.c:209: TPASS: SECCOMP_MODE_FILTER doestn't permit GET_SECCOMP call
+prctl04.c:183: TPASS: SECCOMP_MODE_FILTER permits close(2)
+prctl04.c:209: TPASS: SECCOMP_MODE_FILTER doesn't permit exit()
+prctl04.c:112: TPASS: SECCOMP_MODE_FILTER has been inherited by child
+
+Summary:
+passed   9
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D5
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dprctl08 stime=3D1687154111
+cmdline=3D"prctl08"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+prctl08.c:125: TINFO: current timerslack value is 50000
+prctl08.c:112: TPASS: prctl(PR_SET_TIMERSLACK, 0) succeed
+prctl08.c:68: TPASS: Reset prctl(PR_GET_TIMERSLACK) got 50000 expectedly
+prctl08.c:75: TPASS: /proc/self/timerslack_ns =3D 50000
+prctl08.c:112: TPASS: prctl(PR_SET_TIMERSLACK, 1) succeed
+prctl08.c:68: TPASS: Min prctl(PR_GET_TIMERSLACK) got 1 expectedly
+prctl08.c:75: TPASS: /proc/self/timerslack_ns =3D 1
+prctl08.c:112: TPASS: prctl(PR_SET_TIMERSLACK, 70000) succeed
+prctl08.c:68: TPASS: Middle prctl(PR_GET_TIMERSLACK) got 70000 expectedly
+prctl08.c:75: TPASS: /proc/self/timerslack_ns =3D 70000
+prctl08.c:112: TPASS: prctl(PR_SET_TIMERSLACK, 2147483647) succeed
+prctl08.c:68: TPASS: Max prctl(PR_GET_TIMERSLACK) got 2147483647 expectedly
+prctl08.c:75: TPASS: /proc/self/timerslack_ns =3D 2147483647
+prctl08.c:112: TPASS: prctl(PR_SET_TIMERSLACK, 70000) succeed
+prctl08.c:90: TPASS: Child process two timer slack values are made the same=
+ as the current value(70000) of the creating thread.
+
+Summary:
+passed   14
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpreadv203 stime=3D1687154111
+cmdline=3D"preadv203"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 04m 30s
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:55: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:55: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:55: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:55: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:55: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:55: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:116: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:120: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:55: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:42: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext2 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+preadv203.c:237: TCONF: preadv2(): EOPNOTSUPP (95)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext3 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+preadv203.c:143: TINFO: Number of full_reads 82637, short reads 10, zero le=
+n reads 0, EAGAIN(s) 173458
+preadv203.c:194: TINFO: Cache dropped 1 times
+preadv203.c:180: TINFO: Number of writes 7020
+preadv203.c:222: TPASS: Got some EAGAIN
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext4 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+preadv203.c:143: TINFO: Number of full_reads 12771, short reads 10, zero le=
+n reads 0, EAGAIN(s) 13654568
+preadv203.c:194: TINFO: Cache dropped 100 times
+preadv203.c:180: TINFO: Number of writes 4068360
+preadv203.c:222: TPASS: Got some EAGAIN
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on xfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+preadv203.c:143: TINFO: Number of full_reads 41613, short reads 10, zero le=
+n reads 0, EAGAIN(s) 8312026
+preadv203.c:180: TINFO: Number of writes 3478260
+preadv203.c:194: TINFO: Cache dropped 102 times
+preadv203.c:222: TPASS: Got some EAGAIN
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extra op=
+ts=3D''
+preadv203.c:143: TINFO: Number of full_reads 557, short reads 10, zero len =
+reads 0, EAGAIN(s) 167981
+preadv203.c:180: TINFO: Number of writes 420
+preadv203.c:194: TINFO: Cache dropped 2 times
+preadv203.c:222: TPASS: Got some EAGAIN
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on vfat =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts=3D'' extra opt=
+s=3D''
+preadv203.c:237: TCONF: preadv2(): EOPNOTSUPP (95)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ntfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ntfs opts=3D'' extra opt=
+s=3D''
+The partition start sector was not specified for /dev/loop0 and it could no=
+t be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it cou=
+ld not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be ob=
+tained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sec=
+tors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:1107: TINFO: Trying FUSE...
+preadv203.c:237: TCONF: preadv2(): EOPNOTSUPP (95)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on tmpfs =3D=3D=3D
+tst_test.c:1093: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1074: TINFO: Limiting tmpfs size to 32MB
+preadv203.c:237: TCONF: preadv2(): EOPNOTSUPP (95)
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  4
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D116 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1270 cstime=3D17506
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dprofil01 stime=3D1687154227
+cmdline=3D"profil01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+profil01    0  TINFO  :  buf[0x403a]=3D1
+profil01    0  TINFO  :  buf[0x4040]=3D1
+profil01    0  TINFO  :  buf[0x4044]=3D2
+profil01    0  TINFO  :  buf[0x4048]=3D42
+profil01    0  TINFO  :  buf[0x4058]=3D50
+profil01    0  TINFO  :  buf[0x405c]=3D1
+profil01    0  TINFO  :  buf[0x406e]=3D2
+profil01    0  TINFO  :  buf[0x4088]=3D1
+profil01    0  TINFO  :  buf[0x408c]=3D1
+profil01    0  TINFO  :  buf[0x4162]=3D54
+profil01    0  TINFO  :  buf[0x4170]=3D71
+profil01    0  TINFO  :  buf[0x417a]=3D51
+profil01    0  TINFO  :  buf[0x4186]=3D2
+profil01    0  TINFO  :  buf[0x418a]=3D54
+profil01    0  TINFO  :  buf[0x4192]=3D48
+profil01    0  TINFO  :  buf[0x4196]=3D2
+profil01    0  TINFO  :  buf[0x419c]=3D1
+profil01    0  TINFO  :  buf[0x41a0]=3D65
+profil01    0  TINFO  :  buf[0x41aa]=3D1
+profil01    0  TINFO  :  buf[0x41ae]=3D1
+profil01    0  TINFO  :  buf[0x41b2]=3D45
+profil01    0  TINFO  :  buf[0x41ba]=3D1
+profil01    1  TPASS  :  profil recorded some data
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D5 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D498 cstime=3D0
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dprocess_vm_readv03 stime=3D1687154232
+cmdline=3D"process_vm_readv03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+process_vm_readv03.c:164: TINFO: bufsize=3D1024, remote_iovecs=3D1024, loca=
+l_iovecs=3D8
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 1024
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D1024, remote_iovecs=3D512, local=
+_iovecs=3D16
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 1024
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D1024, remote_iovecs=3D256, local=
+_iovecs=3D32
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 1024
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D1024, remote_iovecs=3D128, local=
+_iovecs=3D64
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 1024
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D1024, remote_iovecs=3D64, local_=
+iovecs=3D128
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 1024
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D1024, remote_iovecs=3D32, local_=
+iovecs=3D256
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 1024
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D1024, remote_iovecs=3D16, local_=
+iovecs=3D512
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 1024
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D1024, remote_iovecs=3D8, local_i=
+ovecs=3D1024
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 1024
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D131072, remote_iovecs=3D1024, lo=
+cal_iovecs=3D8
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 131072
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D131072, remote_iovecs=3D512, loc=
+al_iovecs=3D16
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 131072
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D131072, remote_iovecs=3D256, loc=
+al_iovecs=3D32
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 131072
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D131072, remote_iovecs=3D128, loc=
+al_iovecs=3D64
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 131072
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D131072, remote_iovecs=3D64, loca=
+l_iovecs=3D128
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 131072
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D131072, remote_iovecs=3D32, loca=
+l_iovecs=3D256
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 131072
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D131072, remote_iovecs=3D16, loca=
+l_iovecs=3D512
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 131072
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+process_vm_readv03.c:164: TINFO: bufsize=3D131072, remote_iovecs=3D8, local=
+_iovecs=3D1024
+process_vm_readv03.c:83: TINFO: child_alloc: memory allocated and initializ=
+ed
+process_vm_readv03.c:110: TINFO: child_read: reading string from same memor=
+y location
+process_vm_readv03.c:112: TPASS: process_vm_read() returned 131072
+process_vm_readv03.c:137: TPASS: child_read: all bytes are correctly receiv=
+ed
+
+Summary:
+passed   32
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D9
+<<<test_end>>>
+<<<test_start>>>
+tag=3Ddirtyc0w_shmem stime=3D1687154232
+cmdline=3D"dirtyc0w_shmem"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 06m 30s
+dirtyc0w_shmem_child.c:134: TCONF: syscall(323) __NR_userfaultfd not suppor=
+ted on your arch
+dirtyc0w_shmem.c:95: TINFO: Early child process exit
+
+Summary:
+passed   0
+failed   0
+broken   0
+skipped  1
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D32 corefile=3Dno
+cutime=3D1 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Ddirtypipe stime=3D1687154232
+cmdline=3D"dirtypipe"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_buffers.c:55: TINFO: Test is using guarded buffers
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+dirtypipe.c:62: TPASS: read buff data match, bug doesn't exist
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D2
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpselect01_64 stime=3D1687154232
+cmdline=3D"pselect01_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_timer_test.c:357: TINFO: CLOCK_MONOTONIC resolution 1ns
+tst_timer_test.c:369: TINFO: prctl(PR_GET_TIMERSLACK) =3D 50us
+tst_test.c:1566: TINFO: Updating max runtime to 0h 00m 09s
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 48s
+tst_timer_test.c:263: TINFO: pselect() sleeping for 1000us 500 iterations, =
+threshold 450.01us
+tst_timer_test.c:305: TINFO: min 1032us, max 2996us, median 1058us, trunc m=
+ean 1058.12us (discarded 25)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: pselect() sleeping for 2000us 500 iterations, =
+threshold 450.01us
+tst_timer_test.c:305: TINFO: min 2016us, max 3716us, median 2062us, trunc m=
+ean 2061.14us (discarded 25)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: pselect() sleeping for 5000us 300 iterations, =
+threshold 450.04us
+tst_timer_test.c:305: TINFO: min 5016us, max 5089us, median 5058us, trunc m=
+ean 5058.81us (discarded 15)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: pselect() sleeping for 10000us 100 iterations,=
+ threshold 450.33us
+tst_timer_test.c:305: TINFO: min 10024us, max 10790us, median 10060us, trun=
+c mean 10061.07us (discarded 5)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: pselect() sleeping for 25000us 50 iterations, =
+threshold 451.29us
+tst_timer_test.c:305: TINFO: min 25047us, max 29310us, median 25071us, trun=
+c mean 25070.29us (discarded 2)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: pselect() sleeping for 100000us 10 iterations,=
+ threshold 537.00us
+tst_timer_test.c:305: TINFO: min 100098us, max 100150us, median 100122us, t=
+runc mean 100118.67us (discarded 1)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+tst_timer_test.c:263: TINFO: pselect() sleeping for 1000000us 2 iterations,=
+ threshold 4400.00us
+tst_timer_test.c:305: TINFO: min 1000791us, max 1001001us, median 1000791us=
+, trunc mean 1000791.00us (discarded 1)
+tst_timer_test.c:326: TPASS: Measured times are within thresholds
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D9 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D8
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dptrace01 stime=3D1687154241
+cmdline=3D"ptrace01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+ptrace01.c:89: TINFO: Testing PTRACE_KILL without child handler
+ptrace01.c:118: TPASS: Child killed by SIGKILL as expected
+ptrace01.c:89: TINFO: Testing PTRACE_KILL with child handler
+ptrace01.c:118: TPASS: Child killed by SIGKILL as expected
+ptrace01.c:89: TINFO: Testing PTRACE_CONT without child handler
+ptrace01.c:118: TPASS: Child exited with 1 as expected
+ptrace01.c:89: TINFO: Testing PTRACE_CONT with child handler
+ptrace01.c:118: TPASS: Child exited with 1 as expected
+
+Summary:
+passed   4
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D5
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dptrace09 stime=3D1687154241
+cmdline=3D"ptrace09"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+ptrace09.c:82: TPASS: We're still here. Nothing bad happened, probably.
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpwrite01 stime=3D1687154241
+cmdline=3D"pwrite01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pwrite01.c:60: TPASS: Functionality of pwrite() successful
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpwrite03_64 stime=3D1687154241
+cmdline=3D"pwrite03_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pwrite03.c:20: TPASS: pwrite(4, NULL, 0) =3D=3D 0 passed
+
+Summary:
+passed   1
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpwritev02 stime=3D1687154241
+cmdline=3D"pwritev02"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pwritev02.c:84: TPASS: pwritev() failed as expected: EINVAL (22)
+pwritev02.c:84: TPASS: pwritev() failed as expected: EINVAL (22)
+pwritev02.c:84: TPASS: pwritev() failed as expected: EINVAL (22)
+pwritev02.c:84: TPASS: pwritev() failed as expected: EFAULT (14)
+pwritev02.c:84: TPASS: pwritev() failed as expected: EBADF (9)
+pwritev02.c:84: TPASS: pwritev() failed as expected: EBADF (9)
+pwritev02.c:84: TPASS: pwritev() failed as expected: ESPIPE (29)
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D4
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpwritev201 stime=3D1687154241
+cmdline=3D"pwritev201"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pwritev201.c:95: TPASS: pwritev2() wrote 64 bytes successfully with content=
+ 'a' expectedly=20
+pwritev201.c:95: TPASS: pwritev2() wrote 64 bytes successfully with content=
+ 'a' expectedly=20
+pwritev201.c:95: TPASS: pwritev2() wrote 64 bytes successfully with content=
+ 'a' expectedly=20
+pwritev201.c:95: TPASS: pwritev2() wrote 64 bytes successfully with content=
+ 'a' expectedly=20
+pwritev201.c:95: TPASS: pwritev2() wrote 64 bytes successfully with content=
+ 'a' expectedly=20
+pwritev201.c:95: TPASS: pwritev2() wrote 64 bytes successfully with content=
+ 'a' expectedly=20
+
+Summary:
+passed   6
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dpwritev202_64 stime=3D1687154241
+cmdline=3D"pwritev202_64"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+pwritev202.c:78: TPASS: pwritev2() failed as expected: EINVAL (22)
+pwritev202.c:78: TPASS: pwritev2() failed as expected: EINVAL (22)
+pwritev202.c:78: TPASS: pwritev2() failed as expected: EOPNOTSUPP (95)
+pwritev202.c:78: TPASS: pwritev2() failed as expected: EFAULT (14)
+pwritev202.c:78: TPASS: pwritev2() failed as expected: EBADF (9)
+pwritev202.c:78: TPASS: pwritev2() failed as expected: EBADF (9)
+pwritev202.c:78: TPASS: pwritev2() failed as expected: ESPIPE (29)
+
+Summary:
+passed   7
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D0 cstime=3D3
+<<<test_end>>>
+<<<test_start>>>
+tag=3Dquotactl06 stime=3D1687154241
+cmdline=3D"quotactl06"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+quotactl06.c:183: TINFO: quotactl() with vfsv0 format
+quotactl06.c:132: TINFO: Testing EACCES when cmd is Q_QUOTAON and addr exis=
+ted but not a regular file
+quotactl06.c:158: TPASS: quotactl() : EACCES (13)
+quotactl06.c:132: TINFO: Testing ENOENT when the file specified by special =
+or addr does not exist
+quotactl06.c:158: TPASS: quotactl() : ENOENT (2)
+quotactl06.c:132: TINFO: Testing EBUSY when cmd is Q_QUOTAON and another Q_=
+QUOTAON had already been performed
+quotactl06.c:158: TPASS: quotactl() : EBUSY (16)
+quotactl06.c:132: TINFO: Testing EFAULT when addr or special is invalid
+quotactl06.c:158: TPASS: quotactl() : EFAULT (14)
+quotactl06.c:132: TINFO: Testing EINVAL when cmd or type is invalid
+quotactl06.c:158: TPASS: quotactl() : EINVAL (22)
+quotactl06.c:132: TINFO: Testing ENOTBLK when special is not a block device
+quotactl06.c:155: TPASS: quotactl() : ENOTBLK (15)
+quotactl06.c:132: TINFO: Testing ESRCH is for Q_SETQUOTA but no quota found=
+ for the user or quotas are off
+quotactl06.c:158: TPASS: quotactl() : ESRCH (3)
+quotactl06.c:132: TINFO: Testing ESRCH when cmd is Q_QUOTAON, but the quota=
+ format was not found
+quotactl06.c:158: TPASS: quotactl() : ESRCH (3)
+quotactl06.c:132: TINFO: Testing ESRCH for Q_GETNEXTQUOTA, but the id was l=
+ast one
+quotactl06.c:158: TPASS: quotactl() : ESRCH (3)
+quotactl06.c:132: TINFO: Testing ERANGE for Q_SETQUOTA, but the specified l=
+imits are out of range
+quotactl06.c:158: TPASS: quotactl() : ERANGE (34)
+quotactl06.c:132: TINFO: Testing EPERM when the caller lacks the required p=
+rivilege (CAP_SYS_ADMIN)
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+quotactl06.c:158: TPASS: quotactl() : EPERM (1)
+tst_capability.c:41: TINFO: Permitting CAP_SYS_ADMIN(21)
+quotactl06.c:183: TINFO: quotactl() with vfsv1 format
+quotactl06.c:132: TINFO: Testing EACCES when cmd is Q_QUOTAON and addr exis=
+ted but not a regular file
+quotactl06.c:158: TPASS: quotactl() : EACCES (13)
+quotactl06.c:132: TINFO: Testing ENOENT when the file specified by special =
+or addr does not exist
+quotactl06.c:158: TPASS: quotactl() : ENOENT (2)
+quotactl06.c:132: TINFO: Testing EBUSY when cmd is Q_QUOTAON and another Q_=
+QUOTAON had already been performed
+quotactl06.c:158: TPASS: quotactl() : EBUSY (16)
+quotactl06.c:132: TINFO: Testing EFAULT when addr or special is invalid
+quotactl06.c:158: TPASS: quotactl() : EFAULT (14)
+quotactl06.c:132: TINFO: Testing EINVAL when cmd or type is invalid
+quotactl06.c:158: TPASS: quotactl() : EINVAL (22)
+quotactl06.c:132: TINFO: Testing ENOTBLK when special is not a block device
+quotactl06.c:155: TPASS: quotactl() : ENOTBLK (15)
+quotactl06.c:132: TINFO: Testing ESRCH is for Q_SETQUOTA but no quota found=
+ for the user or quotas are off
+quotactl06.c:158: TPASS: quotactl() : ESRCH (3)
+quotactl06.c:132: TINFO: Testing ESRCH when cmd is Q_QUOTAON, but the quota=
+ format was not found
+quotactl06.c:158: TPASS: quotactl() : ESRCH (3)
+quotactl06.c:132: TINFO: Testing ESRCH for Q_GETNEXTQUOTA, but the id was l=
+ast one
+quotactl06.c:158: TPASS: quotactl() : ESRCH (3)
+quotactl06.c:132: TINFO: Testing ERANGE for Q_SETQUOTA, but the specified l=
+imits are out of range
+quotactl06.c:158: TPASS: quotactl() : ERANGE (34)
+quotactl06.c:132: TINFO: Testing EPERM when the caller lacks the required p=
+rivilege (CAP_SYS_ADMIN)
+tst_capability.c:29: TINFO: Dropping CAP_SYS_ADMIN(21)
+quotactl06.c:158: TPASS: quotactl() : EPERM (1)
+tst_capability.c:41: TINFO: Permitting CAP_SYS_ADMIN(21)
+
+Summary:
+passed   22
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D2 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D32
+<<<test_end>>>
+<<<test_start>>>
+tag=3Drename05 stime=3D1687154243
+cmdline=3D"rename05"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext2
+tst_supported_fs_types.c:55: TINFO: mkfs.ext2 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext3
+tst_supported_fs_types.c:55: TINFO: mkfs.ext3 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports ext4
+tst_supported_fs_types.c:55: TINFO: mkfs.ext4 does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports xfs
+tst_supported_fs_types.c:55: TINFO: mkfs.xfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports btrfs
+tst_supported_fs_types.c:55: TINFO: mkfs.btrfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports vfat
+tst_supported_fs_types.c:55: TINFO: mkfs.vfat does exist
+tst_supported_fs_types.c:116: TINFO: Filesystem exfat is not supported
+tst_supported_fs_types.c:120: TINFO: FUSE does support ntfs
+tst_supported_fs_types.c:55: TINFO: mkfs.ntfs does exist
+tst_supported_fs_types.c:90: TINFO: Kernel supports tmpfs
+tst_supported_fs_types.c:42: TINFO: mkfs is not needed for tmpfs
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext2 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+rename05.c:31: TPASS: rename(TEMP_FILE, TEMP_DIR) : EISDIR (21)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext3 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+rename05.c:31: TPASS: rename(TEMP_FILE, TEMP_DIR) : EISDIR (21)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ext4 =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext4 opts=3D'' extra opt=
+s=3D''
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+rename05.c:31: TPASS: rename(TEMP_FILE, TEMP_DIR) : EISDIR (21)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on xfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with xfs opts=3D'' extra opts=
+=3D''
+rename05.c:31: TPASS: rename(TEMP_FILE, TEMP_DIR) : EISDIR (21)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extra op=
+ts=3D''
+rename05.c:31: TPASS: rename(TEMP_FILE, TEMP_DIR) : EISDIR (21)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on vfat =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with vfat opts=3D'' extra opt=
+s=3D''
+rename05.c:31: TPASS: rename(TEMP_FILE, TEMP_DIR) : EISDIR (21)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on ntfs =3D=3D=3D
+tst_test.c:1093: TINFO: Formatting /dev/loop0 with ntfs opts=3D'' extra opt=
+s=3D''
+The partition start sector was not specified for /dev/loop0 and it could no=
+t be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /dev/loop0 and it cou=
+ld not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /dev/loop0 and it could not be ob=
+tained automatically.  It has been set to 0.
+To boot from a device, Windows needs the 'partition start sector', the 'sec=
+tors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+tst_test.c:1107: TINFO: Trying FUSE...
+rename05.c:31: TPASS: rename(TEMP_FILE, TEMP_DIR) : EISDIR (21)
+tst_test.c:1634: TINFO: =3D=3D=3D Testing on tmpfs =3D=3D=3D
+tst_test.c:1093: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1074: TINFO: Limiting tmpfs size to 32MB
+rename05.c:31: TPASS: rename(TEMP_FILE, TEMP_DIR) : EISDIR (21)
+
+Summary:
+passed   8
+failed   0
+broken   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D28 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D6 cstime=3D1802
+<<<test_end>>>
+<<<test_start>>>
+tag=3Drenameat01 stime=3D1687154271
+cmdline=3D"renameat01"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+mke2fs 1.46.6-rc1 (12-Sep-2022)
+renameat01    0  TINFO  :  Found free device 0 '/dev/loop0'
+renameat01    0  TINFO  :  Formatting /dev/loop0 with ext2 opts=3D'' extra =
+opts=3D''
+renameat01    0  TINFO  :  subdir limit is not availiable for xfs filesyste=
+m
+renameat01    1  TPASS  :  renameat() returned the expected value: TEST_ERR=
+NO=3DSUCCESS(0): Success
+renameat01    2  TPASS  :  renameat() returned the expected value: TEST_ERR=
+NO=3DSUCCESS(0): Success
+renameat01    3  TPASS  :  renameat() returned the expected value: TEST_ERR=
+NO=3DSUCCESS(0): Success
+renameat01    4  TPASS  :  renameat() returned the expected value: TEST_ERR=
+NO=3DEBADF(9): Bad file descriptor
+renameat01    5  TPASS  :  renameat() returned the expected value: TEST_ERR=
+NO=3DENOTDIR(20): Not a directory
+renameat01    6  TPASS  :  renameat() returned the expected value: TEST_ERR=
+NO=3DELOOP(40): Too many levels of symbolic links
+renameat01    7  TPASS  :  renameat() returned the expected value: TEST_ERR=
+NO=3DEROFS(30): Read-only file system
+renameat01    8  TCONF  :  renameat01.c:193: EMLINK test is not appropriate
+<<<execution_status>>>
+initiation_status=3D"ok"
+duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=3Dno
+cutime=3D1 cstime=3D8
+<<<test_end>>>
+<<<test_start>>>
+tag=3Drequest_key03 stime=3D1687154272
+cmdline=3D"request_key03"
+contacts=3D""
+analysis=3Dexit
+<<<test_output>>>
+tst_test.c:1558: TINFO: Timeout per run is 0h 03m 10s
+request_key03.c:185: TPASS: didn't crash while updating key of type 'encryp=
+ted'
+request_key03.c:199: TPASS: didn't crash while requesting key of type 'encr=
+ypted'
+request_key03.c:149: TCONF: kernel doesn't support key type 'trusted'
+
+--jJwnjB4X99DgDJ7r
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: attachment; filename="job.yaml"
+
+---
+
+#! jobs/ltp-syscalls.yaml
+suite: ltp
+testcase: ltp
+category: functional
+need_memory: 4G
+disk: 1HDD
+fs: xfs
+ltp:
+  test: syscalls-05
+job_origin: ltp-syscalls.yaml
+
+#! queue options
+queue_cmdline_keys: []
+queue: vip
+testbox: lkp-ivb-d04
+tbox_group: lkp-ivb-d04
+submit_id: 648f18f50b9a93b92c4ec835
+job_file: "/lkp/jobs/scheduled/lkp-ivb-d04/ltp-1HDD-xfs-syscalls-05-debian-12-x86_64-20220629.cgz-eca2040972b4-20230618-47404-1pz30dn-5.yaml"
+id: 9366651c976d71c9fc0ad41f14a2f91b40a91b9e
+queuer_version: "/lkp/xsang/.src-20230618-215932"
+
+#! /db/releases/20230614000013/lkp-src/hosts/lkp-ivb-d04
+model: Ivy Bridge
+nr_node: 1
+nr_cpu: 4
+memory: 8G
+nr_ssd_partitions: 1
+nr_hdd_partitions: 4
+ssd_partitions: "/dev/disk/by-id/ata-INTEL_SSDSC2KB240G8_BTYF836606UQ240AGN-part1"
+hdd_partitions: "/dev/disk/by-id/ata-WDC_WD20EZRX-00D8PB0_WD-WCC4M0KTT6NK-part2 /dev/disk/by-id/ata-WDC_WD20EZRX-00D8PB0_WD-WCC4M0KTT6NK-part3
+  /dev/disk/by-id/ata-WDC_WD20EZRX-00D8PB0_WD-WCC4M0KTT6NK-part4 /dev/disk/by-id/ata-WDC_WD20EZRX-00D8PB0_WD-WCC4M0KTT6NK-part5"
+rootfs_partition: "/dev/disk/by-id/ata-WDC_WD20EZRX-00D8PB0_WD-WCC4M0KTT6NK-part1"
+brand: Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz
+
+#! /db/releases/20230614000013/lkp-src/include/category/functional
+kmsg:
+heartbeat:
+meminfo:
+kmemleak:
+
+#! /db/releases/20230614000013/lkp-src/include/queue/cyclic
+commit: eca2040972b411ec27483bf75dc8b84e730e88ff
+
+#! /db/releases/20230614000013/lkp-src/include/testbox/lkp-ivb-d04
+netconsole_port: 6676
+ucode: '0x21'
+need_kconfig_hw:
+- R8169: y
+- SATA_AHCI
+- DRM_I915
+
+#! /db/releases/20230614000013/lkp-src/include/disk/nr_hdd
+need_kconfig:
+- BLK_DEV_SD
+- SCSI
+- BLOCK: y
+- SATA_AHCI
+- SATA_AHCI_PLATFORM
+- ATA
+- PCI: y
+- XFS_FS
+- BLK_DEV_LOOP
+- CAN: m
+- CAN_DEV: m
+- CAN_RAW: m
+- CAN_VCAN: m
+- MINIX_FS: m
+- EXPERT: y
+- CHECKPOINT_RESTORE: y
+
+#! /db/releases/20230614000013/lkp-src/include/fs/OTHERS
+
+#! /db/releases/20230614000013/lkp-src/include/ltp
+rootfs: debian-12-x86_64-20220629.cgz
+initrds:
+- linux_headers
+kconfig: x86_64-rhel-8.3-ltp
+enqueue_time: 2023-06-18 22:47:17.747825930 +08:00
+_id: 648f18ff0b9a93b92c4ec83a
+_rt: "/result/ltp/1HDD-xfs-syscalls-05/lkp-ivb-d04/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff"
+
+#! schedule options
+user: lkp
+compiler: gcc-12
+LKP_SERVER: internal-lkp-server
+head_commit: 893cfa9a0f01795705bee0039a0ce07f80b915d8
+base_commit: 858fd168a95c5b9669aac8db6c14a9aeab446375
+branch: linux-next/master
+result_root: "/result/ltp/1HDD-xfs-syscalls-05/lkp-ivb-d04/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/0"
+scheduler_version: "/lkp/lkp/.src-20230616-233838"
+arch: x86_64
+max_uptime: 1200
+initrd: "/osimage/debian/debian-12-x86_64-20220629.cgz"
+bootloader_append:
+- root=/dev/ram0
+- RESULT_ROOT=/result/ltp/1HDD-xfs-syscalls-05/lkp-ivb-d04/debian-12-x86_64-20220629.cgz/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/0
+- BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/vmlinuz-6.4.0-rc1-00001-geca2040972b4
+- branch=linux-next/master
+- job=/lkp/jobs/scheduled/lkp-ivb-d04/ltp-1HDD-xfs-syscalls-05-debian-12-x86_64-20220629.cgz-eca2040972b4-20230618-47404-1pz30dn-5.yaml
+- user=lkp
+- ARCH=x86_64
+- kconfig=x86_64-rhel-8.3-ltp
+- commit=eca2040972b411ec27483bf75dc8b84e730e88ff
+- initcall_debug
+- nmi_watchdog=0
+- max_uptime=1200
+- LKP_SERVER=internal-lkp-server
+- nokaslr
+- selinux=0
+- debug
+- apic=debug
+- sysrq_always_enabled
+- rcupdate.rcu_cpu_stall_timeout=100
+- net.ifnames=0
+- printk.devkmsg=on
+- panic=-1
+- softlockup_panic=1
+- nmi_watchdog=panic
+- oops=panic
+- load_ramdisk=2
+- prompt_ramdisk=0
+- drbd.minor_count=8
+- systemd.log_level=err
+- ignore_loglevel
+- console=tty0
+- earlyprintk=ttyS0,115200
+- console=ttyS0,115200
+- vga=normal
+- rw
+
+#! runtime status
+modules_initrd: "/pkg/linux/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/modules.cgz"
+linux_headers_initrd: "/pkg/linux/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/linux-headers.cgz"
+bm_initrd: "/osimage/deps/debian-12-x86_64-20220629.cgz/run-ipconfig_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/lkp_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/rsync-rootfs_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/fs_20221125.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/ltp_20230520.cgz,/osimage/pkg/debian-12-x86_64-20220629.cgz/ltp-x86_64-14c1f76-1_20230520.cgz,/osimage/deps/debian-12-x86_64-20220629.cgz/hw_20230326.cgz"
+ucode_initrd: "/osimage/ucode/intel-ucode-20230406.cgz"
+lkp_initrd: "/osimage/user/lkp/lkp-x86_64.cgz"
+site: inn
+
+#! /db/releases/20230615094022/lkp-src/include/site/inn
+LKP_CGI_PORT: 80
+LKP_CIFS_PORT: 139
+oom-killer:
+watchdog:
+last_kernel: 4.20.0
+stop_repeat_if_found: ltp.ioprio_set03.fail
+
+#! user overrides
+kbuild_queue_analysis: 1
+
+#! /db/releases/20230616170720/lkp-src/include/site/inn
+kernel: "/pkg/linux/x86_64-rhel-8.3-ltp/gcc-12/eca2040972b411ec27483bf75dc8b84e730e88ff/vmlinuz-6.4.0-rc1-00001-geca2040972b4"
+dequeue_time: 2023-06-18 23:16:16.109122538 +08:00
+
+#! /cephfs/db/releases/20230618143619/lkp-src/include/site/inn
+job_state: soft_timeout
+loadavg: 6.80 52.80 53.19 2/239 44016
+start_time: '1687101650'
+end_time: '1687102856'
+version: "/lkp/lkp/.src-20230616-233922:1bd394325df1:c9023cc6fea2"
+
+--jJwnjB4X99DgDJ7r
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: attachment; filename="reproduce"
+
+dmsetup remove_all
+wipefs -a --force /dev/sda2
+mkfs -t xfs -f -mreflink=0 /dev/sda2
+mkdir -p /fs/sda2
+modprobe xfs
+mount -t xfs -o inode64 /dev/sda2 /fs/sda2
+ln -sf /usr/sbin/iptables-nft /usr/bin/iptables
+ln -sf /usr/sbin/ip6tables-nft /usr/bin/ip6tables
+export LTP_RUNTIME_MUL=2
+./runltp -f syscalls-05 -d /fs/sda2/tmpdir
+
+--jJwnjB4X99DgDJ7r
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--jJwnjB4X99DgDJ7r--
