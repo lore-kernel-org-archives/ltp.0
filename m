@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA341EB64D7
-	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 10:42:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E4C5EB64D7
+	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 10:54:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E7BE23CB8B3
-	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 12:42:50 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id E420C3CE0F7
+	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 12:54:35 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD7793C9C7B
- for <ltp@lists.linux.it>; Tue, 20 Jun 2023 12:42:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id B179A3CB041
+ for <ltp@lists.linux.it>; Tue, 20 Jun 2023 12:54:26 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3A06B6002A5
- for <ltp@lists.linux.it>; Tue, 20 Jun 2023 12:42:39 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A9C9C20005C
+ for <ltp@lists.linux.it>; Tue, 20 Jun 2023 12:54:24 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3089A21877;
- Tue, 20 Jun 2023 10:42:39 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6A63F1F38A;
+ Tue, 20 Jun 2023 10:54:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1687257759;
+ t=1687258464;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=I2KY1TvebuxBA+GKjIZJkP2MPNdRrrkEWPQfw/WteQk=;
- b=jFHU1zyw0sNWkoHO2REew3OjZihspECgKoSDtjRhQkY4wvTPg2ETvsqMwJ/Sq4FuVRJQVD
- Z+vKoHXXqtaPeVJV5Z9AFvmyNdyJfF8oXcp4IZObWkvIyLY73ex9mfYFN2inaH2RLAk3xC
- T2qmPwtUKcuT7l7/lgwCAe73bs3X1XA=
+ bh=aHNHdfFgacNw3zFHnCeUz+uw7fCNcqQQw16pZiM0Ayg=;
+ b=rUT7xCc4tVUFK1KMr3ohR3f9S01VpcGGNS4u6h7EKSxI8mbsMeHDCpnKFIFd9NxW7BoLr4
+ ooyjGQinu+btDKnJIQJ7J9JYdO0l19+0xGnV6YG7rdBE2DQrtYgyISiStHdlv1W76bHRps
+ fLV+VgPpt16UENzkbp9slV/nqe6iceo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1687257759;
+ s=susede2_ed25519; t=1687258464;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=I2KY1TvebuxBA+GKjIZJkP2MPNdRrrkEWPQfw/WteQk=;
- b=rXVrBnBfntChVjoEi5BxxQZT8T28dCnioGEKgbLGUxonCF/W7H5KY/Qc+WJAZKMLFqib8H
- 4J6bA0idE7UA5DAw==
+ bh=aHNHdfFgacNw3zFHnCeUz+uw7fCNcqQQw16pZiM0Ayg=;
+ b=vSGQO7Ac1+x1PRIF0JM7mmw5Kd+dr9AiDmW4t/9ElPJBoasVR7+U6i9APzYdnpOsbdxfF/
+ 8YdWJCcAR4VdHCDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F3EB91346D;
- Tue, 20 Jun 2023 10:42:38 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2B9CE1346D;
+ Tue, 20 Jun 2023 10:54:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id t09VOp6CkWTsYQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 20 Jun 2023 10:42:38 +0000
-Date: Tue, 20 Jun 2023 12:42:29 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id jItECWCFkWQUaAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 20 Jun 2023 10:54:24 +0000
+Date: Tue, 20 Jun 2023 12:54:22 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Niklas Cassel <Niklas.Cassel@wdc.com>
-Message-ID: <20230620104229.GB281987@pevik>
+Message-ID: <20230620105422.GC281987@pevik>
 References: <20230605044131.798383-1-dlemoal@kernel.org>
  <20230620091316.GB275381@pevik> <ZJFugRCzFlZYL934@x1-carbon>
  <ZJFwQRo8dOZICQJ+@x1-carbon>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <ZJFwQRo8dOZICQJ+@x1-carbon>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 0/2] Improve ioprio tests
 X-BeenThere: ltp@lists.linux.it
@@ -84,60 +85,14 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Tue, Jun 20, 2023 at 11:16:49AM +0200, Niklas Cassel wrote:
-> > On Tue, Jun 20, 2023 at 11:13:16AM +0200, Petr Vorel wrote:
-> > > Hi Damien,
+Hi all,
 
-> > > > The ioprio syscall tests rely on ltp internal definitions of the
-> > > > IOPRIO_XXX() macro defining priority classes and levels. With changes
-> > > > to the ioprio API to support command duration limits, these internal
-> > > > definitions are incomplete, causing test case ioprio_set03 to fail.
+patchset merged with added missing #include "config.h".
 
-> > > > Avoid this issue by having the iprio tests use the kernel header file
-> > > > definitions if that header exists. This enables additional checks in
-> > > > the header file [1] which restores the expected results with test
-> > > > ioprio_set03.
-
-> > > > [1] https://lore.kernel.org/linux-block/20230530061307.525644-1-dlemoal@kernel.org/
-
-> > > > Note: a review of this patch on the kernel block mailing list would be
-> > > > very appreciated.
-
-> > > I haven't found this patchset on https://lore.kernel.org/linux-block/,
-> > > did you send it there?
-
-> > Hello Petr,
-
-> > The patch series for LTP can be found here:
-> > https://lore.kernel.org/ltp/20230608005315.3703446-1-dlemoal@kernel.org/T/#t
-
-> > I just checked LTP master, and it hasn't been applied by the
-> > LTP maintainers yet.
-
-
-> > Kind regards,
-> > Niklas
-
-> Oh, and in case you were referring to the prerequisite kernel patch,
-> it is already in linux-next:
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=staging&id=01584c1e233740519d0e11aa20daa323d26bf598
-
-Good to know, thank you (referring to kernel commits is always considered
-useful).
-
-No, I really searched if LTP patchset was also Cc'ed to linux-block.
-But as the maintainers were Cc'ed I now understand why linux-block was omitted.
-I'm sorry for the confusion.
+I'll do the additional cleanup work and Cc you.
 
 Kind regards,
 Petr
-
-> So right now we are just waiting for the LTP patch series to get picked up.
-
-
-> Kind regards,
-> Niklas
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
