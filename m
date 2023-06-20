@@ -4,70 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BFBBEB64D7
-	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 09:01:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8A89EB64D7
+	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 09:13:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 32ED13CE0FE
-	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 11:01:43 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id ECA6F3CE0FB
+	for <ltp@archiver.kernel.org>; Tue, 20 Jun 2023 11:13:30 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A268C3CA861
- for <ltp@lists.linux.it>; Tue, 20 Jun 2023 11:01:33 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 009E23CAD3F
+ for <ltp@lists.linux.it>; Tue, 20 Jun 2023 11:13:19 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7C40E60075C
- for <ltp@lists.linux.it>; Tue, 20 Jun 2023 11:01:32 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2B768600281
+ for <ltp@lists.linux.it>; Tue, 20 Jun 2023 11:13:18 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CC25A21898;
- Tue, 20 Jun 2023 09:01:31 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6E3AC218B1;
+ Tue, 20 Jun 2023 09:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1687251691;
+ t=1687252398;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xDt/xafRlgB79ZI0k28Z9+wb0XN4qnj7tzzcfjH+9fQ=;
- b=2R/NYg48xirweXeiqymhKx7Oy5FYslNycL3swNLjVOgMxS4EyNxBRxKEO30pPBENlYWiqn
- T1/rthr+m0zfJmS52rQ6KWKul4MlclWYaI2FvxpHc1sUMrPrGI79a1YETFIjUltee33c+E
- n9vnK1QfBcdNhig7ufm1ddRT1HkLOfU=
+ bh=DDC926ykHKG0aaztEC/Ck1on3g2DmQtx85Bdv/fBxNw=;
+ b=mRad2ebYSw0UObb/0byXwVUaHteDmUoPKUcnMQZ9HhVMJ5o+3r8l6JLTyMVkhspzJE+gUP
+ UpxwHFU5TZPRpkZBmr+6osvVekpD4Ukjhv/vflA/DbyenbePUXiWINzuY1UyjJX3z9V6Jc
+ z5s2HFSJZPR8H/MOiYF0I0s8tayYZTI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1687251691;
+ s=susede2_ed25519; t=1687252398;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xDt/xafRlgB79ZI0k28Z9+wb0XN4qnj7tzzcfjH+9fQ=;
- b=LPra32xDtISeiNAAP2u9Z3eGF21JNJMGdO2LxtsmuaL40sMrBkUATramtC2j0tWA7Z3o6v
- Yrs8XX3+T7KmFeAQ==
+ bh=DDC926ykHKG0aaztEC/Ck1on3g2DmQtx85Bdv/fBxNw=;
+ b=f/Pg/aX4K8zWmvZ/Dx4cJjGnWKefDAeZwApnCNKlNa0tNyPw0dCas5Z6HZWC5Yc2eL7xlt
+ aLb3OVMBlwPZV7Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A084F133A9;
- Tue, 20 Jun 2023 09:01:31 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 38C54133A9;
+ Tue, 20 Jun 2023 09:13:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QBUtJetqkWQMLgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 20 Jun 2023 09:01:31 +0000
-Date: Tue, 20 Jun 2023 11:01:30 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id WI6zDK5tkWQjNAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 20 Jun 2023 09:13:18 +0000
+Date: Tue, 20 Jun 2023 11:13:16 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20230620090130.GA275381@pevik>
-References: <20230607144517.24972-1-mdoucha@suse.cz>
- <20230620082442.GA270877@pevik>
- <666f5cd5-5f03-95b3-0b33-6e104fd58744@suse.cz>
+To: Damien Le Moal <dlemoal@kernel.org>
+Message-ID: <20230620091316.GB275381@pevik>
+References: <20230605044131.798383-1-dlemoal@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <666f5cd5-5f03-95b3-0b33-6e104fd58744@suse.cz>
+In-Reply-To: <20230605044131.798383-1-dlemoal@kernel.org>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/madvise11: Ignore unpoison failure under
- kernel lockdown
+Subject: Re: [LTP] [PATCH 0/2] Improve ioprio tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,39 +77,43 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Niklas Cassel <niklas.cassel@wdc.com>, ltp <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On 20. 06. 23 10:24, Petr Vorel wrote:
-> > Hi Martin,
+Hi Damien,
 
-> > ...
-> > > -	return SAFE_OPEN(debugfs_fp, O_WRONLY);
-> > > +	TEST(open(debugfs_fp, O_WRONLY));
-> > > +
-> > > +	if (TST_RET == -1 && TST_ERR == EPERM && tst_lockdown_enabled()) {
-> > > +		tst_res(TINFO,
-> > > +			"Cannot restore soft-offlined memory due to lockdown");
-> > > +		return TST_RET;
-> > > +	}
-> > > +
-> > > +	if (TST_RET == -1)
-> > > +		tst_brk(TBROK | TTERRNO, "open(%s) failed", debugfs_fp);
-> > > +	else if (TST_RET < 0)
-> > > +		tst_brk(TBROK | TTERRNO, "Invalid open() return value");
-> > nit: I'd print the return value as we do in safe_open():
-> > 		tst_brk(TBROK | TTERRNO, "Invalid open() return value %d", TST_RET);
+> The ioprio syscall tests rely on ltp internal definitions of the
+> IOPRIO_XXX() macro defining priority classes and levels. With changes
+> to the ioprio API to support command duration limits, these internal
+> definitions are incomplete, causing test case ioprio_set03 to fail.
 
-> Good point. Though TST_RET is long int so it should be %ld. Should I send a
-> v2?
+> Avoid this issue by having the iprio tests use the kernel header file
+> definitions if that header exists. This enables additional checks in
+> the header file [1] which restores the expected results with test
+> ioprio_set03.
 
-Yes, please.
+> [1] https://lore.kernel.org/linux-block/20230530061307.525644-1-dlemoal@kernel.org/
+
+> Note: a review of this patch on the kernel block mailing list would be
+> very appreciated.
+
+I haven't found this patchset on https://lore.kernel.org/linux-block/,
+did you send it there?
 
 Kind regards,
 Petr
+
+> Damien Le Moal (2):
+>   ioprio: use ioprio.h kernel header if it exists
+>   ioprio: Use IOPRIO_PRIO_NUM to check prio range
+
+>  configure.ac                                  |  1 +
+>  testcases/kernel/syscalls/ioprio/ioprio.h     | 33 ++++++++++++++-----
+>  .../kernel/syscalls/ioprio/ioprio_set03.c     |  2 +-
+>  3 files changed, 26 insertions(+), 10 deletions(-)
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
