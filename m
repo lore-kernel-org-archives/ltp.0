@@ -4,89 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 731A2EB64D7
-	for <ltp@archiver.kernel.org>; Wed, 21 Jun 2023 14:09:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 334ADC0015E
+	for <ltp@archiver.kernel.org>; Wed, 21 Jun 2023 14:16:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4D47C3CD37B
-	for <ltp@archiver.kernel.org>; Wed, 21 Jun 2023 16:09:27 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 8D9E43CDAD0
+	for <ltp@archiver.kernel.org>; Wed, 21 Jun 2023 16:16:11 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F0AEF3CACBD
- for <ltp@lists.linux.it>; Wed, 21 Jun 2023 16:09:15 +0200 (CEST)
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id A9F233C6335
+ for <ltp@lists.linux.it>; Wed, 21 Jun 2023 16:15:59 +0200 (CEST)
+Received: from MW2PR02CU001.outbound.protection.outlook.com
+ (mail-westus2azon11012012.outbound.protection.outlook.com [52.101.48.12])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5E77F2009D4
- for <ltp@lists.linux.it>; Wed, 21 Jun 2023 16:09:13 +0200 (CEST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
- by mailout.nyi.internal (Postfix) with ESMTP id 0B4C55C0215;
- Wed, 21 Jun 2023 10:09:13 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
- by compute6.internal (MEProxy); Wed, 21 Jun 2023 10:09:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
- :cc:content-type:content-type:date:date:from:from:in-reply-to
- :in-reply-to:message-id:mime-version:references:reply-to:sender
- :subject:subject:to:to; s=fm1; t=1687356553; x=1687442953; bh=dY
- 2wjH1dPAUyXPlv+3pWnq0L8c8fn4MgP9qZzKyqERE=; b=EuqG2xunpquoWrkWcv
- EeKIsjZ2G1bP3mTutqDHkKl+TK9U9RL6lmE2Ky1sq3knzkkTp9RKgHV5XVHgj7rd
- k22pYnZgNSzTe5g4bno7u1xUniGLC9NCUgQVPmPLmnAOtnn3YLFxm11CaA1o2Aa2
- 5+T4l3Jc3a1a8029+2nj+h/PCTJjHRY0IUXYY6jVd6f3ldsgbL6Jl9Fae8U1feNe
- YxZgOejfLiuBn85Fvbu8eUVzIbgf43IpEdwjlTq0Qxulr5BYcKsbVt5lBklioToa
- RsRX7YrTMxU5SroNNLZyy2uF1aKSe5WTp/V6xpvqOt5VAtsB3rs7kLOUO4MxrAlE
- o13Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-type:content-type:date:date
- :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
- :message-id:mime-version:references:reply-to:sender:subject
- :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
- :x-sasl-enc; s=fm2; t=1687356553; x=1687442953; bh=dY2wjH1dPAUyX
- Plv+3pWnq0L8c8fn4MgP9qZzKyqERE=; b=RODJF+5zQFElZUj9yTx3I0bpynVwr
- azzDz1bCJ7O/B+nFtBpB8WTPjdP/4lxvovk4xajAm/xqBJmRBRrVbYOZisqRw2r8
- IumAalEBCOjpjDBE0id0y+V+jvIUCm0A0OitQ8OvVeu8+jHLGVu1r5PuIuYvus+y
- 4R70uPNVHZ1V5yl58kMytZeHWpzlajRdRTI8CAOSBBHVPOCiPF6DkyhlckzOEZNz
- 1UTu+3IaAw0ts5w7IX3ZmMBiwytG3NHlWJ+Ge7gT5teuaDQcbrxtjYj3K8cet4Zm
- 7FO4qNiQ2bcXdyK6JvY9VmLvdz/O8pSnIen3taQrSymse1l5xfQv2Rylw==
-X-ME-Sender: <xms:iASTZCrtnqmTkymsUhAWWEOz6bZgYRT8TzSX_R0SBHEqIPVwsuW-Kw>
- <xme:iASTZArTbFifVyUzIDbQ6_js3PM1EQoOGqdXwK3uwGH_tlfFQzCtLt1cNnbeeSUee
- aHPPcgMn1nFYMYPut8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeefkedggeeiucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
- nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
- htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
- teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
- hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:iASTZHMviZzP9hoCrCy3nIZEIujHdXlpIxNI2mAVMur1Ips6WidB_A>
- <xmx:iASTZB7y8aPbopri1bV1ftcVbSuMWWWPLsBTOtKPAbvUvWWhyyvYmw>
- <xmx:iASTZB7PdqGOmEk4PYfhWqb6pG7oaquSQnIxwH6_NfL-C0nII5qsuQ>
- <xmx:iQSTZATrc-jQP-PCSGGUyWqlRjo20psZPGQlbtBqtbhtUrhBGU_X4A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
- id 3A1BEB60086; Wed, 21 Jun 2023 10:09:12 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-499-gf27bbf33e2-fm-20230619.001-gf27bbf33
-Mime-Version: 1.0
-Message-Id: <89dfc918-9757-4487-aa72-615f7029f6c1@app.fastmail.com>
-In-Reply-To: <CA+G9fYtKCZeAUTtwe69iK8Xcz1mOKQzwcy49wd+imZrfj6ifXA@mail.gmail.com>
-References: <CA+G9fYtKCZeAUTtwe69iK8Xcz1mOKQzwcy49wd+imZrfj6ifXA@mail.gmail.com>
-Date: Wed, 21 Jun 2023 16:08:50 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
- "open list" <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
- lkft-triage@lists.linaro.org, linux-block <linux-block@vger.kernel.org>,
- "LTP List" <ltp@lists.linux.it>, linux-mm <linux-mm@kvack.org>,
- "Rahul Rameshbabu" <rrameshbabu@nvidia.com>,
- "Richard Cochran" <richardcochran@gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 24EC5600801
+ for <ltp@lists.linux.it>; Wed, 21 Jun 2023 16:15:58 +0200 (CEST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g/mJtmeya5uVlkLJM1Zo9sckr2l24g9q0WDGE+HJERZ42VBtsy2YG/cs4H6cxJyQ7McAQR/O4iXQWR0ZVMybX1v42Jx46HxU/Icp4qro0ZGr6po24HLwqzHpeKN1ddEbc2Y9xwF23D7pnr0ne49qEnkQoVQFKyH45xN7KLdHsSxMIeoAF1U5qq0GcOUYOVds/UZWsIIC0Ljt1EzOY8hIztYSky49iixlhxjDug/1vc+cDhFNgf3bSCUDJ43wjLl9Jc85vzkX36rATjYQmxMNuMgdtnWNP12vAmpWI5eyThnaxYYX72o07a71dkHZpB0LMYUeJZJMEUIIg8RApyXQUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/ofPH4uobVTtgM79paiCxi0wEiCuLHExUoV+j/ETlEU=;
+ b=OPLlj4Hf/vY1DODY3heHfhzxdvj22IO4oQHneM4jl9qdiWM2yaUs+bKUWFZWNpnQhS4sQcRWoAHwkimI+Cr2zRxsCCeO25n53GfBylWhf9Aru2GOSu0O7GIz+e695095wU8+tSod4zTzKXfhqAgfBpdqviJiIiGtRE2JZsJ5D1b/uzkClTFlnM9AJ13cCJN0c+mLE3AL4IgYiDGT7D+hn4uv7JLhuohDIdwrjhi+r+90d8v+zOxuDTUUitOjIsMbTtgAVds50+2X2Ss5k0xzQ9MOlzFeZVBWDrEdCD1KxiEZK7qQToR8DS4Cisgeq/AgzhBmz0rtcks9Q1Ed5tQ9tQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/ofPH4uobVTtgM79paiCxi0wEiCuLHExUoV+j/ETlEU=;
+ b=0oR+E0oKgaFGEpXw/6Ket+JxnlQ1qFNEmFv+3eb1s/D+ZTcXGSQp0ehJdBmXATu+oLYaBwAMgZbYKK85+UXRwlMhPOocxg2tOR36xDkph5NhMwHkM2tcBeoFMgXg4mZdv2JI/LYqiRX53X7AlYWp/gbKCH9ICk8TqXC740sh5EE=
+Received: from BL0PR05MB5409.namprd05.prod.outlook.com (2603:10b6:208:6e::17)
+ by PH0PR05MB9598.namprd05.prod.outlook.com (2603:10b6:510:287::14)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.37; Wed, 21 Jun
+ 2023 14:15:38 +0000
+Received: from BL0PR05MB5409.namprd05.prod.outlook.com
+ ([fe80::68a4:3da6:4981:4793]) by BL0PR05MB5409.namprd05.prod.outlook.com
+ ([fe80::68a4:3da6:4981:4793%7]) with mapi id 15.20.6521.020; Wed, 21 Jun 2023
+ 14:15:37 +0000
+To: Petr Vorel <pvorel@suse.cz>
+Thread-Topic: [LTP] [PATCH] sctp_big_chunk: Do not use md5 hmac algo if fips
+ is enabled
+Thread-Index: AQHZo5k3Qi3mcEdQ1EqnVWVWOBu/C6+URTKAgAB89YCAACg0gIAAS8IAgAAYY4A=
+Date: Wed, 21 Jun 2023 14:15:37 +0000
+Message-ID: <6E401126-E414-4CE9-87E5-FE18A798F4E7@vmware.com>
+References: <1687280634-5906-1-git-send-email-kashwindayan@vmware.com>
+ <20230620222603.GB340710@pevik>
+ <01C96D39-2B2E-44EB-A5D7-41BF26D2C2AC@vmware.com>
+ <20230621081711.GA361973@pevik> <20230621124820.GA464557@pevik>
+In-Reply-To: <20230621124820.GA464557@pevik>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL0PR05MB5409:EE_|PH0PR05MB9598:EE_
+x-ms-office365-filtering-correlation-id: a30263f4-1da1-4f51-2a79-08db7261fc98
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Vurd/M6unRv6Wewq8y3fasMhtvPNe8RD+ltkv5iVYzvxY1KLnGD41ehl7l+R4B97Ge80p1//SCro6dEOh9/g99zXhA9j51I5yNtucZia5vGwl74KdcGiB3s7SV38muqcrSn+8F77jeGp9qk0b5jAAS6xK2w/9LdLMTDsr8UsLsH5nHFy7LtQZa0Nbs8pU4/n4a473YfBOz6hXQjfA8dHGned1FP2S2IvK4zCurHduR6hGpq3IcVyAhxVSXKbjC2Q+XWbL9z+nMGXluG0DEsxZQVbAsD+szZi5pjTokDCDgMoXWTstmFiK4ocb6FUNBeT32313nLPurieYoCERYgjKvUk8V20Fgm8ROSvNTpqPby32lI44Ehd+9AIX6/Kedj8+8jonXtD/WGWKlFTWzDKLczogiRJeyNgyfwQtbsDwQWFwsRub8dWe2dKOPJLAGw12aOFfUjQTKkp17bWQZhCdYBB12bCxXTuUu39UfrDm8FpoPJaCYgS/R6qd3EYUkh83mS6Lj9at+1wBOzbwnDShcKyAmCB5DuOMjV1L9NCusz5BaArr3FLVPCDj4MUpqNtLvg1lKJSV242bNh6AxcUlBqq2WsFwMRAVYenzpFhkoUOCwDSbr2TLKsArTKUA7Zeg5Ej/UR2CgivaZSwcjWKz/vQut02KPJCMjngJVqrpQeWc4cvYpXeSw7Iu6Q3Beit6s3WloPw7lMT6OEVbA1ImziliMCBaNPefxeZMrThk64=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BL0PR05MB5409.namprd05.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230028)(4636009)(396003)(136003)(376002)(366004)(39860400002)(346002)(451199021)(36756003)(166002)(2906002)(38070700005)(33656002)(86362001)(2616005)(53546011)(6486002)(186003)(6506007)(83380400001)(6512007)(107886003)(966005)(91956017)(5660300002)(478600001)(66946007)(71200400001)(4326008)(122000001)(64756008)(66446008)(66476007)(6916009)(76116006)(316002)(45080400002)(66556008)(38100700002)(54906003)(41300700001)(8676002)(8936002)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cXJiY3N2SDdjdW5RYWFSK1FMNVFjci9IVVlmU3IxdGlBV3hMMmZITU13L3hq?=
+ =?utf-8?B?cUNVY3duUVdRSllCZk5iS0lJamdDL0doeURFSUM4TlVnaCsvS2V1RWpRdFRZ?=
+ =?utf-8?B?dStIZmliV1ZWMndnKzNCcUtCSEgySlU2Vks4b3pKYjJhck5weVNTYmdNVnYr?=
+ =?utf-8?B?RDRqVVBhZnVZdWFYZnR4eGdUQUlxZnVoZFJXYVQ0SFVmZDdzb2hRS3c0MVdN?=
+ =?utf-8?B?LzQ5SVFUamg5U0xJS2FsL3ZMakRFY1NUZUxrbG5PVkNpZ2NrYVlMNzVrbXRG?=
+ =?utf-8?B?UUtXUUVQY0E1YUFGYjdIVVVYNzY2WlhJVHlYRlBjME10cG5BbkVKYjZSNTBq?=
+ =?utf-8?B?ZWFhZDdnZ2wxN3VKWElqWE9VeWxST05JL3RhYys4ZGw3WU15L1lCVWQ3YWU4?=
+ =?utf-8?B?MlNUOFlPMFQ1TTdWd3oxbW85Qy85YnpPR2pjakp6WElWRkIxbk9CYldsTTY0?=
+ =?utf-8?B?ZU1RS2t1NXV2Wm8wSGkvVE0rNVZYaTRrRnQxTTlaYzZPZ2ZvNUpOUDdQVFk1?=
+ =?utf-8?B?L1puVzhrL2lrZGhzcUJZanBWRUVaTFhkNzVqS2JwSkh3bTMyWWp3bHRnV1Iw?=
+ =?utf-8?B?aUU4QksxamF5Vm9RaUFRNTRzL2h6akRzWTdaeVJvWE44SitCb25mL3VyYXNw?=
+ =?utf-8?B?OVVEYXZ5V2VlSE5nZ0l6Njl6NlJIWmhSQkY0Qzg2UFEyRXFWa09KVk1VbGsx?=
+ =?utf-8?B?Z0RDTU1KajZTQzIweFVETXBqcGt3L3prZWNRcEw2NHpSR29TOENlUit5MjZm?=
+ =?utf-8?B?SzM5dnZtS1FMbWRSZGNOaXE0UmJlRWk0bFQ5NTF5UzV3K3QwWVlueVd3R0cw?=
+ =?utf-8?B?bDY2NW1YcndwZC90Um0vamNVdEQrd0NMWG42enFZNFkxRHZMOEs4a0RnMXZM?=
+ =?utf-8?B?VzQ1cU9ESHh1ZVQ1VENlZ2dsdXB4UEp0RHJCMXZ1Z1ltNDh5K0RHS2c4Qi81?=
+ =?utf-8?B?Skpkb2JDeGpCUm9WcWNlUHo0Z29rMFR6N0ZDM0ltQ29hYkRMMEk5VUhBbUYr?=
+ =?utf-8?B?Q2NXMG1kQ29US2RqRjd5aHBVNWcxS0xkNWNqOTZoOEZoWTgvUE1LVDZWNm9a?=
+ =?utf-8?B?SGkxOFdoTmduZTg3b2tpcmExSmlocm51UUI4SGVyazZiNGNGQ3B2cXRBaEV2?=
+ =?utf-8?B?b0JOaEYxM21SWFUyeDB4Q05VSHY0MVJEL1lwY240dU9OSWZ2WElkTk5FcW9n?=
+ =?utf-8?B?cCtmUzdtWFdtNXVOUVg2d3R2Vi96dGVVaFlWOGtuK0lLcDZsckZaZW42N3pS?=
+ =?utf-8?B?Nk15ZzdOcjM2d1dXaVphNnZWdGlkbVNCTm5OQ2hhSDBCTE5rWEU0YkhTUVJW?=
+ =?utf-8?B?UDVCanZtZWx0anUzYlNhQmxqYUo4clZXK0x2NVU1YnZ6N1NtQXcvcFFITGFM?=
+ =?utf-8?B?UGZtSHFkakR6c1lONFZFV25uYXI3UWFUa09FWldUU2QrcmVCYVpTc3NuODZu?=
+ =?utf-8?B?MnpLSldLQ0JtUnMya2NZdU1mQy9WQnpoM1RRVGwzMUFWbmRtbTNTR05TZVda?=
+ =?utf-8?B?RzdJazJTYmR6QVIyczR3LzZYeEVScXEyaHhWMkN0OUFkRit5c01ablp1by92?=
+ =?utf-8?B?elZOMHpYOWV1T3h6NTYveC9FSjRxcG1Va1pZUTJpbm1MR3RzMUVQRWsraEFV?=
+ =?utf-8?B?NGl5Q01wWExMQkttZlpEaTdHaG5XZFJveGpUbzdYcWxwL0I1ZlZhaUlJdHR1?=
+ =?utf-8?B?azF5cTg0eE1jaGNDRzFDZGUyaFhEUGNWcXpNdDNvUVhRRWcrM2p4dHhpMlE3?=
+ =?utf-8?B?VnlhR3FnQ1pwcjJ0MWVvWGZGdTVENkRxUTc2RXNFaFprQkVvTlo3bFNlRE1V?=
+ =?utf-8?B?OWdQeTB1QkJ4Szd0M2ErdEVmQitMVmF6VVkvaTh2c1F0MVkrQS9kdXNYL2Iw?=
+ =?utf-8?B?UmNRUWZFNlNKZncvT3FncnAxVVdKV0U2TEs2MForbGdTQlc1SDA4bVE1bTdW?=
+ =?utf-8?B?aDlDSllKSmdqMkwzRXc1RkE4V3R3V2t5NTdsRHZvNGRUVlFoaCtBOGE4MmY1?=
+ =?utf-8?B?YXE0NmN5U1djMVdrUUhuY3lhR05QOTlwbmd2emo1YUIxWklvQjlnZHFla2Ri?=
+ =?utf-8?B?SE9RUlg4TzZuLzFMcXFDaWM0WUpUMEFOSWFNVDlTaUVFaHB0YlpOT3JIamNo?=
+ =?utf-8?B?WEM5QnY0SlladzRjaFdYRE5mS3dxaG9WenNlcm12akhTME51RlJPQndON3Nt?=
+ =?utf-8?B?N0ZSbUt3Qi9CUnRTdm1mS2tlTXhHRWN4YzA2NS82YmREZVlCM3RKNzhKTGVD?=
+ =?utf-8?B?UldTWC9hUnk5TndvamYrbkU3RlRBPT0=?=
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR05MB5409.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a30263f4-1da1-4f51-2a79-08db7261fc98
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2023 14:15:37.7884 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WqaPAV+XTx/N34hdEdSGTThbYMxIFSn/kPNP7p1jL02Byf808fy256smJ3FOO+pd2kcMzNNe4fR10aK0nbJBeQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR05MB9598
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] next: ltp: fs: read_all: block sda: the capability
- attribute has been deprecated. - supervisor instruction fetch in kernel
- mode
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] sctp_big_chunk: Do not use md5 hmac algo if fips
+ is enabled
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,82 +139,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Christian Brauner <brauner@kernel.org>,
- Richard Cochran <richardcochran@gmail.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Maciek Machnikowski <maciek@machnikowski.net>,
- Jakub Kicinski <kuba@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Ashwin Dayanand Kamat via ltp <ltp@lists.linux.it>
+Reply-To: Ashwin Dayanand Kamat <kashwindayan@vmware.com>
+Cc: Tapas Kundu <tkundu@vmware.com>, Ajay Kaher <akaher@vmware.com>,
+ Ashwin Dayanand Kamat <kashwindayan@vmware.com>,
+ Vasavi Sirnapalli <vsirnapalli@vmware.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Jun 21, 2023, at 16:01, Naresh Kamboju wrote:
-> While running LTP fs testing on x86_64 device the following kernel BUG:
-> notice with Linux next-20230621.
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> Steps to reproduce:
->
-> # cd /opt/ltp
-> # ./runltp -f fs
->
-> Test log:
-> ======
-> read_all.c:687: TPASS: Finished reading files
-> Summary:
-> passed   1
-> failed   0
-> broken   0
-> skipped  0
-> warnings 0
-> tst_test.c:1558: TINFO: Timeout per run is 0h 06m 40s
-> read_all.c:568: TINFO: Worker timeout set to 10% of max_runtime: 1000ms
-> [ 1344.664349] block sda: the capability attribute has been deprecated.
-
-I think the oops is unrelated to the line above
-
-> [ 1344.679885] BUG: kernel NULL pointer dereference, address: 0000000000000000
-> [ 1344.686839] #PF: supervisor instruction fetch in kernel mode
-> [ 1344.692490] #PF: error_code(0x0010) - not-present page
-> [ 1344.697620] PGD 8000000105569067 P4D 8000000105569067 PUD 1056ed067 PMD 0
-> [ 1344.704494] Oops: 0010 [#1] PREEMPT SMP PTI
-> [ 1344.708680] CPU: 0 PID: 5649 Comm: read_all Not tainted
-> 6.4.0-rc7-next-20230621 #1
-> [ 1344.716245] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> 2.5 11/26/2020
-> [ 1344.723629] RIP: 0010:0x0
-> [ 1344.726257] Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-> [ 1344.732780] RSP: 0018:ffff98d38123bd38 EFLAGS: 00010286
-> [ 1344.737998] RAX: 0000000000000000 RBX: ffffffffbea38720 RCX: 0000000000000000
-> [ 1344.745123] RDX: ffff979e42e31000 RSI: ffffffffbea38720 RDI: ffff979e40371900
-> [ 1344.752246] RBP: ffff98d38123bd48 R08: ffff979e4080a0f0 R09: 0000000000000001
-> [ 1344.759371] R10: ffff979e42e31000 R11: 0000000000000000 R12: ffff979e42e31000
-> [ 1344.766495] R13: 0000000000000001 R14: ffff979e432dd2f8 R15: ffff979e432dd2d0
-> [ 1344.773621] FS:  00007ff745d4b740(0000) GS:ffff97a1a7a00000(0000)
-> knlGS:0000000000000000
-> [ 1344.781704] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 1344.787442] CR2: ffffffffffffffd6 CR3: 000000010563c004 CR4: 00000000003706f0
-> [ 1344.794587] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 1344.801733] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [ 1344.808857] Call Trace:
-> [ 1344.811301]  <TASK>
-> [ 1344.813399]  ? show_regs+0x6e/0x80
-> [ 1344.816804]  ? __die+0x29/0x70
-> [ 1344.819857]  ? page_fault_oops+0x154/0x470
-> [ 1344.823957]  ? do_user_addr_fault+0x355/0x6c0
-> [ 1344.828314]  ? exc_page_fault+0x6e/0x170
-> [ 1344.832239]  ? asm_exc_page_fault+0x2b/0x30
-> [ 1344.836420]  max_phase_adjustment_show+0x23/0x50
-
-The function is newly added by commit c3b60ab7a4dff ("ptp: Add 
-getmaxphase callback to ptp_clock_info"), adding everyone from
-that patch to Cc.
-
-     Arnd
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+DQoNCk9uIDIxLUp1bi0yMDIzLCBhdCA2OjE4IFBNLCBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5j
+ejxtYWlsdG86cHZvcmVsQHN1c2UuY3o+PiB3cm90ZToNCg0KISEgRXh0ZXJuYWwgRW1haWwNCg0K
+SGkgQXNod2luLA0KDQpPdXQgb2YgY3VyaW9zaXR5LCB3aGljaCBlcnJubyBpcyByZXBvcnRlZCBv
+biBsaXN0ZW4/DQoNCkluIG91ciBjYXNlIGluIEZJUFMgRU5PU1lTIGlzIHJldHVybmVkLCB0aHVz
+IGhhbmRsZWQgYXMgVENPTkYuDQoNCkkgYW0gc2VlaW5nIHRoZSBFTk9TWVMgKDM4KSBlcnJvciBh
+bmQgaXTigJlzIHRydWUgdGhhdCBpdCBpcyBoYW5kbGVkIGFzIFRDT05GLiBUaGUgaW50ZW50aW9u
+IG9mIHRoZSBwYXRjaCBpcyB0byBmaXggdGhlIHNhbWUuDQoNClRDT05GIG1lYW5zIHNraXBwZWQs
+IGkuZS4gT0suIEkgc3VwcG9zZSB5b3VyIHBhdGNoIGFsbG93cyB0byBkbyB0ZXN0aW5nLCB3aGlj
+aA0KaXMgYW4gZW5oYW5jZW1lbnQuIEJ1dCwgYXQgbGVhc3Qgb24gb25lIEZJUFMgc3lzdGVtIEkg
+Z2V0IGZhaWx1cmUgZHVlIG1pc3NpbmcNCnByb2MgZmlsZToNCg0KdHN0X2ZpcHMuYzoyMjogVElO
+Rk86IEZJUFM6IG9uDQpzY3RwX2JpZ19jaHVuay5jOjE1MzogVEJST0s6IEZhaWxlZCB0byBvcGVu
+IEZJTEUgJy9wcm9jL3N5cy9uZXQvc2N0cC9jb29raWVfaG1hY19hbGcnIGZvciByZWFkaW5nOiBF
+Tk9FTlQgKDIpDQoNCk9LLCB0aGlzIHByb2JsZW0gaXMgb24gYWxsIHN5c3RlbXMgd2hpY2ggaGF2
+ZW4ndCB1c2VkIHNjdHAgc28gZmFyLiBXZSByZWFsbHkNCm5lZWQgdG8gc29tZWhvdyBtb2Rwcm9i
+ZSBzY3RwIGJlZm9yZSByZWFkaW5nIC9wcm9jL3N5cy9uZXQvc2N0cC9jb29raWVfaG1hY19hbGcu
+DQpNYXliZSB1c2luZyAubmVlZHNfZHJpdmVycz8NCg0KVGhhbmsgeW91IGZvciB5b3VyIHZhbHVh
+YmxlIGlucHV0LiBJIHdpbGwgbG9vayBpbnRvIHRoZXNlIGFuZCBoYW5kbGUgaXQNCmFjY29yZGlu
+Z2x5IGluIHRoZSBuZXh0IHBhdGNoLg0KDQpLaW5kIHJlZ2FyZHMsDQpBc2h3aW4gS2FtYXQNCktp
+bmQgcmVnYXJkcywNClBldHINCg0KVGhlIHN5c3RlbSBoYXMgQ09ORklHX0lQX1NDVFA9bSwgSSBk
+b24ndCBrbm93IHdoeSBtb2R1bGUgaXMgbm90IGxvYWRlZC4NCk1heWJlIGl0J3Mgbm90IGluc3Rh
+bGxlZCBvbiB0aGUgc3lzdGVtICh3b3VsZCByZXF1aXJlIHBhY2thZ2Ugd2l0aCBleHRyYQ0KbW9k
+dWxlcyksIGJ1dCBzdGlsbCB0aGlzIHdvdWxkIGJlIGEgcmVncmVzc2lvbiwgd2Ugc2hvdWxkIGNo
+ZWNrIGZvciBwcmVzZW5jZSBvZg0KdGhlIGZpbGUuDQoNCk5PVEUgV2UgaGF2ZSAuc2F2ZV9yZXN0
+b3JlIFsxXSBoZWxwZXIsIGdlbmVyYWxseSB3ZSdkIHVzZSBpdCB3aXRoDQpUU1RfU1JfVENPTkZf
+TUlTU0lORywgYnV0IGluIHRoaXMgY2FzZSBJJ2QgdXNlIGFjY2VzcygpIHRvIGNoZWNrLA0KYmVj
+YXVzZSB3aG9sZSBTQUZFX0ZJTEVfU0NBTkYoKSBzaG91bGQgYmUgYXBwbGllZCBvbmx5IHdoZW4g
+bmVlZGVkDQooaW4gdHN0X2ZpcHNfZW5hYmxlZCgpKS4NCg0KS2luZCByZWdhcmRzLA0KUGV0cg0K
+DQpbMV0gaHR0cHM6Ly9uYW0wNC5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJs
+PWh0dHBzJTNBJTJGJTJGZ2l0aHViLmNvbSUyRmxpbnV4LXRlc3QtcHJvamVjdCUyRmx0cCUyRndp
+a2klMkZDLVRlc3QtQVBJJTIzMTI3LXNhdmluZy0tcmVzdG9yaW5nLXByb2NzeXMtdmFsdWVzJmRh
+dGE9MDUlN0MwMSU3Q2thc2h3aW5kYXlhbiU0MHZtd2FyZS5jb20lN0MyZGI2NjExNjNkOWE0N2E0
+NzIwMzA4ZGI3MjU1Y2NiNSU3Q2IzOTEzOGNhM2NlZTRiNGFhNGQ2Y2Q4M2Q5ZGQ2MmYwJTdDMCU3
+QzAlN0M2MzgyMjk0ODUwODAwNjE1NTglN0NVbmtub3duJTdDVFdGcGJHWnNiM2Q4ZXlKV0lqb2lN
+QzR3TGpBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRpSTZJazFoYVd3aUxDSlhWQ0k2TW4wJTNE
+JTdDMzAwMCU3QyU3QyU3QyZzZGF0YT1LZllQd1VkJTJGeUV5ZkhDMEFOJTJCSHYzMnFXVUdhM0kz
+ViUyQlRuUTBLdUdRb0xRJTNEJnJlc2VydmVkPTA8aHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXRl
+c3QtcHJvamVjdC9sdHAvd2lraS9DLVRlc3QtQVBJIzEyNy1zYXZpbmctLXJlc3RvcmluZy1wcm9j
+c3lzLXZhbHVlcz4NCg0KVGhhbmtzLA0KQXNod2luDQoNCiEhIEV4dGVybmFsIEVtYWlsOiBUaGlz
+IGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBvdXRzaWRlIG9mIHRoZSBvcmdhbml6YXRpb24uIERvIG5v
+dCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3UgcmVjb2duaXplIHRo
+ZSBzZW5kZXIuDQoNCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXgu
+aXQvbGlzdGluZm8vbHRwCg==
