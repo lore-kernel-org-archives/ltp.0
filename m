@@ -4,72 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87672EB64D8
-	for <ltp@archiver.kernel.org>; Wed, 21 Jun 2023 09:07:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5CEFEB64DC
+	for <ltp@archiver.kernel.org>; Wed, 21 Jun 2023 09:38:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A1B183CDE2E
-	for <ltp@archiver.kernel.org>; Wed, 21 Jun 2023 11:07:14 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id A332B3CDACF
+	for <ltp@archiver.kernel.org>; Wed, 21 Jun 2023 11:38:41 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B87233C9CCB
- for <ltp@lists.linux.it>; Wed, 21 Jun 2023 11:07:04 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 9C5063C9212
+ for <ltp@lists.linux.it>; Wed, 21 Jun 2023 11:38:31 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 39BBB20034E
- for <ltp@lists.linux.it>; Wed, 21 Jun 2023 11:07:03 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E9E9460070F
+ for <ltp@lists.linux.it>; Wed, 21 Jun 2023 11:38:30 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4F6031F8AA;
- Wed, 21 Jun 2023 09:07:03 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 30B361F8BD;
+ Wed, 21 Jun 2023 09:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1687338423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ t=1687340310;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rTjUQCI4druMvqRdfwdrIbNEz3F/YPV5ukSZFEloubM=;
- b=fDxO2IJS+vPsQf35KJiJ4Ul3XSptnEQbtCvNsNBDpsNnmVhY2+mNnXBBRXVoTDow6BzJvu
- 0xxclT4k0GEqb+e8EO0V+bTHo+OzNNdJGQ9ZR9x1KllPPYgtoM50pbz5N34fkwBvGw6G71
- f1EAXW2lzJbfcAM4w13xfO1H0PM/o5M=
+ bh=Hbbvc1VMljp+ApSo/bhFdYDyqPUTcnGu7yPH9uGMwhk=;
+ b=OCNHjkuD8tDtRmtdngVbGhf3fAtlCK3RBzykpZjDdgPr8c4lxiKzj1NaYA+ftdd2Rz10gu
+ 4JTKXCeMEj/3zxaLNTEvnQ2F3iX0Eq2IiBZ725onzopJdyox0HCMXnQUs/aC7PZ3zxn+/N
+ xwu/oFR3vYgl1Om/2/+za5v+YKNlmQg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1687338423;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1687340310;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=rTjUQCI4druMvqRdfwdrIbNEz3F/YPV5ukSZFEloubM=;
- b=38YV66bb5LmSEcqNgSD2rGsId1TegVCx2vm35ECjrxy932PFvuBBSK8GYSDI9Jre5V3qBF
- ytNzEsRSwlt2U3Cg==
+ bh=Hbbvc1VMljp+ApSo/bhFdYDyqPUTcnGu7yPH9uGMwhk=;
+ b=iFMi5gUVE/aY8U+d6qhufoBzS7nVeMKtT7+3kYoieJ8DSTUdAu7cmEfwTpeI+x2L+u0Mz/
+ +s+rDgrI7AXXOJAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 38F2D134B1;
- Wed, 21 Jun 2023 09:07:03 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B1D7133E6;
+ Wed, 21 Jun 2023 09:38:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id mjCcDLe9kmRPZgAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Wed, 21 Jun 2023 09:07:03 +0000
-Message-ID: <1cca2a5f-64e0-2932-2971-8d7d91e01605@suse.cz>
-Date: Wed, 21 Jun 2023 11:07:02 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 4skPARbFkmQ0dQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 21 Jun 2023 09:38:30 +0000
+Date: Wed, 21 Jun 2023 11:38:28 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Alexander Aring <aahringo@redhat.com>
+Message-ID: <20230621093828.GA386889@pevik>
+References: <20230530203707.2965684-1-aahringo@redhat.com>
+ <20230530203707.2965684-3-aahringo@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-To: Souta Kawahara <souta.kawahara@miraclelinux.com>, ltp@lists.linux.it,
- Li Wang <liwang@redhat.com>
-References: <80595ab205ea7b3f633bf4228bb43ee999aef3a1.1687247273.git.souta.kawahara@miraclelinux.com>
- <7ac34b5102d65e6bb7112234f6ad685e98d066f2.1687306661.git.souta.kawahara@miraclelinux.com>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <7ac34b5102d65e6bb7112234f6ad685e98d066f2.1687306661.git.souta.kawahara@miraclelinux.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230530203707.2965684-3-aahringo@redhat.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] runtest/cve: Add some existing CVE tests
- to runtest file
+Subject: Re: [LTP] [PATCH 2/5] fcntl41: test for owner values on OFD posix
+ locks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,94 +77,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi Alexander,
 
-On 21. 06. 23 2:20, Souta Kawahara wrote:
-> Signed-off-by: Souta Kawahara <souta.kawahara@miraclelinux.com>
-> ---
->   runtest/cve | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
-> 
-> diff --git a/runtest/cve b/runtest/cve
-> index f9a449fe7..bbc552bea 100644
-> --- a/runtest/cve
-> +++ b/runtest/cve
-> @@ -24,6 +24,7 @@ cve-2017-6951 request_key05
->   cve-2017-7308 setsockopt02
->   cve-2017-7472 keyctl04
->   cve-2017-7616 set_mempolicy05
-> +cve-2017-8890 accept02
->   cve-2017-10661 timerfd_settime02
->   cve-2017-12192 keyctl07
->   cve-2017-12193 add_key04
-> @@ -41,16 +42,19 @@ cve-2017-17805 af_alg02
->   cve-2017-17806 af_alg01
->   cve-2017-17807 request_key04
->   cve-2017-18075 pcrypt_aead01
-> +cve-2017-18344 timer_create03
->   cve-2017-1000111 setsockopt07
->   cve-2017-1000112 setsockopt05
->   cve-2017-1000364 stack_clash
->   cve-2017-1000380 snd_timer01
->   cve-2017-1000405 thp04
->   cve-2018-5803 sctp_big_chunk
-> +cve-2018-6927 futex_cmp_requeue02
->   cve-2018-7566 snd_seq01
->   cve-2018-8897 ptrace09
->   cve-2018-9568 connect02
->   cve-2018-10124 kill13
-> +cve-2018-11508 adjtimex03
->   cve-2018-12896 timer_settime03
->   cve-2018-13405 creat09
->   cve-2018-18445 bpf_prog04
-> @@ -66,15 +70,23 @@ cve-2020-14386 sendto03
->   cve-2020-14416 pty03
->   cve-2020-25705 icmp_rate_limit01
->   cve-2020-29373 io_uring02
-> +cve-2020-36557 pty06
->   cve-2021-3444 bpf_prog05
->   cve-2021-3609 can_bcm01
-> +cve-2021-3653 kvm_svm01
-> +cve-2021-3656 kvm_svm02
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl41.c b/testcases/kernel/syscalls/fcntl/fcntl41.c
+> new file mode 100644
+> index 000000000..40d14ff02
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl41.c
+...
+> +#include <sys/wait.h>
+> +
+> +#include "tst_test.h"
+> +
+> +static int fd, fd2;
+> +
+> +void do_child1(void)
+> +{
+> +	const struct flock fl_0_0 = {
+> +		.l_type = F_WRLCK,
+> +		.l_whence = SEEK_SET,
+> +		.l_start = 0L,
+> +		.l_len = 1L,
+> +	};
+> +
+> +	tst_res(TINFO, "thread1 waits for thread2 to lock 1-1");
+> +	TST_CHECKPOINT_WAIT(1);
+> +
+> +	tst_res(TINFO, "thread1 lock region 0-0 - It should block");
+> +	SAFE_FCNTL(fd2, F_OFD_SETLKW, &fl_0_0);
+F_OFD_SETLKW is undefined on old Cent0S 7, we still support:
+https://github.com/pevik/ltp/actions/runs/5331934790/jobs/9660442246
 
-All kvm_* tests are intended only for baremetal testing and they're 
-built only for x86 machines. On any other arch, you'll get errors that 
-the test program does not exist. In other words, they don't belong in 
-this runfile.
+You need to use our fallback to avoid this.
 
->   cve-2021-4034 execve06
-> +cve-2021-4197_1 cgroup_core01
-> +cve-2021-4197_2 cgroup_core02
-> +cve-2021-4204 bpf_prog06
->   cve-2021-22555 setsockopt08 -i 100
->   cve-2021-26708 vsock01
->   cve-2021-22600 setsockopt09
-> +cve-2021-38198 kvm_pagefault01
+#include "lapi/fcntl.h"
 
-Also this one.
+We also have fcntl_common.h, which is used for F_OFD_* (fcntl_compat(),
+you may need to use it. It also includes lapi/fcntl.h.
 
->   cve-2021-38604 mq_notify03
->   cve-2022-0847 dirtypipe
->   cve-2022-2590 dirtyc0w_shmem
-> +cve-2022-23222 bpf_prog07
->   # Tests below may cause kernel memory leak
->   cve-2020-25704 perf_event_open03
->   cve-2022-0185 fsconfig03
-
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
