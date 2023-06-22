@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F642EB64DA
-	for <ltp@archiver.kernel.org>; Thu, 22 Jun 2023 08:30:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28489EB64DA
+	for <ltp@archiver.kernel.org>; Thu, 22 Jun 2023 08:47:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 45E5F3CD97E
-	for <ltp@archiver.kernel.org>; Thu, 22 Jun 2023 10:30:41 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 9B4163CC417
+	for <ltp@archiver.kernel.org>; Thu, 22 Jun 2023 10:47:07 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id ABE063C9A35
- for <ltp@lists.linux.it>; Thu, 22 Jun 2023 10:30:29 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ by picard.linux.it (Postfix) with ESMTPS id C6A643C9A35
+ for <ltp@lists.linux.it>; Thu, 22 Jun 2023 10:46:55 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 59F681000A40
- for <ltp@lists.linux.it>; Thu, 22 Jun 2023 10:30:27 +0200 (CEST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C0BAE200AF2
+ for <ltp@lists.linux.it>; Thu, 22 Jun 2023 10:46:54 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9FF5B6172B;
- Thu, 22 Jun 2023 08:30:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D458C433C8;
- Thu, 22 Jun 2023 08:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1687422625;
- bh=+3bhOWdKmIVFqafQUQ3k3iMy77jkrN8TVbh6Ta1cvm0=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=swD3m5EWDl4TeE08aha6k14r+CzeNS98ISMVIImQCiWY4fZgJpxcvSurpqSY1+LEl
- 7NiAiwb3HBKpwcbVZuAeXJKPUJltsbAoPpXPvAkv6y4XjRtzTN7zpMviRmiOx1d5df
- IdL99l9mr3HxDjGmtm2djfXVrZponB9kvpV1MTrI8v76T+KaNCmQwuBVlRxk+IpP7L
- Ng1HmC73zbodBiEty7+7XIKOJGoi3deth90qcGji1dksXIatsU1ZmfsEGl7UygRLj1
- arFwRHNcNiAHjWPOESKLP0O9iKWQjdpiGkYliNdySaYuij6L4sJIzjIaTKRPHXJhnm
- p1uRx+8gnTKkg==
-Message-ID: <09815276-c515-7f3b-e81c-6c60e9ebfe4c@kernel.org>
-Date: Thu, 22 Jun 2023 17:30:22 +0900
+ by smtp-out1.suse.de (Postfix) with ESMTPS id ACB732278B;
+ Thu, 22 Jun 2023 08:46:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1687423613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=J1TXXkFnQOTXBWHWQr71pNqDt+gA23LnV7lfAUEwHKQ=;
+ b=1+af6DkFHTQ9tLkpZWaaRKdt29Jo9BIEJjom7OJXCRIQKg4TIiw9FZxSHvIG/L1UypxY/4
+ pJJuqpJDa4QGRr4e8xoVTPDtZjPbEXULxzcz2M0S1uF5EnSxHdMY9NNJniWToJ5NMaYZxZ
+ DXtpE6OkhM1yMfJZGHSdmkXcmMk9MsQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1687423613;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=J1TXXkFnQOTXBWHWQr71pNqDt+gA23LnV7lfAUEwHKQ=;
+ b=ewtV+aKUVyoMHKaIQGw7+KerxBTVOxNCtwryYFDnHzMhJuttFjX1FUCPqCxgEuQuz11FmK
+ FUNmwDZXJWdMGcDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A251132BE;
+ Thu, 22 Jun 2023 08:46:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id yRTdCH0KlGTBBwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 22 Jun 2023 08:46:53 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu, 22 Jun 2023 10:46:48 +0200
+Message-Id: <20230622084648.490498-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, Niklas Cassel <Niklas.Cassel@wdc.com>
-References: <202306192248.1ece4c29-oliver.sang@intel.com>
- <61f22c1d-6b04-d193-57c9-8cad1c555e4b@kernel.org> <ZJLxbwCno-it2xBB@yuki>
- <ZJMYP/CCVviG6IMq@x1-carbon> <20230622073256.GA482307@pevik>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20230622073256.GA482307@pevik>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [linux-next:master] [scsi] eca2040972:
- ltp.ioprio_set03.fail
+Subject: [LTP] [PATCH 1/1] runtest/net.nfs: Run nfs02_06 on TCP only
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,78 +70,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "lkp@intel.com" <lkp@intel.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- Linux Memory Management List <linux-mm@kvack.org>,
- kernel test robot <oliver.sang@intel.com>, Hannes Reinecke <hare@suse.de>,
- "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
- Christoph Hellwig <hch@lst.de>, "ltp@lists.linux.it" <ltp@lists.linux.it>
+Cc: Olga Kornievskaia <olga.kornievskaia@gmail.com>,
+ Jeff Layton <jlayton@kernel.org>, linux-nfs@vger.kernel.org,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Chuck Lever <chuck.lever@oracle.com>,
+ Anna Schumaker <Anna.Schumaker@Netapp.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 6/22/23 16:32, Petr Vorel wrote:
->> On Wed, Jun 21, 2023 at 02:47:43PM +0200, Cyril Hrubis wrote:
->>> Hi!
->>>>> kernel test robot noticed "ltp.ioprio_set03.fail" on:
-> 
->>>> LTP maintainers,
-> 
->>>> Patches have been submitted to fix this issue. Were these patches applied ?
-> 
->>> Looks like they are in, at least these two:
-> 
->>>     ioprio: use ioprio.h kernel header if it exists
->>>     ioprio: Use IOPRIO_PRIO_NUM to check prio range
-> 
->>> And there does not seem to be anything ioprio related haning in the LTP
->>> patchwork.
-> 
-> Hi Niklas,
-> 
->> Hello Cyril, Petr, Damien,
-> 
-> 
->> I just ran LTP master + linux-next and the test case passes for me.
-> 
-> 
->> Although, note that even if you are using LTP master,
->> the way that the LTP header:
->> testcases/kernel/syscalls/ioprio/ioprio.h
->> is written, you will need to run
-> 
->> make headers_install
->> with linux-next kernel source,
-> 
->> before running
->> make autotools && ./configure
->> in LTP.
-> 
->> Otherwise LTP will use the kernel uapi headers from your distro,
->> which does not perform the new checks for the IOPRIO_PRIO_VALUE()
->> macro. (It requires linux uapi headers from linux-next.)
-> 
-> Yes, it should do otherwise more tests would be often broken.
-> 
-> 
->> Does the linux kernel test robot not run
->> make headers_install
->> before running
->> make autotools && ./configure
->> in LTP?
-> 
-> I guess that's the question for Damien (I and Cyril have nothing to do with
-> kernel test robot). I wonder myself.
+UDP support disabled was on NFS server in kernel 5.6.
+Due that 2 of 3 nfs06.sh tests runs are being skipped on newer kernels.
 
-Sorry, but I have nothing to do with the kernel robot either. I am only acting
-when I get notified of a problem due to one of my patches.
+Therefore NFSv3 job in nfs02_06 test as TCP. This way all jobs in the
+test are TCP, thus test will not be skipped. This also bring NFSv3
+testing also under TCP (previously it was tested only on UDP).
 
+Keep UDP in nfs01_06 jobs, so that NFSv3 on UDP is still covered for
+older kernels.
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ runtest/net.nfs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/runtest/net.nfs b/runtest/net.nfs
+index 72cf4b307..15a960017 100644
+--- a/runtest/net.nfs
++++ b/runtest/net.nfs
+@@ -58,7 +58,7 @@ nfs41_ipv6_05 nfs05.sh -6 -v 4.1 -t tcp
+ nfs42_ipv6_05 nfs05.sh -6 -v 4.2 -t tcp
+ 
+ nfs01_06  nfs06.sh -v "3,3,3,4,4,4" -t "udp,udp,tcp,tcp,tcp,tcp"
+-nfs02_06 nfs06.sh -v "3,4,4.1,4.2,4.2,4.2" -t "udp,tcp,tcp,tcp,tcp,tcp"
++nfs02_06 nfs06.sh -v "3,4,4.1,4.2,4.2,4.2" -t "tcp,tcp,tcp,tcp,tcp,tcp"
+ nfs03_ipv6_06 nfs06.sh -6 -v "4,4.1,4.1,4.2,4.2,4.2" -t "tcp,tcp,tcp,tcp,tcp,tcp"
+ 
+ nfs3_07 nfs07.sh -v 3 -t udp
 -- 
-Damien Le Moal
-Western Digital Research
+2.40.1
 
 
 -- 
