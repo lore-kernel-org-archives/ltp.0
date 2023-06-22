@@ -4,67 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D888CEB64DB
-	for <ltp@archiver.kernel.org>; Thu, 22 Jun 2023 07:33:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B26D6EB64D8
+	for <ltp@archiver.kernel.org>; Thu, 22 Jun 2023 07:59:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 06D633CB956
-	for <ltp@archiver.kernel.org>; Thu, 22 Jun 2023 09:33:13 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 53E2E3CD993
+	for <ltp@archiver.kernel.org>; Thu, 22 Jun 2023 09:59:49 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 261BF3C9A39
- for <ltp@lists.linux.it>; Thu, 22 Jun 2023 09:33:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id E06033C9B2C
+ for <ltp@lists.linux.it>; Thu, 22 Jun 2023 09:59:38 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3824B1A00E20
- for <ltp@lists.linux.it>; Thu, 22 Jun 2023 09:32:59 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EDC771400DC0
+ for <ltp@lists.linux.it>; Thu, 22 Jun 2023 09:59:37 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4C3AD228F4;
- Thu, 22 Jun 2023 07:32:58 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A5C94203F1;
+ Thu, 22 Jun 2023 07:59:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1687419178;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1687420776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pgboY+1eKS7Q4R+wwxJQMziAyhb5MWJJWPixvdsi6vw=;
- b=Y+S6cWYXoDMZLa4zgn8fXqN1yVVU4Rc5J3cecl/T4XwUXtc1WEyiOLrpWwehhnLEhKvvNr
- iJsuZ8lnFtBadV/8KQmFkAtExzARtZdpPgvPY6eZL4741HxpQVG8IqMTneY8xBI7WQL445
- eFMxsBMBA/qtt1A9qZEW2rm/+Gd1/PQ=
+ bh=Y8UtH7gU84fxdekvJY/AM16EfFJszLpCobK2E/vW70Y=;
+ b=gig58Clv8nLaebHHBdCRN9rz1WvPzyoUwuoPpVS5A/HD2nGeiPZxJih6y25Uzmpt88xTtF
+ 4qiWdrFk+SuFZlmBZU0BcK8VK0TihG5Wp+b16oYClCHo6w9/bs2SbCaamPrtCwzm/1QPKj
+ XXam6SrpvlW6owI2k+Hmw+pGdzOJ03Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1687419178;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1687420776;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=pgboY+1eKS7Q4R+wwxJQMziAyhb5MWJJWPixvdsi6vw=;
- b=pGfxU2eZPdVCvBbg1C/Ohx53ZNQOEgSeTw6YwkthFbsntvmEFx+uZ+uTJQaNElFLRfLkT+
- nZCDJ83OLBp+BAAw==
+ bh=Y8UtH7gU84fxdekvJY/AM16EfFJszLpCobK2E/vW70Y=;
+ b=zDtqdnK8vDwkTjG6Gw/Q8ahT5J51Ye9akvh733KFwsFJ9CFO61xgfAGFGUt4jIh63cuL5c
+ 0iZh/EnsAvw8GtCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E213D13905;
- Thu, 22 Jun 2023 07:32:57 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8FF3A13905;
+ Thu, 22 Jun 2023 07:59:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4irjNSn5k2TSZwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 22 Jun 2023 07:32:57 +0000
-Date: Thu, 22 Jun 2023 09:32:56 +0200
-From: Petr Vorel <pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id Gvq7IWj/k2REcwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 22 Jun 2023 07:59:36 +0000
+Date: Thu, 22 Jun 2023 10:00:40 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
 To: Niklas Cassel <Niklas.Cassel@wdc.com>
-Message-ID: <20230622073256.GA482307@pevik>
+Message-ID: <ZJP_qPeJ37H4qhEN@yuki>
 References: <202306192248.1ece4c29-oliver.sang@intel.com>
  <61f22c1d-6b04-d193-57c9-8cad1c555e4b@kernel.org>
  <ZJLxbwCno-it2xBB@yuki> <ZJMYP/CCVviG6IMq@x1-carbon>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <ZJMYP/CCVviG6IMq@x1-carbon>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [linux-next:master] [scsi] eca2040972:
  ltp.ioprio_set03.fail
@@ -79,7 +77,6 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: "lkp@intel.com" <lkp@intel.com>,
  "Martin K. Petersen" <martin.petersen@oracle.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -93,81 +90,19 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Wed, Jun 21, 2023 at 02:47:43PM +0200, Cyril Hrubis wrote:
-> > Hi!
-> > > > kernel test robot noticed "ltp.ioprio_set03.fail" on:
-
-> > > LTP maintainers,
-
-> > > Patches have been submitted to fix this issue. Were these patches applied ?
-
-> > Looks like they are in, at least these two:
-
-> >     ioprio: use ioprio.h kernel header if it exists
-> >     ioprio: Use IOPRIO_PRIO_NUM to check prio range
-
-> > And there does not seem to be anything ioprio related haning in the LTP
-> > patchwork.
-
-Hi Niklas,
-
-> Hello Cyril, Petr, Damien,
-
-
-> I just ran LTP master + linux-next and the test case passes for me.
-
-
-> Although, note that even if you are using LTP master,
-> the way that the LTP header:
-> testcases/kernel/syscalls/ioprio/ioprio.h
-> is written, you will need to run
-
-> make headers_install
-> with linux-next kernel source,
-
-> before running
-> make autotools && ./configure
-> in LTP.
-
-> Otherwise LTP will use the kernel uapi headers from your distro,
-> which does not perform the new checks for the IOPRIO_PRIO_VALUE()
-> macro. (It requires linux uapi headers from linux-next.)
-
-Yes, it should do otherwise more tests would be often broken.
-
-
-> Does the linux kernel test robot not run
-> make headers_install
-> before running
-> make autotools && ./configure
-> in LTP?
-
-I guess that's the question for Damien (I and Cyril have nothing to do with
-kernel test robot). I wonder myself.
-
-> One option, although I'm not sure if we want this,
-> is to change
-> testcases/kernel/syscalls/ioprio/ioprio.h
-> to do something like:
-
-> #ifndef IOPRIO_BAD_VALUE
-> # define IOPRIO_BAD_VALUE(val, max) ((val) < 0 || (val) >= (max))
-> #endif
-
-> such that LTP does not need to be compiled against the kernel uapi
-> headers that match the running kernel.
-
+Hi!
 > But... shouldn't the installed uapi headers match the running kernel?
 
-Yes, whatever kernel version (stable, enterprise, mainline, linux-next, ...) is
-being tested, the tester should make sure LTP is compiled against correct
-headers.
+Genearlly this is tough nut to crack. It's nearly impossible for headers
+to actually match the running kernel in testing environments, since
+quite often the testsuite is compiled beforehand and only retrieved,
+since recompiling for each testrun is wasting too many cycles. I would
+say that the best we can have is that UAPI headers shouldn't be newer
+than running kernel.
 
-Kind regards,
-Petr
-
-> Kind regards,
-> Niklas
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
