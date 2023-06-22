@@ -4,151 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B72F3EB64DC
-	for <ltp@archiver.kernel.org>; Wed, 21 Jun 2023 15:34:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D888CEB64DB
+	for <ltp@archiver.kernel.org>; Thu, 22 Jun 2023 07:33:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6AF783CDCD5
-	for <ltp@archiver.kernel.org>; Wed, 21 Jun 2023 17:34:00 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 06D633CB956
+	for <ltp@archiver.kernel.org>; Thu, 22 Jun 2023 09:33:13 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4E1C13C9DB1
- for <ltp@lists.linux.it>; Wed, 21 Jun 2023 17:33:48 +0200 (CEST)
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 261BF3C9A39
+ for <ltp@lists.linux.it>; Thu, 22 Jun 2023 09:33:00 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 977976002B7
- for <ltp@lists.linux.it>; Wed, 21 Jun 2023 17:33:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
- t=1687361625; x=1718897625;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=gV6PtmK82pRwVQZJ+gutzLK2RDhk22zBWBz2KiYPHCw=;
- b=CJJZX2ZnB2fpBeeWfrBLPwizK87Y1LT0oIvUWHaUlwHfvO7CdExdoUKW
- jNLgVtQOd/vXJ7bT4r2qjmqOQRgHhOF1JoaHIleDVMS9Eu+nvOiHRok/G
- Gd3nuVLvXWwO7BgF4ytSVhClZR5MMH/pXe514xXtRN+D7WFhX2QWN8BsV
- CIu1DvzmKyutzfkZkUtbmNXCGa9KqQh++8cxicy17N5wKvmnSYi0ai+wn
- kZMp+esf4m0IEkJF5W7r3CdPReCto3i8YFyfUUlHB/4ZGblx7TAtrJUC3
- faDHvkjuVxgJCYj8Y1C1feutQIgyNJ1Z2dOqUa81uj7eDEBIZaAtBQJbd w==;
-X-IronPort-AV: E=Sophos;i="6.00,260,1681142400"; d="scan'208";a="234623278"
-Received: from mail-bn7nam10lp2104.outbound.protection.outlook.com (HELO
- NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.104])
- by ob1.hgst.iphmx.com with ESMTP; 21 Jun 2023 23:33:24 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X4ImzKEuMPfUgM6DGjFTIiGP0EwA8S3a62DGA5buDUwOjgmJsJVqZVVE+F3AaHPZVB9Myvfu8ukDkQ80wdlNcoUPq2K7HqtSvaH5QDIcW4obPwnRoNRTSBXk+tYjSH3hO50+8EE15hl/Hftrx3cnskgpLbDJuR1n36OIkYFcv1RnqAcBvCRXVpYC/PuBHHoVtvID3w1RVuW3yJsXNdqLvdeEANP98ekyGyUFdQUKhSsuhuFALQUKJ9nsRWjy7fBDu8O4uzxfrKti0qWWjexxpxfF8aCphAhEpLXI39DET6e4W9Q73MpVn9jOMuMgo4wIQte9c98WtAfv1A89DAkDYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y4PCrD06tgjV+A0iWOAOBR+AEohTCQ06pes/rFm/WXU=;
- b=fI+OQKPa4R8waQS3JpIIkgIZeVDgG3tHRgAGnQAtySPuk1TbSaLNXByFeNOFMAd7kz2fbOMYg1jXmFwPHdQQrQ0nAzGLVv1MVDIsfNgk1fnK3gkKSI1JpPeOIzrfB7JQIWtz+Up0V2UC9j99yYNJUuC3fjDAfHrowZdNcMv04Gnhx9cd88/6QmHJs2cA6dSsNC6S4lS+yrg1ZFm679WGqX5XocEQkXSeIqr6zmnEhEmPf44dMRUXPQEmkz7l/mLVlbJRjymX8KgV+byHs7BgaJmLWyodaHlQRQ+wSk1rCOGWh0jci3DuvRA0W3IxZyPeTIdVLUUwYteHBuD6DbP8ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y4PCrD06tgjV+A0iWOAOBR+AEohTCQ06pes/rFm/WXU=;
- b=m3IOOHRQsBhIenrPUPlDU0YgciUFtdMKRD0qpAGChwWgilwzbGLajeLTEAmxaU0Co4/pSar5RWeyOjGicAP6rVUnrHIYSiAT9mngAXIzZUiABh5JElk2GBzPLnso7lqIsUmVcNmORq8fKRtbY83EFCyUuGitO3ufTSBdwbXgY7A=
-Received: from MN2PR04MB6272.namprd04.prod.outlook.com (2603:10b6:208:e0::27)
- by DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Wed, 21 Jun
- 2023 15:33:22 +0000
-Received: from MN2PR04MB6272.namprd04.prod.outlook.com
- ([fe80::d8ec:2aa9:9ddf:5af9]) by MN2PR04MB6272.namprd04.prod.outlook.com
- ([fe80::d8ec:2aa9:9ddf:5af9%4]) with mapi id 15.20.6521.023; Wed, 21 Jun 2023
- 15:33:22 +0000
-To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [LTP] [linux-next:master] [scsi] eca2040972:
- ltp.ioprio_set03.fail
-Thread-Index: AQHZo0rVSYCnsI/WrEamCoCQtkxA3a+VNo6AgAAuRYA=
-Date: Wed, 21 Jun 2023 15:33:22 +0000
-Message-ID: <ZJMYP/CCVviG6IMq@x1-carbon>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3824B1A00E20
+ for <ltp@lists.linux.it>; Thu, 22 Jun 2023 09:32:59 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4C3AD228F4;
+ Thu, 22 Jun 2023 07:32:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1687419178;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pgboY+1eKS7Q4R+wwxJQMziAyhb5MWJJWPixvdsi6vw=;
+ b=Y+S6cWYXoDMZLa4zgn8fXqN1yVVU4Rc5J3cecl/T4XwUXtc1WEyiOLrpWwehhnLEhKvvNr
+ iJsuZ8lnFtBadV/8KQmFkAtExzARtZdpPgvPY6eZL4741HxpQVG8IqMTneY8xBI7WQL445
+ eFMxsBMBA/qtt1A9qZEW2rm/+Gd1/PQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1687419178;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=pgboY+1eKS7Q4R+wwxJQMziAyhb5MWJJWPixvdsi6vw=;
+ b=pGfxU2eZPdVCvBbg1C/Ohx53ZNQOEgSeTw6YwkthFbsntvmEFx+uZ+uTJQaNElFLRfLkT+
+ nZCDJ83OLBp+BAAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E213D13905;
+ Thu, 22 Jun 2023 07:32:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 4irjNSn5k2TSZwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 22 Jun 2023 07:32:57 +0000
+Date: Thu, 22 Jun 2023 09:32:56 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Niklas Cassel <Niklas.Cassel@wdc.com>
+Message-ID: <20230622073256.GA482307@pevik>
 References: <202306192248.1ece4c29-oliver.sang@intel.com>
- <61f22c1d-6b04-d193-57c9-8cad1c555e4b@kernel.org> <ZJLxbwCno-it2xBB@yuki>
-In-Reply-To: <ZJLxbwCno-it2xBB@yuki>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN2PR04MB6272:EE_|DM6PR04MB6575:EE_
-x-ms-office365-filtering-correlation-id: 29b72973-d9ff-402c-f9e9-08db726cd8dc
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kSLd3d62OnShZZoFPUZFF/9GH+lt5Z1R45RH4YfaKKmecLYXJM7IqgNIsyk2a0UHjW6Sl7SzfU0UDTVP9hO9Thls9bHbc5TWky4PZt2L2WPKuxcvesPVd0QX49quIZuznOe+QyleDZUmPM8xRuSCHf5ziETHRVVlS/7wW8+BBRyxxpLut7qIs5U2R8olWRrlYbydZGJenrXOi5tWaptS+o7HGhhh8prYbqOFurgZjFJN57CpL37DvjfyeoBdeh9ICrgz/eYEnf2ohuTIB7fYgtmucwiBFdc60k8Lc3sZnxR06spZh9v/uJhEBeJqnRTBglfd47giw6Eb39IDdyBNHfUPABmO8fSeb/k4PeqIxXDvyK4fd6GDzZ/RwAg1l4qmOlXMsXi/E+C/T8M46UM7QsC4ujIrJaXn8XWCPkv5twQnHaKYpF/RxX40JcwjmCtRrbNQ9YBivak4tjIkTAeRSHahBoSyw9OL+1CDqcr8m93KOY6wHEYwC0QfXP/A/G+Ms7ZLXfZKOX+Rg1qHuoJ//hnUn7sNrj27O2Q9OIeqeWOuhXq7osemEiglJowKHyBSfI1vB1wAzgLUSb95RCCW32ZBC61oCuCiM59iUDgY5vJc7HN/1JjgCsgduczGPPn7
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MN2PR04MB6272.namprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230028)(7916004)(4636009)(376002)(346002)(396003)(136003)(366004)(39860400002)(451199021)(6486002)(33716001)(8936002)(8676002)(41300700001)(316002)(66446008)(64756008)(66556008)(66476007)(6916009)(2906002)(7416002)(38100700002)(82960400001)(83380400001)(6512007)(26005)(478600001)(71200400001)(54906003)(4326008)(76116006)(91956017)(38070700005)(86362001)(66946007)(5660300002)(122000001)(9686003)(186003)(6506007);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tjlZ5HRlXMe/8JXTA4LupjSrLA5ajRgsMlW25vzNWeG+rPljLaFdCZB6WVle?=
- =?us-ascii?Q?piVUA6bcpXYnGZ1gle4B4GW/NxVIukh+wL9E/d2Pd4p/6h/icriXReJHb/FT?=
- =?us-ascii?Q?XNq+noywjFAJsvS/ksoBdMOEqOwfXWI3m8B6FfPNmFM2q/y1FXN7AGWTlceS?=
- =?us-ascii?Q?qLpNdHCijctywGAhfYRfM3AWiryeEXi94SIEe1m6taBB7artt1D7M+jWXqsH?=
- =?us-ascii?Q?xo0qiknmd7EeewbJYZUAGY4Vt5RKfcZzVRCQxJA5P38AjgpTnLFHlh+v7kKm?=
- =?us-ascii?Q?AivomDmOYsZhtQ6coBtT9Uy/2NQ4vJEy2aAyp5FXq+2GwFEhkQnizlD3tdiF?=
- =?us-ascii?Q?VaxY1YxfD9MGN5U/YgvWhBtuvqzVQjABN0aOslSjDXmJhmjAAcd2Vdz7NWYl?=
- =?us-ascii?Q?FkUZ/WnH5GWQOcPuzMboA5eQUnXPspZZsHNiMCxf5/YYkzwI9zki3wHBQqbb?=
- =?us-ascii?Q?4X0UCosydW+7UYA4LdTXWoLeytR57rJYWXDgIhwRituQHq32PQPGWrx3Sk95?=
- =?us-ascii?Q?Uz4hsvPOWkYzGUpQEIn2VG3oWE/6RRrovg4n8fYSIqsU3//2cJVXlsJb6FR7?=
- =?us-ascii?Q?V3whRW/FzNEoCEw4Dodak0iQ/02JPxJCsg7X79l64dA0wO7qiWrjdZK5eq88?=
- =?us-ascii?Q?rxEGapSfX7W4hJkHW0hW9QB88gkCWlxO80cB0dO1hO3xpD2qZ2fS8pFPb1Z8?=
- =?us-ascii?Q?G5FhEmjOKFGO2Wy/pcUDXNLLgMK5yRift/NCpw7owx/dgEx3cMKwWxZSUKBN?=
- =?us-ascii?Q?7V785uJdcEyvAyx85S+Sl1lr+NTZF34rnst/mE1OkkQbBYcqgPbc4xTFnfWo?=
- =?us-ascii?Q?BLbyP08fnHAs8x+mkU1jkqSRlBnPzKZhYnZVCKzhj+mXE8dkiUM5bEyLosIz?=
- =?us-ascii?Q?x7IlLVwcTMJrGZvcwxdwnExsCsWoqfghETnTNEJ7RTd8FuXHxlH+Ua9La8ue?=
- =?us-ascii?Q?pbA1hW0ZfJTzAw9IlLgEUWrONXn0+ZcPXsmEJmyTrms+QYBTN/Dgv/tugLC4?=
- =?us-ascii?Q?lzRhRwm6/UD9gHPv1k72PPfaRKlRLM7bSGMkiMqbegbChqECGtwAPTep1CJd?=
- =?us-ascii?Q?tUfzMxclNZlFPigISVZ5C+cxb8MTgQzkgtyeFRwT/lvRr4xaN2x6a2UQnxcp?=
- =?us-ascii?Q?b/dY0V72ncnkhgfAu2ARzG8+McuLnLsLyCVes2WY3RRQoTrMAXEWY9ViQcg5?=
- =?us-ascii?Q?WGGP5oO795SCKX1d+4ZF6lyDF18POCjfyoWQK4fuy0j+b6iNotnamiHJ3K54?=
- =?us-ascii?Q?Ms3334RPaa+FsOOLqKI+E4SDPg6YOs/OTADPM1y0QIP+lpOrvhIm8lx8ULvd?=
- =?us-ascii?Q?jwi4IDsNMvYIjUJPwCzYnZtOl6zw5hoLPyY7ZBVN0NJqSi66OtaSnDilHya1?=
- =?us-ascii?Q?JsVnOFtEdUBcD/8sVSz53dtihOdtfsVr97wXzxYloW0pIP/bXJyprAEazkKp?=
- =?us-ascii?Q?HtLLTCWSXQMjq8V+bfQqitWrUgOrbD54wGHmYIOXyt+xUAIK0yuCYQlNmaUJ?=
- =?us-ascii?Q?DZ/Qk+faaYuqUbBfHSH9KugaSmZ8v0DBK5xt1oneyP/bLS3ysXowsmslyDyD?=
- =?us-ascii?Q?5P8WCz1jzTpEAvjAAc4mnEwG8XmGGXbSn7jG+dp+g7bAvj6afT3IoQAWRySc?=
- =?us-ascii?Q?OA=3D=3D?=
-Content-ID: <F2200FC3DDAEBA40B83F1C6B6392D27B@namprd04.prod.outlook.com>
+ <61f22c1d-6b04-d193-57c9-8cad1c555e4b@kernel.org>
+ <ZJLxbwCno-it2xBB@yuki> <ZJMYP/CCVviG6IMq@x1-carbon>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?1QTrbmwGnngZmr/Hj3OnkX41+s6xfoCJCLt41PMNj4xjM2eagR62Jdk2quSr?=
- =?us-ascii?Q?KR5DEra3XY1jaXRdXVGLSATQSWcFETwFaxieJ0lvW22vyjAJgnbAUR1tbAmM?=
- =?us-ascii?Q?HEHB8dGAe5cVawzEeTRLBDpWfRVIvezimE2U7EacySLpTapfJRawgFkLYVlA?=
- =?us-ascii?Q?HaABRGvmKasM5xn2RHuWYFun3R8LkIjvXBR9xZDGDKPoYprlg7MUNSmWcGRr?=
- =?us-ascii?Q?h+1KHIp5PPdq8LqMQFI1IIAQDnSBpGlkrE21AZ9mlL1GzaN9GCEo5pPmtmQ8?=
- =?us-ascii?Q?Nqc3LvQ/V8fO6tSAXM3fvZIzByxSP/e1UFwanLd4OPguXv3Nt33+WNE5mczy?=
- =?us-ascii?Q?U63bDcjKSq235TZ5f53q+FFqrMj5xpQ+YXB8DgWD0b6P3e8mDWCU8Ur/L3o7?=
- =?us-ascii?Q?3WLQq51ptMh28OP30t6HGYOG7QHH0DMmRw9qT3f4cYttYTNFK+Fn5DVwSahI?=
- =?us-ascii?Q?/cTiNcjbAUoDP9+eQBxtID7CyDh2PiIVTclix4r18eE6tiqdjZyf6cnNjBsT?=
- =?us-ascii?Q?AGFPueKvSpftpXzQlpnpgKL0y6ZAtleZDI89bavxi1DlQYZ3g48rYG8YM4BF?=
- =?us-ascii?Q?z1HgrQtRq/AaHuwMLVUm/xIZPK1VDMRT5lSASMmJYKL0pdVHi+OPzd58g3bA?=
- =?us-ascii?Q?B+ejxXZXJyvdp0+sCu5Nkm1PKPCplRzLh/Ztw+a0YkqsQVwFMOrAZ9QfzUGJ?=
- =?us-ascii?Q?hZcmX5bkXgJRHYE0cDbCALgq+JxLugt/sLvKPshL2owjM3lIMTeery5oJgv/?=
- =?us-ascii?Q?kdmbBpkR7896VghO2K14zfPK0VW3WcqPryC7hGJI3Yr+yirP01aTqOb+AY0n?=
- =?us-ascii?Q?foKzlCdL3kH/VRBfCSj7xFgjQ3SagbRjTvaBys5fieIambpe3EIqNAFfxi2+?=
- =?us-ascii?Q?CV2H/JY8zbFDCjbCW1vupJnxc9Vj8pMNZ/wSXkYucF7z66SGeKpv0t82bocR?=
- =?us-ascii?Q?v8GM/8gyrot3sTBdEXQ22V6cx09t2texoWlp3p8cYMd+5hZFq3pmn6Yh5SrV?=
- =?us-ascii?Q?c379NdfDwwS+3RwYapufc1iLAnRBTgpEDtF+lRxvqmAj0xw=3D?=
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR04MB6272.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29b72973-d9ff-402c-f9e9-08db726cd8dc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2023 15:33:22.2949 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JMBuOluAnBww2tUUvJT1kKC14izAk604N3RCiQMfsWXbOOHOub1T7KaXWv+ee8RztWmitg4dVWHHkkoK00MItA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6575
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <ZJMYP/CCVviG6IMq@x1-carbon>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [linux-next:master] [scsi] eca2040972:
  ltp.ioprio_set03.fail
@@ -163,10 +79,9 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Niklas Cassel via ltp <ltp@lists.linux.it>
-Reply-To: Niklas Cassel <Niklas.Cassel@wdc.com>
-Cc: "lkp@intel.com" <lkp@intel.com>, "Martin K.
- Petersen" <martin.petersen@oracle.com>,
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: "lkp@intel.com" <lkp@intel.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
  Linux Memory Management List <linux-mm@kvack.org>,
@@ -178,69 +93,81 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Jun 21, 2023 at 02:47:43PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > > kernel test robot noticed "ltp.ioprio_set03.fail" on:
-> > 
-> > LTP maintainers,
-> > 
-> > Patches have been submitted to fix this issue. Were these patches applied ?
-> 
-> Looks like they are in, at least these two:
-> 
->     ioprio: use ioprio.h kernel header if it exists
->     ioprio: Use IOPRIO_PRIO_NUM to check prio range
-> 
-> And there does not seem to be anything ioprio related haning in the LTP
-> patchwork.
+> On Wed, Jun 21, 2023 at 02:47:43PM +0200, Cyril Hrubis wrote:
+> > Hi!
+> > > > kernel test robot noticed "ltp.ioprio_set03.fail" on:
 
-Hello Cyril, Petr, Damien,
+> > > LTP maintainers,
 
+> > > Patches have been submitted to fix this issue. Were these patches applied ?
 
-I just ran LTP master + linux-next and the test case passes for me.
+> > Looks like they are in, at least these two:
 
+> >     ioprio: use ioprio.h kernel header if it exists
+> >     ioprio: Use IOPRIO_PRIO_NUM to check prio range
 
-Although, note that even if you are using LTP master,
-the way that the LTP header:
-testcases/kernel/syscalls/ioprio/ioprio.h
-is written, you will need to run
+> > And there does not seem to be anything ioprio related haning in the LTP
+> > patchwork.
 
-make headers_install
-with linux-next kernel source,
+Hi Niklas,
 
-before running
-make autotools && ./configure
-in LTP.
-
-Otherwise LTP will use the kernel uapi headers from your distro,
-which does not perform the new checks for the IOPRIO_PRIO_VALUE()
-macro. (It requires linux uapi headers from linux-next.)
+> Hello Cyril, Petr, Damien,
 
 
+> I just ran LTP master + linux-next and the test case passes for me.
 
-Does the linux kernel test robot not run
-make headers_install
-before running
-make autotools && ./configure
-in LTP?
 
-One option, although I'm not sure if we want this,
-is to change
-testcases/kernel/syscalls/ioprio/ioprio.h
-to do something like:
+> Although, note that even if you are using LTP master,
+> the way that the LTP header:
+> testcases/kernel/syscalls/ioprio/ioprio.h
+> is written, you will need to run
 
-#ifndef IOPRIO_BAD_VALUE
-# define IOPRIO_BAD_VALUE(val, max) ((val) < 0 || (val) >= (max))
-#endif
+> make headers_install
+> with linux-next kernel source,
 
-such that LTP does not need to be compiled against the kernel uapi
-headers that match the running kernel.
+> before running
+> make autotools && ./configure
+> in LTP.
 
-But... shouldn't the installed uapi headers match the running kernel?
+> Otherwise LTP will use the kernel uapi headers from your distro,
+> which does not perform the new checks for the IOPRIO_PRIO_VALUE()
+> macro. (It requires linux uapi headers from linux-next.)
 
+Yes, it should do otherwise more tests would be often broken.
+
+
+> Does the linux kernel test robot not run
+> make headers_install
+> before running
+> make autotools && ./configure
+> in LTP?
+
+I guess that's the question for Damien (I and Cyril have nothing to do with
+kernel test robot). I wonder myself.
+
+> One option, although I'm not sure if we want this,
+> is to change
+> testcases/kernel/syscalls/ioprio/ioprio.h
+> to do something like:
+
+> #ifndef IOPRIO_BAD_VALUE
+> # define IOPRIO_BAD_VALUE(val, max) ((val) < 0 || (val) >= (max))
+> #endif
+
+> such that LTP does not need to be compiled against the kernel uapi
+> headers that match the running kernel.
+
+> But... shouldn't the installed uapi headers match the running kernel?
+
+Yes, whatever kernel version (stable, enterprise, mainline, linux-next, ...) is
+being tested, the tester should make sure LTP is compiled against correct
+headers.
 
 Kind regards,
-Niklas
+Petr
+
+> Kind regards,
+> Niklas
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
