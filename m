@@ -4,117 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA3EBEB64DC
-	for <ltp@archiver.kernel.org>; Thu, 29 Jun 2023 09:06:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFD57EB64DC
+	for <ltp@archiver.kernel.org>; Thu, 29 Jun 2023 09:06:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2F90F3CC783
-	for <ltp@archiver.kernel.org>; Thu, 29 Jun 2023 11:06:29 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id EEC863CC315
+	for <ltp@archiver.kernel.org>; Thu, 29 Jun 2023 11:06:41 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D73C83CC734
- for <ltp@lists.linux.it>; Wed, 28 Jun 2023 22:56:08 +0200 (CEST)
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com
- (mail-co1nam11on2060c.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7eab::60c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 317163C8998
+ for <ltp@lists.linux.it>; Wed, 28 Jun 2023 01:33:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 309601400E7F
- for <ltp@lists.linux.it>; Wed, 28 Jun 2023 22:56:07 +0200 (CEST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OrY2yBL9wtV6yZ7ZNlKGI/3TrV67+o5HjlfCDoRfxRuDKY8KqglNRPzIbzrbPuFEynGs6eanYdyUQZoBgE1Eoadjm6AJUu7pKlo9M1H6qJ4oCgSNQzPn+NZGEr6DtLS3WVFWQUc/rMpzLC0GKXxQAnvM7oMpjLaj4HVdRgQc3N1krQNxNUtq7BMezFy8oj4FWSeQrheZBQ4q7B8pMCO+UMLnz5QscxmI+SxTxfXCGLKUXrLa9j93HieynwTAfvHYu343JfmrJlbZmb43qt0QnuAEyOSlYVgMMSfzeLVSWceIWr1xHCRDDJMwkdkSUpLfnpIybwjKTbXAe9JVzlFj+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=85qezXd3+y5rKiwAdABgR4CYpJYpfQruIN77HrdY4i8=;
- b=RgZoxH4jo8xL73SwBKfF5Ez4EbUe71GnAPBFWnphMB0nL6u0lSNqRjuIa23UOLJYzCoKW6bTHmLs+7/u9Fqs1o9r2MPhvxO0HyLudno91VrlSM1f/9Xi5jZhSuDkCWBlY5sJjQRGd92MpquyXpxbwKdcBJLUVA434J1mapGiTwq/PFZ0+njSXB7B9DRuyiM87IZz77jGe9oIOhcCzU2qFYEYnARy8Cb67cHjZejjKdP5aH3imvGIEuo6rnddBTciOr2tWUTYxo1rajsKttJt1o9REVM2tx5absb5pMrFVtpEXG25nqedQ2CVOqSudC5+2x4xoZCNrNjcSknF2di93g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=85qezXd3+y5rKiwAdABgR4CYpJYpfQruIN77HrdY4i8=;
- b=IV8qG8xzE0UZah5TQ6L9wDlbrMEARQRXLYEUZenEoAKg/z+6sr6KCNSs8valMCxMBLg7B+6wMoIVj0vfod8r5FjEbsQ6hEhVKCQEq7V3NJ+ATOh1ZJ8oinpidaTWvFYCVlzxX/+ZfKH7QIlkt82ChcRV05DVxDdWsBqLUXbC+YMtKSJSCKPJLIjOnZsJ5DVh26R7VetjxKwfdvfRJlojeOcYWPXKX/ED5UMAFa/H+p74+zh1uPe9viQnzSrNmroqVGrAnWgDKCP+qvceUyooNFGB62yKo42LXY6G2axMsywgzZ/C2JdLk6P4Sq04VVjbOvmSdoUPsA0ghxkyWSH6og==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by CH2PR12MB5018.namprd12.prod.outlook.com (2603:10b6:610:6e::24)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Wed, 28 Jun
- 2023 20:56:03 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::ecb0:2f8e:c4bf:b471]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::ecb0:2f8e:c4bf:b471%7]) with mapi id 15.20.6521.024; Wed, 28 Jun 2023
- 20:56:01 +0000
-To: Andrew Lunn <andrew@lunn.ch>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 40AA51A0027B
+ for <ltp@lists.linux.it>; Wed, 28 Jun 2023 01:33:50 +0200 (CEST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C2D6461200;
+ Tue, 27 Jun 2023 23:33:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70C16C433C8;
+ Tue, 27 Jun 2023 23:33:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1687908827;
+ bh=ICAejiuFUC/1Y/I67hPGjW+XknCM1NTjVehtolvc5/w=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=CCgLg90R9nb6tEwNk63w9P5PVVk25wJ+WW6pX7u4s0m+h3Deg7440fxTOv5yMR7JD
+ tZSL7Mii3FkTTTN0i29DtuyTcwm3pPKVhMUqwK591eZ6VuEe8LSDmTg8bXVwg/JdNZ
+ eok58l6KnUzC0iB68zgoz0skXHB8LFhYNdStUgwz21jP73sTYU8l1ftWUxiP7fLzXp
+ MLbTtCVO5jRUWALfmoQu0BRNZB4BW+O7qejH5Rl0PsPWUj5N4VE9Nf+R8wJLhVFIca
+ FPEf4XWqCae/fuQ4slLWCptdFsyvJyuUn2ArHtu57JCu9fOLnxeKFJEZmfga5SZ4Wx
+ pmDuJTsM+0Rwg==
+Date: Tue, 27 Jun 2023 16:33:44 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Message-ID: <20230627233344.GA1914803@dev-arch.thelio-3990X>
 References: <20230627232139.213130-1-rrameshbabu@nvidia.com>
- <7fa02bc1-64bd-483d-b3e9-f4ffe0bbb9fb@lunn.ch>
- <20230628133850.0d01d503@kernel.org>
- <06f5c065-2c6d-4cd2-9699-89f05443f137@lunn.ch>
-Date: Wed, 28 Jun 2023 13:55:53 -0700
-In-Reply-To: <06f5c065-2c6d-4cd2-9699-89f05443f137@lunn.ch> (Andrew Lunn's
- message of "Wed, 28 Jun 2023 22:46:32 +0200")
-Message-ID: <87edlvqpba.fsf@nvidia.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-X-ClientProxiedBy: PH8PR07CA0003.namprd07.prod.outlook.com
- (2603:10b6:510:2cd::17) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|CH2PR12MB5018:EE_
-X-MS-Office365-Filtering-Correlation-Id: a693b1a3-ec94-4689-15c5-08db781a14ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4RgQ0WKoDz9X9ngJtzxEnyvIr6FCWqO+OnZIVdXpgr6gQzyNZ0Xqext+CAD5ovT6f0UHwYIIVR4xVfO2cII6MTIyG876MqBEsfncTmxkyC8D2obyy6SYMup0cyknWAh2aEwIM5OkFtBYKzLK/g6ZcU0lIV0FQg10jPmcWSGNrvufoyiKtaO/Bl8chGijR1ufQeD19JgFqBRAuuTCV0Fzv8CFc86zJARKY50GZUgMZOWOLHCTpEM2v+hsm5yqoLFoqRohuESdf+Bpnr6QNycU6fxtVwsHZfDsWAMQNUg+JF6UusPAhhiwnBW4lQcjjQO6JNJN/U14HvLk19xo1rv4g99LQ1d3W8Wazxx345LXWqvuZr4kBk5Vc/XGVORed9Ok48qCxJrFOaEcI1b/cM4d/cP6aPfKRSXlDJrCn3x76InY36GCrwmy6VLJ2at1qtoxV8h1WIlc1vIQUZTCUX7dczdgke/29T2hFtgWW+2Qf6/vXNFDbex4phnbSMB2lQm7IGsHDlQRG0gvc4vmaVNF7aBk5vRkpFMZ7bKgFDOWT4MUbB9y+QhF8A1yVqsfjdB+o8MX0OFcAeraLmkC1O4CUhB88ZacI4R4UOamLVx6J7M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BYAPR12MB2743.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230028)(4636009)(136003)(396003)(39860400002)(346002)(376002)(366004)(451199021)(8676002)(66476007)(66556008)(8936002)(41300700001)(316002)(66946007)(6506007)(26005)(6916009)(186003)(6512007)(966005)(54906003)(478600001)(6666004)(2616005)(4326008)(6486002)(2906002)(5660300002)(7416002)(38100700002)(36756003)(86362001);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?74Y/yBL0GUfzv5hIGcNmBZVYi10N1LTi0wgVNGhLV9eb1AAuq7u+unb0wgsg?=
- =?us-ascii?Q?7JmkXU/w5ODuelEGYzG8d8DHGDTfLhe6RpVvAw5viQErB6+V8LemzMQoGsxN?=
- =?us-ascii?Q?l6JxnP9kqh+Ft3rs8aAPYQgWCCFl14zBK2BtZHB9orlgZFNQoMs9gkrCRuDI?=
- =?us-ascii?Q?vJeJ8l9ZVgtpYXPn6XTjrg2I2wHAuDA4eDdaM36hty5QOp4gOmffE2MGP7RP?=
- =?us-ascii?Q?QsaHZ7TXAS9tzhXUVf0CTgFWwgaVXAxtlCJ/FxI6jtbmEHl6JQQ3iEfTfew/?=
- =?us-ascii?Q?ZsIaxgWMtQtcxmSgoeTjYuohyD5RKgiOoKBAIn9kU9slDZKxIJWgGf/XZW9k?=
- =?us-ascii?Q?ymIwD6enm9cR0fDtr1WKgKIKKUt92qmb3KThzpKgGi+Yuyq8EhKHESnz9ZXT?=
- =?us-ascii?Q?XoAFOlmDPTsq4kq1OQhibDY1H68ZGtCPph3zH3Jx6pH0ONJceaJWVmttyuGH?=
- =?us-ascii?Q?hGY/U+A2M8ZpbMggSk0+oZLnyhHoLXVz+WgtSNBQHktfcBCI1ZO/KsSOgfLp?=
- =?us-ascii?Q?mNqeImknVbSXqvInlPqsp/PV8f8neFfEkhQ4nFO1WQ467+NLccXRolsgTFS2?=
- =?us-ascii?Q?0YOytiI2alvLiNsn6gLiw/AKWfYUdD02q6iF3UoQ1kFSY6HOFAWT6JYbqSds?=
- =?us-ascii?Q?0a5LWUqEKsqBg5SJyn3PVeCZ7ts3LZXC6j2chOLpvsuY8LuDl4Sxv1wZsMdP?=
- =?us-ascii?Q?xD9YkxF8uCg51PKzrl9qOcf2Z98GjWrYm7rkOYvvZn6bfEonvAoHomMYjwwU?=
- =?us-ascii?Q?QtiB4AJm4y126u3HJ5yqiPYGiKR7iGQU6n3nkXD5T8k0sf0yMAx+6ertkR0h?=
- =?us-ascii?Q?FtkgkdEXw4ShaeJLyrY+IQX2/r+zB6Aik1jfoFyuRTj2I5T4TGSvcgTOQJ24?=
- =?us-ascii?Q?BjtIJCJn9yx12+Y2An8XPIQ8o5oT4wg3CXLoS62DY+kmp2Xtfsl89eiw8Ulf?=
- =?us-ascii?Q?utXY7Yb+O8xE/JfZMr0JAvftcSnfPE7pV8Vs8OVUeaWcgsas8W8XqYxBUCc6?=
- =?us-ascii?Q?XPxJtf0QAKUniD6A6ah+hABLZj8/DOlsUXKiQBpBbILybHlfpr1vKcHn0oFY?=
- =?us-ascii?Q?+AQpzDrSiyYud0NnfnaBGA5HyzUSoKh2iUHJJkeHshvtix9wAFHJFIhMLRhe?=
- =?us-ascii?Q?Tmm7jAEzAuv3JcuikYeREf4pdXm7/2zoT31YoA0T5cHv48x7hMsKW7XwKhkK?=
- =?us-ascii?Q?UdvklQNELfzgVjwU3VAx/zZBnUCE7nfLLkzVaQEpsF0qIwdt0sL8cFBh85w5?=
- =?us-ascii?Q?fI16bK1GSxYSWo4F0b3kyVU/aW5/9HuZngmsELnXoUWNXtNk4rjihiSKo1me?=
- =?us-ascii?Q?6Yxxqc43v/qUm6PQF6fkjcgV61TBDUglwvw0TKaKygUdA+1SNaxf6d+7mbZe?=
- =?us-ascii?Q?B2kfrwaAOXrVCIxJRjgFjnFgF/ZNh7xrpissW2I7i/gyytax2rlA0BQ/S35A?=
- =?us-ascii?Q?zF3/yXYszRbKM6vt/o1kXkhqz9o2mFj44R/jRcrIdm2E9tdx4pfuSIvrKAAn?=
- =?us-ascii?Q?UsZWFHQxmnm+sR/IqJXnPMcAMXkKbIeMzjcQnWS5SGUjus99Ia6QKoOYT8E6?=
- =?us-ascii?Q?FvZ+Lt0u43U05xBtjn/eDMNojy8q5OzIK5Pq2rQXlNKR/c+r42nyMi2C3y1Q?=
- =?us-ascii?Q?cg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a693b1a3-ec94-4689-15c5-08db781a14ad
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2023 20:56:01.7060 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vmQ2BPK5Oo7DdHsvK+DXGoI2aEMMS1qYU5J94kTbtSFwd8TeBlZQkVhANGxxD/Y6025wAiz7wWNzf7aX2spiyg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB5018
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230627232139.213130-1-rrameshbabu@nvidia.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Thu, 29 Jun 2023 11:05:30 +0200
+X-Mailman-Approved-At: Thu, 29 Jun 2023 11:05:53 +0200
 Subject: Re: [LTP] [PATCH net v1] ptp: Make max_phase_adjustment sysfs
  device attribute invisible when not supported
 X-BeenThere: ltp@lists.linux.it
@@ -128,53 +64,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Rahul Rameshbabu via ltp <ltp@lists.linux.it>
-Reply-To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
 Cc: Linux Kernel Functional Testing <lkft@linaro.org>, netdev@vger.kernel.org,
  Richard Cochran <richardcochran@gmail.com>, lkft-triage@lists.linaro.org,
- "David S. Miller" <davem@davemloft.net>, Nathan Chancellor <nathan@kernel.org>,
- Saeed Mahameed <saeed@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Gal Pressman <gal@nvidia.com>,
- LTP List <ltp@lists.linux.it>
+ "David S. Miller" <davem@davemloft.net>, Saeed Mahameed <saeed@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Gal Pressman <gal@nvidia.com>, LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, 28 Jun, 2023 22:46:32 +0200 Andrew Lunn <andrew@lunn.ch> wrote:
-> On Wed, Jun 28, 2023 at 01:38:50PM -0700, Jakub Kicinski wrote:
->> On Wed, 28 Jun 2023 03:16:43 +0200 Andrew Lunn wrote:
->> > > +	} else if (attr == &dev_attr_max_phase_adjustment.attr) {
->> > > +		if (!info->adjphase || !info->getmaxphase)
->> > > +			mode = 0;  
->> > 
->> > Maybe it is time to turn this into a switch statement?
->> 
->> I don't think we can switch on pointers in C.
->
-> https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/sfp.c#L749
->
-> Works for temperature sensors, voltage sensors, current sensors, and
-> power sensors. Maybe hwmon is different to what is going on here, but
-> both a sysfs files.
+On Tue, Jun 27, 2023 at 04:21:39PM -0700, Rahul Rameshbabu wrote:
+> The .adjphase operation is an operation that is implemented only by certain
+> PHCs. The sysfs device attribute node for querying the maximum phase
+> adjustment supported should not be exposed on devices that do not support
+> .adjphase.
+> 
+> Fixes: c3b60ab7a4df ("ptp: Add .getmaxphase callback to ptp_clock_info")
+> Signed-off-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Link: https://lore.kernel.org/netdev/20230627162146.GA114473@dev-arch.thelio-3990X/
+> Link: https://lore.kernel.org/all/CA+G9fYtKCZeAUTtwe69iK8Xcz1mOKQzwcy49wd+imZrfj6ifXA@mail.gmail.com/
 
-Sorry, the only switch cases I see in the link you shared are for an
-integral type enum and a u32. I do not see a pointer type being used in
-a switch in sfp_hwmon_is_visible?
+Thanks a lot for the fix!
 
-I believe Jakub is right about pointer types + switches in C. pointer
-types are not considered integral types. Here is a compiler explorer
-example to demonstrate. This slipped my mind during our discussion.
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-https://godbolt.org/z/nKr3x7cT8
-
-  <source>: In function 'main':
-  <source>:6:13: error: switch quantity not an integer
-      6 |     switch (data) {
-        |             ^~~~
-  Compiler returned: 1
-
--- Rahul Rameshbabu
+> ---
+>  drivers/ptp/ptp_sysfs.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/ptp/ptp_sysfs.c b/drivers/ptp/ptp_sysfs.c
+> index 77219cdcd683..6e4d5456a885 100644
+> --- a/drivers/ptp/ptp_sysfs.c
+> +++ b/drivers/ptp/ptp_sysfs.c
+> @@ -358,6 +358,9 @@ static umode_t ptp_is_attribute_visible(struct kobject *kobj,
+>  		   attr == &dev_attr_max_vclocks.attr) {
+>  		if (ptp->is_virtual_clock)
+>  			mode = 0;
+> +	} else if (attr == &dev_attr_max_phase_adjustment.attr) {
+> +		if (!info->adjphase || !info->getmaxphase)
+> +			mode = 0;
+>  	}
+>  
+>  	return mode;
+> -- 
+> 2.40.1
+> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
