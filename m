@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90DCCEB64D7
-	for <ltp@archiver.kernel.org>; Wed, 28 Jun 2023 13:35:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4BB5EB64DA
+	for <ltp@archiver.kernel.org>; Wed, 28 Jun 2023 13:35:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7EA943CE161
-	for <ltp@archiver.kernel.org>; Wed, 28 Jun 2023 15:35:00 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 9F5653CF12A
+	for <ltp@archiver.kernel.org>; Wed, 28 Jun 2023 15:35:50 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 02A503CC739
- for <ltp@lists.linux.it>; Wed, 28 Jun 2023 15:34:49 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 7CF483C999F
+ for <ltp@lists.linux.it>; Wed, 28 Jun 2023 15:35:39 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 67FEE600991
- for <ltp@lists.linux.it>; Wed, 28 Jun 2023 15:34:48 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F03BC10009A0
+ for <ltp@lists.linux.it>; Wed, 28 Jun 2023 15:35:38 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5A7421F8D5;
- Wed, 28 Jun 2023 13:34:48 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 478FC1F8BB;
+ Wed, 28 Jun 2023 13:35:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1687959288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1687959338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8rl3mDNrsZ9Uyu74bJXpbf9OSGpRFtdmZKHjT5jFmSA=;
- b=mseqARSvaUezz4pz1p7iKZPZdiJnpaQiV6cZxA92aE/bB7du6/S298Bg5JQ9Vt2OcyuZ8O
- Eu3KSShadi5k99HA+ywLJwn7+AnigufflqyhqprYJVn2FK+XAWeFoCu5KFvWKlytvsEBLy
- KikcwJy1IRkexO/cEd/T24EBTWCEYgw=
+ bh=RfeEVBpwE2fWoQ9ApV7AS0I+bZ9StqHlBFCcTxWFwqw=;
+ b=wazi3KNDZI9zd2jIRtEn6c5D/NkttjCUsiUVsItXB6D7IGljr3Bi1AKcFY+uzUdVnxUzXO
+ i+hCGbU1fEfduvBRTEG2WRzYRFmNbBelrwh+yjXWJ9+NMwarRFQ9i5/tCSByi6IxGUsa1C
+ qZX6472n1hO76q9gEL3YXdZzzJaUOpo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1687959288;
+ s=susede2_ed25519; t=1687959338;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=8rl3mDNrsZ9Uyu74bJXpbf9OSGpRFtdmZKHjT5jFmSA=;
- b=mHyM5pI2rBeye4gbXrnT1acTO6lanThAZotyBWQLw5tQjdFg0eOvImND9T6653WE3ce1DA
- ZKGz++PXJ3jYyYCQ==
+ bh=RfeEVBpwE2fWoQ9ApV7AS0I+bZ9StqHlBFCcTxWFwqw=;
+ b=OjAtGgGptYgHInJ40BfIZLMpRrqoKo3pjcAnvvSnqgRvOlOuC54AtgZvkfTnlaCI9YSPz/
+ RdMmEolgvQ1VfSCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 39611138E8;
- Wed, 28 Jun 2023 13:34:48 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33EAD138E8;
+ Wed, 28 Jun 2023 13:35:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id /21uC/g2nGRPAwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 28 Jun 2023 13:34:48 +0000
-Date: Wed, 28 Jun 2023 15:35:54 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id b+YZCyo3nGTTAwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 28 Jun 2023 13:35:38 +0000
+Date: Wed, 28 Jun 2023 15:36:44 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZJw3Or-7pEXOnAjC@yuki>
-References: <20230628130742.155724-1-pvorel@suse.cz>
- <20230628130742.155724-3-pvorel@suse.cz>
+Message-ID: <ZJw3bPDB76tY3Ioz@yuki>
+References: <20230628081831.123189-1-pvorel@suse.cz>
+ <20230628081831.123189-2-pvorel@suse.cz> <ZJwb_wxDrqIlNqfg@yuki>
+ <20230628125144.GA147674@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230628130742.155724-3-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+In-Reply-To: <20230628125144.GA147674@pevik>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/3] fsstress/global.h: Use _GNU_SOURCE
+Subject: Re: [LTP] [PATCH 1/3] lapi/fcntl.h: Fix O_DIRECT definition for
+ various archs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,13 +85,12 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> -/* xfs-specific includes */
+> I have no problem to remove O_DIRECT. The only question is what to do if we need
+> it in the library one day. Will we be ok that whole LTP becaume _GNU_SOURCE due
+> that?
 
-Just a very minor nit, such cleanups should be in a separate patch.
-
-Otherwise the rest of the changes looks good:
-
-Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+Nothing stops us from adding _GNU_SOURCE into a lib/foo.c if that is
+ever needed.
 
 -- 
 Cyril Hrubis
