@@ -4,113 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C993EB64D9
-	for <ltp@archiver.kernel.org>; Thu, 29 Jun 2023 09:06:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA3EBEB64DC
+	for <ltp@archiver.kernel.org>; Thu, 29 Jun 2023 09:06:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 21EFF3CC301
-	for <ltp@archiver.kernel.org>; Thu, 29 Jun 2023 11:06:17 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 2F90F3CC783
+	for <ltp@archiver.kernel.org>; Thu, 29 Jun 2023 11:06:29 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A75423CD05F
- for <ltp@lists.linux.it>; Wed, 28 Jun 2023 19:48:38 +0200 (CEST)
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com
- (mail-dm3nam02on2062a.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e83::62a])
+ by picard.linux.it (Postfix) with ESMTPS id D73C83CC734
+ for <ltp@lists.linux.it>; Wed, 28 Jun 2023 22:56:08 +0200 (CEST)
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam11on2060c.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7eab::60c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 968CC1400E11
- for <ltp@lists.linux.it>; Wed, 28 Jun 2023 19:48:36 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 309601400E7F
+ for <ltp@lists.linux.it>; Wed, 28 Jun 2023 22:56:07 +0200 (CEST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bd1fA4iqYuayxruZEl1G7HuBrMCL4I1g2DK0F5cRMIt0eaOzEhLxBqC0yZ8whWeYpIyH+/NoDUw5596kw+VleqAuccSpUM2AwI+XZYV3sQXeouge02BaayYKnOmB9EgdiJ22Z69zmYG/Uz+K4EyaPWUHrRjhMtEDUbMM+yJJemlRH8ytZYQqXHnhYwaHx0vO4FapuTPSzTZpc95DzVNgBpYTuOWfWJryNp2GqBiW/k8RWvaL2O86wVMg+lmjivj1YNtvut2c1xFFYTR93n21oIITqe/qpEjaunjHeW9aDPEPE/uk79AWB98mnqVMgPCq31uaWZEQR2A23WEZgfq/mA==
+ b=OrY2yBL9wtV6yZ7ZNlKGI/3TrV67+o5HjlfCDoRfxRuDKY8KqglNRPzIbzrbPuFEynGs6eanYdyUQZoBgE1Eoadjm6AJUu7pKlo9M1H6qJ4oCgSNQzPn+NZGEr6DtLS3WVFWQUc/rMpzLC0GKXxQAnvM7oMpjLaj4HVdRgQc3N1krQNxNUtq7BMezFy8oj4FWSeQrheZBQ4q7B8pMCO+UMLnz5QscxmI+SxTxfXCGLKUXrLa9j93HieynwTAfvHYu343JfmrJlbZmb43qt0QnuAEyOSlYVgMMSfzeLVSWceIWr1xHCRDDJMwkdkSUpLfnpIybwjKTbXAe9JVzlFj+Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sD0vzjlQBs5bO1J19+Lz2NHMNz7FQUbjBqpd86qeeYA=;
- b=RAkcgL/tugOqWDAOUzPVIfL99hK3XQt6OpIMVr/cpDQfLU13hM5GceegmFEuSxhOehfLIrb3xJS+YiTL90UQXfo+EteTXB7NhtokkCDI0ar6UjbgzvmxfqCUamYhjCezoSlaD/sXTmIKCTAkGVGc8IgpMXIGhHvGYpmQjVXSQzrP/wXl/N7Kyp4cCAJjWaAEsplEzhc5YDZscqXe6EbnF3W1YNPCzl2TSE70DNkD7IUyL6IskULR4CR5w3iuyaLvBocW4EhjeUjoH1Zn8tDcQfIXetFonrKFPoqFzHr7Yo4Wo18tySVUMPsWIvILfeLRj4Xaqkj9AAkc4Va9SnpxOg==
+ bh=85qezXd3+y5rKiwAdABgR4CYpJYpfQruIN77HrdY4i8=;
+ b=RgZoxH4jo8xL73SwBKfF5Ez4EbUe71GnAPBFWnphMB0nL6u0lSNqRjuIa23UOLJYzCoKW6bTHmLs+7/u9Fqs1o9r2MPhvxO0HyLudno91VrlSM1f/9Xi5jZhSuDkCWBlY5sJjQRGd92MpquyXpxbwKdcBJLUVA434J1mapGiTwq/PFZ0+njSXB7B9DRuyiM87IZz77jGe9oIOhcCzU2qFYEYnARy8Cb67cHjZejjKdP5aH3imvGIEuo6rnddBTciOr2tWUTYxo1rajsKttJt1o9REVM2tx5absb5pMrFVtpEXG25nqedQ2CVOqSudC5+2x4xoZCNrNjcSknF2di93g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sD0vzjlQBs5bO1J19+Lz2NHMNz7FQUbjBqpd86qeeYA=;
- b=q/05xIruFvIbr80UVkRY5W+VwjDk+Np8MF7Oumu5e9V6R4ig9ACLmu9kgodcfpRaYhFsQ3XgysCypyEcGa0LT4vjscGukAtT38EXSMstZVWKXvEBTaMmuT4EZm7pSN92YBnmZORyZN9iF6F1d7IfWwa0k9cUuUGmd9N6HGj01j+XOYslTB9fPnCQtyKwwZtdKWgSqgH9u8twAJbpNoshVH5oNngfgflXtBScVsMappcRoMDnrRoi0vFPb9laqivtByqMiemKLLhT07PiLCy6vbKuFRD7mTqBKwPM9jv+ZDznq6lKswxPOphwe4hd+htE2rogRASDzxyE8g+OLTTiRg==
+ bh=85qezXd3+y5rKiwAdABgR4CYpJYpfQruIN77HrdY4i8=;
+ b=IV8qG8xzE0UZah5TQ6L9wDlbrMEARQRXLYEUZenEoAKg/z+6sr6KCNSs8valMCxMBLg7B+6wMoIVj0vfod8r5FjEbsQ6hEhVKCQEq7V3NJ+ATOh1ZJ8oinpidaTWvFYCVlzxX/+ZfKH7QIlkt82ChcRV05DVxDdWsBqLUXbC+YMtKSJSCKPJLIjOnZsJ5DVh26R7VetjxKwfdvfRJlojeOcYWPXKX/ED5UMAFa/H+p74+zh1uPe9viQnzSrNmroqVGrAnWgDKCP+qvceUyooNFGB62yKo42LXY6G2axMsywgzZ/C2JdLk6P4Sq04VVjbOvmSdoUPsA0ghxkyWSH6og==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by MW3PR12MB4505.namprd12.prod.outlook.com (2603:10b6:303:5a::24)
+ by CH2PR12MB5018.namprd12.prod.outlook.com (2603:10b6:610:6e::24)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.24; Wed, 28 Jun
- 2023 17:48:32 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Wed, 28 Jun
+ 2023 20:56:03 +0000
 Received: from BYAPR12MB2743.namprd12.prod.outlook.com
  ([fe80::ecb0:2f8e:c4bf:b471]) by BYAPR12MB2743.namprd12.prod.outlook.com
  ([fe80::ecb0:2f8e:c4bf:b471%7]) with mapi id 15.20.6521.024; Wed, 28 Jun 2023
- 17:48:32 +0000
+ 20:56:01 +0000
 To: Andrew Lunn <andrew@lunn.ch>
 References: <20230627232139.213130-1-rrameshbabu@nvidia.com>
- <7fa02bc1-64bd-483d-b3e9-f4ffe0bbb9fb@lunn.ch> <87ilb8ba1d.fsf@nvidia.com>
- <0e82eff0-16ba-49b0-933d-26f49515d434@lunn.ch>
-Date: Wed, 28 Jun 2023 10:48:21 -0700
-In-Reply-To: <0e82eff0-16ba-49b0-933d-26f49515d434@lunn.ch> (Andrew Lunn's
- message of "Wed, 28 Jun 2023 16:35:41 +0200")
-Message-ID: <87ilb7qxzu.fsf@nvidia.com>
+ <7fa02bc1-64bd-483d-b3e9-f4ffe0bbb9fb@lunn.ch>
+ <20230628133850.0d01d503@kernel.org>
+ <06f5c065-2c6d-4cd2-9699-89f05443f137@lunn.ch>
+Date: Wed, 28 Jun 2023 13:55:53 -0700
+In-Reply-To: <06f5c065-2c6d-4cd2-9699-89f05443f137@lunn.ch> (Andrew Lunn's
+ message of "Wed, 28 Jun 2023 22:46:32 +0200")
+Message-ID: <87edlvqpba.fsf@nvidia.com>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-X-ClientProxiedBy: BY5PR13CA0006.namprd13.prod.outlook.com
- (2603:10b6:a03:180::19) To BYAPR12MB2743.namprd12.prod.outlook.com
+X-ClientProxiedBy: PH8PR07CA0003.namprd07.prod.outlook.com
+ (2603:10b6:510:2cd::17) To BYAPR12MB2743.namprd12.prod.outlook.com
  (2603:10b6:a03:61::28)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|MW3PR12MB4505:EE_
-X-MS-Office365-Filtering-Correlation-Id: f2f29ae7-1250-434c-dbff-08db77ffe38e
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|CH2PR12MB5018:EE_
+X-MS-Office365-Filtering-Correlation-Id: a693b1a3-ec94-4689-15c5-08db781a14ad
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8UXaIPn72Q5IaqlKFta702tv9GjGyhqEbjLCff3Af5Ap5qL4AKNgv7Qcp5GTIpEVnYtEh++JMJ4bIAkaSHkzIMHe+DGLUjQ5BgukIfRPNoyYmaCeYsMcEYlpstGAlGsxGymM7f62NC/A/rYk+EfqcLXsGSs+jkvf7JmdgAYo4m6BlxHHdDQ/LFzWrRiih1b1A3cGHqZyzvLzpogalQHmkhuOdEHg5X1FS+TVKZ3YWvAH1jKJ0xbpjtBrkkf+YX76/z5/FEpcGXdLVgZS7F3Ys7H1EU3x0np0dxlOD/hqs9AB+qUjXbsyQuoe5zC0LaP62+Czz810GULlz7OGJg++tWh98T1LloItvPjzWYV3HwpLniZdVtoPH26Pty5HJRdVElrTViwzNf7rIjH0GVY6IP1hMfsiSFBDi3hqqbpGuCKIf9U7sWFrsMwD+PZXH2RNZilTsL/j/oYZl+yOSTap8uyemUdh/j+l+QUiq/IrZCx++LHim93Y0iCVtKxQFwLPAMkwZql695lJGoptSKwqp6GbMYx9/k6TQnBsl6FLwpiwUQ//ZkUk6c/8kAXOwwWAI0xVFbgTKWionmiqxFVCm42qZ4Kg5LKC52kSsB6xQrQ=
+X-Microsoft-Antispam-Message-Info: 4RgQ0WKoDz9X9ngJtzxEnyvIr6FCWqO+OnZIVdXpgr6gQzyNZ0Xqext+CAD5ovT6f0UHwYIIVR4xVfO2cII6MTIyG876MqBEsfncTmxkyC8D2obyy6SYMup0cyknWAh2aEwIM5OkFtBYKzLK/g6ZcU0lIV0FQg10jPmcWSGNrvufoyiKtaO/Bl8chGijR1ufQeD19JgFqBRAuuTCV0Fzv8CFc86zJARKY50GZUgMZOWOLHCTpEM2v+hsm5yqoLFoqRohuESdf+Bpnr6QNycU6fxtVwsHZfDsWAMQNUg+JF6UusPAhhiwnBW4lQcjjQO6JNJN/U14HvLk19xo1rv4g99LQ1d3W8Wazxx345LXWqvuZr4kBk5Vc/XGVORed9Ok48qCxJrFOaEcI1b/cM4d/cP6aPfKRSXlDJrCn3x76InY36GCrwmy6VLJ2at1qtoxV8h1WIlc1vIQUZTCUX7dczdgke/29T2hFtgWW+2Qf6/vXNFDbex4phnbSMB2lQm7IGsHDlQRG0gvc4vmaVNF7aBk5vRkpFMZ7bKgFDOWT4MUbB9y+QhF8A1yVqsfjdB+o8MX0OFcAeraLmkC1O4CUhB88ZacI4R4UOamLVx6J7M=
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:BYAPR12MB2743.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230028)(4636009)(366004)(136003)(396003)(39860400002)(376002)(346002)(451199021)(66556008)(7416002)(6916009)(5660300002)(36756003)(66476007)(86362001)(8676002)(316002)(41300700001)(38100700002)(8936002)(66946007)(4326008)(966005)(6506007)(26005)(6512007)(2906002)(186003)(478600001)(54906003)(6486002)(83380400001)(2616005)(6666004);
+ SFS:(13230028)(4636009)(136003)(396003)(39860400002)(346002)(376002)(366004)(451199021)(8676002)(66476007)(66556008)(8936002)(41300700001)(316002)(66946007)(6506007)(26005)(6916009)(186003)(6512007)(966005)(54906003)(478600001)(6666004)(2616005)(4326008)(6486002)(2906002)(5660300002)(7416002)(38100700002)(36756003)(86362001);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UiSJQGj1QLHf4j06S5B6AqYvrb4JUbRMq/92a++sYVDir40oiEn4JGbD1ifa?=
- =?us-ascii?Q?JxTl/sXu8tYYq02JRjwS5piPApe8RQt0EWGIUQJWxNJDjTpp7l5bg9H1GzJC?=
- =?us-ascii?Q?BdVKcpEwUtSISboCPzhmvImMt5tWWae+XZYtxDfICqvM2yhEcSEjxxMG8AbZ?=
- =?us-ascii?Q?u2kYF3xiQuWtq0VspmAkUjqUmb5nQQ8R2iUF1HxeeDQzSOCy1eR2FUPnmjrn?=
- =?us-ascii?Q?/cvK2eg3wgFH+qkuLAp1VwBfNr4IQZFJLcOBhvofpd/ZZOdig6WB1T/GBFne?=
- =?us-ascii?Q?UiCxu5l/PXyhvnXifDji+bT4uOXzuu4B2rS4Qvqw6UWA0LHpG8fcR5CziO5d?=
- =?us-ascii?Q?2Dv/1x+sMItYB1GsG9LjusW9vtteEbIVi43emluxoheXXgjug11KTItD5/ec?=
- =?us-ascii?Q?V1XHQRaRkZsHGJ28hrVMoMMVi2LlY64cuP0/PD4g/4D2BrJgFuxycRanJp1B?=
- =?us-ascii?Q?/T1PlxNAfAaVEBo0xrvlt9R2xM+jrLGBF1/OWxHwYTOFds1EV8kfL/QnRsUt?=
- =?us-ascii?Q?OVX3NQAaykNbf0E1KG9WMRgvfWbww5VQQAZZ73hVgl7TDiHpvDQnB2R7bJtC?=
- =?us-ascii?Q?MIx3hOy0RsJTc1dn8ke7HIYdUKeYomygux6jTMg97+rrICQUKZUqwIpaj+IE?=
- =?us-ascii?Q?vLdRZXUswhc17Oe7Oxuu30k9QM9py6IF19XMsngOS3bfS58RVDfSPacVZoUM?=
- =?us-ascii?Q?mzCWfbzDUf4KJ4FQP2m2NWqbZ+hGII61LLPqacBPxZlUjmg76nlfJ7O0JWai?=
- =?us-ascii?Q?N2SQnhCxoWg1pVywyq6EA0tXK5NZonU295HIXpcivN22JgKDbRJhfXXcz6Z6?=
- =?us-ascii?Q?MbmXGr3PTmzU9WXuwMfxi2sy5FdwsxccvTpJKPye6mUhodpw/uDcLsEip0FL?=
- =?us-ascii?Q?/66MQpz+QbyKGcyTZzo9RhJZpU9TFdDJEoiazzwuLRZoQ81dx+K9ucV42+DR?=
- =?us-ascii?Q?k659IvTID9IhPEK3dWAgzoj2t9GlJW9nJoNqWrb7Vdn4grg4RYszhRNQCQ6C?=
- =?us-ascii?Q?bacwJCMT4wjSYm5FJvYCUcUCDnxMt1KjC2Czdf3hznLl+Kel6QZ05PNRVwHp?=
- =?us-ascii?Q?mgHZs9KKyO89XjSHGs0l9t+511BwIFftkqbSejimcuLzucawTk6paOz83s+h?=
- =?us-ascii?Q?c9aNFJETIBd9qmA6LdAHgiwq97QYesTzizJOPBEVA/2P2ztuEeVk9AzzVruw?=
- =?us-ascii?Q?ZhSvlgpZlySUKKSH+Njog3Uwy9FxgwF2WlAEgCV+ZcYSo6WU6Bl3OP757kwq?=
- =?us-ascii?Q?sPoiGLeNCbE8WEEFZeD1M3tCRr+rU/pTUZiLDrSee4wBoOZBjFmgMERL9hHT?=
- =?us-ascii?Q?Jf+l9aAfuiGZ1fB7ExtCCyiqK7IXjfsnycMP7NEIjbCXxX35N2nG+VPblpx4?=
- =?us-ascii?Q?jDQ819vCkZZPOg1jYoY1EfMP+7gZjysYwLVYmizykNKix6By98SQVS3qv4N7?=
- =?us-ascii?Q?s95gSnsUm4eMsXMdCpQFKGXLdcsyckEJyAXIiykOlqaHfkK0ZJCXzsYma8zm?=
- =?us-ascii?Q?coe8V3jOfpSecfvoW8cSGtp2NZIQXEa7aIK4PE+lYZJa5wvDKU5L0rr0LXEF?=
- =?us-ascii?Q?FrJ3QM8V19+BHqDe5tXvpofDTODCyAAZ7Ko3W2hdyCX8F0Ex/Mm21p4kz9xg?=
- =?us-ascii?Q?pw=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?74Y/yBL0GUfzv5hIGcNmBZVYi10N1LTi0wgVNGhLV9eb1AAuq7u+unb0wgsg?=
+ =?us-ascii?Q?7JmkXU/w5ODuelEGYzG8d8DHGDTfLhe6RpVvAw5viQErB6+V8LemzMQoGsxN?=
+ =?us-ascii?Q?l6JxnP9kqh+Ft3rs8aAPYQgWCCFl14zBK2BtZHB9orlgZFNQoMs9gkrCRuDI?=
+ =?us-ascii?Q?vJeJ8l9ZVgtpYXPn6XTjrg2I2wHAuDA4eDdaM36hty5QOp4gOmffE2MGP7RP?=
+ =?us-ascii?Q?QsaHZ7TXAS9tzhXUVf0CTgFWwgaVXAxtlCJ/FxI6jtbmEHl6JQQ3iEfTfew/?=
+ =?us-ascii?Q?ZsIaxgWMtQtcxmSgoeTjYuohyD5RKgiOoKBAIn9kU9slDZKxIJWgGf/XZW9k?=
+ =?us-ascii?Q?ymIwD6enm9cR0fDtr1WKgKIKKUt92qmb3KThzpKgGi+Yuyq8EhKHESnz9ZXT?=
+ =?us-ascii?Q?XoAFOlmDPTsq4kq1OQhibDY1H68ZGtCPph3zH3Jx6pH0ONJceaJWVmttyuGH?=
+ =?us-ascii?Q?hGY/U+A2M8ZpbMggSk0+oZLnyhHoLXVz+WgtSNBQHktfcBCI1ZO/KsSOgfLp?=
+ =?us-ascii?Q?mNqeImknVbSXqvInlPqsp/PV8f8neFfEkhQ4nFO1WQ467+NLccXRolsgTFS2?=
+ =?us-ascii?Q?0YOytiI2alvLiNsn6gLiw/AKWfYUdD02q6iF3UoQ1kFSY6HOFAWT6JYbqSds?=
+ =?us-ascii?Q?0a5LWUqEKsqBg5SJyn3PVeCZ7ts3LZXC6j2chOLpvsuY8LuDl4Sxv1wZsMdP?=
+ =?us-ascii?Q?xD9YkxF8uCg51PKzrl9qOcf2Z98GjWrYm7rkOYvvZn6bfEonvAoHomMYjwwU?=
+ =?us-ascii?Q?QtiB4AJm4y126u3HJ5yqiPYGiKR7iGQU6n3nkXD5T8k0sf0yMAx+6ertkR0h?=
+ =?us-ascii?Q?FtkgkdEXw4ShaeJLyrY+IQX2/r+zB6Aik1jfoFyuRTj2I5T4TGSvcgTOQJ24?=
+ =?us-ascii?Q?BjtIJCJn9yx12+Y2An8XPIQ8o5oT4wg3CXLoS62DY+kmp2Xtfsl89eiw8Ulf?=
+ =?us-ascii?Q?utXY7Yb+O8xE/JfZMr0JAvftcSnfPE7pV8Vs8OVUeaWcgsas8W8XqYxBUCc6?=
+ =?us-ascii?Q?XPxJtf0QAKUniD6A6ah+hABLZj8/DOlsUXKiQBpBbILybHlfpr1vKcHn0oFY?=
+ =?us-ascii?Q?+AQpzDrSiyYud0NnfnaBGA5HyzUSoKh2iUHJJkeHshvtix9wAFHJFIhMLRhe?=
+ =?us-ascii?Q?Tmm7jAEzAuv3JcuikYeREf4pdXm7/2zoT31YoA0T5cHv48x7hMsKW7XwKhkK?=
+ =?us-ascii?Q?UdvklQNELfzgVjwU3VAx/zZBnUCE7nfLLkzVaQEpsF0qIwdt0sL8cFBh85w5?=
+ =?us-ascii?Q?fI16bK1GSxYSWo4F0b3kyVU/aW5/9HuZngmsELnXoUWNXtNk4rjihiSKo1me?=
+ =?us-ascii?Q?6Yxxqc43v/qUm6PQF6fkjcgV61TBDUglwvw0TKaKygUdA+1SNaxf6d+7mbZe?=
+ =?us-ascii?Q?B2kfrwaAOXrVCIxJRjgFjnFgF/ZNh7xrpissW2I7i/gyytax2rlA0BQ/S35A?=
+ =?us-ascii?Q?zF3/yXYszRbKM6vt/o1kXkhqz9o2mFj44R/jRcrIdm2E9tdx4pfuSIvrKAAn?=
+ =?us-ascii?Q?UsZWFHQxmnm+sR/IqJXnPMcAMXkKbIeMzjcQnWS5SGUjus99Ia6QKoOYT8E6?=
+ =?us-ascii?Q?FvZ+Lt0u43U05xBtjn/eDMNojy8q5OzIK5Pq2rQXlNKR/c+r42nyMi2C3y1Q?=
+ =?us-ascii?Q?cg=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2f29ae7-1250-434c-dbff-08db77ffe38e
+X-MS-Exchange-CrossTenant-Network-Message-Id: a693b1a3-ec94-4689-15c5-08db781a14ad
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2023 17:48:32.4060 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2023 20:56:01.7060 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wt8VLIH2ZmZTGGi7zkiNu1LGB9ZR9dMtbn8BExuHv7G0slB+MSwAES+sWBmDzWXEhYcUwAsw1X4191NX2g84mQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4505
+X-MS-Exchange-CrossTenant-UserPrincipalName: vmQ2BPK5Oo7DdHsvK+DXGoI2aEMMS1qYU5J94kTbtSFwd8TeBlZQkVhANGxxD/Y6025wAiz7wWNzf7aX2spiyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB5018
 X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Thu, 29 Jun 2023 11:05:30 +0200
@@ -140,68 +141,40 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, 28 Jun, 2023 16:35:41 +0200 Andrew Lunn <andrew@lunn.ch> wrote:
->> > I also wounder if this really is something for net. How do you think
->> > this patch matches against the stable rules?
+On Wed, 28 Jun, 2023 22:46:32 +0200 Andrew Lunn <andrew@lunn.ch> wrote:
+> On Wed, Jun 28, 2023 at 01:38:50PM -0700, Jakub Kicinski wrote:
+>> On Wed, 28 Jun 2023 03:16:43 +0200 Andrew Lunn wrote:
+>> > > +	} else if (attr == &dev_attr_max_phase_adjustment.attr) {
+>> > > +		if (!info->adjphase || !info->getmaxphase)
+>> > > +			mode = 0;  
+>> > 
+>> > Maybe it is time to turn this into a switch statement?
 >> 
->> Apologize in advance but not sure I am following along. The commit for
->> the patch the introduces the problematic logic has made its way to net
->> and this patch is a fix. Therefore, isn't net the right tree to target?
+>> I don't think we can switch on pointers in C.
 >
-> Humm. So c3b60ab7a4df is in net-next, and the tag net-next-6.5. So it
-> was passed to Linus yesterday for merging. You would like this fix
-> merged either before -rc1, or just after -rc1.
-
-It can be after -rc1. I understand your point now from this elaboration.
-Since the change is not heading towards a final release yet but a
-release candidate, it's not an "urgent" patch to be applied before -rc1.
-
+> https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/sfp.c#L749
 >
-> We are in the grey area where it is less clear which tree it should be
-> against. So it is good to explain after the --- what your intention
-> is, so the Maintainers get a heads up and understand what you are
-> trying to achieve.
+> Works for temperature sensors, voltage sensors, current sensors, and
+> power sensors. Maybe hwmon is different to what is going on here, but
+> both a sysfs files.
 
-Agreed, I could have used git notes for that in my patch generation.
-Noted for the future. Just to be clear, my intention is for this fix to
-make its way before the final 6.5 release (before the changes make their
-way to an end user since the NULL pointer dereference when reading that
-sysfs node from a PHC not supporting phase adjustment is problematic). I
-think the issue being present in a release candidate is a minor problem.
-Would I still keep the Fixes tag however if targeting net-next? I
-remember this email from Jakub where if a Fixes tag is used, the patch
-should end up in net rather than net-next. However, I fear that without
-a Fixes tag, targeting net-next would cause me to miss applying this
-fix before the 6.5 release.
+Sorry, the only switch cases I see in the link you shared are for an
+integral type enum and a u32. I do not see a pointer type being used in
+a switch in sfp_hwmon_is_visible?
 
-Link: https://lore.kernel.org/netdev/20230607091909.321fc5d7@kernel.org/
+I believe Jakub is right about pointer types + switches in C. pointer
+types are not considered integral types. Here is a compiler explorer
+example to demonstrate. This slipped my mind during our discussion.
 
------ BEGIN QUOTE -----
-  We'll obviously apply our own judgment but submitter should send all
-  fixes against net.
------- END QUOTE ------
+https://godbolt.org/z/nKr3x7cT8
 
-I personally think this fix is "worthy" of targeting net based on the
-discussion Jakub previously provided, given the impact of reading the
-sysfs node on a system without this patch on PHCs that do not support
-phase adjustment.
+  <source>: In function 'main':
+  <source>:6:13: error: switch quantity not an integer
+      6 |     switch (data) {
+        |             ^~~~
+  Compiler returned: 1
 
->
-> I actually thought you were trying to fix an older issue, something in
-> 6.4 or older, which is what net is mostly used for. Under those
-> conditions, the stable rules apply. Things like, is this fixing an
-> issue which really effects users....
-
-Right, this was caught before it made its way to general users. I was
-basing targeting net still from the previous conversation about Fixes
-tags.
-
->
->        Andrew
-
-Thanks,
-
-Rahul Rameshbabu
+-- Rahul Rameshbabu
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
