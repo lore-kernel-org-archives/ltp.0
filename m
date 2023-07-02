@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FEFBEB64D9
-	for <ltp@archiver.kernel.org>; Sun,  2 Jul 2023 19:12:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C43AEB64D9
+	for <ltp@archiver.kernel.org>; Sun,  2 Jul 2023 19:18:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A57133CC267
-	for <ltp@archiver.kernel.org>; Sun,  2 Jul 2023 21:12:56 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9259F3CC268
+	for <ltp@archiver.kernel.org>; Sun,  2 Jul 2023 21:18:31 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5D38A3CC202
- for <ltp@lists.linux.it>; Sun,  2 Jul 2023 21:12:45 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 7792B3CC258
+ for <ltp@lists.linux.it>; Sun,  2 Jul 2023 21:18:16 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 800D8600120
- for <ltp@lists.linux.it>; Sun,  2 Jul 2023 21:12:43 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CB35614001F7
+ for <ltp@lists.linux.it>; Sun,  2 Jul 2023 21:18:15 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EEA941F7AB;
- Sun,  2 Jul 2023 19:12:40 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 89F7E21885;
+ Sun,  2 Jul 2023 19:18:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1688325160;
+ t=1688325494;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kS0r3VIRx/yhzWN84bxFfthREN1D0F6dsKWg0u5iXS8=;
- b=kaaI6fIR1pEJ8M8BPVxdFviDGpcfNElXv2g7NPjzTHaDV41cJhVlVAB+q60rR1puaHC5YS
- ZKeMQc8DetZIFlSXxc/RCcOdV4YomyD+esAp2Bba/WDj33IvIpXj4IHtZVOoct749apVGG
- 4n69jplXUO6vYvoXgQANWNCm+kJkZMo=
+ bh=2izP3zjHbc8sSFeDZeNJWMZwa/+m4bedo7NhOuIgp4w=;
+ b=qqRQczxlYXDrMk3IgMAMihLK0do5CIt9+OVxh1oNhCrRT9VzikP2Q3ZpOYEpCqvU1K3clk
+ I+7DVRvMFTTShZFcoIleLMh9Qi4WqrYX0NopYAegM1aVzFqhvcTTBhZgH3e1p4U8gW0Tb2
+ ekj1ykoU4jePiEo1oTj69hwQQWxWAsI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1688325160;
+ s=susede2_ed25519; t=1688325494;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kS0r3VIRx/yhzWN84bxFfthREN1D0F6dsKWg0u5iXS8=;
- b=XvZjcJkdmgZ5zwMV9bg/FwN9Z925KRALQdT1sXrGo4kdyxnYG+paXUqjApNvr2A54g8HPu
- wvN8m/NchTkXTeCA==
+ bh=2izP3zjHbc8sSFeDZeNJWMZwa/+m4bedo7NhOuIgp4w=;
+ b=5mWlyO4IB4g25qpBHMH+U72hR99Zc9KpCi0axBMs3+vCt/lphwdagaJ2U4sUxEY09PqD1X
+ cyIKBp1W5tyE7bDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CEB911348D;
- Sun,  2 Jul 2023 19:12:40 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 72BA11348D;
+ Sun,  2 Jul 2023 19:18:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id GOiCMSjMoWT3TgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Sun, 02 Jul 2023 19:12:40 +0000
-Date: Sun, 2 Jul 2023 21:12:34 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id ENOWGnbNoWTnUAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Sun, 02 Jul 2023 19:18:14 +0000
+Date: Sun, 2 Jul 2023 21:18:13 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <20230702191234.GA360317@pevik>
-References: <20230630193742.310416-1-pvorel@suse.cz>
- <CAOQ4uxjG0GrKRZE5btcbptjAaKRLj+OFMJRynPwPx4_BP4=e9g@mail.gmail.com>
+To: Alexander Aring <aahringo@redhat.com>
+Message-ID: <20230702191813.GB360317@pevik>
+References: <20230530203707.2965684-1-aahringo@redhat.com>
+ <20230530203707.2965684-2-aahringo@redhat.com>
+ <20230621090331.GA365741@pevik>
+ <CAK-6q+jVapf==Sg_BqWr0KTGA+uKgaaSZQwO=5tWzve9=Dok2Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjG0GrKRZE5btcbptjAaKRLj+OFMJRynPwPx4_BP4=e9g@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+In-Reply-To: <CAK-6q+jVapf==Sg_BqWr0KTGA+uKgaaSZQwO=5tWzve9=Dok2Q@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [COMMITTED][PATCH 1/1] runtest: Move fanotify23 from
- staging to syscalls
+Subject: Re: [LTP] [PATCH 1/5] fcntl40: test for owner values on classic
+ posix lock
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,37 +81,42 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgQW1pciwKCj4gT24gRnJpLCBKdW4gMzAsIDIwMjMgYXQgMTA6MzjigK9QTSBQZXRyIFZvcmVs
-IDxwdm9yZWxAc3VzZS5jej4gd3JvdGU6Cgo+ID4gZmFub3RpZnkyMyBpcyBhIHRlc3QgZm9yIEZB
-Tl9NQVJLX0VWSUNUQUJMRSwgcHJlcGFyZWQgZm9yIHY1LjE5LXJjMS4KPiA+IFdlIGZvcmdldCB0
-byBtb3ZlIGl0IGFmdGVyIHY1LjE5IGJlaW5nIHJlbGVhc2VkLgoKPiA+IFNpZ25lZC1vZmYtYnk6
-IFBldHIgVm9yZWwgPHB2b3JlbEBzdXNlLmN6Pgo+ID4gLS0tCj4gPiBPYnZpb3VzbHkgd2UgZm9y
-Z2V0IHRvIGNoZWNrIHRoZSBmaWxlIGFmdGVyIHNldmVyYWwga2VybmVsIHJlbGVhc2VzIDooLgo+
-ID4gSSdtIHNvcnJ5LgoKPiBPaCwgbWlzc2VkIHlvdXIgbm90ZSBvbiBjb21taXQ6Cj4gWyBwdm9y
-ZWw6IG1vdmUgdGVzdCBpbnRvIHN0YWdpbmcgXQoKPiBJZiBJJ2Qga25vd24sIEkgbWlnaHQgaGF2
-ZSByZW1lbWJlcmVkIHRvIHJlbWluZCB5b3UgOy0pCgo+IGZhbm90aWZ5MjMgYW5kIGZhbm90aWZ5
-MTAgYm90aCBhZGRlZCB0ZXN0cyBmb3IKPiBGQU5fTUFSS19FVklDVEFCTEUgYXQgdGhlIHNhbWUg
-dGltZS4KCj4gQnV0IHNpbmNlIHRoZW4gdGhlcmUgd2VyZSB0d28gYXR0ZW1wdHMgdG8gaW1wcm92
-ZSB0aGUgcmVsaWFiaWxpdHkKPiBvZiBmYW5vdGlmeTEwOgoKPiA0OGNmZDdhOTkgc3lzY2FsbHMv
-ZmFub3RpZnkxMDogTWFrZSBldmljdGFibGUgbWFya3MgdGVzdCBtb3JlIHJlbGlhYmxlCj4gNGZl
-ZmRmMzQwIGZhbm90aWZ5MTA6IE1ha2UgZXZpY3RhYmxlIG1hcmtzIHRlc3RzIG1vcmUgcmVsaWFi
-bGUKCj4gSSB3b25kZXIgaWYgZmFub3RpZnkyMydzIHJlbGlhYmlsaXR5IGRpZCBub3QgY29tZSB1
-cCBzbyBmYXIgYmVjYXVzZQo+IDEuIEl0IHdhcyBpbiBzdGFnaW5nIGxpc3QKPiAyLiBJdCBoYXMg
-dGhpcyBoYWNrOgo+ICAgICAgICAvKiBTaHJpbmtlcnMgb24gb3RoZXIgZnMgZG8gbm90IHdvcmsg
-cmVsaWFibHkgZW5vdWdoIHRvCj4gZ3VhcmFudGVlIG1hcmsgZXZpY3Rpb24gb24gZHJvcF9jYWNo
-ZXMgKi8KPiAgICAgICAgLmRldl9mc190eXBlID0gImV4dDIiLAoKPiBJIGd1ZXNzIHdlIHdpbGwg
-a25vdyBzb29uIC4uLgoKSSB3b25kZXIgbXlzZWxmIDopLiBCdXQgSSBhY3R1YWxseSBmaWxsZWQg
-b3BlblNVU0UgYnVnIFsxXSBhYm91dCBmYW5vdGlmeTIzCnJhbmRvbWx5IGZhaWxpbmcsIHdoZW4g
-cnVubmluZyBtb3JlIHRpbWVzIChlLmcuIC4vZmFub3RpZnkyMyAtaTUpLiBJIHdhcyBub3QKc3Vy
-ZSBpZiBpdCdzIG9wZW5TVVNFIHNwZWNpZmljIG9yIG5vdCAoSSBzdXNwZWN0IHRoZSBwcm9ibGVt
-IGlzIGdlbmVyaWMsIGJ1dCAyCnRlc3RlZCBEZWJpYW4gc3lzdGVtcyBkb24ndCBzdWZmZXIgdGhp
-cyksIHRodXMgSSBmaXJzdCBwdXQgaXQgdG8gdGhlIEphbidzIHF1ZXVlLgoKS2luZCByZWdhcmRz
-LApQZXRyCgpbMV0gaHR0cHM6Ly9idWd6aWxsYS5zdXNlLmNvbS8xMjEyOTA2Cgo+IFRoYW5rcywK
-PiBBbWlyLgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xp
-c3RpbmZvL2x0cAo=
+Hi Alex,
+
+...
+> > > + * [Description]
+> > > + * Tests gfs2 dlm posix op queue handling in the kernel.
+> > > + * It is recommended to run watch -n 0.1 "dlm_tool plocks $LS"
+> > > + * aside to monitor dlm plock handling.
+> > > + *
+> > > + * [How to use it]
+> > > + * Call it with TMPDIR=/mnt ./fcntl40 where TMPDIR is a gfs2 mountpoint.
+> > I wonder if we could check for GFS2_MAGIC (we'd need to add it to
+> > include/tst_fs.h => 0x01161970) and quit the test with tst_brk(TCONF) if TMPDIR
+> > is not on gfs2.
+
+> > ATM we don't have any helper in struct tst_test, which would do it.
+
+
+> I will mention that gfs2 is only an example here. It becomes
+> interesting when a file system implements its own .lock() callback OR
+> if somebody wants to test file system core, when a filesystem does not
+> implement its own .lock().
+
+I see .lock is implemented in 9p, afs, ceph, cifs, ocfs2, orangefs, even NFS.
+"file system core": do you mean VFS? Because that would be more usable than the
+filesystems above (which are quite exotic).
+
+...
+
+Kind regards,
+Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
