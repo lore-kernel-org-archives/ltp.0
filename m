@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4770FC001DD
-	for <ltp@archiver.kernel.org>; Mon,  3 Jul 2023 19:56:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50192C001B0
+	for <ltp@archiver.kernel.org>; Mon,  3 Jul 2023 20:07:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A8A4A3CC151
-	for <ltp@archiver.kernel.org>; Mon,  3 Jul 2023 21:55:58 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 4A3123CC0BC
+	for <ltp@archiver.kernel.org>; Mon,  3 Jul 2023 22:07:49 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6C4B43C8949
- for <ltp@lists.linux.it>; Mon,  3 Jul 2023 21:55:48 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 714E93C9A04
+ for <ltp@lists.linux.it>; Mon,  3 Jul 2023 22:07:39 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C01041A006BC
- for <ltp@lists.linux.it>; Mon,  3 Jul 2023 21:55:47 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1D9F91400278
+ for <ltp@lists.linux.it>; Mon,  3 Jul 2023 22:07:37 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D10DF1FE9D;
- Mon,  3 Jul 2023 19:55:46 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6379021CB1;
+ Mon,  3 Jul 2023 20:07:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1688414146;
+ t=1688414857;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9ndItis4gnHkdT2fMUxvlQFiU5jxsVaXaueSCDn7yzQ=;
- b=APJHcWBq/pXlnV71DaSYzNKA5eCzeGzi2XkHcxxGLp7LcEMHW1R2gARawvfrC4tQchuhWL
- KByXvh9Na5c/f0F3oVJh38ZVGTECJKV4NmoKmUC+BF8aectS59QliJ88hhOr6mmYW3cGuX
- uMfUOBu/Hfma/yJSjJ4z3pCMPVzsIN0=
+ bh=gPfuDoQ8Apr/w9YdtHfamSRYsfc7DGhmZcOGcz7tEKo=;
+ b=WsKjJ2Tfv81fMS/TzcWJkcb4YaZXWxsWMfxfbYgA91F31McqBaTwxj50FWldLPTAvZMvQ5
+ prDZqC6iGP93xyrnKzPkOcaCO4DQyFgCSIj9/6NlDyUQELRDWPVC1Gne3RoJIJ0OzFQsrY
+ jELOOmxdYWf+Har52oTIwVsdaQogUds=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1688414146;
+ s=susede2_ed25519; t=1688414857;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9ndItis4gnHkdT2fMUxvlQFiU5jxsVaXaueSCDn7yzQ=;
- b=7q+oNEpAmt44SV4VxVbRJ0Hfgo4qBBGspB2Z0J9zvpPNHefPWhufa7/+N/amY///6XFhjS
- tgi0Gd8kYBggXSCw==
+ bh=gPfuDoQ8Apr/w9YdtHfamSRYsfc7DGhmZcOGcz7tEKo=;
+ b=7ySSSrtSDCiBQvJDsPSpc4zKJdzoBoy800Yhx1eOE+iDfr5dfhkI1VcDmVsQtgLcLxfMfp
+ UvWNkfKCI2XUw3DA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A2C631358E;
- Mon,  3 Jul 2023 19:55:46 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 37D5C1358E;
+ Mon,  3 Jul 2023 20:07:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Y8blJcIno2QXXgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 03 Jul 2023 19:55:46 +0000
-Date: Mon, 3 Jul 2023 21:55:45 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id ajZMDIkqo2TYYgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 03 Jul 2023 20:07:37 +0000
+Date: Mon, 3 Jul 2023 22:07:35 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Message-ID: <20230703195545.GA446620@pevik>
+Message-ID: <20230703200735.GB446620@pevik>
 References: <20230703194904.445661-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20230703194904.445661-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] mremap06: Add mremap() reproducer for
  7e7757876f25
@@ -77,33 +78,38 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Fabian Vogt <fvogt@suse.com>, Jiri Slaby <jirislaby@kernel.org>,
- Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi,
 
-I forget to add link to the original bug report
-https://bugzilla.suse.com/show_bug.cgi?id=1210903
-(I'll add it to the commit message)
+[ drop kernel developers, add Jan, Li ]
 
-and the original reproducer (I'll add it to the sources).
+> ---
+> @Cyril: I plan to add SAFE_FALLOCATE() (3 other sources),
+> SAFE_MPROTECT() (7 other sources) and SAFE_MREMAP()
+> (2 other sources), but as a separate effort.
+
+@Jan, you added in 9120d8a22 ("safe_macros: turn functions with off_t parameter
+into static inline") note "following functions are inline because the behaviour
+may depend on -D_FILE_OFFSET_BITS=64 -DOFF_T=__off64_t compile flags". IMHO the
+only source which uses SAFE_MMAP() is testcases/kernel/mem/mmapstress/mmapstress01.c
+I'm asking because I wonder if SAFE_MPROTECT() and SAFE_MREMAP() should be also
+static inline, IMHO it's not needed.
+
+@all: SAFE_MPROTECT() would be needed also on some still old API sources
+(testcases/kernel/syscalls/signal/signal06.c,
+testcases/kernel/syscalls/mprotect/mprotect02.c,
+testcases/kernel/syscalls/mprotect/mprotect03.c)
+Should I ignore that and add it just to new API?
 
 Kind regards,
 Petr
 
-+++ testcases/kernel/syscalls/mremap/mremap06.c
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (c) 2023 SUSE LLC
-  * Author: Vlastimil Babka <vbabka@suse.cz>
-+ * https://bugzilla.suse.com/attachment.cgi?id=867254
-  * LTP port: Petr Vorel <pvorel@suse.cz>
-  */
- 
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
