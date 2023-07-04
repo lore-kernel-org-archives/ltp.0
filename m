@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4CA9EB64D9
-	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 11:47:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DF5BEB64D9
+	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 11:50:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4CE5E3C99E3
-	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 13:47:11 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 09B483C9999
+	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 13:50:27 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 043E43C997D
- for <ltp@lists.linux.it>; Tue,  4 Jul 2023 13:47:01 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id C80073C997D
+ for <ltp@lists.linux.it>; Tue,  4 Jul 2023 13:50:16 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D66E81400965
- for <ltp@lists.linux.it>; Tue,  4 Jul 2023 13:47:00 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 85BCC1A00801
+ for <ltp@lists.linux.it>; Tue,  4 Jul 2023 13:50:15 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 16BE22280D;
- Tue,  4 Jul 2023 11:47:00 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EAA3822819;
+ Tue,  4 Jul 2023 11:50:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1688471220;
+ t=1688471414;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OVxBVEIgU+G7JIe31gxxdtmV4bSL4zTOnehZYC6d5u8=;
- b=dOWoKoEClzqluVJFP87OSiI8wWDkhnQWj9DtVLqI4v5IRFlKnZtyTzhTCo5Uu82xPw7PzM
- UU5+VznaFBb5kZTBMKkBCh1KqBssHciPkg8Hlm2iepCbL0DevNFA0pu3kiRtxi0dnVyYVK
- 16KdXZKDAlCW06LA/Z/suexjBKCYdGQ=
+ bh=XTSMUvSrPjEVmoXhk5sTK8DkvDsIl6W4AGd3x081O6A=;
+ b=bu+XHK+r6uDtEvgu8DwyjVe+U7OckgBn3c7oT7xxvI7wHHUCs1YhtMSs9qBk0AT8TPzNs6
+ vGgKmoOnrei8QZFmu2KgBdCHhCy+reZpLSgzvDAksfzxl036ILIbvSDsQrBhLCuanGbN04
+ QmdH3HlvOCD63jR0xSKU1v/lOruGd1A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1688471220;
+ s=susede2_ed25519; t=1688471414;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OVxBVEIgU+G7JIe31gxxdtmV4bSL4zTOnehZYC6d5u8=;
- b=J1Ytao7PWchDMUm3LWKqDJWE+djbDeafqWIYsKaK71j3UoaYJaZjt+D+JyNHI/XCX0GyDD
- 42GpO0+Ylcql7fDA==
+ bh=XTSMUvSrPjEVmoXhk5sTK8DkvDsIl6W4AGd3x081O6A=;
+ b=WiS666TuQhD3QZllcOtad+C4/pNzQMXR9B6d4rfQ5f6TGuvdAW95YgoI5srthCyvDlWC1/
+ 3XMbOB3wtm+KjZCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4DF2133F7;
- Tue,  4 Jul 2023 11:46:59 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D110F133F7;
+ Tue,  4 Jul 2023 11:50:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id n10AN7MGpGRtHAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 04 Jul 2023 11:46:59 +0000
-Date: Tue, 4 Jul 2023 13:46:58 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id JrMXMnYHpGRIHgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 04 Jul 2023 11:50:14 +0000
+Date: Tue, 4 Jul 2023 13:50:13 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20230704114658.GC507064@pevik>
-References: <20230703194904.445661-1-pvorel@suse.cz>
- <ZKPbSn2qQzxJGxR3@yuki>
+Message-ID: <20230704115013.GD507064@pevik>
+References: <20230704091933.496989-1-pvorel@suse.cz>
+ <20230704091933.496989-3-pvorel@suse.cz> <ZKP1afDMgcKSIESE@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZKPbSn2qQzxJGxR3@yuki>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+In-Reply-To: <ZKP1afDMgcKSIESE@yuki>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] mremap06: Add mremap() reproducer for
- 7e7757876f25
+Subject: Re: [LTP] [RFC PATCH 2/3] lib/C-API: Add option -V to print LTP
+ version
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,8 +79,7 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Fabian Vogt <fvogt@suse.com>, Jiri Slaby <jirislaby@kernel.org>,
- Vlastimil Babka <vbabka@suse.cz>, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -88,33 +87,24 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Cyril,
 
-> > +#define PAGE_SIZE 4096
-
-> This wouldn't work on 64k page size.
-
-> > +#define MMAP_SIZE ((ARRAY_SIZE(tcases)+1)*PAGE_SIZE)
-> > +#define MREMAP_SIZE (ARRAY_SIZE(tcases)*PAGE_SIZE)
-
-> These have to be variables initialized on the fly with getpagesize()
-> instead of PAGE_SIZE.
-
-Yep, I thought about getpagesize().
-
 ...
-> > +static int check_pages(void)
-> > +{
-> > +	int fail = 0, i;
-> > +	char val;
-> > +
-> > +	for (i = 0; i < (int)ARRAY_SIZE(tcases); i++) {
-> > +		val = buf[i * PAGE_SIZE];
-> > +		if (val != 0x30 + i) {
-> > +			tst_res(TFAIL, "page %d wrong value %d (0x%x)", i, val - 0x30, val);
+> > @@ -686,6 +688,10 @@ static void parse_opts(int argc, char *argv[])
+> >  			else
+> >  				duration = SAFE_STRTOF(optarg, 0.1, HUGE_VALF);
+> >  		break;
+> > +		case 'V':
+> > +			fprintf(stderr, LTP_VERSION "\n");
+> > +			exit(0);
+> > +		break;
 
-> Woudn't this generate too many FAILURE messages? Maybe we should just
-> break the for cycle here.
+> Why don't we print that as a part of help? Do we really need to allocate
+> a flag for this?
 
-It could be. I wasn't sure if it's important to know which pages were wrong.
+Well, people expect -V or --verbose. But because I add printing also on running
+test, we could just move it to -h.
+
+BTW I was also thinking about using getopt_long(), at least to allow --help,
+I guess you don't think any value in it.
 
 Kind regards,
 Petr
