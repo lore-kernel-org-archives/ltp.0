@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39C6BEB64D9
-	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 09:26:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EFEDEB64D9
+	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 09:39:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C825B3CE06A
-	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 11:26:43 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 4215A3CC0EF
+	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 11:39:15 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 635183C997B
- for <ltp@lists.linux.it>; Tue,  4 Jul 2023 11:26:33 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 7236F3C9981
+ for <ltp@lists.linux.it>; Tue,  4 Jul 2023 11:39:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BEDE4140051A
- for <ltp@lists.linux.it>; Tue,  4 Jul 2023 11:26:32 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C3F0210007FF
+ for <ltp@lists.linux.it>; Tue,  4 Jul 2023 11:39:02 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0BF1922663;
- Tue,  4 Jul 2023 09:26:32 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F389420483;
+ Tue,  4 Jul 2023 09:39:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1688462792;
+ t=1688463542;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+9NF7gK1MYOVMTQ5ChEsKSF41cFknmJnYJL6lhV5jEI=;
- b=QJ2rDOS+AYER2Essn4n/a9Ctnfewa1a/0GaI6U0EQHysW/mHVDTWngncm/inXo9OROwSjT
- 09LXVXPcWEGInObAtfE31u7Dfgxf46TD1MdlP8Dlth9Un9pq+iFp0MMVqPh4rwOoVEd59Y
- c1Mc6rfWRfGdfxVG4VXlbsOlxRlWGHY=
+ bh=aZgn8oRQnZ31x6Q+owX37cbu5hbbTt0mSp5MKGNUSm8=;
+ b=1K50PN303wqCHQ7sD31vpBgRCyzGn5Yf5aRX32oHAdrOYd4euX1mS/wKKGGFhpYfbeE+kd
+ qhRyYJQT8gew/p1hBM8LDcj0u+36yD8jvqT9O2eEZLmYLt7cABHPU2LyWgyUdSbv6znT/P
+ ZVNdMG24ZaBzRrlDeQJoBj82H127aHc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1688462792;
+ s=susede2_ed25519; t=1688463542;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+9NF7gK1MYOVMTQ5ChEsKSF41cFknmJnYJL6lhV5jEI=;
- b=RkXY2R0rJt/GiGeeU4dhJhaPP5V6kQUO1SFCOnLPL0In6fMIEnb7R342c5vj0Pecd8WFAC
- CFhs5dp9wSGfQxCQ==
+ bh=aZgn8oRQnZ31x6Q+owX37cbu5hbbTt0mSp5MKGNUSm8=;
+ b=+cbJOVzGwASaC/Bw2y6c4ephL4JV8tpEFzoxwhWduQdlMSQA0tbyIKlYOheZirNCtUY5K4
+ om2O9xaol6YDl3Bw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8F3D133F7;
- Tue,  4 Jul 2023 09:26:31 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D7BCD133F7;
+ Tue,  4 Jul 2023 09:39:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id JWT+L8flo2T7TAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 04 Jul 2023 09:26:31 +0000
-Date: Tue, 4 Jul 2023 11:26:30 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id L1p8M7Xoo2SuUwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 04 Jul 2023 09:39:01 +0000
+Date: Tue, 4 Jul 2023 11:39:00 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Message-ID: <20230704092630.GB497945@pevik>
-References: <20230704091933.496989-1-pvorel@suse.cz>
+Message-ID: <20230704093900.GB470707@pevik>
+References: <20230704092424.497903-1-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230704091933.496989-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+In-Reply-To: <20230704092424.497903-1-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/3] Makefile: Add C header with generated LTP
- version
+Subject: Re: [LTP] [RFC PATCH 0/3] C API: print LTP version
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,32 +83,30 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi,
 
-> Hi,
+I also wonder, how to print LTP version for C API without requiring
+LTPROOT environment variable.
 
-> obviously this is wrong, because $(top_srcdir)/Version (ltp-version.h
-> dependency) is not specified in the top level Makefile (only Version is
-> there). But I'm not sure if it should be changed to
-> $(top_srcdir)/Version.
+In shell, it could be changed
 
-> I suppose ltp-version.h should be in include/, but here I'm completely
-> lost with dependencies under lib/. My goal is to type make in lib/ and
-> make sure the header is generated (dependencies correctly resolved).
+if [ -z "$LTPROOT" ]; then
+-	export LTPROOT="$PWD"
++	export LTPROOT="$(cd "$(dirname "$0")/../.." && pwd)
+-	export TST_DATAROOT="$LTPROOT/datafiles"
+else
+	export TST_DATAROOT="$LTPROOT/testcases/data/$TST_ID"
+fi
 
-> Kind regards,
-> Petr
+But that could broke some tests which are using datafiles/ directory inside git
+tree.
 
-> Petr Vorel (3):
->   Makefile: Add C header with generated LTP version
->   lib/C-API: Add option -V to print LTP version
->   lib/C-API: Print LTP version at test start
+I was also thinking about replacing LTPROOT in C API with #define generated by
+configure script based on prefix. But again, how to have it in shell?
+I don't want to have stub (tst_test.sh.in), thus maybe the way would be to
+expect "Version" file is in ../../, e.g.
 
->  .gitignore     | 1 +
->  lib/Makefile   | 4 ++++
->  lib/tst_test.c | 8 ++++++++
->  3 files changed, 13 insertions(+)
-
-please ignore this patch. Subject was supposed to be
-"[RFC PATCH 0/3] C API: print LTP version"
+. ../../Version
+But with the LTPROOT change above, it could be
+. $LTPROOT/Version
 
 Kind regards,
 Petr
