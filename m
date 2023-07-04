@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EFEDEB64D9
-	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 09:39:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 890BFEB64D9
+	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 10:32:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4215A3CC0EF
-	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 11:39:15 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 9B8F83C993F
+	for <ltp@archiver.kernel.org>; Tue,  4 Jul 2023 12:32:20 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7236F3C9981
- for <ltp@lists.linux.it>; Tue,  4 Jul 2023 11:39:03 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id A9F793C993F
+ for <ltp@lists.linux.it>; Tue,  4 Jul 2023 12:32:10 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C3F0210007FF
- for <ltp@lists.linux.it>; Tue,  4 Jul 2023 11:39:02 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F338410008F8
+ for <ltp@lists.linux.it>; Tue,  4 Jul 2023 12:32:09 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F389420483;
- Tue,  4 Jul 2023 09:39:01 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CABEA204C6;
+ Tue,  4 Jul 2023 10:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1688463542;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1688466727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aZgn8oRQnZ31x6Q+owX37cbu5hbbTt0mSp5MKGNUSm8=;
- b=1K50PN303wqCHQ7sD31vpBgRCyzGn5Yf5aRX32oHAdrOYd4euX1mS/wKKGGFhpYfbeE+kd
- qhRyYJQT8gew/p1hBM8LDcj0u+36yD8jvqT9O2eEZLmYLt7cABHPU2LyWgyUdSbv6znT/P
- ZVNdMG24ZaBzRrlDeQJoBj82H127aHc=
+ bh=0UjVzqaEqPDIfYuXmelobThvvsbeB5T2RoHgFiX4yac=;
+ b=j2htoboeGWBKEBDvM9i8x8rfoq7qtN7P7lwv2VVvzSrwziM4YJGRPjWn1fXq3d6CWZxX3A
+ KSglYaMQ00P6I4fYr+kGqrfZyh+mOBwf3iwdsiussVkjZpaswqCgiwC4/nphSPHCOfORL0
+ bk78aMQ/hEkUi9mbYKFA2V0bWKFBNqk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1688463542;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1688466727;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=aZgn8oRQnZ31x6Q+owX37cbu5hbbTt0mSp5MKGNUSm8=;
- b=+cbJOVzGwASaC/Bw2y6c4ephL4JV8tpEFzoxwhWduQdlMSQA0tbyIKlYOheZirNCtUY5K4
- om2O9xaol6YDl3Bw==
+ bh=0UjVzqaEqPDIfYuXmelobThvvsbeB5T2RoHgFiX4yac=;
+ b=j9mCr0aOYq4ia/7YSmX491Lu+I1KAXWZZ6yDYvA0FM0VYfEwD8JBbh4EIdd9BtH/C1Y354
+ TIlrBX901BI3IRAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D7BCD133F7;
- Tue,  4 Jul 2023 09:39:01 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC6FA1346D;
+ Tue,  4 Jul 2023 10:32:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id L1p8M7Xoo2SuUwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 04 Jul 2023 09:39:01 +0000
-Date: Tue, 4 Jul 2023 11:39:00 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <20230704093900.GB470707@pevik>
-References: <20230704092424.497903-1-pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id x2N9Jyf1o2TocAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 04 Jul 2023 10:32:07 +0000
+Date: Tue, 4 Jul 2023 12:33:13 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZKP1afDMgcKSIESE@yuki>
+References: <20230704091933.496989-1-pvorel@suse.cz>
+ <20230704091933.496989-3-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230704092424.497903-1-pvorel@suse.cz>
+In-Reply-To: <20230704091933.496989-3-pvorel@suse.cz>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 0/3] C API: print LTP version
+Subject: Re: [LTP] [RFC PATCH 2/3] lib/C-API: Add option -V to print LTP
+ version
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,41 +76,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi!
+> It can be useful for troubleshooting reported issues.
+> 
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  lib/tst_test.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/lib/tst_test.c b/lib/tst_test.c
+> index 04da456c6..e81a3d036 100644
+> --- a/lib/tst_test.c
+> +++ b/lib/tst_test.c
+> @@ -34,6 +34,7 @@
+>  #include "old_resource.h"
+>  #include "old_device.h"
+>  #include "old_tmpdir.h"
+> +#include "ltp-version.h"
+>  
+>  /*
+>   * Hack to get TCID defined in newlib tests
+> @@ -509,6 +510,7 @@ static struct option {
+>  	{"h",  "-h       Prints this help"},
+>  	{"i:", "-i n     Execute test n times"},
+>  	{"I:", "-I x     Execute test for n seconds"},
+> +	{"V",  "-V       Prints LTP version"},
+>  	{"C:", "-C ARG   Run child process with ARG arguments (used internally)"},
+>  };
+>  
+> @@ -686,6 +688,10 @@ static void parse_opts(int argc, char *argv[])
+>  			else
+>  				duration = SAFE_STRTOF(optarg, 0.1, HUGE_VALF);
+>  		break;
+> +		case 'V':
+> +			fprintf(stderr, LTP_VERSION "\n");
+> +			exit(0);
+> +		break;
 
-I also wonder, how to print LTP version for C API without requiring
-LTPROOT environment variable.
+Why don't we print that as a part of help? Do we really need to allocate
+a flag for this?
 
-In shell, it could be changed
+>  		case 'C':
+>  #ifdef UCLINUX
+>  			child_args = optarg;
+> -- 
+> 2.40.1
+> 
 
-if [ -z "$LTPROOT" ]; then
--	export LTPROOT="$PWD"
-+	export LTPROOT="$(cd "$(dirname "$0")/../.." && pwd)
--	export TST_DATAROOT="$LTPROOT/datafiles"
-else
-	export TST_DATAROOT="$LTPROOT/testcases/data/$TST_ID"
-fi
-
-But that could broke some tests which are using datafiles/ directory inside git
-tree.
-
-I was also thinking about replacing LTPROOT in C API with #define generated by
-configure script based on prefix. But again, how to have it in shell?
-I don't want to have stub (tst_test.sh.in), thus maybe the way would be to
-expect "Version" file is in ../../, e.g.
-
-. ../../Version
-But with the LTPROOT change above, it could be
-. $LTPROOT/Version
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
