@@ -4,82 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56582EB64DA
-	for <ltp@archiver.kernel.org>; Wed,  5 Jul 2023 13:24:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97D5FEB64DA
+	for <ltp@archiver.kernel.org>; Wed,  5 Jul 2023 14:15:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 56DD43CE055
-	for <ltp@archiver.kernel.org>; Wed,  5 Jul 2023 15:24:07 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id C40EE3CEE61
+	for <ltp@archiver.kernel.org>; Wed,  5 Jul 2023 16:15:21 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C5B923CBFCA
- for <ltp@lists.linux.it>; Wed,  5 Jul 2023 15:23:57 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 591073CBFB4
+ for <ltp@lists.linux.it>; Wed,  5 Jul 2023 16:15:09 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A924B600231
- for <ltp@lists.linux.it>; Wed,  5 Jul 2023 15:23:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1688563435;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5AA96200989
+ for <ltp@lists.linux.it>; Wed,  5 Jul 2023 16:15:09 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B56E921E93;
+ Wed,  5 Jul 2023 14:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1688566508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=W/DdVieXgp321AnP9MC3JuC/fGVLxQna4FNuiXw9KfM=;
- b=NALqxRYD/MXTrL7L3eGRGslxcHXCWJ4wb6uKGPnweUqtD0xg2ROFOrNKnsn2xvhFGoU00i
- +djXxZ+VVMDFOtCkN2vgIFIKqkZPtvaiIGeXimsM1vymAs5mHQk7/XjJPqnoD+XWFl1biL
- Uj6+xHQmky6yGQS+kWTFFj4m+hsBvi0=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-260-dBT30TJDMjycYVwl_ywHMw-1; Wed, 05 Jul 2023 09:23:54 -0400
-X-MC-Unique: dBT30TJDMjycYVwl_ywHMw-1
-Received: by mail-yw1-f199.google.com with SMTP id
- 00721157ae682-564fb1018bcso67396097b3.0
- for <ltp@lists.linux.it>; Wed, 05 Jul 2023 06:23:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1688563433; x=1691155433;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=W/DdVieXgp321AnP9MC3JuC/fGVLxQna4FNuiXw9KfM=;
- b=JFptAsG8cw18y4i0SZtmV+AN1mv9eyCRgfsT7NWHkRDAuRPKcn7B9bPcMinVW1/hd7
- 6r/rEgnV0zO8pi8o+dexA86Ggtkq4BljREP7eaQ9krHDb1QIfiowOR28KbSKxzlaUyAb
- Ge6pwyGD00+H7VIOyziBG5JjD+SEqpNJ31/qRFq5TTGiAQDml+OkGpmQPDZ5xfmyipMH
- LsPl+rE5lNBYK2a8mp3+dzODjDB5OenHPH84hMqvKTlxSgzeX9ERas6p6TnXJe8YaTnd
- HF+qgSLLv/rbZkJFArEwepM+lvcYrBVJo3ylXI4pZ8kaJAPA0T2R8GRaU9Zj9Im+YK2g
- j3/A==
-X-Gm-Message-State: ABy/qLa4gEPcXZKIVXPoES/+5ZQLPobnXKfWFjZ/Li+hGalFruaiiPfw
- OjboN/znB2K/JqnS6VxdcRProYTiCPmonbbFbd+09twjrf5oUlVoPpClRCNK+4CUJ8MEAPeagS4
- ZvIYaKBj1Jd88nf3bXIUm7ZaLQRtUzog69Ovflw==
-X-Received: by 2002:a0d:eac1:0:b0:577:64d4:edc with SMTP id
- t184-20020a0deac1000000b0057764d40edcmr13085769ywe.31.1688563433123; 
- Wed, 05 Jul 2023 06:23:53 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHF/BoCjSgL+LDdz1rQaxB4i9VxAQ/7cSdjNqarjJgrV93SLWoBsCxmn0nUV+4YeDbu7avfvLurWKpcJdZKX3g=
-X-Received: by 2002:a0d:eac1:0:b0:577:64d4:edc with SMTP id
- t184-20020a0deac1000000b0057764d40edcmr13085717ywe.31.1688563432201; Wed, 05
- Jul 2023 06:23:52 -0700 (PDT)
+ bh=tYQFAjHLW6anb/a7FQN+zv41hn+wXfhS7+xICMvSQaU=;
+ b=A2I85EvRwPP2HwTdAi0Zy7cytPMWnMaNBq9PDI9nbRpcR+2ljvwsWXpj6QWDqp1DdafwCA
+ HqT20Mk7IdDuXkxKNJ3AeD1t9s7k5S3p9vdfMCQJVty0UgEgY7bAErufsZubsqsi/0hzNL
+ aQBzRo5R3umAPZZwo+1yvmEWSiwvcRw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1688566508;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=tYQFAjHLW6anb/a7FQN+zv41hn+wXfhS7+xICMvSQaU=;
+ b=jDNULW4DFpTD5UB7QrMFXqbm0OXKhtxqAv8og8QnS0l9hRj6j9t4ZuDB3REBRGCYOkpoch
+ I0ZzxcwFCcJxQPDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 597A0134F3;
+ Wed,  5 Jul 2023 14:15:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id SGwzCex6pWQFBwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 05 Jul 2023 14:15:08 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Wed,  5 Jul 2023 16:12:21 +0200
+Message-Id: <20230705141223.31468-3-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230705141223.31468-1-andrea.cervesato@suse.de>
+References: <20230705141223.31468-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-References: <20230530203707.2965684-1-aahringo@redhat.com>
- <20230530203707.2965684-2-aahringo@redhat.com>
- <20230621090331.GA365741@pevik>
- <CAK-6q+jVapf==Sg_BqWr0KTGA+uKgaaSZQwO=5tWzve9=Dok2Q@mail.gmail.com>
- <20230702191813.GB360317@pevik>
-In-Reply-To: <20230702191813.GB360317@pevik>
-From: Alexander Aring <aahringo@redhat.com>
-Date: Wed, 5 Jul 2023 09:23:41 -0400
-Message-ID: <CAK-6q+hsZxurnnd2snKr12R5UwieCnWhvgr5_OoDKAXorHNhTA@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/5] fcntl40: test for owner values on classic
- posix lock
+Subject: [LTP] [PATCH v8 2/4] Refactor mqns_04 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,46 +77,351 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGksCgpPbiBTdW4sIEp1bCAyLCAyMDIzIGF0IDM6MTjigK9QTSBQZXRyIFZvcmVsIDxwdm9yZWxA
-c3VzZS5jej4gd3JvdGU6Cj4KPiBIaSBBbGV4LAo+Cj4gLi4uCj4gPiA+ID4gKyAqIFtEZXNjcmlw
-dGlvbl0KPiA+ID4gPiArICogVGVzdHMgZ2ZzMiBkbG0gcG9zaXggb3AgcXVldWUgaGFuZGxpbmcg
-aW4gdGhlIGtlcm5lbC4KPiA+ID4gPiArICogSXQgaXMgcmVjb21tZW5kZWQgdG8gcnVuIHdhdGNo
-IC1uIDAuMSAiZGxtX3Rvb2wgcGxvY2tzICRMUyIKPiA+ID4gPiArICogYXNpZGUgdG8gbW9uaXRv
-ciBkbG0gcGxvY2sgaGFuZGxpbmcuCj4gPiA+ID4gKyAqCj4gPiA+ID4gKyAqIFtIb3cgdG8gdXNl
-IGl0XQo+ID4gPiA+ICsgKiBDYWxsIGl0IHdpdGggVE1QRElSPS9tbnQgLi9mY250bDQwIHdoZXJl
-IFRNUERJUiBpcyBhIGdmczIgbW91bnRwb2ludC4KPiA+ID4gSSB3b25kZXIgaWYgd2UgY291bGQg
-Y2hlY2sgZm9yIEdGUzJfTUFHSUMgKHdlJ2QgbmVlZCB0byBhZGQgaXQgdG8KPiA+ID4gaW5jbHVk
-ZS90c3RfZnMuaCA9PiAweDAxMTYxOTcwKSBhbmQgcXVpdCB0aGUgdGVzdCB3aXRoIHRzdF9icmso
-VENPTkYpIGlmIFRNUERJUgo+ID4gPiBpcyBub3Qgb24gZ2ZzMi4KPgo+ID4gPiBBVE0gd2UgZG9u
-J3QgaGF2ZSBhbnkgaGVscGVyIGluIHN0cnVjdCB0c3RfdGVzdCwgd2hpY2ggd291bGQgZG8gaXQu
-Cj4KPgo+ID4gSSB3aWxsIG1lbnRpb24gdGhhdCBnZnMyIGlzIG9ubHkgYW4gZXhhbXBsZSBoZXJl
-LiBJdCBiZWNvbWVzCj4gPiBpbnRlcmVzdGluZyB3aGVuIGEgZmlsZSBzeXN0ZW0gaW1wbGVtZW50
-cyBpdHMgb3duIC5sb2NrKCkgY2FsbGJhY2sgT1IKPiA+IGlmIHNvbWVib2R5IHdhbnRzIHRvIHRl
-c3QgZmlsZSBzeXN0ZW0gY29yZSwgd2hlbiBhIGZpbGVzeXN0ZW0gZG9lcyBub3QKPiA+IGltcGxl
-bWVudCBpdHMgb3duIC5sb2NrKCkuCj4KPiBJIHNlZSAubG9jayBpcyBpbXBsZW1lbnRlZCBpbiA5
-cCwgYWZzLCBjZXBoLCBjaWZzLCBvY2ZzMiwgb3JhbmdlZnMsIGV2ZW4gTkZTLgo+ICJmaWxlIHN5
-c3RlbSBjb3JlIjogZG8geW91IG1lYW4gVkZTPyBCZWNhdXNlIHRoYXQgd291bGQgYmUgbW9yZSB1
-c2FibGUgdGhhbiB0aGUKPiBmaWxlc3lzdGVtcyBhYm92ZSAod2hpY2ggYXJlIHF1aXRlIGV4b3Rp
-YykuCj4KCkl0IGRlcGVuZHMgaGVyZSB3aGF0IHRoZXkgYXJlIGRvaW5nIGluIC5sb2NrKCkgLSBJ
-ZiB0aGV5IGp1c3QgY2FsbApsb2Nrc19sb2NrX2ZpbGVfd2FpdCgpIG9yIHNpbWlsYXIgaGVscGVy
-cyBkZXBlbmRpbmcgb24gdGhlIGNhbGwsIHRoZW4KdGhleSBkb24ndCBkbyBtdWNoIGRpZmZlcmVu
-dCB0aGFuIHdoYXQgdmZzIGlzIGRvaW5nLgpJbiBjYXNlIG9mIGdmczIvb2NmcyBpdCBpcyB2ZXJ5
-IHNwZWNpYWwsIGl0IHJlZGlyZWN0cyB0aGVpciBjYWxscyB0bwpETE0gYW5kIERMTSBoYXMgaXRz
-IG93biB3aG9sZSBwb3NpeCBpbXBsZW1lbnRhdGlvbiBiZWhpbmQgaXQuIFdlIG9ubHkKY2FsbCBs
-b2Nrc19sb2NrX2ZpbGVfd2FpdCgpIHRvIGtlZXAgdGhlIExpbnV4IGJvb2trZWVwaW5nIGluCi9w
-cm9jL2xvY2tzLgoKV2hhdCBJIGFtIGRvaW5nIGhlcmUgaXMgbW9zdGx5IHRydXN0aW5nIHRoZSBM
-aW51eCBpbXBsZW1lbnRhdGlvbiBhbmQKY29tcGFyaW5nIHJlc3VsdHMgZnJvbSBlLmcuIHRtcGZz
-IHdpdGggR0ZTMiBhbmQgSSBmb3VuZCBpc3N1ZXMuCgpGb3Igbm93IEkgdHJ1c3QgdGhlIExpbnV4
-IGltcGxlbWVudGF0aW9uIGFuZCBjaGVjayBpZiB3ZSBoYXZlIGEKZGlmZmVyZW50IHJlc3VsdCBo
-ZXJlLiBJIG5lZWQgdG8gYmUgdmVyeSBjYXJlZnVsIGhlcmUgYmVjYXVzZQpHRlMyL09DRlMyIGFy
-ZSBjbHVzdGVyIGZpbGVzeXN0ZW1zIGFuZCB0aGUgZmNudGwoKSBpbnRlcmZhY2Ugd2FzIG5ldmVy
-Cm1hZGUgZm9yIGNsdXN0ZXIgZmlsZXN5c3RlbXMuIEhvd2V2ZXIgSSBjdXJyZW50bHkgb25seSB0
-ZXN0ICJvbmUgbm9kZSIKbG9ja2luZyBhbmQgdGhpcyBzaG91bGQgZGVsaXZlciB0aGUgc2FtZSBy
-ZXN1bHRzIGFzIHRtcGZzLCBldGMuCgotIEFsZXgKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
-dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Use a single mq_freed volatile variable to know mqueues status
+Better parameters handling
+Check and umount mqueue(s)
+
+ testcases/kernel/containers/mqns/mqns_04.c | 288 ++++++++++-----------
+ 1 file changed, 134 insertions(+), 154 deletions(-)
+
+diff --git a/testcases/kernel/containers/mqns/mqns_04.c b/testcases/kernel/containers/mqns/mqns_04.c
+index d07a85c04..27ac0a868 100644
+--- a/testcases/kernel/containers/mqns/mqns_04.c
++++ b/testcases/kernel/containers/mqns/mqns_04.c
+@@ -1,187 +1,167 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+-* Copyright (c) International Business Machines Corp., 2009
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-*
+-* Author: Serge Hallyn <serue@us.ibm.com>
+-*
+-* Check mqueuefs lifetime
+-* . parent creates /dev/mqueue2
+-* . child mounts mqueue there
+-* . child does mq_open("/ab")
+-* . parent checks for /dev/mqueue2
+-* . child exits
+-* . parent checks for /dev/mqueue2
+-* . parent tries 'touch /dev/mqueue2/dd' -> should fail
+-* . parent umounts /dev/mqueue2
+-
+-***************************************************************************/
+-
+-#ifndef _GNU_SOURCE
+-#define _GNU_SOURCE
+-#endif
+-#include <sys/types.h>
+-#include <sys/stat.h>
++ * Copyright (c) International Business Machines Corp., 2009
++ * Copyright (c) Serge Hallyn <serue@us.ibm.com>
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Test mqueuefs manipulation from child/parent namespaces.
++ *
++ * [Algorithm]
++ *
++ * - parent creates mqueue folder in <tmpdir>
++ * - child mounts mqueue there
++ * - child creates /MQ1 mqueue
++ * - parent checks for <tmpdir>/mqueue/MQ1 existence
++ * - child exits
++ * - parent checks for <tmpdir>/mqueue/MQ1 existence
++ * - parent tries 'touch <tmpdir>/mqueue/MQ2' -> should fail
++ * - parent umount mqueuefs
++ */
++
+ #include <sys/wait.h>
+-#include <assert.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <errno.h>
+-#include "mqns.h"
+-#include "mqns_helper.h"
++#include "tst_test.h"
++#include "lapi/sched.h"
++#include "tst_safe_posix_ipc.h"
++#include "tst_safe_stdio.h"
++#include "tst_safe_macros.h"
+ 
+-char *TCID = "posixmq_namespace_04";
+-int TST_TOTAL = 1;
++#define CHECK_MQ_OPEN_RET(x) ((x) >= 0 || ((x) == -1 && errno != EMFILE))
+ 
+-int p1[2];
+-int p2[2];
++#define MQNAME1 "/MQ1"
++#define MQNAME2 "/MQ2"
+ 
+-#define FNAM1 DEV_MQUEUE2 SLASH_MQ1
+-#define FNAM2 DEV_MQUEUE2 SLASH_MQ2
++static char *str_op;
++static char *devdir;
++static char *mqueue1;
++static char *mqueue2;
++static volatile int *mq_freed;
+ 
+-int check_mqueue(void *vtest)
++static void check_mqueue(void)
+ {
+-	char buf[30];
+ 	mqd_t mqd;
+-	int rc;
+ 
+-	(void) vtest;
++	tst_res(TINFO, "Creating %s mqueue from within child process", MQNAME1);
+ 
+-	close(p1[1]);
+-	close(p2[0]);
++	mqd = TST_RETRY_FUNC(
++		mq_open(MQNAME1, O_RDWR | O_CREAT | O_EXCL, 0755, NULL),
++		CHECK_MQ_OPEN_RET);
++	if (mqd == -1)
++		tst_brk(TBROK | TERRNO, "mq_open failed");
+ 
+-	read(p1[0], buf, 3);	/* go */
++	SAFE_MQ_CLOSE(mqd);
++	mq_freed[0] = 1;
+ 
+-	mqd = tst_syscall(__NR_mq_open, NOSLASH_MQ1, O_RDWR | O_CREAT | O_EXCL,
+-		0755, NULL);
+-	if (mqd == -1) {
+-		write(p2[1], "mqfail", 7);
+-		tst_exit();
+-	}
++	tst_res(TINFO, "Mount %s from within child process", devdir);
++
++	SAFE_MOUNT("mqueue", devdir, "mqueue", 0, NULL);
++
++	TST_CHECKPOINT_WAKE_AND_WAIT(0);
++}
+ 
+-	mq_close(mqd);
++static void run(void)
++{
++	const struct tst_clone_args clone_args = { CLONE_NEWIPC, SIGCHLD };
++	struct stat statbuf;
+ 
+-	rc = mount("mqueue", DEV_MQUEUE2, "mqueue", 0, NULL);
+-	if (rc == -1) {
+-		perror("mount");
+-		write(p2[1], "mount", 6);
+-		tst_exit();
++	if (str_op && !strcmp(str_op, "clone")) {
++		tst_res(TINFO, "Spawning isolated process");
++
++		if (!SAFE_CLONE(&clone_args)) {
++			check_mqueue();
++			return;
++		}
++	} else if (str_op && !strcmp(str_op, "unshare")) {
++		tst_res(TINFO, "Spawning unshared process");
++
++		if (!SAFE_FORK()) {
++			SAFE_UNSHARE(CLONE_NEWIPC);
++			check_mqueue();
++			return;
++		}
+ 	}
+ 
+-	write(p2[1], "go", 3);
+-	read(p1[0], buf, 3);
++	TST_CHECKPOINT_WAIT(0);
+ 
+-	tst_exit();
+-}
++	SAFE_STAT(mqueue1, &statbuf);
++	tst_res(TPASS, "%s child's mqueue can be accessed from parent", mqueue1);
+ 
+-static void setup(void)
+-{
+-	tst_require_root();
+-	check_mqns();
+-}
++	TST_CHECKPOINT_WAKE(0);
+ 
+-int main(int argc, char *argv[])
+-{
+-	int rc;
+-	int status;
+-	char buf[30];
+-	struct stat statbuf;
+-	int use_clone = T_UNSHARE;
++	tst_res(TINFO, "Waiting child to exit");
+ 
+-	setup();
++	tst_reap_children();
++	mq_freed[0] = 0;
+ 
+-	if (argc == 2 && strcmp(argv[1], "-clone") == 0) {
+-		tst_resm(TINFO,
+-			 "Testing posix mq namespaces through clone(2).");
+-		use_clone = T_CLONE;
+-	} else
+-		tst_resm(TINFO,
+-			 "Testing posix mq namespaces through unshare(2).");
++	SAFE_STAT(mqueue1, &statbuf);
++	tst_res(TPASS, "%s child's mqueue can be accessed from parent after child's dead", mqueue1);
+ 
+-	if (pipe(p1) == -1) {
+-		perror("pipe");
+-		exit(EXIT_FAILURE);
+-	}
+-	if (pipe(p2) == -1) {
+-		perror("pipe");
+-		exit(EXIT_FAILURE);
+-	}
++	tst_res(TINFO, "Try to create %s from parent", mqueue2);
+ 
+-	mkdir(DEV_MQUEUE2, 0755);
++	TST_EXP_FAIL(creat(mqueue2, 0755), EACCES);
++	if (!TST_PASS)
++		mq_freed[1] = 1;
+ 
+-	tst_resm(TINFO, "Checking mqueue filesystem lifetime");
++	SAFE_UMOUNT(devdir);
++}
+ 
+-	/* fire off the test */
+-	rc = do_clone_unshare_test(use_clone, CLONE_NEWIPC, check_mqueue, NULL);
+-	if (rc < 0) {
+-		tst_resm(TFAIL, "failed clone/unshare");
+-		goto fail;
+-	}
++static void setup(void)
++{
++	char *tmpdir;
+ 
+-	close(p1[0]);
+-	close(p2[1]);
+-	write(p1[1], "go", 3);
+-
+-	read(p2[0], buf, 7);
+-	if (!strcmp(buf, "mqfail")) {
+-		tst_resm(TFAIL, "child process could not create mqueue");
+-		goto fail;
+-	} else if (!strcmp(buf, "mount")) {
+-		tst_resm(TFAIL, "child process could not mount mqueue");
+-		goto fail;
+-	}
++	if (!str_op || (strcmp(str_op, "clone") && strcmp(str_op, "unshare")))
++		tst_brk(TCONF, "Please specify clone|unshare child isolation");
+ 
+-	rc = stat(FNAM1, &statbuf);
+-	if (rc == -1) {
+-		perror("stat");
+-		write(p1[1], "go", 3);
+-		tst_resm(TFAIL, "parent could not see child's created mq");
+-		goto fail;
+-	}
+-	write(p1[1], "go", 3);
++	tmpdir = tst_get_tmpdir();
+ 
+-	rc = wait(&status);
+-	if (rc == -1) {
+-		perror("wait");
+-		tst_resm(TFAIL, "error while parent waited on child to exit");
+-		goto fail;
+-	}
+-	if (!WIFEXITED(status)) {
+-		tst_resm(TFAIL, "Child did not exit normally (status %d)",
+-			 status);
+-		goto fail;
+-	}
+-	rc = stat(FNAM1, &statbuf);
+-	if (rc == -1) {
+-		tst_resm(TFAIL,
+-			 "parent's view of child's mq died with child");
+-		goto fail;
+-	}
++	SAFE_ASPRINTF(&devdir, "%s/mqueue", tmpdir);
++	SAFE_MKDIR(devdir, 0755);
+ 
+-	rc = creat(FNAM2, 0755);
+-	if (rc != -1) {
+-		tst_resm(TFAIL,
+-			 "parent was able to create a file in dead child's mqfs");
+-		goto fail;
+-	}
++	SAFE_ASPRINTF(&mqueue1, "%s" MQNAME1, devdir);
++	SAFE_ASPRINTF(&mqueue2, "%s" MQNAME2, devdir);
++
++	mq_freed = SAFE_MMAP(NULL,
++		2 * sizeof(int),
++		PROT_READ | PROT_WRITE,
++		MAP_SHARED | MAP_ANONYMOUS,
++		-1, 0);
++}
+ 
+-	tst_resm(TPASS, "Child mqueue fs still visible for parent");
++static void cleanup(void)
++{
++	if (!devdir)
++		return;
+ 
+-fail:
+-	umount(DEV_MQUEUE2);
+-	rmdir(DEV_MQUEUE2);
++	if (!access(mqueue1, F_OK))
++		SAFE_MQ_UNLINK(MQNAME1);
+ 
+-	tst_exit();
++	if (!access(mqueue2, F_OK))
++		SAFE_MQ_UNLINK(MQNAME2);
++
++	if (tst_is_mounted(devdir))
++		SAFE_UMOUNT(devdir);
++
++	if (*mq_freed)
++		SAFE_MUNMAP((void *)mq_freed, 2 * sizeof(int));
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++	.forks_child = 1,
++	.needs_tmpdir = 1,
++	.needs_checkpoints = 1,
++	.options = (struct tst_option[]) {
++		{ "m:", &str_op, "Child process isolation <clone|unshare>" },
++		{},
++	},
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_NS",
++		NULL
++	},
++};
+-- 
+2.35.3
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
