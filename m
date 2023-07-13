@@ -4,69 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 262CFC001DC
-	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 11:58:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E8DBEB64DD
+	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 13:29:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B47363CECEA
-	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 13:58:03 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id E7ECE3CECEB
+	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 15:29:15 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E7DB33C999C
- for <ltp@lists.linux.it>; Thu, 13 Jul 2023 13:57:52 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id DDAD03C0313
+ for <ltp@lists.linux.it>; Thu, 13 Jul 2023 15:29:04 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E6A1B1A00A27
- for <ltp@lists.linux.it>; Thu, 13 Jul 2023 13:57:51 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CAEF5100098A
+ for <ltp@lists.linux.it>; Thu, 13 Jul 2023 15:29:03 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9C2DA1FD97;
- Thu, 13 Jul 2023 11:57:50 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 916A41FDE4;
+ Thu, 13 Jul 2023 13:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689249470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wdOqf7IQZdLvimS2bJs5plkO3Xc3FjuLsO5M1bAA5jk=;
- b=AA5RmUijvkVXWUpeDBla2kXXE1h71U2LV2IhU9uVCrimg19OyH/HePuz0xYxfym5ncrzwg
- au+OhsZT22eErTCRm1OB6FXYoxsJqFAH69PqXZ1YbvPB9B48V/cbXckbC05sj/NX1KL6hS
- j23fYCiMK/jqbpksPfkPh9kN6S9vBQE=
+ t=1689254942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=EniX7MhmuYUdXz28r2di0Fv4cVNtPzKC3I0qb/EYM9E=;
+ b=nWZ/qCgyknYVz0IIikWGnQjmNfpzHvuujTMxadlaZ6KEDWDQc1HgR4kqDo8BxhV220h9Jm
+ IWN9mcW+SOxikbjKcvzgyisaL8lm4/ZdZmhc8n5VTJvOj05TE6NyCxR+ojlftJh+c255kS
+ cs/8mcmSVRr/zCPsyxj4HeiuqKUtPeM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689249470;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wdOqf7IQZdLvimS2bJs5plkO3Xc3FjuLsO5M1bAA5jk=;
- b=Xhbf3zsHyDicfCc83pXeNxZFXm3toReOOejz2pNmGgSqzPNUly3/LbmffcsjmvxwKmnJJi
- sUTQqmQ5JgdyXYAg==
+ s=susede2_ed25519; t=1689254942;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=EniX7MhmuYUdXz28r2di0Fv4cVNtPzKC3I0qb/EYM9E=;
+ b=YwNsWWT8d8LZVJZCp3XqtZ4SIro5zwM9IWHlNSU1vG5mK3oL+G733uJzGgkcsOPe0ejqJ/
+ vTV/5q3JP1AebuDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 86F1F133D6;
- Thu, 13 Jul 2023 11:57:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EDD413489;
+ Thu, 13 Jul 2023 13:29:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id iaw3H77mr2Q+HAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 13 Jul 2023 11:57:50 +0000
-Date: Thu, 13 Jul 2023 13:58:55 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZK_m_8OuewzitKmH@yuki>
-References: <20230704091933.496989-1-pvorel@suse.cz>
- <20230704091933.496989-2-pvorel@suse.cz>
- <20230704092536.GA497945@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id YqUcGh78r2TlSwAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 13 Jul 2023 13:29:02 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: Dai Shili <daisl.fnst@fujitsu.com>,
+	ltp@lists.linux.it
+Date: Thu, 13 Jul 2023 15:28:52 +0200
+Message-ID: <20230713132901.28660-1-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230704092536.GA497945@pevik>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH 1/3] Makefile: Add C header with generated LTP
- version
+Subject: [LTP] [PATCH] statx09: Reduce fs-verity blocksize to 1024
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,103 +72,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> obviously this is wrong, because $(top_srcdir)/Version (ltp-version.h
-> dependency) is not specified in the top level Makefile (only Version is
-> there). But I'm not sure if it should be changed to
-> $(top_srcdir)/Version.
-> 
-> I suppose ltp-version.h should be in include/
+The kernel requires that fs-verity blocksize must be at most equal
+to the filesystem blocksize. Testing on small loop device means that
+mkfs.ext4 will very likely default to blocksize of 1024. Set fs-verity
+blocksize to the minimum possible value (1024) to avoid blocksize
+mismatch.
 
-Not reall, as long as it's used only in the library it can stay in the
-lib/
-
-> , but here I'm completely lost with dependencies under lib/. My goal
-> is to type make in lib/ and make sure the header is generated
-> (dependencies correctly resolved).
-
-There is another problem as well, currently the Version file is
-generated at the end of the LTP build, that means if you do a git pull
-and make it's not updated until the build has finished.
-
-Also we will have to rebuild tst_test.c each time Version file has been
-rewritten, which actually happens each time make is build in the top
-level directory, which would cause useless rebuilds.
-
-The best I could came up with:
-
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- lib/.gitignore     |  2 ++
- lib/Makefile       | 13 +++++++++++++
- lib/gen_version.sh | 16 ++++++++++++++++
- 3 files changed, 31 insertions(+)
- create mode 100644 lib/.gitignore
- create mode 100755 lib/gen_version.sh
 
-diff --git a/lib/.gitignore b/lib/.gitignore
-new file mode 100644
-index 000000000..178867a94
---- /dev/null
-+++ b/lib/.gitignore
-@@ -0,0 +1,2 @@
-+ltp-version.h
-+cached-version
-diff --git a/lib/Makefile b/lib/Makefile
-index 9b9906f25..371119ede 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -20,6 +20,19 @@ pc_file			:= $(DESTDIR)/$(datarootdir)/pkgconfig/ltp.pc
- 
- INSTALL_TARGETS		:= $(pc_file)
- 
-+tst_test.o: ltp-version.h
-+
-+ltp-version.h: gen_version
-+
-+MAKE_TARGETS+=gen_version
-+
-+.PHONY: gen_version
-+gen_version:
-+	@echo GEN ltp-version.h
-+	@./gen_version.sh
-+
-+CLEAN_TARGETS+=ltp-version.h cached-version
-+
- $(pc_file):
- 	test -d "$(@D)" || mkdir -p "$(@D)"
- 	install -m $(INSTALL_MODE) "$(builddir)/$(@F)" "$@"
-diff --git a/lib/gen_version.sh b/lib/gen_version.sh
-new file mode 100755
-index 000000000..7ecfb9077
---- /dev/null
-+++ b/lib/gen_version.sh
-@@ -0,0 +1,16 @@
-+#!/bin/sh
-+
-+touch cached-version;
-+
-+if git describe >/dev/null 2>&1; then
-+	VERSION=`git describe`
-+else
-+	VERSION=`cat $(top_srcdir)/VERSION`
-+fi
-+
-+CACHED_VERSION=`cat cached-version`
-+
-+if [ "$CACHED_VERSION" != "$VERSION" ]; then
-+	echo "$VERSION" > cached-version
-+	echo "#define LTP_VERSION \"$VERSION\"" > ltp-version.h
-+fi
+Alternatively, we could add "-b 4096" to .dev_fs_opts.
 
+ testcases/kernel/syscalls/statx/statx09.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/statx/statx09.c b/testcases/kernel/syscalls/statx/statx09.c
+index c03d2c91e..dc9786c76 100644
+--- a/testcases/kernel/syscalls/statx/statx09.c
++++ b/testcases/kernel/syscalls/statx/statx09.c
+@@ -94,7 +94,7 @@ static void flag_setup(void)
+ 	memset(&enable, 0, sizeof(enable));
+ 	enable.version = 1;
+ 	enable.hash_algorithm = hash_algorithms[0];
+-	enable.block_size = 4096;
++	enable.block_size = 1024;
+ 	enable.salt_size = 0;
+ 	enable.salt_ptr = (intptr_t)NULL;
+ 	enable.sig_size = 0;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.41.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
