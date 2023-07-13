@@ -4,63 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E8DBEB64DD
-	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 13:29:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09BA7C001B0
+	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 15:13:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E7ECE3CECEB
-	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 15:29:15 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 22C8A3CEF05
+	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 17:13:56 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DDAD03C0313
- for <ltp@lists.linux.it>; Thu, 13 Jul 2023 15:29:04 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id A5DC63C99ED
+ for <ltp@lists.linux.it>; Thu, 13 Jul 2023 17:11:12 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CAEF5100098A
- for <ltp@lists.linux.it>; Thu, 13 Jul 2023 15:29:03 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C28E31A00A56
+ for <ltp@lists.linux.it>; Thu, 13 Jul 2023 17:11:11 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 916A41FDE4;
- Thu, 13 Jul 2023 13:29:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2276322158;
+ Thu, 13 Jul 2023 15:11:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689254942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=EniX7MhmuYUdXz28r2di0Fv4cVNtPzKC3I0qb/EYM9E=;
- b=nWZ/qCgyknYVz0IIikWGnQjmNfpzHvuujTMxadlaZ6KEDWDQc1HgR4kqDo8BxhV220h9Jm
- IWN9mcW+SOxikbjKcvzgyisaL8lm4/ZdZmhc8n5VTJvOj05TE6NyCxR+ojlftJh+c255kS
- cs/8mcmSVRr/zCPsyxj4HeiuqKUtPeM=
+ t=1689261071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wCLBmF2e2dRCNx7+d13fHc8+rkei0zsayK8x+eKdnGc=;
+ b=qomcWisImhIgTGE3b4ZUEPF9NcyOW0hyDzZnyCPVzVgRuINKpG8MQbpCS13E9V1HBOrMO/
+ iAyUdkn6A+IJpPb5QvbPi4sRRNNjhjdXjokIMH8S4MUYkByXeu7CRlgjWvkVWDawXd8vHp
+ 8AT5b9KhPS/AKO4mxgcaNhfFavUADcU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689254942;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=EniX7MhmuYUdXz28r2di0Fv4cVNtPzKC3I0qb/EYM9E=;
- b=YwNsWWT8d8LZVJZCp3XqtZ4SIro5zwM9IWHlNSU1vG5mK3oL+G733uJzGgkcsOPe0ejqJ/
- vTV/5q3JP1AebuDw==
+ s=susede2_ed25519; t=1689261071;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wCLBmF2e2dRCNx7+d13fHc8+rkei0zsayK8x+eKdnGc=;
+ b=2D2YEL/BjKdkgcqnhmm74ZlNQAyBcVXYYRhOK4PSceT9B8FBt6yWbDy3bm5gYdZm5fpfJG
+ MnQHKcIOISrEZ3Dw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EDD413489;
- Thu, 13 Jul 2023 13:29:02 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0AC70133D6;
+ Thu, 13 Jul 2023 15:11:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YqUcGh78r2TlSwAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Thu, 13 Jul 2023 13:29:02 +0000
-From: Martin Doucha <mdoucha@suse.cz>
-To: Dai Shili <daisl.fnst@fujitsu.com>,
-	ltp@lists.linux.it
-Date: Thu, 13 Jul 2023 15:28:52 +0200
-Message-ID: <20230713132901.28660-1-mdoucha@suse.cz>
-X-Mailer: git-send-email 2.41.0
+ by imap2.suse-dmz.suse.de with ESMTPSA id FtJUAg8UsGQOBwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 13 Jul 2023 15:11:11 +0000
+Date: Thu, 13 Jul 2023 17:12:15 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: kernel test robot <oliver.sang@intel.com>
+Message-ID: <ZLAUT_19ST-47Wed@yuki>
+References: <202307132107.2ce4ea2f-oliver.sang@intel.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <202307132107.2ce4ea2f-oliver.sang@intel.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] statx09: Reduce fs-verity blocksize to 1024
+X-Mailman-Approved-At: Thu, 13 Jul 2023 17:13:23 +0200
+Subject: Re: [LTP] [linus:master] [iomap]  219580eea1: ltp.writev07.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,41 +76,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ Andreas Gruenbacher <agruenba@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+ Ilya Dryomov <idryomov@gmail.com>, Miklos Szeredi <mszeredi@redhat.com>,
+ Chao Yu <chao@kernel.org>, oe-lkp@lists.linux.dev,
+ Al Viro <viro@zeniv.linux.org.uk>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Xiubo Li <xiubli@redhat.com>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>, ltp@lists.linux.it,
+ lkp@intel.com, Jens Axboe <axboe@kernel.dk>,
+ Christian Brauner <brauner@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-kernel@vger.kernel.org,
+ linux-xfs@vger.kernel.org, Anna Schumaker <anna@kernel.org>,
+ linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Hannes Reinecke <hare@suse.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The kernel requires that fs-verity blocksize must be at most equal
-to the filesystem blocksize. Testing on small loop device means that
-mkfs.ext4 will very likely default to blocksize of 1024. Set fs-verity
-blocksize to the minimum possible value (1024) to avoid blocksize
-mismatch.
+Hi!
+The test description:
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+ Verify writev() behaviour with partially valid iovec list.
+ Kernel <4.8 used to shorten write up to first bad invalid
+ iovec. Starting with 4.8, a writev with short data (under
+ page size) is likely to get shorten to 0 bytes and return
+ EFAULT.
 
-Alternatively, we could add "-b 4096" to .dev_fs_opts.
+ This test doesn't make assumptions how much will write get
+ shortened. It only tests that file content/offset after
+ syscall corresponds to return value of writev().
 
- testcases/kernel/syscalls/statx/statx09.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ See: [RFC] writev() semantics with invalid iovec in the middle
+      https://marc.info/?l=linux-kernel&m=147388891614289&w=2
 
-diff --git a/testcases/kernel/syscalls/statx/statx09.c b/testcases/kernel/syscalls/statx/statx09.c
-index c03d2c91e..dc9786c76 100644
---- a/testcases/kernel/syscalls/statx/statx09.c
-+++ b/testcases/kernel/syscalls/statx/statx09.c
-@@ -94,7 +94,7 @@ static void flag_setup(void)
- 	memset(&enable, 0, sizeof(enable));
- 	enable.version = 1;
- 	enable.hash_algorithm = hash_algorithms[0];
--	enable.block_size = 4096;
-+	enable.block_size = 1024;
- 	enable.salt_size = 0;
- 	enable.salt_ptr = (intptr_t)NULL;
- 	enable.sig_size = 0;
 -- 
-2.41.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
