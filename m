@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09BA7C001B0
-	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 15:13:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A97DC0015E
+	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 15:35:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 22C8A3CEF05
-	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 17:13:56 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 382E93CDEA6
+	for <ltp@archiver.kernel.org>; Thu, 13 Jul 2023 17:35:48 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A5DC63C99ED
- for <ltp@lists.linux.it>; Thu, 13 Jul 2023 17:11:12 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id D98663CDE9C
+ for <ltp@lists.linux.it>; Thu, 13 Jul 2023 17:33:51 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C28E31A00A56
- for <ltp@lists.linux.it>; Thu, 13 Jul 2023 17:11:11 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1DBFE200A04
+ for <ltp@lists.linux.it>; Thu, 13 Jul 2023 17:33:50 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2276322158;
- Thu, 13 Jul 2023 15:11:11 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5C41522185;
+ Thu, 13 Jul 2023 15:33:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689261071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1689262430; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=wCLBmF2e2dRCNx7+d13fHc8+rkei0zsayK8x+eKdnGc=;
- b=qomcWisImhIgTGE3b4ZUEPF9NcyOW0hyDzZnyCPVzVgRuINKpG8MQbpCS13E9V1HBOrMO/
- iAyUdkn6A+IJpPb5QvbPi4sRRNNjhjdXjokIMH8S4MUYkByXeu7CRlgjWvkVWDawXd8vHp
- 8AT5b9KhPS/AKO4mxgcaNhfFavUADcU=
+ bh=ZnsbM2wbDJKZoJO63kCqa7skAvyrvbFpqW+OFngO6J0=;
+ b=sV1pgtAi27tWlGMws6tV7hf/GEtyL/tfm4WbvICemOjJMuus/p2+X17CiUlFl/l1j+rjgD
+ xKsKyh+PUXOM5Mtqqoc/ExfUrXx6RAHwtZ6Lb7OFEryuzF6O5kA/QwwDb0pnIavlwHUUdU
+ pG3UxM2hej8IJ+lTSLLmhqbB30xUz/0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689261071;
+ s=susede2_ed25519; t=1689262430;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=wCLBmF2e2dRCNx7+d13fHc8+rkei0zsayK8x+eKdnGc=;
- b=2D2YEL/BjKdkgcqnhmm74ZlNQAyBcVXYYRhOK4PSceT9B8FBt6yWbDy3bm5gYdZm5fpfJG
- MnQHKcIOISrEZ3Dw==
+ bh=ZnsbM2wbDJKZoJO63kCqa7skAvyrvbFpqW+OFngO6J0=;
+ b=9pXKKiCXJGy/exWne0PvxfT2nb5/QqIeeq771ADv8xv5NQVJ9/i551YInR/xTA9frjX5m8
+ AoqlkLi8oC3II5Bg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0AC70133D6;
- Thu, 13 Jul 2023 15:11:11 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 42C8613489;
+ Thu, 13 Jul 2023 15:33:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id FtJUAg8UsGQOBwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 13 Jul 2023 15:11:11 +0000
-Date: Thu, 13 Jul 2023 17:12:15 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id e3taEF4ZsGTsGAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 13 Jul 2023 15:33:50 +0000
+Date: Thu, 13 Jul 2023 17:34:55 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: kernel test robot <oliver.sang@intel.com>
-Message-ID: <ZLAUT_19ST-47Wed@yuki>
+To: Christoph Hellwig <hch@lst.de>
+Message-ID: <ZLAZn_SBmoIFG5F5@yuki>
 References: <202307132107.2ce4ea2f-oliver.sang@intel.com>
+ <20230713150923.GA28246@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <202307132107.2ce4ea2f-oliver.sang@intel.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+In-Reply-To: <20230713150923.GA28246@lst.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Thu, 13 Jul 2023 17:13:23 +0200
+X-Mailman-Approved-At: Thu, 13 Jul 2023 17:35:37 +0200
 Subject: Re: [LTP] [linus:master] [iomap]  219580eea1: ltp.writev07.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -76,7 +76,7 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, Christoph Hellwig <hch@lst.de>,
+Cc: "Darrick J. Wong" <djwong@kernel.org>,
  Andreas Gruenbacher <agruenba@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
  Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
  Ilya Dryomov <idryomov@gmail.com>, Miklos Szeredi <mszeredi@redhat.com>,
@@ -87,29 +87,74 @@ Cc: "Darrick J. Wong" <djwong@kernel.org>, Christoph Hellwig <hch@lst.de>,
  lkp@intel.com, Jens Axboe <axboe@kernel.dk>,
  Christian Brauner <brauner@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
  Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-kernel@vger.kernel.org,
- linux-xfs@vger.kernel.org, Anna Schumaker <anna@kernel.org>,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Hannes Reinecke <hare@suse.de>
+ linux-xfs@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
+ Anna Schumaker <anna@kernel.org>, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>, Hannes Reinecke <hare@suse.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-The test description:
+> I can't reproduce this on current mainline.  Is this a robust failure
+> or flapping test?  Especiall as the FAIL conditions look rather
+> unrelated.
 
- Verify writev() behaviour with partially valid iovec list.
- Kernel <4.8 used to shorten write up to first bad invalid
- iovec. Starting with 4.8, a writev with short data (under
- page size) is likely to get shorten to 0 bytes and return
- EFAULT.
+Actually the test is spot on, the difference is that previously the
+error was returned form the iomap_file_buffered_write() only if we
+failed with the first buffer from the iov, now we always return the
+error and we do not advance the offset.
 
- This test doesn't make assumptions how much will write get
- shortened. It only tests that file content/offset after
- syscall corresponds to return value of writev().
+The change that broke it:
 
- See: [RFC] writev() semantics with invalid iovec in the middle
-      https://marc.info/?l=linux-kernel&m=147388891614289&w=2
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 063133ec77f4..550525a525c4 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -864,16 +864,19 @@ iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
+                .len            = iov_iter_count(i),
+                .flags          = IOMAP_WRITE,
+        };
+-       int ret;
++       ssize_t ret;
+
+        if (iocb->ki_flags & IOCB_NOWAIT)
+                iter.flags |= IOMAP_NOWAIT;
+
+        while ((ret = iomap_iter(&iter, ops)) > 0)
+                iter.processed = iomap_write_iter(&iter, i);
+-       if (iter.pos == iocb->ki_pos)
++
++       if (unlikely(ret < 0))
+                return ret;
+-       return iter.pos - iocb->ki_pos;
++       ret = iter.pos - iocb->ki_pos;
++       iocb->ki_pos += ret;
++       return ret;
+ }
+
+I suppose that we shoudl fix is with something as:
+
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index adb92cdb24b0..bfb39f7bc303 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -872,11 +872,12 @@ iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
+        while ((ret = iomap_iter(&iter, ops)) > 0)
+                iter.processed = iomap_write_iter(&iter, i);
+
++       iocb->ki_pos += iter.pos - iocb->ki_pos;
++
+        if (unlikely(ret < 0))
+                return ret;
+-       ret = iter.pos - iocb->ki_pos;
+-       iocb->ki_pos += ret;
+-       return ret;
++
++       return iter.pos - iocb->ki_pos;
+ }
+ EXPORT_SYMBOL_GPL(iomap_file_buffered_write);
+
 
 -- 
 Cyril Hrubis
