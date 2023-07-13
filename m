@@ -4,67 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3358EEB64DA
-	for <ltp@archiver.kernel.org>; Fri, 14 Jul 2023 13:16:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38210EB64DA
+	for <ltp@archiver.kernel.org>; Fri, 14 Jul 2023 13:17:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 41DAB3CB6E5
-	for <ltp@archiver.kernel.org>; Fri, 14 Jul 2023 15:16:15 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id C98BE3CDE8A
+	for <ltp@archiver.kernel.org>; Fri, 14 Jul 2023 15:17:05 +0200 (CEST)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 584A63C036A
- for <ltp@lists.linux.it>; Fri, 14 Jul 2023 15:16:03 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 980A13CDE9C
+ for <ltp@lists.linux.it>; Thu, 13 Jul 2023 17:56:35 +0200 (CEST)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 51B8A600F33
- for <ltp@lists.linux.it>; Fri, 14 Jul 2023 15:16:01 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 5A78E1FDD3;
- Fri, 14 Jul 2023 13:16:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689340561;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b19fPAzhbPUQK5rO+cTyys7DEmODBBfZFyK1RZ4h9ng=;
- b=tN1fTM3F0soUz3TYJnmZrj/IrK7oG1rLKMXSODJPwfZ4fGAKTu6euWguJ0IsWw+rPkF1hS
- iO3dqKt94M+r9p0jVuHCMoPN3HJLaNWNUlq9rMxM0Psepo3uAbt3yES3oLG8HPSK/Xk3rA
- 5VDKlFj0d4KYG5gkAYYwsojhFUHdn+4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689340561;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b19fPAzhbPUQK5rO+cTyys7DEmODBBfZFyK1RZ4h9ng=;
- b=3ZatBNi1KDRgcmEuUomyba5E3VUMXrcphnE+wQc/qX1C1JqSaVyXgqSw4HUmbK5IryDNxx
- ckZvd2NPxXxAhyDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2ADEA138F8;
- Fri, 14 Jul 2023 13:16:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id bE/kB5FKsWQJbgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 14 Jul 2023 13:16:01 +0000
-Date: Fri, 14 Jul 2023 15:15:59 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20230714131559.GB965391@pevik>
-References: <20230714114244.32109-1-mdoucha@suse.cz>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 29FCF600A4D
+ for <ltp@lists.linux.it>; Thu, 13 Jul 2023 17:56:34 +0200 (CEST)
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id AC4A86732D; Thu, 13 Jul 2023 17:56:31 +0200 (CEST)
+Date: Thu, 13 Jul 2023 17:56:31 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20230713155631.GA29281@lst.de>
+References: <202307132107.2ce4ea2f-oliver.sang@intel.com>
+ <20230713150923.GA28246@lst.de> <ZLAZn_SBmoIFG5F5@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230714114244.32109-1-mdoucha@suse.cz>
+In-Reply-To: <ZLAZn_SBmoIFG5F5@yuki>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] statx09: Set fs-verity blocksize to FS
- blocksize
+X-Mailman-Approved-At: Fri, 14 Jul 2023 15:16:55 +0200
+Subject: Re: [LTP] [linus:master] [iomap]  219580eea1: ltp.writev07.fail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,34 +47,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: "Darrick J. Wong" <djwong@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ Andreas Gruenbacher <agruenba@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+ Ilya Dryomov <idryomov@gmail.com>, Miklos Szeredi <mszeredi@redhat.com>,
+ Chao Yu <chao@kernel.org>, oe-lkp@lists.linux.dev,
+ Al Viro <viro@zeniv.linux.org.uk>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Xiubo Li <xiubli@redhat.com>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>, ltp@lists.linux.it,
+ lkp@intel.com, Jens Axboe <axboe@kernel.dk>,
+ Christian Brauner <brauner@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-kernel@vger.kernel.org,
+ linux-xfs@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
+ Anna Schumaker <anna@kernel.org>, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>, Hannes Reinecke <hare@suse.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+On Thu, Jul 13, 2023 at 05:34:55PM +0200, Cyril Hrubis wrote:
+>                 iter.processed = iomap_write_iter(&iter, i);
+> 
+> +       iocb->ki_pos += iter.pos - iocb->ki_pos;
+> +
+>         if (unlikely(ret < 0))
+>                 return ret;
+> -       ret = iter.pos - iocb->ki_pos;
+> -       iocb->ki_pos += ret;
+> -       return ret;
+> +
+> +       return iter.pos - iocb->ki_pos;
 
-> The kernel requires that fs-verity blocksize must be at most equal
-> to the filesystem blocksize. Testing on small loop device means that
-> mkfs.ext4 will very likely default to blocksize of 1024. Set fs-verity
-> blocksize to the filesystem blocksize to avoid errors.
+I don't think this works, as iocb->ki_pos has been updated above.
+What you want is probably the version below.  But so far I can't
+reproduce anything yet..
 
-> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
-> ---
-
-> Setting filesystem blocksize to pagesize would require moving the mkfs
-> command to setup(). We can do that later to fix support for kernels
-> before v6.3 but let's fix the failure on latest kernel version first.
-
-Makes sense.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index adb92cdb24b009..02aea0174ddbcf 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -872,7 +872,7 @@ iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
+ 	while ((ret = iomap_iter(&iter, ops)) > 0)
+ 		iter.processed = iomap_write_iter(&iter, i);
+ 
+-	if (unlikely(ret < 0))
++	if (iter.pos == iocb->ki_pos)
+ 		return ret;
+ 	ret = iter.pos - iocb->ki_pos;
+ 	iocb->ki_pos += ret;
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
