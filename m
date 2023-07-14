@@ -4,70 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39363EB64DA
-	for <ltp@archiver.kernel.org>; Fri, 14 Jul 2023 12:32:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3358EEB64DA
+	for <ltp@archiver.kernel.org>; Fri, 14 Jul 2023 13:16:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 877203CDE6A
-	for <ltp@archiver.kernel.org>; Fri, 14 Jul 2023 14:32:26 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 41DAB3CB6E5
+	for <ltp@archiver.kernel.org>; Fri, 14 Jul 2023 15:16:15 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D3C203CB5DF
- for <ltp@lists.linux.it>; Fri, 14 Jul 2023 14:32:16 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 584A63C036A
+ for <ltp@lists.linux.it>; Fri, 14 Jul 2023 15:16:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id BA623200B73
- for <ltp@lists.linux.it>; Fri, 14 Jul 2023 14:32:15 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 51B8A600F33
+ for <ltp@lists.linux.it>; Fri, 14 Jul 2023 15:16:01 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B33A51FD66;
- Fri, 14 Jul 2023 12:32:14 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5A78E1FDD3;
+ Fri, 14 Jul 2023 13:16:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689337934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ t=1689340561;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gTzYMwib7VJ1h2x82ZIkcBh/j5N5JoJAvxiI4guC43U=;
- b=iNjsCLb3p1GjdZZC+SlB2M5gXWh2z8UVJDxL8TqvNwemDPtOLcAKGHOfSjaxJpxok+fuyl
- KKwZKOWoB2tZPeo/WPzIoMXbgiP/uHiiHv85C23YwF1nZwcOdAuyKm4YCKd1L9HjOCTAPj
- WVnJ35XgWHefYcnbLIegRkPRw4IqQuU=
+ bh=b19fPAzhbPUQK5rO+cTyys7DEmODBBfZFyK1RZ4h9ng=;
+ b=tN1fTM3F0soUz3TYJnmZrj/IrK7oG1rLKMXSODJPwfZ4fGAKTu6euWguJ0IsWw+rPkF1hS
+ iO3dqKt94M+r9p0jVuHCMoPN3HJLaNWNUlq9rMxM0Psepo3uAbt3yES3oLG8HPSK/Xk3rA
+ 5VDKlFj0d4KYG5gkAYYwsojhFUHdn+4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689337934;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1689340561;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gTzYMwib7VJ1h2x82ZIkcBh/j5N5JoJAvxiI4guC43U=;
- b=eDuVO+dU+w7lQpGLKty4Tu/y2kz+tQTeKEreMRiEB1Uz0xnJDGp1wz+qkZk42dymxY3w3l
- TG2hsadYiQLotdCg==
+ bh=b19fPAzhbPUQK5rO+cTyys7DEmODBBfZFyK1RZ4h9ng=;
+ b=3ZatBNi1KDRgcmEuUomyba5E3VUMXrcphnE+wQc/qX1C1JqSaVyXgqSw4HUmbK5IryDNxx
+ ckZvd2NPxXxAhyDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 986CF13A15;
- Fri, 14 Jul 2023 12:32:14 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2ADEA138F8;
+ Fri, 14 Jul 2023 13:16:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 6oMGJE5AsWTsVAAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Fri, 14 Jul 2023 12:32:14 +0000
-Message-ID: <ebfe2958-c981-2ef6-3255-01b546fa4bea@suse.cz>
-Date: Fri, 14 Jul 2023 14:32:14 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id bE/kB5FKsWQJbgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 14 Jul 2023 13:16:01 +0000
+Date: Fri, 14 Jul 2023 15:15:59 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20230714131559.GB965391@pevik>
+References: <20230714114244.32109-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, Eric Biggers <ebiggers@kernel.org>
-References: <20230713132901.28660-1-mdoucha@suse.cz>
- <20230714034048.GA913@sol.localdomain> <20230714114719.GB958548@pevik>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <20230714114719.GB958548@pevik>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230714114244.32109-1-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] statx09: Reduce fs-verity blocksize to 1024
+Subject: Re: [LTP] [PATCH v2] statx09: Set fs-verity blocksize to FS
+ blocksize
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,49 +76,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 14. 07. 23 13:47, Petr Vorel wrote:
->> There are a few different approaches you could take.  One would be the one you
->> mentioned: just add "-b 4096".  Though, note that systems with non-4K pages and
->> kernel older than v6.3 can't mount an "-O verity -b 4096" filesystem.
-> 
-> I suppose the problem would be with e.g. ppc64le. Because otherwise
-> it works with this setup (untested on ppc64le, I believe it'd fail):
-> .dev_fs_opts = (const char *const []){"-O verity", "-b 4096", NULL},
-> and kept enable.block_size = 4096
-> the test passes on older kernels 6.2.12-1-default (openSUSE), 5.10.0-8-amd64
-> (Debian) as well as on 6.3 kernel.
-> 
->> Or you could query the filesystem block size (that resulted from mkfs.ext4 with
->> unspecified block size) and use that as the Merkle tree block size.
-> 
-> Unless it's not too complicated, it looks to me the best, as it'd support both
->   >= 6.3 and older kernels.
+Hi Martin,
 
-Querying the filesystem size doesn't help on older kernels because 
-mkfs.ext4 still creates the filesystem with small blocksize and setup() 
-exits with TCONF because it can't mount the loop device, as you've seen 
-in your own experiments. But it'll work on kernels v6.3+ so I've 
-submitted that as v2.
+> The kernel requires that fs-verity blocksize must be at most equal
+> to the filesystem blocksize. Testing on small loop device means that
+> mkfs.ext4 will very likely default to blocksize of 1024. Set fs-verity
+> blocksize to the filesystem blocksize to avoid errors.
 
-For the older kernels, we'll have to run mkfs.ext4 in setup() with 
-dynamically constructed command line arguments and set blocksize 
-explicitly to pagesize.
+> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+> ---
 
--- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+> Setting filesystem blocksize to pagesize would require moving the mkfs
+> command to setup(). We can do that later to fix support for kernels
+> before v6.3 but let's fix the failure on latest kernel version first.
 
+Makes sense.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Tested-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
