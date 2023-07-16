@@ -4,73 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56D73EB64DD
-	for <ltp@archiver.kernel.org>; Sun, 16 Jul 2023 05:36:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C0ACEB64DA
+	for <ltp@archiver.kernel.org>; Sun, 16 Jul 2023 05:36:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 551683CEC06
-	for <ltp@archiver.kernel.org>; Sun, 16 Jul 2023 07:35:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A3CA43CACF0
+	for <ltp@archiver.kernel.org>; Sun, 16 Jul 2023 07:36:10 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 80DF83CBE84
- for <ltp@lists.linux.it>; Sun, 16 Jul 2023 07:35:39 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
+ by picard.linux.it (Postfix) with ESMTPS id A084A3CDDF6
+ for <ltp@lists.linux.it>; Sun, 16 Jul 2023 07:35:40 +0200 (CEST)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
+ [IPv6:2a00:1450:4864:20::432])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B760C600A72
- for <ltp@lists.linux.it>; Sun, 16 Jul 2023 07:35:38 +0200 (CEST)
-Received: by mail-wr1-x436.google.com with SMTP id
- ffacd0b85a97d-313e742a787so1986098f8f.1
- for <ltp@lists.linux.it>; Sat, 15 Jul 2023 22:35:38 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E742E600732
+ for <ltp@lists.linux.it>; Sun, 16 Jul 2023 07:35:39 +0200 (CEST)
+Received: by mail-wr1-x432.google.com with SMTP id
+ ffacd0b85a97d-316f9abf204so694281f8f.1
+ for <ltp@lists.linux.it>; Sat, 15 Jul 2023 22:35:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1689485738; x=1692077738;
+ d=gmail.com; s=20221208; t=1689485739; x=1692077739;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=esiHodUSrzIBf7dBnOo1Le8ZuqzXoilGry7ZM+s9Z5k=;
- b=ge54Smcou8jAN3EfQv8Qzd0zlQlcGiaNYidDQ4NRQhIqcQfLm40VySUfrSEtOdSd2i
- n3bIpF5+9So0OJCqkHmfRgFrS2ADrRyjQW89Ij4/eyM8KbsyL0PG4WVQ3LMV4fUB92nN
- j2lFCmaiN8jKXLsqwOGZYlxJbZtyQIBzAEBBG27IwGD3nKVfQc7iaer0ALd26bydMYIY
- 1mIrxJk5Vu4JWnX0ExXuIURW6WP/0kjIfPzaHgLPZ595gvndp2w2Ha2RPXVDhzRM1seU
- 2i79ky+VW6zARk3vp8nkQESXFvCdWhz92u9wc0JJIi/Xb5JzrYys64ZDchctaZjQnfQ9
- KhPQ==
+ bh=yaGMWEvhFWfhumRlvv5oHQn0PZ/jE2wcL1i3MyNAwXk=;
+ b=Hsg+zeJbMyGfadsQaiANgsg4I1l9ioA4QeljCGd6U6Avx0IJ/hFB/HdvEzXETZJfQj
+ Ft9zDHDCeBHs25NZDzEsb0jalOZoGIl9v6KZlbJ0p3/ZdOw/FnGh3xN39Q21XpHg2Pye
+ u91hqcvJ+t3zm6ilGtCQRcA6lQVr3+P9i4xZN9U2Gr0F/joQk0SqRFPXWrI7o2duq8eo
+ CJjIcNImgECICMcJbK8PE+iSn9QGX7ddeW6vkR1Wf7jpas38HPBWF0Ge1XC5COJizR8O
+ 80zUftshAs9x5agguc44zuLC1ixBuBxacaVWpQekSKK8PCoxz/z2wjR/Jiv6/7dsk6oO
+ IyPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1689485738; x=1692077738;
+ d=1e100.net; s=20221208; t=1689485739; x=1692077739;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=esiHodUSrzIBf7dBnOo1Le8ZuqzXoilGry7ZM+s9Z5k=;
- b=BAA1gevH5/AqV87uc4cNqt6M6MFD6Z8+WMU6D4+HMgmvR+Im6JZ7Ri6ybx8UYkfZ1i
- Ox++3YK60XoWeEig7pJ3tnMOGQv9qzGB3NQpIXjevCUQfHZR4gltT1yfelpKPRPPYRqa
- H/TtbRZnLuYtT6+MqinSZLcIaR4HPge+526kEVz1rWQRPiJuflBhvsVPpzjLsORz2IST
- VLDC9ZFqRVWiRpGvjIJB0sFmRvoXVha9p3mk3dn178/pwg6Od2M3qngIo73j5f3J9uZB
- uFJlPZfLz5bBev14Sokk2w2wgSVvsxZrWZXB8QXB+M9sGvEU9KOYDoNTFF9BJum9Z1Wj
- e0HQ==
-X-Gm-Message-State: ABy/qLZt3bi6r9nMK1Rq2D4109N7hp64sqBRFAbDXvx9C0HhANSB2WDn
- ogdB8XNzrI5MgVbY54PVhx77KMpgKnE=
-X-Google-Smtp-Source: APBJJlHIPy1gDwVtWNpa6yJmX5gWOfqhCWlDmaXz2bJZHbXXL6jUA8ovGAExG9gZ6dXWKn95XGSalQ==
-X-Received: by 2002:adf:f30f:0:b0:307:7959:6461 with SMTP id
- i15-20020adff30f000000b0030779596461mr5686929wro.31.1689485738153; 
- Sat, 15 Jul 2023 22:35:38 -0700 (PDT)
+ bh=yaGMWEvhFWfhumRlvv5oHQn0PZ/jE2wcL1i3MyNAwXk=;
+ b=ZOGOY1aQFzlSWdT1V1Gp85lb+pA2MBQ+MEA2UoIs1sbS+Tjw01+dCFQ9G9rqK24Rub
+ JVwN04ABfpXgFY8mOWBrPd4pXGH9OB+SJtBDYU82nCFur0iBD6I0pT+QRqlSTJEziORa
+ wSILc106ApoDpBmEVxsDHHkdl2cFmIuAmh+iXNKMA2e4URmijIEJOhDU40H7GUTcdSii
+ bdVi1ZQnFR0cI/QCjNtghwJuMGYlGJaXLrIhdCS0hetlCfyGrTUioyTdwZARkpb+Pul2
+ 4eaZB87eIf4q00NC9Wfn216AB9krfed/2hGB7IYhySmH16uF8m2IDTq6X74DDIv1D/tz
+ cLyg==
+X-Gm-Message-State: ABy/qLaSka8Hi9ZcvBgnkrpjYF0Oa5eddlVQITBkIRy8teYMmPLBWYAU
+ 7ys3LdLARwQDdaZQBnuEo3Iq9s5NI9o=
+X-Google-Smtp-Source: APBJJlEeWYj9Gn6zZW8Xjb6GIHZXRxQEvzSiPy3lXCMOPjzxGAyGQFMSjTZbPCoolotnxrtMRrmKcA==
+X-Received: by 2002:adf:e646:0:b0:30e:3f55:ebc9 with SMTP id
+ b6-20020adfe646000000b0030e3f55ebc9mr7899440wrn.13.1689485739355; 
+ Sat, 15 Jul 2023 22:35:39 -0700 (PDT)
 Received: from amir-ThinkPad-T480.lan ([5.29.249.86])
  by smtp.gmail.com with ESMTPSA id
- u2-20020a5d4682000000b00313e2abfb8dsm15556087wrq.92.2023.07.15.22.35.37
+ u2-20020a5d4682000000b00313e2abfb8dsm15556087wrq.92.2023.07.15.22.35.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 15 Jul 2023 22:35:37 -0700 (PDT)
+ Sat, 15 Jul 2023 22:35:39 -0700 (PDT)
 From: Amir Goldstein <amir73il@gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
-Date: Sun, 16 Jul 2023 08:35:29 +0300
-Message-Id: <20230716053530.1629416-3-amir73il@gmail.com>
+Date: Sun, 16 Jul 2023 08:35:30 +0300
+Message-Id: <20230716053530.1629416-4-amir73il@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230716053530.1629416-1-amir73il@gmail.com>
 References: <20230716053530.1629416-1-amir73il@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/3] fanotify14: Use named initializers
+Subject: [LTP] [PATCH v2 3/3] fanotify14: Test disallow sb/mount mark on
+ anonymous pipe
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,224 +91,117 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In preparation for adding a new optional test case struct member.
+This case was retroactively disallowed.
+
+This test is meant to encourage the backporting of commit 69562eb0bd3e
+("fanotify: disallow mount/sb marks on kernel internal pseudo fs") to
+all stable kernels.
 
 Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- .../kernel/syscalls/fanotify/fanotify14.c     | 160 +++++++++++++-----
- 1 file changed, 114 insertions(+), 46 deletions(-)
+ .../kernel/syscalls/fanotify/fanotify14.c     | 38 ++++++++++++++++++-
+ 1 file changed, 36 insertions(+), 2 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify14.c b/testcases/kernel/syscalls/fanotify/fanotify14.c
-index 08cd94858..2c6f6afea 100644
+index 2c6f6afea..4596511f0 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify14.c
 +++ b/testcases/kernel/syscalls/fanotify/fanotify14.c
-@@ -62,92 +62,160 @@ static struct test_case_t {
+@@ -19,6 +19,9 @@
+  *
+  *     ceaf69f8eadc fanotify: do not allow setting dirent events in mask of non-dir
+  *     8698e3bab4dd fanotify: refine the validation checks on non-dir inode mask
++ *
++ * The pipes test cases are regression tests for commit:
++ *     69562eb0bd3e fanotify: disallow mount/sb marks on kernel internal pseudo fs
+  */
+ 
+ #define _GNU_SOURCE
+@@ -40,6 +43,7 @@
+ 
+ #define FLAGS_DESC(flags) {(flags), (#flags)}
+ 
++static int pipes[2] = {-1, -1};
+ static int fanotify_fd;
+ static int fan_report_target_fid_unsupported;
+ static int ignore_mark_unsupported;
+@@ -60,6 +64,7 @@ static struct test_case_t {
+ 	/* when mask.flags == 0, fanotify_init() is expected to fail */
+ 	struct test_case_flags_t mask;
  	int expected_errno;
++	int *pfd;
  } test_cases[] = {
  	/* FAN_REPORT_FID without class FAN_CLASS_NOTIF is not valid */
--	{FLAGS_DESC(FAN_CLASS_CONTENT | FAN_REPORT_FID), {}, {}, EINVAL},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_CONTENT | FAN_REPORT_FID),
-+		.expected_errno = EINVAL,
-+	},
- 
- 	/* FAN_REPORT_FID without class FAN_CLASS_NOTIF is not valid */
--	{FLAGS_DESC(FAN_CLASS_PRE_CONTENT | FAN_REPORT_FID), {}, {}, EINVAL},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_PRE_CONTENT | FAN_REPORT_FID),
-+		.expected_errno = EINVAL,
-+	},
- 
- 	/* INODE_EVENTS in mask without class FAN_REPORT_FID are not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF), FLAGS_DESC(FAN_MARK_INODE), FLAGS_DESC(INODE_EVENTS),
--		EINVAL},
+ 	{
+@@ -216,6 +221,22 @@ static struct test_case_t {
+ 		.mask = FLAGS_DESC(FAN_OPEN),
+ 		.expected_errno = EINVAL,
+ 	},
++	/* mount mark on anonymous pipe is not valid */
 +	{
 +		.init = FLAGS_DESC(FAN_CLASS_NOTIF),
-+		.mark = FLAGS_DESC(FAN_MARK_INODE),
-+		.mask = FLAGS_DESC(INODE_EVENTS),
-+		.expected_errno = EINVAL,
-+	},
- 
- 	/* INODE_EVENTS in mask with FAN_MARK_MOUNT are not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_FID),
--		FLAGS_DESC(FAN_MARK_MOUNT), FLAGS_DESC(INODE_EVENTS), EINVAL},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_FID),
 +		.mark = FLAGS_DESC(FAN_MARK_MOUNT),
-+		.mask = FLAGS_DESC(INODE_EVENTS),
++		.mask = { FAN_ACCESS, "anonymous pipe"},
++		.pfd = pipes,
 +		.expected_errno = EINVAL,
 +	},
- 
- 	/* FAN_REPORT_NAME without FAN_REPORT_DIR_FID is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_NAME), {}, {}, EINVAL},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_NAME),
-+		.expected_errno = EINVAL,
-+	},
- 
- 	/* FAN_REPORT_NAME without FAN_REPORT_DIR_FID is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_FID | FAN_REPORT_NAME), {},
--		{}, EINVAL},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_FID | FAN_REPORT_NAME),
-+		.expected_errno = EINVAL,
-+	},
- 
- 	/* FAN_REPORT_TARGET_FID without FAN_REPORT_FID is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_TARGET_FID | FAN_REPORT_DFID_NAME),
--		{}, {}, EINVAL},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_TARGET_FID | FAN_REPORT_DFID_NAME),
-+		.expected_errno = EINVAL,
-+	},
- 
- 	/* FAN_REPORT_TARGET_FID without FAN_REPORT_NAME is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_TARGET_FID | FAN_REPORT_DFID_FID),
--		{}, {}, EINVAL},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_TARGET_FID | FAN_REPORT_DFID_FID),
-+		.expected_errno = EINVAL,
-+	},
- 
- 	/* FAN_RENAME without FAN_REPORT_NAME is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_FID), FLAGS_DESC(FAN_MARK_INODE),
--		FLAGS_DESC(FAN_RENAME), EINVAL},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_FID),
-+		.mark = FLAGS_DESC(FAN_MARK_INODE),
-+		.mask = FLAGS_DESC(FAN_RENAME),
-+		.expected_errno = EINVAL,
-+	},
- 
- 	/* With FAN_MARK_ONLYDIR on non-dir is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF), FLAGS_DESC(FAN_MARK_ONLYDIR),
--		FLAGS_DESC(FAN_OPEN), ENOTDIR},
++	/* filesystem mark on anonymous pipe is not valid */
 +	{
 +		.init = FLAGS_DESC(FAN_CLASS_NOTIF),
-+		.mark = FLAGS_DESC(FAN_MARK_ONLYDIR),
-+		.mask = FLAGS_DESC(FAN_OPEN),
-+		.expected_errno = ENOTDIR,
-+	},
- 
- 	/* With FAN_REPORT_TARGET_FID, FAN_DELETE on non-dir is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
--		FLAGS_DESC(FAN_MARK_INODE), FLAGS_DESC(FAN_DELETE), ENOTDIR},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
-+		.mark = FLAGS_DESC(FAN_MARK_INODE),
-+		.mask = FLAGS_DESC(FAN_DELETE),
-+		.expected_errno = ENOTDIR,
-+	},
- 
- 	/* With FAN_REPORT_TARGET_FID, FAN_RENAME on non-dir is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
--		FLAGS_DESC(FAN_MARK_INODE), FLAGS_DESC(FAN_RENAME), ENOTDIR},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
-+		.mark = FLAGS_DESC(FAN_MARK_INODE),
-+		.mask = FLAGS_DESC(FAN_RENAME),
-+		.expected_errno = ENOTDIR,
-+	},
- 
- 	/* With FAN_REPORT_TARGET_FID, FAN_ONDIR on non-dir is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
--		FLAGS_DESC(FAN_MARK_INODE), FLAGS_DESC(FAN_OPEN | FAN_ONDIR), ENOTDIR},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
-+		.mark = FLAGS_DESC(FAN_MARK_INODE),
-+		.mask = FLAGS_DESC(FAN_OPEN | FAN_ONDIR),
-+		.expected_errno = ENOTDIR,
-+	},
- 
- 	/* With FAN_REPORT_TARGET_FID, FAN_EVENT_ON_CHILD on non-dir is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
--		FLAGS_DESC(FAN_MARK_INODE), FLAGS_DESC(FAN_OPEN | FAN_EVENT_ON_CHILD),
--		ENOTDIR},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME_TARGET),
-+		.mark = FLAGS_DESC(FAN_MARK_INODE),
-+		.mask = FLAGS_DESC(FAN_OPEN | FAN_EVENT_ON_CHILD),
-+		.expected_errno = ENOTDIR,
-+	},
- 
- 	/* FAN_MARK_IGNORE_SURV with FAN_DELETE on non-dir is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
--		FLAGS_DESC(FAN_MARK_IGNORE_SURV), FLAGS_DESC(FAN_DELETE),
--		ENOTDIR},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
-+		.mark = FLAGS_DESC(FAN_MARK_IGNORE_SURV),
-+		.mask = FLAGS_DESC(FAN_DELETE),
-+		.expected_errno = ENOTDIR,
-+	},
- 
- 	/* FAN_MARK_IGNORE_SURV with FAN_RENAME on non-dir is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
--		FLAGS_DESC(FAN_MARK_IGNORE_SURV), FLAGS_DESC(FAN_RENAME),
--		ENOTDIR},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
-+		.mark = FLAGS_DESC(FAN_MARK_IGNORE_SURV),
-+		.mask = FLAGS_DESC(FAN_RENAME),
-+		.expected_errno = ENOTDIR,
-+	},
- 
- 	/* FAN_MARK_IGNORE_SURV with FAN_ONDIR on non-dir is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
--		FLAGS_DESC(FAN_MARK_IGNORE_SURV),
--		FLAGS_DESC(FAN_OPEN | FAN_ONDIR), ENOTDIR},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
-+		.mark = FLAGS_DESC(FAN_MARK_IGNORE_SURV),
-+		.mask = FLAGS_DESC(FAN_OPEN | FAN_ONDIR),
-+		.expected_errno = ENOTDIR,
-+	},
- 
- 	/* FAN_MARK_IGNORE_SURV with FAN_EVENT_ON_CHILD on non-dir is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
--		FLAGS_DESC(FAN_MARK_IGNORE_SURV),
--		FLAGS_DESC(FAN_OPEN | FAN_EVENT_ON_CHILD), ENOTDIR},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF | FAN_REPORT_DFID_NAME),
-+		.mark = FLAGS_DESC(FAN_MARK_IGNORE_SURV),
-+		.mask = FLAGS_DESC(FAN_OPEN | FAN_EVENT_ON_CHILD),
-+		.expected_errno = ENOTDIR,
-+	},
- 
- 	/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on directory is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF), FLAGS_DESC(FAN_MARK_IGNORE),
--		FLAGS_DESC(FAN_OPEN), EISDIR},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF),
-+		.mark = FLAGS_DESC(FAN_MARK_IGNORE),
-+		.mask = FLAGS_DESC(FAN_OPEN),
-+		.expected_errno = EISDIR,
-+	},
- 
- 	/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on mount mark is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF),
--		FLAGS_DESC(FAN_MARK_MOUNT | FAN_MARK_IGNORE),
--		FLAGS_DESC(FAN_OPEN), EINVAL},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF),
-+		.mark = FLAGS_DESC(FAN_MARK_MOUNT | FAN_MARK_IGNORE),
-+		.mask = FLAGS_DESC(FAN_OPEN),
-+		.expected_errno = EINVAL,
-+	},
- 
- 	/* FAN_MARK_IGNORE without FAN_MARK_IGNORED_SURV_MODIFY on filesystem mark is not valid */
--	{FLAGS_DESC(FAN_CLASS_NOTIF),
--		FLAGS_DESC(FAN_MARK_FILESYSTEM | FAN_MARK_IGNORE),
--		FLAGS_DESC(FAN_OPEN), EINVAL},
-+	{
-+		.init = FLAGS_DESC(FAN_CLASS_NOTIF),
-+		.mark = FLAGS_DESC(FAN_MARK_FILESYSTEM | FAN_MARK_IGNORE),
-+		.mask = FLAGS_DESC(FAN_OPEN),
++		.mark = FLAGS_DESC(FAN_MARK_FILESYSTEM),
++		.mask = { FAN_ACCESS, "anonymous pipe"},
++		.pfd = pipes,
 +		.expected_errno = EINVAL,
 +	},
  };
  
  static void do_test(unsigned int number)
+@@ -253,11 +274,17 @@ static void do_test(unsigned int number)
+ 
+ 	/* Set mark on non-dir only when expecting error ENOTDIR */
+ 	const char *path = tc->expected_errno == ENOTDIR ? FILE1 : MNTPOINT;
++	int dirfd = AT_FDCWD;
++
++	if (tc->pfd) {
++		dirfd = tc->pfd[0];
++		path = NULL;
++	}
+ 
+-	tst_res(TINFO, "Testing fanotify_mark(FAN_MARK_ADD | %s, %s)",
++	tst_res(TINFO, "Testing %s with %s",
+ 		tc->mark.desc, tc->mask.desc);
+ 	TST_EXP_FD_OR_FAIL(fanotify_mark(fanotify_fd, FAN_MARK_ADD | tc->mark.flags,
+-					 tc->mask.flags, AT_FDCWD, path),
++					 tc->mask.flags, dirfd, path),
+ 					 tc->expected_errno);
+ 
+ 	/*
+@@ -299,12 +326,18 @@ static void do_setup(void)
+ 
+ 	/* Create temporary test file to place marks on */
+ 	SAFE_FILE_PRINTF(FILE1, "0");
++	/* Create anonymous pipes to place marks on */
++	SAFE_PIPE2(pipes, O_CLOEXEC);
+ }
+ 
+ static void do_cleanup(void)
+ {
+ 	if (fanotify_fd > 0)
+ 		SAFE_CLOSE(fanotify_fd);
++	if (pipes[0] != -1)
++		SAFE_CLOSE(pipes[0]);
++	if (pipes[1] != -1)
++		SAFE_CLOSE(pipes[1]);
+ }
+ 
+ static struct tst_test test = {
+@@ -319,6 +352,7 @@ static struct tst_test test = {
+ 	.tags = (const struct tst_tag[]) {
+ 		{"linux-git", "ceaf69f8eadc"},
+ 		{"linux-git", "8698e3bab4dd"},
++		{"linux-git", "69562eb0bd3e"},
+ 		{}
+ 	}
+ };
 -- 
 2.34.1
 
