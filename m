@@ -4,49 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01739C001DE
-	for <ltp@archiver.kernel.org>; Mon, 17 Jul 2023 04:31:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C93BEB64DC
+	for <ltp@archiver.kernel.org>; Mon, 17 Jul 2023 05:06:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E2C273CAB42
-	for <ltp@archiver.kernel.org>; Mon, 17 Jul 2023 06:31:45 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 32AE03CDDC4
+	for <ltp@archiver.kernel.org>; Mon, 17 Jul 2023 07:06:30 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 36C783CA860
- for <ltp@lists.linux.it>; Mon, 17 Jul 2023 06:31:35 +0200 (CEST)
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 526503C99AE
+ for <ltp@lists.linux.it>; Mon, 17 Jul 2023 07:06:19 +0200 (CEST)
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com
+ [IPv6:2607:f8b0:4864:20::a2d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6D81060070D
- for <ltp@lists.linux.it>; Mon, 17 Jul 2023 06:31:32 +0200 (CEST)
-Received: from cwcc.thunk.org (pool-173-48-116-181.bstnma.fios.verizon.net
- [173.48.116.181]) (authenticated bits=0)
- (User authenticated as tytso@ATHENA.MIT.EDU)
- by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36H4VBcW032431
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 17 Jul 2023 00:31:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
- t=1689568277; bh=DX2FGsc/zuGqEoYRVwpitWL4pzdwOUkjpH+YNkuzp2Y=;
- h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
- b=RCVa30gNl9kM4D6VozHZDx8G+qwpIjmtX8cKPRiR6JHO3z3W3J0EtDhaj2LLCrDRD
- oWyiYVWAcW2y5/laImvSaxU87lBLs8X0tfgmKxOnAje0UwHB2eJc8NVxYKhgnG/WXL
- zPQ5Nu5zqPTRqYKwmxgMedqTYfbbEQL4BopvEyhmNT8LabWSYXc1u2F41Z3cZA9WmR
- U6wHj/lr5VHsJy4zJUO6UdYB2PdHGdSOHDZ7JNhExI1tYt0bCBrF8Xnd2InF34l2GJ
- 4iM+9XdU88C45cRmSogzUJKXy+SSptbk25t4okb7dXiUNuB1dzMlOjwWTNTMm6vlQm
- 9ubmeTTdfvQxg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
- id 7CB0315C0280; Mon, 17 Jul 2023 00:31:11 -0400 (EDT)
-Date: Mon, 17 Jul 2023 00:31:11 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Message-ID: <20230717043111.GA3842864@mit.edu>
-References: <CA+G9fYv2FRpLqBZf34ZinR8bU2_ZRAUOjKAD3+tKRFaEQHtt8Q@mail.gmail.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E2ACF14002BB
+ for <ltp@lists.linux.it>; Mon, 17 Jul 2023 07:06:18 +0200 (CEST)
+Received: by mail-vk1-xa2d.google.com with SMTP id
+ 71dfb90a1353d-4816db26ff1so875638e0c.2
+ for <ltp@lists.linux.it>; Sun, 16 Jul 2023 22:06:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1689570377; x=1692162377;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=xR7Jh7BXNDpu6+2aiq3ZuVrs5oBNof862oaaEGT22kE=;
+ b=K/GmCjSqOYm0KWCBJgUAzYKSJMgtUbsQgdm3le7BCDDPkafCvqTGFvy/h05nnECb3A
+ SXiLbd98PE5p0DHBkyrJHpnDi4u8V/Ls+0mW2DiZhRHrvaogGxeZH67R9I+WAMJaY50P
+ 8pej23rGRTwODqWQEVMMd1SMgtf10FCgibO2twTrOfGxcA/8g0nHbKKUFsBcTh+V0Iua
+ kC+e+RKVSmL1ADafHew0B8wA2cozddQug8Fh9JDB0Bgqwh2ShRBoMalH9pf9DIAzi8r+
+ 31R2cmR6rsERPaezQDdv3EKRM4/jjsqC84/StexZJTLhJli4BYahal7F2Yfdu16GcEyH
+ 7zKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1689570377; x=1692162377;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=xR7Jh7BXNDpu6+2aiq3ZuVrs5oBNof862oaaEGT22kE=;
+ b=H9dZCdDcRIQrr2vs+B6bKleNpsi1tAgpW3qo+b0BljLj7fWxrShUlg5VLvz2N1f7O2
+ nIS//zWbQW2jtZa6kgFa2GRVp3Nl2pd/ve9c1AWaBWMbA77jAHjfiAJ4qwYy69PrR7/d
+ wj8tq9MiW5w3xWjEZN4azndbTzyE5l8Wr91U/IBE90rciWe0mEhVTTg94sTRE0cH1jGC
+ +ZRoEo7CKbKhkHLCNE/9KS9wcRABFEg6BIWHdT/FQK55aKWjBQLF3P4/5+eTEw1ONpiG
+ 2TqzZDN0uvYXvpaHN8/0ipi5hzs48cX15J1RFtgI68FVkkwgZNqvMRq4gh/1RIfz3FIX
+ lycQ==
+X-Gm-Message-State: ABy/qLaU1lyQwdXZyEri0PVFaWVkxm2L13iNXLILQ7BuCtvIYO5HOvnn
+ kRSeUgNFuPGxbRKaMXsoVqSFXRp+y5sCieMKOCRSLg==
+X-Google-Smtp-Source: APBJJlFtxcetEBCc4TSfgqF8xL/QIBSc2Drf5I8jWvVjy2toUPb9CBtwXYjXn2M9Pxxq/5xt2wL5YpHpWjFpfJPf2Vg=
+X-Received: by 2002:a67:fd7b:0:b0:444:17aa:df60 with SMTP id
+ h27-20020a67fd7b000000b0044417aadf60mr5035406vsa.13.1689570377332; Sun, 16
+ Jul 2023 22:06:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYv2FRpLqBZf34ZinR8bU2_ZRAUOjKAD3+tKRFaEQHtt8Q@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+References: <CA+G9fYv2FRpLqBZf34ZinR8bU2_ZRAUOjKAD3+tKRFaEQHtt8Q@mail.gmail.com>
+ <20230717043111.GA3842864@mit.edu>
+In-Reply-To: <20230717043111.GA3842864@mit.edu>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 17 Jul 2023 10:36:06 +0530
+Message-ID: <CA+G9fYukSUuNV5usVC1Zmq7uqxu5w2g8dTHgV9WUAA=nGBk20w@mail.gmail.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] next: kernel BUG at fs/ext4/mballoc.c:4369!
 X-BeenThere: ltp@lists.linux.it
@@ -72,28 +89,73 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Sun, Jul 16, 2023 at 11:32:51AM +0530, Naresh Kamboju wrote:
-> Following kernel BUG noticed while testing LTP fs testing on x86_64
-> arch x86_64 on the Linux next-20230716 built with clang toolchain.
+On Mon, 17 Jul 2023 at 10:01, Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Sun, Jul 16, 2023 at 11:32:51AM +0530, Naresh Kamboju wrote:
+> > Following kernel BUG noticed while testing LTP fs testing on x86_64
+> > arch x86_64 on the Linux next-20230716 built with clang toolchain.
+>
+> Hmm, I'm not seeing the next-20230716 tag at:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/
+>
+> or
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next-history.git/
+>
+> I see a tag for next-20230717 and for next-20230714, but not
+> next-20230716.  Was this a typo?  Does it reproduce on the
+> next-20230717 tree?
 
-Hmm, I'm not seeing the next-20230716 tag at:
+Sorry it is a Typo,
+Here is the kernel version, 6.5.0-rc1-next-20230714
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/
+>
+> Also, since I don't use LTP, can you give me a trimmed-down
+> reproducer, to save me some time?
 
-or
+Boot images for x86_64,
+I have defconfig + test KConfigs.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next-history.git/
+   kernel:
+      url:
+        https://storage.tuxsuite.com/public/linaro/lkft/builds/2SY3QjxEGsLoae4uGpfjPnZqwKC/bzImage
+    modules:
+      url:
+        https://storage.tuxsuite.com/public/linaro/lkft/builds/2SY3QjxEGsLoae4uGpfjPnZqwKC/modules.tar.xz
+    nfsrootfs:
+      url:
+        https://storage.tuxsuite.com/public/linaro/lkft/oebuilds/2SPaZ6KtLE32NNDGqKrHtwJJz1g/images/intel-corei7-64/lkft-console-image-intel-corei7-64-20230711051126.rootfs.tar.xz
 
-I see a tag for next-20230717 and for next-20230714, but not
-next-20230716.  Was this a typo?  Does it reproduce on the
-next-20230717 tree?
 
-Also, since I don't use LTP, can you give me a trimmed-down
-reproducer, to save me some time?
+Build and install LTP:
 
-Thanks!!
+# git clone https://github.com/linux-test-project/ltp.git
+# cd ltp
+# make autotools
+# ./configure
+# make
+# make install
 
-					- Ted
+Connect external newly formatted SSD drive via USB and mount.
+This drive will be used by LTP at run time to create temporary test files.
+
+
+Run LTP
+
+  cd /opt/ltp/
+  ./runltp -f fs - d /mount/SSD-external-storage-drive
+
+
+ref:
+ - https://github.com/linux-test-project/ltp
+
+- Naresh
+
+>
+> Thanks!!
+>
+>                                         - Ted
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
