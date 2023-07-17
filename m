@@ -4,71 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27E20EB64DC
-	for <ltp@archiver.kernel.org>; Mon, 17 Jul 2023 10:01:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7D7DEB64DC
+	for <ltp@archiver.kernel.org>; Mon, 17 Jul 2023 10:42:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 906963CB55E
-	for <ltp@archiver.kernel.org>; Mon, 17 Jul 2023 12:01:18 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id BE86F3CEB7B
+	for <ltp@archiver.kernel.org>; Mon, 17 Jul 2023 12:42:42 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3F8753C9925
- for <ltp@lists.linux.it>; Mon, 17 Jul 2023 09:43:27 +0200 (CEST)
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
- [IPv6:2a00:1450:4864:20::534])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 54E9F3C2DC8
+ for <ltp@lists.linux.it>; Mon, 17 Jul 2023 12:42:30 +0200 (CEST)
+Received: from esa15.fujitsucc.c3s2.iphmx.com (esa15.fujitsucc.c3s2.iphmx.com
+ [68.232.156.107])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E75F21A00EB4
- for <ltp@lists.linux.it>; Mon, 17 Jul 2023 09:43:25 +0200 (CEST)
-Received: by mail-ed1-x534.google.com with SMTP id
- 4fb4d7f45d1cf-51e57874bfdso5997876a12.0
- for <ltp@lists.linux.it>; Mon, 17 Jul 2023 00:43:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1689579805; x=1692171805;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=412L8optdQyF2m69jgTLAUW787PgjSAnLpeeSwznjPM=;
- b=o+xwJC6KRMrwmiywZUBEsQuD8lcO3tGXuhxJcH/wy4MYAZ2Lp2udX3IW9xNxKKnsBb
- CM0/hbdxGDVleyCf4mj2ZlRSYkI2ld2mplo99c5M0mx9+V6n32W3yYUCkgTsQL0eifQG
- ECX0PDpiqDVSg/7Vtp4TOV2Y0BshJaTxqxO/q1lF7hl+3G8UkoHwxc/HknQ5Re0+WCXw
- nlpC5Jz0Uo778VbgGH9nnosahsKQ6h9nIJCpjTSzBZx1po8J2YfJdesTl5+a6lDmEgtI
- cv8iLC52UE0WH4UdgXMkxBn8Kew9UOwq8kGjTCVkzNa+pvFH6j9RPePo70PwTg6xh5BL
- 7vwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1689579805; x=1692171805;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=412L8optdQyF2m69jgTLAUW787PgjSAnLpeeSwznjPM=;
- b=bGlt94pf7UqUZRK3OBlF60gu34p9LIUVYh3F1Us1Nv5mDlDcgK44Z1O/w2nB+WLyrl
- nyLVW9J2Nvn5dcpseEpAjd36gBGaDDXDydujX2GrP59A1pBuw1hAwMCt+mz032nAXX+U
- KauzjBTGyHHhALO0kKVxG1KIwtcYZ5Gtlq0xBbAi2BoavuK4mXI3BJ+KejctCcKbzpL6
- 4JaKT9/cyyeTz5DUzPjhOQZaGp2+LMPItG85DHq6oncDLLk/v3+k4N/h8e6aPqdqFItr
- QUn1qvioMLY2hM3lZeQU9eb5KGi86YutNmk/j7czkes9VTM7nWIhgDFJmGK33l78r6tc
- DGGA==
-X-Gm-Message-State: ABy/qLZy3WSqVGDuiAKGUytOOAMvuZ8nPCrJ1Jc1+5VOW7sTKfE8boag
- db3XG3x6AX1O6JohC0TWmRBa1gXrtO4JqTnorxc=
-X-Google-Smtp-Source: APBJJlHxjNFxxEGiFF6V25YdN6zkdGha8xc6VBef8P6TgMAmCLFtgBcKEBlssPz/99kl2FNL3L8lHP3Kwpu64yiC4eY=
-X-Received: by 2002:aa7:c6d3:0:b0:51d:9905:6f60 with SMTP id
- b19-20020aa7c6d3000000b0051d99056f60mr10604635eds.41.1689579805181; Mon, 17
- Jul 2023 00:43:25 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9E7092001CB
+ for <ltp@lists.linux.it>; Mon, 17 Jul 2023 12:42:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1689590550; x=1721126550;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=5aH/Cx/MFBNTnj/07iSfTteQSAkzv+iwaSbj2y3etaE=;
+ b=j+/ihxAd0b790jdEijL791TNB/kemPfZhY+Hsk1SMHSZC9mjBMoP4mfn
+ 0TaFbxFR23daRmDQPGtaAJKiFvE3FUdD15H74pxcqukyYFo+3/grlFJ32
+ 93IyFuxkK5iKir5cj8MAdG4kQ+CELv3sSvpWiZvhmHO0hUgP3Gby89Q0J
+ zMCQ2oGcOD05FfaSHdHkOqJnihs8LuE9qW7Kc2jMSiwECnMyyKvWoEeWv
+ pr0ZTUOEXb36V6PEnYRhDGVvbnx8RxdCQUK23Ykfr9ZGujLeM3GPTURLs
+ o4xs3oOx76/Etc0OQrRooSskodswoCEIj1FrEHGZgQ4+kPB9jKVrW6OYm Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="89908912"
+X-IronPort-AV: E=Sophos;i="5.98,286,1673881200"; d="scan'208";a="89908912"
+Received: from mail-tycjpn01lp2176.outbound.protection.outlook.com (HELO
+ JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.176])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Jul 2023 19:42:28 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YcURvbw3w0OxBQVJVpTAhWF16fWwSAmnigRmxNsvdTysEyZ99Vv8viGTDcN2BqzmLcb38lFD7UgdQ9c0nK7skcI1HMD0xr6CVWWCxWBFJDZmyZBm/fEpH6HoUJlp0OCc17Jg46KdqepnLhfTWQjOIY0+K+kn2jp7dIilq2f9Ul2gT8JuQHUIO7nNeZJ8qr4KMpXUXfPhMps21Vb2Wt3K6GI31/LAghlvWwku9fLZH9jpa3sT75tIZ8CGYh+OKyZpBp+QbiagV2MjEaVIsD9635QK0/BZ+votvA9gGMKtllOGoPkVV5iM4jAz45gD8M5BTC4+EW5iNShePkmuCkO7oQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5aH/Cx/MFBNTnj/07iSfTteQSAkzv+iwaSbj2y3etaE=;
+ b=YJKRE8PlTNxyHTyjU/F9rD8wvgq7E3DIJ75R1c6m9zl3BqstlYhfoNMAhKXSGvBSrAyVJo1pQ3Rso9OJIRmMI+1DxaX3ew64MEcYbayTrbhfsHjU6ak6g3KUcLLbXOdO//C/3oVqyUF3GMb5FWnbxLZgmRLj7lWY9C3N7ojEExmZbfZS/5PSuo9H65j75agmAP53UGZOrfHC0n807ZX83FvA+IoWjtmepsbI5kucVxxHMmAfCKs6odD8CemjABMmmzPT0IcYrct0UNSvCAz0zKUWi961vsxGTLU0pN+6slj9CuT04IbCienE0hHN4DlJHcm55pB/i0s8qwmkpMtoAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from TYCPR01MB10712.jpnprd01.prod.outlook.com (2603:1096:400:294::9)
+ by OS0PR01MB6148.jpnprd01.prod.outlook.com (2603:1096:604:b6::12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Mon, 17 Jul
+ 2023 10:42:24 +0000
+Received: from TYCPR01MB10712.jpnprd01.prod.outlook.com
+ ([fe80::cab0:8eee:f77c:2d5a]) by TYCPR01MB10712.jpnprd01.prod.outlook.com
+ ([fe80::cab0:8eee:f77c:2d5a%7]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
+ 10:42:24 +0000
+From: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>
+To: Petr Vorel <pvorel@suse.cz>
+Thread-Topic: [LTP] [PATCH v2 2/2] syscalls/geteuid02: Convert into new api
+Thread-Index: AQHZr/F769iwEuzPuEWcz3Amv2DFx6+uA28AgAdmVACACG0VAA==
+Date: Mon, 17 Jul 2023 10:42:23 +0000
+Message-ID: <4ede938a-64f1-33aa-f4ba-5c88dade0371@fujitsu.com>
+References: <1688637954-17765-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1688637954-17765-2-git-send-email-xuyang2018.jy@fujitsu.com>
+ <20230707090148.GC571797@pevik>
+ <11e524a2-c775-b68e-aa05-29b50fe6e38b@fujitsu.com>
+In-Reply-To: <11e524a2-c775-b68e-aa05-29b50fe6e38b@fujitsu.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYCPR01MB10712:EE_|OS0PR01MB6148:EE_
+x-ms-office365-filtering-correlation-id: 01743602-7c6f-423b-91ce-08db86b2819d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AFAR31YBWbVIAI6RXwlfDb9BM2/j3+gr7Sl6HzyC7UYzJLHwlN1w9Q7JnCgZF4t0x+vcCmdFY8mFSVaUbSKttLwDwRZlnZHbWPPe4IXd4CiQ1/goA6z/xfCHU9JI1AFfz9/5vDP3xVutlS5G6x+RjhbG4Syu9jMQij96Sfj3+VpU2RJWb74QnxV/Qr1w2tfEkc30z1pii+sP7Fs6X6me2QlhmxT+HBaHWulrqJeLIncimNK+W08iVfKUcIcZO8iaV41IayvDYNbrPJAPdmAFR/SXN37G1lltg7H/RL7/SVv1PxsqbMC+DLbhA4Wv0GmKEx5UnSF+IszKQzEkVOBhzkSeoSaSmpMLEkx45uVA5CDTpc1UQfN+Fu42YSsqcttLcsCWLsIyMBuV0E0UFVw+c8K4dPRqbSZLQY5lgX+Gp7Rugfd8EYQia+VaUC1xfn7Hvl8bn8U4mmpTOXg1KkV18QGH41VE+cuJMbvgeJ7yBH9UKpczzR2VAZYTWsDUyM3OYM0ZbjFbwwcJ1ORjwgwFVf0yMw9SO41k3FFlQwFQhKayVNo3QbgVcp0hFarvGQFlaIEzLLYprPaydY75O55yEEMfe+MxCjqswHj0TuD6G8CfimFjlh7m36GancGOuRORNH8E1kZvuZmtGMOWuBwfybALZADW7vyxfctDGoRb24U=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:TYCPR01MB10712.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230028)(4636009)(376002)(396003)(39860400002)(136003)(366004)(346002)(1590799018)(451199021)(83380400001)(38100700002)(38070700005)(31696002)(86362001)(82960400001)(31686004)(122000001)(316002)(6916009)(8676002)(2906002)(8936002)(41300700001)(5660300002)(4326008)(66556008)(66476007)(66946007)(76116006)(66446008)(64756008)(91956017)(478600001)(6512007)(71200400001)(6486002)(36756003)(966005)(85182001)(2616005)(1580799015)(26005)(186003)(6506007)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dTlOeHpBL2FoaldKdkhNeDh5SVVBSGVnWUZoaHBKNTFmVWQxWjErL1hmTjRR?=
+ =?utf-8?B?L1J0cEhRK2pNajZuR1gzdFBmUlVtbWNibXJ0ZkRQMjFqY25zaGh1UEhsTjQ1?=
+ =?utf-8?B?TzErcEJORGlUWVgzRVMzbm9nTlorNGRCbkhZd1ZIK2ZvRVhhRFVtMnlMbnll?=
+ =?utf-8?B?S1JXblBtOGxkTkhqbFgrQVVweGhRTytGSnd0d3UxRU9iYVBHYXlXRXFtV2w0?=
+ =?utf-8?B?VTFLZkpuYmJidVJoN2tVL1BENkZHRmpoUlBmZlpKWlgzakZFVVFmaTczcGk5?=
+ =?utf-8?B?U1BmOU8xd3lpcHZUOW9sb1NQVURyelRHSFVPZkxNSnBYRjBCb1phMkl4aE8z?=
+ =?utf-8?B?NG81M0NLYjVya0Y3OVRuTm1ycXEzU09MWForVFB4NTljQkhlaGlwT3pyaFlH?=
+ =?utf-8?B?cTZaVTF6VldKM000SXJKWUlFL3pJSWR6Wjc5UWdNZEZpTy9QWGVUMGxJQXpT?=
+ =?utf-8?B?SkJGWjdaVmtXenBEclFrVXBWbXZFVnV6QkdkbElIZG5Ed1Z5QnE4WU9pRlJ5?=
+ =?utf-8?B?SmtraWFpVjJuTXZ1RFNTTnFyeVVuQ0FqTmg3cGpXaU14K1ZEdS9XSWRCRURC?=
+ =?utf-8?B?TkpBVDh4L2VXVzA1NitXeTFNYy85ajRQYnd2cU1NUlBaK2p0M2w5aDZIWktC?=
+ =?utf-8?B?REFnWFhxQVVDbXpHZjRqc2dQWFJGL2NJN2REcWNveTFhcnZjelRxYTBrbHVS?=
+ =?utf-8?B?SGh3ZWFZcGM0RVFnM21IRXhpVGRTNUpoMmhXQVBRWHVMNVVwUDlEUnhWaDhJ?=
+ =?utf-8?B?S3JCZ09aNDU3WHh1Y0tHNFFMU3ZYMUx6SWt6QmxMSFFhNGJtRmFtUGlrTUIz?=
+ =?utf-8?B?KzdyVGlUOEdGdC9jZHlqbDFDZnlOTVRHS1JkcEdkcjVvNUdFZkFJa0g2bWUw?=
+ =?utf-8?B?cytRN21LQmh2aUw0djlzcDF4U1BXSVArc3h4ZGxSUGk1K3ZJVW15RnIzdEY1?=
+ =?utf-8?B?VW1xZnE2TUl3enJlNjJxV3NGbWluZk1LMzdCZ1ZqQ013ZEhDY3RwWjg5cjRG?=
+ =?utf-8?B?eW01NWRLZFdjRE4wQ0tEYUJ1NkVrWEhmWU9CN013Uk1zRDFQWW83UURvWXI1?=
+ =?utf-8?B?Y3RvOFpjNlY4a041RExEYTBHbFZPWFJUN05tbS93MG1IVktpOGtUYmNHWWM0?=
+ =?utf-8?B?TlBxNHlNZFhic2pZRDJNN0NzUUpXQTJTSHpmVVVReTNXMlZvUm9mOTVJVU9p?=
+ =?utf-8?B?aW13RThLYnIreUp3SnRMWEgvTThmUkNWb0U3QkNETTNablNaa3FxVEFXaDRU?=
+ =?utf-8?B?dnBtTDl4MFpuVjFxTkpYVUU1UFNMM0RaTjJMQ215eHBBa3Z6MWZMbzRPRjhR?=
+ =?utf-8?B?NHp4UmtER0NuclpNSlhDTGx2UkZUVGNLTlRnbnY2eDBVY0pwL0hZNUN0Z2Nw?=
+ =?utf-8?B?Mlg4ditHdVVIWmM0WjlwR28zSE1BVXBQbS8wYjRHZC9tc3JJR3NOdE1ucmR6?=
+ =?utf-8?B?c1NnTHRTLzFRa3pXV3dHSTg1N0tydHA0d29GUDdKeHJlc0xKcXJicTR1VVFv?=
+ =?utf-8?B?VHU3VFAzS2dUMW14ZDZwc1krc083N2c3S0wzS016b2habjBNaXNaVjczYXZR?=
+ =?utf-8?B?czIzcFdjdG8rdm41alZsTllSTC9QNExRaUxGSldpRHAwMU9JalhzNTNzbGJ4?=
+ =?utf-8?B?Y05Kd0VNb01TUlhibFVVQnlSUFJiTGNqNm9IazFLYXl1RFprcUYrT3FNdHA0?=
+ =?utf-8?B?eit5KyszQjdGL2JIWDliTy9YT3hoZk5PL3ZQMTYvL2VQcFJPZ1FVTW5HcUNN?=
+ =?utf-8?B?VEVMOUlHR3FFRURYRlpmcldwN0tTa1NzaUFVdWhBZ3l4cmF3R0kxT2I3MkNy?=
+ =?utf-8?B?a25SZ0RJaVJGQXNUWUI3Y1F1MTkrdytlend4eWlpN2RPaUp4R1dFbi9sM2pL?=
+ =?utf-8?B?dXdKdEZaMk15WlprMkI1OXRLTjZNdmNtYzB1VGtIQ0VtQURtMWtySkxxdjdY?=
+ =?utf-8?B?MytFaDBxOEY3M3RCL0N3Yk1EZHZ1ZkhZdlY5RGtTSnp4b3ZKVk1oQlFlU1I1?=
+ =?utf-8?B?UjZHaTYxbWdvNTBldExkNFdQMmJvaDRINVpEbExXblZoU0FINjdETjFTV0dr?=
+ =?utf-8?B?QVlLalZvY3RtalNwd3FIRTR3dEI0WElicWtubXpHVlZXTnB4dW9tZ0l4Z3pO?=
+ =?utf-8?B?MkxEbWQ2RFYybEVIYmdod1pnRFAyQTBHZGl0dlVRNXpnL0xCZ1dQWHJXNnd2?=
+ =?utf-8?B?Wnc9PQ==?=
+Content-ID: <BDF89CC8EA51F940BBB38F932355BE02@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <CA+G9fYv2FRpLqBZf34ZinR8bU2_ZRAUOjKAD3+tKRFaEQHtt8Q@mail.gmail.com>
- <87o7kbnle9.fsf@doe.com>
- <ZLTp4xyWPkBrPBgF@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-In-Reply-To: <ZLTp4xyWPkBrPBgF@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-From: Ritesh Harjani <ritesh.list@gmail.com>
-Date: Mon, 17 Jul 2023 13:13:13 +0530
-Message-ID: <CALk7dXrQnrrJD8BSNdv+LM10LoRBENELJ_xZNy6ARdm2QGeXKA@mail.gmail.com>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: S74BZusLUF1WCbB7cOQUoEpknWGBF9hOGhmqdfNEF/7p5uh3xjc6Z22YZG0KQ8y4drtkyOgLhvCJGM2n/3nHpnugpp5p5cPELAW4PzRAEkAetlFMXbeMLtBCecKzuYFMZVEwiYx6leYxr/PCl0hMB9/d3HF8NSNQxLU0vxZdhBLN6+s3RGtjuwR3xNJhXRaa9NOvAzJ+XPfbuBqIzx2OdwTne0jjMXQ351xxtAHHKCFIaPUArjTLA3TqzRq9s1MPcCrLBxN/mnndrTyTWm9tN6z57/C8mP50jiqdAwy9hAH2UE1A9xm4NvaabS0uoIZeX1wtYcmzOMd52qoX1bJWJliQZxTvahQuCbaQR7RSL/5BzaJ+Iekeg8QtcGLh+xNt09Cme+XJYT+l1THH6YF4Q6MdMLFfOn1gqKn7fCx8XCVxRV8OC16IZb6Vz0SwriuMm+jddRfEt4FeFgzH0sV5m3hhTb/GwWlxwXkUX83J4HeejorC89xg9JICyF3HnP3vz0zRVUqKlnwI9c1jx2igVa5VcbTDb8HUyXuYIBsCMCJBWZuZ/ym8CTC3IU6f6gSguLucqY/MUQ7W3Zvho2gChSNGS9OcziSvCxIu3Do6UI8KyDMc6BP4cbxTkc579Vl+3EXSIWs+zo9KbBqEFldcuGoJ0mfZ178DP1WQRZ8gHqZCweG2TiHb2PUqp/UgiSin0UMSpgCEYSSA/DYGqBnrOYvguIF0uWDADBLHqwjXtjvlZ7HNkVgF2PqadNZ3ZolzcVKkPwYSeN4DZI/aFJY49jSznNnpdf6PzmG/iUAK6o4=
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10712.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01743602-7c6f-423b-91ce-08db86b2819d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2023 10:42:23.9828 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0Sx8tRnr81GbXjk45zrsI2kSthoFEnx7DefCskEsn8iClciwAdCU1JccYtcH7jgrd3A8zGSpE7fYoBx0Av7Cop1qzzUO8t20UGB2t9TS6eU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB6148
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Mon, 17 Jul 2023 12:00:43 +0200
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] next: kernel BUG at fs/ext4/mballoc.c:4369!
+Subject: Re: [LTP] [PATCH v2 2/2] syscalls/geteuid02: Convert into new api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,380 +153,68 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Theodore Ts'o <tytso@mit.edu>, Arnd Bergmann <arnd@arndb.de>,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- linux-mm <linux-mm@kvack.org>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Dan Carpenter <dan.carpenter@linaro.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- linux-ext4 <linux-ext4@vger.kernel.org>, LTP List <ltp@lists.linux.it>
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Jul 17, 2023, 12:42 PM Ojaswin Mujoo <ojaswin@linux.ibm.com> wrote:
+Hi Petr,
 
-> On Mon, Jul 17, 2023 at 11:13:10AM +0530, Ritesh Harjani wrote:
-> > Naresh Kamboju <naresh.kamboju@linaro.org> writes:
-> >
-> > > Following kernel BUG noticed while testing LTP fs testing on x86_64
-> > > arch x86_64 on the Linux next-20230716 built with clang toolchain.
-> > >
-> > > I see a similar crash log on arm64 Juno-r2. The logs are shared below.
-> > >
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > >
-> > > x86 log:
-> > > -------
-> > > tst_test.c:1634: TINFO: === Testing on ext2 ===
-> > > tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext2 opts='' extra
-> opts=''
-> > > mke2fs 1.46.5 (30-Dec-2021)
-> > > [ 1393.346989] EXT4-fs (loop0): mounting ext2 file system using the
-> > > ext4 subsystem
-> >
-> > ext4 driver is used for ext2 filesystem here. It will be using indirect
-> > block mapping path.
-> >
-> > > [ 1393.396754] EXT4-fs (loop0): mounted filesystem
-> > > 7ca8e239-bc8f-488c-af12-5e0ef12d17a5 r/w without journal. Quota mode:
-> > > none.
-> > > fs_fill.c:115: TINFO: Running 6 writer threads
-> > > tst_fill_fs.c:109: TINFO: writev(\"mntpoint/subdir/thread6/AOF\", iov,
-> > > 512): ENOSPC
-> > > tst_fill_fs.c:109: TINFO: writev(\"mntpoint/subdir/thread5/AOF\", iov,
-> > > 512): ENOSPC
-> > > ...
-> > > tst_fill_fs.c:109: TINFO: writev(\"mntpoint/subdir/thread6/AOF\", iov,
-> > > 512): ENOSPC
-> > > tst_fill_fs.c:109: TINFO: writev(\"mntpoint/subdir/thread3/AOF\", iov,
-> > > 512): ENOSPC
-> > > tst_fill_fs.c:109: TINF[ 1393.817197] ------------[ cut here
-> ]------------
-> > > [ 1393.823305] kernel BUG at fs/ext4/mballoc.c:4369!
-> >
-> > It's hard to trigger the race I guess. But here are some debugging
-> > information.
-> >
-> > [  955.508751] EXT4-fs (loop1): mounting ext2 file system using the ext4
-> subsystem
-> > [  955.515527] EXT4-fs (loop1): mounted filesystem
-> 57096378-d173-4bc5-ac06-9cd53c1dfa1c r/w without journal. Quota mode: none.
-> > [  959.289672] EXT4-fs (loop1): unmounting filesystem
-> 57096378-d173-4bc5-ac06-9cd53c1dfa1c.
-> > [  959.490548] EXT4-fs (loop1): mounting ext3 file system using the ext4
-> subsystem
-> > [  959.503719] EXT4-fs (loop1): mounted filesystem
-> 841c90bd-4d83-4bc5-be10-39452034e84b r/w with ordered data mode. Quota
-> mode: none.
-> > [  960.553669] ext4_mb_pa_adjust_overlap: ==== This should not happend
-> ==== left_pa=ffff8881471c7f50 deleted=0 lstart=6144 len=656
-> right_pa=0000000000000000
-> > [  960.557437] ext4_mb_pa_adjust_overlap: pa = ffff8881471c7540,
-> deleted=1 lstart=5872 len=272 pstart=34560
-> > [  960.560659] ext4_mb_pa_adjust_overlap: pa = ffff8881471c7f50,
-> deleted=0 lstart=6144 len=656 pstart=26848
-> > [  960.563855] ext4_mb_pa_adjust_overlap: pa = ffff8881471c7ee0,
-> deleted=1 lstart=6623 len=2 pstart=45503
-> >
-> > (This is the rbtree printed ^^^ )
-> >
-> > (gdb) p ac->ac_o_ex
-> > $8 = {
-> >   fe_logical = 6625,
-> >   fe_start = 27328,
-> >   fe_group = 0,
-> >   fe_len = 1
-> > }
-> > (gdb) p new_start
-> > $9 = 6144
-> > (gdb) p new_end
-> > $10 = 8192
-> > (gdb) p left_pa_end
-> > $11 = 6800
-> >
-> >
-> > The bug one happens here -
-> >
-> >       if (left_pa) {
-> >               left_pa_end =
-> >                       left_pa->pa_lstart + EXT4_C2B(sbi,
-> left_pa->pa_len);
-> >               BUG_ON(left_pa_end > ac->ac_o_ex.fe_logical);
-> >       }
-> >
-> > i.e. left_pa_end(6144 + 656 = 6800) > ac->ac_o_ex.fe_logical(6625)
-> >
-> > Thought of sharing this info which can save time for others.
->
-> Hi Ritesh,
->
-> Thanks for sharing the information. So it seems there's an overlapping
-> preallocation already present in which case the request should ideally
-> be satisfied by it and we shouldn't enter ext4_mb_normalize_request().
->
+Kindly ping,
 
-Yes. The undeleted PA in above tree should satisfy the request in
-ext4_mb_use_preallocated() so it should have never gone into normalization
-path.
+This case references getuid03,
+the URL for providing modification suggestions is as follows:
+https://patchwork.ozlabs.org/project/ltp/patch/20211109085745.21531-2-tangmeng@uniontech.com/
 
-And I don't think the PA rbtree can get entries inserted since we must be
-holding the locks in write path.
+Best Regards
+Yang Xu
 
-
-> Further, the presence of deleted PAs can suggest a group discard is
-> ongoing which happens low storage scenarios.
->
-
-Yes it seems the test is doing ENOSPC testing and it's not easy to trigger
-it. For me, I had kept it for overnight testing with some debug logs added.
-Although I don't know if it got triggered in few hours or maybe more.
-
-I'll try to replicate it in my setup and update here.
-
-
-Sure, I haven't yet looked closely into the code yet. But I feel maybe with
-the above debug information pasted it will be easy to find out why
-ext4_mb_use_preallocated() was not successful.
-
--ritesh
-
-
-> Regards,
-> ojaswin
-> >
-> > > O: writev(\"mntpo[ 1393.828041] invalid opcode: 0000 [#1] PREEMPT SMP
-> PTI
-> > > [ 1393.834448] CPU: 3 PID: 8606 Comm: fs_fill Not tainted
-> > > 6.5.0-rc1-next-20230714 #1
-> > > [ 1393.841925] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> > > 2.0b 07/27/2017
-> > > [ 1393.849396] RIP: 0010:ext4_mb_normalize_request+0x58f/0x5a0
-> > > int[/ s1u3b9d3i.r8ode: d7 b4 fc ff 80 4b 59 02 e9 b4 fa ff ff 48 8b 7b
-> > > 08 48 c7 c6 ba 35 7b 9a 48 c7 c2 75 26 83 9a e8 17 a9 02 00 0f 0b 0f
-> > > 0b 0f 0b <0f> 0b 66 66 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90
-> > > 90 90
-> > > [ 1393.873879] RSP: 0018:ffffad2c03327708 EFLAGS: 00010212
-> > > [ 1393.879098] RAX: 0000000080000000 RBX: 0000000000000000 RCX:
-> 0000000000000000
-> > > [ 1393.886228] RDX: 0000000000000800 RSI: 000000000000c000 RDI:
-> 000000000000c000
-> > > [ 1393.893353] RBP: ffffad2c03327770 R08: 00000000ffffffff R09:
-> 000000000000bdac
-> > > [ 1393.900487] R10: ffffa28309e47098 R11: ffffffff991a03a0 R12:
-> ffffa283232a3620
-> > > [ 1393.907611] R13: 0000000000000000 R14: ffffa283232a3658 R15:
-> ffffa28309e47098
-> > > [ 1393.914733] FS:  00007f6963e80640(0000) GS:ffffa2865fd80000(0000)
-> > > knlGS:0000000000000000
-> > > [ 1393.922811] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [ 1393.928550] CR2: 00007f694c008ba8 CR3: 000000012cb72001 CR4:
-> 00000000003706e0
-> > > [ 1393.935681] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> 0000000000000000
-> > > [ 1393.942804] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> 0000000000000400
-> > > [ 1393.949930] Call Trace:
-> > > [ 1393.952374]  <TASK>
-> > > [ 1393.954472]  ? __die_body+0x6c/0xc0
-> > > [ 1393.957964]  ? die+0xae/0xe0
-> > > [ 1393.960841]  ? do_trap+0x8d/0x160
-> > > [ 1393.964159]  ? ext4_mb_normalize_request+0x58f/0x5a0
-> > > [ 1393.969119]  ? handle_invalid_op+0x7f/0xd0
-> > > [ 1393.973218]  ? ext4_mb_normalize_request+0x58f/0x5a0
-> > > [ 1393.978183]  ? exc_invalid_op+0x36/0x50
-> > > [ 1393.982023]  ? asm_exc_invalid_op+0x1f/0x30
-> > > [ 1393.986210]  ? __pfx_ext4_dirty_inode+0x10/0x10
-> > > [ 1393.990740]  ? ext4_mb_normalize_request+0x58f/0x5a0
-> > > [ 1393.995698]  ? ext4_mb_normalize_request+0x311/0x5a0
-> > > [ 1394.000664]  ? _raw_read_unlock+0x20/0x40
-> > > [ 1394.004676]  ext4_mb_new_blocks+0x3c8/0xdf0
-> > > [ 1394.008864]  ? mark_buffer_dirty_inode+0x26/0xb0
-> > > [ 1394.013483]  ? __ext4_handle_dirty_metadata+0x7d/0x230
-> > > [ 1394.018620]  ext4_ind_map_blocks+0x74e/0xc30
-> > > [ 1394.022897]  ext4_map_blocks+0x2d6/0x640
-> > > [ 1394.026821]  _ext4_get_block+0x92/0x150
-> > > [ 1394.030659]  ext4_get_block+0x1b/0x30
-> > > [ 1394.034316]  __block_write_begin_int+0x193/0x670
-> > > [ 1394.038928]  ? __pfx_ext4_get_block+0x10/0x10
-> > > [ 1394.043277]  ? __ext4_journal_start_sb+0x9f/0x210
-> > > [ 1394.047974]  __block_write_begin+0x1f/0x50
-> > > [ 1394.052065]  ext4_write_begin+0x1fa/0x520
-> > > [ 1394.056072]  generic_perform_write+0xb7/0x260
-> > > [ 1394.060431]  ext4_buffered_write_iter+0xcd/0x150
-> > > [ 1394.065049]  ext4_file_write_iter+0x341/0x960
-> > > [ 1394.069407]  ? iovec_from_user+0x53/0x110
-> > > [ 1394.073420]  do_iter_write+0x202/0x320
-> > > [ 1394.077173]  vfs_writev+0x19c/0x280
-> > > [ 1394.080666]  do_writev+0x77/0x110
-> > > [ 1394.083978]  __x64_sys_writev+0x23/0x30
-> > > [ 1394.087816]  do_syscall_64+0x48/0xa0
-> > > [ 1394.091386]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> > > [ 1394.096440] RIP: 0033:0x7f696678aa7d
-> > > [ 1394.100011] Code: 28 89 54 24 1c 48 89 74 24 10 89 7c 24 08 e8 0a
-> > > 55 f8 ff 8b 54 24 1c 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 14 00 00
-> > > 00 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 44 24 08 e8 5e 55 f8
-> > > ff 48
-> > > [ 1394.118756] RSP: 002b:00007f6963e7cdd0 EFLAGS: 00000293 ORIG_RAX:
-> > > 0000000000000014
-> > > [ 1394.126315] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f696678aa7d
-> > > [ 1394.133436] RDX: 0000000000000200 RSI: 00007f6963e7ce00 RDI:
-> 0000000000000007
-> > > [ 1394.140562] RBP: 0000000000d4bbe8 R08: 0000000000000000 R09:
-> 0000000000000180
-> > > [ 1394.147684] R10: 0000000000000180 R11: 0000000000000293 R12:
-> 0000000000000007
-> > > [ 1394.154809] R13: 0000000000000003 R14: 00007f6963e805c0 R15:
-> 0000000000200000
-> > > [ 1394.161933]  </TASK>
-> > > [ 1394.164118] Modules linked in: tun x86_pkg_temp_thermal
-> > > [ 1394.169352] ---[ end trace 0000000000000000 ]---
-> > >
-> > >
-> > > Links:
-> > >  -
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230714/testrun/18306459/suite/log-parser-test/tests/
-> > >  -
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230714/testrun/18306459/suite/log-parser-test/test/check-kernel-bug/log
-> > >  - https://lkft.validation.linaro.org/scheduler/job/6584529#L2195
-> > >  -
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2SY3QjxEGsLoae4uGpfjPnZqwKC/
-> > >
-> > >
-> > > Juno-r2 log:
-> > > ------------
-> > >
-> > > tst_test.c:1634: TINFO: === Testing on ext3 ===
-> > > tst_test.c:1093: TINFO: Formatting /dev/loop0 with ext3 opts='' extra
-> opts=''
-> > > mke2fs 1.46.5 (30-Dec-2021)
-> > > [ 2086.751198] EXT4-fs (loop0): mounting ext3 file system using the
-> > > ext4 subsystem
-> > > [ 2086.802353] EXT4-fs (loop0): mounted filesystem
-> > > 0b1ac79e-51b8-47a0-b8c8-13ff4c4c2459 r/w with ordered data mode. Quota
-> > > mode: none.
-> > > [ 2092.630907]
-> ==================================================================
-> > > [ 2092.638172] BUG: KASAN: slab-use-after-free in
-> > > copy_page_from_iter_atomic+0x778/0x8c8
-> >
-> > This seems to be a different issue than above.
-> >
-> >
-> > > [ 2092.646046] Read of size 1024 at addr ffff000834540000 by task
-> > > kworker/u12:1/15943
-> > > [ 2092.653643]
-> > > [ 2092.655141] CPU: 2 PID: 15943 Comm: kworker/u12:1 Not tainted
-> > > 6.5.0-rc1-next-20230714 #1
-> > > [ 2092.663264] Hardware name: ARM Juno development board (r2) (DT)
-> > > [ 2092.669204] Workqueue: loop0 loop_rootcg_workfn
-> > > [ 2092.673773] Call trace:
-> > > [ 2092.676226]  dump_backtrace+0x9c/0x128
-> > > [ 2092.679997]  show_stack+0x20/0x38
-> > > [ 2092.683328]  dump_stack_lvl+0x60/0xb0
-> > > [ 2092.687009]  print_report+0xf4/0x5b0
-> > > [ 2092.690607]  kasan_report+0xa8/0x100
-> > > [ 2092.694204]  kasan_check_range+0xe8/0x190
-> > > [ 2092.698231]  memcpy+0x3c/0xa0
-> > > [ 2092.701213]  copy_page_from_iter_atomic+0x778/0x8c8
-> > > [ 2092.706113]  generic_perform_write+0x1b4/0x318
-> > > [ 2092.710576]  ext4_buffered_write_iter+0x98/0x1a8
-> > > [ 2092.715217]  ext4_file_write_iter+0xf0/0xb20
-> > > [ 2092.719507]  do_iter_readv_writev+0x134/0x200
-> > > [ 2092.723889]  do_iter_write+0xd8/0x390
-> > > [ 2092.727572]  vfs_iter_write+0x60/0x88
-> > > [ 2092.731256]  loop_process_work+0x8f0/0x1000
-> > > [ 2092.735463]  loop_rootcg_workfn+0x28/0x40
-> > > [ 2092.739495]  process_one_work+0x42c/0x888
-> > > [ 2092.743524]  worker_thread+0xa4/0x6a8
-> > > [ 2092.747203]  kthread+0x19c/0x1b0
-> > > [ 2092.750450]  ret_from_fork+0x10/0x20
-> > > [ 2092.754045]
-> > > [ 2092.755539] Allocated by task 15409:
-> > > [ 2092.759126]  kasan_save_stack+0x2c/0x58
-> > > [ 2092.762986]  kasan_set_track+0x2c/0x40
-> > > [ 2092.766756]  kasan_save_alloc_info+0x24/0x38
-> > > [ 2092.771044]  __kasan_slab_alloc+0xa8/0xb0
-> > > [ 2092.775075]  kmem_cache_alloc+0x130/0x330
-> > > [ 2092.779105]  jbd2_alloc+0x78/0x90
-> > > [ 2092.782437]  do_get_write_access+0x2b8/0x758
-> > > [ 2092.786728]  jbd2_journal_get_write_access+0xb0/0xf8
-> > > [ 2092.791715]  __ext4_journal_get_write_access+0xc4/0x250
-> > > [ 2092.796968]  ext4_reserve_inode_write+0xe0/0x138
-> > > [ 2092.801610]  __ext4_mark_inode_dirty+0xe4/0x3e8
-> > > [ 2092.806164]  ext4_dirty_inode+0x8c/0xb8
-> > > [ 2092.810021]  __mark_inode_dirty+0x84/0x618
-> > > [ 2092.814138]  generic_write_end+0x170/0x180
-> > > [ 2092.818253]  ext4_da_write_end+0x120/0x3d0
-> > > [ 2092.822372]  generic_perform_write+0x1ec/0x318
-> > > [ 2092.826835]  ext4_buffered_write_iter+0x98/0x1a8
-> > > [ 2092.831472]  ext4_file_write_iter+0xf0/0xb20
-> > > [ 2092.835760]  vfs_write+0x450/0x550
-> > > [ 2092.839176]  ksys_write+0xcc/0x178
-> > > [ 2092.842592]  __arm64_sys_write+0x4c/0x68
-> > > [ 2092.846530]  invoke_syscall+0x68/0x198
-> > > [ 2092.850303]  el0_svc_common.constprop.0+0x12c/0x168
-> > > [ 2092.855206]  do_el0_svc+0x4c/0xd8
-> > > [ 2092.858541]  el0_svc+0x30/0x70
-> > > [ 2092.861612]  el0t_64_sync_handler+0x13c/0x158
-> > > [ 2092.865990]  el0t_64_sync+0x190/0x198
-> > > [ 2092.869668]
-> > > [ 2092.871163] The buggy address belongs to the object at
-> ffff000834540000
-> > > [ 2092.871163]  which belongs to the cache jbd2_1k of size 1024
-> > > [ 2092.883459] The buggy address is located 0 bytes inside of
-> > > [ 2092.883459]  freed 1024-byte region [ffff000834540000,
-> ffff000834540400)
-> > > [ 2092.895670]
-> > > [ 2092.897164] The buggy address belongs to the physical page:
-> > > [ 2092.902751] page:0000000021bf671c refcount:1 mapcount:0
-> > > mapping:0000000000000000 index:0xffff000834540000 pfn:0x8b4540
-> > > [ 2092.913485] head:0000000021bf671c order:3 entire_mapcount:0
-> > > nr_pages_mapped:0 pincount:0
-> > > [ 2092.921602] flags:
-> > > 0xbfffc0000010200(slab|head|node=0|zone=2|lastcpupid=0xffff)
-> > > [ 2092.928944] page_type: 0xffffffff()
-> > > [ 2092.932452] raw: 0bfffc0000010200 ffff00082b6c4000 dead000000000122
-> > > 0000000000000000
-> > > [ 2092.940224] raw: ffff000834540000 000000008010000f 00000001ffffffff
-> > > 0000000000000000
-> > > [ 2092.947989] page dumped because: kasan: bad access detected
-> > > [ 2092.953576]
-> > > [ 2092.955070] Memory state around the buggy address:
-> > > [ 2092.959877]  ffff00083453ff00: ff ff ff ff ff ff ff ff ff ff ff ff
-> > > ff ff ff ff
-> > > [ 2092.967123]  ffff00083453ff80: ff ff ff ff ff ff ff ff ff ff ff ff
-> > > ff ff ff ff
-> > > [ 2092.974368] >ffff000834540000: fb fb fb fb fb fb fb fb fb fb fb fb
-> > > fb fb fb fb
-> > > [ 2092.981610]                    ^
-> > > [ 2092.984849]  ffff000834540080: fb fb fb fb fb fb fb fb fb fb fb fb
-> > > fb fb fb fb
-> > > [ 2092.992094]  ffff000834540100: fb fb fb fb fb fb fb fb fb fb fb fb
-> > > fb fb fb fb
-> > > [ 2092.999336]
-> ==================================================================
-> > > [ 2093.006683] Disabling lock debugging due to kernel taint
-> > > [ 2099.278554] preadv203 (103227): drop_caches: 3
-> > > [ 2099.514899] preadv203 (103228): drop_caches: 3
-> > > [ 2099.552185] preadv203 (103228): drop_caches: 3
-> > > [ 2099.586917] preadv203 (103228): drop_caches: 3
-> > >
-> > > Links:
-> > >  -
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230714/testrun/18303379/suite/log-parser-test/tests/
-> > >  - https://lkft.validation.linaro.org/scheduler/job/6584681#L2640
-> > >  -
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2SY3ZSm0bzBoyQkWFQAYYZru1UJ/
-> > >
-> > >
-> > > --
-> > > Linaro LKFT
-> > > https://lkft.linaro.org
-> >
-> > -ritesh
->
+> Hi Petr,
+> 
+>> Hi Xu,
+>>
+>>> -		if (pwent == NULL)
+>>> -			tst_resm(TFAIL | TERRNO, "getpwuid failed");
+>>> -
+>>> -		UID16_CHECK(pwent->pw_uid, geteuid, cleanup);
+>> Don't we need to use UID16_CHECK()? In the new API version from
+>> compat_tst_16.h
+>>
+>   >
+> Previously, the EUID was obtained from the return value of getpwuid()
+> and compared with the return value of geteuid() to check for a match.
+> This approach seemed more like a test of getpwuid() rather than testing
+> geteuid() itself.
+> 
+> EUID is stored in /proc/self/status, and we can directly obtain it for
+> comparison with the return from geteuid().
+> 
+> Best Regards
+> Yang Xu
+> 
+>> Kind regards,
+>> Petr
+>>
+>>> -		if (pwent->pw_uid != TEST_RETURN)
+>>> -			tst_resm(TFAIL, "getpwuid value, %d, "
+>>> -				 "does not match geteuid "
+>>> -				 "value, %ld", pwent->pw_uid,
+>>> -				 TEST_RETURN);
+>>> -		else
+>>> -			tst_resm(TPASS, "values from geteuid "
+>>> -				 "and getpwuid match");
+>>> -	}
+>> ...
+>>> +	TST_EXP_EXPR(TST_RET == uid[1],
+>>> +		     "geteuid() ret %ld == /proc/self/status EUID: %ld",
+>>> +		     TST_RET, uid[1]);
+>>>    }
+>>
+>>> +static struct tst_test test = {
+>>> +	.test_all = verify_geteuid,
+>>> +};
+> 
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
