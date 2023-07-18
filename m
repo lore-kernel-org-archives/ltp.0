@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DC61EB64DA
-	for <ltp@archiver.kernel.org>; Tue, 18 Jul 2023 13:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81AACEB64DA
+	for <ltp@archiver.kernel.org>; Tue, 18 Jul 2023 14:03:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B31983CDE9D
-	for <ltp@archiver.kernel.org>; Tue, 18 Jul 2023 15:47:40 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id E27E73CEB31
+	for <ltp@archiver.kernel.org>; Tue, 18 Jul 2023 16:03:21 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6F3EC3C98F4
- for <ltp@lists.linux.it>; Tue, 18 Jul 2023 15:47:30 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 1A73F3C9A2E
+ for <ltp@lists.linux.it>; Tue, 18 Jul 2023 16:03:10 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B538C60029E
- for <ltp@lists.linux.it>; Tue, 18 Jul 2023 15:47:29 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 34407600114
+ for <ltp@lists.linux.it>; Tue, 18 Jul 2023 16:03:09 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D8F59218F8;
- Tue, 18 Jul 2023 13:47:28 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 63398218F8;
+ Tue, 18 Jul 2023 14:03:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689688048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1689688989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Dfs+plJw5fUAmZ7pigJAUQpbM0qGAQG6PnaJA0Sf8n0=;
- b=TXiG4m4fVWt3j7t1VP43+IJ8HDP12GY7SqPGLo1PCF1j39PyDntaMrPnMCEHE0GimyIhqu
- F4uUyhlAb88nKmscVL8slyiuDFQBkwMKJ5KpvhxOVh2l8oFo2tmRRXgLefOC6F1X4/+Uf8
- BKgJ8OtD4N+lnOl/HtkRzojNHKGKq0k=
+ bh=OZqarg5fMpWd7AaknJ41DNarATXoeE9zUDXa0r/AhUg=;
+ b=B1K1x4usBjfrFo8ifTChNH/E3Cq3M4EX0gWl0FmvI0vb9JFNrzPlE8KENAolcUoLYDLAp2
+ f1xRk7lpo80lCMG2Owab0jhWJvW9yiKllC39GwZT5ZU6yo4SYdsjOBrFirUG8VhCzPOINR
+ zH/GkFIM0mavZ/gPvaqh1gAkThjBwko=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689688048;
+ s=susede2_ed25519; t=1689688989;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Dfs+plJw5fUAmZ7pigJAUQpbM0qGAQG6PnaJA0Sf8n0=;
- b=cSLuXOPsVAxvNP3RF4oTbaoC53/LFcAEmhiGlUDkmLbw+O6KV/qFA+Vaf50vANe5R4P4zj
- fHZDVw5ZYFD2l1CQ==
+ bh=OZqarg5fMpWd7AaknJ41DNarATXoeE9zUDXa0r/AhUg=;
+ b=btyX5NLLw4ccLc8C9iBs9cv5icIRJyDiEi/44xXdOhSESXvcajGTbN8Rl6wmHWotTHyHfQ
+ XtsXqg9ih8CT8qCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C654613494;
- Tue, 18 Jul 2023 13:47:28 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 510DD134B0;
+ Tue, 18 Jul 2023 14:03:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 999WL/CXtmQvcgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 18 Jul 2023 13:47:28 +0000
-Date: Tue, 18 Jul 2023 15:48:32 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id rnmTEp2btmTeegAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 18 Jul 2023 14:03:09 +0000
+Date: Tue, 18 Jul 2023 16:04:12 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZLaYMAkKxMK3h7mC@yuki>
+Message-ID: <ZLab3JV7ECyGIccZ@yuki>
 References: <20230718114027.GA1172148@pevik>
+ <ZLaYMAkKxMK3h7mC@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230718114027.GA1172148@pevik>
+In-Reply-To: <ZLaYMAkKxMK3h7mC@yuki>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] sched_rr_get_interval01 depends on particular CONFIG_HZ
@@ -83,22 +84,27 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> sched_rr_get_interval01.c depends on particular CONFIG_HZ value.
-> Recent change in openSUSE kernel from the default 250 to 300 breaks it:
+> > sched_rr_get_interval01.c depends on particular CONFIG_HZ value.
+> > Recent change in openSUSE kernel from the default 250 to 300 breaks it:
+> > 
+> > sched_rr_get_interval01.c:57: TPASS: sched_rr_get_interval() passed
+> > sched_rr_get_interval01.c:64: TPASS: Time quantum 0s 99999990ns
+> > sched_rr_get_interval01.c:72: TFAIL: /proc/sys/kernel/sched_rr_timeslice_ms != 100 got 90
+> > sched_rr_get_interval01.c:57: TPASS: sched_rr_get_interval() passed
+> > sched_rr_get_interval01.c:64: TPASS: Time quantum 0s 99999990ns
+> > sched_rr_get_interval01.c:72: TFAIL: /proc/sys/kernel/sched_rr_timeslice_ms != 100 got 90
+> > 
+> > According to kernel/Kconfig.hz CONFIG_HZ can have various values (100, 250, 300,
+> > 1000). Should we adapt the test to expect any of these? Or should we require
+> > kernel config to read CONFIG_HZ value and check for correct value?
 > 
-> sched_rr_get_interval01.c:57: TPASS: sched_rr_get_interval() passed
-> sched_rr_get_interval01.c:64: TPASS: Time quantum 0s 99999990ns
-> sched_rr_get_interval01.c:72: TFAIL: /proc/sys/kernel/sched_rr_timeslice_ms != 100 got 90
-> sched_rr_get_interval01.c:57: TPASS: sched_rr_get_interval() passed
-> sched_rr_get_interval01.c:64: TPASS: Time quantum 0s 99999990ns
-> sched_rr_get_interval01.c:72: TFAIL: /proc/sys/kernel/sched_rr_timeslice_ms != 100 got 90
-> 
-> According to kernel/Kconfig.hz CONFIG_HZ can have various values (100, 250, 300,
-> 1000). Should we adapt the test to expect any of these? Or should we require
-> kernel config to read CONFIG_HZ value and check for correct value?
+> We had the same problem with getrusage04.c, see the
+> guess_timer_resolution() function there.
 
-We had the same problem with getrusage04.c, see the
-guess_timer_resolution() function there.
+However in the case of sched_rr_get_interval() both values are supposed
+to be in seconds. The sched_rr_get_interval() fills in a timespec and
+the proc file is in miliseconds. As far as I can tell we actually
+compare apples to apples in the test and not oranges and apples.
 
 -- 
 Cyril Hrubis
