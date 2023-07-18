@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ED3DEB64DA
-	for <ltp@archiver.kernel.org>; Tue, 18 Jul 2023 08:33:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DD9BEB64DA
+	for <ltp@archiver.kernel.org>; Tue, 18 Jul 2023 09:10:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EDF773CA8FF
-	for <ltp@archiver.kernel.org>; Tue, 18 Jul 2023 10:33:48 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 87FB53C9901
+	for <ltp@archiver.kernel.org>; Tue, 18 Jul 2023 11:10:47 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EBF083C9753
- for <ltp@lists.linux.it>; Tue, 18 Jul 2023 10:33:36 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 6C8FA3C98F6
+ for <ltp@lists.linux.it>; Tue, 18 Jul 2023 11:10:35 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BE092600A44
- for <ltp@lists.linux.it>; Tue, 18 Jul 2023 10:33:35 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E2CE81400DB3
+ for <ltp@lists.linux.it>; Tue, 18 Jul 2023 11:10:34 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4FC1A1FDC3;
- Tue, 18 Jul 2023 08:33:33 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2D5872195F;
+ Tue, 18 Jul 2023 09:10:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689669213; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ t=1689671434;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nuSTi7F7QTYu2gbUOv6LgCKSOySt0aWWBDU5Iaid6Lc=;
- b=DSCL5DiiMuboTMQ29whiLeoptNyu4lB1EIM3Zpl1l4Yq61IxLqhBGRDfjpo7ZFvb8HHeDH
- KyjI1mwI0eL936jR0pj26sLh+EkDyxwHWhfYjC9l8O6aaYgkzFUT4F7ed4d+OznzAAiGuA
- uqfmUx1AWm82M2jffxcRJAEqGB3K9uw=
+ bh=XjTjy8bD3w9DvRPImUgRpOPNPTrxRdwaCRNZC4ChKoU=;
+ b=MBiFUahqa/MCGv/mqC8Ps52wf8DzczakgtxZMqZSuHa+5iNwPFoADR6fcr4EG1yKUWPXKP
+ dKbUqMsQdrn6kpPmRpNonkieRdJw6CCcVbohvpQ8icnfTjl1CLsuxj78Fc/46+01ThCOVx
+ 1iOGHQAlOVdJLIjOdYdNIiKRM/H6aPY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689669213;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1689671434;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=nuSTi7F7QTYu2gbUOv6LgCKSOySt0aWWBDU5Iaid6Lc=;
- b=C2lhFANod/f3RhJD4VkCVBlmCu4OoWTP/TEge3halF9t23q+U8VfvRyoC0tf7qtX2L7zuj
- MJuzFkmoG3WJA1AA==
+ bh=XjTjy8bD3w9DvRPImUgRpOPNPTrxRdwaCRNZC4ChKoU=;
+ b=x8C9NF5/Qyg+tX17//LLcfNgr5MhVohJLIfu9eo4JqX0SUVHTURTy403q3dyWagM9jOx+j
+ AS4rr9UdHBVxP7Dg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A05913494;
- Tue, 18 Jul 2023 08:33:33 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8486613494;
+ Tue, 18 Jul 2023 09:10:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id vKRjCV1OtmSHRgAAMHmgww
- (envelope-from <vbabka@suse.cz>); Tue, 18 Jul 2023 08:33:33 +0000
-Message-ID: <3c844681-015b-c9cf-1fd1-8f71ae631804@suse.cz>
-Date: Tue, 18 Jul 2023 10:33:32 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 97IkHglXtmSGWgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 18 Jul 2023 09:10:33 +0000
+Date: Tue, 18 Jul 2023 11:10:31 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Ritesh Harjani <ritesh.list@gmail.com>
+Message-ID: <20230718091031.GB1140910@pevik>
+References: <20230717213424.GB3842864@mit.edu>
+ <87h6q2nfr7.fsf@doe.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20230717094348.1105467-1-pvorel@suse.cz>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230717094348.1105467-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87h6q2nfr7.fsf@doe.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/1] mremap06: Add mremap() reproducer for
- 7e7757876f25
+Subject: Re: [LTP] next: kernel BUG at fs/ext4/mballoc.c:4369!
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,202 +77,71 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Fabian Vogt <fvogt@suse.com>, Jiri Slaby <jirislaby@kernel.org>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Theodore Ts'o <tytso@mit.edu>, Arnd Bergmann <arnd@arndb.de>,
+ open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ linux-mm <linux-mm@kvack.org>, Andreas Dilger <adilger.kernel@dilger.ca>,
+ LTP List <ltp@lists.linux.it>, Andrew Morton <akpm@linux-foundation.org>,
+ linux-ext4 <linux-ext4@vger.kernel.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>,
+ Ojaswin Mujoo <ojaswin@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 7/17/23 11:43, Petr Vorel wrote:
-> Affected system reports:
-> 
-> mremap06.c:69: TINFO: all pages with compatible mapping
-> mremap06.c:90: TPASS: mmap/mremap work properly
-> mremap06.c:69: TINFO: third page's mapping incompatible
-> mremap06.c:90: TPASS: mmap/mremap work properly
-> mremap06.c:69: TINFO: first page's mapping incompatible
-> mremap06.c:56: TFAIL: page 1 wrong value 2 (0x32)
-> mremap06.c:56: TFAIL: page 2 wrong value 3 (0x33)
-> 
-> Link: https://bugzilla.suse.com/show_bug.cgi?id=1210903
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> "Theodore Ts'o" <tytso@mit.edu> writes:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Thanks!
+> > On Mon, Jul 17, 2023 at 08:04:54PM +0530, Ritesh Harjani wrote:
 
-> ---
-> Changes v1->v2:
-> * Use getpagesize() to fix ppc64le (Cyril)
-> * Don't use ARRAY_SIZE(tcases) for mmap() size - define NUM_PAGES 3
-> instead (Vlastimil)
-> 
->  runtest/syscalls                            |   1 +
->  testcases/kernel/syscalls/mremap/.gitignore |   1 +
->  testcases/kernel/syscalls/mremap/mremap06.c | 133 ++++++++++++++++++++
->  3 files changed, 135 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/mremap/mremap06.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index b29151186..008bca508 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -845,6 +845,7 @@ mremap02 mremap02
->  mremap03 mremap03
->  mremap04 mremap04
->  mremap05 mremap05
-> +mremap06 mremap06
->  
->  msgctl01 msgctl01
->  msgctl02 msgctl02
-> diff --git a/testcases/kernel/syscalls/mremap/.gitignore b/testcases/kernel/syscalls/mremap/.gitignore
-> index 833e1b883..ec15a19cd 100644
-> --- a/testcases/kernel/syscalls/mremap/.gitignore
-> +++ b/testcases/kernel/syscalls/mremap/.gitignore
-> @@ -3,3 +3,4 @@
->  /mremap03
->  /mremap04
->  /mremap05
-> +/mremap06
-> diff --git a/testcases/kernel/syscalls/mremap/mremap06.c b/testcases/kernel/syscalls/mremap/mremap06.c
-> new file mode 100644
-> index 000000000..758df66f0
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/mremap/mremap06.c
-> @@ -0,0 +1,133 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2023 SUSE LLC
-> + * Author: Vlastimil Babka <vbabka@suse.cz>
-> + * https://bugzilla.suse.com/attachment.cgi?id=867254
-> + * LTP port: Petr Vorel <pvorel@suse.cz>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Bug reproducer for 7e7757876f25 ("mm/mremap: fix vm_pgoff in vma_merge() case 3")
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <unistd.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <fcntl.h>
-> +#include <sys/mman.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_safe_macros.h"
-> +
-> +#define NUM_PAGES 3
-> +
-> +static int fd;
-> +static char *buf, *buf2;
-> +static int page_size, mmap_size, mremap_size;
-> +
-> +static struct tcase {
-> +	size_t incompatible;
-> +	const char *desc;
-> +} tcases[] = {
-> +	{
-> +		.desc = "all pages with compatible mapping",
-> +	},
-> +	{
-> +		.incompatible = 3,
-> +		.desc = "third page's mapping incompatible",
-> +	},
-> +	{
-> +		.incompatible = 1,
-> +		.desc = "first page's mapping incompatible",
-> +	},
-> +};
-> +
-> +static int check_pages(void)
-> +{
-> +	int fail = 0, i;
-> +	char val;
-> +
-> +	for (i = 0; i < (int)ARRAY_SIZE(tcases); i++) {
-> +		val = buf[i * page_size];
-> +		if (val != 0x30 + i) {
-> +			tst_res(TFAIL, "page %d wrong value %d (0x%x)", i, val - 0x30, val);
-> +			fail = 1;
-> +		}
-> +	}
-> +
-> +	return fail;
-> +}
-> +
-> +static void do_test(unsigned int n)
-> +{
-> +	struct tcase *tc = &tcases[n];
-> +	int ret;
-> +
-> +	tst_res(TINFO, "%s", tc->desc);
-> +
-> +	buf = SAFE_MMAP(0, mmap_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-> +
-> +	buf2 = mremap(buf + page_size, page_size, page_size,
-> +			MREMAP_MAYMOVE|MREMAP_FIXED, buf + mremap_size);
-> +	if (buf2 == MAP_FAILED)
-> +		tst_brk(TBROK, "mremap() failed");
-> +
-> +	if (tc->incompatible) {
-> +		ret = mprotect(buf + (tc->incompatible-1)*page_size, page_size, PROT_READ);
-> +		if (ret == -1)
-> +			tst_brk(TBROK, "mprotect() failed");
-> +	}
-> +
-> +	buf2 = mremap(buf + mremap_size, page_size, page_size,
-> +			MREMAP_MAYMOVE|MREMAP_FIXED, buf + page_size);
-> +	if (buf2 == MAP_FAILED)
-> +		tst_brk(TBROK, "mremap() failed");
-> +
-> +	if (!check_pages())
-> +		tst_res(TPASS, "mmap/mremap work properly");
-> +
-> +	SAFE_MUNMAP(buf, mremap_size);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int ret, i;
-> +
-> +	page_size = getpagesize();
-> +	mmap_size = (NUM_PAGES+1) * page_size;
-> +	mremap_size = NUM_PAGES * page_size;
-> +
-> +	fd = SAFE_OPEN("testfile", O_CREAT | O_RDWR | O_TRUNC, 0600);
-> +
-> +	ret = fallocate(fd, 0, 0, mmap_size);
-> +	if (ret == -1)
-> +		tst_brk(TBROK, "fallocate() failed");
-> +
-> +	buf = SAFE_MMAP(0, mmap_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-> +
-> +	for (i = 0; i < (int)ARRAY_SIZE(tcases)+1; i++)
-> +		buf[i*page_size] = 0x30 + i;
-> +
-> +	/* clear the page tables */
-> +	SAFE_MUNMAP(buf, mmap_size);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test = do_test,
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.tags = (struct tst_tag[]) {
-> +		{"linux-git", "7e7757876f25"},
-> +		{}
-> +	},
-> +};
+> >> These can basically trigger in extremely low memory space and only when
+> >> such ranges exist in the PA rbtree. Hence, I guess it is a little hard
+> >> to tigger race.
 
+> > Ritesh, thanks for looking into this!
+
+> > Naresh, how easy is it for you to trigger the BUG when using LTP?  I
+> > did two xfstests runs using "gce-xfstests -c ext2/default -g auto",
+> > one on the ext4 dev branch, and one on linux-next 20230717, and I
+> > wasn't able to trigger the BUG.
+
+> > If you can trivially trigger it using LTP (perhaps with a low memory
+> > configuration in your test setup?), that would be useful to know.
+
+> Hi Ted,
+
+Hi Ted, Ritesh, all,
+
+> Sorry for wrong choice of words. By low memory space I meant low disk
+> space i.e. ENOSPC test (fs_fill). I reproduced it like this - 
+
+> root@ubuntu:/opt/ltp# while [ 1 ]; do ./runltp -s fs_fill; sleep 1; done
+
+Late, but better than never: LTP C tests can be run without any wrapper.
+e.g. to reproduce the bug triggered by fs_fill, you can just:
+
+git clone https://github.com/linux-test-project/ltp.git && cd ltp
+./ci/your-distro.sh # optionally install the dependencies
+make autotools
+./configure
+cd testcases/kernel/fs/fs_fill/
+make -j`nproc`
+while true; do ./fs_fill; sleep 1; done
+
+NOTE: runltp is
+1) deprecated, replaced by runltp-ng [1]
+2) again, there is no need to use this shell wrapper to run a single C binary
+
+Kind regards,
+Petr
+
+[1] https://github.com/linux-test-project/runltp-ng
+
+> For me it took around ~1-2 hours for it to reproduce when I tried again.
+> I am hoping if we run generic/269 (fsstress ENOSPC) in a while loop like
+> this maybe it can hit this bug. But I didn't give it a shot.
+
+> -ritesh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
