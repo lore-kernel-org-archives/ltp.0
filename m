@@ -4,78 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11497EB64DA
-	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 09:11:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DA4DEB64DA
+	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 09:30:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E348D3CDD16
-	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 11:11:25 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id B3ED83C9737
+	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 11:30:23 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5BCE13C02C7
- for <ltp@lists.linux.it>; Wed, 19 Jul 2023 11:11:15 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 33ACF3C0D05
+ for <ltp@lists.linux.it>; Wed, 19 Jul 2023 11:28:50 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0B0C6201100
- for <ltp@lists.linux.it>; Wed, 19 Jul 2023 11:11:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1689757872;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9D7546007A1
+ for <ltp@lists.linux.it>; Wed, 19 Jul 2023 11:28:48 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id EAECD1FD94
+ for <ltp@lists.linux.it>; Wed, 19 Jul 2023 09:28:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1689758927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=iHdj44wErqX10vgMEwC7HPTsaPmLrlakyJVTsxvp0DY=;
- b=QjRKZraGdCCgMSQ/Uat71VlXyM4uivbtpqIFTv69abs8C/uXDNvz2oMmCRZqSEW7P4+BXs
- Ca5vdqLo2iKT/whSUmxHYOClNh0O99esJTorOzKMe57Lr7eCKL4QUz0hx4Ot8i7Ts3v1sI
- QsaR0B70uZ+A0g7plHdq20GTX+A6OTk=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-466-dJprHXvGPF2GHLOQ3j12-A-1; Wed, 19 Jul 2023 05:11:10 -0400
-X-MC-Unique: dJprHXvGPF2GHLOQ3j12-A-1
-Received: by mail-lj1-f199.google.com with SMTP id
- 38308e7fff4ca-2b701c82e83so61166271fa.1
- for <ltp@lists.linux.it>; Wed, 19 Jul 2023 02:11:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1689757869; x=1692349869;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=iHdj44wErqX10vgMEwC7HPTsaPmLrlakyJVTsxvp0DY=;
- b=A9mKrxovAl7zxslu5cZI8TJf3tpw3XbhP6rggES1PXTGefuEB87a9fKDSg/br/Mss0
- b2FvqyeERXINPct6Nh0UfuG088hKL+JPH4Z1jlilaI3w9LnxgZqnzpIYF42ngnJTXBFz
- NIu0zu5sIN52oOa7eZa3vpO2camox0CVQ41+IU1F6JsF1ovYnKFVyWYbXzSYD8Eh8L5o
- 67F9/tvhxrlHbCxZgVDVA8yuOOOXDbvawxBRwREODYcmWq9SRLbkQXZaIRaXgjsfKk4Q
- CyWJN02jgWzmY3AUY2+FvSpI25argfd+oIaVYNAwKQS5hCSpmYpqhB092QSQVX+cZq43
- W5iw==
-X-Gm-Message-State: ABy/qLaRsYWn8xo6uP72InUj+oU0zRX16lRU9BMV04tL0LboTspyhedD
- p6hK+Sq/lEdwUOhASqqHQkBk9KdTIR3CExN5shlzfQAKxYFhjtWwSyZrq/MRoB6CAUVC8uABvZd
- qoIv8tDX/+1QxUzNPvbkB/irLZBM=
-X-Received: by 2002:a2e:9059:0:b0:2b6:9ed0:46f4 with SMTP id
- n25-20020a2e9059000000b002b69ed046f4mr2227678ljg.23.1689757868859; 
- Wed, 19 Jul 2023 02:11:08 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFFsPaSOB/IA3k8rMSO6vo8unwzGICoprogMwAXCHX4doEETt/6eE0sw3SoiV8j88V2FLN77YAzY8+WgFJ94T4=
-X-Received: by 2002:a2e:9059:0:b0:2b6:9ed0:46f4 with SMTP id
- n25-20020a2e9059000000b002b69ed046f4mr2227663ljg.23.1689757868537; Wed, 19
- Jul 2023 02:11:08 -0700 (PDT)
+ bh=cxXtbqeFpUpiJfFIHLQud/Yg8M8e/ZysIBgo3nI6G/4=;
+ b=JfiC/eIRA6NnG9iMi9eTwDx6iqXDnuv0KDwVP5yN0PDTAryA0G2Tc8/WwC6+zclMd01QXQ
+ Lc4PVjzCMKCa66Yv7uCTlxDfnjYmXyTPunbFvWWPxGXG5//V5lgxXdidAtEPcunqw5CcRV
+ rw9F2E1aLkCvmqnkbE0hPzXXz4f534g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1689758927;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cxXtbqeFpUpiJfFIHLQud/Yg8M8e/ZysIBgo3nI6G/4=;
+ b=Z7z6qlsccgudpxCEeLmleY8AYO6AbqagHNbqKAG8SXtTAZTnYqUBLn/64/tyJ62iIPRT7v
+ +sHrtfM7Y9bPMIAQ==
+Received: from localhost (dwarf.suse.cz [10.100.12.32])
+ by relay2.suse.de (Postfix) with ESMTP id C69412C142;
+ Wed, 19 Jul 2023 09:28:47 +0000 (UTC)
+Date: Wed, 19 Jul 2023 11:28:47 +0200
+From: Jiri Bohac <jbohac@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <ZLesz+hBcRGh1XOh@dwarf.suse.cz>
+References: <20230718114027.GA1172148@pevik> <ZLaYMAkKxMK3h7mC@yuki>
+ <ZLab3JV7ECyGIccZ@yuki> <ZLajnVugi-F3Lx_U@yuki>
 MIME-Version: 1.0
-References: <20230719085529.8886-1-mdoucha@suse.cz>
-In-Reply-To: <20230719085529.8886-1-mdoucha@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 19 Jul 2023 17:10:56 +0800
-Message-ID: <CAEemH2ee36=NQCvNZ+fwj2=mkG+Bx7doSudsJw_qqnRijMXyWw@mail.gmail.com>
-To: Martin Doucha <mdoucha@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <ZLajnVugi-F3Lx_U@yuki>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] cpuset_memory_testset.sh: Fix syntax error when
- hugepages not supported
+X-Mailman-Approved-At: Wed, 19 Jul 2023 11:30:12 +0200
+Subject: Re: [LTP] sched_rr_get_interval01 depends on particular CONFIG_HZ
+ value
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,32 +69,67 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gV2VkLCBKdWwgMTksIDIwMjMgYXQgNDo1NeKAr1BNIE1hcnRpbiBEb3VjaGEgPG1kb3VjaGFA
-c3VzZS5jej4gd3JvdGU6Cgo+IFRoZSBpbml0aWFsIGh1Z2VwYWdlIHNpemUgY2FsY3VsYXRpb24g
-Y2FuIHJlc3VsdCBpbiBtdWx0aXBsaWNhdGlvbgo+IG9mIGVtcHR5IHN0cmluZyBvbiBtYWNoaW5l
-cyB3aGljaCBkb24ndCBzdXBwb3J0IGh1Z2VwYWdlcy4gTWFrZQo+IHN1cmUgdGhhdCBlbXB0eSBz
-dHJpbmcgaXMgY29udmVydGVkIHRvIHplcm8uCj4KPiBTaWduZWQtb2ZmLWJ5OiBNYXJ0aW4gRG91
-Y2hhIDxtZG91Y2hhQHN1c2UuY3o+Cj4KClJldmlld2VkLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVk
-aGF0LmNvbT4KCj4gLS0tCj4gIC4uLi9jcHVzZXQvY3B1c2V0X21lbW9yeV90ZXN0L2NwdXNldF9t
-ZW1vcnlfdGVzdHNldC5zaCAgICAgICAgICB8IDIgKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5z
-ZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4KPiBkaWZmIC0tZ2l0Cj4gYS90ZXN0Y2FzZXMva2Vy
-bmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRfbWVtb3J5X3Rlc3QvY3B1c2V0X21lbW9yeV90
-ZXN0c2V0LnNoCj4gYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRf
-bWVtb3J5X3Rlc3QvY3B1c2V0X21lbW9yeV90ZXN0c2V0LnNoCj4gaW5kZXggY2I3ZGJkODY3Li5j
-MWU3Y2VhOGYgMTAwNzU1Cj4gLS0tCj4gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nw
-dXNldC9jcHVzZXRfbWVtb3J5X3Rlc3QvY3B1c2V0X21lbW9yeV90ZXN0c2V0LnNoCj4gKysrCj4g
-Yi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRfbWVtb3J5X3Rlc3Qv
-Y3B1c2V0X21lbW9yeV90ZXN0c2V0LnNoCj4gQEAgLTQxLDcgKzQxLDcgQEAgbWVtc19hbGw9IiQo
-c2VxIC1zLCAwICQoKG5yX21lbXMtMSkpKSIKPiAgY3B1X29mX25vZGUwPTAKPgo+ICBIVUdFUEFH
-RVNJWkU9JChhd2sgJy9IdWdlcGFnZXNpemUveyBwcmludCAkMiB9JyAvcHJvYy9tZW1pbmZvKQo+
-IC1IVUdFUEFHRVNJWkU9JCgoJEhVR0VQQUdFU0laRSAqIDEwMjQpKQo+ICtIVUdFUEFHRVNJWkU9
-JCgoJHtIVUdFUEFHRVNJWkU6LTB9ICogMTAyNCkpCj4KPiAgTUVNT1JZX1JFU1VMVD0iJENQVVNF
-VF9UTVAvbWVtb3J5X3Jlc3VsdCIKPgo+IC0tCj4gMi40MS4wCj4KPgo+IC0tCj4gTWFpbGluZyBs
-aXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCj4KPgoKLS0gClJl
-Z2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
-eC5pdC9saXN0aW5mby9sdHAK
+Hi,
+
+On Tue, Jul 18, 2023 at 04:37:17PM +0200, Cyril Hrubis wrote:
+> > > > sched_rr_get_interval01.c:72: TFAIL: /proc/sys/kernel/sched_rr_timeslice_ms != 100 got 90
+> > > > 
+> > > > According to kernel/Kconfig.hz CONFIG_HZ can have various values (100, 250, 300,
+> > > > 1000). Should we adapt the test to expect any of these? Or should we require
+> > > > kernel config to read CONFIG_HZ value and check for correct value?
+> > > 
+> > > We had the same problem with getrusage04.c, see the
+> > > guess_timer_resolution() function there.
+> > 
+> > However in the case of sched_rr_get_interval() both values are supposed
+> > to be in seconds. The sched_rr_get_interval() fills in a timespec and
+> > the proc file is in miliseconds. As far as I can tell we actually
+> > compare apples to apples in the test and not oranges and apples.
+> 
+> So I suppose that this is just rounding error in kernel.
+> 
+> We do have RR_TIMESLICE defined as:
+> 
+> include/linux/sched/rt.h:
+> 
+> #define RR_TIMESLICE           (100 * HZ / 1000)
+> 
+> And we get the proc file from that by:
+> 
+> static int sysctl_sched_rr_timeslice = (MSEC_PER_SEC / HZ) * RR_TIMESLICE;
+> 
+> If you put 300 you get:
+> 
+> (1000 / 300) * (100 * 300 / 1000)
+> 
+> Which in integer arithmetic is:
+> 
+> 3 * 30 = 90
+> 
+> While the syscall acutally does a bit more work to get the numbers right
+> as it uses the timeslice (RR_TIMESLICE) in jiffies, which itself is
+> precise and converts that into timespec. We still getthe 99999990ns
+> instead of 100000000ns I suppose that is because jiffies_to_timespec64()
+> uses TICK_NSEC, which is more precise in integer arithmetics but still
+> rounded (we get 3333333 in the case of 300HZ and that multiplied by
+> RR_TIMESLICE is still 99999990).
+> 
+> 
+> Maybe the fix sould be to change the division as:
+> 
+> static int sysctl_sched_rr_timeslice = (MSEC_PER_SEC * RR_TIMESLICE) / HZ
+
+makes sense to me; good catch!
+
+-- 
+Jiri Bohac <jbohac@suse.cz>
+SUSE Labs, Prague, Czechia
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
