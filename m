@@ -4,67 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9881EB64DA
-	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 11:01:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62C2FEB64DA
+	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 11:01:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6CF9E3C98F4
-	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 13:01:34 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id CC5B43CE9CA
+	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 13:01:43 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 115ED3C9733
+ by picard.linux.it (Postfix) with ESMTPS id 3671A3C98F1
  for <ltp@lists.linux.it>; Wed, 19 Jul 2023 13:00:57 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7977E1400451
- for <ltp@lists.linux.it>; Wed, 19 Jul 2023 13:00:57 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8DA0D200A0F
+ for <ltp@lists.linux.it>; Wed, 19 Jul 2023 13:00:55 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1B1E521B27;
- Wed, 19 Jul 2023 11:00:57 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7E0AC21B20;
+ Wed, 19 Jul 2023 11:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689764457; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=f2qfkxP5Yykfg1tSV2XqfZsrWXK1B97QjCzbwsJgO74=;
- b=avYkrTlFp3E0kg7rzj+fcxgmyin8I3TDlDUAgXhA2XeKYaefy6QLXNlxBf6K5UR28163ba
- cv23sQlN6E63dvvtf2buGc90ng+LY0z/oB3AfLGr/Cta9dN/2gPyAC6bvFQv7TNWHVTVVM
- fQgpzrwN81Q8CUmTKZ/O8BOcUGQUL38=
+ t=1689764455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=E7osXWPx0QZgLxfmTeJsr28G2oUGLckSWzkemBMH1ow=;
+ b=I5l2rrFlW6r7tNdf9dYGd4FM0CYAgL6H/DVE8uslSXL+eg0XApM70p6aBZOz5jw/zIueWt
+ FPC+YjPy9OOqngjwiR3dxyQedd3FtdXDvt/aQTj9M3z3FEMLv50jXvxMHNX73HbquPLyti
+ WUmBISb94NWrpIQ75Kn0Po/8dgqUw5I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689764457;
+ s=susede2_ed25519; t=1689764455;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=f2qfkxP5Yykfg1tSV2XqfZsrWXK1B97QjCzbwsJgO74=;
- b=xJg7lf7PO39xyy88V9vINCf14aVqN0uE27lIn4YjYYY1omZkL4eRK4y+My12Eg77YEAeoV
- ijWtrBLrwlQIE7CA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=E7osXWPx0QZgLxfmTeJsr28G2oUGLckSWzkemBMH1ow=;
+ b=ITHwtkivDB0k9ZRZzV/y6fDtLDs4FcK8gkG3poNOTNxONRFR+za54QjOkrPL7LOdl6zUKp
+ TLUK4slT15yhAcBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DB3311361C;
- Wed, 19 Jul 2023 11:00:56 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08CAC1361C;
+ Wed, 19 Jul 2023 11:00:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id yNfrMmjCt2RtUgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 19 Jul 2023 11:00:56 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id aTKhAGfCt2RtUgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 19 Jul 2023 11:00:55 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 19 Jul 2023 13:00:51 +0200
-Message-Id: <20230719110051.1237775-5-pvorel@suse.cz>
+Date: Wed, 19 Jul 2023 13:00:47 +0200
+Message-Id: <20230719110051.1237775-1-pvorel@suse.cz>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230719110051.1237775-1-pvorel@suse.cz>
-References: <20230719110051.1237775-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 4/4] lib: Move gitignore entries to their directory
+Subject: [LTP] [PATCH v2 0/4] Makefile: Add C header with generated LTP
+ version
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,78 +77,39 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
+Hi,
+
+changes v1->v2:
+* proper make solution from Cyril, slightly modified (first commit)
+ltp-version.h gets regenerated only when make requires to run in lib/,
+but I'm ok with that.
+* .gitignore cleanup (last commit)
+
+I wonder how about shell API? Do we want to create tst_version binary in
+testcases/lib/ ?
+
+Kind regards,
+Petr
+
+Cyril Hrubis (1):
+  Makefile: Add C header with generated LTP version
+
+Petr Vorel (3):
+  lib/C-API: Add option -V to print LTP version
+  lib/C-API: Print LTP version at test start
+  lib: Move gitignore entries to their directory
+
  .gitignore           | 18 ------------------
- lib/.gitignore       |  1 +
+ lib/.gitignore       |  3 +++
+ lib/Makefile         | 13 +++++++++++++
+ lib/gen_version.sh   | 16 ++++++++++++++++
  lib/tests/.gitignore | 17 +++++++++++++++++
- 3 files changed, 18 insertions(+), 18 deletions(-)
+ lib/tst_test.c       |  8 ++++++++
+ 6 files changed, 57 insertions(+), 18 deletions(-)
+ create mode 100644 lib/.gitignore
+ create mode 100755 lib/gen_version.sh
  create mode 100644 lib/tests/.gitignore
 
-diff --git a/.gitignore b/.gitignore
-index 915d22104..85bcf052b 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -41,7 +41,6 @@ autom4te.cache
- /include/mk/config-openposix.mk
- /include/mk/features.mk
- /m4/ltp-version.m4
--/lib/ltp.pc
- /pan/ltp-bump
- /pan/ltp-pan
- 
-@@ -63,20 +62,3 @@ patches/
- logfile.*
- 
- /utils/benchmark/ebizzy-0.3/ebizzy
--/lib/tests/tst_tmpdir_test
--/lib/tests/tst_checkpoint
--/lib/tests/tst_checkpoint_wait_timeout
--/lib/tests/tst_checkpoint_wake_timeout
--/lib/tests/tst_process_state
--/lib/tests/tst_cleanup_once
--/lib/tests/tst_safe_macros
--/lib/tests/tst_strsig
--/lib/tests/tst_strerrno
--/lib/tests/tst_fs_fill_subdirs
--/lib/tests/tst_fs_fill_hardlinks
--/lib/tests/tst_device
--/lib/tests/tst_record_childstatus
--/lib/tests/trerrno
--/lib/tests/tst_dataroot01
--/lib/tests/tst_dataroot02
--/lib/tests/tst_dataroot03
-diff --git a/lib/.gitignore b/lib/.gitignore
-index 1bd967e2f..eb9901169 100644
---- a/lib/.gitignore
-+++ b/lib/.gitignore
-@@ -1,2 +1,3 @@
- /ltp-version.h
- /cached-version
-+/ltp.pc
-diff --git a/lib/tests/.gitignore b/lib/tests/.gitignore
-new file mode 100644
-index 000000000..1d880c1b7
---- /dev/null
-+++ b/lib/tests/.gitignore
-@@ -0,0 +1,17 @@
-+/tst_tmpdir_test
-+/tst_checkpoint
-+/tst_checkpoint_wait_timeout
-+/tst_checkpoint_wake_timeout
-+/tst_process_state
-+/tst_cleanup_once
-+/tst_safe_macros
-+/tst_strsig
-+/tst_strerrno
-+/tst_fs_fill_subdirs
-+/tst_fs_fill_hardlinks
-+/tst_device
-+/tst_record_childstatus
-+/trerrno
-+/tst_dataroot01
-+/tst_dataroot02
-+/tst_dataroot03
 -- 
 2.40.1
 
