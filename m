@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19CEDEB64DA
-	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 10:12:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02B60C001DE
+	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 10:26:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1AAD73CDD37
-	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 12:12:40 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 2F65C3CDD25
+	for <ltp@archiver.kernel.org>; Wed, 19 Jul 2023 12:26:31 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 490543C02B2
- for <ltp@lists.linux.it>; Wed, 19 Jul 2023 12:12:29 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id B83483C02C7
+ for <ltp@lists.linux.it>; Wed, 19 Jul 2023 12:26:20 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 30FEB6011FC
- for <ltp@lists.linux.it>; Wed, 19 Jul 2023 12:12:28 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1F857601225
+ for <ltp@lists.linux.it>; Wed, 19 Jul 2023 12:26:19 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2FE611FE2F;
- Wed, 19 Jul 2023 10:12:28 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E46C61FE41;
+ Wed, 19 Jul 2023 10:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689761548;
+ t=1689762378;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=QUqM/MO+EcUB5Mn16viXcMG+TXGfVA9X+UgWmh5SBYk=;
- b=ptd+sOAYhgpd9OlF1Vsr0nMqc+CoSjOtuH4E1TXk1H3STaly9BI//qwCUWV/+htrbAbCPi
- pzj4l6rL9vZKb0rUY8YDRisbU6NX/3kjA9aOW7aifhZx3cAgndM1keD/JyIJOeVnuNJsan
- SfRRFn9feZmcrXYFCCNyY+EHX83BMZQ=
+ bh=ghE+fFDEVL85Kt0a2BxNCcha658vHYAJdYiCJSgP3Cs=;
+ b=KBvP2ppAA/jYH6Q5QX1tHwi4iN43eQ/YKpb3BckAH7fu+IPttQqIfKzVmcbLPTiSkVGwdk
+ 3+RB8pgThvXiCFNBahRJCGOhonXVbGaCz1ins/b4uwrHR/MyxiJ+ojwbIWks2oGtv1Ty9I
+ zPHwDYjytU0XdpsNQm0ZOzCqbkNenQA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689761548;
+ s=susede2_ed25519; t=1689762378;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=QUqM/MO+EcUB5Mn16viXcMG+TXGfVA9X+UgWmh5SBYk=;
- b=bADdvYMKTUnZt8XXMKTk7u+vIff+vILd8iFZQ3ncEzRWlxkj2F2Rx/OKPEc9dEzSp3zxUI
- 6c1mhhgHS4NDqHDw==
+ bh=ghE+fFDEVL85Kt0a2BxNCcha658vHYAJdYiCJSgP3Cs=;
+ b=GSe4LENi9E5Xc2P02EIBqfulYROVbrHQsukfYZGiFJUqJ9VXXqCU9D2y8v2EHY78vJ/8Zp
+ Cm4cb3vClx5mN1AA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C123C13460;
- Wed, 19 Jul 2023 10:12:27 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC87913460;
+ Wed, 19 Jul 2023 10:26:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id N3BpJgu3t2Q/OAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 19 Jul 2023 10:12:27 +0000
-Date: Wed, 19 Jul 2023 12:12:25 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id L3LvJ0q6t2R2PwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 19 Jul 2023 10:26:18 +0000
+Date: Wed, 19 Jul 2023 12:26:17 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20230719101225.GB1221211@pevik>
-References: <20230718100050.1162482-1-pvorel@suse.cz>
- <CAEemH2fAuHrE4XyBjpudMCJJ4ZJ+9TOu=LpHXzizUp-uRqWXdA@mail.gmail.com>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20230719102617.GC1221211@pevik>
+References: <20230717125413.1123587-1-pvorel@suse.cz>
+ <23241907-fdfa-f1c0-7979-4680aae40252@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2fAuHrE4XyBjpudMCJJ4ZJ+9TOu=LpHXzizUp-uRqWXdA@mail.gmail.com>
+In-Reply-To: <23241907-fdfa-f1c0-7979-4680aae40252@suse.cz>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] compat_16: Define USE_LEGACY_COMPAT_16_H for
- legacy tests
+Subject: Re: [LTP] [PATCH 1/1] statx09: Format filesystem with page size
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,44 +83,12 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Hi Martin,
 
-...
-> I'm not sure here if we really need COMPAT_16_H for choosing two compat
-> header file.
-> As we already use hard code in C source file like #include "compat_16.h" or
-> "compat_tst_16.h",
-> so compile with -I the header directory is enough I guess.
-
-> Try this simple compat_16.mk, it at least works well on my side.
-> Or, did I miss anything in the 16bit compilation?
-
-I like this simplification.
-
-Well, touch compat_16.h causes rebuilding tests which use compat_tst_16.h.
-I don't mind that. But OTOH touch compat_tst_16.h does not trigger rebuilding
-tests which use compat_tst_16.h :( (tested on
-testcases/kernel/syscalls/setregid). Could you please recheck that?
+thanks for your review, merged!
 
 Kind regards,
 Petr
-
-> # cat compat_16.mk
-
-> CPPFLAGS += -I$(abs_srcdir) -I$(abs_srcdir)/../utils
-
-> SRCS ?= $(sort $(wildcard $(abs_srcdir)/*.c))
-
-> MAKE_TARGETS := $(notdir $(patsubst %.c,%,$(SRCS)))
-> MAKE_TARGETS_OBJS_WO_COMPAT_16 := $(addsuffix .o,$(MAKE_TARGETS))
-> MAKE_TARGETS += $(addsuffix _16,$(MAKE_TARGETS))
-
-> DEF_16 := TST_USE_COMPAT16_SYSCALL
-
-> %_16: CPPFLAGS += -D$(DEF_16)=1
-
-> %_16.o: %.c
-> $(COMPILE.c) $(OUTPUT_OPTION) $<
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
