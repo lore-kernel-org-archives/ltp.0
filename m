@@ -4,71 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88974EB64DA
-	for <ltp@archiver.kernel.org>; Thu, 20 Jul 2023 15:18:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2CC7EB64DA
+	for <ltp@archiver.kernel.org>; Thu, 20 Jul 2023 15:26:22 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C22FD3CDC8A
-	for <ltp@archiver.kernel.org>; Thu, 20 Jul 2023 17:18:21 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 353ED3CE97F
+	for <ltp@archiver.kernel.org>; Thu, 20 Jul 2023 17:26:21 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 93C3A3C0123
- for <ltp@lists.linux.it>; Thu, 20 Jul 2023 17:18:10 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id EC0F63C0123
+ for <ltp@lists.linux.it>; Thu, 20 Jul 2023 17:26:10 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9C9161400F92
- for <ltp@lists.linux.it>; Thu, 20 Jul 2023 17:18:08 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4B0BA1A00FA7
+ for <ltp@lists.linux.it>; Thu, 20 Jul 2023 17:26:09 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7D5A922BCD;
- Thu, 20 Jul 2023 15:18:08 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9680022C86;
+ Thu, 20 Jul 2023 15:26:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689866288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ t=1689866769;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fIduKu+3lB4Wg+Yueg4COzNrAG3bS/krxBhjfDOvL1M=;
- b=oCkHKd0ca4J6bWgdkKas43JlKD+CpFlVPQlZkJg4X1w/xL1cqOd3MNfWl45iaNzFXlaPnj
- QchUqVqSj9v96vaJtzJAaa2tiHW/kpg3Ln8nbvwhyx1BhiZ0epqlHIjo6qi8kBjjfephS0
- A3zXsTnUclH/mTdvg848bzmw/ucJLR0=
+ bh=q70tGeeS4GH0cXsQPf7ncd6Wd0DOw7l1qR8JjrCbBUU=;
+ b=vEc3rdgTPJ3ppuEkphZPccK/NdH2gTuDYsGZpCnWuEqrouQ+GDMRl87+NcKGzYoI/TJgYz
+ lOjMXqFdkK+sMCCgbp3n/ViWcwBuSJifaSr8SveQ7b+fNZhKC2o+d9+TZexVBLkRYUCDXO
+ HcDPstoSO4kk4VIkAyp27urkVF+FBcc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689866288;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1689866769;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=fIduKu+3lB4Wg+Yueg4COzNrAG3bS/krxBhjfDOvL1M=;
- b=s7rgYuCjE1nNpqL9Kto2PJC+xOVHE2yZd3knPDQWOpCs15MdikjKSn9TMO4o3upZoZ37ku
- EPv5XdTluOR1ZYBA==
+ bh=q70tGeeS4GH0cXsQPf7ncd6Wd0DOw7l1qR8JjrCbBUU=;
+ b=TKumWkUxkjHBvyALMPxyp6bc/hB+FMMVeF2MZgAF4H321WZxcltFu5SSJQCMySIkcC6DZk
+ J6WdfsUV3ZIbmSBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6D039133DD;
- Thu, 20 Jul 2023 15:18:08 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BFDF133DD;
+ Thu, 20 Jul 2023 15:26:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id r9+SGTBQuWQiEgAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Thu, 20 Jul 2023 15:18:08 +0000
-Message-ID: <adf7fc1d-b43e-fecb-4cbf-7663985a404e@suse.cz>
-Date: Thu, 20 Jul 2023 17:18:08 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id r2GdGBFSuWQ1FgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 20 Jul 2023 15:26:09 +0000
+Date: Thu, 20 Jul 2023 17:26:07 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Min <limin154@huawei.com>
+Message-ID: <20230720152607.GA1339322@pevik>
+References: <20230721071831.83546-1-limin154@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-References: <20230720150206.1338520-1-pvorel@suse.cz>
- <20230720150206.1338520-3-pvorel@suse.cz>
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <20230720150206.1338520-3-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230721071831.83546-1-limin154@huawei.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/4] lib: Add .skip_in_secureboot flag
+Subject: Re: [LTP] [PATCH]utils/sctp: bugfix for testlib/sctputil.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,50 +75,56 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGksClJldmlld2VkLWJ5OiBNYXJ0aW4gRG91Y2hhIDxtZG91Y2hhQHN1c2UuY3o+CgpPbiAyMC4g
-MDcuIDIzIDE3OjAyLCBQZXRyIFZvcmVsIHdyb3RlOgo+IFRoaXMgd2lsbCBiZSB1c2VkIGluIG1v
-ZHVsZSByZWxhdGVkIHRlc3RzLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFBldHIgVm9yZWwgPHB2b3Jl
-bEBzdXNlLmN6Pgo+IC0tLQo+ICAgZG9jL3Rlc3Qtd3JpdGluZy1ndWlkZWxpbmVzLnR4dCB8IDEg
-Kwo+ICAgaW5jbHVkZS90c3RfdGVzdC5oICAgICAgICAgICAgICB8IDQgKysrKwo+ICAgbGliL3Rz
-dF90ZXN0LmMgICAgICAgICAgICAgICAgICB8IDMgKysrCj4gICAzIGZpbGVzIGNoYW5nZWQsIDgg
-aW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS9kb2MvdGVzdC13cml0aW5nLWd1aWRlbGlu
-ZXMudHh0IGIvZG9jL3Rlc3Qtd3JpdGluZy1ndWlkZWxpbmVzLnR4dAo+IGluZGV4IGI4M2E2ZmRi
-Ni4uNmQxYTY5MTY1IDEwMDY0NAo+IC0tLSBhL2RvYy90ZXN0LXdyaXRpbmctZ3VpZGVsaW5lcy50
-eHQKPiArKysgYi9kb2MvdGVzdC13cml0aW5nLWd1aWRlbGluZXMudHh0Cj4gQEAgLTM5Myw2ICsz
-OTMsNyBAQCBodHRwczovL2dpdGh1Yi5jb20vbGludXgtdGVzdC1wcm9qZWN0L2x0cC93aWtpL1No
-ZWxsLVRlc3QtQVBJW1NoZWxsIFRlc3QgQVBJXS4KPiAgIHwgJy5za2lwX2ZpbGVzeXN0ZW1zJyB8
-ICdUU1RfU0tJUF9GSUxFU1lTVEVNUycKPiAgIHwgJy5za2lwX2luX2NvbXBhdCcgfCDigJMKPiAg
-IHwgJy5za2lwX2luX2xvY2tkb3duJyB8IOKAkwo+ICt8ICcuc2tpcF9pbl9zZWN1cmVib290JyB8
-IOKAkwo+ICAgfCAnLnN1cHBvcnRlZF9hcmNocycgfCBub3QgYXBwbGljYWJsZQo+ICAgfCAnLnRh
-Z3MnIHwg4oCTCj4gICB8ICcudGFpbnRfY2hlY2snIHwg4oCTCj4gZGlmZiAtLWdpdCBhL2luY2x1
-ZGUvdHN0X3Rlc3QuaCBiL2luY2x1ZGUvdHN0X3Rlc3QuaAo+IGluZGV4IDIyYWNmYmE1OS4uMGFj
-NDkyYTgwIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvdHN0X3Rlc3QuaAo+ICsrKyBiL2luY2x1ZGUv
-dHN0X3Rlc3QuaAo+IEBAIC0xNzcsNiArMTc3LDcgQEAgc3RydWN0IHRzdF90ZXN0IHsKPiAgIAlp
-bnQgY2hpbGRfbmVlZHNfcmVpbml0OjE7Cj4gICAJaW50IG5lZWRzX2RldmZzOjE7Cj4gICAJaW50
-IHJlc3RvcmVfd2FsbGNsb2NrOjE7Cj4gKwo+ICAgCS8qCj4gICAJICogSWYgc2V0IHRoZSB0ZXN0
-IGZ1bmN0aW9uIHdpbGwgYmUgZXhlY3V0ZWQgZm9yIGFsbCBhdmFpbGFibGUKPiAgIAkgKiBmaWxl
-c3lzdGVtcyBhbmQgdGhlIGN1cnJlbnQgZmlsZXN5c3RlbSB0eXBlIHdvdWxkIGJlIHNldCBpbiB0
-aGUKPiBAQCAtMTg2LDggKzE4NywxMSBAQCBzdHJ1Y3QgdHN0X3Rlc3Qgewo+ICAgCSAqIHRvIHRo
-ZSB0ZXN0IGZ1bmN0aW9uLgo+ICAgCSAqLwo+ICAgCWludCBhbGxfZmlsZXN5c3RlbXM6MTsKPiAr
-Cj4gICAJaW50IHNraXBfaW5fbG9ja2Rvd246MTsKPiArCWludCBza2lwX2luX3NlY3VyZWJvb3Q6
-MTsKPiAgIAlpbnQgc2tpcF9pbl9jb21wYXQ6MTsKPiArCj4gICAJLyoKPiAgIAkgKiBJZiBzZXQs
-IHRoZSBodWdldGxiZnMgd2lsbCBiZSBtb3VudGVkIGF0IC5tbnRwb2ludC4KPiAgIAkgKi8KPiBk
-aWZmIC0tZ2l0IGEvbGliL3RzdF90ZXN0LmMgYi9saWIvdHN0X3Rlc3QuYwo+IGluZGV4IDA0ZGE0
-NTZjNi4uOGY3MjIzYjBlIDEwMDY0NAo+IC0tLSBhL2xpYi90c3RfdGVzdC5jCj4gKysrIGIvbGli
-L3RzdF90ZXN0LmMKPiBAQCAtMTE2MCw2ICsxMTYwLDkgQEAgc3RhdGljIHZvaWQgZG9fc2V0dXAo
-aW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKPiAgIAlpZiAodHN0X3Rlc3QtPnNraXBfaW5fbG9ja2Rv
-d24gJiYgdHN0X2xvY2tkb3duX2VuYWJsZWQoKSkKPiAgIAkJdHN0X2JyayhUQ09ORiwgIktlcm5l
-bCBpcyBsb2NrZWQgZG93biwgc2tpcHBpbmcgdGVzdCIpOwo+ICAgCj4gKwlpZiAodHN0X3Rlc3Qt
-PnNraXBfaW5fc2VjdXJlYm9vdCAmJiB0c3Rfc2VjdXJlYm9vdF9lbmFibGVkKCkpCj4gKwkJdHN0
-X2JyayhUQ09ORiwgIlNlY3VyZUJvb3QgZW5hYmxlZCwgc2tpcHBpbmcgdGVzdCIpOwo+ICsKPiAg
-IAlpZiAodHN0X3Rlc3QtPnNraXBfaW5fY29tcGF0ICYmIFRTVF9BQkkgIT0gdHN0X2tlcm5lbF9i
-aXRzKCkpCj4gICAJCXRzdF9icmsoVENPTkYsICJOb3Qgc3VwcG9ydGVkIGluIDMyLWJpdCBjb21w
-YXQgbW9kZSIpOwo+ICAgCgotLSAKTWFydGluIERvdWNoYSAgIG1kb3VjaGFAc3VzZS5jegpTVyBR
-dWFsaXR5IEVuZ2luZWVyClNVU0UgTElOVVgsIHMuci5vLgpDT1JTTyBJSWEKS3Jpemlrb3ZhIDE0
-OC8zNAoxODYgMDAgUHJhZ3VlIDgKQ3plY2ggUmVwdWJsaWMKCgotLSAKTWFpbGluZyBsaXN0IGlu
-Zm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Hi Li,
+
+> The socket is created and bound immediately without waiting for the handshake after close(sk).
+> "bind(): errno=EADDRINUSE(98): Address already in use" may be reported.
+> Use SO_REUSEPORT to allow multiple sockets to be bound to the same port.
+
+How this can happen? Running tests too quickly one after the other?
+Or what is different on your SUT? I'm not sure if it's good idea to always test
+with SO_REUSEADDR and SO_REUSEPORT.
+
+> Signed-off-by: Min Li <limin154@huawei.com>
+> ---
+>  utils/sctp/testlib/sctputil.h | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+
+> diff --git a/utils/sctp/testlib/sctputil.h b/utils/sctp/testlib/sctputil.h
+> index 176d623f0..b51a3f9b0 100644
+> --- a/utils/sctp/testlib/sctputil.h
+> +++ b/utils/sctp/testlib/sctputil.h
+> @@ -133,6 +133,15 @@ extern int TST_CNT;
+>  static inline int test_socket(int domain, int type, int protocol)
+>  {
+>  	int sk = socket(domain, type, protocol);
+> +	int true_const=1;
+What is this unused variable for?
+
+> +
+> +	if(setsockopt(sk, SOL_SOCKET, SO_REUSEADDR, &true_const, sizeof(int))){
+> +		printf("set addr err\n");
+Besides missing spaces in if (if (..) { ), we have SAFE_SETSOCKOPT().
+Or tst_brkm(TWARN, ...) could be used (we don't use printf directly in LTP).
+
+Kind regards,
+Petr
+
+> +	}
+> +
+> +	if(setsockopt(sk, SOL_SOCKET, SO_REUSEPORT, &true_const, sizeof(int))){
+> +		printf("set port err\n");
+> +	}
+
+>  	if (sk == -1) {
+>  		if (errno == EAFNOSUPPORT)
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
