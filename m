@@ -4,64 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B5A5EB64DA
-	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 02:14:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD671EB64DD
+	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 08:51:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 227D23CE974
-	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 04:14:10 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5E3A23CAE14
+	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 10:51:55 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1005F3C9CD3
- for <ltp@lists.linux.it>; Fri, 21 Jul 2023 04:13:58 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 2F6373C9422
+ for <ltp@lists.linux.it>; Fri, 21 Jul 2023 10:51:42 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0A1F6200042
- for <ltp@lists.linux.it>; Fri, 21 Jul 2023 04:13:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1689905636;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=M5cvfWxs/yR9W6uL+jRzWQcVmSMb7972R59EHtR/P4s=;
- b=HRwTRw2lG8t3/WbTQSgffH1SCGaBIKPtzPHR8pv2OEc3rRLNn7bPAJsfAobiBTh529Hnu8
- WnCdzrKniiclCyjHxb5qF95CX8Q7T56jjtbdmBAOOP//BvQgrEpPiRtvoLYNS9483d5Ygm
- mQNC5KWAdelEG8/f6AX9MiCOnLvwx40=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-428-jg2TEHzgMwOoz5utQqGPyA-1; Thu, 20 Jul 2023 22:13:50 -0400
-X-MC-Unique: jg2TEHzgMwOoz5utQqGPyA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com
- [10.11.54.8])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 63CA410006CE
+ for <ltp@lists.linux.it>; Fri, 21 Jul 2023 10:51:41 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 239D4858290;
- Fri, 21 Jul 2023 02:13:50 +0000 (UTC)
-Received: from [10.22.17.23] (unknown [10.22.17.23])
- by smtp.corp.redhat.com (Postfix) with ESMTP id D9FC9C57969;
- Fri, 21 Jul 2023 02:13:48 +0000 (UTC)
-Message-ID: <bd976e78-953c-68cb-291f-7ad2188aa3fb@redhat.com>
-Date: Thu, 20 Jul 2023 22:13:48 -0400
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 02BFC1F461;
+ Fri, 21 Jul 2023 08:51:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1689929500;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Zvy668gC5BlHSmH0Cybfid2Bt3G3cfLz/rBMWBW3Zas=;
+ b=b5djX9hG3aEvKNSlm/uiaQ6CIZhXchXRVWqsVH2PWuoP0fuCgCz1m3X+EHJAyuNKVaxbl4
+ I2x9V2tfa3itKBKGLxjoWnY/do4zyGLvDrriPrXsQGL8k7FGfiMCv0CL2AdAmtCHKnAJsp
+ y8Jo+B9UhkeKYcI1YlbYZ+LAVNkROZc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1689929500;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Zvy668gC5BlHSmH0Cybfid2Bt3G3cfLz/rBMWBW3Zas=;
+ b=cp/6HeR4xqRWRTtYpKsuXmUdtdY/vyh3P9jaW9nk8RAYITxbX150Z3g/wlYwaQ3StmbNNk
+ qRjD/38eeI7ST6DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB917134B0;
+ Fri, 21 Jul 2023 08:51:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id TShrJxtHumRgXwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 21 Jul 2023 08:51:39 +0000
+Date: Fri, 21 Jul 2023 10:51:38 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20230721085138.GA1348273@pevik>
+References: <20230720150206.1338520-1-pvorel@suse.cz>
+ <20230720150206.1338520-4-pvorel@suse.cz>
+ <92c457da-9b02-88ae-62e4-9a2be155e6cb@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>, kernel test robot <oliver.sang@intel.com>
-References: <20230628211637.1679348-1-longman@redhat.com>
- <202307171539.3d8d0e8-oliver.sang@intel.com> <ZLVS_ANORaZO_ZIE@yuki>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZLVS_ANORaZO_ZIE@yuki>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <92c457da-9b02-88ae-62e4-9a2be155e6cb@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] sched/core: Use empty mask to reset cpumasks in
- sched_setaffinity()
+Subject: Re: [LTP] [PATCH 3/4] {delete, finit,
+ init}_module0[1-3]: Skip on SecureBoot
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,45 +78,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Juri Lelli <juri.lelli@redhat.com>, Brent Rowsell <browsell@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>, Phil Auld <pauld@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, yu.c.chen@intel.com,
- Peter Zijlstra <peterz@infradead.org>, aubrey.li@linux.intel.com,
- linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
- Ben Segall <bsegall@google.com>, Peter Hunt <pehunt@redhat.com>,
- Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
- oe-lkp@lists.linux.dev, Daniel Bristot de Oliveira <bristot@redhat.com>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, ltp@lists.linux.it, lkp@intel.com
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 7/17/23 10:41, Cyril Hrubis wrote:
-> Hi!
->> Running tests.......
->> <<<test_start>>>
->> tag=sched_setaffinity01 stime=1689382567
->> cmdline="sched_setaffinity01"
->> contacts=""
->> analysis=exit
->> <<<test_output>>>
->> tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
->> sched_setaffinity01.c:83: TPASS: sched_setaffinity() failed: EFAULT (14)
->> sched_setaffinity01.c:73: TFAIL: sched_setaffinity() succeded unexpectedly
->> tst_test.c:1612: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
->> tst_test.c:1614: TBROK: Test killed! (timeout?)
-> So what the test does is that it sets empty affinity mask to
-> sched_setaffinity() and expects EINVAL. Instead it looks like the call
-> now succeeeds, the test stops getting schedulled and is killed by
-> timeout.
->
-I had sent out a v2 patch should not fail the LTP's sched_setaffinity() 
-test.
+Hi Martin,
 
-Cheers,
-Longman
+> > +++ b/testcases/kernel/syscalls/delete_module/delete_module01.c
+> > @@ -52,6 +52,8 @@ static struct tst_test test = {
+> >   	.needs_root = 1,
+> >   	/* lockdown requires signed modules */
+> >   	.skip_in_lockdown = 1,
+> > +	/* SecureBoot requires signed modules */
 
+> Nit: the two comments could be merged into one.
++1
+
+...
+> > @@ -102,9 +104,16 @@ static void run(unsigned int n)
+> >   {
+> >   	struct tcase *tc = &tcases[n];
+> > -	if (tc->skip_in_lockdown && kernel_lockdown) {
+> > -		tst_res(TCONF, "Kernel is locked down, skipping %s", tc->name);
+> > -		return;
+> > +	if (tc->skip_in_lockdown) {
+> > +		if (secure_boot) {
+> > +			tst_res(TCONF, "SecureBoot enabled, skipping %s", tc->name);
+> > +			return;
+> > +		}
+> > +
+> > +		if (kernel_lockdown) {
+> > +			tst_res(TCONF, "Kernel is locked down, skipping %s", tc->name);
+> > +			return;
+> > +		}
+
+> It'd be better to just change the original TCONF message to something like
+> "Cannot load unsigned modules, skipping %s". Adding a TINFO message
+> "Lockdown on/off" to tst_lockdown_enabled() would provide the explanation
+> why.
+
++1
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
