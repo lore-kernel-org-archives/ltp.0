@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8023EB64DD
-	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 09:16:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05AEEEB64DC
+	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 09:32:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1D7FF3C950F
-	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 11:16:29 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id DB78D3CE8F0
+	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 11:32:47 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 804003C9481
- for <ltp@lists.linux.it>; Fri, 21 Jul 2023 11:15:24 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 2889F3C025E
+ for <ltp@lists.linux.it>; Fri, 21 Jul 2023 11:32:38 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 282B01A00CAF
- for <ltp@lists.linux.it>; Fri, 21 Jul 2023 11:15:23 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 872B41400DEF
+ for <ltp@lists.linux.it>; Fri, 21 Jul 2023 11:32:37 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 50CA2219F8;
- Fri, 21 Jul 2023 09:15:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DAC9A218FF;
+ Fri, 21 Jul 2023 09:32:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689930923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1689931956;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=X68fsnjPnSBiw4ognCFVZjIkP4xP0sNBUXZfwqyJJ3M=;
- b=jmiKv5x8ybw3nDry34VgoGkh9UtLBll2HhPE9ZnualLkHvamo+KVi+eSvMWCL7A4spiWNA
- hVMRg6Iird+D6Wzy47MMgf+q8IyCwQBh2He+agzggoGv86XWNC5JG9uAoaw9XjsDiHN/Sr
- m5nQFEKLyguER1v3AVFlDbyYzwiduhk=
+ bh=UY0OfpHxXpe/ygKyNtttOqqmtobdXHNBGt7rEZHk3lA=;
+ b=JRz+2zROzy2SsXMcxQLZgz96tFSM4ITPZTKlTkx1v6AmzQFA8grY1h3cQd/kl1JJ0TbNds
+ o6l+LZgMPCvuyhBsVZ9m4C8VhNySwmr/QLRksw5Kz2lE5sfvOnUMguFQrLbsF/RB0Y4dRy
+ dhZ9Iw2a+sMMw/NdgoIIQ/zrP/0QrAI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689930923;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1689931956;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=X68fsnjPnSBiw4ognCFVZjIkP4xP0sNBUXZfwqyJJ3M=;
- b=fc1C6sDKI0dqwfvfRLqQakkEkdd20GW3qL2Hx7ZSvwocrosM4WBfKzD1ExyXYlOr6UT6/l
- 19s1AnuU3lBR86BQ==
+ bh=UY0OfpHxXpe/ygKyNtttOqqmtobdXHNBGt7rEZHk3lA=;
+ b=i9KviXahBezBWQlZX0RmVnA1vLfqBmBGxkB+n2m5mKXWDHMcmvB9EuEPAhgQB9dlUHFK4J
+ taqA08MaSVi29bAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1F37F134B0;
- Fri, 21 Jul 2023 09:15:23 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B363A134B0;
+ Fri, 21 Jul 2023 09:32:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wII+BqtMumRSawAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 21 Jul 2023 09:15:23 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id hqIDKrRQumQjdAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 21 Jul 2023 09:32:36 +0000
+Date: Fri, 21 Jul 2023 11:32:35 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 21 Jul 2023 11:15:15 +0200
-Message-Id: <20230721091515.1353371-6-pvorel@suse.cz>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230721091515.1353371-1-pvorel@suse.cz>
-References: <20230721091515.1353371-1-pvorel@suse.cz>
+To: Avinesh Kumar <akumar@suse.de>
+Message-ID: <20230721093235.GA1362022@pevik>
+References: <20230719113906.22317-1-akumar@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230719113906.22317-1-akumar@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 5/5] doc/c-api: Document .skip_in_* flags
+Subject: Re: [LTP] [PATCH] syscalls/pipe08: Remove the test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,37 +75,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Martin Doucha <mdoucha@suse.cz>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- doc/c-test-api.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+Hi Avinesh,
 
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index 07c069ced..74871e6c8 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -2412,6 +2412,12 @@ static struct tst_test test = {
- };
- -------------------------------------------------------------------------------
- 
-+1.41 Skipping test based on system state
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+Test can be skipped on various conditions: on enabled SecureBoot
-+('.skip_in_secureboot = 1'), lockdown ('.skip_in_lockdown = 1') or in 32-bit
-+compat mode ('.skip_in_compat = 1').
-+
- 2. Common problems
- ------------------
- 
--- 
-2.40.1
+> This test scenario of verifying SIGPIPE signal is being covered in
+> syscalls/write05.c test.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
+Good catch. I'm just waiting for ack of others.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
