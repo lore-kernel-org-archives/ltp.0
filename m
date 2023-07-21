@@ -4,61 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05444C0015E
-	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 14:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7792AEB64DD
+	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 14:51:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F2DB53CE919
-	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 16:36:26 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 8240D3CDC79
+	for <ltp@archiver.kernel.org>; Fri, 21 Jul 2023 16:51:08 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 751413C93EE
- for <ltp@lists.linux.it>; Fri, 21 Jul 2023 16:36:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id B09943C02F7
+ for <ltp@lists.linux.it>; Fri, 21 Jul 2023 16:50:56 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EFDBC1A00CDC
- for <ltp@lists.linux.it>; Fri, 21 Jul 2023 16:36:03 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 864876003C2
+ for <ltp@lists.linux.it>; Fri, 21 Jul 2023 16:50:54 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 73FC82189D;
- Fri, 21 Jul 2023 14:36:03 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 46A64218A8;
+ Fri, 21 Jul 2023 14:50:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1689950163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=CXW4GaAAoDWYkMVdhxvPEyCjXDixkFoiOxpF5EJWSwk=;
- b=goxwm17IbjYbpbe4MCZ+zw6dBFr3ZmQEo8tDNFD2AUehU6LBspOVubTB1vy6y9bCirgGD7
- 5sT5hUnWv1xy4yoi9Ri8CSopXUFXL1nN1LF9RHWhUEmreQxerbnakPP04h/glrOTEY28cS
- HvIWZC1zK0PZgNjgQFgAENd2X59+DFc=
+ t=1689951054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WPUG3enuMWHyGGLe2gIKxrpHyQkwqWa4uELMsev7G8A=;
+ b=jE+CeBtnkJdKpkPF9ynZ50HZRfd59NC+55Ot2JJOvIGU6OY72a1Dw6ESsB4u5G/g+Jfgrt
+ c97Jog7ORyAAbmCSRSaP7Ldx4uXj2EJaSEX7pDBvCDG+ptf6A1jcgAPEuQuPam/i29R0EG
+ WB+LGfwVJhx1soYbjz3u/LquYYWNRok=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1689950163;
+ s=susede2_ed25519; t=1689951054;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=CXW4GaAAoDWYkMVdhxvPEyCjXDixkFoiOxpF5EJWSwk=;
- b=h87KrCoN96IVjz0eQdB8A4I7QcXgLEXQrfNswoxNFL09gtgmFIq7P3UJx8uoJTYQd89S6e
- jRUo/Wao3rM/rlBA==
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WPUG3enuMWHyGGLe2gIKxrpHyQkwqWa4uELMsev7G8A=;
+ b=I6i5GvGFrGNyoY34eBsBUJlTslEJpkWsnhRcKOh/N9cY2E9u+UTVB7xm5a4hz2AbmRa45t
+ anvDPvAI+PXbDDBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9A2DF134BA;
- Fri, 21 Jul 2023 14:36:01 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 30B90134BA;
+ Fri, 21 Jul 2023 14:50:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id pRpKEdGXumSdEQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 21 Jul 2023 14:36:01 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 21 Jul 2023 16:35:54 +0200
-Message-Id: <20230721143555.1433034-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.40.1
+ by imap2.suse-dmz.suse.de with ESMTPSA id HbLcCk6bumRdGQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 21 Jul 2023 14:50:54 +0000
+Date: Fri, 21 Jul 2023 16:51:56 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZLqbjAUAjk49BXQY@yuki>
+References: <20230315092552.18127-1-andrea.cervesato@suse.de>
+ <20230329055459.GA833475@pevik> <20230721125012.GA1421542@pevik>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230721125012.GA1421542@pevik>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] write04: Use correct macro
+Subject: Re: [LTP] [PATCH v3] Rewrite eventfd01 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,35 +75,25 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-TST_EXP_FAIL2() must be used for write(), as not only 0 would be a
-failure, but also >= 0 (the number of written bytes).
+Hi!
+> Or, Cyril, if you post your RBT, I can change this before merge. Because the
+> proposed include/tst_test_macros.h change was merged in 303eb96a3
+> ("tst_test_macros.h: Support return value in TST_* macros") we should finish
+> this nice work.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/syscalls/write/write04.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The changes looks good, so feel free to merge with the minor fix.
 
-diff --git a/testcases/kernel/syscalls/write/write04.c b/testcases/kernel/syscalls/write/write04.c
-index afbac0f09..a5d62e0f5 100644
---- a/testcases/kernel/syscalls/write/write04.c
-+++ b/testcases/kernel/syscalls/write/write04.c
-@@ -28,7 +28,7 @@ static void verify_write(void)
- {
- 	char wbuf[8 * page_size];
- 
--	TST_EXP_FAIL(write(wfd, wbuf, sizeof(wbuf)), EAGAIN);
-+	TST_EXP_FAIL2(write(wfd, wbuf, sizeof(wbuf)), EAGAIN);
- }
- 
- static void setup(void)
+Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
+
 -- 
-2.40.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
