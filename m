@@ -4,67 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FA02C0015E
-	for <ltp@archiver.kernel.org>; Fri, 28 Jul 2023 07:53:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9820AC0015E
+	for <ltp@archiver.kernel.org>; Fri, 28 Jul 2023 08:17:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 97C263CE664
-	for <ltp@archiver.kernel.org>; Fri, 28 Jul 2023 09:53:17 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 70A0D3CD6B2
+	for <ltp@archiver.kernel.org>; Fri, 28 Jul 2023 10:17:24 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A865A3C8AC4
- for <ltp@lists.linux.it>; Fri, 28 Jul 2023 09:53:06 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 0CFDC3C8AC3
+ for <ltp@lists.linux.it>; Fri, 28 Jul 2023 10:17:11 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D84CF1000EB0
- for <ltp@lists.linux.it>; Fri, 28 Jul 2023 09:53:05 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 678BE140119D
+ for <ltp@lists.linux.it>; Fri, 28 Jul 2023 10:17:09 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D4ABF1F45B;
- Fri, 28 Jul 2023 07:53:04 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 24F181F854;
+ Fri, 28 Jul 2023 08:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1690530784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1690532229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=l7CXcV80KjdtWFd3RY3hN2CwU7SMwmiyc9SX/iy13S8=;
- b=lnKZqResJFWHed3pDPuBoHHoIEdWlyYq3YjaOaJJU45ive36Dp4lBa6ynRnGoeAgrVsca9
- XeSNqyT9sG/1TlEqNFMeYNInmvNdLI+Vom/pMTTX4PZ1aJi0pZ93UerYw57RXg/kEN91eX
- CP9X0+E45FY5VKbGIsUZZV0oGTaUo3s=
+ bh=8Wui0yds+XZmyMllKtnAKmB59AcF4KOUUQJVTjQl8RU=;
+ b=AgTU1n9CagnZE93p1oCcftaqpWIV+eefV4KkCPWI5bXUPtcNNbAece1ckWVC1nwll5XPGc
+ 7YtCUhoLA9uM4knQDjN/ocnpDnSSGM+VX4Fy5Y/jeNFN2uP2JbsO8hBb0CYzdTjSpbN0Jy
+ F5uybLqyUlEqEtfljcpDa/1YfXrV6qg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1690530784;
+ s=susede2_ed25519; t=1690532229;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=l7CXcV80KjdtWFd3RY3hN2CwU7SMwmiyc9SX/iy13S8=;
- b=VgNf283so1byfhP5XpMkcyjQSKteVHKkpbQG8mRfMEqzp76xMXB6hzbn8lXEd/P4c3WFrr
- fYyQFHyAbBIQJiAQ==
+ bh=8Wui0yds+XZmyMllKtnAKmB59AcF4KOUUQJVTjQl8RU=;
+ b=SkFXFKzdQAVm9U7r8CzhlTaUG4BBSDB0X2G/gupAuZbxDg0wmenO+pv5039JOXmhQAHkRJ
+ d0MlMw3z9cqx2RDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BF88A13276;
- Fri, 28 Jul 2023 07:53:04 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E4BA133F7;
+ Fri, 28 Jul 2023 08:17:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QnuaLeBzw2TPVQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 28 Jul 2023 07:53:04 +0000
-Date: Fri, 28 Jul 2023 09:53:58 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <ZMN0FtFduNJgY1cc@yuki>
-References: <20230727150013.31835-1-mdoucha@suse.cz>
- <20230727150013.31835-2-mdoucha@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id OU5ZAoV5w2QfYwAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Fri, 28 Jul 2023 08:17:09 +0000
+Message-ID: <97f281ba-4c7f-b1d9-19c9-71884e4c19bc@suse.cz>
+Date: Fri, 28 Jul 2023 10:17:08 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230727150013.31835-2-mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+To: Cyril Hrubis <chrubis@suse.cz>
+References: <20230727150013.31835-1-mdoucha@suse.cz> <ZMNya4WWC3IP6FZZ@yuki>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <ZMNya4WWC3IP6FZZ@yuki>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] tst_netdevice: Add helper functions for qdisc
- and filter management
+Subject: Re: [LTP] [PATCH 1/3] tst_netdevice: Add missing rtnetlink context
+ allocation checks
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,147 +81,60 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> --- a/lib/tst_netdevice.c
-> +++ b/lib/tst_netdevice.c
-> @@ -7,6 +7,7 @@
->  #include <linux/veth.h>
->  #include <sys/socket.h>
->  #include <net/if.h>
-> +#include <linux/pkt_sched.h>
->  #include "lapi/rtnetlink.h"
->  
->  #define TST_NO_DEFAULT_MAIN
-> @@ -518,3 +519,116 @@ int tst_netdev_remove_route_inet(const char *file, const int lineno,
->  	return modify_route_inet(file, lineno, RTM_DELROUTE, 0, ifname,
->  		srcaddr, srcprefix, dstaddr, dstprefix, gateway);
->  }
-> +
-> +static int modify_qdisc(const char *file, const int lineno, const char *object,
-> +	unsigned int action, unsigned int nl_flags, const char *ifname,
-> +	unsigned int family, unsigned int parent, unsigned int handle,
-> +	unsigned int info, const char *qd_kind,
-> +	const struct tst_rtnl_attr_list *config)
-> +{
-> +	struct tst_rtnl_context *ctx;
-> +	int ret;
-> +	struct tcmsg msg = {
-> +		.tcm_family = family,
-> +		.tcm_handle = handle,
-> +		.tcm_parent = parent,
-> +		.tcm_info = info
-> +	};
-> +
-> +	if (!qd_kind) {
-> +		tst_brk_(file, lineno, TBROK,
-> +			"Queueing discipline name required");
-> +		return 0;
-> +	}
-> +
-> +	if (ifname) {
-> +		msg.tcm_ifindex = tst_netdev_index_by_name(file, lineno,
-> +			ifname);
-> +
-> +		if (msg.tcm_ifindex < 0) {
-> +			tst_brk_(file, lineno, TBROK, "Interface %s not found",
-> +				ifname);
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	ctx = create_request(file, lineno, action, nl_flags, &msg, sizeof(msg));
-> +
-> +	if (!ctx)
-> +		return 0;
-> +
-> +	if (!tst_rtnl_add_attr_string(file, lineno, ctx, TCA_KIND, qd_kind)) {
-> +		tst_rtnl_destroy_context(file, lineno, ctx);
-> +		return 0;
-> +	}
-> +
-> +	if (config && !tst_rtnl_add_attr_list(file, lineno, ctx, config)) {
-> +		tst_rtnl_destroy_context(file, lineno, ctx);
-> +		return 0;
-> +	}
+On 28. 07. 23 9:46, Cyril Hrubis wrote:
+> Hi!
+>> Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+>> ---
+>>   lib/tst_netdevice.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
+>> index 4a0442932..a57f506e9 100644
+>> --- a/lib/tst_netdevice.c
+>> +++ b/lib/tst_netdevice.c
+>> @@ -332,6 +332,9 @@ static int change_ns(const char *file, const int lineno, const char *ifname,
+>>   
+>>   	ctx = create_request(file, lineno, RTM_NEWLINK, 0, &info, sizeof(info));
+>>   
+>> +	if (!ctx)
+>> +		return 0;
+>> +
+>>   	if (!tst_rtnl_add_attr_string(file, lineno, ctx, IFLA_IFNAME, ifname)) {
+>>   		tst_rtnl_destroy_context(file, lineno, ctx);
+>>   		return 0;
+>> @@ -411,6 +414,9 @@ static int modify_route(const char *file, const int lineno, unsigned int action,
+>>   
+>>   	ctx = create_request(file, lineno, action, flags, &info, sizeof(info));
+>>   
+>> +	if (!ctx)
+>> +		return 0;
+>> +
+>>   	if (srcaddr && !tst_rtnl_add_attr(file, lineno, ctx, RTA_SRC, srcaddr,
+>>   		srclen)) {
+>>   		tst_rtnl_destroy_context(file, lineno, ctx);
+> 
+> Shouldn't we tst_brk_() in these cases? This function is a base for
+> NETDEV_CHANGE_NS_*() which is used as a safe macro without checking it's
+> return value.
 
-
-Here as well, shouldn't we tst_brk_() consistently if we fail to prepare
-the context?
-
-> +	ret = tst_rtnl_send_validate(file, lineno, ctx);
-> +	tst_rtnl_destroy_context(file, lineno, ctx);
-> +
-> +	if (!ret) {
-> +		tst_brk_(file, lineno, TBROK,
-> +			"Failed to modify %s: %s", object,
-> +			tst_strerrno(tst_rtnl_errno));
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +int tst_netdev_add_qdisc(const char *file, const int lineno,
-> +	const char *ifname, unsigned int family, unsigned int parent,
-> +	unsigned int handle, const char *qd_kind,
-> +	const struct tst_rtnl_attr_list *config)
-> +{
-> +	return modify_qdisc(file, lineno, "queueing discipline", RTM_NEWQDISC,
-> +		NLM_F_CREATE | NLM_F_EXCL, ifname, family, parent, handle, 0,
-> +		qd_kind, config);
-> +}
-> +
-> +int tst_netdev_remove_qdisc(const char *file, const int lineno,
-> +	const char *ifname, unsigned int family, unsigned int parent,
-> +	unsigned int handle, const char *qd_kind)
-> +{
-> +	return modify_qdisc(file, lineno, "queueing discipline", RTM_DELQDISC,
-> +		0, ifname, family, parent, handle, 0, qd_kind, NULL);
-> +}
-> +
-> +int tst_netdev_add_traffic_class(const char *file, const int lineno,
-> +	const char *ifname, unsigned int parent, unsigned int handle,
-> +	const char *qd_kind, const struct tst_rtnl_attr_list *config)
-> +{
-> +	return modify_qdisc(file, lineno, "traffic class", RTM_NEWTCLASS,
-> +		NLM_F_CREATE | NLM_F_EXCL, ifname, AF_UNSPEC, parent, handle,
-> +		0, qd_kind, config);
-> +}
-> +
-> +int tst_netdev_remove_traffic_class(const char *file, const int lineno,
-> +	const char *ifname, unsigned int parent, unsigned int handle,
-> +	const char *qd_kind)
-> +{
-> +	return modify_qdisc(file, lineno, "traffic class", RTM_DELTCLASS, 0,
-> +		ifname, AF_UNSPEC, parent, handle, 0, qd_kind, NULL);
-> +}
-> +
-> +int tst_netdev_add_traffic_filter(const char *file, const int lineno,
-> +	const char *ifname, unsigned int parent, unsigned int handle,
-> +	unsigned int protocol, unsigned int priority, const char *f_kind,
-> +	const struct tst_rtnl_attr_list *config)
-> +{
-> +	return modify_qdisc(file, lineno, "traffic filter", RTM_NEWTFILTER,
-> +		NLM_F_CREATE | NLM_F_EXCL, ifname, AF_UNSPEC, parent, handle,
-> +		TC_H_MAKE(priority << 16, htons(protocol)), f_kind, config);
-> +}
-> +
-> +int tst_netdev_remove_traffic_filter(const char *file, const int lineno,
-> +	const char *ifname, unsigned int parent, unsigned int handle,
-> +	unsigned int protocol, unsigned int priority, const char *f_kind)
-> +{
-> +	return modify_qdisc(file, lineno, "traffic filter", RTM_DELTFILTER,
-> +		0, ifname, AF_UNSPEC, parent, handle,
-> +		TC_H_MAKE(priority << 16, htons(protocol)), f_kind, NULL);
-> +}
+The tst_brk_() gets called by the safe_*() functions deeper in the call 
+tree. But tst_netdevice functions may be called from cleanup() where 
+explicit return is necessary even after tst_brk_().
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
