@@ -4,60 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68392EB64DD
-	for <ltp@archiver.kernel.org>; Wed,  2 Aug 2023 03:14:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74A48C001DE
+	for <ltp@archiver.kernel.org>; Wed,  2 Aug 2023 09:25:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1ACDE3CDB70
-	for <ltp@archiver.kernel.org>; Wed,  2 Aug 2023 05:14:43 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 29C703CDB41
+	for <ltp@archiver.kernel.org>; Wed,  2 Aug 2023 11:25:55 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9E72A3CDBE0
- for <ltp@lists.linux.it>; Wed,  2 Aug 2023 05:14:14 +0200 (CEST)
-Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com
- [139.138.61.252])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id A3D183CC967
+ for <ltp@lists.linux.it>; Wed,  2 Aug 2023 11:25:43 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3FEE81A0100F
- for <ltp@lists.linux.it>; Wed,  2 Aug 2023 05:14:14 +0200 (CEST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="105503068"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684767600"; d="scan'208";a="105503068"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
- by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2023 12:14:13 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
- [192.168.87.58])
- by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 0F06FD29E8
- for <ltp@lists.linux.it>; Wed,  2 Aug 2023 12:14:11 +0900 (JST)
-Received: from aks-ab1.gw.nic.fujitsu.com (aks-ab1.gw.nic.fujitsu.com
- [192.51.207.11])
- by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 40E04E4AD4
- for <ltp@lists.linux.it>; Wed,  2 Aug 2023 12:14:10 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.215.131])
- by aks-ab1.gw.nic.fujitsu.com (Postfix) with ESMTP id 5DD762FC047C;
- Wed,  2 Aug 2023 12:14:09 +0900 (JST)
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: ltp@lists.linux.it
-Date: Wed,  2 Aug 2023 11:13:56 +0800
-Message-Id: <1690946036-27866-3-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1690946036-27866-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1690946036-27866-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27788.004
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27788.004
-X-TMASE-Result: 10--7.797700-10.000000
-X-TMASE-MatchedRID: nRYjnRMpeiCkemoEvXwmRU7nLUqYrlslFIuBIWrdOePfUZT83lbkEFI3
- NifDbduL+FyTwBk2ojwmQEk7DkLChqklC9pYur2SSs47mbT7SASOVGny5q72hr5TVqwOzxj8RtU
- L4XifTnvV4q36S0NEz3TXQSc8erBKoDlDgS6jzLSeAiCmPx4NwBnUJ0Ek6yhjxEHRux+uk8h+IC
- quNi0WJNy5+03ZUSGj/jTMxnBO+D74hh1TpxreSc6tNiNrg0IWftwZ3X11IV0=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 976F4237147
+ for <ltp@lists.linux.it>; Wed,  2 Aug 2023 11:25:42 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D16D81F8B2;
+ Wed,  2 Aug 2023 09:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1690968341; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0xFMtxkS6hWbP1UeAam6GZo0DUxqM0NuJUd5T/zq+k8=;
+ b=lKhLQ8DeFUN38VHGp4ihsZUxg8vKXrCn3elBj/AeVnPt7BJnK/yXVGkhGRicj4p2DMcscG
+ 6h7TGctHTs5jkoEJCQxUeb2/1IiYfTDNSyoSExV5FopXdmoQpHm2Tz0whO8XdcX3fbbi0l
+ 5xAP7aCc4SlNCftA4kRbqWHIPGNtBhw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1690968341;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0xFMtxkS6hWbP1UeAam6GZo0DUxqM0NuJUd5T/zq+k8=;
+ b=WyD3lcS/P9NNbLc6IrVul7wUZbyT0sVBG2VNiO4tzqku+ZlLPuvqoqSede856izsl2OsOt
+ Bsa7WQwCDx7grAAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E1CA13909;
+ Wed,  2 Aug 2023 09:25:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id m6llOxQhymRaYwAAMHmgww
+ (envelope-from <akumar@suse.de>); Wed, 02 Aug 2023 09:25:40 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: pvorel@suse.cz, Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 02 Aug 2023 14:55:39 +0530
+Message-ID: <422745784.q2UjYaihZW@localhost>
+Organization: SUSE
+In-Reply-To: <ZL-mb1nXfwpAklYr@yuki>
+References: <20230719113906.22317-1-akumar@suse.de> <ZL-mb1nXfwpAklYr@yuki>
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] access04: Convert docs to docparse
+Subject: Re: [LTP] [PATCH] syscalls/pipe08: Remove the test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,68 +77,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-MIME-Version: 1.0
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- testcases/kernel/syscalls/access/access04.c | 35 +++++++++++++++--------------
- 1 file changed, 18 insertions(+), 17 deletions(-)
+Hi Cyril, Petr,
 
-diff --git a/testcases/kernel/syscalls/access/access04.c b/testcases/kernel/syscalls/access/access04.c
-index 2d6dd70..f02f384 100644
---- a/testcases/kernel/syscalls/access/access04.c
-+++ b/testcases/kernel/syscalls/access/access04.c
-@@ -2,26 +2,27 @@
- /*
-  * Copyright (c) International Business Machines Corp., 2001
-  * Copyright (c) 2013 Fujitsu Ltd.
-+ * Copyright (c) Linux Test Project, 2003-2023
-+ * Ported to LTP: Wayne Boyer
-+ * 11/2013 Ported by Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-+ * 11/2016 Modified by Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-  */
- 
--/*
-- * Verify that,
-- *  1) access() fails with -1 return value and sets errno to EINVAL
-- *     if the specified access mode argument is invalid.
-- *  2) access() fails with -1 return value and sets errno to ENOENT
-- *     if the specified file doesn't exist (or pathname is NULL).
-- *  3) access() fails with -1 return value and sets errno to ENAMETOOLONG
-- *     if the pathname size is > PATH_MAX characters.
-- *  4) access() fails with -1 return value and sets errno to ENOTDIR
-- *     if a component used as a directory in pathname is not a directory.
-- *  5) access() fails with -1 return value and sets errno to ELOOP
-- *     if too many symbolic links were encountered in resolving pathname.
-- *  6) access() fails with -1 return value and sets errno to EROFS
-- *     if write permission was requested for files on a read-only file system.
-+/*\
-+ * [Description]
-  *
-- * Ported to LTP: Wayne Boyer
-- *  11/2013 Ported by Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-- *  11/2016 Modified by Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ * 1. access() fails with -1 return value and sets errno to EINVAL
-+ *    if the specified access mode argument is invalid.
-+ * 2. access() fails with -1 return value and sets errno to ENOENT
-+ *    if the specified file doesn't exist (or pathname is NULL).
-+ * 3. access() fails with -1 return value and sets errno to ENAMETOOLONG
-+ *    if the pathname size is > PATH_MAX characters.
-+ * 4. access() fails with -1 return value and sets errno to ENOTDIR
-+ *    if a component used as a directory in pathname is not a directory.
-+ * 5. access() fails with -1 return value and sets errno to ELOOP
-+ *    if too many symbolic links were encountered in resolving pathname.
-+ * 6. access() fails with -1 return value and sets errno to EROFS
-+ *    if write permission was requested for files on a read-only file system.
-  */
- 
- #include <errno.h>
--- 
-1.8.3.1
+On Tuesday, July 25, 2023 4:09:43 PM IST Cyril Hrubis wrote:
+> Hi!
+> 
+> > This test scenario of verifying SIGPIPE signal is being covered in
+> > syscalls/write05.c test.
+> 
+> Hmm, this one is actually hard to figure out. Indeed the write test
+> implmenents the SIGPIPE case, however it would make more sense to have
+> the SIGPIPE test in syscalls/pipe/ directory instead. I guess that any
+> kernel developer that would like to use LTP for testing changes in
+> pipe() implementation would rather want to have the test under pipe/
+> directory.
+> 
+> Maybe we should keep the pipe08 test and remove the case from the
+> write05 test instead? Or should we keep both?
+
+Thank you for your feedback. Now I too think we can keep both, but you guys 
+can decide. Please let me know, I can send the patch for pipe08 to convert to 
+new API if we decide to keep it.
+
+--
+Regards,
+Avinesh
+
+
+
+
 
 
 -- 
