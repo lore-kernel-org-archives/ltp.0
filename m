@@ -4,76 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ACB1C001DF
-	for <ltp@archiver.kernel.org>; Wed,  2 Aug 2023 15:18:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D70ADC001DE
+	for <ltp@archiver.kernel.org>; Thu,  3 Aug 2023 01:52:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7A0233CDAF1
-	for <ltp@archiver.kernel.org>; Wed,  2 Aug 2023 17:18:46 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 460C23CDB70
+	for <ltp@archiver.kernel.org>; Thu,  3 Aug 2023 03:52:15 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 419CA3CD512
- for <ltp@lists.linux.it>; Wed,  2 Aug 2023 17:18:12 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 9CA343CBCA8
+ for <ltp@lists.linux.it>; Thu,  3 Aug 2023 03:52:01 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 346721A01994
- for <ltp@lists.linux.it>; Wed,  2 Aug 2023 17:18:12 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E5D0E1F8A4;
- Wed,  2 Aug 2023 15:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1690989491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pKIweQamxfw0ZZ0aSOi6JqFL+eQxAp+j1VDPErEK1gA=;
- b=KJRZPyx+5B/Ak0fQd2ZrAyISKSzXy2B+oMdHxqCaPaBRFNwVPz7+F2cTybcjx+QWJIWHLY
- F2rhlPeoEWnZKxdoh6rFW2G2mMXrYTtIk+gedFc/ka+Wg7e7LAX61toOdjJdSLDwHx6K3V
- YrDsLFYcpFZs2v/UBPRag+e+BsckDy4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1690989491;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=pKIweQamxfw0ZZ0aSOi6JqFL+eQxAp+j1VDPErEK1gA=;
- b=L2RlHRWU0ZWPXiqwbtP1Ze5XJSUg75pgzizNBuqHtuM7BkMJzrv7bkY13k7N/roXmcknDP
- rbqY4Mu+kGq6nyDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D073313919;
- Wed,  2 Aug 2023 15:18:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kRCWMbNzymRnKAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 02 Aug 2023 15:18:11 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
-Date: Wed,  2 Aug 2023 17:19:06 +0200
-Message-ID: <20230802151906.25258-3-chrubis@suse.cz>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 75A2C200B37
+ for <ltp@lists.linux.it>; Thu,  3 Aug 2023 03:51:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1691027518;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Pgf7jfIxuyStaKFWu11wz9E86U/RabEUR0Em0xwn9ic=;
+ b=Ri7b3lMb8twZKm6zMnqipnKD5hUCvPLhWl0T5IsfAqSUx/ddxIreigvkTLgeC3WrP/PnrW
+ 9OcVoTXr3Ays7gadRHtMf5c5VM9IaCLGxsrdJ/tHgS5W2VrHDHFTm52EevvJjVZRetwvqd
+ SnlIHl0DKcaXyCyAknXqmlFHCshPB8s=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-149-VCSlVUs0NHeVyWe9A2A5Pw-1; Wed, 02 Aug 2023 21:51:57 -0400
+X-MC-Unique: VCSlVUs0NHeVyWe9A2A5Pw-1
+Received: by mail-pg1-f199.google.com with SMTP id
+ 41be03b00d2f7-56336f5dc6cso279790a12.0
+ for <ltp@lists.linux.it>; Wed, 02 Aug 2023 18:51:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1691027516; x=1691632316;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=Pgf7jfIxuyStaKFWu11wz9E86U/RabEUR0Em0xwn9ic=;
+ b=B9oNMTDNM4L03Z93FDD7cNyJOxk297iA/+48RKq60s1uJaF2BzBZlEDFqO5KvYanF6
+ z/jttEVrKSjOGd+W536GSL0p9cWouGuGv29gdiIYZ0Ls9kHAXyEe8DKDIwVJKjLQmOXx
+ osVowJOtrMGCXDLekp4Gv+ZfoAKD+GTf4IPaW5rPt9jXiOkHhbPaw/MrM4DJ1m8ltnhY
+ MBghfEqxVQYdVOvcGj+4BD21Zi/LlYIsBSzneZs8ndhh5t3H2J0lwHcOLcPahekGeTWw
+ I10OTZ2JYw5UdpfOd4O1U1tGXSQWAajQQYTQRWbab1VIzNEv8jJyEHSeTudGQq8ZXlPF
+ R+pA==
+X-Gm-Message-State: ABy/qLb/PoOWwYwC5CaijNROsTevomxs/Q/gEXvgbWLgJGN5TeZbbhEW
+ FN8p9peM6m1Lwec56ibythKmcY13/LAB1+4rCo5iyMwTPkZCNMvzLP99iQhwXmNs1Scgh3T7FYq
+ qcT434WDfLmHoiEgWOh7vsgswUQHJXA1QFGrVoWEGFnDSGwNWNI9AlpSpEEGsqZK8OncygPc=
+X-Received: by 2002:a05:6300:808d:b0:138:1980:1375 with SMTP id
+ ap13-20020a056300808d00b0013819801375mr15899858pzc.25.1691027516304; 
+ Wed, 02 Aug 2023 18:51:56 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHNL3fELXTFCZOkTqiRywUHWeronJWdSlAfLeA/RP1PNy40fyvBkya+3lXiW2AwVkuxhO/znA==
+X-Received: by 2002:a05:6300:808d:b0:138:1980:1375 with SMTP id
+ ap13-20020a056300808d00b0013819801375mr15899851pzc.25.1691027515872; 
+ Wed, 02 Aug 2023 18:51:55 -0700 (PDT)
+Received: from fedora19.redhat.com ([2401:d002:2d05:b10a:c9ac:2dd7:6463:bb84])
+ by smtp.gmail.com with ESMTPSA id
+ z1-20020a170903018100b001b9df74bac6sm13076085plg.260.2023.08.02.18.51.54
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 02 Aug 2023 18:51:55 -0700 (PDT)
+From: Ian Wienand <iwienand@redhat.com>
+To: ltp@lists.linux.it
+Date: Thu,  3 Aug 2023 11:51:49 +1000
+Message-ID: <20230803015149.69906-1-iwienand@redhat.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230802151906.25258-1-chrubis@suse.cz>
-References: <20230802151906.25258-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2 RESEND] sched/rt: sysctl_sched_rr_timeslice show
- default timeslice after reset
+Subject: [LTP] [PATCH] kernel/device-drivers/zram/zram01.sh : add a sync
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,45 +89,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jiri Bohac <jbohac@suse.cz>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The sched_rr_timeslice can be reset to default by writing value that is
-<= 0. However after reading from this file we always got the last value
-written, which is not useful at all.
+I have a system (virtualized aarch64, 4.18.0 kernel) that is
+consistently failing the zram01.sh test as it tries to divide the
+memory stats by zero.  It seems like I'm not the only one, this has
+been reported before at [1] without resolution.
 
-$ echo -1 > /proc/sys/kernel/sched_rr_timeslice_ms
-$ cat /proc/sys/kernel/sched_rr_timeslice_ms
--1
+This test does a lot of 1k writes into zram devices of size 25, 25,
+25, 300 and 25 mb.  On this particular system, I consistently see the
+final 25mb testing fail as it examines /sys/block/zramX/mm_stat and
+finds the mem_used_total as zero.
 
-Fix this by setting the variable that holds the sysctl file value to the
-jiffies_to_msecs(RR_TIMESLICE) in case that <= 0 value was written.
+For example, I instrumented the test to put a "sync" call in between
+examining the mm_stat value if it was zero; before and after it looks
+like:
 
-CC: Jiri Bohac <jbohac@suse.cz>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
+ zram01 7 TINFO: /sys/block/zram34/mm_stat is zero : 10092544        0        0 26214400   196608      154        0        0
+ <sync>
+ zram01 7 TINFO: /sys/block/zram34/mm_stat is zero (post sync) : 26214400     2841    65536 26214400   196608      399        0        0
+
+This is an otherwise quiet system and nothing else seems out of order
+(weird logs, load average, etc.).  I think that given the 300mb worth
+of writes from the prior step, the system just needs a little time to
+catch up on the compression to make this test more reliable.
+
+I considered checking if the value is zero and arbitrarily just
+waiting a few seconds which did work.  I then replaced this with a
+sync which also worked.  Rather than worrying about checking for zero
+values, it seems more reliable and simpler to just sync after the
+writes in all cases.  I could not replicate this issue with the sync
+as proposed in this patch.
+
+Additionally this does a check for a zero value to hopefully provide a
+more structured message if the test fails in the same way.
+
+[1] https://lists.linux.it/pipermail/ltp/2019-July/013028.html
+
+Signed-off-by: Ian Wienand <iwienand@redhat.com>
 ---
- kernel/sched/rt.c | 3 +++
- 1 file changed, 3 insertions(+)
+ testcases/kernel/device-drivers/zram/zram01.sh | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 185d3d749f6b..0597ba0f85ff 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -3062,6 +3062,9 @@ static int sched_rr_handler(struct ctl_table *table, int write, void *buffer,
- 		sched_rr_timeslice =
- 			sysctl_sched_rr_timeslice <= 0 ? RR_TIMESLICE :
- 			msecs_to_jiffies(sysctl_sched_rr_timeslice);
-+
-+		if (sysctl_sched_rr_timeslice <= 0)
-+			sysctl_sched_rr_timeslice = jiffies_to_msecs(RR_TIMESLICE);
- 	}
- 	mutex_unlock(&mutex);
+diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
+index 58d233f91..5f3964f6c 100755
+--- a/testcases/kernel/device-drivers/zram/zram01.sh
++++ b/testcases/kernel/device-drivers/zram/zram01.sh
+@@ -119,6 +119,9 @@ zram_fill_fs()
+ 				>/dev/null 2>err.txt || break
+ 			b=$(($b + 1))
+ 		done
++                # Give the system time to catch up, otherwise the mm_stat
++                # checking below can give a false negative
++		sync
+ 		if [ $b -eq 0 ]; then
+ 			[ -s err.txt ] && tst_res TWARN "dd error: $(cat err.txt)"
+ 			tst_brk TBROK "cannot fill zram $i"
+@@ -134,6 +137,9 @@ zram_fill_fs()
+ 		fi
+ 
+ 		mem_used_total=`awk '{print $3}' "/sys/block/zram$i/mm_stat"`
++		if [ $mem_used_total -eq 0 ]; then
++			test_res FAIL "/sys/block/zram$i/mm_stat reports 0 size : $(cat /sys/block/zram$i/mm_stat)"
++		fi
+ 		v=$((100 * 1024 * $b / $mem_used_total))
+ 		r=`echo "scale=2; $v / 100 " | bc`
  
 -- 
 2.41.0
