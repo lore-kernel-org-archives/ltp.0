@@ -4,62 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B8AFC001DB
-	for <ltp@archiver.kernel.org>; Fri,  4 Aug 2023 05:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 580A9C04A6A
+	for <ltp@archiver.kernel.org>; Fri,  4 Aug 2023 06:37:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 35EB93CD4D3
-	for <ltp@archiver.kernel.org>; Fri,  4 Aug 2023 07:30:37 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id EAC0C3CD49C
+	for <ltp@archiver.kernel.org>; Fri,  4 Aug 2023 08:37:35 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 351173CB8E5
- for <ltp@lists.linux.it>; Fri,  4 Aug 2023 07:30:25 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 8E19E3CB9A0
+ for <ltp@lists.linux.it>; Fri,  4 Aug 2023 08:37:24 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5EC41601189
- for <ltp@lists.linux.it>; Fri,  4 Aug 2023 07:30:24 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6580E1F8A4
- for <ltp@lists.linux.it>; Fri,  4 Aug 2023 05:30:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1691127024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=uixMdPreZBo42QRh3JOi7ZN++1eabgcfmtx0jXi2xns=;
- b=euyZvlnozIadSvdc11PQtyThBKr+fk7onvcPZ98MhXLovAbVPJtE5b8GZCULCcz0VWK67S
- P8SHL2d/56xI4iUxI+Eyo3Mvps7IDn6M624R19yHgi/YxFF7f+8/EirgamB+VMeBjFCHIK
- VaF6TTPRUIqRJMXOjzJ4khzcnafNyFU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1691127024;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=uixMdPreZBo42QRh3JOi7ZN++1eabgcfmtx0jXi2xns=;
- b=GgvJf2AWVoNnbyVNfCxaNLTLWL7daseg4UGI7SDBztA6zahifenpq3z6RC4K/0AYyR+Tgk
- 7KXDJ9UOtjcJJBDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0ACA013904
- for <ltp@lists.linux.it>; Fri,  4 Aug 2023 05:30:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id M8/bNe+MzGTYJQAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Fri, 04 Aug 2023 05:30:23 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Fri,  4 Aug 2023 10:56:17 +0530
-Message-ID: <20230804053022.22008-1-akumar@suse.de>
-X-Mailer: git-send-email 2.41.0
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 94F971000D58
+ for <ltp@lists.linux.it>; Fri,  4 Aug 2023 08:37:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1691131041;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=JRbNEV/g+3SWffCtpqnTW+44zOe74EJ4R0UlzfLRMdg=;
+ b=estP8MlUPohsgM+Tcvp+oWi2TjlWOITz9LYdoD0I/2H0yP2U+NQqMH+kxmsjbzzNzfTHRT
+ fYX4gdfpdZLxVwfamK4Fl7btgSky07NoeEodf8Rr+Yd3D7+C5tzONus996aOjD3yIVnLK2
+ Ua1Ay1CUFAHkT8QLxay1AdSxrDZd66M=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-581-AP7J6ikYNTe3vHlFYS9eMA-1; Fri, 04 Aug 2023 02:37:19 -0400
+X-MC-Unique: AP7J6ikYNTe3vHlFYS9eMA-1
+Received: by mail-qv1-f71.google.com with SMTP id
+ 6a1803df08f44-63cf3020a29so19525596d6.0
+ for <ltp@lists.linux.it>; Thu, 03 Aug 2023 23:37:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1691131039; x=1691735839;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=JRbNEV/g+3SWffCtpqnTW+44zOe74EJ4R0UlzfLRMdg=;
+ b=ecOQ3RFTsSv+ZI2N6FcEa+UfiseZCqbeVwcFFcx/HuADz3ybWG4Ax+7PPGL3XiRhI6
+ 0KcIa8Ywb+/FARMWU3sm5gQ+6ibsIBCrfFED8rDW4nQIIt5d7LIUiD5kwO5Ls0lmb/lN
+ r5Igw9v/hfUe0nxS3B8kK6Y/FVK6KVc9SH446pqwpA92SL9aHB9LG3+aXyDcFPjWCWxH
+ UqVPURui+nLny8nyz6j5N4aG7LhDj478Um9zeGFOjuS1NSX59aAsxPFHB24wPxRQ9Qn2
+ yNz0vrf0cu8fHwLGm84VyN/Y8eAZcNAHDAEZOkVV/5yVC1j8RwBguho2AB3aPzvog/+i
+ Md2A==
+X-Gm-Message-State: AOJu0YzEPVRn5Gih6Ryc8xlgd40TWoseTA8DpGrlQjAhov7VcCcD9bno
+ hUxQjJp3o39Hvuf5TrYdBTXMXF2AiBahWcD/8EuYsh8PzTMmUT7t6WQl9Mi72d7Tv446ncR22+i
+ dF0smErUzSp0=
+X-Received: by 2002:a05:622a:44f:b0:404:a649:879c with SMTP id
+ o15-20020a05622a044f00b00404a649879cmr1022818qtx.49.1691131038969; 
+ Thu, 03 Aug 2023 23:37:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEQAEaqfcC9XZlm+xYVaRBqSvtLqOU49iCHOkXeJwSJ4Vq7u3O4eD+BrXMQHkYycIHuMGVRvA==
+X-Received: by 2002:a05:622a:44f:b0:404:a649:879c with SMTP id
+ o15-20020a05622a044f00b00404a649879cmr1022804qtx.49.1691131038689; 
+ Thu, 03 Aug 2023 23:37:18 -0700 (PDT)
+Received: from fedora19.localdomain ([2401:d002:2d05:b10a:c9ac:2dd7:6463:bb84])
+ by smtp.gmail.com with ESMTPSA id
+ 7-20020a17090a034700b002681bda127esm920379pjf.35.2023.08.03.23.37.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 03 Aug 2023 23:37:18 -0700 (PDT)
+Date: Fri, 4 Aug 2023 16:37:11 +1000
+From: Ian Wienand <iwienand@redhat.com>
+To: Minchan Kim <minchan@kernel.org>
+Message-ID: <ZMycl7xKyJoQNpcu@fedora19.localdomain>
+References: <20221107191136.18048-1-pvorel@suse.cz>
+ <Y2l3vJb1y2Jynf50@google.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+In-Reply-To: <Y2l3vJb1y2Jynf50@google.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/pipe08: Rewrite test using new LTP API
+Subject: Re: [LTP] [PATCH 0/1] Possible bug in zram on ppc64le on vfat
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,201 +91,118 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: Jens Axboe <axboe@kernel.dk>, Sergey Senozhatsky <senozhatsky@chromium.org>,
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, ltp@lists.linux.it,
+ linux-kselftest@vger.kernel.org, Nitin Gupta <ngupta@vflare.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Background [1]
+On Mon, Nov 07, 2022 at 01:25:16PM -0800, Minchan Kim wrote:
+> > following bug is trying to workaround an error on ppc64le, where
+> > zram01.sh LTP test (there is also kernel selftest
+> > tools/testing/selftests/zram/zram01.sh, but LTP test got further
+> > updates) has often mem_used_total 0 although zram is already filled.
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
+> Is it happening on only ppc64le?
 
-[1] https://lore.kernel.org/ltp/ZMopSzK0MpPIj3p4@yuki/
----
- testcases/kernel/syscalls/pipe/pipe08.c | 152 ++++++------------------
- 1 file changed, 37 insertions(+), 115 deletions(-)
+I have managed to replicate this on an arm64 system.  I frankly don't
+know what is so special about it -- it's a qemu guest and I'm not sure
+what exactly it's running ontop of.
 
-diff --git a/testcases/kernel/syscalls/pipe/pipe08.c b/testcases/kernel/syscalls/pipe/pipe08.c
-index 173ec788a..1eac7e578 100644
---- a/testcases/kernel/syscalls/pipe/pipe08.c
-+++ b/testcases/kernel/syscalls/pipe/pipe08.c
-@@ -1,137 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ *  07/2001 Ported by Wayne Boyer
-+ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
- 
--/*
-- * NAME
-- *	pipe08.c
-- *
-- * DESCRIPTION
-- *	Check that a SIGPIPE signal is generated when a write is
-- *	attempted on an empty pipe.
-- *
-- * ALGORITHM
-- *	1. Write to a pipe after closing the read side.
-- *	2. Check for the signal SIGPIPE to be received.
-+/*\
-+ * [Description]
-  *
-- * USAGE:  <for command-line>
-- *  pipe08 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-- *
-- * USAGE
-- *	pipe08
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	None
-+ * Verify that, on any attempt to write to a pipe which is closed for
-+ * reading will generate a SIGPIPE signal and write will fail with
-+ * EPIPE errno.
-  */
--#include <errno.h>
--#include <unistd.h>
--#include <signal.h>
--#include <string.h>
--#include "test.h"
- 
--char *TCID = "pipe08";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
--void setup(void);
--void cleanup(void);
--void sighandler(int);
-+static int pipefd[2];
-+static int sigpipe_cnt;
- 
--int main(int ac, char **av)
-+static void sighandler(int sig)
+> Is it a new regression? What kernel version did you use?
+
+I've replicated this on 4.18.0; obviously something more recent would
+be useful but I'm hesitant to destroy too much state in case it is
+something ...
+
+> Actually, mem_used_total indicates how many *physical memory* were
+> currently used to keep original data size.
+> 
+> However, if the test data is repeated pattern of unsigned long
+> (https://github.com/torvalds/linux/blob/master/drivers/block/zram/zram_drv.c#L210)
+> zram doesn't allocate the physical memory but just mark the unsigned long's value
+> in meta area for decompression later.
+
+To recap; this test [1] creates a zram device, makes a filesystem on
+it, and fills it with sequential 1k writes from /dev/zero via dd.  The
+problem is that it sees the mem_used_total for the zram device as zero
+in the sysfs stats after the writes; this causes a divide by zero
+error in the script calculation.
+
+An annoted extract:
+
+ zram01 3 TINFO: /sys/block/zram1/disksize = '26214400'
+ zram01 3 TPASS: test succeeded
+ zram01 4 TINFO: set memory limit to zram device(s)
+ zram01 4 TINFO: /sys/block/zram1/mem_limit = '25M'
+ zram01 4 TPASS: test succeeded
+ zram01 5 TINFO: make vfat filesystem on /dev/zram1
+
+ >> at this point a cat of /sys/block/zram1/mm_stat shows
+ >>   65536      527    65536 26214400    65536        0        0        0
+
+ zram01 5 TPASS: zram_makefs succeeded
+ zram01 6 TINFO: mount /dev/zram1
+ zram01 6 TPASS: mount of zram device(s) succeeded
+ zram01 7 TINFO: filling zram1 (it can take long time)
+ zram01 7 TPASS: zram1 was filled with '25568' KB
+
+ >> at this point "ls -lh" shows the file
+ >> total 25M
+ >> -rwxr-xr-x. 1 root root 25M Aug  4 01:06 file
+
+ >> however, /sys/block/zram1/mm_stat shows
+ >>   9502720        0        0 26214400   196608      145        0        0
+ >> the script reads this zero value and tries to calculate the
+ >> compression ratio
+
+ ./zram01.sh: line 145: 100 * 1024 * 25568 / 0: division by 0 (error token is "0")
+
+ >> If we do a "sync" then redisply the mm_stat after, we get
+ >>   26214400     2842    65536 26214400   196608      399        0        0
+
+I have managed to instrument this, and in the following
+
+ static ssize_t mm_stat_show(struct device *dev,
+                struct device_attribute *attr, char *buf)
  {
--	int lc;
--
--	int pipefd[2];		/* fds for pipe read/write */
--	char wrbuf[BUFSIZ];
--	int written, length;
--	int close_stat;		/*  exit status of close(read fd) */
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		TEST(pipe(pipefd));
-+	if (sig == SIGPIPE)
-+		sigpipe_cnt++;
-+}
- 
--		if (TEST_RETURN != 0) {
--			tst_resm(TFAIL, "call failed unexpectedly");
--			continue;
--		}
-+static void run(void)
-+{
-+	char wrbuf[] = "abcdefghijklmnopqrstuvwxyz";
- 
--		if ((close_stat = close(pipefd[0])) == -1) {
--			tst_brkm(TBROK, cleanup, "close of read side failed");
--		}
-+	sigpipe_cnt = 0;
- 
--		strcpy(wrbuf, "abcdefghijklmnopqrstuvwxyz\0");
--		length = strlen(wrbuf);
-+	SAFE_PIPE(pipefd);
-+	SAFE_CLOSE(pipefd[0]);
- 
--		/*
--		 * the SIGPIPE signal will be caught here or else
--		 * the program will dump core when the signal is
--		 * sent
--		 */
--		written = write(pipefd[1], wrbuf, length);
--		if (written > 0)
--			tst_brkm(TBROK, cleanup, "write succeeded unexpectedly");
--	}
--	cleanup();
--	tst_exit();
-+	TST_EXP_FAIL2_SILENT(write(pipefd[1], wrbuf, sizeof(wrbuf)), EPIPE);
-+	TST_EXP_EQ_LI(sigpipe_cnt, 1);
- 
-+	SAFE_CLOSE(pipefd[1]);
- }
- 
--/*
-- * sighandler - catch signals and look for SIGPIPE
-- */
--void sighandler(int sig)
-+static void setup(void)
- {
--	if (sig != SIGPIPE)
--		tst_resm(TFAIL, "expected SIGPIPE, got %d", sig);
--	else
--		tst_resm(TPASS, "got expected SIGPIPE signal");
-+	SAFE_SIGNAL(SIGPIPE, sighandler);
- }
- 
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- */
--void setup(void)
-+static void cleanup(void)
- {
--
--	tst_sig(NOFORK, sighandler, cleanup);
--
--	TEST_PAUSE;
-+	if (pipefd[0] > 0)
-+		SAFE_CLOSE(pipefd[0]);
-+	if (pipefd[1] > 0)
-+		SAFE_CLOSE(pipefd[1]);
- }
- 
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
-- */
--void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.setup = setup,
-+	.test_all = run,
-+	.cleanup = cleanup
-+};
--- 
-2.41.0
+  ...
+        if (init_done(zram)) {
+		mem_used = zs_get_total_pages(zram->mem_pool);
+                pr_info("mm_stat_show: init done %p %lld\n", zram->mem_pool, mem_used);
+                zs_pool_stats(zram->mem_pool, &pool_stats);
+
+zs_get_total_pages(zram->mem_pool) is definitely zero, which is why
+the mm_stat is returning zero.  i.e. zsmalloc really doesn't seem to
+have any pages recorded for that mem_pool ...
+
+This doesn't seem to make sense; how can a device that has a file
+system on it not even have one page assigned to it in zram->mem_pool?
+
+I *think* this has something to do with the de-deuplication as noted.
+If I stub out page_same_filled() to return false always, we see instead
+
+ zram01 7 TPASS: zram1 was filled with '25568' KB
+ >>  < immediately after >
+ >> 10223616    48516   131072 26214400   196608        0        0        0
+ >>  < after sync >
+ >> 26214400   126933   327680 26214400   327680        0        0        0
+
+So I think this test still needs a sync to be sure that it's seeing
+the right values?  It's probably expected that this takes some time to
+write everything out?
+
+But is it possible that mem_used_total being zero is a bug -- possibly
+triggered by the de-dup path and the test writing the same thing in
+every block?  Something like the first de-duped page also being thrown
+out?
+
+-i
+
+[1] https://github.com/linux-test-project/ltp/blob/8c201e55f684965df2ae5a13ff439b28278dec0d/testcases/kernel/device-drivers/zram/zram01.sh
 
 
 -- 
