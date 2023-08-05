@@ -4,46 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3796CC00528
-	for <ltp@archiver.kernel.org>; Sat,  5 Aug 2023 02:42:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04B9BC001DB
+	for <ltp@archiver.kernel.org>; Sat,  5 Aug 2023 04:08:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C25FD3CE36F
-	for <ltp@archiver.kernel.org>; Sat,  5 Aug 2023 04:42:21 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 04C823CE369
+	for <ltp@archiver.kernel.org>; Sat,  5 Aug 2023 06:08:33 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AE1CB3CAB0C
- for <ltp@lists.linux.it>; Sat,  5 Aug 2023 04:42:10 +0200 (CEST)
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
- [60.248.80.70])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 0B3293CB4BD
+ for <ltp@lists.linux.it>; Sat,  5 Aug 2023 06:08:21 +0200 (CEST)
+Received: from esa8.hc1455-7.c3s2.iphmx.com (esa8.hc1455-7.c3s2.iphmx.com
+ [139.138.61.253])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 15A1114001E2
- for <ltp@lists.linux.it>; Sat,  5 Aug 2023 04:42:06 +0200 (CEST)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
- by Atcsqr.andestech.com with ESMTP id 3752fvoX021456;
- Sat, 5 Aug 2023 10:41:57 +0800 (+08)
- (envelope-from ycliang@andestech.com)
-Received: from ubuntu01 (10.0.12.75) by ATCPCS16.andestech.com (10.0.1.222)
- with Microsoft SMTP Server id 14.3.498.0; Sat, 5 Aug 2023 10:41:58 +0800
-Date: Sat, 5 Aug 2023 02:41:55 +0000
-From: Leo Liang <ycliang@andestech.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <ZM2284WIANaxhmCF@ubuntu01>
-References: <20230803103004.2429973-1-ycliang@andestech.com>
- <ZMuEkuWpcIkEN3QP@yuki>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZMuEkuWpcIkEN3QP@yuki>
-User-Agent: Mutt/2.0.5 (2021-01-21)
-X-Originating-IP: [10.0.12.75]
-X-DNSRBL: 
-X-MAIL: Atcsqr.andestech.com 3752fvoX021456
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EAA87600FF8
+ for <ltp@lists.linux.it>; Sat,  5 Aug 2023 06:08:20 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="115198598"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684767600"; d="scan'208";a="115198598"
+Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+ by esa8.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Aug 2023 13:08:18 +0900
+Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
+ [192.168.87.61])
+ by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 3CFCAF08A0
+ for <ltp@lists.linux.it>; Sat,  5 Aug 2023 13:08:16 +0900 (JST)
+Received: from aks-ab2.gw.nic.fujitsu.com (aks-ab2.gw.nic.fujitsu.com
+ [192.51.207.12])
+ by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 5B2E1D6148
+ for <ltp@lists.linux.it>; Sat,  5 Aug 2023 13:08:15 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.215.131])
+ by aks-ab2.gw.nic.fujitsu.com (Postfix) with ESMTP id 6F3D9878F1;
+ Sat,  5 Aug 2023 13:08:14 +0900 (JST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: ltp@lists.linux.it
+Date: Sat,  5 Aug 2023 12:07:56 +0800
+Message-Id: <1691208482-5464-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27794.003
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27794.003
+X-TMASE-Result: 10--6.842900-10.000000
+X-TMASE-MatchedRID: RtHHqK+8YWP/rbll2ZPJSE7nLUqYrlslKQNhMboqZlqrwqxtE531VICu
+ qghmtWfXbF6gos3VEkPovZLr3MyNeVn0TQX1xc9+qoeab9Xgz8/kwFzTzcgzhNZHHyezBoPUo8W
+ MkQWv6iUoTQl7wNH8Pg1fA1QHegDv3QfwsVk0UbtuRXh7bFKB7tB6ArnfSxw0+NLM+g33glo8oA
+ IMHMfc5rvNeFyRJtBHsBTJSD2iAW0=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] hugeshmat04: Restore the correct shmmax value
+Subject: [LTP] [PATCH 1/3] include/faccessat.h: Add header file faccessat.h
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -55,65 +67,48 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: cynthia@andestech.com, patrick@andestech.com, ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ include/lapi/faccessat.h | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+ create mode 100644 include/lapi/faccessat.h
 
-On Thu, Aug 03, 2023 at 12:42:26PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-> > ---
-> >  testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-> > index 50efa8a52..b3e7c272a 100644
-> > --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-> > +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-> > @@ -83,12 +83,12 @@ static void setup(void)
-> >  	long hpage_size, orig_hugepages;
-> >  
-> >  	orig_hugepages = get_sys_tune("nr_hugepages");
-> > -	SAFE_FILE_SCANF(PATH_SHMMAX, "%ld", &orig_shmmax);
-> > -	SAFE_FILE_PRINTF(PATH_SHMMAX, "%ld", (long)SIZE);
-> > -	SAFE_FILE_SCANF(PATH_SHMMAX, "%ld", &new_shmmax);
-> > +	SAFE_FILE_SCANF(PATH_SHMMAX, "%lu", &orig_shmmax);
-> > +	SAFE_FILE_PRINTF(PATH_SHMMAX, "%lu", (long)SIZE);
-> > +	SAFE_FILE_SCANF(PATH_SHMMAX, "%lu", &new_shmmax);
-> >  
-> >  	if (new_shmmax < SIZE)
-> > -		tst_brk(TCONF,	"shmmax too low, have: %ld", new_shmmax);
-> > +		tst_brk(TCONF,	"shmmax too low, have: %lu", new_shmmax);
-> >  
-> >  	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
-> >  
-> > @@ -99,7 +99,7 @@ static void setup(void)
-> >  static void cleanup(void)
-> >  {
-> >  	if (orig_shmmax != -1)
-> > -		SAFE_FILE_PRINTF(PATH_SHMMAX, "%ld", orig_shmmax);
-> > +		SAFE_FILE_PRINTF(PATH_SHMMAX, "%lu", orig_shmmax);
-> >  }
-> 
-> Can we please move the PATH_SHMMAX restoration to the .save_restore part
-> of the tst_test structure?
-> 
-> https://github.com/linux-test-project/ltp/wiki/C-Test-API#127-saving--restoring-procsys-values
+diff --git a/include/lapi/faccessat.h b/include/lapi/faccessat.h
+new file mode 100644
+index 000000000..f3318fd7a
+--- /dev/null
++++ b/include/lapi/faccessat.h
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
++ * Copyright (c) Linux Test Project, 2003-2023
++ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
++ */
++
++#ifndef FACCESSAT_H
++#define FACCESSAT_H
++
++#include <sys/types.h>
++#include "lapi/syscalls.h"
++
++#ifndef HAVE_FACCESSAT
++int faccessat(int dirfd, const char *pathname, int mode, int flags)
++{
++	return tst_syscall(__NR_faccessat, dirfd, pathname, mode, flags);
++}
++#endif
++
++#endif /* FACCESSAT_H */
+-- 
+2.39.1
 
-Thanks for the pointer.
-I will send a v2 patch soon!
-
-Best regards,
-Leo
-
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
