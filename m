@@ -4,54 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E612C001DF
-	for <ltp@archiver.kernel.org>; Fri,  4 Aug 2023 16:49:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3796CC00528
+	for <ltp@archiver.kernel.org>; Sat,  5 Aug 2023 02:42:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 270A23CE36B
-	for <ltp@archiver.kernel.org>; Fri,  4 Aug 2023 18:49:44 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id C25FD3CE36F
+	for <ltp@archiver.kernel.org>; Sat,  5 Aug 2023 04:42:21 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0498A3CB4BD
- for <ltp@lists.linux.it>; Fri,  4 Aug 2023 18:49:32 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id AE1CB3CAB0C
+ for <ltp@lists.linux.it>; Sat,  5 Aug 2023 04:42:10 +0200 (CEST)
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net
+ [60.248.80.70])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 3D771101C258
- for <ltp@lists.linux.it>; Fri,  4 Aug 2023 18:49:30 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D935021862;
- Fri,  4 Aug 2023 16:49:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1691167768; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=/l1JpdjujXYw4tG/IlbecOGYDW1dYWTsRBgf96P6GXU=;
- b=qLASaiNo/yOh7iJyfXGMXkA7g1ATVT7/mz7PQ6EZ54xq3aqo2xyRSDgIDqUtGPHDXrpbsH
- Qbvgy98dVWLwmw5SwK0OEE49Rama683yOemG++SNgHDhtn8vDExU+nDQRLml82zmiheBaD
- vpEi3X8SiRs7ZzD95gyWnhVT4RzP2sA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C4E4B13904;
- Fri,  4 Aug 2023 16:49:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 3Rk/LxgszWSodwAAMHmgww
- (envelope-from <ybonatakis@suse.com>); Fri, 04 Aug 2023 16:49:28 +0000
-To: ltp@lists.linux.it
-Date: Fri,  4 Aug 2023 18:49:18 +0200
-Message-ID: <20230804164918.31756-1-ybonatakis@suse.com>
-X-Mailer: git-send-email 2.41.0
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 15A1114001E2
+ for <ltp@lists.linux.it>; Sat,  5 Aug 2023 04:42:06 +0200 (CEST)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+ by Atcsqr.andestech.com with ESMTP id 3752fvoX021456;
+ Sat, 5 Aug 2023 10:41:57 +0800 (+08)
+ (envelope-from ycliang@andestech.com)
+Received: from ubuntu01 (10.0.12.75) by ATCPCS16.andestech.com (10.0.1.222)
+ with Microsoft SMTP Server id 14.3.498.0; Sat, 5 Aug 2023 10:41:58 +0800
+Date: Sat, 5 Aug 2023 02:41:55 +0000
+From: Leo Liang <ycliang@andestech.com>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <ZM2284WIANaxhmCF@ubuntu01>
+References: <20230803103004.2429973-1-ycliang@andestech.com>
+ <ZMuEkuWpcIkEN3QP@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <ZMuEkuWpcIkEN3QP@yuki>
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Originating-IP: [10.0.12.75]
+X-DNSRBL: 
+X-MAIL: Atcsqr.andestech.com 3752fvoX021456
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Rewrite the gethostname01 using new LTP API
+Subject: Re: [LTP] [PATCH 1/1] hugeshmat04: Restore the correct shmmax value
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,212 +55,65 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: ybonatakis via ltp <ltp@lists.linux.it>
-Reply-To: ybonatakis <ybonatakis@suse.com>
+Cc: cynthia@andestech.com, patrick@andestech.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Minimun test of gethostname which checks the return value.
+Hi Cyril,
 
-Signed-off-by: ybonatakis <ybonatakis@suse.com>
----
- .../syscalls/gethostname/gethostname01.c      | 173 +++---------------
- 1 file changed, 23 insertions(+), 150 deletions(-)
+On Thu, Aug 03, 2023 at 12:42:26PM +0200, Cyril Hrubis wrote:
+> Hi!
+> > Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+> > ---
+> >  testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> > index 50efa8a52..b3e7c272a 100644
+> > --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> > +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> > @@ -83,12 +83,12 @@ static void setup(void)
+> >  	long hpage_size, orig_hugepages;
+> >  
+> >  	orig_hugepages = get_sys_tune("nr_hugepages");
+> > -	SAFE_FILE_SCANF(PATH_SHMMAX, "%ld", &orig_shmmax);
+> > -	SAFE_FILE_PRINTF(PATH_SHMMAX, "%ld", (long)SIZE);
+> > -	SAFE_FILE_SCANF(PATH_SHMMAX, "%ld", &new_shmmax);
+> > +	SAFE_FILE_SCANF(PATH_SHMMAX, "%lu", &orig_shmmax);
+> > +	SAFE_FILE_PRINTF(PATH_SHMMAX, "%lu", (long)SIZE);
+> > +	SAFE_FILE_SCANF(PATH_SHMMAX, "%lu", &new_shmmax);
+> >  
+> >  	if (new_shmmax < SIZE)
+> > -		tst_brk(TCONF,	"shmmax too low, have: %ld", new_shmmax);
+> > +		tst_brk(TCONF,	"shmmax too low, have: %lu", new_shmmax);
+> >  
+> >  	hpage_size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+> >  
+> > @@ -99,7 +99,7 @@ static void setup(void)
+> >  static void cleanup(void)
+> >  {
+> >  	if (orig_shmmax != -1)
+> > -		SAFE_FILE_PRINTF(PATH_SHMMAX, "%ld", orig_shmmax);
+> > +		SAFE_FILE_PRINTF(PATH_SHMMAX, "%lu", orig_shmmax);
+> >  }
+> 
+> Can we please move the PATH_SHMMAX restoration to the .save_restore part
+> of the tst_test structure?
+> 
+> https://github.com/linux-test-project/ltp/wiki/C-Test-API#127-saving--restoring-procsys-values
 
-diff --git a/testcases/kernel/syscalls/gethostname/gethostname01.c b/testcases/kernel/syscalls/gethostname/gethostname01.c
-index a7cb5417f..1c07c46b7 100644
---- a/testcases/kernel/syscalls/gethostname/gethostname01.c
-+++ b/testcases/kernel/syscalls/gethostname/gethostname01.c
-@@ -1,161 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * 07/2001 Ported by Wayne Boyer
-+ * Copyright (c) Linux Test Project, 2002-2015
-+ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
--/* $Id: gethostname01.c,v 1.6 2009/10/26 14:55:47 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: gethostname01
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for gethostname(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	1.) gethostname(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- * 	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *    INTERCASE DEPENDENCIES
-- * 	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the gethostname(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	gethostname(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
--
--#include <errno.h>
--#include <signal.h>
--#include <string.h>
--
--#include "test.h"
- 
--void setup();
--void cleanup();
-+/*
-+ * [Description]
-+ *
-+ *      This is a Phase I test for the gethostname(2) system call.  It is intended
-+ *      to provide a limited exposure of the system call, for now.  It
-+ *      should/will be extended when full functional tests are written for
-+ *      gethostname(2).
-+ */
- 
--char *TCID = "gethostname01";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
-+#include <stdlib.h>
- 
--int main(int ac, char **av)
-+static void run(void)
- {
--	int lc;
-+	char hname[100];
-+	int ret = gethostname(hname, sizeof(hname));
- 
--	char hname[100];	/* host name */
-+	if (!ret)
-+		tst_res(TPASS, "gethostname %s", hname);
- 
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		TEST(gethostname(hname, sizeof(hname)));
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL | TTERRNO, "gethostname failed");
--			continue;	/* next loop for MTKERNEL */
--		}
--
--		tst_resm(TPASS, "gethostname returned %ld",
--			 TEST_RETURN);
--	}
--
--	cleanup();
--	tst_exit();
- }
- 
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--}
- 
--void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.test_all = run
-+};
--- 
-2.41.0
+Thanks for the pointer.
+I will send a v2 patch soon!
 
+Best regards,
+Leo
+
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
