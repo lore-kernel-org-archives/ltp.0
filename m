@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0A8AC001B0
-	for <ltp@archiver.kernel.org>; Mon,  7 Aug 2023 12:29:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 195F5C001B0
+	for <ltp@archiver.kernel.org>; Mon,  7 Aug 2023 13:12:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7EA433CE1D4
-	for <ltp@archiver.kernel.org>; Mon,  7 Aug 2023 14:29:50 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 0F36F3CE1B8
+	for <ltp@archiver.kernel.org>; Mon,  7 Aug 2023 15:12:43 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 96BFA3CD1CF
- for <ltp@lists.linux.it>; Mon,  7 Aug 2023 14:29:39 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id A99D63C62DA
+ for <ltp@lists.linux.it>; Mon,  7 Aug 2023 15:12:33 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9FB071400DC4
- for <ltp@lists.linux.it>; Mon,  7 Aug 2023 14:29:38 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E7327600BDC
+ for <ltp@lists.linux.it>; Mon,  7 Aug 2023 15:12:32 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D73A61FD73;
- Mon,  7 Aug 2023 12:29:37 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8EB2621900;
+ Mon,  7 Aug 2023 13:12:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1691411377; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1691413951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BPc8C/nx77r3WZpNRIhCI958U7qkgsYy4gce3kN+UGU=;
- b=04HwOx9i39E65ccuIDNcrUaNmkFYddZmso8KrjxDD/c2l7faEDzc7j/O+pE3RFNYqvNP1e
- bkz3ZlRMGZxuVca/CxMTN+LSCqykE7Kaw+Ny5+pIhQH7SorO93YnR0WIXdlsOtJIld+ykj
- wdGj14wUl3z7+pxEaVByFHIZEuKHJZk=
+ bh=arBrU/YHqqTqaWZ9EzlKpV5WkztDyedvYJPj2sUp6gg=;
+ b=ecaEvhv0drWn1ESDtH/Ml6qF4vXiVc3gQUeIGtHp+2cjKpj5wt36kx+1jo5EcfpTm8QNMc
+ bfhbowsxCeYjqHnKgFXKZwf125xAFwTHTy4pV3zP5Sowib0xi8Z+mnUldLFYtNE9Jqqu5k
+ 4Vn3AsghyNGAyvJYbRbl0UBD36k20AA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1691411377;
+ s=susede2_ed25519; t=1691413951;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=BPc8C/nx77r3WZpNRIhCI958U7qkgsYy4gce3kN+UGU=;
- b=+1IK7uKfGP6b1P6dlHo42f7ybJMJcB3a+vlLexca9qCRRUPzXC2vzXunwlDmXx95ZQ5o5d
- UdvjtH0S//kHRaDQ==
+ bh=arBrU/YHqqTqaWZ9EzlKpV5WkztDyedvYJPj2sUp6gg=;
+ b=bsoVj6Wn+ablH46mE1GABqfXT4NqiHhOj6w/y43wJ+86HiTpm2IQshkCRXa33VNLUpGbFF
+ RQ/s5ocnm/QnI8BA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C3C9F13487;
- Mon,  7 Aug 2023 12:29:37 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 68DBA13487;
+ Mon,  7 Aug 2023 13:12:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id IAlnLrHj0GQnfAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 07 Aug 2023 12:29:37 +0000
-Date: Mon, 7 Aug 2023 14:30:34 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id zNpOF7/t0GTlFAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 07 Aug 2023 13:12:31 +0000
+Date: Mon, 7 Aug 2023 15:13:28 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <ZNDj6o3UViMIbvkT@yuki>
+Message-ID: <ZNDt-PogUzCebHSl@yuki>
 References: <1690888046-18662-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1690888046-18662-2-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1690888046-18662-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+In-Reply-To: <1690888046-18662-2-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/3] syscalls/setgroups01: Convert to new API
+Subject: Re: [LTP] [PATCH v2 2/3] syscalls/setgroups02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,112 +82,77 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> -#include <errno.h>
-> -#include <string.h>
-> -#include <signal.h>
-> -#include <sys/param.h>
-> -#include <unistd.h>
-> -#include <grp.h>
-> -
-> -#include "test.h"
-> -
-> -#include "compat_16.h"
-> +/*\
-> + * [Description]
-> + *
-> + * Check the basic functionality of the setgroups() system call.
-> + */
->  
-> -void setup();
-> -void cleanup();
-> +#include "tst_test.h"
-> +#include "compat_tst_16.h"
->  
-> -TCID_DEFINE(setgroups01);
-> -int TST_TOTAL = 1;
-> +static int len = NGROUPS, ngrps;
->  
-> -int len = NGROUPS, ngrps = 0;
-> -GID_T list[NGROUPS];
-> +static GID_T list[NGROUPS];
->  
-> -int main(int ac, char **av)
+> +static GID_T groups_get[NGROUPS];
+> +static GID_T groups_set[NGROUPS];
+
+Since you are using the guarded buffers these two has to be just
+pointers, i.e.
+
+static GID_T *groups_get;
+
+> -/*
+> - * setup() - performs all ONE TIME setup for this test.
+> - *
+> - *  Make sure the test process uid is root.
+> - *  Get the supplimentrary group id of test user from /etc/passwd file.
+> - */
+> -void setup(void)
 > +static void verify_setgroups(void)
 >  {
-> -	int lc;
-> -
-> -    /***************************************************************
-> -     * parse standard options
-> -     ***************************************************************/
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -    /***************************************************************
-> -     * perform global setup for test
-> -     ***************************************************************/
-> -	setup();
-> -
-> -    /***************************************************************
-> -     * check looping state if -c option given
-> -     ***************************************************************/
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -
-> -		tst_count = 0;
-> -
-> -		/*
-> -		 * Call setgroups(2)
-> -		 */
-> -		TEST(SETGROUPS(cleanup, ngrps, list));
-> -
-> -		/* check return code */
-> -		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL,
-> -				 "setgroups(%d, list) Failed, errno=%d : %s",
-> -				 len, TEST_ERRNO, strerror(TEST_ERRNO));
-> -		} else {
-> -			tst_resm(TPASS,
-> -				 "setgroups(%d, list) returned %ld",
-> -				 len, TEST_RETURN);
-> -		}
-> -
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> +	TST_EXP_POSITIVE(SETGROUPS(ngrps, list),
-> +			 "setgroups(%d, list)", len);
->  }
->  
-> -/***************************************************************
-> - * setup() - performs all ONE TIME setup for this test.
-> - ***************************************************************/
-> -void setup(void)
-> +static void setup(void)
->  {
-> -
+> +	int gidsetsize = 1;
+
+There is no point in passing the value via variable, we can as well pass
+1 directly to the getgroups/setgroups calls.
+
 > -	tst_require_root();
 > -
 > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
+> +	groups_set[0] = 42;
+
+We have to clear the groups_get[0] here as well, in the case that we are
+looping with the -i parameter, i.e.
+
+	groups_get[0] = 0;
+
 > -	TEST_PAUSE;
+> +	TST_EXP_PASS(SETGROUPS(gidsetsize, groups_set));
+>  
+> -	/* Get the group id info. of TESTUSER from /etc/passwd */
+> -	if ((user_info = getpwnam(TESTUSER)) == NULL) {
+> -		tst_brkm(TFAIL, cleanup, "getpwnam(2) of %s Failed", TESTUSER);
+> -	}
+> +	TST_EXP_VAL(GETGROUPS(gidsetsize, groups_get), 1);
+>  
+> -	if (!GID_SIZE_CHECK(user_info->pw_gid)) {
+> -		tst_brkm(TBROK,
+> -			 cleanup,
+> -			 "gid returned from getpwnam is too large for testing setgroups16");
+> -	}
 > -
-> -	ngrps = GETGROUPS(cleanup, len, list);
-> -	if (ngrps == -1) {
-> -		tst_brkm(TBROK, cleanup,
-> -			 "getgroups(%d, list) Failure. errno=%d : %s",
-> -			 len, errno, strerror(errno));
-> +	if (GETGROUPS(len, list) < 0) {
-> +		tst_brk(TBROK,
-> +			"getgroups(%d, list) Failure. errno=%d : %s",
-> +			len, errno, strerror(errno));
-                             ^
-			     use TERRNO instead of printing the values
-			     by hand
+> -	groups_list[0] = user_info->pw_gid;
+> +	TST_EXP_EQ_LI(groups_get[0], groups_set[0]);
+>  }
+>  
+> -/*
+> - * cleanup() - performs all ONE TIME cleanup for this test at
+> - *	       completion or premature exit.
+> - */
+> -void cleanup(void)
+> -{
+> -
+> -}
+> +static struct tst_test test = {
+> +	.test_all = verify_setgroups,
+> +	.bufs = (struct tst_buffers []) {
+> +		{&groups_get, .size = sizeof(groups_get)},
+> +		{&groups_set, .size = sizeof(groups_set)},
+                                          ^
+					  Since we are using arrays of
+					  size 1 with elements of a size
+					  GID_T this should be just
+					  sizeof(GID_T)
 
-
->  	}
-
-Also after this change the ngrps is no loger set and we pass 0 as the
-number of groups to the setgroups call.
+If it was array of size 2 it would have been 2 * sizeof(GID_T) etc.
 
 
 The rest of the changes looks good.
