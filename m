@@ -4,71 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58DE2C04A6A
-	for <ltp@archiver.kernel.org>; Thu, 10 Aug 2023 14:38:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8571CC001E0
+	for <ltp@archiver.kernel.org>; Thu, 10 Aug 2023 14:53:33 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 56FF63CD3EB
-	for <ltp@archiver.kernel.org>; Thu, 10 Aug 2023 16:38:40 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 819E43C8BBF
+	for <ltp@archiver.kernel.org>; Thu, 10 Aug 2023 16:53:31 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 819DB3C98D3
- for <ltp@lists.linux.it>; Thu, 10 Aug 2023 16:38:28 +0200 (CEST)
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com
- [IPv6:2607:f8b0:4864:20::a2c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 38E9E3C4BC7
+ for <ltp@lists.linux.it>; Thu, 10 Aug 2023 16:53:19 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8F3311400F49
- for <ltp@lists.linux.it>; Thu, 10 Aug 2023 16:38:27 +0200 (CEST)
-Received: by mail-vk1-xa2c.google.com with SMTP id
- 71dfb90a1353d-48730d2ce5cso417234e0c.0
- for <ltp@lists.linux.it>; Thu, 10 Aug 2023 07:38:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1691678306; x=1692283106;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=KtKW3m6St/tCwi9EUh2wY2Fr06FdmNeB2PkpN9wNam4=;
- b=PzrOljJFgftVM6vygtxCH/O+Tllh7c3vrKQP1Oj0+FoznExZsxCUOUAQWB0dHUWGQU
- ZZnpxzXr4qPkllzSk0yz6GUBdJRcuFH1X6X4Pjw208/bIBEDBHiEut7ROmQAHzAMn6/u
- Uy+I7wUK5O83cP8vZ5ovAtP40DEC+YXG+QbRloOr3GCx3nWlTiH5pV2Yvf45RvO26MLS
- X4YtSm0W5rUcMp2Khh8Uasq9vYUVQGiK0eSsxCAFkRIOmeGQi0Vyv+CcK22FQ2QvKcwe
- y1BUJ1LFSM1fY86OrffaRkXR84UWz5VOl+heSqxO10ccswfXaUVCqEslFOcy2gJwbCNV
- yhFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1691678306; x=1692283106;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=KtKW3m6St/tCwi9EUh2wY2Fr06FdmNeB2PkpN9wNam4=;
- b=aeLwb3v4IAdgYC58O7nZnw0grdmqr19a3RbSiECOgkp/YR02UrlTuNUazo3SfdZ0Cz
- uii8RxZYVCpG+M2Z3W+3V2R8A/Ssr5r01RBMltqc7Bv8cGqr39oXcrZLlg66Hwl2OIqm
- xzzKpMgu17Z0ylQFtIhCdiS/InECzR2yoz3+Olahqsmop9l5var63woJTE/dc72GUHIn
- kG71BQaMFow7lB86Z3tfuRXqplVicZLvhRC/2oDaS1pNm9hJjekiTmVKWViBmZhzGTmJ
- KoAEQQSni0AI7LZh5hNNIUgWihFWozQBWvgirJ8u8MLPpxqIHymB7+LE1WSIM6Q2EAPM
- F3LQ==
-X-Gm-Message-State: AOJu0YxR/M7Tk6zZhT/azy11vwfl3huUp/epr76vf8AklcjpzPKIJk7r
- QtIS5sE3tQiMV0lgjKkA9pc+uusou5ZHLqzktj8=
-X-Google-Smtp-Source: AGHT+IG93lFTJmW1PntJsuA5zAOoIy778v4IZWy0eXL6h0IMqd5oc+8Z4dLpTLTzMHf1KPnH2se4/okd8qYL7gswQKg=
-X-Received: by 2002:a67:efcf:0:b0:444:3f96:ff70 with SMTP id
- s15-20020a67efcf000000b004443f96ff70mr1959645vsp.33.1691678306331; Thu, 10
- Aug 2023 07:38:26 -0700 (PDT)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2E6E81A02391
+ for <ltp@lists.linux.it>; Thu, 10 Aug 2023 16:53:18 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 51F522184B;
+ Thu, 10 Aug 2023 14:53:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1691679198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IBmlQVFnrCZS/IXyzb15uVcwypMNr7WVZ2CNWcdagSM=;
+ b=JIlR6UDjbfcsoekR25/i/rGKWV0Vt7voxIrDfo3GP6V3G+mzT2c0BbPN8ytgQPXu4rb5s+
+ C+WotVHq50n8wxDc+1wlWvhgqNYuqX2Puj4ERBiwPZu7Llbwt01Us7fshCpQxomgXQl2NX
+ u2mGoBn7fNRF3PznlQ2Y5q+TONrxVE8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1691679198;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IBmlQVFnrCZS/IXyzb15uVcwypMNr7WVZ2CNWcdagSM=;
+ b=OzlawWPVCblnFh77dAGAl5cGOZYXfi/1p8Uv28OiVLxI9rWVxTNsn2NvWe7a2eblawsg6P
+ p6XNqP0sGNU6sOCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3335E138E0;
+ Thu, 10 Aug 2023 14:53:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id y90xC9751GT8EAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 10 Aug 2023 14:53:18 +0000
+Date: Thu, 10 Aug 2023 16:54:18 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Message-ID: <ZNT6GkZ05CrGk5pV@yuki>
+References: <1691208482-5464-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1691208482-5464-4-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
-References: <20230810131012.13026-1-jack@suse.cz>
- <CAOQ4uxiY3Qajthb_kVhzGbuzqzJvUWXdF4HRW=YtaojQ1Ys3DA@mail.gmail.com>
- <20230810142524.xmrf4xfplxe7hv2e@quack3>
-In-Reply-To: <20230810142524.xmrf4xfplxe7hv2e@quack3>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 10 Aug 2023 17:38:15 +0300
-Message-ID: <CAOQ4uxh85sm8nv6_Q2tH95Uwx2G8aZ0nhLPLhOMYeOC=mjbKqQ@mail.gmail.com>
-To: Jan Kara <jack@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <1691208482-5464-4-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] fanotify23: Make evictable marks tests more
- reliable
+Subject: Re: [LTP] [PATCH 1/2] syscalls/faccessat201: Add new testcase
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,84 +76,251 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it, petr.vorel@suse.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBBdWcgMTAsIDIwMjMgYXQgNToyNeKAr1BNIEphbiBLYXJhIDxqYWNrQHN1c2UuY3o+
-IHdyb3RlOgo+Cj4gT24gVGh1IDEwLTA4LTIzIDE2OjMwOjMyLCBBbWlyIEdvbGRzdGVpbiB3cm90
-ZToKPiA+IE9uIFRodSwgQXVnIDEwLCAyMDIzIGF0IDQ6MTDigK9QTSBKYW4gS2FyYSA8amFja0Bz
-dXNlLmN6PiB3cm90ZToKPiA+ID4KPiA+ID4gSXQgaGFzIGJlZW4gb2JzZXJ2ZWQgdGhhdCB3aGVu
-IGZhbm90aWZ5MjMgdGVzdCBpcyBydW4gaW4gYSBsb29wLCBpdAo+ID4gPiBldmVudHVhbGx5IGZh
-aWxzIGFzOgo+ID4gPgo+ID4gPiBmYW5vdGlmeTIzLmM6MTEyOiBUUEFTUzogRkFOX01BUktfQURE
-IGZhaWxlZCB3aXRoIEVFWElTVCBhcyBleHBlY3RlZCB3aGVuIHRyeWluZyB0byBkb3duZ3JhZGUg
-dG8gZXZpY3RhYmxlIG1hcmsKPiA+ID4gZmFub3RpZnkyMy5jOjc1OiBUUEFTUzogRkFOX01BUktf
-UkVNT1ZFIGZhaWxlZCB3aXRoIEVOT0VOVCBhcyBleHBlY3RlZCBhZnRlciBlbXB0eSBtYXNrCj4g
-PiA+IGZhbm90aWZ5MjMuYzoxNTY6IFRQQVNTOiBHb3Qgbm8gZXZlbnRzIGFzIGV4cGVjdGVkCj4g
-PiA+IGZhbm90aWZ5MjMuYzo4MTogVEZBSUw6IEZBTl9NQVJLX1JFTU9WRSBkaWQgbm90IGZhaWwg
-d2l0aCBFTk9FTlQgYXMgZXhwZWN0ZWQgYWZ0ZXIgZHJvcF9jYWNoZXM6IFNVQ0NFU1MgKDApCj4g
-PiA+Cj4gPiA+IFRoaXMgaXMgYmVjYXVzZSByZXBlYXRlZCBldmljdGlvbnMgb2YgY2FjaGVzIGRv
-bmUgYnkgdGhlIHRlc3QgcmVjbGFpbQo+ID4gPiBhbGwgZnJlZWFibGUgc2xhYiBvYmplY3RzIGlu
-IHRoZSBzeXN0ZW0uIFNvIHdoZW4gdGhlIHRlc3QgY2FsbHMgZHJvcAo+ID4gPiBjYWNoZXMsIG9u
-bHkgdGhlIGRlbnRyeSBhbmQgaW5vZGUgb2YgdGhlIHRlc3QgZmlsZSBhcmUgdGhlcmUgdG8gcmVj
-bGFpbS4KPiA+ID4gQnV0IGZvciBpbm9kZSB0byBiZSByZWNsYWltZWQsIGRlbnRyeSAod2hpY2gg
-aG9sZHMgaW5vZGUgcmVmZXJlbmNlKSBoYXMKPiA+ID4gdG8gYmUgZnJlZWQgZmlyc3QgYW5kIGZv
-ciBkZW50cnkgdG8gYmUgZnJlZWQgaXQgaGFzIHRvIGZpcnN0IGN5Y2xlCj4gPiA+IHRocm91Z2gg
-dGhlIExSVSB3aGljaCB0YWtlcyB0d28gc2xhYiByZWNsYWltIGNhbGxzLgo+ID4gPgo+ID4gPiBD
-YWxsIGRyb3AgY2FjaGVzIHR3aWNlIHRvIG1ha2Ugc3VyZSBkZW50cnkgaGFzIGNoYW5jZSB0byBw
-YXNzIHRocm91Z2gKPiA+ID4gdGhlIExSVSBhbmQgYmUgcmVjbGFpbWVkLgo+ID4gPgo+ID4gPiBT
-aWduZWQtb2ZmLWJ5OiBKYW4gS2FyYSA8amFja0BzdXNlLmN6Pgo+ID4gPiAtLS0KPiA+ID4gIHRl
-c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZmFub3RpZnkvZmFub3RpZnkyMy5jIHwgNyArKysrKyst
-Cj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4g
-PiA+Cj4gPiA+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Zhbm90aWZ5
-L2Zhbm90aWZ5MjMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZmFub3RpZnkvZmFub3Rp
-ZnkyMy5jCj4gPiA+IGluZGV4IDg5ZmQ0ZjM2YTA5Yi4uMmQ1MGY3MDU4NWI3IDEwMDY0NAo+ID4g
-PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Zhbm90aWZ5L2Zhbm90aWZ5MjMuYwo+
-ID4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Zhbm90aWZ5L2Zhbm90aWZ5MjMu
-Ywo+ID4gPiBAQCAtMTYwLDEwICsxNjAsMTUgQEAgc3RhdGljIHZvaWQgdGVzdF9mYW5vdGlmeSh2
-b2lkKQo+ID4gPiAgICAgICAgIH0KPiA+ID4KPiA+ID4gICAgICAgICAvKgo+ID4gPiAtICAgICAg
-ICAqIGRyb3BfY2FjaGVzIHNob3VsZCBldmljdCBpbm9kZSBmcm9tIGNhY2hlIGFuZCByZW1vdmUg
-ZXZpY3RhYmxlIG1hcmsKPiA+ID4gKyAgICAgICAgKiBkcm9wX2NhY2hlcyBzaG91bGQgZXZpY3Qg
-aW5vZGUgZnJvbSBjYWNoZSBhbmQgcmVtb3ZlIGV2aWN0YWJsZSBtYXJrLgo+ID4gPiArICAgICAg
-ICAqIFdlIGNhbGwgZHJvcF9jYWNoZXMgdHdpY2UgYXMgb25jZSB0aGUgZGVudHJpZXMgd2lsbCBq
-dXN0IGN5Y2xlCj4gPiA+ICsgICAgICAgICogdGhyb3VnaCB0aGUgTFJVIHdpdGhvdXQgYmVpbmcg
-cmVjbGFpbWVkIGFuZCBpZiB0aGVyZSBhcmUgbm8gb3RoZXIKPiA+ID4gKyAgICAgICAgKiBvYmpl
-Y3RzIHRvIHJlY2xhaW0sIHRoZSBzbGFiIHJlY2xhaW0gd2lsbCBqdXN0IHN0b3AgaW5zdGVhZCBv
-Zgo+ID4gPiArICAgICAgICAqIHJldHJ5aW5nLgo+ID4gPiAgICAgICAgICAqLwo+ID4gPiAgICAg
-ICAgIGZzeW5jX2ZpbGUoVEVTVF9GSUxFKTsKPiA+ID4gICAgICAgICBTQUZFX0ZJTEVfUFJJTlRG
-KERST1BfQ0FDSEVTX0ZJTEUsICIzIik7Cj4gPiA+ICsgICAgICAgU0FGRV9GSUxFX1BSSU5URihE
-Uk9QX0NBQ0hFU19GSUxFLCAiMyIpOwo+ID4gPgo+ID4gPiAgICAgICAgIHZlcmlmeV9tYXJrX3Jl
-bW92ZWQoVEVTVF9GSUxFLCAiYWZ0ZXIgZHJvcF9jYWNoZXMiKTsKPiA+Cj4gPiBJZiB0aGlzIGlt
-cHJvdmVzIHRoZSByZWxpYWJpbGl0eSBvZiB0aGUgdGVzdCwgSSBoYXZlIG5vIHByb2JsZW0gd2l0
-aAo+ID4gdGhlIHNvbHV0aW9uLAo+Cj4gWWVzLCBpdCBmaXhlcyB0aGUgcHJvYmxlbSBhdCBsZWFz
-dCBmb3IgbWUgOikKPgo+ID4gYnV0IEkgYW0gYSBiaXQgdW5lYXN5IHdpdGggdGhlIGZhY3QgdGhh
-dCBmYW5vdGl5MTAgYW5kIGZhbm90aWZ5MjMgaGF2ZSB0d28KPiA+IGRpZmZlcmVudCBtaXRpZ2F0
-aW9ucy4KPgo+IEkga25vdyBhbmQgSSB3YXMgdGhpbmtpbmcgYWJvdXQgdGhhdCBhIGJpdC4gSSBj
-b3VsZCBpbXBsZW1lbnQgc29tZXRoaW5nCj4gc2ltaWxhciBhcyBmYW5vdGlmeTEwIGRvZXMgZm9y
-IGZhbm90aWZ5MjMgYnV0IGl0IHNlZW1lZCB0byBiZSBhIGJpdCBvZiBhbgo+IG92ZXJraWxsIHNv
-IEkgd2VudCBmb3IgdGhlIG9uZS1saW5lci4KPgo+ID4gQW55d2F5LCBJIHRoaW5rIHRoYXQgdGhl
-IGV4cGxhbmF0aW9uIGFib3ZlIGlzIHRydWUgZm9yIHNvbWUgZnMgYnV0IHhmcwo+ID4gaW5vZGUg
-bGlmZXRpbWUgYW5kIHNocmlua2VycyBmb3IgZXhhbXBsZSBhbmQgbW9yZSBjb21wbGV4LCBzbyBp
-dCBkb2VzCj4gPiBub3QgaG9sZC4gUmlnaHQ/Cj4KPiBTbyB0aGUgZXhwbGFuYXRpb24gaXMgdXNp
-bmcgaW50ZXJuYWwga25vd2xlZGdlIG9mIHBydW5lX2ljYWNoZV9zYigpCj4gaW1wbGVtZW50YXRp
-b24uIFhGUyBoYXMgaXRzIG93biBydWxlcyBmb3IgYWdpbmcgaW5vZGVzIHNvIGl0IHdpbGwKPiBu
-b3QgaG9sZCB0aGVyZSAtIGl0IGhhcyB0aGlzICJpbmFjdGl2YXRpb24iIGFjdGlvbiB3aGljaCBy
-ZWxlYXNlcyB0aGUgbGFzdAo+IGlub2RlIHJlZmVyZW5jZSBhbmQgQUZBSUNTIGRyb3BfY2FjaGVz
-IHJlc3VsdHMgb25seSBpbiBwaW5naW5nIGJhY2tncm91bmQKPiB0aHJlYWRzIHRvIGRvIHdvcmsg
-YnV0IGRvZXNuJ3QgcmVhbGx5IHdhaXQgZm9yIGlub2RlcyB0byBiZSBpbmFjdGl2YXRlZCwKPiBs
-ZXQgYWxvbmUgZnJlZWQuCj4KPiA+IE1lYW5pbmcgdGhhdCB0aGUgZXhwbGFuYXRpb24gaXMgdHJ1
-ZSBiZWNhdXNlIGZhbm90aWZ5MTAgaGFzOgo+ID4KPiA+ICAgICAgICAgLyogU2hyaW5rZXJzIG9u
-IG90aGVyIGZzIGRvIG5vdCB3b3JrIHJlbGlhYmx5IGVub3VnaCB0bwo+ID4gZ3VhcmFudGVlIG1h
-cmsgZXZpY3Rpb24gb24gZHJvcF9jYWNoZXMgKi8KPiA+ICAgICAgICAgLmRldl9mc190eXBlID0g
-ImV4dDIiLAo+ID4KPiA+IE1heWJlIHRoYXQgc2hvdWxkIGJlIHNwZWxsZWQgb3V0Pwo+Cj4gSSBn
-dWVzcyB5b3Ugc3BlYWsgYWJvdXQgZmFub3RpZnkyMyBub3cgYnV0IHllcywgdGhpcyBwYXRjaCBk
-ZXBlbmRzIG9uIHRoZQo+IGZhY3QgdGhhdCB3ZSBhcmUgbGltaXRlZCB0byBleHQyLiBQZXJoYXBz
-IEkgY2FuIGFkZCB0aGF0IHRvIHRoZSBjb21tZW50IGJ1dAo+IGl0IGFscmVhZHkgaXMgbWVudGlv
-bmVkIGluIHRoZSB0ZXN0IGFzIHlvdSBzaG93IGFib3ZlLi4uCgpZZXMsIHRoYXQgaXMgYWxsIEkg
-bWVhbnQsIHNvIGEgcmVhZGVyIHdvbid0IHNlZSB0aGlzIGV4cGxhbmF0aW9uIGFuZAp0cnkgdG8g
-Y29weSB0aGUgc2FtZSBtaXRpZ2F0aW9uIHRvIG90aGVyIHRlc3RzIHRoYXQgZG8gbm90IGxpbWl0
-CnRoZW1zZWx2ZXMgdG8gZXh0MiwgYmV0dGVyIG1ha2UgdGhhdCBmYWN0IGNsZWFyIGluIHRoZSBj
-b21tZW50LgoKVGhhbmtzLApBbWlyLgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xp
-c3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi!
+> diff --git a/include/lapi/faccessat2.h b/include/lapi/faccessat2.h
+> new file mode 100644
+> index 000000000..e8b27d6b1
+> --- /dev/null
+> +++ b/include/lapi/faccessat2.h
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
+> + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
+> + */
+> +
+> +#ifndef LAPI_FACCESSAT2_H__
+> +#define LAPI_FACCESSAT2_H__
+> +
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +
+> +#ifndef HAVE_FACCESSAT2
+> +int faccessat2(int dirfd, const char *pathname, int mode, int flags)
+> +{
+> +	return tst_syscall(__NR_faccessat2, dirfd, pathname, mode, flags);
+> +}
+> +#endif
+> +
+> +#endif /* LAPI_FACCESSAT2_H__ */
+
+This one needs the configure check, and I would call the header just
+faccessat.h.
+
+> diff --git a/testcases/kernel/syscalls/faccessat2/faccessat201.c b/testcases/kernel/syscalls/faccessat2/faccessat201.c
+> new file mode 100644
+> index 000000000..658d1dd81
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/faccessat2/faccessat201.c
+> @@ -0,0 +1,115 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
+> + * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Check the basic functionality of faccessat2().
+> + *
+> + * Minimum Linux version required is v5.8.
+> + */
+> +
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include <pwd.h>
+> +
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +#include "lapi/faccessat2.h"
+> +
+> +#define TESTUSER	"nobody"
+> +#define TESTDIR		"faccessat2dir"
+> +#define TESTFILE	"faccessat2file"
+> +#define	RELPATH		"faccessat2dir/faccessat2file"
+> +#define TESTSYMLINK	"faccessat2symlink"
+
+There is a mix of tabs and spaces in this part that should be cleaned
+up.
+
+> +static int dir_fd = -1, bad_fd = -1;
+> +static int atcwd_fd = AT_FDCWD;
+> +static char *filepaths[4];
+> +static char abs_path[128];
+> +static struct passwd *ltpuser;
+> +
+> +static struct tcase {
+> +	int *fd;
+> +	char **filename;
+> +	int flags;
+> +	int exp_errno;
+> +} tcases[] = {
+> +	{&dir_fd, &filepaths[0], 0, 0},
+> +	{&bad_fd, &filepaths[1], 0, 0},
+> +	{&atcwd_fd, &filepaths[2], 0, 0},
+> +	{&dir_fd, &filepaths[0], AT_EACCESS, 0},
+> +	{&bad_fd, &filepaths[1], AT_EACCESS, 0},
+> +	{&atcwd_fd, &filepaths[2], AT_EACCESS, 0},
+> +	{&dir_fd, &filepaths[0], AT_EACCESS, EACCES},
+> +	{&bad_fd, &filepaths[1], AT_EACCESS, EACCES},
+> +	{&atcwd_fd, &filepaths[2], AT_EACCESS, EACCES},
+> +	{&atcwd_fd, &filepaths[3], AT_SYMLINK_NOFOLLOW, 0},
+> +};
+> +
+> +static void verify_faccessat2(unsigned int i)
+> +{
+> +	struct tcase *tc = &tcases[i];
+> +
+> +	if (tc->exp_errno == EACCES) {
+> +		if (SAFE_FORK() == 0) {
+> +			SAFE_SETUID(ltpuser->pw_uid);
+> +			TST_EXP_FAIL(faccessat2(*tc->fd, *tc->filename, R_OK, tc->flags),
+> +				    tc->exp_errno, "faccessat2(%d, %s, R_OK, %d) as %s",
+> +				    *tc->fd, *tc->filename, tc->flags, TESTUSER);
+> +		}
+> +
+> +		tst_reap_children();
+
+I would just put the EACCESS tests to a separate testcase, which would
+make the test more straightforward and easier to read.
+
+> +	} else {
+> +		TST_EXP_PASS(faccessat2(*tc->fd, *tc->filename, R_OK, tc->flags),
+> +			     "faccessat2(%d, %s, R_OK, %d) as root",
+> +			     *tc->fd, *tc->filename, tc->flags);
+> +	}
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	char *tmpdir_path = tst_get_tmpdir();
+> +
+> +	sprintf(abs_path, "%s/%s", tmpdir_path, RELPATH);
+> +	free(tmpdir_path);
+> +
+> +	SAFE_MKDIR(TESTDIR, 0666);
+> +	dir_fd = SAFE_OPEN(TESTDIR, O_DIRECTORY);
+> +	SAFE_TOUCH(abs_path, 0444, NULL);
+> +	SAFE_SYMLINK(abs_path, TESTSYMLINK);
+> +
+> +	filepaths[0] = TESTFILE;
+> +	filepaths[1] = abs_path;
+> +	filepaths[2] = RELPATH;
+> +	filepaths[3] = TESTSYMLINK;
+> +
+> +	ltpuser = SAFE_GETPWNAM(TESTUSER);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (dir_fd > 0)
+> +		SAFE_CLOSE(dir_fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test = verify_faccessat2,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.bufs = (struct tst_buffers []) {
+> +		{&filepaths[0], .size = sizeof(*filepaths[0])},
+> +		{&filepaths[1], .size = sizeof(*filepaths[1])},
+> +		{&filepaths[2], .size = sizeof(*filepaths[2])},
+> +		{&filepaths[3], .size = sizeof(*filepaths[3])},
+> +		{&ltpuser, .size = sizeof(ltpuser)},
+
+Why do we allocate anything here when we replace the pointers in the
+test setup anyways?
+
+If anything it would make sense to allocate the buffers in the test
+setup instead of using static strings there. Also filepath[x] way less
+readable than actually giving the variables proper names such as
+abs_path.
+
+I guess that we can as well add a helper to the buffer library such as:
+
+diff --git a/include/tst_buffers.h b/include/tst_buffers.h
+index d19ac8cf0..a12d70a62 100644
+--- a/include/tst_buffers.h
++++ b/include/tst_buffers.h
+@@ -46,6 +46,11 @@ char *tst_strdup(const char *str);
+  */
+ void *tst_alloc(size_t size);
+ 
++/*
++ * Strdup into a guarded buffer.
++ */
++char *tst_strdup(const char *str);
++
+ /*
+  * Allocates iovec structure including the buffers.
+  *
+diff --git a/lib/tst_buffers.c b/lib/tst_buffers.c
+index b8b597a12..4488f458e 100644
+--- a/lib/tst_buffers.c
++++ b/lib/tst_buffers.c
+@@ -76,6 +76,13 @@ void *tst_alloc(size_t size)
+        return ret + map->buf_shift;
+ }
+ 
++char *tst_strup(const char *str)
++{
++       char *ret = tst_alloc(strlen(str) + 1);
++
++       return strcpy(ret, str);
++}
++
+ static int count_iovec(int *sizes)
+ {
+        int ret = 0;
+
+
+And slightly more complicated would be addition of tst_aprintf() that
+would printf into buffer allocated by tst_alloc(). I will send a patch
+that adds this tomorrow.
+
+Once that is done we can use these in the test setup such as:
+
+static char *abs_path;
+static char *testfile;
+
+static struct tcase {
+     int *fd;
+     char **filename;
+     int flags;
+     int exp_errno;
+} tcases[] = {
+     {..., &abs_path, ...},
+     {..., &testfile, ...},
+}
+
+static void setup(void)
+{
+	...
+
+	testfile = tst_strdup(TESTFILE);
+	abs_path = tst_aprintf(abs_path, "%s/%s", tmpdir_path, TESTFILE);
+
+	...
+}
+
+Which allocates the exact sized guarded buffers so that the canaries are
+exaclty after end of the data, not at the end of the rather large
+buffer.
+
+We can't pre-allocate buffers in the tst_test structure for data whose
+size is not known in advance, which is the case for the tmpdir_path.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
