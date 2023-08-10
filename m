@@ -4,77 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76EE5C001DB
-	for <ltp@archiver.kernel.org>; Thu, 10 Aug 2023 07:30:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2513FC001B0
+	for <ltp@archiver.kernel.org>; Thu, 10 Aug 2023 08:03:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6639E3CD08A
-	for <ltp@archiver.kernel.org>; Thu, 10 Aug 2023 09:30:11 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 071093CD09B
+	for <ltp@archiver.kernel.org>; Thu, 10 Aug 2023 10:03:53 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F1E253C894D
- for <ltp@lists.linux.it>; Thu, 10 Aug 2023 09:29:59 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id 3832F3C98FC
+ for <ltp@lists.linux.it>; Thu, 10 Aug 2023 10:03:42 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 254DD200387
- for <ltp@lists.linux.it>; Thu, 10 Aug 2023 09:29:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1691652597;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8665210011A3
+ for <ltp@lists.linux.it>; Thu, 10 Aug 2023 10:03:41 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 683751F38D;
+ Thu, 10 Aug 2023 08:03:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1691654620; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GOemtNuCstFwdVnSH1lcdRYrZc5vhZelC7Wrk6SwYlc=;
- b=KaUD0DG+TIhRUCFMIFSNN6IzmVMCSrBvjlk4I/q6p63biGH3LstBn/y4+5WnO2ThkwY8c+
- FO2ZhOVwDoFwFOC043/jt6CgX8JshEQrarwuu4CE6UrKzTt7dSSEctD8xdK4ChRU3ikwHh
- cqif4gSuA9fIjMapQZW/MREwB2jMlF8=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-358-G_VSbeMRNeGfE8mXcMlMzA-1; Thu, 10 Aug 2023 03:29:54 -0400
-X-MC-Unique: G_VSbeMRNeGfE8mXcMlMzA-1
-Received: by mail-lj1-f197.google.com with SMTP id
- 38308e7fff4ca-2b9dc1bfdd2so7023981fa.1
- for <ltp@lists.linux.it>; Thu, 10 Aug 2023 00:29:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1691652593; x=1692257393;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=GOemtNuCstFwdVnSH1lcdRYrZc5vhZelC7Wrk6SwYlc=;
- b=eotCyjlNZWpZGBDqDX0oYsUFeP+HMFREjZX1QphGVMRdE9G05a3TQH6gzyNdAuRGIk
- zUd1lBHLm4018XZlgnyMWL98fYjyZ6dEz7LUcj3g0H+u+Y34CM8ufAAjsQuPADOB0wDY
- leK8t8esLS6/kmoFI3cEyEvT5kg8LoQg824fK0vn0WKOAcULO6Y+gx/8LOF5ziRuu4+w
- FLhIK4XwibNXY/ck0mxnSFfl+jqAyv0ZcAVss/ZAZKCWOsCoI4fLfwEKWgzrKIXioLFX
- YqHrBjWIBWTzWncx5FY8APOIdgmj+djhsZMqSFbaMQqmDvuh0Onm1zWTDTwyL8L5wMdX
- I+vg==
-X-Gm-Message-State: AOJu0Yw7LG2XdtwAUtKhtHe9Ddg8hsJd/4x/6yvuv8rRhRLu0XgHDxQO
- 64b2wsvk77AhEBLOB5/qqKqV5jI62S+i5FCz+rOpV/3tZpEA9rYvQs53uvLepnCXK97YESv2+Wb
- C+3WRpRnbJaVfdHp1ksBPZjgdBHs=
-X-Received: by 2002:a2e:7c0a:0:b0:2b9:ef0a:7d40 with SMTP id
- x10-20020a2e7c0a000000b002b9ef0a7d40mr1218326ljc.41.1691652593581; 
- Thu, 10 Aug 2023 00:29:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHWKOOi9eWNdDI8117hnFG0RySdB4wrRHVUsWNgE4KSq5SfwAWMRW+TfiDOQzk7g4uaLHp1yIfuKBvwSHOzf1s=
-X-Received: by 2002:a2e:7c0a:0:b0:2b9:ef0a:7d40 with SMTP id
- x10-20020a2e7c0a000000b002b9ef0a7d40mr1218318ljc.41.1691652593233; Thu, 10
- Aug 2023 00:29:53 -0700 (PDT)
+ bh=hx4B1LuzVZmO8OXJ4AjkD5FtFfD1Glr7prlScHEnStI=;
+ b=MFKEJXRzl0EnqkM0QJb/aW8AqG4LaRkCFmiGguANaYXeDpxNiK/w/X/pDCjlhuwFZgEjfL
+ 7wiJVVHCXoVb1IYr0ESV+AyBHlDTB3A/FRKeWXKG0GymbrV6ZySM4Ibs/OZ5ZnSJLemUPb
+ WYZBAAo2vYheJbk1i5FHxlABAH7m3DQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1691654620;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hx4B1LuzVZmO8OXJ4AjkD5FtFfD1Glr7prlScHEnStI=;
+ b=Pm9a1wQumcLkqKB+EgLWL4qLMxcdlOdeef7tFd2jg4g2+n0JeVTULaAL+rBdZiBbnnb6l7
+ dmnJOf+cUDTzhuDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4DCDB138E2;
+ Thu, 10 Aug 2023 08:03:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id DAGCEdyZ1GRjWAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 10 Aug 2023 08:03:40 +0000
+Date: Thu, 10 Aug 2023 10:04:40 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Xin Wang <Xin.Wang@windriver.com>
+Message-ID: <ZNSaGP9_SRoAiHMX@yuki>
+References: <20230808062025.2991984-1-Xin.Wang@windriver.com>
 MIME-Version: 1.0
-References: <20230807033536.1927020-1-ycliang@andestech.com>
-In-Reply-To: <20230807033536.1927020-1-ycliang@andestech.com>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 10 Aug 2023 15:29:41 +0800
-Message-ID: <CAEemH2d9FHG-B7RC2kMmbXiWYQyq3T-4iG9qDBNyZ9Uyok6DQw@mail.gmail.com>
-To: Leo Yu-Chi Liang <ycliang@andestech.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20230808062025.2991984-1-Xin.Wang@windriver.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [v2,
- 1/1] hugeshmat04: make use of save_restore to simplify code
+Subject: Re: [LTP] [PATCH] fs/fsx-linux/fsx-linux.c: Add measurement of
+ execution time
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,20 +76,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: cynthia@andestech.com, patrick@andestech.com, ltp@lists.linux.it
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Leo,
+Hi!
+> Signed-off-by: Xin.Wang@windriver.com
+> ---
+>  testcases/kernel/fs/fsx-linux/fsx-linux.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/fs/fsx-linux/fsx-linux.c b/testcases/kernel/fs/fsx-linux/fsx-linux.c
+> index 64c27a0f5..71b719782 100644
+> --- a/testcases/kernel/fs/fsx-linux/fsx-linux.c
+> +++ b/testcases/kernel/fs/fsx-linux/fsx-linux.c
+> @@ -1115,7 +1115,8 @@ int main(int argc, char **argv)
+>  	int i, style, ch;
+>  	char *endp;
+>  	int dirpath = 0;
+> -
+> +	struct timeval time_start, time_end, time_diff;
+> +	
+>  	goodfile[0] = 0;
+>  	logfile[0] = 0;
+>  
+> @@ -1336,12 +1337,24 @@ int main(int argc, char **argv)
+>  	} else
+>  		check_trunc_hack();
+>  
+> +	gettimeofday(&time_start, NULL);
 
-Thanks for your work, patch was applied.
+gettimeofday() is not a good way how to measure elapsed time, it may
+jump up and down as it's adjusted by ntp-daemon.
 
+If you want to measure time between two events you should use
+clock_gettime() with CLOCK_MONOTONIC_RAW instead.
+
+>  	while (numops == -1 || numops--)
+>  		test();
+>  
+>  	close_test_files();
+> +	gettimeofday(&time_end, NULL);
+> +
+>  	prt("All operations completed A-OK!\n");
+>  
+> +	time_diff.tv_sec = time_end.tv_sec - time_start.tv_sec;
+> +	time_diff.tv_usec = time_end.tv_usec - time_start.tv_usec;
+> +	if (time_diff.tv_usec < 0) {
+> +		time_diff.tv_usec += 1000000;
+> +		time_diff.tv_sec -= 1; 
+> +	}
+> +	prt("Elapsed Test Time %lu.%06lu\n",
+> +        (unsigned long)time_diff.tv_sec, time_diff.tv_usec);
+> +	
+>  	if (tf_buf)
+>  		free(tf_buf);
+>  
+> -- 
+> 2.34.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
-Regards,
-Li Wang
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
