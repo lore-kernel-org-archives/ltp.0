@@ -4,64 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F3E4C001E0
-	for <ltp@archiver.kernel.org>; Thu, 10 Aug 2023 17:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8AF4C001B0
+	for <ltp@archiver.kernel.org>; Fri, 11 Aug 2023 11:56:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E0EBF3C8BBF
-	for <ltp@archiver.kernel.org>; Thu, 10 Aug 2023 19:59:41 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 2418F3CD054
+	for <ltp@archiver.kernel.org>; Fri, 11 Aug 2023 13:56:01 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 624AF3CD087
- for <ltp@lists.linux.it>; Thu, 10 Aug 2023 19:59:31 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id A790E3C89B6
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 13:55:48 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7A7711400981
- for <ltp@lists.linux.it>; Thu, 10 Aug 2023 19:59:30 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1C9421400452
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 13:55:48 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C336A21845;
- Thu, 10 Aug 2023 17:59:29 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DC4A81F459
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 11:55:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1691690369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=eg6PJjSUf7aesI0hkz9rVAmwG86jYgVjLiKeqq/Vfj4=;
- b=XPmAeFETalUnxrYlJVv8Mx0HsLYKpgXqZ6iqCE0/vIUrkCjwhxbpxGvtyDgBd3zCJ1LB2f
- +NxwzmJcQ3cMfo95nM0dlkUD0UHbxfZfzBfmC4KeScQjmeflJ7A2EvBs+V0HNcnEyEAfdJ
- PGnb2gN6Jz4DtuCfS4Gt+oIGH2bFKKM=
+ t=1691754947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=KQS8Uzww3HQ0/XobznIZGyRe79qMWJo2hX3T+geqwY4=;
+ b=VnOI96o1FmpWezyTgDn7yGuYpBzX3fLjwi46a3aVN4xKpows413c8qzjmZFrhUDDH8XV9R
+ s3fYTsoqo+MiYwQ99yf8dEM2RIRVffwM+X14tncbGA/EBTRUaDnDBem8u1I9lB5FFhYkxq
+ Ja1prbFsIWgqWWITGSxjWEASAjNdX68=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1691690369;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=eg6PJjSUf7aesI0hkz9rVAmwG86jYgVjLiKeqq/Vfj4=;
- b=Cni+3nwYfI79xDXS0HiZRSCL3cwR2+KT/t8WVZ5lkS4z0hwIsSAG5wTnO8jAYbZ8LlLVXm
- DEnjKtEGUvtlSMCQ==
+ s=susede2_ed25519; t=1691754947;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=KQS8Uzww3HQ0/XobznIZGyRe79qMWJo2hX3T+geqwY4=;
+ b=w15TK23G0p8ab063qTujGzme31RYmjTzNosRTdiinroYyOn8/oCRksXVy1LPegaRgpTQaf
+ 3MlL5jAI+delryBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A66B8138E2;
- Thu, 10 Aug 2023 17:59:29 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8179138E2
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 11:55:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4CilKIEl1WSvXQAAMHmgww
- (envelope-from <jack@suse.cz>); Thu, 10 Aug 2023 17:59:29 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
- id F269DA076F; Thu, 10 Aug 2023 19:59:28 +0200 (CEST)
-From: Jan Kara <jack@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id NaOeL8Mh1mQFWwAAMHmgww
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 11:55:47 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 10 Aug 2023 19:59:26 +0200
-Message-Id: <20230810175926.6205-1-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
+Date: Fri, 11 Aug 2023 13:56:43 +0200
+Message-ID: <20230811115647.32387-4-chrubis@suse.cz>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230811115647.32387-1-chrubis@suse.cz>
+References: <20230811115647.32387-1-chrubis@suse.cz>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] fanotify23: Make evictable marks tests more
- reliable
+Subject: [LTP] [PATCH 2/6] syscalls/access04: Make use of guarded buffers
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,59 +78,88 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, petr.vorel@suse.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-It has been observed that when fanotify23 test is run in a loop, it
-eventually fails as:
-
-fanotify23.c:112: TPASS: FAN_MARK_ADD failed with EEXIST as expected when trying to downgrade to evictable mark
-fanotify23.c:75: TPASS: FAN_MARK_REMOVE failed with ENOENT as expected after empty mask
-fanotify23.c:156: TPASS: Got no events as expected
-fanotify23.c:81: TFAIL: FAN_MARK_REMOVE did not fail with ENOENT as expected after drop_caches: SUCCESS (0)
-
-This is because repeated evictions of caches done by the test reclaim
-all freeable slab objects in the system. So when the test calls drop
-caches, only the dentry and inode of the test file are there to reclaim.
-But for inode to be reclaimed, dentry (which holds inode reference) has
-to be freed first and for dentry to be freed it has to first cycle
-through the LRU which takes two slab reclaim calls.
-
-Call drop caches twice to make sure dentry has chance to pass through
-the LRU and be reclaimed.
-
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/fanotify/fanotify23.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/access/access04.c | 36 +++++++++++++++------
+ 1 file changed, 26 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify23.c b/testcases/kernel/syscalls/fanotify/fanotify23.c
-index 89fd4f36a09b..fb812c51e34e 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify23.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify23.c
-@@ -160,10 +160,16 @@ static void test_fanotify(void)
- 	}
+diff --git a/testcases/kernel/syscalls/access/access04.c b/testcases/kernel/syscalls/access/access04.c
+index 424fe6f10..b5764a5dd 100644
+--- a/testcases/kernel/syscalls/access/access04.c
++++ b/testcases/kernel/syscalls/access/access04.c
+@@ -40,26 +40,32 @@
+ #define SNAME1	"symlink1"
+ #define SNAME2	"symlink2"
+ #define MNT_POINT	"mntpoint"
++#define LONGPATHSIZE (PATH_MAX + 2)
  
- 	/*
--	 * drop_caches should evict inode from cache and remove evictable mark
-+	 * drop_caches should evict inode from cache and remove evictable mark.
-+	 * We call drop_caches twice as once the dentries will just cycle
-+	 * through the LRU without being reclaimed and if there are no other
-+	 * objects to reclaim, the slab reclaim will just stop instead of
-+	 * retrying. Note that this relies on how reclaim of fs objects work
-+	 * for the filesystem but this test is restricted to ext2...
- 	 */
- 	fsync_file(TEST_FILE);
- 	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
-+	SAFE_FILE_PRINTF(DROP_CACHES_FILE, "3");
+ static uid_t uid;
+-static char longpathname[PATH_MAX + 2];
++static char *longpathname;
++static char *fname1;
++static char *fname2;
++static char *sname1;
++static char *empty_fname;
++static char *mnt_point;
  
- 	verify_mark_removed(TEST_FILE, "after drop_caches");
+ static struct tcase {
+-	const char *pathname;
++	char **pathname;
+ 	int mode;
+ 	int exp_errno;
+ } tcases[] = {
+-	{FNAME1, -1, EINVAL},
+-	{"", W_OK, ENOENT},
+-	{longpathname, R_OK, ENAMETOOLONG},
+-	{FNAME2, R_OK, ENOTDIR},
+-	{SNAME1, R_OK, ELOOP},
+-	{MNT_POINT, W_OK, EROFS}
++	{&fname1, -1, EINVAL},
++	{&empty_fname, W_OK, ENOENT},
++	{&longpathname, R_OK, ENAMETOOLONG},
++	{&fname2, R_OK, ENOTDIR},
++	{&sname1, R_OK, ELOOP},
++	{&mnt_point, W_OK, EROFS}
+ };
  
+ static void access_test(struct tcase *tc, const char *user)
+ {
+-	TST_EXP_FAIL(access(tc->pathname, tc->mode), tc->exp_errno,
++	TST_EXP_FAIL(access(*tc->pathname, tc->mode), tc->exp_errno,
+ 	             "access as %s", user);
+ }
+ 
+@@ -87,7 +93,8 @@ static void setup(void)
+ 
+ 	uid = pw->pw_uid;
+ 
+-	memset(longpathname, 'a', sizeof(longpathname) - 1);
++	memset(longpathname, 'a', LONGPATHSIZE - 1);
++	longpathname[LONGPATHSIZE-1] = 0;
+ 
+ 	SAFE_TOUCH(FNAME1, 0333, NULL);
+ 	SAFE_TOUCH(DNAME, 0644, NULL);
+@@ -104,4 +111,13 @@ static struct tst_test test = {
+ 	.mntpoint = MNT_POINT,
+ 	.setup = setup,
+ 	.test = verify_access,
++	.bufs = (struct tst_buffers []) {
++		{&fname1, .str = FNAME1},
++		{&fname2, .str = FNAME2},
++		{&sname1, .str = SNAME1},
++		{&empty_fname, .str = ""},
++		{&longpathname, .size = LONGPATHSIZE},
++		{&mnt_point, .str = MNT_POINT},
++		{}
++	}
+ };
 -- 
-2.35.3
+2.41.0
 
 
 -- 
