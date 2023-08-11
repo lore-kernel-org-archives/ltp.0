@@ -4,46 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF744C0015E
-	for <ltp@archiver.kernel.org>; Fri, 11 Aug 2023 12:06:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E29E4C0015E
+	for <ltp@archiver.kernel.org>; Fri, 11 Aug 2023 12:06:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7EA9E3CD061
-	for <ltp@archiver.kernel.org>; Fri, 11 Aug 2023 14:06:23 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 7F3ED3CDA9A
+	for <ltp@archiver.kernel.org>; Fri, 11 Aug 2023 14:06:33 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A8193C62DB
- for <ltp@lists.linux.it>; Wed,  9 Aug 2023 10:56:16 +0200 (CEST)
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.196])
- by in-4.smtp.seeweb.it (Postfix) with ESMTP id 804E11000DB1
- for <ltp@lists.linux.it>; Wed,  9 Aug 2023 10:56:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=PLjX6
- 8cf8g1oI5Rs6ytAcWBaDC6QBZt2Iy4iDWxliUY=; b=kYxUmEh940FCBfZjsbzqM
- IN5rhEUyJgMiPhFg5v4XIogasZylShaZmJ0T/kifz3yjGhOcjy21kTfPrTMz2/1v
- 4jluVv6NDMNASVfG9Pn8g2MpqynhpUeWsGZ1O1szRzwjyzQw3NdbNMed9gHmifag
- zm/T1KIO+qc4t8LeCvRc4I=
-Received: from wxw-QiTianM428-N000.. (unknown [39.156.73.12])
- by zwqz-smtp-mta-g3-2 (Coremail) with SMTP id _____wC336+eVNNkbRurCg--.22249S4;
- Wed, 09 Aug 2023 16:55:58 +0800 (CST)
-From: 18810879172@163.com
-To: ltp@lists.linux.it
-Date: Wed,  9 Aug 2023 16:55:56 +0800
-Message-Id: <20230809085556.103828-1-18810879172@163.com>
-X-Mailer: git-send-email 2.34.1
+ by picard.linux.it (Postfix) with ESMTPS id DCE843CD016
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 12:08:19 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5B9841A027AC
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 12:08:17 +0200 (CEST)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 37B9riMR004163; Fri, 11 Aug 2023 10:04:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=HEvAdum8H/fat4ADoWiazNqPS0qd+rElQl2w2tP1pxw=;
+ b=Khhg/rV75wX8Y1dAnARaaQdIRoOgRAyRD0EIIMsrlUFgTi1JNFd/lvrQSIAYRoKSNKvB
+ wKpby+H8K7PCmVnjeU+BQmz95mkfc8uArdYqwrtEVy0VdIsivONcJLsbK+IPu5XZ8QTo
+ p1ihbxPO87q2kp6GRUHQsgBeS4rTtBCDk7RznU4gViPE5fnC1FiQlTN8ihSw2ZvROXNn
+ BcFEr2mgdD82BwekK//lnYDvg7LHlpjFgnEnZPj67xwypefzqag1rff5tGeNAdYVg7Pg
+ VYWddXhpdg441bs9AGlhNUgYi+WaPTHxc9g0DerLjTNAfEGTRjNSnbs8ZKpMnhG8olE2 5A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sdjrkr60d-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 11 Aug 2023 10:04:13 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37B9sAdF005928;
+ Fri, 11 Aug 2023 10:04:09 GMT
+Received: from ppma23.wdc07v.mail.ibm.com
+ (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sdjrkr5s6-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 11 Aug 2023 10:04:09 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 37B9qACc006437; Fri, 11 Aug 2023 10:04:04 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sd2evf2j0-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 11 Aug 2023 10:04:04 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
+ [10.20.54.103])
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 37BA42nP61997402
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 11 Aug 2023 10:04:02 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 38B782006E;
+ Fri, 11 Aug 2023 10:04:02 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id BC2242006C;
+ Fri, 11 Aug 2023 10:03:59 +0000 (GMT)
+Received: from li-05afa54c-330e-11b2-a85c-e3f3aa0db1e9.in.ibm.com (unknown
+ [9.204.206.180])
+ by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Fri, 11 Aug 2023 10:03:59 +0000 (GMT)
+From: Vishal Chourasia <vishalc@linux.ibm.com>
+To: ltp@lists.linux.it, chris@mips.com, chrubis@suse.cz,
+ gaowanlong@cn.fujitsu.com, pvorel@suse.cz, raj.khem@gmail.com,
+ tdavies@darkphysics.net, vishalc@linux.ibm.com
+Date: Fri, 11 Aug 2023 15:33:36 +0530
+Message-Id: <20230811100337.1683673-2-vishalc@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230811100337.1683673-1-vishalc@linux.ibm.com>
+References: <20230811100337.1683673-1-vishalc@linux.ibm.com>
 MIME-Version: 1.0
-X-CM-TRANSID: _____wC336+eVNNkbRurCg--.22249S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXrykKw4DGw43ZF4rKw45KFg_yoW7JFW8pF
- 1DA395GF4ruryrC3y29F1xKFWIy3yUKr12qw4UurnYyw13tFW0qr4DXa45GF1xArZ2grWa
- gFn7Wr95Ww1DXFUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j2eHDUUUUU=
-X-Originating-IP: [39.156.73.12]
-X-CM-SenderInfo: rprymiyqyxmiixs6il2tof0z/xtbBEQTG9VaEPCHL8AAAsS
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 6WMJFi3LqHVe4u06qHXAqY4QRnDWaRav
+X-Proofpoint-GUID: yXZHvMdy9MkPUjJRdiiafRSrUj7oi2HZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-10_20,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1011 malwarescore=0
+ phishscore=0 adultscore=0 bulkscore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308110091
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Fri, 11 Aug 2023 14:06:13 +0200
-Subject: [LTP] [PATCH] lapi/syscalls: Add some syscall numbers
+Subject: [LTP] [PATCH 1/2] Enhanced thread safety in ebizzy benchmark tool
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -55,147 +106,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: wangxuewen <wangxuewen@kylinos.cn>
+Cc: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
+ Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: wangxuewen <wangxuewen@kylinos.cn>
+Modified ebizzy.c to improve thread safety by introducing a mutex for
+'records_read' shared variable.
 
-Signed-off-by: wangxuewen <wangxuewen@kylinos.cn>
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
 ---
- include/lapi/syscalls/aarch64.in  | 1 +
- include/lapi/syscalls/arc.in      | 1 +
- include/lapi/syscalls/arm.in      | 1 +
- include/lapi/syscalls/i386.in     | 1 +
- include/lapi/syscalls/mips_n32.in | 1 +
- include/lapi/syscalls/mips_n64.in | 1 +
- include/lapi/syscalls/mips_o32.in | 1 +
- include/lapi/syscalls/powerpc.in  | 1 +
- include/lapi/syscalls/s390.in     | 1 +
- include/lapi/syscalls/sh.in       | 1 +
- include/lapi/syscalls/sparc.in    | 1 +
- include/lapi/syscalls/x86_64.in   | 2 ++
- 12 files changed, 13 insertions(+)
+ utils/benchmark/ebizzy-0.3/ebizzy.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
-index de4ed5fb1..ae513a4de 100644
---- a/include/lapi/syscalls/aarch64.in
-+++ b/include/lapi/syscalls/aarch64.in
-@@ -296,4 +296,5 @@ pidfd_getfd 438
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+set_mempolicy_home_node 450
- _sysctl 1078
-diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
-index 9f11381db..63202fdf0 100644
---- a/include/lapi/syscalls/arc.in
-+++ b/include/lapi/syscalls/arc.in
-@@ -316,3 +316,4 @@ pidfd_getfd 438
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+set_mempolicy_home_node 450
-diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
-index 4b0f63a28..5aa6e0d7d 100644
---- a/include/lapi/syscalls/arm.in
-+++ b/include/lapi/syscalls/arm.in
-@@ -394,3 +394,4 @@ pidfd_getfd (__NR_SYSCALL_BASE+438)
- epoll_pwait2 (__NR_SYSCALL_BASE+441)
- quotactl_fd (__NR_SYSCALL_BASE+443)
- futex_waitv (__NR_SYSCALL_BASE+449)
-+set_mempolicy_home_node (__NR_SYSCALL_BASE+450)
-diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
-index d0e6e9a4b..dd0649198 100644
---- a/include/lapi/syscalls/i386.in
-+++ b/include/lapi/syscalls/i386.in
-@@ -430,3 +430,4 @@ pidfd_getfd 438
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+set_mempolicy_home_node 450
-diff --git a/include/lapi/syscalls/mips_n32.in b/include/lapi/syscalls/mips_n32.in
-index e818c9d92..785cae76d 100644
---- a/include/lapi/syscalls/mips_n32.in
-+++ b/include/lapi/syscalls/mips_n32.in
-@@ -371,3 +371,4 @@ epoll_pwait2 6441
- mount_setattr 6442
- quotactl_fd 6443
- futex_waitv 6449
-+set_mempolicy_home_node 6450
-diff --git a/include/lapi/syscalls/mips_n64.in b/include/lapi/syscalls/mips_n64.in
-index 6e15f43b3..62e484487 100644
---- a/include/lapi/syscalls/mips_n64.in
-+++ b/include/lapi/syscalls/mips_n64.in
-@@ -347,3 +347,4 @@ epoll_pwait2 5441
- mount_setattr 5442
- quotactl_fd 5443
- futex_waitv 5449
-+set_mempolicy_home_node 5450
-diff --git a/include/lapi/syscalls/mips_o32.in b/include/lapi/syscalls/mips_o32.in
-index 921d5d331..4157a7620 100644
---- a/include/lapi/syscalls/mips_o32.in
-+++ b/include/lapi/syscalls/mips_o32.in
-@@ -417,3 +417,4 @@ epoll_pwait2 4441
- mount_setattr 4442
- quotactl_fd 4443
- futex_waitv 4449
-+set_mempolicy_home_node 4450
-diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
-index d5de621e1..0ee900ebe 100644
---- a/include/lapi/syscalls/powerpc.in
-+++ b/include/lapi/syscalls/powerpc.in
-@@ -423,3 +423,4 @@ pidfd_getfd 438
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+set_mempolicy_home_node 450
-diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
-index 6505f3822..36ea1c585 100644
---- a/include/lapi/syscalls/s390.in
-+++ b/include/lapi/syscalls/s390.in
-@@ -410,3 +410,4 @@ pidfd_getfd 438
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+set_mempolicy_home_node 450
-diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
-index 316ffe5f1..5c44e5d66 100644
---- a/include/lapi/syscalls/sh.in
-+++ b/include/lapi/syscalls/sh.in
-@@ -404,3 +404,4 @@ pidfd_getfd 438
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+set_mempolicy_home_node 450
-diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
-index e0c60a360..dc02e654f 100644
---- a/include/lapi/syscalls/sparc.in
-+++ b/include/lapi/syscalls/sparc.in
-@@ -409,3 +409,4 @@ pidfd_getfd 438
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+set_mempolicy_home_node 450
-diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
-index 1863e1df7..03087ce1d 100644
---- a/include/lapi/syscalls/x86_64.in
-+++ b/include/lapi/syscalls/x86_64.in
-@@ -351,6 +351,8 @@ pidfd_getfd 438
- epoll_pwait2 441
- quotactl_fd 443
- futex_waitv 449
-+set_mempolicy_home_node 450
-+cachestat 451
- rt_sigaction 512
- rt_sigreturn 513
- ioctl 514
-
-base-commit: 419452d1b3948aad09ffccfe61f845fafcb0cc37
+diff --git a/utils/benchmark/ebizzy-0.3/ebizzy.c b/utils/benchmark/ebizzy-0.3/ebizzy.c
+index 54b047130..1af004d9d 100644
+--- a/utils/benchmark/ebizzy-0.3/ebizzy.c
++++ b/utils/benchmark/ebizzy-0.3/ebizzy.c
+@@ -85,6 +85,8 @@ static time_t start_time;
+ static volatile int threads_go;
+ static unsigned int records_read;
+ 
++pthread_mutex_t records_read_lock;
++
+ static void usage(void)
+ {
+ 	fprintf(stderr, "Usage: %s [options]\n"
+@@ -430,7 +432,9 @@ static void *thread_run(void *arg __attribute__((unused)))
+ 
+ 	while (threads_go == 0) ;
+ 
++	pthread_mutex_lock(&records_read_lock);
+ 	records_read += search_mem();
++	pthread_mutex_unlock(&records_read_lock);
+ 
+ 	if (verbose > 1)
+ 		printf("Thread finished, %f seconds\n",
+@@ -456,6 +460,12 @@ static void start_threads(void)
+ 	struct timeval usr_time, sys_time;
+ 	int err;
+ 
++	/* Initialize the mutex before starting the threads */
++	if (pthread_mutex_init(&records_read_lock, NULL) != 0) {
++		fprintf(stderr, "Failed to initialize mutex\n");
++		exit(1);
++	}
++
+ 	if (verbose)
+ 		printf("Threads starting\n");
+ 
+@@ -491,6 +501,8 @@ static void start_threads(void)
+ 		}
+ 	}
+ 
++	pthread_mutex_destroy(&records_read_lock);
++
+ 	if (verbose)
+ 		printf("Threads finished\n");
+ 
 -- 
-2.34.1
+2.39.3
 
 
 -- 
