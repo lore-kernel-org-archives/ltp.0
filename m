@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B2C7C001DB
-	for <ltp@archiver.kernel.org>; Fri, 11 Aug 2023 11:56:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FD92C0015E
+	for <ltp@archiver.kernel.org>; Fri, 11 Aug 2023 11:56:40 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B34D33CD043
-	for <ltp@archiver.kernel.org>; Fri, 11 Aug 2023 13:56:25 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 232C63CD07D
+	for <ltp@archiver.kernel.org>; Fri, 11 Aug 2023 13:56:39 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EEDD43C89B6
- for <ltp@lists.linux.it>; Fri, 11 Aug 2023 13:55:49 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 09C853CC82C
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 13:55:50 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 61D7E1A006B7
- for <ltp@lists.linux.it>; Fri, 11 Aug 2023 13:55:49 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7D3E7140096C
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 13:55:48 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9DC981F459
- for <ltp@lists.linux.it>; Fri, 11 Aug 2023 11:55:48 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DA49021857
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 11:55:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1691754948; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1691754946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=N61fDO53vtww7oFpWb5zcjRXI3K5Mf7PJi69nM/vqIU=;
- b=ibiLFM7q06MBii+z9QoJOMtMHg/VDSm7rjFBmXuUgmFXydtyiWcnkeYEk97yg5LGZdLwHl
- ZHWiOh8KXf8VbraojYH3LOlzcQcFm9JWw9MzuHl2llMe/tHtIL3fUTnuuXCnry5kbsIJ1W
- qH+T3vY7lsgkW/29160v50sr+MR6pQ8=
+ bh=EcnkJcVZ7awYt0eaJouCrcrHhWdyxEhyjzbZ5sRu3qU=;
+ b=W+zCoZcvvIrAx996e8L1Q2F6Wl5mRHD22hyybyLa7F3jN3p66YF55kW5Bn1JitJCjdLI6n
+ unnTD4Z1BIhb2Hh7UarWFJa4WPT2xvA4BYBXIJ2fkWT7ozslK5kvb7RpFUkrb+XeTro0q2
+ nR9dO0VDAIC+zs5vxT7PH4LavUB9arw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1691754948;
+ s=susede2_ed25519; t=1691754946;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=N61fDO53vtww7oFpWb5zcjRXI3K5Mf7PJi69nM/vqIU=;
- b=fhtm3Gz2B9/LQfJ5ZoguDDO5V9ZPefhR01xqyB3TWnol3N/jTdfFS3H8TaxspM8t9D8XdC
- UbSzvGjd7HJl0aDA==
+ bh=EcnkJcVZ7awYt0eaJouCrcrHhWdyxEhyjzbZ5sRu3qU=;
+ b=2Stua3QBnPluI8B4fAQdWqf6hC9u0zBPFM1OE1Su5bKpBf515sRVEVKU3wvOil0+Wka7yR
+ Q3LA5lYH7sCeYYBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7ED81138E2
- for <ltp@lists.linux.it>; Fri, 11 Aug 2023 11:55:48 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C83BB138E2
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 11:55:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qP24HcQh1mQHWwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id IRvBL8Ih1mT9WgAAMHmgww
  (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Fri, 11 Aug 2023 11:55:48 +0000
+ for <ltp@lists.linux.it>; Fri, 11 Aug 2023 11:55:46 +0000
 From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 11 Aug 2023 13:56:44 +0200
-Message-ID: <20230811115647.32387-5-chrubis@suse.cz>
+Date: Fri, 11 Aug 2023 13:56:41 +0200
+Message-ID: <20230811115647.32387-2-chrubis@suse.cz>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230811115647.32387-1-chrubis@suse.cz>
 References: <20230811115647.32387-1-chrubis@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/6] syscalls/acct01: Make use of guarded buffers
+Subject: [LTP] [PATCH 1/6] lib: tst_buffers: Add bufs .str and tst_aprintf()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,153 +85,98 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/acct/acct01.c | 84 +++++++++++++------------
- 1 file changed, 45 insertions(+), 39 deletions(-)
+ include/tst_buffers.h | 11 +++++++++++
+ lib/tst_buffers.c     | 28 +++++++++++++++++++++++++---
+ 2 files changed, 36 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/acct/acct01.c b/testcases/kernel/syscalls/acct/acct01.c
-index 254d7b503..52c4d41da 100644
---- a/testcases/kernel/syscalls/acct/acct01.c
-+++ b/testcases/kernel/syscalls/acct/acct01.c
-@@ -27,17 +27,25 @@
- #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
- 			 S_IXGRP|S_IROTH|S_IXOTH)
- #define FILE_EISDIR		"."
--#define FILE_EACCES		"/dev/null"
-+#define FILE_EACCESS		"/dev/null"
- #define FILE_ENOENT		"/tmp/does/not/exist"
- #define FILE_ENOTDIR		"./tmpfile/"
--#define TEST_TMPFILE		"./tmpfile"
--#define TEST_ELOOP		"test_file_eloop1"
--#define TEST_ENAMETOOLONG	nametoolong
--#define TEST_EROFS		"mntpoint/file"
-+#define FILE_TMPFILE		"./tmpfile"
-+#define FILE_ELOOP		"test_file_eloop1"
-+#define FILE_EROFS		"ro_mntpoint/file"
+diff --git a/include/tst_buffers.h b/include/tst_buffers.h
+index d19ac8cf0..b5f355f0f 100644
+--- a/include/tst_buffers.h
++++ b/include/tst_buffers.h
+@@ -25,6 +25,11 @@ struct tst_buffers {
+ 	 * Array of iov buffer sizes terminated by -1.
+ 	 */
+ 	int *iov_sizes;
++	/*
++	 * If size and iov_sizes is NULL this is the string we want to strdup()
++	 * into the buffer.
++	 */
++	char *str;
+ };
  
--static char nametoolong[PATH_MAX+2];
- static struct passwd *ltpuser;
+ /*
+@@ -46,6 +51,12 @@ char *tst_strdup(const char *str);
+  */
+ void *tst_alloc(size_t size);
  
-+static char *file_eisdir;
-+static char *file_eaccess;
-+static char *file_enoent;
-+static char *file_enotdir;
-+static char *file_tmpfile;
-+static char *file_eloop;
-+static char *file_enametoolong;
-+static char *file_erofs;
-+static char *file_null;
++/*
++ * Printf into a guarded buffer.
++ */
++char *tst_aprintf(const char *fmt, ...)
++      __attribute__((format (printf, 1, 2)));
 +
- static void setup_euid(void)
+ /*
+  * Allocates iovec structure including the buffers.
+  *
+diff --git a/lib/tst_buffers.c b/lib/tst_buffers.c
+index b8b597a12..b0bd359eb 100644
+--- a/lib/tst_buffers.c
++++ b/lib/tst_buffers.c
+@@ -5,6 +5,7 @@
+ 
+ #include <sys/mman.h>
+ #include <stdlib.h>
++#include <stdio.h>
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
+ 
+@@ -76,6 +77,25 @@ void *tst_alloc(size_t size)
+ 	return ret + map->buf_shift;
+ }
+ 
++char *tst_aprintf(const char *fmt, ...)
++{
++	va_list va;
++	int len;
++	char *ret;
++
++        va_start(va, fmt);
++        len = vsnprintf(NULL, 0, fmt, va)+1;
++        va_end(va);
++
++	ret = tst_alloc(len);
++
++	va_start(va, fmt);
++        vsprintf(ret, fmt, va);
++        va_end(va);
++
++	return ret;
++}
++
+ static int count_iovec(int *sizes)
  {
- 	SAFE_SETEUID(ltpuser->pw_uid);
-@@ -49,21 +57,21 @@ static void cleanup_euid(void)
+ 	int ret = 0;
+@@ -115,15 +135,17 @@ void tst_buffers_alloc(struct tst_buffers bufs[])
+ 	for (i = 0; bufs[i].ptr; i++) {
+ 		if (bufs[i].size)
+ 			*((void**)bufs[i].ptr) = tst_alloc(bufs[i].size);
+-		else
++		else if (bufs[i].iov_sizes)
+ 			*((void**)bufs[i].ptr) = tst_iovec_alloc(bufs[i].iov_sizes);
++		else
++			*((void**)bufs[i].ptr) = tst_strdup(bufs[i].str);
+ 	}
  }
  
- static struct test_case {
--	char *filename;
--	char *exp_errval;
-+	char **filename;
-+	char *desc;
- 	int exp_errno;
- 	void (*setupfunc) ();
- 	void (*cleanfunc) ();
- } tcases[] = {
--	{FILE_EISDIR, "EISDIR",  EISDIR,  NULL,   NULL},
--	{FILE_EACCES, "EACCES",  EACCES,  NULL,   NULL},
--	{FILE_ENOENT, "ENOENT",  ENOENT,  NULL,   NULL},
--	{FILE_ENOTDIR, "ENOTDIR", ENOTDIR, NULL,   NULL},
--	{TEST_TMPFILE, "EPERM",   EPERM,   setup_euid, cleanup_euid},
--	{NULL,       "EPERM",   EPERM,   setup_euid, cleanup_euid},
--	{TEST_ELOOP, "ELOOP",        ELOOP,        NULL, NULL},
--	{TEST_ENAMETOOLONG, "ENAMETOOLONG", ENAMETOOLONG, NULL, NULL},
--	{TEST_EROFS, "EROFS",        EROFS,        NULL, NULL},
-+	{&file_eisdir,  FILE_EISDIR,  EISDIR,  NULL,   NULL},
-+	{&file_eaccess, FILE_EACCESS, EACCES,  NULL,   NULL},
-+	{&file_enoent,  FILE_ENOENT,  ENOENT,  NULL,   NULL},
-+	{&file_enotdir, FILE_ENOTDIR, ENOTDIR, NULL,   NULL},
-+	{&file_tmpfile, FILE_TMPFILE, EPERM,   setup_euid, cleanup_euid},
-+	{&file_null,    "NULL",       EPERM,   setup_euid, cleanup_euid},
-+	{&file_eloop,   FILE_ELOOP,   ELOOP,        NULL, NULL},
-+	{&file_enametoolong, "aaaa...", ENAMETOOLONG, NULL, NULL},
-+	{&file_erofs,   FILE_EROFS,   EROFS,        NULL, NULL},
- };
- 
- static void setup(void)
-@@ -76,10 +84,10 @@ static void setup(void)
- 
- 	ltpuser = SAFE_GETPWNAM("nobody");
- 
--	fd = SAFE_CREAT(TEST_TMPFILE, 0777);
-+	fd = SAFE_CREAT(FILE_TMPFILE, 0777);
- 	SAFE_CLOSE(fd);
- 
--	TEST(acct(TEST_TMPFILE));
-+	TEST(acct(FILE_TMPFILE));
- 	if (TST_RET == -1)
- 		tst_brk(TBROK | TTERRNO, "acct failed unexpectedly");
- 
-@@ -89,11 +97,11 @@ static void setup(void)
- 		tst_brk(TBROK | TTERRNO, "acct(NULL) failed");
- 
- 	/* ELOOP SETTING */
--	SAFE_SYMLINK(TEST_ELOOP, "test_file_eloop2");
--	SAFE_SYMLINK("test_file_eloop2", TEST_ELOOP);
-+	SAFE_SYMLINK(FILE_ELOOP, "test_file_eloop2");
-+	SAFE_SYMLINK("test_file_eloop2", FILE_ELOOP);
- 
--	/* ENAMETOOLONG SETTING */
--	memset(nametoolong, 'a', PATH_MAX+1);
-+	memset(file_enametoolong, 'a', PATH_MAX+1);
-+	file_enametoolong[PATH_MAX+1] = 0;
+ char *tst_strdup(const char *str)
+ {
+-	size_t len = strlen(str);
+-	char *ret = tst_alloc(len + 1);
++	char *ret = tst_alloc(strlen(str) + 1);
++
+ 	return strcpy(ret, str);
  }
  
- static void verify_acct(unsigned int nr)
-@@ -103,31 +111,29 @@ static void verify_acct(unsigned int nr)
- 	if (tcase->setupfunc)
- 		tcase->setupfunc();
- 
--	TEST(acct(tcase->filename));
-+	TST_EXP_FAIL(acct(*tcase->filename), tcase->exp_errno,
-+	             "acct(%s)", tcase->desc);
- 
- 	if (tcase->cleanfunc)
- 		tcase->cleanfunc();
--
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "acct(%s) succeeded unexpectedly",
--				tcase->filename);
--		return;
--	}
--
--	if (TST_ERR == tcase->exp_errno) {
--		tst_res(TPASS | TTERRNO, "acct() failed as expected");
--	} else {
--		tst_res(TFAIL | TTERRNO,
--				"acct() failed, expected: %s",
--				tst_strerrno(tcase->exp_errno));
--	}
- }
- 
- static struct tst_test test = {
- 	.needs_root = 1,
--	.mntpoint = "mntpoint",
-+	.mntpoint = "ro_mntpoint",
- 	.needs_rofs = 1,
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.setup = setup,
- 	.test = verify_acct,
-+	.bufs = (struct tst_buffers []) {
-+		{&file_eisdir, .str = FILE_EISDIR},
-+		{&file_eaccess, .str = FILE_EACCESS},
-+		{&file_enoent, .str = FILE_ENOENT},
-+		{&file_enotdir, .str = FILE_ENOTDIR},
-+		{&file_tmpfile, .str = FILE_TMPFILE},
-+		{&file_eloop, .str = FILE_ELOOP},
-+		{&file_enametoolong, .size = PATH_MAX+2},
-+		{&file_erofs, .str = FILE_EROFS},
-+		{}
-+	}
- };
 -- 
 2.41.0
 
