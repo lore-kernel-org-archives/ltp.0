@@ -4,141 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F698C001B0
-	for <ltp@archiver.kernel.org>; Mon, 14 Aug 2023 11:23:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58479C001DB
+	for <ltp@archiver.kernel.org>; Mon, 14 Aug 2023 11:31:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D8A13C65F4
-	for <ltp@archiver.kernel.org>; Mon, 14 Aug 2023 13:23:06 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 8BEDD3CCE37
+	for <ltp@archiver.kernel.org>; Mon, 14 Aug 2023 13:31:43 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B241F3C65F4
- for <ltp@lists.linux.it>; Mon, 14 Aug 2023 13:22:54 +0200 (CEST)
-Received: from esa10.fujitsucc.c3s2.iphmx.com (esa10.fujitsucc.c3s2.iphmx.com
- [68.232.159.247])
+ by picard.linux.it (Postfix) with ESMTPS id 93FF23C65F4
+ for <ltp@lists.linux.it>; Mon, 14 Aug 2023 13:31:30 +0200 (CEST)
+Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com
+ [207.54.90.47])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id EB18C200963
- for <ltp@lists.linux.it>; Mon, 14 Aug 2023 13:22:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1692012173; x=1723548173;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=HZz9Ic5u0EYhSzQ858WUaAcVuZ0t3EH/fU/g8eRXHyo=;
- b=FlSI0TIpW+xrtJh2LXe0Ar/gvKEufs4rrKcxzN7lSZ4rH1LNFHBie3p8
- tDCMddCylB/6iWLbUkyQBpDeNdzN4YhsmadMY/WQOZ1gkfTSywStwihIR
- nc4F5LcwZaxQGoRaE6dtNsh/p4xVsV7r8z4je13tMZoGKK955WCt1/42l
- W9H5WBUUwmtWqTYCT6hT3eHGgo4EA75BgFSRc/iW4SXxbP02LVQosNU/h
- dWgJ67vyIwsDcfsocQSiTlDl4AO6es9OcRQLlRf+bJD3H8hTc7Fskigah
- fvMsX0EtcRzV/2B1iKhnCAjMsS4mOjdeA6EjUElucLsN7RVCYUmLX0bM8 g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="92356257"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684767600"; d="scan'208";a="92356257"
-Received: from mail-os0jpn01lp2112.outbound.protection.outlook.com (HELO
- JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.112])
- by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Aug 2023 20:22:51 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ndOlTPFZbDogy7XGrxXOnhPJ9tnFgke6Ly+zsPREApTg3DAGe6DPmm/KBzX6OQ9JG5tVM/1Kyrd7ci2rw6YNmoYTCMu88bvjBv2ApSkycUNpXSOUiN4MGolUGFsycz1mFry4kDs4Ni8WNnOU3LAXDs5OPlJwSZoRJzfMMrj6/birouqrQXaM9OkAY18qa9wR9ugldmfN+CsQuifyfYZp5szFszO8J6TwuGpl+8SUC65xCrehlmC7zmxrtz7Tqwiy5/pyYVfHfmZdneFIgeX9iq9Kse/wwmx+3glIxVy35R7OILFwr8L9x9+xo3qnoaUGqCzxN0MJHQlP8Z7VJCYHaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HZz9Ic5u0EYhSzQ858WUaAcVuZ0t3EH/fU/g8eRXHyo=;
- b=W5KM+zXLzjcxQ/vyASkMp+MRZ6S4JfMPz3M8ZQtHvi9xqPUowB2MN1metpYgvE97oz0k4h9ceDOroVD3XmAJ3fj+QumbM4Gdqh8c6K/rm0SMY8wClnbuy/CEtqdA5gz/ehrHGlz+q6j+r7s59dzAHVlybFdTq6BLrZBuFZPAuXAhNCZ5J0Fu17L6QTE41AT2z9+LD5tQXFXZYUVg9UaeotHre/lmEYkhyy6vVaWVhJ/W+Nc7CS0FoGtdZmM/tAujREJhUQwhjsbO8vRuSFvLXgUaF2JYeJShUDzyo5GMQSy2/HwFpO1qohNFqvlSZ6W9oO0S9ygvX53s2h6J45SpiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TYCPR01MB10712.jpnprd01.prod.outlook.com (2603:1096:400:294::9)
- by TYCPR01MB10431.jpnprd01.prod.outlook.com (2603:1096:400:247::7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
- 2023 11:22:49 +0000
-Received: from TYCPR01MB10712.jpnprd01.prod.outlook.com
- ([fe80::e570:69b5:dbd6:58f0]) by TYCPR01MB10712.jpnprd01.prod.outlook.com
- ([fe80::e570:69b5:dbd6:58f0%4]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
- 11:22:49 +0000
-From: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-Thread-Topic: [LTP] [PATCH v2 1/3] syscalls/setgroups01: Convert to new API
-Thread-Index: AQHZxGhhUuj88+vTeEKpDamLU+yH/6/ezRsAgArtYoA=
-Date: Mon, 14 Aug 2023 11:22:49 +0000
-Message-ID: <b80ef019-6c2c-5f74-5243-282ffbb728c5@fujitsu.com>
-References: <1690888046-18662-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <ZNDj6o3UViMIbvkT@yuki>
-In-Reply-To: <ZNDj6o3UViMIbvkT@yuki>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYCPR01MB10712:EE_|TYCPR01MB10431:EE_
-x-ms-office365-filtering-correlation-id: f5183440-bc84-4ffe-9831-08db9cb8cab5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: X+Z9md40BDcDUBIy2QC8PYYCjuhqOITjTG2YqlvjlCXIF9V153fjyax6v+w1Fi78/rvip4USku/chlB3/4azQR1RZbKxgjuHYfZ0NFQhtMNpvlcUqTHqoZ7T7MxQ++Gj7YyUxB9+bsVbYQGOIGmutu0Y6vyLM0h3JhwhclhxYRVnQdkJM1EWPfnSUo5mEN7a+nLTIjo4WCkUqrtmCmqgl+LfjYUf20NR63btLz6iVLVMebajv3dYpUZ/CqfVI2+oZl6A0oe5avUvnr0McXxGwfhPmSk13i/hco7kzDAZ0K33ccEle1tpreIvAv5CJgFfPDwmpWrEO8Xq2ImY8j05UEupjXBJX7mWPWWFKzXFoj4xOh+sX7ce3LdkHv7Vkm3n7j6R1IRxpz2dvfPF5YK9wRzy/aOZfP8Rt4O7dD9RMAtgogWxRWEvAbzbjpslRpfBxMJL0mSn9Og0utoTnIT+AvhgNOOQ5mXTI5A52zY7qEADJwxup+M9kLCjOle4tBkIkCwWnvLBVI5BisVLQaxJ549Wqn0En+hyiRzfg7MxTueAkoUirs3bMZnIBzDDUvp0di0Hq9gmuaeBD/KkN9ET7qCnWzOPcqNfF9/BWkFfp6v1gLY/1xpB/6le46cIoFB0qKU87Ogs84bJ4r2OWgv/avRN1R/KFVGJ3rM2853SiPldWBLCrlTQ4xG+BaZbTrtI
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TYCPR01MB10712.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230028)(39860400002)(136003)(376002)(346002)(396003)(366004)(451199021)(1590799018)(1800799006)(186006)(6486002)(71200400001)(6512007)(6506007)(478600001)(2616005)(26005)(2906002)(83380400001)(64756008)(41300700001)(6916009)(91956017)(316002)(66446008)(66556008)(76116006)(66476007)(8936002)(66946007)(4326008)(8676002)(5660300002)(31696002)(38100700002)(82960400001)(38070700005)(85182001)(36756003)(86362001)(122000001)(1580799015)(31686004)(45980500001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WSswUHBsU1pRdW5KVFBmNVhxTFpRTmx4d0VseERFMHJOSElIRnM4RTJvYlY4?=
- =?utf-8?B?UHduS0xpYS9kQURNZExQeDVZdWpleTZ4Z0w3TWoxYTh6KzFiUG5rR3o3MU5x?=
- =?utf-8?B?WEdaS29NMXpRQ0pUbkdDaXJyZFYyU2l2dWtiZ3U4T29nTzJhZzVVYjNKR0g2?=
- =?utf-8?B?TnQ2YmZHWWZYZngyOGNFWXIxSW5XTDM1S2VIdlVTV0t6bDJSOE4wT1prVFBZ?=
- =?utf-8?B?RHVrMkd4MmhWTkhoUzQreEt6NGZYS3dyTGR2WEpIcUJYazIyNUJUSFZtelBV?=
- =?utf-8?B?NDNaYWF4NEJQSHBuM01ON1BDRGhlbzAvTEY0cUVkbUNKNXE4NE85T2dMQkJS?=
- =?utf-8?B?bURWeXdRVHNHdUpUM2NIeFBTUko3a0hQdGMyVU5yY1ViQU5OclI1WEZneTJ2?=
- =?utf-8?B?T3NUbEN2ZkRlTjF4R3Y4aFhUUXpuYVFQblJPQmdITnl5REdmT2Y2blpjaTJP?=
- =?utf-8?B?YTNUWnoxaHI5MDlHNEJWN1ZramppRG1PNmxVT04xQ0NrT1lzNXVLZW5rRzdL?=
- =?utf-8?B?bWo0TWNseUhObTgxNWoxNTkvRllPUkp3bzhqeE1BY2ZVNWJQUFExZmtISmFm?=
- =?utf-8?B?R3k1ckkzanBKT0dnR1NHcU1OQW1NcjJSSlpzS3VFUkwzMmY3UWxBQ2FRLzE3?=
- =?utf-8?B?M1dEdkFWd1ViVlRIenhRNlBuTkpTbnNJQldCNTUyYXNiSXRUVVlMbHF4dkwr?=
- =?utf-8?B?ZytUR1VaUmdzQVFoOEZja2VFZXhJeWNGdEFsWTk4elhiZDk3VVFCcGRsenBT?=
- =?utf-8?B?R0pYV0VJSUg1NU5mZWJOYi9od0FabHBrN2tNUytvWWJMNTBkQ2xQRGdKNkZ5?=
- =?utf-8?B?dnJ2S29oayt0RXVibEFwUmdWMlNSRElEQ3p0R1A2bjRXOU13b3gvTUk2TCtu?=
- =?utf-8?B?dDhMU0NqdHZyMFNRbHk0ak84N3ZKd00vOGFSWlA0RmgvL0k5c3hRdVdkZGRX?=
- =?utf-8?B?Y3RUNXYyNWZDMlF6ZnBtdGdaZXVXUzZ6STA5K3VMWm9VbVVLWSs5cWllM0dk?=
- =?utf-8?B?SEJnUElxY1hmbWxXbWVONjRGVmpMcmRibXZ5UjNsYVNCVVBIMi9vY3J2RkRS?=
- =?utf-8?B?ZGNHUzhoQTNDWGF1elJ4MFhmcjVxays0VnpMQjFob0Q1TGhnSDRZWC9OcUxP?=
- =?utf-8?B?K29YeVhSMzR5RmFZbkFDUXFrNUFwZkdDaUVPVjdoandWZ0lGR0ZjekU0WGtW?=
- =?utf-8?B?U2tMTzlQOWEwMEk0ODdiTlVockdFSVo4emN3U1M4SHc3Um5mNzQwZDVnRUZV?=
- =?utf-8?B?SHF6NlUvZzNZRTdVYndNS3YxblBNWjM1L1dFUVBrZjVuZm5CR3NhS3ErTXdt?=
- =?utf-8?B?MGNkM3lQdTRaTWVmMW5BdER0dXNCSkhZYmk2cHVoemNLbCtOdmVzbUJDWndR?=
- =?utf-8?B?c2lQOVBFTTZab0ZUWGhja1dKeG1Xakk2OC9KVW5iWG02Y0ZUWVZBY1dEOFJ2?=
- =?utf-8?B?bnBLODM1ODlFb2g2WjRza2t3b2JBQTB6dWJIZ0dVb2FLU1VWQkZ0bXdvaWlY?=
- =?utf-8?B?Vm9aZGdzUTNHWEdnVThWaGdOd3BTZWVzZ3dZb2NLMmVtejhYbmRycGp2bDNV?=
- =?utf-8?B?c0MvVHRHK3cxbUs3UmM0M2FnU0I0TVRwSGNFUkZGd3J6ek5MSEI0cDJ5ZElt?=
- =?utf-8?B?bktNdEVDZTB3WndINUUzbXEyS2RKRm4wWHloSFkxcVhRcG1heS95UEtlSUFU?=
- =?utf-8?B?R1NCUEh2RStrTUNKbzBOZVBibkF5SUYxM3VVTTNKRVZ2eFFvVHQxKzlkVDZR?=
- =?utf-8?B?c21xcnU5NzZpeVNFelZnM3NBR3YyTUY3SnYvNHUrUmtyWHJzZlh5MExJRGpT?=
- =?utf-8?B?U053REFUbVVjb05rQVluc1A0V2pwS1BDMWErOW9Ec1VNeEhMSjhFN3YyR0pm?=
- =?utf-8?B?cEZFcEhoSHlYRkYyTEJQRStZTkI0eEVncE9xWGhQZGs5c3MvdUc5cEoyL1pY?=
- =?utf-8?B?Z3lUYlRvL2daT2o2a0UvcnBXdEptOVRiaFpMRG9QTXc2LzJ6Yk10TmFSbk9S?=
- =?utf-8?B?b003MDRjNGsvQkpGd2hsQVVlRWZ3MUppdlR2MU9UZ3JyVXNueFdFZHNlVEow?=
- =?utf-8?B?SE1xenhBS0dQalg3VjNuZzhVUUpHUE5Ea2pMSkZobFBaQklxVVRqNmE1U29Z?=
- =?utf-8?B?N002M0d5c05CK3dMTHVLcjB0N2xCQVBqdnJYS1hDdTlvRS9XUWphK01MZUU4?=
- =?utf-8?B?ZWc9PQ==?=
-Content-ID: <1ED887ABDB6AE14FB52ED69ED6A39A26@jpnprd01.prod.outlook.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D2F2D20093E
+ for <ltp@lists.linux.it>; Mon, 14 Aug 2023 13:31:29 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="127921051"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684767600"; d="scan'208";a="127921051"
+Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
+ by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Aug 2023 20:31:27 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
+ [192.168.83.64])
+ by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id A7760D501A
+ for <ltp@lists.linux.it>; Mon, 14 Aug 2023 20:31:24 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id F2ABCCFAB1
+ for <ltp@lists.linux.it>; Mon, 14 Aug 2023 20:31:23 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.215.131])
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 77BD170B2E;
+ Mon, 14 Aug 2023 20:31:23 +0900 (JST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: ltp@lists.linux.it
+Date: Mon, 14 Aug 2023 19:30:48 +0800
+Message-Id: <1692012648-1970-3-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1692012648-1970-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1692012648-1970-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: X1zhR137trzvwRtvqlIf471V8sOyoet/bc9jGieK2Zj6bqKSmyWzzHksLo47qoVzz4KJnl/lGv/xIGU4Z+esFMlejlDxrpl/pEYDDMlABhAoGVAbtIzIqB4sU/fz1c+ub/YxfJCkaBtDyqCdJSLm+OsqU8Rm4SMjDLaaMMYTLXhEnzeYchA2CKRzJFWrxYQXZZP4/YRqp06cAwPE5IFdlgwIv1TMu/FSevFVz0gpEga3Q39FcdqwzyyIoBVqBr8TROI7uWy+7X3UHBmI+NhkMGh8QnyyUryGQqMf+QcfNN0qziWVJmAhNkJa9wM2MeOXuSAA3W10EEzet0K0USzJYvx7WZRSV+Ed0K9gR92AXPsXB6KxxNJtEFRaYaEdvrUFfc1EJogXOVRCd0075m80S7IRo5wS4FLW/WghIKYPHGW0qus08V1ZVuNlLbC0Yrcz221NJxTqEwZJbxACSy+65af2n554BPsE8kh39piqCd0NFAPBkSq6NSjMr6qwl3UEpxn8zLpN3XlGa/vLKDG6s5PjCY6ebjpG//2+Y0EYdGPr7sOBs7yRqR/YmAohsZ6tLH9/oEFM2N4YSeroCI+kIXVGZrPyRUly/nzurjaMIFq8E0JF+bbfp62AVicuq88k4uKii6qTY/qOsuhkNqqurjIkuijcYk6r3NoiuiES/45qiVvJ4LKMa8KqreSkd5AiCfh0guy7bwwThYwRGP2v/hCJpFnFjJYh3Ouw7xUESaS2vSxTHqSN6tjVrJznHGKladJUNpeyz/i0GWd20TP3NI3LIhBktY9UIoXq19iCk7E=
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10712.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5183440-bc84-4ffe-9831-08db9cb8cab5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Aug 2023 11:22:49.1328 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /X4JAdYQtAv3C2SVaUIoLx20Qwy3AU8HlM3xbRSVKepCmvMWCVfZ8lhf/fGKMj6Npo8PCZJmY4Ywe4f7g3WmicKeezB2GtClv9NjmS7D9sc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB10431
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27812.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27812.006
+X-TMASE-Result: 10--14.939500-10.000000
+X-TMASE-MatchedRID: UHPlrx36cywAzT8btdR146zGfgakLdjaCZa9cSpBObmkob0Y35+HFI3c
+ eRXYSJoDIvrftAIhWmLP85tlrdTfE4+kj9iRsuif7TovvZPhLcB1zSnwpu89bft9kl8N0Ihcj3d
+ ZSyALReJZZO2km095FRza9vQBPvMp2FMcgddyBa+RgPzABkqxIJ+Z30eyNnRTTPm/MsQarwOTwS
+ +tHNykeFCEg9OsBDUFoWjx8y7f3ImcfX6Ug1yFMJUXYcPwQc2nOA3W7N7dBgnfc2Xd6VJ+yodG5
+ Deyz2OttFyW7k8xSBFS4pfvQyHLzGj+Msn9Q6VoqNtC2YatSIlpkBMYDn8FeE2q2vj1g2Nh4Wj9
+ iaClAkk4Bt3LKju+riXHp1pX6kfOCtNdSL7NMxQF7cpFXK76TReK/B+WKxKsvlNWrA7PGPyg6SD
+ UFo25mqsislIb+lkwoWjx8y7f3InSJlb/fq4fiqz+FzWjUOLzfrTt+hmA5bKMltxkB8Rw01sraq
+ YpRpfWRAP285T1SE41wOHlbbYzTQlEXXe75zyCi95/KnWCU3Q217sBakpdK33lj93joBiubWqU+
+ jtUG9Mqtq5d3cxkNUhQ9pL/1/Lzz4MJY7Stj4kI2VmCkd9zAn8dEvpWbRtSXBv9skmsTTI=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/3] syscalls/setgroups01: Convert to new API
+Subject: [LTP] [PATCH v3 3/3] syscalls/setgroups03: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -150,124 +75,513 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1737529510=="
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+--===============1737529510==
+Content-Type: text/plain; charset=yes
+Content-Transfer-Encoding: 8bit
 
-Hi,Cyril
-> Hi!
->> -#include <errno.h>
->> -#include <string.h>
->> -#include <signal.h>
->> -#include <sys/param.h>
->> -#include <unistd.h>
->> -#include <grp.h>
->> -
->> -#include "test.h"
->> -
->> -#include "compat_16.h"
->> +/*\
->> + * [Description]
->> + *
->> + * Check the basic functionality of the setgroups() system call.
->> + */
->>   
->> -void setup();
->> -void cleanup();
->> +#include "tst_test.h"
->> +#include "compat_tst_16.h"
->>   
->> -TCID_DEFINE(setgroups01);
->> -int TST_TOTAL = 1;
->> +static int len = NGROUPS, ngrps;
->>   
->> -int len = NGROUPS, ngrps = 0;
->> -GID_T list[NGROUPS];
->> +static GID_T list[NGROUPS];
->>   
->> -int main(int ac, char **av)
->> +static void verify_setgroups(void)
->>   {
->> -	int lc;
->> -
->> -    /***************************************************************
->> -     * parse standard options
->> -     ***************************************************************/
->> -	tst_parse_opts(ac, av, NULL, NULL);
->> -
->> -    /***************************************************************
->> -     * perform global setup for test
->> -     ***************************************************************/
->> -	setup();
->> -
->> -    /***************************************************************
->> -     * check looping state if -c option given
->> -     ***************************************************************/
->> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
->> -
->> -		tst_count = 0;
->> -
->> -		/*
->> -		 * Call setgroups(2)
->> -		 */
->> -		TEST(SETGROUPS(cleanup, ngrps, list));
->> -
->> -		/* check return code */
->> -		if (TEST_RETURN == -1) {
->> -			tst_resm(TFAIL,
->> -				 "setgroups(%d, list) Failed, errno=%d : %s",
->> -				 len, TEST_ERRNO, strerror(TEST_ERRNO));
->> -		} else {
->> -			tst_resm(TPASS,
->> -				 "setgroups(%d, list) returned %ld",
->> -				 len, TEST_RETURN);
->> -		}
->> -
->> -	}
->> -
->> -	cleanup();
->> -	tst_exit();
->> +	TST_EXP_POSITIVE(SETGROUPS(ngrps, list),
->> +			 "setgroups(%d, list)", len);
->>   }
->>   
->> -/***************************************************************
->> - * setup() - performs all ONE TIME setup for this test.
->> - ***************************************************************/
->> -void setup(void)
->> +static void setup(void)
->>   {
->> -
->> -	tst_require_root();
->> -
->> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
->> -
->> -	TEST_PAUSE;
->> -
->> -	ngrps = GETGROUPS(cleanup, len, list);
->> -	if (ngrps == -1) {
->> -		tst_brkm(TBROK, cleanup,
->> -			 "getgroups(%d, list) Failure. errno=%d : %s",
->> -			 len, errno, strerror(errno));
->> +	if (GETGROUPS(len, list) < 0) {
->> +		tst_brk(TBROK,
->> +			"getgroups(%d, list) Failure. errno=%d : %s",
->> +			len, errno, strerror(errno));
->                               ^
-> 			     use TERRNO instead of printing the values
-> 			     by hand
->
->
->>   	}
-> Also after this change the ngrps is no loger set and we pass 0 as the
-> number of groups to the setgroups call.
->
->
-> The rest of the changes looks good.
-I agree with your suggestion and I will update it.
+1.merge setgroups04 to setgroups03
+2.use safe_macro macro
+
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ runtest/syscalls                              |   2 -
+ .../kernel/syscalls/setgroups/.gitignore      |   2 -
+ .../kernel/syscalls/setgroups/setgroups03.c   | 247 ++++--------------
+ .../kernel/syscalls/setgroups/setgroups04.c   | 163 ------------
+ 4 files changed, 56 insertions(+), 358 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/setgroups/setgroups04.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 1028e45fc..119710d63 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1331,8 +1331,6 @@ setgroups02 setgroups02
+ setgroups02_16 setgroups02_16
+ setgroups03 setgroups03
+ setgroups03_16 setgroups03_16
+-setgroups04 setgroups04
+-setgroups04_16 setgroups04_16
+ 
+ sethostname01 sethostname01
+ sethostname02 sethostname02
+diff --git a/testcases/kernel/syscalls/setgroups/.gitignore b/testcases/kernel/syscalls/setgroups/.gitignore
+index 0649a3425..9de928241 100644
+--- a/testcases/kernel/syscalls/setgroups/.gitignore
++++ b/testcases/kernel/syscalls/setgroups/.gitignore
+@@ -4,5 +4,3 @@
+ /setgroups02_16
+ /setgroups03
+ /setgroups03_16
+-/setgroups04
+-/setgroups04_16
+diff --git a/testcases/kernel/syscalls/setgroups/setgroups03.c b/testcases/kernel/syscalls/setgroups/setgroups03.c
+index 490b06996..d0331b216 100644
+--- a/testcases/kernel/syscalls/setgroups/setgroups03.c
++++ b/testcases/kernel/syscalls/setgroups/setgroups03.c
+@@ -1,222 +1,87 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (C) Bull S.A. 2001
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (c) Linux Test Project, 2003-2023
++ * 07/2001 Ported by Wayne Boyer
++ * 05/2002 Ported by AndrĂ© Merlier
+  */
+ 
+-/*
+- * Test Name: setgroups03
+- *
+- * Test Description:
+- *  Verify that,
+- *   1. setgroups() fails with -1 and sets errno to EINVAL if the size
+- *      argument value is > NGROUPS
+- *   2. setgroups() fails with -1 and sets errno to EPERM if the
+- *	calling process is not super-user.
++/*\
++ * [Description]
+  *
+- * Expected Result:
+- *  setgroups() should fail with return value -1 and set expected errno.
++ * Test for EINVAL, EPERM, EFAULT errors.
+  *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Pause for SIGUSR1 if option specified.
++ * - setgroups() fails with EINVAL if the size argument value is > NGROUPS.
+  *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *   	if errno set == expected errno
+- *   		Issue sys call fails with expected return value and errno.
+- *   	Otherwise,
+- *		Issue sys call fails with unexpected errno.
+- *   Otherwise,
+- *	Issue sys call returns unexpected value.
+- *
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *
+- * Usage:  <for command-line>
+- *  setgroups03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
+- *
+- * RESTRICTIONS:
+- *  This test should be executed by 'non-super-user' only.
++ * - setgroups() fails with EPERM if the calling process is not super-user.
+  *
++ * - setgroups() fails with EFAULT if the list has an invalid address.
+  */
+-#include <limits.h>
+-#include <sys/types.h>
+-#include <unistd.h>
+-#include <errno.h>
+-#include <pwd.h>
+-#include <grp.h>
+ 
+-#include "test.h"
++#include <pwd.h>
++#include <stdlib.h>
+ 
+-#include "compat_16.h"
++#include "tst_test.h"
++#include "compat_tst_16.h"
+ 
+ #define TESTUSER	"nobody"
+ 
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
+-
+-TCID_DEFINE(setgroups03);
+-int TST_TOTAL = 2;
+-
+-GID_T *groups_list;		/* Array to hold gids for getgroups() */
++static GID_T *glist1, *glist2, *glist3;
++static struct passwd *user_info;
+ 
+-int setup1();			/* setup function to test error EPERM */
+-void setup();			/* setup function for the test */
+-void cleanup();			/* cleanup function for the test */
+-
+-struct test_case_t {		/* test case struct. to hold ref. test cond's */
+-	size_t gsize_add;
+-	int list;
+-	char *desc;
++static struct tcase {
++	int gsize;
++	GID_T **glist;
+ 	int exp_errno;
+-	int (*setupfunc) ();
+-} Test_cases[] = {
+-	{
+-	1, 1, "Size is > sysconf(_SC_NGROUPS_MAX)", EINVAL, NULL}, {
+-	0, 2, "Permission denied, not super-user", EPERM, setup1}
++} tcases[] = {
++	{NGROUPS + 1, &glist1, EINVAL},
++	{NGROUPS, &glist2, EPERM},
++	{NGROUPS, &glist3, EFAULT},
+ };
+ 
+-int main(int ac, char **av)
++static void verify_setgroups(unsigned int i)
+ {
+-	int lc;
+-	int gidsetsize;		/* total no. of groups */
+-	int i;
+-	char *test_desc;	/* test specific error message */
+-	int ngroups_max = sysconf(_SC_NGROUPS_MAX);	/* max no. of groups in the current system */
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	groups_list = malloc(ngroups_max * sizeof(GID_T));
+-	if (groups_list == NULL) {
+-		tst_brkm(TBROK, NULL, "malloc failed to alloc %zu errno "
+-			 " %d ", ngroups_max * sizeof(GID_T), errno);
+-	}
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			if (Test_cases[i].setupfunc != NULL) {
+-				Test_cases[i].setupfunc();
+-			}
++	struct tcase *tc = &tcases[i];
+ 
+-			gidsetsize = ngroups_max + Test_cases[i].gsize_add;
+-			test_desc = Test_cases[i].desc;
++	if (tc->exp_errno == EPERM)
++		SAFE_SETEUID(user_info->pw_uid);
+ 
+-			/*
+-			 * Call setgroups() to test different test conditions
+-			 * verify that it fails with -1 return value and
+-			 * sets appropriate errno.
+-			 */
+-			TEST(SETGROUPS(cleanup, gidsetsize, groups_list));
++	TST_EXP_FAIL(SETGROUPS(tc->gsize, *tc->glist), tc->exp_errno,
++		     "setgroups(%d, groups_list)", tc->gsize);
+ 
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "setgroups(%d) returned %ld, "
+-					 "expected -1, errno=%d", gidsetsize,
+-					 TEST_RETURN, Test_cases[i].exp_errno);
+-				continue;
+-			}
+-
+-			if (TEST_ERRNO == Test_cases[i].exp_errno) {
+-				tst_resm(TPASS,
+-					 "setgroups(%d) fails, %s, errno=%d",
+-					 gidsetsize, test_desc, TEST_ERRNO);
+-			} else {
+-				tst_resm(TFAIL, "setgroups(%d) fails, %s, "
+-					 "errno=%d, expected errno=%d",
+-					 gidsetsize, test_desc, TEST_ERRNO,
+-					 Test_cases[i].exp_errno);
+-			}
+-		}
+-
+-	}
+-
+-	cleanup();
+-
+-	tst_exit();
++	if (tc->exp_errno == EPERM)
++		SAFE_SETEUID(0);
+ }
+ 
+-/*
+- * setup() - performs all ONE TIME setup for this test.
+- *
+- *  Call individual test specific setup functions.
+- */
+-void setup(void)
++static void setup(void)
+ {
+-	tst_require_root();
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	glist1 = SAFE_MALLOC((NGROUPS + 1) * sizeof(GID_T));
+ 
+-	TEST_PAUSE;
++	user_info = SAFE_GETPWNAM(TESTUSER);
++	GID16_CHECK(user_info->pw_gid, getpwnam);
++	glist2 = (GID_T *)&(user_info->pw_gid);
+ 
++	glist3 = tst_get_bad_addr(NULL);
+ }
+ 
+-/*
+- * setup1 -  Setup function to test setgroups() which returns -1
+- *	     and sets errno to EPERM.
+- *
+- *  Get the user info. from /etc/passwd file.
+- *  This function returns 0 on success.
+- */
+-int setup1(void)
++static void cleanup(void)
+ {
+-	struct passwd *user_info;	/* struct. to hold test user info */
+-
+-/* Switch to nobody user for correct error code collection */
+-	ltpuser = getpwnam(nobody_uid);
+-	if (seteuid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TINFO, "setreuid failed to "
+-			 "to set the effective uid to %d", ltpuser->pw_uid);
+-		perror("setreuid");
+-	}
+-
+-	if ((user_info = getpwnam(TESTUSER)) == NULL) {
+-		tst_brkm(TFAIL, cleanup, "getpwnam(2) of %s Failed", TESTUSER);
+-	}
+-
+-	if (!GID_SIZE_CHECK(user_info->pw_gid)) {
+-		tst_brkm(TBROK,
+-			 cleanup,
+-			 "gid returned from getpwnam is too large for testing setgroups16");
+-	}
+-	groups_list[0] = user_info->pw_gid;
+-	return 0;
++	if (glist1)
++		free(glist1);
+ }
+ 
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *             completion or premature exit.
+- */
+-void cleanup(void)
+-{
+-
+-}
++static struct tst_test test = {
++	.test = verify_setgroups,
++	.tcnt = ARRAY_SIZE(tcases),
++	.bufs = (struct tst_buffers []) {
++		{&glist1, .size = sizeof(GID_T)},
++		{&glist2, .size = sizeof(GID_T)},
++		{&glist3, .size = sizeof(GID_T)},
++		{&user_info, .size = sizeof(struct passwd)},
++		{},
++	},
++	.setup = setup,
++	.cleanup = cleanup,
++	.needs_root = 1,
++};
+diff --git a/testcases/kernel/syscalls/setgroups/setgroups04.c b/testcases/kernel/syscalls/setgroups/setgroups04.c
+deleted file mode 100644
+index 971c86bd2..000000000
+--- a/testcases/kernel/syscalls/setgroups/setgroups04.c
++++ /dev/null
+@@ -1,163 +0,0 @@
+-/*
+- *   Copyright (C) Bull S.A. 2001
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * Test Name: setgroups04
+- *
+- * Test Description:
+- *  Verify that, setgroups() fails with -1 and sets errno to EFAULT if the list has an invalid address.
+- *
+- * Expected Result:
+- *  setgroups() should fail with return value -1 and set expected errno.
+- *
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Pause for SIGUSR1 if option specified.
+- *
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *   	if errno set == expected errno
+- *   		Issue sys call fails with expected return value and errno.
+- *   	Otherwise,
+- *		Issue sys call fails with unexpected errno.
+- *   Otherwise,
+- *	Issue sys call returns unexpected value.
+- *
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *
+- * Usage:  <for command-line>
+- *  setgroups04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	05/2002 Ported by Andr� Merlier
+- *
+- * RESTRICTIONS:
+- *  none.
+- *
+- */
+-#include <sys/types.h>
+-#include <sys/param.h>
+-#include <unistd.h>
+-#include <errno.h>
+-#include <pwd.h>
+-#include <grp.h>
+-
+-#include "test.h"
+-
+-#include "compat_16.h"
+-
+-TCID_DEFINE(setgroups04);
+-int TST_TOTAL = 1;
+-
+-GID_T groups_list[NGROUPS];
+-
+-void setup();			/* setup function for the test */
+-void cleanup();			/* cleanup function for the test */
+-
+-#if !defined(UCLINUX)
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	int gidsetsize;		/* total no. of groups */
+-	char *test_desc;	/* test specific error message */
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	/* Perform setup for test */
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		gidsetsize = NGROUPS;
+-		test_desc = "EFAULT";
+-
+-		/*
+-		 * Call setgroups() to test condition
+-		 * verify that it fails with -1 return value and
+-		 * sets appropriate errno.
+-		 */
+-		TEST(SETGROUPS(cleanup, gidsetsize, sbrk(0)));
+-
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "setgroups() returned %ld, "
+-				 "expected -1, errno=%d", TEST_RETURN,
+-				 EFAULT);
+-		} else {
+-
+-			if (TEST_ERRNO == EFAULT) {
+-				tst_resm(TPASS,
+-					 "setgroups() fails with expected "
+-					 "error EFAULT errno:%d", TEST_ERRNO);
+-			} else {
+-				tst_resm(TFAIL, "setgroups() fails, %s, "
+-					 "errno=%d, expected errno=%d",
+-					 test_desc, TEST_ERRNO, EFAULT);
+-			}
+-		}
+-
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-
+-}
+-
+-#else
+-
+-int main(void)
+-{
+-	tst_resm(TINFO, "test is not available on uClinux");
+-	tst_exit();
+-}
+-
+-#endif /* if !defined(UCLINUX) */
+-
+-/*
+- * setup()
+- */
+-void setup(void)
+-{
+-	tst_require_root();
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-}
+-
+-/*
+- * cleanup()
+- */
+-void cleanup(void)
+-{
+-
+-}
+-- 
+2.39.1
+
+
+--===============1737529510==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
+
+--===============1737529510==--
