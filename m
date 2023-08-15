@@ -4,59 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91CF9C001B0
-	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 07:05:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4787DC001DE
+	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 08:57:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EC1E03CCD7B
-	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 09:05:36 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 474583CD2C7
+	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 10:56:57 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 620963CB059
- for <ltp@lists.linux.it>; Tue, 15 Aug 2023 09:05:26 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id ACEFD3C65F4
+ for <ltp@lists.linux.it>; Tue, 15 Aug 2023 10:56:45 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 75492200041
- for <ltp@lists.linux.it>; Tue, 15 Aug 2023 09:05:24 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C268C2199B;
- Tue, 15 Aug 2023 07:05:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1692083123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=sBIRYKMeHERZeGzpS5gbR07yq/6IxG5qGIotO/IwR4c=;
- b=QjuUPLwW5JwV1SjzB/G47ECie0juOflNomnItSF+4ijCtXeLkSq1U1foALEt+88qx4T+rE
- 3eTsfOFQg6RK34+kSHhBoR2dn8ffjIaBCyP0Lt3xwWw7w1+tEV09wvYc72Zs9igALiqEuq
- GAzL/stOhRAhYrNBY+KZY/Lzfm+zxSo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F10861353E;
- Tue, 15 Aug 2023 07:05:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id C6paL7Ij22S2fAAAMHmgww
- (envelope-from <wegao@suse.com>); Tue, 15 Aug 2023 07:05:22 +0000
-To: ltp@lists.linux.it
-Date: Tue, 15 Aug 2023 03:05:18 -0400
-Message-Id: <20230815070518.21641-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230814232643.17673-1-wegao@suse.com>
-References: <20230814232643.17673-1-wegao@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 557D71A00153
+ for <ltp@lists.linux.it>; Tue, 15 Aug 2023 10:56:42 +0200 (CEST)
+Received: from dggpeml500003.china.huawei.com (unknown [172.30.72.55])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RQ4p1179CzVjlp
+ for <ltp@lists.linux.it>; Tue, 15 Aug 2023 16:54:33 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500003.china.huawei.com
+ (7.185.36.200) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 15 Aug
+ 2023 16:56:36 +0800
+To: <ltp@lists.linux.it>
+Date: Tue, 15 Aug 2023 16:57:06 +0800
+Message-ID: <20230815085706.1077725-1-xusenmiao@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500003.china.huawei.com (7.185.36.200)
+X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Regression check for unlink fail issue after
- successful mknod
+Subject: [LTP] [PATCH] ipneigh01.sh: Fix an issue where ipneigh01_arp test
+ case fail due to ARP timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -68,49 +51,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+From: Xu Senmiao via ltp <ltp@lists.linux.it>
+Reply-To: Xu Senmiao <xusenmiao@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Write a regression test once making unix_bind() undo mknod on failure patchset is merged.
+When the ARP status of the rhost is stale,
+lhost ping rhost and the lhost deletes the ARP record,
+the record in the rhost changes from stale to delay.
+Then, the probe request is sent to the lhost, and the lhost ARP information is updated.
 
-Kernel patch detail:
-git describe --contains c0c3b8d380a8f54c75786d41f6f9efbe761dac6c
-v5.14-rc1119^286
-git log -p c0c3b8d380a8f54c75786d41f6f9efbe761dac6c
-commit c0c3b8d380a8f54c75786d41f6f9efbe761dac6c
-Author: Al Viro viro@zeniv.linux.org.uk
-Date: Sat Jun 19 03:50:32 2021 +0000
-unix_bind_bsd(): unlink if we fail after successful mknod
+   rhost(10.0.0.1)      lhost(10.0.0.2)
+t1 10.0.0.2 STALE       ping 10.0.0.1
+                        10.0.0.1 REACHABLE
+                        arp -d 10.0.0.1
+t2 10.0.0.2 DELAY
+t3 probe 10.0.0.2
+t4                      10.0.0.1 REACHABLE
 
-Signed-off-by: Wei Gao <wegao@suse.com>
+Clear the ARP entries of rhost before each round of test.
+
+Signed-off-by: Xu Senmiao <xusenmiao@huawei.com>
 ---
- testcases/kernel/syscalls/bind/bind03.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ testcases/network/tcp_cmds/ipneigh/ipneigh01.sh | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/bind/bind03.c b/testcases/kernel/syscalls/bind/bind03.c
-index 37a040b29..8c95cd799 100644
---- a/testcases/kernel/syscalls/bind/bind03.c
-+++ b/testcases/kernel/syscalls/bind/bind03.c
-@@ -43,8 +43,12 @@ static void run(void)
- 	 * locks the socket and does all the checks and the node is not removed
- 	 * in the error path. For now we will unlink the node here so that the
- 	 * test works fine when the run() function is executed in a loop.
-+	 * From v5.14-rc1 the kernel has fix above issue.
- 	 */
--	unlink(SNAME_B);
-+	if (tst_kvercmp(5, 14, 0) >= 0)
-+		TST_EXP_FAIL(unlink(SNAME_B), ENOENT, "check exist of SNAME_B");
-+	else
-+		unlink(SNAME_B);
- }
+diff --git a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+index e67ff5cc8..4db675f8f 100755
+--- a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
++++ b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+@@ -56,6 +56,7 @@ do_test()
+ 	tst_res TINFO "stress auto-creation $entry_name cache entry deleted with '$CMD' $NUMLOOPS times"
  
- static void setup(void)
+ 	for i in $(seq 1 $NUMLOOPS); do
++		tst_rhost_run -c "arp -d $(tst_ipaddr lhost)"
+ 
+ 		ping$TST_IPV6 -q -c1 $(tst_ipaddr rhost) -I $(tst_iface) > /dev/null || \
+ 			tst_brk TFAIL "cannot ping $(tst_ipaddr rhost)"
 -- 
-2.35.3
+2.33.0
 
 
 -- 
