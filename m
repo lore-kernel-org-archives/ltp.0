@@ -4,78 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 435E4C001B0
-	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 09:43:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DABADC001B0
+	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 10:54:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9179F3CCD8F
-	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 11:43:48 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 7B6333CD1AF
+	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 12:54:29 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A94083CCD76
- for <ltp@lists.linux.it>; Tue, 15 Aug 2023 11:43:34 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 20BFC3C967F
+ for <ltp@lists.linux.it>; Tue, 15 Aug 2023 12:54:17 +0200 (CEST)
+Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com
+ [207.54.90.49])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6169A1400172
- for <ltp@lists.linux.it>; Tue, 15 Aug 2023 11:43:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1692092610;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fWXwSSHLbgRwmnewmLJlt3X2XOgVklYgYVwWooQEUUk=;
- b=GP1lj7E+zUw1XHCf44T1tBLVB2Me+XpcVD21UdafuHHDXBlE3euu2h1F9O8ZzKfn6eq/8g
- rDfxLyDqpVZpWzTM7Ks+BYA2qJIxzn3fnqCS2lpbg2PPgMREGrISelUu+pDcsYT9lt0Xsi
- 0sSiIw22WIuK9yO+13mUH9uOref6Apk=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-653-ZjaTxu9CPUCqkuEAblYN5Q-1; Tue, 15 Aug 2023 05:43:28 -0400
-X-MC-Unique: ZjaTxu9CPUCqkuEAblYN5Q-1
-Received: by mail-lj1-f199.google.com with SMTP id
- 38308e7fff4ca-2b9bf493456so50945351fa.0
- for <ltp@lists.linux.it>; Tue, 15 Aug 2023 02:43:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1692092606; x=1692697406;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=fWXwSSHLbgRwmnewmLJlt3X2XOgVklYgYVwWooQEUUk=;
- b=il3wDFhukTFQXVahMpWW7Q1kWFO6dAT4RiQVFJd45GpL1qqTpcxfrNB6eNUd0fguh2
- jnUAtA8ohQU5JLfRyZBTL7yJiQElZ901GWUgpvEMWAArHM3nHs8V6l6oYeB8bm8PcJ0B
- ge26kAZXEsNyhAYQVtMvd1IJk9z4qY2mHA2Wola6DeJ2dJ5syHj/KQrvMXb0hDiZ8Fj1
- NsSl9G+0xYM6M1q9FlNvcbhhheSuZ3oD9iKdOZcNTdfAiOuMgTXCzdpsgnvenxxT4Mwm
- vvL5QKVj/ShAjv5qOtFdMvUwXCqqw9nkNUlNNme8OSQRwxkAKHHKs9D7lLhziznKs9XZ
- EOxg==
-X-Gm-Message-State: AOJu0YwHS8PV6deObzWDanPb1LkoC9RzKw7PVzdECewSHhcGeYWkYy7L
- ztOfkqQwNjPSaJ3PaacIHoBlNR0f1HhwrSAg39wLgRfoiB/LKrrHd1nF8YffyosOAZKdOMOsO6b
- OCZua2WB8PcmtfO+edeSc2BBygyye4XDKBAd2xm3nJXo=
-X-Received: by 2002:a2e:2c09:0:b0:2b9:c046:8617 with SMTP id
- s9-20020a2e2c09000000b002b9c0468617mr8214379ljs.5.1692092605911; 
- Tue, 15 Aug 2023 02:43:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH47BN8cpfvUqai4u6ZKqZqpgjTB3HcIZisy/m5GMTZoa59GnA5+z+hRCoHVgagrug6tcIsa5tXg4rLWE7HxtQ=
-X-Received: by 2002:a2e:2c09:0:b0:2b9:c046:8617 with SMTP id
- s9-20020a2e2c09000000b002b9c0468617mr8214365ljs.5.1692092605508; Tue, 15 Aug
- 2023 02:43:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230811115647.32387-1-chrubis@suse.cz>
- <20230811115647.32387-2-chrubis@suse.cz>
-In-Reply-To: <20230811115647.32387-2-chrubis@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 15 Aug 2023 17:43:13 +0800
-Message-ID: <CAEemH2fCOye2v8yL7AR6JO7Ar4tW83sB4Fi=YzJUuSCzhmtkiQ@mail.gmail.com>
-To: Cyril Hrubis <chrubis@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0A8336001FA
+ for <ltp@lists.linux.it>; Tue, 15 Aug 2023 12:54:15 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="128188532"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684767600"; d="scan'208";a="128188532"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+ by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Aug 2023 19:54:12 +0900
+Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
+ [192.168.87.61])
+ by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 995A97FB69
+ for <ltp@lists.linux.it>; Tue, 15 Aug 2023 19:54:09 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 90A14D6140
+ for <ltp@lists.linux.it>; Tue, 15 Aug 2023 19:54:08 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.215.131])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 05D14200649E9;
+ Tue, 15 Aug 2023 19:54:07 +0900 (JST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: ltp@lists.linux.it
+Date: Tue, 15 Aug 2023 18:53:37 +0800
+Message-Id: <1692096817-15512-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27814.003
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27814.003
+X-TMASE-Result: 10--11.649600-10.000000
+X-TMASE-MatchedRID: cW5UfOyvKhE23AXUgL0utazGfgakLdjaaEANKbBJN106FHRWx2FGsL8F
+ Hrw7frluf146W0iUu2vNs+hSjQLHEDKEOf80TKXQOjf3A4DTYuFZoq85oEW2FAGJiBxi7iVxysx
+ /ZixtIIryZnEl0t0eu9BrVWcP/4U9JZ+ovZY/XBFIcJTn2HkqsRgff28UuvITFFqcwE7P4SI3KV
+ 6TwldBNzf3LjDSfF32QxzKhFiXIPBUAmzcvaRR98IkzTqL3E/WTSz0JdEAJbQum94DE3gzX7qSN
+ KTkl986m6WfEFBBxPqdONIB9b2owAGm89tONGRnqhcdnP91eXGUO3k9AyCPTfLIj08N6FsEsvOv
+ U1bC85z3gkZLY/qIz3dNoXv6UJm+EfIWTKnSZvk1PRCuPh/FNUEe5VjFzwNb6qVTmlduXY+jxYy
+ RBa/qJcFwgTvxipFa9xS3mVzWUuCRTpSQiv9X7bRBGWsEXd5lPs2j5ry5SDZjmzq5drM54dSPYu
+ dJ95b2ouJhNp2axJnTq9HaTRi2VA==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/6] lib: tst_buffers: Add bufs .str and
- tst_aprintf()
+Subject: [LTP] [PATCH]
+ build-system-guide.txt/c-test-api.txt/c-test-tutorial-simple.txt/c-test-tutorial-simple.txt:
+ fix typo
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,62 +73,93 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBBdWcgMTEsIDIwMjMgYXQgNzo1NuKAr1BNIEN5cmlsIEhydWJpcyA8Y2hydWJpc0Bz
-dXNlLmN6PiB3cm90ZToKCj4gU2lnbmVkLW9mZi1ieTogQ3lyaWwgSHJ1YmlzIDxjaHJ1YmlzQHN1
-c2UuY3o+Cj4gLS0tCj4gIGluY2x1ZGUvdHN0X2J1ZmZlcnMuaCB8IDExICsrKysrKysrKysrCj4g
-IGxpYi90c3RfYnVmZmVycy5jICAgICB8IDI4ICsrKysrKysrKysrKysrKysrKysrKysrKystLS0K
-PiAgMiBmaWxlcyBjaGFuZ2VkLCAzNiBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+Cj4g
-ZGlmZiAtLWdpdCBhL2luY2x1ZGUvdHN0X2J1ZmZlcnMuaCBiL2luY2x1ZGUvdHN0X2J1ZmZlcnMu
-aAo+IGluZGV4IGQxOWFjOGNmMC4uYjVmMzU1ZjBmIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvdHN0
-X2J1ZmZlcnMuaAo+ICsrKyBiL2luY2x1ZGUvdHN0X2J1ZmZlcnMuaAo+IEBAIC0yNSw2ICsyNSwx
-MSBAQCBzdHJ1Y3QgdHN0X2J1ZmZlcnMgewo+ICAgICAgICAgICogQXJyYXkgb2YgaW92IGJ1ZmZl
-ciBzaXplcyB0ZXJtaW5hdGVkIGJ5IC0xLgo+ICAgICAgICAgICovCj4gICAgICAgICBpbnQgKmlv
-dl9zaXplczsKPiArICAgICAgIC8qCj4gKyAgICAgICAgKiBJZiBzaXplIGFuZCBpb3Zfc2l6ZXMg
-aXMgTlVMTCB0aGlzIGlzIHRoZSBzdHJpbmcgd2Ugd2FudCB0bwo+IHN0cmR1cCgpCj4gKyAgICAg
-ICAgKiBpbnRvIHRoZSBidWZmZXIuCj4gKyAgICAgICAgKi8KPiArICAgICAgIGNoYXIgKnN0cjsK
-PiAgfTsKPgo+ICAvKgo+IEBAIC00Niw2ICs1MSwxMiBAQCBjaGFyICp0c3Rfc3RyZHVwKGNvbnN0
-IGNoYXIgKnN0cik7Cj4gICAqLwo+ICB2b2lkICp0c3RfYWxsb2Moc2l6ZV90IHNpemUpOwo+Cj4g
-Ky8qCj4gKyAqIFByaW50ZiBpbnRvIGEgZ3VhcmRlZCBidWZmZXIuCj4gKyAqLwo+ICtjaGFyICp0
-c3RfYXByaW50Zihjb25zdCBjaGFyICpmbXQsIC4uLikKPiArICAgICAgX19hdHRyaWJ1dGVfXygo
-Zm9ybWF0IChwcmludGYsIDEsIDIpKSk7Cj4gKwo+ICAvKgo+ICAgKiBBbGxvY2F0ZXMgaW92ZWMg
-c3RydWN0dXJlIGluY2x1ZGluZyB0aGUgYnVmZmVycy4KPiAgICoKPiBkaWZmIC0tZ2l0IGEvbGli
-L3RzdF9idWZmZXJzLmMgYi9saWIvdHN0X2J1ZmZlcnMuYwo+IGluZGV4IGI4YjU5N2ExMi4uYjBi
-ZDM1OWViIDEwMDY0NAo+IC0tLSBhL2xpYi90c3RfYnVmZmVycy5jCj4gKysrIGIvbGliL3RzdF9i
-dWZmZXJzLmMKPiBAQCAtNSw2ICs1LDcgQEAKPgo+ICAjaW5jbHVkZSA8c3lzL21tYW4uaD4KPiAg
-I2luY2x1ZGUgPHN0ZGxpYi5oPgo+ICsjaW5jbHVkZSA8c3RkaW8uaD4KPiAgI2RlZmluZSBUU1Rf
-Tk9fREVGQVVMVF9NQUlOCj4gICNpbmNsdWRlICJ0c3RfdGVzdC5oIgo+Cj4gQEAgLTc2LDYgKzc3
-LDI1IEBAIHZvaWQgKnRzdF9hbGxvYyhzaXplX3Qgc2l6ZSkKPiAgICAgICAgIHJldHVybiByZXQg
-KyBtYXAtPmJ1Zl9zaGlmdDsKPiAgfQo+Cj4gK2NoYXIgKnRzdF9hcHJpbnRmKGNvbnN0IGNoYXIg
-KmZtdCwgLi4uKQo+CgpJIGRpZG4ndCBzZWUgYW55IHBsYWNlIHRvIGludm9rZSB0aGlzIGZ1bmN0
-aW9uIGluIHRoZSBwYXRjaHNldCwKZG9lcyBpdCBwcmVwYXJlIGZvciB0aGUgY29taW5nIGNhc2Ug
-b3Igb3RoZXJzPwoKQW55d2F5LCB0aGUgd2hvbGUgcGF0Y2ggc2V0IGxvb2tzIHByZXR0eSBnb29k
-IHRvIG1lLgoKUmV2aWV3ZWQtYnk6IExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQuY29tPgoKCgo+ICt7
-Cj4gKyAgICAgICB2YV9saXN0IHZhOwo+ICsgICAgICAgaW50IGxlbjsKPiArICAgICAgIGNoYXIg
-KnJldDsKPiArCj4gKyAgICAgICAgdmFfc3RhcnQodmEsIGZtdCk7Cj4gKyAgICAgICAgbGVuID0g
-dnNucHJpbnRmKE5VTEwsIDAsIGZtdCwgdmEpKzE7Cj4gKyAgICAgICAgdmFfZW5kKHZhKTsKPiAr
-Cj4gKyAgICAgICByZXQgPSB0c3RfYWxsb2MobGVuKTsKPiArCj4gKyAgICAgICB2YV9zdGFydCh2
-YSwgZm10KTsKPiArICAgICAgICB2c3ByaW50ZihyZXQsIGZtdCwgdmEpOwo+ICsgICAgICAgIHZh
-X2VuZCh2YSk7Cj4gKwo+ICsgICAgICAgcmV0dXJuIHJldDsKPiArfQo+ICsKPiAgc3RhdGljIGlu
-dCBjb3VudF9pb3ZlYyhpbnQgKnNpemVzKQo+ICB7Cj4gICAgICAgICBpbnQgcmV0ID0gMDsKPiBA
-QCAtMTE1LDE1ICsxMzUsMTcgQEAgdm9pZCB0c3RfYnVmZmVyc19hbGxvYyhzdHJ1Y3QgdHN0X2J1
-ZmZlcnMgYnVmc1tdKQo+ICAgICAgICAgZm9yIChpID0gMDsgYnVmc1tpXS5wdHI7IGkrKykgewo+
-ICAgICAgICAgICAgICAgICBpZiAoYnVmc1tpXS5zaXplKQo+ICAgICAgICAgICAgICAgICAgICAg
-ICAgICooKHZvaWQqKilidWZzW2ldLnB0cikgPSB0c3RfYWxsb2MoYnVmc1tpXS5zaXplKTsKPiAt
-ICAgICAgICAgICAgICAgZWxzZQo+ICsgICAgICAgICAgICAgICBlbHNlIGlmIChidWZzW2ldLmlv
-dl9zaXplcykKPiAgICAgICAgICAgICAgICAgICAgICAgICAqKCh2b2lkKiopYnVmc1tpXS5wdHIp
-ID0KPiB0c3RfaW92ZWNfYWxsb2MoYnVmc1tpXS5pb3Zfc2l6ZXMpOwo+ICsgICAgICAgICAgICAg
-ICBlbHNlCj4gKyAgICAgICAgICAgICAgICAgICAgICAgKigodm9pZCoqKWJ1ZnNbaV0ucHRyKSA9
-IHRzdF9zdHJkdXAoYnVmc1tpXS5zdHIpOwo+ICAgICAgICAgfQo+ICB9Cj4KPiAgY2hhciAqdHN0
-X3N0cmR1cChjb25zdCBjaGFyICpzdHIpCj4gIHsKPiAtICAgICAgIHNpemVfdCBsZW4gPSBzdHJs
-ZW4oc3RyKTsKPiAtICAgICAgIGNoYXIgKnJldCA9IHRzdF9hbGxvYyhsZW4gKyAxKTsKPiArICAg
-ICAgIGNoYXIgKnJldCA9IHRzdF9hbGxvYyhzdHJsZW4oc3RyKSArIDEpOwo+ICsKPiAgICAgICAg
-IHJldHVybiBzdHJjcHkocmV0LCBzdHIpOwo+ICB9Cj4KPiAtLQo+IDIuNDEuMAo+Cj4KPiAtLQo+
-IE1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo+
-Cj4KCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8v
-bGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ doc/build-system-guide.txt             | 2 +-
+ doc/c-test-api.txt                     | 6 +++---
+ doc/c-test-tutorial-simple.txt         | 2 +-
+ doc/supported-kernel-libc-versions.txt | 2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/doc/build-system-guide.txt b/doc/build-system-guide.txt
+index b8d267b4b..e078fa7f7 100644
+--- a/doc/build-system-guide.txt
++++ b/doc/build-system-guide.txt
+@@ -106,7 +106,7 @@ The 'REQ_VERSION_MAJOR' and 'REQ_VERSION_PATCH' describe minimal kernel
+ version for which the build system tries to build the module.
+ 
+ The buildsystem is also forward compatible with changes in Linux kernel
+-internal API so that if modul fails to build the failure is ignored both on
++internal API so that if module fails to build the failure is ignored both on
+ build and installation. If the userspace counterpart of the test fails to load
+ the module because the file does not exists, the test is skipped.
+ 
+diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
+index 74871e6c8..44ec5bb3d 100644
+--- a/doc/c-test-api.txt
++++ b/doc/c-test-api.txt
+@@ -20,7 +20,7 @@ Let's start with an example, following code is a simple test for a 'getenv()'.
+  * [Description]
+  * Tests basic functionality of getenv().
+  *
+- *  - create an env variable and verify that getenv() can get get it
++ *  - create an env variable and verify that getenv() can get it
+  *  - call getenv() with nonexisting variable name, check that it returns NULL
+  */
+ 
+@@ -579,7 +579,7 @@ These two functions are intended for runtime kernel version detection. They
+ parse the output from 'uname()' and compare it to the passed values.
+ 
+ The return value is similar to the 'strcmp()' function, i.e. zero means equal,
+-negative value means that the kernel is older than than the expected value and
++negative value means that the kernel is older than the expected value and
+ positive means that it's newer.
+ 
+ The second function 'tst_kvercmp2()' allows for specifying per-vendor table of
+@@ -1949,7 +1949,7 @@ available to the children (see the capabilities (7) manual pages).
+ 
+ However a lot of problems can be solved by using 'tst_cap_action(struct
+ tst_cap  *cap)' directly which can be called at any time. This also helps if
+-you wish to drop a capability at the begining of setup.
++you wish to drop a capability at the beginning of setup.
+ 
+ 1.33 Reproducing race-conditions
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/doc/c-test-tutorial-simple.txt b/doc/c-test-tutorial-simple.txt
+index 62930fdcb..c691c1dd9 100644
+--- a/doc/c-test-tutorial-simple.txt
++++ b/doc/c-test-tutorial-simple.txt
+@@ -940,7 +940,7 @@ the 'index' where you are then able to un-stage some parts before
+ re-committing.
+ 
+ You can also use +edit+ and +git commit --amend+ together to change a commit
+-deep in your history, but without reseting the 'index'. The 'index' contains
++deep in your history, but without resetting the 'index'. The 'index' contains
+ changes which you have staged with +git add+, but not yet committed.
+ 
+ So now that the commit history has been cleaned up, we need to submit a patch
+diff --git a/doc/supported-kernel-libc-versions.txt b/doc/supported-kernel-libc-versions.txt
+index 6b9970872..e3d9cd92f 100644
+--- a/doc/supported-kernel-libc-versions.txt
++++ b/doc/supported-kernel-libc-versions.txt
+@@ -62,7 +62,7 @@ Minimal supported kernel version is 3.10.
+ [align="center",options="header"]
+ |==================================
+ | Libc      | Note
+-| https://www.gnu.org/software/libc/[GNU C Library (glibc)] | Targetted libc, tested both compilation and actual test results.
++| https://www.gnu.org/software/libc/[GNU C Library (glibc)] | Targeted libc, tested both compilation and actual test results.
+ | https://uclibc-ng.org/[uClibc-ng] | Although not being tested it should work as well as it attempt to maintain a glibc compatible interface.
+ | https://www.uclibc.org/[uClibc]   | Older https://www.uclibc.org/[uClibc] might have problems.
+ | https://musl.libc.org/[musl] | Not yet fully supported (see
+-- 
+2.39.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
