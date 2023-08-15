@@ -4,54 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33AA7C001E0
-	for <ltp@archiver.kernel.org>; Mon, 14 Aug 2023 23:27:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91CF9C001B0
+	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 07:05:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A80813CD598
-	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 01:27:12 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id EC1E03CCD7B
+	for <ltp@archiver.kernel.org>; Tue, 15 Aug 2023 09:05:36 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A4703CCE5B
- for <ltp@lists.linux.it>; Tue, 15 Aug 2023 01:27:01 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 620963CB059
+ for <ltp@lists.linux.it>; Tue, 15 Aug 2023 09:05:26 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8381360078C
- for <ltp@lists.linux.it>; Tue, 15 Aug 2023 01:27:00 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 75492200041
+ for <ltp@lists.linux.it>; Tue, 15 Aug 2023 09:05:24 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8F0E21F7AB;
- Mon, 14 Aug 2023 23:26:59 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C268C2199B;
+ Tue, 15 Aug 2023 07:05:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1692055619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=ajxzgnYAICeD5MEHf9kTx4oNZYtWgvnCxUT5LbTeYSA=;
- b=PdABPL2Mi0krya6vysm2YbyqJJevQ+eURD472No6f/vxY9b7tjUTQn3QRCooBmIvnpUn9v
- TJ/lSE500lAG3vBm29kFNroTVs6NaCy4ouX9csXHTETw9cEyyL0aWW3ebWl0MGPTfegpHa
- c56oBRNQ0JRVHSUEJznWTcV4SXj/LnE=
+ t=1692083123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sBIRYKMeHERZeGzpS5gbR07yq/6IxG5qGIotO/IwR4c=;
+ b=QjuUPLwW5JwV1SjzB/G47ECie0juOflNomnItSF+4ijCtXeLkSq1U1foALEt+88qx4T+rE
+ 3eTsfOFQg6RK34+kSHhBoR2dn8ffjIaBCyP0Lt3xwWw7w1+tEV09wvYc72Zs9igALiqEuq
+ GAzL/stOhRAhYrNBY+KZY/Lzfm+zxSo=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3FCB138EE;
- Mon, 14 Aug 2023 23:26:58 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F10861353E;
+ Tue, 15 Aug 2023 07:05:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qGPFLUK42mQiVQAAMHmgww
- (envelope-from <wegao@suse.com>); Mon, 14 Aug 2023 23:26:58 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id C6paL7Ij22S2fAAAMHmgww
+ (envelope-from <wegao@suse.com>); Tue, 15 Aug 2023 07:05:22 +0000
 To: ltp@lists.linux.it
-Date: Mon, 14 Aug 2023 19:26:43 -0400
-Message-Id: <20230814232643.17673-1-wegao@suse.com>
+Date: Tue, 15 Aug 2023 03:05:18 -0400
+Message-Id: <20230815070518.21641-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230814232643.17673-1-wegao@suse.com>
+References: <20230814232643.17673-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Regression check for unlink fail issue after
+Subject: [LTP] [PATCH v2] Regression check for unlink fail issue after
  successful mknod
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -84,25 +88,24 @@ unix_bind_bsd(): unlink if we fail after successful mknod
 
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- testcases/kernel/syscalls/bind/bind03.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ testcases/kernel/syscalls/bind/bind03.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/testcases/kernel/syscalls/bind/bind03.c b/testcases/kernel/syscalls/bind/bind03.c
-index 37a040b29..12285acb9 100644
+index 37a040b29..8c95cd799 100644
 --- a/testcases/kernel/syscalls/bind/bind03.c
 +++ b/testcases/kernel/syscalls/bind/bind03.c
-@@ -43,8 +43,13 @@ static void run(void)
+@@ -43,8 +43,12 @@ static void run(void)
  	 * locks the socket and does all the checks and the node is not removed
  	 * in the error path. For now we will unlink the node here so that the
  	 * test works fine when the run() function is executed in a loop.
 +	 * From v5.14-rc1 the kernel has fix above issue.
  	 */
 -	unlink(SNAME_B);
-+	if (tst_kvercmp(5, 14, 0) >= 0) {
-+		TST_EXP_FAIL(unlink(SNAME_B), ENOENT,"check exist of SNAME_B");
-+	} else {
++	if (tst_kvercmp(5, 14, 0) >= 0)
++		TST_EXP_FAIL(unlink(SNAME_B), ENOENT, "check exist of SNAME_B");
++	else
 +		unlink(SNAME_B);
-+	}
  }
  
  static void setup(void)
