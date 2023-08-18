@@ -4,70 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B018C678DC
-	for <ltp@archiver.kernel.org>; Fri, 18 Aug 2023 11:21:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C520C7113C
+	for <ltp@archiver.kernel.org>; Fri, 18 Aug 2023 13:19:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 363AB3CCAB1
-	for <ltp@archiver.kernel.org>; Fri, 18 Aug 2023 13:21:13 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 217533CCAD4
+	for <ltp@archiver.kernel.org>; Fri, 18 Aug 2023 15:19:36 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9206C3CCADB
- for <ltp@lists.linux.it>; Fri, 18 Aug 2023 13:20:35 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 57F561A000A2
- for <ltp@lists.linux.it>; Fri, 18 Aug 2023 13:20:34 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D74E62188A
- for <ltp@lists.linux.it>; Fri, 18 Aug 2023 11:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1692357633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=x0rtRXkrnLNrOxiZ8FlZiW2KK2abIQIEUiKi/7EOryU=;
- b=DrhZOSSZ6BuIpIz05JzB2SQ1eyHXVtN9Td4fww1J3gyRkd9LWtHvo25UczAZ1YyEaMHxQd
- pynIErUqfKZ+w4yPdu5Nd/8U/KSZuTYiH9ehmNPbzuLuhcsRJ4I/KJO/wqRMTPLFUC4vLN
- cTfLeDh/m4xU0+67TMH3Dq1Ng23Jihg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1692357633;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=x0rtRXkrnLNrOxiZ8FlZiW2KK2abIQIEUiKi/7EOryU=;
- b=rLqQACosGF41HUatjPOgemJH4ixv6zjieM6SOyLtW2WmNc3StlAJYDyehyIobVT2lvgqTQ
- jFtxqA+AMwak3DCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7AC7813441
- for <ltp@lists.linux.it>; Fri, 18 Aug 2023 11:20:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4CaNEwFU32TEYQAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Fri, 18 Aug 2023 11:20:33 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Fri, 18 Aug 2023 16:50:17 +0530
-Message-ID: <20230818112023.18159-4-akumar@suse.de>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230818112023.18159-1-akumar@suse.de>
-References: <20230818112023.18159-1-akumar@suse.de>
+ by picard.linux.it (Postfix) with ESMTPS id 620E53CCB51
+ for <ltp@lists.linux.it>; Fri, 18 Aug 2023 04:47:58 +0200 (CEST)
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.198])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTP id 206751400060
+ for <ltp@lists.linux.it>; Fri, 18 Aug 2023 04:47:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+ s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=oR/F1
+ yNyt1kET33YuaI2BI26NcqG5qBCkx8m4D+mhvg=; b=L1SKEQkJdjllgbPn5S/+C
+ k/CjYvIz8yKjIks9frxinFI914X7RDau5qeDEn8gREUY2wFSpRK8VWWR687cqCwS
+ +meHsoVxHX4P2eUBI8XZKRlPsRQFmQEiASnSnZ5nkuPBlld8y1qkj7v+M55jYpBm
+ NRmQQ2SSJ+Jyf6QPn+Db/4=
+Received: from localhost.localdomain (unknown [139.159.170.26])
+ by zwqz-smtp-mta-g0-3 (Coremail) with SMTP id _____wBHf1PU295kS9vhDQ--.11029S2;
+ Fri, 18 Aug 2023 10:47:49 +0800 (CST)
+From: bingdoumi@163.com
+To: ltp@lists.linux.it,
+	liqiang64@huawei.com
+Date: Fri, 18 Aug 2023 10:47:47 +0800
+Message-Id: <20230818024747.37062-1-bingdoumi@163.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-CM-TRANSID: _____wBHf1PU295kS9vhDQ--.11029S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Gw1DXF1xKF1UKF4ruFW3ZFb_yoWfKF4xpF
+ 1xXryFyFn5AF95JF13XF1qgr48Zr97Xa1fGwsIkrWrGr4kZ3s8GFZYg3WaqryYgrWUKayq
+ vFZ5GF43Jw1kGFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UEPfLUUUUU=
+X-Originating-IP: [139.159.170.26]
+X-CM-SenderInfo: pelqwvprxpxqqrwthudrp/xtbBbBjP5Fc7QGeFjQAAsc
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 4/4] syscalls/mmap04: Rewrite the test using new LTP
- API
+X-Mailman-Approved-At: Fri, 18 Aug 2023 15:19:24 +0200
+Subject: [LTP] [PATCH 1/1] fix the typos of 'epoll_clt' to 'epoll_ctl'
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,249 +62,217 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/mmap/mmap04.c | 200 ++++++------------------
- 1 file changed, 46 insertions(+), 154 deletions(-)
+From: liqiang <liqiang64@huawei.com>
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap04.c b/testcases/kernel/syscalls/mmap/mmap04.c
-index 43f7b7525..b818a5917 100644
---- a/testcases/kernel/syscalls/mmap/mmap04.c
-+++ b/testcases/kernel/syscalls/mmap/mmap04.c
-@@ -1,185 +1,77 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *  07/2001 Ported by Wayne Boyer
-+ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
+Fixed some typos related to epoll under testcases/kernel/syscalls.
+
+Signed-off-by: liqiang <liqiang64@huawei.com>
+---
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c     | 4 ++--
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c     | 2 +-
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c     | 4 ++--
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c     | 6 +++---
+ testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c | 2 +-
+ testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c | 2 +-
+ testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c | 2 +-
+ testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c | 2 +-
+ testcases/kernel/syscalls/epoll_pwait/epoll_pwait05.c | 2 +-
+ testcases/kernel/syscalls/epoll_wait/epoll_wait02.c   | 2 +-
+ testcases/kernel/syscalls/epoll_wait/epoll_wait03.c   | 2 +-
+ testcases/kernel/syscalls/epoll_wait/epoll_wait04.c   | 2 +-
+ 12 files changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
+index fe16ad1cb..dcf74bf77 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
+@@ -67,7 +67,7 @@ static void setup(void)
+ 	events[1].data.fd = fd[1];
  
--/*
-- * Test Description:
-- *  Call mmap() to map a file creating a mapped region with read/exec access
-- *  under the following conditions -
-- *	- The prot parameter is set to PROT_READ|PROT_EXEC
-- *	- The file descriptor is open for read
-- *	- The file being mapped has read and execute permission bit set.
-- *	- The minimum file permissions should be 0555.
-- *
-- *  The call should succeed to map the file creating mapped memory with the
-- *  required attributes.
-+/*\
-+ * [Description]
-  *
-- * Expected Result:
-- *  mmap() should succeed returning the address of the mapped region,
-- *  and the mapped region should contain the contents of the mapped file.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-+ * Verify that, mmap() call with 'PROT_READ | PROT_EXEC; and file descriptor
-+ * which is open for read only and has read and execute permission bits set,
-+ * succeeds to map a file creating mapped memory with read/exec access.
-  */
- 
--#include <stdio.h>
- #include <stdlib.h>
--#include <sys/types.h>
--#include <errno.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <string.h>
--#include <signal.h>
--#include <sys/stat.h>
--#include <sys/mman.h>
--
--#include "test.h"
--
--#define TEMPFILE	"mmapfile"
--
--char *TCID = "mmap04";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
-+#define TEMPFILE "mmapfile"
- static size_t page_sz;
-+static int fd;
- static char *addr;
- static char *dummy;
--static int fildes;
--
--static void setup(void);
--static void cleanup(void);
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		/*
--		 * Call mmap to map the temporary file 'TEMPFILE'
--		 * with read and execute access.
--		 */
--		errno = 0;
--		addr = mmap(0, page_sz, PROT_READ | PROT_EXEC,
--			    MAP_FILE | MAP_SHARED, fildes, 0);
--
--		/* Check for the return value of mmap() */
--		if (addr == MAP_FAILED) {
--			tst_resm(TFAIL | TERRNO, "mmap of %s failed", TEMPFILE);
--			continue;
--		}
--
--		/*
--		 * Read the file contents into the dummy
--		 * variable.
--		 */
--		if (read(fildes, dummy, page_sz) < 0) {
--			tst_brkm(TFAIL, cleanup, "reading %s failed",
--				 TEMPFILE);
--		}
--
--		/*
--		 * Check whether the mapped memory region
--		 * has the file contents.
--		 */
--		if (memcmp(dummy, addr, page_sz)) {
--			tst_resm(TFAIL,
--				 "mapped memory region contains invalid "
--				 "data");
--		} else {
--			tst_resm(TPASS,
--				 "Functionality of mmap() successful");
--		}
--
--		/* Clean up things in case we are looping. */
--		/* Unmap the mapped memory */
--		if (munmap(addr, page_sz) != 0) {
--			tst_brkm(TFAIL, cleanup, "munmapping failed");
--		}
--	}
--
--	cleanup();
--	tst_exit();
--}
- 
- static void setup(void)
- {
--	char *tst_buff;
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	char *tst_buf;
- 
- 	page_sz = getpagesize();
-+	tst_buf = SAFE_CALLOC(page_sz, sizeof(char));
-+	memset(tst_buf, 'A', page_sz);
- 
--	if ((tst_buff = calloc(page_sz, sizeof(char))) == NULL) {
--		tst_brkm(TFAIL, NULL, "calloc failed (tst_buff)");
--	}
--
--	/* Fill the test buffer with the known data */
--	memset(tst_buff, 'A', page_sz);
-+	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, tst_buf, page_sz);
-+	free(tst_buf);
- 
--	tst_tmpdir();
-+	SAFE_FCHMOD(fd, 0555);
-+	SAFE_CLOSE(fd);
- 
--	/* Creat a temporary file used for mapping */
--	if ((fildes = open(TEMPFILE, O_WRONLY | O_CREAT, 0666)) < 0) {
--		free(tst_buff);
--		tst_brkm(TFAIL, cleanup, "opening %s failed", TEMPFILE);
--	}
--
--	/* Write test buffer contents into temporary file */
--	if (write(fildes, tst_buff, page_sz) < (ssize_t)page_sz) {
--		free(tst_buff);
--		tst_brkm(TFAIL, cleanup, "writing to %s failed", TEMPFILE);
--	}
-+	fd = SAFE_OPEN(TEMPFILE, O_RDONLY);
-+	dummy = SAFE_CALLOC(page_sz, sizeof(char));
-+}
- 
--	/* Free the memory allocated for test buffer */
--	free(tst_buff);
-+static void run(void)
-+{
-+	addr = mmap(0, page_sz, PROT_READ | PROT_EXEC, MAP_FILE | MAP_SHARED, fd, 0);
- 
--	/* Make sure proper permissions set on file */
--	if (fchmod(fildes, 0555) < 0) {
--		tst_brkm(TFAIL, cleanup, "fchmod of %s failed", TEMPFILE);
-+	if (addr == MAP_FAILED) {
-+		tst_res(TFAIL | TERRNO, "mmap() of %s failed", TEMPFILE);
-+		return;
- 	}
- 
--	/* Close the temporary file opened for write */
--	if (close(fildes) < 0) {
--		tst_brkm(TFAIL, cleanup, "closing %s failed", TEMPFILE);
--	}
-+	SAFE_READ(1, fd, dummy, page_sz);
-+	SAFE_LSEEK(fd, 0, SEEK_SET);
- 
--	/* Allocate and initialize dummy string of system page size bytes */
--	if ((dummy = calloc(page_sz, sizeof(char))) == NULL) {
--		tst_brkm(TFAIL, cleanup, "calloc failed (dummy)");
--	}
-+	if (memcmp(dummy, addr, page_sz) == 0)
-+		tst_res(TPASS, "mmap() functionality successful");
-+	else
-+		tst_res(TFAIL, "mapped memory region contains invalid data");
- 
--	/* Open the temporary file again for reading */
--	if ((fildes = open(TEMPFILE, O_RDONLY)) < 0) {
--		tst_brkm(TFAIL, cleanup,
--			 "opening %s read-only failed", TEMPFILE);
--	}
-+	SAFE_MUNMAP(addr, page_sz);
+ 	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd[0], &events[0]))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
  }
  
  static void cleanup(void)
+@@ -85,7 +85,7 @@ static void cleanup(void)
+ static void verify_epoll_ctl(unsigned int n)
  {
--	close(fildes);
--	free(dummy);
--	tst_rmdir();
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+	if (dummy)
-+		free(dummy);
+ 	TST_EXP_FAIL(epoll_ctl(*tc[n].epfd, tc[n].opt, *tc[n].fd, tc[n].event),
+-		     tc[n].exp_err, "epoll_clt(...) if %s", tc[n].desc);
++		     tc[n].exp_err, "epoll_ctl(...) if %s", tc[n].desc);
  }
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.needs_tmpdir = 1
-+};
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c
+index c92b0b62e..f617295cc 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl03.c
+@@ -55,7 +55,7 @@ static void setup(void)
+ 	events.data.fd = fds[0];
+ 
+ 	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[0], &events))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c
+index 5173755f7..bc015c01b 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl04.c
+@@ -36,7 +36,7 @@ static void setup(void)
+ 
+ 		events.data.fd = epfd;
+ 		if (epoll_ctl(new_epfd, EPOLL_CTL_ADD, epfd, &events))
+-			tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++			tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ 
+ 		epfd = new_epfd;
+ 	}
+@@ -59,7 +59,7 @@ static void verify_epoll_ctl(void)
+ 
+ 	events.data.fd = epfd;
+ 	TST_EXP_FAIL(epoll_ctl(new_epfd, EPOLL_CTL_ADD, epfd, &events), EINVAL,
+-		     "epoll_clt(..., EPOLL_CTL_ADD, ...) with number of nesting is 5");
++		     "epoll_ctl(..., EPOLL_CTL_ADD, ...) with number of nesting is 5");
+ 	SAFE_CLOSE(new_epfd);
+ }
+ 
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c
+index d03009cf3..71e300daa 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl05.c
+@@ -40,12 +40,12 @@ static void setup(void)
+ 
+ 		events.data.fd = epfd;
+ 		if (epoll_ctl(new_epfd, EPOLL_CTL_ADD, epfd, &events))
+-			tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++			tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ 	}
+ 
+ 	events.data.fd = fd[0];
+ 	if (epoll_ctl(origin_epfd, EPOLL_CTL_DEL, fd[0], &events))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_DEL, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_DEL, ...)");
+ }
+ 
+ static void cleanup(void)
+@@ -61,7 +61,7 @@ static void verify_epoll_ctl(void)
+ {
+ 	events.data.fd = epfd;
+ 	TST_EXP_FAIL(epoll_ctl(origin_epfd, EPOLL_CTL_ADD, epfd, &events),
+-		     ELOOP, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		     ELOOP, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
+index f4a55e008..928d57803 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
+@@ -102,7 +102,7 @@ static void setup(void)
+ 
+ 	e.events = EPOLLIN;
+ 	if (epoll_ctl(efd, EPOLL_CTL_ADD, sfd[0], &e))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
+index 7914f1c50..2ae32519f 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
+@@ -42,7 +42,7 @@ static void setup(void)
+ 
+ 	e.events = EPOLLIN;
+ 	if (epoll_ctl(efd, EPOLL_CTL_ADD, sfd[0], &e))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ 	SAFE_WRITE(SAFE_WRITE_ALL, sfd[1], "w", 1);
+ }
+ 
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c
+index 2ad1a6abc..aa08daa1b 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait03.c
+@@ -50,7 +50,7 @@ static void setup(void)
+ 
+ 	e.events = EPOLLIN;
+ 	if (epoll_ctl(efd, EPOLL_CTL_ADD, sfd[0], &e))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c
+index 54b9be975..4be33488d 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait04.c
+@@ -38,7 +38,7 @@ static void setup(void)
+ 
+ 	e.events = EPOLLIN;
+ 	if (epoll_ctl(efd, EPOLL_CTL_ADD, sfd[0], &e))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ 	SAFE_WRITE(SAFE_WRITE_ALL, sfd[1], "w", 1);
+ 
+ 	bad_addr = tst_get_bad_addr(NULL);
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait05.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait05.c
+index 4c4aeb77d..ed8f3e4f8 100644
+--- a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait05.c
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait05.c
+@@ -46,7 +46,7 @@ static void setup(void)
+ 
+ 	e.events = EPOLLIN;
+ 	if (epoll_ctl(efd, EPOLL_CTL_ADD, sfd[0], &e))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ 	SAFE_WRITE(SAFE_WRITE_ALL, sfd[1], "w", 1);
+ }
+ 
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
+index d2c0b6ef4..93ada1cf3 100644
+--- a/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
+@@ -50,7 +50,7 @@ static void setup(void)
+ 	epevs[0].data.fd = fds[0];
+ 
+ 	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[0], &epevs[0]))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait03.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
+index 4b21aba4c..d31e49864 100644
+--- a/testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
+@@ -57,7 +57,7 @@ static void setup(void)
+ 	epevs[0].data.fd = fds[1];
+ 
+ 	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[1], &epevs[0]))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ }
+ 
+ static void verify_epoll_wait(unsigned int n)
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait04.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait04.c
+index dc62e9202..bd8baca22 100644
+--- a/testcases/kernel/syscalls/epoll_wait/epoll_wait04.c
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait04.c
+@@ -49,7 +49,7 @@ static void setup(void)
+ 	epevs[0].data.fd = fds[0];
+ 
+ 	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[0], &epevs[0]))
+-		tst_brk(TBROK | TERRNO, "epoll_clt(..., EPOLL_CTL_ADD, ...)");
++		tst_brk(TBROK | TERRNO, "epoll_ctl(..., EPOLL_CTL_ADD, ...)");
+ }
+ 
+ static void cleanup(void)
 -- 
-2.41.0
+2.37.1 (Apple Git-137.1)
 
 
 -- 
