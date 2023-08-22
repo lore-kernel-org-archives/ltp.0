@@ -4,61 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A04B7EE4996
-	for <ltp@archiver.kernel.org>; Tue, 22 Aug 2023 13:46:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A532EEE4993
+	for <ltp@archiver.kernel.org>; Tue, 22 Aug 2023 14:18:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A6A133CC73F
-	for <ltp@archiver.kernel.org>; Tue, 22 Aug 2023 15:46:18 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 05E693CC7B8
+	for <ltp@archiver.kernel.org>; Tue, 22 Aug 2023 16:18:42 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 391DC3C2A04
- for <ltp@lists.linux.it>; Tue, 22 Aug 2023 15:46:06 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 299863CC6D4
+ for <ltp@lists.linux.it>; Tue, 22 Aug 2023 16:18:32 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 17FD71400F54
- for <ltp@lists.linux.it>; Tue, 22 Aug 2023 15:46:05 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id DDEB41400F99
+ for <ltp@lists.linux.it>; Tue, 22 Aug 2023 16:18:30 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 269871F892;
- Tue, 22 Aug 2023 13:46:05 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id CEDE31F381;
+ Tue, 22 Aug 2023 14:18:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1692711965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=GBTevIy5TSbn/Lm4MYjFcXYw2VAAeE/VfMu5XFFMGXc=;
- b=TIj9jYl0dKlIz/K8TPK4cElIDxIvm9Y+HVbiWYb9Xhfhn4eBiW0Bz3+zbgQCBlm02X16Br
- CO6xhRBhDP8YNcDPNbcibl9D1FbuQyQLTxg9jR9/yoUftCzoqEqUto1kC5jUhrUGj2ToTZ
- NW2U8EvAYx+YZRmQOqJOB2pAhCUk+QI=
+ t=1692713909; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=PTMXfCGxeBA9angk5INp8hDBil7WHdN4s4iIjJi/ZME=;
+ b=Z6Yt2jBz67YNIaHqF8TXzXb/KbDekEA8xuZwE2n4XpdIde0aVubru6itrxA4ynQSL6JdaK
+ DwbmPI14j8fzkWkoUBQ4wIFiNinHJJhlG0Sb7F59LhoJJe0I7SpyQmManLmUpOKzvAZxAC
+ K4jf0yzDhxAgfyGtPdRHfdU0wx1D1ow=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1692711965;
+ s=susede2_ed25519; t=1692713909;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=GBTevIy5TSbn/Lm4MYjFcXYw2VAAeE/VfMu5XFFMGXc=;
- b=EhZ2QPnOeKEjVYJbg6RJu30jX84N+9RMgR4VnfVvYEZHmOspRhFVVrsXkACrrhto3gm4iC
- q9B/NhBQLd+42uBQ==
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=PTMXfCGxeBA9angk5INp8hDBil7WHdN4s4iIjJi/ZME=;
+ b=mG0BKOpjEfvrLCIzwDU+I1AWJpbVFsmwGPIH3mUxGE6oA9nDM5i3mZP0fSrfPBXtY/KbGz
+ 7Q+1xX+0dbVkBVBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 09135132B9;
- Tue, 22 Aug 2023 13:46:04 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25DB213919;
+ Tue, 22 Aug 2023 14:18:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id NVk9Oxy85GTHDAAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Tue, 22 Aug 2023 13:46:04 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Tue, 22 Aug 2023 15:46:04 +0200
-Message-Id: <20230822134604.3982-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+ by imap2.suse-dmz.suse.de with ESMTPSA id /cmGOLTD5GSRHAAAMHmgww
+ (envelope-from <akumar@suse.de>); Tue, 22 Aug 2023 14:18:28 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Tue, 22 Aug 2023 19:48:26 +0530
+Message-ID: <16937131.VfuVlxDoEe@localhost>
+Organization: SUSE
+In-Reply-To: <20230822101333.16993-1-rpalethorpe@suse.com>
+References: <20230822101333.16993-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Add process_madvise01 test
+Subject: Re: [LTP] [PATCH v2] Add goals of patch review and tips
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,265 +76,146 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi Richie,
 
-This test checks process_madvise support for MADV_PAGEOUT. It tests
-if memory pages have been swapped out by looking at smaps information
-after reclaiming memory using MADV_PAGEOUT.
-This test supports kernel 5.10 or later.
+Thank you for this, I'll also start investing more effort in review.
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- testcases/kernel/syscalls/cma/cma.h           | 101 ++++++++++++++
- .../kernel/syscalls/cma/process_madvise01.c   | 124 ++++++++++++++++++
- 2 files changed, 225 insertions(+)
- create mode 100644 testcases/kernel/syscalls/cma/cma.h
- create mode 100644 testcases/kernel/syscalls/cma/process_madvise01.c
+Reviewed-by: Avinesh Kumar <akumar@suse.de>
+with few nits below.
 
-diff --git a/testcases/kernel/syscalls/cma/cma.h b/testcases/kernel/syscalls/cma/cma.h
-new file mode 100644
-index 000000000..08a0d9319
---- /dev/null
-+++ b/testcases/kernel/syscalls/cma/cma.h
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+#ifndef CMA_H__
-+#define CMA_H__
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include "tst_safe_stdio.h"
-+
-+struct addr_mapping {
-+	int size;
-+	int rss;
-+	int pss;
-+	int shared_clean;
-+	int shared_dirty;
-+	int private_clean;
-+	int private_dirty;
-+	int referenced;
-+	int anonymous;
-+	int anon_huge_pages;
-+	int shmem_huge_pages;
-+	int shmem_pmd_mapped;
-+	int swap;
-+	int kernel_page_size;
-+	int mmu_page_size;
-+	int locked;
-+	int protection_key;
-+};
-+
-+static inline void read_address_mapping(unsigned long address, struct addr_mapping *mapping)
-+{
-+	FILE *f;
-+	int found = 0;
-+	char label[BUFSIZ];
-+	char line[BUFSIZ];
-+	char smaps[BUFSIZ];
-+	char ptr_str[BUFSIZ];
-+	int value;
-+
-+	snprintf(smaps, BUFSIZ, "/proc/%i/smaps", getpid());
-+	snprintf(ptr_str, BUFSIZ, "%lx", address);
-+
-+	f = SAFE_FOPEN(smaps, "r");
-+
-+	while (fgets(line, BUFSIZ, f) != NULL) {
-+		if (strncmp(ptr_str, line, strlen(ptr_str)) == 0)
-+			found = 1;
-+
-+		if (!found)
-+			continue;
-+
-+		if (found && strcmp(line, "VmFlags") >= 0)
-+			break;
-+
-+		if (sscanf(line, "%31[^:]: %d", label, &value) > 0) {
-+			if (strcmp(label, "Size") == 0)
-+				mapping->size = value;
-+			else if (strcmp(label, "Rss") == 0)
-+				mapping->rss = value;
-+			else if (strcmp(label, "Pss") == 0)
-+				mapping->pss = value;
-+			else if (strcmp(label, "Shared_Clean") == 0)
-+				mapping->shared_clean = value;
-+			else if (strcmp(label, "Shared_Dirty") == 0)
-+				mapping->shared_dirty = value;
-+			else if (strcmp(label, "Private_Clean") == 0)
-+				mapping->private_clean = value;
-+			else if (strcmp(label, "Private_Dirty") == 0)
-+				mapping->private_dirty = value;
-+			else if (strcmp(label, "Referenced") == 0)
-+				mapping->referenced = value;
-+			else if (strcmp(label, "Anonymous") == 0)
-+				mapping->anonymous = value;
-+			else if (strcmp(label, "AnonHugePages") == 0)
-+				mapping->anon_huge_pages = value;
-+			else if (strcmp(label, "ShmemHugePages") == 0)
-+				mapping->shmem_huge_pages = value;
-+			else if (strcmp(label, "ShmemPmdMapped") == 0)
-+				mapping->shmem_pmd_mapped = value;
-+			else if (strcmp(label, "Swap") == 0)
-+				mapping->swap = value;
-+			else if (strcmp(label, "KernelPageSize") == 0)
-+				mapping->kernel_page_size = value;
-+			else if (strcmp(label, "MMUPageSize") == 0)
-+				mapping->mmu_page_size = value;
-+			else if (strcmp(label, "Locked") == 0)
-+				mapping->locked = value;
-+			else if (strcmp(label, "ProtectionKey") == 0)
-+				mapping->protection_key = value;
-+		}
-+	}
-+
-+	SAFE_FCLOSE(f);
-+}
-+
-+#endif
-diff --git a/testcases/kernel/syscalls/cma/process_madvise01.c b/testcases/kernel/syscalls/cma/process_madvise01.c
-new file mode 100644
-index 000000000..ea3e0270d
---- /dev/null
-+++ b/testcases/kernel/syscalls/cma/process_madvise01.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Allocate anonymous memory pages inside child and reclaim it with
-+ * MADV_PAGEOUT. Then check if memory pages have been swapped out by looking
-+ * at smaps information.
-+ *
-+ * The advice might be ignored for some pages in the range when it is
-+ * not applicable, so test passes if swap memory increases after
-+ * reclaiming memory with MADV_PAGEOUT.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <sys/mman.h>
-+#include "tst_test.h"
-+#include "lapi/mmap.h"
-+#include "lapi/syscalls.h"
-+#include "cma.h"
-+
-+#define MEM_CHILD	(1 * TST_MB)
-+
-+static void **data_ptr;
-+
-+static void child_alloc(void)
-+{
-+	char data[MEM_CHILD];
-+	struct addr_mapping map_before;
-+	struct addr_mapping map_after;
-+
-+	memset(data, 'a', MEM_CHILD);
-+
-+	tst_res(TINFO, "Allocate memory: %d bytes", MEM_CHILD);
-+
-+	*data_ptr = SAFE_MMAP(NULL, MEM_CHILD,
-+			PROT_READ | PROT_WRITE,
-+			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+
-+	memset(*data_ptr, 'a', MEM_CHILD);
-+
-+	memset(&map_before, 0, sizeof(struct addr_mapping));
-+	read_address_mapping((unsigned long)*data_ptr, &map_before);
-+
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
-+
-+	memset(&map_after, 0, sizeof(struct addr_mapping));
-+	read_address_mapping((unsigned long)*data_ptr, &map_after);
-+
-+	if (memcmp(*data_ptr, data, MEM_CHILD) != 0) {
-+		tst_res(TFAIL, "Dirty memory after reclaiming it");
-+		return;
-+	}
-+
-+	SAFE_MUNMAP(*data_ptr, MEM_CHILD);
-+	*data_ptr = NULL;
-+
-+    TST_EXP_EXPR(map_before.swap < map_after.swap,
-+        "Most of the memory has been swapped out: %dkB",
-+        map_after.swap);
-+}
-+
-+static void setup(void)
-+{
-+	data_ptr = SAFE_MMAP(NULL, sizeof(void *),
-+			PROT_READ | PROT_WRITE,
-+			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (*data_ptr)
-+		SAFE_MUNMAP(*data_ptr, MEM_CHILD);
-+
-+	if (data_ptr)
-+		SAFE_MUNMAP(data_ptr, sizeof(void *));
-+}
-+
-+static void run(void)
-+{
-+	int ret;
-+	int pidfd;
-+	pid_t pid_alloc;
-+	struct iovec vec;
-+
-+	pid_alloc = SAFE_FORK();
-+	if (!pid_alloc) {
-+		child_alloc();
-+		return;
-+	}
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	tst_res(TINFO, "Reclaim memory using MADV_PAGEOUT");
-+
-+	pidfd = SAFE_PIDFD_OPEN(pid_alloc, 0);
-+
-+	vec.iov_base = *data_ptr;
-+	vec.iov_len = MEM_CHILD;
-+
-+	ret = tst_syscall(__NR_process_madvise, pidfd, &vec, 1UL,
-+			MADV_PAGEOUT, 0UL);
-+
-+	if (ret == -1)
-+		tst_brk(TBROK | TERRNO, "process_madvise failed");
-+
-+	if (ret != MEM_CHILD)
-+		tst_brk(TBROK, "process_madvise reclaimed only %d bytes", ret);
-+
-+	TST_CHECKPOINT_WAKE(0);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.forks_child = 1,
-+	.min_kver = "5.10",
-+	.needs_checkpoints = 1,
-+};
--- 
-2.35.3
+On Tuesday, August 22, 2023 3:43:33 PM IST Richard Palethorpe via ltp wrote:
+> I see two options for patch review. Either we have a single senior
+> maintainer who does most of or it is distributed.
+> 
+> For now I think it needs to be distributed which is beyond the scope
+> of this commit.
+> 
+> In order to distribute it we need new contributors to review each
+> others' work at least for the first few revisions.
+> 
+> I think that anyone can review a patch if they put the work in to test
+> it and try to break it. Then understand why it is broken.
+> 
+> This commit states some ideas about how to do that, plus some tips for
+> more advanced patch review.
+> 
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Cc: Cyril Hrubis <chrubis@suse.cz>
+> 
+> ---
+> 
+> I'd like to clear this off the queue now.
+> 
+> V2:
+> * Correct typo
+> * Use Einstein quote
+> * Mention Tested-by
+> 
+>  doc/maintainer-patch-review-checklist.txt | 82 ++++++++++++++++++++++-
+>  1 file changed, 81 insertions(+), 1 deletion(-)
+> 
+> diff --git a/doc/maintainer-patch-review-checklist.txt
+> b/doc/maintainer-patch-review-checklist.txt index 61eb06c5f..b11c7b546
+> 100644
+> --- a/doc/maintainer-patch-review-checklist.txt
+> +++ b/doc/maintainer-patch-review-checklist.txt
+> @@ -1,4 +1,84 @@
+> -# Maintainer Patch Review Checklist
+> +# Patch Review
+> +
+> +Anyone can and should review patches. It's the only way to get good at
+> +patch review and for the project to scale.
+> +
+> +## Goals of patch review
+> +
+> +1. Prevent false positive test results
+> +2. Prevent false negative test results
+> +3. Keep the code as simple as possible, but no simpler
+> +
+> +## How to find clear errors
+> +
+> +A clear error is one where there is unlikely to be any argument if you
+> +provide evidence of it. Evidence being an error trace or logical proof
+> +that an error will occur in a common situation.
+> +
+> +The following are examples and may not be appropriate for all tests.
+> +
+> +* Merge the patch. It should apply cleanly to master.
+> +* Compile the patch with default and non-default configurations.
+> +  - Use sanitizers e.g. undefined behaviour, address.
+> +  - Compile on non-x86
+> +  - Compile on x86 with -m32
+> +* Use `make check`
+> +* Run effected tests in a VM
+> +  - Use single vCPU
+> +  - Use many vCPUs and enable NUMA
+> +  - Restrict RAM to < 1GB.
+> +* Run effected tests on an embedded device
+> +* Run effected tests on non-x86 machine in general
+> +* Run reproducers on a kernel where the bug is present
+> +* Run tests with "-i0"
+> +* Compare usage of system calls with man page descriptions
+> +* Compare usage of system calls with kernel code
+> +* Search the LTP library for existing helper functions
+> +
+> +## How to find subtle errors
+> +
+> +A subtle error is one where you can expect some argument because you
+> +do not have clear evidence of an error. It is best to state these as
+> +questions and not make assertions if possible.
+> +
+> +Although if it is a matter of style or "taste" then senior maintainers
+> +can assert what is correct to avoid bike shedding.
+> +
+> +* Ask what happens if there is an error, could it be debugged just
+> +  with the test output?
+> +* Are we testing undefined behavior?
+> +  - Could future kernel behaviour change without "breaking userland"?
+> +  - Does the kernel behave differently depending on hardware?
+> +  - Does it behave differently depending kernel on configuration?
+depending on kernel configuration
+> +  - Does it behave differently depending on the compiler?
+> +* Will it scale to tiny and huge systems?
+> +  - What happens if there are 100+ CPUs?
+> +  - What happens if each CPU core is very slow?
+> +  - What happens if there are 2TB or RAM?
+s/or/of
+> +* Are we repeating a pattern that can be turned into a library function?
+> +* Is a single test trying to do too much?
+> +* Could multiple similar tests be merged?
+> +* Race conditions
+> +  - What happens if a process gets preempted?
+> +  - Could checkpoints or fuzzsync by used instead?
+> +  - Note, usually you can insert a sleep to prove a race condition
+> +    exists however finding them is hard
+> +* Is there a simpler way to achieve the same kernel coverage?
+> +
+> +## How to get patches merged
+> +
+> +Once you think a patch is good enough you should add your Reviewed-by
+> +and/or Tested-by tags. This means you will get some credit for getting
+> +the patch merged. Also some blame if there are problems.
+> +
+> +If you ran the test you can add the Tested-by tag. If you read the
+> +code or used static analysis tools on it, you can add the Reviewed-by
+> +tag.
+> +
+> +In addition you can expect others to review your patches and add their
+> +tags. This will speed up the process of getting your patches merged.
+> +
+> +## Maintainers Checklist
+> 
+>  Patchset should be tested locally and ideally also in maintainer's fork in
+>  GitHub Actions on GitHub.
+
+
+
 
 
 -- 
