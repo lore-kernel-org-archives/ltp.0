@@ -4,45 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DF36EE49A3
-	for <ltp@archiver.kernel.org>; Tue, 22 Aug 2023 10:13:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B2A2EE4993
+	for <ltp@archiver.kernel.org>; Tue, 22 Aug 2023 10:42:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5C8643CC6E9
-	for <ltp@archiver.kernel.org>; Tue, 22 Aug 2023 12:13:55 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 6D2AA3CC7A5
+	for <ltp@archiver.kernel.org>; Tue, 22 Aug 2023 12:42:27 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 975353C88DB
- for <ltp@lists.linux.it>; Tue, 22 Aug 2023 12:13:43 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 54F323CC6D2
+ for <ltp@lists.linux.it>; Tue, 22 Aug 2023 12:42:15 +0200 (CEST)
+Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com
+ [68.232.139.130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8E22A600A44
- for <ltp@lists.linux.it>; Tue, 22 Aug 2023 12:13:41 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id D484B22C0E;
- Tue, 22 Aug 2023 10:13:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1692699220; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=NPK3tji8EVQOUnlJ7aH+jvOOUsx7ilectpYoumxPgYs=;
- b=LIX4ZvCMP/hVPXG2GCKPKOhByylElARscI++XGB1Wka9w1vxUNNXcheFhxETEJp6h/R0RT
- hAi5OmD5w45VupyaXVvLTKfEAOi1cN/bEtaGwqv3ofHD7IY8oOJDZxaKaOW8F0WZ9idWOi
- xjSvutR4rkl84TOLy99VjA/BSZ056s4=
-Received: from g78.cable.virginm.net (unknown [10.163.28.198])
- by relay2.suse.de (Postfix) with ESMTP id 0C9AA2C143;
- Tue, 22 Aug 2023 10:13:39 +0000 (UTC)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id EA02260012F
+ for <ltp@lists.linux.it>; Tue, 22 Aug 2023 12:42:14 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="128510678"
+X-IronPort-AV: E=Sophos;i="6.01,192,1684767600"; d="scan'208";a="128510678"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+ by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Aug 2023 19:42:13 +0900
+Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
+ [192.168.83.67])
+ by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 68880C68E4
+ for <ltp@lists.linux.it>; Tue, 22 Aug 2023 19:42:10 +0900 (JST)
+Received: from aks-ab2.gw.nic.fujitsu.com (aks-ab2.gw.nic.fujitsu.com
+ [192.51.207.12])
+ by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 99C52D5040
+ for <ltp@lists.linux.it>; Tue, 22 Aug 2023 19:42:09 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.215.131])
+ by aks-ab2.gw.nic.fujitsu.com (Postfix) with ESMTP id DA039884AF;
+ Tue, 22 Aug 2023 19:42:08 +0900 (JST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Tue, 22 Aug 2023 11:13:33 +0100
-Message-ID: <20230822101333.16993-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
+Date: Tue, 22 Aug 2023 18:41:40 +0800
+Message-Id: <1692700900-13521-2-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1692700900-13521-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1692700900-13521-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27828.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27828.006
+X-TMASE-Result: 10--16.734900-10.000000
+X-TMASE-MatchedRID: NGDYxnKYxb3IY6JevWs4vgPZZctd3P4B9LMB0hXFSeg6FHRWx2FGsI3c
+ eRXYSJoDIvrftAIhWmJ8eC2pVr1wb6/Elphzpf1LGYJhRh6ssesfimmlcABuNyfJTn+dmnFQszW
+ bbhESzfd+CxzcGwLNWAGDTGLhNrAfxzpH9vijA/wqIkSpQVZGCF/d6ediod7Y+32SXw3QiFwOvq
+ z8x19fG2qJ0+VpCAVgyYyeAPTbBZYXHLPN9+q8ed9JA2lmQRNUHhysWPN3OzibKItl61J/yZ+in
+ TK0bC9eKrauXd3MZDUD/dHyT/Xh7Q==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Add goals of patch review and tips
+Subject: [LTP] [PATCH v2 2/2] syscalls/faccessat202: Add new testcase
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -54,136 +70,154 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-I see two options for patch review. Either we have a single senior
-maintainer who does most of or it is distributed.
+Check various errnos for faccessat2().
 
-For now I think it needs to be distributed which is beyond the scope
-of this commit.
-
-In order to distribute it we need new contributors to review each
-others' work at least for the first few revisions.
-
-I think that anyone can review a patch if they put the work in to test
-it and try to break it. Then understand why it is broken.
-
-This commit states some ideas about how to do that, plus some tips for
-more advanced patch review.
-
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Cyril Hrubis <chrubis@suse.cz>
-
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/faccessat2/.gitignore     |   1 +
+ .../kernel/syscalls/faccessat2/faccessat202.c | 105 ++++++++++++++++++
+ 3 files changed, 107 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/faccessat2/faccessat202.c
 
-I'd like to clear this off the queue now.
-
-V2:
-* Correct typo
-* Use Einstein quote
-* Mention Tested-by
-
- doc/maintainer-patch-review-checklist.txt | 82 ++++++++++++++++++++++-
- 1 file changed, 81 insertions(+), 1 deletion(-)
-
-diff --git a/doc/maintainer-patch-review-checklist.txt b/doc/maintainer-patch-review-checklist.txt
-index 61eb06c5f..b11c7b546 100644
---- a/doc/maintainer-patch-review-checklist.txt
-+++ b/doc/maintainer-patch-review-checklist.txt
-@@ -1,4 +1,84 @@
--# Maintainer Patch Review Checklist
-+# Patch Review
-+
-+Anyone can and should review patches. It's the only way to get good at
-+patch review and for the project to scale.
-+
-+## Goals of patch review
-+
-+1. Prevent false positive test results
-+2. Prevent false negative test results
-+3. Keep the code as simple as possible, but no simpler
-+
-+## How to find clear errors
-+
-+A clear error is one where there is unlikely to be any argument if you
-+provide evidence of it. Evidence being an error trace or logical proof
-+that an error will occur in a common situation.
-+
-+The following are examples and may not be appropriate for all tests.
-+
-+* Merge the patch. It should apply cleanly to master.
-+* Compile the patch with default and non-default configurations.
-+  - Use sanitizers e.g. undefined behaviour, address.
-+  - Compile on non-x86
-+  - Compile on x86 with -m32
-+* Use `make check`
-+* Run effected tests in a VM
-+  - Use single vCPU
-+  - Use many vCPUs and enable NUMA
-+  - Restrict RAM to < 1GB.
-+* Run effected tests on an embedded device
-+* Run effected tests on non-x86 machine in general
-+* Run reproducers on a kernel where the bug is present
-+* Run tests with "-i0"
-+* Compare usage of system calls with man page descriptions
-+* Compare usage of system calls with kernel code
-+* Search the LTP library for existing helper functions
-+
-+## How to find subtle errors
-+
-+A subtle error is one where you can expect some argument because you
-+do not have clear evidence of an error. It is best to state these as
-+questions and not make assertions if possible.
-+
-+Although if it is a matter of style or "taste" then senior maintainers
-+can assert what is correct to avoid bike shedding.
-+
-+* Ask what happens if there is an error, could it be debugged just
-+  with the test output?
-+* Are we testing undefined behavior?
-+  - Could future kernel behaviour change without "breaking userland"?
-+  - Does the kernel behave differently depending on hardware?
-+  - Does it behave differently depending kernel on configuration?
-+  - Does it behave differently depending on the compiler?
-+* Will it scale to tiny and huge systems?
-+  - What happens if there are 100+ CPUs?
-+  - What happens if each CPU core is very slow?
-+  - What happens if there are 2TB or RAM?
-+* Are we repeating a pattern that can be turned into a library function?
-+* Is a single test trying to do too much?
-+* Could multiple similar tests be merged?
-+* Race conditions
-+  - What happens if a process gets preempted?
-+  - Could checkpoints or fuzzsync by used instead?
-+  - Note, usually you can insert a sleep to prove a race condition
-+    exists however finding them is hard
-+* Is there a simpler way to achieve the same kernel coverage?
-+
-+## How to get patches merged
-+
-+Once you think a patch is good enough you should add your Reviewed-by
-+and/or Tested-by tags. This means you will get some credit for getting
-+the patch merged. Also some blame if there are problems.
-+
-+If you ran the test you can add the Tested-by tag. If you read the
-+code or used static analysis tools on it, you can add the Reviewed-by
-+tag.
-+
-+In addition you can expect others to review your patches and add their
-+tags. This will speed up the process of getting your patches merged.
-+
-+## Maintainers Checklist
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 02768c236..7af2842f3 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -218,6 +218,7 @@ faccessat01 faccessat01
  
- Patchset should be tested locally and ideally also in maintainer's fork in
- GitHub Actions on GitHub.
+ #faccessat2 test cases
+ faccessat201 faccessat201
++faccessat202 faccessat202
+ 
+ #fallocate test cases
+ fallocate01 fallocate01
+diff --git a/testcases/kernel/syscalls/faccessat2/.gitignore b/testcases/kernel/syscalls/faccessat2/.gitignore
+index 53f700bac..f58f045f4 100644
+--- a/testcases/kernel/syscalls/faccessat2/.gitignore
++++ b/testcases/kernel/syscalls/faccessat2/.gitignore
+@@ -1 +1,2 @@
+ /faccessat201
++/faccessat202
+diff --git a/testcases/kernel/syscalls/faccessat2/faccessat202.c b/testcases/kernel/syscalls/faccessat2/faccessat202.c
+new file mode 100644
+index 000000000..607a615e4
+--- /dev/null
++++ b/testcases/kernel/syscalls/faccessat2/faccessat202.c
+@@ -0,0 +1,105 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 FUJITSU LIMITED. All rights reserved.
++ * Copyright (c) Linux Test Project, 2003-2023
++ * Author: Yang Xu <xuyang2018.jy@fujitsu.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Test basic error handling of faccessat2 syscall:
++ *
++ * - faccessat2() fails with EFAULT if pathname is a bad pathname point.
++ * - faccessat2() fails with EINVAL if flags is -1.
++ * - faccessat2() fails with EINVAL if mode is -1.
++ * - faccessat2() fails with EBADF if dirfd is -1.
++ * - faccessat2() fails with ENOTDIR if pathname is relative path to a
++ *   file and dir_fd is file descriptor for this file.
++ * - faccessat2() fails with EACCES if flags is AT_EACCESS and not using
++ *   the effective user and group IDs.
++ *
++ * Minimum Linux version required is v5.8.
++ */
++
++#include <pwd.h>
++
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/faccessat.h"
++
++#define TESTUSER        "nobody"
++#define TESTDIR         "faccessat2dir"
++#define RELPATH         "faccessat2dir/faccessat2file"
++
++static int fd;
++static int bad_fd = -1;
++static int atcwd_fd = AT_FDCWD;
++static char *bad_path;
++static char *rel_path;
++
++static struct passwd *ltpuser;
++
++static struct tcase {
++	int *fd;
++	char **filename;
++	int mode;
++	int flags;
++	int exp_errno;
++} tcases[] = {
++	{&atcwd_fd, &bad_path, R_OK, 0, EFAULT},
++	{&atcwd_fd, &rel_path, R_OK, -1, EINVAL},
++	{&atcwd_fd, &rel_path, -1, 0, EINVAL},
++	{&bad_fd, &rel_path, R_OK, 0, EBADF},
++	{&fd, &rel_path, R_OK, 0, ENOTDIR},
++	{&atcwd_fd, &rel_path, R_OK, AT_EACCESS, EACCES},
++};
++
++static void verify_faccessat2(unsigned int i)
++{
++	struct tcase *tc = &tcases[i];
++
++	if (tc->exp_errno == EACCES) {
++		if (SAFE_FORK() == 0) {
++			SAFE_SETUID(ltpuser->pw_uid);
++			TST_EXP_FAIL(faccessat2(*tc->fd, *tc->filename,
++				     tc->mode, tc->flags), tc->exp_errno);
++		}
++
++		tst_reap_children();
++	} else {
++		TST_EXP_FAIL(faccessat2(*tc->fd, *tc->filename,
++			     tc->mode, tc->flags), tc->exp_errno);
++	}
++}
++
++static void setup(void)
++{
++	SAFE_MKDIR(TESTDIR, 0666);
++	SAFE_TOUCH(RELPATH, 0444, NULL);
++
++	fd = SAFE_OPEN(RELPATH, O_RDONLY);
++	bad_path = tst_get_bad_addr(NULL);
++
++	ltpuser = SAFE_GETPWNAM(TESTUSER);
++}
++
++static void cleanup(void)
++{
++	if (fd > -1)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.test = verify_faccessat2,
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.cleanup = cleanup,
++	.bufs = (struct tst_buffers []) {
++		{&rel_path, .str = RELPATH},
++		{},
++	},
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.forks_child = 1,
++};
 -- 
-2.41.0
+2.39.1
 
 
 -- 
