@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55C90EE49AF
-	for <ltp@archiver.kernel.org>; Wed, 23 Aug 2023 07:10:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54936EE4993
+	for <ltp@archiver.kernel.org>; Wed, 23 Aug 2023 09:02:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 427753CC5DC
-	for <ltp@archiver.kernel.org>; Wed, 23 Aug 2023 09:10:43 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 282693CC65A
+	for <ltp@archiver.kernel.org>; Wed, 23 Aug 2023 11:02:15 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C88133CB635
- for <ltp@lists.linux.it>; Wed, 23 Aug 2023 09:10:31 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 6EA6A3C98FC
+ for <ltp@lists.linux.it>; Wed, 23 Aug 2023 11:02:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 858DF200DB2
- for <ltp@lists.linux.it>; Wed, 23 Aug 2023 09:10:30 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F24FD1F38A;
- Wed, 23 Aug 2023 07:10:29 +0000 (UTC)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 6BC0A1A00617
+ for <ltp@lists.linux.it>; Wed, 23 Aug 2023 11:02:01 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id DD5021F8A6;
+ Wed, 23 Aug 2023 09:02:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1692774630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=nfSIzxxfMm+Z/ghLBzwuOpZKyGYen6vHjvll6mWLqHk=;
- b=I/gta9VT5ThnA0eSmmR3o620psKENS0ed+e3bWVD4Jk6qDM0qpo7iwsDqsk2TOgA6E5bhf
- M6KcpalQkWv8VcLTuGp0rMrVrQ5pqR1tgJN57m24nk/Nuh9SqdLa7rORBrD/9SoxJuOfeb
- lkju8xY6edqrN8ujZpl4tFTgWTv4xtg=
+ t=1692781320;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lZ0k0awrumeiQU6RnyMZTCZAf6CZqZUM1CGJ7ciayEY=;
+ b=2LJDx24O95oxcuapnx4jmJWLyIFVgtcBjaAYw9UmrNoN61M3UYJo2EJj8Jkkk8NTc+5O1p
+ Ge/1aQ/Rw1nyyLwIrQ64gIcEQ6WkA9T7PWOtpPJerLYNZPCmIYp+ckoPfru5qmyiJrU+TH
+ Pwx9TkaB+05Jho91D3u7We8Uu+N0hWk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1692774630;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=nfSIzxxfMm+Z/ghLBzwuOpZKyGYen6vHjvll6mWLqHk=;
- b=K0LXTgvspw8bDPn6aLoX4JCBwNY0hLLntkpt1StfoS83//0aeZHPEO8zMT45wAAH4GwTs9
- o4xS1u2He5jFjvBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ s=susede2_ed25519; t=1692781320;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lZ0k0awrumeiQU6RnyMZTCZAf6CZqZUM1CGJ7ciayEY=;
+ b=C9gWZLvdUa37aEmTT9rJDaZaG9L7jsu9zunIcGjukQfNeQu6NNYiL8/5w8IWK9gA9t6OZQ
+ hQ23d42Xmqe/7fBA==
+Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D0C131351F;
- Wed, 23 Aug 2023 07:10:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id lXlgMeWw5WQSOAAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Wed, 23 Aug 2023 07:10:29 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Wed, 23 Aug 2023 09:10:25 +0200
-Message-Id: <20230823071025.19625-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+ by relay2.suse.de (Postfix) with ESMTPS id 21F102C142;
+ Wed, 23 Aug 2023 09:01:59 +0000 (UTC)
+References: <20230315150330.2964-1-andrea.cervesato@suse.de>
+ <20230721154512.GA1445478@pevik>
+User-agent: mu4e 1.10.6; emacs 29.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 23 Aug 2023 09:40:23 +0100
+Organization: Linux Private Site
+In-reply-to: <20230721154512.GA1445478@pevik>
+Message-ID: <871qfuw2re.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Add process_madvise01 test
+Subject: Re: [LTP] [PATCH v3] Add epoll_wait05 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,290 +70,211 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hello,
 
-This test checks process_madvise support for MADV_PAGEOUT. It tests
-if memory pages have been swapped out by looking at smaps information
-after reclaiming memory using MADV_PAGEOUT.
-This test supports kernel 5.10 or later.
+Petr Vorel <pvorel@suse.cz> writes:
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- runtest/syscalls                              |   2 +
- testcases/kernel/syscalls/cma/.gitignore      |   1 +
- testcases/kernel/syscalls/cma/cma.h           | 101 ++++++++++++++
- .../kernel/syscalls/cma/process_madvise01.c   | 124 ++++++++++++++++++
- 4 files changed, 228 insertions(+)
- create mode 100644 testcases/kernel/syscalls/cma/cma.h
- create mode 100644 testcases/kernel/syscalls/cma/process_madvise01.c
+> Hi Andrea,
+>
+>> This test verifies that epoll receives EPOLLRDHUP event when we hang
+>> a reading half-socket we are polling on.
+>
+> Commit message would deserver
+>
+> Implements: https://github.com/linux-test-project/ltp/issues/860
+> (Although the ticket asks to cover more flags than just EPOLLET).
+>
+>> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+>> ---
+>>  .../kernel/syscalls/epoll_wait/.gitignore     |   1 +
+>>  .../kernel/syscalls/epoll_wait/epoll_wait05.c | 117 ++++++++++++++++++
+> Test is missing a record in runtest/syscalls.
+>
+>>  2 files changed, 118 insertions(+)
+>>  create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait05.c
+>
+>> diff --git a/testcases/kernel/syscalls/epoll_wait/.gitignore b/testcases/kernel/syscalls/epoll_wait/.gitignore
+>> index 222955dd2..ab5a9c010 100644
+>> --- a/testcases/kernel/syscalls/epoll_wait/.gitignore
+>> +++ b/testcases/kernel/syscalls/epoll_wait/.gitignore
+>> @@ -2,3 +2,4 @@ epoll_wait01
+>>  epoll_wait02
+>>  epoll_wait03
+>>  epoll_wait04
+>> +epoll_wait05
+>> diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c
+>> new file mode 100644
+>> index 000000000..e43cac933
+>> --- /dev/null
+>> +++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c
+>> @@ -0,0 +1,117 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+>> + */
+>> +
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * Verify that epoll receives EPOLLRDHUP event when we hang a reading
+>> + * half-socket we are polling on.
+>
+> I'd put here the LWN article:
+> https://lwn.net/Articles/864947/
+>> + */
+>> +
+>> +#define _GNU_SOURCE
+> Why is _GNU_SOURCE needed?
+>
+>> +#include "tst_test.h"
+>> +#include "tst_epoll.h"
+>> +
+>> +static int epfd;
+>> +static in_port_t *sock_port;
+>> +
+>> +static void create_server(void)
+>> +{
+>> +	int sockfd;
+>> +	socklen_t len;
+>> +	struct sockaddr_in serv_addr;
+>> +	struct sockaddr_in sin;
+>> +
+>> +	memset(&serv_addr, 0, sizeof(struct sockaddr_in));
+>> +	serv_addr.sin_family = AF_INET;
+>> +	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+>> +	serv_addr.sin_port = 0;
+> You could use tst_init_sockaddr_inet_bin() (include include "tst_net.h").
+>> +
+>> +	sockfd = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
+>> +	SAFE_BIND(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+>> +	SAFE_LISTEN(sockfd, 10);
+>> +
+>> +	len = sizeof(sin);
+>> +	memset(&sin, 0, sizeof(struct sockaddr_in));
+>> +	SAFE_GETSOCKNAME(sockfd, (struct sockaddr *)&sin, &len);
+>> +
+>> +	*sock_port = sin.sin_port;
+>> +
+>> +	tst_res(TINFO, "Listening on port %d", *sock_port);
+>> +
+>> +	TST_CHECKPOINT_WAKE_AND_WAIT(0);
+>> +
+>> +	SAFE_CLOSE(sockfd);
+>> +}
+>> +
+>> +static void run(void)
+>> +{
+>> +	int sockfd;
+>> +	struct sockaddr_in client_addr;
+>> +	struct epoll_event evt_req;
+>> +	struct epoll_event evt_rec;
+>> +
+>> +	if (!SAFE_FORK()) {
+>> +		create_server();
+>> +		return;
+>> +	}
+>> +
+>> +	TST_CHECKPOINT_WAIT(0);
+>> +
+>> +	tst_res(TINFO, "Connecting to port %d", *sock_port);
+>> +
+>> +	sockfd = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
+>> +
+>> +	memset(&client_addr, 0, sizeof(struct sockaddr));
+>> +	client_addr.sin_family = AF_INET;
+>> +	client_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+>> +	client_addr.sin_port = *sock_port;
+> And here as well.
+>
+>> +
+>> +	SAFE_CONNECT(sockfd, (struct sockaddr *)&client_addr, sizeof(client_addr));
+>> +
+>> +	tst_res(TINFO, "Polling on socket");
+>> +
+>> +	epfd = SAFE_EPOLL_CREATE1(0);
+>> +	evt_req.events = EPOLLRDHUP;
+>> +	SAFE_EPOLL_CTL(epfd, EPOLL_CTL_ADD, sockfd, &evt_req);
+>> +
+>> +	tst_res(TINFO, "Hang socket");
+>> +
+>> +	TST_EXP_PASS_SILENT(shutdown(sockfd, SHUT_RD));
+>> +	SAFE_EPOLL_WAIT(epfd, &evt_rec, 1, 2000);
+>> +
+>> +	if (evt_rec.events & EPOLLRDHUP)
+>> +		tst_res(TPASS, "Received EPOLLRDHUP");
+>> +	else
+>> +		tst_res(TFAIL, "EPOLLRDHUP has not been received");
+>> +
+>> +	SAFE_CLOSE(epfd);
+>> +	SAFE_CLOSE(sockfd);
+> In extreme case when SAFE_EPOLL_WAIT() fails sockfd will not get closed, right?
+> This could be problem on high number of iterations. But I guess it's just a
+> theoretical problem.
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 119710d63..64907ff53 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1046,6 +1046,8 @@ process_vm_readv03 process_vm_readv03
- process_vm_writev01 process_vm01
- process_vm_writev02 process_vm_writev02
- 
-+process_madvise01 process_madvise01
-+
- prot_hsymlinks prot_hsymlinks
- dirtyc0w dirtyc0w
- dirtyc0w_shmem dirtyc0w_shmem
-diff --git a/testcases/kernel/syscalls/cma/.gitignore b/testcases/kernel/syscalls/cma/.gitignore
-index 1ee39d93e..846704294 100644
---- a/testcases/kernel/syscalls/cma/.gitignore
-+++ b/testcases/kernel/syscalls/cma/.gitignore
-@@ -2,3 +2,4 @@
- /process_vm_readv02
- /process_vm_readv03
- /process_vm_writev02
-+/process_madvise01
-diff --git a/testcases/kernel/syscalls/cma/cma.h b/testcases/kernel/syscalls/cma/cma.h
-new file mode 100644
-index 000000000..08a0d9319
---- /dev/null
-+++ b/testcases/kernel/syscalls/cma/cma.h
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+#ifndef CMA_H__
-+#define CMA_H__
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include "tst_safe_stdio.h"
-+
-+struct addr_mapping {
-+	int size;
-+	int rss;
-+	int pss;
-+	int shared_clean;
-+	int shared_dirty;
-+	int private_clean;
-+	int private_dirty;
-+	int referenced;
-+	int anonymous;
-+	int anon_huge_pages;
-+	int shmem_huge_pages;
-+	int shmem_pmd_mapped;
-+	int swap;
-+	int kernel_page_size;
-+	int mmu_page_size;
-+	int locked;
-+	int protection_key;
-+};
-+
-+static inline void read_address_mapping(unsigned long address, struct addr_mapping *mapping)
-+{
-+	FILE *f;
-+	int found = 0;
-+	char label[BUFSIZ];
-+	char line[BUFSIZ];
-+	char smaps[BUFSIZ];
-+	char ptr_str[BUFSIZ];
-+	int value;
-+
-+	snprintf(smaps, BUFSIZ, "/proc/%i/smaps", getpid());
-+	snprintf(ptr_str, BUFSIZ, "%lx", address);
-+
-+	f = SAFE_FOPEN(smaps, "r");
-+
-+	while (fgets(line, BUFSIZ, f) != NULL) {
-+		if (strncmp(ptr_str, line, strlen(ptr_str)) == 0)
-+			found = 1;
-+
-+		if (!found)
-+			continue;
-+
-+		if (found && strcmp(line, "VmFlags") >= 0)
-+			break;
-+
-+		if (sscanf(line, "%31[^:]: %d", label, &value) > 0) {
-+			if (strcmp(label, "Size") == 0)
-+				mapping->size = value;
-+			else if (strcmp(label, "Rss") == 0)
-+				mapping->rss = value;
-+			else if (strcmp(label, "Pss") == 0)
-+				mapping->pss = value;
-+			else if (strcmp(label, "Shared_Clean") == 0)
-+				mapping->shared_clean = value;
-+			else if (strcmp(label, "Shared_Dirty") == 0)
-+				mapping->shared_dirty = value;
-+			else if (strcmp(label, "Private_Clean") == 0)
-+				mapping->private_clean = value;
-+			else if (strcmp(label, "Private_Dirty") == 0)
-+				mapping->private_dirty = value;
-+			else if (strcmp(label, "Referenced") == 0)
-+				mapping->referenced = value;
-+			else if (strcmp(label, "Anonymous") == 0)
-+				mapping->anonymous = value;
-+			else if (strcmp(label, "AnonHugePages") == 0)
-+				mapping->anon_huge_pages = value;
-+			else if (strcmp(label, "ShmemHugePages") == 0)
-+				mapping->shmem_huge_pages = value;
-+			else if (strcmp(label, "ShmemPmdMapped") == 0)
-+				mapping->shmem_pmd_mapped = value;
-+			else if (strcmp(label, "Swap") == 0)
-+				mapping->swap = value;
-+			else if (strcmp(label, "KernelPageSize") == 0)
-+				mapping->kernel_page_size = value;
-+			else if (strcmp(label, "MMUPageSize") == 0)
-+				mapping->mmu_page_size = value;
-+			else if (strcmp(label, "Locked") == 0)
-+				mapping->locked = value;
-+			else if (strcmp(label, "ProtectionKey") == 0)
-+				mapping->protection_key = value;
-+		}
-+	}
-+
-+	SAFE_FCLOSE(f);
-+}
-+
-+#endif
-diff --git a/testcases/kernel/syscalls/cma/process_madvise01.c b/testcases/kernel/syscalls/cma/process_madvise01.c
-new file mode 100644
-index 000000000..ea3e0270d
---- /dev/null
-+++ b/testcases/kernel/syscalls/cma/process_madvise01.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2022 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Allocate anonymous memory pages inside child and reclaim it with
-+ * MADV_PAGEOUT. Then check if memory pages have been swapped out by looking
-+ * at smaps information.
-+ *
-+ * The advice might be ignored for some pages in the range when it is
-+ * not applicable, so test passes if swap memory increases after
-+ * reclaiming memory with MADV_PAGEOUT.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <sys/mman.h>
-+#include "tst_test.h"
-+#include "lapi/mmap.h"
-+#include "lapi/syscalls.h"
-+#include "cma.h"
-+
-+#define MEM_CHILD	(1 * TST_MB)
-+
-+static void **data_ptr;
-+
-+static void child_alloc(void)
-+{
-+	char data[MEM_CHILD];
-+	struct addr_mapping map_before;
-+	struct addr_mapping map_after;
-+
-+	memset(data, 'a', MEM_CHILD);
-+
-+	tst_res(TINFO, "Allocate memory: %d bytes", MEM_CHILD);
-+
-+	*data_ptr = SAFE_MMAP(NULL, MEM_CHILD,
-+			PROT_READ | PROT_WRITE,
-+			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+
-+	memset(*data_ptr, 'a', MEM_CHILD);
-+
-+	memset(&map_before, 0, sizeof(struct addr_mapping));
-+	read_address_mapping((unsigned long)*data_ptr, &map_before);
-+
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
-+
-+	memset(&map_after, 0, sizeof(struct addr_mapping));
-+	read_address_mapping((unsigned long)*data_ptr, &map_after);
-+
-+	if (memcmp(*data_ptr, data, MEM_CHILD) != 0) {
-+		tst_res(TFAIL, "Dirty memory after reclaiming it");
-+		return;
-+	}
-+
-+	SAFE_MUNMAP(*data_ptr, MEM_CHILD);
-+	*data_ptr = NULL;
-+
-+    TST_EXP_EXPR(map_before.swap < map_after.swap,
-+        "Most of the memory has been swapped out: %dkB",
-+        map_after.swap);
-+}
-+
-+static void setup(void)
-+{
-+	data_ptr = SAFE_MMAP(NULL, sizeof(void *),
-+			PROT_READ | PROT_WRITE,
-+			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (*data_ptr)
-+		SAFE_MUNMAP(*data_ptr, MEM_CHILD);
-+
-+	if (data_ptr)
-+		SAFE_MUNMAP(data_ptr, sizeof(void *));
-+}
-+
-+static void run(void)
-+{
-+	int ret;
-+	int pidfd;
-+	pid_t pid_alloc;
-+	struct iovec vec;
-+
-+	pid_alloc = SAFE_FORK();
-+	if (!pid_alloc) {
-+		child_alloc();
-+		return;
-+	}
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	tst_res(TINFO, "Reclaim memory using MADV_PAGEOUT");
-+
-+	pidfd = SAFE_PIDFD_OPEN(pid_alloc, 0);
-+
-+	vec.iov_base = *data_ptr;
-+	vec.iov_len = MEM_CHILD;
-+
-+	ret = tst_syscall(__NR_process_madvise, pidfd, &vec, 1UL,
-+			MADV_PAGEOUT, 0UL);
-+
-+	if (ret == -1)
-+		tst_brk(TBROK | TERRNO, "process_madvise failed");
-+
-+	if (ret != MEM_CHILD)
-+		tst_brk(TBROK, "process_madvise reclaimed only %d bytes", ret);
-+
-+	TST_CHECKPOINT_WAKE(0);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.forks_child = 1,
-+	.min_kver = "5.10",
-+	.needs_checkpoints = 1,
-+};
+Let's just assume it is a problem because it is easy to add the cleanup
+code.
+
+Something to think about is that regardless of test iterations, the
+kernel may behave differently when cleaning up a socket on process
+termination rather than a deliberate close. For e.g. it could do a bulk
+cleanup after some delay, so you may get errors happening as the next
+test executes.
+
+Of course that can happen with a deliberate close as well, but you are
+bringing the close forward at least. Also it makes the behaviour of the
+test after an error more similar to if there were not an error. So
+comparing the output may be easier.
+
+>
+>> +
+>> +	TST_CHECKPOINT_WAKE(0);
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	sock_port = SAFE_MMAP(NULL, sizeof(in_port_t), PROT_READ | PROT_WRITE,
+>> +		MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	if (sock_port)
+>> +		SAFE_MUNMAP(sock_port, sizeof(in_port_t));
+>> +
+>> +	if (epfd > 0)
+>> +		SAFE_CLOSE(epfd);
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>> +	.test_all = run,
+>> +	.forks_child = 1,
+>> +	.needs_checkpoints = 1,
+> IMHO there should be 3a34b13a88ca commit marked in tags:
+>
+> .tags = (const struct tst_tag[]) {
+>         {"linux-git", "3a34b13a88ca"},
+>         {}
+>
+> The rest LGTM.
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+>> +};
+
+I'll set this to changes requested in patchwork
+
 -- 
-2.35.3
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
