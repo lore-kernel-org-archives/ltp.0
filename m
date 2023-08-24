@@ -4,60 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A118DC3DA6F
-	for <ltp@archiver.kernel.org>; Thu, 24 Aug 2023 11:10:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BEE1C3DA6F
+	for <ltp@archiver.kernel.org>; Thu, 24 Aug 2023 11:11:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 47C543CC4B8
-	for <ltp@archiver.kernel.org>; Thu, 24 Aug 2023 13:10:52 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 5ABDD3CC556
+	for <ltp@archiver.kernel.org>; Thu, 24 Aug 2023 13:11:03 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 32FE93CB9B3
+ by picard.linux.it (Postfix) with ESMTPS id C6C5A3CB9B3
  for <ltp@lists.linux.it>; Thu, 24 Aug 2023 13:10:39 +0200 (CEST)
-Received: from esa9.hc1455-7.c3s2.iphmx.com (esa9.hc1455-7.c3s2.iphmx.com
- [139.138.36.223])
+Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
+ [139.138.37.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id A505B60154A
- for <ltp@lists.linux.it>; Thu, 24 Aug 2023 13:10:37 +0200 (CEST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="117572305"
-X-IronPort-AV: E=Sophos;i="6.01,195,1684767600"; d="scan'208";a="117572305"
-Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
- by esa9.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Aug 2023 20:10:34 +0900
-Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com
- [192.168.83.65])
- by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 7178E9FD86
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B86351A00CDE
+ for <ltp@lists.linux.it>; Thu, 24 Aug 2023 13:10:38 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="108759523"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684767600"; d="scan'208";a="108759523"
+Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
+ by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Aug 2023 20:10:35 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
+ [192.168.87.59])
+ by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 230C2D29E5
  for <ltp@lists.linux.it>; Thu, 24 Aug 2023 20:10:30 +0900 (JST)
 Received: from aks-ab1.gw.nic.fujitsu.com (aks-ab1.gw.nic.fujitsu.com
  [192.51.207.11])
- by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id BF134D67A7
+ by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 574EFBCB66
  for <ltp@lists.linux.it>; Thu, 24 Aug 2023 20:10:29 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.215.131])
- by aks-ab1.gw.nic.fujitsu.com (Postfix) with ESMTP id 072402FC8ED4;
+ by aks-ab1.gw.nic.fujitsu.com (Postfix) with ESMTP id 9B5072FC8ECB;
  Thu, 24 Aug 2023 20:10:28 +0900 (JST)
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Thu, 24 Aug 2023 19:10:24 +0800
-Message-Id: <1692875424-22449-2-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Thu, 24 Aug 2023 19:10:23 +0800
+Message-Id: <1692875424-22449-1-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1692875424-22449-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1692875424-22449-1-git-send-email-xuyang2018.jy@fujitsu.com>
 X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27832.007
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27832.007
-X-TMASE-Result: 10--5.907300-10.000000
-X-TMASE-MatchedRID: DSrurHRS2Lnyq/cli2hvDbnHu4BcYSmtlwT0XposETW+f7ap9DJaDb8F
- Hrw7frluNIBrw7gT13Qv/zJQ0aiPJlPlr5afWtNU7TovvZPhLcB1zSnwpu89bft9kl8N0Ihcj3d
- ZSyALReJZZO2km095FRza9vQBPvMp2FMcgddyBa+RgPzABkqxIJ+Z30eyNnRTS7NxD4SLUR2Fa5
- OeOLZA2OLzNWBegCW2wgn7iDBesS0gBwKKRHe+r9hCnU5/RzSOrTkKc723rYRW+praPy4gvmDZF
- y2yqLlJJRoxBwca3Zs=
+X-TMASE-Result: 10--9.908100-10.000000
+X-TMASE-MatchedRID: mJkk328f4R7yq/cli2hvDbnHu4BcYSmtlwT0XposETW+f7ap9DJaDb8F
+ Hrw7frluNIBrw7gT13Qv/zJQ0aiPJlE/ARLVFdXaQQp1SVSsqYB9v5k7uQeUSAPHqiqIXxKGhWu
+ Tnji2QNji8zVgXoAltuJ5hXsnxp7jC24oEZ6SpSkj80Za3RRg8HH63hlWOVEScWM56Juha+4nY3
+ +oiFI4o/mzI7eBx4l0zruA0Aqz72g=
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] syscalls/renameat2: Remove renameat2 fallback
+Subject: [LTP] [PATCH 1/2] syscalls/renameat: Remove renameat fallback
  definition
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -78,79 +76,52 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- .../kernel/syscalls/renameat2/renameat2.h     | 35 -------------------
- .../kernel/syscalls/renameat2/renameat201.c   |  2 +-
- .../kernel/syscalls/renameat2/renameat202.c   |  2 +-
- 3 files changed, 2 insertions(+), 37 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/renameat2/renameat2.h
+ include/lapi/renameat.h                       | 23 -------------------
+ .../kernel/syscalls/renameat/renameat01.c     |  1 -
+ 2 files changed, 24 deletions(-)
+ delete mode 100644 include/lapi/renameat.h
 
-diff --git a/testcases/kernel/syscalls/renameat2/renameat2.h b/testcases/kernel/syscalls/renameat2/renameat2.h
+diff --git a/include/lapi/renameat.h b/include/lapi/renameat.h
 deleted file mode 100644
-index c4688ed53..000000000
---- a/testcases/kernel/syscalls/renameat2/renameat2.h
+index abf4c1d6e..000000000
+--- a/include/lapi/renameat.h
 +++ /dev/null
-@@ -1,35 +0,0 @@
+@@ -1,23 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
 -/*
-- * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of
-- * the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software Foundation,
-- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+- * Copyright (c) International Business Machines  Corp., 2007
+- * Copyright (c) 2014 Fujitsu Ltd.
 - */
 -
--#ifndef RENAMEAT2_H
--#define RENAMEAT2_H
+-#ifndef LAPI_RENAMEAT_H__
+-#define LAPI_RENAMEAT_H__
 -
 -#include <sys/types.h>
 -#include "config.h"
 -#include "lapi/syscalls.h"
 -
--#if !defined(HAVE_RENAMEAT2)
--int renameat2(int olddirfd, const char *oldpath, int newdirfd,
--				const char *newpath, unsigned int flags)
+-#if !defined(HAVE_RENAMEAT)
+-static inline int renameat(int olddirfd, const char *oldpath, int newdirfd,
+-                           const char *newpath)
 -{
--	return tst_syscall(__NR_renameat2, olddirfd, oldpath, newdirfd,
--						newpath, flags);
+-	return tst_syscall(__NR_renameat, olddirfd, oldpath, newdirfd,
+-					newpath);
 -}
 -#endif
 -
--#endif /* RENAMEAT2_H */
-diff --git a/testcases/kernel/syscalls/renameat2/renameat201.c b/testcases/kernel/syscalls/renameat2/renameat201.c
-index 9832b1cdb..ff1747b8d 100644
---- a/testcases/kernel/syscalls/renameat2/renameat201.c
-+++ b/testcases/kernel/syscalls/renameat2/renameat201.c
-@@ -37,7 +37,7 @@
+-#endif /* LAPI_RENAMEAT_H__ */
+diff --git a/testcases/kernel/syscalls/renameat/renameat01.c b/testcases/kernel/syscalls/renameat/renameat01.c
+index 3de103563..c318a7971 100644
+--- a/testcases/kernel/syscalls/renameat/renameat01.c
++++ b/testcases/kernel/syscalls/renameat/renameat01.c
+@@ -50,7 +50,6 @@
  #include "test.h"
  #include "safe_macros.h"
  #include "lapi/fcntl.h"
--#include "renameat2.h"
-+#include <errno.h>
+-#include "lapi/renameat.h"
  
- #define TEST_DIR "test_dir/"
- #define TEST_DIR2 "test_dir2/"
-diff --git a/testcases/kernel/syscalls/renameat2/renameat202.c b/testcases/kernel/syscalls/renameat2/renameat202.c
-index 0c1457022..ef3df3e91 100644
---- a/testcases/kernel/syscalls/renameat2/renameat202.c
-+++ b/testcases/kernel/syscalls/renameat2/renameat202.c
-@@ -26,7 +26,7 @@
- #include "test.h"
- #include "safe_macros.h"
- #include "lapi/fcntl.h"
--#include "renameat2.h"
-+#include <errno.h>
- 
- #define TEST_DIR "test_dir/"
- #define TEST_DIR2 "test_dir2/"
+ #define MNTPOINT "mntpoint"
+ #define TESTDIR "testdir"
 -- 
 2.39.1
 
