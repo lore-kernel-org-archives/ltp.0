@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 057DFC7113B
-	for <ltp@archiver.kernel.org>; Thu, 24 Aug 2023 11:12:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D623C27C40
+	for <ltp@archiver.kernel.org>; Thu, 24 Aug 2023 11:49:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1D7313CC4BA
-	for <ltp@archiver.kernel.org>; Thu, 24 Aug 2023 13:12:20 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 50C7D3CC519
+	for <ltp@archiver.kernel.org>; Thu, 24 Aug 2023 13:49:46 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 48FB23CB9B3
- for <ltp@lists.linux.it>; Thu, 24 Aug 2023 13:12:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 9394D3CB8A2
+ for <ltp@lists.linux.it>; Thu, 24 Aug 2023 13:49:36 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6FE1A200B28
- for <ltp@lists.linux.it>; Thu, 24 Aug 2023 13:12:08 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8BF17600C28
+ for <ltp@lists.linux.it>; Thu, 24 Aug 2023 13:49:34 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B0AC521DF4;
- Thu, 24 Aug 2023 11:12:07 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7C52B207C2;
+ Thu, 24 Aug 2023 11:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1692875527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1692877773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3gUW1rkWEgOrCN+ZdJkebpk538W5XGgzm6pO480PXa0=;
- b=CAbh/wPiBNJTgXq/NAMkSkHFJYYfWTvPYQUU18DwOt1YVmHOOIl9dGZMOW68mi0gVRu+XG
- RmqmdwLszBbZ7+tevhuRTfET5abDunT6Sxbsv/KYTgcPN7zlKQd63WOuwKO2rmyJAzWC7n
- u+ZP7RlxNSK5v1P5824Wt/bxLZVI41Q=
+ bh=/F5R5GpuFPnXnfvZfrijv7DtSyPwTeFWupVjdT03QvQ=;
+ b=Fsz+tGYkObrUys8R8P2Pt2+eSBlZ70ULPgYm3//WdL1yKsGQAEyPyluYKJ0X8655Kqq171
+ sZymWsPYTQ/5z5VwLkYBq1TfofI+7dD3dz2ORFW6JQIxdyjKnKA4WcywZCDQKBtsX6NSmX
+ ihZTXIYgejeJj1n2g6mxQYNg73DV86g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1692875527;
+ s=susede2_ed25519; t=1692877773;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3gUW1rkWEgOrCN+ZdJkebpk538W5XGgzm6pO480PXa0=;
- b=moSzCHKZBD7dqYY5njP2rL/ugqWfbcJKO0tT9//i3uPKYoLxGJ5qgM46gqA/JrWD8xPDxy
- AmyrOX6dQ+N8RHDQ==
+ bh=/F5R5GpuFPnXnfvZfrijv7DtSyPwTeFWupVjdT03QvQ=;
+ b=QKk+gaPa16gl4CmVrMvS3sPmPlL6YWvgRZv1FiNJuql+8NXi7ZUDx2ZdDhj0K7Vj+8k8Sr
+ 7MH/f1A3woI2AKDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 91AF31336F;
- Thu, 24 Aug 2023 11:12:07 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 60D05132F2;
+ Thu, 24 Aug 2023 11:49:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id oXEKIgc752SIRgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 24 Aug 2023 11:12:07 +0000
-Date: Thu, 24 Aug 2023 13:12:41 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id RtrWFs1D52ShVQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Thu, 24 Aug 2023 11:49:33 +0000
+Date: Thu, 24 Aug 2023 13:50:07 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <ZOc7KXhQGDh-0w04@yuki>
-References: <1692617910-32684-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1692617910-32684-2-git-send-email-xuyang2018.jy@fujitsu.com>
+To: Avinesh Kumar <akumar@suse.de>
+Message-ID: <ZOdD71AcNRSfB1ah@yuki>
+References: <20230807095654.20552-1-akumar@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1692617910-32684-2-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+In-Reply-To: <20230807095654.20552-1-akumar@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/2] syscalls/readlinkat02: Convert to new API
+Subject: Re: [LTP] [PATCH v2] syscalls/pipe07: Rewrite the test using new
+ LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,7 +83,7 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-I've addeds ENOENT case to the test and pushed, thanks.
+Applied, thanks.
 
 -- 
 Cyril Hrubis
