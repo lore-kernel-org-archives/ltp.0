@@ -4,79 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9783C3DA6F
-	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 09:06:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 527ABC3DA6F
+	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 09:07:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id BC5C93CC3AF
-	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 11:06:12 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 576F63CC3AC
+	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 11:07:08 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5F1A73C6D29
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 11:06:01 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 40CF33C6D29
+ for <ltp@lists.linux.it>; Fri, 25 Aug 2023 11:06:57 +0200 (CEST)
+Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com
+ [207.54.90.49])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id CBBFF1A01967
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 11:06:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1692954359;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Z+s6yhfeWUrRLyj0DDJLEv2Oouh4SoLsHnXn9ME10SQ=;
- b=H3Ud5gYeFI7Jj5zlEYv8ElLrcay5MWQ9NRymeII4zYXPvZxONPixMAix71re+fI9fchUPQ
- 5v9z6pw8xxeen+F8kskPz+IPhJn8/37tv5E2SfSpGSd9ftuLiy4ca6u3bRGtdPSpE4AZll
- Ou/mAr3j1OGHDha60UKw0NvplWEbeRg=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-464-Mi-VLZWRPticEV2MkIk0aQ-1; Fri, 25 Aug 2023 05:05:56 -0400
-X-MC-Unique: Mi-VLZWRPticEV2MkIk0aQ-1
-Received: by mail-lj1-f197.google.com with SMTP id
- 38308e7fff4ca-2b9e014111fso8286221fa.0
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 02:05:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1692954355; x=1693559155;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=Z+s6yhfeWUrRLyj0DDJLEv2Oouh4SoLsHnXn9ME10SQ=;
- b=BYZCainOAALYz+taGci20r7nQpHxqCg3V3k8wsRgQubSIKjSSalZUoIM6tX8LVJtsD
- wE12rtfbwyW72aWDKTGUIp8ggjlNRtY04L0W/ypzazmeuhajhq/W4VsrjRzxREA3G4zg
- MMTGAomoVV+KrQF2ox7ANNtoxYh8Agk7Uq8HIIaKqj/Xm8SYGVMoqrzpFymPYgC/Teek
- Tj22WhXo5aspf2a8K8QJDfgE7h08YFv4tWlYj58XgRdFyUc0IDbeEdEARVFzemvfgnfP
- 1vwluAEENMyG4ryPmSUsyn8xPw814Ktr9SLlOyRdeboLXxjtrLYR4HNkA8+EXloT/Jrj
- 3pVg==
-X-Gm-Message-State: AOJu0Yw8aecnIk/pqn+rdEJi4NNFuOOEorF1eMWPHYd9fgvrNyIBxdup
- g4aM/0kuM4HOGCD0LGHj3612LGNHsWHhZ/VHTq5eumXxOVZ4fd6BmUF6UCfNxN11md5uLHz6+LJ
- fbnL35InAIzS+xcWpYA+qIoV6WJI=
-X-Received: by 2002:a2e:b0e9:0:b0:2bc:b884:c9be with SMTP id
- h9-20020a2eb0e9000000b002bcb884c9bemr12498171ljl.30.1692954355520; 
- Fri, 25 Aug 2023 02:05:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHG8mxP46c+CJOb2IsoljwUyTvqbOLeRU3puA3UrjiPolDEUg+tXpHyjgyT1N8jfvyJT4JZCgkL9ecGBTzN328=
-X-Received: by 2002:a2e:b0e9:0:b0:2bc:b884:c9be with SMTP id
- h9-20020a2eb0e9000000b002bcb884c9bemr12498153ljl.30.1692954355189; Fri, 25
- Aug 2023 02:05:55 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1D615600CEE
+ for <ltp@lists.linux.it>; Fri, 25 Aug 2023 11:06:55 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="129493899"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688396400"; d="scan'208";a="129493899"
+Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+ by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Aug 2023 18:06:53 +0900
+Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com
+ [192.168.87.60])
+ by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 312F8CD7E0
+ for <ltp@lists.linux.it>; Fri, 25 Aug 2023 18:06:50 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 638A8D946E
+ for <ltp@lists.linux.it>; Fri, 25 Aug 2023 18:06:49 +0900 (JST)
+Received: from [10.167.215.54] (unknown [10.167.215.54])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id E54CC20093094;
+ Fri, 25 Aug 2023 18:06:48 +0900 (JST)
+Message-ID: <68d82f6f-2c42-0c2d-3d8a-618d387675dc@fujitsu.com>
+Date: Fri, 25 Aug 2023 17:06:48 +0800
 MIME-Version: 1.0
-References: <447b0209996f33c5d7f6f5e0f146ca1abfe28346.1692858827.git.souta.kawahara@miraclelinux.com>
- <2424913.C0n9F0bVQ2@localhost>
-In-Reply-To: <2424913.C0n9F0bVQ2@localhost>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 25 Aug 2023 17:05:42 +0800
-Message-ID: <CAEemH2foGr9FrigmczYQBwG3qp0i-=pT4bgD=sddDYvfRECehA@mail.gmail.com>
-To: Avinesh Kumar <akumar@suse.de>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+To: Yang Xu <xuyang2018.jy@fujitsu.com>, ltp@lists.linux.it
+References: <1692875480-22494-1-git-send-email-xuyang2018.jy@fujitsu.com>
+From: Xiao Yang <yangx.jy@fujitsu.com>
+In-Reply-To: <1692875480-22494-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27834.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27834.006
+X-TMASE-Result: 10--13.700100-10.000000
+X-TMASE-MatchedRID: hwtUKlde9zGPvrMjLFD6eJVRzPxemJL0ZR+OFNkbtdpWjSWvFszxq4u3
+ renu5Y0wbJfPbBoXyMOxUiJMMML0+y/7QU2czuUNA9lly13c/gFS3D9gYw52fxe1yJq6HIhHiER
+ aZd+PxAHi8zVgXoAltkWL4rBlm20vt7DW3B48kkHYoM82yqmFMvoLR4+zsDTtviI7BBDiM2L1Zh
+ hinEXF3LTs57gAuJyMlSQSahD4pqgcPb5SIcCaFA==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v1 1/1] doc/c-test-api.txt: fix wrong chapter
- number
+Subject: Re: [LTP] [PATCH 1/2] hugeshmctl01: Mark struct tcase as static
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,18 +70,70 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Thank you, both patches were pushed.
+Hi Xu,
 
+The Subject seems not exact. You marked struct struct tcase and several 
+functions as static.
 
--- 
-Regards,
-Li Wang
+Other than that, it looks good to me.
+Reviewed-by: Xiao Yang <yangx.jy@fujitsu.com>
+
+Best Regards,
+Xiao Yang
+
+On 2023/8/24 19:11, Yang Xu wrote:
+> To follow LTP conventions.
+> 
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>   testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> index 11cd69050..8cacde7cd 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> @@ -53,7 +53,7 @@ static void func_set(void);
+>   static void func_rmid(void);
+>   static void *set_shmat(void);
+>   
+> -struct tcase {
+> +static struct tcase {
+>   	int cmd;
+>   	void (*func_test) (void);
+>   	void (*func_setup) (void);
+> @@ -90,7 +90,7 @@ static void test_hugeshmctl(unsigned int i)
+>   /*
+>    * set_shmat() - Attach the shared memory and return the pointer.
+>    */
+> -void *set_shmat(void)
+> +static void *set_shmat(void)
+>   {
+>   	void *rval;
+>   
+> @@ -279,7 +279,7 @@ static void func_rmid(void)
+>   	shm_id_1 = -1;
+>   }
+>   
+> -void setup(void)
+> +static void setup(void)
+>   {
+>   	long hpage_size;
+>   
+> @@ -293,7 +293,7 @@ void setup(void)
+>   	shmkey = getipckey();
+>   }
+>   
+> -void cleanup(void)
+> +static void cleanup(void)
+>   {
+>   	rm_shm(shm_id_1);
+>   }
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
