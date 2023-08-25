@@ -4,69 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6612C727A1
-	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 09:34:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 568A1C3DA66
+	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 10:17:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B463B3CC43D
-	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 11:34:23 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 07EEA3CC3AA
+	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 12:17:27 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1949D3CBA17
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 11:34:11 +0200 (CEST)
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com
- [IPv6:2607:f8b0:4864:20::a2e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 0E8AA3CC186
+ for <ltp@lists.linux.it>; Fri, 25 Aug 2023 12:17:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id B9AD86008CB
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 11:34:10 +0200 (CEST)
-Received: by mail-vk1-xa2e.google.com with SMTP id
- 71dfb90a1353d-48d2c072030so1094685e0c.0
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 02:34:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linaro.org; s=google; t=1692956049; x=1693560849;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=NkOXDPx/S3uX0LGrWHhqDuzgnalOjRvvuzfXBDquIJE=;
- b=ukX0Pnuivh/o6xISkXG2MwEK0o1GsQV27v/wL8PCYr3K8rw4rCQ89pL5zDucAFhMcb
- YskOrO04SlvsfelPwM6wi6bo33kueI9hAzLSHaH+rO3C/KdletWIMPRTOYoAyAI3o5Bb
- gwe8YbDTEL9VB12BM6LBCliW9FWhwvSr325DZcjSigPSeB9JpebjY5rhdU88q9fnhEcr
- bO6YXtDqCkq7TIBUj7afnMs8Ik0gKHvbzTGASsEDdGmUvf5tgRjCJeHx7rzEZgS3e+cq
- 5wBCW0y7FKsG5YGqd1KFGnDwwJz8ywHAaQLG/7SL+2BGaFhCrt7m2jYp93piNMTJfTI7
- 5ZGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1692956049; x=1693560849;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=NkOXDPx/S3uX0LGrWHhqDuzgnalOjRvvuzfXBDquIJE=;
- b=gmCSZYIuvjU8dwwD6/PFIycCRO/aeVO/YvhlZySeVQJi6Nu9Mh5nKFHa8sp3WGU05f
- BVSeJI8g+8mD1P9xUPWrwSfSUUmedLdGe9YtHBrIs2Ep8+Ot4ddfD9smxz+3H3ZbaIf1
- PHIuswjgwsKULQlavSmPeUerfjsgoVFgp2ffb/ybadpyl//UK67RikLKromgmIWaEKGS
- hHiBWHVI7S8CYkQ3fAmVq6mgcKBR0tsN5qqG7IS+wVRGI/0Z/zg1M/KX7BOI1yh8lgYB
- 4xRTbDauHYf8G4OGegh7+sle3e6m5dryLSrvpNhXysBtVzRTEBvVmpepmIEbOn95Vnsu
- UO4g==
-X-Gm-Message-State: AOJu0Yw4xlDJqhXKTM1p1luKxSljpeUvnjtCpdzUSOUUTFJPA9+dpUXp
- 7sAxzYCtF2UqLkG5qmgxFyNntAdK0dk8UeyoBOfVSQ==
-X-Google-Smtp-Source: AGHT+IHYxHlYu/b9jq1hZYwDJBTUYSSDdzBlVxG6txEHWSCkNIMRdBra+qgQir4lLTbNjKOfAbjN9wZa5rm8CXm04BI=
-X-Received: by 2002:a05:6122:2527:b0:48d:969:af8b with SMTP id
- cl39-20020a056122252700b0048d0969af8bmr10536527vkb.1.1692956049376; Fri, 25
- Aug 2023 02:34:09 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8B3B4601171
+ for <ltp@lists.linux.it>; Fri, 25 Aug 2023 12:17:12 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2D8382224B;
+ Fri, 25 Aug 2023 10:17:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1692958632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=rqLE6a0mHoxZnSdA8k5y5NWpj8QLqcSNxp6ShfYO8xc=;
+ b=nh5nIpiZATVip7fNzngY5ifpdsbhKYv1djEhLcLZXBnW9UHc6S/ZEcRxpotZs+aR9c+4DK
+ p2E+wB521JTtuGNdF/7dRl9ajHoWlQjI8GD83h3cLs87A/iD58COyIBS5lzJzrb6+qKKPF
+ 933ChnbNt8CR4CR8UZwm+a+45mZ/vsE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1692958632;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=rqLE6a0mHoxZnSdA8k5y5NWpj8QLqcSNxp6ShfYO8xc=;
+ b=DP0RNWu/itO7LtroN/03TTvP/E1awDeEBT7S2pYaYBkjAkEe6Gw6HXAH0HyhYlCIi86OLI
+ os7Nlyh788HTbpDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B9321340A;
+ Fri, 25 Aug 2023 10:17:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id YHoaAah/6GRNGwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Fri, 25 Aug 2023 10:17:12 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Fri, 25 Aug 2023 12:17:11 +0200
+Message-Id: <20230825101711.6370-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-References: <20230824141447.155846739@linuxfoundation.org>
- <CA+G9fYsPPpduLzJ4+GZe_18jgYw56=w5bQ2W1jnyWa-8krmOSw@mail.gmail.com>
- <2023082512-amusement-luncheon-8d8d@gregkh>
-In-Reply-To: <2023082512-amusement-luncheon-8d8d@gregkh>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Fri, 25 Aug 2023 15:03:58 +0530
-Message-ID: <CA+G9fYsxAgRcvc4G_mU2LW+bw3aUVgTNGd+zmkhkoaXUsWv67Q@mail.gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 6.1 00/15] 6.1.48-rc1 review
+Subject: [LTP] [PATCH v3] Add epoll_wait07 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,69 +71,128 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkft-triage@lists.linaro.org, patches@lists.linux.dev,
- stable@vger.kernel.org, shuah@kernel.org, f.fainelli@gmail.com,
- Sherry Yang <sherry.yang@oracle.com>, jonathanh@nvidia.com,
- patches@kernelci.org, linux@roeck-us.net, linux-nfs@vger.kernel.org,
- srw@sladewatkins.net, LTP List <ltp@lists.linux.it>,
- Christian Brauner <brauner@kernel.org>, rwarsow@gmx.de, pavel@denx.de,
- Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
- conor@kernel.org, Chuck Lever <chuck.lever@oracle.com>,
- akpm@linux-foundation.org, torvalds@linux-foundation.org,
- sudipm.mukherjee@gmail.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, 25 Aug 2023 at 13:57, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Aug 25, 2023 at 12:35:46PM +0530, Naresh Kamboju wrote:
-> > + linux-nfs and more
-> >
-> > On Thu, 24 Aug 2023 at 19:45, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This is the start of the stable review cycle for the 6.1.48 release.
-> > > There are 15 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Sat, 26 Aug 2023 14:14:28 +0000.
-> > > Anything received after that time might be too late.
-> > >
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.48-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> > > and the diffstat can be found below.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> >
-> > Following test regression found on stable-rc 6.1.
-> > Rpi4 is using NFS mount rootfs and running LTP syscalls testing.
-> > chown02 tests creating testfile2 on NFS mounted and validating
-> > the functionality and found that it was a failure.
-> >
-> > This is already been reported by others on lore and fix patch merged
-> > into stable-rc linux-6.4.y [1] and [2].
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> Odd, it's not a regression in this -rc cycle, so it was missed in the
-> previous ones somehow?
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-I have re-tested with newers and older versions of the kernel and here
-I confirm that this is not a regression from this round of stable rc review.
+This test verifies that EPOLLONESHOT is correctly handled by
+epoll_wait.
 
-We have made a couple of changes to our infrastructure and are investigating
-the root cause of these two test cases failures.
+Implements: https://github.com/linux-test-project/ltp/issues/860
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ runtest/syscalls                              |  1 +
+ .../kernel/syscalls/epoll_wait/.gitignore     |  1 +
+ .../kernel/syscalls/epoll_wait/epoll_wait07.c | 73 +++++++++++++++++++
+ 3 files changed, 75 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait07.c
 
-- Naresh
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 88e868a74..1cdba11ce 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -175,6 +175,7 @@ epoll_wait01 epoll_wait01
+ epoll_wait02 epoll_wait02
+ epoll_wait03 epoll_wait03
+ epoll_wait04 epoll_wait04
++epoll_wait07 epoll_wait07
+ epoll_pwait01 epoll_pwait01
+ epoll_pwait02 epoll_pwait02
+ epoll_pwait03 epoll_pwait03
+diff --git a/testcases/kernel/syscalls/epoll_wait/.gitignore b/testcases/kernel/syscalls/epoll_wait/.gitignore
+index 222955dd2..c0be9a88e 100644
+--- a/testcases/kernel/syscalls/epoll_wait/.gitignore
++++ b/testcases/kernel/syscalls/epoll_wait/.gitignore
+@@ -2,3 +2,4 @@ epoll_wait01
+ epoll_wait02
+ epoll_wait03
+ epoll_wait04
++epoll_wait07
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait07.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait07.c
+new file mode 100644
+index 000000000..23fa7ec55
+--- /dev/null
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait07.c
+@@ -0,0 +1,73 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Verify that EPOLLONESHOT is correctly handled by epoll_wait.
++ * We open a channel, write in it two times and verify that EPOLLIN has been
++ * received only once.
++ */
++
++#include <poll.h>
++#include <sys/epoll.h>
++#include "tst_test.h"
++#include "tst_epoll.h"
++
++static int fds[2];
++static int epfd;
++
++static void cleanup(void)
++{
++	if (epfd > 0)
++		SAFE_CLOSE(epfd);
++
++	if (fds[0] > 0)
++		SAFE_CLOSE(fds[0]);
++
++	if (fds[1] > 0)
++		SAFE_CLOSE(fds[1]);
++}
++
++static void run(void)
++{
++	struct epoll_event evt_receive;
++    char buff = 'a';
++
++	SAFE_PIPE(fds);
++
++	tst_res(TINFO, "Polling on channel with EPOLLONESHOT");
++
++	epfd = SAFE_EPOLL_CREATE1(0);
++
++	SAFE_EPOLL_CTL(epfd, EPOLL_CTL_ADD, fds[0], &((struct epoll_event) {
++		.events = EPOLLIN | EPOLLONESHOT,
++        .data.fd = fds[0],
++	}));
++
++	tst_res(TINFO, "Write channel for the 1st time. EPOLLIN expected");
++
++	SAFE_WRITE(0, fds[1], &buff, 1);
++	TST_EXP_EQ_LI(SAFE_EPOLL_WAIT(epfd, &evt_receive, 10, 0), 1);
++	TST_EXP_EQ_LI(evt_receive.events & EPOLLIN, EPOLLIN);
++	TST_EXP_EQ_LI(evt_receive.data.fd, fds[0]);
++
++    SAFE_READ(1, fds[0], &buff, 1);
++	TST_EXP_EQ_LI(SAFE_EPOLL_WAIT(epfd, &evt_receive, 10, 0), 0);
++
++	tst_res(TINFO, "Write channel for the 2nd time. No events expected");
++
++	SAFE_WRITE(0, fds[1], &buff, 1);
++	TST_EXP_EQ_LI(SAFE_EPOLL_WAIT(epfd, &evt_receive, 10, 0), 0);
++
++	SAFE_CLOSE(epfd);
++    SAFE_CLOSE(fds[0]);
++    SAFE_CLOSE(fds[1]);
++}
++
++static struct tst_test test = {
++	.cleanup = cleanup,
++	.test_all = run,
++};
+-- 
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
