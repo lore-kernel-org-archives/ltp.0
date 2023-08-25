@@ -4,69 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7D34C71133
-	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 06:40:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72021C3DA66
+	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 06:40:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6BB8D3CC36F
-	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 08:40:37 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id E5A8B3CC44B
+	for <ltp@archiver.kernel.org>; Fri, 25 Aug 2023 08:40:52 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3EEEC3CC441
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 08:39:47 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id DD2FA3CC3B2
+ for <ltp@lists.linux.it>; Fri, 25 Aug 2023 08:40:33 +0200 (CEST)
+Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
+ [139.138.36.225])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 794B11400331
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 08:39:46 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E26F1224A8
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 06:39:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1692945585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=n6Kcez72jlsExLfH6D2XgUJlT17MtHsHEZ6Kg1xzbrM=;
- b=tnD7yV67/NtY5YvgakeReG2UDRvXyhdCJu4xKqRrROpEWKxLZfdi1SzCNdsgx+yv6U0OTo
- sepxyTCLkqQkH3XnSTOUhX8Ig82oLK0Ccv2rVubSI1ADjlg18CkVfCUAHh3TMavsuGeXvV
- IU+g629RQxv2i1iEZnlGdkbou4PNuPw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1692945585;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=n6Kcez72jlsExLfH6D2XgUJlT17MtHsHEZ6Kg1xzbrM=;
- b=sD4Vcsgl5TAofBnw+g9ewNFxL7GqPx1XZx/5WG4+ymqDt2mhv2e0etyWKSJvEe8vrgc/b/
- D+B1+23qYuQXYPCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FB33138F9
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 06:39:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ZmStE7FM6GSMLwAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Fri, 25 Aug 2023 06:39:45 +0000
-From: Avinesh Kumar <akumar@suse.de>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5B9D91A00FAE
+ for <ltp@lists.linux.it>; Fri, 25 Aug 2023 08:40:31 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="117180948"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688396400"; d="scan'208";a="117180948"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+ by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Aug 2023 15:40:29 +0900
+Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
+ [192.168.83.67])
+ by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id E4CDFDB4C0
+ for <ltp@lists.linux.it>; Fri, 25 Aug 2023 15:40:26 +0900 (JST)
+Received: from aks-ab1.gw.nic.fujitsu.com (aks-ab1.gw.nic.fujitsu.com
+ [192.51.207.11])
+ by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 23490C8BFE
+ for <ltp@lists.linux.it>; Fri, 25 Aug 2023 15:40:26 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.215.131])
+ by aks-ab1.gw.nic.fujitsu.com (Postfix) with ESMTP id 2314E2FC6B47;
+ Fri, 25 Aug 2023 15:40:25 +0900 (JST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Fri, 25 Aug 2023 12:08:42 +0530
-Message-ID: <20230825063932.30875-5-akumar@suse.de>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230825063932.30875-1-akumar@suse.de>
-References: <20230825063932.30875-1-akumar@suse.de>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+Date: Fri, 25 Aug 2023 14:40:19 +0800
+Message-Id: <1692945619-1066-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27834.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27834.005
+X-TMASE-Result: 10--11.003100-10.000000
+X-TMASE-MatchedRID: mLEC5fZiOdDyq/cli2hvDU7nLUqYrlslFIuBIWrdOePEosIs7IJbkIh+
+ mL+ciFCpbnRB47KLJ1QzLmfGY6iDkX5uUfhNvnKzOWUWxTQJdI8UZYubbUj2DLt4BAaULwAVJf5
+ otvavOZf9vT5evMX4tJhCh8+WImJUL7fGpDjikVZtN2GsBybzwuTAXNPNyDOEMwzrsNAhWRIQzv
+ W+/DZ4kdufy4+0gFFLQiY8is/TwOn+0jQufZU6FKUl1aQUvopWjlRp8uau9oYW6DSK3JHrYpbjt
+ ojIJiNqXoyZmORsN2VXNicS/yg1bRHdGMlurS25hdD+G7U5X/QaJDwYgQY/fxG3US/I5cDR8mBH
+ 5i5c0qz5DhMAITBjS1CTGkEP+yMkbBgnprrOG6aeAiCmPx4NwBnUJ0Ek6yhjxEHRux+uk8h+ICq
+ uNi0WJF/ixW64UADg96t2zMLAafewfPQ5DvIr5qaAOsw6R6ydftwZ3X11IV0=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 5/5] syscalls/mmap15: Rewrite test using new LTP API
+Subject: [LTP] [PATCH v3] syscalls/readlinkat01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,25 +69,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/syscalls/mmap/mmap15.c | 117 +++++++-----------------
- 1 file changed, 35 insertions(+), 82 deletions(-)
+ .../kernel/syscalls/readlinkat/readlinkat01.c | 174 +++++++-----------
+ 1 file changed, 62 insertions(+), 112 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap15.c b/testcases/kernel/syscalls/mmap/mmap15.c
-index 443a37eb8..643ed3a8b 100644
---- a/testcases/kernel/syscalls/mmap/mmap15.c
-+++ b/testcases/kernel/syscalls/mmap/mmap15.c
-@@ -1,113 +1,66 @@
+diff --git a/testcases/kernel/syscalls/readlinkat/readlinkat01.c b/testcases/kernel/syscalls/readlinkat/readlinkat01.c
+index 985890ebe..100881615 100644
+--- a/testcases/kernel/syscalls/readlinkat/readlinkat01.c
++++ b/testcases/kernel/syscalls/readlinkat/readlinkat01.c
+@@ -1,143 +1,93 @@
+-/******************************************************************************
+- *
 +// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) International Business Machines  Corp., 2004
-  *  Written by Robbie Williamson
++/*
+  * Copyright (c) International Business Machines  Corp., 2006
+- *  Author: Yi Yang <yyangcdl@cn.ibm.com>
+  * Copyright (c) Cyril Hrubis 2014 <chrubis@suse.cz>
 - *
 - * This program is free software;  you can redistribute it and/or modify
 - * it under the terms of the GNU General Public License as published by
@@ -111,138 +106,192 @@ index 443a37eb8..643ed3a8b 100644
 - * You should have received a copy of the GNU General Public License
 - * along with this program;  if not, write to the Free Software
 - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
+- *
+- * This test case will verify basic function of readlinkat
+- * added by kernel 2.6.16 or up.
+- *
+- *****************************************************************************/
++ * Copyright (c) Linux Test Project, 2003-2023
++ * Author: Yi Yang <yyangcdl@cn.ibm.com>
++ */
  
--/*
-- * Test Description: Test that a normal page cannot be mapped into a high
-- * memory region.
+-#define _GNU_SOURCE
 +/*\
 + * [Description]
 + *
-+ * Verify that, a normal page cannot be mapped into a high memory region,
-+ * and mmap() call fails with either ENOMEM or EINVAL errno.
-  */
++ * Check the basic functionality of the readlinkat() system call.
++ */
  
 -#include <sys/types.h>
--#include <sys/mman.h>
--#include <sys/mount.h>
 -#include <sys/stat.h>
--#include <errno.h>
+-#include <sys/time.h>
 -#include <fcntl.h>
--#include <signal.h>
--#include <stdint.h>
--#include <stdio.h>
--#include <stdlib.h>
+ #include <stdlib.h>
+-#include <errno.h>
 -#include <string.h>
--#include <unistd.h>
+-#include <signal.h>
 -#include "test.h"
 -#include "safe_macros.h"
--#include "lapi/abisize.h"
+-#include "lapi/readlinkat.h"
 -
--char *TCID = "mmap15";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
- #ifdef __ia64__
--# define HIGH_ADDR (void *)(0xa000000000000000UL)
-+# define HIGH_ADDR ((void *)(0xa000000000000000UL))
- #else
--# define HIGH_ADDR (void *)(-page_size)
-+# define HIGH_ADDR ((void *)(-page_size))
- #endif
- 
-+#define TEMPFILE "mmapfile"
- static long page_size;
-+static int fd;
- 
 -static void setup(void);
 -static void cleanup(void);
++#include <stdio.h>
++#include "tst_test.h"
++#include "lapi/fcntl.h"
+ 
+-char *TCID = "readlinkat01";
++#define TEST_FILE       "readlink_file"
++#define TEST_SYMLINK    "readlink_symlink"
+ 
+-static int dir_fd, fd;
+-static int fd_invalid = 100;
++static int file_fd, dir_fd, dir_fd2;
+ static int fd_atcwd = AT_FDCWD;
+-
+-#define TEST_SYMLINK "readlink_symlink"
+-#define TEST_FILE "readlink_file"
+-
+-static char abspath[1024];
+-
+-static struct test_case {
+-	int *dir_fd;
+-	const char *path;
+-	const char *exp_buf;
+-	int exp_ret;
+-	int exp_errno;
+-} test_cases[] = {
+-	{&dir_fd, TEST_SYMLINK, TEST_FILE, sizeof(TEST_FILE)-1, 0},
+-	{&dir_fd, abspath, TEST_FILE, sizeof(TEST_FILE)-1, 0},
+-	{&fd, TEST_SYMLINK, NULL, -1, ENOTDIR},
+-	{&fd_invalid, TEST_SYMLINK, NULL, -1, EBADF},
+-	{&fd_atcwd, TEST_SYMLINK, TEST_FILE, sizeof(TEST_FILE)-1, 0},
++static const char *abspath;
++static const char *testsymlink;
++static const char *emptypath = "";
++
++static struct tcase {
++	int *fd;
++	const char **path;
++} tcases[] = {
++	{&dir_fd, &testsymlink},
++	{&dir_fd, &abspath},
++	{&file_fd, &abspath},
++	{&fd_atcwd, &testsymlink},
++	{&fd_atcwd, &abspath},
++	{&dir_fd2, &emptypath},
+ };
+ 
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
+-
+-static void verify_readlinkat(struct test_case *test)
++static void verify_readlinkat(unsigned int i)
+ {
+ 	char buf[1024];
++	struct tcase *tc = &tcases[i];
+ 
+ 	memset(buf, 0, sizeof(buf));
+ 
+-	TEST(readlinkat(*test->dir_fd, test->path, buf, sizeof(buf)));
+-
+-	if (TEST_RETURN != test->exp_ret) {
+-		tst_resm(TFAIL | TTERRNO,
+-		         "readlinkat() returned %ld, expected %d",
+-		         TEST_RETURN, test->exp_ret);
+-		return;
+-	}
+-
+-	if (TEST_ERRNO != test->exp_errno) {
+-		tst_resm(TFAIL | TTERRNO,
+-		         "readlinkat() returned %ld, expected %d",
+-		         TEST_RETURN, test->exp_ret);
+-		return;
+-	}
+-
+-	if (test->exp_ret > 0 && strcmp(test->exp_buf, buf)) {
+-		tst_resm(TFAIL, "Unexpected buffer have '%s', expected '%s'",
+-		         buf, test->exp_buf);
+-		return;
+-	}
+-
+-	tst_resm(TPASS | TTERRNO, "readlinkat() returned %ld", TEST_RETURN);
+-}
 -
 -int main(int ac, char **av)
-+static void run(void)
- {
--	int lc, fd;
--	void *addr;
+-{
+-	int lc;
+-	int i;
 -
- #ifdef TST_ABI32
--	tst_brkm(TCONF, NULL, "This test is only for 64bit");
-+	tst_brkm(TCONF, NULL, "Test is not applicable for 32-bit systems.");
- #endif
- 
 -	tst_parse_opts(ac, av, NULL, NULL);
-+	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
- 
+-
 -	setup();
-+	TESTPTR(mmap(HIGH_ADDR, page_size, PROT_READ, MAP_SHARED | MAP_FIXED, fd, 0));
++	TST_EXP_POSITIVE(readlinkat(*tc->fd, *tc->path, buf, sizeof(buf)),
++		     "readlinkat(%d, %s, %s, %ld)",
++		     *tc->fd, *tc->path, buf, sizeof(buf));
  
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
-+	if (TST_RET_PTR != MAP_FAILED) {
-+		tst_res(TFAIL, "mmap() into high mem region succeeded unexpectedly");
-+		SAFE_MUNMAP(TST_RET_PTR, page_size);
-+		return;
-+	} else if (TST_RET_PTR == MAP_FAILED && (TST_ERR == ENOMEM || TST_ERR == EINVAL))
-+		tst_res(TPASS | TERRNO, "mmap() failed with expected errno");
-+	else
-+		tst_res(TFAIL | TERRNO, "mmap() failed with unexpected errno");
- 
--		fd = SAFE_OPEN(cleanup, "testfile", O_RDWR | O_CREAT, 0666);
--
--		/* Attempt to mmap into highmem addr, should get ENOMEM */
--		addr = mmap(HIGH_ADDR, page_size, PROT_READ,
--			    MAP_SHARED | MAP_FIXED, fd, 0);
--		if (addr != MAP_FAILED) {
--			tst_resm(TFAIL, "mmap into high region "
--				 "succeeded unexpectedly");
--			munmap(addr, page_size);
--			close(fd);
--			continue;
--		}
--
--		if (errno != ENOMEM && errno != EINVAL) {
--			tst_resm(TFAIL | TERRNO, "mmap into high region "
--				 "failed unexpectedly");
--		} else {
--			tst_resm(TPASS | TERRNO, "mmap into high region "
--				 "failed as expected");
--		}
--
--		SAFE_CLOSE(cleanup, fd);
+-		for (i = 0; i < TST_TOTAL; i++)
+-			verify_readlinkat(&test_cases[i]);
 -	}
 -
 -	cleanup();
 -	tst_exit();
-+	SAFE_CLOSE(fd);
++	if (strcmp(buf, TEST_FILE) == 0)
++		tst_res(TPASS, "The filename in buffer is correct");
++	else
++		tst_res(TFAIL, "Wrong filename in buffer '%s'", buf);
  }
  
  static void setup(void)
  {
--	tst_require_root();
--
 -	tst_tmpdir();
--
- 	page_size = getpagesize();
+ 	char *tmpdir = tst_get_tmpdir();
+ 
+-	snprintf(abspath, sizeof(abspath), "%s/" TEST_SYMLINK, tmpdir);
++	abspath = tst_aprintf("%s/" TEST_SYMLINK, tmpdir);
+ 	free(tmpdir);
+ 
+-	fd = SAFE_OPEN(cleanup, TEST_FILE, O_CREAT, 0600);
+-	SAFE_SYMLINK(cleanup, TEST_FILE, TEST_SYMLINK);
+-	dir_fd = SAFE_OPEN(cleanup, ".", O_DIRECTORY);
 -
 -	TEST_PAUSE;
++	file_fd = SAFE_OPEN(TEST_FILE, O_CREAT, 0600);
++	SAFE_SYMLINK(TEST_FILE, TEST_SYMLINK);
++	dir_fd = SAFE_OPEN(".", O_DIRECTORY);
++	dir_fd2 = SAFE_OPEN(TEST_SYMLINK, O_PATH | O_NOFOLLOW);
  }
  
  static void cleanup(void)
  {
+-	if (fd > 0 && close(fd))
+-		tst_resm(TWARN | TERRNO, "Failed to close fd");
++	if (file_fd > -1)
++		SAFE_CLOSE(file_fd);
+ 
+-	if (dir_fd > 0 && close(dir_fd))
+-		tst_resm(TWARN | TERRNO, "Failed to close dir_fd");
++	if (dir_fd > -1)
++		SAFE_CLOSE(dir_fd);
+ 
 -	tst_rmdir();
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
++	if (dir_fd2 > -1)
++		SAFE_CLOSE(dir_fd2);
  }
 +
 +static struct tst_test test = {
++	.test = verify_readlinkat,
++	.needs_tmpdir = 1,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = run,
-+	.needs_root = 1,
-+	.needs_tmpdir = 1
++	.bufs = (struct tst_buffers []) {
++		{&testsymlink, .str = TEST_SYMLINK},
++		{},
++	},
++	.tcnt = ARRAY_SIZE(tcases),
 +};
 -- 
-2.41.0
+2.39.1
 
 
 -- 
