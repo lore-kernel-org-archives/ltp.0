@@ -4,64 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0E92C71153
-	for <ltp@archiver.kernel.org>; Mon, 28 Aug 2023 10:03:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF5F8C71153
+	for <ltp@archiver.kernel.org>; Mon, 28 Aug 2023 10:03:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 95C983CC151
-	for <ltp@archiver.kernel.org>; Mon, 28 Aug 2023 12:02:59 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 221843CC1C9
+	for <ltp@archiver.kernel.org>; Mon, 28 Aug 2023 12:03:09 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8622D3CB708
- for <ltp@lists.linux.it>; Mon, 28 Aug 2023 12:02:48 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 6D8113CB708
+ for <ltp@lists.linux.it>; Mon, 28 Aug 2023 12:02:49 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 6C2DC1400E1F
- for <ltp@lists.linux.it>; Mon, 28 Aug 2023 12:02:46 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 895801A01084
+ for <ltp@lists.linux.it>; Mon, 28 Aug 2023 12:02:48 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9A7DF1F38A;
- Mon, 28 Aug 2023 10:02:44 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2F15B1F390;
+ Mon, 28 Aug 2023 10:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1693216964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=P/Y8HhvWEqAUMBBLYfFek7WiBWgJncLpvozW0PbQoes=;
- b=VrqAK6QthwA/7ACrdGzq/pldu1TvssZYiPEChgEV+aFyQgEvrwpy4SD5tVxOWi4tl7g76y
- emI/iG36g4kBf0IGQKIXeakhkISC2rrQaJiDzS/1qbDfvejPFEEJyGQDC2bPkvAU18ukXy
- 9WIWtkvF6XUpyeT4x1lznX3mI8MMFPw=
+ t=1693216968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9rCMojA0Y/37SdfHbpoTcdpobcqSmr3ZWzw9sVUhdtE=;
+ b=SFpdPQroW/nE5J9Bjm6kC+32IQPxAUWNdaWhfNcdN/9kl8pohD+40aQYfOQMkcibUf3vD0
+ 6DdDn89eF2EGBkKSQuIcWmTUcqZ+PmAjpqDSXwD2dehhJV1hrevr6FtA00NbNVQUayG42k
+ F3mDQPuyMMyzUmoSB3U5DYdsTLuTNE4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1693216964;
+ s=susede2_ed25519; t=1693216968;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=P/Y8HhvWEqAUMBBLYfFek7WiBWgJncLpvozW0PbQoes=;
- b=FKp3wrB6okaEJIh/u9IDKM/glkH+pJAofVlaQKLkGYQSPWRJ1AT2+atXcPgpYgGiCxonw2
- dapTI6J714PosdAQ==
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9rCMojA0Y/37SdfHbpoTcdpobcqSmr3ZWzw9sVUhdtE=;
+ b=0yk0dvgnIy0geK47pXQCo4Iro4KCiIm4L4mdL0zooeX687NfOCSsLoKFI006QmXsb2JRD0
+ x77NpRHtuhdItsCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89A13139CC;
- Mon, 28 Aug 2023 10:02:44 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1EDBA139CC;
+ Mon, 28 Aug 2023 10:02:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ou2HIcRw7GSLRgAAMHmgww
- (envelope-from <jack@suse.cz>); Mon, 28 Aug 2023 10:02:44 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id Hk+FB8hw7GSTRgAAMHmgww
+ (envelope-from <jack@suse.cz>); Mon, 28 Aug 2023 10:02:48 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
- id 0BA0FA0774; Mon, 28 Aug 2023 12:02:44 +0200 (CEST)
+ id B0A53A0774; Mon, 28 Aug 2023 12:02:47 +0200 (CEST)
+Date: Mon, 28 Aug 2023 12:02:47 +0200
 From: Jan Kara <jack@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon, 28 Aug 2023 12:02:39 +0200
-Message-Id: <20230828100239.13518-1-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
+To: Amir Goldstein <amir73il@gmail.com>
+Message-ID: <20230828100247.2njvvupgfgsyivsv@quack3>
+References: <20230825122753.4721-1-jack@suse.cz>
+ <CAOQ4uxjhSix9-nWBb+CvovDjkGHhdeT5tTiOZs5WeV55vNuHQg@mail.gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxjhSix9-nWBb+CvovDjkGHhdeT5tTiOZs5WeV55vNuHQg@mail.gmail.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] fanotify22: Make tests not depend on behavior of
+Subject: Re: [LTP] [PATCH] fanotify22: Make tests not depend on behavior of
  shutdown filesystem
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -74,135 +80,63 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-The tests in fanotify22 implicitely depended on the fact that filesystem
-shutdown with 'abort' mount option keeps reporting further errors and
-further mounts with 'abort' option. This is however too strict (mostly a
-bug in ext4 implementation) and in principle reporting errors after the
-filesystem is shutdown is just a pointless noise. Ext4 recently modified
-the behavior of 'abort' mount option to behave the same as filesystem
-shutdown and thus also stop reporting further filesystem errors. Modify
-the tests to unmount and mount the filesystem after each test to get it
-out of the shutdown state for the following tests and also replace a
-test testing behavior after mounting with 'abort' mount option with a
-test testing two different filesystem corruption errors.
-
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- .../kernel/syscalls/fanotify/fanotify22.c     | 33 +++++++++++++++----
- 1 file changed, 26 insertions(+), 7 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify22.c b/testcases/kernel/syscalls/fanotify/fanotify22.c
-index 1105172bb269..f4b7987deda9 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify22.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify22.c
-@@ -42,6 +42,7 @@
- #define MOUNT_PATH "test_mnt"
- #define BASE_DIR "internal_dir"
- #define BAD_DIR BASE_DIR"/bad_dir"
-+#define BAD_LINK BASE_DIR"/bad_link"
- 
- #ifdef HAVE_NAME_TO_HANDLE_AT
- 
-@@ -51,6 +52,7 @@ static int fd_notify;
- /* These expected FIDs are common to multiple tests */
- static struct fanotify_fid_t null_fid;
- static struct fanotify_fid_t bad_file_fid;
-+static struct fanotify_fid_t bad_link_fid;
- 
- static void trigger_fs_abort(void)
- {
-@@ -65,7 +67,7 @@ static void do_debugfs_request(const char *dev, char *request)
- 	SAFE_CMD(cmd, NULL, NULL);
- }
- 
--static void tcase2_trigger_lookup(void)
-+static void trigger_bad_file_lookup(void)
- {
- 	int ret;
- 
-@@ -76,15 +78,27 @@ static void tcase2_trigger_lookup(void)
- 			ret, BAD_DIR, errno, EUCLEAN);
- }
- 
-+static void trigger_bad_link_lookup(void)
-+{
-+	int ret;
-+
-+	/* SAFE_OPEN cannot be used here because we expect it to fail. */
-+	ret = open(MOUNT_PATH"/"BAD_LINK, O_RDONLY, 0);
-+	if (ret != -1 && errno != EUCLEAN)
-+		tst_res(TFAIL, "Unexpected open result(%d) of %s (%d!=%d)",
-+			ret, BAD_LINK, errno, EUCLEAN);
-+}
-+
-+
- static void tcase3_trigger(void)
- {
--	trigger_fs_abort();
--	tcase2_trigger_lookup();
-+	trigger_bad_link_lookup();
-+	trigger_bad_file_lookup();
- }
- 
- static void tcase4_trigger(void)
- {
--	tcase2_trigger_lookup();
-+	trigger_bad_file_lookup();
- 	trigger_fs_abort();
- }
- 
-@@ -104,7 +118,7 @@ static struct test_case {
- 	},
- 	{
- 		.name = "Lookup of inode with invalid mode",
--		.trigger_error = &tcase2_trigger_lookup,
-+		.trigger_error = &trigger_bad_file_lookup,
- 		.error_count = 1,
- 		.error = EFSCORRUPTED,
- 		.fid = &bad_file_fid,
-@@ -113,8 +127,8 @@ static struct test_case {
- 		.name = "Multiple error submission",
- 		.trigger_error = &tcase3_trigger,
- 		.error_count = 2,
--		.error = ESHUTDOWN,
--		.fid = &null_fid,
-+		.error = EFSCORRUPTED,
-+		.fid = &bad_link_fid,
- 	},
- 	{
- 		.name = "Multiple error submission 2",
-@@ -248,6 +262,9 @@ static void do_test(unsigned int i)
- 			   FAN_FS_ERROR, AT_FDCWD, MOUNT_PATH);
- 
- 	check_event(event_buf, read_len, tcase);
-+	/* Unmount and mount the filesystem to get it out of the error state */
-+	SAFE_UMOUNT(MOUNT_PATH);
-+	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
- }
- 
- static void pre_corrupt_fs(void)
-@@ -256,9 +273,11 @@ static void pre_corrupt_fs(void)
- 	SAFE_MKDIR(MOUNT_PATH"/"BAD_DIR, 0777);
- 
- 	fanotify_save_fid(MOUNT_PATH"/"BAD_DIR, &bad_file_fid);
-+	fanotify_save_fid(MOUNT_PATH"/"BASE_DIR, &bad_link_fid);
- 
- 	SAFE_UMOUNT(MOUNT_PATH);
- 	do_debugfs_request(tst_device->dev, "sif " BAD_DIR " mode 0xff");
-+	do_debugfs_request(tst_device->dev, "ln <1> " BAD_LINK);
- 	SAFE_MOUNT(tst_device->dev, MOUNT_PATH, tst_device->fs_type, 0, NULL);
- }
- 
--- 
-2.35.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gRnJpIDI1LTA4LTIzIDE3OjEyOjE3LCBBbWlyIEdvbGRzdGVpbiB3cm90ZToKPiBPbiBGcmks
+IEF1ZyAyNSwgMjAyMyBhdCAzOjI44oCvUE0gSmFuIEthcmEgPGphY2tAc3VzZS5jej4gd3JvdGU6
+Cj4gPgo+ID4gVGhlIHRlc3RzIGluIGZhbm90aWZ5MjIgaW1wbGljaXRlbHkgZGVwZW5kZWQgb24g
+dGhlIGZhY3QgdGhhdCBmaWxlc3lzdGVtCj4gPiBzaHV0ZG93biB3aXRoICdhYm9ydCcgbW91bnQg
+b3B0aW9uIGtlZXBzIHJlcG9ydGluZyBmdXJ0aGVyIGVycm9ycyBhbmQKPiA+IGZ1cnRoZXIgbW91
+bnRzIHdpdGggJ2Fib3J0JyBvcHRpb24uIFRoaXMgaXMgaG93ZXZlciB0b28gc3RyaWN0IChtb3N0
+bHkgYQo+ID4gYnVnIGluIGV4dDQgaW1wbGVtZW50YXRpb24pIGFuZCBpbiBwcmluY2lwbGUgcmVw
+b3J0aW5nIGVycm9ycyBhZnRlciB0aGUKPiA+IGZpbGVzeXN0ZW0gaXMgc2h1dGRvd24gaXMganVz
+dCBhIHBvaW50bGVzcyBub2lzZS4gRXh0NCByZWNlbnRseSBtb2RpZmllZAo+ID4gdGhlIGJlaGF2
+aW9yIG9mICdhYm9ydCcgbW91bnQgb3B0aW9uIHRvIGJlaGF2ZSB0aGUgc2FtZSBhcyBmaWxlc3lz
+dGVtCj4gPiBzaHV0ZG93biBhbmQgdGh1cyBhbHNvIHN0b3AgcmVwb3J0aW5nIGZ1cnRoZXIgZmls
+ZXN5c3RlbSBlcnJvcnMuIE1vZGlmeQo+ID4gdGhlIHRlc3RzIHRvIHVubW91bnQgYW5kIG1vdW50
+IHRoZSBmaWxlc3lzdGVtIGFmdGVyIGVhY2ggdGVzdCB0byBnZXQgaXQKPiA+IG91dCBvZiB0aGUg
+c2h1dGRvd24gc3RhdGUgZm9yIHRoZSBmb2xsb3dpbmcgdGVzdHMgYW5kIGFsc28gcmVwbGFjZSBh
+Cj4gPiB0ZXN0IHRlc3RpbmcgYmVoYXZpb3IgYWZ0ZXIgbW91bnRpbmcgd2l0aCAnYWJvcnQnIG1v
+dW50IG9wdGlvbiB3aXRoIGEKPiA+IHRlc3QgdGVzdGluZyB0d28gZGlmZmVyZW50IGZpbGVzeXN0
+ZW0gY29ycnVwdGlvbiBlcnJvcnMuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogSmFuIEthcmEgPGph
+Y2tAc3VzZS5jej4KPiA+IC0tLQo+ID4gIC4uLi9rZXJuZWwvc3lzY2FsbHMvZmFub3RpZnkvZmFu
+b3RpZnkyMi5jICAgICB8IDE5ICsrKysrKysrKysrKysrKystLS0KPiA+ICAxIGZpbGUgY2hhbmdl
+ZCwgMTYgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeTIyLmMgYi90ZXN0Y2Fz
+ZXMva2VybmVsL3N5c2NhbGxzL2Zhbm90aWZ5L2Zhbm90aWZ5MjIuYwo+ID4gaW5kZXggMTEwNTE3
+MmJiMjY5Li40NzUxNTViOWY1OGEgMTAwNjQ0Cj4gPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2Zhbm90aWZ5L2Zhbm90aWZ5MjIuYwo+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9mYW5vdGlmeS9mYW5vdGlmeTIyLmMKPiA+IEBAIC00Miw2ICs0Miw3IEBACj4gPiAg
+I2RlZmluZSBNT1VOVF9QQVRIICJ0ZXN0X21udCIKPiA+ICAjZGVmaW5lIEJBU0VfRElSICJpbnRl
+cm5hbF9kaXIiCj4gPiAgI2RlZmluZSBCQURfRElSIEJBU0VfRElSIi9iYWRfZGlyIgo+ID4gKyNk
+ZWZpbmUgQkFEX0xJTksgQkFTRV9ESVIiL2JhZF9saW5rIgo+ID4KPiA+ICAjaWZkZWYgSEFWRV9O
+QU1FX1RPX0hBTkRMRV9BVAo+ID4KPiA+IEBAIC01MSw2ICs1Miw3IEBAIHN0YXRpYyBpbnQgZmRf
+bm90aWZ5Owo+ID4gIC8qIFRoZXNlIGV4cGVjdGVkIEZJRHMgYXJlIGNvbW1vbiB0byBtdWx0aXBs
+ZSB0ZXN0cyAqLwo+ID4gIHN0YXRpYyBzdHJ1Y3QgZmFub3RpZnlfZmlkX3QgbnVsbF9maWQ7Cj4g
+PiAgc3RhdGljIHN0cnVjdCBmYW5vdGlmeV9maWRfdCBiYWRfZmlsZV9maWQ7Cj4gPiArc3RhdGlj
+IHN0cnVjdCBmYW5vdGlmeV9maWRfdCBiYWRfbGlua19maWQ7Cj4gPgo+ID4gIHN0YXRpYyB2b2lk
+IHRyaWdnZXJfZnNfYWJvcnQodm9pZCkKPiA+ICB7Cj4gPiBAQCAtNzgsNyArODAsMTMgQEAgc3Rh
+dGljIHZvaWQgdGNhc2UyX3RyaWdnZXJfbG9va3VwKHZvaWQpCj4gPgo+ID4gIHN0YXRpYyB2b2lk
+IHRjYXNlM190cmlnZ2VyKHZvaWQpCj4gPiAgewo+ID4gLSAgICAgICB0cmlnZ2VyX2ZzX2Fib3J0
+KCk7Cj4gPiArICAgICAgIGludCByZXQ7Cj4gPiArCj4gPiArICAgICAgIC8qIFNBRkVfT1BFTiBj
+YW5ub3QgYmUgdXNlZCBoZXJlIGJlY2F1c2Ugd2UgZXhwZWN0IGl0IHRvIGZhaWwuICovCj4gPiAr
+ICAgICAgIHJldCA9IG9wZW4oTU9VTlRfUEFUSCIvIkJBRF9MSU5LLCBPX1JET05MWSwgMCk7Cj4g
+PiArICAgICAgIGlmIChyZXQgIT0gLTEgJiYgZXJybm8gIT0gRVVDTEVBTikKPiA+ICsgICAgICAg
+ICAgICAgICB0c3RfcmVzKFRGQUlMLCAiVW5leHBlY3RlZCBvcGVuIHJlc3VsdCglZCkgb2YgJXMg
+KCVkIT0lZCkiLAo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0LCBCQURfTElOSywgZXJy
+bm8sIEVVQ0xFQU4pOwo+ID4gICAgICAgICB0Y2FzZTJfdHJpZ2dlcl9sb29rdXAoKTsKPiA+ICB9
+Cj4gCj4gVG8gbWFrZSBpdCBtb3JlIGNsZWFyIHRoYXQgdGhpcyBpcyBhIG11bHRpcGxlIGVycm9y
+IHRyaWdnZXIsIEkgd291bGQgY29uc2lkZXIKPiAKPiAxLiB1c2UgaGVscGVyIHRyaWdnZXJfYmFk
+X2xpbmtfbG9va3VwKCkKPiAyLiBzL3RjYXNlMl90cmlnZ2VyX2xvb2t1cC90cmlnZ2VyX2JhZF9m
+aWxlX2xvb2t1cAo+IAo+IEFORAo+IAo+IHN0YXRpYyB2b2lkIHRjYXNlM190cmlnZ2VyKHZvaWQp
+Cj4gewo+ICAgICAgICB0cmlnZ2VyX2JhZF9saW5rX2xvb2t1cCgpOwo+ICAgICAgICB0cmlnZ2Vy
+X2JhZF9maWxlX2xvb2t1cCgpOwo+IH0KPiAKPiBXaXRoIHRoYXQgbml0IGZpeCwgeW91IG1heSBh
+ZGQ6Cj4gCj4gUmV2aWV3ZWQtYnk6IEFtaXIgR29sZHN0ZWluIDxhbWlyNzNpbEBnbWFpbC5jb20+
+CgpUaGFua3MgZm9yIHJldmlldyEgSSBkaWQgYWxsIHRoZSBjaGFuZ2VzLCBzdWJtaXR0aW5nIHYy
+IHNob3J0bHkuCgoJCQkJCQkJCUhvbnphCi0tIApKYW4gS2FyYSA8amFja0BzdXNlLmNvbT4KU1VT
+RSBMYWJzLCBDUgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0
+L2xpc3RpbmZvL2x0cAo=
