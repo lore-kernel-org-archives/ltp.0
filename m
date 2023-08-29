@@ -4,61 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6893AC83F12
-	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 10:29:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 804B3C83F14
+	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 10:43:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4495A3CC060
-	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 12:29:30 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 304E63CC087
+	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 12:43:30 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C03D63C8948
- for <ltp@lists.linux.it>; Tue, 29 Aug 2023 12:29:19 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id E69DF3C8948
+ for <ltp@lists.linux.it>; Tue, 29 Aug 2023 12:43:20 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9D858200AD3
- for <ltp@lists.linux.it>; Tue, 29 Aug 2023 12:29:18 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 072EB1F750;
- Tue, 29 Aug 2023 10:29:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693304957;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b9S9x88v5UKRuylyJFfr6TXOWQe0lHSASBPH+emyDxY=;
- b=PWxXKP8F+PpFTxqs1Cvem51wdYo+dpDTQdJppVku6yxpceZp9r77+N3rswzgxhTPOZbkTt
- Maef4kKKBYXz3QVUX2DXQK6Jew/quviWdCyXUPmkSsbRruA83wDtIZsMcEPU8lWIQmI5eg
- YCmgztsOZO9NmeA8VR/ya1Eo+XWsNak=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693304957;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=b9S9x88v5UKRuylyJFfr6TXOWQe0lHSASBPH+emyDxY=;
- b=Q7I4IkA7++jKA+WoI3Je+aSKIg8AKqFEd4ZcwkEXVXfS4u7DERLeCFJZ735M9zd11juGoA
- HlI/fJvDw4U9kCDw==
-Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 39E1B10009B6
+ for <ltp@lists.linux.it>; Tue, 29 Aug 2023 12:43:19 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 341C72C143;
- Tue, 29 Aug 2023 10:29:16 +0000 (UTC)
-References: <20230721071831.83546-1-limin154@huawei.com>
- <20230720152607.GA1339322@pevik>
-User-agent: mu4e 1.10.6; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 29 Aug 2023 11:25:18 +0100
-Organization: Linux Private Site
-In-reply-to: <20230720152607.GA1339322@pevik>
-Message-ID: <87v8cyi1l1.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C528E1F45F;
+ Tue, 29 Aug 2023 10:43:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1693305798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=HC+ih5tTq/xu5fUMfx+wUyZDcBF3CGshu/E4vnl4idk=;
+ b=RhwUKZjPCKF0q4jCFxoKRrvMNxKMkUaDalhjVk2Lo2svMoaSOx+uYegSJcFE1CInY8cMcZ
+ L3e+ah9B0fvnwECH2TtIZl/Z4zXrPZ7s+NEw0ZTyBGLlKPFdwXfM3ctho4CR0Yv0FgDRfX
+ Fn8C0lQ/19XRq4yH9TzdZ09R4G+OLaA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1693305798;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=HC+ih5tTq/xu5fUMfx+wUyZDcBF3CGshu/E4vnl4idk=;
+ b=2ywKAi3ZCs3u+y/boPv2i+mFim4ppRPMjMElqZyGn/q0e2RIX70PSravdW1TJAfMR2yLjN
+ l+qdK1OIaqqMrdBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B541D13301;
+ Tue, 29 Aug 2023 10:43:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id xjpeDMDL7WRxAgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 29 Aug 2023 10:43:12 +0000
+Date: Tue, 29 Aug 2023 12:41:22 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <ZO3LUpPOJs1Qn0H7@rei>
+References: <20230823130904.26051-1-andrea.cervesato@suse.de>
+ <ZO2dfwOM0pK8xz1j@rei>
+ <1717e228-1556-4ba0-8f91-4cb7160c3908@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <1717e228-1556-4ba0-8f91-4cb7160c3908@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH]utils/sctp: bugfix for testlib/sctputil.h
+Subject: Re: [LTP] [PATCH v4] Add epoll_wait05 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,77 +77,83 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi!
+> If patch is fine, is it possible to push it removing the reference?
 
-Petr Vorel <pvorel@suse.cz> writes:
+Pushed with one minor change, thanks.
 
-> Hi Li,
->
->> The socket is created and bound immediately without waiting for the handshake after close(sk).
->> "bind(): errno=EADDRINUSE(98): Address already in use" may be reported.
->> Use SO_REUSEPORT to allow multiple sockets to be bound to the same port.
->
-> How this can happen? Running tests too quickly one after the other?
-> Or what is different on your SUT? I'm not sure if it's good idea to always test
-> with SO_REUSEADDR and SO_REUSEPORT.
->
->> Signed-off-by: Min Li <limin154@huawei.com>
->> ---
->>  utils/sctp/testlib/sctputil.h | 9 +++++++++
->>  1 file changed, 9 insertions(+)
->
->> diff --git a/utils/sctp/testlib/sctputil.h b/utils/sctp/testlib/sctputil.h
->> index 176d623f0..b51a3f9b0 100644
->> --- a/utils/sctp/testlib/sctputil.h
->> +++ b/utils/sctp/testlib/sctputil.h
->> @@ -133,6 +133,15 @@ extern int TST_CNT;
->>  static inline int test_socket(int domain, int type, int protocol)
->>  {
->>  	int sk = socket(domain, type, protocol);
->> +	int true_const=1;
-> What is this unused variable for?
+I've also added check that epoll_wait() returns 1 otherwise the content
+of the returned event is not valid.
 
-It's used as the socket option value.
+Full diff:
 
->
->> +
->> +	if(setsockopt(sk, SOL_SOCKET, SO_REUSEADDR, &true_const, sizeof(int))){
->> +		printf("set addr err\n");
-> Besides missing spaces in if (if (..) { ), we have SAFE_SETSOCKOPT().
-> Or tst_brkm(TWARN, ...) could be used (we don't use printf directly in
-> LTP).
-
-+1 for SAFE_SETSOCKOPT
-
->
-> Kind regards,
-> Petr
->
->> +	}
->> +
->> +	if(setsockopt(sk, SOL_SOCKET, SO_REUSEPORT, &true_const, sizeof(int))){
->> +		printf("set port err\n");
->> +	}
-
-We don't need to set it twice.
-
-Setting patch as changes requested.
-
->
->>  	if (sk == -1) {
->>  		if (errno == EAFNOSUPPORT)
-
+diff --git a/testcases/kernel/mce-test b/testcases/kernel/mce-test
+index 95e136a3b..0b4e77570 160000
+--- a/testcases/kernel/mce-test
++++ b/testcases/kernel/mce-test
+@@ -1 +1 @@
+-Subproject commit 95e136a3b0cde818448d5fcff5bf75d58600dc0d
++Subproject commit 0b4e7757068381139db1317c07bdb7532196ef76
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c
+index a055a5885..d06a024ff 100644
+--- a/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c
+@@ -8,8 +8,6 @@
+  *
+  * Verify that epoll receives EPOLLRDHUP event when we hang a reading
+  * half-socket we are polling on.
+- *
+- * As reference please check https://lwn.net/Articles/864947/
+  */
+ 
+ #include "tst_test.h"
+@@ -52,6 +50,7 @@ static void run(void)
+ 	struct sockaddr_in client_addr;
+ 	struct epoll_event evt_req;
+ 	struct epoll_event evt_rec;
++	int ret;
+ 
+ 	if (!SAFE_FORK()) {
+ 		create_server();
+@@ -79,13 +78,18 @@ static void run(void)
+ 	tst_res(TINFO, "Hang socket");
+ 
+ 	TST_EXP_PASS_SILENT(shutdown(sockfd_client, SHUT_RD));
+-	SAFE_EPOLL_WAIT(epfd, &evt_rec, 1, 2000);
++	ret = SAFE_EPOLL_WAIT(epfd, &evt_rec, 1, 2000);
++	if (ret != 1) {
++		tst_res(TFAIL, "Wrong number of events reported %i", ret);
++		goto exit;
++	}
+ 
+ 	if (evt_rec.events & EPOLLRDHUP)
+ 		tst_res(TPASS, "Received EPOLLRDHUP");
+ 	else
+ 		tst_res(TFAIL, "EPOLLRDHUP has not been received");
+ 
++exit:
+ 	SAFE_CLOSE(epfd);
+ 	SAFE_CLOSE(sockfd_client);
+ 
+@@ -119,8 +123,4 @@ static struct tst_test test = {
+ 	.test_all = run,
+ 	.forks_child = 1,
+ 	.needs_checkpoints = 1,
+-	.tags = (const struct tst_tag[]) {
+-		{"linux-git", "3a34b13a88ca"},
+-		{},
+-	}
+ };
 
 -- 
-Thank you,
-Richard.
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
