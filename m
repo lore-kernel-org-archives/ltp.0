@@ -4,68 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 804B3C83F14
-	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 10:43:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7EADC83F14
+	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 11:01:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 304E63CC087
-	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 12:43:30 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 49A1F3CC0FB
+	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 13:01:22 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E69DF3C8948
- for <ltp@lists.linux.it>; Tue, 29 Aug 2023 12:43:20 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id DD9FE3CB97D
+ for <ltp@lists.linux.it>; Tue, 29 Aug 2023 13:01:11 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 39E1B10009B6
- for <ltp@lists.linux.it>; Tue, 29 Aug 2023 12:43:19 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0A73C200DBB
+ for <ltp@lists.linux.it>; Tue, 29 Aug 2023 13:01:10 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C528E1F45F;
- Tue, 29 Aug 2023 10:43:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1693305798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6F23A21863;
+ Tue, 29 Aug 2023 11:01:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1693306870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=HC+ih5tTq/xu5fUMfx+wUyZDcBF3CGshu/E4vnl4idk=;
- b=RhwUKZjPCKF0q4jCFxoKRrvMNxKMkUaDalhjVk2Lo2svMoaSOx+uYegSJcFE1CInY8cMcZ
- L3e+ah9B0fvnwECH2TtIZl/Z4zXrPZ7s+NEw0ZTyBGLlKPFdwXfM3ctho4CR0Yv0FgDRfX
- Fn8C0lQ/19XRq4yH9TzdZ09R4G+OLaA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1693305798;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=HC+ih5tTq/xu5fUMfx+wUyZDcBF3CGshu/E4vnl4idk=;
- b=2ywKAi3ZCs3u+y/boPv2i+mFim4ppRPMjMElqZyGn/q0e2RIX70PSravdW1TJAfMR2yLjN
- l+qdK1OIaqqMrdBw==
+ bh=A8Gd4maiYlB9bSiHEO4Z1Rfpoj0ygVlkc4lbZBO1piY=;
+ b=c8XmqveRv5SdC4DaVs4Qw4b7uCVlLWGuyl9zfYWnFoSpYvjnEavXx8Q3GQMDDMwV9lVxVC
+ utyy2K02DwQRQykilImX6l1b5T1c+VRXaRa64OpEUMmSm4l1j1M4N1Lr7FXbp6hG0HFNjX
+ QYUuKWqg8t8NhHZQb+g39SPqkySB5qE=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B541D13301;
- Tue, 29 Aug 2023 10:43:12 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C22613301;
+ Tue, 29 Aug 2023 11:01:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id xjpeDMDL7WRxAgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 29 Aug 2023 10:43:12 +0000
-Date: Tue, 29 Aug 2023 12:41:22 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Message-ID: <ZO3LUpPOJs1Qn0H7@rei>
-References: <20230823130904.26051-1-andrea.cervesato@suse.de>
- <ZO2dfwOM0pK8xz1j@rei>
- <1717e228-1556-4ba0-8f91-4cb7160c3908@suse.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id LP0yEfXP7WQCDAAAMHmgww
+ (envelope-from <wegao@suse.com>); Tue, 29 Aug 2023 11:01:09 +0000
+To: ltp@lists.linux.it
+Date: Tue, 29 Aug 2023 07:00:49 -0400
+Message-Id: <20230829110049.20896-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230530120723.29745-1-wegao@suse.com>
+References: <20230530120723.29745-1-wegao@suse.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1717e228-1556-4ba0-8f91-4cb7160c3908@suse.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v4] Add epoll_wait05 test
+Subject: [LTP] [v6,2/2] semop04: Refactor with new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,83 +67,231 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> If patch is fine, is it possible to push it removing the reference?
+---
+ testcases/kernel/syscalls/ipc/semop/semop04.c | 158 +++++-------------
+ 1 file changed, 42 insertions(+), 116 deletions(-)
 
-Pushed with one minor change, thanks.
-
-I've also added check that epoll_wait() returns 1 otherwise the content
-of the returned event is not valid.
-
-Full diff:
-
-diff --git a/testcases/kernel/mce-test b/testcases/kernel/mce-test
-index 95e136a3b..0b4e77570 160000
---- a/testcases/kernel/mce-test
-+++ b/testcases/kernel/mce-test
-@@ -1 +1 @@
--Subproject commit 95e136a3b0cde818448d5fcff5bf75d58600dc0d
-+Subproject commit 0b4e7757068381139db1317c07bdb7532196ef76
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c
-index a055a5885..d06a024ff 100644
---- a/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait05.c
-@@ -8,8 +8,6 @@
-  *
-  * Verify that epoll receives EPOLLRDHUP event when we hang a reading
-  * half-socket we are polling on.
+diff --git a/testcases/kernel/syscalls/ipc/semop/semop04.c b/testcases/kernel/syscalls/ipc/semop/semop04.c
+index 582624d60..96f4b8fb8 100644
+--- a/testcases/kernel/syscalls/ipc/semop/semop04.c
++++ b/testcases/kernel/syscalls/ipc/semop/semop04.c
+@@ -1,164 +1,90 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
 - *
-- * As reference please check https://lwn.net/Articles/864947/
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ * Copyright (C) 2003-2023 Linux Test Project, Inc.
++ * Author: 2001 Paul Larson <plars@us.ibm.com>
++ * Modified: 2001 Manoj Iyer <manjo@ausin.ibm.com>
   */
  
- #include "tst_test.h"
-@@ -52,6 +50,7 @@ static void run(void)
- 	struct sockaddr_in client_addr;
- 	struct epoll_event evt_req;
- 	struct epoll_event evt_rec;
-+	int ret;
+-/*
+- *  FILE        : sem01.c
+- *  DESCRIPTION : Creates a semaphore and two processes.  The processes
+- *                each go through a loop where they semdown, delay for a
+- *                random amount of time, and semup, so they will almost
+- *                always be fighting for control of the semaphore.
+- *  HISTORY:
+- *    01/15/2001 Paul Larson (plars@us.ibm.com)
+- *      -written
+- *    11/09/2001 Manoj Iyer (manjo@ausin.ibm.com)
+- *    Modified.
+- *    - Removed compiler warnings.
+- *      added exit to the end of function main()
++/*\
++ * [Description]
+  *
++ * Creates a semaphore and two processes.  The processes
++ * each go through a loop where they semdown, delay for a
++ * random amount of time, and semup, so they will almost
++ * always be fighting for control of the semaphore.
+  */
  
- 	if (!SAFE_FORK()) {
- 		create_server();
-@@ -79,13 +78,18 @@ static void run(void)
- 	tst_res(TINFO, "Hang socket");
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <errno.h>
+ #include <sys/types.h>
+-#include <sys/wait.h>
+ #include <sys/ipc.h>
+ #include "lapi/sem.h"
++#include "tst_test.h"
++#include "tst_safe_sysv_ipc.h"
  
- 	TST_EXP_PASS_SILENT(shutdown(sockfd_client, SHUT_RD));
--	SAFE_EPOLL_WAIT(epfd, &evt_rec, 1, 2000);
-+	ret = SAFE_EPOLL_WAIT(epfd, &evt_rec, 1, 2000);
-+	if (ret != 1) {
-+		tst_res(TFAIL, "Wrong number of events reported %i", ret);
-+		goto exit;
-+	}
+-int verbose = 0;
+-int loops = 100;
+-int errors = 0;
++#define LOOPS 1000
  
- 	if (evt_rec.events & EPOLLRDHUP)
- 		tst_res(TPASS, "Received EPOLLRDHUP");
- 	else
- 		tst_res(TFAIL, "EPOLLRDHUP has not been received");
- 
-+exit:
- 	SAFE_CLOSE(epfd);
- 	SAFE_CLOSE(sockfd_client);
- 
-@@ -119,8 +123,4 @@ static struct tst_test test = {
- 	.test_all = run,
- 	.forks_child = 1,
- 	.needs_checkpoints = 1,
--	.tags = (const struct tst_tag[]) {
--		{"linux-git", "3a34b13a88ca"},
--		{},
+-int semup(int semid)
++static void semup(int semid)
+ {
+ 	struct sembuf semops;
++
+ 	semops.sem_num = 0;
+ 	semops.sem_op = 1;
+ 	semops.sem_flg = SEM_UNDO;
+-	if (semop(semid, &semops, 1) == -1) {
+-		perror("semup");
+-		errors++;
+-		return 1;
 -	}
- };
-
+-	return 0;
++
++	SAFE_SEMOP(semid, &semops, 1);
+ }
+ 
+-int semdown(int semid)
++static void semdown(int semid)
+ {
+ 	struct sembuf semops;
++
+ 	semops.sem_num = 0;
+ 	semops.sem_op = -1;
+ 	semops.sem_flg = SEM_UNDO;
+-	if (semop(semid, &semops, 1) == -1) {
+-		perror("semdown");
+-		errors++;
+-		return 1;
+-	}
+-	return 0;
+-}
+ 
+-void delayloop()
+-{
+-	int delay;
+-	delay = 1 + ((100.0 * rand()) / RAND_MAX);
+-	if (verbose)
+-		printf("in delay function for %d microseconds\n", delay);
+-	usleep(delay);
++	SAFE_SEMOP(semid, &semops, 1);
+ }
+ 
+-void mainloop(int semid)
++static void mainloop(int semid)
+ {
+ 	int i;
+-	for (i = 0; i < loops; i++) {
+-		if (semdown(semid)) {
+-			printf("semdown failed\n");
+-		}
+-		if (verbose)
+-			printf("sem is down\n");
+-		delayloop();
+-		if (semup(semid)) {
+-			printf("semup failed\n");
+-		}
+-		if (verbose)
+-			printf("sem is up\n");
++
++	for (i = 0; i < LOOPS; i++) {
++		semdown(semid);
++		usleep(1 + ((100.0 * rand()) / RAND_MAX));
++		semup(semid);
+ 	}
+ }
+ 
+-int main(int argc, char *argv[])
++static void run(void)
+ {
+-	int semid, opt;
++	int semid;
+ 	union semun semunion;
+-	extern char *optarg;
+ 	pid_t pid;
+-	int chstat;
+-
+-	while ((opt = getopt(argc, argv, "l:vh")) != EOF) {
+-		switch ((char)opt) {
+-		case 'l':
+-			loops = atoi(optarg);
+-			break;
+-		case 'v':
+-			verbose = 1;
+-			break;
+-		case 'h':
+-		default:
+-			printf("Usage: -l loops [-v]\n");
+-			exit(1);
+-		}
+-	}
+ 
+ 	/* set up the semaphore */
+-	if ((semid = semget((key_t) 9142, 1, 0666 | IPC_CREAT)) < 0) {
+-		printf("error in semget()\n");
+-		exit(-1);
+-	}
++	semid = SAFE_SEMGET((key_t) 9142, 1, 0666 | IPC_CREAT);
++
+ 	semunion.val = 1;
+-	if (semctl(semid, 0, SETVAL, semunion) == -1) {
+-		printf("error in semctl\n");
+-	}
+ 
+-	if ((pid = fork()) < 0) {
+-		printf("fork error\n");
+-		exit(-1);
+-	}
++	SAFE_SEMCTL(semid, 0, SETVAL, semunion);
++
++	pid = SAFE_FORK();
++
+ 	if (pid) {
+-		/* parent */
+ 		srand(pid);
+ 		mainloop(semid);
+-		waitpid(pid, &chstat, 0);
+-		if (!WIFEXITED(chstat)) {
+-			printf("child exited with status\n");
+-			exit(-1);
+-		}
+-		if (semctl(semid, 0, IPC_RMID, semunion) == -1) {
+-			printf("error in semctl\n");
+-		}
+-		if (errors) {
+-			printf("FAIL: there were %d errors\n", errors);
+-		} else {
+-			printf("PASS: error count is 0\n");
+-		}
+-		exit(errors);
++		tst_reap_children();
++		TST_EXP_POSITIVE(semctl(semid, 0, IPC_RMID, semunion));
+ 	} else {
+-		/* child */
+ 		mainloop(semid);
+ 	}
+-	exit(0);
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.forks_child = 1,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
