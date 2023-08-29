@@ -4,62 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AA0DC83F12
-	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 07:38:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D13DC83F14
+	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 07:52:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 235FB3CC0CF
-	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 09:38:39 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 6880B3CC0B4
+	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 09:52:31 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 808873CB722
- for <ltp@lists.linux.it>; Tue, 29 Aug 2023 09:38:29 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 6003C3CB722
+ for <ltp@lists.linux.it>; Tue, 29 Aug 2023 09:52:20 +0200 (CEST)
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com
+ (mail-db5eur01on060e.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe02::60e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0D3A264027C
- for <ltp@lists.linux.it>; Tue, 29 Aug 2023 09:38:27 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 708D12184F;
- Tue, 29 Aug 2023 07:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693294707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=AtO8P/8zTzDXEiHIc6HwyCvhONTnvIejI4TtroOowIo=;
- b=ULuI+xb1b29pFGCrdRPuVCLn9nhOYAOjIYf9rv1xNophVegp7hk0SMUBzLRL2omaRDzwzx
- aOmATQmQYvfuWQEq/PzpW1YFj2Sd1i8JZmUJI/281T+W3qLs9UQVNrxtBqWcONO6geYB9V
- yt1opV6Dh5+WeZ/tNccH5N+e3gAsz70=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693294707;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=AtO8P/8zTzDXEiHIc6HwyCvhONTnvIejI4TtroOowIo=;
- b=8FSJfA8peRhcMe7gRYP1fnV5m/c+yGrFr4/2ZxMK27aoh2jZA4+JyUJfsXJLUZxPphsgiq
- LFiq/jOrlfR9NcCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 55DDC138E2;
- Tue, 29 Aug 2023 07:38:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 6cmpE3Og7WSiIQAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Tue, 29 Aug 2023 07:38:27 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Tue, 29 Aug 2023 09:38:21 +0200
-Message-Id: <20230829073821.2580-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 396D0200AFB
+ for <ltp@lists.linux.it>; Tue, 29 Aug 2023 09:52:19 +0200 (CEST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i61qX3XhTAhgAtJCld8koFF3LkGJMPKuDZuiUmRMtZDLgvqTyP/3oDsJVRCbnTuXr1udoR+ewJcOZOfiVgm4JIfAaflgVqpoKog/Mls5/6AAGzuwuzx+K5gljS4qPdGhXTlXoHcF5Spu7p7mJChHIiGp4uvcsRRNVdvMiYg/NK1VgK7MAO19FPXhcUGNvJRGPug9X2TgpzNJ8gj4r9f377iJLeqeKVMMfwk8nXFsz468dd2N9SPSFGqkK4VzeCJk5HhlA55ZiP968DE0Vphm8N3ozSuTkiOGXlo/urUmCxtjObtMM4M2LgWIsiOOX+Hm6YHxnyc7RCMET6jNghMUNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iUnnxWzFGdn9z2q1aB92S6DLCrAy9vPkKNWeyXE+rUw=;
+ b=RreEViqeBWxJsGlnGTNjlq6s+6mLy3G2betp8PpOFHrdp5PbV/68GHfIBAZSjVOrvCDwhFkpqtGbVnZ5+LKE8p+mK39lqLs8qjUTdCskP44wTVSwpN36gzl+/5cDvwP/OB5K8w6ZFOquk/btG3ScSPqKJPk1bILQrNFmJQTxG399AIWUy+J33S8eXvC9S44l6MIpWnCFGx0D5YhdXls21nC4pSoJqrjmoou7umOyjMiru4XfDWvtHY45+UmK3C2/cp8SFP39uVI+R34rjqpfNlgfv7eQp0eOP9Ue7hMCS1j8Qh8tqNmPqFxfdR+d99JN0SgfGpZI4ZIX3Bm2JJEyMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iUnnxWzFGdn9z2q1aB92S6DLCrAy9vPkKNWeyXE+rUw=;
+ b=tTtP6qMZdNnDg/vtlVVdmDgvCp+UaOIo4AlBKWyDSc4KA3qS4pi93sSt6Isg5ntCqktANvas/LpWixY8amDWlRLigaP2XZiIDyEuIszvy6KB5Abx++IrLQxO9KkCmxFRuZ3HYbSg/FlgP2C3yU65qx44pgXWlGaRj+Owt1JLSBeZYbFVfLiYW7C9BsensDJBHUXIFepqabmVTCUuCHypfjQMqquksEgMJKBMnvg9zW9nP/Q7sOqrhWAOMcmrZCWnGaNxo12Dwj86sMFBd9Vj9vljS68jbgW0vY0n/egfniCeHX1olYCbzZR5eykua/Xpbp/B1ZSsx3PCaBwXgAuePQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB6797.eurprd04.prod.outlook.com (2603:10a6:803:13e::13)
+ by DU0PR04MB9372.eurprd04.prod.outlook.com (2603:10a6:10:35b::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Tue, 29 Aug
+ 2023 07:52:16 +0000
+Received: from VI1PR04MB6797.eurprd04.prod.outlook.com
+ ([fe80::c33:be0b:88be:b96e]) by VI1PR04MB6797.eurprd04.prod.outlook.com
+ ([fe80::c33:be0b:88be:b96e%4]) with mapi id 15.20.6678.031; Tue, 29 Aug 2023
+ 07:52:16 +0000
+Message-ID: <1717e228-1556-4ba0-8f91-4cb7160c3908@suse.com>
+Date: Tue, 29 Aug 2023 09:52:15 +0200
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Cyril Hrubis <chrubis@suse.cz>, Andrea Cervesato <andrea.cervesato@suse.de>
+References: <20230823130904.26051-1-andrea.cervesato@suse.de>
+ <ZO2dfwOM0pK8xz1j@rei>
+In-Reply-To: <ZO2dfwOM0pK8xz1j@rei>
+X-ClientProxiedBy: FR0P281CA0212.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ac::11) To VI1PR04MB6797.eurprd04.prod.outlook.com
+ (2603:10a6:803:13e::13)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6797:EE_|DU0PR04MB9372:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3adca4c2-260f-4b08-3249-08dba864dd1c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 15qLzm5XSHnXqub1PQ42c6b0rnN3g6qgVxVfCFeMIO664q0PRYF665t2L2HJEKJbD23dRVx4XZ9V5/FiHxnT0y9HCy/zby+HaRO4NkxpqBclBkBC/kGYcXZ0Cdb2OYhJ/w280xgAAkdsPjtsU9zzzKQT9+5/BPZ2nDvizvGjzxSKP8oC18h2KnxRZiPaC6vH/EbYB0p1ZgQzTSx/0wT+tTJq7hPDe3yBdLiczISqwTDJJIDt49Yr/8tJDo1mspnbbWTkW9MIs+GX/9Ug8rMtnCykC3eEY0g/7Nt/88ZSm2umi0Re2AcNjjotV8C08D2kkl6omtwIfsE9/LM+YdhR3YKYhqrqdJ47/qQTXfYQMjv1Wz5TO8UbghUFkqhoIUxvPALbZs8IXx0ilPGa8fo8YVDpdf+Y57TaXYKHhc0pitjp4Q37+aGRRDMmoB6MzSQllAITfQN7UKViyWG/urWUszeuyvc2xxCVhKTtTsLBTa4+Vf8TuYxzSVmmiv/qym9ita8pqeEolCCYg9PaHipwzQoceq/y59S28v1c75KNKgEPR4yUkfHXrYxdypEa2dNmTYf0KsJns1zbPztPhkWhG2pqcu0JG0hGOub3uEVz3x3VO9iIwIijkANqsYjOQdoEJCm7//wgx+HXEF3H3/Sdjw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:VI1PR04MB6797.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230031)(396003)(346002)(136003)(366004)(376002)(39860400002)(186009)(1800799009)(451199024)(83380400001)(478600001)(966005)(26005)(31686004)(6486002)(2616005)(6512007)(110136005)(53546011)(6506007)(31696002)(86362001)(36756003)(316002)(44832011)(2906002)(38100700002)(8676002)(8936002)(4326008)(66556008)(66476007)(5660300002)(41300700001)(66946007)(45980500001)(43740500002);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a1lRTmNNWGxDZkNiUkFMVXpMMDEwK3UvMUlWazBZcC9SN3VpOThIaUNFTFZJ?=
+ =?utf-8?B?R01sZEYzdGkrZWlndlhXR2RDbVBDNzBxMng2aWFGY0JTb2NvMDZ2RmhqVFpF?=
+ =?utf-8?B?enM3eWtHRlRFTW9jN2dzSldKWGV2YmlRR2paU2dJS3Nid1IzcjVQOFZwcXB1?=
+ =?utf-8?B?eHZrSG9EaTFJR1psRjllS2VESEFFNnNVME9aV2V1a2NRb1RoSEhXMGJCazFD?=
+ =?utf-8?B?MTBWZnM3VmZnR0hnMm1zT0RFNGkzajJ3ZUN1M0dmKzZBTU1Fb1crUWNKMEF4?=
+ =?utf-8?B?M2FxWTVOV3RFZGFZSy8xNEpzdTFmR25Xa1NJaHFDOVFMbFdZTUg2SHJJRGxj?=
+ =?utf-8?B?Tzd1N2ovL2h1TFBmUnJCcWZwalhjWVM5SGNpbGpjRUQwTjhWZDh0K1pVZVlo?=
+ =?utf-8?B?eGxOYmpNcmVIU2oxNzRudng3eC9WWTR3bG9mN1N3WlpmTGR2cThGV25aOUpJ?=
+ =?utf-8?B?SlZ6cEkwU28xYjE2RlVFWGdRY3lpNklKcnl1QWcxMktjQnAvL2VueUI4NDlz?=
+ =?utf-8?B?cU1UbUdTUmswZGQzZmNPVTBxTEYyalZ4cXFobzdsWGxMODlqSUxtdmVYTWFQ?=
+ =?utf-8?B?Q1FBaXN3WmppSzZOa1VFa25vbDhQSmNnUWZES2hjMmdlTVdGZXpPOXlhNWl6?=
+ =?utf-8?B?cktIeEdVUW96QnVyWVBjS3dER0ZpWXpuNGN1OTloNkc0SFF6R2J2aWIvdnk5?=
+ =?utf-8?B?RFJXZVprR3R5WFBxajdVaGRaVy9jcVdQcmJ1cDRMaDFvQTZaNFVvbmEvTE4z?=
+ =?utf-8?B?MklpVlh3bGtSbi9hSTd1aTZ2RU9JbjVKc2grRTkrT1djclNoSGhIcHZPQjhx?=
+ =?utf-8?B?WnA3clpMcG5GbXF4TXBXdGVtN1NEUjRVWjNUU1pGY1p4MHd5bTl6ZDNZVWls?=
+ =?utf-8?B?elJpKzB3WlBPSW51UkRuWFJCMTJHeU0rbWh6dWdCZWFCdEV6dkdIWk9uSGVB?=
+ =?utf-8?B?YWFSRGNhaHJkQ3drUTZXRTZkQjIrZnRlc3RiUU1iTVVnKzdLcEpZM2dieFU3?=
+ =?utf-8?B?WFRwT0V2NkcyRktkQnlVMmtjTGFTeDliWHJndE0xeXZTRnpjSkRMRlduZmtk?=
+ =?utf-8?B?d0grRFdISFArbmRSYkdyREJIMG5nTXg3Q2NkdzlOOTloangwdUlSSUJKUEdk?=
+ =?utf-8?B?YjNkK2hIaXJNOTRDUEtUZnppZkVPS0V0NUxCU3BLMy90am1ZWDNJUXdsTm4z?=
+ =?utf-8?B?NzNxWXNPdnRJaUZRQW5EMDNiUllXN1BWeTBGSllkR0tGcWY5aHVwNHZEbENZ?=
+ =?utf-8?B?TkkyemNlOTZ3Q2ZyRnNsdmcwYWlBTnJiZjdHbzNiT1lZb3dqSHhwR3U3WDFq?=
+ =?utf-8?B?UTVZTkxrL3I1UE9yUW9BMW94OUxtN3lsWFQ1U2t4YXZsR3kxNFpORXBQOFRq?=
+ =?utf-8?B?UnE5Wlo5YjJrdU1jTkg3Q21RdUk2QVBGYjNrRGtaWDM5N29pOGpjVVc4cmNs?=
+ =?utf-8?B?TklCUWRGNFI1cWI1Zjc1SmZiN1U4NXl2QkdsOFJuTkFqR2F4US9CbGNRRkV1?=
+ =?utf-8?B?OWlaVnprMFY1a3dPZ3RCdlNCWDRGUXA4M1MwQmdIOVRKQ0JCdzgvallPM0lC?=
+ =?utf-8?B?NTdRbFpub1RhdmtCNnFFbXpRN01TVUsyWWJtZkJ5elJpenZUaXU5czc5MGVT?=
+ =?utf-8?B?dlA0aVF6UXNLaFBqc3ZpNUhVWldXd2grNzJhcEtJVmhFWkZORVBvWmJWQVJl?=
+ =?utf-8?B?UTF1clNDdVpaRHRsTW8wbUxzSEZzZnJybWhzVklPclVGMmQ2NkdHb3lhb2RJ?=
+ =?utf-8?B?TzBlZlRmOG1GNlRLTE55Z3U0cnpJMStmdk43UzVGYUFHL1lydnR5eVBHcUkz?=
+ =?utf-8?B?ZTR3OFRma0dVMjRHQkFBSW9rN3M1ZTVwZTMzSWt1TVJEbWR4a1lhcm9FbVY1?=
+ =?utf-8?B?TGpRMnJ3bXg1Tll0NzZwQ3diTUd1RW4yeS9CZmN4TFByNTlLR21MQVhaWkR3?=
+ =?utf-8?B?NFR6T25uRmZtVk1JU1NGT2FSeEhmcWd5NFQvNFAyZnZMSC9KTGQrNi9aMi81?=
+ =?utf-8?B?dG5jc1c1dU9NWnpQdWJQdktrWmNKdmJoNTVpNVhrVVVqMFJvejRVSndnd1JN?=
+ =?utf-8?B?a0xLejlDUmhXNkdhQ1h2ckc2VEJFdVBwMlNkNC9KckdhdFJFOUVzQi81bjIv?=
+ =?utf-8?B?NFZjc2p6eHdqaXhabUQvRjlCaWljaU1zVFdack4vMjRxT2VMS0g1ZHUyQUtq?=
+ =?utf-8?B?dGc9PQ==?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3adca4c2-260f-4b08-3249-08dba864dd1c
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB6797.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2023 07:52:16.5794 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yMGvtjPxv3ArX4MxrHE4lsBUXZxeGmDZj3pOvdlZVN5d+s4zmki3roQMLW/hiDSVXzBux9YcmuZ7zfrbEkDZwwTtwe4TVJUIBirkhQSYlt4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9372
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] Add process_madvise01 test
+Subject: Re: [LTP] [PATCH v4] Add epoll_wait05 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,306 +132,47 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi,
 
-This test checks process_madvise support for MADV_PAGEOUT. It tests
-if memory pages have been swapped out by looking at smaps information
-after reclaiming memory using MADV_PAGEOUT.
-This test supports kernel 5.10 or later.
+On 8/29/23 09:25, Cyril Hrubis wrote:
+> Hi!
+>> This test verifies that epoll receives EPOLLRDHUP event when we hang
+>> a reading half-socket we are polling on.
+>>
+>> Implements: https://github.com/linux-test-project/ltp/issues/860
+>> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ...
+>
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * Verify that epoll receives EPOLLRDHUP event when we hang a reading
+>> + * half-socket we are polling on.
+>> + *
+>> + * As reference please check https://lwn.net/Articles/864947/
+> I'm a bit confused here, the test itself looks good, but it references
+> an article and a kernel commit that changed how polling on _pipe_ works.
+> The kernel change literally changes only pipe_write() in fs/pipe.c and
+> this test actually tests inet sockets.
+>
+> I guess that the confusion is caused by the fact that the github issue
+> referenced the lwn.net article as a reason why we need more epoll
+> coverage, but these tests are not directly related to that commit at
+> all.
+>
+If patch is fine, is it possible to push it removing the reference?
 
-Implements: https://github.com/linux-test-project/ltp/issues/909
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- runtest/syscalls                              |   2 +
- .../syscalls/process_madvise/.gitignore       |   1 +
- .../kernel/syscalls/process_madvise/Makefile  |   7 +
- .../process_madvise/process_madvise.h         | 101 ++++++++++++++
- .../process_madvise/process_madvise01.c       | 126 ++++++++++++++++++
- 5 files changed, 237 insertions(+)
- create mode 100644 testcases/kernel/syscalls/process_madvise/.gitignore
- create mode 100644 testcases/kernel/syscalls/process_madvise/Makefile
- create mode 100644 testcases/kernel/syscalls/process_madvise/process_madvise.h
- create mode 100644 testcases/kernel/syscalls/process_madvise/process_madvise01.c
+Thanks,
+Andrea
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 119710d63..64907ff53 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1046,6 +1046,8 @@ process_vm_readv03 process_vm_readv03
- process_vm_writev01 process_vm01
- process_vm_writev02 process_vm_writev02
- 
-+process_madvise01 process_madvise01
-+
- prot_hsymlinks prot_hsymlinks
- dirtyc0w dirtyc0w
- dirtyc0w_shmem dirtyc0w_shmem
-diff --git a/testcases/kernel/syscalls/process_madvise/.gitignore b/testcases/kernel/syscalls/process_madvise/.gitignore
-new file mode 100644
-index 000000000..93d2640f7
---- /dev/null
-+++ b/testcases/kernel/syscalls/process_madvise/.gitignore
-@@ -0,0 +1 @@
-+/process_madvise01
-diff --git a/testcases/kernel/syscalls/process_madvise/Makefile b/testcases/kernel/syscalls/process_madvise/Makefile
-new file mode 100644
-index 000000000..ad5b66061
---- /dev/null
-+++ b/testcases/kernel/syscalls/process_madvise/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#  Copyright (C) 2023 Linux Test Project, Inc.
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/process_madvise/process_madvise.h b/testcases/kernel/syscalls/process_madvise/process_madvise.h
-new file mode 100644
-index 000000000..c4570e530
---- /dev/null
-+++ b/testcases/kernel/syscalls/process_madvise/process_madvise.h
-@@ -0,0 +1,101 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+#ifndef PROCESS_MADVISE_H__
-+#define PROCESS_MADVISE_H__
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include "tst_safe_stdio.h"
-+
-+struct addr_mapping {
-+	int size;
-+	int rss;
-+	int pss;
-+	int shared_clean;
-+	int shared_dirty;
-+	int private_clean;
-+	int private_dirty;
-+	int referenced;
-+	int anonymous;
-+	int anon_huge_pages;
-+	int shmem_huge_pages;
-+	int shmem_pmd_mapped;
-+	int swap;
-+	int kernel_page_size;
-+	int mmu_page_size;
-+	int locked;
-+	int protection_key;
-+};
-+
-+static inline void read_address_mapping(unsigned long address, struct addr_mapping *mapping)
-+{
-+	FILE *f;
-+	int found = 0;
-+	char label[BUFSIZ];
-+	char line[BUFSIZ];
-+	char smaps[BUFSIZ];
-+	char ptr_str[BUFSIZ];
-+	int value;
-+
-+	snprintf(smaps, BUFSIZ, "/proc/%i/smaps", getpid());
-+	snprintf(ptr_str, BUFSIZ, "%lx", address);
-+
-+	f = SAFE_FOPEN(smaps, "r");
-+
-+	while (fgets(line, BUFSIZ, f) != NULL) {
-+		if (strncmp(ptr_str, line, strlen(ptr_str)) == 0)
-+			found = 1;
-+
-+		if (!found)
-+			continue;
-+
-+		if (found && strcmp(line, "VmFlags") >= 0)
-+			break;
-+
-+		if (sscanf(line, "%31[^:]: %d", label, &value) > 0) {
-+			if (strcmp(label, "Size") == 0)
-+				mapping->size = value;
-+			else if (strcmp(label, "Rss") == 0)
-+				mapping->rss = value;
-+			else if (strcmp(label, "Pss") == 0)
-+				mapping->pss = value;
-+			else if (strcmp(label, "Shared_Clean") == 0)
-+				mapping->shared_clean = value;
-+			else if (strcmp(label, "Shared_Dirty") == 0)
-+				mapping->shared_dirty = value;
-+			else if (strcmp(label, "Private_Clean") == 0)
-+				mapping->private_clean = value;
-+			else if (strcmp(label, "Private_Dirty") == 0)
-+				mapping->private_dirty = value;
-+			else if (strcmp(label, "Referenced") == 0)
-+				mapping->referenced = value;
-+			else if (strcmp(label, "Anonymous") == 0)
-+				mapping->anonymous = value;
-+			else if (strcmp(label, "AnonHugePages") == 0)
-+				mapping->anon_huge_pages = value;
-+			else if (strcmp(label, "ShmemHugePages") == 0)
-+				mapping->shmem_huge_pages = value;
-+			else if (strcmp(label, "ShmemPmdMapped") == 0)
-+				mapping->shmem_pmd_mapped = value;
-+			else if (strcmp(label, "Swap") == 0)
-+				mapping->swap = value;
-+			else if (strcmp(label, "KernelPageSize") == 0)
-+				mapping->kernel_page_size = value;
-+			else if (strcmp(label, "MMUPageSize") == 0)
-+				mapping->mmu_page_size = value;
-+			else if (strcmp(label, "Locked") == 0)
-+				mapping->locked = value;
-+			else if (strcmp(label, "ProtectionKey") == 0)
-+				mapping->protection_key = value;
-+		}
-+	}
-+
-+	SAFE_FCLOSE(f);
-+}
-+
-+#endif
-diff --git a/testcases/kernel/syscalls/process_madvise/process_madvise01.c b/testcases/kernel/syscalls/process_madvise/process_madvise01.c
-new file mode 100644
-index 000000000..d79da650c
---- /dev/null
-+++ b/testcases/kernel/syscalls/process_madvise/process_madvise01.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Allocate anonymous memory pages inside child and reclaim it with
-+ * MADV_PAGEOUT. Then check if memory pages have been swapped out by looking
-+ * at smaps information.
-+ *
-+ * The advice might be ignored for some pages in the range when it is
-+ * not applicable, so test passes if swap memory increases after
-+ * reclaiming memory with MADV_PAGEOUT.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <sys/mman.h>
-+#include "tst_test.h"
-+#include "lapi/mmap.h"
-+#include "lapi/syscalls.h"
-+#include "process_madvise.h"
-+
-+#define MEM_CHILD	(1 * TST_MB)
-+
-+static void **data_ptr;
-+
-+static void child_alloc(void)
-+{
-+	char data[MEM_CHILD];
-+	struct addr_mapping map_before;
-+	struct addr_mapping map_after;
-+
-+	memset(data, 'a', MEM_CHILD);
-+
-+	tst_res(TINFO, "Allocate memory: %d bytes", MEM_CHILD);
-+
-+	*data_ptr = SAFE_MMAP(NULL, MEM_CHILD,
-+			PROT_READ | PROT_WRITE,
-+			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+
-+	memset(*data_ptr, 'a', MEM_CHILD);
-+
-+	memset(&map_before, 0, sizeof(struct addr_mapping));
-+	read_address_mapping((unsigned long)*data_ptr, &map_before);
-+
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
-+
-+	memset(&map_after, 0, sizeof(struct addr_mapping));
-+	read_address_mapping((unsigned long)*data_ptr, &map_after);
-+
-+	if (memcmp(*data_ptr, data, MEM_CHILD) != 0) {
-+		tst_res(TFAIL, "Dirty memory after reclaiming it");
-+		return;
-+	}
-+
-+	SAFE_MUNMAP(*data_ptr, MEM_CHILD);
-+	*data_ptr = NULL;
-+
-+	TST_EXP_EXPR(map_before.swap < map_after.swap,
-+		"Most of the memory has been swapped out: %dkB out of %dkB",
-+		map_after.swap,
-+		MEM_CHILD / TST_KB);
-+}
-+
-+static void setup(void)
-+{
-+	data_ptr = SAFE_MMAP(NULL, sizeof(void *),
-+			PROT_READ | PROT_WRITE,
-+			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (*data_ptr)
-+		SAFE_MUNMAP(*data_ptr, MEM_CHILD);
-+
-+	if (data_ptr)
-+		SAFE_MUNMAP(data_ptr, sizeof(void *));
-+}
-+
-+static void run(void)
-+{
-+	int ret;
-+	int pidfd;
-+	pid_t pid_alloc;
-+	struct iovec vec;
-+
-+	pid_alloc = SAFE_FORK();
-+	if (!pid_alloc) {
-+		child_alloc();
-+		return;
-+	}
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	tst_res(TINFO, "Reclaim memory using MADV_PAGEOUT");
-+
-+	pidfd = SAFE_PIDFD_OPEN(pid_alloc, 0);
-+
-+	vec.iov_base = *data_ptr;
-+	vec.iov_len = MEM_CHILD;
-+
-+	ret = tst_syscall(__NR_process_madvise, pidfd, &vec, 1UL,
-+			MADV_PAGEOUT, 0UL);
-+
-+	if (ret == -1)
-+		tst_brk(TBROK | TERRNO, "process_madvise failed");
-+
-+	if (ret != MEM_CHILD)
-+		tst_brk(TBROK, "process_madvise reclaimed only %d bytes", ret);
-+
-+	TST_CHECKPOINT_WAKE(0);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.forks_child = 1,
-+	.min_kver = "5.10",
-+	.needs_checkpoints = 1,
-+	.needs_root = 1,
-+};
--- 
-2.35.3
 
 
 -- 
