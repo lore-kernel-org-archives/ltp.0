@@ -4,58 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7EADC83F14
-	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 11:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35AC7C83F14
+	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 11:19:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 49A1F3CC0FB
-	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 13:01:22 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 030E73CEDA0
+	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 13:19:08 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DD9FE3CB97D
- for <ltp@lists.linux.it>; Tue, 29 Aug 2023 13:01:11 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id DBE743C8AC4
+ for <ltp@lists.linux.it>; Tue, 29 Aug 2023 13:18:56 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0A73C200DBB
- for <ltp@lists.linux.it>; Tue, 29 Aug 2023 13:01:10 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6B2B610009DA
+ for <ltp@lists.linux.it>; Tue, 29 Aug 2023 13:18:55 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6F23A21863;
- Tue, 29 Aug 2023 11:01:10 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C982E2185D;
+ Tue, 29 Aug 2023 11:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1693306870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1693307934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=A8Gd4maiYlB9bSiHEO4Z1Rfpoj0ygVlkc4lbZBO1piY=;
- b=c8XmqveRv5SdC4DaVs4Qw4b7uCVlLWGuyl9zfYWnFoSpYvjnEavXx8Q3GQMDDMwV9lVxVC
- utyy2K02DwQRQykilImX6l1b5T1c+VRXaRa64OpEUMmSm4l1j1M4N1Lr7FXbp6hG0HFNjX
- QYUuKWqg8t8NhHZQb+g39SPqkySB5qE=
+ bh=+YjY/icOS3Ya7VnLYedMD2pqsgz6Tg3Thkl7Mwqv/aY=;
+ b=guXKBx9Z96/UkNIKIfXfVeJFGzSbPbbm0s97yH+ZGw1oKDL0zvV+LHnN5IvVbac5V+2s4b
+ EtdiqalEQVtcndKJ0ueB9W1MK1lsOTuFMUDVfAc3gg3viswqHNG8d9D/1f7mcLjVJF9vIV
+ XzCct3Awn7HU6Yv/X7SZDRLYeYKZhbg=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C22613301;
- Tue, 29 Aug 2023 11:01:09 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9D2113301;
+ Tue, 29 Aug 2023 11:18:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id LP0yEfXP7WQCDAAAMHmgww
- (envelope-from <wegao@suse.com>); Tue, 29 Aug 2023 11:01:09 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id QBtIJx3U7WQcFgAAMHmgww
+ (envelope-from <wegao@suse.com>); Tue, 29 Aug 2023 11:18:53 +0000
 To: ltp@lists.linux.it
-Date: Tue, 29 Aug 2023 07:00:49 -0400
-Message-Id: <20230829110049.20896-1-wegao@suse.com>
+Date: Tue, 29 Aug 2023 07:18:46 -0400
+Message-Id: <20230829111846.30961-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230530120723.29745-1-wegao@suse.com>
-References: <20230530120723.29745-1-wegao@suse.com>
+In-Reply-To: <20230829110049.20896-1-wegao@suse.com>
+References: <20230829110049.20896-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [v6,2/2] semop04: Refactor with new API
+Subject: [LTP] [v7,2/2] semop04: Refactor with new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,6 +73,7 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
  testcases/kernel/syscalls/ipc/semop/semop04.c | 158 +++++-------------
  1 file changed, 42 insertions(+), 116 deletions(-)
