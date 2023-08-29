@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54577C6FA8F
-	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 09:07:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EACEAC6FA8F
+	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 09:22:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A2E413CC1C5
-	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 11:07:50 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id EDCB03CC125
+	for <ltp@archiver.kernel.org>; Tue, 29 Aug 2023 11:22:09 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 970A53C9762
- for <ltp@lists.linux.it>; Tue, 29 Aug 2023 11:07:39 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 4F02A3C9762
+ for <ltp@lists.linux.it>; Tue, 29 Aug 2023 11:22:00 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 680401400FB6
- for <ltp@lists.linux.it>; Tue, 29 Aug 2023 11:07:37 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 77A711F750;
- Tue, 29 Aug 2023 09:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1693300057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 14CD01000EC6
+ for <ltp@lists.linux.it>; Tue, 29 Aug 2023 11:21:58 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 86BAA211DE;
+ Tue, 29 Aug 2023 09:21:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1693300918;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/y4X7W+0FJmxngFnf2z8pZ03avzhGK9dZUq9FP24JfQ=;
- b=K4eII02sJp0ZUVEA9vmmYn0enRfr4xpkOzakNpsZ4wYVsEBnfmKCYHUS72JmcUXRNodegR
- ugCiu3xKLKQ4ET0pKzsjWai6GLkfHqMqp7UYEBnpG6LcrvmADgQY1QCWeOr8TiB8iOf3VW
- WaXNLF5UVkQaqSEM9i0yj/uuZDf/lps=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1693300057;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ bh=d6eOB1F+Z7Xf1mxe4o8jQ8/k0zodMP2o5ArFQNi+rvw=;
+ b=fhdqokkzSuW1yHPpcgn9J3+fPnbPUiCJ9bCp8XJ2yzM0dvFFCudq0bbIQE3r0LTLvJQZoI
+ St6XpnMaLR0wmskE+16dizxaKHDmQbkENNB2fpctN8+hvwg3XI8igMkRJj+oNMUzm/YQ18
+ WBHWwgv0LswSoOczOD0NMj2PRQ8RKOI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1693300918;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/y4X7W+0FJmxngFnf2z8pZ03avzhGK9dZUq9FP24JfQ=;
- b=gtwdBsSPtHRHsOFIhC5gbsBjSU5JvECnIbcQzTaNyanCTlGBnIj9wccotOTTdYl4ntyi4M
- jQEOnJKuoXsR+eBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=d6eOB1F+Z7Xf1mxe4o8jQ8/k0zodMP2o5ArFQNi+rvw=;
+ b=BIKZTSRD45szHR/HLFT81Is4lTnWME6+WARPgnlSlY0l4pwKxWz5UZsG+ilPBswqSpsI2y
+ K1O0cT7zSOn36IDA==
+Received: from g78 (unknown [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6CA6D13301;
- Tue, 29 Aug 2023 09:07:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4dFODli17WTHUAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 29 Aug 2023 09:07:36 +0000
-Date: Tue, 29 Aug 2023 11:07:17 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <ZO21RSSoRyeQmXBZ@rei>
-References: <20230818112023.18159-1-akumar@suse.de>
- <20230818112023.18159-3-akumar@suse.de>
+ by relay2.suse.de (Postfix) with ESMTPS id B390C2C142;
+ Tue, 29 Aug 2023 09:21:57 +0000 (UTC)
+References: <20230316072231.19157-3-wegao@suse.com>
+ <20230530120723.29745-1-wegao@suse.com> <20230621102506.GB393195@pevik>
+User-agent: mu4e 1.10.6; emacs 29.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 29 Aug 2023 10:20:44 +0100
+Organization: Linux Private Site
+In-reply-to: <20230621102506.GB393195@pevik>
+Message-ID: <874jkijj9p.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230818112023.18159-3-akumar@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/4] syscalls/mmap02: Rewrite the test using new
- LTP API
+Subject: Re: [LTP] [v5,2/2] semop04: Refactor with new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,139 +71,103 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
->  static void setup(void)
->  {
-> -	char *tst_buff;
-> -
-> -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> +	char *buf;
->  
->  	page_sz = getpagesize();
-> +	buf = SAFE_CALLOC(page_sz, sizeof(char));
-                                   ^
-				   this is 1 by definition
+Hello,
 
-So we can do just SAFE_MALLOC(page_sz);
+Petr Vorel <pvorel@suse.cz> writes:
 
-> +	memset(buf, 'A', page_sz);
->  
-> -	/* Allocate space for the test buffer */
-> -	if ((tst_buff = calloc(page_sz, sizeof(char))) == NULL) {
-> -		tst_brkm(TFAIL, NULL, "calloc failed (tst_buff)");
-> -	}
-> -
-> -	/* Fill the test buffer with the known data */
-> -	memset(tst_buff, 'A', page_sz);
-> +	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
-> +	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, page_sz);
-> +	free(buf);
-> +	SAFE_FCHMOD(fd, 0444);
-> +	SAFE_CLOSE(fd);
->  
-> -	tst_tmpdir();
-> -
-> -	/* Creat a temporary file used for mapping */
-> -	if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0) {
-> -		free(tst_buff);
-> -		tst_brkm(TFAIL | TERRNO, cleanup, "opening %s failed",
-> -			 TEMPFILE);
-> -	}
-> -
-> -	/* Write test buffer contents into temporary file */
-> -	if (write(fildes, tst_buff, page_sz) < (int)page_sz) {
-> -		free(tst_buff);
-> -		tst_brkm(TFAIL | TERRNO, cleanup,
-> -			 "writing to %s failed", TEMPFILE);
-> -	}
-> -
-> -	/* Free the memory allocated for test buffer */
-> -	free(tst_buff);
-> -
-> -	/* Change Mode permissions on Temporary file */
-> -	if (fchmod(fildes, 0444) < 0) {
-> -		tst_brkm(TFAIL | TERRNO, cleanup, "fchmod(%s, 0444) failed",
-> -			 TEMPFILE);
-> -	}
-> +	fd = SAFE_OPEN(TEMPFILE, O_RDONLY);
-> +	dummy = SAFE_CALLOC(page_sz, sizeof(char));
+> Hi Wei,
+>
+>> -void delayloop()
+>> +static void delayloop(void)
+>>  {
+>>  	int delay;
+>> +
+>>  	delay = 1 + ((100.0 * rand()) / RAND_MAX);
+>> -	if (verbose)
+>> -		printf("in delay function for %d microseconds\n", delay);
+>>  	usleep(delay);
+>>  }
+>
+> ...
+>> +	for (i = 0; i < LOOPS; i++) {
+>> +		semdown(semid);
+>>  		delayloop();
+> Why not just:
+>
+> 	usleep(1 + ((100.0 * rand()) / RAND_MAX));
+>
+> and delete whole delayloop() function?
+>
+>> -		if (semup(semid)) {
+>> -			printf("semup failed\n");
+>> -		}
+>> -		if (verbose)
+>> -			printf("sem is up\n");
+>> +		semup(semid);
+>>  	}
+>
+> ...
+>>  	/* set up the semaphore */
+>> -	if ((semid = semget((key_t) 9142, 1, 0666 | IPC_CREAT)) < 0) {
+>> -		printf("error in semget()\n");
+>> -		exit(-1);
+>> -	}
+>> +	semid = SAFE_SEMGET((key_t) 9142, 1, 0666 | IPC_CREAT);
+>> +
+>>  	semunion.val = 1;
+>> -	if (semctl(semid, 0, SETVAL, semunion) == -1) {
+>> -		printf("error in semctl\n");
+>> -	}
+>
+>> -	if ((pid = fork()) < 0) {
+>> -		printf("fork error\n");
+>> -		exit(-1);
+>> -	}
+>> +	SAFE_SEMCTL(semid, 0, SETVAL, semunion);
+>> +
+>> +	pid = SAFE_FORK();
+>> +
+>>  	if (pid) {
+>> -		/* parent */
+>>  		srand(pid);
+>>  		mainloop(semid);
+>> -		waitpid(pid, &chstat, 0);
+>> -		if (!WIFEXITED(chstat)) {
+>> -			printf("child exited with status\n");
+>> -			exit(-1);
+>> -		}
+>> -		if (semctl(semid, 0, IPC_RMID, semunion) == -1) {
+>> -			printf("error in semctl\n");
+>> -		}
+>> -		if (errors) {
+>> -			printf("FAIL: there were %d errors\n", errors);
+>> -		} else {
+>> -			printf("PASS: error count is 0\n");
+>> -		}
+>> -		exit(errors);
+>> +		tst_reap_children();
+>> +		SAFE_SEMCTL(semid, 0, IPC_RMID, semunion);
+>> +		tst_res(TPASS, "Semaphore up/down check success");
+>
+> Maybe here use plain semctl() verified with TST_EXP_POSITIVE() from
+> tst_test_macros.h? This way we'd get TFAIL on failure instead of TPASS.
+>
+> Kind regards,
+> Petr
 
-Why do we allocate second buffer? Cant we just keep the buf? Bonus point
-is that the buf was alread filled with data we expect in the file, so we
-don't have to read them with read() in the run() function.
+Setting to changes requested in patchwork.
 
-> +}
->  
-> -	/* Close the temporary file */
-> -	if (close(fildes) < 0) {
-> -		tst_brkm(TFAIL | TERRNO, cleanup, "closing %s failed",
-> -			 TEMPFILE);
-> +static void run(void)
-> +{
-> +	addr = mmap(0, page_sz, PROT_READ, MAP_FILE | MAP_SHARED, fd, 0);
-> +	if (addr == MAP_FAILED) {
-> +		tst_res(TFAIL | TERRNO, "mmap() of %s failed", TEMPFILE);
-> +		return;
->  	}
->  
-> -	/* Open the temporary file again, - Readonly mode */
-> -	if ((fildes = open(TEMPFILE, O_RDONLY)) < 0) {
-> -		tst_brkm(TFAIL, cleanup, "reopening %s readonly failed",
-> -			 TEMPFILE);
-> -	}
-> +	SAFE_READ(1, fd, dummy, page_sz);
-> +	SAFE_LSEEK(fd, 0, SEEK_SET);
->  
-> -	/* Allocate and initialize dummy string of system page size bytes */
-> -	if ((dummy = calloc(page_sz, sizeof(char))) == NULL) {
-> -		tst_brkm(TFAIL, cleanup, "calloc failed (dummy)");
-> -	}
-> +	if (memcmp(dummy, addr, page_sz) == 0)
-> +		tst_res(TPASS, "mmap() functionality successful");
-> +	else
-> +		tst_res(TFAIL, "mapped memory area contains invalid data");
->  
-> +	SAFE_MUNMAP(addr, page_sz);
->  }
->  
->  static void cleanup(void)
->  {
-> -	close(fildes);
-> -	free(dummy);
-> -	tst_rmdir();
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
-> +	if (dummy)
-> +		free(dummy);
-
-free(NULL) is no-op so there is no need for the if ().
-
->  }
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run,
-> +	.needs_tmpdir = 1
-> +};
-> -- 
-> 2.41.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
