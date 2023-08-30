@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B03AC6FA8F
-	for <ltp@archiver.kernel.org>; Wed, 30 Aug 2023 13:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 270A2C83F01
+	for <ltp@archiver.kernel.org>; Wed, 30 Aug 2023 15:56:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 922D33CE048
-	for <ltp@archiver.kernel.org>; Wed, 30 Aug 2023 15:26:06 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 2F7803CE046
+	for <ltp@archiver.kernel.org>; Wed, 30 Aug 2023 17:56:01 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0C93C3CC002
- for <ltp@lists.linux.it>; Wed, 30 Aug 2023 15:25:31 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id D4A403CB7F1
+ for <ltp@lists.linux.it>; Wed, 30 Aug 2023 17:55:50 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E79001A00921
- for <ltp@lists.linux.it>; Wed, 30 Aug 2023 15:25:30 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F198B14004EC
+ for <ltp@lists.linux.it>; Wed, 30 Aug 2023 17:55:49 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E73A11F74B;
- Wed, 30 Aug 2023 13:25:29 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 387E321862;
+ Wed, 30 Aug 2023 15:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693401929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=85L1WEHaT0JYnIPb68npxISGMq3alxNGHeMaX+QFQs4=;
- b=lg11NPbVbRa8AmTbcq8/IqfJSEFjCAtocqzVy+7y/674oQkH91q9QLx2DNiXjqubXSJaXq
- gr4ODa7Tm9A5DoNsqMGR4oni3Lgr8WgXBzX08HooAvpjWvFI5RgOmLaT6F7it1Qomiyh80
- xO9c9VIdOYcVn+fpnOyAQBN1VAx6b2A=
+ t=1693410949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=v9PYe/UmjPi96MllR4J97cbD3y5/sCLJ+zE11LYr5HE=;
+ b=TxLBCX8GqNfadpQA0fN/BXK5Bxo4MR4H6+882jFCHFA6f0CaI00tJYtMouLdVnmkLXomH4
+ o5Rqc+BEJpFVfdWBKbOvtTLIjQWKT/X2UfTNNZAJ9LP/XbsXmIzZN4DeoCJ64iQD5vhOhI
+ jSKkuRUABWtbValq2ipnfLoek41mUv4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693401929;
+ s=susede2_ed25519; t=1693410949;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=85L1WEHaT0JYnIPb68npxISGMq3alxNGHeMaX+QFQs4=;
- b=XcAID6cOeYxVWNZ5RVYL/NXvoCXOVJ4pauMqIiG6CD7V1spAHaMgPPl7GsHRTA8jBvW66G
- ceLuWWgzY/TsLPBQ==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=v9PYe/UmjPi96MllR4J97cbD3y5/sCLJ+zE11LYr5HE=;
+ b=WSvYUL82Nr+KzpZ97oUemQMEM7ouFPrvsn0d6W0YvH376fwuiuk4n6uVytWKxoCL2yJM2R
+ eanC8tQzRwqs9NBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C836C13441;
- Wed, 30 Aug 2023 13:25:29 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1AE1713441;
+ Wed, 30 Aug 2023 15:55:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QLRZL0lD72QXaAAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Wed, 30 Aug 2023 13:25:29 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id u5UaBYVm72QsPQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Wed, 30 Aug 2023 15:55:49 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Wed, 30 Aug 2023 15:25:28 +0200
-Message-Id: <20230830132528.26521-3-andrea.cervesato@suse.de>
+Date: Wed, 30 Aug 2023 17:55:48 +0200
+Message-Id: <20230830155548.9402-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230830132528.26521-1-andrea.cervesato@suse.de>
-References: <20230830132528.26521-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 2/2] Refactor personality02 using new API
+Subject: [LTP] [PATCH v1] Refactor exit_group01 using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,99 +78,184 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
+We provided a different approach to exit_group() testing, spawning
+multiple threads inside the child and checking if they get killed with
+the parent process.
+
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
- .../syscalls/personality/personality02.c      | 64 +++++++------------
- 1 file changed, 22 insertions(+), 42 deletions(-)
+ testcases/kernel/syscalls/exit_group/Makefile |   2 +
+ .../kernel/syscalls/exit_group/exit_group01.c | 137 +++++++++++-------
+ 2 files changed, 85 insertions(+), 54 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/personality/personality02.c b/testcases/kernel/syscalls/personality/personality02.c
-index eb18c9951..e080284f4 100644
---- a/testcases/kernel/syscalls/personality/personality02.c
-+++ b/testcases/kernel/syscalls/personality/personality02.c
-@@ -1,62 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-+ * Copyright (c) 2016 Linux Test Project
-  * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software: you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation, either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-  */
+diff --git a/testcases/kernel/syscalls/exit_group/Makefile b/testcases/kernel/syscalls/exit_group/Makefile
+index 1273a4e9c..adbac3c51 100644
+--- a/testcases/kernel/syscalls/exit_group/Makefile
++++ b/testcases/kernel/syscalls/exit_group/Makefile
+@@ -3,6 +3,8 @@
  
--/*
-- * If personality with STICKY_TIMEOUTS is used select() timeout is not updated.
+ top_srcdir		?= ../../../..
+ 
++exit_group01: CFLAGS+=-pthread
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/exit_group/exit_group01.c b/testcases/kernel/syscalls/exit_group/exit_group01.c
+index 5bf5b0218..0ed008115 100644
+--- a/testcases/kernel/syscalls/exit_group/exit_group01.c
++++ b/testcases/kernel/syscalls/exit_group/exit_group01.c
+@@ -1,68 +1,97 @@
+-/******************************************************************************
+- * Copyright (c) Crackerjack Project., 2007                                   *
+- * Ported to LTP by Manas Kumar Nayak <maknayak@in.ibm.com>                   *
+- * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>                          *
+- *                                                                            *
+- * This program is free software;  you can redistribute it and/or modify      *
+- * it under the terms of the GNU General Public License as published by       *
+- * the Free Software Foundation; either version 2 of the License, or          *
+- * (at your option) any later version.                                        *
+- *                                                                            *
+- * This program is distributed in the hope that it will be useful,            *
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of            *
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  *
+- * the GNU General Public License for more details.                           *
+- *                                                                            *
+- * You should have received a copy of the GNU General Public License          *
+- * along with this program;  if not, write to the Free Software Foundation,   *
+- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           *
+- *                                                                            *
+- ******************************************************************************/
+-
+-#include <stdio.h>
+-#include <errno.h>
+-#include <linux/unistd.h>
+-#include <sys/wait.h>
+-
+-#include "test.h"
+-#include "safe_macros.h"
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) Crackerjack Project., 2007
++ * Ported to LTP by Manas Kumar Nayak <maknayak@in.ibm.com>
++ * Copyright (c) 2015 Linux Test Project
++ * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
 +/*\
 + * [Description]
 + *
-+ * This test checks if select() timeout is not updated when personality with
-+ * STICKY_TIMEOUTS is used.
-  */
- 
--#include "test.h"
--#include <sys/personality.h>
++ * This test checks if exit_group() correctly ends a spawned child and all its
++ * running threads.
++ */
++
++#include <stdlib.h>
++#include "tst_safe_pthread.h"
 +#include "tst_test.h"
-+#include "lapi/personality.h"
- #include <sys/select.h>
+ #include "lapi/syscalls.h"
  
--char *TCID = "personality02";
+-char *TCID = "exit_group01";
+-int testno;
 -int TST_TOTAL = 1;
--
- #define USEC 10
++/* gittid is not defined by glibc */
++#define gettid() syscall(SYS_gettid)
++
++#define THREADS_NUM 10
  
--static void verify_personality(void)
+-static void verify_exit_group(void)
++static pid_t *tids;
++
++static void *worker(void *arg)
+ {
+-	pid_t cpid, w;
+-	int status;
++	int i = *((int *)arg);
+ 
+-	cpid = fork();
+-	if (cpid == -1)
+-		tst_brkm(TFAIL | TERRNO, NULL, "fork failed");
++	tids[i] = gettid();
+ 
+-	if (cpid == 0) {
+-		TEST(tst_syscall(__NR_exit_group, 4));
+-	} else {
+-		w = SAFE_WAIT(NULL, &status);
+-
+-		if (WIFEXITED(status) && (WEXITSTATUS(status) == 4)) {
+-			tst_resm(TPASS, "exit_group() succeeded");
+-		} else {
+-			tst_resm(TFAIL | TERRNO,
+-				 "exit_group() failed (wait status = %d)", w);
+-		}
++	TST_CHECKPOINT_WAKE(0);
++	pause();
++
++	return arg;
++}
++
++static void spawn_threads(void)
++{
++	pthread_t threads[THREADS_NUM];
++
++	for (int i = 0; i < THREADS_NUM; i++) {
++		SAFE_PTHREAD_CREATE(&threads[i], NULL, worker, (void *)&i);
++		TST_CHECKPOINT_WAIT(0);
+ 	}
+ }
+ 
+-int main(int ac, char **av)
 +static void run(void)
  {
--	struct timeval tv = {.tv_sec = 0, .tv_usec = USEC};
--	int ret;
-+	struct timeval tv = { .tv_sec = 0, .tv_usec = USEC };
- 	fd_set rfds;
- 
- 	FD_ZERO(&rfds);
- 	FD_SET(1, &rfds);
- 
--	personality(PER_LINUX | STICKY_TIMEOUTS);
--	ret = select(2, &rfds, NULL, NULL, &tv);
--	personality(PER_LINUX);
--	if (ret < 0)
--		tst_resm(TBROK | TERRNO, "select()");
-+	SAFE_PERSONALITY(PER_LINUX | STICKY_TIMEOUTS);
- 
--	if (tv.tv_usec != USEC)
--		tst_resm(TFAIL, "Timeout was modified");
--	else
--		tst_resm(TPASS, "Timeout wasn't modified");
--}
--
--int main(int ac, char **av)
--{
 -	int lc;
-+	TEST(select(2, &rfds, NULL, NULL, &tv));
-+	if (TST_RET == -1)
-+		tst_brk(TBROK | TERRNO, "select() error");
++	pid_t pid;
++	int status;
  
 -	tst_parse_opts(ac, av, NULL, NULL);
-+	SAFE_PERSONALITY(PER_LINUX);
++	pid = SAFE_FORK();
++	if (!pid) {
++		spawn_threads();
  
 -	for (lc = 0; TEST_LOOPING(lc); lc++)
--		verify_personality();
--
+-		verify_exit_group();
++		TEST(tst_syscall(__NR_exit_group, 4));
++		if (TST_RET == -1)
++			tst_brk(TBROK | TERRNO, "exit_group() error");
++
++		return;
++	}
++
++	SAFE_WAITPID(pid, &status, 0);
++
++	TST_EXP_EXPR(WIFEXITED(status) && WEXITSTATUS(status) == 4,
++		"exit_group() succeeded");
++
++	for (int i = 0; i < THREADS_NUM; i++)
++		TST_EXP_FAIL(kill(tids[i], 0), ESRCH);
++}
++
++static void setup(void)
++{
++	tids = SAFE_MMAP(
++		NULL,
++		sizeof(pid_t) * THREADS_NUM,
++		PROT_READ | PROT_WRITE,
++		MAP_SHARED | MAP_ANONYMOUS,
++		-1, 0);
++}
+ 
 -	tst_exit();
-+	TST_EXP_EQ_LI(tv.tv_usec, USEC);
++static void cleanup(void)
++{
++	SAFE_MUNMAP(tids, sizeof(pid_t) * THREADS_NUM);
  }
 +
 +static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
 +	.test_all = run,
++	.forks_child = 1,
++	.needs_checkpoints = 1,
 +};
 -- 
 2.35.3
