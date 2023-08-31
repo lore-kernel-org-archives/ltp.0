@@ -4,62 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 270A2C83F01
-	for <ltp@archiver.kernel.org>; Wed, 30 Aug 2023 15:56:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFA45C83F10
+	for <ltp@archiver.kernel.org>; Thu, 31 Aug 2023 06:47:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2F7803CE046
-	for <ltp@archiver.kernel.org>; Wed, 30 Aug 2023 17:56:01 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 883F83CBDC7
+	for <ltp@archiver.kernel.org>; Thu, 31 Aug 2023 08:47:48 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D4A403CB7F1
- for <ltp@lists.linux.it>; Wed, 30 Aug 2023 17:55:50 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id AB9313C55E3
+ for <ltp@lists.linux.it>; Thu, 31 Aug 2023 08:47:37 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id F198B14004EC
- for <ltp@lists.linux.it>; Wed, 30 Aug 2023 17:55:49 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4BE1E602986
+ for <ltp@lists.linux.it>; Thu, 31 Aug 2023 08:47:35 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 387E321862;
- Wed, 30 Aug 2023 15:55:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693410949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=v9PYe/UmjPi96MllR4J97cbD3y5/sCLJ+zE11LYr5HE=;
- b=TxLBCX8GqNfadpQA0fN/BXK5Bxo4MR4H6+882jFCHFA6f0CaI00tJYtMouLdVnmkLXomH4
- o5Rqc+BEJpFVfdWBKbOvtTLIjQWKT/X2UfTNNZAJ9LP/XbsXmIzZN4DeoCJ64iQD5vhOhI
- jSKkuRUABWtbValq2ipnfLoek41mUv4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693410949;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=v9PYe/UmjPi96MllR4J97cbD3y5/sCLJ+zE11LYr5HE=;
- b=WSvYUL82Nr+KzpZ97oUemQMEM7ouFPrvsn0d6W0YvH376fwuiuk4n6uVytWKxoCL2yJM2R
- eanC8tQzRwqs9NBA==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 253801F747;
+ Thu, 31 Aug 2023 06:47:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1693464454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=DgQ39ffjjBm1uIFJLPSBaiVfddo1X5opoQVW8F+gwWc=;
+ b=jigQw5MRrUixNRoEoHy0c0kGXycs0D3S52WoXlAPDtHlL2ViXfD1epnP0As3tTtIolVCsK
+ T4Holds/Cxvoq0jDL4Ysxro/rTo5jH82z+yGi5ssqjF9jvJczlrKql6lWRs3sV6IS+Zp09
+ lImDN1hUMVGRbnbrGdit1UNL+nmH6mo=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1AE1713441;
- Wed, 30 Aug 2023 15:55:49 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 472A013583;
+ Thu, 31 Aug 2023 06:47:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id u5UaBYVm72QsPQAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Wed, 30 Aug 2023 15:55:49 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id pxGUA4U38GSNQQAAMHmgww
+ (envelope-from <wegao@suse.com>); Thu, 31 Aug 2023 06:47:33 +0000
 To: ltp@lists.linux.it
-Date: Wed, 30 Aug 2023 17:55:48 +0200
-Message-Id: <20230830155548.9402-1-andrea.cervesato@suse.de>
+Date: Thu, 31 Aug 2023 02:47:27 -0400
+Message-Id: <20230831064727.5790-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230829231845.25866-1-wegao@suse.com>
+References: <20230829231845.25866-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Refactor exit_group01 using new API
+Subject: [LTP] [PATCH v7] clone3: Add clone3's clone_args cgroup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,191 +66,235 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-We provided a different approach to exit_group() testing, spawning
-multiple threads inside the child and checking if they get killed with
-the parent process.
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- testcases/kernel/syscalls/exit_group/Makefile |   2 +
- .../kernel/syscalls/exit_group/exit_group01.c | 137 +++++++++++-------
- 2 files changed, 85 insertions(+), 54 deletions(-)
+ include/lapi/sched.h                        |  8 ++
+ include/tst_cgroup.h                        |  4 +
+ include/tst_clone.h                         |  1 +
+ lib/tst_cgroup.c                            |  8 ++
+ lib/tst_clone.c                             |  1 +
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/clone3/.gitignore |  1 +
+ testcases/kernel/syscalls/clone3/clone303.c | 95 +++++++++++++++++++++
+ 8 files changed, 119 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/clone3/clone303.c
 
-diff --git a/testcases/kernel/syscalls/exit_group/Makefile b/testcases/kernel/syscalls/exit_group/Makefile
-index 1273a4e9c..adbac3c51 100644
---- a/testcases/kernel/syscalls/exit_group/Makefile
-+++ b/testcases/kernel/syscalls/exit_group/Makefile
-@@ -3,6 +3,8 @@
+diff --git a/include/lapi/sched.h b/include/lapi/sched.h
+index 1065665d1..ac766efc5 100644
+--- a/include/lapi/sched.h
++++ b/include/lapi/sched.h
+@@ -13,6 +13,7 @@
+ #include <inttypes.h>
+ #include "config.h"
+ #include "lapi/syscalls.h"
++#include "lapi/sched.h"
  
- top_srcdir		?= ../../../..
+ struct sched_attr {
+ 	uint32_t size;
+@@ -54,6 +55,9 @@ struct clone_args {
+ 	uint64_t __attribute__((aligned(8))) stack;
+ 	uint64_t __attribute__((aligned(8))) stack_size;
+ 	uint64_t __attribute__((aligned(8))) tls;
++	uint64_t __attribute__((aligned(8))) set_tid;
++	uint64_t __attribute__((aligned(8))) set_tid_size;
++	uint64_t __attribute__((aligned(8))) cgroup;
+ };
  
-+exit_group01: CFLAGS+=-pthread
+ static inline int clone3(struct clone_args *args, size_t size)
+@@ -133,4 +137,8 @@ static inline int getcpu(unsigned *cpu, unsigned *node)
+ # define CLONE_NEWTIME		0x00000080
+ #endif
+ 
++#ifndef CLONE_INTO_CGROUP
++# define CLONE_INTO_CGROUP 0x200000000ULL
++#endif
 +
- include $(top_srcdir)/include/mk/testcases.mk
+ #endif /* LAPI_SCHED_H__ */
+diff --git a/include/tst_cgroup.h b/include/tst_cgroup.h
+index 2826ddad1..be14d07c6 100644
+--- a/include/tst_cgroup.h
++++ b/include/tst_cgroup.h
+@@ -157,6 +157,10 @@ const char *
+ tst_cg_group_name(const struct tst_cg_group *const cg)
+ 		      __attribute__ ((nonnull, warn_unused_result));
  
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/exit_group/exit_group01.c b/testcases/kernel/syscalls/exit_group/exit_group01.c
-index 5bf5b0218..0ed008115 100644
---- a/testcases/kernel/syscalls/exit_group/exit_group01.c
-+++ b/testcases/kernel/syscalls/exit_group/exit_group01.c
-@@ -1,68 +1,97 @@
--/******************************************************************************
-- * Copyright (c) Crackerjack Project., 2007                                   *
-- * Ported to LTP by Manas Kumar Nayak <maknayak@in.ibm.com>                   *
-- * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>                          *
-- *                                                                            *
-- * This program is free software;  you can redistribute it and/or modify      *
-- * it under the terms of the GNU General Public License as published by       *
-- * the Free Software Foundation; either version 2 of the License, or          *
-- * (at your option) any later version.                                        *
-- *                                                                            *
-- * This program is distributed in the hope that it will be useful,            *
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of            *
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  *
-- * the GNU General Public License for more details.                           *
-- *                                                                            *
-- * You should have received a copy of the GNU General Public License          *
-- * along with this program;  if not, write to the Free Software Foundation,   *
-- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           *
-- *                                                                            *
-- ******************************************************************************/
--
--#include <stdio.h>
--#include <errno.h>
--#include <linux/unistd.h>
--#include <sys/wait.h>
--
--#include "test.h"
--#include "safe_macros.h"
++/* This call returns a fd pointing to a v2 directory */
++int tst_cg_group_unified_dir_fd(const struct tst_cg_group *const cg)
++		      __attribute__ ((nonnull, warn_unused_result));
++
+ /* Remove a descendant CGroup */
+ struct tst_cg_group *
+ tst_cg_group_rm(struct tst_cg_group *const cg)
+diff --git a/include/tst_clone.h b/include/tst_clone.h
+index 9ffdc68d1..7b278dfa7 100644
+--- a/include/tst_clone.h
++++ b/include/tst_clone.h
+@@ -11,6 +11,7 @@
+ struct tst_clone_args {
+ 	uint64_t flags;
+ 	uint64_t exit_signal;
++	uint64_t cgroup;
+ };
+ 
+ /* clone3 with fallbacks to clone when possible. Be aware that it
+diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+index 274c73fea..fdeac6059 100644
+--- a/lib/tst_cgroup.c
++++ b/lib/tst_cgroup.c
+@@ -1112,6 +1112,14 @@ const char *tst_cg_group_name(const struct tst_cg_group *const cg)
+ 	return cg->group_name;
+ }
+ 
++int tst_cg_group_unified_dir_fd(const struct tst_cg_group *const cg)
++{
++	if(cg->dirs_by_ctrl[0])
++		return cg->dirs_by_ctrl[0]->dir_fd;
++
++	return -1;
++}
++
+ struct tst_cg_group *tst_cg_group_rm(struct tst_cg_group *const cg)
+ {
+ 	struct cgroup_dir **dir;
+diff --git a/lib/tst_clone.c b/lib/tst_clone.c
+index ecc84408c..2aa00beb1 100644
+--- a/lib/tst_clone.c
++++ b/lib/tst_clone.c
+@@ -15,6 +15,7 @@ pid_t tst_clone(const struct tst_clone_args *tst_args)
+ 	struct clone_args args = {
+ 		.flags = tst_args->flags,
+ 		.exit_signal = tst_args->exit_signal,
++		.cgroup = tst_args->cgroup,
+ 	};
+ 	int flags;
+ 	pid_t pid = -1;
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 9c23a4248..0b6adfd7f 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -117,6 +117,7 @@ clone09 clone09
+ 
+ clone301 clone301
+ clone302 clone302
++clone303 clone303
+ 
+ close01 close01
+ close02 close02
+diff --git a/testcases/kernel/syscalls/clone3/.gitignore b/testcases/kernel/syscalls/clone3/.gitignore
+index 604cb903e..10369954b 100644
+--- a/testcases/kernel/syscalls/clone3/.gitignore
++++ b/testcases/kernel/syscalls/clone3/.gitignore
+@@ -1,2 +1,3 @@
+ clone301
+ clone302
++clone303
+diff --git a/testcases/kernel/syscalls/clone3/clone303.c b/testcases/kernel/syscalls/clone3/clone303.c
+new file mode 100644
+index 000000000..767d7c1a9
+--- /dev/null
++++ b/testcases/kernel/syscalls/clone3/clone303.c
+@@ -0,0 +1,95 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (c) Crackerjack Project., 2007
-+ * Ported to LTP by Manas Kumar Nayak <maknayak@in.ibm.com>
-+ * Copyright (c) 2015 Linux Test Project
-+ * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
-+ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ * Copyright (c) 2023 SUSE LLC <wegao@suse.com>
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * This test checks if exit_group() correctly ends a spawned child and all its
-+ * running threads.
++ * This test case check clone3 CLONE_INTO_CGROUP flag
++ *
 + */
 +
++#define _GNU_SOURCE
++#include <stdio.h>
 +#include <stdlib.h>
-+#include "tst_safe_pthread.h"
++#include <sys/wait.h>
++
 +#include "tst_test.h"
- #include "lapi/syscalls.h"
- 
--char *TCID = "exit_group01";
--int testno;
--int TST_TOTAL = 1;
-+/* gittid is not defined by glibc */
-+#define gettid() syscall(SYS_gettid)
++#include "lapi/sched.h"
++#include "lapi/pidfd.h"
 +
-+#define THREADS_NUM 10
- 
--static void verify_exit_group(void)
-+static pid_t *tids;
++#define BUF_LEN 20
 +
-+static void *worker(void *arg)
- {
--	pid_t cpid, w;
--	int status;
-+	int i = *((int *)arg);
- 
--	cpid = fork();
--	if (cpid == -1)
--		tst_brkm(TFAIL | TERRNO, NULL, "fork failed");
-+	tids[i] = gettid();
- 
--	if (cpid == 0) {
--		TEST(tst_syscall(__NR_exit_group, 4));
--	} else {
--		w = SAFE_WAIT(NULL, &status);
--
--		if (WIFEXITED(status) && (WEXITSTATUS(status) == 4)) {
--			tst_resm(TPASS, "exit_group() succeeded");
--		} else {
--			tst_resm(TFAIL | TERRNO,
--				 "exit_group() failed (wait status = %d)", w);
--		}
-+	TST_CHECKPOINT_WAKE(0);
-+	pause();
++static struct tst_cg_group *cg_child_test_simple;
++static int fd;
++static struct tst_clone_args *args;
 +
-+	return arg;
++static pid_t clone_into_cgroup(int cgroup_fd)
++{
++
++	args->flags = CLONE_INTO_CGROUP;
++	args->exit_signal = SIGCHLD;
++	args->cgroup = cgroup_fd;
++
++	return tst_clone(args);
 +}
 +
-+static void spawn_threads(void)
-+{
-+	pthread_t threads[THREADS_NUM];
-+
-+	for (int i = 0; i < THREADS_NUM; i++) {
-+		SAFE_PTHREAD_CREATE(&threads[i], NULL, worker, (void *)&i);
-+		TST_CHECKPOINT_WAIT(0);
- 	}
- }
- 
--int main(int ac, char **av)
 +static void run(void)
- {
--	int lc;
++{
 +	pid_t pid;
-+	int status;
- 
--	tst_parse_opts(ac, av, NULL, NULL);
-+	pid = SAFE_FORK();
-+	if (!pid) {
-+		spawn_threads();
- 
--	for (lc = 0; TEST_LOOPING(lc); lc++)
--		verify_exit_group();
-+		TEST(tst_syscall(__NR_exit_group, 4));
-+		if (TST_RET == -1)
-+			tst_brk(TBROK | TERRNO, "exit_group() error");
 +
++	pid = clone_into_cgroup(fd);
++
++	if (!pid) {
++		TST_CHECKPOINT_WAIT(0);
 +		return;
 +	}
 +
-+	SAFE_WAITPID(pid, &status, 0);
++	char buf[BUF_LEN];
 +
-+	TST_EXP_EXPR(WIFEXITED(status) && WEXITSTATUS(status) == 4,
-+		"exit_group() succeeded");
++	SAFE_CG_READ(cg_child_test_simple, "cgroup.procs", buf, BUF_LEN);
 +
-+	for (int i = 0; i < THREADS_NUM; i++)
-+		TST_EXP_FAIL(kill(tids[i], 0), ESRCH);
++	if (atoi(buf) == pid)
++		tst_res(TPASS, "clone3 case pass!");
++	else
++		tst_brk(TFAIL | TTERRNO, "clone3() failed !");
++
++	TST_CHECKPOINT_WAKE(0);
++
++	SAFE_WAITPID(pid, NULL, 0);
++
 +}
 +
 +static void setup(void)
 +{
-+	tids = SAFE_MMAP(
-+		NULL,
-+		sizeof(pid_t) * THREADS_NUM,
-+		PROT_READ | PROT_WRITE,
-+		MAP_SHARED | MAP_ANONYMOUS,
-+		-1, 0);
++	clone3_supported_by_kernel();
++
++	cg_child_test_simple = tst_cg_group_mk(tst_cg, "cg_test_simple");
++
++	fd = tst_cg_group_unified_dir_fd(cg_child_test_simple);
++
++	if (fd < 0)
++		tst_brk(TBROK, "get dir fd failed!");
 +}
- 
--	tst_exit();
++
 +static void cleanup(void)
 +{
-+	SAFE_MUNMAP(tids, sizeof(pid_t) * THREADS_NUM);
- }
++	cg_child_test_simple = tst_cg_group_rm(cg_child_test_simple);
++}
 +
 +static struct tst_test test = {
++	.test_all = run,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = run,
 +	.forks_child = 1,
++	.max_runtime = 20,
++	.needs_cgroup_ctrls = (const char *const []){ "base", NULL },
++	.needs_cgroup_ver = TST_CG_V2,
 +	.needs_checkpoints = 1,
++	.min_kver = "5.7",
++	.bufs = (struct tst_buffers []) {
++		{&args, .size = sizeof(*args)},
++		{},
++	}
 +};
 -- 
 2.35.3
