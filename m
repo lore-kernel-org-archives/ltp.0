@@ -4,62 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9D4AC83F33
-	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 14:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FD8CC83F3F
+	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 14:46:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 853B13CB88D
-	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 16:04:37 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 69B523CBFC9
+	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 16:46:49 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8BDB83CB887
- for <ltp@lists.linux.it>; Mon,  4 Sep 2023 16:04:27 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 78A133C62DB
+ for <ltp@lists.linux.it>; Thu, 31 Aug 2023 08:11:24 +0200 (CEST)
+Received: from smtpbgau1.qq.com (smtpbgau1.qq.com [54.206.16.166])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2355F601167
- for <ltp@lists.linux.it>; Mon,  4 Sep 2023 16:04:25 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 895E52184F;
- Mon,  4 Sep 2023 14:04:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693836265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=3NujNPRNaJUd1hgEvCqFe5Ggb+Gu7rgkKAE3LiUrOBA=;
- b=SRakgBiK8aBa3goa06tRhFWyzJ/8LI0XnpSnXcZVSnB84gC8fuhZ2leVcvBwQDJmwG4UK7
- xBw+g/TBfpBbe682kwganbdg14ktlgUgTUsqmJP3vwb/Veo0mdMnvmWVW/QZQDaHmEE11u
- eV9MB0hEqG2dvGf4+6YKsrbUCYVm4Vg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693836265;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=3NujNPRNaJUd1hgEvCqFe5Ggb+Gu7rgkKAE3LiUrOBA=;
- b=WhJK03t0ylcIxptdCAX3rZJ4LlHk0aTVdgB0/ItY73DRhROHkBNzYmC75KNb14plOLmKkh
- 8Ys33oI42kuthHCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E8AE13425;
- Mon,  4 Sep 2023 14:04:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wLC2Genj9WQnIQAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Mon, 04 Sep 2023 14:04:25 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Mon,  4 Sep 2023 16:04:24 +0200
-Message-Id: <20230904140424.9971-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 67660605649
+ for <ltp@lists.linux.it>; Thu, 31 Aug 2023 08:10:42 +0200 (CEST)
+X-QQ-mid: bizesmtp75t1693462227tl23kkf4
+Received: from alvin ( [221.123.136.170])
+ by bizesmtp.qq.com (ESMTP) with SMTP id 0
+ for <ltp@lists.linux.it.>; Thu, 31 Aug 2023 14:09:34 +0800 (CST)
+X-QQ-SSF: 00400000000000Z0Z000000A0000000
+X-QQ-FEAT: +ynUkgUhZJm4xz8GeQKCm0shyfN5rQNXmNRgHcRgaAROSnajGLkuPjw7EnKKq
+ Cig67LKaz3bFaW2Z4kWYWqPdwUi17gBrTJXg5/o3Khy7XvXg2Wg0bMrShkryA3ju0JigzqX
+ HBQwW/z/03McBZw5Or/ilQjb9S5Hr1cO8kBd7OunglQittE6qf8l7NWBW7NuUIJRfEBcHPn
+ jBJzdOiEcx+x/Dc3wqthgKtaTq46aKbp7QLXihyFYvOylLMT6tARLekqukUu0DU/sdSQuPK
+ 2KarU3ePzgU3q1q89PClmnTtNLr0TlHURkZOk4BBmtpsMg5FgNaTuG4XfYZUuMkACAy62lZ
+ eLyntJTi3yLmFGuJ81hA12vhRsusDWzRA+DDrqQay0AbbJO9M5nRleeW73/9JIKI0wjM1dZ
+ BYz21Th1ODvrKAzSs/65jljKxMRviSSa
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 1971478944658686317
+Date: Thu, 31 Aug 2023 14:09:35 +0800
+From: =?GB2312?B?wO7VvM7k?= <lizw@chinasupercloud.com>
+To: ltp <ltp@lists.linux.it>
+X-Priority: 3
+X-GUID: 29D3E938-035E-4EB5-AB9D-1ECB6639D279
+X-Has-Attach: yes
+X-Mailer: Foxmail 7.2.23.121[cn]
+Mime-Version: 1.0
+Message-ID: <927B643AA2DE0DEB+2023083114093400166120@chinasupercloud.com>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:chinasupercloud.com:qybglogicsvrgz:qybglogicsvrgz6a-1
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Refactor timerfd_create01 using new LTP API
+X-Mailman-Approved-At: Mon, 04 Sep 2023 16:46:38 +0200
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: [LTP] Seeking help with LTP testing issues.
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,143 +62,12 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- .../syscalls/timerfd/timerfd_create01.c       | 99 +++++--------------
- 1 file changed, 22 insertions(+), 77 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/timerfd/timerfd_create01.c b/testcases/kernel/syscalls/timerfd/timerfd_create01.c
-index 3d70b84f0..18a233586 100644
---- a/testcases/kernel/syscalls/timerfd/timerfd_create01.c
-+++ b/testcases/kernel/syscalls/timerfd/timerfd_create01.c
-@@ -1,95 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) 2014 Fujitsu Ltd.
-- * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ *         Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-+ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-  */
--/*
-- * DESCRIPTION
-- *  Verify that,
-- *   1. The clockid argument is neither CLOCK_MONOTONIC nor CLOCK_REALTIME,
-- *	EINVAL would return.
-- *   2. flags is invalid, EINVAL would return.
-+/*\
-+ * [Description]
-+ *
-+ * This test verifies that:
-+ * - clockid argument is neither CLOCK_MONOTONIC nor CLOCK_REALTIME,
-+ * EINVAL would return.
-+ * - flags is invalid, EINVAL would return.
-  */
- 
--#define _GNU_SOURCE
--
- #include <errno.h>
- 
--#include "test.h"
--#include "lapi/timerfd.h"
--
--char *TCID = "timerfd_create01";
-+#include "tst_test.h"
-+#include "tst_safe_timerfd.h"
- 
- static struct test_case_t {
- 	int clockid;
- 	int flags;
- 	int exp_errno;
--} test_cases[] = {
--	{-1, 0, EINVAL},
--	{0, -1, EINVAL},
-+} tcases[] = {
-+	{ -1,  0, EINVAL },
-+	{  0, -1, EINVAL },
- };
- 
--int TST_TOTAL = ARRAY_SIZE(test_cases);
--static void setup(void);
--static void timerfd_create_verify(const struct test_case_t *);
--static void cleanup(void);
--
--int main(int argc, char *argv[])
-+static void run(unsigned int i)
- {
--	int lc;
--	int i;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
-+	struct test_case_t *test = &tcases[i];
- 
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		for (i = 0; i < TST_TOTAL; i++)
--			timerfd_create_verify(&test_cases[i]);
--	}
--
--	cleanup();
--	tst_exit();
-+	TST_EXP_FAIL(timerfd_create(test->clockid, test->flags), test->exp_errno);
- }
- 
--static void setup(void)
--{
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--}
--
--static void timerfd_create_verify(const struct test_case_t *test)
--{
--	TEST(timerfd_create(test->clockid, test->flags));
--
--	if (TEST_RETURN != -1) {
--		tst_resm(TFAIL, "timerfd_create() succeeded unexpectedly");
--		return;
--	}
--
--	if (TEST_ERRNO == test->exp_errno) {
--		tst_resm(TPASS | TTERRNO,
--			 "timerfd_create() failed as expected");
--	} else {
--		tst_resm(TFAIL | TTERRNO,
--			 "timerfd_create() failed unexpectedly; expected: "
--			 "%d - %s", test->exp_errno, strerror(test->exp_errno));
--	}
--}
--
--static void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases),
-+};
--- 
-2.35.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+V2UgYXJlIGEgc2VydmVyIG1hbnVmYWN0dXJlciB1c2luZyBMVFAgdGVzdGluZy4gVGhlIGF0dGFj
+aG1lbnQgaXMgYW4gZXJyb3IgbG9nLiBQbGVhc2UgaGVscCB1cy4NCg0KDQpLZW4gLkxpIMDu1bzO
+5CANCg0KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0
+aW5mby9sdHAK
