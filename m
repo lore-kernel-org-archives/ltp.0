@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B99BC83F10
-	for <ltp@archiver.kernel.org>; Thu, 31 Aug 2023 11:26:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3FC7C83F12
+	for <ltp@archiver.kernel.org>; Thu, 31 Aug 2023 11:29:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5CEB53CBEDF
-	for <ltp@archiver.kernel.org>; Thu, 31 Aug 2023 13:26:44 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 052403CCB2F
+	for <ltp@archiver.kernel.org>; Thu, 31 Aug 2023 13:29:04 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1B8523CB6FB
- for <ltp@lists.linux.it>; Thu, 31 Aug 2023 13:26:33 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 34EFB3CBDBF
+ for <ltp@lists.linux.it>; Thu, 31 Aug 2023 13:28:53 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6F5326096BE
- for <ltp@lists.linux.it>; Thu, 31 Aug 2023 13:26:33 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B68B01BB9C0B
+ for <ltp@lists.linux.it>; Thu, 31 Aug 2023 13:28:52 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B30D51F853
- for <ltp@lists.linux.it>; Thu, 31 Aug 2023 11:26:32 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 34FC32185A
+ for <ltp@lists.linux.it>; Thu, 31 Aug 2023 11:28:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693481192; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1693481332; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Inyhj5OZneYlbgjZQ35AlUQc8Z8fCLksW583ahQ6gag=;
- b=put5gkddUtbkKKc+E+SArxbagyYcDdrWCEKA9QKvJgOSlh3/9I3yNlb6PU4dG2s0UOIlWb
- 4yGLJp40cUShctrxOOAzNgW7jfdzwWvx6vql8F+TF/7DRCF5rdhwILb8sqsG/h42JUgbXN
- lD+uwdpjd5In+Wx+tFG2tB0nXezp4P4=
+ bh=7h8hj5syjYVzVfq2ErTP3mLtg75OdLxkApdO9mDzVU8=;
+ b=E2P2IEcNCgSFEbIZpPXzgAELCE/7vNkXil1u4Ygt4S87bjvka9jesxFnB/SsScW97X653u
+ losmgmZbsjpRnlm8wBQvGePDSF3CCQ+fc6SKxvkbuo2ZMo+yDbI1sCrqf1OV8gAp4E9iSI
+ Z1Tx02NUaGgrb8EbGN797ArubAS9mJw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693481192;
+ s=susede2_ed25519; t=1693481332;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=Inyhj5OZneYlbgjZQ35AlUQc8Z8fCLksW583ahQ6gag=;
- b=/5LXrm0jzl/Xh1bPMZkAIs/TTCWaZEBfr/HyqFJ58ZyU8U9rvBoIWByR4yWA4DwHI5D+i4
- 3aqSxI0yfwsMl5AQ==
+ bh=7h8hj5syjYVzVfq2ErTP3mLtg75OdLxkApdO9mDzVU8=;
+ b=QHJ4ujn07Wdj+ccGfxWh8ill5a6KTnwfCD2+WC9TFtZk2RIHX1XN3s+/L0t4mCNyN7XLrD
+ 9dgziUtKlkrmKxBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA41B13583
- for <ltp@lists.linux.it>; Thu, 31 Aug 2023 11:26:31 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C52DE13583
+ for <ltp@lists.linux.it>; Thu, 31 Aug 2023 11:28:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 6708Kud48GQgWgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3aUJJXN58GSTWwAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 31 Aug 2023 11:26:31 +0000
+ for <ltp@lists.linux.it>; Thu, 31 Aug 2023 11:28:51 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 31 Aug 2023 16:49:33 +0530
-Message-ID: <20230831112629.21510-1-akumar@suse.de>
+Date: Thu, 31 Aug 2023 16:58:48 +0530
+Message-ID: <20230831112849.22126-1-akumar@suse.de>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/mmap21: Add new test for mmap's ENOMEM case
+Subject: [LTP] [PATCH] syscalls/mmap22: Add new test for validating mmap's
+ EINVAL scenarios
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,24 +77,18 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-To be more precise in this test and checking for ENOMEM on exact mapping
-when limit is crossed, I could only think of counting the existing
-mappings from /proc/$pid/maps and counting the remaining possible
-mappings. Is there any better approach if we want to test this for exact
-case?
-
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/mmap/mmap21.c | 70 +++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mmap/mmap21.c
+ testcases/kernel/syscalls/mmap/mmap22.c | 73 +++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/mmap/mmap22.c
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap21.c b/testcases/kernel/syscalls/mmap/mmap21.c
+diff --git a/testcases/kernel/syscalls/mmap/mmap22.c b/testcases/kernel/syscalls/mmap/mmap22.c
 new file mode 100644
-index 000000000..76002edb3
+index 000000000..98e8b05e2
 --- /dev/null
-+++ b/testcases/kernel/syscalls/mmap/mmap21.c
-@@ -0,0 +1,70 @@
++++ b/testcases/kernel/syscalls/mmap/mmap22.c
+@@ -0,0 +1,73 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
 + * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
@@ -102,54 +97,56 @@ index 000000000..76002edb3
 +/*\
 + * [Description]
 + *
-+ * Verify that, mmap(2) fails with errno ENOMEM when process's
-+ * maximum number of mappings would have been exceeded.
++ * Verify that, mmap() call fails with errno EINVAL when
++ *
++ * - length argument is 0.
++ * - flags contains none of MAP_PRIVATE, MAP_SHARED, or MAP_SHARED_VALIDATE.
 + */
 +
-+#include <stdio.h>
++#include <stdlib.h>
 +#include "tst_test.h"
 +
 +#define TEMPFILE "mmapfile"
-+static int fd;
++#define MMAPSIZE 1024
 +static size_t page_sz;
-+static int max_map;
++static int fd;
++
++static struct tcase {
++	size_t length;
++	int prot;
++	int flags;
++} tcases[] = {
++	{0, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED},
++	{MMAPSIZE, PROT_READ | PROT_WRITE, MAP_FILE},
++};
 +
 +static void setup(void)
 +{
++	char *buf;
++
 +	page_sz = getpagesize();
++	buf = SAFE_MALLOC(page_sz);
++	memset(buf, 'A', page_sz);
 +
 +	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
-+
-+	SAFE_FILE_SCANF("/proc/sys/vm/max_map_count", "%d   ", &max_map);
-+	tst_res(TINFO, "max_map_count: %d", max_map);
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, page_sz);
++	free(buf);
 +}
 +
-+static void run(void)
++static void run(unsigned int i)
 +{
-+	int i;
-+	char *addr[max_map];
++	struct tcase *tc = &tcases[i];
 +
-+	for (i = 0; i < max_map; i++) {
-+		TESTPTR(mmap(0, page_sz, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0));
-+		if (TST_RET_PTR != MAP_FAILED) {
-+			addr[i] = TST_RET_PTR;
-+		} else {
-+			if (TST_ERR == ENOMEM) {
-+				tst_res(TINFO, "New successful mappings before exhausting the limit: %d", i);
-+				tst_res(TPASS, "mmap() failed with ENOMEM");
-+			} else {
-+				tst_res(TINFO, "New successful mappings before mmap() failed: %d", i);
-+				tst_res(TFAIL | TERRNO, "mmap() failed with unexpected errno");
-+			}
-+			break;
-+		}
++	TESTPTR(mmap(0, tc->length, tc->prot, tc->flags, fd, 0));
++
++	if (TST_RET_PTR != MAP_FAILED) {
++		tst_res(TFAIL | TERRNO, "mmap() was successful unexpectedly");
++		SAFE_MUNMAP(TST_RET_PTR, page_sz);
++	} else if (TST_ERR == EINVAL) {
++		tst_res(TPASS, "mmap() failed with errno EINVAL");
++	} else {
++		tst_res(TFAIL | TERRNO, "mmap() failed but unexpected errno");
 +	}
-+
-+	if (i == max_map)
-+		tst_res(TFAIL, "mmap() crossed max_map_count limit, no of new mmapings: %d", i);
-+
-+	while (--i >= 0)
-+		SAFE_MUNMAP(addr[i], page_sz);
 +}
 +
 +static void cleanup(void)
@@ -161,7 +158,8 @@ index 000000000..76002edb3
 +static struct tst_test test = {
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = run,
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.needs_tmpdir = 1
 +};
 -- 
