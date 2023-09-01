@@ -4,67 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D61D6CA0FE1
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 12:16:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2275DCA0FE6
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 12:20:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B58253CC4A6
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 14:16:19 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 5C3EC3CBD86
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 14:20:40 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 93BFE3CBB99
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:16:10 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 69B623CBB99
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:20:30 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id A3623140139D
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:16:09 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id ACF391000448
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:20:29 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A94371F853;
- Fri,  1 Sep 2023 12:16:08 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2C67A218E4;
+ Fri,  1 Sep 2023 12:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1693570568; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1693570829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=V9wg6GhtzGEdCok6MQPLAd/w3sxLjxjV6a3F263jkSg=;
- b=TJG1bCaIznaMR9iGYtYEf4qH1mHP4FzDUbD29K2ufaaylqOL3H6P4F08LSnsGnYG5MoTG+
- Ez+CpkZ7KgWar1DlwvhbJxnTyKnE+SlQUb7Y5rEgQzuYcg4nlRLwqlP4ffLT8JT5EAWtPt
- H8pFTXwekNU1/tB7NF6kzrFExktYA9M=
+ bh=dIq0zjujEPgRVwfyLjRBDjbm5SsN/L6LBV/l9hJjdpg=;
+ b=PovHEKb5Xap3CDwxUBhXio6+t4uVfnXTl6O/1PGM30e0tB2tpRFQSnSjTBeUYywjCLZOCF
+ PdP+4uGoB4Rn7C+5zVsHRiqvbSK8C+Qyeuq95k6fFm36c+9NKTgPfKYXCOfWJS+bmKuUp4
+ cU4BFgOVr3jBh7PVXxLfyIimtIhmoYU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1693570568;
+ s=susede2_ed25519; t=1693570829;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=V9wg6GhtzGEdCok6MQPLAd/w3sxLjxjV6a3F263jkSg=;
- b=BnEtzmepusbE73U1EVo8dU3V9QT93OS5hTGoGWsXuqQy5MfWUUOof3NwsGCzDCNzYK4l7F
- oPfwVfkULSl/P+Aw==
+ bh=dIq0zjujEPgRVwfyLjRBDjbm5SsN/L6LBV/l9hJjdpg=;
+ b=K04n6bNaSmpYLvXgYNSDqv5dGzBCMd2v3PRy4zqljNqFgiOzMDeDvqqXhjVJ7RYuuDDnWu
+ KljBESlXCXdX/VDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 953701358B;
- Fri,  1 Sep 2023 12:16:08 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 199D91358B;
+ Fri,  1 Sep 2023 12:20:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id is+TIQjW8WRaHQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 01 Sep 2023 12:16:08 +0000
-Date: Fri, 1 Sep 2023 14:16:43 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id mvolBQ3X8WTEHwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 01 Sep 2023 12:20:29 +0000
+Date: Fri, 1 Sep 2023 14:21:04 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <ZPHWK_Msrqbpmvtt@yuki>
-References: <20230829073821.2580-1-andrea.cervesato@suse.de>
- <ZO8d3GO_jFgNAXNY@rei> <20230901103758.GC323151@pevik>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <ZPHXMGNqT6WQUmyg@yuki>
+References: <20230831104242.27156-1-andrea.cervesato@suse.de>
+ <20230831104242.27156-2-andrea.cervesato@suse.de>
+ <ZPCWWXXHG-oEB5qO@yuki>
+ <ace7a77a-f187-45ed-91e5-c19b8d240a39@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230901103758.GC323151@pevik>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+In-Reply-To: <ace7a77a-f187-45ed-91e5-c19b8d240a39@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Add process_madvise01 test
+Subject: Re: [LTP] [PATCH v1 1/2] Refactor getegid01 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,53 +81,76 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> > > +	TST_EXP_EXPR(map_before.swap < map_after.swap,
-> > > +		"Most of the memory has been swapped out: %dkB out of %dkB",
-> > > +		map_after.swap,
-> 
-> > Although it's unlikely that map_before.swap will be non-zero we should
-> > print the difference here, so I've changed this part to:
-> 
-> > map_after.swap - map_before.swap
-> 
-> > And pushed, thanks.
-> 
-> FYI this new test is failing on current openSUSE Tumbleweed (kernel 6.4.12-1):
-> 
-> tst_test.c:1559: TINFO: Timeout per run is 0h 00m 30s
-> process_madvise01.c:38: TINFO: Allocate memory: 1048576 bytes
-> process_madvise01.c:99: TINFO: Reclaim memory using MADV_PAGEOUT
-> process_madvise01.c:62: TFAIL: Expect: Most of the memory has been swapped out: 0kB out of 1024kB
-> 
-> Summary:
-> passed   0
-> failed   1
-> broken   0
-> skipped  0
-> warnings 0
-> 
-> Test works well on current Debian unstable with kernel 6.4.11.
-> Could you please have a look if it's a test or a kernel bug?
+> >> +	TST_EXP_EQ_LI(gid, st_egid);
+> > So the code here should really do:
+> >
+> > 	if (GID16_CHECK(st_egid))
+> > 		TST_EXP_EQ_LI(gid, st_egid);
+> > 	else
+> > 		tst_res(TPASS, "getgid() passed");
+> =
 
-Does the machine where it fails even have any swap?
+> Mmmh, this would make sense if GID16_CHECK only checked for 16bit =
 
-I suppose that we should check for:
+> compatibility, because at the moment it's way different:
+> =
 
-1) CONFIG_SWAP in the kernel .config
-2) /proc/meminfo SwapFree: > $pagesize kB
+> =
 
-I guess that the madvise kicks off the kernel swapper, but it may take
-some time for the memory to be actually swapped.
+> #define GID16_CHECK(gid, sys_name, cleanup) \
+> if (!GID_SIZE_CHECK(gid)) { \
+>  =A0=A0 =A0tst_brkm(TBROK, cleanup, \
+>  =A0=A0 =A0=A0=A0=A0 "gid %d of %s is too large for testing 16-bit versio=
+n " \
+>  =A0=A0 =A0=A0=A0=A0 "of %s()", gid, #gid, #sys_name); \
+> }
+> =
 
--- 
+> Am I missing something?
+
+It seems that I confused GID16_CHECK with GID_SIZE_CHECK(), so it should
+have been:
+
+	if (GID_SIZE_CHECK(st_egid))
+
+> > Which skips the check on 16bit syscall in the case that the GID
+> > overflows 16bit, however we still have to report at least single TPASS
+> > otherwise the test will be failed by the test library.
+> >
+> >>   }
+> >>   =
+
+> >> -static void cleanup(void)
+> >> -{
+> >> -}
+> >> +static struct tst_test test =3D {
+> >> +	.test_all =3D run,
+> >> +};
+> >> -- =
+
+> >> 2.35.3
+> >>
+> >>
+> >> -- =
+
+> >> Mailing list info: https://lists.linux.it/listinfo/ltp
+> =
+
+> Andrea
+> =
+
+
+-- =
+
 Cyril Hrubis
 chrubis@suse.cz
 
--- 
+-- =
+
 Mailing list info: https://lists.linux.it/listinfo/ltp
