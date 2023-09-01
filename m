@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5A7CCA0FE6
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 07:40:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC4A0CA0FE1
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 08:37:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 106333CBF3B
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 09:40:43 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id B8B513CBD06
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 10:36:59 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1AFCF3CBB55
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 09:40:32 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id DD56C3CBCA6
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 10:36:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 53072600BEB
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 09:40:30 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B85C21413605
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 10:36:47 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 880671F45E;
- Fri,  1 Sep 2023 07:40:30 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id B9DEF21832
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 08:36:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693554030;
+ t=1693557406;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ENXIz06N2H1rDnRR5a4AGseoglQUaeD5eRDmjGYKKGI=;
- b=HAsgaVvus8HL1svwpqILnQqcphr9zeHxVmw936Y4WoWCOnEFpcXCnE8kxhqcErcFo95qTx
- rGZyq9FPmpf9G6lIuvi3gkMYmQhNPg3hqoOXYhayiyyXJF0pKSVzT7IK9dRz7Y3vOPQRUx
- 4dWLeTJ4AYmbg1uuhy3SHshxJmokuEg=
+ bh=exQoVoE1skyFIKoB1c4d4Am6uLnubQqlP5dCA9sQBzA=;
+ b=hwRpkwHV2fYMubvVbHcYZuYg6bn+E2q9JaO9RjWrlkORHw3lW0sWYO252SKI5m1UFsxH8S
+ LAXAL77qS2sIn0CoYavqQnywagEuSnIdCnGFQ2a6JKDKlS0DxYjkJ6jgCRruaB7frDW7OC
+ Rlb57cFVJNMvdN7ezRf025XjM/+/npY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693554030;
+ s=susede2_ed25519; t=1693557406;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ENXIz06N2H1rDnRR5a4AGseoglQUaeD5eRDmjGYKKGI=;
- b=VigrQ+24zLVOw23IQHBQH3IwHnptNQWSBPEFbporDq5J0guXBjhD4Ef4P9iPz8dQrWjKCA
- sdC0iSRpwOc+nXDg==
+ bh=exQoVoE1skyFIKoB1c4d4Am6uLnubQqlP5dCA9sQBzA=;
+ b=GCNdktsLhwA0DPxPLDKVQlklhe7eKYzcuQmSKR4w0T1gV4Q9zhX5lLLId/tAPekI4rTgPL
+ FZgSyNReiZ3tP9AA==
 Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.28.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id DB3C82C142;
- Fri,  1 Sep 2023 07:40:29 +0000 (UTC)
-References: <20230829110049.20896-1-wegao@suse.com>
- <20230829111846.30961-1-wegao@suse.com>
- <69d95cfd-b3ba-4071-965b-1fc3ab2793be@suse.com>
+ by relay2.suse.de (Postfix) with ESMTPS id 16BDA2C142;
+ Fri,  1 Sep 2023 08:36:45 +0000 (UTC)
+References: <20230825063932.30875-1-akumar@suse.de>
+ <20230825063932.30875-2-akumar@suse.de>
 User-agent: mu4e 1.10.6; emacs 29.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Date: Fri, 01 Sep 2023 08:38:52 +0100
+To: Avinesh Kumar <akumar@suse.de>
+Date: Fri, 01 Sep 2023 09:27:29 +0100
 Organization: Linux Private Site
-In-reply-to: <69d95cfd-b3ba-4071-965b-1fc3ab2793be@suse.com>
-Message-ID: <87jztagx3n.fsf@suse.de>
+In-reply-to: <20230825063932.30875-2-akumar@suse.de>
+Message-ID: <87fs3yguhw.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [v7,2/2] semop04: Refactor with new API
+Subject: Re: [LTP] [PATCH 2/5] syscalls/mmap09: Rewrite the test using new
+ LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,199 +80,196 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hello,
 
-Andrea Cervesato via ltp <ltp@lists.linux.it> writes:
+Avinesh Kumar <akumar@suse.de> writes:
 
-> Hi!
+> Signed-off-by: Avinesh Kumar <akumar@suse.de>
+> ---
+>  testcases/kernel/syscalls/mmap/mmap09.c | 134 ++++++++----------------
+>  1 file changed, 45 insertions(+), 89 deletions(-)
 >
-> On 8/29/23 13:18, Wei Gao via ltp wrote:
->> Signed-off-by: Wei Gao <wegao@suse.com>
->> ---
->>   testcases/kernel/syscalls/ipc/semop/semop04.c | 158 +++++-------------
->>   1 file changed, 42 insertions(+), 116 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/ipc/semop/semop04.c b/testcases/kernel/syscalls/ipc/semop/semop04.c
->> index 582624d60..96f4b8fb8 100644
->> --- a/testcases/kernel/syscalls/ipc/semop/semop04.c
->> +++ b/testcases/kernel/syscalls/ipc/semop/semop04.c
->> @@ -1,164 +1,90 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->>   /*
->> - *
->> - *   Copyright (c) International Business Machines  Corp., 2001
->> - *
->> - *   This program is free software;  you can redistribute it and/or modify
->> - *   it under the terms of the GNU General Public License as published by
->> - *   the Free Software Foundation; either version 2 of the License, or
->> - *   (at your option) any later version.
->> - *
->> - *   This program is distributed in the hope that it will be useful,
->> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
->> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
->> - *   the GNU General Public License for more details.
->> - *
->> - *   You should have received a copy of the GNU General Public License
->> - *   along with this program;  if not, write to the Free Software
->> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
->> + * Copyright (c) International Business Machines  Corp., 2001
->> + * Copyright (C) 2003-2023 Linux Test Project, Inc.
->> + * Author: 2001 Paul Larson <plars@us.ibm.com>
->> + * Modified: 2001 Manoj Iyer <manjo@ausin.ibm.com>
->>    */
->>   -/*
->> - *  FILE        : sem01.c
->> - *  DESCRIPTION : Creates a semaphore and two processes.  The processes
->> - *                each go through a loop where they semdown, delay for a
->> - *                random amount of time, and semup, so they will almost
->> - *                always be fighting for control of the semaphore.
->> - *  HISTORY:
->> - *    01/15/2001 Paul Larson (plars@us.ibm.com)
->> - *      -written
->> - *    11/09/2001 Manoj Iyer (manjo@ausin.ibm.com)
->> - *    Modified.
->> - *    - Removed compiler warnings.
->> - *      added exit to the end of function main()
->> +/*\
->> + * [Description]
->>    *
->> + * Creates a semaphore and two processes.  The processes
->> + * each go through a loop where they semdown, delay for a
->> + * random amount of time, and semup, so they will almost
->> + * always be fighting for control of the semaphore.
->>    */
->>     #include <unistd.h>
->>   #include <stdlib.h>
->>   #include <stdio.h>
->> -#include <errno.h>
->>   #include <sys/types.h>
->> -#include <sys/wait.h>
->>   #include <sys/ipc.h>
->>   #include "lapi/sem.h"
->> +#include "tst_test.h"
->> +#include "tst_safe_sysv_ipc.h"
->>   -int verbose = 0;
->> -int loops = 100;
->> -int errors = 0;
->> +#define LOOPS 1000
->>   -int semup(int semid)
->> +static void semup(int semid)
->>   {
->>   	struct sembuf semops;
->> +
->>   	semops.sem_num = 0;
->>   	semops.sem_op = 1;
->>   	semops.sem_flg = SEM_UNDO;
->> -	if (semop(semid, &semops, 1) == -1) {
->> -		perror("semup");
->> -		errors++;
->> -		return 1;
->> -	}
->> -	return 0;
->> +
->> +	SAFE_SEMOP(semid, &semops, 1);
->>   }
->>   -int semdown(int semid)
->> +static void semdown(int semid)
->>   {
->>   	struct sembuf semops;
->> +
->>   	semops.sem_num = 0;
->>   	semops.sem_op = -1;
->>   	semops.sem_flg = SEM_UNDO;
->> -	if (semop(semid, &semops, 1) == -1) {
->> -		perror("semdown");
->> -		errors++;
->> -		return 1;
->> -	}
->> -	return 0;
->> -}
->>   -void delayloop()
->> -{
->> -	int delay;
->> -	delay = 1 + ((100.0 * rand()) / RAND_MAX);
->> -	if (verbose)
->> -		printf("in delay function for %d microseconds\n", delay);
->> -	usleep(delay);
->> +	SAFE_SEMOP(semid, &semops, 1);
->>   }
->>   -void mainloop(int semid)
->> +static void mainloop(int semid)
->>   {
->>   	int i;
->> -	for (i = 0; i < loops; i++) {
->> -		if (semdown(semid)) {
->> -			printf("semdown failed\n");
->> -		}
->> -		if (verbose)
->> -			printf("sem is down\n");
->> -		delayloop();
->> -		if (semup(semid)) {
->> -			printf("semup failed\n");
->> -		}
->> -		if (verbose)
->> -			printf("sem is up\n");
->> +
->> +	for (i = 0; i < LOOPS; i++) {
->> +		semdown(semid);
->> +		usleep(1 + ((100.0 * rand()) / RAND_MAX));
->> +		semup(semid);
->>   	}
->>   }
->>   -int main(int argc, char *argv[])
->> +static void run(void)
->>   {
->> -	int semid, opt;
->> +	int semid;
->>   	union semun semunion;
->> -	extern char *optarg;
->>   	pid_t pid;
->> -	int chstat;
->> -
->> -	while ((opt = getopt(argc, argv, "l:vh")) != EOF) {
->> -		switch ((char)opt) {
->> -		case 'l':
->> -			loops = atoi(optarg);
->> -			break;
->> -		case 'v':
->> -			verbose = 1;
->> -			break;
->> -		case 'h':
->> -		default:
->> -			printf("Usage: -l loops [-v]\n");
->> -			exit(1);
->> -		}
->> -	}
->>     	/* set up the semaphore */
->> -	if ((semid = semget((key_t) 9142, 1, 0666 | IPC_CREAT)) < 0) {
->> -		printf("error in semget()\n");
->> -		exit(-1);
->> -	}
->> +	semid = SAFE_SEMGET((key_t) 9142, 1, 0666 | IPC_CREAT);
->> +
->>   	semunion.val = 1;
->> -	if (semctl(semid, 0, SETVAL, semunion) == -1) {
->> -		printf("error in semctl\n");
->> -	}
->>   -	if ((pid = fork()) < 0) {
->> -		printf("fork error\n");
->> -		exit(-1);
->> -	}
->> +	SAFE_SEMCTL(semid, 0, SETVAL, semunion);
->> +
->> +	pid = SAFE_FORK();
->> +
->>   	if (pid) {
->> -		/* parent */
->>   		srand(pid);
-> I'm wondering if this is an error from the previous test as well. We
-> are using mainloop() function that is using rand() inside both child
-> and parent. So srand() should be called before parent and child, in
-> order to have random seed initialized for both of them. I would also
-> use srand(time(0)).
+> diff --git a/testcases/kernel/syscalls/mmap/mmap09.c b/testcases/kernel/syscalls/mmap/mmap09.c
+> index 4ab0da470..6f59baf4a 100644
+> --- a/testcases/kernel/syscalls/mmap/mmap09.c
+> +++ b/testcases/kernel/syscalls/mmap/mmap09.c
+> @@ -1,119 +1,75 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+> - * Copyright (c) International Business Machines  Corp., 2003
+> - *
+> - * This program is free software;  you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation; either version 2 of the License, or
+> - * (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> - * the GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program;  if not, write to the Free Software
+> - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + * Copyright (c) International Business Machines  Corp., 2001
+> + *  04/2003 Written by Paul Larson
+> + * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+>   */
+>  
+> -/*
+> - * Test Description:
+> - *  Verify that truncating a mmaped file works correctly.
+> - *
+> - * Expected Result:
+> - *  ftruncate should be allowed to increase, decrease, or zero the
+> - *  size of a file that has been mmaped
+> +/*\
+> + * [Description]
+>   *
+> - *  Test:
+> - *   Use ftruncate to shrink the file while it is mapped
+> - *   Use ftruncate to grow the file while it is mapped
+> - *   Use ftruncate to zero the size of the file while it is mapped
+> - *
+> - * HISTORY
+> - *	04/2003 Written by Paul Larson
+> + * Verify that, once we have a file mapping created using mmap(), we can
+> + * successfully shrink, grow or zero the size of the mapped file using
+> + * ftruncate.
+>   */
+> -#include <stdio.h>
+> -#include <unistd.h>
+> -#include <fcntl.h>
+> -#include <errno.h>
+> -#include <sys/mman.h>
+> -#include <sys/types.h>
+> -#include "test.h"
+>  
+> -#define mapsize (1 << 14)
+>  
+> -char *TCID = "mmap09";
+> -int TST_TOTAL = 3;
+> +#include <stdlib.h>
+> +#include "tst_test.h"
+>  
+> +#define mapsize (1 << 14)
+> +#define TEMPFILE "mmapfile"
+>  static int fd;
+> -static char *maddr;
+> +static char *addr;
+>  
+> -static struct test_case_t {
+> +static struct tcase {
+>  	off_t newsize;
+>  	char *desc;
+> -} TC[] = {
+> -	{mapsize - 8192, "ftruncate mmaped file to a smaller size"},
+> -	{mapsize + 1024, "ftruncate mmaped file to a larger size"},
+> -	{0, "ftruncate mmaped file to 0 size"},
+> +} tcases[] = {
+> +	{mapsize - 8192, "ftruncate mapped file to a smaller size"},
+> +	{mapsize + 1024, "ftruncate mapped file to a bigger size"},
+> +	{0, "ftruncate mapped file to zero size"}
+>  };
+>  
+> -static void setup(void);
+> -static void cleanup(void);
+> -
+> -int main(int argc, char **argv)
+> +static void setup(void)
+>  {
+> -	int lc;
+> -	int i;
+> -
+> -	tst_parse_opts(argc, argv, NULL, NULL);
+> -
+> -	setup();
+> +	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
+>  
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -		tst_count = 0;
+> -		for (i = 0; i < TST_TOTAL; i++) {
+> -			TEST(ftruncate(fd, TC[i].newsize));
+> +	SAFE_FTRUNCATE(fd, mapsize);
+>  
+> -			if (TEST_RETURN == -1) {
+> -				tst_resm(TFAIL | TTERRNO, "%s", TC[i].desc);
+> -			} else {
+> -				tst_resm(TPASS, "%s", TC[i].desc);
+> -			}
+> -		}
+> +	addr = mmap(0, mapsize, PROT_READ | PROT_WRITE, MAP_FILE |
+> MAP_SHARED, fd, 0);
 
-Perhaps and also the value passed to srand should be printed for
-reproducing failures. (or just use the same value every time).
+Why don't we use SAFE_MMAP?
 
-Setting to changes requested.
+> +	if (addr == MAP_FAILED)
+> +		tst_brk(TFAIL | TERRNO, "mmap() failed");
+>  
+> -	}
+> +	memset(addr, 'A', mapsize);
+>  
+> -	cleanup();
+> -	tst_exit();
+>  }
+>  
+> -static void setup(void)
+> +static void run(unsigned int i)
+>  {
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> +	struct stat stat_buf;
+> +	struct tcase *tc = &tcases[i];
+>  
+> -	tst_tmpdir();
+> +	TST_EXP_PASS(ftruncate(fd, tc->newsize), "%s", tc->desc);
+>  
+> -	if ((fd = open("mmaptest", O_RDWR | O_CREAT, 0666)) < 0)
+> -		tst_brkm(TFAIL | TERRNO, cleanup, "opening mmaptest failed");
+> +	SAFE_FSTAT(fd, &stat_buf);
+> +	TST_EXP_EQ_LI(stat_buf.st_size, tc->newsize);
+>  
+> -	/* ftruncate the file to 16k */
+> -	if (ftruncate(fd, mapsize) < 0)
+> -		tst_brkm(TFAIL | TERRNO, cleanup, "ftruncate file failed");
+> -
+> -	maddr = mmap(0, mapsize, PROT_READ | PROT_WRITE,
+> -		     MAP_FILE | MAP_SHARED, fd, 0);
+> -	if (maddr == MAP_FAILED)
+> -		tst_brkm(TFAIL | TERRNO, cleanup, "mmapping mmaptest failed");
+> -
+> -	/* fill up the file with A's */
+> -	memset(maddr, 'A', mapsize);
+> +	SAFE_FTRUNCATE(fd, mapsize);
+>  }
+>  
+>  static void cleanup(void)
+>  {
+> -	munmap(maddr, mapsize);
+> -	close(fd);
+> -	tst_rmdir();
+> +	if (fd > 0)
+> +		SAFE_CLOSE(fd);
+> +	if (addr)
+> +		SAFE_MUNMAP(addr, mapsize);
+>  }
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test = run,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.needs_tmpdir = 1
+
+Can we use all file systems?
+
+The test is mapping a file and performing an operation on it. So this is
+basically a file system test.
+
+BTW this test seems weak. I don't know what truncating the file without
+then trying to access the newly OOB memory achieves. However it's what
+the original test did, so it's up to you if you want to change anything.
+
+Setting to changes requested
 
 -- 
 Thank you,
