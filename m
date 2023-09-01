@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B93D3CA0FEC
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 17:48:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1C5DCA0FEF
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 18:17:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 588E13CCA78
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 19:48:34 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 13EBD3CE136
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 20:16:59 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 200143CBE12
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 19:48:23 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id E95AA3CBC5F
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 20:16:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6BE02602820
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 19:48:22 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 086082009A8
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 20:16:47 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 90FD21F45E;
- Fri,  1 Sep 2023 17:48:18 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 93957211CE;
+ Fri,  1 Sep 2023 18:16:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1693590498;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1693592206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PoEf8T51lG+KGubMoNOKIRyBmHWnNh7kH4YFuzF+xtQ=;
- b=OSF9Y0QS2mQdZcndzoTTwHLIRYgUL2vII7SvQkMDcorUCADHgb799JZ7FvIaGv7oOI/btl
- Wk4QWnj2JT/bZUF8GGr1n0rJ6gvAmAmk6ek2pkbUaI1rwGS3e1pW+3ouHzKrjMkeiAHv27
- eMrPI/kddY/odRy6BB7+RvlNINgvBXI=
+ bh=SczNKaVL1iGLO0+CrAmVKlavPYKq/W/vUS1YtqrLUeA=;
+ b=NS3n//SRONg/+5qwYUhU4v7EUfrYcHS6eBYWOfvhso+oKNwFKksOfTgCDTeUIwMwHBARnp
+ h1kOIlxIZBBWNKUMr0xYYqdxJc0gMN5wN9x/5STfYZ9uxO/yoUn9xrkqTnz3rJBHn4KAsg
+ j+mh+pMUG2KR/j5O0vh0nWMcsmSYzwM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1693590498;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1693592206;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PoEf8T51lG+KGubMoNOKIRyBmHWnNh7kH4YFuzF+xtQ=;
- b=eGDANx1cs7Pk1dsV7Osx1BBkToKTZ66Y9Yifg94+R0D1PS60adSHxdDqHT94Llka5OeQ8q
- J1qZq8GOOWuk+FBg==
+ bh=SczNKaVL1iGLO0+CrAmVKlavPYKq/W/vUS1YtqrLUeA=;
+ b=fMrgFtVvLdrPEqKIjJoDzcyLZuWrTbedHnbRrE/d58/WtNZWw5CYV+ftwQ2YFYm7xjUrAR
+ N+pdmTTHgDR6UnCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C91A13582;
- Fri,  1 Sep 2023 17:48:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 77D1B13582;
+ Fri,  1 Sep 2023 18:16:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +15AA+Ij8mQmPwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 01 Sep 2023 17:48:18 +0000
-Date: Fri, 1 Sep 2023 19:48:15 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20230901174815.GA390265@pevik>
-References: <20230901144433.2526-1-chrubis@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id +z3/G44q8mQ5SwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 01 Sep 2023 18:16:46 +0000
+Date: Fri, 1 Sep 2023 20:17:22 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZPIqsmTbJh7z-LcO@yuki>
+References: <20230901154355.5351-1-chrubis@suse.cz>
+ <20230901174529.GB364687@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230901144433.2526-1-chrubis@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+In-Reply-To: <20230901174529.GB364687@pevik>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] sched: add sched sysctl sanity test
+Subject: Re: [LTP] [PATCH] sched/rt: Disallow writing invalid values to
+ sched_rt_period_us
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,41 +76,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Juri Lelli <juri.lelli@redhat.com>,
+ Valentin Schneider <vschneid@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi!
+> Documentation/scheduller/sched-rt-group.rst [1] specifies this as values from -1 to
+> (INT_MAX - 1), I guess due int range. Looking into proc_dointvec_minmax() [2]
+> even INT_MAX would pass the check. I suppose we can do nothing about that,
+> because there is no value in sysctl_vals[] which would represent INT_MAX - 1.
+> 
+> And you specify in LTP test range: from -1 to INT_MAX.
+> 
+> But even much shorter value than INT_MAX fails:
+> 
+> $ echo 1234567 > /proc/sys/kernel/sched_rt_runtime_us
+> sh: echo: write error: Invalid argument
 
-...
-> +++ b/testcases/kernel/sched/sysctl/proc_sched_rt01.c
-> @@ -0,0 +1,115 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) Cyril Hrubis <chrubis@suse.cz>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Sanity tests for the /proc/sys/kernel/sched_r* files.
-> + *
-> + * - The sched_rt_period_us range is 1 to INT_MAX
-> + *   try invalid values and check for EINVAL
-> + *
-> + * - The sched_rt_runtime_us range is -1 to INT_MAX
-> + *   try invalid values and check for EINVAL
+That is because runtime_us must be < period_us by definition, since
+runtime_us defines how much time is allocated from the period_us. I
+guess that this is not described good enough in the kernel docs.
 
-As I wrote to the kernel patch, Documentation/scheduller/sched-rt-group.rst [1]
-specifies this as values from -1 to (INT_MAX - 1).
-
-Kind regards,
-Petr
-
-[1] https://www.kernel.org/doc/html/latest/scheduler/sched-rt-group.html#system-wide-settings
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
