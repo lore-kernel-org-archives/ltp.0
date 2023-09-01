@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F0D9CA0FE1
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 14:44:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6E28CA0FE4
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 14:44:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E62453CBF3E
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 16:44:09 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 3FD233CED6C
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 16:44:25 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D59013CBB56
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 16:43:59 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 36DB03CED3D
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 16:44:13 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1B0571A00E32
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 16:43:58 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 5EC9C1A00939
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 16:44:12 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 932EB1F45F
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:43:57 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 848251F45F;
+ Fri,  1 Sep 2023 14:44:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1693579437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1693579452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=3PP5c1tUV4qj/4o13rzoN3nmZoBL3XOsgEa6f8gNM7I=;
- b=tinjAResIdeRpn4XiVYyh/FbGeEDntJiuyg86zJO73JA/gU6bVs/zTziMzZV/YXaNo/XQh
- VnbWamOUbx4rQaSRbW18l8qL26LnxzEyFmFYm+cL0hDUmZMep2hWScYXHaRuk2CAYQnsuf
- yI8vKIkJJx38m2BCeQ4CE0DytVKqsbM=
+ bh=KH1FDe5h2eEyeoE0eiM2AqZd/VhG/kMqL7SKBG7Unpw=;
+ b=2jPODAPpoKbV0vFVhR1r9O2ZVRBNIeq34pw+urfUL0HrGqcW62aHRp1VTTpRMwdfymyBdb
+ 9uQYtFJFwCPnYxVsc3skfesrOnsBWRaciLydBhchGG6PLcamfV6w+DvtHNHmr5sCd0O9eP
+ YZgVfkTFusuFynKxsvsGYPb2Vb2MmtE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1693579437;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ s=susede2_ed25519; t=1693579452;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=3PP5c1tUV4qj/4o13rzoN3nmZoBL3XOsgEa6f8gNM7I=;
- b=fyoIwCFqPbvkrhFxJHrgA08V3IYs2GPofCIkPUSNpmoszajJGXR/g1jmTlQX6/YgHwT+Jo
- ZM9gHcI0UZM+abDw==
+ bh=KH1FDe5h2eEyeoE0eiM2AqZd/VhG/kMqL7SKBG7Unpw=;
+ b=ljHvtbPYDgRkQMHgZRlc7aZ3lkUQ3VaaHOHhi6XqrZMOIeni5yxfTcmDXJTj6iQfJjwtRH
+ WmKeJ1EcV/N6wCCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 739331358B
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:43:57 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 525DB1358B;
+ Fri,  1 Sep 2023 14:44:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Vb7NG6348WS5aAAAMHmgww
- (envelope-from <chrubis@suse.cz>)
- for <ltp@lists.linux.it>; Fri, 01 Sep 2023 14:43:57 +0000
-From: Cyril Hrubis <chrubis@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id MciOErz48WTdaAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 01 Sep 2023 14:44:12 +0000
+From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri,  1 Sep 2023 16:44:33 +0200
-Message-ID: <20230901144433.2526-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.41.0
+Date: Fri,  1 Sep 2023 16:44:07 +0200
+Message-Id: <20230901144407.364630-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] sched: add sched sysctl sanity test
+Subject: [LTP] [PATCH 1/1] clone302: Fix short size test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,179 +75,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Currently the test fails due to kernel bug, I will send patch to LKML
-later on.
+Test uses sizeof(struct clone_args)-1 as invalid size. Original struct
+size 64 was suitable (because > 64 results in EINVAL), but unrelated
+change in 45f6916ba increased the size to 88, thus test failed to due
+unexpected clone3() pass.
 
-The problem with kernel is that sysctl_sched_rt_period is unsigned int
-but it's processed with proc_dointvec() which means that you are allowed
-to write negative values into the variable even though documentation
-says it shouldn't be possible and the kernel code asserts that rt_period
-is > 0.
+Depending on struct clone_args size is not good idea, let's use
+arbitrary value 1.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Fixes: 1b0e8dd71 ("syscalls/clone3: New tests")
+Suggested-by: Martin Doucha <mdoucha@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/sched                                 |   2 +
- testcases/kernel/sched/sysctl/.gitignore      |   1 +
- testcases/kernel/sched/sysctl/Makefile        |   7 ++
- .../kernel/sched/sysctl/proc_sched_rt01.c     | 115 ++++++++++++++++++
- 4 files changed, 125 insertions(+)
- create mode 100644 testcases/kernel/sched/sysctl/.gitignore
- create mode 100644 testcases/kernel/sched/sysctl/Makefile
- create mode 100644 testcases/kernel/sched/sysctl/proc_sched_rt01.c
+Value is really arbitrary, any hint for better value.
+Or should we delete the test?
 
-diff --git a/runtest/sched b/runtest/sched
-index 172fe4174..3457114f4 100644
---- a/runtest/sched
-+++ b/runtest/sched
-@@ -16,3 +16,5 @@ sched_cli_serv run_sched_cliserv.sh
- sched_stress sched_stress.sh
- 
- autogroup01 autogroup01
-+
-+proc_sched_rt01
-diff --git a/testcases/kernel/sched/sysctl/.gitignore b/testcases/kernel/sched/sysctl/.gitignore
-new file mode 100644
-index 000000000..29b859b81
---- /dev/null
-+++ b/testcases/kernel/sched/sysctl/.gitignore
-@@ -0,0 +1 @@
-+proc_sched_rt01
-diff --git a/testcases/kernel/sched/sysctl/Makefile b/testcases/kernel/sched/sysctl/Makefile
-new file mode 100644
-index 000000000..18896b6f2
---- /dev/null
-+++ b/testcases/kernel/sched/sysctl/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sched/sysctl/proc_sched_rt01.c b/testcases/kernel/sched/sysctl/proc_sched_rt01.c
-new file mode 100644
-index 000000000..b30256792
---- /dev/null
-+++ b/testcases/kernel/sched/sysctl/proc_sched_rt01.c
-@@ -0,0 +1,115 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) Cyril Hrubis <chrubis@suse.cz>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Sanity tests for the /proc/sys/kernel/sched_r* files.
-+ *
-+ * - The sched_rt_period_us range is 1 to INT_MAX
-+ *   try invalid values and check for EINVAL
-+ *
-+ * - The sched_rt_runtime_us range is -1 to INT_MAX
-+ *   try invalid values and check for EINVAL
-+ *
-+ * - The sched_rt_runtime_us must be less or equal to sched_rt_period_us
-+ *
-+ * - Reset sched_rr_timeslice_ms to default value by writing -1 and check that
-+ *   we get the default value on next read.
-+ *
-+ *   This is a regression test for a commit:
-+ *
-+ *   commit c1fc6484e1fb7cc2481d169bfef129a1b0676abe
-+ *   Author: Cyril Hrubis <chrubis@suse.cz>
-+ *   Date:   Wed Aug 2 17:19:06 2023 +0200
-+ *
-+ *       sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset
-+ */
-+
-+#include <stdio.h>
-+#include "tst_test.h"
-+
-+#define RT_PERIOD_US "/proc/sys/kernel/sched_rt_period_us"
-+#define RT_RUNTIME_US "/proc/sys/kernel/sched_rt_runtime_us"
-+#define RR_TIMESLICE_MS "/proc/sys/kernel/sched_rr_timeslice_ms"
-+
-+static int period_fd;
-+static int runtime_fd;
-+
-+static void rr_timeslice_ms_reset(void)
-+{
-+	long timeslice_ms;
-+
-+	SAFE_FILE_PRINTF(RR_TIMESLICE_MS, "-1");
-+	SAFE_FILE_SCANF(RR_TIMESLICE_MS, "%li", &timeslice_ms);
-+
-+	TST_EXP_EXPR(timeslice_ms > 0,
-+	             "timeslice_ms > 0 after reset to default");
-+}
-+
-+static void rt_period_us_einval(void)
-+{
-+	TST_EXP_FAIL(write(period_fd, "0", 2), EINVAL,
-+	             "echo 0 > "RT_PERIOD_US);
-+	TST_EXP_FAIL(write(period_fd, "-1", 2), EINVAL,
-+	             "echo -1 > "RT_PERIOD_US);
-+}
-+
-+static void rt_runtime_us_einval(void)
-+{
-+	TST_EXP_FAIL(write(runtime_fd, "-2", 2), EINVAL,
-+	             "echo -2 > "RT_RUNTIME_US);
-+}
-+
-+static void rt_runtime_us_le_period_us(void)
-+{
-+	int period_us;
-+	char buf[32];
-+
-+	SAFE_FILE_SCANF(RT_PERIOD_US, "%i", &period_us);
-+
-+	sprintf(buf, "%i", period_us+1);
-+
-+	TST_EXP_FAIL(write(runtime_fd, buf, strlen(buf)), EINVAL,
-+	             "echo rt_period_us+1 > "RT_RUNTIME_US);
-+}
-+
-+static void verify_sched_proc(void)
-+{
-+	rr_timeslice_ms_reset();
-+	rt_period_us_einval();
-+	rt_runtime_us_einval();
-+	rt_runtime_us_le_period_us();
-+}
-+
-+static void setup(void)
-+{
-+	period_fd = open(RT_PERIOD_US, O_RDWR);
-+	runtime_fd = open(RT_RUNTIME_US, O_RDWR);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (period_fd > 0)
-+		SAFE_CLOSE(period_fd);
-+
-+	if (runtime_fd > 0)
-+		SAFE_CLOSE(runtime_fd);
-+}
-+
-+static struct tst_test test = {
-+	.needs_root = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_sched_proc,
-+	.tags = (struct tst_tag []) {
-+		{"linux-git", "c1fc6484e1fb"},
-+		{}
-+	},
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_SYSCTL",
-+		NULL
-+	},
-+};
+NOTE: tested only on x86_64.
+
+Kind regards,
+Petr
+
+ testcases/kernel/syscalls/clone3/clone302.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/clone3/clone302.c b/testcases/kernel/syscalls/clone3/clone302.c
+index b1b4ccebb..98848e4bc 100644
+--- a/testcases/kernel/syscalls/clone3/clone302.c
++++ b/testcases/kernel/syscalls/clone3/clone302.c
+@@ -34,7 +34,7 @@ static struct tcase {
+ } tcases[] = {
+ 	{"invalid args", &invalid_args, sizeof(*valid_args), 0, NULL, SIGCHLD, 0, 0, 0, EFAULT},
+ 	{"zero size", &valid_args, 0, 0, NULL, SIGCHLD, 0, 0, 0, EINVAL},
+-	{"short size", &valid_args, sizeof(*valid_args) - 1, 0, NULL, SIGCHLD, 0, 0, 0, EINVAL},
++	{"short size", &valid_args, 1, 0, NULL, SIGCHLD, 0, 0, 0, EINVAL},
+ 	{"extra size", &valid_args, sizeof(*valid_args) + 1, 0, NULL, SIGCHLD, 0, 0, 0, EFAULT},
+ 	{"sighand-no-VM", &valid_args, sizeof(*valid_args), CLONE_SIGHAND, NULL, SIGCHLD, 0, 0, 0, EINVAL},
+ 	{"thread-no-sighand", &valid_args, sizeof(*valid_args), CLONE_THREAD, NULL, SIGCHLD, 0, 0, 0, EINVAL},
 -- 
-2.41.0
+2.40.1
 
 
 -- 
