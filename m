@@ -4,63 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D84D7CA0FE1
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 12:48:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DD9FCA0FE1
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 12:48:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 69AAC3CBEDF
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 14:48:33 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 067783CEE73
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 14:48:48 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 728533CB2BC
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:48:20 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id DE73B3CBF3B
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:48:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C87BE602794
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:48:19 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0EA8014010FA
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:48:22 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4B0961F88D
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 12:48:19 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 36D5A1F86C
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 12:48:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693572499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=L7i+9S0g4vcWaCqSRYWgyr3YNZNkf/G7zrkNM393giw=;
- b=C7V4mF48bAbEemRB111sFkTs8tLS78L0UUnF9Om5hpOwADO2SR8osJUgOgPjhE2GBoNwyJ
- AWFYT6XsIGR0grXkUv+h6M4v2Mnz1te/UIeVJVKERSm1fgu6Lcs7tGrPDFq5AglekbdNL4
- Rw2Npcec3SyC6oyNdHFhiabhTru5d/Q=
+ t=1693572502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XpGRLjlFz4icComuZWmAGvigD0QwMkGWhHvCygodxiI=;
+ b=fiBE7pIi+f2vA30QvH6Hbp1gONkJshl5YrKXm3xIbqv9EaWqdBnhYpGX6TGzn2QCIRFy+j
+ JEpr1uMQn9QLpDNCiqeCwwks3cFPxeru3/+lU+qZoRoHQ+kqvaQUoPQWVc63sqLya0meh5
+ 3iO+1ZF5Avby/bm2qHj6GW8vcFCbsTU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693572499;
+ s=susede2_ed25519; t=1693572502;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=L7i+9S0g4vcWaCqSRYWgyr3YNZNkf/G7zrkNM393giw=;
- b=Cv7eh8PZTKWBkOrKt1ujHYFHexL6yI8lAKNoeEMZOaf3lEaIPWxD4Ikcm4CjRx34sskzul
- UhFPBMpk6IFj8uCw==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XpGRLjlFz4icComuZWmAGvigD0QwMkGWhHvCygodxiI=;
+ b=SLdAvVmBdUq2pusSMKlDnAW6WA3hCjdnHtKcP5Jb/ulwbrKe3AcQX0uMCZcJRlNRSWhLvn
+ 7TKl4RKP9AnLmzDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DEEE51358B
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 12:48:18 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CABD11358B
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 12:48:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id lsCBK5Ld8WTCLQAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id q0ixJpXd8WTJLQAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Fri, 01 Sep 2023 12:48:18 +0000
+ for <ltp@lists.linux.it>; Fri, 01 Sep 2023 12:48:21 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Fri,  1 Sep 2023 18:18:13 +0530
-Message-ID: <20230901124816.30437-1-akumar@suse.de>
+Date: Fri,  1 Sep 2023 18:18:14 +0530
+Message-ID: <20230901124816.30437-2-akumar@suse.de>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230901124816.30437-1-akumar@suse.de>
+References: <20230901124816.30437-1-akumar@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 1/2] syscalls/mmap01: Rewrite the test using new
+Subject: [LTP] [PATCH v2 2/2] syscalls/mmap02: Rewrite the test using new
  LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -78,20 +83,16 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-also old test was broken for iterations > 1 as mmap() returns the same
-mapping address each time and we need to clear the memory contents in
-every loop for test to work correctly.
-
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- testcases/kernel/syscalls/mmap/mmap01.c | 221 ++++++------------------
- 1 file changed, 57 insertions(+), 164 deletions(-)
+ testcases/kernel/syscalls/mmap/mmap02.c | 204 +++++-------------------
+ 1 file changed, 41 insertions(+), 163 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap01.c b/testcases/kernel/syscalls/mmap/mmap01.c
-index 99266b57f..4ec38639e 100644
---- a/testcases/kernel/syscalls/mmap/mmap01.c
-+++ b/testcases/kernel/syscalls/mmap/mmap01.c
-@@ -1,194 +1,87 @@
+diff --git a/testcases/kernel/syscalls/mmap/mmap02.c b/testcases/kernel/syscalls/mmap/mmap02.c
+index 566cc323a..7ffe61fa3 100644
+--- a/testcases/kernel/syscalls/mmap/mmap02.c
++++ b/testcases/kernel/syscalls/mmap/mmap02.c
+@@ -1,186 +1,64 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
   * Copyright (c) International Business Machines  Corp., 2001
@@ -109,33 +110,30 @@ index 99266b57f..4ec38639e 100644
 - * You should have received a copy of the GNU General Public License
 - * along with this program;  if not, write to the Free Software
 - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *	07/2001 Ported by Wayne Boyer
++ *  07/2001 Ported by Wayne Boyer
 + * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
   */
  
 -/*
 - * Test Description:
-- *  Verify that, mmap() succeeds when used to map a file where size of the
-- *  file is not a multiple of the page size, the memory area beyond the end
-- *  of the file to the end of the page is accessible. Also, verify that
-- *  this area is all zeroed and the modifications done to this area are
-- *  not written to the file.
+- *  Call mmap() with prot parameter set to PROT_READ and with the file
+- *  descriptor being open for read, to  map a file creating mapped memory
+- *  with read access. The minimum file permissions should be 0444.
 - *
-- * Expected Result:
-- *  mmap() should succeed returning the address of the mapped region.
-- *  The memory area beyond the end of file to the end of page should be
-- *  filled with zero.
-- *  The changes beyond the end of file should not get written to the file.
+- *  The call should succeed to create the mapped region with required
+- *  attributes.
 +/*\
 + * [Description]
   *
+- * Expected Result:
+- *  mmap() should succeed returning the address of the mapped region,
+- *  the mapped region should contain the contents of the mapped file.
+- *
 - * HISTORY
 - *	07/2001 Ported by Wayne Boyer
-+ * Verify that, mmap() succeeds when used to map a file where size of the
-+ * file is not a multiple of the page size, the memory area beyond the end
-+ * of the file to the end of the page is accessible. Also, verify that
-+ * this area is all zeroed and the modifications done to this area are
-+ * not written to the file.
++ * Verify that, mmap() call with PROT_READ and a file descriptor which is
++ * open for read only, succeeds to map a file creating mapped memory with
++ * read access.
   */
 -#include <stdio.h>
 -#include <stdlib.h>
@@ -145,28 +143,25 @@ index 99266b57f..4ec38639e 100644
 -#include <fcntl.h>
 -#include <string.h>
 -#include <signal.h>
--#include <stdint.h>
 -#include <sys/stat.h>
 -#include <sys/mman.h>
--#include <sys/shm.h>
 -
 -#include "test.h"
  
 -#define TEMPFILE	"mmapfile"
 -
--char *TCID = "mmap01";
+-char *TCID = "mmap02";
 -int TST_TOTAL = 1;
 +#include <stdlib.h>
 +#include "tst_test.h"
  
--static char *addr;
--static char *dummy;
 +#define TEMPFILE "mmapfile"
++static ssize_t page_sz;
 +static int fd;
- static size_t page_sz;
- static size_t file_sz;
+ static char *addr;
+-static char *dummy;
+-static size_t page_sz;
 -static int fildes;
--static char cmd_buffer[BUFSIZ];
 -
 -static void setup(void);
 -static void cleanup(void);
@@ -184,11 +179,11 @@ index 99266b57f..4ec38639e 100644
 -		tst_count = 0;
 -
 -		/*
--		 * Call mmap to map the temporary file beyond EOF
--		 * with write access.
+-		 * Call mmap to map the temporary file 'TEMPFILE'
+-		 * with read access.
 -		 */
 -		errno = 0;
--		addr = mmap(NULL, page_sz, PROT_READ | PROT_WRITE,
+-		addr = mmap(0, page_sz, PROT_READ,
 -			    MAP_FILE | MAP_SHARED, fildes, 0);
 -
 -		/* Check for the return value of mmap() */
@@ -198,131 +193,113 @@ index 99266b57f..4ec38639e 100644
 -		}
 -
 -		/*
--		 * Check if mapped memory area beyond EOF are
--		 * zeros and changes beyond EOF are not written
--		 * to file.
+-		 * Read the file contents into the dummy
+-		 * string.
 -		 */
--		if (memcmp(&addr[file_sz], dummy, page_sz - file_sz)) {
--			tst_brkm(TFAIL, cleanup,
--				 "mapped memory area contains invalid "
--				 "data");
--		}
--
--		/*
--		 * Initialize memory beyond file size
--		 */
--		addr[file_sz] = 'X';
--		addr[file_sz + 1] = 'Y';
--		addr[file_sz + 2] = 'Z';
--
--		/*
--		 * Synchronize the mapped memory region
--		 * with the file.
--		 */
--		if (msync(addr, page_sz, MS_SYNC) != 0) {
+-		if (read(fildes, dummy, page_sz) < 0) {
 -			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "failed to synchronize mapped file");
+-				 "reading %s failed", TEMPFILE);
 -		}
 -
 -		/*
--		 * Now, Search for the pattern 'XYZ' in the
--		 * temporary file.  The pattern should not be
--		 * found and the return value should be 1.
+-		 * Check whether mapped memory region has
+-		 * the file contents.
 -		 */
--		if (system(cmd_buffer) != 0) {
+-		if (memcmp(dummy, addr, page_sz)) {
+-			tst_resm(TFAIL, "mapped memory area contains "
+-				 "invalid data");
+-		} else {
 -			tst_resm(TPASS,
 -				 "Functionality of mmap() successful");
--		} else {
--			tst_resm(TFAIL,
--				 "Specified pattern found in file");
 -		}
 -
 -		/* Clean up things in case we are looping */
 -		/* Unmap the mapped memory */
 -		if (munmap(addr, page_sz) != 0) {
--			tst_brkm(TFAIL | TERRNO, NULL, "munmap failed");
+-			tst_brkm(TFAIL | TERRNO, cleanup, "munmapping failed");
 -		}
 -	}
 -
 -	cleanup();
 -	tst_exit();
 -}
-+static char *dummy;
-+static char *addr;
++static char *buf;
  
  static void setup(void)
  {
- 	struct stat stat_buf;
--	char Path_name[PATH_MAX];
- 	char write_buf[] = "hello world\n";
- 
+-	char *tst_buff;
+-
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
-+
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, write_buf, strlen(write_buf));
-+	SAFE_LSEEK(fd, 0, SEEK_SET);
-+	SAFE_STAT(TEMPFILE, &stat_buf);
-+
-+	file_sz = stat_buf.st_size;
-+	page_sz = getpagesize();
- 
+-
 -	TEST_PAUSE;
-+	dummy = SAFE_MALLOC(page_sz);
-+	memset(dummy, 0, page_sz);
-+}
+-
+ 	page_sz = getpagesize();
++	buf = SAFE_MALLOC(page_sz);
++	memset(buf, 'A', page_sz);
+ 
+-	/* Allocate space for the test buffer */
+-	if ((tst_buff = calloc(page_sz, sizeof(char))) == NULL) {
+-		tst_brkm(TFAIL, NULL, "calloc failed (tst_buff)");
+-	}
+-
+-	/* Fill the test buffer with the known data */
+-	memset(tst_buff, 'A', page_sz);
++	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, page_sz);
  
 -	tst_tmpdir();
-+static void run(void)
-+{
-+	char buf[20];
- 
--	/* Get the path of temporary file to be created */
--	if (getcwd(Path_name, sizeof(Path_name)) == NULL) {
--		tst_brkm(TFAIL | TERRNO, cleanup,
--			 "getcwd failed to get current working directory");
--	}
-+	addr = SAFE_MMAP(NULL, page_sz, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0);
- 
+-
 -	/* Creat a temporary file used for mapping */
 -	if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0) {
--		tst_brkm(TFAIL, cleanup, "opening %s failed", TEMPFILE);
--	}
-+	if (memcmp(&addr[file_sz], dummy, page_sz - file_sz) != 0)
-+		tst_brk(TFAIL, "mapped memory area contains invalid data");
- 
--	/* Write some data into temporary file */
--	if (write(fildes, write_buf, strlen(write_buf)) != (long)strlen(write_buf)) {
--		tst_brkm(TFAIL, cleanup, "writing to %s", TEMPFILE);
--	}
-+	addr[file_sz] = 'X';
-+	addr[file_sz + 1] = 'Y';
-+	addr[file_sz + 2] = 'Z';
- 
--	/* Get the size of temporary file */
--	if (stat(TEMPFILE, &stat_buf) < 0) {
--		tst_brkm(TFAIL | TERRNO, cleanup, "stat of %s failed",
+-		free(tst_buff);
+-		tst_brkm(TFAIL | TERRNO, cleanup, "opening %s failed",
 -			 TEMPFILE);
 -	}
--	file_sz = stat_buf.st_size;
-+	if (msync(addr, page_sz, MS_SYNC) != 0)
-+		tst_brk(TFAIL | TERRNO, "failed to sync mapped file");
+-
+-	/* Write test buffer contents into temporary file */
+-	if (write(fildes, tst_buff, page_sz) < (int)page_sz) {
+-		free(tst_buff);
+-		tst_brkm(TFAIL | TERRNO, cleanup,
+-			 "writing to %s failed", TEMPFILE);
+-	}
+-
+-	/* Free the memory allocated for test buffer */
+-	free(tst_buff);
+-
+-	/* Change Mode permissions on Temporary file */
+-	if (fchmod(fildes, 0444) < 0) {
+-		tst_brkm(TFAIL | TERRNO, cleanup, "fchmod(%s, 0444) failed",
+-			 TEMPFILE);
+-	}
+-
+-	/* Close the temporary file */
+-	if (close(fildes) < 0) {
+-		tst_brkm(TFAIL | TERRNO, cleanup, "closing %s failed",
+-			 TEMPFILE);
+-	}
++	SAFE_FCHMOD(fd, 0444);
++	SAFE_CLOSE(fd);
++	fd = SAFE_OPEN(TEMPFILE, O_RDONLY);
++}
  
--	page_sz = getpagesize();
-+	SAFE_READ(0, fd, buf, sizeof(buf));
-+	SAFE_LSEEK(fd, 0, SEEK_SET);
+-	/* Open the temporary file again, - Readonly mode */
+-	if ((fildes = open(TEMPFILE, O_RDONLY)) < 0) {
+-		tst_brkm(TFAIL, cleanup, "reopening %s readonly failed",
+-			 TEMPFILE);
+-	}
++static void run(void)
++{
++	addr = SAFE_MMAP(NULL, page_sz, PROT_READ, MAP_FILE | MAP_SHARED, fd, 0);
  
 -	/* Allocate and initialize dummy string of system page size bytes */
 -	if ((dummy = calloc(page_sz, sizeof(char))) == NULL) {
 -		tst_brkm(TFAIL, cleanup, "calloc failed (dummy)");
 -	}
-+	if (strstr(buf, "XYZ") == NULL)
++	if (memcmp(buf, addr, page_sz) == 0)
 +		tst_res(TPASS, "mmap() functionality successful");
 +	else
-+		tst_res(TFAIL, "mmap() functionality failed");
++		tst_res(TFAIL, "mapped memory area contains invalid data");
  
--	/* Create the command which will be executed in the test */
--	sprintf(cmd_buffer, "grep XYZ %s/%s > /dev/null", Path_name, TEMPFILE);
-+	memset(&addr[file_sz], 0, 3);
 +	SAFE_MUNMAP(addr, page_sz);
  }
  
@@ -333,8 +310,8 @@ index 99266b57f..4ec38639e 100644
 -	tst_rmdir();
 +	if (fd > 0)
 +		SAFE_CLOSE(fd);
-+	if (dummy)
-+		free(dummy);
++
++	free(buf);
  }
 +
 +static struct tst_test test = {
