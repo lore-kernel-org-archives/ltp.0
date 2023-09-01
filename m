@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C48DCA0FE6
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 10:38:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF83ACA0FE1
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 10:45:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7FF113CE037
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 12:38:12 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 2A85B3CBD83
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 12:45:41 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EA0E43CBBA7
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 12:38:01 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id A8E463CBBA7
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 12:45:30 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3A4D2600A85
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 12:38:00 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2A5CB1A0433D
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 12:45:28 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1B90B1F45E;
- Fri,  1 Sep 2023 10:38:00 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7028521850;
+ Fri,  1 Sep 2023 10:45:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1693564680;
+ t=1693565128;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1/n4zI2gvusqHRwql/8vYS0DUeYFEVN+lTH5vP+qwrM=;
- b=P1KgYbu+xtXS/UF4S68nCT50d6h8p7rUR0a2XIp30s/7khKLYuIyVPCIK43Ai4POGUjXAL
- +PeobTmSCIt4LCAhru/e7xwpasv/mqr+ynKsxwgMr9uAo7LVBQeJbE7ZyO11M55z4h1Lgq
- vlzPFwK2DSGJwzAVd8imY7Sfw9lFQ+w=
+ bh=Ot/89N+g4rKg8gL1iv8+bGSkRIbEaw5nE3FWMXZcniY=;
+ b=28GBrB6aSZhGU4w4ltlURZqTi2PsdW46astMpzSvI7cU8yq6YXqHGF+aTYBXebsl5mkhZc
+ obD7vVXG9IU0cQ1lZGZ6hKGMrkRm6PweWOYU1Ae0LPwu1ifsRALyQhP/S87LDEjIDWBg9K
+ PjrIiuQht61+EaRYj3TnzI8w5EHIuF4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1693564680;
+ s=susede2_ed25519; t=1693565128;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1/n4zI2gvusqHRwql/8vYS0DUeYFEVN+lTH5vP+qwrM=;
- b=5jWPQLfD6Oo+a9PONrgyCOE4URQP380xMy3Mo6imZLGNssr3S8KDv5t5umvGTbMgorK9nb
- soyLMbISptzYJ/AQ==
+ bh=Ot/89N+g4rKg8gL1iv8+bGSkRIbEaw5nE3FWMXZcniY=;
+ b=/gaxCO3Jwi3//aHa16E5STpYU8ycn19T9fqo7k0SKNgTETIV/oSOA1qj2oKPaqYMdEP31R
+ RJ+LQRjNcFH+8ABg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD4131358B;
- Fri,  1 Sep 2023 10:37:59 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 59F391358B;
+ Fri,  1 Sep 2023 10:45:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id G2hrMwe/8WRtZgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 01 Sep 2023 10:37:59 +0000
-Date: Fri, 1 Sep 2023 12:37:58 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id z82cFMjA8WRfagAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 01 Sep 2023 10:45:28 +0000
+Date: Fri, 1 Sep 2023 12:45:26 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20230901103758.GC323151@pevik>
-References: <20230829073821.2580-1-andrea.cervesato@suse.de>
- <ZO8d3GO_jFgNAXNY@rei>
+Message-ID: <20230901104526.GA335783@pevik>
+References: <20230818071323.89606-1-pvorel@suse.cz>
+ <ZPGx2VbtreROQC2N@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZO8d3GO_jFgNAXNY@rei>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+In-Reply-To: <ZPGx2VbtreROQC2N@yuki>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Add process_madvise01 test
+Subject: Re: [LTP] [PATCH 1/1] sched_rr_get_interval01: Add another kernel
+ tag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,36 +85,21 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-HI Andrea, Cyril,
-
 > Hi!
-> > +	TST_EXP_EXPR(map_before.swap < map_after.swap,
-> > +		"Most of the memory has been swapped out: %dkB out of %dkB",
-> > +		map_after.swap,
+> > NOTE: git commit is still only in next tree [1], although hash will be
+> > very likely the same, we should wait until it get to mainline (likely in
+> > 6.6-rc1).
 
-> Although it's unlikely that map_before.swap will be non-zero we should
-> print the difference here, so I've changed this part to:
+> The fix has reached the mainline with unchanged hash hence patch
+> applied, thanks.
 
-> map_after.swap - map_before.swap
++1
 
-> And pushed, thanks.
+> > I suppose we could write a test for another Cyril's fix [2].
 
-FYI this new test is failing on current openSUSE Tumbleweed (kernel 6.4.12-1):
+> I guess that I can just send patch for that one, should be fairly easy.
 
-tst_test.c:1559: TINFO: Timeout per run is 0h 00m 30s
-process_madvise01.c:38: TINFO: Allocate memory: 1048576 bytes
-process_madvise01.c:99: TINFO: Reclaim memory using MADV_PAGEOUT
-process_madvise01.c:62: TFAIL: Expect: Most of the memory has been swapped out: 0kB out of 1024kB
-
-Summary:
-passed   0
-failed   1
-broken   0
-skipped  0
-warnings 0
-
-Test works well on current Debian unstable with kernel 6.4.11.
-Could you please have a look if it's a test or a kernel bug?
+Great, thanks!
 
 Kind regards,
 Petr
