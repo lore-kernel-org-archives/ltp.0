@@ -4,124 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C5EECA0FE6
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 12:47:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D84D7CA0FE1
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 12:48:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 482A33CE041
-	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 14:47:34 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 69AAC3CBEDF
+	for <ltp@archiver.kernel.org>; Fri,  1 Sep 2023 14:48:33 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3B2503CB2BC
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:47:23 +0200 (CEST)
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com
- (mail-am0eur02on20630.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe13::630])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 728533CB2BC
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:48:20 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 3F0AE6008ED
- for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:47:22 +0200 (CEST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k+fheE9PUqjCHhUsrwIpn0yCZQfHe4JsYqAVdOuRJ29b3RpSJptBqcLUdss4eZMt/DrzRskAvdNgF7haMC8B+yg9GOlzHWEVVudal966He51cNEy4cd95fGh5ymiqSvVjSjq9gyJCsMNHPtb4G8BouXZEsK0hBlukGEW0jQY4VL/UCn4B3Hjs7nwzjtOpBE4YZtmmoMqxyvLWpKuqiHwL6wlEAuEhEINZUkhNc7stEOxvMT6Lg2dbjh+xX5tESSq7FCSh6SV28HH7CyqV6piGA5rcjiZrU3hZYBNDLj84Z3DsgmeaOYH//EgBE1/C2MM+ZqCGJEyHL/bZPkHCpKjIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A/9/1IQB80TCTabw4yEAXAC+3haDksvITxHsGbYptgQ=;
- b=NU6g3NmnWW8YuiSUAJNhsh2YcNxuA/st4c4E6DOGp5CCJbQkCzpwzHSskZRzfNWn7xs1MPcnJVlBCm2IfffHHnYQtbe5VID1UQs1Wfwh9bX00hInatugmFjQu3wv3kGQY149FqWAM31CX9qNBllydAltPAiNV/2G8s2Tme1KvSOpsEXBBw5jJvtSUw/V+0RfRt6dR8RF/tn6W2IyBDGZoqXDjW5mk44bmWsGYvujQ0eVVBD2quav5aO5QgrTR6HugT+f+FYSXZOYghT0eA8D3x9tfxfadrtX7Mgp3k3Q9xfp7lUh1SaZBpA3j9CdpwtOkgG/vQ69kzeD0LbXLMeb1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A/9/1IQB80TCTabw4yEAXAC+3haDksvITxHsGbYptgQ=;
- b=ljYIH60JkWcOYUJ6OwFCBKNC6q1uA2V68RnsQ6rdAljHURTl8n7Zl2fQPCezfwm5dNTbMSTF+86sKlms3ngsT19B5D/TBwzMmlFfjXSA2x8xqJNMuDfedSo+TnezLirGmGlLARb7udvcG+KkEk0YgC6hQzXO7wrgQ5KQnKAut4HZB1Lv8jP084RuZafFFidgktrPfCoXWnwvmNfc8KTfg67cnf2O7YfeA1+vfwpKoscTRX40B2KfcfV0195FibT3dHaxvfzfMhOaG7AhXapdJeZv7XyIpDvGq1xXZjXZS63b6r9EaNq/wPZnGu3l3UG9AIN2GdOgHUyDrQs1H3lwsA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB6797.eurprd04.prod.outlook.com (2603:10a6:803:13e::13)
- by PAXPR04MB8720.eurprd04.prod.outlook.com (2603:10a6:102:21f::14)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.21; Fri, 1 Sep
- 2023 12:47:20 +0000
-Received: from VI1PR04MB6797.eurprd04.prod.outlook.com
- ([fe80::c33:be0b:88be:b96e]) by VI1PR04MB6797.eurprd04.prod.outlook.com
- ([fe80::c33:be0b:88be:b96e%4]) with mapi id 15.20.6678.031; Fri, 1 Sep 2023
- 12:47:20 +0000
-Message-ID: <9f27bcdd-c4b2-4d01-abcc-2530c442f279@suse.com>
-Date: Fri, 1 Sep 2023 14:47:16 +0200
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20230831104242.27156-1-andrea.cervesato@suse.de>
- <20230831104242.27156-2-andrea.cervesato@suse.de> <ZPCWWXXHG-oEB5qO@yuki>
- <80324acd-253b-4216-8a92-04e31905c648@suse.com> <ZPHXjXFIvbPIPwIH@yuki>
-In-Reply-To: <ZPHXjXFIvbPIPwIH@yuki>
-X-ClientProxiedBy: FR2P281CA0161.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:99::20) To VI1PR04MB6797.eurprd04.prod.outlook.com
- (2603:10a6:803:13e::13)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id C87BE602794
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 14:48:19 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4B0961F88D
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 12:48:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1693572499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=L7i+9S0g4vcWaCqSRYWgyr3YNZNkf/G7zrkNM393giw=;
+ b=C7V4mF48bAbEemRB111sFkTs8tLS78L0UUnF9Om5hpOwADO2SR8osJUgOgPjhE2GBoNwyJ
+ AWFYT6XsIGR0grXkUv+h6M4v2Mnz1te/UIeVJVKERSm1fgu6Lcs7tGrPDFq5AglekbdNL4
+ Rw2Npcec3SyC6oyNdHFhiabhTru5d/Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1693572499;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=L7i+9S0g4vcWaCqSRYWgyr3YNZNkf/G7zrkNM393giw=;
+ b=Cv7eh8PZTKWBkOrKt1ujHYFHexL6yI8lAKNoeEMZOaf3lEaIPWxD4Ikcm4CjRx34sskzul
+ UhFPBMpk6IFj8uCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DEEE51358B
+ for <ltp@lists.linux.it>; Fri,  1 Sep 2023 12:48:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id lsCBK5Ld8WTCLQAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Fri, 01 Sep 2023 12:48:18 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Fri,  1 Sep 2023 18:18:13 +0530
+Message-ID: <20230901124816.30437-1-akumar@suse.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6797:EE_|PAXPR04MB8720:EE_
-X-MS-Office365-Filtering-Correlation-Id: e6201601-598c-4ec5-e5e4-08dbaae994e0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6RsX7yzsvgr2jMI6FS4UuaInVn70GMOLXLwthVY0KBrYRPmCtW+4ljbGUUkaU1Zm2i3G2z+yFsq2Gzf0X9YlECBU1B7KD+wdQvtPBlfWtQ6/gWKc845e3iwHubkxxJ377UsoJewAktXhaiJ9eUa6wiT/JQcQHRMy6MaNKd1i4R2RfMYNe5dFOnm+8gET+3D7NLgQWvnn4XP51psYY0WqjdsplfkFNcBIYYxRVWxz1PzpSiUN1z2YArNOir82XxtUGQ7i7uBuc2GpeVVqZKaTftKJwgl/pFZtJ0t5Ql0FQ7wepWpCtzi1GfkzlUF2aLqR9c+P86CWIs0RfyHzRLSW45YflhUxkk41cK84/Ao+IW5aywlHLUVAQ//V51Okm5A9LyL/CNLOznJKnmxxbGSQjTdNjfRYa7tHz1MHTVcRT/oZgs3Dr9fGKWh4woqTn/X4yGz7QndiOMUbi1QHRwwlBYVMzj+0dkJvgMnucDAn/6SsUWZt5pSogRsVffteoV/C7KOcR5xzj7ORopghg66s4nmzmTZUBqLGAfcMGeszr6ZuYOcRUI2LVMsKqqAY6G5hkUY9rHobn7pFm9Z351mXIbr6ny0cMs0RTqT11GEhjrffm9OrSSGEb3udDZKldJQmkrMzEihh1dMl92ZiguPmhQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:VI1PR04MB6797.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(396003)(346002)(39860400002)(366004)(376002)(136003)(1800799009)(186009)(451199024)(66946007)(31686004)(6666004)(6512007)(6506007)(6486002)(36756003)(86362001)(38100700002)(31696002)(2616005)(2906002)(4744005)(26005)(53546011)(83380400001)(478600001)(8936002)(8676002)(4326008)(66476007)(44832011)(5660300002)(66556008)(6916009)(41300700001)(316002)(45980500001)(43740500002);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SjBNVTdEZVZya0RHNXdqckR1K1A3QkNMaElUdjhiVjlVVUZrc29UK1BaVUd6?=
- =?utf-8?B?eWpnc3VaTkRlMGV3SWxMamJjVkw2OUJMN25NVVN3N2hRcEt5TzZmQmFwd0dq?=
- =?utf-8?B?RGtLbUZKZjhCOG1CUTNJOGg5dmZXQW1nWHVyamNoWFBxVzN6SW1ZWTBub1pY?=
- =?utf-8?B?bUwrUWY1dFJ4bGNXdFFQZEtPZ2lybXdiNDFXaEhLTVVBc29Wb1R5cjUyRWh5?=
- =?utf-8?B?cnZ0NFB1YUtqYjVTTzdwSC8vNlhrVHdpRnFzMm0zbHdOWVpHSlVIWjdEeGJN?=
- =?utf-8?B?aGlma0VjaWc1VTlqNVZjbGlxV3RIZC9DLzdEU0U1M210K1Vpb3MrN04ybjVJ?=
- =?utf-8?B?cU5ldWhaa2pxSU1qM3lrSFRWTWhyL1JkZ0Z6MUEzTW4wL2g3aEpHNW9ubndZ?=
- =?utf-8?B?Nm9wWWQydjRWVTY5YjU1NDFsNmFQVjdOeE9OWjNFZU1nUUJJOW9jNTRGRXUw?=
- =?utf-8?B?UUpGYkdnZ1VuQkVvdWExZ1VnZThxcTNnN3lkeDhNNjc3cDlhaWZLSVpkVUlu?=
- =?utf-8?B?RFh4aG1yMFhPRGNlaWpoNXRxK0ZFaHlIMDNRRlZjaHFvVDhyazdUYlh1TjU5?=
- =?utf-8?B?cE1tcDRhVzN6ZlVDRXJFcU9lb2hRNXpYWUZmeVdvYThMWXNhK0JFYWV6NHpG?=
- =?utf-8?B?bTdVdHVMdis3Y013bnlZWUtQK29hQXZmR092V2gxQnNNMCtJN0gyTVJJRVlN?=
- =?utf-8?B?Qkl1ZFFpdjY2aTZLd1ZPZVVRYTVaOVVkUVNQZ245OERXdGRmKzJuakMrdFBT?=
- =?utf-8?B?bEF3WXloK0FsekhKbWJpSGFTY3c2bG5VYWxzMmpTcmJWWXJWV0ovR1RtTXBO?=
- =?utf-8?B?ZktiYUlIcXJtZzhNWVlHbW9FQUwzMk1zZnNaVW9zV0phYVErZmxxa0VjVDhq?=
- =?utf-8?B?VkpDeW05NVJwakJjZHo5NHJ0SCtLWERLRFBEVUdjNHFoRUV1ckNUcGZzRnFj?=
- =?utf-8?B?aDhmZCtVVTIvYmdvb1NhMjFXTGZyRTgwZ0VaU1V5dEVOQTNUZEhuY2F2Q3Jj?=
- =?utf-8?B?U2xwWDZ6THA5RWU0T2pLbXo5aUpWb2Rockw4NGFsWGVsSEZMazl5Wk1od2NF?=
- =?utf-8?B?Z2h0WTZWdCt5MTNCeXUyVnEvRUpNZmdSZDVTVXpGQ2dYQUlmb3Q5akRGVVNk?=
- =?utf-8?B?YTJab3BYeGJqLzMzaXBkeG10STN6cjNXaEFpbVpWRURBVFZSSk40WHUzRG00?=
- =?utf-8?B?SFZUdnE5OTRmdXJFTDE0OHUwbVhJTkw0UEN6OXRCdmdLUk9UMGRwRjdGejZG?=
- =?utf-8?B?QU1CWXhxR0hKeXpZODJkUmpOT05IQTljc1QrQUdkNWRKNnZBZXJacjVtd1Bi?=
- =?utf-8?B?S3BieDFzdjlhYnAyVWRRSUlSVzZLWHpqMGZ4UFc0M094clBGZzYvSmJUdERG?=
- =?utf-8?B?UTVKSTFHcTZIblA1WXpxUEVReVl2dFVFZ2NERTh1Z3JoaVdvc0xLZytNVGQ1?=
- =?utf-8?B?bE1kK3ljKzNNaG9GSGJIWEloa0tHdXM4OE9qNGdybkhjNnpUNGNFK2Y3WXRQ?=
- =?utf-8?B?c2oxQ1laY29QQ3VzL2t5WXZ4L2x6enkwdzVzbXpDYW9ZNmxCUzZPdEh5ZStZ?=
- =?utf-8?B?NmIzbTQ3WWNXUnZRQ0U2UldQbDg4OTlWTEFTRHJrSGV0TGcyd0hIa2tMVmpt?=
- =?utf-8?B?Vkp5QWpDNnVXTG1ka2dNVDlIQzRMWk5DQ3VGam50V3dMSlhaNlV0QS85OE9J?=
- =?utf-8?B?S0trQUhiYVRYTjhqeFJ5Nktwb05YcE04R3MxdlBmNzQ5KzhRdUtKdDE5dnZI?=
- =?utf-8?B?dHdhNEZpQW92MmltZnhPeEo3SVJROGNZbEc1Y0R2cnpUeTJQOEdCRVFpS2pC?=
- =?utf-8?B?Tms3eldpZFNYSlBoTE95MktNckJRQXlKc3RuWXN2OHpPSVkreHFmVjVYejJG?=
- =?utf-8?B?OVZkZnJ6cUlrMFVxQ1lzQjEwcTM3M3daTVYreE5FaFk0YU94NUd3cGNxWDRM?=
- =?utf-8?B?a3FobVdhRUxkVmZjZkhISDRqNVJjc3M2cGsxUG00QXRjbFRoV3F6V01CY0Iy?=
- =?utf-8?B?b0NPZEN1TDR6a0p0cWhhcURLMk5kKzVGSGkyQWtQMWh4anZCYm5mZmhLMXhO?=
- =?utf-8?B?Q3JPNDBoemlOQVBiVTJ2RzZocFdicmxzU1NlU1FMcnJjdGUyZ2ZZSEhtWGVG?=
- =?utf-8?B?ZTBNa1dZZVVmKzFxeWJaZWFaeUFqSEdxYTZtblhKVDNyTlRLRGhoNDhSQW9Y?=
- =?utf-8?B?cHc9PQ==?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6201601-598c-4ec5-e5e4-08dbaae994e0
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB6797.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 12:47:20.6965 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A7l/dj8BS8Md/G+fMHUPVljoAQsv3b2bMc4ElJm07RKw4ie+WKK0AVR/l+4r11G9F56tvAGyOLLty5jWySMae8hibUDVGqhjC5qDTKGjfR8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8720
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 1/2] Refactor getegid01 using new LTP API
+Subject: [LTP] [PATCH v2 1/2] syscalls/mmap01: Rewrite the test using new
+ LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -133,31 +73,278 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+also old test was broken for iterations > 1 as mmap() returns the same
+mapping address each time and we need to clear the memory contents in
+every loop for test to work correctly.
 
-On 9/1/23 14:22, Cyril Hrubis wrote:
-> Hi!
->>>> +	SAFE_FILE_LINES_SCANF("/proc/self/status", "Gid: %d %d", &st_gid, &st_egid);
->>> Hint: You can use assignment suppresion '*' in order to get rid of the
->>>         dummy st_gid variable.
->> Also, unfortunately this is not working.
-> SAFE_FILE_LINES_SCANF("/proc/self/status", "Gid: %*d %d", &st_egid); works for me.
->
-Ok, that perfectly works now.
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ testcases/kernel/syscalls/mmap/mmap01.c | 221 ++++++------------------
+ 1 file changed, 57 insertions(+), 164 deletions(-)
 
-Waiting for getegid02 review, then I will modify code and send it with 
-the patch set.
-
-Thanks,
-Andrea
+diff --git a/testcases/kernel/syscalls/mmap/mmap01.c b/testcases/kernel/syscalls/mmap/mmap01.c
+index 99266b57f..4ec38639e 100644
+--- a/testcases/kernel/syscalls/mmap/mmap01.c
++++ b/testcases/kernel/syscalls/mmap/mmap01.c
+@@ -1,194 +1,87 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *	07/2001 Ported by Wayne Boyer
++ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-/*
+- * Test Description:
+- *  Verify that, mmap() succeeds when used to map a file where size of the
+- *  file is not a multiple of the page size, the memory area beyond the end
+- *  of the file to the end of the page is accessible. Also, verify that
+- *  this area is all zeroed and the modifications done to this area are
+- *  not written to the file.
+- *
+- * Expected Result:
+- *  mmap() should succeed returning the address of the mapped region.
+- *  The memory area beyond the end of file to the end of page should be
+- *  filled with zero.
+- *  The changes beyond the end of file should not get written to the file.
++/*\
++ * [Description]
+  *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
++ * Verify that, mmap() succeeds when used to map a file where size of the
++ * file is not a multiple of the page size, the memory area beyond the end
++ * of the file to the end of the page is accessible. Also, verify that
++ * this area is all zeroed and the modifications done to this area are
++ * not written to the file.
+  */
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <sys/types.h>
+-#include <errno.h>
+-#include <unistd.h>
+-#include <fcntl.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <stdint.h>
+-#include <sys/stat.h>
+-#include <sys/mman.h>
+-#include <sys/shm.h>
+-
+-#include "test.h"
+ 
+-#define TEMPFILE	"mmapfile"
+-
+-char *TCID = "mmap01";
+-int TST_TOTAL = 1;
++#include <stdlib.h>
++#include "tst_test.h"
+ 
+-static char *addr;
+-static char *dummy;
++#define TEMPFILE "mmapfile"
++static int fd;
+ static size_t page_sz;
+ static size_t file_sz;
+-static int fildes;
+-static char cmd_buffer[BUFSIZ];
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/*
+-		 * Call mmap to map the temporary file beyond EOF
+-		 * with write access.
+-		 */
+-		errno = 0;
+-		addr = mmap(NULL, page_sz, PROT_READ | PROT_WRITE,
+-			    MAP_FILE | MAP_SHARED, fildes, 0);
+-
+-		/* Check for the return value of mmap() */
+-		if (addr == MAP_FAILED) {
+-			tst_resm(TFAIL | TERRNO, "mmap of %s failed", TEMPFILE);
+-			continue;
+-		}
+-
+-		/*
+-		 * Check if mapped memory area beyond EOF are
+-		 * zeros and changes beyond EOF are not written
+-		 * to file.
+-		 */
+-		if (memcmp(&addr[file_sz], dummy, page_sz - file_sz)) {
+-			tst_brkm(TFAIL, cleanup,
+-				 "mapped memory area contains invalid "
+-				 "data");
+-		}
+-
+-		/*
+-		 * Initialize memory beyond file size
+-		 */
+-		addr[file_sz] = 'X';
+-		addr[file_sz + 1] = 'Y';
+-		addr[file_sz + 2] = 'Z';
+-
+-		/*
+-		 * Synchronize the mapped memory region
+-		 * with the file.
+-		 */
+-		if (msync(addr, page_sz, MS_SYNC) != 0) {
+-			tst_brkm(TFAIL | TERRNO, cleanup,
+-				 "failed to synchronize mapped file");
+-		}
+-
+-		/*
+-		 * Now, Search for the pattern 'XYZ' in the
+-		 * temporary file.  The pattern should not be
+-		 * found and the return value should be 1.
+-		 */
+-		if (system(cmd_buffer) != 0) {
+-			tst_resm(TPASS,
+-				 "Functionality of mmap() successful");
+-		} else {
+-			tst_resm(TFAIL,
+-				 "Specified pattern found in file");
+-		}
+-
+-		/* Clean up things in case we are looping */
+-		/* Unmap the mapped memory */
+-		if (munmap(addr, page_sz) != 0) {
+-			tst_brkm(TFAIL | TERRNO, NULL, "munmap failed");
+-		}
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
++static char *dummy;
++static char *addr;
+ 
+ static void setup(void)
+ {
+ 	struct stat stat_buf;
+-	char Path_name[PATH_MAX];
+ 	char write_buf[] = "hello world\n";
+ 
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
++	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
++
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, write_buf, strlen(write_buf));
++	SAFE_LSEEK(fd, 0, SEEK_SET);
++	SAFE_STAT(TEMPFILE, &stat_buf);
++
++	file_sz = stat_buf.st_size;
++	page_sz = getpagesize();
+ 
+-	TEST_PAUSE;
++	dummy = SAFE_MALLOC(page_sz);
++	memset(dummy, 0, page_sz);
++}
+ 
+-	tst_tmpdir();
++static void run(void)
++{
++	char buf[20];
+ 
+-	/* Get the path of temporary file to be created */
+-	if (getcwd(Path_name, sizeof(Path_name)) == NULL) {
+-		tst_brkm(TFAIL | TERRNO, cleanup,
+-			 "getcwd failed to get current working directory");
+-	}
++	addr = SAFE_MMAP(NULL, page_sz, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0);
+ 
+-	/* Creat a temporary file used for mapping */
+-	if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0) {
+-		tst_brkm(TFAIL, cleanup, "opening %s failed", TEMPFILE);
+-	}
++	if (memcmp(&addr[file_sz], dummy, page_sz - file_sz) != 0)
++		tst_brk(TFAIL, "mapped memory area contains invalid data");
+ 
+-	/* Write some data into temporary file */
+-	if (write(fildes, write_buf, strlen(write_buf)) != (long)strlen(write_buf)) {
+-		tst_brkm(TFAIL, cleanup, "writing to %s", TEMPFILE);
+-	}
++	addr[file_sz] = 'X';
++	addr[file_sz + 1] = 'Y';
++	addr[file_sz + 2] = 'Z';
+ 
+-	/* Get the size of temporary file */
+-	if (stat(TEMPFILE, &stat_buf) < 0) {
+-		tst_brkm(TFAIL | TERRNO, cleanup, "stat of %s failed",
+-			 TEMPFILE);
+-	}
+-	file_sz = stat_buf.st_size;
++	if (msync(addr, page_sz, MS_SYNC) != 0)
++		tst_brk(TFAIL | TERRNO, "failed to sync mapped file");
+ 
+-	page_sz = getpagesize();
++	SAFE_READ(0, fd, buf, sizeof(buf));
++	SAFE_LSEEK(fd, 0, SEEK_SET);
+ 
+-	/* Allocate and initialize dummy string of system page size bytes */
+-	if ((dummy = calloc(page_sz, sizeof(char))) == NULL) {
+-		tst_brkm(TFAIL, cleanup, "calloc failed (dummy)");
+-	}
++	if (strstr(buf, "XYZ") == NULL)
++		tst_res(TPASS, "mmap() functionality successful");
++	else
++		tst_res(TFAIL, "mmap() functionality failed");
+ 
+-	/* Create the command which will be executed in the test */
+-	sprintf(cmd_buffer, "grep XYZ %s/%s > /dev/null", Path_name, TEMPFILE);
++	memset(&addr[file_sz], 0, 3);
++	SAFE_MUNMAP(addr, page_sz);
+ }
+ 
+ static void cleanup(void)
+ {
+-	close(fildes);
+-	free(dummy);
+-	tst_rmdir();
++	if (fd > 0)
++		SAFE_CLOSE(fd);
++	if (dummy)
++		free(dummy);
+ }
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.needs_tmpdir = 1
++};
+-- 
+2.41.0
 
 
 -- 
