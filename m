@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB98DC71153
-	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 15:18:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C853C83F2C
+	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 16:10:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 13AE03CB936
-	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 17:18:13 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id C22B23CEBFE
+	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 18:10:36 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 611863CB911
- for <ltp@lists.linux.it>; Mon,  4 Sep 2023 17:18:02 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 9F8B63CB68C
+ for <ltp@lists.linux.it>; Mon,  4 Sep 2023 18:10:24 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id ACB1B600826
- for <ltp@lists.linux.it>; Mon,  4 Sep 2023 17:18:01 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 2A008140076D
+ for <ltp@lists.linux.it>; Mon,  4 Sep 2023 18:10:23 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2E27E21858
- for <ltp@lists.linux.it>; Mon,  4 Sep 2023 15:18:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693840681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 0F04D1F74B;
+ Mon,  4 Sep 2023 16:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1693843823; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XXMVDMflCJPI2bQAQr4TmI7+vYr1n/Rlv+cY/b9MtPk=;
- b=cWsbuFkHZKqp85WdNS3jiUmJQCzsrwRNF3/uPJl5gW/HXPWVq+jm9mz9AuBsUqA2+XV5A7
- /0NghRHDpaMC9LHmheGsIY7FZwwvjEHDavfHN9O/9pifS1AxPw8ORTT3RxfDMiR429Hic/
- XPqx+jEvtoH9BfehnX6pn4z29Svdrnc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693840681;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ bh=IQPgcknrFeW1EhVAohFx0loVuUpWk0iuFZ7nruoPnZU=;
+ b=vhcl7BLAbQ/Z46pf4oWF4CPGZAOuibrIJCxtiSWpJLu7KVVeDaZeZvIkoOROic6kEi6B5e
+ aiC98DaWdv25nBPVzjlJYItSWMrpQK4pguRQZqa7Q3pRsj/Tqakxx++JvQYd+HD98KKhDO
+ kZQyDKPOTtK7/GYnL5ui1yLl0PTWoKE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1693843823;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XXMVDMflCJPI2bQAQr4TmI7+vYr1n/Rlv+cY/b9MtPk=;
- b=pXms1CL1NonN/5Y5IbVA6GMl2tMWXYRxlbqvz9iPZtL6Gqcud33/tfvDwVDZqAyLi7W4dJ
- YtKo2+rzATFMK4Aw==
+ bh=IQPgcknrFeW1EhVAohFx0loVuUpWk0iuFZ7nruoPnZU=;
+ b=VvEo9TEBJ/+J60Wudod6d14NUBdcFOUMmWcAASPrxoa/HXq4xhweyZZlqtkaZdiz16kp7E
+ ivyxJ4r9FCYiiUBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D7CD13585
- for <ltp@lists.linux.it>; Mon,  4 Sep 2023 15:18:01 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EDE9613425;
+ Mon,  4 Sep 2023 16:10:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id pr0ZBin19WTUSAAAMHmgww
- (envelope-from <mkittler@suse.de>)
- for <ltp@lists.linux.it>; Mon, 04 Sep 2023 15:18:01 +0000
-From: Marius Kittler <mkittler@suse.de>
-To: ltp <ltp@lists.linux.it>
-Date: Mon, 04 Sep 2023 17:18:00 +0200
-Message-ID: <4508326.LvFx2qVVIh@linux-9lzf>
-In-Reply-To: <ZPXyE9O38JHxfiV0@yuki>
+ by imap2.suse-dmz.suse.de with ESMTPSA id GLvhOG4B9mRxYwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 04 Sep 2023 16:10:22 +0000
+Date: Mon, 4 Sep 2023 18:11:02 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Marius Kittler <mkittler@suse.de>
+Message-ID: <ZPYBlmunkfUdV6BX@yuki>
 References: <20230904145035.22939-1-mkittler@suse.de> <ZPXyE9O38JHxfiV0@yuki>
+ <4508326.LvFx2qVVIh@linux-9lzf>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <4508326.LvFx2qVVIh@linux-9lzf>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] Use correct ioctl request for termios
 X-BeenThere: ltp@lists.linux.it
@@ -76,37 +75,41 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Am Montag, 4. September 2023, 17:04:51 CEST schrieb Cyril Hrubis:
-> 
-> I guess that it would be cleaner to keep the single request, but define
-> the s_tio as a void * here.
-> 
-> That way we can add test on a separate lines:
-> 
-> 	{&bfd, TCGETA, &termio, EBADF},
-> 	{&bfd, TCGETS, &termios, EBADF},
-> 	...
-> 
+Hi!
+> But we have currently 4 tests that are all executed via both termio and 
+> termios. To keep this kind of coverage we would need to duplicate all of those 
+> lines. That would be 4 new test lines in total. Is that what you're 
+> suggesting? I'm just asking twice because I'm not sure whether it is better 
+> (but don't have a strong opinion).
 
-But we have currently 4 tests that are all executed via both termio and 
-termios. To keep this kind of coverage we would need to duplicate all of those 
-lines. That would be 4 new test lines in total. Is that what you're 
-suggesting? I'm just asking twice because I'm not sure whether it is better 
-(but don't have a strong opinion).
+Yes, as far as I can tell one test per entry is much cleaner and easier
+to read.
 
-By the way, how would I submit an amendment here? Just submit the amended 
-commit again in the same way (I used `git send-email --
-to=ltp@lists.linux.it`)?
+> By the way, how would I submit an amendment here? Just submit the amended 
+> commit again in the same way (I used `git send-email --
+> to=ltp@lists.linux.it`)?
 
-And how is this merged? I saw that in another case patchwork was used? How 
-does that come into play?
+Yes, and you are supposed to version the commits, so add to format-patch
+-v2 for second version, etc.
 
+> And how is this merged? I saw that in another case patchwork was used? How 
+> does that come into play?
 
+Things get merged by maintainers who apply the patch to their local git
+tree and then push to github. Patchwork is just a tool that monitors the
+mailing list and saves a list of patches that needs review, which makes
+things easier for developers as it's easy for patches to get burried in
+their mailboxes.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
