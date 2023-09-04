@@ -4,66 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7BF1C71153
-	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 09:53:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3A03C71153
+	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 11:00:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 881853CB894
-	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 11:53:46 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 25CF43CEBFD
+	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 13:00:45 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D0F043CB834
- for <ltp@lists.linux.it>; Mon,  4 Sep 2023 11:53:35 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 430F13CB821
+ for <ltp@lists.linux.it>; Mon,  4 Sep 2023 13:00:33 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 834581401268
- for <ltp@lists.linux.it>; Mon,  4 Sep 2023 11:53:33 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3B1B9601285
+ for <ltp@lists.linux.it>; Mon,  4 Sep 2023 13:00:31 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7778A1F38C;
- Mon,  4 Sep 2023 09:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1693821213; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fBIqMyNNgm4pK9sIFgEsU86gxXdCWHuM89TLgiACQvg=;
- b=Qj+kEj86WlBoe+MylDGkqGaVIWKf2pfM76AxsLnK1S+CLRoSL3JwpvB9IXpBPdLshY3l7Q
- 6Z26k9XuVTrD6Nhlb05pkzanNhrRK/aS4mAwx2NGVToEu72Vh7+KMPjEbXJF5xzeP01y/q
- P249D/FH1tA7HjFCYivpQOc5WUX5AlY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1693821213;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4726A1F38C;
+ Mon,  4 Sep 2023 11:00:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1693825231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=x/ySB2CEBDESxHzLZ71fcWBwfif/xd3nZ5m7p4vC3xU=;
+ b=bZROLU1LQoo2U1gkW8csva79Z2wwBw+tFvtIN4OO5OehVGkf7UGSRMcA7GaopfPy7c7zqM
+ TRj7pOcJ+JvEgZcLa7zDEXc8hLLtKHyCygeEnD+2bQt35PQU/9G5StcW/m4kbekCixvJao
+ Fd51nUqwZvmi5qV5FYeCKEadmoxsraU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1693825231;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=fBIqMyNNgm4pK9sIFgEsU86gxXdCWHuM89TLgiACQvg=;
- b=rh1/u2nT+V8c/v8e210eLVdZO/5BzqixdvV4PSTFAoK1I6UXsDRtFtUcAhVBA0lnM8ZnGD
- 7E+Nc77Fe2EIXxDg==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=x/ySB2CEBDESxHzLZ71fcWBwfif/xd3nZ5m7p4vC3xU=;
+ b=zhpjdYmwXbTaf9C8/KeVWdaKlm/Y9QUSW5V5SA3fYG/2XaNKxC3F9Th+wG2WWoQPwJVYrd
+ 33H2Aq2lNVJ7ZwBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D0C713425;
- Mon,  4 Sep 2023 09:53:33 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B269913585;
+ Mon,  4 Sep 2023 11:00:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id MZruFR2p9WQiDQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 04 Sep 2023 09:53:33 +0000
-Date: Mon, 4 Sep 2023 11:54:12 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Nageswara R Sastry <rnsastry@linux.ibm.com>
-Message-ID: <ZPWpRFy4-T0vVzWv@yuki>
-References: <20230904065643.32590-1-rnsastry@linux.ibm.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id vTS/Ic649WSIMgAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 04 Sep 2023 11:00:30 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Mon,  4 Sep 2023 13:00:28 +0200
+Message-Id: <20230904110028.23393-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230904065643.32590-1-rnsastry@linux.ibm.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib/tst_lockdown.c: Add PPC64 architecture support
+Subject: [LTP] [PATCH v1] Refactor timer_getoverrun test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,124 +71,156 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +#if defined(__powerpc64__) || defined(__ppc64__)
-> +#define SECUREBOOT_VAR "/proc/device-tree/ibm,secure-boot"
-> +#else
-> +#define SECUREBOOT_VAR "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
-> +#endif
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-This is not properly indented, for preprocessor directives the # has to
-always be first character in the line, then inner blocks are indented by
-spaces between # and the rest such as:
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ .../kernel/syscalls/timer_getoverrun/Makefile |   2 +
+ .../timer_getoverrun/timer_getoverrun01.c     | 106 +++++-------------
+ 2 files changed, 32 insertions(+), 76 deletions(-)
 
-#if foo
-# if bar
-#  define BAZ
-# endif
-#endif
-
->  int tst_secureboot_enabled(void)
->  {
->  	int fd;
->  	char data[5];
->  
-> -	if (access(EFIVAR_SECUREBOOT, F_OK)) {
-> -		tst_res(TINFO, "Efivar FS not available");
-> +	if (access(SECUREBOOT_VAR, F_OK)) {
-> +		tst_res(TINFO, "SecureBoot sysfs file not available");
->  		return -1;
->  	}
->  
-> -	fd = open(EFIVAR_SECUREBOOT, O_RDONLY);
-> +	fd = open(SECUREBOOT_VAR, O_RDONLY);
->  
->  	if (fd == -1) {
->  		tst_res(TINFO | TERRNO,
-> -			"Cannot open SecureBoot Efivar sysfile");
-> +			"Cannot open SecureBoot file");
->  		return -1;
->  	} else if (fd < 0) {
->  		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
->  		return -1;
->  	}
-> -
-> +	#if defined(__powerpc64__) || defined(__ppc64__)
-> +	SAFE_READ(1, fd, data, 4);
-> +	#else
->  	SAFE_READ(1, fd, data, 5);
-> +	#endif
-
-Here as well, the ifdefs has to start at first character in the line:
-
-#if ...
-	SAFE_READ(...);
-#else
-	SAFE_READ(...);
-#endif
-
->  	SAFE_CLOSE(fd);
-> +
-> +	#if defined(__powerpc64__) || defined(__ppc64__)
-> +	tst_res(TINFO, "SecureBoot: %s", data[3] ? "on" : "off");
-> +	return data[3];
-> +	#else
->  	tst_res(TINFO, "SecureBoot: %s", data[4] ? "on" : "off");
->  	return data[4];
-> +	#endif
->
->  }
->  
->  int tst_lockdown_enabled(void)
-> @@ -51,9 +64,16 @@ int tst_lockdown_enabled(void)
->  
->  	if (access(PATH_LOCKDOWN, F_OK) != 0) {
->  		char flag;
-> +
->  		/* SecureBoot enabled could mean integrity lockdown (non-mainline version) */
-> +		#if defined(__powerpc64__) || defined(__ppc64__)
-> +		flag = tst_kconfig_get("CONFIG_SECURITY_LOCKDOWN_LSM") == 'y';
-> +		flag |= tst_kconfig_get("CONFIG_SECURITY_LOCKDOWN_LSM_EARLY") == 'y';
-> +		#else
->  		flag = tst_kconfig_get("CONFIG_EFI_SECURE_BOOT_LOCK_DOWN") == 'y';
->  		flag |= tst_kconfig_get("CONFIG_LOCK_DOWN_IN_EFI_SECURE_BOOT") == 'y';
-> +		#endif
-
-However all of these cases we can just define a few constants instead of
-cluttering the code with ifdefs.
-
-#ifdef ppc
-# define VAR_DATA_SIZE 5
-# define VAR_DATA_OFF 4
-# define KERNEL_KCONFIG1 "CONFIG_SECURITY_LOCKDOWN_LSM"
-# define KERNEL_KCONFIG2 "CONFIG_SECURITY_LOCKDOWN_LSM_EARLY"
-...
-#else
-# define VAR_DATA_SIZE 4
-# define VAR_DATA_OFF 3
-...
-#endif
-
-
->  		if (flag && tst_secureboot_enabled() > 0)
->  			return 1;
->  
-> -- 
-> 2.37.1 (Apple Git-137.1)
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/syscalls/timer_getoverrun/Makefile b/testcases/kernel/syscalls/timer_getoverrun/Makefile
+index 1273a4e9c..58376e379 100644
+--- a/testcases/kernel/syscalls/timer_getoverrun/Makefile
++++ b/testcases/kernel/syscalls/timer_getoverrun/Makefile
+@@ -5,4 +5,6 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
++LDLIBS			:= -lrt $(LDLIBS)
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
+index aa9881f27..cb221268d 100644
+--- a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
++++ b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
+@@ -1,88 +1,42 @@
+-/******************************************************************************
+- * Copyright (c) Crackerjack Project., 2007                                   *
+- * Porting from Crackerjack to LTP is done by:                                *
+- *              Manas Kumar Nayak <maknayak@in.ibm.com>                       *
+- * Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>                          *
+- *                                                                            *
+- * This program is free software;  you can redistribute it and/or modify      *
+- * it under the terms of the GNU General Public License as published by       *
+- * the Free Software Foundation; either version 2 of the License, or          *
+- * (at your option) any later version.                                        *
+- *                                                                            *
+- * This program is distributed in the hope that it will be useful,            *
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of            *
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  *
+- * the GNU General Public License for more details.                           *
+- *                                                                            *
+- * You should have received a copy of the GNU General Public License          *
+- * along with this program;  if not, write to the Free Software Foundation,   *
+- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           *
+- *                                                                            *
+- ******************************************************************************/
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) International Business Machines Corp., 2001
++ * Porting from Crackerjack to LTP is done by:
++ *              Manas Kumar Nayak <maknayak@in.ibm.com>
++ *
++ * Copyright (c) Linux Test Project, 2009-2023
++ * Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * This test checks base timer_getoverrun() functionality.
++ */
+ 
+-#include <stdio.h>
+-#include <errno.h>
+-#include <time.h>
+ #include <signal.h>
+-#include <sys/syscall.h>
+-
+-#include "test.h"
++#include "tst_test.h"
++#include "tst_safe_clocks.h"
+ #include "lapi/syscalls.h"
+ 
+-char *TCID = "timer_getoverrun01";
+-int TST_TOTAL = 1;
+-
+-static void cleanup(void)
+-{
+-
+-	tst_rmdir();
+-}
+-
+-static void setup(void)
++static void run(void)
+ {
+-	TEST_PAUSE;
+-	tst_tmpdir();
+-}
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	int timer;
++	timer_t timer;
+ 	struct sigevent ev;
+ 
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+ 	ev.sigev_value = (union sigval) 0;
+-	ev.sigev_signo = SIGALRM;
+ 	ev.sigev_notify = SIGEV_SIGNAL;
+-	TEST(tst_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
+-
+-	if (TEST_RETURN != 0)
+-		tst_brkm(TBROK | TTERRNO, cleanup, "Failed to create timer");
+-
+-	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+-		tst_count = 0;
+-
+-		TEST(tst_syscall(__NR_timer_getoverrun, timer));
+-		if (TEST_RETURN == 0) {
+-			tst_resm(TPASS,
+-			         "timer_getoverrun(CLOCK_REALTIME) Passed");
+-		} else {
+-			tst_resm(TFAIL | TTERRNO,
+-			         "timer_getoverrun(CLOCK_REALTIME) Failed");
+-		}
++	ev.sigev_signo = SIGALRM;
+ 
+-		TEST(tst_syscall(__NR_timer_getoverrun, -1));
+-		if (TEST_RETURN == -1 && TEST_ERRNO == EINVAL) {
+-			tst_resm(TPASS,	"timer_gettime(-1) Failed: EINVAL");
+-		} else {
+-			tst_resm(TFAIL | TTERRNO,
+-			         "timer_gettime(-1) = %li", TEST_RETURN);
+-		}
+-	}
++	TEST(tst_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
++	if (TST_RET)
++		tst_brk(TBROK | TERRNO, "timer_create() error");
+ 
+-	cleanup();
+-	tst_exit();
++	TST_EXP_POSITIVE(tst_syscall(__NR_timer_getoverrun, timer));
++	TST_EXP_FAIL(tst_syscall(__NR_timer_getoverrun, -1), EINVAL);
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
