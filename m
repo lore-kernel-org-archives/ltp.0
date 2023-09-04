@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3A03C71153
-	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 11:00:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93BFCC71153
+	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 11:19:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 25CF43CEBFD
-	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 13:00:45 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id EC05D3CB8DF
+	for <ltp@archiver.kernel.org>; Mon,  4 Sep 2023 13:19:54 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 430F13CB821
- for <ltp@lists.linux.it>; Mon,  4 Sep 2023 13:00:33 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 3647E3CB821
+ for <ltp@lists.linux.it>; Mon,  4 Sep 2023 13:19:45 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3B1B9601285
- for <ltp@lists.linux.it>; Mon,  4 Sep 2023 13:00:31 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0321B1A006E2
+ for <ltp@lists.linux.it>; Mon,  4 Sep 2023 13:19:43 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4726A1F38C;
- Mon,  4 Sep 2023 11:00:31 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5D13E2184F;
+ Mon,  4 Sep 2023 11:19:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693825231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1693826383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=x/ySB2CEBDESxHzLZ71fcWBwfif/xd3nZ5m7p4vC3xU=;
- b=bZROLU1LQoo2U1gkW8csva79Z2wwBw+tFvtIN4OO5OehVGkf7UGSRMcA7GaopfPy7c7zqM
- TRj7pOcJ+JvEgZcLa7zDEXc8hLLtKHyCygeEnD+2bQt35PQU/9G5StcW/m4kbekCixvJao
- Fd51nUqwZvmi5qV5FYeCKEadmoxsraU=
+ bh=MURQxskQ0S3T3M4j0AVAy9RX9zqyk5bELbkP6ub3A4Q=;
+ b=kr9oKBo07zU3WVyZm0Qkr18zjL3b2zlOJbnk+m9oR2OFTOSDG5IkVxof2Ny6U3NYhdjGOT
+ lxGI9oEUnfKkjI+AQWR6cQ5hXcBaWbhZ8Gudxxaxyod0j0VqXKrKy2WehcAhCAOj3dIt9O
+ vfbeLgGFf7Zn6A0S//tQCO2A43myJ1M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693825231;
+ s=susede2_ed25519; t=1693826383;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=x/ySB2CEBDESxHzLZ71fcWBwfif/xd3nZ5m7p4vC3xU=;
- b=zhpjdYmwXbTaf9C8/KeVWdaKlm/Y9QUSW5V5SA3fYG/2XaNKxC3F9Th+wG2WWoQPwJVYrd
- 33H2Aq2lNVJ7ZwBQ==
+ bh=MURQxskQ0S3T3M4j0AVAy9RX9zqyk5bELbkP6ub3A4Q=;
+ b=q2p/gMAMP8qkZYo5G3P3vXAU+sS03zOsfENXLJErO1+VytwnYnksoh7eDV4D2ccryIidKF
+ PmgnTHkmV3sUf+CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B269913585;
- Mon,  4 Sep 2023 11:00:30 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CC19613585;
+ Mon,  4 Sep 2023 11:19:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id vTS/Ic649WSIMgAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Mon, 04 Sep 2023 11:00:30 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id O2FaKk699WQ1PQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 04 Sep 2023 11:19:42 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Mon,  4 Sep 2023 13:00:28 +0200
-Message-Id: <20230904110028.23393-1-andrea.cervesato@suse.de>
+Date: Mon,  4 Sep 2023 13:19:40 +0200
+Message-Id: <20230904111940.26824-1-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Refactor timer_getoverrun test using new LTP API
+Subject: [LTP] [PATCH v2] Refactor timer_getoverrun test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,9 +79,11 @@ From: Andrea Cervesato <andrea.cervesato@suse.com>
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
 ---
+Added glibc variant
+
  .../kernel/syscalls/timer_getoverrun/Makefile |   2 +
- .../timer_getoverrun/timer_getoverrun01.c     | 106 +++++-------------
- 2 files changed, 32 insertions(+), 76 deletions(-)
+ .../timer_getoverrun/timer_getoverrun01.c     | 117 ++++++------------
+ 2 files changed, 43 insertions(+), 76 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/timer_getoverrun/Makefile b/testcases/kernel/syscalls/timer_getoverrun/Makefile
 index 1273a4e9c..58376e379 100644
@@ -96,10 +97,10 @@ index 1273a4e9c..58376e379 100644
 +
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
 diff --git a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
-index aa9881f27..cb221268d 100644
+index aa9881f27..28cba8214 100644
 --- a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
 +++ b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
-@@ -1,88 +1,42 @@
+@@ -1,88 +1,53 @@
 -/******************************************************************************
 - * Copyright (c) Crackerjack Project., 2007                                   *
 - * Porting from Crackerjack to LTP is done by:                                *
@@ -159,14 +160,14 @@ index aa9881f27..cb221268d 100644
 -}
 -
 -static void setup(void)
-+static void run(void)
- {
+-{
 -	TEST_PAUSE;
 -	tst_tmpdir();
 -}
 -
 -int main(int ac, char **av)
--{
++static void run(void)
+ {
 -	int lc;
 -	int timer;
 +	timer_t timer;
@@ -204,19 +205,30 @@ index aa9881f27..cb221268d 100644
 -			tst_resm(TFAIL | TTERRNO,
 -			         "timer_gettime(-1) = %li", TEST_RETURN);
 -		}
--	}
-+	TEST(tst_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
-+	if (TST_RET)
-+		tst_brk(TBROK | TERRNO, "timer_create() error");
- 
++	switch (tst_variant) {
++	case 0:
++		SAFE_TIMER_CREATE(CLOCK_REALTIME, &ev, &timer);
++		TST_EXP_POSITIVE(timer_getoverrun(timer));
++
++		/* glibc causes SIGSEGV where timer_getoverrun() fails with EINVAL */
++#ifndef __GLIBC__
++		TST_EXP_FAIL(timer_getoverrun((timer_t)-1), EINVAL);
++#endif
++		break;
++	case 1:
++		tst_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer);
++		TST_EXP_POSITIVE(tst_syscall(__NR_timer_getoverrun, timer));
++		TST_EXP_FAIL(tst_syscall(__NR_timer_getoverrun, -1), EINVAL);
++		break;
+ 	}
+-
 -	cleanup();
 -	tst_exit();
-+	TST_EXP_POSITIVE(tst_syscall(__NR_timer_getoverrun, timer));
-+	TST_EXP_FAIL(tst_syscall(__NR_timer_getoverrun, -1), EINVAL);
  }
 +
 +static struct tst_test test = {
 +	.test_all = run,
++	.test_variants = 2,
 +};
 -- 
 2.35.3
