@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74609C83F33
-	for <ltp@archiver.kernel.org>; Tue,  5 Sep 2023 13:31:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B8C6CA0FF8
+	for <ltp@archiver.kernel.org>; Tue,  5 Sep 2023 16:02:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9996E3CEB64
-	for <ltp@archiver.kernel.org>; Tue,  5 Sep 2023 15:31:33 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 17DD43CEB72
+	for <ltp@archiver.kernel.org>; Tue,  5 Sep 2023 18:01:59 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DE9543C995F
- for <ltp@lists.linux.it>; Tue,  5 Sep 2023 15:31:22 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 347313CB78F
+ for <ltp@lists.linux.it>; Tue,  5 Sep 2023 18:01:47 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D8C77201733
- for <ltp@lists.linux.it>; Tue,  5 Sep 2023 15:31:21 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 24DD2201DC7
+ for <ltp@lists.linux.it>; Tue,  5 Sep 2023 18:01:46 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 10B481FDEB
- for <ltp@lists.linux.it>; Tue,  5 Sep 2023 13:31:21 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 520B521C92
+ for <ltp@lists.linux.it>; Tue,  5 Sep 2023 16:01:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1693920681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1693929706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/CHIgbnU86A3ySDbH1UxOImH4ABoF3LnvxxWWob+PCY=;
- b=mCVWMOkx+/HAgqGmfUogR/uiRzVNKIQGS5bOZRFWeHg09pylNewn9OWjagfLDnAbM6BcMl
- 3UDt7kZdKbMFGQwUVLhD6uByYlarRbeCVws8b2DZyeFGzSxs/tvQWTH0QR/vU3KjhU6LPm
- X02WHrX5jQQIPhrV0DPh2E9rkMI6VEg=
+ bh=zU9VFBQl62K80zdoxyeTJg1NuzXLOXUCUh7hfDf22AY=;
+ b=srM8K3R5RJkzv5YLw4GT47KWy4ol1Lwfl3kj+VYGWaD7/SohitITv/emGBWFaASuAvkR47
+ vcc+r2fdtiB+InNHf53oGAn9gsO7BY5hRMFK9Fgsh+PhqSIGOFrOBFuXk7x/g2UVZBhQqv
+ V4xU2/vmw/7lATwf+n+X8wt8p4pWQ2Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1693920681;
+ s=susede2_ed25519; t=1693929706;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=/CHIgbnU86A3ySDbH1UxOImH4ABoF3LnvxxWWob+PCY=;
- b=xhKDLLEhKeCox2DkSWGVyP1g+1nMrWVzgzDQLjeKQlv6TZz0ptsBKe7BNIMK2Pmpe5TDFu
- gyiGsA1bjvYzMADA==
+ bh=zU9VFBQl62K80zdoxyeTJg1NuzXLOXUCUh7hfDf22AY=;
+ b=b5Hch9jmCmUkvJ6buq/47dIvaSHMqK8TJU6rcRWpP9iaZqJNtmg/h+B5cCl7FaV/onfZM0
+ QApVEegclao2tkBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F42713499
- for <ltp@lists.linux.it>; Tue,  5 Sep 2023 13:31:20 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D98CD13499
+ for <ltp@lists.linux.it>; Tue,  5 Sep 2023 16:01:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id o2JBG6gt92TrNwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id BUX8KelQ92RMDgAAMHmgww
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Tue, 05 Sep 2023 13:31:20 +0000
+ for <ltp@lists.linux.it>; Tue, 05 Sep 2023 16:01:45 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Tue,  5 Sep 2023 18:58:45 +0530
-Message-ID: <20230905133118.23912-1-akumar@suse.de>
+Date: Tue,  5 Sep 2023 21:31:42 +0530
+Message-ID: <20230905160143.1076-1-akumar@suse.de>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230825063932.30875-4-akumar@suse.de>
-References: <20230825063932.30875-4-akumar@suse.de>
+In-Reply-To: <87pm2yffmx.fsf@suse.de>
+References: <87pm2yffmx.fsf@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] syscalls/mmap14: Rewrite test using new LTP API
+Subject: [LTP] [PATCH v2] syscalls/mmap15: Rewrite test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,22 +85,18 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
+ testcases/kernel/syscalls/mmap/mmap15.c | 116 +++++++-----------------
+ 1 file changed, 35 insertions(+), 81 deletions(-)
 
-Changes in v2:
-- Check RLIMIT_MEMLOCK before trying to map locked pages
-
-
- testcases/kernel/syscalls/mmap/mmap14.c | 138 ++++++++----------------
- 1 file changed, 46 insertions(+), 92 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/mmap/mmap14.c b/testcases/kernel/syscalls/mmap/mmap14.c
-index 31632601b..fba07ef3c 100644
---- a/testcases/kernel/syscalls/mmap/mmap14.c
-+++ b/testcases/kernel/syscalls/mmap/mmap14.c
-@@ -1,124 +1,78 @@
+diff --git a/testcases/kernel/syscalls/mmap/mmap15.c b/testcases/kernel/syscalls/mmap/mmap15.c
+index 443a37eb8..763b2ecbf 100644
+--- a/testcases/kernel/syscalls/mmap/mmap15.c
++++ b/testcases/kernel/syscalls/mmap/mmap15.c
+@@ -1,113 +1,67 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
  /*
-  * Copyright (c) 2013 FNST, DAN LI <li.dan@cn.fujitsu.com>
+  * Copyright (c) International Business Machines  Corp., 2004
+  *  Written by Robbie Williamson
 - *
 - * This program is free software;  you can redistribute it and/or modify
 - * it under the terms of the GNU General Public License as published by
@@ -118,154 +115,131 @@ index 31632601b..fba07ef3c 100644
   */
  
 -/*
-- * Test Description:
-- *  Verify MAP_LOCKED works fine.
-- *  "Lock the pages of the mapped region into memory in the manner of mlock(2)."
+- * Test Description: Test that a normal page cannot be mapped into a high
+- * memory region.
 +/*\
 + * [Description]
-  *
-- * Expected Result:
-- *  mmap() should succeed returning the address of the mapped region,
-- *  and this region should be locked into memory.
-+ * Verify that, mmap() call with MAP_LOCKED flag successfully locks
-+ * the mapped pages into memory.
++ *
++ * Verify that, a normal page cannot be mapped into a high memory region,
++ * and mmap() call fails with either ENOMEM or EINVAL errno.
   */
--#include <stdio.h>
--#include <sys/mman.h>
  
+-#include <sys/types.h>
+-#include <sys/mman.h>
+-#include <sys/mount.h>
+-#include <sys/stat.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <signal.h>
+-#include <stdint.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
 -#include "test.h"
-+#include <stdio.h>
+-#include "safe_macros.h"
+-#include "lapi/abisize.h"
+-
+-char *TCID = "mmap15";
+-int TST_TOTAL = 1;
 +#include "tst_test.h"
  
--#define TEMPFILE        "mmapfile"
--#define MMAPSIZE        (1UL<<20)
-+#define MMAPSIZE        (1UL<<21)
- #define LINELEN         256
+ #ifdef __ia64__
+-# define HIGH_ADDR (void *)(0xa000000000000000UL)
++# define HIGH_ADDR ((void *)(0xa000000000000000UL))
+ #else
+-# define HIGH_ADDR (void *)(-page_size)
++# define HIGH_ADDR ((void *)(-page_size))
+ #endif
  
--char *TCID = "mmap14";
--int TST_TOTAL = 1;
--
- static char *addr;
--
- static void getvmlck(unsigned int *lock_sz);
++#define TEMPFILE "mmapfile"
+ static long page_size;
++static int fd;
+ 
 -static void setup(void);
 -static void cleanup(void);
-+static struct rlimit rlim;
- 
--int main(int argc, char *argv[])
-+static void setup(void)
+-
+-int main(int ac, char **av)
++static void run(void)
  {
--	int lc;
--	unsigned int sz_before;
--	unsigned int sz_after;
--	unsigned int sz_ch;
+-	int lc, fd;
+-	void *addr;
 -
--	tst_parse_opts(argc, argv, NULL, NULL);
--
+ #ifdef TST_ABI32
+-	tst_brkm(TCONF, NULL, "This test is only for 64bit");
++	tst_brk(TCONF, "Test is not applicable for 32-bit systems.");
+ #endif
+ 
+-	tst_parse_opts(ac, av, NULL, NULL);
++	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
+ 
 -	setup();
--
++	TESTPTR(mmap(HIGH_ADDR, page_size, PROT_READ, MAP_SHARED | MAP_FIXED, fd, 0));
+ 
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
 -		tst_count = 0;
 -
--		getvmlck(&sz_before);
+-		fd = SAFE_OPEN(cleanup, "testfile", O_RDWR | O_CREAT, 0666);
 -
--		addr = mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE,
--			    MAP_PRIVATE | MAP_LOCKED | MAP_ANONYMOUS,
--			    -1, 0);
--
--		if (addr == MAP_FAILED) {
--			tst_resm(TFAIL | TERRNO, "mmap of %s failed", TEMPFILE);
+-		/* Attempt to mmap into highmem addr, should get ENOMEM */
+-		addr = mmap(HIGH_ADDR, page_size, PROT_READ,
+-			    MAP_SHARED | MAP_FIXED, fd, 0);
+-		if (addr != MAP_FAILED) {
+-			tst_resm(TFAIL, "mmap into high region "
+-				 "succeeded unexpectedly");
+-			munmap(addr, page_size);
+-			close(fd);
 -			continue;
 -		}
 -
--		getvmlck(&sz_after);
--
--		sz_ch = sz_after - sz_before;
--		if (sz_ch == MMAPSIZE / 1024) {
--			tst_resm(TPASS, "Functionality of mmap() "
--					"successful");
+-		if (errno != ENOMEM && errno != EINVAL) {
+-			tst_resm(TFAIL | TERRNO, "mmap into high region "
+-				 "failed unexpectedly");
 -		} else {
--			tst_resm(TFAIL, "Expected %luK locked, "
--					"get %uK locked",
--					MMAPSIZE / 1024, sz_ch);
+-			tst_resm(TPASS | TERRNO, "mmap into high region "
+-				 "failed as expected");
 -		}
 -
--		if (munmap(addr, MMAPSIZE) != 0)
--			tst_brkm(TFAIL | TERRNO, NULL, "munmap failed");
--	}
--
+-		SAFE_CLOSE(cleanup, fd);
++	if (TST_RET_PTR != MAP_FAILED) {
++		tst_res(TFAIL, "mmap() into high mem region succeeded unexpectedly");
++		SAFE_MUNMAP(TST_RET_PTR, page_size);
++		return;
++	} else if (TST_RET_PTR == MAP_FAILED && (TST_ERR == ENOMEM || TST_ERR == EINVAL)) {
++		tst_res(TPASS | TERRNO, "mmap() failed with expected errno");
++	} else {
++		tst_res(TFAIL | TERRNO, "mmap() failed with unexpected errno");
+ 	}
+ 
 -	cleanup();
 -	tst_exit();
-+	SAFE_GETRLIMIT(RLIMIT_MEMLOCK, &rlim);
++	SAFE_CLOSE(fd);
  }
  
- void getvmlck(unsigned int *lock_sz)
- {
--	int ret;
- 	char line[LINELEN];
--	FILE *fstatus = NULL;
-+	FILE *fp = NULL;
- 
--	fstatus = fopen("/proc/self/status", "r");
--	if (fstatus == NULL)
--		tst_brkm(TFAIL | TERRNO, NULL, "Open dev status failed");
-+	fp = fopen("/proc/self/status", "r");
-+	if (fp == NULL)
-+		tst_brk(TFAIL | TERRNO, "could not open status file");
- 
--	while (fgets(line, LINELEN, fstatus) != NULL)
-+	while (fgets(line, LINELEN, fp) != NULL) {
- 		if (strstr(line, "VmLck") != NULL)
- 			break;
-+	}
- 
--	ret = sscanf(line, "%*[^0-9]%d%*[^0-9]", lock_sz);
--	if (ret != 1)
--		tst_brkm(TFAIL | TERRNO, NULL, "Get lock size failed");
-+	if (sscanf(line, "%*[^0-9]%d%*[^0-9]", lock_sz) != 1)
-+		tst_brk(TFAIL | TERRNO, "Getting locked memory size failed");
- 
--	fclose(fstatus);
-+	fclose(fp);
- }
- 
--static void setup(void)
-+static void run(void)
+ static void setup(void)
  {
 -	tst_require_root();
-+	unsigned int sz_before, sz_after, sz_diff;
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	getvmlck(&sz_before);
- 
+-
+-	tst_tmpdir();
+-
+ 	page_size = getpagesize();
+-
 -	TEST_PAUSE;
--}
-+	if (((sz_before * 1024) + MMAPSIZE) > rlim.rlim_cur)
-+		tst_brk(TBROK, "Trying to exceed RLIMIT_MEMLOCK limit");
+ }
  
--static void cleanup(void)
--{
-+	addr = mmap(NULL, MMAPSIZE, PROT_READ | PROT_WRITE,
-+				MAP_PRIVATE | MAP_LOCKED | MAP_ANONYMOUS, -1, 0);
-+
-+	if (addr != MAP_FAILED) {
-+		tst_res(TPASS, "mmap() with MAP_LOCKED flag passed");
-+	} else {
-+		tst_res(TFAIL | TERRNO, "mmap() failed");
-+		return;
-+	}
-+
-+	getvmlck(&sz_after);
-+	sz_diff = sz_after - sz_before;
-+	TST_EXP_EQ_LU(MMAPSIZE / 1024, sz_diff);
-+
-+	SAFE_MUNMAP(addr, MMAPSIZE);
+ static void cleanup(void)
+ {
+-	tst_rmdir();
++	if (fd > 0)
++		SAFE_CLOSE(fd);
  }
 +
 +static struct tst_test test = {
 +	.setup = setup,
-+	.test_all = run
++	.cleanup = cleanup,
++	.test_all = run,
++	.needs_root = 1,
++	.needs_tmpdir = 1
 +};
 -- 
 2.41.0
