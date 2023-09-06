@@ -4,61 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EA4FEB8FD3
-	for <ltp@archiver.kernel.org>; Wed,  6 Sep 2023 13:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F12F8EE14A0
+	for <ltp@archiver.kernel.org>; Wed,  6 Sep 2023 15:45:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1FA853C0609
-	for <ltp@archiver.kernel.org>; Wed,  6 Sep 2023 15:45:08 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 0E7873CE9FF
+	for <ltp@archiver.kernel.org>; Wed,  6 Sep 2023 17:45:55 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BFE5D3C0609
- for <ltp@lists.linux.it>; Wed,  6 Sep 2023 15:44:56 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id ED7C73C2755
+ for <ltp@lists.linux.it>; Wed,  6 Sep 2023 17:45:42 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 738DB10002BE
- for <ltp@lists.linux.it>; Wed,  6 Sep 2023 15:44:54 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B8FB21400124
+ for <ltp@lists.linux.it>; Wed,  6 Sep 2023 17:45:41 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 52583223D1;
- Wed,  6 Sep 2023 13:44:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1694007893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=kItcdEjgUpbIY/peVavRagKA02/blV2f5pz2jlXAzNo=;
- b=K4miTBmmcwY2Z6oinBLrbqg4bjgTIpTuy0mMteUEx07QSMe8HNBRISoU+LMqIAMSUxn4nY
- ZrrwXU/NBejwWlWMODil1oTYE+mgaVnzyE9+M2/naJjJXnRK41b7uOsnHY3OfH+HD9TYSY
- /7Bk7lozjh0Ns6rCjwFq3que4tbTALI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1694007893;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=kItcdEjgUpbIY/peVavRagKA02/blV2f5pz2jlXAzNo=;
- b=MzO2FQX5REaetm1QZs9KXg/Hbpu9Pu5QSU14xsK7sU/2ZPgw9tL+YxNyigjNUMxqZgnYlW
- bO8Vohxgwz2EI4Ag==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8303A223AE;
+ Wed,  6 Sep 2023 15:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1694015140; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4RO4fP/rVEIMPBxbkBahjqahDQY76QYUAHqP4+xdzYg=;
+ b=xL5Gr7su6eBTyP+Fllg29DDVJObf6cjKRqvkljjRq7Kt9PenD+aq+GbTVOOZQIF4uVYjPi
+ G+HaVJ+PhJ8Lg05BjE97GiIg7YSXx2XjSxlvymdhI+QMgAc7i+RSL042VogpAXnYNtmFMV
+ I25f6Xs3mlw33IMKXgt3ZYyLyKf76vY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1694015140;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=4RO4fP/rVEIMPBxbkBahjqahDQY76QYUAHqP4+xdzYg=;
+ b=NM7CvwdtSr41FCEVNN1lzjJSxu0bohYkkC10nSsuLxPOcB/KlRAraPb55XR7PB3JJkl5IG
+ cQy6LFIOv3ZZovDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 372DE1333E;
- Wed,  6 Sep 2023 13:44:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B6EC1333E;
+ Wed,  6 Sep 2023 15:45:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YzMSDFWC+GQTJgAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Wed, 06 Sep 2023 13:44:53 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Wed,  6 Sep 2023 15:44:52 +0200
-Message-Id: <20230906134452.9792-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+ by imap2.suse-dmz.suse.de with ESMTPSA id HoZAGaSe+GQxawAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Wed, 06 Sep 2023 15:45:40 +0000
+Message-ID: <a250c512-f989-18da-7fd5-3ea0923d4142@suse.cz>
+Date: Wed, 6 Sep 2023 17:45:40 +0200
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Content-Language: en-US
+To: Marius Kittler <mkittler@suse.de>, ltp@lists.linux.it
+References: <20230905115608.31192-1-mkittler@suse.de>
+ <20230905115608.31192-2-mkittler@suse.de>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20230905115608.31192-2-mkittler@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Rewrite fork04 test
+Subject: Re: [LTP] [PATCH 1/2] Refactor ioctl02.c to use the new test API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,421 +79,505 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hi,
 
-The old test was outdated, so it has been rewritten from scratch
-keeping the idea behind it. Now the test verifies that parent process
-shares environment variables with a child process and that child process
-doesn't change parent process environment variables.
+On 05. 09. 23 13:56, Marius Kittler wrote:
+> This test code itself has been kept unchanged as much as possible
+> (although it probably still has room for improvement).
+> 
+> See https://github.com/linux-test-project/ltp/issues/637 for related
+> discussion.
+> 
+> Signed-off-by: Marius Kittler <mkittler@suse.de>
+> ---
+>   testcases/kernel/syscalls/ioctl/ioctl02.c | 221 +++++++++-------------
+>   1 file changed, 92 insertions(+), 129 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/ioctl/ioctl02.c b/testcases/kernel/syscalls/ioctl/ioctl02.c
+> index b4d4a3594..65a00821c 100644
+> --- a/testcases/kernel/syscalls/ioctl/ioctl02.c
+> +++ b/testcases/kernel/syscalls/ioctl/ioctl02.c
+> @@ -1,6 +1,7 @@
+>   /*
+>    *   Copyright (c) International Business Machines  Corp., 2001
+>    *   Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
+> + *   Copyright (c) 2023 Marius Kittler <mkittler@suse.de>
+>    *
+>    *   This program is free software;  you can redistribute it and/or modify
+>    *   it under the terms of the GNU General Public License as published by
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- testcases/kernel/syscalls/fork/fork04.c | 361 +++++-------------------
- 1 file changed, 63 insertions(+), 298 deletions(-)
+Let's start with header cleanup. The whole GPL license header should be 
+replaced with SPDX string at the top of the file:
 
-diff --git a/testcases/kernel/syscalls/fork/fork04.c b/testcases/kernel/syscalls/fork/fork04.c
-index 5e5e42c4e..307845c92 100644
---- a/testcases/kernel/syscalls/fork/fork04.c
-+++ b/testcases/kernel/syscalls/fork/fork04.c
-@@ -1,328 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *    TEST IDENTIFIER	: fork04
-- *    TEST TITLE	: Child inheritance of Environment Variables after fork()
-- *    PARENT DOCUMENT	: frktds01
-- *    TEST CASE TOTAL	: 3
-- *    WALL CLOCK TIME	: 1
-- *    CPU TYPES		: ALL
-- *    AUTHOR		: Kathy Olmsted
-- *    CO-PILOT		: Steve Shaw
-- *    DATE STARTED	: 06/17/92
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *       Test these environment variables correctly inherited by child:
-- *       1. TERM
-- *       2. NoTSetzWq
-- *       3. TESTPROG
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    DETAILED DESCRIPTION
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *        Make and change to a temporary directory.
-- *	  Pause for SIGUSR1 if option specified.
-- *        Add TESTPROG variable to the environment
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- *	 fork()
-- *	 Check return code, if system call failed (return=-1)
-- *		Log the errno
-- *	   CHILD:
-- *              open a temp file
-- *		Determine environment values and write to file
-- *		close file containing test values.
-- *		exit.
-- *	    PARENT:
-- *		Wait for child to exit.
-- *              Verify exit status
-- *		Open file containing test values.
-- *		For each test case:
-- *			Read the value from the file.
-- *			Determine and report PASS/FAIL result.
-+ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+/*\
-+ *[Description]
-  *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *        Remove the temporary directory and exit.
-+ * This test verifies that parent process shares environ variables with the
-+ * child and that child doesn't change parent's environ variables.
-  */
- 
- #include <stdlib.h>
--#include <sys/types.h>
--#include <sys/wait.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <string.h>
--#include <sys/param.h>
--#include <signal.h>
--#include <errno.h>
--#include "test.h"
--#include "safe_macros.h"
--
--char *TCID = "fork04";
--
--#define	KIDEXIT	42
--#define MAX_LINE_LENGTH 256
--#define OUTPUT_FILE  "env.out"
--#define ENV_NOT_SET  "getenv() does not find variable set"
-+#include "tst_test.h"
- 
--/* list of environment variables to test */
--char *environ_list[] = { "TERM", "NoTSetzWq", "TESTPROG" };
-+#define ENV_KEY "LTP_FORK04"
-+#define ENV_VAL0 "PASS"
-+#define ENV_VAL1 "FAIL"
- 
--#define NUMBER_OF_ENVIRON (sizeof(environ_list)/sizeof(char *))
--int TST_TOTAL = NUMBER_OF_ENVIRON;
--
--static void cleanup(void)
-+static void run_child(void)
- {
--	tst_rmdir();
--}
-+	const char *val;
- 
--static void setup(void)
--{
-+	val = getenv(ENV_KEY);
-+	if (!val)
-+		tst_brk(TBROK, "Can't find %s environ variable", ENV_KEY);
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
--	tst_tmpdir();
-+	TST_EXP_EXPR(strcmp(ENV_VAL0, val) == 0,
-+		"%s environ variable has been inherited by the child",
-+		ENV_KEY)
- 
--	/* add a variable to the environment */
--	putenv("TESTPROG=FRKTCS04");
--}
-+	tst_res(TINFO, "Unset %s environ variable inside child", ENV_KEY);
- 
--static void child_environment(void)
--{
--
--	int fildes;
--	int index;
--	char msg[MAX_LINE_LENGTH];
--	char *var;
-+	if (unsetenv(ENV_KEY) == -1)
-+		tst_brk(TBROK, "Can't unset %s environ variable", ENV_KEY);
- 
--	fildes = creat(OUTPUT_FILE, 0700);
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
- 
--	for (index = 0; index < (int)NUMBER_OF_ENVIRON; index++) {
--		memset(msg, 0, MAX_LINE_LENGTH);
-+	tst_res(TINFO, "Set %s=%s environ variable inside child", ENV_KEY, ENV_VAL1);
- 
--		var = getenv(environ_list[index]);
--		if (var == NULL)
--			(void)sprintf(msg, "%s:%s", environ_list[index],
--				      ENV_NOT_SET);
--		else
--			(void)sprintf(msg, "%s:%s", environ_list[index], var);
--		/* includes extra null chars */
--		write(fildes, msg, sizeof(msg));
--	}
-+	SAFE_SETENV(ENV_KEY, ENV_VAL1, 0);
- 
--	close(fildes);
-+	TST_CHECKPOINT_WAKE(0);
- }
- 
--/*
-- * Compare parent env string to child's string.
-- * Each string is in the format:  <env var>:<value>
-- */
--static int cmp_env_strings(char *pstring, char *cstring)
-+static void run(void)
- {
--	char *penv, *cenv, *pvalue, *cvalue;
-+	const char *val;
- 
--	/*
--	 * Break pstring into env and value
--	 */
--	penv = pstring;
--	pvalue = strchr(pstring, ':');
--	if (pvalue == NULL) {
--		tst_resm(TBROK,
--			 "internal error - parent's env string not in correct format:'%s'",
--			 pstring);
--		return -1;
--	} else {
--		*pvalue = '\0';
--		pvalue++;
--		if (*pvalue == '\0') {
--			tst_resm(TBROK,
--				 "internal error - missing parent's env value");
--			return -1;
--		}
--	}
-+	tst_res(TINFO,
-+		"Set %s=%s environ variable inside parent",
-+		ENV_KEY, ENV_VAL0);
- 
--	/*
--	 * Break cstring into env and value
--	 */
--	cenv = cstring;
--	cvalue = strchr(cstring, ':');
--	if (cvalue == NULL) {
--		tst_resm(TBROK,
--			 "internal error - parent's env string not in correct format:'%s'",
--			 cstring);
--		return -1;
--	} else {
--		*cvalue = '\0';
--		cvalue++;
--		if (*cvalue == '\0') {
--			tst_resm(TBROK,
--				 "internal error - missing child's env value");
--			return -1;
--		}
--	}
-+	SAFE_SETENV(ENV_KEY, ENV_VAL0, 0);
- 
--	if (strcmp(penv, cenv) != 0) {
--		tst_resm(TBROK, "internal error - parent(%s) != child (%s) env",
--			 penv, cenv);
--		return -1;
--	}
-+	tst_res(TINFO, "Spawning child");
- 
--	if (strcmp(pvalue, cvalue) != 0) {
--		tst_resm(TFAIL,
--			 "Env var %s changed after fork(), parent's %s, child's %s",
--			 penv, pvalue, cvalue);
--	} else {
--		tst_resm(TPASS, "Env var %s unchanged after fork(): %s",
--			 penv, cvalue);
-+	if (!SAFE_FORK()) {
-+		run_child();
-+		exit(0);
- 	}
--	return 0;
--
--}
--
--/***************************************************************
-- * parent_environment - the parent side of the environment tests
-- *        determine values for the variables
-- *        read the values determined by the child
-- *        compare values
-- ***************************************************************/
--void parent_environment(void)
--{
--
--	int fildes;
--	char tmp_line[MAX_LINE_LENGTH];
--	char parent_value[MAX_LINE_LENGTH];
--	unsigned int index;
--	int ret;
--	char *var;
--
--	fildes = SAFE_OPEN(cleanup, OUTPUT_FILE, O_RDWR);
--	for (index = 0; index < NUMBER_OF_ENVIRON; index++) {
--		ret = read(fildes, tmp_line, MAX_LINE_LENGTH);
--		if (ret == 0) {
--			tst_resm(TBROK,
--				 "fork() test. parent_environment: failed to read from file with %d (%s)",
--				 errno, strerror(errno));
--		} else {
- 
--			var = getenv(environ_list[index]);
--			if (var == NULL)
--				sprintf(parent_value, "%s:%s",
--					environ_list[index], ENV_NOT_SET);
--			else
--				sprintf(parent_value, "%s:%s",
--					environ_list[index], var);
-+	TST_CHECKPOINT_WAIT(0);
- 
--			cmp_env_strings(parent_value, tmp_line);
--
--		}
-+	val = getenv(ENV_KEY);
-+	if (!val) {
-+		tst_res(TFAIL,
-+			"%s environ variable has been unset inside parent",
-+			ENV_KEY);
-+	} else {
-+		TST_EXP_EXPR(strcmp(ENV_VAL0, val) == 0,
-+			"%s environ variable is still present inside parent",
-+			ENV_KEY)
- 	}
- 
--	close(fildes);
--}
--
--int main(int ac, char **av)
--{
--	int lc;
--	int kid_status;
--	int wait_status;
--	int fails;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		fails = 0;
--
--		TEST(fork());
--
--		if (TEST_RETURN == -1) {
--			/* fork failed */
--			tst_brkm(TFAIL, cleanup,
--				 "fork() failed with %d (%s)",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--		} else if (TEST_RETURN == 0) {
--			/* child */
--			/* determine environment variables */
--			child_environment();
--			/* exit with known value */
--			exit(KIDEXIT);
--		} else {
--			/* parent of successful fork */
--			/* wait for the child to complete */
--			wait_status = waitpid(TEST_RETURN, &kid_status, 0);
--			/* validate the child exit status */
--			if (wait_status == TEST_RETURN) {
--				if (kid_status != KIDEXIT << 8) {
--					tst_brkm(TBROK, cleanup,
--						 "fork(): Incorrect child status returned on wait(): %d",
--						 kid_status);
--					fails++;
--				}
--			} else {
--				tst_brkm(TBROK, cleanup,
--					 "fork(): wait() for child status failed with %d errno: %d : %s",
--					 wait_status, errno,
--					 strerror(errno));
--				fails++;
--			}
--
--			if (fails == 0) {
--				/* verification tests */
--				parent_environment();
--			}
--		}
--
-+	TST_CHECKPOINT_WAKE_AND_WAIT(0);
-+
-+	val = getenv(ENV_KEY);
-+	if (!val)
-+		tst_res(TFAIL,
-+			"%s environ variable has been unset inside parent",
-+			ENV_KEY);
-+	else {
-+		TST_EXP_EXPR(strcmp(ENV_VAL0, val) == 0,
-+			"%s environ variable didn't change inside parent",
-+			ENV_KEY)
- 	}
--
--	cleanup();
--	tst_exit();
- }
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+};
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+ From the test info block, delete everything except the DESCRIPTION 
+paragraph (without the header). The description comment block should 
+start with /*\ instead of /* so that it gets picked up by our test 
+metadata parser.
+
+> @@ -64,15 +65,11 @@
+>   #include <sys/types.h>
+>   #include <sys/stat.h>
+>   #include <termios.h>
+> -#include "test.h"
+> -#include "safe_macros.h"
+> -#include "lapi/ioctl.h"
+> +#include "tst_test.h"
+> +#include "tst_safe_macros.h"
+>   
+>   #define	CNUL	0
+>   
+> -char *TCID = "ioctl02";
+> -int TST_TOTAL = 1;
+> -
+>   static struct termio termio, save_io;
+>   
+>   static char *parenttty, *childtty;
+
+Initialize parentfd and childfd to -1 here, then the "closed" variable 
+won't be needed.
+
+> @@ -88,108 +85,72 @@ static int run_ctest(void);
+>   static int chk_tty_parms();
+>   static void setup(void);
+>   static void cleanup(void);
+> -static void help(void);
+>   static void do_child(void);
+>   void do_child_uclinux(void);
+>   static void sigterm_handler(void);
+>   
+> -static int Devflag;
+> -static char *devname;
+> -
+> -static option_t options[] = {
+> -	{"D:", &Devflag, &devname},
+> -	{NULL, NULL, NULL}
+> -};
+> +static char *device;
+>   
+> -int main(int ac, char **av)
+> +static void verify_ioctl(void)
+>   {
+> -	int lc;
+> -	int rval;
+> -
+> -	tst_parse_opts(ac, av, options, &help);
+> +	parenttty = device;
+> +	childtty = device;
+>   
+> +	parentpid = getpid();
+> +	childpid = SAFE_FORK();
+> +	if (childpid == 0) {	/* child */
+>   #ifdef UCLINUX
+> -	maybe_run_child(&do_child_uclinux, "dS", &parentpid, &childtty);
+> -#endif
+> -
+> -	if (!Devflag)
+> -		tst_brkm(TBROK, NULL, "You must specify a tty device with "
+> -			 "the -D option.");
+> -
+> -	tst_require_root();
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -
+> -		tst_count = 0;
+> -
+> -		parenttty = devname;
+> -		childtty = devname;
+> -
+> -		parentpid = getpid();
+> -
+> -		childpid = FORK_OR_VFORK();
+> -		if (childpid < 0)
+> -			tst_brkm(TBROK, cleanup, "fork failed");
+> -
+> -		if (childpid == 0) {	/* child */
+> -#ifdef UCLINUX
+> -			if (self_exec(av[0], "dS", parentpid, childtty) < 0)
+> -				tst_brkm(TBROK, cleanup, "self_exec failed");
+> +		if (self_exec(av[0], "dS", parentpid, childtty) < 0)
+> +			tst_brkm(TBROK, cleanup, "self_exec failed");
+>   #else
+
+We don't support uclibc anymore. The #ifdef should be removed along with 
+self_exec(). Just call do_child() here.
+
+> -			do_child();
+> +		do_child();
+>   #endif
+> -		}
+> -
+> -		while (!sigusr1)
+> -			sleep(1);
+> -
+> -		sigusr1 = 0;
+> -
+> -		parentfd = do_parent_setup();
+> -		if (parentfd < 0) {
+> -			kill(childpid, SIGTERM);
+> -			waitpid(childpid, NULL, 0);
+> -			cleanup();
+> -		}
+> +	}
+>   
+> -		/* run the parent test */
+> -		rval = run_ptest();
+> -		if (rval == -1) {
+> -			/*
+> -			 * Parent cannot set/get ioctl parameters.
+> -			 * SIGTERM the child and cleanup.
+> -			 */
+> -			kill(childpid, SIGTERM);
+> -			waitpid(childpid, NULL, 0);
+> -			cleanup();
+> -		}
+> +	while (!sigusr1)
+> +		sleep(1);
+
+The signal sending and catching should probably be replaced with 
+TST_CHECKPOINT_WAIT()/_WAKE().
+
+>   
+> -		if (rval != 0)
+> -			tst_resm(TFAIL, "TCGETA/TCSETA tests FAILED with "
+> -				 "%d %s", rval, rval > 1 ? "errors" : "error");
+> -		else
+> -			tst_resm(TPASS, "TCGETA/TCSETA tests SUCCEEDED");
+> +	sigusr1 = 0;
+>   
+> -		/* FIXME: check return codes. */
+> -		(void)kill(childpid, SIGTERM);
+> -		(void)waitpid(childpid, NULL, 0);
+> +	parentfd = do_parent_setup();
+> +	if (parentfd < 0) {
+
+This error handling branch will never be used. SAFE_OPEN() and 
+SAFE_IOCTL() in do_parent_setup() will automatically terminate the test 
+on error.
+
+You could also remove do_parent_setup() entirely and just call the 
+SAFE_OPEN() and SAFE_IOCTL() here directly.
+
+> +		kill(childpid, SIGTERM);
+> +		waitpid(childpid, NULL, 0);
+> +		cleanup();
+
+Never call cleanup() directly!
+
+> +	}
+>   
+> +	/* run the parent test */
+> +	int rval = run_ptest();
+> +	if (rval == -1) {
+>   		/*
+> -		 * Clean up things from the parent by restoring the
+> -		 * tty device information that was saved in setup()
+> -		 * and closing the tty file descriptor.
+> +		 * Parent cannot set/get ioctl parameters.
+> +		 * SIGTERM the child and cleanup.
+>   		 */
+> -		if (ioctl(parentfd, TCSETA, &save_io) == -1)
+> -			tst_resm(TINFO, "ioctl restore failed in main");
+> -		SAFE_CLOSE(cleanup, parentfd);
+> -
+> -		closed = 1;
+> +		kill(childpid, SIGTERM);
+> +		waitpid(childpid, NULL, 0);
+> +		cleanup();
+>   	}
+> -	cleanup();
+>   
+> -	tst_exit();
+> +	if (rval != 0)
+> +		tst_res(TFAIL, "TCGETA/TCSETA tests FAILED with "
+> +				"%d %s", rval, rval > 1 ? "errors" : "error");
+> +	else
+> +		tst_res(TPASS, "TCGETA/TCSETA tests SUCCEEDED");
+> +
+> +	/* FIXME: check return codes. */
+> +	(void)kill(childpid, SIGTERM);
+> +	(void)waitpid(childpid, NULL, 0);
+
+kill() should be replaced with checkpoints. waitpid() will be done 
+automatically by LTP library. The ioctl() and SAFE_CLOSE() below should 
+be done in cleanup().
+
+> +
+> +	/*
+> +	 * Clean up things from the parent by restoring the
+> +	 * tty device information that was saved in setup()
+> +	 * and closing the tty file descriptor.
+> +	 */
+> +	if (ioctl(parentfd, TCSETA, &save_io) == -1)
+> +		tst_res(TINFO, "ioctl restore failed in main");
+> +	SAFE_CLOSE(parentfd);
+> +
+> +	closed = 1;
+>   }
+>   
+>   static void do_child(void)
+> @@ -221,8 +182,6 @@ void do_child_uclinux(void)
+>    */
+>   static int run_ptest(void)
+>   {
+> -	int i, rval;
+> -
+>   	/* Use "old" line discipline */
+>   	termio.c_line = 0;
+>   
+> @@ -230,7 +189,7 @@ static int run_ptest(void)
+>   	termio.c_cflag = B50 | CS7 | CREAD | PARENB | PARODD | CLOCAL;
+>   
+>   	/* Set control chars. */
+> -	for (i = 0; i < NCC; i++) {
+> +	for (int i = 0; i < NCC; i++) {
+>   		if (i == VEOL2)
+>   			continue;
+>   		termio.c_cc[i] = CSTART;
+> @@ -250,16 +209,10 @@ static int run_ptest(void)
+>   
+>   	TEST(ioctl(parentfd, TCSETA, &termio));
+
+TEST(ioctl()) above should be changed to SAFE_IOCTL().
+
+>   
+> -	if (TEST_RETURN < 0) {
+> -		tst_resm(TFAIL, "ioctl TCSETA failed : "
+> -			 "errno = %d", TEST_ERRNO);
+> -		return -1;
+> -	}
+> -
+>   	/* Get termio and see if all parameters actually got set */
+> -	rval = ioctl(parentfd, TCGETA, &termio);
+> +	int rval = ioctl(parentfd, TCGETA, &termio);
+
+Also change this to SAFE_IOCTL() and remove the error handling below.
+
+>   	if (rval < 0) {
+> -		tst_resm(TFAIL, "ioctl TCGETA failed.  Ending test.");
+> +		tst_res(TFAIL, "ioctl TCGETA failed.  Ending test.");
+>   		return -1;
+>   	}
+>   
+> @@ -276,10 +229,10 @@ static int run_ctest(void)
+>   
+
+Replace signals with checkpoints here.
+
+>   	sigterm = 0;
+>   
+> -	tst_resm(TINFO, "child: Got SIGTERM from parent.");
+> +	tst_res(TINFO, "child: Got SIGTERM from parent.");
+>   
+>   	if (close(childfd) == -1)
+> -		tst_resm(TINFO, "close() in run_ctest() failed");
+> +		tst_res(TINFO, "close() in run_ctest() failed");
+>   	return 0;
+>   }
+>   
+> @@ -288,7 +241,7 @@ static int chk_tty_parms(void)
+>   	int i, flag = 0;
+>   
+>   	if (termio.c_line != 0) {
+> -		tst_resm(TINFO, "line discipline has incorrect value %o",
+> +		tst_res(TINFO, "line discipline has incorrect value %o",
+>   			 termio.c_line);
+>   		flag++;
+>   	}
+> @@ -301,7 +254,7 @@ static int chk_tty_parms(void)
+>   	 */
+>   #if 0
+>   	if (termio.c_cflag != (B50 | CS7 | CREAD | PARENB | PARODD | CLOCAL)) {
+> -		tst_resm(TINFO, "cflag has incorrect value. %o",
+> +		tst_res(TINFO, "cflag has incorrect value. %o",
+>   			 termio.c_cflag);
+>   		flag++;
+>   	}
+> @@ -312,7 +265,7 @@ static int chk_tty_parms(void)
+>   			if (termio.c_cc[VEOL2] == CNUL) {
+>   				continue;
+>   			} else {
+> -				tst_resm(TINFO, "control char %d has "
+> +				tst_res(TINFO, "control char %d has "
+>   					 "incorrect value %d %d", i,
+>   					 termio.c_cc[i], CNUL);
+>   				flag++;
+> @@ -321,7 +274,7 @@ static int chk_tty_parms(void)
+>   		}
+>   
+>   		if (termio.c_cc[i] != CSTART) {
+> -			tst_resm(TINFO, "control char %d has incorrect "
+> +			tst_res(TINFO, "control char %d has incorrect "
+>   				 "value %d.", i, termio.c_cc[i]);
+>   			flag++;
+>   		}
+> @@ -330,7 +283,7 @@ static int chk_tty_parms(void)
+>   	if (!
+>   	    (termio.c_lflag
+>   	     && (ISIG | ICANON | XCASE | ECHO | ECHOE | NOFLSH))) {
+> -		tst_resm(TINFO, "lflag has incorrect value. %o",
+> +		tst_res(TINFO, "lflag has incorrect value. %o",
+>   			 termio.c_lflag);
+>   		flag++;
+>   	}
+> @@ -339,34 +292,32 @@ static int chk_tty_parms(void)
+>   	    (termio.c_iflag
+>   	     && (BRKINT | IGNPAR | INPCK | ISTRIP | ICRNL | IUCLC | IXON | IXANY
+>   		 | IXOFF))) {
+> -		tst_resm(TINFO, "iflag has incorrect value. %o",
+> +		tst_res(TINFO, "iflag has incorrect value. %o",
+>   			 termio.c_iflag);
+>   		flag++;
+>   	}
+>   
+>   	if (!(termio.c_oflag && (OPOST | OLCUC | ONLCR | ONOCR))) {
+> -		tst_resm(TINFO, "oflag has incorrect value. %o",
+> +		tst_res(TINFO, "oflag has incorrect value. %o",
+>   			 termio.c_oflag);
+>   		flag++;
+>   	}
+>   
+>   	if (!flag)
+> -		tst_resm(TINFO, "termio values are set as expected");
+> +		tst_res(TINFO, "termio values are set as expected");
+>   
+>   	return flag;
+>   }
+>   
+>   static int do_parent_setup(void)
+>   {
+> -	int pfd;
+> -
+> -	pfd = SAFE_OPEN(cleanup, parenttty, O_RDWR, 0777);
+> +	int pfd = SAFE_OPEN(parenttty, O_RDWR, 0777);
+
+Assign the file descriptor directly to parentfd so that it can be closed 
+in cleanup() if SAFE_IOCTL() below fails.
+
+>   
+>   	/* unset the closed flag */
+>   	closed = 0;
+>   
+>   	/* flush tty queues to remove old output */
+> -	SAFE_IOCTL(cleanup, pfd, TCFLSH, 2);
+> +	SAFE_IOCTL(pfd, TCFLSH, 2);
+>   	return pfd;
+>   }
+>   
+> @@ -376,7 +327,7 @@ static int do_child_setup(void)
+>   
+>   	cfd = open(childtty, O_RDWR, 0777);
+
+Use SAFE_OPEN() here and remove the error handling below.
+
+>   	if (cfd < 0) {
+> -		tst_resm(TINFO, "Could not open %s in do_child_setup(), errno "
+> +		tst_res(TINFO, "Could not open %s in do_child_setup(), errno "
+>   			 "= %d", childtty, errno);
+>   		/* signal the parent so we don't hang the test */
+>   		kill(parentpid, SIGUSR1);
+> @@ -385,7 +336,7 @@ static int do_child_setup(void)
+>   
+>   	/* flush tty queues to remove old output */
+>   	if (ioctl(cfd, TCFLSH, 2) < 0) {
+
+SAFE_IOCTL() here and then use checkpoints.
+
+> -		tst_resm(TINFO, "ioctl TCFLSH failed. : errno = %d", errno);
+> +		tst_res(TINFO, "ioctl TCFLSH failed. : errno = %d", errno);
+>   		/* signal the parent so we don't hang the test */
+>   		kill(parentpid, SIGUSR1);
+>   		return -1;
+> @@ -415,24 +366,26 @@ static void sigusr2_handler(void)
+>   	sigusr2 = 1;
+>   }
+>   
+> -static void help(void)
+> -{
+> -	printf("  -D <tty device> : for example, /dev/tty[0-9]\n");
+> -}
+> -
+>   static void setup(void)
+>   {
+> +#ifdef UCLINUX
+> +	do_child_uclinux();
+> +#endif
+
+We don't support uclibc anymore.
+
+> +
+> +	if (!device)
+> +		tst_brk(TBROK, "You must specify a tty device with -D option");
+> +
+>   	int fd;
+>   	struct sigaction act;
+>   
+>   	/* XXX: TERRNO required all over the place */
+> -	fd = SAFE_OPEN(NULL, devname, O_RDWR, 0777);
+> +	fd = SAFE_OPEN(device, O_RDWR, 0777);
+>   
+>   	/* Save the current device information - to be restored in cleanup() */
+> -	SAFE_IOCTL(cleanup, fd, TCGETA, &save_io);
+> +	SAFE_IOCTL(fd, TCGETA, &save_io);
+>   
+>   	/* Close the device */
+> -	SAFE_CLOSE(cleanup, fd);
+> +	SAFE_CLOSE(fd);
+>   
+>   	/* Set up the signal handlers */
+>   	act.sa_handler = (void *)sigterm_handler;
+> @@ -453,16 +406,26 @@ static void setup(void)
+>   	(void)sigaction(SIGTTOU, &act, 0);
+>   
+>   	sigterm = sigusr1 = sigusr2 = 0;
+> -
+> -	TEST_PAUSE;
+>   }
+>   
+>   static void cleanup(void)
+>   {
+
+Check whether parentfd >= 0 instead and use SAFE_IOCTL()/SAFE_CLOSE().
+
+>   	if (!closed) {
+>   		if (ioctl(parentfd, TCSETA, &save_io) == -1)
+> -			tst_resm(TINFO, "ioctl restore failed in cleanup()");
+> +			tst_res(TINFO, "ioctl restore failed in cleanup()");
+>   		if (close(parentfd) == -1)
+> -			tst_resm(TINFO, "close() failed in cleanup()");
+> +			tst_res(TINFO, "close() failed in cleanup()");
+>   	}
+>   }
+> +
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.forks_child = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = verify_ioctl,
+> +	.options = (struct tst_option[]) {
+> +		{"D:", &device, "Tty device. For example, /dev/tty[0-9]"},
+> +		{}
+> +	}
+> +};
+> \ No newline at end of file
+
 -- 
-2.35.3
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
 
 -- 
