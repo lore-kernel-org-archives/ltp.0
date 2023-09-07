@@ -4,61 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89D61EE14DE
-	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 11:11:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 473C8CCF9F4
+	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 11:13:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A5D513CE9C1
-	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 13:11:39 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 210383CE9B4
+	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 13:13:16 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0D5673CB579
- for <ltp@lists.linux.it>; Thu,  7 Sep 2023 13:11:26 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 89FE13CB579
+ for <ltp@lists.linux.it>; Thu,  7 Sep 2023 13:13:04 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E9C30602F6C
- for <ltp@lists.linux.it>; Thu,  7 Sep 2023 13:11:25 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 3AAF71F8A6;
- Thu,  7 Sep 2023 11:11:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1694085085;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZLPwzwJO/kOcO9NT2X/kuHPf6ewpJaAnv6I6u4A3Rvk=;
- b=BbazeP9ngkgB1QZ9tQN/prvMScZ582BD/99zUHGs52KMDn5L0apUwThtqtDshzI7cGYDfQ
- rXpwW+Yt54itcj9K23x49+X1MOD0d/xd3Oi0GIuiORAPDv7kuGSjemWmd0Jgub4Gu6PLFT
- yNoW5h8ZNdE9UQllJfiIvpcK7ZctxDw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1694085085;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZLPwzwJO/kOcO9NT2X/kuHPf6ewpJaAnv6I6u4A3Rvk=;
- b=dYHVVMSFrTu6FYSSgJG9JQRKeXv5I2gQRm29vl8X9EHiBV5r9UJtWKG/EVPj2zK8oJwkBq
- mQFPdcdyFxRlA5CA==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CEA76602F7F
+ for <ltp@lists.linux.it>; Thu,  7 Sep 2023 13:13:03 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 8BB692C142;
- Thu,  7 Sep 2023 11:11:24 +0000 (UTC)
-References: <20230905101444.3365-1-wegao@suse.com>
- <20230907100149.12090-1-wegao@suse.com>
-User-agent: mu4e 1.10.6; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Wei Gao <wegao@suse.com>
-Date: Thu, 07 Sep 2023 12:11:14 +0100
-Organization: Linux Private Site
-In-reply-to: <20230907100149.12090-1-wegao@suse.com>
-Message-ID: <87il8mdyqu.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C12DA1F8A6;
+ Thu,  7 Sep 2023 11:13:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1694085182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=jKVjRo+Y58svIMa+VqWzYZiU1f0fI9xZJJtzz7HfPVk=;
+ b=bDsYVj2JpqKA182NvQlOzZQwE3bh3Wg8H7yvXX6q1KPl0a1yFI1kDGN0T/xo6sB3atCPLP
+ cfUW40vu47b9szAuUiN+hNtLoow0S+SkYqfRLvJAFTw0Ho8UOJcQrvXpB9vZk27h2t+DHb
+ ljJCaisvmWOTfcuXT0jyHx9OU8Rv9ng=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1694085182;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=jKVjRo+Y58svIMa+VqWzYZiU1f0fI9xZJJtzz7HfPVk=;
+ b=x3aF+43mm2x884niRcEc09M+Oyep5GlpdCZqvux5jFwKbGV8Cm+M3Ie615ULKEYfa875Sf
+ SLUDjFZXa3kR7CAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B16B1138FA;
+ Thu,  7 Sep 2023 11:13:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id tdNAKj6w+WT4cAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Thu, 07 Sep 2023 11:13:02 +0000
+Message-ID: <cc1cf898-ff65-29bb-1157-772d8f319eec@suse.cz>
+Date: Thu, 7 Sep 2023 13:13:02 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Content-Language: en-US
+To: R Nageswara Sastry <rnsastry@linux.ibm.com>, ltp@lists.linux.it
+References: <20230907044011.4812-1-rnsastry@linux.ibm.com>
+From: Martin Doucha <mdoucha@suse.cz>
+In-Reply-To: <20230907044011.4812-1-rnsastry@linux.ibm.com>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v5] clone302: Fix short size test
+Subject: Re: [LTP] [PATCH v3] lib/tst_lockdown.c: Add PPC64 architecture
+ support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,84 +79,109 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi,
+Reviewed-by: Martin Doucha <mdoucha@suse.cz>
 
-Pushed!
-
-Wei Gao via ltp <ltp@lists.linux.it> writes:
-
-> Signed-off-by: Wei Gao <wegao@suse.com>
+On 07. 09. 23 6:40, R Nageswara Sastry wrote:
+> From: Nageswara R Sastry <rnsastry@linux.ibm.com>
+> 
+> Add PPC64 architecture support to the lockdown library.
+> 
+> Signed-off-by: R Nageswara Sastry <rnsastry@linux.ibm.com>
 > ---
->  include/lapi/sched.h                        | 11 +++++++++++
->  testcases/kernel/syscalls/clone3/clone302.c |  5 ++++-
->  2 files changed, 15 insertions(+), 1 deletion(-)
->
-> diff --git a/include/lapi/sched.h b/include/lapi/sched.h
-> index ac766efc5..26fdb628d 100644
-> --- a/include/lapi/sched.h
-> +++ b/include/lapi/sched.h
-> @@ -60,6 +60,17 @@ struct clone_args {
->  	uint64_t __attribute__((aligned(8))) cgroup;
->  };
->  
-> +struct clone_args_minimal {
-> +	uint64_t __attribute__((aligned(8))) flags;
-> +	uint64_t __attribute__((aligned(8))) pidfd;
-> +	uint64_t __attribute__((aligned(8))) child_tid;
-> +	uint64_t __attribute__((aligned(8))) parent_tid;
-> +	uint64_t __attribute__((aligned(8))) exit_signal;
-> +	uint64_t __attribute__((aligned(8))) stack;
-> +	uint64_t __attribute__((aligned(8))) stack_size;
-> +	uint64_t __attribute__((aligned(8))) tls;
-> +};
+> v3:
+>   - Revert back the kernel config checking to v1 (Martin Doucha)
+> v2:
+>   - Group all the constant definitions together (Cyril Hrubis)
+>   - Reduce the number of variables (Martin Doucha)
+> ---
+>   lib/tst_lockdown.c | 31 +++++++++++++++++++++----------
+>   1 file changed, 21 insertions(+), 10 deletions(-)
+> 
+> diff --git a/lib/tst_lockdown.c b/lib/tst_lockdown.c
+> index 9086eba36..3ccf73092 100644
+> --- a/lib/tst_lockdown.c
+> +++ b/lib/tst_lockdown.c
+> @@ -14,33 +14,37 @@
+>   #include "tst_lockdown.h"
+>   #include "tst_private.h"
+>   
+> -#define EFIVAR_SECUREBOOT "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
+> -
+> +#if defined(__powerpc64__) || defined(__ppc64__)
+> +# define SECUREBOOT_VAR "/proc/device-tree/ibm,secure-boot"
+> +# define VAR_DATA_SIZE 4
+> +#else
+> +# define SECUREBOOT_VAR "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
+> +# define VAR_DATA_SIZE 5
+> +#endif
+>   int tst_secureboot_enabled(void)
+>   {
+>   	int fd;
+>   	char data[5];
+>   
+> -	if (access(EFIVAR_SECUREBOOT, F_OK)) {
+> -		tst_res(TINFO, "Efivar FS not available");
+> +	if (access(SECUREBOOT_VAR, F_OK)) {
+> +		tst_res(TINFO, "SecureBoot sysfs file not available");
+>   		return -1;
+>   	}
+>   
+> -	fd = open(EFIVAR_SECUREBOOT, O_RDONLY);
+> +	fd = open(SECUREBOOT_VAR, O_RDONLY);
+>   
+>   	if (fd == -1) {
+>   		tst_res(TINFO | TERRNO,
+> -			"Cannot open SecureBoot Efivar sysfile");
+> +			"Cannot open SecureBoot file");
+>   		return -1;
+>   	} else if (fd < 0) {
+>   		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
+>   		return -1;
+>   	}
+> -
+> -	SAFE_READ(1, fd, data, 5);
+> +	SAFE_READ(1, fd, data, VAR_DATA_SIZE);
+>   	SAFE_CLOSE(fd);
+> -	tst_res(TINFO, "SecureBoot: %s", data[4] ? "on" : "off");
+> -	return data[4];
+> +	tst_res(TINFO, "SecureBoot: %s", data[VAR_DATA_SIZE - 1] ? "on" : "off");
+> +	return data[VAR_DATA_SIZE - 1];
+>   }
+>   
+>   int tst_lockdown_enabled(void)
+> @@ -51,9 +55,16 @@ int tst_lockdown_enabled(void)
+>   
+>   	if (access(PATH_LOCKDOWN, F_OK) != 0) {
+>   		char flag;
 > +
->  static inline int clone3(struct clone_args *args, size_t size)
->  {
->  	return tst_syscall(__NR_clone3, args, size);
-> diff --git a/testcases/kernel/syscalls/clone3/clone302.c b/testcases/kernel/syscalls/clone3/clone302.c
-> index b1b4ccebb..48b831554 100644
-> --- a/testcases/kernel/syscalls/clone3/clone302.c
-> +++ b/testcases/kernel/syscalls/clone3/clone302.c
-> @@ -12,6 +12,7 @@
->  #define _GNU_SOURCE
->  
->  #include <stdlib.h>
-> +#include <assert.h>
->  
->  #include "tst_test.h"
->  #include "lapi/sched.h"
-> @@ -34,7 +35,7 @@ static struct tcase {
->  } tcases[] = {
->  	{"invalid args", &invalid_args, sizeof(*valid_args), 0, NULL, SIGCHLD, 0, 0, 0, EFAULT},
->  	{"zero size", &valid_args, 0, 0, NULL, SIGCHLD, 0, 0, 0, EINVAL},
-> -	{"short size", &valid_args, sizeof(*valid_args) - 1, 0, NULL, SIGCHLD, 0, 0, 0, EINVAL},
-> +	{"short size", &valid_args, sizeof(struct clone_args_minimal) - 1, 0, NULL, SIGCHLD, 0, 0, 0, EINVAL},
->  	{"extra size", &valid_args, sizeof(*valid_args) + 1, 0, NULL, SIGCHLD, 0, 0, 0, EFAULT},
->  	{"sighand-no-VM", &valid_args, sizeof(*valid_args), CLONE_SIGHAND, NULL, SIGCHLD, 0, 0, 0, EINVAL},
->  	{"thread-no-sighand", &valid_args, sizeof(*valid_args), CLONE_THREAD, NULL, SIGCHLD, 0, 0, 0, EINVAL},
-> @@ -59,6 +60,8 @@ static void setup(void)
->  {
->  	clone3_supported_by_kernel();
->  
-> +	TST_EXP_EQ_SZ(sizeof(struct clone_args_minimal), 64);
+>   		/* SecureBoot enabled could mean integrity lockdown (non-mainline version) */
+> +#if defined(__powerpc64__) || defined(__ppc64__)
+> +		flag = tst_kconfig_get("CONFIG_SECURITY_LOCKDOWN_LSM") == 'y';
+> +		flag |= tst_kconfig_get("CONFIG_SECURITY_LOCKDOWN_LSM_EARLY") == 'y';
+> +#else
+>   		flag = tst_kconfig_get("CONFIG_EFI_SECURE_BOOT_LOCK_DOWN") == 'y';
+>   		flag |= tst_kconfig_get("CONFIG_LOCK_DOWN_IN_EFI_SECURE_BOOT") == 'y';
+> +#endif
 > +
->  	void *p = tst_get_bad_addr(NULL);
->  
->  	invalid_args = p;
-> -- 
-> 2.35.3
-
+>   		if (flag && tst_secureboot_enabled() > 0)
+>   			return 1;
+>   
 
 -- 
-Thank you,
-Richard.
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
