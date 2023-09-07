@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEE3CEE14D6
-	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 04:43:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8193EE14D4
+	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 06:46:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 451673CB595
-	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 06:43:33 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 430DD3CB599
+	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 08:46:33 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 292B93C8B41
- for <ltp@lists.linux.it>; Thu,  7 Sep 2023 06:43:22 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id CA1073C8B41
+ for <ltp@lists.linux.it>; Thu,  7 Sep 2023 08:46:21 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AF8C0610225
- for <ltp@lists.linux.it>; Thu,  7 Sep 2023 06:43:19 +0200 (CEST)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 3874WnDw008951 for <ltp@lists.linux.it>; Thu, 7 Sep 2023 04:43:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=K68KVdvDqsZMX+mPUiOgktZWHx8Q2JqATFCsF64ZofA=;
- b=tkBeC8yhTmkSErLypd+xDXAEynGZ/bEIwH6G9KoaEgsa5crYL7D1pVfVKpbj3XZ/tOd/
- HZOsI8506jCBx5m+pLSy5uCqYhea46OL4iaZ1oVFg8BO+fDYcFBeHMZlj+E2oJ2dNedy
- Yl095UrqzIAoBEUApQ3XBYbFSxDALqn6CfTzGJucrAHxkRZD8f3jHjn5k5tobkgd6dcC
- N10euJ6NyemNKygBAtL9pkgQczhCpoiOiVwWlhOfmH+lETEUkZ2m3+J3sCoVALP0NnVl
- Gs6D59KTMOXNdhSCfp9Hz7q6+n+FQ1sTsvdtJRMXcj1ro5J/BBNQq6Pzoqm7c3uVF/Kd Ug== 
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sy5qr2yhf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Thu, 07 Sep 2023 04:43:16 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38724wSA021412 for <ltp@lists.linux.it>; Thu, 7 Sep 2023 04:40:20 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svfrys63r-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Thu, 07 Sep 2023 04:40:20 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
- [10.20.54.103])
- by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 3874eHrG42205774
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 7 Sep 2023 04:40:17 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 206E720043;
- Thu,  7 Sep 2023 04:40:17 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 7B5F620040;
- Thu,  7 Sep 2023 04:40:16 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.156.150])
- by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Thu,  7 Sep 2023 04:40:16 +0000 (GMT)
-From: R Nageswara Sastry <rnsastry@linux.ibm.com>
-To: ltp@lists.linux.it
-Date: Thu,  7 Sep 2023 10:10:10 +0530
-Message-Id: <20230907044011.4812-1-rnsastry@linux.ibm.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1C17610006CE
+ for <ltp@lists.linux.it>; Thu,  7 Sep 2023 08:46:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1694069179;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9SMmDO8TOevVFwJo00qPEJmbcG8bAcEmgBS9qycTA74=;
+ b=bx3mGUcVh7tz96GAlAfFL2ZsUafuuqRjYqsEyYWcQ/eulFSdN/hTIlx/HDLZEExv61i7Fy
+ AXznEEPW8pcCVVO6ftH9VIeq2KQOu6kWplOLXo27L9jBeTU4HBtPznljVI4C5vsn0vw/uK
+ A9EGZIrrXggG1p0n/UrFI/1jYooJqKI=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-14-zsYJQoAuNACD__ekkm7Gbg-1; Thu, 07 Sep 2023 02:46:18 -0400
+X-MC-Unique: zsYJQoAuNACD__ekkm7Gbg-1
+Received: by mail-oo1-f72.google.com with SMTP id
+ 006d021491bc7-5735a879147so631465eaf.3
+ for <ltp@lists.linux.it>; Wed, 06 Sep 2023 23:46:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1694069177; x=1694673977;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=9SMmDO8TOevVFwJo00qPEJmbcG8bAcEmgBS9qycTA74=;
+ b=HXDZHPBdI/UeoIq8G/5nsZ/LYEfXeum+PFX3j8OHcJIVhku6iJwRHHcubjZbt50szx
+ H1cSxHCFP69lpeln54e8LvuJFJspsRFFSNg3LK3RysF8zSUWxb7AE91A/JxnoDjxMR4Z
+ Rm3fkwkHqgh3KfvQ0N560mACYJCNkDAOtbCBIIa54b9jsgOA0r0Bhx1IwfRnTtdqZ+SB
+ upjSR/H7hZqdoAfJe9y+Q9rbnrsxCyy6sILtstb+zUJIn/zPMPLW3cMfYMHcI73yDYt6
+ ZU6JnRcrWuSlFAW2iVgY9QMYY/r1GvwKk7/xDbAyuC64BnDK6/BEPWcmSYhxunox4BQs
+ QgfQ==
+X-Gm-Message-State: AOJu0YzGzPkjOB6hCvEjHAus8HT2FYH6FdNaindbhO3WmZBDLzHc+qL6
+ Quf4/7ox4nZCkc04b0r5jq/nWap1VHak3GxwQLQifkB3gRlJm6EjvexlwEiCupMudl5FevlBkGG
+ V0ox0erdDKjI=
+X-Received: by 2002:a05:6871:d96:b0:1d5:eb1:c587 with SMTP id
+ vi22-20020a0568710d9600b001d50eb1c587mr6011779oab.19.1694069177387; 
+ Wed, 06 Sep 2023 23:46:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH+KeDQud0j6QysoKgpFxuLpSCJfFbnJ4fZ7IaNgTKa3J7pY4+gDQIfzaHecOrPba9mqPAhyw==
+X-Received: by 2002:a05:6871:d96:b0:1d5:eb1:c587 with SMTP id
+ vi22-20020a0568710d9600b001d50eb1c587mr6011766oab.19.1694069177087; 
+ Wed, 06 Sep 2023 23:46:17 -0700 (PDT)
+Received: from fedora19.localdomain ([2401:d002:2d05:b10a:c9ac:2dd7:6463:bb84])
+ by smtp.gmail.com with ESMTPSA id
+ n26-20020a638f1a000000b0055b61cd99a1sm12047590pgd.81.2023.09.06.23.46.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 06 Sep 2023 23:46:16 -0700 (PDT)
+Date: Thu, 7 Sep 2023 16:46:12 +1000
+From: Ian Wienand <iwienand@redhat.com>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <ZPlxtKUwOta4GYh2@fedora19.localdomain>
+References: <20230803015149.69906-1-iwienand@redhat.com>
+ <20230808035641.364676-2-iwienand@redhat.com>
+ <87il8xhr05.fsf@suse.de>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yXvkdDYaY4O2jurw6vsaqjJSyTAox9cp
-X-Proofpoint-GUID: yXvkdDYaY4O2jurw6vsaqjJSyTAox9cp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-06_12,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0
- priorityscore=1501 mlxscore=0 suspectscore=0 malwarescore=0
- mlxlogscore=927 adultscore=0 impostorscore=0 clxscore=1015 spamscore=0
- lowpriorityscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309070038
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+In-Reply-To: <87il8xhr05.fsf@suse.de>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Disposition: inline
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] lib/tst_lockdown.c: Add PPC64 architecture support
+Subject: Re: [LTP] [PATCH v2] kernel/device-drivers/zram/zram01.sh : don't
+ fill from /dev/zero
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,98 +93,76 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: rnsastry@linux.ibm.com
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Nageswara R Sastry <rnsastry@linux.ibm.com>
+On Wed, Aug 30, 2023 at 09:20:44AM +0100, Richard Palethorpe wrote:
+> > This is visible in the occasional divide-by-zero error, but in the
+> > bigger picture means this test is not exercising the compression path
+> > as desired.
 
-Add PPC64 architecture support to the lockdown library.
+> Do zram{02,03} already do something similar?
 
-Signed-off-by: R Nageswara Sastry <rnsastry@linux.ibm.com>
----
-v3:
- - Revert back the kernel config checking to v1 (Martin Doucha)
-v2:
- - Group all the constant definitions together (Cyril Hrubis)
- - Reduce the number of variables (Martin Doucha)
----
- lib/tst_lockdown.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+Let's go backwards and try to find a path forward...
 
-diff --git a/lib/tst_lockdown.c b/lib/tst_lockdown.c
-index 9086eba36..3ccf73092 100644
---- a/lib/tst_lockdown.c
-+++ b/lib/tst_lockdown.c
-@@ -14,33 +14,37 @@
- #include "tst_lockdown.h"
- #include "tst_private.h"
- 
--#define EFIVAR_SECUREBOOT "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
--
-+#if defined(__powerpc64__) || defined(__ppc64__)
-+# define SECUREBOOT_VAR "/proc/device-tree/ibm,secure-boot"
-+# define VAR_DATA_SIZE 4
-+#else
-+# define SECUREBOOT_VAR "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
-+# define VAR_DATA_SIZE 5
-+#endif
- int tst_secureboot_enabled(void)
- {
- 	int fd;
- 	char data[5];
- 
--	if (access(EFIVAR_SECUREBOOT, F_OK)) {
--		tst_res(TINFO, "Efivar FS not available");
-+	if (access(SECUREBOOT_VAR, F_OK)) {
-+		tst_res(TINFO, "SecureBoot sysfs file not available");
- 		return -1;
- 	}
- 
--	fd = open(EFIVAR_SECUREBOOT, O_RDONLY);
-+	fd = open(SECUREBOOT_VAR, O_RDONLY);
- 
- 	if (fd == -1) {
- 		tst_res(TINFO | TERRNO,
--			"Cannot open SecureBoot Efivar sysfile");
-+			"Cannot open SecureBoot file");
- 		return -1;
- 	} else if (fd < 0) {
- 		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
- 		return -1;
- 	}
--
--	SAFE_READ(1, fd, data, 5);
-+	SAFE_READ(1, fd, data, VAR_DATA_SIZE);
- 	SAFE_CLOSE(fd);
--	tst_res(TINFO, "SecureBoot: %s", data[4] ? "on" : "off");
--	return data[4];
-+	tst_res(TINFO, "SecureBoot: %s", data[VAR_DATA_SIZE - 1] ? "on" : "off");
-+	return data[VAR_DATA_SIZE - 1];
- }
- 
- int tst_lockdown_enabled(void)
-@@ -51,9 +55,16 @@ int tst_lockdown_enabled(void)
- 
- 	if (access(PATH_LOCKDOWN, F_OK) != 0) {
- 		char flag;
-+
- 		/* SecureBoot enabled could mean integrity lockdown (non-mainline version) */
-+#if defined(__powerpc64__) || defined(__ppc64__)
-+		flag = tst_kconfig_get("CONFIG_SECURITY_LOCKDOWN_LSM") == 'y';
-+		flag |= tst_kconfig_get("CONFIG_SECURITY_LOCKDOWN_LSM_EARLY") == 'y';
-+#else
- 		flag = tst_kconfig_get("CONFIG_EFI_SECURE_BOOT_LOCK_DOWN") == 'y';
- 		flag |= tst_kconfig_get("CONFIG_LOCK_DOWN_IN_EFI_SECURE_BOOT") == 'y';
-+#endif
-+
- 		if (flag && tst_secureboot_enabled() > 0)
- 			return 1;
- 
--- 
-2.37.1 (Apple Git-137.1)
+In Jan 19 2011, ecd667ecb5118a6a2805caca30823f18a355bbe2 added
+testcases/kernel/mem/zram/zram01.c to test r/w compressed block
+devices.
+
+In Apr 23 2015, 433445f6beeaa38f5ffbd723a8f392a6880b7e11 created two
+more tests
+  zram01.sh creates general purpose ram disks with different filesystems
+  zram02.sh creates block device for swap
+
+In Jun 2015, af0470f65abc62090ad22583b40c27923c48b038 moved the
+original testcases/kernel/mem/zram/zram01.c ->
+kernel/device-drivers/zram/zram03.c
+
+zram02.sh creates and adds/removes swap devices; I think this is
+sufficiently different to stand alone (I mean, maybe it could be given
+some intrinsic documentation by being called something descriptive
+like 'zram-swap-test.sh' but anyway).
+
+zram03.c (the original zram test, renamed) makes a device and fills it
+with the character 'a'.  It reads it back but doens't validate any
+statistics from the stats.
+
+zram01.sh is in concept fairly similar, but instead it makes various
+file-systems on the device and (as-is) writes zeros.  It reads back
+the stats and tries to infer correct operation from that.
+
+zram01.sh has been suspect from the start, because since the original
+upstream zram commit (8e19d540d107ee897eb9a874844060c94e2376c0)
+zero-pages have been de-duplicated and not compressed.  I think the
+reason it minimally works is because there's some non-zero file-system
+metadata; but it's unreliable (hence it randomly failing, and this
+email) and not really stressing what it wants to stress, which is the
+actual compression paths.
+
+zram03.c always filled with a non-zero value -- presumably to avoid
+the zero-page deduplication -- but I think what this missed is that
+when same-page detection was added in ~2017 (kernel
+8e19d540d107ee897eb9a874844060c94e2376c0).  Since this time, it is
+really not stressing any of the compression paths either, since every
+page is the same.
+
+> In any case I'd prefer to see a zram04 written in C if some coverage is
+> missing.
+
+I don't think adding another test really helps.
+
+I think the best course here is to fix zram01.sh to write enough
+random data to stress the compression paths and further sync to make
+it reliable.  This is what the patch proposes.
+
+If there's some agreement that the investigation above is valid, we
+could probably remove zram03.c.  It's not really doing anything
+zram01.sh doesn't do and it is not really stressing anything either.
+
+-i
 
 
 -- 
