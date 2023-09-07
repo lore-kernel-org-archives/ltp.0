@@ -4,79 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54A15EE14D3
-	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 03:22:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEE3CEE14D6
+	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 04:43:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0F7D93CEA02
-	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 05:21:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 451673CB595
+	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 06:43:33 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 292AB3C89B6
- for <ltp@lists.linux.it>; Thu,  7 Sep 2023 05:21:48 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 292B93C8B41
+ for <ltp@lists.linux.it>; Thu,  7 Sep 2023 06:43:22 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CBE2E60142A
- for <ltp@lists.linux.it>; Thu,  7 Sep 2023 05:21:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1694056906;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=J9FsgLZmOrEKKCRJ8sZT2Y1r/PR1BgFYoQitewYL0zI=;
- b=SUqfBzJnd4YhSSgZZDLjyDTP+UgJI1zsiE6COet1mZ3QLcHkCbbMi2ygyNTG/jHBuk/Dyz
- MEW2Q2OiAiCCaV4S86H9p0F5Rpzm8HFQvng9ALqGPwPUv58Us7dOqvFqaa6clAcIU32N0h
- DCqGBMhD6grSmzHbtFoyd24PB8rRsfY=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-248-JAndWa3nNuiUeVwYa2Qmqg-1; Wed, 06 Sep 2023 23:21:44 -0400
-X-MC-Unique: JAndWa3nNuiUeVwYa2Qmqg-1
-Received: by mail-lj1-f200.google.com with SMTP id
- 38308e7fff4ca-2bcdd6ba578so6268001fa.3
- for <ltp@lists.linux.it>; Wed, 06 Sep 2023 20:21:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1694056902; x=1694661702;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=J9FsgLZmOrEKKCRJ8sZT2Y1r/PR1BgFYoQitewYL0zI=;
- b=BPWl1rWkv0xwN3/kdTbRvaGiEm4AylNKeWwqE8O+j2jngm8BzmKYZ9GWEmFkq7UdSc
- sTq10KqDFApENuPhloYZkGI50NeoH+oj9NyXqEI3t4bdFUbrACmwKSSU+UXMql2TK3fz
- WDnVp4xOiQVdRbaC4OxoQQuADAqqrohGzyH8BQ/H7nV1zsgPwMBMEyWi7yDJXxcQC4h8
- YBHwLw5kgPCd5UmRqYQiiNqcP4IICZQ5nDrsQ2Oae2RzykGK4Cf6pQvZOTeDCbTh5h/t
- Xb7pI2uQLSY0UhwPViwRHtVu7AvKhIISRPQWqRHWfgDtkFB3e/SxHAq3ZrWuZptOCxdQ
- WDPQ==
-X-Gm-Message-State: AOJu0YwL4pwdbR/C0GSvDY9RLi6moeVZBeM/4dbHyX83g0qmXI5SBcEv
- zSmf/q751XrbSPO/7JeVkz35e7fD8fPkTutVJANkm2zbXI+cTE2MiUF3iBANHpXyhgnkB8Onm3H
- zqBCEFhxQfWxjMs8Kp3t2/qxyB+OQ7UT/AhoC4QwZ
-X-Received: by 2002:a2e:b168:0:b0:2bd:d34:d98a with SMTP id
- a8-20020a2eb168000000b002bd0d34d98amr3491749ljm.44.1694056901853; 
- Wed, 06 Sep 2023 20:21:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGi1XwMKppYQJHRfAglB7RtDtAFkt40gcZ8c5rtKt3Kprtq9D3cHOzNURxxDqhya7gxKQptjABN1JBDiRJ3a+Q=
-X-Received: by 2002:a2e:b168:0:b0:2bd:d34:d98a with SMTP id
- a8-20020a2eb168000000b002bd0d34d98amr3491745ljm.44.1694056901386; Wed, 06 Sep
- 2023 20:21:41 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id AF8C0610225
+ for <ltp@lists.linux.it>; Thu,  7 Sep 2023 06:43:19 +0200 (CEST)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 3874WnDw008951 for <ltp@lists.linux.it>; Thu, 7 Sep 2023 04:43:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=K68KVdvDqsZMX+mPUiOgktZWHx8Q2JqATFCsF64ZofA=;
+ b=tkBeC8yhTmkSErLypd+xDXAEynGZ/bEIwH6G9KoaEgsa5crYL7D1pVfVKpbj3XZ/tOd/
+ HZOsI8506jCBx5m+pLSy5uCqYhea46OL4iaZ1oVFg8BO+fDYcFBeHMZlj+E2oJ2dNedy
+ Yl095UrqzIAoBEUApQ3XBYbFSxDALqn6CfTzGJucrAHxkRZD8f3jHjn5k5tobkgd6dcC
+ N10euJ6NyemNKygBAtL9pkgQczhCpoiOiVwWlhOfmH+lETEUkZ2m3+J3sCoVALP0NnVl
+ Gs6D59KTMOXNdhSCfp9Hz7q6+n+FQ1sTsvdtJRMXcj1ro5J/BBNQq6Pzoqm7c3uVF/Kd Ug== 
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sy5qr2yhf-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 07 Sep 2023 04:43:16 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 38724wSA021412 for <ltp@lists.linux.it>; Thu, 7 Sep 2023 04:40:20 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svfrys63r-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 07 Sep 2023 04:40:20 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
+ [10.20.54.103])
+ by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 3874eHrG42205774
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 7 Sep 2023 04:40:17 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 206E720043;
+ Thu,  7 Sep 2023 04:40:17 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 7B5F620040;
+ Thu,  7 Sep 2023 04:40:16 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.156.150])
+ by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Thu,  7 Sep 2023 04:40:16 +0000 (GMT)
+From: R Nageswara Sastry <rnsastry@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Thu,  7 Sep 2023 10:10:10 +0530
+Message-Id: <20230907044011.4812-1-rnsastry@linux.ibm.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-References: <927B643AA2DE0DEB+2023083114093400166120@chinasupercloud.com>
- <CAEemH2d=nhMThDZH3PsBNE9toXPjr5eQ+q52Sd_1iM48KB3AOw@mail.gmail.com>
- <49DE213CC66246D3+202309071102186333789@chinasupercloud.com>
-In-Reply-To: <49DE213CC66246D3+202309071102186333789@chinasupercloud.com>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 7 Sep 2023 11:21:29 +0800
-Message-ID: <CAEemH2e_DOOQ-BFFRqY_GmMzWHE-uay6TMBy0UPJXnqdW1TiZw@mail.gmail.com>
-To: =?UTF-8?B?5p2O5Y2g5q2m?= <lizw@chinasupercloud.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: yXvkdDYaY4O2jurw6vsaqjJSyTAox9cp
+X-Proofpoint-GUID: yXvkdDYaY4O2jurw6vsaqjJSyTAox9cp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-06_12,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0
+ priorityscore=1501 mlxscore=0 suspectscore=0 malwarescore=0
+ mlxlogscore=927 adultscore=0 impostorscore=0 clxscore=1015 spamscore=0
+ lowpriorityscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309070038
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] Seeking help with LTP testing issues.
+Subject: [LTP] [PATCH v3] lib/tst_lockdown.c: Add PPC64 architecture support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,36 +93,99 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: rnsastry@linux.ibm.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T2theSwgZmVlbCBmcmVlIHRvIGF0dGFjaCB0aGUgZXJyb3IgbG9ncywgYW5kIGJldHRlciBkZXNj
-cmliZSB0aGUNCnByb2JsZW0gKGUuZyB0ZXN0IEhXLCAgYXJjaCwga2VybmVsIHZlcnNpb24sIExU
-UCB2ZXJzaW9uLCBldGMpIGluDQpFbmdsaXNoIHRvIGd1YXJhbnRlZSBldmVyeW9uZSBpbiBNTCBj
-b3VsZCByZWFkLg0KDQpPbiBUaHUsIFNlcCA3LCAyMDIzIGF0IDExOjAz4oCvQU0g5p2O5Y2g5q2m
-IDxsaXp3QGNoaW5hc3VwZXJjbG91ZC5jb20+IHdyb3RlOg0KDQo+IEhp77yMTGkgd2FuZw0KPg0K
-PiDmiJHnmoRtZXNzYWdl5q+U6L6D5aSn77yM5aaC5p6c57qv5paH5pys5LiN5piv5b6I5aW95YiG
-5p6QDQo+DQoNCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+ICpLZW4gLkxpIOad
-juWNoOatpiogfCDmmbrnrpfkuqflk4HkuovkuJrpg6gNCj4gKueUteivne+8mjE4NTE0NTI4ODU2
-Kg0KPiAq6YKu566x77yaKmxpendAY2hpbmFzdXBlcmNsb3VkLmNvbQ0KPiAq5a6Y572R77yaKmh0
-dHA6Ly93d3cuY2hpbmFzdXBlcmNsb3VkLmNvbQ0KPiDotoXkupHmgLvpg6jvvJrljJfkuqzluILm
-mIzlubPljLrpsoHnloPot6815Y+3QeW6pzTlsYINCj4g56CU5Y+R5Lit5b+D77ya5YyX5Lqs5biC
-5Lqm5bqE57uP5rWO5oqA5pyv5byA5Y+R5Yy656eR5Yib5Y2B5Zub6KGXNuWPt+mZojLlj7fmpbwz
-5bGCDQo+DQo+DQo+ICpGcm9tOiogTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+DQo+ICpEYXRl
-OiogMjAyMy0wOS0wNSAwOTowOA0KPiAqVG86KiDmnY7ljaDmraYgPGxpendAY2hpbmFzdXBlcmNs
-b3VkLmNvbT4NCj4gKkNDOiogbHRwIDxsdHBAbGlzdHMubGludXguaXQ+DQo+ICpTdWJqZWN0Oiog
-UmU6IFtMVFBdIFNlZWtpbmcgaGVscCB3aXRoIExUUCB0ZXN0aW5nIGlzc3Vlcy4NCj4gSGkgWmhh
-bnd1LA0KPg0KPiBJIGRpZG4ndCBmaW5kIGFueSBhdHRhY2htZW50cyBoZXJlLCBjYW4geW91IHBs
-ZWFzZSByZWNoZWNrIGlmIHRoZSBlcnJvcg0KPiBsb2cgdXBsb2FkIHdhcyBzdWNjZXNzZnVsPw0K
-PiBCVFcsIHdlIHR5cGljYWxseSByZWNvbW1lbmQgcG9zdGluZyB0aGUgZXJyb3JzIGluIHBsYWlu
-IHRleHQuDQo+DQo+DQo+IE9uIE1vbiwgU2VwIDQsIDIwMjMgYXQgMTA6NDbigK9QTSDmnY7ljaDm
-raYgPGxpendAY2hpbmFzdXBlcmNsb3VkLmNvbT4gd3JvdGU6DQo+DQo+PiBXZSBhcmUgYSBzZXJ2
-ZXIgbWFudWZhY3R1cmVyIHVzaW5nIExUUCB0ZXN0aW5nLiBUaGUgYXR0YWNobWVudCBpcyBhbg0K
-Pj4gZXJyb3IgbG9nLiBQbGVhc2UgaGVscCB1cy4NCj4+DQo+Pg0KPj4gS2VuIC5MaSDmnY7ljaDm
-raYNCj4+DQo+Pg0KPj4gLS0NCj4+IE1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxp
-bnV4Lml0L2xpc3RpbmZvL2x0cA0KPj4NCj4NCj4NCj4gLS0NCj4gUmVnYXJkcywNCj4gTGkgV2Fu
-Zw0KPg0KPg0KDQotLSANClJlZ2FyZHMsDQpMaSBXYW5nDQoKLS0gCk1haWxpbmcgbGlzdCBpbmZv
-OiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+From: Nageswara R Sastry <rnsastry@linux.ibm.com>
+
+Add PPC64 architecture support to the lockdown library.
+
+Signed-off-by: R Nageswara Sastry <rnsastry@linux.ibm.com>
+---
+v3:
+ - Revert back the kernel config checking to v1 (Martin Doucha)
+v2:
+ - Group all the constant definitions together (Cyril Hrubis)
+ - Reduce the number of variables (Martin Doucha)
+---
+ lib/tst_lockdown.c | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
+
+diff --git a/lib/tst_lockdown.c b/lib/tst_lockdown.c
+index 9086eba36..3ccf73092 100644
+--- a/lib/tst_lockdown.c
++++ b/lib/tst_lockdown.c
+@@ -14,33 +14,37 @@
+ #include "tst_lockdown.h"
+ #include "tst_private.h"
+ 
+-#define EFIVAR_SECUREBOOT "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
+-
++#if defined(__powerpc64__) || defined(__ppc64__)
++# define SECUREBOOT_VAR "/proc/device-tree/ibm,secure-boot"
++# define VAR_DATA_SIZE 4
++#else
++# define SECUREBOOT_VAR "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
++# define VAR_DATA_SIZE 5
++#endif
+ int tst_secureboot_enabled(void)
+ {
+ 	int fd;
+ 	char data[5];
+ 
+-	if (access(EFIVAR_SECUREBOOT, F_OK)) {
+-		tst_res(TINFO, "Efivar FS not available");
++	if (access(SECUREBOOT_VAR, F_OK)) {
++		tst_res(TINFO, "SecureBoot sysfs file not available");
+ 		return -1;
+ 	}
+ 
+-	fd = open(EFIVAR_SECUREBOOT, O_RDONLY);
++	fd = open(SECUREBOOT_VAR, O_RDONLY);
+ 
+ 	if (fd == -1) {
+ 		tst_res(TINFO | TERRNO,
+-			"Cannot open SecureBoot Efivar sysfile");
++			"Cannot open SecureBoot file");
+ 		return -1;
+ 	} else if (fd < 0) {
+ 		tst_brk(TBROK | TERRNO, "Invalid open() return value %d", fd);
+ 		return -1;
+ 	}
+-
+-	SAFE_READ(1, fd, data, 5);
++	SAFE_READ(1, fd, data, VAR_DATA_SIZE);
+ 	SAFE_CLOSE(fd);
+-	tst_res(TINFO, "SecureBoot: %s", data[4] ? "on" : "off");
+-	return data[4];
++	tst_res(TINFO, "SecureBoot: %s", data[VAR_DATA_SIZE - 1] ? "on" : "off");
++	return data[VAR_DATA_SIZE - 1];
+ }
+ 
+ int tst_lockdown_enabled(void)
+@@ -51,9 +55,16 @@ int tst_lockdown_enabled(void)
+ 
+ 	if (access(PATH_LOCKDOWN, F_OK) != 0) {
+ 		char flag;
++
+ 		/* SecureBoot enabled could mean integrity lockdown (non-mainline version) */
++#if defined(__powerpc64__) || defined(__ppc64__)
++		flag = tst_kconfig_get("CONFIG_SECURITY_LOCKDOWN_LSM") == 'y';
++		flag |= tst_kconfig_get("CONFIG_SECURITY_LOCKDOWN_LSM_EARLY") == 'y';
++#else
+ 		flag = tst_kconfig_get("CONFIG_EFI_SECURE_BOOT_LOCK_DOWN") == 'y';
+ 		flag |= tst_kconfig_get("CONFIG_LOCK_DOWN_IN_EFI_SECURE_BOOT") == 'y';
++#endif
++
+ 		if (flag && tst_secureboot_enabled() > 0)
+ 			return 1;
+ 
+-- 
+2.37.1 (Apple Git-137.1)
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
