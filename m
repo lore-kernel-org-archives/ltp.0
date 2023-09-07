@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9F17EE14D4
-	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 09:58:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81B97EE14D4
+	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 10:00:57 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9AB493CCD62
-	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 11:58:11 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id E77323CCCE0
+	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 12:00:55 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8B90B3CB65C
- for <ltp@lists.linux.it>; Thu,  7 Sep 2023 11:58:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 4C1DE3CB589
+ for <ltp@lists.linux.it>; Thu,  7 Sep 2023 12:00:43 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id CE4DC1001F27
- for <ltp@lists.linux.it>; Thu,  7 Sep 2023 11:57:59 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 57CA421863;
- Thu,  7 Sep 2023 09:57:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1694080679;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=qcSS+4jyLrOM1xU2cRfmtWN7bF6FyirmHNOHJ52ZoIc=;
- b=LkykX21cuMs/LpGcl5mnl/hCK4J02IYsjqx6KCf6vgpMhZbhd5xrHLBDX5j7/n3VsRvDsK
- MPx1OAWrk//y0qvQnfuTBzAiZAsOLZgB01MEjqW2g/vZsgqmhz6a3onVvatOOQez32xBxT
- vPH3rZh2J8p0zLx0zjqNPxalQPLEYg0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1694080679;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=qcSS+4jyLrOM1xU2cRfmtWN7bF6FyirmHNOHJ52ZoIc=;
- b=NlrkjAU+fHREPUZ/XauerueuqbImUBkRO1nRg0OmguN52EFkxaJXHTMrtFGBk3J4xroMUW
- doXL1ahutSCp0DCg==
-Received: from g78 (unknown [10.163.28.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id F29706013D4
+ for <ltp@lists.linux.it>; Thu,  7 Sep 2023 12:00:42 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id A8D202C142;
- Thu,  7 Sep 2023 09:57:58 +0000 (UTC)
-References: <20230803015149.69906-1-iwienand@redhat.com>
- <20230808035641.364676-2-iwienand@redhat.com> <87il8xhr05.fsf@suse.de>
- <ZPlxtKUwOta4GYh2@fedora19.localdomain>
-User-agent: mu4e 1.10.6; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Ian Wienand <iwienand@redhat.com>
-Date: Thu, 07 Sep 2023 09:26:29 +0100
-Organization: Linux Private Site
-In-reply-to: <ZPlxtKUwOta4GYh2@fedora19.localdomain>
-Message-ID: <87r0nae259.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 048DA1F8AA;
+ Thu,  7 Sep 2023 10:00:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1694080842; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=zAp9XATHc16H0cdePZ6gmf4f72zKNi8BpQhUF1PFhkQ=;
+ b=iNHJOo+6sgCYP9cb6Ne3/yYmGSI7b4r47a1rmLmADg/LJGzw6UcSnxszCPyeFtPzwfoafL
+ 7ofkuJeu9fazXrz2T8Q+ZDAgh27HHVg6Ca9Ndt2AG1kPRwozWuv0zjF+5TqpbOg5UYWSmd
+ u5SS7RuDy7L9izaCPbK7qFBfq8TmMPg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1694080842;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=zAp9XATHc16H0cdePZ6gmf4f72zKNi8BpQhUF1PFhkQ=;
+ b=kR3ExJULKHEsjsW/ZcuLPh8Qq+qIrpsowanqXmpO2w+B5ybpDGf6qtAKCwAbK49zQP5v5P
+ 2m/xW3jOSCGuGUCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D8F2D138F9;
+ Thu,  7 Sep 2023 10:00:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id +KWJM0mf+WTLSgAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 07 Sep 2023 10:00:41 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Thu,  7 Sep 2023 12:00:41 +0200
+Message-Id: <20230907100041.22406-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] kernel/device-drivers/zram/zram01.sh : don't
- fill from /dev/zero
+Subject: [LTP] [PATCH v1] Refactor fork05 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,95 +71,204 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello Ian,
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-Ian Wienand <iwienand@redhat.com> writes:
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ testcases/kernel/syscalls/fork/fork05.c | 133 +++++-------------------
+ 1 file changed, 28 insertions(+), 105 deletions(-)
 
-> On Wed, Aug 30, 2023 at 09:20:44AM +0100, Richard Palethorpe wrote:
->> > This is visible in the occasional divide-by-zero error, but in the
->> > bigger picture means this test is not exercising the compression path
->> > as desired.
->
->> Do zram{02,03} already do something similar?
->
-> Let's go backwards and try to find a path forward...
->
-> In Jan 19 2011, ecd667ecb5118a6a2805caca30823f18a355bbe2 added
-> testcases/kernel/mem/zram/zram01.c to test r/w compressed block
-> devices.
->
-> In Apr 23 2015, 433445f6beeaa38f5ffbd723a8f392a6880b7e11 created two
-> more tests
->   zram01.sh creates general purpose ram disks with different filesystems
->   zram02.sh creates block device for swap
->
-> In Jun 2015, af0470f65abc62090ad22583b40c27923c48b038 moved the
-> original testcases/kernel/mem/zram/zram01.c ->
-> kernel/device-drivers/zram/zram03.c
->
-> zram02.sh creates and adds/removes swap devices; I think this is
-> sufficiently different to stand alone (I mean, maybe it could be given
-> some intrinsic documentation by being called something descriptive
-> like 'zram-swap-test.sh' but anyway).
->
-> zram03.c (the original zram test, renamed) makes a device and fills it
-> with the character 'a'.  It reads it back but doens't validate any
-> statistics from the stats.
->
-> zram01.sh is in concept fairly similar, but instead it makes various
-> file-systems on the device and (as-is) writes zeros.  It reads back
-> the stats and tries to infer correct operation from that.
->
-> zram01.sh has been suspect from the start, because since the original
-> upstream zram commit (8e19d540d107ee897eb9a874844060c94e2376c0)
-> zero-pages have been de-duplicated and not compressed.  I think the
-> reason it minimally works is because there's some non-zero file-system
-> metadata; but it's unreliable (hence it randomly failing, and this
-> email) and not really stressing what it wants to stress, which is the
-> actual compression paths.
-
-Maybe it's not testing what was orginally intended, but filling the FS
-with all zero's is an important corner case. We don't want to remove
-that coverage. We at least want to check that the kernel doesn't
-crash.
-
->
-> zram03.c always filled with a non-zero value -- presumably to avoid
-> the zero-page deduplication -- but I think what this missed is that
-> when same-page detection was added in ~2017 (kernel
-> 8e19d540d107ee897eb9a874844060c94e2376c0).  Since this time, it is
-> really not stressing any of the compression paths either, since every
-> page is the same.
-
-So it is testing deduplication of non-zero pages. In general these are
-testing a degenerate case.
-
->
->> In any case I'd prefer to see a zram04 written in C if some coverage is
->> missing.
->
-> I don't think adding another test really helps.
->
-> I think the best course here is to fix zram01.sh to write enough
-> random data to stress the compression paths and further sync to make
-> it reliable.  This is what the patch proposes.
->
-> If there's some agreement that the investigation above is valid, we
-> could probably remove zram03.c.  It's not really doing anything
-> zram01.sh doesn't do and it is not really stressing anything either.
->
-> -i
-
+diff --git a/testcases/kernel/syscalls/fork/fork05.c b/testcases/kernel/syscalls/fork/fork05.c
+index 9a99cff1d..bf146d32a 100644
+--- a/testcases/kernel/syscalls/fork/fork05.c
++++ b/testcases/kernel/syscalls/fork/fork05.c
+@@ -1,44 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- * Portions Copyright (c) 2000 Ulrich Drepper
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com$
+- *
+- * For further information regarding this notice, see:$
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
++ * Author: Ulrich Drepper / Nate Straz , Red Hat
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++
++/*\
++ * [Description]
+  *
+- *    Linux Test Project - Silicon Graphics, Inc.
+- *    TEST IDENTIFIER	: fork05
+- *    EXECUTED BY	: anyone
+- *    TEST TITLE	: Make sure LDT is propagated correctly
+- *    TEST CASE TOTAL	: 1
+- *    CPU TYPES		: i386
+- *    AUTHORS		: Ulrich Drepper
+- *			  Nate Straz
++ * This test verifies that LDT is propagated correctly from parent process to
++ * the child process.
+  *
+  *On Friday, May 2, 2003 at 09:47:00AM MST, Ulrich Drepper wrote:
+  *>Robert Williamson wrote:
+@@ -96,55 +67,22 @@
+  *> Red Hat          `--' drepper at redhat.com   `------------------------
+  *>
+  *> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- *
+  */
+ 
+-#include <stdio.h>
+-#include <fcntl.h>
+-#include <unistd.h>
+-#include <stdlib.h>
+-#include <sys/wait.h>
++#include <asm/ldt.h>
+ #include "lapi/syscalls.h"
+-#include "test.h"
+-
+-char *TCID = "fork05";
+-
+-static char *environ_list[] = { "TERM", "NoTSetzWq", "TESTPROG" };
+-
+-#define NUMBER_OF_ENVIRON (sizeof(environ_list)/sizeof(char *))
+-int TST_TOTAL = NUMBER_OF_ENVIRON;
++#include "tst_test.h"
+ 
+ #if defined(linux) && defined(__i386__)
+ 
+-struct modify_ldt_ldt_s {
+-	unsigned int entry_number;
+-	unsigned long int base_addr;
+-	unsigned int limit;
+-	unsigned int seg_32bit:1;
+-	unsigned int contents:2;
+-	unsigned int read_exec_only:1;
+-	unsigned int limit_in_pages:1;
+-	unsigned int seg_not_present:1;
+-	unsigned int useable:1;
+-	unsigned int empty:25;
+-};
+-
+-static int a = 42;
+-
+-static void modify_ldt(int func, struct modify_ldt_ldt_s *ptr, int bytecount)
+-{
+-	tst_syscall(__NR_modify_ldt, func, ptr, bytecount);
+-}
+-
+-int main(void)
++static void run(void)
+ {
+ 	struct modify_ldt_ldt_s ldt0;
++	int base_addr = 42;
+ 	int lo;
+-	pid_t pid;
+-	int res;
+ 
+ 	ldt0.entry_number = 0;
+-	ldt0.base_addr = (long)&a;
++	ldt0.base_addr = (long)&base_addr;
+ 	ldt0.limit = 4;
+ 	ldt0.seg_32bit = 1;
+ 	ldt0.contents = 0;
+@@ -154,49 +92,34 @@ int main(void)
+ 	ldt0.useable = 1;
+ 	ldt0.empty = 0;
+ 
+-	modify_ldt(1, &ldt0, sizeof(ldt0));
++	tst_syscall(__NR_modify_ldt, 1, &ldt0, sizeof(ldt0));
+ 
+ 	asm volatile ("movw %w0, %%fs"::"q" (7));
+-
+ 	asm volatile ("movl %%fs:0, %0":"=r" (lo));
+-	tst_resm(TINFO, "a = %d", lo);
++	tst_res(TINFO, "a = %d", lo);
+ 
+ 	asm volatile ("pushl %%fs; popl %0":"=q" (lo));
+-	tst_resm(TINFO, "%%fs = %#06hx", lo);
++	tst_res(TINFO, "%%fs = %#06hx", lo);
+ 
+ 	asm volatile ("movl %0, %%fs:0"::"r" (99));
+ 
+-	pid = fork();
+-
+-	if (pid == 0) {
++	if (!SAFE_FORK()) {
+ 		asm volatile ("pushl %%fs; popl %0":"=q" (lo));
+-		tst_resm(TINFO, "%%fs = %#06hx", lo);
++		tst_res(TINFO, "%%fs = %#06hx", lo);
+ 
+ 		asm volatile ("movl %%fs:0, %0":"=r" (lo));
+-		tst_resm(TINFO, "a = %d", lo);
++		tst_res(TINFO, "a = %d", lo);
++
++		TST_EXP_EQ_LI(lo, 99);
+ 
+-		if (lo != 99)
+-			tst_resm(TFAIL, "Test failed");
+-		else
+-			tst_resm(TPASS, "Test passed");
+ 		exit(lo != 99);
+-	} else {
+-		waitpid(pid, &res, 0);
+ 	}
+-
+-	return WIFSIGNALED(res);
+ }
+ 
+-#else /* if defined(linux) && defined(__i386__) */
+-
+-int main(void)
+-{
+-	tst_resm(TINFO, "%%fs test only for ix86");
+-
+-	/*
+-	 * should be successful on all non-ix86 platforms.
+-	 */
+-	tst_exit();
+-}
++static struct tst_test test = {
++	.run_all = run
++};
+ 
+-#endif /* if defined(linux) && defined(__i386__) */
++#else /* defined(linux) && defined(__i386__) */
++	TST_TEST_TCONF("Test only supports linux 32 bits");
++#endif
 -- 
-Thank you,
-Richard.
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
