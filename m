@@ -4,84 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8193EE14D4
-	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 06:46:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67DCFEE14D9
+	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 08:11:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 430DD3CB599
-	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 08:46:33 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 9CC623CC28B
+	for <ltp@archiver.kernel.org>; Thu,  7 Sep 2023 10:11:22 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA1073C8B41
- for <ltp@lists.linux.it>; Thu,  7 Sep 2023 08:46:21 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 59B873C9F6B
+ for <ltp@lists.linux.it>; Thu,  7 Sep 2023 05:03:44 +0200 (CEST)
+Received: from smtpbg153.qq.com (smtpbg153.qq.com [13.245.218.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1C17610006CE
- for <ltp@lists.linux.it>; Thu,  7 Sep 2023 08:46:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1694069179;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9SMmDO8TOevVFwJo00qPEJmbcG8bAcEmgBS9qycTA74=;
- b=bx3mGUcVh7tz96GAlAfFL2ZsUafuuqRjYqsEyYWcQ/eulFSdN/hTIlx/HDLZEExv61i7Fy
- AXznEEPW8pcCVVO6ftH9VIeq2KQOu6kWplOLXo27L9jBeTU4HBtPznljVI4C5vsn0vw/uK
- A9EGZIrrXggG1p0n/UrFI/1jYooJqKI=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-14-zsYJQoAuNACD__ekkm7Gbg-1; Thu, 07 Sep 2023 02:46:18 -0400
-X-MC-Unique: zsYJQoAuNACD__ekkm7Gbg-1
-Received: by mail-oo1-f72.google.com with SMTP id
- 006d021491bc7-5735a879147so631465eaf.3
- for <ltp@lists.linux.it>; Wed, 06 Sep 2023 23:46:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1694069177; x=1694673977;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=9SMmDO8TOevVFwJo00qPEJmbcG8bAcEmgBS9qycTA74=;
- b=HXDZHPBdI/UeoIq8G/5nsZ/LYEfXeum+PFX3j8OHcJIVhku6iJwRHHcubjZbt50szx
- H1cSxHCFP69lpeln54e8LvuJFJspsRFFSNg3LK3RysF8zSUWxb7AE91A/JxnoDjxMR4Z
- Rm3fkwkHqgh3KfvQ0N560mACYJCNkDAOtbCBIIa54b9jsgOA0r0Bhx1IwfRnTtdqZ+SB
- upjSR/H7hZqdoAfJe9y+Q9rbnrsxCyy6sILtstb+zUJIn/zPMPLW3cMfYMHcI73yDYt6
- ZU6JnRcrWuSlFAW2iVgY9QMYY/r1GvwKk7/xDbAyuC64BnDK6/BEPWcmSYhxunox4BQs
- QgfQ==
-X-Gm-Message-State: AOJu0YzGzPkjOB6hCvEjHAus8HT2FYH6FdNaindbhO3WmZBDLzHc+qL6
- Quf4/7ox4nZCkc04b0r5jq/nWap1VHak3GxwQLQifkB3gRlJm6EjvexlwEiCupMudl5FevlBkGG
- V0ox0erdDKjI=
-X-Received: by 2002:a05:6871:d96:b0:1d5:eb1:c587 with SMTP id
- vi22-20020a0568710d9600b001d50eb1c587mr6011779oab.19.1694069177387; 
- Wed, 06 Sep 2023 23:46:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH+KeDQud0j6QysoKgpFxuLpSCJfFbnJ4fZ7IaNgTKa3J7pY4+gDQIfzaHecOrPba9mqPAhyw==
-X-Received: by 2002:a05:6871:d96:b0:1d5:eb1:c587 with SMTP id
- vi22-20020a0568710d9600b001d50eb1c587mr6011766oab.19.1694069177087; 
- Wed, 06 Sep 2023 23:46:17 -0700 (PDT)
-Received: from fedora19.localdomain ([2401:d002:2d05:b10a:c9ac:2dd7:6463:bb84])
- by smtp.gmail.com with ESMTPSA id
- n26-20020a638f1a000000b0055b61cd99a1sm12047590pgd.81.2023.09.06.23.46.15
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 06 Sep 2023 23:46:16 -0700 (PDT)
-Date: Thu, 7 Sep 2023 16:46:12 +1000
-From: Ian Wienand <iwienand@redhat.com>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <ZPlxtKUwOta4GYh2@fedora19.localdomain>
-References: <20230803015149.69906-1-iwienand@redhat.com>
- <20230808035641.364676-2-iwienand@redhat.com>
- <87il8xhr05.fsf@suse.de>
-MIME-Version: 1.0
-In-Reply-To: <87il8xhr05.fsf@suse.de>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E6AC12010F2
+ for <ltp@lists.linux.it>; Thu,  7 Sep 2023 05:03:40 +0200 (CEST)
+X-QQ-mid: bizesmtp89t1694055740t980m2vg
+Received: from alvin ( [221.123.136.170]) by bizesmtp.qq.com (ESMTP) with 
+ id ; Thu, 07 Sep 2023 11:02:18 +0800 (CST)
+X-QQ-SSF: 00400000000000Z0Z000000A0000000
+X-QQ-FEAT: 1IQQPTaFpROzBflLJvcbXcGAMXieq75J1f4WJFc/2pPDJ1FYQ1XLXZCWfAt6h
+ xaD4oQEVnDykBOySJcJGXO5Lr3xB2Jep1K43gao2TRpSsSK5ZsVYk0uiRgDgH9OkMXdlRR1
+ LxV2YT82ItyA+dGUmO2zX/CxGpctty1F5yD1+tMCvv0YbSmKJx2jORdHO5f1vbcxwxxhtE3
+ GlM0572NZs3i44Uze8q9QNLxVZxvdaGvdqjQXMCH+a1xq2zeWk05NTB3W+tit1z3z7s2mSA
+ djTqq58ypParaPmQaK6WL4iI8Brd8g4oKFJSM565hh4yOmsnhMMYIxaMRjvM2iWqoBbnzyu
+ SAQ+5zu3Qc6kqcBeqkvygsH2xpVExAYq1+JwbBzJJCuAqE3kalBg4PTi9ptiQDk07dt1bkv
+ lCBUWJfhw5uBTBTEjIDF1UAPgCjjhGwI
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 11854986959529204909
+Date: Thu, 7 Sep 2023 11:02:19 +0800
+From: =?UTF-8?B?5p2O5Y2g5q2m?= <lizw@chinasupercloud.com>
+To: "Li Wang" <liwang@redhat.com>
+References: <927B643AA2DE0DEB+2023083114093400166120@chinasupercloud.com>, 
+ <CAEemH2d=nhMThDZH3PsBNE9toXPjr5eQ+q52Sd_1iM48KB3AOw@mail.gmail.com>
+X-Priority: 3
+X-GUID: 3DCD9A53-9223-498B-8644-259408F7AEB7
+X-Has-Attach: no
+X-Mailer: Foxmail 7.2.23.121[cn]
+Mime-Version: 1.0
+Message-ID: <49DE213CC66246D3+202309071102186333789@chinasupercloud.com>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:chinasupercloud.com:qybglogicsvrgz:qybglogicsvrgz6a-1
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] kernel/device-drivers/zram/zram01.sh : don't
- fill from /dev/zero
+X-Mailman-Approved-At: Thu, 07 Sep 2023 10:11:10 +0200
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: [LTP] =?utf-8?b?5Zue5aSNOiBSZTogIFNlZWtpbmcgaGVscCB3aXRoIExUUCB0?=
+ =?utf-8?q?esting_issues=2E?=
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,77 +63,27 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp <ltp@lists.linux.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Wed, Aug 30, 2023 at 09:20:44AM +0100, Richard Palethorpe wrote:
-> > This is visible in the occasional divide-by-zero error, but in the
-> > bigger picture means this test is not exercising the compression path
-> > as desired.
-
-> Do zram{02,03} already do something similar?
-
-Let's go backwards and try to find a path forward...
-
-In Jan 19 2011, ecd667ecb5118a6a2805caca30823f18a355bbe2 added
-testcases/kernel/mem/zram/zram01.c to test r/w compressed block
-devices.
-
-In Apr 23 2015, 433445f6beeaa38f5ffbd723a8f392a6880b7e11 created two
-more tests
-  zram01.sh creates general purpose ram disks with different filesystems
-  zram02.sh creates block device for swap
-
-In Jun 2015, af0470f65abc62090ad22583b40c27923c48b038 moved the
-original testcases/kernel/mem/zram/zram01.c ->
-kernel/device-drivers/zram/zram03.c
-
-zram02.sh creates and adds/removes swap devices; I think this is
-sufficiently different to stand alone (I mean, maybe it could be given
-some intrinsic documentation by being called something descriptive
-like 'zram-swap-test.sh' but anyway).
-
-zram03.c (the original zram test, renamed) makes a device and fills it
-with the character 'a'.  It reads it back but doens't validate any
-statistics from the stats.
-
-zram01.sh is in concept fairly similar, but instead it makes various
-file-systems on the device and (as-is) writes zeros.  It reads back
-the stats and tries to infer correct operation from that.
-
-zram01.sh has been suspect from the start, because since the original
-upstream zram commit (8e19d540d107ee897eb9a874844060c94e2376c0)
-zero-pages have been de-duplicated and not compressed.  I think the
-reason it minimally works is because there's some non-zero file-system
-metadata; but it's unreliable (hence it randomly failing, and this
-email) and not really stressing what it wants to stress, which is the
-actual compression paths.
-
-zram03.c always filled with a non-zero value -- presumably to avoid
-the zero-page deduplication -- but I think what this missed is that
-when same-page detection was added in ~2017 (kernel
-8e19d540d107ee897eb9a874844060c94e2376c0).  Since this time, it is
-really not stressing any of the compression paths either, since every
-page is the same.
-
-> In any case I'd prefer to see a zram04 written in C if some coverage is
-> missing.
-
-I don't think adding another test really helps.
-
-I think the best course here is to fix zram01.sh to write enough
-random data to stress the compression paths and further sync to make
-it reliable.  This is what the patch proposes.
-
-If there's some agreement that the investigation above is valid, we
-could probably remove zram03.c.  It's not really doing anything
-zram01.sh doesn't do and it is not really stressing anything either.
-
--i
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGnvvIxMaSB3YW5nDQoNCuaIkeeahG1lc3NhZ2Xmr5TovoPlpKfvvIzlpoLmnpznuq/mlofmnKzk
+uI3mmK/lvojlpb3liIbmnpANCg0KDQoNCktlbiAuTGkg5p2O5Y2g5q2mIHwg5pm6566X5Lqn5ZOB
+5LqL5Lia6YOoDQrnlLXor53vvJoxODUxNDUyODg1Ng0K6YKu566x77yabGl6d0BjaGluYXN1cGVy
+Y2xvdWQuY29tIA0K5a6Y572R77yaaHR0cDovL3d3dy5jaGluYXN1cGVyY2xvdWQuY29tDQrotoXk
+upHmgLvpg6jvvJrljJfkuqzluILmmIzlubPljLrpsoHnloPot6815Y+3QeW6pzTlsYINCueglOWP
+keS4reW/g++8muWMl+S6rOW4guS6puW6hOe7j+a1juaKgOacr+W8gOWPkeWMuuenkeWIm+WNgeWb
+m+ihlzblj7fpmaIy5Y+35qW8M+Wxgg0KIA0KRnJvbTogTGkgV2FuZw0KRGF0ZTogMjAyMy0wOS0w
+NSAwOTowOA0KVG86IOadjuWNoOatpg0KQ0M6IGx0cA0KU3ViamVjdDogUmU6IFtMVFBdIFNlZWtp
+bmcgaGVscCB3aXRoIExUUCB0ZXN0aW5nIGlzc3Vlcy4NCkhpIFpoYW53dSwNCg0KSSBkaWRuJ3Qg
+ZmluZCBhbnkgYXR0YWNobWVudHMgaGVyZSwgY2FuIHlvdSBwbGVhc2UgcmVjaGVjayBpZiB0aGUg
+ZXJyb3IgbG9nIHVwbG9hZCB3YXMgc3VjY2Vzc2Z1bD8NCkJUVywgd2UgdHlwaWNhbGx5IHJlY29t
+bWVuZCBwb3N0aW5nIHRoZSBlcnJvcnMgaW4gcGxhaW4gdGV4dC4NCg0KDQpPbiBNb24sIFNlcCA0
+LCAyMDIzIGF0IDEwOjQ24oCvUE0g5p2O5Y2g5q2mIDxsaXp3QGNoaW5hc3VwZXJjbG91ZC5jb20+
+IHdyb3RlOg0KV2UgYXJlIGEgc2VydmVyIG1hbnVmYWN0dXJlciB1c2luZyBMVFAgdGVzdGluZy4g
+VGhlIGF0dGFjaG1lbnQgaXMgYW4gZXJyb3IgbG9nLiBQbGVhc2UgaGVscCB1cy4NCg0KDQpLZW4g
+LkxpIOadjuWNoOatpiANCg0KDQotLSANCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
+LmxpbnV4Lml0L2xpc3RpbmZvL2x0cA0KDQoNCi0tIA0KUmVnYXJkcywNCkxpIFdhbmcNCgotLSAK
+TWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
