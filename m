@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D644EE7FE3
-	for <ltp@archiver.kernel.org>; Fri,  8 Sep 2023 12:21:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41210EE7FE5
+	for <ltp@archiver.kernel.org>; Fri,  8 Sep 2023 12:34:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7EA6B3CE966
-	for <ltp@archiver.kernel.org>; Fri,  8 Sep 2023 14:21:49 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 54CCA3CC0FC
+	for <ltp@archiver.kernel.org>; Fri,  8 Sep 2023 14:34:37 +0200 (CEST)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F27E83CB570
- for <ltp@lists.linux.it>; Fri,  8 Sep 2023 14:21:37 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 733373C89B6
+ for <ltp@lists.linux.it>; Fri,  8 Sep 2023 14:34:26 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D6FDD600684
- for <ltp@lists.linux.it>; Fri,  8 Sep 2023 14:21:36 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id A7D9B6014E6
+ for <ltp@lists.linux.it>; Fri,  8 Sep 2023 14:34:25 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DBF081FE2E;
- Fri,  8 Sep 2023 12:21:35 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9B58621BB7;
+ Fri,  8 Sep 2023 12:34:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1694175695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1694176464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hCL7sg1WQoIReuGX1eF9ssbFvlNfFgefF+1Kf+HPnDk=;
- b=o6ub2b8juv3zE57vd3Z4e5y9Ukh4Kql2erNzLchiS/Bnqh8rvD8dJ/IifnaEousDYiVAn1
- LZlx31PivWtUVVPntzCch+PP+e8BaCruL2WuYxGxn2qA1HbURaqqLyCygEccznZruP/zPG
- MCdpV7uw0APC+RfnaonlB1cISKv/v94=
+ bh=Rau8HmnZdRuvVInn6KsVVqS+J04BZ9XRLBQFj7stlzU=;
+ b=MH9433P+jtHdzGQJREUYijzPJ1nRWGIFa4/fBHz+PlVTjjGZ0ZLqwA7oBEQEY0wOELTmd7
+ /U52v20E28LyDi9aucK12W44BhZIIw795ghdbb8CGuD/w8lgZSYDlRt4VUpuBlw9/GZPNc
+ t0ruiDyMi9DDIK3ILS9IhHh1exWW89Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1694175695;
+ s=susede2_ed25519; t=1694176464;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hCL7sg1WQoIReuGX1eF9ssbFvlNfFgefF+1Kf+HPnDk=;
- b=DY2FNl+tsbNRwjtlOygj3pSA0ExJDom5zhBJImFAaBNmZUhtMaY4ziPRK/YmSkGY0MtMns
- 1SpkeBIXbMgJ7hDw==
+ bh=Rau8HmnZdRuvVInn6KsVVqS+J04BZ9XRLBQFj7stlzU=;
+ b=dNHPPLOC5GyyZmUheR0V9YlA81Q9rPz+Cgn8nFDnZpDDwjYuqfQOGOiUZPIgtcKShU5sza
+ /AYaJJOSZDANsZAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CA08F132F2;
- Fri,  8 Sep 2023 12:21:35 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 87C83131FD;
+ Fri,  8 Sep 2023 12:34:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Oh77L88R+2SnNgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 08 Sep 2023 12:21:35 +0000
-Date: Fri, 8 Sep 2023 14:22:17 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id hQhuINAU+2SUPQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 08 Sep 2023 12:34:24 +0000
+Date: Fri, 8 Sep 2023 14:35:05 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Samir Mulani <samir@linux.vnet.ibm.com>
-Message-ID: <ZPsR-fYtg70dC-Tc@yuki>
-References: <20230908110530.14990-1-samir@linux.vnet.ibm.com>
+To: Sachin P Bappalige <sachinpb@linux.vnet.ibm.com>
+Message-ID: <ZPsU-bTNG8w_wys5@yuki>
+References: <20230908121135.245296-1-sachinpb@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230908110530.14990-1-samir@linux.vnet.ibm.com>
+In-Reply-To: <20230908121135.245296-1-sachinpb@linux.vnet.ibm.com>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH] Migrating the
- libhugetlbfs/testcases/stack_grow_into_huge.c test
+ libhugetlbfs/testcases/shm-gettest.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,126 +82,124 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-First of all the whitespaces in the test are messed up, please make sure
-to run 'make check' and fix all the reported problems.
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugepage35.c b/testcases/kernel/mem/hugetlb/hugemmap/hugepage35.c
+> new file mode 100644
+> index 000000000..fb603b4ef
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugepage35.c
+> @@ -0,0 +1,93 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2005-2006, IBM Corporation.
+> + * Author: David Gibson & Adam Litke
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Test Name: shm-gettest.c
+> + *
+> + * This testcase creates shared memory segments backed by hugepages, 
+                                                                       ^
+		                                                Trailing
+								space.
 
-> +void do_child(void *stop_address)
-> +{
-> +	struct rlimit r;
-> +	volatile int *x;
+There are a few in the source and other coding style errors, please run
+'make check' and fix all the reported problems.
+
+> + * writes specific patterns to each segment, verifies pattern,
+> + * and detaches a shared memory segments in a loop. 
+> + * It ensures that the hugepage backed shared memory functionalities 
+> + * works correctly by validating the data written to segment.
+> + */
 > +
-> +	/* corefile from this process is not interesting and limiting
-> +	 * its size can save a lot of time. '1' is a special value,
-> +	 * that will also abort dumping via pipe, which by default
-> +	 * sets limit to RLIM_INFINITY. */
-> +	r.rlim_cur = 1;
-> +	r.rlim_max = 1;
-> +	SAFE_SETRLIMIT(RLIMIT_CORE, &r);
+> +#include "hugetlb.h"
+> +#include "tst_safe_sysv_ipc.h"
 > +
-> +	do {
-> +		x = alloca(STACK_ALLOCATION_SIZE);
-> +		*x = 1;
-> +	} while ((void *)x >= stop_address);
+> +#define MNTPOINT "hugetlbfs/"
+> +#define NR_HUGEPAGES 4
+> +
+> +static long hpage_size;
+> +static unsigned int iter;
+> +static int shmid = -1, key = -1;
+> +
+> +static void do_shmtest(size_t size) {
+> +        size_t i, j;
+> +        char pattern;
+> +        char *shmaddr;
+> +
+> +        shmid = SAFE_SHMGET(key, size, SHM_HUGETLB|IPC_CREAT|SHM_R|SHM_W);
+> +        tst_res(TINFO, "shmid: 0x%x\n", shmid);
+> +
+> +        shmaddr = SAFE_SHMAT(shmid, 0, SHM_RND);
+> +        tst_res(TINFO, "shmaddr: %p\n", shmaddr);
+> +
+> +        for (i = 0; i < NR_HUGEPAGES; i++) {
+> +                pattern = 65 + (i % 26);
+> +                tst_res(TINFO, "Touching %p with %c\n",
+> +                                shmaddr + (i * hpage_size), pattern);
+> +                memset(shmaddr + (i * hpage_size), pattern, hpage_size);
+> +        }
+> +
+> +        for (i = 0; i < NR_HUGEPAGES; i++) {
+> +                pattern = 65 + (i % 26);
+> +                tst_res(TINFO, "Verifying %p\n", (shmaddr + (i * hpage_size)));
+> +                for (j = 0; j < (size_t)hpage_size; j++)
+> +                        if (*(shmaddr + (i * hpage_size) + j) != pattern)
+> +                                tst_res(TFAIL, "Verifying the segment failed."
+> +                                        "Got %c, expected %c",
+> +                                        *(shmaddr + (i * hpage_size) + j),
+> +                                        pattern);
+> +        }
+> +        SAFE_SHMDT((const void *)shmaddr);
 > +}
 > +
 > +static void run_test(void)
 > +{
-> +	int pid, status, sig;
-> +    	char *b;
-> +	void *stack_address, *mmap_address, *heap_address;
-> +        stack_address = alloca(0);
-> +        heap_address = sbrk(0);
-> +        /*
-> +         * paranoia: start mapping two hugepages below the start of the stack,
-> +         * in case the alignment would cause us to map over something if we
-> +         * only used a gap of one hugepage.
-> +         */
-> +        mmap_address = PALIGN(stack_address - 2 * hpage_size, hpage_size);
-> +        do {
-> +		b = SAFE_MMAP(mmap_address, hpage_size, PROT_READ|PROT_WRITE,
-> +						MAP_FIXED|MAP_SHARED, fd, 0);
-> +		mmap_address -= hpage_size;
-> +		/*
-> +		 * if we get all the way down to the heap, stop trying
-> +		 */
-> +		if (mmap_address <= heap_address)
-> +			break;
-> + 	   } while (b == MAP_FAILED);
+> +        int i;
+> +        iter = 2;
+> +        size_t size;
+> +        size = NR_HUGEPAGES * hpage_size;
+> +        for (i=0; i < (int)iter; i++)
+> +                do_shmtest(size);
+> +        tst_res(TPASS, "Successfully tested shared memory segment operations "
+> +                        "backed by hugepages");
 
-This definitelly wouldn't work as expected, SAFE_MMAP() cannot fail, it
-does exit the test if it fails.
+This is obviously wrong, you are reporting TPASS regardless if the
+do_shmtest() reported failure or not. Ideally you should report TPASS
+in the do_shmtest() function in a case that no failures have had
+happened.
 
-> +        if (b == MAP_FAILED)
-> +		tst_res(TFAIL, "mmap() at unexpected address %p instead of %p\n", b,
-> +	    		 mmap_address);
-> +    
-> +    	pid = SAFE_FORK();
-> +		if (pid == 0) {
-> +			do_child(mmap_address);
-> +			exit(0);
-> +		}
-> +   	SAFE_WAITPID(pid, &status, 0);
-> +
-> +	if (WIFSIGNALED(status)) {
-> +		sig = WTERMSIG(status);
-> +
-> +		if (sig == SIGSEGV) {
-> +			 tst_res(TPASS, "Test Passed");
-> +			 exit(0);
-> +		} else {
-> +			tst_res(TFAIL, "Got unexpected signal: %s", strsignal(sig));
-> +			exit(1);
+Also LTP test can run a number of iterations when passed -i parameter,
+so instead of duplicating the functionality here the test should be
+executed with -i 2 instead.
 
-No calls to exit(1) in the test, the tst_res() is used to report test
-results.
-
-> +		}
-> +	}
-> +	tst_res(TFAIL, "Child not signalled");
-
-This should use tst_strstatus() to print what has happened to the child.
-Have a look at syscalls/mmap/mmap18.c how it's done.
+Also the test is not added into .gitignore and to runtest file
+(runtest/hugetlb), which means that it wouldn't be executed at all.\
 
 > +}
 > +
-> +void setup(void)
+> +static void setup(void)
 > +{
-> +    	struct rlimit r;
-> +	page_size = getpagesize();
-> +	hpage_size = tst_get_hugepage_size();
-> +	/*
-> +	 * Setting the stack size to unlimited.
-> +	 */
-> +	r.rlim_cur = RLIM_INFINITY;
-> +        r.rlim_max = RLIM_INFINITY;
-> +        SAFE_SETRLIMIT(RLIMIT_STACK, &r);
-> +
-> +        SAFE_GETRLIMIT(RLIMIT_STACK, &r);
-> +        if (r.rlim_cur != RLIM_INFINITY)
-> +		tst_brk(TCONF, "Stack rlimit must be 'unlimited'");
-> +	fd = tst_creat_unlinked(MNTPOINT, 0);
+> +        hpage_size = tst_get_hugepage_size();
+> +        tst_res(TINFO, "hugepage size is  %ld", hpage_size);
 > +}
 > +
-> +void cleanup(void)
+> +static void cleanup(void)
 > +{
-> +    	if (fd > 0)
-> +		SAFE_CLOSE(fd);
+> +        if (shmid >= 0)
+> +                // Remove the shared memory segment
+> +                SAFE_SHMCTL(shmid, IPC_RMID, NULL);
 > +}
 > +
 > +static struct tst_test test = {
-> +	.tags = (struct tst_tag[]) {
-> +                {"linux-git", "0d59a01bc461"},
-> +                {}
-> +	},
-> +	.needs_root = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.needs_hugetlbfs = 1,
-> +	.needs_tmpdir = 1,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run_test,
-> +	.hugepages = {2, TST_NEEDS},
-> +	.forks_child = 1,
+> +        .needs_root = 1,
+> +        .mntpoint = MNTPOINT,
+> +        .needs_hugetlbfs = 1,
+> +        .setup = setup,
+> +        .cleanup = cleanup,
+> +        .test_all = run_test,
+> +        .hugepages = {NR_HUGEPAGES, TST_NEEDS},
 > +};
 > -- 
 > 2.39.3
