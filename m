@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5687EE57E0
-	for <ltp@archiver.kernel.org>; Fri,  8 Sep 2023 07:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19565EE57E0
+	for <ltp@archiver.kernel.org>; Fri,  8 Sep 2023 09:19:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id EB6CC3CC801
-	for <ltp@archiver.kernel.org>; Fri,  8 Sep 2023 09:34:26 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id C97833CE973
+	for <ltp@archiver.kernel.org>; Fri,  8 Sep 2023 11:19:46 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 86E383CB513
- for <ltp@lists.linux.it>; Fri,  8 Sep 2023 09:34:16 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 864C83CB504
+ for <ltp@lists.linux.it>; Fri,  8 Sep 2023 11:19:36 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 589B31400457
- for <ltp@lists.linux.it>; Fri,  8 Sep 2023 09:34:14 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 338E3218E7;
- Fri,  8 Sep 2023 07:34:14 +0000 (UTC)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id B2ADF1BB9FAC
+ for <ltp@lists.linux.it>; Fri,  8 Sep 2023 11:19:35 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 13B4A218EA;
+ Fri,  8 Sep 2023 09:19:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1694158454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=U0w4JF2AUX9X6hi9/jYsqhmAH4fEKXxJMNCTJk+y+ds=;
- b=IGrp8L2TIykMQabt7xbALt/jDzFBoKia6MKlykJruSqjpoff1jfEMoom/lqKVfuLknatlO
- b7vLGKK+n+7sni67Z8H8uvIsYk77I0235YMmkv/98cdR2+f7VIUBa1+NVNX9XF/TxTkR4n
- 3jIGWpaiAY86vUUG3Sp+4s0OFhgd54E=
+ t=1694164775;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Q9mvHg40YXchnjvZytkw2SsNPG/XBo2XHxOd+MHcarA=;
+ b=up8ZD8V+PvSQ4iHiHL8q03Ac8J5neDOmWFv//nyYlaysGPdHmSt4DEwCIqA4bA3bA4yHmK
+ pbxIfQNA9pkmW3OfgMBk35rBTqQOs/l1g8CtqwZSjMeRx4mwPHBqLPOsRB1qMMOzmkufI+
+ GZ4VU4PvLGFinoinMX7nIeSMk0i8Ra8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1694158454;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=U0w4JF2AUX9X6hi9/jYsqhmAH4fEKXxJMNCTJk+y+ds=;
- b=aso0QLY/KPtjHUq579YLuienHKhHyMaCGeMz1hMRNtRMzIy/Rn3XEYsl6xlU8Q5sNtQVsp
- Cmn96z99dOEcb7Cw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ s=susede2_ed25519; t=1694164775;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Q9mvHg40YXchnjvZytkw2SsNPG/XBo2XHxOd+MHcarA=;
+ b=oZy/8qv89H8JbzYSzqznPxslD+DL7+Tuwn9wswDtcOBy4N7dMEQ+NFEWHIZhMJggKkGjrP
+ /pN4ylRgH0TwZ8DA==
+Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.28.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 15081132F2;
- Fri,  8 Sep 2023 07:34:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 7duCA3bO+mT6EQAAMHmgww
- (envelope-from <andrea.cervesato@suse.de>); Fri, 08 Sep 2023 07:34:14 +0000
-From: Andrea Cervesato <andrea.cervesato@suse.de>
-To: ltp@lists.linux.it
-Date: Fri,  8 Sep 2023 09:34:07 +0200
-Message-Id: <20230908073407.31444-1-andrea.cervesato@suse.de>
-X-Mailer: git-send-email 2.35.3
+ by relay2.suse.de (Postfix) with ESMTPS id 63B4D2C143;
+ Fri,  8 Sep 2023 09:19:34 +0000 (UTC)
+References: <20230907115431.28960-1-andrea.cervesato@suse.de>
+User-agent: mu4e 1.10.7; emacs 29.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Date: Fri, 08 Sep 2023 10:02:59 +0100
+Organization: Linux Private Site
+In-reply-to: <20230907115431.28960-1-andrea.cervesato@suse.de>
+Message-ID: <874jk5hviz.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Refactor fork10 test using new LTP API
+Subject: Re: [LTP] [PATCH v2] Refactor exit_group01 using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,263 +69,225 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Andrea Cervesato <andrea.cervesato@suse.com>
+Hello,
 
-Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
----
- testcases/kernel/syscalls/fork/fork10.c | 215 +++++++++---------------
- 1 file changed, 78 insertions(+), 137 deletions(-)
+Andrea Cervesato <andrea.cervesato@suse.de> writes:
 
-diff --git a/testcases/kernel/syscalls/fork/fork10.c b/testcases/kernel/syscalls/fork/fork10.c
-index 815eee1f6..96f61b5ed 100644
---- a/testcases/kernel/syscalls/fork/fork10.c
-+++ b/testcases/kernel/syscalls/fork/fork10.c
-@@ -1,159 +1,100 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- *
-- *
-- * NAME
-- *	fork10.c
-- *
-- * DESCRIPTION
-- *	Check inheritance of file descriptor by children, they
-- *	should all be refering to the same file.
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ *    07/2001 Ported by Wayne Boyer
-+ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-  *
-- * ALGORITHM
-- *	Child reads several chars and exits.
-- *	Parent forks another child, have the child and parent attempt to use
-- *	that location
-+ * This test verifies inheritance of file descriptors from parent to child
-+ * process. We open a file from parent, then we check if file offset changes
-+ * accordingly with file descriptor usage.
-  *
-- * USAGE
-- *	fork10
-+ * [Algorithm]
-  *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-+ * Test steps are the following:
-+ * - create a file made in three parts -> | aa..a | bb..b | cc..c |
-+ * - from parent, open the file
-+ * - from child, move file offset after the first part
-+ * - from parent, read second part and check if it's | bb..b |
-+ * - from child, read third part and check if it's | cc..c |
-  *
-- * RESTRICTIONS
-- *	None
-+ * Test passes if we were able to read the correct file parts from parent and
-+ * child.
-  */
- 
--#include <sys/types.h>
--#include <sys/wait.h>
--#include <sys/stat.h>
--#include <fcntl.h>
--#include <stdio.h>
--#include <errno.h>
--#include "test.h"
--#include "safe_macros.h"
--
--char *TCID = "fork10";
--int TST_TOTAL = 1;
-+#include <stdlib.h>
-+#include "tst_test.h"
- 
--static void setup(void);
--static void cleanup(void);
-+#define FILENAME "file.txt"
-+#define DATASIZE 1024
- 
--static char pidbuf[10];
--static char fnamebuf[40];
-+static int fd;
- 
--int main(int ac, char **av)
-+static void run(void)
- {
--	int status, pid, fildes;
--	char parchar[2];
--	char chilchar[2];
--
--	int lc;
--
--	fildes = -1;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		fildes = SAFE_CREAT(cleanup, fnamebuf, 0600);
--		write(fildes, "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n", 27);
--		close(fildes);
--
--		fildes = SAFE_OPEN(cleanup, fnamebuf, 0);
--
--		pid = fork();
--		if (pid == -1)
--			tst_brkm(TBROK, cleanup, "fork() #1 failed");
--
--		if (pid == 0) {	/* child */
--			tst_resm(TINFO, "fork child A");
--			if (lseek(fildes, 10L, 0) == -1L) {
--				tst_resm(TFAIL, "bad lseek by child");
--				exit(1);
--			}
--			exit(0);
--		} else {	/* parent */
--			wait(&status);
--
--			/* parent starts second child */
--			pid = fork();
--			if (pid == -1)
--				tst_brkm(TBROK, cleanup, "fork() #2 failed");
--
--			if (pid == 0) {	/* child */
--				if (read(fildes, chilchar, 1) <= 0) {
--					tst_resm(TFAIL, "Child can't read "
--						 "file");
--					exit(1);
--				} else {
--					if (chilchar[0] != 'K') {
--						chilchar[1] = '\n';
--						exit(1);
--					} else {
--						exit(0);
--					}
--				}
--			} else {	/* parent */
--				(void)wait(&status);
--				if (status >> 8 != 0) {
--					tst_resm(TFAIL, "Bad return from "
--						 "second child");
--					continue;
--				}
--				/* parent reads */
--				if (read(fildes, parchar, 1) <= 0) {
--					tst_resm(TFAIL, "Parent cannot read "
--						 "file");
--					continue;
--				} else {
--					write(fildes, parchar, 1);
--					if (parchar[0] != 'L') {
--						parchar[1] = '\n';
--						tst_resm(TFAIL, "Test failed");
--						continue;
--					}
--				}
--			}
--		}
--		tst_resm(TPASS, "test 1 PASSED");
-+	int status;
-+	char buff[DATASIZE];
-+	char data[DATASIZE];
-+
-+	fd = SAFE_OPEN(FILENAME, 0);
-+
-+	if (!SAFE_FORK()) {
-+		SAFE_LSEEK(fd, DATASIZE, SEEK_SET);
-+		exit(0);
-+	}
-+
-+	SAFE_WAIT(&status);
-+
-+	memset(buff, 'b', DATASIZE);
-+	SAFE_READ(0, fd, data, DATASIZE);
-+
-+	TST_EXP_EXPR(strncmp(buff, data, DATASIZE) == 0,
-+		"read first part of data from parent process");
-+
-+	if (!SAFE_FORK()) {
-+		memset(buff, 'c', DATASIZE);
-+		SAFE_READ(0, fd, data, DATASIZE);
-+
-+		TST_EXP_EXPR(strncmp(buff, data, DATASIZE) == 0,
-+			"read second part of data from child process");
-+
-+		exit(0);
- 	}
- 
--	close(fildes);
--	cleanup();
--	tst_exit();
-+	SAFE_CLOSE(fd);
- }
- 
- static void setup(void)
- {
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	umask(0);
--	TEST_PAUSE;
--	tst_tmpdir();
--
--	strcpy(fnamebuf, "fork10.");
--	sprintf(pidbuf, "%d", getpid());
--	strcat(fnamebuf, pidbuf);
-+	char buff[DATASIZE];
-+
-+	fd = SAFE_CREAT(FILENAME, 0600);
-+
-+	memset(buff, 'a', DATASIZE);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buff, DATASIZE);
-+
-+	memset(buff, 'b', DATASIZE);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buff, DATASIZE);
-+
-+	memset(buff, 'c', DATASIZE);
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, buff, DATASIZE);
-+
-+	SAFE_CLOSE(fd);
- }
- 
- static void cleanup(void)
- {
--	tst_rmdir();
-+	if (fcntl(fd, F_GETFD) > 0)
-+		SAFE_CLOSE(fd);
- }
-+
-+static struct tst_test test = {
-+	.forks_child = 1,
-+	.needs_tmpdir = 1,
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+};
+> From: Andrea Cervesato <andrea.cervesato@suse.com>
+>
+> We provided a different approach to exit_group() testing, spawning
+> multiple threads inside the child and checking if they get killed with
+> the parent process.
+>
+> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+> ---
+>  testcases/kernel/syscalls/exit_group/Makefile |   2 +
+>  .../kernel/syscalls/exit_group/exit_group01.c | 140 +++++++++++-------
+>  2 files changed, 88 insertions(+), 54 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/exit_group/Makefile b/testcases/kernel/syscalls/exit_group/Makefile
+> index 1273a4e9c..adbac3c51 100644
+> --- a/testcases/kernel/syscalls/exit_group/Makefile
+> +++ b/testcases/kernel/syscalls/exit_group/Makefile
+> @@ -3,6 +3,8 @@
+>  
+>  top_srcdir		?= ../../../..
+>  
+> +exit_group01: CFLAGS+=-pthread
+> +
+>  include $(top_srcdir)/include/mk/testcases.mk
+>  
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/exit_group/exit_group01.c b/testcases/kernel/syscalls/exit_group/exit_group01.c
+> index 5bf5b0218..fb65624ac 100644
+> --- a/testcases/kernel/syscalls/exit_group/exit_group01.c
+> +++ b/testcases/kernel/syscalls/exit_group/exit_group01.c
+> @@ -1,68 +1,100 @@
+> -/******************************************************************************
+> - * Copyright (c) Crackerjack Project., 2007                                   *
+> - * Ported to LTP by Manas Kumar Nayak <maknayak@in.ibm.com>                   *
+> - * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>                          *
+> - *                                                                            *
+> - * This program is free software;  you can redistribute it and/or modify      *
+> - * it under the terms of the GNU General Public License as published by       *
+> - * the Free Software Foundation; either version 2 of the License, or          *
+> - * (at your option) any later version.                                        *
+> - *                                                                            *
+> - * This program is distributed in the hope that it will be useful,            *
+> - * but WITHOUT ANY WARRANTY;  without even the implied warranty of            *
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  *
+> - * the GNU General Public License for more details.                           *
+> - *                                                                            *
+> - * You should have received a copy of the GNU General Public License          *
+> - * along with this program;  if not, write to the Free Software Foundation,   *
+> - * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           *
+> - *                                                                            *
+> - ******************************************************************************/
+> -
+> -#include <stdio.h>
+> -#include <errno.h>
+> -#include <linux/unistd.h>
+> -#include <sys/wait.h>
+> -
+> -#include "test.h"
+> -#include "safe_macros.h"
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) Crackerjack Project., 2007
+> + * Ported to LTP by Manas Kumar Nayak <maknayak@in.ibm.com>
+> + * Copyright (c) 2015 Linux Test Project
+> + * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
+> + * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * This test checks if exit_group() correctly ends a spawned child and all its
+> + * running threads.
+> + */
+> +
+> +#include <stdlib.h>
+> +#include "tst_safe_pthread.h"
+> +#include "tst_test.h"
+>  #include "lapi/syscalls.h"
+>  
+> -char *TCID = "exit_group01";
+> -int testno;
+> -int TST_TOTAL = 1;
+> +/* gittid is not defined by glibc */
+> +#define gettid() syscall(SYS_gettid)
+
+It was added in glibc 2.30. I don't know how old that is. It may need an
+entry in lapi.
+
+> +
+> +#define THREADS_NUM 10
+> +
+> +static pid_t *tids;
+>  
+> -static void verify_exit_group(void)
+> +static void *worker(void *arg)
+>  {
+> -	pid_t cpid, w;
+> -	int status;
+> +	int i = *((int *)arg);
+>  
+> -	cpid = fork();
+> -	if (cpid == -1)
+> -		tst_brkm(TFAIL | TERRNO, NULL, "fork failed");
+> +	tids[i] = gettid();
+>  
+> -	if (cpid == 0) {
+> -		TEST(tst_syscall(__NR_exit_group, 4));
+> -	} else {
+> -		w = SAFE_WAIT(NULL, &status);
+> -
+> -		if (WIFEXITED(status) && (WEXITSTATUS(status) == 4)) {
+> -			tst_resm(TPASS, "exit_group() succeeded");
+> -		} else {
+> -			tst_resm(TFAIL | TERRNO,
+> -				 "exit_group() failed (wait status = %d)", w);
+> -		}
+> +	TST_CHECKPOINT_WAKE(0);
+> +	pause();
+> +
+> +	return arg;
+> +}
+> +
+> +static void spawn_threads(void)
+> +{
+> +	pthread_t threads[THREADS_NUM];
+> +
+> +	for (int i = 0; i < THREADS_NUM; i++) {
+> +		SAFE_PTHREAD_CREATE(&threads[i], NULL, worker, (void *)&i);
+> +		TST_CHECKPOINT_WAIT(0);
+> +
+> +		/* wait for paused thread */
+> +		TST_PROCESS_STATE_WAIT(tids[i], 'S', 0);
+>  	}
+>  }
+>  
+> -int main(int ac, char **av)
+> +static void run(void)
+>  {
+> -	int lc;
+> +	pid_t pid;
+> +	int status;
+>  
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> +	pid = SAFE_FORK();
+> +	if (!pid) {
+> +		spawn_threads();
+>  
+> -	for (lc = 0; TEST_LOOPING(lc); lc++)
+> -		verify_exit_group();
+> +		TEST(tst_syscall(__NR_exit_group, 4));
+> +		if (TST_RET == -1)
+> +			tst_brk(TBROK | TERRNO, "exit_group() error");
+> +
+> +		return;
+> +	}
+> +
+> +	SAFE_WAITPID(pid, &status, 0);
+> +
+> +	for (int i = 0; i < THREADS_NUM; i++)
+> +		TST_EXP_FAIL(kill(tids[i], 0), ESRCH);
+
+I think there is still a possible race condition here. Especially if the
+children are schedule on a different CPU and that CPU is handling
+interrupts. AFAICT the kernel sends kill then schedules the
+children. I'm not sure what happens exactly, but it doesn't move the
+children to the current CPU and schedule them in serial before killing
+the parent.
+
+I'm not sure if waiting on the threads will work. Another option is to
+repeatedly check if the /proc/<pid> folder exists and what state the
+process is in if it does. You can't send kill repeatedly unless you know
+the signal you are sending won't kill the child.
+
+> +
+> +	TST_EXP_EXPR(WIFEXITED(status) && WEXITSTATUS(status) == 4,
+> +		"exit_group() succeeded");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tids = SAFE_MMAP(
+> +		NULL,
+> +		sizeof(pid_t) * THREADS_NUM,
+> +		PROT_READ | PROT_WRITE,
+> +		MAP_SHARED | MAP_ANONYMOUS,
+> +		-1, 0);
+> +}
+>  
+> -	tst_exit();
+> +static void cleanup(void)
+> +{
+> +	SAFE_MUNMAP(tids, sizeof(pid_t) * THREADS_NUM);
+>  }
+> +
+> +static struct tst_test test = {
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = run,
+> +	.forks_child = 1,
+> +	.needs_checkpoints = 1,
+> +};
+> -- 
+> 2.35.3
+
+
 -- 
-2.35.3
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
