@@ -4,71 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39492EEB58A
-	for <ltp@archiver.kernel.org>; Sat,  9 Sep 2023 11:30:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AADAEE7FF4
+	for <ltp@archiver.kernel.org>; Mon, 11 Sep 2023 07:13:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 180F73CC235
-	for <ltp@archiver.kernel.org>; Sat,  9 Sep 2023 13:30:20 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 79B8F3CE848
+	for <ltp@archiver.kernel.org>; Mon, 11 Sep 2023 09:13:56 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AD2183CB4B9
- for <ltp@lists.linux.it>; Sat,  9 Sep 2023 13:30:09 +0200 (CEST)
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com
- [IPv6:2607:f8b0:4864:20::636])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 4E9353CB386
+ for <ltp@lists.linux.it>; Mon, 11 Sep 2023 09:13:45 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9FF3E200BDE
- for <ltp@lists.linux.it>; Sat,  9 Sep 2023 13:30:08 +0200 (CEST)
-Received: by mail-pl1-x636.google.com with SMTP id
- d9443c01a7336-1bc0d39b52cso22158045ad.2
- for <ltp@lists.linux.it>; Sat, 09 Sep 2023 04:30:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1694259007; x=1694863807; darn=lists.linux.it;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:from:to:cc:subject:date:message-id:reply-to;
- bh=xosiTtYrnbxETl8XhYP+jc4qa8jqf2/CH1H6KoTmahI=;
- b=cWd7De+nja9AuzxsBMJvgBZF15OCJVdc2wI/QQ8GAs09qM5kP/8aRI/3bmDOSIVtU0
- clIOnAsKYtVUTX8p2Ue5Wmc6MGDjFURYEkA1s4J5bA6fNmf2tiYMSEKd9O4b5kuYc0RZ
- sAvDA/4F/bySGWlT9Pk8+oCM6wvaAMUgNFw7ce/CLRuNfr2Rl6S2dBCMTYOq5WYFVla2
- BsjIHTxjfOVsnDMycxJR0EXF5LWelrv5klrM629uVl9zqk2KHkpTrHZjHctRa9cAM0yR
- FYnMJcwuEljJy8Y2CRGP2Hkw7tVPp7ffa9IUzNLlPtCwJkvhdYiyjxwlO1YayTu65ioE
- 0pcw==
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id D4187601413
+ for <ltp@lists.linux.it>; Mon, 11 Sep 2023 09:13:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1694416422;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=lYVIzw94PQ2s1VkJS/asgTvZNF8VsZNq8TBL5TC0R80=;
+ b=P981fnuOg4E3PjKBXUV71cvH7jwvurfgejSu4+qGhxJhQVc6kVT3p4clZn32rhhMtci47K
+ oahxyAPsWmOFbm6AdNi+ge5Ymh8sriOdho2ia+Q4bEdAEWwaYgCJDbKPAcefFrpyxWsDMu
+ fRvm8wELDnF47/ydP3KrP6qBoUKKm/0=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-399-trkIjWnVP8-Lv92jSWR3Ig-1; Mon, 11 Sep 2023 03:13:41 -0400
+X-MC-Unique: trkIjWnVP8-Lv92jSWR3Ig-1
+Received: by mail-lf1-f72.google.com with SMTP id
+ 2adb3069b0e04-501c70f247cso4349366e87.1
+ for <ltp@lists.linux.it>; Mon, 11 Sep 2023 00:13:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1694259007; x=1694863807;
- h=content-transfer-encoding:mime-version:message-id:date:subject:to
- :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=xosiTtYrnbxETl8XhYP+jc4qa8jqf2/CH1H6KoTmahI=;
- b=ga97HC2z6RAeL0zcoVToj6I9j9wAAbk9Jgp4ZkMvpyuntORU+AGWaLCi1iCdQHErH1
- nZBBv1pLRnPl4VqzdgRlQODP+eTPjuGthvscJIHO9kf1ZtpcWeVU4481KhH072o4ngX7
- B1gYv02HqmGh9diJ7n1spAJk/qvuf0tCpjMTozvGgflAxNjXZYKDMiUGurksO1HciWre
- Iqy3aCKNPLZMWE77uXfN/xORzVI7qKbrPIKX04ZCUX4xW/xZ2M3klMPru3XxFEdi5nVL
- /rd+aVfa8JvSdjVI8f85pPH8DRm0OYRfJBZck1peVDahb3vhF6Poj5JiM56TaRnc7aY5
- XEtA==
-X-Gm-Message-State: AOJu0YyunAi6toQhidxunoxmF03dVqv38Px7MVj8RTIct8wNg74h3tMm
- 6q+b2JnkQ8qc1dkJ1xYgQrOclpgVz7I=
-X-Google-Smtp-Source: AGHT+IF9157Ab5G/MpuYEahiSfMwwFAnIMlLYZFCoiXVkDYgOFCGTO2HCrWi81Mn2QsGx6Vfbqko6g==
-X-Received: by 2002:a17:902:ecc4:b0:1c0:d8e8:38cd with SMTP id
- a4-20020a170902ecc400b001c0d8e838cdmr5457889plh.9.1694259006923; 
- Sat, 09 Sep 2023 04:30:06 -0700 (PDT)
-Received: from localhost.localdomain
- ([2405:6583:30c0:2d00:2ef0:5dff:fe9e:61e8])
- by smtp.gmail.com with ESMTPSA id
- jk6-20020a170903330600b001ab39cd875csm3106453plb.133.2023.09.09.04.30.06
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 09 Sep 2023 04:30:06 -0700 (PDT)
-From: Takuya Wakazono <pastalian46@gmail.com>
-To: ltp@lists.linux.it
-Date: Sat,  9 Sep 2023 20:30:04 +0900
-Message-ID: <20230909113004.21766-1-pastalian46@gmail.com>
-X-Mailer: git-send-email 2.42.0
+ d=1e100.net; s=20230601; t=1694416418; x=1695021218;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=lYVIzw94PQ2s1VkJS/asgTvZNF8VsZNq8TBL5TC0R80=;
+ b=bsRE3Vk/4x5tahEUSWDdD/yvQTSYvzx1TSK6fdhrf5b/of7vumG0VbMrYev/5fVnJV
+ fIT+DyXNT8Jy4afRuJEbd8jf7uLSYYs8ElwpYyogTh5wMV4x78Ce8bzJ1e8FOSh13kij
+ mgbHGmnKcrtl3plTFILu0/AYPLsSXgfq7vxMjV/HYC+WgzMMGWtgboegaa+64uemlg/C
+ zaPJLMYgVvjhFhLT6WXUJSEYCI4G0eNDbm0Z+THgdcFNgAPvmVnJV8eIqgwWJeGgaClJ
+ 3EfdSkannHcT1iE8rJ0rpJ33MXj0+qRCNs8xddye7/ug8tVCJWJ/pmhfXftTMuWsGq8A
+ k2/A==
+X-Gm-Message-State: AOJu0YwpnrkfhC0+/lcJ64qoMvun1saz8BEqhTL0DgV3316foxIBsodX
+ Hcbnomco8NPO5XlDRf/QcRgq9w3TLOquZJ40FjvDpxETw+WSfzRz11gKX6bBtSYvppzCcOlpXb6
+ krm3Gm6G7XP/rbT4ajlDrASNGUvXeGRpttvaaI98f
+X-Received: by 2002:ac2:57c5:0:b0:500:b74b:e53 with SMTP id
+ k5-20020ac257c5000000b00500b74b0e53mr5878642lfo.46.1694416418611; 
+ Mon, 11 Sep 2023 00:13:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEr5Go2bcxJhc4UEWI8bIHkQ5vvKiHvjzZHA51nXkDRhF0ZSJYkvC5zs6iJh4+MbLjHlyUM9Niwhe87OT4gyBg=
+X-Received: by 2002:ac2:57c5:0:b0:500:b74b:e53 with SMTP id
+ k5-20020ac257c5000000b00500b74b0e53mr5878625lfo.46.1694416418176; Mon, 11 Sep
+ 2023 00:13:38 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+References: <20230909113004.21766-1-pastalian46@gmail.com>
+In-Reply-To: <20230909113004.21766-1-pastalian46@gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 11 Sep 2023 15:13:25 +0800
+Message-ID: <CAEemH2f3-LqJ0M5yLoBPQErfkrWgELgiRZjzxGLJ0QrKMoof9Q@mail.gmail.com>
+To: Takuya Wakazono <pastalian46@gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] recvmsg01: Skip unsupported test
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] recvmsg01: Skip unsupported test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,44 +86,36 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since it's already stated that MSQ_ERRQUEUE + SOCK_STREAM is not
-supported on kernels < 3.17, let's actually skip this test.
-
-Fixes: 7d365d72ba71 ("recvmsg01: Refactor using new LTP API")
-Signed-off-by: Takuya Wakazono <pastalian46@gmail.com>
----
- testcases/kernel/syscalls/recvmsg/recvmsg01.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg01.c b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-index 2576e1572..80c1b3aa9 100644
---- a/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-+++ b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-@@ -220,14 +220,14 @@ static void run(unsigned int n)
- 	struct tcase *tc = &tcases[n];
- 	int ret = tc->exp_errno ? -1 : 0;
- 
--	setup_all();
--
- 	if ((tst_kvercmp(3, 17, 0) < 0)
- 			&& (tc->flags & MSG_ERRQUEUE)
- 			&& (tc->type & SOCK_STREAM)) {
- 		tst_res(TCONF, "MSG_ERRQUEUE requires kernel >= 3.17");
-+		return;
- 	}
- 
-+	setup_all();
- 	tc->setup(n);
- 
- 	iov[0].iov_base = tc->recv_buf;
--- 
-2.42.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gU2F0LCBTZXAgOSwgMjAyMyBhdCA3OjMw4oCvUE0gVGFrdXlhIFdha2F6b25vIDxwYXN0YWxp
+YW40NkBnbWFpbC5jb20+Cndyb3RlOgoKPiBTaW5jZSBpdCdzIGFscmVhZHkgc3RhdGVkIHRoYXQg
+TVNRX0VSUlFVRVVFICsgU09DS19TVFJFQU0gaXMgbm90Cj4gc3VwcG9ydGVkIG9uIGtlcm5lbHMg
+PCAzLjE3LCBsZXQncyBhY3R1YWxseSBza2lwIHRoaXMgdGVzdC4KPgo+IEZpeGVzOiA3ZDM2NWQ3
+MmJhNzEgKCJyZWN2bXNnMDE6IFJlZmFjdG9yIHVzaW5nIG5ldyBMVFAgQVBJIikKPiBTaWduZWQt
+b2ZmLWJ5OiBUYWt1eWEgV2FrYXpvbm8gPHBhc3RhbGlhbjQ2QGdtYWlsLmNvbT4KPiAtLS0KPiAg
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9yZWN2bXNnL3JlY3Ztc2cwMS5jIHwgNCArKy0tCj4g
+IDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4KPiBkaWZm
+IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9yZWN2bXNnL3JlY3Ztc2cwMS5jCj4g
+Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3JlY3Ztc2cvcmVjdm1zZzAxLmMKPiBpbmRleCAy
+NTc2ZTE1NzIuLjgwYzFiM2FhOSAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL3JlY3Ztc2cvcmVjdm1zZzAxLmMKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3JlY3Ztc2cvcmVjdm1zZzAxLmMKPiBAQCAtMjIwLDE0ICsyMjAsMTQgQEAgc3RhdGljIHZvaWQg
+cnVuKHVuc2lnbmVkIGludCBuKQo+ICAgICAgICAgc3RydWN0IHRjYXNlICp0YyA9ICZ0Y2FzZXNb
+bl07Cj4gICAgICAgICBpbnQgcmV0ID0gdGMtPmV4cF9lcnJubyA/IC0xIDogMDsKPgo+IC0gICAg
+ICAgc2V0dXBfYWxsKCk7Cj4gLQo+ICAgICAgICAgaWYgKCh0c3Rfa3ZlcmNtcCgzLCAxNywgMCkg
+PCAwKQo+ICAgICAgICAgICAgICAgICAgICAgICAgICYmICh0Yy0+ZmxhZ3MgJiBNU0dfRVJSUVVF
+VUUpCj4gICAgICAgICAgICAgICAgICAgICAgICAgJiYgKHRjLT50eXBlICYgU09DS19TVFJFQU0p
+KSB7Cj4gICAgICAgICAgICAgICAgIHRzdF9yZXMoVENPTkYsICJNU0dfRVJSUVVFVUUgcmVxdWly
+ZXMga2VybmVsID49IDMuMTciKTsKPiArICAgICAgICAgICAgICAgcmV0dXJuOwo+CgpJdCdkIGJl
+IGJldHRlciB0byB1c2UgdHN0X2JyayBUQ09ORiByYXRoZXIgdGhhbiB0c3RfcmVzICsgcmV0dXJu
+LgoKVGhlIHJlc3QgbG9va3MgZ29vZC4KUmV2aWV3ZWQtYnk6IExpIFdhbmcgPGxpd2FuZ0ByZWRo
+YXQuY29tPgoKCgo+ICAgICAgICAgfQo+Cj4gKyAgICAgICBzZXR1cF9hbGwoKTsKPiAgICAgICAg
+IHRjLT5zZXR1cChuKTsKPgo+ICAgICAgICAgaW92WzBdLmlvdl9iYXNlID0gdGMtPnJlY3ZfYnVm
+Owo+IC0tCj4gMi40Mi4wCj4KPgo+IC0tCj4gTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
+dHMubGludXguaXQvbGlzdGluZm8vbHRwCj4KPgoKLS0gClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApN
+YWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
