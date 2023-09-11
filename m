@@ -4,62 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9BCBEE57DF
-	for <ltp@archiver.kernel.org>; Mon, 11 Sep 2023 12:04:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42253EE57DF
+	for <ltp@archiver.kernel.org>; Mon, 11 Sep 2023 12:06:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5E71C3CE87C
-	for <ltp@archiver.kernel.org>; Mon, 11 Sep 2023 14:04:23 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 5C11F3CE850
+	for <ltp@archiver.kernel.org>; Mon, 11 Sep 2023 14:06:47 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9CECD3CB3D4
- for <ltp@lists.linux.it>; Mon, 11 Sep 2023 14:04:12 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 9515D3CB427
+ for <ltp@lists.linux.it>; Mon, 11 Sep 2023 14:06:37 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 891EF1001170
- for <ltp@lists.linux.it>; Mon, 11 Sep 2023 14:04:11 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D9A2421836;
- Mon, 11 Sep 2023 12:04:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1694433850; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=x6VHcMh3DsdwDwgu0YvcUPanl17QUiGRc1Vb1Y+3dm0=;
- b=bbsoGCgstFxWLtuXz8NZM2vXrLlNukJ8FmA9Pist0SD8FUavxGcIc1TrAuK1LqLGr+qyim
- +Iyj0XtG2lThgdipLyQHOh1TAWJ9nDvV+FB48IA+2FlZDkhUfMfwvORRzbQ4hIseia4SfF
- 9C/KqS++bRbs4CgDCP2PqWsRzfSZXck=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1694433850;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=x6VHcMh3DsdwDwgu0YvcUPanl17QUiGRc1Vb1Y+3dm0=;
- b=BrUWRlmxX4Zh+XFo6MmGzfAwEZabVh9aLA9VZGaCVK8Tbbjp18Yqv+tDTEZGaDWVVZzio0
- /XE/hg9Rd/6An0CA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C530E139CC;
- Mon, 11 Sep 2023 12:04:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id AVgkLzoC/2SrfAAAMHmgww
- (envelope-from <mkittler@suse.de>); Mon, 11 Sep 2023 12:04:10 +0000
-From: Marius Kittler <mkittler@suse.de>
-To: ltp@lists.linux.it
-Date: Mon, 11 Sep 2023 14:04:08 +0200
-Message-ID: <20230911120408.31921-1-mkittler@suse.de>
-X-Mailer: git-send-email 2.42.0
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id BB70A1A01081
+ for <ltp@lists.linux.it>; Mon, 11 Sep 2023 14:06:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1694433995;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jIJnG1t1+08Z4sXXNy+98n4Y7qrhzGFcPsGLUlSUSag=;
+ b=Ds/AwAoSo0zi0qVIs1/gsDWejmmArsbZPlzY6MlD3Y4mHbwUbUX1P5eqMLpWd8tneS3wLD
+ 5ZcGOdl/VbWXpKbU+RdYhIusVQILAXjqiAzkIUqN/58NG+5AUYaMzyW1XpM2HkH7mKfqIy
+ VmQsxN7p0jnNK/tHJH+lCxaUBBcgjtY=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-31-4-bS0vgqPxCxxtVOq104zA-1; Mon, 11 Sep 2023 08:06:33 -0400
+X-MC-Unique: 4-bS0vgqPxCxxtVOq104zA-1
+Received: by mail-lf1-f72.google.com with SMTP id
+ 2adb3069b0e04-500a6ae8392so4688688e87.0
+ for <ltp@lists.linux.it>; Mon, 11 Sep 2023 05:06:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1694433990; x=1695038790;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=jIJnG1t1+08Z4sXXNy+98n4Y7qrhzGFcPsGLUlSUSag=;
+ b=oEgvWuY9Nr27uXW9zXGs+LI+X61BSaLqCh8HNVMMWiJJ6/0FzDmuq4GgWMBJVIbXgQ
+ eEwhKTjba/+8zPmnRxzISUzAG4DZw199ZzbR1itS/5Xw9GLU2NgOE1ztYQZJS3eWnT86
+ /ZlCOjP1+cRo1GtLiXZyFsWz1AyaYXtEtUEmUCW/AV4QbphfyP8D0pM3TdO3gHhlnILd
+ 9WGDdADfPj/pothohbG61Gq0S2rmmJx6JWPV/8YFWLD7Jiy1iz73GdB0yryZuM21Eah8
+ M52JkVsfCBPS93j/0XICAti5gabw84o2JqzcSCv1vI0N+k3dpCkySIzqM3BGOnC3osbF
+ 5OWg==
+X-Gm-Message-State: AOJu0YyMcWeqWJRpwkR4P5A4q1nzj3PgJdzNrAdFs5Gif2+XeK7CYoMc
+ s1r0EXD4OESngXvXKyzBgLRMgEC7fsojRNqgskzQd+x28vz6IrwbBiNuqFXVrgnvkUoKEBzc1x6
+ hxdbRUSwmgGlOaj6Xxk/BL5EYm3kVp7wRSvDu9UfFnUk=
+X-Received: by 2002:ac2:5ddb:0:b0:4fb:a0f1:f8b8 with SMTP id
+ x27-20020ac25ddb000000b004fba0f1f8b8mr6754281lfq.63.1694433989987; 
+ Mon, 11 Sep 2023 05:06:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFpfyPF192r4DWP+bdA0jQ9JR4vfWb7V27es0WqB6acTIWXN2dfUWIzN6AKxf+DPiAXBllKpGoSd6dhm9q4G/s=
+X-Received: by 2002:ac2:5ddb:0:b0:4fb:a0f1:f8b8 with SMTP id
+ x27-20020ac25ddb000000b004fba0f1f8b8mr6754256lfq.63.1694433989625; Mon, 11
+ Sep 2023 05:06:29 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+References: <20230909113004.21766-1-pastalian46@gmail.com>
+ <CAEemH2f3-LqJ0M5yLoBPQErfkrWgELgiRZjzxGLJ0QrKMoof9Q@mail.gmail.com>
+ <CAAaAyq_1w2UqVSTkxy+x8CohiK2DEOHEjgVV5t7+gbL0s44VXQ@mail.gmail.com>
+In-Reply-To: <CAAaAyq_1w2UqVSTkxy+x8CohiK2DEOHEjgVV5t7+gbL0s44VXQ@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 11 Sep 2023 20:06:17 +0800
+Message-ID: <CAEemH2fH+dm127iCFOf_hm94jTUvWLt7OQh8K67eCZSVRaqByQ@mail.gmail.com>
+To: Takuya Wakazono <pastalian46@gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Avoid messing with system tty in ioctl01.c
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] recvmsg01: Skip unsupported test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,143 +88,22 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-* Use `openpty()` to create a new tty
-* Remove `-D` option
-* Remove requirement to run as root
-
-Signed-off-by: Marius Kittler <mkittler@suse.de>
----
- runtest/syscalls                           |  2 +-
- testcases/kernel/syscalls/ioctl/ioctl01.c  | 25 ++++++++++------------
- testcases/kernel/syscalls/ioctl/test_ioctl | 23 --------------------
- 3 files changed, 12 insertions(+), 38 deletions(-)
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b1125dd75..f999bd74f 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -557,10 +557,10 @@ init_module01 init_module01
- init_module02 init_module02
- 
- #Needs tty device.
--#ioctl01 ioctl01 -D /dev/tty0
- #ioctl02 ioctl02 -D /dev/tty0
- 
- # Introducing ioctl tests for all /dev/tty* devices
-+ioctl01      ioctl01
- ioctl01_02   test_ioctl
- ioctl03      ioctl03
- ioctl04      ioctl04
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl01.c b/testcases/kernel/syscalls/ioctl/ioctl01.c
-index 3ca8a9a3b..fe6a5591d 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl01.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl01.c
-@@ -23,11 +23,13 @@
- #include <fcntl.h>
- #include <stdio.h>
- #include <termios.h>
-+#include <pty.h>
- #include "tst_test.h"
- #include "lapi/ioctl.h"
- 
- #define	INVAL_IOCTL	9999999
- 
-+static int amaster, aslave;
- static int fd, fd_file;
- static int bfd = -1;
- 
-@@ -59,8 +61,6 @@ static struct tcase {
- 	{&fd, TCGETS, NULL, EFAULT}
- };
- 
--static char *device;
--
- static void verify_ioctl(unsigned int i)
- {
- 	TST_EXP_FAIL(ioctl(*(tcases[i].fd), tcases[i].request, tcases[i].s_tio),
-@@ -69,31 +69,28 @@ static void verify_ioctl(unsigned int i)
- 
- static void setup(void)
- {
--	if (!device)
--		tst_brk(TBROK, "You must specify a tty device with -D option");
-+	if (openpty(&amaster, &aslave, NULL, &termios, NULL) < 0) {
-+		tst_brk(TBROK | TERRNO, "unable to open pty");
-+	}
- 
--	fd = SAFE_OPEN(device, O_RDWR, 0777);
-+	fd = amaster;
- 	fd_file = SAFE_OPEN("x", O_CREAT, 0777);
- }
- 
- static void cleanup(void)
- {
--	if (fd > 0)
--		SAFE_CLOSE(fd);
--
-+	if (amaster > 0)
-+		SAFE_CLOSE(amaster);
-+	if (aslave > 0)
-+		SAFE_CLOSE(aslave);
- 	if (fd_file > 0)
- 		SAFE_CLOSE(fd_file);
- }
- 
- static struct tst_test test = {
--	.needs_root = 1,
- 	.needs_tmpdir = 1,
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test = verify_ioctl,
--	.tcnt = ARRAY_SIZE(tcases),
--	.options = (struct tst_option[]) {
--		{"D:", &device, "Tty device. For example, /dev/tty[0-9]"},
--		{}
--	}
-+	.tcnt = ARRAY_SIZE(tcases)
- };
-diff --git a/testcases/kernel/syscalls/ioctl/test_ioctl b/testcases/kernel/syscalls/ioctl/test_ioctl
-index 923275433..43836a229 100755
---- a/testcases/kernel/syscalls/ioctl/test_ioctl
-+++ b/testcases/kernel/syscalls/ioctl/test_ioctl
-@@ -34,29 +34,6 @@ has_tty()
-     return 1
- }
- 
--for tttype in `ls /dev/tty*`
--do
--device_no=${tttype#/dev/tty}
--case "$device_no" in
--[0-9]|[0-9][0-9])
--    has_tty $tttype
--    if [ $? -eq 0 ]; then
--        tst_resm TINFO "Skipping ioctl01 with $tttype"
--        continue
--    fi
--    tst_resm TINFO "Testing ioctl01 with $tttype"
--    ioctl01 -D $tttype
--    RC=$?
--    if  [ $RC -eq 0 ]
--    then
--     tst_resm TPASS "ioctl01 Passed with $tttype"
--    else
--     tst_resm TFAIL "ioctl01 Failed with $tttype"
--    fi
--echo;;
--esac
--done
--
- for tttype in `ls /dev/tty*`
- do
- device_no=${tttype#/dev/tty}
--- 
-2.42.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBTZXAgMTEsIDIwMjMgYXQgNjo1MOKAr1BNIFRha3V5YSBXYWthem9ubyA8cGFzdGFs
+aWFuNDZAZ21haWwuY29tPgp3cm90ZToKCj4gSGkgTGksCj4gVGhhbmtzIGZvciB0aGUgcmV2aWV3
+Lgo+Cj4gPiA+ICAgICAgICAgaWYgKCh0c3Rfa3ZlcmNtcCgzLCAxNywgMCkgPCAwKQo+ID4gPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAmJiAodGMtPmZsYWdzICYgTVNHX0VSUlFVRVVFKQo+ID4g
+PiAgICAgICAgICAgICAgICAgICAgICAgICAmJiAodGMtPnR5cGUgJiBTT0NLX1NUUkVBTSkpIHsK
+PiA+ID4gICAgICAgICAgICAgICAgIHRzdF9yZXMoVENPTkYsICJNU0dfRVJSUVVFVUUgcmVxdWly
+ZXMga2VybmVsID49IDMuMTciKTsKPiA+ID4gKyAgICAgICAgICAgICAgIHJldHVybjsKPiA+ID4K
+PiA+Cj4gPiBJdCdkIGJlIGJldHRlciB0byB1c2UgdHN0X2JyayBUQ09ORiByYXRoZXIgdGhhbiB0
+c3RfcmVzICsgcmV0dXJuLgo+Cj4gV291bGRuJ3QgdGhhdCBhYm9ydCBhbGwgc3Vic2VxdWVudCB0
+ZXN0IGNhc2VzPyBXZSBvbmx5IHdhbnQgdG8gc2tpcCB0aGUKPiBNU0dfRVJSUVVFVUUgdGVzdCBj
+YXNlcy4KPgoKQWgsIHllcywgSSBvdmVybG9va2VkIHRoYXQgdGNhc2VzIHRyYXZlcnNlLiBTb3Jy
+eX4KCgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczov
+L2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
