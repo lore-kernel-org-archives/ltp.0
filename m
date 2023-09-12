@@ -4,146 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CA60CA0EC9
-	for <ltp@archiver.kernel.org>; Tue, 12 Sep 2023 05:21:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAB98CA0ECA
+	for <ltp@archiver.kernel.org>; Tue, 12 Sep 2023 06:42:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D584A3CB383
-	for <ltp@archiver.kernel.org>; Tue, 12 Sep 2023 07:21:28 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 78E713CE7C0
+	for <ltp@archiver.kernel.org>; Tue, 12 Sep 2023 08:41:58 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2A3273C9961
- for <ltp@lists.linux.it>; Tue, 12 Sep 2023 07:21:16 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+ by picard.linux.it (Postfix) with ESMTPS id CDE8E3CB349
+ for <ltp@lists.linux.it>; Tue, 12 Sep 2023 08:41:45 +0200 (CEST)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3EA46600659
- for <ltp@lists.linux.it>; Tue, 12 Sep 2023 07:21:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1694496074; x=1726032074;
- h=date:from:to:cc:subject:message-id:in-reply-to: mime-version;
- bh=6HAPzzp+WI4hanldbanXXMFxECIt0KxYRSh1hUdSpKs=;
- b=dixQI1VemiouxLpYX0Xqw+0eYYxU9BfX9WorNNGnPDgOC0Ek/njsnotL
- QdpstjJCE7vOnFyfInqQ00zfHswQl5TTsKreJJq92iRH2pWCESOxHPtlA
- 938Z9h2O9vSzTYktbUZivn2RQe6zmMPQrr+5BbcLqgWr/1hsC72NyWv1E
- SdFuLqAovAmc6XaZ27n4iLo/HZKXT7Cx6Jz/qS346r+9wwLFyDpfpLTxP
- otjlPJf6Dv0xd4iH03SmMwUwGJpXm+Tlwvi5dyd+myPitDBR4IFoWKkO8
- rUtWygwbnf90G2ujQg/gIxom3citgzNWdE6J/7hfYvbh/OpYRafIoEqGe g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="378188105"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; d="scan'208";a="378188105"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Sep 2023 22:21:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="772856959"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; d="scan'208";a="772856959"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
- by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
- 11 Sep 2023 22:21:09 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 11 Sep 2023 22:21:09 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 11 Sep 2023 22:21:08 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 11 Sep 2023 22:21:08 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.170)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 11 Sep 2023 22:21:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lViBslY/x7ETo0XgoNK14FLqH2z8kDGbfYMQqrOlLkywnLLVJGMYyk1e9eYjk1oANXJnMDSnJO0RJiVvNZ91nl/TgvrqKSEO+EAcaAobjhxKWYmi3CQXrxiBBUruXCFyxFEKcAHcExS0P2BoGP0mQe81acSDtfEBlxII54DTdP9TKsgAFoegi9kOIy13BLrGdMIFGyqZfvi63dKwtylCNEzIFOcyOHei6oW4zWr2Njep+fzL1S1vX5SwcfqyaMWdOCx2bMIXhwcpPVN6gKCPHFR0Noo7ucvcWUiZH45gkpKT/n1i74sHhQ2Eg8jsPO+deSxrl/Jne6XtSCHdR4yAiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZGiRJKuXviff+W0aA2ayxpWjQJZ21fKOdEEPH4nvVKs=;
- b=g4zWg4eH9Vjf5g4ky6myfmS8LWpV8yvRFTLl8SqtctGQgJzOuOgr9/FlAnVlHWmFjafxEVM3Wh48jg1u67Kg5tC1PnNijQmtmRwgM+TDQ+v0uVVmdS3NoAcwwETBW+ES+cwHqEJAqwg2kVCsADxBvi0DkNHe+sbCqtEROhIFYBxpQyv1wzREdoWz70xHauKM+vEd7eHravRWtd6VUyBAKDaDkvlp2BBOPhPsOva1nP+lia/0Gkw/FbF1wideJzOcJGDrmyWnwPuhbHLqeav8eEG/U31609WMNKpEXUFRPxSnR12A6eJC+spuaiNy2qEAIeQ9vKmztVq2A687Xhg4+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
- by BN9PR11MB5226.namprd11.prod.outlook.com (2603:10b6:408:133::6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Tue, 12 Sep
- 2023 05:21:06 +0000
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::73c6:1231:e700:924]) by PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::73c6:1231:e700:924%4]) with mapi id 15.20.6768.029; Tue, 12 Sep 2023
- 05:21:06 +0000
-Date: Tue, 12 Sep 2023 13:20:55 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: Edward AD <eadavis@sina.com>
-Message-ID: <202309121302.8864096c-oliver.sang@intel.com>
-Content-Disposition: inline
-In-Reply-To: <20230906061902.591996-1-eadavis@sina.com>
-X-ClientProxiedBy: SI2PR01CA0019.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::12) To PH8PR11MB6779.namprd11.prod.outlook.com
- (2603:10b6:510:1ca::17)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 94AF3600BE3
+ for <ltp@lists.linux.it>; Tue, 12 Sep 2023 08:41:42 +0200 (CEST)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 38C6aktQ003944
+ for <ltp@lists.linux.it>; Tue, 12 Sep 2023 06:41:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=ild+R6cbh994SkW9cTxxOTtQLGNVampPXig9gj+ikrY=;
+ b=jl9/+aGrGjAR5WSLxetJAi8vdZYtqilBaYomOo+89MaRhHSqyQLy1e7v9Y803puJSjML
+ 5k4TC4AYbe0UNABdfvMIBSH3HaoYbmDPz0vTrQgUfD67OZURGG9X7ieKlIha6degO+QE
+ BBg2MyNZHdLPnho6q/lWdoNteeY3s3oy2QS//CTGHEmGVEze5CCM6eEcoZXfR3E82pWt
+ rKjNzFgV4HEc8aQ/tURorJlzaEzAHTLathPINfSWliGadIrLWIjezXmy6F8JfiY+rERo
+ c48TmjxoVMH0wi1rLOi6OdeVRBpfIUYPyHQKNtlhRrCYSQBQsv6e8g5UGP3dnLciD1vz PA== 
+Received: from ppma11.dal12v.mail.ibm.com
+ (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2hv51fyt-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Tue, 12 Sep 2023 06:41:40 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+ by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 38C5Ao2c011959
+ for <ltp@lists.linux.it>; Tue, 12 Sep 2023 06:41:39 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+ by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t15r1rd5m-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Tue, 12 Sep 2023 06:41:38 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
+ [10.20.54.106])
+ by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 38C6fZ5b27460282
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 12 Sep 2023 06:41:36 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id D894E2004E;
+ Tue, 12 Sep 2023 06:41:35 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id F208720040;
+ Tue, 12 Sep 2023 06:41:34 +0000 (GMT)
+Received: from ltcever7x1-lp6.aus.stglabs.ibm.com (unknown [9.53.168.26])
+ by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Tue, 12 Sep 2023 06:41:34 +0000 (GMT)
+From: Samir Mulani <samir@linux.vnet.ibm.com>
+To: ltp@lists.linux.it
+Date: Tue, 12 Sep 2023 01:41:26 -0500
+Message-Id: <20230912064126.3350-1-samir@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|BN9PR11MB5226:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3e91ba84-27c4-4a37-a794-08dbb35010f8
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vUIqxJj5NaHXk2c4BUvlA35X43I9mBfb9FJpAaUvF6ABE1fyC2ppGxPLjEi4tQ+VD3qq4t2WZfONhtqFGvp4xZNcNSQc+ybL8iYI+P3D7i9z14YeuB/0HbUkYptIG1T/5+YamDboZHn9CUWA9tJcQuuZ1PHjlzQwjk2ymuVKslbJxJHZ4z4jM/nXTgVfs54tr9xKpwzA5g70jLA1jiY+i6+PU1Io7xmzQEhzcs84wgmlE3rQfld4sbj7zWAU7IhvX2mRuM3I6xIGadyA2i3O2sYRkdCNIo2FJ+uzxIqxYKm0wHtk36GhGdqvdw0AHs3fF+RIWVO5JgfDwE+pIjo4MGgL0iyRVV4Ib9MrDzb3+iVxrXj+nZ509YuliG4tkiifbz30DegXdgSn56rgMPm++xpHtaGexCQogObXrGN99LTkwiiLsQIrLibZpyUjqJno194Bh3gP6oIfSohKbeyLRw84YJejVDaftWvdpqsf+SHMHjMQ/CHHfnshriXfQ20ip7009+IAbxZVvQoq2GPoIzsIdur5SNSvSqvsfA823Ocfnb57YXrZ6Ybq1KcSZP2nawFef8wN5j5EKpHIBLcAQg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:PH8PR11MB6779.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(346002)(376002)(396003)(366004)(136003)(39860400002)(1800799009)(186009)(451199024)(26005)(2906002)(83380400001)(6486002)(86362001)(6506007)(107886003)(2616005)(6512007)(6666004)(82960400001)(38100700002)(1076003)(966005)(478600001)(36756003)(5660300002)(4326008)(8676002)(8936002)(66476007)(66556008)(316002)(6916009)(66946007)(41300700001);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+DX5M2Im76JYoAUL+XJ+3nnDJTI45X8tG5+LwuTRedS1mHt5ty/XcZElX1Ww?=
- =?us-ascii?Q?lbxFrAmgIJgqmo82U+RuB+cpj2WlgQsz1kKICZJjgxE3A7kWbVTPkfAnMB+2?=
- =?us-ascii?Q?yKE5t7KnbKDxakhdnkNjFpdp0DmwEsoTqrFEDVzNu6rvh6CMw3fYN0DvMNWc?=
- =?us-ascii?Q?ADwyiALohmsoJpaEqrHeTEFZQXKi/c9U0q5J3PbX7T11TS55apQkfHI///b/?=
- =?us-ascii?Q?3QtnRAIGJZ46SR+shwl0RjJiR5JXM3sOggc++XrMXO2SjcQfnS+O3mBG0ZYE?=
- =?us-ascii?Q?uatd6MgSNmA36UpYeTlir8rDAAXch56ZGEh288XnyU0A8dRiTIzcqufF2jmr?=
- =?us-ascii?Q?AfgBZFhhO92ifTvh++XZ9cWCmg8dM1buJXV2nzE/GMv8/Rt8CeOvHRJACTMT?=
- =?us-ascii?Q?mB2BzPkdHPTwmlHYNONqdC4KHTU7G6LGx5C9WXCYqlc4bzzlLDFcunNUunmj?=
- =?us-ascii?Q?ChYvbZK/ij4dyJ/8uq/+RSO4rOji+l35Q7xu8y8aMgY0XYLoOAJNOjqmYwor?=
- =?us-ascii?Q?QAzbmdinr3j5KqTCd+gG9QmZKnJzzneOPqFi7bjTaEuQFrO7SJCeuWnsuSq0?=
- =?us-ascii?Q?l6coezk4j7LrHGwdIk87/thIvi0ar+HeDtC9FL8NczhPBPfTs9pWO7xolCUh?=
- =?us-ascii?Q?dyuR9VOj5h6IwLJu5KB4196zgPGu5fNPe2M29rnofHcGhEr/9asCDoDFb4VR?=
- =?us-ascii?Q?xHK6vu0Q8u9w49jl22kf9Q063WbhGqjaqqtYWN9vtije/JKQfQtw3rN8dskI?=
- =?us-ascii?Q?HD/VVA4SHZeTY/tWrQB2DbfCLlvXdKsp6rux9QK0iq77gIub8fyQ022PjX2K?=
- =?us-ascii?Q?A5DCb6gwWACu3jfkvWmSM4CWxSWxKDmwIgRhrl3MBQDibvEIPo4ns0xf2sJy?=
- =?us-ascii?Q?GdlXpLOR4AUlZLj8A3siu09WngrLd2kREEpVV8RBUc1ZgeYsaA+hl5rk4kFr?=
- =?us-ascii?Q?oNfZWez3iYg3OxcnQWz3AwMDcxcAqBpB5neUKlJwhQzWl7VkHeH56ztpIvHB?=
- =?us-ascii?Q?5NJ4Qzo9I6Es8LY+MZNlk+AZ9e74OI3qAB+IPoGj8aQ4gTqpJLDlv1pV4YwK?=
- =?us-ascii?Q?Iyk1PAw2g5OvW0bzst8HGnoy8IvMT0Iv3qxoRPFzA+TC0M0D5mk+XgcyAO+G?=
- =?us-ascii?Q?vhZ9ilOFotdrFBjoUIl/VD5XgueEapzKPV1YlYO7b+SmJSOVyteAXKg7QMgk?=
- =?us-ascii?Q?UmXRyycJ6d1zfVu5H/A8Kydlnz7S6b/BHbsqb71Rh0Ut7Vh6gi+OdGBNqYYn?=
- =?us-ascii?Q?4jEpBawOl+XIP1h3LHNBRWvuC9EEXTjpQEZjHokxw/dK86OLFLSqCW5sEUbZ?=
- =?us-ascii?Q?KfmGcuu4ks3twqNaaqAoxJ+wOUDHCBuORuHPl+mFlLHxw/fz75u1iVa19QXA?=
- =?us-ascii?Q?kABMCYX0nP+dVmnfcBcld+HRWiUw911xv63mt39qWGMxyqL8sxIt/a/dCy8O?=
- =?us-ascii?Q?GIYR9hIbW8iVXB7Ewke3NHOedUmTBKltzD0P2yzZlU9s1xsibEpQaELno56+?=
- =?us-ascii?Q?ojpzhkHIZDKrvINPyfn9b5jLG8+AOAyoXDln8sTjviEWfiWrMKJxGbF6m/QE?=
- =?us-ascii?Q?frKdx2Ad7K9lt2on84YHZ6zQ5GPPEIU0TRWK4klhaS4he2HlyJ8xy4yDm5bk?=
- =?us-ascii?Q?mA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e91ba84-27c4-4a37-a794-08dbb35010f8
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 05:21:06.7651 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: awq3kra8p3o/Y6HBa+fDo7tnQTesVVMLj7bltgrUOMhNeOUGhwFRDckADJDOqVugjSrzo05rz7kNh3zCjY7jXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5226
-X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: o_tI6kuBBNI_2ffd_k3eraD01uL6QmQj
+X-Proofpoint-GUID: o_tI6kuBBNI_2ffd_k3eraD01uL6QmQj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_03,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 adultscore=0
+ malwarescore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 bulkscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309120054
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] mm: as the same logic with queue_pages_range
+Subject: [LTP] [PATCH] Migrating the
+ libhugetlbfs/testcases/alloc-instantiate-race.c test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -155,89 +96,322 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com, lkp@intel.com,
- syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, oliver.sang@intel.com, oe-lkp@lists.linux.dev,
- akpm@linux-foundation.org, ltp@lists.linux.it
+Cc: Samir Mulani <samir@linux.vnet.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+This test is designed to detect a kernel allocation race introduced
+with hugepage demand-faulting.  The problem is that no lock is held
+between allocating a hugepage and instantiating it in the
+pagetables or page cache index.  In between the two, the (huge)
+page is cleared, so there's substantial time.  Thus two processes
+can race instantiating the (same) last available hugepage - one
+will fail on the allocation, and thus cause an OOM fault even
+though the page it actually wants is being instantiated by the
+other racing process.
 
+Signed-off-by: Samir Mulani <samir@linux.vnet.ibm.com>
+---
+ .../kernel/mem/hugetlb/hugemmap/hugemmap36.c  | 286 ++++++++++++++++++
+ 1 file changed, 286 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
 
-Hello,
-
-kernel test robot noticed "ltp.vma02.fail" on:
-
-commit: 8dfdaf99160833af1a0a4ffef60c94627c77025b ("[PATCH] mm: as the same logic with queue_pages_range")
-url: https://github.com/intel-lab-lkp/linux/commits/Edward-AD/mm-as-the-same-logic-with-queue_pages_range/20230906-142110
-base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-everything
-patch link: https://lore.kernel.org/all/20230906061902.591996-1-eadavis@sina.com/
-patch subject: [PATCH] mm: as the same logic with queue_pages_range
-
-in testcase: ltp
-version: ltp-x86_64-14c1f76-1_20230715
-with following parameters:
-
-	disk: 1HDD
-	test: mm-00/vma02
-
-
-
-compiler: gcc-12
-test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz (Kaby Lake) with 32G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202309121302.8864096c-oliver.sang@intel.com
-
-
-
-Running tests.......
-<<<test_start>>>
-tag=vma02 stime=1694438526
-cmdline="vma02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-vma02       0  TINFO  :  pid = 3639 addr = 0x7f5202dd6000
-vma02       0  TINFO  :  start = 0x7f5202dd6000, end = 0x7f5202dd7000
-vma02       0  TINFO  :  start = 0x7f5202dd7000, end = 0x7f5202dd8000
-vma02       0  TINFO  :  start = 0x7f5202dd8000, end = 0x7f5202dd9000
-vma02       1  TFAIL  :  vma02.c:144: >1 unmerged VMAs.
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
-cutime=0 cstime=7
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: 20230516-75-g2e582e743
-
-       ###############################################################
-
-            Done executing testcases.
-            LTP Version:  20230516-75-g2e582e743
-       ###############################################################
-
-
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20230912/202309121302.8864096c-oliver.sang@intel.com
-
-
-
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+new file mode 100644
+index 000000000..7135af8a4
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+@@ -0,0 +1,286 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2005-2006 IBM Corporation
++ * Author: David Gibson & Adam Litke
++ */
++
++/*\
++ * [Description]
++ *
++ * Test Name: alloc-instantiate-race.c
++ *
++ * This test is designed to detect a kernel allocation race introduced
++ * with hugepage demand-faulting.  The problem is that no lock is held
++ * between allocating a hugepage and instantiating it in the
++ * pagetables or page cache index.  In between the two, the (huge)
++ * page is cleared, so there's substantial time.  Thus two processes
++ * can race instantiating the (same) last available hugepage - one
++ * will fail on the allocation, and thus cause an OOM fault even
++ * though the page it actually wants is being instantiated by the
++ * other racing process.
++ */
++
++#define _GNU_SOURCE
++#include <stdio.h>
++#include <pthread.h>
++#include "tst_safe_pthread.h"
++#include "hugetlb.h"
++#define SYSFS_CPU_ONLINE_FMT	"/sys/devices/system/cpu/cpu%d/online"
++#define MNTPOINT "hugetlbfs/"
++unsigned long totpages;
++static long hpage_size;
++char *str_op;
++int race_type;
++static int child1, child2;
++static pthread_t thread1, thread2;
++
++struct racer_info {
++	void *p; /* instantiation address */
++	int cpu;
++	int race_type;
++	volatile int *mytrigger;
++	volatile int *othertrigger;
++	int status;
++};
++
++static int one_racer(void *p, int cpu,
++		     volatile int *mytrigger, volatile int *othertrigger)
++{
++	volatile int *pi = p;
++	cpu_set_t cpuset;
++	int err;
++
++	/* Split onto different cpus to encourage the race */
++	CPU_ZERO(&cpuset);
++	CPU_SET(cpu, &cpuset);
++
++	err = sched_setaffinity(gettid(), CPU_SETSIZE/8, &cpuset);
++	if (err != 0)
++		tst_res(TFAIL,"sched_setaffinity(cpu%d): %s", cpu, strerror(errno));
++
++	/* Ready.. */
++	*mytrigger = 1;
++	/* Set.. */
++	while (! *othertrigger)
++		;
++
++	/* Instantiate! */
++	*pi = 1;
++
++	return 0;
++}
++
++static void proc_racer(void *p, int cpu,
++		       volatile int *mytrigger, volatile int *othertrigger)
++{
++	exit(one_racer(p, cpu, mytrigger, othertrigger));
++}
++
++static void *thread_racer(void *info)
++{
++	struct racer_info *ri = info;
++	one_racer(ri->p, ri->cpu, ri->mytrigger, ri->othertrigger);
++	return ri;
++}
++
++void check_online_cpus(int online_cpus[], int nr_cpus_needed)
++{
++	char cpu_state, path_buf[64];
++	int total_cpus, cpu_idx, fd, ret, i;
++
++	total_cpus = get_nprocs_conf();
++	cpu_idx = 0;
++
++	if (get_nprocs() < nr_cpus_needed)
++		tst_res(TFAIL,"Atleast online %d cpus are required", nr_cpus_needed);
++
++	for (i = 0; i < total_cpus && cpu_idx < nr_cpus_needed; i++) {
++		errno = 0;
++		sprintf(path_buf, SYSFS_CPU_ONLINE_FMT, i);
++		fd = open(path_buf, O_RDONLY);
++		if (fd < 0) {
++			/* If 'online' is absent, the cpu cannot be offlined */
++			if (errno == ENOENT) {
++				online_cpus[cpu_idx] = i;
++				cpu_idx++;
++				continue;
++			} else {
++				tst_res(TFAIL,"Unable to open %s: %s", path_buf,
++				     strerror(errno));
++			}
++		}
++
++		ret = read(fd, &cpu_state, 1);
++		if (ret < 1)
++			tst_res(TFAIL,"Unable to read %s: %s", path_buf,
++			     strerror(errno));
++
++		if (cpu_state == '1') {
++			online_cpus[cpu_idx] = i;
++			cpu_idx++;
++		}
++
++		if (fd >= 0)
++			SAFE_CLOSE(fd);
++	}
++
++	if (cpu_idx < nr_cpus_needed)
++		tst_res(TFAIL,"Atleast %d online cpus were not found", nr_cpus_needed);
++}
++
++static void run_race(void *syncarea, int race_type)
++{
++	volatile int *trigger1, *trigger2;
++	int fd;
++	void *p, *tret1, *tret2;
++	int status1, status2;
++	int online_cpus[2];
++
++	check_online_cpus(online_cpus, 2);
++	memset(syncarea, 0, sizeof(*trigger1) + sizeof(*trigger2));
++	trigger1 = syncarea;
++	trigger2 = trigger1 + 1;
++
++	/* Get a new file for the final page */
++	fd = tst_creat_unlinked(MNTPOINT, 0);
++	tst_res(TINFO,"Mapping final page.. ");
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, race_type, fd, 0);
++	if (race_type == MAP_SHARED) {
++		child1 = SAFE_FORK();
++		if (child1 == 0)
++			proc_racer(p, online_cpus[0], trigger1, trigger2);
++
++		child2 = SAFE_FORK();
++		if (child2 == 0)
++			proc_racer(p, online_cpus[1], trigger2, trigger1);
++
++		/* wait() calls */
++		SAFE_WAITPID(child1, &status1, 0);
++		tst_res(TINFO,"Child 1 status: %x\n", status1);
++
++
++		SAFE_WAITPID(child2, &status2, 0);
++		tst_res(TINFO,"Child 2 status: %x\n", status2);
++
++		if (WIFSIGNALED(status1))
++			tst_res(TFAIL,"Child 1 killed by signal %s",
++			strsignal(WTERMSIG(status1)));
++		if (WIFSIGNALED(status2))
++			tst_res(TFAIL,"Child 2 killed by signal %s",
++			strsignal(WTERMSIG(status2)));
++
++		status1 = WEXITSTATUS(status1);
++		status2 = WEXITSTATUS(status2);
++	} else {
++		struct racer_info ri1 = {
++			.p = p,
++			.cpu = online_cpus[0],
++			.mytrigger = trigger1,
++			.othertrigger = trigger2,
++		};
++		struct racer_info ri2 = {
++			.p = p,
++			.cpu = online_cpus[1],
++			.mytrigger = trigger2,
++			.othertrigger = trigger1,
++		};
++		
++		SAFE_PTHREAD_CREATE(&thread1, NULL, thread_racer, &ri1);
++		SAFE_PTHREAD_CREATE(&thread2, NULL, thread_racer, &ri2);
++		SAFE_PTHREAD_JOIN(thread1, &tret1);
++		if (tret1 != &ri1)
++			tst_res(TFAIL,"Thread 1 returned %p not %p, killed?\n",
++			     tret1, &ri1);
++		SAFE_PTHREAD_JOIN(thread2, &tret2);
++		if (tret2 != &ri2)
++			tst_res(TFAIL,"Thread 2 returned %p not %p, killed?\n",
++			     tret2, &ri2);
++		status1 = ri1.status;
++		status2 = ri2.status;
++	}
++
++	if (status1 != 0)
++		tst_res(TFAIL,"Racer 1 terminated with code %d", status1);
++
++	if (status2 != 0)
++		tst_res(TFAIL,"Racer 2 terminated with code %d", status2);
++
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
++
++static void run_test(void)
++{
++	int fd;
++	long unsigned int i;
++	void *p, *q;
++	fd = tst_creat_unlinked(MNTPOINT, 0);
++	/* Get a shared normal page for synchronization */
++	tst_res(TINFO, "Mapping synchronization area..");
++	q = SAFE_MMAP(NULL, getpagesize(), PROT_READ|PROT_WRITE,
++		 MAP_SHARED|MAP_ANONYMOUS, -1, 0);
++	
++	tst_res(TINFO,"done\n");
++	tst_res(TINFO,"Mapping %ld/%ld pages.. ", totpages-1, totpages);
++	
++	p = SAFE_MMAP(NULL, (totpages-1)*hpage_size, PROT_READ|PROT_WRITE,
++		 MAP_SHARED, fd, 0);
++
++	/* Allocate all save one of the pages up front */
++	tst_res(TINFO,"instantiating.. ");
++	for (i = 0; i < (totpages - 1); i++)
++		memset(p + (i * hpage_size), 0, sizeof(int));
++
++	tst_res(TINFO,"done\n");
++
++	run_race(q, race_type);
++	tst_res(TPASS,"Test passed..!!");
++
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
++void setup(void)
++{
++	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
++	hpage_size = tst_get_hugepage_size();
++	if (str_op)
++	{	
++		if (strcmp(str_op, "shared") == 0) {
++			race_type = MAP_SHARED;
++			} else if (strcmp(str_op, "private") == 0) {
++				race_type = MAP_PRIVATE;
++				} else {
++					tst_res(TFAIL,"Usage: alloc-instantiate-race <private|shared>");
++		}
++	}
++	else{
++		tst_res(TFAIL,"Usage: alloc-instantiate-race <private|shared>");
++	}	
++}
++
++void cleanup(void)
++{
++	if (child1)
++		SAFE_KILL(child1, SIGKILL);
++	if (child2)
++		SAFE_KILL(child2, SIGKILL);
++}
++
++
++static struct tst_test test = {
++	.options = (struct  tst_option[]){
++		{"m:", &str_op, "Usage: alloc-instantiate-race <private|shared>"},
++		{}
++	},
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.hugepages = {2, TST_NEEDS},
++	.forks_child = 1,
++};
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
 
 
 -- 
