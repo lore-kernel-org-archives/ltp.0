@@ -4,87 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAB98CA0ECA
-	for <ltp@archiver.kernel.org>; Tue, 12 Sep 2023 06:42:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41810CA0ECA
+	for <ltp@archiver.kernel.org>; Tue, 12 Sep 2023 07:56:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 78E713CE7C0
-	for <ltp@archiver.kernel.org>; Tue, 12 Sep 2023 08:41:58 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id A9B8E3CB839
+	for <ltp@archiver.kernel.org>; Tue, 12 Sep 2023 09:56:22 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CDE8E3CB349
- for <ltp@lists.linux.it>; Tue, 12 Sep 2023 08:41:45 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 31B173CA45A
+ for <ltp@lists.linux.it>; Tue, 12 Sep 2023 09:56:11 +0200 (CEST)
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com
+ [IPv6:2607:f8b0:4864:20::934])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 94AF3600BE3
- for <ltp@lists.linux.it>; Tue, 12 Sep 2023 08:41:42 +0200 (CEST)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38C6aktQ003944
- for <ltp@lists.linux.it>; Tue, 12 Sep 2023 06:41:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=ild+R6cbh994SkW9cTxxOTtQLGNVampPXig9gj+ikrY=;
- b=jl9/+aGrGjAR5WSLxetJAi8vdZYtqilBaYomOo+89MaRhHSqyQLy1e7v9Y803puJSjML
- 5k4TC4AYbe0UNABdfvMIBSH3HaoYbmDPz0vTrQgUfD67OZURGG9X7ieKlIha6degO+QE
- BBg2MyNZHdLPnho6q/lWdoNteeY3s3oy2QS//CTGHEmGVEze5CCM6eEcoZXfR3E82pWt
- rKjNzFgV4HEc8aQ/tURorJlzaEzAHTLathPINfSWliGadIrLWIjezXmy6F8JfiY+rERo
- c48TmjxoVMH0wi1rLOi6OdeVRBpfIUYPyHQKNtlhRrCYSQBQsv6e8g5UGP3dnLciD1vz PA== 
-Received: from ppma11.dal12v.mail.ibm.com
- (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2hv51fyt-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Tue, 12 Sep 2023 06:41:40 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
- by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38C5Ao2c011959
- for <ltp@lists.linux.it>; Tue, 12 Sep 2023 06:41:39 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
- by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t15r1rd5m-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Tue, 12 Sep 2023 06:41:38 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com
- [10.20.54.106])
- by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 38C6fZ5b27460282
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 12 Sep 2023 06:41:36 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id D894E2004E;
- Tue, 12 Sep 2023 06:41:35 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id F208720040;
- Tue, 12 Sep 2023 06:41:34 +0000 (GMT)
-Received: from ltcever7x1-lp6.aus.stglabs.ibm.com (unknown [9.53.168.26])
- by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Tue, 12 Sep 2023 06:41:34 +0000 (GMT)
-From: Samir Mulani <samir@linux.vnet.ibm.com>
-To: ltp@lists.linux.it
-Date: Tue, 12 Sep 2023 01:41:26 -0500
-Message-Id: <20230912064126.3350-1-samir@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.39.3
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0B1A31400C47
+ for <ltp@lists.linux.it>; Tue, 12 Sep 2023 09:56:11 +0200 (CEST)
+Received: by mail-ua1-x934.google.com with SMTP id
+ a1e0cc1a2514c-79414715edeso1547557241.0
+ for <ltp@lists.linux.it>; Tue, 12 Sep 2023 00:56:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1694505369; x=1695110169; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=KHya+7F1DBe8l/ePdcCte4Kk0bJRNucDG9gM+2FXrkk=;
+ b=CvVkusjZBVe2H4GnlB0j5mTU1XWHXgD2fuqwQ5Qiy2kDAOaN4+DqP9Uffg+RabxoUD
+ 4FGijWjIbdy1JUO2IAahKg4DijP4EWvqJjWMEpnUIYjLbyUFBv+4D5ki2oGxYRNEpjNi
+ 6gyTOnbs5SU7kIInl8YRHt0YOZ53dSkEgzm++G3oejPOH0RRThK0vOZu33dp9rsaaYVp
+ TXXd0cUFRZ3Vjk2GxkR5twd29fmw8E1hhL9xC9iAJ0vLHABg5OvyRnkOfFIH0xjiz35i
+ QOInoywwS7cjL/+YMWkR6dW/xMA92DyCrs4cJWKhS8F6aq4wQHhiinLB6P0G/ti0cRpZ
+ hxjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1694505369; x=1695110169;
+ h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=KHya+7F1DBe8l/ePdcCte4Kk0bJRNucDG9gM+2FXrkk=;
+ b=L7Ho1A5voZuW85+uk+3lP6aH5Tm+qrXxM0piQARTl6ij2IC3BwvytKTGe9DeKHa8Hg
+ i3TBuVm8+RAmHJ9U2KI4QmPGGx7UalSSerkgvyFq+poAvUQX1juU+YDnase8q23TiHnE
+ s40Y0nSAynNnUN6WlBifnXtw4WJFt+TMvgkrNFHHhqrNTeuiqR+OVT5p4jo57Ay46xnB
+ Ja7T7v4Bh3wukeJ/RKfi39mw0Y/WbKo/4ARpJ3P7LrM9hkmNSnYaB4hk3MYh0ONMHPS9
+ 9LbF7UkcIz77khq/VbScRZuGoVfE/aZUC3mCfXjKf6FByuGpsEgOc0gouXbGcVddE0Fa
+ 8VnQ==
+X-Gm-Message-State: AOJu0Yzocjefsfqb32JYZZbMcaiaDKEGpcuppNfTXhFnUNYjH5rYlZOQ
+ CX3o6HXtEhouu8+vgMrYY4aqtMThjhFJFnBRJEOmqA==
+X-Google-Smtp-Source: AGHT+IEU7lzE/Dy3/8fiDPb3paZeKjpSwC6m9TQvo4Eme28XUib49W5/g7bAteipV+pRQMe7GryFitoR15vuGrj30Lg=
+X-Received: by 2002:a1f:c487:0:b0:48d:1359:4dcd with SMTP id
+ u129-20020a1fc487000000b0048d13594dcdmr6428193vkf.7.1694505369434; Tue, 12
+ Sep 2023 00:56:09 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: o_tI6kuBBNI_2ffd_k3eraD01uL6QmQj
-X-Proofpoint-GUID: o_tI6kuBBNI_2ffd_k3eraD01uL6QmQj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_03,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 adultscore=0
- malwarescore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- clxscore=1015 bulkscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309120054
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 12 Sep 2023 13:25:58 +0530
+Message-ID: <CA+G9fYvHhiiGKhNd=L9+xYFVwv0Q8k6gUBeFQGWCWw1cWhb50Q@mail.gmail.com>
+To: open list <linux-kernel@vger.kernel.org>, LTP List <ltp@lists.linux.it>, 
+ Linux PM <linux-pm@vger.kernel.org>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Migrating the
- libhugetlbfs/testcases/alloc-instantiate-race.c test
+Subject: [LTP] Qemu-arm64: LTP: cfs_bandwidth01: Unable to handle kernel
+ NULL pointer dereference at virtual address 0000000000000038
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,323 +74,142 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Samir Mulani <samir@linux.vnet.ibm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Peter Zijlstra <peterz@infradead.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This test is designed to detect a kernel allocation race introduced
-with hugepage demand-faulting.  The problem is that no lock is held
-between allocating a hugepage and instantiating it in the
-pagetables or page cache index.  In between the two, the (huge)
-page is cleared, so there's substantial time.  Thus two processes
-can race instantiating the (same) last available hugepage - one
-will fail on the allocation, and thus cause an OOM fault even
-though the page it actually wants is being instantiated by the
-other racing process.
+Following kernel crash noticed on Linux stable-rc 6.5.3-rc1 on qemu-arm64 while
+running LTP sched tests cases.
 
-Signed-off-by: Samir Mulani <samir@linux.vnet.ibm.com>
----
- .../kernel/mem/hugetlb/hugemmap/hugemmap36.c  | 286 ++++++++++++++++++
- 1 file changed, 286 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
+This is not always reproducible.
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
-new file mode 100644
-index 000000000..7135af8a4
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap36.c
-@@ -0,0 +1,286 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2005-2006 IBM Corporation
-+ * Author: David Gibson & Adam Litke
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Test Name: alloc-instantiate-race.c
-+ *
-+ * This test is designed to detect a kernel allocation race introduced
-+ * with hugepage demand-faulting.  The problem is that no lock is held
-+ * between allocating a hugepage and instantiating it in the
-+ * pagetables or page cache index.  In between the two, the (huge)
-+ * page is cleared, so there's substantial time.  Thus two processes
-+ * can race instantiating the (same) last available hugepage - one
-+ * will fail on the allocation, and thus cause an OOM fault even
-+ * though the page it actually wants is being instantiated by the
-+ * other racing process.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <pthread.h>
-+#include "tst_safe_pthread.h"
-+#include "hugetlb.h"
-+#define SYSFS_CPU_ONLINE_FMT	"/sys/devices/system/cpu/cpu%d/online"
-+#define MNTPOINT "hugetlbfs/"
-+unsigned long totpages;
-+static long hpage_size;
-+char *str_op;
-+int race_type;
-+static int child1, child2;
-+static pthread_t thread1, thread2;
-+
-+struct racer_info {
-+	void *p; /* instantiation address */
-+	int cpu;
-+	int race_type;
-+	volatile int *mytrigger;
-+	volatile int *othertrigger;
-+	int status;
-+};
-+
-+static int one_racer(void *p, int cpu,
-+		     volatile int *mytrigger, volatile int *othertrigger)
-+{
-+	volatile int *pi = p;
-+	cpu_set_t cpuset;
-+	int err;
-+
-+	/* Split onto different cpus to encourage the race */
-+	CPU_ZERO(&cpuset);
-+	CPU_SET(cpu, &cpuset);
-+
-+	err = sched_setaffinity(gettid(), CPU_SETSIZE/8, &cpuset);
-+	if (err != 0)
-+		tst_res(TFAIL,"sched_setaffinity(cpu%d): %s", cpu, strerror(errno));
-+
-+	/* Ready.. */
-+	*mytrigger = 1;
-+	/* Set.. */
-+	while (! *othertrigger)
-+		;
-+
-+	/* Instantiate! */
-+	*pi = 1;
-+
-+	return 0;
-+}
-+
-+static void proc_racer(void *p, int cpu,
-+		       volatile int *mytrigger, volatile int *othertrigger)
-+{
-+	exit(one_racer(p, cpu, mytrigger, othertrigger));
-+}
-+
-+static void *thread_racer(void *info)
-+{
-+	struct racer_info *ri = info;
-+	one_racer(ri->p, ri->cpu, ri->mytrigger, ri->othertrigger);
-+	return ri;
-+}
-+
-+void check_online_cpus(int online_cpus[], int nr_cpus_needed)
-+{
-+	char cpu_state, path_buf[64];
-+	int total_cpus, cpu_idx, fd, ret, i;
-+
-+	total_cpus = get_nprocs_conf();
-+	cpu_idx = 0;
-+
-+	if (get_nprocs() < nr_cpus_needed)
-+		tst_res(TFAIL,"Atleast online %d cpus are required", nr_cpus_needed);
-+
-+	for (i = 0; i < total_cpus && cpu_idx < nr_cpus_needed; i++) {
-+		errno = 0;
-+		sprintf(path_buf, SYSFS_CPU_ONLINE_FMT, i);
-+		fd = open(path_buf, O_RDONLY);
-+		if (fd < 0) {
-+			/* If 'online' is absent, the cpu cannot be offlined */
-+			if (errno == ENOENT) {
-+				online_cpus[cpu_idx] = i;
-+				cpu_idx++;
-+				continue;
-+			} else {
-+				tst_res(TFAIL,"Unable to open %s: %s", path_buf,
-+				     strerror(errno));
-+			}
-+		}
-+
-+		ret = read(fd, &cpu_state, 1);
-+		if (ret < 1)
-+			tst_res(TFAIL,"Unable to read %s: %s", path_buf,
-+			     strerror(errno));
-+
-+		if (cpu_state == '1') {
-+			online_cpus[cpu_idx] = i;
-+			cpu_idx++;
-+		}
-+
-+		if (fd >= 0)
-+			SAFE_CLOSE(fd);
-+	}
-+
-+	if (cpu_idx < nr_cpus_needed)
-+		tst_res(TFAIL,"Atleast %d online cpus were not found", nr_cpus_needed);
-+}
-+
-+static void run_race(void *syncarea, int race_type)
-+{
-+	volatile int *trigger1, *trigger2;
-+	int fd;
-+	void *p, *tret1, *tret2;
-+	int status1, status2;
-+	int online_cpus[2];
-+
-+	check_online_cpus(online_cpus, 2);
-+	memset(syncarea, 0, sizeof(*trigger1) + sizeof(*trigger2));
-+	trigger1 = syncarea;
-+	trigger2 = trigger1 + 1;
-+
-+	/* Get a new file for the final page */
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+	tst_res(TINFO,"Mapping final page.. ");
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, race_type, fd, 0);
-+	if (race_type == MAP_SHARED) {
-+		child1 = SAFE_FORK();
-+		if (child1 == 0)
-+			proc_racer(p, online_cpus[0], trigger1, trigger2);
-+
-+		child2 = SAFE_FORK();
-+		if (child2 == 0)
-+			proc_racer(p, online_cpus[1], trigger2, trigger1);
-+
-+		/* wait() calls */
-+		SAFE_WAITPID(child1, &status1, 0);
-+		tst_res(TINFO,"Child 1 status: %x\n", status1);
-+
-+
-+		SAFE_WAITPID(child2, &status2, 0);
-+		tst_res(TINFO,"Child 2 status: %x\n", status2);
-+
-+		if (WIFSIGNALED(status1))
-+			tst_res(TFAIL,"Child 1 killed by signal %s",
-+			strsignal(WTERMSIG(status1)));
-+		if (WIFSIGNALED(status2))
-+			tst_res(TFAIL,"Child 2 killed by signal %s",
-+			strsignal(WTERMSIG(status2)));
-+
-+		status1 = WEXITSTATUS(status1);
-+		status2 = WEXITSTATUS(status2);
-+	} else {
-+		struct racer_info ri1 = {
-+			.p = p,
-+			.cpu = online_cpus[0],
-+			.mytrigger = trigger1,
-+			.othertrigger = trigger2,
-+		};
-+		struct racer_info ri2 = {
-+			.p = p,
-+			.cpu = online_cpus[1],
-+			.mytrigger = trigger2,
-+			.othertrigger = trigger1,
-+		};
-+		
-+		SAFE_PTHREAD_CREATE(&thread1, NULL, thread_racer, &ri1);
-+		SAFE_PTHREAD_CREATE(&thread2, NULL, thread_racer, &ri2);
-+		SAFE_PTHREAD_JOIN(thread1, &tret1);
-+		if (tret1 != &ri1)
-+			tst_res(TFAIL,"Thread 1 returned %p not %p, killed?\n",
-+			     tret1, &ri1);
-+		SAFE_PTHREAD_JOIN(thread2, &tret2);
-+		if (tret2 != &ri2)
-+			tst_res(TFAIL,"Thread 2 returned %p not %p, killed?\n",
-+			     tret2, &ri2);
-+		status1 = ri1.status;
-+		status2 = ri2.status;
-+	}
-+
-+	if (status1 != 0)
-+		tst_res(TFAIL,"Racer 1 terminated with code %d", status1);
-+
-+	if (status2 != 0)
-+		tst_res(TFAIL,"Racer 2 terminated with code %d", status2);
-+
-+	if (fd >= 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+
-+static void run_test(void)
-+{
-+	int fd;
-+	long unsigned int i;
-+	void *p, *q;
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+	/* Get a shared normal page for synchronization */
-+	tst_res(TINFO, "Mapping synchronization area..");
-+	q = SAFE_MMAP(NULL, getpagesize(), PROT_READ|PROT_WRITE,
-+		 MAP_SHARED|MAP_ANONYMOUS, -1, 0);
-+	
-+	tst_res(TINFO,"done\n");
-+	tst_res(TINFO,"Mapping %ld/%ld pages.. ", totpages-1, totpages);
-+	
-+	p = SAFE_MMAP(NULL, (totpages-1)*hpage_size, PROT_READ|PROT_WRITE,
-+		 MAP_SHARED, fd, 0);
-+
-+	/* Allocate all save one of the pages up front */
-+	tst_res(TINFO,"instantiating.. ");
-+	for (i = 0; i < (totpages - 1); i++)
-+		memset(p + (i * hpage_size), 0, sizeof(int));
-+
-+	tst_res(TINFO,"done\n");
-+
-+	run_race(q, race_type);
-+	tst_res(TPASS,"Test passed..!!");
-+
-+	if (fd >= 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+void setup(void)
-+{
-+	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	hpage_size = tst_get_hugepage_size();
-+	if (str_op)
-+	{	
-+		if (strcmp(str_op, "shared") == 0) {
-+			race_type = MAP_SHARED;
-+			} else if (strcmp(str_op, "private") == 0) {
-+				race_type = MAP_PRIVATE;
-+				} else {
-+					tst_res(TFAIL,"Usage: alloc-instantiate-race <private|shared>");
-+		}
-+	}
-+	else{
-+		tst_res(TFAIL,"Usage: alloc-instantiate-race <private|shared>");
-+	}	
-+}
-+
-+void cleanup(void)
-+{
-+	if (child1)
-+		SAFE_KILL(child1, SIGKILL);
-+	if (child2)
-+		SAFE_KILL(child2, SIGKILL);
-+}
-+
-+
-+static struct tst_test test = {
-+	.options = (struct  tst_option[]){
-+		{"m:", &str_op, "Usage: alloc-instantiate-race <private|shared>"},
-+		{}
-+	},
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {2, TST_NEEDS},
-+	.forks_child = 1,
-+};
--- 
-2.39.3
+Anyone have noticed LTP cfs_bandwidth01 causing a kernel crash on any of the
+devices or qemu-* ?
 
+I need to check similar crashes on other Linux trees and branches.
+
+Boot log and test log:
+---------------------
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x000f0510]
+[    0.000000] Linux version 6.5.3-rc1 (tuxmake@tuxmake) (Debian clang
+version 18.0.0 (++20230910112057+710b5a12324e-1~exp1~20230910112229.889),
+Debian LLD 18.0.0) #1 SMP PREEMPT @1694441978
+[    0.000000] KASLR enabled
+[    0.000000] random: crng init done
+[    0.000000] Machine model: linux,dummy-virt
+...
+running LTP sched tests
+...
+cfs_bandwidth01.c:129: TPASS: Workers exited
+cfs_bandwidth01.c:117: TPASS: Scheduled bandwidth constrained workers
+cfs_bandwidth01.c:54: TINFO: Set 'level2/cpu.max' = '5000 10000'
+<1>[   74.455327] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000038
+<1>[   74.456395] Mem abort info:
+<1>[   74.456639]   ESR = 0x0000000097880004
+<1>[   74.458273]   EC = 0x25: DABT (current EL), IL = 32 bits
+<1>[   74.458859]   SET = 0, FnV = 0
+<1>[   74.459495]   EA = 0, S1PTW = 0
+<1>[   74.460171]   FSC = 0x04: level 0 translation fault
+<1>[   74.460799] Data abort info:
+<1>[   74.461388]   Access size = 4 byte(s)
+<1>[   74.462068]   SSE = 0, SRT = 8
+<1>[   74.462713]   SF = 0, AR = 0
+<1>[   74.463257]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+<1>[   74.463996]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+<1>[   74.465120] user pgtable: 4k pages, 48-bit VAs, pgdp=00000001029d6000
+<1>[   74.465818] [0000000000000038] pgd=0000000000000000, p4d=0000000000000000
+<0>[   74.468416] Internal error: Oops: 0000000097880004 [#1] PREEMPT SMP
+<4>[   74.469489] Modules linked in: fuse drm dm_mod ip_tables x_tables
+<4>[   74.470964] CPU: 0 PID: 435 Comm: cfs_bandwidth01 Not tainted 6.5.3-rc1 #1
+<4>[   74.471789] Hardware name: linux,dummy-virt (DT)
+<4>[   74.473045] pstate: 634000c9 (nZCv daIF +PAN -UAO +TCO +DIT
+-SSBS BTYPE=--)
+<4>[   74.473785] pc : set_next_entity+0xc0/0x1f8
+<4>[   74.475461] lr : pick_next_task_fair+0x204/0x3b8
+<4>[   74.476989] sp : ffff8000807eb870
+<4>[   74.477346] x29: ffff8000807eb870 x28: ffff0000c4e3b750 x27:
+ffffcb93e8e19008
+<4>[   74.478392] x26: ffff0000c4e3b0c0 x25: ffffcb93e8ab4828 x24:
+ffff0000c0354a00
+<4>[   74.479263] x23: ffff8000807eb900 x22: 0000000000000000 x21:
+ffff0000ff5b1300
+<4>[   74.480401] x20: ffff0000ff5b1300 x19: 0000000000000000 x18:
+0000000000000000
+<4>[   74.481417] x17: 000000000000ba7e x16: 0000000000000606 x15:
+000000000117d17a
+<4>[   74.482733] x14: 0000000000000000 x13: 0000000f0f4bc800 x12:
+00000000000002b0
+<4>[   74.484181] x11: 0000000f0f4bc800 x10: 0000000cf6ad6bd1 x9 :
+ffffcb93e6af8e4c
+<4>[   74.485229] x8 : 0000000000000000 x7 : ffffcb93e8a3ccac x6 :
+0000000000000003
+<4>[   74.486131] x5 : 000000008040002b x4 : 0000ffffbef0c000 x3 :
+ffff0000ff5b1200
+<4>[   74.487012] x2 : ffff0000c39efc00 x1 : 0000000000000000 x0 :
+ffff0000ff5b1300
+<4>[   74.488236] Call trace:
+<4>[   74.488608]  set_next_entity+0xc0/0x1f8
+<4>[   74.489280]  pick_next_task_fair+0x204/0x3b8
+<4>[   74.489987]  __schedule+0x1e0/0x9c8
+<4>[   74.490903]  schedule+0x134/0x1b8
+<4>[   74.491632]  schedule_preempt_disabled+0x90/0x108
+<4>[   74.492392]  rwsem_down_write_slowpath+0x288/0x6f0
+<4>[   74.493056]  down_write+0x48/0xb0
+<4>[   74.493606]  unlink_anon_vmas+0x148/0x1b0
+<4>[   74.494222]  free_pgtables+0x10c/0x200
+<4>[   74.494800]  exit_mmap+0x174/0x3c0
+<4>[   74.495177]  __mmput+0x48/0x150
+<4>[   74.495761]  mmput+0x34/0x70
+<4>[   74.496058]  exit_mm+0xbc/0x148
+<4>[   74.497651]  do_exit+0x22c/0x910
+<4>[   74.498212]  do_group_exit+0xa4/0xb0
+<4>[   74.498870]  __arm64_sys_exit_group+0x24/0x30
+<4>[   74.499484]  invoke_syscall+0x4c/0x120
+<4>[   74.499834]  el0_svc_common+0xd0/0x110
+<4>[   74.500196]  do_el0_svc+0x3c/0xb8
+<4>[   74.500475]  el0_svc+0x30/0x90
+<4>[   74.500746]  el0t_64_sync_handler+0x84/0x100
+<4>[   74.501309]  el0t_64_sync+0x190/0x198
+<0>[   74.502156] Code: f900293f f9403908 b5ffff48 17ffffde (b9403a68)
+<4>[   74.503735] ---[ end trace 0000000000000000 ]---
+<6>[   74.504727] note: cfs_bandwidth01[435] exited with irqs disabled
+
+Links:
+-----
+  - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2VFpDOMEgzroNyiP9SSlxRxHsMH
+  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.2-740-g7bfd1316ceae/testrun/19901770/suite/log-parser-test/tests/
+  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2VFpB1ieNZSp5zh0joVGtoMn7RG/
+
+Steps to reproduce:
+----------------
+# To install tuxrun to your home directory at ~/.local/bin:
+# pip3 install -U --user tuxrun==0.49.2
+#
+# Or install a deb/rpm depending on the running distribution
+# See https://tuxmake.org/install-deb/ or
+# https://tuxmake.org/install-rpm/
+#
+# See https://tuxrun.org/ for complete documentation.
+#
+
+tuxrun --runtime podman --device qemu-arm64 --boot-args rw --kernel
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2VFpB1ieNZSp5zh0joVGtoMn7RG/Image.gz
+--modules https://storage.tuxsuite.com/public/linaro/lkft/builds/2VFpB1ieNZSp5zh0joVGtoMn7RG/modules.tar.xz
+--rootfs https://storage.tuxboot.com/debian/bookworm/arm64/rootfs.ext4.xz
+--parameters SKIPFILE=skipfile-lkft.yaml --parameters SHARD_NUMBER=4
+--parameters SHARD_INDEX=2 --image
+docker.io/linaro/tuxrun-dispatcher:v0.49.2 --tests ltp-sched
+--timeouts boot=30 ltp-sched=30 --overlay
+https://storage.tuxboot.com/overlays/debian/bookworm/arm64/ltp/20230516/ltp.tar.xz
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
