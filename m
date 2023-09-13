@@ -4,87 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49D2FCA5507
-	for <ltp@archiver.kernel.org>; Wed, 13 Sep 2023 08:22:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 669B4CA5511
+	for <ltp@archiver.kernel.org>; Wed, 13 Sep 2023 08:55:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF6FA3CB32C
-	for <ltp@archiver.kernel.org>; Wed, 13 Sep 2023 10:22:39 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 460E33CB2F1
+	for <ltp@archiver.kernel.org>; Wed, 13 Sep 2023 10:54:58 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CB2D23C9961
- for <ltp@lists.linux.it>; Wed, 13 Sep 2023 10:22:28 +0200 (CEST)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
- [148.163.156.1])
+ by picard.linux.it (Postfix) with ESMTPS id 65D3C3CB2A9
+ for <ltp@lists.linux.it>; Wed, 13 Sep 2023 10:54:47 +0200 (CEST)
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur04on061f.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe0e::61f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E57351A0BC5B
- for <ltp@lists.linux.it>; Wed, 13 Sep 2023 10:22:26 +0200 (CEST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38D87jnx022788
- for <ltp@lists.linux.it>; Wed, 13 Sep 2023 08:22:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=alGk172QwnA5LArb84itWLVKvF5jiANzzAuMbyyRUpU=;
- b=qnO0cWP4J+04Hlsb6jPDNW8X7t/HDsv3rwk6oAIsENCWFBEUc/K1w/oIoh8C9sNetqMv
- l6IFXXWzFcwzWTrKtxfUXTY2dyc39YBdudivqORT5SYMH52hy59BCtZ8Ux7i334y4gF0
- NXDcWNy3DgwxmvJCqB5itCwNga6nJeej7+XGoxBUBnG18FKuNAEu1itujDU91KytuPDN
- oYu2owo+gYrJDPfK/hbY8KBJrwkOjx1HUk4P4DG185wFTOLKIN9B0Hu8jB//rdlen6Pa
- UJQLSyLzZNCUErBPR2vGPD8xDmWovgU7Lb3NMO4JLEn3/jyc/HnVCZ9F4+i/c45LyUsL Fg== 
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t38x2967e-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Wed, 13 Sep 2023 08:22:23 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38D6qZqW012064
- for <ltp@lists.linux.it>; Wed, 13 Sep 2023 08:22:22 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t13dyswgf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Wed, 13 Sep 2023 08:22:22 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com
- [10.20.54.105])
- by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 38D8MJVa15270412
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 13 Sep 2023 08:22:19 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 67E832004D;
- Wed, 13 Sep 2023 08:22:19 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 7EFEB20040;
- Wed, 13 Sep 2023 08:22:18 +0000 (GMT)
-Received: from ltcever7x1-lp6.aus.stglabs.ibm.com (unknown [9.53.168.26])
- by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Wed, 13 Sep 2023 08:22:18 +0000 (GMT)
-From: Samir Mulani <samir@linux.vnet.ibm.com>
-To: ltp@lists.linux.it
-Date: Wed, 13 Sep 2023 03:22:14 -0500
-Message-Id: <20230913082214.8453-1-samir@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.39.3
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 47D11601091
+ for <ltp@lists.linux.it>; Wed, 13 Sep 2023 10:54:46 +0200 (CEST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YpzD0G//HTr4X5wMXartA8RiUUUrLOCxoaH/Bpd5LDjueEnuAOmSDnCU6Xq4AR+ydRVV7h0FCptM+dhpUbtD4lX/E4S1fjEoYQHsrjUkwIcV2cE84uan0KKTfjs//DVu4gdzdpF8xgRgc3UsbiS3dxEtUCAAl85PLOPUSWvnzaOHAUltWbJDSw+9jOKDqv3q5NjGkpzeoWu262Hx9wj5hxHJ7g1mGzSMi2PQ//gbBV+ZQzrTr+YB3KcFL6ECDewh65403x4d+ZwKBC8DqDP23eqZDXD7/1kmaNIdxfj6pKtDcV0bOMcWwXWckwdevXMBb6PQ/ai7dHrrGyquhc9dUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WO0GKowRW/X8lnLjbTUYKoX9YM0bZzV/7uUbTQ3alzA=;
+ b=XvV1BMbtx9tNSbqo890ZATGaO8VVo2/t5MkP3Eowt4FH9/fi9SybVBhN1RKfLmo5OJbH6urCOczfbkJXeJKNr2kdlRcbMOd5Pfh+zlTYKfBWHdYGZ7YsQ20U3AlK8cMIRvBrG4iqIrmwPagSZQMX77Ci5VtG5lyEIxlQKL6kBdNUfRvCoUKfyDFk1lq5soPjMJGZhTbukB25drsjzjrBlZGU/QkXm3LEAfbsJWjZzFdF06AX8fg//NtHlBZuQjIOTMKVrUOFetS2Bt3rmAC6ZEBo+BA6murpXHVemolquL0f1eWjVxw55Rj43GQqKN8ULEXrCkY7WCyQNYFnSwIVKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WO0GKowRW/X8lnLjbTUYKoX9YM0bZzV/7uUbTQ3alzA=;
+ b=B6eAIw+7SApKH9iyR+fGEtzUGd7IKOl/bp8YbHl6gzfdq4URPwDFBv9d/WhOW60I2FY/jgQj4fy4meT2Lw3s+a1jAK+amastaPJA4hwnJk+dXcEaLL+diZQQUeJ73XyGDf5qgC/JOUj8JCIZIEw1o22GJ3Xoh1KBkHSP3HenV0jh44D8bSHMrEYq/QPjciFNIaDq91ypA8rmknKQSCOtYu2AXfoKmIpvTsBx1vBoLjf31t2xHb6hUGlnGVb8x+3BDxPvi5/7rmzK6DkVTsMQkkIMHedTO3qtCnpIoltLHvlgycNMJZBBaf6VaJd9TijHVVhTGEpZXspwOwXD17UsIQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB6797.eurprd04.prod.outlook.com (2603:10a6:803:13e::13)
+ by DU2PR04MB9132.eurprd04.prod.outlook.com (2603:10a6:10:2f7::18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.37; Wed, 13 Sep
+ 2023 08:54:44 +0000
+Received: from VI1PR04MB6797.eurprd04.prod.outlook.com
+ ([fe80::c33:be0b:88be:b96e]) by VI1PR04MB6797.eurprd04.prod.outlook.com
+ ([fe80::c33:be0b:88be:b96e%4]) with mapi id 15.20.6768.029; Wed, 13 Sep 2023
+ 08:54:44 +0000
+Message-ID: <1eeeb56d-3a8e-45d8-b275-394b43be0bd5@suse.com>
+Date: Wed, 13 Sep 2023 10:54:42 +0200
+User-Agent: Mozilla Thunderbird
+To: Marius Kittler <mkittler@suse.de>, ltp@lists.linux.it
+References: <20230912144351.13494-1-mkittler@suse.de>
+ <20230912144351.13494-3-mkittler@suse.de>
+Content-Language: en-US
+In-Reply-To: <20230912144351.13494-3-mkittler@suse.de>
+X-ClientProxiedBy: FR2P281CA0099.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9c::9) To VI1PR04MB6797.eurprd04.prod.outlook.com
+ (2603:10a6:803:13e::13)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AF9RWIU-wc2Ia-4CvdEd2UVhbfANTrOa
-X-Proofpoint-ORIG-GUID: AF9RWIU-wc2Ia-4CvdEd2UVhbfANTrOa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_24,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 phishscore=0
- spamscore=0 clxscore=1015 suspectscore=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 adultscore=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309130066
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6797:EE_|DU2PR04MB9132:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1b29f621-cdde-482c-ddd5-08dbb4371304
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +IMgKtS7IEcH11VCukcEhGYKqe78VduySPa95v2jfeR/ungMLaPmx0wMYzlVg+skOletj5yspltzy7/AE4a5So1bBx656wo5U+LjggNrQQxpl3NoJIroYXuekcV2RdBUvTuGRO85m7TXPpcbkMK1DASyEtBxxdXqmiQgm37lh2yemV+r14MwHrB2MEuTDNwnn5q8jE9d1Hvc224eN4S++CHK/2NiwC/kheBnatTY+9ei8Th91mWHI4MK9kd+hKK6Ye6QGTi+H+QOGBnCawuUvjgXIW7TuIQX6ADz0brwMQ/ZTtvieNN07HDCgzQF4ZvncY2MOpdtiw6hArfHrS2mP77bUAFdwgnECLIuogtEaZtVuOF6boXkiG3t5JMlQqs5sORmy3vrBWvCymO2DolORGQ4w5cQM0BafS3E6DBLihNZACmVSJXC+hrkr4BZpM4sF97O7iGzcEe1ZUdm64CC489dQT2gIaPCbq5ZOBLSjq27Xhe3hs9TMGnQG98h1LxewTMguEKuKJl85Z0GeRza+2q/G13QGse8FWRivoaVQJcy92VZJn/nOt72Q+Lw1oX4tIQsfeDyyhSBwHHdxdNOWtHatYvhEyXDFftjY6NBroZ+S3zkSMiRKcNrLKOlld00dUEQHXxHQALLf4o7ExnyCQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:VI1PR04MB6797.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230031)(39860400002)(346002)(376002)(396003)(366004)(136003)(186009)(451199024)(1800799009)(31686004)(44832011)(5660300002)(8936002)(8676002)(6486002)(83380400001)(6512007)(6506007)(26005)(53546011)(2616005)(478600001)(66946007)(316002)(66476007)(66556008)(41300700001)(31696002)(36756003)(2906002)(86362001)(38100700002)(45980500001)(43740500002);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UzhRT0hkQ2VPN1RHWExTbEtmNFpMT0d2SDNXTFRJY3hkcHVkK05SY0RoQ09h?=
+ =?utf-8?B?aG1HYVF2ZStOczB0VnBiNHBVZHlUbkZrUHpPdHltZnArVzNmcTdoNDV2RWtu?=
+ =?utf-8?B?dHI2UndBNVFoVHFGR1c3Kzd5U0x6Ny9SaWVSMG54SThPY1NZbEt0Z0VuZnNG?=
+ =?utf-8?B?NHUzUkZoN1pNbE8rUFVDWGhSdnNBVTdCSlFoSlZtK0ZwMEtQcENGYTZuSlZU?=
+ =?utf-8?B?bXZWc1BNZzdZNzBXK0dwdWJKT3lSVXMxYjNHTWtzQXVaN0tuZ1haT1ZrSWlI?=
+ =?utf-8?B?SDRaVUZ5UllPSlBXMU14aDkrODRwUXhOdE9sT1FFaGpSS2w3SnM3TmptZGFJ?=
+ =?utf-8?B?SU5vTE9jUm5aN1pCRHorNVRPcHhnUkhFWTF2dGord1dXK2VrS29FbVhnU1VX?=
+ =?utf-8?B?cTVVMWxpUUMrc3JYOXNvSUN6VVQ4QnA4VnJiY215dWhtK0JVWEJWL1hudWc5?=
+ =?utf-8?B?SjFOanIwTCtOWHg4ZEtkek1FK091VVhudXZTT0dWd3BDdVg0ZnBRTnZia1Fz?=
+ =?utf-8?B?THNuSkFYSUFGU3pkaFlzcUNpd3JiVGlYYXF1aDJ5cXZXckZBYThGMW56Z2F4?=
+ =?utf-8?B?Mmp0YytSWWhOcDY5U0wxbExBVmIxVUdJbEFvdEhPenNCNmdCbWNhSENuWTdQ?=
+ =?utf-8?B?SXpYNC9NWjQwdTZyQ0dXSWV4L1JkUDBOK3F0Nit5Um9VNGJLQk1qUmgzck9E?=
+ =?utf-8?B?bDRTREJWcW9Ub3BCaDlzZUxqVWFydHJCQ1g0bVpXTC9sNjk5dlk2NEJVbWp4?=
+ =?utf-8?B?NHk0NGs1M3FYOTFXYUdQd1ZiaEpZeW9NS01XT2E0L3piemlPN2dnMlJ1bHJw?=
+ =?utf-8?B?cXVSSzRxZUFsaFVDckZLMWRqaG9HcGVSNm1KNGRUckZLa2tCVFBSdXpvQW5m?=
+ =?utf-8?B?VDZTcWdOYWU0blJHQTIxUmhpYmZIV2FEc1ZBNGJNSTJmOHRzcm9zL3Vhbjdh?=
+ =?utf-8?B?WlNqejdyb05Nc1VrVlVRWDIxZmlsREk0TnV6U1hYTG9SZWlDZ2J0amE3NEhN?=
+ =?utf-8?B?NXlZOVRKd3RjaGNaQmFCL2ZWRnFNZmxOdHNwVGM2YjBCL1ljWjVwRlFtS0sx?=
+ =?utf-8?B?WUNQdytnbWxEVkx6ZlRZdFFnR0Vzazl1SElSQ3RINDJnU0pNaFV1UG9Pa2J1?=
+ =?utf-8?B?WUhycmM5NFlYZFFQMUtUS3RBczJESmxYaEJZdDdmTXQxOU1Td3dmVzNjRkZq?=
+ =?utf-8?B?MXVyMXdHRXRkM2Rnazl1dE9LVzdzclZVYnJsdG1oRXRWVjFtbVdvQVRyM1JV?=
+ =?utf-8?B?SGZwR3N3QjBkeUJzNkxiZkVtOVMwYjl0KzFDV0k0MEc4VGVqcytRc2xSTThz?=
+ =?utf-8?B?d0J2RUNiUFcxNmM1STFYWk5CRWI5Z0ExMThZQ3R3dXZlTkVsVU9uWFpud3FU?=
+ =?utf-8?B?Y3RuRVZ4cEVuSFZVZkJHUkx5Wlc5SFVScnhlRktUcXhEMVppbzNxMlAzcEQz?=
+ =?utf-8?B?TzFia2w0emRvR1NIeFloWXo2UjQ3UXI2bjVnRnF4U0Z4WkJpTi9BN0ttV1Ri?=
+ =?utf-8?B?bW5DREV4eFh6eTVDWkVvQmdSQWo4by8yN0lVcndGR29XNm8vZHFGMEJHYXhO?=
+ =?utf-8?B?MGQ4L3RaK0dYY1YveE5CcFVUclo2QVh2amE5aWJQQk1XRnYyZ2JpSm5CbVhN?=
+ =?utf-8?B?KzhjaVdqSEYyYmQ1MEVHWnE3VTZUZWJMMHVYN0U4bDk5bitMbWZXNSsweDgx?=
+ =?utf-8?B?SFI3b1JiazZNOTF6K0ZSamR1SGtPSlFvZHhzZVo5U3JrYU9UNzRvWkpsUHRs?=
+ =?utf-8?B?WW00MGh2TVh5S2F4QnpiSGVvWkZBMVpvLzBWVTdvNzhvZDN1VExjSjU0Vk9K?=
+ =?utf-8?B?cXVpZkhHY3lkUjVmaXRLU05BcU9oTUVxRG5tazVKTGZaa0JMSUpvTXJCRWJx?=
+ =?utf-8?B?VDFiQk5kLzdvUHF5Y1NzYk9EV0NZQTJtenlVM3h2VlJKbEhIQWdPZ2NHNWZY?=
+ =?utf-8?B?V2tmSmdXSnNZbWdTdkROVHRxRXNSQ2pCMG42eG5QNUN5eWg2a1poZ0JielZ0?=
+ =?utf-8?B?U1h1N2Z5d1pUNWQ0ekF4QjhRSVhtTHgrVVhaV050UGZvWmd2UWREc2oxSnNq?=
+ =?utf-8?B?VUd4Y0FvR2pEMHlwN09FNnhVVVIxNHlaWElaQkFHNjIrWjhxazZ4RTYwOG4r?=
+ =?utf-8?B?U2FraUZJNDlkand1dlppWXJhancwN1kvTFloOERGSjIvc3V2MkpUZXNHUVRn?=
+ =?utf-8?B?elE9PQ==?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b29f621-cdde-482c-ddd5-08dbb4371304
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB6797.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 08:54:44.1984 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ioGHvfAgSafIh5wVLkpVoh8JC25DpV1AAWiyqqzEKvr9iiVsLUwUepC8Q02qzY/VfircXEjEnwa/SmO0m/bbMUltVYyd+2KnPDBn/sFL9Do=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9132
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Migrating the
- libhugetlbfs/testcases/stack_grow_into_huge.c test
+Subject: Re: [LTP] [PATCH v1 2/2] Prevent segmentation fault when negative
+ task count specified
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,202 +133,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Samir Mulani <samir@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Test Description:On PowerPC, the address space is divided into segments.
-These segments can contain either huge pages or normal pages, but not
-both.
-All segments are initially set up to map normal pages. When a huge page
-mapping is created within a set of empty segments, they are "enabled"
-for huge pages at that time. Once enabled for huge pages, they can
-not be used again for normal pages for the remaining lifetime of the
-process.
+Hi!
 
-If the segment immediately preceeding the segment containing the stack is
-converted to huge pages and the stack is made to grow into the this
-preceeding segment, some kernels may attempt to map normal pages into the
-huge page-only segment -- resulting in bugs.
+patch is simple enough to be applied, but this test really needs to be 
+refactored, as it's almost untouched for 15 years now and we moved to 
+new API long time ago.
 
-Signed-off-by: Samir Mulani <samir@linux.vnet.ibm.com>
----
-v2:
-Below are the requested changes in version 2:
-1. Fixed "make check warnings"
-2. Removed explicit calls to exit(1)
-3.[To get the information about the child state], adapted the "tst_strstatus" implementation.
----
- runtest/hugetlb                               |   1 +
- testcases/kernel/mem/.gitignore               |   1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap34.c  | 130 ++++++++++++++++++
- 3 files changed, 132 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c
+Reviewed-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 299c07ac9..0c812c780 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -35,6 +35,7 @@ hugemmap29 hugemmap29
- hugemmap30 hugemmap30
- hugemmap31 hugemmap31
- hugemmap32 hugemmap32
-+hugemmap34 hugemmap34
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 7258489ed..41f547edf 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -34,6 +34,7 @@
- /hugetlb/hugemmap/hugemmap30
- /hugetlb/hugemmap/hugemmap31
- /hugetlb/hugemmap/hugemmap32
-+/hugetlb/hugemmap/hugemmap34
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c
-new file mode 100644
-index 000000000..914a015bc
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap34.c
-@@ -0,0 +1,130 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2005-2006 IBM Corporation
-+ * Author: David Gibson & Adam Litke
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Test Name: stack_grow_into_huge
-+ *
-+ * On PowerPC, the address space is divided into segments.  These segments can
-+ * contain either huge pages or normal pages, but not both.  All segments are
-+ * initially set up to map normal pages.  When a huge page mapping is created
-+ * within a set of empty segments, they are "enabled" for huge pages at that
-+ * time.  Once enabled for huge pages, they can not be used again for normal
-+ * pages for the remaining lifetime of the process.
-+ *
-+ * If the segment immediately preceeding the segment containing the stack is
-+ * converted to huge pages and the stack is made to grow into the this
-+ * preceeding segment, some kernels may attempt to map normal pages into the
-+ * huge page-only segment -- resulting in bugs.
-+ */
-+
-+#include "hugetlb.h"
-+
-+#ifdef __LP64__
-+#define STACK_ALLOCATION_SIZE	(256*1024*1024)
-+#else
-+#define STACK_ALLOCATION_SIZE	(16*1024*1024)
-+#endif
-+#define PALIGN(p, a) ((void *)LTP_ALIGN((unsigned long)(p), (a)))
-+#define MNTPOINT "hugetlbfs/"
-+static int  fd = -1;
-+static unsigned long long hpage_size;
-+static int page_size;
-+
-+
-+void do_child(void *stop_address)
-+{
-+	struct rlimit r;
-+	volatile int *x;
-+
-+	/* corefile from this process is not interesting and limiting
-+	 * its size can save a lot of time. '1' is a special value,
-+	 * that will also abort dumping via pipe, which by default
-+	 * sets limit to RLIM_INFINITY.
-+	 */
-+	r.rlim_cur = 1;
-+	r.rlim_max = 1;
-+	SAFE_SETRLIMIT(RLIMIT_CORE, &r);
-+
-+	do {
-+		x = alloca(STACK_ALLOCATION_SIZE);
-+		*x = 1;
-+	} while ((void *)x >= stop_address);
-+}
-+
-+static void run_test(void)
-+{
-+	int pid, status;
-+	void *stack_address, *mmap_address, *heap_address;
-+
-+	stack_address = alloca(0);
-+	heap_address = sbrk(0);
-+
-+	/*
-+	 * paranoia: start mapping two hugepages below the start of the stack,
-+	 * in case the alignment would cause us to map over something if we
-+	 * only used a gap of one hugepage.
-+	 */
-+	mmap_address = PALIGN(stack_address - 2 * hpage_size, hpage_size);
-+	do {
-+		SAFE_MMAP(mmap_address, hpage_size, PROT_READ|PROT_WRITE,
-+				MAP_FIXED|MAP_SHARED, fd, 0);
-+		mmap_address -= hpage_size;
-+		/*
-+		 * if we get all the way down to the heap, stop trying
-+		 */
-+	} while (mmap_address <= heap_address);
-+	pid = SAFE_FORK();
-+	if (pid == 0)
-+		do_child(mmap_address);
-+
-+	SAFE_WAITPID(pid, &status, 0);
-+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
-+		tst_res(TPASS, "Child killed by %s as expected", tst_strsig(SIGSEGV));
-+	else
-+		tst_res(TFAIL, "Child: %s", tst_strstatus(status));
-+}
-+
-+void setup(void)
-+{
-+	struct rlimit r;
-+
-+	page_size = getpagesize();
-+	hpage_size = tst_get_hugepage_size();
-+	/*
-+	 * Setting the stack size to unlimited.
-+	 */
-+	r.rlim_cur = RLIM_INFINITY;
-+	r.rlim_max = RLIM_INFINITY;
-+	SAFE_SETRLIMIT(RLIMIT_STACK, &r);
-+	SAFE_GETRLIMIT(RLIMIT_STACK, &r);
-+	if (r.rlim_cur != RLIM_INFINITY)
-+		tst_brk(TCONF, "Stack rlimit must be 'unlimited'");
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+}
-+
-+void cleanup(void)
-+{
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+}
-+
-+static struct tst_test test = {
-+	.tags = (struct tst_tag[]) {
-+		{"linux-git", "0d59a01bc461"},
-+		{}
-+	},
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {2, TST_NEEDS},
-+	.forks_child = 1,
-+};
--- 
-2.39.3
+On 9/12/23 16:43, Marius Kittler wrote:
+> Signed-off-by: Marius Kittler <mkittler@suse.de>
+> ---
+>   testcases/realtime/func/rt-migrate/rt-migrate.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/testcases/realtime/func/rt-migrate/rt-migrate.c b/testcases/realtime/func/rt-migrate/rt-migrate.c
+> index 2554f63e2..252e77e6a 100644
+> --- a/testcases/realtime/func/rt-migrate/rt-migrate.c
+> +++ b/testcases/realtime/func/rt-migrate/rt-migrate.c
+> @@ -419,6 +419,10 @@ int main(int argc, char **argv)
+>   		numcpus = sysconf(_SC_NPROCESSORS_ONLN);
+>   		nr_tasks = numcpus + 1;
+>   	}
+> +	if (nr_tasks < 0) {
+> +		printf("The number of tasks must not be negative.\n");
+> +		exit(EXIT_FAILURE);
+> +	}
+>   
+>   	intervals = malloc(sizeof(stats_container_t) * nr_tasks);
+>   	if (!intervals)
+
+Andrea
 
 
 -- 
