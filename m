@@ -4,68 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B34AEEDE9A8
-	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 11:45:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B8ACEDE9AD
+	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 11:59:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C538E3CE729
-	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 13:45:48 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 5E5DC3CE723
+	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 13:59:54 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6054B3CE712
- for <ltp@lists.linux.it>; Thu, 14 Sep 2023 13:45:27 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 683483CB23E
+ for <ltp@lists.linux.it>; Thu, 14 Sep 2023 13:59:41 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A0FBF1000A6C
- for <ltp@lists.linux.it>; Thu, 14 Sep 2023 13:45:26 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D48281400E64
+ for <ltp@lists.linux.it>; Thu, 14 Sep 2023 13:59:40 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 168911F459
- for <ltp@lists.linux.it>; Thu, 14 Sep 2023 11:45:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1694691926; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=jipFCabk3Fn4hdlkdsxzE7Xx6BeRGqShp9O/JBsUN3w=;
- b=UPa9etrdeaj7G9O6syjjzQnha4ATA5wUdspqvXN/PLyONyyp2lAqsKimq0NAG4qY1TcPer
- LVDk69J/pQwmyBPBWitRFQja7NVDIQf8bdf1vG8LR16EovQMJ557ZY3xSJTc2TKH2+3yKM
- 7j59fl2KhOWvjCi/8MNm2poKUFR1KOk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1694691926;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B94782184E
+ for <ltp@lists.linux.it>; Thu, 14 Sep 2023 11:59:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1694692779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Y2w3JkhZzFI8huP/6xaDjQ793h4AzoFS7f5YVj0MdN0=;
+ b=K1AcTsuNG7jVIxi7x1/GTgzkDl8vGIv0qBemxwLKcX1JapZMcx7tFHC04K8eAbPQEtZwDb
+ ve2Bbpj2zlb0WOe/mV4W6zf51kcu2wO07zV/rz8uXek+EuE7xwp0fr6QaTUf4W6IBTOVhz
+ ACE0ao5ZK/yyD7K/XLIji0k6bdecNhI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1694692779;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=jipFCabk3Fn4hdlkdsxzE7Xx6BeRGqShp9O/JBsUN3w=;
- b=lUrdaNtNtHNvAqMsZQiKwfyAWFvc6pXX/ijl81ye3lI/YbU0LumEx6AiWIjBDp1epYjiFB
- ukQYx8D38DweBaAw==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Y2w3JkhZzFI8huP/6xaDjQ793h4AzoFS7f5YVj0MdN0=;
+ b=LXkTlLfYBlI8CNEnSmoHuTTpB72guSy3fT+7erNwoiIG+Y5ij5KlmS15VfjmRWd5m/0VHV
+ PldX8K7AighW37Dg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8B0A139DB
- for <ltp@lists.linux.it>; Thu, 14 Sep 2023 11:45:25 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A2820139DB
+ for <ltp@lists.linux.it>; Thu, 14 Sep 2023 11:59:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ClvCHlXyAmUTGQAAMHmgww
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Thu, 14 Sep 2023 11:45:25 +0000
-From: Avinesh Kumar <akumar@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 1ASjJ6v1AmXkIAAAMHmgww
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Thu, 14 Sep 2023 11:59:39 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 14 Sep 2023 17:15:19 +0530
-Message-ID: <20230914114520.5212-2-akumar@suse.de>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230914114520.5212-1-akumar@suse.de>
-References: <20230914114520.5212-1-akumar@suse.de>
+Date: Thu, 14 Sep 2023 14:00:25 +0200
+Message-ID: <20230914120025.22402-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3] syscalls/mmap01: Rewrite the test using new LTP API
+Subject: [LTP] [COMMITTED] [PATCH] testcases/containers: clone_args switch
+ to named initializers
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,278 +78,549 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-- use SAFE_MSYNC() macro
-- fixed the test for iterations > 1
+After the addition of cgroup into the clone_args we got a bunch of
+warnings, this commit fixes all of them.
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- testcases/kernel/syscalls/mmap/mmap01.c | 223 +++++++-----------------
- 1 file changed, 63 insertions(+), 160 deletions(-)
+The code was fixed with following coccinelle spatch:
 
-diff --git a/testcases/kernel/syscalls/mmap/mmap01.c b/testcases/kernel/syscalls/mmap/mmap01.c
-index 99266b57f..a1e6e9d59 100644
---- a/testcases/kernel/syscalls/mmap/mmap01.c
-+++ b/testcases/kernel/syscalls/mmap/mmap01.c
-@@ -1,194 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) International Business Machines  Corp., 2001
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- * the GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program;  if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *	07/2001 Ported by Wayne Boyer
-+ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
-  */
- 
--/*
-- * Test Description:
-- *  Verify that, mmap() succeeds when used to map a file where size of the
-- *  file is not a multiple of the page size, the memory area beyond the end
-- *  of the file to the end of the page is accessible. Also, verify that
-- *  this area is all zeroed and the modifications done to this area are
-- *  not written to the file.
-- *
-- * Expected Result:
-- *  mmap() should succeed returning the address of the mapped region.
-- *  The memory area beyond the end of file to the end of page should be
-- *  filled with zero.
-- *  The changes beyond the end of file should not get written to the file.
-+/*\
-+ * [Description]
-  *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-+ * Verify that, mmap() succeeds when used to map a file where size of the
-+ * file is not a multiple of the page size, the memory area beyond the end
-+ * of the file to the end of the page is accessible. Also, verify that
-+ * this area is all zeroed and the modifications done to this area are
-+ * not written to the file.
-  */
--#include <stdio.h>
--#include <stdlib.h>
--#include <sys/types.h>
--#include <errno.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <string.h>
--#include <signal.h>
--#include <stdint.h>
--#include <sys/stat.h>
--#include <sys/mman.h>
--#include <sys/shm.h>
--
--#include "test.h"
--
--#define TEMPFILE	"mmapfile"
- 
--char *TCID = "mmap01";
--int TST_TOTAL = 1;
-+#include <stdlib.h>
-+#include "tst_test.h"
- 
--static char *addr;
--static char *dummy;
-+#define TEMPFILE "mmapfile"
-+static int fd;
- static size_t page_sz;
- static size_t file_sz;
--static int fildes;
--static char cmd_buffer[BUFSIZ];
--
--static void setup(void);
--static void cleanup(void);
-+static char *dummy;
-+static char *addr;
- 
--int main(int ac, char **av)
-+static void setup(void)
- {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		/*
--		 * Call mmap to map the temporary file beyond EOF
--		 * with write access.
--		 */
--		errno = 0;
--		addr = mmap(NULL, page_sz, PROT_READ | PROT_WRITE,
--			    MAP_FILE | MAP_SHARED, fildes, 0);
--
--		/* Check for the return value of mmap() */
--		if (addr == MAP_FAILED) {
--			tst_resm(TFAIL | TERRNO, "mmap of %s failed", TEMPFILE);
--			continue;
--		}
--
--		/*
--		 * Check if mapped memory area beyond EOF are
--		 * zeros and changes beyond EOF are not written
--		 * to file.
--		 */
--		if (memcmp(&addr[file_sz], dummy, page_sz - file_sz)) {
--			tst_brkm(TFAIL, cleanup,
--				 "mapped memory area contains invalid "
--				 "data");
--		}
-+	struct stat stat_buf;
-+	char write_buf[] = "hello world\n";
- 
--		/*
--		 * Initialize memory beyond file size
--		 */
--		addr[file_sz] = 'X';
--		addr[file_sz + 1] = 'Y';
--		addr[file_sz + 2] = 'Z';
--
--		/*
--		 * Synchronize the mapped memory region
--		 * with the file.
--		 */
--		if (msync(addr, page_sz, MS_SYNC) != 0) {
--			tst_brkm(TFAIL | TERRNO, cleanup,
--				 "failed to synchronize mapped file");
--		}
-+	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
- 
--		/*
--		 * Now, Search for the pattern 'XYZ' in the
--		 * temporary file.  The pattern should not be
--		 * found and the return value should be 1.
--		 */
--		if (system(cmd_buffer) != 0) {
--			tst_resm(TPASS,
--				 "Functionality of mmap() successful");
--		} else {
--			tst_resm(TFAIL,
--				 "Specified pattern found in file");
--		}
-+	SAFE_WRITE(SAFE_WRITE_ALL, fd, write_buf, strlen(write_buf));
-+	SAFE_LSEEK(fd, 0, SEEK_SET);
-+	SAFE_STAT(TEMPFILE, &stat_buf);
- 
--		/* Clean up things in case we are looping */
--		/* Unmap the mapped memory */
--		if (munmap(addr, page_sz) != 0) {
--			tst_brkm(TFAIL | TERRNO, NULL, "munmap failed");
--		}
--	}
-+	file_sz = stat_buf.st_size;
-+	page_sz = getpagesize();
- 
--	cleanup();
--	tst_exit();
-+	dummy = SAFE_MALLOC(page_sz);
-+	memset(dummy, 0, page_sz);
- }
- 
--static void setup(void)
-+static void run(void)
- {
--	struct stat stat_buf;
--	char Path_name[PATH_MAX];
--	char write_buf[] = "hello world\n";
-+	char buf[20];
-+	unsigned long read_cnt;
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	addr = SAFE_MMAP(NULL, page_sz, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0);
- 
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	/* Get the path of temporary file to be created */
--	if (getcwd(Path_name, sizeof(Path_name)) == NULL) {
--		tst_brkm(TFAIL | TERRNO, cleanup,
--			 "getcwd failed to get current working directory");
-+	if (memcmp(&addr[file_sz], dummy, page_sz - file_sz) != 0) {
-+		tst_res(TFAIL, "mapped memory area contains invalid data");
-+		goto unmap;
- 	}
- 
--	/* Creat a temporary file used for mapping */
--	if ((fildes = open(TEMPFILE, O_RDWR | O_CREAT, 0666)) < 0) {
--		tst_brkm(TFAIL, cleanup, "opening %s failed", TEMPFILE);
--	}
-+	addr[file_sz] = 'X';
-+	addr[file_sz + 1] = 'Y';
-+	addr[file_sz + 2] = 'Z';
- 
--	/* Write some data into temporary file */
--	if (write(fildes, write_buf, strlen(write_buf)) != (long)strlen(write_buf)) {
--		tst_brkm(TFAIL, cleanup, "writing to %s", TEMPFILE);
--	}
-+	SAFE_MSYNC(addr, page_sz, MS_SYNC);
- 
--	/* Get the size of temporary file */
--	if (stat(TEMPFILE, &stat_buf) < 0) {
--		tst_brkm(TFAIL | TERRNO, cleanup, "stat of %s failed",
--			 TEMPFILE);
--	}
--	file_sz = stat_buf.st_size;
-+	memset(buf, 0, sizeof(buf));
-+	read_cnt = SAFE_READ(0, fd, buf, sizeof(buf));
-+	if (read_cnt != file_sz)
-+		tst_res(TFAIL, "unexpected data length in buf");
- 
--	page_sz = getpagesize();
-+	for (int i = 0; i < 3; i++)
-+		if ((memchr(buf, (int)('X') + i, sizeof(buf))) != NULL) {
-+			tst_res(TFAIL, "mmap() functionality failed");
-+			goto unmap;
-+		}
- 
--	/* Allocate and initialize dummy string of system page size bytes */
--	if ((dummy = calloc(page_sz, sizeof(char))) == NULL) {
--		tst_brkm(TFAIL, cleanup, "calloc failed (dummy)");
--	}
-+	tst_res(TPASS, "mmap() functionality successful");
- 
--	/* Create the command which will be executed in the test */
--	sprintf(cmd_buffer, "grep XYZ %s/%s > /dev/null", Path_name, TEMPFILE);
-+	SAFE_LSEEK(fd, 0, SEEK_SET);
-+	memset(&addr[file_sz], 0, 3);
-+
-+unmap:
-+	SAFE_MUNMAP(addr, page_sz);
- }
- 
- static void cleanup(void)
- {
--	close(fildes);
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
-+
- 	free(dummy);
--	tst_rmdir();
- }
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.needs_tmpdir = 1
+@@
+expression f;
+identifier var;
+@@
+-const struct tst_clone_args var = { f, SIGCHLD };
++const struct tst_clone_args var = {
++	.flags = f,
++	.exit_signal = SIGCHLD,
 +};
+
+Fixes: 45f6916bae4c ("clone3: Add clone3's clone_args cgroup")
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/containers/mountns/mountns01.c |  5 ++++-
+ testcases/kernel/containers/mountns/mountns02.c |  5 ++++-
+ testcases/kernel/containers/mountns/mountns03.c |  5 ++++-
+ testcases/kernel/containers/mqns/mqns_01.c      |  5 ++++-
+ testcases/kernel/containers/mqns/mqns_02.c      |  5 ++++-
+ testcases/kernel/containers/pidns/pidns01.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns02.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns03.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns04.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns06.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns10.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns12.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns13.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns16.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns17.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns20.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns30.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns31.c     |  5 ++++-
+ testcases/kernel/containers/pidns/pidns32.c     |  5 ++++-
+ testcases/kernel/containers/sysvipc/common.h    |  5 ++++-
+ testcases/kernel/containers/userns/userns01.c   |  5 ++++-
+ testcases/kernel/containers/userns/userns02.c   |  5 ++++-
+ testcases/kernel/containers/userns/userns03.c   |  5 ++++-
+ testcases/kernel/containers/userns/userns04.c   |  5 ++++-
+ testcases/kernel/containers/userns/userns05.c   |  5 ++++-
+ testcases/kernel/containers/userns/userns06.c   |  5 ++++-
+ testcases/kernel/containers/userns/userns07.c   | 10 ++++++++--
+ testcases/kernel/containers/userns/userns08.c   |  4 ++--
+ testcases/kernel/containers/utsname/utsname03.c |  5 ++++-
+ testcases/kernel/containers/utsname/utsname04.c |  5 ++++-
+ 30 files changed, 122 insertions(+), 32 deletions(-)
+
+diff --git a/testcases/kernel/containers/mountns/mountns01.c b/testcases/kernel/containers/mountns/mountns01.c
+index 41c2956ea..8d821ea45 100644
+--- a/testcases/kernel/containers/mountns/mountns01.c
++++ b/testcases/kernel/containers/mountns/mountns01.c
+@@ -56,7 +56,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWNS,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	SAFE_UNSHARE(CLONE_NEWNS);
+ 
+diff --git a/testcases/kernel/containers/mountns/mountns02.c b/testcases/kernel/containers/mountns/mountns02.c
+index 7ca01a438..e7a80cbbf 100644
+--- a/testcases/kernel/containers/mountns/mountns02.c
++++ b/testcases/kernel/containers/mountns/mountns02.c
+@@ -56,7 +56,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWNS,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	SAFE_UNSHARE(CLONE_NEWNS);
+ 
+diff --git a/testcases/kernel/containers/mountns/mountns03.c b/testcases/kernel/containers/mountns/mountns03.c
+index 3b4936b06..6066d1c54 100644
+--- a/testcases/kernel/containers/mountns/mountns03.c
++++ b/testcases/kernel/containers/mountns/mountns03.c
+@@ -64,7 +64,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWNS, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWNS,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	SAFE_UNSHARE(CLONE_NEWNS);
+ 
+diff --git a/testcases/kernel/containers/mqns/mqns_01.c b/testcases/kernel/containers/mqns/mqns_01.c
+index 80e248503..d9f6e6c18 100644
+--- a/testcases/kernel/containers/mqns/mqns_01.c
++++ b/testcases/kernel/containers/mqns/mqns_01.c
+@@ -24,7 +24,10 @@ static char *str_op;
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args clone_args = { CLONE_NEWIPC, SIGCHLD };
++	const struct tst_clone_args clone_args = {
++		.flags = CLONE_NEWIPC,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	tst_res(TINFO, "Checking namespaces isolation from parent to child");
+ 
+diff --git a/testcases/kernel/containers/mqns/mqns_02.c b/testcases/kernel/containers/mqns/mqns_02.c
+index 9291787be..4348be7fc 100644
+--- a/testcases/kernel/containers/mqns/mqns_02.c
++++ b/testcases/kernel/containers/mqns/mqns_02.c
+@@ -52,7 +52,10 @@ static void isolated_child(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args clone_args = { CLONE_NEWIPC, SIGCHLD };
++	const struct tst_clone_args clone_args = {
++		.flags = CLONE_NEWIPC,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	tst_res(TINFO, "Checking namespaces isolation from parent to child");
+ 
+diff --git a/testcases/kernel/containers/pidns/pidns01.c b/testcases/kernel/containers/pidns/pidns01.c
+index 107519971..8b856ec90 100644
+--- a/testcases/kernel/containers/pidns/pidns01.c
++++ b/testcases/kernel/containers/pidns/pidns01.c
+@@ -30,7 +30,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	if (!SAFE_CLONE(&args)) {
+ 		child_func();
+diff --git a/testcases/kernel/containers/pidns/pidns02.c b/testcases/kernel/containers/pidns/pidns02.c
+index 07eda0c3a..f23178cb6 100644
+--- a/testcases/kernel/containers/pidns/pidns02.c
++++ b/testcases/kernel/containers/pidns/pidns02.c
+@@ -30,7 +30,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	if (!SAFE_CLONE(&args)) {
+ 		child_func();
+diff --git a/testcases/kernel/containers/pidns/pidns03.c b/testcases/kernel/containers/pidns/pidns03.c
+index d0d26c8a5..d662ca9d5 100644
+--- a/testcases/kernel/containers/pidns/pidns03.c
++++ b/testcases/kernel/containers/pidns/pidns03.c
+@@ -43,7 +43,10 @@ static void cleanup(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	if (!SAFE_CLONE(&args)) {
+ 		child_func();
+diff --git a/testcases/kernel/containers/pidns/pidns04.c b/testcases/kernel/containers/pidns/pidns04.c
+index 8df32899a..bed75a082 100644
+--- a/testcases/kernel/containers/pidns/pidns04.c
++++ b/testcases/kernel/containers/pidns/pidns04.c
+@@ -32,7 +32,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 	pid_t pid;
+ 
+ 	pid = SAFE_CLONE(&args);
+diff --git a/testcases/kernel/containers/pidns/pidns06.c b/testcases/kernel/containers/pidns/pidns06.c
+index 8ded0a6b1..c85a875e4 100644
+--- a/testcases/kernel/containers/pidns/pidns06.c
++++ b/testcases/kernel/containers/pidns/pidns06.c
+@@ -29,7 +29,10 @@ static void child_func(int pid)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 	pid_t pid = getpid();
+ 
+ 	if (!SAFE_CLONE(&args)) {
+diff --git a/testcases/kernel/containers/pidns/pidns10.c b/testcases/kernel/containers/pidns/pidns10.c
+index f65b5887b..c2a9094b6 100644
+--- a/testcases/kernel/containers/pidns/pidns10.c
++++ b/testcases/kernel/containers/pidns/pidns10.c
+@@ -29,7 +29,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	if (!SAFE_CLONE(&args)) {
+ 		child_func();
+diff --git a/testcases/kernel/containers/pidns/pidns12.c b/testcases/kernel/containers/pidns/pidns12.c
+index b527dbba9..1811dbc36 100644
+--- a/testcases/kernel/containers/pidns/pidns12.c
++++ b/testcases/kernel/containers/pidns/pidns12.c
+@@ -45,7 +45,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 	int pid;
+ 
+ 	pid = SAFE_CLONE(&args);
+diff --git a/testcases/kernel/containers/pidns/pidns13.c b/testcases/kernel/containers/pidns/pidns13.c
+index 64038310d..65fcc4443 100644
+--- a/testcases/kernel/containers/pidns/pidns13.c
++++ b/testcases/kernel/containers/pidns/pidns13.c
+@@ -104,7 +104,10 @@ static void child_fn(unsigned int cinit_no)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args cargs = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args cargs = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	SAFE_PIPE(pipe_fd);
+ 
+diff --git a/testcases/kernel/containers/pidns/pidns16.c b/testcases/kernel/containers/pidns/pidns16.c
+index 22da53213..313b0a097 100644
+--- a/testcases/kernel/containers/pidns/pidns16.c
++++ b/testcases/kernel/containers/pidns/pidns16.c
+@@ -56,7 +56,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 	pid_t pid;
+ 
+ 	signal_pid = -1;
+diff --git a/testcases/kernel/containers/pidns/pidns17.c b/testcases/kernel/containers/pidns/pidns17.c
+index 823cb90fc..4633ec14b 100644
+--- a/testcases/kernel/containers/pidns/pidns17.c
++++ b/testcases/kernel/containers/pidns/pidns17.c
+@@ -54,7 +54,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	if (!SAFE_CLONE(&args)) {
+ 		child_func();
+diff --git a/testcases/kernel/containers/pidns/pidns20.c b/testcases/kernel/containers/pidns/pidns20.c
+index 4d87a8303..914820865 100644
+--- a/testcases/kernel/containers/pidns/pidns20.c
++++ b/testcases/kernel/containers/pidns/pidns20.c
+@@ -69,7 +69,10 @@ static void child_func(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 	int pid;
+ 
+ 	pid = SAFE_CLONE(&args);
+diff --git a/testcases/kernel/containers/pidns/pidns30.c b/testcases/kernel/containers/pidns/pidns30.c
+index 8e95e7963..4a8bc5e2b 100644
+--- a/testcases/kernel/containers/pidns/pidns30.c
++++ b/testcases/kernel/containers/pidns/pidns30.c
+@@ -88,7 +88,10 @@ static void cleanup(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	remove_mqueue(mqd);
+ 	received = 0;
+diff --git a/testcases/kernel/containers/pidns/pidns31.c b/testcases/kernel/containers/pidns/pidns31.c
+index 91f8cf1d6..7312f8bdc 100644
+--- a/testcases/kernel/containers/pidns/pidns31.c
++++ b/testcases/kernel/containers/pidns/pidns31.c
+@@ -71,7 +71,10 @@ static void run(void)
+ 	pid_t cpid;
+ 	struct sigaction sa;
+ 	struct sigevent notif;
+-	const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWPID,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	remove_mqueue(mqd);
+ 	received = 0;
+diff --git a/testcases/kernel/containers/pidns/pidns32.c b/testcases/kernel/containers/pidns/pidns32.c
+index a6326e252..0738369b1 100644
+--- a/testcases/kernel/containers/pidns/pidns32.c
++++ b/testcases/kernel/containers/pidns/pidns32.c
+@@ -19,7 +19,10 @@
+ 
+ #define MAXNEST 32
+ 
+-static const struct tst_clone_args args = { CLONE_NEWPID, SIGCHLD };
++static const struct tst_clone_args args = {
++	.flags = CLONE_NEWPID,
++	.exit_signal = SIGCHLD,
++};
+ static int *level;
+ 
+ static pid_t child_func(void)
+diff --git a/testcases/kernel/containers/sysvipc/common.h b/testcases/kernel/containers/sysvipc/common.h
+index c43d947d5..180cf9bd7 100644
+--- a/testcases/kernel/containers/sysvipc/common.h
++++ b/testcases/kernel/containers/sysvipc/common.h
+@@ -39,7 +39,10 @@ static inline int get_clone_unshare_enum(const char *str_op)
+ 
+ static void clone_test(unsigned long clone_flags, void (*fn1)())
+ {
+-	const struct tst_clone_args clone_args = { clone_flags, SIGCHLD };
++	const struct tst_clone_args clone_args = {
++		.flags = clone_flags,
++		.exit_signal = SIGCHLD,
++	};
+ 	int pid;
+ 
+ 	pid = SAFE_CLONE(&clone_args);
+diff --git a/testcases/kernel/containers/userns/userns01.c b/testcases/kernel/containers/userns/userns01.c
+index cbe0da245..6fe0cd637 100644
+--- a/testcases/kernel/containers/userns/userns01.c
++++ b/testcases/kernel/containers/userns/userns01.c
+@@ -73,7 +73,10 @@ static void setup(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWUSER, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWUSER,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	if (!SAFE_CLONE(&args)) {
+ 		child_fn1();
+diff --git a/testcases/kernel/containers/userns/userns02.c b/testcases/kernel/containers/userns/userns02.c
+index 9d445d986..3c8ce2133 100644
+--- a/testcases/kernel/containers/userns/userns02.c
++++ b/testcases/kernel/containers/userns/userns02.c
+@@ -32,7 +32,10 @@ static void child_fn1(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWUSER, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWUSER,
++		.exit_signal = SIGCHLD,
++	};
+ 	int childpid;
+ 	int parentuid;
+ 	int parentgid;
+diff --git a/testcases/kernel/containers/userns/userns03.c b/testcases/kernel/containers/userns/userns03.c
+index a7f12e3d9..fca858702 100644
+--- a/testcases/kernel/containers/userns/userns03.c
++++ b/testcases/kernel/containers/userns/userns03.c
+@@ -117,7 +117,10 @@ static void child_fn2(int cpid1, int parentuid, int parentgid)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWUSER, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWUSER,
++		.exit_signal = SIGCHLD,
++	};
+ 	pid_t cpid1, cpid2;
+ 	uid_t parentuid;
+ 	gid_t parentgid;
+diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
+index 58ae7c302..d20041f06 100644
+--- a/testcases/kernel/containers/userns/userns04.c
++++ b/testcases/kernel/containers/userns/userns04.c
+@@ -31,7 +31,10 @@ static void child_fn2(int fd)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWUSER, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWUSER,
++		.exit_signal = SIGCHLD,
++	};
+ 	pid_t cpid1, cpid2, cpid3;
+ 	char path[BUFSIZ];
+ 	int fd;
+diff --git a/testcases/kernel/containers/userns/userns05.c b/testcases/kernel/containers/userns/userns05.c
+index 36f48fda5..e7a00af18 100644
+--- a/testcases/kernel/containers/userns/userns05.c
++++ b/testcases/kernel/containers/userns/userns05.c
+@@ -45,7 +45,10 @@ static unsigned int getusernsidbypid(int pid)
+ static void run(void)
+ {
+ 	const struct tst_clone_args args1 = { .exit_signal = SIGCHLD };
+-	const struct tst_clone_args args2 = { CLONE_NEWUSER, SIGCHLD };
++	const struct tst_clone_args args2 = {
++		.flags = CLONE_NEWUSER,
++		.exit_signal = SIGCHLD,
++	};
+ 	int cpid1, cpid2, cpid3;
+ 	unsigned int parentuserns, cpid1userns, cpid2userns, newparentuserns;
+ 
+diff --git a/testcases/kernel/containers/userns/userns06.c b/testcases/kernel/containers/userns/userns06.c
+index a2c51f725..a270dafdc 100644
+--- a/testcases/kernel/containers/userns/userns06.c
++++ b/testcases/kernel/containers/userns/userns06.c
+@@ -62,7 +62,10 @@ static void child_fn2(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWUSER, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWUSER,
++		.exit_signal = SIGCHLD,
++	};
+ 	pid_t cpid1;
+ 	pid_t cpid2;
+ 	int parentuid;
+diff --git a/testcases/kernel/containers/userns/userns07.c b/testcases/kernel/containers/userns/userns07.c
+index 2c946a659..2217a5ed0 100644
+--- a/testcases/kernel/containers/userns/userns07.c
++++ b/testcases/kernel/containers/userns/userns07.c
+@@ -22,7 +22,10 @@
+ 
+ static void child_fn1(const int level)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWUSER, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWUSER,
++		.exit_signal = SIGCHLD,
++	};
+ 	pid_t cpid;
+ 	int parentuid;
+ 	int parentgid;
+@@ -53,7 +56,10 @@ static void child_fn1(const int level)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args args = { CLONE_NEWUSER, SIGCHLD };
++	const struct tst_clone_args args = {
++		.flags = CLONE_NEWUSER,
++		.exit_signal = SIGCHLD,
++	};
+ 	pid_t cpid;
+ 	int parentuid;
+ 	int parentgid;
+diff --git a/testcases/kernel/containers/userns/userns08.c b/testcases/kernel/containers/userns/userns08.c
+index 84f0ce9a9..72d7f8d12 100644
+--- a/testcases/kernel/containers/userns/userns08.c
++++ b/testcases/kernel/containers/userns/userns08.c
+@@ -31,8 +31,8 @@
+ static pid_t clone_newuser(void)
+ {
+ 	const struct tst_clone_args cargs = {
+-		CLONE_NEWUSER,
+-		SIGCHLD
++		.flags = CLONE_NEWUSER,
++		.exit_signal = SIGCHLD,
+ 	};
+ 
+ 	return SAFE_CLONE(&cargs);
+diff --git a/testcases/kernel/containers/utsname/utsname03.c b/testcases/kernel/containers/utsname/utsname03.c
+index 6b94b452e..e5a4a56dc 100644
+--- a/testcases/kernel/containers/utsname/utsname03.c
++++ b/testcases/kernel/containers/utsname/utsname03.c
+@@ -45,7 +45,10 @@ static void child2_run(void)
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args cargs = { CLONE_NEWUTS, SIGCHLD };
++	const struct tst_clone_args cargs = {
++		.flags = CLONE_NEWUTS,
++		.exit_signal = SIGCHLD,
++	};
+ 
+ 	memset(hostname1, 0, HOST_NAME_MAX);
+ 	memset(hostname2, 0, HOST_NAME_MAX);
+diff --git a/testcases/kernel/containers/utsname/utsname04.c b/testcases/kernel/containers/utsname/utsname04.c
+index 61a3e819c..bf97880ba 100644
+--- a/testcases/kernel/containers/utsname/utsname04.c
++++ b/testcases/kernel/containers/utsname/utsname04.c
+@@ -20,7 +20,10 @@ static char *str_op;
+ 
+ static void run(void)
+ {
+-	const struct tst_clone_args cargs = { CLONE_NEWUTS, SIGCHLD };
++	const struct tst_clone_args cargs = {
++		.flags = CLONE_NEWUTS,
++		.exit_signal = SIGCHLD,
++	};
+ 	struct passwd *pw;
+ 
+ 	tst_res(TINFO, "Dropping root privileges");
 -- 
-2.42.0
+2.41.0
 
 
 -- 
