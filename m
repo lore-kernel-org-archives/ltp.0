@@ -4,70 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B44D7CA553C
-	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 13:25:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC0FEEEAA41
+	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 13:42:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 156A23CE73C
-	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 15:25:17 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 2955C3CE756
+	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 15:42:37 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EF8B83CE71D
- for <ltp@lists.linux.it>; Thu, 14 Sep 2023 15:25:06 +0200 (CEST)
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com
- [IPv6:2607:f8b0:4864:20::a2a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 93B3C3CC0A4
+ for <ltp@lists.linux.it>; Thu, 14 Sep 2023 15:42:26 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4FC551A00CC6
- for <ltp@lists.linux.it>; Thu, 14 Sep 2023 15:25:06 +0200 (CEST)
-Received: by mail-vk1-xa2a.google.com with SMTP id
- 71dfb90a1353d-4935f87ca26so441027e0c.3
- for <ltp@lists.linux.it>; Thu, 14 Sep 2023 06:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1694697905; x=1695302705; darn=lists.linux.it;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=g8g7cbRHNiBB7kLy/+15nJEy1q3Dnsjo9urJij9aaIE=;
- b=jItU7KCJUD8P2u+M755zvjUeX8jwrN/cZ2SgAoNIk5E711K8w8xDrGM0uZuHLwNFT+
- Qxv1Zx8XHHe7iZYp6iu0/UFpgrCBhIvjdAn7CnylJUW/Gu9/aGj2/z6u/Tl4vcHo5bIs
- Xp5peJf3/AqvXHqOXKiIQ+OVlaPKp0GD3uVV/DSgWxpzhWX8/pCgz7pkoZFAa9VUfOEt
- kVcDEnSl+j46mAicYpVDWnhVR3Qas9b+r9uUqTRNs7LUDG3o/IeIjhJN913ZqYzMPxsV
- 17vLjXbvZ3zYJzxu036V0XnbCxA3wz7mmJESXtUGa+nTZL5WsQKUJFae4eyLBtV/JZ7Z
- EFPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1694697905; x=1695302705;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=g8g7cbRHNiBB7kLy/+15nJEy1q3Dnsjo9urJij9aaIE=;
- b=uU1gZa634JvSHls0MdPFXJY74kYi/oHtMCvyY6Dj/axTiLLU4amfws/WYih2lXqTLh
- q3jd2eGiD9FPhQfxRRBNEXP44smufP6wPRs+eZsBLCMbzA2vBCC7vbVcjQtXMZzBiM7s
- Nqx7RN9PGzEeGFft4ZuuX2Xk/lhYhC9mlfLwFmwH5jdetuqTzleb/6lKluxUQbJYO5TW
- NzQhu55PLXDT1Et4ZIi0M8Q3JFggMCGfhy8fOdjfuP6gv58Lv5yNMDG3dkNT3nOy+4Ow
- j1ksC+2ZJH7pJWa7I3jtPHsmLvnOPrdrUaiQHrCNvqfyGTsNW5yEHbRh1FXniCNiraGk
- WY2A==
-X-Gm-Message-State: AOJu0Yz68Rt9ha4vgBywIEGDczSuw0lzHTrtf5DSl52iErYwXGZPePBw
- xOrHPmlky6NFhBc7VwupOyyZ9iZyqGoO6Wl7HPg=
-X-Google-Smtp-Source: AGHT+IH7odsW9+Jh4wQazpPfnhEMWvhHwdmJIXKKqe0W8X4g0avhi866LtGxnWyUZ4PyTandiFuP3i68Lm1fNlYW48c=
-X-Received: by 2002:a1f:cac7:0:b0:495:e236:a73 with SMTP id
- a190-20020a1fcac7000000b00495e2360a73mr5732956vkg.11.1694697905041; Thu, 14
- Sep 2023 06:25:05 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4907F200071
+ for <ltp@lists.linux.it>; Thu, 14 Sep 2023 15:42:24 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 55A2B21845;
+ Thu, 14 Sep 2023 13:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1694698944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=XOAD6PZ6WA7eRz9ohQt4j16spY7yKqKu7Psx77O0xSY=;
+ b=ZDnKMonVPhC1OOss15CqtFXm3Sa5evJq+Jp2zGlF7X5luAZQg4lYA+HMWcQ0UJw525JXGd
+ CVggDauihD0Ea1vF7R8vSfa88Za8d/NX1SBuyuEoaCHlbwwrP5LmSMm/CGZ2hNHffFPera
+ Rq4UCji8SL/VcE8l+M4JEHFP3G7RPEE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1694698944;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=XOAD6PZ6WA7eRz9ohQt4j16spY7yKqKu7Psx77O0xSY=;
+ b=uPbO0My8Eu/YFueJLtgkT0AN/Bv/pVdJejvx39YF3aK1n4Ar4UWKLQ0CvVPU7c1N/nwUEV
+ lL01HtgT210z0JDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2310D13580;
+ Thu, 14 Sep 2023 13:42:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id tUTiBsANA2U5WwAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 14 Sep 2023 13:42:24 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Thu, 14 Sep 2023 15:42:22 +0200
+Message-Id: <20230914134222.32012-1-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-References: <20230903111558.2603332-1-amir73il@gmail.com>
- <20230903111558.2603332-2-amir73il@gmail.com>
- <87il8dghw0.fsf@suse.de>
-In-Reply-To: <87il8dghw0.fsf@suse.de>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 14 Sep 2023 16:24:53 +0300
-Message-ID: <CAOQ4uxhM8F6iyp5AVLquaq=NoR_V_6Y6NUjBDjqfjgcPvA5-Dw@mail.gmail.com>
-To: rpalethorpe@suse.de
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3] fanotify13: Test watching overlayfs upper fs
+Subject: [LTP] [PATCH v2] Remove libclone library from containers suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,28 +70,505 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
- ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBTZXAgMTQsIDIwMjMgYXQgMTozN+KAr1BNIFJpY2hhcmQgUGFsZXRob3JwZSA8cnBh
-bGV0aG9ycGVAc3VzZS5kZT4gd3JvdGU6Cj4KPiBIZWxsbyBBbWlyLAo+Cj4gQW1pciBHb2xkc3Rl
-aW4gPGFtaXI3M2lsQGdtYWlsLmNvbT4gd3JpdGVzOgo+Cj4gPiBSdW4gYSB0ZXN0IHZhcmlhbnQg
-d2l0aCBvdmVybGF5ZnMgKG92ZXIgYWxsIHN1cHBvcnRlZCBmcykKPiA+IHdoZW4gd2F0Y2hpbmcg
-dGhlIHVwcGVyIGZzLgo+ID4KPiA+IFRoaXMgaXMgYSByZWdyZXNzaW9uIHRlc3QgZm9yIGtlcm5l
-bCBmaXggYmMyNDczYzkwZmNhCj4gPiAoIm92bDogZW5hYmxlIGZzbm90aWZ5IGV2ZW50cyBvbiB1
-bmRlcmx5aW5nIHJlYWwgZmlsZXMiKSwKPiA+IGZyb20ga2VybmVsIDYuNSwgd2hpY2ggaXMgbm90
-IGxpa2VseSB0byBiZSBiYWNrcG9ydGVkIHRvIG9sZGVyIGtlcm5lbHMuCj4gPgo+ID4gVG8gYXZv
-aWQgd2FpdGluZyBmb3IgZXZlbnRzIHRoYXQgd29uJ3QgYXJyaXZlIHdoZW4gdGVzdGluZyBvbGQg
-a2VybmVscywKPiA+IHJlcXVpcmUgdGhhdCBrZXJuZWwgc3VwcG9ydHMgZW5jb2RpbmcgZmlkIHdp
-dGggbmV3IGZsYWcgQVRfSEFETkxFX0ZJRCwKPiA+IGFsc28gbWVyZ2VkIHRvIDYuNSBhbmQgbm90
-IGxpa2VseSB0byBiZSBiYWNrcG9ydGVkIHRvIG9sZGVyIGtlcm5lbHMuCj4KPiBVbmZvcnR1bmF0
-ZWx5IFBldHIncyBub3QgaGVyZSBhdCB0aGUgbW9tZW50Lgo+Cj4gSSBndWVzcyB0aGlzIGZpcnN0
-IHBhdGNoIGRvZXNuJ3QgcmVxdWlyZSA2LjY/IFNvIGl0IGNvdWxkIGJlIG1lcmdlZAo+IGluZGVw
-ZW5kZW50bHkgd2l0aG91dCBmdXJ0aGVyIGNvbnNpZGVyYXRpb25zIGZvciB3aGF0IG1ha2VzIGl0
-IGludG8gNi42Pwo+CgpZZXMgdGhhdCBpcyBjb3JyZWN0LgoKVGhhbmtzLApBbWlyLgoKLS0gCk1h
-aWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ testcases/kernel/containers/Makefile          |  27 +---
+ testcases/kernel/containers/Makefile.inc      |  45 ------
+ testcases/kernel/containers/README            |   2 -
+ testcases/kernel/containers/libclone/Makefile |  27 ----
+ .../kernel/containers/libclone/libclone.c     | 142 ------------------
+ .../kernel/containers/libclone/libclone.h     |  81 ----------
+ testcases/kernel/containers/netns/Makefile    |   4 +-
+ testcases/kernel/containers/pidns/Makefile    |   3 +-
+ .../kernel/containers/pidns/pidns_helper.h    |  34 -----
+ testcases/kernel/containers/userns/Makefile   |   1 -
+ testcases/kernel/containers/utsname/Makefile  |   3 +-
+ 11 files changed, 5 insertions(+), 364 deletions(-)
+ delete mode 100644 testcases/kernel/containers/Makefile.inc
+ delete mode 100644 testcases/kernel/containers/libclone/Makefile
+ delete mode 100644 testcases/kernel/containers/libclone/libclone.c
+ delete mode 100644 testcases/kernel/containers/libclone/libclone.h
+ delete mode 100644 testcases/kernel/containers/pidns/pidns_helper.h
+
+diff --git a/testcases/kernel/containers/Makefile b/testcases/kernel/containers/Makefile
+index 4285546e7..20d2424a5 100644
+--- a/testcases/kernel/containers/Makefile
++++ b/testcases/kernel/containers/Makefile
+@@ -1,33 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines  Corp., 2007
++# Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+ 
+ top_srcdir		?= ../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+-
+-LIBDIR			:= libclone
+-
+-FILTER_OUT_DIRS		:= $(LIBDIR)
+-
+-LIB			:= $(LIBDIR)/libclone.a
+-
+-LDLIBS			:= -ldl -lltp
+-
+-INSTALL_TARGETS		:= *.sh
+-
+-$(LIBDIR):
+-	mkdir -p "$@"
+-
+-# Make the target the real lib so we don't have to deal with rebuilding this
+-# every time the dependency is evaluated, like with PHONY rules.
+-$(LIB): $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$(LIBDIR)/Makefile" all
+-
+-MAKE_DEPS		:= $(LIB)
+-
+-trunk-clean:: | lib-clean
+-
+-lib-clean:: $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$(LIBDIR)/Makefile" clean
+-
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/containers/Makefile.inc b/testcases/kernel/containers/Makefile.inc
+deleted file mode 100644
+index 179809bc1..000000000
+--- a/testcases/kernel/containers/Makefile.inc
++++ /dev/null
+@@ -1,45 +0,0 @@
+-#
+-#    kernel/containers testcase suite common definitions Makefile.
+-#
+-#    Copyright (C) 2009, Cisco Systems Inc.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Ngie Cooper, July 2009
+-#
+-
+-# DO NOT USE THIS FILE FOR containers / libclone!!!
+-
+-LIBDIR			:= ../libclone
+-
+-LIBS			:= $(LIBDIR)/libclone.a
+-
+-CPPFLAGS		+= -I$(abs_srcdir)/$(LIBDIR)
+-
+-LDFLAGS			+= -L$(abs_builddir)/$(LIBDIR)
+-
+-$(LIBDIR):
+-	mkdir -p "$@"
+-
+-# Make the target the real lib so we don't have to deal with rebuilding this
+-# every time the dependency is evaluated, like with PHONY rules.
+-$(LIBS): $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+-
+-INSTALL_TARGETS		?= *.sh
+-
+-MAKE_DEPS		:= $(LIBS)
+-
+-# vim: syntax=make
+diff --git a/testcases/kernel/containers/README b/testcases/kernel/containers/README
+index c99cacd98..df909e526 100644
+--- a/testcases/kernel/containers/README
++++ b/testcases/kernel/containers/README
+@@ -44,7 +44,5 @@ posixmq/*
+ 	enabled in the kernel without SYSV IPC support.
+ utsname/*
+ 	Contains all the testcases related to utsname tests.
+-libclone/*
+-	Contains the library API for clone() .
+ netns/*
+         Contains the testcases related to the network NS tests.
+diff --git a/testcases/kernel/containers/libclone/Makefile b/testcases/kernel/containers/libclone/Makefile
+deleted file mode 100644
+index 13af52b67..000000000
+--- a/testcases/kernel/containers/libclone/Makefile
++++ /dev/null
+@@ -1,27 +0,0 @@
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2007                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-################################################################################
+-
+-top_srcdir		?= ../../../..
+-
+-include $(top_srcdir)/include/mk/testcases.mk
+-
+-INTERNAL_LIB		:= libclone.a
+-
+-include $(top_srcdir)/include/mk/lib.mk
+diff --git a/testcases/kernel/containers/libclone/libclone.c b/testcases/kernel/containers/libclone/libclone.c
+deleted file mode 100644
+index db0d9b2a5..000000000
+--- a/testcases/kernel/containers/libclone/libclone.c
++++ /dev/null
+@@ -1,142 +0,0 @@
+-/*
+-* Copyright (c) International Business Machines Corp., 2007
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-*
+-***************************************************************************/
+-#include "libclone.h"
+-
+-int do_clone_tests(unsigned long clone_flags,
+-		   int (*fn1) (void *arg), void *arg1,
+-		   int (*fn2) (void *arg), void *arg2)
+-{
+-	int ret;
+-
+-	ret = ltp_clone_quick(clone_flags | SIGCHLD, fn1, arg1);
+-
+-	if (ret == -1) {
+-		return -1;
+-	}
+-	if (fn2)
+-		ret = fn2(arg2);
+-	else
+-		ret = 0;
+-
+-	return ret;
+-}
+-
+-int do_unshare_tests(unsigned long clone_flags,
+-		     int (*fn1) (void *arg), void *arg1,
+-		     int (*fn2) (void *arg), void *arg2)
+-{
+-	int pid, ret = 0;
+-	int retpipe[2];
+-	char buf[2];
+-
+-	if (pipe(retpipe) == -1) {
+-		perror("pipe");
+-		return -1;
+-	}
+-	pid = fork();
+-	if (pid == -1) {
+-		perror("fork");
+-		close(retpipe[0]);
+-		close(retpipe[1]);
+-		return -1;
+-	}
+-	if (pid == 0) {
+-		close(retpipe[0]);
+-		ret = tst_syscall(SYS_unshare, clone_flags);
+-		if (ret == -1) {
+-			if (write(retpipe[1], "0", 2) < 0) {
+-				perror("unshare:write(retpipe[1], ..)");
+-			}
+-			close(retpipe[1]);
+-			exit(1);
+-		} else {
+-			if (write(retpipe[1], "1", 2) < 0) {
+-				perror("unshare:write(retpipe[1], ..)");
+-			}
+-		}
+-		close(retpipe[1]);
+-		ret = fn1(arg1);
+-		exit(ret);
+-	} else {
+-		close(retpipe[1]);
+-		if (read(retpipe[0], &buf, 2) < 0) {
+-			perror("unshare:read(retpipe[0], ..)");
+-		}
+-		close(retpipe[0]);
+-		if (*buf == '0')
+-			return -1;
+-		if (fn2)
+-			ret = fn2(arg2);
+-	}
+-
+-	return ret;
+-}
+-
+-int do_plain_tests(int (*fn1) (void *arg), void *arg1,
+-		   int (*fn2) (void *arg), void *arg2)
+-{
+-	int ret = 0, pid;
+-
+-	pid = fork();
+-	if (pid == -1) {
+-		perror("fork");
+-		return -1;
+-	}
+-	if (pid == 0)
+-		exit(fn1(arg1));
+-	if (fn2)
+-		ret = fn2(arg2);
+-	return ret;
+-}
+-
+-int do_clone_unshare_test(int use_clone, unsigned long clone_flags,
+-			  int (*fn1) (void *arg), void *arg1)
+-{
+-	switch (use_clone) {
+-	case T_NONE:
+-		return do_plain_tests(fn1, arg1, NULL, NULL);
+-	case T_CLONE:
+-		return do_clone_tests(clone_flags, fn1, arg1, NULL, NULL);
+-	case T_UNSHARE:
+-		return do_unshare_tests(clone_flags, fn1, arg1, NULL, NULL);
+-	default:
+-		printf("%s: bad use_clone option: %d\n", __FUNCTION__,
+-		       use_clone);
+-		return -1;
+-	}
+-}
+-
+-/*
+- * Run fn1 in a unshared environmnent, and fn2 in the original context
+- */
+-int do_clone_unshare_tests(int use_clone, unsigned long clone_flags,
+-			   int (*fn1) (void *arg), void *arg1,
+-			   int (*fn2) (void *arg), void *arg2)
+-{
+-	switch (use_clone) {
+-	case T_NONE:
+-		return do_plain_tests(fn1, arg1, fn2, arg2);
+-	case T_CLONE:
+-		return do_clone_tests(clone_flags, fn1, arg1, fn2, arg2);
+-	case T_UNSHARE:
+-		return do_unshare_tests(clone_flags, fn1, arg1, fn2, arg2);
+-	default:
+-		printf("%s: bad use_clone option: %d\n", __FUNCTION__,
+-		       use_clone);
+-		return -1;
+-	}
+-}
+diff --git a/testcases/kernel/containers/libclone/libclone.h b/testcases/kernel/containers/libclone/libclone.h
+deleted file mode 100644
+index e92fdca02..000000000
+--- a/testcases/kernel/containers/libclone/libclone.h
++++ /dev/null
+@@ -1,81 +0,0 @@
+-/*
+-* Copyright (c) International Business Machines Corp., 2007
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-*
+-***************************************************************************/
+-#ifndef __LIBCLONE_H
+-#define __LIBCLONE_H
+-
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <libgen.h>
+-#include <sys/syscall.h>
+-#include <signal.h>
+-#include "lapi/syscalls.h"
+-#include "test.h"
+-#include "lapi/sched.h"
+-
+-#define T_UNSHARE 0
+-#define T_CLONE 1
+-#define T_NONE 2
+-
+-#ifndef SYS_unshare
+-#ifdef __NR_unshare
+-#define SYS_unshare __NR_unshare
+-#elif __i386__
+-#define SYS_unshare 310
+-#elif __ia64__
+-#define SYS_unshare 1296
+-#elif __x86_64__
+-#define SYS_unshare 272
+-#elif __s390x__ || __s390__
+-#define SYS_unshare 303
+-#elif __powerpc__
+-#define SYS_unshare 282
+-#else
+-#error "unshare not supported on this architecure."
+-#endif
+-#endif
+-
+-#ifndef __NR_unshare
+-#define __NR_unshare SYS_unshare
+-#endif
+-
+-/*
+- * Run fn1 in a unshared environmnent, and fn2 in the original context
+- * Fn2 may be NULL.
+- */
+-
+-int do_clone_tests(unsigned long clone_flags,
+-			int(*fn1)(void *arg), void *arg1,
+-			int(*fn2)(void *arg), void *arg2);
+-
+-int do_unshare_tests(unsigned long clone_flags,
+-			int (*fn1)(void *arg), void *arg1,
+-			int (*fn2)(void *arg), void *arg2);
+-
+-int do_fork_tests(int (*fn1)(void *arg), void *arg1,
+-			int (*fn2)(void *arg), void *arg2);
+-
+-int do_clone_unshare_test(int use_clone, unsigned long clone_flags,
+-			int (*fn1)(void *arg), void *arg1);
+-
+-int do_clone_unshare_tests(int use_clone, unsigned long clone_flags,
+-			int (*fn1)(void *arg), void *arg1,
+-			int (*fn2)(void *arg), void *arg2);
+-
+-#endif
+diff --git a/testcases/kernel/containers/netns/Makefile b/testcases/kernel/containers/netns/Makefile
+index 3cc2b4ae7..a8edd31b8 100644
+--- a/testcases/kernel/containers/netns/Makefile
++++ b/testcases/kernel/containers/netns/Makefile
+@@ -2,12 +2,12 @@
+ # Copyright (c) International Business Machines  Corp., 2008
+ # Author: Veerendra <veeren@linux.vnet.ibm.com>
+ # Copyright (c) 2015 Red Hat, Inc.
++# Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
+ 
+ top_srcdir              ?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-include $(abs_srcdir)/../Makefile.inc
+ 
+-LDLIBS                  := -lclone -lltp
++INSTALL_TARGETS		:= *.sh
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/containers/pidns/Makefile b/testcases/kernel/containers/pidns/Makefile
+index 5f8383c3c..b99df9f74 100644
+--- a/testcases/kernel/containers/pidns/Makefile
++++ b/testcases/kernel/containers/pidns/Makefile
+@@ -4,8 +4,7 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-include $(abs_srcdir)/../Makefile.inc
+ 
+-LDLIBS			:= -lpthread -lrt -lclone $(LDLIBS)
++LDLIBS			:= -lpthread -lrt $(LDLIBS)
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/containers/pidns/pidns_helper.h b/testcases/kernel/containers/pidns/pidns_helper.h
+deleted file mode 100644
+index 3b356768f..000000000
+--- a/testcases/kernel/containers/pidns/pidns_helper.h
++++ /dev/null
+@@ -1,34 +0,0 @@
+-/*
+-* Copyright (c) International Business Machines Corp., 2007
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-*/
+-
+-#include "../libclone/libclone.h"
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-static int dummy_child(void *v)
+-{
+-	(void) v;
+-	return 0;
+-}
+-
+-static int check_newpid(void)
+-{
+-	int pid, status;
+-
+-	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWPID, dummy_child, NULL);
+-	if (pid == -1)
+-		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWPID not supported");
+-	SAFE_WAIT(NULL, &status);
+-
+-	return 0;
+-}
+diff --git a/testcases/kernel/containers/userns/Makefile b/testcases/kernel/containers/userns/Makefile
+index 018ab000b..cc1d14604 100644
+--- a/testcases/kernel/containers/userns/Makefile
++++ b/testcases/kernel/containers/userns/Makefile
+@@ -19,7 +19,6 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-include $(abs_srcdir)/../Makefile.inc
+ 
+ LDLIBS			:= $(LDLIBS) $(CAP_LIBS)
+ 
+diff --git a/testcases/kernel/containers/utsname/Makefile b/testcases/kernel/containers/utsname/Makefile
+index 9c0158c01..603a3cd6e 100644
+--- a/testcases/kernel/containers/utsname/Makefile
++++ b/testcases/kernel/containers/utsname/Makefile
+@@ -4,8 +4,7 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+-include $(abs_srcdir)/../Makefile.inc
+ 
+-LDLIBS			:= -lclone $(LDLIBS)
++LDLIBS			:= $(LDLIBS)
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+-- 
+2.35.3
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
