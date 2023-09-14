@@ -4,68 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60D7EEDE998
-	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 09:00:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9FF0EDE99C
+	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 09:45:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 84BB43CE733
-	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 10:59:59 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 776AB3CE726
+	for <ltp@archiver.kernel.org>; Thu, 14 Sep 2023 11:45:05 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B08A13CB291
- for <ltp@lists.linux.it>; Thu, 14 Sep 2023 10:59:48 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 5032E3CB253
+ for <ltp@lists.linux.it>; Thu, 14 Sep 2023 11:44:53 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 67341602BAC
- for <ltp@lists.linux.it>; Thu, 14 Sep 2023 10:59:46 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 13D1C21887;
- Thu, 14 Sep 2023 08:59:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1694681985;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0C3C420A6C7
+ for <ltp@lists.linux.it>; Thu, 14 Sep 2023 11:44:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1694684690;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xar5aASVzItjmU+UQHARuSaIZLKjh5MYNpT5TQn7dq4=;
- b=pT7JCGFZz/UDTFty9bAyZneQvsn2yuWo4NUcQrCx/3L6MNyFjmCKs2sKUzq+c4nE2PQrKD
- skEzs3D0YAiZP5cZN35nacsK9Zv5dTbhMBmo9I7IjfAWhTlbDZJ33NwTmCyrqAE5CwbkUY
- lpD/Gp2weGJW+c92Q0VltRM52Ip857o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1694681985;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xar5aASVzItjmU+UQHARuSaIZLKjh5MYNpT5TQn7dq4=;
- b=C/t8LfLgEIvYaDSWfp9t3Y5FToMMlSkt403b82BUaOb/eNdCiN3pY1yeV9eTeoma1Cf75l
- QDwW84k2lqHlxkBg==
-Received: from g78 (rpalethorpe.tcp.ovpn1.nue.suse.de [10.163.17.14])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id B40F52C142;
- Thu, 14 Sep 2023 08:59:44 +0000 (UTC)
-References: <20230803015149.69906-1-iwienand@redhat.com>
- <20230808035641.364676-2-iwienand@redhat.com> <87il8xhr05.fsf@suse.de>
- <ZPlxtKUwOta4GYh2@fedora19.localdomain>
- <65af05ae-bfd1-8153-4662-1bf61be855f3@suse.cz>
- <ZPpOuK9lyWr2wZWI@fedora19.localdomain>
- <845ca8fe-1ae2-13ba-c9e0-a53cf953c0ff@suse.cz>
- <ZP+4xTgAuTBepQge@fedora19.localdomain> <87r0n2gip5.fsf@suse.de>
- <ZQI14xCNkc4wjpC2@fedora19.localdomain>
-User-agent: mu4e 1.10.7; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Ian Wienand <iwienand@redhat.com>
-Date: Thu, 14 Sep 2023 08:37:46 +0100
-Organization: Linux Private Site
-In-reply-to: <ZQI14xCNkc4wjpC2@fedora19.localdomain>
-Message-ID: <87msxpgmf4.fsf@suse.de>
+ bh=BANKxLh//dfbx2i1INStXZkL/cKOcwTcTDlzuFLqBSA=;
+ b=B0mNqXxzpBz10Toybid8/oopHXz8lTSBcH3Ezm4yrnQRakGLKonC3LmiHGre2S2Yrv5zbJ
+ jgwITg9SmYyMZAFVY2msudDKY0CJwTp7aONgVvSR0hw8/4j7JM8DQb5/Lc2SQMmNrnR9IQ
+ TPAfP6ciGlZHGXFmTzs8ZqXrgAB9YAg=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-631-4LDXmmxlNIGls7K7e21NKg-1; Thu, 14 Sep 2023 05:44:49 -0400
+X-MC-Unique: 4LDXmmxlNIGls7K7e21NKg-1
+Received: by mail-lf1-f69.google.com with SMTP id
+ 2adb3069b0e04-5007f3d3293so902373e87.3
+ for <ltp@lists.linux.it>; Thu, 14 Sep 2023 02:44:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1694684687; x=1695289487;
+ h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=BANKxLh//dfbx2i1INStXZkL/cKOcwTcTDlzuFLqBSA=;
+ b=vLA7G5Bouu2fCTzM9G2NRGyPfUOdM9YGViXc1ROTEnRahoMSs09w4nrqijbc9GOy4D
+ q1Xh93VfP5N1rTXvTaaOp1g9cS1c+m0fkZwuph6ylVNEXegDi83vN6fNPuDSAwaFPV6d
+ ypNs+3bajGaTvhSlcLBbuu6gQfDihabd7jq9+D/n45Dq+JfrawqBJlaUg+x3KoAYkIpn
+ BzSWQq+qcs6dF4tuRt4JJKBlEuvMOnfVnf2rC9O2Z1dA92nfkPrU+opBifNxMRAdV4GP
+ eyfHm/GqguM8BkSD7l2W4V73LK1Ld8Vw6rh1Uz7BceVCa2shc3D/ZVjhrwz9k7oAxFOP
+ UW7g==
+X-Gm-Message-State: AOJu0Yx3QCGtoKfQYGLPBhiUkTGwuIgawkYayps8uQAn/z1wq3UfWE1c
+ 5HIGpQVWnbMQgT+Qdki5IrL58VkaL3lWB3n+o8ZWnuYcDstKp25tM82xo+XQy6Hg2nE5dUUy+1f
+ E17rj1LjAokv2TqJ1pyhguKFJpYL/eBY4dW/yHxa/vwQ=
+X-Received: by 2002:ac2:4bd2:0:b0:4ff:7f57:facd with SMTP id
+ o18-20020ac24bd2000000b004ff7f57facdmr5040892lfq.54.1694684686726; 
+ Thu, 14 Sep 2023 02:44:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHlB1Q/hiv5a9BbLxBheODcDSmPXa8E6Fg7rD1kthcQFH4qkiEKaQPmFufK8WzJ8SbH5DctQT+EC8Z8TxecNMU=
+X-Received: by 2002:ac2:4bd2:0:b0:4ff:7f57:facd with SMTP id
+ o18-20020ac24bd2000000b004ff7f57facdmr5040879lfq.54.1694684686347; Thu, 14
+ Sep 2023 02:44:46 -0700 (PDT)
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+References: <20230524093930.43971-1-liwang@redhat.com>
+ <20230911080233.1305942-1-liwang@redhat.com>
+In-Reply-To: <20230911080233.1305942-1-liwang@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 14 Sep 2023 17:44:34 +0800
+Message-ID: <CAEemH2ejp3iLbv7fXAr6H3WuC+TQ3O05V0t2HUyYSbsNYixFaQ@mail.gmail.com>
+To: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] kernel/device-drivers/zram/zram01.sh : don't
- fill from /dev/zero
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v2 1/2] lib: add support for kinds of hpsize
+ reservation
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,72 +87,133 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi Cyril,
 
-Ian Wienand <iwienand@redhat.com> writes:
+[Please hold off on merging this patch]
 
-> On Wed, Sep 13, 2023 at 03:35:18PM +0100, Richard Palethorpe wrote:
->> I would suggest just using sync, but Petr originally suggested using a
->> wait loop. Then reported that the bug was still reproducible with the
->> loop:
->> 
->> https://lore.kernel.org/linux-block/Y3s+Czg8sBsGYO+1@pevik/
->> 
->> Then said it wasn't reproducible. The problem is that if using a loop
->> doesn't solve it then possibly the VFAT meta-data doesn't get written to
->> disk in the absence of any pressure.
->> 
->> So instead I'd suggest resurrecting Petr's original patch or at least
->> his approach. If we merge that and still see failures then maybe it's
->> worth investigating more with tracing/debugging.
->
-> I do not think the original patch [1] is the correct solution in light
-> of the further investigation that has happened after it was proposed.
->
-> [2] is about the clearest explaination I can come up with, other than
-> the patch description and comments added in the v2 patch [3].  I am of
-> the opinion that to be useful these tests need to explicitly make sure
-> they are not just writing data that can be de-duplicated.  I do not
-> believe the the intent of these tests was to have the only data
-> managed by the disk a very small amount of file-system metadata.
->
-> Sorry to sound like a broken record, but I spent some time
-> investigating the paths taken with [2] and confirming the stats that
-> were coming out were not due to some kernel issue, but it really was
-> that the backing area had no pages allocated to it at all.
->
-> Looping on a sync might make the test pass in more cases, but I hope
-> we can agree the idea is to make the test better, not just pass so we
-> can continue to ignore it.
+The hesitating part of this method (from myself) is the new field
+'hp->hpsize'.
+It seems not wise to leave it to users to fill the gigantic page size
+manually,
+as some arches support different huge/gigantic page sizes:
 
-We don't want to remove coverage of ZRAM_SAME! A bug in ZRAM_SAME is a
-potential expoit or data-corruption.
+   x86_64 and x86:  2MB and 1GB.
+   PowerPC:  ranging from 64KB to 16GB.
+   ARM64:  2MB and 1GB.
+   IA-64 (Itanium):  from 4KB to 256MB.
 
-If you want to change the test you have to show where ZRAM_SAME is being
-covered instead.
+we probably need a intelengent way to detect and reserve whatever
+hugepage or gitantic-page that all acmplish that in ltp-library or setup().
+Then people don't need to fill any byte which avoiding typo or
+something wrong.
 
-It's not that I think ZRAM_SAME is any more or less important than the
-true compression path. It's that if we never allow coverage to be
-swapped out or removed, then we systematically increase coverage.
+What I can think of the improved way is to extend the hugepage policy
+with "_G" subfix to  specified the gigantic pages.
 
->
-> -i
->
-> [1] https://lore.kernel.org/linux-block/20221107191136.18048-2-pvorel@suse.cz/
-> [2] https://lore.kernel.org/linux-block/ZNB2kORYiKdl3vSq@fedora19.localdomain/
-> [3] https://lore.kernel.org/ltp/ZPpOuK9lyWr2wZWI@fedora19.localdomain/T/#m1e037003252012ac115e57285a926db77380897f
+Is this sounds better?  What do you think?
+
+Something drafted base on my patch V2:
+
+--- a/include/tst_hugepage.h
++++ b/include/tst_hugepage.h
+@@ -20,14 +20,15 @@ extern char *nr_opt; /* -s num   Set the number of the
+been allocated hugepages
+ extern char *Hopt;   /* -H /..   Location of hugetlbfs, i.e.  -H
+/var/hugetlbfs */
+
+ enum tst_hp_policy {
+-       TST_REQUEST,
+-       TST_NEEDS,
++       TST_REQUEST_H = 0x0,
++       TST_REQUEST_G = 0x1,
++       TST_NEEDS_H   = 0x2,
++       TST_NEEDS_G   = 0x4,
+ };
+
+ struct tst_hugepage {
+        const unsigned long number;
+        enum  tst_hp_policy policy;
+-       const unsigned long hpsize;
+ };
+
+ /*
+@@ -35,6 +36,11 @@ struct tst_hugepage {
+  */
+ size_t tst_get_hugepage_size(void);
+
++/*
++ * Get the gigantic hugepage size. Returns 0 if hugepages are not
+supported.
++ */
++size_t tst_get_gigantic_size(void);
++
+ /*
+  * Try the best to request a specified number of huge pages from system,
+  * it will store the reserved hpage number in tst_hugepages.
+diff --git a/lib/tst_hugepage.c b/lib/tst_hugepage.c
+index f4b18bbbf..568884fbb 100644
+--- a/lib/tst_hugepage.c
++++ b/lib/tst_hugepage.c
+@@ -21,6 +21,30 @@ size_t tst_get_hugepage_size(void)
+        return SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+ }
+
++/* Check if hugetlb page is gigantic */
++static inline int is_hugetlb_gigantic(unsigned long hpage_size)
++{
++       return (hpage_size / getpagesize()) >> 11;
++}
++
++size_t tst_get_gigantic_size(void)
++{
++       DIR *dir;
++       struct dirent *ent;
++       unsigned long g_hpage_size;
++
++       dir = SAFE_OPENDIR(PATH_HUGEPAGES);
++       while ((ent = SAFE_READDIR(dir))) {
++               if ((sscanf(ent->d_name, "hugepages-%lukB", &g_hpage_size)
+== 1) &&
++                       is_hugetlb_gigantic(g_hpage_size * 1024)) {
++                       break;
++               }
++       }
++
++       SAFE_CLOSEDIR(dir);
++       return g_hpage_size * 1024;
++}
++
+ unsigned long tst_reserve_hugepages(struct tst_hugepage *hp)
+ {
+        unsigned long val, max_hpages, hpsize;
+@@ -43,10 +67,10 @@ unsigned long tst_reserve_hugepages(struct tst_hugepage
+*hp)
+        else
+                tst_hugepages = hp->number;
+
+-       if (hp->hpsize)
+-               hpsize = hp->hpsize;
++       if (hp->policy & (TST_NEEDS_G | TST_REQUEST_G))
++               hpsize = tst_get_gigantic_size() / 1024;
+        else
+-               hpsize = SAFE_READ_MEMINFO(MEMINFO_HPAGE_SIZE);
++               hpsize = tst_get_hugepage_size() / 1024;
+
+        sprintf(hugepage_path,
+PATH_HUGEPAGES"/hugepages-%lukB/nr_hugepages", hpsize);
+        if (access(hugepage_path, F_OK)) {
+
+
 
 
 -- 
-Thank you,
-Richard.
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
