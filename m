@@ -4,123 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56DD5EE645B
-	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 13:02:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 936C9EE6457
+	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 13:44:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B7F6D3CE6B9
-	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 15:02:34 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 4508B3CE6B4
+	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 15:44:04 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2B8123CB172
- for <ltp@lists.linux.it>; Fri, 15 Sep 2023 15:02:22 +0200 (CEST)
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com
- (mail-dbaeur03on20606.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe1a::606])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 7AEAC3CB172
+ for <ltp@lists.linux.it>; Fri, 15 Sep 2023 15:43:53 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 11DE860320C
- for <ltp@lists.linux.it>; Fri, 15 Sep 2023 15:02:22 +0200 (CEST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GrYn3apM5sswjoC9KLO8kLORmLNC1EyRXGs/jP7b6JqiwBinMy+hyOnJgbIvoI484dzBcExBovgMvhfc4Zxv6HLO7fcUq9kx5jPBuPI6cCwTFSZBQTzbFGAmoSUo6WpN/gmtpZAsoGdYeNknXsr/TxuxiAaAsV83pVc5N+MB++/jlSMrdQBCk8v47mfjYYgxbjUkkQoLlzhyhBZ0LenGWzzBeUhTgiYOmn6ZC8llBXzmQn0mMTbuFRkCWmR98yTQqowmVJK8HsZHtc+o4NoBAh/+o57eny39MYXasXvSMFfhluQL7c1EPCVIE25PCHwQB5LQeWtx5eb++yurKRwaVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k9MIrxx4aQF66H7oE8s5zzF6jeTvt3qtihpF1NN0v6U=;
- b=Ch01WDtgTXJFCQB3I2zGrGWHPzN3DyYpsSbl8QRfv5jvacKlfEbcrqukcjj23IPIH7jMj9AvWc1s30i70RckCv+nlIZ/e68JGwqP7bGIn6skjSsQxySLdXejq1iHQ5CAyA7Y7vBda/BHwMnl/WFKV24w+/T63mzMHhOlUfUbadPM5KtZir/K6gkqouJp6296KWhFJI9ORWm0+f1XI5B5AVlS4ufeEuvVO3ohlGCCJR03oY26V6+tLyzx6cOd3yw+i12DQAFP6UDrGNwdqnwfXZHNuZkgyOwVh6ZyQ9HhUO29LsaV5ocAgGfKley1ephhGD8ElXhzs2bIwV6T14GuGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k9MIrxx4aQF66H7oE8s5zzF6jeTvt3qtihpF1NN0v6U=;
- b=nC+EaLDGaBfnClQ/0A/jSldC1md8KPvSw52qU32iJRI5RC3xd8HbERq99TRHKZ+bCt48XwaW9m1KoMz5WXF6cfc2f/WvPpxkR3ww89htpD9lPcPS3OPQlG65rvE8L8PUJ+GjuixjDuE9/DO7Ra86gPGTgrFKVCKMOiMmBsaJTihL5Jn146of+bbd4xHG1D3+SZ8l1JE/hmKlrcUSFJHkQPS1EiOUGrswC4fBLHGTNERheOdl5R8+qtEuOeImiLbsAtU6uvpxWMZmBKHEW/HcZwdLlgWm9hvgucSTMDGhQxl52pySWqK7w8jkON0RVom4N118N1V5LyLhHwuHvzgcOA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB6797.eurprd04.prod.outlook.com (2603:10a6:803:13e::13)
- by AM0PR04MB7076.eurprd04.prod.outlook.com (2603:10a6:208:19a::8)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.20; Fri, 15 Sep
- 2023 13:02:20 +0000
-Received: from VI1PR04MB6797.eurprd04.prod.outlook.com
- ([fe80::c33:be0b:88be:b96e]) by VI1PR04MB6797.eurprd04.prod.outlook.com
- ([fe80::c33:be0b:88be:b96e%4]) with mapi id 15.20.6792.021; Fri, 15 Sep 2023
- 13:02:20 +0000
-Message-ID: <8b1ed832-2c6d-4e1c-8227-234e5864b300@suse.com>
-Date: Fri, 15 Sep 2023 15:02:18 +0200
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 57F9910001A4
+ for <ltp@lists.linux.it>; Fri, 15 Sep 2023 15:43:51 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2188A218F0;
+ Fri, 15 Sep 2023 13:43:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1694785431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Z9cVq4p3qaYVLrO9p5nyaFMWY2jDvL/6EM+7V86fW9c=;
+ b=WMAcS1j2bd54EM7fo7rZkQHR1cvaUN/KoRVc8Zkya+sEUfRkAEMJBHBkGCnvGYRu4spBJ8
+ M8CPK8XcNi+OWBoGbsoIdJ4ge6EabPc1XQnPUfPRLHCu83kEGDuDidjysW6IQ5DU2zd1s9
+ qXQV792ZW/rFKXdy4HdNyvSsTRnQo/Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1694785431;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Z9cVq4p3qaYVLrO9p5nyaFMWY2jDvL/6EM+7V86fW9c=;
+ b=Idvr6GAllv/Zm9VBuKvSogvZLxi1Cq4yLbiZoRkHq80hWYoEbE0uM6yVYp+qmPEO+c1hHr
+ c+ghAezIv1d2JPDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0AD201358A;
+ Fri, 15 Sep 2023 13:43:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id S/WjAZdfBGVwZwAAMHmgww
+ (envelope-from <mkittler@suse.de>); Fri, 15 Sep 2023 13:43:51 +0000
+From: Marius Kittler <mkittler@suse.de>
 To: ltp@lists.linux.it
-References: <ZQF5J0UJ25_QLwcQ@yuki>
-In-Reply-To: <ZQF5J0UJ25_QLwcQ@yuki>
-X-ClientProxiedBy: FR0P281CA0255.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:af::18) To VI1PR04MB6797.eurprd04.prod.outlook.com
- (2603:10a6:803:13e::13)
+Date: Fri, 15 Sep 2023 15:43:48 +0200
+Message-ID: <20230915134348.5553-1-mkittler@suse.de>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6797:EE_|AM0PR04MB7076:EE_
-X-MS-Office365-Filtering-Correlation-Id: d4a5c2d1-1704-4e82-8a26-08dbb5ebfefb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: O4EYSYjrPRee8hhKOUVlch7WrTg09/FhyIpMNInpuM5hYX4mIdpWegO+7An8TSA0B5eMCKpX8Io2lx6C06U6A6V7R7AgubCEJ1KtM+nR3iD5EwpbQNO9y8ofIxoVaSeArKHzXJ/M7A1uIfHuh7ZllSyJls/6436WsUZfGsyUQdWOL657ZuSAX/i3QMlJElDoeJa0UEaVQKiHejCHUoisfuvi+tMTejsxSjeZgQr9neF7eU0Xo52swqfmLuJkcM3W9BanSozKewL0uBmhXh07cQoBDiHs56VuppG0+XCbUFzt0NZGpFJXsqvMrYFXPhfbc5BK293mcEObJUmKuq3wDnsit9quOVZP7eOPT3E7TGimREL2naRpyZJxMEChY+9OdyCZgnYk7QC/3qQO68CRsl1ptH9mnmc9uwukj04SnRCdBuhoVtms6KJRO45LvUWP8gc/tYnDSkFyjDYwUTz/UWBLzwtMuAPmkAiaPKmjOTjWUAFcRhIyXR0NggT+hgL/SzalBDhpvkjhFD/UWPTq3pFvJxN93xu4u15PzjjqA6nrchvDADjjhNrk+kgrWRpu2bz/cIxOFK64TolHAJAsXqUBh9hLc519zLtsLrkRQcL1CtnwbZCOd3rV9gRo86SOUgKn3Y4fhBJihRZXw/tt3g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:VI1PR04MB6797.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(366004)(346002)(396003)(39860400002)(136003)(376002)(1800799009)(451199024)(186009)(86362001)(41300700001)(66476007)(8676002)(36756003)(6916009)(31696002)(66556008)(66946007)(83380400001)(5660300002)(31686004)(8936002)(316002)(38100700002)(44832011)(2616005)(26005)(966005)(478600001)(2906002)(53546011)(4744005)(6512007)(6486002)(6506007)(43740500002)(45980500001);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UHd6YlRWMUYzMFIzZ1MwN05iV0R3Tm9LMmZBYWlNTUhtelpxcnJQT0JUdnAz?=
- =?utf-8?B?ODQ1SkQ4bU1sekMxNTVFOUZDS0Y4azQ1Zm16VFVjTHdqNXhpdFZoSVFnZFJi?=
- =?utf-8?B?Vi9MVlBUbWloejhVeVZWSFhlbWZ3ZHRWN1ZCRHhmYlVBNmhiYjlIMjd0YWkv?=
- =?utf-8?B?Uko4Q1J2S1pCenp2K3dEQkZzVWl5eFRRRDZWQldScDNFcUU2WTM4dytHdG9Z?=
- =?utf-8?B?WVNCRnE2OURWdTVuNjg4TG5MelhNaFE5aHMrb1JoUmhXbENoVG1rUnBWZjBS?=
- =?utf-8?B?dVdEYUhPZTQ1VnBUREhNa3NkOWN5L1ZJRGFaenZyQzJOUFdib0lVejNQVWdG?=
- =?utf-8?B?TkJiM0swaXhud0duSHloN1VzM21HQVppUHk0bXozSFMvSXh4NXFTT3FMUnJk?=
- =?utf-8?B?MERhY1QxZWpvSDRwbm42a08rVTZUaFlzc21RYzlUVnV3VDRnem1RYnY0MWhN?=
- =?utf-8?B?SjVrT1hpaTM2NnVLQW0va3N6aTFweUUyN0IvZVBDYjFHQkFNZ3VCT3pBb2dn?=
- =?utf-8?B?dG5ISWlYMk9Fait2VXpITHY4dmVDRVE4MHRJL2dYN1ZnckdGdlVmRXhCZWRK?=
- =?utf-8?B?RnBCM1E4dzQ2ajRabWZiN2NhazR6N2dkSm4xZDFkVVU4Y3p3WGM1VnI2WWpj?=
- =?utf-8?B?eHhpYXFhQ0JHYzFTWWh5YmhDd1RzelFZTVR4bW5WQko4V0hrNFEzcGw5YVhq?=
- =?utf-8?B?T3MvYzMxMUZxQThjaFRra1g3enBqb2pueWp6M1IzWkszeFU0S3M3WW9PUjBS?=
- =?utf-8?B?citSSnZQdjF0SWFobkZySUtNVUo2V01ZZUx3Nnh3cUI2eDc2QzBxRU14NDBF?=
- =?utf-8?B?NE5KZmJ2WWNacnBCTVM1eEJqWG5QSzg1V0U3SVl2VWk4SC9UcG1oLzBZM2Y2?=
- =?utf-8?B?V0dUSkt2L0c4WCtFVlhjVis5NTh1ZWducUFMdm5hQW82ZHpPZG05NDUzVkgv?=
- =?utf-8?B?b1F4MmUvajBORSt0YkFKV1NYVzZPUHZuM3pvbldtaVFHU2ZRVmtoREx1aWdh?=
- =?utf-8?B?ZFluaC9wNGR0VFVqQzVQV1VlUHFPdmZraEJzUythQmFJOURDR08va1BDQVcy?=
- =?utf-8?B?elVrdVhURHJzNzlSQ2RTRWZ6VVVvYk5RZkJoc1FzZGNuN3BNUWNESVpHbmdn?=
- =?utf-8?B?ZGZTZHNKclIwYkRRcDNtTG9hV2lyeEhkRjR6OWk3eFFHdVlFZWtpbjNodW4r?=
- =?utf-8?B?aEhBTzBsOGhYQURtNGdRVEdTdzd3VHg2QUlON3VQZk85dTdaSnZHQzgwcjg3?=
- =?utf-8?B?VG9HLzdDa3g3SGtWTWkrUDNweklpR3B0MjgwM3BYYXdpSTBjTzg5c0ZPaGZV?=
- =?utf-8?B?REtybExnTjViWUNBVmRmRmpNKzZ6cVR2Q1dsd0kwcGZtTnllbmc1TVRMV1A0?=
- =?utf-8?B?WVduc0Q0c2xZUDdEV3JrM0tQMzRRamN3UkNockV5Q205U2xkMEFNMVE5YUxZ?=
- =?utf-8?B?TUxGK0dhWWFJc3ZHMk5PQTFyYTdjLy84TW14aDRPa2l1RXZXamNBYUtrVmh4?=
- =?utf-8?B?QjViaVNpOVB2TGNVeTdWS0NjWGV1UXJMNjJ5U0h5SFBIVkxoK1B5UWZqRjhj?=
- =?utf-8?B?WXYzMkZXT3owcGx3QU5nWElvT3A5c0E1b3NaUmQzOEsvRm0yb1U2R1N2ZTV5?=
- =?utf-8?B?TmpSZ1NVSmhZb3ZvWXRKeEtCZUhtVTd4eTJYeisvR25kZUN3bGp4TWt5UDJ4?=
- =?utf-8?B?TE1QenpUb280bFZKZHZheXloSWFoUTZtVFQ4RWZxcldsaHB2aTdJd3V3ZWRs?=
- =?utf-8?B?RldUTXhybEFKVmg4aEVPb1Yybzk5MjdLblUrNXVidXI1TVhmWFVOMEFFZWZ4?=
- =?utf-8?B?ZCtZdkJkaTYvY0tQeDErL1Q4c2NjMFVIaTVZclBXVDJlbnNwelloeElha3lK?=
- =?utf-8?B?SmRRajV4ZzJwQndQVUtYd0RxODFWSXFyNlI4N1Uza0VOUnN6dS9hT1RFRzBV?=
- =?utf-8?B?ZXFqc3pCZ3k0Z2g4UEdpaEZjM3dTQnQxcDZ3UFRVVmJGcElEWnFFa25CcWc2?=
- =?utf-8?B?aEVNSUNibVp0SDVQQVlhckNtUHVLaE9uSFJ6SUx1QUtFaW5TbE9QV3A0UXRK?=
- =?utf-8?B?NWR5Q3M4QmVoTkhzWWlsODlteEdQK1pudWI2MzUzNnJDNzloT1g2VGRXSlBS?=
- =?utf-8?B?cmIwZWUyWEs5cmlVNk9Rank2Ryt4QmsyaGhYRlFUalNPVnJqMnNxM2ZPbzVo?=
- =?utf-8?B?Q1E9PQ==?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4a5c2d1-1704-4e82-8a26-08dbb5ebfefb
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB6797.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2023 13:02:20.4820 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ANo9TxgFgSF28CA52Q8gJo+BCshRI/C3pVyfbFMtQ3BRzm0REER7q1goXc+gVMqDnGGAvBMFR6fkdPF833q4xYNFNxzgH7biOXUOf5kK2ZI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7076
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] LTP Release preparations
+Subject: [LTP] [PATCH v1] Port `getxattr02.c` to new test API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -132,30 +71,255 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+* Utilize `all_filesystems = 1`-mechanism to test on various file
+  systems instead of relying on the temporary directory's file system
+  to support xattr (which it probably does not as it is commonly a
+  tmpfs)
+* Improve error handling
+* Simplify code and description
 
-it would be nice to add the ltx tool into the next release.
-https://github.com/acerv/ltx
+Signed-off-by: Marius Kittler <mkittler@suse.de>
+---
+ .../kernel/syscalls/getxattr/getxattr02.c     | 182 ++++++++----------
+ 1 file changed, 75 insertions(+), 107 deletions(-)
 
-Regards,
-Andrea Cervesato
-
-On 9/13/23 10:56, Cyril Hrubis wrote:
-> Hi!
-> As usuall we are supposed the release LTP at the end of the month. In
-> order to get at least two weeks of pre-release testing I would like to
-> freeze the git starting next week. I will try to review and merge as
-> much as possible till the end of this week. If there is anything that
-> you think should go into the release let me know so that I can have a
-> look.
->
+diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c b/testcases/kernel/syscalls/getxattr/getxattr02.c
+index a42057d0a..d6dea2c81 100644
+--- a/testcases/kernel/syscalls/getxattr/getxattr02.c
++++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
+@@ -1,28 +1,12 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright (C) 2011 Red Hat, Inc.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
++ * Copyright (C) 2011  Red Hat, Inc.
++ * Copyright (c) 2023 Marius Kittler <mkittler@suse.de>
+  */
+ 
+-/*
++/*\
++ * [Description]
++ *
+  * In the user.* namespace, only regular files and directories can
+  * have extended attributes. Otherwise getxattr(2) will return -1
+  * and set errno to ENODATA.
+@@ -39,26 +23,17 @@
+  */
+ 
+ #include "config.h"
+-#include <sys/types.h>
+-#include <sys/stat.h>
+ #include <sys/sysmacros.h>
+-#include <sys/wait.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <unistd.h>
+-#include <signal.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include <string.h>
+ #ifdef HAVE_SYS_XATTR_H
+ # include <sys/xattr.h>
+ #endif
+-#include "test.h"
+-#include "safe_macros.h"
+ 
+-char *TCID = "getxattr02";
++#include "tst_test.h"
++#include "tst_test_macros.h"
+ 
+-#ifdef HAVE_SYS_XATTR_H
++#define MNTPOINT "mntpoint"
+ #define XATTR_TEST_KEY "user.testkey"
+ 
+ #define FIFO "getxattr02fifo"
+@@ -66,94 +41,87 @@ char *TCID = "getxattr02";
+ #define BLK  "getxattr02blk"
+ #define SOCK "getxattr02sock"
+ 
+-static void setup(void);
+-static void cleanup(void);
++static char *workdir;
+ 
+-static char *tc[] = {
++static char *tcases[] = {
+ 	FIFO,			/* case 00, get attr from fifo */
+ 	CHR,			/* case 01, get attr from char special */
+ 	BLK,			/* case 02, get attr from block special */
+ 	SOCK,			/* case 03, get attr from UNIX domain socket */
+ };
+ 
+-int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
+-
+-int main(int argc, char *argv[])
++static void run(unsigned int i)
+ {
+-	int lc;
+-	int i;
+-	int exp_eno;
+-	char buf[BUFSIZ];
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-		exp_eno = ENODATA;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			TEST(getxattr(tc[0], XATTR_TEST_KEY, buf, BUFSIZ));
+-
+-			if (TEST_RETURN == -1 && TEST_ERRNO == exp_eno)
+-				tst_resm(TPASS | TTERRNO, "expected behavior");
+-			else
+-				tst_resm(TFAIL | TTERRNO, "unexpected behavior"
+-					 " - expected errno %d - Got", exp_eno);
++#ifdef HAVE_SYS_XATTR_H
++	SAFE_CHDIR(workdir);
++
++	if (i == 0) {
++		/* Test for xattr support in the current filesystem */
++		int fd = SAFE_CREAT("testfile", 0644);
++		close(fd);
++		TEST(setxattr("testfile", "user.test", "test", 4, XATTR_CREATE));
++		if (TST_RET < 0) {
++			if (TST_ERR == ENOTSUP)
++				tst_brk(TCONF, "no xattr support in filesystem");
++			tst_brk(TBROK | TTERRNO, "unexpected setxattr() return code");
++			return;
+ 		}
++		unlink("testfile");
++
++		/* Create test files */
++		if (mknod(FIFO, S_IFIFO | 0777, 0) < 0)
++			tst_brk(TBROK | TERRNO, "create FIFO(%s) failed", FIFO);
++		dev_t dev = makedev(1, 3);
++		if (mknod(CHR, S_IFCHR | 0777, dev) < 0)
++			tst_brk(TBROK | TERRNO, "create char special(%s)"
++				" failed", CHR);
++		if (mknod(BLK, S_IFBLK | 0777, 0) < 0)
++			tst_brk(TBROK | TERRNO, "create block special(%s)"
++				" failed", BLK);
++		if (mknod(SOCK, S_IFSOCK | 0777, 0) < 0)
++			tst_brk(TBROK | TERRNO, "create socket(%s) failed",
++				SOCK);
+ 	}
+ 
+-	cleanup();
+-	tst_exit();
++	int exp_eno = ENODATA;
++	char buf[BUFSIZ];
++	TEST(getxattr(tcases[i], XATTR_TEST_KEY, buf, BUFSIZ));
++	if (TST_RET == -1 && TST_ERR == exp_eno)
++		tst_res(TPASS | TTERRNO, "expected return value");
++	else
++		tst_res(TFAIL | TTERRNO, "unexpected return value"
++				" - expected errno %d - got", exp_eno);
++#endif
+ }
+ 
+ static void setup(void)
+ {
+-	int fd;
+-	dev_t dev;
+-
+-	tst_require_root();
+-
+-	tst_tmpdir();
+-
+-	/* Test for xattr support */
+-	fd = SAFE_CREAT(cleanup, "testfile", 0644);
+-	close(fd);
+-	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
+-		if (errno == ENOTSUP)
+-			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
+-				 "mount without user_xattr option");
+-	unlink("testfile");
+-
+-	/* Create test files */
+-	if (mknod(FIFO, S_IFIFO | 0777, 0) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "Create FIFO(%s) failed",
+-			 FIFO);
+-
+-	dev = makedev(1, 3);
+-	if (mknod(CHR, S_IFCHR | 0777, dev) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "Create char special(%s)"
+-			 " failed", CHR);
+-
+-	if (mknod(BLK, S_IFBLK | 0777, 0) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "Create block special(%s)"
+-			 " failed", BLK);
+-
+-	if (mknod(SOCK, S_IFSOCK | 0777, 0) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "Create socket(%s) failed",
+-			 SOCK);
+-
+-	TEST_PAUSE;
++#ifdef HAVE_SYS_XATTR_H
++	char *cwd = SAFE_GETCWD(NULL, 0);
++	workdir = SAFE_MALLOC(strlen(cwd) + strlen(MNTPOINT) + 2);
++	sprintf(workdir, "%s/%s", cwd, MNTPOINT);
++	free(cwd);
++#else
++	tst_brk(TCONF, "<sys/xattr.h> does not exist.");
++#endif
+ }
+ 
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
+-#else /* HAVE_SYS_XATTR_H */
+-int main(int argc, char *argv[])
+-{
+-	tst_brkm(TCONF, NULL, "<sys/xattr.h> does not exist.");
+-}
++static struct tst_test test = {
++#ifdef HAVE_SYS_XATTR_H
++	.all_filesystems = 1,
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.mount_device = 1,
++	.skip_filesystems = (const char *const []) {
++			"exfat",
++			"tmpfs",
++			"ramfs",
++			"nfs",
++			"vfat",
++			NULL
++	},
+ #endif
++	.setup = setup,
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases)
++};
+-- 
+2.42.0
 
 
 -- 
