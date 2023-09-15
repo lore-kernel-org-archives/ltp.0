@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E0F9EED615
-	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 15:41:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56EE7EED619
+	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 16:41:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1DE7D3CE69F
-	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 17:41:51 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 35BF73CE6A7
+	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 18:41:18 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1356C3CB576
- for <ltp@lists.linux.it>; Fri, 15 Sep 2023 17:41:39 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 84D9F3CB133
+ for <ltp@lists.linux.it>; Fri, 15 Sep 2023 18:41:07 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6518C600AA8
- for <ltp@lists.linux.it>; Fri, 15 Sep 2023 17:41:38 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6D3E5603122
+ for <ltp@lists.linux.it>; Fri, 15 Sep 2023 18:41:05 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 39DC71FD73;
- Fri, 15 Sep 2023 15:41:38 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 47B31218FE;
+ Fri, 15 Sep 2023 16:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1694792498;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1694796065; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dtT+Il6mBazxj1DODPdwa7M3rlzSg0FwXvjHSVPm2t4=;
- b=iqoTyfMI9jajYH4rL68DVhl+ma9LbPXoEhlhhfYH45tVJESy9GEyzrCZpw+SNNO93dAnGQ
- hrzueAP62teGgjgZsqYK5PKTftI6kYReQyfvsTy//i/iyE/0xkLE4ZjUJu35R5yqZX/YBD
- uzvs3PtYrOLbA/reUf8C5NeuHTEhowM=
+ bh=iES/A4tmD0CrYhrwrc4DT4Z02BLj/EWKwG+5f5pQOkU=;
+ b=Lh+qcwIUa7RacpHW0l6q/GGMPWi9jXso+ziSr5mjLG/0RKAnvcl4cepJRkn2j7lNWSXDGr
+ JWFbJmA+ylO1eHYeSAi2kwyIHxqSgAlEJGi8FG2G4qvHNdn1QzjQPhBfa2rkgDNtoltidU
+ 3bJxQNLfHeNwZwVb2sF/F7ITMxPSEco=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1694792498;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1694796065;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=dtT+Il6mBazxj1DODPdwa7M3rlzSg0FwXvjHSVPm2t4=;
- b=v7mvw3C0zBYVxanpXdlwcjqxG18oiD4Rg2aufZJfGAisBPw79Q4za9XIsOhCz4RleeKtt5
- F7UnnnKC3EFv20AA==
+ bh=iES/A4tmD0CrYhrwrc4DT4Z02BLj/EWKwG+5f5pQOkU=;
+ b=ryV7CFhoCpToynZsmWSwRQbA5tp1XiZdSH728wq0NT+gU/UipaxhAomb9+9+txYUEjQxcI
+ UJxGZ1GC7ozBR/BA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7062D1358A;
- Fri, 15 Sep 2023 15:41:37 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 338EF13251;
+ Fri, 15 Sep 2023 16:41:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id LqWrEzF7BGVlIgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 15 Sep 2023 15:41:37 +0000
-Date: Fri, 15 Sep 2023 17:41:35 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>, ltp@lists.linux.it
-Message-ID: <20230915154135.GA11318@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id lwoRCCGJBGW0PAAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 15 Sep 2023 16:41:05 +0000
+Date: Fri, 15 Sep 2023 18:41:50 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZQSJThJZLuAuxaMT@yuki>
 References: <20230915144156.22380-1-andrea.cervesato@suse.de>
  <20230915144156.22380-3-andrea.cervesato@suse.de>
- <20230915152910.GB73280@pevik>
+ <20230915152910.GB73280@pevik> <20230915154135.GA11318@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230915152910.GB73280@pevik>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+In-Reply-To: <20230915154135.GA11318@pevik>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 2/2] Add Linux Test eXecutor inside tools
 X-BeenThere: ltp@lists.linux.it
@@ -78,39 +77,81 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Andrea,
+Hi!
+> This is breaking build:
+> 
+> 2023-09-15T13:47:12.1128844Z make -C ltx
+> 2023-09-15T13:47:12.1148029Z make[3]: *** No targets specified and no makefile found.  Stop.
+> 2023-09-15T13:47:12.1153175Z make[2]: *** [/__w/ltp/ltp/tools/ltx/Makefile:13: all] Error 2
+> 2023-09-15T13:47:12.1159251Z make[1]: *** [../include/mk/generic_trunk_target.inc:108: all] Error 2
+> 2023-09-15T13:47:12.1163512Z make[1]: Leaving directory '/__w/ltp/ltp/tools'
+> 2023-09-15T13:47:12.1169815Z make: *** [Makefile:94: tools-all] Error 2
 
-> Hi Andrea,
+I suppose that we need
 
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Reproduce with simple:
+> $ cd tools && make -C ltx
+> 
+> The problem is because there is no tools/ltx/Makefile
 
-This is breaking build:
+Huh? I did apply the two patches and I do have tools/ltx/Makefile
 
-2023-09-15T13:47:12.1128844Z make -C ltx
-2023-09-15T13:47:12.1148029Z make[3]: *** No targets specified and no makefile found.  Stop.
-2023-09-15T13:47:12.1153175Z make[2]: *** [/__w/ltp/ltp/tools/ltx/Makefile:13: all] Error 2
-2023-09-15T13:47:12.1159251Z make[1]: *** [../include/mk/generic_trunk_target.inc:108: all] Error 2
-2023-09-15T13:47:12.1163512Z make[1]: Leaving directory '/__w/ltp/ltp/tools'
-2023-09-15T13:47:12.1169815Z make: *** [Makefile:94: tools-all] Error 2
+And actually there is a minor problem there, without the submodules
+checked out I get:
 
-Reproduce with simple:
-$ cd tools && make -C ltx
+CC ltx
+gcc: fatal error: no input files
+compilation terminated.
+make: *** [Makefile:21: ltx] Error 1
 
-The problem is because there is no tools/ltx/Makefile
+So I guess that we need:
 
-Why are the sources in tools/ltx/ltx-src instead of tools/ltx anyway?
-I guess you used sparse approach, which is not necessary here.
-I'm ok with that if it makes things simpler, but please include the required
-Makefile.
+diff --git a/tools/ltx/Makefile b/tools/ltx/Makefile
+index 0fbf7cfd9..43ed93c6b 100644
+--- a/tools/ltx/Makefile
++++ b/tools/ltx/Makefile
+@@ -7,6 +7,8 @@ top_srcdir              ?= ../..
 
-Kind regards,
-Petr
+ include $(top_srcdir)/include/mk/env_pre.mk
+
++ifneq ($(wildcard $(abs_srcdir/ltx-src/*)),)
++
+ BINARY=ltx
+
+ MAKE_TARGETS := $(BINARY)
+@@ -23,4 +25,6 @@ endif
+
+ INSTALL_DIR := $(prefix)
+
++endif
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
+> Why are the sources in tools/ltx/ltx-src instead of tools/ltx anyway?
+
+Because if there is a directory with the name ltx it horribly confused
+Make.
+
+> I guess you used sparse approach, which is not necessary here.
+
+I'm not sure that we can do things simpler, the Makefile in the ltx git
+repository does not support out of tree build, so unless we remove that
+from LTP this is probably the easiest solution.
+
+> I'm ok with that if it makes things simpler, but please include the required
+> Makefile.
+
+It is there.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
