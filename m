@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F046FEE6459
-	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 11:19:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F9E3EE6457
+	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 11:28:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4A1073CE69C
-	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 13:19:39 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id DAE033CE6B4
+	for <ltp@archiver.kernel.org>; Fri, 15 Sep 2023 13:28:30 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E6B313CE684
- for <ltp@lists.linux.it>; Fri, 15 Sep 2023 13:19:28 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id D57DA3CE67F
+ for <ltp@lists.linux.it>; Fri, 15 Sep 2023 13:28:20 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9CC3D14088EA
- for <ltp@lists.linux.it>; Fri, 15 Sep 2023 13:19:26 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F26151009BC1
+ for <ltp@lists.linux.it>; Fri, 15 Sep 2023 13:28:19 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7744121866;
- Fri, 15 Sep 2023 11:19:26 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BD7C81F74B;
+ Fri, 15 Sep 2023 11:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1694776766;
+ t=1694777298;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UK6HI+HrKvzuMl8P4kbvsZ9xZFhTaluycL0YBU6LXXs=;
- b=wifbcBE7J9jLOC2vGWBzb7GrKNMdLYK7jykrFdginJM8iWMqhuggG2bcujtQyA6Yol12aM
- 3GsmPiW0ihk49M1h73gPdpxZ+1eeVQgzLkGmCkcIoLAgX6Yd76Xl25oINANoDWkfvRZMvc
- r/a7/sNFCLnoCmPpfioUbWh9WLMe2rE=
+ bh=7FD+xJzH+MRkWl9mg4mo31cPq/WIuRbfDuaB8hS2yxs=;
+ b=os4erryiCJ0YZPvlK+IvTeQYe5y+mpHrNvaBrT6Lrf7JoCcHlCW45+D2MTc42fM/K3jtKn
+ BdAE9qPjUAsSJdZ9R43dKekImlZqhHymHh0ST8aKtFgvAKEEhrqk8jEDhG7DPU4VzP1sOd
+ Mm+6aa0aomWj2fGrx4i7bIeAzkOLnXU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1694776766;
+ s=susede2_ed25519; t=1694777298;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UK6HI+HrKvzuMl8P4kbvsZ9xZFhTaluycL0YBU6LXXs=;
- b=D7Iks5FY63x/yNMA/gebix83DXLmJqOiBGUWByFLF1MqRXx2OdUOINgNSeavhUGvw58Np0
- FmhunMY24vpAiGDg==
+ bh=7FD+xJzH+MRkWl9mg4mo31cPq/WIuRbfDuaB8hS2yxs=;
+ b=pyhpdLYwwzJDbkSJDA9prehRlI2Y6I9p9fbP4t2JxrHi+ogc3wBF06P/3loyh9yy4F7upN
+ 3uBYUTF8u/FZd5Dw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2493E1358A;
- Fri, 15 Sep 2023 11:19:26 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4CCA01358A;
+ Fri, 15 Sep 2023 11:28:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id MVsSB749BGVtHQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 15 Sep 2023 11:19:26 +0000
-Date: Fri, 15 Sep 2023 13:19:24 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id SOP6ENI/BGW+IQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 15 Sep 2023 11:28:18 +0000
+Date: Fri, 15 Sep 2023 13:28:16 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20230915111924.GB46324@pevik>
-References: <20230915091547.26270-1-andrea.cervesato@suse.de>
- <ZQQ4ax1A2ZkFNwIH@yuki>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Message-ID: <20230915112816.GC46324@pevik>
+References: <1694770506-9455-1-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZQQ4ax1A2ZkFNwIH@yuki>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+In-Reply-To: <1694770506-9455-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Replace runltp-ng with kirk framework
+Subject: Re: [LTP] [PATCH] ltp-pan.1/parse_ranges.3: fix typo
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,42 +82,16 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril, Andrea,
+Hi Xu,
 
-> Hi!
-> > Kirk application is a fork of runltp-ng and it aims to merge multiple
-> > Linux testing frameworks in one tool, providing support for remote
-> > testing via Qemu, SSH, LTX, parallel execution and much more.
+hopefully ltp-pan will be removed and runltp-ng/kirk adopted sooner than later
+[1], but we're not there yet, thus I dared to merge this and merge commit which
+fixes more double the typos.
 
-> > Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> > ---
-> >  .gitmodules     | 6 +++---
-> >  tools/kirk      | 1 +
-> >  tools/runltp-ng | 1 -
-
-> Do we also want symlink from runltp-ng to kirk?
-
-+1
-
-BTW I suggested Andrea in the beginning of kirk to have runltp-ng symlink,
-which would behave like 'kirk --framework ltp'. I.e. this:
-
-./kirk --framework ltp --run-suite syscalls
-
-would be equivalent of
-
-./runltp-ng --run-suite syscalls
-
-Instead of having to run:
-./runltp-ng --framework ltp --run-suite syscalls
-
-In that case kirk would be a drop in replacement.
-Andrea, would it be possible to implement this functionality?
-(the default framework could be detected by symlink name, the same approach
-busybox uses, more symlinks could be added).
-
-Kind regards,
+Thanks!
 Petr
+
+[1] https://patchwork.ozlabs.org/project/ltp/patch/20230915091547.26270-1-andrea.cervesato@suse.de/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
