@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76DC2C46CA1
-	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 10:34:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A540FC46CA1
+	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 10:37:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A7F893CE4F1
-	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 12:34:48 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 73F803CE4C3
+	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 12:37:41 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 65A6E3C9274
- for <ltp@lists.linux.it>; Mon, 18 Sep 2023 12:34:35 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 0F1733C9611
+ for <ltp@lists.linux.it>; Mon, 18 Sep 2023 12:37:29 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 45BA9201DB0
- for <ltp@lists.linux.it>; Mon, 18 Sep 2023 12:34:34 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 82E55600879
+ for <ltp@lists.linux.it>; Mon, 18 Sep 2023 12:37:29 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2744C21A2D;
- Mon, 18 Sep 2023 10:34:34 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CFE0021A42;
+ Mon, 18 Sep 2023 10:37:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695033274;
+ t=1695033448;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1nKVBvVMlCBiWzlukr1VOLwWBvHl8WZv6Bfk0Y8nhKA=;
- b=vWN4LwZx0X+YM5ydgOyhkxhO+OYV2DkszoAWmljhAhVhRdremY6v55QleBAVBqKAQBtABD
- vpvjv/C/EK0x+TLUCylp79Y7tEsvlR1ue/Nx9Cr7x5zUgHIxLhoqjEERwyK7sm3CZsGEWd
- 7Ej9ubm2eGlQTaWdpPocVrppf7abo/Y=
+ bh=3yHOq2Vd7Uf4sIgUcpPUSy/UojE3APk7l0iDyertpIY=;
+ b=SlEli4qrjim9bDO/mXagUmgZamVF35UzNCSZ+GiwmsiqvGlm50zyWa7pcr9m2GJ5gM/jYa
+ MT40m3cElHfSp26yXSckrBKjgsxr40IT2m3iBRtImg8IRClw3XrlB4sOhPKZpaVOIx39gh
+ ydpDZZIdIt6/pHVcxp7SWAnepBH6OfA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695033274;
+ s=susede2_ed25519; t=1695033448;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=1nKVBvVMlCBiWzlukr1VOLwWBvHl8WZv6Bfk0Y8nhKA=;
- b=dLnOCSxVkNalyLjaoFM4S4/zNOKPlQZ1THTpoHARGSi70/4awH9Q2hTxBFgE7ViHsu1TJn
- EHrc/Craxihl79CQ==
+ bh=3yHOq2Vd7Uf4sIgUcpPUSy/UojE3APk7l0iDyertpIY=;
+ b=EVTWi3/XX6hmuSK68IGRd6ucySeRD3junSFujNoK71yIx+Ga7tgHpoNmb6YijlKNm0AZp4
+ 8R8BjfpXjCQ938Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 074641358A;
- Mon, 18 Sep 2023 10:34:34 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B235F1358A;
+ Mon, 18 Sep 2023 10:37:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id FwR2ALonCGXPOwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 18 Sep 2023 10:34:34 +0000
-Date: Mon, 18 Sep 2023 12:34:32 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id J78lKmgoCGUwPQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 18 Sep 2023 10:37:28 +0000
+Date: Mon, 18 Sep 2023 12:37:27 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20230918103432.GA12384@pevik>
+Message-ID: <20230918103727.GB12384@pevik>
 References: <20230918082506.17464-1-andrea.cervesato@suse.de>
  <20230918082506.17464-3-andrea.cervesato@suse.de>
  <20230918091756.GB30304@pevik> <ZQgarkBUEyDd4lxF@yuki>
- <ZQgbbx2MEsJaKWwR@yuki>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZQgbbx2MEsJaKWwR@yuki>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+In-Reply-To: <ZQgarkBUEyDd4lxF@yuki>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v3 2/2] Add Linux Test eXecutor inside tools
 X-BeenThere: ltp@lists.linux.it
@@ -87,31 +85,47 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 > Hi!
-> > Unfortunately this does not work well either because the ltx does not
-> > have install targed and trying to install a file from a subdirectory is
-> > not possible with the LTP build system. I've tried that and it didn't
-> > work.
+> > This works, but why we don't use approach used for sparc, i.e.
 
-> > Let's merge this version that works, we can try to do make things better
-> > later on.
+> > $(MAKE) -C ltx-src
 
-> Also one more point $(MAKE) -C ltx-src does not support out-of-tree
-> build and while it's probably fine for 'make check' not to support it,
-> since that is a developer tooling, it should work fine for ltx that is
-> going to be packaged/installed on the SUT.
-Very good point! It'd be nice to note this reason in the git commit message.
+> > That way we would not have to redefine the default rules.
 
-> So I suppose that we are stuck with the LTP ltx Makefile unless we:
+> Unfortunately this does not work well either because the ltx does not
+> have install targed and trying to install a file from a subdirectory is
+> not possible with the LTP build system. I've tried that and it didn't
+> work.
 
-> - add support for out-of-tree build to ltx/Makefile
-> - drop out-of-tree build support from LTP
+> Let's merge this version that works, we can try to do make things better
+> later on.
 
-I guess even Buildroot and Yocto does not use out-of-tree build.
-Maybe we should really remove the support.
+Sure. BTW I prefer v4, which replaces runltp-ng instead of keeping it.
+
+> > Also it detects missing git clone and runs
+> > git submodule update --init if needed.
+
+> > I'm asking for a same approach, not only because later we can unify and reuse
+> > the code in some make helper, but also because it'd be more user friendly if our
+> > new git submodules work the same way.
+
+> Now this needs to be discussed first. Currently the submodule is
+> installed when user writes make check. That means that it's not
+> triggered in default build and the default build works without network
+> connection. I do not think that we should attempt to download additional
+> repositories on default build.
+
+Make sense.
+
+> > But if there is not enough time before release I would not be against this.
+
+> I'm would say that there is not enough time for a proper discussion, so
+> I would really keep things as they are in the latest patchset and leave
+> the discussion for later.
+
+Sure.
 
 Kind regards,
 Petr
-
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
