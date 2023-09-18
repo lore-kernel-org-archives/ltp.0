@@ -4,72 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DF8DCD37B0
-	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 11:49:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 958E8C46CA1
+	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 11:56:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B38BE3CE4D9
-	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 13:49:44 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id D03DC3CE4DD
+	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 13:56:21 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E6FA63CA983
- for <ltp@lists.linux.it>; Mon, 18 Sep 2023 13:49:33 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id C2B413C9611
+ for <ltp@lists.linux.it>; Mon, 18 Sep 2023 13:56:10 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EB16C1A027B5
- for <ltp@lists.linux.it>; Mon, 18 Sep 2023 13:49:32 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1045D1A027D0
+ for <ltp@lists.linux.it>; Mon, 18 Sep 2023 13:56:09 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 9CFB221B2A;
- Mon, 18 Sep 2023 11:49:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695037771; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 69FC91FE43;
+ Mon, 18 Sep 2023 11:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1695038169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ADI9Z0yIjA31BPbbDpRaivz1RYyBMb28wGEj+22WD68=;
- b=HAl0yjOpFxEE/IcXFiJbZSGkGgB38+SIrv78QvfwCf/RK5U4QRoDAyNTHojI9EedX/rhgr
- dfH2sEoq9iBRcuGlT8clCBjWEcZdc80PX5BdYMJZAIQwfrUX/AOOye6b7vdh5dzuSmgtiW
- I6Orf9vzpExgSr+W/Fcjdtm6NwuGCGY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695037771;
+ bh=gO8C9bcKwuxkAvTbwIb0ER5/oBjDFmgNMv7HvQIQJs0=;
+ b=YLQz5zr6+vYRCThekZ2vhVazW6HjuBNf6XSqmyk+UDnw/S9GW3v+K0Wc8FpE7l1cV8cPFA
+ z+wI67aIdndpZhVJyMlWydJEIjX+HukkFj8ZhB28JRAe3+lfCbqMnvX3kwe2w8GM9ybkNZ
+ Jh0iOzncO+Qd/PkqR0vcZuOjQ1LS/s8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1695038169;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ADI9Z0yIjA31BPbbDpRaivz1RYyBMb28wGEj+22WD68=;
- b=r/BNkyTh2Let/wgmIXqWVQwDSBG5XIidTyt1STP5SfstnLvpFrtNZXY69XpR7Bjs+oOTd7
- IIcAuw36dQwQrEDA==
+ bh=gO8C9bcKwuxkAvTbwIb0ER5/oBjDFmgNMv7HvQIQJs0=;
+ b=ypfhNUIMT2ZUHN2mOKkJ4tZZNYyGt6Tx5HXibURd8aEMrGzf165gujUr6gHg/rU/uLXkKF
+ snVTHTcvCj5R/TAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7636C13480;
- Mon, 18 Sep 2023 11:49:31 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D11613480;
+ Mon, 18 Sep 2023 11:56:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id UYyzG0s5CGVxYgAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Mon, 18 Sep 2023 11:49:31 +0000
-Message-ID: <d85fc0df-2e44-2cec-83d8-a7d6b7828e96@suse.cz>
-Date: Mon, 18 Sep 2023 13:49:31 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id sHKKEdk6CGXpZQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Mon, 18 Sep 2023 11:56:09 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
+To: ltp@lists.linux.it
+Date: Mon, 18 Sep 2023 13:56:07 +0200
+Message-Id: <20230918115608.5630-2-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230918115608.5630-1-andrea.cervesato@suse.de>
+References: <20230918115608.5630-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-To: Cyril Hrubis <chrubis@suse.cz>, Richard Palethorpe <rpalethorpe@suse.com>
-References: <20230918112358.25858-1-rpalethorpe@suse.com>
- <ZQg4EN2EYZnjP5Sr@yuki>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <ZQg4EN2EYZnjP5Sr@yuki>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH] kvm: Fix Nix build failure by specifying
- -fno-stack-protector again
+Subject: [LTP] [PATCH v6 1/2] Replace runltp-ng with kirk framework
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,30 +76,60 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: mdoucha@suse.com, ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 18. 09. 23 13:44, Cyril Hrubis wrote:
-> Hi!
->> I found that adding the GUEST_LDFLAGS to the lib_*.o compilations
->> fixes the issue on Nix.
-> 
-> I suppose that, if nothing else, we should add just -fno-stack-protector
-> to the GUEST_CFLAGS instead.
+From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-+1
+Kirk application is the runltp-ng successor and it aims to merge
+multiple Linux testing frameworks in one tool, providing support
+for remote testing via Qemu, SSH, LTX, parallel execution and much
+more.
 
+This patch removes runltp-ng, which is now replaced by kirk. All
+runltp-ng features are present in kirk and even more.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+ .gitmodules     | 6 +++---
+ tools/kirk      | 1 +
+ tools/runltp-ng | 1 -
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+ create mode 160000 tools/kirk
+ delete mode 160000 tools/runltp-ng
+
+diff --git a/.gitmodules b/.gitmodules
+index d1d558b9e..088023039 100644
+--- a/.gitmodules
++++ b/.gitmodules
+@@ -4,6 +4,6 @@
+ [submodule "tools/sparse/sparse-src"]
+ 	path = tools/sparse/sparse-src
+ 	url = git://git.kernel.org/pub/scm/devel/sparse/sparse.git
+-[submodule "tools/runltp-ng"]
+-	path = tools/runltp-ng
+-	url = https://github.com/linux-test-project/runltp-ng.git
++[submodule "tools/kirk"]
++	path = tools/kirk
++	url = https://github.com/linux-test-project/kirk.git
+diff --git a/tools/kirk b/tools/kirk
+new file mode 160000
+index 000000000..7e397fe1a
+--- /dev/null
++++ b/tools/kirk
+@@ -0,0 +1 @@
++Subproject commit 7e397fe1a2d34a100c7dbfa452bd5d86ca1ddb77
+diff --git a/tools/runltp-ng b/tools/runltp-ng
+deleted file mode 160000
+index e842511ed..000000000
+--- a/tools/runltp-ng
++++ /dev/null
+@@ -1 +0,0 @@
+-Subproject commit e842511ed2c680e3b2ea6dec790913a41d5ed937
 -- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.35.3
 
 
 -- 
