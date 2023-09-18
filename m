@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55F3BC46CA1
-	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 11:43:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D68ACD37B0
+	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 11:48:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 782A13CE4DB
-	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 13:43:44 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 897663CA983
+	for <ltp@archiver.kernel.org>; Mon, 18 Sep 2023 13:48:06 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 271C63CAA05
- for <ltp@lists.linux.it>; Mon, 18 Sep 2023 13:43:32 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id BF85B3CA983
+ for <ltp@lists.linux.it>; Mon, 18 Sep 2023 13:47:54 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4769B1A00EE7
- for <ltp@lists.linux.it>; Mon, 18 Sep 2023 13:43:31 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 280191A00F99
+ for <ltp@lists.linux.it>; Mon, 18 Sep 2023 13:47:53 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 6A53E1FE36;
- Mon, 18 Sep 2023 11:43:31 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4782A1FE3A;
+ Mon, 18 Sep 2023 11:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695037411; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1695037673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Z+UEl9x6LNm8swbskfO6RSD/qvmqzOga5xtF8wkHpSE=;
- b=fe+kFIiVdHbvtjLAbdXQ4hGdNjcIc4KoGr++jWjI++Yi6/JWtjyCEuNWbZFAeIaTmIPBAd
- S5kxrBDyNJReY9kHjGrJojiHV7HH0Tdyh/txiamvEPEY+1/YVCUTdU4QQKpMlVgrO4LTLY
- w3I+qibs6V3yltq14x0Jc1vf/o7rOX8=
+ bh=CFkxOOiER9k2Uio16G46S4ffO3AuK3CnKU4LxXNvM2s=;
+ b=wFwql/7DQgxF/SirKos3WCIiX49Lk5JdlBngRV69EYtoILN3OS2BG+mGnc4quRte02htpb
+ V1KEtEjPYwottuHFgFMt+e/yti1JR1ouFL1ovmeudYIx8XyLrADW0+p3gzDgMHheHuKay4
+ QPpyr4XykTvXZox7YUAuCNn7SH23dnI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695037411;
+ s=susede2_ed25519; t=1695037673;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Z+UEl9x6LNm8swbskfO6RSD/qvmqzOga5xtF8wkHpSE=;
- b=J4i/EZam7Fl03XUPXEGY4zgb9kJi7XXalBkz25zySA6euhfsAA+34ckcF7Jt+Zo83u432/
- NxBcojaJ/cqgxyBQ==
+ bh=CFkxOOiER9k2Uio16G46S4ffO3AuK3CnKU4LxXNvM2s=;
+ b=iKe1yiockTeTpLTWVPKPA71eO1MSi86zmqWjRA+fkA3tp3j+OlvTe27MsRwUpxNBsSvm4F
+ 4sDBwWZzNN0s2bDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5095B13480;
- Mon, 18 Sep 2023 11:43:31 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CC0E13480;
+ Mon, 18 Sep 2023 11:47:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YM6ZEuM3CGVEXwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 18 Sep 2023 11:43:31 +0000
-Date: Mon, 18 Sep 2023 13:44:16 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id srVPCek4CGWYYQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Mon, 18 Sep 2023 11:47:53 +0000
+Date: Mon, 18 Sep 2023 13:48:37 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <ZQg4EN2EYZnjP5Sr@yuki>
-References: <20230918112358.25858-1-rpalethorpe@suse.com>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZQg5FZuKujZeI403@yuki>
+References: <20230918110737.1922-1-andrea.cervesato@suse.de>
+ <20230918110737.1922-2-andrea.cervesato@suse.de>
+ <20230918113947.GA4279@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230918112358.25858-1-rpalethorpe@suse.com>
+In-Reply-To: <20230918113947.GA4279@pevik>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC PATCH] kvm: Fix Nix build failure by specifying
- -fno-stack-protector again
+Subject: Re: [LTP] [PATCH v5 1/2] Replace runltp-ng with kirk framework
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,42 +76,24 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: mdoucha@suse.com, ltp@lists.linux.it
+Cc: ltp@lists.linux.it, Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> I found that adding the GUEST_LDFLAGS to the lib_*.o compilations
-> fixes the issue on Nix.
+> I dared to send yet another fix for kirk Makefile:
+> https://patchwork.ozlabs.org/project/ltp/patch/20230918113524.17908-1-pvorel@suse.cz/
+> 
+> kirk should remain as the original file, runltp-ng is the link name.
+> 
+> If you agree with it, I'll merge the fix to kirk repo and update the git has in
+> this patch.
 
-I suppose that, if nothing else, we should add just -fno-stack-protector
-to the GUEST_CFLAGS instead.
-
-> ---
->  testcases/kernel/kvm/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/kvm/Makefile b/testcases/kernel/kvm/Makefile
-> index d9eb10728..ddb24fabe 100644
-> --- a/testcases/kernel/kvm/Makefile
-> +++ b/testcases/kernel/kvm/Makefile
-> @@ -46,7 +46,7 @@ MAKE_TARGETS =
->  endif
->  
->  lib_guest.o $(ARCH_OBJ): CPPFLAGS	:= $(GUEST_CPPFLAGS)
-> -lib_guest.o $(ARCH_OBJ): CFLAGS		:= $(GUEST_CFLAGS)
-> +lib_guest.o $(ARCH_OBJ): CFLAGS		:= $(GUEST_CFLAGS) $(GUEST_LDFLAGS)
->  
->  kvm_svm03: CFLAGS += -pthread
->  kvm_svm03: LDLIBS += -pthread
-> -- 
-> 2.40.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Green light from me. Feel free to also merge the Add kirk & ltx tools
+but do not forget about ack from Ritchie and please add also my
+Reviewed-by.
 
 -- 
 Cyril Hrubis
