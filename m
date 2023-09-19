@@ -4,86 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C09C1CD3447
-	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 07:20:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 592FFCD54A4
+	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 08:30:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 92AC63CA710
-	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 09:20:50 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id C086C3CE482
+	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 10:30:07 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 353FA3CA62B
- for <ltp@lists.linux.it>; Tue, 19 Sep 2023 09:20:40 +0200 (CEST)
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
- [148.163.158.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id BCCD03CA70E
+ for <ltp@lists.linux.it>; Tue, 19 Sep 2023 10:29:57 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C7362648730
- for <ltp@lists.linux.it>; Tue, 19 Sep 2023 09:20:38 +0200 (CEST)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38J78wOV008387
- for <ltp@lists.linux.it>; Tue, 19 Sep 2023 07:20:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=dJwEwTCMd3vEIajF5JKchW3teHwkEQuS3GOvyJmYUBs=;
- b=UI+gVdpJ+oOl/sFl0tE1sQ2akK9EWyCgfeAkm/ozOIjJUBYI5BfeI7KA3hrJ/AAjUn1U
- JxgvZSFvf62ij86jIemMjQXlnN8Q5e9CnsMYAQMRKW7N8RFjy3+IE3F91vR2qjcqDhH1
- QH4LOh+j18KPeBB3pM9pVpA8zZydVpXT0S6BsARiSzvuIhEbaSqTGrlFwKmDbclLLdK6
- CtLz2NCfKUbQy+7TCpijI4xXNDtCiDRXCunLW5Anq/yjYtavDZqE51q4DuAOVkLmYWPk
- fWuHSefBIIMKMZM8ii2Ykyy03LUj3pKe96TaNKFsb896umMjdwOE79rhALhY2EUzbZJ4 lg== 
-Received: from ppma22.wdc07v.mail.ibm.com
- (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
- by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t75wy20b8-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Tue, 19 Sep 2023 07:20:34 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
- by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38J5iogA005855
- for <ltp@lists.linux.it>; Tue, 19 Sep 2023 07:20:29 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
- by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t5q2yj5px-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <ltp@lists.linux.it>; Tue, 19 Sep 2023 07:20:29 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com
- [10.20.54.103])
- by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 38J7KQi420775636
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 19 Sep 2023 07:20:26 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 3C9C320040;
- Tue, 19 Sep 2023 07:20:26 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 531E720043;
- Tue, 19 Sep 2023 07:20:25 +0000 (GMT)
-Received: from ltcever7x1-lp6.aus.stglabs.ibm.com (unknown [9.53.168.26])
- by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
- Tue, 19 Sep 2023 07:20:25 +0000 (GMT)
-From: Samir Mulani <samir@linux.vnet.ibm.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 77E2310009F7
+ for <ltp@lists.linux.it>; Tue, 19 Sep 2023 10:29:55 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B37801FE09;
+ Tue, 19 Sep 2023 08:29:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1695112194; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sk+jW0rbVZbENPFOOr63vAVDOQzc70cdzeCN43iLaHA=;
+ b=Bd3cWf2lySY28M8tOeolzkBozLh20C5K8LgV1yLRlChq23n4q15dVTfmkAtOEIwQUYvv/S
+ CoLhdjzR/xZQyG80OwP+ZVORyNp4Wwum0idvJt+4K1GAErrhpWcNGMG7VckGhOLpdqJQW4
+ +oG5ETcZ/trBWtD8lsz82K6pHKuqFfI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F056B13458;
+ Tue, 19 Sep 2023 08:29:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id QobLLwFcCWWNDgAAMHmgww
+ (envelope-from <wegao@suse.com>); Tue, 19 Sep 2023 08:29:53 +0000
 To: ltp@lists.linux.it
-Date: Tue, 19 Sep 2023 02:20:22 -0500
-Message-Id: <20230919072022.93034-1-samir@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.39.3
+Date: Tue, 19 Sep 2023 04:29:49 -0400
+Message-Id: <20230919082949.21027-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230908072925.15102-1-wegao@suse.com>
+References: <20230908072925.15102-1-wegao@suse.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: M9f88mL0pukqgqtvW3_ilhaBbEt40LsI
-X-Proofpoint-ORIG-GUID: M9f88mL0pukqgqtvW3_ilhaBbEt40LsI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-19_01,2023-09-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 mlxscore=0
- phishscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
- mlxlogscore=604 bulkscore=0 clxscore=1015 suspectscore=0
- lowpriorityscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309190059
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] Migrating the
- libhugetlbfs/testcases/truncate_sigbus_versus_oom.c test
+Subject: [LTP] [PATCH v2] cachestat01.c: Add cachestat() testcheck
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,152 +66,527 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Samir Mulani <samir@linux.vnet.ibm.com>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-In this test case, we are verifying the bug fix commit that is attached as
-a part of the test case structure,
-
-Some kernel have a bug in the positioning of the test against
-i_size.  This bug means that attempting to instantiate a page
-beyond the end of a hugepage file can result in an OOM and SIGKILL
-instead of the correct SIGBUS.
-
-Signed-off-by: Samir Mulani <samir@linux.vnet.ibm.com>
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
-v2:
- -Corrected typo.
- -Fixed the make check warnings.
----
- runtest/hugetlb                               |  1 +
- testcases/kernel/mem/.gitignore               |  1 +
- .../kernel/mem/hugetlb/hugemmap/hugemmap37.c  | 88 +++++++++++++++++++
- 3 files changed, 90 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
+ configure.ac                                  |   1 +
+ include/lapi/cachestat.h                      |  36 +++
+ include/lapi/syscalls/aarch64.in              |   1 +
+ include/lapi/syscalls/arc.in                  |   1 +
+ include/lapi/syscalls/arm.in                  |   1 +
+ include/lapi/syscalls/hppa.in                 |   1 +
+ include/lapi/syscalls/i386.in                 |   1 +
+ include/lapi/syscalls/ia64.in                 |   1 +
+ include/lapi/syscalls/powerpc.in              |   1 +
+ include/lapi/syscalls/powerpc64.in            |   1 +
+ include/lapi/syscalls/s390.in                 |   1 +
+ include/lapi/syscalls/s390x.in                |   1 +
+ include/lapi/syscalls/sh.in                   |   1 +
+ include/lapi/syscalls/sparc.in                |   1 +
+ include/lapi/syscalls/sparc64.in              |   1 +
+ include/lapi/syscalls/x86_64.in               |   1 +
+ runtest/syscalls                              |   2 +
+ .../kernel/syscalls/cachestat/.gitignore      |   1 +
+ testcases/kernel/syscalls/cachestat/Makefile  |   8 +
+ .../kernel/syscalls/cachestat/cachestat01.c   | 260 ++++++++++++++++++
+ 20 files changed, 322 insertions(+)
+ create mode 100644 include/lapi/cachestat.h
+ create mode 100644 testcases/kernel/syscalls/cachestat/.gitignore
+ create mode 100644 testcases/kernel/syscalls/cachestat/Makefile
+ create mode 100644 testcases/kernel/syscalls/cachestat/cachestat01.c
 
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 299c07ac9..7b7c44b77 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -35,6 +35,7 @@ hugemmap29 hugemmap29
- hugemmap30 hugemmap30
- hugemmap31 hugemmap31
- hugemmap32 hugemmap32
-+hugemmap37 hugemmap37
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 7258489ed..7b923c8fd 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -34,6 +34,7 @@
- /hugetlb/hugemmap/hugemmap30
- /hugetlb/hugemmap/hugemmap31
- /hugetlb/hugemmap/hugemmap32
-+/hugetlb/hugemmap/hugemmap37
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
+diff --git a/configure.ac b/configure.ac
+index 662c4c058..4b5547b5b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -93,6 +93,7 @@ AC_CHECK_FUNCS_ONCE([ \
+     epoll_pwait2 \
+     execveat \
+     faccessat2 \
++    cachestat \
+     fallocate \
+     fchownat \
+     fsconfig \
+diff --git a/include/lapi/cachestat.h b/include/lapi/cachestat.h
 new file mode 100644
-index 000000000..66990db25
+index 000000000..fea390849
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap37.c
-@@ -0,0 +1,88 @@
++++ b/include/lapi/cachestat.h
+@@ -0,0 +1,36 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
++ * Copyright (c) Linux Test Project, 2003-2023
++ * Author: Wei Gao <wegao@suse.com>
++ */
++
++#ifndef CACHESTAT_H
++#define CACHESTAT_H
++
++#include "tst_test.h"
++#include "config.h"
++#include "lapi/syscalls.h"
++
++#ifndef HAVE_CACHESTAT
++struct cachestat_range {
++	__u64 off;
++	__u64 len;
++};
++
++struct cachestat {
++	__u64 nr_cache;
++	__u64 nr_dirty;
++	__u64 nr_writeback;
++	__u64 nr_evicted;
++	__u64 nr_recently_evicted;
++};
++
++int cachestat(unsigned int fd,
++                struct cachestat_range *cstat_range,
++                struct cachestat *cstat, unsigned int flags)
++{
++	return tst_syscall(__NR_cachestat, fd, cstat_range, cstat, flags);
++}
++#endif
++
++#endif /* CACHESTAT_H */
+diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+index 2cb6c2d87..1c0218eae 100644
+--- a/include/lapi/syscalls/aarch64.in
++++ b/include/lapi/syscalls/aarch64.in
+@@ -297,4 +297,5 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+ _sysctl 1078
+diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
+index 3e2ee9061..5d7cd6ca4 100644
+--- a/include/lapi/syscalls/arc.in
++++ b/include/lapi/syscalls/arc.in
+@@ -317,3 +317,4 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+index 7bdbca533..e41a7e576 100644
+--- a/include/lapi/syscalls/arm.in
++++ b/include/lapi/syscalls/arm.in
+@@ -395,3 +395,4 @@ faccessat2 (__NR_SYSCALL_BASE+439)
+ epoll_pwait2 (__NR_SYSCALL_BASE+441)
+ quotactl_fd (__NR_SYSCALL_BASE+443)
+ futex_waitv (__NR_SYSCALL_BASE+449)
++cachestat (__NR_SYSCALL_BASE+451)
+diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
+index 8ebdafafb..2772e7334 100644
+--- a/include/lapi/syscalls/hppa.in
++++ b/include/lapi/syscalls/hppa.in
+@@ -44,3 +44,4 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+index 1472631c4..2d341182e 100644
+--- a/include/lapi/syscalls/i386.in
++++ b/include/lapi/syscalls/i386.in
+@@ -431,3 +431,4 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
+index 0ea6e9722..141c6be51 100644
+--- a/include/lapi/syscalls/ia64.in
++++ b/include/lapi/syscalls/ia64.in
+@@ -344,3 +344,4 @@ faccessat2 1463
+ epoll_pwait2 1465
+ quotactl_fd 1467
+ futex_waitv 1473
++cachestat 1475
+diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+index 545d9d3d6..67e928951 100644
+--- a/include/lapi/syscalls/powerpc.in
++++ b/include/lapi/syscalls/powerpc.in
+@@ -424,3 +424,4 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+index 545d9d3d6..67e928951 100644
+--- a/include/lapi/syscalls/powerpc64.in
++++ b/include/lapi/syscalls/powerpc64.in
+@@ -424,3 +424,4 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+index 7213ac5f8..b456ea408 100644
+--- a/include/lapi/syscalls/s390.in
++++ b/include/lapi/syscalls/s390.in
+@@ -411,3 +411,4 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+index 879012e2b..2c57eacdf 100644
+--- a/include/lapi/syscalls/s390x.in
++++ b/include/lapi/syscalls/s390x.in
+@@ -359,3 +359,4 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
+index 7d5192a27..25eb9bb26 100644
+--- a/include/lapi/syscalls/sh.in
++++ b/include/lapi/syscalls/sh.in
+@@ -405,3 +405,4 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+index 91d2fb1c2..e934591dd 100644
+--- a/include/lapi/syscalls/sparc.in
++++ b/include/lapi/syscalls/sparc.in
+@@ -410,3 +410,4 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+index 1f2fc59b7..4c489e38d 100644
+--- a/include/lapi/syscalls/sparc64.in
++++ b/include/lapi/syscalls/sparc64.in
+@@ -375,3 +375,4 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+index dc61aa56e..4afea6019 100644
+--- a/include/lapi/syscalls/x86_64.in
++++ b/include/lapi/syscalls/x86_64.in
+@@ -352,6 +352,7 @@ faccessat2 439
+ epoll_pwait2 441
+ quotactl_fd 443
+ futex_waitv 449
++cachestat 451
+ rt_sigaction 512
+ rt_sigreturn 513
+ ioctl 514
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 4fb76584f..b84b2d2ce 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -59,6 +59,8 @@ capset04 capset04
+ 
+ cacheflush01 cacheflush01
+ 
++cachestat01 cachestat01
++
+ chdir01 chdir01
+ chdir01A symlink01 -T chdir01
+ chdir04 chdir04
+diff --git a/testcases/kernel/syscalls/cachestat/.gitignore b/testcases/kernel/syscalls/cachestat/.gitignore
+new file mode 100644
+index 000000000..870bceae4
+--- /dev/null
++++ b/testcases/kernel/syscalls/cachestat/.gitignore
+@@ -0,0 +1 @@
++/cachestat01
+diff --git a/testcases/kernel/syscalls/cachestat/Makefile b/testcases/kernel/syscalls/cachestat/Makefile
+new file mode 100644
+index 000000000..49238eee0
+--- /dev/null
++++ b/testcases/kernel/syscalls/cachestat/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0-only
++# Copyright (c) 2023 Wei Gao <wegao@suse.com>
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/cachestat/cachestat01.c b/testcases/kernel/syscalls/cachestat/cachestat01.c
+new file mode 100644
+index 000000000..9ad432b59
+--- /dev/null
++++ b/testcases/kernel/syscalls/cachestat/cachestat01.c
+@@ -0,0 +1,260 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2023 Andre Przywara <andre.przywara@arm.com>
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
++ *
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * Test Name: Truncate_sigbus_versus_oom
++ * Verify that cachestat() executes successfully
 + *
-+ * Some kernel have a bug in the positioning of the test against
-+ * i_size.  This bug means that attempting to instantiate a page
-+ * beyond the end of a hugepage file can result in an OOM and SIGKILL
-+ * instead of the correct SIGBUS.
 + */
 +
-+#include "hugetlb.h"
++#include <stdio.h>
++#include <math.h>
++#include <unistd.h> /* _SC_PAGESIZE */
++#include <stdbool.h>
++#include <stdlib.h>
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "lapi/cachestat.h"
 +
-+#define MNTPOINT "hugetlbfs/"
-+#define PTS_PASS 0
-+static int  fd = -1, fdx = -1;
++#define SAFE_FREE(p) { if (p) { free(p); (p) = NULL; } }
++#define TMPFS_MAGIC 0x01021994
++#define TEST_NORMAL_FILE "tmpfilecachestat"
++#define SHM_FILE "tmpshmcstat"
++#define NUM_PAGES 4
 +
-+static unsigned long long hpage_size;
-+static unsigned long totpages;
-+struct sigaction sa;
++static int fd;
++static int fd_shm;
++static size_t PS;
++static size_t filesize;
++static char *data;
++static int random_fd;
 +
-+static void sigbus_handler(int signum)
++/*
++ * fsync() is implemented via noop_fsync() on tmpfs. This makes the fsync()
++ * test fail below, so we need to check for test file living on a tmpfs.
++ */
++static bool is_on_tmpfs(int fd)
 +{
-+	if (signum == SIGBUS) {
-+		tst_res(TPASS, "Test PASSED\n");
-+		_exit(PTS_PASS);
++	struct statfs statfs_buf;
++
++	if (fstatfs(fd, &statfs_buf))
++		return false;
++
++	return statfs_buf.f_type == TMPFS_MAGIC;
++}
++
++static void print_cachestat(struct cachestat *cs)
++{
++	tst_res(TINFO,
++			"Using cachestat: Cached: %llu, Dirty: %llu, Writeback: %llu, Evicted: %llu, Recently Evicted: %llu",
++			cs->nr_cache, cs->nr_dirty, cs->nr_writeback,
++			cs->nr_evicted, cs->nr_recently_evicted);
++}
++
++static const char * const dev_files[] = {
++	"/dev/zero", "/dev/null", "/dev/urandom",
++	"/proc/version", "/proc"
++};
++
++static bool write_exactly(int write_fd)
++{
++	char *cursor;
++	int remained;
++
++	remained = filesize;
++	cursor = data;
++	while (remained) {
++		ssize_t read_len = SAFE_READ(1, random_fd, cursor, remained);
++
++		if (read_len <= 0)
++			tst_brk(TBROK | TERRNO, "Unable to read from urandom.");
++
++		remained -= read_len;
++		cursor += read_len;
 +	}
-+}
 +
-+static void run_test(void)
-+{
-+	void *p, *q;
-+	unsigned long i;
++	remained = filesize;
++	cursor = data;
++	while (remained) {
++		ssize_t write_len = SAFE_WRITE(1, write_fd, cursor, remained);
 +
-+	fd = tst_creat_unlinked(MNTPOINT, 0);
-+	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-+	SAFE_FTRUNCATE(fd, 0);
++		if (write_len <= 0)
++			tst_brk(TBROK | TERRNO, "Unable write random data to file.");
 +
-+	fdx = tst_creat_unlinked(MNTPOINT, 0);
-+	q = SAFE_MMAP(NULL, totpages * hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fdx, 0);
-+	/* Touch the pages to ensure they're removed from the pool */
-+	for (i = 0; i < totpages; i++) {
-+		volatile char *x = (volatile char *)q + i*hpage_size;
-+		*x = 0;
++		remained -= write_len;
++		cursor += write_len;
 +	}
-+	/* SIGBUS is what *should* happen */
-+	SAFE_FTRUNCATE(fdx, 0);
-+	*((volatile unsigned int *)p);
-+	tst_res(TFAIL, "Didn't SIGBUS or OOM");
++
++	return true;
 +}
 +
-+void setup(void)
++/*
++ * Open/create the file at filename, (optionally) write random data to it
++ * (exactly num_pages), then test the cachestat syscall on this file.
++ *
++ * If test_fsync == true, fsync the file, then check the number of dirty
++ * pages.
++ */
++static void test_cachestat(const char *filename, bool write_random, bool create,
++		bool test_fsync, int open_flags, mode_t open_mode)
 +{
-+	sa.sa_flags = SA_SIGINFO;
-+	sa.sa_handler = sigbus_handler;
-+	SAFE_SIGACTION(SIGBUS, &sa, NULL);
-+	totpages = SAFE_READ_MEMINFO(MEMINFO_HPAGE_FREE);
-+	hpage_size = tst_get_hugepage_size();
-+}
++	struct cachestat cs;
++	struct cachestat_range cs_range = { 0, filesize };
 +
-+void cleanup(void)
-+{
-+	if (fd > 0)
++	if (!fcntl(fd, F_GETFD))
 +		SAFE_CLOSE(fd);
-+	if (fdx > 0)
-+		SAFE_CLOSE(fdx);
++	fd = SAFE_OPEN(filename, open_flags, open_mode);
++
++	if (write_random) {
++		if (!write_exactly(fd))
++			tst_brk(TBROK | TERRNO, "Unable to access urandom.");
++	}
++
++	TST_EXP_PASS(cachestat(fd, &cs_range, &cs, 0));
++
++	print_cachestat(&cs);
++
++	if (write_random) {
++		if (cs.nr_cache + cs.nr_evicted != NUM_PAGES) {
++			tst_brk(TBROK | TERRNO,
++					"Total number of cached and evicted pages is off.");
++		}
++	}
++
++	if (test_fsync) {
++		if (is_on_tmpfs(fd)) {
++			tst_res(TCONF, "skip fsync check on tmpfs");
++		} else if (fsync(fd)) {
++			tst_brk(TBROK | TERRNO, "fsync fails.");
++		} else {
++			TST_EXP_PASS(cachestat(fd, &cs_range, &cs, 0));
++			print_cachestat(&cs);
++			if (cs.nr_dirty) {
++				tst_brk(TBROK | TERRNO,
++						"Number of dirty should be zero after fsync.");
++			} else {
++				tst_res(TPASS, "Cachestat (after fsync) pass.");
++			}
++		}
++	}
++
++	close(fd);
++
++	if (create)
++		remove(filename);
++
++	tst_res(TPASS, "cachestat works with file %s", filename);
 +}
 +
++static void test_incorrect_file(void)
++{
++	TST_EXP_FAIL(cachestat(-1, NULL, NULL, 0), EBADF);
++}
++
++static void test_virtual_file(void)
++{
++	for (unsigned long i = 0; i < sizeof(dev_files) / sizeof(*dev_files); i++) {
++		const char *dev_filename = dev_files[i];
++
++		test_cachestat(dev_filename, false, false, false, O_RDONLY, 0400);
++	}
++}
++
++static void test_normal_file(void)
++{
++	test_cachestat(TEST_NORMAL_FILE, true, true, false, O_CREAT | O_RDWR, 0600);
++	test_cachestat(TEST_NORMAL_FILE, true, true, true, O_CREAT | O_RDWR, 0600);
++}
++
++static void check_cachestat_range(struct cachestat_range *ptr_cs_range, __u64 expect_num_pages)
++{
++	struct cachestat cs;
++
++	TST_EXP_PASS(cachestat(fd_shm, ptr_cs_range, &cs, 0));
++	print_cachestat(&cs);
++	if (cs.nr_cache + cs.nr_evicted != expect_num_pages) {
++		tst_brk(TFAIL | TERRNO,
++				"Total number of cached and evicted pages is off.");
++	} else {
++		tst_res(TPASS,
++				"Cachestat range check pass.");
++	}
++}
++
++static void test_share_memory(void)
++{
++
++	struct cachestat_range cs_range = { 0, filesize};
++
++	if (ftruncate(fd_shm, filesize))
++		tst_brk(TFAIL | TERRNO, "Unable to truncate shmem file.");
++
++	if (!write_exactly(fd_shm))
++		tst_brk(TFAIL | TERRNO, "Unable to write to shmem file.");
++
++	check_cachestat_range(&cs_range, NUM_PAGES);
++
++	size_t compute_len = PS * NUM_PAGES / 2;
++	unsigned long num_pages = ceil((double)NUM_PAGES / 2);
++
++	cs_range.off = PS;
++	cs_range.len = compute_len;
++	check_cachestat_range(&cs_range, num_pages);
++}
++
++static struct tcase {
++	void (*tfunc)(void);
++} tcases[] = {
++	{&test_incorrect_file},
++	{&test_virtual_file},
++	{&test_normal_file},
++	{&test_share_memory}
++};
++
++static void run(unsigned int i)
++{
++	tcases[i].tfunc();
++}
++
++
++static void setup(void)
++{
++
++	PS = sysconf(_SC_PAGESIZE);
++	filesize = NUM_PAGES * PS;
++	data = tst_alloc(filesize);
++	random_fd = SAFE_OPEN("/dev/urandom", O_RDONLY);
++
++	/* setup for test_share_memory case */
++	fd_shm = shm_open(SHM_FILE, O_CREAT | O_RDWR, 0700);
++	if (fd_shm < 0)
++		tst_brk(TFAIL | TERRNO, "Unable to create shmem file.");
++}
++
++static void cleanup(void)
++{
++	SAFE_CLOSE(random_fd);
++
++	/* cleanup for test_normal_file case*/
++	if (!fcntl(fd, F_GETFD))
++		SAFE_CLOSE(fd);
++	remove(TEST_NORMAL_FILE);
++
++	/* cleanup for test_share_memory case */
++	SAFE_CLOSE(fd_shm);
++	shm_unlink(SHM_FILE);
++}
 +
 +static struct tst_test test = {
-+	.tags = (struct tst_tag[]) {
-+		{"linux-git", "0d59a01bc461"},
-+		{}
-+	},
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.needs_hugetlbfs = 1,
-+	.needs_tmpdir = 1,
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = run_test,
-+	.hugepages = {2, TST_NEEDS},
++	.needs_tmpdir = 1,
++	.min_kver = "6.5.0"
 +};
 -- 
-2.39.3
+2.35.3
 
 
 -- 
