@@ -4,68 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B263CD54B0
-	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 10:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66ED1CD54B0
+	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 10:25:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 84B3D3CE460
-	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 12:25:02 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id E76763CE463
+	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 12:25:14 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 67C893CA6BC
+ by picard.linux.it (Postfix) with ESMTPS id 9329A3CA6BC
  for <ltp@lists.linux.it>; Tue, 19 Sep 2023 12:24:49 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 96623600634
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CD78260095D
  for <ltp@lists.linux.it>; Tue, 19 Sep 2023 12:24:48 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 487451FE39;
- Tue, 19 Sep 2023 10:24:48 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D878B1FDBE;
+ Tue, 19 Sep 2023 10:24:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1695119088; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=orKEWineRYxiQmLOLncSQ5LMNrsDtwM+cYRryMXfvNY=;
- b=XfdfoNagIt2zIW7a8dJqDALI12LBSaL6uZRk3l3Oue4o1lVs76L8K2bo9ITsNjs1BSFALH
- bzZVo57nYhLyHG42gau1v/QBG/Kj/XkN1F1oSieOBN9XKHw0BkSrNGQjKNVdHFhTc1/vaq
- asRPk5GO/DAVwted6JgJq34UhyAa5NE=
+ t=1695119087; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ZS+Jg9q603xdp2HniBOaQaC2xolrDhEm7CTcwmYX4fw=;
+ b=Bh+j2fYnH5bAm7i/qHwTFuFEW6vxd222aKh6bI3wHQ+PwxBFrXmictWeGXXRe55NwEr5fv
+ XMK1qKhrpaBvYMgnzHReouPnTZJ1bdC5X5txv2GLPW/pLfQd9VhRlGC+vxUFksHqixvZan
+ rWBbc1lKFLJxR1xTY2sFeTTjhiG0Uy0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1695119088;
+ s=susede2_ed25519; t=1695119087;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=orKEWineRYxiQmLOLncSQ5LMNrsDtwM+cYRryMXfvNY=;
- b=e/9C0MYyF/dpjJ1N0wFvqpw5ME88/v9QnCpfgpGMRByUg7d8YyRpYKNMrsWbxsSygG/P3w
- WGQs4fYR0dHd99Cw==
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=ZS+Jg9q603xdp2HniBOaQaC2xolrDhEm7CTcwmYX4fw=;
+ b=ZjarhGf9trMvNIBgW7oyxTdxhOF+YLl8HuEGLmooIFp9Rjttll6cJH92AaAqtApAPGWfUz
+ 7vPawwk1yXt2LnAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 346FB13458;
- Tue, 19 Sep 2023 10:24:48 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B80F113458;
+ Tue, 19 Sep 2023 10:24:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4HrVC/B2CWXOSAAAMHmgww
- (envelope-from <mkittler@suse.de>); Tue, 19 Sep 2023 10:24:48 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id I8nJK+92CWXOSAAAMHmgww
+ (envelope-from <mkittler@suse.de>); Tue, 19 Sep 2023 10:24:47 +0000
 From: Marius Kittler <mkittler@suse.de>
 To: ltp@lists.linux.it
-Date: Tue, 19 Sep 2023 12:24:45 +0200
-Message-ID: <20230919102445.23934-5-mkittler@suse.de>
+Date: Tue, 19 Sep 2023 12:24:41 +0200
+Message-ID: <20230919102445.23934-1-mkittler@suse.de>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230919102445.23934-1-mkittler@suse.de>
-References: <20230919102445.23934-1-mkittler@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v5 4/4] Use termios instead of legacy struct in
- ioctl02.c
+Subject: [LTP] [PATCH v5 0/4] Improve ioctl02.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,99 +78,17 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Marius Kittler <mkittler@suse.de>
----
- testcases/kernel/syscalls/ioctl/ioctl02.c | 24 +++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+Improve ioctl02.c
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl02.c b/testcases/kernel/syscalls/ioctl/ioctl02.c
-index b4db6ba86..c9a1c32d0 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl02.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl02.c
-@@ -8,17 +8,17 @@
- /*\
-  * [Description]
-  *
-- * Testcase to test the TCGETA, and TCSETA ioctl implementations for
-+ * Testcase to test the TCGETS, and TCSETS ioctl implementations for
-  * the tty driver
-  *
-  * In this test, the parent and child open the parentty and the childtty
-  * respectively.  After opening the childtty the child flushes the stream
-  * and wakes the parent (thereby asking it to continue its testing). The
-- * parent, then starts the testing. It issues a TCGETA ioctl to get all
-+ * parent, then starts the testing. It issues a TCGETS ioctl to get all
-  * the tty parameters. It then changes them to known values by issuing a
-- * TCSETA ioctl. Then the parent issues a TCGETA ioctl again and compares
-+ * TCSETS ioctl. Then the parent issues a TCGETS ioctl again and compares
-  * the received values with what it had set earlier. The test fails if
-- * TCGETA or TCSETA fails, or if the received values don't match those
-+ * TCGETS or TCSETS fails, or if the received values don't match those
-  * that were set. The parent does all the testing, the requirement of the
-  * child process is to moniter the testing done by the parent, and hence
-  * the child just waits for the parent.
-@@ -37,7 +37,7 @@
- #include "tst_test.h"
- #include "tst_safe_macros.h"
- 
--static struct termio termio, save_io;
-+static struct termios termio, save_io;
- 
- static char *parenttty, *childtty;
- static int parentfd = -1, childfd = -1;
-@@ -76,10 +76,10 @@ static void verify_ioctl(void)
- 	int rval = run_ptest();
- 
- 	if (rval != 0)
--		tst_res(TFAIL, "TCGETA/TCSETA tests FAILED with "
-+		tst_res(TFAIL, "TCGETS/TCSETS tests FAILED with "
- 				"%d %s", rval, rval > 1 ? "errors" : "error");
- 	else
--		tst_res(TPASS, "TCGETA/TCSETA tests SUCCEEDED");
-+		tst_res(TPASS, "TCGETS/TCSETS tests SUCCEEDED");
- 
- 	TST_CHECKPOINT_WAKE(checkpoint_parent_done_testing);
- }
-@@ -95,7 +95,7 @@ static void do_child(void)
- 
- /*
-  * run_ptest() - setup the various termio structure values and issue
-- *		 the TCSETA ioctl call with the TEST macro.
-+ *		 the TCSETS ioctl call with the TEST macro.
-  */
- static int run_ptest(void)
- {
-@@ -124,10 +124,10 @@ static int run_ptest(void)
- 	/* Set output modes. */
- 	termio.c_oflag = OPOST | OLCUC | ONLCR | ONOCR;
- 
--	SAFE_IOCTL(parentfd, TCSETA, &termio);
-+	SAFE_IOCTL(parentfd, TCSETS, &termio);
- 
- 	/* Get termio and see if all parameters actually got set */
--	SAFE_IOCTL(parentfd, TCGETA, &termio);
-+	SAFE_IOCTL(parentfd, TCGETS, &termio);
- 	return chk_tty_parms();
- }
- 
-@@ -215,7 +215,7 @@ static void setup(void)
- 	int fd = SAFE_OPEN(device, O_RDWR, 0777);
- 
- 	/* Save the current device information - to be restored in cleanup() */
--	SAFE_IOCTL(fd, TCGETA, &save_io);
-+	SAFE_IOCTL(fd, TCGETS, &save_io);
- 
- 	/* Close the device */
- 	SAFE_CLOSE(fd);
-@@ -224,7 +224,7 @@ static void setup(void)
- static void cleanup(void)
- {
- 	if (parentfd >= 0) {
--		SAFE_IOCTL(parentfd, TCSETA, &save_io);
-+		SAFE_IOCTL(parentfd, TCSETS, &save_io);
- 		SAFE_CLOSE(parentfd);
- 	}
- }
+Marius Kittler (4):
+  Refactor ioctl02.c to use the new test API
+  Make checks for termio flags more strict
+  Remove disabled code in ioctl02.c
+  Use termios instead of legacy struct in ioctl02.c
+
+ testcases/kernel/syscalls/ioctl/ioctl02.c | 411 +++++-----------------
+ 1 file changed, 93 insertions(+), 318 deletions(-)
+
 -- 
 2.42.0
 
