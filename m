@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B790CCD54B8
-	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 11:47:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9EB4CD54B5
+	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 11:47:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id ED58B3CE471
-	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 13:47:25 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id F10B43CE460
+	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 13:47:36 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2EA4F3CA6BC
+ by picard.linux.it (Postfix) with ESMTPS id 106143CBED4
  for <ltp@lists.linux.it>; Tue, 19 Sep 2023 13:47:04 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9F6FD60083F
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9F77B1400B9A
  for <ltp@lists.linux.it>; Tue, 19 Sep 2023 13:47:03 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id BF68B1FE89
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EFE991FE8B
  for <ltp@lists.linux.it>; Tue, 19 Sep 2023 11:47:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1695124022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DqbQ9UnKMbSLwxinHSdFpByEdfe0Mj4neZ5SvlBNUcI=;
- b=P3ZR9Q60s3aVz9ENkU7nfZdcqOO+if1DfFIJBLGyXFDQ82sDtPUqjiaxP901bO66H0erJ/
- Xt3dtyluv9vW4nTBqCwWEb0AJKCyI4WrTDtHaYNxiPJzcm6g64OrVOMY34a6dXSoU1p4Ps
- X+TttvAtMW+qI4fmOzif8eUsWNyDqX4=
+ bh=7vqScj5J5uhy2KuyvPNr2fRdgfkfOUnvgxFlbtc3MNA=;
+ b=195K7C9LnL9/iATUkLcfIPWZCg7ifDMylqF3XJ+dCGq3sEVIBA2uHXSsnVz65ebchmGjH+
+ FB7JLkhYxBsYWQ0QlcuLaltQ8lWnyvCh8IkxXz9z4TdIMVnGa/PMGElbSRdXr+wouly8nS
+ 5JmwgLhfP2+AKtyS8XvT4E/8XBDBSSo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1695124022;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DqbQ9UnKMbSLwxinHSdFpByEdfe0Mj4neZ5SvlBNUcI=;
- b=GHHE0tCF9Tqb0QUFUE7kJSRzQmTMP+YgZsQIV5VD0jUoXauLG8DNYvIBk7S0ckkYYZhWHQ
- qeRoS+3pKtvw5GBA==
+ bh=7vqScj5J5uhy2KuyvPNr2fRdgfkfOUnvgxFlbtc3MNA=;
+ b=eG2xQ8IM/+kydodIFx1Hk1gHfA3+CcpfFWE00tYO7R+dPh/rrd0x2aE07iTduJMfKT+cZx
+ p/3HN3U1fKNPzLCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AFCA113A49
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D4D2013A49
  for <ltp@lists.linux.it>; Tue, 19 Sep 2023 11:47:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QKAnKjaKCWX8eAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id WEAqMzaKCWX8eAAAMHmgww
  (envelope-from <mdoucha@suse.cz>)
  for <ltp@lists.linux.it>; Tue, 19 Sep 2023 11:47:02 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 19 Sep 2023 13:46:57 +0200
-Message-ID: <20230919114701.15327-2-mdoucha@suse.cz>
+Date: Tue, 19 Sep 2023 13:46:59 +0200
+Message-ID: <20230919114701.15327-4-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230919114701.15327-1-mdoucha@suse.cz>
 References: <20230919114701.15327-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] nfs_lib.sh: Log NFS mount and unmount
+Subject: [LTP] [PATCH 3/3] nfs_lib.sh: Fail the test if NFS unmount fails
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,36 +85,22 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
- testcases/network/nfs/nfs_stress/nfs_lib.sh | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ testcases/network/nfs/nfs_stress/nfs_lib.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-index abf7ba5a2..a996f7cc8 100644
+index a996f7cc8..099c78759 100644
 --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
 +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-@@ -191,7 +191,9 @@ nfs_setup()
- 
- 		remote_dir="$(get_remote_dir $i $type)"
- 		nfs_setup_server "$remote_dir" "$(($$ + n))"
--		nfs_mount "$(get_local_dir $i $n)" "$remote_dir" "-o proto=$type,vers=$i"
-+		local_dir="$(get_local_dir $i $n)"
-+		tst_res TINFO "Mounting $local_dir"
-+		nfs_mount "$local_dir" "$remote_dir" "-o proto=$type,vers=$i"
- 
- 		n=$(( n + 1 ))
- 	done
-@@ -210,7 +212,10 @@ nfs_cleanup()
- 	local n=0
- 	for i in $VERSION; do
+@@ -214,7 +214,7 @@ nfs_cleanup()
  		local_dir="$(get_local_dir $i $n)"
--		grep -q "$local_dir" /proc/mounts && umount $local_dir
-+		if grep -q "$local_dir" /proc/mounts; then
-+			tst_res TINFO "Unmounting $local_dir"
-+			umount $local_dir
-+		fi
+ 		if grep -q "$local_dir" /proc/mounts; then
+ 			tst_res TINFO "Unmounting $local_dir"
+-			umount $local_dir
++			umount $local_dir || tst_res TFAIL "Unmount failed"
+ 		fi
  		n=$(( n + 1 ))
  	done
- 	sleep 2
 -- 
 2.42.0
 
