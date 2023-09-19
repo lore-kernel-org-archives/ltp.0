@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D29BCD54AF
-	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 11:10:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C285CD54B5
+	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 11:47:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 49D1B3CE463
-	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 13:10:51 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 15B553CE456
+	for <ltp@archiver.kernel.org>; Tue, 19 Sep 2023 13:47:15 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4FB533CA6D1
- for <ltp@lists.linux.it>; Tue, 19 Sep 2023 13:09:54 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 4D6333CBED4
+ for <ltp@lists.linux.it>; Tue, 19 Sep 2023 13:47:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 07310208E10
- for <ltp@lists.linux.it>; Tue, 19 Sep 2023 13:09:53 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 586AB60083D
+ for <ltp@lists.linux.it>; Tue, 19 Sep 2023 13:47:03 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A68092296E;
- Tue, 19 Sep 2023 11:09:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1695121793; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=zjj6qBK/6d9SDXdWBKclfpg/Oa1L9lcQB8DnOsf2e2I=;
- b=cGB/8xTScnhKLKzSoEvqL4jSt9J7YqSsrWRggKVD0XduS5/x9EW2AwrYeYoT3Dl+S/4HEf
- EyMdoNuYgThrpnUJwxVhiebtO9h1zI1uz8ryj1zhaBKulM+0wqCTTMusutHUCLoKMDSwom
- u49CHI1rb+Q7tvq0BFbhf7KDtu+pZEo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1695121793;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=zjj6qBK/6d9SDXdWBKclfpg/Oa1L9lcQB8DnOsf2e2I=;
- b=pJBk72FyrfkWi4lnE9leCcJdLJ1bdkqIVpHuRcuk7hGKHq79/sduxyS5ALP7Q968n8iePa
- +T+2G1QB/2pnK5AA==
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AD35D1FE39
+ for <ltp@lists.linux.it>; Tue, 19 Sep 2023 11:47:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1695124022; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Nd0xSkOu1v/b/E/7+NT4uTaC+bo4y1xFOnsKxQRsA8w=;
+ b=vMIwkkPSPTseRZrMjRlKDT6hNKxXPr1IdyFEzyc0iEijQCkNuLLvC3JqtXPd4Ns35N61uA
+ WMTcH9/42tSEuiiVpfFmRFcDfRVZ+zhKUWMbdKkw5zIZXOZ7pWQFXBpQw0OCdvFJwOfwMU
+ QDUiRbpmCya7IB1XJFedyLYBS1UI2XQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1695124022;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Nd0xSkOu1v/b/E/7+NT4uTaC+bo4y1xFOnsKxQRsA8w=;
+ b=uu0ySGa2WyHja74H+nbwGsVnDIuFLWicGadGQTyIkUyIOf49uST3vvpUTGtvaQ3X9XrrNs
+ A5j/OGGaVQP9w1AQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 91894134F3;
- Tue, 19 Sep 2023 11:09:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94B4F134F3
+ for <ltp@lists.linux.it>; Tue, 19 Sep 2023 11:47:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id mNF9IoGBCWVVYwAAMHmgww
- (envelope-from <mkittler@suse.de>); Tue, 19 Sep 2023 11:09:53 +0000
-From: Marius Kittler <mkittler@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id XXhsIzaKCWX8eAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>)
+ for <ltp@lists.linux.it>; Tue, 19 Sep 2023 11:47:02 +0000
+From: Martin Doucha <mdoucha@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 19 Sep 2023 13:09:50 +0200
-Message-ID: <20230919110951.31500-4-mkittler@suse.de>
+Date: Tue, 19 Sep 2023 13:46:56 +0200
+Message-ID: <20230919114701.15327-1-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230919110951.31500-1-mkittler@suse.de>
-References: <20230919110951.31500-1-mkittler@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v6 3/4] Remove disabled code in ioctl02.c
+Subject: [LTP] [PATCH 0/3] NFS test fixes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,36 +77,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Marius Kittler <mkittler@suse.de>
----
- testcases/kernel/syscalls/ioctl/ioctl02.c | 14 --------------
- 1 file changed, 14 deletions(-)
+The nfs03.sh test has a race condition which may randomly cause NFS unmount
+to fail and trigger strange behavior. Add NFS mount/unmount logging and
+unmount success check for easier debugging. Also fix the race condition
+in nfs03.sh
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl02.c b/testcases/kernel/syscalls/ioctl/ioctl02.c
-index d2f46cd1a..f049d4e9c 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl02.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl02.c
-@@ -149,20 +149,6 @@ static int chk_tty_parms(void)
- 			 termio.c_line);
- 		flag++;
- 	}
--	/*
--	 * The following Code Sniffet is disabled to check the value of c_cflag
--	 * as it seems that due to some changes from 2.6.24 onwards, this
--	 * setting is not done properly for either of (B50|CS7|CREAD|PARENB|
--	 * PARODD|CLOCAL|(CREAD|HUPCL|CLOCAL).
--	 * However, it has been observed that other flags are properly set.
--	 */
--#if 0
--	if (termio.c_cflag != (B50 | CS7 | CREAD | PARENB | PARODD | CLOCAL)) {
--		tst_res(TINFO, "cflag has incorrect value. %o",
--			 termio.c_cflag);
--		flag++;
--	}
--#endif
- 
- 	for (i = 0; i < NCC; i++) {
- 		if (i == VEOL2) {
+Patch 3 should be merged after new LTP release.
+
+Martin Doucha (3):
+  nfs_lib.sh: Log NFS mount and unmount
+  nfs03.sh: Wait for all files to be removed
+  nfs_lib.sh: Fail the test if NFS unmount fails
+
+ testcases/network/nfs/nfs_stress/nfs03.sh   | 2 ++
+ testcases/network/nfs/nfs_stress/nfs_lib.sh | 9 +++++++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
 -- 
 2.42.0
 
