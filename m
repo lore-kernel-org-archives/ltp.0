@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34CDEC04A97
-	for <ltp@archiver.kernel.org>; Wed, 20 Sep 2023 15:37:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B29D3C04AA7
+	for <ltp@archiver.kernel.org>; Wed, 20 Sep 2023 15:39:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AEC043CE3EC
-	for <ltp@archiver.kernel.org>; Wed, 20 Sep 2023 17:37:35 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 2DD403CA59A
+	for <ltp@archiver.kernel.org>; Wed, 20 Sep 2023 17:39:41 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8F7CE3CA59A
- for <ltp@lists.linux.it>; Wed, 20 Sep 2023 17:37:26 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id DF3943CA59A
+ for <ltp@lists.linux.it>; Wed, 20 Sep 2023 17:39:30 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E80BD6027A7
- for <ltp@lists.linux.it>; Wed, 20 Sep 2023 17:37:25 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 432861A01983
+ for <ltp@lists.linux.it>; Wed, 20 Sep 2023 17:39:29 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1BCD020232;
- Wed, 20 Sep 2023 15:37:25 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 599F02023F;
+ Wed, 20 Sep 2023 15:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695224245;
+ t=1695224369;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=P8KNdfBou1NazuLykfZohaF/ZESss2/8pfX8iA+1wuM=;
- b=rzKXX4a7ttK3gKzfZOJoT76GkSDPnGNqCltK0uX54FKes+/fq+7GPPFtcF1y529PbDgdbh
- MVn5NGkT2KJaSB1LfNa8tACtoXmqYw5WCvezO/UojSvJwiWiDSFxDjhd36FQM03xbussEu
- km52B7PXZ632wGxrtSPZZB5gYzuaRq0=
+ bh=drGXkrDiEYO8OtYCDSXtlkry50W+NrzM0b/nDhvXde4=;
+ b=GwYrqX9oNNiX4Gk9bm1bNgadYsAOwEB6evkYHivi3mxnyxylutOrO2hYerULFu70Z4EESW
+ E5r0jsQPDwdNx9m1wnFLNsIHAeEE1KZsEGSk0x4ibeLhA0qVVw6FxiPhLut6x488D7C+20
+ M7dfBGeVXo+nJJ7/4V3X0TMGD4WOZgk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695224245;
+ s=susede2_ed25519; t=1695224369;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=P8KNdfBou1NazuLykfZohaF/ZESss2/8pfX8iA+1wuM=;
- b=UpOJOXg56/4k609hd4YSVgAc1OhqEP2ZLWEWnolG1IS7GXnBC3iuXyt96z38Lav8LyY94x
- SgihfWDhBSw/vIBQ==
+ bh=drGXkrDiEYO8OtYCDSXtlkry50W+NrzM0b/nDhvXde4=;
+ b=ArmG3G2vtoan7We38eVwc3x2/IS9HUXMZC5DxEy9YGCWuFlMB3zZ+6LQnFy3b56t1bVC13
+ 7knmZnLOdMYC6bAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B1432132C7;
- Wed, 20 Sep 2023 15:37:24 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D4499132C7;
+ Wed, 20 Sep 2023 15:39:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id jHDFKbQRC2X7SgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 20 Sep 2023 15:37:24 +0000
-Date: Wed, 20 Sep 2023 17:37:22 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id XPezMDASC2UyTAAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 20 Sep 2023 15:39:28 +0000
+Date: Wed, 20 Sep 2023 17:39:27 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <20230920153722.GB375961@pevik>
-References: <20230920153145.30891-1-mdoucha@suse.cz>
+To: ltp@lists.linux.it
+Message-ID: <20230920153927.GC375961@pevik>
+References: <20230920095318.340582-1-pvorel@suse.cz>
+ <20230920095318.340582-6-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230920153145.30891-1-mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+In-Reply-To: <20230920095318.340582-6-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] pidns05: Use tst_getpid()
+Subject: Re: [LTP] [PATCH 5/5] doc: Update release procedure
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,17 +77,32 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Xiao Yang <yangx.jy@cn.fujitsu.com>,
+ Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Martin,
+Few formatting fixes would be needed, e.g.:
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+-1. Release eve work
++1 Release eve work
+ -------------------
+ 
+-a. Collecting the (must have) patch list for new release
+-b. Reviewing and merging the patch list of (a.)
+-c. Widely testing, explicitly post results
+-d. Tiny fix according to release testing
+-e. Writing release note
++[start=a]
++.. Collecting the (must have) patch list for new release
++.. Reviewing and merging the patch list of (a.)
++.. Widely testing, explicitly post results
++.. Tiny fix according to release testing
++.. Writing release notes
 
-Obviously candidate for pre-release fix.
+But the text is what matters, thus not sending fixes before getting feedback.
 
 Kind regards,
 Petr
