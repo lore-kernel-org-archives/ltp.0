@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5959ACE79CD
-	for <ltp@archiver.kernel.org>; Wed, 20 Sep 2023 11:28:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9800CE79CE
+	for <ltp@archiver.kernel.org>; Wed, 20 Sep 2023 11:28:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 77AB13CDED4
-	for <ltp@archiver.kernel.org>; Wed, 20 Sep 2023 13:27:59 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id E81A03CDED5
+	for <ltp@archiver.kernel.org>; Wed, 20 Sep 2023 13:28:52 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 977AB3C0041
- for <ltp@lists.linux.it>; Wed, 20 Sep 2023 13:27:48 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 833473C0041
+ for <ltp@lists.linux.it>; Wed, 20 Sep 2023 13:28:42 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0FF411001F42
- for <ltp@lists.linux.it>; Wed, 20 Sep 2023 13:27:47 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E49B214060A1
+ for <ltp@lists.linux.it>; Wed, 20 Sep 2023 13:28:41 +0200 (CEST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 0296821E46
- for <ltp@lists.linux.it>; Wed, 20 Sep 2023 11:27:47 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 4C98C1FFA5
+ for <ltp@lists.linux.it>; Wed, 20 Sep 2023 11:28:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1695209267;
+ t=1695209321;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GD2VJibjFLsJxMNntLbIgcy/bOgKWWq1B3StBI/j1XE=;
- b=PnwiPte3nLwlvLIridgo1OSWLuFqCVa0xM9EuFXjUVlpoNxCT37Y8w1LEn/Z1BIrsx6UGy
- ti0GVSVwcIWxHMZnFPqjVUKn3mzaLzl5+n2YRStLCiss13/EApcc/QOp7zCmdRIOce9ym+
- q47lIjHeM8H/y7Cjz6FP1sDRviYSggs=
+ bh=j069pF/vbaZZMP81ZNhPmtgbiKQHx5sAUEizAJiXi+0=;
+ b=XKqMhZbuUrIG9VnNDUG6AzQ4Lu5PHwNYSlEIAdCfsTJwa2xenIQyq3Wf0NZV2wutRVdoUh
+ lp636fKRH3fzsN8KZUpB2qBUjmc6Kc5GRrhvCDW3FDbFwdMYiaRIFKaqXYM0xvafXLi9HP
+ Nt/aEP3TFImS4yHbqM/jQEq8viU/PTo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1695209267;
+ s=susede2_ed25519; t=1695209321;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GD2VJibjFLsJxMNntLbIgcy/bOgKWWq1B3StBI/j1XE=;
- b=67ScSC/znPLMzFXeeLXVrcfEpcPuqagcAATCQUdsME/yESjromQx/dPEob0rePzK5aMNhQ
- 8ZYcMEq8Dvs3ikAA==
+ bh=j069pF/vbaZZMP81ZNhPmtgbiKQHx5sAUEizAJiXi+0=;
+ b=BT1+eDVYw6FU1lEXOQKZ6COLbSDZ+UzuZDJkWW1htUvJlxnpqCbkB0X8gyqsvyscDc0hCJ
+ uKSVqYv/Y7t0qRDA==
 Received: from g78 (rpalethorpe.tcp.ovpn1.nue.suse.de [10.163.17.14])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id AD0F12C142;
- Wed, 20 Sep 2023 11:27:46 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTPS id 017992C142;
+ Wed, 20 Sep 2023 11:28:40 +0000 (UTC)
 References: <20230919114701.15327-1-mdoucha@suse.cz>
- <20230919114701.15327-4-mdoucha@suse.cz>
+ <20230919114701.15327-3-mdoucha@suse.cz>
 User-agent: mu4e 1.10.7; emacs 29.1
 From: Richard Palethorpe <rpalethorpe@suse.de>
 To: Martin Doucha <mdoucha@suse.cz>
-Date: Wed, 20 Sep 2023 12:27:38 +0100
+Date: Wed, 20 Sep 2023 12:28:36 +0100
 Organization: Linux Private Site
-In-reply-to: <20230919114701.15327-4-mdoucha@suse.cz>
-Message-ID: <87fs39f5ji.fsf@suse.de>
+In-reply-to: <20230919114701.15327-3-mdoucha@suse.cz>
+Message-ID: <87bkdxf5i0.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] nfs_lib.sh: Fail the test if NFS unmount fails
+Subject: Re: [LTP] [PATCH 2/3] nfs03.sh: Wait for all files to be removed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,24 +82,34 @@ Reviewed-by: Richard Palethorpe <rpalethorpe@suse.com>
 
 Martin Doucha <mdoucha@suse.cz> writes:
 
+> A race condition between the two parallel calls of rm_files may cause
+> NFS unmount to fail and then the NFS client will get confused by remote
+> filesystem change which leads to strange failures. Make sure both
+> rm_files calls finish before returning from the main test function.
+>
 > Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 > ---
->  testcases/network/nfs/nfs_stress/nfs_lib.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  testcases/network/nfs/nfs_stress/nfs03.sh | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> index a996f7cc8..099c78759 100644
-> --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> @@ -214,7 +214,7 @@ nfs_cleanup()
->  		local_dir="$(get_local_dir $i $n)"
->  		if grep -q "$local_dir" /proc/mounts; then
->  			tst_res TINFO "Unmounting $local_dir"
-> -			umount $local_dir
-> +			umount $local_dir || tst_res TFAIL "Unmount failed"
->  		fi
->  		n=$(( n + 1 ))
->  	done
+> diff --git a/testcases/network/nfs/nfs_stress/nfs03.sh b/testcases/network/nfs/nfs_stress/nfs03.sh
+> index e5f4de67c..e9ef5fb78 100755
+> --- a/testcases/network/nfs/nfs_stress/nfs03.sh
+> +++ b/testcases/network/nfs/nfs_stress/nfs03.sh
+> @@ -66,11 +66,13 @@ do_test()
+>  	cd ../dir1
+>  	wait $pid1
+>  	rm_files &
+> +	pid3=$!
+>  
+>  	tst_res TINFO "cd dir2 & removing files"
+>  	cd ../dir2
+>  	wait $pid2
+>  	rm_files
+> +	wait $pid3
+>  
+>  	tst_res TPASS "test done"
+>  }
 > -- 
 > 2.42.0
 
