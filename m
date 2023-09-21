@@ -4,71 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C845CE71076
-	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 14:01:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64058E71076
+	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 14:06:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7918C3CE3A9
-	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 16:01:18 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 04EAA3CDE9A
+	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 16:06:47 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E8ED63CA2AB
- for <ltp@lists.linux.it>; Thu, 21 Sep 2023 16:01:07 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id BAF4C3CDE89
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 16:06:36 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E2ACA206519
- for <ltp@lists.linux.it>; Thu, 21 Sep 2023 16:01:06 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 96F001BB8523
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 16:06:35 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 18250338AC;
- Thu, 21 Sep 2023 14:01:06 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C95AC338AC
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 14:06:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695304866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=e3QA6hKXdKJamXOYxTHRA8q2FlyKOWcHpMvjCca+Qa4=;
- b=ZTwipeWryWTRzzYU5kVpgda3gPHMrRqZ6JrBlbC1ApsZPZcqBIweUhgFUGE6bO10A5fiMq
- JxRYduqlL1WHhEYVnlB+IwsBFu6MOf4jUUliCZaGg03pGDYK9VVvoY2tfIdOLcEMs1pbWM
- Mfi9x09rokb7AkfW/1JJoWp21DQDZBw=
+ t=1695305194; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=lc0yvfqmvmsW5hIehrMRGqwYUJJn5nMLP/ATWq5p9mw=;
+ b=oLt9OyBU3IDZ+oXWxfJ2Jlw3LMh+ZVo7jaPOphejdH5qFfCpCn0mIvCsITv2qTaaQ7fbia
+ CK2FuNPjvWT0kd2ZGoqJvRa6jSEUmpME1swIcRIPH/lKTgl2NuW4CnRQB2hijGEBh79LTP
+ LHKpFp9HATAb/MzG6LlkpmRl9y/N5O8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695304866;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=e3QA6hKXdKJamXOYxTHRA8q2FlyKOWcHpMvjCca+Qa4=;
- b=BJTkO/Jszxqa5u2oepsyBIFglarQF/wfUYvxIcLoxSfTJOlIYiaz3gpGhliSpWclzhp2ac
- aizOtK30bFeIFsCw==
+ s=susede2_ed25519; t=1695305194;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=lc0yvfqmvmsW5hIehrMRGqwYUJJn5nMLP/ATWq5p9mw=;
+ b=q2JhxKEpJeotr0Cd1/SCzTtQEYIpO75MqMAjUm4iMvdwSWdrBg+rwvY+QY0FnNNqTc++WP
+ iIR+Dh2HbhlaH/Cg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 001E713513;
- Thu, 21 Sep 2023 14:01:05 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B291D13513
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 14:06:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id P/AZOqFMDGUUSgAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Thu, 21 Sep 2023 14:01:05 +0000
-Message-ID: <48a78178-8cdc-6227-fb50-9d70d7c80c9c@suse.cz>
-Date: Thu, 21 Sep 2023 16:01:05 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id UFXqKepNDGWKTAAAMHmgww
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 14:06:34 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu, 21 Sep 2023 16:07:21 +0200
+Message-ID: <20230921140721.11382-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-To: Cyril Hrubis <chrubis@suse.cz>
-References: <20230920154447.3165-1-chrubis@suse.cz>
- <783bad35-1735-f5df-c50b-22d5949def37@suse.cz> <ZQs3J6AUPWcRQZxJ@yuki>
-Content-Language: en-US
-From: Martin Doucha <mdoucha@suse.cz>
-In-Reply-To: <ZQs3J6AUPWcRQZxJ@yuki>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] lib: lockdown: Report lockdown as disabled on
- missing sysfs
+Subject: [LTP] [PATCH v2] lib: tst_test: Fix lockdown detection on missing
+ sysfs
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,59 +73,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+The lockdown detection function reports -1 when secure boot sysfs file
+is not present, which is later mistakenly interpreted as secure boot
+enabled in tst_test.c.
 
-On 20. 09. 23 20:17, Cyril Hrubis wrote:
-> Hi!
->>> We currently report -1 when secure boot sysfs file is not present which
->>> is later interpreted as secure boot enabled. This causes regression in
->>> *_module sycall tests executed on systems when secureboot is not
->>> compiled-in or supported at all.
->>
->> That's incorrect usage then. The tests should check
->> tst_secureboot_enabled() > 0 instead. I think it will be useful to know
->> whether the function found that secureboot is disabled, or could not
->> check at all. We should just document it better.
-> 
-> Yes, the functions do not seem to have any documentation.
-> 
-> So I guess that we need:
-> 
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 2e58cad33..e2c195645 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -1163,10 +1163,10 @@ static void do_setup(int argc, char *argv[])
->          if (tst_test->supported_archs && !tst_is_on_arch(tst_test->supported_archs))
->                  tst_brk(TCONF, "This arch '%s' is not supported for test!", tst_arch.name);
-> 
-> -       if (tst_test->skip_in_lockdown && tst_lockdown_enabled())
-> +       if (tst_test->skip_in_lockdown && tst_lockdown_enabled() > 0)
->                  tst_brk(TCONF, "Kernel is locked down, skipping test");
-> 
-> -       if (tst_test->skip_in_secureboot && tst_secureboot_enabled())
-> +       if (tst_test->skip_in_secureboot && tst_secureboot_enabled() > 0)
->                  tst_brk(TCONF, "SecureBoot enabled, skipping test");
-> 
->          if (tst_test->skip_in_compat && TST_ABI != tst_kernel_bits())
-> 
+This causes regression in *_module sycall tests executed on systems when
+secureboot is not compiled-in or supported at all.
 
-Yes, this is the correct fix.
+Check properly if secure boot is enabled by checking that the return
+value from these functions is positive.
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 2e58cad33..e2c195645 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -1163,10 +1163,10 @@ static void do_setup(int argc, char *argv[])
+ 	if (tst_test->supported_archs && !tst_is_on_arch(tst_test->supported_archs))
+ 		tst_brk(TCONF, "This arch '%s' is not supported for test!", tst_arch.name);
+ 
+-	if (tst_test->skip_in_lockdown && tst_lockdown_enabled())
++	if (tst_test->skip_in_lockdown && tst_lockdown_enabled() > 0)
+ 		tst_brk(TCONF, "Kernel is locked down, skipping test");
+ 
+-	if (tst_test->skip_in_secureboot && tst_secureboot_enabled())
++	if (tst_test->skip_in_secureboot && tst_secureboot_enabled() > 0)
+ 		tst_brk(TCONF, "SecureBoot enabled, skipping test");
+ 
+ 	if (tst_test->skip_in_compat && TST_ABI != tst_kernel_bits())
 -- 
-Martin Doucha   mdoucha@suse.cz
-SW Quality Engineer
-SUSE LINUX, s.r.o.
-CORSO IIa
-Krizikova 148/34
-186 00 Prague 8
-Czech Republic
+2.41.0
 
 
 -- 
