@@ -4,61 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3449CD4954
-	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 05:23:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84E65CD4957
+	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 05:48:38 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B06833CDE99
-	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 07:23:04 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id E352E3CDE90
+	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 07:48:36 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 317B63CA31F
- for <ltp@lists.linux.it>; Thu, 21 Sep 2023 07:22:40 +0200 (CEST)
-Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com
- [207.54.90.49])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 13A983CA327
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 07:48:25 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C0FC61000D46
- for <ltp@lists.linux.it>; Thu, 21 Sep 2023 07:22:39 +0200 (CEST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="132975073"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694703600"; d="scan'208";a="132975073"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
- by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2023 14:22:38 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
- [192.168.83.64])
- by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id C5E9BDB3C1
- for <ltp@lists.linux.it>; Thu, 21 Sep 2023 14:22:34 +0900 (JST)
-Received: from aks-ab2.gw.nic.fujitsu.com (aks-ab2.gw.nic.fujitsu.com
- [192.51.207.12])
- by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 149AACF7C3
- for <ltp@lists.linux.it>; Thu, 21 Sep 2023 14:22:34 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.215.131])
- by aks-ab2.gw.nic.fujitsu.com (Postfix) with ESMTP id AE267883C1;
- Thu, 21 Sep 2023 14:22:32 +0900 (JST)
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 004BF1000D84
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 07:48:24 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B11AE20744
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 05:48:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1695275303; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vxKigvDkTZphiMCD4MXZhPWTYmmBamslfsGqB6NEKOA=;
+ b=gEg9/eoaiJ5zppPt9qUhFURYsi2qwz0PqoZ70Hn0oXKS5xAmFyf0ZJOUPpWhpvnjGOKfhy
+ F2yf+lCzr/W32osTgWRHGlbGl+zwgIa1W+QccPXTh0SRQ43TDqjrFctCiSH9m8Srgg25vH
+ qyW4avU7cGdcsGtJek5SXJ6I7a39FFE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1695275303;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=vxKigvDkTZphiMCD4MXZhPWTYmmBamslfsGqB6NEKOA=;
+ b=nanVGgeRiV7mRx4sZNpUP8VtZjgs5GsvdSMGSxZL7NDyeK/fLJsmUxXITTcQjIZS+pxl9h
+ rdGHLlsavA18vCBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5236B134AF
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 05:48:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Kt9FCSfZC2XiSAAAMHmgww
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 05:48:23 +0000
+From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 21 Sep 2023 13:22:28 +0800
-Message-Id: <1695273748-4607-2-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1695273748-4607-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1695273748-4607-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27888.005
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27888.005
-X-TMASE-Result: 10--10.950700-10.000000
-X-TMASE-MatchedRID: WNLpxaprp4IKK0r2G9VU7gPZZctd3P4BCZa9cSpBObm+f7ap9DJaDb8F
- Hrw7frluX2TxVGxWCcEafQZfvyaD9NbNQByfRPHgSs47mbT7SATzWEMQjooUzQhVq5YmQAlEvmK
- TdxbGqLK3KNQyDMLBzRqKuTwtGvmtFxyzzffqvHnfSQNpZkETVB4crFjzdzs4myiLZetSf8mfop
- 0ytGwvXiq2rl3dzGQ1kMa8cqelyIMOw7UpSt4jXNRUVWGK+nuPhfe7P7kB95adfcqjy4H5ZQ==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+Date: Thu, 21 Sep 2023 11:18:07 +0530
+Message-ID: <20230921054821.12855-1-akumar@suse.de>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] syscalls/fchmodat02: Move errnos check to
- fchmodat02
+Subject: [LTP] [PATCH v3] syscalls/mmap04: Validate mapping perms in
+ /proc/self/maps
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,115 +72,264 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Check errnos for fchmodat().
+Validating the various combinations of prot+flags arguments in mmap()
+call and parsing the /proc/self/maps file to verifying resulting mapping
+has the permission bits as requested in mmap() call.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
 ---
- runtest/syscalls                              |  1 +
- testcases/kernel/syscalls/fchmodat/.gitignore |  1 +
- .../kernel/syscalls/fchmodat/fchmodat02.c     | 66 +++++++++++++++++++
- 3 files changed, 68 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fchmodat/fchmodat02.c
+ testcases/kernel/syscalls/mmap/mmap04.c | 219 ++++++------------------
+ 1 file changed, 52 insertions(+), 167 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 4f1ee1f34..5a6b4a64d 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -259,6 +259,7 @@ fchmod06 fchmod06
- 
- #fchmodat test cases
- fchmodat01 fchmodat01
-+fchmodat02 fchmodat02
- 
- fchown01 fchown01
- fchown01_16 fchown01_16
-diff --git a/testcases/kernel/syscalls/fchmodat/.gitignore b/testcases/kernel/syscalls/fchmodat/.gitignore
-index a9508bc5a..09d5c47d5 100644
---- a/testcases/kernel/syscalls/fchmodat/.gitignore
-+++ b/testcases/kernel/syscalls/fchmodat/.gitignore
-@@ -1 +1,2 @@
- /fchmodat01
-+/fchmodat02
-diff --git a/testcases/kernel/syscalls/fchmodat/fchmodat02.c b/testcases/kernel/syscalls/fchmodat/fchmodat02.c
-new file mode 100644
-index 000000000..ad8e2aaf7
---- /dev/null
-+++ b/testcases/kernel/syscalls/fchmodat/fchmodat02.c
-@@ -0,0 +1,66 @@
+diff --git a/testcases/kernel/syscalls/mmap/mmap04.c b/testcases/kernel/syscalls/mmap/mmap04.c
+index 43f7b7525..c25f0e05b 100644
+--- a/testcases/kernel/syscalls/mmap/mmap04.c
++++ b/testcases/kernel/syscalls/mmap/mmap04.c
+@@ -1,185 +1,70 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) International Business Machines  Corp., 2006
-+ * Copyright (c) Linux Test Project, 2003-2023
-+ * Author: Yi Yang <yyangcdl@cn.ibm.com>
-+ */
-+
+ /*
+  * Copyright (c) International Business Machines  Corp., 2001
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *  07/2001 Ported by Wayne Boyer
++ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-/*
+- * Test Description:
+- *  Call mmap() to map a file creating a mapped region with read/exec access
+- *  under the following conditions -
+- *	- The prot parameter is set to PROT_READ|PROT_EXEC
+- *	- The file descriptor is open for read
+- *	- The file being mapped has read and execute permission bit set.
+- *	- The minimum file permissions should be 0555.
+- *
+- *  The call should succeed to map the file creating mapped memory with the
+- *  required attributes.
 +/*\
 + * [Description]
-+ *
-+ * - fchmodat() fails with ENOTDIR if dir_fd is file descriptor to the file
-+ *   and pathname is relative path of the file.
-+ *
-+ * - fchmodat() fails with EBADF if dir_fd is invalid.
-+ */
-+
-+#include <stdlib.h>
-+#include <stdio.h>
+  *
+- * Expected Result:
+- *  mmap() should succeed returning the address of the mapped region,
+- *  and the mapped region should contain the contents of the mapped file.
+- *
+- * HISTORY
+- *	07/2001 Ported by Wayne Boyer
++ * Verify that, after a successful mmap() call, permission bits of the new
++ * mapping in /proc/pid/maps file matches the prot and flags arguments in
++ * mmap() call.
+  */
+ 
++#include <inttypes.h>
 +#include "tst_test.h"
-+
-+#define TESTDIR         "fchmodatdir"
-+#define TESTFILE        "fchmodatfile"
-+#define FILEPATH        "fchmodatdir/fchmodatfile"
-+
-+static int dir_fd, file_fd;
-+static int bad_fd = -1;
-+
+ #include <stdio.h>
+-#include <stdlib.h>
+-#include <sys/types.h>
+-#include <errno.h>
+-#include <unistd.h>
+-#include <fcntl.h>
+-#include <string.h>
+-#include <signal.h>
+-#include <sys/stat.h>
+-#include <sys/mman.h>
+-
+-#include "test.h"
+-
+-#define TEMPFILE	"mmapfile"
+-
+-char *TCID = "mmap04";
+-int TST_TOTAL = 1;
+ 
+-static size_t page_sz;
++#define MMAPSIZE 1024
+ static char *addr;
+-static char *dummy;
+-static int fildes;
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/*
+-		 * Call mmap to map the temporary file 'TEMPFILE'
+-		 * with read and execute access.
+-		 */
+-		errno = 0;
+-		addr = mmap(0, page_sz, PROT_READ | PROT_EXEC,
+-			    MAP_FILE | MAP_SHARED, fildes, 0);
+ 
+-		/* Check for the return value of mmap() */
+-		if (addr == MAP_FAILED) {
+-			tst_resm(TFAIL | TERRNO, "mmap of %s failed", TEMPFILE);
+-			continue;
+-		}
+-
+-		/*
+-		 * Read the file contents into the dummy
+-		 * variable.
+-		 */
+-		if (read(fildes, dummy, page_sz) < 0) {
+-			tst_brkm(TFAIL, cleanup, "reading %s failed",
+-				 TEMPFILE);
+-		}
+-
+-		/*
+-		 * Check whether the mapped memory region
+-		 * has the file contents.
+-		 */
+-		if (memcmp(dummy, addr, page_sz)) {
+-			tst_resm(TFAIL,
+-				 "mapped memory region contains invalid "
+-				 "data");
+-		} else {
+-			tst_resm(TPASS,
+-				 "Functionality of mmap() successful");
+-		}
+-
+-		/* Clean up things in case we are looping. */
+-		/* Unmap the mapped memory */
+-		if (munmap(addr, page_sz) != 0) {
+-			tst_brkm(TFAIL, cleanup, "munmapping failed");
+-		}
+-	}
+-
+-	cleanup();
+-	tst_exit();
+-}
+-
+-static void setup(void)
 +static struct tcase {
-+	int *fd;
-+	int exp_errno;
++	int prot;
++	int flags;
++	char *exp_perms;
 +} tcases[] = {
-+	{&file_fd, ENOTDIR},
-+	{&bad_fd, EBADF},
++	{PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE, "---p"},
++	{PROT_NONE, MAP_ANONYMOUS | MAP_SHARED, "---s"},
++	{PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE, "r--p"},
++	{PROT_READ, MAP_ANONYMOUS | MAP_SHARED, "r--s"},
++	{PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, "-w-p"},
++	{PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, "-w-s"},
++	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, "rw-p"},
++	{PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, "rw-s"},
++	{PROT_READ | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE, "r-xp"},
++	{PROT_READ | PROT_EXEC, MAP_ANONYMOUS | MAP_SHARED, "r-xs"},
++	{PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE, "-wxp"},
++	{PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_SHARED, "-wxs"},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_PRIVATE, "rwxp"},
++	{PROT_READ | PROT_WRITE | PROT_EXEC, MAP_ANONYMOUS | MAP_SHARED, "rwxs"}
 +};
 +
-+static void verify_fchmodat(unsigned int i)
-+{
++static void run(unsigned int i)
+ {
+-	char *tst_buff;
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	page_sz = getpagesize();
 +	struct tcase *tc = &tcases[i];
-+
-+	TST_EXP_FAIL(fchmodat(*tc->fd, TESTFILE, 0600, 0),
-+		     tc->exp_errno, "fchmodat(%d, %s, 0600, 0)", *tc->fd, TESTFILE);
-+}
-+
-+static void setup(void)
-+{
-+	SAFE_MKDIR(TESTDIR, 0700);
-+	dir_fd = SAFE_OPEN(TESTDIR, O_DIRECTORY);
-+	file_fd = SAFE_OPEN(FILEPATH, O_CREAT | O_RDWR, 0600);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (dir_fd > -1)
-+		SAFE_CLOSE(dir_fd);
-+
-+	if (file_fd > -1)
-+		SAFE_CLOSE(file_fd);
-+}
-+
++	char addr_str[20];
++	char perms[8];
++	char fmt[1024];
+ 
+-	if ((tst_buff = calloc(page_sz, sizeof(char))) == NULL) {
+-		tst_brkm(TFAIL, NULL, "calloc failed (tst_buff)");
+-	}
++	addr = SAFE_MMAP(NULL, MMAPSIZE, tc->prot, tc->flags, -1, 0);
+ 
+-	/* Fill the test buffer with the known data */
+-	memset(tst_buff, 'A', page_sz);
++	sprintf(addr_str, "%" PRIxPTR, (uintptr_t)addr);
++	sprintf(fmt, "%s-%%*x %%s", addr_str);
++	SAFE_FILE_LINES_SCANF("/proc/self/maps", fmt, perms);
+ 
+-	tst_tmpdir();
++	if (!strcmp(perms, tc->exp_perms))
++		tst_res(TPASS, "mapping permissions in /proc matched: %s", perms);
++	else
++		tst_res(TFAIL, "mapping permissions in /proc mismatched,"
++						" expected: %s, found: %s",
++						tc->exp_perms, perms);
+ 
+-	/* Creat a temporary file used for mapping */
+-	if ((fildes = open(TEMPFILE, O_WRONLY | O_CREAT, 0666)) < 0) {
+-		free(tst_buff);
+-		tst_brkm(TFAIL, cleanup, "opening %s failed", TEMPFILE);
+-	}
+-
+-	/* Write test buffer contents into temporary file */
+-	if (write(fildes, tst_buff, page_sz) < (ssize_t)page_sz) {
+-		free(tst_buff);
+-		tst_brkm(TFAIL, cleanup, "writing to %s failed", TEMPFILE);
+-	}
+-
+-	/* Free the memory allocated for test buffer */
+-	free(tst_buff);
+-
+-	/* Make sure proper permissions set on file */
+-	if (fchmod(fildes, 0555) < 0) {
+-		tst_brkm(TFAIL, cleanup, "fchmod of %s failed", TEMPFILE);
+-	}
+-
+-	/* Close the temporary file opened for write */
+-	if (close(fildes) < 0) {
+-		tst_brkm(TFAIL, cleanup, "closing %s failed", TEMPFILE);
+-	}
+-
+-	/* Allocate and initialize dummy string of system page size bytes */
+-	if ((dummy = calloc(page_sz, sizeof(char))) == NULL) {
+-		tst_brkm(TFAIL, cleanup, "calloc failed (dummy)");
+-	}
+-
+-	/* Open the temporary file again for reading */
+-	if ((fildes = open(TEMPFILE, O_RDONLY)) < 0) {
+-		tst_brkm(TFAIL, cleanup,
+-			 "opening %s read-only failed", TEMPFILE);
+-	}
++	SAFE_MUNMAP(addr, MMAPSIZE);
+ }
+ 
+-static void cleanup(void)
+-{
+-	close(fildes);
+-	free(dummy);
+-	tst_rmdir();
+-}
 +static struct tst_test test = {
-+	.test = verify_fchmodat,
++	.test = run,
 +	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
 +};
 -- 
-2.39.1
+2.42.0
 
 
 -- 
