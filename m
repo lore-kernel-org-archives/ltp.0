@@ -4,54 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58728CD4938
-	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 02:15:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8EA5CD494F
+	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 05:22:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A60963CE3DF
-	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 04:15:04 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 0723D3CDE84
+	for <ltp@archiver.kernel.org>; Thu, 21 Sep 2023 07:22:53 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 251983C9274
- for <ltp@lists.linux.it>; Thu, 21 Sep 2023 04:14:53 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id EEA943CA31F
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 07:22:40 +0200 (CEST)
+Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com
+ [207.54.90.47])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7718D140025A
- for <ltp@lists.linux.it>; Thu, 21 Sep 2023 04:14:51 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A1C66205AD;
- Thu, 21 Sep 2023 02:14:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1695262489; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=XE42rxZetD2f9HnHfs5rjjijSpkNJ3XlMlWXEoDEhds=;
- b=KDCg2ttl3a9tGwNpgX8k5g4v40Wvyw+z42WAb1LgQz1YhHG9qhGi5IDkd4u128CcMHAtFi
- ICOxxxv7LGaJPMkUOynFumuRsIE3uupbRvlESoStjoCkpFYconm39dmvAuHyeIKLwgOHrw
- lc3PavXup7HkRkqcVbQ09ZPx+nOgU+s=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 083E813478;
- Thu, 21 Sep 2023 02:14:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id /DCPNBinC2XubwAAMHmgww
- (envelope-from <wegao@suse.com>); Thu, 21 Sep 2023 02:14:48 +0000
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BE6E41000D45
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 07:22:39 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="132804751"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694703600"; d="scan'208";a="132804751"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+ by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Sep 2023 14:22:36 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
+ [192.168.87.59])
+ by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 01DE9DA68D
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 14:22:34 +0900 (JST)
+Received: from aks-ab2.gw.nic.fujitsu.com (aks-ab2.gw.nic.fujitsu.com
+ [192.51.207.12])
+ by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 2C331BF3CD
+ for <ltp@lists.linux.it>; Thu, 21 Sep 2023 14:22:33 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.215.131])
+ by aks-ab2.gw.nic.fujitsu.com (Postfix) with ESMTP id 496748817B;
+ Thu, 21 Sep 2023 14:22:32 +0900 (JST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Wed, 20 Sep 2023 22:14:45 -0400
-Message-Id: <20230921021445.2075-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+Date: Thu, 21 Sep 2023 13:22:27 +0800
+Message-Id: <1695273748-4607-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27888.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27888.005
+X-TMASE-Result: 10--11.221300-10.000000
+X-TMASE-MatchedRID: oBjmd5ti2Ofyq/cli2hvDU7nLUqYrlslFIuBIWrdOePEosIs7IJbkFI3
+ NifDbduL+FyTwBk2ojyri0Mekz/9si+3xqQ44pFWbTdhrAcm88IEa8g1x8eqFzb+WPFOeKNMysx
+ /ZixtIIqTOkeik9B9Gh1NT+IwZHu0hVgj6N6wwHCVF2HD8EHNpwXR2ID7xaV6rrmlNXieXJTQsq
+ gKndcUfvDkXmQzkSgGFR2nHgrUQCM3KXWd30Ii3RRFJJyf5BJe3QfwsVk0UbtuRXh7bFKB7sXiF
+ LBDiKfHQk8YksAbp1hHndL5ppj0Q2OqUloHFKahNkUSDDq742k=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] seccomp01.c: Add SECCOMP_RET_USER_NOTIF check
+Subject: [LTP] [PATCH 1/2] syscalls/fchmodat01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,560 +67,171 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This case will report EINVAL error when execute SAFE_IOCTL(notifyFd,
-SECCOMP_IOCTL_NOTIF_RECV, req) such as 5.6.19, so i put current case's
-.min_kver = "5.7.19"
-
-NOTE: If your old kernel compile env is ubuntu 22.04 LTS, better use
-old gcc-8 and also apply patch base following link:
-https://www.spinics.net/lists/kernel/msg3797871.html
-
-Signed-off-by: Wei Gao <wegao@suse.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- configure.ac                                  |   1 +
- include/lapi/seccomp.h                        |   7 +
- runtest/syscalls                              |   2 +
- testcases/kernel/syscalls/seccomp/.gitignore  |   1 +
- testcases/kernel/syscalls/seccomp/Makefile    |   8 +
- testcases/kernel/syscalls/seccomp/seccomp01.c | 456 ++++++++++++++++++
- 6 files changed, 475 insertions(+)
- create mode 100644 testcases/kernel/syscalls/seccomp/.gitignore
- create mode 100644 testcases/kernel/syscalls/seccomp/Makefile
- create mode 100644 testcases/kernel/syscalls/seccomp/seccomp01.c
+ .../kernel/syscalls/fchmodat/fchmodat01.c     | 103 +++++++-----------
+ 1 file changed, 42 insertions(+), 61 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 662c4c058..6cea35cb4 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -138,6 +138,7 @@ AC_CHECK_FUNCS_ONCE([ \
-     renameat \
-     renameat2 \
-     sched_getcpu \
-+    seccomp \
-     sendmmsg \
-     sethostid \
-     setns \
-diff --git a/include/lapi/seccomp.h b/include/lapi/seccomp.h
-index 29819ba6f..cfb3da55d 100644
---- a/include/lapi/seccomp.h
-+++ b/include/lapi/seccomp.h
-@@ -37,4 +37,11 @@ struct seccomp_data {
+diff --git a/testcases/kernel/syscalls/fchmodat/fchmodat01.c b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
+index 3deff0ebe..d9db4ec10 100644
+--- a/testcases/kernel/syscalls/fchmodat/fchmodat01.c
++++ b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
+@@ -1,99 +1,75 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2006
+- *
++ * Copyright (c) Linux Test Project, 2003-2023
+  * 08/28/2006 AUTHOR: Yi Yang <yyangcdl@cn.ibm.com>
+  */
+ 
+ /*\
+  * [Description]
+  *
+- * This test case will verify basic function of fchmodat.
++ * Check the basic functionality of the faccessat() system call.
++ *
++ * - fchmodat() passes if dir_fd is file descriptor to the directory
++ *   where the file is located and pathname is relative path of the file.
++ *
++ * - fchmodat() passes if dir_fd is a bad file descriptor and pathname is
++ *   absolute path of the file.
++ *
++ * - fchmodat() passes if dir_fd is AT_FDCWD and pathname is interpreted
++ *   relative to the current working directory of the calling process.
+  */
+ 
+-#define _GNU_SOURCE
+-
+-#include <unistd.h>
+-#include <string.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include "tst_test.h"
+-#include "lapi/syscalls.h"
+ 
+-#ifndef AT_FDCWD
+-#define AT_FDCWD -100
+-#endif
++#define TESTDIR         "fchmodatdir"
++#define TESTFILE        "fchmodatfile"
++#define FILEPATH        "fchmodatdir/fchmodatfile"
+ 
+-static char pathname[256];
+-static char testfile[256];
+-static char testfile2[256];
+-static char testfile3[256];
++static int dir_fd, file_fd;
++static int atcwd_fd = AT_FDCWD;
++static char *abs_path;
++static char *test_file;
++static char *file_path;
+ 
+ static struct tcase {
+-	int exp_errno;
+-	char *exp_errval;
++	int *fd;
++	char **filenames;
+ } tcases[] = {
+-	{ 0, NULL},
+-	{ 0, NULL},
+-	{ ENOTDIR, "ENOTDIR"},
+-	{ EBADF, "EBADF"},
+-	{ 0, NULL},
+-	{ 0, NULL},
++	{&dir_fd, &test_file},
++	{&dir_fd, &abs_path},
++	{&atcwd_fd, &file_path},
  };
+-static int fds[ARRAY_SIZE(tcases)];
+-static char *filenames[ARRAY_SIZE(tcases)];
  
- #endif /* HAVE_LINUX_SECCOMP_H*/
-+
-+# ifndef HAVE_SECCOMP
-+int seccomp(unsigned int operation, unsigned int flags, void *args)
-+{
-+	return syscall(__NR_seccomp, operation, flags, args);
-+}
-+# endif /* HAVE_SECCOMP */
- #endif /* LAPI_SECCOMP_H__ */
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 4f1ee1f34..544610d63 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1242,6 +1242,8 @@ select02 select02
- select03 select03
- select04 select04
+ static void verify_fchmodat(unsigned int i)
+ {
+ 	struct tcase *tc = &tcases[i];
  
-+seccomp01 seccomp01
-+
- semctl01 semctl01
- semctl02 semctl02
- semctl03 semctl03
-diff --git a/testcases/kernel/syscalls/seccomp/.gitignore b/testcases/kernel/syscalls/seccomp/.gitignore
-new file mode 100644
-index 000000000..9196906cf
---- /dev/null
-+++ b/testcases/kernel/syscalls/seccomp/.gitignore
-@@ -0,0 +1 @@
-+seccomp01
-diff --git a/testcases/kernel/syscalls/seccomp/Makefile b/testcases/kernel/syscalls/seccomp/Makefile
-new file mode 100644
-index 000000000..49238eee0
---- /dev/null
-+++ b/testcases/kernel/syscalls/seccomp/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/seccomp/seccomp01.c b/testcases/kernel/syscalls/seccomp/seccomp01.c
-new file mode 100644
-index 000000000..bf23fe8f7
---- /dev/null
-+++ b/testcases/kernel/syscalls/seccomp/seccomp01.c
-@@ -0,0 +1,456 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023 Michael Kerrisk <mtk.manpages@gmail.com>
-+ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify seccomp and seccomp_user_notif
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/prctl.h>
-+#include <fcntl.h>
-+#include <limits.h>
-+#include <signal.h>
-+#include <stddef.h>
-+#include <stdint.h>
-+#include <stdbool.h>
-+#include <linux/audit.h>
-+#include <sys/syscall.h>
-+#include <sys/stat.h>
-+#include <linux/filter.h>
-+#include <linux/seccomp.h>
-+#include <sys/ioctl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <sys/socket.h>
-+#include <sys/un.h>
-+
-+#include "tst_test.h"
-+#include "lapi/seccomp.h"
-+
-+#define TMP_PREFIX_DIR "/tmp/ltp_test"
-+#define CWD_DIR "./abc"
-+#define OTHER_DIR "/aa"
-+
-+static struct tcase {
-+	char *dir;
-+	int expect_ret;
-+	char *desc;
-+} tcases[] = {
-+	{TMP_PREFIX_DIR, strlen(TMP_PREFIX_DIR), "pathname begins with the prefix /tmp/"},
-+	{CWD_DIR, 0,  "pathname begins with ./"},
-+	{OTHER_DIR, -1, "pathname begins with /abc"},
-+};
-+
-+static int sendfd(int sockfd, int fd)
-+{
-+	struct msghdr msgh;
-+	struct iovec iov;
-+	int data;
-+	struct cmsghdr *cmsgp;
-+
-+	/* Allocate a char array of suitable size to hold the ancillary data.
-+	 * However, since this buffer is in reality a 'struct cmsghdr', use a
-+	 * union to ensure that it is suitable aligned.
-+	 */
-+	union {
-+		char   buf[CMSG_SPACE(sizeof(int))];
-+		/* Space large enough to hold an 'int' */
-+		struct cmsghdr align;
-+	} controlMsg;
-+
-+	/* The 'msg_name' field can be used to specify the address of the
-+	 * destination socket when sending a datagram. However, we do not
-+	 * need to use this field because 'sockfd' is a connected socket.
-+	 */
-+
-+	msgh.msg_name = NULL;
-+	msgh.msg_namelen = 0;
-+
-+	/* On Linux, we must transmit at least one byte of real data in
-+	 * order to send ancillary data. We transmit an arbitrary integer
-+	 * whose value is ignored by recvfd().
-+	 */
-+
-+	msgh.msg_iov = &iov;
-+	msgh.msg_iovlen = 1;
-+	iov.iov_base = &data;
-+	iov.iov_len = sizeof(int);
-+	data = 12345;
-+
-+	/* Set 'msghdr' fields that describe ancillary data */
-+
-+	msgh.msg_control = controlMsg.buf;
-+	msgh.msg_controllen = sizeof(controlMsg.buf);
-+
-+	/* Set up ancillary data describing file descriptor to send */
-+
-+	cmsgp = CMSG_FIRSTHDR(&msgh);
-+	cmsgp->cmsg_level = SOL_SOCKET;
-+	cmsgp->cmsg_type = SCM_RIGHTS;
-+	cmsgp->cmsg_len = CMSG_LEN(sizeof(int));
-+	memcpy(CMSG_DATA(cmsgp), &fd, sizeof(int));
-+
-+	SAFE_SENDMSG(sizeof(int), sockfd, &msgh, 0);
-+
-+	return 0;
-+}
-+
-+static int recvfd(int sockfd)
-+{
-+	struct msghdr msgh;
-+	struct iovec iov;
-+	int data, fd;
-+	ssize_t nr;
-+
-+	/* Allocate a char buffer for the ancillary data. See the comments
-+	 * in sendfd()
-+	 */
-+	union {
-+		char   buf[CMSG_SPACE(sizeof(int))];
-+		struct cmsghdr align;
-+	} controlMsg;
-+	struct cmsghdr *cmsgp;
-+
-+	/* The 'msg_name' field can be used to obtain the address of the
-+	 * sending socket. However, we do not need this information.
-+	 */
-+
-+	msgh.msg_name = NULL;
-+	msgh.msg_namelen = 0;
-+
-+	/* Specify buffer for receiving real data */
-+
-+	msgh.msg_iov = &iov;
-+	msgh.msg_iovlen = 1;
-+	iov.iov_base = &data;       /* Real data is an 'int' */
-+	iov.iov_len = sizeof(int);
-+
-+	/* Set 'msghdr' fields that describe ancillary data */
-+
-+	msgh.msg_control = controlMsg.buf;
-+	msgh.msg_controllen = sizeof(controlMsg.buf);
-+
-+	/* Receive real plus ancillary data; real data is ignored */
-+
-+	nr = SAFE_RECVMSG(sizeof(int), sockfd, &msgh, 0);
-+
-+	if (nr == -1)
-+		return -1;
-+
-+	cmsgp = CMSG_FIRSTHDR(&msgh);
-+
-+	/* Check the validity of the 'cmsghdr' */
-+
-+	if (cmsgp == NULL ||
-+			cmsgp->cmsg_len != CMSG_LEN(sizeof(int)) ||
-+			cmsgp->cmsg_level != SOL_SOCKET ||
-+			cmsgp->cmsg_type != SCM_RIGHTS) {
-+		errno = EINVAL;
-+		return -1;
-+	}
-+
-+	/* Return the received file descriptor to our caller */
-+
-+	memcpy(&fd, CMSG_DATA(cmsgp), sizeof(int));
-+	return fd;
-+}
-+
-+/* The following is the x86-64-specific BPF boilerplate code for checking
-+ * that the BPF program is running on the right architecture + ABI. At
-+ * completion of these instructions, the accumulator contains the system
-+ * call number.
-+ */
-+
-+/* For the x32 ABI, all system call numbers have bit 30 set */
-+
-+#define X32_SYSCALL_BIT         0x40000000
-+
-+#define X86_64_CHECK_ARCH_AND_LOAD_SYSCALL_NR \
-+	BPF_STMT(BPF_LD | BPF_W | BPF_ABS, \
-+	(offsetof(struct seccomp_data, arch))), \
-+	BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, AUDIT_ARCH_X86_64, 0, 2), \
-+	BPF_STMT(BPF_LD | BPF_W | BPF_ABS, \
-+	(offsetof(struct seccomp_data, nr))), \
-+	BPF_JUMP(BPF_JMP | BPF_JGE | BPF_K, X32_SYSCALL_BIT, 0, 1), \
-+	BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS)
-+
-+/* installNotifyFilter() installs a seccomp filter that generates
-+ * user-space notifications (SECCOMP_RET_USER_NOTIF) when the process
-+ * calls mkdir(2); the filter allows all other system calls.
-+ *
-+ * The function return value is a file descriptor from which the
-+ * user-space notifications can be fetched.
-+ */
-+
-+static int installNotifyFilter(void)
-+{
-+	struct sock_filter filter[] = {
-+		X86_64_CHECK_ARCH_AND_LOAD_SYSCALL_NR,
-+
-+		/* mkdir() triggers notification to user-space supervisor */
-+
-+		BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_mkdir, 0, 1),
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_USER_NOTIF),
-+
-+		/* Every other system call is allowed */
-+
-+		BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
-+	};
-+
-+	struct sock_fprog prog = {
-+		.len = ARRAY_SIZE(filter),
-+		.filter = filter,
-+	};
-+
-+	/* Install the filter with the SECCOMP_FILTER_FLAG_NEW_LISTENER flag;
-+	 * as a result, seccomp() returns a notification file descriptor.
-+	 */
-+
-+	TST_EXP_POSITIVE(seccomp(SECCOMP_SET_MODE_FILTER,
-+				SECCOMP_FILTER_FLAG_NEW_LISTENER, &prog));
-+	return TST_RET;
-+
-+}
-+
-+/* Close a pair of sockets created by socketpair() */
-+
-+static void closeSocketPair(int sockPair[2])
-+{
-+	SAFE_CLOSE(sockPair[0]);
-+	SAFE_CLOSE(sockPair[1]);
-+}
-+
-+/* Implementation of the target process; create a child process that:
-+ *
-+ * (1) installs a seccomp filter with the
-+ * SECCOMP_FILTER_FLAG_NEW_LISTENER flag;
-+ * (2) writes the seccomp notification file descriptor returned from
-+ * the previous step onto the UNIX domain socket, 'sockPair[0]';
-+ * (3) calls mkdir(2) for each element of 'argv'.
-+
-+ * The function return value in the parent is the PID of the child
-+ * process; the child does not return from this function.
-+ */
-+
-+static pid_t targetProcess(int sockPair[2], struct tcase *tc)
-+{
-+
-+	pid_t targetPid = SAFE_FORK();
-+
-+	if (targetPid > 0)          /* In parent, return PID of child */
-+		return targetPid;
-+
-+	/* Child falls through to here */
-+
-+	tst_res(TINFO, "T: PID = %ld", (long) getpid());
-+
-+	/* Install seccomp filter(s) */
-+
-+	TST_EXP_PASS(prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0));
-+
-+	int notifyFd = installNotifyFilter();
-+
-+	/* Pass the notification file descriptor to the tracing process over
-+	 * a UNIX domain socket
-+	 */
-+
-+	TST_EXP_PASS(sendfd(sockPair[0], notifyFd));
-+
-+	/* Notification and socket FDs are no longer needed in target */
-+
-+	SAFE_CLOSE(notifyFd);
-+
-+	closeSocketPair(sockPair);
-+
-+	tst_res(TINFO, "T: about to mkdir(\"%s\")", tc->dir);
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	TEST(mkdir(tc->dir, 0700));
-+
-+	tst_res(TINFO, "T: SUCCESS: mkdir(2) returned %ld", TST_RET);
-+	if (TST_RET == tc->expect_ret)
-+		tst_res(TPASS, "Case %s PASS", tc->desc);
-+	else
-+		tst_brk(TBROK | TTERRNO, "Case %s Failed, expect %d but return %ld",
-+						tc->desc, tc->expect_ret, TST_RET);
-+
-+	exit(EXIT_SUCCESS);
-+}
-+
-+
-+/* Access the memory of the target process in order to discover the
-+ * pathname that was given to mkdir()
-+ */
-+
-+static void getTargetPathname(struct seccomp_notif *req, int notifyFd,
-+		char *path)
-+{
-+	char procMemPath[PATH_MAX];
-+
-+	snprintf(procMemPath, sizeof(procMemPath), "/proc/%d/mem", req->pid);
-+
-+	int procMemFd = SAFE_OPEN(procMemPath, O_RDONLY);
-+
-+	/* Check that the process whose info we are accessing is still alive.
-+	 * If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performed
-+	 * in checkNotificationIdIsValid()) succeeds, we know that the
-+	 * /proc/PID/mem file descriptor that we opened corresponds to the
-+	 * process for which we received a notification. If that process
-+	 * subsequently terminates, then read() on that file descriptor
-+	 * will return 0 (EOF).
-+	 */
-+
-+	SAFE_IOCTL(notifyFd, SECCOMP_IOCTL_NOTIF_ID_VALID, &req->id);
-+
-+	/* Seek to the location containing the pathname argument (i.e., the
-+	 *  first argument) of the mkdir(2) call and read that pathname
-+	 */
-+
-+	SAFE_LSEEK(procMemFd, req->data.args[0], SEEK_SET);
-+
-+	SAFE_READ(1, procMemFd, path, PATH_MAX);
-+
-+	SAFE_CLOSE(procMemFd);
-+}
-+
-+/* Handle notifications that arrive via the SECCOMP_RET_USER_NOTIF file
-+ *  descriptor, 'notifyFd'.
-+ */
-+
-+static void handleNotifications(int notifyFd)
-+{
-+	struct seccomp_notif_sizes sizes;
-+	char path[PATH_MAX];
-+
-+	TST_EXP_POSITIVE(seccomp(SECCOMP_GET_NOTIF_SIZES, 0, &sizes));
-+
-+	struct seccomp_notif *req = SAFE_MALLOC(sizes.seccomp_notif);
-+
-+	struct seccomp_notif_resp *resp = SAFE_MALLOC(sizes.seccomp_notif_resp);
-+
-+	memset(req, 0, sizes.seccomp_notif);
-+
-+	TST_CHECKPOINT_WAKE(0);
-+
-+	SAFE_IOCTL(notifyFd, SECCOMP_IOCTL_NOTIF_RECV, req);
-+
-+	tst_res(TINFO, "S: got notification (ID %#llx) for PID %d",
-+			req->id, req->pid);
-+
-+	/* The only system call that can generate a notification event
-+	 * is mkdir(2). Nevertheless, we check that the notified system
-+	 * call is indeed mkdir() as kind of future-proofing of this
-+	 * code in case the seccomp filter is later modified to
-+	 * generate notifications for other system calls.
-+	 */
-+
-+	if (req->data.nr != __NR_mkdir)
-+		tst_brk(TBROK, "notification contained unexpected system call number");
-+
-+	getTargetPathname(req, notifyFd, path);
-+
-+	/* Prepopulate some fields of the response */
-+
-+	resp->id = req->id;     /* Response includes notification ID */
-+	resp->flags = 0;
-+	resp->val = 0;
-+
-+	/* If the directory is in /tmp, then create it on behalf of
-+	 * the supervisor; if the pathname starts with '.', tell the
-+	 * kernel to let the target process execute the mkdir();
-+	 * otherwise, give an error for a directory pathname in
-+	 * any other location.
-+	 */
-+
-+	if (strncmp(path, "/tmp/", strlen("/tmp/")) == 0) {
-+		tst_res(TINFO, "S: executing: mkdir(\"%s\", %#llo)",
-+				path, req->data.args[1]);
-+
-+		if (mkdir(path, req->data.args[1]) == 0) {
-+			resp->error = 0;            /* "Success" */
-+			resp->val = strlen(path);   /* Used as return value of
-+						     * mkdir() in target
-+						     */
-+			tst_res(TINFO, "S: success! spoofed return = %lld",
-+					resp->val);
-+		} else {
-+
-+			/* If mkdir() failed in the supervisor, pass the error
-+			 *  back to the target
-+			 */
-+
-+			resp->error = -errno;
-+			tst_res(TINFO, "S: failure! (errno = %d; %s)", errno,
-+					strerror(errno));
-+		}
-+	} else if (strncmp(path, "./", strlen("./")) == 0) {
-+		resp->error = resp->val = 0;
-+		resp->flags = SECCOMP_USER_NOTIF_FLAG_CONTINUE;
-+		tst_res(TINFO, "S: target can execute system call");
-+	} else {
-+		resp->error = -EOPNOTSUPP;
-+		tst_res(TINFO, "S: spoofing error response (%s)",
-+				strerror(-resp->error));
-+	}
-+
-+	/* Send a response to the notification */
-+
-+	tst_res(TINFO, "S: sending response "
-+			"(flags = %#x; val = %lld; error = %d)",
-+			resp->flags, resp->val, resp->error);
-+
-+	SAFE_IOCTL(notifyFd, SECCOMP_IOCTL_NOTIF_SEND, resp);
-+
-+}
-+
-+/* Implementation of the supervisor process:
-+ *
-+ * (1) obtains the notification file descriptor from 'sockPair[1]'
-+ * (2) handles notifications that arrive on that file descriptor.
-+ */
-+
-+static void supervisor(int sockPair[2])
-+{
-+	int notifyFd = TST_EXP_POSITIVE(recvfd(sockPair[1]));
-+
-+	closeSocketPair(sockPair);  /* We no longer need the socket pair */
-+
-+	handleNotifications(notifyFd);
-+}
-+
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	int sockPair[2];
-+
-+	tst_res(TINFO, "Test case %s start", tc->desc);
-+
-+	SAFE_SOCKETPAIR(AF_UNIX, SOCK_STREAM, 0, sockPair);
-+
-+	int pid = targetProcess(sockPair, tc);
-+
-+	supervisor(sockPair);
-+
-+	SAFE_WAITPID(pid, NULL, 0);
-+
-+	if (!access(tc->dir, F_OK))
-+		SAFE_RMDIR(tc->dir);
-+}
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = run,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+	.min_kver = "5.7.19",
-+	.needs_checkpoints = 1
-+};
+-	if (tc->exp_errno == 0)
+-		TST_EXP_PASS(tst_syscall(__NR_fchmodat, fds[i], filenames[i], 0600),
+-			     "fchmodat() returned the expected errno %d: %s",
+-			     TST_ERR, strerror(TST_ERR));
+-	else
+-		TST_EXP_FAIL(tst_syscall(__NR_fchmodat, fds[i], filenames[i], 0600),
+-			     tc->exp_errno,
+-			     "fchmodat() returned the expected errno %d: %s",
+-			     TST_ERR, strerror(TST_ERR));
++	TST_EXP_PASS(fchmodat(*tc->fd, *tc->filenames, 0600, 0),
++		     "fchmodat(%d, %s, 0600, 0)",
++		     *tc->fd, *tc->filenames);
+ }
+ 
+ static void setup(void)
+ {
+-	/* Initialize test dir and file names */
+-	char *abs_path = tst_get_tmpdir();
+-	int p = getpid();
+-
+-	sprintf(pathname, "fchmodattestdir%d", p);
+-	sprintf(testfile, "fchmodattest%d.txt", p);
+-	sprintf(testfile2, "%s/fchmodattest%d.txt", abs_path, p);
+-	sprintf(testfile3, "fchmodattestdir%d/fchmodattest%d.txt", p, p);
+-
+-	free(abs_path);
+-
+-	SAFE_MKDIR(pathname, 0700);
+-
+-	fds[0] = SAFE_OPEN(pathname, O_DIRECTORY);
+-	fds[1] = fds[4] = fds[0];
+-
+-	SAFE_FILE_PRINTF(testfile, "%s", testfile);
+-	SAFE_FILE_PRINTF(testfile2, "%s", testfile2);
++	char *tmpdir_path = tst_get_tmpdir();
+ 
+-	fds[2] = SAFE_OPEN(testfile3, O_CREAT | O_RDWR, 0600);
+-	fds[3] = 100;
+-	fds[5] = AT_FDCWD;
++	abs_path = tst_aprintf("%s/%s", tmpdir_path, FILEPATH);
++	free(tmpdir_path);
+ 
+-	filenames[0] = filenames[2] = filenames[3] = filenames[4] = testfile;
+-	filenames[1] = testfile2;
+-	filenames[5] = testfile3;
++	SAFE_MKDIR(TESTDIR, 0700);
++	dir_fd = SAFE_OPEN(TESTDIR, O_DIRECTORY);
++	file_fd = SAFE_OPEN(FILEPATH, O_CREAT | O_RDWR, 0600);
+ }
+ 
+ static void cleanup(void)
+ {
+-	if (fds[0] > 0)
+-		close(fds[0]);
+-	if (fds[2] > 0)
+-		close(fds[2]);
++	if (dir_fd > -1)
++		close(dir_fd);
++	if (file_fd > -1)
++		close(file_fd);
+ }
+ 
+ static struct tst_test test = {
+@@ -101,5 +77,10 @@ static struct tst_test test = {
+ 	.test = verify_fchmodat,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
++	.bufs = (struct tst_buffers []) {
++		{&test_file, .str = TESTFILE},
++		{&file_path, .str = FILEPATH},
++		{},
++	},
+ 	.needs_tmpdir = 1,
+ };
 -- 
-2.35.3
+2.39.1
 
 
 -- 
