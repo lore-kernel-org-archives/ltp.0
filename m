@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B773ECD4F5B
-	for <ltp@archiver.kernel.org>; Fri, 22 Sep 2023 12:07:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50476C04AAB
+	for <ltp@archiver.kernel.org>; Fri, 22 Sep 2023 12:13:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9C27B3CE36F
-	for <ltp@archiver.kernel.org>; Fri, 22 Sep 2023 14:07:49 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 492C13CDE8A
+	for <ltp@archiver.kernel.org>; Fri, 22 Sep 2023 14:13:22 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 748483CDE37
- for <ltp@lists.linux.it>; Fri, 22 Sep 2023 14:07:39 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 592E93CDE37
+ for <ltp@lists.linux.it>; Fri, 22 Sep 2023 14:13:07 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C3C09209A16
- for <ltp@lists.linux.it>; Fri, 22 Sep 2023 14:07:38 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0E7EB100B79D
+ for <ltp@lists.linux.it>; Fri, 22 Sep 2023 14:13:06 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0F4B9218A0;
- Fri, 22 Sep 2023 12:07:38 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id F1B522190B;
+ Fri, 22 Sep 2023 12:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695384458; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1695384786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hJSdYIlZqr+ESwNKWGZ0JOjg9VVVcSI5iaUNj/v22RM=;
- b=hPZOShgTGoXOCqrTBcKR+GJVK7YLHI2dRiYd1SczFLxi1jkVV4mEd9IqeqaPct0BN9VrcL
- dxbEi61J/Ft8qsXWXgxbr2dTU/uEJgf5+RB0wEFjF0PqbUtPW+NZtEcr6316b2RFngIPV5
- myrm9KyJGsmRCGUpvzRVN2Ts/Auc9bQ=
+ bh=++zfTZbeZTU/7XNZcwTaWeO/C/ejIBw1iuXxgsqxtuY=;
+ b=PeZ1BMgRIXKxDW/cuohgXdNxfIVXPWJ/v667R2x4y6t+M0l6VfmJFfvRnu4KahlNdvRSm5
+ VtoPRuP7Tf6ASw8Q9U+Q3CXTRxPIq6Xe5+zJcbR5rUhO7TW4ywC7kHloQ8zHZ6YZ9kGOmi
+ E+akMuUaqX1lq2Vcjkn0UwSOzYaw/j8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695384458;
+ s=susede2_ed25519; t=1695384786;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=hJSdYIlZqr+ESwNKWGZ0JOjg9VVVcSI5iaUNj/v22RM=;
- b=n2kv/1b3VO8/Xh7L8fFB0Y3t4PRk93wxsLKh6RrEUuufTrm8D3l054ZNQDA8Y6hyn9TMG4
- c05GjHi+gxI6fNAQ==
+ bh=++zfTZbeZTU/7XNZcwTaWeO/C/ejIBw1iuXxgsqxtuY=;
+ b=vbNfbbsUv2tvpLuI7qAfEEWwffy14vLviK4FHhOGe3xy4CsX3FqK0o5dX7Az0I2IBFdkiS
+ T6LObhlUUXkm1YBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD56713478;
- Fri, 22 Sep 2023 12:07:37 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA19B13478;
+ Fri, 22 Sep 2023 12:13:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 1u6tMImDDWXPMgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 22 Sep 2023 12:07:37 +0000
-Date: Fri, 22 Sep 2023 14:08:22 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id f0FrM9GEDWXvNQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 22 Sep 2023 12:13:05 +0000
+Date: Fri, 22 Sep 2023 14:13:50 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Martin Doucha <mdoucha@suse.cz>
-Message-ID: <ZQ2Dth3NZO2rhzXP@yuki>
-References: <20230919114701.15327-1-mdoucha@suse.cz>
- <20230919114701.15327-4-mdoucha@suse.cz>
+Message-ID: <ZQ2E_pKz2QSG61LY@yuki>
+References: <20230920153145.30891-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230919114701.15327-4-mdoucha@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+In-Reply-To: <20230920153145.30891-1-mdoucha@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] nfs_lib.sh: Fail the test if NFS unmount fails
+Subject: Re: [LTP] [PATCH] pidns05: Use tst_getpid()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,21 +82,27 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> index a996f7cc8..099c78759 100644
-> --- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> +++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-> @@ -214,7 +214,7 @@ nfs_cleanup()
->  		local_dir="$(get_local_dir $i $n)"
->  		if grep -q "$local_dir" /proc/mounts; then
->  			tst_res TINFO "Unmounting $local_dir"
-> -			umount $local_dir
-> +			umount $local_dir || tst_res TFAIL "Unmount failed"
+> --- a/testcases/kernel/containers/pidns/pidns05.c
+> +++ b/testcases/kernel/containers/pidns/pidns05.c
+> @@ -28,7 +28,7 @@ static void child_func(int *level)
+>  {
+>  	pid_t cpid, ppid;
+>  
+> -	cpid = getpid();
+> +	cpid = tst_getpid();
+>  	ppid = getppid();
+>  
+>  	TST_EXP_EQ_LI(cpid, 1);
+> @@ -55,7 +55,7 @@ static int find_cinit_pids(pid_t *pids)
+>  	int next = 0;
+>  	pid_t parentpid, pgid, pgid2;
+>  
+> -	parentpid = getpid();
+> +	parentpid = tst_getpid();
 
-I suppose that this should be TBROK instead. And that this, apart from
-the previous patches, should be applied after the release.
+I suppose that this one is not strictly required, but it does not harm
+to consistently use tst_getpid()
 
-Otherwise:
 
 Reviewed-by: Cyril Hrubis <chrubis@suse.cz>
 
