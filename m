@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D40BCD4F33
-	for <ltp@archiver.kernel.org>; Fri, 22 Sep 2023 09:09:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AEB8CD4F35
+	for <ltp@archiver.kernel.org>; Fri, 22 Sep 2023 09:11:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D49283CE37D
-	for <ltp@archiver.kernel.org>; Fri, 22 Sep 2023 11:09:46 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 697D83CE379
+	for <ltp@archiver.kernel.org>; Fri, 22 Sep 2023 11:11:13 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A63923C8946
- for <ltp@lists.linux.it>; Fri, 22 Sep 2023 11:09:36 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 9895E3C8946
+ for <ltp@lists.linux.it>; Fri, 22 Sep 2023 11:11:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 269FD1BB9FAF
- for <ltp@lists.linux.it>; Fri, 22 Sep 2023 11:09:35 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BE5771002889
+ for <ltp@lists.linux.it>; Fri, 22 Sep 2023 11:11:01 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 740BA1F38A;
- Fri, 22 Sep 2023 09:09:35 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 8DF2C1F45A;
+ Fri, 22 Sep 2023 09:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695373775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1695373861;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=onGdSnf1TabhST/nVQOzguCOB3OwnFwkbl9U7FML82U=;
- b=QQWghVX07yAEd/c8giGyj2aEmDo+G/Nrdhdvi5pyuL7lXrmlUdxjDG2Lguao/8N4tv7zTv
- yT/FmpboyILjqAavxFaxW8CtXIK/u7q4ZdR7Tl62C+YLNK6ZYq4er0Sde/5aJIVtY6gE1w
- 5tg8jI1RtR0CJBHZFeCx/zsQ47rjhWA=
+ bh=F/jho8KKZ0H8szA6Vm6sMFjwVPB+b0A02JZe/Ei5DSU=;
+ b=YoAVqiRh1/inIvoukf17w/SeHIUx/uwfsHi16Bm0Xa5isptxEP06jLNfAuOrJWzCfC2Xv+
+ jPgJsVQcIT1hPCOfPWv85PPQIAGkb4SVuveik4S0DUF0O6ecXRTQ/EY3HLHFjWDbkOzqK3
+ wAqowojfgb+L70X87tYcNxvl94E7MIM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695373775;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1695373861;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=onGdSnf1TabhST/nVQOzguCOB3OwnFwkbl9U7FML82U=;
- b=ohri14qvNI6wH0btb6pqb/u4FXiGUIfOjHLYfJdc9tzLbQZgtJnDLd3Hty0RfgP8qoO1Ja
- bDifj/b95uzQaqDA==
+ bh=F/jho8KKZ0H8szA6Vm6sMFjwVPB+b0A02JZe/Ei5DSU=;
+ b=gmVhrlBuZpoGa8YT+s4xXO6SiHUUuALPtVKhZTl59d1cMBhYAPkOoMgLIjFhWsdgxiBjnr
+ JP+eSK4dQIPgqUBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D23D13478;
- Fri, 22 Sep 2023 09:09:35 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B9F813478;
+ Fri, 22 Sep 2023 09:11:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id tEqNFc9ZDWWgUgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Fri, 22 Sep 2023 09:09:35 +0000
-Date: Fri, 22 Sep 2023 11:10:20 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Reuben Hawkins <reubenhwk@gmail.com>
-Message-ID: <ZQ1Z_JHMPE3hrzv5@yuki>
-References: <20230909043806.3539-1-reubenhwk@gmail.com>
- <202309191018.68ec87d7-oliver.sang@intel.com>
- <CAOQ4uxhc8q=GAuL9OPRVOr=mARDL3TExPY0Zipij1geVKknkkQ@mail.gmail.com>
- <CAD_8n+TpZF2GoE1HUeBLs0vmpSna0yR9b+hsd-VC1ZurTe41LQ@mail.gmail.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id EYd6DiVaDWVjUwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 22 Sep 2023 09:11:01 +0000
+Date: Fri, 22 Sep 2023 11:10:59 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Xu Senmiao <xusenmiao@huawei.com>
+Message-ID: <20230922091059.GB483490@pevik>
+References: <20230815085706.1077725-1-xusenmiao@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAD_8n+TpZF2GoE1HUeBLs0vmpSna0yR9b+hsd-VC1ZurTe41LQ@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+In-Reply-To: <20230815085706.1077725-1-xusenmiao@huawei.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] vfs: fix readahead(2) on block devices
+Subject: Re: [LTP] [PATCH] ipneigh01.sh: Fix an issue where ipneigh01_arp
+ test case fail due to ARP timeout
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,43 +77,53 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: mszeredi@redhat.com, brauner@kernel.org, lkp@intel.com, willy@infradead.org,
- oe-lkp@lists.linux.dev, kernel test robot <oliver.sang@intel.com>,
- viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> ack.  Will try to test.  My Ubuntu 22.04 system wasn't able to find
-> packages called
-> for by the test case, so it'll take me a little while to figure out how to
-> get the
-> test case working...
+Hi Xu,
 
-Huh? The test is a simple C binary you shouldn't need anything more
-than:
+> When the ARP status of the rhost is stale,
+> lhost ping rhost and the lhost deletes the ARP record,
+> the record in the rhost changes from stale to delay.
+> Then, the probe request is sent to the lhost, and the lhost ARP information is updated.
 
-$ git clone https://github.com/linux-test-project/ltp.git
-$ cd ltp
-$ make autotools
-$ ./configure
+>    rhost(10.0.0.1)      lhost(10.0.0.2)
+> t1 10.0.0.2 STALE       ping 10.0.0.1
+>                         10.0.0.1 REACHABLE
+>                         arp -d 10.0.0.1
+> t2 10.0.0.2 DELAY
+> t3 probe 10.0.0.2
+> t4                      10.0.0.1 REACHABLE
 
-$ cd testcases/kernel/syscalls/readahead
-$ make
-$ ./readahead01
+> Clear the ARP entries of rhost before each round of test.
 
-And this is well described in the readme at:
+Do you have idea why ARP status of the rhost is stale?
+I've never encountered problem like this.
 
-https://github.com/linux-test-project/ltp/
+> Signed-off-by: Xu Senmiao <xusenmiao@huawei.com>
+> ---
+>  testcases/network/tcp_cmds/ipneigh/ipneigh01.sh | 1 +
+>  1 file changed, 1 insertion(+)
 
-And the packages required for the compilation are make, C compiler and
-autotools nothing extraordinary.
+> diff --git a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+> index e67ff5cc8..4db675f8f 100755
+> --- a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+> +++ b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+> @@ -56,6 +56,7 @@ do_test()
+>  	tst_res TINFO "stress auto-creation $entry_name cache entry deleted with '$CMD' $NUMLOOPS times"
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>  	for i in $(seq 1 $NUMLOOPS); do
+> +		tst_rhost_run -c "arp -d $(tst_ipaddr lhost)"
+IMHO we use $DEL_CMD as we use later in the test function, because some systems
+does not have arp installed.  i.e. use the tool which is used for testing.
+Otherwise we endup with: sh: arp: command not found
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
