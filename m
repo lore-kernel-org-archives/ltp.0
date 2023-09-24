@@ -4,56 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73A64CE7A8A
-	for <ltp@archiver.kernel.org>; Sun, 24 Sep 2023 14:28:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1D59CE7A88
+	for <ltp@archiver.kernel.org>; Sun, 24 Sep 2023 14:35:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 732673C9C98
-	for <ltp@archiver.kernel.org>; Sun, 24 Sep 2023 16:27:59 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id DF3033CE29A
+	for <ltp@archiver.kernel.org>; Sun, 24 Sep 2023 16:35:40 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CC7553C9BF5
- for <ltp@lists.linux.it>; Sun, 24 Sep 2023 16:27:47 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id B029D3CDDC3
+ for <ltp@lists.linux.it>; Sun, 24 Sep 2023 16:35:26 +0200 (CEST)
 Received: from casper.infradead.org (casper.infradead.org
  [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7AD121000A0A
- for <ltp@lists.linux.it>; Sun, 24 Sep 2023 16:27:45 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 49CA41400153
+ for <ltp@lists.linux.it>; Sun, 24 Sep 2023 16:35:25 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
  References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=oREoElc5jpssB77N72uWfn2jY29hXFa5YHaPFH9Puuw=; b=IWivhL67SaSkoM1RHiUcFSYaZt
- 441UcLnuKM0oMXllZKJbrhSv3pxPu3tOCw6kc+ssFgntO7gNzMdtRSFBculTNtOTN87yHxs2pu5aj
- 5ijTqI1aKo6sL8KatAX/2BNKGVO/lZmBmo0peYc9Y+yYyc+bQxii56hAFFrrBwVdwPDQjmsZYMLfP
- +X1Emiemllw8W75KWaE7zKUjq1N0Js4hWNw20h9iwnpdQc1zmrRA8suwiLXAsPgLHQH2hjjTF2uQf
- SSRcOUXmwJKqnmX/ZhuBUELT1hH6LXunKITNkhkxkRc6Dlg3guHog68Va1UJZ9jHN3AMnOV++h/N+
- KKBTXUrQ==;
+ bh=M5pObT5z3Mwip+WvbK3iOt6865GE12uJP5gsebp/nnQ=; b=AwwueGpZKCnMTC75hg8M4rqwUv
+ sl51v7yKGpM6sivDirVYrWXe+pyUwwFfBeigYQse2mVBdmcllpAZ7WgHEwAepL/S1VhA67XPmWK38
+ Ly7/T0glDgOiDMQK14E593EZcPiJScsCLmJ5oQHx6y1737mCIO31EUzbbUs4vgfz2dT4Cv9OXJV9s
+ ROhEACJ0VA/Wt1y3TDzV9z8rUwKgoFyRO+9I1jO8+NLdfmNYxwpWphOAzmZucZfVdWB6DxU5Y10ef
+ 6dV+yQ+Bi/QHGZFJS5uHEA5JJDvArnqFiXqmhhpf2BK86fplrjNGMZSWBTRyjxemI+MmMVfb9b9DG
+ YTGoaS+g==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1qkQ4u-00DPlw-2K; Sun, 24 Sep 2023 14:27:20 +0000
-Date: Sun, 24 Sep 2023 15:27:20 +0100
+ Hat Linux)) id 1qkQCc-00DSFC-34; Sun, 24 Sep 2023 14:35:18 +0000
+Date: Sun, 24 Sep 2023 15:35:18 +0100
 From: Matthew Wilcox <willy@infradead.org>
-To: Amir Goldstein <amir73il@gmail.com>
-Message-ID: <ZRBHSACF5NdZoQwx@casper.infradead.org>
-References: <CAOQ4uxhc8q=GAuL9OPRVOr=mARDL3TExPY0Zipij1geVKknkkQ@mail.gmail.com>
- <CAD_8n+TpZF2GoE1HUeBLs0vmpSna0yR9b+hsd-VC1ZurTe41LQ@mail.gmail.com>
- <ZQ1Z_JHMPE3hrzv5@yuki>
- <CAD_8n+ShV=HJuk5v-JeYU1f+MAq1nDz9GqVmbfK9NpNThRjzSg@mail.gmail.com>
- <CAOQ4uxjnCdAeWe3W4mp=DwgL49Vwp_FVx4S_V33A3-JLtzJb-g@mail.gmail.com>
- <ZQ75JynY8Y2DqaHD@casper.infradead.org>
- <CAOQ4uxjOGqWFdS4rU8u9TuLMLJafqMUsQUD3ToY3L9bOsfGibg@mail.gmail.com>
- <CAD_8n+SNKww4VwLRsBdOg+aBc7pNzZhmW9TPcj9472_MjGhWyg@mail.gmail.com>
- <CAOQ4uxjM8YTA9DjT5nYW1RBZReLjtLV6ZS3LNOOrgCRQcR2F9A@mail.gmail.com>
- <CAOQ4uxjmyfKmOxP0MZQPfu8PL3KjLeC=HwgEACo21MJg-6rD7g@mail.gmail.com>
+To: Christian Brauner <brauner@kernel.org>
+Message-ID: <ZRBJJgwFl/0NwQ6W@casper.infradead.org>
+References: <20230924050846.2263-1-reubenhwk@gmail.com>
+ <ZQ/hGr+o61X1mik9@casper.infradead.org>
+ <20230924-umliegenden-qualifizieren-4d670d00e775@brauner>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjmyfKmOxP0MZQPfu8PL3KjLeC=HwgEACo21MJg-6rD7g@mail.gmail.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+In-Reply-To: <20230924-umliegenden-qualifizieren-4d670d00e775@brauner>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] vfs: fix readahead(2) on block devices
+Subject: Re: [LTP] [PATCH v3] vfs: fix readahead(2) on block devices
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -65,9 +59,8 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: mszeredi@redhat.com, brauner@kernel.org, Jan Kara <jack@suse.cz>,
- lkp@intel.com, oe-lkp@lists.linux.dev,
- kernel test robot <oliver.sang@intel.com>, viro@zeniv.linux.org.uk,
+Cc: mszeredi@redhat.com, Jan Kara <jack@suse.cz>, lkp@intel.com,
+ oe-lkp@lists.linux.dev, oliver.sang@intel.com, viro@zeniv.linux.org.uk,
  linux-fsdevel@vger.kernel.org, Reuben Hawkins <reubenhwk@gmail.com>,
  ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
@@ -75,28 +68,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Sun, Sep 24, 2023 at 02:47:42PM +0300, Amir Goldstein wrote:
-> Since you joined the discussion, you have the opportunity to agree or
-> disagree with our decision to change readahead() to ESPIPE.
-> Judging  by your citing of lseek and posix_fadvise standard,
-> I assume that you will be on board?
+On Sun, Sep 24, 2023 at 12:30:30PM +0200, Christian Brauner wrote:
+> > This ad-hoc approach to testing syscalls is probably not the best idea.
+> > Have the LTP considered a more thorough approach where we have a central
+> > iterator that returns a file descriptor of various types (the ones listed
+> > above, plus block devices, and regular files), and individual syscall
+> > testcases can express whether this syscall should pass/fail for each type
+> > of fd?  That would give us one central place to add new fd types, and we
+> > wouldn't be relying on syzbot to try fds at random until something fails.
+> > 
+> > Or something.  I'm not an expert on the LTP or testing in general; it
+> > just feels like we could do better here.
+> 
+> I honestly would love to see such tests all go into xfstests. IOW,
+> general VFS and fs-specific tests should be in one location. That's why
+> I added src/vfs/ under xfstests. Having to run multiple test-suites for
+> one subsystem isn't ideal. I mean, I'm doing it but I don't love it...
 
-I'm fine with returning ESPIPE (it's like ENOTTY in a sense).  but
-that's not what kbuild reported:
+This may well be a subject on which reasonable people can disagree.
+I'm going to lay out what I believe the positions of the various
+parties are here, and plese feel free to speak up if you feel I'm
+mischaracterising anyone.
 
-readahead01.c:62: TFAIL: readahead(fd[0], 0, getpagesize()) succeeded
+The LTP people see it as their mandate to test all syscalls.  They focus
+on getting the correct error code, checking corner cases of the API, etc.
 
-61:	fd[0] = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
-62:	TST_EXP_FAIL(readahead(fd[0], 0, getpagesize()), EINVAL);
+The xfstests people see it as their mandate to test filesystems.
+They focus on testing the corner cases of the filesystem.
 
-I think LTP would report 'wrong error code' rather than 'succeeded'
-if it were returning ESPIPE.
+These are quite different things, and I'm not sure that forcing them
+together or moving test-cases from one test-suite to the other makes
+sense.  I think it's reasonable to have two separate test suites for you
+(and the various bots) to run, even though it's slightly more work.
 
-I'm not OK with readahead() succeeding on a socket.  I think that should
-also return ESPIPE.  I think posix_fadvise() should return ESPIPE on a
-socket too, but reporting bugs to the Austin Group seems quite painful.
-Perhaps somebody has been through this process and can do that for us?
-
+At the end of the day, I don't much care, it doesn't significantly affect
+my life.  If I could see a clear advantage to converting one to the other,
+I'd be all for it, but I don't see a compelling reason to put much work
+in here.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
