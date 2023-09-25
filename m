@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6678BCE7A95
-	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 11:11:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3A03CE7A81
+	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 11:11:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4C5D43CDD16
-	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 13:11:36 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id E2D893CDCE8
+	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 13:11:48 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7C1E73C998B
- for <ltp@lists.linux.it>; Mon, 25 Sep 2023 13:11:24 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id EE31C3CDCEC
+ for <ltp@lists.linux.it>; Mon, 25 Sep 2023 13:11:25 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 101011000C30
- for <ltp@lists.linux.it>; Mon, 25 Sep 2023 13:11:21 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9479460091B
+ for <ltp@lists.linux.it>; Mon, 25 Sep 2023 13:11:24 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1982E21857;
- Mon, 25 Sep 2023 11:11:21 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 88F5A1F45F;
+ Mon, 25 Sep 2023 11:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1695640281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1695640283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XE42rxZetD2f9HnHfs5rjjijSpkNJ3XlMlWXEoDEhds=;
- b=BJxVoEPgKqZyuB5J+A0OWkgH4+TRyizEJME87eOzJPXmirV0+qcr81pW0Tf3CI7PKzUNU6
- BvH9eNUkC3WEw5Kpw2w3PjlNaDaBkl5Q9QVC/T2SJE2a58s1eUZaPYFvPfhVJmMAlg9rzj
- e8zeEwjs5U4AAj3taZogvoeBZsNzCEg=
+ bh=sjhZ6jdtVQ4O37Y2XgCpV+mukFj7F36OlxRxkefoeX4=;
+ b=sKJ2haHtCB3LqErKqjcT0whP+Pf2loKbU6q1PnkslfzVtWxspHIJaBi6/ekGgx2bM0rmof
+ g+DKp9H5qWoz0tEfJXwEdnOKJEVFBntRIdSnKdGIIDsI9hHma5jGfIrp/r8l+jtEPCkgNx
+ JPCfySQzo42AWfRUr/Sps2BoPEjmZlE=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94B6E1358F;
- Mon, 25 Sep 2023 11:11:19 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6D0EC1358F;
+ Mon, 25 Sep 2023 11:11:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id aE0MFtdqEWVPOwAAMHmgww
- (envelope-from <wegao@suse.com>); Mon, 25 Sep 2023 11:11:19 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id 0DVRDdpqEWVPOwAAMHmgww
+ (envelope-from <wegao@suse.com>); Mon, 25 Sep 2023 11:11:22 +0000
 To: wegao@suse.com,
 	ltp@lists.linux.it
-Date: Mon, 25 Sep 2023 07:04:21 -0400
-Message-Id: <20230925110422.19167-2-wegao@suse.com>
+Date: Mon, 25 Sep 2023 07:04:22 -0400
+Message-Id: <20230925110422.19167-3-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230925110422.19167-1-wegao@suse.com>
 References: <20230925110422.19167-1-wegao@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1 1/2] seccomp01.c: Add SECCOMP_RET_USER_NOTIF check
+Subject: [LTP] [PATCH v1 2/2] d
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,550 +75,615 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This case will report EINVAL error when execute SAFE_IOCTL(notifyFd,
-SECCOMP_IOCTL_NOTIF_RECV, req) such as 5.6.19, so i put current case's
-.min_kver = "5.7.19"
-
-NOTE: If your old kernel compile env is ubuntu 22.04 LTS, better use
-old gcc-8 and also apply patch base following link:
-https://www.spinics.net/lists/kernel/msg3797871.html
-
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- configure.ac                                  |   1 +
- include/lapi/seccomp.h                        |   7 +
- runtest/syscalls                              |   2 +
- testcases/kernel/syscalls/seccomp/.gitignore  |   1 +
- testcases/kernel/syscalls/seccomp/Makefile    |   8 +
- testcases/kernel/syscalls/seccomp/seccomp01.c | 456 ++++++++++++++++++
- 6 files changed, 475 insertions(+)
- create mode 100644 testcases/kernel/syscalls/seccomp/.gitignore
- create mode 100644 testcases/kernel/syscalls/seccomp/Makefile
- create mode 100644 testcases/kernel/syscalls/seccomp/seccomp01.c
+ testcases/kernel/syscalls/ptrace/ptrace05.c | 147 +++-------
+ testcases/kernel/syscalls/ptrace/ptrace06.c | 306 +++++++++++---------
+ 2 files changed, 214 insertions(+), 239 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 662c4c058..6cea35cb4 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -138,6 +138,7 @@ AC_CHECK_FUNCS_ONCE([ \
-     renameat \
-     renameat2 \
-     sched_getcpu \
-+    seccomp \
-     sendmmsg \
-     sethostid \
-     setns \
-diff --git a/include/lapi/seccomp.h b/include/lapi/seccomp.h
-index 29819ba6f..cfb3da55d 100644
---- a/include/lapi/seccomp.h
-+++ b/include/lapi/seccomp.h
-@@ -37,4 +37,11 @@ struct seccomp_data {
- };
- 
- #endif /* HAVE_LINUX_SECCOMP_H*/
-+
-+# ifndef HAVE_SECCOMP
-+int seccomp(unsigned int operation, unsigned int flags, void *args)
-+{
-+	return syscall(__NR_seccomp, operation, flags, args);
-+}
-+# endif /* HAVE_SECCOMP */
- #endif /* LAPI_SECCOMP_H__ */
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 4f1ee1f34..544610d63 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1242,6 +1242,8 @@ select02 select02
- select03 select03
- select04 select04
- 
-+seccomp01 seccomp01
-+
- semctl01 semctl01
- semctl02 semctl02
- semctl03 semctl03
-diff --git a/testcases/kernel/syscalls/seccomp/.gitignore b/testcases/kernel/syscalls/seccomp/.gitignore
-new file mode 100644
-index 000000000..9196906cf
---- /dev/null
-+++ b/testcases/kernel/syscalls/seccomp/.gitignore
-@@ -0,0 +1 @@
-+seccomp01
-diff --git a/testcases/kernel/syscalls/seccomp/Makefile b/testcases/kernel/syscalls/seccomp/Makefile
-new file mode 100644
-index 000000000..49238eee0
---- /dev/null
-+++ b/testcases/kernel/syscalls/seccomp/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/seccomp/seccomp01.c b/testcases/kernel/syscalls/seccomp/seccomp01.c
-new file mode 100644
-index 000000000..bf23fe8f7
---- /dev/null
-+++ b/testcases/kernel/syscalls/seccomp/seccomp01.c
-@@ -0,0 +1,456 @@
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace05.c b/testcases/kernel/syscalls/ptrace/ptrace05.c
+index 54cfa4d7b..4904b959c 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace05.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace05.c
+@@ -1,122 +1,67 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023 Michael Kerrisk <mtk.manpages@gmail.com>
+ /*
+- ******************************************************************************
+- *
+- *   ptrace05 - an app which ptraces itself as per arbitrarily specified signals,
+- *   over a user specified range.
+- *
+- *   Copyright (C) 2009, Ngie Cooper
+- *
+- *   This program is free software; you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *   GNU General Public License for more details.
++ * Copyright (C) 2009, Ngie Cooper
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * [Description]
+  *
+- *   You should have received a copy of the GNU General Public License along
+- *   with this program; if not, write to the Free Software Foundation, Inc.,
+- *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *  ptrace05 - an app which ptraces itself as per arbitrarily specified signals
+  *
+- ******************************************************************************
+  */
+ 
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-#include <signal.h>
+-#include <errno.h>
+-#include <libgen.h>
+-#include <math.h>
+ #include <stdlib.h>
+-#include <stdio.h>
+-#include <string.h>
+-#include <unistd.h>
+-
+ #include <config.h>
+ #include "ptrace.h"
+ 
+-#include "test.h"
+ #include "lapi/signal.h"
++#include "tst_test.h"
+ 
+-char *TCID = "ptrace05";
+-int TST_TOTAL = 0;
+-
+-int usage(const char *);
+-
+-int usage(const char *argv0)
+-{
+-	fprintf(stderr, "usage: %s [start-signum] [end-signum]\n", argv0);
+-	return 1;
+-}
+-
+-int main(int argc, char **argv)
++static void run(void)
+ {
+ 
+-	int end_signum = -1;
+-	int signum;
+-	int start_signum = -1;
++	int end_signum = SIGRTMAX;
++	int signum = 0;
++	int start_signum = 0;
+ 	int status;
+ 
+ 	pid_t child;
+ 
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	if (start_signum == -1) {
+-		start_signum = 0;
+-	}
+-	if (end_signum == -1) {
+-		end_signum = SIGRTMAX;
+-	}
+-
+ 	for (signum = start_signum; signum <= end_signum; signum++) {
+ 
+-		if (signum >= __SIGRTMIN && signum < SIGRTMIN)
+-			continue;
+-
+-		switch (child = fork()) {
++		switch (child = SAFE_FORK()) {
+ 		case -1:
+-			tst_brkm(TBROK | TERRNO, NULL, "fork() failed");
++			tst_brk(TBROK | TERRNO, "fork() failed");
+ 		case 0:
+ 
+-			if (ptrace(PTRACE_TRACEME, 0, NULL, NULL) != -1) {
+-				tst_resm(TINFO, "[child] Sending kill(.., %d)",
+-					 signum);
+-				if (kill(getpid(), signum) < 0) {
+-					tst_resm(TINFO | TERRNO,
+-						 "[child] kill(.., %d) failed.",
+-						 signum);
+-				}
++			TEST(ptrace(PTRACE_TRACEME, 0, NULL, NULL));
++			if (TST_RET != -1) {
++				tst_res(TINFO, "[child] Sending kill(.., %d)",
++						signum);
++				SAFE_KILL(getpid(), signum);
+ 			} else {
+-
+-				/*
+-				 * This won't increment the TST_COUNT var.
+-				 * properly, but it'll show up as a failure
+-				 * nonetheless.
+-				 */
+-				tst_resm(TFAIL | TERRNO,
++				tst_brk(TFAIL | TERRNO,
+ 					 "Failed to ptrace(PTRACE_TRACEME, ...) "
+ 					 "properly");
+-
+ 			}
+-			/* Shouldn't get here if signum == 0. */
+-			exit((signum == 0 ? 0 : 2));
++
++			exit(0);
+ 			break;
+ 
+ 		default:
+ 
+-			waitpid(child, &status, 0);
++			SAFE_WAITPID(child, &status, 0);
+ 
+ 			switch (signum) {
+ 			case 0:
+ 				if (WIFEXITED(status)
+ 				    && WEXITSTATUS(status) == 0) {
+-					tst_resm(TPASS,
++					tst_res(TPASS,
+ 						 "kill(.., 0) exited "
+ 						 "with 0, as expected.");
+ 				} else {
+-					tst_resm(TFAIL,
++					tst_brk(TFAIL | TERRNO,
+ 						 "kill(.., 0) didn't exit "
+ 						 "with 0.");
+ 				}
+@@ -125,20 +70,20 @@ int main(int argc, char **argv)
+ 				if (WIFSIGNALED(status)) {
+ 					/* SIGKILL must be uncatchable. */
+ 					if (WTERMSIG(status) == SIGKILL) {
+-						tst_resm(TPASS,
++						tst_res(TPASS,
+ 							 "Killed with SIGKILL, "
+ 							 "as expected.");
+ 					} else {
+-						tst_resm(TPASS,
++						tst_brk(TFAIL | TERRNO,
+ 							 "Didn't die with "
+ 							 "SIGKILL (?!) ");
+ 					}
+ 				} else if (WIFEXITED(status)) {
+-					tst_resm(TFAIL,
++					tst_brk(TFAIL | TERRNO,
+ 						 "Exited unexpectedly instead "
+ 						 "of dying with SIGKILL.");
+ 				} else if (WIFSTOPPED(status)) {
+-					tst_resm(TFAIL,
++					tst_brk(TFAIL | TERRNO,
+ 						 "Stopped instead of dying "
+ 						 "with SIGKILL.");
+ 				}
+@@ -146,35 +91,21 @@ int main(int argc, char **argv)
+ 				/* All other processes should be stopped. */
+ 			default:
+ 				if (WIFSTOPPED(status)) {
+-					tst_resm(TPASS, "Stopped as expected");
++					tst_res(TPASS, "Stopped as expected");
+ 				} else {
+-					tst_resm(TFAIL, "Didn't stop as "
++					tst_brk(TFAIL | TERRNO, "Didn't stop as "
+ 						 "expected.");
+-					if (kill(child, 0)) {
+-						tst_resm(TINFO,
+-							 "Is still alive!?");
+-					} else if (WIFEXITED(status)) {
+-						tst_resm(TINFO,
+-							 "Exited normally");
+-					} else if (WIFSIGNALED(status)) {
+-						tst_resm(TINFO,
+-							 "Was signaled with "
+-							 "signum=%d",
+-							 WTERMSIG(status));
+-					}
+-
+ 				}
+-
+ 				break;
+-
+ 			}
+-
+ 		}
+-		/* Make sure the child dies a quick and painless death ... */
+-		kill(child, 9);
+ 
++		if (signum != 0 && signum != 9)
++			SAFE_PTRACE(PTRACE_CONT, child, NULL, NULL);
+ 	}
+-
+-	tst_exit();
+-
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.forks_child = 1,
++};
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace06.c b/testcases/kernel/syscalls/ptrace/ptrace06.c
+index c0cb3b9bd..5829faea4 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace06.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace06.c
+@@ -1,32 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
++ * Copyright (c) 2008 Analog Devices Inc.
 + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
 + */
 +
 +/*\
 + * [Description]
 + *
-+ * Verify seccomp and seccomp_user_notif
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/prctl.h>
-+#include <fcntl.h>
-+#include <limits.h>
-+#include <signal.h>
-+#include <stddef.h>
-+#include <stdint.h>
-+#include <stdbool.h>
-+#include <linux/audit.h>
-+#include <sys/syscall.h>
-+#include <sys/stat.h>
-+#include <linux/filter.h>
-+#include <linux/seccomp.h>
-+#include <sys/ioctl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <sys/socket.h>
-+#include <sys/un.h>
-+
+  * check out-of-bound/unaligned addresses given to
+  *  - {PEEK,POKE}{DATA,TEXT,USER}
+  *  - {GET,SET}{,FG}REGS
+  *  - {GET,SET}SIGINFO
+  *
+- * Copyright (c) 2008 Analog Devices Inc.
+- *
+- * Licensed under the GPL-2 or later
+  */
+ 
+ #define _GNU_SOURCE
+ 
+-#include <errno.h>
+-#include <stdbool.h>
+-#include <stdio.h>
+ #include <stdlib.h>
+-#include <unistd.h>
+-
+ #include <config.h>
+-#include "ptrace.h"
+ 
+-#include "test.h"
+-#include "spawn_ptrace_child.h"
+-#include "config.h"
++#include "ptrace.h"
 +#include "tst_test.h"
-+#include "lapi/seccomp.h"
+ 
+ /* this should be sizeof(struct user), but that info is only found
+  * in the kernel asm/user.h which is not exported to userspace.
+  */
 +
-+#define TMP_PREFIX_DIR "/tmp/ltp_test"
-+#define CWD_DIR "./abc"
-+#define OTHER_DIR "/aa"
-+
-+static struct tcase {
-+	char *dir;
-+	int expect_ret;
-+	char *desc;
-+} tcases[] = {
-+	{TMP_PREFIX_DIR, strlen(TMP_PREFIX_DIR), "pathname begins with the prefix /tmp/"},
-+	{CWD_DIR, 0,  "pathname begins with ./"},
-+	{OTHER_DIR, -1, "pathname begins with /abc"},
+ #if defined(__i386__)
+ #define SIZEOF_USER 284
+ #elif defined(__x86_64__)
+@@ -35,168 +34,213 @@
+ #define SIZEOF_USER 0x1000	/* just pick a big number */
+ #endif
+ 
+-char *TCID = "ptrace06";
+-
+ struct test_case_t {
+ 	int request;
+ 	long addr;
+ 	long data;
+ } test_cases[] = {
+ 	{
+-	PTRACE_PEEKDATA,.addr = 0}, {
+-	PTRACE_PEEKDATA,.addr = 1}, {
+-	PTRACE_PEEKDATA,.addr = 2}, {
+-	PTRACE_PEEKDATA,.addr = 3}, {
+-	PTRACE_PEEKDATA,.addr = -1}, {
+-	PTRACE_PEEKDATA,.addr = -2}, {
+-	PTRACE_PEEKDATA,.addr = -3}, {
+-	PTRACE_PEEKDATA,.addr = -4}, {
+-	PTRACE_PEEKTEXT,.addr = 0}, {
+-	PTRACE_PEEKTEXT,.addr = 1}, {
+-	PTRACE_PEEKTEXT,.addr = 2}, {
+-	PTRACE_PEEKTEXT,.addr = 3}, {
+-	PTRACE_PEEKTEXT,.addr = -1}, {
+-	PTRACE_PEEKTEXT,.addr = -2}, {
+-	PTRACE_PEEKTEXT,.addr = -3}, {
+-	PTRACE_PEEKTEXT,.addr = -4}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 1}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 2}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 3}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 4}, {
+-	PTRACE_PEEKUSER,.addr = -1}, {
+-	PTRACE_PEEKUSER,.addr = -2}, {
+-	PTRACE_PEEKUSER,.addr = -3}, {
+-	PTRACE_PEEKUSER,.addr = -4}, {
+-	PTRACE_POKEDATA,.addr = 0}, {
+-	PTRACE_POKEDATA,.addr = 1}, {
+-	PTRACE_POKEDATA,.addr = 2}, {
+-	PTRACE_POKEDATA,.addr = 3}, {
+-	PTRACE_POKEDATA,.addr = -1}, {
+-	PTRACE_POKEDATA,.addr = -2}, {
+-	PTRACE_POKEDATA,.addr = -3}, {
+-	PTRACE_POKEDATA,.addr = -4}, {
+-	PTRACE_POKETEXT,.addr = 0}, {
+-	PTRACE_POKETEXT,.addr = 1}, {
+-	PTRACE_POKETEXT,.addr = 2}, {
+-	PTRACE_POKETEXT,.addr = 3}, {
+-	PTRACE_POKETEXT,.addr = -1}, {
+-	PTRACE_POKETEXT,.addr = -2}, {
+-	PTRACE_POKETEXT,.addr = -3}, {
+-	PTRACE_POKETEXT,.addr = -4}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 1}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 2}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 3}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 4}, {
+-	PTRACE_POKEUSER,.addr = -1}, {
+-	PTRACE_POKEUSER,.addr = -2}, {
+-	PTRACE_POKEUSER,.addr = -3}, {
+-	PTRACE_POKEUSER,.addr = -4},
++	PTRACE_PEEKDATA, .addr = 0}, {
++	PTRACE_PEEKDATA, .addr = 1}, {
++	PTRACE_PEEKDATA, .addr = 2}, {
++	PTRACE_PEEKDATA, .addr = 3}, {
++	PTRACE_PEEKDATA, .addr = -1}, {
++	PTRACE_PEEKDATA, .addr = -2}, {
++	PTRACE_PEEKDATA, .addr = -3}, {
++	PTRACE_PEEKDATA, .addr = -4}, {
++	PTRACE_PEEKTEXT, .addr = 0}, {
++	PTRACE_PEEKTEXT, .addr = 1}, {
++	PTRACE_PEEKTEXT, .addr = 2}, {
++	PTRACE_PEEKTEXT, .addr = 3}, {
++	PTRACE_PEEKTEXT, .addr = -1}, {
++	PTRACE_PEEKTEXT, .addr = -2}, {
++	PTRACE_PEEKTEXT, .addr = -3}, {
++	PTRACE_PEEKTEXT, .addr = -4}, {
++	PTRACE_PEEKUSER, .addr = SIZEOF_USER + 1}, {
++	PTRACE_PEEKUSER, .addr = SIZEOF_USER + 2}, {
++	PTRACE_PEEKUSER, .addr = SIZEOF_USER + 3}, {
++	PTRACE_PEEKUSER, .addr = SIZEOF_USER + 4}, {
++	PTRACE_PEEKUSER, .addr = -1}, {
++	PTRACE_PEEKUSER, .addr = -2}, {
++	PTRACE_PEEKUSER, .addr = -3}, {
++	PTRACE_PEEKUSER, .addr = -4}, {
++	PTRACE_POKEDATA, .addr = 0}, {
++	PTRACE_POKEDATA, .addr = 1}, {
++	PTRACE_POKEDATA, .addr = 2}, {
++	PTRACE_POKEDATA, .addr = 3}, {
++	PTRACE_POKEDATA, .addr = -1}, {
++	PTRACE_POKEDATA, .addr = -2}, {
++	PTRACE_POKEDATA, .addr = -3}, {
++	PTRACE_POKEDATA, .addr = -4}, {
++	PTRACE_POKETEXT, .addr = 0}, {
++	PTRACE_POKETEXT, .addr = 1}, {
++	PTRACE_POKETEXT, .addr = 2}, {
++	PTRACE_POKETEXT, .addr = 3}, {
++	PTRACE_POKETEXT, .addr = -1}, {
++	PTRACE_POKETEXT, .addr = -2}, {
++	PTRACE_POKETEXT, .addr = -3}, {
++	PTRACE_POKETEXT, .addr = -4}, {
++	PTRACE_POKEUSER, .addr = SIZEOF_USER + 1}, {
++	PTRACE_POKEUSER, .addr = SIZEOF_USER + 2}, {
++	PTRACE_POKEUSER, .addr = SIZEOF_USER + 3}, {
++	PTRACE_POKEUSER, .addr = SIZEOF_USER + 4}, {
++	PTRACE_POKEUSER, .addr = -1}, {
++	PTRACE_POKEUSER, .addr = -2}, {
++	PTRACE_POKEUSER, .addr = -3}, {
++	PTRACE_POKEUSER, .addr = -4},
+ #ifdef PTRACE_GETREGS
+ 	{
+-	PTRACE_GETREGS,.data = 0}, {
+-	PTRACE_GETREGS,.data = 1}, {
+-	PTRACE_GETREGS,.data = 2}, {
+-	PTRACE_GETREGS,.data = 3}, {
+-	PTRACE_GETREGS,.data = -1}, {
+-	PTRACE_GETREGS,.data = -2}, {
+-	PTRACE_GETREGS,.data = -3}, {
+-	PTRACE_GETREGS,.data = -4},
++	PTRACE_GETREGS, .data = 0}, {
++	PTRACE_GETREGS, .data = 1}, {
++	PTRACE_GETREGS, .data = 2}, {
++	PTRACE_GETREGS, .data = 3}, {
++	PTRACE_GETREGS, .data = -1}, {
++	PTRACE_GETREGS, .data = -2}, {
++	PTRACE_GETREGS, .data = -3}, {
++	PTRACE_GETREGS, .data = -4},
+ #endif
+ #ifdef PTRACE_GETFGREGS
+ 	{
+-	PTRACE_GETFGREGS,.data = 0}, {
+-	PTRACE_GETFGREGS,.data = 1}, {
+-	PTRACE_GETFGREGS,.data = 2}, {
+-	PTRACE_GETFGREGS,.data = 3}, {
+-	PTRACE_GETFGREGS,.data = -1}, {
+-	PTRACE_GETFGREGS,.data = -2}, {
+-	PTRACE_GETFGREGS,.data = -3}, {
+-	PTRACE_GETFGREGS,.data = -4},
++	PTRACE_GETFGREGS, .data = 0}, {
++	PTRACE_GETFGREGS, .data = 1}, {
++	PTRACE_GETFGREGS, .data = 2}, {
++	PTRACE_GETFGREGS, .data = 3}, {
++	PTRACE_GETFGREGS, .data = -1}, {
++	PTRACE_GETFGREGS, .data = -2}, {
++	PTRACE_GETFGREGS, .data = -3}, {
++	PTRACE_GETFGREGS, .data = -4},
+ #endif
+ #ifdef PTRACE_SETREGS
+ 	{
+-	PTRACE_SETREGS,.data = 0}, {
+-	PTRACE_SETREGS,.data = 1}, {
+-	PTRACE_SETREGS,.data = 2}, {
+-	PTRACE_SETREGS,.data = 3}, {
+-	PTRACE_SETREGS,.data = -1}, {
+-	PTRACE_SETREGS,.data = -2}, {
+-	PTRACE_SETREGS,.data = -3}, {
+-	PTRACE_SETREGS,.data = -4},
++	PTRACE_SETREGS, .data = 0}, {
++	PTRACE_SETREGS, .data = 1}, {
++	PTRACE_SETREGS, .data = 2}, {
++	PTRACE_SETREGS, .data = 3}, {
++	PTRACE_SETREGS, .data = -1}, {
++	PTRACE_SETREGS, .data = -2}, {
++	PTRACE_SETREGS, .data = -3}, {
++	PTRACE_SETREGS, .data = -4},
+ #endif
+ #ifdef PTRACE_SETFGREGS
+ 	{
+-	PTRACE_SETFGREGS,.data = 0}, {
+-	PTRACE_SETFGREGS,.data = 1}, {
+-	PTRACE_SETFGREGS,.data = 2}, {
+-	PTRACE_SETFGREGS,.data = 3}, {
+-	PTRACE_SETFGREGS,.data = -1}, {
+-	PTRACE_SETFGREGS,.data = -2}, {
+-	PTRACE_SETFGREGS,.data = -3}, {
+-	PTRACE_SETFGREGS,.data = -4},
++	PTRACE_SETFGREGS, .data = 0}, {
++	PTRACE_SETFGREGS, .data = 1}, {
++	PTRACE_SETFGREGS, .data = 2}, {
++	PTRACE_SETFGREGS, .data = 3}, {
++	PTRACE_SETFGREGS, .data = -1}, {
++	PTRACE_SETFGREGS, .data = -2}, {
++	PTRACE_SETFGREGS, .data = -3}, {
++	PTRACE_SETFGREGS, .data = -4},
+ #endif
+ #if HAVE_DECL_PTRACE_GETSIGINFO
+ 	{
+-	PTRACE_GETSIGINFO,.data = 0}, {
+-	PTRACE_GETSIGINFO,.data = 1}, {
+-	PTRACE_GETSIGINFO,.data = 2}, {
+-	PTRACE_GETSIGINFO,.data = 3}, {
+-	PTRACE_GETSIGINFO,.data = -1}, {
+-	PTRACE_GETSIGINFO,.data = -2}, {
+-	PTRACE_GETSIGINFO,.data = -3}, {
+-	PTRACE_GETSIGINFO,.data = -4},
++	PTRACE_GETSIGINFO, .data = 0}, {
++	PTRACE_GETSIGINFO, .data = 1}, {
++	PTRACE_GETSIGINFO, .data = 2}, {
++	PTRACE_GETSIGINFO, .data = 3}, {
++	PTRACE_GETSIGINFO, .data = -1}, {
++	PTRACE_GETSIGINFO, .data = -2}, {
++	PTRACE_GETSIGINFO, .data = -3}, {
++	PTRACE_GETSIGINFO, .data = -4},
+ #endif
+ #if HAVE_DECL_PTRACE_SETSIGINFO
+ 	{
+-	PTRACE_SETSIGINFO,.data = 0}, {
+-	PTRACE_SETSIGINFO,.data = 1}, {
+-	PTRACE_SETSIGINFO,.data = 2}, {
+-	PTRACE_SETSIGINFO,.data = 3}, {
+-	PTRACE_SETSIGINFO,.data = -1}, {
+-	PTRACE_SETSIGINFO,.data = -2}, {
+-	PTRACE_SETSIGINFO,.data = -3}, {
+-	PTRACE_SETSIGINFO,.data = -4},
++	PTRACE_SETSIGINFO, .data = 0}, {
++	PTRACE_SETSIGINFO, .data = 1}, {
++	PTRACE_SETSIGINFO, .data = 2}, {
++	PTRACE_SETSIGINFO, .data = 3}, {
++	PTRACE_SETSIGINFO, .data = -1}, {
++	PTRACE_SETSIGINFO, .data = -2}, {
++	PTRACE_SETSIGINFO, .data = -3}, {
++	PTRACE_SETSIGINFO, .data = -4},
++#endif
 +};
 +
-+static int sendfd(int sockfd, int fd)
++#define SPT(x) [PTRACE_##x] = #x,
++static char *strings[] = {
++	SPT(TRACEME)
++	SPT(PEEKTEXT)
++	SPT(PEEKDATA)
++	SPT(PEEKUSER)
++	SPT(POKETEXT)
++	SPT(POKEDATA)
++	SPT(POKEUSER)
++#ifdef PTRACE_GETREGS
++	SPT(GETREGS)
++#endif
++#ifdef PTRACE_SETREGS
++	SPT(SETREGS)
++#endif
++#ifdef PTRACE_GETSIGINFO
++	SPT(GETSIGINFO)
++#endif
++#ifdef PTRACE_SETSIGINFO
++	SPT(SETSIGINFO)
++#endif
++#ifdef PTRACE_GETFGREGS
++	SPT(GETFGREGS)
++#endif
++#ifdef PTRACE_SETFGREGS
++	SPT(SETFGREGS)
+ #endif
++	SPT(KILL)
++	SPT(SINGLESTEP)
+ };
+ 
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
++static inline char *strptrace(int request)
 +{
-+	struct msghdr msgh;
-+	struct iovec iov;
-+	int data;
-+	struct cmsghdr *cmsgp;
-+
-+	/* Allocate a char array of suitable size to hold the ancillary data.
-+	 * However, since this buffer is in reality a 'struct cmsghdr', use a
-+	 * union to ensure that it is suitable aligned.
-+	 */
-+	union {
-+		char   buf[CMSG_SPACE(sizeof(int))];
-+		/* Space large enough to hold an 'int' */
-+		struct cmsghdr align;
-+	} controlMsg;
-+
-+	/* The 'msg_name' field can be used to specify the address of the
-+	 * destination socket when sending a datagram. However, we do not
-+	 * need to use this field because 'sockfd' is a connected socket.
-+	 */
-+
-+	msgh.msg_name = NULL;
-+	msgh.msg_namelen = 0;
-+
-+	/* On Linux, we must transmit at least one byte of real data in
-+	 * order to send ancillary data. We transmit an arbitrary integer
-+	 * whose value is ignored by recvfd().
-+	 */
-+
-+	msgh.msg_iov = &iov;
-+	msgh.msg_iovlen = 1;
-+	iov.iov_base = &data;
-+	iov.iov_len = sizeof(int);
-+	data = 12345;
-+
-+	/* Set 'msghdr' fields that describe ancillary data */
-+
-+	msgh.msg_control = controlMsg.buf;
-+	msgh.msg_controllen = sizeof(controlMsg.buf);
-+
-+	/* Set up ancillary data describing file descriptor to send */
-+
-+	cmsgp = CMSG_FIRSTHDR(&msgh);
-+	cmsgp->cmsg_level = SOL_SOCKET;
-+	cmsgp->cmsg_type = SCM_RIGHTS;
-+	cmsgp->cmsg_len = CMSG_LEN(sizeof(int));
-+	memcpy(CMSG_DATA(cmsgp), &fd, sizeof(int));
-+
-+	SAFE_SENDMSG(sizeof(int), sockfd, &msgh, 0);
-+
-+	return 0;
++	return strings[request];
 +}
 +
-+static int recvfd(int sockfd)
++static void child(void)
 +{
-+	struct msghdr msgh;
-+	struct iovec iov;
-+	int data, fd;
-+	ssize_t nr;
-+
-+	/* Allocate a char buffer for the ancillary data. See the comments
-+	 * in sendfd()
-+	 */
-+	union {
-+		char   buf[CMSG_SPACE(sizeof(int))];
-+		struct cmsghdr align;
-+	} controlMsg;
-+	struct cmsghdr *cmsgp;
-+
-+	/* The 'msg_name' field can be used to obtain the address of the
-+	 * sending socket. However, we do not need this information.
-+	 */
-+
-+	msgh.msg_name = NULL;
-+	msgh.msg_namelen = 0;
-+
-+	/* Specify buffer for receiving real data */
-+
-+	msgh.msg_iov = &iov;
-+	msgh.msg_iovlen = 1;
-+	iov.iov_base = &data;       /* Real data is an 'int' */
-+	iov.iov_len = sizeof(int);
-+
-+	/* Set 'msghdr' fields that describe ancillary data */
-+
-+	msgh.msg_control = controlMsg.buf;
-+	msgh.msg_controllen = sizeof(controlMsg.buf);
-+
-+	/* Receive real plus ancillary data; real data is ignored */
-+
-+	nr = SAFE_RECVMSG(sizeof(int), sockfd, &msgh, 0);
-+
-+	if (nr == -1)
-+		return -1;
-+
-+	cmsgp = CMSG_FIRSTHDR(&msgh);
-+
-+	/* Check the validity of the 'cmsghdr' */
-+
-+	if (cmsgp == NULL ||
-+			cmsgp->cmsg_len != CMSG_LEN(sizeof(int)) ||
-+			cmsgp->cmsg_level != SOL_SOCKET ||
-+			cmsgp->cmsg_type != SCM_RIGHTS) {
-+		errno = EINVAL;
-+		return -1;
-+	}
-+
-+	/* Return the received file descriptor to our caller */
-+
-+	memcpy(&fd, CMSG_DATA(cmsgp), sizeof(int));
-+	return fd;
++	SAFE_PTRACE(PTRACE_TRACEME, 0, NULL, NULL);
++	execl("/bin/echo", "/bin/echo", NULL);
++	exit(0);
 +}
-+
-+/* The following is the x86-64-specific BPF boilerplate code for checking
-+ * that the BPF program is running on the right architecture + ABI. At
-+ * completion of these instructions, the accumulator contains the system
-+ * call number.
-+ */
-+
-+/* For the x32 ABI, all system call numbers have bit 30 set */
-+
-+#define X32_SYSCALL_BIT         0x40000000
-+
-+#define X86_64_CHECK_ARCH_AND_LOAD_SYSCALL_NR \
-+	BPF_STMT(BPF_LD | BPF_W | BPF_ABS, \
-+	(offsetof(struct seccomp_data, arch))), \
-+	BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, AUDIT_ARCH_X86_64, 0, 2), \
-+	BPF_STMT(BPF_LD | BPF_W | BPF_ABS, \
-+	(offsetof(struct seccomp_data, nr))), \
-+	BPF_JUMP(BPF_JMP | BPF_JGE | BPF_K, X32_SYSCALL_BIT, 0, 1), \
-+	BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS)
-+
-+/* installNotifyFilter() installs a seccomp filter that generates
-+ * user-space notifications (SECCOMP_RET_USER_NOTIF) when the process
-+ * calls mkdir(2); the filter allows all other system calls.
-+ *
-+ * The function return value is a file descriptor from which the
-+ * user-space notifications can be fetched.
-+ */
-+
-+static int installNotifyFilter(void)
-+{
-+	struct sock_filter filter[] = {
-+		X86_64_CHECK_ARCH_AND_LOAD_SYSCALL_NR,
-+
-+		/* mkdir() triggers notification to user-space supervisor */
-+
-+		BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_mkdir, 0, 1),
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_USER_NOTIF),
-+
-+		/* Every other system call is allowed */
-+
-+		BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
-+	};
-+
-+	struct sock_fprog prog = {
-+		.len = ARRAY_SIZE(filter),
-+		.filter = filter,
-+	};
-+
-+	/* Install the filter with the SECCOMP_FILTER_FLAG_NEW_LISTENER flag;
-+	 * as a result, seccomp() returns a notification file descriptor.
-+	 */
-+
-+	TST_EXP_POSITIVE(seccomp(SECCOMP_SET_MODE_FILTER,
-+				SECCOMP_FILTER_FLAG_NEW_LISTENER, &prog));
-+	return TST_RET;
-+
-+}
-+
-+/* Close a pair of sockets created by socketpair() */
-+
-+static void closeSocketPair(int sockPair[2])
-+{
-+	SAFE_CLOSE(sockPair[0]);
-+	SAFE_CLOSE(sockPair[1]);
-+}
-+
-+/* Implementation of the target process; create a child process that:
-+ *
-+ * (1) installs a seccomp filter with the
-+ * SECCOMP_FILTER_FLAG_NEW_LISTENER flag;
-+ * (2) writes the seccomp notification file descriptor returned from
-+ * the previous step onto the UNIX domain socket, 'sockPair[0]';
-+ * (3) calls mkdir(2) for each element of 'argv'.
-+
-+ * The function return value in the parent is the PID of the child
-+ * process; the child does not return from this function.
-+ */
-+
-+static pid_t targetProcess(int sockPair[2], struct tcase *tc)
-+{
-+
-+	pid_t targetPid = SAFE_FORK();
-+
-+	if (targetPid > 0)          /* In parent, return PID of child */
-+		return targetPid;
-+
-+	/* Child falls through to here */
-+
-+	tst_res(TINFO, "T: PID = %ld", (long) getpid());
-+
-+	/* Install seccomp filter(s) */
-+
-+	TST_EXP_PASS(prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0));
-+
-+	int notifyFd = installNotifyFilter();
-+
-+	/* Pass the notification file descriptor to the tracing process over
-+	 * a UNIX domain socket
-+	 */
-+
-+	TST_EXP_PASS(sendfd(sockPair[0], notifyFd));
-+
-+	/* Notification and socket FDs are no longer needed in target */
-+
-+	SAFE_CLOSE(notifyFd);
-+
-+	closeSocketPair(sockPair);
-+
-+	tst_res(TINFO, "T: about to mkdir(\"%s\")", tc->dir);
-+
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	TEST(mkdir(tc->dir, 0700));
-+
-+	tst_res(TINFO, "T: SUCCESS: mkdir(2) returned %ld", TST_RET);
-+	if (TST_RET == tc->expect_ret)
-+		tst_res(TPASS, "Case %s PASS", tc->desc);
-+	else
-+		tst_brk(TBROK | TTERRNO, "Case %s Failed, expect %d but return %ld",
-+						tc->desc, tc->expect_ret, TST_RET);
-+
-+	exit(EXIT_SUCCESS);
-+}
-+
-+
-+/* Access the memory of the target process in order to discover the
-+ * pathname that was given to mkdir()
-+ */
-+
-+static void getTargetPathname(struct seccomp_notif *req, int notifyFd,
-+		char *path)
-+{
-+	char procMemPath[PATH_MAX];
-+
-+	snprintf(procMemPath, sizeof(procMemPath), "/proc/%d/mem", req->pid);
-+
-+	int procMemFd = SAFE_OPEN(procMemPath, O_RDONLY);
-+
-+	/* Check that the process whose info we are accessing is still alive.
-+	 * If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performed
-+	 * in checkNotificationIdIsValid()) succeeds, we know that the
-+	 * /proc/PID/mem file descriptor that we opened corresponds to the
-+	 * process for which we received a notification. If that process
-+	 * subsequently terminates, then read() on that file descriptor
-+	 * will return 0 (EOF).
-+	 */
-+
-+	SAFE_IOCTL(notifyFd, SECCOMP_IOCTL_NOTIF_ID_VALID, &req->id);
-+
-+	/* Seek to the location containing the pathname argument (i.e., the
-+	 *  first argument) of the mkdir(2) call and read that pathname
-+	 */
-+
-+	SAFE_LSEEK(procMemFd, req->data.args[0], SEEK_SET);
-+
-+	SAFE_READ(1, procMemFd, path, PATH_MAX);
-+
-+	SAFE_CLOSE(procMemFd);
-+}
-+
-+/* Handle notifications that arrive via the SECCOMP_RET_USER_NOTIF file
-+ *  descriptor, 'notifyFd'.
-+ */
-+
-+static void handleNotifications(int notifyFd)
-+{
-+	struct seccomp_notif_sizes sizes;
-+	char path[PATH_MAX];
-+
-+	TST_EXP_POSITIVE(seccomp(SECCOMP_GET_NOTIF_SIZES, 0, &sizes));
-+
-+	struct seccomp_notif *req = SAFE_MALLOC(sizes.seccomp_notif);
-+
-+	struct seccomp_notif_resp *resp = SAFE_MALLOC(sizes.seccomp_notif_resp);
-+
-+	memset(req, 0, sizes.seccomp_notif);
-+
-+	TST_CHECKPOINT_WAKE(0);
-+
-+	SAFE_IOCTL(notifyFd, SECCOMP_IOCTL_NOTIF_RECV, req);
-+
-+	tst_res(TINFO, "S: got notification (ID %#llx) for PID %d",
-+			req->id, req->pid);
-+
-+	/* The only system call that can generate a notification event
-+	 * is mkdir(2). Nevertheless, we check that the notified system
-+	 * call is indeed mkdir() as kind of future-proofing of this
-+	 * code in case the seccomp filter is later modified to
-+	 * generate notifications for other system calls.
-+	 */
-+
-+	if (req->data.nr != __NR_mkdir)
-+		tst_brk(TBROK, "notification contained unexpected system call number");
-+
-+	getTargetPathname(req, notifyFd, path);
-+
-+	/* Prepopulate some fields of the response */
-+
-+	resp->id = req->id;     /* Response includes notification ID */
-+	resp->flags = 0;
-+	resp->val = 0;
-+
-+	/* If the directory is in /tmp, then create it on behalf of
-+	 * the supervisor; if the pathname starts with '.', tell the
-+	 * kernel to let the target process execute the mkdir();
-+	 * otherwise, give an error for a directory pathname in
-+	 * any other location.
-+	 */
-+
-+	if (strncmp(path, "/tmp/", strlen("/tmp/")) == 0) {
-+		tst_res(TINFO, "S: executing: mkdir(\"%s\", %#llo)",
-+				path, req->data.args[1]);
-+
-+		if (mkdir(path, req->data.args[1]) == 0) {
-+			resp->error = 0;            /* "Success" */
-+			resp->val = strlen(path);   /* Used as return value of
-+						     * mkdir() in target
-+						     */
-+			tst_res(TINFO, "S: success! spoofed return = %lld",
-+					resp->val);
-+		} else {
-+
-+			/* If mkdir() failed in the supervisor, pass the error
-+			 *  back to the target
-+			 */
-+
-+			resp->error = -errno;
-+			tst_res(TINFO, "S: failure! (errno = %d; %s)", errno,
-+					strerror(errno));
-+		}
-+	} else if (strncmp(path, "./", strlen("./")) == 0) {
-+		resp->error = resp->val = 0;
-+		resp->flags = SECCOMP_USER_NOTIF_FLAG_CONTINUE;
-+		tst_res(TINFO, "S: target can execute system call");
-+	} else {
-+		resp->error = -EOPNOTSUPP;
-+		tst_res(TINFO, "S: spoofing error response (%s)",
-+				strerror(-resp->error));
-+	}
-+
-+	/* Send a response to the notification */
-+
-+	tst_res(TINFO, "S: sending response "
-+			"(flags = %#x; val = %lld; error = %d)",
-+			resp->flags, resp->val, resp->error);
-+
-+	SAFE_IOCTL(notifyFd, SECCOMP_IOCTL_NOTIF_SEND, resp);
-+
-+}
-+
-+/* Implementation of the supervisor process:
-+ *
-+ * (1) obtains the notification file descriptor from 'sockPair[1]'
-+ * (2) handles notifications that arrive on that file descriptor.
-+ */
-+
-+static void supervisor(int sockPair[2])
-+{
-+	int notifyFd = TST_EXP_POSITIVE(recvfd(sockPair[1]));
-+
-+	closeSocketPair(sockPair);  /* We no longer need the socket pair */
-+
-+	handleNotifications(notifyFd);
-+}
-+
-+static void run(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	int sockPair[2];
-+
-+	tst_res(TINFO, "Test case %s start", tc->desc);
-+
-+	SAFE_SOCKETPAIR(AF_UNIX, SOCK_STREAM, 0, sockPair);
-+
-+	int pid = targetProcess(sockPair, tc);
-+
-+	supervisor(sockPair);
-+
-+	SAFE_WAITPID(pid, NULL, 0);
-+
-+	if (!access(tc->dir, F_OK))
-+		SAFE_RMDIR(tc->dir);
-+}
+ 
+-int main(int argc, char *argv[])
++static void run(void)
+ {
+ 	size_t i;
+-	long ret;
+-	int saved_errno;
++	int pid;
++	int status;
+ 
+-	tst_parse_opts(argc, argv, NULL, NULL);
++	pid = SAFE_FORK();
+ 
+-	make_a_baby(argc, argv);
++	if (!pid)
++		child();
++
++	SAFE_WAIT(&status);
++
++	if (!WIFSTOPPED(status))
++		tst_brk(TBROK, "child %d was not stopped", pid);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(test_cases); ++i) {
+ 		struct test_case_t *tc = &test_cases[i];
+ 
+-		errno = 0;
+-		ret =
+-		    ptrace(tc->request, pid, (void *)tc->addr,
+-			   (void *)tc->data);
+-		saved_errno = errno;
+-		if (ret != -1)
+-			tst_resm(TFAIL,
++		TEST(ptrace(tc->request, pid, (void *)tc->addr,
++					(void *)tc->data));
++		if (TST_RET != -1)
++			tst_brk(TFAIL | TERRNO,
+ 				 "ptrace(%s, ..., %li, %li) returned %li instead of -1",
+ 				 strptrace(tc->request), tc->addr, tc->data,
+-				 ret);
+-		else if (saved_errno != EIO && saved_errno != EFAULT)
+-			tst_resm(TFAIL,
++				 TST_RET);
++		else if (TST_ERR != EIO && TST_ERR != EFAULT)
++			tst_brk(TFAIL | TERRNO,
+ 				 "ptrace(%s, ..., %li, %li) expected errno EIO or EFAULT; actual: %i (%s)",
+ 				 strptrace(tc->request), tc->addr, tc->data,
+-				 saved_errno, strerror(saved_errno));
++				 TST_ERR, strerror(TST_ERR));
+ 		else
+-			tst_resm(TPASS,
++			tst_res(TPASS,
+ 				 "ptrace(%s, ..., %li, %li) failed as expected",
+ 				 strptrace(tc->request), tc->addr, tc->data);
+ 	}
+ 
+-	/* hopefully this worked */
+-	ptrace(PTRACE_KILL, pid, NULL, NULL);
++	SAFE_PTRACE(PTRACE_CONT, pid, NULL, NULL);
+ 
+-	tst_exit();
+ }
 +
 +static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = run,
-+	.needs_tmpdir = 1,
++	.test_all = run,
 +	.forks_child = 1,
-+	.min_kver = "5.7.19",
-+	.needs_checkpoints = 1
 +};
 -- 
 2.35.3
