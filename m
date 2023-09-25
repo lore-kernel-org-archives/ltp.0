@@ -4,62 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F01ECE7A95
-	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 15:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45CFECE7A81
+	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 15:29:44 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8D39B3CF2C4
-	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 17:25:04 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 8E7883CE26B
+	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 17:29:42 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE9E53CE241
- for <ltp@lists.linux.it>; Mon, 25 Sep 2023 17:24:54 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 5FDDB3C997B
+ for <ltp@lists.linux.it>; Mon, 25 Sep 2023 17:29:31 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BA5D560090A
- for <ltp@lists.linux.it>; Mon, 25 Sep 2023 17:24:53 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 5A588201DB5
+ for <ltp@lists.linux.it>; Mon, 25 Sep 2023 17:29:31 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 039802184E;
- Mon, 25 Sep 2023 15:24:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695655493; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=c00FJZA82iSyc0AkO2g24ZxHFdedxledax3xUJYku5c=;
- b=H8M9cr4XbBdftw0pz7b1AGs/kqEuu99/Ylxt0O4L3dAtD3TNNkFv3dyqji0AV+2xGOKHZu
- qZEKa2q13qsSCV9iLra8vytnEiHuRO3pyORLnxgrUCitbq8o4Tuz/nzl6nCE45DCxFuU4C
- eeWrAW53gWlZvhDWM6nqGvpeoHqNGBQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695655493;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=c00FJZA82iSyc0AkO2g24ZxHFdedxledax3xUJYku5c=;
- b=CVkXmLrqp9n8ln2PEwTLZGeXGrQCawd21vOrLlkMXgDjPe7V3N8RerHI9OIRlWIx3DTGW/
- 5bMYK+7BJ3NFDjCw==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C176C2184E
+ for <ltp@lists.linux.it>; Mon, 25 Sep 2023 15:29:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1695655770; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Xv1zXZ2efO9MVO2SQ+3YJ/L9jqjqqMxHh1d6+LFMbCI=;
+ b=crZpktZSzqjEvtwIz6d43obvzN9wN+Icvf+KmYSkWr5dWTbD8xso2jOr4hAYcjAHGbOzrD
+ lnU0PxNSEtkHmAgcs2JioxR2mEBCoyCUmxKICWl35rnrs97VHGXbNGFYjLIteZ7BIpy0ew
+ C8FaGf4xSWutmji/BhIAb5yyA/0aQKM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1695655770;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Xv1zXZ2efO9MVO2SQ+3YJ/L9jqjqqMxHh1d6+LFMbCI=;
+ b=y29XvvEuwA38SDjA4LdoTh8Jul3TA7K7a3lGMYGh1gRezRDsmbVuyvV69spzHznftAMO0v
+ uhqOu1jdBi2rp2AA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D1B9413580;
- Mon, 25 Sep 2023 15:24:52 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B3B5213580
+ for <ltp@lists.linux.it>; Mon, 25 Sep 2023 15:29:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id KJk4MkSmEWURVQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 25 Sep 2023 15:24:52 +0000
-From: Petr Vorel <pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id nBTUKlqnEWVoVwAAMHmgww
+ (envelope-from <mkittler@suse.de>)
+ for <ltp@lists.linux.it>; Mon, 25 Sep 2023 15:29:30 +0000
+From: Marius Kittler <mkittler@suse.de>
 To: ltp@lists.linux.it
-Date: Mon, 25 Sep 2023 17:24:50 +0200
-Message-Id: <20230925152450.89228-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.40.1
+Date: Mon, 25 Sep 2023 17:29:30 +0200
+Message-ID: <4834400.GXAFRqVoOG@linux-9lzf>
+In-Reply-To: <20230925151319.87688-1-pvorel@suse.cz>
+References: <20230925151319.87688-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] doc: Document musl-git
+Subject: Re: [LTP] [PATCH 0/3] Report clone04 failure on musl
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,42 +77,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-A follow up for musl-git related patchset
-https://patchwork.ozlabs.org/project/ltp/list/?series=374767&state=*
+Am Montag, 25. September 2023, 17:13:16 CEST schrieb Petr Vorel:
+> This required to add musl-git support into lib.
+> 
+> Petr Vorel (3):
+>   lib/tst_test.c: docparse/testinfo.pl: Add support for musl git fixes
+>   clone04: Add musl-git tag
+>   lib/tst_test.c: Print failure hints also for TBROK
+> 
+>  docparse/testinfo.pl                      | 3 ++-
+>  lib/tst_test.c                            | 8 +++++++-
+>  testcases/kernel/syscalls/clone/clone04.c | 5 +++++
+>  3 files changed, 14 insertions(+), 2 deletions(-)
 
- doc/c-test-api.txt | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Reviewed-by: Marius Kittler <mkittler@suse.de>
 
-diff --git a/doc/c-test-api.txt b/doc/c-test-api.txt
-index 0fe8ed41d..dab811564 100644
---- a/doc/c-test-api.txt
-+++ b/doc/c-test-api.txt
-@@ -2369,13 +2369,14 @@ NOTE: We don't track all backports to stable kernel but just those which are
-       stable branch specific (unique), i.e. no commit in mainline. Example of
-       commits: c4a23c852e80, cac68d12c531.
- 
--Glibc git commit in a regression test for a glibc bug:
-+Glibc and musl git commits in a regression test for glibc and musl bugs:
- [source,c]
- -------------------------------------------------------------------------------
- struct tst_test test = {
- 	...
- 	.tags = (const struct tst_tag[]) {
- 		{"glibc-git", "574500a108be"},
-+		{"musl-git", "fa4a8abd06a4"},
- 		{}
- 	}
- };
--- 
-2.40.1
+Looks good to me.
+
+
 
 
 -- 
