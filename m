@@ -4,111 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8783CE7A81
-	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 11:31:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAB6BCE7A94
+	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 11:36:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 484623CE21C
-	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 13:31:22 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id AE5AB3CDCF2
+	for <ltp@archiver.kernel.org>; Mon, 25 Sep 2023 13:36:16 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F05363C5AC7
- for <ltp@lists.linux.it>; Mon, 25 Sep 2023 13:31:10 +0200 (CEST)
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04on2077.outbound.protection.outlook.com [40.107.7.77])
+ by picard.linux.it (Postfix) with ESMTPS id 83D663C998B
+ for <ltp@lists.linux.it>; Mon, 25 Sep 2023 13:36:05 +0200 (CEST)
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05on20629.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7d00::629])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DF6F620093F
- for <ltp@lists.linux.it>; Mon, 25 Sep 2023 13:31:09 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 915F51A010B2
+ for <ltp@lists.linux.it>; Mon, 25 Sep 2023 13:36:04 +0200 (CEST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XvbOuFz1qdUF7jgVIwHI5CUejIFEE0AEOzwMfQqbVR7dZaUklv1I2YsS/CFQG5pjaeTEE93dvZGSykDvBHw5OGaEFIr62RP+KVmGbJPcKNUdOjhiQ2vXILReYWDscQ4m0nx0ew+YNIrInthSKH3a1xQpla4zES+XrBPLq5Abw5mLxJrUydR1zeXUOeMOD0KUlwu64dMFSxevHVL7Omc3qLf9wvReog6fjJxDzTNTDHhtMMHgaNFUBxRd0tcMovbS/fbvS33qb+hJrZ4hOmkQdidrMs2SKfLONJdsRL0c/dPp6QuUkWFTGyNvc8nDsNmaAaTUwBqNPtry8hHRKCZ6cw==
+ b=H7IDpP4KvtfN2YHC2yx+HhO+0hdavFLBDKMwDjgBwwASRH89lXpeslmuwDhgPLEHJEjPYRAvGpHv3swziPguxneDBjrEI7zvDtA2FSHUjgJNDaHDDqAjENSBjlYjjEnN8x0Ip5fVp2ldoSd5u83zXv5b6ZUf9P4QoMe7/xeRAnWRdO5nssGzD3fGyQGIlk+IQHOD2jkKMwUnCxM78FfDm+Nj8G2jPsvrztmY5+V8KFyaelUQpW7bLQG13Zr8wdFEHn9qT9e40R9LxXZrujiJqGU5UN5pJTnJKAqT60sRTeCi/568zR3dl23dbt2tQjWMZTxIOiiIN3wDZFBOSXJnuA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7bXgZIYRe56FFK+bFHqpapjMXpZagAumMCeX53ULa/o=;
- b=dTEp+/PVyAH3SU4cP+5PlEdxUaBIHBD9YXV4XTiYdkWwsX7a8LFfifdrCIYAT0VOf22/NzkY77lpRj5UuAHPg7VEJrGng5ZyZB+AlAN92w8/S5koSz9LMjetMzi4usLjROyyWV1On16qzsGEDmYR2K4Mv1NDipRhQm8kFro/dmqTzM/VsxKI3AFJoaeo4o0xvFo2h3NuJnqRfYz4S9uLeEpvsEXEqtw94zXFizZN3ugkUH8zQhb6kdL+1UljZthZ90tyvVTqwfkkZb7Ll6q/ZJvu9+91IoNpfdm+hHYBDxkE5g4RJLmCE/rSX5Ebi+0LZ9o/m8vKoNRy+K+2O/70HQ==
+ bh=hSj9VRZd1b3NyiGWiU0BSZYWRDoS5Jcsy1H9WtYTc2A=;
+ b=JHERzDzBhQDYuGzm39GSSvb1eYYFS1mAMo469IEYCxEEUq2a83THary8WG8x30HSEtkpINv5FZpbUvBY+2RmH3jDGFr9d70QfWJEVWeYAicM9dzrn6iCFQHgNfGddhCQDA7QOpOV5utcvn+09Gr3VxAlnoZ56A9b/IPt4PtFL9m+7bnzmiYsbSOVdOMBARKM58ehkHL77jy+N3EY62dQSqhxej6D51F6NAeiZuqrV8jZ5N1x/9tY2pjmOHy5U9gGvDw6iOLUrLN3x1XDAOFkAx74PaO5Q7fo/ij7pOWzBeWmi6nrbBXJ2rhCAI8XN6ii+en9kUapgptFVBPePflHVA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7bXgZIYRe56FFK+bFHqpapjMXpZagAumMCeX53ULa/o=;
- b=bf4ktROWQe3qPlASXlFKaoFfiQAHqZ+sylzqBJYgBdxRSjwXBO2JzFX16tzm+fJcAKwYb3e92sv7Gm2T5SH0dr2yPjoNlYYlBZ244wa4CNmaLsuiC7QWL5PmVUs6U2EjeGBRvg89I0N7zBIYpbdj8Jjxt/lN+1Em2mBsliL8RTPwZcPw4IOO50rKZpE6eicTY9E+GDLZlVuNrLNmyIGnDd3cLB73eUzF/sE31dZRao4kqm4VXw4nNVhdUnLsvdec/qpP7Ct+RvWX1Chj4irzDsONSXBeWUSp7p5DgyuVBwGtUsaCBt/5MV+fWHNYTA6JEMOr/k6SrmzUTcAWFmoFdQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
+ bh=hSj9VRZd1b3NyiGWiU0BSZYWRDoS5Jcsy1H9WtYTc2A=;
+ b=aJdS8iOQnVzpbB1SHUuTQU5kEgyYFkwgR21Z8FYs1DEk61JlFbsL7RdXpjVHVc1bYZ+wb+Uy6xNhGROL9cFD+crdOVOu5bamu72ZpIqC+UwsKngdceKA58DeX27Ju4lVaGUj/1Abn53eKwMhCmpUR5SSF8NKtSjzKO0RfeVUAiv8bszElfwaJw73frkiWmvXSA0m4ZuVNQdzTj03qrgFIVvP5BAjAlBDENutYj1fBYTEDdP3Y0PvutusSl1ifugClM9RHcZC4sGAnRWPaqyPrbHfZIoLSp9yuiChYiHKTN0HI7ZbgTP5tbSmY/qgN8B6DiuQbZRFu0egkDk154LGjg==
 Received: from AS8PR04MB8199.eurprd04.prod.outlook.com (2603:10a6:20b:3f6::21)
- by VI1PR04MB7021.eurprd04.prod.outlook.com (2603:10a6:800:127::24)
+ by DU2PR04MB8982.eurprd04.prod.outlook.com (2603:10a6:10:2e1::10)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 25 Sep
- 2023 11:31:08 +0000
+ 2023 11:36:01 +0000
 Received: from AS8PR04MB8199.eurprd04.prod.outlook.com
  ([fe80::41dd:e42:e86b:c92f]) by AS8PR04MB8199.eurprd04.prod.outlook.com
  ([fe80::41dd:e42:e86b:c92f%4]) with mapi id 15.20.6813.027; Mon, 25 Sep 2023
- 11:31:08 +0000
-Date: Mon, 25 Sep 2023 07:31:03 -0400
-To: ltp@lists.linux.it
-Message-ID: <ZRFvd5LYlAiIJCy5@wegao>
+ 11:36:01 +0000
+To: Wei Gao <wegao@suse.com>, "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: [PATCH v1 2/2] d
+Thread-Index: AQHZ76EHMhhRSK6sZEmg+ec9urn1KLAraXyQ
+Date: Mon, 25 Sep 2023 11:36:01 +0000
+Message-ID: <AS8PR04MB819968FBF293CB490CB657A3DEFCA@AS8PR04MB8199.eurprd04.prod.outlook.com>
 References: <20230925110422.19167-1-wegao@suse.com>
-Content-Disposition: inline
-In-Reply-To: <20230925110422.19167-1-wegao@suse.com>
-X-ClientProxiedBy: FR4P281CA0132.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b9::10) To AS8PR04MB8199.eurprd04.prod.outlook.com
- (2603:10a6:20b:3f6::21)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8199:EE_|VI1PR04MB7021:EE_
-X-MS-Office365-Filtering-Correlation-Id: 71588ad5-d922-4b09-1fe6-08dbbdbae950
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cy9tPHSYKg6/ysuVPkSAWx7BBX9QIDzFUVvXhqZkixz0JZzNZ/3mX2SnnPC93cchH6BXqxZsBa0qcE8O8hYgk5VhND7klfQBwphBQYj/jbEp/LrBHD1Xtde8UBfU2tn/2Wyd3GGelpdvyiVRubB8e0awFwU4pXVrNPGSCJVxAuUMgfgAcLjN32I7rcNxEB96IPfPmgS28ElO9Jf/zpYgP/egCJ8P8nBu/Oq3JEAkYX/yz09hPVUWFRdDrmoadia24448LBneiRolqWMVRyhUshPhWGwriOdJQodRc1zDClf/VH2ABhyF0mMcSv5l/yn9AZjUupFz2lpuyA7GR/X0/xzgG9OdZkTCkqqnBE/4bQPTVUNvhtStvvVumnq3cfL8uWLz5gUeD+ia3iIhHhcsUeB54DZYkg4RTBzgeNC9vrz6MslddEkBgUtJVKRlmF9XnXLkdnOaEuWgs/y/af61MNIsBDcIINxwYFGQIxg9s2P6kiOnw12bCpPww1XGCDpLa8z9/SjCRur69eM3A3LaaXGdfp6XjheCNoQGhmgChxQ+RTg0LfSDx1I34ElwkMYw
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ <20230925110422.19167-3-wegao@suse.com>
+In-Reply-To: <20230925110422.19167-3-wegao@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AS8PR04MB8199:EE_|DU2PR04MB8982:EE_
+x-ms-office365-filtering-correlation-id: ba653066-62e1-4043-bc2f-08dbbdbb987d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WrUJodF3pEnmHAcANvknGudCXh+ZiiJ29VCWHz6QfwpuAFnB+m3Vytu9zUBWwiQU12LKkRaUpFM08LR2/o9ZptTp15dZpf8DVGKMbmlQvt2zE8GCVw9i2pqdxXi1Tr9cRQBEJsbb1I7RL+p7z75tXPUSBVE/l7NJiw4eouGclXngDPA5wvRmwP8+7nTu5D2HHHpgXkWo9FH1eOWmWXTy6A+cHKOV/dArr63q7+5YGP6B9YNk2Pc+Aj5l+bS1MndolHu8TQqdBugBhCZrcVv3QE4ggXLGTnUzR1Wq7Vded93MFMn0jPn+ASVrlToBwe3aKZQZ5u6lZMMC35zLdjna6BQ9eNwm+91U2eOd5cyrDXWmqqrVCSJJqnQ8d5NH1JmmEWKmQrTwTcz17rm0LjJAOky5X7vhE5ydnRZJtrwyyC5NGxDRKnq+d0jQmdbc+C3jwA6jQTsKpi3a6aekkNqb43hthMqv7KJRNeAEYy4leciAT0GTKWjU4zM0nfFGhbXZ/Inon9vTsL40d/b/a4ZueDbVojvQXCOdYSqWLq7CuQhu2+inw63Faypd/G8FY6drLCAbKemXF889PypGILUj3xzlhl6tNPUXuwP2MY/x+EsnmVSSW0FhwPCyfibLxX2db0MdWx8ua5os2QwNy2w8gA==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:AS8PR04MB8199.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(7916004)(376002)(39850400004)(396003)(366004)(346002)(136003)(230922051799003)(1800799009)(186009)(451199024)(6512007)(9686003)(6506007)(86362001)(38100700002)(26005)(4744005)(2906002)(478600001)(6486002)(83380400001)(8936002)(6666004)(8676002)(5660300002)(41300700001)(33716001)(66476007)(66556008)(6916009)(316002)(66946007);
+ SFS:(13230031)(396003)(366004)(376002)(39850400004)(136003)(346002)(230922051799003)(186009)(1800799009)(451199024)(30864003)(2906002)(52536014)(5660300002)(110136005)(66946007)(66476007)(66446008)(64756008)(66556008)(76116006)(478600001)(71200400001)(53546011)(9686003)(7696005)(26005)(6506007)(8936002)(8676002)(316002)(41300700001)(83380400001)(122000001)(86362001)(38100700002)(38070700005)(55016003)(33656002)(2004002)(579004);
  DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jMa5FI1xzPNGLpiMu2e2rlv/0Z+Qwf+P7CpYHPzNOu8Tya8/sOynuh48z207?=
- =?us-ascii?Q?nDmopuQqPsfWNKynjQe1E4q7ZP+zBKD2SDTPXLU+7MT7uSbsFqcPc+TLFAiz?=
- =?us-ascii?Q?NOX4ETDzRbeD2aA0gpsrIoq+0G/UL0CjoT4ybBbVUCNiz8vMwi8vqV+R6ODi?=
- =?us-ascii?Q?NagP+w27vsEk8oJE8KTwDm6na3Ojm95Kt80rTK2QB1KWcARgg1EC9wcwdsCQ?=
- =?us-ascii?Q?0HEj2I9UPc4UM6iUTMRXiWudQPLg8Z3KsDhhyvZ88jwtWkE4VF5fHKxbRyCD?=
- =?us-ascii?Q?V2KvyQWB4sxHKqEGoDOTRVMtl+8hbI9A8czexQHs3oDXf1XORFCCbupXHD1N?=
- =?us-ascii?Q?h8xj57bT9B+4I0O1rm11SzoVH7Mai+vZ3lDErxEPmSDyNjJjtR5glLrGmuF6?=
- =?us-ascii?Q?yTzPVvLlrmbx4lGGLsNznMSt52W5hk9AMp2STAWh7zJMx1roaPMY4WvvNV8E?=
- =?us-ascii?Q?KhkoDBM7IthMowf8Oki4VeeRRcLC/iiZdqE6MnbE5ZZWfUGKv9zRmi2Rf9Cb?=
- =?us-ascii?Q?KfYZFdhw4o6RFXYrBOxA6Wuj3ijeBa0+QWPSYuEoRY1CcJyK4ugeWERIi9f2?=
- =?us-ascii?Q?L0vwZIJzyQgmXqXN92EH5ZnwgoehcB/Qc8kB6tEX9FpvCvPED1SzO3cnnF79?=
- =?us-ascii?Q?icUeOSKT9vIf/uS6S0G7ZMc2ULIbCXCbobIKRjlIYRcM00DWEINn1nscFPD9?=
- =?us-ascii?Q?GKmL2NEL7pFqeJbHJDIKWqnQcv2/fKwwaqcwBQ7ZZ9SY+HZ9s/0M3fp8fAbY?=
- =?us-ascii?Q?T63U2kE1u9oAKp2jzQeaM9aVLFMoQ9Eam2sM+/WN9CWxxKypUF6NCAAmV3if?=
- =?us-ascii?Q?jZWtwevI3BfW41+WmaFDtQULbKfIO4w1I1pFGvFjLiW0IlYQ/IKcbqg7eAIT?=
- =?us-ascii?Q?wNWz3TPQrtSdzcRROFeSytzarpmcdu2cwGjI+RspyEm/J/bO/sQAcSJ8I50M?=
- =?us-ascii?Q?i+3hR2Oec2UiVYNtJyfawINdyqF+cz/al5DC9tEY8zcORumQGrTfmOr1vFfJ?=
- =?us-ascii?Q?LxJMDiqvbYyDU29ZEeqCYYuaj+CV2KSwaahpdxFFQoezgcLCJYyTidn2pNfY?=
- =?us-ascii?Q?qtlKh+d6oeb9qNIdaBKNnNm0wyBMWs13WXgY5egbMrr6Hls9axPLCTAZsubW?=
- =?us-ascii?Q?duFrtPV7WVK9jDjgFM0kACEU4ahOm1G+DtUZKja5ulBupTEndGmZigII0Wr7?=
- =?us-ascii?Q?EsbvHfNVJc/SqdZmncIOkaK3MyE038nRVOOk4iz3L/9+ghhatDxRRmPuWaG5?=
- =?us-ascii?Q?r0rqCkJAyHHaqNDSjcQl8mYNDxy2gQC2HKwW3fbDpNNeF2/5SpqfI9GfwBgd?=
- =?us-ascii?Q?X4dEIeiss8YYJhM4xmZDAwJNyygR8K//KWakazw0HuAoPhvK5dEBWKrNmRNo?=
- =?us-ascii?Q?0/3lDil9ek/YqISlEeTENKZ5Jr3L4J5rYrLfd7SvzxxBnpYJ5EVlLjK73Nq0?=
- =?us-ascii?Q?YqS1rmqPNh+3cNJoSAbFyAZshs9CBlboORXnUKMLY6oWdFFeLTZBGJ1y0TdC?=
- =?us-ascii?Q?89BXrgp+1mDIMfnanGJctiTywZzaBG/wFs5S3CvgHL6QucpdGwyZ7i258Vv9?=
- =?us-ascii?Q?FwMvu9KkIp7KLmToDnQ=3D?=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?AiJq9LEyyYX57rw6T9wT4rbd6RQ2VznEjBwJm9yNTRPoP6yEIpQulbiSNLDd?=
+ =?us-ascii?Q?bdm0z4i8g4tN7/742uMgBfbp7vJIaflUZHFcd/QJOSSOqWzJ3E6WtWG4VuvK?=
+ =?us-ascii?Q?LuhpiAHFFKiDSHDgB/PD0zKJmmXiNoJaiXwADHTyyKbJhuLU2dBI6BqttB71?=
+ =?us-ascii?Q?geCyfibEr0NGSkMR1O5CT/EfsJs49E9BWPEMsLGXoMusTksEIQdj8/qtDYQo?=
+ =?us-ascii?Q?xiovK6P7OsioBEpxfd27yXvEYZxl8wtAupZUzMJ3NhOHLPCqMl92r+NVZRAT?=
+ =?us-ascii?Q?8c0WbBzZ+8GzXb1dzqFXpj1o3qGOhUD6duqQtXaOxvxOMSB5jaYxkRrKufY+?=
+ =?us-ascii?Q?k1kmlhIYAYNh/6owgT3aM8dZWbq6GRhkZl2m5/BQX+Rstm077M7DiVWyxARu?=
+ =?us-ascii?Q?lLCrkPV0strsfJ1NhyeZluJ0Yq/VfMc8oekYOeSHSq1vWFTGfy34Y0Ra9mrf?=
+ =?us-ascii?Q?/02oes4uG2oH/m4vaFhE3HobxON0ncuzYcppMizORjMorhraXd136QOvttYb?=
+ =?us-ascii?Q?U1xMnfJnd/smrssihMvA2ATW/KPhOq5DeLcpyhsgmL0C/l29Elg/SvK3kvj8?=
+ =?us-ascii?Q?QNvwYrsnKOIt2jeXEczR6TW7ItfPkwuNuIwWNCwP8KG14pAbWH61bpRWYUlt?=
+ =?us-ascii?Q?0pU7kRwpmpjNhDgMhES0Q4SJZqVb7BwUyMvZo1ZkYfsn/R2JWgScXVVF0ooB?=
+ =?us-ascii?Q?2ygwLoOGl7bgIYPkyvkrfR69naw6gqNJGzrlEMJJRzSeADBs2tHTZboTHRJQ?=
+ =?us-ascii?Q?nBn2z77aXi6/PN1DWIbIdEAeqQE7cO2mb01orhctLH6F6oPmB/eKQhbmJsgc?=
+ =?us-ascii?Q?tgQGYwR/ilc5m+89ZjxjxR8/7TWR250Xzzu+6JF7GK1XQhBAoY0y2XHuDgbs?=
+ =?us-ascii?Q?yYptx8oUlyKQEwXxihd3O/AuBMRROirYVarUUSCA74WiBusqtTp+Hc99p+fv?=
+ =?us-ascii?Q?ZJaLj6hfnGtfRTGijeejLsPDcnX4I5nM3OrBlmglog6Y0fSRwx80LGwFzXOf?=
+ =?us-ascii?Q?y9RznEuRN57zKkhImDZzVfISOsgGSkpoz3olpm1rewGZzLIEum6YoE+6pzfN?=
+ =?us-ascii?Q?q9uuWRmFMVPjxrDTWApXct6/Nuiq9m3hye62VBvk2MQspybgdyXRJZd/Z+Fp?=
+ =?us-ascii?Q?yKhPxTuNkzGH5HyrGXNySXSAzvqsJr4Cs4CAU2r9IA4+6IYDP53tYLEw+JUM?=
+ =?us-ascii?Q?wWOUzdsazXqg7t8hPdTdo/L2XmkWC8DpkkP5GcPk0f/mwA6x/fFm4dMWUS2l?=
+ =?us-ascii?Q?ZLJIP+Vs9eeLu/bri3iJK12IF00GpzLptSRp0nQtMlZbNxU+evEVPwqz//y7?=
+ =?us-ascii?Q?Cw3tVf/Ye75FvnrdqfhpJUkgae3q1IaQiWpu+WgreJqH65VUECUhX4iWalIH?=
+ =?us-ascii?Q?uPkpkGI1XCGkK5X1uwadxSswL+qcFcKT9yfvTzsNxuky1019RRy7EvJsJgRT?=
+ =?us-ascii?Q?487TaueKCPoLvRZmS7KS2ELc/9vLwv5rHWGMUcJLTwbCWp9GC9kW1hLwEhTi?=
+ =?us-ascii?Q?KtRIv1ysmAXZH9ts3sxqJ52QLrA58AuLOvXw3L965ahM1mDbPld7ADZeW40e?=
+ =?us-ascii?Q?+WFXYSYdhYrCMLcXEws=3D?=
+MIME-Version: 1.0
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71588ad5-d922-4b09-1fe6-08dbbdbae950
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8199.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 11:31:08.2139 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: r+l0oi6Zen9BcUOFW/jYTROH3XcvIYNJKSemwF3bPmuiW1A5XPzpx1I6HXR2h0eR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7021
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8199.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba653066-62e1-4043-bc2f-08dbbdbb987d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2023 11:36:01.7716 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XTw5Q7zOdsxytSo0B+zUL/WolcNrsN/+iHFx49hk1BUhadpBY2s4DfNTIiXEYrvf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8982
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1 0/2] factory
+Subject: Re: [LTP] [PATCH v1 2/2] d
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -127,28 +131,624 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Mon, Sep 25, 2023 at 07:04:20AM -0400, Wei Gao wrote:
-> Wei Gao (2):
->   seccomp01.c: Add SECCOMP_RET_USER_NOTIF check
->   d
-> 
->  configure.ac                                  |   1 +
->  include/lapi/seccomp.h                        |   7 +
->  runtest/syscalls                              |   2 +
->  testcases/kernel/syscalls/ptrace/ptrace05.c   | 147 ++----
->  testcases/kernel/syscalls/ptrace/ptrace06.c   | 306 +++++++-----
->  testcases/kernel/syscalls/seccomp/.gitignore  |   1 +
->  testcases/kernel/syscalls/seccomp/Makefile    |   8 +
->  testcases/kernel/syscalls/seccomp/seccomp01.c | 456 ++++++++++++++++++
->  8 files changed, 689 insertions(+), 239 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/seccomp/.gitignore
->  create mode 100644 testcases/kernel/syscalls/seccomp/Makefile
->  create mode 100644 testcases/kernel/syscalls/seccomp/seccomp01.c
-> 
-> -- 
-> 2.35.3
-> 
-Sorry for the garbage email, please skip this serial email
+Sorry for the garbage email, please SKIP this email.
+
+-----Original Message-----
+From: Wei Gao <wegao@suse.com> 
+Sent: Monday, September 25, 2023 7:04 PM
+To: Wei Gao <wegao@suse.com>; ltp@lists.linux.it
+Subject: [PATCH v1 2/2] d
+
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ testcases/kernel/syscalls/ptrace/ptrace05.c | 147 +++-------  testcases/kernel/syscalls/ptrace/ptrace06.c | 306 +++++++++++---------
+ 2 files changed, 214 insertions(+), 239 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace05.c b/testcases/kernel/syscalls/ptrace/ptrace05.c
+index 54cfa4d7b..4904b959c 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace05.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace05.c
+@@ -1,122 +1,67 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+- ******************************************************************************
+- *
+- *   ptrace05 - an app which ptraces itself as per arbitrarily specified signals,
+- *   over a user specified range.
+- *
+- *   Copyright (C) 2009, Ngie Cooper
+- *
+- *   This program is free software; you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *   GNU General Public License for more details.
++ * Copyright (C) 2009, Ngie Cooper
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com> */
++
++/*\
++ * [Description]
+  *
+- *   You should have received a copy of the GNU General Public License along
+- *   with this program; if not, write to the Free Software Foundation, Inc.,
+- *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *  ptrace05 - an app which ptraces itself as per arbitrarily specified 
++ signals
+  *
+- ******************************************************************************
+  */
+ 
+-#include <sys/types.h>
+-#include <sys/wait.h>
+-#include <signal.h>
+-#include <errno.h>
+-#include <libgen.h>
+-#include <math.h>
+ #include <stdlib.h>
+-#include <stdio.h>
+-#include <string.h>
+-#include <unistd.h>
+-
+ #include <config.h>
+ #include "ptrace.h"
+ 
+-#include "test.h"
+ #include "lapi/signal.h"
++#include "tst_test.h"
+ 
+-char *TCID = "ptrace05";
+-int TST_TOTAL = 0;
+-
+-int usage(const char *);
+-
+-int usage(const char *argv0)
+-{
+-	fprintf(stderr, "usage: %s [start-signum] [end-signum]\n", argv0);
+-	return 1;
+-}
+-
+-int main(int argc, char **argv)
++static void run(void)
+ {
+ 
+-	int end_signum = -1;
+-	int signum;
+-	int start_signum = -1;
++	int end_signum = SIGRTMAX;
++	int signum = 0;
++	int start_signum = 0;
+ 	int status;
+ 
+ 	pid_t child;
+ 
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	if (start_signum == -1) {
+-		start_signum = 0;
+-	}
+-	if (end_signum == -1) {
+-		end_signum = SIGRTMAX;
+-	}
+-
+ 	for (signum = start_signum; signum <= end_signum; signum++) {
+ 
+-		if (signum >= __SIGRTMIN && signum < SIGRTMIN)
+-			continue;
+-
+-		switch (child = fork()) {
++		switch (child = SAFE_FORK()) {
+ 		case -1:
+-			tst_brkm(TBROK | TERRNO, NULL, "fork() failed");
++			tst_brk(TBROK | TERRNO, "fork() failed");
+ 		case 0:
+ 
+-			if (ptrace(PTRACE_TRACEME, 0, NULL, NULL) != -1) {
+-				tst_resm(TINFO, "[child] Sending kill(.., %d)",
+-					 signum);
+-				if (kill(getpid(), signum) < 0) {
+-					tst_resm(TINFO | TERRNO,
+-						 "[child] kill(.., %d) failed.",
+-						 signum);
+-				}
++			TEST(ptrace(PTRACE_TRACEME, 0, NULL, NULL));
++			if (TST_RET != -1) {
++				tst_res(TINFO, "[child] Sending kill(.., %d)",
++						signum);
++				SAFE_KILL(getpid(), signum);
+ 			} else {
+-
+-				/*
+-				 * This won't increment the TST_COUNT var.
+-				 * properly, but it'll show up as a failure
+-				 * nonetheless.
+-				 */
+-				tst_resm(TFAIL | TERRNO,
++				tst_brk(TFAIL | TERRNO,
+ 					 "Failed to ptrace(PTRACE_TRACEME, ...) "
+ 					 "properly");
+-
+ 			}
+-			/* Shouldn't get here if signum == 0. */
+-			exit((signum == 0 ? 0 : 2));
++
++			exit(0);
+ 			break;
+ 
+ 		default:
+ 
+-			waitpid(child, &status, 0);
++			SAFE_WAITPID(child, &status, 0);
+ 
+ 			switch (signum) {
+ 			case 0:
+ 				if (WIFEXITED(status)
+ 				    && WEXITSTATUS(status) == 0) {
+-					tst_resm(TPASS,
++					tst_res(TPASS,
+ 						 "kill(.., 0) exited "
+ 						 "with 0, as expected.");
+ 				} else {
+-					tst_resm(TFAIL,
++					tst_brk(TFAIL | TERRNO,
+ 						 "kill(.., 0) didn't exit "
+ 						 "with 0.");
+ 				}
+@@ -125,20 +70,20 @@ int main(int argc, char **argv)
+ 				if (WIFSIGNALED(status)) {
+ 					/* SIGKILL must be uncatchable. */
+ 					if (WTERMSIG(status) == SIGKILL) {
+-						tst_resm(TPASS,
++						tst_res(TPASS,
+ 							 "Killed with SIGKILL, "
+ 							 "as expected.");
+ 					} else {
+-						tst_resm(TPASS,
++						tst_brk(TFAIL | TERRNO,
+ 							 "Didn't die with "
+ 							 "SIGKILL (?!) ");
+ 					}
+ 				} else if (WIFEXITED(status)) {
+-					tst_resm(TFAIL,
++					tst_brk(TFAIL | TERRNO,
+ 						 "Exited unexpectedly instead "
+ 						 "of dying with SIGKILL.");
+ 				} else if (WIFSTOPPED(status)) {
+-					tst_resm(TFAIL,
++					tst_brk(TFAIL | TERRNO,
+ 						 "Stopped instead of dying "
+ 						 "with SIGKILL.");
+ 				}
+@@ -146,35 +91,21 @@ int main(int argc, char **argv)
+ 				/* All other processes should be stopped. */
+ 			default:
+ 				if (WIFSTOPPED(status)) {
+-					tst_resm(TPASS, "Stopped as expected");
++					tst_res(TPASS, "Stopped as expected");
+ 				} else {
+-					tst_resm(TFAIL, "Didn't stop as "
++					tst_brk(TFAIL | TERRNO, "Didn't stop as "
+ 						 "expected.");
+-					if (kill(child, 0)) {
+-						tst_resm(TINFO,
+-							 "Is still alive!?");
+-					} else if (WIFEXITED(status)) {
+-						tst_resm(TINFO,
+-							 "Exited normally");
+-					} else if (WIFSIGNALED(status)) {
+-						tst_resm(TINFO,
+-							 "Was signaled with "
+-							 "signum=%d",
+-							 WTERMSIG(status));
+-					}
+-
+ 				}
+-
+ 				break;
+-
+ 			}
+-
+ 		}
+-		/* Make sure the child dies a quick and painless death ... */
+-		kill(child, 9);
+ 
++		if (signum != 0 && signum != 9)
++			SAFE_PTRACE(PTRACE_CONT, child, NULL, NULL);
+ 	}
+-
+-	tst_exit();
+-
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.forks_child = 1,
++};
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace06.c b/testcases/kernel/syscalls/ptrace/ptrace06.c
+index c0cb3b9bd..5829faea4 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace06.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace06.c
+@@ -1,32 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
++ * Copyright (c) 2008 Analog Devices Inc.
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com> */
++
++/*\
++ * [Description]
++ *
+  * check out-of-bound/unaligned addresses given to
+  *  - {PEEK,POKE}{DATA,TEXT,USER}
+  *  - {GET,SET}{,FG}REGS
+  *  - {GET,SET}SIGINFO
+  *
+- * Copyright (c) 2008 Analog Devices Inc.
+- *
+- * Licensed under the GPL-2 or later
+  */
+ 
+ #define _GNU_SOURCE
+ 
+-#include <errno.h>
+-#include <stdbool.h>
+-#include <stdio.h>
+ #include <stdlib.h>
+-#include <unistd.h>
+-
+ #include <config.h>
+-#include "ptrace.h"
+ 
+-#include "test.h"
+-#include "spawn_ptrace_child.h"
+-#include "config.h"
++#include "ptrace.h"
++#include "tst_test.h"
+ 
+ /* this should be sizeof(struct user), but that info is only found
+  * in the kernel asm/user.h which is not exported to userspace.
+  */
++
+ #if defined(__i386__)
+ #define SIZEOF_USER 284
+ #elif defined(__x86_64__)
+@@ -35,168 +34,213 @@
+ #define SIZEOF_USER 0x1000	/* just pick a big number */
+ #endif
+ 
+-char *TCID = "ptrace06";
+-
+ struct test_case_t {
+ 	int request;
+ 	long addr;
+ 	long data;
+ } test_cases[] = {
+ 	{
+-	PTRACE_PEEKDATA,.addr = 0}, {
+-	PTRACE_PEEKDATA,.addr = 1}, {
+-	PTRACE_PEEKDATA,.addr = 2}, {
+-	PTRACE_PEEKDATA,.addr = 3}, {
+-	PTRACE_PEEKDATA,.addr = -1}, {
+-	PTRACE_PEEKDATA,.addr = -2}, {
+-	PTRACE_PEEKDATA,.addr = -3}, {
+-	PTRACE_PEEKDATA,.addr = -4}, {
+-	PTRACE_PEEKTEXT,.addr = 0}, {
+-	PTRACE_PEEKTEXT,.addr = 1}, {
+-	PTRACE_PEEKTEXT,.addr = 2}, {
+-	PTRACE_PEEKTEXT,.addr = 3}, {
+-	PTRACE_PEEKTEXT,.addr = -1}, {
+-	PTRACE_PEEKTEXT,.addr = -2}, {
+-	PTRACE_PEEKTEXT,.addr = -3}, {
+-	PTRACE_PEEKTEXT,.addr = -4}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 1}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 2}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 3}, {
+-	PTRACE_PEEKUSER,.addr = SIZEOF_USER + 4}, {
+-	PTRACE_PEEKUSER,.addr = -1}, {
+-	PTRACE_PEEKUSER,.addr = -2}, {
+-	PTRACE_PEEKUSER,.addr = -3}, {
+-	PTRACE_PEEKUSER,.addr = -4}, {
+-	PTRACE_POKEDATA,.addr = 0}, {
+-	PTRACE_POKEDATA,.addr = 1}, {
+-	PTRACE_POKEDATA,.addr = 2}, {
+-	PTRACE_POKEDATA,.addr = 3}, {
+-	PTRACE_POKEDATA,.addr = -1}, {
+-	PTRACE_POKEDATA,.addr = -2}, {
+-	PTRACE_POKEDATA,.addr = -3}, {
+-	PTRACE_POKEDATA,.addr = -4}, {
+-	PTRACE_POKETEXT,.addr = 0}, {
+-	PTRACE_POKETEXT,.addr = 1}, {
+-	PTRACE_POKETEXT,.addr = 2}, {
+-	PTRACE_POKETEXT,.addr = 3}, {
+-	PTRACE_POKETEXT,.addr = -1}, {
+-	PTRACE_POKETEXT,.addr = -2}, {
+-	PTRACE_POKETEXT,.addr = -3}, {
+-	PTRACE_POKETEXT,.addr = -4}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 1}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 2}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 3}, {
+-	PTRACE_POKEUSER,.addr = SIZEOF_USER + 4}, {
+-	PTRACE_POKEUSER,.addr = -1}, {
+-	PTRACE_POKEUSER,.addr = -2}, {
+-	PTRACE_POKEUSER,.addr = -3}, {
+-	PTRACE_POKEUSER,.addr = -4},
++	PTRACE_PEEKDATA, .addr = 0}, {
++	PTRACE_PEEKDATA, .addr = 1}, {
++	PTRACE_PEEKDATA, .addr = 2}, {
++	PTRACE_PEEKDATA, .addr = 3}, {
++	PTRACE_PEEKDATA, .addr = -1}, {
++	PTRACE_PEEKDATA, .addr = -2}, {
++	PTRACE_PEEKDATA, .addr = -3}, {
++	PTRACE_PEEKDATA, .addr = -4}, {
++	PTRACE_PEEKTEXT, .addr = 0}, {
++	PTRACE_PEEKTEXT, .addr = 1}, {
++	PTRACE_PEEKTEXT, .addr = 2}, {
++	PTRACE_PEEKTEXT, .addr = 3}, {
++	PTRACE_PEEKTEXT, .addr = -1}, {
++	PTRACE_PEEKTEXT, .addr = -2}, {
++	PTRACE_PEEKTEXT, .addr = -3}, {
++	PTRACE_PEEKTEXT, .addr = -4}, {
++	PTRACE_PEEKUSER, .addr = SIZEOF_USER + 1}, {
++	PTRACE_PEEKUSER, .addr = SIZEOF_USER + 2}, {
++	PTRACE_PEEKUSER, .addr = SIZEOF_USER + 3}, {
++	PTRACE_PEEKUSER, .addr = SIZEOF_USER + 4}, {
++	PTRACE_PEEKUSER, .addr = -1}, {
++	PTRACE_PEEKUSER, .addr = -2}, {
++	PTRACE_PEEKUSER, .addr = -3}, {
++	PTRACE_PEEKUSER, .addr = -4}, {
++	PTRACE_POKEDATA, .addr = 0}, {
++	PTRACE_POKEDATA, .addr = 1}, {
++	PTRACE_POKEDATA, .addr = 2}, {
++	PTRACE_POKEDATA, .addr = 3}, {
++	PTRACE_POKEDATA, .addr = -1}, {
++	PTRACE_POKEDATA, .addr = -2}, {
++	PTRACE_POKEDATA, .addr = -3}, {
++	PTRACE_POKEDATA, .addr = -4}, {
++	PTRACE_POKETEXT, .addr = 0}, {
++	PTRACE_POKETEXT, .addr = 1}, {
++	PTRACE_POKETEXT, .addr = 2}, {
++	PTRACE_POKETEXT, .addr = 3}, {
++	PTRACE_POKETEXT, .addr = -1}, {
++	PTRACE_POKETEXT, .addr = -2}, {
++	PTRACE_POKETEXT, .addr = -3}, {
++	PTRACE_POKETEXT, .addr = -4}, {
++	PTRACE_POKEUSER, .addr = SIZEOF_USER + 1}, {
++	PTRACE_POKEUSER, .addr = SIZEOF_USER + 2}, {
++	PTRACE_POKEUSER, .addr = SIZEOF_USER + 3}, {
++	PTRACE_POKEUSER, .addr = SIZEOF_USER + 4}, {
++	PTRACE_POKEUSER, .addr = -1}, {
++	PTRACE_POKEUSER, .addr = -2}, {
++	PTRACE_POKEUSER, .addr = -3}, {
++	PTRACE_POKEUSER, .addr = -4},
+ #ifdef PTRACE_GETREGS
+ 	{
+-	PTRACE_GETREGS,.data = 0}, {
+-	PTRACE_GETREGS,.data = 1}, {
+-	PTRACE_GETREGS,.data = 2}, {
+-	PTRACE_GETREGS,.data = 3}, {
+-	PTRACE_GETREGS,.data = -1}, {
+-	PTRACE_GETREGS,.data = -2}, {
+-	PTRACE_GETREGS,.data = -3}, {
+-	PTRACE_GETREGS,.data = -4},
++	PTRACE_GETREGS, .data = 0}, {
++	PTRACE_GETREGS, .data = 1}, {
++	PTRACE_GETREGS, .data = 2}, {
++	PTRACE_GETREGS, .data = 3}, {
++	PTRACE_GETREGS, .data = -1}, {
++	PTRACE_GETREGS, .data = -2}, {
++	PTRACE_GETREGS, .data = -3}, {
++	PTRACE_GETREGS, .data = -4},
+ #endif
+ #ifdef PTRACE_GETFGREGS
+ 	{
+-	PTRACE_GETFGREGS,.data = 0}, {
+-	PTRACE_GETFGREGS,.data = 1}, {
+-	PTRACE_GETFGREGS,.data = 2}, {
+-	PTRACE_GETFGREGS,.data = 3}, {
+-	PTRACE_GETFGREGS,.data = -1}, {
+-	PTRACE_GETFGREGS,.data = -2}, {
+-	PTRACE_GETFGREGS,.data = -3}, {
+-	PTRACE_GETFGREGS,.data = -4},
++	PTRACE_GETFGREGS, .data = 0}, {
++	PTRACE_GETFGREGS, .data = 1}, {
++	PTRACE_GETFGREGS, .data = 2}, {
++	PTRACE_GETFGREGS, .data = 3}, {
++	PTRACE_GETFGREGS, .data = -1}, {
++	PTRACE_GETFGREGS, .data = -2}, {
++	PTRACE_GETFGREGS, .data = -3}, {
++	PTRACE_GETFGREGS, .data = -4},
+ #endif
+ #ifdef PTRACE_SETREGS
+ 	{
+-	PTRACE_SETREGS,.data = 0}, {
+-	PTRACE_SETREGS,.data = 1}, {
+-	PTRACE_SETREGS,.data = 2}, {
+-	PTRACE_SETREGS,.data = 3}, {
+-	PTRACE_SETREGS,.data = -1}, {
+-	PTRACE_SETREGS,.data = -2}, {
+-	PTRACE_SETREGS,.data = -3}, {
+-	PTRACE_SETREGS,.data = -4},
++	PTRACE_SETREGS, .data = 0}, {
++	PTRACE_SETREGS, .data = 1}, {
++	PTRACE_SETREGS, .data = 2}, {
++	PTRACE_SETREGS, .data = 3}, {
++	PTRACE_SETREGS, .data = -1}, {
++	PTRACE_SETREGS, .data = -2}, {
++	PTRACE_SETREGS, .data = -3}, {
++	PTRACE_SETREGS, .data = -4},
+ #endif
+ #ifdef PTRACE_SETFGREGS
+ 	{
+-	PTRACE_SETFGREGS,.data = 0}, {
+-	PTRACE_SETFGREGS,.data = 1}, {
+-	PTRACE_SETFGREGS,.data = 2}, {
+-	PTRACE_SETFGREGS,.data = 3}, {
+-	PTRACE_SETFGREGS,.data = -1}, {
+-	PTRACE_SETFGREGS,.data = -2}, {
+-	PTRACE_SETFGREGS,.data = -3}, {
+-	PTRACE_SETFGREGS,.data = -4},
++	PTRACE_SETFGREGS, .data = 0}, {
++	PTRACE_SETFGREGS, .data = 1}, {
++	PTRACE_SETFGREGS, .data = 2}, {
++	PTRACE_SETFGREGS, .data = 3}, {
++	PTRACE_SETFGREGS, .data = -1}, {
++	PTRACE_SETFGREGS, .data = -2}, {
++	PTRACE_SETFGREGS, .data = -3}, {
++	PTRACE_SETFGREGS, .data = -4},
+ #endif
+ #if HAVE_DECL_PTRACE_GETSIGINFO
+ 	{
+-	PTRACE_GETSIGINFO,.data = 0}, {
+-	PTRACE_GETSIGINFO,.data = 1}, {
+-	PTRACE_GETSIGINFO,.data = 2}, {
+-	PTRACE_GETSIGINFO,.data = 3}, {
+-	PTRACE_GETSIGINFO,.data = -1}, {
+-	PTRACE_GETSIGINFO,.data = -2}, {
+-	PTRACE_GETSIGINFO,.data = -3}, {
+-	PTRACE_GETSIGINFO,.data = -4},
++	PTRACE_GETSIGINFO, .data = 0}, {
++	PTRACE_GETSIGINFO, .data = 1}, {
++	PTRACE_GETSIGINFO, .data = 2}, {
++	PTRACE_GETSIGINFO, .data = 3}, {
++	PTRACE_GETSIGINFO, .data = -1}, {
++	PTRACE_GETSIGINFO, .data = -2}, {
++	PTRACE_GETSIGINFO, .data = -3}, {
++	PTRACE_GETSIGINFO, .data = -4},
+ #endif
+ #if HAVE_DECL_PTRACE_SETSIGINFO
+ 	{
+-	PTRACE_SETSIGINFO,.data = 0}, {
+-	PTRACE_SETSIGINFO,.data = 1}, {
+-	PTRACE_SETSIGINFO,.data = 2}, {
+-	PTRACE_SETSIGINFO,.data = 3}, {
+-	PTRACE_SETSIGINFO,.data = -1}, {
+-	PTRACE_SETSIGINFO,.data = -2}, {
+-	PTRACE_SETSIGINFO,.data = -3}, {
+-	PTRACE_SETSIGINFO,.data = -4},
++	PTRACE_SETSIGINFO, .data = 0}, {
++	PTRACE_SETSIGINFO, .data = 1}, {
++	PTRACE_SETSIGINFO, .data = 2}, {
++	PTRACE_SETSIGINFO, .data = 3}, {
++	PTRACE_SETSIGINFO, .data = -1}, {
++	PTRACE_SETSIGINFO, .data = -2}, {
++	PTRACE_SETSIGINFO, .data = -3}, {
++	PTRACE_SETSIGINFO, .data = -4},
++#endif
++};
++
++#define SPT(x) [PTRACE_##x] = #x,
++static char *strings[] = {
++	SPT(TRACEME)
++	SPT(PEEKTEXT)
++	SPT(PEEKDATA)
++	SPT(PEEKUSER)
++	SPT(POKETEXT)
++	SPT(POKEDATA)
++	SPT(POKEUSER)
++#ifdef PTRACE_GETREGS
++	SPT(GETREGS)
++#endif
++#ifdef PTRACE_SETREGS
++	SPT(SETREGS)
++#endif
++#ifdef PTRACE_GETSIGINFO
++	SPT(GETSIGINFO)
++#endif
++#ifdef PTRACE_SETSIGINFO
++	SPT(SETSIGINFO)
++#endif
++#ifdef PTRACE_GETFGREGS
++	SPT(GETFGREGS)
++#endif
++#ifdef PTRACE_SETFGREGS
++	SPT(SETFGREGS)
+ #endif
++	SPT(KILL)
++	SPT(SINGLESTEP)
+ };
+ 
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
++static inline char *strptrace(int request) {
++	return strings[request];
++}
++
++static void child(void)
++{
++	SAFE_PTRACE(PTRACE_TRACEME, 0, NULL, NULL);
++	execl("/bin/echo", "/bin/echo", NULL);
++	exit(0);
++}
+ 
+-int main(int argc, char *argv[])
++static void run(void)
+ {
+ 	size_t i;
+-	long ret;
+-	int saved_errno;
++	int pid;
++	int status;
+ 
+-	tst_parse_opts(argc, argv, NULL, NULL);
++	pid = SAFE_FORK();
+ 
+-	make_a_baby(argc, argv);
++	if (!pid)
++		child();
++
++	SAFE_WAIT(&status);
++
++	if (!WIFSTOPPED(status))
++		tst_brk(TBROK, "child %d was not stopped", pid);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(test_cases); ++i) {
+ 		struct test_case_t *tc = &test_cases[i];
+ 
+-		errno = 0;
+-		ret =
+-		    ptrace(tc->request, pid, (void *)tc->addr,
+-			   (void *)tc->data);
+-		saved_errno = errno;
+-		if (ret != -1)
+-			tst_resm(TFAIL,
++		TEST(ptrace(tc->request, pid, (void *)tc->addr,
++					(void *)tc->data));
++		if (TST_RET != -1)
++			tst_brk(TFAIL | TERRNO,
+ 				 "ptrace(%s, ..., %li, %li) returned %li instead of -1",
+ 				 strptrace(tc->request), tc->addr, tc->data,
+-				 ret);
+-		else if (saved_errno != EIO && saved_errno != EFAULT)
+-			tst_resm(TFAIL,
++				 TST_RET);
++		else if (TST_ERR != EIO && TST_ERR != EFAULT)
++			tst_brk(TFAIL | TERRNO,
+ 				 "ptrace(%s, ..., %li, %li) expected errno EIO or EFAULT; actual: %i (%s)",
+ 				 strptrace(tc->request), tc->addr, tc->data,
+-				 saved_errno, strerror(saved_errno));
++				 TST_ERR, strerror(TST_ERR));
+ 		else
+-			tst_resm(TPASS,
++			tst_res(TPASS,
+ 				 "ptrace(%s, ..., %li, %li) failed as expected",
+ 				 strptrace(tc->request), tc->addr, tc->data);
+ 	}
+ 
+-	/* hopefully this worked */
+-	ptrace(PTRACE_KILL, pid, NULL, NULL);
++	SAFE_PTRACE(PTRACE_CONT, pid, NULL, NULL);
+ 
+-	tst_exit();
+ }
++
++static struct tst_test test = {
++	.test_all = run,
++	.forks_child = 1,
++};
+--
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
