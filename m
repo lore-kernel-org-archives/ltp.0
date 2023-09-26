@@ -4,61 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7510CE7E62F
-	for <ltp@archiver.kernel.org>; Tue, 26 Sep 2023 12:47:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE52BE7E630
+	for <ltp@archiver.kernel.org>; Tue, 26 Sep 2023 12:47:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3129C3CDC8F
-	for <ltp@archiver.kernel.org>; Tue, 26 Sep 2023 14:47:06 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id D72EF3CDC87
+	for <ltp@archiver.kernel.org>; Tue, 26 Sep 2023 14:47:16 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 243573C9981
- for <ltp@lists.linux.it>; Tue, 26 Sep 2023 14:46:55 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 662793CE1C8
+ for <ltp@lists.linux.it>; Tue, 26 Sep 2023 14:46:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7E02F1400214
- for <ltp@lists.linux.it>; Tue, 26 Sep 2023 14:46:54 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id A399120175A
+ for <ltp@lists.linux.it>; Tue, 26 Sep 2023 14:46:57 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B389421858;
- Tue, 26 Sep 2023 12:46:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 04BE31F86C;
+ Tue, 26 Sep 2023 12:46:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695732413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=/MbQ38oUtmlfqZOoNm5IROz2kbYQlTPiABdZFSNqdNg=;
- b=pgZqazHSM8rhcZfJG7YEbOINGenIz2/d+ASikOp3D2gfDagO4ebXwpwTK08TetAak1ugaX
- 63KPT8f7ijw0Ez4Oy3Z3e0TOYZa++WjRBAkVu/leIhnhzm4B3yIWplF9TnR3YF8tFhMpR5
- LsTZx7+ELqquCRIAtzHffqPpNnOHIgc=
+ t=1695732417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=CevMjABn4ph+qULrqktbBjIx4OK2sdQTOZLzHwN7CfA=;
+ b=fAeDLuCoo4EiE7UMSXx5bOC6Z/D3rBD+GWzBEY+tbsf1vQchadefo8L0ZgJoBLrjS0XZyo
+ FHzVsElJpg0mbwuFTHUorYouVGdEUzZf976IwMjPXimPXSRy3aZY15zMeJgiuoZ9CS+M/f
+ BkyWfeGkP23Tpu8Hn/cr2JakmBCQCv0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695732413;
+ s=susede2_ed25519; t=1695732417;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=/MbQ38oUtmlfqZOoNm5IROz2kbYQlTPiABdZFSNqdNg=;
- b=pfqcYP4HhXcMhewQkQrbGmP5hb58plmoFTQj9bJJCd63x6ZnJR6qOxOx44hv/tTtO9ECGJ
- vRvhOFg7Lr5U9gCQ==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=CevMjABn4ph+qULrqktbBjIx4OK2sdQTOZLzHwN7CfA=;
+ b=4ZXP17nKt4S4PY+6Az0LnpSJffmTjq79KhYepfiGCUkkonS6I7548cXli1EblIJ8T4nXdl
+ jMSTfyX24fvfiZBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7C24413434;
- Tue, 26 Sep 2023 12:46:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C85FE13A6A;
+ Tue, 26 Sep 2023 12:46:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id LroqHb3SEmXxHgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 26 Sep 2023 12:46:53 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id eNeeL8DSEmXxHgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 26 Sep 2023 12:46:56 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Tue, 26 Sep 2023 14:46:45 +0200
-Message-Id: <20230926124647.152972-1-pvorel@suse.cz>
+Date: Tue, 26 Sep 2023 14:46:47 +0200
+Message-Id: <20230926124647.152972-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230926124647.152972-1-pvorel@suse.cz>
+References: <20230926124647.152972-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 0/2] Fix vma05.sh on $DEBUGINFOD_URLS
+Subject: [LTP] [RFC][PATCH 2/2] vma05.sh: Add check for core file presence
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,21 +83,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Because we redirect gdb output, add sanity check for core file being
+created.
 
-first patch is a candidate for pre-release fix.
-Second commit is not strictly needed.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Maybe this sanity check is useless. WDYT?
 
 Kind regards,
 Petr
 
-Petr Vorel (2):
-  vma05.sh: Add workaround for gdb debuginfod question
-  vma05.sh: Add check for core file presence
+ testcases/kernel/mem/vma/vma05.sh | 2 ++
+ 1 file changed, 2 insertions(+)
 
- testcases/kernel/mem/vma/vma05.sh | 3 +++
- 1 file changed, 3 insertions(+)
-
+diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
+index c9e4becdb..30b1d689a 100755
+--- a/testcases/kernel/mem/vma/vma05.sh
++++ b/testcases/kernel/mem/vma/vma05.sh
+@@ -54,6 +54,8 @@ vma_report_check()
+ 
+ 	rm -rf core*
+ 	{ vma05_vdso; } > /dev/null 2>&1
++	[ -f core ] || tst_brk TCONF "missing core file"
++
+ 	TRACE=$(gdb -silent -ex="thread apply all backtrace" -ex="quit"\
+ 		vma05_vdso ./core* 2> /dev/null)
+ 	if echo "$TRACE" | grep -qF "??"; then
 -- 
 2.40.1
 
