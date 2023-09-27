@@ -4,59 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BA89E80AA2
-	for <ltp@archiver.kernel.org>; Wed, 27 Sep 2023 07:42:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D652E810AD
+	for <ltp@archiver.kernel.org>; Wed, 27 Sep 2023 09:05:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 497833CDC7C
-	for <ltp@archiver.kernel.org>; Wed, 27 Sep 2023 09:42:42 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id E4EDF3CDC30
+	for <ltp@archiver.kernel.org>; Wed, 27 Sep 2023 11:05:49 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B09BC3C88C8
- for <ltp@lists.linux.it>; Wed, 27 Sep 2023 09:42:30 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 7A3353C9944
+ for <ltp@lists.linux.it>; Wed, 27 Sep 2023 11:05:38 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C2B441001F4E
- for <ltp@lists.linux.it>; Wed, 27 Sep 2023 09:42:29 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 9766F1F897
- for <ltp@lists.linux.it>; Wed, 27 Sep 2023 07:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1695800548;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=lcaaCzogPSM/j4pW30wFWo3hEChGbmrJaAjFJ1a8KnI=;
- b=FxMHuVgKlmidnD0IPJHkwIjoKC1s3G4qEah2/7e5fH8yGAYDvqUqurMbiGDf1WTkck3NzM
- oMLiekJBRqGd1gPvJRBNVcdZgwGbrWpqiL8UNf6NSNIl1Yi8ioxRpFZbyr0ISOsHTFFKks
- +afvgLr+gilDesJohH4DuLDf3nhAXb8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1695800548;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=lcaaCzogPSM/j4pW30wFWo3hEChGbmrJaAjFJ1a8KnI=;
- b=kAsguzJCrX+GiE/Z9DEkZOd/Tal5fliUuHLqVuCL4xVOehX36zulCglEBz4S5Kw8ekVny0
- dCS1nveR8y8d2DCw==
-Received: from g78 (rpalethorpe.tcp.ovpn1.nue.suse.de [10.163.17.14])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5EB22601BC0
+ for <ltp@lists.linux.it>; Wed, 27 Sep 2023 11:05:36 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 4D2912C142;
- Wed, 27 Sep 2023 07:42:28 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7F7412190C;
+ Wed, 27 Sep 2023 09:05:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1695805536;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qjtYTC5oLLOMpC55WA+V7M9n0zWsrts3JiiKFe+5M+g=;
+ b=VYQvlgCUwfqhELqHv1jJOM/sGVDakslaUuu1YV/Ze8mzaDotj5/r27EUWPdpEcr9Mq6LAH
+ Nq7pT6hh5LhojUuisQcolaxZB7vEtMPkg6noeAvLnBBYWra4xyCqKn3kPXPWYXZmqji596
+ 0gIP9EcW21fID+qUrVe5KLvEonxoVCw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1695805536;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qjtYTC5oLLOMpC55WA+V7M9n0zWsrts3JiiKFe+5M+g=;
+ b=kymObks0+5o/Y+fTa5WdPwfBQn16gwWApo8XC91l3jSAgP3WVn2xjc+Y/kO8ouyHPmCp2S
+ AyLadVaPUC3suxBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 645981338F;
+ Wed, 27 Sep 2023 09:05:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ISmMF2DwE2UuAQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 27 Sep 2023 09:05:36 +0000
+Date: Wed, 27 Sep 2023 11:05:34 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <20230927090534.GA225232@pevik>
 References: <20230926090101.7565-1-rpalethorpe@suse.com>
- <20230927062716.GF205174@pevik>
-User-agent: mu4e 1.10.7; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 27 Sep 2023 08:29:22 +0100
-Organization: Linux Private Site
-In-reply-to: <20230927062716.GF205174@pevik>
-Message-ID: <87pm24dpul.fsf@suse.de>
+ <20230927062716.GF205174@pevik> <87pm24dpul.fsf@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87pm24dpul.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [RFC PATCH] Add simple Alpine container
 X-BeenThere: ltp@lists.linux.it
@@ -70,126 +76,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi all,
 
-Petr Vorel <pvorel@suse.cz> writes:
+...
+> >> +++ b/Containerfile
+> >> @@ -0,0 +1,35 @@
+> >> +FROM alpine:3.18 AS build
 
-> Hi all,
->
->> Can be built with `docker/podman build .`. Then run with `podman -it
->> run sh`. It contains Kirk in /opt/kirk. So `cd /opt/kirk && ./kirk -f
->> ltp --run-suite syscalls` will run some tests.
->> ---
->
->> Hello,
->
->> This builds and installs the LTP and Kirk inside an Alpine
->> container. The idea is to use a standard container workflow to build
->> and run the LTP from source. This helps with testing LTP itself and
->> running tests inside a container.
->
->> I'd like to add some container files to upstream to help with various
->> workflows.
->
->> The container has a number of problems:
->
->> 1. If the Git directory has build artifacts in it, these are copied
->>    into the container (.dockerignore may help)
->> 2. The resulting container is quite large (possibly due to debug symbols)
->> 3. Where should we put container files and how should we name them?
->> 4. Making the slightest change results in a complete container rebuild
->
->> Note that SUSE publishes a TW container based on our packaging system:
->> https://build.opensuse.org/project/show/benchmark:ltp:devel
->> https://registry.opensuse.org/cgi-bin/cooverview?srch_term=project%3D%5Ebenchmark+container%3D.*
->
->> Also, for developing tests, it may be better to build the LTP outside
->> of a container then copy in the files.
->
->> +++ b/Containerfile
->> @@ -0,0 +1,35 @@
->> +FROM alpine:3.18 AS build
->
-> Maybe we could use ARG and ENV to allow user to decide which distro to use.
-> https://stackoverflow.com/questions/76091578/is-it-possible-to-use-an-environment-variable-in-the-from-instruction-of-a-docke
-> This way we could use various scripts in ci.
+> > Maybe we could use ARG and ENV to allow user to decide which distro to use.
+> > https://stackoverflow.com/questions/76091578/is-it-possible-to-use-an-environment-variable-in-the-from-instruction-of-a-docke
+> > This way we could use various scripts in ci.
 
-Sounds good assuming it does not make the container file too
-complicated. The scripts you made have been really helpful.
+> Sounds good assuming it does not make the container file too
+> complicated. The scripts you made have been really helpful.
 
->
->> +ARG LTPROOT=/opt/ltp
->> +
->> +RUN mkdir /build
->> +WORKDIR /build
->> +COPY . /build
->> +RUN ./ci/alpine.sh
->> +RUN ./build.sh -p $LTPROOT -i
->> +
->> +FROM alpine:3.18
-> Also here.
->
->> +ARG LTPROOT=/opt/ltp
->> +ARG KIRKROOT=/opt/kirk
->> +
->> +RUN apk add \
->> +            acl \
->> +            keyutils \
->> +            libaio \
->> +            libacl \
->> +            libcap \
->> +            libselinux \
->> +            libsepol \
->> +            libtirpc \
->> +            numactl \
->> +            openssl \
->> +            py3-msgpack
-> This somehow emulates ./ci/alpine.sh (i.e. ./ci/alpine.sh has keyutils-dev,
-> which should install also keyutils as a dependency). We could add a mechanism to
-> ci scripts to install runtime dependencies (e.g. './ci/alpine.sh runtime' would
-> install all runtime dependencies, './ci/alpine.sh runtime-syscalls' would
-> install only runtime dependencies for syscalls).
++1. We would need at least some comment. If there are more things to say, it
+might be useful to have a wiki page about container based testing (if you have
+time and energy to write it).
 
-How about, for now, just an optional 'runtime' flag that only installs
-runtime deps?
+> >> +ARG LTPROOT=/opt/ltp
+> >> +
+> >> +RUN mkdir /build
+> >> +WORKDIR /build
+> >> +COPY . /build
+> >> +RUN ./ci/alpine.sh
+> >> +RUN ./build.sh -p $LTPROOT -i
+> >> +
+> >> +FROM alpine:3.18
+> > Also here.
 
->
-> But better would be to move runtime dependencies to kirk. But unfortunately this
-> part from original Cyril's perl based runltp-ng was not ported to new Andrea's
-> python based runltp-ng/kirk.
+> >> +ARG LTPROOT=/opt/ltp
+> >> +ARG KIRKROOT=/opt/kirk
+> >> +
+> >> +RUN apk add \
+> >> +            acl \
+> >> +            keyutils \
+> >> +            libaio \
+> >> +            libacl \
+> >> +            libcap \
+> >> +            libselinux \
+> >> +            libsepol \
+> >> +            libtirpc \
+> >> +            numactl \
+> >> +            openssl \
+> >> +            py3-msgpack
+> > This somehow emulates ./ci/alpine.sh (i.e. ./ci/alpine.sh has keyutils-dev,
+> > which should install also keyutils as a dependency). We could add a mechanism to
+> > ci scripts to install runtime dependencies (e.g. './ci/alpine.sh runtime' would
+> > install all runtime dependencies, './ci/alpine.sh runtime-syscalls' would
+> > install only runtime dependencies for syscalls).
 
-Well we could also make an Alpine, Flatpack, Nix package or any number
-of other ways to build LTP and install the deps. Andrea deliberately
-chose to decouple that from Kirk. However you could pass the CI scripts
-to Kirk during test setup. It's just that those scripts don't live
-inside the Kirk repo.
+> How about, for now, just an optional 'runtime' flag that only installs
+> runtime deps?
 
->
-> Kind regards,
-> Petr
->
->> +
->> +COPY --from=build $LTPROOT $LTPROOT
->> +ENV LTPROOT=$LTPROOT
->> +ENV PATH=$LTPROOT/testcases/bin:$LTPROOT/bin:$PATH
->> +
->> +RUN mkdir -p $KIRKROOT
->> +COPY --from=build /build/tools/kirk $KIRKROOT
->> +
->> +RUN adduser -D -g "Unprivileged LTP user" ltp
->> +RUN su ltp
+Sure, no problem. The real work is to identify these runtime dependencies.
+I mean not libraries without development headers (headers does not take that
+much size, thus I would not bother), but various other tools (e.g. ip,
+ping, mkfs.*, useradd, quotacheck, e4crypt, exportfs, modprobe, rmmod, ...) Some
+of them are installed on normal distro, but not all; for sure most of them
+aren't installed in the default container.
 
+> > But better would be to move runtime dependencies to kirk. But unfortunately this
+> > part from original Cyril's perl based runltp-ng was not ported to new Andrea's
+> > python based runltp-ng/kirk.
 
--- 
-Thank you,
-Richard.
+> Well we could also make an Alpine, Flatpack, Nix package or any number
+> of other ways to build LTP and install the deps. Andrea deliberately
+> chose to decouple that from Kirk. However you could pass the CI scripts
+I'm not sure if that was a correct decision. Sure, it might be easier to
+maintain scripts like this in the projects kirk runs (e.g. LTP, Kselftest),
+but OTOH I see a benefit in having unified interface for all project
+(or at least run these upstreamed scripts in kirk in unified way).
+
+> to Kirk during test setup. It's just that those scripts don't live
+> inside the Kirk repo.
+
++1
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
