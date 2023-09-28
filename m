@@ -4,76 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9566CE7B09
-	for <ltp@archiver.kernel.org>; Thu, 28 Sep 2023 07:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65D5DCE7B09
+	for <ltp@archiver.kernel.org>; Thu, 28 Sep 2023 07:47:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0B28C3CDBF7
-	for <ltp@archiver.kernel.org>; Thu, 28 Sep 2023 09:44:42 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id AA2EF3CDBFD
+	for <ltp@archiver.kernel.org>; Thu, 28 Sep 2023 09:47:29 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 147093C01D0
- for <ltp@lists.linux.it>; Thu, 28 Sep 2023 09:44:28 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 869293C65F4
+ for <ltp@lists.linux.it>; Thu, 28 Sep 2023 09:47:18 +0200 (CEST)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com
+ [148.163.158.5])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id E6A28200C96
- for <ltp@lists.linux.it>; Thu, 28 Sep 2023 09:44:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1695887065;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=yCPxmJJzP9qu58oNKk0HrE7KxcRVCwDr2OP6AJT3m40=;
- b=E0sYwKDUxisUirXTsevWOU8mldP7nX8xgQF+EPCEYi0H+1ZmAuJeyYY36yK9YdEB9VHkeB
- m0I8Un8HAs+1e9aOd+Qeg1Z7l+z3vNIcCBxt1ypMCzoLXsITIHLl5uaq4ffinj2Nh5C2R1
- LGcHI+0h+dfxWXR/A+Vd+ZntepuVfWU=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-311-x5W0K_p1MEew93iT6Vm8Ww-1; Thu, 28 Sep 2023 03:44:22 -0400
-X-MC-Unique: x5W0K_p1MEew93iT6Vm8Ww-1
-Received: by mail-lf1-f69.google.com with SMTP id
- 2adb3069b0e04-5043353efbdso17898815e87.0
- for <ltp@lists.linux.it>; Thu, 28 Sep 2023 00:44:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1695887061; x=1696491861;
- h=to:subject:message-id:date:from:in-reply-to:references:mime-version
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=yCPxmJJzP9qu58oNKk0HrE7KxcRVCwDr2OP6AJT3m40=;
- b=GoPLK4avnLi4ldaclKxrohPmVWlUDgkxBGGBrA+UjEQx6b6Xn+CVL8b36J12lEVeuw
- Egk9qW/1vFGaofp0GWljwBOGL4dXreoGshMEqUqbbeICvyeEomQSBp8J5MOKoqp/Br73
- /TbEu+AicW2mU9AztAm3Yae28g29+7H7GtDAhOZbAuusFV88iBAkFzakIAIw6D7TO6Gj
- QleUQsL5eG3s1lHUmrSNmPU49ehhCv29uXplSFEsubTwsSYgOUy6pTIPYn7xZAfi7ZLB
- qcuOk65tBOiQdAvAIOGTtGG2L5nma49X6kAdvEO2u7XUeQEwlq28M0UdvuqFXy/GBFEf
- 9tmg==
-X-Gm-Message-State: AOJu0YxgTdL8bFrXBvnJBTFRJigKhM9sOzlAOVpimqeM2Iy4LBOZ2ko7
- SyA9NKoNr0g8aSnnooUlEcduxNOFfNAjnL+JG7dRNKy8kpx8zd2ybg44H8qrWkHisWSTcfkEzee
- bevGz2nSnpg12Aa6rulcx+yBjh+s=
-X-Received: by 2002:a05:6512:2807:b0:4fd:fc36:68a2 with SMTP id
- cf7-20020a056512280700b004fdfc3668a2mr528172lfb.1.1695887061084; 
- Thu, 28 Sep 2023 00:44:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFdzAN0uZ1XrTW6vLWORyaePIWWouACru1FFhdLfJvlBx62AwAk95pix6a+rgQDIpcV9rvTiSt3g0knPi+ET8Q=
-X-Received: by 2002:a05:6512:2807:b0:4fd:fc36:68a2 with SMTP id
- cf7-20020a056512280700b004fdfc3668a2mr528160lfb.1.1695887060717; Thu, 28 Sep
- 2023 00:44:20 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8F4201009BEF
+ for <ltp@lists.linux.it>; Thu, 28 Sep 2023 09:47:15 +0200 (CEST)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 38S7etKv028864
+ for <ltp@lists.linux.it>; Thu, 28 Sep 2023 07:47:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=3VYB1iIevsJPOFMm8+wpLGODxOfAmDa76WUM2PhQE88=;
+ b=PRbYwBUIbIwaU+Wv16UCw0zg1SrTh1TCrPxYskXeTwXbcX5YytDYNZDD/2u9iHMbsjx0
+ SWY1Obr1t/CBEryQtrcdUpkDXfqKHkXQLgQZJHyYTy6nKYin1dam8UhunHNQf5u5kmqs
+ p5Hn9T6JO43BqDoGxr7GX74iw1+AhlYcaMBIp3aVEFzIngCKOGEIV7ChFgQvdeA5ayYw
+ jn67aHcZa0T29fC5ErV8Ac5S5C+j1+DJSXlMeGQZTjLbZfGs1gBF5I0Z8bmowk5lYOmV
+ /HAlA49+2ijjknr7bcruQZYnTLWH9i6OJAABRbvQBQvwg1Urzt1wc3q6F4SebASzbQkH wA== 
+Received: from ppma22.wdc07v.mail.ibm.com
+ (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3td49h1t4m-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 28 Sep 2023 07:47:14 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 38S5rA87008167
+ for <ltp@lists.linux.it>; Thu, 28 Sep 2023 07:47:13 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+ by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3taaqytmfp-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Thu, 28 Sep 2023 07:47:13 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com
+ [10.20.54.104])
+ by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 38S7lAh015532640
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 28 Sep 2023 07:47:10 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 1DBAA2004B;
+ Thu, 28 Sep 2023 07:47:10 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 54DEB20043;
+ Thu, 28 Sep 2023 07:47:09 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.109.243.234])
+ by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+ Thu, 28 Sep 2023 07:47:09 +0000 (GMT)
+From: Geetika <geetika@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Thu, 28 Sep 2023 13:16:24 +0530
+Message-Id: <20230928074624.67065-1-geetika@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
-References: <ZQF5J0UJ25_QLwcQ@yuki> <20230926105011.GA133737@pevik>
-In-Reply-To: <20230926105011.GA133737@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 28 Sep 2023 15:44:08 +0800
-Message-ID: <CAEemH2cb-asn5VSnpSCusS-Rb187T_mjOrBqH722_c3KaAF=LQ@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>, LTP List <ltp@lists.linux.it>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Cw4CfHgc61_QWcvGwSw9tNTSEDVqWzTy
+X-Proofpoint-GUID: Cw4CfHgc61_QWcvGwSw9tNTSEDVqWzTy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-28_04,2023-09-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 spamscore=0
+ malwarescore=0 mlxlogscore=467 lowpriorityscore=0 clxscore=1015
+ suspectscore=0 impostorscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309280063
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] LTP Release preparations
+Subject: [LTP] [PATCH] Hugetlb: Migrating libhugetlbfs test
+ truncate_reserve_wraparound.c
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,27 +95,181 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKCk9uIFR1ZSwgU2VwIDI2LCAyMDIzIGF0IDY6NTDigK9QTSBQZXRyIFZvcmVsIDxw
-dm9yZWxAc3VzZS5jej4gd3JvdGU6Cgo+IEhpIHRlc3RpbmcgY29tbXVuaXR5LAo+Cj4gPiBIaSEK
-PiA+IEFzIHVzdWFsbCB3ZSBhcmUgc3VwcG9zZWQgdGhlIHJlbGVhc2UgTFRQIGF0IHRoZSBlbmQg
-b2YgdGhlIG1vbnRoLiBJbgo+ID4gb3JkZXIgdG8gZ2V0IGF0IGxlYXN0IHR3byB3ZWVrcyBvZiBw
-cmUtcmVsZWFzZSB0ZXN0aW5nIEkgd291bGQgbGlrZSB0bwo+ID4gZnJlZXplIHRoZSBnaXQgc3Rh
-cnRpbmcgbmV4dCB3ZWVrLiBJIHdpbGwgdHJ5IHRvIHJldmlldyBhbmQgbWVyZ2UgYXMKPiA+IG11
-Y2ggYXMgcG9zc2libGUgdGlsbCB0aGUgZW5kIG9mIHRoaXMgd2Vlay4gSWYgdGhlcmUgaXMgYW55
-dGhpbmcgdGhhdAo+ID4geW91IHRoaW5rIHNob3VsZCBnbyBpbnRvIHRoZSByZWxlYXNlIGxldCBt
-ZSBrbm93IHNvIHRoYXQgSSBjYW4gaGF2ZSBhCj4gPiBsb29rLgo+Cj4gRllJIHdlIHBsYW4gdG8g
-cmVsZWFzZSBMVFAgdGhpcyB3ZWVrIG9uIEZyaWRheS4gSXQncyBub3QgbXVjaCB0aW1lIGxlZnQs
-Cj4gYnV0IGlmCj4geW91IGhhdmUgdGltZSwgcGxlYXNlIHRyeSB0byBkbyBzb21lIExUUCBwcmUt
-cmVsZWFzZSB0ZXN0aW5nIG9uIHlvdXIKPiBmYXZvdXJpdGUKPiBkaXN0cm8uCj4KCkFDSy4KCk15
-IHByZS1yZWxlYXNlIHRlc3QgcmVzdWx0IGxvb2tzIGdvb2Qgb24gb3VyIFJIRUw4LzkuIEp1c3Qg
-c29tZSBtaW5vcgplcnJvci90aW1lZG91dCBpc3N1ZSB3aGljaCBoYXZlIGFscmVhZHkgYmVlbiB0
-cmFja2VkLgoKKFRoYW5rcyBmb3IgeW91ciB3b3JrIG9uIHRoZSByZWxlYXNlLCBJJ20gYWxyZWFk
-eSBvbiB2YWNhdGlvbiB0aGlzIHdlZWssCnNwZWNpYWxseSBjb21lIHRvIHJlcGx5IHRvIHlvdSBm
-b3IgYWRkaW5nIGNvbmZpZGVuY2UgaW4gdGhlIG5ldyBwYWNrYWdlOikuCgoKLS0gClJlZ2FyZHMs
-CkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9s
-aXN0aW5mby9sdHAK
+Test Description:
+Test to verify the Hugepages_Rsvd before and after mmap, truncate and sigbus operations.
+At one stage, improper handling of tests against i_size could mess
+up accounting of reserved hugepages on certain truncate operations.
+
+Signed-off-by: Geetika <geetika@linux.ibm.com>
+---
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap38.c  | 124 ++++++++++++++++++
+ 3 files changed, 126 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap38.c
+
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 299c07ac9..2ffd35aec 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -35,6 +35,7 @@ hugemmap29 hugemmap29
+ hugemmap30 hugemmap30
+ hugemmap31 hugemmap31
+ hugemmap32 hugemmap32
++hugemmap38 hugemmap38
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index 7258489ed..346bf9533 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -34,6 +34,7 @@
+ /hugetlb/hugemmap/hugemmap30
+ /hugetlb/hugemmap/hugemmap31
+ /hugetlb/hugemmap/hugemmap32
++/hugetlb/hugemmap/hugemmap38
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap38.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap38.c
+new file mode 100644
+index 000000000..2de6aa4da
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap38.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: LGPL-2.1-or-later
++/*
++ * Copyright (C) 2005-2006 David Gibson & Adam Litke, IBM Corporation.
++ * Copyright (C) 2006 Hugh Dickins <hugh@veritas.com>
++ */
++
++/*\
++ *[Descripiton]
++ *
++ * At one stage, improper handling of tests against i_size could mess
++ * up accounting of reserved hugepages on certain truncate
++ * operations.
++ *
++ */
++
++#include <signal.h>
++#include <setjmp.h>
++#include "hugetlb.h"
++
++#define MNTPOINT "hugetlbfs/"
++#define RANDOM_CONSTANT 0x1234ABCD
++
++static long hpage_size;
++static int fd = -1;
++static int sigbus_count;
++static unsigned long initial_rsvd, after_map_rsvd, after_touch_rsvd;
++static unsigned long after_trunc_rsvd, after_unmap_rsvd, after_sigbus_rsvd;
++static volatile unsigned int *q;
++
++
++static sigjmp_buf sig_escape;
++
++static void sigbus_handler(int signum, siginfo_t *si, void *uc)
++{
++	siglongjmp(sig_escape, 17);
++}
++
++static void run_test(void)
++{
++	void *p;
++	struct sigaction sa = {
++	.sa_sigaction = sigbus_handler,
++	.sa_flags = SA_SIGINFO,
++	};
++
++	sigbus_count = 0;
++
++	initial_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count before map: %lu\n", initial_rsvd);
++
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED,
++			fd, 0);
++	q = p;
++
++	after_map_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count after map: %lu\n", after_map_rsvd);
++
++	*q = 0;
++	after_touch_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count after touch: %lu\n", after_touch_rsvd);
++
++	SAFE_FTRUNCATE(fd, 0);
++	after_trunc_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count after truncate: %lu\n", after_trunc_rsvd);
++
++	if (after_trunc_rsvd != initial_rsvd) {
++		tst_res(TFAIL, "Reserved count is not restored after truncate: %lu instead of %lu", after_trunc_rsvd, initial_rsvd);
++		goto windup;
++	}
++
++	SAFE_SIGACTION(SIGBUS, &sa, NULL);
++	if (sigsetjmp(sig_escape, 1) == 0)
++		*q; /* Fault, triggering a SIGBUS */
++	else
++		sigbus_count++;
++
++	if (sigbus_count != 1) {
++		tst_res(TFAIL, "Didn't SIGBUS after truncate");
++		goto windup;
++	}
++
++	after_sigbus_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count after truncate: %lu\n", after_sigbus_rsvd);
++
++	if (after_trunc_rsvd != initial_rsvd) {
++		tst_res(TFAIL, "Reserved count is altered by SIGBUS fault: %lu instead of %lu", after_sigbus_rsvd, initial_rsvd);
++		goto windup;
++	}
++
++	tst_res(TPASS, "Test passed!");
++
++windup:
++	SAFE_MUNMAP(p, hpage_size);
++	after_unmap_rsvd = SAFE_READ_MEMINFO(MEMINFO_HPAGE_RSVD);
++	tst_res(TINFO, "Reserve count after munmap: %lu\n", after_unmap_rsvd);
++
++}
++
++static void setup(void)
++{
++	hpage_size = tst_get_hugepage_size();
++	fd = tst_creat_unlinked(MNTPOINT, 0);
++}
++
++static void cleanup(void)
++{
++	if (fd >= 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.tags = (struct tst_tag[]) {
++		{"linux-git", "ebed4bfc8da8"},
++		{}
++	},
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.hugepages = {4, TST_NEEDS},
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++};
++
+-- 
+2.39.2 (Apple Git-143)
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
