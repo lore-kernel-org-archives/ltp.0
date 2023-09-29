@@ -4,69 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D585E743FE
-	for <ltp@archiver.kernel.org>; Fri, 29 Sep 2023 09:38:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72220CE7B1F
+	for <ltp@archiver.kernel.org>; Fri, 29 Sep 2023 09:52:02 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AD1E73CB9EF
-	for <ltp@archiver.kernel.org>; Fri, 29 Sep 2023 11:38:07 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id C67603CE107
+	for <ltp@archiver.kernel.org>; Fri, 29 Sep 2023 11:52:00 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DCAB73CB9EF
- for <ltp@lists.linux.it>; Fri, 29 Sep 2023 11:37:56 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 094E23CBA26
+ for <ltp@lists.linux.it>; Fri, 29 Sep 2023 11:51:48 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A0E311000F27
- for <ltp@lists.linux.it>; Fri, 29 Sep 2023 11:37:55 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 973D41400FA0
+ for <ltp@lists.linux.it>; Fri, 29 Sep 2023 11:51:46 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DBC3221899;
- Fri, 29 Sep 2023 09:37:54 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A0932218E6;
+ Fri, 29 Sep 2023 09:51:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695980274;
+ t=1695981106;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Uwagea27/ejs0lfM950BIvw7SsOFp8eCKgC6LgUOqCY=;
- b=iuHdKvqt6f/MYD+9EXPUYiZ2UtqyEchyTj2UKmqPgPIVQDj2mYtT/ueti+sacQiElcQ+JU
- jpc2TcpP54skH0/QUjsswql+PYkyYyW36nfwtDIVhzg7ZXracg7AoXTc3yZ97l/GqNoo3X
- BUK88NxNzKBZb4nswaNQp2PRR4h9Kf8=
+ cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=2mSvajXs/u299TQR/vl8udijxVbzNCOW2qMU41hxYb4=;
+ b=q50G3asbHmAzxja6JMjQdjtO2wfyPavrJh+sLjDYoAl3s6FzvR7pOLQ1ieptOKA897NJQ0
+ EGOmPa+8CXaGj4gKnz36/d4eWBV/ptrcKf/Df9D386W07YHHbsG0Kvl6UEU02D+1jJObwm
+ P/oMZH86ZxagOfSnj7XNbokaVVVOSbM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695980274;
+ s=susede2_ed25519; t=1695981106;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Uwagea27/ejs0lfM950BIvw7SsOFp8eCKgC6LgUOqCY=;
- b=ZT8xlOgOPneAo6/YQ6MNKLzR4PJZKgV8x0na32c9wvScU88dpqkee9Xhh5HSq2nhRzupmt
- qL9T54pIZMM2GpBw==
+ cc:cc:mime-version:mime-version:content-type:content-type;
+ bh=2mSvajXs/u299TQR/vl8udijxVbzNCOW2qMU41hxYb4=;
+ b=tvpkGFUuvM/cGpi/g+GaNsZTzw85e+gKzLu6skn/+c1yVkb8iHr5iaBpxnPPaFsJVwFH7K
+ novooDOjzpxWN6CQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7AEF1390A;
- Fri, 29 Sep 2023 09:37:54 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 371151390A;
+ Fri, 29 Sep 2023 09:51:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id WhwBK/KaFmX9DgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 29 Sep 2023 09:37:54 +0000
-Date: Fri, 29 Sep 2023 11:37:53 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id AVg2CzKeFmUaFgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 29 Sep 2023 09:51:46 +0000
+Date: Fri, 29 Sep 2023 11:51:44 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <20230929093753.GA364346@pevik>
-References: <20230928104458.12115-1-rpalethorpe@suse.com>
- <20230928181124.GA309263@pevik> <87h6nde7hu.fsf@suse.de>
- <20230929081521.GA351787@pevik> <87cyy1e35e.fsf@suse.de>
+To: ltp@lists.linux.it, linux-kernel@vger.kernel.org, libc-alpha@sourceware.org
+Message-ID: <20230929095144.GD364346@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <87cyy1e35e.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Add simple Containerfile
+Subject: [LTP] The Linux Test Project has been released for SEPTEMBER 2023
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,47 +73,191 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: lwn@lwn.net, akpm@linux-foundation.org, torvalds@linux-foundation.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Richie,
+Good news everyone,
 
-...
-> > The benefit is that you have not only a clean git repo for the container,
-> > but also not touching your working copy directory. But unless nobody else
-> > raise any concern, I'm ok with your current proposal.
+the Linux Test Project test suite stable release for *September 2023* has been
+released.
 
-> Ah I think I see your concern now. It does not touch the directory
-> outside the container. It copies everything in first (IDK if it actually
-> copies the data if you are doing a local build).
+Since the last release 250 patches by 34 authors were merged, 14 authors were new.
 
-Ah, sorry, of course.
+Patch review is what most of the projects struggle with and LTP is no
+different. If you can spare some effort helping with the patch review is more
+than welcomed.
 
-> Note that I tried using a .dockerignore to stop build artifacts being
-> copied, but it's not as rich as the .gitignore(s) we have sprinkled
-> throughout the LTP.
+The release notes were prepared by Cyril Hrubis.
 
-...
-> >> >> +#!/bin/sh -eux
-> >> > nit: out of curiosity, why -u (fail unset variables and parameters)?
+NOTABLE CHANGES
+===============
 
-> >> I find it finds errors in shell scripts or when using them. E.g. typo's
-> >> in env variable names. I just include it wherever possible.
+* New tests
+  - epoll_wait07 for EPOLLONESHOT
+  - epoll_wait06 for EPOLLET
+  - epoll_wait05 for EPOLLRDHUP
+  - process_madvise01 for MADV_PAGEOUT
+  - faccessat201 basic faccessat2() test
+  - faccessat202 checks that the syscall fails correctly
+  - tcindex01 aka CVE-2023-1829
+  - mremap06 reproducer for
+    7e7757876f25 ("mm/mremap: fix vm_pgoff in vma_merge() case 3")
+  - starvation a simple test case for sched starvation
+    https://lwn.net/ml/linux-kernel/9fd2c37a05713c206dcbd5866f67ce779f315e9e.camel@gmx.de/
+  - pipe14 for end-of-file (read() returns 0) in a case the write end is closed
+  - statx12 basic test for STATX_ATTR_MOUNT_ROOT
+  - kvm_svm03 KVM test for CPU lockup through malicous SVM guest
+  - kvm_svm02 test that KVM correctly intercepts VMSAVE and VMLOAD instructions
+              in a nested virtual machine aka CVE-2021-3656
+  - statx11 a basic test for STATX_DIOALIGN on block device
+  - statx10 a basic test for STATX_DIOALIGN on regular file
 
-> > +1, maybe we should add it to the current ci scripts as well (+ use params
-> > instead of setting it via set command, it should work in dash and busybox shell
-> > as well).
+* Increased coverage
+  - fanotify13 added test variant for overalfs upper fs
+  - mmap05 increased coverage for EINVAL
+  - mmap06 increased coverage for EACCES
+  - bind03 now includes regression test for
+    c0c3b8d380a8 ("unix_bind_bsd(): unlink if we fail after successful mknod")
+  - stack_clash added test for mmap() minding gap
 
-> Yeah, I think it should be the default.
+* ebizzy benchmark counter increment races and overflows were fixed
 
-I add it at least to the original scripts in ci directory, it should be safe
-here. I'll test tst_test.sh and tst_net.sh and send a patch for this.
+* A few more testcases were converted to guarded buffers
+  that is data passed by pointer to kernel are immediatelly
+  following a PROT_NONE page and followed by canaries
+  to catch off-by-one errors
 
-Kind regards,
-Petr
+* Tests that modprobe kernel modules are now skipped when secure boot is
+  enabled on x86 and ppc64le
+
+* ioprio tests now use IOPRIO_PRIO_NUM instead of hardcoded value
+  to check for prio range
+
+* 35 testcases were converted to the new test library
+  - we finally got rid of the old and messy libclone library
+
++ The usual amount of fixes and cleanups
+
+KIRK (previously RUNLTP-NG)
+===========================
+
+* The new runltp-ng version is now called kirk
+  - The name was changed since kirk now supports different testsuites as well
+  - Apart from the name changes the internals were rewritten and cleaned up
+  - Prototype for parallel testruns is included as well
+  - https://github.com/linux-test-project/kirk/#readme
+
+* There is now experimental LTX support implemented
+  - Beware this is _VERY EXPERIMENTAL_ at the moment
+  - LTX is tiny binary that runs on system under test
+  - LTX communicates with kirk over serial using messages packed in msgpack
+  - LTX is going to be locked in memory and executed with realtime priority
+  - LTX allows advanced features such as running tests in parallel
+  - https://github.com/linux-test-project/ltx
+
+REMOVED TESTS
+=============
+
+* mmap07 (included in mmap06)
+* setgroups04 (included in setgroups03)
+
+DOWNLOAD AND LINKS
+==================
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+and can be downloaded at:
+
+https://github.com/linux-test-project/ltp/releases/tag/YYYYMMDD
+
+The project pages as well as GIT repository are hosted on GitHub:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to write a LTP testcase, don't miss our developer
+documentation at:
+
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-API
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Network-API
+
+https://github.com/linux-test-project/ltp/wiki/Shell-Test-API
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+
+https://github.com/linux-test-project/ltp/wiki/Build-System
+
+Patches, new tests, bugs, comments or questions should go to to our mailing
+list at ltp@lists.linux.it.
+
+CREDITS
+=======
+
+Many thanks to the people contributing to this release:
+
+$ git shortlog -s -e -n 20230516..
+    71	Petr Vorel <pvorel@suse.cz>
+    32	Yang Xu <xuyang2018.jy@fujitsu.com>
+    26	Avinesh Kumar <akumar@suse.de>
+    22	Andrea Cervesato <andrea.cervesato@suse.com>
+    22	Martin Doucha <mdoucha@suse.cz>
+    13	Cyril Hrubis <chrubis@suse.cz>
+    13	Li Wang <liwang@redhat.com>
+     6	Wei Gao <wegao@suse.com>
+     5	Souta Kawahara <souta.kawahara@miraclelinux.com>
+     4	Amir Goldstein <amir73il@gmail.com>
+     4	Marius Kittler <mkittler@suse.de>
+     3	Richard Palethorpe <rpalethorpe@suse.com>
+     3	Ci Zhou <zhouci@ruijie.com.cn>
+     2	Damien Le Moal <dlemoal@kernel.org>
+     2	Jan Kara <jack@suse.cz>
+     2	Konstantin Khorenko <khorenko@virtuozzo.com>
+     2	Min Li <limin154@huawei.com>
+     2	Murphy Zhou <jencce.kernel@gmail.com>
+     2	Vishal Chourasia <vishalc@linux.ibm.com>
+     1	Ashwin Dayanand Kamat <kashwindayan@vmware.com>
+     1	Duncan.chu <wqhaicyj@163.com>
+     1	Dylan Jhong <dylan@andestech.com>
+     1	Edward Liaw <edliaw@google.com>
+     1	Hongchen Zhang <zhanghongchen@loongson.cn>
+     1	Jeff Layton <jlayton@kernel.org>
+     1	Leo Yu-Chi Liang <ycliang@andestech.com>
+     1	Nageswara R Sastry <rnsastry@linux.ibm.com>
+     1	Randolph <randolph@andestech.com>
+     1	Rick Edgecombe <rick.p.edgecombe@intel.com>
+     1	Shizhao Chen <shichen@redhat.com>
+     1	Takuya Wakazono <pastalian46@gmail.com>
+     1	Zachary Leaf <zachary.leaf@arm.com>
+     1	Li Qiang <liqiang64@huawei.com>
+     1	Ioannis Bonatakis <ybonatakis@suse.com>
+
+And also thanks to patch reviewers:
+
+$ git log 20230516.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | sort | uniq -c | sort -n -r
+    104 Cyril Hrubis <chrubis@suse.cz>
+     66 Petr Vorel <pvorel@suse.cz>
+     46 Li Wang <liwang@redhat.com>
+     15 Martin Doucha <mdoucha@suse.cz>
+     14 Avinesh Kumar <akumar@suse.de>
+     14 Richard Palethorpe <rpalethorpe@suse.com>
+      8 Xiao Yang <yangx.jy@fujitsu.com>
+      3 Niklas Cassel <niklas.cassel@wdc.com>
+      3 Marius Kittler <mkittler@suse.de>
+      3 Damien Le Moal <dlemoal@kernel.org>
+      2 Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+      2 Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+      2 Linus Walleij <linus.walleij@linaro.org>
+      2 Amir Goldstein <amir73il@gmail.com>
+      1 Yang Xu <xuyang2018.jy@fujitsu.com>
+      1 Vlastimil Babka <vbabka@suse.cz>
+      1 Murphy Zhou <jencce.kernel@gmail.com>
+      1 Jeff Moyer <jmoyer@redhat.com>
+      1 Andrea Cervesato <andrea.cervesato@suse.com>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
