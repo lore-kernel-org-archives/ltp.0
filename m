@@ -4,67 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE2FAE80A98
-	for <ltp@archiver.kernel.org>; Fri, 29 Sep 2023 11:26:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48B0EE7734B
+	for <ltp@archiver.kernel.org>; Sat, 30 Sep 2023 00:00:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1A2C13CE124
-	for <ltp@archiver.kernel.org>; Fri, 29 Sep 2023 13:26:30 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id 19D8A3CF888
+	for <ltp@archiver.kernel.org>; Sat, 30 Sep 2023 02:00:29 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 210563CBA26
- for <ltp@lists.linux.it>; Fri, 29 Sep 2023 13:26:18 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7C2FC3CE160
+ for <ltp@lists.linux.it>; Sat, 30 Sep 2023 02:00:17 +0200 (CEST)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com
+ [IPv6:2607:f8b0:4864:20::54a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9BE941A05C9C
- for <ltp@lists.linux.it>; Fri, 29 Sep 2023 13:26:16 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7A136218E8;
- Fri, 29 Sep 2023 11:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1695986776;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0vw59bnk/Wrqb8vYCk/WCQsYBAd/HBqU1BvDPB688GI=;
- b=ILbLmxJzJMDsSDJlWv/DlRQXLUtMrhZC6FixwS1mvIdDie7MO2JXL8UFrTeoMpEiz/3Y4Y
- BfZc3A9n1fWjAOCadTHzFYwbfoyU2xwalZMcMVSIyaI1TBfecVucDmNMVkag4mFPTMXUEh
- Mj70XYn6J8m6iC5eSbqH4ZnqpBlGipQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1695986776;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0vw59bnk/Wrqb8vYCk/WCQsYBAd/HBqU1BvDPB688GI=;
- b=c7/fKrT0p3sp0HQBwFwNj3BPgMzEQ/EFg7G2yPK38k15X0mhUQqK7yO6Jomz2PRIGltmSL
- oPgOkXpY5+tTEnBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CB61A13434;
- Fri, 29 Sep 2023 11:26:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id FKZRLVe0FmWuQwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 29 Sep 2023 11:26:15 +0000
-Date: Fri, 29 Sep 2023 13:26:13 +0200
-From: Petr Vorel <pvorel@suse.cz>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CE1221400264
+ for <ltp@lists.linux.it>; Sat, 30 Sep 2023 02:00:16 +0200 (CEST)
+Received: by mail-pg1-x54a.google.com with SMTP id
+ 41be03b00d2f7-57cf261194aso16230286a12.3
+ for <ltp@lists.linux.it>; Fri, 29 Sep 2023 17:00:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20230601; t=1696032015; x=1696636815; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=fZetqQEgrwo3EWCfGBrCWzxD4OhIX00BcpEYoULkPEM=;
+ b=OPVwIKzew9a2lkf7UhfFM8Rv4Yy2kA8sivxxUFLAvndJDElHkUFe7cAojhir9rROji
+ OClVjVitH38/Oq+hM1+z2DZN6EFZM28tdc9dOYZcPFdzC4uEIrsTZUud7Bua3xQn6WW2
+ 20NtLaKBRCWzi/N/ka6LuYuyFGuM4kFGND3o1ZUZzfb8pu3CgWTzMMgwCgkMusM/k5+C
+ +4J2yjn75+I0BzlW++9Myrzou3T2G1EFzJq/bH2S6THTGYCs6HQIDG1AiypDb56V3FtF
+ 6cddhDn7iKVSF/46hDhqjZNNJun9dhmHvDVKmWh7yueXkgBS2IcdHoEXVALjq4tkF0N0
+ c7bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1696032015; x=1696636815;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=fZetqQEgrwo3EWCfGBrCWzxD4OhIX00BcpEYoULkPEM=;
+ b=beXgcM7bwJ8r9+L5s6nE7fCVXmQQSep6O9xdPpCTgRhCuxDbloqg2PZyMf7npDokRf
+ 5dyER7CjHGsmh0WDJqFmwk/RnTLYOFcOvkPj1a6SYND3yWaNxs/EzW4dc+RS/yAMco6B
+ kN9LMivr08odua1kU2sE8i+l51mNgRK1x/2s/Vdhl3O5s5rW/uPAUErvFMelCv/P9pP5
+ ft/gjm2yMa+L7IoHy0Pyl6OxfTddcC7dsW19yIIw+OP1RBtEg+aKOuUiCV+/3J0hXhLO
+ 0/Q7vHka6N3wy74Pl7AKuhOhWJbPlhskvO8L+qvtSduOJl00Ns2rBjWfTT7m/Gyb2wFW
+ d37w==
+X-Gm-Message-State: AOJu0YyLHb8GQ0ToRmdIIgAaAjdiAEH+xF0o6o57Clx8yW7+3TWR4KmY
+ 7/Tun96hV1zU/PHbhDlD0swQe9kICAvqMAj+f6epwy6XHW9QWypCzFpLn6lHr6/01cdWu3Z5Xt3
+ Y2+2yXfTx3xi7gz95pKqzcRZNo9WFwhr0vZbzwpGB5vrziTkIp0SyEpfZ
+X-Google-Smtp-Source: AGHT+IGzuWGaDYv6mdbrYUFkWsgx9TN+Pk8LPVoY5ENzE/dDhYoHCA8pM070hwcJeDyv+Up1X6qUU/8uEQs=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a63:bf46:0:b0:578:9125:922d with SMTP id
+ i6-20020a63bf46000000b005789125922dmr85081pgo.10.1696032014841; Fri, 29 Sep
+ 2023 17:00:14 -0700 (PDT)
+Date: Sat, 30 Sep 2023 00:00:07 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+Message-ID: <20230930000007.4052837-1-edliaw@google.com>
 To: ltp@lists.linux.it
-Message-ID: <20230929112613.GA379979@pevik>
-References: <20230721123852.1420080-1-pvorel@suse.cz>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230721123852.1420080-1-pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] nfs_lib.sh: Set NFS 4.2 on TCP as the default
+Subject: [LTP] [PATCH] pipe07: close /proc/self/fd after counting fds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,53 +74,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Olga Kornievskaia <olga.kornievskaia@gmail.com>,
- Jeff Layton <jlayton@kernel.org>, linux-nfs@vger.kernel.org,
- Trond Myklebust <trond.myklebust@hammerspace.com>,
- Chuck Lever <chuck.lever@oracle.com>,
- Anna Schumaker <Anna.Schumaker@netapp.com>
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team@android.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Leaving the directory fd open will count against the max number of fds
+opened, so the final expected count will be off.
 
-> Previously NFS 3 on UDP was the default, which leaded to test being
-> skipped when tests run without parameters:
+Also, removed the halving / doubling of exp_num_pipes since it is
+redundant.
 
-> TCONF: UDP support disabled on NFS server
+Signed-off-by: Edward Liaw <edliaw@google.com>
+---
+ testcases/kernel/syscalls/pipe/pipe07.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-> This does not have an effect when tests run properly via
-> runtest/net.nfs, which specify parameters. It just safes typing
-> -t tcp (and optionally -v 4.2) when one runs single test manually.
+diff --git a/testcases/kernel/syscalls/pipe/pipe07.c b/testcases/kernel/syscalls/pipe/pipe07.c
+index 196485684..01f6b78f8 100644
+--- a/testcases/kernel/syscalls/pipe/pipe07.c
++++ b/testcases/kernel/syscalls/pipe/pipe07.c
+@@ -45,6 +45,8 @@ static int record_open_fds(void)
+ 		opened_fds[num_opened_fds++] = fd;
+ 	}
+ 
++	SAFE_CLOSEDIR(dir);
++
+ 	return num_opened_fds;
+ }
+ 
+@@ -56,8 +58,8 @@ static void setup(void)
+ 	tst_res(TINFO, "getdtablesize() = %d", max_fds);
+ 	pipe_fds = SAFE_MALLOC(max_fds * sizeof(int));
+ 
+-	exp_num_pipes = (max_fds - record_open_fds()) / 2;
+-	tst_res(TINFO, "expected max fds to be opened by pipe(): %d", exp_num_pipes * 2);
++	exp_num_pipes = max_fds - record_open_fds();
++	tst_res(TINFO, "expected max fds to be opened by pipe(): %d", exp_num_pipes);
+ }
+ 
+ static void run(void)
+@@ -73,7 +75,7 @@ static void run(void)
+ 	} while (!TST_RET);
+ 
+ 	TST_EXP_EQ_LI(errno, EMFILE);
+-	TST_EXP_EQ_LI(exp_num_pipes * 2, num_pipe_fds);
++	TST_EXP_EQ_LI(exp_num_pipes, num_pipe_fds);
+ 
+ 	for (int i = 0; i < num_pipe_fds; i++)
+ 		SAFE_CLOSE(pipe_fds[i]);
+-- 
+2.42.0.582.g8ccd20d70d-goog
 
-FYI patch merged.
-
-Kind regards,
-Petr
-
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
-> Hi,
-
-> I'm pretty sure, we don't want to have UDP as the default (besides
-> skipped with TCONF it was acked by Jeff [1]). But I wonder if NFS 4.2 is
-> the best as the default version. Maybe just 4 or 4.1?
-
-> Kind regards,
-> Petr
-
-> [1] https://lore.kernel.org/ltp/e4d22ae6cefb34463ed7d04287ca9e81cd0949d8.camel@kernel.org/
-
->  testcases/network/nfs/nfs_stress/nfs_lib.sh | 4 ++--
-...
-> -VERSION=${VERSION:=3}
-> +VERSION=${VERSION:=4.2}
->  NFILES=${NFILES:=1000}
-> -SOCKET_TYPE="${SOCKET_TYPE:-udp}"
-> +SOCKET_TYPE="${SOCKET_TYPE:-tcp}"
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
