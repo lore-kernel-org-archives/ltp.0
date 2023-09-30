@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48B0EE7734B
-	for <ltp@archiver.kernel.org>; Sat, 30 Sep 2023 00:00:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B0C9E7734C
+	for <ltp@archiver.kernel.org>; Sat, 30 Sep 2023 00:05:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 19D8A3CF888
-	for <ltp@archiver.kernel.org>; Sat, 30 Sep 2023 02:00:29 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 7C96B3CF20F
+	for <ltp@archiver.kernel.org>; Sat, 30 Sep 2023 02:05:33 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7C2FC3CE160
- for <ltp@lists.linux.it>; Sat, 30 Sep 2023 02:00:17 +0200 (CEST)
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com
- [IPv6:2607:f8b0:4864:20::54a])
+ by picard.linux.it (Postfix) with ESMTPS id 27DC03CB9C8
+ for <ltp@lists.linux.it>; Sat, 30 Sep 2023 02:05:23 +0200 (CEST)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
+ [IPv6:2607:f8b0:4864:20::549])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id CE1221400264
- for <ltp@lists.linux.it>; Sat, 30 Sep 2023 02:00:16 +0200 (CEST)
-Received: by mail-pg1-x54a.google.com with SMTP id
- 41be03b00d2f7-57cf261194aso16230286a12.3
- for <ltp@lists.linux.it>; Fri, 29 Sep 2023 17:00:16 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 99613605628
+ for <ltp@lists.linux.it>; Sat, 30 Sep 2023 02:05:22 +0200 (CEST)
+Received: by mail-pg1-x549.google.com with SMTP id
+ 41be03b00d2f7-565ece76be4so17457980a12.2
+ for <ltp@lists.linux.it>; Fri, 29 Sep 2023 17:05:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1696032015; x=1696636815; darn=lists.linux.it;
+ d=google.com; s=20230601; t=1696032321; x=1696637121; darn=lists.linux.it;
  h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
  :date:message-id:reply-to;
- bh=fZetqQEgrwo3EWCfGBrCWzxD4OhIX00BcpEYoULkPEM=;
- b=OPVwIKzew9a2lkf7UhfFM8Rv4Yy2kA8sivxxUFLAvndJDElHkUFe7cAojhir9rROji
- OClVjVitH38/Oq+hM1+z2DZN6EFZM28tdc9dOYZcPFdzC4uEIrsTZUud7Bua3xQn6WW2
- 20NtLaKBRCWzi/N/ka6LuYuyFGuM4kFGND3o1ZUZzfb8pu3CgWTzMMgwCgkMusM/k5+C
- +4J2yjn75+I0BzlW++9Myrzou3T2G1EFzJq/bH2S6THTGYCs6HQIDG1AiypDb56V3FtF
- 6cddhDn7iKVSF/46hDhqjZNNJun9dhmHvDVKmWh7yueXkgBS2IcdHoEXVALjq4tkF0N0
- c7bQ==
+ bh=CAUP9HhMDmKoa2/0PQH3WirlHHe0IcUq5/TExvAg294=;
+ b=Pdpqayc95QC8t22qzycVHS9QKsLA7uCP5094uL5CK1O58YpxtV18W+03RliwJ083SP
+ 7Xy5FOcMHQqaoZvYwKqC36weM8XS30mO6ZHsOOmFuJha1dLDA5sOe32wnDOuk516TxNJ
+ V85jAVllk83fa+vLcDvGekmKyH5vByT/kRaklO0XMfl3I4r/AhWGdLZgoo4azcy5xACu
+ K+8tspKhniiWU8GFLOzmisfglU3MK3dU7Jr0r7w6bvQcVvgK/Yf9y6CCBsasZjzWgT6d
+ 1UTSOQZJ2oI33o5k6mut7k7Z5ZLlm9u8Sf4+tIslgggxRrkPFvBED09w/Q6sc114Fya9
+ iOPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1696032015; x=1696636815;
+ d=1e100.net; s=20230601; t=1696032321; x=1696637121;
  h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
  :from:to:cc:subject:date:message-id:reply-to;
- bh=fZetqQEgrwo3EWCfGBrCWzxD4OhIX00BcpEYoULkPEM=;
- b=beXgcM7bwJ8r9+L5s6nE7fCVXmQQSep6O9xdPpCTgRhCuxDbloqg2PZyMf7npDokRf
- 5dyER7CjHGsmh0WDJqFmwk/RnTLYOFcOvkPj1a6SYND3yWaNxs/EzW4dc+RS/yAMco6B
- kN9LMivr08odua1kU2sE8i+l51mNgRK1x/2s/Vdhl3O5s5rW/uPAUErvFMelCv/P9pP5
- ft/gjm2yMa+L7IoHy0Pyl6OxfTddcC7dsW19yIIw+OP1RBtEg+aKOuUiCV+/3J0hXhLO
- 0/Q7vHka6N3wy74Pl7AKuhOhWJbPlhskvO8L+qvtSduOJl00Ns2rBjWfTT7m/Gyb2wFW
- d37w==
-X-Gm-Message-State: AOJu0YyLHb8GQ0ToRmdIIgAaAjdiAEH+xF0o6o57Clx8yW7+3TWR4KmY
- 7/Tun96hV1zU/PHbhDlD0swQe9kICAvqMAj+f6epwy6XHW9QWypCzFpLn6lHr6/01cdWu3Z5Xt3
- Y2+2yXfTx3xi7gz95pKqzcRZNo9WFwhr0vZbzwpGB5vrziTkIp0SyEpfZ
-X-Google-Smtp-Source: AGHT+IGzuWGaDYv6mdbrYUFkWsgx9TN+Pk8LPVoY5ENzE/dDhYoHCA8pM070hwcJeDyv+Up1X6qUU/8uEQs=
+ bh=CAUP9HhMDmKoa2/0PQH3WirlHHe0IcUq5/TExvAg294=;
+ b=GHvtL/GG2YaV+J4ZILrdb+/vYVb7SQdzop5oqPRxAo/A2N6jCI4YWBwyu4uW/Z9gqm
+ dwXvVaBA9TdL60hIo2h2IOs0kyqmeeMtoU/aE2TP/zv4qfWKita8ZwwpFBBlRh6h6O5U
+ kXOZ7zHtbnlo+ATq5fDKXsr2/O5RNIejnPCB6MIqf3aWhgAyhgx0YUzOH0vL1zdZ72L2
+ tFGy8iBFbv1Wng/mexMpvFXqG6m1NwPRu9V9Yqc/aRa0J1DcTT8CG7BW8tIwW2JHaaQi
+ jWveVaNYM0Gqr0jKVtXqoVNNV8LM1GXmy0Ls+HNfiZdl0gP+jaigxITpDqVeNp04B2NU
+ VuwQ==
+X-Gm-Message-State: AOJu0YzW42EkoyS8QcY7ZLfSQuCcScvs2p3u1IWI8RLFhYeeq9+W4kfY
+ wmhPJpwDNmF8etlV2MJm2f0ZSV7nO8rLc8dwsPIUppyq/eLMzwsbn87UAYSSPgNFdbZxCfFqLYz
+ Hhh3ivF5POzjHPMIInqhhfHNUuoTS+N3ihQQZk18+jM87heRQwfCs/DTO
+X-Google-Smtp-Source: AGHT+IHZjl4iT8RWCsy3Ekl0P24AIRASRO9Tmqs0OMIT6rUez7WuZacIfRT+40X1H8ySpvaDvfFU+2xtBgo=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
  (user=edliaw job=sendgmr) by 2002:a63:bf46:0:b0:578:9125:922d with SMTP id
- i6-20020a63bf46000000b005789125922dmr85081pgo.10.1696032014841; Fri, 29 Sep
- 2023 17:00:14 -0700 (PDT)
-Date: Sat, 30 Sep 2023 00:00:07 +0000
+ i6-20020a63bf46000000b005789125922dmr85143pgo.10.1696032320829; Fri, 29 Sep
+ 2023 17:05:20 -0700 (PDT)
+Date: Sat, 30 Sep 2023 00:05:16 +0000
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20230930000007.4052837-1-edliaw@google.com>
+Message-ID: <20230930000516.4063681-1-edliaw@google.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] pipe07: close /proc/self/fd after counting fds
+Subject: [LTP] [PATCH] getpgid01: On Android, pgid(1) is 0 instead of 1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,50 +83,28 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Leaving the directory fd open will count against the max number of fds
-opened, so the final expected count will be off.
-
-Also, removed the halving / doubling of exp_num_pipes since it is
-redundant.
+Android's init does not call setpgid(0, 0) so it does not have pgid=1.
+0 is functionally equivalent, since pgid 0 means the pgid is the same as
+the process pid.
 
 Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
- testcases/kernel/syscalls/pipe/pipe07.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ testcases/kernel/syscalls/getpgid/getpgid01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/pipe/pipe07.c b/testcases/kernel/syscalls/pipe/pipe07.c
-index 196485684..01f6b78f8 100644
---- a/testcases/kernel/syscalls/pipe/pipe07.c
-+++ b/testcases/kernel/syscalls/pipe/pipe07.c
-@@ -45,6 +45,8 @@ static int record_open_fds(void)
- 		opened_fds[num_opened_fds++] = fd;
+diff --git a/testcases/kernel/syscalls/getpgid/getpgid01.c b/testcases/kernel/syscalls/getpgid/getpgid01.c
+index 479fe5dcb..8640f2c93 100644
+--- a/testcases/kernel/syscalls/getpgid/getpgid01.c
++++ b/testcases/kernel/syscalls/getpgid/getpgid01.c
+@@ -37,7 +37,7 @@ static void run(void)
+ 		TST_EXP_EQ_LI(TST_RET, pgid);
+ 
+ 		TST_EXP_PID(getpgid(1));
+-		TST_EXP_EQ_LI(TST_RET, 1);
++		TST_EXP_EXPR(TST_RET == 1 || TST_RET == 0, "getpgid(1) == 1 or 0");
  	}
  
-+	SAFE_CLOSEDIR(dir);
-+
- 	return num_opened_fds;
- }
- 
-@@ -56,8 +58,8 @@ static void setup(void)
- 	tst_res(TINFO, "getdtablesize() = %d", max_fds);
- 	pipe_fds = SAFE_MALLOC(max_fds * sizeof(int));
- 
--	exp_num_pipes = (max_fds - record_open_fds()) / 2;
--	tst_res(TINFO, "expected max fds to be opened by pipe(): %d", exp_num_pipes * 2);
-+	exp_num_pipes = max_fds - record_open_fds();
-+	tst_res(TINFO, "expected max fds to be opened by pipe(): %d", exp_num_pipes);
- }
- 
- static void run(void)
-@@ -73,7 +75,7 @@ static void run(void)
- 	} while (!TST_RET);
- 
- 	TST_EXP_EQ_LI(errno, EMFILE);
--	TST_EXP_EQ_LI(exp_num_pipes * 2, num_pipe_fds);
-+	TST_EXP_EQ_LI(exp_num_pipes, num_pipe_fds);
- 
- 	for (int i = 0; i < num_pipe_fds; i++)
- 		SAFE_CLOSE(pipe_fds[i]);
+ 	tst_reap_children();
 -- 
 2.42.0.582.g8ccd20d70d-goog
 
