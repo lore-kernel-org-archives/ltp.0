@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB5DEE77354
-	for <ltp@archiver.kernel.org>; Sat, 30 Sep 2023 06:34:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70C4DE77354
+	for <ltp@archiver.kernel.org>; Sat, 30 Sep 2023 06:54:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9CFAB3CE0C5
-	for <ltp@archiver.kernel.org>; Sat, 30 Sep 2023 08:34:55 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 83CD93CD77D
+	for <ltp@archiver.kernel.org>; Sat, 30 Sep 2023 08:54:57 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9EEAA3CB9EA
- for <ltp@lists.linux.it>; Sat, 30 Sep 2023 08:34:43 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 2636C3CB9AD
+ for <ltp@lists.linux.it>; Sat, 30 Sep 2023 08:54:46 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7C46B1400B7B
- for <ltp@lists.linux.it>; Sat, 30 Sep 2023 08:34:42 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 5601B600952
+ for <ltp@lists.linux.it>; Sat, 30 Sep 2023 08:54:46 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 632C81F8C0;
- Sat, 30 Sep 2023 06:34:41 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BDF911F8C0;
+ Sat, 30 Sep 2023 06:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1696055681;
+ t=1696056885;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NkEsPUjuJ6dyc+N5Izkh+VH/Q9J53wyuQ6ITuA2qrEo=;
- b=L69v1bIbJxpUnDF/x9FM4JjdgXQs+35CNLCIJ98ayEh8fUf6rjC89GRuNc/zRyW7w4JohS
- S0+01RIcpXHRsoujR2SpPbB/bqp65/GrpxLV0ndeZlffwidvwzxtgXQ4Xh0FyaevhzsbNy
- W+CSWXiy0r8Z3X+o3aQOxgFnmxbxJqM=
+ bh=0QVBj3UmEOQizTHj48fj/NKBE2+FJqx0uL6tWm72+JA=;
+ b=ZFhtj4vYz2GjD5eSwU21XnNYS3ZipswTiF+Ua+ivF9licHUadWsX3vlgFQFxNquyV8grYl
+ IYd9fUXS3wrQR2Mx7Bml/yDMqf6vo5B8Wp/mUhZqPQGNBXpk50IRSrpgNRQeeStQpl9pbk
+ Xgj4uzduLQmuiH6VNutJYogs2senCoM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1696055681;
+ s=susede2_ed25519; t=1696056885;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=NkEsPUjuJ6dyc+N5Izkh+VH/Q9J53wyuQ6ITuA2qrEo=;
- b=xRyDNK1RUxT47uZ3MYhied6dcKQSpmCWpPcJyL6gjPWI9TJHZVunuIOoSTLEcyNgo0L6uU
- K/ijHRy1RfdjMHDg==
+ bh=0QVBj3UmEOQizTHj48fj/NKBE2+FJqx0uL6tWm72+JA=;
+ b=KE+b1cE92GV6jPjkkTMpGfBkf1QK/v7jSSITvbB2J4JamoUYbblRQluey3dF9xGqVgLmuh
+ 9mY/m8PVl22i5lDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F410A13456;
- Sat, 30 Sep 2023 06:34:40 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6AAFB13456;
+ Sat, 30 Sep 2023 06:54:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id FHyaOIDBF2W+FwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Sat, 30 Sep 2023 06:34:40 +0000
-Date: Sat, 30 Sep 2023 08:34:38 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id g3yeFzXGF2WvHgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Sat, 30 Sep 2023 06:54:45 +0000
+Date: Sat, 30 Sep 2023 08:54:43 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Edward Liaw <edliaw@google.com>
-Message-ID: <20230930063438.GB414289@pevik>
-References: <20230930000007.4052837-1-edliaw@google.com>
+Message-ID: <20230930065443.GC414289@pevik>
+References: <20230930000516.4063681-1-edliaw@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230930000007.4052837-1-edliaw@google.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+In-Reply-To: <20230930000516.4063681-1-edliaw@google.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] pipe07: close /proc/self/fd after counting fds
+Subject: Re: [LTP] [PATCH] getpgid01: On Android, pgid(1) is 0 instead of 1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,74 +84,38 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Edward,
 
-> Leaving the directory fd open will count against the max number of fds
-> opened, so the final expected count will be off.
-
-> Also, removed the halving / doubling of exp_num_pipes since it is
-> redundant.
+> Android's init does not call setpgid(0, 0) so it does not have pgid=1.
+> 0 is functionally equivalent, since pgid 0 means the pgid is the same as
+> the process pid.
 
 > Signed-off-by: Edward Liaw <edliaw@google.com>
 > ---
->  testcases/kernel/syscalls/pipe/pipe07.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>  testcases/kernel/syscalls/getpgid/getpgid01.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> diff --git a/testcases/kernel/syscalls/pipe/pipe07.c b/testcases/kernel/syscalls/pipe/pipe07.c
-> index 196485684..01f6b78f8 100644
-> --- a/testcases/kernel/syscalls/pipe/pipe07.c
-> +++ b/testcases/kernel/syscalls/pipe/pipe07.c
-> @@ -45,6 +45,8 @@ static int record_open_fds(void)
->  		opened_fds[num_opened_fds++] = fd;
->  	}
+> diff --git a/testcases/kernel/syscalls/getpgid/getpgid01.c b/testcases/kernel/syscalls/getpgid/getpgid01.c
+> index 479fe5dcb..8640f2c93 100644
+> --- a/testcases/kernel/syscalls/getpgid/getpgid01.c
+> +++ b/testcases/kernel/syscalls/getpgid/getpgid01.c
+> @@ -37,7 +37,7 @@ static void run(void)
+>  		TST_EXP_EQ_LI(TST_RET, pgid);
 
-> +	SAFE_CLOSEDIR(dir);
-IMHO this changes counting from 1020:
+>  		TST_EXP_PID(getpgid(1));
+> -		TST_EXP_EQ_LI(TST_RET, 1);
+> +		TST_EXP_EXPR(TST_RET == 1 || TST_RET == 0, "getpgid(1) == 1 or 0");
+Although I don't prefer using often libc specific code, here I'd use it:
 
-pipe07.c:56: TINFO: getdtablesize() = 1024
-pipe07.c:60: TINFO: expected max fds to be opened by pipe(): 1020
-pipe07.c:75: TPASS: errno == EMFILE (24)
-pipe07.c:76: TPASS: exp_num_pipes * 2 == num_pipe_fds (1020)
+#ifndef __ANDROID__ 
+		TST_EXP_EQ_LI(TST_RET, 0);
+#else
+		TST_EXP_EQ_LI(TST_RET, 1);
+#endif
 
-to 1021, which leads to failure:
-
-pipe07.c:58: TINFO: getdtablesize() = 1024
-pipe07.c:62: TINFO: expected max fds to be opened by pipe(): 1021
-pipe07.c:77: TPASS: errno == EMFILE (24)
-pipe07.c:78: TFAIL: exp_num_pipes (1021) != num_pipe_fds (1020)
-
-> +
->  	return num_opened_fds;
-This is not elegant, but get's the correct count. Will it fail on AOSP?
-
-return num_opened_fds + 1;
->  }
-
-> @@ -56,8 +58,8 @@ static void setup(void)
->  	tst_res(TINFO, "getdtablesize() = %d", max_fds);
->  	pipe_fds = SAFE_MALLOC(max_fds * sizeof(int));
-
-> -	exp_num_pipes = (max_fds - record_open_fds()) / 2;
-> -	tst_res(TINFO, "expected max fds to be opened by pipe(): %d", exp_num_pipes * 2);
-> +	exp_num_pipes = max_fds - record_open_fds();
-> +	tst_res(TINFO, "expected max fds to be opened by pipe(): %d", exp_num_pipes);
-
-It'd be slightly more readable if this was in separate patch
-(as it modifies the same variable), but it's up to you.
+Because your code would loosen testing for other libc.
+Cyril, Li, WDYT?
 
 Kind regards,
 Petr
-
->  }
-
->  static void run(void)
-> @@ -73,7 +75,7 @@ static void run(void)
->  	} while (!TST_RET);
-
->  	TST_EXP_EQ_LI(errno, EMFILE);
-> -	TST_EXP_EQ_LI(exp_num_pipes * 2, num_pipe_fds);
-> +	TST_EXP_EQ_LI(exp_num_pipes, num_pipe_fds);
-
->  	for (int i = 0; i < num_pipe_fds; i++)
->  		SAFE_CLOSE(pipe_fds[i]);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
