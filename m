@@ -4,67 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47DE7E748E9
-	for <ltp@archiver.kernel.org>; Sun,  1 Oct 2023 04:22:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FBEEE784AF
+	for <ltp@archiver.kernel.org>; Mon,  2 Oct 2023 10:42:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E47A23D05B5
-	for <ltp@archiver.kernel.org>; Sun,  1 Oct 2023 06:22:21 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id CA89F3CDE6F
+	for <ltp@archiver.kernel.org>; Mon,  2 Oct 2023 12:41:58 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 938983D034E
- for <ltp@lists.linux.it>; Sun,  1 Oct 2023 06:22:10 +0200 (CEST)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
- [IPv6:2a00:1450:4864:20::52d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 5B30B3CC0C7
+ for <ltp@lists.linux.it>; Mon,  2 Oct 2023 12:41:47 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id CAF6E200142
- for <ltp@lists.linux.it>; Sun,  1 Oct 2023 06:22:09 +0200 (CEST)
-Received: by mail-ed1-x52d.google.com with SMTP id
- 4fb4d7f45d1cf-51e24210395so6925a12.0
- for <ltp@lists.linux.it>; Sat, 30 Sep 2023 21:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1696134129; x=1696738929; darn=lists.linux.it;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=/QVXkLGNL8BCQ4ov9kCzWM678kZeqphhHUahiBiuWCs=;
- b=lc3/8XfjrNY8bvMPK6XRze0YLQxTYHL2twnnmO0MsyqfdWi0KFxyH2dXAidskDVoB8
- zOo2n2VHQRX9lGxf9vB6h7fsHeQ1U+ap6DoCdPqSuMo+PsCoLPUA66Anj34duk0D9Z0P
- hp5FlA5ocyCeGMVZE/8y3jYYLjNekgtzVvv2DQmV8oH/chiYOhjysugDG59+hcZKS2v9
- x2GZ/9fyURxb9nLUhaLDLz2g3aEovc3wHLA8X7KSs01jqbxiSc9r8QtJ2gdAAmW8VSlT
- aM5i2vCGtAlP+Vf+WudPOWbUDDv7MOIv73jgTLbT3rVg1W+s8AY7+LoFagSJXSsQqd66
- AMfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1696134129; x=1696738929;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=/QVXkLGNL8BCQ4ov9kCzWM678kZeqphhHUahiBiuWCs=;
- b=q+QQiROQZuySF2MXGnRrvXIdJR0hO0TuKeM0W+Fx8rP7jicLAOKFzuG2ln0Zf1doQA
- 7nJFyz/tpux4UNJVT1IsPYrMkqPgk9zXaDgLNaRfBAwEmGwL7CWp96lHVq5qHs0B57zV
- AwpczIz0dy6XDhEYfY6VHwh4+89Vz+theEvoX4JQef+/inNM7YCjk+sMuMgUFXcuUmnH
- APm5+8/JWwCyhu8SVCImrPFNEXCTCx0HpsM6aXK2kZvp/tDpHcQACmbOzOKxZakWNsp+
- RymInWZUzsX+Yo3jIRa2HhGkkPXKRkdv5CnFKipQFzg3nT5GheJyd7fk1jSLQllvUsC6
- oFkg==
-X-Gm-Message-State: AOJu0YyzWIeUzDu4R7mbsNiVnI3VgYGf1xzU+fDfNK3rNqiIUkksNYGs
- Uv/sQozllCL7aqz48Ap/p7JZo/7HPbgcPtSv3Q8Txr0XiaRdl+bnNyk=
-X-Google-Smtp-Source: AGHT+IGQH6gYx/wrLy54XFeNw9Ful82woJ3GuTUnVhjjicRABKfPzXl3kqeW3fPTyI4u2D8udOlnBTv9Vy7nZAgv8oQ=
-X-Received: by 2002:a50:9b1a:0:b0:523:caae:d6ee with SMTP id
- o26-20020a509b1a000000b00523caaed6eemr45585edi.2.1696134128939; Sat, 30 Sep
- 2023 21:22:08 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2E9626000FD
+ for <ltp@lists.linux.it>; Mon,  2 Oct 2023 12:41:46 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 6DF4A2185C
+ for <ltp@lists.linux.it>; Mon,  2 Oct 2023 10:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1696243306;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cTSez2SDSdLjVw7eKmEKekP2aNb6k9xTVDA9sOBs3V4=;
+ b=PAo9gK8lcxwnlhHJtkCU32oy5RixRwhCJ184Ir6Wg6vCKKMRIZCyEPqgW3U20DQTBnaSvO
+ YyqpeBPg7M8dqrF+kOUWkCSl/wbQLM36yLiGFRifhswFu79U3jkJICx1a5ZYehb807RYJA
+ FzyZFwJD6V9xfHE13h5bFPhnH4UG+zE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1696243306;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cTSez2SDSdLjVw7eKmEKekP2aNb6k9xTVDA9sOBs3V4=;
+ b=csCYYvdw3sPcWwcacOUuWiFmRlHwyoAT3J/4HOlKag0NPq0wYI9/exuBLcTCxMG9bbs6Wt
+ PhGIxtfZibsb9uCA==
+Received: from g78 (rpalethorpe.udp.ovpn2.prg.suse.de [10.100.204.110])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 1AAAA2C142;
+ Mon,  2 Oct 2023 10:41:46 +0000 (UTC)
+References: <20230901144433.2526-1-chrubis@suse.cz>
+User-agent: mu4e 1.10.7; emacs 29.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 02 Oct 2023 09:26:05 +0100
+Organization: Linux Private Site
+In-reply-to: <20230901144433.2526-1-chrubis@suse.cz>
+Message-ID: <87cyxx2tna.fsf@suse.de>
 MIME-Version: 1.0
-References: <20230930000007.4052837-1-edliaw@google.com>
- <20230930063438.GB414289@pevik>
-In-Reply-To: <20230930063438.GB414289@pevik>
-Date: Sat, 30 Sep 2023 21:21:58 -0700
-Message-ID: <CAG4es9V2QyuThyfGmuccOq1xdMV+Lsk=XVnLgShZcLhf7DNERQ@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH] pipe07: close /proc/self/fd after counting fds
+Subject: Re: [LTP] [PATCH] sched: add sched sysctl sanity test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,62 +70,212 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team <kernel-team@android.com>, LTP List <ltp@lists.linux.it>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBTZXAgMjksIDIwMjMsIDExOjM04oCvUE0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
-Y3o+IHdyb3RlOgoKPiBIaSBFZHdhcmQsCj4KPiA+IExlYXZpbmcgdGhlIGRpcmVjdG9yeSBmZCBv
-cGVuIHdpbGwgY291bnQgYWdhaW5zdCB0aGUgbWF4IG51bWJlciBvZiBmZHMKPiA+IG9wZW5lZCwg
-c28gdGhlIGZpbmFsIGV4cGVjdGVkIGNvdW50IHdpbGwgYmUgb2ZmLgo+Cj4gPiBBbHNvLCByZW1v
-dmVkIHRoZSBoYWx2aW5nIC8gZG91Ymxpbmcgb2YgZXhwX251bV9waXBlcyBzaW5jZSBpdCBpcwo+
-ID4gcmVkdW5kYW50LgoKCj4gPiBTaWduZWQtb2ZmLWJ5OiBFZHdhcmQgTGlhdyA8ZWRsaWF3QGdv
-b2dsZS5jb20+Cj4gPiAtLS0KPiA+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3BpcGUvcGlw
-ZTA3LmMgfCA4ICsrKysrLS0tCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwg
-MyBkZWxldGlvbnMoLSkKPgo+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvcGlwZS9waXBlMDcuYwo+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9waXBlL3BpcGUw
-Ny5jCj4gPiBpbmRleCAxOTY0ODU2ODQuLjAxZjZiNzhmOCAxMDA2NDQKPiA+IC0tLSBhL3Rlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvcGlwZS9waXBlMDcuYwo+ID4gKysrIGIvdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy9waXBlL3BpcGUwNy5jCj4gPiBAQCAtNDUsNiArNDUsOCBAQCBzdGF0aWMg
-aW50IHJlY29yZF9vcGVuX2Zkcyh2b2lkKQo+ID4gICAgICAgICAgICAgICBvcGVuZWRfZmRzW251
-bV9vcGVuZWRfZmRzKytdID0gZmQ7Cj4gPiAgICAgICB9Cj4KPiA+ICsgICAgIFNBRkVfQ0xPU0VE
-SVIoZGlyKTsKPiBJTUhPIHRoaXMgY2hhbmdlcyBjb3VudGluZyBmcm9tIDEwMjA6Cj4KPiBwaXBl
-MDcuYzo1NjogVElORk86IGdldGR0YWJsZXNpemUoKSA9IDEwMjQKPiBwaXBlMDcuYzo2MDogVElO
-Rk86IGV4cGVjdGVkIG1heCBmZHMgdG8gYmUgb3BlbmVkIGJ5IHBpcGUoKTogMTAyMAo+IHBpcGUw
-Ny5jOjc1OiBUUEFTUzogZXJybm8gPT0gRU1GSUxFICgyNCkKPiBwaXBlMDcuYzo3NjogVFBBU1M6
-IGV4cF9udW1fcGlwZXMgKiAyID09IG51bV9waXBlX2ZkcyAoMTAyMCkKPgo+IHRvIDEwMjEsIHdo
-aWNoIGxlYWRzIHRvIGZhaWx1cmU6Cj4KPiBwaXBlMDcuYzo1ODogVElORk86IGdldGR0YWJsZXNp
-emUoKSA9IDEwMjQKPiBwaXBlMDcuYzo2MjogVElORk86IGV4cGVjdGVkIG1heCBmZHMgdG8gYmUg
-b3BlbmVkIGJ5IHBpcGUoKTogMTAyMQo+IHBpcGUwNy5jOjc3OiBUUEFTUzogZXJybm8gPT0gRU1G
-SUxFICgyNCkKPiBwaXBlMDcuYzo3ODogVEZBSUw6IGV4cF9udW1fcGlwZXMgKDEwMjEpICE9IG51
-bV9waXBlX2ZkcyAoMTAyMCkKPgo+ID4gKwo+ID4gICAgICAgcmV0dXJuIG51bV9vcGVuZWRfZmRz
-Owo+IFRoaXMgaXMgbm90IGVsZWdhbnQsIGJ1dCBnZXQncyB0aGUgY29ycmVjdCBjb3VudC4gV2ls
-bCBpdCBmYWlsIG9uIEFPU1A/Cj4KPiByZXR1cm4gbnVtX29wZW5lZF9mZHMgKyAxOwo+CgpJJ2xs
-IGdldCBiYWNrIHRvIHlvdSBvbiBNb25kYXksIGJ1dCBJIHRoaW5rIHRoaXMgaXMgYmVjYXVzZSBl
-YWNoIHBpcGUKY3JlYXRlcyB0d28gZmRzLCB0aGUgcmVzdWx0aW5nIGV4cCBudW1iZXIgb2YgcGlw
-ZXMgd2lsbCBoYXZlIHRvIGJlIGV2ZW4sCmFuZCBJIG1lc3NlZCB0aGF0IHVwIGJ5IHJlbW92aW5n
-IHRoZSBoYWx2aW5nL2RvdWJsaW5nLiAgV2hlbiBJIHRlc3RlZCBpdCwKdGhlIGV4cF9udW1fcGlw
-ZXMgaGFwcGVuZWQgdG8gYmUgZXZlbiwgc28gSSBkaWRuJ3QgcnVuIGludG8gdGhlIG9kZCBjYXNl
-LgoKPiAgfQo+Cj4gPiBAQCAtNTYsOCArNTgsOCBAQCBzdGF0aWMgdm9pZCBzZXR1cCh2b2lkKQo+
-ID4gICAgICAgdHN0X3JlcyhUSU5GTywgImdldGR0YWJsZXNpemUoKSA9ICVkIiwgbWF4X2Zkcyk7
-Cj4gPiAgICAgICBwaXBlX2ZkcyA9IFNBRkVfTUFMTE9DKG1heF9mZHMgKiBzaXplb2YoaW50KSk7
-Cj4KPiA+IC0gICAgIGV4cF9udW1fcGlwZXMgPSAobWF4X2ZkcyAtIHJlY29yZF9vcGVuX2Zkcygp
-KSAvIDI7Cj4gPiAtICAgICB0c3RfcmVzKFRJTkZPLCAiZXhwZWN0ZWQgbWF4IGZkcyB0byBiZSBv
-cGVuZWQgYnkgcGlwZSgpOiAlZCIsCj4gZXhwX251bV9waXBlcyAqIDIpOwo+ID4gKyAgICAgZXhw
-X251bV9waXBlcyA9IG1heF9mZHMgLSByZWNvcmRfb3Blbl9mZHMoKTsKPiA+ICsgICAgIHRzdF9y
-ZXMoVElORk8sICJleHBlY3RlZCBtYXggZmRzIHRvIGJlIG9wZW5lZCBieSBwaXBlKCk6ICVkIiwK
-PiBleHBfbnVtX3BpcGVzKTsKPgo+IEl0J2QgYmUgc2xpZ2h0bHkgbW9yZSByZWFkYWJsZSBpZiB0
-aGlzIHdhcyBpbiBzZXBhcmF0ZSBwYXRjaAo+IChhcyBpdCBtb2RpZmllcyB0aGUgc2FtZSB2YXJp
-YWJsZSksIGJ1dCBpdCdzIHVwIHRvIHlvdS4KPgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4KPiA+
-ICB9Cj4KPiA+ICBzdGF0aWMgdm9pZCBydW4odm9pZCkKPiA+IEBAIC03Myw3ICs3NSw3IEBAIHN0
-YXRpYyB2b2lkIHJ1bih2b2lkKQo+ID4gICAgICAgfSB3aGlsZSAoIVRTVF9SRVQpOwo+Cj4gPiAg
-ICAgICBUU1RfRVhQX0VRX0xJKGVycm5vLCBFTUZJTEUpOwo+ID4gLSAgICAgVFNUX0VYUF9FUV9M
-SShleHBfbnVtX3BpcGVzICogMiwgbnVtX3BpcGVfZmRzKTsKPiA+ICsgICAgIFRTVF9FWFBfRVFf
-TEkoZXhwX251bV9waXBlcywgbnVtX3BpcGVfZmRzKTsKPgo+ID4gICAgICAgZm9yIChpbnQgaSA9
-IDA7IGkgPCBudW1fcGlwZV9mZHM7IGkrKykKPiA+ICAgICAgICAgICAgICAgU0FGRV9DTE9TRShw
-aXBlX2Zkc1tpXSk7Cj4KCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51
-eC5pdC9saXN0aW5mby9sdHAK
+Hello,
+
+[This is a resend because I had some network issues; sorry if it comes
+through twice]
+
+Cyril Hrubis <chrubis@suse.cz> writes:
+
+> Currently the test fails due to kernel bug, I will send patch to LKML
+> later on.
+>
+> The problem with kernel is that sysctl_sched_rt_period is unsigned int
+> but it's processed with proc_dointvec() which means that you are allowed
+> to write negative values into the variable even though documentation
+> says it shouldn't be possible and the kernel code asserts that rt_period
+> is > 0.
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  runtest/sched                                 |   2 +
+>  testcases/kernel/sched/sysctl/.gitignore      |   1 +
+>  testcases/kernel/sched/sysctl/Makefile        |   7 ++
+>  .../kernel/sched/sysctl/proc_sched_rt01.c     | 115 ++++++++++++++++++
+>  4 files changed, 125 insertions(+)
+>  create mode 100644 testcases/kernel/sched/sysctl/.gitignore
+>  create mode 100644 testcases/kernel/sched/sysctl/Makefile
+>  create mode 100644 testcases/kernel/sched/sysctl/proc_sched_rt01.c
+>
+> diff --git a/runtest/sched b/runtest/sched
+> index 172fe4174..3457114f4 100644
+> --- a/runtest/sched
+> +++ b/runtest/sched
+> @@ -16,3 +16,5 @@ sched_cli_serv run_sched_cliserv.sh
+>  sched_stress sched_stress.sh
+>  
+>  autogroup01 autogroup01
+> +
+> +proc_sched_rt01
+> diff --git a/testcases/kernel/sched/sysctl/.gitignore b/testcases/kernel/sched/sysctl/.gitignore
+> new file mode 100644
+> index 000000000..29b859b81
+> --- /dev/null
+> +++ b/testcases/kernel/sched/sysctl/.gitignore
+> @@ -0,0 +1 @@
+> +proc_sched_rt01
+> diff --git a/testcases/kernel/sched/sysctl/Makefile b/testcases/kernel/sched/sysctl/Makefile
+> new file mode 100644
+> index 000000000..18896b6f2
+> --- /dev/null
+> +++ b/testcases/kernel/sched/sysctl/Makefile
+> @@ -0,0 +1,7 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/sched/sysctl/proc_sched_rt01.c b/testcases/kernel/sched/sysctl/proc_sched_rt01.c
+> new file mode 100644
+> index 000000000..b30256792
+> --- /dev/null
+> +++ b/testcases/kernel/sched/sysctl/proc_sched_rt01.c
+> @@ -0,0 +1,115 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) Cyril Hrubis <chrubis@suse.cz>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Sanity tests for the /proc/sys/kernel/sched_r* files.
+> + *
+> + * - The sched_rt_period_us range is 1 to INT_MAX
+> + *   try invalid values and check for EINVAL
+> + *
+> + * - The sched_rt_runtime_us range is -1 to INT_MAX
+> + *   try invalid values and check for EINVAL
+> + *
+> + * - The sched_rt_runtime_us must be less or equal to sched_rt_period_us
+> + *
+> + * - Reset sched_rr_timeslice_ms to default value by writing -1 and check that
+> + *   we get the default value on next read.
+> + *
+> + *   This is a regression test for a commit:
+> + *
+> + *   commit c1fc6484e1fb7cc2481d169bfef129a1b0676abe
+> + *   Author: Cyril Hrubis <chrubis@suse.cz>
+> + *   Date:   Wed Aug 2 17:19:06 2023 +0200
+> + *
+> + *       sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset
+> + */
+> +
+> +#include <stdio.h>
+> +#include "tst_test.h"
+> +
+> +#define RT_PERIOD_US "/proc/sys/kernel/sched_rt_period_us"
+> +#define RT_RUNTIME_US "/proc/sys/kernel/sched_rt_runtime_us"
+> +#define RR_TIMESLICE_MS "/proc/sys/kernel/sched_rr_timeslice_ms"
+> +
+> +static int period_fd;
+> +static int runtime_fd;
+> +
+> +static void rr_timeslice_ms_reset(void)
+> +{
+> +	long timeslice_ms;
+> +
+> +	SAFE_FILE_PRINTF(RR_TIMESLICE_MS, "-1");
+> +	SAFE_FILE_SCANF(RR_TIMESLICE_MS, "%li", &timeslice_ms);
+> +
+> +	TST_EXP_EXPR(timeslice_ms > 0,
+> +	             "timeslice_ms > 0 after reset to default");
+> +}
+> +
+> +static void rt_period_us_einval(void)
+> +{
+> +	TST_EXP_FAIL(write(period_fd, "0", 2), EINVAL,
+> +	             "echo 0 > "RT_PERIOD_US);
+> +	TST_EXP_FAIL(write(period_fd, "-1", 2), EINVAL,
+> +	             "echo -1 > "RT_PERIOD_US);
+> +}
+> +
+> +static void rt_runtime_us_einval(void)
+> +{
+> +	TST_EXP_FAIL(write(runtime_fd, "-2", 2), EINVAL,
+> +	             "echo -2 > "RT_RUNTIME_US);
+> +}
+
+I would happily add my tags to the test except that as a general
+principal, I don't want to deal with tests that fail if an unexpected
+error number is returned.
+
+Unless something can be done (e.g. with meta-data), so that TST_EXP_FAIL
+and similar can be reduced to a TCONF when the wrong errno is returned.
+
+For instance, this would allow running the tests with a seccomp BPF
+profile, LSM, CGroup or /proc bind mount that blocks the write.
+
+Or you could just seperate the tests I guess. Then the reset can be
+checked while skipping the errno checks.
+
+> +
+> +static void rt_runtime_us_le_period_us(void)
+> +{
+> +	int period_us;
+> +	char buf[32];
+> +
+> +	SAFE_FILE_SCANF(RT_PERIOD_US, "%i", &period_us);
+> +
+> +	sprintf(buf, "%i", period_us+1);
+> +
+> +	TST_EXP_FAIL(write(runtime_fd, buf, strlen(buf)), EINVAL,
+> +	             "echo rt_period_us+1 > "RT_RUNTIME_US);
+> +}
+> +
+> +static void verify_sched_proc(void)
+> +{
+> +	rr_timeslice_ms_reset();
+> +	rt_period_us_einval();
+> +	rt_runtime_us_einval();
+> +	rt_runtime_us_le_period_us();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	period_fd = open(RT_PERIOD_US, O_RDWR);
+> +	runtime_fd = open(RT_RUNTIME_US, O_RDWR);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (period_fd > 0)
+> +		SAFE_CLOSE(period_fd);
+> +
+> +	if (runtime_fd > 0)
+> +		SAFE_CLOSE(runtime_fd);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.needs_root = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.test_all = verify_sched_proc,
+> +	.tags = (struct tst_tag []) {
+> +		{"linux-git", "c1fc6484e1fb"},
+> +		{}
+> +	},
+> +	.needs_kconfigs = (const char *[]) {
+> +		"CONFIG_SYSCTL",
+> +		NULL
+> +	},
+> +};
+> -- 
+> 2.41.0
+
+
+-- 
+Thank you,
+Richard.
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
