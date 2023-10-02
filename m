@@ -4,65 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0E19E748FE
-	for <ltp@archiver.kernel.org>; Mon,  2 Oct 2023 17:34:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AFC3E748FE
+	for <ltp@archiver.kernel.org>; Mon,  2 Oct 2023 17:34:54 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B4B933CDDE3
-	for <ltp@archiver.kernel.org>; Mon,  2 Oct 2023 19:34:38 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id EE01C3CE06C
+	for <ltp@archiver.kernel.org>; Mon,  2 Oct 2023 19:34:52 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 63F6F3CDD94
- for <ltp@lists.linux.it>; Mon,  2 Oct 2023 19:34:27 +0200 (CEST)
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com
- [IPv6:2607:f8b0:4864:20::1149])
+ by picard.linux.it (Postfix) with ESMTPS id E5E023CDEC1
+ for <ltp@lists.linux.it>; Mon,  2 Oct 2023 19:34:33 +0200 (CEST)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com
+ [IPv6:2607:f8b0:4864:20::54a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 9D22660054A
- for <ltp@lists.linux.it>; Mon,  2 Oct 2023 19:34:26 +0200 (CEST)
-Received: by mail-yw1-x1149.google.com with SMTP id
- 00721157ae682-59f61a639b9so466437b3.1
- for <ltp@lists.linux.it>; Mon, 02 Oct 2023 10:34:26 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 54581600A42
+ for <ltp@lists.linux.it>; Mon,  2 Oct 2023 19:34:33 +0200 (CEST)
+Received: by mail-pg1-x54a.google.com with SMTP id
+ 41be03b00d2f7-56c2d67da6aso14793590a12.2
+ for <ltp@lists.linux.it>; Mon, 02 Oct 2023 10:34:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1696268065; x=1696872865; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=IXrrK42Ec3PVJqBKurWurGmtjYGztwJ748Plm9CSMas=;
- b=pHS4kCvO75YD1wrJev15YyzTn0Yi2QQsvYdmh2uhiP5EA5kbgc4z0hDuXoukppu8+a
- GGQpKG82xlp0VZaqRrwytHEKIOVASgFeug2sfJnyX2AcO+JNn/K2mSFqG2dTLrCvomci
- RKW6scyo7m8YTUx4WkClMcL8Ibj2k5XTT7L/09LbNtdAMxx9AVHYhBwCtod+KjbDWhMH
- j09N6Wn4roY9lu67EwCFivb/anxzSTIvmVgWeZCAIjq4s7UaycRs7XzOjNCiRRCHAR+C
- C+hKlo2duskpjChe7TJoB+6o9JkslPZVsb/o7nufk8WX9bLNOLrPteh1IYn8PiGoWq1X
- Ah5Q==
+ d=google.com; s=20230601; t=1696268072; x=1696872872; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:from:to:cc:subject:date:message-id:reply-to;
+ bh=zuPmbm9QxeLn0RTntL5g5QP6LHXkR4gDzTHhkxw3CFw=;
+ b=xvtyiPkkXbAjHB930r8OsRkDZzTTonRomDWeT/ZT+pF6UHAkohSncNAxvUSfqSkcVh
+ BMuyQuN/zhQMdu5UAvpDp+jKELD1bGrnl5oxN6NjKUjzhwEzvIaUjmCeFBv5v7cnH+iF
+ e/67cNWM7YfDTuhU7bP5UH3lKI+kbe31e8BoQ5zv07jTyyZs0fTWNyrbksvMuRo/AIZn
+ ZdETgYTRQ0C8+iG1Eq7AF37voieB97nwsci91aNuGfZseDUlFcFBFO/YLMZUbTd4k15f
+ 5r77r+mhP/v61fg3Z+7jspyIDwj/rXRvIAh6MeqEy0ZR0H9ykCirq1c+Jz/DRFH7VEdF
+ vXDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1696268065; x=1696872865;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=IXrrK42Ec3PVJqBKurWurGmtjYGztwJ748Plm9CSMas=;
- b=CXkpW6AwqMb3/nmXB7OSMurHUqGlJCm7qFsYNXtZhnqfMYz6OVyasOAyauED+vBtOl
- 2UjlS+20bIBdOeI8MN9fd89yHNEw+K+9EYbqTSXgvu9uN2fzcIkBnV53eS/3mM0pfUol
- 9nohSEBEpOsVze42Xto1eQAalIxvfRA6A0S+xgrcvr5w8jx4q6shw+jerl0POMvupXW7
- Hayii+dP1FBH4fziH6SnFPTx3fxJo1/Nr8dGC8wTc9HN76e6wLAcPnx+CiyuKwpPxZUC
- dWkXajp18E3t0ZwTweyVKJvqitaYa1+nIOD165/IW8I60hf8BPOWGZF2f4Sj0W0wRaah
- bEng==
-X-Gm-Message-State: AOJu0Ywqneb5c13ExxpfY8p5yBr7Oyno95o7P8owfKEhFi81QrW9xZN0
- Os+W4nFeXFN3nMm7iLBquy+5kJDtg7ewuLVAb9jkBf9p2NPozSW3KDT7gYrmD45GjVOTSu74h8q
- f7JXQfDHl6a0lZLKRuH/krItfU5oBRblbghPaLFXeX6aLVJMe531MHQJx
-X-Google-Smtp-Source: AGHT+IE6IC60Mw7RsJBxPU/uvXAI0e9TZ0tqkO+kPHIgj2nFIfCWJR4ZMbziWYPfzm5XIruPJXVb8Ctv+xc=
+ d=1e100.net; s=20230601; t=1696268072; x=1696872872;
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=zuPmbm9QxeLn0RTntL5g5QP6LHXkR4gDzTHhkxw3CFw=;
+ b=m7LTfB680cz+iAYQOjIYoLr2NtgrkpUnGW71v7PU2EuhpSAFCbyAmPo3cbAuMWvBQt
+ dtFZ2ISm+KLX5Ijo3qoJWrj9Dlq3Z28qIUyGFxYG9bGLxVZDPHNbr9ZiArOE2ClgFTcq
+ zXquv5HxsTkszvRIDiPt3c/sYkFulV23A4dNq5qNRGMgrW5XqmU7NFnBjOGgpYluwTDD
+ BkFFYfhC46zTyZsLeikARRY7D0SUiav9Rz3vo8OgjNqfbJk8T7Wh1zgNNV5u/rfLRDl8
+ gptQNI4/PilzAJokZ4nopvi+hbspEncaHBoleRbGtOAyjPOjZQ4Li5OtfpU7kg8qpMcd
+ Cgnw==
+X-Gm-Message-State: AOJu0YzAh3jmRI0eLIhEmPl1A7tnFDFsj242WZpiByTvovvGVKpNq8jX
+ uOQHPg+6UxSMKl2roRQaoFUvlo/qvV05CouqoitVVBqYG3FOMEpIyVolhKKCviv24xTu4rRvpOX
+ BWT4Ng3Pq2XacrbzudApG3rLLjJ+eBMNPqZUQlOpAp63peBeAayOYBjPp
+X-Google-Smtp-Source: AGHT+IE/DMN12U1BQRa4QqRpxNmKb7HPU8czwK4OW5uYPxVeglkccbVdufiHdp0njGAz9BodrZZ8BZL83I0=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a0d:ec10:0:b0:59b:eace:d46f with SMTP id
- q16-20020a0dec10000000b0059beaced46fmr205033ywn.8.1696268065121; Mon, 02 Oct
- 2023 10:34:25 -0700 (PDT)
-Date: Mon,  2 Oct 2023 17:34:14 +0000
+ (user=edliaw job=sendgmr) by 2002:a63:6dc8:0:b0:564:e80e:81c0 with SMTP id
+ i191-20020a636dc8000000b00564e80e81c0mr185437pgc.2.1696268071412; Mon, 02 Oct
+ 2023 10:34:31 -0700 (PDT)
+Date: Mon,  2 Oct 2023 17:34:15 +0000
+In-Reply-To: <20231002173416.1080347-1-edliaw@google.com>
 Mime-Version: 1.0
+References: <20231002173416.1080347-1-edliaw@google.com>
 X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20231002173416.1080347-1-edliaw@google.com>
+Message-ID: <20231002173416.1080347-2-edliaw@google.com>
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 0/2] pipe07: close /proc/self/fd after counting fds
+Subject: [LTP] [PATCH v2 1/2] pipe07: close /proc/self/fd after counting fds
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,19 +88,25 @@ Leaving the directory fd open will count against the max number of fds
 opened, so the final expected count will be off when (max_fds -
 record_open_fds()) is even.
 
-v1->v2:
-Split patch into bugfix and refactor
-Fix bug in refactor that caused exp_num_pipes to not round down to
-nearest even integer
+Signed-off-by: Edward Liaw <edliaw@google.com>
+---
+ testcases/kernel/syscalls/pipe/pipe07.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Edward Liaw (2):
-  pipe07: close /proc/self/fd after counting fds
-  pipe07: refactor exp_num_pipes
-
- testcases/kernel/syscalls/pipe/pipe07.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
---
+diff --git a/testcases/kernel/syscalls/pipe/pipe07.c b/testcases/kernel/syscalls/pipe/pipe07.c
+index 196485684..d9b23044d 100644
+--- a/testcases/kernel/syscalls/pipe/pipe07.c
++++ b/testcases/kernel/syscalls/pipe/pipe07.c
+@@ -45,6 +45,8 @@ static int record_open_fds(void)
+ 		opened_fds[num_opened_fds++] = fd;
+ 	}
+ 
++	SAFE_CLOSEDIR(dir);
++
+ 	return num_opened_fds;
+ }
+ 
+-- 
 2.42.0.582.g8ccd20d70d-goog
 
 
