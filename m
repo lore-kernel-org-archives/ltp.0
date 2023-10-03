@@ -4,66 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F044E7490C
-	for <ltp@archiver.kernel.org>; Mon,  2 Oct 2023 18:36:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABB79E776F0
+	for <ltp@archiver.kernel.org>; Tue,  3 Oct 2023 01:57:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 226813CF17E
-	for <ltp@archiver.kernel.org>; Mon,  2 Oct 2023 20:36:08 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 1A8B83CDE22
+	for <ltp@archiver.kernel.org>; Tue,  3 Oct 2023 03:57:23 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 61B113CB54C
- for <ltp@lists.linux.it>; Mon,  2 Oct 2023 20:35:55 +0200 (CEST)
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com
- [IPv6:2607:f8b0:4864:20::54a])
+ by picard.linux.it (Postfix) with ESMTPS id 4BDE83CD759
+ for <ltp@lists.linux.it>; Tue,  3 Oct 2023 03:57:11 +0200 (CEST)
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com
+ [IPv6:2001:4860:4864:20::2a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8B38C60004C
- for <ltp@lists.linux.it>; Mon,  2 Oct 2023 20:35:55 +0200 (CEST)
-Received: by mail-pg1-x54a.google.com with SMTP id
- 41be03b00d2f7-565ece76be4so13556a12.2
- for <ltp@lists.linux.it>; Mon, 02 Oct 2023 11:35:55 -0700 (PDT)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 55362100076A
+ for <ltp@lists.linux.it>; Tue,  3 Oct 2023 03:57:11 +0200 (CEST)
+Received: by mail-oa1-x2a.google.com with SMTP id
+ 586e51a60fabf-1dd22266f51so82066fac.0
+ for <ltp@lists.linux.it>; Mon, 02 Oct 2023 18:57:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1696271754; x=1696876554; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=E/fJZNZk4pxFnE3hn71ult4AiP+IkPxCLd5Z/kNpYbY=;
- b=hcPtKn/54GZBdS6nQvRBTH+zmFIImnARyTsVX65WuzEMmwKuqJVP0KbjsjoXMYAROl
- m/GLt//sa4hj0ac618rycRNxyFjWtW65VIbGi81KmApP/Av9m0gloukvniRH26uuFiwC
- cZH0G8Z+qLuE1sRUoFHkECSET5iMGO+Dh2ISiPAJ0XlCod1fALiNiYjE/EDoGRcLpCa6
- 15IhvrOgtYRjuxNyOYS1XJnqD7hwH2606kP7o3kGIISydUvfrciEDB2nLYDJwTVzy7aV
- AkIaJzYfgzzVH38QypIBwBWnpRPkcDXvQs2B578c3OBI0UEeFLKZmn3Cp4xl4Z4QKOr1
- U2vA==
+ d=gmail.com; s=20230601; t=1696298230; x=1696903030; darn=lists.linux.it;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=O00OPeBX0OAQavpWTikv1KaJprJXcYLW3QJEgWJmVgY=;
+ b=BEjW+WMEwsTb+3w87J9o/MXdLwNruroIhOSlRBq/UfZ099bjxLqoKmh+POa3e/9TBu
+ gBJr2XlIl3Jd9/w5Uz1xIgI9NzJOqHHhCPUhZYbKssuDdwz2tmy+JaQISqeaPzqUVV3L
+ hQYedCwY8Zz15zYlG4NGLR5CuwN1QmN+9BWGofB/eAZ1RqEVdDRqPRWnHAk8qb/umkWj
+ Ed2tSlMcNXk5T5nWHQSMex45MVV5755Pfz0TC01uHIUM/gzA/wBxYpnHLHkvGdPhT36c
+ sDV9d8l//GuHXhiYkjtjF5oKObkN/AwYNOW1JtgeHHUVSgpJS8kAJqe52fAdZ/fOOH3q
+ zyYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1696271754; x=1696876554;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=E/fJZNZk4pxFnE3hn71ult4AiP+IkPxCLd5Z/kNpYbY=;
- b=ZaUkVaLMzHFt4m3JrSmEMYMZvSQ0gC06Y+4e7WKRc8q8SmVvwWqKuabC7hNr16O6JC
- nbRfTRaULuxKHNvrIylEfSNasqj7/cntpwLB0xOb0aG6CRxZqHQIhs0KP1JPo9F7Gz5R
- 7jGv0ywwxXL+OclManB1xhnTeIgIjvoVAeaghzrHQXAISoqC5qg8Cv3zTk+9r2SyhTTK
- 4Xz1HGjWMJswheEBVtU30eA0aWhUR/xFd0QeFaG/CJ4hR3rBHuHB/sAoQ2li7cWmnQUE
- 2ptYyfjLOhZUVfw83IMaIiwlue6JCUwLhiUtbkNpn1qyILW6IbWT3Ur7mVv2kakP0KQV
- 1FCQ==
-X-Gm-Message-State: AOJu0YwuyZqU5OsMp/CxBecrNmDGX9GX3XCaU7JE6ExyfRaEds1hRvBs
- oFBuf5spBgvRZyNNKwPYAKB+WhxX4kv0M+0gS2H+ILLqLXCfMKe41CmcIX/n+kVNhaaSVw6HcJl
- AFQ/7Q/D4jlnGxn+aISuTMYl8KkWDHOyrx1NmTNVomS2rekwepIUYlXIF
-X-Google-Smtp-Source: AGHT+IFkEugm8c1XLCCorRj/38pXaPXKDLkR7mNa1Bzf5I/hEcZoPGFzKyO49d9YsjN7NM2n9Rk+36J7idM=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a63:790a:0:b0:585:79ef:9926 with SMTP id
- u10-20020a63790a000000b0058579ef9926mr186007pgc.7.1696271753695; Mon, 02 Oct
- 2023 11:35:53 -0700 (PDT)
-Date: Mon,  2 Oct 2023 18:35:50 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20231002183550.1351704-1-edliaw@google.com>
-To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+ d=1e100.net; s=20230601; t=1696298230; x=1696903030;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=O00OPeBX0OAQavpWTikv1KaJprJXcYLW3QJEgWJmVgY=;
+ b=Onw2kJDi86c7u+J1obQRUBBoTnDh+dgd35Y6DMbMSZBO7ivmQdqDLYYm1syurwp7vl
+ 0JEUVd+SXpPG2jsQhDLof7IXiieVMae6RzF3NI22rM7IlISnlRRsUHQ2310XB7BzAaWE
+ taqQLOWAXsj40Q6To7RIRR6P+pFWWIlExvsRPeSfKfqs4WOXj/c2wPxKoajDtdyF2Wty
+ 47ZyqN87dvoc0GTigUD/iDJXyh/d2t0TDwUEE9qaXieqoaNzPLrpdbzmztWzn5RnnUnh
+ 47ezksuIj6Feh1ZVrx0+JrHXvO7Kv/6To8a7xN+00FiM0ygfbnyEfymyLJR1OpeVS14N
+ UTpQ==
+X-Gm-Message-State: AOJu0YzB5ZA7RoxUMXWffJvsM1mOKeysa6kxfgSsForNj/4LVqdGXP35
+ 3X3h+x3OuzxzQyX9pJsGc74=
+X-Google-Smtp-Source: AGHT+IGMJhd67lE+Kn9AwqiETrIu/sIPojytQz9RjEUQ8PA8jl9s9zZ3r6SHYmG4F1v3iGBhsR75mg==
+X-Received: by 2002:a05:6870:9707:b0:1d5:f814:56a3 with SMTP id
+ n7-20020a056870970700b001d5f81456a3mr15700234oaq.2.1696298229848; 
+ Mon, 02 Oct 2023 18:57:09 -0700 (PDT)
+Received: from node202.. ([209.16.91.231]) by smtp.gmail.com with ESMTPSA id
+ f22-20020a9d7b56000000b006b9443ce478sm22803oto.27.2023.10.02.18.57.08
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 02 Oct 2023 18:57:09 -0700 (PDT)
+From: Reuben Hawkins <reubenhwk@gmail.com>
+To: amir73il@gmail.com
+Date: Mon,  2 Oct 2023 20:57:04 -0500
+Message-Id: <20231003015704.2415-1-reubenhwk@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] getpgid01: On Android, pgid(1) is 0 instead of 1
+Subject: [LTP] [PATCH v4] vfs: fix readahead(2) on block devices
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,43 +79,44 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team@android.com
+Cc: mszeredi@redhat.com, brauner@kernel.org, lkp@intel.com, willy@infradead.org,
+ oe-lkp@lists.linux.dev, oliver.sang@intel.com, viro@zeniv.linux.org.uk,
+ linux-fsdevel@vger.kernel.org, Reuben Hawkins <reubenhwk@gmail.com>,
+ ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Edward Liaw via ltp <ltp@lists.linux.it>
+Readahead was factored to call generic_fadvise.  That refactor added an
+S_ISREG restriction which broke readahead on block devices.
 
-Android's init does not call setpgid(0, 0) so it does not have pgid=1.
-0 is functionally equivalent, since pgid 0 means the pgid is the same as
-the process pid.
+In addition to S_ISREG, this change checks S_ISBLK to fix block device
+readahead.  There is no change in behavior with any file type besides block
+devices in this change.
 
-Signed-off-by: Edward Liaw <edliaw@google.com>
+Fixes: 3d8f7615319b ("vfs: implement readahead(2) using POSIX_FADV_WILLNEED")
+Signed-off-by: Reuben Hawkins <reubenhwk@gmail.com>
 ---
- testcases/kernel/syscalls/getpgid/getpgid01.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ mm/readahead.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/getpgid/getpgid01.c b/testcases/kernel/syscalls/getpgid/getpgid01.c
-index 479fe5dcb..5523101e7 100644
---- a/testcases/kernel/syscalls/getpgid/getpgid01.c
-+++ b/testcases/kernel/syscalls/getpgid/getpgid01.c
-@@ -37,7 +37,11 @@ static void run(void)
- 		TST_EXP_EQ_LI(TST_RET, pgid);
+diff --git a/mm/readahead.c b/mm/readahead.c
+index e815c114de21..6925e6959fd3 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -735,7 +735,8 @@ ssize_t ksys_readahead(int fd, loff_t offset, size_t count)
+ 	 */
+ 	ret = -EINVAL;
+ 	if (!f.file->f_mapping || !f.file->f_mapping->a_ops ||
+-	    !S_ISREG(file_inode(f.file)->i_mode))
++	    (!S_ISREG(file_inode(f.file)->i_mode) &&
++	    !S_ISBLK(file_inode(f.file)->i_mode)))
+ 		goto out;
  
- 		TST_EXP_PID(getpgid(1));
-+#ifndef __ANDROID__
- 		TST_EXP_EQ_LI(TST_RET, 1);
-+#else
-+		TST_EXP_EQ_LI(TST_RET, 0);
-+#endif
- 	}
- 
- 	tst_reap_children();
+ 	ret = vfs_fadvise(f.file, offset, count, POSIX_FADV_WILLNEED);
 -- 
-2.42.0.582.g8ccd20d70d-goog
+2.34.1
 
 
 -- 
