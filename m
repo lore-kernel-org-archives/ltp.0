@@ -4,61 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D06BE7543E
-	for <ltp@archiver.kernel.org>; Tue,  3 Oct 2023 09:52:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44C50E7AD41
+	for <ltp@archiver.kernel.org>; Tue,  3 Oct 2023 13:22:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 855D23CDD62
-	for <ltp@archiver.kernel.org>; Tue,  3 Oct 2023 11:52:01 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 2A51B3CBA0D
+	for <ltp@archiver.kernel.org>; Tue,  3 Oct 2023 15:22:40 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 28FFB3CBF23
- for <ltp@lists.linux.it>; Tue,  3 Oct 2023 11:51:50 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 6E1693CBA0D
+ for <ltp@lists.linux.it>; Tue,  3 Oct 2023 15:22:28 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 374A51000365
- for <ltp@lists.linux.it>; Tue,  3 Oct 2023 11:51:49 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 31AB61F45B
- for <ltp@lists.linux.it>; Tue,  3 Oct 2023 09:51:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1696326709;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8q7Pam1GyA9i9xAEAZF9GVgbTRcBxCiLunHm2lLpjwQ=;
- b=BnLqo6+aBfcGmgu4Ps/TaCQu0V1n5exZbs5iNZ53CXB/X6O/BlVr9gijXE02Y7lefTXv+J
- MMOa01XZU4/8PCol7k0j2RXT6ru/womdMuYDTGOkFmeSJslMeVEtz4YkPtJRZB51vCKhLX
- a065s5Bt7dxpojCgshy4QZGSydfmpBY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1696326709;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=8q7Pam1GyA9i9xAEAZF9GVgbTRcBxCiLunHm2lLpjwQ=;
- b=Hr8+vpVKlD8LL/6SmBBDdmkYe0fY0Owiq7tNtxJ3xMadcXi9m3ot6nwdvoDMws5l1ZiOYF
- NVkNJ0VVLU0ciWDQ==
-Received: from g78 (rpalethorpe.udp.ovpn2.prg.suse.de [10.100.204.110])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id D1BD92C142;
- Tue,  3 Oct 2023 09:51:48 +0000 (UTC)
-References: <20230901144433.2526-1-chrubis@suse.cz> <87cyxx2tna.fsf@suse.de>
- <ZRqk47qqtquBw3XQ@yuki>
-User-agent: mu4e 1.10.7; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 03 Oct 2023 09:18:01 +0100
-Organization: Linux Private Site
-In-reply-to: <ZRqk47qqtquBw3XQ@yuki>
-Message-ID: <874jj82fuz.fsf@suse.de>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2DAF4200227
+ for <ltp@lists.linux.it>; Tue,  3 Oct 2023 15:22:26 +0200 (CEST)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+ by dfw.source.kernel.org (Postfix) with ESMTP id A73EB6121F;
+ Tue,  3 Oct 2023 13:22:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6DC5C433C7;
+ Tue,  3 Oct 2023 13:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1696339344;
+ bh=4HJ4lXE/gn+p/GC4BBOANqh3Tq17/zOiY/nqfu3N/6k=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=gYm+00vHtYYsOzjxMEN31pv5biGQGFgdy9kZQ4SIrfILcdj12L49OMRHb65vM0R9K
+ G4IAyXyzOMcB+N8VHE6potlovixV/fXKezOEqf+9kxoJB9N2LelIr+3HXCnaYZiHby
+ N+seD1jPInhKK3f6DpaUx7g+UMQYYEoMzTejIlFGFvcFdx4BFEQRyYuT9rlJdf+JXs
+ UA17Ycft9hXLUmPYFJwZjnt/e02+dsIPUA91GyMF/4ZqMSyPJxQUhpZzdJ88gYguuY
+ klo386RCZAkQVKXpiEBwHD2e0y8KMZ109amfC2/NtAl+F4hlQiSFW0BoIb2QkxCErC
+ eDDeFpiYBlSnQ==
+From: Christian Brauner <brauner@kernel.org>
+To: amir73il@gmail.com,
+	Reuben Hawkins <reubenhwk@gmail.com>
+Date: Tue,  3 Oct 2023 15:22:16 +0200
+Message-Id: <20231003-weglassen-anlassen-e42c8cc2db9a@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231003015704.2415-1-reubenhwk@gmail.com>
+References: <20231003015704.2415-1-reubenhwk@gmail.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1220; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=4HJ4lXE/gn+p/GC4BBOANqh3Tq17/zOiY/nqfu3N/6k=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTKiDZbBzyNnBxbuIdFoTn7tvbd0O29u9l1Zvy7+E/S6ctp
+ 3+OTOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbidoCRoeN64Tdt5p/nKzIVT0gG2l
+ maepUw1nVu3XHGassLlbNXDjIyLFitNl8j6JPXs2mPguzf3N3nU2Tn8rFq39fEtHXbas/e5wYA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] sched: add sched sysctl sanity test
+Subject: Re: [LTP] [PATCH v4] vfs: fix readahead(2) on block devices
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,60 +67,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+Cc: mszeredi@redhat.com, Christian Brauner <brauner@kernel.org>, lkp@intel.com,
+ willy@infradead.org, oe-lkp@lists.linux.dev, oliver.sang@intel.com,
+ viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+On Mon, 02 Oct 2023 20:57:04 -0500, Reuben Hawkins wrote:
+> Readahead was factored to call generic_fadvise.  That refactor added an
+> S_ISREG restriction which broke readahead on block devices.
+> 
+> In addition to S_ISREG, this change checks S_ISBLK to fix block device
+> readahead.  There is no change in behavior with any file type besides block
+> devices in this change.
+> 
+> [...]
 
-Cyril Hrubis <chrubis@suse.cz> writes:
+On vacation so just picking up smaller (hopefully obvious) stuff.
 
-> Hi!
->> > +static void rt_runtime_us_einval(void)
->> > +{
->> > +	TST_EXP_FAIL(write(runtime_fd, "-2", 2), EINVAL,
->> > +	             "echo -2 > "RT_RUNTIME_US);
->> > +}
->> 
->> I would happily add my tags to the test except that as a general
->> principal, I don't want to deal with tests that fail if an unexpected
->> error number is returned.
->> 
->> Unless something can be done (e.g. with meta-data), so that TST_EXP_FAIL
->> and similar can be reduced to a TCONF when the wrong errno is returned.
->> 
->> For instance, this would allow running the tests with a seccomp BPF
->> profile, LSM, CGroup or /proc bind mount that blocks the write.
->> 
->> Or you could just seperate the tests I guess. Then the reset can be
->> checked while skipping the errno checks.
->
-> Hmm, so I guess that with LSM we are able to open these files R/W but we
-> can stil get EPERM from the write() right?
+---
 
-Sorry, I thought there was an LSM hook in read, but AFAICT there is
-not. It's possible that another hook get's called
-(e.g. security_inode_getattr), but it's not immediately clear to me.
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-This still leaves seccomp bpf, FUSE, kernel module, etc. whatever is
-mounted at /proc doesn't have to be the original file system. Container
-runtimes do something with /proc to filter it. This situation seems to
-get more complicated each year.
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-> I'm reluctant to add wildcard
-> TCONF on any errno, but I guess that we can add a TST_EXP_FAIL macro
-> version that would have one errno for PASS and one errno for TCONF.
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-I'm leaning increasingly towards partitioning the test, so that bits can
-be filtered out somehow. Then people can focus on the bits they really
-care about.
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
--- 
-Thank you,
-Richard.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] vfs: fix readahead(2) on block devices
+      https://git.kernel.org/vfs/vfs/c/165bb7140aa4
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
