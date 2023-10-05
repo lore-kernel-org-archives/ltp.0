@@ -4,61 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EA5CE7C4FD
-	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 08:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A744E7C4FD
+	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 09:00:49 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 323E23CDAB7
-	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 10:55:39 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 0506B3CDA9C
+	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 11:00:48 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D862D3CD995
- for <ltp@lists.linux.it>; Thu,  5 Oct 2023 10:55:28 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id B4B243CB02B
+ for <ltp@lists.linux.it>; Thu,  5 Oct 2023 11:00:37 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0854E600AC7
- for <ltp@lists.linux.it>; Thu,  5 Oct 2023 10:55:27 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EC39F14052EE
+ for <ltp@lists.linux.it>; Thu,  5 Oct 2023 11:00:36 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6507421864;
- Thu,  5 Oct 2023 08:55:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1696496125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=z3Jq18vGPCHiFBjlteK3hHM3fbGdjblcPz60S745ncQ=;
- b=kfG7EpbppbaT0CDLTy9q9vpVW+YIiS6W2fF2Cpu5jYhsxCm+TjJormdYFsonOvgwcB8rft
- wAdlq9cSkvhEF6+h9sR/xQimyVlnRa6qrtFb7uSxspXDIMCN0wG8ekHFMLr70SojVBvHJK
- 1eFHmS4l4nrzaUWaBtfyGpgPn1S1MK8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1696496125;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=z3Jq18vGPCHiFBjlteK3hHM3fbGdjblcPz60S745ncQ=;
- b=i6L85vhCXOpE5CBQuHx26M0vtfubhwQFuymA+kPwigbXgOkAYIsspczZ0CDIMugi9JIt9m
- 1zWDN8VMt1Q56gAA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id ED07321865;
+ Thu,  5 Oct 2023 09:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1696496435;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wdNGLzXvqKNkNwiCbqjmtDAG8EiMKdAoGcKAqj4sq4M=;
+ b=Zz5mUassrl+/CYnCoBspT085DSuQLpphI1tnxH8XofLpPZROF1WwESEk9zoyyTH5VR3uWl
+ YA521WCLynIeq14eWeJ3fOzw2bv8Cd7n/+4gg2pv/R2V3Vry3+uSQgr2hscIKTLkozBSvB
+ 9XCtJ5a15sio6IaicjILJvxXYEzX2Eo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1696496435;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=wdNGLzXvqKNkNwiCbqjmtDAG8EiMKdAoGcKAqj4sq4M=;
+ b=SwIl8NgEtdKWQXH6fa+xmIDD3QAAXoKs3NraCir32vMfgtsCTk4Otds+kWMxh59SUMNv+T
+ cb4aMejlOA1WIACQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 593F613438;
- Thu,  5 Oct 2023 08:55:25 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CA063139C2;
+ Thu,  5 Oct 2023 09:00:35 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id PPd+Ff15HmUvbAAAMHmgww
- (envelope-from <mkittler@suse.de>); Thu, 05 Oct 2023 08:55:25 +0000
-From: Marius Kittler <mkittler@suse.de>
-To: ltp@lists.linux.it
-Date: Thu,  5 Oct 2023 10:55:21 +0200
-Message-ID: <20231005085521.10057-1-mkittler@suse.de>
-X-Mailer: git-send-email 2.42.0
+ by imap2.suse-dmz.suse.de with ESMTPSA id pb/JLzN7HmVZbwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 05 Oct 2023 09:00:35 +0000
+Date: Thu, 5 Oct 2023 11:00:34 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.com>
+Message-ID: <20231005090034.GA102472@pevik>
+References: <20231004121149.30849-1-rpalethorpe@suse.com>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20231004121149.30849-1-rpalethorpe@suse.com>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4] Port getxattr02.c to new test API
+Subject: Re: [LTP] [PATCH] memcg: Account for pages in the per-cpu cache
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,263 +75,61 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-* Utilize `all_filesystems = 1`-mechanism to test on various file
-  systems instead of relying on the temporary directory's file system
-  to support xattr (which it probably does not as it is commonly a
-  tmpfs)
-* Improve error handling
-* Simplify code and description
+Hi Richie,
 
-Signed-off-by: Marius Kittler <mkittler@suse.de>
----
- .../kernel/syscalls/getxattr/getxattr02.c     | 192 +++++++-----------
- 1 file changed, 73 insertions(+), 119 deletions(-)
+[ Cc Li ]
 
-diff --git a/testcases/kernel/syscalls/getxattr/getxattr02.c b/testcases/kernel/syscalls/getxattr/getxattr02.c
-index a42057d0a..dbbce8f16 100644
---- a/testcases/kernel/syscalls/getxattr/getxattr02.c
-+++ b/testcases/kernel/syscalls/getxattr/getxattr02.c
-@@ -1,64 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Copyright (C) 2011 Red Hat, Inc.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of version 2 of the GNU General Public
-- * License as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it
-- * is free of the rightful claim of any third person regarding
-- * infringement or the like.  Any license provided herein, whether
-- * implied or otherwise, applies only to this software file.  Patent
-- * licenses, if any, provided herein do not apply to combinations of
-- * this program with other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-- * 02110-1301, USA.
-+ * Copyright (C) 2011  Red Hat, Inc.
-+ * Copyright (c) 2023 Marius Kittler <mkittler@suse.de>
-  */
- 
--/*
-+/*\
-+ * [Description]
-+ *
-  * In the user.* namespace, only regular files and directories can
-  * have extended attributes. Otherwise getxattr(2) will return -1
-  * and set errno to ENODATA.
-  *
-  * There are 4 test cases:
-- * 1. Get attribute from a FIFO, setxattr(2) should return -1 and
-+ * - Get attribute from a FIFO, setxattr(2) should return -1 and
-  *    set errno to ENODATA
-- * 2. Get attribute from a char special file, setxattr(2) should
-+ * - Get attribute from a char special file, setxattr(2) should
-  *    return -1 and set errno to ENODATA
-- * 3. Get attribute from a block special file, setxattr(2) should
-+ * - Get attribute from a block special file, setxattr(2) should
-  *    return -1 and set errno to ENODATA
-- * 4. Get attribute from a UNIX domain socket, setxattr(2) should
-+ * - Get attribute from a UNIX domain socket, setxattr(2) should
-  *    return -1 and set errno to ENODATA
-  */
- 
- #include "config.h"
- #include <sys/types.h>
--#include <sys/stat.h>
- #include <sys/sysmacros.h>
--#include <sys/wait.h>
--#include <errno.h>
--#include <fcntl.h>
--#include <unistd.h>
--#include <signal.h>
- #include <stdio.h>
- #include <stdlib.h>
--#include <string.h>
--#ifdef HAVE_SYS_XATTR_H
--# include <sys/xattr.h>
--#endif
--#include "test.h"
--#include "safe_macros.h"
- 
--char *TCID = "getxattr02";
-+#include "tst_test.h"
- 
- #ifdef HAVE_SYS_XATTR_H
-+#include <sys/xattr.h>
-+
-+#include "tst_test_macros.h"
-+
-+#define MNTPOINT "mntpoint"
-+#define FNAME MNTPOINT"/getxattr02"
- #define XATTR_TEST_KEY "user.testkey"
- 
- #define FIFO "getxattr02fifo"
-@@ -66,94 +44,70 @@ char *TCID = "getxattr02";
- #define BLK  "getxattr02blk"
- #define SOCK "getxattr02sock"
- 
--static void setup(void);
--static void cleanup(void);
--
--static char *tc[] = {
--	FIFO,			/* case 00, get attr from fifo */
--	CHR,			/* case 01, get attr from char special */
--	BLK,			/* case 02, get attr from block special */
--	SOCK,			/* case 03, get attr from UNIX domain socket */
-+static struct test_case {
-+	char *fname;
-+	int mode;
-+} tcases[] = {
-+	{ /* case 00, get attr from fifo */
-+	 .fname = FNAME FIFO,
-+	 .mode = S_IFIFO,
-+	},
-+	{ /* case 01, get attr from char special */
-+	 .fname = FNAME CHR,
-+	 .mode = S_IFCHR,
-+	},
-+	{ /* case 02, get attr from block special */
-+	 .fname = FNAME BLK,
-+	 .mode = S_IFBLK,
-+	},
-+	{ /* case 03, get attr from UNIX domain socket */
-+	 .fname = FNAME SOCK,
-+	 .mode = S_IFSOCK,
-+	},
- };
- 
--int TST_TOTAL = sizeof(tc) / sizeof(tc[0]);
--
--int main(int argc, char *argv[])
-+static void run(unsigned int i)
- {
--	int lc;
--	int i;
--	int exp_eno;
- 	char buf[BUFSIZ];
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		exp_eno = ENODATA;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(getxattr(tc[0], XATTR_TEST_KEY, buf, BUFSIZ));
--
--			if (TEST_RETURN == -1 && TEST_ERRNO == exp_eno)
--				tst_resm(TPASS | TTERRNO, "expected behavior");
--			else
--				tst_resm(TFAIL | TTERRNO, "unexpected behavior"
--					 " - expected errno %d - Got", exp_eno);
--		}
--	}
--
--	cleanup();
--	tst_exit();
-+	struct test_case *tc = &tcases[i];
-+	dev_t dev = tc->mode == S_IFCHR ? makedev(1, 3) : 0u;
-+
-+	if (mknod(tc->fname, tc->mode | 0777, dev) < 0)
-+		tst_brk(TBROK | TERRNO, "create %s (mode %i) failed", tc->fname, tc->mode);
-+
-+	TEST(getxattr(tc->fname, XATTR_TEST_KEY, buf, BUFSIZ));
-+	if (TST_RET == -1 && TST_ERR == ENODATA)
-+		tst_res(TPASS | TTERRNO, "expected return value");
-+	else
-+		tst_res(TFAIL | TTERRNO, "unexpected return value"
-+				" - expected errno %d - got", ENODATA);
- }
- 
- static void setup(void)
- {
--	int fd;
--	dev_t dev;
--
--	tst_require_root();
--
--	tst_tmpdir();
--
--	/* Test for xattr support */
--	fd = SAFE_CREAT(cleanup, "testfile", 0644);
--	close(fd);
--	if (setxattr("testfile", "user.test", "test", 4, XATTR_CREATE) == -1)
--		if (errno == ENOTSUP)
--			tst_brkm(TCONF, cleanup, "No xattr support in fs or "
--				 "mount without user_xattr option");
--	unlink("testfile");
--
--	/* Create test files */
--	if (mknod(FIFO, S_IFIFO | 0777, 0) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "Create FIFO(%s) failed",
--			 FIFO);
--
--	dev = makedev(1, 3);
--	if (mknod(CHR, S_IFCHR | 0777, dev) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "Create char special(%s)"
--			 " failed", CHR);
--
--	if (mknod(BLK, S_IFBLK | 0777, 0) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "Create block special(%s)"
--			 " failed", BLK);
--
--	if (mknod(SOCK, S_IFSOCK | 0777, 0) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "Create socket(%s) failed",
--			 SOCK);
--
--	TEST_PAUSE;
-+	/* assert xattr support in the current filesystem */
-+	SAFE_TOUCH(FNAME, 0644, NULL);
-+	SAFE_SETXATTR(FNAME, "user.test", "test", 4, XATTR_CREATE);
- }
- 
--static void cleanup(void)
--{
--	tst_rmdir();
--}
--#else /* HAVE_SYS_XATTR_H */
--int main(int argc, char *argv[])
--{
--	tst_brkm(TCONF, NULL, "<sys/xattr.h> does not exist.");
--}
-+static struct tst_test test = {
-+	.all_filesystems = 1,
-+	.needs_root = 1,
-+	.mntpoint = MNTPOINT,
-+	.mount_device = 1,
-+	.skip_filesystems = (const char *const []) {
-+			"exfat",
-+			"tmpfs",
-+			"ramfs",
-+			"nfs",
-+			"vfat",
-+			NULL
-+	},
-+	.setup = setup,
-+	.test = run,
-+	.tcnt = ARRAY_SIZE(tcases)
-+};
-+
-+#else
-+TST_TEST_TCONF("System doesn't have <sys/xattr.h>");
- #endif
--- 
-2.42.0
+> PAGESIZES is one greater than the batch size for charging pages from
+> the per CPU cache. So with MEM_TO_ALLOC=2*PAGESIZES we have two pages
+> that are below the threshold for being charged.
 
+> Sometimes something triggers a flush and the pages get charged to the
+> global counter anyway and the test passes. We have seen cases where
+> the test times out waiting for this to happen.
+
+> So this patch sets a lower bound to allow those cases to pass. It'll
+> probably speed the test up as well.
+
+LGTM.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
+
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  .../controllers/memcg/functional/memcg_subgroup_charge.sh    | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+> index 9bcc01258..3b7311422 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+> @@ -33,8 +33,8 @@ test_subgroup()
+>  	fi
+
+>  	echo $MEMCG_PROCESS_PID > tasks
+> -	signal_memcg_process $MEM_TO_ALLOC
+> -	check_mem_stat "rss" $MEM_TO_ALLOC
+> +	signal_memcg_process $MIN_CHARGED
+> +	check_mem_stat "rss" $MIN_CHARGED $MEM_TO_ALLOC
+
+>  	cd subgroup
+>  	echo $MEMCG_PROCESS_PID > tasks
+> @@ -66,5 +66,6 @@ test3()
+
+>  # Allocate memory bigger than per-cpu kernel memory
+>  MEM_TO_ALLOC=$((PAGESIZES * 2))
+> +MIN_CHARGED=$((2 * (PAGESIZES - 1)))
+
+>  tst_run
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
