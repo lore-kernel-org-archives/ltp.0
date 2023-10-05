@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70BDFE9270C
-	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 14:44:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD272E92706
+	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 14:44:11 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A364A3D050E
-	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 16:43:58 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 2879F3D0532
+	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 16:44:10 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B67C83CF7AF
+ by picard.linux.it (Postfix) with ESMTPS id F2EBF3CF7AF
  for <ltp@lists.linux.it>; Thu,  5 Oct 2023 16:43:38 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A42071A002C9
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 3AE2C1A00ED5
  for <ltp@lists.linux.it>; Thu,  5 Oct 2023 16:43:37 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 35645218B5;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 65CD7218B8;
  Thu,  5 Oct 2023 14:43:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1696517017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=pgJ0tapPdMuH1lWmaeupzL0fPzYybsklfaTRmwP2W9E=;
- b=EOaTeup3ko1KLLqipkiKiXqw3p6tlDkgSflDhcMJ0HAJmByEuCoG/+Z0FJDqDUg6QM4bk0
- qGFdHkX1tkClUICva+dPYE17LFlLC3a+htGjvHDzhiQoa2Aprti+lqw6Bpgc5hQgZ3LLbS
- uHruWONRusQCQBx3FNdvLYEt0rh2ZLI=
+ bh=Xmd6wzSCWNJPchDqjNnNWGHdPA86VN9PptphTtdEEjw=;
+ b=p2QHMW+jGJuznIyF50TSu9eqM51jigbzFMrlVnrIIRsW6DaDvZJrnrSPp5xVKAzcZ7EIyM
+ iypqK83RkVzKvyjyL5hC93ixC50tcQz8o0ES4gOWwOWkYgZ/F5JV7eklMsYyZ2XFfAyMN8
+ Mb3nQWDbDdFjBpIg/gLEHF1sZM8T084=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1696517017;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=pgJ0tapPdMuH1lWmaeupzL0fPzYybsklfaTRmwP2W9E=;
- b=0R1xgwVxlDkyWj775M+nRaA+N2nq0oT6fjceC/hiFQKNK2zMR7Hkuf8XQWJ6DuAxI2AY+h
- N5oZHKZGHC76J3Dw==
+ bh=Xmd6wzSCWNJPchDqjNnNWGHdPA86VN9PptphTtdEEjw=;
+ b=GeoXc6tEfcrjPaHF/TNGVrppswO4v3aK+5yGK0M0NuJGmM2Uu+bY81HZC30A77BNh224Mi
+ t1+ieswDNwIMOyCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 17B0F139C2;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3EC68139C2;
  Thu,  5 Oct 2023 14:43:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wI1dBJnLHmXGOAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id AHOEDZnLHmXGOAAAMHmgww
  (envelope-from <andrea.cervesato@suse.de>); Thu, 05 Oct 2023 14:43:37 +0000
 From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Thu,  5 Oct 2023 16:43:34 +0200
-Message-Id: <20231005144335.16509-2-andrea.cervesato@suse.de>
+Date: Thu,  5 Oct 2023 16:43:35 +0200
+Message-Id: <20231005144335.16509-3-andrea.cervesato@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20231005144335.16509-1-andrea.cervesato@suse.de>
 References: <20231005144335.16509-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 1/2] Rewrite gettid01 test
+Subject: [LTP] [PATCH v3 2/2] Add gettid02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,133 +84,122 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 From: Andrea Cervesato <andrea.cervesato@suse.com>
 
-The old test wasn't doing anything meaningful, but just checking that
-__NR_gettid syscall is working. In this test we check that
-tid == pid, in the case we are not inside a thread.
+This new test is checking if __NR_gettid syscall is properly handling a
+multi-threaded application, by assigning a different TID for each
+thread.
 
 Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+Reviewed-by: Marius Kittler <mkittler@suse.de>
 ---
- testcases/kernel/syscalls/gettid/gettid01.c | 105 ++++----------------
- 1 file changed, 20 insertions(+), 85 deletions(-)
+Removed useless comulative comparision in threads ID check
 
-diff --git a/testcases/kernel/syscalls/gettid/gettid01.c b/testcases/kernel/syscalls/gettid/gettid01.c
-index 7e5b6b175..5f9623e9a 100644
---- a/testcases/kernel/syscalls/gettid/gettid01.c
-+++ b/testcases/kernel/syscalls/gettid/gettid01.c
-@@ -1,96 +1,31 @@
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/gettid/.gitignore |  1 +
+ testcases/kernel/syscalls/gettid/Makefile   |  4 +-
+ testcases/kernel/syscalls/gettid/gettid02.c | 63 +++++++++++++++++++++
+ 4 files changed, 68 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/syscalls/gettid/gettid02.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 8652e0bd3..bba266ea3 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -538,6 +538,7 @@ getsockopt01 getsockopt01
+ getsockopt02 getsockopt02
+ 
+ gettid01 gettid01
++gettid02 gettid02
+ 
+ gettimeofday01 gettimeofday01
+ gettimeofday02 gettimeofday02
+diff --git a/testcases/kernel/syscalls/gettid/.gitignore b/testcases/kernel/syscalls/gettid/.gitignore
+index 78dce3499..9014f7c3a 100644
+--- a/testcases/kernel/syscalls/gettid/.gitignore
++++ b/testcases/kernel/syscalls/gettid/.gitignore
+@@ -1 +1,2 @@
+ /gettid01
++/gettid02
+diff --git a/testcases/kernel/syscalls/gettid/Makefile b/testcases/kernel/syscalls/gettid/Makefile
+index 4e9982f76..5345eb0f5 100644
+--- a/testcases/kernel/syscalls/gettid/Makefile
++++ b/testcases/kernel/syscalls/gettid/Makefile
+@@ -10,7 +10,9 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ ifeq ($(ANDROID), 1)
+-FILTER_OUT_MAKE_TARGETS	+= gettid01
++FILTER_OUT_MAKE_TARGETS	+= gettid01 gettid02
+ endif
+ 
++gettid02: LDLIBS += -lpthread
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/gettid/gettid02.c b/testcases/kernel/syscalls/gettid/gettid02.c
+new file mode 100644
+index 000000000..61f115fc9
+--- /dev/null
++++ b/testcases/kernel/syscalls/gettid/gettid02.c
+@@ -0,0 +1,63 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * Crackerjack Project
-- *
-- * Copyright (C) 2007-2008, Hitachi, Ltd.
-- * Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,
-- *            Yumiko Sugita <yumiko.sugita.yf@hitachi.com>,
-- *            Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * as published by the Free Software Foundation; either version 2
-- * of the License, or (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-- *
-- * $Id: gettid01.c,v 1.5 2009/10/26 14:55:47 subrata_modak Exp $
++/*
 + * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
 + */
 +/*\
 + * [Description]
-  *
-+ * This test checks if parent pid is equal to tid in single-threaded
-+ * application.
-  */
- 
--/* Porting from Crackerjack to LTP is done
--   by Masatake YAMATO <yamato@redhat.com> */
--
--#include <sys/types.h>
--#include <linux/unistd.h>
--#include <errno.h>
--
--#include "test.h"
--
--void setup();
--void cleanup();
--
--char *TCID = "gettid01";
--
--int TST_TOTAL = 1;
--
--pid_t my_gettid(void)
--{
--	return (pid_t) syscall(__NR_gettid);
--}
--
--int main(int ac, char **av)
--{
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	/*
--	 * The following loop checks looping state if -c option given
--	 */
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
++ *
++ * This test spawns multiple threads, then check for each one of them if the
++ * parent ID is different AND if the thread ID is different from all the other
++ * spwaned threads.
++ */
++
 +#include "tst_test.h"
 +#include "lapi/syscalls.h"
- 
--		tst_count = 0;
--
--		TEST(my_gettid());
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "gettid() Failed, errno=%d: %s",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--			tst_resm(TPASS, "gettid() returned %ld",
--				 TEST_RETURN);
--		}
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- */
--void setup(void)
++#include "tst_safe_pthread.h"
++
++#define THREADS_NUM 10
++
++static pid_t tids[THREADS_NUM];
++
++static void *threaded(void *arg)
++{
++	int i = *(int *)arg;
++	pid_t pid, tid;
++
++	pid = tst_syscall(__NR_getpid);
++	tid = tst_syscall(__NR_gettid);
++
++	TST_EXP_EXPR(pid != tid,
++		"parent ID (%d) differs from thread[%d] ID (%d)",
++		pid, i, tid);
++
++	return (void *)tst_syscall(__NR_gettid);
++}
++
 +static void run(void)
- {
-+	long pid, tid;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	SAFE_FILE_LINES_SCANF("/proc/self/status", "Pid: %ld", &pid);
-+	SAFE_FILE_LINES_SCANF("/proc/self/status", "Tgid: %ld", &tid);
- 
--	TEST_PAUSE;
-+	if (pid != tid)
-+		tst_brk(TBROK, "Test function has been moved inside a thread?");
- 
-+	TST_EXP_EQ_LI(tst_syscall(__NR_gettid), tst_syscall(__NR_getpid));
-+	TST_EXP_EQ_LI(tst_syscall(__NR_gettid), pid);
- }
- 
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- */
--void cleanup(void)
--{
--}
++{
++	pthread_t thread;
++	int error = 0;
++
++	for (int i = 0; i < THREADS_NUM; i++) {
++		SAFE_PTHREAD_CREATE(&thread, NULL, threaded, &i);
++		SAFE_PTHREAD_JOIN(thread, (void **)&tids[i]);
++	}
++
++	for (int i = 0; i < THREADS_NUM; i++) {
++		for (int j = i + 1; j < THREADS_NUM; j++) {
++			if (tids[i] == tids[j]) {
++				tst_res(TINFO, "thread[%d] and thread[%d] have the same ID", i, j);
++				error = 1;
++			}
++		}
++	}
++
++	if (error)
++		tst_res(TFAIL, "Some threads have the same TID");
++	else
++		tst_res(TPASS, "All threads have a different TID");
++}
++
 +static struct tst_test test = {
 +	.test_all = run,
 +};
