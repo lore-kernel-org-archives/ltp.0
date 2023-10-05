@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D60BE9370C
-	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 13:45:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2DCCE93710
+	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 13:49:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0749C3CD9D9
-	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 15:45:25 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id F10843CEFF2
+	for <ltp@archiver.kernel.org>; Thu,  5 Oct 2023 15:49:25 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 05B963CB48E
- for <ltp@lists.linux.it>; Thu,  5 Oct 2023 15:45:12 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 049853CD9D9
+ for <ltp@lists.linux.it>; Thu,  5 Oct 2023 15:49:13 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 253DD60192B
- for <ltp@lists.linux.it>; Thu,  5 Oct 2023 15:45:11 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7D762200BA5
+ for <ltp@lists.linux.it>; Thu,  5 Oct 2023 15:49:13 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DE0891F890;
- Thu,  5 Oct 2023 13:45:07 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 18B081F895;
+ Thu,  5 Oct 2023 13:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1696513507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=cazzJuGC9cY3DDS9MpIm4osq40PAFG1F4vziZjhqdao=;
- b=jYFPrCPlgJ5HtOKNrdsU2OkZIJ6qtLYSQptajw425oaOmFjnb3x6g+SRJUh4odpL6YoM3n
- jsRBrSfnQmpWGlMXFP3tQiv8uKF+nUmxbOUvermV9+3PcgYrFgkEQqOUU4lWM3H7MwxERG
- N9GCLEDhZvZPy+Atx3kZYiE4jNuwD+s=
+ t=1696513753; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=lRH7460r+ymfoRYL3lMuHgUrwi9VZpBMZdEonOPJYEo=;
+ b=BL8xDn2zDts7nuDYvWCaeN5KgQNwTTiErt02nTphMTnV/7rHDjsczCBpfQXvQj0BW8Htpf
+ UWfyFQZWqVchitQkK5RA1L7aTKX/tlwOfMBB57/ICAYvELAesb8wOD59LfwNfZ0cTeJWdZ
+ t6wIIBMY9Kc4rHXV4GRo6OqblrwJ8zA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1696513507;
+ s=susede2_ed25519; t=1696513753;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=cazzJuGC9cY3DDS9MpIm4osq40PAFG1F4vziZjhqdao=;
- b=VxTlAwNBE1oejLXVz035GJ/NUC/DLhX9491jVq0sGJp9pG5MDe+qjXWEHBRynFQGWYdk3C
- 6+GNPKEi7HnB22DA==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=lRH7460r+ymfoRYL3lMuHgUrwi9VZpBMZdEonOPJYEo=;
+ b=Hc8f+GjbS7VT8qbvE5Al1NxGgNhTKbvI8pGP/Uh75MkGL3HKdZOVcJS5bFp1k9l3jyAJN1
+ NO0qNf2GLqgm0vAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8391139C2;
- Thu,  5 Oct 2023 13:45:07 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ED5AC139C2;
+ Thu,  5 Oct 2023 13:49:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 71zhL+O9HmUsFwAAMHmgww
- (envelope-from <mkittler@suse.de>); Thu, 05 Oct 2023 13:45:07 +0000
-From: Marius Kittler <mkittler@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ALZcONi+HmWBGQAAMHmgww
+ (envelope-from <andrea.cervesato@suse.de>); Thu, 05 Oct 2023 13:49:12 +0000
+From: Andrea Cervesato <andrea.cervesato@suse.de>
 To: ltp@lists.linux.it
-Date: Thu,  5 Oct 2023 15:45:04 +0200
-Message-ID: <20231005134504.3828-1-mkittler@suse.de>
-X-Mailer: git-send-email 2.42.0
+Date: Thu,  5 Oct 2023 15:49:11 +0200
+Message-Id: <20231005134911.26758-3-andrea.cervesato@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20231005134911.26758-1-andrea.cervesato@suse.de>
+References: <20231005134911.26758-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Fix memcontrol tests under Tumbleweed
+Subject: [LTP] [PATCH v2 2/2] Add gettid02 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,51 +76,139 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VGhlc2UgdGVzdHMgdXNlIGBhbGxfZmlsZXN5c3RlbXNgIGluIGNvbWJpbmF0aW9uIHdpdGgKYGRl
-dl9taW5fc2l6ZWAgd2hpY2ggZG9lcyBub3Qgd29yayBvbiBUdW1ibGV3ZWVkIGFzIGl0IHJlc3Vs
-dHMKaW46CgpgYGAKdHN0X3Rlc3QuYzoxNjQ0OiBUSU5GTzogPT09IFRlc3Rpbmcgb24geGZzID09
-PQp0c3RfdGVzdC5jOjEwOTk6IFRJTkZPOiBGb3JtYXR0aW5nIC9kZXYvbG9vcDAgd2l0aCB4ZnMg
-b3B0cz0nJyBleHRyYSBvcHRzPScnCkZpbGVzeXN0ZW0gbXVzdCBiZSBsYXJnZXIgdGhhbiAzMDBN
-Qi4K4oCmCnRzdF90ZXN0LmM6MTEwNTogVEJST0s6IG1rZnMueGZzIGZhaWxlZCB3aXRoIGV4aXQg
-Y29kZSAxCmBgYAoKVGhpcyBpcyBsaWtlbHkgYSBsaW1pdGF0aW9uIGludHJvZHVjZWQgaW4gbmV3
-ZXIga2VybmVsIHZlcnNpb25zLgoKSW5jcmVhc2luZyBgZGV2X21pbl9zaXplYCB0byAzMDAgZml4
-ZXMgdGhlIHRlc3RzLiBJbgpgbWVtY29udHJvbDAzYCBhbmQgYG1lbWNvbnRyb2wwNGAgdGhlIGBk
-ZXZfbWluX3NpemVgIHNldHRpbmcKY2FuIGJlIGRyb3BwZWQgY29tcGxldGVseS4KClNpZ25lZC1v
-ZmYtYnk6IE1hcml1cyBLaXR0bGVyIDxta2l0dGxlckBzdXNlLmRlPgotLS0KIHRlc3RjYXNlcy9r
-ZXJuZWwvY29udHJvbGxlcnMvbWVtY2cvbWVtY29udHJvbDAyLmMgfCAyICstCiB0ZXN0Y2FzZXMv
-a2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL21lbWNvbnRyb2wwMy5jIHwgMSAtCiB0ZXN0Y2FzZXMv
-a2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL21lbWNvbnRyb2wwNC5jIHwgMSAtCiAzIGZpbGVzIGNo
-YW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3Rj
-YXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cvbWVtY29udHJvbDAyLmMgYi90ZXN0Y2FzZXMv
-a2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL21lbWNvbnRyb2wwMi5jCmluZGV4IDE2NTYxNzZiNi4u
-MGQ5M2FiZDllIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNn
-L21lbWNvbnRyb2wwMi5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cv
-bWVtY29udHJvbDAyLmMKQEAgLTEzNCw3ICsxMzQsNyBAQCBzdGF0aWMgc3RydWN0IHRzdF90ZXN0
-IHRlc3QgPSB7CiAJLnRjbnQgPSAyLAogCS50ZXN0ID0gdGVzdF9tZW1jZ19jdXJyZW50LAogCS5t
-b3VudF9kZXZpY2UgPSAxLAotCS5kZXZfbWluX3NpemUgPSAyNTYsCisJLmRldl9taW5fc2l6ZSA9
-IDMwMCwKIAkubW50cG9pbnQgPSBUTVBESVIsCiAJLmFsbF9maWxlc3lzdGVtcyA9IDEsCiAJLmZv
-cmtzX2NoaWxkID0gMSwKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMv
-bWVtY2cvbWVtY29udHJvbDAzLmMgYi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNn
-L21lbWNvbnRyb2wwMy5jCmluZGV4IGJjNzI2ZjM5NS4uOWM2YzgwOGUwIDEwMDY0NAotLS0gYS90
-ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL21lbWNvbnRyb2wwMy5jCisrKyBiL3Rl
-c3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cvbWVtY29udHJvbDAzLmMKQEAgLTIzOSw3
-ICsyMzksNiBAQCBzdGF0aWMgc3RydWN0IHRzdF90ZXN0IHRlc3QgPSB7CiAJLmNsZWFudXAgPSBj
-bGVhbnVwLAogCS50ZXN0X2FsbCA9IHRlc3RfbWVtY2dfbWluLAogCS5tb3VudF9kZXZpY2UgPSAx
-LAotCS5kZXZfbWluX3NpemUgPSAyNTYsCiAJLm1udHBvaW50ID0gVE1QRElSLAogCS5hbGxfZmls
-ZXN5c3RlbXMgPSAxLAogCS5za2lwX2ZpbGVzeXN0ZW1zID0gKGNvbnN0IGNoYXIgKmNvbnN0W10p
-ewpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9tZW1jb250
-cm9sMDQuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cvbWVtY29udHJvbDA0
-LmMKaW5kZXggYzk2M2ExY2Q4Li4zMmEwYjlmZDQgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJu
-ZWwvY29udHJvbGxlcnMvbWVtY2cvbWVtY29udHJvbDA0LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5l
-bC9jb250cm9sbGVycy9tZW1jZy9tZW1jb250cm9sMDQuYwpAQCAtMjMyLDcgKzIzMiw2IEBAIHN0
-YXRpYyBzdHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKIAkuY2xlYW51cCA9IGNsZWFudXAsCiAJLnRl
-c3RfYWxsID0gdGVzdF9tZW1jZ19sb3csCiAJLm1vdW50X2RldmljZSA9IDEsCi0JLmRldl9taW5f
-c2l6ZSA9IDI1NiwKIAkubW50cG9pbnQgPSBUTVBESVIsCiAJLmFsbF9maWxlc3lzdGVtcyA9IDEs
-CiAJLnNraXBfZmlsZXN5c3RlbXMgPSAoY29uc3QgY2hhciAqY29uc3RbXSl7Ci0tIAoyLjQyLjAK
-CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8v
-bHRwCg==
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+
+This new test is checking if __NR_gettid syscall is properly handling a
+multi-threaded application, by assigning a different TID for each
+thread.
+
+Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
+---
+Make use of tst_syscall
+
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/gettid/.gitignore |  1 +
+ testcases/kernel/syscalls/gettid/Makefile   |  4 +-
+ testcases/kernel/syscalls/gettid/gettid02.c | 68 +++++++++++++++++++++
+ 4 files changed, 73 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/syscalls/gettid/gettid02.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 8652e0bd3..bba266ea3 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -538,6 +538,7 @@ getsockopt01 getsockopt01
+ getsockopt02 getsockopt02
+ 
+ gettid01 gettid01
++gettid02 gettid02
+ 
+ gettimeofday01 gettimeofday01
+ gettimeofday02 gettimeofday02
+diff --git a/testcases/kernel/syscalls/gettid/.gitignore b/testcases/kernel/syscalls/gettid/.gitignore
+index 78dce3499..9014f7c3a 100644
+--- a/testcases/kernel/syscalls/gettid/.gitignore
++++ b/testcases/kernel/syscalls/gettid/.gitignore
+@@ -1 +1,2 @@
+ /gettid01
++/gettid02
+diff --git a/testcases/kernel/syscalls/gettid/Makefile b/testcases/kernel/syscalls/gettid/Makefile
+index 4e9982f76..5345eb0f5 100644
+--- a/testcases/kernel/syscalls/gettid/Makefile
++++ b/testcases/kernel/syscalls/gettid/Makefile
+@@ -10,7 +10,9 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ ifeq ($(ANDROID), 1)
+-FILTER_OUT_MAKE_TARGETS	+= gettid01
++FILTER_OUT_MAKE_TARGETS	+= gettid01 gettid02
+ endif
+ 
++gettid02: LDLIBS += -lpthread
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/gettid/gettid02.c b/testcases/kernel/syscalls/gettid/gettid02.c
+new file mode 100644
+index 000000000..22e843bad
+--- /dev/null
++++ b/testcases/kernel/syscalls/gettid/gettid02.c
+@@ -0,0 +1,68 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2023 SUSE LLC Andrea Cervesato <andrea.cervesato@suse.com>
++ */
++/*\
++ * [Description]
++ *
++ * This test spawns multiple threads, then check for each one of them if the
++ * parent ID is different AND if the thread ID is different from all the other
++ * spwaned threads.
++ */
++
++#include "tst_test.h"
++#include "lapi/syscalls.h"
++#include "tst_safe_pthread.h"
++
++#define THREADS_NUM 10
++
++static pid_t tids[THREADS_NUM];
++
++static void *threaded(void *arg)
++{
++	int i = *(int *)arg;
++	pid_t pid, tid;
++
++	pid = tst_syscall(__NR_getpid);
++	tid = tst_syscall(__NR_gettid);
++
++	TST_EXP_EXPR(pid != tid,
++		"parent ID (%d) differs from thread[%d] ID (%d)",
++		pid, i, tid);
++
++	return (void *)tst_syscall(__NR_gettid);
++}
++
++static void run(void)
++{
++	pthread_t thread;
++	int error = 0;
++
++	for (int i = 0; i < THREADS_NUM; i++) {
++		SAFE_PTHREAD_CREATE(&thread, NULL, threaded, &i);
++		SAFE_PTHREAD_JOIN(thread, (void **)&tids[i]);
++	}
++
++	for (int i = 0; i < THREADS_NUM; i++) {
++		for (int j = 0; j < THREADS_NUM; j++) {
++			if (i == j)
++				continue;
++
++			if (tids[i] == tids[j]) {
++				tst_res(TINFO, "thread[%d] and thread[%d] have the same ID", i, j);
++				error = 1;
++				goto end;
++			}
++		}
++	}
++
++end:
++	if (error)
++		tst_res(TFAIL, "Some threads have the same TID");
++	else
++		tst_res(TPASS, "All threads have a different TID");
++}
++
++static struct tst_test test = {
++	.test_all = run,
++};
+-- 
+2.35.3
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
