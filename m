@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E3CAE95A8E
-	for <ltp@archiver.kernel.org>; Mon,  9 Oct 2023 08:01:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2667DE95A96
+	for <ltp@archiver.kernel.org>; Mon,  9 Oct 2023 09:44:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6A5CD3CD812
-	for <ltp@archiver.kernel.org>; Mon,  9 Oct 2023 10:01:50 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id D70893CBA73
+	for <ltp@archiver.kernel.org>; Mon,  9 Oct 2023 11:44:53 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AC3073C896E
- for <ltp@lists.linux.it>; Mon,  9 Oct 2023 10:01:35 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id EE5593C8964
+ for <ltp@lists.linux.it>; Mon,  9 Oct 2023 11:44:43 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DA2441BBB450
- for <ltp@lists.linux.it>; Mon,  9 Oct 2023 10:01:34 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E86C61F390;
- Mon,  9 Oct 2023 08:01:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1696838492;
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 70C811A0193E
+ for <ltp@lists.linux.it>; Mon,  9 Oct 2023 11:44:42 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id BF5912184E;
+ Mon,  9 Oct 2023 09:44:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1696844681;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=oUF1KM4ACkOeXrnJnbd6HRq+uHCU1XT/QZiSJs+eEcs=;
- b=RA9/j4FphVBZ8F9T9hF2bdtlzD8+FF8LbLbtUqPI3OGVUS82vgH+DDD2+eAr4wLGfC+ggu
- kGoj50SGzRyGsRr794UwYv2zi0rnoP3tAbKsYBIGzh0m9JQyjrAgjBUstKgVDk7dcIAGsF
- 1x9tZDqNm9efrOFAMGxgUuMcsR9aVjA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1696838492;
+ bh=kAAAWrsGHXYVfKJYQTJjrR+ut741BDviuY2zj335Bvk=;
+ b=ERb4576iD74ibjBLp/dSVbEuyVl90oh8SpsT8oxGPl7TQyFrdMKO2N2w340YwisAWUFnu1
+ QauWRqXhAaJ3dDv+/EX8i7smJpXFwbqcnvJw4q4enqnNRG7ua5/Cicp/BAYO/4O6v6lCA4
+ gdEfx1lj5L/13qIodQYnDQ7GXw1c66U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1696844681;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=oUF1KM4ACkOeXrnJnbd6HRq+uHCU1XT/QZiSJs+eEcs=;
- b=CdmVbfACUX15Nrg+z2PaEGRjI4r7GA8szY3o+ke1F5jjnY//hgVTUY+Hdufhq2ksw+acdX
- vmNK5+18W/orQEAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ bh=kAAAWrsGHXYVfKJYQTJjrR+ut741BDviuY2zj335Bvk=;
+ b=NVn/gCGCbiARS4cMfzhp+Af0fKR46I2ivytjvCoJTWSSw44kqueNk0IIOBTL3qC66EL+KE
+ Dq4U09bPCmuCOcAw==
+Received: from g78 (unknown [10.163.25.62])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C76DD13905;
- Mon,  9 Oct 2023 08:01:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id oiaiLlyzI2WKMwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 09 Oct 2023 08:01:32 +0000
-Date: Mon, 9 Oct 2023 10:01:31 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <20231009080131.GA370124@pevik>
-References: <20230921054821.12855-1-akumar@suse.de>
+ by relay2.suse.de (Postfix) with ESMTPS id 6AC842C142;
+ Mon,  9 Oct 2023 09:44:41 +0000 (UTC)
+References: <20230906134452.9792-1-andrea.cervesato@suse.de>
+ <20231006132514.GA214612@pevik>
+User-agent: mu4e 1.10.7; emacs 29.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 09 Oct 2023 10:35:23 +0100
+Organization: Linux Private Site
+In-reply-to: <20231006132514.GA214612@pevik>
+Message-ID: <875y3g1660.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230921054821.12855-1-akumar@suse.de>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] syscalls/mmap04: Validate mapping perms in
- /proc/self/maps
+Subject: Re: [LTP] [PATCH v1] Rewrite fork04 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,41 +71,38 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
+Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Avinesh,
+Hello,
 
-> Validating the various combinations of prot+flags arguments in mmap()
-> call and parsing the /proc/self/maps file to verifying resulting mapping
-> has the permission bits as requested in mmap() call.
+Petr Vorel <pvorel@suse.cz> writes:
 
-LGTM + you fixed all Cyril's comments.
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+> Hi Andrea, Richie,
+>
+> thanks this rewrite. There are small issues with the copyright and
+> license.
+>
+> ...
+>> +++ b/testcases/kernel/syscalls/fork/fork04.c
+>> @@ -1,328 +1,93 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+> You relicenced to v2+.
+>
+>>  /*
+>> - * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+> Removed valid copyright (although you rewrite the test, we still need to keep
+> the original copyright).
 
-...
-> +	if (!strcmp(perms, tc->exp_perms))
-> +		tst_res(TPASS, "mapping permissions in /proc matched: %s", perms);
-> +	else
-> +		tst_res(TFAIL, "mapping permissions in /proc mismatched,"
-> +						" expected: %s, found: %s",
-> +						tc->exp_perms, perms);
-Very nit: I wouldn't split the string. IMHO it's better to have easier git
-grepping, than follow 80 line rules. Also checkpatch does not complain on this:
+OK, better safe than sorry.
 
-	else
-		tst_res(TFAIL,
-			"mapping permissions in /proc mismatched, expected: %s, found: %s",
-			tc->exp_perms, perms);
-
-This can be fixed before merge.
-
-Kind regards,
-Petr
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
