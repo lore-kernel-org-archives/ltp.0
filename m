@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81D2CCD80CD
-	for <ltp@archiver.kernel.org>; Tue, 10 Oct 2023 13:20:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F95ACD80CE
+	for <ltp@archiver.kernel.org>; Tue, 10 Oct 2023 13:22:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6356D3CF088
-	for <ltp@archiver.kernel.org>; Tue, 10 Oct 2023 15:20:09 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 721123CD68B
+	for <ltp@archiver.kernel.org>; Tue, 10 Oct 2023 15:22:57 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D6ED53C8ACD
- for <ltp@lists.linux.it>; Tue, 10 Oct 2023 15:19:56 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 392BB3C8ACD
+ for <ltp@lists.linux.it>; Tue, 10 Oct 2023 15:22:45 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 22E2D600941
- for <ltp@lists.linux.it>; Tue, 10 Oct 2023 15:19:55 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2EF071A0197B
+ for <ltp@lists.linux.it>; Tue, 10 Oct 2023 15:22:44 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D74141F45A;
- Tue, 10 Oct 2023 13:19:54 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2C337210EB;
+ Tue, 10 Oct 2023 13:22:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1696943994; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1696944164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=G5Vb6GB0GE+FDsx3580vS2ntU4j+c+h4IwqaebVjKuE=;
- b=L0rbhRBlgs+blHaWr/0k8eLsennmeRfFo3lGPKD9+QYE1FJbKu6Bax3R8aIpbmrwltin/j
- XrwlSlGXWq/ADqcK7nY9+zbzM9ymFIN7rP07fXfYOBypW1LVAh9N1MplFShYLS32yHj4sO
- IEpMGHkXdjREErOSobSFv9OLdLIHY2Y=
+ bh=bJvBBQT8/uyJPyM3NMBYOFkF4Fk/m7JTLvpOtw7nozo=;
+ b=nZsS9dme73Rhs1t3UPs37v9hzkgfbgM3bIPRlbLFxLdWYJytc6FoxrIL/s0ZTevxbDeHut
+ ovsBKZGDDcQl/4DVXGcde9irBX5kmyPzvJV4sMpykenHAyk+/opCNYI/V+mvLkIlCf5kkT
+ qVJzOFkvZRSrWtVw8EfafiGUsvHz2i8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1696943994;
+ s=susede2_ed25519; t=1696944164;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=G5Vb6GB0GE+FDsx3580vS2ntU4j+c+h4IwqaebVjKuE=;
- b=BC8KCJ5sDV+ByXCel/EVVfa6prrX8HlRP82ItyfqsFG2fzBdOJsYVIOcfC8Ukwyccp5y/b
- ahZ4UhR6bOYRgsAg==
+ bh=bJvBBQT8/uyJPyM3NMBYOFkF4Fk/m7JTLvpOtw7nozo=;
+ b=eGUPxwsBw0sE6+PcMC3HMfsYHOVic1CYRWuqmibosOIqDIsSImWOAzMcp14mCEvHynxyjS
+ 3wqQ+WNd99hopvBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C13491358F;
- Tue, 10 Oct 2023 13:19:54 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16F4B1358F;
+ Tue, 10 Oct 2023 13:22:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ELVnLnpPJWViZQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 10 Oct 2023 13:19:54 +0000
-Date: Tue, 10 Oct 2023 15:20:36 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id StCDAyRQJWV2ZgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 10 Oct 2023 13:22:44 +0000
+Date: Tue, 10 Oct 2023 15:23:26 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
 To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <ZSVPpG4_ui4k5nES@yuki>
+Message-ID: <ZSVQTs1WTxz5Bioi@yuki>
 References: <20231004124712.3833-1-chrubis@suse.cz>
- <87o7h6zsth.fsf@suse.de>
+ <20231004124712.3833-2-chrubis@suse.cz> <87jzruzs6p.fsf@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <87o7h6zsth.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+In-Reply-To: <87jzruzs6p.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/3] Add tst_iterate_fd()
+Subject: Re: [LTP] [PATCH 1/3] lib: Add tst_fd_iterate()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,32 +84,22 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> >  - adds tst_iterate_fd() functionality
-> >  - make use of tst_iterate_fd() in readahead01
-> >  - add accept03 test which uses tst_iterate_fd()
-> >
-> > This is a prototype for how the functionality to iterate over different
-> > file descriptors should look like it converts one tests and adds
-> > another. There is plenty of other syscalls that can use this kind of
-> > testing, e.g. all fooat() syscalls where we can pass invalid dir_fd, the
-> > plan is to add these if/once we agree on the API.
+> I don't wish to over complicate this, but how many potential fd types
+> could there be 100, 1000? Some could have complicated init logic.
+
+I'm at 25 at the moment, suprisingly all of them so far are a syscall
+with a few parameters, sometimes packed in a struct.
+
+> I'm wondering if at the outset it would be better to define an interface
+> struct with name, setup and teardown for each FD type, plus whatever
+> other meta-data might be useful for filtering.
 > 
-> I imagine the results of using this with splice could be very interesting.
+> Then instead of a case statement, we put the structs in an array etc.
 
-Good idea, I guess that we need to figure out how to do carthesian
-multiplication on the different file descriptors though. Maybe we need
-to treat the tst_interate_fd() as an iterator so that we can advance to
-the next fd with each call, so that we can do:
-
-	struct tst_fd fd_in = {}, fd_out = {};
-
-	while (tst_iterate_fd(&fd_in)) {
-		while (tst_iterate_fd(&fd_out)) {
-			...
-			TST_TEST(splice(fd_in.fd, 0, fd_out.fd, 0, ...));
-			...
-		}
-	}
+I guess that we can, but we would have to add some private data area to
+the tst_fd, so that we can tear down things cleanly, but we would need
+that if we want to convert the tst_iterate_fd() to be iterator-like
+anyways.
 
 -- 
 Cyril Hrubis
