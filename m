@@ -4,60 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD24ECD6E53
-	for <ltp@archiver.kernel.org>; Wed, 11 Oct 2023 09:30:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE25BCD6E5A
+	for <ltp@archiver.kernel.org>; Wed, 11 Oct 2023 10:55:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E73233CD4E1
-	for <ltp@archiver.kernel.org>; Wed, 11 Oct 2023 11:29:59 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 3FCB73CD5B0
+	for <ltp@archiver.kernel.org>; Wed, 11 Oct 2023 12:55:33 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 56AEC3C62DB
- for <ltp@lists.linux.it>; Wed, 11 Oct 2023 11:29:50 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B0BE0206C2C
- for <ltp@lists.linux.it>; Wed, 11 Oct 2023 11:29:49 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 23DB9211C2;
- Wed, 11 Oct 2023 09:29:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1697016589;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wQkyMDRCDV39lielmBu7dSdw70sXgwk+vQB3IWE8pcc=;
- b=kVe9ORq3M7FeJ7dxjk8kScHKW9k7/PX4/kJWtb/tzmZ+hQjiyIhgePq+ynUPt78DDyr7jG
- j/c1x8zIA1heUyALnVte9J5ZUa4pZBLSrtCKHc6+yWpPDXj5KrKgxZPO/onl+DdnMixxf3
- CCVQ5w1PSFW0J4nBiW1aDpcmIBzRa9I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1697016589;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wQkyMDRCDV39lielmBu7dSdw70sXgwk+vQB3IWE8pcc=;
- b=KnDGCuiLUFeygNjq7UsuqAXr6AqQ24P2XM49tgxDnclgqtxFj75gpI70G3RUycnSDd60v3
- RiGsK3mNnwZwk+Ag==
-Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.25.62])
+ by picard.linux.it (Postfix) with ESMTPS id 2693B3C88F3
+ for <ltp@lists.linux.it>; Wed, 11 Oct 2023 12:55:23 +0200 (CEST)
+Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com
+ [139.138.61.252])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id C92752C665;
- Wed, 11 Oct 2023 09:29:48 +0000 (UTC)
-References: <20230908092822.27085-1-andrea.cervesato@suse.de>
-User-agent: mu4e 1.10.7; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Date: Wed, 11 Oct 2023 10:29:31 +0100
-Organization: Linux Private Site
-In-reply-to: <20230908092822.27085-1-andrea.cervesato@suse.de>
-Message-ID: <87bkd5zeur.fsf@suse.de>
-MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 84942140045A
+ for <ltp@lists.linux.it>; Wed, 11 Oct 2023 12:55:21 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="114521408"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694703600"; d="scan'208";a="114521408"
+Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
+ by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Oct 2023 19:55:20 +0900
+Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com
+ [192.168.87.60])
+ by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 6B82CCA1E6
+ for <ltp@lists.linux.it>; Wed, 11 Oct 2023 19:55:18 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 9D2FA13F78
+ for <ltp@lists.linux.it>; Wed, 11 Oct 2023 19:55:17 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 217C96BC67
+ for <ltp@lists.linux.it>; Wed, 11 Oct 2023 19:55:17 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.215.131])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id A632C1A0074;
+ Wed, 11 Oct 2023 18:55:16 +0800 (CST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: ltp@lists.linux.it
+Date: Wed, 11 Oct 2023 18:55:08 +0800
+Message-Id: <1697021709-22916-2-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1697021709-22916-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1697021709-22916-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27928.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27928.006
+X-TMASE-Result: 10--4.988900-10.000000
+X-TMASE-MatchedRID: 8Mx/Esjxkj+hhjsqgSuNbxF4zyLyne+AVBDQSDMig9HEosIs7IJbkM+a
+ lSM7Pep8VZb3m5KO5MrGwFKyQ3xFG5r9F4bPByvNngIgpj8eDcBpkajQR5gb3savT21DsLD/UEh
+ Wy9W70AEnRE+fI6etktOVWH7Ecb7cjB87iXP/P2+IJZhWfEGyKNtUGejMBBWjC7/wO5XtIIYvlk
+ MsRp0iGUwlKyvc+X8jdY59uJua3sa91LHSquc7ZUu/kTKv9giuqwOHO1Fdn0Kb4tj0DvxRUIs9r
+ o6z1cfchCFNTbTJJtE=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Merge fork06 and fork11 into new test
+Subject: [LTP] [PATCH 2/3] link05: Convert docs to docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,32 +72,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ testcases/kernel/syscalls/link/link05.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Andrea Cervesato <andrea.cervesato@suse.de> writes:
-
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
->
-> fork06 and fork11 worked in the same way, spawning multiple processes
-> inside parent and waiting until they complete by checking wait() pid
-> result. fork06 was spawning 1000 children, fork11 was spawning 100
-> children. For this reason, fork_procs now merges both of them,
-> including an option that selects amount of processes we want to spawn.
->
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-
-Merged, thanks!
-
+diff --git a/testcases/kernel/syscalls/link/link05.c b/testcases/kernel/syscalls/link/link05.c
+index 95787ec24..1e75cfc30 100644
+--- a/testcases/kernel/syscalls/link/link05.c
++++ b/testcases/kernel/syscalls/link/link05.c
+@@ -1,12 +1,14 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *  AUTHOR		: Richard Logan
+- *  CO-PILOT		: William Roske
++ * AUTHOR		: Richard Logan
++ * CO-PILOT		: William Roske
+  * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
+  */
+ 
+-/*
++/*\
++ * [Description]
++ *
+  * Test if link(2) fails with EMLINK.
+  */
+ 
 -- 
-Thank you,
-Richard.
+2.39.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
