@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E581CD6E5B
-	for <ltp@archiver.kernel.org>; Wed, 11 Oct 2023 10:55:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AB1CCD6E5D
+	for <ltp@archiver.kernel.org>; Wed, 11 Oct 2023 12:15:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5E1CC3CD503
-	for <ltp@archiver.kernel.org>; Wed, 11 Oct 2023 12:55:54 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 610073CD55E
+	for <ltp@archiver.kernel.org>; Wed, 11 Oct 2023 14:15:53 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D136A3C88F3
- for <ltp@lists.linux.it>; Wed, 11 Oct 2023 12:55:23 +0200 (CEST)
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
- [139.138.37.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 7FBD63CB456
+ for <ltp@lists.linux.it>; Wed, 11 Oct 2023 14:15:41 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 3DB95140126C
- for <ltp@lists.linux.it>; Wed, 11 Oct 2023 12:55:22 +0200 (CEST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="115131664"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694703600"; d="scan'208";a="115131664"
-Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
- by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Oct 2023 19:55:20 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
- [192.168.87.58])
- by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id CB43E7E100
- for <ltp@lists.linux.it>; Wed, 11 Oct 2023 19:55:18 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 0B7E3D88B2
- for <ltp@lists.linux.it>; Wed, 11 Oct 2023 19:55:18 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id A1F11200649D6
- for <ltp@lists.linux.it>; Wed, 11 Oct 2023 19:55:17 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.215.131])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 2ACE01A006F;
- Wed, 11 Oct 2023 18:55:17 +0800 (CST)
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 85C7B200BCA
+ for <ltp@lists.linux.it>; Wed, 11 Oct 2023 14:15:40 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B2A611FEBF;
+ Wed, 11 Oct 2023 12:15:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1697026539; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ybwtw9v6FPiAmXqcnOa0VPwsjBobV8Y+DEs1mUKCNZo=;
+ b=mI5TNmTPKouc7Zy6Diwdn9Wj9m1Z5aEIuzLVHFKRaqfRoMEoO8+g5nMaySI+5q7sj4JwHW
+ yVa4E5QeHwMyDUE+M9B59/WnAZNHXsOq7u/Rj4Ps8r1qfOqJMvNlX9S8hFhByGiPSV7FwE
+ Q+nbqufBHRRoenpSDdgpze0NNvh9z1U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1697026539;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ybwtw9v6FPiAmXqcnOa0VPwsjBobV8Y+DEs1mUKCNZo=;
+ b=yVPecAMRqm/LmRCIyLZmn53tFM2KdocWHRUvzDso5w3M5HGJt6N8iwrLK54sSqGN9su3/x
+ siXvG75B2Bes33CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9FA4D138EF;
+ Wed, 11 Oct 2023 12:15:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id SEigJeuRJmUsIwAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 11 Oct 2023 12:15:39 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
 To: ltp@lists.linux.it
-Date: Wed, 11 Oct 2023 18:55:09 +0800
-Message-Id: <1697021709-22916-3-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1697021709-22916-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1697021709-22916-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27928.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27928.006
-X-TMASE-Result: 10--8.222900-10.000000
-X-TMASE-MatchedRID: v71phiYrRiGhhjsqgSuNbxF4zyLyne+ATJDl9FKHbrmOEENgsUAuYpGH
- Z85Onc+2n92kMT5ikLc3hH9FVqz6aATsy5Ctk/ajngIgpj8eDcAZ1CdBJOsoY8RB0bsfrpPIfiA
- qrjYtFiQX/yIf9khEf4j5Bz+/F3OrZLSHLe1MfzO4DTHFsNnden7cGd19dSFd
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+Date: Wed, 11 Oct 2023 14:14:48 +0200
+Message-ID: <20231011121448.23134-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] link08: Convert docs to docparse
+Subject: [LTP] [PATCH] runtest/syscalls: Add missing entry for splice06
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,61 +71,32 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-MIME-Version: 1.0
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Fixes: 895edeed2ebe ("splice06.c: Add splice check on proc files")
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/link/link08.c | 30 +++++++++++++------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
+ runtest/syscalls | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/link/link08.c b/testcases/kernel/syscalls/link/link08.c
-index d3e33d077..b3bffb31e 100644
---- a/testcases/kernel/syscalls/link/link08.c
-+++ b/testcases/kernel/syscalls/link/link08.c
-@@ -3,21 +3,23 @@
-  * Copyright (c) 2014 Fujitsu Ltd.
-  * Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-  */
--/*
-- * Test Description:
-- *  Verify that,
-- *   1. link() fails with -1 return value and sets errno to EPERM
-- *      if oldpath is a directory.
-- *   2. link() fails with -1 return value and sets errno to EXDEV
-- *      if oldpath and newpath are not on the same mounted file system( Linux
-- *      permits a file system to be mounted at multiple points, but link()
-- *      does not work across different mount points, even if the same
-- *      file system is mounted on both. ).
-- *   3. link() fails with -1 return value and sets errno to EROFS
-- *      if the file is on a read-only file system.
-- *   4. link() fails with -1 return value and sets errno to ELOOP
-- *      if too many symbolic links were encountered in resolving path.
-+
-+/*\
-+ * [Description]
-+ *
-+ * - link() fails with -1 return value and sets errno to EPERM
-+ *   if oldpath is a directory.
-+ * - link() fails with -1 return value and sets errno to EXDEV
-+ *   if oldpath and newpath are not on the same mounted file system( Linux
-+ *   permits a file system to be mounted at multiple points, but link()
-+ *   does not work across different mount points, even if the same
-+ *   file system is mounted on both. ).
-+ * - link() fails with -1 return value and sets errno to EROFS
-+ *   if the file is on a read-only file system.
-+ * - link() fails with -1 return value and sets errno to ELOOP
-+ *   if too many symbolic links were encountered in resolving path.
-  */
-+
- #include <errno.h>
- #include "tst_test.h"
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 149c93820..53e519639 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1513,6 +1513,7 @@ splice02 splice02
+ splice03 splice03
+ splice04 splice04
+ splice05 splice05
++splice06 splice06
  
+ tee01 tee01
+ tee02 tee02
 -- 
-2.39.1
+2.41.0
 
 
 -- 
