@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D97A5CDB482
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 09:19:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD4BBCDB46E
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 09:29:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3349C3CD433
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 11:19:13 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id E8C9E3CD439
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 11:29:03 +0200 (CEST)
 Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BD7BE3C8903
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 11:19:02 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 408903C8B68
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 11:28:53 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 50EB01000376
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 11:19:02 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8D942100095E
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 11:28:52 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9F7441F74C;
- Thu, 12 Oct 2023 09:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1697102341; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C132A1F74B
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 09:28:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1697102931; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OY7dRLvz8/heZkhu7l84J77vvKalTvxk5IvslXbtw4Y=;
- b=nF64GWtAz4AqMpKlljoHdyvxcrdpHMU9BFr76EE1VXB1XIPJXzs7hQzRu4jLjD28zZLhNy
- 5vMvvHUh0DTRZDhJzdTWRNwlZRaUlrvj4QZD3mcEW2/KC7fOAnEJCjLw1Mel5d696Wthhi
- VzY0L+6ObF/ekuqwyrgDEPphYw6vi08=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1697102341;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ bh=KrS1D7JMy8b1RZC42zP0pugrd+QlKjN18LPIWTmfRGk=;
+ b=fRcZmo1ITPQAIa+dW4BIEeVJOAqIYz2UtsorI96Fc1Sox/4YnC3MoAVEjDkz6DCmfrJmLi
+ 2tNmsUYjWKk1zAS358YD747t3LoMrtsnkC+0JOnGzH6QxOvjn9JHh7nywLWIy4+RWdNPu1
+ YMTQE5WV/yh7+J2IuygFCUJxD6xxHl0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1697102931;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=OY7dRLvz8/heZkhu7l84J77vvKalTvxk5IvslXbtw4Y=;
- b=hQgoeHYci0WduSFKWaowsKhfOPf4oC2FF0A0UxSLrzPhDByD56IzZINb8q5koAd3RJ4g9o
- 8Q8aGXf9Y2Q37eAg==
+ bh=KrS1D7JMy8b1RZC42zP0pugrd+QlKjN18LPIWTmfRGk=;
+ b=Nxu0l6w/xDg82gktxYmm7aT/ZLUi5y8Wz026sec3Gi5k0ZXC9KTL0hpu1XPEZbc3zPv/qK
+ wEiKMNjccQeIYfDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 78321139ED;
- Thu, 12 Oct 2023 09:19:01 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B32C9139ED
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 09:28:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id XALGGQW6J2WLaAAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 12 Oct 2023 09:19:01 +0000
-Date: Thu, 12 Oct 2023 11:19:44 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Marius Kittler <mkittler@suse.de>
-Message-ID: <ZSe6MNMQ6L5yJdV4@yuki>
-References: <20231005134504.3828-1-mkittler@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ZH7WKlO8J2WSbQAAMHmgww
+ (envelope-from <mkittler@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 09:28:51 +0000
+From: Marius Kittler <mkittler@suse.de>
+To: ltp@lists.linux.it
+Date: Thu, 12 Oct 2023 11:28:51 +0200
+Message-ID: <4867816.31r3eYUQgx@linux-9lzf>
+In-Reply-To: <20231011162428.583911-1-pvorel@suse.cz>
+References: <20231011162428.583911-1-pvorel@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231005134504.3828-1-mkittler@suse.de>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Fix memcontrol tests under Tumbleweed
+Subject: Re: [LTP] [PATCH 0/2] swapon01: Test on all filesystems, cleanup
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,25 +77,29 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkhCj4gVGhlc2UgdGVzdHMgdXNlIGBhbGxfZmlsZXN5c3RlbXNgIGluIGNvbWJpbmF0aW9uIHdp
-dGgKPiBgZGV2X21pbl9zaXplYCB3aGljaCBkb2VzIG5vdCB3b3JrIG9uIFR1bWJsZXdlZWQgYXMg
-aXQgcmVzdWx0cwo+IGluOgo+IAo+IGBgYAo+IHRzdF90ZXN0LmM6MTY0NDogVElORk86ID09PSBU
-ZXN0aW5nIG9uIHhmcyA9PT0KPiB0c3RfdGVzdC5jOjEwOTk6IFRJTkZPOiBGb3JtYXR0aW5nIC9k
-ZXYvbG9vcDAgd2l0aCB4ZnMgb3B0cz0nJyBleHRyYSBvcHRzPScnCj4gRmlsZXN5c3RlbSBtdXN0
-IGJlIGxhcmdlciB0aGFuIDMwME1CLgo+IOKApgo+IHRzdF90ZXN0LmM6MTEwNTogVEJST0s6IG1r
-ZnMueGZzIGZhaWxlZCB3aXRoIGV4aXQgY29kZSAxCj4gYGBgCj4gCj4gVGhpcyBpcyBsaWtlbHkg
-YSBsaW1pdGF0aW9uIGludHJvZHVjZWQgaW4gbmV3ZXIga2VybmVsIHZlcnNpb25zLgo+Cj4gSW5j
-cmVhc2luZyBgZGV2X21pbl9zaXplYCB0byAzMDAgZml4ZXMgdGhlIHRlc3RzLiBJbgo+IGBtZW1j
-b250cm9sMDNgIGFuZCBgbWVtY29udHJvbDA0YCB0aGUgYGRldl9taW5fc2l6ZWAgc2V0dGluZwo+
-IGNhbiBiZSBkcm9wcGVkIGNvbXBsZXRlbHkuCgpTaG91bGRuJ3Qgd2UganVzdCByZW1vdmUgYWxs
-IG9mIGRldl9taW5fc2l6ZSByZWNvcmRzPwoKV2UgYWxyZWFkeSBoYXZlIERFVl9TSVpFX01CIHNl
-dCB0byAzMDAgaW4gbGliL3RzdF9kZXZpY2UuYyBzbyB3aXRoIG5vCmxpbWl0cyB3ZSB3aWxsIHVz
-ZSB0aGUgZGVmYXVsdCAzMDBNYi4KCi0tIApDeXJpbCBIcnViaXMKY2hydWJpc0BzdXNlLmN6Cgot
-LSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRw
-Cg==
+I guess the code would work and looks generally good to merge. In fact, I 
+tested `.all_filesystems = 1`  myself yesterday. It is just the question 
+whether we actually want it. Is there really coverage to be gained (or does 
+the kernel just the same under the hood anyway regardless of the filesystem)?
+
+> Test on all filesystems to increase coverage.  btrfs and tmpfs
+> currently does not support swap file, but keep it in case this get
+> changed in the future.
+
+Considering btrfs does not support it I guess that means the kernel does 
+indeed different things under the hood so the coverage might be beneficial. (If 
+it was just about tmpfs then I'd say it makes no sense to put a swapfile there 
+in any case and it will therefore likely never be supported.)
+
+Reviewed-by: Marius Kittler <mkittler@suse.de>
+
+
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
