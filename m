@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 793FBCDB46E
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 10:08:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF94BCDB46E
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 10:40:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AF3523C88A3
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 12:08:25 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 85D9C3CD408
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 12:40:23 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7556D3C8882
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:08:16 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id B87AF3C888A
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:40:13 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6C9101009BFA
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:08:14 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1F84D208E11
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:40:12 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7C2BB2185E;
- Thu, 12 Oct 2023 10:08:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1697105293;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 539E01F88C
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:40:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1697107212; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kBtiiUxM50/ccVip0oiCk20K1lHboKVa5CB5IIJGnpg=;
- b=oA/2E4ChevdA4TVm3oci/juisnu3ZqEgYMLreEgFd1QlyhMh17fNPD33yxX6pw5xSxUzRV
- VwHzC61HmEzNpLcy9B2GC8kSHchB6/j3LRD1y78PdMm5bErsCA2tYh1j9/P2DQrfiYeTwt
- MMWhSGg9y9UUCmm+BiNtR2Tsl/Z8X8k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1697105293;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ bh=WSVLKarxwj4Y9CaSNNqq3+vx0OrLQy0xVLirG9BA5YQ=;
+ b=xzkvE3JmIC9/p3H5l/hfjSmfFif0Nka4RR6rMaZNnfUnpneStItMlujmnTfd0gQ3joUKet
+ hr7cKMdrT2a7fao7YuhD1JodtGsqBqVgBLapF3rDdNNWDd2dwHkKZwhvPs/7Gm50UJskGq
+ TIHhUMBto7GmQv8t00fJXeuPAfh8p/I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1697107212;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=kBtiiUxM50/ccVip0oiCk20K1lHboKVa5CB5IIJGnpg=;
- b=QiqAlz7dNQ3QpGtLZRvJyP5K+Pxpf9KgnMHBEQR8Hy0Dw950sFDJSjm1IJzwDNXzo0vm9b
- USS3JFziPkPU4jBQ==
+ bh=WSVLKarxwj4Y9CaSNNqq3+vx0OrLQy0xVLirG9BA5YQ=;
+ b=KaZtM6eKtWep+Ic8x5YJF+MVmuFZ7B2sQVNxe6CTzq5zmxjtHJWNT77m7VMHgsYiZ84SYo
+ XzCUqE6xfdrh7QCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 651F9139F9;
- Thu, 12 Oct 2023 10:08:13 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 452E6139F9
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:40:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 22d/F43FJ2WoBQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 12 Oct 2023 10:08:13 +0000
-Date: Thu, 12 Oct 2023 12:08:12 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <20231012100812.GD618148@pevik>
-References: <1697021709-22916-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1697021709-22916-2-git-send-email-xuyang2018.jy@fujitsu.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id Y4fdDwzNJ2V/FgAAMHmgww
+ (envelope-from <mkittler@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:40:12 +0000
+From: Marius Kittler <mkittler@suse.de>
+To: ltp@lists.linux.it
+Date: Thu, 12 Oct 2023 12:40:11 +0200
+Message-ID: <2301548.ElGaqSPkdT@linux-9lzf>
+In-Reply-To: <20231012091546.607702-1-pvorel@suse.cz>
+References: <20231012091546.607702-1-pvorel@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1697021709-22916-2-git-send-email-xuyang2018.jy@fujitsu.com>
-Authentication-Results: smtp-out1.suse.de;
+Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spamd-Result: default: False [-3.32 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.02)[54.21%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Spamd-Result: default: False [-4.68 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; BAYES_HAM(-1.58)[92.26%];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ NEURAL_HAM_LONG(-3.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCPT_COUNT_ONE(0.00)[1];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]; CTE_CASE(0.50)[]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/3] link05: Convert docs to docparse
+Subject: Re: [LTP] [PATCH 1/1] tst_clocks.c: Fix stack smashing on 32bit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,50 +89,17 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Xu,
+LGTM, especially since you've shown how you reproduced/tested it.
 
-> +++ b/testcases/kernel/syscalls/link/link05.c
-> @@ -1,12 +1,14 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
->   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-> - *  AUTHOR		: Richard Logan
-> - *  CO-PILOT		: William Roske
-> + * AUTHOR		: Richard Logan
-> + * CO-PILOT		: William Roske
-* Authors: Richard Logan, William Roske
+Reviewed-by: Marius Kittler <mkittler@suse.de>
 
->   * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
-* Copyright (c) Linux Test Project, 2001-2023
 
->   */
 
-With this fixed:
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-> -/*
-> +/*\
-> + * [Description]
-> + *
->   * Test if link(2) fails with EMLINK.
->   */
-
-I was thinking how to cleanup test a bit. I don't like the loop
-(SAFE_STAT(fname, &fbuf)). It could be simplified with putting
-the loop into .tcnt = 1000, if (1000) (and put 1000 to #define).
-
-Also it mixes tabs and spaces (visible in make check-link05,
-spaces should be converted to tabs).
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
