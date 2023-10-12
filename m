@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5038DCDB482
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 08:41:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2118CDB47E
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 08:41:42 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 18D643CD467
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 10:41:28 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id AA5133CD493
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 10:41:40 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 89CDF3C8883
+ by picard.linux.it (Postfix) with ESMTPS id F11973C8883
  for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:41:16 +0200 (CEST)
 Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
  [139.138.36.225])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6699D600A31
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:41:14 +0200 (CEST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="123564956"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694703600"; d="scan'208";a="123564956"
-Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 6536760122A
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:41:16 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="123564957"
+X-IronPort-AV: E=Sophos;i="6.03,218,1694703600"; d="scan'208";a="123564957"
+Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
  by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  12 Oct 2023 17:41:13 +0900
-Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com
- [192.168.87.60])
- by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id E9D55DDC63
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
+ [192.168.83.66])
+ by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id D7CA0E42B0
  for <ltp@lists.linux.it>; Thu, 12 Oct 2023 17:41:10 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 1B18F31BFF
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 2C082D9688
  for <ltp@lists.linux.it>; Thu, 12 Oct 2023 17:41:10 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id AFAE82005932A
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id BF63D70BDE
  for <ltp@lists.linux.it>; Thu, 12 Oct 2023 17:41:09 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.215.131])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 405761A0071;
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 770041A0074;
  Thu, 12 Oct 2023 16:41:09 +0800 (CST)
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Thu, 12 Oct 2023 16:40:56 +0800
-Message-Id: <1697100058-2859-1-git-send-email-xuyang2018.jy@fujitsu.com>
+Date: Thu, 12 Oct 2023 16:40:57 +0800
+Message-Id: <1697100058-2859-2-git-send-email-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1697100058-2859-1-git-send-email-xuyang2018.jy@fujitsu.com>
+References: <1697100058-2859-1-git-send-email-xuyang2018.jy@fujitsu.com>
 X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27930.006
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27930.006
-X-TMASE-Result: 10--7.409200-10.000000
-X-TMASE-MatchedRID: /2NGPvLZz+MxAROjHaAf207nLUqYrlslFIuBIWrdOeOU8ftiyKjZreCG
- 89wh97wnj/bvtfhhXEtvp+b/wK4TT6Pr79DeRpFZxDiakrJ+Spn4uJ1REX4MHd+CFgPG/6VdTYG
- pyldZn87i8zVgXoAltuJ5hXsnxp7jC24oEZ6SpSkj80Za3RRg8JrByotRiTPW5+j2DKlQS1YkY2
- HJqCntJn2mk02Y8qjXfuSSEYqMKuk=
+X-TMASE-Result: 10--7.451100-10.000000
+X-TMASE-MatchedRID: s7S5NEjjqbIxAROjHaAf207nLUqYrlslFIuBIWrdOeOjEIt+uIPPOBpl
+ bnRIZ6aE+FyTwBk2ojzQiPkh3igW2mttoX8vLlJxxDiakrJ+SpnA10GlIGdlLDQM0/COoudwGJ0
+ UP0AzEBUlnn51CX1pz4Ay6p60ZV62yA7duzCw6dLdB/CxWTRRu25FeHtsUoHuza8uISoVRv1/dm
+ yL323RwZkj3f73jXqBouZyfNImy/BfCOKFKuVYGg==
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] umount01: Simplify test using TST_ macros
+Subject: [LTP] [PATCH 2/3] umount02: Simplify test using TST_ macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,43 +79,45 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/syscalls/umount/umount01.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ testcases/kernel/syscalls/umount/umount02.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/umount/umount01.c b/testcases/kernel/syscalls/umount/umount01.c
-index d05296dce..2950300a7 100644
---- a/testcases/kernel/syscalls/umount/umount01.c
-+++ b/testcases/kernel/syscalls/umount/umount01.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/testcases/kernel/syscalls/umount/umount02.c b/testcases/kernel/syscalls/umount/umount02.c
+index 34a38c998..40fed1fbd 100644
+--- a/testcases/kernel/syscalls/umount/umount02.c
++++ b/testcases/kernel/syscalls/umount/umount02.c
+@@ -2,6 +2,7 @@
  /*
   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+  * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
 + * Copyright (c) Linux Test Project, 2003-2023
   * Author: Nirmala Devi Dhanasekar <nirmala.devi@wipro.com>
   *
-  * Phase I test for the umount(2) system call.
-@@ -23,7 +24,7 @@ static void verify_umount(void)
- 		mount_flag = 1;
- 	}
+  * Check for basic errors returned by umount(2) system call.
+@@ -41,21 +42,14 @@ static void verify_umount(unsigned int n)
+ {
+ 	struct tcase *tc = &tcases[n];
  
--	TEST(umount(MNTPOINT));
-+	TST_EXP_PASS(umount(MNTPOINT), "umount(%s)", MNTPOINT);
- 
- 	if (TST_RET != 0 && TST_ERR == EBUSY) {
- 		tst_res(TINFO, "umount() Failed with EBUSY "
-@@ -31,12 +32,6 @@ static void verify_umount(void)
- 			"is probing newly mounted dirs");
- 	}
- 
--	if (TST_RET != 0) {
--		tst_res(TFAIL | TTERRNO, "umount() Failed");
+-	TEST(umount(tc->mntpoint));
+-
+-	if (TST_RET != -1) {
+-		tst_res(TFAIL, "umount() succeeds unexpectedly");
 -		return;
 -	}
++	TST_EXP_FAIL(umount(tc->mntpoint), tc->exp_errno,
++		     "umount() fail with %s", tc->err_desc);
+ 
+ 	if (tc->exp_errno != TST_ERR) {
+ 		tst_res(TFAIL | TTERRNO, "umount() should fail with %s",
+ 			tst_strerrno(tc->exp_errno));
+ 		return;
+ 	}
 -
--	tst_res(TPASS, "umount() Passed");
- 	mount_flag = 0;
+-	tst_res(TPASS | TTERRNO, "umount() fails as expected: %s",
+-		tc->err_desc);
  }
  
+ static void setup(void)
 -- 
 2.39.1
 
