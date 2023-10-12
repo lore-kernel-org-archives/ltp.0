@@ -4,51 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62C1ECDB46E
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 11:13:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4089CDB46E
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 11:26:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A00FF3CE72E
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 13:13:48 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 174163CD429
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 13:26:07 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C297F3CD3F4
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 13:13:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id A39DC3CD3F4
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 13:25:56 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 0F82D601117
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 13:13:37 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 053321A00A2A
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 13:25:55 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D959D1F74C;
- Thu, 12 Oct 2023 11:13:36 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A9E25211BD;
+ Thu, 12 Oct 2023 11:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1697109216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=/JKSMpQbqQMx7r/aNSeKArfmHHvU2voh05QM/yaMcZY=;
- b=j2AYj8MYFR3a1DpvlMhSdKJEGWwB+BkyV0JpHjtyxkra9iZTmCLTNlRW7Iq2wr4jfEuSCL
- baM3aj+CQiW7oSVmnRcTS3N+T5Nt1PHZn0FYeTgo3eyftyr/SEDpEcD56MbEkF96BjCToP
- MNazkX7jpPLNF1XBkjZy0ERR4HBcwIA=
+ t=1697109954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nm59mcL+dAIkEHeQW3L9A3Tu0zlCasmIdiNHkQQlDyA=;
+ b=DKsN+SVpyQy5tNvt69LtC5yXk0UiX17q1QnUorK1CB8YqFFhMQyyRzf39MF0KHp17oTmTN
+ qEsVauuJPuNcrl3HT/6WZ52RhdJWw1zDY20qhoZ5C/6KS1pWZ2Goms9MyBdgZWk6jN5KOQ
+ 6pRVd/RGlTPk6+uZTVfvl/Fl2MPZQ20=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 454BA139ED;
- Thu, 12 Oct 2023 11:13:36 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 90FD5139ED;
+ Thu, 12 Oct 2023 11:25:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id XfvxB+DUJ2W1KAAAMHmgww
- (envelope-from <wegao@suse.com>); Thu, 12 Oct 2023 11:13:36 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id YJdpE8HXJ2UmLwAAMHmgww
+ (envelope-from <wegao@suse.com>); Thu, 12 Oct 2023 11:25:53 +0000
 To: ltp@lists.linux.it
-Date: Thu, 12 Oct 2023 07:13:33 -0400
-Message-Id: <20231012111333.32004-1-wegao@suse.com>
+Date: Thu, 12 Oct 2023 07:25:48 -0400
+Message-Id: <20231012112548.6887-1-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20231012111333.32004-1-wegao@suse.com>
+References: <20231012111333.32004-1-wegao@suse.com>
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
 	none
 X-Spamd-Result: default: False [0.90 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
@@ -60,9 +64,9 @@ X-Spamd-Result: default: False [0.90 / 50.00]; ARC_NA(0.00)[];
  MID_CONTAINS_FROM(1.00)[]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
  RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] Add test for UI_GET_NAME ioctl
+Subject: [LTP] [PATCH v2] Add test for UI_GET_NAME ioctl
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,11 +88,11 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 Fix:#573
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- testcases/kernel/input/input_helper.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ testcases/kernel/input/input_helper.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
 diff --git a/testcases/kernel/input/input_helper.c b/testcases/kernel/input/input_helper.c
-index 09530fb4d..a5e7bb109 100644
+index 09530fb4d..8f7d6b523 100644
 --- a/testcases/kernel/input/input_helper.c
 +++ b/testcases/kernel/input/input_helper.c
 @@ -32,6 +32,7 @@
@@ -99,24 +103,25 @@ index 09530fb4d..a5e7bb109 100644
  
  static int try_open_device(void)
  {
-@@ -185,6 +186,27 @@ void send_rel_move(int fd, int x, int y)
+@@ -185,6 +186,28 @@ void send_rel_move(int fd, int x, int y)
  	send_event(fd, EV_SYN, 0, 0);
  }
  
 +static int check_ui_get_sysname_ioctl(int fd)
 +{
 +	char name[256];
++
 +	SAFE_IOCTL(NULL, fd, UI_GET_SYSNAME(sizeof(name)), name, NULL);
 +
 +	DIR *test_dir;
++
 +	struct dirent *ent;
 +
 +	test_dir = SAFE_OPENDIR(NULL, "/sys/devices/virtual/input/");
 +
 +	while ((ent = SAFE_READDIR(NULL, test_dir))) {
-+		if (!strcmp(ent->d_name, name)) {
++		if (!strcmp(ent->d_name, name))
 +			return 1;
-+		}
 +		else
 +			continue;
 +	}
@@ -127,7 +132,7 @@ index 09530fb4d..a5e7bb109 100644
  void create_device(int fd)
  {
  	int nb;
-@@ -202,7 +224,7 @@ void create_device(int fd)
+@@ -202,7 +225,7 @@ void create_device(int fd)
  	SAFE_IOCTL(NULL, fd, UI_DEV_CREATE, NULL);
  
  	for (nb = 100; nb > 0; nb--) {
