@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F11ACDB46E
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 08:41:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56A3ECDB482
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 09:13:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8A6EA3C8903
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 10:41:52 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 8563C3CD404
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 11:13:01 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 00D153C888E
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:41:16 +0200 (CEST)
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
- [139.138.37.100])
+ by picard.linux.it (Postfix) with ESMTPS id 8CEA33C888A
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 11:12:51 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 55780600442
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 11:12:50 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 41091216DA;
+ Thu, 12 Oct 2023 09:12:49 +0000 (UTC)
+Received: from g78 (unknown [10.163.25.62])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8883920EB2E
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:41:14 +0200 (CEST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="115281209"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694703600"; d="scan'208";a="115281209"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
- by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 17:41:13 +0900
-Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com
- [192.168.87.60])
- by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 2A6E9CA1E6
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 17:41:11 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 5C272D94B9
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 17:41:10 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id F343C20050184
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 17:41:09 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.215.131])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id A57631A0075;
- Thu, 12 Oct 2023 16:41:09 +0800 (CST)
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: ltp@lists.linux.it
-Date: Thu, 12 Oct 2023 16:40:58 +0800
-Message-Id: <1697100058-2859-3-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1697100058-2859-1-git-send-email-xuyang2018.jy@fujitsu.com>
-References: <1697100058-2859-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27930.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27930.006
-X-TMASE-Result: 10--7.064200-10.000000
-X-TMASE-MatchedRID: s7S5NEjjqbIxAROjHaAf207nLUqYrlslFIuBIWrdOeOU8ftiyKjZreCG
- 89wh97wnj/bvtfhhXEtvp+b/wK4TT5x9fpSDXIUw9k0tWBWiOf/4uJ1REX4MHV80IvgThXk8E0o
- 8W+GU3zA4/aMZkiU+aoAy6p60ZV62yA7duzCw6dLdB/CxWTRRu25FeHtsUoHuZr83rM8yfij9YJ
- ZJY2BFZaH41wU1OuvKRz80cUtJfJywFMlIPaIBbQ==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+ by relay2.suse.de (Postfix) with ESMTPS id DBA682C92F;
+ Thu, 12 Oct 2023 09:12:48 +0000 (UTC)
+References: <20231004121149.30849-1-rpalethorpe@suse.com>
+ <20231005090034.GA102472@pevik>
+User-agent: mu4e 1.10.7; emacs 29.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 12 Oct 2023 10:09:17 +0100
+Organization: Linux Private Site
+In-reply-to: <20231005090034.GA102472@pevik>
+Message-ID: <8734ygyzjl.fsf@suse.de>
+MIME-Version: 1.0
+X-Spamd-Bar: /
+Authentication-Results: smtp-out1.suse.de; dkim=none; dmarc=none;
+ spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor
+ denied by domain of rpalethorpe@suse.de) smtp.mailfrom=rpalethorpe@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [0.79 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[rpalethorpe@suse.de]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
+ NEURAL_HAM_LONG(-3.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ REPLYTO_ADDR_EQ_FROM(0.00)[]; DMARC_NA(0.20)[suse.de];
+ R_SPF_SOFTFAIL(0.60)[~all:c]; HAS_ORG_HEADER(0.00)[];
+ TO_MATCH_ENVRCPT_SOME(0.00)[]; VIOLATED_DIRECT_SPF(3.50)[];
+ MX_GOOD(-0.01)[]; NEURAL_HAM_SHORT(-1.00)[-1.000];
+ RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+ RCVD_NO_TLS_LAST(0.10)[]; FROM_EQ_ENVFROM(0.00)[];
+ R_DKIM_NA(0.20)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_COUNT_TWO(0.00)[2]; MID_RHS_MATCH_FROM(0.00)[]
+X-Rspamd-Queue-Id: 41091216DA
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 3/3] umount03: Simplify test using TST_ macros
+Subject: Re: [LTP] [PATCH] memcg: Account for pages in the per-cpu cache
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,53 +71,78 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-MIME-Version: 1.0
+Reply-To: rpalethorpe@suse.de
+Cc: Martin Doucha <mdoucha@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- testcases/kernel/syscalls/umount/umount03.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Hello,
 
-diff --git a/testcases/kernel/syscalls/umount/umount03.c b/testcases/kernel/syscalls/umount/umount03.c
-index 1cef06fa1..e6bb523b4 100644
---- a/testcases/kernel/syscalls/umount/umount03.c
-+++ b/testcases/kernel/syscalls/umount/umount03.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
-+ * Copyright (c) Linux Test Project, 2003-2023
-  * Author: Nirmala Devi Dhanasekar <nirmala.devi@wipro.com>
-  *
-  * Verify that umount(2) returns -1 and sets errno to  EPERM if the user
-@@ -20,19 +21,12 @@ static int mount_flag;
- 
- static void verify_umount(void)
- {
--	TEST(umount(MNTPOINT));
--
--	if (TST_RET != -1) {
--		tst_res(TFAIL, "umount() succeeds unexpectedly");
--		return;
--	}
-+	TST_EXP_FAIL(umount(MNTPOINT), EPERM, "umount(%s) Failed", MNTPOINT);
- 
- 	if (TST_ERR != EPERM) {
- 		tst_res(TFAIL | TTERRNO, "umount() should fail with EPERM");
- 		return;
- 	}
--
--	tst_res(TPASS | TTERRNO, "umount() fails as expected");
- }
- 
- static void setup(void)
+Merged, thanks!
+
+As discussed on bz, it may be better to drain the stocks
+instead. However there is no direct way to do it.
+
+My idea would be to find the batch size emperically, but it requires a
+rewrite of the test IMO. So let's see if this works for now.
+
+Petr Vorel <pvorel@suse.cz> writes:
+
+> Hi Richie,
+>
+> [ Cc Li ]
+>
+>> PAGESIZES is one greater than the batch size for charging pages from
+>> the per CPU cache. So with MEM_TO_ALLOC=2*PAGESIZES we have two pages
+>> that are below the threshold for being charged.
+>
+>> Sometimes something triggers a flush and the pages get charged to the
+>> global counter anyway and the test passes. We have seen cases where
+>> the test times out waiting for this to happen.
+>
+>> So this patch sets a lower bound to allow those cases to pass. It'll
+>> probably speed the test up as well.
+>
+> LGTM.
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+> Kind regards,
+> Petr
+>
+>> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+>> ---
+>>  .../controllers/memcg/functional/memcg_subgroup_charge.sh    | 5 +++--
+>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+>> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+>> index 9bcc01258..3b7311422 100755
+>> --- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+>> +++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+>> @@ -33,8 +33,8 @@ test_subgroup()
+>>  	fi
+>
+>>  	echo $MEMCG_PROCESS_PID > tasks
+>> -	signal_memcg_process $MEM_TO_ALLOC
+>> -	check_mem_stat "rss" $MEM_TO_ALLOC
+>> +	signal_memcg_process $MIN_CHARGED
+>> +	check_mem_stat "rss" $MIN_CHARGED $MEM_TO_ALLOC
+>
+>>  	cd subgroup
+>>  	echo $MEMCG_PROCESS_PID > tasks
+>> @@ -66,5 +66,6 @@ test3()
+>
+>>  # Allocate memory bigger than per-cpu kernel memory
+>>  MEM_TO_ALLOC=$((PAGESIZES * 2))
+>> +MIN_CHARGED=$((2 * (PAGESIZES - 1)))
+>
+>>  tst_run
+
+
 -- 
-2.39.1
-
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
