@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AFA8CDB46E
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 10:00:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 793FBCDB46E
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 10:08:27 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7E13E3CD3F7
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 12:00:35 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id AF3523C88A3
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 12:08:25 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3B3DA3C8882
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:00:24 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 7556D3C8882
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:08:16 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4A5591A0C24C
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:00:23 +0200 (CEST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 6C9101009BFA
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:08:14 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 992012183F;
- Thu, 12 Oct 2023 10:00:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7C2BB2185E;
+ Thu, 12 Oct 2023 10:08:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1697104823;
+ t=1697105293;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DxZRKLYlUhfeOgjAlVgCc8vBcicGky+u8pV6ovWSxpQ=;
- b=UjoPBEmYeaBiKl/QAMzIODkB900lD+2YvRB0vL4EUHoFTGWPHo3TkLlQU72mPgg3g+UvVS
- k0Ftro4ASlsvT2N8ZMnBxti+t/46f6dES12KyKDRxwMf46x+ckVsXOYrwc5ccYtuhYJ3aW
- +Z821QwHHiA+wS6Edr9JbOeHMOA2Vk8=
+ bh=kBtiiUxM50/ccVip0oiCk20K1lHboKVa5CB5IIJGnpg=;
+ b=oA/2E4ChevdA4TVm3oci/juisnu3ZqEgYMLreEgFd1QlyhMh17fNPD33yxX6pw5xSxUzRV
+ VwHzC61HmEzNpLcy9B2GC8kSHchB6/j3LRD1y78PdMm5bErsCA2tYh1j9/P2DQrfiYeTwt
+ MMWhSGg9y9UUCmm+BiNtR2Tsl/Z8X8k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1697104823;
+ s=susede2_ed25519; t=1697105293;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DxZRKLYlUhfeOgjAlVgCc8vBcicGky+u8pV6ovWSxpQ=;
- b=1qw35WN0ynqiW+4+Te9ygwf2mcfMjaovWdjt62aY5MhE/zYNrawk5xbV4DXIrpXPnR5NB0
- hksysoSdD1xxb0Ag==
+ bh=kBtiiUxM50/ccVip0oiCk20K1lHboKVa5CB5IIJGnpg=;
+ b=QiqAlz7dNQ3QpGtLZRvJyP5K+Pxpf9KgnMHBEQR8Hy0Dw950sFDJSjm1IJzwDNXzo0vm9b
+ USS3JFziPkPU4jBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 80F5D139F9;
- Thu, 12 Oct 2023 10:00:23 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 651F9139F9;
+ Thu, 12 Oct 2023 10:08:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qSFHHrfDJ2WKAQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 12 Oct 2023 10:00:23 +0000
-Date: Thu, 12 Oct 2023 12:00:22 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id 22d/F43FJ2WoBQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 12 Oct 2023 10:08:13 +0000
+Date: Thu, 12 Oct 2023 12:08:12 +0200
 From: Petr Vorel <pvorel@suse.cz>
 To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <20231012100022.GC618148@pevik>
+Message-ID: <20231012100812.GD618148@pevik>
 References: <1697021709-22916-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <1697021709-22916-3-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1697021709-22916-2-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1697021709-22916-3-git-send-email-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <1697021709-22916-2-git-send-email-xuyang2018.jy@fujitsu.com>
 Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [-3.30 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-3.32 / 50.00]; ARC_NA(0.00)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
@@ -74,10 +73,10 @@ X-Spamd-Result: default: False [-3.30 / 50.00]; ARC_NA(0.00)[];
  NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
  FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
  MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[39.24%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.02)[54.21%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] link08: Convert docs to docparse
+Subject: Re: [LTP] [PATCH 2/3] link05: Convert docs to docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,28 +97,41 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Xu,
 
-could you please fixes the formating errors and the grammar?
-...
-> + * - link() fails with -1 return value and sets errno to EXDEV
-> + *   if oldpath and newpath are not on the same mounted file system( Linux
-    *   if the old path and the new path are not on the same mounted file system (Linux
+> +++ b/testcases/kernel/syscalls/link/link05.c
+> @@ -1,12 +1,14 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+> - *  AUTHOR		: Richard Logan
+> - *  CO-PILOT		: William Roske
+> + * AUTHOR		: Richard Logan
+> + * CO-PILOT		: William Roske
+* Authors: Richard Logan, William Roske
 
-> + *   permits a file system to be mounted at multiple points, but link()
-> + *   does not work across different mount points, even if the same
-> + *   file system is mounted on both. ).
-    *   file system is mounted on both).
+>   * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
+* Copyright (c) Linux Test Project, 2001-2023
+
+>   */
+
+With this fixed:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> -/*
+> +/*\
+> + * [Description]
+> + *
+>   * Test if link(2) fails with EMLINK.
+>   */
+
+I was thinking how to cleanup test a bit. I don't like the loop
+(SAFE_STAT(fname, &fbuf)). It could be simplified with putting
+the loop into .tcnt = 1000, if (1000) (and put 1000 to #define).
+
+Also it mixes tabs and spaces (visible in make check-link05,
+spaces should be converted to tabs).
 
 Kind regards,
 Petr
-
-> + * - link() fails with -1 return value and sets errno to EROFS
-> + *   if the file is on a read-only file system.
-> + * - link() fails with -1 return value and sets errno to ELOOP
-> + *   if too many symbolic links were encountered in resolving path.
->   */
-> +
->  #include <errno.h>
->  #include "tst_test.h"
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
