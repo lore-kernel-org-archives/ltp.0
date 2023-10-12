@@ -4,61 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E818CDB46E
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 10:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0550CDB46E
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 10:48:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DDE943CD449
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 12:42:02 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 1073F3CD443
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 12:48:50 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B6CAF3C8B68
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:41:51 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 632393C8B68
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:48:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id E4EE31007CBF
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:41:49 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 138202186F;
- Thu, 12 Oct 2023 10:41:49 +0000 (UTC)
-Received: from g78.cable.virginm.net (unknown [10.163.25.62])
- by relay2.suse.de (Postfix) with ESMTP id B76272C89B;
- Thu, 12 Oct 2023 10:41:48 +0000 (UTC)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id A1D6D1BBEA42
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 12:48:38 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7AA8C1F74B
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:48:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1697107717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=aUABDZ1aHBtOOHObRTtJfZbcwj9ZuwjBAU4PDWKdphA=;
+ b=jfpXxmhqshowanmzZOSVA2Rc10NVorWiZhbLrBVnRpPPs+sCQQyduYfqtR25zCMFYQs7Gc
+ zdguqpVX81A5VLq+wdPpEdXrQ8dta+FC49OVUmnmSQa+7kkaVEYFccs8TLTHg58YwuvwQW
+ inB3X/bTovVT1WHYDdAPv8Ly7VDRLxQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1697107717;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=aUABDZ1aHBtOOHObRTtJfZbcwj9ZuwjBAU4PDWKdphA=;
+ b=bm1KwnwYEKLGrSluiQqCxht9UBoV8BnxqwM6mYCxkWwkR6ppe3Tyr6T8qGNU2XipMICVlw
+ docDoD1jmZfbAcBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 69694139F9
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:48:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id qfDPGAXPJ2UWGwAAMHmgww
+ (envelope-from <mkittler@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 10:48:37 +0000
+From: Marius Kittler <mkittler@suse.de>
 To: ltp@lists.linux.it
-Date: Thu, 12 Oct 2023 11:39:16 +0100
-Message-ID: <20231012103916.30712-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.42.0
+Date: Thu, 12 Oct 2023 12:48:37 +0200
+Message-ID: <13368109.uLZWGnKmhe@linux-9lzf>
+In-Reply-To: <ZSe6MNMQ6L5yJdV4@yuki>
+References: <20231005134504.3828-1-mkittler@suse.de> <ZSe6MNMQ6L5yJdV4@yuki>
 MIME-Version: 1.0
-X-Spamd-Bar: +++++++++++++++
-Authentication-Results: smtp-out1.suse.de; dkim=none;
- dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com
- (policy=quarantine); 
- spf=fail (smtp-out1.suse.de: domain of rpalethorpe@suse.com does not designate
- 149.44.160.134 as permitted sender) smtp.mailfrom=rpalethorpe@suse.com
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [15.00 / 50.00]; ARC_NA(0.00)[];
- R_SPF_FAIL(1.00)[-all]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
- BROKEN_CONTENT_TYPE(1.50)[];
- RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
- NEURAL_HAM_LONG(-3.00)[-1.000];
- DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid
- DKIM,quarantine]; VIOLATED_DIRECT_SPF(3.50)[];
- MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_SHORT(-1.00)[-1.000];
- RCVD_NO_TLS_LAST(0.10)[]; FROM_EQ_ENVFROM(0.00)[];
- R_DKIM_NA(0.20)[]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Queue-Id: 138202186F
-X-Spam: Yes
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-3.10 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; TO_DN_NONE(0.00)[];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ RCPT_COUNT_ONE(0.00)[1];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[]; CTE_CASE(0.50)[]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] Add setsockopt10 TLS ULP UAF CVE-2023-0461
+Subject: Re: [LTP] [PATCH v1] Fix memcontrol tests under Tumbleweed
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,281 +89,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- configure.ac                                  |   1 +
- runtest/cve                                   |   1 +
- runtest/syscalls                              |   1 +
- .../kernel/syscalls/setsockopt/.gitignore     |   1 +
- .../kernel/syscalls/setsockopt/setsockopt10.c | 204 ++++++++++++++++++
- 5 files changed, 208 insertions(+)
- create mode 100644 testcases/kernel/syscalls/setsockopt/setsockopt10.c
+Am Donnerstag, 12. Oktober 2023, 11:19:44 CEST schrieb Cyril Hrubis:
+> 
+> Shouldn't we just remove all of dev_min_size records?
+> 
+> We already have DEV_SIZE_MB set to 300 in lib/tst_device.c so with no
+> limits we will use the default 300Mb.
 
-diff --git a/configure.ac b/configure.ac
-index 662c4c058..ee39f6b25 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -64,6 +64,7 @@ AC_CHECK_HEADERS_ONCE([ \
-     linux/netlink.h \
-     linux/seccomp.h \
-     linux/securebits.h \
-+    linux/tls.h \
-     linux/tty.h \
-     linux/types.h \
-     linux/userfaultfd.h \
-diff --git a/runtest/cve b/runtest/cve
-index f9b36a182..569558af2 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -85,6 +85,7 @@ cve-2022-0847 dirtypipe
- cve-2022-2590 dirtyc0w_shmem
- cve-2022-23222 bpf_prog07
- cve-2023-1829 tcindex01
-+cve-2023-0461 setsockopt10
- # Tests below may cause kernel memory leak
- cve-2020-25704 perf_event_open03
- cve-2022-0185 fsconfig03
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 149c93820..471476411 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1425,6 +1425,7 @@ setsockopt06 setsockopt06
- setsockopt07 setsockopt07
- setsockopt08 setsockopt08
- setsockopt09 setsockopt09
-+setsockopt10 setsockopt10
- 
- settimeofday01 settimeofday01
- settimeofday02 settimeofday02
-diff --git a/testcases/kernel/syscalls/setsockopt/.gitignore b/testcases/kernel/syscalls/setsockopt/.gitignore
-index fd3235bb3..5c05290a5 100644
---- a/testcases/kernel/syscalls/setsockopt/.gitignore
-+++ b/testcases/kernel/syscalls/setsockopt/.gitignore
-@@ -7,3 +7,4 @@
- /setsockopt07
- /setsockopt08
- /setsockopt09
-+/setsockopt10
-diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt10.c b/testcases/kernel/syscalls/setsockopt/setsockopt10.c
-new file mode 100644
-index 000000000..a321fef7d
---- /dev/null
-+++ b/testcases/kernel/syscalls/setsockopt/setsockopt10.c
-@@ -0,0 +1,204 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2023 SUSE LLC Richard Palethorpe <rpalethorpe@suse.com>
-+ */
-+/*\
-+ * [Description]
-+ *
-+ * Reproducer for CVE-2023-0461 which is an exploitable use-after-free
-+ * in a TLS socket. In fact it is exploitable in any User Level
-+ * Protocol (ULP) which does not clone its context when accepting a
-+ * connection.
-+ *
-+ * Because it does not clone the context, the child socket which is
-+ * created on accept has a pointer to the listening socket's
-+ * context. When the child is closed the parent's context is freed
-+ * while it still has a reference to it.
-+ *
-+ * TLS can only be added to a socket which is connected. Not listening
-+ * or disconnected, and a connected socket can not be set to
-+ * listening. So we have to connect the socket, add TLS, then
-+ * disconnect, then set it to listening.
-+ *
-+ * To my knowledge, setting a socket from open to disconnected
-+ * requires a trick; we have to "connect" to an unspecified
-+ * address. This could explain why the bug was not found earlier.
-+ *
-+ * The accepted fix was to disallow listening on sockets with a ULP
-+ * set which does not have a clone function.
-+ *
-+ * The test uses two processes, first the child acts as a server so
-+ * that the parent can create the TLS socket. Then the child connects
-+ * to the parent's TLS socket.
-+ *
-+ * When we try to listen on the parent, the current kernel should
-+ * return EINVAL. However if clone is implemented then this could
-+ * become a valid operation. It is also quite easy to crash the kernel
-+ * if we set some TLS options before doing a double free.
-+ *
-+ * commit 2c02d41d71f90a5168391b6a5f2954112ba2307c
-+ * Author: Paolo Abeni <pabeni@redhat.com>
-+ * Date:   Tue Jan 3 12:19:17 2023 +0100
-+ *
-+ *  net/ulp: prevent ULP without clone op from entering the LISTEN status
-+ */
-+
-+#include "tst_test.h"
-+
-+#ifdef HAVE_LINUX_TLS_H
-+
-+#include <linux/tls.h>
-+#include "netinet/in.h"
-+#include "netinet/tcp.h"
-+#include "tst_checkpoint.h"
-+#include "tst_net.h"
-+#include "tst_safe_net.h"
-+#include "tst_taint.h"
-+
-+static struct tls12_crypto_info_aes_gcm_128 opts = {
-+	.info = {
-+		.version = TLS_1_2_VERSION,
-+		.cipher_type = TLS_CIPHER_AES_GCM_128,
-+	},
-+	.iv = { 'i', 'v' },
-+	.key = { 'k', 'e', 'y' },
-+	.salt = { 's', 'a', 'l', 't' },
-+	.rec_seq = { 'r', 'e', 'c', 's' },
-+};
-+
-+static struct sockaddr_in tcp0_addr, tcp1_addr;
-+static const struct sockaddr unspec_addr = {
-+	.sa_family = AF_UNSPEC
-+};
-+
-+static int tcp0_sk, tcp1_sk, tcp2_sk, tcp3_sk;
-+
-+static void setup(void)
-+{
-+	tst_init_sockaddr_inet(&tcp0_addr, "127.0.0.1", 0x7c90);
-+	tst_init_sockaddr_inet(&tcp1_addr, "127.0.0.1", 0x7c91);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (tcp0_sk > 0)
-+		SAFE_CLOSE(tcp0_sk);
-+	if (tcp1_sk > 0)
-+		SAFE_CLOSE(tcp1_sk);
-+	if (tcp2_sk > 0)
-+		SAFE_CLOSE(tcp2_sk);
-+	if (tcp3_sk > 0)
-+		SAFE_CLOSE(tcp3_sk);
-+}
-+
-+static void child(void)
-+{
-+	tst_res(TINFO, "child: Listen for tcp1 connection");
-+	tcp0_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
-+	SAFE_BIND(tcp0_sk, (struct sockaddr *)&tcp0_addr, sizeof(tcp0_addr));
-+	SAFE_LISTEN(tcp0_sk, 1);
-+	TST_CHECKPOINT_WAKE(0);
-+
-+	tcp3_sk = SAFE_ACCEPT(tcp0_sk, NULL, 0);
-+	TST_CHECKPOINT_WAIT(1);
-+	SAFE_CLOSE(tcp3_sk);
-+	SAFE_CLOSE(tcp0_sk);
-+
-+	tcp3_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
-+	TST_CHECKPOINT_WAIT(2);
-+
-+	tst_res(TINFO, "child: connect for tcp2 connection");
-+	TEST(connect(tcp3_sk, (struct sockaddr *)&tcp1_addr, sizeof(tcp1_addr)));
-+
-+	if (TST_RET == -1) {
-+		tst_res(TINFO | TTERRNO, "child: could not connect to tcp1");
-+		return;
-+	}
-+
-+	TST_CHECKPOINT_WAIT(3);
-+}
-+
-+static void run(void)
-+{
-+	const pid_t child_pid = SAFE_FORK();
-+
-+	if (child_pid == 0) {
-+		child();
-+		return;
-+	}
-+
-+	tcp1_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	tst_res(TINFO, "parent: Connect for tcp0 connection");
-+	SAFE_CONNECT(tcp1_sk, (struct sockaddr *)&tcp0_addr, sizeof(tcp0_addr));
-+	TEST(setsockopt(tcp1_sk, SOL_TCP, TCP_ULP, "tls", 3));
-+
-+	if (TST_RET == -1 && TST_ERR == ENOENT)
-+		tst_brk(TCONF | TTERRNO, "parent: setsockopt failed: The TLS module is probably not loaded");
-+	else if (TST_RET == -1)
-+		tst_brk(TBROK | TTERRNO, "parent: setsockopt failed");
-+
-+	SAFE_SETSOCKOPT(tcp1_sk, SOL_TLS, TLS_TX, &opts, sizeof(opts));
-+	TST_CHECKPOINT_WAKE(1);
-+
-+	tst_res(TINFO, "parent: Disconnect by setting unspec address");
-+	SAFE_CONNECT(tcp1_sk, &unspec_addr, sizeof(unspec_addr));
-+	SAFE_BIND(tcp1_sk, (struct sockaddr *)&tcp1_addr, sizeof(tcp1_addr));
-+
-+	TEST(listen(tcp1_sk, 1));
-+
-+	if (TST_RET == -1) {
-+		if (TST_ERR == EINVAL)
-+			tst_res(TPASS | TTERRNO, "parent: Can't listen on disconnected TLS socket");
-+		else
-+			tst_res(TCONF | TTERRNO, "parent: Can't listen on disconnected TLS socket, but the errno is not EINVAL as expected");
-+
-+		TST_CHECKPOINT_WAKE(2);
-+		goto out;
-+	}
-+
-+	tst_res(TINFO, "parent: Can listen on disconnected TLS socket");
-+	TST_CHECKPOINT_WAKE(2);
-+
-+	tcp2_sk = SAFE_ACCEPT(tcp1_sk, NULL, 0);
-+	SAFE_CLOSE(tcp2_sk);
-+
-+	tst_res(TINFO, "parent: Attempting double free, because we set cipher options this should result in an crash");
-+	SAFE_CLOSE(tcp1_sk);
-+
-+	TST_CHECKPOINT_WAKE(3);
-+	usleep(0);
-+
-+	if (tst_taint_check())
-+		tst_res(TFAIL, "Kernel is tainted");
-+	else
-+		tst_res(TCONF, "No kernel taint or crash, maybe the kernel can clone the TLS-ULP context now?");
-+
-+out:
-+	tst_reap_children();
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+	.taint_check = TST_TAINT_W | TST_TAINT_D,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_TLS",
-+		NULL
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "2c02d41d71f90"},
-+		{"CVE", "2023-0461"},
-+		{}
-+	}
-+};
-+
-+#else
-+
-+TST_TEST_TCONF("linux/tls.h missing, we assume your system is too old");
-+
-+#endif
--- 
-2.40.1
+I thought so, too. However, when running this particular test without this 
+minimum specified explicitly, it runs into the following error:
+
+```
+tst_test.c:1650: TINFO: === Testing on tmpfs ===
+tst_test.c:1105: TINFO: Skipping mkfs for TMPFS filesystem
+tst_test.c:1086: TINFO: Limiting tmpfs size to 32MB
+tst_test.c:1119: TINFO: Mounting ltp-tmpfs to /tmp/LTP_memkrqX1e/mntdir 
+fstyp=tmpfs flags=0
+memcontrol02.c:93: TPASS: Expect: (current=0) == 0
+memcontrol02.c:99: TINFO: Added proc to memcg: memory.current=262144
+memcontrol02.c:46: TPASS: Expect: (memory.current=52690944) >= (size=52428800)
+memcontrol02.c:51: TPASS: Expect: (memory.stat.anon=52449280) > 0
+memcontrol02.c:52: TPASS: Expect: (size=52428800) ~= 
+(memory.stat.anon=52449280)
+memcontrol02.c:54: TPASS: Expect: (memory.current=52690944) ~= 
+(memory.stat.anon=52449280)
+memcontrol02.c:93: TPASS: Expect: (current=0) == 0
+memcontrol02.c:99: TINFO: Added proc to memcg: memory.current=262144
+memcontrol02.c:69: TINFO: Created temp file: memory.current=262144
+memcontrol_common.h:34: TBROK: write(9,0x7ffda0f93710,8192) failed: ENOSPC (28)
+```
+
+Judging by the 3rd TINFO message the size for tmpfs filesystems is 
+intentionally limited to 32MB which presumably also makes generally sense. 
+However, here we *really* need more space. This is most likely also the reason 
+why this test had `.dev_min_size = 256,` before in the first place. The other 
+tests don't need it, though (and I guess the `.dev_min_size = 256,` had just 
+been copied over from the first test).
+
+
 
 
 -- 
