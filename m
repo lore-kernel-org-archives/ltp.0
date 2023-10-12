@@ -4,62 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56A3ECDB482
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 09:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B124CDB46E
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 09:16:06 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8563C3CD404
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 11:13:01 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 6B3D73CD43B
+	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 11:16:04 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8CEA33C888A
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 11:12:51 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id C3E113C888A
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 11:15:53 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 55780600442
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 11:12:50 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 41091216DA;
- Thu, 12 Oct 2023 09:12:49 +0000 (UTC)
-Received: from g78 (unknown [10.163.25.62])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E81C9140004A
+ for <ltp@lists.linux.it>; Thu, 12 Oct 2023 11:15:51 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id DBA682C92F;
- Thu, 12 Oct 2023 09:12:48 +0000 (UTC)
-References: <20231004121149.30849-1-rpalethorpe@suse.com>
- <20231005090034.GA102472@pevik>
-User-agent: mu4e 1.10.7; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 12 Oct 2023 10:09:17 +0100
-Organization: Linux Private Site
-In-reply-to: <20231005090034.GA102472@pevik>
-Message-ID: <8734ygyzjl.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id F3C1521846;
+ Thu, 12 Oct 2023 09:15:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1697102151; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=oc88qmdO0WHpAjdNiirBhAHqzFcWoL4szj+zDpe742o=;
+ b=dOalQD+K3m9yOmqmh1/z9vPniw94nG1c5mWEGId/uP01p6WQRa3g33rDZoX96RnyrKyOb4
+ ZBX1XHfVTQqMN7vOkZsVuCDh7XJqsWOqymG/7+llNbxqr4HHyojlTOkGgirOaMEyg0qNYG
+ eZc3wLAuzzBbSUtbhyEZJMV/fDOy7Gg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1697102151;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=oc88qmdO0WHpAjdNiirBhAHqzFcWoL4szj+zDpe742o=;
+ b=FeABRMViYHldTUTNhpR9BdbVQarrkVi5i0iuFuD1hKXmI2GBtE7Lc4kKRXzGq60DcmpSR0
+ gFCjXJxWnvNIEJBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CF4AD139ED;
+ Thu, 12 Oct 2023 09:15:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id T6SEMUa5J2UDZwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 12 Oct 2023 09:15:50 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu, 12 Oct 2023 11:15:46 +0200
+Message-ID: <20231012091546.607702-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Spamd-Bar: /
-Authentication-Results: smtp-out1.suse.de; dkim=none; dmarc=none;
- spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor
- denied by domain of rpalethorpe@suse.de) smtp.mailfrom=rpalethorpe@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [0.79 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[rpalethorpe@suse.de]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
- NEURAL_HAM_LONG(-3.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- REPLYTO_ADDR_EQ_FROM(0.00)[]; DMARC_NA(0.20)[suse.de];
- R_SPF_SOFTFAIL(0.60)[~all:c]; HAS_ORG_HEADER(0.00)[];
- TO_MATCH_ENVRCPT_SOME(0.00)[]; VIOLATED_DIRECT_SPF(3.50)[];
- MX_GOOD(-0.01)[]; NEURAL_HAM_SHORT(-1.00)[-1.000];
- RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
- RCVD_NO_TLS_LAST(0.10)[]; FROM_EQ_ENVFROM(0.00)[];
- R_DKIM_NA(0.20)[]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; MID_RHS_MATCH_FROM(0.00)[]
-X-Rspamd-Queue-Id: 41091216DA
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-2.09 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCPT_COUNT_FIVE(0.00)[5];
+ NEURAL_HAM_LONG(-3.00)[-1.000];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-2.99)[99.96%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] memcg: Account for pages in the per-cpu cache
+Subject: [LTP] [PATCH 1/1] tst_clocks.c: Fix stack smashing on 32bit
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,78 +83,75 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: Martin Doucha <mdoucha@suse.com>, ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+63e8c1eba introduced a regression on 32 bit compilation when compiled
+with -fstack-protector-strong, because struct timespec is probably too
+small for timespec64.
 
-Merged, thanks!
+    PKG_CONFIG_LIBDIR=/usr/lib/pkgconfig CFLAGS="-m32 -fstack-protector-strong" LDFLAGS="-m32 -fstack-protector-strong" ./configure
+    ...
+    # gdb ./abort01
+    (gdb) set follow-fork-mode child
+    (gdb) run
+    Starting program: testcases/kernel/syscalls/abort/abort01
+    Missing separate debuginfos, use: zypper install glibc-32bit-debuginfo-2.31-150300.52.2.x86_64
+    tst_test.c:1690: TINFO: LTP version: 20230929-7-gff6cdc67f
+    tst_test.c:1576: TINFO: Timeout per run is 0h 00m 30s
+    [Attaching after process 3357 fork to child process 3360]
+    [New inferior 2 (process 3360)]
+    [Detaching after fork from parent process 3357]
+    [Inferior 1 (process 3357) detached]
+    *** stack smashing detected ***: terminated
 
-As discussed on bz, it may be better to drain the stocks
-instead. However there is no direct way to do it.
+    Thread 2.1 "abort01" received signal SIGABRT, Aborted.
+    [Switching to process 3360]
+    0xf7fd2559 in __kernel_vsyscall ()
+    (gdb) bt
+    #0  0xf7fd2559 in __kernel_vsyscall ()
+    #1  0xf7e08aa2 in raise () from /lib/libc.so.6
+    #2  0xf7e09efd in abort () from /lib/libc.so.6
+    #3  0xf7e4d91b in __libc_message () from /lib/libc.so.6
+    #4  0xf7eeb2cc in __fortify_fail () from /lib/libc.so.6
+    #5  0xf7eeb299 in __stack_chk_fail () from /lib/libc.so.6
+    #6  0x0805c501 in syscall_supported_by_kernel (sysnr=403) at tst_clocks.c:27
+    #7  0x0805c80d in tst_clock_gettime (clk_id=1, ts=0x807cfb0 <tst_start_time>) at tst_clocks.c:66
+    #8  0x080531df in heartbeat () at tst_test.c:1374
+    #9  0x08053ba2 in testrun () at tst_test.c:1458
+    #10 fork_testrun () at tst_test.c:1608
+    #11 0x08055afa in tst_run_tcases (argc=<optimized out>, argv=<optimized out>, self=<optimized out>) at tst_test.c:1704
+    #12 0x0804b3f0 in main (argc=1, argv=0xffffc414) at ../../../../include/tst_test.h:401
+    (gdb) Test timeouted, sending SIGKILL!
+    Test timeouted, sending SIGKILL!
 
-My idea would be to find the batch size emperically, but it requires a
-rewrite of the test IMO. So let's see if this works for now.
+Fixes: 63e8c1eba ("tst_clocks: Fix unaddressable byte warning")
+Reported-by: Petr Cervinka <pcervinka@suse.com>
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ lib/tst_clocks.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Petr Vorel <pvorel@suse.cz> writes:
-
-> Hi Richie,
->
-> [ Cc Li ]
->
->> PAGESIZES is one greater than the batch size for charging pages from
->> the per CPU cache. So with MEM_TO_ALLOC=2*PAGESIZES we have two pages
->> that are below the threshold for being charged.
->
->> Sometimes something triggers a flush and the pages get charged to the
->> global counter anyway and the test passes. We have seen cases where
->> the test times out waiting for this to happen.
->
->> So this patch sets a lower bound to allow those cases to pass. It'll
->> probably speed the test up as well.
->
-> LGTM.
-> Reviewed-by: Petr Vorel <pvorel@suse.cz>
->
-> Kind regards,
-> Petr
->
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
->> ---
->>  .../controllers/memcg/functional/memcg_subgroup_charge.sh    | 5 +++--
->>  1 file changed, 3 insertions(+), 2 deletions(-)
->
->> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
->> index 9bcc01258..3b7311422 100755
->> --- a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
->> +++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
->> @@ -33,8 +33,8 @@ test_subgroup()
->>  	fi
->
->>  	echo $MEMCG_PROCESS_PID > tasks
->> -	signal_memcg_process $MEM_TO_ALLOC
->> -	check_mem_stat "rss" $MEM_TO_ALLOC
->> +	signal_memcg_process $MIN_CHARGED
->> +	check_mem_stat "rss" $MIN_CHARGED $MEM_TO_ALLOC
->
->>  	cd subgroup
->>  	echo $MEMCG_PROCESS_PID > tasks
->> @@ -66,5 +66,6 @@ test3()
->
->>  # Allocate memory bigger than per-cpu kernel memory
->>  MEM_TO_ALLOC=$((PAGESIZES * 2))
->> +MIN_CHARGED=$((2 * (PAGESIZES - 1)))
->
->>  tst_run
-
-
+diff --git a/lib/tst_clocks.c b/lib/tst_clocks.c
+index 2144a6ae5..29f4b420c 100644
+--- a/lib/tst_clocks.c
++++ b/lib/tst_clocks.c
+@@ -17,7 +17,7 @@ typedef int (*mysyscall)(clockid_t clk_id, void *ts);
+ int syscall_supported_by_kernel(long sysnr)
+ {
+ 	int ret;
+-	struct timespec foo;
++	struct __kernel_timespec foo;
+ 
+ 	ret = syscall(sysnr, 0, &foo);
+ 	if (ret == -1 && errno == ENOSYS)
 -- 
-Thank you,
-Richard.
+2.42.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
