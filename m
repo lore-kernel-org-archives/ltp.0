@@ -4,77 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93617CDB482
-	for <ltp@archiver.kernel.org>; Fri, 13 Oct 2023 13:31:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7332BCDB47E
+	for <ltp@archiver.kernel.org>; Fri, 13 Oct 2023 13:50:50 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0A23B3CD3F0
-	for <ltp@archiver.kernel.org>; Fri, 13 Oct 2023 15:31:14 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 84C913CEE3F
+	for <ltp@archiver.kernel.org>; Fri, 13 Oct 2023 15:50:48 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A84B33C6BD3
- for <ltp@lists.linux.it>; Fri, 13 Oct 2023 15:31:01 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id B3C433C8712
+ for <ltp@lists.linux.it>; Fri, 13 Oct 2023 15:50:36 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id B6E12200B65
- for <ltp@lists.linux.it>; Fri, 13 Oct 2023 15:30:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1697203858;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BBC4B601239
+ for <ltp@lists.linux.it>; Fri, 13 Oct 2023 15:50:34 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EDF621FD99;
+ Fri, 13 Oct 2023 13:50:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1697205032;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=DrSRZ0QuElq9w3ZfBrrWZhiIhpMBQH352h9pyutMOKs=;
- b=IwheNON2ZKJT2wezkvnuIIJeWA6GeYlh9UsO9KswTxnp92Axxu/9lj4vxsuIo6llzuC2qt
- 5r4bvN2bIY+Sd5vRG41LJaXrJUuPOHD19TW3gunozraIFRhnqKzauE6jVZ5ItwO88x8hJ9
- m0Q7rYI5mHxHE7Z7IE9VASdJFrEPIvA=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-61-vOyqeARpNcGpzfK1y72evw-1; Fri, 13 Oct 2023 09:30:46 -0400
-X-MC-Unique: vOyqeARpNcGpzfK1y72evw-1
-Received: by mail-lf1-f70.google.com with SMTP id
- 2adb3069b0e04-50433324cf3so2196822e87.3
- for <ltp@lists.linux.it>; Fri, 13 Oct 2023 06:30:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1697203843; x=1697808643;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=DrSRZ0QuElq9w3ZfBrrWZhiIhpMBQH352h9pyutMOKs=;
- b=s6KH/X/Doq1Oz0bsU6modCSSc3WiDvfi4R3RxfZ0/hCNrNTzbu3B/OYuktclIF9rbZ
- Kj38IgNh+Xvc9bWe2fUMGXQNNSKKMEaX/z/dNour8U3VW0SLGec7ur0SwFJtrTov6KXY
- lHi+FGj5rT5DsxxEPKNnNvsIQ/pUCKq8IpGBKkOUdira4cpAwS1RrsLIv6hfOLKz/2/9
- GmvwbqJIi9nkFw102YiklWuyohRXR5A/d591J1AuzcfLDCcWniuc7DMwiDjfPy8JMp0W
- mZqEzPkJYWvA4I48Kr1egW93lMLqcUsoqbobzwEopC+8nWbrv/wek7BPN6MHY9/cqiPF
- pMmQ==
-X-Gm-Message-State: AOJu0YyYfLlkr1TJ3999KtWJx4YIgw2+gEIAWxPkGnuIh3AJ/HWshE+J
- 5CMFpZPoYWPN+/u44nHIIh5EKHk4bZl7GP3lZfWBtfN3ZWlcJGxceIsNaK9Zsnr1dPxXugmCWj8
- JwGvD2Y3g4KuhvhxPWCgudRvsbvGxYpgfhUx2DADGkJo=
-X-Received: by 2002:a19:8c48:0:b0:504:3a7c:66ce with SMTP id
- i8-20020a198c48000000b005043a7c66cemr20067276lfj.68.1697203843167; 
- Fri, 13 Oct 2023 06:30:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH71IM21nJQ7NpKzFjQOpFruERJKdTyM0gOkw+QjbBgn+cBzfjUnfWFRsNAXrvNaInb0Wv4rMkvGTV1gQnKVt0=
-X-Received: by 2002:a19:8c48:0:b0:504:3a7c:66ce with SMTP id
- i8-20020a198c48000000b005043a7c66cemr20067263lfj.68.1697203842828; Fri, 13
- Oct 2023 06:30:42 -0700 (PDT)
+ bh=d07iYvMCfftnx4gLaFe6kch+nUlNhGJyeIJo2IvoYFo=;
+ b=rNTbJXGUFtwkisyrF806pNqZ6GcVzRMVzvIqlPAGetZvWJGY1e7ZIlNBIfNYa6nbKh+g6w
+ FYNbzgT4WluGHWhHOvYpXQHxoLnf4xCj2DWulfyFlVUn8/2Z5AMba5Q49IY9d20xhAiRvc
+ rTJRPT4GbH/WlO4c7RPs8+CY3pSX7Q0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1697205032;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=d07iYvMCfftnx4gLaFe6kch+nUlNhGJyeIJo2IvoYFo=;
+ b=yFH7iHRt8DRqiNsv+rFMrhETw727tR6itlTvoiAXHuk6dQVpGerlOLafpGuSasxzkZXXA/
+ j0O2rZGcj3R0U+Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D414F1358F;
+ Fri, 13 Oct 2023 13:50:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Po2UMihLKWVlHgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 13 Oct 2023 13:50:32 +0000
+Date: Fri, 13 Oct 2023 15:50:31 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <20231013135031.GA740264@pevik>
+References: <20231013074748.702214-1-pvorel@suse.cz>
+ <20231013074748.702214-3-pvorel@suse.cz>
+ <20231013123056.GC733568@pevik>
+ <CAEemH2es0i-=V5W=2ZhZnN7OOq9BnFkkkSPyU1EUDWj0XHu1WA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231013074902.702534-1-pvorel@suse.cz>
-In-Reply-To: <20231013074902.702534-1-pvorel@suse.cz>
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 13 Oct 2023 21:30:31 +0800
-Message-ID: <CAEemH2eW+K78tj3fGE3wwnnDy-7Y6vDoC0u43JePg6y=0tqfJg@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAEemH2es0i-=V5W=2ZhZnN7OOq9BnFkkkSPyU1EUDWj0XHu1WA@mail.gmail.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-7.47 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.17)[69.85%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [RFC PATCH 1/1] Remove load_stress_all_kernel_modules.sh
+Subject: Re: [LTP] [PATCH 2/4] lib: Add .modprobe
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,18 +91,74 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Reviewed-by: Li Wang <liwang@redhat.com>
+
+Hi Li,
+
+thanks for your input!
+
+> > Hi all,
+
+> > maybe .modprobe is too short name, but I'm not sure what would be better.
+> > Maybe .modprobe_module ?
 
 
--- 
-Regards,
-Li Wang
+> .modprobe_module sounds better.
++1
+
+> Also, I think that maybe we can support modprobe some
+> third-party modules (written by users) in test case, there are
+> a few managed by shell scripts, but if .modprobe_module
+> manages them unify in C, it would be nice for test variety.
+
++1. Also I plan to move some of the LTP kernel modules - tests which use kernel
+modules from LTP (e.g. delete_module, init_module, ...)to KUnit or kselftest (to
+solve problem with signed modules required by distro kernels, kernel modules
+from LTP are then untestable on lockdown).  But maybe these modules can stay in
+LTP and also be added to KUnit.
+But these modules use tst_module_exists_() and SAFE_OPEN(). So you might mean
+3rd party modules like nvidia or other proprietary modules, right?
+
+Then, some of the tests in testcases/kernel/device-drivers/ might be obsolete or
+also be more suitable in kselftest or KUnit or elsewhere.
+
+...
+> > > +     if (tst_test->modprobe) {
+> > > +             const char *name;
+> > > +             int i;
+> > > +
+> > > +             for (i = 0; (name = tst_test->modprobe[i]); ++i) {
+> > > +                     /* only load module if not already loaded */
+> > > +                     if (!module_loaded(name) &&
+> > tst_check_builtin_driver(name)) {
+
+> > Also we could make it independent on modules.builtin (NixOS based problem -
+> > missing these files). I.e. we would keep only module_loaded(), remove
+> > tst_check_builtin_driver(). But then we could not run rmmod / modprobe -r,
+> > or we would have to ignore it's exit code (rmmod on builtin module) fails.
+
+
+> Or we add one step to detect modules.builtin file, if no,
+> then just print a Warning at unload in fails?
+
+Unloading shouldn't be problem since it's in cleanup (thus TBROK => TWARN).
+But I'll test it.
+
+Or do you mean that on missing modules.builtin would test itself be working as
+module is presented (have warning on that modules.* files are missing and
+warning on rmmod?).
+
+Would you do it for both .modprobe_module and .needs_drivers? Or just one
+of them?
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
