@@ -4,49 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2986FCDB482
-	for <ltp@archiver.kernel.org>; Fri, 13 Oct 2023 10:13:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2024BCDB47E
+	for <ltp@archiver.kernel.org>; Fri, 13 Oct 2023 10:16:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7F5FA3CD3C4
-	for <ltp@archiver.kernel.org>; Fri, 13 Oct 2023 12:13:54 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 914583CE040
+	for <ltp@archiver.kernel.org>; Fri, 13 Oct 2023 12:16:18 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id AAAFF3C8894
- for <ltp@lists.linux.it>; Fri, 13 Oct 2023 12:13:43 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id A26293CD3A5
+ for <ltp@lists.linux.it>; Fri, 13 Oct 2023 12:16:07 +0200 (CEST)
 Received: from esa4.fujitsucc.c3s2.iphmx.com (esa4.fujitsucc.c3s2.iphmx.com
  [68.232.151.214])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 8783C600C82
- for <ltp@lists.linux.it>; Fri, 13 Oct 2023 12:13:42 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3FFAE6012CB
+ for <ltp@lists.linux.it>; Fri, 13 Oct 2023 12:16:05 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
- t=1697192022; x=1728728022;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:mime-version;
- bh=diN6qnSx9HbNaS0MRH0kkadMztmSnQvB2S6R7MULQNM=;
- b=mg9tLxEcqu2TZxO/SwwLiywaQwllIoEiD3WiSXrfMKT0dAHcLAcsYi8K
- O2gATUkpJKp7EXhH+ssLzO9M3C1xFJKjme9csO+kXm4/N732zBOptxKQw
- Wtu4pmgsN7gXnHJ7kXIU2oO5sd3AsOS4+lUQbrN56fMpNAfwpMK2eHTEm
- e4AlqY2jLm6MAq/Y+K6+JI1jPFe9AqyyMjf/skMIatme+YgNB0nJtZJz0
- VxVLRdL+FHBN1V1UgvH/9zQM3H/K+Icn2uqs0ASvTORCL5+89TRMA6xbV
- 74eViNzJRmN5Fo3URKsgRMcX10kvLLaQOJ1RBMcwtR4tkVHiz8Ya9FEbL w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="12125243"
-X-IronPort-AV: E=Sophos;i="6.03,221,1694703600"; d="scan'208,217";a="12125243"
+ t=1697192166; x=1728728166;
+ h=from:to:subject:date:message-id:references:in-reply-to:
+ mime-version; bh=WzhP1yQZx6VKSHdRvnb3ZlG6+imbcIy0p2I7iwTbwww=;
+ b=tSfmtaKsua0j1oIvhiS+IRg3suB0jUW9SLQSbZ3K2Ws4xdfvROG9wYf3
+ Hs+H5IcjUW3Smv0juHEb2nTk9nXAmuxmfrkptVomuEbmw7T6uJD9z9165
+ rkNitqC7obfxPOjqn60kqRY08APOcpt6Zy76lnnk+FLlBUN/qmMWKn6U+
+ bjBTyDtnakOSR4yIMRauxRa2/dRF4zt0QDd2H+9FgIVncJyeD7vQO9Owe
+ oeVOQOwujsBlhLZv4uWRZPdjebUm16qM5+dG4xGO+S9MBrdLVqk7nhFVn
+ xS546Yhl15NExjCkODBiGx3vKrCv0t02BnhVO+gAMOphJlXzRlO2uPfvO Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="12125644"
+X-IronPort-AV: E=Sophos;i="6.03,221,1694703600"; d="scan'208,217";a="12125644"
 Received: from mail-os0jpn01lp2104.outbound.protection.outlook.com (HELO
  JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.104])
  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Oct 2023 19:13:33 +0900
+ 13 Oct 2023 19:16:02 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oLhX1ja9hxGwkIuhc4Z1zMPm8q7Aj8ULVhrAGf7Xd0MZ3IlwOGB9TZQGarTeF6YWWk84qg/epUQmmvG+UqK5LGlKWbsXho+dgwStpLRhPDsDfbxZg4wMOufpMc+wL0TWoZ8YJljf8cPV9uA1qyV+Htc6nFMQfnHr2MvpLE46GkU5Uyqfbw7dQuc6qAtCjn4W4HXf4yEc1Rl3OyxQuUrjOAHM6PJ8B0q8xPchkrWWAaBZoKhTkzSSkM9qk3vK3IO8YWxLzot/JyeKyLpqZbFVOoGIpVQkk5u8vTN+AJIJkKqcvdwsiQRm93al9xP2Y1c3Tq7hMSU7FnHRDC8Uz0zL6g==
+ b=M5yQFcJwCOQLl/2s8HJs/hXBweTrLTuqoUjdZHfaOEvX98em5YfIzOIxRJyiW+4XoSc77NybIzgOiglUTv1QjV9e1Frr5qMAZAlVHPUs3u6wLTL0uO6+YCTlsLUaYSIdJUwuSfLdBZdsliApzO5EXHeH5viOfMatvkYF+UoNBUKE/xRDSWAn8zLyxjSzvEiZfwM2CKd1C12gJHPrIL2CluuvWdKnD5mFihKyZC37HUR9PxDnkbEHeNVEYpqIqfu0u8XhnXk+Nejn+NS2CUnlIuzuaKuDXathvMOeHKgmSbKx2aZSQ8z9artLK+njKjt2Prq7IVGYQuCr7qySiQ03rg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=diN6qnSx9HbNaS0MRH0kkadMztmSnQvB2S6R7MULQNM=;
- b=QKT4r2ojMitPdIlYZeWVAU1H7mh5iZDVAgyT/e+x/L0iurCXpKBfmhlBOLRBrZHEdV8egUAW2wOMNM1430ibxLg9hDxMKd4A3OxTxV6qpBX1e+dXo+FIPhGWZX/OM4P/aPt0jxMmj3GRhg8fN6krYpu7EYekE8wj8BFYWRLleX9Zw0lFvbIkhNtLgGRRJjgQduQdl/ZUm3iRzbWZMVdo6nU4dUfUAA1B3iDZrF9a1TQLQ/O72crBfGJ0Dzrcl1gWvkP5kqRsnnTogWkpGypT7VZ3qiSLsw/rA62w4WzE43q6Lq/CsqvH5WOXPVBaU2kpnvc+ljVpQt94SyH7xzI9JA==
+ bh=WzhP1yQZx6VKSHdRvnb3ZlG6+imbcIy0p2I7iwTbwww=;
+ b=AktXmLt0c7rOb/8BOAdZlLxDt01rERDy/6gj/8e6c1SjB9whzHnd9upb1c+XQjnQqCpVQwK2xv76r/HwFRNKr3kBDcg5Atyz6a2lpvLNHyQHSsd77EUUr2l2eK/jzxAfN+d6S1nb/I+NCOWCIzGMXaqODDv5rEtOd7/RNZ2dxk/cDm4v4Gbdeydz4zNpKScsNOLBRDfZYP5GQvq4Qs7zJvFqKG3UM7CDYZOq/OoxHHv2HtabLFN8xBiSnko/9FP46pBcb5pAT1QJH6qx0frhZOj67YGWhRvSV23RnOAUUwJhz3t/F9SbX8io4UfYkmqvBBmVu1+nJIi5VuJegxc3dQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
  dkim=pass header.d=fujitsu.com; arc=none
@@ -54,22 +52,19 @@ Received: from OS7PR01MB11839.jpnprd01.prod.outlook.com (2603:1096:604:23b::8)
  by TYCPR01MB6046.jpnprd01.prod.outlook.com (2603:1096:400:49::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Fri, 13 Oct
- 2023 10:13:27 +0000
+ 2023 10:15:58 +0000
 Received: from OS7PR01MB11839.jpnprd01.prod.outlook.com
  ([fe80::a5d2:bd3a:8420:bd3a]) by OS7PR01MB11839.jpnprd01.prod.outlook.com
  ([fe80::a5d2:bd3a:8420:bd3a%4]) with mapi id 15.20.6863.046; Fri, 13 Oct 2023
- 10:13:27 +0000
+ 10:15:58 +0000
 From: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>
-To: Petr Vorel <pvorel@suse.cz>
-Thread-Topic: [LTP] [PATCH v2] syscalls/renameat: Remove renameat fallback
- definition
-Thread-Index: AQHZ57gmN9gSFG1DwkKasxuMqoh3P7Ak1KaAgAALdICAIsxDgA==
-Date: Fri, 13 Oct 2023 10:13:27 +0000
-Message-ID: <d81159b5-8c88-d07e-6c24-1ecebfbbc9ab@fujitsu.com>
-References: <1694770587-9502-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <20230921060831.GA393601@pevik>
- <TY3PR01MB10221A2B558AC0198EAB701E2FDF8A@TY3PR01MB10221.jpnprd01.prod.outlook.com>
-In-Reply-To: <TY3PR01MB10221A2B558AC0198EAB701E2FDF8A@TY3PR01MB10221.jpnprd01.prod.outlook.com>
+To: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: [PATCH 1/2] syscalls/fchmodat01: Convert to new API
+Thread-Index: AQHZ7Eug9Be/6P4hYkOuIbSsVyDmYrBHo+oA
+Date: Fri, 13 Oct 2023 10:15:58 +0000
+Message-ID: <ae8d819d-238e-daee-4b1b-3806237b153d@fujitsu.com>
+References: <1695273748-4607-1-git-send-email-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <1695273748-4607-1-git-send-email-xuyang2018.jy@fujitsu.com>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -78,71 +73,70 @@ authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=fujitsu.com;
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: OS7PR01MB11839:EE_|TYCPR01MB6046:EE_
-x-ms-office365-filtering-correlation-id: d800e025-658c-439f-5a0c-08dbcbd50afd
+x-ms-office365-filtering-correlation-id: 7f99e77a-7de5-4aba-5e63-08dbcbd564f7
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fY5WM1KlU8SldzFE85nBM2G+Tawb7awiQc0fvjgSLjAE9OOu5czuHM9sQMRbcO9OnAngUkaha9iK8PReMxGZIaBqRpIhUoPVDvJy02/fl0i0Um5qSw8V7GhraQOrMF6nYZtVunySDyI6SG6DYs+YhrQqDRLgAhGjRwjwzPkpMWOy0UekYJKwSAa18FWGvbWfD2VTHO1cOnSrE6kHqTKjqmtX1qwbVfFBbMw5/6/NYnKmx4NKVDA944VpMUqvrlzr8GXmCXqhU/vaHcJiOXZK1lfqw413T+6xaC6OAzLHp0GPd4ZgKS70cUDNtQTFNQlgbkdW4CyVa/ugMmvxLiSj2KMZBsfW0PkFVryJBhFs61FLxtSJnWtryB7ioNQNJX4dmbNzzsDxfdcNeBVvlgKfzy+CfdklOlTSMUqWcPSLZsFbJuO4EQLwpTMiHgeqPpJMZUvEnTooGry1tmJ3AC7MxGbdJIlEaPOrWd+/0vaKG/JUFLKNX3iC3mOFUNGyqeaJKM4tFhgwXdrHc9CGxLwEtlff/ImDmB3R6b6kUj2Lud6sDMzQDMDkbGBMuQ5vMxuEZHfv4cYweS8+TRmanY2AmvoUT8KGPAb6FoYT0E0KM72ID91wII9FTD+JL6Kg7WmBrijD8JV3OJRybMxPfvO2LBxVVuQCppFgIa22SF15W5p3hYiIP5FdlwzhFITESbn4
+x-microsoft-antispam-message-info: v3ZTy3PL77qqNhFlHdBVgIjDoE0NASPT3YR/0V+pEwx7uBIIan01ZovKcKACVzj98uJxRHdIWPcu8Z93PDD/xnvCEu/l1pPwSU/oYHUxuHCoC0z+UWiEC9QQKdiXtW5l02VaBT9OS1EqV4Syu0Bd/QxXWgmx8QFXU69hUt9yUfNM0CEz4iBG3PCUzOlTcg1lVVX7JkqsxWiLERYLPKfPenMmLd5cuPdul9xmf+ONVDXqUB/l10usGUzHLmm0ytYk9n9RwHZS3Akh0yoHPTIcUkLvmon2crS5utda4xPdxNBImgIOrJhXq+nAn5kQ7lTDRODLC6/j6Y7eOfQTGnInLdQjPt3X084fUjCPICAXPPAQzpDUcofIhRuhqyefWAssDyIMl5PjmS3SEsF/LyOtfrNsw8OFIHEh3bHBKJsEKT4JrrCDk4PAh/5OyNGS2g80FPDi1dzFVcCB2PHqwJkF90tTgznok9PF8rEy+Fnz77PsQQ1Df39dIVALN6v9IgU3xV2Tdo/Mj2xZayoehfene9cIm0LJ8sSz/Rgn9kKAPBkGTxs+8QLCzPzwhskcj4Ryrd177xsLEIDjCMn0/SYZGVzZivITw8j1erj0RhlP1N8QJSyY1N+OupX6iyBO4VNOfxgrh4w8LJiMQwK0WmueSgiH+zyvetFZHfiRw1K4qBH3Nn8CTrf/6K53Dglfwe83
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:OS7PR01MB11839.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(136003)(376002)(346002)(396003)(39860400002)(366004)(230922051799003)(1590799021)(186009)(1800799009)(64100799003)(451199024)(316002)(6486002)(478600001)(76116006)(54906003)(66446008)(64756008)(66476007)(66556008)(66946007)(6916009)(2616005)(91956017)(71200400001)(26005)(6506007)(6512007)(8936002)(8676002)(5660300002)(4326008)(4744005)(41300700001)(2906002)(86362001)(31696002)(122000001)(38100700002)(82960400001)(38070700005)(85182001)(36756003)(1580799018)(31686004)(45980500001);
+ SFS:(13230031)(136003)(376002)(346002)(396003)(39860400002)(366004)(230922051799003)(1590799021)(186009)(1800799009)(64100799003)(451199024)(316002)(6486002)(478600001)(76116006)(66446008)(64756008)(66476007)(66556008)(66946007)(6916009)(2616005)(91956017)(71200400001)(26005)(6506007)(6512007)(8936002)(8676002)(5660300002)(41300700001)(2906002)(86362001)(31696002)(122000001)(38100700002)(82960400001)(38070700005)(85182001)(36756003)(83380400001)(1580799018)(31686004)(45980500001)(579004);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RXozZTEzY1lpL0s1dTRFaWdUbHRmeDd4ejgzQkE4a1dOSkZmTklqaWtUYTBL?=
- =?utf-8?B?NW44cmZrQy9tV2VDK29zN3pBNFRqSkxYRy94N1ZHUTF0ZG1RMWtlSEcrU29G?=
- =?utf-8?B?N2krOGJabDdZT2JFZ1lTVnI2L0lGaUFCUmd4TmtObzJwRE13QjBDQzZJYndq?=
- =?utf-8?B?Zk9sOVFUQlJiZk8rU1M1TnQ1YUhxQTg5OVNWQUIxK0sxcjJBRjBoOGJ2eDlq?=
- =?utf-8?B?U2MvZWJmbHZlbkJkeStTbHBHU0xjS1JDMHk3QkxXc1llOTlISk1HREhIWHJO?=
- =?utf-8?B?VDFiRko5dUZtSGw2Y3JNMmtYM09pRXFJR2h0blR4YUgwT244Y08wSStZbDhi?=
- =?utf-8?B?dlpxYnlPZGc0ekNRT1dzSFc3QmkvKzdGT21wNHdJSSs4R2RnZTZqa2NXenp6?=
- =?utf-8?B?bzRXZGhmSnlUcWZsK0VkS2lHTE4rSVVKL3NwWUgySGR6L1duUlpFTHl5Si9p?=
- =?utf-8?B?YmFDVllxcW9IdXdkWE9XcDhuS0UyRnZzcTVzeUJzZ0Vudll5RisrQTE1RFMw?=
- =?utf-8?B?ekJwVzJVNFIwYmxmOG9KRndWMUtNNU5LRml1TjVEVTJQV21IVXdvWFNFNG5z?=
- =?utf-8?B?bmkzZlJidklRUVY5Q0JxY1NtWGppNUZQdXNVVnhZU1NHRGNDV2FqY08vQ1lk?=
- =?utf-8?B?MUFGUUVVaDNBNUoyRGluQm9XK0xwZGloTC9ocExvQUx5b3dDVE50Y1I4UnNq?=
- =?utf-8?B?NW5FdXZzUWN6emtmeDFkUVZyZG55dDlFTFFSK3FBTWVGRFJ0NHpsSlk2MGMw?=
- =?utf-8?B?REZlTTFlSTJIWTJCK0E1WHRlQUJ3Uzc3Y3VGSmlIRmhvZXhIc3hJdW04WnUv?=
- =?utf-8?B?dzFjOXJKdHpIS2FTbzhmWm1iNG5XaEtKNXJEelpTb2tKdFVhc0Y2cUJ0a05k?=
- =?utf-8?B?YVZRTVYvWGlEOXBncHp0M21oNmRjMFFGSXZEYjNuNHZ5Q0VhRFNjOTIxYjk0?=
- =?utf-8?B?V2NyU0MrakdEbm9ScjZXRUlhMDhZWm1yVjl5WnU4MmMvU3R4TnRzbDd5WkNm?=
- =?utf-8?B?V25uaHppMStKZHlENTl0dTYvcXB0bnAxR0I1azhLc0FGVG5pQUlUYThTWFZQ?=
- =?utf-8?B?eUQzUi9xR0x2Rlo1VjRyRmZvV1dFYU9zVDBqSzBTMEdnK0JBQjM4dEJwcnpY?=
- =?utf-8?B?d2djOFcrblE4YW9NMVRadklwSGljQVcvWGxpeG5GdnV0YWZOdUhJb1NwRzh4?=
- =?utf-8?B?TW1SNlgrZU16MFl2emd0TW9YcVlqREhVZVplU0c4dGVhbTN0ZmtyS2pvWHVU?=
- =?utf-8?B?ajN5VURWcWF4ZkFyRlk1eTlwQk1TWnN2UW8wVCtBVDFWTjhnSTQxcEo3SmRu?=
- =?utf-8?B?c1cyeS9vUCtXcFJqNTY3OFpWUGdWdk1HVWVSckNhYzcrWUlFajVWa1ErdGNj?=
- =?utf-8?B?emh3L1QwZHY5NW1XSWVleUNCM1lPWUVrSDB2aVloaGlLSm8wb0hGU29HL2ov?=
- =?utf-8?B?d1l0U1lrL2d5ZHZwd1lLMkJwenJHaVdTVUpwZTRqTGVWWUhCTGtjbXhoT29v?=
- =?utf-8?B?Z1oyM0s3c0V1cEVLcTlTRHVnVS96UXVxaWxzRURIeXNTM0F5ZSszSCtUaWVY?=
- =?utf-8?B?a0ZSQUk3QzB1RE9nUVcxODNPQkhmeFlBMUdmYXF4Y1EvbGUwUUNwSktOdWF1?=
- =?utf-8?B?MG55Sy8yNlBCS3VsZVBpeExoMTY4TUR4czhCcUVKdEI1QktqelJPemJiOWNC?=
- =?utf-8?B?UnRsNG1RR002bkw4SHJBbCtvUmxVUkFMeSs5dkM0R2s1dk1WOU5Wd3huZWsv?=
- =?utf-8?B?cSt2NTZSbTZjVlpzcFRtU2pwZWN2RVVpR1FiZ05YNXJDSHRnUTFUZks0clZk?=
- =?utf-8?B?YTJFTXZBMVJTcG0vcHFqRnNOMFFBUWJXNEQzSUtrVCtPSE8yUENxNW1vb29s?=
- =?utf-8?B?TlY4OTFsTEVLdmJQU2J2WE5oTkd1QzkyTk5PZmtOa0w4UFRPU3V5Y3kwTFZk?=
- =?utf-8?B?TThEb2JIS0FidW9FSWRNUzlURnpyRkw3RUc5VkJ4emlqelJOZzV5aGlHQ2VZ?=
- =?utf-8?B?OHRKcFVVQWFyd2pnMCtDcWNaTGtVSGZWeUkvUDI3dzdzK1pobFRUSzRTSDhS?=
- =?utf-8?B?ZEFvR1BXV29SQWZaWEIra244YlhlaVFsanRkaVRZM0paT05IR0RFRVRTdTJh?=
- =?utf-8?B?U2tjRFR4QVpsbjFidlVjR05IREFRR3VaWGRCbGpsQXovckR5Ui9CMXVUWTRU?=
- =?utf-8?B?anc9PQ==?=
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VWxjM2xNcEdmVkNidW9Ib21PS2ZON1JrUEdLWWoxRkVUSS84T1E0YWtMdzhQ?=
+ =?utf-8?B?MDVtQ1NhZkI3R1puME5ERCtSajhrRFF3RG9XOXoxelhxakFVV01Ud0dQaXZj?=
+ =?utf-8?B?NGhRajhoU1JFYzI2NU81UERmVGtzUDRYV3NYbnlzaHNOYXB4V1FSWWppN283?=
+ =?utf-8?B?YVVOV0tjdG5lVDN0NW41TEYrWFI2Y3RXbzl5eTgwTmd1ZC81Z3ArZS8wK0sv?=
+ =?utf-8?B?QXVkeUN5SmJNaEV6QVVWRUU0Z1RTc0d3b2VrOCtWWGp4L2ZTTXBzaytuZDN0?=
+ =?utf-8?B?WGN6MTkwRWE3bG1uSHBaQSswYW96dS9JRXlpOXVFcjlMVzdFQnRyem9TR2xW?=
+ =?utf-8?B?Z0o0NTAxZ0VPdDhJcjZFKy93bExZVFR2MkVQRFpZTlM0SFZFZFpiN000TytV?=
+ =?utf-8?B?cTRpU0ljQkRWYWMxMzcxeGhqUmRwZE9LeTlmWHlLcStrTk9jR0tKVGRCNTZr?=
+ =?utf-8?B?UW16TXJhRUUxUkIyNEhYNUs4OE5mN0w2NzF5T0UwQXp1TEhScFd1cWp2SlpI?=
+ =?utf-8?B?bVkzbk54ODZuY2pUcUNBblF5UW5xUkZaZUwyQmNEZ2Zuay9uV25ZbVJhZzg2?=
+ =?utf-8?B?S1lpb096Y2FnVzRVMlp1dFNuS2UzZVM3bnVOL3h4cFprSHFKMUF4YU9zUUZ6?=
+ =?utf-8?B?NXZWdVBNUmc2QnVxQlRydldSTUd5MTRnTVUyTjB1d3lUNk1SZzk2TWhSV0xR?=
+ =?utf-8?B?VDJta3dTYTdNMHpya1R1QjlvNDBlb09BWnNvWkY1a0FKY0hud253ZWtRREdD?=
+ =?utf-8?B?aU9KRGMrN0dXTU5RRHROOG9IRkE5dlB6bVRDSnFHMkQvZDRobjliV0JXQ3cw?=
+ =?utf-8?B?QzNxQWRPOVczbnpLbXdJTE81eFMzYW9TZ2ViTThhV05TaktqUmJnNVIwNjNH?=
+ =?utf-8?B?Y1crY1EzOHA3N3RNNmI2b09nZ1FZOVg1NzRXUDN1UWZrcUZjRTc4VnUvZnNZ?=
+ =?utf-8?B?VnNrL2YrR2I3citjdEpUSHd1dnpZeGhNeTVxdkEycnZrejgvNHpiWlZ4V21N?=
+ =?utf-8?B?ZlphZVZrdTJtL21oNzMrY0dleVI0dUZrQ0RyN0NBSzloeExaOVpPSDRSaEZN?=
+ =?utf-8?B?cVRsRXl2UndwZ2NaUUsyZzhXOUJCRXR0NzFaalhMcGdveVphQnpZdHpwajl5?=
+ =?utf-8?B?T2NqQ2IwQWpjM0Y1UGpXQ2NrUUwwMlZOMjJHWVBHTEx4dHZjOTlybEd2N1NU?=
+ =?utf-8?B?MHV0MkZOQWQ4ZWd2SEs2QW42cVFMU3FMZzQ2d2dUVEcxUVpvNml0R2gyVFAz?=
+ =?utf-8?B?NHpxbklJTVJrRW05Y0RVcFdSdUYyVGZyd0N2RzhqbVBhamZUZ2h6bGRRNDZJ?=
+ =?utf-8?B?bTF2S0t4cnk2ekNZQUV6TTV6MnNJMjVUcmc0Uk4rZ3pPdHRoYkFNY2w2MWRW?=
+ =?utf-8?B?eEJlVUVtVjFkYWlSNExTLzRmR0dyT29mMEdWS0d1bEo1T2pxRVhRaWdZaXd6?=
+ =?utf-8?B?ODNBT3NJYVMva1pEL3Q5YlVvL2VjY3hzMUxuMFhFTTM4WW5mRGJBRkF3dWFl?=
+ =?utf-8?B?SWhHdllOOWR2TmZBbDNuTUxtK0pXTjBNajgwWjJvMDMvNS9Ubm1tWEl3b3pO?=
+ =?utf-8?B?QWsyMitiUGltNUczTUFNc3JIS2lYNzY3RFBLN0Ftb0FqS2hEbFYyalJVdnpp?=
+ =?utf-8?B?TnlQbVlFZlZVYmwxSE16ZEJ5UWtSVC8rZU9RNFBSRDR1UlBlSDhOQVlZVzRw?=
+ =?utf-8?B?SmF6UHM4dS9aUHoyUlVuU1JBMHJ3ZHVGQ0daMmlRL3JoWVBNNmFrazBzWnRJ?=
+ =?utf-8?B?K0FTQjllei82VStsZi9DeHNvZzFWdERsS1kyQ3EvU1FHN1hXVE5waGZZNjk3?=
+ =?utf-8?B?OEgxenpKTWJEZXhTUWIycWhXM095TUE3VnZSYXdNcU5ESnlFV29NMHIzVXp4?=
+ =?utf-8?B?Y2ErSUNGTk1vSFlJQyttVDVmSXBVci8xb28rblZTRDRVL1ZiSWM4NHU0bXRE?=
+ =?utf-8?B?RHRNUGJndzFkcjRhclhEN2o4WXIrMHJ2MGs2REtQdXV0Z0RsVS9JTll1bmRS?=
+ =?utf-8?B?TU5vTldIN05uYWZhZFprdGN2UmpFQTFsaFNlejNDYkk2Y2dxNWxYSzNaS2dm?=
+ =?utf-8?B?K2FUeGdjeGg0Z1FNLzJELytFNEJMaFR6SzlTUGJ2ZVQ4c0pIRkI1S0lybzE5?=
+ =?utf-8?B?ZExLWXFiMXVXWUhacnB0dm1MVlpXQytoVmxLeGl4U20xdkFwVkRtMU5weWhh?=
+ =?utf-8?B?UVE9PQ==?=
 MIME-Version: 1.0
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: O8vR2IUEuyNURrazS7mdbGRtvbkIFgh4vVUrI2VDUus7yV/eAIevOPdlBiyuB2WG4ATEUKjahn/+vp1Yrms4sbMBO9+W0NS6ob5f5KvxHLzie5otjMn+tnx8MteDdYwRKDKK7YWbxBNBQXi3b3zcvJiayDUUAZH5tDoe3aSvbMR/ggG8Ngv/1jvOssqJYcuIrPDR9rPngVxqb3Bks911KvYk8thFJygyKGKK8JEAtWz/EFkP9c6d1IRyVm1OkqoXkpy1veIQeeZ6LW4N2NtUYeQvLYCLGA7AsC8490M5F6UlH+11AlAD0itxlC/mCG+efZBaEPuF0sBDlqwnI4Vk9aIwz8xHEAHiaOfmjtqvz5aNnA721luPZoXaRmagQMJIhu0SOBzFCAwtcOgChOniK9lnCyPpHUQVeMT2GmljW6Y0KwJ1FmxtpsbNJFh/HnEvy+Z5bX8T4j/7ZOVdkKnA5zKueRxfIx7+4e2oKn5LLLLpW5NmaBWGI+Njs0A3nqg1QxaVadL9NPUA6HJowYQzbz1Zrkk5W3GT8tcHQEBd8E/I/+DkJJOGlf5mDHTebTTno6Jk10cJGkarrs9hzk9E6SOWS05a+30cJ19/DR5Oyf1zuo5zwe+JFsTCnbXBNsHzo3o6D+jdpVJWfFW0eUNjz8pvWzFTN/xMlbwOXExpUiQ+nlK+xmxB1zPHOk24plQEZYmqfs1jgOwSnThguzDaMjOJ73fZrhqJIaChU10hoXifonPBEUTm1oLoamYqitwHVPLKGwGk9dcOqtBzRrIv/fSsb+4n1SUTfmEBpLyJ1Swd4+x4EmoIUaJBUFPEbCDc
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 6B1cwr+XDCSjbOi10rF/QOv091TSq0O8jSNAt+cDukSTwXUMONvB/T/S36pJHe6wjEfxslr0rhOXm8Bfq3vuX7ZtqWEWTnRcwharUslnFTlV1kwdllAWB4C325ack/X6/VeM13MkXT16TtO6xB9jl91+zd5W8Wu6iO5ODjUopd2gIKoh3E70ZDAvPQu63DzLJZixVC6+4i4PsPAhXA2zKefZOGZ3chf6b860DMvdh5ExqmglA6vsyeKKF/JCabsAvPRwNCidOPOCn1VyoURiCNxJXLhzhHTde5jNuPhysbkaXY+bZ52/FFoI8nRds28/vvsavVUlcky08m195+KPA0Iirez3CrnCIEnUxrWIYtCgas3NwfxQpN4yamqwyXnpJ+a2bZuuizUG/3mGLzRWYohMpf8p+mt5KRXR/h82tBmZ1y+NNafpH3cJZJ1yn7RU0tDCi9oI9pE4c7KPT3cv3XjYuqw+6bgxcAbtL3zBH0+9Ov90PvIx2v6mXf2cyjHkmdxT8farTIU85a2KEkUvtG/l+55dPSHTshtolxinQRfn3bc7on9kh3S1bd2q0z0iYkSf5M52Trwz3YODM2qd9PiYekgqGp2e2fG/8+ygXePjRUvghmz/ND5crFrWLhKxKLbvQGisZIEIRV3GnQQT/Qj6juPYyG/PTKbUy2/OE7CQWRzAscP8fJ1p0yH0+5tiud55jL4ROgqsNF8JcJsWSzsehvGDkXQN0KDvHSLC8m8aGk4QrKViv7IqF2dUZ7xYiOSiPJLQq7X0pbVZ7WGR7Q==
 X-OriginatorOrg: fujitsu.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: OS7PR01MB11839.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d800e025-658c-439f-5a0c-08dbcbd50afd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2023 10:13:27.5815 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f99e77a-7de5-4aba-5e63-08dbcbd564f7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2023 10:15:58.4919 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zx4ywmAnD+H74vW+wFU6BmxUUB0xQfIpecHl2YgKXkiW62piW8zmeggGXBsBlTgssod1T5V8GOwiv2u6zvMNN4f23m2MKulFTe9oe5AtuSo=
+X-MS-Exchange-CrossTenant-userprincipalname: iqvc3wDxJPZHEDZtuFUTft5J2AZE4qdlUrvYxGJeaRLw1I5n/5hxeHafg+mJMg1KmFhQA+7xFS72ty6BIEwIwLFxgOEncNmOjfTwYqOUCoY=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB6046
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v2] syscalls/renameat: Remove renameat fallback
- definition
+Subject: Re: [LTP] [PATCH 1/2] syscalls/fchmodat01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -154,8 +148,6 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
@@ -174,31 +166,163 @@ Best Regards
 Yang Xu
 
 
-Hi Petr
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com><mailto:xuyang2018.jy@fujitsu.com>
+---
+ .../kernel/syscalls/fchmodat/fchmodat01.c     | 103 +++++++-----------
+ 1 file changed, 42 insertions(+), 61 deletions(-)
 
-Thanks for your review.
+diff --git a/testcases/kernel/syscalls/fchmodat/fchmodat01.c b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
+index 3deff0ebe..d9db4ec10 100644
+--- a/testcases/kernel/syscalls/fchmodat/fchmodat01.c
++++ b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
+@@ -1,99 +1,75 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2006
+- *
++ * Copyright (c) Linux Test Project, 2003-2023
+  * 08/28/2006 AUTHOR: Yi Yang <yyangcdl@cn.ibm.com><mailto:yyangcdl@cn.ibm.com>
+  */
 
+ /*\
+  * [Description]
+  *
+- * This test case will verify basic function of fchmodat.
++ * Check the basic functionality of the faccessat() system call.
++ *
++ * - fchmodat() passes if dir_fd is file descriptor to the directory
++ *   where the file is located and pathname is relative path of the file.
++ *
++ * - fchmodat() passes if dir_fd is a bad file descriptor and pathname is
++ *   absolute path of the file.
++ *
++ * - fchmodat() passes if dir_fd is AT_FDCWD and pathname is interpreted
++ *   relative to the current working directory of the calling process.
+  */
 
+-#define _GNU_SOURCE
+-
+-#include <unistd.h>
+-#include <string.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include "tst_test.h"
+-#include "lapi/syscalls.h"
 
-Yang asked [1] also for removing entry in include/lapi/syscalls/aarch64.in and others, but I think we should keep it there.
+-#ifndef AT_FDCWD
+-#define AT_FDCWD -100
+-#endif
++#define TESTDIR         "fchmodatdir"
++#define TESTFILE        "fchmodatfile"
++#define FILEPATH        "fchmodatdir/fchmodatfile"
 
+-static char pathname[256];
+-static char testfile[256];
+-static char testfile2[256];
+-static char testfile3[256];
++static int dir_fd, file_fd;
++static int atcwd_fd = AT_FDCWD;
++static char *abs_path;
++static char *test_file;
++static char *file_path;
 
+ static struct tcase {
+-       int exp_errno;
+-       char *exp_errval;
++       int *fd;
++       char **filenames;
+ } tcases[] = {
+-       { 0, NULL},
+-       { 0, NULL},
+-       { ENOTDIR, "ENOTDIR"},
+-       { EBADF, "EBADF"},
+-       { 0, NULL},
+-       { 0, NULL},
++       {&dir_fd, &test_file},
++       {&dir_fd, &abs_path},
++       {&atcwd_fd, &file_path},
+ };
+-static int fds[ARRAY_SIZE(tcases)];
+-static char *filenames[ARRAY_SIZE(tcases)];
 
-Of course, we should ensure user still can use different variants to test function ie use glibc call or syscall(syscall_number) when they have
-special aims , so I only remove these old fallback and not remove syscall number in ltp lapi/syscalls/*.in file.
+ static void verify_fchmodat(unsigned int i)
+ {
+        struct tcase *tc = &tcases[i];
 
-Especially, these syscalls/*in files should be consistent with these libc header in file as far as possible IMO.
+-       if (tc->exp_errno == 0)
+-               TST_EXP_PASS(tst_syscall(__NR_fchmodat, fds[i], filenames[i], 0600),
+-                            "fchmodat() returned the expected errno %d: %s",
+-                            TST_ERR, strerror(TST_ERR));
+-       else
+-               TST_EXP_FAIL(tst_syscall(__NR_fchmodat, fds[i], filenames[i], 0600),
+-                            tc->exp_errno,
+-                            "fchmodat() returned the expected errno %d: %s",
+-                            TST_ERR, strerror(TST_ERR));
++       TST_EXP_PASS(fchmodat(*tc->fd, *tc->filenames, 0600, 0),
++                    "fchmodat(%d, %s, 0600, 0)",
++                    *tc->fd, *tc->filenames);
+ }
 
+ static void setup(void)
+ {
+-       /* Initialize test dir and file names */
+-       char *abs_path = tst_get_tmpdir();
+-       int p = getpid();
+-
+-       sprintf(pathname, "fchmodattestdir%d", p);
+-       sprintf(testfile, "fchmodattest%d.txt", p);
+-       sprintf(testfile2, "%s/fchmodattest%d.txt", abs_path, p);
+-       sprintf(testfile3, "fchmodattestdir%d/fchmodattest%d.txt", p, p);
+-
+-       free(abs_path);
+-
+-       SAFE_MKDIR(pathname, 0700);
+-
+-       fds[0] = SAFE_OPEN(pathname, O_DIRECTORY);
+-       fds[1] = fds[4] = fds[0];
+-
+-       SAFE_FILE_PRINTF(testfile, "%s", testfile);
+-       SAFE_FILE_PRINTF(testfile2, "%s", testfile2);
++       char *tmpdir_path = tst_get_tmpdir();
 
+-       fds[2] = SAFE_OPEN(testfile3, O_CREAT | O_RDWR, 0600);
+-       fds[3] = 100;
+-       fds[5] = AT_FDCWD;
++       abs_path = tst_aprintf("%s/%s", tmpdir_path, FILEPATH);
++       free(tmpdir_path);
 
-I'd definitely keep this till the release, but then it should be safe to remove this old fallback.
+-       filenames[0] = filenames[2] = filenames[3] = filenames[4] = testfile;
+-       filenames[1] = testfile2;
+-       filenames[5] = testfile3;
++       SAFE_MKDIR(TESTDIR, 0700);
++       dir_fd = SAFE_OPEN(TESTDIR, O_DIRECTORY);
++       file_fd = SAFE_OPEN(FILEPATH, O_CREAT | O_RDWR, 0600);
+ }
 
+ static void cleanup(void)
+ {
+-       if (fds[0] > 0)
+-               close(fds[0]);
+-       if (fds[2] > 0)
+-               close(fds[2]);
++       if (dir_fd > -1)
++               close(dir_fd);
++       if (file_fd > -1)
++               close(file_fd);
+ }
 
-This sounds great.
-
-Best Regards
-Yang Xu
-
+ static struct tst_test test = {
+@@ -101,5 +77,10 @@ static struct tst_test test = {
+        .test = verify_fchmodat,
+        .setup = setup,
+        .cleanup = cleanup,
++       .bufs = (struct tst_buffers []) {
++               {&test_file, .str = TESTFILE},
++               {&file_path, .str = FILEPATH},
++               {},
++       },
+        .needs_tmpdir = 1,
+ };
 
 
 -- 
