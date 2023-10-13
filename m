@@ -4,76 +4,141 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BA81CDB47E
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 14:54:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2F9FCDB47E
+	for <ltp@archiver.kernel.org>; Fri, 13 Oct 2023 05:44:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 7BC533CE72E
-	for <ltp@archiver.kernel.org>; Thu, 12 Oct 2023 16:54:06 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 3D46A3CD3A2
+	for <ltp@archiver.kernel.org>; Fri, 13 Oct 2023 07:44:01 +0200 (CEST)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 00F003C8889
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 16:53:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id DE3113C8866
+ for <ltp@lists.linux.it>; Fri, 13 Oct 2023 07:43:50 +0200 (CEST)
+Received: from esa19.fujitsucc.c3s2.iphmx.com (esa19.fujitsucc.c3s2.iphmx.com
+ [216.71.158.62])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id E41271A0196F
- for <ltp@lists.linux.it>; Thu, 12 Oct 2023 16:53:54 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C42491F74C;
- Thu, 12 Oct 2023 14:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1697122433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6wF2TnpDOH1vez+au+uhgBsKs6XXHM3tYC7kg6u5rSM=;
- b=Qp3HQih3kj1vOHENm0o5ihqrr8ngtUfeNPM3Ebf1evkR59lfvD3hy9NVMKr7UqoHMidF51
- BloQh2W1uiGd4++qUsdZ/slOOjRiHamIKMU6le1xzu+WyUzgvlUixRaLXxh6aOlLa4Edlo
- gZxY7Ha3/9kzTUF0/dbE12R00mxk67k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1697122433;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6wF2TnpDOH1vez+au+uhgBsKs6XXHM3tYC7kg6u5rSM=;
- b=z7uwGpSfppkg++B648TrspouKQYZHVr9pom+g+DOwiPXxTOGeSpwhVrNOCtqgbaV1LDJl5
- PYSzPgnHJ/Bis8BA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE041139F9;
- Thu, 12 Oct 2023 14:53:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id hL0DKYEIKGWpIwAAMHmgww
- (envelope-from <chrubis@suse.cz>); Thu, 12 Oct 2023 14:53:53 +0000
-Date: Thu, 12 Oct 2023 16:54:37 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.com>
-Message-ID: <ZSgIrcu2A5eC_OvZ@yuki>
-References: <20231012103916.30712-1-rpalethorpe@suse.com>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 447701A00FE8
+ for <ltp@lists.linux.it>; Fri, 13 Oct 2023 07:43:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1697175829; x=1728711829;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=/BB6fZkxf2Jl2KCzxpxMzrU9DNnSqHhsLUDfydtHi7I=;
+ b=XN7Mc6ySb9c4drzFd59KYlbw0ouVP3aITXhFbFlDeKV6zJW7uuEBy095
+ Qqz4FM7UH0/WnACtJf9AOb1SX/IfKOgbal59JwJqR4HbUKO2bm8ejZ5/2
+ 24Zu9KBsg8m0VQxNHvzw+GnthCBwbyvYW/nGrCNmyaJ9l3CivFQ//a5Oq
+ D0n5Cif4kWXLjDZsc54cvRp4D8daOkU1tdXhPIriaM5zALoyDvfqLaTnj
+ 1dLsKlZSu/WZ/+obcwfLaAzTEkF/JAlyj0gJH6bf1s/1B6pUSMbixa8z8
+ YGmCc361BDu5wKJQC8chQa5RVQeFl4k03+M53D2uQ+DpdMPbkrCdsz4qk Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="98602072"
+X-IronPort-AV: E=Sophos;i="6.03,221,1694703600"; d="scan'208";a="98602072"
+Received: from mail-tycjpn01lp2168.outbound.protection.outlook.com (HELO
+ JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.168])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Oct 2023 14:43:46 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ALF2spLAz0oXJNg/tLoCZ06ad7ej3XeShrTvtz/Aab+UE7TAYp1KcnNQRSHHSlC821/X0ovSXzsc6JDzvDpITPKzpOccN41dnCgnW52YA0Y5n2QtbV9wCHtCa8xgR9hRwercWNiVD8gJ5J8BHUO6ZgUdYTaHltUGQJNAM2Nk7KXOD+PYXRIXJLmhCP2DQorBZKjo/4TtZ7vkqa69iaPVE5ZykyhSQ8+pujBbuohDVSqe022aGVQFzdHJIPXAcrNnrg07xIm+m3Sw4qChsaD7m+ZyjgR+Hmjxue7vUYUnmvjn76RgG3EN7fi/rE9JTN+g3o39N1i+dHhHuGVKWqZRUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/BB6fZkxf2Jl2KCzxpxMzrU9DNnSqHhsLUDfydtHi7I=;
+ b=YPT43IWJcXRg/RSTqZpFsAadIRTavzpbXdxpCsUAwnMxcZatMtHUtKXz/mDTXjBE/CJeVeVrmj3EkWfHpKH96nHROcZYlfXBvdc8zQjf74McmnkhmX99WiUH0KFTtF+yoxry9rh3FcWTa7lxRFN3Fyup0VHpcKcPnsPG/KqXtPAuI0PNixVc1ek9Q5bYkbzDqeGOLvgD4W5Kbrqen0r33pkyKbhh7TnBBATqGObnyOIbC04JGIfJKU8vwGfBqUUi5NGzn7pCC1eM+7vWeg/F47RWlRnrBWFHmyB7C9TcTNmdeI8/ueXlJ+2UznufQhCViDO12X7kROBUFui58qDXqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from OS7PR01MB11839.jpnprd01.prod.outlook.com (2603:1096:604:23b::8)
+ by TYWPR01MB10112.jpnprd01.prod.outlook.com (2603:1096:400:1e4::8)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.46; Fri, 13 Oct
+ 2023 05:43:43 +0000
+Received: from OS7PR01MB11839.jpnprd01.prod.outlook.com
+ ([fe80::a5d2:bd3a:8420:bd3a]) by OS7PR01MB11839.jpnprd01.prod.outlook.com
+ ([fe80::a5d2:bd3a:8420:bd3a%4]) with mapi id 15.20.6863.046; Fri, 13 Oct 2023
+ 05:43:43 +0000
+From: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>
+To: Petr Vorel <pvorel@suse.cz>
+Thread-Topic: [LTP] [PATCH 1/3] link03: Convert docs to docparse
+Thread-Index: AQHZ/DFsia34Ut00pEuW5rgsKNEt+rBF7AKAgAFMDIA=
+Date: Fri, 13 Oct 2023 05:43:43 +0000
+Message-ID: <807b574c-35f6-c84d-91ef-229385e8009a@fujitsu.com>
+References: <1697021709-22916-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <20231012095515.GA618148@pevik>
+In-Reply-To: <20231012095515.GA618148@pevik>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS7PR01MB11839:EE_|TYWPR01MB10112:EE_
+x-ms-office365-filtering-correlation-id: 4d44790f-dcee-4055-7329-08dbcbaf5c90
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4MwqV5AqaHhiQbEqq278gdwr+mSMU4Eb3zUgm48PSxv/GBJ62vxoRQTVV03EmPmyVr5BOKg1iY5yjtoCY1W+BrMHbj88rh799YN+TtsRUqMAedl4MJtsax4DzP1hzsuFds0m3mOX0e4STC7Wy3EYMVLDPqiOJUT98DOg3Y8rIbiUK5VvZ0lTkWb2uwfqbHvLGrD5icBai7Bfgo75GMYJblqi8ewBRrjRbLSJMmBpliyN7dlpqE8IQNlaIVnMCYwMSdaK0J4JBhru5r4bo3DN/d8aWh3AbGaLeOsf1VF1+czTHXCGD3iBT4HUDcEknQODu2vzM6PFHqcZIZnAeBHmfCZR0/vp7bj4EvQvz9LwjIp6/2k62TnFXPAHRkG4dlyts8xNg7fy6ZqDfp85xxWRp4GgXdUq94AJGqnn1Xr1NPcvCHEjpNaJz/FJCTErdXisdiNI3pKQwFx3Hpj1rIZ+Kj7LH9AjEbji/kmdZkOCbyi61etgatgsEVg0SYwjvWgDGXgIVghyV2xQDihseMgHQxZYtaakA5JqjKPdE7uYI+7HuxPxlw6B6XKGjgUPtC9g2ukio2bisboyvIvgTCYaHh5B6LyqdefDJJNWARnMr81fhUQ2fzEfAhfBHGc+6u9WMhYLmyo7cAHZkzxfx8XfSNCLFmOMq3jaPFtGuMccW4dIT9c9MqDOdHWfbsrun4HK
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:OS7PR01MB11839.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230031)(346002)(376002)(136003)(396003)(366004)(39860400002)(230922051799003)(64100799003)(451199024)(1590799021)(1800799009)(186009)(76116006)(66946007)(91956017)(316002)(66476007)(66556008)(66446008)(64756008)(6916009)(54906003)(31696002)(2906002)(86362001)(5660300002)(41300700001)(4326008)(8936002)(8676002)(1580799018)(36756003)(85182001)(2616005)(82960400001)(26005)(122000001)(83380400001)(71200400001)(6512007)(38100700002)(38070700005)(6506007)(31686004)(478600001)(6486002)(966005)(2004002)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZWFGVnA4TU9yUi80KzNRMlhVLzhaNnJjV2dBc3hZZGttN3NJMTY5YzM3by8z?=
+ =?utf-8?B?bHJIbGF4WDZ6c1c4QWZmdXNYT1h2c2I0bzlXTVp2NWRPSndUcnkyYzdtWHps?=
+ =?utf-8?B?SE1mTjRRQkEzS3dRUUU4RlcwM1lzTHRNdEVaMSswbGxvaGYrdVpheTBUeDhT?=
+ =?utf-8?B?eEt0TVVlMnZHWldnQjllQjRlVlpWWld3WVU1aHdheU9JTW1XQzFnVHpzRUN1?=
+ =?utf-8?B?a2RUbWJSWkVERlVpNHNTV1VNVlNYN04wbEQvcm1rV1hqenpiN05oVkFKYTI5?=
+ =?utf-8?B?dXFDNG5YaUNhd2JvdDBRU1Vpd2paL0FXVmhuUFlrSUMvdGV4SDhuQVVFbis5?=
+ =?utf-8?B?L2lGaGhkUXFtZFplb2h2UUVlWkEvaU5UKzFYbVloaUZkQUVqTkMyL2Z3MVBP?=
+ =?utf-8?B?NHZpd3V6QldZQ3V2TGhKUll5NGxxWHphakNyNkFmbTVVWEhDMVhlc0pGbHQz?=
+ =?utf-8?B?Qlc0TGU3TzdjWDNBN2pqSFBzV0dPbkc2NHFHOUxFaUM1V1cxUDErMnZrRDNR?=
+ =?utf-8?B?MHQyQWNJY0FLby9TOTExS1JDc0pJL1krSGJLSkNXZlV3L3ZsMWZqNTBqMmFE?=
+ =?utf-8?B?Vkc1QzJuNmROZDZhQVYyNmVrRzdMWlVvOEl0MkI0QjhVT2ZROExiQi9rbnow?=
+ =?utf-8?B?WjRmdnl3dldETWVURWpqbU9ha3dOQkFZL2dRdmlZamYxMUxEUjRxUGxmenhW?=
+ =?utf-8?B?b1ZyTmtKNXZzZmdQT2h1cS9adEVUczl5TFRSRmRvOGMzZDgrT0pWUDZ5Z2xq?=
+ =?utf-8?B?YTdNM3pWc3dCMkFCcjY3cmJ2VEp1ZytRaERnb2UvbHI2TW9nWjV6QURqd2k2?=
+ =?utf-8?B?enlEYzRZMWRYdVBvanl4S0ZDWGcvcDQ4M2ZKSnJmQWVhVjZzMUxuekw5cm9v?=
+ =?utf-8?B?cDMxd0NRYktOUldra3BSN3F4UlRjTVR2L0JzRGcyYW9yaHN0YTdBdFljLy92?=
+ =?utf-8?B?c09aVnk3NkF0YzlHYm50M1dDbzN5d1dQYzl3YWwrWlhUQVVPbE5Ob1dPSUxD?=
+ =?utf-8?B?ay90M2FORG02MTlKV0tTaEhWTG1LbWNsSEdNVkxlUWhIUnRqODJhNW9nVE9v?=
+ =?utf-8?B?Zlg4RzgzdFVVVy92bHNOT1Y1ZTU0WFd4S2lwK2pZN2p1b1BpUTRNbGpGKzhC?=
+ =?utf-8?B?WTg4ZExkdlhZUkVPajlFbnQxK3RVeFE0UkhLK0ZwK1h2dE9DMXZvaEJuL051?=
+ =?utf-8?B?SVdRbWpHbGVpeXpyTFBqNFdxLy8vNEU1NEVmUGpnRVl0ZWtoNFpmZnpPYVR5?=
+ =?utf-8?B?ZmpyMWJsZk96OGd5KzlPSHI1eUlYcHEzTHRCOXJEbnFCcC84Syt0Ujl4YzNY?=
+ =?utf-8?B?cVh6UUxYWVpGZklWV09qcTFlVnhMNmZYS0Q1VGttTkZwOUdTUEZqVHpqQnI2?=
+ =?utf-8?B?MktFUm5DcWVQVE9UUFZsK0t6bnIySXRaU3hFa2phazlYMThURnhtUVRnQ3Z2?=
+ =?utf-8?B?YTRKa2VHdXlwUytQbm9vNmF4eWVkSEVIWklSRHFiOHBOMFJZY1YyZjdQTjJF?=
+ =?utf-8?B?NVdKVWlmcHBOLzUxWktFMzFQeXVPQ1N6cjZEZXpyYXNZTEl4NXZldjQvV01v?=
+ =?utf-8?B?ck1PZzljVVhkVWNyWG4xL1dBNHZBMDFOQUUra3VSRGpIQXpSbkJUb1dnNVJ3?=
+ =?utf-8?B?cExSS3I5YmlodVBXaHYvcXh6Y2JiYjRlQksrUmRtNTZwc3gzME5XZEtBcHVY?=
+ =?utf-8?B?cFlrZ0ltNG5ab0QxNVNhRndyZVF1MjNWRTcydTBqYXZiZzIxcnRQMnNxNHN2?=
+ =?utf-8?B?RjRjeVhQaDBqVHNKY056aXl4K1NiMGVrVU56RGovZnpJbTN2cGFYM3pUMFFF?=
+ =?utf-8?B?ZEt5SzlPelFxbHMzYmh6czByT1l2cjgwZmF2WXZVcFVkbVdsUlVtL3JMMWh4?=
+ =?utf-8?B?dEpZaU1XMVhiMm1VWjRHM2JyNi9HdHU2eUFoU1c0Ri83bzMxdVloZm84aFBV?=
+ =?utf-8?B?L1hGTGQvYTU2cE5lem0zK3NmY1ErK1BBMzNCbm9MNkdGS0RhYWR6R0thSmkx?=
+ =?utf-8?B?VUJVd3EzZElYMnpUa3pPbnQ1TUtGb1pPYjB3ZUdHUUVHNGxWcjIwakFyV2FY?=
+ =?utf-8?B?eklLV3JTRDVPSHlmRGZTcDNlcTZYdjJmam1KT1c1OW5MbDN6aHlqdThaa3U1?=
+ =?utf-8?B?QlRaRm42SHFuZVFIRmtOSGJsRUhseGNPVCtoWTV6N3Ezem5ONXNyNGhuRDJx?=
+ =?utf-8?B?b2c9PQ==?=
+Content-ID: <325EC09CD500894CAE7FAFD19461D79D@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231012103916.30712-1-rpalethorpe@suse.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-5.78 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-3.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-2.18)[96.08%]
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: BqalFXi/ovpQ+bM6Ri2Je8vRc4BAih3v/icsGjPbXVLwA6HPOch68wnw8778cLv2iK4WkKiI+SDW0hVj8c6BM4FZXIjqSBqaIJuwJJvjV4NlD1tjw+89TV0vLvXlEeIJcs8ZrFs2ByvCk3wrWtMVShvp7s9pyqGCQWdtvPMyCAIqYn1kHP/sLeBQ9Jiq+hGjjgixPIec5phPOLXjKoOaAVpO8u2fr1JWn8LKZsDTUACdmhdtdRT4CghgPZ6/0jYfxVDUQ4XY85by08CAlvi6xQbYlFCQf2vuWoGvwoCf1Xli+xD1nFZwOwa9tvA0PnZLHhpQROW6j93KINcVrk42nOsg62dLpGgPIt1JF+PKM0xqhpxRCyMhMWJtwsijGexYlatmaRIg6p7tQwIAC3/vtKnDlEqzTYUlTEJUR4aFj7TRYWWf42CEWAkzdYTI0NvXH4W9fIkzSRNQxyh1oLt4PZce9HBTQegLKuiwehhH6tRuFQxB56LnGqSOs2pRk/wLAkV26jmkkYyAF/CDxFyjFnQkJEO685sObaJ/f0G3srgKSB8OWHuplT+TY87C2qRdRBgbhJG+EqoJCCgqG24wDckOvgUUc9uhz5TirCLFUPdIbHBmvtsfNCpiJw+kNaBkn4rcCYUJVqmjRkCt62RsQGOah0FvGSplJkRltCqw6QSblFziV2HlHCGfqkgPh2yvXAolPA7B9Rmk9/hI1Dwc1VRMFs7XCuscBnAHlF1PMYLTPOyGCwnQn+SEe163mQY9nV5kebXBmc1tXCtvKMMTMbkWoEMsd7QYcWEHKwVpwiI=
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS7PR01MB11839.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d44790f-dcee-4055-7329-08dbcbaf5c90
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2023 05:43:43.5376 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 367wdCsvBgAn4cqkf0WbWtzL9SAiZYu8eq/AXIGWFAues9TmEdzOI0ats2F1Q+7rJZ6g5sw8EyKKv0W6gXRFWya5tAojDKWryJgo9FiH4QE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB10112
 X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] Add setsockopt10 TLS ULP UAF CVE-2023-0461
+Subject: Re: [LTP] [PATCH 1/3] link03: Convert docs to docparse
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,191 +150,94 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: "ltp@lists.linux.it" <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> +#include "tst_test.h"
-> +
-> +#ifdef HAVE_LINUX_TLS_H
-> +
-> +#include <linux/tls.h>
-> +#include "netinet/in.h"
-> +#include "netinet/tcp.h"
-> +#include "tst_checkpoint.h"
-> +#include "tst_net.h"
-> +#include "tst_safe_net.h"
-> +#include "tst_taint.h"
-> +
-> +static struct tls12_crypto_info_aes_gcm_128 opts = {
-> +	.info = {
-> +		.version = TLS_1_2_VERSION,
-> +		.cipher_type = TLS_CIPHER_AES_GCM_128,
-> +	},
-> +	.iv = { 'i', 'v' },
-> +	.key = { 'k', 'e', 'y' },
-> +	.salt = { 's', 'a', 'l', 't' },
-> +	.rec_seq = { 'r', 'e', 'c', 's' },
-> +};
-> +
-> +static struct sockaddr_in tcp0_addr, tcp1_addr;
-> +static const struct sockaddr unspec_addr = {
-> +	.sa_family = AF_UNSPEC
-> +};
-> +
-> +static int tcp0_sk, tcp1_sk, tcp2_sk, tcp3_sk;
-> +
-> +static void setup(void)
-> +{
-> +	tst_init_sockaddr_inet(&tcp0_addr, "127.0.0.1", 0x7c90);
-> +	tst_init_sockaddr_inet(&tcp1_addr, "127.0.0.1", 0x7c91);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (tcp0_sk > 0)
-> +		SAFE_CLOSE(tcp0_sk);
-> +	if (tcp1_sk > 0)
-> +		SAFE_CLOSE(tcp1_sk);
-> +	if (tcp2_sk > 0)
-> +		SAFE_CLOSE(tcp2_sk);
-> +	if (tcp3_sk > 0)
-> +		SAFE_CLOSE(tcp3_sk);
-> +}
-> +
-> +static void child(void)
-> +{
-> +	tst_res(TINFO, "child: Listen for tcp1 connection");
-> +	tcp0_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
-> +	SAFE_BIND(tcp0_sk, (struct sockaddr *)&tcp0_addr, sizeof(tcp0_addr));
-> +	SAFE_LISTEN(tcp0_sk, 1);
-> +	TST_CHECKPOINT_WAKE(0);
-> +
-> +	tcp3_sk = SAFE_ACCEPT(tcp0_sk, NULL, 0);
-> +	TST_CHECKPOINT_WAIT(1);
-> +	SAFE_CLOSE(tcp3_sk);
-> +	SAFE_CLOSE(tcp0_sk);
-> +
-> +	tcp3_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
-> +	TST_CHECKPOINT_WAIT(2);
-> +
-> +	tst_res(TINFO, "child: connect for tcp2 connection");
-> +	TEST(connect(tcp3_sk, (struct sockaddr *)&tcp1_addr, sizeof(tcp1_addr)));
-> +
-> +	if (TST_RET == -1) {
-> +		tst_res(TINFO | TTERRNO, "child: could not connect to tcp1");
-> +		return;
-> +	}
-> +
-> +	TST_CHECKPOINT_WAIT(3);
-> +}
-> +
-> +static void run(void)
-> +{
-> +	const pid_t child_pid = SAFE_FORK();
-> +
-> +	if (child_pid == 0) {
-> +		child();
-> +		return;
-> +	}
-> +
-> +	tcp1_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
-> +	TST_CHECKPOINT_WAIT(0);
-> +
-> +	tst_res(TINFO, "parent: Connect for tcp0 connection");
-> +	SAFE_CONNECT(tcp1_sk, (struct sockaddr *)&tcp0_addr, sizeof(tcp0_addr));
-> +	TEST(setsockopt(tcp1_sk, SOL_TCP, TCP_ULP, "tls", 3));
-> +
-> +	if (TST_RET == -1 && TST_ERR == ENOENT)
-> +		tst_brk(TCONF | TTERRNO, "parent: setsockopt failed: The TLS module is probably not loaded");
 
-Should we set .needs_drivers for the test so that it only attempts to
-run either if TLS is compiled in or could be modprobed as a module?
+Hi Petr,
+> Hi Xu,
+>
+> first, so far we did these changes during rewrite to the new C API.
+> Do we really put docparse on these old tests? I would postpone it.
 
-> +	else if (TST_RET == -1)
-> +		tst_brk(TBROK | TTERRNO, "parent: setsockopt failed");
-> +
-> +	SAFE_SETSOCKOPT(tcp1_sk, SOL_TLS, TLS_TX, &opts, sizeof(opts));
-> +	TST_CHECKPOINT_WAKE(1);
-> +
-> +	tst_res(TINFO, "parent: Disconnect by setting unspec address");
-> +	SAFE_CONNECT(tcp1_sk, &unspec_addr, sizeof(unspec_addr));
-> +	SAFE_BIND(tcp1_sk, (struct sockaddr *)&tcp1_addr, sizeof(tcp1_addr));
-> +
-> +	TEST(listen(tcp1_sk, 1));
-> +
-> +	if (TST_RET == -1) {
-> +		if (TST_ERR == EINVAL)
-> +			tst_res(TPASS | TTERRNO, "parent: Can't listen on disconnected TLS socket");
-> +		else
-> +			tst_res(TCONF | TTERRNO, "parent: Can't listen on disconnected TLS socket, but the errno is not EINVAL as expected");
-> +
-> +		TST_CHECKPOINT_WAKE(2);
-> +		goto out;
-> +	}
-> +
-> +	tst_res(TINFO, "parent: Can listen on disconnected TLS socket");
-> +	TST_CHECKPOINT_WAKE(2);
-> +
-> +	tcp2_sk = SAFE_ACCEPT(tcp1_sk, NULL, 0);
-> +	SAFE_CLOSE(tcp2_sk);
-> +
-> +	tst_res(TINFO, "parent: Attempting double free, because we set cipher options this should result in an crash");
-> +	SAFE_CLOSE(tcp1_sk);
-> +
-> +	TST_CHECKPOINT_WAKE(3);
-> +	usleep(0);
+I agree with you, I overlooked that this is an old test.
 
-Did you forget this here?
+You can postpone it, maybe in the future I will rewrite to the new C API.
 
-> +	if (tst_taint_check())
-> +		tst_res(TFAIL, "Kernel is tainted");
-> +	else
-> +		tst_res(TCONF, "No kernel taint or crash, maybe the kernel can clone the TLS-ULP context now?");
-
-If you set up .taint_check this is going to be redundant since we print
-TFAIL in the test library in that case.
-
-> +out:
-> +	tst_reap_children();
-> +}
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run,
-> +	.forks_child = 1,
-> +	.needs_checkpoints = 1,
-> +	.taint_check = TST_TAINT_W | TST_TAINT_D,
-> +	.needs_kconfigs = (const char *[]) {
-> +		"CONFIG_TLS",
-> +		NULL
-> +	},
-> +	.tags = (const struct tst_tag[]) {
-> +		{"linux-git", "2c02d41d71f90"},
-> +		{"CVE", "2023-0461"},
-> +		{}
-> +	}
-> +};
-> +
-> +#else
-> +
-> +TST_TEST_TCONF("linux/tls.h missing, we assume your system is too old");
-> +
-> +#endif
-> -- 
-> 2.40.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+>> ---
+>>   testcases/kernel/syscalls/link/link03.c | 41 +++++--------------------
+>>   1 file changed, 7 insertions(+), 34 deletions(-)
+>> diff --git a/testcases/kernel/syscalls/link/link03.c b/testcases/kernel/syscalls/link/link03.c
+>> index 1f45240ae..27f8a4efe 100644
+>> --- a/testcases/kernel/syscalls/link/link03.c
+>> +++ b/testcases/kernel/syscalls/link/link03.c
+>> @@ -1,42 +1,15 @@
+>>   /*
+>>    * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+>> - *  AUTHOR		: Richard Logan
+>> - *  CO-PILOT		: William Roske
+>> + * AUTHOR		: Richard Logan
+>> + * CO-PILOT		: William Roske
+> Although we probably should keep these names, we're not forced to have it in
+> original ugly form. How about put it as:
+> * Authors: Richard Logan, William Roske
+>
+ok.
+>>    * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
+> I would also put here:
+> * Copyright (c) Linux Test Project, 2001-2023
+ok.
+>> - *
+>> - * This program is free software; you can redistribute it and/or modify it
+>> - * under the terms of version 2 of the GNU General Public License as
+>> - * published by the Free Software Foundation.
+>> - *
+>> - * This program is distributed in the hope that it would be useful, but
+>> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+>> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>> - *
+>> - * Further, this software is distributed without any warranty that it is
+>> - * free of the rightful claim of any third person regarding infringement
+>> - * or the like.  Any license provided herein, whether implied or
+>> - * otherwise, applies only to this software file.  Patent licenses, if
+>> - * any, provided herein do not apply to combinations of this program with
+>> - * other software, or any other product whatsoever.
+>> - *
+>> - * You should have received a copy of the GNU General Public License along
+>> - * with this program; if not, write the Free Software Foundation, Inc.,
+>> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+>> - *
+>> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+>> - * Mountain View, CA  94043, or:
+>> - *
+>> - * http://www.sgi.com
+>> - *
+>> - * For further information regarding this notice, see:
+>> - *
+>> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+>> - *
+>>    */
+> You removed GPL, but haven't added SPDX on a first line:
+> // SPDX-License-Identifier: GPL-2.0-only
+Sorry for ignoring this.
+>> - /*
+>> -  * Tests that link(2) succeds with creating n links.
+>> -  */
+>> +/*\
+>> + * [Description]
+>> + *
+>> + * Tests that link(2) succeds with creating n links.
+> s/succeds/succeeds/g
+>> + */
+> Kind regards,
+> Petr
+>
+>>   #include <sys/types.h>
+>>   #include <fcntl.h>
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
