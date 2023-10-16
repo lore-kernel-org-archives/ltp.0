@@ -4,49 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62598CDB482
-	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 08:45:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 029FCC41513
+	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 09:06:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6CD6D3CD138
-	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 10:45:29 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 36EB73CEE01
+	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 11:06:12 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 781573C8689
- for <ltp@lists.linux.it>; Mon, 16 Oct 2023 10:45:18 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 69FDA3C036A
+ for <ltp@lists.linux.it>; Mon, 16 Oct 2023 11:06:02 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 295961000DD6
- for <ltp@lists.linux.it>; Mon, 16 Oct 2023 10:45:16 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id EC63E1FDB2
- for <ltp@lists.linux.it>; Mon, 16 Oct 2023 08:45:15 +0000 (UTC)
-Received: from g78 (unknown [10.163.25.62])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 8D5282D0FD;
- Mon, 16 Oct 2023 08:45:15 +0000 (UTC)
-References: <20231013074748.702214-1-pvorel@suse.cz> <87h6mrx9ff.fsf@suse.de>
-User-agent: mu4e 1.10.7; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: rpalethorpe@suse.de
-Date: Mon, 16 Oct 2023 09:41:34 +0100
-Organization: Linux Private Site
-In-reply-to: <87h6mrx9ff.fsf@suse.de>
-Message-ID: <87cyxfx8fa.fsf@suse.de>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 61D511A01117
+ for <ltp@lists.linux.it>; Mon, 16 Oct 2023 11:06:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1697447159;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=EqdAEgPPAqUuUcMPMo/sBEavH9iyKmvxTc+uw9QGTwI=;
+ b=eKELIS/eEIgkFeE/H+qjm0m1WDujVRprRXWesqbleSQvYopfKp9Q/DZHQ5GURzvY8LqObW
+ Qc8VaQjGMSpV2dDw7t/OsYMft+HSgIBHX+140w7ir7VQkD5CHKydtY+NR3c+gQmuTK5PK8
+ 8Cz1FxW+HYL/R5vptsy7xOM90e2yk/M=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-616-u3DkXH-OMsGWkVFBQ1E7Yg-1; Mon, 16 Oct 2023 05:05:57 -0400
+X-MC-Unique: u3DkXH-OMsGWkVFBQ1E7Yg-1
+Received: by mail-lf1-f70.google.com with SMTP id
+ 2adb3069b0e04-5079630993dso3145029e87.1
+ for <ltp@lists.linux.it>; Mon, 16 Oct 2023 02:05:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1697447155; x=1698051955;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=EqdAEgPPAqUuUcMPMo/sBEavH9iyKmvxTc+uw9QGTwI=;
+ b=wl41tbJ/bO6MuAgZXndSZHmfbF6RBn9ntpMem/f4AR+JMvCeYwBdZzk32ISlO1inHp
+ t50lU8hHQJ9soLRwTrY/wbFpGgqfuW/mjLfikdb2tcEoUFpaqxCvOMZvs0SwmTQtt10G
+ XHTySkLdZghGVN08uhAyuwP091vSMSQgSUy/L0OPraiQAOQDmoBBLwpWcnQBsiiHFzEi
+ zhhIXcsow6DMxLkUQY24LNcGgwWV/Fd9onmQ6An75oaTj3nZPnKwX/kIWytBNMeNb2V6
+ WZSkoqZinV+XSjw4tAtzyCpTrav05URId8wE/69y8hChnjEnjuwqD1gtmb+pAO9RvDYt
+ b0tQ==
+X-Gm-Message-State: AOJu0Ywba6K6RZnrhl3nlI24RVlvub2Em/Xckcty8Nd97S6xqc0obnx8
+ dzI1Wf1K2svfvE6q0RLRKm5tYvqccJJniCKD+GslWhAedOoZMYxtIboZ7106w+gtvjZBsVIYHbL
+ g0LqAxOYdsx3swcg8+hrp7Pi6UdYjcvUPSZtmaw==
+X-Received: by 2002:a05:6512:1154:b0:506:93a0:777a with SMTP id
+ m20-20020a056512115400b0050693a0777amr21939488lfg.2.1697447154770; 
+ Mon, 16 Oct 2023 02:05:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF5PLpcIgvXsopuh40zvu3g8Y9IGVauq8htc9+T7cX8N1K1nicVRti0d9cfPZItVv20SXCuDdt8JKRIRJPOoYc=
+X-Received: by 2002:a05:6512:1154:b0:506:93a0:777a with SMTP id
+ m20-20020a056512115400b0050693a0777amr21939472lfg.2.1697447154364; Mon, 16
+ Oct 2023 02:05:54 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Queue-Id: EC63E1FDB2
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+References: <20231013074748.702214-1-pvorel@suse.cz>
+ <20231013074748.702214-3-pvorel@suse.cz>
+ <CAEemH2fQuqPhd+5wjiBeswJQOG=FikpKmL6eubdWgyWqehX6fw@mail.gmail.com>
+In-Reply-To: <CAEemH2fQuqPhd+5wjiBeswJQOG=FikpKmL6eubdWgyWqehX6fw@mail.gmail.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 16 Oct 2023 17:05:42 +0800
+Message-ID: <CAEemH2fjTMaGgHeCJiuGJg7BLT4KoCDjY7ZPod3P9xUQTJFW1g@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/4] Add .modprobe (loading modules in C API)
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 2/4] lib: Add .modprobe
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,126 +87,77 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
-
-Richard Palethorpe <rpalethorpe@suse.de> writes:
-
-> Hello,
->
-> Petr Vorel <pvorel@suse.cz> writes:
->
->> Hi,
->>
->> when I started this patch it looked to me that quite a few C tests executes
->> modprobe to load kernel module. In the end, so far only can_bcm01.c and
->> madvise11.c uses it. But maybe more could be used.
->
-> Just to be clear this is a great idea in principle.
->
-> What concerns me is that module detection and loading will be
-> mandatory. Then tests which can work without root, even run in a sandbox,
-> will require real root.
->
-> I want to be able to see if a bug is reachable from inside a container,
-> embedded system or nsjail without adding /lib/modules to the
-> environment or recompiling the test.
->
-> In particular the module detection is a problem because it stops the
-> test from running when the module is present, but some file is not. If
-> it is acceptable for Android to disable this check then it should be
-> acceptable for any system.
->
-> If we make the check "best efforts", then we don't need a special define
-> for Android either.
-
-Also it occurred to me that in .modprobe you could add a field which
-specifies the kconfig parameter name for the module.
-
-So we could avoid modules.builtin, by checking the kernel configuration
-first. If the module is builtin or set to N, then no more checks are
-required.
-
->
->>
->> If I add support for module parameters (it would be easy to add), it could be
->> used also in can_common.h testcases/network/can/filter-tests/.
->>
->> It could also be used in the old API C tests in testcases/kernel/input (which
->> use input_helper.c), of course after we rewrite them to the new API.
->>
->> Tests which use modprobe but using .modprobe is not usable:
->> * kvm_pagefault01.c (more complicated use - it requires checks).
->> * zram03.c, zram_lib.sh (too complicated check due /sys/class/zram-control
->>   introduced in v4.2-rc1 vs. the old API, but maybe this could be simplified)
->> * netstress.c (used only when testing dccp, which is determined by getopts)
->>
->> But if we move code I put into tst_test.c into separate function, we could be
->> unified interface which would be usable for those tests as well.
->>
->> I haven't added support for parameters (it would be easy to add), atm only
->> kvm_pagefault01.c and can_common.h use them.
->>
->> If is .modprobe (as TST_MODPROBE) supported in shell API, then these could use it:
->> * new API shell tests: binfmt_misc_lib.sh, rcu_torture.sh, ip_tests.sh (if we
->>   don't delete this test), mpls01.sh, tests which use mpls_lib.sh, tests which
->>   use tcp_cc_lib.sh, tc01.sh
->> * fou01.sh (new API) needs to load module after getopts, but it could use some
->>   unified interface.
->> * old API shell tests (after they are rewritten): lock_torture.sh
->>
->> Few notes on modprobe:
->> * Do we even need to remove modules?
->
-> IDK, but it could be useful for triggering a double free or counter
-> underflow etc.
->
->> * should we use "modprobe -r" instead of "rmmod" on cleanup? rmmod is a simple
->> program which removes (unloads) a module from the Linux kernel. "modprobe -r"
->> handles a dependencies (if more modules loded, they are also removed).
->
-> These should probably be configurable. There are different
-> implementations of these tools (e.g. busybox, toybox etc.). In Toybox
-> modprobe is in "pending", meanwhile lsmod, insmod and rmmod are complete.
->
->>
->> * Network tests use -s on remote (log errors into syslog), I guess we probably
->> prefer for general use error on stderr.
->>
->> Petr Vorel (4):
->>   tst_kernel: Add safe_check_driver()
->>   lib: Add .modprobe
->>   madvise11: Replace .needs_drivers with .modprobe
->>   can_bcm01: Move vcan to .modprobe
->>
->>  doc/C-Test-API.asciidoc                       |  5 ++
->>  doc/Test-Writing-Guidelines.asciidoc          |  1 +
->>  include/tst_kernel.h                          |  9 +++
->>  include/tst_test.h                            |  5 +-
->>  lib/tst_kernel.c                              |  6 ++
->>  lib/tst_test.c                                | 56 ++++++++++++++++++-
->>  testcases/kernel/syscalls/madvise/madvise11.c | 36 +-----------
->>  testcases/network/can/cve/can_bcm01.c         | 19 ++++---
->>  8 files changed, 90 insertions(+), 47 deletions(-)
->>
->> -- 
->> 2.42.0
->
->
-> -- 
-> Thank you,
-> Richard.
-
-
--- 
-Thank you,
-Richard.
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gRnJpLCBPY3QgMTMsIDIwMjMgYXQgODowOeKAr1BNIExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
+Y29tPiB3cm90ZToKCj4gSGkgUGV0ciwKPgo+IE9uIEZyaSwgT2N0IDEzLCAyMDIzIGF0IDM6NDji
+gK9QTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4gd3JvdGU6Cj4KPj4gU2lnbmVkLW9mZi1i
+eTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4+IC0tLQo+PiAgZG9jL0MtVGVzdC1BUEku
+YXNjaWlkb2MgICAgICAgICAgICAgIHwgIDUgKysrCj4+ICBkb2MvVGVzdC1Xcml0aW5nLUd1aWRl
+bGluZXMuYXNjaWlkb2MgfCAgMSArCj4+ICBpbmNsdWRlL3RzdF90ZXN0LmggICAgICAgICAgICAg
+ICAgICAgfCAgNSArKy0KPj4gIGxpYi90c3RfdGVzdC5jICAgICAgICAgICAgICAgICAgICAgICB8
+IDUzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysKPj4gIDQgZmlsZXMgY2hhbmdlZCwgNjMg
+aW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZG9jL0MtVGVz
+dC1BUEkuYXNjaWlkb2MgYi9kb2MvQy1UZXN0LUFQSS5hc2NpaWRvYwo+PiBpbmRleCBkYWI4MTE1
+NjQuLmYyYmEzMDJlMiAxMDA2NDQKPj4gLS0tIGEvZG9jL0MtVGVzdC1BUEkuYXNjaWlkb2MKPj4g
+KysrIGIvZG9jL0MtVGVzdC1BUEkuYXNjaWlkb2MKPj4gQEAgLTE2MDksNiArMTYwOSwxMSBAQCBm
+aXJzdCBtaXNzaW5nIGRyaXZlci4KPj4gIFRoZSBkZXRlY3Rpb24gaXMgYmFzZWQgb24gcmVhZGlu
+ZyAnbW9kdWxlcy5kZXAnIGFuZCAnbW9kdWxlcy5idWlsdGluJwo+PiBmaWxlcwo+PiAgZ2VuZXJh
+dGVkIGJ5IGttb2QuIFRoZSBjaGVjayBpcyBza2lwcGVkIG9uIEFuZHJvaWQuCj4+Cj4+ICtOVUxM
+IHRlcm1pbmF0ZWQgYXJyYXkgJy5tb2Rwcm9iZScgb2Yga2VybmVsIG1vZHVsZSBuYW1lcyBhcmUg
+dHJpZWQgdG8gYmUKPj4gbG9hZGVkCj4+ICt3aXRoICdtb2Rwcm9iZScgdW5sZXNzIHRoZXkgYXJl
+IGJ1aWx0aW4gb3IgYWxyZWFkeSBsb2FkZWQuIFRlc3QgZXhpdHMKPj4gd2l0aAo+PiArJ1RDT05G
+JyBvbiBmaXJzdCAnbW9kcHJvYmUnIG5vbi16ZXJvIGV4aXQuIER1cmluZyBjbGVhbnVwIGFyZSB0
+aGUgbW9kdWxlcwo+PiArbG9hZGVkIGJ5IHRoZSB0ZXN0IHVubG9hZGVkIHdpdGggJ3JtbW9kJy4K
+Pj4gKwo+PiAgMS4yNyBTYXZpbmcgJiByZXN0b3JpbmcgL3Byb2N8c3lzIHZhbHVlcwo+PiAgfn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgo+Pgo+PiBkaWZmIC0tZ2l0IGEv
+ZG9jL1Rlc3QtV3JpdGluZy1HdWlkZWxpbmVzLmFzY2lpZG9jCj4+IGIvZG9jL1Rlc3QtV3JpdGlu
+Zy1HdWlkZWxpbmVzLmFzY2lpZG9jCj4+IGluZGV4IDBkYjg1MmFlNi4uMTk0ODc4MTZlIDEwMDY0
+NAo+PiAtLS0gYS9kb2MvVGVzdC1Xcml0aW5nLUd1aWRlbGluZXMuYXNjaWlkb2MKPj4gKysrIGIv
+ZG9jL1Rlc3QtV3JpdGluZy1HdWlkZWxpbmVzLmFzY2lpZG9jCj4+IEBAIC0zNzEsNiArMzcxLDcg
+QEAKPj4gaHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9sdHAvd2lraS9TaGVs
+bC1UZXN0LUFQSVtTaGVsbCBUZXN0Cj4+IEFQSV0uCj4+ICB8ICcubWluX21lbV9hdmFpbCcgfCBu
+b3QgYXBwbGljYWJsZQo+PiAgfCAnLm1udF9mbGFncycgfCAnVFNUX01OVF9QQVJBTVMnCj4+ICB8
+ICcubWluX3N3YXBfYXZhaWwnIHwgbm90IGFwcGxpY2FibGUKPj4gK3wgJy5tb2Rwcm9iZScgfCDi
+gJMKPj4gIHwgJy5tbnRwb2ludCcsICcubW50X2RhdGEnIHwgJ1RTVF9NTlRQT0lOVCcKPj4gIHwg
+Jy5tb3VudF9kZXZpY2UnIHwgJ1RTVF9NT1VOVF9ERVZJQ0UnCj4+ICB8ICcubmVlZHNfY2dyb3Vw
+X2N0cmxzJyB8IOKAkwo+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS90c3RfdGVzdC5oIGIvaW5jbHVk
+ZS90c3RfdGVzdC5oCj4+IGluZGV4IDc1YzIxMDliOS4uNmI0ZmFjOTg1IDEwMDY0NAo+PiAtLS0g
+YS9pbmNsdWRlL3RzdF90ZXN0LmgKPj4gKysrIGIvaW5jbHVkZS90c3RfdGVzdC5oCj4+IEBAIC0y
+OTcsOSArMjk3LDEyIEBAIHN0cnVjdCB0c3RfdGVzdCB7Cj4+ICAgICAgICAgLyogTlVMTCB0ZXJt
+aW5hdGVkIGFycmF5IG9mIHJlc291cmNlIGZpbGUgbmFtZXMgKi8KPj4gICAgICAgICBjb25zdCBj
+aGFyICpjb25zdCAqcmVzb3VyY2VfZmlsZXM7Cj4+Cj4+IC0gICAgICAgLyogTlVMTCB0ZXJtaW5h
+dGVkIGFycmF5IG9mIG5lZWRlZCBrZXJuZWwgZHJpdmVycyAqLwo+PiArICAgICAgIC8qIE5VTEwg
+dGVybWluYXRlZCBhcnJheSBvZiBuZWVkZWQga2VybmVsIGRyaXZlcnMgdG8gYmUgY2hlY2tlZCAq
+Lwo+PiAgICAgICAgIGNvbnN0IGNoYXIgKiBjb25zdCAqbmVlZHNfZHJpdmVyczsKPj4KPj4gKyAg
+ICAgICAvKiBOVUxMIHRlcm1pbmF0ZWQgYXJyYXkgb2YgbmVlZGVkIGtlcm5lbCBkcml2ZXJzIHRv
+IGJlIGxvYWRlZAo+PiB3aXRoIG1vZHByb2JlICovCj4+ICsgICAgICAgY29uc3QgY2hhciAqIGNv
+bnN0ICptb2Rwcm9iZTsKPj4gKwo+PiAgICAgICAgIC8qCj4+ICAgICAgICAgICoge05VTEwsIE5V
+TEx9IHRlcm1pbmF0ZWQgYXJyYXkgb2YgKC9wcm9jLCAvc3lzKSBmaWxlcyB0byBzYXZlCj4+ICAg
+ICAgICAgICogYmVmb3JlIHNldHVwIGFuZCByZXN0b3JlIGFmdGVyIGNsZWFudXAKPj4gZGlmZiAt
+LWdpdCBhL2xpYi90c3RfdGVzdC5jIGIvbGliL3RzdF90ZXN0LmMKPj4gaW5kZXggMDg3YzYyYTE2
+Li5jY2JhYTRjMDIgMTAwNjQ0Cj4+IC0tLSBhL2xpYi90c3RfdGVzdC5jCj4+ICsrKyBiL2xpYi90
+c3RfdGVzdC5jCj4+IEBAIC00OSw2ICs0OSw3IEBAIGNvbnN0IGNoYXIgKlRDSUQgX19hdHRyaWJ1
+dGVfXygod2VhaykpOwo+PiAgI2RlZmluZSBDVkVfREJfVVJMICJodHRwczovL2N2ZS5taXRyZS5v
+cmcvY2dpLWJpbi9jdmVuYW1lLmNnaT9uYW1lPUNWRS0iCj4+Cj4+ICAjZGVmaW5lIERFRkFVTFRf
+VElNRU9VVCAzMAo+PiArI2RlZmluZSBNT0RVTEVTX01BWF9MRU4gMTAKPj4KPj4gIHN0cnVjdCB0
+c3RfdGVzdCAqdHN0X3Rlc3Q7Cj4+Cj4+IEBAIC04Myw2ICs4NCw4IEBAIGNvbnN0IGNoYXIgKnRz
+dF9pcGNfcGF0aCA9IGlwY19wYXRoOwo+Pgo+PiAgc3RhdGljIGNoYXIgc2htX3BhdGhbMTAyNF07
+Cj4+Cj4+ICtzdGF0aWMgaW50IG1vZHVsZXNfbG9hZGVkW01PRFVMRVNfTUFYX0xFTl07Cj4+ICsK
+Pj4gIGludCBUU1RfRVJSOwo+PiAgaW50IFRTVF9QQVNTOwo+PiAgbG9uZyBUU1RfUkVUOwo+PiBA
+QCAtMTEzNSw2ICsxMTM4LDI5IEBAIHN0YXRpYyB2b2lkIGRvX2Nncm91cF9yZXF1aXJlcyh2b2lk
+KQo+PiAgICAgICAgIHRzdF9jZ19pbml0KCk7Cj4+ICB9Cj4+Cj4+ICsvKgo+PiArICogU2VhcmNo
+IGtlcm5lbCBkcml2ZXIgaW4gL3Byb2MvbW9kdWxlcy4KPj4gKyAqCj4+ICsgKiBAcGFyYW0gZHJp
+dmVyIFRoZSBuYW1lIG9mIHRoZSBkcml2ZXIuCj4+ICsgKiBAcmV0dXJuIDEgaWYgZHJpdmVyIGlz
+IGZvdW5kLCBvdGhlcndpc2UgMC4KPj4gKyAqLwo+PiArc3RhdGljIGludCBtb2R1bGVfbG9hZGVk
+KGNvbnN0IGNoYXIgKmRyaXZlcikKPj4KPgo+Cj4gV2hhdCBhYm91dCByZW5hbWluZyBpdCBhcyB0
+c3RfbW9kdWxlX2lzX2xvYWRlZCgpIGFuZCBtb3ZlIGludG8KPiB0c3Rfa2VybmVsLmg/Cj4gSSBn
+dWVzcyB3ZSBjb3VsZCBtYWtlIHVzZSBvZiBpdCB3aWRlbHkgZm9yIGNoZWNraW5nIG1vZHVsZSBs
+b2FkaW5nIG9yIG5vdC4KPgoKCnRzdF9tb2R1bGUuaCBzaG91bGQgYmUgYSBiZXR0ZXIgcGxhY2Us
+IEkganVzdCBmaW5kIGl0IHdoZW4gcmVhZCBzb21lCmV4aXN0aW5nIExUUCBjYXNlcy4KCgoKLS0g
+ClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5s
+aW51eC5pdC9saXN0aW5mby9sdHAK
