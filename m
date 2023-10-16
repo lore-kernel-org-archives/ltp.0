@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32751CDB474
-	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 18:45:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17476CDB465
+	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 18:46:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3E9663CF5A7
-	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 20:45:43 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 68A9D3CFE58
+	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 20:45:59 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 493EF3CFD6E
- for <ltp@lists.linux.it>; Mon, 16 Oct 2023 20:44:37 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 1425D3CFD3D
+ for <ltp@lists.linux.it>; Mon, 16 Oct 2023 20:44:39 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 49B551400BDF
- for <ltp@lists.linux.it>; Mon, 16 Oct 2023 20:44:36 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BF5401400BDF
+ for <ltp@lists.linux.it>; Mon, 16 Oct 2023 20:44:37 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 674951FEC6;
- Mon, 16 Oct 2023 18:44:35 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 595901FECD;
+ Mon, 16 Oct 2023 18:44:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1697481875; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1697481877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=hPNK4N09V2MfpuGZCYnQ/SDTVY67AlwY6PcytaqS4Tk=;
- b=Sm6LrtKhgWxIDRY+SGsyVnJGStLtqMMZoz8sa9tb+9aDTvEgzx+skSBeAYbzWdqGbSsNPi
- JfwJVgI7donfKtJPwZ8UJWoqK9ysluOhry5ydmu2CF16ag3Zp40STJtJ5iIiw/Qn0eLBg1
- sG7o+TmP//LSJS5gL5ur+mf0QfGunuQ=
+ bh=CBbhhk/nA77J/A7EO8PcTjA3tyRMTk/91gN5USruCE0=;
+ b=YEUH9kbX1kvXrp1q8IkdbbAPvTwQKCOl/dN4QpAI5yBXTTkAUuu14I2yrrgAQrqUlUAtIU
+ S7QTHJ11FwTH2tMyxFwT1tjcx78wH3wpDLbD6hK/ZfQyytWJcDEWDi3l9xlkMawsggCkT5
+ Yi7xA++FuEQnHzl6LwRPoePwuUxJw/U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1697481875;
+ s=susede2_ed25519; t=1697481877;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=hPNK4N09V2MfpuGZCYnQ/SDTVY67AlwY6PcytaqS4Tk=;
- b=QUQ86N/5aLsD512S0ZBVzsfenBTfuOQ4Yo2GUPXtcIvRtFr/IEcDqBKSTwnYlC5Gm8bKJl
- cvSBCcTX70DzguDA==
+ bh=CBbhhk/nA77J/A7EO8PcTjA3tyRMTk/91gN5USruCE0=;
+ b=ApQ88Nlu/YjpcefRF3/c1N2ncQMzvf95kf9exIHJNSHy+N7mj/wY0dej1Eh/KMGegjniMW
+ HzvlEwPW0WinGmAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F25CE138EF;
- Mon, 16 Oct 2023 18:44:33 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 040DD138EF;
+ Mon, 16 Oct 2023 18:44:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id iJs0OZGELWXAZgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 16 Oct 2023 18:44:33 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id oL2TNpSELWXAZgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 16 Oct 2023 18:44:36 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon, 16 Oct 2023 20:44:05 +0200
-Message-ID: <20231016184408.879977-5-pvorel@suse.cz>
+Date: Mon, 16 Oct 2023 20:44:07 +0200
+Message-ID: <20231016184408.879977-7-pvorel@suse.cz>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231016184408.879977-1-pvorel@suse.cz>
 References: <20231016184408.879977-1-pvorel@suse.cz>
@@ -78,7 +77,7 @@ X-Spamd-Result: default: False [-6.09 / 50.00]; ARC_NA(0.00)[];
  BAYES_HAM(-3.00)[100.00%]
 X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RFC PATCH 4/7] testscripts: Remove ltpdmmapper.sh
+Subject: [LTP] [RFC PATCH 6/7] testscripts: Remove sysfs.sh
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,224 +95,142 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Legacy script from 2004, probably not used by anybody.
+Legacy script from 2003, useless nowadays (sysfs is being mounted by
+all linux distros).
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testscripts/ltpdmmapper.sh | 204 -------------------------------------
- 1 file changed, 204 deletions(-)
- delete mode 100755 testscripts/ltpdmmapper.sh
+ testscripts/sysfs.sh | 121 -------------------------------------------
+ 1 file changed, 121 deletions(-)
+ delete mode 100755 testscripts/sysfs.sh
 
-diff --git a/testscripts/ltpdmmapper.sh b/testscripts/ltpdmmapper.sh
+diff --git a/testscripts/sysfs.sh b/testscripts/sysfs.sh
 deleted file mode 100755
-index f49e59626..000000000
---- a/testscripts/ltpdmmapper.sh
+index e22f36fa2..000000000
+--- a/testscripts/sysfs.sh
 +++ /dev/null
-@@ -1,204 +0,0 @@
--#!/bin/sh
--# This script should be run prior to running executing the filesystem tests.
--# valid devices need to be passed for Device Mapper to work correctly
--# 03/14/03 mridge@us.ibm.com added instance and time command line options
+@@ -1,121 +0,0 @@
+-#!/bin/bash
 -
--cd `dirname $0`
--export LTPROOT=${PWD}
--echo $LTPROOT | grep testscripts > /dev/null 2>&1
--if [ $? -eq 0 ]; then
-- cd ..
-- export LTPROOT=${PWD}
+-
+-##############################################################
+-#
+-#  Copyright (c) International Business Machines  Corp., 2003
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#  FILE        : sysfs.sh
+-#  USAGE       : sysfs.sh [ -k <kernel_module> ]
+-#
+-#  DESCRIPTION : A script that will test sysfs on Linux system.
+-#  REQUIREMENTS: CONFIG_DUMMY must have been used to build kernel, and the
+-#		 dummy network module must exist.
+-#
+-#  HISTORY     :
+-#      06/24/2003 Prakash Narayana (prakashn@us.ibm.com)
+-#
+-#  CODE COVERAGE: 31.3% - fs/sysfs (Total Coverage)
+-#
+-#                  0.0% - fs/sysfs/bin.c
+-#                 61.8% - fs/sysfs/dir.c
+-#                 27.5% - fs/sysfs/file.c
+-#                 40.4% - fs/sysfs/inode.c
+-#                 41.2% - fs/sysfs/mount.c
+-#                 58.1% - fs/sysfs/symlink.c
+-#
+-##############################################################
+-
+-
+-MNT_POINT="/tmp/sysfs_$$"
+-
+-KERNEL_NAME=`uname -a | awk ' { print $3 } '`
+-KERN_MODULE=/lib/modules/$KERNEL_NAME/kernel/drivers/net/dummy.ko
+-USAGE="$0 [ -k <kernel_module> ]"
+-
+-
+-##############################################################
+-#
+-# Make sure that uid=root is running this script.
+-# Validate the command line arguments.
+-#
+-##############################################################
+-
+-if [ $UID != 0 ]
+-then
+-	echo "FAILED: Must have root access to execute this script"
+-	exit 1
 -fi
 -
--export TMPBASE="/tmp"
--
--
--usage()
--{
--	cat <<-END >&2
--	usage: ${0##*/} [ -a part1 ] [ -b part2 ]
--
--	Note: In order to run this test, you must turn on "device mapper"
--        component in kernel (it is under device drivers item when you
--        run make menuconfig); and you must install userspace supporting
--        files (libdevmapper and dmsetup). They are in the device-mapper
--        package. You can download it from http://www.sistina.com. Follow
--        the README/INSTALL file within the package to install it.
--
--
--	defaults:
--	part1=$part1
--	part2=$part2
--	ltproot=$LTPROOT
--	tmpdir=$TMPBASE
--
--	example: ${0##*/} -a hdc1 -b hdc2
--
--
--	END
--exit
--}
--
--while getopts :a:b: arg
--do      case $arg in
--		a)	part1=$OPTARG;;
--                b)      part2=$OPTARG;;
--
--                \?)     echo "************** Help Info: ********************"
--                        usage;;
--        esac
+-while getopts k: args
+-do
+-	case $args in
+-	k)	KERN_MODULE=$OPTARG ;;
+-	\?)	echo $USAGE ; exit 1 ;;
+-	esac
 -done
 -
--if [ ! -n "$part1"  ]; then
--  echo "Missing 1st partition. You must pass 2 partitions for testing"
--  usage;
--  exit
+-if [ -z "$KERN_MODULE" ]
+-then
+-	echo $USAGE
+-	echo "FAILED: kernel module to insert not specified"
+-	exit 1
 -fi
 -
--if [ ! -n "$part2" ]; then
--  echo "Missing 2nd partition. You must pass 2 partitions for testing"
--  usage;
--  exit
+-# Here is the code coverage for fs/sysfs
+-# insmod/rmmod net/dummy.ko creates and deletes a directory
+-# under sysfs.
+-# In kernel, 2.5.73 or higher, insert/delete base/firmware_class.ko
+-
+-mkdir -p -m 777 $MNT_POINT
+-mount -t sysfs sysfs $MNT_POINT
+-if [ $? != 0 ]
+-then
+-	echo "FAILED: sysfs mount failed"
+-	exit 1
 -fi
 -
--echo "Starting Device Mapper Tests..."
+-insmod $KERN_MODULE
+-if [ $? != 0 ]
+-then
+-	umount $MNT_POINT
+-	rm -rf $MNT_POINT
+-	echo "FAILED: insmod failed"
+-	exit 1
+-fi
 -
--echo "0 10240 linear " $part1 "0" > ltp-dev-mapper-table1
--echo "0 100000 linear " $part1 "0" > ltp-dev-mapper-table2
--echo "0 100000 linear " $part2 "0" > ltp-dev-mapper-table3
--echo "0 200000 striped 2 16 " $part1 "0" $part2 "0" > ltp-dev-mapper-table4
--
--echo "Creating Devices..."
--
--dmsetup create dm-test-1 ltp-dev-mapper-table1
--dmsetup create dm-test-2 ltp-dev-mapper-table2
--dmsetup create dm-test-3 ltp-dev-mapper-table3
--dmsetup create dm-test-4 ltp-dev-mapper-table4
--
--echo "Device Info..."
--
--dmsetup info dm-test-1
--dmsetup info dm-test-2
--dmsetup info dm-test-3
--dmsetup info dm-test-4
--
--echo "Device Dependancies..."
--
--dmsetup deps dm-test-1
--dmsetup deps dm-test-2
--dmsetup deps dm-test-3
--dmsetup deps dm-test-4
--
--echo "Device Status..."
--
--dmsetup status dm-test-1
--dmsetup status dm-test-2
--dmsetup status dm-test-3
--dmsetup status dm-test-4
--
--echo "Device Tables..."
--
--dmsetup table dm-test-1
--dmsetup table dm-test-2
--dmsetup table dm-test-3
--dmsetup table dm-test-4
--
--echo "Device Mapper Version..."
--
--dmsetup version
--
--echo "Device Waiting..."
--
--#dmsetup wait dm-test-1
--#dmsetup wait dm-test-2
--#dmsetup wait dm-test-3
--#dmsetup wait dm-test-4
--
--echo "Device Mapper Removing Devices..."
--
--dmsetup remove dm-test-1
--dmsetup remove dm-test-2
--dmsetup remove dm-test-3
--dmsetup remove dm-test-4
--
--echo "Device Mapper Re-Creating Devices..."
--
--dmsetup create dm-test-1 ltp-dev-mapper-table1
--dmsetup create dm-test-2 ltp-dev-mapper-table2
--dmsetup create dm-test-3 ltp-dev-mapper-table3
--dmsetup create dm-test-4 ltp-dev-mapper-table4
--
--echo "Re-Naming Devices..."
--
--dmsetup rename dm-test-1 dm-test-1-new
--dmsetup rename dm-test-2 dm-test-2-new
--dmsetup rename dm-test-3 dm-test-3-new
--dmsetup rename dm-test-4 dm-test-4-new
--
--echo "Suspend Devices..."
--
--dmsetup suspend dm-test-1-new
--dmsetup suspend dm-test-2-new
--dmsetup suspend dm-test-3-new
--dmsetup suspend dm-test-4-new
--
--echo "0 102400 linear " $part1 "0" > ltp-dev-mapper-table1
--echo "0 200000 linear " $part1 "0" > ltp-dev-mapper-table2
--echo "0 200000 linear " $part2 "0" > ltp-dev-mapper-table3
--echo "0 400000 striped 2 16 " $part1 "0" $part2 "0" > ltp-dev-mapper-table4
--
--echo "Re-loading Devices..."
--
--dmsetup reload dm-test-1-new ltp-dev-mapper-table1
--dmsetup reload dm-test-2-new ltp-dev-mapper-table2
--dmsetup reload dm-test-3-new ltp-dev-mapper-table3
--dmsetup reload dm-test-4-new ltp-dev-mapper-table4
--
--echo "Resuming Devices..."
--
--dmsetup resume dm-test-1-new
--dmsetup resume dm-test-2-new
--dmsetup resume dm-test-3-new
--dmsetup resume dm-test-4-new
--
--echo "Device Info..."
--
--dmsetup info dm-test-1-new
--dmsetup info dm-test-2-new
--dmsetup info dm-test-3-new
--dmsetup info dm-test-4-new
--
--echo "Device Dependancies..."
--
--dmsetup deps dm-test-1-new
--dmsetup deps dm-test-2-new
--dmsetup deps dm-test-3-new
--dmsetup deps dm-test-4-new
--
--echo "Device Status..."
--
--dmsetup status dm-test-1-new
--dmsetup status dm-test-2-new
--dmsetup status dm-test-3-new
--dmsetup status dm-test-4-new
--
--echo "Device Tables..."
--
--dmsetup table dm-test-1-new
--dmsetup table dm-test-2-new
--dmsetup table dm-test-3-new
--dmsetup table dm-test-4-new
--
--echo "Device Mapper Remove-all..."
--
--dmsetup remove_all
--
--echo "Device Mapper Checking Status - Shouldn't be anything to check"
--
--dmsetup status dm-test-1-new
--dmsetup status dm-test-2-new
--dmsetup status dm-test-3-new
--dmsetup status dm-test-4-new
+-rmmod $KERN_MODULE
+-if [ $? != 0 ]
+-then
+-	umount $MNT_POINT
+-	rm -rf $MNT_POINT
+-	echo "FAILED: rmmod failed"
+-	exit 1
+-fi
 -
 -
+-#######################################################
+-#
+-# Just before exit, perform the cleanup.
+-#
+-#######################################################
+-
+-umount $MNT_POINT
+-rm -rf $MNT_POINT
+-
+-echo "PASSED: $0 passed!"
+-exit 0
 -- 
 2.42.0
 
