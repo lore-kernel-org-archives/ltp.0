@@ -4,78 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 029FCC41513
-	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 09:06:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0070CDB482
+	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 09:24:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 36EB73CEE01
-	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 11:06:12 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 4CA463CD14A
+	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 11:24:07 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 69FDA3C036A
- for <ltp@lists.linux.it>; Mon, 16 Oct 2023 11:06:02 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id E235D3C86BA
+ for <ltp@lists.linux.it>; Mon, 16 Oct 2023 11:23:55 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 61D511A01117
- for <ltp@lists.linux.it>; Mon, 16 Oct 2023 11:06:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1697447159;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=EqdAEgPPAqUuUcMPMo/sBEavH9iyKmvxTc+uw9QGTwI=;
- b=eKELIS/eEIgkFeE/H+qjm0m1WDujVRprRXWesqbleSQvYopfKp9Q/DZHQ5GURzvY8LqObW
- Qc8VaQjGMSpV2dDw7t/OsYMft+HSgIBHX+140w7ir7VQkD5CHKydtY+NR3c+gQmuTK5PK8
- 8Cz1FxW+HYL/R5vptsy7xOM90e2yk/M=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-616-u3DkXH-OMsGWkVFBQ1E7Yg-1; Mon, 16 Oct 2023 05:05:57 -0400
-X-MC-Unique: u3DkXH-OMsGWkVFBQ1E7Yg-1
-Received: by mail-lf1-f70.google.com with SMTP id
- 2adb3069b0e04-5079630993dso3145029e87.1
- for <ltp@lists.linux.it>; Mon, 16 Oct 2023 02:05:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1697447155; x=1698051955;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=EqdAEgPPAqUuUcMPMo/sBEavH9iyKmvxTc+uw9QGTwI=;
- b=wl41tbJ/bO6MuAgZXndSZHmfbF6RBn9ntpMem/f4AR+JMvCeYwBdZzk32ISlO1inHp
- t50lU8hHQJ9soLRwTrY/wbFpGgqfuW/mjLfikdb2tcEoUFpaqxCvOMZvs0SwmTQtt10G
- XHTySkLdZghGVN08uhAyuwP091vSMSQgSUy/L0OPraiQAOQDmoBBLwpWcnQBsiiHFzEi
- zhhIXcsow6DMxLkUQY24LNcGgwWV/Fd9onmQ6An75oaTj3nZPnKwX/kIWytBNMeNb2V6
- WZSkoqZinV+XSjw4tAtzyCpTrav05URId8wE/69y8hChnjEnjuwqD1gtmb+pAO9RvDYt
- b0tQ==
-X-Gm-Message-State: AOJu0Ywba6K6RZnrhl3nlI24RVlvub2Em/Xckcty8Nd97S6xqc0obnx8
- dzI1Wf1K2svfvE6q0RLRKm5tYvqccJJniCKD+GslWhAedOoZMYxtIboZ7106w+gtvjZBsVIYHbL
- g0LqAxOYdsx3swcg8+hrp7Pi6UdYjcvUPSZtmaw==
-X-Received: by 2002:a05:6512:1154:b0:506:93a0:777a with SMTP id
- m20-20020a056512115400b0050693a0777amr21939488lfg.2.1697447154770; 
- Mon, 16 Oct 2023 02:05:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF5PLpcIgvXsopuh40zvu3g8Y9IGVauq8htc9+T7cX8N1K1nicVRti0d9cfPZItVv20SXCuDdt8JKRIRJPOoYc=
-X-Received: by 2002:a05:6512:1154:b0:506:93a0:777a with SMTP id
- m20-20020a056512115400b0050693a0777amr21939472lfg.2.1697447154364; Mon, 16
- Oct 2023 02:05:54 -0700 (PDT)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DD949600851
+ for <ltp@lists.linux.it>; Mon, 16 Oct 2023 11:23:54 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 5A1C81F8C1;
+ Mon, 16 Oct 2023 09:23:53 +0000 (UTC)
+Received: from g78.cable.virginm.net (unknown [10.163.25.62])
+ by relay2.suse.de (Postfix) with ESMTP id 00CB32CB3C;
+ Mon, 16 Oct 2023 09:23:52 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Mon, 16 Oct 2023 10:23:46 +0100
+Message-ID: <20231016092346.23805-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231013074748.702214-1-pvorel@suse.cz>
- <20231013074748.702214-3-pvorel@suse.cz>
- <CAEemH2fQuqPhd+5wjiBeswJQOG=FikpKmL6eubdWgyWqehX6fw@mail.gmail.com>
-In-Reply-To: <CAEemH2fQuqPhd+5wjiBeswJQOG=FikpKmL6eubdWgyWqehX6fw@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 16 Oct 2023 17:05:42 +0800
-Message-ID: <CAEemH2fjTMaGgHeCJiuGJg7BLT4KoCDjY7ZPod3P9xUQTJFW1g@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Spamd-Bar: +++++++++++++++++
+Authentication-Results: smtp-out2.suse.de; dkim=none;
+ dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com
+ (policy=quarantine); 
+ spf=fail (smtp-out2.suse.de: domain of rpalethorpe@suse.com does not designate
+ 149.44.160.134 as permitted sender) smtp.mailfrom=rpalethorpe@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [17.50 / 50.00]; ARC_NA(0.00)[];
+ R_SPF_FAIL(1.00)[-all]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[];
+ RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+ DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid
+ DKIM,quarantine]; VIOLATED_DIRECT_SPF(3.50)[];
+ MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_SHORT(-1.00)[-1.000];
+ NEURAL_SPAM_LONG(3.00)[1.000]; RCVD_NO_TLS_LAST(0.10)[];
+ FROM_EQ_ENVFROM(0.00)[]; R_DKIM_NA(0.20)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Queue-Id: 5A1C81F8C1
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 2/4] lib: Add .modprobe
+Subject: [LTP] [PATCH v2] Add setsockopt10 TLS ULP UAF CVE-2023-0461
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,77 +69,292 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBPY3QgMTMsIDIwMjMgYXQgODowOeKAr1BNIExpIFdhbmcgPGxpd2FuZ0ByZWRoYXQu
-Y29tPiB3cm90ZToKCj4gSGkgUGV0ciwKPgo+IE9uIEZyaSwgT2N0IDEzLCAyMDIzIGF0IDM6NDji
-gK9QTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4gd3JvdGU6Cj4KPj4gU2lnbmVkLW9mZi1i
-eTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4+IC0tLQo+PiAgZG9jL0MtVGVzdC1BUEku
-YXNjaWlkb2MgICAgICAgICAgICAgIHwgIDUgKysrCj4+ICBkb2MvVGVzdC1Xcml0aW5nLUd1aWRl
-bGluZXMuYXNjaWlkb2MgfCAgMSArCj4+ICBpbmNsdWRlL3RzdF90ZXN0LmggICAgICAgICAgICAg
-ICAgICAgfCAgNSArKy0KPj4gIGxpYi90c3RfdGVzdC5jICAgICAgICAgICAgICAgICAgICAgICB8
-IDUzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysKPj4gIDQgZmlsZXMgY2hhbmdlZCwgNjMg
-aW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZG9jL0MtVGVz
-dC1BUEkuYXNjaWlkb2MgYi9kb2MvQy1UZXN0LUFQSS5hc2NpaWRvYwo+PiBpbmRleCBkYWI4MTE1
-NjQuLmYyYmEzMDJlMiAxMDA2NDQKPj4gLS0tIGEvZG9jL0MtVGVzdC1BUEkuYXNjaWlkb2MKPj4g
-KysrIGIvZG9jL0MtVGVzdC1BUEkuYXNjaWlkb2MKPj4gQEAgLTE2MDksNiArMTYwOSwxMSBAQCBm
-aXJzdCBtaXNzaW5nIGRyaXZlci4KPj4gIFRoZSBkZXRlY3Rpb24gaXMgYmFzZWQgb24gcmVhZGlu
-ZyAnbW9kdWxlcy5kZXAnIGFuZCAnbW9kdWxlcy5idWlsdGluJwo+PiBmaWxlcwo+PiAgZ2VuZXJh
-dGVkIGJ5IGttb2QuIFRoZSBjaGVjayBpcyBza2lwcGVkIG9uIEFuZHJvaWQuCj4+Cj4+ICtOVUxM
-IHRlcm1pbmF0ZWQgYXJyYXkgJy5tb2Rwcm9iZScgb2Yga2VybmVsIG1vZHVsZSBuYW1lcyBhcmUg
-dHJpZWQgdG8gYmUKPj4gbG9hZGVkCj4+ICt3aXRoICdtb2Rwcm9iZScgdW5sZXNzIHRoZXkgYXJl
-IGJ1aWx0aW4gb3IgYWxyZWFkeSBsb2FkZWQuIFRlc3QgZXhpdHMKPj4gd2l0aAo+PiArJ1RDT05G
-JyBvbiBmaXJzdCAnbW9kcHJvYmUnIG5vbi16ZXJvIGV4aXQuIER1cmluZyBjbGVhbnVwIGFyZSB0
-aGUgbW9kdWxlcwo+PiArbG9hZGVkIGJ5IHRoZSB0ZXN0IHVubG9hZGVkIHdpdGggJ3JtbW9kJy4K
-Pj4gKwo+PiAgMS4yNyBTYXZpbmcgJiByZXN0b3JpbmcgL3Byb2N8c3lzIHZhbHVlcwo+PiAgfn5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgo+Pgo+PiBkaWZmIC0tZ2l0IGEv
-ZG9jL1Rlc3QtV3JpdGluZy1HdWlkZWxpbmVzLmFzY2lpZG9jCj4+IGIvZG9jL1Rlc3QtV3JpdGlu
-Zy1HdWlkZWxpbmVzLmFzY2lpZG9jCj4+IGluZGV4IDBkYjg1MmFlNi4uMTk0ODc4MTZlIDEwMDY0
-NAo+PiAtLS0gYS9kb2MvVGVzdC1Xcml0aW5nLUd1aWRlbGluZXMuYXNjaWlkb2MKPj4gKysrIGIv
-ZG9jL1Rlc3QtV3JpdGluZy1HdWlkZWxpbmVzLmFzY2lpZG9jCj4+IEBAIC0zNzEsNiArMzcxLDcg
-QEAKPj4gaHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXRlc3QtcHJvamVjdC9sdHAvd2lraS9TaGVs
-bC1UZXN0LUFQSVtTaGVsbCBUZXN0Cj4+IEFQSV0uCj4+ICB8ICcubWluX21lbV9hdmFpbCcgfCBu
-b3QgYXBwbGljYWJsZQo+PiAgfCAnLm1udF9mbGFncycgfCAnVFNUX01OVF9QQVJBTVMnCj4+ICB8
-ICcubWluX3N3YXBfYXZhaWwnIHwgbm90IGFwcGxpY2FibGUKPj4gK3wgJy5tb2Rwcm9iZScgfCDi
-gJMKPj4gIHwgJy5tbnRwb2ludCcsICcubW50X2RhdGEnIHwgJ1RTVF9NTlRQT0lOVCcKPj4gIHwg
-Jy5tb3VudF9kZXZpY2UnIHwgJ1RTVF9NT1VOVF9ERVZJQ0UnCj4+ICB8ICcubmVlZHNfY2dyb3Vw
-X2N0cmxzJyB8IOKAkwo+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS90c3RfdGVzdC5oIGIvaW5jbHVk
-ZS90c3RfdGVzdC5oCj4+IGluZGV4IDc1YzIxMDliOS4uNmI0ZmFjOTg1IDEwMDY0NAo+PiAtLS0g
-YS9pbmNsdWRlL3RzdF90ZXN0LmgKPj4gKysrIGIvaW5jbHVkZS90c3RfdGVzdC5oCj4+IEBAIC0y
-OTcsOSArMjk3LDEyIEBAIHN0cnVjdCB0c3RfdGVzdCB7Cj4+ICAgICAgICAgLyogTlVMTCB0ZXJt
-aW5hdGVkIGFycmF5IG9mIHJlc291cmNlIGZpbGUgbmFtZXMgKi8KPj4gICAgICAgICBjb25zdCBj
-aGFyICpjb25zdCAqcmVzb3VyY2VfZmlsZXM7Cj4+Cj4+IC0gICAgICAgLyogTlVMTCB0ZXJtaW5h
-dGVkIGFycmF5IG9mIG5lZWRlZCBrZXJuZWwgZHJpdmVycyAqLwo+PiArICAgICAgIC8qIE5VTEwg
-dGVybWluYXRlZCBhcnJheSBvZiBuZWVkZWQga2VybmVsIGRyaXZlcnMgdG8gYmUgY2hlY2tlZCAq
-Lwo+PiAgICAgICAgIGNvbnN0IGNoYXIgKiBjb25zdCAqbmVlZHNfZHJpdmVyczsKPj4KPj4gKyAg
-ICAgICAvKiBOVUxMIHRlcm1pbmF0ZWQgYXJyYXkgb2YgbmVlZGVkIGtlcm5lbCBkcml2ZXJzIHRv
-IGJlIGxvYWRlZAo+PiB3aXRoIG1vZHByb2JlICovCj4+ICsgICAgICAgY29uc3QgY2hhciAqIGNv
-bnN0ICptb2Rwcm9iZTsKPj4gKwo+PiAgICAgICAgIC8qCj4+ICAgICAgICAgICoge05VTEwsIE5V
-TEx9IHRlcm1pbmF0ZWQgYXJyYXkgb2YgKC9wcm9jLCAvc3lzKSBmaWxlcyB0byBzYXZlCj4+ICAg
-ICAgICAgICogYmVmb3JlIHNldHVwIGFuZCByZXN0b3JlIGFmdGVyIGNsZWFudXAKPj4gZGlmZiAt
-LWdpdCBhL2xpYi90c3RfdGVzdC5jIGIvbGliL3RzdF90ZXN0LmMKPj4gaW5kZXggMDg3YzYyYTE2
-Li5jY2JhYTRjMDIgMTAwNjQ0Cj4+IC0tLSBhL2xpYi90c3RfdGVzdC5jCj4+ICsrKyBiL2xpYi90
-c3RfdGVzdC5jCj4+IEBAIC00OSw2ICs0OSw3IEBAIGNvbnN0IGNoYXIgKlRDSUQgX19hdHRyaWJ1
-dGVfXygod2VhaykpOwo+PiAgI2RlZmluZSBDVkVfREJfVVJMICJodHRwczovL2N2ZS5taXRyZS5v
-cmcvY2dpLWJpbi9jdmVuYW1lLmNnaT9uYW1lPUNWRS0iCj4+Cj4+ICAjZGVmaW5lIERFRkFVTFRf
-VElNRU9VVCAzMAo+PiArI2RlZmluZSBNT0RVTEVTX01BWF9MRU4gMTAKPj4KPj4gIHN0cnVjdCB0
-c3RfdGVzdCAqdHN0X3Rlc3Q7Cj4+Cj4+IEBAIC04Myw2ICs4NCw4IEBAIGNvbnN0IGNoYXIgKnRz
-dF9pcGNfcGF0aCA9IGlwY19wYXRoOwo+Pgo+PiAgc3RhdGljIGNoYXIgc2htX3BhdGhbMTAyNF07
-Cj4+Cj4+ICtzdGF0aWMgaW50IG1vZHVsZXNfbG9hZGVkW01PRFVMRVNfTUFYX0xFTl07Cj4+ICsK
-Pj4gIGludCBUU1RfRVJSOwo+PiAgaW50IFRTVF9QQVNTOwo+PiAgbG9uZyBUU1RfUkVUOwo+PiBA
-QCAtMTEzNSw2ICsxMTM4LDI5IEBAIHN0YXRpYyB2b2lkIGRvX2Nncm91cF9yZXF1aXJlcyh2b2lk
-KQo+PiAgICAgICAgIHRzdF9jZ19pbml0KCk7Cj4+ICB9Cj4+Cj4+ICsvKgo+PiArICogU2VhcmNo
-IGtlcm5lbCBkcml2ZXIgaW4gL3Byb2MvbW9kdWxlcy4KPj4gKyAqCj4+ICsgKiBAcGFyYW0gZHJp
-dmVyIFRoZSBuYW1lIG9mIHRoZSBkcml2ZXIuCj4+ICsgKiBAcmV0dXJuIDEgaWYgZHJpdmVyIGlz
-IGZvdW5kLCBvdGhlcndpc2UgMC4KPj4gKyAqLwo+PiArc3RhdGljIGludCBtb2R1bGVfbG9hZGVk
-KGNvbnN0IGNoYXIgKmRyaXZlcikKPj4KPgo+Cj4gV2hhdCBhYm91dCByZW5hbWluZyBpdCBhcyB0
-c3RfbW9kdWxlX2lzX2xvYWRlZCgpIGFuZCBtb3ZlIGludG8KPiB0c3Rfa2VybmVsLmg/Cj4gSSBn
-dWVzcyB3ZSBjb3VsZCBtYWtlIHVzZSBvZiBpdCB3aWRlbHkgZm9yIGNoZWNraW5nIG1vZHVsZSBs
-b2FkaW5nIG9yIG5vdC4KPgoKCnRzdF9tb2R1bGUuaCBzaG91bGQgYmUgYSBiZXR0ZXIgcGxhY2Us
-IEkganVzdCBmaW5kIGl0IHdoZW4gcmVhZCBzb21lCmV4aXN0aW5nIExUUCBjYXNlcy4KCgoKLS0g
-ClJlZ2FyZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5s
-aW51eC5pdC9saXN0aW5mby9sdHAK
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+
+V2:
+* rm taint check, it's done by lib
+* flush before doing double free because I found it was cutting the message in two
+* switch sleep to sched_yield
+* also reap children before concluding we didn't trigger the bug
+
+I haven't added needs_drivers. I'd prefer to add that later when
+Petr's patchset is merged.
+
+ configure.ac                                  |   1 +
+ runtest/cve                                   |   1 +
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/setsockopt/.gitignore     |   1 +
+ .../kernel/syscalls/setsockopt/setsockopt10.c | 204 ++++++++++++++++++
+ 5 files changed, 208 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/setsockopt/setsockopt10.c
+
+diff --git a/configure.ac b/configure.ac
+index 30a6f56e6..e40a18fa0 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -64,6 +64,7 @@ AC_CHECK_HEADERS_ONCE([ \
+     linux/netlink.h \
+     linux/seccomp.h \
+     linux/securebits.h \
++    linux/tls.h \
+     linux/tty.h \
+     linux/types.h \
+     linux/userfaultfd.h \
+diff --git a/runtest/cve b/runtest/cve
+index f9b36a182..569558af2 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -85,6 +85,7 @@ cve-2022-0847 dirtypipe
+ cve-2022-2590 dirtyc0w_shmem
+ cve-2022-23222 bpf_prog07
+ cve-2023-1829 tcindex01
++cve-2023-0461 setsockopt10
+ # Tests below may cause kernel memory leak
+ cve-2020-25704 perf_event_open03
+ cve-2022-0185 fsconfig03
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 53e519639..1851752cf 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1425,6 +1425,7 @@ setsockopt06 setsockopt06
+ setsockopt07 setsockopt07
+ setsockopt08 setsockopt08
+ setsockopt09 setsockopt09
++setsockopt10 setsockopt10
+ 
+ settimeofday01 settimeofday01
+ settimeofday02 settimeofday02
+diff --git a/testcases/kernel/syscalls/setsockopt/.gitignore b/testcases/kernel/syscalls/setsockopt/.gitignore
+index fd3235bb3..5c05290a5 100644
+--- a/testcases/kernel/syscalls/setsockopt/.gitignore
++++ b/testcases/kernel/syscalls/setsockopt/.gitignore
+@@ -7,3 +7,4 @@
+ /setsockopt07
+ /setsockopt08
+ /setsockopt09
++/setsockopt10
+diff --git a/testcases/kernel/syscalls/setsockopt/setsockopt10.c b/testcases/kernel/syscalls/setsockopt/setsockopt10.c
+new file mode 100644
+index 000000000..afd2c40a1
+--- /dev/null
++++ b/testcases/kernel/syscalls/setsockopt/setsockopt10.c
+@@ -0,0 +1,204 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2023 SUSE LLC Richard Palethorpe <rpalethorpe@suse.com>
++ */
++/*\
++ * [Description]
++ *
++ * Reproducer for CVE-2023-0461 which is an exploitable use-after-free
++ * in a TLS socket. In fact it is exploitable in any User Level
++ * Protocol (ULP) which does not clone its context when accepting a
++ * connection.
++ *
++ * Because it does not clone the context, the child socket which is
++ * created on accept has a pointer to the listening socket's
++ * context. When the child is closed the parent's context is freed
++ * while it still has a reference to it.
++ *
++ * TLS can only be added to a socket which is connected. Not listening
++ * or disconnected, and a connected socket can not be set to
++ * listening. So we have to connect the socket, add TLS, then
++ * disconnect, then set it to listening.
++ *
++ * To my knowledge, setting a socket from open to disconnected
++ * requires a trick; we have to "connect" to an unspecified
++ * address. This could explain why the bug was not found earlier.
++ *
++ * The accepted fix was to disallow listening on sockets with a ULP
++ * set which does not have a clone function.
++ *
++ * The test uses two processes, first the child acts as a server so
++ * that the parent can create the TLS socket. Then the child connects
++ * to the parent's TLS socket.
++ *
++ * When we try to listen on the parent, the current kernel should
++ * return EINVAL. However if clone is implemented then this could
++ * become a valid operation. It is also quite easy to crash the kernel
++ * if we set some TLS options before doing a double free.
++ *
++ * commit 2c02d41d71f90a5168391b6a5f2954112ba2307c
++ * Author: Paolo Abeni <pabeni@redhat.com>
++ * Date:   Tue Jan 3 12:19:17 2023 +0100
++ *
++ *  net/ulp: prevent ULP without clone op from entering the LISTEN status
++ */
++
++#include "sched.h"
++#include "tst_test.h"
++
++#ifdef HAVE_LINUX_TLS_H
++
++#include <linux/tls.h>
++#include "netinet/in.h"
++#include "netinet/tcp.h"
++
++#include "lapi/sched.h"
++#include "tst_checkpoint.h"
++#include "tst_net.h"
++#include "tst_safe_net.h"
++#include "tst_taint.h"
++
++static struct tls12_crypto_info_aes_gcm_128 opts = {
++	.info = {
++		.version = TLS_1_2_VERSION,
++		.cipher_type = TLS_CIPHER_AES_GCM_128,
++	},
++	.iv = { 'i', 'v' },
++	.key = { 'k', 'e', 'y' },
++	.salt = { 's', 'a', 'l', 't' },
++	.rec_seq = { 'r', 'e', 'c', 's' },
++};
++
++static struct sockaddr_in tcp0_addr, tcp1_addr;
++static const struct sockaddr unspec_addr = {
++	.sa_family = AF_UNSPEC
++};
++
++static int tcp0_sk, tcp1_sk, tcp2_sk, tcp3_sk;
++
++static void setup(void)
++{
++	tst_init_sockaddr_inet(&tcp0_addr, "127.0.0.1", 0x7c90);
++	tst_init_sockaddr_inet(&tcp1_addr, "127.0.0.1", 0x7c91);
++}
++
++static void cleanup(void)
++{
++	if (tcp0_sk > 0)
++		SAFE_CLOSE(tcp0_sk);
++	if (tcp1_sk > 0)
++		SAFE_CLOSE(tcp1_sk);
++	if (tcp2_sk > 0)
++		SAFE_CLOSE(tcp2_sk);
++	if (tcp3_sk > 0)
++		SAFE_CLOSE(tcp3_sk);
++}
++
++static void child(void)
++{
++	tst_res(TINFO, "child: Listen for tcp1 connection");
++	tcp0_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
++	SAFE_BIND(tcp0_sk, (struct sockaddr *)&tcp0_addr, sizeof(tcp0_addr));
++	SAFE_LISTEN(tcp0_sk, 1);
++	TST_CHECKPOINT_WAKE(0);
++
++	tcp3_sk = SAFE_ACCEPT(tcp0_sk, NULL, 0);
++	TST_CHECKPOINT_WAIT(1);
++	SAFE_CLOSE(tcp3_sk);
++	SAFE_CLOSE(tcp0_sk);
++
++	tcp3_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
++	TST_CHECKPOINT_WAIT(2);
++
++	tst_res(TINFO, "child: connect for tcp2 connection");
++	TEST(connect(tcp3_sk, (struct sockaddr *)&tcp1_addr, sizeof(tcp1_addr)));
++
++	if (TST_RET == -1) {
++		tst_res(TINFO | TTERRNO, "child: could not connect to tcp1");
++		return;
++	}
++
++	TST_CHECKPOINT_WAIT(3);
++}
++
++static void run(void)
++{
++	const pid_t child_pid = SAFE_FORK();
++
++	if (child_pid == 0) {
++		child();
++		return;
++	}
++
++	tcp1_sk = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
++	TST_CHECKPOINT_WAIT(0);
++
++	tst_res(TINFO, "parent: Connect for tcp0 connection");
++	SAFE_CONNECT(tcp1_sk, (struct sockaddr *)&tcp0_addr, sizeof(tcp0_addr));
++	TEST(setsockopt(tcp1_sk, SOL_TCP, TCP_ULP, "tls", 3));
++
++	if (TST_RET == -1 && TST_ERR == ENOENT)
++		tst_brk(TCONF | TTERRNO, "parent: setsockopt failed: The TLS module is probably not loaded");
++	else if (TST_RET == -1)
++		tst_brk(TBROK | TTERRNO, "parent: setsockopt failed");
++
++	SAFE_SETSOCKOPT(tcp1_sk, SOL_TLS, TLS_TX, &opts, sizeof(opts));
++	TST_CHECKPOINT_WAKE(1);
++
++	tst_res(TINFO, "parent: Disconnect by setting unspec address");
++	SAFE_CONNECT(tcp1_sk, &unspec_addr, sizeof(unspec_addr));
++	SAFE_BIND(tcp1_sk, (struct sockaddr *)&tcp1_addr, sizeof(tcp1_addr));
++
++	TEST(listen(tcp1_sk, 1));
++
++	if (TST_RET == -1) {
++		if (TST_ERR == EINVAL)
++			tst_res(TPASS | TTERRNO, "parent: Can't listen on disconnected TLS socket");
++		else
++			tst_res(TCONF | TTERRNO, "parent: Can't listen on disconnected TLS socket, but the errno is not EINVAL as expected");
++
++		TST_CHECKPOINT_WAKE(2);
++		tst_reap_children();
++		return;
++	}
++
++	tst_res(TINFO, "parent: Can listen on disconnected TLS socket");
++	TST_CHECKPOINT_WAKE(2);
++
++	tcp2_sk = SAFE_ACCEPT(tcp1_sk, NULL, 0);
++	SAFE_CLOSE(tcp2_sk);
++
++	tst_res(TINFO, "parent: Attempting double free, because we set cipher options this should result in an crash");
++	tst_flush();
++	SAFE_CLOSE(tcp1_sk);
++
++	TST_CHECKPOINT_WAKE(3);
++	tst_reap_children();
++	sched_yield();
++
++	tst_res(TCONF, "parent: We're still here, maybe the kernel can clone the TLS-ULP context now?");
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.forks_child = 1,
++	.needs_checkpoints = 1,
++	.taint_check = TST_TAINT_W | TST_TAINT_D,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_TLS",
++		NULL
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "2c02d41d71f90"},
++		{"CVE", "2023-0461"},
++		{}
++	}
++};
++
++#else
++
++TST_TEST_TCONF("linux/tls.h missing, we assume your system is too old");
++
++#endif
+-- 
+2.40.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
