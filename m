@@ -4,79 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFA50CDB465
-	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 15:49:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 292E6CDB474
+	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 18:44:47 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E10FE3CFA45
-	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 17:49:09 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id CD5FB3CFD38
+	for <ltp@archiver.kernel.org>; Mon, 16 Oct 2023 20:44:45 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id DFA063C8689
- for <ltp@lists.linux.it>; Mon, 16 Oct 2023 17:49:00 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 62E3D3CF5A6
+ for <ltp@lists.linux.it>; Mon, 16 Oct 2023 20:44:33 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C06BA100096D
- for <ltp@lists.linux.it>; Mon, 16 Oct 2023 17:48:58 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 19B5E20117C
+ for <ltp@lists.linux.it>; Mon, 16 Oct 2023 20:44:31 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1BDD821C1E;
- Mon, 16 Oct 2023 15:48:58 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 177D221C64;
+ Mon, 16 Oct 2023 18:44:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1697471338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1697481870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NnGmGUs5OKpPyBST+XW4cTXDXY3NGLjW9kceXUH/HTs=;
- b=NggqpFTsydzUi3exB0XDOW8JwR8jQrZ/G6pm4mZ7Uz+TT90r9YbhFKz63CTXw5Dh94MEgH
- hHiCqjvSpANG1jSYGNbn0Kli25+O1W1+0w9wTrMGGzyucF715VvP4+QHACHPQ5U0Inysco
- V64XAri98ltWW0IJlxHkVl5kx1qNeLo=
+ bh=6wp044LP7nPEnGwwGNNgvcaUnBgsBH7ZVmOpQMePD6o=;
+ b=K0Dxp/+lLImQdAa8i9zXHPuMePcJyPKRox1+yKvOG4mYzoHqniwt4mARaLpfy/fJ8ekvYZ
+ JJ47xaEeEsG+ugyww9fHrySmysyGmrHyn23fbu9U/sw02rKk/ykWZ+K9SD4aVpSj2Z7vnn
+ t+/GB6BkjSJLSCBvbrK0bSDFDngS1Ps=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1697471338;
+ s=susede2_ed25519; t=1697481870;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=NnGmGUs5OKpPyBST+XW4cTXDXY3NGLjW9kceXUH/HTs=;
- b=DXtZJuuoguzYbqId33Gvfh3GNLJ4J1kh3cUJjnj5YVSxK6FuYfkOrUviFsFTKKVckwwB19
- ZPHkyPQaun9B1cAg==
+ bh=6wp044LP7nPEnGwwGNNgvcaUnBgsBH7ZVmOpQMePD6o=;
+ b=KF5FLiAdjvk23Ca7NcXbXkR5DjJs/5h2wPAWI0YrY499M9Xpx9EuQGZLD/a5RlySBMC9X1
+ 4UuI92IEnmg2gzDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A4EA138EF;
- Mon, 16 Oct 2023 15:48:58 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8118139F9;
+ Mon, 16 Oct 2023 18:44:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id bJ10AmpbLWWCDgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 16 Oct 2023 15:48:58 +0000
-Date: Mon, 16 Oct 2023 17:49:34 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <ZS1bjvd84DVj9hUX@yuki>
-References: <20231012111333.32004-1-wegao@suse.com>
- <20231012112548.6887-1-wegao@suse.com> <ZSf9IdW9ciTDjkFm@yuki>
- <ZSoMsDNyf4Y+w8d3@wegao>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8D/wJY2ELWXAZgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 16 Oct 2023 18:44:29 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Mon, 16 Oct 2023 20:44:02 +0200
+Message-ID: <20231016184408.879977-2-pvorel@suse.cz>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231016184408.879977-1-pvorel@suse.cz>
+References: <20231016184408.879977-1-pvorel@suse.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZSoMsDNyf4Y+w8d3@wegao>
 Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [-0.25 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-6.09 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain];
+ R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
+ REPLY(-4.00)[]; BROKEN_CONTENT_TYPE(1.50)[];
+ RCPT_COUNT_FIVE(0.00)[5]; NEURAL_HAM_LONG(-2.99)[-0.998];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.65)[-0.654]; RCPT_COUNT_TWO(0.00)[2];
- NEURAL_SPAM_LONG(3.00)[1.000]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
  RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
  BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] Add test for UI_GET_NAME ioctl
+Subject: [LTP] [RFC PATCH 1/7] doc: Remove ltp-run-files.txt
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,62 +90,155 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > > +static int check_ui_get_sysname_ioctl(int fd)
-> > > +{
-> > > +	char name[256];
-> > > +
-> > > +	SAFE_IOCTL(NULL, fd, UI_GET_SYSNAME(sizeof(name)), name, NULL);
-> > > +
-> > > +	DIR *test_dir;
-> > > +
-> > > +	struct dirent *ent;
-> > > +
-> > > +	test_dir = SAFE_OPENDIR(NULL, "/sys/devices/virtual/input/");
-> > > +
-> > > +	while ((ent = SAFE_READDIR(NULL, test_dir))) {
-> > > +		if (!strcmp(ent->d_name, name))
-> > > +			return 1;
-> > > +		else
-> > > +			continue;
-> > > +	}
-> > 
-> > Why do we loop over the directory here? Can't we just directly check
-> > that the path /sys/devices/virtual/input/$name/ exists?
-> > 
-> > I guess that we can as well read the
-> > /sys/devices/virtual/input/$name/dev and match that against fstat() on
-> > the fd.
-> Seems no dev node can be found under /sys/devices/virtual/input/$name/.
-> 
-> ll /sys/devices/virtual/input/input13/
-> total 0
-> drwxr-xr-x 2 root root    0 Oct 13 21:32 capabilities
-> drwxr-xr-x 3 root root    0 Oct 13 21:32 event8
-> drwxr-xr-x 2 root root    0 Oct 13 21:32 id
-> -rw-r--r-- 1 root root 4.0K Oct 13 21:33 inhibited
-> -r--r--r-- 1 root root 4.0K Oct 13 21:33 modalias
-> drwxr-xr-x 3 root root    0 Oct 13 21:32 mouse3
-> -r--r--r-- 1 root root 4.0K Oct 13 21:32 name
-> -r--r--r-- 1 root root 4.0K Oct 13 21:32 phys
-> drwxr-xr-x 2 root root    0 Oct 13 21:33 power
-> -r--r--r-- 1 root root 4.0K Oct 13 21:32 properties
-> lrwxrwxrwx 1 root root    0 Oct 13 21:32 subsystem -> ../../../../class/input
-> -rw-r--r-- 1 root root 4.0K Oct 13 21:32 uevent
-> -r--r--r-- 1 root root 4.0K Oct 13 21:33 uniq
+This file contained runtest file description + list of various scripts
+in testcases directory. Scripts list are outdated (some has been
+already deleted, others will be deleted).
 
-Ah, right, it's under the event8 directory in this case. I guess that we
-can match name againts the VIRTUAL_DEVICE string instead.
+The format of the LTP runtest file is described in
+doc/C-Test-Case-Tutorial.asciidoc and
+doc/Test-Writing-Guidelines.asciidoc, improve the description.
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ doc/Test-Writing-Guidelines.asciidoc | 12 ++++
+ doc/ltp-run-files.txt                | 96 ----------------------------
+ 2 files changed, 12 insertions(+), 96 deletions(-)
+ delete mode 100644 doc/ltp-run-files.txt
+
+diff --git a/doc/Test-Writing-Guidelines.asciidoc b/doc/Test-Writing-Guidelines.asciidoc
+index 0db852ae6..a81404fa6 100644
+--- a/doc/Test-Writing-Guidelines.asciidoc
++++ b/doc/Test-Writing-Guidelines.asciidoc
+@@ -262,6 +262,18 @@ The list of tests to be executed is stored in runtest files under the
+ stored in 'scenario_groups/default'. When you add a test you should add
+ corresponding entries into some runtest file(s) as well.
+ 
++Each line of runtest file contain one test. First item is the test name
++('shell_test01', 'splice02'). All other items, separated by space will be
++executed ('echo "SUCCESS" | shell_pipe01.sh', 'splice02 -s 20').
++
++[source,sh]
++-------------------------------------------------------------------------------
++shell_test01 echo "SUCCESS" | shell_pipe01.sh
++splice02 splice02 -s 20
++-------------------------------------------------------------------------------
++
++Blank lines and lines starting with a '#' (comments) are ignored.
++
+ For syscall tests (these placed under 'testcases/kernel/syscalls/') use
+ 'runtest/syscalls' file, for kernel related tests for memory management we
+ have 'runtest/mm', etc.
+diff --git a/doc/ltp-run-files.txt b/doc/ltp-run-files.txt
+deleted file mode 100644
+index 3f405b387..000000000
+--- a/doc/ltp-run-files.txt
++++ /dev/null
+@@ -1,96 +0,0 @@
+-The runtest files contain a list of test cases to be executed.
+-
+-File Format
+------------
+-
+-Lines starting with a '#' are comments and blank lines are ignored.
+-
+-Otherwise, lines start with a test name followed by white space, then some
+-shell script to be executed. For example
+-
+-Test Name
+-|       Delimiter               Test case argument
+-|       |                       |
+-v       v                       v
+-splice02 seq 1 20000 | splice02 splice02-temp
+-         ^             ^                    ^
+-         |             |                    |
+-         |             Test case executable |
+-         -----------Shell script-------------
+-
+-So the splice02 runtest entry pipes the output of seq into the splice02 test
+-executable. Most runtest entries are simpler than this, for example
+-
+-splice03 splice03
+-
+-Here the test name and executable have the same name and no arguments have
+-been supplied.
+-
+-Run test files should start with a comment describing the tests they contain,
+-e.g.
+-
+-#DESCRIPTION:Kernel system calls
+-
+-Note that the LTP has absorbed a number of other projects. Some of these have
+-been fully converted to the LTP format, others have runtest files generated
+-for them during installation, while some use a shell script to integrate them
+-with the other tests.
+-
+-Test suites
+------------
+-
+- - syscalls  (except epoll, see below)
+- - fs
+- - fsx
+- - dio
+- - mm
+- - ipc
+- - sched
+- - math
+- - pty
+-
+-if run network tests flag is passed these additional tests are run
+- - tcp_cmds
+- - multicast
+- - rpc
+- - nfs
+-
+-To test filesystem with LVM
+-- testscripts/lvmtest.sh
+-
+-Device Mapper tests
+- - ltpdmmapper.sh
+-
+-Network tests
+- - network.sh
+- - testcases/network/sockets/ltpSockets.sh
+-
+-other filesystem or disk type tests
+- - autofs1.sh
+- - autofs4.sh
+- - diskio.sh
+- - isofs.sh
+- - sysfs.sh
+-
+-AIO/DIO filesystem tests
+- - ltp-aiodio.sh
+-
+-Device driver tests (may not run on all platforms)
+- - acpi
+- - agp
+- - base
+- - drm
+- - include
+- - nls
+- - pci
+- - tbio
+- - usb
+-
+-Open_hpi_testsuite
+- - run_tests
+-
+-Open_posix_testsuite
+- - run_tests
+-
+-
+-testcases/kernel/syscalls/epoll - The tests require additional installation files. See the README in the epoll directory.
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.42.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
