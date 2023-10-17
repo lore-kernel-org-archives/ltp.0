@@ -4,77 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43929CDB474
-	for <ltp@archiver.kernel.org>; Tue, 17 Oct 2023 11:08:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 977DACDB474
+	for <ltp@archiver.kernel.org>; Tue, 17 Oct 2023 11:35:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D5A093CD129
-	for <ltp@archiver.kernel.org>; Tue, 17 Oct 2023 13:08:16 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id CDBD93CEDEC
+	for <ltp@archiver.kernel.org>; Tue, 17 Oct 2023 13:35:22 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C7D193CD0E0
- for <ltp@lists.linux.it>; Tue, 17 Oct 2023 13:08:06 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 9CAD13CD106
+ for <ltp@lists.linux.it>; Tue, 17 Oct 2023 13:35:13 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 27B911400077
- for <ltp@lists.linux.it>; Tue, 17 Oct 2023 13:08:05 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B5729600761
+ for <ltp@lists.linux.it>; Tue, 17 Oct 2023 13:35:12 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B636021D0C;
- Tue, 17 Oct 2023 11:08:04 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 67E1721CA7;
+ Tue, 17 Oct 2023 11:35:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1697540884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1697542511;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3NWu8Ctkh2TRLgmNewbtrKwGeOq7W7dWd5W8N6C/g9s=;
- b=zinqRJBuG7d0Y/ZUZCnGgX7q3gpau+pOGXUMKskVXPuLLppj8q8xgTCxpQkG5p0tMxiPo/
- 8/pF3fC+zaVcMxzW9/5nkb7ZNnLR0uClCt8FcrQNyRmX+uJGhyJE372MoMAtj9OzcYd1Ob
- 6BhyBHTuTpCN+h8yDInTpaxkRRBcXHI=
+ bh=QMg4jhhKbDe2hOCUdxGa8eDTGsQ7glljYqQAU2SvCrk=;
+ b=XHGfMmOwujpANlhT6gTjRQJyyIdj/lUZHpOKbGkHy7mIcTqvlHTSm2ZUf1mLOBkGh+pGAu
+ ZoYFUWikWjEJzVNDBNuwwa8pXhjvtAI7zEBtcSIG/Xe2wnOgfigCnyCSYDCRLKvSX0H+zU
+ O/QaldwWi6cgW3qbMk3FUSdQW2nPIvs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1697540884;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1697542511;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3NWu8Ctkh2TRLgmNewbtrKwGeOq7W7dWd5W8N6C/g9s=;
- b=+vTuqO89eaBDb02DvM5/AuIyhmD/RRNoN6eryhAypomD5hXELYoH8cvYxvGDOMN6u+0Cer
- PSZSNPCqiASYt3Cg==
+ bh=QMg4jhhKbDe2hOCUdxGa8eDTGsQ7glljYqQAU2SvCrk=;
+ b=A9cyiboxFyJ531L47708Ax111MytCbu0FCA8b/AxHKv3bE+D21FxTTMoDhQLSkuP1w4Vxn
+ o+KBTEd+CjdNzdAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9794813584;
- Tue, 17 Oct 2023 11:08:04 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3AAFC13584;
+ Tue, 17 Oct 2023 11:35:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 8Qe0IxRrLmVfJgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 17 Oct 2023 11:08:04 +0000
-Date: Tue, 17 Oct 2023 13:08:40 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <ZS5rOMFkG-znhXMf@yuki>
-References: <20231012112548.6887-1-wegao@suse.com>
- <20231014033104.31424-1-wegao@suse.com>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ajUPDW9xLmV+NQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 17 Oct 2023 11:35:11 +0000
+Date: Tue, 17 Oct 2023 13:35:09 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.de>
+Message-ID: <20231017113509.GA931108@pevik>
+References: <20230908141414.28359-1-andrea.cervesato@suse.de>
+ <20230908141414.28359-3-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231014033104.31424-1-wegao@suse.com>
+In-Reply-To: <20230908141414.28359-3-andrea.cervesato@suse.de>
 Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [-6.60 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-3.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+X-Spamd-Result: default: False [-4.03 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.73)[83.74%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3] Add test for UI_GET_NAME ioctl
+Subject: Re: [LTP] [PATCH v2 2/2] Refactor getegid02 using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,93 +90,42 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> Fix:#573
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  testcases/kernel/input/input_helper.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/input/input_helper.c b/testcases/kernel/input/input_helper.c
-> index 09530fb4d..b9dc50a7f 100644
-> --- a/testcases/kernel/input/input_helper.c
-> +++ b/testcases/kernel/input/input_helper.c
-> @@ -32,6 +32,7 @@
->  
->  static int uinput_loaded;
->  static int check_device(void);
-> +static void check_ui_get_sysname_ioctl(int fd);
+Hi all,
 
-I do not think that this is needed, we do not call the function before
-it's definition.
+This code is based on Cyril's suggestion in v1 [1]
+	if (GID_SIZE_CHECK(st_egid))
+		TST_EXP_EQ_LI(gid, st_egid);
+	else
+		tst_res(TPASS, "getegid() passed");
 
->  static int try_open_device(void)
->  {
-> @@ -185,6 +186,22 @@ void send_rel_move(int fd, int x, int y)
->  	send_event(fd, EV_SYN, 0, 0);
->  }
->  
-> +static void check_ui_get_sysname_ioctl(int fd)
-> +{
-> +	char sys_name[256];
-> +	char dev_name[256];
-> +	char *path;
-> +
-> +	SAFE_IOCTL(NULL, fd, UI_GET_SYSNAME(sizeof(sys_name)), sys_name, NULL);
-> +	SAFE_ASPRINTF(NULL, &path, "/sys/devices/virtual/input/%s/name", sys_name);
-> +	SAFE_FILE_SCANF(NULL, path, "%s", dev_name);
+I wonder which system returns 16 bit gid?
 
-I would be inclined to use the FILE_SCANF() instead here and report
-failure if the file does not exist or couldn't be read, something as:
+man getgid(2) says that originally there was only 16 bit, than kernel 2.4 added
+support for 32 bit and the glibc getegid() wrapper transparently deal with this.
 
-	if (FILE_SCANF(NULL, path, "%s", dev_name)) {
-		tst_res(TFAIL, "Failed to read name from the sysfs path");
-		free(path);
-		return;
-	}
+Because even I compile as 32 bit:
 
-> +	if (strcmp(VIRTUAL_DEVICE, dev_name)) {
-> +		tst_brkm(TBROK, NULL, "Unable to find the input device through ioctl");
-> +	}
+$ file getegid01_16
+getegid01_16: ELF 32-bit LSB pie executable, Intel 80386
 
-I do not think that tst_brkm() is the right here either, this is simple
-TPASS/TFAIL situation. Can we just print TPASS/TFAIL based on if these
-names match?
+I get comparison, thus 32 bit:
+$ ./getegid01_16
+...
+getegid01.c:25: TPASS: gid == st_egid (1000)
 
-> +	free(path);
-> +}
-> +
->  void create_device(int fd)
->  {
->  	int nb;
-> @@ -202,8 +219,10 @@ void create_device(int fd)
->  	SAFE_IOCTL(NULL, fd, UI_DEV_CREATE, NULL);
->  
->  	for (nb = 100; nb > 0; nb--) {
-> -		if (check_device())
-> +		if (check_device()) {
-> +			check_ui_get_sysname_ioctl(fd);
->  			return;
-> +		}
->  		usleep(10000);
->  	}
->  
-> -- 
-> 2.35.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+What am I missing?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
+
+[1] https://lore.kernel.org/ltp/ZPCWWXXHG-oEB5qO@yuki/
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
