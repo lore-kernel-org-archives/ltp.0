@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77431CDB474
-	for <ltp@archiver.kernel.org>; Wed, 18 Oct 2023 01:50:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6920CDB47E
+	for <ltp@archiver.kernel.org>; Wed, 18 Oct 2023 05:44:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 94C063CEF53
-	for <ltp@archiver.kernel.org>; Wed, 18 Oct 2023 03:50:34 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id 0A8353CD0B5
+	for <ltp@archiver.kernel.org>; Wed, 18 Oct 2023 07:44:16 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 027C13C8885
- for <ltp@lists.linux.it>; Wed, 18 Oct 2023 03:50:23 +0200 (CEST)
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com
- [IPv6:2607:f8b0:4864:20::1149])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 852F13C84C3
+ for <ltp@lists.linux.it>; Wed, 18 Oct 2023 07:44:05 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 73C14600BAC
- for <ltp@lists.linux.it>; Wed, 18 Oct 2023 03:50:23 +0200 (CEST)
-Received: by mail-yw1-x1149.google.com with SMTP id
- 00721157ae682-5a7ac9c1522so96683187b3.0
- for <ltp@lists.linux.it>; Tue, 17 Oct 2023 18:50:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=google.com; s=20230601; t=1697593822; x=1698198622; darn=lists.linux.it;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=ItNhtT+LqRF8RORNRviC6uiab/EaF0+RR4c7K9BZ36M=;
- b=1GurzfQtxW5KTyyJ/3CEIbDXBz6zWHA9wyTb1bIvs4kX0Spjd8yyCDA2qOyx5p/47V
- BYx65dHEGa782R1/QtIHV97Pk3KEqpoaUMMnkuUXovjBxivzVmXIiNpytPICNhnVWk99
- y4Ywz1AYojIQE7saAmqWz6phElqynsqNO7XLdAGQtwEp8OpYzTOBs2WN0UNeVB/nX8Yj
- 6xk+qCQvdqemQDtf5dv6QjDcyTLn+AuZtCuSfDvtYVjsBg2xNff8Mr8MJ1fRjxHrIrqb
- x7hK+l+5DxXv+m4mKMOXLxpR/fO8NKBtKaIeDMxl7+0SXC/Df4DgfOTx5N/rJSmjEf0v
- ZfUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1697593822; x=1698198622;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=ItNhtT+LqRF8RORNRviC6uiab/EaF0+RR4c7K9BZ36M=;
- b=HrxIPmVpGNAYROKaGKxsL5Xk59hnrJYv1QV7q85SGGbt99GWwUIfnASsQshGtLHlE1
- OtbhIC4mMKBWCrBaqEq/3o7q1+1OqNozB/kM0t5LTrckg7hXrFOSJJNPidMljkhQa0tA
- Dg8074Ukr5wVn3Qd6FZFhdkzCBRowDf1O1wCsz0cTQA6xkGyHuZfJWKU4Udka1YkcTwz
- Dc8uPvhdxRbK7T95yoGViWMYJ6C3YkPvujD6iyQcMW1Qg9bY7ntoPFzt+Rm3qX1H2Gnp
- BXWL28F6LrIHU09shnciZxgAM/5Ldr/TxbeoOg4XCMjH1aN6AcTh1IJo5tRUHCjE4mC9
- ehKw==
-X-Gm-Message-State: AOJu0YxY8XgyLx1UbwZkd+SLFRZw8qeKFXCxJ9G9nsFGMtCD5gSuZnK9
- Gtr2ODFj0qWXyI5VRlYXw3mvF/xt8L4TMHvvBHAL3e9su/rtifG5DNWmkJih8vsPeBxnGomDXKX
- glQdXrhKvaBUVgGv8y9kkFwXjZQ30IxlSQCV6DlZ/0oPdkeIRgYRB+xVt
-X-Google-Smtp-Source: AGHT+IGxOfYIH8HFjxvxjncDUPjH7q6cdvD7wmYSOBnieSETazlYmAMrtYkT3ZGUhCu5m4RqWIUZxEkCMF8=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a0d:d4d7:0:b0:5a7:ba3f:3407 with SMTP id
- w206-20020a0dd4d7000000b005a7ba3f3407mr87674ywd.9.1697593821959; Tue, 17 Oct
- 2023 18:50:21 -0700 (PDT)
-Date: Wed, 18 Oct 2023 01:50:16 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
-Message-ID: <20231018015016.1897021-1-edliaw@google.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 31A98204714
+ for <ltp@lists.linux.it>; Wed, 18 Oct 2023 07:44:03 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6785F21D1E;
+ Wed, 18 Oct 2023 05:44:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1697607842; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=pDiNihpU/4yQfibyFm1aiKFjOZcYoNydxK4nw2UUXIk=;
+ b=rzYTZn744+bn//StbwegN4rmDYOkWb1wwMYDdijMV5bFEfxK/qyy+aUbx7iBw42t9Hw5Yb
+ PNfxGcwaie47rNn4y0WqyoxezEm9hgp7jfkl//eSWhZ1+ctCt2hjKqnp+SCXo+iYOL3/Vy
+ mUjit12ZC6DKkgZAqtGfnWJ3otyGT7s=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C12FA138EF;
+ Wed, 18 Oct 2023 05:44:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id A7LeJaFwL2X3MQAAMHmgww
+ (envelope-from <wegao@suse.com>); Wed, 18 Oct 2023 05:44:01 +0000
 To: ltp@lists.linux.it
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+Date: Wed, 18 Oct 2023 01:43:57 -0400
+Message-Id: <20231018054357.29035-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
+MIME-Version: 1.0
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.90 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ DKIM_SIGNED(0.00)[suse.com:s=susede1];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ MID_CONTAINS_FROM(1.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] tst_kvercmp: Handle larger kernel version numbers
+Subject: [LTP] [PATCH v1] ioctl_fiemap01: New test for fiemap ioctl()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,39 +75,160 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Edward Liaw via ltp <ltp@lists.linux.it>
-Reply-To: Edward Liaw <edliaw@google.com>
-Cc: kernel-team@android.com
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Current implementation can only handle revision numbers up to 256.  Bump
-this up to 1024 as some revision numbers are in the 300s.
+Fix: #535
 
-Signed-off-by: Edward Liaw <edliaw@google.com>
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- lib/tst_kvercmp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ runtest/syscalls                              |   2 +
+ testcases/kernel/syscalls/ioctl/.gitignore    |   1 +
+ .../kernel/syscalls/ioctl/ioctl_fiemap01.c    | 107 ++++++++++++++++++
+ 3 files changed, 110 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
 
-diff --git a/lib/tst_kvercmp.c b/lib/tst_kvercmp.c
-index 552920fac..9e1a511af 100644
---- a/lib/tst_kvercmp.c
-+++ b/lib/tst_kvercmp.c
-@@ -92,8 +92,8 @@ int tst_kvcmp(const char *cur_kver, int r1, int r2, int r3)
- 		         cur_kver);
- 	}
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 4152e1e5f..c7a0b2301 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -588,6 +588,8 @@ ioctl_ns07 ioctl_ns07
  
--	testver = (r1 << 16) + (r2 << 8) + r3;
--	currver = (a1 << 16) + (a2 << 8) + a3;
-+	testver = (r1 << 20) + (r2 << 10) + r3;
-+	currver = (a1 << 20) + (a2 << 10) + a3;
+ ioctl_sg01 ioctl_sg01
  
- 	return currver - testver;
- }
++ioctl_fiemap01 ioctl_fiemap01
++
+ inotify_init1_01 inotify_init1_01
+ inotify_init1_02 inotify_init1_02
+ 
+diff --git a/testcases/kernel/syscalls/ioctl/.gitignore b/testcases/kernel/syscalls/ioctl/.gitignore
+index 5fff7a61d..64adcdfe6 100644
+--- a/testcases/kernel/syscalls/ioctl/.gitignore
++++ b/testcases/kernel/syscalls/ioctl/.gitignore
+@@ -22,3 +22,4 @@
+ /ioctl_ns06
+ /ioctl_ns07
+ /ioctl_sg01
++/ioctl_fiemap01
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c b/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
+new file mode 100644
+index 000000000..e0511667e
+--- /dev/null
++++ b/testcases/kernel/syscalls/ioctl/ioctl_fiemap01.c
+@@ -0,0 +1,107 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Verify basic fiemap ioctl
++ *
++ */
++
++#include <linux/fs.h>
++#include <linux/fiemap.h>
++#include <stdlib.h>
++
++#include "tst_test.h"
++
++#define TESTFILE "testfile"
++#define NUM_EXTENT 2
++#define FILE_OFFSET ((rand() % 8 + 2) * getpagesize())
++
++static char *buf;
++
++static void print_extens(struct fiemap *fiemap)
++{
++
++	tst_res(TINFO, "File extent count: %u", fiemap->fm_mapped_extents);
++	for (unsigned int i = 0; i < fiemap->fm_mapped_extents; ++i) {
++		tst_res(TINFO, "Extent %u: Logical offset: %llu, Physical offset: %llu, flags: %u, Length: %llu",
++				i + 1,
++				fiemap->fm_extents[i].fe_logical,
++				fiemap->fm_extents[i].fe_physical,
++				fiemap->fm_extents[i].fe_flags,
++				fiemap->fm_extents[i].fe_length);
++	}
++}
++
++static void verify_ioctl(void)
++{
++	int fd;
++	struct fiemap *fiemap;
++
++	fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
++
++	fiemap = SAFE_MALLOC(sizeof(struct fiemap) + sizeof(struct fiemap_extent) * NUM_EXTENT);
++	fiemap->fm_start = 0;
++	fiemap->fm_length = ~0ULL;
++	fiemap->fm_extent_count = 1;
++
++	fiemap->fm_flags =  -1;
++	TST_EXP_FAIL(ioctl(fd, FS_IOC_FIEMAP, fiemap), EBADR);
++
++	fiemap->fm_flags =  0;
++	SAFE_IOCTL(fd, FS_IOC_FIEMAP, fiemap);
++	print_extens(fiemap);
++	if (fiemap->fm_mapped_extents == 0)
++		tst_res(TPASS, "Check fiemap iotct step1 pass");
++
++	SAFE_WRITE(SAFE_WRITE_ANY, fd, buf, getpagesize());
++	SAFE_IOCTL(fd, FS_IOC_FIEMAP, fiemap);
++	print_extens(fiemap);
++	if ((fiemap->fm_mapped_extents == 1) && (fiemap->fm_extents[0].fe_physical == 0))
++		tst_res(TPASS, "Check fiemap iotct step2 pass");
++
++	fiemap->fm_flags = FIEMAP_FLAG_SYNC;
++	SAFE_IOCTL(fd, FS_IOC_FIEMAP, fiemap);
++	print_extens(fiemap);
++	if ((fiemap->fm_extent_count == 1) &&
++		(fiemap->fm_extents[0].fe_flags == FIEMAP_EXTENT_LAST) &&
++		(fiemap->fm_extents[0].fe_physical > 0) &&
++		(fiemap->fm_extents[0].fe_length == (__u64)getpagesize()))
++		tst_res(TPASS, "Check fiemap iotct step3 pass");
++
++	fiemap->fm_extent_count = NUM_EXTENT;
++	srand(time(NULL));
++	SAFE_LSEEK(fd, FILE_OFFSET, SEEK_SET);
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, buf, getpagesize());
++	SAFE_IOCTL(fd, FS_IOC_FIEMAP, fiemap);
++	print_extens(fiemap);
++	if ((fiemap->fm_extent_count == NUM_EXTENT) &&
++		(fiemap->fm_extents[NUM_EXTENT - 1].fe_flags == FIEMAP_EXTENT_LAST) &&
++		(fiemap->fm_extents[NUM_EXTENT - 1].fe_physical > 0) &&
++		(fiemap->fm_extents[NUM_EXTENT - 1].fe_length == (__u64)getpagesize()))
++		tst_res(TPASS, "Check fiemap iotct step4 pass");
++
++	free(fiemap);
++	close(fd);
++}
++
++static void setup(void)
++{
++	buf = SAFE_MALLOC(getpagesize());
++}
++
++static void cleanup(void)
++{
++	free(buf);
++}
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_ioctl,
++	.needs_root = 1,
++	.needs_tmpdir = 1,
++};
 -- 
-2.42.0.655.g421f12c284-goog
+2.35.3
 
 
 -- 
