@@ -4,76 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51FF5CDB474
-	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 11:09:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E985ECDB474
+	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 11:55:43 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4C1423CEDC0
-	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 13:09:46 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 039303CD057
+	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 13:55:42 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3D8043CD00B
- for <ltp@lists.linux.it>; Fri, 20 Oct 2023 13:09:24 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id CEEB03C8927
+ for <ltp@lists.linux.it>; Fri, 20 Oct 2023 13:55:30 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2E669610230
- for <ltp@lists.linux.it>; Fri, 20 Oct 2023 13:09:23 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2C480200C3E
+ for <ltp@lists.linux.it>; Fri, 20 Oct 2023 13:55:29 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3417021A37;
- Fri, 20 Oct 2023 11:09:22 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EE02C1F45B;
+ Fri, 20 Oct 2023 11:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1697800162; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=TD4I+VrgqsGL3cdpUky4HV/qhSfh3mr7TJArR6tuqAg=;
- b=KoxZdWLFRIUFXL8Vd6lQnhHcHTDSLqRN3kUEN6DbTc8DbUK7cRIHlI95tNnZCXJaPhkMOY
- nPT8wzUQTJZv0xgGHeNcEpXe9bbnwnG+XC+1c1Rq6AdaEZqF8LjfPbIJY0gvng55esVOsu
- cTmVZjVNogRu8AycPkm87WOkzxPoZ/8=
+ t=1697802928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YgUf1HecpqR3HYfpFZVLB0kjqV2oZR2cwEGE1R1qHHw=;
+ b=OaR3Sbo35iWdjSAzc+uT9dQ3+tWHisRkPOF6658ksYr4cD7r1Tl9IY5lPHitjnIloQdkuo
+ qyed+ANzclrp8xVR/pgXyzSpok3dPgkEWKV8irJI3V6Vw6SwgVKVNifQnrZGT9yPFHYP/n
+ tqEHb8TLxf2/+5txSqnvSTVTObp7jlU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1697800162;
+ s=susede2_ed25519; t=1697802928;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=TD4I+VrgqsGL3cdpUky4HV/qhSfh3mr7TJArR6tuqAg=;
- b=yt+3M1rOKxAGax/w15WikYyxqHF/n9ZZitRx8+gKMOGfWm88Y8S6wsY8iK0/dPDC+sqnUR
- DlVUdSM4VxzggxCQ==
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YgUf1HecpqR3HYfpFZVLB0kjqV2oZR2cwEGE1R1qHHw=;
+ b=DPCRag4K3teL9zgDgsZM7jflhxqwmDxEcCmJsmt7tFCSZAYkFAFvZ8wdUpFwDNMXeMUj7w
+ QywuiwIOiw5I7SCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DB1E6138E2;
- Fri, 20 Oct 2023 11:09:21 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA9D013584;
+ Fri, 20 Oct 2023 11:55:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qhONMeFfMmXZZQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 20 Oct 2023 11:09:21 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 20 Oct 2023 13:09:17 +0200
-Message-ID: <20231020110918.26066-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.42.0
+ by imap2.suse-dmz.suse.de with ESMTPSA id DWw1NLBqMmUseQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 20 Oct 2023 11:55:28 +0000
+Date: Fri, 20 Oct 2023 13:56:00 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Li Wang <liwang@redhat.com>
+Message-ID: <ZTJq0FYkBwr2KyFM@yuki>
+References: <875y33vsks.fsf@suse.de>
+ <CAEemH2fvE0z4zDfbKEG0Vj60cVZ1v5MuA9iSDZGMPHzMw8amtA@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de;
+Content-Disposition: inline
+In-Reply-To: <CAEemH2fvE0z4zDfbKEG0Vj60cVZ1v5MuA9iSDZGMPHzMw8amtA@mail.gmail.com>
+Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spamd-Result: default: False [-2.08 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-8.37 / 50.00]; ARC_NA(0.00)[];
  RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
- BROKEN_CONTENT_TYPE(1.50)[]; RCPT_COUNT_FIVE(0.00)[5];
- NEURAL_HAM_LONG(-3.00)[-1.000];
+ RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ REPLY(-4.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
  RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-2.98)[99.89%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+ BAYES_HAM(-0.77)[84.39%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] lapi/{socket,
- tcp}.h: Add fallback definition for setsockopt10.c
+Subject: Re: [LTP] [RFC] LTP open monthly meeting
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,55 +87,33 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: LTP List <ltp@lists.linux.it>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Both SOL_TLS and TCP_ULP definitions are from Linux 4.13, it were added
-in glibc 2.27.  We still support compiling on older glibc, thus add this
-definition.
+Hi!
+> For me is (UTC + 8:00) available, I think it should be fine,
+> I always meet with European colleagues online. But I would
+> mark that as optional to me, to avoid conflict with other activities.
+> 
+> Btw, should we create a channel to talk in type first?
+> 
+> I have dropped use IRC for a period of time, maybe a channel
+> with chat history would be better. e.g. Slack or googlechat.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- include/lapi/socket.h | 4 ++++
- include/lapi/tcp.h    | 4 ++++
- 2 files changed, 8 insertions(+)
+I'm kind of discouraged to run one more chat client on my machines. I
+guess that in order to make things simpler if we are going to go for
+another chat solution, it should include irc bridge, from that point of
+view I would avoid Slack and googlechat.
 
-diff --git a/include/lapi/socket.h b/include/lapi/socket.h
-index 794dee49f..23e7ba6cf 100644
---- a/include/lapi/socket.h
-+++ b/include/lapi/socket.h
-@@ -62,6 +62,10 @@
- # define SOL_ALG		279
- #endif
- 
-+#ifndef SOL_TLS
-+# define SOL_TLS         282
-+#endif
-+
- #ifndef HAVE_STRUCT_MMSGHDR
- struct mmsghdr {
- 	struct msghdr msg_hdr;
-diff --git a/include/lapi/tcp.h b/include/lapi/tcp.h
-index bb98f28f0..87c5636f6 100644
---- a/include/lapi/tcp.h
-+++ b/include/lapi/tcp.h
-@@ -12,6 +12,10 @@
- # define TCP_FASTOPEN	23
- #endif
- 
-+#ifndef TCP_ULP
-+# define TCP_ULP          31
-+#endif
-+
- #ifndef TCP_FASTOPEN_CONNECT
- # define TCP_FASTOPEN_CONNECT	30	/* Attempt FastOpen with connect */
- #endif
+Maybe we can try to set up matrix channel with IRC bridge, however I
+have no idea if there is a suitable free server for that.
+
 -- 
-2.42.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
