@@ -4,68 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F168CDB474
-	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 03:25:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9053CDB474
+	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 06:23:51 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0D7DF3CFC52
-	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 05:25:18 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id D852F3CD03D
+	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 08:23:49 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2D98F3CD0C0
- for <ltp@lists.linux.it>; Fri, 20 Oct 2023 05:24:54 +0200 (CEST)
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
- [139.138.37.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 8ECF73C849F
+ for <ltp@lists.linux.it>; Fri, 20 Oct 2023 08:23:38 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C0D9E60077F
- for <ltp@lists.linux.it>; Fri, 20 Oct 2023 05:24:52 +0200 (CEST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="116264019"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694703600"; d="scan'208";a="116264019"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
- by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Oct 2023 12:24:50 +0900
-Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com
- [192.168.87.60])
- by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id E5EA0CA1E4
- for <ltp@lists.linux.it>; Fri, 20 Oct 2023 12:24:48 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 18202D94B8
- for <ltp@lists.linux.it>; Fri, 20 Oct 2023 12:24:48 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id AD9446BF59
- for <ltp@lists.linux.it>; Fri, 20 Oct 2023 12:24:47 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.215.131])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 679491A0073;
- Fri, 20 Oct 2023 11:24:47 +0800 (CST)
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: ltp@lists.linux.it
-Date: Fri, 20 Oct 2023 11:24:34 +0800
-Message-Id: <1697772274-11332-2-git-send-email-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1697772274-11332-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0B23C601ECB
+ for <ltp@lists.linux.it>; Fri, 20 Oct 2023 08:23:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1697783014;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=aND18DHNPmT9FqdaN3PogiAwfzP2jdvuBz76+uMoyJI=;
+ b=KhdYhAD97e3aQ/Lnu0tQAA8Oxk/i2E+oBSsC8wI6sNtoNR7Bm4VjjhjXEdOIFSZZmxLt/E
+ UBntCWnZXrGj65Qoopl1axbED/Qd/Qm4QspdRoYgUbh+ZMbKKdB4RIEfaujBarGw5Dj5Fl
+ 0Ded0Ku/tyQcU8dWBQ999aZcVPe8Avg=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-149-kHRkVRLpMZGhpPWJqmGvMg-1; Fri, 20 Oct 2023 02:23:32 -0400
+X-MC-Unique: kHRkVRLpMZGhpPWJqmGvMg-1
+Received: by mail-lf1-f70.google.com with SMTP id
+ 2adb3069b0e04-507cafb69e8so430699e87.1
+ for <ltp@lists.linux.it>; Thu, 19 Oct 2023 23:23:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1697783011; x=1698387811;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=aND18DHNPmT9FqdaN3PogiAwfzP2jdvuBz76+uMoyJI=;
+ b=hp68CW/2NP4E/X1AdYHFHmVXWqeT9C46kGq1Zh9/FM96YfkOjZgS8Y2t1c0sY+B8YY
+ LZWQq5svD8WKJuIzmIQHCgksGIQvNLkcKEM1nxfs6eGAtWgfFXbzv6YXMtE2EJ6YZL3u
+ kw2Dp5uRNN27Z7scPBVCYMPt2rbp3Fz7SiELNu7UVFUhqT2ICnWwPeUNWk4tgj6n1J5t
+ CfSuGNwg1/rjF85YDaHsdjA1yafS+IC3sRZa2xDxs522GB5qwJ8wZ2HMOAvBJD5VeJyK
+ +R4F/NidX7jPafWrpoyAVH/0T/yH1HMpVeF1PvLBYNQAfv4aFkBhfJmAOes9sOKRJavq
+ SC9g==
+X-Gm-Message-State: AOJu0YzEu465SaeW1t3YRV9SZ072UEbH+tpY29eNuFKEiwgg9rX0aE4N
+ l5qjCC6d2oDcke+/n41WnAF3VaZithI9XO3/vdoenKplmwAwlMzxv16TVGU2d24/w6hm8IBWkAz
+ 4/S2bt2ZucsCxWQcxduF6Ry31syw=
+X-Received: by 2002:ac2:520a:0:b0:4ff:7602:5879 with SMTP id
+ a10-20020ac2520a000000b004ff76025879mr614225lfl.55.1697783010966; 
+ Thu, 19 Oct 2023 23:23:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG8XWPsJweZ33sy8SBDpy0MdBxFlHvrAW/CfWKMbD1lP0OOLfmpDPtAatr6MAfvlzdUilBa27309WfqloMXLWM=
+X-Received: by 2002:ac2:520a:0:b0:4ff:7602:5879 with SMTP id
+ a10-20020ac2520a000000b004ff76025879mr614215lfl.55.1697783010527; Thu, 19 Oct
+ 2023 23:23:30 -0700 (PDT)
+MIME-Version: 1.0
 References: <1697772274-11332-1-git-send-email-xuyang2018.jy@fujitsu.com>
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27946.004
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27946.004
-X-TMASE-Result: 10--17.448700-10.000000
-X-TMASE-MatchedRID: tGJ02YVcvxcRcrxK+AdK7zU9EK4+H8U1aZATGA5/BXhgPgeggVwCFpYv
- gWqjMEzaNYCBzzxsUnv/hDDq/XyZmS/7QU2czuUNA9lly13c/gFzNCdGumZsScSiwizsgluQiH6
- Yv5yIUKludEHjsosnVDMuZ8ZjqIORfm5R+E2+crM5ZRbFNAl0jxRli5ttSPYMu3gEBpQvABUl/m
- i29q85l/29Pl68xfi0WS2NwPsUPtJZQ4rley4x/kz7FUUjXG1jl9q75JzWJRNujEcOZiInj5/bu
- mQx78u3oekUdArZ14HOyd98r1P+4fVACeiFsAcyEzEoOqAAVLM2hINq/IswlCkvFki4e3OUzPNl
- EtpUdaIQrkzWMsBTmoVjahLr+ZTJR+vpYbhOH1r4Zi3x/9WFO79cAlQW5YprrblmM/aFaC+Trr+
- C1WNmxdVlIlxlHyS47pwlAnoEcLCPGYLjOKcfyoanR/CvYO8XsbIL/j/u56ryPC7FUFMmiJ7VNy
- 7+UW/9/I+yd0mcY0W310iilwWxWkIYiAJlkvRNngIgpj8eDcCbifj2/J/1cUp0ODI8GjvXKrauX
- d3MZDUD/dHyT/Xh7Q==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+In-Reply-To: <1697772274-11332-1-git-send-email-xuyang2018.jy@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 20 Oct 2023 14:23:18 +0800
+Message-ID: <CAEemH2eyZRVtMJzJHBJbxwfzbZqugPqXpgrEiQurCb4yORoj7Q@mail.gmail.com>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] Refactor and merge symlink04/05 using new LTP API
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 1/2] syscalls/symlink02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,482 +86,164 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-symlink04 and symlink05 has been merged together, testing
-the results of symlink(2) for the existence or non-existence
-of a file
-
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- runtest/syscalls                              |   1 -
- testcases/kernel/syscalls/symlink/.gitignore  |   1 -
- testcases/kernel/syscalls/symlink/symlink04.c | 218 ++++--------------
- testcases/kernel/syscalls/symlink/symlink05.c | 180 ---------------
- 4 files changed, 49 insertions(+), 351 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/symlink/symlink05.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 1851752cf..7e2f793f6 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1559,7 +1559,6 @@ symlink01 symlink01
- symlink02 symlink02
- symlink03 symlink03
- symlink04 symlink04
--symlink05 symlink05
- 
- #symlinkat test cases
- symlinkat01 symlinkat01
-diff --git a/testcases/kernel/syscalls/symlink/.gitignore b/testcases/kernel/syscalls/symlink/.gitignore
-index d1497e680..6ea587ff3 100644
---- a/testcases/kernel/syscalls/symlink/.gitignore
-+++ b/testcases/kernel/syscalls/symlink/.gitignore
-@@ -2,4 +2,3 @@
- /symlink02
- /symlink03
- /symlink04
--/symlink05
-diff --git a/testcases/kernel/syscalls/symlink/symlink04.c b/testcases/kernel/syscalls/symlink/symlink04.c
-index 2190b3b1b..5022d4f13 100644
---- a/testcases/kernel/syscalls/symlink/symlink04.c
-+++ b/testcases/kernel/syscalls/symlink/symlink04.c
-@@ -1,193 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ * Copyright (c) Linux Test Project, 2003-2023
-+ * Author: 07/2001 John George
-  */
- 
--/*
-- * Test Name : symlink04
-- *
-- * Test Description :
-- *  Verify that, symlink will succeed to creat a symbolic link of an existing
-- *  object name path.
-- *
-- * Expected Result:
-- *  symlink() should return value 0 on success and symbolic link of an
-- *  existing object should be created.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *   	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *   	Verify the Functionality of system call
-- *      if successful,
-- *      	Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory created.
-- *
-- * Usage:  <for command-line>
-- *  symlink04 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
-- *	where,  -c n : Run n copies concurrently.
-- *		-e   : Turn on errno logging.
-- *		-f   : Turn off functionality Testing.
-- *		-i n : Execute test n times.
-- *		-I x : Execute test for x seconds.
-- *		-P x : Pause for x seconds between iterations.
-- *		-t   : Turn on syscall timing.
-- *
-- * History
-- *	07/2001 John George
-- *		-Ported
-- *
-- * Restrictions:
-- *  None.
-+/*\
-+ * [Description]
-  *
-+ * Check that a symbolic link may point to an existing file or
-+ * to a nonexistent one.
-  */
- 
-+#include "tst_test.h"
-+#include <stdlib.h>
- #include <stdio.h>
--#include <sys/types.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include <sys/stat.h>
--#include "test.h"
--#include "safe_macros.h"
- 
--#define  TESTFILE	"testfile"
--#define  SYMFILE	"slink_file"
--#define FILE_MODE       S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-+#define TESTFILE    "testfile"
-+#define NONFILE     "noexistfile"
-+#define SYMFILE     "slink_file"
- 
--char *TCID = "symlink04";
--int TST_TOTAL = 1;
-+static int fd;
-+static char *testfile;
-+static char *nonfile;
- 
--void setup();
--void cleanup();
-+static struct tcase {
-+	char **srcfile;
-+} tcases[] = {
-+	{&testfile},
-+	{&nonfile},
-+};
- 
--int main(int ac, char **av)
-+static void setup(void)
- {
--	struct stat stat_buf;	/* stat structure buffer */
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		/*
--		 * Call symlink(2) to create a symlink of
--		 * testfile.
--		 */
--		TEST(symlink(TESTFILE, SYMFILE));
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "symlink(%s, %s) Failed, errno=%d : %s",
--				 TESTFILE, SYMFILE, TEST_ERRNO,
--				 strerror(TEST_ERRNO));
--		} else {
--			/*
--			 * Get the symlink file status information
--			 * using lstat(2).
--			 */
--			if (lstat(SYMFILE, &stat_buf) < 0) {
--				tst_brkm(TFAIL, cleanup, "lstat(2) of "
--					 "%s failed, error:%d", SYMFILE,
--					 errno);
--			}
--
--			/* Check if the st_mode contains a link  */
--			if (!S_ISLNK(stat_buf.st_mode)) {
--				tst_resm(TFAIL,
--					 "symlink of %s doesn't exist",
--					 TESTFILE);
--			} else {
--				tst_resm(TPASS, "symlink(%s, %s) "
--					 "functionality successful",
--					 TESTFILE, SYMFILE);
--			}
--		}
--
--		/* Unlink the symlink file for next loop */
--		SAFE_UNLINK(cleanup, SYMFILE);
--		tst_count++;	/* incr TEST_LOOP counter */
--	}
--
--	cleanup();
--	tst_exit();
--
-+	fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
- }
- 
--/*
-- * void
-- * setup() - performs all ONE TIME setup for this test.
-- *  Create a temporary directory and change directory to it.
-- *  Create a test file under temporary directory and close it
-- */
--void setup(void)
-+static void verify_symlink(unsigned int i)
- {
--	int fd;			/* file handle for testfile */
-+	struct tcase *tc = &tcases[i];
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	struct stat stat_buf;
- 
--	/* Pause if that option was specified
--	 * TEST_PAUSE contains the code to fork the test with the -i option.
--	 * You want to make sure you do this before you create your temporary
--	 * directory.
--	 */
--	TEST_PAUSE;
-+	TST_EXP_PASS(symlink(*tc->srcfile, SYMFILE), "symlink(%s, %s)",
-+		     *tc->srcfile, SYMFILE);
- 
--	tst_tmpdir();
-+	SAFE_LSTAT(SYMFILE, &stat_buf);
- 
--	/* creat/open a testfile */
--	if ((fd = open(TESTFILE, O_RDWR | O_CREAT, FILE_MODE)) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "open(%s, O_RDWR|O_CREAT, %#o) Failed, errno=%d : %s",
--			 TESTFILE, FILE_MODE, errno, strerror(errno));
--	}
-+	if (!S_ISLNK(stat_buf.st_mode))
-+		tst_res(TFAIL, "symlink of %s doesn't exist", *tc->srcfile);
- 
--	/* Close the temporary file created above */
--	if (close(fd) == -1) {
--		tst_resm(TBROK, "close(%s) Failed, errno=%d : %s",
--			 TESTFILE, errno, strerror(errno));
--	}
-+	SAFE_UNLINK(SYMFILE);
- }
- 
--/*
-- * void
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- *  Remove the test directory and testfile created in the setup.
-- */
--void cleanup(void)
-+static void cleanup(void)
- {
--
--	tst_rmdir();
--
-+	if (fd > -1)
-+		SAFE_CLOSE(fd);
- }
-+
-+static struct tst_test test = {
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_symlink,
-+	.bufs = (struct tst_buffers []) {
-+		{&testfile, .str = TESTFILE},
-+		{&nonfile, .str = NONFILE},
-+		{},
-+	},
-+	.needs_tmpdir = 1,
-+};
-diff --git a/testcases/kernel/syscalls/symlink/symlink05.c b/testcases/kernel/syscalls/symlink/symlink05.c
-deleted file mode 100644
-index 83b151f5d..000000000
---- a/testcases/kernel/syscalls/symlink/symlink05.c
-+++ /dev/null
-@@ -1,180 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Test Name : symlink05
-- *
-- * Test Description :
-- *  Verify that, symlink will succeed to creat a symbolic link of an
-- *  non-existing object name path.
-- *
-- * Expected Result:
-- *  symlink() should return value 0 on success and symlink of an
-- *  non-existing object should be created.
-- *
-- * Algorithm:
-- *  Setup:
-- *   Setup signal handling.
-- *   Create temporary directory.
-- *   Pause for SIGUSR1 if option specified.
-- *
-- *  Test:
-- *   Loop if the proper options are given.
-- *   Execute system call
-- *   Check return code, if system call failed (return=-1)
-- *   	Log the errno and Issue a FAIL message.
-- *   Otherwise,
-- *   	Verify the Functionality of system call
-- *      if successful,
-- *      	Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
-- *  Cleanup:
-- *   Print errno log and/or timing stats if options given
-- *   Delete the temporary directory created.
-- *
-- * Usage:  <for command-line>
-- *  symlink05 [-c n] [-e] [-f] [-i n] [-I x] [-p x] [-t]
-- *	where,  -c n : Run n copies concurrently.
-- *		-e   : Turn on errno logging.
-- *		-f   : Turn off functionality Testing.
-- *		-i n : Execute test n times.
-- *		-I x : Execute test for x seconds.
-- *		-P x : Pause for x seconds between iterations.
-- *		-t   : Turn on syscall timing.
-- *
-- * History
-- *	07/2001 John George
-- *		-Ported
-- *
-- * Restrictions:
-- *  This test should be run by 'non-super-user' only.
-- *
-- */
--
--#include <stdio.h>
--#include <sys/types.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include <sys/stat.h>
--
--#include "test.h"
--#include "safe_macros.h"
--
--#define  TESTFILE	"testfile"
--#define  SYMFILE	"slink_file"
--
--char *TCID = "symlink05";
--int TST_TOTAL = 1;
--
--void setup();
--void cleanup();
--
--int main(int ac, char **av)
--{
--	struct stat stat_buf;	/* stat structure buffer */
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		/*
--		 * Call symlink(2) to create a symlink of
--		 * an non-existing testfile.
--		 */
--		TEST(symlink(TESTFILE, SYMFILE));
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL,
--				 "symlink(%s, %s) Failed, errno=%d : %s",
--				 TESTFILE, SYMFILE, TEST_ERRNO,
--				 strerror(TEST_ERRNO));
--		} else {
--			/*
--			 * Get the symlink file status information
--			 * using lstat(2).
--			 */
--			if (lstat(SYMFILE, &stat_buf) < 0) {
--				tst_brkm(TFAIL, cleanup, "lstat(2) of "
--					 "%s failed, error:%d",
--					 SYMFILE, errno);
--			}
--
--			/* Check if the st_mode contains a link  */
--			if (!S_ISLNK(stat_buf.st_mode)) {
--				tst_resm(TFAIL,
--					 "symlink of %s doesn't exist",
--					 TESTFILE);
--			} else {
--				tst_resm(TPASS, "symlink(%s, %s) "
--					 "functionality successful",
--					 TESTFILE, SYMFILE);
--			}
--		}
--
--		/* Unlink the symlink file for next loop */
--		SAFE_UNLINK(cleanup, SYMFILE);
--		tst_count++;	/* incr TEST_LOOP counter */
--	}
--
--	cleanup();
--	tst_exit();
--
--}
--
--/*
-- * void
-- * setup() - performs all ONE TIME setup for this test.
-- *  Create a temporary directory and change directory to it.
-- */
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	/* Pause if that option was specified
--	 * TEST_PAUSE contains the code to fork the test with the -i option.
--	 * You want to make sure you do this before you create your temporary
--	 * directory.
--	 */
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--}
--
--/*
-- * void
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *             completion or premature exit.
-- *  Remove the temporary directory created in the setup.
-- */
--void cleanup(void)
--{
--
--	tst_rmdir();
--
--}
--- 
-2.39.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gRnJpLCBPY3QgMjAsIDIwMjMgYXQgMTE6MjXigK9BTSBZYW5nIFh1IDx4dXlhbmcyMDE4Lmp5
+QGZ1aml0c3UuY29tPiB3cm90ZToKCj4gVGhlIG9yaWdpbmFsIHRlc3QgZGlkbid0IHByb2R1Y2Ug
+YW55IG91dHB1dCByZXN1bHRzLgo+IFVzZSB0c3RfbWFjcm8gdG8gZW5hYmxlIHRlc3QgdG8gcHJv
+ZHVjZSBvdXRwdXQgcmVzdWx0cy4KPgo+IFNpZ25lZC1vZmYtYnk6IFlhbmcgWHUgPHh1eWFuZzIw
+MTguanlAZnVqaXRzdS5jb20+Cj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3lt
+bGluay9zeW1saW5rMDIuYyB8IDIyMiArKystLS0tLS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5n
+ZWQsIDMyIGluc2VydGlvbnMoKyksIDE5MCBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3N5bWxpbmsvc3ltbGluazAyLmMKPiBiL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvc3ltbGluay9zeW1saW5rMDIuYwo+IGluZGV4IGMxOGRiMmIzNy4u
+YWEwYzI1ZDlmIDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3ltbGlu
+ay9zeW1saW5rMDIuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3ltbGluay9z
+eW1saW5rMDIuYwo+IEBAIC0xLDIwOCArMSw1MCBAQAo+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRp
+ZmllcjogR1BMLTIuMC1vci1sYXRlcgo+ICAvKgo+ICAgKiBDb3B5cmlnaHQgKGMpIDIwMDAgU2ls
+aWNvbiBHcmFwaGljcywgSW5jLiAgQWxsIFJpZ2h0cyBSZXNlcnZlZC4KPiAtICoKPiAtICogVGhp
+cyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9v
+ciBtb2RpZnkgaXQKPiAtICogdW5kZXIgdGhlIHRlcm1zIG9mIHZlcnNpb24gMiBvZiB0aGUgR05V
+IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMKPiAtICogcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNv
+ZnR3YXJlIEZvdW5kYXRpb24uCj4gLSAqCj4gLSAqIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRl
+ZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdvdWxkIGJlIHVzZWZ1bCwgYnV0Cj4gLSAqIFdJVEhPVVQg
+QU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKPiAtICog
+TUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLgo+IC0g
+Kgo+IC0gKiBGdXJ0aGVyLCB0aGlzIHNvZnR3YXJlIGlzIGRpc3RyaWJ1dGVkIHdpdGhvdXQgYW55
+IHdhcnJhbnR5IHRoYXQgaXQgaXMKPiAtICogZnJlZSBvZiB0aGUgcmlnaHRmdWwgY2xhaW0gb2Yg
+YW55IHRoaXJkIHBlcnNvbiByZWdhcmRpbmcgaW5mcmluZ2VtZW50Cj4gLSAqIG9yIHRoZSBsaWtl
+LiAgQW55IGxpY2Vuc2UgcHJvdmlkZWQgaGVyZWluLCB3aGV0aGVyIGltcGxpZWQgb3IKPiAtICog
+b3RoZXJ3aXNlLCBhcHBsaWVzIG9ubHkgdG8gdGhpcyBzb2Z0d2FyZSBmaWxlLiAgUGF0ZW50IGxp
+Y2Vuc2VzLCBpZgo+IC0gKiBhbnksIHByb3ZpZGVkIGhlcmVpbiBkbyBub3QgYXBwbHkgdG8gY29t
+YmluYXRpb25zIG9mIHRoaXMgcHJvZ3JhbSB3aXRoCj4gLSAqIG90aGVyIHNvZnR3YXJlLCBvciBh
+bnkgb3RoZXIgcHJvZHVjdCB3aGF0c29ldmVyLgo+IC0gKgo+IC0gKiBZb3Ugc2hvdWxkIGhhdmUg
+cmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhbG9uZwo+
+IC0gKiB3aXRoIHRoaXMgcHJvZ3JhbTsgaWYgbm90LCB3cml0ZSB0aGUgRnJlZSBTb2Z0d2FyZSBG
+b3VuZGF0aW9uLCBJbmMuLAo+IC0gKiA1MSBGcmFua2xpbiBTdHJlZXQsIEZpZnRoIEZsb29yLCBC
+b3N0b24sIE1BIDAyMTEwLTEzMDEgVVNBLgo+IC0gKgo+IC0gKiBDb250YWN0IGluZm9ybWF0aW9u
+OiBTaWxpY29uIEdyYXBoaWNzLCBJbmMuLCAxNjAwIEFtcGhpdGhlYXRyZSBQa3d5LAo+IC0gKiBN
+b3VudGFpbiBWaWV3LCBDQSAgOTQwNDMsIG9yOgo+IC0gKgo+IC0gKiBodHRwOi8vd3d3LnNnaS5j
+b20KPiAtICoKPiAtICogRm9yIGZ1cnRoZXIgaW5mb3JtYXRpb24gcmVnYXJkaW5nIHRoaXMgbm90
+aWNlLCBzZWU6Cj4gLSAqCj4gLSAqIGh0dHA6Ly9vc3Muc2dpLmNvbS9wcm9qZWN0cy9HZW5JbmZv
+L05vdGljZUV4cGxhbi8KPiAtICoKPiArICogQ29weXJpZ2h0IChjKSBMaW51eCBUZXN0IFByb2pl
+Y3QsIDIwMDMtMjAyMwo+ICsgKiBBdXRob3I6IFdpbGxpYW0gUm9za2UKPiAgICovCj4gLS8qICRJ
+ZDogc3ltbGluazAyLmMsdiAxLjYgMjAwOS8wOC8yOCAxNDoxNzoxNCB2YXBpZXIgRXhwICQgKi8K
+PiAtLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioKPiAtICoKPiAtICogICAgT1MgVGVzdCAtIFNpbGljb24gR3JhcGhpY3MsIEluYy4KPiAt
+ICoKPiAtICogICAgVEVTVCBJREVOVElGSUVSICA6IHN5bWxpbmswMgo+IC0gKgo+IC0gKiAgICBF
+WEVDVVRFRCBCWSAgICAgIDogYW55b25lCj4gLSAqCj4gLSAqICAgIFRFU1QgVElUTEUgICAgICAg
+OiBCYXNpYyB0ZXN0IGZvciBzeW1saW5rKDIpCj4gLSAqCj4gLSAqICAgIFBBUkVOVCBET0NVTUVO
+VCAgOiB1c2N0cGwwMQo+IC0gKgo+IC0gKiAgICBURVNUIENBU0UgVE9UQUwgIDogMQo+IC0gKgo+
+IC0gKiAgICBXQUxMIENMT0NLIFRJTUUgIDogMQo+IC0gKgo+IC0gKiAgICBDUFUgVFlQRVMgICAg
+ICAgICAgICAgICAgOiBBTEwKPiAtICoKPiAtICogICAgQVVUSE9SICAgICAgICAgICA6IFdpbGxp
+YW0gUm9za2UKPiAtICoKPiAtICogICAgQ08tUElMT1QgICAgICAgICA6IERhdmUgRmVubmVyCj4g
+LSAqCj4gLSAqICAgIERBVEUgU1RBUlRFRCAgICAgOiAwMy8zMC85Mgo+IC0gKgo+IC0gKiAgICBJ
+TklUSUFMIFJFTEVBU0UgIDogVU5JQ09TIDcuMAo+IC0gKgo+IC0gKiAgICBURVNUIENBU0VTCj4g
+LSAqCj4gLSAqICAgICAxLikgc3ltbGluaygyKSByZXR1cm5zLi4uKFNlZSBEZXNjcmlwdGlvbikK
+PiAtICoKPiAtICogICAgSU5QVVQgU1BFQ0lGSUNBVElPTlMKPiAtICogICAgIFRoZSBzdGFuZGFy
+ZCBvcHRpb25zIGZvciBzeXN0ZW0gY2FsbCB0ZXN0cyBhcmUgYWNjZXB0ZWQuCj4gLSAqICAgICAo
+U2VlIHRoZSBwYXJzZV9vcHRzKDMpIG1hbiBwYWdlKS4KPiAtICoKPiAtICogICAgT1VUUFVUIFNQ
+RUNJRklDQVRJT05TCj4gLSAqJAo+IC0gKiAgICBEVVJBVElPTgo+IC0gKiAgICAgVGVybWluYXRl
+cyAtIHdpdGggZnJlcXVlbmN5IGFuZCBpbmZpbml0ZSBtb2Rlcy4KPiAtICoKPiAtICogICAgU0lH
+TkFMUwo+IC0gKiAgICAgVXNlcyBTSUdVU1IxIHRvIHBhdXNlIGJlZm9yZSB0ZXN0IGlmIG9wdGlv
+biBzZXQuCj4gLSAqICAgICAoU2VlIHRoZSBwYXJzZV9vcHRzKDMpIG1hbiBwYWdlKS4KPiAtICoK
+PiAtICogICAgUkVTT1VSQ0VTCj4gLSAqICAgICBOb25lCj4gLSAqCj4gLSAqICAgIEVOVklST05N
+RU5UQUwgTkVFRFMKPiAtICogICAgICBObyBydW4tdGltZSBlbnZpcm9ubWVudGFsIG5lZWRzLgo+
+IC0gKgo+IC0gKiAgICBTUEVDSUFMIFBST0NFRFVSQUwgUkVRVUlSRU1FTlRTCj4gLSAqICAgICBO
+b25lCj4gLSAqCj4gLSAqICAgIElOVEVSQ0FTRSBERVBFTkRFTkNJRVMKPiAtICogICAgIE5vbmUK
+PiAtICoKPiAtICogICAgREVUQUlMRUQgREVTQ1JJUFRJT04KPiAtICogICAgIFRoaXMgaXMgYSBQ
+aGFzZSBJIHRlc3QgZm9yIHRoZSBzeW1saW5rKDIpIHN5c3RlbSBjYWxsLiAgSXQgaXMKPiBpbnRl
+bmRlZAo+IC0gKiAgICAgdG8gcHJvdmlkZSBhIGxpbWl0ZWQgZXhwb3N1cmUgb2YgdGhlIHN5c3Rl
+bSBjYWxsLCBmb3Igbm93LiAgSXQKPiAtICogICAgIHNob3VsZC93aWxsIGJlIGV4dGVuZGVkIHdo
+ZW4gZnVsbCBmdW5jdGlvbmFsIHRlc3RzIGFyZSB3cml0dGVuIGZvcgo+IC0gKiAgICAgc3ltbGlu
+aygyKS4KPiAtICoKPiAtICogICAgIFNldHVwOgo+IC0gKiAgICAgICBTZXR1cCBzaWduYWwgaGFu
+ZGxpbmcuCj4gLSAqICAgICAgIFBhdXNlIGZvciBTSUdVU1IxIGlmIG9wdGlvbiBzcGVjaWZpZWQu
+Cj4gLSAqCj4gLSAqICAgICBUZXN0Ogo+IC0gKiAgICAgIExvb3AgaWYgdGhlIHByb3BlciBvcHRp
+b25zIGFyZSBnaXZlbi4KPiAtICogICAgICAgRXhlY3V0ZSBzeXN0ZW0gY2FsbAo+IC0gKiAgICAg
+ICBDaGVjayByZXR1cm4gY29kZSwgaWYgc3lzdGVtIGNhbGwgZmFpbGVkIChyZXR1cm49LTEpCj4g
+LSAqICAgICAgICAgICAgIExvZyB0aGUgZXJybm8gYW5kIElzc3VlIGEgRkFJTCBtZXNzYWdlLgo+
+IC0gKiAgICAgICBPdGhlcndpc2UsIElzc3VlIGEgUEFTUyBtZXNzYWdlLgo+IC0gKgo+IC0gKiAg
+ICAgQ2xlYW51cDoKPiAtICogICAgICAgUHJpbnQgZXJybm8gbG9nIGFuZC9vciB0aW1pbmcgc3Rh
+dHMgaWYgb3B0aW9ucyBnaXZlbgo+IC0gKgo+IC0gKgo+IC0gKiMqIyojKiMqIyojKiMqIyojKiMq
+IyojKiMqIyojKiMqIyojKiMqIyojKiMqIyojKiMqIyojKiMqIyoqLwo+Cj4gLSNpbmNsdWRlIDxz
+eXMvdHlwZXMuaD4KPiAtI2luY2x1ZGUgPGZjbnRsLmg+Cj4gLSNpbmNsdWRlIDxlcnJuby5oPgo+
+IC0jaW5jbHVkZSA8c3RyaW5nLmg+Cj4gLSNpbmNsdWRlIDxzaWduYWwuaD4KPiAtI2luY2x1ZGUg
+InRlc3QuaCIKPiAtI2luY2x1ZGUgInNhZmVfbWFjcm9zLmgiCj4gLQo+IC12b2lkIHNldHVwKCk7
+Cj4gLXZvaWQgY2xlYW51cCgpOwo+ICsvKlwKPiArICogW0Rlc2NyaXB0aW9uXQo+ICsgKgo+ICsg
+KiBDaGVjayB0aGUgYmFzaWMgZnVuY3Rpb25hbGl0eSBvZiB0aGUgc3ltbGluaygpIHN5c3RlbSBj
+YWxsLgo+ICsgKi8KPgo+IC1jaGFyICpUQ0lEID0gInN5bWxpbmswMiI7Cj4gLWludCBUU1RfVE9U
+QUwgPSAxOwo+ICsjaW5jbHVkZSAidHN0X3Rlc3QuaCIKPgo+IC1jaGFyIGZuYW1lWzI1NV0sIHN5
+bWxua1syNTVdOwo+IC1pbnQgZmQ7Cj4gK3N0YXRpYyBjaGFyICpmbmFtZSwgKnN5bWxuazsKPiAr
+c3RhdGljIGludCBmZDsKPgoKdGhlIGZkIGlzIHVubmVjZXNzYXJ5IGluIHRoZSB0ZXN0LgoKCj4g
+LWludCBtYWluKGludCBhYywgY2hhciAqKmF2KQo+ICtzdGF0aWMgdm9pZCB2ZXJpZnlfc3ltbGlu
+ayh2b2lkKQo+ICB7Cj4gLSAgICAgICBpbnQgbGM7Cj4gLQo+IC0gICAgLyoqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgo+IC0gICAg
+ICogcGFyc2Ugc3RhbmRhcmQgb3B0aW9ucwo+IC0gICAgICoqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KPiAtICAgICAgIHRzdF9w
+YXJzZV9vcHRzKGFjLCBhdiwgTlVMTCwgTlVMTCk7Cj4gLQo+IC0gICAgLyoqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgo+IC0gICAg
+ICogcGVyZm9ybSBnbG9iYWwgc2V0dXAgZm9yIHRlc3QKPiAtICAgICAqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCj4gLSAgICAg
+ICBzZXR1cCgpOwo+IC0KPiAtICAgIC8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioKPiAtICAgICAqIGNoZWNrIGxvb3Bpbmcgc3Rh
+dGUgaWYgLWMgb3B0aW9uIGdpdmVuCj4gLSAgICAgKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwo+IC0gICAgICAgZm9yIChsYyA9
+IDA7IFRFU1RfTE9PUElORyhsYyk7IGxjKyspIHsKPiAtCj4gLSAgICAgICAgICAgICAgIHRzdF9j
+b3VudCA9IDA7Cj4gLQo+IC0gICAgICAgICAgICAgICAvKgo+IC0gICAgICAgICAgICAgICAgKiBD
+YWxsIHN5bWxpbmsoMikKPiAtICAgICAgICAgICAgICAgICovCj4gLSAgICAgICAgICAgICAgIFRF
+U1Qoc3ltbGluayhmbmFtZSwgc3ltbG5rKSk7Cj4gLQo+IC0gICAgICAgICAgICAgICAvKiBjaGVj
+ayByZXR1cm4gY29kZSAqLwo+IC0gICAgICAgICAgICAgICBpZiAoVEVTVF9SRVRVUk4gPT0gLTEp
+IHsKPiAtICAgICAgICAgICAgICAgICAgICAgICB0c3RfcmVzbShURkFJTCwgInN5bWxpbmsoJXMs
+ICVzKSBGYWlsZWQsIGVycm5vPSVkCj4gOiAlcyIsCj4gLSAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgZm5hbWUsIHN5bWxuaywgVEVTVF9FUlJOTywKPiAtICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBzdHJlcnJvcihURVNUX0VSUk5PKSk7Cj4gLSAgICAgICAgICAgICAgIH0g
+ZWxzZSB7Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgU0FGRV9VTkxJTksoY2xlYW51cCwgc3lt
+bG5rKTsKPiAtICAgICAgICAgICAgICAgfQo+IC0gICAgICAgfQo+IC0KPiAtICAgIC8qKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioK
+PiAtICAgICAqIGNsZWFudXAgYW5kIGV4aXQKPiAtICAgICAqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCj4gLSAgICAgICBjbGVh
+bnVwKCk7Cj4gLSAgICAgICB0c3RfZXhpdCgpOwo+ICsgICAgICAgVFNUX0VYUF9QT1NJVElWRShz
+eW1saW5rKGZuYW1lLCBzeW1sbmspLCAic3ltbGluayglcywgJXMpIiwKPiArICAgICAgICAgICAg
+ICAgICAgICAgICAgZm5hbWUsIHN5bWxuayk7Cj4KPiArICAgICAgIGlmIChUU1RfUkVUID09IC0x
+KQo+ICsgICAgICAgICAgICAgICB0c3RfcmVzKFRGQUlMLCAic3ltbGluayglcywgJXMpIEZhaWxl
+ZCIsIGZuYW1lLCBzeW1sbmspOwo+ICsgICAgICAgZWxzZQo+ICsgICAgICAgICAgICAgICBTQUZF
+X1VOTElOSyhzeW1sbmspOwo+ICB9Cj4KPiAtLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgo+IC0gKiBzZXR1cCgpIC0gcGVyZm9y
+bXMgYWxsIE9ORSBUSU1FIHNldHVwIGZvciB0aGlzIHRlc3QuCj4gLSAqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCj4gLXZvaWQg
+c2V0dXAodm9pZCkKPiArc3RhdGljIHZvaWQgc2V0dXAodm9pZCkKPiAgewo+ICsgICAgICAgZm5h
+bWUgPSB0c3RfYXByaW50ZigidGZpbGVfJWQiLCBnZXRwaWQoKSk7Cj4KPiAtICAgICAgIHRzdF9z
+aWcoTk9GT1JLLCBERUZfSEFORExFUiwgY2xlYW51cCk7Cj4gKyAgICAgICBmZCA9IFNBRkVfT1BF
+TihmbmFtZSwgT19SRFdSIHwgT19DUkVBVCwgMDcwMCk7Cj4KCldoeSBkbyB3ZSBuZWVkIHNhdmUg
+dGhlIGZkIGhlcmUsIEkgZGlkbid0IHNlZSBhbnkgcGxhY2VzIG1ha2UgdXNlIG9mIGl0LgoKT3Ro
+ZXJ3aXNlIHBhdGNoc2V0IGxvb2tzIGdvb2QgdG8gbWUuCgpSZXZpZXdlZC1ieTogTGkgV2FuZyA8
+bGl3YW5nQHJlZGhhdC5jb20+CgoKCgo+Cj4gLSAgICAgICBURVNUX1BBVVNFOwo+IC0KPiAtICAg
+ICAgIHRzdF90bXBkaXIoKTsKPiAtCj4gLSAgICAgICBzcHJpbnRmKGZuYW1lLCAidGZpbGVfJWQi
+LCBnZXRwaWQoKSk7Cj4gLSAgICAgICBpZiAoKGZkID0gb3BlbihmbmFtZSwgT19SRFdSIHwgT19D
+UkVBVCwgMDcwMCkpID09IC0xKSB7Cj4gLSAgICAgICAgICAgICAgIHRzdF9icmttKFRCUk9LLCBj
+bGVhbnVwLAo+IC0gICAgICAgICAgICAgICAgICAgICAgICAib3BlbiglcywgT19SRFdSfE9fQ1JF
+QVQsMDcwMCkgRmFpbGVkLCBlcnJubz0lZCA6Cj4gJXMiLAo+IC0gICAgICAgICAgICAgICAgICAg
+ICAgICBmbmFtZSwgZXJybm8sIHN0cmVycm9yKGVycm5vKSk7Cj4gLSAgICAgICB9Cj4gLQo+IC0g
+ICAgICAgaWYgKGNsb3NlKGZkKSA9PSAtMSkgewo+IC0gICAgICAgICAgICAgICB0c3RfcmVzbShU
+V0FSTiwgImNsb3NlKCVzKSBGYWlsZWQsIGVycm5vPSVkIDogJXMiLAo+IC0gICAgICAgICAgICAg
+ICAgICAgICAgICBmbmFtZSwgZXJybm8sIHN0cmVycm9yKGVycm5vKSk7Cj4gLSAgICAgICB9Cj4g
+LSAgICAgICBzcHJpbnRmKHN5bWxuaywgInN0XyVkIiwgZ2V0cGlkKCkpOwo+ICsgICAgICAgc3lt
+bG5rID0gdHN0X2FwcmludGYoInN0XyVkIiwgZ2V0cGlkKCkpOwo+ICB9Cj4KPiAtLyoqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgo+
+IC0gKiBjbGVhbnVwKCkgLSBwZXJmb3JtcyBhbGwgT05FIFRJTUUgY2xlYW51cCBmb3IgdGhpcyB0
+ZXN0IGF0Cj4gLSAqICAgICAgICAgICAgIGNvbXBsZXRpb24gb3IgcHJlbWF0dXJlIGV4aXQuCj4g
+LSAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKiovCj4gLXZvaWQgY2xlYW51cCh2b2lkKQo+ICtzdGF0aWMgdm9pZCBjbGVhbnVwKHZv
+aWQpCj4KCnJlbW92ZSB0aGUgY2xlYW51cCBmdW5jdGlvbi4KCgoKPiAgewo+IC0KPiAtICAgICAg
+IHRzdF9ybWRpcigpOwo+IC0KPiArICAgICAgIGlmIChmZCA+IC0xKQo+ICsgICAgICAgICAgICAg
+ICBTQUZFX0NMT1NFKGZkKTsKPiAgfQo+ICsKPiArc3RhdGljIHN0cnVjdCB0c3RfdGVzdCB0ZXN0
+ID0gewo+ICsgICAgICAgLm5lZWRzX3RtcGRpciA9IDEsCj4gKyAgICAgICAuc2V0dXAgPSBzZXR1
+cCwKPiArICAgICAgIC5jbGVhbnVwID0gY2xlYW51cCwKPiArICAgICAgIC50ZXN0X2FsbCA9IHZl
+cmlmeV9zeW1saW5rLAo+ICt9Owo+IC0tCj4gMi4zOS4xCj4KPgo+IC0tCj4gTWFpbGluZyBsaXN0
+IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCj4KPgoKLS0gClJlZ2Fy
+ZHMsCkxpIFdhbmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
+dC9saXN0aW5mby9sdHAK
