@@ -4,78 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 498EFCDB47E
-	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 09:37:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A24BCDB474
+	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 09:38:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B2DBB3CD005
-	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 11:37:43 +0200 (CEST)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id BAA243CD04B
+	for <ltp@archiver.kernel.org>; Fri, 20 Oct 2023 11:38:29 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EF3733C8927
- for <ltp@lists.linux.it>; Fri, 20 Oct 2023 11:37:32 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 717A73C8927
+ for <ltp@lists.linux.it>; Fri, 20 Oct 2023 11:38:18 +0200 (CEST)
+Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com
+ [68.232.139.117])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2105A1A00CA7
- for <ltp@lists.linux.it>; Fri, 20 Oct 2023 11:37:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1697794650;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=9gaaqmsKs+4btSaZyS/2FToRhdahrHVml/zMky8oBjU=;
- b=aNKm4g5iAGZ7iJOeZDrtjMyLdm/4DypfqSAg4xzfN/iQBYX39IARDaoSm/qMzhPvb4VT2J
- rdaSLyZDlT9ZsT4f/aZA2VONWOnNF01HEIPJodHOlfti//qkfK+EobofkzIGYmNI5Ha/sj
- yBNTpzY5J+GYupq5Rp1NYcjfteOe1/8=
-Received: from mail-vs1-f69.google.com (mail-vs1-f69.google.com
- [209.85.217.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-668-fUWP1gpgN2u0nLanScC1TQ-1; Fri, 20 Oct 2023 05:37:12 -0400
-X-MC-Unique: fUWP1gpgN2u0nLanScC1TQ-1
-Received: by mail-vs1-f69.google.com with SMTP id
- ada2fe7eead31-457c7e76d30so230962137.1
- for <ltp@lists.linux.it>; Fri, 20 Oct 2023 02:37:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1697794632; x=1698399432;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=9gaaqmsKs+4btSaZyS/2FToRhdahrHVml/zMky8oBjU=;
- b=SdnBUUYOuOSaU2JO2LCwbtjx4FgNGbNCkbU1kZlnt/zg2qs56hOWwUrb0v2BDkyPMv
- TcRXYqthIbIivM6O1vriB8D9W+0qlr5G59gg5PLHyhwrLy4DIqw1Vy6xbObsLeVPPuQm
- sFmmjNBzJ18jxz5nGZ3tgBk2yAup83R2035xZlsEVlVN4O1rVUKt/l6pulOqvbp8F66e
- 8ywnejFTDQAYhAIKODG6EaIpstNAWWL1Mn0VknLw17aj3UGo3pQDVg8v9BR0ORAWsRJ8
- GWhj8/hKirQrtR5rFSiOPXVsq9qjGzbt8kDtxllWZ4CiTT3gogegGBi00ZBL6deP1w/G
- JAWg==
-X-Gm-Message-State: AOJu0YzRsVoQjcDdmthCJbjin0uM5m+14t6VCnt/2PWZ6gZ3X73SqNoK
- BJ2McNcM69C3TDcP78r/QdVLeOXoY1qwZbGdYmLmy4KUSZnW1IhPT9zUkTpaPHuoCyF/dB0zoY5
- J0/W1IyNUuHCjfs3Ri1EGrThdCoM=
-X-Received: by 2002:a67:e047:0:b0:457:c415:a495 with SMTP id
- n7-20020a67e047000000b00457c415a495mr1309013vsl.10.1697794632319; 
- Fri, 20 Oct 2023 02:37:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFPu5X/Z8kHt/mXeeOi2chNcJQjL6oL72nxdZoAC50Bh6ljK72YfL2nX/Pv0W3z13mN4NQlGUj66BFxIUdkbPQ=
-X-Received: by 2002:a67:e047:0:b0:457:c415:a495 with SMTP id
- n7-20020a67e047000000b00457c415a495mr1309002vsl.10.1697794631986; Fri, 20 Oct
- 2023 02:37:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <345e84821f2319d24ce8b9b84f5e038d53a2c9d5.1697715265.git.jstancek@redhat.com>
- <CAEemH2eehMwAHfwAPOhqmixwwdM2=8XsjqNP1Mkw28yjHjRpwA@mail.gmail.com>
-In-Reply-To: <CAEemH2eehMwAHfwAPOhqmixwwdM2=8XsjqNP1Mkw28yjHjRpwA@mail.gmail.com>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 20 Oct 2023 11:37:45 +0200
-Message-ID: <CAASaF6xd6DP=pH6tMsWh+iw5ng=RZutTsegXLOG90_krZr+BOQ@mail.gmail.com>
-To: Li Wang <liwang@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0755E1000CB4
+ for <ltp@lists.linux.it>; Fri, 20 Oct 2023 11:38:16 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="137027344"
+X-IronPort-AV: E=Sophos;i="6.03,238,1694703600"; d="scan'208";a="137027344"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+ by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Oct 2023 18:38:14 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
+ [192.168.83.66])
+ by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 2C166D9DA9
+ for <ltp@lists.linux.it>; Fri, 20 Oct 2023 18:38:12 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 6568EF943
+ for <ltp@lists.linux.it>; Fri, 20 Oct 2023 18:38:11 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id E047820050193
+ for <ltp@lists.linux.it>; Fri, 20 Oct 2023 18:38:10 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.215.131])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 8BCB21A0071;
+ Fri, 20 Oct 2023 17:38:10 +0800 (CST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: ltp@lists.linux.it
+Date: Fri, 20 Oct 2023 17:37:56 +0800
+Message-Id: <1697794677-14892-1-git-send-email-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27946.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27946.006
+X-TMASE-Result: 10--15.150100-10.000000
+X-TMASE-MatchedRID: 3UHCnQ5jp7VnQCQAG5wcwTU9EK4+H8U19LMB0hXFSejAuQ0xDMaXkH4q
+ tYI9sRE/w/kunvvd5s3Zvor6qg8CpUeXEeTXarDS7TovvZPhLcB1zSnwpu89bYAjsy+r+wvn2JH
+ TTqNG6YpUzndbBQKrMojqLBCPdE946tgv1S39I0ZdnSd5JiRhlhB0ENZnw1vtXZmAtjip/rFcfd
+ b7nucZ+RBPzZigGafMMVObZjZKQv6+yza4Wm1Q8e9VsdrlGzy3xMZq+YajS9Y+LVWZNfdejlXKJ
+ 0T+EEPnvaNqd3Y9EXzOFDEYTSdNXrCJvLOmyWTFyCvBIqsqjUf+wG4sVAq2B6L0Xt/8vZHxqbs+
+ nJ/tFJFp66ZRoBRi30qGW42c0HkY4GDafdAMMvc5ZRbFNAl0jxyzHcgfiyrczAdJD7JeNMPHLN3
+ eLMgRKbapfeJhlwtKCoeEzyhqd5TIY6JevWs4vlhRyidsElYkyqyllX6UJIs1Y73PdzvXZDavMp
+ at2LKSQA5yz5TdUE0dNHqsRxGuHm37Tua3mPR3dXu122+iJtpa9oWcYwi86iy30dOC2b5HaDh/J
+ dlmcfAR+1MbcnIby4Yj9NPA4+LIHxPMjOKY7A8WeMpVNhsMwMRB0bsfrpPIfiAqrjYtFiS1MduF
+ WAZn2MwsY34gWL/SYBUf+9u58Btf2kAmEVJuBX7cGd19dSFd
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/gettid02: fix s390x and couple races
+Subject: [LTP] [PATCH v2 1/2] syscalls/symlink02: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,96 +76,261 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBPY3QgMjAsIDIwMjMgYXQgMTE6MjPigK9BTSBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0
-LmNvbT4gd3JvdGU6Cj4KPgo+Cj4gT24gVGh1LCBPY3QgMTksIDIwMjMgYXQgNzo0MOKAr1BNIEph
-biBTdGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29tPiB3cm90ZToKPj4KPj4gczM5MHggaXMgYmln
-IGVuZGlhbiB3aGVyZSBzaXplb2YoaW50KSA9PSA0IGFuZCBzaXplb2Yodm9pZCAqKSA9PSA4Lgo+
-PiBUaGlzIHRlc3QgY3VycmVudGx5IGZhaWxzIG9uIHMzOTB4IGJlY2F1c2UgaW4gcHRocmVhZF9q
-b2luLCAiJnRpZHNbaV0iCj4+IGlzIHRyZWF0ZWQgYXMgInZvaWQqKiIgYW5kIGR1ZSB0byBkaWZm
-ZXJlbnQgdHlwZSBzaXplIGl0IHdyaXRlcyBvdmVyCj4+IDIgZW50cmllcyBvZiB0aWRzW10gYXJy
-YXkuIFNvIGZvciBzbWFsbCB0aWQgdmFsdWVzIHRlc3QgcmVwb3J0czoKPj4gICAgICAgICBnZXR0
-aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20g
-dGhyZWFkWzBdIElEICgxNDA0OSkKPj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhw
-ZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFkWzFdIElEICgxNDA1MCkK
-Pj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4
-KSBkaWZmZXJzIGZyb20gdGhyZWFkWzJdIElEICgxNDA1MSkKPj4gICAgICAgICBnZXR0aWQwMi5j
-OjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFk
-WzNdIElEICgxNDA1MikKPj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBw
-YXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFkWzRdIElEICgxNDA1MykKPj4gICAg
-ICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZm
-ZXJzIGZyb20gdGhyZWFkWzVdIElEICgxNDA1NCkKPj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBU
-UEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFkWzZdIElE
-ICgxNDA1NSkKPj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQg
-SUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFkWzddIElEICgxNDA1NikKPj4gICAgICAgICBn
-ZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZy
-b20gdGhyZWFkWzhdIElEICgxNDA1NykKPj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzog
-RXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFkWzldIElEICgxNDA1
-OCkKPj4gICAgICAgICBnZXR0aWQwMi5jOjQ5OiBUSU5GTzogdGhyZWFkWzBdIGFuZCB0aHJlYWRb
-MV0gaGF2ZSB0aGUgc2FtZSBJRAo+PiAgICAgICAgIGdldHRpZDAyLmM6NDk6IFRJTkZPOiB0aHJl
-YWRbMF0gYW5kIHRocmVhZFsyXSBoYXZlIHRoZSBzYW1lIElECj4+ICAgICAgICAgZ2V0dGlkMDIu
-Yzo0OTogVElORk86IHRocmVhZFswXSBhbmQgdGhyZWFkWzNdIGhhdmUgdGhlIHNhbWUgSUQKPj4g
-ICAgICAgICAuLi4KPj4gd2hpY2ggaXMgY2xlYXJseSB3cm9uZywgc2luY2UgZWFjaCB0aHJlYWQg
-YWJvdmUgcHJpbnRlZCBkaWZmZXJlbnQgSUQuCj4+Cj4+IFRoaXMgY29uc3RydWN0IGlzIHJhY2Ut
-eSBvbiBzbG93ZXIgczM5MHggc3lzdGVtczoKPj4gICAgICAgICBmb3IgKGludCBpID0gMDsgaSA8
-IFRIUkVBRFNfTlVNOyBpKyspCj4+ICAgICAgICAgICAgICAgICBTQUZFX1BUSFJFQURfQ1JFQVRF
-KCZ0aHJlYWQsIE5VTEwsIHRocmVhZGVkLCAmaSk7Cj4+IGJlY2F1c2UgYnkgdGhlIHRpbWUgdGhy
-ZWFkIHN0YXJ0cyBhbmQgbG9va3MgYXQgIiZpIiwgdGhlIGxvb3AgY2FuCj4+IGFscmVhZHkgbW92
-ZSBvbiBhbmQgaW5jcmVtZW50ICJpIi4KPgo+Cj4gU29ycnksIGp1c3QgY29tZSB1cCBvbmUgbW9y
-ZSBxdWVzdGlvbiwgcHRocmVhZF9qb2luIHdpbGwgc3RheSB0aGVyZQo+IHVudGlsIHRoZSB0aHJl
-YWQgcmV2b2tlcyBmaW5pc2gsIHNvIHdoeSB0aGUgbG9vcCBjYW4gbW92ZSBvbiBhbmQgaW5jcmVh
-c2UgaT8KCllvdSdyZSByaWdodCwgdGhhdCBjb21tZW50IGFwcGxpZXMgb25seSBhZnRlciBjcmVh
-dGUgYW5kIGpvaW4gcnVucyBzZXBhcmF0ZWx5LgpJdCB3YXMgbWVhbnQgYXMgZXhwbGFuYXRpb24g
-Zm9yIHRoZSBuZWVkIGZvciAiYXJncyIgYXJyYXkgLSBJIGNhbgpyZXdvcmQgY29tbWl0IGxvZy4K
-Cj4KPgo+Pgo+Pgo+PiBBbHNvLCBwb3RlbnRpYWxseSBzdGFydGluZyBhbmQgd2FpdGluZyBmb3Ig
-ZWFjaCB0aHJlYWQgY291bGQgYmUgYW4gaXNzdWUsIHNpbmNlIGtlcm5lbCBpcwo+PiBmcmVlIHRv
-IHJlLXVzZSB0aWQgZm9yIGFscmVhZHkgZmluaXNoZWQgdGhyZWFkcy4KPj4KPj4gSW5zdGVhZCBv
-ZiBwYXNzaW5nIHRpZCB2aWEgcHRocmVhZF9qb2luLCBqdXN0IHVzZSBhbHJlYWR5IGF2YWlsYWJs
-ZSBnbG9iYWwgYXJyYXkgInRpZHMiLgo+PiBNYWtlIHN1cmUgdGhlIGFyZ3VtZW50IHRvIHB0aHJl
-YWRfY3JlYXRlIGRvZXNuJ3QgY2hhbmdlLCBieSBjcmVhdGluZyBhbiBhcmdzIGFycmF5Lgo+PiBT
-dGFydCBhbGwgdGhyZWFkcyBiZWZvcmUgd2Ugam9pbiBhbnkuCj4+IEFuZCBhbHNvIHByaW50IHRo
-ZSB2YWx1ZSBvZiBUSUQgaW4gY2FzZXMgd2hlcmUgdGVzdCBkZXRlY3RzIHR3byB0aHJlYWRzIHVz
-ZSBzYW1lIG9uZS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogSmFuIFN0YW5jZWsgPGpzdGFuY2VrQHJl
-ZGhhdC5jb20+Cj4+IC0tLQo+PiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXR0aWQvZ2V0
-dGlkMDIuYyB8IDE3ICsrKysrKysrKystLS0tLS0tCj4+ICAxIGZpbGUgY2hhbmdlZCwgMTAgaW5z
-ZXJ0aW9ucygrKSwgNyBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvZ2V0dGlkL2dldHRpZDAyLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
-bGxzL2dldHRpZC9nZXR0aWQwMi5jCj4+IGluZGV4IDYxZjExNWZjOWU3Yy4uZWY0NDc2MWM0MWRl
-IDEwMDY0NAo+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldHRpZC9nZXR0aWQw
-Mi5jCj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0dGlkL2dldHRpZDAyLmMK
-Pj4gQEAgLTE2LDcgKzE2LDcgQEAKPj4KPj4gICNkZWZpbmUgVEhSRUFEU19OVU0gMTAKPj4KPj4g
-LXN0YXRpYyBwaWRfdCB0aWRzW1RIUkVBRFNfTlVNXTsKPj4gK3N0YXRpYyB2b2xhdGlsZSBwaWRf
-dCB0aWRzW1RIUkVBRFNfTlVNXTsKPj4KPj4gIHN0YXRpYyB2b2lkICp0aHJlYWRlZCh2b2lkICph
-cmcpCj4+ICB7Cj4+IEBAIC0yOSwyNCArMjksMjcgQEAgc3RhdGljIHZvaWQgKnRocmVhZGVkKHZv
-aWQgKmFyZykKPj4gICAgICAgICBUU1RfRVhQX0VYUFIocGlkICE9IHRpZCwKPj4gICAgICAgICAg
-ICAgICAgICJwYXJlbnQgSUQgKCVkKSBkaWZmZXJzIGZyb20gdGhyZWFkWyVkXSBJRCAoJWQpIiwK
-Pj4gICAgICAgICAgICAgICAgIHBpZCwgaSwgdGlkKTsKPj4gLQo+PiAtICAgICAgIHJldHVybiAo
-dm9pZCAqKXRzdF9zeXNjYWxsKF9fTlJfZ2V0dGlkKTsKPj4gKyAgICAgICB0aWRzW2ldID0gdGlk
-Owo+PiArICAgICAgIHJldHVybiBOVUxMOwo+PiAgfQo+Pgo+PiAgc3RhdGljIHZvaWQgcnVuKHZv
-aWQpCj4+ICB7Cj4+IC0gICAgICAgcHRocmVhZF90IHRocmVhZDsKPj4gKyAgICAgICBwdGhyZWFk
-X3QgdGhyZWFkW1RIUkVBRFNfTlVNXTsKPj4gKyAgICAgICBpbnQgYXJnc1tUSFJFQURTX05VTV07
-Cj4+ICAgICAgICAgaW50IGVycm9yID0gMDsKPj4KPj4gICAgICAgICBmb3IgKGludCBpID0gMDsg
-aSA8IFRIUkVBRFNfTlVNOyBpKyspIHsKPj4gLSAgICAgICAgICAgICAgIFNBRkVfUFRIUkVBRF9D
-UkVBVEUoJnRocmVhZCwgTlVMTCwgdGhyZWFkZWQsICZpKTsKPj4gLSAgICAgICAgICAgICAgIFNB
-RkVfUFRIUkVBRF9KT0lOKHRocmVhZCwgKHZvaWQgKiopJnRpZHNbaV0pOwo+PiArICAgICAgICAg
-ICAgICAgYXJnc1tpXSA9IGk7Cj4+ICsgICAgICAgICAgICAgICBTQUZFX1BUSFJFQURfQ1JFQVRF
-KCZ0aHJlYWRbaV0sIE5VTEwsIHRocmVhZGVkLCAmYXJnc1tpXSk7Cj4+ICAgICAgICAgfQo+PiAr
-ICAgICAgIGZvciAoaW50IGkgPSAwOyBpIDwgVEhSRUFEU19OVU07IGkrKykKPj4gKyAgICAgICAg
-ICAgICAgIFNBRkVfUFRIUkVBRF9KT0lOKHRocmVhZFtpXSwgTlVMTCk7Cj4+Cj4+ICAgICAgICAg
-Zm9yIChpbnQgaSA9IDA7IGkgPCBUSFJFQURTX05VTTsgaSsrKSB7Cj4+ICAgICAgICAgICAgICAg
-ICBmb3IgKGludCBqID0gaSArIDE7IGogPCBUSFJFQURTX05VTTsgaisrKSB7Cj4+ICAgICAgICAg
-ICAgICAgICAgICAgICAgIGlmICh0aWRzW2ldID09IHRpZHNbal0pIHsKPj4gLSAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICB0c3RfcmVzKFRJTkZPLCAidGhyZWFkWyVkXSBhbmQgdGhyZWFk
-WyVkXSBoYXZlIHRoZSBzYW1lIElEIiwgaSwgaik7Cj4+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgdHN0X3JlcyhUSU5GTywgInRocmVhZFslZF0gYW5kIHRocmVhZFslZF0gaGF2ZSB0
-aGUgc2FtZSBJRCAlZCIsIGksIGosIHRpZHNbaV0pOwo+PiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIGVycm9yID0gMTsKPj4gICAgICAgICAgICAgICAgICAgICAgICAgfQo+PiAgICAg
-ICAgICAgICAgICAgfQo+PiAtLQo+PiAyLjMxLjEKPj4KPj4KPj4gLS0KPj4gTWFpbGluZyBsaXN0
-IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCj4+Cj4KPgo+IC0tCj4g
-UmVnYXJkcywKPiBMaSBXYW5nCgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
-LmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+The original test didn't produce any output results.
+Use tst_macro to enable test to produce output results.
+
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ testcases/kernel/syscalls/symlink/symlink02.c | 218 ++----------------
+ 1 file changed, 25 insertions(+), 193 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/symlink/symlink02.c b/testcases/kernel/syscalls/symlink/symlink02.c
+index c18db2b37..c152bb2b7 100644
+--- a/testcases/kernel/syscalls/symlink/symlink02.c
++++ b/testcases/kernel/syscalls/symlink/symlink02.c
+@@ -1,208 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
+- * Mountain View, CA  94043, or:
+- *
+- * http://www.sgi.com
+- *
+- * For further information regarding this notice, see:
+- *
+- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
+- *
++ * Copyright (c) Linux Test Project, 2003-2023
++ * Author: William Roske
+  */
+-/* $Id: symlink02.c,v 1.6 2009/08/28 14:17:14 vapier Exp $ */
+-/**********************************************************
+- *
+- *    OS Test - Silicon Graphics, Inc.
+- *
+- *    TEST IDENTIFIER	: symlink02
+- *
+- *    EXECUTED BY	: anyone
+- *
+- *    TEST TITLE	: Basic test for symlink(2)
+- *
+- *    PARENT DOCUMENT	: usctpl01
+- *
+- *    TEST CASE TOTAL	: 1
+- *
+- *    WALL CLOCK TIME	: 1
+- *
+- *    CPU TYPES		: ALL
+- *
+- *    AUTHOR		: William Roske
+- *
+- *    CO-PILOT		: Dave Fenner
+- *
+- *    DATE STARTED	: 03/30/92
+- *
+- *    INITIAL RELEASE	: UNICOS 7.0
+- *
+- *    TEST CASES
+- *
+- * 	1.) symlink(2) returns...(See Description)
+- *
+- *    INPUT SPECIFICATIONS
+- * 	The standard options for system call tests are accepted.
+- *	(See the parse_opts(3) man page).
+- *
+- *    OUTPUT SPECIFICATIONS
+- *$
+- *    DURATION
+- * 	Terminates - with frequency and infinite modes.
+- *
+- *    SIGNALS
+- * 	Uses SIGUSR1 to pause before test if option set.
+- * 	(See the parse_opts(3) man page).
+- *
+- *    RESOURCES
+- * 	None
+- *
+- *    ENVIRONMENTAL NEEDS
+- *      No run-time environmental needs.
+- *
+- *    SPECIAL PROCEDURAL REQUIREMENTS
+- * 	None
+- *
+- *    INTERCASE DEPENDENCIES
+- * 	None
+- *
+- *    DETAILED DESCRIPTION
+- *	This is a Phase I test for the symlink(2) system call.  It is intended
+- *	to provide a limited exposure of the system call, for now.  It
+- *	should/will be extended when full functional tests are written for
+- *	symlink(2).
+- *
+- * 	Setup:
+- * 	  Setup signal handling.
+- *	  Pause for SIGUSR1 if option specified.
+- *
+- * 	Test:
+- *	 Loop if the proper options are given.
+- * 	  Execute system call
+- *	  Check return code, if system call failed (return=-1)
+- *		Log the errno and Issue a FAIL message.
+- *	  Otherwise, Issue a PASS message.
+- *
+- * 	Cleanup:
+- * 	  Print errno log and/or timing stats if options given
+- *
+- *
+- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+ 
+-#include <sys/types.h>
+-#include <fcntl.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <signal.h>
+-#include "test.h"
+-#include "safe_macros.h"
+-
+-void setup();
+-void cleanup();
++/*\
++ * [Description]
++ *
++ * Check the basic functionality of the symlink() system call.
++ */
+ 
+-char *TCID = "symlink02";
+-int TST_TOTAL = 1;
++#include "tst_test.h"
+ 
+-char fname[255], symlnk[255];
+-int fd;
++static char *fname, *symlnk;
+ 
+-int main(int ac, char **av)
++static void verify_symlink(void)
+ {
+-	int lc;
+-
+-    /***************************************************************
+-     * parse standard options
+-     ***************************************************************/
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-    /***************************************************************
+-     * perform global setup for test
+-     ***************************************************************/
+-	setup();
+-
+-    /***************************************************************
+-     * check looping state if -c option given
+-     ***************************************************************/
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/*
+-		 * Call symlink(2)
+-		 */
+-		TEST(symlink(fname, symlnk));
+-
+-		/* check return code */
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "symlink(%s, %s) Failed, errno=%d : %s",
+-				 fname, symlnk, TEST_ERRNO,
+-				 strerror(TEST_ERRNO));
+-		} else {
+-			SAFE_UNLINK(cleanup, symlnk);
+-		}
+-	}
+-
+-    /***************************************************************
+-     * cleanup and exit
+-     ***************************************************************/
+-	cleanup();
+-	tst_exit();
++	TST_EXP_POSITIVE(symlink(fname, symlnk), "symlink(%s, %s)",
++			 fname, symlnk);
+ 
++	if (TST_RET == -1)
++		tst_res(TFAIL, "symlink(%s, %s) Failed", fname, symlnk);
++	else
++		SAFE_UNLINK(symlnk);
+ }
+ 
+-/***************************************************************
+- * setup() - performs all ONE TIME setup for this test.
+- ***************************************************************/
+-void setup(void)
++static void setup(void)
+ {
++	fname = tst_aprintf("tfile_%d", getpid());
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	tst_tmpdir();
+-
+-	sprintf(fname, "tfile_%d", getpid());
+-	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
+-		tst_brkm(TBROK, cleanup,
+-			 "open(%s, O_RDWR|O_CREAT,0700) Failed, errno=%d : %s",
+-			 fname, errno, strerror(errno));
+-	}
+-
+-	if (close(fd) == -1) {
+-		tst_resm(TWARN, "close(%s) Failed, errno=%d : %s",
+-			 fname, errno, strerror(errno));
+-	}
+-	sprintf(symlnk, "st_%d", getpid());
++	symlnk = tst_aprintf("st_%d", getpid());
+ }
+ 
+-/***************************************************************
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *		completion or premature exit.
+- ***************************************************************/
+-void cleanup(void)
+-{
+-
+-	tst_rmdir();
+-
+-}
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.test_all = verify_symlink,
++};
+-- 
+2.39.1
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
