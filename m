@@ -4,77 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CB28C25B41
-	for <ltp@archiver.kernel.org>; Mon, 23 Oct 2023 14:40:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B81C4C001E0
+	for <ltp@archiver.kernel.org>; Mon, 23 Oct 2023 14:50:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AFD703CF4FE
-	for <ltp@archiver.kernel.org>; Mon, 23 Oct 2023 16:40:06 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 1050B3CF4FF
+	for <ltp@archiver.kernel.org>; Mon, 23 Oct 2023 16:50:51 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6846F3CECB4
- for <ltp@lists.linux.it>; Mon, 23 Oct 2023 16:39:56 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DA93E1000D80
- for <ltp@lists.linux.it>; Mon, 23 Oct 2023 16:39:55 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8D58D1FE1D;
- Mon, 23 Oct 2023 14:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698071994; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FFganvkDpkZYn7E/9L/ccsg21U96j7NuwRvHivhi+iQ=;
- b=j+U0cLKQWhiutHmsIxpCmfi5B6n0hzzh/60CoIC7ky6qENUZADT7h6iI3RF9jLDQjejM6X
- J9fuPKN8zJUrsW+sSrc1sD72Qy7EUzwTgmGq+Ql45BG3t9i1OJkmUsOY8st5xVBnMnOV41
- GkRTwqen/sQhUIKJH291wYmUz+CblNE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698071994;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FFganvkDpkZYn7E/9L/ccsg21U96j7NuwRvHivhi+iQ=;
- b=pUAoCFsDT++yvJvWYZUCJ0H312fcuQu6idMffdFDkjfadM2wkBlnrovvNVwQAthgRDVglj
- mHhNt3Qq0X5L/XDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7B009139C2;
- Mon, 23 Oct 2023 14:39:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id lbu/HLqFNmV3dQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Mon, 23 Oct 2023 14:39:54 +0000
-Date: Mon, 23 Oct 2023 16:40:26 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Kevin Brodsky <kevin.brodsky@arm.com>
-Message-ID: <ZTaF2kM1R1i3_JpR@yuki>
-References: <20231023135647.2157030-1-kevin.brodsky@arm.com>
- <20231023135647.2157030-4-kevin.brodsky@arm.com>
+ by picard.linux.it (Postfix) with ESMTPS id B88833CF4F7
+ for <ltp@lists.linux.it>; Mon, 23 Oct 2023 16:50:40 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTP id 930862001C6
+ for <ltp@lists.linux.it>; Mon, 23 Oct 2023 16:50:37 +0200 (CEST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 863BE2F4;
+ Mon, 23 Oct 2023 07:51:16 -0700 (PDT)
+Received: from [10.44.160.71] (e126510-lin.lund.arm.com [10.44.160.71])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B8D713F64C;
+ Mon, 23 Oct 2023 07:50:34 -0700 (PDT)
+Message-ID: <87291cdf-0245-c825-d3a3-235e4a4d1f9d@arm.com>
+Date: Mon, 23 Oct 2023 16:50:33 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231023135647.2157030-4-kevin.brodsky@arm.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-7.69 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-3.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- REPLY(-4.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.09)[64.61%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-GB
+To: Cyril Hrubis <chrubis@suse.cz>
+References: <20231023135647.2157030-1-kevin.brodsky@arm.com>
+ <20231023135647.2157030-4-kevin.brodsky@arm.com> <ZTaF2kM1R1i3_JpR@yuki>
+From: Kevin Brodsky <kevin.brodsky@arm.com>
+In-Reply-To: <ZTaF2kM1R1i3_JpR@yuki>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 3/3] Provide a PATH_MAX-long buffer when expecting
  ENAMETOOLONG
@@ -95,24 +56,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> A number of tests check that syscalls manipulating paths return
-> -ENAMETOOLONG when the specified path is longer than allowed. There
-> are actually two ways this error can be triggered:
-> 
-> 1. If the given string is longer than PATH_MAX, i.e. 4096 as far as
->    the kernel is concerned, then the getname() helper will fail and
->    the kernel will return -ENAMETOOLONG right away.
-> 
-> 2. If the string fits in PATH_MAX, but the filesystem rejects the
->    path name, for instance because one of its components is longer
->    than the support file name length (e.g. 255 for ext4).
+On 23/10/2023 16:40, Cyril Hrubis wrote:
+> Hi!
+>> A number of tests check that syscalls manipulating paths return
+>> -ENAMETOOLONG when the specified path is longer than allowed. There
+>> are actually two ways this error can be triggered:
+>>
+>> 1. If the given string is longer than PATH_MAX, i.e. 4096 as far as
+>>    the kernel is concerned, then the getname() helper will fail and
+>>    the kernel will return -ENAMETOOLONG right away.
+>>
+>> 2. If the string fits in PATH_MAX, but the filesystem rejects the
+>>    path name, for instance because one of its components is longer
+>>    than the support file name length (e.g. 255 for ext4).
+> Ideally we should have at least one test that would hit the 1. as well...
 
-Ideally we should have at least one test that would hit the 1. as well...
+This is what patch 3 is meant to achieve: instead of hitting 2. we now
+systematically hit 1.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks for merging this series (so quickly)!
+
+Kevin
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
