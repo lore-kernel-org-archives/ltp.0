@@ -4,83 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A180C07545
-	for <ltp@archiver.kernel.org>; Tue, 24 Oct 2023 09:36:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A15D2C07545
+	for <ltp@archiver.kernel.org>; Tue, 24 Oct 2023 09:38:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF8053CF4F3
-	for <ltp@archiver.kernel.org>; Tue, 24 Oct 2023 11:36:18 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 0CEED3CECE3
+	for <ltp@archiver.kernel.org>; Tue, 24 Oct 2023 11:38:38 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3A8C43CCE48
- for <ltp@lists.linux.it>; Tue, 24 Oct 2023 11:36:08 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 7586F3CCD8C
+ for <ltp@lists.linux.it>; Tue, 24 Oct 2023 11:38:28 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 61D6D201728
- for <ltp@lists.linux.it>; Tue, 24 Oct 2023 11:36:07 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 9069820118F
+ for <ltp@lists.linux.it>; Tue, 24 Oct 2023 11:38:26 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 7732221B92;
+ Tue, 24 Oct 2023 09:38:25 +0000 (UTC)
+Received: from g78 (rpalethorpe.udp.ovpn1.nue.suse.de [10.163.25.62])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 58ADF1F459;
- Tue, 24 Oct 2023 09:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698140167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=E1QSE5z4MTvh6whNtap9VZbvriIFsZl6URYKp8nA6bc=;
- b=p8/8wY86wST3E3E3GY/Xc3/j3TGCZ7dcMFToyWtK6Pot73o++5KmjLEqv0lSXgW9zoNvHU
- ZVHf59cB304zPmyTASivBjO5RQVNDXY83dad81C8aPGpldtCOZZevpyTgABvyidDsvguos
- opDrkkWtk9InRNwQ0tvagT3gvkxGNnc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698140167;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=E1QSE5z4MTvh6whNtap9VZbvriIFsZl6URYKp8nA6bc=;
- b=sCqJ6JqGrziXCmKA7HoWoc5V31jI//+RIeiuFv9MPJYPrLmFBwXUW9H1cm5mHxWweYD2pQ
- avB6n0QBB0ly/UDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 447C4134F5;
- Tue, 24 Oct 2023 09:36:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id TA+XEAeQN2UXCgAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 24 Oct 2023 09:36:07 +0000
-Date: Tue, 24 Oct 2023 11:36:39 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Kevin Brodsky <kevin.brodsky@arm.com>
-Message-ID: <ZTeQJ95GncF5yg8F@yuki>
-References: <20231023135647.2157030-1-kevin.brodsky@arm.com>
- <20231023135647.2157030-4-kevin.brodsky@arm.com>
- <ZTaF2kM1R1i3_JpR@yuki>
- <87291cdf-0245-c825-d3a3-235e4a4d1f9d@arm.com>
- <ZTaL6rLETxHwvFDr@yuki>
- <e6cc15ff-cb44-4805-cba5-9f5340410746@arm.com>
+ by relay2.suse.de (Postfix) with ESMTPS id D0E872CB1E;
+ Tue, 24 Oct 2023 09:38:24 +0000 (UTC)
+References: <20231016123320.9865-1-chrubis@suse.cz>
+ <20231016123320.9865-3-chrubis@suse.cz>
+User-agent: mu4e 1.10.7; emacs 29.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 24 Oct 2023 10:31:07 +0100
+Organization: Linux Private Site
+In-reply-to: <20231016123320.9865-3-chrubis@suse.cz>
+Message-ID: <87bkcouzqo.fsf@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <e6cc15ff-cb44-4805-cba5-9f5340410746@arm.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-7.73 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+Authentication-Results: smtp-out1.suse.de; dkim=none; dmarc=none;
+ spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor
+ denied by domain of rpalethorpe@suse.de) smtp.mailfrom=rpalethorpe@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [-2.21 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[rpalethorpe@suse.de]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[];
+ RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
  NEURAL_HAM_LONG(-3.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- REPLY(-4.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.13)[67.74%]
+ REPLYTO_ADDR_EQ_FROM(0.00)[]; DMARC_NA(0.20)[suse.de];
+ R_SPF_SOFTFAIL(0.60)[~all:c]; HAS_ORG_HEADER(0.00)[];
+ TO_MATCH_ENVRCPT_SOME(0.00)[]; VIOLATED_DIRECT_SPF(3.50)[];
+ MX_GOOD(-0.01)[]; NEURAL_HAM_SHORT(-1.00)[-1.000];
+ RCPT_COUNT_SEVEN(0.00)[8]; RCVD_NO_TLS_LAST(0.10)[];
+ FROM_EQ_ENVFROM(0.00)[]; R_DKIM_NA(0.20)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ MID_RHS_MATCH_FROM(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Queue-Id: 7732221B92
 X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 3/3] Provide a PATH_MAX-long buffer when expecting
- ENAMETOOLONG
+Subject: Re: [LTP] [PATCH v2 2/4] syscalls: readahead01: Make use of tst_fd
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,39 +72,124 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
+Reply-To: rpalethorpe@suse.de
+Cc: mszeredi@redhat.com, brauner@kernel.org, Jan Kara <jack@suse.cz>,
+ Matthew Wilcox <willy@infradead.org>, viro@zeniv.linux.org.uk,
+ linux-fsdevel@vger.kernel.org, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> > Sigh, I meant 2. I guess that we would have to loop over filesystems
-> > (easily done with .all_filesystems = 1) and pass very long filename. Or
-> > do we have such test already?
-> >
-> > Looking at our tests, the rename10.c is actually one of two tests that
-> > sets .all_fileystems and checks for ENAMETOOLONG. Looking at the
-> > filesystem limits, all seems to have limits that are <= 255 characters,
-> > the only problem is a definition of character. For utf8 character 255
-> > characters are around 1021 (including nul terminator). So I suppose that
-> > if we pass another buffer that is PATH_MAX in length and has PATH_MAX-1
-> > characters we should consistenly hit 2. Or do I miss something?
-> 
-> This is a good point, I didn't think about it this way. Your idea seems
-> sensible. With this patch we always hit 1. as we specify a string that
-> is longer than PATH_MAX. We could instead hit 2. without out-of-bound
-> access by specifying a string that is at most PATH_MAX in length
-> (including the null terminator), and at least the filesystem character
-> limit. Maybe something like the diff below (just tested it, that works
-> fine).
+Hello,
 
-Can we actually have two long paths in the test and test both? That
-should have the best test coverage.
+Cyril Hrubis <chrubis@suse.cz> writes:
+
+> TODO:
+> - readahead() on /proc/self/maps seems to succeed
+> - readahead() on pipe write end, O_PATH file and open_tree() fd returns EBADFD
+>
+> Are these to be expected?
+>
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  .../kernel/syscalls/readahead/readahead01.c   | 54 ++++++++++---------
+>  1 file changed, 29 insertions(+), 25 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/readahead/readahead01.c b/testcases/kernel/syscalls/readahead/readahead01.c
+> index bdef7945d..6dd5086e5 100644
+> --- a/testcases/kernel/syscalls/readahead/readahead01.c
+> +++ b/testcases/kernel/syscalls/readahead/readahead01.c
+> @@ -30,43 +30,47 @@
+>  
+>  static void test_bad_fd(void)
+>  {
+> -	char tempname[PATH_MAX] = "readahead01_XXXXXX";
+> -	int fd;
+> +	int fd[2];
+> +
+> +	TST_EXP_FAIL(readahead(-1, 0, getpagesize()), EBADF,
+> +	             "readahead() with fd = -1");
+>  
+> -	tst_res(TINFO, "%s -1", __func__);
+> -	TST_EXP_FAIL(readahead(-1, 0, getpagesize()), EBADF);
+> +	SAFE_PIPE(fd);
+> +	SAFE_CLOSE(fd[0]);
+> +	SAFE_CLOSE(fd[1]);
+
+Would it make more sense to just close one of the ends?
+
+Or to open a file with write only?
+
+I wonder whether we still need test_bad_fd at all? Perhaps all the cases
+should be integrated into TST_FD_FOREACH?
+
+The rest looks good.
+
+>  
+> -	tst_res(TINFO, "%s O_WRONLY", __func__);
+> -	fd = mkstemp(tempname);
+> -	if (fd == -1)
+> -		tst_res(TFAIL | TERRNO, "mkstemp failed");
+> -	SAFE_CLOSE(fd);
+> -	fd = SAFE_OPEN(tempname, O_WRONLY);
+> -	TST_EXP_FAIL(readahead(fd, 0, getpagesize()), EBADF);
+> -	SAFE_CLOSE(fd);
+> -	unlink(tempname);
+> +	TST_EXP_FAIL(readahead(fd[0], 0, getpagesize()), EBADF,
+> +	             "readahead() with invalid fd");
+>  }
+>  
+> -static void test_invalid_fd(void)
+> +static void test_invalid_fd(struct tst_fd *fd)
+>  {
+> -	int fd[2];
+> +	int exp_errno = EINVAL;
+>  
+> -	tst_res(TINFO, "%s pipe", __func__);
+> -	SAFE_PIPE(fd);
+> -	TST_EXP_FAIL(readahead(fd[0], 0, getpagesize()), EINVAL);
+> -	SAFE_CLOSE(fd[0]);
+> -	SAFE_CLOSE(fd[1]);
+> +	switch (fd->type) {
+> +	/* These two succeed */
+> +	case TST_FD_FILE:
+> +	case TST_FD_MEMFD:
+> +		return;
+> +	case TST_FD_PIPE_WRITE:
+> +	case TST_FD_OPEN_TREE:
+> +	case TST_FD_PATH:
+> +		exp_errno = EBADF;
+> +	break;
+> +	default:
+> +		break;
+> +	}
+>  
+> -	tst_res(TINFO, "%s socket", __func__);
+> -	fd[0] = SAFE_SOCKET(AF_INET, SOCK_STREAM, 0);
+> -	TST_EXP_FAIL(readahead(fd[0], 0, getpagesize()), EINVAL);
+> -	SAFE_CLOSE(fd[0]);
+> +	TST_EXP_FAIL(readahead(fd->fd, 0, getpagesize()), exp_errno,
+> +		     "readahead() on %s", tst_fd_desc(fd));
+>  }
+>  
+>  static void test_readahead(void)
+>  {
+>  	test_bad_fd();
+> -	test_invalid_fd();
+> +
+> +	TST_FD_FOREACH(fd)
+> +		test_invalid_fd(&fd);
+>  }
+>  
+>  static void setup(void)
+> -- 
+> 2.41.0
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
