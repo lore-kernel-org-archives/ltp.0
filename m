@@ -4,75 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23146C25B48
-	for <ltp@archiver.kernel.org>; Tue, 24 Oct 2023 08:49:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AAB8C00A8F
+	for <ltp@archiver.kernel.org>; Tue, 24 Oct 2023 08:56:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B73913CCD6D
-	for <ltp@archiver.kernel.org>; Tue, 24 Oct 2023 10:49:57 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 908063CEC67
+	for <ltp@archiver.kernel.org>; Tue, 24 Oct 2023 10:56:50 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3D3553CCD53
- for <ltp@lists.linux.it>; Tue, 24 Oct 2023 10:49:36 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 9E33C3C62EA
+ for <ltp@lists.linux.it>; Tue, 24 Oct 2023 10:56:41 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id F39F110011C3
- for <ltp@lists.linux.it>; Tue, 24 Oct 2023 10:49:35 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C475C2003BE
+ for <ltp@lists.linux.it>; Tue, 24 Oct 2023 10:56:40 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1E07B1FE67;
- Tue, 24 Oct 2023 08:49:27 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5DA1A1FE5F;
+ Tue, 24 Oct 2023 08:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698137367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=cEZbQ65cieLzawq43U5UJBlgigUpKm9QvdgojS/7q9U=;
- b=t9Y2D7GWsO1VfiNVZViO0Q93o+R+Slr1a0NlTPfxkgD72yCg54Q/4zixqQtcE34unXA0MY
- TqfEP+IHCmdEWoJbUgO6e42PVuPxaioQk5kfOvf/OihDURU4OvfF6ggN03nl11aZXAA1Sd
- 4/PfJV/i13MwyQ+11NhwGACUpt0+xzA=
+ t=1698137799;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+vQeW7QHTZ4RRrvuVCS6kZS7O0NjZJteLJ39wxRYMi0=;
+ b=XaPyiiEv6ewz1swNyVNitt2VsRfknvH8uVd3RNl+7wmHxrGC5o7D/rzlDkwug/l9p7q4Uz
+ k+cormU0/zRzLQfvzWt7KPt18i6AU2jCsehiDBssMspA8SiZaYYbdBPJUR/dfVDjS5jucO
+ QWbtxoh1GSEcfDIXZw7OHJt4AGX4sJc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698137367;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=cEZbQ65cieLzawq43U5UJBlgigUpKm9QvdgojS/7q9U=;
- b=AX+QIDngQh2nIJ685k7RxPfYexEqCIMMDn1wOnD6tAgOImyQj2aB38myGyCiYBRoMOnnma
- qLSaqjf+RwlUPOBQ==
+ s=susede2_ed25519; t=1698137799;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+vQeW7QHTZ4RRrvuVCS6kZS7O0NjZJteLJ39wxRYMi0=;
+ b=z9+13N4X7TO5zP9msYZbpfKmjg6uBZxnslkLA5RZhgHrYvs1KasUYNmTx9i8MJvjPokO9t
+ pN+AMjk4OPXX/DAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4CFC1391C;
- Tue, 24 Oct 2023 08:49:26 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 37E111391C;
+ Tue, 24 Oct 2023 08:56:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QVVlNhaFN2UCcAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Tue, 24 Oct 2023 08:49:26 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id ICyXDMeGN2XecwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 24 Oct 2023 08:56:39 +0000
+Date: Tue, 24 Oct 2023 10:56:29 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Tue, 24 Oct 2023 10:49:22 +0200
-Message-ID: <20231024084923.217110-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.42.0
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20231024085629.GA218038@pevik>
+References: <20231013151724.23057-1-mdoucha@suse.cz>
+ <20231013151724.23057-3-mdoucha@suse.cz>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20231013151724.23057-3-mdoucha@suse.cz>
 Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spamd-Result: default: False [-1.47 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- R_MISSING_CHARSET(2.50)[]; BROKEN_CONTENT_TYPE(1.50)[];
- NEURAL_HAM_LONG(-3.00)[-1.000];
+X-Spamd-Result: default: False [-6.28 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
  FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-2.37)[97.10%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+ MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-2.98)[99.93%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/2] stack_clash: Guard functions used only in 64bit
+Subject: Re: [LTP] [PATCH 2/3] tst_netlink_destroy_context(): Allow safely
+ passing NULL context
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,59 +89,19 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>,
- Pavel Boldin <pboldin@cloudlinux.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-To avoid "defined but not used" warnings when compiled on 32bit.
+Hi Martin,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/cve/stack_clash.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-diff --git a/testcases/cve/stack_clash.c b/testcases/cve/stack_clash.c
-index 3a99c49bb..56b970a1b 100644
---- a/testcases/cve/stack_clash.c
-+++ b/testcases/cve/stack_clash.c
-@@ -92,6 +92,7 @@ void segv_handler(int sig, siginfo_t *info, void *data LTP_ATTRIBUTE_UNUSED)
- 		_exit(EXIT_SUCCESS);
- }
- 
-+#ifdef __x86_64__
- static void force_bottom_up(void)
- {
- 	FILE *fh;
-@@ -134,6 +135,7 @@ static void force_bottom_up(void)
- out:
- 	SAFE_FCLOSE(fh);
- }
-+#endif
- 
- unsigned long read_stack_addr_from_proc(unsigned long *stack_size)
- {
-@@ -187,6 +189,7 @@ void __attribute__((noinline)) preallocate_stack(unsigned long required)
- 	garbage[0] = garbage[required - 1] = '\0';
- }
- 
-+#ifdef __x86_64__
- static void do_mmap_placement_test(unsigned long stack_addr, unsigned long gap)
- {
- 	void *map_test_gap;
-@@ -208,6 +211,7 @@ static void do_mmap_placement_test(unsigned long stack_addr, unsigned long gap)
- 		SAFE_MUNMAP(map_test_gap, MAPPED_LEN);
- 	}
- }
-+#endif
- 
- void do_child(void)
- {
--- 
-2.42.0
-
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
