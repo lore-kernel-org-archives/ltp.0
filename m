@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51385C25B6B
-	for <ltp@archiver.kernel.org>; Wed, 25 Oct 2023 22:09:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93696C25B6B
+	for <ltp@archiver.kernel.org>; Wed, 25 Oct 2023 22:14:07 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6CDC53CF910
-	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 00:09:32 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id B90173CF4D8
+	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 00:14:05 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id E19D13CCB57
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 00:09:22 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 4E2FF3CCB57
+ for <ltp@lists.linux.it>; Thu, 26 Oct 2023 00:13:54 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3332C201DC9
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 00:09:21 +0200 (CEST)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 1795F1A00997
+ for <ltp@lists.linux.it>; Thu, 26 Oct 2023 00:13:51 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 56CFF1F385;
- Wed, 25 Oct 2023 22:09:21 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 6C6F21F37C;
+ Wed, 25 Oct 2023 22:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698271761;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1698272031;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=FMY8DQsCa4IewL9XjH8xZhYVOGfLTU4OxU5zSAX8DEY=;
- b=ApnSMCd/Ye2e75mJ21FoSNrkXBYQlvkX2qfVlyWSvsgf8u2x9J78WGeigk5TP/X9G6sOEQ
- 4xrWAOffjfndnjLia5/QnodB3Da+NudKzUoKY05FeFpbq0bH4iifSq2LcTVgte368Smxto
- AZbTkDGltPJAqs+JpMXhOOr1BjJ5ryk=
+ bh=PlXXhEfog1Mn64jbIfuDsHe5EkpaQSO502YerD8rRKs=;
+ b=xisILtDiQkFSvhvzrq5DLAFYYuo8pF564fNYs7fOnlE6a8OBAJ/jS/HSZzfqYRzjMB6WoV
+ bU7xDSnVTXHMOaiaGWxQAAt0jYiW8gSOmGlMyldnwxJFEAGsFJ4Aw0+IYh43EmH4sUrpLz
+ 3h6Sp9Ro36pXOpVVv+ecrGnercLKsHQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698271761;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1698272031;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=FMY8DQsCa4IewL9XjH8xZhYVOGfLTU4OxU5zSAX8DEY=;
- b=G+dcTNSK6vO6vxyJxvVXhFH9oldy3+ZGgyA92ki1k8ux0u7yhj5wZ4OwCk4HJLgE3NjV4b
- ZP3HiiBU7brUtUAQ==
+ bh=PlXXhEfog1Mn64jbIfuDsHe5EkpaQSO502YerD8rRKs=;
+ b=Ho8TeOPIWyueD8Ur4Fak/KFX2pt9sy8h2MzC1tay5MTPUT3SqofELD076Vrt99TvwXNzx1
+ 8tj3bGRgctDLqyDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 382C7138E9;
- Wed, 25 Oct 2023 22:09:21 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 50300138E9;
+ Wed, 25 Oct 2023 22:13:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id mO5ODBGSOWV3QAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 25 Oct 2023 22:09:21 +0000
-Date: Thu, 26 Oct 2023 00:09:19 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id rw0NEh+TOWWsQQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 25 Oct 2023 22:13:51 +0000
+Date: Thu, 26 Oct 2023 00:13:49 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Marius Kittler <mkittler@suse.de>, ltp@lists.linux.it
-Message-ID: <20231025220919.GC477570@pevik>
+To: Marius Kittler <mkittler@suse.de>
+Message-ID: <20231025221349.GD477570@pevik>
 References: <20231025110835.28832-1-mkittler@suse.de>
- <20231025110835.28832-2-mkittler@suse.de>
- <20231025220605.GB477570@pevik>
+ <20231025110835.28832-5-mkittler@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231025220605.GB477570@pevik>
+In-Reply-To: <20231025110835.28832-5-mkittler@suse.de>
 Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spamd-Result: default: False [-5.96 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-8.81 / 50.00]; ARC_NA(0.00)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
  FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
  FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
  MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-2.66)[98.51%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-1.51)[91.81%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v8 1/4] Refactor ioctl02.c to use the new test API
+Subject: Re: [LTP] [PATCH v8 4/4] Extend ioctl02 to test termio and termios
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,27 +91,54 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Marius,
+Hi Marius
 
-> > -	if (ioctl(cfd, TCFLSH, 2) < 0) {
-> > -		tst_resm(TINFO, "ioctl TCFLSH failed. : errno = %d", errno);
-> > -		/* signal the parent so we don't hang the test */
-> > -		kill(parentpid, SIGUSR1);
-> > -		return -1;
-> > -	}
-> > +	SAFE_IOCTL(cfd, TCFLSH, 2);
-> 2 is for flushing both Rx and Tx, right?
-> Maybe we could use TCIOFLUSH, right? At least it's documented in
-> include/uapi/asm-generic/termbits-common.h. TCIOFLUSH is in glibc, musl and
-> uclibc-ng thus safe to use.
+...
+> -	if (termio.c_iflag != (BRKINT | IGNPAR | INPCK | ISTRIP
+> -		 | ICRNL | IUCLC | IXON | IXANY | IXOFF)) {
+> -		tst_res(TFAIL, "iflag has incorrect value. %o",
+> -			 termio.c_iflag);
+> -		flag++;
 
-And, more importantly, TCIOFLUSH is mentioned in man ioctl_tty(2) and
-termios(3). Using constant is kind of self explaining.
+> +#define CMP_ATTR(tcexp, tcval, attr) \
+> +	do { \
+> +		if ((tcval).attr != (tcexp).attr) { \
+> +			tst_res(TINFO, #attr " has incorrect value %o", \
+> +				(tcval).attr); \
+> +			flag++; \
+> +		} \
+> +	} while (0)
+> +
+> +#define CECK_CONTROL_CHARS(tcval) \
+> +	for (i = 0; i < NCC; i++) { \
+> +		if (i == VEOL2) { \
+> +			if (!(tcval).c_cc[i]) { \
+> +				continue; \
+> +			} else { \
+> +				tst_res(TFAIL, "control char %d has " \
+> +					 "incorrect value %d", i, (tcval).c_cc[i]); \
+> +				flag++; \
+> +				continue; \
+> +			} \
+> +		} \
+> +		if ((tcval).c_cc[i] != CSTART) { \
+> +			tst_res(TFAIL, "control char %d has incorrect " \
+> +				 "value %d.", i, (tcval).c_cc[i]); \
+> +			flag++; \
+> +		} \
+>  	}
+
+Could be this written as a function? Or what is the benefit of it?  Because
+readability suffers. (We prefer avoid macros, tst_test_macros.h is the exception
+due using kernel syscalls, but readability also suffers).
+
+I know you mentioned C++ in cover letter, but please no C++ :).
 
 Kind regards,
 Petr
