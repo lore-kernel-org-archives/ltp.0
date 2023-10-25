@@ -4,61 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23171C25B47
-	for <ltp@archiver.kernel.org>; Wed, 25 Oct 2023 07:18:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4471BC0032E
+	for <ltp@archiver.kernel.org>; Wed, 25 Oct 2023 07:40:10 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E27ED3CCBF2
-	for <ltp@archiver.kernel.org>; Wed, 25 Oct 2023 09:18:38 +0200 (CEST)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 4B0883CCBD8
+	for <ltp@archiver.kernel.org>; Wed, 25 Oct 2023 09:40:08 +0200 (CEST)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 10DF93CCB57
- for <ltp@lists.linux.it>; Wed, 25 Oct 2023 09:18:28 +0200 (CEST)
+ by picard.linux.it (Postfix) with ESMTPS id 568E23CBE8F
+ for <ltp@lists.linux.it>; Wed, 25 Oct 2023 09:39:56 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 07071600F2D
- for <ltp@lists.linux.it>; Wed, 25 Oct 2023 09:18:27 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 1AF5121D40;
- Wed, 25 Oct 2023 07:18:26 +0000 (UTC)
-Received: from g78 (unknown [10.163.25.62])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A06BA10028B0
+ for <ltp@lists.linux.it>; Wed, 25 Oct 2023 09:39:54 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 61D552D30D;
- Wed, 25 Oct 2023 07:18:25 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 29B7421D47;
+ Wed, 25 Oct 2023 07:39:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1698219594;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VoxxzRe3FFwFbpbGhgra4GJ5nJDKJ2X6rngsjLJoX98=;
+ b=NGgqlhPBk7OGT2Vr0bG1gIJTTkiE6LfU5evVIGeH5rgMaLU3ukwd90l9SQLOkoJB2Zh0mM
+ AFqT5UFNTkkc69Rt2mFVJH0oLLxNDHpbMWM1m8nPmphJbK8EAD0S6aMn8Kw2O1INWuvk9I
+ avWCOdKRo1LVlh+Zsez2ukBkMfOBjUo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1698219594;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=VoxxzRe3FFwFbpbGhgra4GJ5nJDKJ2X6rngsjLJoX98=;
+ b=KGGY2ASnylNTKQORTisUuK6zgjnAncCrop6sxoTnYNsJe+puEQeA7t/v5SdFRmzjS6XRMF
+ Fu/1ZwP4LqPD6oCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D35B5138E9;
+ Wed, 25 Oct 2023 07:39:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3rOZMEnGOGWNYgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 25 Oct 2023 07:39:53 +0000
+Date: Wed, 25 Oct 2023 09:39:52 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <20231025073952.GA286089@pevik>
 References: <20231024201135.264768-1-pvorel@suse.cz>
- <20231024201135.264768-2-pvorel@suse.cz>
-User-agent: mu4e 1.10.7; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 25 Oct 2023 08:18:07 +0100
-Organization: Linux Private Site
-In-reply-to: <20231024201135.264768-2-pvorel@suse.cz>
-Message-ID: <8734xzuq4g.fsf@suse.de>
+ <20231024201135.264768-2-pvorel@suse.cz> <8734xzuq4g.fsf@suse.de>
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de; dkim=none; dmarc=none;
- spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor
- denied by domain of rpalethorpe@suse.de) smtp.mailfrom=rpalethorpe@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-2.16 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[rpalethorpe@suse.de]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[];
- RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
- NEURAL_HAM_LONG(-3.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- REPLYTO_ADDR_EQ_FROM(0.00)[]; DMARC_NA(0.20)[suse.de];
- R_SPF_SOFTFAIL(0.60)[~all:c]; HAS_ORG_HEADER(0.00)[];
- TO_MATCH_ENVRCPT_SOME(0.00)[]; VIOLATED_DIRECT_SPF(3.50)[];
- MX_GOOD(-0.01)[]; NEURAL_HAM_SHORT(-1.00)[-1.000];
- RCPT_COUNT_SEVEN(0.00)[7]; RCVD_NO_TLS_LAST(0.10)[];
- FROM_EQ_ENVFROM(0.00)[]; R_DKIM_NA(0.20)[];
- MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
- MID_RHS_MATCH_FROM(0.00)[]; BAYES_HAM(-2.95)[99.77%]
-X-Rspamd-Queue-Id: 1AF5121D40
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <8734xzuq4g.fsf@suse.de>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-10.20 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_SEVEN(0.00)[7];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-2.90)[99.56%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/2] lapi: Add uinput.h
 X-BeenThere: ltp@lists.linux.it
@@ -72,68 +89,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Hi Richie,
 
-Petr Vorel <pvorel@suse.cz> writes:
+> > +++ b/configure.ac
+> > @@ -67,6 +67,7 @@ AC_CHECK_HEADERS_ONCE([ \
+> >      linux/tls.h \
+> >      linux/tty.h \
+> >      linux/types.h \
+> > +    linux/uinput.h \
 
-> With the only definition UI_GET_SYSNAME, which was added in kernel 3.15,
-> but we 3.10 (CentOS 7).
->
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  configure.ac          |  1 +
->  include/lapi/uinput.h | 15 +++++++++++++++
->  2 files changed, 16 insertions(+)
->  create mode 100644 include/lapi/uinput.h
->
-> diff --git a/configure.ac b/configure.ac
-> index e40a18fa0..6d3620c57 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -67,6 +67,7 @@ AC_CHECK_HEADERS_ONCE([ \
->      linux/tls.h \
->      linux/tty.h \
->      linux/types.h \
-> +    linux/uinput.h \
+> Do we use this?
+Yes, see below.
 
-Do we use this?
+> >      linux/userfaultfd.h \
+> >      netinet/sctp.h \
+> >      pthread.h \
+> > diff --git a/include/lapi/uinput.h b/include/lapi/uinput.h
+> > new file mode 100644
+> > index 000000000..bdd6f466f
+> > --- /dev/null
+> > +++ b/include/lapi/uinput.h
+> > @@ -0,0 +1,15 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (c) 2023 Petr Vorel <pvorel@suse.cz>
+> > + */
+> > +
+> > +#ifndef LAPI_UINPUT_H__
+> > +#define LAPI_UINPUT_H__
+> > +
+> > +#include <linux/uinput.h>
+Here. We have policy, that we first load the header and then check for a
+fallback.
 
->      linux/userfaultfd.h \
->      netinet/sctp.h \
->      pthread.h \
-> diff --git a/include/lapi/uinput.h b/include/lapi/uinput.h
-> new file mode 100644
-> index 000000000..bdd6f466f
-> --- /dev/null
-> +++ b/include/lapi/uinput.h
-> @@ -0,0 +1,15 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2023 Petr Vorel <pvorel@suse.cz>
-> + */
-> +
-> +#ifndef LAPI_UINPUT_H__
-> +#define LAPI_UINPUT_H__
-> +
-> +#include <linux/uinput.h>
-> +
-> +#ifndef UI_GET_SYSNAME
-> +# define UI_GET_SYSNAME(len)	_IOC(_IOC_READ, UINPUT_IOCTL_BASE, 44, len)
-> +#endif
-> +
-> +#endif	/* LAPI_UINPUT_H__ */
+Kind regards,
+Petr
 
-
--- 
-Thank you,
-Richard.
+> > +
+> > +#ifndef UI_GET_SYSNAME
+> > +# define UI_GET_SYSNAME(len)	_IOC(_IOC_READ, UINPUT_IOCTL_BASE, 44, len)
+> > +#endif
+> > +
+> > +#endif	/* LAPI_UINPUT_H__ */
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
