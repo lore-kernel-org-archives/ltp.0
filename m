@@ -4,72 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47519C25B6B
-	for <ltp@archiver.kernel.org>; Wed, 25 Oct 2023 23:51:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4720C25B47
+	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 00:05:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A780B3CF4D2
-	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 01:51:42 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 272F83CF4D9
+	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 02:05:54 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id CA7463CC2D1
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 01:51:30 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id EA0203CB596
+ for <ltp@lists.linux.it>; Thu, 26 Oct 2023 02:05:42 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id B6F891400457
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 01:51:29 +0200 (CEST)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 595A0200905
+ for <ltp@lists.linux.it>; Thu, 26 Oct 2023 02:05:41 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D143D1FD61;
- Wed, 25 Oct 2023 23:51:28 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B6CBD1FD68;
+ Thu, 26 Oct 2023 00:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698277888;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ t=1698278740;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Cgpv7RCYVb3F3vsPAi68zXxopGp3hyfwF2Bc+YO6ZGk=;
- b=MG7hmM2YQq0bfh+sJaUI2uX2NeHJgbS801rAYnnx113ZyMwOxO9jk+JrASQtromBCuHSWv
- 2RFvht3u9xwBcSGfpC77UTkfI2icNA63/VgIZb1dAfU1ktm0wvsff+uBRFuVv27bXMsvRl
- damAirWunhIteLPNm4MXcZWSn2evV3E=
+ bh=PFBA6H+ezpxX7YjAQLIDxRXuCp5EdDvUxhdJTUOe9wY=;
+ b=RXsGdnl6zMmeRUs5Br4ssNJwd47+WN+3EFUIZTcXgcI7GsCqgX5Sz4sc5BTx1HCy24mmdl
+ Z5SMMwAX7DPSlVz2K0oIErPpAXJ27rcgdoKhRNS0oXb48fVLZ6RpcCjxEZUSSjNnQzapG5
+ 78hn2IeJwaY6Eu0Zj9HgrSd77//71U0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698277888;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1698278740;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Cgpv7RCYVb3F3vsPAi68zXxopGp3hyfwF2Bc+YO6ZGk=;
- b=05cVrPc/9Nl2cW9Cp8U/fcrroxJ27WubDLMPwEZXAcaGgR4mIZ9Pn6xHeaDg8rVxtZmEkF
- RaL3vp0sUIyd82Bg==
+ bh=PFBA6H+ezpxX7YjAQLIDxRXuCp5EdDvUxhdJTUOe9wY=;
+ b=XKF9zEORhDExrVWbISjZ4cb63baN+ETVSy2B/iyawYvzXprrr7luz5SjNsNyKWEGI/1Eyv
+ Sre0d8qoZY+vFbDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA600138E9;
- Wed, 25 Oct 2023 23:51:28 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C0EF13398;
+ Thu, 26 Oct 2023 00:05:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OGdOLACqOWVXXQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 25 Oct 2023 23:51:28 +0000
-Date: Thu, 26 Oct 2023 01:51:27 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id rFFXJFStOWVuYwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 26 Oct 2023 00:05:40 +0000
+Date: Thu, 26 Oct 2023 02:05:39 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>,
- "ltp@lists.linux.it" <ltp@lists.linux.it>
-Message-ID: <20231025235127.GA540370@pevik>
-References: <1697021709-22916-1-git-send-email-xuyang2018.jy@fujitsu.com>
- <20231012095515.GA618148@pevik>
- <807b574c-35f6-c84d-91ef-229385e8009a@fujitsu.com>
- <20231013061217.GA688129@pevik>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Message-ID: <20231026000539.GB540370@pevik>
+References: <1697100058-2859-1-git-send-email-xuyang2018.jy@fujitsu.com>
+ <1697100058-2859-3-git-send-email-xuyang2018.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231013061217.GA688129@pevik>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+In-Reply-To: <1697100058-2859-3-git-send-email-xuyang2018.jy@fujitsu.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-5.94 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-2.64)[98.42%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/3] link03: Convert docs to docparse
+Subject: Re: [LTP] [PATCH 3/3] umount03: Simplify test using TST_ macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,47 +89,71 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgWHUsCgpBbHNvLCB3aGlsZSB5b3UgYXJlIGF0IGl0LCBjb3VsZCB5b3UgcGxlYXNlIGZpeCB0
-aGVzZSB3YXJuaW5ncz8KCiQgbWFrZSBsaW5rMDMKCmxpbmswMy5jOiBJbiBmdW5jdGlvbiDigJht
-YWlu4oCZOgpsaW5rMDMuYzoxMDQ6MjI6IHdhcm5pbmc6IOKAmCVk4oCZIGRpcmVjdGl2ZSB3cml0
-aW5nIGJldHdlZW4gMSBhbmQgMTAgYnl0ZXMgaW50byBhIHJlZ2lvbiBvZiBzaXplIGJldHdlZW4g
-MSBhbmQgMjU1IFstV2Zvcm1hdC1vdmVyZmxvdz1dCiAgMTA0IHwgICAgc3ByaW50ZihsbmFtZSwg
-IiVzJWQiLCBmbmFtZSwgaSk7CiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgXn4KbGluazAz
-LmM6MTA0OjE5OiBub3RlOiBkaXJlY3RpdmUgYXJndW1lbnQgaW4gdGhlIHJhbmdlIFsxLCAyMTQ3
-NDgzNjQ2XQogIDEwNCB8ICAgIHNwcmludGYobG5hbWUsICIlcyVkIiwgZm5hbWUsIGkpOwogICAg
-ICB8ICAgICAgICAgICAgICAgICAgIF5+fn5+fgpsaW5rMDMuYzoxMDQ6NDogbm90ZTog4oCYc3By
-aW50ZuKAmSBvdXRwdXQgYmV0d2VlbiAyIGFuZCAyNjUgYnl0ZXMgaW50byBhIGRlc3RpbmF0aW9u
-IG9mIHNpemUgMjU1CiAgMTA0IHwgICAgc3ByaW50ZihsbmFtZSwgIiVzJWQiLCBmbmFtZSwgaSk7
-CiAgICAgIHwgICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4KbGluazAzLmM6MTIz
-OjIyOiB3YXJuaW5nOiDigJglZOKAmSBkaXJlY3RpdmUgd3JpdGluZyBiZXR3ZWVuIDEgYW5kIDEw
-IGJ5dGVzIGludG8gYSByZWdpb24gb2Ygc2l6ZSBiZXR3ZWVuIDEgYW5kIDI1NSBbLVdmb3JtYXQt
-b3ZlcmZsb3c9XQogIDEyMyB8ICAgIHNwcmludGYobG5hbWUsICIlcyVkIiwgZm5hbWUsIGkpOwog
-ICAgICB8ICAgICAgICAgICAgICAgICAgICAgIF5+CmxpbmswMy5jOjEyMzoxOTogbm90ZTogZGly
-ZWN0aXZlIGFyZ3VtZW50IGluIHRoZSByYW5nZSBbMSwgMjE0NzQ4MzY0Nl0KICAxMjMgfCAgICBz
-cHJpbnRmKGxuYW1lLCAiJXMlZCIsIGZuYW1lLCBpKTsKICAgICAgfCAgICAgICAgICAgICAgICAg
-ICBefn5+fn4KbGluazAzLmM6MTIzOjQ6IG5vdGU6IOKAmHNwcmludGbigJkgb3V0cHV0IGJldHdl
-ZW4gMiBhbmQgMjY1IGJ5dGVzIGludG8gYSBkZXN0aW5hdGlvbiBvZiBzaXplIDI1NQogIDEyMyB8
-ICAgIHNwcmludGYobG5hbWUsICIlcyVkIiwgZm5hbWUsIGkpOwogICAgICB8ICAgIF5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+CmxpbmswMy5jOjEzODoyMjogd2FybmluZzog4oCYJWTi
-gJkgZGlyZWN0aXZlIHdyaXRpbmcgYmV0d2VlbiAxIGFuZCAxMCBieXRlcyBpbnRvIGEgcmVnaW9u
-IG9mIHNpemUgYmV0d2VlbiAxIGFuZCAyNTUgWy1XZm9ybWF0LW92ZXJmbG93PV0KICAxMzggfCAg
-ICBzcHJpbnRmKGxuYW1lLCAiJXMlZCIsIGZuYW1lLCBpKTsKICAgICAgfCAgICAgICAgICAgICAg
-ICAgICAgICBefgpsaW5rMDMuYzoxMzg6MTk6IG5vdGU6IGRpcmVjdGl2ZSBhcmd1bWVudCBpbiB0
-aGUgcmFuZ2UgWzEsIDIxNDc0ODM2NDZdCiAgMTM4IHwgICAgc3ByaW50ZihsbmFtZSwgIiVzJWQi
-LCBmbmFtZSwgaSk7CiAgICAgIHwgICAgICAgICAgICAgICAgICAgXn5+fn5+CmxpbmswMy5jOjEz
-ODo0OiBub3RlOiDigJhzcHJpbnRm4oCZIG91dHB1dCBiZXR3ZWVuIDIgYW5kIDI2NSBieXRlcyBp
-bnRvIGEgZGVzdGluYXRpb24gb2Ygc2l6ZSAyNTUKICAxMzggfCAgICBzcHJpbnRmKGxuYW1lLCAi
-JXMlZCIsIGZuYW1lLCBpKTsKCiQgbWFrZSBjaGVjay1saW5rMDMKQ0hFQ0sgdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy9saW5rL2xpbmswMy5jCmxpbmswMy5jOjE6IFdBUk5JTkc6IE1pc3Npbmcg
-b3IgbWFsZm9ybWVkIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyIHRhZyBpbiBsaW5lIDEKbGluazAz
-LmM6MzM6IEVSUk9SOiBkbyBub3QgaW5pdGlhbGlzZSBzdGF0aWNzIHRvIDAKbGluazAzLmM6NTU6
-IEVSUk9SOiBjb2RlIGluZGVudCBzaG91bGQgdXNlIHRhYnMgd2hlcmUgcG9zc2libGUKbGluazAz
-LmM6OTA6IEVSUk9SOiBjb2RlIGluZGVudCBzaG91bGQgdXNlIHRhYnMgd2hlcmUgcG9zc2libGUK
-bGluazAzLmM6MTAwOiBFUlJPUjogY29kZSBpbmRlbnQgc2hvdWxkIHVzZSB0YWJzIHdoZXJlIHBv
-c3NpYmxlCgpUaGFua3MhCgpLaW5kIHJlZ2FyZHMsClBldHIKCi0tIApNYWlsaW5nIGxpc3QgaW5m
-bzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
+Hi Xu,
+
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/umount/umount03.c | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
+
+this is not needed:
+#include <errno.h>
+
+This is for all 3 patches.
+
+> diff --git a/testcases/kernel/syscalls/umount/umount03.c b/testcases/kernel/syscalls/umount/umount03.c
+> index 1cef06fa1..e6bb523b4 100644
+> --- a/testcases/kernel/syscalls/umount/umount03.c
+> +++ b/testcases/kernel/syscalls/umount/umount03.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later
+>  /*
+>   * Copyright (c) Wipro Technologies Ltd, 2002.  All Rights Reserved.
+> + * Copyright (c) Linux Test Project, 2003-2023
+>   * Author: Nirmala Devi Dhanasekar <nirmala.devi@wipro.com>
+>   *
+>   * Verify that umount(2) returns -1 and sets errno to  EPERM if the user
+> @@ -20,19 +21,12 @@ static int mount_flag;
+
+>  static void verify_umount(void)
+>  {
+> -	TEST(umount(MNTPOINT));
+> -
+> -	if (TST_RET != -1) {
+> -		tst_res(TFAIL, "umount() succeeds unexpectedly");
+> -		return;
+> -	}
+> +	TST_EXP_FAIL(umount(MNTPOINT), EPERM, "umount(%s) Failed", MNTPOINT);
+nit: I would prefer just:
+
+	TST_EXP_FAIL(umount(MNTPOINT), EPERM);
+
+
+>  	if (TST_ERR != EPERM) {
+>  		tst_res(TFAIL | TTERRNO, "umount() should fail with EPERM");
+>  		return;
+>  	}
+This should have been removed, it's redundant when TST_EXP_FAIL() is done.
+> -
+> -	tst_res(TPASS | TTERRNO, "umount() fails as expected");
+>  }
+
+>  static void setup(void)
+
+With <errno.h> and if (TST_ERR != EPERM) removed you can add:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+It would be good (as a separate commit) to reword the documentation and convert
+it to docparse. Feel free to do it, or please let me know if I should do it.
+
+Kind regards,
+Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
