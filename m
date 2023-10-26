@@ -4,68 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41ACBC25B6B
-	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 09:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD081C25B48
+	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 09:41:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9F0C23CCB48
-	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 11:37:21 +0200 (CEST)
+	by picard.linux.it (Postfix) with ESMTP id 2BF213CCB3A
+	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 11:41:34 +0200 (CEST)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 580D73C83DA
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 11:37:11 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 549293C83DA
+ for <ltp@lists.linux.it>; Thu, 26 Oct 2023 11:41:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BC62A1401211
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 11:37:10 +0200 (CEST)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7A74E1401103
+ for <ltp@lists.linux.it>; Thu, 26 Oct 2023 11:41:22 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DEB531F86A;
- Thu, 26 Oct 2023 09:37:09 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 81E5921ACA;
+ Thu, 26 Oct 2023 09:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698313029;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1698313281;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UI2gkD2geQ7rQBJcUmeFSiKlVbMSMsxF9dOwUC2f57s=;
- b=o8iPEAAFgt7sfWox5c6USaTmzFisgb9QmP8Ec3Hr2JoKgmYbuTKhAp3B8OWzQyo13Hp7sI
- Wz6tkj/9fnS/pHd9DGt4K8g1C9zsJqGkjdUBeMRUeUNAPnJkQqJNPBxf5Z2s58MlyvcPrh
- 4ybbigo2qJEm9eoedTUHrs7OCrp2Ef8=
+ bh=t3aXOLvK8AWAIv3NtmkHWiJBMktPlqwK7CKv0vYc5Ho=;
+ b=VotXL5+yu2CtgU2ZCmWxFz2myu1nYTkxuTbdCkw4wzQgoCUMatyP2g4XBhhXqFL1iXqsnL
+ aV77X8BCMUvi/RPBkdYfojkePxE8uyHlNHfU52ZkbqlsnNil34WSngsENGD1fJ99/+tHco
+ /v8f6a3jliwXyR7omne+namXJ2VbYk8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698313029;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1698313281;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UI2gkD2geQ7rQBJcUmeFSiKlVbMSMsxF9dOwUC2f57s=;
- b=625wnzbs7c27NR7fcbcJ1xmPHnA+s7yhCbegq9Xwyo9DBBZMC1BOJtNgBRab4j4s5lygwB
- GntL3VHHgcIKtbAQ==
+ bh=t3aXOLvK8AWAIv3NtmkHWiJBMktPlqwK7CKv0vYc5Ho=;
+ b=vbzKmcG7INAa0kvpS2uWyeKxpTn/7u920+9VOCGIQGBfMfnpHaTu3Bshh/m1A8zD/wF4Si
+ FUnyNeUpu1zKjnCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B20E7133F5;
- Thu, 26 Oct 2023 09:37:09 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 53591133F5;
+ Thu, 26 Oct 2023 09:41:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id LPOmKUUzOmVWMwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 26 Oct 2023 09:37:09 +0000
-Date: Thu, 26 Oct 2023 11:37:08 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id FZrrEUE0OmV7NgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 26 Oct 2023 09:41:21 +0000
+Date: Thu, 26 Oct 2023 11:41:19 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20231026093708.GB580291@pevik>
-References: <20231024084923.217110-1-pvorel@suse.cz> <ZTjgBkVwwvqgbWm1@rei>
- <20231025231448.GA510491@pevik> <ZTomvGZWq1QL2mnc@rei>
+To: Cyril Hrubis <chrubis@suse.cz>,
+ Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+Message-ID: <20231026094119.GC580291@pevik>
+References: <20230926124647.152972-1-pvorel@suse.cz>
+ <20230926124647.152972-3-pvorel@suse.cz> <ZRLn7-PoVhomEB-v@yuki>
+ <20230926152155.GE159673@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZTomvGZWq1QL2mnc@rei>
+In-Reply-To: <20230926152155.GE159673@pevik>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-5.63 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ TO_DN_SOME(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-2.33)[96.86%]
 X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] stack_clash: Guard functions used only in
- 64bit
+Subject: Re: [LTP] [RFC][PATCH 2/2] vma05.sh: Add check for core file
+ presence
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,31 +93,45 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>,
- Pavel Boldin <pboldin@cloudlinux.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi all,
 
-> Hi!
-> > force_bottom_up() is called only inside do_mmap_placement_test(), which is also
-> > wrapped with #ifdef __x86_64_.
+> > Hi!
+> > > Maybe this sanity check is useless. WDYT?
 
-> > I did not notice that, compiler pointed it out :).
+> > I guess that it does not harm.
 
-> Ah I was blind yesterday, sorry.
+> Thanks for your review!
 
-No problem, thanks for a review, merged.
+> > >  testcases/kernel/mem/vma/vma05.sh | 2 ++
+> > >  1 file changed, 2 insertions(+)
+
+> > > diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
+> > > index c9e4becdb..30b1d689a 100755
+> > > --- a/testcases/kernel/mem/vma/vma05.sh
+> > > +++ b/testcases/kernel/mem/vma/vma05.sh
+> > > @@ -54,6 +54,8 @@ vma_report_check()
+
+> > >  	rm -rf core*
+> > >  	{ vma05_vdso; } > /dev/null 2>&1
+> > > +	[ -f core ] || tst_brk TCONF "missing core file"
+
+> > TCONF or TBROK that is the question.
+
+> I guess TBROK is better in this case. I wonder myself why I type TCONF.
+> If nobody complains, I'll merge this with TBROK and your ack.
+
+Merged with TBROK, thanks for your time.
 
 Kind regards,
 Petr
 
-> > Can I merge with your RBT?
-
-> Of course.
+> Kind regards,
+> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
