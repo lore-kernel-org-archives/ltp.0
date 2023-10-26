@@ -4,83 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD081C25B48
-	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 09:41:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B17C1C25B48
+	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 09:48:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2BF213CCB3A
-	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 11:41:34 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 16B423C8711
+	for <ltp@archiver.kernel.org>; Thu, 26 Oct 2023 11:48:17 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 549293C83DA
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 11:41:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id ED70B3C8207
+ for <ltp@lists.linux.it>; Thu, 26 Oct 2023 11:48:04 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7A74E1401103
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 11:41:22 +0200 (CEST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id E9AE9616624
+ for <ltp@lists.linux.it>; Thu, 26 Oct 2023 11:48:03 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 81E5921ACA;
- Thu, 26 Oct 2023 09:41:21 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D88CD21B44;
+ Thu, 26 Oct 2023 09:48:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698313281;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1698313681;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=t3aXOLvK8AWAIv3NtmkHWiJBMktPlqwK7CKv0vYc5Ho=;
- b=VotXL5+yu2CtgU2ZCmWxFz2myu1nYTkxuTbdCkw4wzQgoCUMatyP2g4XBhhXqFL1iXqsnL
- aV77X8BCMUvi/RPBkdYfojkePxE8uyHlNHfU52ZkbqlsnNil34WSngsENGD1fJ99/+tHco
- /v8f6a3jliwXyR7omne+namXJ2VbYk8=
+ bh=RmZZeqsVOBiJ+h233WnZcuZnIRXKJjHLK70cEgSZtEw=;
+ b=MpKBTMOvu8NZ6QbWPMCNsrPPnVCK9TmoMtWG7+YCJWlQtLkDJc0CotnUGsPrsJw2WcQ0r5
+ 66YRTHKmKd9BWzcUofi/aVT1Vzkr6eIfdJDoDCl1PaY0p+LXbiapsUK/3duCEh6k0y+Mmj
+ HICOzAWI6nFt4YBrJVGhj+VF3b+66Os=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698313281;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1698313681;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=t3aXOLvK8AWAIv3NtmkHWiJBMktPlqwK7CKv0vYc5Ho=;
- b=vbzKmcG7INAa0kvpS2uWyeKxpTn/7u920+9VOCGIQGBfMfnpHaTu3Bshh/m1A8zD/wF4Si
- FUnyNeUpu1zKjnCA==
+ bh=RmZZeqsVOBiJ+h233WnZcuZnIRXKJjHLK70cEgSZtEw=;
+ b=wc1OJdXuONBvy1r3ftSdXHCzCKkGxoyxzx+FTriySGskYS3HUCOFCteBVdjR1m2MsZ+XSZ
+ WSjWZqnPk+k1gaCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 53591133F5;
- Thu, 26 Oct 2023 09:41:21 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B3E951358F;
+ Thu, 26 Oct 2023 09:48:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id FZrrEUE0OmV7NgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Thu, 26 Oct 2023 09:41:21 +0000
-Date: Thu, 26 Oct 2023 11:41:19 +0200
+ by imap2.suse-dmz.suse.de with ESMTPSA id iWA5KtE1OmVBOgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Thu, 26 Oct 2023 09:48:01 +0000
+Date: Thu, 26 Oct 2023 11:48:00 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>,
- Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
-Message-ID: <20231026094119.GC580291@pevik>
-References: <20230926124647.152972-1-pvorel@suse.cz>
- <20230926124647.152972-3-pvorel@suse.cz> <ZRLn7-PoVhomEB-v@yuki>
- <20230926152155.GE159673@pevik>
+To: Marius Kittler <mkittler@suse.de>
+Message-ID: <20231026094800.GA584918@pevik>
+References: <20231011142927.29699-1-mkittler@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230926152155.GE159673@pevik>
+In-Reply-To: <20231011142927.29699-1-mkittler@suse.de>
 Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [-5.63 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [-4.04 / 50.00]; ARC_NA(0.00)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
  MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-2.33)[96.86%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.74)[83.97%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [RFC][PATCH 2/2] vma05.sh: Add check for core file
- presence
+Subject: Re: [LTP] [PATCH v1] Prevent vma05 from passing wrongly when no
+ coredump generated at all
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,45 +90,48 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Marius,
 
-> > Hi!
-> > > Maybe this sanity check is useless. WDYT?
+> When debugging this test I noticed that it passes when no coredump could
+> be generated at all. This change adds a check to verify whether the test is
+> provoking a coredump as intended.
 
-> > I guess that it does not harm.
+I'm sorry, I haven't noticed this when I was merging my old patch doing
+similar check:
 
-> Thanks for your review!
+https://patchwork.ozlabs.org/project/ltp/patch/20230926124647.152972-3-pvorel@suse.cz/
+https://lore.kernel.org/ltp/20230926124647.152972-3-pvorel@suse.cz/
 
-> > >  testcases/kernel/mem/vma/vma05.sh | 2 ++
-> > >  1 file changed, 2 insertions(+)
+> Signed-off-by: Marius Kittler <mkittler@suse.de>
+> ---
+>  testcases/kernel/mem/vma/vma05.sh | 1 +
+>  1 file changed, 1 insertion(+)
 
-> > > diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
-> > > index c9e4becdb..30b1d689a 100755
-> > > --- a/testcases/kernel/mem/vma/vma05.sh
-> > > +++ b/testcases/kernel/mem/vma/vma05.sh
-> > > @@ -54,6 +54,8 @@ vma_report_check()
+> diff --git a/testcases/kernel/mem/vma/vma05.sh b/testcases/kernel/mem/vma/vma05.sh
+> index c9e4becdb..bcc3b9623 100755
+> --- a/testcases/kernel/mem/vma/vma05.sh
+> +++ b/testcases/kernel/mem/vma/vma05.sh
+> @@ -54,6 +54,7 @@ vma_report_check()
 
-> > >  	rm -rf core*
-> > >  	{ vma05_vdso; } > /dev/null 2>&1
-> > > +	[ -f core ] || tst_brk TCONF "missing core file"
+>  	rm -rf core*
+>  	{ vma05_vdso; } > /dev/null 2>&1
+> +	[ -s ./core* ] || tst_brk TBROK "[vdso] no backtrace generated"
 
-> > TCONF or TBROK that is the question.
+Maybe checking with -s (size > 0) is better than for simple -f (file exists).
+But OTOH how often can happen that backtrace gets generated but it's empty?
+When no space left? But half of the LTP tests would blow up.
 
-> I guess TBROK is better in this case. I wonder myself why I type TCONF.
-> If nobody complains, I'll merge this with TBROK and your ack.
-
-Merged with TBROK, thanks for your time.
+I'm closing this in patchwork because it's not applicable now, but feel free to
+send rebased v2.
 
 Kind regards,
 Petr
-
-> Kind regards,
-> Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
