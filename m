@@ -4,61 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 773A2C25B47
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 17:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2479C25B47
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 17:45:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DF3DB3CCB19
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 19:43:39 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 46F263CF4B1
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 19:45:27 +0200 (CEST)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 93A013CACCC
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 19:43:28 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 06A913CCB19
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 19:45:15 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EE14C1000D80
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 19:43:27 +0200 (CEST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 345A2603EA1
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 19:45:14 +0200 (CEST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 8C5C21FDCD;
- Fri, 27 Oct 2023 17:43:26 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4E0901FDCD;
+ Fri, 27 Oct 2023 17:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698428606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=QI8Q3tuTA5njk5aokl8iwOnKr5hwkecJ9iWmML8mYQM=;
- b=sU3iMfAQ0qtpCUW3a6lCymAHjFVcwcWlKZLamx9jR9yqxT1OTPXswu3kKEvUJr8gzdEh+O
- +NiHKE0zjgFlOpbV1QT/KeApxK+C8G92ax7+ICpUvjZYZsXbgEFahEWNVLj9+TSFdh8rKs
- aKeK1+IMC7+OsUm2wWuZFOcLROfM3GY=
+ t=1698428714;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GBXsvuS1hWe+J/U65scUBMEO0FgQFpZP4d3HuncQj+o=;
+ b=uNbYVIHr5mpGP2wsU/1j+ZTI98KAxT8mRxDW05PH472bFuHcKaGiPnE/6Nr0HvPP+OEf+w
+ We64OMf3FQBQtFrMVvumYpI3Suc7QzG7O8Clv1GcQVs7fm71ypFbX/gEM5RLYGAxMrpyob
+ k9LyeeNAp/BuUoaJGE1jgd1IFG1HOA8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698428606;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=QI8Q3tuTA5njk5aokl8iwOnKr5hwkecJ9iWmML8mYQM=;
- b=TM6KeYlOK9mRYdZbJLoSzyDPehwLD8bM7goGCLMhv5hJUZK7hdyGlOkqRTibVT55lM1ufO
- PGtQpy65PsAxbiAw==
+ s=susede2_ed25519; t=1698428714;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=GBXsvuS1hWe+J/U65scUBMEO0FgQFpZP4d3HuncQj+o=;
+ b=lw3BLLLOZsqNx7oiDrLSap/AxvgrnfNcJ5UortVtP70dKrIOvIwRq1O39ri4T7Ni0di06I
+ Sd3R80xyXxIymIAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A7091358C;
- Fri, 27 Oct 2023 17:43:26 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EC9FB1358C;
+ Fri, 27 Oct 2023 17:45:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id rRW9B772O2WLVQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 27 Oct 2023 17:43:26 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id kHSkNin3O2U9VgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 27 Oct 2023 17:45:13 +0000
+Date: Fri, 27 Oct 2023 19:45:12 +0200
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 27 Oct 2023 19:43:22 +0200
-Message-ID: <20231027174322.710674-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.42.0
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20231027174512.GA710840@pevik>
+References: <20231027104951.32464-1-rpalethorpe@suse.com>
+ <20231027110116.GA649751@pevik> <ZTvH_DptjIrZJx-A@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <ZTvH_DptjIrZJx-A@yuki>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-8.19 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
+ NEURAL_HAM_LONG(-3.00)[-1.000]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.89)[85.89%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/1] compat_16.mk: Cleanup INTERMEDIATE object syntax
+Subject: Re: [LTP] [PATCH] controllers/cpuset: Make mount failure TCONF
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,55 +90,34 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Stanislav Kholmanskikh <stanislav.kholmanskikh@bell-sw.com>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Li Wang <liwang@redhat.com>
+> Hi!
+> > > It appears that if the subsystem is available under V2 then mounting
+> > > the V1 can fail. Probably when the V2 has processes assigned to a
+> > > group it controls.
 
-INTERMEDIATE object syntax is not necessary, thus remove it.
+> > Sounds likely, but it would be good to check this in the kernel code or with
+> > kernel cgroup developers.
 
-Suggested-by: Li Wang <liwang@redhat.com>
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/kernel/syscalls/utils/compat_16.mk | 11 -----------
- 1 file changed, 11 deletions(-)
+> I'm pretty sure that controller can be used either in v1, or in v2 but
+> not from both at the same time by choice. Some of the changes between v1
+> and v2 are incompatible so this couldn't work either way.
 
-diff --git a/testcases/kernel/syscalls/utils/compat_16.mk b/testcases/kernel/syscalls/utils/compat_16.mk
-index 71a8cc56f..8effa2b05 100644
---- a/testcases/kernel/syscalls/utils/compat_16.mk
-+++ b/testcases/kernel/syscalls/utils/compat_16.mk
-@@ -53,11 +53,8 @@ CPPFLAGS		+= -I$(abs_srcdir) -I$(abs_srcdir)/../utils
- SRCS			?= $(sort $(wildcard $(abs_srcdir)/*.c))
- 
- MAKE_TARGETS		:= $(notdir $(patsubst %.c,%,$(SRCS)))
--MAKE_TARGETS_OBJS_WO_COMPAT_16	:= $(addsuffix .o,$(MAKE_TARGETS))
- MAKE_TARGETS		+= $(addsuffix _16,$(MAKE_TARGETS))
- 
--# XXX (garrcoop): This code should be put in question as it cannot be applied
--# (no .h file, no TST_USE_NEWER64_SYSCALL def).
- DEF_16			:= TST_USE_COMPAT16_SYSCALL
- 
- ifeq ($(USE_LEGACY_COMPAT_16_H),1)
-@@ -66,13 +63,5 @@ else
- COMPAT_16_H     := $(abs_srcdir)/../utils/compat_tst_16.h
- endif
- 
--ifneq ($(wildcard $(COMPAT_16_H)),)
--$(MAKE_TARGETS_OBJS_WO_COMPAT_16): $(COMPAT_16_H)
--.INTERMEDIATE: $(MAKE_TARGETS_OBJS_WO_COMPAT_16)
--endif
--
--%_16: CPPFLAGS += -D$(DEF_16)=1
--# XXX (garrcoop): End section of code in question..
--
- %_16.o: %.c $(COMPAT_16_H)
- 	$(COMPILE.c) $(OUTPUT_OPTION) $<
--- 
-2.42.0
+> I think that once the controller name is written to
+> /sys/fs/cgroup/unified/cgroup.subtree_controll mounting it to v1 should
+> fail, so maybe we should just try to grep the fail instead and exit the
+> test with TCONF if we found the controller bound to v2 already.
 
+Sounds like a good idea.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
