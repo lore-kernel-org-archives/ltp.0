@@ -4,77 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2CA1C25B67
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 09:58:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15AFFC25B47
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 10:09:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 82EFB3CCDF3
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 11:58:16 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 3BA3C3CEB99
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 12:09:18 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5BC373CCAD0
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 11:58:06 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ by picard.linux.it (Postfix) with ESMTPS id 99FA03CCA83
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:09:07 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 72A0D600EA7
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 11:58:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1698400683;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DAED52348DA
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:09:06 +0200 (CEST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 39E6821C4A;
+ Fri, 27 Oct 2023 10:09:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1698401345;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=z8v2ZOCMdHP9SWg9tHMbcVUVy7mOR6hcfvuniyeLl7s=;
- b=hFMPGQ7csmTfzFHooUqYYVy64TRYQOx1gzYhTanlkJklPIMTIdghmAPdd5tiZn8WNYYPyO
- 2YqChSwaG9jS/U7qsBmK5eG63WnUiyESSy3gI8s7ec45lcfn8uIJzyCFljX3Y69LQqjeru
- VT+jV1lPVHjhw5Cfba7SoUc1rRAs7iY=
-Received: from mail-vs1-f72.google.com (mail-vs1-f72.google.com
- [209.85.217.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-321-lMexxIS0NtavpD6qiC742A-1; Fri, 27 Oct 2023 05:58:02 -0400
-X-MC-Unique: lMexxIS0NtavpD6qiC742A-1
-Received: by mail-vs1-f72.google.com with SMTP id
- ada2fe7eead31-457ba261d60so837474137.2
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 02:58:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1698400681; x=1699005481;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=z8v2ZOCMdHP9SWg9tHMbcVUVy7mOR6hcfvuniyeLl7s=;
- b=rphSS+oy69qI8aH2/14RumZ5YQgJKYCZZTnCi+UPQyHP4cQQRvunpnlT8htKOf5Srp
- tPU2KF0YUZAkT/XjZpW8QWtcLwEP43f6oBFyvQgRc7rlNCOr7RrNJKU8AitFTZ9xY4YH
- ul9KuIiSb2djlLWNISlNYDmr0MIzOwhF5oNXXHIji5MFFRBsPeKPsO0GmZ8I8xSh/1lG
- 3axsKj+Gfd1xtVLvpXn08GxWHmfsTjv0rXyAU908LEcEaUAKslzEQEUU6JanyrpR+Pef
- w7xqsbcIorXFKyAPHDPzpmZfXygSXhbO5Fjm2lgt4mrIi52+dlD7Q+pVNifBSVCQe4Ed
- 2yyQ==
-X-Gm-Message-State: AOJu0YwD7Nkf4FSeCbNUZiGEAXgEjqeUTOuEy01jEiimQ6rCbom8FDNj
- kJHlZDs+JiNvMz7w7aav1PndDAVJK6jnMqab4VbX3n/guB1D69fq1auQlavYdga3ncuXjPL0OU0
- tff5bonX4N9pJgjYRVuMsy0HYL38xs/sbRqc=
-X-Received: by 2002:a67:cb9c:0:b0:458:3bc1:9777 with SMTP id
- h28-20020a67cb9c000000b004583bc19777mr2025258vsl.15.1698400681533; 
- Fri, 27 Oct 2023 02:58:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGSkzEKJiJRjc0autizAbgLWuaYbNPX7OuJHao9mVcvGDMq4caQWyY+jqd2d+bnNZ0HKzYUuT59aUODUNsHqbI=
-X-Received: by 2002:a67:cb9c:0:b0:458:3bc1:9777 with SMTP id
- h28-20020a67cb9c000000b004583bc19777mr2025244vsl.15.1698400681259; Fri, 27
- Oct 2023 02:58:01 -0700 (PDT)
+ bh=CkOb1OCVGwxS+Tduatk5YJsC79Lqzy5Mnt4IWXA00yE=;
+ b=H+Cq9d1LZQCywQKVGshFtJDlj7Q/nLAZM2UP8PDZpnVfa6o4R03PdWp4lPbE6Bm4GmMq3i
+ nF8V80HHMiR0pc2Cn9ut6LFgft2uZz9PR1HwLRKbv2rzfyJjQ3bwVMb3YN9a8uiaZAcrCy
+ r8h/teImKy1RCnX9uEQXGdL6fc4qe5A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1698401345;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=CkOb1OCVGwxS+Tduatk5YJsC79Lqzy5Mnt4IWXA00yE=;
+ b=ysy2rCTV86JD9JItLZ5h7O0zH9ZNSDLYFKUMkvxhoKyEl2QWdm8JOKrzntfnzpjOkT8O+r
+ zRy6OsZQ9C2aJDDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0109F1358C;
+ Fri, 27 Oct 2023 10:09:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id D7JhOUCMO2UccQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 27 Oct 2023 10:09:04 +0000
+Date: Fri, 27 Oct 2023 12:09:03 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <20231027100903.GA638866@pevik>
+References: <20231026094957.15371-1-rpalethorpe@suse.com>
+ <20231026110659.GA593730@pevik> <87cyx0tqli.fsf@suse.de>
 MIME-Version: 1.0
-References: <345e84821f2319d24ce8b9b84f5e038d53a2c9d5.1697715265.git.jstancek@redhat.com>
- <CAEemH2fkj49Z-NQVSewZAgm6z8agC-Z_PoBrqRhFvGbu8uRAZg@mail.gmail.com>
-In-Reply-To: <CAEemH2fkj49Z-NQVSewZAgm6z8agC-Z_PoBrqRhFvGbu8uRAZg@mail.gmail.com>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 27 Oct 2023 11:58:33 +0200
-Message-ID: <CAASaF6y1y2t=g2-Rpc8SGxv3JTtW-f9KTuVk4vmH6Favm3W-DA@mail.gmail.com>
-To: Li Wang <liwang@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <87cyx0tqli.fsf@suse.de>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-3.30 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[36.66%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/gettid02: fix s390x and couple races
+Subject: Re: [LTP] [PATCH v2] cgroup: Handle trailing new line in
+ cgroup.controllers
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,49 +89,92 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gRnJpLCBPY3QgMjAsIDIwMjMgYXQgMTA6NTXigK9BTSBMaSBXYW5nIDxsaXdhbmdAcmVkaGF0
-LmNvbT4gd3JvdGU6Cj4KPgo+Cj4gT24gVGh1LCBPY3QgMTksIDIwMjMgYXQgNzo0MOKAr1BNIEph
-biBTdGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29tPiB3cm90ZToKPj4KPj4gczM5MHggaXMgYmln
-IGVuZGlhbiB3aGVyZSBzaXplb2YoaW50KSA9PSA0IGFuZCBzaXplb2Yodm9pZCAqKSA9PSA4Lgo+
-PiBUaGlzIHRlc3QgY3VycmVudGx5IGZhaWxzIG9uIHMzOTB4IGJlY2F1c2UgaW4gcHRocmVhZF9q
-b2luLCAiJnRpZHNbaV0iCj4+IGlzIHRyZWF0ZWQgYXMgInZvaWQqKiIgYW5kIGR1ZSB0byBkaWZm
-ZXJlbnQgdHlwZSBzaXplIGl0IHdyaXRlcyBvdmVyCj4+IDIgZW50cmllcyBvZiB0aWRzW10gYXJy
-YXkuIFNvIGZvciBzbWFsbCB0aWQgdmFsdWVzIHRlc3QgcmVwb3J0czoKPj4gICAgICAgICBnZXR0
-aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20g
-dGhyZWFkWzBdIElEICgxNDA0OSkKPj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhw
-ZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFkWzFdIElEICgxNDA1MCkK
-Pj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4
-KSBkaWZmZXJzIGZyb20gdGhyZWFkWzJdIElEICgxNDA1MSkKPj4gICAgICAgICBnZXR0aWQwMi5j
-OjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFk
-WzNdIElEICgxNDA1MikKPj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBw
-YXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFkWzRdIElEICgxNDA1MykKPj4gICAg
-ICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZm
-ZXJzIGZyb20gdGhyZWFkWzVdIElEICgxNDA1NCkKPj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBU
-UEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFkWzZdIElE
-ICgxNDA1NSkKPj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQg
-SUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFkWzddIElEICgxNDA1NikKPj4gICAgICAgICBn
-ZXR0aWQwMi5jOjI5OiBUUEFTUzogRXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZy
-b20gdGhyZWFkWzhdIElEICgxNDA1NykKPj4gICAgICAgICBnZXR0aWQwMi5jOjI5OiBUUEFTUzog
-RXhwZWN0OiBwYXJlbnQgSUQgKDE0MDQ4KSBkaWZmZXJzIGZyb20gdGhyZWFkWzldIElEICgxNDA1
-OCkKPj4gICAgICAgICBnZXR0aWQwMi5jOjQ5OiBUSU5GTzogdGhyZWFkWzBdIGFuZCB0aHJlYWRb
-MV0gaGF2ZSB0aGUgc2FtZSBJRAo+PiAgICAgICAgIGdldHRpZDAyLmM6NDk6IFRJTkZPOiB0aHJl
-YWRbMF0gYW5kIHRocmVhZFsyXSBoYXZlIHRoZSBzYW1lIElECj4+ICAgICAgICAgZ2V0dGlkMDIu
-Yzo0OTogVElORk86IHRocmVhZFswXSBhbmQgdGhyZWFkWzNdIGhhdmUgdGhlIHNhbWUgSUQKPj4g
-ICAgICAgICAuLi4KPj4gd2hpY2ggaXMgY2xlYXJseSB3cm9uZywgc2luY2UgZWFjaCB0aHJlYWQg
-YWJvdmUgcHJpbnRlZCBkaWZmZXJlbnQgSUQuCj4+Cj4+IFRoaXMgY29uc3RydWN0IGlzIHJhY2Ut
-eSBvbiBzbG93ZXIgczM5MHggc3lzdGVtczoKPj4gICAgICAgICBmb3IgKGludCBpID0gMDsgaSA8
-IFRIUkVBRFNfTlVNOyBpKyspCj4+ICAgICAgICAgICAgICAgICBTQUZFX1BUSFJFQURfQ1JFQVRF
-KCZ0aHJlYWQsIE5VTEwsIHRocmVhZGVkLCAmaSk7Cj4+IGJlY2F1c2UgYnkgdGhlIHRpbWUgdGhy
-ZWFkIHN0YXJ0cyBhbmQgbG9va3MgYXQgIiZpIiwgdGhlIGxvb3AgY2FuCj4+IGFscmVhZHkgbW92
-ZSBvbiBhbmQgaW5jcmVtZW50ICJpIi4KPj4KPj4gQWxzbywgcG90ZW50aWFsbHkgc3RhcnRpbmcg
-YW5kIHdhaXRpbmcgZm9yIGVhY2ggdGhyZWFkIGNvdWxkIGJlIGFuIGlzc3VlLCBzaW5jZSBrZXJu
-ZWwgaXMKPj4gZnJlZSB0byByZS11c2UgdGlkIGZvciBhbHJlYWR5IGZpbmlzaGVkIHRocmVhZHMu
-Cj4KPgo+IE1ha2Ugc2Vuc2UhCj4KPiBSZXZpZXdlZC1ieTogTGkgV2FuZyA8bGl3YW5nQHJlZGhh
-dC5jb20+CgpQdXNoZWQgd2l0aCBtb2RpZmllZCBjb21taXQgbWVzc2FnZS4KCgotLSAKTWFpbGlu
-ZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+> Hello,
+
+> Petr Vorel <pvorel@suse.cz> writes:
+
+> > Hi Richie,
+
+> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+> >> V2:
+> >> * Add underscore
+> >> * Add length check
+> >> * Expand commit message
+> >> * Use shorter syntax
+> > +1
+
+> >>  lib/tst_cgroup.c | 13 ++++++++++++-
+> >>  1 file changed, 12 insertions(+), 1 deletion(-)
+
+> >> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
+> >> index 5240aadaa..c5cb20505 100644
+> >> --- a/lib/tst_cgroup.c
+> >> +++ b/lib/tst_cgroup.c
+> >> @@ -433,9 +433,20 @@ __attribute__ ((nonnull, warn_unused_result))
+> >>  static struct cgroup_ctrl *cgroup_find_ctrl(const char *const ctrl_name)
+> >>  {
+> >>  	struct cgroup_ctrl *ctrl;
+> >> +	int l = 0;
+> >> +	char c = ctrl_name[l];
+> >> +
+> >> +	while (c == '_' || (c >= 'a' && c <= 'z'))
+> >> +		c = ctrl_name[++l];
+> >> +
+> >> +	if (l > 32)
+> > +1 for this check.
+> > I would slightly prefer to add MAX_CGROUP_TYPE_NAMELEN definition into our
+> > include/tst_cgroup.h, but it can stay as is.
+
+> > BTW include/linux/cgroup-defs.h contains also MAX_CGROUP_ROOT_NAMELEN, there are
+> > also other checks in C files (CGROUP_FILE_NAME_MAX) in case it makes sense to
+> > have some checks for these (I have no idea).
+
+> I'm not sure about this. On the one hand it may detect a bug in the
+> library or kernel. On the other it's not exposed to userland or defined
+> anywhere.
+
+Yep, it's just an idea, I'm not sure myself.
+
+> For me the main thing is to avoid janitorial work like creating and
+> merging patches just to increase some internal kernel value that was
+> increased or is ignored in some corner case.
+
++1
+
+> I'll post another patch if there is some obvious way to check the root
+> name length that would help the library.
+
++1
+
+> Thanks for the review, I'll merge this now.
+
+Great.
+
+Kind regards,
+Petr
+
+> > Kind regards,
+> > Petr
+
+> >> +		tst_res(TWARN, "Subsys name len greater than max known value of MAX_CGROUP_TYPE_NAMELEN: %d > 32", l);
+
+> >> +
+> >> +	if (!(c == '\n' || c == '\0'))
+> >> +		tst_brk(TBROK, "Unexpected char in %s: %c", ctrl_name, c);
+
+> >>  	for_each_ctrl(ctrl) {
+> >> -		if (!strcmp(ctrl_name, ctrl->ctrl_name))
+> >> +		if (!strncmp(ctrl_name, ctrl->ctrl_name, l))
+> >>  			return ctrl;
+> >>  	}
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
