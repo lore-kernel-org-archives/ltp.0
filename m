@@ -4,60 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CD1CC25B47
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 10:50:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34C8EC25B67
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 10:58:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CEC713CEB97
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 12:50:10 +0200 (CEST)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 0307C3CEB85
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 12:58:07 +0200 (CEST)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F2EAF3CCA70
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:49:59 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id C39993C2FAF
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:57:54 +0200 (CEST)
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com
+ [IPv6:2607:f8b0:4864:20::929])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 63D4714044A1
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:49:58 +0200 (CEST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 4810E21B1E;
- Fri, 27 Oct 2023 10:49:57 +0000 (UTC)
-Received: from g78.cable.virginm.net (rpalethorpe.tcp.ovpn1.nue.suse.de
- [10.163.17.14]) by relay2.suse.de (Postfix) with ESMTP id CE1362D7B8;
- Fri, 27 Oct 2023 10:49:56 +0000 (UTC)
-To: ltp@lists.linux.it
-Date: Fri, 27 Oct 2023 11:49:51 +0100
-Message-ID: <20231027104951.32464-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.42.0
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 65A992064EA
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:57:54 +0200 (CEST)
+Received: by mail-ua1-x929.google.com with SMTP id
+ a1e0cc1a2514c-7b610279c8aso878436241.3
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 03:57:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=linaro.org; s=google; t=1698404273; x=1699009073; darn=lists.linux.it;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=3zQBT6jRuR5jxYiRAr8syfNhHciQ/BHcE4DZFyhdPwI=;
+ b=WHXen2h2rYWFq7tK6fS1jcJhsuasl9LBEqfBgG0wop2obsDC18nB/p03xCOncR8z1D
+ hv8jFjcmVH2GzrWRgD6gpoEDXzdMM/Ww/xMWR0rryih5C1y/rSuBSShh/WsSJdJ0410L
+ VB9ha2CJoD7igbLKPjt0reFa+ejLmL6IXQ4V8YerxKtrbqpUdqI6bsymKIxNuJ5UqmTs
+ 6K0faleBDJoI3d7riiww9UNtcv/5HnMHCw+XJW4QCE5BSS1DK9aty0YnqMJtPSdANs/M
+ PVsBeRG8BQQNJ9U9G+D5Ui3hN03XYIuUpinjHihwVmjewZzjpy+sxsRKcfNFCbRNjh7R
+ 7Ysg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1698404273; x=1699009073;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=3zQBT6jRuR5jxYiRAr8syfNhHciQ/BHcE4DZFyhdPwI=;
+ b=JxxntyDrpU2H6dKQCxB3yeo6XHz3PQYtYtO9OJzL0hN86Wv9bkrs/csMQQbbbMW0mq
+ Lf3VAb5VrZofSEwakGgw/oURvAO7BWNUTpo9aGMNI8/vWzKTvhSEqP0cQaDZCpl65t6U
+ V7nuP7idIsAqI7PZ4JV0i5QK0tR2FQ0T1C9G6vR/QddMxMrv1q4xc+PlXqNgTEKGVnG1
+ z+XOudsr42UupFjfHZnQf1ok/WS6Q2euE0khh3bNrdhhB59ysD+qaMCE3eLqwIxsnYSV
+ Tf4BQeyjUXv2TKbpkkDhsYWztWKuiYdvNnFihE6EgMm5az0XA5O0iYiYhhHTxa1vpAn5
+ BkEA==
+X-Gm-Message-State: AOJu0YwwRGtzj6X6sPpOVWbtdT6OpGvw9XUSMsfq5BgTuSccAQmZ8Lk+
+ IQfLjdinNyt/3086H4arl5wESchuWx+iSLCUMuGoYA==
+X-Google-Smtp-Source: AGHT+IHarNLCoFsdKNzL1a48n70a2eNgURLrsseEGHkrmEWYJ6n2/q05I2+4jQ74A/lQL0OqJP835LGQwXLk47ENiWU=
+X-Received: by 2002:a05:6102:1592:b0:457:dbfc:5c69 with SMTP id
+ g18-20020a056102159200b00457dbfc5c69mr2829666vsv.12.1698404273032; Fri, 27
+ Oct 2023 03:57:53 -0700 (PDT)
 MIME-Version: 1.0
-X-Spamd-Bar: +++++++++++++++
-Authentication-Results: smtp-out1.suse.de; dkim=none;
- dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com
- (policy=quarantine); 
- spf=fail (smtp-out1.suse.de: domain of rpalethorpe@suse.com does not designate
- 149.44.160.134 as permitted sender) smtp.mailfrom=rpalethorpe@suse.com
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [15.00 / 50.00]; ARC_NA(0.00)[];
- R_SPF_FAIL(1.00)[-all]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
- BROKEN_CONTENT_TYPE(1.50)[];
- RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
- NEURAL_HAM_LONG(-3.00)[-1.000];
- DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid
- DKIM,quarantine]; VIOLATED_DIRECT_SPF(3.50)[];
- MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
- MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_SHORT(-1.00)[-1.000];
- RCVD_NO_TLS_LAST(0.10)[]; FROM_EQ_ENVFROM(0.00)[];
- R_DKIM_NA(0.20)[]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; BAYES_HAM(-0.16)[69.53%]
-X-Rspamd-Queue-Id: 4810E21B1E
-X-Spam: Yes
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+References: <CA+G9fYsCskpn_TNpSwLq9HGUgtT=aZpDzs7SVrqpa9WmyYFaxQ@mail.gmail.com>
+ <ZTqGBzOQd4Oi3e9j@FVFF77S0Q05N.cambridge.arm.com>
+ <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
+In-Reply-To: <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 27 Oct 2023 16:27:41 +0530
+Message-ID: <CA+G9fYuQxUhsrL_=uYSAdotU1_Wx7iu5PxFuG9EzWgBE2nMjcw@mail.gmail.com>
+To: Ard Biesheuvel <ardb@kernel.org>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] controllers/cpuset: Make mount failure TCONF
+Subject: Re: [LTP] qemu-arm64: handle_futex_death - kernel/futex/core.c:661
+ - Unable to handle kernel unknown 43 at virtual address
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -69,46 +79,80 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Richard Palethorpe via ltp <ltp@lists.linux.it>
-Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
+ LTP List <ltp@lists.linux.it>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>, open list <linux-kernel@vger.kernel.org>,
+ Oliver Upton <oliver.upton@linux.dev>,
+ Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ lkft-triage@lists.linaro.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-It appears that if the subsystem is available under V2 then mounting
-the V1 can fail. Probably when the V2 has processes assigned to a
-group it controls.
+On Thu, 26 Oct 2023 at 21:09, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Thu, 26 Oct 2023 at 17:30, Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Thu, Oct 26, 2023 at 08:11:26PM +0530, Naresh Kamboju wrote:
+> > > Following kernel crash noticed on qemu-arm64 while running LTP syscalls
+> > > set_robust_list test case running Linux next 6.6.0-rc7-next-20231026 and
+> > > 6.6.0-rc7-next-20231025.
+> > >
+> > > BAD: next-20231025
+> > > Good: next-20231024
+> > >
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > >
+> > > Log:
+> > > ----
+> > > <1>[  203.119139] Unable to handle kernel unknown 43 at virtual
+> > > address 0001ffff9e2e7d78
+> > > <1>[  203.119838] Mem abort info:
+> > > <1>[  203.120064]   ESR = 0x000000009793002b
+> > > <1>[  203.121040]   EC = 0x25: DABT (current EL), IL = 32 bits
+> > > set_robust_list01    1  TPASS  :  set_robust_list: retval = -1
+> > > (expected -1), errno = 22 (expected 22)
+> > > set_robust_list01    2  TPASS  :  set_robust_list: retval = 0
+> > > (expected 0), errno = 0 (expected 0)
+> > > <1>[  203.124496]   SET = 0, FnV = 0
+> > > <1>[  203.124778]   EA = 0, S1PTW = 0
+> > > <1>[  203.125029]   FSC = 0x2b: unknown 43
+> >
+> > It looks like this is fallout from the LPA2 enablement.
+> >
+> > According to the latest ARM ARM (ARM DDI 0487J.a), page D19-6475, that "unknown
+> > 43" (0x2b / 0b101011) is the DFSC for a level -1 translation fault:
+> >
+> >         0b101011 When FEAT_LPA2 is implemented:
+> >                  Translation fault, level -1.
+> >
+> > It's triggered here by an LDTR in a get_user() on a bogus userspace address.
+> > The exception is expected, and it's supposed to be handled via the exception
+> > fixups, but the LPA2 patches didn't update the fault_info table entries for all
+> > the level -1 faults, and so those all get handled by do_bad() and don't call
+> > fixup_exception(), causing them to be fatal.
+> >
+> > It should be relatively simple to update the fault_info table for the level -1
+> > faults, but given the other issues we're seeing I think it's probably worth
+> > dropping the LPA2 patches for the moment.
+> >
+>
+> Thanks for the analysis Mark.
+>
+> I agree that this should not be difficult to fix, but given the other
+> CI problems and identified loose ends, I am not going to object to
+> dropping this partially or entirely at this point. I'm sure everybody
+> will be thrilled to go over those 60 patches again after I rebase them
+> onto v6.7-rc1 :-)
 
-The test should scan the system and find the existing CGroup
-hierarchies and work with those. This can be done by converting the
-test to tst_cgctl or rewriting it in C. It's not clear what the best
-course of action would be.
+I am happy to test any proposed fix patch.
 
-For now, this commit just changes the result to TCONF.
-
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- testcases/kernel/controllers/cpuset/cpuset_funcs.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-index 0cfa0c17e..312654a9d 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-@@ -165,7 +165,7 @@ setup()
- 	mount -t cgroup -o cpuset cpuset "$CPUSET" 2> /dev/null
- 	if [ $? -ne 0 ]; then
- 		cleanup
--		tst_brkm TFAIL "Could not mount cgroup filesystem with"\
-+		tst_brkm TCONF "Could not mount cgroup filesystem with"\
- 					" cpuset on $CPUSET..Exiting test"
- 	fi
- 
--- 
-2.40.1
-
+- Naresh
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
