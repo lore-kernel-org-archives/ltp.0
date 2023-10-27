@@ -4,81 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45671C25B67
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 10:34:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CD1CC25B47
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 10:50:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B45F33CEBF8
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 12:34:21 +0200 (CEST)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id CEC713CEB97
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 12:50:10 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4670F3CCB26
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:34:11 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id F2EAF3CCA70
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:49:59 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 9D3AD10007BB
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:34:10 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A8B1121C61;
- Fri, 27 Oct 2023 10:34:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698402849;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Ys2+KPPBYIfu6a3q63u8M+Vw2ehYzu8nyjhXFbl/vnw=;
- b=xrEZbTVHwPFFtZ015Se0dCKJPZI9KXTp0Cr5XiYGj+QOOLSFxShsgFF5kbYYQlJ4R//jXr
- wVaBjbYRiFHtZdUMgfrwBtXGf6/rwHJNqpEUPs9Z9zb6H1e+5ng2nxSJfIP13uuz3AydhM
- dNTluvGZVY7xv91TsKwPUHbe3LH4GV0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698402849;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Ys2+KPPBYIfu6a3q63u8M+Vw2ehYzu8nyjhXFbl/vnw=;
- b=XeNXvU2bhVWmNs0YMBLenfCQ9PKyPeqqHJ6P1pAzq3k1igQFFyolo6a4hKjdw9s8uvK+Qe
- dCVmbbHnpK24+UCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 700EF1358C;
- Fri, 27 Oct 2023 10:34:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Ven1GCGSO2UQfgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 27 Oct 2023 10:34:09 +0000
-Date: Fri, 27 Oct 2023 12:34:07 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20231027103407.GA644399@pevik>
-References: <20231005134504.3828-1-mkittler@suse.de> <ZSe6MNMQ6L5yJdV4@yuki>
- <13368109.uLZWGnKmhe@linux-9lzf> <ZTuDOcJ8bG_rO4fA@yuki>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 63D4714044A1
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:49:58 +0200 (CEST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 4810E21B1E;
+ Fri, 27 Oct 2023 10:49:57 +0000 (UTC)
+Received: from g78.cable.virginm.net (rpalethorpe.tcp.ovpn1.nue.suse.de
+ [10.163.17.14]) by relay2.suse.de (Postfix) with ESMTP id CE1362D7B8;
+ Fri, 27 Oct 2023 10:49:56 +0000 (UTC)
+To: ltp@lists.linux.it
+Date: Fri, 27 Oct 2023 11:49:51 +0100
+Message-ID: <20231027104951.32464-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZTuDOcJ8bG_rO4fA@yuki>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-10.22 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out1.suse.de; dkim=none;
+ dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com
+ (policy=quarantine); 
+ spf=fail (smtp-out1.suse.de: domain of rpalethorpe@suse.com does not designate
+ 149.44.160.134 as permitted sender) smtp.mailfrom=rpalethorpe@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00]; ARC_NA(0.00)[];
+ R_SPF_FAIL(1.00)[-all]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
- NEURAL_HAM_LONG(-3.00)[-1.000]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-2.92)[99.64%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+ R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[];
+ RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+ NEURAL_HAM_LONG(-3.00)[-1.000];
+ DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid
+ DKIM,quarantine]; VIOLATED_DIRECT_SPF(3.50)[];
+ MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
+ MID_CONTAINS_FROM(1.00)[]; NEURAL_HAM_SHORT(-1.00)[-1.000];
+ RCVD_NO_TLS_LAST(0.10)[]; FROM_EQ_ENVFROM(0.00)[];
+ R_DKIM_NA(0.20)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_COUNT_TWO(0.00)[2]; BAYES_HAM(-0.16)[69.53%]
+X-Rspamd-Queue-Id: 4810E21B1E
+X-Spam: Yes
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Fix memcontrol tests under Tumbleweed
+Subject: [LTP] [PATCH] controllers/cpuset: Make mount failure TCONF
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,29 +69,46 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+From: Richard Palethorpe via ltp <ltp@lists.linux.it>
+Reply-To: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > I thought so, too. However, when running this particular test without this 
-> > minimum specified explicitly, it runs into the following error:
+It appears that if the subsystem is available under V2 then mounting
+the V1 can fail. Probably when the V2 has processes assigned to a
+group it controls.
 
-> Ah, right, we create the tmpfs with size 32MB by default, but the test
-> creates 50MB worth of files so it needs slightly more than that, I would
-> say 60MB. However the .dev_min_size does limit the size of other FS
-> types as well, so we can't se this easily. I suppose that we need the
-> per fs minimal size stored in the library as we discussed with Peter
-> back then and with that we can set the real minimum in the test and
-> override when filesystem needs more.
+The test should scan the system and find the existing CGroup
+hierarchies and work with those. This can be done by converting the
+test to tst_cgctl or rewriting it in C. It's not clear what the best
+course of action would be.
 
-I guess I should finish this implementation, thanks for reminding me.
+For now, this commit just changes the result to TCONF.
 
-Kind regards,
-Petr
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ testcases/kernel/controllers/cpuset/cpuset_funcs.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+index 0cfa0c17e..312654a9d 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+@@ -165,7 +165,7 @@ setup()
+ 	mount -t cgroup -o cpuset cpuset "$CPUSET" 2> /dev/null
+ 	if [ $? -ne 0 ]; then
+ 		cleanup
+-		tst_brkm TFAIL "Could not mount cgroup filesystem with"\
++		tst_brkm TCONF "Could not mount cgroup filesystem with"\
+ 					" cpuset on $CPUSET..Exiting test"
+ 	fi
+ 
+-- 
+2.40.1
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
