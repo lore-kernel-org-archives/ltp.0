@@ -4,81 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2479C25B47
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 17:45:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90F03C25B48
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 19:00:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 46F263CF4B1
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 19:45:27 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 8DC1F3CEBD0
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 21:00:46 +0200 (CEST)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 06A913CCB19
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 19:45:15 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id A8D4A3CEB92
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 21:00:35 +0200 (CEST)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com
+ [IPv6:2607:f8b0:4864:20::b4a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 345A2603EA1
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 19:45:14 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4E0901FDCD;
- Fri, 27 Oct 2023 17:45:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698428714;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GBXsvuS1hWe+J/U65scUBMEO0FgQFpZP4d3HuncQj+o=;
- b=uNbYVIHr5mpGP2wsU/1j+ZTI98KAxT8mRxDW05PH472bFuHcKaGiPnE/6Nr0HvPP+OEf+w
- We64OMf3FQBQtFrMVvumYpI3Suc7QzG7O8Clv1GcQVs7fm71ypFbX/gEM5RLYGAxMrpyob
- k9LyeeNAp/BuUoaJGE1jgd1IFG1HOA8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698428714;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=GBXsvuS1hWe+J/U65scUBMEO0FgQFpZP4d3HuncQj+o=;
- b=lw3BLLLOZsqNx7oiDrLSap/AxvgrnfNcJ5UortVtP70dKrIOvIwRq1O39ri4T7Ni0di06I
- Sd3R80xyXxIymIAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EC9FB1358C;
- Fri, 27 Oct 2023 17:45:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kHSkNin3O2U9VgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 27 Oct 2023 17:45:13 +0000
-Date: Fri, 27 Oct 2023 19:45:12 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20231027174512.GA710840@pevik>
-References: <20231027104951.32464-1-rpalethorpe@suse.com>
- <20231027110116.GA649751@pevik> <ZTvH_DptjIrZJx-A@yuki>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZTvH_DptjIrZJx-A@yuki>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-8.19 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
- NEURAL_HAM_LONG(-3.00)[-1.000]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-0.89)[85.89%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id ECBB314052EA
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 21:00:34 +0200 (CEST)
+Received: by mail-yb1-xb4a.google.com with SMTP id
+ 3f1490d57ef6-da03ef6fc30so1953152276.0
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:00:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20230601; t=1698433233; x=1699038033; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=Dkel4jZSQrDdLpbKeuMoJIMf8FcRGVYxfYcDMYt6U5k=;
+ b=d7eyyyDB29H7Bhlwpb2Jp46NIVoRLoM6UeLsgr3So3OCdc8dsHpRp8ygd/PI9BkeqN
+ 125UzLaL6l+6YRJOqjs4nMqNFlSJz/rFjTYfVEKpIOZJ6Qfkxg6sLwAVqzDl+tWqwCGm
+ OfQ9k4XU2ggebkNCifMWUu0dUHMaE7E5lN3nS6S+ySksazgnd85YlL9yP4ueLibSTcKe
+ scz7pyDSmqVZXjMQI1VeNClShVMwmefAoCCEFyfmkXCmoR5x3CWp6oWMmPuLpCq6OxIR
+ F364/PPUBBYw38jHwN8pY92QeMVraG2q0Q2J0uVQz2DNdR8W9OZ+dVvEnkfTPAuEqVEb
+ f1EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1698433233; x=1699038033;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=Dkel4jZSQrDdLpbKeuMoJIMf8FcRGVYxfYcDMYt6U5k=;
+ b=P/mQDJBy1YyydJbn7GOq71NWAXI9kxK5UAdvoNDmh3gM7qSOpxToRiTzusj7BAt0uY
+ PHPD1CtuGzuYIYF1FKAJnz3mxkaVrDomm/Uky+9ZI55LPutdyxr8BIKu8TBH4eO1aZwx
+ UVISCMXcRpexVC4miQGscAPXk0aZjczCpz1ItT3ogTNISalZfeadah8ilRsSVQb5QS00
+ 4aJatF7Fxr6v51sURl9xAgEphln/da4P1kqneFXJ93xHfUVRD1ZVi/3KmnkjmrILF/FN
+ sxxjfQ2oMvSlad3yYqMQYx7x5JP+PYMv5Y025qUP9zOm9dvZkPj4J25eVmrQGAgL0Kwr
+ tBbA==
+X-Gm-Message-State: AOJu0YwGvWHHEjePqKoGBzNd5cjI7jkOMiofjFgfUekaR3ZkdKa5rokr
+ tnD4BPU/t2O7H5PEUjz/IpQovwwBLgUcqqZgau07V+sGBfgzXig+VvmqPVIbsIGFCv6xXtkmTpz
+ aU5ZBbncKo2wAnghwm95GFV259zrEWuw/Tvd6f70C69aKJUEdq/FgCWoc
+X-Google-Smtp-Source: AGHT+IEdfZXP1NjfYeFlLxgZopqFCTz6O4H9qt5nc56CSiUwWYZiqfDVIqewhSaXBMl+NlI/XDHpzhUpN6I=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a05:6902:a93:b0:d9a:e6ae:ddb7 with SMTP id
+ cd19-20020a0569020a9300b00d9ae6aeddb7mr64625ybb.7.1698433233341; Fri, 27 Oct
+ 2023 12:00:33 -0700 (PDT)
+Date: Fri, 27 Oct 2023 19:00:29 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231027190029.3820505-1-edliaw@google.com>
+To: ltp@lists.linux.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] controllers/cpuset: Make mount failure TCONF
+Subject: [LTP] [PATCH v3] getpgid01: On Android, pgid(1) is 0 instead of 1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,34 +74,55 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team@android.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > > It appears that if the subsystem is available under V2 then mounting
-> > > the V1 can fail. Probably when the V2 has processes assigned to a
-> > > group it controls.
+Android's init does not call setpgid(0, 0) so it does not have pgid=1.
 
-> > Sounds likely, but it would be good to check this in the kernel code or with
-> > kernel cgroup developers.
+In either case, the pgid should match /proc/1/stat, so compare
+getpgid(1) against that.
 
-> I'm pretty sure that controller can be used either in v1, or in v2 but
-> not from both at the same time by choice. Some of the changes between v1
-> and v2 are incompatible so this couldn't work either way.
+Signed-off-by: Edward Liaw <edliaw@google.com>
+---
+ testcases/kernel/syscalls/getpgid/getpgid01.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-> I think that once the controller name is written to
-> /sys/fs/cgroup/unified/cgroup.subtree_controll mounting it to v1 should
-> fail, so maybe we should just try to grep the fail instead and exit the
-> test with TCONF if we found the controller bound to v2 already.
+diff --git a/testcases/kernel/syscalls/getpgid/getpgid01.c b/testcases/kernel/syscalls/getpgid/getpgid01.c
+index 479fe5dcb..de05a434b 100644
+--- a/testcases/kernel/syscalls/getpgid/getpgid01.c
++++ b/testcases/kernel/syscalls/getpgid/getpgid01.c
+@@ -13,6 +13,14 @@
+ 
+ #include "tst_test.h"
+ 
++static int get_init_pgid()
++{
++	int pgid;
++
++	SAFE_FILE_SCANF("/proc/1/stat", "%*d %*s %*c %*d %d", &pgid);
++	return pgid;
++}
++
+ static void run(void)
+ {
+ 	pid_t pid_1, child_pid, pgid;
+@@ -37,7 +45,7 @@ static void run(void)
+ 		TST_EXP_EQ_LI(TST_RET, pgid);
+ 
+ 		TST_EXP_PID(getpgid(1));
+-		TST_EXP_EQ_LI(TST_RET, 1);
++		TST_EXP_EQ_LI(TST_RET, get_init_pgid());
+ 	}
+ 
+ 	tst_reap_children();
+-- 
+2.42.0.820.g83a721a137-goog
 
-Sounds like a good idea.
-
-Kind regards,
-Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
