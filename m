@@ -4,63 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AACE2C25B67
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 09:30:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94554C25B47
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 09:49:05 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 285013CEBA9
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 11:30:58 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id B76753CEB86
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 11:49:03 +0200 (CEST)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 675E73C26EE
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 17:39:34 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ by picard.linux.it (Postfix) with ESMTPS id 10D173CCA86
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 11:48:52 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 659B320076F
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 17:39:32 +0200 (CEST)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by dfw.source.kernel.org (Postfix) with ESMTP id 0FF8C63532
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 15:39:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5FD8C43391
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 15:39:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1698334768;
- bh=FDj+TtkA41V8W+Dgx4SdwNTR5EfRCiqvl6KQP3P3OD0=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=fZprWnS1zKe9CbthGm2D8C8zn1nHzy+//yBaYsrHS2yMyLV4Mra2DrQCWoWjXTzBz
- wmZsR2S4VUKMnbpnDA2j8BvXxn9wQ2HGezAJaWDPSU5a6RYVylVKNc71ZBr7bTLf/0
- md20LufSdvrHbA+7Y/9HEHJai5JDJ/LXeslMvVgc38iVm9ALkXNI0bSx4/No1e7twd
- 9IQkuaWHkBn4DGJqpMUo8J4lmwsu3KxMDmWbAFDWyLMymS1z2I94MghGWnphoVzqHH
- ek932aj5ECM/nNLrYNV+rPymMUzHfp8t1fNRvVqE1wuLbmDiAGPKuWymrgHTW8l+XM
- Ylf5ZSpZl3/Zg==
-Received: by mail-lj1-f170.google.com with SMTP id
- 38308e7fff4ca-2c50305c5c4so16096361fa.1
- for <ltp@lists.linux.it>; Thu, 26 Oct 2023 08:39:28 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxEafoBPmgPNUQhLPm5q8Ls0Pf0dR3Y3LnyUvWbE8amuxVi9yjW
- KmWOKU7Aybt6M6gjdI4FvfN2aJuIzooaaz4MM5I=
-X-Google-Smtp-Source: AGHT+IE320/m4nxTYakuJFBJp88Ll7maED97PBXuy6j3H25+6YoIexbnB90kueybRhWmacv8IDTeoQ5wlVQQTkiVzRM=
-X-Received: by 2002:a2e:b04b:0:b0:2c5:1b01:b67f with SMTP id
- d11-20020a2eb04b000000b002c51b01b67fmr13026501ljl.52.1698334766885; Thu, 26
- Oct 2023 08:39:26 -0700 (PDT)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1A7D96005C5
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 11:48:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1698400127;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=55uOaJR5QAhL1jDWT4DMpb8gMHV8aCbLwGxRNqFH930=;
+ b=Zp5audrxEoUxoE04knmKDEaNSTw0/b9+Md22CQYEGqN/ebGwPOIQh8Im8TwrRH/QsES+a+
+ JFY+e6v6B5BF7F7exC+vw5s49yzM04jmBtzsfRK3JlNI7QgNCS9TdCvp9MTE1cY8ChH7ST
+ TD98JRLGxVN+jMnWllWG4brzdGqVtwM=
+Received: from mail-vs1-f69.google.com (mail-vs1-f69.google.com
+ [209.85.217.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-567-9MhtSxp_Ph-gH5VRJI597g-1; Fri, 27 Oct 2023 05:48:46 -0400
+X-MC-Unique: 9MhtSxp_Ph-gH5VRJI597g-1
+Received: by mail-vs1-f69.google.com with SMTP id
+ ada2fe7eead31-457d04cb75cso831363137.1
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 02:48:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1698400126; x=1699004926;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=55uOaJR5QAhL1jDWT4DMpb8gMHV8aCbLwGxRNqFH930=;
+ b=XzdJPf/pnTcSc1R72zDgpJsgnS+VT6LPadg5neEOLPQp5sUYP3+6p/lRchR2JMaulD
+ imGJeyCIiawkIX0l+H8KkQ+/qtvtlmKTcTPgOYuzoKblMXKw9Qd0IVQGgM4pelZe2gYk
+ J/PddCGUgRj8rThTNYXEgNtAfwINBZixDw8RYEF0Ek/wSVBxttnSWeuXgJVNa5NzWMs1
+ T4dSwhNDRBNeaT79iw0sWfRCZYiKkQ9bBkCMXvlCEP7DS9zebwbCfeyT3sHnETKRhw+M
+ 7Zgwi44nsi/0bfZ4RM/yWhKPWfa8nJIXAhqO90j6UFxliHUZjRROdkFNW6IHBMa99Fak
+ +7Dg==
+X-Gm-Message-State: AOJu0YxylpZEBJz6CVNPgkYj/VKNzk7JoQfMpEVsdlg2NfJD597xaCm4
+ yUfFa031CQCR5axZWSRjdA66bZ3UKeNSTboso6tf5oNuRXRPqizv+592t3qUHN5MEix+6F1+RWk
+ cd5+a7k7V6L2wqQhiYZqmR+binJPEkRBWK0U=
+X-Received: by 2002:a67:e186:0:b0:458:3bc1:8941 with SMTP id
+ e6-20020a67e186000000b004583bc18941mr2008040vsl.22.1698400125843; 
+ Fri, 27 Oct 2023 02:48:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHBETqf3PKm4ShnAjtqPEHSl6ZjDwTdCEkG1UB6kLukqH+ZXg7H11dPhfYrn5Hb163AP2mYGAeZstf2pIbe8aI=
+X-Received: by 2002:a67:e186:0:b0:458:3bc1:8941 with SMTP id
+ e6-20020a67e186000000b004583bc18941mr2008033vsl.22.1698400125596; Fri, 27 Oct
+ 2023 02:48:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYsCskpn_TNpSwLq9HGUgtT=aZpDzs7SVrqpa9WmyYFaxQ@mail.gmail.com>
- <ZTqGBzOQd4Oi3e9j@FVFF77S0Q05N.cambridge.arm.com>
-In-Reply-To: <ZTqGBzOQd4Oi3e9j@FVFF77S0Q05N.cambridge.arm.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 26 Oct 2023 17:39:11 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
-Message-ID: <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
-To: Mark Rutland <mark.rutland@arm.com>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+References: <272dd7b41f4e1049c7428d2de2ac97814ed900ba.1697705468.git.jstancek@redhat.com>
+ <1f088ac0-fac1-40c4-91eb-accf629daaee@suse.com>
+ <CAASaF6zYqm+ct9C0unRHZfg0z74xyeSu6hOrXzyKNV1peWZcwg@mail.gmail.com>
+ <55b7a1e5-698a-4a0f-91c8-c0bb5e6423e1@suse.com>
+In-Reply-To: <55b7a1e5-698a-4a0f-91c8-c0bb5e6423e1@suse.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 27 Oct 2023 11:49:17 +0200
+Message-ID: <CAASaF6x8csBAW8a78VgUWrf+SKAjVh6WNmvTBT8eeNQeSJQ=QA@mail.gmail.com>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Fri, 27 Oct 2023 11:30:48 +0200
-Subject: Re: [LTP] qemu-arm64: handle_futex_death - kernel/futex/core.c:661
- - Unable to handle kernel unknown 43 at virtual address
+Subject: Re: [LTP] [PATCH] syscalls/process_madvise01: fix smaps scan and
+ min_swap_avail
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,73 +89,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
- LTP List <ltp@lists.linux.it>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will.deacon@arm.com>, open list <linux-kernel@vger.kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>,
- Linux-Next Mailing List <linux-next@vger.kernel.org>,
- lkft-triage@lists.linaro.org, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Thu, 26 Oct 2023 at 17:30, Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Thu, Oct 26, 2023 at 08:11:26PM +0530, Naresh Kamboju wrote:
-> > Following kernel crash noticed on qemu-arm64 while running LTP syscalls
-> > set_robust_list test case running Linux next 6.6.0-rc7-next-20231026 and
-> > 6.6.0-rc7-next-20231025.
-> >
-> > BAD: next-20231025
-> > Good: next-20231024
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> >
-> > Log:
-> > ----
-> > <1>[  203.119139] Unable to handle kernel unknown 43 at virtual
-> > address 0001ffff9e2e7d78
-> > <1>[  203.119838] Mem abort info:
-> > <1>[  203.120064]   ESR = 0x000000009793002b
-> > <1>[  203.121040]   EC = 0x25: DABT (current EL), IL = 32 bits
-> > set_robust_list01    1  TPASS  :  set_robust_list: retval = -1
-> > (expected -1), errno = 22 (expected 22)
-> > set_robust_list01    2  TPASS  :  set_robust_list: retval = 0
-> > (expected 0), errno = 0 (expected 0)
-> > <1>[  203.124496]   SET = 0, FnV = 0
-> > <1>[  203.124778]   EA = 0, S1PTW = 0
-> > <1>[  203.125029]   FSC = 0x2b: unknown 43
->
-> It looks like this is fallout from the LPA2 enablement.
->
-> According to the latest ARM ARM (ARM DDI 0487J.a), page D19-6475, that "unknown
-> 43" (0x2b / 0b101011) is the DFSC for a level -1 translation fault:
->
->         0b101011 When FEAT_LPA2 is implemented:
->                  Translation fault, level -1.
->
-> It's triggered here by an LDTR in a get_user() on a bogus userspace address.
-> The exception is expected, and it's supposed to be handled via the exception
-> fixups, but the LPA2 patches didn't update the fault_info table entries for all
-> the level -1 faults, and so those all get handled by do_bad() and don't call
-> fixup_exception(), causing them to be fatal.
->
-> It should be relatively simple to update the fault_info table for the level -1
-> faults, but given the other issues we're seeing I think it's probably worth
-> dropping the LPA2 patches for the moment.
->
-
-Thanks for the analysis Mark.
-
-I agree that this should not be difficult to fix, but given the other
-CI problems and identified loose ends, I am not going to object to
-dropping this partially or entirely at this point. I'm sure everybody
-will be thrilled to go over those 60 patches again after I rebase them
-onto v6.7-rc1 :-)
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gRnJpLCBPY3QgMjcsIDIwMjMgYXQgMTA6NTXigK9BTSBBbmRyZWEgQ2VydmVzYXRvCjxhbmRy
+ZWEuY2VydmVzYXRvQHN1c2UuY29tPiB3cm90ZToKPgo+IEhpLAo+Cj4gT24gMTAvMjcvMjMgMTA6
+NTAsIEphbiBTdGFuY2VrIHdyb3RlOgo+ID4gT24gVGh1LCBPY3QgMTksIDIwMjMgYXQgMTA6NTji
+gK9BTSBBbmRyZWEgQ2VydmVzYXRvIHZpYSBsdHAKPiA+IDxsdHBAbGlzdHMubGludXguaXQ+IHdy
+b3RlOgo+ID4+IEhpIQo+ID4+Cj4gPj4gT24gMTAvMTkvMjMgMTA6NTEsIEphbiBTdGFuY2VrIHdy
+b3RlOgo+ID4+PiBzbWFwcyBtYXRjaGluZyBjYW4gcHJlbWF0dXJlbHkgZW5kLCBiZWNhdXNlIHRo
+ZSBjb21wYXJpc29uIHRvICJWbUZsYWdzIgo+ID4+PiBzdHJpbmcgaXMgbm90IGV4YWN0LiBTbyBk
+ZXBlbmRpbmcgb24gYWRkcmVzcyBvbiBsaW5lLCBpdCBjYW4gYnJlYWsKPiA+Pj4gYmVmb3JlIGl0
+IGZpbmRzIFN3YXAgbGluZS4gVGhpcyBtYWtlcyB0aGUgdGVzdCBmYWlsIG9uIHJlY2VudCBhYXJj
+aDY0Cj4gPj4+IGtlcm5lbHMuCj4gPj4+Cj4gPj4+IG1pbl9zd2FwX2F2YWlsIHBlciBkb2N1bWVu
+dGF0aW9uIGlzIGluIE1CIG5vdCBLQi4KPiA+Pj4KPiA+Pj4gU2lnbmVkLW9mZi1ieTogSmFuIFN0
+YW5jZWsgPGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4gPj4+IC0tLQo+ID4+PiAgICB0ZXN0Y2FzZXMv
+a2VybmVsL3N5c2NhbGxzL3Byb2Nlc3NfbWFkdmlzZS9wcm9jZXNzX21hZHZpc2UuaCAgIHwgMiAr
+LQo+ID4+PiAgICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Byb2Nlc3NfbWFkdmlzZS9wcm9j
+ZXNzX21hZHZpc2UwMS5jIHwgMiArLQo+ID4+PiAgICAyIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0
+aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPiA+Pj4KPiA+Pj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvcHJvY2Vzc19tYWR2aXNlL3Byb2Nlc3NfbWFkdmlzZS5oIGIvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wcm9jZXNzX21hZHZpc2UvcHJvY2Vzc19tYWR2aXNlLmgK
+PiA+Pj4gaW5kZXggYzQ1NzBlNTMwOWRlLi41YjIyN2FkYTA5OWUgMTAwNjQ0Cj4gPj4+IC0tLSBh
+L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHJvY2Vzc19tYWR2aXNlL3Byb2Nlc3NfbWFkdmlz
+ZS5oCj4gPj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHJvY2Vzc19tYWR2aXNl
+L3Byb2Nlc3NfbWFkdmlzZS5oCj4gPj4+IEBAIC01NCw3ICs1NCw3IEBAIHN0YXRpYyBpbmxpbmUg
+dm9pZCByZWFkX2FkZHJlc3NfbWFwcGluZyh1bnNpZ25lZCBsb25nIGFkZHJlc3MsIHN0cnVjdCBh
+ZGRyX21hcHBpCj4gPj4+ICAgICAgICAgICAgICAgIGlmICghZm91bmQpCj4gPj4+ICAgICAgICAg
+ICAgICAgICAgICAgICAgY29udGludWU7Cj4gPj4+Cj4gPj4+IC0gICAgICAgICAgICAgaWYgKGZv
+dW5kICYmIHN0cmNtcChsaW5lLCAiVm1GbGFncyIpID49IDApCj4gPj4+ICsgICAgICAgICAgICAg
+aWYgKGZvdW5kICYmIHN0cm5jbXAobGluZSwgIlZtRmxhZ3MiLCA3KSA9PSAwKQo+ID4+PiAgICAg
+ICAgICAgICAgICAgICAgICAgIGJyZWFrOwo+ID4+Pgo+ID4+PiAgICAgICAgICAgICAgICBpZiAo
+c3NjYW5mKGxpbmUsICIlMzFbXjpdOiAlZCIsIGxhYmVsLCAmdmFsdWUpID4gMCkgewo+ID4+PiBk
+aWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wcm9jZXNzX21hZHZpc2UvcHJv
+Y2Vzc19tYWR2aXNlMDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHJvY2Vzc19tYWR2
+aXNlL3Byb2Nlc3NfbWFkdmlzZTAxLmMKPiA+Pj4gaW5kZXggMzIyYjRjZjYwMzUzLi4wZmQzYzFl
+ZjRmODAgMTAwNjQ0Cj4gPj4+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHJvY2Vz
+c19tYWR2aXNlL3Byb2Nlc3NfbWFkdmlzZTAxLmMKPiA+Pj4gKysrIGIvdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy9wcm9jZXNzX21hZHZpc2UvcHJvY2Vzc19tYWR2aXNlMDEuYwo+ID4+PiBAQCAt
+MTIzLDcgKzEyMyw3IEBAIHN0YXRpYyBzdHJ1Y3QgdHN0X3Rlc3QgdGVzdCA9IHsKPiA+Pj4gICAg
+ICAgIC5taW5fa3ZlciA9ICI1LjEwIiwKPiA+Pj4gICAgICAgIC5uZWVkc19jaGVja3BvaW50cyA9
+IDEsCj4gPj4+ICAgICAgICAubmVlZHNfcm9vdCA9IDEsCj4gPj4+IC0gICAgIC5taW5fc3dhcF9h
+dmFpbCA9IE1FTV9DSElMRCAvIFRTVF9LQiwKPiA+Pj4gKyAgICAgLm1pbl9zd2FwX2F2YWlsID0g
+TUVNX0NISUxEIC8gVFNUX01CLAo+ID4+PiAgICAgICAgLm5lZWRzX2tjb25maWdzID0gKGNvbnN0
+IGNoYXIgKltdKSB7Cj4gPj4+ICAgICAgICAgICAgICAgICJDT05GSUdfU1dBUD15IiwKPiA+Pj4g
+ICAgICAgICAgICAgICAgTlVMTAo+ID4+IFRoYW5rcyBmb3IgZml4aW5nIHRoaXMuCj4gPiBDb3Vs
+ZCBJIGFkZCB5b3VyIFJldmlld2VkL0Fja2VkLWJ5IHRvIHRoZSBwYXRjaD8KPgo+IFllcyBwbGVh
+c2UuCj4KPiBBY2tlZC1ieTogQW5kcmVhIENlcnZlc2F0byA8YW5kcmVhLmNlcnZlc2F0b0BtYWls
+Ym94Lm9yZz4KClB1c2hlZC4KCj4gPgo+ID4+IEFuZHJlYSBDZXJ2ZXNhdG8KPiA+Pgo+ID4+Cj4g
+Pj4gLS0KPiA+PiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0
+aW5mby9sdHAKPiA+Pgo+IEFuZHJlYSBDZXJ2ZXNhdG8KPgoKCi0tIApNYWlsaW5nIGxpc3QgaW5m
+bzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
