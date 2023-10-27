@@ -4,80 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15AFFC25B47
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 10:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD6DC25B67
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 10:19:53 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3BA3C3CEB99
-	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 12:09:18 +0200 (CEST)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 5069D3CEB8F
+	for <ltp@archiver.kernel.org>; Fri, 27 Oct 2023 12:19:51 +0200 (CEST)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 99FA03CCA83
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:09:07 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id AA6643CCA83
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:19:40 +0200 (CEST)
+Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com
+ [207.54.90.47])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DAED52348DA
- for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:09:06 +0200 (CEST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 39E6821C4A;
- Fri, 27 Oct 2023 10:09:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698401345;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=CkOb1OCVGwxS+Tduatk5YJsC79Lqzy5Mnt4IWXA00yE=;
- b=H+Cq9d1LZQCywQKVGshFtJDlj7Q/nLAZM2UP8PDZpnVfa6o4R03PdWp4lPbE6Bm4GmMq3i
- nF8V80HHMiR0pc2Cn9ut6LFgft2uZz9PR1HwLRKbv2rzfyJjQ3bwVMb3YN9a8uiaZAcrCy
- r8h/teImKy1RCnX9uEQXGdL6fc4qe5A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698401345;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=CkOb1OCVGwxS+Tduatk5YJsC79Lqzy5Mnt4IWXA00yE=;
- b=ysy2rCTV86JD9JItLZ5h7O0zH9ZNSDLYFKUMkvxhoKyEl2QWdm8JOKrzntfnzpjOkT8O+r
- zRy6OsZQ9C2aJDDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0109F1358C;
- Fri, 27 Oct 2023 10:09:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id D7JhOUCMO2UccQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 27 Oct 2023 10:09:04 +0000
-Date: Fri, 27 Oct 2023 12:09:03 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <20231027100903.GA638866@pevik>
-References: <20231026094957.15371-1-rpalethorpe@suse.com>
- <20231026110659.GA593730@pevik> <87cyx0tqli.fsf@suse.de>
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 534571A0C274
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 12:19:38 +0200 (CEST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="137551057"
+X-IronPort-AV: E=Sophos;i="6.03,255,1694703600"; d="scan'208";a="137551057"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+ by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Oct 2023 19:19:37 +0900
+Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
+ [192.168.87.58])
+ by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 28C10DDC75
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 19:19:35 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 666B9D8B8A
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 19:19:34 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 044216C836
+ for <ltp@lists.linux.it>; Fri, 27 Oct 2023 19:19:34 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.220.121])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 736411A0070;
+ Fri, 27 Oct 2023 18:19:33 +0800 (CST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: ltp@lists.linux.it
+Date: Fri, 27 Oct 2023 05:37:59 -0400
+Message-Id: <20231027093801.51947-1-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87cyx0tqli.fsf@suse.de>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-3.30 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_COUNT_TWO(0.00)[2];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[36.66%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27960.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27960.006
+X-TMASE-Result: 10--8.241000-10.000000
+X-TMASE-MatchedRID: t6JJoekIeTgxAROjHaAf207nLUqYrlslFIuBIWrdOePfUZT83lbkEBaE
+ RsAuK/owsAxCCQ9WOyt/iseCANV010fr6WG4Th9a9k0tWBWiOf/QtWdx8wWyB5soi2XrUn/J8m+
+ hzBStanvIM9mETCO70yAHAopEd76vjz4sWLYl4Ih6luXUab9nW7pykYQINMxQGZ0UuNCE7TNFHj
+ hq/7eksg==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] cgroup: Handle trailing new line in
- cgroup.controllers
+Subject: [LTP] [PATCH v2 1/3] umount01: Simplify test using TST_ macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,92 +71,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hello,
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+---
+ testcases/kernel/syscalls/umount/umount01.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-> Petr Vorel <pvorel@suse.cz> writes:
+diff --git a/testcases/kernel/syscalls/umount/umount01.c b/testcases/kernel/syscalls/umount/umount01.c
+index d05296dce..47e35eaeb 100644
+--- a/testcases/kernel/syscalls/umount/umount01.c
++++ b/testcases/kernel/syscalls/umount/umount01.c
+@@ -7,7 +7,6 @@
+  * It is intended to provide a limited exposure of the system call.
+  */
+ 
+-#include <errno.h>
+ #include <sys/mount.h>
+ #include "tst_test.h"
+ 
+@@ -23,7 +22,7 @@ static void verify_umount(void)
+ 		mount_flag = 1;
+ 	}
+ 
+-	TEST(umount(MNTPOINT));
++	TST_EXP_PASS(umount(MNTPOINT));
+ 
+ 	if (TST_RET != 0 && TST_ERR == EBUSY) {
+ 		tst_res(TINFO, "umount() Failed with EBUSY "
+@@ -31,12 +30,6 @@ static void verify_umount(void)
+ 			"is probing newly mounted dirs");
+ 	}
+ 
+-	if (TST_RET != 0) {
+-		tst_res(TFAIL | TTERRNO, "umount() Failed");
+-		return;
+-	}
+-
+-	tst_res(TPASS, "umount() Passed");
+ 	mount_flag = 0;
+ }
+ 
+-- 
+2.39.1
 
-> > Hi Richie,
-
-> > Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-> >> V2:
-> >> * Add underscore
-> >> * Add length check
-> >> * Expand commit message
-> >> * Use shorter syntax
-> > +1
-
-> >>  lib/tst_cgroup.c | 13 ++++++++++++-
-> >>  1 file changed, 12 insertions(+), 1 deletion(-)
-
-> >> diff --git a/lib/tst_cgroup.c b/lib/tst_cgroup.c
-> >> index 5240aadaa..c5cb20505 100644
-> >> --- a/lib/tst_cgroup.c
-> >> +++ b/lib/tst_cgroup.c
-> >> @@ -433,9 +433,20 @@ __attribute__ ((nonnull, warn_unused_result))
-> >>  static struct cgroup_ctrl *cgroup_find_ctrl(const char *const ctrl_name)
-> >>  {
-> >>  	struct cgroup_ctrl *ctrl;
-> >> +	int l = 0;
-> >> +	char c = ctrl_name[l];
-> >> +
-> >> +	while (c == '_' || (c >= 'a' && c <= 'z'))
-> >> +		c = ctrl_name[++l];
-> >> +
-> >> +	if (l > 32)
-> > +1 for this check.
-> > I would slightly prefer to add MAX_CGROUP_TYPE_NAMELEN definition into our
-> > include/tst_cgroup.h, but it can stay as is.
-
-> > BTW include/linux/cgroup-defs.h contains also MAX_CGROUP_ROOT_NAMELEN, there are
-> > also other checks in C files (CGROUP_FILE_NAME_MAX) in case it makes sense to
-> > have some checks for these (I have no idea).
-
-> I'm not sure about this. On the one hand it may detect a bug in the
-> library or kernel. On the other it's not exposed to userland or defined
-> anywhere.
-
-Yep, it's just an idea, I'm not sure myself.
-
-> For me the main thing is to avoid janitorial work like creating and
-> merging patches just to increase some internal kernel value that was
-> increased or is ignored in some corner case.
-
-+1
-
-> I'll post another patch if there is some obvious way to check the root
-> name length that would help the library.
-
-+1
-
-> Thanks for the review, I'll merge this now.
-
-Great.
-
-Kind regards,
-Petr
-
-> > Kind regards,
-> > Petr
-
-> >> +		tst_res(TWARN, "Subsys name len greater than max known value of MAX_CGROUP_TYPE_NAMELEN: %d > 32", l);
-
-> >> +
-> >> +	if (!(c == '\n' || c == '\0'))
-> >> +		tst_brk(TBROK, "Unexpected char in %s: %c", ctrl_name, c);
-
-> >>  	for_each_ctrl(ctrl) {
-> >> -		if (!strcmp(ctrl_name, ctrl->ctrl_name))
-> >> +		if (!strncmp(ctrl_name, ctrl->ctrl_name, l))
-> >>  			return ctrl;
-> >>  	}
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
