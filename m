@@ -4,63 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B21F8C27C48
-	for <ltp@archiver.kernel.org>; Sat, 28 Oct 2023 07:42:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 045B6C4332F
+	for <ltp@archiver.kernel.org>; Sun, 29 Oct 2023 01:28:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9BD6C3CCA50
-	for <ltp@archiver.kernel.org>; Sat, 28 Oct 2023 09:42:57 +0200 (CEST)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id CB1AE3CBF43
+	for <ltp@archiver.kernel.org>; Sun, 29 Oct 2023 02:28:14 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B69593C9793
- for <ltp@lists.linux.it>; Sat, 28 Oct 2023 09:42:47 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ by picard.linux.it (Postfix) with ESMTPS id 514F63C8683
+ for <ltp@lists.linux.it>; Sun, 29 Oct 2023 02:28:05 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 447D16011AF
- for <ltp@lists.linux.it>; Sat, 28 Oct 2023 09:42:45 +0200 (CEST)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
- by dfw.source.kernel.org (Postfix) with ESMTP id EC70760E26
- for <ltp@lists.linux.it>; Sat, 28 Oct 2023 07:42:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55645C4339A
- for <ltp@lists.linux.it>; Sat, 28 Oct 2023 07:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1698478961;
- bh=htUU5NgNW5XjX1k4bhwOpjiaCPHzbKJXSRlXtBMXaaI=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=SLt9RpRk04EaksB4alsV5juWqDKrrkoFjxUkbGOZ7QmCkr5DaOIcuWvzpg2KRZFs4
- oyNj7h+Nu2x3s/nz8wlUOhoDuxjmHXZ81/fxdhC/0g5Voz0M9n1SONNKBWxBpMncFw
- lBKCeI9FyvIc3DaiiGzH06wGVU7T0+DOcEqxXG5+SBgGefDMATnj9bRNWCQvHdXZeM
- FyqwXfRoKQYSCd/fmacxctuND9MgMxzBI8ScDwHMoocjekC8Ee6ezXeZ/nIzGkSYtn
- mnayYsRVJbFeSef6Ffe/Rd0T+4ssNkfDQtYf7XwHBc5QWDgU4QDZ0Wt0a762+yDV6w
- L93MhRkYGp9Cg==
-Received: by mail-lf1-f48.google.com with SMTP id
- 2adb3069b0e04-507a62d4788so4346140e87.0
- for <ltp@lists.linux.it>; Sat, 28 Oct 2023 00:42:41 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yx8vsHg/Re4pvRovhXPudfRtMIB81vzSTEhClKzT2AWZkGSTWMo
- VYQ6o9e68uh59HsZeDIK7ii4ttuoNGZPL6pI/VM=
-X-Google-Smtp-Source: AGHT+IFiTcDct53OijnP1Dv//ljwa/j8p7snP2xWb1MXmhUAIVhLZvUBdZmrQEndHPbZWL2iA8aWwpyIs51gK8PaGng=
-X-Received: by 2002:ac2:4835:0:b0:507:9ff7:2ed4 with SMTP id
- 21-20020ac24835000000b005079ff72ed4mr3299897lft.43.1698478959384; Sat, 28 Oct
- 2023 00:42:39 -0700 (PDT)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 7F3352009A2
+ for <ltp@lists.linux.it>; Sun, 29 Oct 2023 02:28:03 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 28B5721B4F;
+ Sun, 29 Oct 2023 01:28:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1698542881; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=oWVaCVS2fT9ab9d8WIN6d78BozwwabS0Qr0vzsD/ic4=;
+ b=HjN/6vRKRgXL4zOeWxx0aqo4Sp2ThKFJcCYKnjxb6nnAZq6uWZhGGYZcvyNKGHQsoQFVyZ
+ WoHiD6F0HqniU1aadDYgQGhDU47/pFXXpQHFlakgfS3ar7jEvCaONBLpTXJc7MXEFd2jZG
+ Y5bi2v8rgKn1VcFqCAhPETSsYAhtT9U=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7C3691358C;
+ Sun, 29 Oct 2023 01:28:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6qA1FCC1PWXjaAAAMHmgww
+ (envelope-from <wegao@suse.com>); Sun, 29 Oct 2023 01:28:00 +0000
+To: ltp@lists.linux.it
+Date: Sat, 28 Oct 2023 21:27:55 -0400
+Message-Id: <20231029012755.19969-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-References: <CA+G9fYsCskpn_TNpSwLq9HGUgtT=aZpDzs7SVrqpa9WmyYFaxQ@mail.gmail.com>
- <ZTqGBzOQd4Oi3e9j@FVFF77S0Q05N.cambridge.arm.com>
- <CAMj1kXE8VrG6aPsjByd83kavw7He6vn=DszhJfAd-TfP9y8VBA@mail.gmail.com>
- <CA+G9fYuQxUhsrL_=uYSAdotU1_Wx7iu5PxFuG9EzWgBE2nMjcw@mail.gmail.com>
-In-Reply-To: <CA+G9fYuQxUhsrL_=uYSAdotU1_Wx7iu5PxFuG9EzWgBE2nMjcw@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Sat, 28 Oct 2023 09:42:27 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXESknQ40SZRMFv6Vv32x-2mSuMyOxoURQwwO1apQ+m=jA@mail.gmail.com>
-Message-ID: <CAMj1kXESknQ40SZRMFv6Vv32x-2mSuMyOxoURQwwO1apQ+m=jA@mail.gmail.com>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-2.10 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ DKIM_SIGNED(0.00)[suse.com:s=susede1];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ MID_CONTAINS_FROM(1.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] qemu-arm64: handle_futex_death - kernel/futex/core.c:661
- - Unable to handle kernel unknown 43 at virtual address
+Subject: [LTP] [PATCH v1] io_submit04: Add test case for RWF_NOWAIT flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,60 +75,243 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
- LTP List <ltp@lists.linux.it>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will.deacon@arm.com>, open list <linux-kernel@vger.kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>,
- Linux-Next Mailing List <linux-next@vger.kernel.org>,
- lkft-triage@lists.linaro.org, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Fri, 27 Oct 2023 at 12:57, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Thu, 26 Oct 2023 at 21:09, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Thu, 26 Oct 2023 at 17:30, Mark Rutland <mark.rutland@arm.com> wrote:
-> > >
-> > > On Thu, Oct 26, 2023 at 08:11:26PM +0530, Naresh Kamboju wrote:
-> > > > Following kernel crash noticed on qemu-arm64 while running LTP syscalls
-> > > > set_robust_list test case running Linux next 6.6.0-rc7-next-20231026 ...
-> > > It looks like this is fallout from the LPA2 enablement.
-> > >
-> > > According to the latest ARM ARM (ARM DDI 0487J.a), page D19-6475, that "unknown
-> > > 43" (0x2b / 0b101011) is the DFSC for a level -1 translation fault:
-> > >
-> > >         0b101011 When FEAT_LPA2 is implemented:
-> > >                  Translation fault, level -1.
-> > >
-> > > It's triggered here by an LDTR in a get_user() on a bogus userspace address.
-> > > The exception is expected, and it's supposed to be handled via the exception
-> > > fixups, but the LPA2 patches didn't update the fault_info table entries for all
-> > > the level -1 faults, and so those all get handled by do_bad() and don't call
-> > > fixup_exception(), causing them to be fatal.
-> > >
-> > > It should be relatively simple to update the fault_info table for the level -1
-> > > faults, but given the other issues we're seeing I think it's probably worth
-> > > dropping the LPA2 patches for the moment.
-> > >
-> >
-> > Thanks for the analysis Mark.
-> >
-> > I agree that this should not be difficult to fix, but given the other
-> > CI problems and identified loose ends, I am not going to object to
-> > dropping this partially or entirely at this point. I'm sure everybody
-> > will be thrilled to go over those 60 patches again after I rebase them
-> > onto v6.7-rc1 :-)
->
-> I am happy to test any proposed fix patch.
->
+Fixs: #467
 
-Thanks Naresh. Patch attached.
+Signed-off-by: Wei Gao <wegao@suse.com>
+---
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/io_submit/.gitignore      |   1 +
+ testcases/kernel/syscalls/io_submit/Makefile  |   1 +
+ .../kernel/syscalls/io_submit/io_submit04.c   | 178 ++++++++++++++++++
+ 4 files changed, 181 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/io_submit/io_submit04.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index c7a0b2301..5e7fa0403 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -656,6 +656,7 @@ io_setup02 io_setup02
+ io_submit01 io_submit01
+ io_submit02 io_submit02
+ io_submit03 io_submit03
++io_submit04 io_submit04
+ 
+ keyctl01 keyctl01
+ keyctl02 keyctl02
+diff --git a/testcases/kernel/syscalls/io_submit/.gitignore b/testcases/kernel/syscalls/io_submit/.gitignore
+index 60b07970a..abe962e1c 100644
+--- a/testcases/kernel/syscalls/io_submit/.gitignore
++++ b/testcases/kernel/syscalls/io_submit/.gitignore
+@@ -1,3 +1,4 @@
+ /io_submit01
+ /io_submit02
+ /io_submit03
++/io_submit04
+diff --git a/testcases/kernel/syscalls/io_submit/Makefile b/testcases/kernel/syscalls/io_submit/Makefile
+index ce4f13b72..c29d2060c 100644
+--- a/testcases/kernel/syscalls/io_submit/Makefile
++++ b/testcases/kernel/syscalls/io_submit/Makefile
+@@ -6,5 +6,6 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS			+= $(AIO_LIBS)
++LDFLAGS			+= -pthread
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/io_submit/io_submit04.c b/testcases/kernel/syscalls/io_submit/io_submit04.c
+new file mode 100644
+index 000000000..9622ff796
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_submit/io_submit04.c
+@@ -0,0 +1,178 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * Similarily to the preadv2, this is a basic test for io_submit
++ * RWF_NOWAIT flag, we are attempting to force io_submit return
++ * EAGAIN with thread concurently running threads.
++ *
++ */
++
++#include <linux/aio_abi.h>
++
++#include "config.h"
++#include "tst_test.h"
++#include "tst_safe_pthread.h"
++#include "lapi/syscalls.h"
++
++#define TEST_FILE "test_file"
++#define MODE 0777
++#define BUF_LEN 1000000
++#define MNTPOINT "mntpoint"
++
++static char *w_buf;
++static char *r_buf;
++static int fd;
++static aio_context_t ctx;
++static struct iocb iocb;
++static struct iocb *iocbs[] = {&iocb};
++static volatile int stop;
++
++static inline void io_prep_option(struct iocb *cb, int fd, void *buf,
++			size_t count, long long offset, unsigned int opcode)
++{
++	memset(cb, 0, sizeof(*cb));
++	cb->aio_fildes = fd;
++	cb->aio_lio_opcode = opcode;
++	cb->aio_buf = (uint64_t)r_buf;
++	cb->aio_offset = offset;
++	cb->aio_nbytes = count;
++	cb->aio_rw_flags = RWF_NOWAIT;
++}
++
++static void write_test(void)
++{
++	SAFE_LSEEK(fd, 0, SEEK_SET);
++	SAFE_WRITE(SAFE_WRITE_ALL, fd, r_buf, BUF_LEN);
++}
++
++static void *writer_thread(void *unused)
++{
++	while (!stop)
++		write_test();
++
++	return unused;
++}
++
++static void drop_caches(void)
++{
++	SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "3");
++}
++
++static void *cache_dropper(void *unused)
++{
++	unsigned int drop_cnt = 0;
++
++	while (!stop) {
++		drop_caches();
++		drop_cnt++;
++	}
++
++	tst_res(TINFO, "Cache dropped %u times", drop_cnt);
++
++	return unused;
++}
++
++static unsigned int io_submit(void)
++{
++	struct io_event evbuf;
++	struct timespec timeout = { .tv_sec = 1 };
++
++	TST_EXP_VAL_SILENT(tst_syscall(__NR_io_submit, ctx, 1, iocbs), 1);
++
++	TST_EXP_VAL_SILENT(tst_syscall(__NR_io_getevents, ctx, 1, 1, &evbuf,
++			&timeout), 1);
++
++	if (evbuf.res == -EAGAIN)
++		return 1;
++	else
++		return 0;
++}
++
++static void *nowait_reader(void *unused LTP_ATTRIBUTE_UNUSED)
++{
++	unsigned int eagains_cnt = 0;
++
++	while (!stop) {
++		if (eagains_cnt >= 100)
++			stop = 1;
++		eagains_cnt = eagains_cnt + io_submit();
++	}
++
++	return (void *)(long)eagains_cnt;
++}
++
++static void setup(void)
++{
++
++	TST_EXP_PASS_SILENT(tst_syscall(__NR_io_setup, 1, &ctx));
++
++	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, MODE);
++
++	memset(w_buf, 'a', BUF_LEN);
++	memset(r_buf, 'b', BUF_LEN);
++
++	io_prep_option(&iocb, fd, r_buf, BUF_LEN, 0, IOCB_CMD_PREAD);
++}
++
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
++
++	if (tst_syscall(__NR_io_destroy, ctx))
++		tst_brk(TBROK | TERRNO, "io_destroy() failed");
++}
++
++
++static void run(void)
++{
++
++	pthread_t reader, dropper, writer;
++	void *eagains;
++
++	stop = 0;
++
++	SAFE_PTHREAD_CREATE(&dropper, NULL, cache_dropper, NULL);
++	SAFE_PTHREAD_CREATE(&reader, NULL, nowait_reader, NULL);
++	SAFE_PTHREAD_CREATE(&writer, NULL, writer_thread, NULL);
++
++	while (!stop && tst_remaining_runtime())
++		usleep(100000);
++
++	stop = 1;
++
++	SAFE_PTHREAD_JOIN(reader, &eagains);
++	SAFE_PTHREAD_JOIN(dropper, NULL);
++	SAFE_PTHREAD_JOIN(writer, NULL);
++
++	if (eagains)
++		tst_res(TPASS, "Got some EAGAIN");
++	else
++		tst_res(TFAIL, "Haven't got EAGAIN");
++
++}
++
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_AIO=y",
++		NULL
++	},
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.max_runtime = 60,
++	.mntpoint = MNTPOINT,
++	.mount_device = 1,
++	.all_filesystems = 1,
++	.bufs = (struct tst_buffers []) {
++		{&w_buf, .size = BUF_LEN},
++		{&r_buf, .size = BUF_LEN},
++		{}
++	}
++};
+-- 
+2.35.3
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
