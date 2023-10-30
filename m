@@ -4,82 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97D36C4332F
-	for <ltp@archiver.kernel.org>; Mon, 30 Oct 2023 07:28:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A57CAC4332F
+	for <ltp@archiver.kernel.org>; Mon, 30 Oct 2023 07:41:01 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 23B873CC988
-	for <ltp@archiver.kernel.org>; Mon, 30 Oct 2023 08:28:36 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 859093CEA41
+	for <ltp@archiver.kernel.org>; Mon, 30 Oct 2023 08:40:59 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EFF6C3C88CE
- for <ltp@lists.linux.it>; Mon, 30 Oct 2023 08:28:25 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 35A503C88CE
+ for <ltp@lists.linux.it>; Mon, 30 Oct 2023 08:40:49 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DD6701A0120B
- for <ltp@lists.linux.it>; Mon, 30 Oct 2023 08:28:23 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 82BD11A000B1
+ for <ltp@lists.linux.it>; Mon, 30 Oct 2023 08:40:47 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 433AD21D06;
- Mon, 30 Oct 2023 07:28:21 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2D5061FEDD;
+ Mon, 30 Oct 2023 07:40:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698650901;
+ t=1698651647;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/LxSMhhhJ+DdrsqcJXJcXyL/2u6igIQveMe9M8vzsxU=;
- b=pwBlh7XnA/r62raXs4iTIJo2LgyQFdyM54p+B1uHuzdhl76T7dgj5/qcrT+rxQ0lxHON7f
- bshc+qhNO0DuAznKlR6KsDNvCVVb8Uc5jrkJ5yXBY3MOiFsjoultptytja6wcaNp9wQ2vP
- uxbU1iRw7wrJPMdZEndXFBHKzOY/Mx4=
+ bh=x+EeMOmGVBeMKiDXmh3GTaAgRU2ztEyVjnS6NmvFh10=;
+ b=0XNYfApblTf3tH+GD2dBfnN16zKuNLz2XQWC6wR2+clg6pREbT8MwMHRhbMi75aVv2o2Ez
+ uJWqjgOkwH7K9ygcRaifY6LnuIJJt6+GIQsr0oXoZxlkEvbCSHPa3tP7iqR90ECMh3PcZl
+ lOK1Y9miJTipmBT6qbgZk8wPy3R48tU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698650901;
+ s=susede2_ed25519; t=1698651647;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/LxSMhhhJ+DdrsqcJXJcXyL/2u6igIQveMe9M8vzsxU=;
- b=QELtrn8nRygswGtX+EqX8kHHE1/VRHGXVYLzEj/Zg6HuBQZw/yVOKqhQF7CO0O6WNbFV3q
- Hp3X5bcMgy0YNzDg==
+ bh=x+EeMOmGVBeMKiDXmh3GTaAgRU2ztEyVjnS6NmvFh10=;
+ b=OEi1iG3FkAw4DO7tiDvvE1kv/l51HThc8hSuS7HNFBF6Np8VVoZUijEZsCtceq720XkVjv
+ 5fITphgsngAJb3Bw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 19467138F8;
- Mon, 30 Oct 2023 07:28:21 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 03AE0138F8;
+ Mon, 30 Oct 2023 07:40:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 17foBBVbP2UETAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 30 Oct 2023 07:28:21 +0000
-Date: Mon, 30 Oct 2023 08:28:19 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id AzrnOv5dP2WYUQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 30 Oct 2023 07:40:46 +0000
+Date: Mon, 30 Oct 2023 08:40:45 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20231030072819.GA9167@pevik>
-References: <20231027174322.710674-1-pvorel@suse.cz>
- <CAEemH2fuA+YfFGNzSResMprEeT8+zhO1S_2Kscc14d2T828YYw@mail.gmail.com>
+To: Edward Liaw <edliaw@google.com>
+Message-ID: <20231030074045.GB9167@pevik>
+References: <20231027190029.3820505-1-edliaw@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAEemH2fuA+YfFGNzSResMprEeT8+zhO1S_2Kscc14d2T828YYw@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-6.22 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCPT_COUNT_FIVE(0.00)[5];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-1.00)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-2.92)[99.65%]
+In-Reply-To: <20231027190029.3820505-1-edliaw@google.com>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] compat_16.mk: Cleanup INTERMEDIATE object
- syntax
+Subject: Re: [LTP] [PATCH v3] getpgid01: On Android,
+ pgid(1) is 0 instead of 1
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,47 +78,62 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Stanislav Kholmanskikh <stanislav.kholmanskikh@bell-sw.com>,
- ltp@lists.linux.it
+Cc: kernel-team@android.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Li,
+Hi Edward,
 
-> Hi Petr,
+> Android's init does not call setpgid(0, 0) so it does not have pgid=1.
 
-> Petr Vorel <pvorel@suse.cz> wrote:
+> In either case, the pgid should match /proc/1/stat, so compare
+> getpgid(1) against that.
 
+> Signed-off-by: Edward Liaw <edliaw@google.com>
+> ---
+>  testcases/kernel/syscalls/getpgid/getpgid01.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 
-> >  DEF_16                 := TST_USE_COMPAT16_SYSCALL
+> diff --git a/testcases/kernel/syscalls/getpgid/getpgid01.c b/testcases/kernel/syscalls/getpgid/getpgid01.c
+> index 479fe5dcb..de05a434b 100644
+> --- a/testcases/kernel/syscalls/getpgid/getpgid01.c
+> +++ b/testcases/kernel/syscalls/getpgid/getpgid01.c
+> @@ -13,6 +13,14 @@
 
+>  #include "tst_test.h"
 
+> +static int get_init_pgid()
+static int get_init_pgid(void)
 
-> > ...
+We still use -std=gnu99, thus we need that otherwise compiler complains
+warning: old-style function definition [-Wold-style-definition].
 
-
-
-> > -%_16: CPPFLAGS += -D$(DEF_16)=1
-
-Not related to this effort: shouldn't we convert all CPPFLAGS to CFLAGS? Or the
-LTP build system it just prepared to the crazy ideas about using C++? :)
-
-
-> Seems we need to keep this one line, otherwise it can't transfer the
-> 'TST_USE_COMPAT16_SYSCALL=1' macro in the compilation.
-
-Ah, thanks!
-
-> The rest looks good to me.
-> Reviewed-by: Li Wang <liwang@redhat.com>
-
-BTW I'm going to push it with you as an author + with your Signed-off-by: tag
-(you're effectively the autor of the code) and with my RBT.
+It can be fixed during merge.
 
 Kind regards,
 Petr
+
+> +{
+> +	int pgid;
+> +
+> +	SAFE_FILE_SCANF("/proc/1/stat", "%*d %*s %*c %*d %d", &pgid);
+> +	return pgid;
+> +}
+> +
+>  static void run(void)
+>  {
+>  	pid_t pid_1, child_pid, pgid;
+> @@ -37,7 +45,7 @@ static void run(void)
+>  		TST_EXP_EQ_LI(TST_RET, pgid);
+
+>  		TST_EXP_PID(getpgid(1));
+> -		TST_EXP_EQ_LI(TST_RET, 1);
+> +		TST_EXP_EQ_LI(TST_RET, get_init_pgid());
+>  	}
+
+>  	tst_reap_children();
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
