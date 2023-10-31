@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9674DC4332F
-	for <ltp@archiver.kernel.org>; Tue, 31 Oct 2023 09:32:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE484C4332F
+	for <ltp@archiver.kernel.org>; Tue, 31 Oct 2023 12:50:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B92483CE9D8
-	for <ltp@archiver.kernel.org>; Tue, 31 Oct 2023 10:32:55 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 031C43CE9E6
+	for <ltp@archiver.kernel.org>; Tue, 31 Oct 2023 13:50:58 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6DB213CC936
- for <ltp@lists.linux.it>; Tue, 31 Oct 2023 10:32:44 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id 0EDDA3CC93F
+ for <ltp@lists.linux.it>; Tue, 31 Oct 2023 13:50:47 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 8892F10000EB
- for <ltp@lists.linux.it>; Tue, 31 Oct 2023 10:32:42 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id DD3031F45E;
- Tue, 31 Oct 2023 09:32:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1698744760;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=CNHMeD3ANrr+OH9QkfhHBGbmdz2HlJHOcfy1+9/aPUE=;
- b=EDVNzhYWMUyPnEn74gHiauvfIbzeNM2F+yL96Eq4LrUZl5UPNkToWRJSSj2SznreIWKBjn
- 9oJgx0/ZPvCHDfW8Fo2OtlStWZ3WeXaWY+5EpUrPC2lxR2+RInKdkMwkskPQMoOSENRo1d
- 6/0cROa2te+fdvU9+nPhMEpG+VF1B8U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1698744760;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=CNHMeD3ANrr+OH9QkfhHBGbmdz2HlJHOcfy1+9/aPUE=;
- b=FGp4PcTtuzfjbVnX8rhOfYw+rgWORLhc92Zyvd+L44WQCPoax95Y+B6Sc3xQqSiE/apm03
- ySTCa0mXshR4aGBg==
-Received: from g78 (rpalethorpe.tcp.ovpn1.nue.suse.de [10.163.17.14])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id C2FD61A00ECF
+ for <ltp@lists.linux.it>; Tue, 31 Oct 2023 13:50:45 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 5C4D32D272;
- Tue, 31 Oct 2023 09:32:40 +0000 (UTC)
-References: <20230906080950.23155-1-andrea.cervesato@suse.de>
- <87a5sw10qb.fsf@suse.de>
-User-agent: mu4e 1.10.7; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: rpalethorpe@suse.de
-Date: Tue, 31 Oct 2023 09:30:02 +0000
-Organization: Linux Private Site
-In-reply-to: <87a5sw10qb.fsf@suse.de>
-Message-ID: <87zfzzrvbc.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A6D5A21116
+ for <ltp@lists.linux.it>; Tue, 31 Oct 2023 12:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1698756644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=yFhFV9a25MwJtBNWkqMPbtn6+fL/Z4BJlS4rqLFRjKQ=;
+ b=BBzh0spyBYy38+3g70tox1xZECY16t8BfKY/PoZxdeBBKp+a0HWTwvjIwrkJF/DQ82ZbVS
+ aJSZ+Ye/S/ijaRlafrKENYWGYBiuJG/VozJEy/pSWlF+SrsQB+ygP5MLZo+Ul1Eg9XsFC7
+ ua5UCAx0iKKJ6kkPgmMdPK6XoQKe0BQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1698756644;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=yFhFV9a25MwJtBNWkqMPbtn6+fL/Z4BJlS4rqLFRjKQ=;
+ b=4AqBkafBAYyasGIsQScpg7c812XAbyqXN4MLpXZOPiJYGYNOL3eKdNRO0mRKULYR9cPlVm
+ CESV0JFyKBZh0qBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 90A661391B
+ for <ltp@lists.linux.it>; Tue, 31 Oct 2023 12:50:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id KKJFIyT4QGW2WgAAMHmgww
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Tue, 31 Oct 2023 12:50:44 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Date: Tue, 31 Oct 2023 13:51:13 +0100
+Message-ID: <20231031125114.5879-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Refactor fork12 using new LTP API
+Subject: [LTP] [PATCH v2] sched: add sched sysctl sanity test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,105 +72,196 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Currently the test fails due to kernel bug, I will send patch to LKML
+later on.
 
-Richard Palethorpe <rpalethorpe@suse.de> writes:
+The problem with kernel is that sysctl_sched_rt_period is unsigned int
+but it's processed with proc_dointvec() which means that you are allowed
+to write negative values into the variable even though documentation
+says it shouldn't be possible and the kernel code asserts that rt_period
+is > 0.
 
-> Hello,
->
-> Andrea Cervesato <andrea.cervesato@suse.de> writes:
->
->> -	cleanup();
->> -	tst_exit();
->> +	tst_res(TINFO, "Number of processes forked is %d", forks);
->> +	TST_EXP_EXPR(TST_ERR == EAGAIN, "last fork() failed with
->> EAGAIN");
->
-> I think it should at least accept ENOMEM as well.
->
->>  }
->>  
->> -static void setup(void)
->> +static void run(void)
->>  {
->> -	tst_sig(FORK, fork12_sigs, cleanup);
->> -	TEST_PAUSE;
->> +	int status;
->> +
->> +	child_pid = SAFE_FORK();
->> +	if (!child_pid) {
->
-> Maybe here we should start a new process group which we can kill later
-> in cleanup.
->
-> I guess you would call SAFE_SETPGID(0, 0) here.
->
->> +		start_forking();
->> +		return;
->> +	}
->> +
->> +	SAFE_WAIT(&status);
->>  }
->>  
->>  static void cleanup(void)
->>  {
->> -	int waitstatus;
->> +	kill(child_pid, 0);
->>  
->> -	/* collect our kids */
->> -	kill(0, SIGQUIT);
->> -	while (wait(&waitstatus) > 0) ;
->> +	if (errno != ESRCH)
->
-> Possibly errno is undefined if the call to kill was successful. Also
-> there is a race here. You probably should just do an unconditional
-> SIGKILL to all the children.
->
-> If you have a process group as mentioned above, then you should be able
-> to call kill(-child_pid, SIGKILL).
->
->> +		SAFE_KILL(child_pid, SIGKILL);
->>  }
->>  
->> -static void fork12_sigs(int signum)
->> -{
->> -	if (signum == SIGQUIT) {
->> -		/* Children will continue, parent will ignore */
->> -	} else {
->> -		tst_brkm(TBROK, cleanup,
->> -			 "Unexpected signal %d received.", signum);
->> -	}
->> -}
->> +static struct tst_test test = {
->> +	.test_all = run,
->> +	.cleanup = cleanup,
->> +	.forks_child = 1,
->> +	.max_runtime = 600,
->> +};
->> -- 
->> 2.35.3
->
-> BTW, tests like this seem to cause containers to become unresponsive. If
-> Kirk or LTX are running in the same container without any further
-> isolation then we could use all the resources assigned to a container on
-> forking. We can lock LTX in memory, but that still leaves CPU.
->
-> Perhaps the test could reduce its own process and memory limit? e.g. with prlimit
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
 
-This test also randomly fails outside of a container. Also other tests
-that are testing the limits. This makes me think more that setting lower
-prlimits is needed. Also this rewrite gets higher priority.
+- Fixed a few whitespaces
+- Added second kernel commit into metadata
 
+ runtest/sched                                 |   2 +
+ testcases/kernel/sched/sysctl/.gitignore      |   1 +
+ testcases/kernel/sched/sysctl/Makefile        |   7 +
+ .../kernel/sched/sysctl/proc_sched_rt01.c     | 122 ++++++++++++++++++
+ 4 files changed, 132 insertions(+)
+ create mode 100644 testcases/kernel/sched/sysctl/.gitignore
+ create mode 100644 testcases/kernel/sched/sysctl/Makefile
+ create mode 100644 testcases/kernel/sched/sysctl/proc_sched_rt01.c
+
+diff --git a/runtest/sched b/runtest/sched
+index 172fe4174..3457114f4 100644
+--- a/runtest/sched
++++ b/runtest/sched
+@@ -16,3 +16,5 @@ sched_cli_serv run_sched_cliserv.sh
+ sched_stress sched_stress.sh
+ 
+ autogroup01 autogroup01
++
++proc_sched_rt01
+diff --git a/testcases/kernel/sched/sysctl/.gitignore b/testcases/kernel/sched/sysctl/.gitignore
+new file mode 100644
+index 000000000..29b859b81
+--- /dev/null
++++ b/testcases/kernel/sched/sysctl/.gitignore
+@@ -0,0 +1 @@
++proc_sched_rt01
+diff --git a/testcases/kernel/sched/sysctl/Makefile b/testcases/kernel/sched/sysctl/Makefile
+new file mode 100644
+index 000000000..18896b6f2
+--- /dev/null
++++ b/testcases/kernel/sched/sysctl/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0-or-later
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sched/sysctl/proc_sched_rt01.c b/testcases/kernel/sched/sysctl/proc_sched_rt01.c
+new file mode 100644
+index 000000000..203846ae4
+--- /dev/null
++++ b/testcases/kernel/sched/sysctl/proc_sched_rt01.c
+@@ -0,0 +1,122 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) Cyril Hrubis <chrubis@suse.cz>
++ */
++
++/*\
++ * [Description]
++ *
++ * Sanity tests for the /proc/sys/kernel/sched_r* files.
++ *
++ * - The sched_rt_period_us range is 1 to INT_MAX
++ *   try invalid values and check for EINVAL
++ *
++ * - The sched_rt_runtime_us range is -1 to INT_MAX
++ *   try invalid values and check for EINVAL
++ *
++ * - The sched_rt_runtime_us must be less or equal to sched_rt_period_us
++ *
++ * - Reset sched_rr_timeslice_ms to default value by writing -1 and check that
++ *   we get the default value on next read.
++ *
++ * This is a regression test for a commits:
++ *
++ *   commit c1fc6484e1fb7cc2481d169bfef129a1b0676abe
++ *   Author: Cyril Hrubis <chrubis@suse.cz>
++ *   Date:   Wed Aug 2 17:19:06 2023 +0200
++ *
++ *       sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset
++ *
++ *  commit 079be8fc630943d9fc70a97807feb73d169ee3fc
++ *  Author: Cyril Hrubis <chrubis@suse.cz>
++ *  Date:   Mon Oct 2 13:55:51 2023 +0200
++ *
++ *       sched/rt: Disallow writing invalid values to sched_rt_period_us
++ */
++
++#include <stdio.h>
++#include "tst_test.h"
++
++#define RT_PERIOD_US "/proc/sys/kernel/sched_rt_period_us"
++#define RT_RUNTIME_US "/proc/sys/kernel/sched_rt_runtime_us"
++#define RR_TIMESLICE_MS "/proc/sys/kernel/sched_rr_timeslice_ms"
++
++static int period_fd;
++static int runtime_fd;
++
++static void rr_timeslice_ms_reset(void)
++{
++	long timeslice_ms;
++
++	SAFE_FILE_PRINTF(RR_TIMESLICE_MS, "-1");
++	SAFE_FILE_SCANF(RR_TIMESLICE_MS, "%li", &timeslice_ms);
++
++	TST_EXP_EXPR(timeslice_ms > 0,
++		"timeslice_ms > 0 after reset to default");
++}
++
++static void rt_period_us_einval(void)
++{
++	TST_EXP_FAIL(write(period_fd, "0", 2), EINVAL,
++		"echo 0 > "RT_PERIOD_US);
++	TST_EXP_FAIL(write(period_fd, "-1", 2), EINVAL,
++		"echo -1 > "RT_PERIOD_US);
++}
++
++static void rt_runtime_us_einval(void)
++{
++	TST_EXP_FAIL(write(runtime_fd, "-2", 2), EINVAL,
++		"echo -2 > "RT_RUNTIME_US);
++}
++
++static void rt_runtime_us_le_period_us(void)
++{
++	int period_us;
++	char buf[32];
++
++	SAFE_FILE_SCANF(RT_PERIOD_US, "%i", &period_us);
++
++	sprintf(buf, "%i", period_us+1);
++
++	TST_EXP_FAIL(write(runtime_fd, buf, strlen(buf)), EINVAL,
++		"echo rt_period_us+1 > "RT_RUNTIME_US);
++}
++
++static void verify_sched_proc(void)
++{
++	rr_timeslice_ms_reset();
++	rt_period_us_einval();
++	rt_runtime_us_einval();
++	rt_runtime_us_le_period_us();
++}
++
++static void setup(void)
++{
++	period_fd = open(RT_PERIOD_US, O_RDWR);
++	runtime_fd = open(RT_RUNTIME_US, O_RDWR);
++}
++
++static void cleanup(void)
++{
++	if (period_fd > 0)
++		SAFE_CLOSE(period_fd);
++
++	if (runtime_fd > 0)
++		SAFE_CLOSE(runtime_fd);
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_sched_proc,
++	.tags = (struct tst_tag []) {
++		{"linux-git", "c1fc6484e1fb"},
++		{"linux-git", "079be8fc6309"},
++		{}
++	},
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_SYSCTL",
++		NULL
++	},
++};
 -- 
-Thank you,
-Richard.
+2.41.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
