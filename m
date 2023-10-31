@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCFC6C4332F
-	for <ltp@archiver.kernel.org>; Tue, 31 Oct 2023 15:31:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E56EBC4332F
+	for <ltp@archiver.kernel.org>; Tue, 31 Oct 2023 15:39:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 031883CF391
-	for <ltp@archiver.kernel.org>; Tue, 31 Oct 2023 16:31:40 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 43D573CF39C
+	for <ltp@archiver.kernel.org>; Tue, 31 Oct 2023 16:39:11 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 61E233CC971
- for <ltp@lists.linux.it>; Tue, 31 Oct 2023 16:31:30 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 729EE3CC971
+ for <ltp@lists.linux.it>; Tue, 31 Oct 2023 16:39:00 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 95D8B60108F
- for <ltp@lists.linux.it>; Tue, 31 Oct 2023 16:31:28 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D638B2064EF
+ for <ltp@lists.linux.it>; Tue, 31 Oct 2023 16:38:59 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4644C21AF7;
- Tue, 31 Oct 2023 15:31:28 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 95EE61F74D;
+ Tue, 31 Oct 2023 15:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698766288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1698766738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=z2JutqgR15BZg1qahNbfajpUD/+4emyK9uBjtUppFfM=;
- b=MlbLpvzyO/XpFGmPSU5GUUSllmh4zQfBoyXZdBGEqqGhSZrVxMsACebBGxo76ffeZDOKUG
- WM7DTCSE+RwREQgr0szTs2W1bziIO9dPLEj3dF7bY2jB4JB7wgkwd+rOGJLbtoMKdu3Err
- iAJyiU1nSrfj32haiQdLVPjP0hEs7dE=
+ bh=cPS5nSSyrBYpIBhp2Ju2zuRZNn8Yh2H5hPMo8+k5g8U=;
+ b=I9A7WRYW3ATDXg0fqhEUh+TFXNlUmvmYJoVkWLkI4CJUixA1GXwjlJtAOlru8GHWb+t2cQ
+ JWcyAAOF3OSjjGzAQ8X1IjJK79zFEVDqn3GZg0jlL2fAahjLUAKH6bmnZoqPEOv+Fr7hbW
+ plQv31ZNd+CEqcBQLS0+VuMtPCEq//E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698766288;
+ s=susede2_ed25519; t=1698766738;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=z2JutqgR15BZg1qahNbfajpUD/+4emyK9uBjtUppFfM=;
- b=lexEeiLv1icYn+MlkUMVsOdguTPe7Zsz9NxcKFNz3fxjM1DwIViVD/dfUy1tlgaTa3IDzg
- FaJwT9S32C3fbwCA==
+ bh=cPS5nSSyrBYpIBhp2Ju2zuRZNn8Yh2H5hPMo8+k5g8U=;
+ b=BtFLS6OeN46bJafSduzFuLkn+FdpnE5pGOJ00ppqeIdO7bRj4175ZPDOI7kSdiEeh6e3Dh
+ aCGP6846Uq30yPDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E86981391B;
- Tue, 31 Oct 2023 15:31:27 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 83EE9138EF;
+ Tue, 31 Oct 2023 15:38:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id bNX3Ns8dQWW/NQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Tue, 31 Oct 2023 15:31:27 +0000
-Date: Tue, 31 Oct 2023 16:31:59 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id 7rmzH5IfQWWcOQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Tue, 31 Oct 2023 15:38:58 +0000
+Date: Tue, 31 Oct 2023 16:39:29 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Avinesh Kumar <akumar@suse.de>
-Message-ID: <ZUEd79N7aiC_VCDO@yuki>
-References: <87pm2yffmx.fsf@suse.de>
- <20230905160143.1076-1-akumar@suse.de>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <ZUEfsSXxSe4nIsyf@yuki>
+References: <20230825063932.30875-4-akumar@suse.de>
+ <20230905133118.23912-1-akumar@suse.de> <871qe412jm.fsf@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230905160143.1076-1-akumar@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+In-Reply-To: <871qe412jm.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/mmap15: Rewrite test using new LTP API
+Subject: Re: [LTP] [PATCH v2] syscalls/mmap14: Rewrite test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,62 +82,26 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> +	if (TST_RET_PTR != MAP_FAILED) {
-> +		tst_res(TFAIL, "mmap() into high mem region succeeded unexpectedly");
-> +		SAFE_MUNMAP(TST_RET_PTR, page_size);
-> +		return;
-> +	} else if (TST_RET_PTR == MAP_FAILED && (TST_ERR == ENOMEM || TST_ERR == EINVAL)) {
-
-There is no reason for an else branch if we do return in the previous
-one.
-
-Also we do return so TST_RET_PTR is always MAP_FAILED here, no need to
-test it again.
-
-> +		tst_res(TPASS | TERRNO, "mmap() failed with expected errno");
-> +	} else {
-> +		tst_res(TFAIL | TERRNO, "mmap() failed with unexpected errno");
->  	}
->  
-> -	cleanup();
-> -	tst_exit();
-> +	SAFE_CLOSE(fd);
->  }
->  
->  static void setup(void)
->  {
-> -	tst_require_root();
-> -
-> -	tst_tmpdir();
-> -
->  	page_size = getpagesize();
-> -
-> -	TEST_PAUSE;
->  }
->  
->  static void cleanup(void)
->  {
-> -	tst_rmdir();
-> +	if (fd > 0)
-> +		SAFE_CLOSE(fd);
->  }
-> +
-> +static struct tst_test test = {
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = run,
-> +	.needs_root = 1,
-
-Do we really need root?
-
-> +	.needs_tmpdir = 1
-> +};
-> -- 
-> 2.41.0
+> > -static void setup(void)
+> > +static void run(void)
+> >  {
+> > -	tst_require_root();
+> > +	unsigned int sz_before, sz_after, sz_diff;
+> >  
+> > -	tst_sig(FORK, DEF_HANDLER, cleanup);
+> > +	getvmlck(&sz_before);
+> >  
+> > -	TEST_PAUSE;
+> > -}
+> > +	if (((sz_before * 1024) + MMAPSIZE) > rlim.rlim_cur)
+> > +		tst_brk(TBROK, "Trying to exceed RLIMIT_MEMLOCK limit");
 > 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> Should this be TCONF not TBROK?
+
+TCONF also this should be done in the test setup()
+
+And optionally we may atempt to raise the limit as long as rlim_max >=
+than the size we need we can easily raise the rlim_cur.
 
 -- 
 Cyril Hrubis
