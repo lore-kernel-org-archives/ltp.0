@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC951C4332F
-	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 12:29:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BC26C4167B
+	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 12:50:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5173E3CE9B5
-	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 13:29:15 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 6E3EA3CE9BF
+	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 13:50:14 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A93763CC8DB
- for <ltp@lists.linux.it>; Wed,  1 Nov 2023 13:29:04 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 980113CC8DB
+ for <ltp@lists.linux.it>; Wed,  1 Nov 2023 13:50:03 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7C45014010D6
- for <ltp@lists.linux.it>; Wed,  1 Nov 2023 13:29:02 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3929A600847
+ for <ltp@lists.linux.it>; Wed,  1 Nov 2023 13:50:01 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 577481F74A;
- Wed,  1 Nov 2023 12:29:02 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E13FE211B7;
+ Wed,  1 Nov 2023 12:50:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698841742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1698843000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Afi/x1cqlkETf2ytVLlnxJXbRdDACARUd+S8E9HCSfM=;
- b=vYXk5CESJpEVk6CM0HfwcGDR+w0QaNV3MhTwLnxtSkM4REq1Ipasngl07m13YYA413cdXo
- c9ZJzAgJzVNWi9mMJmwp1LPtBVYqfQGv7WYhEY++g7YEKUuPgH0UI7Gpe4IcQ2+l8aSlGY
- /58VxcN0ORdyIPREz6h8LaQq+W1XKhU=
+ bh=xZSl0bEgfEcUjnW1PwqhCD/zC0Q2j4HXioEujLC/T1g=;
+ b=X7VFbGXZSXtSw+XQ9PqwTB3ZqDOFKTMzJQUps6KZ1amZ0DP8j4NOxZxCB7937o0u9GYieq
+ SKJR2CAshuOS4477PkZOJGGG1G1MemRaU3GMQCLRmU6CeMftuDckF5KVBmFwZw9DbaFDkY
+ mJyY2oPZsBLYwRxIYIBZcmRoPD31UAk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698841742;
+ s=susede2_ed25519; t=1698843000;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=Afi/x1cqlkETf2ytVLlnxJXbRdDACARUd+S8E9HCSfM=;
- b=0BlRd5K+EJ2B53RV4JziyPfKJ+9VjPnpmyXWR4mCQlvSdm98hHlHlw8fF6A/vBLEa6r/uA
- eJi8wdIYciNm4FDg==
+ bh=xZSl0bEgfEcUjnW1PwqhCD/zC0Q2j4HXioEujLC/T1g=;
+ b=wdYc6I8iqoLnldCaYvank+LY1lJu4qBKdtHBqjdTcQXDddXtaMywgov1aUL57MYL/i12ni
+ Gx9VgkC+dUHY81Bg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2FB151348D;
- Wed,  1 Nov 2023 12:29:02 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CEB1E1348D;
+ Wed,  1 Nov 2023 12:50:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id nnb5CI5EQmUgVQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 01 Nov 2023 12:29:02 +0000
-Date: Wed, 1 Nov 2023 13:29:32 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id +CI/MXhJQmX0XQAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Wed, 01 Nov 2023 12:50:00 +0000
+Date: Wed, 1 Nov 2023 13:50:32 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <ZUJErMEfJO4C7d3N@yuki>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <ZUJJmPJYqumtFZxh@yuki>
 References: <20230908102315.8163-1-andrea.cervesato@suse.de>
- <20230908102315.8163-2-andrea.cervesato@suse.de>
+ <20230908102315.8163-3-andrea.cervesato@suse.de>
+ <878r82yhyh.fsf@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230908102315.8163-2-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+In-Reply-To: <878r82yhyh.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/2] Add tst_gettid wrapper around gettid
- syscall
+Subject: Re: [LTP] [PATCH v3 2/2] Refactor exit_group01 using new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,50 +83,30 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
-> Signed-off-by: Andrea Cervesato <andrea.cervesato@suse.com>
-> ---
->  include/tst_pid.h | 8 ++++++++
->  lib/tst_pid.c     | 5 +++++
->  2 files changed, 13 insertions(+)
+> This could fail due to PID reuse or maybe because state == 'Z'.
 > 
-> diff --git a/include/tst_pid.h b/include/tst_pid.h
-> index 774c845ce..6958d5d23 100644
-> --- a/include/tst_pid.h
-> +++ b/include/tst_pid.h
-> @@ -50,4 +50,12 @@ static inline int tst_get_free_pids(void (*cleanup_fn)(void))
->   */
->  pid_t tst_getpid(void);
->  
-> +/*
-> + * Direct gettid() syscall. Some glibc versions cache gettid() return value
-> + * which can cause confusing issues for example in processes created by
-> + * direct clone() syscall (without using the glibc wrapper). Use this function
-> + * whenever the current process may be a child of the main test process.
-                                              ^
-					      thread spawned from the main ...
-> + */
-> +pid_t tst_gettid(void);
-> +
->  #endif /* TST_PID_H__ */
-> diff --git a/lib/tst_pid.c b/lib/tst_pid.c
-> index cfaa5db36..4e9dc7a52 100644
-> --- a/lib/tst_pid.c
-> +++ b/lib/tst_pid.c
-> @@ -166,3 +166,8 @@ pid_t tst_getpid(void)
->  {
->  	return syscall(SYS_getpid);
->  }
-> +
-> +pid_t tst_gettid(void)
-> +{
-> +	return syscall(SYS_gettid);
-> +}
-> -- 
-> 2.35.3
+> Perhaps instead we could check the threads are put into the Z state?
 > 
+> I guess that the child threads are reparented to init and it reaps
+> them. So you will have to prevent that by setting PR_SET_CHILD_SUBREAPER
+> on the main test process with prctl.
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> The man pages are not clear on this though. I guess this is how it works
+> from reading the kernel code.
+
+What about we:
+
+1) allocate a piece of shared memory
+2) each thread would run a loop that would increment a counter in that
+   memory
+3) the test process will wait() the main child
+4) then monitor the shared memory to make sure that counters are not
+   incremented anymore
+
+Also child threads shouldn't be reparented to init, as long as at least
+one of the threads runs the child process is technically alive and I
+guess that wait() will not return until last thread in the group is
+dead.
 
 -- 
 Cyril Hrubis
