@@ -4,67 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BC26C4167B
-	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 12:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6373FC4332F
+	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 14:15:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6E3EA3CE9BF
-	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 13:50:14 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 33CCE3CE9C6
+	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 15:15:07 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 980113CC8DB
- for <ltp@lists.linux.it>; Wed,  1 Nov 2023 13:50:03 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id 1AB753CC870
+ for <ltp@lists.linux.it>; Wed,  1 Nov 2023 15:14:56 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3929A600847
- for <ltp@lists.linux.it>; Wed,  1 Nov 2023 13:50:01 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E13FE211B7;
- Wed,  1 Nov 2023 12:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698843000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1C140200104
+ for <ltp@lists.linux.it>; Wed,  1 Nov 2023 15:14:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1698848093;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xZSl0bEgfEcUjnW1PwqhCD/zC0Q2j4HXioEujLC/T1g=;
- b=X7VFbGXZSXtSw+XQ9PqwTB3ZqDOFKTMzJQUps6KZ1amZ0DP8j4NOxZxCB7937o0u9GYieq
- SKJR2CAshuOS4477PkZOJGGG1G1MemRaU3GMQCLRmU6CeMftuDckF5KVBmFwZw9DbaFDkY
- mJyY2oPZsBLYwRxIYIBZcmRoPD31UAk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698843000;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=xZSl0bEgfEcUjnW1PwqhCD/zC0Q2j4HXioEujLC/T1g=;
- b=wdYc6I8iqoLnldCaYvank+LY1lJu4qBKdtHBqjdTcQXDddXtaMywgov1aUL57MYL/i12ni
- Gx9VgkC+dUHY81Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CEB1E1348D;
- Wed,  1 Nov 2023 12:50:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +CI/MXhJQmX0XQAAMHmgww
- (envelope-from <chrubis@suse.cz>); Wed, 01 Nov 2023 12:50:00 +0000
-Date: Wed, 1 Nov 2023 13:50:32 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Richard Palethorpe <rpalethorpe@suse.de>
-Message-ID: <ZUJJmPJYqumtFZxh@yuki>
-References: <20230908102315.8163-1-andrea.cervesato@suse.de>
- <20230908102315.8163-3-andrea.cervesato@suse.de>
- <878r82yhyh.fsf@suse.de>
+ bh=8fTRsr6tRg9Ug1cB85UsWkIjjZHjBBuWT+aBFd23W4Q=;
+ b=FdVbFBkSKehcqAnXZRSaKsOOu9MAD33G9H7baBKK/ZmtkUCvBTF12+hKqnFLhShrwPg21z
+ O2mX4rivGMRdM31rDAk+PCM7Bl8ZswEDidN8aBDtWdcla7F+NgAbKPF6+7x12395N8H23E
+ xc7XRLsUSQLicBtTnHNu3s5qE5MVyh8=
+Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
+ [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-563-77oRltXqPAiyJ8Z6GyaaIw-1; Wed, 01 Nov 2023 10:14:52 -0400
+X-MC-Unique: 77oRltXqPAiyJ8Z6GyaaIw-1
+Received: by mail-ua1-f69.google.com with SMTP id
+ a1e0cc1a2514c-7b6e3ddb27fso2445090241.3
+ for <ltp@lists.linux.it>; Wed, 01 Nov 2023 07:14:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1698848091; x=1699452891;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=8fTRsr6tRg9Ug1cB85UsWkIjjZHjBBuWT+aBFd23W4Q=;
+ b=FBufc/B/R0CR4CjYBR8JVBrGq26Xxs5rLTswQg793WEw/W45u+LgjpuFyBUiXdii5U
+ fMXgMgcnjObRja9qKC+wcN1BBy1fi9CXlDSvhWMP/neQJ2nklXBLuMNcoqSy6c7rNKM8
+ O6E+C1+NK7LrNuTaOtSpwN6lph3vyuvQ1jEUjR1VR5AMwz2IkcCQswFxcy2iJS9u9oOd
+ za2ef6JI0+DM9Ad9W1br0nbHZ1+nsoUxTUyBt0M6bysDXHUEsNcdtV0pRr3MKQOLvHmx
+ Vxxy13gWxhyCznA2QFUigb+bnTlUnvH5t35DLaBat5EO5R0jEr5SrgxWD8U09vLHnqbn
+ Br9g==
+X-Gm-Message-State: AOJu0YzlfdVikv1gCf8k+0TfP61+MlvIUB2DDWbHnQHj8eIg2+fc6Wgw
+ pTvTjpYLgPeArnb9v437eqRWjXwz0dHoRiVp4cd9U32Sv9D1vylOuIEbiV9PvaWkX/zZXMqpPGw
+ IR+w4s4MVeVF3kgna1+REmjl7nEU=
+X-Received: by 2002:a67:c30c:0:b0:457:c49c:bc63 with SMTP id
+ r12-20020a67c30c000000b00457c49cbc63mr15096490vsj.6.1698848091414; 
+ Wed, 01 Nov 2023 07:14:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFQe9wApc90LwW4DRJGuB0MScyPouAtpo3TNX+uefSYjLKG7WJ7YY/ngcVBegX1j9GeDo2Ibj6YbtgeYSeRkZ8=
+X-Received: by 2002:a67:c30c:0:b0:457:c49c:bc63 with SMTP id
+ r12-20020a67c30c000000b00457c49cbc63mr15096394vsj.6.1698848089715; Wed, 01
+ Nov 2023 07:14:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <878r82yhyh.fsf@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+References: <875y33vsks.fsf@suse.de> <87lebpu02a.fsf@suse.de>
+ <87msvxst71.fsf@suse.de> <20231101101200.GB884786@pevik>
+In-Reply-To: <20231101101200.GB884786@pevik>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 1 Nov 2023 15:14:33 +0100
+Message-ID: <CAASaF6zhLkdhpsbJqEZVyKxg6bHwG_iNzpYPrGumzY8PO-5saw@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/2] Refactor exit_group01 using new API
+Subject: Re: [LTP] Open monthly meeting 1st of November 09:00 UTC
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,41 +86,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Andrea Cervesato <acervesato@suse.de>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> This could fail due to PID reuse or maybe because state == 'Z'.
-> 
-> Perhaps instead we could check the threads are put into the Z state?
-> 
-> I guess that the child threads are reparented to init and it reaps
-> them. So you will have to prevent that by setting PR_SET_CHILD_SUBREAPER
-> on the main test process with prctl.
-> 
-> The man pages are not clear on this though. I guess this is how it works
-> from reading the kernel code.
-
-What about we:
-
-1) allocate a piece of shared memory
-2) each thread would run a loop that would increment a counter in that
-   memory
-3) the test process will wait() the main child
-4) then monitor the shared memory to make sure that counters are not
-   incremented anymore
-
-Also child threads shouldn't be reparented to init, as long as at least
-one of the threads runs the child process is technically alive and I
-guess that wait() will not return until last thread in the group is
-dead.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gV2VkLCBOb3YgMSwgMjAyMyBhdCAxMToxMuKAr0FNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKPgo+IEhpIGFsbCwKPgo+ID4gSGVsbG8sCj4KPiA+IFRoYW5rcyB0byBldmVy
+eW9uZSB3aG8gYXR0ZW5kZWQgdGhlIG1lZXRpbmcuIFNvbWUgb3V0Y29tZXM6Cj4gQWxzbyB0aGFu
+a3MgdG8gYWxsIGF0dGVuZGVycy4KPgo+ID4gMS4gVGhlcmUgd2VyZSBhdWRpbyBhbmQgY29ubmVj
+dGlvbiBpc3N1ZXMgd2l0aCBKaXRzaSwgd2Ugc2hvdWxkIHRyeQo+ID4gICAgc29tZXRoaW5nIGVs
+c2UgbmV4dCB0aW1lCj4KPiBDb3VsZCBhbnlib2R5IHRlc3QgaWYgbWVldCBmcm9tIGdvb2dsZSB3
+b3JrcyBmb3IgaGltPwo+IGh0dHBzOi8vbWVldC5nb29nbGUuY29tL3VkYy1uY3JzLXd4eAoKSSB0
+cmllZCwgaXQncyB3YWl0aW5nIGZvciBzb21lb25lIHRvIGxldCBtZSBpbi4KQnV0IEkgZG9uJ3Qg
+ZXhwZWN0IGlzc3VlcyAoYXQgbGVhc3QgZm9yIG1lL0xpKSwgd2UgZG8gdXNlIGl0IGludGVybmFs
+bHkuCgo+Cj4gS2luZCByZWdhcmRzLAo+IFBldHIKPgo+ID4gMi4gV2UnbGwgbWFrZSBiZXN0IGVm
+Zm9ydHMgdG8gY2hhc2UgcmV2aWV3ZXJzIGZvciB0aGVpciB0YWdzLCBidXQgd2UKPiA+ICAgIGRv
+bid0IGhhdmUgYSBiZXR0ZXIgc29sdXRpb24gZm9yIHRyYWNraW5nIGNvbnRyaWJ1dGlvbnMgdG8g
+cmV2aWV3Lgo+Cj4gPiAzLiBJJ2xsIGJlIG1vcmUgYWdncmVzc2l2ZSBpbiBhZGRpbmcgY2hhbmdl
+cyByZXF1ZXN0ZWQuIE1vc3Qgb2YgdGhlCj4gPiAgICByZXNwb25zaWJpbGl0eSBpcyB3aXRoIGNv
+bnRyaWJ1dG9ycyB0byByZW1lbWJlciB0byByZXN1Ym1pdCB0aGVpciBvd24KPiA+ICAgIHBhdGNo
+ZXMuCj4KPiA+IDQuIFBldHIgdm9yZWwgd2lsbCBtb3ZlIHBhdGNod29yayBpbnN0YW5jZXMuIFdl
+IGFjY2VwdCB0aGVyZSB3aWxsIGJlCj4gPiAgICBpc3N1ZXMgY2F1c2VkIGJ5IHRoZSBjaGFuZ2Vv
+dmVyLgo+Cj4gPiA1LiAzMCBtaW51dGVzIGlzIGdvb2QgbWVldGluZyB0aW1lIChJTU8gMTUtMzAg
+bWludXRlcyBpcyBmaW5lKQo+Cj4gPiA2LiBXZSBzaGFsbCB3cml0ZSBkb3duIGFuIGFnZW5kYSBu
+ZXh0IHRpbWUKPgo+ID4gUmljaGFyZCBQYWxldGhvcnBlIDxycGFsZXRob3JwZUBzdXNlLmRlPiB3
+cml0ZXM6Cj4KPiA+ID4gSGVsbG8sCj4KPiA+ID4gQWZ0ZXIgcmV2aWV3aW5nIHRoZSByZXNwb25z
+ZXMgdG8gdGhlIFJGQyBJIGhhdmUgY29tZSB1cCB3aXRoIHRoZQo+ID4gPiBmb2xsb3dpbmcgbWVl
+dGluZyBkZXRhaWxzLgo+Cj4gPiA+IFRpbWUgYW5kIGRhdGU6IEZpcnN0IFdlZG5lc2RheSBlYWNo
+IG1vbnRoIGF0IDA5OjAwIFVUQy4KPiA+ID4gUGxhdGZvcm06IGh0dHBzOi8vbWVldC5qaXQuc2kv
+bGludXgtdGVzdC1wcm9qZWN0Cj4KPiA+ID4gVGhlIGZpcnN0IG1lZXRpbmcgd2lsbCBiZSBvbiB0
+aGUgMXN0IG9mIE5vdmVtYmVyIGF0IDA5OjAwIFVUQy4KPgo+ID4gPiBJIGhhdmVuJ3QgdHJpZWQg
+dG8gYWRkcmVzcyB0aGUgbGFjayBvZiBjaGF0IGJyb3VnaHQgdXAgYnkgTGkuIEkgc3VnZ2VzdAo+
+ID4gPiB0cnlpbmcgSml0c2kgYW5kIGlmIHRoZXJlIGFyZSBpc3N1ZXMgdGhlbiB3ZSBnbyBmcm9t
+IHRoZXJlLgo+Cj4gLS0KPiBNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5p
+dC9saXN0aW5mby9sdHAKPgoKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5s
+aW51eC5pdC9saXN0aW5mby9sdHAK
