@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74C9BC4332F
-	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 11:11:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E58C8C4332F
+	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 11:17:36 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9B6FA3CE9C8
-	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 12:11:17 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 2BB673CE9AE
+	for <ltp@archiver.kernel.org>; Wed,  1 Nov 2023 12:17:35 +0100 (CET)
 Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 73CB33CC8E7
- for <ltp@lists.linux.it>; Wed,  1 Nov 2023 12:11:07 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id C96633CC8EB
+ for <ltp@lists.linux.it>; Wed,  1 Nov 2023 12:17:25 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0394F2009DB
- for <ltp@lists.linux.it>; Wed,  1 Nov 2023 12:11:06 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 1E4D02002B2
+ for <ltp@lists.linux.it>; Wed,  1 Nov 2023 12:17:24 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 42E761F74D;
- Wed,  1 Nov 2023 11:11:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id DA60D216DA;
+ Wed,  1 Nov 2023 11:17:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1698837065;
+ t=1698837443;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=E7bE6wtuMWFkspIfr9/m4CcGMCAEv6gSkJ+OZMrZICw=;
- b=23qpBhunZ5TIOlugYZT03Htrmr/OdqKO/B0PCYMyYZnuSDHtTtNpHH2GcAdgrsD41pZMDD
- lCAjNl4ob/PgvtMfS/NJ5SfofmexB78gOdu/JwxQA4i7qzAHeTCXsAA41ymLp7gALyA97z
- hCwKk+zLy0jS6iaio4KkPDrgrwBOQuI=
+ bh=HlJ/S/Mx0tH+ycbtFoIljdPOmbOhhmuiCMt1pwKM5Gs=;
+ b=vJN4OXkbXdG/B02xsgoi6YRi4DPZsWb2KDMLR6mB7EAPvog+oi2nfUnhES78RrPu+tKZhV
+ 47i0rxw+YnvnU1a5eRBSKyEEox4PVGM5E/zNZDtvNscD1SR8wZJ4jOFwXnVs6/3hPmqvrQ
+ reU3+GFB8ojLXcbNvpJPq02JRPipnHg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1698837065;
+ s=susede2_ed25519; t=1698837443;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=E7bE6wtuMWFkspIfr9/m4CcGMCAEv6gSkJ+OZMrZICw=;
- b=ga9xGZxeFemGPe9oaU23HXFWLdL98JNwYyUqvzAfgTxVcAq1eVLtxYxTNpvFbLx0emr4dO
- layx9vdGk4zTN7BA==
+ bh=HlJ/S/Mx0tH+ycbtFoIljdPOmbOhhmuiCMt1pwKM5Gs=;
+ b=vh6zHrW/FNI74u+D28kwYre3lPxbdYTpbtlcSXmsyOyYufjn9ue6ieY6JQu+txoovbQBHs
+ HWdad1NssFQi+EBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16C0213460;
- Wed,  1 Nov 2023 11:11:05 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7E3CF13460;
+ Wed,  1 Nov 2023 11:17:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OqvlAkkyQmXGMgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Wed, 01 Nov 2023 11:11:05 +0000
-Date: Wed, 1 Nov 2023 12:11:03 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id bBZCG8MzQmWyNQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Wed, 01 Nov 2023 11:17:23 +0000
+Date: Wed, 1 Nov 2023 12:17:22 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20231101111103.GA896131@pevik>
-References: <20231030110107.4528-1-andrea.cervesato@suse.de>
- <20231030110107.4528-2-andrea.cervesato@suse.de>
- <20231101103420.GC884786@pevik> <ZUIuNMoMbu2gGApM@yuki>
+To: Jan Stancek <jstancek@redhat.com>, Li Wang <liwang@redhat.com>
+Message-ID: <20231101111722.GB896131@pevik>
+References: <20231025140109.340441-1-pvorel@suse.cz>
+ <CAASaF6yVnrBK0UCxj4HRbi_scm84KS5Jm_xi8rUEuXcZXo=rZQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZUIuNMoMbu2gGApM@yuki>
+In-Reply-To: <CAASaF6yVnrBK0UCxj4HRbi_scm84KS5Jm_xi8rUEuXcZXo=rZQ@mail.gmail.com>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 1/2] Rewrite fsx-linux test
+Subject: Re: [LTP] [PATCH 0/2] Remove CentOS 7 support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,65 +78,46 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Ulrich Hecht <uli@kernel.org>, ltp@lists.linux.it,
+ Richard Palethorpe <rpalethorpe@suse.com>,
+ Martin Doucha <martin.doucha@suse.com>,
+ automated-testing@lists.yoctoproject.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Hi!
-> > > +++ b/testcases/kernel/fs/fsx-linux/fsx-linux.c
-> > > @@ -1,1353 +1,392 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > >  /*
-> > >   * Copyright (C) 1991, NeXT Computer, Inc.  All Rights Reserverd.
-> > > - * Copyright (c) 1998-2001 Apple Computer, Inc. All rights reserved.
-> > > - *
-> > > - * @APPLE_LICENSE_HEADER_START@
-> > > - *
-> > > - * The contents of this file constitute Original Code as defined in and
-> > > - * are subject to the Apple Public Source License Version 1.1 (the
-> > > - * "License").  You may not use this file except in compliance with the
-> > > - * License.  Please obtain a copy of the License at
-> > > - * http://www.apple.com/publicsource and read it before using this file.
+Hi all,
 
-> > I wonder if we can switch from APSL-1.1 to GPL-2.0-or-later
-> > https://spdx.org/licenses/APSL-1.1.html
+Note for myself: typo in subject s/ReAplace/Replace/
 
-> > "This is a complete rewrite of the old test." may justify that.
+> > we recently had yet another regression on old CentOS 7 (kernel 3.10,
+> > glibc 2.17, gcc 4.8.5 [1]. That brought me to the question if we still
+> > want to support it.
 
-> The test was written from scratch based loosely on what the original
-> stress test did, so I would say that the new license is okay.
+> > Although we test in SUSE also very old SLES releases, these are tested
+> > with older LTP releases. I suppose Red Hat does the same with RHEL
+> > (Li, Jan, please correct me if not, or feel free to introduce another
+> > CentOS version, as there will none with this patchset), thus why
+> > pretend current LTP is useful on these old releases.
 
-> But I suggested adding "Based on fxs.c test by Next Computer, Inc."
-> instead of the copyright lines, since I suppose that once we add these
-> copyrights we have to keep the original license.
+> Looking at internal LTP test wrapper, it's using older LTP release for RHEL7,
+> so your assumption appears to be correct.
 
-Sounds good, thanks!
-Not yet marking as changes requested (the real review should be done).
 
-> > > - * This Original Code and all software distributed under the License are
-> > > - * distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
-> > > - * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
-> > > - * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
-> > > - * FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT.  Please see the
-> > > - * License for the specific language governing rights and limitations
-> > > - * under the License.
-> > > - *
-> > > - * @APPLE_LICENSE_HEADER_END@
-> > ...
+> > I wonder who is actually interested in keeping LTP compilable for CentOS 7.
+> > According to distrowatch it EOL in 2024-06 [2], but does anybody even run new
+> > LTP on it. If yes, please speak up, but I'd expect that person to
+> > actually maintain CI failures.
 
-> > > -#include <sys/types.h>
-> > > -#include <sys/stat.h>
-> > > -#if defined(_UWIN) || defined(__linux__)
+> There's planned ELS until 2026, but I'd expect that continues using
+> older LTP for tests.
 
-> > I would also consider moving (and rename) the file to testcases/kernel/fs/fsx/fsx.c.
-> > We don't care about _UWIN any more.
-
-> I would keep the linux in the name, at least is clear that we do not
-> intend to be portable to BSDs etc. like the orignal code was.
-
-OK.
+@Li, Jan Could you please add your ABT or RBT?
+Also, feel free to add quay.io/centos/centos:stream9 or rockylinux:9 or
+rockylinux:8 or whatever makes sense to you. These are tested in
+https://github.com/iputils/iputils/blob/master/.github/workflows/ci.yml
+(it would have to be checked if ci/centos.sh needs be modified to support).
 
 Kind regards,
 Petr
