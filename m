@@ -4,57 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C553EC41535
-	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 09:50:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F856C4332F
+	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 09:51:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0BEAA3CE4DF
-	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 10:50:51 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id BBA933CE4FE
+	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 10:51:01 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7D0FD3CEB3C
- for <ltp@lists.linux.it>; Tue, 31 Oct 2023 02:53:17 +0100 (CET)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 872253CB831
+ for <ltp@lists.linux.it>; Thu,  2 Nov 2023 04:02:07 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 80770600750
- for <ltp@lists.linux.it>; Tue, 31 Oct 2023 02:53:12 +0100 (CET)
-X-UUID: e67e9f41a2914ef2a0357cb28757153b-20231031
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32, REQID:ec9b4dbb-8cf2-476c-b25e-53335b2502db, IP:20,
- URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
- ION:release,TS:30
-X-CID-INFO: VERSION:1.1.32, REQID:ec9b4dbb-8cf2-476c-b25e-53335b2502db, IP:20,
- UR
- L:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
- N:release,TS:30
-X-CID-META: VersionHash:5f78ec9, CLOUDID:39fe80d7-04a0-4e50-8742-3543eab8cb8e,
- B
- ulkID:23103109501841XJK58Q,BulkQuantity:1,Recheck:0,SF:66|24|17|19|44|102,
- TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,O
- SI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: e67e9f41a2914ef2a0357cb28757153b-20231031
-X-User: wangxuewen@kylinos.cn
-Received: from wxw-qitianm428-n000.. [(39.156.73.13)] by mailgw
- (envelope-from <wangxuewen@kylinos.cn>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 1219363071; Tue, 31 Oct 2023 09:53:04 +0800
-From: wangxuewen@kylinos.cn
-To: ltp@lists.linux.it
-Date: Tue, 31 Oct 2023 09:53:01 +0800
-Message-Id: <20231031015301.355147-1-wangxuewen@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 1B014600AD1
+ for <ltp@lists.linux.it>; Thu,  2 Nov 2023 04:02:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1698894124;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XQCQj5geVnZ+0WvFn3eMsdAzGEZlly7DoPULEtnC1tI=;
+ b=ByKtO0ZJIid8rwRaArQ4mGs3CmEzPUn04xR5YSUhFWag6iUfArnmEcz40NWT8pysnUQ6y6
+ DDQcDmyyK1JBxe6iaAQ2y23xsJoqf4WGj9zXmbhxrX1TEyi4/h4CIQjmYGhIkmWQR6aGpe
+ AjDKEQxHj5s9+l0GfJNdBMuTRgIi1lA=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-556-uJMnVNZ2OWC8nmXL2jt9TA-1; Wed, 01 Nov 2023 23:02:00 -0400
+X-MC-Unique: uJMnVNZ2OWC8nmXL2jt9TA-1
+Received: by mail-oo1-f69.google.com with SMTP id
+ 006d021491bc7-581e2fc1178so651170eaf.0
+ for <ltp@lists.linux.it>; Wed, 01 Nov 2023 20:02:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1698894120; x=1699498920;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=XQCQj5geVnZ+0WvFn3eMsdAzGEZlly7DoPULEtnC1tI=;
+ b=mu9x3Kvu6FxzCk8otF2a2tnDP07AqZjxyUm5BfehU51ExBQffOiOtvqjV+fyPY292J
+ RmhEbe7CKL/UE8qCfQ1pG12BgGjTIVguX+DmauDfLHNgOYpaPyqXw6aiorlAJik22E/W
+ 0R0bRFQY6OPR093D57Jt+lahL6tvqLilh87EjP2niGSMUvkqG62X0RP8nqp+DqZexWA4
+ RtxlS7sDaiQsrN+xU7Y07grBfMPffcz1r95C7C9CeQb/cF8iCR/JEhwayZos0UhNKaBB
+ MJEeEZ5ek29MtMU2CeE90Zvwe51UfAsUdZJoCBxk2FgHCIkPqciJVnVI8K0swcD2tqjd
+ pejA==
+X-Gm-Message-State: AOJu0Yz/2wvl1lHp535kZhCQpHUKbxULKd8knpy7sGIfrIxT1q4jvfcc
+ Un8yKZk+oGoJPEh/FKlvq25aksgivx2UJWDDXoV5jMWdZ5BT4W6/jveHNYzHHTBI5njvhQLajt2
+ k6XvoKBN1ccoNiOZKidUIa3sUgGE=
+X-Received: by 2002:a05:6820:179a:b0:581:d6a6:478a with SMTP id
+ bs26-20020a056820179a00b00581d6a6478amr2770302oob.0.1698894120153; 
+ Wed, 01 Nov 2023 20:02:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEcsOfRJZghUoPnVHTrB9d1chRc02QuE7++9FC8uC9BkaJQcyNsp+mJPbvnn/g5hZU/xJDixerfVKG44ePp4bQ=
+X-Received: by 2002:a05:6820:179a:b0:581:d6a6:478a with SMTP id
+ bs26-20020a056820179a00b00581d6a6478amr2770282oob.0.1698894119836; Wed, 01
+ Nov 2023 20:01:59 -0700 (PDT)
 MIME-Version: 1.0
+References: <20231025140109.340441-1-pvorel@suse.cz>
+ <CAASaF6yVnrBK0UCxj4HRbi_scm84KS5Jm_xi8rUEuXcZXo=rZQ@mail.gmail.com>
+ <20231101111722.GB896131@pevik>
+ <CAASaF6zVpEvG8NXLOyKo5Lp9rKcbg_=5_=xRRpVFKjRaqGzL6w@mail.gmail.com>
+ <CAEemH2eehZbY9S=xYtOLAas=TOzFqdfvPyTy5UY-uFs20OtX7g@mail.gmail.com>
+In-Reply-To: <CAEemH2eehZbY9S=xYtOLAas=TOzFqdfvPyTy5UY-uFs20OtX7g@mail.gmail.com>
+From: Chao Ye <cye@redhat.com>
+Date: Thu, 2 Nov 2023 11:01:23 +0800
+Message-ID: <CAL3eej4VQ3hrfT2Q=oi_=zjCFkj9JBuGz2Cduu-PFXu0U0w1vA@mail.gmail.com>
+To: Li Wang <liwang@redhat.com>, Jan Stancek <jstancek@redhat.com>
+X-Mimecast-Spam-Score: 1
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Mailman-Approved-At: Tue, 14 Nov 2023 10:50:40 +0100
-Subject: [LTP] [PATCH] hugemmap24: loongarch:Add __longarch__ for
- compatibility with Loongarch
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 0/2] Remove CentOS 7 support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,57 +90,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: wangxuewen <wangxuewen@kylinos.cn>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: Ulrich Hecht <uli@kernel.org>, Martin Doucha <martin.doucha@suse.com>,
+ Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it,
+ automated-testing@lists.yoctoproject.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: wangxuewen <wangxuewen@kylinos.cn>
-
-This allows for a lower address branch on the Longarch platform.
-
-./hugemmap24
-tst_hugepage.c:83: TINFO: 4 hugepage(s) reserved
-tst_test.c:1560: TINFO: Timeout per run is 0h 00m 30s
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0x20000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0x30000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0x40000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0x50000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0x60000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0x70000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0x80000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0x90000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0xa0000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0xb0000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0xc0000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0xd0000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0xe0000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0xf0000000000: EINVAL (22)
-hugemmap24.c:64: TINFO: can't use slice_boundary: 0x100000000000: EINVAL (22)
-hugemmap24.c:72: TFAIL: couldn't find 2 free neighbour slices: EINVAL (22)
-
-Signed-off-by: wangxuewen <wangxuewen@kylinos.cn>
----
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c
-index 158a03010..431dc1bbf 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap24.c
-@@ -30,7 +30,7 @@ static int init_slice_boundary(int fd)
- 	unsigned long slice_size;
- 	void *p, *heap;
- 	int i;
--#if defined(__LP64__) && !defined(__aarch64__)
-+#if defined(__LP64__) && !defined(__aarch64__) && !defined(__loongarch__)
- 	/* powerpc: 1TB slices starting at 1 TB */
- 	slice_boundary = 0x10000000000;
- 	slice_size = 0x10000000000;
--- 
-2.34.1
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+TGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5jb20+IOS6jjIwMjPlubQxMeaciDLml6Xlkajlm5sgMTA6
+NTDlhpnpgZPvvJoKCj4gSGkgSmFuLCBBbGwsCj4KPgo+IE9uIFdlZCwgTm92IDEsIDIwMjMgYXQg
+ODoyOOKAr1BNIEphbiBTdGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29tPiB3cm90ZToKPgo+PiBP
+biBXZWQsIE5vdiAxLCAyMDIzIGF0IDEyOjE34oCvUE0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
+Y3o+IHdyb3RlOgo+PiA+Cj4+ID4gSGkgYWxsLAo+PiA+Cj4+ID4gTm90ZSBmb3IgbXlzZWxmOiB0
+eXBvIGluIHN1YmplY3Qgcy9SZUFwbGFjZS9SZXBsYWNlLwo+PiA+Cj4+ID4gPiA+IHdlIHJlY2Vu
+dGx5IGhhZCB5ZXQgYW5vdGhlciByZWdyZXNzaW9uIG9uIG9sZCBDZW50T1MgNyAoa2VybmVsIDMu
+MTAsCj4+ID4gPiA+IGdsaWJjIDIuMTcsIGdjYyA0LjguNSBbMV0uIFRoYXQgYnJvdWdodCBtZSB0
+byB0aGUgcXVlc3Rpb24gaWYgd2UKPj4gc3RpbGwKPj4gPiA+ID4gd2FudCB0byBzdXBwb3J0IGl0
+Lgo+PiA+Cj4+ID4gPiA+IEFsdGhvdWdoIHdlIHRlc3QgaW4gU1VTRSBhbHNvIHZlcnkgb2xkIFNM
+RVMgcmVsZWFzZXMsIHRoZXNlIGFyZQo+PiB0ZXN0ZWQKPj4gPiA+ID4gd2l0aCBvbGRlciBMVFAg
+cmVsZWFzZXMuIEkgc3VwcG9zZSBSZWQgSGF0IGRvZXMgdGhlIHNhbWUgd2l0aCBSSEVMCj4+ID4g
+PiA+IChMaSwgSmFuLCBwbGVhc2UgY29ycmVjdCBtZSBpZiBub3QsIG9yIGZlZWwgZnJlZSB0byBp
+bnRyb2R1Y2UKPj4gYW5vdGhlcgo+PiA+ID4gPiBDZW50T1MgdmVyc2lvbiwgYXMgdGhlcmUgd2ls
+bCBub25lIHdpdGggdGhpcyBwYXRjaHNldCksIHRodXMgd2h5Cj4+ID4gPiA+IHByZXRlbmQgY3Vy
+cmVudCBMVFAgaXMgdXNlZnVsIG9uIHRoZXNlIG9sZCByZWxlYXNlcy4KPj4gPgo+PiA+ID4gTG9v
+a2luZyBhdCBpbnRlcm5hbCBMVFAgdGVzdCB3cmFwcGVyLCBpdCdzIHVzaW5nIG9sZGVyIExUUCBy
+ZWxlYXNlCj4+IGZvciBSSEVMNywKPj4gPiA+IHNvIHlvdXIgYXNzdW1wdGlvbiBhcHBlYXJzIHRv
+IGJlIGNvcnJlY3QuCj4+ID4KPj4gPgo+PiA+ID4gPiBJIHdvbmRlciB3aG8gaXMgYWN0dWFsbHkg
+aW50ZXJlc3RlZCBpbiBrZWVwaW5nIExUUCBjb21waWxhYmxlIGZvcgo+PiBDZW50T1MgNy4KPj4g
+PiA+ID4gQWNjb3JkaW5nIHRvIGRpc3Ryb3dhdGNoIGl0IEVPTCBpbiAyMDI0LTA2IFsyXSwgYnV0
+IGRvZXMgYW55Ym9keQo+PiBldmVuIHJ1biBuZXcKPj4gPiA+ID4gTFRQIG9uIGl0LiBJZiB5ZXMs
+IHBsZWFzZSBzcGVhayB1cCwgYnV0IEknZCBleHBlY3QgdGhhdCBwZXJzb24gdG8KPj4gPiA+ID4g
+YWN0dWFsbHkgbWFpbnRhaW4gQ0kgZmFpbHVyZXMuCj4+ID4KPj4gPiA+IFRoZXJlJ3MgcGxhbm5l
+ZCBFTFMgdW50aWwgMjAyNiwgYnV0IEknZCBleHBlY3QgdGhhdCBjb250aW51ZXMgdXNpbmcKPj4g
+PiA+IG9sZGVyIExUUCBmb3IgdGVzdHMuCj4+ID4KPj4gPiBATGksIEphbiBDb3VsZCB5b3UgcGxl
+YXNlIGFkZCB5b3VyIEFCVCBvciBSQlQ/Cj4+Cj4+IEFja2VkLWJ5OiBKYW4gU3RhbmNlayA8anN0
+YW5jZWtAcmVkaGF0LmNvbT4KPj4KPgo+IFJldmlld2VkLWJ5OiBMaSBXYW5nIDxsaXdhbmdAcmVk
+aGF0LmNvbT4KPgo+Cj4+Cj4+ID4gQWxzbywgZmVlbCBmcmVlIHRvIGFkZCBxdWF5LmlvL2NlbnRv
+cy9jZW50b3M6c3RyZWFtOSBvciByb2NreWxpbnV4Ojkgb3IKPj4gPiByb2NreWxpbnV4Ojggb3Ig
+d2hhdGV2ZXIgbWFrZXMgc2Vuc2UgdG8geW91LiBUaGVzZSBhcmUgdGVzdGVkIGluCj4+ID4gaHR0
+cHM6Ly9naXRodWIuY29tL2lwdXRpbHMvaXB1dGlscy9ibG9iL21hc3Rlci8uZ2l0aHViL3dvcmtm
+bG93cy9jaS55bWwKPj4gPiAoaXQgd291bGQgaGF2ZSB0byBiZSBjaGVja2VkIGlmIGNpL2NlbnRv
+cy5zaCBuZWVkcyBiZSBtb2RpZmllZCB0bwo+PiBzdXBwb3J0KS4KPj4KPj4gQExpOiBEbyB5b3Ug
+a25vdyB3aG8vaG93IGZyZXF1ZW50bHkgdXBkYXRlcyBjOXMgaW1hZ2U/Cj4+Cj4KPiBJJ20gbm90
+IHN1cmUgYWJvdXQgaXQuIEkgZ3Vlc3MgQ2hhbyBZZSBrbm93cyBiZXR0ZXIgdGhhbiBtZS4KPgo+
+ClRoZSBvZmZpY2FsIGNlbnRvcyBzdHJlYW0gaW1hZ2VzIHdvdWxkIGJlOgpodHRwczovL3F1YXku
+aW8vY2VudG9zL2NlbnRvczpzdHJlYW05Cmh0dHBzOi8vcXVheS5pby9jZW50b3MvY2VudG9zOnN0
+cmVhbTgKCkFjY29yZGluZyB0byBodHRwczovL3NpZ3MuY2VudG9zLm9yZy9oeXBlcnNjYWxlL2Nv
+bnRlbnQvY29udGFpbmVycy8KIlRoaXMgY29udGFpbmVyIGltYWdlIGlzIGF1dG9tYXRpY2FsbHkg
+YnVpbHQgZnJvbSBzY3JhdGNoIG9uIHRoZSBDZW50T1MgQ0kKaW5mcmFzdHJ1Y3R1cmUgYW5kIHB1
+c2hlZCB3ZWVrbHkuIgpSZWY6IGh0dHBzOi8vcGFndXJlLmlvL2NlbnRvcy1zaWctaHlwZXJzY2Fs
+ZS9jb250YWluZXJzLXJlbGVuZwoKVGhhbmtzLApDaGFvCgoKPiBDYydpbmcgQ2hhbyBZZS4KPgo+
+IC0tCj4gUmVnYXJkcywKPiBMaSBXYW5nCj4KCgotLSAKTmFtZTogQ2hhbyBZZQpUZWFtOiBLZXJu
+ZWwtUUUKTW9iaWxlOiArODYtMTg2MC0xMTItMDc0NQoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBo
+dHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
