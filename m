@@ -4,62 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0573C4332F
-	for <ltp@archiver.kernel.org>; Thu,  2 Nov 2023 13:12:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC124C4332F
+	for <ltp@archiver.kernel.org>; Thu,  2 Nov 2023 13:15:28 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C96C03CC8DD
-	for <ltp@archiver.kernel.org>; Thu,  2 Nov 2023 14:12:00 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 81ED53CCD79
+	for <ltp@archiver.kernel.org>; Thu,  2 Nov 2023 14:15:27 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id A08183C99B0
- for <ltp@lists.linux.it>; Thu,  2 Nov 2023 14:11:51 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ by picard.linux.it (Postfix) with ESMTPS id DB73B3CC8C8
+ for <ltp@lists.linux.it>; Thu,  2 Nov 2023 14:15:17 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 04910608A7E
- for <ltp@lists.linux.it>; Thu,  2 Nov 2023 14:11:49 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 3868A219C3;
- Thu,  2 Nov 2023 13:11:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1698930709;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=WqKi+8YEt010l24uIgan4M8+amf8pi/2aye7mqMzYL0=;
- b=m2HjGxezQ3wknVU0twHOt8uC9xqfWiPC3hz81Ee1QUX6MlbqurG+96IzLR8P7TjMzheam+
- 7PEBmewz4KkhD+AKes/xPytsrJUlT553UYH++QUT1wsQaALIprpWoagon7EkMD8VmDjlT0
- 6ShQSO+wJdCMNjLmkS8JG7YCC+up4qA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1698930709;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=WqKi+8YEt010l24uIgan4M8+amf8pi/2aye7mqMzYL0=;
- b=fNcyuHbsovq53h/KxiVKVSBEi5OVkMPraMev/N6YyK8nk6+ojjqtsRh+e7/QDwzyD0MoS6
- G+r2djFGYEq8hXCw==
-Received: from g78 (rpalethorpe.udp.ovpn2.prg.suse.de [10.100.204.110])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4B63A200741
+ for <ltp@lists.linux.it>; Thu,  2 Nov 2023 14:15:16 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id A745D2C4B8;
- Thu,  2 Nov 2023 13:11:48 +0000 (UTC)
-References: <20230907150538.16772-1-andrea.cervesato@suse.de>
- <ZUJydZgdGTcPQAxt@yuki>
-User-agent: mu4e 1.10.7; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 02 Nov 2023 12:56:33 +0000
-Organization: Linux Private Site
-In-reply-to: <ZUJydZgdGTcPQAxt@yuki>
-Message-ID: <87edh8s3jf.fsf@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 51E8F1F8D4
+ for <ltp@lists.linux.it>; Thu,  2 Nov 2023 13:15:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1698930916; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=wB7A9LB9dQg6ydih0YkX6QHMvMS8L/GQaKaH8Ck4MOI=;
+ b=2PTjgU+I3uuyFaDwti3vcJB4DO+dhLqvH27ShQ+hQU4xUZOJgnzOSKXM1ZWbBPhORMiF8T
+ bgq27qvpWsyCzfVR+yJrB6D5bt8+wZam/URNEIO5a1YObXyPbYOdajEFU9c24rlczCQNfS
+ cIYqp6yuo8/SFDY6KdAmLTf+HSmCnAA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1698930916;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=wB7A9LB9dQg6ydih0YkX6QHMvMS8L/GQaKaH8Ck4MOI=;
+ b=jOW856SFgTGC/CSUUKyCz1d7zI7Xwa23CFhLm471hs4cayBLu0wDqrgK5OCUi6dJHxpXsl
+ EqleqK+t00YMU5AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 407AD13584
+ for <ltp@lists.linux.it>; Thu,  2 Nov 2023 13:15:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id SmqpDuSgQ2WFYQAAMHmgww
+ (envelope-from <mkittler@suse.de>)
+ for <ltp@lists.linux.it>; Thu, 02 Nov 2023 13:15:16 +0000
+From: Marius Kittler <mkittler@suse.de>
+To: ltp@lists.linux.it
+Date: Thu, 02 Nov 2023 14:15:15 +0100
+Message-ID: <1880149.tdWV9SEqCh@linux-9lzf>
+In-Reply-To: <ZTvQMpx-q4LnBJgN@yuki>
+References: <20231026114716.17545-1-mkittler@suse.de>
+ <20231026114716.17545-5-mkittler@suse.de> <ZTvQMpx-q4LnBJgN@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Refactor fork09 using new LTP API
+Subject: Re: [LTP] [PATCH v9 4/4] Extend ioctl02 to test termio and termios
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,48 +77,50 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
-
-Cyril Hrubis <chrubis@suse.cz> writes:
-
+Am Freitag, 27. Oktober 2023, 16:58:58 CET schrieb Cyril Hrubis:
 > Hi!
-> Honestly I'm struggling to understand the point of this test, the
-> description says:
->
-> "Check that child has access to a full set of files"
->
-> What is that supposed to mean? I guess that if we wanted to check that
-> the child has inherited the file descriptors ee should open a few files,
-> do some changes in the child/parent and check that they are not propagated to
-> the other one. I.e. reading from a file in child/parent does not change
-> file offset in parent. Closing a file descriptor from a child/parent
-> does not close the file in the other one, etc.
+> 
+> > +static void chk_tty_parms_termio(void)
+> > +{
+> > +	int i, flag = 0;
+> > 
+> > +	CMP_ATTR(termio_exp, termio, c_line);
+> > +	CHECK_CONTROL_CHARS(termio);
+> > +	CMP_ATTR(termio_exp, termio, c_lflag);
+> > +	CMP_ATTR(termio_exp, termio, c_iflag);
+> > +	CMP_ATTR(termio_exp, termio, c_oflag);
+> 
+> I do not see a reason why this cannot be a function, the only difference
+> would be that we would have to do cmp_attr(termio_exp, termio->c_line)
+> instead.
 
-This is what the fork10 rewrite does unless I am mistaken? So possibly
-they can be combined.
+I'm not sure whether I understand this suggestion. If the first parameter is 
+still just termio_exp, how would that function know what field in termio_exp to 
+compare with? I guess you had an invocation like this in mind:
 
-fork12's description sugggests it does the same thing, but thhe test
-just seems to test forking until a resource limit is hit. This overlaps
-other tests and can probably be deleted.
+cmp_attr(termio_exp->c_line, termio->c_line)
 
->
-> Also why do we use fopen() instead of just open()?
->
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+That would be possible. The repetition of the attribute name is not nice. Of 
+course we'd also lose the attribute name in the error message. This could be 
+solved by passing it as string and doing a dynamic string concatenation in the 
+function, so the invocation would look like this:
+
+cmp_attr(termio_exp->c_line, termio->c_line, "c_line")
+
+This would also mean two additional implicit type conversions per call of this 
+function within chk_tty_parms_termio() because termio uses smaller sized types 
+than termios and the cmp_attr() function would need to decide on one type (and 
+we'd have to pick the larger size).
+
+So I'm honestly not sure whether any of this is better than just making it a 
+macro or maybe I don't understand your suggestion.
 
 
--- 
-Thank you,
-Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
