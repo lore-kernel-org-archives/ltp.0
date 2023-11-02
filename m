@@ -4,125 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4DDBC4332F
-	for <ltp@archiver.kernel.org>; Thu,  2 Nov 2023 13:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C7C4C4332F
+	for <ltp@archiver.kernel.org>; Thu,  2 Nov 2023 15:24:19 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CCF4C3CE99B
-	for <ltp@archiver.kernel.org>; Thu,  2 Nov 2023 14:31:57 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 1FC723CE988
+	for <ltp@archiver.kernel.org>; Thu,  2 Nov 2023 16:24:17 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7F03D3C008C
- for <ltp@lists.linux.it>; Thu,  2 Nov 2023 14:31:46 +0100 (CET)
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur04on0621.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe0e::621])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 16CA23CC8A2
+ for <ltp@lists.linux.it>; Thu,  2 Nov 2023 16:24:06 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 3A140600648
- for <ltp@lists.linux.it>; Thu,  2 Nov 2023 14:31:45 +0100 (CET)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EU1MYjthTvyAnOsI0rf/q4ZmHHlIK9tQzDK59XW5AfGOEBYed5X6rgLHMA4R0tsEG1KG0shzqLsypJDLc0wwwabMc7xCI8Un0RetPn6SWHvMsAC1NShWYym50SyHbXmpMBlx5IJJiVEHddsNobkgvhLOlBFdc7OpJ2B3Relg1z5BoY/IfAKGQ8lEH+63JTDMwYVzxbUuqg7oFSvVro8noPynGZch5tK1xyvzWrHfzsQqiGVw4cuIOR7zzhI+I2aUuCQumY4875TakLpKrOvdzcHgzvUkMLo7p6wyjYzRxFQnfIFESFep1dq7oqcNn8lYXLnUVsMxut28m4hpusycyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9NBjPxC9xhRoVwDYynUUPOoIBSeXysPBSvVzwCAL0UI=;
- b=f77FiwyAFfiw0muFnNdml96LqANBK4Dayqe01vtjNQMXptNyyiksSq2s/xDX0bxsj9SqTJhGynsGDDmeKXCU7FkNIFp4A+epN7Wo466JKfnJGkFXMZoBEWjV2zTUi1xSNlrSib8+5A8GuYQCVll7VrHCOveg2bHQF2pevQwEtyUuked/sxhoDKS3C1QJWKT5dudQ3oeKCBYtxCOB3qKGhQZRddzinZA6doX30O4X6ErzNXsjY7NvFNY1zJGNH2eX5CGC8GPtLNuZ8zJQ8LYVGzJTpcXKtJFU1Kii7y8HfyRP7raIfVKVDFyh4EisqjoS2m9Gd/en5A+eSEjf3sv62w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9NBjPxC9xhRoVwDYynUUPOoIBSeXysPBSvVzwCAL0UI=;
- b=HvNU58ZfjwKJYCo22ZDe/wA3XjE+LlcLYLLYCwIAfiad2F6PFZbycqlPKFTgBub8Nel8E1Ci4uFE2Lql5Vj9ABMyQAkO1jcGZ4VYnvOVMg42232dgisJQXSjUW9x1NNmcu2ZdsqBlogLOHy7MCDbaRygpH0zhQBDJTMxAzG+wXHHVI4lsJ0oELXUX0qyDKq/WCSmo+eEnqVlQqKwGz+tvloclGEkJWVKa65oHkH7WEszlaY0a8CebugDnHUIBiGDEAsC4kS9ZVC1OCJk2WoejUjKDAoUISibNuLevA0tyaTqC5BF5xWhjWXhVg35SSWF+ybM5VqAtR+TSfKaHUshsQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB6797.eurprd04.prod.outlook.com (2603:10a6:803:13e::13)
- by AM0PR04MB6996.eurprd04.prod.outlook.com (2603:10a6:208:18b::24)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.18; Thu, 2 Nov
- 2023 13:31:43 +0000
-Received: from VI1PR04MB6797.eurprd04.prod.outlook.com
- ([fe80::fe32:e823:6c2a:ec3a]) by VI1PR04MB6797.eurprd04.prod.outlook.com
- ([fe80::fe32:e823:6c2a:ec3a%7]) with mapi id 15.20.6954.019; Thu, 2 Nov 2023
- 13:31:42 +0000
-Message-ID: <7263d01f-5cfb-4c2e-aa02-1758fea6c435@suse.com>
-Date: Thu, 2 Nov 2023 14:31:35 +0100
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2315420A6C3
+ for <ltp@lists.linux.it>; Thu,  2 Nov 2023 16:24:04 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 49BBB1F8C1;
+ Thu,  2 Nov 2023 15:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1698938643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=G2cuuUct3g6PN/JYlY9j2IGaS5JeGGg0wQ1fDbgeU/w=;
+ b=OmbAQrTN8cwKLQi1yWPw8YIRJ1ftF9pIM7Deji3uJz1PH0YaA6qGm0rWqbItcW8S/bT5Rq
+ 9eNhBankUc6KB5HWbf+0FUwAxj4b7ZHc9ZVTUfEWc9ec329aXpHTapTunxFvgnQ5qn3sMv
+ eSkbK7+Q9MwNVJ3DX4GYJs5M7EsZz4U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1698938643;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=G2cuuUct3g6PN/JYlY9j2IGaS5JeGGg0wQ1fDbgeU/w=;
+ b=T8VeJbsEgDZW/NVR5+QE2Fi4dbvMd8i0szDrdkLbMipKOSlqbxAhC3X7KepdtVysGa7CYb
+ DTj++Ls+4nmicwBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 252E313584;
+ Thu,  2 Nov 2023 15:24:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 2fEGCBO/Q2VoLAAAMHmgww
+ (envelope-from <mkittler@suse.de>); Thu, 02 Nov 2023 15:24:03 +0000
+From: Marius Kittler <mkittler@suse.de>
 To: ltp@lists.linux.it
-References: <20230906080950.23155-1-andrea.cervesato@suse.de>
- <87a5sw10qb.fsf@suse.de> <87zfzzrvbc.fsf@suse.de> <ZUEkhFYIJogalhpq@yuki>
- <87r0l9swzl.fsf@suse.de>
-In-Reply-To: <87r0l9swzl.fsf@suse.de>
-X-ClientProxiedBy: FR4P281CA0228.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:e9::9) To VI1PR04MB6797.eurprd04.prod.outlook.com
- (2603:10a6:803:13e::13)
+Date: Thu,  2 Nov 2023 16:24:00 +0100
+Message-ID: <20231102152400.12705-1-mkittler@suse.de>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6797:EE_|AM0PR04MB6996:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4c7a72e8-cc1a-43e1-11f4-08dbdba80cc4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: a3w+uh1WirHlD+i2qThYhPLHbnc3GXAW+bL/wqu5yI4RrD2en8tXLcI8knhh+zLtwat5xbYUT7w/dxBlmIQXTTrQbC8i8al4Pj0au4PmhOZDmShIWyQQeerQYY5onCsJQWCME6zDQJWiOdrwqGK0gKgKQeKppIRmj41v0RtA1dbE+vsi8uVF+lw00LWjcihkpfSMQLvIKcpQrEKF2zzSPS4Y0HxB3c7qTkSEcMb5yVASZkBF4gjWwbOk8M+Ap+DL1T4oE+65ZTgsQ01Yxc+fuQoYLmGK/Xo/mAqqKqd9xcTvHTuUHiTZyxKp7VwG7iMjoLQENfkbcXH6yhhArvIT6sTtFcn3Jdq1aOVXq14HvF5PFXFEyLUb9gmpUmqe2bAqwGEpwCc3JOiYK6nn+iyVspeGwHXt/OSx/HkonUUUFj4MTsIsJgjF0ZNaeSVdfX+cMaYqDW/jEoHwJMLUcO19thmJUN9DjFLTXzPBpzPsf9Pg7ltMTG1KBJEnPmv340frXq/7VQ5wolLfIWv3ejvoav0RF1YB/nUNKt6ZWvPP+ySfJcIiTVLphyUwf5KrLRulwgstaOvx0CjBiXXJVQZAptfCZBk1xGjMgXiWPY+2IOWKqbI+3dJi/8aF1fbYd2T6l3ciERZjN8qkg/Wo26r1jQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:VI1PR04MB6797.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(396003)(39860400002)(136003)(346002)(366004)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(2616005)(38100700002)(26005)(36756003)(6666004)(66574015)(6506007)(6512007)(2906002)(53546011)(83380400001)(44832011)(66476007)(41300700001)(86362001)(8676002)(66946007)(316002)(66556008)(8936002)(31696002)(31686004)(5660300002)(6916009)(478600001)(6486002)(45980500001)(43740500002);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?anNndThDVEVORm5HL1dFSzVGTWJIaDNxRDdyODRhOHEyTGFMa1VIZUVFeWM0?=
- =?utf-8?B?NFNLNTRpS29IRFF0L1dBV1g5UExya2xXZTFycGNFb1dQZ3Y0YVpKR01qUitl?=
- =?utf-8?B?ejdWbjg4V3JZWS9oTmc5Z2Y1V2k0SmJSQ2J0WGxmT29zVGVMaElpVUVVRVRo?=
- =?utf-8?B?aTJjTUdBbmlvcE9qWDJBcmNLVzRuRW8wQjljQkNRSjc1b1c3cnIxdHU5UTVI?=
- =?utf-8?B?SCtLYTVzR2JPNlUwbk16N3Q5ME5pTnZLQTN1TkYxc1EzUnFRK3doZHVRczl3?=
- =?utf-8?B?VzBiUWRONG1jR3pySXBwOFZtd3U0MjJib2ZHcHBON1haLytSQ0lLSVk0bEVO?=
- =?utf-8?B?UFhlMGpoMEtqSFA3UzExUjlycUlzbVJ4bzZ6d2MybE1wd1RoVVVKMjRoS1pM?=
- =?utf-8?B?WmtoQkVYNEdjb3NSMDIvTjlrTE1YWlh0c2ZROThaS0E1NHBjbWk2TW9tRDBR?=
- =?utf-8?B?b1FhT0NvQ3o2K1g4MzkvRE1wTXowWC84dnRJQndjT0RzQ2tHYjAzbGVvSUtW?=
- =?utf-8?B?dmFmRmp6S1BHSzRERHN1YWxrRG95c3ZlZ3gvTndCaE9tdUtVWTVKZHFpODJs?=
- =?utf-8?B?UVNzc0JFUlZ2MitiSVRaNEZ3SjJiQVdEZE5jWGp1RDZxQXFDKytNS0RIVUZ4?=
- =?utf-8?B?V29kQjRBNXNwMHF4THlveVdvVlFpTFY5aTQzTVBTV09jbVlseEd4R3pPWTJU?=
- =?utf-8?B?ZitJSGhnSFpSWnI0N3hlQ0FJQlNXRTlXcnBnVnlSVDlEYitWTjREZEMvVlND?=
- =?utf-8?B?dzR6SUNib2V4WEdnVXE0dlJWOERlcDRqUWsydnlTbVYram1EaDZTU1R1Tmpw?=
- =?utf-8?B?aXU5UURMVnZoQUV0US9CVFBCc0l5UlI0a0FXZXFCanBhZi94WnFRY0wrWGRi?=
- =?utf-8?B?K3pjcXFPM3gvVWszWWc5YmdCWDk2eEJpYW5pU2x0UnFUcmNXSGR0NWgreFhy?=
- =?utf-8?B?R2E0L3ZZeGxoNG1Nc2pGci82WDFZY20rc2RPRGVqc1lBOXFxcVhISmlseTk1?=
- =?utf-8?B?TDJLNGJrY1MrYVNiL3hHckI0bWpWc2NJRmIvQU5Kbjdtd3lYeWhEWnJNQy9M?=
- =?utf-8?B?OG5jMTUvZXdYbGtwSUlHMm1ia1RtV0JnYVdxUjNLUlpjdEJuT1NRTXhralNn?=
- =?utf-8?B?L0lha2oySnJKQURqMldBb2U2dFg0ajYzaUYyb3FKb1l2dnd3K25kdEpjeVNn?=
- =?utf-8?B?a0gvYkdkbUhTRFVkMGpvekxRYWZWbTQwSmpudUZCcHlQVVhoUjJwVGJiMEN5?=
- =?utf-8?B?WDhpcDdVMnRYVGxrU3JiQjdtVWlmRTFsOWhkVkpSanR0dk54aXI2ZkhyZU5S?=
- =?utf-8?B?ZFhmMTA2LzF3Uy9wNDRNbUJWYUNpTXEvQzVrbUphY2xHQTdacVpKd01QdDJ4?=
- =?utf-8?B?L04venNJeUVhcUhrbnFBRytrSHdCYnJyNStRMU9rRGVHcEJrVDR1ck5VYmVs?=
- =?utf-8?B?Z1g3MXRGVTA3Z1JJM1p2SGI0UVRubzg2Sy94ZjBzRGtMTUhBaC8zYnFlajNZ?=
- =?utf-8?B?NUtUSk1vY2xhcjdNN2hSaCtLLzVUVDQzZjJHbzJLRVBXaFpEL2tjTUh0SmVt?=
- =?utf-8?B?bWhJN2MrOGEydFRBOTh0dEk4V1hzczc2dWhsN3ZOa1lzWVludW5VMHpiV1V6?=
- =?utf-8?B?SWpNSytqU3orOXlGQ0NUVXNHcDJJVkIrTzE3Q1RISUZVOVFZbVA1WGZ2Nm85?=
- =?utf-8?B?RVVCeUk4VXgwNkNhM2l2bGFDYU42eDViLy9GY2hsQTdCOHVRbGRtM2tKakNu?=
- =?utf-8?B?N3lpWFVHQ3ZpSzlEVFlBbVVqV0FpQk5QblA5NGdubDBtcEt0VVV5TzJ2bkZk?=
- =?utf-8?B?bUdnRlUwU21KRG1Wa3ZtcEQyVTgzZ2pTVktPTS9hYStLZHlwSzFETjQybGV1?=
- =?utf-8?B?TnBFbmsrRDU5dlJuTmRRK1JTOThlMFRXOGJBUzVYWGFteXVHZFFFVmhpMU56?=
- =?utf-8?B?aXdVQ0VLYXhleUs2TmpNVEFjYU8xNlZOdXRKWExlZldidDNWQ2dKSHVPMjFu?=
- =?utf-8?B?MEVUOGxiNTFzbmp4dURRZVVRSWtCc2MyTml3U3F0WGZmVm1RaG4wdTZ6Z2kw?=
- =?utf-8?B?ckpWOXRHTjB3NlU0UDF6OUx6MkROcnVVUUVtT0pleGtzYloxRmUxSGs4UDJj?=
- =?utf-8?B?aExKMHJISUs1SmpEMkhBbU90U0k4d0F5WFprUVpCaEN2NTVLelMyaHYyZG8x?=
- =?utf-8?B?bnc9PQ==?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c7a72e8-cc1a-43e1-11f4-08dbdba80cc4
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB6797.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 13:31:41.9864 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1ryklHeV9sm6UY9DX55EW5fkdJevX0ssZVsgyWHc0dcIOjiRfZpdXcPi97B0SJNeBQn+ML+TJMm1mTYsyDXj2f/q9xtvJ4Xbz6SIYtYNscI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6996
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Refactor fork12 using new LTP API
+Subject: [LTP] [PATCH v1] Extend ioctl02 to test termio and termios
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -134,49 +70,329 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
+Testing the behavior of both sets of ioctl commands at the same time is
+challenging because they use different structures. This change tries to
+minimize the amount of code duplication (it is not fully possible) and to
+minimize the amount of macro code (it is not fully avoidable).
 
-On 11/1/23 09:11, Richard Palethorpe wrote:
-> Hello,
->
-> Cyril Hrubis <chrubis@suse.cz> writes:
->
->> Hi!
->>> This test also randomly fails outside of a container. Also other tests
->>> that are testing the limits. This makes me think more that setting lower
->>> prlimits is needed. Also this rewrite gets higher priority.
->> Just note that this test is not in syscalls runtest file but in the
->> crashme runtest file, which contains highly questionable stuff.
->>
->> I guess that the original test does not really take things like
->> overcommit and OMM into an account, so shifting the test goals by
->> setting the RLIMIT_NPROC so that we effectively check that the
->> limits are enforced is probably reasonable way how to fix the test.
->> Either we do that or we remove fork12.c.
-> Looking at the setrlimit tests we already do this in setrlimit01 as
-> well.
->
-> I guess someone might want to test a fork bomb. However I don't see how
-> it could be a reliable or meaningful test unless you set reasonable
-> limits for the particular system that the test is running on.
->
-> Just a thought; IMO stress tests are better handled by a tool like
-> stress-ng and some bespoke scripts for a particular system. Or else we
-> have to create a framework inside LTP for deciding on and implementing
-> reasonable limits.
->
->
-I agree with Richard. We can just remove fork12 and use setrlimit01 
-instead (test that needs to be refactoring anyway).
+To ease this, this change simplifies the checks:
+* Create a separate function and macro for checking attributes
+* Remove useless nested condition in loop for checking the control
+  characters
+    * The loop condition is `i < NCC` and the nested condition was
+      `i == VEOL2`. The nested condition is completely useless because it
+      is never reached because `VEOL2 > NCC`.
+    * The same applies to the loop for initializing the structs.
+    * This change introduces use of termios (where `VEOL2 < NCCS`) but
+      extra handling for `VEOL2` can still be avoided.
+* Implement the check for control characters in terms of the normal
+  attribute check
 
-Andrea Cervesato
+Signed-off-by: Marius Kittler <mkittler@suse.de>
+---
+ testcases/kernel/syscalls/ioctl/ioctl02.c | 190 +++++++++++++---------
+ 1 file changed, 117 insertions(+), 73 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ioctl/ioctl02.c b/testcases/kernel/syscalls/ioctl/ioctl02.c
+index 8c6924386..333cad375 100644
+--- a/testcases/kernel/syscalls/ioctl/ioctl02.c
++++ b/testcases/kernel/syscalls/ioctl/ioctl02.c
+@@ -8,26 +8,28 @@
+ /*\
+  * [Description]
+  *
+- * Testcase to test the TCGETA, and TCSETA ioctl implementations for
+- * the tty driver
++ * Testcase to test the TCGETA/TCGETS, and TCSETA/TCSETS ioctl
++ * implementations for the tty driver
+  *
+  * In this test, the parent and child open the parentty and the childtty
+  * respectively.  After opening the childtty the child flushes the stream
+  * and wakes the parent (thereby asking it to continue its testing). The
+- * parent, then starts the testing. It issues a TCGETA ioctl to get all
+- * the tty parameters. It then changes them to known values by issuing a
+- * TCSETA ioctl. Then the parent issues a TCGETA ioctl again and compares
+- * the received values with what it had set earlier. The test fails if
+- * TCGETA or TCSETA fails, or if the received values don't match those
+- * that were set. The parent does all the testing, the requirement of the
+- * child process is to moniter the testing done by the parent, and hence
+- * the child just waits for the parent.
++ * parent, then starts the testing. It issues a TCGETA/TCGETS ioctl to
++ * get all the tty parameters. It then changes them to known values by
++ * issuing a TCSETA/TCSETS ioctl. Then the parent issues a TCSETA/TCGETS
++ * ioctl again and compares the received values with what it had set
++ * earlier. The test fails if TCGETA/TCGETS or TCSETA/TCSETS fails, or if
++ * the received values don't match those that were set. The parent does
++ * all the testing, the requirement of the child process is to moniter
++ * the testing done by the parent, and hence the child just waits for the
++ * parent.
+  */
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <fcntl.h>
+ #include <errno.h>
++#include <sys/ioctl.h>
+ #include <sys/wait.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+@@ -39,22 +41,51 @@
+ #include "tst_test.h"
+ #include "tst_safe_macros.h"
+ 
+-static struct termio termio, save_io;
++static struct termio termio, termio_exp;
++static struct termios termios, termios_exp, termios_bak;
+ 
+ static char *parenttty, *childtty;
+ static int parentfd = -1;
+ static int parentpid, childpid;
+ 
+ static void do_child(void);
++static void prepare_termio(void);
+ static void run_ptest(void);
+-static void chk_tty_parms(void);
++static void chk_tty_parms_termio(void);
++static void chk_tty_parms_termios(void);
+ static void setup(void);
+ static void cleanup(void);
+ 
+ static char *device;
+ 
++static struct variant {
++	const char *name;
++	void *termio, *termio_exp, *termio_bak;
++	void (*check)(void);
++	int tcget, tcset;
++} variants[] = {
++	{
++		.name = "termio",
++		.termio = &termio,
++		.termio_exp = &termio_exp,
++		.check = &chk_tty_parms_termio,
++		.tcget = TCGETA,
++		.tcset = TCSETA,
++	},
++	{
++		.name = "termios",
++		.termio = &termios,
++		.termio_exp = &termios_exp,
++		.check = &chk_tty_parms_termios,
++		.tcget = TCGETS,
++		.tcset = TCSETS,
++	},
++};
++
+ static void verify_ioctl(void)
+ {
++	tst_res(TINFO, "Testing %s variant", variants[tst_variant].name);
++
+ 	parenttty = device;
+ 	childtty = device;
+ 
+@@ -73,99 +104,109 @@ static void verify_ioctl(void)
+ 	run_ptest();
+ 
+ 	TST_CHECKPOINT_WAKE(0);
++
++	if (tst_variant < sizeof(variants) - 1)
++		SAFE_CLOSE(parentfd);
+ }
+ 
+-/*
+- * run_ptest() - setup the various termio structure values and issue
+- *		 the TCSETA ioctl call with the TEST macro.
+- */
+-static void run_ptest(void)
++static void prepare_termio(void)
+ {
+ 	/* Use "old" line discipline */
+-	termio.c_line = 0;
++	termios_exp.c_line = termio_exp.c_line = 0;
+ 
+ 	/* Set control modes */
+-	termio.c_cflag = B50 | CS7 | CREAD | PARENB | PARODD | CLOCAL;
++	termios_exp.c_cflag = termio_exp.c_cflag = B50 | CS7 | CREAD | PARENB | PARODD | CLOCAL;
+ 
+ 	/* Set control chars. */
+-	for (int i = 0; i < NCC; i++) {
+-		if (i == VEOL2)
+-			continue;
+-		termio.c_cc[i] = CSTART;
+-	}
++	for (int i = 0; i < NCC; i++)
++		termio_exp.c_cc[i] = CSTART;
++	for (int i = 0; i < VEOL2; i++)
++		termios_exp.c_cc[i] = CSTART;
+ 
+ 	/* Set local modes. */
+-	termio.c_lflag =
++	termios_exp.c_lflag = termio_exp.c_lflag =
+ 	    ((unsigned short)(ISIG | ICANON | XCASE | ECHO | ECHOE | NOFLSH));
+ 
+ 	/* Set input modes. */
+-	termio.c_iflag =
++	termios_exp.c_iflag = termio_exp.c_iflag =
+ 	    BRKINT | IGNPAR | INPCK | ISTRIP | ICRNL | IUCLC | IXON | IXANY |
+ 	    IXOFF;
+ 
+ 	/* Set output modes. */
+-	termio.c_oflag = OPOST | OLCUC | ONLCR | ONOCR;
++	termios_exp.c_oflag = termio_exp.c_oflag = OPOST | OLCUC | ONLCR | ONOCR;
++
++	/* Init termio/termios structures used to check if all params got set */
++	memset(&termio, 0, sizeof(termio));
++	memset(&termios, 0, sizeof(termios));
++}
++
++/*
++ * run_ptest() - setup the various termio/termios structure values and issue
++ * the TCSETA/TCSETS ioctl call with the TEST macro.
++ */
++static void run_ptest(void)
++{
++	struct variant *v = &variants[tst_variant];
+ 
+-	SAFE_IOCTL(parentfd, TCSETA, &termio);
++	SAFE_IOCTL(parentfd, v->tcset, v->termio_exp);
+ 
+ 	/* Get termio and see if all parameters actually got set */
+-	SAFE_IOCTL(parentfd, TCGETA, &termio);
+-	chk_tty_parms();
++	SAFE_IOCTL(parentfd, v->tcget, v->termio);
++	v->check();
+ }
+ 
+-static void chk_tty_parms(void)
++static int cmp_attr(unsigned long long exp, unsigned long long act, const char *attr)
+ {
+-	int i, flag = 0;
++	if (act == exp)
++		return 0;
++	tst_res(TFAIL, "%s has incorrect value %llu", attr, act);
++	return 1;
++}
+ 
+-	if (termio.c_line != 0) {
+-		tst_res(TFAIL, "line discipline has incorrect value %o",
+-			 termio.c_line);
+-		flag++;
+-	}
++static int cmp_c_cc(unsigned char *exp_c_cc, unsigned char *act_c_cc, int ncc)
++{
++	int i, fails = 0;
++	char what[32];
+ 
+-	for (i = 0; i < NCC; i++) {
+-		if (i == VEOL2) {
+-			if (!termio.c_cc[i]) {
+-				continue;
+-			} else {
+-				tst_res(TFAIL, "control char %d has "
+-					 "incorrect value %d", i, termio.c_cc[i]);
+-				flag++;
+-				continue;
+-			}
+-		}
+-
+-		if (termio.c_cc[i] != CSTART) {
+-			tst_res(TFAIL, "control char %d has incorrect "
+-				 "value %d.", i, termio.c_cc[i]);
+-			flag++;
+-		}
++	for (i = 0; i < ncc; ++i) {
++		sprintf(what, "control char %d", i);
++		fails += cmp_attr(exp_c_cc[i], act_c_cc[i], what);
+ 	}
++	return fails;
++}
+ 
+-	if (termio.c_lflag != (ISIG | ICANON | XCASE | ECHO | ECHOE
+-		 | NOFLSH)) {
+-		tst_res(TFAIL, "lflag has incorrect value. %o",
+-			 termio.c_lflag);
+-		flag++;
+-	}
++#define CMP_ATTR(term_exp, term, attr) \
++	(flag += cmp_attr((term_exp).attr, (term).attr, #attr))
+ 
+-	if (termio.c_iflag != (BRKINT | IGNPAR | INPCK | ISTRIP
+-		 | ICRNL | IUCLC | IXON | IXANY | IXOFF)) {
+-		tst_res(TFAIL, "iflag has incorrect value. %o",
+-			 termio.c_iflag);
+-		flag++;
+-	}
++#define CMP_C_CC(term_exp, term) \
++	(flag += cmp_c_cc(term_exp.c_cc, term.c_cc, sizeof(term.c_cc)))
+ 
+-	if (termio.c_oflag != (OPOST | OLCUC | ONLCR | ONOCR)) {
+-		tst_res(TFAIL, "oflag has incorrect value. %o",
+-			 termio.c_oflag);
+-		flag++;
+-	}
++static void chk_tty_parms_termio(void)
++{
++	int flag = 0;
+ 
++	CMP_ATTR(termio_exp, termio, c_line);
++	CMP_C_CC(termio_exp, termio);
++	CMP_ATTR(termio_exp, termio, c_lflag);
++	CMP_ATTR(termio_exp, termio, c_iflag);
++	CMP_ATTR(termio_exp, termio, c_oflag);
+ 	if (!flag)
+ 		tst_res(TPASS, "TCGETA/TCSETA tests");
+ }
+ 
++static void chk_tty_parms_termios(void)
++{
++	int flag = 0;
++
++	CMP_ATTR(termios_exp, termios, c_line);
++	CMP_C_CC(termios_exp, termios);
++	CMP_ATTR(termios_exp, termios, c_lflag);
++	CMP_ATTR(termios_exp, termios, c_iflag);
++	CMP_ATTR(termios_exp, termios, c_oflag);
++	if (!flag)
++		tst_res(TPASS, "TCGETS/TCSETS tests");
++}
++
+ static void do_child(void)
+ {
+ 	int cfd = SAFE_OPEN(childtty, O_RDWR, 0777);
+@@ -187,14 +228,16 @@ static void setup(void)
+ 
+ 	int fd = SAFE_OPEN(device, O_RDWR, 0777);
+ 
+-	SAFE_IOCTL(fd, TCGETA, &save_io);
++	SAFE_IOCTL(fd, TCGETS, &termios_bak);
+ 	SAFE_CLOSE(fd);
++
++	prepare_termio();
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (parentfd >= 0) {
+-		SAFE_IOCTL(parentfd, TCSETA, &save_io);
++		SAFE_IOCTL(parentfd, TCSETS, &termios_bak);
+ 		SAFE_CLOSE(parentfd);
+ 	}
+ }
+@@ -206,6 +249,7 @@ static struct tst_test test = {
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = verify_ioctl,
++	.test_variants = 2,
+ 	.options = (struct tst_option[]) {
+ 		{"D:", &device, "Tty device. For example, /dev/tty[0-9]"},
+ 		{}
+-- 
+2.42.0
 
 
 -- 
