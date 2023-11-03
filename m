@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07FD3C4332F
-	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 12:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AE74C4332F
+	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 12:34:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 413CD3CC806
-	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 13:34:43 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id 6A09F3CC811
+	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 13:34:54 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id BF2483CA697
+ by picard.linux.it (Postfix) with ESMTPS id 019593CC7D9
  for <ltp@lists.linux.it>; Fri,  3 Nov 2023 13:34:32 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 27C3314052C5
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D11DA14052C4
  for <ltp@lists.linux.it>; Fri,  3 Nov 2023 13:34:31 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C2A381F383;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E10CF1F890;
  Fri,  3 Nov 2023 12:34:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1699014870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=qmgHMzN48MTTzoSBNPZML6DtS9BLNNhZVeMXD3J40OY=;
- b=YuTXNmawLMojlNoRV3Hss9lvzgsrkRTxzsVfFJ3HhCCMd7Sc8eWVvc3xA9eEq+kCT3p7Pt
- CSCmtPbe8rLPkDwsaM1wEZjFiEGn1G1MUcO1Hii/fuU6AYh9FRmlo5f6HWMM4m56PXnP/p
- WF7L+SNH8e/0uOWIpSbWHEEF8PonILg=
+ bh=36YmoVZqg3waLGr/rCCzwHBEzDH4819yqsdFacHA/6w=;
+ b=brCZpYwVrY4nObriD+CSnNG3n15/rpGMS0MkSQ6fOI8+JC6kigRNrbrK74iwX4SZ93ABzj
+ 1C3+nD4a40Kl/pVuA9Mf6TSouu26pmzLp3ndpB4HiXMQpE6yUKdosAvuQKlG4oCLfjyjls
+ ziHH57mBKaxpVFgA1bJOHXKNlGNtlUg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1699014870;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=qmgHMzN48MTTzoSBNPZML6DtS9BLNNhZVeMXD3J40OY=;
- b=3V2bQPFfLUjXdQZYgEZhyvltD/w1q5BiArTtLODlPbTBd1oIRI6OmWSv8SL9tak9X8bOBM
- L/5tCCwR44Aux+Ag==
+ bh=36YmoVZqg3waLGr/rCCzwHBEzDH4819yqsdFacHA/6w=;
+ b=A7IZyzz7p2U3PHtAxPKFL4EPNSsShVFNueCt96XSPSlvUr5NuAiCQmwLU4JYc7WqlXfL0s
+ ceLmpTl4we2iZpAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A07DE1348C;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8C451348C;
  Fri,  3 Nov 2023 12:34:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id KK7qJdboRGViWgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id qIiVL9boRGViWgAAMHmgww
  (envelope-from <pvorel@suse.cz>); Fri, 03 Nov 2023 12:34:30 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri,  3 Nov 2023 13:34:25 +0100
-Message-ID: <20231103123427.1072050-2-pvorel@suse.cz>
+Date: Fri,  3 Nov 2023 13:34:26 +0100
+Message-ID: <20231103123427.1072050-3-pvorel@suse.cz>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231103123427.1072050-1-pvorel@suse.cz>
 References: <20231103123427.1072050-1-pvorel@suse.cz>
 MIME-Version: 1.0
 X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] doc/C-Test-API: Reword SAFE_CMD()
+Subject: [LTP] [PATCH 2/3] include: Add SAFE_CMD() programming doc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,25 +84,35 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/C-Test-API.asciidoc | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/tst_safe_macros.h | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/doc/C-Test-API.asciidoc b/doc/C-Test-API.asciidoc
-index dab811564..f9f20bb74 100644
---- a/doc/C-Test-API.asciidoc
-+++ b/doc/C-Test-API.asciidoc
-@@ -1332,8 +1332,9 @@ return value is '255' if 'execvp()' failed with 'ENOENT' and '254' otherwise.
- 'stdout_path' and 'stderr_path' determine where to redirect the program
- stdout and stderr I/O streams.
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 0cf3d7878..6f3289944 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -646,9 +646,20 @@ int safe_unshare(const char *file, const int lineno, int flags);
+ int safe_setns(const char *file, const int lineno, int fd, int nstype);
+ #define SAFE_SETNS(fd, nstype) safe_setns(__FILE__, __LINE__, (fd), (nstype))
  
--The 'SAFE_CMD()' macro can be used automatic handling non-zero exits (exits
--with 'TBROK') and 'ENOENT' (exits with 'TCONF').
-+'SAFE_CMD()' is a wrapper for 'tst_cmd()' which can be used for automatic
-+handling non-zero exit (exits with 'TBROK') and 'ENOENT' (the program not in
-+'$PATH', exits with 'TCONF').
- 
- .Example
- [source,c]
++/*
++ * SAFE_CMD() is a wrapper for tst_cmd(). It runs a command passed via argv[]
++ * and handles non-zero exit (exits with 'TBROK') and 'ENOENT' (the program not
++ * in '$PATH', exits with 'TCONF').
++ *
++ * @param argv[] a 'NULL' terminated array of strings starting with the program
++ * name which is followed by optional arguments.
++ * @param stdout_path: path where to redirect stdout. Set NULL if redirection is
++ * not needed.
++ * @param stderr_path: path where to redirect stderr. Set NULL if redirection is
++ * not needed.
++ */
+ void safe_cmd(const char *file, const int lineno, const char *const argv[],
+ 	const char *stdout_path, const char *stderr_path);
+-
+ #define SAFE_CMD(argv, stdout_path, stderr_path) \
+ 	safe_cmd(__FILE__, __LINE__, (argv), (stdout_path), (stderr_path))
+ /*
 -- 
 2.42.0
 
