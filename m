@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BF8CC4167D
-	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 18:54:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E771EC4332F
+	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 19:04:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 82BFA3CA488
-	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 19:54:35 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 0B0933CE953
+	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 20:04:08 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 912B43CA488
- for <ltp@lists.linux.it>; Fri,  3 Nov 2023 19:54:24 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id BB4ED3CC7E0
+ for <ltp@lists.linux.it>; Fri,  3 Nov 2023 20:03:57 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 745E81A01988
- for <ltp@lists.linux.it>; Fri,  3 Nov 2023 19:54:22 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 2D91C1A02397
+ for <ltp@lists.linux.it>; Fri,  3 Nov 2023 20:03:56 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 063A22187D;
- Fri,  3 Nov 2023 18:54:22 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 359951F388;
+ Fri,  3 Nov 2023 19:03:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1699037662;
+ t=1699038236;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PZCFjV3QY0sHf0d9yENrEJXw2egu708H8Xz/13cuvag=;
- b=BGZOe4ePubVeyKrBV1MS80ygaHTW2rZjlp+xvXFzyIJ5pPHHzCxGHjZr9MYaS9X1Pf0anJ
- GdAO0bmY+uHrlcN+X2CV8Z1GOaGBgPpq7mXJ3Hi7pYnHG7vis1NVSliVJb/r0IQkJUBbk+
- ZMu9VeUYkRBITCkPmmjkGcz801W90EA=
+ bh=xh+sS5XvtK+IM7179j3PrzqS7jd0qPdoEZJ7wYZ1N5Q=;
+ b=DTbugZtygC6B+NY7yM33qRGe9lJq/XT6B43S+vAarwrcO4a5IGaJwyjnOdJDAEdtqjXrBv
+ rg/tSyPHuCUlM62nzEnUkDII25h5ijpwmKknVgwBqaz8ypeG4T5zZINN3M3arWhxp1vy93
+ hyJKyFp5M/JQok55GXbASuMSpXw8dyA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1699037662;
+ s=susede2_ed25519; t=1699038236;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PZCFjV3QY0sHf0d9yENrEJXw2egu708H8Xz/13cuvag=;
- b=mb1ZB3fQ85g5qNedeC8QEmgxQ/uImZAeErVgi5Ccx/2+ycpXvS/EoavFl5GE0aEJHoMsxL
- Zl6oOccqFkqYE6CA==
+ bh=xh+sS5XvtK+IM7179j3PrzqS7jd0qPdoEZJ7wYZ1N5Q=;
+ b=v9l7xbXosfKWLJ0Fbtlz+5YCk5l5xi9LlCEggCYjn97p55xOKMMnDPrcXEsZf5hl4C5yq3
+ DC468mA4LBONrIDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B2DF413907;
- Fri,  3 Nov 2023 18:54:21 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D384D13907;
+ Fri,  3 Nov 2023 19:03:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id z44mKt1BRWXvBwAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 03 Nov 2023 18:54:21 +0000
-Date: Fri, 3 Nov 2023 19:54:20 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id euvGLRtERWW4CwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 03 Nov 2023 19:03:55 +0000
+Date: Fri, 3 Nov 2023 20:03:53 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Message-ID: <20231103185420.GA1111882@pevik>
-References: <20231103160350.1096410-1-pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20231103190353.GA1118339@pevik>
+References: <20231103172335.23787-1-mdoucha@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231103160350.1096410-1-pvorel@suse.cz>
+In-Reply-To: <20231103172335.23787-1-mdoucha@suse.cz>
 X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] lib/tst_module.c: Replace "rmmod" with
- "modprobe -r"
+Subject: Re: [LTP] [PATCH] keyctl02: Add delay between main loop iterations
+ for RT kernels
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,65 +77,32 @@ List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
 Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi all,
+Hi Martin,
 
-> "modprobe -r" will remove also the dependencies loaded for kernel
-> modules.
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-> Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  lib/tst_module.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-> diff --git a/lib/tst_module.c b/lib/tst_module.c
-> index 9bd443623..e52bb6e00 100644
-> --- a/lib/tst_module.c
-> +++ b/lib/tst_module.c
-> @@ -105,7 +105,7 @@ void tst_module_unload_(void (cleanup_fn)(void), const char *mod_name)
->  {
->  	int i, rc;
-
-> -	const char *const argv[] = { "rmmod", mod_name, NULL };
-> +	const char *const argv[] = { "modprobe", "-r", mod_name, NULL };
-
-I'm sorry, obviously some modules needs rmmod:
-
-# ./delete_module03
 ...
-delete_module03.c:32: TPASS: delete_module() failed as expected: EAGAIN/EWOULDBLOCK (11)
-tst_module.c:121: TWARN: could not unload dummy_del_mod_dep.ko module
-tst_module.c:121: TWARN: could not unload dummy_del_mod.ko module
-...
+> +++ b/testcases/kernel/syscalls/keyctl/keyctl02.c
+> @@ -29,13 +29,17 @@
 
-# ./delete_module03
-insmod: ERROR: could not insert module dummy_del_mod.ko: File exists
-tst_cmd.c:121: TBROK: 'insmod' exited with a non-zero code 1 at tst_cmd.c:121
+>  #include "tst_safe_pthread.h"
+>  #include "tst_test.h"
+> +#include "tst_kconfig.h"
+>  #include "lapi/keyctl.h"
 
-It's because these modules cannot be found by modprobe
+>  #define LOOPS	20000
+>  #define MAX_WAIT_FOR_GC_MS 5000
+>  #define PATH_KEY_COUNT_QUOTA	"/proc/sys/kernel/keys/root_maxkeys"
 
-# modprobe -r dummy_del_mod_dep
-modprobe: FATAL: Module dummy_del_mod_dep not found.
-
-# modprobe -r dummy_del_mod
-modprobe: FATAL: Module dummy_del_mod not found.
-
-# rmmod dummy_del_mod_dep; echo $?; rmmod dummy_del_mod; echo $?
-0
-0
-
-I guess for .modprobe_module we should have function which uses 'modprobe -r'.
-And we should keep tst_module_unload() for these special cases. I would rename
-it to tst_module_rmmod() to be obvious.
-
-Setting this as changes requested, next week there is Hackweek in SUSE, I'll
-send v3 following week.
+> +#define KCONFIG_INIT(confname) { .id = confname, .id_len = strlen(confname) }
+BTW this could be added (as separate effort) somewhere in the library
+(include/tst_common.h) and reused in other tests (well, there are only 3 tests).
 
 Kind regards,
 Petr
