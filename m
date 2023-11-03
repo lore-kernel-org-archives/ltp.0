@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3076FC4167B
-	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 14:58:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7640CC4332F
+	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 15:09:15 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F0E143CE94E
-	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 15:58:29 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id D3EE63CE946
+	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 16:09:13 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EAF913CC025
- for <ltp@lists.linux.it>; Fri,  3 Nov 2023 15:58:17 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id CBCFE3CA488
+ for <ltp@lists.linux.it>; Fri,  3 Nov 2023 16:09:01 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C1EA814010E1
- for <ltp@lists.linux.it>; Fri,  3 Nov 2023 15:58:16 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 2510120023D
+ for <ltp@lists.linux.it>; Fri,  3 Nov 2023 16:09:00 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 68395210E0;
- Fri,  3 Nov 2023 14:58:15 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3CAC02187A;
+ Fri,  3 Nov 2023 15:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1699023495;
+ t=1699024140;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gg4TtdmhhIjKqqEtqeX20r7KI09bCBcy2XlpD6Hv0iY=;
- b=CkTCUJFvEI5FnLExIdmHe58HSvXQShHojkykC1+R++ci0QP5CGsxiuZ47WXg99FCeVgaS8
- eDe6k2Tf1LBYl3HiDt6b9Co3UP4QwUb5ary5kFIGNZaRy5Rcb2ZSbom4SSXP9eHKJ702Aj
- Fs2rbOXBgmKETHrGGaKvNs4jW/f3FNE=
+ bh=XTAxE8fZsC0TIFFs4xrf+a7vfm4EFjGphD4oGhaCM/4=;
+ b=d8N5qwqKwrp/lyX/EC6HlsTAWBq2FIOHwdw2QGkavy7EK80QJKG+s5R1fmc+19g4fge5mA
+ VBM836rqWn9aUnTk2HWi1GIcqS30vlPw7OIJrC0dD0BB4cGXVtYrxob5JT6qurlqkunH+V
+ ZHjmzBAC+loKrx4PwJrlJvHXH0MswoI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1699023495;
+ s=susede2_ed25519; t=1699024140;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gg4TtdmhhIjKqqEtqeX20r7KI09bCBcy2XlpD6Hv0iY=;
- b=7q+cmBi0Xr3Zwn1wg/0tDu/niAn32yjfv1sNkGIQSPFOuRxRfZhMP9eb1NbGPbnPFhc1sL
- /p4ZOln1IYXlkODQ==
+ bh=XTAxE8fZsC0TIFFs4xrf+a7vfm4EFjGphD4oGhaCM/4=;
+ b=NBoxV3RU1F+ONBj/9HzdhNxH7lcmdeXAj3Kfee+/O+E0ejS1RwAdlRWP4/x2MU9D3iFM30
+ 4LAYcxEHqQMiihAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 49A8C1348C;
- Fri,  3 Nov 2023 14:58:15 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 13E7A1348C;
+ Fri,  3 Nov 2023 15:09:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id gbeZEIcKRWVoIQAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 03 Nov 2023 14:58:15 +0000
-Date: Fri, 3 Nov 2023 15:58:13 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id sVuJAwwNRWUkJgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 03 Nov 2023 15:09:00 +0000
+Date: Fri, 3 Nov 2023 16:08:58 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20231103145813.GA1084358@pevik>
+To: Richard Palethorpe <rpalethorpe@suse.de>
+Message-ID: <20231103150858.GB1084358@pevik>
 References: <20231013074748.702214-1-pvorel@suse.cz>
- <20231013074748.702214-3-pvorel@suse.cz> <ZUJ8K9nna0Poa9FS@yuki>
- <20231103121201.GA1005170@pevik> <ZUTluqkrUOBLHw7G@yuki>
+ <20231013074748.702214-5-pvorel@suse.cz> <87il6kse1z.fsf@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZUTluqkrUOBLHw7G@yuki>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+In-Reply-To: <87il6kse1z.fsf@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/4] lib: Add .modprobe
+Subject: Re: [LTP] [PATCH 4/4] can_bcm01: Move vcan to .modprobe
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,49 +84,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi Richie,
 
-> Hi!
-> > Yes, but see safe_cmd() in lib/tst_safe_macros.c. tst_cmd() is called with 
-> > TST_CMD_PASS_RETVAL | TST_CMD_TCONF_ON_MISSING, thus this is covered.
+> Hello,
 
-> TCONF_ON_MISSING means to TCONF when the command is missing, i.e. if
-> modprobe is not installed on the system. When module is missing modprobe
-> will return 1 so I suppose we have to handle the return value from the
-> TST_CMD() or do I missing something?
+> Petr Vorel <pvorel@suse.cz> writes:
 
-Ah yes, you're right:
-modprobe: FATAL: Module foo not found in directory /lib/modules/6.5.0-1-amd64
-uevent02.c:134: TBROK: modprobe failed (1)
+...
+> >  testcases/network/can/cve/can_bcm01.c | 19 ++++++++++---------
+> >  	addr.can_ifindex = NETDEV_INDEX_BY_NAME(LTP_DEVICE);
+> > @@ -143,10 +135,19 @@ static struct tst_test test = {
+> >  	.skip_in_compat = 1,
+> >  	.max_runtime = 30,
+> >  	.needs_drivers = (const char *const[]) {
+> > -		"vcan",
+> >  		"can-bcm",
+> >  		NULL
+> >  	},
+> > +	/*
+> > +	 * Older kernels require explicit modprobe of vcan. Newer kernels
+> > +	 * will load the modules automatically and support CAN in network
+> > +	 * namespace which would eliminate the need for running the test
+> > +	 * with root privileges.
+> > +	 */
 
-But unfortunately we will have to parse error log, because exit code is still 1 [1]:
+> This comment is wrong and can be removed. It also (or only?) depends on
+> kernel config whether modules are loaded automatically. It is a security
+> feature to remove automatic modprobe. IDK if older kernels lacked auto
+> module loading.
 
-return err >= 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+Yes, "blacklist foo" in /etc/modprobe.d/*.conf. Actually loading kernel modules
+with modprobe will detect problems which checking with .needs_drivers or
+.needs_kconfigs does not detect. e.g. the problems with missing modules on
+openSUSE JeOS.
 
-And indeed, although this would be expected:
-
-# modprobe foo; echo $?
-modprobe: FATAL: Module foo not found in directory /lib/modules/6.5.0-1-amd64
-1
-
-This would deserve different exit code:
-
-$ modprobe dccp; echo $?
-modprobe: ERROR: could not insert 'dccp': Operation not permitted
-1
-
-> > > modprobe -r please, rmmod has been deprecated for ages.
-
-> > Ah, here goes the reason. Should it be replaced also in tst_module_unload_()?
-
-> Yes please.
-
-+1
+But as I wrote elsewhere [1], with explicit loading we don't test module
+auto-loading. The approach we have now, that load modules only when needed is
+IMHO better. But maybe I'm wrong.
 
 Kind regards,
 Petr
 
-[1] https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git/tree/tools/modprobe.c#n1047
+[1] https://lore.kernel.org/ltp/20231103121201.GA1005170@pevik/
+
+> > +	.modprobe = (const char *const[]) {
+> > +		"vcan",
+> > +		NULL
+> > +	},
+> >  	.tags = (const struct tst_tag[]) {
+> >  		{"linux-git", "d5f9023fa61e"},
+> >  		{"CVE", "2021-3609"},
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
