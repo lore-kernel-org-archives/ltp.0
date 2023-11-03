@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5FD1C4332F
-	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 15:13:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7B37C4167B
+	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 15:22:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6B15E3CC81A
-	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 16:13:05 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id EE1E83CC8A5
+	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 16:22:19 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 655E33CAA14
- for <ltp@lists.linux.it>; Fri,  3 Nov 2023 16:12:53 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id 892D53CAA14
+ for <ltp@lists.linux.it>; Fri,  3 Nov 2023 16:22:09 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 47E716000EF
- for <ltp@lists.linux.it>; Fri,  3 Nov 2023 16:12:52 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BD8C91000927
+ for <ltp@lists.linux.it>; Fri,  3 Nov 2023 16:22:08 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CF5B021863
- for <ltp@lists.linux.it>; Fri,  3 Nov 2023 15:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1699024370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7F68C1F388;
+ Fri,  3 Nov 2023 15:22:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1699024927;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=osLbHSzoFu8GIPn26p+YtyHDX5eCEQJMTtfCyd6C4qA=;
- b=OU1fhKAg+8ZdTrq3QnsBF2+edTLQM7nv/PBdfgEXKIbJn27S3fUYbqnQS434peOQPKVHgX
- Sn9U+87dUZSKovwtXHt7rrdphBZCn2rvmBnE/F5k6JZYjOmExHhQRdVezFZ4/TZhfoogVQ
- 9UmHLN50mmB3fQEPX5lxngcGefvUe3M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1699024370;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
+ bh=CQvgzM65QvsdDIaLnYUcNfAlb4bZbKIgO302hvsd+Dw=;
+ b=BGH2d7ipWfGmuGm57uns0WqlkhFIyKt4rYllgTksoaeNwsn4+ae2JlsSNwe6Wo3TcaB722
+ ShwaRKX42208qb+BNs7ZTdzNAYfDMjwtU2rNGNWrPVPv3vT/cFZ43zErS6la09l1Oa3IPH
+ P1s+EozZgwqfXJ3ZutPQX0aHfh2ADHI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1699024927;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=osLbHSzoFu8GIPn26p+YtyHDX5eCEQJMTtfCyd6C4qA=;
- b=3xkmjtlt84KD0CauFTnEbzLuzwflZ4KY44M4g7OEVZPyhOPxL88s1h3uPkOJGY1DW7A9sk
- 7WFiGYObvhd6QhAg==
+ bh=CQvgzM65QvsdDIaLnYUcNfAlb4bZbKIgO302hvsd+Dw=;
+ b=237okvKPFDea9j1kUBhd4tC2sTDufrSQeCzY2E2d76wTHZLJxeWj7AB5rDJ712oR2z3+yi
+ SSXO/Sw1oAPXecDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C04301348C
- for <ltp@lists.linux.it>; Fri,  3 Nov 2023 15:12:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4F2AA1348C;
+ Fri,  3 Nov 2023 15:22:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id JVa9LfINRWXOJwAAMHmgww
- (envelope-from <mkittler@suse.de>)
- for <ltp@lists.linux.it>; Fri, 03 Nov 2023 15:12:50 +0000
-From: Marius Kittler <mkittler@suse.de>
-To: ltp@lists.linux.it
-Date: Fri, 03 Nov 2023 16:12:50 +0100
-Message-ID: <5736369.DvuYhMxLoT@linux-9lzf>
-In-Reply-To: <20231103123427.1072050-1-pvorel@suse.cz>
-References: <20231103123427.1072050-1-pvorel@suse.cz>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8ZugER8QRWXwKwAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Fri, 03 Nov 2023 15:22:07 +0000
+Date: Fri, 3 Nov 2023 16:22:05 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20231103152205.GA1087887@pevik>
+References: <20231013074748.702214-1-pvorel@suse.cz>
+ <20231013074748.702214-3-pvorel@suse.cz>
+ <CAEemH2fQuqPhd+5wjiBeswJQOG=FikpKmL6eubdWgyWqehX6fw@mail.gmail.com>
+ <20231027120104.GA657078@pevik> <ZUJ9vJG2gSdyBfAF@yuki>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <ZUJ9vJG2gSdyBfAF@yuki>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 0/3] Minor programming doc improvements
+Subject: Re: [LTP] [PATCH 2/4] lib: Add .modprobe
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,18 +78,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi, I couldn't spot any typos so it looks good to me. (I haven't checked 
-whether it is factually correct.)
+Hi Cyril,
 
-Reviewed-by: Marius Kittler <mkittler@suse.de>
+> Hi!
+> > > What about renaming it as tst_module_is_loaded() and move into tst_kernel.h?
+> > > I guess we could make use of it widely for checking module loading or not.
 
+> > I can do that, but lib/tst_kernel.c uses the old API. I guess it would fit
+> > better in lib/tst_module.c, but that also uses the old API. Most of the tests
+> > are converted, but at least these modules are still in the old API and use
+> > tst_module_load from tst_module.h:
 
+> > IMHO We need another file, which would be new API only. I'm also not sure if
+> > it's a good idea to put another file with just single function to it. We already
+> > have 38 lib/tst_*.c files which use new API. Any tip, what to use?
+> > Or should I really put it into lib/tst_module.c ain include/tst_module.h, but
+> > not into include/old/old_module.h (as we want old tests to be converted first?).
 
+> I would just put the new functions into tst_module.h and we can put the
+> into tst_module_new.c in lib/ and move the function to tst_module.c once
+> the tst_module.c has been converted to new API.
+
++1. IMHO some other functions from lib/tst_kernel.c should be moved there
+(tst_search_driver(), tst_check_builtin_driver(), tst_check_driver()).
+
+> > > And here print the name to tell people the module is loaded.
+> > +1
+
+...
+Thanks for your input.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
