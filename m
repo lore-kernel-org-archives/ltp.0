@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 462C9C4332F
-	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 12:12:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93CB3C4332F
+	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 12:20:55 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 3D4173CC8A5
-	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 13:12:18 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id D01363CC802
+	for <ltp@archiver.kernel.org>; Fri,  3 Nov 2023 13:20:53 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F02943CA1EF
- for <ltp@lists.linux.it>; Fri,  3 Nov 2023 13:12:07 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id C1A8A3CA616
+ for <ltp@lists.linux.it>; Fri,  3 Nov 2023 13:20:43 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D69E11000A68
- for <ltp@lists.linux.it>; Fri,  3 Nov 2023 13:12:06 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 3CE33209A06
+ for <ltp@lists.linux.it>; Fri,  3 Nov 2023 13:20:42 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CD700219C8;
- Fri,  3 Nov 2023 12:12:03 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AD6541FD69;
+ Fri,  3 Nov 2023 12:20:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1699013523;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ t=1699014041; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=eIMuKyEWVlnPnFq4kh57TXwdEcCASF0DDdiPVzurnn4=;
- b=QmaL0E028xmlB5MiUXWfEqjNnGDDK7LCTkTkm8PWL/5N2AbiCVgdGW/RZfefJypwrm8Srg
- ZNfHXP+/CHz2HpEFY0oYqf1chdjHssEeWXmRHmzpKzoU3Y7IWNid4u/d5SNBDi52LLU1Ix
- 9o5bHqtzJD870Em4QerN47EWMVG/05I=
+ bh=O1NfkjAWPhSNB5Agve/xCyfzBUdR0tDeCI1RDcILaig=;
+ b=cxIVsxh+qT1DSWMLLvmdFuCfweIZo3t5rQVNdTVEyLYmOioudV1wswMwH1cYHo+FgUkSLw
+ 1/n2ACofyS1tP/EN9SJA018+GuMiO9K5svYVQK/WLRHQRUhnCfjFFdLujaATLWPpH8HETZ
+ ooeM02tvM615TxaWEVbb/hdLLyx5jec=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1699013523;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1699014041;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=eIMuKyEWVlnPnFq4kh57TXwdEcCASF0DDdiPVzurnn4=;
- b=ow7QnwFC0ce823kQe1ZcI0lorxuWiL/YRnuremYQXC/jDQT/tWuv2Mn/cvyKnp/20FqlQJ
- 50ER9EbWY5Rw1SCA==
+ bh=O1NfkjAWPhSNB5Agve/xCyfzBUdR0tDeCI1RDcILaig=;
+ b=nIabtHvlcKb02/IO31RW9liq1vNMknQktHj1jo2+BfcqdINBUD5T2MfG767SVdvuXuwNO7
+ 1ybvn21WlO21i3CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9C0CF13907;
- Fri,  3 Nov 2023 12:12:03 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9806813907;
+ Fri,  3 Nov 2023 12:20:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id cXVII5PjRGVZTgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Fri, 03 Nov 2023 12:12:03 +0000
-Date: Fri, 3 Nov 2023 13:12:01 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20231103121201.GA1005170@pevik>
+ by imap2.suse-dmz.suse.de with ESMTPSA id TJfPI5nlRGXRUgAAMHmgww
+ (envelope-from <chrubis@suse.cz>); Fri, 03 Nov 2023 12:20:41 +0000
+Date: Fri, 3 Nov 2023 13:21:14 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Message-ID: <ZUTluqkrUOBLHw7G@yuki>
 References: <20231013074748.702214-1-pvorel@suse.cz>
  <20231013074748.702214-3-pvorel@suse.cz> <ZUJ8K9nna0Poa9FS@yuki>
+ <20231103121201.GA1005170@pevik>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZUJ8K9nna0Poa9FS@yuki>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+In-Reply-To: <20231103121201.GA1005170@pevik>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 2/4] lib: Add .modprobe
 X-BeenThere: ltp@lists.linux.it
@@ -77,176 +76,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Cyril,
+Hi!
+> Yes, but see safe_cmd() in lib/tst_safe_macros.c. tst_cmd() is called with 
+> TST_CMD_PASS_RETVAL | TST_CMD_TCONF_ON_MISSING, thus this is covered.
 
-thanks for your comments. More questions bellow.
+TCONF_ON_MISSING means to TCONF when the command is missing, i.e. if
+modprobe is not installed on the system. When module is missing modprobe
+will return 1 so I suppose we have to handle the return value from the
+TST_CMD() or do I missing something?
 
-...
-> > +++ b/doc/C-Test-API.asciidoc
-> > @@ -1609,6 +1609,11 @@ first missing driver.
-> >  The detection is based on reading 'modules.dep' and 'modules.builtin' files
-> >  generated by kmod. The check is skipped on Android.
+> > modprobe -r please, rmmod has been deprecated for ages.
+> 
+> Ah, here goes the reason. Should it be replaced also in tst_module_unload_()?
 
-> > +NULL terminated array '.modprobe' of kernel module names are tried to be loaded
->                                                                   ^
-> 							      attempted
-> > +with 'modprobe' unless they are builtin or already loaded. Test exits with
-> > +'TCONF' on first 'modprobe' non-zero exit. During cleanup are the modules
->                                    ^     ^
-> 		                   failure
-> > +loaded by the test unloaded with 'rmmod'.
+Yes please.
 
-> During the cleanup modules that have been loaded are unloaded by 'modprobe -r'.
-
-Thanks for the wording improvement. I also agree that 'modprobe -r' is probably
-better than 'rmmod'. But we already have tst_module_unload_() in lib/tst_module.c
-(file for both APIs). I guess I'll add new functions to lib/tst_kernel.c, which
-is new API only and already has some module specific files (not ideal name, but
-after everything using lib/tst_module.c is converted to the new API we can move
-module specific files to lib/tst_module.c).
-
-...
-> > +++ b/include/tst_test.h
-> > @@ -297,9 +297,12 @@ struct tst_test {
-> >  	/* NULL terminated array of resource file names */
-> >  	const char *const *resource_files;
-
-> > -	/* NULL terminated array of needed kernel drivers */
-> > +	/* NULL terminated array of needed kernel drivers to be checked */
-> >  	const char * const *needs_drivers;
-
-> Do we need this array? Are there tests that needs to check for a module
-> but does not want the library to load them?
-
-So you would, as a part of this change, replace .needs_drivers with .modprobe_module.
-
-I'm not sure if it's a good idea. Some kernel modules are loaded on demand. If
-we call modprobe, we will skip testing of this auto-load functionality.
-What come to my mind are various modules required by certain socket() call, see
-bind0[45].c., but they don't use .needs_drivers.
-
-Other example is loop module in .needs_drivers (e.g. ioctl/ioctl_loop05.c and
-others) which load loop module via ioctl(fd, LOOP_CONFIGURE, ...) or quotactl
-tests.
-
-IMHO zram03.c cannot just load module. zram-control hot_add/hot_remove
-functionality was added in 6566d1a32bf7 ("zram: add dynamic device add/remove
-functionality") in v4.2-rc1 - still too new to drop the support.
-I still believe we can start with modprobe via .modprobe_module for zram03.c,
-and then do the other checks (I'll try to send patch first with Cc: Yang Xu).
-
-> > +	/* NULL terminated array of needed kernel drivers to be loaded with modprobe */
-> > +	const char * const *modprobe;
-...
-
-> > +/*
-> > + * Search kernel driver in /proc/modules.
-> > + *
-> > + * @param driver The name of the driver.
-> > + * @return 1 if driver is found, otherwise 0.
-> > + */
-> > +static int module_loaded(const char *driver)
-> > +{
-> > +	char line[4096];
-> > +	int found = 0;
-> > +	FILE *file = SAFE_FOPEN("/proc/modules", "r");
-> > +
-> > +	while (fgets(line, sizeof(line), file)) {
-> > +		if (strstr(line, driver)) {
-
-> Is this realy okay? What if a module name is a substring of other
-> module? We have module names that ar as short as two letters, for
-> instance with 'sg' or 'ac' there quite a bit of room for error.
-
-> We really need to find first whitespace in the line and replace it with
-> '\0' then do strcmp().
-
-+1
-
-> And we have to do the '_' and '-' permutations as well, as we do in the
-> code that checks for buildin modules.
-
-Yep, that part has been solved in tst_search_driver_(), which is in
-lib/tst_kernel.c, but that function is searching in /lib/modules.
-
-> Maybe we need module_strcmp(), that would work like strcmp() but would
-> handle the '-' and '_' as the same letter.
-
-+1, it will be then used in two places.
-
-> > +			found = 1;
-> > +			break;
-> > +		}
-> > +	}
-> > +	SAFE_FCLOSE(file);
-> > +
-> > +	return found;
-> > +}
-> > +
-> >  static void do_setup(int argc, char *argv[])
-> >  {
-> >  	if (!tst_test)
-> > @@ -1194,6 +1220,20 @@ static void do_setup(int argc, char *argv[])
-> >  			safe_check_driver(name);
-> >  	}
-
-> > +	if (tst_test->modprobe) {
-> > +		const char *name;
-> > +		int i;
-> > +
-> > +		for (i = 0; (name = tst_test->modprobe[i]); ++i) {
-> > +			/* only load module if not already loaded */
-> > +			if (!module_loaded(name) && tst_check_builtin_driver(name)) {
-> > +				const char *const cmd_modprobe[] = {"modprobe", name, NULL};
-> > +				SAFE_CMD(cmd_modprobe, NULL, NULL);
-
-> We are supposed to TCONF here if modprobe failed, so we have to check
-> the return value and tst_brk(TCONF, "...") when it's non-zero, right?
-
-Yes, but see safe_cmd() in lib/tst_safe_macros.c. tst_cmd() is called with 
-TST_CMD_PASS_RETVAL | TST_CMD_TCONF_ON_MISSING, thus this is covered.
-I agree SAFE_CMD() is confusing, I'll send a patch documenting this in
-include/tst_safe_macros.h.
-
-> > +				modules_loaded[i] = 1;
-> > +			}
-> > +		}
-> > +	}
-> > +
-> >  	if (tst_test->mount_device)
-> >  		tst_test->format_device = 1;
-
-> > @@ -1362,6 +1402,19 @@ static void do_cleanup(void)
-
-> >  	tst_sys_conf_restore(0);
-
-> > +	if (tst_test->modprobe) {
-> > +		const char *name;
-> > +		int i;
-> > +
-> > +		for (i = 0; (name = tst_test->modprobe[i]); ++i) {
-> > +			if (!modules_loaded[i])
-> > +				continue;
-> > +
-> > +			const char *const cmd_rmmod[] = {"rmmod", name, NULL};
-
-> modprobe -r please, rmmod has been deprecated for ages.
-
-Ah, here goes the reason. Should it be replaced also in tst_module_unload_()?
-
-Kind regards,
-Petr
-
-> > +			SAFE_CMD(cmd_rmmod, NULL, NULL);
-> > +		}
-> > +	}
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
