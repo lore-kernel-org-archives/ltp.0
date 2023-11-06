@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16118C4167D
-	for <ltp@archiver.kernel.org>; Mon,  6 Nov 2023 10:55:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41332C4167D
+	for <ltp@archiver.kernel.org>; Mon,  6 Nov 2023 10:55:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2499B3CE865
-	for <ltp@archiver.kernel.org>; Mon,  6 Nov 2023 11:55:08 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 6EF183CE861
+	for <ltp@archiver.kernel.org>; Mon,  6 Nov 2023 11:55:19 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3349F3CC737
- for <ltp@lists.linux.it>; Mon,  6 Nov 2023 11:54:57 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id AA56B3CC737
+ for <ltp@lists.linux.it>; Mon,  6 Nov 2023 11:54:58 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 74B65200DCA
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 54F571400F31
  for <ltp@lists.linux.it>; Mon,  6 Nov 2023 11:54:57 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 082472185F;
- Mon,  6 Nov 2023 10:54:57 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 81C5C2185E;
+ Mon,  6 Nov 2023 10:54:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1699268097; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1699268096; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=lQ1N68q2P1jZ9rKmhkpTUS8ORBcY7eQORsGhaDdX6V4=;
- b=Ee/Psw2mJiN/vbd3lt1px405+9eRk0HKV+h56aP3eP6r8GHdOfnCcSiyU2GjDxxABgaOhy
- KLU/f/FBCaqNSNqxc7uEdb7P+OvfFiVGRaPiymbYiXMUJ4L39M8Y07WcBorwnonjdS8eKt
- v/1mencZPOFNtOFGk2sFVJhKMMTBHxQ=
+ bh=/IJ/0sbFkE5Ys0oopJld4h4I6eE1ARKvtwAEsxFAAiU=;
+ b=ubfT4q58Lfbs6eJAmZU+S0kdQ4eHYVbNy21RLQQonXrwBbjVT92v20kPhoWZ+z8X78lCF3
+ M+uZN06yMRjS9w0WktN5Z5X3D2UAvd28UXziEqDDHHThWSZXnhoL41OK3nlWN52aj7ln/S
+ ehHdVw3Ylqt72fQjHPT1+UwVf3vlu7k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1699268097;
+ s=susede2_ed25519; t=1699268096;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=lQ1N68q2P1jZ9rKmhkpTUS8ORBcY7eQORsGhaDdX6V4=;
- b=NOeHAEqCHBM3dzBsMcMe7BEuLU60vY4rnyazym5SqrslZkUezj8m9Ir8cpgLjiOt2/WpjZ
- tWDkPevdNLD5WVBg==
+ bh=/IJ/0sbFkE5Ys0oopJld4h4I6eE1ARKvtwAEsxFAAiU=;
+ b=il8fKyTton1X8NbIxR7DYKjRqs7H2TLJNHfQeKbcr/BebrsSiioayEmvu20ini84+aXS1t
+ QCbWLURWWRjMZVCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9EE9F138E5;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 180D2138E5;
  Mon,  6 Nov 2023 10:54:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id SPFaJQDGSGXCIAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id 2BquBADGSGXCIAAAMHmgww
  (envelope-from <pvorel@suse.cz>); Mon, 06 Nov 2023 10:54:56 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Mon,  6 Nov 2023 11:54:17 +0100
-Message-ID: <20231106105418.1240169-3-pvorel@suse.cz>
+Date: Mon,  6 Nov 2023 11:54:16 +0100
+Message-ID: <20231106105418.1240169-2-pvorel@suse.cz>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231106105418.1240169-1-pvorel@suse.cz>
 References: <20231106105418.1240169-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/2] doc/support: Update the oldest tested distros
+Subject: [LTP] [PATCH v3 1/2] CI: Replace CentOS 7 with openSUSE Leap 42.2
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,42 +84,72 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Update changes from previous commit (CentOS 7 replaced by Ubuntu 16.04
-LTS xenial and openSUSE Leap 42.2).
+CentOS 7 (kernel 3.10, glibc 2.17, gcc 4.8.5) is not yet EOL,
+but IMHO nobody test it (or other distro with similarly old)
+with the latest LTP (older LTP release is used). It's not worth of
+effort to keep LTP compilable with that old kernel/glibc headers.
 
-Also remove note about Debian 10 oldstable (buster), because since
-June 2023, when Debian 12 bookworm was released as Debian stable,
-the oldstable release codename alias points to Debian 11 bullseye
-which uses quite new software (kernel 5.10, glibc: 2.31, gcc 10.2)
-therefore not mentioned in the table.
+Therefore replace CentOS 7 with a distro with similar age:
+openSUSE Leap 42.2 (kernel 4.4, glibc 2.22, gcc 4.8.5).
+
+Although it has EOL in 2018-01, it's still available in docker Hub (thus
+working in GitHub CI).
+
+These will become the oldest distros in LTP CI.
+
+The same kernel release 4.4 is also used in SLE 12-SP2, which is still
+being tested with the latest LTP release. Also CIP project uses kernel
+4.4, people might test it recent LTP.
+
+NOTE: we considered to add also Ubuntu 16.04 LTS xenial (kernel 4.4,
+glibc 2.23, gcc 5.3.1, EOL 2021-04). But we need to keep number jobs in
+CI reasonable, thus adding just Leap 42.2 which has slightly older
+software.
 
 Acked-by: Jan Stancek <jstancek@redhat.com>
 Reviewed-by: Li Wang <liwang@redhat.com>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- doc/Supported-kernel,-libc,-toolchain-versions.asciidoc | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ .github/workflows/ci.yml | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/doc/Supported-kernel,-libc,-toolchain-versions.asciidoc b/doc/Supported-kernel,-libc,-toolchain-versions.asciidoc
-index e3d9cd92f..bdb3e44f3 100644
---- a/doc/Supported-kernel,-libc,-toolchain-versions.asciidoc
-+++ b/doc/Supported-kernel,-libc,-toolchain-versions.asciidoc
-@@ -19,12 +19,11 @@ NOTE: GitHub Actions does only build testing, passing the CI means only that
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 24876b564..9a8a66b6d 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -58,14 +58,12 @@ jobs:
+               TREE: out
+               VARIANT: minimal
  
- [align="center",options="header"]
--|==============================================================
-+|===============================================================
- | Distro                       | kernel  | glibc | gcc   | clang
--| CentOS 7                     | 3.10    | 2.17  | 4.8.5 | -
-+| openSUSE Leap 42.2           | 4.4     | 2.22  | 4.8.5 | -
- | Ubuntu 18.04 LTS bionic      | 4.15    | 2.27  | 7.3.0 | -
--| Debian 10 oldstable (buster) | 4.19.37 | 2.28  | 8.3.0 | 7.0
--|==============================================================
-+|===============================================================
+-          # other builds
+-          - container: "fedora:latest"
++          # oldest distros
++          - container: "opensuse/archive:42.2"
+             env:
+-              CC: clang
+-              MAKE_INSTALL: 1
+-              METADATA: asciidoctor-pdf
++              CC: gcc
  
- Older distributions are not officially supported, which means that it
- may or may not work. It all depends on your luck. It should be possible
+-          - container: "centos:7"
++          - container: "ubuntu:xenial"
+             env:
+               CC: gcc
+               METADATA: asciidoc-pdf
+@@ -80,6 +78,13 @@ jobs:
+             env:
+               CC: clang
+ 
++          # other builds
++          - container: "fedora:latest"
++            env:
++              CC: clang
++              MAKE_INSTALL: 1
++              METADATA: asciidoctor-pdf
++
+           - container: "opensuse/leap:latest"
+             env:
+               CC: gcc
 -- 
 2.42.0
 
