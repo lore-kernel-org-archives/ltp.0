@@ -4,62 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6243C4332F
-	for <ltp@archiver.kernel.org>; Mon,  6 Nov 2023 10:55:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 174E4C4167B
+	for <ltp@archiver.kernel.org>; Mon,  6 Nov 2023 10:58:39 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1E5503CE872
-	for <ltp@archiver.kernel.org>; Mon,  6 Nov 2023 11:55:30 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id B6E3A3CE2A2
+	for <ltp@archiver.kernel.org>; Mon,  6 Nov 2023 11:58:36 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D07963CC737
- for <ltp@lists.linux.it>; Mon,  6 Nov 2023 11:54:58 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id DAF683CC737
+ for <ltp@lists.linux.it>; Mon,  6 Nov 2023 11:58:26 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 8C137605646
- for <ltp@lists.linux.it>; Mon,  6 Nov 2023 11:54:56 +0100 (CET)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0E1F221855;
- Mon,  6 Nov 2023 10:54:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1699268096; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=VyZ9r6SvZTLqiimeLswNSWedhh0DGhbWZeGWapkV7Cc=;
- b=Ump50VNObrN/nKaEtTYmu3qbWg/PcoapbHkTItbRDzgk3b8uBiM/6GYm6wBCaDtcFeJTa3
- 6NxCt12LhJLkumknzf4BCDB6gfQLKU2NWdg44QY3ExsP1BWBQvom4d3qhq5OcdqGe1UqhR
- iPHO/xGNZ9Qtsa7gR/gliyjtdSQ1zBQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1699268096;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=VyZ9r6SvZTLqiimeLswNSWedhh0DGhbWZeGWapkV7Cc=;
- b=0kEEnCYVCCRap3/ZmLJ6natMkU8ZWtOsSJn2BKRSobmc6CA6L0PtEJfyOyGDyEtf1GZeJU
- 26XA7MmdQOMOuHBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 765A9138E5;
- Mon,  6 Nov 2023 10:54:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id CXWEG//FSGXCIAAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 06 Nov 2023 10:54:55 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Mon,  6 Nov 2023 11:54:15 +0100
-Message-ID: <20231106105418.1240169-1-pvorel@suse.cz>
-X-Mailer: git-send-email 2.42.0
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id C6A9360563C
+ for <ltp@lists.linux.it>; Mon,  6 Nov 2023 11:58:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1699268304;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=gRKLxhaItaJ81pNT3O0zb/UuBsfFKpOn4KLhdTnEcAg=;
+ b=C5PhMWzLXQtTRnO2/PrQws648KPVNVP3jBGdaGmhjYCxpu4Xal85Zw4tsM3fyey3DQbqiW
+ WjcvSCHqWxwUIJGX6sjgCv4eVKBorGvuQAFtX7kYpnmzrx0HYPIdby0zu6Jor3Dw0NGD/x
+ 3oMv0o6xtgCJBsbrbza84y6lbHjSLzA=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-76-RvgWlFrhO6G_l0pEdkGibw-1; Mon, 06 Nov 2023 05:58:22 -0500
+X-MC-Unique: RvgWlFrhO6G_l0pEdkGibw-1
+Received: by mail-lf1-f71.google.com with SMTP id
+ 2adb3069b0e04-50798a259c7so3979953e87.1
+ for <ltp@lists.linux.it>; Mon, 06 Nov 2023 02:58:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1699268300; x=1699873100;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=gRKLxhaItaJ81pNT3O0zb/UuBsfFKpOn4KLhdTnEcAg=;
+ b=STkYc4RnUwwt0Db1fqHTeZWrttYUMwadKf1C+CTrBnuqjX2PXSWsLPzV1Z8tWgYaOq
+ su+HAAnS7r2+eo6o00B7WIYKGNZUBQ17J7/+mG580CTIZN64FtLoX/eyNE9/cFH+P5jO
+ ffn72ArUefqW0Z7vNEUlX6qJFkBBTMVz78mAU+ifCOuHhW5YSnfq/RgV+G40ZmUiz0ER
+ /184zqARCh2qCa+o8NpoWQQYlK2IairnLXqSfK6x9aCZukZS8J2GzASrhpgstW/UEmwp
+ Rc3uNkSQh0af6eTe5XdCMa3NcAfSCdZE+OR6N4QHwJ2I2Zi/uK+Sr3mWe1/PQjhXdOdi
+ E0eg==
+X-Gm-Message-State: AOJu0Yy++Yne/3zEE9Rf+XRMqrf/DGnTenj+8jQ5PK1R8S6/z89y6HhB
+ SWPd2pbN7O0FbC/uU+aEQ2RHUuWUhOtQQZjtr85RxnlEHCCa/LgzxqfnjBuCjBzQyCimSpn5Z/r
+ hGVMlpT/NpRym6M0oJ/7E1b4zDYo=
+X-Received: by 2002:a05:6512:3096:b0:508:11f5:8953 with SMTP id
+ z22-20020a056512309600b0050811f58953mr11591520lfd.26.1699268300528; 
+ Mon, 06 Nov 2023 02:58:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFM4q+JGpEztpvxkYtJzO9UiEqQNtCsFY2JvVxl9Wiq1b8+kZrh606pMhOXwJNw89CO2l4T1f3iaauBC4b9ORk=
+X-Received: by 2002:a05:6512:3096:b0:508:11f5:8953 with SMTP id
+ z22-20020a056512309600b0050811f58953mr11591508lfd.26.1699268300156; Mon, 06
+ Nov 2023 02:58:20 -0800 (PST)
 MIME-Version: 1.0
+References: <20231102072030.1800796-1-liwang@redhat.com>
+ <20231102092135.GA921952@pevik>
+ <CAEemH2fWDQgPv+9TR9nb4rw5CsJx3uGKS+Yvb3YqgNEOUSVYmg@mail.gmail.com>
+ <20231103091439.GA1026385@pevik>
+ <CAEemH2ewUHBC17LL+4OXd8AZqciGrRqo4Ty+Hik2KcXP+t4fNA@mail.gmail.com>
+ <20231106104023.GA1236692@pevik>
+In-Reply-To: <20231106104023.GA1236692@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 6 Nov 2023 18:58:08 +0800
+Message-ID: <CAEemH2fbsZaK11MRgS+jqowWihStX9NX5dc4fcgcDrbFfJULOA@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 0/2] Remove CentOS 7 support
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH] ci: add centos stream support
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,31 +90,49 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Ulrich Hecht <uli@kernel.org>, Richard Palethorpe <rpalethorpe@suse.com>,
- automated-testing@lists.yoctoproject.org
+Cc: Chao Ye <cye@redhat.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-changes v2->v3:
-* Don't add Ubuntu 16.04 LTS xenial (only openSUSE Leap 42.2 added)
-- to keep CI jobs reasonable.
+Petr Vorel <pvorel@suse.cz> wrote:
 
-Kind regards,
-Petr
 
-Petr Vorel (2):
-  CI: Replace CentOS 7 with openSUSE Leap 42.2
-  doc/support: Update the oldest tested distros
+>
+> > > If we want to add both CentOS 8 and 9, we could remove some of
+> > > debian:oldstable (bullseye)
+> > > (similar kernel).
+>
+> > > And, we could add just openSUSE Leap 42.2, which has older glibc and
+> gcc
+> > > than
+> > > Ubuntu 16.04 LTS xenial. For sure there are more people which use
+> xenial
+> > > than
+> > > old Leap 42.2, but as I said, the goal is to test the oldest distro we
+> > > maintainers really care about (and do not have extra work for nothing,
+> > > which is
+> > > IMHO keeping CentOS 7 compilable).
+>
+> > > WDYT?
+>
+>
+> > Your explanation is quite useful, thanks!
+>
+> > I'm fine to remove the CentOS8 build in this patch,
+> > should I resent the new patch or push it directly?
+>
+> You can push it directly. If it does not apply, feel free to push my change
+> first. I'll post a note about keeping only openSUSE Leap 42.2 in the
+> patchset.
+>
 
- .github/workflows/ci.yml                        | 17 +++++++++++------
- ...ed-kernel,-libc,-toolchain-versions.asciidoc |  7 +++----
- 2 files changed, 14 insertions(+), 10 deletions(-)
+Done, and sorry I just merged the V2 then see you post V3 patches.
 
 -- 
-2.42.0
-
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
