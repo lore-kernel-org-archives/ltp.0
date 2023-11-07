@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46440C4332F
-	for <ltp@archiver.kernel.org>; Tue,  7 Nov 2023 11:00:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70BF9C4332F
+	for <ltp@archiver.kernel.org>; Tue,  7 Nov 2023 18:41:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CB2AC3CE04A
-	for <ltp@archiver.kernel.org>; Tue,  7 Nov 2023 12:00:44 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 3285F3CE84C
+	for <ltp@archiver.kernel.org>; Tue,  7 Nov 2023 19:41:33 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 2D31A3CC6AF
- for <ltp@lists.linux.it>; Tue,  7 Nov 2023 12:00:34 +0100 (CET)
-Received: from esa2.hc1455-7.c3s2.iphmx.com (esa2.hc1455-7.c3s2.iphmx.com
- [207.54.90.48])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id A1AF43CC6C1
+ for <ltp@lists.linux.it>; Tue,  7 Nov 2023 19:41:21 +0100 (CET)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
+ [IPv6:2607:f8b0:4864:20::b49])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1E120140004E
- for <ltp@lists.linux.it>; Tue,  7 Nov 2023 12:00:32 +0100 (CET)
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="138818284"
-X-IronPort-AV: E=Sophos;i="6.03,283,1694703600"; d="scan'208";a="138818284"
-Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
- by esa2.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Nov 2023 20:00:32 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com
- [192.168.87.58])
- by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 4AD6DD9D8F
- for <ltp@lists.linux.it>; Tue,  7 Nov 2023 20:00:29 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 7BCEBAA880
- for <ltp@lists.linux.it>; Tue,  7 Nov 2023 20:00:28 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 0787F6BC57
- for <ltp@lists.linux.it>; Tue,  7 Nov 2023 20:00:28 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.220.121])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id B20131A0070;
- Tue,  7 Nov 2023 19:00:27 +0800 (CST)
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D3D54600AAA
+ for <ltp@lists.linux.it>; Tue,  7 Nov 2023 19:41:20 +0100 (CET)
+Received: by mail-yb1-xb49.google.com with SMTP id
+ 3f1490d57ef6-da3b6438170so6019383276.1
+ for <ltp@lists.linux.it>; Tue, 07 Nov 2023 10:41:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=google.com; s=20230601; t=1699382479; x=1699987279; darn=lists.linux.it;
+ h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=CW+9pEJYp0UpZG4DFf3RhYygmFxrJ9tJKhFTtuXeA08=;
+ b=wvH9nClhlgW9B3rzWNhr8y6gT+BXJYtypmzgv/3LoOVOMDEQ+tgjDP1dN5mWn+CpMi
+ QFbtRo2gPhWTEpOnQtiqzDoXzmgoOTAxGJ9ZmSVKGcmfgR83M/ZTna+ZxqisLP+Z8E7c
+ m5gkqM/TmF5Wz9XAGJ+dQrpvfazMF62nkwHFtq4bkOTdiRokStKaPqg5+xN5dXfz2qQH
+ MtH2QqpBjS8+HjlM49sfDiTB95u6KkiIRbhfkJU6apRXXSUYySdYyixeVWYLud+pcEUt
+ n3Wmno2kUwK/BVS3H/lESz2u5/T/cUVelvNPkLlkkd7UlfRLsGbUr79D1BCFUgrDmsBk
+ YYHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1699382479; x=1699987279;
+ h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=CW+9pEJYp0UpZG4DFf3RhYygmFxrJ9tJKhFTtuXeA08=;
+ b=sCWza9zo6tO6DFs7yNFaLQGTMM1q5d8WevLls90JQYBLB/J8xa4s5hM+UXzF2MRY7e
+ riDuJ2dAYOWC0CqZFL3KluX0VAgR5qRXT1tzq4himaHEIP1RvFFCqmtduWcdkrURfuyD
+ eT6tqEy21eIEQilgFkHOrJsJszY4wsE6nRqezutge/LFm2M7Jfswv6l9pt5Euorfv6Vj
+ yWb39I1b6Bszkt/Dg4tKhaRc6uPFoboXbzkqzrtGtf9IpAXdzUUAYR/vWAMP83pNSbZ0
+ lXe0L9HO/Enmmz3C8lJQTWlHSZ2xiKAJtlsAFbXmaa2qfjnEXiIQkRYbfbCv+xuIYDGu
+ 5cUg==
+X-Gm-Message-State: AOJu0YwsEIOkW2PZWr6b00rz6mqklTHvUwpkBCue3Aoruqt2gPAVH18a
+ +fq+Cc8+V/1IMR2XAxy5/+RvnbNkaxbZMN77QIojesN0Cdty3rxGG5yTD/0DQiGOh0DyFMVsg/Z
+ Ka4tg82AZJndWGChLI1QfGC9WY98r7F0RhcM1vKfxJycPUPaRKfXFLMTC
+X-Google-Smtp-Source: AGHT+IHGwjrFl1nmT3J0T73dn4W+UaHEy5tP6dqQjV9vA27XZsr0mMRzFCloUL4efW22xpQuP358j+Z1BY0=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a25:cb02:0:b0:d89:dd12:163d with SMTP id
+ b2-20020a25cb02000000b00d89dd12163dmr620794ybg.1.1699382479028; Tue, 07 Nov
+ 2023 10:41:19 -0800 (PST)
+Date: Tue,  7 Nov 2023 18:41:12 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+Message-ID: <20231107184113.2627463-1-edliaw@google.com>
 To: ltp@lists.linux.it
-Date: Tue,  7 Nov 2023 06:00:18 -0500
-Message-Id: <20231107110018.68128-1-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 2.39.1
-MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27982.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27982.006
-X-TMASE-Result: 10--11.097600-10.000000
-X-TMASE-MatchedRID: cWsSYyeVwqZ2DKcZ8+Tmyt+pUF0HsjxRMVx/3ZYby79jtMlSv+S5nJUh
- t+myr0XMUh5maKIJAx/mn3xyPJAJoh2P280ZiGmRGYJhRh6ssesYH39vFLryExbFEWXNUC8aWLm
- v5Mq0iysA57RVVGDG0FZMEB4qppf1Kl7ih+SW4+yq6D28gDZY4N2+i8ybXdyVw98l9TS0w4XheC
- SEXkVMIfNu/eY5p/OINA4DKA/0OZ3S+yMxmEfqz9odT+kwNKQb2aGwk4OLNSy+eGAmqR+bQH0mm
- lU2RvUrF4UQtGZvPERjTXyQP0YA4cENE306GyFRRbmVr90wE0gxVUWGXs3C811OAfq6beiuF24P
- 4yabpDb93kA1ImA+YEej3sxQoy96/r2K6wdIm98APmNKDWsW0H607foZgOWyEbdRL8jlwNFbK2q
- mKUaX1kQD9vOU9UhOm11lBSAav6kfE8yM4pjsD2vfiVSqJzu3SnQ4MjwaO9cqtq5d3cxkNakd8v
- AseaUlpG/JQhLuYIIs30iFuCGFO999mAzZ+wbGGxwSlKzYTd8=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] syscalls/link03: Remove this case
+Subject: [LTP] [PATCH v2] madvise11: Allow test to skip if MADV_SOFT_OFFLINE
+ is not supported
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,197 +75,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Edward Liaw via ltp <ltp@lists.linux.it>
+Reply-To: Edward Liaw <edliaw@google.com>
+Cc: kernel-team@android.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-I've noticed that the test objectives of link03 and link05 are very similar,
-and the description of link05's test has no relevance to the test code.
-Therefore, I think we can simply remove link03 and update the test description
-of link05 to replace link03.
+madvise11 will exit with TFAIL if CONFIG_MEMORY_FAILURE is not
+configured.  Require it to be set instead.
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
- testcases/kernel/syscalls/link/link03.c | 167 ------------------------
- 1 file changed, 167 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/link/link03.c
+ testcases/kernel/syscalls/madvise/madvise11.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/link/link03.c b/testcases/kernel/syscalls/link/link03.c
-deleted file mode 100644
-index 1f45240ae..000000000
---- a/testcases/kernel/syscalls/link/link03.c
-+++ /dev/null
-@@ -1,167 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *  AUTHOR		: Richard Logan
-- *  CO-PILOT		: William Roske
-- * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--
-- /*
--  * Tests that link(2) succeds with creating n links.
--  */
--
--#include <sys/types.h>
--#include <fcntl.h>
--#include <sys/stat.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
--
--static void setup(void);
--static void help(void);
--static void cleanup(void);
--
--char *TCID = "link03";
--int TST_TOTAL = 2;
--
--#define BASENAME	"lkfile"
--
--static char fname[255];
--static int nlinks = 0;
--static char *links_arg;
--
--option_t options[] = {
--	{"N:", NULL, &links_arg},
--	{NULL, NULL, NULL}
--};
--
--int main(int ac, char **av)
--{
--	int lc;
--	struct stat buf;
--	int i, links;
--	char lname[255];
--
--	tst_parse_opts(ac, av, options, &help);
--
--	if (links_arg) {
--		nlinks = atoi(links_arg);
--
--		if (nlinks == 0) {
--			tst_brkm(TBROK, NULL,
--			         "nlinks is not a positive number");
--		}
--
--		if (nlinks > 1000) {
--			tst_resm(TINFO,
--				 "nlinks > 1000 - may get errno:%d (EMLINK)",
--				 EMLINK);
--		}
--	}
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		if (nlinks)
--			links = nlinks;
--		else
--			links = (lc % 90) + 10;
--
--		/* Create links - 1 hardlinks so that the st_nlink == links */
--		for (i = 1; i < links; i++) {
--			sprintf(lname, "%s%d", fname, i);
--			TEST(link(fname, lname));
--
--			if (TEST_RETURN == -1) {
--				tst_brkm(TFAIL | TTERRNO, cleanup,
--					 "link(%s, %s) Failed", fname, lname);
--			}
--		}
--
--		SAFE_STAT(cleanup, fname, &buf);
--
--		if (buf.st_nlink != (nlink_t)links) {
--			tst_resm(TFAIL, "Wrong number of links for "
--			         "'%s' have %i, should be %i",
--				 fname, (int)buf.st_nlink, links);
--			goto unlink;
--		}
--
--		for (i = 1; i < links; i++) {
--			sprintf(lname, "%s%d", fname, i);
--			SAFE_STAT(cleanup, lname, &buf);
--			if (buf.st_nlink != (nlink_t)links) {
--				tst_resm(TFAIL,
--				         "Wrong number of links for "
--					 "'%s' have %i, should be %i",
--					 lname, (int)buf.st_nlink, links);
--				goto unlink;
--			}
--		}
--
--		tst_resm(TPASS, "link() passed and linkcounts=%d match", links);
--
--unlink:
--		for (i = 1; i < links; i++) {
--			sprintf(lname, "%s%d", fname, i);
--			SAFE_UNLINK(cleanup, lname);
--		}
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void help(void)
--{
--	printf("  -N #links : create #links hard links every iteration\n");
--}
--
--static void setup(void)
--{
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	sprintf(fname, "%s_%d", BASENAME, getpid());
--	SAFE_TOUCH(cleanup, fname, 0700, NULL);
--}
--
--static void cleanup(void)
--{
--	tst_rmdir();
--}
+diff --git a/testcases/kernel/syscalls/madvise/madvise11.c b/testcases/kernel/syscalls/madvise/madvise11.c
+index 74caadc44..7a12abf20 100644
+--- a/testcases/kernel/syscalls/madvise/madvise11.c
++++ b/testcases/kernel/syscalls/madvise/madvise11.c
+@@ -426,6 +426,10 @@ static struct tst_test test = {
+ 		"rmmod",
+ 		NULL
+ 	},
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_MEMORY_FAILURE=y",
++		NULL
++	},
+ 	.max_runtime = 30,
+ 	.needs_checkpoints = 1,
+ 	.setup = setup,
 -- 
-2.39.1
+2.42.0.869.gea05f2083d-goog
 
 
 -- 
