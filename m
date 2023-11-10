@@ -4,65 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2C4CC4332F
-	for <ltp@archiver.kernel.org>; Fri, 10 Nov 2023 10:10:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AFCEC4332F
+	for <ltp@archiver.kernel.org>; Fri, 10 Nov 2023 11:58:58 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 5F13C3CE76D
-	for <ltp@archiver.kernel.org>; Fri, 10 Nov 2023 11:10:15 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id DDE623CE75A
+	for <ltp@archiver.kernel.org>; Fri, 10 Nov 2023 12:58:55 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7A3443CC48A
- for <ltp@lists.linux.it>; Fri, 10 Nov 2023 11:10:05 +0100 (CET)
-Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com
- [207.54.90.49])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 50E7F3C9792
+ for <ltp@lists.linux.it>; Fri, 10 Nov 2023 12:58:45 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id A4F7B1000AFF
- for <ltp@lists.linux.it>; Fri, 10 Nov 2023 11:10:02 +0100 (CET)
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="139260760"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694703600"; d="scan'208";a="139260760"
-Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
- by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2023 19:09:59 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
- [192.168.83.67])
- by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 4526BD4F60
- for <ltp@lists.linux.it>; Fri, 10 Nov 2023 19:09:55 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 7CAD8C4A15
- for <ltp@lists.linux.it>; Fri, 10 Nov 2023 19:09:54 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id F326520050183
- for <ltp@lists.linux.it>; Fri, 10 Nov 2023 19:09:53 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.220.121])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id AF7501A0071;
- Fri, 10 Nov 2023 18:09:53 +0800 (CST)
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 8EC7B1402E34
+ for <ltp@lists.linux.it>; Fri, 10 Nov 2023 12:58:44 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 87BD7219C1;
+ Fri, 10 Nov 2023 11:58:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1699617523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=o7ivBlbw4+9/0teC3zvVLaoINUaT61HXDuyUJEmq+Ck=;
+ b=G41afYBOizrx7gEwsT9l8GWBN8gSWBd7FNrzb+Y7bLNnhocyqTtWhOHXDl4l1sYT7Hpoqb
+ t09x+GAktdOO4Lql9z7smVkg45VYrnrfqao0s/3ZzNowQmo9e0FViSZHpZafm/ualAUR0Z
+ fMgK04VwfjWZN1hfzASYy/ww9KUbz9E=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE9A313398;
+ Fri, 10 Nov 2023 11:58:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id BnjtHfIaTmWsDwAAMHmgww
+ (envelope-from <wegao@suse.com>); Fri, 10 Nov 2023 11:58:42 +0000
 To: ltp@lists.linux.it
-Date: Fri, 10 Nov 2023 05:09:38 -0500
-Message-Id: <20231110100938.210473-1-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 2.39.1
+Date: Fri, 10 Nov 2023 06:58:30 -0500
+Message-Id: <20231110115830.19664-1-wegao@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27988.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27988.006
-X-TMASE-Result: 10--9.535600-10.000000
-X-TMASE-MatchedRID: cWsSYyeVwqZguZOjaKSsWBIRh9wkXSlF9LMB0hXFSeiY5nVpihxiw5Uh
- t+myr0XMUh5maKIJAx/mn3xyPJAJoh2P280ZiGmRGYJhRh6ssesYH39vFLryExbFEWXNUC8aWLm
- v5Mq0iysA57RVVGDG0FZMEB4qppf1Kl7ih+SW4+yq6D28gDZY4N2+i8ybXdyVw98l9TS0w4XheC
- SEXkVMIfNu/eY5p/OINA4DKA/0OZ3S+yMxmEfqz9odT+kwNKQb2aGwk4OLNSy+eGAmqR+bQH0mm
- lU2RvUrF4UQtGZvPERjTXyQP0YA4cENE306GyFRRbmVr90wE0gxVUWGXs3C811OAfq6beiuF24P
- 4yabpDb93kA1ImA+YEej3sxQoy96/r2K6wdIm98APmNKDWsW0H607foZgOWyEbdRL8jlwNFbK2q
- mKUaX1kQD9vOU9UhOm11lBSAav6kfE8yM4pjsD2vfiVSqJzu3SnQ4MjwaO9cqtq5d3cxkNSAHE7
- ojdqqQnJf6reGgSfshcaZvSiCyLT0XgZuUEX2AGOmIJiZ0VaM=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] syscalls/link03: Remove this case
+Subject: [LTP] [PATCH v1] io_submit05.c: Add test case for RWF_APPEND flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -74,219 +62,173 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+From: Wei Gao via ltp <ltp@lists.linux.it>
+Reply-To: Wei Gao <wegao@suse.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-I've noticed that the test objectives of link03 and link05
-are very similar. Therefore, i think we can simply remove link03.
-
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- runtest/syscalls                          |   1 -
- testcases/kernel/syscalls/link/.gitignore |   1 -
- testcases/kernel/syscalls/link/link03.c   | 167 ----------------------
- 3 files changed, 169 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/link/link03.c
+ runtest/syscalls                              |   1 +
+ .../kernel/syscalls/io_submit/.gitignore      |   1 +
+ .../kernel/syscalls/io_submit/io_submit05.c   | 123 ++++++++++++++++++
+ 3 files changed, 125 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/io_submit/io_submit05.c
 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 1851752cf..be55f3f87 100644
+index c7a0b2301..15a54f2d3 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -694,7 +694,6 @@ lgetxattr02 lgetxattr02
+@@ -656,6 +656,7 @@ io_setup02 io_setup02
+ io_submit01 io_submit01
+ io_submit02 io_submit02
+ io_submit03 io_submit03
++io_submit05 io_submit05
  
- link01 symlink01 -T link01
- link02 link02
--link03 link03
- link04 link04
- link05 link05
- link08 link08
-diff --git a/testcases/kernel/syscalls/link/.gitignore b/testcases/kernel/syscalls/link/.gitignore
-index e5d7f1bbc..b2b9db632 100644
---- a/testcases/kernel/syscalls/link/.gitignore
-+++ b/testcases/kernel/syscalls/link/.gitignore
-@@ -1,5 +1,4 @@
- /link02
--/link03
- /link04
- /link05
- /link08
-diff --git a/testcases/kernel/syscalls/link/link03.c b/testcases/kernel/syscalls/link/link03.c
-deleted file mode 100644
-index 1f45240ae..000000000
---- a/testcases/kernel/syscalls/link/link03.c
-+++ /dev/null
-@@ -1,167 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *  AUTHOR		: Richard Logan
-- *  CO-PILOT		: William Roske
-- * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--
-- /*
--  * Tests that link(2) succeds with creating n links.
--  */
--
--#include <sys/types.h>
--#include <fcntl.h>
--#include <sys/stat.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--#include "safe_macros.h"
--
--static void setup(void);
--static void help(void);
--static void cleanup(void);
--
--char *TCID = "link03";
--int TST_TOTAL = 2;
--
--#define BASENAME	"lkfile"
--
--static char fname[255];
--static int nlinks = 0;
--static char *links_arg;
--
--option_t options[] = {
--	{"N:", NULL, &links_arg},
--	{NULL, NULL, NULL}
--};
--
--int main(int ac, char **av)
--{
--	int lc;
--	struct stat buf;
--	int i, links;
--	char lname[255];
--
--	tst_parse_opts(ac, av, options, &help);
--
--	if (links_arg) {
--		nlinks = atoi(links_arg);
--
--		if (nlinks == 0) {
--			tst_brkm(TBROK, NULL,
--			         "nlinks is not a positive number");
--		}
--
--		if (nlinks > 1000) {
--			tst_resm(TINFO,
--				 "nlinks > 1000 - may get errno:%d (EMLINK)",
--				 EMLINK);
--		}
--	}
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		if (nlinks)
--			links = nlinks;
--		else
--			links = (lc % 90) + 10;
--
--		/* Create links - 1 hardlinks so that the st_nlink == links */
--		for (i = 1; i < links; i++) {
--			sprintf(lname, "%s%d", fname, i);
--			TEST(link(fname, lname));
--
--			if (TEST_RETURN == -1) {
--				tst_brkm(TFAIL | TTERRNO, cleanup,
--					 "link(%s, %s) Failed", fname, lname);
--			}
--		}
--
--		SAFE_STAT(cleanup, fname, &buf);
--
--		if (buf.st_nlink != (nlink_t)links) {
--			tst_resm(TFAIL, "Wrong number of links for "
--			         "'%s' have %i, should be %i",
--				 fname, (int)buf.st_nlink, links);
--			goto unlink;
--		}
--
--		for (i = 1; i < links; i++) {
--			sprintf(lname, "%s%d", fname, i);
--			SAFE_STAT(cleanup, lname, &buf);
--			if (buf.st_nlink != (nlink_t)links) {
--				tst_resm(TFAIL,
--				         "Wrong number of links for "
--					 "'%s' have %i, should be %i",
--					 lname, (int)buf.st_nlink, links);
--				goto unlink;
--			}
--		}
--
--		tst_resm(TPASS, "link() passed and linkcounts=%d match", links);
--
--unlink:
--		for (i = 1; i < links; i++) {
--			sprintf(lname, "%s%d", fname, i);
--			SAFE_UNLINK(cleanup, lname);
--		}
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void help(void)
--{
--	printf("  -N #links : create #links hard links every iteration\n");
--}
--
--static void setup(void)
--{
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	sprintf(fname, "%s_%d", BASENAME, getpid());
--	SAFE_TOUCH(cleanup, fname, 0700, NULL);
--}
--
--static void cleanup(void)
--{
--	tst_rmdir();
--}
+ keyctl01 keyctl01
+ keyctl02 keyctl02
+diff --git a/testcases/kernel/syscalls/io_submit/.gitignore b/testcases/kernel/syscalls/io_submit/.gitignore
+index 60b07970a..cf0d4c6df 100644
+--- a/testcases/kernel/syscalls/io_submit/.gitignore
++++ b/testcases/kernel/syscalls/io_submit/.gitignore
+@@ -1,3 +1,4 @@
+ /io_submit01
+ /io_submit02
+ /io_submit03
++/io_submit05
+diff --git a/testcases/kernel/syscalls/io_submit/io_submit05.c b/testcases/kernel/syscalls/io_submit/io_submit05.c
+new file mode 100644
+index 000000000..32f4379e1
+--- /dev/null
++++ b/testcases/kernel/syscalls/io_submit/io_submit05.c
+@@ -0,0 +1,123 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
++ */
++
++/*\
++ * [Description]
++ *
++ * This is a basic test for io_submit RWF_APPEND flag.
++ *
++ */
++
++#include <linux/aio_abi.h>
++
++#include "config.h"
++#include "tst_test.h"
++#include "tst_safe_pthread.h"
++#include "lapi/syscalls.h"
++
++#define TEST_FILE "test_file"
++#define MODE 0777
++#define BUF_LEN 10
++#define MNTPOINT "mntpoint"
++
++static char *init_buf;
++static char *update_buf;
++static char *tmp_buf;
++static int fd;
++static aio_context_t ctx;
++static struct iocb iocb;
++static struct iocb *iocbs[] = {&iocb};
++static volatile int stop;
++
++static inline void io_prep_option(struct iocb *cb, int fd, void *buf,
++			size_t count, long long offset, unsigned int opcode)
++{
++	memset(cb, 0, sizeof(*cb));
++	cb->aio_fildes = fd;
++	cb->aio_lio_opcode = opcode;
++	cb->aio_buf = (uint64_t)buf;
++	cb->aio_offset = offset;
++	cb->aio_nbytes = count;
++	cb->aio_rw_flags = RWF_APPEND;
++}
++
++static unsigned int io_submit(void)
++{
++	struct io_event evbuf;
++	struct timespec timeout = { .tv_sec = 1 };
++
++	TST_EXP_VAL_SILENT(tst_syscall(__NR_io_submit, ctx, 1, iocbs), 1);
++	TST_EXP_VAL_SILENT(tst_syscall(__NR_io_getevents, ctx, 1, 1, &evbuf,
++			&timeout), 1);
++}
++
++static void setup(void)
++{
++
++	TST_EXP_PASS_SILENT(tst_syscall(__NR_io_setup, 1, &ctx));
++
++	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, MODE);
++	SAFE_LSEEK(fd, 0, SEEK_SET);
++
++	memset(init_buf, 0x62, BUF_LEN);
++	memset(update_buf, 0x61, BUF_LEN);
++	memset(tmp_buf, 0, BUF_LEN);
++
++	io_prep_option(&iocb, fd, update_buf, BUF_LEN, 1, IOCB_CMD_PWRITE);
++}
++
++static void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
++
++	if (tst_syscall(__NR_io_destroy, ctx))
++		tst_brk(TBROK | TERRNO, "io_destroy() failed");
++}
++
++
++static void run(void)
++{
++	int i;
++
++	SAFE_WRITE(0, fd, init_buf, BUF_LEN);
++	io_submit();
++	SAFE_LSEEK(fd, BUF_LEN, SEEK_SET);
++	SAFE_READ(1, fd, tmp_buf, BUF_LEN);
++	for (i = 0; i < BUF_LEN; i++) {
++		if (tmp_buf[i] != 0x61)
++			break;
++	}
++
++	if (i != BUF_LEN) {
++		tst_res(TFAIL, "buffer wrong at %i have %c expected 'a'",
++				i, tmp_buf[i]);
++		return;
++	}
++
++	tst_res(TPASS, "io_submit wrote %zi bytes successfully "
++			"with content 'a' expectedly ", BUF_LEN);
++}
++
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_AIO=y",
++		NULL
++	},
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.max_runtime = 60,
++	.mntpoint = MNTPOINT,
++	.mount_device = 1,
++	.all_filesystems = 1,
++	.bufs = (struct tst_buffers []) {
++		{&init_buf, .size = BUF_LEN},
++		{&update_buf, .size = BUF_LEN},
++		{&tmp_buf, .size = BUF_LEN},
++		{}
++	}
++};
 -- 
-2.39.1
+2.35.3
 
 
 -- 
