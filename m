@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60A77C4167D
-	for <ltp@archiver.kernel.org>; Mon, 13 Nov 2023 15:57:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A531DC4332F
+	for <ltp@archiver.kernel.org>; Mon, 13 Nov 2023 16:02:16 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E0FFA3CE5F4
-	for <ltp@archiver.kernel.org>; Mon, 13 Nov 2023 16:57:41 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id D081F3CE5E3
+	for <ltp@archiver.kernel.org>; Mon, 13 Nov 2023 17:02:14 +0100 (CET)
+Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B9B433CE5B8
- for <ltp@lists.linux.it>; Mon, 13 Nov 2023 16:57:31 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ by picard.linux.it (Postfix) with ESMTPS id 02A1E3CE550
+ for <ltp@lists.linux.it>; Mon, 13 Nov 2023 17:02:03 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 487CD600331
- for <ltp@lists.linux.it>; Mon, 13 Nov 2023 16:57:30 +0100 (CET)
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 726AD1A02381
+ for <ltp@lists.linux.it>; Mon, 13 Nov 2023 17:02:02 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 57E351F854;
- Mon, 13 Nov 2023 15:57:30 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0B685216DC;
+ Mon, 13 Nov 2023 16:02:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1699891050;
+ t=1699891322;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=l2UU761EzfjsgYnDjLwFOoLHjqaMPgeOMaFvtLhUZ3k=;
- b=Cqq7gZLVu0Th3AsAs96hq0NHluD9i0h9YZF3MP9s2+xef7Z0NZw39alwtKoW5kuMrmD+hh
- XQFCRslbJBztURMiBvVU4fwSaxUEGYzi9v+QT6ttHpnZJBlUE3cwYss4ZYHfd+Vt+Ft+ey
- 9NVepsCg6Vs5QAiOK7lZvvwT41LJg3s=
+ bh=M1iStFSNdaUcxqOTt9yYCrRVVkbgeQB9nuOxTqB3wiQ=;
+ b=kFrdpi4qr8KvIth+aOs1SXtsnUTMxTtJ3AkTMjLwnTzx0bRn96Z2EG+K0zryr5R3E+b/lf
+ q2nRoohquZFcPE+yAGw//7prShGWmzZMX+8m2Xl075oLYaatYXOjg3FzaMOeDMMQTp5Wxx
+ RQ//o0xMCWeRGR6SOpL0KjNmCTmPgrw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1699891050;
+ s=susede2_ed25519; t=1699891322;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=l2UU761EzfjsgYnDjLwFOoLHjqaMPgeOMaFvtLhUZ3k=;
- b=o0a1vELSGLrCcLwbgdS7GQhsydtbyUnCkAtL+mdhcLQbcI1kzElw/mUnQc297eTLkI44Q6
- R7DO6AZBUMMZJlDQ==
+ bh=M1iStFSNdaUcxqOTt9yYCrRVVkbgeQB9nuOxTqB3wiQ=;
+ b=uvQckcjudZ1pePtvq+vMlkTwgeh0oyHpYkx3VWsjqG8diXauZMsg6wv+uMCSXFMB4gDjKI
+ o9SM5mHGY3vQOpAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2921E13398;
- Mon, 13 Nov 2023 15:57:30 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DC6F613398;
+ Mon, 13 Nov 2023 16:02:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id SAnPCGpHUmWuWgAAMHmgww
- (envelope-from <pvorel@suse.cz>); Mon, 13 Nov 2023 15:57:30 +0000
-Date: Mon, 13 Nov 2023 16:57:28 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id jsWQNHlIUmUlXQAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Mon, 13 Nov 2023 16:02:01 +0000
+Date: Mon, 13 Nov 2023 17:02:00 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20231113155728.GC2231337@pevik>
+Message-ID: <20231113160200.GD2231337@pevik>
 References: <20231030110107.4528-1-andrea.cervesato@suse.de>
+ <20231030110107.4528-3-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231030110107.4528-1-andrea.cervesato@suse.de>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+In-Reply-To: <20231030110107.4528-3-andrea.cervesato@suse.de>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 0/2] Rewrite fsx-linux
+Subject: Re: [LTP] [PATCH v2 2/2] Remove fsx runtest suite
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,9 +86,25 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-> Rewritten fsx-linux test and removed fsx runtest suite.
+runltp also has fsx part, which needs to be deleted:
 
-nit: with these complex testsuites it helps if you post changelog.
+    # The fsx-linux tests use the SCRATCHDEV environment variable as a location
+    # that can be reformatted and run on.  Set SCRATCHDEV if you want to run
+    # these tests.  As a safeguard, this is disabled.
+    unset SCRATCHDEV
+    [ -n "$SCRATCHDEV" ] && \
+    {
+         cat ${LTPROOT}/runtest/fsx >> ${TMP}/alltests ||
+         {
+             echo "FATAL: unable to create  fsx-linux tests command file"
+             exit 1
+         }
+    }
+
+With that removed, you can add:
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+BTW I also wonder if we still need testscripts/ltp-aiodio.sh.
 
 Kind regards,
 Petr
