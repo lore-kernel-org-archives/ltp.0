@@ -4,76 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5BF6C072A2
-	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 15:09:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B40BAC4167B
+	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 15:39:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 886203CE4FF
-	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 16:09:51 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id E01F43CE507
+	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 16:39:22 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 0702D3CE4EE
- for <ltp@lists.linux.it>; Tue, 14 Nov 2023 16:09:30 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ by picard.linux.it (Postfix) with ESMTPS id D73473CE4D2
+ for <ltp@lists.linux.it>; Tue, 14 Nov 2023 16:39:11 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 40EF1601BA5
- for <ltp@lists.linux.it>; Tue, 14 Nov 2023 16:09:29 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 0CEC8201DBE
+ for <ltp@lists.linux.it>; Tue, 14 Nov 2023 16:39:10 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E295C20477;
- Tue, 14 Nov 2023 15:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1699974567; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=IUrd193Z7bWBCLqiR9YcZj8WLLpA+zOGs2gwVW/PS9c=;
- b=rdtRjFceH8YofzhFA6bYJnQMa2sC0g5Ag0YaM1BVPe7gvDjQ1njsnVb7VBU/1oD4rAQVpD
- a0e3PbCgsBBUVzPIql72/ahQjum3Z5VMww2s9HJzb8dDVZNsql6a4Qsx4LjMYR7VF2ppxY
- 2LYsw4xb2OVae+JIKAjotkGeiB8c85E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1699974567;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=IUrd193Z7bWBCLqiR9YcZj8WLLpA+zOGs2gwVW/PS9c=;
- b=1USDtj4gV5vuJyAyY81tX769scowr8LDEk2cX9uTA5Rxh9LabGJicfiLqdoVeph0TryTbg
- XB2p39o9i+Kg9ABA==
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 87E27228F0;
+ Tue, 14 Nov 2023 15:39:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1699976349;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FIdCvXrt3rpCRn96ze7ByJzDkDrKAXXhixPau7Ew8G8=;
+ b=vGTu9/5NvzavfY0lKUf38qmxNOpFgaTAzuASeXG2vEDxyvFQchU3LKXVbWEpvJKsufY0KL
+ MWPVsok1eZdJSQu+0wCgQUNCTddhkqvBacivxdZOIli4VKDmaDUR0Sayd0tcYh/L8n5fHX
+ fcteducFx+lO+v29TG7SFH2PE/74Q84=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1699976349;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=FIdCvXrt3rpCRn96ze7ByJzDkDrKAXXhixPau7Ew8G8=;
+ b=ONZhPJcar0Y0J+AxjV1BetX8gZw5Oy3x/q3gwCa7lwzRZTG2aL/Mj8J5zYX8ERM0U4NTHc
+ 0x6REr0NKVG1yDBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C44FC13416;
- Tue, 14 Nov 2023 15:09:27 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 554F613460;
+ Tue, 14 Nov 2023 15:39:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OujzLqeNU2XWRQAAMHmgww
- (envelope-from <mkittler@suse.de>); Tue, 14 Nov 2023 15:09:27 +0000
-From: Marius Kittler <mkittler@suse.de>
-To: ltp@lists.linux.it
-Date: Tue, 14 Nov 2023 16:09:21 +0100
-Message-ID: <20231114150922.28652-1-mkittler@suse.de>
-X-Mailer: git-send-email 2.42.1
+ by imap2.suse-dmz.suse.de with ESMTPSA id VrVREZ2UU2UZVgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 14 Nov 2023 15:39:09 +0000
+Date: Tue, 14 Nov 2023 16:39:07 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20231114153907.GA2357693@pevik>
+References: <20231114123140.1144-1-mdoucha@suse.cz>
+ <20231114123140.1144-6-mdoucha@suse.cz>
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
+Content-Disposition: inline
+In-Reply-To: <20231114123140.1144-6-mdoucha@suse.cz>
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [-0.01 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
- BROKEN_CONTENT_TYPE(1.50)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+X-Spamd-Result: default: False [-10.29 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
- MID_CONTAINS_FROM(1.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
  RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-0.91)[86.18%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+ BAYES_HAM(-2.99)[99.97%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 0/1] *** Extend ioctl02 to test termio and termios
- ***
+Subject: Re: [LTP] [PATCH v2 5/5] Add test for CVE 2023-31248
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,23 +90,31 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This is the same as v2 except that the variable assignments have been
-moved out of the macros as this is apparently "frowned upon" :-)
+Hi Martin,
 
-Marius Kittler (1):
-  Extend ioctl02 to test termio and termios
+...
+> +++ b/testcases/network/iptables/nft02.c
+...
+> +/* Chain creation and deletion config */
+> +static const struct tst_netlink_attr_list newchain_config[] = {
+> +	{NFTA_TABLE_NAME, TABNAME, strlen(TABNAME) + 1, NULL},
+> +	{NFTA_CHAIN_NAME, CHAINNAME, strlen(CHAINNAME) + 1, NULL},
+> +	{NFTA_CHAIN_ID, &chain_id, sizeof(chain_id), NULL},
 
- testcases/kernel/syscalls/ioctl/ioctl02.c | 191 +++++++++++++---------
- 1 file changed, 118 insertions(+), 73 deletions(-)
+Unfortunately the current oldest distros (Leap 42 and Ubuntu Bionic) are too old
+for NFTA_CHAIN_ID, NFTA_RULE_CHAIN_ID, could you please add them to LAPI?
 
--- 
-2.42.1
+Otherwise the patchset looks ok.
 
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
