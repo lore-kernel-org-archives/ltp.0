@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FC03C4332F
-	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 12:32:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1F6EC4332F
+	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 12:32:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B1BA23CE4E2
-	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 13:32:10 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 99FCF3CE4F0
+	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 13:32:24 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 24E203CC27C
- for <ltp@lists.linux.it>; Tue, 14 Nov 2023 13:31:43 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 343343CC318
+ for <ltp@lists.linux.it>; Tue, 14 Nov 2023 13:31:44 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D1D251400E58
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D30A51400E65
  for <ltp@lists.linux.it>; Tue, 14 Nov 2023 13:31:42 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1F087218F0;
- Tue, 14 Nov 2023 12:31:42 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EC7A4218EA;
+ Tue, 14 Nov 2023 12:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1699965102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1699965101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=UhqUF+pwxnsxdDtYQaLrmNihZywyKJn26iTCGdh8mDU=;
- b=FMrj7lr/SMmYlL2Awzv6IkcbIy84hT3fHfxUKEaWGBAFpTSbw9mi81IqiXkye5ckro9D6f
- XMm+IXRS11Vo4TV0H7yw8K323T9EVZY6E5cE1tmvVTcPj80XKbDnhaX+vwm5KW4DOUhMpN
- BUMxWnWdyXN5UIpYs6MTyncj/KVxfSQ=
+ bh=XvoJnJUkWN0fXa6n+1Td/Y7+/i9UnuFYT0kEqbdhgNA=;
+ b=EC8Uzsjsq2Nrba5YUQKKwQu0wXi13hFMRs5wyF6FzmrmqlVld2oONwrtCwvIlCf+89/rn2
+ 7FD6Il2zDStzG+dgqFi+B7PS5IXioBiT7JTyJCJnid9r8wtDwGuZ3KIVCxYIUkOMzQLHaX
+ 19f1d/tqAsHP0josbnJRtMmGRSGcN7U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1699965102;
+ s=susede2_ed25519; t=1699965101;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=UhqUF+pwxnsxdDtYQaLrmNihZywyKJn26iTCGdh8mDU=;
- b=MYCCqNFLu9YF5eydKIDmPBeFDGfhjm/yHLEW6a8LHmJzcCeXLJlfquFO0THgFYMt9MLkXn
- aEEJaXATcTy4QjBA==
+ bh=XvoJnJUkWN0fXa6n+1Td/Y7+/i9UnuFYT0kEqbdhgNA=;
+ b=usABbJTuTDqs/4TkZsMMZvdlgZpA8eDrE/llzgFEe5DvCW2+ydmEcN+7w5CtLu90qf4k2e
+ drG+ptlau4NBybCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EDC7313ACD;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D0A2613A73;
  Tue, 14 Nov 2023 12:31:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 0IJLOa1oU2UibAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id mNYxMq1oU2UibAAAMHmgww
  (envelope-from <mdoucha@suse.cz>); Tue, 14 Nov 2023 12:31:41 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>,
 	ltp@lists.linux.it
-Date: Tue, 14 Nov 2023 13:31:25 +0100
-Message-ID: <20231114123140.1144-5-mdoucha@suse.cz>
+Date: Tue, 14 Nov 2023 13:31:24 +0100
+Message-ID: <20231114123140.1144-4-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231114123140.1144-1-mdoucha@suse.cz>
 References: <20231114123140.1144-1-mdoucha@suse.cz>
@@ -77,8 +77,8 @@ X-Spamd-Result: default: False [-2.10 / 50.00]; ARC_NA(0.00)[];
  RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
 X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 4/5] tst_netlink: Add helper functions for handling
- generic attributes
+Subject: [LTP] [PATCH v2 3/5] crypto: Replace old netlink helper functions
+ with netlink contexts
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,334 +95,864 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Refactor struct tst_rtnl_attr_list for generic use and add helper
-functions for handling generic struct nlattr message attributes.
+Finish refactoring of netlink helper functions for generic use
+and replace the very limited netlink send/receive functions
+used by the crypto tests with the new context-based helpers.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
-Changes since v1: New patch
+Changes since v1:
+- Rebased
+- Removed doc references to tst_crypto_session
 
- include/tst_netdevice.h   |  6 +--
- include/tst_netlink.h     | 38 ++++++++++++++----
- lib/tst_netdevice.c       | 20 +++++-----
- lib/tst_netlink.c         | 82 ++++++++++++++++++++++++++++++++++++++-
- testcases/cve/tcindex01.c | 12 +++---
- 5 files changed, 131 insertions(+), 27 deletions(-)
+The tst_netlink_context structure is initialized by NETLINK_CREATE_CONTEXT(),
+no macro is needed or even desirable since it's an opaque structure. It has
+no documentation so I've just removed the @relates references
+to tst_crypto_session.
 
+ doc/C-Test-Network-API.asciidoc         |   4 +-
+ include/tst_crypto.h                    |  69 +---------
+ include/tst_netdevice.h                 |   2 +-
+ include/tst_netlink.h                   | 171 ++++++++++++++----------
+ include/tst_rtnetlink.h                 | 109 ---------------
+ lib/tst_crypto.c                        |  90 +++----------
+ lib/tst_netdevice.c                     |   2 +-
+ lib/{tst_rtnetlink.c => tst_netlink.c}  |   2 +-
+ testcases/cve/tcindex01.c               |   2 +-
+ testcases/kernel/crypto/crypto_user01.c |  58 +++-----
+ testcases/kernel/crypto/crypto_user02.c |  17 +--
+ testcases/kernel/crypto/pcrypt_aead01.c |  10 +-
+ 12 files changed, 159 insertions(+), 377 deletions(-)
+ delete mode 100644 include/tst_rtnetlink.h
+ rename lib/{tst_rtnetlink.c => tst_netlink.c} (99%)
+
+diff --git a/doc/C-Test-Network-API.asciidoc b/doc/C-Test-Network-API.asciidoc
+index 25e4bbd18..d04dd6aa3 100644
+--- a/doc/C-Test-Network-API.asciidoc
++++ b/doc/C-Test-Network-API.asciidoc
+@@ -277,7 +277,7 @@ static void setup(void)
+ 3 Netlink API
+ ---------------
+ 
+-+#include "tst_rtnetlink.h"+
+++#include "tst_netlink.h"+
+ 
+ The netlink library provides helper functions for constructing and sending
+ arbitrary messages and parsing kernel responses.
+@@ -443,7 +443,7 @@ Example Usage
+ #include <arpa/inet.h>
+ 
+ #include "tst_test.h"
+-#include "tst_rtnetlink.h"
++#include "tst_netlink.h"
+ #include "tst_netdevice.h"
+ 
+ ...
+diff --git a/include/tst_crypto.h b/include/tst_crypto.h
+index ae406bd04..421e6b947 100644
+--- a/include/tst_crypto.h
++++ b/include/tst_crypto.h
+@@ -13,67 +13,12 @@
+ #define TST_CRYPTO_H
+ 
+ #include "lapi/cryptouser.h"
+-
+-/**
+- * A reference to a crypto session and associated state.
+- *
+- * Holds state relevant to a netlink crypto connection. The seq_num is used
+- * to tag each message sent to the netlink layer and is automatically
+- * incremented by the tst_crypto_ functions. When the netlink layer sends a
+- * response (ack) it will use the sequences number from the request.
+- *
+- * Some functions, such as delete ALG, may return EBUSY in which case it is
+- * safe to retry them. The retries field allows you to set the number of
+- * times this should be done. If set to zero the operation will only be tried
+- * once. For operations which do not return EBUSY, the field is ignored.
+- *
+- * Use TST_CRYPTO_SESSION_INIT to statically initialize this struct with sane
+- * defaults.
+- */
+-struct tst_crypto_session {
+-	/** File descriptor for the netlink socket */
+-	int fd;
+-	/** A sequence number used to identify responses from the kernel. */
+-	uint32_t seq_num;
+-	/** Number of times some operations will be retried. */
+-	uint32_t retries;
+-};
+-
+-/**
+- * Default static definition of tst_crypto_session.
+- *
+- * @relates tst_crypto_session
+- */
+-#define TST_CRYPTO_SESSION_INIT {\
+-	.fd = 0,                 \
+-	.seq_num = 0,            \
+-	.retries = 1000          \
+-}
+-
+-/**
+- * Creates a crypto session.
+- *
+- * @relates tst_crypto_session
+- * @param ses Session structure to use, it can be uninitialized.
+- *
+- * If some necessary feature is missing then it will call tst_brk() with
+- * TCONF, for any other error it will use TBROK.
+- */
+-void tst_crypto_open(struct tst_crypto_session *ses);
+-
+-/**
+- * Close a crypto session.
+- *
+- * @relates tst_crypto_session
+- * @param ses The session to close.
+- */
+-void tst_crypto_close(struct tst_crypto_session *ses);
++#include "tst_netlink.h"
+ 
+ /**
+  * Add a crypto algorithm to a session.
+  *
+- * @relates tst_crypto_session
+- * @param ses An open session.
++ * @param ctx Initialized netlink context
+  * @param alg The crypto algorithm or module to add.
+  *
+  * This requests a new crypto algorithm/engine/module to be initialized by the
+@@ -84,15 +29,15 @@ void tst_crypto_close(struct tst_crypto_session *ses);
+  * @return On success it will return 0 otherwise it will return an inverted
+  *         error code from the crypto layer.
+  */
+-int tst_crypto_add_alg(struct tst_crypto_session *ses,
++int tst_crypto_add_alg(struct tst_netlink_context *ctx,
+ 		       const struct crypto_user_alg *alg);
+ 
+ /**
+  * Delete a crypto algorithm from a session.
+  *
+- * @relates tst_crypto_session
+- * @param ses An open session.
++ * @param ctx Initialized netlink context
+  * @param alg The crypto algorithm to delete.
++ * @param retries Number of retries before giving up. Recommended value: 1000
+  *
+  * Request that the kernel remove an existing crypto algorithm. This behaves
+  * in a similar way to tst_crypto_add_alg() except that it is the inverse
+@@ -106,7 +51,7 @@ int tst_crypto_add_alg(struct tst_crypto_session *ses,
+  *         library, you don't need to log this error as it will already have
+  *         been printed by tst_brk().
+  */
+-int tst_crypto_del_alg(struct tst_crypto_session *ses,
+-		       const struct crypto_user_alg *alg);
++int tst_crypto_del_alg(struct tst_netlink_context *ctx,
++	const struct crypto_user_alg *alg, unsigned int retries);
+ 
+ #endif	/* TST_CRYPTO_H */
 diff --git a/include/tst_netdevice.h b/include/tst_netdevice.h
-index 4239d0960..8d40148a6 100644
+index 5e62ba065..4239d0960 100644
 --- a/include/tst_netdevice.h
 +++ b/include/tst_netdevice.h
-@@ -132,7 +132,7 @@ int tst_netdev_remove_route_inet(const char *file, const int lineno,
- int tst_netdev_add_qdisc(const char *file, const int lineno, int strict,
- 	const char *ifname, unsigned int family, unsigned int parent,
- 	unsigned int handle, const char *qd_kind,
--	const struct tst_rtnl_attr_list *config);
-+	const struct tst_netlink_attr_list *config);
- #define NETDEV_ADD_QDISC(ifname, family, parent, handle, qd_kind, config) \
- 	tst_netdev_add_qdisc(__FILE__, __LINE__, 1, (ifname), (family), \
- 		(parent), (handle), (qd_kind), (config))
-@@ -154,7 +154,7 @@ int tst_netdev_remove_qdisc(const char *file, const int lineno, int strict,
- int tst_netdev_add_traffic_class(const char *file, const int lineno,
- 	int strict, const char *ifname, unsigned int parent,
- 	unsigned int handle, const char *qd_kind,
--	const struct tst_rtnl_attr_list *config);
-+	const struct tst_netlink_attr_list *config);
- #define NETDEV_ADD_TRAFFIC_CLASS(ifname, parent, handle, qd_kind, config) \
- 	tst_netdev_add_traffic_class(__FILE__, __LINE__, 1, (ifname), \
- 		(parent), (handle), (qd_kind), (config))
-@@ -173,7 +173,7 @@ int tst_netdev_remove_traffic_class(const char *file, const int lineno,
- int tst_netdev_add_traffic_filter(const char *file, const int lineno,
- 	int strict, const char *ifname, unsigned int parent,
- 	unsigned int handle, unsigned int protocol, unsigned int priority,
--	const char *f_kind, const struct tst_rtnl_attr_list *config);
-+	const char *f_kind, const struct tst_netlink_attr_list *config);
- #define NETDEV_ADD_TRAFFIC_FILTER(ifname, parent, handle, protocol, priority, \
- 	f_kind, config) \
- 	tst_netdev_add_traffic_filter(__FILE__, __LINE__, 1, (ifname), \
+@@ -5,7 +5,7 @@
+ #ifndef TST_NETDEVICE_H
+ #define TST_NETDEVICE_H
+ 
+-#include "tst_rtnetlink.h"
++#include "tst_netlink.h"
+ 
+ /* Find device index for given network interface name. */
+ int tst_netdev_index_by_name(const char *file, const int lineno,
 diff --git a/include/tst_netlink.h b/include/tst_netlink.h
-index f10f1cf5d..7d96fd711 100644
+index 2030ac30b..f10f1cf5d 100644
 --- a/include/tst_netlink.h
 +++ b/include/tst_netlink.h
-@@ -9,11 +9,11 @@
+@@ -1,11 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0-or-later
+- * Copyright (c) 2018 Richard Palethorpe <rpalethorpe@suse.com>
+- */
+-
+-/**
+- * @file tst_netlink.h
+- *
+- * Library for communicating with the kernel over the netlink interface.
++ * Copyright (c) 2021 Linux Test Project
+  */
  
- struct tst_netlink_context;
+ #ifndef TST_NETLINK_H
+@@ -13,76 +7,105 @@
  
--struct tst_rtnl_attr_list {
-+struct tst_netlink_attr_list {
- 	unsigned short type;
- 	const void *data;
- 	ssize_t len;
--	const struct tst_rtnl_attr_list *sublist;
-+	const struct tst_netlink_attr_list *sublist;
- };
+ #include <linux/netlink.h>
  
- struct tst_netlink_message {
-@@ -72,25 +72,49 @@ int tst_netlink_add_message(const char *file, const int lineno,
- 	tst_netlink_add_message(__FILE__, __LINE__, (ctx), (header), \
- 		(payload), (psize))
- 
--/* Add arbitrary attribute to last message */
-+/* Add arbitrary nlattr attribute to last message */
-+int tst_netlink_add_attr(const char *file, const int lineno,
-+	struct tst_netlink_context *ctx, unsigned short type, const void *data,
-+	unsigned short len);
-+#define NETLINK_ADD_ATTR(ctx, type, data, len) \
-+	tst_netlink_add_attr(__FILE__, __LINE__, (ctx), (type), (data), (len))
+-#ifndef NETLINK_CRYPTO
+-/**
+- * The netlink-crypto socket protocol.
++struct tst_netlink_context;
 +
-+/* Add string nlattr attribute to last message */
-+int tst_netlink_add_attr_string(const char *file, const int lineno,
-+	struct tst_netlink_context *ctx, unsigned short type, const char *data);
-+#define NETLINK_ADD_ATTR_STRING(ctx, type, data) \
-+	tst_netlink_add_attr_string(__FILE__, __LINE__, (ctx), (type), (data))
++struct tst_rtnl_attr_list {
++	unsigned short type;
++	const void *data;
++	ssize_t len;
++	const struct tst_rtnl_attr_list *sublist;
++};
++
++struct tst_netlink_message {
++	struct nlmsghdr *header;
++	struct nlmsgerr *err;
++	void *payload;
++	size_t payload_size;
++};
++
++extern int tst_netlink_errno;
++
++/* Open a netlink socket */
++struct tst_netlink_context *tst_netlink_create_context(const char *file,
++	const int lineno, int protocol);
++#define NETLINK_CREATE_CONTEXT(protocol) \
++	tst_netlink_create_context(__FILE__, __LINE__, (protocol))
++
++/* Free a tst_netlink_message array returned by tst_netlink_recv() */
++void tst_netlink_free_message(struct tst_netlink_message *msg);
++#define NETLINK_FREE_MESSAGE tst_netlink_free_message
++
++/* Close netlink socket */
++void tst_netlink_destroy_context(const char *file, const int lineno,
++	struct tst_netlink_context *ctx);
++#define NETLINK_DESTROY_CONTEXT(ctx) \
++	tst_netlink_destroy_context(__FILE__, __LINE__, (ctx))
++
++/* Send all messages in given buffer */
++int tst_netlink_send(const char *file, const int lineno,
++	struct tst_netlink_context *ctx);
++#define NETLINK_SEND(ctx) tst_netlink_send(__FILE__, __LINE__, (ctx))
++
++/* Send all messages in given buffer and validate kernel response */
++int tst_netlink_send_validate(const char *file, const int lineno,
++	struct tst_netlink_context *ctx);
++#define NETLINK_SEND_VALIDATE(ctx) \
++	tst_netlink_send_validate(__FILE__, __LINE__, (ctx))
++
++/* Wait until data is available for reading from the netlink socket */
++int tst_netlink_wait(struct tst_netlink_context *ctx);
++#define NETLINK_WAIT tst_netlink_wait
 +
 +/*
-+ * Add list of arbitrary nlattr attributes to last message. The list is
-+ * terminated by attribute with negative length. Nested sublists are supported.
-+ */
-+int tst_netlink_add_attr_list(const char *file, const int lineno,
-+	struct tst_netlink_context *ctx,
-+	const struct tst_netlink_attr_list *list);
-+#define NETLINK_ADD_ATTR_LIST(ctx, list) \
-+	tst_netlink_add_attr_list(__FILE__, __LINE__, (ctx), (list))
++ * Read from netlink socket and return an array of partially parsed messages.
++ * header == NULL indicates end of array.
+  */
+-#define NETLINK_CRYPTO 21
+-#endif
+-
+-/** @private */
+-static inline ssize_t safe_netlink_send(const char *file, const int lineno,
+-					int fd, const struct nlmsghdr *nh,
+-					const void *payload)
+-{
+-	struct sockaddr_nl sa = { .nl_family = AF_NETLINK };
+-	struct iovec iov[2] = {
+-		{(struct nlmsghdr *)nh, sizeof(*nh)},
+-		{(void *)payload, nh->nlmsg_len - sizeof(*nh)}
+-	};
+-	struct msghdr msg = {
+-		.msg_name = &sa,
+-		.msg_namelen = sizeof(sa),
+-		.msg_iov = iov,
+-		.msg_iovlen = 2
+-	};
+-
+-	return safe_sendmsg(file, lineno, nh->nlmsg_len, fd, &msg, 0);
+-}
+-
+-/**
+- * Sends a netlink message using safe_sendmsg().
+- *
+- * @param fd netlink socket file descriptor.
+- * @param nl_header netlink header structure describing the message.
+- * @param payload an opaque object containing the message data.
+- *
+- * You should set the message length, type and flags to appropriate values
+- * within the nl_header object. See lib/tst_crypto.c for an example.
+- *
+- * @return The number of bytes sent.
++struct tst_netlink_message *tst_netlink_recv(const char *file, const int lineno,
++	struct tst_netlink_context *ctx);
++#define NETLINK_RECV(ctx) tst_netlink_recv(__FILE__, __LINE__, (ctx))
 +
-+/* Add arbitrary rtattr attribute to last message */
- int tst_rtnl_add_attr(const char *file, const int lineno,
- 	struct tst_netlink_context *ctx, unsigned short type, const void *data,
- 	unsigned short len);
- #define RTNL_ADD_ATTR(ctx, type, data, len) \
- 	tst_rtnl_add_attr(__FILE__, __LINE__, (ctx), (type), (data), (len))
++/* Add new message to buffer */
++int tst_netlink_add_message(const char *file, const int lineno,
++	struct tst_netlink_context *ctx, const struct nlmsghdr *header,
++	const void *payload, size_t payload_size);
++#define NETLINK_ADD_MESSAGE(ctx, header, payload, psize) \
++	tst_netlink_add_message(__FILE__, __LINE__, (ctx), (header), \
++		(payload), (psize))
++
++/* Add arbitrary attribute to last message */
++int tst_rtnl_add_attr(const char *file, const int lineno,
++	struct tst_netlink_context *ctx, unsigned short type, const void *data,
++	unsigned short len);
++#define RTNL_ADD_ATTR(ctx, type, data, len) \
++	tst_rtnl_add_attr(__FILE__, __LINE__, (ctx), (type), (data), (len))
++
++/* Add string attribute to last message */
++int tst_rtnl_add_attr_string(const char *file, const int lineno,
++	struct tst_netlink_context *ctx, unsigned short type, const char *data);
++#define RTNL_ADD_ATTR_STRING(ctx, type, data) \
++	tst_rtnl_add_attr_string(__FILE__, __LINE__, (ctx), (type), (data))
++
++/*
++ * Add list of arbitrary attributes to last message. The list is terminated
++ * by attribute with negative length. Nested sublists are supported.
+  */
+-#define SAFE_NETLINK_SEND(fd, nl_header, payload)		\
+-	safe_netlink_send(__FILE__, __LINE__, fd, nl_header, payload)
+-
+-/** @private */
+-static inline ssize_t safe_netlink_recv(const char *file, const int lineno,
+-					int fd, char *nl_headers_buf,
+-					size_t buf_len)
+-{
+-	struct iovec iov = { nl_headers_buf, buf_len };
+-	struct sockaddr_nl sa;
+-	struct msghdr msg = {
+-		.msg_name = &sa,
+-		.msg_namelen = sizeof(sa),
+-		.msg_iov = &iov,
+-		.msg_iovlen = 1
+-	};
+-
+-	return safe_recvmsg(file, lineno, 0, fd, &msg, 0);
+-}
+-
+-/**
+- * Receives a netlink message using safe_recvmsg().
+- *
+- * @param fd netlink socket file descriptor.
+- * @param nl_header_buf buffer to contain the received netlink header structure.
+- * @param buf_len The length of the header buffer. Must be greater than the page
+- *                size.
++int tst_rtnl_add_attr_list(const char *file, const int lineno,
++	struct tst_netlink_context *ctx, const struct tst_rtnl_attr_list *list);
++#define RTNL_ADD_ATTR_LIST(ctx, list) \
++	tst_rtnl_add_attr_list(__FILE__, __LINE__, (ctx), (list))
++
++/* Check that all sent messages with NLM_F_ACK flag have been acked without
++ * error. Usage:
+  *
+- * @return The number of bytes received.
++ * tst_netlink_send(ctx);
++ * tst_netlink_wait(ctx);
++ * response = tst_netlink_recv(ctx);
++ * if (!tst_netlink_check_acks(ctx, response)) { ... }
++ * tst_netlink_free_message(response);
+  */
+-#define SAFE_NETLINK_RECV(fd, nl_header_buf, buf_len)			\
+-	safe_netlink_recv(__FILE__, __LINE__, fd, nl_header_buf, buf_len)
++int tst_netlink_check_acks(const char *file, const int lineno,
++	struct tst_netlink_context *ctx, struct tst_netlink_message *response);
++#define NETLINK_CHECK_ACKS(ctx, response) \
++	tst_netlink_check_acks(__FILE__, __LINE__, (ctx), (response))
  
+ #endif /* TST_NETLINK_H */
+diff --git a/include/tst_rtnetlink.h b/include/tst_rtnetlink.h
+deleted file mode 100644
+index c5f295a38..000000000
+--- a/include/tst_rtnetlink.h
++++ /dev/null
+@@ -1,109 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later
+- * Copyright (c) 2021 Linux Test Project
+- */
+-
+-#ifndef TST_RTNETLINK_H
+-#define TST_RTNETLINK_H
+-
+-struct tst_netlink_context;
+-
+-struct tst_rtnl_attr_list {
+-	unsigned short type;
+-	const void *data;
+-	ssize_t len;
+-	const struct tst_rtnl_attr_list *sublist;
+-};
+-
+-struct tst_netlink_message {
+-	struct nlmsghdr *header;
+-	struct nlmsgerr *err;
+-	void *payload;
+-	size_t payload_size;
+-};
+-
+-extern int tst_netlink_errno;
+-
+-/* Open a netlink socket */
+-struct tst_netlink_context *tst_netlink_create_context(const char *file,
+-	const int lineno, int protocol);
+-#define NETLINK_CREATE_CONTEXT(protocol) \
+-	tst_netlink_create_context(__FILE__, __LINE__, (protocol))
+-
+-/* Free a tst_netlink_message array returned by tst_netlink_recv() */
+-void tst_netlink_free_message(struct tst_netlink_message *msg);
+-#define NETLINK_FREE_MESSAGE tst_netlink_free_message
+-
+-/* Close netlink socket */
+-void tst_netlink_destroy_context(const char *file, const int lineno,
+-	struct tst_netlink_context *ctx);
+-#define NETLINK_DESTROY_CONTEXT(ctx) \
+-	tst_netlink_destroy_context(__FILE__, __LINE__, (ctx))
+-
+-/* Send all messages in given buffer */
+-int tst_netlink_send(const char *file, const int lineno,
+-	struct tst_netlink_context *ctx);
+-#define NETLINK_SEND(ctx) tst_netlink_send(__FILE__, __LINE__, (ctx))
+-
+-/* Send all messages in given buffer and validate kernel response */
+-int tst_netlink_send_validate(const char *file, const int lineno,
+-	struct tst_netlink_context *ctx);
+-#define NETLINK_SEND_VALIDATE(ctx) \
+-	tst_netlink_send_validate(__FILE__, __LINE__, (ctx))
+-
+-/* Wait until data is available for reading from the netlink socket */
+-int tst_netlink_wait(struct tst_netlink_context *ctx);
+-#define NETLINK_WAIT tst_netlink_wait
+-
+-/*
+- * Read from netlink socket and return an array of partially parsed messages.
+- * header == NULL indicates end of array.
+- */
+-struct tst_netlink_message *tst_netlink_recv(const char *file, const int lineno,
+-	struct tst_netlink_context *ctx);
+-#define NETLINK_RECV(ctx) tst_netlink_recv(__FILE__, __LINE__, (ctx))
+-
+-/* Add new message to buffer */
+-int tst_netlink_add_message(const char *file, const int lineno,
+-	struct tst_netlink_context *ctx, const struct nlmsghdr *header,
+-	const void *payload, size_t payload_size);
+-#define NETLINK_ADD_MESSAGE(ctx, header, payload, psize) \
+-	tst_netlink_add_message(__FILE__, __LINE__, (ctx), (header), \
+-		(payload), (psize))
+-
+-/* Add arbitrary attribute to last message */
+-int tst_rtnl_add_attr(const char *file, const int lineno,
+-	struct tst_netlink_context *ctx, unsigned short type, const void *data,
+-	unsigned short len);
+-#define RTNL_ADD_ATTR(ctx, type, data, len) \
+-	tst_rtnl_add_attr(__FILE__, __LINE__, (ctx), (type), (data), (len))
+-
 -/* Add string attribute to last message */
-+/* Add string rtattr attribute to last message */
- int tst_rtnl_add_attr_string(const char *file, const int lineno,
- 	struct tst_netlink_context *ctx, unsigned short type, const char *data);
- #define RTNL_ADD_ATTR_STRING(ctx, type, data) \
- 	tst_rtnl_add_attr_string(__FILE__, __LINE__, (ctx), (type), (data))
- 
- /*
+-int tst_rtnl_add_attr_string(const char *file, const int lineno,
+-	struct tst_netlink_context *ctx, unsigned short type, const char *data);
+-#define RTNL_ADD_ATTR_STRING(ctx, type, data) \
+-	tst_rtnl_add_attr_string(__FILE__, __LINE__, (ctx), (type), (data))
+-
+-/*
 - * Add list of arbitrary attributes to last message. The list is terminated
 - * by attribute with negative length. Nested sublists are supported.
-+ * Add list of arbitrary rtattr attributes to last message. The list is
-+ * terminated by attribute with negative length. Nested sublists are supported.
-  */
- int tst_rtnl_add_attr_list(const char *file, const int lineno,
+- */
+-int tst_rtnl_add_attr_list(const char *file, const int lineno,
 -	struct tst_netlink_context *ctx, const struct tst_rtnl_attr_list *list);
-+	struct tst_netlink_context *ctx,
-+	const struct tst_netlink_attr_list *list);
- #define RTNL_ADD_ATTR_LIST(ctx, list) \
- 	tst_rtnl_add_attr_list(__FILE__, __LINE__, (ctx), (list))
+-#define RTNL_ADD_ATTR_LIST(ctx, list) \
+-	tst_rtnl_add_attr_list(__FILE__, __LINE__, (ctx), (list))
+-
+-/* Check that all sent messages with NLM_F_ACK flag have been acked without
+- * error. Usage:
+- *
+- * tst_netlink_send(ctx);
+- * tst_netlink_wait(ctx);
+- * response = tst_netlink_recv(ctx);
+- * if (!tst_netlink_check_acks(ctx, response)) { ... }
+- * tst_netlink_free_message(response);
+- */
+-int tst_netlink_check_acks(const char *file, const int lineno,
+-	struct tst_netlink_context *ctx, struct tst_netlink_message *response);
+-#define NETLINK_CHECK_ACKS(ctx, response) \
+-	tst_netlink_check_acks(__FILE__, __LINE__, (ctx), (response))
+-
+-#endif /* TST_RTNETLINK_H */
+diff --git a/lib/tst_crypto.c b/lib/tst_crypto.c
+index c01632c2a..4495d0baa 100644
+--- a/lib/tst_crypto.c
++++ b/lib/tst_crypto.c
+@@ -10,102 +10,42 @@
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
+ #include "tst_crypto.h"
+-#include "tst_netlink.h"
  
-diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
-index 6f86b8089..1042466bf 100644
---- a/lib/tst_netdevice.c
-+++ b/lib/tst_netdevice.c
-@@ -105,17 +105,17 @@ int tst_create_veth_pair(const char *file, const int lineno, int strict,
- 	int ret;
- 	struct ifinfomsg info = { .ifi_family = AF_UNSPEC };
- 	struct tst_netlink_context *ctx;
--	struct tst_rtnl_attr_list peerinfo[] = {
-+	struct tst_netlink_attr_list peerinfo[] = {
- 		{IFLA_IFNAME, ifname2, strlen(ifname2) + 1, NULL},
- 		{0, NULL, -1, NULL}
+-void tst_crypto_open(struct tst_crypto_session *ses)
+-{
+-	const long ret = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_CRYPTO);
+-
+-	if (ret < 0 && errno == EPROTONOSUPPORT)
+-		tst_brk(TCONF | TERRNO, "NETLINK_CRYPTO is probably disabled");
+-
+-	if (ret < 0) {
+-		tst_brk(TBROK | TERRNO,
+-			"socket(AF_NETLINK, SOCK_DGRAM, NETLINK_CRYPTO)");
+-	}
+-
+-	ses->fd = ret;
+-	ses->seq_num = 0;
+-}
+-
+-void tst_crypto_close(struct tst_crypto_session *ses)
+-{
+-	SAFE_CLOSE(ses->fd);
+-}
+-
+-static int tst_crypto_recv_ack(struct tst_crypto_session *ses)
+-{
+-	uint32_t len;
+-	char buf[BUFSIZ];
+-	struct nlmsghdr *nh;
+-
+-	len = SAFE_NETLINK_RECV(ses->fd, buf, sizeof(buf));
+-
+-	for (nh = (struct nlmsghdr *) buf;
+-	     NLMSG_OK(nh, len);
+-	     nh = NLMSG_NEXT(nh, len)) {
+-		if (nh->nlmsg_seq != ses->seq_num) {
+-			tst_brk(TBROK,
+-				"Message out of sequence; type=0%hx, seq_num=%u (not %u)",
+-				nh->nlmsg_type, nh->nlmsg_seq, ses->seq_num);
+-		}
+-
+-		/* Acks use the error message type with error number set to
+-		 * zero. Ofcourse we could also receive an actual error.
+-		 */
+-		if (nh->nlmsg_type == NLMSG_ERROR)
+-			return ((struct nlmsgerr *)NLMSG_DATA(nh))->error;
+-
+-		tst_brk(TBROK, "Unexpected message type; type=0x%hx, seq_num=%u",
+-			nh->nlmsg_type, nh->nlmsg_seq);
+-	}
+-
+-	tst_brk(TBROK, "Empty message from netlink socket?");
+-
+-	return ENODATA;
+-}
+-
+-int tst_crypto_add_alg(struct tst_crypto_session *ses,
++int tst_crypto_add_alg(struct tst_netlink_context *ctx,
+ 		       const struct crypto_user_alg *alg)
+ {
+ 	struct nlmsghdr nh = {
+-		.nlmsg_len = sizeof(struct nlmsghdr) + sizeof(*alg),
+ 		.nlmsg_type = CRYPTO_MSG_NEWALG,
+ 		.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK,
+-		.nlmsg_seq = ++(ses->seq_num),
+-		.nlmsg_pid = 0,
  	};
--	struct tst_rtnl_attr_list peerdata[] = {
-+	struct tst_netlink_attr_list peerdata[] = {
- 		{VETH_INFO_PEER, &info, sizeof(info), peerinfo},
- 		{0, NULL, -1, NULL}
- 	};
--	struct tst_rtnl_attr_list attrs[] = {
-+	struct tst_netlink_attr_list attrs[] = {
- 		{IFLA_IFNAME, ifname1, strlen(ifname1) + 1, NULL},
--		{IFLA_LINKINFO, NULL, 0, (const struct tst_rtnl_attr_list[]){
-+		{IFLA_LINKINFO, NULL, 0, (const struct tst_netlink_attr_list[]){
- 			{IFLA_INFO_KIND, "veth", 4, NULL},
- 			{IFLA_INFO_DATA, NULL, 0, peerdata},
- 			{0, NULL, -1, NULL}
-@@ -164,9 +164,9 @@ int tst_netdev_add_device(const char *file, const int lineno, int strict,
- 	int ret;
- 	struct ifinfomsg info = { .ifi_family = AF_UNSPEC };
- 	struct tst_netlink_context *ctx;
--	struct tst_rtnl_attr_list attrs[] = {
-+	struct tst_netlink_attr_list attrs[] = {
- 		{IFLA_IFNAME, ifname, strlen(ifname) + 1, NULL},
--		{IFLA_LINKINFO, NULL, 0, (const struct tst_rtnl_attr_list[]){
-+		{IFLA_LINKINFO, NULL, 0, (const struct tst_netlink_attr_list[]){
- 			{IFLA_INFO_KIND, devtype, strlen(devtype), NULL},
- 			{0, NULL, -1, NULL}
- 		}},
-@@ -527,7 +527,7 @@ static int modify_qdisc(const char *file, const int lineno, int strict,
- 	const char *object, unsigned int action, unsigned int nl_flags,
- 	const char *ifname, unsigned int family, unsigned int parent,
- 	unsigned int handle, unsigned int info, const char *qd_kind,
--	const struct tst_rtnl_attr_list *config)
-+	const struct tst_netlink_attr_list *config)
- {
- 	struct tst_netlink_context *ctx;
- 	int ret;
-@@ -585,7 +585,7 @@ static int modify_qdisc(const char *file, const int lineno, int strict,
- int tst_netdev_add_qdisc(const char *file, const int lineno, int strict,
- 	const char *ifname, unsigned int family, unsigned int parent,
- 	unsigned int handle, const char *qd_kind,
--	const struct tst_rtnl_attr_list *config)
-+	const struct tst_netlink_attr_list *config)
- {
- 	return modify_qdisc(file, lineno, strict, "queueing discipline",
- 		RTM_NEWQDISC, NLM_F_CREATE | NLM_F_EXCL, ifname, family,
-@@ -604,7 +604,7 @@ int tst_netdev_remove_qdisc(const char *file, const int lineno, int strict,
- int tst_netdev_add_traffic_class(const char *file, const int lineno,
- 	int strict, const char *ifname, unsigned int parent,
- 	unsigned int handle, const char *qd_kind,
--	const struct tst_rtnl_attr_list *config)
-+	const struct tst_netlink_attr_list *config)
- {
- 	return modify_qdisc(file, lineno, strict, "traffic class",
- 		RTM_NEWTCLASS, NLM_F_CREATE | NLM_F_EXCL, ifname, AF_UNSPEC,
-@@ -623,7 +623,7 @@ int tst_netdev_remove_traffic_class(const char *file, const int lineno,
- int tst_netdev_add_traffic_filter(const char *file, const int lineno,
- 	int strict, const char *ifname, unsigned int parent,
- 	unsigned int handle, unsigned int protocol, unsigned int priority,
--	const char *f_kind, const struct tst_rtnl_attr_list *config)
-+	const char *f_kind, const struct tst_netlink_attr_list *config)
- {
- 	return modify_qdisc(file, lineno, strict, "traffic filter",
- 		RTM_NEWTFILTER, NLM_F_CREATE | NLM_F_EXCL, ifname, AF_UNSPEC,
-diff --git a/lib/tst_netlink.c b/lib/tst_netlink.c
-index bd05df81a..7bc98af56 100644
---- a/lib/tst_netlink.c
-+++ b/lib/tst_netlink.c
-@@ -283,6 +283,86 @@ int tst_netlink_add_message(const char *file, const int lineno,
- 	return 1;
+ 
+-	SAFE_NETLINK_SEND(ses->fd, &nh, alg);
+-
+-	return tst_crypto_recv_ack(ses);
++	NETLINK_ADD_MESSAGE(ctx, &nh, alg, sizeof(struct crypto_user_alg));
++	return NETLINK_SEND_VALIDATE(ctx) ? 0 : -tst_netlink_errno;
  }
  
-+int tst_netlink_add_attr(const char *file, const int lineno,
-+	struct tst_netlink_context *ctx, unsigned short type,
-+	const void *data, unsigned short len)
-+{
-+	size_t size = NLA_HDRLEN + NLA_ALIGN(len);
-+	struct nlattr *attr;
-+
-+	if (!ctx->curmsg) {
-+		tst_brk_(file, lineno, TBROK,
-+			"%s(): No message to add attributes to", __func__);
-+		return 0;
-+	}
-+
-+	if (!netlink_grow_buffer(file, lineno, ctx, size))
-+		return 0;
-+
-+	size = NLMSG_ALIGN(ctx->curmsg->nlmsg_len);
-+	attr = (struct nlattr *)(((char *)ctx->curmsg) + size);
-+	attr->nla_type = type;
-+	attr->nla_len = NLA_HDRLEN + len;
-+	memcpy(((char *)attr) + NLA_HDRLEN, data, len);
-+	ctx->curmsg->nlmsg_len = size + attr->nla_len;
-+	ctx->datalen = NLMSG_ALIGN(ctx->datalen) + attr->nla_len;
-+
-+	return 1;
-+}
-+
-+int tst_netlink_add_attr_string(const char *file, const int lineno,
-+	struct tst_netlink_context *ctx, unsigned short type,
-+	const char *data)
-+{
-+	return tst_netlink_add_attr(file, lineno, ctx, type, data,
-+		strlen(data) + 1);
-+}
-+
-+int tst_netlink_add_attr_list(const char *file, const int lineno,
-+	struct tst_netlink_context *ctx,
-+	const struct tst_netlink_attr_list *list)
-+{
-+	int i, ret;
-+	size_t offset;
-+
-+	for (i = 0; list[i].len >= 0; i++) {
-+		if (list[i].len > USHRT_MAX) {
-+			tst_brk_(file, lineno, TBROK,
-+				"%s(): Attribute value too long", __func__);
-+			return -1;
-+		}
-+
-+		offset = NLMSG_ALIGN(ctx->datalen);
-+		ret = tst_netlink_add_attr(file, lineno, ctx, list[i].type,
-+			list[i].data, list[i].len);
-+
-+		if (!ret)
-+			return -1;
-+
-+		if (list[i].sublist) {
-+			struct rtattr *attr;
-+
-+			ret = tst_netlink_add_attr_list(file, lineno, ctx,
-+				list[i].sublist);
-+
-+			if (ret < 0)
-+				return ret;
-+
-+			attr = (struct rtattr *)(ctx->buffer + offset);
-+
-+			if (ctx->datalen - offset > USHRT_MAX) {
-+				tst_brk_(file, lineno, TBROK,
-+					"%s(): Sublist too long", __func__);
-+				return -1;
-+			}
-+
-+			attr->rta_len = ctx->datalen - offset;
-+		}
-+	}
-+
-+	return i;
-+}
-+
- int tst_rtnl_add_attr(const char *file, const int lineno,
- 	struct tst_netlink_context *ctx, unsigned short type,
- 	const void *data, unsigned short len)
-@@ -320,7 +400,7 @@ int tst_rtnl_add_attr_string(const char *file, const int lineno,
- 
- int tst_rtnl_add_attr_list(const char *file, const int lineno,
- 	struct tst_netlink_context *ctx,
--	const struct tst_rtnl_attr_list *list)
-+	const struct tst_netlink_attr_list *list)
+-int tst_crypto_del_alg(struct tst_crypto_session *ses,
+-		       const struct crypto_user_alg *alg)
++int tst_crypto_del_alg(struct tst_netlink_context *ctx,
++	const struct crypto_user_alg *alg, unsigned int retries)
  {
- 	int i, ret;
- 	size_t offset;
+-	long ret;
++	int ret;
+ 	unsigned int i = 0;
+ 	struct nlmsghdr nh = {
+-		.nlmsg_len = sizeof(struct nlmsghdr) + sizeof(*alg),
+ 		.nlmsg_type = CRYPTO_MSG_DELALG,
+ 		.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK,
+-		.nlmsg_pid = 0,
+ 	};
+ 
+-	while (1) {
+-		nh.nlmsg_seq = ++(ses->seq_num),
++	for (i = 0; i < retries; i++) {
++		NETLINK_ADD_MESSAGE(ctx, &nh, alg,
++			sizeof(struct crypto_user_alg));
+ 
+-		SAFE_NETLINK_SEND(ses->fd, &nh, alg);
++		if (NETLINK_SEND_VALIDATE(ctx))
++			return 0;
+ 
+-		ret = tst_crypto_recv_ack(ses);
+-		if (ret != -EBUSY || i >= ses->retries)
+-			break;
++		ret = -tst_netlink_errno;
+ 
+-		if (usleep(1) && errno != EINTR)
+-			tst_brk(TBROK | TERRNO, "usleep(1)");
++		if (ret != -EBUSY)
++			break;
+ 
+-		++i;
++		usleep(1);
+ 	}
+ 
+ 	return ret;
+diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
+index 5873b3d58..6f86b8089 100644
+--- a/lib/tst_netdevice.c
++++ b/lib/tst_netdevice.c
+@@ -12,7 +12,7 @@
+ 
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
+-#include "tst_rtnetlink.h"
++#include "tst_netlink.h"
+ #include "tst_netdevice.h"
+ 
+ static struct tst_netlink_context *create_request(const char *file,
+diff --git a/lib/tst_rtnetlink.c b/lib/tst_netlink.c
+similarity index 99%
+rename from lib/tst_rtnetlink.c
+rename to lib/tst_netlink.c
+index bf782ffb5..bd05df81a 100644
+--- a/lib/tst_rtnetlink.c
++++ b/lib/tst_netlink.c
+@@ -13,7 +13,7 @@
+ #include <sys/poll.h>
+ #define TST_NO_DEFAULT_MAIN
+ #include "tst_test.h"
+-#include "tst_rtnetlink.h"
++#include "tst_netlink.h"
+ 
+ struct tst_netlink_context {
+ 	int socket;
 diff --git a/testcases/cve/tcindex01.c b/testcases/cve/tcindex01.c
-index d441a2449..b4f2bb01a 100644
+index 0fd254a92..d441a2449 100644
 --- a/testcases/cve/tcindex01.c
 +++ b/testcases/cve/tcindex01.c
-@@ -46,15 +46,15 @@ static const struct tc_htb_glob qd_opt = {
- static struct tc_htb_opt cls_opt = {};
+@@ -24,7 +24,7 @@
+ #include <linux/pkt_sched.h>
+ #include <linux/pkt_cls.h>
+ #include "tst_test.h"
+-#include "tst_rtnetlink.h"
++#include "tst_netlink.h"
+ #include "tst_netdevice.h"
+ #include "lapi/sched.h"
+ #include "lapi/if_ether.h"
+diff --git a/testcases/kernel/crypto/crypto_user01.c b/testcases/kernel/crypto/crypto_user01.c
+index 47bf9f0d2..6f6036aed 100644
+--- a/testcases/kernel/crypto/crypto_user01.c
++++ b/testcases/kernel/crypto/crypto_user01.c
+@@ -17,7 +17,6 @@
  
- /* htb qdisc and class options */
--static const struct tst_rtnl_attr_list qd_config[] = {
--	{TCA_OPTIONS, NULL, 0, (const struct tst_rtnl_attr_list[]){
-+static const struct tst_netlink_attr_list qd_config[] = {
-+	{TCA_OPTIONS, NULL, 0, (const struct tst_netlink_attr_list[]){
- 		{TCA_HTB_INIT, &qd_opt, sizeof(qd_opt), NULL},
- 		{0, NULL, -1, NULL}
- 	}},
- 	{0, NULL, -1, NULL}
- };
--static const struct tst_rtnl_attr_list cls_config[] = {
--	{TCA_OPTIONS, NULL, 0, (const struct tst_rtnl_attr_list[]){
-+static const struct tst_netlink_attr_list cls_config[] = {
-+	{TCA_OPTIONS, NULL, 0, (const struct tst_netlink_attr_list[]){
- 		{TCA_HTB_PARMS, &cls_opt, sizeof(cls_opt), NULL},
- 		{0, NULL, -1, NULL}
- 	}},
-@@ -62,8 +62,8 @@ static const struct tst_rtnl_attr_list cls_config[] = {
+ #include "tst_test.h"
+ #include "tst_crypto.h"
+-#include "tst_netlink.h"
+ 
+ /*
+  * include after <sys/socket.h> (via tst_test.h), to work around dependency bug
+@@ -25,11 +24,11 @@
+  */
+ #include <linux/rtnetlink.h>
+ 
+-static struct tst_crypto_session ses = TST_CRYPTO_SESSION_INIT;
++static struct tst_netlink_context *ctx;
+ 
+ static void setup(void)
+ {
+-	tst_crypto_open(&ses);
++	ctx = NETLINK_CREATE_CONTEXT(NETLINK_CRYPTO);
+ }
+ 
+ static void do_check_for_leaks(const char *name, const char *value, size_t vlen)
+@@ -131,25 +130,20 @@ static void validate_one_alg(const struct nlmsghdr *nh)
+ 	}
+ }
+ 
+-static void validate_alg_list(const void *buf, size_t remaining)
++static void validate_alg_list(const struct tst_netlink_message *msg)
+ {
+-	const struct nlmsghdr *nh;
+-
+-	for (nh = buf; NLMSG_OK(nh, remaining);
+-	     nh = NLMSG_NEXT(nh, remaining)) {
+-		if (nh->nlmsg_seq != ses.seq_num) {
+-			tst_brk(TBROK,
+-				"Message out of sequence; type=0%hx, seq_num=%u (not %u)",
+-				nh->nlmsg_type, nh->nlmsg_seq, ses.seq_num);
+-		}
+-		if (nh->nlmsg_type == NLMSG_DONE)
++	for (; msg->header; msg++) {
++		if (msg->header->nlmsg_type == NLMSG_DONE)
+ 			return;
+-		if (nh->nlmsg_type != CRYPTO_MSG_GETALG) {
++
++		if (msg->header->nlmsg_type != CRYPTO_MSG_GETALG) {
+ 			tst_brk(TBROK,
+ 				"Unexpected message type; type=0x%hx, seq_num=%u",
+-				nh->nlmsg_type, nh->nlmsg_seq);
++				msg->header->nlmsg_type,
++				msg->header->nlmsg_seq);
+ 		}
+-		validate_one_alg(nh);
++
++		validate_one_alg(msg->header);
+ 	}
+ }
+ 
+@@ -157,35 +151,23 @@ static void run(void)
+ {
+ 	struct crypto_user_alg payload = { 0 };
+ 	struct nlmsghdr nh = {
+-		.nlmsg_len = sizeof(payload),
+ 		.nlmsg_type = CRYPTO_MSG_GETALG,
+ 		.nlmsg_flags = NLM_F_REQUEST | NLM_F_DUMP,
+-		.nlmsg_seq = ++(ses.seq_num),
+-		.nlmsg_pid = 0,
+ 	};
+-	/*
+-	 * Due to an apparent kernel bug, this API cannot be used incrementally,
+-	 * so we just use a large recvmsg() buffer.  This is good enough since
+-	 * we don't necessarily have to check every algorithm for this test to
+-	 * be effective...
+-	 */
+-	const size_t bufsize = 1048576;
+-	void *buf = SAFE_MALLOC(bufsize);
+-	size_t res;
+-
+-	SAFE_NETLINK_SEND(ses.fd, &nh, &payload);
+-
+-	res = SAFE_NETLINK_RECV(ses.fd, buf, bufsize);
+-
+-	validate_alg_list(buf, res);
+-
+-	free(buf);
++	struct tst_netlink_message *msg;
++
++	NETLINK_ADD_MESSAGE(ctx, &nh, &payload, sizeof(payload));
++	NETLINK_SEND(ctx);
++	NETLINK_WAIT(ctx);
++	msg = NETLINK_RECV(ctx);
++	validate_alg_list(msg);
++	NETLINK_FREE_MESSAGE(msg);
+ 	tst_res(TPASS, "No information leaks found");
+ }
+ 
+ static void cleanup(void)
+ {
+-	tst_crypto_close(&ses);
++	NETLINK_DESTROY_CONTEXT(ctx);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/crypto/crypto_user02.c b/testcases/kernel/crypto/crypto_user02.c
+index afaff5d18..89cbb9bc5 100644
+--- a/testcases/kernel/crypto/crypto_user02.c
++++ b/testcases/kernel/crypto/crypto_user02.c
+@@ -52,7 +52,7 @@ static const char * const ALGORITHM_CANDIDATES[] = {
  };
  
- /* tcindex filter options */
--static const struct tst_rtnl_attr_list f_config[] = {
--	{TCA_OPTIONS, NULL, 0, (const struct tst_rtnl_attr_list[]){
-+static const struct tst_netlink_attr_list f_config[] = {
-+	{TCA_OPTIONS, NULL, 0, (const struct tst_netlink_attr_list[]){
- 		{TCA_TCINDEX_MASK, &mask, sizeof(mask), NULL},
- 		{TCA_TCINDEX_SHIFT, &shift, sizeof(shift), NULL},
- 		{TCA_TCINDEX_CLASSID, &clsid, sizeof(clsid), NULL},
+ static const char* algorithm = NULL;
+-static struct tst_crypto_session ses = TST_CRYPTO_SESSION_INIT;
++static struct tst_netlink_context *ctx;
+ 
+ 
+ static void setup(void)
+@@ -60,7 +60,8 @@ static void setup(void)
+ 	int rc;
+ 	unsigned i;
+ 	struct crypto_user_alg alg;
+-	tst_crypto_open(&ses);
++
++	ctx = NETLINK_CREATE_CONTEXT(NETLINK_CRYPTO);
+ 
+ 	/* find an algorithm, that is not in use */
+ 	for (i = 0; i < ARRAY_SIZE(ALGORITHM_CANDIDATES); ++i) {
+@@ -68,12 +69,12 @@ static void setup(void)
+ 		strcpy(alg.cru_driver_name, ALGORITHM_CANDIDATES[i]);
+ 
+ 		/* try to add it, to see if it is valid */
+-		rc = tst_crypto_add_alg(&ses, &alg);
++		rc = tst_crypto_add_alg(ctx, &alg);
+ 		if (rc != 0)
+ 			continue;
+ 
+ 		/* it also has to be deletable */
+-		rc = tst_crypto_del_alg(&ses, &alg);
++		rc = tst_crypto_del_alg(ctx, &alg, 1000);
+ 		if (rc == 0) {
+ 			algorithm = ALGORITHM_CANDIDATES[i];
+ 			break;
+@@ -103,9 +104,9 @@ static void run(void)
+ 
+ 		if (pid == 0) {
+ 			/* Child process: execute CRYPTO_MSG_NEWALG. */
+-			tst_crypto_open(&ses);
++			ctx = NETLINK_CREATE_CONTEXT(NETLINK_CRYPTO);
+ 			for (;;) {
+-				TEST(tst_crypto_add_alg(&ses, &alg));
++				TEST(tst_crypto_add_alg(ctx, &alg));
+ 				if (TST_RET && TST_RET != -EEXIST)
+ 					tst_brk(TBROK | TRERRNO,
+ 						"unexpected error from tst_crypto_add_alg()");
+@@ -123,7 +124,7 @@ static void run(void)
+ 		SAFE_WAIT(&status);
+ 		if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL)
+ 			tst_brk(TBROK, "child %s", tst_strstatus(status));
+-		TEST(tst_crypto_del_alg(&ses, &alg));
++		TEST(tst_crypto_del_alg(ctx, &alg, 1000));
+ 		if (TST_RET && TST_RET != -ENOENT)
+ 			tst_brk(TBROK | TRERRNO,
+ 				"unexpected error from tst_crypto_del_alg()");
+@@ -134,7 +135,7 @@ static void run(void)
+ 
+ static void cleanup(void)
+ {
+-	tst_crypto_close(&ses);
++	NETLINK_DESTROY_CONTEXT(ctx);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/crypto/pcrypt_aead01.c b/testcases/kernel/crypto/pcrypt_aead01.c
+index 3b4f5d8d1..3979f317a 100644
+--- a/testcases/kernel/crypto/pcrypt_aead01.c
++++ b/testcases/kernel/crypto/pcrypt_aead01.c
+@@ -26,11 +26,11 @@
+ 
+ #define ATTEMPTS 10000
+ 
+-static struct tst_crypto_session ses = TST_CRYPTO_SESSION_INIT;
++static struct tst_netlink_context *ctx;
+ 
+ void setup(void)
+ {
+-	tst_crypto_open(&ses);
++	ctx = NETLINK_CREATE_CONTEXT(NETLINK_CRYPTO);
+ }
+ 
+ void run(void)
+@@ -43,7 +43,7 @@ void run(void)
+ 	};
+ 
+ 	for (i = 0; i < ATTEMPTS; ++i) {
+-		TEST(tst_crypto_add_alg(&ses, &a));
++		TEST(tst_crypto_add_alg(ctx, &a));
+ 		if (TST_RET && TST_RET == -ENOENT) {
+ 			tst_brk(TCONF | TRERRNO,
+ 				"pcrypt, hmac, sha256, cbc or aes not supported");
+@@ -51,7 +51,7 @@ void run(void)
+ 		if (TST_RET && TST_RET != -EEXIST)
+ 			tst_brk(TBROK | TRERRNO, "add_alg");
+ 
+-		TEST(tst_crypto_del_alg(&ses, &a));
++		TEST(tst_crypto_del_alg(ctx, &a, 1000));
+ 		if (TST_RET)
+ 			tst_brk(TBROK | TRERRNO, "del_alg");
+ 
+@@ -67,7 +67,7 @@ void run(void)
+ 
+ void cleanup(void)
+ {
+-	tst_crypto_close(&ses);
++	NETLINK_DESTROY_CONTEXT(ctx);
+ }
+ 
+ static struct tst_test test = {
 -- 
 2.42.0
 
