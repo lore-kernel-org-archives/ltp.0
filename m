@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2AE9C4332F
-	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 12:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FC03C4332F
+	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 12:32:12 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 6F3013CE4F8
-	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 13:31:57 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id B1BA23CE4E2
+	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 13:32:10 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F27353CC27C
+ by picard.linux.it (Postfix) with ESMTPS id 24E203CC27C
  for <ltp@lists.linux.it>; Tue, 14 Nov 2023 13:31:43 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D9B571000995
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id D1D251400E58
  for <ltp@lists.linux.it>; Tue, 14 Nov 2023 13:31:42 +0100 (CET)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2F7A3218F6;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1F087218F0;
  Tue, 14 Nov 2023 12:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1699965102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EIX0EZVEmbOe9hYj0aUXBcpQk767m8/Q6FfnauFb9+8=;
- b=lYWfPCyFbre0Qn1SUCed33V80HTePZqaxjAhh5tJnM58p1MJXVbDjpK81BzepPRwLXqRps
- wQH2zYVmhC/kgpYsAEgxteGwJWWw58rDfXXbdn92TMTv50QEsB+mky/pe64ez5EJSnvT8S
- 7MCFHNLX5epCl6Ce7g927ec9KnDmzJ0=
+ bh=UhqUF+pwxnsxdDtYQaLrmNihZywyKJn26iTCGdh8mDU=;
+ b=FMrj7lr/SMmYlL2Awzv6IkcbIy84hT3fHfxUKEaWGBAFpTSbw9mi81IqiXkye5ckro9D6f
+ XMm+IXRS11Vo4TV0H7yw8K323T9EVZY6E5cE1tmvVTcPj80XKbDnhaX+vwm5KW4DOUhMpN
+ BUMxWnWdyXN5UIpYs6MTyncj/KVxfSQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1699965102;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EIX0EZVEmbOe9hYj0aUXBcpQk767m8/Q6FfnauFb9+8=;
- b=X27x5QJZG3L8zeXUhVjfsob1fHlHlixjBuaOITRArag0ToXA/J4+P5F75gGCq+OhwiS478
- TQ4oosldGAGINzDg==
+ bh=UhqUF+pwxnsxdDtYQaLrmNihZywyKJn26iTCGdh8mDU=;
+ b=MYCCqNFLu9YF5eydKIDmPBeFDGfhjm/yHLEW6a8LHmJzcCeXLJlfquFO0THgFYMt9MLkXn
+ aEEJaXATcTy4QjBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 14E2313ADB;
- Tue, 14 Nov 2023 12:31:42 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EDC7313ACD;
+ Tue, 14 Nov 2023 12:31:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id KBhSBK5oU2UibAAAMHmgww
- (envelope-from <mdoucha@suse.cz>); Tue, 14 Nov 2023 12:31:42 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id 0IJLOa1oU2UibAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Tue, 14 Nov 2023 12:31:41 +0000
 From: Martin Doucha <mdoucha@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>,
 	ltp@lists.linux.it
-Date: Tue, 14 Nov 2023 13:31:26 +0100
-Message-ID: <20231114123140.1144-6-mdoucha@suse.cz>
+Date: Tue, 14 Nov 2023 13:31:25 +0100
+Message-ID: <20231114123140.1144-5-mdoucha@suse.cz>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231114123140.1144-1-mdoucha@suse.cz>
 References: <20231114123140.1144-1-mdoucha@suse.cz>
@@ -76,9 +75,10 @@ X-Spamd-Result: default: False [-2.10 / 50.00]; ARC_NA(0.00)[];
  MID_CONTAINS_FROM(1.00)[]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
  RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 5/5] Add test for CVE 2023-31248
+Subject: [LTP] [PATCH v2 4/5] tst_netlink: Add helper functions for handling
+ generic attributes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,248 +95,334 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fixes #1058
+Refactor struct tst_rtnl_attr_list for generic use and add helper
+functions for handling generic struct nlattr message attributes.
 
 Signed-off-by: Martin Doucha <mdoucha@suse.cz>
 ---
 
 Changes since v1: New patch
 
- testcases/network/iptables/Makefile |   2 +-
- testcases/network/iptables/nft02.c  | 211 ++++++++++++++++++++++++++++
- 2 files changed, 212 insertions(+), 1 deletion(-)
- create mode 100644 testcases/network/iptables/nft02.c
+ include/tst_netdevice.h   |  6 +--
+ include/tst_netlink.h     | 38 ++++++++++++++----
+ lib/tst_netdevice.c       | 20 +++++-----
+ lib/tst_netlink.c         | 82 ++++++++++++++++++++++++++++++++++++++-
+ testcases/cve/tcindex01.c | 12 +++---
+ 5 files changed, 131 insertions(+), 27 deletions(-)
 
-diff --git a/testcases/network/iptables/Makefile b/testcases/network/iptables/Makefile
-index 1b42f25db..02e228cbc 100644
---- a/testcases/network/iptables/Makefile
-+++ b/testcases/network/iptables/Makefile
-@@ -5,7 +5,7 @@
+diff --git a/include/tst_netdevice.h b/include/tst_netdevice.h
+index 4239d0960..8d40148a6 100644
+--- a/include/tst_netdevice.h
++++ b/include/tst_netdevice.h
+@@ -132,7 +132,7 @@ int tst_netdev_remove_route_inet(const char *file, const int lineno,
+ int tst_netdev_add_qdisc(const char *file, const int lineno, int strict,
+ 	const char *ifname, unsigned int family, unsigned int parent,
+ 	unsigned int handle, const char *qd_kind,
+-	const struct tst_rtnl_attr_list *config);
++	const struct tst_netlink_attr_list *config);
+ #define NETDEV_ADD_QDISC(ifname, family, parent, handle, qd_kind, config) \
+ 	tst_netdev_add_qdisc(__FILE__, __LINE__, 1, (ifname), (family), \
+ 		(parent), (handle), (qd_kind), (config))
+@@ -154,7 +154,7 @@ int tst_netdev_remove_qdisc(const char *file, const int lineno, int strict,
+ int tst_netdev_add_traffic_class(const char *file, const int lineno,
+ 	int strict, const char *ifname, unsigned int parent,
+ 	unsigned int handle, const char *qd_kind,
+-	const struct tst_rtnl_attr_list *config);
++	const struct tst_netlink_attr_list *config);
+ #define NETDEV_ADD_TRAFFIC_CLASS(ifname, parent, handle, qd_kind, config) \
+ 	tst_netdev_add_traffic_class(__FILE__, __LINE__, 1, (ifname), \
+ 		(parent), (handle), (qd_kind), (config))
+@@ -173,7 +173,7 @@ int tst_netdev_remove_traffic_class(const char *file, const int lineno,
+ int tst_netdev_add_traffic_filter(const char *file, const int lineno,
+ 	int strict, const char *ifname, unsigned int parent,
+ 	unsigned int handle, unsigned int protocol, unsigned int priority,
+-	const char *f_kind, const struct tst_rtnl_attr_list *config);
++	const char *f_kind, const struct tst_netlink_attr_list *config);
+ #define NETDEV_ADD_TRAFFIC_FILTER(ifname, parent, handle, protocol, priority, \
+ 	f_kind, config) \
+ 	tst_netdev_add_traffic_filter(__FILE__, __LINE__, 1, (ifname), \
+diff --git a/include/tst_netlink.h b/include/tst_netlink.h
+index f10f1cf5d..7d96fd711 100644
+--- a/include/tst_netlink.h
++++ b/include/tst_netlink.h
+@@ -9,11 +9,11 @@
  
- top_srcdir		?= ../../..
+ struct tst_netlink_context;
  
--include $(top_srcdir)/include/mk/env_pre.mk
-+include $(top_srcdir)/include/mk/testcases.mk
+-struct tst_rtnl_attr_list {
++struct tst_netlink_attr_list {
+ 	unsigned short type;
+ 	const void *data;
+ 	ssize_t len;
+-	const struct tst_rtnl_attr_list *sublist;
++	const struct tst_netlink_attr_list *sublist;
+ };
  
- INSTALL_TARGETS		:= *.sh
+ struct tst_netlink_message {
+@@ -72,25 +72,49 @@ int tst_netlink_add_message(const char *file, const int lineno,
+ 	tst_netlink_add_message(__FILE__, __LINE__, (ctx), (header), \
+ 		(payload), (psize))
  
-diff --git a/testcases/network/iptables/nft02.c b/testcases/network/iptables/nft02.c
-new file mode 100644
-index 000000000..4cea7ce64
---- /dev/null
-+++ b/testcases/network/iptables/nft02.c
-@@ -0,0 +1,211 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+-/* Add arbitrary attribute to last message */
++/* Add arbitrary nlattr attribute to last message */
++int tst_netlink_add_attr(const char *file, const int lineno,
++	struct tst_netlink_context *ctx, unsigned short type, const void *data,
++	unsigned short len);
++#define NETLINK_ADD_ATTR(ctx, type, data, len) \
++	tst_netlink_add_attr(__FILE__, __LINE__, (ctx), (type), (data), (len))
++
++/* Add string nlattr attribute to last message */
++int tst_netlink_add_attr_string(const char *file, const int lineno,
++	struct tst_netlink_context *ctx, unsigned short type, const char *data);
++#define NETLINK_ADD_ATTR_STRING(ctx, type, data) \
++	tst_netlink_add_attr_string(__FILE__, __LINE__, (ctx), (type), (data))
++
 +/*
-+ * Copyright (C) 2023 SUSE LLC
-+ * Author: Marcos Paulo de Souza <mpdesouza@suse.com>
-+ * LTP port: Martin Doucha <mdoucha@suse.cz>
++ * Add list of arbitrary nlattr attributes to last message. The list is
++ * terminated by attribute with negative length. Nested sublists are supported.
 + */
++int tst_netlink_add_attr_list(const char *file, const int lineno,
++	struct tst_netlink_context *ctx,
++	const struct tst_netlink_attr_list *list);
++#define NETLINK_ADD_ATTR_LIST(ctx, list) \
++	tst_netlink_add_attr_list(__FILE__, __LINE__, (ctx), (list))
 +
-+/*\
-+ * CVE-2023-31248
-+ *
-+ * Test for use-after-free when adding a new rule to a chain deleted
-+ * in the same netlink message batch.
-+ *
-+ * Kernel bug fixed in:
-+ *
-+ *  commit 515ad530795c118f012539ed76d02bacfd426d89
-+ *  Author: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-+ *  Date:   Wed Jul 5 09:12:55 2023 -0300
-+ *
-+ *  netfilter: nf_tables: do not ignore genmask when looking up chain by id
-+ */
-+
-+#include <linux/netlink.h>
-+#include <linux/tcp.h>
-+#include <arpa/inet.h>
-+#include <linux/netfilter.h>
-+#include <linux/netfilter/nf_tables.h>
-+#include <linux/netfilter/nfnetlink.h>
-+#include "tst_test.h"
-+#include "tst_netlink.h"
-+
-+#define TABNAME "ltp_table1"
-+#define CHAINNAME "ltp_chain1"
-+
-+static const uint8_t rule_proto = IPPROTO_TCP;
-+static const uint32_t rule_dport = 80;
-+
-+static uint32_t chain_id;
-+static uint32_t cmp_sreg;
-+static uint32_t cmp_op;
-+static struct tst_netlink_context *ctx;
-+
-+/* Table creation config */
-+static const struct tst_netlink_attr_list table_config[] = {
-+	{NFTA_TABLE_NAME, TABNAME, strlen(TABNAME) + 1, NULL},
-+	{0, NULL, -1, NULL}
-+};
-+
-+/* Chain creation and deletion config */
-+static const struct tst_netlink_attr_list newchain_config[] = {
-+	{NFTA_TABLE_NAME, TABNAME, strlen(TABNAME) + 1, NULL},
-+	{NFTA_CHAIN_NAME, CHAINNAME, strlen(CHAINNAME) + 1, NULL},
-+	{NFTA_CHAIN_ID, &chain_id, sizeof(chain_id), NULL},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list delchain_config[] = {
-+	{NFTA_TABLE_NAME, TABNAME, strlen(TABNAME) + 1, NULL},
-+	{NFTA_CHAIN_NAME, CHAINNAME, strlen(CHAINNAME) + 1, NULL},
-+	{0, NULL, -1, NULL}
-+};
-+
-+/* Rule creation config */
-+static const struct tst_netlink_attr_list rule_data_config1[] = {
-+	{NFTA_CMP_SREG, &cmp_sreg, sizeof(cmp_sreg), NULL},
-+	{NFTA_CMP_OP, &cmp_op, sizeof(cmp_op), NULL},
-+	{NFTA_CMP_DATA, NULL, 0, (const struct tst_netlink_attr_list[]) {
-+		{NFTA_DATA_VALUE, &rule_proto, sizeof(rule_proto), NULL},
-+		{0, NULL, -1, NULL}
-+	}},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list rule_data_config2[] = {
-+	{NFTA_CMP_SREG, &cmp_sreg, sizeof(cmp_sreg), NULL},
-+	{NFTA_CMP_OP, &cmp_op, sizeof(cmp_op), NULL},
-+	{NFTA_CMP_DATA, NULL, 0, (const struct tst_netlink_attr_list[]) {
-+		{NFTA_DATA_VALUE, &rule_dport, sizeof(rule_dport), NULL},
-+		{0, NULL, -1, NULL}
-+	}},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list rule_expr_config[] = {
-+	{NFTA_LIST_ELEM, NULL, 0, (const struct tst_netlink_attr_list[]) {
-+		{NFTA_EXPR_NAME, "cmp", 4, NULL},
-+		{NFTA_EXPR_DATA, NULL, 0, rule_data_config1},
-+		{0, NULL, -1, NULL}
-+	}},
-+	{NFTA_LIST_ELEM, NULL, 0, (const struct tst_netlink_attr_list[]) {
-+		{NFTA_EXPR_NAME, "cmp", 4, NULL},
-+		{NFTA_EXPR_DATA, NULL, 0, rule_data_config2},
-+		{0, NULL, -1, NULL}
-+	}},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static const struct tst_netlink_attr_list rule_config[] = {
-+	{NFTA_RULE_EXPRESSIONS, NULL, 0, rule_expr_config},
-+	{NFTA_RULE_TABLE, TABNAME, strlen(TABNAME) + 1, NULL},
-+	{NFTA_RULE_CHAIN_ID, &chain_id, sizeof(chain_id), NULL},
-+	{0, NULL, -1, NULL}
-+};
-+
-+static void setup(void)
++/* Add arbitrary rtattr attribute to last message */
+ int tst_rtnl_add_attr(const char *file, const int lineno,
+ 	struct tst_netlink_context *ctx, unsigned short type, const void *data,
+ 	unsigned short len);
+ #define RTNL_ADD_ATTR(ctx, type, data, len) \
+ 	tst_rtnl_add_attr(__FILE__, __LINE__, (ctx), (type), (data), (len))
+ 
+-/* Add string attribute to last message */
++/* Add string rtattr attribute to last message */
+ int tst_rtnl_add_attr_string(const char *file, const int lineno,
+ 	struct tst_netlink_context *ctx, unsigned short type, const char *data);
+ #define RTNL_ADD_ATTR_STRING(ctx, type, data) \
+ 	tst_rtnl_add_attr_string(__FILE__, __LINE__, (ctx), (type), (data))
+ 
+ /*
+- * Add list of arbitrary attributes to last message. The list is terminated
+- * by attribute with negative length. Nested sublists are supported.
++ * Add list of arbitrary rtattr attributes to last message. The list is
++ * terminated by attribute with negative length. Nested sublists are supported.
+  */
+ int tst_rtnl_add_attr_list(const char *file, const int lineno,
+-	struct tst_netlink_context *ctx, const struct tst_rtnl_attr_list *list);
++	struct tst_netlink_context *ctx,
++	const struct tst_netlink_attr_list *list);
+ #define RTNL_ADD_ATTR_LIST(ctx, list) \
+ 	tst_rtnl_add_attr_list(__FILE__, __LINE__, (ctx), (list))
+ 
+diff --git a/lib/tst_netdevice.c b/lib/tst_netdevice.c
+index 6f86b8089..1042466bf 100644
+--- a/lib/tst_netdevice.c
++++ b/lib/tst_netdevice.c
+@@ -105,17 +105,17 @@ int tst_create_veth_pair(const char *file, const int lineno, int strict,
+ 	int ret;
+ 	struct ifinfomsg info = { .ifi_family = AF_UNSPEC };
+ 	struct tst_netlink_context *ctx;
+-	struct tst_rtnl_attr_list peerinfo[] = {
++	struct tst_netlink_attr_list peerinfo[] = {
+ 		{IFLA_IFNAME, ifname2, strlen(ifname2) + 1, NULL},
+ 		{0, NULL, -1, NULL}
+ 	};
+-	struct tst_rtnl_attr_list peerdata[] = {
++	struct tst_netlink_attr_list peerdata[] = {
+ 		{VETH_INFO_PEER, &info, sizeof(info), peerinfo},
+ 		{0, NULL, -1, NULL}
+ 	};
+-	struct tst_rtnl_attr_list attrs[] = {
++	struct tst_netlink_attr_list attrs[] = {
+ 		{IFLA_IFNAME, ifname1, strlen(ifname1) + 1, NULL},
+-		{IFLA_LINKINFO, NULL, 0, (const struct tst_rtnl_attr_list[]){
++		{IFLA_LINKINFO, NULL, 0, (const struct tst_netlink_attr_list[]){
+ 			{IFLA_INFO_KIND, "veth", 4, NULL},
+ 			{IFLA_INFO_DATA, NULL, 0, peerdata},
+ 			{0, NULL, -1, NULL}
+@@ -164,9 +164,9 @@ int tst_netdev_add_device(const char *file, const int lineno, int strict,
+ 	int ret;
+ 	struct ifinfomsg info = { .ifi_family = AF_UNSPEC };
+ 	struct tst_netlink_context *ctx;
+-	struct tst_rtnl_attr_list attrs[] = {
++	struct tst_netlink_attr_list attrs[] = {
+ 		{IFLA_IFNAME, ifname, strlen(ifname) + 1, NULL},
+-		{IFLA_LINKINFO, NULL, 0, (const struct tst_rtnl_attr_list[]){
++		{IFLA_LINKINFO, NULL, 0, (const struct tst_netlink_attr_list[]){
+ 			{IFLA_INFO_KIND, devtype, strlen(devtype), NULL},
+ 			{0, NULL, -1, NULL}
+ 		}},
+@@ -527,7 +527,7 @@ static int modify_qdisc(const char *file, const int lineno, int strict,
+ 	const char *object, unsigned int action, unsigned int nl_flags,
+ 	const char *ifname, unsigned int family, unsigned int parent,
+ 	unsigned int handle, unsigned int info, const char *qd_kind,
+-	const struct tst_rtnl_attr_list *config)
++	const struct tst_netlink_attr_list *config)
+ {
+ 	struct tst_netlink_context *ctx;
+ 	int ret;
+@@ -585,7 +585,7 @@ static int modify_qdisc(const char *file, const int lineno, int strict,
+ int tst_netdev_add_qdisc(const char *file, const int lineno, int strict,
+ 	const char *ifname, unsigned int family, unsigned int parent,
+ 	unsigned int handle, const char *qd_kind,
+-	const struct tst_rtnl_attr_list *config)
++	const struct tst_netlink_attr_list *config)
+ {
+ 	return modify_qdisc(file, lineno, strict, "queueing discipline",
+ 		RTM_NEWQDISC, NLM_F_CREATE | NLM_F_EXCL, ifname, family,
+@@ -604,7 +604,7 @@ int tst_netdev_remove_qdisc(const char *file, const int lineno, int strict,
+ int tst_netdev_add_traffic_class(const char *file, const int lineno,
+ 	int strict, const char *ifname, unsigned int parent,
+ 	unsigned int handle, const char *qd_kind,
+-	const struct tst_rtnl_attr_list *config)
++	const struct tst_netlink_attr_list *config)
+ {
+ 	return modify_qdisc(file, lineno, strict, "traffic class",
+ 		RTM_NEWTCLASS, NLM_F_CREATE | NLM_F_EXCL, ifname, AF_UNSPEC,
+@@ -623,7 +623,7 @@ int tst_netdev_remove_traffic_class(const char *file, const int lineno,
+ int tst_netdev_add_traffic_filter(const char *file, const int lineno,
+ 	int strict, const char *ifname, unsigned int parent,
+ 	unsigned int handle, unsigned int protocol, unsigned int priority,
+-	const char *f_kind, const struct tst_rtnl_attr_list *config)
++	const char *f_kind, const struct tst_netlink_attr_list *config)
+ {
+ 	return modify_qdisc(file, lineno, strict, "traffic filter",
+ 		RTM_NEWTFILTER, NLM_F_CREATE | NLM_F_EXCL, ifname, AF_UNSPEC,
+diff --git a/lib/tst_netlink.c b/lib/tst_netlink.c
+index bd05df81a..7bc98af56 100644
+--- a/lib/tst_netlink.c
++++ b/lib/tst_netlink.c
+@@ -283,6 +283,86 @@ int tst_netlink_add_message(const char *file, const int lineno,
+ 	return 1;
+ }
+ 
++int tst_netlink_add_attr(const char *file, const int lineno,
++	struct tst_netlink_context *ctx, unsigned short type,
++	const void *data, unsigned short len)
 +{
-+	tst_setup_netns();
++	size_t size = NLA_HDRLEN + NLA_ALIGN(len);
++	struct nlattr *attr;
 +
-+	chain_id = htonl(77);
-+	cmp_sreg = htonl(NFT_REG_1);
-+	cmp_op = htonl(NFT_CMP_EQ);
-+}
-+
-+static void run(void)
-+{
-+	struct nlmsghdr header;
-+	struct nfgenmsg nfpayload;
-+
-+	memset(&header, 0, sizeof(header));
-+	memset(&nfpayload, 0, sizeof(nfpayload));
-+	nfpayload.version = NFNETLINK_V0;
-+
-+	ctx = NETLINK_CREATE_CONTEXT(NETLINK_NETFILTER);
-+
-+	/* Start netfilter batch */
-+	header.nlmsg_type = NFNL_MSG_BATCH_BEGIN;
-+	header.nlmsg_flags = NLM_F_REQUEST;
-+	nfpayload.nfgen_family = AF_UNSPEC;
-+	nfpayload.res_id = htons(NFNL_SUBSYS_NFTABLES);
-+	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
-+
-+	/* Add table */
-+	header.nlmsg_type = (NFNL_SUBSYS_NFTABLES << 8) | NFT_MSG_NEWTABLE;
-+	header.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_ACK;
-+	nfpayload.nfgen_family = NFPROTO_IPV4;
-+	nfpayload.res_id = htons(0);
-+	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
-+	NETLINK_ADD_ATTR_LIST(ctx, table_config);
-+
-+	/* Add chain */
-+	header.nlmsg_type = (NFNL_SUBSYS_NFTABLES << 8) | NFT_MSG_NEWCHAIN;
-+	header.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_ACK;
-+	nfpayload.nfgen_family = NFPROTO_IPV4;
-+	nfpayload.res_id = htons(0);
-+	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
-+	NETLINK_ADD_ATTR_LIST(ctx, newchain_config);
-+
-+	/* Delete the above chain */
-+	header.nlmsg_type = (NFNL_SUBSYS_NFTABLES << 8) | NFT_MSG_DELCHAIN;
-+	header.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
-+	nfpayload.nfgen_family = NFPROTO_IPV4;
-+	nfpayload.res_id = htons(0);
-+	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
-+	NETLINK_ADD_ATTR_LIST(ctx, delchain_config);
-+
-+	/* Add rule to deleted chain */
-+	header.nlmsg_type = (NFNL_SUBSYS_NFTABLES << 8) | NFT_MSG_NEWRULE;
-+	header.nlmsg_flags = NLM_F_REQUEST | NLM_F_APPEND | NLM_F_CREATE |
-+		NLM_F_ACK;
-+	nfpayload.nfgen_family = NFPROTO_IPV4;
-+	nfpayload.res_id = htons(0);
-+	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
-+	NETLINK_ADD_ATTR_LIST(ctx, rule_config);
-+
-+	/* End batch */
-+	header.nlmsg_type = NFNL_MSG_BATCH_END;
-+	header.nlmsg_flags = NLM_F_REQUEST;
-+	nfpayload.nfgen_family = AF_UNSPEC;
-+	nfpayload.res_id = htons(NFNL_SUBSYS_NFTABLES);
-+	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
-+
-+	NETLINK_SEND_VALIDATE(ctx);
-+	NETLINK_DESTROY_CONTEXT(ctx);
-+	ctx = NULL;
-+
-+	/* Wait for kernel page fault error */
-+	usleep(100000);
-+
-+	if (tst_taint_check()) {
-+		tst_res(TFAIL, "Kernel is vulnerable");
-+		return;
++	if (!ctx->curmsg) {
++		tst_brk_(file, lineno, TBROK,
++			"%s(): No message to add attributes to", __func__);
++		return 0;
 +	}
 +
-+	tst_res(TPASS, "Nothing bad happened, probably");
++	if (!netlink_grow_buffer(file, lineno, ctx, size))
++		return 0;
++
++	size = NLMSG_ALIGN(ctx->curmsg->nlmsg_len);
++	attr = (struct nlattr *)(((char *)ctx->curmsg) + size);
++	attr->nla_type = type;
++	attr->nla_len = NLA_HDRLEN + len;
++	memcpy(((char *)attr) + NLA_HDRLEN, data, len);
++	ctx->curmsg->nlmsg_len = size + attr->nla_len;
++	ctx->datalen = NLMSG_ALIGN(ctx->datalen) + attr->nla_len;
++
++	return 1;
 +}
 +
-+static void cleanup(void)
++int tst_netlink_add_attr_string(const char *file, const int lineno,
++	struct tst_netlink_context *ctx, unsigned short type,
++	const char *data)
 +{
-+	NETLINK_DESTROY_CONTEXT(ctx);
++	return tst_netlink_add_attr(file, lineno, ctx, type, data,
++		strlen(data) + 1);
 +}
 +
-+static struct tst_test test = {
-+	.test_all = run,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.taint_check = TST_TAINT_W | TST_TAINT_D,
-+	.needs_kconfigs = (const char *[]) {
-+		"CONFIG_USER_NS=y",
-+		"CONFIG_NF_TABLES",
-+		NULL
-+	},
-+	.save_restore = (const struct tst_path_val[]) {
-+		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
-+		{}
-+	},
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "515ad530795c"},
-+		{"CVE", "2023-31248"},
-+		{}
++int tst_netlink_add_attr_list(const char *file, const int lineno,
++	struct tst_netlink_context *ctx,
++	const struct tst_netlink_attr_list *list)
++{
++	int i, ret;
++	size_t offset;
++
++	for (i = 0; list[i].len >= 0; i++) {
++		if (list[i].len > USHRT_MAX) {
++			tst_brk_(file, lineno, TBROK,
++				"%s(): Attribute value too long", __func__);
++			return -1;
++		}
++
++		offset = NLMSG_ALIGN(ctx->datalen);
++		ret = tst_netlink_add_attr(file, lineno, ctx, list[i].type,
++			list[i].data, list[i].len);
++
++		if (!ret)
++			return -1;
++
++		if (list[i].sublist) {
++			struct rtattr *attr;
++
++			ret = tst_netlink_add_attr_list(file, lineno, ctx,
++				list[i].sublist);
++
++			if (ret < 0)
++				return ret;
++
++			attr = (struct rtattr *)(ctx->buffer + offset);
++
++			if (ctx->datalen - offset > USHRT_MAX) {
++				tst_brk_(file, lineno, TBROK,
++					"%s(): Sublist too long", __func__);
++				return -1;
++			}
++
++			attr->rta_len = ctx->datalen - offset;
++		}
 +	}
-+};
++
++	return i;
++}
++
+ int tst_rtnl_add_attr(const char *file, const int lineno,
+ 	struct tst_netlink_context *ctx, unsigned short type,
+ 	const void *data, unsigned short len)
+@@ -320,7 +400,7 @@ int tst_rtnl_add_attr_string(const char *file, const int lineno,
+ 
+ int tst_rtnl_add_attr_list(const char *file, const int lineno,
+ 	struct tst_netlink_context *ctx,
+-	const struct tst_rtnl_attr_list *list)
++	const struct tst_netlink_attr_list *list)
+ {
+ 	int i, ret;
+ 	size_t offset;
+diff --git a/testcases/cve/tcindex01.c b/testcases/cve/tcindex01.c
+index d441a2449..b4f2bb01a 100644
+--- a/testcases/cve/tcindex01.c
++++ b/testcases/cve/tcindex01.c
+@@ -46,15 +46,15 @@ static const struct tc_htb_glob qd_opt = {
+ static struct tc_htb_opt cls_opt = {};
+ 
+ /* htb qdisc and class options */
+-static const struct tst_rtnl_attr_list qd_config[] = {
+-	{TCA_OPTIONS, NULL, 0, (const struct tst_rtnl_attr_list[]){
++static const struct tst_netlink_attr_list qd_config[] = {
++	{TCA_OPTIONS, NULL, 0, (const struct tst_netlink_attr_list[]){
+ 		{TCA_HTB_INIT, &qd_opt, sizeof(qd_opt), NULL},
+ 		{0, NULL, -1, NULL}
+ 	}},
+ 	{0, NULL, -1, NULL}
+ };
+-static const struct tst_rtnl_attr_list cls_config[] = {
+-	{TCA_OPTIONS, NULL, 0, (const struct tst_rtnl_attr_list[]){
++static const struct tst_netlink_attr_list cls_config[] = {
++	{TCA_OPTIONS, NULL, 0, (const struct tst_netlink_attr_list[]){
+ 		{TCA_HTB_PARMS, &cls_opt, sizeof(cls_opt), NULL},
+ 		{0, NULL, -1, NULL}
+ 	}},
+@@ -62,8 +62,8 @@ static const struct tst_rtnl_attr_list cls_config[] = {
+ };
+ 
+ /* tcindex filter options */
+-static const struct tst_rtnl_attr_list f_config[] = {
+-	{TCA_OPTIONS, NULL, 0, (const struct tst_rtnl_attr_list[]){
++static const struct tst_netlink_attr_list f_config[] = {
++	{TCA_OPTIONS, NULL, 0, (const struct tst_netlink_attr_list[]){
+ 		{TCA_TCINDEX_MASK, &mask, sizeof(mask), NULL},
+ 		{TCA_TCINDEX_SHIFT, &shift, sizeof(shift), NULL},
+ 		{TCA_TCINDEX_CLASSID, &clsid, sizeof(clsid), NULL},
 -- 
 2.42.0
 
