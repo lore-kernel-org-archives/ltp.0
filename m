@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D13ECC4167D
-	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 11:30:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2AE9C4332F
+	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 12:31:59 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 906C13CE505
-	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 12:30:49 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 6F3013CE4F8
+	for <ltp@archiver.kernel.org>; Tue, 14 Nov 2023 13:31:57 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 954393CC27F
- for <ltp@lists.linux.it>; Tue, 14 Nov 2023 12:30:36 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ by picard.linux.it (Postfix) with ESMTPS id F27353CC27C
+ for <ltp@lists.linux.it>; Tue, 14 Nov 2023 13:31:43 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7EF33687226
- for <ltp@lists.linux.it>; Tue, 14 Nov 2023 12:30:34 +0100 (CET)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 2CE1421892;
- Tue, 14 Nov 2023 11:30:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1699961433;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=r4jE3s0fuPtaizZfC+J8K6JTUgOiIe1j96SXkg6AkXE=;
- b=H8iTUiNJWFjbXucbyRRF4mzQF+xFD25lqm9hdgqu8WRy5msjENBOXEYArxJTuM5mOFZOxL
- fA0BO8cgsbRbsvQZ6/apt9kkv0RvlTuEIeVREISV8UL7c8u4D3Q8r9F4yFSn8WpMhrBVug
- PH/uNJOWu8RGUf5rcu/XRozjAPTzeKM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1699961433;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=r4jE3s0fuPtaizZfC+J8K6JTUgOiIe1j96SXkg6AkXE=;
- b=8FYw2XMBLdfpDN9yPrwhDjEueghQG4KGljlc8/adOm51n8WbCG5BLre5xSgteFVSnSZ7UR
- Bl/rMAX+lfyCEtCg==
-Received: from g78 (rpalethorpe.udp.ovpn2.prg.suse.de [10.100.204.110])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D9B571000995
+ for <ltp@lists.linux.it>; Tue, 14 Nov 2023 13:31:42 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id CAFDF2C525;
- Tue, 14 Nov 2023 11:30:32 +0000 (UTC)
-References: <20230913101542.18550-1-wegao@suse.com>
-User-agent: mu4e 1.10.7; emacs 29.1
-From: Richard Palethorpe <rpalethorpe@suse.de>
-To: Wei Gao <wegao@suse.com>
-Date: Tue, 14 Nov 2023 09:17:15 +0000
-Organization: Linux Private Site
-In-reply-to: <20230913101542.18550-1-wegao@suse.com>
-Message-ID: <87zfzga7xj.fsf@suse.de>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2F7A3218F6;
+ Tue, 14 Nov 2023 12:31:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1699965102; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=EIX0EZVEmbOe9hYj0aUXBcpQk767m8/Q6FfnauFb9+8=;
+ b=lYWfPCyFbre0Qn1SUCed33V80HTePZqaxjAhh5tJnM58p1MJXVbDjpK81BzepPRwLXqRps
+ wQH2zYVmhC/kgpYsAEgxteGwJWWw58rDfXXbdn92TMTv50QEsB+mky/pe64ez5EJSnvT8S
+ 7MCFHNLX5epCl6Ce7g927ec9KnDmzJ0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1699965102;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=EIX0EZVEmbOe9hYj0aUXBcpQk767m8/Q6FfnauFb9+8=;
+ b=X27x5QJZG3L8zeXUhVjfsob1fHlHlixjBuaOITRArag0ToXA/J4+P5F75gGCq+OhwiS478
+ TQ4oosldGAGINzDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 14E2313ADB;
+ Tue, 14 Nov 2023 12:31:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id KBhSBK5oU2UibAAAMHmgww
+ (envelope-from <mdoucha@suse.cz>); Tue, 14 Nov 2023 12:31:42 +0000
+From: Martin Doucha <mdoucha@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>,
+	ltp@lists.linux.it
+Date: Tue, 14 Nov 2023 13:31:26 +0100
+Message-ID: <20231114123140.1144-6-mdoucha@suse.cz>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231114123140.1144-1-mdoucha@suse.cz>
+References: <20231114123140.1144-1-mdoucha@suse.cz>
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de; dkim=none; dmarc=none;
- spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor
- denied by domain of rpalethorpe@suse.de) smtp.mailfrom=rpalethorpe@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-2.21 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[rpalethorpe@suse.de]; FROM_HAS_DN(0.00)[];
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-2.10 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-3.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- REPLYTO_ADDR_EQ_FROM(0.00)[]; DMARC_NA(0.20)[suse.de];
- R_SPF_SOFTFAIL(0.60)[~all:c]; HAS_ORG_HEADER(0.00)[];
- RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
- VIOLATED_DIRECT_SPF(3.50)[]; NEURAL_HAM_SHORT(-1.00)[-1.000];
- RCVD_NO_TLS_LAST(0.10)[]; FROM_EQ_ENVFROM(0.00)[];
- R_DKIM_NA(0.20)[]; MIME_TRACE(0.00)[0:+];
- RCVD_COUNT_TWO(0.00)[2]; MID_RHS_MATCH_FROM(0.00)[];
- BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Queue-Id: 2CE1421892
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+ R_MISSING_CHARSET(2.50)[]; MIME_GOOD(-0.10)[text/plain];
+ BROKEN_CONTENT_TYPE(1.50)[]; NEURAL_HAM_LONG(-3.00)[-1.000];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-1.00)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ MID_CONTAINS_FROM(1.00)[]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_COUNT_TWO(0.00)[2];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] move_mount03: check allow to mount beneath top
- mount
+Subject: [LTP] [PATCH v2 5/5] Add test for CVE 2023-31248
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,179 +90,256 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: rpalethorpe@suse.de
-Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hello,
+Fixes #1058
 
-Wei Gao via ltp <ltp@lists.linux.it> writes:
+Signed-off-by: Martin Doucha <mdoucha@suse.cz>
+---
 
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  include/lapi/fsmount.h                        |  4 ++
->  runtest/syscalls                              |  1 +
->  .../kernel/syscalls/move_mount/.gitignore     |  1 +
->  .../kernel/syscalls/move_mount/move_mount03.c | 63 +++++++++++++++++++
->  4 files changed, 69 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/move_mount/move_mount03.c
->
-> diff --git a/include/lapi/fsmount.h b/include/lapi/fsmount.h
-> index 07eb42ffa..216e966c7 100644
-> --- a/include/lapi/fsmount.h
-> +++ b/include/lapi/fsmount.h
-> @@ -115,6 +115,10 @@ static inline int mount_setattr(int dirfd, const char *from_pathname, unsigned i
->  }
->  #endif /* HAVE_MOUNT_SETATTR */
->  
-> +#ifndef MOVE_MOUNT_BENEATH
-> +#define MOVE_MOUNT_BENEATH 		0x00000200
-> +#endif /* MOVE_MOUNT_BENEATH */
-> +
->  /*
->   * New headers added in kernel after 5.2 release, create them for old userspace.
->  */
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index b1125dd75..04b758fd9 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -824,6 +824,7 @@ mount_setattr01 mount_setattr01
->  
->  move_mount01 move_mount01
->  move_mount02 move_mount02
-> +move_mount03 move_mount03
->  
->  move_pages01 move_pages01
->  move_pages02 move_pages02
-> diff --git a/testcases/kernel/syscalls/move_mount/.gitignore b/testcases/kernel/syscalls/move_mount/.gitignore
-> index 83ae40145..ddfe10128 100644
-> --- a/testcases/kernel/syscalls/move_mount/.gitignore
-> +++ b/testcases/kernel/syscalls/move_mount/.gitignore
-> @@ -1,2 +1,3 @@
->  /move_mount01
->  /move_mount02
-> +/move_mount03
-> diff --git a/testcases/kernel/syscalls/move_mount/move_mount03.c b/testcases/kernel/syscalls/move_mount/move_mount03.c
-> new file mode 100644
-> index 000000000..071fd984c
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/move_mount/move_mount03.c
-> @@ -0,0 +1,63 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-> + */
-> +
-> +/*\
-> + * [Description]
-> + *
-> + * Verify allow to mount beneath top mount
+Changes since v1: New patch
 
-This should at least reference the following commit:
+ testcases/network/iptables/Makefile |   2 +-
+ testcases/network/iptables/nft02.c  | 211 ++++++++++++++++++++++++++++
+ 2 files changed, 212 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/network/iptables/nft02.c
 
-commit 6ac392815628f317fcfdca1a39df00b9cc4ebc8b
-Author: Christian Brauner <brauner@kernel.org>
-Date:   Wed May 3 13:18:42 2023 +0200
-
-    fs: allow to mount beneath top mount
-
-To be honest I am struggling to understand what all of this
-does. However I think that I found some issues with the test which I
-have noted below.
-
-> + *
-> + */
-> +
-> +#include <stdio.h>
-> +
-> +#include "tst_test.h"
-> +#include "lapi/fsmount.h"
-> +#include "lapi/sched.h"
-> +
-> +#define MNTPOINTR "mntpoint"
-> +#define DIRA "LTP_DIR_A"
-> +
-> +static void run(void)
-> +{
-> +	int fd;
-> +
-> +	SAFE_UNSHARE(CLONE_NEWNS);
-> +	SAFE_MKDIR(DIRA, 0777);
-> +	SAFE_TOUCH(DIRA "/A", 0, NULL);
-> +	/* The parent mnt should be private if check MOVE_MOUNT_BENEATH */
-> +	SAFE_MOUNT("none", "/", "none", MS_REC | MS_PRIVATE, NULL);
-
-Is it necessary and safe to do this on root? It's not clear what effect
-setting all mounts under the present "/" and namespace might have. I
-guess it should be possible to create a mount to use as the parent that
-is private?
-
-> +	SAFE_MOUNT(DIRA, DIRA, "none", MS_BIND, NULL);
-> +	fd = SAFE_OPEN(DIRA, O_RDONLY | O_DIRECTORY);
-
-Why do we open this directory? It seems both source and destination can
-be paths.
-
-Also it is never closed.
-
-> +
-> +	TST_EXP_PASS(move_mount(fd, "", AT_FDCWD, MNTPOINT,
-> +				MOVE_MOUNT_BENEATH | MOVE_MOUNT_F_EMPTY_PATH));
-> +
-> +	if (access(MNTPOINT "/A", F_OK) == 0)
-
-So we have mounted mntpoint/LTP_DIR_A at mntpoint (or moved it there),
-but we don't expect file A to be there?
-
-> +		tst_res(TFAIL, "mount beneath top mount failed");
-> +	else
-> +		tst_res(TPASS, "mount beneath top mount pass");
-
-This message doesn't explain what the test is doing. You can probably
-use TST_EXP_* here as well.
-
-> +
-> +	if (tst_is_mounted_at_tmpdir(MNTPOINT))
-> +		SAFE_UMOUNT(MNTPOINT);
-> +
-> +	if (access(MNTPOINT "/A", F_OK) == 0)
-> +		tst_res(TPASS, "mount beneath top mount pass");
-> +	else
-> +		tst_res(TFAIL, "mount beneath top mount failed");
-> +
-
-So if MNTPOINT is not under tmpdir we do nothing, but the test now
-expects A to exist?
-
-If we always unmount MNTPOINT then this should always fail because we
-never created anything at mntpoint/A.
-
-> +	remove(DIRA "/A");
-
-This should probably be SAFE_UNLINK.
-
-> +	SAFE_RMDIR(DIRA);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.test_all = run,
-> +	.needs_root = 1,
-> +	.format_device = 1,
-> +	.mntpoint = MNTPOINT,
-> +	.mount_device = 1,
-> +	.all_filesystems = 1,
-> +	.skip_filesystems = (const char *const []){"fuse", NULL},
-> +	.min_kver = "6.5.0"
-> +};
-
-
-
+diff --git a/testcases/network/iptables/Makefile b/testcases/network/iptables/Makefile
+index 1b42f25db..02e228cbc 100644
+--- a/testcases/network/iptables/Makefile
++++ b/testcases/network/iptables/Makefile
+@@ -5,7 +5,7 @@
+ 
+ top_srcdir		?= ../../..
+ 
+-include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/testcases.mk
+ 
+ INSTALL_TARGETS		:= *.sh
+ 
+diff --git a/testcases/network/iptables/nft02.c b/testcases/network/iptables/nft02.c
+new file mode 100644
+index 000000000..4cea7ce64
+--- /dev/null
++++ b/testcases/network/iptables/nft02.c
+@@ -0,0 +1,211 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2023 SUSE LLC
++ * Author: Marcos Paulo de Souza <mpdesouza@suse.com>
++ * LTP port: Martin Doucha <mdoucha@suse.cz>
++ */
++
++/*\
++ * CVE-2023-31248
++ *
++ * Test for use-after-free when adding a new rule to a chain deleted
++ * in the same netlink message batch.
++ *
++ * Kernel bug fixed in:
++ *
++ *  commit 515ad530795c118f012539ed76d02bacfd426d89
++ *  Author: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
++ *  Date:   Wed Jul 5 09:12:55 2023 -0300
++ *
++ *  netfilter: nf_tables: do not ignore genmask when looking up chain by id
++ */
++
++#include <linux/netlink.h>
++#include <linux/tcp.h>
++#include <arpa/inet.h>
++#include <linux/netfilter.h>
++#include <linux/netfilter/nf_tables.h>
++#include <linux/netfilter/nfnetlink.h>
++#include "tst_test.h"
++#include "tst_netlink.h"
++
++#define TABNAME "ltp_table1"
++#define CHAINNAME "ltp_chain1"
++
++static const uint8_t rule_proto = IPPROTO_TCP;
++static const uint32_t rule_dport = 80;
++
++static uint32_t chain_id;
++static uint32_t cmp_sreg;
++static uint32_t cmp_op;
++static struct tst_netlink_context *ctx;
++
++/* Table creation config */
++static const struct tst_netlink_attr_list table_config[] = {
++	{NFTA_TABLE_NAME, TABNAME, strlen(TABNAME) + 1, NULL},
++	{0, NULL, -1, NULL}
++};
++
++/* Chain creation and deletion config */
++static const struct tst_netlink_attr_list newchain_config[] = {
++	{NFTA_TABLE_NAME, TABNAME, strlen(TABNAME) + 1, NULL},
++	{NFTA_CHAIN_NAME, CHAINNAME, strlen(CHAINNAME) + 1, NULL},
++	{NFTA_CHAIN_ID, &chain_id, sizeof(chain_id), NULL},
++	{0, NULL, -1, NULL}
++};
++
++static const struct tst_netlink_attr_list delchain_config[] = {
++	{NFTA_TABLE_NAME, TABNAME, strlen(TABNAME) + 1, NULL},
++	{NFTA_CHAIN_NAME, CHAINNAME, strlen(CHAINNAME) + 1, NULL},
++	{0, NULL, -1, NULL}
++};
++
++/* Rule creation config */
++static const struct tst_netlink_attr_list rule_data_config1[] = {
++	{NFTA_CMP_SREG, &cmp_sreg, sizeof(cmp_sreg), NULL},
++	{NFTA_CMP_OP, &cmp_op, sizeof(cmp_op), NULL},
++	{NFTA_CMP_DATA, NULL, 0, (const struct tst_netlink_attr_list[]) {
++		{NFTA_DATA_VALUE, &rule_proto, sizeof(rule_proto), NULL},
++		{0, NULL, -1, NULL}
++	}},
++	{0, NULL, -1, NULL}
++};
++
++static const struct tst_netlink_attr_list rule_data_config2[] = {
++	{NFTA_CMP_SREG, &cmp_sreg, sizeof(cmp_sreg), NULL},
++	{NFTA_CMP_OP, &cmp_op, sizeof(cmp_op), NULL},
++	{NFTA_CMP_DATA, NULL, 0, (const struct tst_netlink_attr_list[]) {
++		{NFTA_DATA_VALUE, &rule_dport, sizeof(rule_dport), NULL},
++		{0, NULL, -1, NULL}
++	}},
++	{0, NULL, -1, NULL}
++};
++
++static const struct tst_netlink_attr_list rule_expr_config[] = {
++	{NFTA_LIST_ELEM, NULL, 0, (const struct tst_netlink_attr_list[]) {
++		{NFTA_EXPR_NAME, "cmp", 4, NULL},
++		{NFTA_EXPR_DATA, NULL, 0, rule_data_config1},
++		{0, NULL, -1, NULL}
++	}},
++	{NFTA_LIST_ELEM, NULL, 0, (const struct tst_netlink_attr_list[]) {
++		{NFTA_EXPR_NAME, "cmp", 4, NULL},
++		{NFTA_EXPR_DATA, NULL, 0, rule_data_config2},
++		{0, NULL, -1, NULL}
++	}},
++	{0, NULL, -1, NULL}
++};
++
++static const struct tst_netlink_attr_list rule_config[] = {
++	{NFTA_RULE_EXPRESSIONS, NULL, 0, rule_expr_config},
++	{NFTA_RULE_TABLE, TABNAME, strlen(TABNAME) + 1, NULL},
++	{NFTA_RULE_CHAIN_ID, &chain_id, sizeof(chain_id), NULL},
++	{0, NULL, -1, NULL}
++};
++
++static void setup(void)
++{
++	tst_setup_netns();
++
++	chain_id = htonl(77);
++	cmp_sreg = htonl(NFT_REG_1);
++	cmp_op = htonl(NFT_CMP_EQ);
++}
++
++static void run(void)
++{
++	struct nlmsghdr header;
++	struct nfgenmsg nfpayload;
++
++	memset(&header, 0, sizeof(header));
++	memset(&nfpayload, 0, sizeof(nfpayload));
++	nfpayload.version = NFNETLINK_V0;
++
++	ctx = NETLINK_CREATE_CONTEXT(NETLINK_NETFILTER);
++
++	/* Start netfilter batch */
++	header.nlmsg_type = NFNL_MSG_BATCH_BEGIN;
++	header.nlmsg_flags = NLM_F_REQUEST;
++	nfpayload.nfgen_family = AF_UNSPEC;
++	nfpayload.res_id = htons(NFNL_SUBSYS_NFTABLES);
++	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
++
++	/* Add table */
++	header.nlmsg_type = (NFNL_SUBSYS_NFTABLES << 8) | NFT_MSG_NEWTABLE;
++	header.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_ACK;
++	nfpayload.nfgen_family = NFPROTO_IPV4;
++	nfpayload.res_id = htons(0);
++	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
++	NETLINK_ADD_ATTR_LIST(ctx, table_config);
++
++	/* Add chain */
++	header.nlmsg_type = (NFNL_SUBSYS_NFTABLES << 8) | NFT_MSG_NEWCHAIN;
++	header.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_ACK;
++	nfpayload.nfgen_family = NFPROTO_IPV4;
++	nfpayload.res_id = htons(0);
++	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
++	NETLINK_ADD_ATTR_LIST(ctx, newchain_config);
++
++	/* Delete the above chain */
++	header.nlmsg_type = (NFNL_SUBSYS_NFTABLES << 8) | NFT_MSG_DELCHAIN;
++	header.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
++	nfpayload.nfgen_family = NFPROTO_IPV4;
++	nfpayload.res_id = htons(0);
++	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
++	NETLINK_ADD_ATTR_LIST(ctx, delchain_config);
++
++	/* Add rule to deleted chain */
++	header.nlmsg_type = (NFNL_SUBSYS_NFTABLES << 8) | NFT_MSG_NEWRULE;
++	header.nlmsg_flags = NLM_F_REQUEST | NLM_F_APPEND | NLM_F_CREATE |
++		NLM_F_ACK;
++	nfpayload.nfgen_family = NFPROTO_IPV4;
++	nfpayload.res_id = htons(0);
++	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
++	NETLINK_ADD_ATTR_LIST(ctx, rule_config);
++
++	/* End batch */
++	header.nlmsg_type = NFNL_MSG_BATCH_END;
++	header.nlmsg_flags = NLM_F_REQUEST;
++	nfpayload.nfgen_family = AF_UNSPEC;
++	nfpayload.res_id = htons(NFNL_SUBSYS_NFTABLES);
++	NETLINK_ADD_MESSAGE(ctx, &header, &nfpayload, sizeof(nfpayload));
++
++	NETLINK_SEND_VALIDATE(ctx);
++	NETLINK_DESTROY_CONTEXT(ctx);
++	ctx = NULL;
++
++	/* Wait for kernel page fault error */
++	usleep(100000);
++
++	if (tst_taint_check()) {
++		tst_res(TFAIL, "Kernel is vulnerable");
++		return;
++	}
++
++	tst_res(TPASS, "Nothing bad happened, probably");
++}
++
++static void cleanup(void)
++{
++	NETLINK_DESTROY_CONTEXT(ctx);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.setup = setup,
++	.cleanup = cleanup,
++	.taint_check = TST_TAINT_W | TST_TAINT_D,
++	.needs_kconfigs = (const char *[]) {
++		"CONFIG_USER_NS=y",
++		"CONFIG_NF_TABLES",
++		NULL
++	},
++	.save_restore = (const struct tst_path_val[]) {
++		{"/proc/sys/user/max_user_namespaces", "1024", TST_SR_SKIP},
++		{}
++	},
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "515ad530795c"},
++		{"CVE", "2023-31248"},
++		{}
++	}
++};
 -- 
-Thank you,
-Richard.
+2.42.0
+
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
