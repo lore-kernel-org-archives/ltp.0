@@ -4,140 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AAAFC47071
-	for <ltp@archiver.kernel.org>; Thu, 16 Nov 2023 04:40:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B03F5C54FB9
+	for <ltp@archiver.kernel.org>; Thu, 16 Nov 2023 08:43:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 17CE73CE4A1
-	for <ltp@archiver.kernel.org>; Thu, 16 Nov 2023 05:40:04 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 7BF7E3CE3AF
+	for <ltp@archiver.kernel.org>; Thu, 16 Nov 2023 09:43:16 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9BA273CC025
- for <ltp@lists.linux.it>; Thu, 16 Nov 2023 05:39:53 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+ by picard.linux.it (Postfix) with ESMTPS id 752593CC261
+ for <ltp@lists.linux.it>; Thu, 16 Nov 2023 09:43:02 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8F46A2001DB
- for <ltp@lists.linux.it>; Thu, 16 Nov 2023 05:39:49 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id D1735100203D
+ for <ltp@lists.linux.it>; Thu, 16 Nov 2023 09:42:59 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1700109591; x=1731645591;
- h=date:from:to:cc:subject:message-id:mime-version;
- bh=Dhirehg36Kj97nVqO/qF53gdD8rYJbOh/ENCZ8e5/8Q=;
- b=IZ/n0W36/Emq5LzJqhywAedfLoJ5FBd08Fl0kUV8dyMmKIIU2UYtyypm
- zyNjJZ3tJV1YQiDMW3TA/2/sb06EMKIfNWI8B3lFwK8bPPErXgIYiE4Fx
- xwrgguHnB8OYbl76tWj4ukWORBTYmZuZDNMoJV4VcHwyJt5XrGMz5FFaK
- i+i6wlNtEHoW+f2d+hO6Q2FNOoCnaqcMunTnmQExLNPXaPNPObzi1pioa
- Dntfyr7/Q4kpoEXhcGBc6yHlUEYyLpMQb21kwhlIFpe1K4GtjNMyTN5vM
- KvLgjlgxBVHtY+v7fzgagmlJFCiI62jBLUZFme0lHJO7Cqvf1+fK74qwc A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="4089623"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="4089623"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Nov 2023 20:39:45 -0800
+ t=1700124180; x=1731660180;
+ h=date:from:to:cc:subject:message-id:in-reply-to: mime-version;
+ bh=VtHvLd+/XliXo+iLvx11nNesokYVbGT8vfD3tc5BNRQ=;
+ b=AuqDNdm/FhE25LDVAaF3CYdj5GUpEVauSW+Ox37W6dcLRDqKzSUjNT7Y
+ P20jHYHqcjTtPV7cXGR7D5vOsoP69MW7oi4+I0gVxu7OZ/HaQKwIgs4Ts
+ 9lABni9W/o6ckbiiUP0q5nRt46wFe6NgkO9tdS0t1muYEFQVFS8JSjfiO
+ 9nFHvDRKSD7fhzeU6DBMTmW6Rj8TQ+3k4uvSWdxMTzMFWADbulIaRAElT
+ W6XaoPCjZgDcUCthPkbLS5Op+szjBMNioKf4Ga8gy8zKVRcNWMXg0tN5S
+ h/UjCUMMw8DvLseuLruyBkfTmJt07AhY3EHZACHGQEz4sXpF3H5T8UU00 w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="394963003"
+X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; d="scan'208";a="394963003"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Nov 2023 00:42:55 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="768797311"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; d="scan'208";a="768797311"
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="888849716"
+X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; d="scan'208";a="888849716"
 Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
- by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
- 15 Nov 2023 20:39:44 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384;
+ 16 Nov 2023 00:42:55 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
  ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 15 Nov 2023 20:39:44 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ 15.1.2507.34; Thu, 16 Nov 2023 00:42:55 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 15 Nov 2023 20:39:44 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ 15.1.2507.34; Thu, 16 Nov 2023 00:42:54 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 16 Nov 2023 00:42:54 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 15 Nov 2023 20:39:43 -0800
+ 15.1.2507.34; Thu, 16 Nov 2023 00:42:54 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L10y5J5c5WvllHXpCeL52cYMyCnSfkC6uDr3EB20MS1p/LAwgnn1KCqZcovyAmZDlvqGcRpHx+K9xeIeTzH/eCyj12Q3z27P7bepB4KAO9Cz5VSfB9txBzwvpnuDHX/79SIVPNQQ8lkGFS4AQMeUGmIuaViVdM2ZtH9YJbZF1UQwknPeBJrmHx3RLWhyvgps2ZZykFs25M1WKj4UJUaPJ15kHv7HJXz13K5O7cphdtNshTrCVyXUp9zmbCHk//yudyd1JKy8ZuCvEr6SHvafAWqmzVYQC6EdbvTWX7GTZdn6WMSiqbK1S+MNDxsaVfu/9YxooVzJ9N9dMkqicfNXPw==
+ b=OH0J5zefoIVsfi0WfVdBJamN2uw/ZYef3Fy4caugaZ8HaCRZR4V0lR8m49qMkTye7voc3TvojjG9j3WVBfTsUT55QzOa+yecpQf5qEihxa9j7IN4txve3WV+ps6zFSVDvro8u1v59w6XqO4KDLopVOtDMLEnIFKAsKrPBt47TTHfCHgoaRhnZkeFKeKlSTcSe2x9mVcMsB11OlTQMOCIPJ806yqsXq+HY2oVnSDC1oQfHjwyQQ0a6FU+FLkAphGDQYNXoO/v0cUqWyHf4IkIErYJnGdEGKmpa/CTu9lEK8G0eq/pWktsoop3m6F7dATNXIwkDXwKPW6f2CG6UXz1/A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OdT90THEBEf9pOacFOzg0ACebzlLsjssP4sAHep3wjw=;
- b=ki7XnlwxLhLPcmBcBwv3HSA4QaqmcI88nfcAieO+P9zVxc0oFw5Ogkjr79s38hbG+QiHNSsDekMIJKwtz8QtHWXo9DswQ9oK60uF3u6awfai+6wo7J4RXvSlmV1RczSumpT/tbtg9LV44Z6IQJ8N0suQoP/SimEl29wZb4CQ8byhXZlW/38usriMJ9nfznMnIO8YxkidV0aAy/FZSiJVd9b0pJuyYkwGovatcoVdH3SQSbmK11lDYhvIwICrU81AEPsq98yBmlTcpXNHqei2Xu5FbytAyHlVLt/Pz02AIX623eq634vZaqFYTmq7g025y/NstXwoiASZLOkQ+QP3JQ==
+ bh=lmVqlMMbp9cRX84mZ203PB0/byCiP1OeVh+16zGIMu8=;
+ b=XVZCVfyPqDcWATLlGa3l1+STCL/qDpSZuT+41Tn06IurPn/l/UyFSWal6JSRAXlRSowjje4+zBDwyo+6092WE/w7r/iBqr1R/u5j6f75cz047S6XosQ34SjeBY0oFjEUMqDcjHyjdRzE55O5OUFDwbkv86n3iKcpbPFyT9sr5r0obsmZSmhJ3gnucpWWQd4hazJFaJp9rnPFDaS96u5MyeNR40P4s77SggaEYOb/57AenMwtPrAH/MEp4E1ynWSu+/HLLxy28IGc8EVCz0vTBXEivi/MoIKmGClgZUX3ep3YnaF+UW4sgP1v3TyaimKDbekO5iCwOZVd/rBEfAvBBQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
- by DM4PR11MB6525.namprd11.prod.outlook.com (2603:10b6:8:8c::13) with
- Microsoft SMTP Server (version=TLS1_2,
+ by SJ0PR11MB4846.namprd11.prod.outlook.com (2603:10b6:a03:2d8::24)
+ with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21; Thu, 16 Nov
- 2023 04:39:39 +0000
+ 2023 08:42:52 +0000
 Received: from PH8PR11MB6779.namprd11.prod.outlook.com
  ([fe80::b8:30e8:1502:b2a7]) by PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::b8:30e8:1502:b2a7%4]) with mapi id 15.20.7002.015; Thu, 16 Nov 2023
- 04:39:39 +0000
-Date: Thu, 16 Nov 2023 12:39:30 +0800
+ ([fe80::b8:30e8:1502:b2a7%4]) with mapi id 15.20.7002.021; Thu, 16 Nov 2023
+ 08:42:51 +0000
+Date: Thu, 16 Nov 2023 16:42:42 +0800
 From: kernel test robot <oliver.sang@intel.com>
-To: Stefan Roesch <shr@devkernel.io>
-Message-ID: <202311161132.13d8ce5a-oliver.sang@intel.com>
+To: Zhou Jifeng <zhoujifeng@kylinos.com.cn>
+Message-ID: <202311161627.5a936995-oliver.sang@intel.com>
 Content-Disposition: inline
-X-ClientProxiedBy: SG2PR03CA0114.apcprd03.prod.outlook.com
- (2603:1096:4:91::18) To PH8PR11MB6779.namprd11.prod.outlook.com
+In-Reply-To: <20231107081350.14472-1-zhoujifeng@kylinos.com.cn>
+X-ClientProxiedBy: SGBP274CA0021.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::33)
+ To PH8PR11MB6779.namprd11.prod.outlook.com
  (2603:10b6:510:1ca::17)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|DM4PR11MB6525:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3594ef03-22e2-4dc3-038d-08dbe65e0ad0
+X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|SJ0PR11MB4846:EE_
+X-MS-Office365-Filtering-Correlation-Id: 385d85e2-3d61-486c-dda9-08dbe6800434
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 46bXkmDlbpsWCe59XC3o5h2SaOSRL+IuSM4oRmnVKwgL/Aod6Lvak5+gNbKetECnMWpV7271kqoMw0OsnyfW1kH77sRWemWz1QTbi8EgpjAaS1chLsPAkC/cXGSz9WJeq+AIWvqQtcONyAVfEJt5zDrdtngmPNMBa+/u7kMK1SBM+O13EopY9FHR+Y4geCLWqZTXeayk+HZaw4isaJx9djBY+QjHLdPmqTa80sN99vPnGmLV6mPgm+zywCfMbldk7p+ENDXzaPSt9gkU84wBmwg3sxUGKR3Li3SDR20ran/iPv7GCpmmQDcNQnZiUt5MQZsSrsDRtQtSk5PwtjUVS9qdrB+Yy/c2pB1vgEzB/ktYfNzofTBmhsyCmi34tgibAeGeMabxPS9onVgEp5zKmW3Y98R8GDNNp7HcvnbnbmyPR0/r80vqN+yQgWY0O9Ng195P+WiyT4b2l7B4Hm85OcB+aW4va6R7GpG9sGuN7Qw490rM1x+7Q8Pq8c0knglIlcXcQSnjkwRrV9tr/Ue+F5IkVzeF8Z4E0wqZB4hQ15bF86ghL6qpqoN4IGajMUzyGE81+13dow//iArIKWemJyiQuJxntlBMxC7fsY+g4pQpPS+5cVihh9CC086mTSxb9k5kWxn7Z3JulU6IExQjFaXTgA1CEfH3lLVyI8sgX1Q=
+X-Microsoft-Antispam-Message-Info: o20SqHryagJ2qlbO3alXkL1cxR4Bnz8fBA0+RCB8uCsgoix7EBxa5yE0vvPIJpvQmDG8uTLcK8tJ8KlJNw1rf38s3lAU3gHa44sk08cCbUR/frjA/rbP82OjXDuriJ1IXzycumeA9/JOiDTFgk1++GgFrj+P17AvfINgRSPEiap7uXYZHW43ngvmBhLgQAUs8QSbaLo4v+tvqs7WtlyP9T2+n2AvJjSPBCPX0XvhZMH4OTYlWkYhinBP4hZ7gZyrHKF8PziLc6bD6/9Zse+4rtJ/qnO45XhHGm/JhiCfMpLb1h6Kp4V4I46sipIwYLR+Cql4E8J10iKDTmdrwiu6SH/e5itHZXxVxWUaa+BVne/a2kfud26oiZSFGIr3KSTiZ0Iipec7IA85SDOcVJckWo2chyHEd79JxNsbmAkwcu4DTsN2WEprhKnIsmJIX2pE6lglt79zsgkKboyDSk405F7ImtG1vj2CfUn12pFe6TMbxPd9lsjP9ZUdCwV3V1Co2CDFRzAdhF+0MESIvqJnCCZgh64HRq4l/3lNbRAAEl2X4TeNMaXwmWMTqlFUrOQSk0fiQLbtwWHfEQogELpvrw==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:PH8PR11MB6779.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(346002)(376002)(366004)(396003)(136003)(39860400002)(230273577357003)(230922051799003)(230173577357003)(64100799003)(186009)(1800799009)(451199024)(41300700001)(2906002)(86362001)(5660300002)(8676002)(8936002)(4326008)(36756003)(38100700002)(54906003)(66946007)(66476007)(66556008)(316002)(6916009)(966005)(6486002)(478600001)(83380400001)(107886003)(6666004)(82960400001)(6506007)(26005)(1076003)(6512007)(2616005)(568244002);
+ SFS:(13230031)(396003)(366004)(39860400002)(136003)(346002)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(66556008)(66476007)(6512007)(316002)(6916009)(36756003)(66946007)(26005)(1076003)(107886003)(2616005)(966005)(478600001)(6506007)(6666004)(86362001)(5660300002)(82960400001)(38100700002)(2906002)(83380400001)(6486002)(8936002)(41300700001)(8676002)(4326008);
  DIR:OUT; SFP:1102; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tagRh8YKVNgnbSunVcgPsBjQEoduMy2pcnYdZqpSHHLATqIm2392OJXYfegJ?=
- =?us-ascii?Q?ItbT8qipR4yIO5RyNCW9R8IQN2DlHVJWHlkgMwQKCUvi0V8Pi5f6Lk2wuZ8u?=
- =?us-ascii?Q?uRyrlx87LJSJ3qPH/5PScL//Hr3v9MTIlf4l1z2w2R15o5aVIE+MAwGAYfn4?=
- =?us-ascii?Q?92iA0Tgoq/zFRxc9HZBncMyXLm11x+tojM4B0zYNd119ER14Ajiy7iYy/IRQ?=
- =?us-ascii?Q?X71wF2K9djJSZNAHE660BFm77vUjniX400ZmUmkJQ529rMZBePQIZ1Bykna0?=
- =?us-ascii?Q?smTR2xD2X8fBqeGx+xFoRNB5BtaHrPRGZUu9DGiqJGksEFWztaWlBa7c6Y3D?=
- =?us-ascii?Q?CQMll2xl4Foa8Y2Yv3Gz3FoCoIvCSbIfdZ0IpqioMS+0vliGqlaD44vRAx4N?=
- =?us-ascii?Q?zdxNg0N4RqWu9jxwk4b1+4sMu8fug8rfFPB+rixROwuFMtxXqySIt52MO+m7?=
- =?us-ascii?Q?16WqhgXwT/e0BJkGouKT9SEa6FSujpQXr0aHgcixpE3f5+BoK6nU0GUIR6wi?=
- =?us-ascii?Q?RGhFipXEdDrew863AEb3zvP5G/i1uECjZxmudcAvhH3Q2KGmehdGvnnp0bk2?=
- =?us-ascii?Q?rdv/QJ0JrnQb46q3X25fxot1Ow6613ZEdyHbybHdg3pzRzdjQWggFpr285yr?=
- =?us-ascii?Q?lgWAjFtkPG2Bx3/MHYOFui1C4adp41dQtpSmbE+N0EehNqdrQclLMgppxXL9?=
- =?us-ascii?Q?DgjHqExKQJiOVuke44iDnmxq4SmmfuRhBAQu9dkJB52EQb3APswHUuosHjSR?=
- =?us-ascii?Q?bFOUPBdCgSwIFwY88cNZxnUEfqRnRSstOAWF8pYiQQFb7814i/95Q+lbp+FS?=
- =?us-ascii?Q?M43ePJ2P+WQx44EE/PuzQD9lSPXL3vYmp2U9dY/i101nq0b89WJsM9S1/xeO?=
- =?us-ascii?Q?5ZGZ4vT4yOUpixlGDA0l5rptPf9IaboWuPN35Hu1FqFta/XRTqBe6F2tKTZm?=
- =?us-ascii?Q?acz0qKR8MB/cfWzAG7YN5aiC9uSqwGTtux+897wDsarfYMS/ERpjtl8tJ1NP?=
- =?us-ascii?Q?6aYQjDDN/9cdtva435ZRzVRpEXuMtoZxJYOUcztuKr63yDH8Tq9EiN5RQ4d4?=
- =?us-ascii?Q?VeXWT2mQeGb4aCqR1dYYYCBNDVKcH0EDJkcGS039NXMnTwrT+Qd+Ff49sRe0?=
- =?us-ascii?Q?aiggqk12+Rr9EEATcI/ftv+tQOy0icszzZoXtzBQI0N3wzIqfzklbrKNbL2e?=
- =?us-ascii?Q?4JwC3xXUlYv27xfu5t9giF/zP1PYqIGx3Hn22wmG4zHziqiQ7GcdndV6Tr4O?=
- =?us-ascii?Q?ik4vME3I6XEf+mrznMGGZqKkqs2eQxkRjUvLzFrY/cdVU7I3LUdDAoH3RprS?=
- =?us-ascii?Q?VHnpQiEwiDt6VM5YUBE0SUI2zzYun5tc/XWa3oVYjvoleDvcC78Wqpvmk41A?=
- =?us-ascii?Q?iaG+UlI448koJtD21CfPkXKMMFqYKmCKNqfTdJWFOrXuP6OkWwMZmoF5q6fe?=
- =?us-ascii?Q?9WY2ogxLPUFVC4qyxzTGPvzkEqNMe3sbUfggJg04xvBdHLu3T/ubRFe+Y48B?=
- =?us-ascii?Q?a0e+GwjhgLe8fw1d8V1XSVFuxKsdHRL7pXKMz9SW4EvmS3mpg6amqVm0b3kc?=
- =?us-ascii?Q?ba3f7zcb8VdSvHT5nRboO+AAFOc+8MUkdiGeyXYJbyGjdfWtVJfAnaUxvHQ6?=
- =?us-ascii?Q?hQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3594ef03-22e2-4dc3-038d-08dbe65e0ad0
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rkSx/oFC960qxpzp70tji+vs8+SHhAK+E4DHd9OpBFsR4lQMVImLLf/0wDvh?=
+ =?us-ascii?Q?7AkjE2ni6iuDlJimxN/INmETTwi2I8EidmYuYwm3KRiywm+NY+JKivsnD+TH?=
+ =?us-ascii?Q?qtzAA4TPoNdPiCERm9tXt6RwY7L6v9Afb7OpNU57hnN3c9UpLCRq5DbrPwo+?=
+ =?us-ascii?Q?Ij6/spiqboJJPM6j2dR1pFzEnKsSWn/gl+l8dpuncr7/Y6ii/3mNFHvCxjK0?=
+ =?us-ascii?Q?pD6Ez/OYwKcUm0+4Gbdf+xIs71UeZlbdM/Qt3hKfUtlpDA8gzGWMLrP6zlZ9?=
+ =?us-ascii?Q?h1OtQHyFXanJxIzMOudGIouKuTYQskYqNQhd0sR3wcjybmUTOQpK2PWecljY?=
+ =?us-ascii?Q?qECshkj8buPyzwPXe1Z8dIhnGyofnvhKyluknOz4Rx9+rFI8qO5a2epAAC0j?=
+ =?us-ascii?Q?337hdaTdnhz/+GcJacAjEfDsiNjZbUMfRz9J+beWhj7VroIVNYkVg6+PTbpt?=
+ =?us-ascii?Q?vgXRmsq9/pSrKDqWDpJGN2iWT7W5Won9QM/QNtLhKYHdHD/sY7K9oo3D1XG4?=
+ =?us-ascii?Q?kN2PKjEQTe4JzEx7xNu4dngJ5lwTweSQY7t7Cyt6xSNzLpW9Q7QduL0mRxfk?=
+ =?us-ascii?Q?gY3JoHblalrapGCvAAswABRwfv9VyApMxXvKPmgfADivTbmbRO8S8Oncloqy?=
+ =?us-ascii?Q?PH+rnn8kw2plQ4z/7kDZ59IMTGFwNkJd9hAO3md/6hvPm3TgS05AzLxye00H?=
+ =?us-ascii?Q?y+jwidXSva3D7mmz+pamVb2xj7hssUilvlFzaDa7DNW2DAyOQNYQbts89CW9?=
+ =?us-ascii?Q?omA+yMHRcyJSmKdd+N48smcUrC9cUdJgF6d5LouAm8BuCEaSYvbpP7KAyP5W?=
+ =?us-ascii?Q?35j+fKT9AbGEuJRpWSsHb4Z5b5c4V2DWkvSFkhpU2UNEgQnq04pxNAJ7o8fJ?=
+ =?us-ascii?Q?n5h7GT2vvLYyFzjzWdFG5lZhVVv9FH22YKLTq2qUEet3RDxvCdx1zbsUXpcM?=
+ =?us-ascii?Q?Db/1OLmJV7TP9bkaHH0fe6Q3rXBnM33OyoET4VLyndle2zzcaQpSVdjwQQcI?=
+ =?us-ascii?Q?T7ApcG34HxjFmwVKr87AWYzPhKGWgqylXC+QZXDdo5PWtjFem/o4D90zOK2X?=
+ =?us-ascii?Q?8FUVoSycBBfM1DTIIih2Wq/EWIfZN4tyn/qbNVDfyz+CPIapE7M3ccYSclE5?=
+ =?us-ascii?Q?dn4YnhNEh4hYlESnnG240ijOTiq9RM9lIYUOmf+FF7C89ITwVVGQazuTM4ri?=
+ =?us-ascii?Q?jDlWiRCQW+ukLOU75dDkSWaXQ3S2ezUpW1pPqMMopBUys1NoYDqv3/q3UBIr?=
+ =?us-ascii?Q?gWvGMIuOuCD4SkoKNT/C+bixW0J4uzEgGNsM9etceWZgXXVznlLAVF5BREyi?=
+ =?us-ascii?Q?Yyu3HAyPRNpCP2OqKBZSvNBpK128avb9Gn9XjWMorNHtEAMICvpX9sTBS8+I?=
+ =?us-ascii?Q?nDOJlpe6WGd+zQJDeC28q3Znnc5otctKK2VUS2YjRJwakG8NhZU4u1KIeGM8?=
+ =?us-ascii?Q?KgF8gzpZGbSBw9F3nVg17XFyrlxUJcO3NLuCOwxVOuruiHhyNDzunzaE0qxq?=
+ =?us-ascii?Q?Drx7rFL2uS0xbZvIZfbOd6QRqXgXdlvYNqt+Ct6mwkE260J4ElHyT/6hoj45?=
+ =?us-ascii?Q?XeUWBlt28Nvy6pB9/vXLaNqiNWVZ5zCl16VItfAuNXiqz7VnSTDc2PVzfRcG?=
+ =?us-ascii?Q?2w=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 385d85e2-3d61-486c-dda9-08dbe6800434
 X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 04:39:38.9347 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 08:42:50.8236 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TO0QzVMGLyoNYGoaaa07mOX0EJXJZvC12kC1A+yR4jzwMiA3JfmqTDLrsplGyZnrcVz6zzY57kjFc0RXOZEuZw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6525
+X-MS-Exchange-CrossTenant-UserPrincipalName: YRz8aVKwDcoS/86b06iGPiRz/BZNrMfgbo4B3g8jP19uY7Yl3cWFzEuBVyg7A51V+OvypsTFGbB4jZpX36fC7w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4846
 X-OriginatorOrg: intel.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [linus:master] [mm/ksm]  5e924ff54d: ltp.ksm01.fail
+Subject: Re: [LTP] [PATCH v2] fuse: Track process write operations in both
+ direct and writethrough modes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -149,136 +155,118 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: lkp@intel.com, David Hildenbrand <david@redhat.com>,
- Rik van Riel <riel@surriel.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, oliver.sang@intel.com,
- Johannes Weiner <hannes@cmpxchg.org>, oe-lkp@lists.linux.dev,
- Andrew Morton <akpm@linux-foundation.org>, ltp@lists.linux.it
+Cc: lkp@intel.com, miklos@szeredi.hu, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, oliver.sang@intel.com, oe-lkp@lists.linux.dev,
+ zhoujifeng@kylinos.com.cn, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 
-hi, Stefan Roesch,
-
-we reported
-"[linux-next:master] [mm/ksm]  5e924ff54d: ltp.ksm01_1.fail"
-in
-https://lore.kernel.org/all/202311031548.66780ff5-oliver.sang@intel.com/
-when this commit is in linux-next/master.
-
-now we noticed this commit is merged in mainline, and we still observed
-same issue. just FYI.
-
 
 Hello,
 
-kernel test robot noticed "ltp.ksm01.fail" on:
+kernel test robot noticed "BUG:KASAN:slab-out-of-bounds_in_fuse_evict_inode" on:
 
-commit: 5e924ff54d088828794d9f1a4d5bf17808f7270e ("mm/ksm: add "smart" page scanning mode")
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-
-[test failed on linus/master 3ca112b71f35dd5d99fc4571a56b5fc6f0c15814]
-[test failed on linux-next/master 8728c14129df7a6e29188a2e737b4774fb200953]
+commit: 6772e9ddfc996544d6a22e72eddf7510ac2999fc ("[PATCH v2] fuse: Track process write operations in both direct and writethrough modes")
+url: https://github.com/intel-lab-lkp/linux/commits/Zhou-Jifeng/fuse-Track-process-write-operations-in-both-direct-and-writethrough-modes/20231107-163300
+base: https://git.kernel.org/cgit/linux/kernel/git/mszeredi/fuse.git for-next
+patch link: https://lore.kernel.org/all/20231107081350.14472-1-zhoujifeng@kylinos.com.cn/
+patch subject: [PATCH v2] fuse: Track process write operations in both direct and writethrough modes
 
 in testcase: ltp
 version: ltp-x86_64-14c1f76-1_20230715
 with following parameters:
 
 	disk: 1HDD
-	test: mm-00/ksm01
+	fs: xfs
+	test: fs-03
 
 
 
 compiler: gcc-12
-test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz (Kaby Lake) with 32G memory
+test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
 
 (please refer to attached dmesg/kmsg for entire log/backtrace)
-
 
 
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202311161132.13d8ce5a-oliver.sang@intel.com
-
-
-
-Running tests.......
-<<<test_start>>>
-tag=ksm01 stime=1699563923
-cmdline="ksm01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
-tst_test.c:1558: TINFO: Timeout per run is 0h 00m 30s
-mem.c:422: TINFO: wait for all children to stop.
-mem.c:388: TINFO: child 0 stops.
-mem.c:388: TINFO: child 1 stops.
-mem.c:388: TINFO: child 2 stops.
-mem.c:495: TINFO: KSM merging...
-mem.c:434: TINFO: resume all children.
-mem.c:422: TINFO: wait for all children to stop.
-mem.c:344: TINFO: child 1 continues...
-mem.c:347: TINFO: child 1 allocates 128 MB filled with 'a'
-mem.c:344: TINFO: child 2 continues...
-mem.c:347: TINFO: child 2 allocates 128 MB filled with 'a'
-mem.c:344: TINFO: child 0 continues...
-mem.c:347: TINFO: child 0 allocates 128 MB filled with 'c'
-mem.c:400: TINFO: child 1 stops.
-mem.c:400: TINFO: child 0 stops.
-mem.c:400: TINFO: child 2 stops.
-ksm_helper.c:36: TINFO: ksm daemon takes 2s to run two full scans
-mem.c:264: TINFO: check!
-mem.c:255: TPASS: run is 1.
-mem.c:255: TPASS: pages_shared is 2.
-
-....
-
-mem.c:255: TPASS: pages_shared is 1.
-mem.c:255: TPASS: pages_sharing is 98302.
-mem.c:252: TFAIL: pages_volatile is not 0 but 1.     <-----
-mem.c:252: TFAIL: pages_unshared is not 1 but 0.     <-----
-mem.c:255: TPASS: sleep_millisecs is 0.
-mem.c:255: TPASS: pages_to_scan is 98304.
-
-....
-
-mem.c:415: TINFO: child 1 finished.
-mem.c:415: TINFO: child 2 finished.
-mem.c:415: TINFO: child 0 finished.
-
-Summary:
-passed   40
-failed   2
-broken   0
-skipped  0
-warnings 0
-incrementing stop
-<<<execution_status>>>
-initiation_status="ok"
-duration=9 termination_type=exited termination_id=1 corefile=no
-cutime=342 cstime=293
-<<<test_end>>>
-INFO: ltp-pan reported some tests FAIL
-LTP Version: 20230516-75-g2e582e743
-
-       ###############################################################
-
-            Done executing testcases.
-            LTP Version:  20230516-75-g2e582e743
-       ###############################################################
-
+| Closes: https://lore.kernel.org/oe-lkp/202311161627.5a936995-oliver.sang@intel.com
 
 
 
 The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20231116/202311161132.13d8ce5a-oliver.sang@intel.com
+https://download.01.org/0day-ci/archive/20231116/202311161627.5a936995-oliver.sang@intel.com
 
 
+[  608.279527][ T5411] ==================================================================
+[  608.279697][ T5411] BUG: KASAN: slab-out-of-bounds in fuse_evict_inode+0x15c/0x4a0 [fuse]
+[  608.279871][ T5411] Write of size 4 at addr ffff888092af0dc8 by task fs_fill/5411
+[  608.280019][ T5411] 
+[  608.280082][ T5411] CPU: 1 PID: 5411 Comm: fs_fill Not tainted 6.6.0-rc2-00004-g6772e9ddfc99 #1
+[  608.280252][ T5411] Hardware name: Hewlett-Packard p6-1451cx/2ADA, BIOS 8.15 02/05/2013
+[  608.280409][ T5411] Call Trace:
+[  608.280494][ T5411]  <TASK>
+[  608.280570][ T5411]  dump_stack_lvl+0x36/0x50
+[  608.280674][ T5411]  print_address_description+0x2c/0x3a0
+[  608.280808][ T5411]  ? fuse_evict_inode+0x15c/0x4a0 [fuse]
+[  608.280935][ T5411]  print_report+0xba/0x2b0
+[  608.281034][ T5411]  ? kasan_addr_to_slab+0xd/0x90
+[  608.281140][ T5411]  ? fuse_evict_inode+0x15c/0x4a0 [fuse]
+[  608.281266][ T5411]  kasan_report+0xc7/0x100
+[  608.281604][ T5411]  ? fuse_evict_inode+0x15c/0x4a0 [fuse]
+[  608.281763][ T5411]  kasan_check_range+0xfc/0x1a0
+[  608.281871][ T5411]  fuse_evict_inode+0x15c/0x4a0 [fuse]
+[  608.281994][ T5411]  evict+0x29b/0x5e0
+[  608.282086][ T5411]  ? lookup_one_qstr_excl+0x23/0x150
+[  608.282201][ T5411]  do_unlinkat+0x34f/0x5a0
+[  608.282300][ T5411]  ? __x64_sys_rmdir+0xf0/0xf0
+[  608.282404][ T5411]  ? 0xffffffff81000000
+[  608.282498][ T5411]  ? strncpy_from_user+0x6a/0x230
+[  608.282611][ T5411]  ? getname_flags+0x8d/0x430
+[  608.282724][ T5411]  __x64_sys_unlink+0xa9/0xf0
+[  608.282827][ T5411]  do_syscall_64+0x38/0x80
+[  608.282928][ T5411]  entry_SYSCALL_64_after_hwframe+0x5e/0xc8
+[  608.283052][ T5411] RIP: 0033:0x7f6ba18898a7
+[  608.283574][ T5411] Code: f0 ff ff 73 01 c3 48 8b 0d 56 85 0d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 29 85 0d 00 f7 d8 64 89 01 48
+[  608.283947][ T5411] RSP: 002b:00007f6ba178ae48 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
+[  608.284142][ T5411] RAX: ffffffffffffffda RBX: 00007f6b94000b70 RCX: 00007f6ba18898a7
+[  608.284321][ T5411] RDX: 0000000000000000 RSI: 0000000000000039 RDI: 00007f6ba178ae90
+[  608.284503][ T5411] RBP: 00007f6ba178ae90 R08: 0000000000000000 R09: 0000000000000073
+[  608.284681][ T5411] R10: 0000000000000000 R11: 0000000000000246 R12: 0000562b20532004
+[  608.284862][ T5411] R13: 0000000000000039 R14: 0000000000000000 R15: 00007f6ba178ae90
+[  608.285050][ T5411]  </TASK>
+[  608.285150][ T5411] 
+[  608.285237][ T5411] The buggy address belongs to the object at ffff888092af0b40
+[  608.285237][ T5411]  which belongs to the cache fuse_inode of size 824
+[  608.285514][ T5411] The buggy address is located 648 bytes inside of
+[  608.285514][ T5411]  allocated 824-byte region [ffff888092af0b40, ffff888092af0e78)
+[  608.285794][ T5411] 
+[  608.285883][ T5411] The buggy address belongs to the physical page:
+[  608.286036][ T5411] page:00000000c8edd8aa refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x92af0
+[  608.286258][ T5411] head:00000000c8edd8aa order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+[  608.286455][ T5411] memcg:ffff8881f087ff01
+[  608.286572][ T5411] flags: 0xfffffc0000840(slab|head|node=0|zone=1|lastcpupid=0x1fffff)
+[  608.286753][ T5411] page_type: 0xffffffff()
+[  608.286867][ T5411] raw: 000fffffc0000840 ffff8881019c9e00 dead000000000122 0000000000000000
+[  608.287685][ T5411] raw: 0000000000000000 0000000080110011 00000001ffffffff ffff8881f087ff01
+[  608.287877][ T5411] page dumped because: kasan: bad access detected
+[  608.288035][ T5411] 
+[  608.288121][ T5411] Memory state around the buggy address:
+[  608.288261][ T5411]  ffff888092af0c80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  608.288443][ T5411]  ffff888092af0d00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  608.288624][ T5411] >ffff888092af0d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  608.288803][ T5411]                                               ^
+[  608.288932][  T291] tst_fill_fs.c:126: TINFO: writev("mntpoint/subdir/thread4/AOF", iov, 512): ENOSPC
+[  608.288950][ T5411]  ffff888092af0e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  608.288953][ T5411]  ffff888092af0e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[  608.288984][  T291] 
+[  608.289107][ T5411] ==================================================================
+[  608.289285][ T5411] Disabling lock debugging due to kernel taint
 
 -- 
 0-DAY CI Kernel Test Service
