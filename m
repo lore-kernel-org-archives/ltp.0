@@ -4,111 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74303C54FB9
-	for <ltp@archiver.kernel.org>; Mon, 20 Nov 2023 11:13:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96804C197A0
+	for <ltp@archiver.kernel.org>; Mon, 20 Nov 2023 13:26:04 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9A3373CE1C3
-	for <ltp@archiver.kernel.org>; Mon, 20 Nov 2023 12:13:56 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id A18043CE1F4
+	for <ltp@archiver.kernel.org>; Mon, 20 Nov 2023 14:26:02 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6A5213CC1F1
- for <ltp@lists.linux.it>; Mon, 20 Nov 2023 12:13:46 +0100 (CET)
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+ by picard.linux.it (Postfix) with ESMTPS id 000543CD018
+ for <ltp@lists.linux.it>; Mon, 20 Nov 2023 14:25:52 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
- server-digest SHA256) (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 84F2C6014F5
- for <ltp@lists.linux.it>; Mon, 20 Nov 2023 12:13:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1700478823; x=1701083623; i=deller@gmx.de;
- bh=EQZ1hqa9HEEVc6Y77oIKm2b2N64X6rr4ERstmS+TRww=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=Zkl+YyaYyH1TFDWG0a80PAbu9kU7Xq5+i3dsB7QUJmoCGXt5Q7LtJPISHueM9VTG
- qwwvpoUISP+hPxB2mE8q7qBudu5KV6j1uS7UaIjxzDBJlyYC33i2ScW3TxZEah9z8
- gUmaJwv5gyvoI3v28gSsMC5+4gRq7JzPnAIaI9u4nd3wj65ii4YplgQNIly27D5iC
- QQ450ND6NusQn4d2se9EzdZRI+FvIgvreAjTdRt4xdRJCl6I2EA445BsjlduYaGbC
- HIpih/7WqGDqJtjatbr8/MehxA87FKjFBC07jRRBoheHaCB/8yx9pwfsBeVnw1XCk
- n8Zx61LD/aicZGbpig==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.152.10]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mg6e4-1rYHyD1mKE-00hfZw; Mon, 20
- Nov 2023 12:13:43 +0100
-Message-ID: <3b638b9e-6269-459d-bcc8-2bad7b538de1@gmx.de>
-Date: Mon, 20 Nov 2023 12:13:42 +0100
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 146ED600F35
+ for <ltp@lists.linux.it>; Mon, 20 Nov 2023 14:25:47 +0100 (CET)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 8D43D21905;
+ Mon, 20 Nov 2023 13:25:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1700486744;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5VLaF5SO/nPFBrcEBhomJLsHh+p1YbmsTUPsQF+UEAs=;
+ b=hbTuVKDt5IsElDSLeNecPgBXbbT/pPSeRt1uAl1g+NtvbtAtjfTOBygTBUvDx1ExtjDd5C
+ 7T9gbB3EuYqZoR1FT5otP5RoUxS26mME5g61In5bmdNg/OCwlDAIryKNi/R2j1ZSw3uwLk
+ Wp07su8/6oOUEAOl/qieUj1v1SBErVs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1700486744;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5VLaF5SO/nPFBrcEBhomJLsHh+p1YbmsTUPsQF+UEAs=;
+ b=L4cYVjCZDWmKPEf9+Ig2vXgCZrMDiVlaMqDixBjZXNoPLH60hD+0u7iGJzH7OpJi8jRXTJ
+ PkEu0jXdDz1PkqAg==
+Received: from g78 (rpalethorpe.udp.ovpn1.prg.suse.de [10.100.228.202])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by relay2.suse.de (Postfix) with ESMTPS id 393752C1A1;
+ Mon, 20 Nov 2023 13:25:44 +0000 (UTC)
+References: <20230908072925.15102-1-wegao@suse.com>
+ <20230919082949.21027-1-wegao@suse.com>
+User-agent: mu4e 1.10.7; emacs 29.1
+From: Richard Palethorpe <rpalethorpe@suse.de>
+To: Wei Gao <wegao@suse.com>
+Date: Mon, 20 Nov 2023 11:25:54 +0000
+Organization: Linux Private Site
+In-reply-to: <20230919082949.21027-1-wegao@suse.com>
+Message-ID: <8734x0a754.fsf@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Li Wang <liwang@redhat.com>, LTP List <ltp@lists.linux.it>
-References: <CAEemH2dJyfhEg4opn3v1c_P1Ewao+s33_PzoVMyP0siEy+0cxA@mail.gmail.com>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- xsFNBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
- HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
- r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
- CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
- 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
- dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
- Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
- GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
- aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
- 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABzRxIZWxnZSBEZWxs
- ZXIgPGRlbGxlckBnbXguZGU+wsGRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
- FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
- uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
- uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
- REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
- qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
- iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
- gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
- Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
- qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
- 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
- dbZgPwou7pD8MTfQhGmDJFKm2jvOwU0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
- rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
- UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
- eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
- ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
- dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
- lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
- 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
- xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
- wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
- fTBRABEBAAHCwXYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
- Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
- l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
- RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
- BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
- Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
- XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
- MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
- FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
- 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
- ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLg==
-In-Reply-To: <CAEemH2dJyfhEg4opn3v1c_P1Ewao+s33_PzoVMyP0siEy+0cxA@mail.gmail.com>
-X-Provags-ID: V03:K1:K7KswcHeByJuWM4torNj+1rtxoPy2t9CYdmwGEYrNdThXoL8Tm9
- kuBMTQi6J5JOSNHPwW2j0oKshMzwXWy8OjhKwfAp2TKBhbaPo0P1v9Mxu7mP/0HXF6cyAia
- SrqyYWHSkhVUvWfuCYNzw1dANWWCehu8qHsI8FYZgj1ENNOFX5U+1xdcopGQIAcJkbRTHS9
- m7rqghaVfqmFXq/VAQ23w==
-UI-OutboundReport: notjunk:1;M01:P0:nVx0yotCupU=;yTyw/jTL6uJ0zSfysDQnDt/TcTg
- NpjdHFgQIFEuTkWrN5h6XfFbR7IB8t6OPgZUXdWGO/2QySP/7FjW9NV6RjCpuLkYKH4gu9Pgc
- 1JaK4sSAylutdeXUaYLAYo4fldNcd3onzAGQzIqTXKCRrM1V/4B2CCAmBc+J5PvTa35sMcJzy
- oeyhJD7JAjEhB5+yiZqdEwC7G2MT4qMn387H695QCVKQ1qt8VEJQ+mdG9Qyi6qv49O0c+AVi3
- RkDjAqv53QGw+8p26WPVNPcmttZztCoi0NkX+yC+LGpjly4sGHiOqcAnXNVG2QZZeaoyIjlUa
- mLJCxb7ZvJ/R4j1lRZrHLXiFKKh0Ici0xnxs1Q2LgiNc6SQIVuCMrlhjmhX0jABJwSo1vaBb4
- kvKN/iSn9QMfzeW2zetVlFybv8RaMrzRVo0vthpfBdgDuNFBAPP5HcnBXT/JnDNNQgYaYbdCe
- gihLJ+TgibScOm/DUq4L0GurBiEUjKksh324SssS0UfodenXMCWHPao1joR0Oybjp6tu8L/g/
- GsuSGVXPtPQBWfKxbPl7c7AzwSVzlyWrf/RqHJuK+3vU37TsyrX/cLOjOK8wUz3qjk8S6BTwj
- 4v+N688F2+f1UHrNBN+wJq6CCT/6AaMRp0EGuwENe17VB85P4JH9wCUDMve99RtvQIqEbqdRy
- RjK2FCASr8hgZxDiRhwaewrNMtwwXdVQz6+MScj4TAiDJSuXoviD/YgE2qwSMaWZcarX/RF7v
- eNp5XbtiKwDwrJmr0fOoHZukFpp5/vcqG/uBegiW3bn4UQDMCJfLipGKgcG7QL1gBHKb4Yx5z
- M54rJFRsbPF9CaazgNiBBPQTWm+35jaJf8wlzvClrxFY2GfEDBrdjSEToZ8uyIZ0lMxIzVzBy
- B1xugwW+l0lWWGEJGdmTtjWeQrsWvgJYK0jUFkHFIKqQ0lE3dr4be4y94pxsmk7Ks8KR66nbb
- 9UGFYOMUgwG4wa6zpusojhUOGGY=
+X-Spamd-Bar: ++++++++++++++
+Authentication-Results: smtp-out1.suse.de; dkim=none; dmarc=none;
+ spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor
+ denied by domain of rpalethorpe@suse.de) smtp.mailfrom=rpalethorpe@suse.de
+X-Rspamd-Server: rspamd1
+X-Spamd-Result: default: False [14.29 / 50.00];
+ HAS_REPLYTO(0.30)[rpalethorpe@suse.de]; TO_DN_SOME(0.00)[];
+ RWL_MAILSPIKE_GOOD(-1.00)[149.44.160.134:from];
+ REPLYTO_ADDR_EQ_FROM(0.00)[]; R_SPF_SOFTFAIL(4.60)[~all:c];
+ HAS_ORG_HEADER(0.00)[];
+ R_RATELIMIT(0.00)[ip(RLkk1mdgxgu4i4849a6y),rip(RLa6h5sh378tcam5q78u)];
+ MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
+ RCVD_NO_TLS_LAST(0.10)[]; FROM_EQ_ENVFROM(0.00)[];
+ R_DKIM_NA(2.20)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_MATCH_FROM(0.00)[]; BAYES_HAM(-3.00)[100.00%];
+ ARC_NA(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_SPAM_SHORT(3.00)[1.000];
+ MIME_GOOD(-0.10)[text/plain]; DMARC_NA(1.20)[suse.de];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ VIOLATED_DIRECT_SPF(3.50)[]; NEURAL_SPAM_LONG(3.50)[1.000];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_COUNT_TWO(0.00)[2]
+X-Rspamd-Queue-Id: 8D43D21905
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] Cleanup IA-64 related code?
+Subject: Re: [LTP] [PATCH v2] cachestat01.c: Add cachestat() testcheck
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,60 +93,580 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: rpalethorpe@suse.de
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On 11/20/23 09:11, Li Wang wrote:
-> Hi all,
+Hello,
+
+Wei Gao via ltp <ltp@lists.linux.it> writes:
+
+> Signed-off-by: Wei Gao <wegao@suse.com>
+> ---
+>  configure.ac                                  |   1 +
+>  include/lapi/cachestat.h                      |  36 +++
+>  include/lapi/syscalls/aarch64.in              |   1 +
+>  include/lapi/syscalls/arc.in                  |   1 +
+>  include/lapi/syscalls/arm.in                  |   1 +
+>  include/lapi/syscalls/hppa.in                 |   1 +
+>  include/lapi/syscalls/i386.in                 |   1 +
+>  include/lapi/syscalls/ia64.in                 |   1 +
+>  include/lapi/syscalls/powerpc.in              |   1 +
+>  include/lapi/syscalls/powerpc64.in            |   1 +
+>  include/lapi/syscalls/s390.in                 |   1 +
+>  include/lapi/syscalls/s390x.in                |   1 +
+>  include/lapi/syscalls/sh.in                   |   1 +
+>  include/lapi/syscalls/sparc.in                |   1 +
+>  include/lapi/syscalls/sparc64.in              |   1 +
+>  include/lapi/syscalls/x86_64.in               |   1 +
+>  runtest/syscalls                              |   2 +
+>  .../kernel/syscalls/cachestat/.gitignore      |   1 +
+>  testcases/kernel/syscalls/cachestat/Makefile  |   8 +
+>  .../kernel/syscalls/cachestat/cachestat01.c   | 260 ++++++++++++++++++
+>  20 files changed, 322 insertions(+)
+>  create mode 100644 include/lapi/cachestat.h
+>  create mode 100644 testcases/kernel/syscalls/cachestat/.gitignore
+>  create mode 100644 testcases/kernel/syscalls/cachestat/Makefile
+>  create mode 100644 testcases/kernel/syscalls/cachestat/cachestat01.c
 >
-> I noticed that the mainline kernel is declaring to dropp support for
-> Itanium IA-64, actually, the commit[1] has been merged in v6.7-rc2.
->
-> I am now thinking should we do the same action for LTP in the
-> main branch to keep consistent with the mainline kernel?
+> diff --git a/configure.ac b/configure.ac
+> index 662c4c058..4b5547b5b 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -93,6 +93,7 @@ AC_CHECK_FUNCS_ONCE([ \
+>      epoll_pwait2 \
+>      execveat \
+>      faccessat2 \
+> +    cachestat \
+>      fallocate \
+>      fchownat \
+>      fsconfig \
+> diff --git a/include/lapi/cachestat.h b/include/lapi/cachestat.h
+> new file mode 100644
+> index 000000000..fea390849
+> --- /dev/null
+> +++ b/include/lapi/cachestat.h
+> @@ -0,0 +1,36 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) Linux Test Project, 2003-2023
+> + * Author: Wei Gao <wegao@suse.com>
+> + */
+> +
+> +#ifndef CACHESTAT_H
+> +#define CACHESTAT_H
+> +
+> +#include "tst_test.h"
+> +#include "config.h"
+> +#include "lapi/syscalls.h"
+> +
+> +#ifndef HAVE_CACHESTAT
+> +struct cachestat_range {
+> +	__u64 off;
+> +	__u64 len;
+> +};
+> +
+> +struct cachestat {
+> +	__u64 nr_cache;
+> +	__u64 nr_dirty;
+> +	__u64 nr_writeback;
+> +	__u64 nr_evicted;
+> +	__u64 nr_recently_evicted;
+> +};
+> +
+> +int cachestat(unsigned int fd,
+> +                struct cachestat_range *cstat_range,
+> +                struct cachestat *cstat, unsigned int flags)
+> +{
+> +	return tst_syscall(__NR_cachestat, fd, cstat_range, cstat, flags);
+> +}
+> +#endif
+> +
+> +#endif /* CACHESTAT_H */
+> diff --git a/include/lapi/syscalls/aarch64.in b/include/lapi/syscalls/aarch64.in
+> index 2cb6c2d87..1c0218eae 100644
+> --- a/include/lapi/syscalls/aarch64.in
+> +++ b/include/lapi/syscalls/aarch64.in
+> @@ -297,4 +297,5 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+>  _sysctl 1078
+> diff --git a/include/lapi/syscalls/arc.in b/include/lapi/syscalls/arc.in
+> index 3e2ee9061..5d7cd6ca4 100644
+> --- a/include/lapi/syscalls/arc.in
+> +++ b/include/lapi/syscalls/arc.in
+> @@ -317,3 +317,4 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+> diff --git a/include/lapi/syscalls/arm.in b/include/lapi/syscalls/arm.in
+> index 7bdbca533..e41a7e576 100644
+> --- a/include/lapi/syscalls/arm.in
+> +++ b/include/lapi/syscalls/arm.in
+> @@ -395,3 +395,4 @@ faccessat2 (__NR_SYSCALL_BASE+439)
+>  epoll_pwait2 (__NR_SYSCALL_BASE+441)
+>  quotactl_fd (__NR_SYSCALL_BASE+443)
+>  futex_waitv (__NR_SYSCALL_BASE+449)
+> +cachestat (__NR_SYSCALL_BASE+451)
+> diff --git a/include/lapi/syscalls/hppa.in b/include/lapi/syscalls/hppa.in
+> index 8ebdafafb..2772e7334 100644
+> --- a/include/lapi/syscalls/hppa.in
+> +++ b/include/lapi/syscalls/hppa.in
+> @@ -44,3 +44,4 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+> diff --git a/include/lapi/syscalls/i386.in b/include/lapi/syscalls/i386.in
+> index 1472631c4..2d341182e 100644
+> --- a/include/lapi/syscalls/i386.in
+> +++ b/include/lapi/syscalls/i386.in
+> @@ -431,3 +431,4 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+> diff --git a/include/lapi/syscalls/ia64.in b/include/lapi/syscalls/ia64.in
+> index 0ea6e9722..141c6be51 100644
+> --- a/include/lapi/syscalls/ia64.in
+> +++ b/include/lapi/syscalls/ia64.in
+> @@ -344,3 +344,4 @@ faccessat2 1463
+>  epoll_pwait2 1465
+>  quotactl_fd 1467
+>  futex_waitv 1473
+> +cachestat 1475
+> diff --git a/include/lapi/syscalls/powerpc.in b/include/lapi/syscalls/powerpc.in
+> index 545d9d3d6..67e928951 100644
+> --- a/include/lapi/syscalls/powerpc.in
+> +++ b/include/lapi/syscalls/powerpc.in
+> @@ -424,3 +424,4 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+> diff --git a/include/lapi/syscalls/powerpc64.in b/include/lapi/syscalls/powerpc64.in
+> index 545d9d3d6..67e928951 100644
+> --- a/include/lapi/syscalls/powerpc64.in
+> +++ b/include/lapi/syscalls/powerpc64.in
+> @@ -424,3 +424,4 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+> diff --git a/include/lapi/syscalls/s390.in b/include/lapi/syscalls/s390.in
+> index 7213ac5f8..b456ea408 100644
+> --- a/include/lapi/syscalls/s390.in
+> +++ b/include/lapi/syscalls/s390.in
+> @@ -411,3 +411,4 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+> diff --git a/include/lapi/syscalls/s390x.in b/include/lapi/syscalls/s390x.in
+> index 879012e2b..2c57eacdf 100644
+> --- a/include/lapi/syscalls/s390x.in
+> +++ b/include/lapi/syscalls/s390x.in
+> @@ -359,3 +359,4 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+> diff --git a/include/lapi/syscalls/sh.in b/include/lapi/syscalls/sh.in
+> index 7d5192a27..25eb9bb26 100644
+> --- a/include/lapi/syscalls/sh.in
+> +++ b/include/lapi/syscalls/sh.in
+> @@ -405,3 +405,4 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+> diff --git a/include/lapi/syscalls/sparc.in b/include/lapi/syscalls/sparc.in
+> index 91d2fb1c2..e934591dd 100644
+> --- a/include/lapi/syscalls/sparc.in
+> +++ b/include/lapi/syscalls/sparc.in
+> @@ -410,3 +410,4 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+> diff --git a/include/lapi/syscalls/sparc64.in b/include/lapi/syscalls/sparc64.in
+> index 1f2fc59b7..4c489e38d 100644
+> --- a/include/lapi/syscalls/sparc64.in
+> +++ b/include/lapi/syscalls/sparc64.in
+> @@ -375,3 +375,4 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+> diff --git a/include/lapi/syscalls/x86_64.in b/include/lapi/syscalls/x86_64.in
+> index dc61aa56e..4afea6019 100644
+> --- a/include/lapi/syscalls/x86_64.in
+> +++ b/include/lapi/syscalls/x86_64.in
+> @@ -352,6 +352,7 @@ faccessat2 439
+>  epoll_pwait2 441
+>  quotactl_fd 443
+>  futex_waitv 449
+> +cachestat 451
+>  rt_sigaction 512
+>  rt_sigreturn 513
+>  ioctl 514
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 4fb76584f..b84b2d2ce 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -59,6 +59,8 @@ capset04 capset04
+>  
+>  cacheflush01 cacheflush01
+>  
+> +cachestat01 cachestat01
+> +
+>  chdir01 chdir01
+>  chdir01A symlink01 -T chdir01
+>  chdir04 chdir04
+> diff --git a/testcases/kernel/syscalls/cachestat/.gitignore b/testcases/kernel/syscalls/cachestat/.gitignore
+> new file mode 100644
+> index 000000000..870bceae4
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/cachestat/.gitignore
+> @@ -0,0 +1 @@
+> +/cachestat01
+> diff --git a/testcases/kernel/syscalls/cachestat/Makefile b/testcases/kernel/syscalls/cachestat/Makefile
+> new file mode 100644
+> index 000000000..49238eee0
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/cachestat/Makefile
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +# Copyright (c) 2023 Wei Gao <wegao@suse.com>
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/cachestat/cachestat01.c b/testcases/kernel/syscalls/cachestat/cachestat01.c
+> new file mode 100644
+> index 000000000..9ad432b59
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/cachestat/cachestat01.c
+> @@ -0,0 +1,260 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023 Andre Przywara <andre.przywara@arm.com>
+> + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
+> + *
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Verify that cachestat() executes successfully
+> + *
+> + */
+> +
+> +#include <stdio.h>
+> +#include <math.h>
+> +#include <unistd.h> /* _SC_PAGESIZE */
+> +#include <stdbool.h>
+> +#include <stdlib.h>
+> +#include "tst_test.h"
+> +#include "lapi/syscalls.h"
+> +#include "lapi/cachestat.h"
+> +
+> +#define SAFE_FREE(p) { if (p) { free(p); (p) = NULL; } }
+> +#define TMPFS_MAGIC 0x01021994
 
-Upstream kernel dropped IA-64 for future releases, but it's still being
-used the next few years with existing kernels, machines and distributions,
-so I suggest to not *pro-actively* dropping existing code yet.
-E.g. it's still supported on debian until end of the current debian releases.
+This is already defined as TST_TMPFS_MAGIC
 
-Just my 2c.
+> +#define TEST_NORMAL_FILE "tmpfilecachestat"
+> +#define SHM_FILE "tmpshmcstat"
+> +#define NUM_PAGES 4
+> +
+> +static int fd;
+> +static int fd_shm;
+> +static size_t PS;
+> +static size_t filesize;
+> +static char *data;
+> +static int random_fd;
+> +
+> +/*
+> + * fsync() is implemented via noop_fsync() on tmpfs. This makes the fsync()
+> + * test fail below, so we need to check for test file living on a tmpfs.
+> + */
+> +static bool is_on_tmpfs(int fd)
+> +{
+> +	struct statfs statfs_buf;
+> +
+> +	if (fstatfs(fd, &statfs_buf))
 
-Helge
+fstatfs01 expects fstatfs to succeed on all file systems. So we should
+here too.
+
+> +		return false;
+> +
+> +	return statfs_buf.f_type == TMPFS_MAGIC;
+> +}
+> +
+> +static void print_cachestat(struct cachestat *cs)
+> +{
+> +	tst_res(TINFO,
+> +			"Using cachestat: Cached: %llu, Dirty: %llu, Writeback: %llu, Evicted: %llu, Recently Evicted: %llu",
+> +			cs->nr_cache, cs->nr_dirty, cs->nr_writeback,
+> +			cs->nr_evicted, cs->nr_recently_evicted);
+> +}
+> +
+> +static const char * const dev_files[] = {
+> +	"/dev/zero", "/dev/null", "/dev/urandom",
+> +	"/proc/version", "/proc"
+> +};
+> +
+> +static bool write_exactly(int write_fd)
+> +{
+> +	char *cursor;
+> +	int remained;
+> +
+> +	remained = filesize;
+> +	cursor = data;
+> +	while (remained) {
+> +		ssize_t read_len = SAFE_READ(1, random_fd, cursor,
+> remained);
+
+If len_strict is set then there is no point having a loop.
+
+> +
+> +		if (read_len <= 0)
+> +			tst_brk(TBROK | TERRNO, "Unable to read from urandom.");
+> +
+
+read_len can't be negative.
+
+> +		remained -= read_len;
+> +		cursor += read_len;
+> +	}
+> +
+> +	remained = filesize;
+> +	cursor = data;
+> +	while (remained) {
+> +		ssize_t write_len = SAFE_WRITE(1, write_fd, cursor, remained);
+> +
+> +		if (write_len <= 0)
+> +			tst_brk(TBROK | TERRNO, "Unable write random
+> data to file.");
+
+Same issues again.
+
+Probably 4 pages is too many to rely on being read atomically. I don't
+know about FS like btrfs and xfs, but only a single page is used for
+buffering sequence files (IIRC).
+
+Why not just use tst_fill_file?
+
+Generally I don't like using random data anyway. If it has any effect at
+all, it could make bug reproduction more difficult.
+
+> +
+> +		remained -= write_len;
+> +		cursor += write_len;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +/*
+> + * Open/create the file at filename, (optionally) write random data to it
+> + * (exactly num_pages), then test the cachestat syscall on this file.
+> + *
+> + * If test_fsync == true, fsync the file, then check the number of dirty
+> + * pages.
+> + */
+> +static void test_cachestat(const char *filename, bool write_random, bool create,
+> +		bool test_fsync, int open_flags, mode_t open_mode)
+> +{
+> +	struct cachestat cs;
+> +	struct cachestat_range cs_range = { 0, filesize };
+> +
+> +	if (!fcntl(fd, F_GETFD))
+> +		SAFE_CLOSE(fd);
+> +	fd = SAFE_OPEN(filename, open_flags, open_mode);
+> +
+> +	if (write_random) {
+> +		if (!write_exactly(fd))
+> +			tst_brk(TBROK | TERRNO, "Unable to access
+> urandom.");
+
+How can write_exactly return false?
+
+> +	}
+> +
+> +	TST_EXP_PASS(cachestat(fd, &cs_range, &cs, 0));
+> +
+> +	print_cachestat(&cs);
+> +
+> +	if (write_random) {
+> +		if (cs.nr_cache + cs.nr_evicted != NUM_PAGES) {
+> +			tst_brk(TBROK | TERRNO,
+> +					"Total number of cached and
+> evicted pages is off.");
+
+I suppose this was in the selftest, so we can trust that these counters
+are updated synchronously.
+
+We probably should print the number of cached and evicted pages though.
+
+> +		}
+> +	}
+> +
+> +	if (test_fsync) {
+> +		if (is_on_tmpfs(fd)) {
+> +			tst_res(TCONF, "skip fsync check on tmpfs");
+> +		} else if (fsync(fd)) {
+> +			tst_brk(TBROK | TERRNO, "fsync fails.");
+> +		} else {
+> +			TST_EXP_PASS(cachestat(fd, &cs_range, &cs, 0));
+> +			print_cachestat(&cs);
+> +			if (cs.nr_dirty) {
+> +				tst_brk(TBROK | TERRNO,
+> +						"Number of dirty should be zero after fsync.");
+> +			} else {
+> +				tst_res(TPASS, "Cachestat (after fsync) pass.");
+> +			}
+> +		}
+> +	}
+> +
+> +	close(fd);
+> +
+> +	if (create)
+> +		remove(filename);
+> +
+> +	tst_res(TPASS, "cachestat works with file %s", filename);
+> +}
+> +
+> +static void test_incorrect_file(void)
+> +{
+> +	TST_EXP_FAIL(cachestat(-1, NULL, NULL, 0), EBADF);
+> +}
+> +
+> +static void test_virtual_file(void)
+> +{
+> +	for (unsigned long i = 0; i < sizeof(dev_files) / sizeof(*dev_files); i++) {
+> +		const char *dev_filename = dev_files[i];
+> +
+> +		test_cachestat(dev_filename, false, false, false, O_RDONLY, 0400);
+> +	}
+> +}
+> +
+> +static void test_normal_file(void)
+> +{
+> +	test_cachestat(TEST_NORMAL_FILE, true, true, false, O_CREAT | O_RDWR, 0600);
+> +	test_cachestat(TEST_NORMAL_FILE, true, true, true, O_CREAT | O_RDWR, 0600);
+> +}
+> +
+> +static void check_cachestat_range(struct cachestat_range *ptr_cs_range, __u64 expect_num_pages)
+> +{
+> +	struct cachestat cs;
+> +
+> +	TST_EXP_PASS(cachestat(fd_shm, ptr_cs_range, &cs, 0));
+> +	print_cachestat(&cs);
+> +	if (cs.nr_cache + cs.nr_evicted != expect_num_pages) {
+> +		tst_brk(TFAIL | TERRNO,
+> +				"Total number of cached and evicted pages is off.");
+> +	} else {
+> +		tst_res(TPASS,
+> +				"Cachestat range check pass.");
+> +	}
+> +}
+> +
+> +static void test_share_memory(void)
+> +{
+> +
+> +	struct cachestat_range cs_range = { 0, filesize};
+> +
+> +	if (ftruncate(fd_shm, filesize))
+> +		tst_brk(TFAIL | TERRNO, "Unable to truncate shmem file.");
+> +
+> +	if (!write_exactly(fd_shm))
+> +		tst_brk(TFAIL | TERRNO, "Unable to write to shmem file.");
+> +
+> +	check_cachestat_range(&cs_range, NUM_PAGES);
+> +
+> +	size_t compute_len = PS * NUM_PAGES / 2;
+> +	unsigned long num_pages = ceil((double)NUM_PAGES / 2);
+> +
+> +	cs_range.off = PS;
+> +	cs_range.len = compute_len;
+> +	check_cachestat_range(&cs_range, num_pages);
+> +}
+> +
+> +static struct tcase {
+> +	void (*tfunc)(void);
+> +} tcases[] = {
+> +	{&test_incorrect_file},
+> +	{&test_virtual_file},
+> +	{&test_normal_file},
+> +	{&test_share_memory}
+> +};
+> +
+> +static void run(unsigned int i)
+> +{
+> +	tcases[i].tfunc();
+> +}
+> +
+> +
+> +static void setup(void)
+> +{
+> +
+> +	PS = sysconf(_SC_PAGESIZE);
+> +	filesize = NUM_PAGES * PS;
+> +	data = tst_alloc(filesize);
+
+This can be allocated using test.bufs which will also handle cleanup.
+
+> +	random_fd = SAFE_OPEN("/dev/urandom", O_RDONLY);
+> +
+> +	/* setup for test_share_memory case */
+> +	fd_shm = shm_open(SHM_FILE, O_CREAT | O_RDWR, 0700);
+> +	if (fd_shm < 0)
+> +		tst_brk(TFAIL | TERRNO, "Unable to create shmem file.");
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	SAFE_CLOSE(random_fd);
+> +
+> +	/* cleanup for test_normal_file case*/
+> +	if (!fcntl(fd, F_GETFD))
+> +		SAFE_CLOSE(fd);
+> +	remove(TEST_NORMAL_FILE);
+> +
+> +	/* cleanup for test_share_memory case */
+> +	SAFE_CLOSE(fd_shm);
+> +	shm_unlink(SHM_FILE);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test = run,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+> +	.needs_tmpdir = 1,
+> +	.min_kver = "6.5.0"
+
+This would benefit from being run on all filesystems!
+
+> +};
+> -- 
+> 2.35.3
 
 
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cf8e8658100d4eae80ce9b21f7a81cb024dd5057
->
-> [liwang@liwang-workstation ltp]$$ git grep __ia64__
-> include/lapi/rt_sigaction.h:#if !defined(__ia64__) && !defined(__alpha__)
-> && !defined(__hppa__) && !defined(__mips__)
-> lib/cloner.c:#if defined(__ia64__)
-> lib/cloner.c: *   2. __ia64__ takes bottom of stack and uses clone2
-> lib/cloner.c:#if defined(__ia64__)
-> lib/tst_arch.c:#elif defined(__ia64__)
-> testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c:#ifdef __ia64__
-> testcases/kernel/mem/hugetlb/hugemmap/hugemmap07.c:#elif defined(__ia64__)
-> testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c:#if defined(__powerpc__)
-> || defined(__powerpc64__) || defined(__ia64__) || \
-> testcases/kernel/mem/hugetlb/hugemmap/hugemmap15.c:#if defined(__powerpc__)
-> || defined(__powerpc64__) || defined(__ia64__) || \
-> testcases/kernel/mem/shmt/shmt09.c:#ifdef __ia64__
-> testcases/kernel/mem/shmt/shmt09.c:#if defined (__ia64__) ||
-> defined(__mips__) || defined(__hppa__) || defined(__arm__) ||
-> defined(__aarch64__)
-> testcases/kernel/sched/cfs-scheduler/hackbench.c:#ifndef __ia64__
-> testcases/kernel/syscalls/mmap/mmap03.c:#if defined(__ia64__) ||
-> defined(__hppa__) || defined(__mips__)
-> testcases/kernel/syscalls/mmap/mmap15.c:#ifdef __ia64__
-> testcases/kernel/syscalls/ptrace/ptrace.h:#ifdef __ia64__ /* what a pos */
-> testcases/misc/crash/crash02.c:#if defined(__ia64__)
-> testcases/misc/crash/crash02.c:#endif /* __ia64__ */
->
->
-
+-- 
+Thank you,
+Richard.
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
