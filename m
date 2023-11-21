@@ -4,70 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CBD6C61D92
-	for <ltp@archiver.kernel.org>; Tue, 21 Nov 2023 10:32:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE12CC54FB9
+	for <ltp@archiver.kernel.org>; Tue, 21 Nov 2023 10:42:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F30053CE115
-	for <ltp@archiver.kernel.org>; Tue, 21 Nov 2023 11:32:06 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 326843CC2EB
+	for <ltp@archiver.kernel.org>; Tue, 21 Nov 2023 11:41:58 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 282FB3C81F3
- for <ltp@lists.linux.it>; Tue, 21 Nov 2023 11:31:56 +0100 (CET)
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com
- [IPv6:2607:f8b0:4864:20::82f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id CE7533C8AE1
+ for <ltp@lists.linux.it>; Tue, 21 Nov 2023 11:41:47 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 7A559600864
- for <ltp@lists.linux.it>; Tue, 21 Nov 2023 11:31:55 +0100 (CET)
-Received: by mail-qt1-x82f.google.com with SMTP id
- d75a77b69052e-41cc56255e3so32951371cf.3
- for <ltp@lists.linux.it>; Tue, 21 Nov 2023 02:31:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1700562714; x=1701167514; darn=lists.linux.it;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=uz2VtlxjMo+c0buPqQcgbnBSbefsRadbNLCrnLDR+oQ=;
- b=bWAonLBJiruaF4EJe2iY2Ne4dJ5/Ps5YIkrazlzIaDioNdHbFeDv/sRURkzIP8is0s
- CR9Ruvl3OZ532BZVB6gY6eAA56Bbsy+qKVMTSGZPsWHaBpyMFywsUdS1zN3BhM/3nUJp
- kX7eC2nXMnKvng2Dv7U2vScrtzsc8ULlqgA/NwrTpWuKaOHPsNjDjgjk3RfI534qhxDX
- JRb0P6xHwntR1bQmCkZlUj+iY6hqiKXAlFDtjziHzQvsJyIlCbc+d5AypI+VpJdl2Hs3
- VSjHLH25eHpUX+bWyLBltpPCS3+QB2EsXQlOjDtrU0V1hqiEWaOd1/emdeZ1BSG9sPAy
- qPog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1700562714; x=1701167514;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=uz2VtlxjMo+c0buPqQcgbnBSbefsRadbNLCrnLDR+oQ=;
- b=w5v3gJJfQUAWX0niOeKsbw1D3RM/GZd0Hat8Hqc5eaWjB8YCewGknNTOCSoFabAlQ3
- UUZk2JeN+3LEKHYlmpHJyro2zbWnVRk1kechv/nZk0Aop/XWoEDul4TnRXqhHpoaRIMk
- +VVtmGQ7xMKtUX+xOKKU/ytQYsx+73etZ5lv8NJ/6i/yF47mQLLNhe6QKlUzR4ny2Odo
- 8AuG+tqBn0lHVgdTql8s0JGq1TMnpEe5Q0bwOkJW7snfqAJmmTuMLuMPyg/5Rv9F8ffI
- AkkfUmDB1UfDTa6C1wmBlRGgffAP4esBVQ8sq9hSsCbUGAEwGAgq0cfeH5GvqVpUlNZS
- RbmQ==
-X-Gm-Message-State: AOJu0Yz6l2SFOudK+oVhk2pVtIDRYj0POKf0S4YO/86bOT2MvEIEcx4t
- M0B7pZ1DfAHoDvYnN9bRFzOxi/FMhsgGgv4CWnuyjAPe
-X-Google-Smtp-Source: AGHT+IEzfePZTS2E6Cwl8nz6X3t7dok10DkD7RXWHSms2bhf+mdVt7TFv0vRlDvrBE8i4PKyHVGr5rsXrgUgOwg5nPo=
-X-Received: by 2002:a05:622a:4243:b0:423:756c:93f0 with SMTP id
- cq3-20020a05622a424300b00423756c93f0mr225841qtb.67.1700562714204; Tue, 21 Nov
- 2023 02:31:54 -0800 (PST)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2C62060020A
+ for <ltp@lists.linux.it>; Tue, 21 Nov 2023 11:41:46 +0100 (CET)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 96EF71F8B5;
+ Tue, 21 Nov 2023 10:41:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1700563305;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=p9KQsw1mrrJB0qOA+bAGlLhlIffsjMEdDtFpVkn3nPk=;
+ b=gIaz2zNb45LI0LiTb5uYMRW/0+Qce3BxloMT+t+Knelj0EzEv4Xw88NfxSjk8CJvCWeokm
+ 8Q3mkvhrHT6p89wJALNqX/Q6DTHHgg5WKkTFOqVUlj7RKkv3HDlBoIdkUj9SQe7h+mFizA
+ If7U+3pSPRhcYK7Kt1jktvtIy3CdPUM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1700563305;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=p9KQsw1mrrJB0qOA+bAGlLhlIffsjMEdDtFpVkn3nPk=;
+ b=0R2EbrjdmOOLlfTXyrrxuB3SamLjuh+sLDyZ6ozkkavYlhylB9kk9pYrO5cP/u2PhnCLhd
+ H7UZB8obZn89uEDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6C159139FD;
+ Tue, 21 Nov 2023 10:41:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Q9SdF2mJXGUgUgAAMHmgww
+ (envelope-from <pvorel@suse.cz>); Tue, 21 Nov 2023 10:41:45 +0000
+Date: Tue, 21 Nov 2023 11:41:43 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Martin Doucha <mdoucha@suse.cz>
+Message-ID: <20231121104143.GB90328@pevik>
+References: <20231116164723.4012-1-mdoucha@suse.cz>
+ <20231116164723.4012-2-mdoucha@suse.cz>
 MIME-Version: 1.0
-References: <20231114072338.1669277-1-amir73il@gmail.com>
- <20231114072338.1669277-3-amir73il@gmail.com>
- <20231114105719.GB2325395@pevik> <20231121095946.GA88938@pevik>
-In-Reply-To: <20231121095946.GA88938@pevik>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 21 Nov 2023 12:31:42 +0200
-Message-ID: <CAOQ4uxi0=aAGeHpGFQxeGD=+mmEu7wRxxSVcrbQ2GEuKnHNCQw@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
+Content-Disposition: inline
+In-Reply-To: <20231116164723.4012-2-mdoucha@suse.cz>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-0.52 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-0.999];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; RCPT_COUNT_TWO(0.00)[2];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_COUNT_TWO(0.00)[2]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.02)[53.54%]
 X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] fanotify13: Test watching overlayfs with
- FAN_REPORT_FID
+Subject: Re: [LTP] [PATCH v3 1/4] tst_netlink: Add helper functions for
+ handling generic attributes
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,46 +90,62 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jan Kara <jack@suse.cz>, linux-unionfs@vger.kernel.org, ltp@lists.linux.it,
- Miklos Szeredi <miklos@szeredi.hu>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVHVlLCBOb3YgMjEsIDIwMjMgYXQgMTE6NTnigK9BTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3Vz
-ZS5jej4gd3JvdGU6Cj4KPiBIaSBBbWlyLAo+Cj4gPiBIaSBBbWlyLAo+Cj4gPiBSZXZpZXdlZC1i
-eTogUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+Cj4gPiBGZXcgbm90ZXMgYmVsb3cuCj4KPiA+
-ID4gUnVuIHRlc3QgdmFyaWFudHMgd2F0Y2hpbmcgb3ZlcmxheWZzIChvdmVyIGFsbCBzdXBwb3J0
-ZWQgZnMpCj4gPiA+IGFuZCByZXBvcnRpbmcgZXZlbnRzIHdpdGggZmlkLgo+Cj4gPiA+IFRoaXMg
-cmVxdWlyZXMgb3ZlcmxheWZzIHN1cHBvcnQgZm9yIEFUX0hBTkRMRV9GSUQgKGtlcm5lbCA2LjYp
-IGFuZAo+ID4gPiBldmVuIHdpdGggQVRfSEFORExFX0ZJRCBmaWxlIGhhbmRsZXMsIG9ubHkgaW5v
-ZGUgbWFya3MgYXJlIHN1cHBvcnRlZC4KPgo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBBbWlyIEdvbGRz
-dGVpbiA8YW1pcjczaWxAZ21haWwuY29tPgo+ID4gPiAtLS0KPiA+ID4gIHRlc3RjYXNlcy9rZXJu
-ZWwvc3lzY2FsbHMvZmFub3RpZnkvZmFub3RpZnkuaCB8IDI4ICsrKysrKysrKysrKy0tLS0tCj4g
-PiA+ICAuLi4va2VybmVsL3N5c2NhbGxzL2Zhbm90aWZ5L2Zhbm90aWZ5MTMuYyAgICAgfCAzMSAr
-KysrKysrKysrKysrKysrLS0tCj4gPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDQ3IGluc2VydGlvbnMo
-KyksIDEyIGRlbGV0aW9ucygtKQo+Cj4gPiA+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVs
-L3N5c2NhbGxzL2Zhbm90aWZ5L2Zhbm90aWZ5LmggYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L2Zhbm90aWZ5L2Zhbm90aWZ5LmgKPiA+ID4gaW5kZXggNzg0MjRhMzUwLi5hOGFlYzY1OTcgMTAw
-NjQ0Cj4gPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZmFub3RpZnkvZmFub3Rp
-ZnkuaAo+ID4gPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Zhbm90aWZ5L2Zhbm90
-aWZ5LmgKPiA+ID4gQEAgLTc5LDggKzc5LDExIEBAIHN0YXRpYyBpbmxpbmUgaW50IHNhZmVfZmFu
-b3RpZnlfbWFyayhjb25zdCBjaGFyICpmaWxlLCBjb25zdCBpbnQgbGluZW5vLAo+ID4gPiAgLyoK
-PiA+ID4gICAqIEhlbHBlciBmdW5jdGlvbiB1c2VkIHRvIG9idGFpbiBmc2lkIGFuZCBmaWxlX2hh
-bmRsZSBmb3IgYSBnaXZlbiBwYXRoLgo+ID4gPiAgICogVXNlZCBieSB0ZXN0IGZpbGVzIGNvcnJl
-bGF0ZWQgdG8gRkFOX1JFUE9SVF9GSUQgZnVuY3Rpb25hbGl0eS4KPiA+ID4gKyAqCj4gPiA+ICsg
-KiBSZXR1cm5zIDAgaWYgbm9ybWFsIE5GUyBmaWxlIGhhbmRsZXMgYXJlIHN1cHBvcnRlZC4KPiA+
-ID4gKyAqIFJldHVybnMgQVRfSEFORExFX0ZJRCwgb2Ygb25seSBub24tZGVjb2RlYWJsZSBmaWxl
-IGhhbmRsZXMgYXJlIHN1cHBvcnRlZC4KPiA+IHMvIG9mIC8gaWYgLwo+ID4gSSBjYW4gZml4IHRo
-aXMgYmVmb3JlIG1lcmdlLgo+Cj4gSSBkYXJlZCB0byBmaXggdGhpcyBhbmQgcy9BVF9IQUROTEVf
-RklEL0FUX0hBTkRMRV9GSUQvIGFuZCBtZXJnZS4KPgoKVGhhdCdzIGdyZWF0IQoKPiA+IEFsc28g
-SSBub3RpY2VkIChub3QgcmVsYXRlZCB0byB0aGlzIGNoYW5nZSkgdGhhdCAjZGVmaW5lIEFUX0hB
-TkRMRV9GSUQgMHgyMDAKPiA+IGFkZGVkIGluIGRjN2IxMzMyYWIgaW50byB0ZXN0Y2FzZXMva2Vy
-bmVsL3N5c2NhbGxzL2Zhbm90aWZ5L2Zhbm90aWZ5Lmggc2hvdWxkCj4gPiBoYXZlIGJlZW4gaW4g
-aW5jbHVkZS9sYXBpL2Zhbm90aWZ5LmggKHRoaXMgZmlsZSBpcyBmb3IgZmFsbGJhY2sgZGVmaW5p
-dGlvbnMpLgo+ID4gVGlueSBkZXRhaWwsIHdoaWNoIHNob3VsZCBiZSBmaXhlZCBhZnRlcndhcmRz
-Lgo+Cj4gSSBhbHNvIG1lcmdlZCBhIGNsZWFudXAgb2YgdGhlIGZhbGxiYWNrIGRlZmluaXRpb25z
-Lgo+Cj4gVGhhbmtzIGZvciBtYWludGFpbmluZyBmYW5vdGlmeSB0ZXN0cyEKPgoKVGhhbmsgeW91
-IQpBbWlyLgoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xp
-c3RpbmZvL2x0cAo=
+Hi Martin,
+
+> Refactor struct tst_rtnl_attr_list for generic use and add helper
+> functions for handling generic struct nlattr message attributes.
+
+There is still tst_rtnl_attr_list mentioned at doc/C-Test-Network-API.asciidoc,
+could you please update that?
+
+...
+> -/* Add arbitrary attribute to last message */
+> +/* Add arbitrary nlattr attribute to last message */
+> +int tst_netlink_add_attr(const char *file, const int lineno,
+> +	struct tst_netlink_context *ctx, unsigned short type, const void *data,
+> +	unsigned short len);
+> +#define NETLINK_ADD_ATTR(ctx, type, data, len) \
+> +	tst_netlink_add_attr(__FILE__, __LINE__, (ctx), (type), (data), (len))
+> +
+> +/* Add string nlattr attribute to last message */
+> +int tst_netlink_add_attr_string(const char *file, const int lineno,
+> +	struct tst_netlink_context *ctx, unsigned short type, const char *data);
+> +#define NETLINK_ADD_ATTR_STRING(ctx, type, data) \
+> +	tst_netlink_add_attr_string(__FILE__, __LINE__, (ctx), (type), (data))
+
+FYI NETLINK_ADD_ATTR_STRING() is not used anywhere. I suppose you plan to use it
+in some of the following CVE tests, right?
+
+...
+> +int tst_netlink_add_attr_list(const char *file, const int lineno,
+> +	struct tst_netlink_context *ctx,
+> +	const struct tst_netlink_attr_list *list)
+> +{
+> +	int i, ret;
+> +	size_t offset;
+> +
+> +	for (i = 0; list[i].len >= 0; i++) {
+> +		if (list[i].len > USHRT_MAX) {
+> +			tst_brk_(file, lineno, TBROK,
+> +				"%s(): Attribute value too long", __func__);
+> +			return -1;
+Here (and on other function working on more items) is return -1 on error and >=
+0 on success.  The other functions return 0 on error and 1 on success.
+While this is logic, it would still be nice to describe return in tst_netlink.h.
+
+The rest LGTM.
+
+Reviewed-by: Petr Vorel <pvorel@suse.cz>
+
+Kind regards,
+Petr
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
