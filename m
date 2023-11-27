@@ -4,36 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB89EC4167B
-	for <ltp@archiver.kernel.org>; Mon, 27 Nov 2023 17:45:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03175C4167B
+	for <ltp@archiver.kernel.org>; Mon, 27 Nov 2023 18:26:21 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 569743CDBD2
-	for <ltp@archiver.kernel.org>; Mon, 27 Nov 2023 18:45:47 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 1A1173CDB7E
+	for <ltp@archiver.kernel.org>; Mon, 27 Nov 2023 19:26:20 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 842593CDB24
- for <ltp@lists.linux.it>; Mon, 27 Nov 2023 18:45:35 +0100 (CET)
-Received: from 66-220-144-178.mail-mxout.facebook.com
- (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+ by picard.linux.it (Postfix) with ESMTPS id 2552E3CCB41
+ for <ltp@lists.linux.it>; Mon, 27 Nov 2023 19:26:08 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id CBD42603224
- for <ltp@lists.linux.it>; Mon, 27 Nov 2023 18:45:34 +0100 (CET)
-Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
- id 6E796FF95F2B; Mon, 27 Nov 2023 09:45:19 -0800 (PST)
-From: Stefan Roesch <shr@devkernel.io>
-To: kernel-team@fb.com
-Date: Mon, 27 Nov 2023 09:45:17 -0800
-Message-Id: <20231127174517.2369593-1-shr@devkernel.io>
-X-Mailer: git-send-email 2.39.3
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 044766008D1
+ for <ltp@lists.linux.it>; Mon, 27 Nov 2023 19:26:07 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B371E21A8B;
+ Mon, 27 Nov 2023 18:26:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1701109566; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=r8aqdH4xxcDBqiXlySHa9+vNm1BAHrekYrVurFgKtgQ=;
+ b=JTUDB4Xxa0A78Y+qsoXbcy8dl73y1EISocS+oNSiqH7wzHkKb+OJ7mRegZNBz6paapqOsa
+ 0QOHrktkJj706WWcrtNGpfRO24ZD5amiitRPsGJ9W2QNw30wEHuYHeQKQUCoJPBYkeQDNC
+ g65NF8A4GaCXAU0Do9IAOWvEasQxqZ0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1701109566;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=r8aqdH4xxcDBqiXlySHa9+vNm1BAHrekYrVurFgKtgQ=;
+ b=FgOaJQWf8fpKBm0zDlL5oIMFn9byfTqxLju4wgdSmyzitJ4OKQ9X7JUS5F+92tGZ+pKjUk
+ tUkvacFoeRhKuyDA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A31E6132A6;
+ Mon, 27 Nov 2023 18:26:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap2.dmz-prg2.suse.org with ESMTPSA id ZAWDJz7fZGXvAgAAn2gu4w
+ (envelope-from <jack@suse.cz>); Mon, 27 Nov 2023 18:26:06 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+ id 25490A07CB; Mon, 27 Nov 2023 19:26:02 +0100 (CET)
+Date: Mon, 27 Nov 2023 19:26:02 +0100
+From: Jan Kara <jack@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Message-ID: <20231127182602.p5tx5hvinsobw3xb@quack3>
+References: <20231127154013.2625-1-jack@suse.cz>
+ <CAOQ4uxhtz2rCn70roeof0Bt8CbAi0vK4CMNiuoFq9M85FUpgGQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxhtz2rCn70roeof0Bt8CbAi0vK4CMNiuoFq9M85FUpgGQ@mail.gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-2.60 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[4]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ FREEMAIL_ENVRCPT(0.00)[gmail.com]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FREEMAIL_TO(0.00)[gmail.com]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_NOT_FQDN(0.50)[]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-3.00)[100.00%]
 X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v1] mem: disable KSM smart scan for ksm tests
+Subject: Re: [LTP] [PATCH] fanotify: Fix broken tests due to
+ fanotify_events_supported_by_kernel()
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -45,51 +93,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-mm@kvack.org, david@redhat.com, oliver.sang@intel.com,
- ltp@lists.linux.it, shr@devkernel.io
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: pvorel@suse.com, Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-This disables the "smart scan" KSM feature to make sure that the volatile
-count remains at 0.
-
-Signed-off-by: Stefan Roesch <devkernel.io>
-
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202311161132.13d8ce5a-oliver.sang@intel.com
----
- testcases/kernel/mem/lib/mem.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index fbfeef026..ef274a3ac 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -454,6 +454,9 @@ void create_same_memory(int size, int num, int unit)
- 	       {'a', size*MB}, {'a', size*MB}, {'d', size*MB}, {'d', size*MB},
- 	};
- 
-+  /* Disable smart scan for correct volatile counts. */
-+  SAFE_FILE_PRINTF(PATH_KSM "smart_scan", "0");
-+
- 	ps = sysconf(_SC_PAGE_SIZE);
- 	pages = MB / ps;
- 
-@@ -526,6 +529,7 @@ void create_same_memory(int size, int num, int unit)
- 
- 	tst_res(TINFO, "stop KSM.");
- 	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
-+  SAFE_FILE_PRINTF(PATH_KSM "smart_scan", "1");
- 	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
- 
- 	while (waitpid(-1, &status, 0) > 0)
-
-base-commit: 8c89ef3d451087ed6e18750bd5eedd10e5ab3d2e
--- 
-2.39.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uIDI3LTExLTIzIDE5OjQwOjE0LCBBbWlyIEdvbGRzdGVpbiB3cm90ZToKPiBPbiBNb24s
+IE5vdiAyNywgMjAyMyBhdCA1OjQw4oCvUE0gSmFuIEthcmEgPGphY2tAc3VzZS5jej4gd3JvdGU6
+Cj4gPgo+ID4gV2hlbiBMVFAgdGVzdCBpcyBydW4gd2l0aCBDV0QgaW4gYnRyZnMgc3Vidm9sdW1l
+LCB0ZXN0cyBsaWtlIGZhbm90aWZ5MTYKPiA+IGZhaWwgd2l0aDoKPiA+Cj4gPiBmYW5vdGlmeS5o
+OjE2OTogVEJST0s6IGZhbm90aWZ5X21hcmsgKDMsIEZBTl9NQVJLX0FERCwgLi4uLCBBVF9GRENX
+RCwgIi4iKSBmYWlsZWQ6IEVYREVWICgxOCkKPiA+Cj4gPiBUaGlzIGlzIGJlY2F1c2UgZmFub3Rp
+ZnlfZXZlbnRzX3N1cHBvcnRlZF9ieV9rZXJuZWwoKSB0cnkgdG8gcGxhY2UgYQo+ID4gbWFyayBv
+bnRvIENXRCBhbmQgdGhhdCBpcyBmb3JiaWRkZW4gZm9yIGJ0cmZzIHN1YnZvbHVtZXMuIENoYW5n
+ZQo+ID4gZmFub3RpZnlfZXZlbnRzX3N1cHBvcnRlZF9ieV9rZXJuZWwoKSB0byB1c2UgIi8iIGlu
+c3RlYWQgb2YgIi4iIHdoaWNoCj4gPiBoYXMgaGlnaGVyIGNoYW5jZXMgb2Ygd29ya2luZyBmb3Ig
+YnRyZnMuCj4gPgo+IAo+IEZXSVcsICIuIiBpbiBzZXR1cCgpIGlzIHVzdWFsbHkgYSB0ZW1wZGly
+ICh1bmRlciBMVFAgdGVtcCByb290KQo+IFNvIEknbSBub3Qgc3VyZSB0aGF0ICIvIiBpcyBhIGJl
+dHRlciBjaG9pY2UgdGhhbiAiLiIuCj4gQXQgbGVhc3QgdGhlIExUUCB0ZW1wIGRpciBpcyBjb25m
+aWd1cmFibGUuCj4gYW5kIG5vIHJlYXNvbiB0aGF0ICIvIiBpcyBub3QgYSBidHJmcyBzdWJ2b2wg
+aW5zaWRlIGEgY29udGFpbmVyLi4uCgpZZWFoLCB0aGF0J3MgYSBnb29kIHBvaW50LiBJIHdhcyB0
+aGlua2luZyBpdCBuZWVkIG5vdCBiZSBzbyBzaW1wbGUgYnV0CndhbnRlZCBzb21ldGhpbmcgdG8g
+c3RhcnQgYSBkaXNjdXNzaW9uIDopCgo+IEZZSSwgaW4gdGhpcyBicmFuY2g6Cj4gaHR0cHM6Ly9n
+aXRodWIuY29tL2FtaXI3M2lsL2x0cC9jb21taXRzL2Zhbm90aWZ5X2ZzaWQKPiAKPiBJIGhhdmUg
+YWxyZWFkeSBpbXBsZW1lbnRlZCBmYW5vdGlmeV9mbGFnc19zdXBwb3J0ZWRfb25fZnMoKQo+IHdo
+aWNoIGNhbiBiZSB1c2VkIHRvIHRlc3Qgc3VwcG9ydCBmb3IgYW4gZXZlbnQvbWFyayBvbiBhIHNw
+ZWNpZmljIHBhdGguCj4gCj4gSSBkaWQgbm90IG1ha2UgdGhlIGNoYW5nZSBpbiBmYW5vdGlmeTE2
+LmMgdG8gdXNlCj4gZmFub3RpZnlfZmxhZ3Nfc3VwcG9ydGVkX29uX2ZzKCkgaW5zdGVhZCBvZgo+
+IGZhbm90aWZ5X3ttYXJrLGV2ZW50c31fc3VwcG9ydGVkX2J5X2tlcm5lbCgpIGJ1dCBpdCB3b3Vs
+ZCBiZSB0cml2aWFsIHRvIGRvLgoKT0ssIHRoaXMgaXMgcHJvYmFibHkgYSBtb3JlIHJvYnVzdCBp
+ZGVhIHNvIHRoYXQgd2UgdGVzdCBhbGwgdGhlIGZlYXR1cmVzCmFnYWluc3QgYSBwYXRoIHdlIGFy
+ZSB0aGVuIGFjdHVhbGx5IGdvaW5nIHRvIHVzZSBmb3IgdGVzdGluZy4gSSdsbCBwaWNrIHRoZQpj
+b21taXQgImZhbm90aWZ5OiBHZW5lcmFsaXplIGhlbHBlciBmYW5vdGlmeV9mbGFnc19zdXBwb3J0
+ZWRfb25fZnMoKSIgZnJvbQp5b3VyIGJyYW5jaCBhbmQgcmV3b3JrIHRoZSBmaXggYmFzZWQgb24g
+dGhhdCB0b21vcnJvdy4gVGhhbmtzIQoKCQkJCQkJCQlIb256YQotLSAKSmFuIEthcmEgPGphY2tA
+c3VzZS5jb20+ClNVU0UgTGFicywgQ1IKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9s
+aXN0cy5saW51eC5pdC9saXN0aW5mby9sdHAK
