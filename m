@@ -4,69 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A8AFC4167B
-	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 02:29:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA726C4167B
+	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 03:03:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 745103CDDE8
-	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 03:29:21 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
+	by picard.linux.it (Postfix) with ESMTP id D1C683CDBB5
+	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 04:03:11 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 907193CB7FF
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 03:29:09 +0100 (CET)
-Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
- [139.138.36.225])
+ by picard.linux.it (Postfix) with ESMTPS id 39E543C88DB
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 04:03:02 +0100 (CET)
+Received: from esa9.hc1455-7.c3s2.iphmx.com (esa9.hc1455-7.c3s2.iphmx.com
+ [139.138.36.223])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 20577600C7D
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 03:29:07 +0100 (CET)
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="128842930"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695654000"; d="scan'208";a="128842930"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
- by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Nov 2023 11:29:05 +0900
-Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
- [192.168.87.59])
- by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id CA643DF0E9
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 11:29:02 +0900 (JST)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id EE43B1000937
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 04:03:00 +0100 (CET)
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="129546544"
+X-IronPort-AV: E=Sophos;i="6.04,232,1695654000"; d="scan'208";a="129546544"
+Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
+ by esa9.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Nov 2023 12:02:58 +0900
+Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com
+ [192.168.83.67])
+ by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 5398CD502B
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 12:02:56 +0900 (JST)
 Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
  [192.51.206.21])
- by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 11B13BF3EE
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 11:29:02 +0900 (JST)
+ by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 8B3A9D3F15
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 12:02:55 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 86F43200649E2
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 11:29:01 +0900 (JST)
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 179F920079118
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 12:02:55 +0900 (JST)
 Received: from [10.167.215.54] (unknown [10.167.215.54])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 2521B1A0070;
- Tue, 28 Nov 2023 10:29:01 +0800 (CST)
-Message-ID: <590411a7-5e5c-dbcc-77ae-edc4ebc7af19@fujitsu.com>
-Date: Tue, 28 Nov 2023 10:29:00 +0800
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id AE6D91A0070;
+ Tue, 28 Nov 2023 11:02:54 +0800 (CST)
+Message-ID: <ab0157cc-f7c5-29e0-f79d-14220d402370@fujitsu.com>
+Date: Tue, 28 Nov 2023 11:02:54 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
 To: Yang Xu <xuyang2018.jy@fujitsu.com>, ltp@lists.linux.it
-References: <20231110100938.210473-1-xuyang2018.jy@fujitsu.com>
+References: <20231110035648.167600-1-xuyang2018.jy@fujitsu.com>
 From: Xiao Yang <yangx.jy@fujitsu.com>
-In-Reply-To: <20231110100938.210473-1-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <20231110035648.167600-1-xuyang2018.jy@fujitsu.com>
 X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28024.003
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28024.004
 X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28024.003
-X-TMASE-Result: 10--15.364200-10.000000
-X-TMASE-MatchedRID: xnGAJ48IopiPvrMjLFD6eK5i3jK3KDOoC/ExpXrHizxM+b8yxBqvA52S
- 8eF0t50JLOEx+hvEk7nMau1T20usruCnSW1s2x7bzYK5U+QI3O7BOVz0Jwcxl6vCrG0TnfVUgK6
- qCGa1Z9dsXqCizdUSQ5XYYVAc0dl5R5cR5NdqsNLz+NEGPHHc6qrFemr66cZVA714v+UID5Qi5u
- P1s5rsy0Ie2eoAxM8kdj6sA9HeF1TfyE70fT6mxihvVjkRcuKhaDoOL4gzIqTuUsaVMCjJLV9Rh
- OpAESv01jXE94ENJm58AX8i9OoygDwdmyX2g5XwBApSYI86Y6hr9+Kgn2XgeCrXJXjG9cgi8rf0
- UFZ3+axV4fWYPm9OiPPH7C/OYQhz1dDZHbsJnLOlJdWkFL6KVln4Ir4HFD2TYUdWP7oX6sgx9S4
- q6ri9O+vnwcnUNOs0wVYwUXEGgs2OrUPm9PNUUrrbxxduc6FPTPe1tPWSpl2bKItl61J/ycnjLT
- A/UDoASlnU38LCY8tWRVlrjsKO8LRBUdG6GQu4F70JBot7Y8+OhzOa6g8KrQ6LqP0NgrtWktJeV
- UoYOLAHy+bflAX36uhLGVCAROQyVCYN9nD8ibA=
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28024.004
+X-TMASE-Result: 10--12.369600-10.000000
+X-TMASE-MatchedRID: P7d3tDo+wQqPvrMjLFD6eK5i3jK3KDOot3aeg7g/usAgUEQTkIWiYtPQ
+ +kcNsyKztjrLscdqa/XmD0/n9mv+d4T1xJNOHZm0uLt50vtxBA52ZYwNBqM6Ipyka59saICoPXc
+ ag8UDUcUi+t+0AiFaYvL3NxFKQpq1xOHHA5l3Dp03xmlyRdP8c30tCKdnhB58vqq8s2MNhPAir3
+ kOMJmHTLmHxFy+2CIWC24oEZ6SpSkj80Za3RRg8DMIkcpOLFW7su9MXLUro4QfP+3VGxandGVDS
+ CEMRpP9oYC0cwOOST0=
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] syscalls/link03: Remove this case
+Subject: Re: [LTP] [PATCH] vma05.sh: Fix check for core file presence
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,219 +81,44 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Yang
 
-It looks good to me. ^_^
-Reviewed-by: Xiao Yang <yangx.jy@fujitsu.com>
+On 2023/11/10 11:56, Yang Xu wrote:
+>   	rm -rf core*
+>   	{ vma05_vdso; } > /dev/null 2>&1
+> -	[ -f core ] || tst_brk TBROK "missing core file"
+> +	[ -f core* ] || tst_brk TBROK "missing core file"
+
+The root cause seems that the name of core file contains the pid number 
+by default. I think the better solution is set 
+/proc/sys/kernel/core_uses_pid to 0 before running vma05_vdso. Like this:
+
+diff --git a/testcases/kernel/mem/vma/vma05.sh 
+b/testcases/kernel/mem/vma/vma05.sh
+index a09951462..e1ef1014e 100755
+--- a/testcases/kernel/mem/vma/vma05.sh
++++ b/testcases/kernel/mem/vma/vma05.sh
+@@ -25,11 +25,13 @@ TST_NEEDS_CMDS="gdb"
+
+  CORE_LIMIT=$(ulimit -c)
+  CORE_PATTERN=$(cat /proc/sys/kernel/core_pattern)
++CORE_USES_PID=$(cat /proc/sys/kernel/core_uses_pid)
+
+  setup()
+  {
+         ulimit -c unlimited
+         echo "core" > /proc/sys/kernel/core_pattern
++       echo 0 > /proc/sys/kernel/core_uses_pid
+         unset DEBUGINFOD_URLS
+  }
+
+@@ -37,6 +39,7 @@ cleanup()
+  {
+         ulimit -c "$CORE_LIMIT"
+         echo "$CORE_PATTERN" > /proc/sys/kernel/core_pattern
++       echo $CORE_USES_PID > /proc/sys/kernel/core_uses_pid
+  }
 
 Best Regards,
 Xiao Yang
-
-On 2023/11/10 18:09, Yang Xu wrote:
-> I've noticed that the test objectives of link03 and link05
-> are very similar. Therefore, i think we can simply remove link03.
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-> ---
->   runtest/syscalls                          |   1 -
->   testcases/kernel/syscalls/link/.gitignore |   1 -
->   testcases/kernel/syscalls/link/link03.c   | 167 ----------------------
->   3 files changed, 169 deletions(-)
->   delete mode 100644 testcases/kernel/syscalls/link/link03.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 1851752cf..be55f3f87 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -694,7 +694,6 @@ lgetxattr02 lgetxattr02
->   
->   link01 symlink01 -T link01
->   link02 link02
-> -link03 link03
->   link04 link04
->   link05 link05
->   link08 link08
-> diff --git a/testcases/kernel/syscalls/link/.gitignore b/testcases/kernel/syscalls/link/.gitignore
-> index e5d7f1bbc..b2b9db632 100644
-> --- a/testcases/kernel/syscalls/link/.gitignore
-> +++ b/testcases/kernel/syscalls/link/.gitignore
-> @@ -1,5 +1,4 @@
->   /link02
-> -/link03
->   /link04
->   /link05
->   /link08
-> diff --git a/testcases/kernel/syscalls/link/link03.c b/testcases/kernel/syscalls/link/link03.c
-> deleted file mode 100644
-> index 1f45240ae..000000000
-> --- a/testcases/kernel/syscalls/link/link03.c
-> +++ /dev/null
-> @@ -1,167 +0,0 @@
-> -/*
-> - * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-> - *  AUTHOR		: Richard Logan
-> - *  CO-PILOT		: William Roske
-> - * Copyright (c) 2014 Cyril Hrubis <chrubis@suse.cz>
-> - *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms of version 2 of the GNU General Public License as
-> - * published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope that it would be useful, but
-> - * WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> - *
-> - * Further, this software is distributed without any warranty that it is
-> - * free of the rightful claim of any third person regarding infringement
-> - * or the like.  Any license provided herein, whether implied or
-> - * otherwise, applies only to this software file.  Patent licenses, if
-> - * any, provided herein do not apply to combinations of this program with
-> - * other software, or any other product whatsoever.
-> - *
-> - * You should have received a copy of the GNU General Public License along
-> - * with this program; if not, write the Free Software Foundation, Inc.,
-> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> - *
-> - * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-> - * Mountain View, CA  94043, or:
-> - *
-> - * http://www.sgi.com
-> - *
-> - * For further information regarding this notice, see:
-> - *
-> - * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-> - *
-> - */
-> -
-> - /*
-> -  * Tests that link(2) succeds with creating n links.
-> -  */
-> -
-> -#include <sys/types.h>
-> -#include <fcntl.h>
-> -#include <sys/stat.h>
-> -#include <errno.h>
-> -#include <string.h>
-> -#include <signal.h>
-> -#include "test.h"
-> -#include "safe_macros.h"
-> -
-> -static void setup(void);
-> -static void help(void);
-> -static void cleanup(void);
-> -
-> -char *TCID = "link03";
-> -int TST_TOTAL = 2;
-> -
-> -#define BASENAME	"lkfile"
-> -
-> -static char fname[255];
-> -static int nlinks = 0;
-> -static char *links_arg;
-> -
-> -option_t options[] = {
-> -	{"N:", NULL, &links_arg},
-> -	{NULL, NULL, NULL}
-> -};
-> -
-> -int main(int ac, char **av)
-> -{
-> -	int lc;
-> -	struct stat buf;
-> -	int i, links;
-> -	char lname[255];
-> -
-> -	tst_parse_opts(ac, av, options, &help);
-> -
-> -	if (links_arg) {
-> -		nlinks = atoi(links_arg);
-> -
-> -		if (nlinks == 0) {
-> -			tst_brkm(TBROK, NULL,
-> -			         "nlinks is not a positive number");
-> -		}
-> -
-> -		if (nlinks > 1000) {
-> -			tst_resm(TINFO,
-> -				 "nlinks > 1000 - may get errno:%d (EMLINK)",
-> -				 EMLINK);
-> -		}
-> -	}
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		tst_count = 0;
-> -
-> -		if (nlinks)
-> -			links = nlinks;
-> -		else
-> -			links = (lc % 90) + 10;
-> -
-> -		/* Create links - 1 hardlinks so that the st_nlink == links */
-> -		for (i = 1; i < links; i++) {
-> -			sprintf(lname, "%s%d", fname, i);
-> -			TEST(link(fname, lname));
-> -
-> -			if (TEST_RETURN == -1) {
-> -				tst_brkm(TFAIL | TTERRNO, cleanup,
-> -					 "link(%s, %s) Failed", fname, lname);
-> -			}
-> -		}
-> -
-> -		SAFE_STAT(cleanup, fname, &buf);
-> -
-> -		if (buf.st_nlink != (nlink_t)links) {
-> -			tst_resm(TFAIL, "Wrong number of links for "
-> -			         "'%s' have %i, should be %i",
-> -				 fname, (int)buf.st_nlink, links);
-> -			goto unlink;
-> -		}
-> -
-> -		for (i = 1; i < links; i++) {
-> -			sprintf(lname, "%s%d", fname, i);
-> -			SAFE_STAT(cleanup, lname, &buf);
-> -			if (buf.st_nlink != (nlink_t)links) {
-> -				tst_resm(TFAIL,
-> -				         "Wrong number of links for "
-> -					 "'%s' have %i, should be %i",
-> -					 lname, (int)buf.st_nlink, links);
-> -				goto unlink;
-> -			}
-> -		}
-> -
-> -		tst_resm(TPASS, "link() passed and linkcounts=%d match", links);
-> -
-> -unlink:
-> -		for (i = 1; i < links; i++) {
-> -			sprintf(lname, "%s%d", fname, i);
-> -			SAFE_UNLINK(cleanup, lname);
-> -		}
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -}
-> -
-> -static void help(void)
-> -{
-> -	printf("  -N #links : create #links hard links every iteration\n");
-> -}
-> -
-> -static void setup(void)
-> -{
-> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
-> -
-> -	tst_tmpdir();
-> -
-> -	sprintf(fname, "%s_%d", BASENAME, getpid());
-> -	SAFE_TOUCH(cleanup, fname, 0700, NULL);
-> -}
-> -
-> -static void cleanup(void)
-> -{
-> -	tst_rmdir();
-> -}
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
