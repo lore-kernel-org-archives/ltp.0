@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17A0CC4167B
-	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 12:56:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57802C4167B
+	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 12:59:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F06FB3CF671
-	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 13:56:54 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 52EAF3CD99A
+	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 13:59:33 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4D2A73CD97F
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 13:56:44 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id B8AE93CD97F
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 13:59:22 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9D30B1A007F5
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 13:56:34 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 95EAF200169
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 13:59:21 +0100 (CET)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B402A218FB;
- Tue, 28 Nov 2023 12:56:33 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8DCD021999;
+ Tue, 28 Nov 2023 12:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1701176193;
+ t=1701176360;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=7pglEf2bSQj6QmoeBVpVFfY4s/QgMkVQRdSNHtHXKEc=;
- b=eph1DlCDhP7cGvlJHIU6Jwnjcq0vKEGQd64QURAID2TpHYU3yxXuXAi7hLZHa616fVSJz8
- u3rnplFs7TkZ7E8AKJCOS4+cDWASoSntzsVVdg5HrjwOAWMPaNl9/R2kge7mpB5DbLFPCS
- G/lzcufR/V95M1WQ4LdCtG57GhMM7bY=
+ bh=3833MTK+s6ZUoJv0kTYi6N7MO9D34wE7LBBVquaMfU4=;
+ b=LjoADHfosepwgDCXXbBFfq84vhjJy7txgtBdNf82muKspuN9/YmcMVWcLuM3f0gtGcWDbI
+ h8+U+YfkDCi0BrPMRW9T47fGnD7qi0BltnZxaW/s8sXiOw8Pzo0oSC1pLwuuWyv+VQnO+S
+ xy6eu7+F+XQLIFm8/nCf/aqqCCFnzAs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1701176193;
+ s=susede2_ed25519; t=1701176360;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=7pglEf2bSQj6QmoeBVpVFfY4s/QgMkVQRdSNHtHXKEc=;
- b=RgWTNG8KDZEWWzEcPeC6BoXksGTwKI8zaPvxs8GwU7lOXDyEjoKxVUzcWPNkH9NUVyEqCc
- U1Qmsx4ZXmOACHBg==
+ bh=3833MTK+s6ZUoJv0kTYi6N7MO9D34wE7LBBVquaMfU4=;
+ b=goqiCJd6LGzta3MWLGQkxHDXT+Xyj+0HDeHi6+lOrMDGxeJFgOYA4CLMGBbFgbr6rXn9Pf
+ Lsalq1K3j7bgwyCg==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 99456139FC;
- Tue, 28 Nov 2023 12:56:33 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F005139FC;
+ Tue, 28 Nov 2023 12:59:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id zrcGJIHjZWVRFAAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Tue, 28 Nov 2023 12:56:33 +0000
-Date: Tue, 28 Nov 2023 13:56:32 +0100
+ by imap2.dmz-prg2.suse.org with ESMTPSA id jqHuGSjkZWU4FQAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Tue, 28 Nov 2023 12:59:20 +0000
+Date: Tue, 28 Nov 2023 13:59:19 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Andrea Cervesato <andrea.cervesato@suse.de>
-Message-ID: <20231128125632.GB381183@pevik>
-References: <20231120154248.15048-1-andrea.cervesato@suse.de>
+Message-ID: <20231128125919.GC381183@pevik>
+References: <20231120154842.17037-1-andrea.cervesato@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231120154248.15048-1-andrea.cervesato@suse.de>
+In-Reply-To: <20231120154842.17037-1-andrea.cervesato@suse.de>
 Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [1.47 / 50.00]; ARC_NA(0.00)[];
+X-Spamd-Result: default: False [1.51 / 50.00]; ARC_NA(0.00)[];
  HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[3];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_SPAM_SHORT(2.29)[0.764];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_SPAM_SHORT(2.07)[0.691];
  MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ RCPT_COUNT_FIVE(0.00)[5]; NEURAL_HAM_LONG(-1.00)[-1.000];
  RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.52)[80.32%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.26)[73.70%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] Delete fork09 test
+Subject: Re: [LTP] [PATCH v1] Delete getdtablesize01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,18 +99,14 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Andrea,
 
-> From: Andrea Cervesato <andrea.cervesato@suse.com>
+> The getdtablesize syscall has been created in the early Linux versions
+> and it has been replaced by getrlimit, which is now tested by its own
+> testing suite. For this reason we don't need this test anymore, since
+> its refactoring to new API can be considered a waste of time.
 
-> The fork09 test is actually testing what fork10 is already testing:
-> accessing an open child's file from parent. For this reason, we delete
-> it and let fork10 doing its job.
+Acked-by: Petr Vorel <pvorel@suse.cz>
 
-in fork09 parent opens maximum number of files, child closes one and attempts to
-open another. That is not exactly the same, but it's very similar.
-
-I'm not sure if the scenario would really tests different code path in
-kernel/libc or not and we can happily delete it.
-Cyril, WDYT?
+I'd like to get more ack for this.
 
 Kind regards,
 Petr
