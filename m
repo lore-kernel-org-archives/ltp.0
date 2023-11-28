@@ -4,66 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C520DC4167B
-	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 06:32:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C15A2C4167B
+	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 07:46:45 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AED453CD988
-	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 07:32:17 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 064183CD990
+	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 08:46:43 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE2EF3CB7FF
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 07:32:07 +0100 (CET)
-Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com
- [139.138.61.252])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id B718C3CB700
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 08:46:31 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 1D66B1400E51
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 07:32:06 +0100 (CET)
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="119998572"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695654000"; d="scan'208";a="119998572"
-Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
- by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Nov 2023 15:32:04 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
- [192.168.83.66])
- by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id C82B3D4F62
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 15:32:02 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 1D69DF992
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 15:32:02 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 9F8B24119F
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 15:32:01 +0900 (JST)
-Received: from [10.167.215.54] (unknown [10.167.215.54])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 34EC61A0070;
- Tue, 28 Nov 2023 14:32:01 +0800 (CST)
-Message-ID: <17196c76-e767-1353-6725-21d92c3633b8@fujitsu.com>
-Date: Tue, 28 Nov 2023 14:32:00 +0800
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C3FEA1400F98
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 08:46:30 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:98])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DA99D1F37E;
+ Tue, 28 Nov 2023 07:46:27 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B50CE133B5;
+ Tue, 28 Nov 2023 07:46:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap2.dmz-prg2.suse.org with ESMTPSA id IF0NK9OaZWVXNAAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Tue, 28 Nov 2023 07:46:27 +0000
+Date: Tue, 28 Nov 2023 08:46:26 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Stefan Roesch <shr@devkernel.io>
+Message-ID: <20231128074626.GA298624@pevik>
+References: <20231127174517.2369593-1-shr@devkernel.io>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-From: Xiao Yang <yangx.jy@fujitsu.com>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>, ltp@lists.linux.it
-References: <20231102080535.63847-1-xuyang2018.jy@fujitsu.com>
- <9bcca18a-42a8-2200-c6c1-0f97b42e11e6@fujitsu.com>
-In-Reply-To: <9bcca18a-42a8-2200-c6c1-0f97b42e11e6@fujitsu.com>
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28024.005
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28024.005
-X-TMASE-Result: 10--1.639600-10.000000
-X-TMASE-MatchedRID: wjdoQEOKyraPvrMjLFD6eK5i3jK3KDOoC/ExpXrHizzB5dpOqrSWikur
- PCb2dldyL8pdHj/gu/qbGV2woY7yrUPbYPqd/GaJngIgpj8eDcCcIZLVZAQa0PHGabLdyIkFF/+
- bTgkwLgkLbigRnpKlKZx+7GyJjhAUf3128dnF1goAyk0ze1dqEnuq3SCoXLe/z9mAs4nc5+hPwR
- 1mSoEsfCum1K6CfV+larGwI36oPqR931gCHvTe6RI394sFIBqxrYpOC6Au14ZHr0IsTgdOWjJcV
- zTDm9VqcsBjhhUpYerFhXMjdQIJpg==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+Content-Disposition: inline
+In-Reply-To: <20231127174517.2369593-1-shr@devkernel.io>
+X-Spamd-Bar: ++++++
+Authentication-Results: smtp-out2.suse.de; dkim=none; dmarc=none;
+ spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither
+ permitted nor denied by domain of pvorel@suse.cz)
+ smtp.mailfrom=pvorel@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [6.15 / 50.00];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; MID_RHS_NOT_FQDN(0.50)[];
+ ARC_NA(0.00)[]; R_SPF_SOFTFAIL(4.60)[~all];
+ RCPT_COUNT_FIVE(0.00)[6];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+ RCVD_COUNT_THREE(0.00)[3]; DMARC_NA(1.20)[suse.cz];
+ MX_GOOD(-0.01)[]; NEURAL_SPAM_LONG(0.46)[0.132];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ R_DKIM_NA(2.20)[]; MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Queue-Id: DA99D1F37E
 X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/2] pathconf01: Convert to new API
+Subject: Re: [LTP] [PATCH v1] mem: disable KSM smart scan for ksm tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,19 +80,90 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: linux-mm@kvack.org, kernel-team@fb.com, oliver.sang@intel.com,
+ ltp@lists.linux.it, david@redhat.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gMjAyMy8xMS8yOCAxMzoyMSwgWGlhbyBZYW5nIHdyb3RlOgo+IC0vKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCj4gLSAqIGNs
-ZWFudXAoKSAtIHBlcmZvcm1zIGFsbCBPTkUgVElNRSBjbGVhbnVwIGZvciB0aGlzIHRlc3QgYXQK
-PiAtICrCoMKgwqDCoMKgwqDCoCBjb21wbGV0aW9uIG9yIHByZW1hdHVyZSBleGl0Lgo+IC0gKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqLwo+ICDCoCB2b2lkIGNsZWFudXAodm9pZCkKSGkgWWFuZwoKT25lIG1vcmUgaGludDoKc3Rh
-dGljIHZvaWQgY2xlYW51cCh2b2lkKSBpcyBiZXR0ZXIgaGVyZS4KCkJlc3QgUmVnYXJkcywKWGlh
-byBZYW5nCj4gIMKgIHsKPiAtwqDCoMKgIGlmICghbGZsYWcpIHsKPiAtwqDCoMKgwqDCoMKgwqAg
-dHN0X3JtZGlyKCk7Cj4gLcKgwqDCoMKgwqDCoMKgIGZyZWUocGF0aCk7Cj4gLcKgwqDCoCB9Cj4g
-K8KgwqDCoCBmcmVlKHBhdGgpOwoKLS0gCk1haWxpbmcgbGlzdCBpbmZvOiBodHRwczovL2xpc3Rz
-LmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
+Hi Stefan,
+
+> This disables the "smart scan" KSM feature to make sure that the volatile
+> count remains at 0.
+
+> Signed-off-by: Stefan Roesch <devkernel.io>
+nit: you forgot 'shr@'
+Signed-off-by: Stefan Roesch <shr@devkernel.io>
+
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202311161132.13d8ce5a-oliver.sang@intel.com
+> ---
+>  testcases/kernel/mem/lib/mem.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+
+> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+> index fbfeef026..ef274a3ac 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -454,6 +454,9 @@ void create_same_memory(int size, int num, int unit)
+>  	       {'a', size*MB}, {'a', size*MB}, {'d', size*MB}, {'d', size*MB},
+>  	};
+
+> +  /* Disable smart scan for correct volatile counts. */
+> +  SAFE_FILE_PRINTF(PATH_KSM "smart_scan", "0");
+NOTE, this fails on the systems without /sys/kernel/mm/ksm/smart_scan:
+
+mem.c:458: TBROK: Failed to open FILE '/sys/kernel/mm/ksm/smart_scan' for writing: EACCES (13)
+
+NOTE, we normally handle the setup like this in test setup function.
+
+But new API has .save_restore which is more robust for tasks  like this.
+It's already used in ksm01.c, you need just to add this line:
+	{"/sys/kernel/mm/ksm/smart_scan", "0", TST_SR_SKIP},
+
+(instead of both SAFE_FILE_PRINTF)
+
+See:
+https://github.com/linux-test-project/ltp/wiki/C-Test-API#127-saving--restoring-procsys-values
+
+I wonder if ksm01.c is the only ksm test which needs to disable this.
+
+also nit: there is a wrong indent (spaces instead of tabs), please be consistent
+with the file content.
+
+NOTE: while this fixes problem on 6.7.0-rc1-2.g86e46c2-default (openSUSE),
+it does not fixes other problem on 6.5.10 on Debian (16 errors like these below):
+
+mem.c:252: TFAIL: pages_shared is not 2 but 5038.
+mem.c:252: TFAIL: pages_sharing is not 98302 but 593629.
+mem.c:252: TFAIL: pages_volatile is not 0 but 391.
+mem.c:252: TFAIL: pages_unshared is not 0 but 149157.
+
+I have no idea if this is a real bug which needs to be fixed or test false
+positive to be fixed, or whether the problem has already been fixed in newer
+kernels.
+
+> +
+>  	ps = sysconf(_SC_PAGE_SIZE);
+>  	pages = MB / ps;
+
+> @@ -526,6 +529,7 @@ void create_same_memory(int size, int num, int unit)
+
+>  	tst_res(TINFO, "stop KSM.");
+>  	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
+> +  SAFE_FILE_PRINTF(PATH_KSM "smart_scan", "1");
+nit: Again, wrong indent. You could have seen it also in the generated patch.
+
+Kind regards,
+Petr
+
+>  	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
+
+>  	while (waitpid(-1, &status, 0) > 0)
+
+> base-commit: 8c89ef3d451087ed6e18750bd5eedd10e5ab3d2e
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
