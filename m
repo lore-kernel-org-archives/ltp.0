@@ -4,73 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0CCDC4167B
-	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 13:49:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAB21C07E97
+	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 13:58:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 164443CDC0F
-	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 14:49:26 +0100 (CET)
-Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::5])
+	by picard.linux.it (Postfix) with ESMTP id 20BB53CDB6F
+	for <ltp@archiver.kernel.org>; Tue, 28 Nov 2023 14:58:51 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D17223CC2FA
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 14:49:15 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 0D4A73C88DB
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 14:58:40 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 062E3600058
- for <ltp@lists.linux.it>; Tue, 28 Nov 2023 14:49:14 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A7B791F74B;
- Tue, 28 Nov 2023 13:49:13 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 91EF0133B5;
- Tue, 28 Nov 2023 13:49:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id g//1ItnvZWVVJQAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Tue, 28 Nov 2023 13:49:13 +0000
-Date: Tue, 28 Nov 2023 14:49:12 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Message-ID: <20231128134912.GB401671@pevik>
-References: <20231102080535.63847-1-xuyang2018.jy@fujitsu.com>
- <20231102080535.63847-2-xuyang2018.jy@fujitsu.com>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 9EF5214000E5
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 14:58:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1701179918;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=pof1k06P68NWBEN7tDhpErru4t1NWmSZYWazYwfq+Q4=;
+ b=KUSJr8HjOrcfSqb/EZsGjNBrBooUqd4ai5qqA3SC0Nix9kd7eW36ixGMR19K02afQEgNe8
+ XUS+k6xrqdPvoIrmFuG6O5NSSXolSM4ltVaQ5lB7mejRYxLquWc0cuDS0lhtm4nqtUqedx
+ hLP7zo5Rau7YC39wOIfULCJkExW5Iec=
+Received: from mail-vk1-f197.google.com (mail-vk1-f197.google.com
+ [209.85.221.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-31-XEmJ_JEKPWODjagtZ8RQfg-1; Tue, 28 Nov 2023 08:58:36 -0500
+X-MC-Unique: XEmJ_JEKPWODjagtZ8RQfg-1
+Received: by mail-vk1-f197.google.com with SMTP id
+ 71dfb90a1353d-4b279f28ddeso149459e0c.3
+ for <ltp@lists.linux.it>; Tue, 28 Nov 2023 05:58:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1701179916; x=1701784716;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=pof1k06P68NWBEN7tDhpErru4t1NWmSZYWazYwfq+Q4=;
+ b=hNBLS3TAj7tS7uwKRhKzupRldbLJ5YKDl6p+feUoEXWj04iDFEz2lnxsxO5hJwk1Io
+ FNdb9EoDz+EHMiqOte4HcZuC+Qojtrenc0ZpMFaE+hzlMcdQ1J8LlQYJokPoJzaHlr1b
+ EEJOhFRCCgTudjxYVjUHftwue5qUtzM4o072peoDlyCOGss3PMRk/1muM2rFMuRxv+2N
+ Vc0m2n70bbAhsICmEV96qdxUI5rUBuUTIsMapArnpzzjvttEnrWJyDVAahUaICmcoT84
+ fV6CDk0/A8xdyk4uXeTo/zCjZ1kslMJ+IvkphN6KX28ZOqnpdKfX22idAMyqOGnr35+J
+ 0+9w==
+X-Gm-Message-State: AOJu0YxZkbLeBERE3o5XbRtDmSYx7YnDkx7nBGfFzA1w2fhDYCPzi+bo
+ aUU3jkusu8Lqe4ZQjudEpVJFKBXPvZGVmUd9pkkdAXh9t6KDzD9+IYd7P9EN/DP11/+xG9dYok6
+ 0LLdvzkJDhFB7lnjL18hrs88l9zQ=
+X-Received: by 2002:a05:6122:3106:b0:4ac:22c7:89d5 with SMTP id
+ cg6-20020a056122310600b004ac22c789d5mr10441178vkb.2.1701179916255; 
+ Tue, 28 Nov 2023 05:58:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHR+7/ulOTDv15QYixKYOMroQ/rSOvLVR45cnsjnzsd9Ke8vgW6uZi/CEIc3USwzNWJxf6A1saQq4bwQy7POhc=
+X-Received: by 2002:a05:6122:3106:b0:4ac:22c7:89d5 with SMTP id
+ cg6-20020a056122310600b004ac22c789d5mr10441166vkb.2.1701179915895; Tue, 28
+ Nov 2023 05:58:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231102080535.63847-2-xuyang2018.jy@fujitsu.com>
-X-Spamd-Bar: +++++++++++
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out2.suse.de; dkim=none;
- spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither
- permitted nor denied by domain of pvorel@suse.cz)
- smtp.mailfrom=pvorel@suse.cz; dmarc=none
-X-Rspamd-Queue-Id: A7B791F74B
-X-Spamd-Result: default: False [11.99 / 50.00];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; MID_RHS_NOT_FQDN(0.50)[];
- ARC_NA(0.00)[]; R_SPF_SOFTFAIL(4.60)[~all];
- DMARC_NA(1.20)[suse.cz];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
- RCVD_COUNT_THREE(0.00)[3]; MX_GOOD(-0.01)[];
- RCPT_COUNT_TWO(0.00)[2]; NEURAL_SPAM_LONG(3.50)[1.000];
- NEURAL_HAM_SHORT(-0.20)[-0.990];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- R_DKIM_NA(2.20)[]; MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
+References: <20231120154842.17037-1-andrea.cervesato@suse.de>
+ <20231128125919.GC381183@pevik>
+In-Reply-To: <20231128125919.GC381183@pevik>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 28 Nov 2023 14:58:18 +0100
+Message-ID: <CAASaF6xTTexWFo1720V4EDDL7hpn8d-gtO-49a2r-mCjpy3T9Q@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 2/2] Add error tests for pathconf() system call
+Subject: Re: [LTP] [PATCH v1] Delete getdtablesize01 test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,120 +86,19 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Xu,
-
-> +/*\
-> + * [Description]
-> + *
-> + * Verify that,
-> + *
-> + * - pathconf() fails with ENOTDIR if A component used as a directory
-nit: s/if A/if a/
-
-> + *   in path is not in fact a directory.
-> + * - pathconf() fails with ENOENT if path is an empty string.
-> + * - pathconf() fails with ENAMETOOLONG if path is too long.
-> + * - pathconf() fails with EINVA if name is invalid.
-> + * - pathconf() fails with EACCES if search permission is denied for
-> + *   one of the directories in the path prefix of path.
-> + * - pathconf() fails with ELOOP if too many symbolic links were
-> + *   encountered while resolving path.
-> + */
-> +
-> +#define FILEPATH "testfile/testfile_1"
-> +#define TESTELOOP "test_eloop1"
-> +
-> +#include <stdlib.h>
-> +#include <pwd.h>
-> +#include "tst_test.h"
-> +
-> +static char *fpath;
-> +static char *emptypath;
-> +static char path[PATH_MAX + 2];
-Maybe define some constant and use it also on other place?
-e.g.:
-
-#define PATH_LEN (PATH_MAX + 2)
-
-> +static char *long_path = path;
-> +static char *abs_path;
-> +static char *testeloop;
-> +static struct passwd *user;
-> +
-> +static struct tcase {
-> +	char **path;
-> +	int name;
-> +	int exp_errno;
-> +	char *desc;
-> +} tcases[] = {
-> +	{&fpath, 0, ENOTDIR, "path prefix is not a directory"},
-> +	{&emptypath, 0, ENOENT, "path is an empty string"},
-> +	{&long_path, 0, ENAMETOOLONG, "path is too long"},
-> +	{&abs_path, -1, EINVAL, "name is invalid"},
-> +	{&abs_path, 0, EACCES, "without full permissions of the path prefix"},
-> +	{&testeloop, 0, ELOOP, "too many symbolic links"},
-> +};
-> +
-> +static void verify_fpathconf(unsigned int i)
-> +{
-> +	struct tcase *tc = &tcases[i];
-> +
-> +	if (tc->exp_errno == EACCES)
-> +		SAFE_SETEUID(user->pw_uid);
-> +
-> +	TST_EXP_FAIL(pathconf(*tc->path, tc->name), tc->exp_errno,
-> +		     "pathconf() fail with %s", tc->desc);
-> +
-> +	if (tc->exp_errno == EACCES)
-> +		SAFE_SETEUID(0);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	user = SAFE_GETPWNAM("nobody");
-> +
-> +	SAFE_TOUCH("testfile", 0777, NULL);
-> +
-> +	char *tmpdir =  tst_get_tmpdir();
-> +
-> +	abs_path = tst_aprintf("%s/%s", tmpdir, FILEPATH);
-> +
-> +	SAFE_CHMOD(tmpdir, 0);
-> +	free(tmpdir);
-> +
-> +	memset(path, 'a', PATH_MAX + 2);
-> +
-> +	SAFE_SYMLINK("test_eloop1", "test_eloop2");
-> +	SAFE_SYMLINK("test_eloop2", "test_eloop1");
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tcnt = ARRAY_SIZE(tcases),
-> +	.test = verify_fpathconf,
-> +	.setup = setup,
-> +	.needs_tmpdir = 1,
-> +	.bufs = (struct tst_buffers []) {
-> +		{&fpath, .str = FILEPATH},
-> +		{&emptypath, .str = ""},
-> +		{&testeloop, .str = TESTELOOP},
-> +		{},
-> +	},
-> +	.needs_root = 1,
-> +};
-
-The rest LGTM.
-
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gVHVlLCBOb3YgMjgsIDIwMjMgYXQgMTo1OeKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
+LmN6PiB3cm90ZToKPgo+IEhpIEFuZHJlYSwKPgo+ID4gVGhlIGdldGR0YWJsZXNpemUgc3lzY2Fs
+bCBoYXMgYmVlbiBjcmVhdGVkIGluIHRoZSBlYXJseSBMaW51eCB2ZXJzaW9ucwo+ID4gYW5kIGl0
+IGhhcyBiZWVuIHJlcGxhY2VkIGJ5IGdldHJsaW1pdCwgd2hpY2ggaXMgbm93IHRlc3RlZCBieSBp
+dHMgb3duCj4gPiB0ZXN0aW5nIHN1aXRlLiBGb3IgdGhpcyByZWFzb24gd2UgZG9uJ3QgbmVlZCB0
+aGlzIHRlc3QgYW55bW9yZSwgc2luY2UKPiA+IGl0cyByZWZhY3RvcmluZyB0byBuZXcgQVBJIGNh
+biBiZSBjb25zaWRlcmVkIGEgd2FzdGUgb2YgdGltZS4KPgo+IEFja2VkLWJ5OiBQZXRyIFZvcmVs
+IDxwdm9yZWxAc3VzZS5jej4KPgo+IEknZCBsaWtlIHRvIGdldCBtb3JlIGFjayBmb3IgdGhpcy4K
+CkFja2VkLWJ5OiBKYW4gU3RhbmNlayA8anN0YW5jZWtAcmVkaGF0LmNvbT4KCgotLSAKTWFpbGlu
+ZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
