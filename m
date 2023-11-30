@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CACDC4167B
-	for <ltp@archiver.kernel.org>; Thu, 30 Nov 2023 09:37:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B409C4167B
+	for <ltp@archiver.kernel.org>; Thu, 30 Nov 2023 09:37:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 46EEE3CD937
-	for <ltp@archiver.kernel.org>; Thu, 30 Nov 2023 10:37:23 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id D77D43CD9A2
+	for <ltp@archiver.kernel.org>; Thu, 30 Nov 2023 10:37:32 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4B8F03C8960
+ by picard.linux.it (Postfix) with ESMTPS id 680D43CD5A6
  for <ltp@lists.linux.it>; Thu, 30 Nov 2023 10:37:13 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id C4C96207CD4
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id BC13E603449
  for <ltp@lists.linux.it>; Thu, 30 Nov 2023 10:37:12 +0100 (CET)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D94471FCDC;
- Thu, 30 Nov 2023 09:37:11 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 26C1A1FCDE;
+ Thu, 30 Nov 2023 09:37:12 +0000 (UTC)
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C41A113B4A;
- Thu, 30 Nov 2023 09:37:11 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1ACB013A5C;
+ Thu, 30 Nov 2023 09:37:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id FxemL8dXaGVYKAAAn2gu4w
- (envelope-from <jack@suse.cz>); Thu, 30 Nov 2023 09:37:11 +0000
+ by imap2.dmz-prg2.suse.org with ESMTPSA id DkGJBshXaGVlKAAAn2gu4w
+ (envelope-from <jack@suse.cz>); Thu, 30 Nov 2023 09:37:12 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
- id 50F33A07E6; Thu, 30 Nov 2023 10:37:11 +0100 (CET)
+ id 66CD1A07EF; Thu, 30 Nov 2023 10:37:11 +0100 (CET)
 From: Jan Kara <jack@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 30 Nov 2023 10:37:05 +0100
-Message-Id: <20231130093711.20171-2-jack@suse.cz>
+Date: Thu, 30 Nov 2023 10:37:08 +0100
+Message-Id: <20231130093711.20171-5-jack@suse.cz>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20231130093533.10036-1-jack@suse.cz>
 References: <20231130093533.10036-1-jack@suse.cz>
@@ -53,11 +53,10 @@ Authentication-Results: smtp-out2.suse.de;
 X-Rspamd-Server: rspamd2
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	 REPLY(-4.00)[]
-X-Rspamd-Queue-Id: D94471FCDC
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Rspamd-Queue-Id: 26C1A1FCDE
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 2/7] fanotify: Print more details on error from
- fanotify_flags_supported_on_fs()
+Subject: [LTP] [PATCH v2 5/7] fanotify: Drop unused feature test macros
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,41 +74,78 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Print more details about failing calls from
-fanotify_flags_supported_on_fs().
+Drop now unused feature test macros
+fanotify_events_supported_by_kernel() and
+fanotify_mark_supported_by_kernel().
 
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- testcases/kernel/syscalls/fanotify/fanotify.h | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ testcases/kernel/syscalls/fanotify/fanotify.h | 44 -------------------
+ 1 file changed, 44 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
-index f34440e0bd41..3b8838e8dd68 100644
+index 1c30a0bcab2a..d49966810381 100644
 --- a/testcases/kernel/syscalls/fanotify/fanotify.h
 +++ b/testcases/kernel/syscalls/fanotify/fanotify.h
-@@ -195,7 +195,9 @@ static inline int fanotify_flags_supported_on_fs(unsigned int init_flags,
- 		if (errno == ENOSYS)
- 			tst_brk(TCONF, "fanotify not configured in kernel");
- 		if (errno != EINVAL)
--			tst_brk(TBROK | TERRNO, "fanotify_init() failed");
-+			tst_brk(TBROK | TERRNO,
-+				"fanotify_init(%x, O_RDONLY) failed",
-+				init_flags);
- 		return -1;
- 	}
+@@ -152,29 +152,6 @@ static inline void require_fanotify_access_permissions_supported_by_kernel(void)
+ 	SAFE_CLOSE(fd);
+ }
  
-@@ -204,8 +206,9 @@ static inline int fanotify_flags_supported_on_fs(unsigned int init_flags,
- 			rval = strcmp(fname, OVL_MNT) ? -2 : -3;
- 		} else if (errno != EINVAL) {
- 			tst_brk(TBROK | TERRNO,
--				"fanotify_mark (%d, FAN_MARK_ADD, ..., AT_FDCWD, %s) failed",
--				fd, fname);
-+				"fanotify_mark (%d, FAN_MARK_ADD | %x, %llx, AT_FDCWD, %s) failed",
-+				fd, mark_flags, (unsigned long long)event_flags,
-+				fname);
- 		} else {
- 			rval = -1;
- 		}
+-static inline int fanotify_events_supported_by_kernel(uint64_t mask,
+-						      unsigned int init_flags,
+-						      unsigned int mark_flags)
+-{
+-	int fd;
+-	int rval = 0;
+-
+-	fd = SAFE_FANOTIFY_INIT(init_flags, O_RDONLY);
+-
+-	if (fanotify_mark(fd, FAN_MARK_ADD | mark_flags, mask, AT_FDCWD, ".") < 0) {
+-		if (errno == EINVAL) {
+-			rval = -1;
+-		} else {
+-			tst_brk(TBROK | TERRNO,
+-				"fanotify_mark (%d, FAN_MARK_ADD, ..., AT_FDCWD, \".\") failed", fd);
+-		}
+-	}
+-
+-	SAFE_CLOSE(fd);
+-
+-	return rval;
+-}
+-
+ /*
+  * @return  0: fanotify flags supported both in kernel and on tested filesystem
+  * @return -1: @init_flags not supported in kernel
+@@ -307,27 +284,6 @@ static inline void fanotify_flags_err_msg(const char *flags_str,
+ 	fanotify_flags_err_msg(#flags, __FILE__, __LINE__, tst_brk_, \
+ 		fanotify_init_flags_supported_by_kernel(flags))
+ 
+-static inline int fanotify_mark_supported_by_kernel(uint64_t flag)
+-{
+-	int fd;
+-	int rval = 0;
+-
+-	fd = SAFE_FANOTIFY_INIT(FAN_CLASS_CONTENT, O_RDONLY);
+-
+-	if (fanotify_mark(fd, FAN_MARK_ADD | flag, FAN_ACCESS, AT_FDCWD, ".") < 0) {
+-		if (errno == EINVAL) {
+-			rval = -1;
+-		} else {
+-			tst_brk(TBROK | TERRNO,
+-				"fanotify_mark (%d, FAN_MARK_ADD, ..., FAN_ACCESS, AT_FDCWD, \".\") failed", fd);
+-		}
+-	}
+-
+-	SAFE_CLOSE(fd);
+-
+-	return rval;
+-}
+-
+ static inline int fanotify_handle_supported_by_kernel(int flag)
+ {
+ 	/*
 -- 
 2.35.3
 
