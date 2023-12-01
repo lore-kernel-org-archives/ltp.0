@@ -4,72 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2841C4167B
-	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 08:23:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EE91C4167B
+	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 09:25:24 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B4F773CD923
-	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 09:23:02 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id B94BF3CD93B
+	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 10:25:21 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3DEEE3CD0FE
- for <ltp@lists.linux.it>; Fri,  1 Dec 2023 09:22:47 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id D2D843CD11C
+ for <ltp@lists.linux.it>; Fri,  1 Dec 2023 10:25:11 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id DE31410149A0
- for <ltp@lists.linux.it>; Fri,  1 Dec 2023 09:22:46 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 1C4336000E7
+ for <ltp@lists.linux.it>; Fri,  1 Dec 2023 10:25:10 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 693A321C28;
- Fri,  1 Dec 2023 08:22:45 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 93A6521B14;
+ Fri,  1 Dec 2023 09:25:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1701422707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=JtdhtyvZjDmv83TvHgBvkIeEVAfKrI0iSz0eNKaqDag=;
+ b=x3TMvxQ1zZ37VYF6BIv838t7WV6LcBO5UKwGpteYRw4ngWAJZoffBUk2kRwzIGde1UaMYa
+ naHJ5YkF4wPyG1eW7QEluVB6BxWiprz7D20GG88JJ7P3xCxk2nGpIG9zUmGV/BlhhTZH5v
+ Np6CB39qAt31eKAwq1N/LABaLA9oiS4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1701422707;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+ bh=JtdhtyvZjDmv83TvHgBvkIeEVAfKrI0iSz0eNKaqDag=;
+ b=slYra9LgVVw110U5elQKcJPjvZEniLwY54NszK2sdySnjUBRrRmBFzeq7ylNV5fxgO7Uut
+ d41eywEyGA5AFEBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4A0381344E;
- Fri,  1 Dec 2023 08:22:45 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7B2331369E;
+ Fri,  1 Dec 2023 09:25:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id bjR1ENWXaWU6VAAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Fri, 01 Dec 2023 08:22:45 +0000
-Date: Fri, 1 Dec 2023 09:22:43 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Mengchi Cheng <mengcc@amazon.com>
-Message-ID: <20231201082243.GA1710028@pevik>
-References: <20231130104127.GA3099694@pevik>
- <20231130221522.689680-1-mengcc@amazon.com>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id 55TSHHOmaWUWTwAAD6G6ig
+ (envelope-from <mdoucha@suse.cz>); Fri, 01 Dec 2023 09:25:07 +0000
+Message-ID: <8d858cd9-4a03-4b9d-902b-1c585baf494f@suse.cz>
+Date: Fri, 1 Dec 2023 10:25:07 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231130221522.689680-1-mengcc@amazon.com>
-X-Spamd-Bar: ++++++
-Authentication-Results: smtp-out1.suse.de; dkim=none; dmarc=none;
- spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither
- permitted nor denied by domain of pvorel@suse.cz)
- smtp.mailfrom=pvorel@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [6.40 / 50.00];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; MID_RHS_NOT_FQDN(0.50)[];
- ARC_NA(0.00)[]; R_SPF_SOFTFAIL(4.60)[~all];
- DMARC_NA(1.20)[suse.cz];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
- RCVD_COUNT_THREE(0.00)[3]; MX_GOOD(-0.01)[];
- RCPT_COUNT_TWO(0.00)[2]; NEURAL_SPAM_LONG(0.71)[0.203];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- R_DKIM_NA(2.20)[]; MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Queue-Id: 693A321C28
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>
+References: <20231130161147.20862-1-mdoucha@suse.cz>
+ <TYWPR01MB11829135B82D5892D2C22AE73FD81A@TYWPR01MB11829.jpnprd01.prod.outlook.com>
+Content-Language: en-US
+From: Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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
+In-Reply-To: <TYWPR01MB11829135B82D5892D2C22AE73FD81A@TYWPR01MB11829.jpnprd01.prod.outlook.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-1.54 / 50.00]; ARC_NA(0.00)[];
+ TO_DN_EQ_ADDR_SOME(0.00)[]; XM_UA_NO_VERSION(0.01)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; BAYES_HAM(-0.45)[78.92%];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWO(0.00)[2]; FUZZY_BLOCKED(0.00)[rspamd.com];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ RCVD_TLS_ALL(0.00)[]; MID_RHS_MATCH_FROM(0.00)[]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] rwtest: Confirm df is a symlink to busybox
+Subject: Re: [LTP] [PATCH] ioctl_loop06: Check for unsupported
+ LOOP_SET_BLOCK_SIZE ioctl
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,86 +136,30 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> On Thu, 2023-11-30 10:41:27 +0000, Petr Vorel wrote:
+On 01. 12. 23 2:57, Yang Xu (Fujitsu) wrote:
+> Hi Martin
+> 
+> I guess commit message can add more clear information ie old kernel 4.x.
+> 
+> Also, why not add this check in setup() since we have did it in there?
 
-> > Hi Mengchi,
+Hmm, yes, I've missed that there's a TCONF check for LOOP_SET_BLOCK_SIZE 
+in setup() already. Extending that would be better. I'll send v2 shortly.
 
-> > > /bin/df can be a symlink to coreutils. It returns correct info with dir
-> > > arguments.
-> > > Just checking if df is a symlink will include such cases. Need to make
-> > > sure it is linking to busybox before ignoring options.
+-- 
+Martin Doucha   mdoucha@suse.cz
+SW Quality Engineer
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
 
-> > > Signed-off-by: Mengchi Cheng <mengcc@amazon.com>
-> > > ---
-> > >  testcases/kernel/fs/doio/rwtest | 8 ++++----
-> > >  1 file changed, 4 insertions(+), 4 deletions(-)
-
-> > > diff --git a/testcases/kernel/fs/doio/rwtest b/testcases/kernel/fs/doio/rwtest
-> > > index 6725e1426..26659e9d3 100644
-> > > --- a/testcases/kernel/fs/doio/rwtest
-> > > +++ b/testcases/kernel/fs/doio/rwtest
-> > > @@ -329,10 +329,10 @@ do
-> > >  		else
-> > >  			# If df is a symlink (to busybox) then do not pass the $dir and $dfOpts
-> > >  			# parameters because they don't work as expected
-> > > -                        if test -h $(which df)
-> > > -                           then
-> > > -                               dir=""; dfOpts="";
-> > > -                        fi
-> > > +			if [[ "$(readlink -f "$(which df)")" == *"busybox"* ]]
-> > Could you please test if this works?
-
-> > 			if [ "$(readlink -f "$(which df)")" = "busybox" ]
-
-> I just replaced df with a symlink cmd and the string such as zstdmt/zstd in ubuntu.
-> It does not work..
-> But below should work
-> 			if echo "$(readlink -f "$(which df)")" | grep -q "busybox"
-
-Yes, this would work, but this would be better:
-
-if df --version 2>&1 | grep -q 'BusyBox'
-
-this is way simpler and this detection is already used elsewhere.
-
-BTW how can happen that df is symlink on coreutils?
-They provide a binary, right?
-
-> However, I linked df to /bin/busybox on my device, df -P ${dir} seems fine.
-> The original code may be for a very old version of busybox.
-> :/# ls -l /bin/df
-> lrwxrwxrwx 1 root root 12 2023-11-16 17:49 /bin/df -> /bin/busybox
-> :/# df -P tmp
-> Filesystem           1024-blocks    Used Available Capacity Mounted on
-> tmpfs                   280848         4    280844   0% /tmp
-> :/# /usr/bin/df.coreutils -P tmp
-> Filesystem     1024-blocks  Used Available Capacity Mounted on
-> tmpfs               280848     4    280844       1% /tmp
-
-> My busybox version is v1.35.0. It might be ok to remove the check completely.
-
--P was implemented in 2008
-https://github.com/mirror/busybox/commit/d66aa3c701ffb83343239e71a8b294407ff5df86
-
-BusyBox has often some features configurable (feature can be disabled), but if I
-look correctly -P is not guarded to any config option
-
-https://github.com/mirror/busybox/blob/master/coreutils/df.c
-
-Therefore I'm for removing this option entirely. Please send v2.
-
-Kind regards,
-Petr
-
-> Best,
-> Mengchi
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
