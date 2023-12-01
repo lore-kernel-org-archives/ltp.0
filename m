@@ -4,71 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5AA5C4167B
-	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 18:48:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 523BBC4167B
+	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 20:06:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 997663CF63C
-	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 19:48:30 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 4DBE93CF621
+	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 21:06:30 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B12923CD2D3
- for <ltp@lists.linux.it>; Fri,  1 Dec 2023 19:48:19 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id 719323CD933
+ for <ltp@lists.linux.it>; Fri,  1 Dec 2023 21:06:18 +0100 (CET)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 381C520118C
- for <ltp@lists.linux.it>; Fri,  1 Dec 2023 19:48:18 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EF71621CC1;
- Fri,  1 Dec 2023 18:48:17 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C8E1E1344E;
- Fri,  1 Dec 2023 18:48:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id /MekL3EqamXmBQAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Fri, 01 Dec 2023 18:48:17 +0000
-Date: Fri, 1 Dec 2023 19:48:16 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Marius Kittler <mkittler@suse.de>
-Message-ID: <20231201184816.GF2829815@pevik>
-References: <20231114150922.28652-1-mkittler@suse.de>
- <20231114150922.28652-2-mkittler@suse.de>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 2496360250E
+ for <ltp@lists.linux.it>; Fri,  1 Dec 2023 21:06:15 +0100 (CET)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id 3C2715C0067;
+ Fri,  1 Dec 2023 15:06:14 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute2.internal (MEProxy); Fri, 01 Dec 2023 15:06:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+ cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+ :in-reply-to:message-id:mime-version:references:reply-to:sender
+ :subject:subject:to:to; s=fm2; t=1701461174; x=1701547574; bh=3M
+ pnxnJ9p0dPBD2wAv8t1shHRqUJ2V2PQWkP1HkspCo=; b=E09av+jX+JsoZNWG27
+ 8IQprqDZgcVWWb/SyxbR19/47u4cYGJp1dAwqp4Q7vE2ohrZflLFqvhqYAYwiEHA
+ tY5FuvnStXDC0SdAfgT6iWTllZ6ZeKwwliQS8NyJNpqPSiA6sv8w/WIVpoZtdYdf
+ +fDpjhd5yVKF99ttFaxU6NuzaXnb4UXz+XIcL96Mdunv2/BzJB1VM+V9ez7EsePp
+ j8/Y1O8yFUup965slU/hPMnLsizGEhyKPBtzgg1pkhYqtOmWOLPg0BU0hezqNj3t
+ zPmWXSZHUHuFvTdEGWcbVtfAtCMmKn7tuOtZivvuow6rT+Z7W9V1syV7rfTBoQ+j
+ AarA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-type:content-type:date:date
+ :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+ :message-id:mime-version:references:reply-to:sender:subject
+ :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm1; t=1701461174; x=1701547574; bh=3MpnxnJ9p0dPB
+ D2wAv8t1shHRqUJ2V2PQWkP1HkspCo=; b=mtlVJD/TKcPDDgVo4BuvO7DKBD17G
+ OucQlT2mkYx4S8w87TMsD1dBh83o9JSapTEemex+BDWaIhA3lDURbfAgBoi2rEOS
+ pCLbcTjMXyyHH85iDg1Js1HCdcbRSStvEWkpeiJSAds9jlAnILqnjFFOHrSfE4UK
+ 9xaU/J6+h29ENY1ev7noYBdrIqDAUR3P9N+SiR7WHXUAlNaG2WF0hgm9FqyzxSj+
+ hM208Lct5/2Y9tmuWJf1JwO/+u8bgsJinCl6UJeoZrEZ9K6GpW3hwEPCdMRJsN5F
+ RhV6a9TMuYQWbWj/++rui+MavMtfbmGY1S+0/3BymmApqai7+OOeGcaCg==
+X-ME-Sender: <xms:tTxqZVq2bL6Z6Vmkm1ll23zM9xNb5XWn0nv-SGpBnSmvRHu86uTyjA>
+ <xme:tTxqZXqcDC9QSuEtshLJSqdjrUFg8pqWQhb7zZAIOJ1XG8zR0ZEcLdULbAmIGw0Rc
+ 1_T9yAtBu68L1HecVc>
+X-ME-Received: <xmr:tTxqZSOUzGBJRE_bUNpd7JcOcGXn0YWeWXevKSABvfWvyO1R2IVhdZh9>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudeffecutefuodetggdotefrod
+ ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+ necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+ enucfjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgv
+ fhgrnhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrg
+ htthgvrhhnpeegtedvkeegleefffeuueevjeeijefhjeelhfefheeiheeiveehveevhfej
+ tdfhieenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhgihhthhhusgdrtghomhenuc
+ evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehshhhrsegu
+ vghvkhgvrhhnvghlrdhioh
+X-ME-Proxy: <xmx:tTxqZQ7xWTNF4Q58JEUMrMbnSSqFH74PmUZ2HjUwdDqhgAtz7TWNAQ>
+ <xmx:tTxqZU77CUX9mutzLA71wP4UgjCx30gp_jnLfTWgYrGhqWQ16RntcQ>
+ <xmx:tTxqZYiw1i25RQeqo39xGOHtIHtbkkIsUEuKXTghR8L2bmybkkzglg>
+ <xmx:tjxqZf05L6c-Rmxn0yJVqi1BSRdQvRFHLsJsIoFgiyalsRRLWPSqUg>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Dec 2023 15:06:11 -0500 (EST)
+References: <20231127174517.2369593-1-shr@devkernel.io>
+ <20231128074626.GA298624@pevik>
+User-agent: mu4e 1.10.3; emacs 29.1
+From: Stefan Roesch <shr@devkernel.io>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 01 Dec 2023 12:02:22 -0800
+In-reply-to: <20231128074626.GA298624@pevik>
+Message-ID: <878r6d6633.fsf@devkernel.io>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231114150922.28652-2-mkittler@suse.de>
-X-Spamd-Bar: +++++++++++
-Authentication-Results: smtp-out1.suse.de; dkim=none; dmarc=none;
- spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither
- permitted nor denied by domain of pvorel@suse.cz)
- smtp.mailfrom=pvorel@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [11.68 / 50.00];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- MID_RHS_NOT_FQDN(0.50)[]; ARC_NA(0.00)[];
- R_SPF_SOFTFAIL(4.60)[~all]; DMARC_NA(1.20)[suse.cz];
- RCVD_COUNT_THREE(0.00)[3]; MX_GOOD(-0.01)[];
- NEURAL_SPAM_LONG(2.99)[0.853]; FUZZY_BLOCKED(0.00)[rspamd.com];
- FROM_EQ_ENVFROM(0.00)[]; R_DKIM_NA(2.20)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Queue-Id: EF71621CC1
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 1/1] Extend ioctl02 to test termio and termios
+Subject: Re: [LTP] [PATCH v1] mem: disable KSM smart scan for ksm tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,132 +93,105 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: linux-mm@kvack.org, kernel-team@fb.com, oliver.sang@intel.com,
+ ltp@lists.linux.it, david@redhat.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-I posted it to the cover letter, but better to add it also to the patch:
 
-BTW this v3 is exactly the same as v2. What am I missing?
+Petr Vorel <pvorel@suse.cz> writes:
 
-Cyril asked you [1] to pass flag parameter to the macro, because you modify it
-and it's not a good code to modify variable in macro without passing it.
-Obviously you should return it as well (not that compact code, but it's really
-better).
+> Hi Stefan,
+>
+>> This disables the "smart scan" KSM feature to make sure that the volatile
+>> count remains at 0.
+>
+>> Signed-off-by: Stefan Roesch <devkernel.io>
+> nit: you forgot 'shr@'
+> Signed-off-by: Stefan Roesch <shr@devkernel.io>
+>
 
-I understood it like:
+Thanks, will be fixed with the next version.
 
-#define CMP_ATTR(term_exp, term, attr, flag) \
-	({                                                      \
-	flag += cmp_attr((term_exp).attr, (term).attr, #attr);	\
-	flag;                                                   \
-	})
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>> Closes: https://lore.kernel.org/oe-lkp/202311161132.13d8ce5a-oliver.sang@intel.com
+>> ---
+>>  testcases/kernel/mem/lib/mem.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>
+>> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+>> index fbfeef026..ef274a3ac 100644
+>> --- a/testcases/kernel/mem/lib/mem.c
+>> +++ b/testcases/kernel/mem/lib/mem.c
+>> @@ -454,6 +454,9 @@ void create_same_memory(int size, int num, int unit)
+>>  	       {'a', size*MB}, {'a', size*MB}, {'d', size*MB}, {'d', size*MB},
+>>  	};
+>
+>> +  /* Disable smart scan for correct volatile counts. */
+>> +  SAFE_FILE_PRINTF(PATH_KSM "smart_scan", "0");
+> NOTE, this fails on the systems without /sys/kernel/mm/ksm/smart_scan:
+>
+> mem.c:458: TBROK: Failed to open FILE '/sys/kernel/mm/ksm/smart_scan' for writing: EACCES (13)
+>
+> NOTE, we normally handle the setup like this in test setup function.
+>
+> But new API has .save_restore which is more robust for tasks  like this.
+> It's already used in ksm01.c, you need just to add this line:
+> 	{"/sys/kernel/mm/ksm/smart_scan", "0", TST_SR_SKIP},
+>
 
-To speedup this, I merged with following diff below.
-Thanks!
+I'll add it with the next version
 
-Kind regards,
-Petr
+> (instead of both SAFE_FILE_PRINTF)
+>
+> See:
+> https://github.com/linux-test-project/ltp/wiki/C-Test-API#127-saving--restoring-procsys-values
+>
+> I wonder if ksm01.c is the only ksm test which needs to disable this.
+>
 
-[1] https://lore.kernel.org/ltp/ZUUV9MiVadNA75WY@yuki/
+Other tests will also need it. They also use the create_same_memory()
+function.
 
-+++ testcases/kernel/syscalls/ioctl/ioctl02.c
-@@ -8,8 +8,7 @@
- /*\
-  * [Description]
-  *
-- * Testcase to test the TCGETA/TCGETS, and TCSETA/TCSETS ioctl
-- * implementations for the tty driver
-+ * Test TCGETA/TCGETS and TCSETA/TCSETS ioctl implementations for tty driver.
-  *
-  * In this test, the parent and child open the parentty and the childtty
-  * respectively.  After opening the childtty the child flushes the stream
-@@ -27,19 +26,10 @@
- 
- #include <stdio.h>
- #include <stdlib.h>
--#include <fcntl.h>
--#include <errno.h>
--#include <sys/ioctl.h>
--#include <sys/wait.h>
--#include <sys/types.h>
--#include <sys/stat.h>
- #include <termios.h>
- 
- #include "lapi/ioctl.h"
--
--#include "tst_checkpoint.h"
- #include "tst_test.h"
--#include "tst_safe_macros.h"
- 
- static struct termio termio, termio_exp;
- static struct termios termios, termios_exp, termios_bak;
-@@ -176,21 +166,28 @@ static int cmp_c_cc(unsigned char *exp_c_cc, unsigned char *act_c_cc, int ncc)
- 	return fails;
- }
- 
--#define CMP_ATTR(term_exp, term, attr) \
--	(flag += cmp_attr((term_exp).attr, (term).attr, #attr))
-+#define CMP_ATTR(term_exp, term, attr, flag)				\
-+({															\
-+	flag += cmp_attr((term_exp).attr, (term).attr, #attr);	\
-+	flag;                                                   \
-+})
- 
--#define CMP_C_CC(term_exp, term) \
--	(flag += cmp_c_cc(term_exp.c_cc, term.c_cc, sizeof(term.c_cc)))
-+#define CMP_C_CC(term_exp, term, flag)								\
-+({																	\
-+	flag += cmp_c_cc(term_exp.c_cc, term.c_cc, sizeof(term.c_cc));	\
-+	flag;															\
-+})
- 
- static void chk_tty_parms_termio(void)
- {
- 	int flag = 0;
- 
--	CMP_ATTR(termio_exp, termio, c_line);
--	CMP_C_CC(termio_exp, termio);
--	CMP_ATTR(termio_exp, termio, c_lflag);
--	CMP_ATTR(termio_exp, termio, c_iflag);
--	CMP_ATTR(termio_exp, termio, c_oflag);
-+	flag = CMP_ATTR(termio_exp, termio, c_line, flag);
-+	flag = CMP_C_CC(termio_exp, termio, flag);
-+	flag = CMP_ATTR(termio_exp, termio, c_lflag, flag);
-+	flag = CMP_ATTR(termio_exp, termio, c_iflag, flag);
-+	flag = CMP_ATTR(termio_exp, termio, c_oflag, flag);
-+
- 	if (!flag)
- 		tst_res(TPASS, "TCGETA/TCSETA tests");
- }
-@@ -199,11 +196,12 @@ static void chk_tty_parms_termios(void)
- {
- 	int flag = 0;
- 
--	CMP_ATTR(termios_exp, termios, c_line);
--	CMP_C_CC(termios_exp, termios);
--	CMP_ATTR(termios_exp, termios, c_lflag);
--	CMP_ATTR(termios_exp, termios, c_iflag);
--	CMP_ATTR(termios_exp, termios, c_oflag);
-+	flag = CMP_ATTR(termios_exp, termios, c_line, flag);
-+	flag = CMP_C_CC(termios_exp, termios, flag);
-+	flag = CMP_ATTR(termios_exp, termios, c_lflag, flag);
-+	flag = CMP_ATTR(termios_exp, termios, c_iflag, flag);
-+	flag = CMP_ATTR(termios_exp, termios, c_oflag, flag);
-+
- 	if (!flag)
- 		tst_res(TPASS, "TCGETS/TCSETS tests");
- }
-@@ -255,4 +253,4 @@ static struct tst_test test = {
- 		{"D:", &device, "Tty device. For example, /dev/tty[0-9]"},
- 		{}
- 	}
--};
-\ No newline at end of file
-+};
+> also nit: there is a wrong indent (spaces instead of tabs), please be consistent
+> with the file content.
+>
+> NOTE: while this fixes problem on 6.7.0-rc1-2.g86e46c2-default (openSUSE),
+> it does not fixes other problem on 6.5.10 on Debian (16 errors like these below):
+>
+> mem.c:252: TFAIL: pages_shared is not 2 but 5038.
+> mem.c:252: TFAIL: pages_sharing is not 98302 but 593629.
+> mem.c:252: TFAIL: pages_volatile is not 0 but 391.
+> mem.c:252: TFAIL: pages_unshared is not 0 but 149157.
+>
+> I have no idea if this is a real bug which needs to be fixed or test false
+> positive to be fixed, or whether the problem has already been fixed in newer
+> kernels.
+>
+
+This is a different problem. "Smart scan was introduced with 6.7"
+
+>> +
+>>  	ps = sysconf(_SC_PAGE_SIZE);
+>>  	pages = MB / ps;
+>
+>> @@ -526,6 +529,7 @@ void create_same_memory(int size, int num, int unit)
+>
+>>  	tst_res(TINFO, "stop KSM.");
+>>  	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
+>> +  SAFE_FILE_PRINTF(PATH_KSM "smart_scan", "1");
+> nit: Again, wrong indent. You could have seen it also in the generated patch.
+>
+> Kind regards,
+> Petr
+>
+>>  	final_group_check(0, 0, 0, 0, 0, 0, size * pages * num);
+>
+>>  	while (waitpid(-1, &status, 0) > 0)
+>
+>> base-commit: 8c89ef3d451087ed6e18750bd5eedd10e5ab3d2e
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
