@@ -4,79 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 276ACC4167B
-	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 10:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8F02C4167B
+	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 10:14:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 199413CD92C
-	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 11:09:23 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 22B2C3CD931
+	for <ltp@archiver.kernel.org>; Fri,  1 Dec 2023 11:14:33 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6B22F3CD3DA
- for <ltp@lists.linux.it>; Fri,  1 Dec 2023 11:09:13 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 761963CD3DA
+ for <ltp@lists.linux.it>; Fri,  1 Dec 2023 11:14:20 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 5F5CA1015437
- for <ltp@lists.linux.it>; Fri,  1 Dec 2023 11:09:11 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 522FC14098BF
+ for <ltp@lists.linux.it>; Fri,  1 Dec 2023 11:14:18 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 909D31FD68
- for <ltp@lists.linux.it>; Fri,  1 Dec 2023 10:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1701425348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=G9kpC6MMJfqt07VRQDxohA0LVn/WZMk7w8KDpuemA5s=;
- b=fMtPCUzfnZAO9cBU8ohRLPf66Umoba2qhWTPlSWVFEHKpQP5rtaLvCyVnjTSyoyTG6eyt9
- mNqtOnQ8HvmBWiMIGuyoPfRpG3E+2irJmZFPHSS6CKpikOsdvLWRXArn/bMtVvHyKURN2c
- eh3nnHCMOZCm6HU5iSGDu0TU6wiurPU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1701425348;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=G9kpC6MMJfqt07VRQDxohA0LVn/WZMk7w8KDpuemA5s=;
- b=GAsdj9UgQXSGvVJNNg8WCz71JnZoWRINBoO4dnZ1cnU4Uzy+k5nkStZ2abR2nVqDrV/mmN
- XoGLfaUMHUWc6KAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CB50921BD5;
+ Fri,  1 Dec 2023 10:14:17 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 78EC01379A
- for <ltp@lists.linux.it>; Fri,  1 Dec 2023 10:09:08 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8558B1344E;
+ Fri,  1 Dec 2023 10:14:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id fYsFHMSwaWV+XAAAD6G6ig
- (envelope-from <mdoucha@suse.cz>)
- for <ltp@lists.linux.it>; Fri, 01 Dec 2023 10:09:08 +0000
-From: Martin Doucha <mdoucha@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri,  1 Dec 2023 11:09:06 +0100
-Message-ID: <20231201100907.7308-1-mdoucha@suse.cz>
-X-Mailer: git-send-email 2.42.1
+ by imap2.dmz-prg2.suse.org with ESMTPSA id 7PtVHPmxaWXCcwAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Fri, 01 Dec 2023 10:14:17 +0000
+Date: Fri, 1 Dec 2023 11:14:15 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20231201101415.GB1710028@pevik>
+References: <20230929004518.29632-1-wegao@suse.com>
+ <20231201031512.27513-1-wegao@suse.com>
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [9.93 / 50.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
- BAYES_SPAM(1.78)[87.66%]; R_MISSING_CHARSET(2.50)[];
- TO_DN_NONE(0.00)[]; BROKEN_CONTENT_TYPE(1.50)[];
- RCVD_COUNT_THREE(0.00)[3]; NEURAL_HAM_SHORT(-0.20)[-1.000];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCPT_COUNT_ONE(0.00)[1];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_SPAM_LONG(3.45)[0.986]; MID_CONTAINS_FROM(1.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; RCVD_TLS_ALL(0.00)[]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20231201031512.27513-1-wegao@suse.com>
+X-Spamd-Bar: +++++++++
+Authentication-Results: smtp-out1.suse.de; dkim=none; dmarc=none;
+ spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither
+ permitted nor denied by domain of pvorel@suse.cz)
+ smtp.mailfrom=pvorel@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [9.42 / 50.00];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+ TO_DN_SOME(0.00)[]; R_SPF_SOFTFAIL(4.60)[~all];
+ RCVD_COUNT_THREE(0.00)[3]; MX_GOOD(-0.01)[];
+ RCPT_COUNT_TWO(0.00)[2]; FROM_EQ_ENVFROM(0.00)[];
+ R_DKIM_NA(2.20)[]; MIME_TRACE(0.00)[0:+]; ARC_NA(0.00)[];
+ REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ DMARC_NA(1.20)[suse.cz]; NEURAL_SPAM_LONG(0.73)[0.209];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Queue-Id: CB50921BD5
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] ioctl_loop06: Check for unsupported
- LOOP_SET_BLOCK_SIZE ioctl
+Subject: Re: [LTP] [PATCH v4] getcwd01: Use syscall directly check invalid
+ argument
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,44 +81,52 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Loop device ioctl() returns EINVAL error if the command is not
-supported. However, in compat mode, it'll return ENOTTY error
-instead.
+Hi Wei,
 
-Signed-off-by: Martin Doucha <mdoucha@suse.cz>
----
+> Fixes: #1084
 
-Changes since v1:
-- Moved check from verify_ioctl_loop() to setup()
+> User space wrap getcwd with different implementation, for example
+> glibc will directly input parameter into kernel in normal situation
+> but uclibc-ng and musl will malloc buffer when buffer is NULL, so for
+> uclibc and musl the parameter size will be ignored. Use system call
+> directly check invalid argument can be a solution.
 
-Tested on kernels 4.12 (ioctl not supported) and 5.3 (ioctl supported).
+For the sake of the correctness: there is no malloc() in musl [1] (nor in the
+mirror source you posted to #1084), that's only in uclibc-ng [2] and glibc [3].
 
- testcases/kernel/syscalls/ioctl/ioctl_loop06.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+The reason why musl failed was already described by Richie and Cyril in #1084:
+musl ignores the size parameter when buffer is NULL and allocates it with PATH_MAX
+and passes this size to kernel.
 
-diff --git a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-index 6d009af6a..64800b4ee 100644
---- a/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-+++ b/testcases/kernel/syscalls/ioctl/ioctl_loop06.c
-@@ -109,8 +109,9 @@ static void setup(void)
- 	unalign_value = pg_size - 1;
- 
- 	dev_fd = SAFE_OPEN(dev_path, O_RDWR);
-+	ret = ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, 512);
- 
--	if (ioctl(dev_fd, LOOP_SET_BLOCK_SIZE, 512) && errno == EINVAL)
-+	if (ret && (errno == EINVAL || errno == ENOTTY))
- 		tst_brk(TCONF, "LOOP_SET_BLOCK_SIZE is not supported");
- 
- 	file_fd = SAFE_OPEN("test.img", O_RDWR);
--- 
-2.42.1
+Therefore I reword the commit message.
 
+[1] https://git.musl-libc.org/cgit/musl/tree/src/unistd/getcwd.c
+[2] https://cgit.uclibc-ng.org/cgi/cgit/uclibc-ng.git/tree/libc/sysdeps/linux/common/getcwd.c#n38
+[3] https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/getcwd.c;h=5b0b6879ed28f278f07ce494f9be30f504757daa;hb=HEAD#l47
+
+...
+> -	tst_res(TPASS | TTERRNO, "getcwd() failed as expected");
+> +	TST_EXP_FAIL2(syscall(__NR_getcwd, tc->buf, tc->size), tc->exp_err);
+While syscalls() would work everywhere, it's better is LTP wrapper tst_syscall()
+(it TCONF in case when syscall is not implemented which is I admit nearly
+impossible).
+
+I used that and merged.
+Thank you!
+
+NOTE: we should implement .test_variants, where you just skip affected NULL
+buffer test (it's enough to test it with raw syscall). Please send a patch or
+let me know that you don't plan to do it and I'll do it.
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
