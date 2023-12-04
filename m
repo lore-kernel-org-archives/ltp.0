@@ -4,69 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA444C4167B
-	for <ltp@archiver.kernel.org>; Mon,  4 Dec 2023 10:46:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DC5AC4167B
+	for <ltp@archiver.kernel.org>; Mon,  4 Dec 2023 18:39:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A07EA3CC3A7
-	for <ltp@archiver.kernel.org>; Mon,  4 Dec 2023 11:46:00 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id CC3783CFB76
+	for <ltp@archiver.kernel.org>; Mon,  4 Dec 2023 19:39:07 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1F0133CB62A
- for <ltp@lists.linux.it>; Mon,  4 Dec 2023 11:45:50 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id 892F73CC343
+ for <ltp@lists.linux.it>; Mon,  4 Dec 2023 19:38:57 +0100 (CET)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 195FF6010FB
- for <ltp@lists.linux.it>; Mon,  4 Dec 2023 11:45:49 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D3F961F8AA;
- Mon,  4 Dec 2023 10:45:48 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A735C139E2;
- Mon,  4 Dec 2023 10:45:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id 3MphJ9ytbWV+RgAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Mon, 04 Dec 2023 10:45:48 +0000
-Date: Mon, 4 Dec 2023 11:45:47 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Stefan Roesch <shr@devkernel.io>
-Message-ID: <20231204104547.GB22019@pevik>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id C730F1401212
+ for <ltp@lists.linux.it>; Mon,  4 Dec 2023 19:38:54 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.nyi.internal (Postfix) with ESMTP id 9E9895C0192;
+ Mon,  4 Dec 2023 13:38:52 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Mon, 04 Dec 2023 13:38:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+ cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+ :in-reply-to:message-id:mime-version:references:reply-to:sender
+ :subject:subject:to:to; s=fm2; t=1701715132; x=1701801532; bh=aG
+ FZfyQ2WN2CydKNxY+nIAAd1dL39GKDKCTb2c27l2Y=; b=sok3OtZ7ib25Uk88kY
+ wQyhlPVLg7PmmROS95H8TqOdy9YpSW29JBeSUu46aQ/6PTCTv9VDEMiHE8j0GtM/
+ 99kSyTpbwUzfKRMHECoc9bQwfaQGoQe8pnK80sEVdEvnY+oI/iErr2EH1Y1rpXYN
+ qxVYFoXerQGiJ93WrEWdiQrNbq1PwE0dUWv2/wG3nry1IFyIrNJjuFEBeRw/Oaic
+ +gGxp4Q9pFlZV6XBrDtQsdqJ7DutlfSXOrQpdFDmOwX9mhOvLtSZmCwoX32sk6dZ
+ GyvKeYUWN8BmOvkYbUO0ug5a0zwqwbAFedPvgNxLbAlGMPtdX9VQRURcl10rj05B
+ 4DHQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-type:content-type:date:date
+ :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+ :message-id:mime-version:references:reply-to:sender:subject
+ :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm1; t=1701715132; x=1701801532; bh=aGFZfyQ2WN2Cy
+ dKNxY+nIAAd1dL39GKDKCTb2c27l2Y=; b=T1VlFHiRlk2SsSY/P6XBGO3wPHk+Q
+ W+SusPnURYnbAe6nInYPjykkFjxNp5FsH8OOB9Nb4uODPgfwdMwBOoRyAfKjEZXc
+ 2Os5LDvaC550Y7kqqqv76ACJpqf0kMR3kYnH+O1bEwmRv1osyOftWpYm0G9sm7Z/
+ +B9TwKob916OUzb7gwDKFT04RdvAhm9afErxz9POkEPp0wHBjq/m23wPMLol38pR
+ PQTCjFu/PFQQ8kMhtH+ZDijbkqC+2FFO4MhxW9QHucZbJyLLq6szePbXaD8mUQGI
+ PZKT7FsssM/XgIsPjEOM4/2vGHUJVMvsYVSg9VF159TX6E2znjgOq3hlQ==
+X-ME-Sender: <xms:vBxuZQRTAEMZQVP9zTMIaolxM1QiKkm1P51L8khZ7uNI-XyQv6YPlA>
+ <xme:vBxuZdwMXxlCnVnr_qv-4oBHMJ_iNFK5NWnwJoNyG6TDTZ3dE_apJIgOEtwUMgK15
+ zh8OQr9WMEqNB_J7KE>
+X-ME-Received: <xmr:vBxuZd15Ns38qxVgy4v8mld2pVFkMeFbIdGqzlaWatjlqg-1S33UkuGe>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejiedguddujecutefuodetggdotefrod
+ ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+ necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+ enucfjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgv
+ fhgrnhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrg
+ htthgvrhhnpefhgfejveduudehvdduvefguddvffefgffhieeuudefudfhhfeijeefjeff
+ heelvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+ eptdenucfrrghrrghmpehmrghilhhfrhhomhepshhhrhesuggvvhhkvghrnhgvlhdrihho
+X-ME-Proxy: <xmx:vBxuZUDdTZRCUFM97J7-nHikYpx55cjpjZm-X9RtoKGcL2EG8v8NdA>
+ <xmx:vBxuZZh4Ms3Tarsa6bjoNbXjwZ3YUUK4Y9esVSJ0T7cuyyYUewopSA>
+ <xmx:vBxuZQqF3DPcVD4-uiVTZ649JHpKx-F742pLuASt0_vyqQ1Y-jcJOw>
+ <xmx:vBxuZXbKQga2DwKkiYAOa568XnKntizv9CSI1zsvWSpJ7QMgAJlRXA>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 4 Dec 2023 13:38:50 -0500 (EST)
 References: <20231201210930.2651725-1-shr@devkernel.io>
- <20231201210930.2651725-2-shr@devkernel.io>
+ <20231201210930.2651725-2-shr@devkernel.io> <20231204104547.GB22019@pevik>
+User-agent: mu4e 1.10.3; emacs 29.1
+From: Stefan Roesch <shr@devkernel.io>
+To: Petr Vorel <pvorel@suse.cz>
+Date: Mon, 04 Dec 2023 10:38:14 -0800
+In-reply-to: <20231204104547.GB22019@pevik>
+Message-ID: <871qc1sthk.fsf@devkernel.io>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231201210930.2651725-2-shr@devkernel.io>
-X-Spamd-Bar: +++++++
-Authentication-Results: smtp-out2.suse.de; dkim=none; dmarc=none;
- spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither
- permitted nor denied by domain of pvorel@suse.cz)
- smtp.mailfrom=pvorel@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [7.69 / 50.00];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- MID_RHS_NOT_FQDN(0.50)[]; ARC_NA(0.00)[];
- R_SPF_SOFTFAIL(4.60)[~all]; DMARC_NA(1.20)[suse.cz];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
- RCVD_COUNT_THREE(0.00)[3]; MX_GOOD(-0.01)[];
- RCPT_COUNT_SEVEN(0.00)[7];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,intel.com:email];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- R_DKIM_NA(2.20)[]; MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Queue-Id: D3F961F8AA
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH v2 1/2] mem: disable KSM smart scan for ksm tests
 X-BeenThere: ltp@lists.linux.it
@@ -80,7 +92,6 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: david@redhat.com, linux-mm@kvack.org, oliver.sang@intel.com,
  kernel-team@fb.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
@@ -88,30 +99,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Stefan,
 
-> This disables the "smart scan" KSM feature to make sure that the volatile
-> count remains at 0.
+Petr Vorel <pvorel@suse.cz> writes:
 
-> Signed-off-by: Stefan Roesch <shr@devkernel.io>
+> Hi Stefan,
+>
+>> This disables the "smart scan" KSM feature to make sure that the volatile
+>> count remains at 0.
+>
+>> Signed-off-by: Stefan Roesch <shr@devkernel.io>
+>
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>> Closes: https://lore.kernel.org/oe-lkp/202311161132.13d8ce5a-oliver.sang@intel.com
+>> ---
+>>  testcases/kernel/mem/ksm/ksm01.c | 2 ++
+>>  testcases/kernel/mem/ksm/ksm02.c | 2 ++
+>>  testcases/kernel/mem/ksm/ksm03.c | 2 ++
+>>  testcases/kernel/mem/ksm/ksm04.c | 2 ++
+> Li suggested in v1, that also ksm0[56].c should disable smart_scan (ksm05.c is
+> questionable, but since you prepared ksm07 it can IMHO be disable in both ksm0[56].c).
+>
+> https://lore.kernel.org/ltp/CAEemH2fqamX720diM1N+iN9a8HM30_5sHg8V0EMHgHdrh3iZPw@mail.gmail.com/
+>
+> With that, you can add:
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+>
+> Kind regards,
+> Petr
 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202311161132.13d8ce5a-oliver.sang@intel.com
-> ---
->  testcases/kernel/mem/ksm/ksm01.c | 2 ++
->  testcases/kernel/mem/ksm/ksm02.c | 2 ++
->  testcases/kernel/mem/ksm/ksm03.c | 2 ++
->  testcases/kernel/mem/ksm/ksm04.c | 2 ++
-Li suggested in v1, that also ksm0[56].c should disable smart_scan (ksm05.c is
-questionable, but since you prepared ksm07 it can IMHO be disable in both ksm0[56].c).
-
-https://lore.kernel.org/ltp/CAEemH2fqamX720diM1N+iN9a8HM30_5sHg8V0EMHgHdrh3iZPw@mail.gmail.com/
-
-With that, you can add:
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-
-Kind regards,
-Petr
+The next version will also disable smart scan for ksm05 and ksm06
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
