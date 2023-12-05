@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E080C4167B
-	for <ltp@archiver.kernel.org>; Tue,  5 Dec 2023 11:02:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03C5BC4167B
+	for <ltp@archiver.kernel.org>; Tue,  5 Dec 2023 11:33:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 47ECC3CCA78
-	for <ltp@archiver.kernel.org>; Tue,  5 Dec 2023 12:02:20 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id D8C2C3CF5A9
+	for <ltp@archiver.kernel.org>; Tue,  5 Dec 2023 12:33:06 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 03C993C869D
- for <ltp@lists.linux.it>; Tue,  5 Dec 2023 12:02:09 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id C3DA23CBF85
+ for <ltp@lists.linux.it>; Tue,  5 Dec 2023 12:32:56 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 404451A0BC29
- for <ltp@lists.linux.it>; Tue,  5 Dec 2023 12:02:07 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 88C2960320B
+ for <ltp@lists.linux.it>; Tue,  5 Dec 2023 12:32:55 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B1EB421EE8;
- Tue,  5 Dec 2023 11:02:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9084521AC0;
+ Tue,  5 Dec 2023 11:32:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1701774125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ t=1701775974;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gyYO7o6BbiObRjMvlwvXOl8N5YoIoYx7sY6bMOUePcs=;
- b=ZHRNvYRVaootn/+AnP/Y7e2BAS8evpq0PC4H0VVm7EtBw5n+Zec4/katsdP7Rx0JhpulWe
- 80WR8FIjX0064cUJqfvJw8Ekv/Mn+CDhKm9aZzTM0sPAjifiv2m5A1mZOCJMeZpC7cRw1h
- LtA0T8j3/sfquy0vcKzR5QSE1rlZCeQ=
+ bh=2c7pm2o/rKANVgemaJAnSw/p0uH6JYOM24nW8syqoqo=;
+ b=mi+EnUuFePSf08YWERKzUqROuC/AeQLUG7xcGlpTRM2TTsl74j4syzRXIdbZ7TajhoHbu+
+ VFuir6mRB6VDWu83AncMBiKXniZtI2buUXwSulb2hVAs4T6hfSK6RkgrPT5n0ShpxzdNcV
+ 7C8UL1QNJvOQgYLDD1+Dxd7eGlbJi1A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1701774125;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ s=susede2_ed25519; t=1701775974;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gyYO7o6BbiObRjMvlwvXOl8N5YoIoYx7sY6bMOUePcs=;
- b=YDjKYyUZPm6FBTsT4Y63qmocrzwC42zpZ+jMLYHUVmKW3Qk6Ln1K0s7rY81TYq7JhFMWIf
- yTWgMUg0ZVCEujDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ bh=2c7pm2o/rKANVgemaJAnSw/p0uH6JYOM24nW8syqoqo=;
+ b=09VsXxcRgfpg49NO68Wb3zb1b2KDXK/ulm1Z8ZbSTlZrA8F9t8r6ng3M3fqZluriNburOO
+ X7++ehBS78asxLCg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A30D2136CF;
- Tue,  5 Dec 2023 11:02:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id 90rIJi0Db2XTeQAAD6G6ig
- (envelope-from <chrubis@suse.cz>); Tue, 05 Dec 2023 11:02:05 +0000
-Date: Tue, 5 Dec 2023 12:02:46 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DBDF9138FF;
+ Tue,  5 Dec 2023 11:32:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap2.dmz-prg2.suse.org with ESMTPSA id ErQINGUKb2XETQAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Tue, 05 Dec 2023 11:32:53 +0000
+Date: Tue, 5 Dec 2023 12:32:52 +0100
+From: Petr Vorel <pvorel@suse.cz>
 To: Stefan Roesch <shr@devkernel.io>
-Message-ID: <ZW8DVo6UfSofc9WP@yuki>
+Message-ID: <20231205113252.GA55404@pevik>
 References: <20231204184817.3570465-1-shr@devkernel.io>
- <20231204184817.3570465-3-shr@devkernel.io>
+ <20231204184817.3570465-2-shr@devkernel.io>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231204184817.3570465-3-shr@devkernel.io>
+In-Reply-To: <20231204184817.3570465-2-shr@devkernel.io>
 Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [-7.80 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- REPLY(-4.00)[]; RCPT_COUNT_FIVE(0.00)[6];
- RCVD_COUNT_THREE(0.00)[3];
+X-Spamd-Result: default: False [-6.05 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
+ RCVD_COUNT_THREE(0.00)[3]; RCVD_VIA_SMTP_AUTH(0.00)[];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-0.999];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,linux.it:url];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+ NEURAL_HAM_SHORT(-0.19)[-0.959]; RCPT_COUNT_SEVEN(0.00)[7];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_NOT_FQDN(0.50)[]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-1.55)[92.11%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/2] add ksm test for smart-scan feature
+Subject: Re: [LTP] [PATCH v3 1/2] mem: disable KSM smart scan for ksm tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,190 +89,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: linux-mm@kvack.org, kernel-team@fb.com, oliver.sang@intel.com,
- ltp@lists.linux.it, david@redhat.com
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: david@redhat.com, linux-mm@kvack.org, oliver.sang@intel.com,
+ kernel-team@fb.com, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-> diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-> index 7258489ed..c96fe8bfc 100644
-> --- a/testcases/kernel/mem/.gitignore
-> +++ b/testcases/kernel/mem/.gitignore
-> @@ -53,6 +53,7 @@
->  /ksm/ksm04
->  /ksm/ksm05
->  /ksm/ksm06
-> +/ksm/ksm07
->  /mem/mem02
->  /mmapstress/mmap-corruption01
->  /mmapstress/mmapstress01
-> diff --git a/testcases/kernel/mem/ksm/ksm07.c b/testcases/kernel/mem/ksm/ksm07.c
-> new file mode 100644
-> index 000000000..16153fdb2
-> --- /dev/null
-> +++ b/testcases/kernel/mem/ksm/ksm07.c
-> @@ -0,0 +1,131 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2010-2017  Red Hat, Inc.
-                      ^
-		      2023?
-> + */
-> +/*\
-> + * [Description]
-> + *
-> + * Kernel Samepage Merging (KSM)
-> + *
-> + * This adds a new ksm (kernel samepage merging) test to evaluate the new
-> + * smart scan feature. It allocates a page and fills it with 'a'
-> + * characters. It captures the pages_skipped counter, waits for a few
-> + * iterations and captures the pages_skipped counter again. The expectation
-> + * is that over 50% of the page scans are skipped (There is only one page
-> + * that has KSM enabled and it gets scanned during each iteration and it
-> + * cannot be de-duplicated).
-> + *
-> + * Prerequisites:
-> + *
-> + * 1) ksm and ksmtuned daemons need to be disabled. Otherwise, it could
-> + *    distrub the testing as they also change some ksm tunables depends
-> + *    on current workloads.
+Hi Stefan,
 
-I guess that it would be more user friendly to check if a process with
-such name is running and at least print a warning, or even skip the
-test.
+> This disables the "smart scan" KSM feature to make sure that the volatile
+> count remains at 0.
 
-I suppose that we can add a library function that would loop over
-/proc/*/comm and return true if we find a match.
+Merged this one, thank you!
 
-> + */
-> +#include <sys/types.h>
-> +#include <sys/mman.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <signal.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include "../include/mem.h"
-> +#include "ksm_common.h"
-> +
-> +/* This test allocates one page, fills the page with a's, captures the
-> + * full_scan and pages_skipped counters. Then it makes sure at least 3
-> + * full scans have been performed and measures the above counters again.
-> + * The expectation is that at least 50% of the pages are skipped.
-> + *
-> + * To wait for at least 3 scans it uses the wait_ksmd_full_scan() function. In
-> + * reality, it will be a lot more scans as the wait_ksmd_full_scan() function
-> + * sleeps for one second.
-> + */
-> +static void create_memory(void)
-> +{
-> +	int status;
-> +	int full_scans_begin;
-> +	int full_scans_end;
-> +	int pages_skipped_begin;
-> +	int pages_skipped_end;
-> +	int diff_pages;
-> +	int diff_scans;
-> +	unsigned long page_size;
-> +	char *memory;
-> +
-> +	/* Apply for the space for memory. */
-> +	page_size = sysconf(_SC_PAGE_SIZE);
-> +	memory = SAFE_MALLOC(page_size);
-> +
-> +	for (int i = 0; i < 1; i++) {
-> +		memory = SAFE_MMAP(NULL, page_size, PROT_READ|PROT_WRITE,
-> +			MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-> +#ifdef HAVE_DECL_MADV_MERGEABLE
-> +		if (madvise(memory, page_size, MADV_MERGEABLE) == -1)
-> +			tst_brk(TBROK|TERRNO, "madvise");
-> +#endif
-> +	}
-> +	memset(memory, 'a', page_size);
-> +
-> +	tst_res(TINFO, "KSM merging...");
-> +	if (access(PATH_KSM "max_page_sharing", F_OK) == 0) {
-> +		SAFE_FILE_PRINTF(PATH_KSM "run", "2");
-> +	}
-> +
-> +	/* Set defalut ksm scan values. */
-> +	SAFE_FILE_PRINTF(PATH_KSM "run", "1");
-> +	SAFE_FILE_PRINTF(PATH_KSM "pages_to_scan", "%ld", 100l);
-> +	SAFE_FILE_PRINTF(PATH_KSM "sleep_millisecs", "0");
-> +
-> +	/* Measure pages skipped aka "smart scan". */
-> +	SAFE_FILE_SCANF(PATH_KSM "full_scans", "%d", &full_scans_begin);
-> +	SAFE_FILE_SCANF(PATH_KSM "pages_skipped", "%d", &pages_skipped_begin);
-> +	wait_ksmd_full_scan();
-> +
-> +	tst_res(TINFO, "stop KSM.");
-> +	SAFE_FILE_PRINTF(PATH_KSM "run", "0");
-> +
-> +	SAFE_FILE_SCANF(PATH_KSM "full_scans", "%d", &full_scans_end);
-> +	SAFE_FILE_SCANF(PATH_KSM "pages_skipped", "%d", &pages_skipped_end);
-> +	diff_pages = pages_skipped_end - pages_skipped_begin;
-> +	diff_scans = full_scans_end - full_scans_begin;
-> +
-> +	if (diff_pages < diff_scans * 50 / 100) {
-> +		tst_res(TFAIL, "not enough pages have been skipped by smart_scan.");
-> +	} else {
-> +		tst_res(TPASS, "smart_scan skipped more than 50%% of the pages.");
-> +	}
-> +
-> +	while (waitpid(-1, &status, 0) > 0)
-> +		if (WEXITSTATUS(status) != 0)
-> +			tst_res(TFAIL, "child exit status is %d",
-> +					WEXITSTATUS(status));
-
-Does the test fork a child? I do not see any place in the code that
-would do so, did I miss something?
-
-> +}
-> +
-> +static void verify_ksm(void)
-> +{
-> +	create_memory();
-
-This is useless indirection.
-
-> +}
-> +
-> +static struct tst_test test = {
-> +	.needs_root = 1,
-> +	.forks_child = 1,
-> +	.options = (struct tst_option[]) {
-> +		{}
-> +	},
-> +	.save_restore = (const struct tst_path_val[]) {
-> +		{"/sys/kernel/mm/ksm/run", NULL, TST_SR_TCONF},
-> +		{"/sys/kernel/mm/ksm/sleep_millisecs", NULL, TST_SR_TCONF},
-> +		{"/sys/kernel/mm/ksm/smart_scan", "1",
-> +			TST_SR_SKIP_MISSING | TST_SR_TCONF},
-> +		{}
-> +	},
-> +	.needs_kconfigs = (const char *const[]){
-> +		"CONFIG_KSM=y",
-> +		NULL
-> +	},
-> +	.test_all = verify_ksm,
-> +};
-> -- 
-> 2.39.3
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
