@@ -4,72 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94A5CC4167B
-	for <ltp@archiver.kernel.org>; Thu,  7 Dec 2023 12:18:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAC09C4167B
+	for <ltp@archiver.kernel.org>; Thu,  7 Dec 2023 12:26:08 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id AFA783CBCE7
-	for <ltp@archiver.kernel.org>; Thu,  7 Dec 2023 13:18:46 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 076793CBBE6
+	for <ltp@archiver.kernel.org>; Thu,  7 Dec 2023 13:26:07 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7BC293C8960
- for <ltp@lists.linux.it>; Thu,  7 Dec 2023 13:18:35 +0100 (CET)
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com
- [IPv6:2a00:1450:4864:20::22a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id E74503CA6DE
+ for <ltp@lists.linux.it>; Thu,  7 Dec 2023 13:25:56 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 70BCA204B42
- for <ltp@lists.linux.it>; Thu,  7 Dec 2023 13:18:34 +0100 (CET)
-Received: by mail-lj1-x22a.google.com with SMTP id
- 38308e7fff4ca-2ca03103155so8093961fa.0
- for <ltp@lists.linux.it>; Thu, 07 Dec 2023 04:18:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1701951513; x=1702556313; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=xwIuVvbJc6fMjsvaTFlWzaFV2U7A38o7zH2GluGuPJ4=;
- b=GSBVS92NiCXKez1nXFr6m33V9PUjsZPRcsnApKL1Rp7BmoRm24D9g2RkoCWWAHWSPC
- zErT09+go9ZW3+FvmAD2dFh2G2lEZUBn/nOKKS85qRPyPtz55GP+l2ilMimbXfH6LyN3
- qkzOIeQd5X2Oq4wuX6yZbEemxvbTDNU1NsgTizER3vpL0/BS077ZeMXlkCWjrGhYNWR9
- 2AgXEdmqeyxh7CFx5gOsYF30jpso1WlPg7Umav+ZhhUAys4/qTKDxh+X2NKVk8+E4qYf
- 9mS2GeqcAN6Q3yCUATjArqz/vX80TGGtebf/NZQ6aihDHrVv7WqDbNg2oZOYsqSn3EtU
- 6LOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1701951513; x=1702556313;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=xwIuVvbJc6fMjsvaTFlWzaFV2U7A38o7zH2GluGuPJ4=;
- b=cuE48fez1LMIXKQeeutgZbdD/dk3cQupz2m2Mc85ET3k01BAxJieNvh3UuJ6o8EDX0
- GKEbDDuF3y15esAAoPp76Xm+YrktW6fIXev80bpEFjiXFI0Qi2ItYYYz8+TbApCUoBaf
- byd0065lKD/8iSSbfIvNoM97ZuKpl1OZQvp379j07QdCdAJ4iNzpFJA8E1EgAP/Ys61D
- aGXCVt6fz/jeTZrOcz36nZ7TJo2oChypeU4uMVvMJerh7PsogpdZL04bvCCvyOaeqDwO
- temhTSYUuT6leoPuvvNOPkYON++Wbolihuy8DBUsA5yu67MXLSR1xgXFgpmVzYjd73Qf
- ye1g==
-X-Gm-Message-State: AOJu0YwXuPRL2wfR7SWKkdIRICj8m8Pg5TFB3r1K+FSJfizIRzdthU2Z
- s0Loc5QxUY/dFhbvSoGU26kJ5A==
-X-Google-Smtp-Source: AGHT+IFnY2v4UVxPzIcF5UBhoXppjZZFZNScu94+fUl0U24FJC4CqaVnXThb2Qninb7EiCW7DV07iw==
-X-Received: by 2002:a2e:9649:0:b0:2c9:fa22:b611 with SMTP id
- z9-20020a2e9649000000b002c9fa22b611mr800224ljh.68.1701951513592; 
- Thu, 07 Dec 2023 04:18:33 -0800 (PST)
-Received: from [10.232.133.55] ([88.128.88.38])
- by smtp.gmail.com with ESMTPSA id
- e14-20020a17090301ce00b001b03f208323sm1249810plh.64.2023.12.07.04.18.30
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 07 Dec 2023 04:18:33 -0800 (PST)
-Message-ID: <aecb0e4c-9042-463d-9888-7f4508e277fb@suse.com>
-Date: Thu, 7 Dec 2023 13:18:27 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id C510C1001596
+ for <ltp@lists.linux.it>; Thu,  7 Dec 2023 13:25:55 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6C0DD22092;
+ Thu,  7 Dec 2023 12:25:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1701951953; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2NqadJHYq8xvZ6Y/VMmGn/8sq6ZOXu16/5qillee97E=;
+ b=G+/Odopvh1NCHvMARCfwhpQrB8hrOsKz3kum1i026qZjayJyC+jY87de4kifB5zLPE/HZa
+ 7L5veFkY4mj0pR/R51FxPIlmbUfgq7Xr9SghtKpVXKspFJv5gcicv10DgTLAzRTjAbbPSK
+ 27rszIASCVrkvUTntV923/7L6Oedre8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1701951953;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=2NqadJHYq8xvZ6Y/VMmGn/8sq6ZOXu16/5qillee97E=;
+ b=5CSa3rkj9lUaF7wbIV0V6A/NpXeZSnz89XqvIC/BocxRAjos3XMpCacN+W6762ePawrfR6
+ EqyUjCsQRBOAG9CA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 24DC413B6A;
+ Thu,  7 Dec 2023 12:25:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id CdjcBtG5cWX6CQAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Thu, 07 Dec 2023 12:25:53 +0000
+Date: Thu, 7 Dec 2023 13:25:43 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Andrea Cervesato <andrea.cervesato@suse.com>
+Message-ID: <ZXG5x8R56fISvCLW@rei>
 References: <20231207111223.234170-1-pvorel@suse.cz>
  <20231207111844.GA234785@pevik> <ZXGrB76MCu0-0K0y@yuki>
-In-Reply-To: <ZXGrB76MCu0-0K0y@yuki>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+ <aecb0e4c-9042-463d-9888-7f4508e277fb@suse.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <aecb0e4c-9042-463d-9888-7f4508e277fb@suse.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-0.80 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ RCPT_COUNT_THREE(0.00)[3]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[30.49%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 Subject: Re: [LTP] [PATCH 1/1] fsx-linux: Reduce log output
 X-BeenThere: ltp@lists.linux.it
@@ -83,39 +90,39 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi!
+> more than TVERB, it would be nice to add a "verbose_flag". Something like:
+> 
+> tst_res(TINFO, "my message %s", my_param, verbose_flag)
 
-more than TVERB, it would be nice to add a "verbose_flag". Something like:
+That's technically impossible, because the printf() like messages have
+variable number of parameters.
 
-tst_res(TINFO, "my message %s", my_param, verbose_flag)
+Also it's really hard to extend the API at this point without really
+breaking it. We would have to also rewrite a few thousands of test if we
+introduce such change, which may be possible with coccinelle, but I
+would rather avoid such hassle.
 
-And then with a -v we filter out messages which are verbose or not.
-In this way we don't add T-flags and we can handle any kind of messages 
-in verbose mode.
+> And then with a -v we filter out messages which are verbose or not.
+> In this way we don't add T-flags and we can handle any kind of messages 
+> in verbose mode.
 
-Andrea
+If you are worried about the output, we can easily produce TINFO
+messages for the TVERB flag too.
 
-On 12/7/23 12:22, Cyril Hrubis wrote:
-> Hi!
->> IMHO output should have been only on error (test run 10000x or 100000x or even
->> 500000x, that's a lot for a regular output). Also logs get huge due logging.
-> Generally tests should print a few lines by default, having too much
-> output can easily flood serial console or any other slow output and slow
-> down thigns considerably.
->
-> Verbose output may be useful for debugging though. Maybe we need
-> TVERB flag and default test library '-v' parameter that would enable
-> such messages.
->
+Or possibly name the flags as TINFO with a debug level appended e.g. we
+can add TINFO0, TINFO1 and TINFO2 and define TINFO to TNFO0 for
+backwards compatibility.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
