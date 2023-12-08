@@ -4,76 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 719F5C4167B
-	for <ltp@archiver.kernel.org>; Fri,  8 Dec 2023 13:54:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0752C4167B
+	for <ltp@archiver.kernel.org>; Fri,  8 Dec 2023 15:20:32 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 8EA1F3CEFBA
-	for <ltp@archiver.kernel.org>; Fri,  8 Dec 2023 14:54:44 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id D0DF03CBA6F
+	for <ltp@archiver.kernel.org>; Fri,  8 Dec 2023 16:20:30 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id EE3613CBA02
- for <ltp@lists.linux.it>; Fri,  8 Dec 2023 14:54:35 +0100 (CET)
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
- [IPv6:2a00:1450:4864:20::530])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 777563CB9E7
+ for <ltp@lists.linux.it>; Fri,  8 Dec 2023 16:20:20 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 36279200066
- for <ltp@lists.linux.it>; Fri,  8 Dec 2023 14:54:35 +0100 (CET)
-Received: by mail-ed1-x530.google.com with SMTP id
- 4fb4d7f45d1cf-54d048550dfso3014810a12.0
- for <ltp@lists.linux.it>; Fri, 08 Dec 2023 05:54:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1702043674; x=1702648474; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=+fazAIKJDHECVmuP+NqdjB0UdNI0xmi7UDa8nIbtnvU=;
- b=TkBfwGuewWkngEVBz+LI/+66AN5nDZz4nrVwC13US9CPrF2pWY+CcT3K+X7LOQU4yH
- VfQEhK1/dTI0tuWjnQg941v2cL7YHUNg4Ql65tMOYqjikWfcFlCS+DWkVpzcX/oPIeBW
- nvVeIs0Z9IewYbFPGMvpGQsPvhp4wplkWrRY+8ooezUeX+jRg3PORdeY68ZuQyiQCJEY
- XZ3oMg1/ottDngcrOWkHmsPkNAeL437bT+ztcnLljQ9N8f89cC+QfRsG5FVQW9bDpon0
- 8ZJ1mhuLBMxX3BH7a/jX2IrJWwpwN8hZn5EtBueV8u+mDHP31d5vuMd1W7FhVumPWUdM
- CEow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1702043674; x=1702648474;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=+fazAIKJDHECVmuP+NqdjB0UdNI0xmi7UDa8nIbtnvU=;
- b=Tnii8oir86KYXdTRxI7FxBwNFinf5dax2rYqTnOu+gqOyqzi6lqp32x8M1cRR0Ea84
- BwVSgX2RD8u8L+4pDinKpP6k8dZxf8VkMGnsK2ex2MNoFZOoUBQuZ1eZ3ZJWGqQCHmEf
- qiTDAktgv+KdMM5TP4FAW9oQmZz8fQs1kqLor0tDSPK5Cb3Q7SoilYPNrc+snzpah1DT
- qPHQDBmRPpVhkYkFn35V5JetfDy2NSNe1hosqiyP6pikpSt83KXbO9GKl6g0noGxkzm4
- cVWjHce3RAg7gGbjnaTRukGG6UfxJyy2iskvbALaGQk57BHzHSqHsJJ42Sn/UamllFzE
- TwEg==
-X-Gm-Message-State: AOJu0YwqcuztHQQfeQXMEtdw2dPqwBfsT/BM9I81M/4M6v1LOHK9JSE5
- xG6iY8CIGxbgFAV6TKZycPtrsA==
-X-Google-Smtp-Source: AGHT+IFDAUWE2xt2clkKLR1GWNgFGZgO/3HA4I+dmu9kGuRHtSR3Ka2XCyqaNviE1KZSRyYo9w6XvQ==
-X-Received: by 2002:a17:907:7d8b:b0:9e3:f24d:5496 with SMTP id
- oz11-20020a1709077d8b00b009e3f24d5496mr5311ejc.28.1702043674630; 
- Fri, 08 Dec 2023 05:54:34 -0800 (PST)
-Received: from [10.232.133.56] ([88.128.88.125])
- by smtp.gmail.com with ESMTPSA id
- vc11-20020a170907d08b00b00a1ce58e9fc7sm1036618ejc.64.2023.12.08.05.54.33
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 08 Dec 2023 05:54:34 -0800 (PST)
-Message-ID: <7025cbd4-9685-415a-84ed-423a65e92f5f@suse.com>
-Date: Fri, 8 Dec 2023 14:54:32 +0100
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 2D66A600F23
+ for <ltp@lists.linux.it>; Fri,  8 Dec 2023 16:20:19 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A37E01F454
+ for <ltp@lists.linux.it>; Fri,  8 Dec 2023 15:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1702048818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yS9nPE/9jy+5ttifS8KLUm7jOEgGCu+Hp453BZt35gk=;
+ b=kbdt1LUcpwLDkMxH9KlixQU1qVDQRoTphnLnHKA8CsxFtOpSMuWcsyThP2nyTlugPMthBl
+ +JZKHbp2f6f0uA6x2n1hXFCoW59e2jQvYiF9u9Q5jHcmPWWPxyxdb2sz4f7iJn+lLjbt1r
+ W7pQzQu6lFeC3yM4SmXvb2mC8xhvRYA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1702048818;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yS9nPE/9jy+5ttifS8KLUm7jOEgGCu+Hp453BZt35gk=;
+ b=BtV+gZi6gppYvEefHg33miKAudLhi7suZ1L0VJqdy5E8KQal4eh4HcR4T4aajZ5BOLETQG
+ i8A6gkFk7CavqIBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1702048816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yS9nPE/9jy+5ttifS8KLUm7jOEgGCu+Hp453BZt35gk=;
+ b=xXprchrqDPGwFialdHe21jqvKGKun0nNbtCOcHVQ63LOQvnkBw7y5tJybhUK+7+jdHP6e1
+ Ah9fc1U2JM/+THbUnH6vJ/hFqvM+MpMQDd/7btFXViTigTfruhcI/z1dbZqoKmVYm5cp+M
+ eNk6W/Cw5YLrKJKUxAu6T6DQYPQ2us8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1702048816;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=yS9nPE/9jy+5ttifS8KLUm7jOEgGCu+Hp453BZt35gk=;
+ b=pj5AI7kcij0TOhsf2b6PVfcaeOhA5nHaal+x7cJeXOD6+BSg4hC9735tgl50MqJvh6iF0P
+ 2FSoFudP6ripHoAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7033512FF7
+ for <ltp@lists.linux.it>; Fri,  8 Dec 2023 15:20:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /QdlFzA0c2VmeAAAD6G6ig
+ (envelope-from <chrubis@suse.cz>)
+ for <ltp@lists.linux.it>; Fri, 08 Dec 2023 15:20:16 +0000
+Date: Fri, 8 Dec 2023 16:21:03 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: ltp@lists.linux.it
+Message-ID: <ZXM0X3dz0otpNEAy@yuki>
+References: <20231031125114.5879-1-chrubis@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Petr Vorel <pvorel@suse.cz>, Cyril Hrubis <chrubis@suse.cz>
-References: <20231207212739.302374-1-pvorel@suse.cz>
- <20231207212739.302374-3-pvorel@suse.cz>
- <CAASaF6yheXD4w07K1xUVXrqoS6jdX6PUjG64UXQbE_hQR9cW7w@mail.gmail.com>
- <ZXLRB46ZqzBN6laS@yuki> <20231208135305.GA351742@pevik>
-In-Reply-To: <20231208135305.GA351742@pevik>
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20231031125114.5879-1-chrubis@suse.cz>
+X-Spamd-Bar: ++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xXprchrq;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=pj5AI7kc;
+ dmarc=none;
+ spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither
+ permitted nor denied by domain of chrubis@suse.cz)
+ smtp.mailfrom=chrubis@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [12.01 / 50.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ NEURAL_SPAM_SHORT(2.81)[0.938]; MIME_GOOD(-0.10)[text/plain];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ TO_DN_NONE(0.00)[]; R_SPF_SOFTFAIL(4.60)[~all];
+ RCPT_COUNT_ONE(0.00)[1]; RCVD_COUNT_THREE(0.00)[3];
+ DMARC_NA(1.20)[suse.cz];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ NEURAL_SPAM_LONG(3.50)[1.000];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+ FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
+ MID_RHS_NOT_FQDN(0.50)[]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-0.29)[74.63%]
+X-Rspamd-Queue-Id: A37E01F454
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 2/4] lib: Add support for TDBUG tst_res() flag
+Subject: Re: [LTP] [PATCH v2] sched: add sched sysctl sanity test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,36 +120,17 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi!
+Ping?
 
-On 12/8/23 14:53, Petr Vorel wrote:
-> Hi Cyril, all,
->
->> Hi!
->>> My first impression was it's some kind of new BUG type :-)
->>> I'd suggest making it TDEBUG or TDBG.
->> Naming things is hard, I suppose that the least confusing is probably
->> the full spelling, i.e. TDEBUG. I suppose that having it one letter
->> longer is not a big deal.
-> OK, I'll wait for other feedback before sending v3 with
-> s/TDBUG/TDEBUG/
->
-> Kind regards,
-> Petr
-
-TDEBUG sounds good to me. Also TVERB was not so bad, but I prefer the 
-TDEBUG notation.
-
-Andrea
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
