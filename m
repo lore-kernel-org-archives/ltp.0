@@ -4,77 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43BEEC4167B
-	for <ltp@archiver.kernel.org>; Mon, 11 Dec 2023 16:27:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74E20C4332F
+	for <ltp@archiver.kernel.org>; Mon, 11 Dec 2023 20:49:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 819473CF816
-	for <ltp@archiver.kernel.org>; Mon, 11 Dec 2023 17:27:02 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 184993CF846
+	for <ltp@archiver.kernel.org>; Mon, 11 Dec 2023 21:49:23 +0100 (CET)
 Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 268713CF7E8
- for <ltp@lists.linux.it>; Mon, 11 Dec 2023 17:26:51 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id B08603CB7AB
+ for <ltp@lists.linux.it>; Mon, 11 Dec 2023 21:49:12 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-5.smtp.seeweb.it (Postfix) with ESMTPS id B6CAE600C79
- for <ltp@lists.linux.it>; Mon, 11 Dec 2023 17:26:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1702312007;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 6BE7F600AFC
+ for <ltp@lists.linux.it>; Mon, 11 Dec 2023 21:49:11 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id F2DF91FBBF
+ for <ltp@lists.linux.it>; Mon, 11 Dec 2023 20:49:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1702327749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=erYWctKNgD5NocoXzokYw6Cc9Ydro42N+CoY9DUdwDA=;
- b=XAEB3beERD9laCxkWOQWSaIei9aZacRdFQumPK1RmZ6vmydcjIMVmR4fZAtx6a5h3Uy/ku
- JSDUTtW90QKsi+0IInI+Ag9D1xr4M1Z4i66e4+G/sXakW/bj3rIm45zcOiSnVC8cj3+FLe
- Tu5eCUSB31VZvNB7IE9G/grkwIELtyU=
-Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
- [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-594-wUMOxehLPtuWmgdXv6H3ZA-1; Mon, 11 Dec 2023 11:26:46 -0500
-X-MC-Unique: wUMOxehLPtuWmgdXv6H3ZA-1
-Received: by mail-ua1-f71.google.com with SMTP id
- a1e0cc1a2514c-7cb1a0c3db6so14691241.1
- for <ltp@lists.linux.it>; Mon, 11 Dec 2023 08:26:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1702312005; x=1702916805;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=erYWctKNgD5NocoXzokYw6Cc9Ydro42N+CoY9DUdwDA=;
- b=ks6NOJ2secmLYy6A1mFujm6YwlLBK8SAWe+rp9OEJxm9fkQH3dyJDRJIxv4GsySBwK
- +yUv/3YsKi06AKwOPK88mMy/0JQsN5Rc1UrVD2obf1khijnrtLvbjkwZhPWIMjOUf0oe
- 67SXYGA9i1vkmi7ZKr/Y9Pwqz1Fdjfd5UkBnImNj6v7NkiRk3Lv7un/up2NNr6UqZao9
- 7lSr1GksRvRo5ge/Q3dn2gr0R8WzbNecLknv/F4/Jb5sRF56qAhdFY7jgC9I8zrYDDYx
- EpI7rj63JWb5Var6IoPXGjANELc+T0/MUiRKmndBeeoOhGkx+Hp7h6mW1wghL35JU9fC
- Uegg==
-X-Gm-Message-State: AOJu0YzJOnlwXaKV69EnbS1tEGK1GWVgJQXoUQh72a6At7bmYCZOOhfm
- TO9BPHQrNlkjkIzQ95Q1jOsAIoM/GJTIlqbShNCUlLoWvMCnVVdmLqL4iZE4jt+KRfP31JkBGHd
- 25sJ+KwpE0+XeTy710nDv3hNmRJU=
-X-Received: by 2002:a05:6122:4d12:b0:4b2:879d:1acc with SMTP id
- fi18-20020a0561224d1200b004b2879d1accmr3229956vkb.10.1702312005519; 
- Mon, 11 Dec 2023 08:26:45 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFzeme1B1vz6PucYVLp1Bm80JuIa+Hr+BOZlvV4PGgbdpue+u1IN2h2kbjEd2q3MqSv2yHKbhwrbMeyGlmVRe0=
-X-Received: by 2002:a05:6122:4d12:b0:4b2:879d:1acc with SMTP id
- fi18-20020a0561224d1200b004b2879d1accmr3229941vkb.10.1702312005234; Mon, 11
- Dec 2023 08:26:45 -0800 (PST)
+ bh=JuVxwer6XN8tKkd4PEQKCO067A+UrzghIiGp+hVVMB4=;
+ b=CFWAeBKcJdnKq3PdfCJcOEOU6h/+K0Bpc1u0KUCPRgElrPKyoamIIRCsw+4z3THfdpw2YN
+ ecARjodbjp0pjXjlspxcQ/z6pnrNKXYueYttKM2jLZGh86c9SJk2YZfPB2HFrzqEOTU5yW
+ iS9uvAL/oSFDM5bhoYVyE405FxAocQ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1702327749;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=JuVxwer6XN8tKkd4PEQKCO067A+UrzghIiGp+hVVMB4=;
+ b=D9D9SOy66go5eSgUHP2WcDE0AFqM53n5kDb50vTkOvWsg0gmJOECFdQ8PedtKkgh9By/Za
+ 7z26z/xRVc+YGjDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1702327749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=JuVxwer6XN8tKkd4PEQKCO067A+UrzghIiGp+hVVMB4=;
+ b=CFWAeBKcJdnKq3PdfCJcOEOU6h/+K0Bpc1u0KUCPRgElrPKyoamIIRCsw+4z3THfdpw2YN
+ ecARjodbjp0pjXjlspxcQ/z6pnrNKXYueYttKM2jLZGh86c9SJk2YZfPB2HFrzqEOTU5yW
+ iS9uvAL/oSFDM5bhoYVyE405FxAocQ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1702327749;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=JuVxwer6XN8tKkd4PEQKCO067A+UrzghIiGp+hVVMB4=;
+ b=D9D9SOy66go5eSgUHP2WcDE0AFqM53n5kDb50vTkOvWsg0gmJOECFdQ8PedtKkgh9By/Za
+ 7z26z/xRVc+YGjDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E180E133DE
+ for <ltp@lists.linux.it>; Mon, 11 Dec 2023 20:49:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id RmLFNsR1d2VzHwAAD6G6ig
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Mon, 11 Dec 2023 20:49:08 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Mon, 11 Dec 2023 21:49:06 +0100
+Message-ID: <20231211204908.7212-1-akumar@suse.de>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZUEd79N7aiC_VCDO@yuki>
+References: <ZUEd79N7aiC_VCDO@yuki>
 MIME-Version: 1.0
-References: <20231211161807.526714-1-pvorel@suse.cz>
-In-Reply-To: <20231211161807.526714-1-pvorel@suse.cz>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 11 Dec 2023 17:27:11 +0100
-Message-ID: <CAASaF6wiMS3_u35mwnBKUy15g1LzpF6rjfXUU7TNBUcd0qG01w@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+X-Spamd-Result: default: False [8.82 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; BAYES_SPAM(5.10)[100.00%];
+ FROM_HAS_DN(0.00)[]; R_MISSING_CHARSET(2.50)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCPT_COUNT_ONE(0.00)[1];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
+ TO_DN_NONE(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.18)[-0.896]; MID_CONTAINS_FROM(1.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.com:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[]
+Authentication-Results: smtp-out2.suse.de;
+	none
 X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 0/3] Add TDEBUG tst_res() flag
+Subject: [LTP] [PATCH v3] syscalls/mmap15: Rewrite test using new LTP API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,30 +112,171 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gTW9uLCBEZWMgMTEsIDIwMjMgYXQgNToxOeKAr1BNIFBldHIgVm9yZWwgPHB2b3JlbEBzdXNl
-LmN6PiB3cm90ZToKPgo+IEhpLAo+Cj4gY2hhbmdlcyB2MS0+djI6Cj4gKiAlcy9UREVCVUcvVERF
-QlVHL2cgKEN5cmlsKS4KPiAqIE1lcmdlZCB0aGUgbGF0ZXN0IHBhdGNoIGFuZCByZWJhc2VkIGJl
-Zm9yZSBzZW5kaW5nLgoKQWNrZWQtYnk6IEphbiBTdGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29t
-PgoKPgo+IEtpbmQgcmVnYXJkcywKPiBQZXRyCj4KPiBQZXRyIFZvcmVsICgzKToKPiAgIGxpYi90
-ZXN0czogQWRkIHRlc3QgZm9yIHRlc3RpbmcgdHN0X3JlcygpIGZsYWdzCj4gICBsaWI6IEFkZCBz
-dXBwb3J0IGZvciBUREVCVUcgdHN0X3JlcygpIGZsYWcKPiAgIGZzeC1saW51eDogUmVkdWNlIGxv
-ZyBvdXRwdXQgd2l0aCBUREVCVUcKPgo+ICBkb2MvQy1UZXN0LUFQSS5hc2NpaWRvYyAgICAgICAg
-ICAgICAgICAgICB8ICA5ICsrKy0tCj4gIGluY2x1ZGUvdHN0X2Fuc2lfY29sb3IuaCAgICAgICAg
-ICAgICAgICAgIHwgIDMgKysKPiAgaW5jbHVkZS90c3RfY29tbW9uLmggICAgICAgICAgICAgICAg
-ICAgICAgfCAgMiArLQo+ICBpbmNsdWRlL3RzdF9yZXNfZmxhZ3MuaCAgICAgICAgICAgICAgICAg
-ICB8ICAxICsKPiAgaW5jbHVkZS90c3RfdGVzdC5oICAgICAgICAgICAgICAgICAgICAgICAgfCAg
-NSArKy0KPiAgbGliL25ld2xpYl90ZXN0cy90c3RfcmVzX2ZsYWdzLmMgICAgICAgICAgfCA0NyAr
-KysrKysrKysrKysrKysrKysrKysrKwo+ICBsaWIvdHN0X2Fuc2lfY29sb3IuYyAgICAgICAgICAg
-ICAgICAgICAgICB8ICAzICsrCj4gIGxpYi90c3RfcmVzLmMgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgIDkgKysrLS0KPiAgbGliL3RzdF90ZXN0LmMgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAxMiArKysrKysKPiAgdGVzdGNhc2VzL2tlcm5lbC9mcy9mc3gtbGludXgvZnN4LWxp
-bnV4LmMgfCAzMyArKysrKystLS0tLS0tLS0tCj4gIDEwIGZpbGVzIGNoYW5nZWQsIDkyIGluc2Vy
-dGlvbnMoKyksIDMyIGRlbGV0aW9ucygtKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgbGliL25ld2xp
-Yl90ZXN0cy90c3RfcmVzX2ZsYWdzLmMKPgo+IC0tCj4gMi40My4wCj4KCgotLSAKTWFpbGluZyBs
-aXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ testcases/kernel/syscalls/mmap/mmap15.c | 115 +++++++-----------------
+ 1 file changed, 34 insertions(+), 81 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mmap/mmap15.c b/testcases/kernel/syscalls/mmap/mmap15.c
+index 443a37eb8..42005a9ec 100644
+--- a/testcases/kernel/syscalls/mmap/mmap15.c
++++ b/testcases/kernel/syscalls/mmap/mmap15.c
+@@ -1,113 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright (c) International Business Machines  Corp., 2004
+  *  Written by Robbie Williamson
+- *
+- * This program is free software;  you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program;  if not, write to the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) 2023 SUSE LLC Avinesh Kumar <avinesh.kumar@suse.com>
+  */
+ 
+-/*
+- * Test Description: Test that a normal page cannot be mapped into a high
+- * memory region.
++/*\
++ * [Description]
++ *
++ * Verify that, a normal page cannot be mapped into a high memory region,
++ * and mmap() call fails with either ENOMEM or EINVAL errno.
+  */
+ 
+-#include <sys/types.h>
+-#include <sys/mman.h>
+-#include <sys/mount.h>
+-#include <sys/stat.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <signal.h>
+-#include <stdint.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+-#include "test.h"
+-#include "safe_macros.h"
+-#include "lapi/abisize.h"
+-
+-char *TCID = "mmap15";
+-int TST_TOTAL = 1;
++#include "tst_test.h"
+ 
+ #ifdef __ia64__
+-# define HIGH_ADDR (void *)(0xa000000000000000UL)
++# define HIGH_ADDR ((void *)(0xa000000000000000UL))
+ #else
+-# define HIGH_ADDR (void *)(-page_size)
++# define HIGH_ADDR ((void *)(-page_size))
+ #endif
+ 
++#define TEMPFILE "mmapfile"
+ static long page_size;
++static int fd;
+ 
+-static void setup(void);
+-static void cleanup(void);
+-
+-int main(int ac, char **av)
++static void run(void)
+ {
+-	int lc, fd;
+-	void *addr;
+-
+ #ifdef TST_ABI32
+-	tst_brkm(TCONF, NULL, "This test is only for 64bit");
++	tst_brk(TCONF, "Test is not applicable for 32-bit systems.");
+ #endif
+ 
+-	tst_parse_opts(ac, av, NULL, NULL);
++	fd = SAFE_OPEN(TEMPFILE, O_RDWR | O_CREAT, 0666);
+ 
+-	setup();
++	TESTPTR(mmap(HIGH_ADDR, page_size, PROT_READ, MAP_SHARED | MAP_FIXED, fd, 0));
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		fd = SAFE_OPEN(cleanup, "testfile", O_RDWR | O_CREAT, 0666);
+-
+-		/* Attempt to mmap into highmem addr, should get ENOMEM */
+-		addr = mmap(HIGH_ADDR, page_size, PROT_READ,
+-			    MAP_SHARED | MAP_FIXED, fd, 0);
+-		if (addr != MAP_FAILED) {
+-			tst_resm(TFAIL, "mmap into high region "
+-				 "succeeded unexpectedly");
+-			munmap(addr, page_size);
+-			close(fd);
+-			continue;
+-		}
+-
+-		if (errno != ENOMEM && errno != EINVAL) {
+-			tst_resm(TFAIL | TERRNO, "mmap into high region "
+-				 "failed unexpectedly");
+-		} else {
+-			tst_resm(TPASS | TERRNO, "mmap into high region "
+-				 "failed as expected");
+-		}
+-
+-		SAFE_CLOSE(cleanup, fd);
++	if (TST_RET_PTR != MAP_FAILED) {
++		tst_res(TFAIL, "mmap() into high mem region succeeded unexpectedly");
++		SAFE_MUNMAP(TST_RET_PTR, page_size);
++		return;
+ 	}
++	if (TST_ERR == ENOMEM || TST_ERR == EINVAL)
++		tst_res(TPASS | TERRNO, "mmap() failed with expected errno");
++	else
++		tst_res(TFAIL | TERRNO, "mmap() failed with unexpected errno");
+ 
+-	cleanup();
+-	tst_exit();
++	SAFE_CLOSE(fd);
+ }
+ 
+ static void setup(void)
+ {
+-	tst_require_root();
+-
+-	tst_tmpdir();
+-
+ 	page_size = getpagesize();
+-
+-	TEST_PAUSE;
+ }
+ 
+ static void cleanup(void)
+ {
+-	tst_rmdir();
++	if (fd > 0)
++		SAFE_CLOSE(fd);
+ }
++
++static struct tst_test test = {
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run,
++	.needs_tmpdir = 1
++};
+-- 
+2.43.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
