@@ -4,113 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B682C4332F
-	for <ltp@archiver.kernel.org>; Mon, 11 Dec 2023 21:02:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFC57C4332F
+	for <ltp@archiver.kernel.org>; Tue, 12 Dec 2023 10:09:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 60F5B3CF82E
-	for <ltp@archiver.kernel.org>; Mon, 11 Dec 2023 22:02:56 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
+	by picard.linux.it (Postfix) with ESMTP id E314E3CEE51
+	for <ltp@archiver.kernel.org>; Tue, 12 Dec 2023 11:09:00 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 15A0F3CB7D9
- for <ltp@lists.linux.it>; Mon, 11 Dec 2023 22:02:45 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 7E7923CB5FB
+ for <ltp@lists.linux.it>; Tue, 12 Dec 2023 11:08:51 +0100 (CET)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com
+ [IPv6:2a00:1450:4864:20::22a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 26C601400BE5
- for <ltp@lists.linux.it>; Mon, 11 Dec 2023 22:02:44 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1C4B12242F;
- Mon, 11 Dec 2023 21:02:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1702328564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=kXkR5J+foOmTz+A5fdxnRlxoAReC92K6Pj4M6IrkSd0=;
- b=1oWzQd6JBmadmCIHmYsf99yJ4WdbqERESV8M1fZe4PrFJW+Df85AAHCDx6jFu5BFtvGrQy
- OMynAclKZafkYzAYj2BxhqNSy7Eh3JPsXWV20FskpXKn8jNiAEgdfnH94dnQj7wc/gnkg5
- /QOm1NdcHn9QytmVzkt+WsHN02xpoqI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1702328564;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=kXkR5J+foOmTz+A5fdxnRlxoAReC92K6Pj4M6IrkSd0=;
- b=h7hG+rki6yE5WiKMK2v324ev4yMSOj2a5EFAnBDXcvY2hSwcpNGJU7OH6wV+HdGXsi01qb
- 18DhhDRGVVoqOCAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1702328564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=kXkR5J+foOmTz+A5fdxnRlxoAReC92K6Pj4M6IrkSd0=;
- b=1oWzQd6JBmadmCIHmYsf99yJ4WdbqERESV8M1fZe4PrFJW+Df85AAHCDx6jFu5BFtvGrQy
- OMynAclKZafkYzAYj2BxhqNSy7Eh3JPsXWV20FskpXKn8jNiAEgdfnH94dnQj7wc/gnkg5
- /QOm1NdcHn9QytmVzkt+WsHN02xpoqI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1702328564;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=kXkR5J+foOmTz+A5fdxnRlxoAReC92K6Pj4M6IrkSd0=;
- b=h7hG+rki6yE5WiKMK2v324ev4yMSOj2a5EFAnBDXcvY2hSwcpNGJU7OH6wV+HdGXsi01qb
- 18DhhDRGVVoqOCAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0926E133DE;
- Mon, 11 Dec 2023 21:02:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
- by imap1.dmz-prg2.suse.org with ESMTPSA id FTIRAfR4d2WdIwAAD6G6ig
- (envelope-from <akumar@suse.de>); Mon, 11 Dec 2023 21:02:44 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Mon, 11 Dec 2023 22:02:43 +0100
-Message-ID: <2718045.mvXUDI8C0e@localhost>
-Organization: SUSE
-In-Reply-To: <20231031132756.12799-1-chrubis@suse.cz>
-References: <20231031132756.12799-1-chrubis@suse.cz>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 4271C206C4A
+ for <ltp@lists.linux.it>; Tue, 12 Dec 2023 11:08:50 +0100 (CET)
+Received: by mail-lj1-x22a.google.com with SMTP id
+ 38308e7fff4ca-2c9f7fe6623so68718571fa.3
+ for <ltp@lists.linux.it>; Tue, 12 Dec 2023 02:08:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1702375729; x=1702980529; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id:from
+ :to:cc:subject:date:message-id:reply-to;
+ bh=6nw5DzH0ZD1VdnWGQ2bASo0ICmcuoct/lhPX9JvfQa8=;
+ b=IM4hVOwlLayYtLpN/JWvc0zzfLuQ9Dgtdyx4PUb8wCkFyfg6oViiDe9iD4whF8mS3z
+ bKdyE3Tajax4L11OOGMka7cB6R7/HJMyMNKfamL6h4+JG23yMM1CZ80ZVg820sOCxiot
+ JKAtsZQWxAgKQg3W7Ae2AZSb3+oHu9LCS2AxiknvrFFR+ktGdPSAsmTQafif71ZBXivs
+ bP0aGKJMZSnhMhysMmySqQN8aMUdiitQFm52ApLxnKn8R9Pkly6G0HhptvGF2vF6N6VX
+ kWUk082lh0/m4x1pBJy+GNlUEfv4xnaBX1QpxRb1wJnwdV0QoZ7zAMikq8XyA2x+F194
+ L7Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1702375729; x=1702980529;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=6nw5DzH0ZD1VdnWGQ2bASo0ICmcuoct/lhPX9JvfQa8=;
+ b=mDtN5QktI6yhiI1uiWztGklLlSqgbLLXj6r3CRPXT5MdnRTmfNkL5Az6AH3krlg89z
+ LJoJGn9aHLOUt2qNFBAe2y2ROUl629riiG3Cz0NsLVaG/40E2l6UlF85r+0LseBbTxfx
+ 7L+N9E6tjpJNynQlF2KQyEPzMlE9I62MtTeLXWzP4gElPcMmVKlowLRdlUPN1OHDDyCv
+ WdINOAAQu2ADyMB2UPr6iDIAA/R/8k80NzhTmkvtNiWLjc6RldUGmzzaanTUnhpzbGTj
+ 2HyFYT9+LcErya1scQoqtCfY73p6k1uOZcZYYZpAYDRd//omzWqQLDEGqqXIVZRYSnSc
+ 6bpQ==
+X-Gm-Message-State: AOJu0Yw+KuIbQV/g1LRqsNjqNdvnlSyFfhL1L5gKYgh7NOMKym5zozSw
+ BDkbupkn8d1gKwmqAfg8OhKkqDcsGCFtE+t6HYE=
+X-Google-Smtp-Source: AGHT+IHuPqinQbUnG/zTVw1PIPto3+UlUVKLpvyVToRCrkXsfQNWHzUrv1Hp1rvW8RDUHpVFuhwKHw==
+X-Received: by 2002:a05:6512:2352:b0:50d:1e6f:b52c with SMTP id
+ p18-20020a056512235200b0050d1e6fb52cmr1598857lfu.76.1702375728609; 
+ Tue, 12 Dec 2023 02:08:48 -0800 (PST)
+Received: from ?IPV6:2a02:a31b:843f:e00:d596:e8e:78c7:ff41?
+ ([2a02:a31b:843f:e00:d596:e8e:78c7:ff41])
+ by smtp.gmail.com with ESMTPSA id
+ vx6-20020a170907a78600b00a1e852ab3f0sm6116687ejc.15.2023.12.12.02.08.48
+ for <ltp@lists.linux.it>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 12 Dec 2023 02:08:48 -0800 (PST)
+Message-ID: <e9c67e52-e4e6-4a15-ae7d-31995c515ba6@suse.com>
+Date: Tue, 12 Dec 2023 11:08:47 +0100
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=1oWzQd6J;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=h7hG+rki;
- dmarc=pass (policy=none) header.from=suse.de;
- spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither
- permitted nor denied by domain of akumar@suse.de)
- smtp.mailfrom=akumar@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-8.10 / 50.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
- TO_DN_SOME(0.00)[]; R_SPF_SOFTFAIL(0.00)[~all:c];
- HAS_ORG_HEADER(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_TRACE(0.00)[suse.de:+]; RCPT_COUNT_TWO(0.00)[2];
- DMARC_POLICY_ALLOW(0.00)[suse.de,none]; MX_GOOD(-0.01)[];
- DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; CTE_CASE(0.50)[];
- BAYES_HAM(-0.09)[64.93%]; ARC_NA(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- FROM_HAS_DN(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- WHITELIST_DMARC(-7.00)[suse.de:D:+];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
- MID_RHS_NOT_FQDN(0.50)[]; RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Queue-Id: 1C4B12242F
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: ltp@lists.linux.it
+References: <20231211161807.526714-1-pvorel@suse.cz>
+ <20231211161807.526714-4-pvorel@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20231211161807.526714-4-pvorel@suse.cz>
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH] syscalls/sched_rr_get_interval: Convert to
- docparse
+Subject: Re: [LTP] [PATCH v3 3/3] fsx-linux: Reduce log output with TDEBUG
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,20 +85,119 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi,
+Hi!
 
-Reviewed-by: Avinesh Kumar <akumar@suse.de>
+Acked-by: Andrea Cervesato <andrea.cervesato@suse.com>
 
+Andrea
 
---
-Regards,
-Avinesh
-
+On 12/11/23 17:18, Petr Vorel wrote:
+> Log output is very verbose thus silent with changing most verbose
+> TINFO messages to TDEBUG. Given how many times the test tries it's a
+> significant time spent for printing output. This change also helps to
+> run on slower SUT without need to set LTP_TIMEOUT_MUL environment
+> variable.
+>
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>   testcases/kernel/fs/fsx-linux/fsx-linux.c | 33 ++++++++---------------
+>   1 file changed, 11 insertions(+), 22 deletions(-)
+>
+> diff --git a/testcases/kernel/fs/fsx-linux/fsx-linux.c b/testcases/kernel/fs/fsx-linux/fsx-linux.c
+> index 23e608189..658fc99c3 100644
+> --- a/testcases/kernel/fs/fsx-linux/fsx-linux.c
+> +++ b/testcases/kernel/fs/fsx-linux/fsx-linux.c
+> @@ -98,8 +98,7 @@ static void update_file_size(struct file_pos_t const *pos)
+>   {
+>   	if (pos->offset + pos->size > file_size) {
+>   		file_size = pos->offset + pos->size;
+> -
+> -		tst_res(TINFO, "File size changed: %llu", file_size);
+> +		tst_res(TDEBUG, "File size changed: %llu", file_size);
+>   	}
+>   }
+>   
+> @@ -114,8 +113,7 @@ static int memory_compare(
+>   	for (long long i = 0; i < size; i++) {
+>   		diff = a[i] - b[i];
+>   		if (diff) {
+> -			tst_res(TINFO,
+> -				"File memory differs at offset=%llu ('%c' != '%c')",
+> +			tst_res(TDEBUG, "File memory differs at offset=%llu ('%c' != '%c')",
+>   				offset + i, a[i], b[i]);
+>   			break;
+>   		}
+> @@ -135,10 +133,8 @@ static int op_read(void)
+>   
+>   	op_file_position(file_size, op_read_align, &pos);
+>   
+> -	tst_res(TINFO,
+> -		"Reading at offset=%llu, size=%llu",
+> -		pos.offset,
+> -		pos.size);
+> +	tst_res(TDEBUG, "Reading at offset=%llu, size=%llu",
+> +		pos.offset, pos.size);
+>   
+>   	memset(temp_buff, 0, file_max_size);
+>   
+> @@ -176,10 +172,8 @@ static int op_write(void)
+>   		temp_buff[i] = data;
+>   	}
+>   
+> -	tst_res(TINFO,
+> -		"Writing at offset=%llu, size=%llu",
+> -		pos.offset,
+> -		pos.size);
+> +	tst_res(TDEBUG, "Writing at offset=%llu, size=%llu",
+> +		pos.offset, pos.size);
+>   
+>   	SAFE_LSEEK(file_desc, (off_t)pos.offset, SEEK_SET);
+>   	SAFE_WRITE(SAFE_WRITE_ALL, file_desc, temp_buff, pos.size);
+> @@ -194,10 +188,9 @@ static int op_truncate(void)
+>   	struct file_pos_t pos;
+>   
+>   	op_file_position(file_max_size, op_trunc_align, &pos);
+> -
+>   	file_size = pos.offset + pos.size;
+>   
+> -	tst_res(TINFO, "Truncating to %llu", file_size);
+> +	tst_res(TDEBUG, "Truncating to %llu", file_size);
+>   
+>   	SAFE_FTRUNCATE(file_desc, file_size);
+>   	memset(file_buff + file_size, 0, file_max_size - file_size);
+> @@ -218,10 +211,8 @@ static int op_map_read(void)
+>   	op_file_position(file_size, op_read_align, &pos);
+>   	op_align_pages(&pos);
+>   
+> -	tst_res(TINFO,
+> -		"Map reading at offset=%llu, size=%llu",
+> -		pos.offset,
+> -		pos.size);
+> +	tst_res(TDEBUG, "Map reading at offset=%llu, size=%llu",
+> +		pos.offset, pos.size);
+>   
+>   	addr = SAFE_MMAP(
+>   		0, pos.size,
+> @@ -261,10 +252,8 @@ static int op_map_write(void)
+>   	if (file_size < pos.offset + pos.size)
+>   		SAFE_FTRUNCATE(file_desc, pos.offset + pos.size);
+>   
+> -	tst_res(TINFO,
+> -		"Map writing at offset=%llu, size=%llu",
+> -		pos.offset,
+> -		pos.size);
+> +	tst_res(TDEBUG, "Map writing at offset=%llu, size=%llu",
+> +		pos.offset, pos.size);
+>   
+>   	for (long long i = 0; i < pos.size; i++)
+>   		file_buff[pos.offset + i] = random() % 10 + 'l';
 
 
 
