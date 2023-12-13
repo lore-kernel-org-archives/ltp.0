@@ -4,58 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36307C4332F
-	for <ltp@archiver.kernel.org>; Wed, 13 Dec 2023 23:11:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AE82C4332F
+	for <ltp@archiver.kernel.org>; Wed, 13 Dec 2023 23:41:00 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 063D83CF558
-	for <ltp@archiver.kernel.org>; Thu, 14 Dec 2023 00:11:35 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 1AE143CF559
+	for <ltp@archiver.kernel.org>; Thu, 14 Dec 2023 00:40:58 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id C47333CE5B8
- for <ltp@lists.linux.it>; Thu, 14 Dec 2023 00:11:24 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id B10873CE5B8
+ for <ltp@lists.linux.it>; Thu, 14 Dec 2023 00:40:47 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id AED04603585
- for <ltp@lists.linux.it>; Thu, 14 Dec 2023 00:11:23 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id D6848200965
+ for <ltp@lists.linux.it>; Thu, 14 Dec 2023 00:40:46 +0100 (CET)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 0F97C1F789;
- Wed, 13 Dec 2023 23:11:21 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C24B61F792;
+ Wed, 13 Dec 2023 23:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1702510845;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YSePSHXoX+Pxy6pL4y8IGrvFAsYxr5NZrUvvCoQpTnk=;
+ b=f+HKQQDhOdbVU5mOItn+vSv6A2ObE4pPE9whIvJSztw4z4hLCbOXI88ez3W9HP5BmwaILV
+ VP6Eqr563uPxdBiE/bt42tlPGWLfNJ84BUocTB4Hpf234gvOo7z5Z3wSCjSzC22uQf6Qsg
+ glAqaMtaGtBt7OG2317SGDyku5M7iYI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1702510845;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YSePSHXoX+Pxy6pL4y8IGrvFAsYxr5NZrUvvCoQpTnk=;
+ b=oWATqILbYWSRe1WAunADk+pxWx0E8fB5xWY4z8YNHUuoif7EJ7MHlYoHlRGdDcWiiM2eVP
+ vbIspwyetYvcqfCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1702510845;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YSePSHXoX+Pxy6pL4y8IGrvFAsYxr5NZrUvvCoQpTnk=;
+ b=f+HKQQDhOdbVU5mOItn+vSv6A2ObE4pPE9whIvJSztw4z4hLCbOXI88ez3W9HP5BmwaILV
+ VP6Eqr563uPxdBiE/bt42tlPGWLfNJ84BUocTB4Hpf234gvOo7z5Z3wSCjSzC22uQf6Qsg
+ glAqaMtaGtBt7OG2317SGDyku5M7iYI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1702510845;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YSePSHXoX+Pxy6pL4y8IGrvFAsYxr5NZrUvvCoQpTnk=;
+ b=oWATqILbYWSRe1WAunADk+pxWx0E8fB5xWY4z8YNHUuoif7EJ7MHlYoHlRGdDcWiiM2eVP
+ vbIspwyetYvcqfCg==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B5E3F1391D;
- Wed, 13 Dec 2023 23:11:16 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7244513240;
+ Wed, 13 Dec 2023 23:40:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id um8kKRQ6emWwPAAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Wed, 13 Dec 2023 23:11:16 +0000
-Date: Thu, 14 Dec 2023 00:11:15 +0100
+ by imap2.dmz-prg2.suse.org with ESMTPSA id F4thGv1AemX6QQAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Wed, 13 Dec 2023 23:40:45 +0000
+Date: Thu, 14 Dec 2023 00:40:44 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20231213231115.GA768049@pevik>
+Message-ID: <20231213234044.GA774490@pevik>
 References: <20231211161807.526714-1-pvorel@suse.cz>
- <20231211161807.526714-3-pvorel@suse.cz> <ZXoC6LUE8ePDPRIU@rei>
+ <20231211161807.526714-2-pvorel@suse.cz> <ZXoAKxPxfXxU8bxw@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZXoC6LUE8ePDPRIU@rei>
+In-Reply-To: <ZXoAKxPxfXxU8bxw@rei>
 Authentication-Results: smtp-out2.suse.de;
 	none
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 0F97C1F789
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+X-Spamd-Result: default: False [-4.50 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
+ RCVD_COUNT_THREE(0.00)[3]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-0.997]; RCPT_COUNT_SEVEN(0.00)[7];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[32.08%]
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v3 2/3] lib: Add support for TDEBUG tst_res() flag
+Subject: Re: [LTP] [PATCH v3 1/3] lib/tests: Add test for testing tst_res()
+ flags
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,175 +116,50 @@ Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 > Hi!
-> > diff --git a/lib/tst_res.c b/lib/tst_res.c
-> > index e0896eb05..5125001f7 100644
-> > --- a/lib/tst_res.c
-> > +++ b/lib/tst_res.c
-> > @@ -157,6 +157,7 @@ const char *strttype(int ttype)
-> >  		PAIR(TCONF)
-> >  		PAIR(TWARN)
-> >  		PAIR(TINFO)
-> > +		PAIR(TDEBUG)
-> >  	};
-
-> >  	PAIR_LOOKUP(ttype_pairs, TTYPE_RESULT(ttype));
-> > @@ -174,8 +175,10 @@ static void tst_res__(const char *file, const int lineno, int ttype,
-> >  	int len = 0;
-> >  	int ttype_result = TTYPE_RESULT(ttype);
-
-> > -	if (file && (ttype_result != TPASS && ttype_result != TINFO))
-> > +	if (file && (ttype_result != TPASS && ttype_result != TINFO &&
-> > +		     ttype_result != TDEBUG))
-> >  		len = sprintf(tmesg, "%s:%d: ", file, lineno);
+> > +#define FLAG(x) .flag = x, .str = #x
+> > +static struct tcase {
+> > +	int flag;
+> > +	const char *str;
+> > +} tcases[] = {
+> > +	{FLAG(TPASS)},
+> > +	{FLAG(TFAIL)},
+> > +	{FLAG(TBROK)},
+> > +	{FLAG(TCONF)},
+> > +	{FLAG(TWARN)},
+> > +	{FLAG(TINFO)},
+> > +};
 > > +
-> >  	EXPAND_VAR_ARGS(tmesg + len, arg_fmt, USERMESG - len);
-
-> >  	/*
-> > @@ -193,7 +196,7 @@ static void tst_res__(const char *file, const int lineno, int ttype,
-> >  	 * Set the test case number and print the results, depending on the
-> >  	 * display type.
-> >  	 */
-> > -	if (ttype_result == TWARN || ttype_result == TINFO) {
-> > +	if (ttype_result == TWARN || ttype_result == TINFO || ttype_result == TDEBUG) {
-> >  		tst_print(TCID, 0, ttype, tmesg);
-> >  	} else {
-> >  		if (tst_count < 0)
-> > @@ -411,7 +414,7 @@ void tst_exit(void)
-
-> >  	tst_old_flush();
-
-> > -	T_exitval &= ~TINFO;
-> > +	T_exitval &= ~(TINFO | TDEBUG);
-
-> >  	if (T_exitval == TCONF && passed_cnt)
-> >  		T_exitval &= ~TCONF;
-
-> I woudln't add it to the old library. None of the old tests uses it so
-> there is no reason to export it there.
-
-> I suppose that we just abort if we get this flag in old library:
-
-> diff --git a/lib/tst_res.c b/lib/tst_res.c
-> index e0896eb05..e87918ed1 100644
-> --- a/lib/tst_res.c
-> +++ b/lib/tst_res.c
-> @@ -174,6 +174,11 @@ static void tst_res__(const char *file, const int lineno, int ttype,
->         int len = 0;
->         int ttype_result = TTYPE_RESULT(ttype);
-
-> +       if (ttype_result == TDEBUG) {
-> +               printf("%s: %i: TDEBUG is not supported\n", __func__, __LINE__);
-> +               abort();
-> +       }
-> +
-
-> What do you think?
-
-Makes sense, thanks!
-
-> > diff --git a/lib/tst_test.c b/lib/tst_test.c
-> > index c2f8f503f..f5c87ed9e 100644
-> > --- a/lib/tst_test.c
-> > +++ b/lib/tst_test.c
-> > @@ -60,6 +60,7 @@ static pid_t main_pid, lib_pid;
-> >  static int mntpoint_mounted;
-> >  static int ovl_mounted;
-> >  static struct timespec tst_start_time; /* valid only for test pid */
-> > +static int tdebug;
-
-> >  struct results {
-> >  	int passed;
-> > @@ -224,6 +225,9 @@ static void print_result(const char *file, const int lineno, int ttype,
-> >  	case TINFO:
-> >  		res = "TINFO";
-> >  	break;
-> > +	case TDEBUG:
-> > +		res = "TDEBUG";
-> > +	break;
-> >  	default:
-> >  		tst_brk(TBROK, "Invalid ttype value %i", ttype);
-> >  		abort();
-> > @@ -352,6 +356,9 @@ void tst_res_(const char *file, const int lineno, int ttype,
-> >  {
-> >  	va_list va;
-
-> > +	if (ttype == TDEBUG && !tdebug)
-> > +		return;
+> > +static void do_cleanup(void)
+> > +{
+> > +	tst_brk(TBROK, "TBROK message should be TWARN in cleanup");
+> > +}
 > > +
-> >  	va_start(va, fmt);
-> >  	tst_vres_(file, lineno, ttype, fmt, va);
-> >  	va_end(va);
-> > @@ -511,6 +518,7 @@ static struct option {
-> >  	{"h",  "-h       Prints this help"},
-> >  	{"i:", "-i n     Execute test n times"},
-> >  	{"I:", "-I x     Execute test for n seconds"},
-> > +	{"v",  "-v       Prints debug information"},
+> > +static void do_test(unsigned int n)
+> > +{
+> > +	int flag = tcases[n].flag;
+> > +	const char *str = tcases[n].str;
+> > +
+> > +	tst_res(flag, "%s message", str);
+> > +
+> > +	if (flag == TWARN || flag == TINFO)
+> > +		tst_res(TPASS, "%s message is not a result", str);
 
-> Maybe this should now be called -d since we call it TDEBUG and that will
-> avoid having a bit confusing parameters with both -v and -V used.
+> Maybe it would make sense the loop over the flags here instead, so that
+> we don't have to produce second TPASS message.
 
-Yes, I didn't like the flag name does not correspond to the option.
-I previously wrote that more tests use -d for something else:
-
-$ git grep '"d:"' $(git grep -l tst_option)
-testcases/kernel/fs/read_all/read_all.c:                {"d:", &root_dir,
-testcases/kernel/io/ltp-aiodio/aio-stress.c:            { "d:", &str_depth, "Number of pending aio requests for each file (default 64)" },
-testcases/network/netstress/netstress.c:                {"d:", &rpath, "Path to file where result is saved"},
-testcases/network/nfs/nfs_stress/nfs05_make_tree.c:     {"d:", &d_arg, "Number of subdirs to generate, default: 100"},
-testcases/network/stress/route/route-change-netlink.c:          {"d:", &d_opt, "Interface to work on (mandatory)"},
-
-Hopefully all could be changed to -D in separate commits.
-
-$ git grep '"d"' $(git grep -l tst_option)
-Also some other tests already use it as debug, this will be trivial to convert
-to delete it and use TDEBUG (will have to be in the same commit which introduces
-the flag or I would have to remove the debug and print always in commit before
-introducing the flag):
-
-testcases/kernel/mem/mmapstress/mmapstress01.c:         {"d", &debug, "Enable debug output"},
-testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c:       {"d", &debug, "Enable debug"},
-testcases/kernel/syscalls/mq_notify/mq_notify01.c:              {"d", &str_debug, "Print debug messages"},
-
-Also, shell API uses -d
-
-$ git grep "TST_OPTS=.*d"
-testcases/network/virt/geneve01.sh:TST_OPTS="hi:d:"
-testcases/network/virt/geneve02.sh:TST_OPTS="hi:d:"
-testcases/network/virt/vxlan01.sh:TST_OPTS="hi:d:"
-testcases/network/virt/vxlan02.sh:TST_OPTS="hi:d:"
-testcases/network/virt/vxlan03.sh:TST_OPTS="hi:d:"
-testcases/network/virt/vxlan04.sh:TST_OPTS="hi:d:"
-
-=> all for VxLAN destination address in testcases/network/virt/virt_lib.sh
-Again, it could be changed to -D in separate commits.
-
-Alternative to all this work would be to have TVERBOSE. But I'm ok to do the job
-if you like TDEBUG.
-
-> >  	{"V",  "-V       Prints LTP version"},
-> >  	{"C:", "-C ARG   Run child process with ARG arguments (used internally)"},
-> >  };
-> > @@ -692,6 +700,10 @@ static void parse_opts(int argc, char *argv[])
-> >  			else
-> >  				duration = SAFE_STRTOF(optarg, 0.1, HUGE_VALF);
-> >  		break;
-> > +		case 'v':
-> > +			tdebug = 1;
-> > +			tst_res(TINFO, "Run with -v, printing debug info");
->                                            ^
-> 					   Maybe just "Enabling debug info"
-
-+1
-
-If none objects, I hopefully send patch this week.
+I'm not sure if I follow you. I wanted to use the flag in tst_res(),
+but for these two there would be tst_brk(TBROK) due missing result.
 
 Kind regards,
 Petr
 
-> > +		break;
-> >  		case 'V':
-> >  			fprintf(stderr, "LTP version: " LTP_VERSION "\n");
-> >  			exit(0);
+> > +}
+> > +
+> > +static struct tst_test test = {
+> > +	.test = do_test,
+> > +	.tcnt = ARRAY_SIZE(tcases),
+> > +	.cleanup = do_cleanup,
+> > +};
 > > -- 
 > > 2.43.0
 
