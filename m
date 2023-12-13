@@ -4,112 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B9C4C4332F
-	for <ltp@archiver.kernel.org>; Tue, 12 Dec 2023 17:29:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55D15C4332F
+	for <ltp@archiver.kernel.org>; Wed, 13 Dec 2023 08:48:18 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 04FB13CF73F
-	for <ltp@archiver.kernel.org>; Tue, 12 Dec 2023 18:29:47 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 67FE73CCD3F
+	for <ltp@archiver.kernel.org>; Wed, 13 Dec 2023 09:48:16 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 814C43CBDE7
- for <ltp@lists.linux.it>; Tue, 12 Dec 2023 18:29:36 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 7B12B3CB56D
+ for <ltp@lists.linux.it>; Wed, 13 Dec 2023 09:48:06 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 4EAAA1A0BC56
- for <ltp@lists.linux.it>; Tue, 12 Dec 2023 18:29:34 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2C6711FB82;
- Tue, 12 Dec 2023 17:29:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1702402172;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9LD9O/Fg0SxYuMyCJ1kD37M+8ldiZiQo1eRECHUEbyA=;
- b=T6wE0VFGpXoZEshIMCMDNdjOqCH/lCwk8GTgyaisHisv/DrAyTjqd7ASTt1Rnh7Z0xf2kN
- 4MgGLt06xdhv4V3vOgsQkMKK4YadlB8fKfWJQznLFMi3hr3ZLXUcc6XUzLfjX6Bqs5BXGJ
- aXnskdQgoU13qHBafpRQ5INlgcYcnWk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1702402172;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9LD9O/Fg0SxYuMyCJ1kD37M+8ldiZiQo1eRECHUEbyA=;
- b=GDDKtlWZBmV03/zQLAH5BQ0yh3r9N4WLwXHsm2CeGpFAKVmJjJxUrj97ULIqwiLI6Px0Zt
- n7OynOfml7W4jcBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1702402172;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9LD9O/Fg0SxYuMyCJ1kD37M+8ldiZiQo1eRECHUEbyA=;
- b=T6wE0VFGpXoZEshIMCMDNdjOqCH/lCwk8GTgyaisHisv/DrAyTjqd7ASTt1Rnh7Z0xf2kN
- 4MgGLt06xdhv4V3vOgsQkMKK4YadlB8fKfWJQznLFMi3hr3ZLXUcc6XUzLfjX6Bqs5BXGJ
- aXnskdQgoU13qHBafpRQ5INlgcYcnWk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1702402172;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=9LD9O/Fg0SxYuMyCJ1kD37M+8ldiZiQo1eRECHUEbyA=;
- b=GDDKtlWZBmV03/zQLAH5BQ0yh3r9N4WLwXHsm2CeGpFAKVmJjJxUrj97ULIqwiLI6Px0Zt
- n7OynOfml7W4jcBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 410BF132DC;
- Tue, 12 Dec 2023 17:29:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id JWJNCHuYeGV/CwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Tue, 12 Dec 2023 17:29:31 +0000
-Date: Tue, 12 Dec 2023 18:29:29 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Wei Gao <wegao@suse.com>
-Message-ID: <20231212172929.GA629121@pevik>
-References: <20231210094339.26971-1-wegao@suse.com>
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id BBC31601357
+ for <ltp@lists.linux.it>; Wed, 13 Dec 2023 09:48:03 +0100 (CET)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 3BD8WR04020526
+ for <ltp@lists.linux.it>; Wed, 13 Dec 2023 08:48:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=0WasUj+oWLSUzinH7kFzB8cQDYbvRu1OSv0OGtjrNBs=;
+ b=ImYcTEHZfJOxX2B3Tk6/w0YG7DID+ofNRuD5P4bNefv9p0biGPX6YRQhtjF2K9REnzDO
+ qEKsqE+ItYQH+sxhPpmUPs6wpxAGt2b8Ol/fIdi8/VuuwCFrxk4uL/8AT4zVo6VU8Ytx
+ y7wEK4uUvDySe+yCeEM/S5AmueTMzTZveoRPYA9n4XRu2394sNYFbmWoMlrCXqm87s65
+ PYGX5JSttta10jEso1Fch/6Ob2ILKlPN9IzQozyaH3Rkyz7nNFQGYfHk2hIQk102/nGB
+ zTkEHitczIKfgTw1qgaz9YwgUy8YngrWTTB8wueerLbkgYrSzvRJt0i0bhqoOd1ApyUq lw== 
+Received: from ppma21.wdc07v.mail.ibm.com
+ (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy6j0nmhf-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Wed, 13 Dec 2023 08:48:01 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+ by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 3BD6MERA012593
+ for <ltp@lists.linux.it>; Wed, 13 Dec 2023 08:48:00 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+ by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw3jnyh98-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <ltp@lists.linux.it>; Wed, 13 Dec 2023 08:47:59 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com
+ [10.20.54.101])
+ by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 3BD8luTg17891994
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 13 Dec 2023 08:47:56 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id B0E1D2004B;
+ Wed, 13 Dec 2023 08:47:56 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 0714C20040;
+ Wed, 13 Dec 2023 08:47:56 +0000 (GMT)
+Received: from ltcden9-lp5.aus.stglabs.ibm.com (unknown [9.53.174.134])
+ by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+ Wed, 13 Dec 2023 08:47:55 +0000 (GMT)
+From: Shirisha G <shirisha@linux.ibm.com>
+To: ltp@lists.linux.it
+Date: Wed, 13 Dec 2023 14:17:53 +0530
+Message-Id: <20231213084753.61762-1-shirisha@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Bmt-IQNhHhkSwXxI1_tb9G5AFgr7i4YK
+X-Proofpoint-ORIG-GUID: Bmt-IQNhHhkSwXxI1_tb9G5AFgr7i4YK
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231210094339.26971-1-wegao@suse.com>
-X-Spamd-Bar: ++
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=T6wE0VFG;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=GDDKtlWZ;
- dmarc=none;
- spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither
- permitted nor denied by domain of pvorel@suse.cz)
- smtp.mailfrom=pvorel@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [2.49 / 50.00];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
- TO_DN_SOME(0.00)[]; R_SPF_SOFTFAIL(4.60)[~all];
- RCVD_COUNT_THREE(0.00)[3]; DKIM_TRACE(0.00)[suse.cz:+];
- MX_GOOD(-0.01)[]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; BAYES_HAM(-3.00)[100.00%];
- ARC_NA(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
- RCPT_COUNT_THREE(0.00)[4]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
- DMARC_NA(1.20)[suse.cz]; NEURAL_SPAM_SHORT(0.20)[0.068];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim];
- FUZZY_BLOCKED(0.00)[rspamd.com]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Queue-Id: 2C6711FB82
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-13_01,2023-12-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1011 malwarescore=0
+ suspectscore=0 lowpriorityscore=0 impostorscore=0 adultscore=0 mlxscore=0
+ spamscore=0 phishscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312130063
+X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v1] swapping01.c: Reporting /proc/meminfo before
- test and at the moment of the failure
+Subject: [LTP] [PATCH] Add hugemmap41(Migrating the
+ libhugetlbfs/testcases/slbpacaflush.c test)
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,115 +97,207 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it
+Cc: Shirisha G <shirisha@linux.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi Wei,
+We are verifying ppc64 kernels prior to 2.6.15-rc5 exhibit a bug in the
+hugepage SLB flushing path. When opening new hugetlb areas, updating masks
+in the thread_struct and copying to the PACA only occurs on the CPU where
+segments are opened, leading to potential stale copies in other CPUs.
+This bug can be triggered by multiple threads sharing the mm or a single thread
+migrating between CPUs, particularly evident in a close-to-idle system,
+as other processes may flush the SLB and prevent the bug from manifesting.
 
-nit: the subject is:
-"swapping01.c: Reporting /proc/meminfo before test and at the moment of the failure"
+Original test originates from https://github.com/libhugetlbfs/libhugetlbfs/blob/master/tests/slbpacaflush.c
 
-This is way too long, please make it shorter (it should be up to 72 chars),
-you can write more at other lines (not everything have to be on the subject).
+Signed-off-by: Shirisha G <shirisha@linux.ibm.com>
+---
+ runtest/hugetlb                               |   1 +
+ testcases/kernel/mem/.gitignore               |   1 +
+ .../kernel/mem/hugetlb/hugemmap/hugemmap41.c  | 144 ++++++++++++++++++
+ 3 files changed, 146 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
 
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  testcases/kernel/mem/swapping/swapping01.c | 24 +++++++++++++++++++++-
->  1 file changed, 23 insertions(+), 1 deletion(-)
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 299c07ac9..d956866ac 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -35,6 +35,7 @@ hugemmap29 hugemmap29
+ hugemmap30 hugemmap30
+ hugemmap31 hugemmap31
+ hugemmap32 hugemmap32
++hugemmap41 hugemmap41
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index c96fe8bfc..b7e108956 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -34,6 +34,7 @@
+ /hugetlb/hugemmap/hugemmap30
+ /hugetlb/hugemmap/hugemmap31
+ /hugetlb/hugemmap/hugemmap32
++/hugetlb/hugemmap/hugemmap41
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
+new file mode 100644
+index 000000000..3b3388c68
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap41.c
+@@ -0,0 +1,144 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2005-2006 IBM Corporation.
++ * Author: David Gibson & Adam Litke
++ */
++/*\
++ * [Description]
++ *
++ * ppc64 kernels (prior to 2.6.15-rc5) have a bug in the hugepage SLB
++ * flushing path.  After opening new hugetlb areas, we update the
++ * masks in the thread_struct, copy to the PACA, then do slbies on
++ * each CPU.  The trouble is we only copy to the PACA on the CPU where
++ * we're opening the segments, which can leave a stale copy in the
++ * PACAs on other CPUs.
++ *
++ * This can be triggered either with multiple threads sharing the mm,
++ * or with a single thread which is migrated from one CPU, to another
++ * (where the mapping occurs), then back again (where we touch the
++ * stale SLB).  We use the second method in this test, since it's
++ * easier to force (using sched_setaffinity).  However it relies on a
++ * close-to-idle system, if any process other than a kernel thread
++ * runs on the first CPU between runs of the test process, the SLB
++ * will be flushed and we won't trigger the bug, hence the
++ * PASS_INCONCLUSIVE().  Obviously, this test won't work on a 1-cpu
++ * system (should get CONFIG() on the sched_setaffinity)
++ *
++ */
++#define _GNU_SOURCE
++#include "hugetlb.h"
++#define SYSFS_CPU_ONLINE_FMT	"/sys/devices/system/cpu/cpu%d/online"
++#define MNTPOINT "hugetlbfs/"
++
++
++#include <stdio.h>
++#include <sched.h>
++
++
++long hpage_size;
++int fd;
++void *p;
++volatile unsigned long *q;
++int online_cpus[2], err;
++cpu_set_t cpu0, cpu1;
++
++
++
++void check_online_cpus(int online_cpus[], int nr_cpus_needed)
++{
++	char cpu_state, path_buf[64];
++	int total_cpus, cpu_idx, fd, ret, i;
++
++	total_cpus = get_nprocs_conf();
++	cpu_idx = 0;
++
++	if (get_nprocs() < nr_cpus_needed)
++		tst_res(TFAIL, "Atleast online %d cpus are required", nr_cpus_needed);
++
++	for (i = 0; i < total_cpus && cpu_idx < nr_cpus_needed; i++) {
++		errno = 0;
++		sprintf(path_buf, SYSFS_CPU_ONLINE_FMT, i);
++		fd = open(path_buf, O_RDONLY);
++		if (fd < 0) {
++			/* If 'online' is absent, the cpu cannot be offlined */
++			if (errno == ENOENT) {
++				online_cpus[cpu_idx] = i;
++				cpu_idx++;
++				continue;
++			} else {
++				tst_res(TFAIL, "Unable to open %s: %s", path_buf,
++				     strerror(errno));
++			}
++		}
++
++		ret = read(fd, &cpu_state, 1);
++		if (ret < 1)
++			tst_res(TFAIL, "Unable to read %s: %s", path_buf,
++			     strerror(errno));
++
++		if (cpu_state == '1') {
++			online_cpus[cpu_idx] = i;
++			cpu_idx++;
++		}
++
++		if (fd >= 0)
++			SAFE_CLOSE(fd);
++	}
++
++	if (cpu_idx < nr_cpus_needed)
++		tst_res(TFAIL, "Atleast %d online cpus were not found", nr_cpus_needed);
++}
++
++
++static void run_test(void)
++{
++	check_online_cpus(online_cpus, 2);
++	CPU_ZERO(&cpu0);
++	CPU_SET(online_cpus[0], &cpu0);
++	CPU_ZERO(&cpu1);
++	CPU_SET(online_cpus[1], &cpu1);
++
++	err = sched_setaffinity(getpid(), CPU_SETSIZE/8, &cpu0);
++	if (err != 0)
++		tst_res(TFAIL, "sched_setaffinity(cpu%d): %s", online_cpus[0],
++				strerror(errno));
++
++	err = sched_setaffinity(getpid(), CPU_SETSIZE/8, &cpu1);
++
++	if (err != 0)
++		tst_res(TFAIL, "sched_setaffinity(cpu%d): %s", online_cpus[1],
++				strerror(errno));
++	p = SAFE_MMAP(NULL, hpage_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
++
++	err = sched_setaffinity(getpid(), CPU_SETSIZE/8, &cpu0);
++	if (err != 0)
++		tst_res(TFAIL, "sched_setaffinity(cpu%d): %s", online_cpus[0],
++				strerror(errno));
++	q = (volatile unsigned long *)(p + getpagesize());
++	*q = 0xdeadbeef;
++
++	tst_res(TPASS, "Test Passed inconclusive");
++}
++
++static void setup(void)
++{
++	hpage_size = tst_get_hugepage_size();
++	fd = tst_creat_unlinked(MNTPOINT, 0);
++}
++
++void cleanup(void)
++{
++	if (fd > 0)
++		SAFE_CLOSE(fd);
++}
++
++static struct tst_test test = {
++	.needs_root = 1,
++	.mntpoint = MNTPOINT,
++	.needs_hugetlbfs = 1,
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = run_test,
++	.hugepages = {1, TST_NEEDS},
++};
+-- 
+2.39.3
 
-> diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-> index fc225e4a6..07d89f44b 100644
-> --- a/testcases/kernel/mem/swapping/swapping01.c
-> +++ b/testcases/kernel/mem/swapping/swapping01.c
-> @@ -60,6 +60,17 @@ static long mem_over_max;
->  static pid_t pid;
->  static unsigned int start_runtime;
-
-NOTE: we have tst_available_mem() and tst_available_swap() in
-lib/tst_memutils.c. Wouldn't be they enough? Or other line from /proc/meminfo
-(new function would need to be added)? I'm not sure myself.
-
-Also, is it really needed to print both /proc/meminfo and /proc/PID/status?
-And if it's needed, why other testcases/kernel/mem/ tests don't need it?
-Notes below are if we decide that we want this (I'd like to hear others).
-
-> +static void print_meminfo(char *path)
-
-You use print_meminfo() for printing /proc/meminfo and /proc/PID/status.
-Instead, there could be a generic function safe_print_file(char *path) either in
-safe_macros.c or tst_print_file(char *path) in tst_safe_file_at.c (I slightly
-prefer the first, there is a mess with files in lib/*.c, there are way too many
-files with just few functions).
-The function would also print TINFO message which file is printing.
-
-And then, in lib/tst_memutils.c would be tst_print_meminfo() which would call
-safe_print_file("/proc/meminfo") and tst_print_status(pid_t pid), which would do
-sprintf(proc_status_path, "/proc/%d/status", pid) and call safe_print_file()
-with the result.
-
-NOTE: you need to add also function signature to corresponding include/*.h file.
-This should be done as a separate commit, using function in swapping01.c would
-be as a separate commit.
-
-> +{
-> +	FILE *file;
-> +	char line[PATH_MAX];
-> +
-> +	file = SAFE_FOPEN(path, "r");
-> +	while (fgets(line, sizeof(line), file))
-> +		tst_res(TINFO, "%s", line);
-> +	SAFE_FCLOSE(file);
-> +}
-> +
->  static void test_swapping(void)
->  {
->  #ifdef TST_ABI32
-> @@ -84,6 +95,8 @@ static void test_swapping(void)
->  	switch (pid = SAFE_FORK()) {
->  	case 0:
->  		do_alloc(0);
-> +		tst_res(TINFO, "Meminfo before check:");
-IMHO this TINFO should be removed (TINFO in the printing function is enough).
-
-> +		print_meminfo("/proc/meminfo");
-
-
->  		do_alloc(1);
->  		exit(0);
->  	default:
-> @@ -108,9 +121,11 @@ static void do_alloc(int allow_raise)
->  	long mem_count;
->  	void *s;
-
-> -	if (allow_raise == 1)
-> +	if (allow_raise == 1) {
-> +		init_meminfo();
-Why this? You haven't mentioned it in the commit message.
-
->  		tst_res(TINFO, "available physical memory: %ld MB",
->  				mem_available_init / 1024);
-> +	}
-...
-
->  	swapped = SAFE_READ_PROC_STATUS(pid, "VmSwap:");
->  	if (swapped > mem_over_max) {
-> +		tst_res(TINFO, "Heavy swapping detected, print meminfo:");
-Again, I'd prefer generic message in print_meminfo() (on a single place).
-IMHO it will be obvious that first print is before test and the second after.
-
-Kind regards,
-Petr
-> +		print_meminfo("/proc/meminfo");
-> +		tst_res(TINFO, "Heavy swapping detected, print proc status:");
-> +		sprintf(proc_status_path, "/proc/%d/status", pid);
-> +		print_meminfo(proc_status_path);
->  		kill(pid, SIGCONT);
->  		tst_brk(TFAIL, "heavy swapping detected: "
->  				"%ld MB swapped.", swapped / 1024);
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
