@@ -4,100 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9C7BC4332F
-	for <ltp@archiver.kernel.org>; Wed, 13 Dec 2023 16:52:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FD4CC4332F
+	for <ltp@archiver.kernel.org>; Wed, 13 Dec 2023 19:04:52 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 4242A3CF502
-	for <ltp@archiver.kernel.org>; Wed, 13 Dec 2023 17:52:13 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 6A0A23CF554
+	for <ltp@archiver.kernel.org>; Wed, 13 Dec 2023 20:04:50 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4541E3CCAC9
- for <ltp@lists.linux.it>; Wed, 13 Dec 2023 17:52:03 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id CCFF33CB55F
+ for <ltp@lists.linux.it>; Wed, 13 Dec 2023 20:04:40 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 252FA1A00EF9
- for <ltp@lists.linux.it>; Wed, 13 Dec 2023 17:52:01 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id ACAC61B61FFC
+ for <ltp@lists.linux.it>; Wed, 13 Dec 2023 20:04:39 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 080B81FD8B;
- Wed, 13 Dec 2023 16:52:00 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id EC717210EC;
+ Wed, 13 Dec 2023 19:04:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1702486320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1702494278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=J1SFJDFKvtTmh08CEKXgr8V+FtVPkQtA0aNwr1ROKK0=;
- b=MigSjoDAyc/OsU7CvS/Q9Hjq5aeECHuPeLr4GJ005R6TJsYcVBas6h12jAKhmvtr65ITM9
- k8Tx59wVR3GNOQn/4Qhi0ZPyq1n4NEB5JVPonZ0WRLfazzyF7+HgSesPtePHTnH787vIwu
- 3Woa3VS0SA0mDtoO8I5/P3uJS8hTQAo=
+ bh=6KsUWaYKnWlZqTLVs0KZ/cAEJNF2BysfwLhH++CEoMw=;
+ b=FLKV50I8WibcDTZ78C9jaZefO8BmAOydnQVdH+RleRwnn9NEQ9dPkR3iVVX0s+Q4c1ob3t
+ lcPnzV5vyI4VCA7Wtj7WzaQcXpkBWRCgRsXVdb++vgG2K2ogz7uZ5VHCuNZlnSzzPt5XZe
+ tMzlauto+bvG187J+NjlSoVEIOJpMHI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1702486320;
+ s=susede2_ed25519; t=1702494278;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=J1SFJDFKvtTmh08CEKXgr8V+FtVPkQtA0aNwr1ROKK0=;
- b=pbIcULFftSoGXmXhNP8HU0iVkftqk6r7QJVt8cQnLMR6l7i4YbxnxYdA2XuhkhZxILflmU
- 6yhbumnhIEwkSOAQ==
+ bh=6KsUWaYKnWlZqTLVs0KZ/cAEJNF2BysfwLhH++CEoMw=;
+ b=codHbMsYd+1PtvAVeCDkLXj4A8wEm52WA+2CRwv9zz2MIG/MGYUm4MLihla+bStWKGw9F3
+ 6CzjLb/UxlR8fzBA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1702486320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1702494278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=J1SFJDFKvtTmh08CEKXgr8V+FtVPkQtA0aNwr1ROKK0=;
- b=MigSjoDAyc/OsU7CvS/Q9Hjq5aeECHuPeLr4GJ005R6TJsYcVBas6h12jAKhmvtr65ITM9
- k8Tx59wVR3GNOQn/4Qhi0ZPyq1n4NEB5JVPonZ0WRLfazzyF7+HgSesPtePHTnH787vIwu
- 3Woa3VS0SA0mDtoO8I5/P3uJS8hTQAo=
+ bh=6KsUWaYKnWlZqTLVs0KZ/cAEJNF2BysfwLhH++CEoMw=;
+ b=FLKV50I8WibcDTZ78C9jaZefO8BmAOydnQVdH+RleRwnn9NEQ9dPkR3iVVX0s+Q4c1ob3t
+ lcPnzV5vyI4VCA7Wtj7WzaQcXpkBWRCgRsXVdb++vgG2K2ogz7uZ5VHCuNZlnSzzPt5XZe
+ tMzlauto+bvG187J+NjlSoVEIOJpMHI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1702486320;
+ s=susede2_ed25519; t=1702494278;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=J1SFJDFKvtTmh08CEKXgr8V+FtVPkQtA0aNwr1ROKK0=;
- b=pbIcULFftSoGXmXhNP8HU0iVkftqk6r7QJVt8cQnLMR6l7i4YbxnxYdA2XuhkhZxILflmU
- 6yhbumnhIEwkSOAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+ bh=6KsUWaYKnWlZqTLVs0KZ/cAEJNF2BysfwLhH++CEoMw=;
+ b=codHbMsYd+1PtvAVeCDkLXj4A8wEm52WA+2CRwv9zz2MIG/MGYUm4MLihla+bStWKGw9F3
+ 6CzjLb/UxlR8fzBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E6A821391D;
- Wed, 13 Dec 2023 16:51:59 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D09CC137E8;
+ Wed, 13 Dec 2023 19:04:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id BDxHOC/heWU5bQAAn2gu4w
- (envelope-from <jack@suse.cz>); Wed, 13 Dec 2023 16:51:59 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
- id 9965FA07E0; Wed, 13 Dec 2023 17:51:51 +0100 (CET)
-Date: Wed, 13 Dec 2023 17:51:51 +0100
-From: Jan Kara <jack@suse.cz>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Lzk4MUUAemWudgAAD6G6ig
+ (envelope-from <chrubis@suse.cz>); Wed, 13 Dec 2023 19:04:37 +0000
+Date: Wed, 13 Dec 2023 20:04:11 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
 To: Petr Vorel <pvorel@suse.cz>
-Message-ID: <20231213165151.qvbtrr546cnxm2ou@quack3>
-References: <20231207194011.273027-1-pvorel@suse.cz>
- <20231212144821.rji2to3iiedyqxlm@quack3>
+Message-ID: <ZXoAKxPxfXxU8bxw@rei>
+References: <20231211161807.526714-1-pvorel@suse.cz>
+ <20231211161807.526714-2-pvorel@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231212144821.rji2to3iiedyqxlm@quack3>
-X-Spamd-Result: default: False [-2.07 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; FREEMAIL_ENVRCPT(0.00)[gmail.com];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+In-Reply-To: <20231211161807.526714-2-pvorel@suse.cz>
+X-Spamd-Bar: ++++
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FLKV50I8;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=codHbMsY;
+ dmarc=none;
+ spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither
+ permitted nor denied by domain of chrubis@suse.cz)
+ smtp.mailfrom=chrubis@suse.cz
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [4.81 / 50.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ ARC_NA(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ MIME_GOOD(-0.10)[text/plain]; DMARC_NA(1.20)[suse.cz];
+ R_SPF_SOFTFAIL(4.60)[~all]; NEURAL_HAM_SHORT(-0.18)[-0.897];
  RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- RCPT_COUNT_TWELVE(0.00)[14];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ RCPT_COUNT_SEVEN(0.00)[7];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- FREEMAIL_CC(0.00)[lists.linux.it,suse.cz,redhat.com,suse.com,fujitsu.com,linux.dev,vger.kernel.org,gmail.com];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-2.47)[97.59%]
-Authentication-Results: smtp-out2.suse.de;
-	none
+ RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Queue-Id: EC717210EC
 X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2 0/3] Add support bcachefs filesystem
+Subject: Re: [LTP] [PATCH v3 1/3] lib/tests: Add test for testing tst_res()
+ flags
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,35 +120,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
- Brian Foster <bfoster@redhat.com>, fstests@vger.kernel.org,
- Richard Palethorpe <rpalethorpe@suse.com>, linux-bcachefs@vger.kernel.org,
- Jan Kara <jack@suse.cz>, ltp@lists.linux.it
+Cc: Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-On Tue 12-12-23 15:48:21, Jan Kara wrote:
-> On Thu 07-12-23 20:40:08, Petr Vorel wrote:
-> > Hi all,
-> > 
-> > @Amir @Jan, could you please have look on fanotify failures on Bcachefs?
-> > fanotify13.c, fanotify15.c and fanotify16.c produce many errors.
-> > 
-> > To test, just apply this patchset and then run with LTP_SINGLE_FS_TYPE:
-> > 
-> > # LTP_SINGLE_FS_TYPE=bcachefs ./fanotify15
+Hi!
+> +#define FLAG(x) .flag = x, .str = #x
+> +static struct tcase {
+> +	int flag;
+> +	const char *str;
+> +} tcases[] = {
+> +	{FLAG(TPASS)},
+> +	{FLAG(TFAIL)},
+> +	{FLAG(TBROK)},
+> +	{FLAG(TCONF)},
+> +	{FLAG(TWARN)},
+> +	{FLAG(TINFO)},
+> +};
+> +
+> +static void do_cleanup(void)
+> +{
+> +	tst_brk(TBROK, "TBROK message should be TWARN in cleanup");
+> +}
+> +
+> +static void do_test(unsigned int n)
+> +{
+> +	int flag = tcases[n].flag;
+> +	const char *str = tcases[n].str;
+> +
+> +	tst_res(flag, "%s message", str);
+> +
+> +	if (flag == TWARN || flag == TINFO)
+> +		tst_res(TPASS, "%s message is not a result", str);
+
+Maybe it would make sense the loop over the flags here instead, so that
+we don't have to produce second TPASS message.
+
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test = do_test,
+> +	.tcnt = ARRAY_SIZE(tcases),
+> +	.cleanup = do_cleanup,
+> +};
+> -- 
+> 2.43.0
 > 
-> I suspect some catch with fsids but we'll see... I hopefully get to this
-> tomorrow.
 
-Ok, this was a bug in bch_encode_fh(). Fix submitted.
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Cyril Hrubis
+chrubis@suse.cz
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
