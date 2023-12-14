@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5B5EC4332F
-	for <ltp@archiver.kernel.org>; Thu, 14 Dec 2023 15:21:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFC09C4167D
+	for <ltp@archiver.kernel.org>; Thu, 14 Dec 2023 15:21:25 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DCB493CE710
-	for <ltp@archiver.kernel.org>; Thu, 14 Dec 2023 16:21:10 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 23CA63CF4AD
+	for <ltp@archiver.kernel.org>; Thu, 14 Dec 2023 16:21:23 +0100 (CET)
 Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
  [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8A2913CF4AE
- for <ltp@lists.linux.it>; Thu, 14 Dec 2023 16:20:06 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 756D93CF4BA
+ for <ltp@lists.linux.it>; Thu, 14 Dec 2023 16:20:09 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id BE25C1400E4E
- for <ltp@lists.linux.it>; Thu, 14 Dec 2023 16:20:05 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id EEADC1400E61
+ for <ltp@lists.linux.it>; Thu, 14 Dec 2023 16:20:08 +0100 (CET)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 38F2621F6F;
- Thu, 14 Dec 2023 15:20:05 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 622712210A;
+ Thu, 14 Dec 2023 15:20:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1702567205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1702567208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=M+7LjwXMLXsDfH5MWjCsc3D0d99GJuZBejAsb7h/Oj8=;
- b=PVa74z5vRCabxOsaGjxG+h9dYHN/aftAHEZRZ9tFXRtxcOBTXag8fxlVuft+9FO4/sreKU
- FNVUPGTWFwQxTQRsF9o54WuYcnsw2xYqRB5FhP1SuT/H3jD08HvNz3q2CeWQ2VmIEQaf2H
- D+Fm2Xb3lDbQJ5Psvjrv8z2jOWiglYk=
+ bh=nW2gqeZC1Yns7/rn9qAsCSCMIpJWL/K5UnKZj5Hi/Dk=;
+ b=nHnTJyuS08dnEq7D2yRzosQsf2KIWX7DLL23pRk/81t5+5WohUdeOHsmjKF0vw9o2TE9Jn
+ q0veMisESjeMiZja+6Gqst9YVpVdoQ7Q/k2mCeeW+t3wsktB4rfE9G4HZbVzupTteUP2FX
+ ZdOFNaxjKEkrO9Sbl1Gk07bAbrGFAps=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1702567205;
+ s=susede2_ed25519; t=1702567208;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=M+7LjwXMLXsDfH5MWjCsc3D0d99GJuZBejAsb7h/Oj8=;
- b=zUoAPC37sthk1j/BSeJvcBSLbLcBHSsQSuInjmNEg7vu5QUSdlpTSfI2WDvnk7rAObXLk5
- J5qZ15yEFgJQdUBQ==
+ bh=nW2gqeZC1Yns7/rn9qAsCSCMIpJWL/K5UnKZj5Hi/Dk=;
+ b=ukm+vwRPajfOgOHaNW69n395riqrVPO+3Wjx83DpyTfX1HI/35jmNBUrs6uEUN1o58aP8S
+ gkosftEp5eKidmBA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1702567205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1702567208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=M+7LjwXMLXsDfH5MWjCsc3D0d99GJuZBejAsb7h/Oj8=;
- b=PVa74z5vRCabxOsaGjxG+h9dYHN/aftAHEZRZ9tFXRtxcOBTXag8fxlVuft+9FO4/sreKU
- FNVUPGTWFwQxTQRsF9o54WuYcnsw2xYqRB5FhP1SuT/H3jD08HvNz3q2CeWQ2VmIEQaf2H
- D+Fm2Xb3lDbQJ5Psvjrv8z2jOWiglYk=
+ bh=nW2gqeZC1Yns7/rn9qAsCSCMIpJWL/K5UnKZj5Hi/Dk=;
+ b=nHnTJyuS08dnEq7D2yRzosQsf2KIWX7DLL23pRk/81t5+5WohUdeOHsmjKF0vw9o2TE9Jn
+ q0veMisESjeMiZja+6Gqst9YVpVdoQ7Q/k2mCeeW+t3wsktB4rfE9G4HZbVzupTteUP2FX
+ ZdOFNaxjKEkrO9Sbl1Gk07bAbrGFAps=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1702567205;
+ s=susede2_ed25519; t=1702567208;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=M+7LjwXMLXsDfH5MWjCsc3D0d99GJuZBejAsb7h/Oj8=;
- b=zUoAPC37sthk1j/BSeJvcBSLbLcBHSsQSuInjmNEg7vu5QUSdlpTSfI2WDvnk7rAObXLk5
- J5qZ15yEFgJQdUBQ==
+ bh=nW2gqeZC1Yns7/rn9qAsCSCMIpJWL/K5UnKZj5Hi/Dk=;
+ b=ukm+vwRPajfOgOHaNW69n395riqrVPO+3Wjx83DpyTfX1HI/35jmNBUrs6uEUN1o58aP8S
+ gkosftEp5eKidmBA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 88BC6134B0;
- Thu, 14 Dec 2023 15:20:04 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F149913AB3;
+ Thu, 14 Dec 2023 15:20:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id aPj+HSQde2WpJwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Thu, 14 Dec 2023 15:20:04 +0000
+ by imap2.dmz-prg2.suse.org with ESMTPSA id uBA1OScde2WpJwAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Thu, 14 Dec 2023 15:20:07 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Thu, 14 Dec 2023 16:19:49 +0100
-Message-ID: <20231214151954.840244-6-pvorel@suse.cz>
+Date: Thu, 14 Dec 2023 16:19:52 +0100
+Message-ID: <20231214151954.840244-9-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231214151954.840244-1-pvorel@suse.cz>
 References: <20231214151954.840244-1-pvorel@suse.cz>
@@ -90,16 +90,17 @@ X-Spamd-Result: default: False [-0.30 / 50.00]; ARC_NA(0.00)[];
  TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
  REPLY(-4.00)[]; BROKEN_CONTENT_TYPE(1.50)[];
  RCPT_COUNT_FIVE(0.00)[6]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ R_RATELIMIT(0.00)[to_ip_from(RLbscyhnm3p7um4yytan3x3843)];
  RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.19)[-0.974]; MID_CONTAINS_FROM(1.00)[];
+ NEURAL_HAM_SHORT(-0.20)[-0.976]; MID_CONTAINS_FROM(1.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-0.00)[38.84%]
+ BAYES_HAM(-0.00)[13.85%]
 X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 05/10] can_filter: Rename option -D => -d
+Subject: [LTP] [PATCH v4 08/10] netstress: Rename option -D => -d
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,22 +121,47 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/network/can/filter-tests/can_filter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/lib/tst_net.sh                | 6 +++---
+ testcases/network/netstress/netstress.c | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/network/can/filter-tests/can_filter.c b/testcases/network/can/filter-tests/can_filter.c
-index 19c7fc48d..1ea8ea18f 100644
---- a/testcases/network/can/filter-tests/can_filter.c
-+++ b/testcases/network/can/filter-tests/can_filter.c
-@@ -172,7 +172,7 @@ static void run(unsigned int n)
- static struct tst_test test = {
- 	.tcnt = TC,
- 	.options = (struct tst_option[]) {
--		{"D:", &can_dev_name, "CAN device name"},
-+		{"d:", &can_dev_name, "CAN device name"},
- 		{}
- 	},
- 	.setup = setup,
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index 0718a8ad1..e47ee9676 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -766,7 +766,7 @@ tst_netload()
+ 		f) cs_opts="${cs_opts}-f " ;;
+ 		F) cs_opts="${cs_opts}-F " ;;
+ 		e) expect_res="$OPTARG" ;;
+-		D) [ "$TST_NETLOAD_BINDTODEVICE" = 1 ] && cs_opts="${cs_opts}-D $OPTARG "
++		D) [ "$TST_NETLOAD_BINDTODEVICE" = 1 ] && cs_opts="${cs_opts}-d $OPTARG "
+ 		   bind_to_device=0 ;;
+ 		*) tst_brk_ TBROK "tst_netload: unknown option: $OPTARG" ;;
+ 		esac
+@@ -776,8 +776,8 @@ tst_netload()
+ 	[ "$setup_srchost" = 1 ] && s_opts="${s_opts}-S $hostopt "
+ 
+ 	if [ "$bind_to_device" = 1 -a "$TST_NETLOAD_BINDTODEVICE" = 1 ]; then
+-		c_opts="${c_opts}-D $(tst_iface) "
+-		s_opts="${s_opts}-D $(tst_iface rhost) "
++		c_opts="${c_opts}-d $(tst_iface) "
++		s_opts="${s_opts}-d $(tst_iface rhost) "
+ 	fi
+ 
+ 	local expect_ret=0
+diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
+index fb6281cd0..5958150cc 100644
+--- a/testcases/network/netstress/netstress.c
++++ b/testcases/network/netstress/netstress.c
+@@ -1009,7 +1009,7 @@ static struct tst_test test = {
+ 		{"T:", &type, "Tcp (default), udp, udp_lite, dccp, sctp"},
+ 		{"z", &zcopy, "Enable SO_ZEROCOPY"},
+ 		{"P:", &reuse_port, "Enable SO_REUSEPORT"},
+-		{"D:", &dev, "Bind to device x"},
++		{"d:", &dev, "Bind to device x"},
+ 
+ 		{"H:", &server_addr, "Server name or IP address"},
+ 		{"l", &client_mode, "Become client, default is server"},
 -- 
 2.43.0
 
