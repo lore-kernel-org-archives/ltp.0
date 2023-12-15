@@ -4,101 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 016E6C4167B
-	for <ltp@archiver.kernel.org>; Fri, 15 Dec 2023 18:31:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6922FC4167B
+	for <ltp@archiver.kernel.org>; Fri, 15 Dec 2023 18:31:48 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id F3F413CE441
-	for <ltp@archiver.kernel.org>; Fri, 15 Dec 2023 19:31:35 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id DC9093CF449
+	for <ltp@archiver.kernel.org>; Fri, 15 Dec 2023 19:31:45 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3C3BF3CB385
+ by picard.linux.it (Postfix) with ESMTPS id 446CB3CB473
  for <ltp@lists.linux.it>; Fri, 15 Dec 2023 19:31:26 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 32CEF1007C93
- for <ltp@lists.linux.it>; Fri, 15 Dec 2023 19:31:24 +0100 (CET)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 78A631401103
+ for <ltp@lists.linux.it>; Fri, 15 Dec 2023 19:31:25 +0100 (CET)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 30CC4220BE;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B0B26220BF;
  Fri, 15 Dec 2023 18:31:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1702665084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Wn8OxJ7PsEwuoqvsIZSw1296xgoWeYaDulh6u7/Ch9Y=;
- b=k6a3/cLEB5bFeNm/SKwwkgO/QnI1iaNJeJJz6VY8P67Gm4kYsc7nmF1e7Zdp+IAwsQjwyB
- 9KcywA4W7gTuFechYy8nZVCINsgn0dVRbXwtyy7ao0F3AhV+/LqSmq8jORRm0vr1UJ7JP3
- KLmv9/j9J2o3po9CvLjYwrKEyR8h8EE=
+ bh=FfWiNuCYmGQyJW9tesmhXttcux3IC7hm8MArfogJPHI=;
+ b=gKx5LCoXX43pYigI7sxChBxwwB650yOnzPwCYCXVN6fRsuvYCftOh36aipPgufqhr8I2KY
+ +ullWaNeXOZkfNpQzFOPpLLug9wwgICom43ZsjjrpmGcMCg9QkBV1NQ+0Dpj9xVowKv8Fn
+ EuV2BL2p/KtsNan0EcVSMxvftpCj5lw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1702665084;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Wn8OxJ7PsEwuoqvsIZSw1296xgoWeYaDulh6u7/Ch9Y=;
- b=bp4Y25xOqz3PxCyJt41OXSPHEPloMSCOVITaQ5TcR1JhmPX6tlqJPrWjWqCae0fN1DoUXD
- 08wyck86Qtop3XBw==
+ bh=FfWiNuCYmGQyJW9tesmhXttcux3IC7hm8MArfogJPHI=;
+ b=amE/fN+LfSXiXXABJDg8Nw0AYNy+JMguY4TCG30OvKvIsWwBRgKulKYy4J3ec1/XqlP3xk
+ MKebr93UStH3tsCg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
  t=1702665084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Wn8OxJ7PsEwuoqvsIZSw1296xgoWeYaDulh6u7/Ch9Y=;
- b=k6a3/cLEB5bFeNm/SKwwkgO/QnI1iaNJeJJz6VY8P67Gm4kYsc7nmF1e7Zdp+IAwsQjwyB
- 9KcywA4W7gTuFechYy8nZVCINsgn0dVRbXwtyy7ao0F3AhV+/LqSmq8jORRm0vr1UJ7JP3
- KLmv9/j9J2o3po9CvLjYwrKEyR8h8EE=
+ bh=FfWiNuCYmGQyJW9tesmhXttcux3IC7hm8MArfogJPHI=;
+ b=gKx5LCoXX43pYigI7sxChBxwwB650yOnzPwCYCXVN6fRsuvYCftOh36aipPgufqhr8I2KY
+ +ullWaNeXOZkfNpQzFOPpLLug9wwgICom43ZsjjrpmGcMCg9QkBV1NQ+0Dpj9xVowKv8Fn
+ EuV2BL2p/KtsNan0EcVSMxvftpCj5lw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
  s=susede2_ed25519; t=1702665084;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Wn8OxJ7PsEwuoqvsIZSw1296xgoWeYaDulh6u7/Ch9Y=;
- b=bp4Y25xOqz3PxCyJt41OXSPHEPloMSCOVITaQ5TcR1JhmPX6tlqJPrWjWqCae0fN1DoUXD
- 08wyck86Qtop3XBw==
+ bh=FfWiNuCYmGQyJW9tesmhXttcux3IC7hm8MArfogJPHI=;
+ b=amE/fN+LfSXiXXABJDg8Nw0AYNy+JMguY4TCG30OvKvIsWwBRgKulKYy4J3ec1/XqlP3xk
+ MKebr93UStH3tsCg==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F30F113BA0;
- Fri, 15 Dec 2023 18:31:23 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D02F13BA0;
+ Fri, 15 Dec 2023 18:31:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id oLJoOnubfGW2LwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Fri, 15 Dec 2023 18:31:23 +0000
+ by imap2.dmz-prg2.suse.org with ESMTPSA id CPPJHHybfGW2LwAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Fri, 15 Dec 2023 18:31:24 +0000
 From: Petr Vorel <pvorel@suse.cz>
 To: ltp@lists.linux.it
-Date: Fri, 15 Dec 2023 19:31:19 +0100
-Message-ID: <20231215183121.57632-2-pvorel@suse.cz>
+Date: Fri, 15 Dec 2023 19:31:21 +0100
+Message-ID: <20231215183121.57632-4-pvorel@suse.cz>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231215183121.57632-1-pvorel@suse.cz>
 References: <20231215183121.57632-1-pvorel@suse.cz>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [2.03 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; BAYES_HAM(-0.37)[77.06%];
- FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
- FREEMAIL_ENVRCPT(0.00)[gmail.com]; R_MISSING_CHARSET(2.50)[];
- TAGGED_RCPT(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+X-Spamd-Result: default: False [-2.10 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
  REPLY(-4.00)[]; BROKEN_CONTENT_TYPE(1.50)[];
- RCPT_COUNT_FIVE(0.00)[6]; RCVD_COUNT_THREE(0.00)[3];
+ RCPT_COUNT_FIVE(0.00)[5]; RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  MID_CONTAINS_FROM(1.00)[];
  DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; FUZZY_BLOCKED(0.00)[rspamd.com];
- FROM_EQ_ENVFROM(0.00)[]; MIME_TRACE(0.00)[0:+];
- FREEMAIL_CC(0.00)[gmail.com,suse.cz,redhat.com,suse.com];
- RCVD_TLS_ALL(0.00)[]; SUSPICIOUS_RECIPS(1.50)[]
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-3.00)[100.00%]
 Authentication-Results: smtp-out1.suse.de;
 	none
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 1/3] fsx-linux: Add .max_runtime = 60
+Subject: [LTP] [PATCH 3/3] runtest/ltp-aiodio.part3: Renumber tests
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -115,32 +114,61 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Petr Vorel <petr.vorel@gmail.com>
-
-fsx-linux has entry in the runtest file, where it runs quite long via
--N 100000 (number of operations). While this is ok on normal worker
-(runs ~20s), it timeouts on slightly overbooked SUT.
-
-On heavily overbooked SUT it will still require LTP_TIMEOUT_MUL or
-LTP_RUNTIME_MUL, but that's expected.
+Renumber tests to remove gabs. Use lower case to make it obvious it's a
+different test from the old scheme.
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/fs/fsx-linux/fsx-linux.c | 1 +
- 1 file changed, 1 insertion(+)
+ runtest/ltp-aiodio.part3 | 42 ++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/testcases/kernel/fs/fsx-linux/fsx-linux.c b/testcases/kernel/fs/fsx-linux/fsx-linux.c
-index 658fc99c3..32fc70e01 100644
---- a/testcases/kernel/fs/fsx-linux/fsx-linux.c
-+++ b/testcases/kernel/fs/fsx-linux/fsx-linux.c
-@@ -367,6 +367,7 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.test_all = run,
-+	.max_runtime = 60,
- 	.options = (struct tst_option[]) {
- 		{ "l:", &str_file_max_size, "Maximum size in MB of the test file(s) (default 262144)" },
- 		{ "o:", &str_op_max_size, "Maximum size for single operation (default 65536)" },
+diff --git a/runtest/ltp-aiodio.part3 b/runtest/ltp-aiodio.part3
+index 2389e7d64..decf2f6ea 100644
+--- a/runtest/ltp-aiodio.part3
++++ b/runtest/ltp-aiodio.part3
+@@ -1,21 +1,21 @@
+-FSX032 fsx-linux -l 500000 -r 4096 -t 4096 -w 4096 -N 10000
+-FSX033 fsx-linux -l 500000 -r 4096 -t 2048 -w 2048 -N 10000
+-FSX034 fsx-linux -l 500000 -r 4096 -N 10000
+-FSX035 fsx-linux -N 10000
+-FSX040 fsx-linux -N 10000 -o 1024
+-FSX041 fsx-linux -N 10000 -o 2048
+-FSX042 fsx-linux -N 10000 -o 4096
+-FSX043 fsx-linux -N 10000 -o 8192
+-FSX044 fsx-linux -N 10000 -o 16384
+-FSX045 fsx-linux -N 10000 -o 32768
+-FSX046 fsx-linux -N 10000 -o 128000
+-FSX054 fsx-linux -N 10000 -o 1024 -l 500000 -r 4096 -t 4096 -w 4096
+-FSX055 fsx-linux -N 10000 -o 2048 -l 500000 -r 4096 -t 2048 -w 2048
+-FSX056 fsx-linux -N 10000 -o 4096 -l 500000 -r 4096 -t 4096 -w 4096
+-FSX057 fsx-linux -N 10000 -o 8192 -l 500000 -r 4096 -t 2048 -w 2048
+-FSX058 fsx-linux -N 10000 -o 16384 -l 500000 -r 4096 -t 4096 -w 4096
+-FSX059 fsx-linux -N 10000 -o 32768 -l 500000 -r 4096 -t 2048 -w 2048
+-FSX060 fsx-linux -N 10000 -o 128000 -l 500000 -r 4096 -t 4096 -w 4096
+-FSX073 fsx-linux -N 10000 -o 128000 -l 500000 -r 4096 -t 4096 -w 40963
+-FSX076 fsx-linux -N 10000 -o 128000 -l 500000 -r 4096 -t 4096 -w 40966
+-FSX078 fsx-linux -N 100000
++fsx01 fsx-linux -l 500000 -r 4096 -t 4096 -w 4096 -N 10000
++fsx02 fsx-linux -l 500000 -r 4096 -t 2048 -w 2048 -N 10000
++fsx03 fsx-linux -l 500000 -r 4096 -N 10000
++fsx04 fsx-linux -N 10000
++fsx05 fsx-linux -N 10000 -o 1024
++fsx06 fsx-linux -N 10000 -o 2048
++fsx07 fsx-linux -N 10000 -o 4096
++fsx08 fsx-linux -N 10000 -o 8192
++fsx09 fsx-linux -N 10000 -o 16384
++fsx10 fsx-linux -N 10000 -o 32768
++fsx12 fsx-linux -N 10000 -o 128000
++fsx13 fsx-linux -N 10000 -o 1024 -l 500000 -r 4096 -t 4096 -w 4096
++fsx14 fsx-linux -N 10000 -o 2048 -l 500000 -r 4096 -t 2048 -w 2048
++fsx15 fsx-linux -N 10000 -o 4096 -l 500000 -r 4096 -t 4096 -w 4096
++fsx16 fsx-linux -N 10000 -o 8192 -l 500000 -r 4096 -t 2048 -w 2048
++fsx17 fsx-linux -N 10000 -o 16384 -l 500000 -r 4096 -t 4096 -w 4096
++fsx18 fsx-linux -N 10000 -o 32768 -l 500000 -r 4096 -t 2048 -w 2048
++fsx19 fsx-linux -N 10000 -o 128000 -l 500000 -r 4096 -t 4096 -w 4096
++fsx20 fsx-linux -N 10000 -o 128000 -l 500000 -r 4096 -t 4096 -w 40963
++fsx21 fsx-linux -N 10000 -o 128000 -l 500000 -r 4096 -t 4096 -w 40966
++fsx22 fsx-linux -N 100000
 -- 
 2.43.0
 
