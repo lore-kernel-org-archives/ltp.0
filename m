@@ -4,102 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5978C4167B
-	for <ltp@archiver.kernel.org>; Fri, 15 Dec 2023 18:32:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDEC2C4167B
+	for <ltp@archiver.kernel.org>; Fri, 15 Dec 2023 18:58:09 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 1A3253CDB4D
-	for <ltp@archiver.kernel.org>; Fri, 15 Dec 2023 19:32:07 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::3])
+	by picard.linux.it (Postfix) with ESMTP id EB1FC3CD840
+	for <ltp@archiver.kernel.org>; Fri, 15 Dec 2023 19:58:07 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D577D3CB385
- for <ltp@lists.linux.it>; Fri, 15 Dec 2023 19:31:26 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id AF82C3CB1CB
+ for <ltp@lists.linux.it>; Fri, 15 Dec 2023 19:57:57 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 9BD321A0C25B
- for <ltp@lists.linux.it>; Fri, 15 Dec 2023 19:31:25 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 75CFC10007CD
+ for <ltp@lists.linux.it>; Fri, 15 Dec 2023 19:57:55 +0100 (CET)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 737C61F846;
- Fri, 15 Dec 2023 18:31:24 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3FFA61F849;
+ Fri, 15 Dec 2023 18:57:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1702665084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1702666675;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/eNWGVgDbhA84fJj8mV9nSZ5j4rB1cUapbBz5jnsyfk=;
- b=Sj5bkjmL0klO9BiyzOqmNgll5LKV8/b76tlpnwO3YO70WR+2SXEjDnJw1WQrlLJUismrf+
- YvbYA/yVZPrly7JPp3xvQ91vOMIwrp9LEYWmTiw96KMUSOiPYN6WnnPO2x/0qBp+NAzOft
- b4K+tpLvrqm87uKrTo05WOT5nQ3J2WM=
+ bh=Zg9dxhrPn0T63Cl8xN8jMaXmUB9lFbiTPivOV0t9hd4=;
+ b=MR8w9Fd8ZaoQXxjrcFYn2uNucfa555xV6g5eqaHSIBzqoOfeszIFp3Pa/V57wdXaImCwC8
+ LHakHCogyQTe6JxpSMiCoOXu9V8VLXliDAxzdmNKrfJvol/0M8ZLCQJBwehvdHAe5c3l+d
+ C3akw6UDPST1diMP+VegLnWjex+rbnQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1702665084;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1702666675;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/eNWGVgDbhA84fJj8mV9nSZ5j4rB1cUapbBz5jnsyfk=;
- b=QvcQVUMN3v0uvRVw27T3+oTe7LLgYmNGZLPqvvcV4RFO4qvBhc2sMG9HSG87iJbCn2kz02
- H4bEFAs6bT2MOkAg==
+ bh=Zg9dxhrPn0T63Cl8xN8jMaXmUB9lFbiTPivOV0t9hd4=;
+ b=2TET36kZSFUVTheNJbP3ZOu/q5DI1bSgoqKpJYQdcoSV8megoww+/2lyK88j6ZF1KXDLWl
+ V7E6JwACgG4j8+AA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1702665084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1702666675;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/eNWGVgDbhA84fJj8mV9nSZ5j4rB1cUapbBz5jnsyfk=;
- b=Sj5bkjmL0klO9BiyzOqmNgll5LKV8/b76tlpnwO3YO70WR+2SXEjDnJw1WQrlLJUismrf+
- YvbYA/yVZPrly7JPp3xvQ91vOMIwrp9LEYWmTiw96KMUSOiPYN6WnnPO2x/0qBp+NAzOft
- b4K+tpLvrqm87uKrTo05WOT5nQ3J2WM=
+ bh=Zg9dxhrPn0T63Cl8xN8jMaXmUB9lFbiTPivOV0t9hd4=;
+ b=MR8w9Fd8ZaoQXxjrcFYn2uNucfa555xV6g5eqaHSIBzqoOfeszIFp3Pa/V57wdXaImCwC8
+ LHakHCogyQTe6JxpSMiCoOXu9V8VLXliDAxzdmNKrfJvol/0M8ZLCQJBwehvdHAe5c3l+d
+ C3akw6UDPST1diMP+VegLnWjex+rbnQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1702665084;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1702666675;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=/eNWGVgDbhA84fJj8mV9nSZ5j4rB1cUapbBz5jnsyfk=;
- b=QvcQVUMN3v0uvRVw27T3+oTe7LLgYmNGZLPqvvcV4RFO4qvBhc2sMG9HSG87iJbCn2kz02
- H4bEFAs6bT2MOkAg==
+ bh=Zg9dxhrPn0T63Cl8xN8jMaXmUB9lFbiTPivOV0t9hd4=;
+ b=2TET36kZSFUVTheNJbP3ZOu/q5DI1bSgoqKpJYQdcoSV8megoww+/2lyK88j6ZF1KXDLWl
+ V7E6JwACgG4j8+AA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3927913A08;
- Fri, 15 Dec 2023 18:31:24 +0000 (UTC)
+ by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 14C7913912;
+ Fri, 15 Dec 2023 18:57:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id kH+EDHybfGW2LwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Fri, 15 Dec 2023 18:31:24 +0000
+ by imap2.dmz-prg2.suse.org with ESMTPSA id 9lEsA7OhfGViNQAAn2gu4w
+ (envelope-from <pvorel@suse.cz>); Fri, 15 Dec 2023 18:57:55 +0000
+Date: Fri, 15 Dec 2023 19:57:49 +0100
 From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Fri, 15 Dec 2023 19:31:20 +0100
-Message-ID: <20231215183121.57632-3-pvorel@suse.cz>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231215183121.57632-1-pvorel@suse.cz>
-References: <20231215183121.57632-1-pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20231215185749.GA58273@pevik>
+References: <20231214063311.2325-1-wegao@suse.com>
+ <20231214071321.9863-1-wegao@suse.com>
+ <20231214071321.9863-2-wegao@suse.com>
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-3.30 / 50.00]; ARC_NA(0.00)[];
- RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
- TO_DN_SOME(0.00)[]; R_MISSING_CHARSET(2.50)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
- REPLY(-4.00)[]; BROKEN_CONTENT_TYPE(1.50)[];
- RCPT_COUNT_FIVE(0.00)[5]; NEURAL_HAM_LONG(-1.00)[-1.000];
+Content-Disposition: inline
+In-Reply-To: <20231214071321.9863-2-wegao@suse.com>
+X-Spamd-Result: default: False [0.70 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
  RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; MID_CONTAINS_FROM(1.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
- BAYES_HAM(-3.00)[100.00%]
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/3] runtest/ltp-aiodio.part3: Keep only unique records
+Subject: Re: [LTP] [PATCH v3 1/2] tst_memutils.c: Add tst_print_meminfo
+ function
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -111,89 +109,86 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-When ltp-aiodio.part3 was added in f5fb66199, it contained & to run
-some of the tests in paralel. It might never worked as expected (it was
-removed in 7df75e26a, added again in 01bca9a82 and finally removed in
-2a61af975).
+Hi Wei,
 
-But now, after fsx-linux rewrite in 134b08362 there is no
-reason to repeat tests (tests in runtests run sequentially),
-thus do a final cleanup.
+...
+> +++ b/include/tst_memutils.h
+> @@ -58,4 +58,10 @@ void tst_enable_oom_protection(pid_t pid);
+>   */
+>  void tst_disable_oom_protection(pid_t pid);
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- runtest/ltp-aiodio.part3 | 45 ++++++++--------------------------------
- 1 file changed, 9 insertions(+), 36 deletions(-)
+> +void tst_print_meminfo(void);
+> +
+> +void tst_print_meminfo_(const char *file, const int lineno);
+> +
+> +#define tst_print_meminfo() tst_print_meminfo_(__FILE__, __LINE__)
+Most of the macros we have upper case, can it be please TST_PRINT_MEMINFO() ?
+I guess it does not have to be SAFE_PRINT_MEMINFO().
 
-diff --git a/runtest/ltp-aiodio.part3 b/runtest/ltp-aiodio.part3
-index 65931ddf4..2389e7d64 100644
---- a/runtest/ltp-aiodio.part3
-+++ b/runtest/ltp-aiodio.part3
-@@ -2,10 +2,6 @@ FSX032 fsx-linux -l 500000 -r 4096 -t 4096 -w 4096 -N 10000
- FSX033 fsx-linux -l 500000 -r 4096 -t 2048 -w 2048 -N 10000
- FSX034 fsx-linux -l 500000 -r 4096 -N 10000
- FSX035 fsx-linux -N 10000
--FSX036 fsx-linux -N 10000
--FSX037 fsx-linux -N 10000
--FSX038 fsx-linux -N 10000
--FSX039 fsx-linux -N 10000
- FSX040 fsx-linux -N 10000 -o 1024
- FSX041 fsx-linux -N 10000 -o 2048
- FSX042 fsx-linux -N 10000 -o 4096
-@@ -13,36 +9,13 @@ FSX043 fsx-linux -N 10000 -o 8192
- FSX044 fsx-linux -N 10000 -o 16384
- FSX045 fsx-linux -N 10000 -o 32768
- FSX046 fsx-linux -N 10000 -o 128000
--FSX047 fsx-linux -N 10000 -o 1024
--FSX048 fsx-linux -N 10000 -o 2048
--FSX049 fsx-linux -N 10000 -o 4096
--FSX050 fsx-linux -N 10000 -o 8192
--FSX051 fsx-linux -N 10000 -o 16384
--FSX052 fsx-linux -N 10000 -o 32768
--FSX053 fsx-linux -N 10000 -o 128000
--FSX054 fsx-linux -N 10000  -o 1024 -l 500000 -r 4096 -t 4096 -w 4096
--FSX055 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048
--FSX056 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096
--FSX057 fsx-linux -N 10000  -o 8192 -l 500000 -r 4096 -t 2048 -w 2048
--FSX058 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096
--FSX059 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048
--FSX060 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096
--FSX061 fsx-linux -N 10000 -o 32768
--FSX062 fsx-linux -N 10000 -o 128000
--FSX063 fsx-linux -N 10000  -o 1024  -l 500000 -r 4096 -t 4096 -w 4096
--FSX064 fsx-linux -N 10000  -o 2048 -l 500000 -r 4096 -t 2048 -w 2048
--FSX065 fsx-linux -N 10000  -o 4096 -l 500000 -r 4096 -t 4096 -w 4096
--FSX066 fsx-linux -N 10000  -o 8192  -l 500000 -r 4096 -t 2048 -w 2048
--FSX067 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096
--FSX068 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048
--FSX069 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096
--FSX070 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 4096
--FSX071 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096
--FSX072 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048
--FSX073 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 40963
--FSX074 fsx-linux -N 10000  -o 16384 -l 500000 -r 4096 -t 4096 -w 4096
--FSX075 fsx-linux -N 10000  -o 32768 -l 500000 -r 4096 -t 2048 -w 2048
--FSX076 fsx-linux -N 10000  -o 128000 -l 500000 -r 4096 -t 4096 -w 40966
--FSX077 fsx-linux -N 10000
-+FSX054 fsx-linux -N 10000 -o 1024 -l 500000 -r 4096 -t 4096 -w 4096
-+FSX055 fsx-linux -N 10000 -o 2048 -l 500000 -r 4096 -t 2048 -w 2048
-+FSX056 fsx-linux -N 10000 -o 4096 -l 500000 -r 4096 -t 4096 -w 4096
-+FSX057 fsx-linux -N 10000 -o 8192 -l 500000 -r 4096 -t 2048 -w 2048
-+FSX058 fsx-linux -N 10000 -o 16384 -l 500000 -r 4096 -t 4096 -w 4096
-+FSX059 fsx-linux -N 10000 -o 32768 -l 500000 -r 4096 -t 2048 -w 2048
-+FSX060 fsx-linux -N 10000 -o 128000 -l 500000 -r 4096 -t 4096 -w 4096
-+FSX073 fsx-linux -N 10000 -o 128000 -l 500000 -r 4096 -t 4096 -w 40963
-+FSX076 fsx-linux -N 10000 -o 128000 -l 500000 -r 4096 -t 4096 -w 40966
- FSX078 fsx-linux -N 100000
--FSX079 fsx-linux -N 100000
--- 
-2.43.0
+And because it's just one liner, could it be:
 
+#define TST_PRINT_MEMINFO() safe_print_file(__FILE__, __LINE__, "/proc/meminfo")
+
+...
+
+> +++ b/lib/safe_macros.c
+
+We don't want to add anything to the legacy API (otherwise it would go to
+lib/safe_file_ops.c), please add this to lib/tst_safe_macros.c.
+
+BTW I'm slightly confused, what would be the best place for this,
+lib/tst_safe_macros.c is being used nowadays for everything. But there is also
+include/tst_safe_file_ops.h, which does not have C file
+(lib/tst_safe_file_ops.c) because it internally use lib/tst_safe_macros.c.
+I guess creating lib/tst_safe_macros.c was postponed until we rewrite all tests,
+maybe it's a time to create it.
+
+@Li @Cyril: Also include/tst_safe_file_ops.h has SAFE_READ_MEMINFO() and
+SAFE_READ_PROC_STATUS(), IMHO these should be in include/tst_memutils.h.
+Or, we shouldn't have 2 headers for similar thing, it would be good to merge
+these two.
+
+> @@ -1352,3 +1352,19 @@ int safe_sysinfo(const char *file, const int lineno, struct sysinfo *info)
+
+>  	return ret;
+>  }
+> +
+> +int safe_print_file(const char *file, const int lineno, char *path)
+> +{
+> +	int ret;
+> +	FILE *pfile;
+> +	char line[PATH_MAX];
+> +
+> +	pfile = safe_fopen(file, lineno, NULL, path, "r");
+> +
+> +	while (fgets(line, sizeof(line), pfile))
+> +		tst_resm_(file, lineno, TINFO, "%s", line);
+> +
+> +	ret = safe_fclose(file, lineno, NULL, pfile);
+> +
+> +	return ret;
+> +}
+> diff --git a/lib/tst_memutils.c b/lib/tst_memutils.c
+> index c5382ff10..6c1e7c29e 100644
+> --- a/lib/tst_memutils.c
+> +++ b/lib/tst_memutils.c
+> @@ -182,3 +182,8 @@ void tst_disable_oom_protection(pid_t pid)
+>  {
+>  	set_oom_score_adj(pid, 0);
+>  }
+> +
+> +void tst_print_meminfo_(const char *file, const int lineno)
+> +{
+> +	safe_print_file(file, lineno, "/proc/meminfo");
+As I mentioned above, we try to avoid function wrappers.
+> +}
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
