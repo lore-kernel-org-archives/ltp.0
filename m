@@ -4,57 +4,141 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F6C4C4332F
-	for <ltp@archiver.kernel.org>; Thu, 14 Dec 2023 15:22:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFAE9C4332F
+	for <ltp@archiver.kernel.org>; Fri, 15 Dec 2023 06:04:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DACF63CF4CC
-	for <ltp@archiver.kernel.org>; Thu, 14 Dec 2023 16:22:08 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 4009E3CDE56
+	for <ltp@archiver.kernel.org>; Fri, 15 Dec 2023 07:04:54 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 070033CE710
- for <ltp@lists.linux.it>; Thu, 14 Dec 2023 16:20:10 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ by picard.linux.it (Postfix) with ESMTPS id 112EC3CB305
+ for <ltp@lists.linux.it>; Fri, 15 Dec 2023 07:04:43 +0100 (CET)
+Received: from esa8.fujitsucc.c3s2.iphmx.com (esa8.fujitsucc.c3s2.iphmx.com
+ [68.232.159.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id B5E651001165
- for <ltp@lists.linux.it>; Thu, 14 Dec 2023 16:20:09 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id EF8D71F7E7;
- Thu, 14 Dec 2023 15:20:08 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 730CD134B0;
- Thu, 14 Dec 2023 15:20:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id 6MPBGSgde2WpJwAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Thu, 14 Dec 2023 15:20:08 +0000
-From: Petr Vorel <pvorel@suse.cz>
-To: ltp@lists.linux.it
-Date: Thu, 14 Dec 2023 16:19:53 +0100
-Message-ID: <20231214151954.840244-10-pvorel@suse.cz>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231214151954.840244-1-pvorel@suse.cz>
-References: <20231214151954.840244-1-pvorel@suse.cz>
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 0AC781401186
+ for <ltp@lists.linux.it>; Fri, 15 Dec 2023 07:04:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+ t=1702620283; x=1734156283;
+ h=from:to:subject:date:message-id:references:in-reply-to:
+ content-id:content-transfer-encoding:mime-version;
+ bh=qGtA4vaDraAzGZxm+tANtNdklgiJXtJpmtLEd/e2q3k=;
+ b=BclpQVSL4NEbPjEc817i+6wzA2aocFwAlJdwDNCmAWnuITBVQI2GLJdX
+ J4nzYR5xjl/0MRvDK0BLmbcuUz3LUCw9GM+maMnkonEuzo4r3+idy2Dmw
+ 5fyvGHNISxcqAkwITnVpGmZBBEcJDpRqYt7oHTzEj5zfhREqLY1WfUygW
+ XsjMvi67t1EMYFUCDB+i3SiKcpeXjy5vpxUIJFuTnRHABIzd2hmPFRij7
+ 2D9ZwSvYZPV0nQcKyA321wt74t2Zob4pnYAdRPR5djKOED9QZSAkCBBfv
+ a/KJSCCC/MJpQlrRNEKJ+/ofHOQvcVKoui1rbQq55jMIBqFq36YYMpKmg w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="105894261"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695654000"; d="scan'208";a="105894261"
+Received: from mail-os0jpn01lp2105.outbound.protection.outlook.com (HELO
+ JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.105])
+ by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Dec 2023 15:04:39 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PjezmZmbksnSPpryuSCIzdhNeQmYMuNfmTFAegHHF8/d0TaTrFXTXKTpePZ3u3bSzRFH8ZETUClOQMDKvPjUkXRhynipiweArGxIUZfBInA4BPyhScw4jwbAQ48dowAfTmsTLaoX1PdlgLPvFCNQ1m2BhTL/A18ZAVpK5vkd5Jhoe9LX5ovIbgJwkN7RGTdGX5G6ilFsw/UYQFOKrhXtw5tOHox9AO3bcl4EQXMeJWyyt3yBhHEIj7foAplUbO8Lelg1D2POnveIjOdr9NhS3X2yglk0U0hbPrWZeyjiLC8kF6Z8JtDoAKW8Jia0P8MbtRXU7c1JWfP1ur8injCjGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qGtA4vaDraAzGZxm+tANtNdklgiJXtJpmtLEd/e2q3k=;
+ b=UngqnINZ93Ynq5ncoy6EEROG08fENLT06aCz0aPpBUJoWV6lkED3cYp1w3xGilo6O7WSGrQPJVG2RTvXNreQjneA670vgSGoGoUgUcr1IXfqhkVmwcUDCZj4zskR9YeCCgnyOTYlF7eePQg8vAsTHhOlj1ZAQdghHmCYiYiSXYXWBTUBSeN3OI0Ty89RnK3Ad96acGtp0AY9jH3JJTR+otnucu48bZ5K1RUjFa5l4L9mZydK8txCmPRvvEgWQrbp8C/+82mFNVTpieEODWdHOLNp8/+meuWVokAoDbku0hrHFJq/3/ooqvBxvLZPrg+TU+Ax9SG2At0d1x0nJYKQYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from OS7PR01MB11839.jpnprd01.prod.outlook.com (2603:1096:604:23b::8)
+ by TYWPR01MB9608.jpnprd01.prod.outlook.com (2603:1096:400:19b::14)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.11; Fri, 15 Dec
+ 2023 06:04:36 +0000
+Received: from OS7PR01MB11839.jpnprd01.prod.outlook.com
+ ([fe80::eede:9a21:dfae:c0b4]) by OS7PR01MB11839.jpnprd01.prod.outlook.com
+ ([fe80::eede:9a21:dfae:c0b4%3]) with mapi id 15.20.7113.010; Fri, 15 Dec 2023
+ 06:04:36 +0000
+From: "Yang Xu (Fujitsu)" <xuyang2018.jy@fujitsu.com>
+To: "ltp@lists.linux.it" <ltp@lists.linux.it>
+Thread-Topic: [PATCH 1/3] libltpswap: Add get_maxswapfiles api
+Thread-Index: AQHaJ0KjIqmmD8lnO0y8tlo500/qErCp6qKA
+Date: Fri, 15 Dec 2023 06:04:36 +0000
+Message-ID: <85832c21-53fd-4370-9b36-befc4f51fb93@fujitsu.com>
+References: <20231205061639.68656-1-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <20231205061639.68656-1-xuyang2018.jy@fujitsu.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS7PR01MB11839:EE_|TYWPR01MB9608:EE_
+x-ms-office365-filtering-correlation-id: 7b742746-0f3c-4fac-c42b-08dbfd33b779
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Cl1t+TV03e43Hx6ZsLrdeHNpvP3sihFn8lc2tBa5o0oGEWomlrh7tpE6oUqZBvGA2cotaoyO1reWyIUxoqhkNcjqtYjtMOiOoA1qBH4VHEyDwE4myoOr7dtB3Lt7AWlWFPkGabDeZRNmxCJgkC4/GvoWPS8QZPb9KMVRzST07ShU5LpJ5N7FvQ64PEXBQc7bLW8CZphpjKd6oUJUuq0xHKqOtmAy2uKXQNrHgu0n9Ko+fz6vrP6pVffSQsr7BJF+Zx3RhnBrLHBF0s3M4+CthVjg6Cdjq55RO3RufqMp7EP+mN1EAit6cNwYPlQ1mLOEiKejdjvAta8SNiOXjWOEJEjZWHCR0jS884I1IGIdPN1hCxkbrcODyb40H8AjPlKtc1p27+Fau3m0OZv13TcDOZL+9E3a/0B74U7v/Ed+806sh3TOKSoa4PLH2P6XXsfjgKv9g3RZFVS17k648DdximjRJobWd0SWgQIdThPV+Qhz8f3IsAaxXom4kd8s584jotsO+SqqHwf6EXcX8WO2Rqb8TeugGauxSgoVPXLa2QPAAtX9Pie2yQGJUQi0Fg4JJCXWNlEyTjeAjnf2cphrCEeYhRhyebu6Ly+RLn6UTz1FCSoXzmDWNT+/Xlw3XPFIWVB0XVi09uHvgd9+FgwDiYRQXGkGzGJm9o6TGI5VKB2TvrxjSdqsT1ZgyGlqtJuD
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:OS7PR01MB11839.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230031)(136003)(346002)(39860400002)(366004)(396003)(376002)(230922051799003)(451199024)(1800799012)(1590799021)(186009)(64100799003)(26005)(2616005)(6506007)(71200400001)(6512007)(83380400001)(5660300002)(41300700001)(2906002)(478600001)(6486002)(8676002)(8936002)(76116006)(91956017)(66946007)(316002)(6916009)(64756008)(66446008)(66476007)(66556008)(82960400001)(36756003)(85182001)(31696002)(86362001)(122000001)(38100700002)(38070700009)(31686004)(1580799018)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TXdHNXVmSGs1cWxuT0hHa1JydEZoZHlNcXE2RXJNUkkyN040dE1zT3J1eWpp?=
+ =?utf-8?B?RnFrSWtHcnExZEJqQmZnTmhzRlVnOThnOGJWQklTQ211OEJMRXcvakNDa3ly?=
+ =?utf-8?B?NXFKTGt6bWRwckJDMVExcU93TjNuNmNYL2UzbGpmWmY1dTQ0SlVXbHZiUFRE?=
+ =?utf-8?B?eDlRTERVVitVSm5EVnloQVZwRVZ0N3ZGSE9JbTY1SU1DTnRzMS9lWUJxMXFr?=
+ =?utf-8?B?UkhMYTYzclhNa1FlSUpnQ3FUVFcvVU0yT2VwUEV2N1ZjbGI2UCt6NkhCazhC?=
+ =?utf-8?B?VTN2SFlyeFR0SWZiY241QkRMSVAxMkNvRlBNYjF5SGs3eERtZHVMMTlvTFJ5?=
+ =?utf-8?B?U3N2SnRzZGNXZmpwdGg3Um91cTZ3cWpSWHc4T2grTWFyOWh2WjBIR3JzcDlD?=
+ =?utf-8?B?T040bldTMlNITUEzMkQzY0d2WDNTdTd0c1Z1V0dzcXFueFRTNVpVOFFyMjVn?=
+ =?utf-8?B?RlhTQVpVVndqZXBZazdPa2NXN3p0ckRINGpydXJoTVhnV1VNYXlqK1FSeTRT?=
+ =?utf-8?B?UEdwVmR4dTBkWmVHd3o5bmtDV1FNYndjbHhkMlNGZTNmSnRGaWRIMVFOMng0?=
+ =?utf-8?B?KzdnRi90c2RtcUVCSzI4RXpOSGlGYytFN3RFRnBwcjlkM1dHZTBmZk1SeHhZ?=
+ =?utf-8?B?OVNzbmRkNklmaG54RDhwclp3NXRaQmwwNWRCakxiUEFjeStQSnVmbW1JN0Nt?=
+ =?utf-8?B?ZjBhZUhRRGd3dzNwVWR6VUlLcnBwdWVtMkZqZ3NuYzNQc2JJcUtobm9SY0s5?=
+ =?utf-8?B?enBUa1h3dCtucC91YXJzYzNndXVwdU8xcWlvVHNmSitHNi9za0dhQ1VwMHRV?=
+ =?utf-8?B?cVJjWi9NdmFYdzRVVHRLanJkMHo2aFRRTGR4UGFXaVVLNDhJa25VYU5uMTE0?=
+ =?utf-8?B?bkRlVUlmUmlHQ2sxdWx6VnFmRkdhb2p0bjJZR0p4L1JCU0EzUWo4cUtIVmo3?=
+ =?utf-8?B?TERjbEdFSTh0amdLYkpvNzJ3MmxzU0x0VVVKeVY1ZyszSWxMQjZlMmY5MDIv?=
+ =?utf-8?B?QS9UZXZMQTZaUHMwMjA0N3JZd3QxSGdQRmtZQjBNMFhIYVREcHExaHpZOStY?=
+ =?utf-8?B?dEVHWVF4YVNsNjdBOG1ta3RWQWtqSWdpb1pkWFNPNWUxZ1VnT1dtaUl4bzhO?=
+ =?utf-8?B?YmlQdnk5Z0dMeC9zc2ZtVkE1QVZZSDdFWkVobDM3T05TQ3ZOSUFieVVBSU9L?=
+ =?utf-8?B?M3B2OFF2MWEwdFJsZDFjYlV6TG16Z250K1V3WWlXbVM2N3ZLQjlPaHJ1USs3?=
+ =?utf-8?B?S2hKbGlwRnlvRnpSSE1JaVJ1a0QwdzBXTUoxQ3drSFI0Nm9WUkJPNWFENTNY?=
+ =?utf-8?B?Wm50YkxrSjBDeTZvQVRSMnVPT3lHR2E5L2NHZ3p5Ri81OVNpaEhqUzdyMWNG?=
+ =?utf-8?B?TG50Qm1SRXhsdytKMzA0T0ljTG1LNW52N2tPZzFweW9SZVJsalFIN0VqTE5H?=
+ =?utf-8?B?a09LU2t4MUE5aHp3VXpRdDlnM1d1Q04zdlZidjhpV3J2dDhyZWZKcWFLN1lo?=
+ =?utf-8?B?cTZudmhLeGJ4QjdKMEt6b2o4Y2VSaG50RHNKdEY1L0NvVGpPQVlQSTB6S3ha?=
+ =?utf-8?B?UmFNQ2svaGRjSXQ3MDFhOW45ajZUMDB5K3A3Zys4ME9jTnprYUl1RTIzQVVl?=
+ =?utf-8?B?WkNYQm5URUR5Yk00UERzUXNoaHpjMk8xdXdBc2FCazVtYWE5amRjRGYvTEF3?=
+ =?utf-8?B?cVBHRW1VUHNlN3B6bWwvSkhwSytyWW55QldKQ3lQOC8wbDkreVFQWjRNUTlQ?=
+ =?utf-8?B?NHpUZmY5bXlKM2gvMG9pKy9tT1E0YWtQNHRCcTZsaEVQaXlGK1oyU3o0dk5x?=
+ =?utf-8?B?dGNwMnJPWWxRd2U0alpEQ2I0TnR2czNQVGFIb2RYTURxQ29JVTI1UVJhVHpT?=
+ =?utf-8?B?Y0x3LzFJTXUrWDgxN2dlb3lWWUpTOVp4cFJMQUI3RVN3WlRERjRqUkhqWlNM?=
+ =?utf-8?B?REJzaC83ME9lTzdxdzBYZFEzempMODhVeCtBcWp5TmllV2Vjem5FckVXSmR2?=
+ =?utf-8?B?cE8veDg0eUQ0S2FHam1JM2tXaDJmRU9GSEllMUJWUFRzN0daSVU2eTdZWlBK?=
+ =?utf-8?B?VFdnNDN1OStoSkhoVGhSblJrQVZmYXBJMUQ4YWx4akZOWXpDSUNIU29lM3NX?=
+ =?utf-8?B?MTFlRUNYV3BReklDRlYxTFFGNmZOTlMvcnVqZnorM0grWml3RjNpdTNRWkZ4?=
+ =?utf-8?B?RkE9PQ==?=
+Content-ID: <4D57A6F6A757BD45BCC09BEC0B9630FB@jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Queue-Id: EF8D71F7E7
-X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 1Zo0XY0vHJrvsmUqxMYiC+qXgPqTFTfEOip5htKemhX0QDHYCuHcTSZz2uhGPZmqYHqgg9Jogjn2yWAP0K3xQgzTG8U2YMuKKES4p19eC0jY9hCyJ4XK33vaNu2DZcWQ4QqMlcsIQ3T3WJyq8mJ6fGE3y+jCtCLQlN1bc1sa9pf3TCeityUo/UjjebJkQCH6LC05GBbFx8e72xeH+mR2pm0+0uV9qnUMM1+qRlXM6isZMTyLamuhskqIH86WUYcpWvFf9YGIMyEm/t8aULhK+FprXRwpLn/lpWgobDA1tLbF/ivcKiNE7PtM8kqeX0ekRyiKpazJREL7tuEgVDuZpF9AA734WqsR+mtsxDfexfaBDhgEH3YYX/shYtmcSs+Oy9UcmUEik5lC8oEJlFYRoCKAnjq6/0I+Z04U4ZJ9kYOCcZA/NTEvjDHAwiMB8XyO8fUWx5PsNwJtHB93+wMFX03lIuPZMPkduEkYAlRa+BqXEL0ZR1/AeLatrvYGrFkV8avVkfos+lk4vZEOYnZNNRbKoJ/BBXkLVnVoOBcGTpdDRlJEAInP2BOoiYdC2bVCH/hlpOe3EuTzLN85Es7fF9+IvMi8K/SLpLJzTLippoB+fv4cnieT6ECQy2qr84kG
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS7PR01MB11839.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b742746-0f3c-4fac-c42b-08dbfd33b779
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2023 06:04:36.6074 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cfiM6zSbuccEiBLvOO+RmYXVzauHnPD4iKghlWBWYGD2Hd5JEGY9JOFkdTGUjCYOJwkvIT3eBtC/AEohYaqkhw+EHgFo64jgmlkFnQSiMXY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB9608
+X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 09/10] lib: Add support for TDEBUG tst_res() flag
+Subject: Re: [LTP] [PATCH 1/3] libltpswap: Add get_maxswapfiles api
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,258 +155,121 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-To print more verbose info. By default it's off, printing enabled with
--D option or TST_ENABLE_DEBUG=1.
+Hi all,
 
-Use unused value 8 (former TRETR).
-Assigned color is white.
-Legacy API does not support it.
+Ping
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- doc/C-Test-API.asciidoc          | 10 ++++++----
- doc/User-Guidelines.asciidoc     |  1 +
- include/tst_ansi_color.h         |  3 +++
- include/tst_common.h             |  2 +-
- include/tst_res_flags.h          |  1 +
- include/tst_test.h               |  5 +++--
- lib/newlib_tests/tst_res_flags.c |  5 ++++-
- lib/tst_ansi_color.c             |  3 +++
- lib/tst_res.c                    |  5 +++++
- lib/tst_test.c                   | 19 +++++++++++++++++++
- 10 files changed, 46 insertions(+), 8 deletions(-)
+Best Regards
+Yang Xu
 
-diff --git a/doc/C-Test-API.asciidoc b/doc/C-Test-API.asciidoc
-index dab811564..979ec5ccf 100644
---- a/doc/C-Test-API.asciidoc
-+++ b/doc/C-Test-API.asciidoc
-@@ -224,10 +224,12 @@ void tst_res(int ttype, char *arg_fmt, ...);
- Printf-like function to report test result, it's mostly used with ttype:
- 
- |==============================
--| 'TPASS' | Test has passed.
--| 'TFAIL' | Test has failed.
--| 'TINFO' | General message.
--| 'TWARN' | Something went wrong but we decided to continue. Mostly used in cleanup functions.
-+| 'TPASS'  | Test has passed.
-+| 'TFAIL'  | Test has failed.
-+| 'TINFO'  | General message.
-+| 'TDEBUG' | Debug message (new C API only, printed with '-D' or via 'TST_ENABLE_DEBUG=1' or 'y'
-+             environment variable), only for messages which would be too verbose for normal run.
-+| 'TWARN'  | Something went wrong but we decided to continue. Mostly used in cleanup functions.
- |==============================
- 
- The 'ttype' can be combined bitwise with 'TERRNO' or 'TTERRNO' to print
-diff --git a/doc/User-Guidelines.asciidoc b/doc/User-Guidelines.asciidoc
-index 8f2418df0..ec6d89b65 100644
---- a/doc/User-Guidelines.asciidoc
-+++ b/doc/User-Guidelines.asciidoc
-@@ -41,6 +41,7 @@ For running LTP network tests see `testcases/network/README.md`.
-                           and others, which imply it, shell: 'TST_NEEDS_TMPDIR=1').
-                           Must be an absolute path (default: '/tmp').
- | 'TST_NO_CLEANUP'      | Disable running test cleanup (defined in 'TST_CLEANUP').
-+| 'TST_ENABLE_DEBUG'    | Enable debug info (value 'y' or '1').
- |==============================================================================
- 
- 
-diff --git a/include/tst_ansi_color.h b/include/tst_ansi_color.h
-index 770bf46d9..376d4ad63 100644
---- a/include/tst_ansi_color.h
-+++ b/include/tst_ansi_color.h
-@@ -4,14 +4,17 @@
- 
- #ifndef TST_ANSI_COLOR_H__
- #define TST_ANSI_COLOR_H__
-+
- /*
-  * NOTE: these colors should match colors defined in tst_flag2color() in
-  * testcases/lib/tst_ansi_color.sh
-  */
-+
- #define ANSI_COLOR_BLUE		"\033[1;34m"
- #define ANSI_COLOR_GREEN	"\033[1;32m"
- #define ANSI_COLOR_MAGENTA	"\033[1;35m"
- #define ANSI_COLOR_RED		"\033[1;31m"
-+#define ANSI_COLOR_WHITE	"\033[1;37m"
- #define ANSI_COLOR_YELLOW	"\033[1;33m"
- 
- #define ANSI_COLOR_RESET	"\033[0m"
-diff --git a/include/tst_common.h b/include/tst_common.h
-index 520cca72c..b14bbae04 100644
---- a/include/tst_common.h
-+++ b/include/tst_common.h
-@@ -80,7 +80,7 @@
- #define TST_BRK_SUPPORTS_ONLY_TCONF_TBROK(condition) \
- 	TST_BUILD_BUG_ON(condition)
- 
--#define TST_RES_SUPPORTS_TCONF_TFAIL_TINFO_TPASS_TWARN(condition) \
-+#define TST_RES_SUPPORTS_TCONF_TDEBUG_TFAIL_TINFO_TPASS_TWARN(condition) \
- 	TST_BUILD_BUG_ON(condition)
- 
- /* stringification */
-diff --git a/include/tst_res_flags.h b/include/tst_res_flags.h
-index 8eda2f8b8..872352144 100644
---- a/include/tst_res_flags.h
-+++ b/include/tst_res_flags.h
-@@ -11,6 +11,7 @@
- #define TFAIL	1	/* Test failed flag */
- #define TBROK	2	/* Test broken flag */
- #define TWARN	4	/* Test warning flag */
-+#define TDEBUG	8	/* Test debug information flag */
- #define TINFO	16	/* Test information flag */
- #define TCONF	32	/* Test not appropriate for configuration flag */
- #define TTYPE_RESULT(ttype)	((ttype) & TTYPE_MASK)
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 75c2109b9..0c3171e5b 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -54,8 +54,9 @@ void tst_res_(const char *file, const int lineno, int ttype,
- 
- #define tst_res(ttype, arg_fmt, ...) \
- 	({									\
--		TST_RES_SUPPORTS_TCONF_TFAIL_TINFO_TPASS_TWARN(!((TTYPE_RESULT(ttype) ?: TCONF) & \
--			(TCONF | TFAIL | TINFO | TPASS | TWARN))); 				\
-+		TST_RES_SUPPORTS_TCONF_TDEBUG_TFAIL_TINFO_TPASS_TWARN(\
-+			!((TTYPE_RESULT(ttype) ?: TCONF) & \
-+			(TCONF | TDEBUG | TFAIL | TINFO | TPASS | TWARN))); 				\
- 		tst_res_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
- 	})
- 
-diff --git a/lib/newlib_tests/tst_res_flags.c b/lib/newlib_tests/tst_res_flags.c
-index 85eee09a6..b104808d7 100644
---- a/lib/newlib_tests/tst_res_flags.c
-+++ b/lib/newlib_tests/tst_res_flags.c
-@@ -13,6 +13,7 @@
- static struct tcase {
- 	int flag;
- 	const char *str;
-+	const char *note;
- } tcases[] = {
- 	{FLAG(TPASS)},
- 	{FLAG(TFAIL)},
-@@ -20,6 +21,7 @@ static struct tcase {
- 	{FLAG(TCONF)},
- 	{FLAG(TWARN)},
- 	{FLAG(TINFO)},
-+	{FLAG(TDEBUG), " (printed only with -D or TST_ENABLE_DEBUG=1)"},
- };
- 
- static void do_cleanup(void)
-@@ -32,7 +34,8 @@ static void do_test(void)
- 	size_t i;
- 
- 	for (i = 0; i < ARRAY_SIZE(tcases); i++)
--		tst_res(tcases[i].flag, "%s message", tcases[i].str);
-+		tst_res(tcases[i].flag, "%s message%s", tcases[i].str,
-+			tcases[i].note ?: "");
- }
- 
- static struct tst_test test = {
-diff --git a/lib/tst_ansi_color.c b/lib/tst_ansi_color.c
-index 1c29268f2..98041c0af 100644
---- a/lib/tst_ansi_color.c
-+++ b/lib/tst_ansi_color.c
-@@ -31,6 +31,9 @@ char* tst_ttype2color(int ttype)
- 	case TINFO:
- 		return ANSI_COLOR_BLUE;
- 	break;
-+	case TDEBUG:
-+		return ANSI_COLOR_WHITE;
-+	break;
- 	default:
- 		return "";
- 	}
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index e0896eb05..e87918ed1 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -174,6 +174,11 @@ static void tst_res__(const char *file, const int lineno, int ttype,
- 	int len = 0;
- 	int ttype_result = TTYPE_RESULT(ttype);
- 
-+	if (ttype_result == TDEBUG) {
-+		printf("%s: %i: TDEBUG is not supported\n", __func__, __LINE__);
-+		abort();
-+	}
-+
- 	if (file && (ttype_result != TPASS && ttype_result != TINFO))
- 		len = sprintf(tmesg, "%s:%d: ", file, lineno);
- 	EXPAND_VAR_ARGS(tmesg + len, arg_fmt, USERMESG - len);
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index c2f8f503f..edc17a00b 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -60,6 +60,7 @@ static pid_t main_pid, lib_pid;
- static int mntpoint_mounted;
- static int ovl_mounted;
- static struct timespec tst_start_time; /* valid only for test pid */
-+static int tdebug;
- 
- struct results {
- 	int passed;
-@@ -224,6 +225,9 @@ static void print_result(const char *file, const int lineno, int ttype,
- 	case TINFO:
- 		res = "TINFO";
- 	break;
-+	case TDEBUG:
-+		res = "TDEBUG";
-+	break;
- 	default:
- 		tst_brk(TBROK, "Invalid ttype value %i", ttype);
- 		abort();
-@@ -352,6 +356,9 @@ void tst_res_(const char *file, const int lineno, int ttype,
- {
- 	va_list va;
- 
-+	if (ttype == TDEBUG && !tdebug)
-+		return;
-+
- 	va_start(va, fmt);
- 	tst_vres_(file, lineno, ttype, fmt, va);
- 	va_end(va);
-@@ -511,6 +518,7 @@ static struct option {
- 	{"h",  "-h       Prints this help"},
- 	{"i:", "-i n     Execute test n times"},
- 	{"I:", "-I x     Execute test for n seconds"},
-+	{"D",  "-D       Prints debug information"},
- 	{"V",  "-V       Prints LTP version"},
- 	{"C:", "-C ARG   Run child process with ARG arguments (used internally)"},
- };
-@@ -679,6 +687,10 @@ static void parse_opts(int argc, char *argv[])
- 			print_help();
- 			tst_brk(TBROK, "Invalid option");
- 		break;
-+		case 'D':
-+			tst_res(TINFO, "Enabling debug info");
-+			tdebug = 1;
-+		break;
- 		case 'h':
- 			print_help();
- 			print_test_tags();
-@@ -1137,6 +1149,8 @@ static void do_cgroup_requires(void)
- 
- static void do_setup(int argc, char *argv[])
- {
-+	char *tdebug_env = getenv("TST_ENABLE_DEBUG");
-+
- 	if (!tst_test)
- 		tst_brk(TBROK, "No tests to run");
- 
-@@ -1157,6 +1171,11 @@ static void do_setup(int argc, char *argv[])
- 
- 	parse_opts(argc, argv);
- 
-+	if (tdebug_env && (!strcmp(tdebug_env, "y") || !strcmp(tdebug_env, "1"))) {
-+		tst_res(TINFO, "Enabling debug info");
-+		tdebug = 1;
-+	}
-+
- 	if (tst_test->needs_kconfigs && tst_kconfig_check(tst_test->needs_kconfigs))
- 		tst_brk(TCONF, "Aborting due to unsuitable kernel config, see above!");
- 
--- 
-2.43.0
-
+> Current, the kernel constant MAX_SWAPFILES value is calculated as below
+> ------------------------------------
+> //#ifdef CONFIG_DEVICE_PRIVATE
+> //#define SWP_DEVICE_NUM 4
+> //#else
+> //#define SWP_DEVICE_NUM 0
+> //#endif
+> 
+> //#ifdef CONFIG_MIGRATION
+> //#define SWP_MIGRATION_NUM 3
+> //#else
+> //#define SWP_MIGRATION_NUM 0
+> 
+> //#ifdef CONFIG_MEMORY_FAILURE
+> //#define SWP_HWPOISON_NUM 1
+> //#else
+> //#define SWP_HWPOISON_NUM 0
+> //#endif
+> 
+> //#define SWP_PTE_MARKER_NUM 1
+> //#define MAX_SWAPFILES_SHIFT	5
+> 
+> //#define MAX_SWAPFILES \
+> //	((1 << MAX_SWAPFILES_SHIFT) - SWP_DEVICE_NUM - \
+> //	SWP_MIGRATION_NUM - SWP_HWPOISON_NUM - \
+> //	SWP_PTE_MARKER_NUM)
+> ------------------------------------
+> 
+> Also, man-pages missed something after 5.14 kernel. I have sent two patches to
+> add it.
+> 
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
+>   include/libswap.h         |  6 ++++++
+>   libs/libltpswap/libswap.c | 41 +++++++++++++++++++++++++++++++++++++++
+>   2 files changed, 47 insertions(+)
+> 
+> diff --git a/include/libswap.h b/include/libswap.h
+> index d4b5301a5..2cab1047d 100644
+> --- a/include/libswap.h
+> +++ b/include/libswap.h
+> @@ -21,4 +21,10 @@ int make_swapfile(const char *swapfile, int safe);
+>    * we are testing on.
+>    */
+>   void is_swap_supported(const char *filename);
+> +
+> +/*
+> + * Get kernel constant MAX_SWAPFILES value
+> + */
+> +unsigned int get_maxswapfiles(void);
+> +
+>   #endif /* __LIBSWAP_H__ */
+> diff --git a/libs/libltpswap/libswap.c b/libs/libltpswap/libswap.c
+> index a4427736f..54317c627 100644
+> --- a/libs/libltpswap/libswap.c
+> +++ b/libs/libltpswap/libswap.c
+> @@ -11,6 +11,7 @@
+>   #include "tst_test.h"
+>   #include "libswap.h"
+>   #include "lapi/syscalls.h"
+> +#include "tst_kconfig.h"
+>   
+>   /*
+>    * Make a swap file
+> @@ -63,3 +64,43 @@ void is_swap_supported(const char *filename)
+>   	if (TST_RET == -1)
+>   		tst_brk(TFAIL | TTERRNO, "swapoff on %s failed", fstype);
+>   }
+> +
+> +/*
+> + * Get kernel constant MAX_SWAPFILES value
+> + */
+> +unsigned int get_maxswapfiles(void)
+> +{
+> +	unsigned int max_swapfile = 32;
+> +	unsigned int swp_migration_num = 0, swp_hwpoison_num = 0, swp_device_num = 0, swp_pte_marker_num = 0;
+> +	struct tst_kconfig_var migration_kconfig = TST_KCONFIG_INIT("CONFIG_MIGRATION");
+> +	struct tst_kconfig_var memory_kconfig = TST_KCONFIG_INIT("CONFIG_MEMORY_FAILURE");
+> +	struct tst_kconfig_var device_kconfig = TST_KCONFIG_INIT("CONFIG_DEVICE_PRIVATE");
+> +	struct tst_kconfig_var marker_kconfig = TST_KCONFIG_INIT("CONFIG_PTE_MARKER");
+> +
+> +	tst_kconfig_read(&migration_kconfig, 1);
+> +	tst_kconfig_read(&memory_kconfig, 1);
+> +	tst_kconfig_read(&device_kconfig, 1);
+> +	tst_kconfig_read(&marker_kconfig, 1);
+> +
+> +	if (migration_kconfig.choice == 'y') {
+> +		if (tst_kvercmp(5, 19, 0) < 0)
+> +			swp_migration_num = 2;
+> +		else
+> +			swp_migration_num = 3;
+> +	}
+> +
+> +	if (memory_kconfig.choice == 'y')
+> +		swp_hwpoison_num = 1;
+> +
+> +	if (device_kconfig.choice == 'y') {
+> +		if (tst_kvercmp(5, 14, 0) >= 0)
+> +			swp_device_num = 4;
+> +	}
+> +
+> +	if (marker_kconfig.choice == 'y') {
+> +		if (tst_kvercmp(5, 19, 0) < 0)
+> +			swp_pte_marker_num = 1;
+> +	}
+> +
+> +	return max_swapfile - swp_migration_num - swp_hwpoison_num - swp_device_num - swp_pte_marker_num;
+> +}
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
