@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66A25C35274
-	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 07:47:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21F58C35274
+	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 08:08:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CD2AE3CF32D
-	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 08:47:44 +0100 (CET)
-Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
+	by picard.linux.it (Postfix) with ESMTP id 344DF3CF33F
+	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 09:08:35 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 96BC23C99F7
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 08:47:34 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id 2CF433C98E9
+ for <ltp@lists.linux.it>; Mon, 18 Dec 2023 09:08:24 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id EA6551A027AC
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 08:47:33 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 49E221001260
+ for <ltp@lists.linux.it>; Mon, 18 Dec 2023 09:08:23 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1702885652;
+ s=mimecast20190719; t=1702886902;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xoUqtXgNzeuKxypXoRhqQBN1uCW0Uh79uRijCbvGCjc=;
- b=b/hIis4rcLNt4xQEemUCuXnWro3E/l/y32rwdS9FXaolCVID1o0IiYIyGpib1BQZQDGs3l
- weTgtC+TmQqBD56nnlNx/1oEeSIbwny1sBeAJI9ee9PNk51ZE6JjE7/cGyDSZrNm0FFpiG
- WJcuFs4dmlYVNrDCoJOnxLvWKGVHj2Y=
+ bh=CocnknGzy1OJr2WuguDd+Ryddu5qdvK3Xy3y7/IT6ec=;
+ b=AE+UQ24zwoyJbdIhmU2jzocPAVnEla0QySzbnc32lqN4X17j+wLTOYrftJhIS0C592t3mM
+ wz/YgyqM5NTunS8NiuC/zn6gcC7pA2B46bkU01j0fsOT+hEue/7oOmewTAFWcY95/HA1LX
+ x0ONJGKNiLUKr6w5L1sC+gMXoimrBEc=
 Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
  [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-487--oQwKQKfP7eVZV106-nCtg-1; Mon, 18 Dec 2023 02:47:31 -0500
-X-MC-Unique: -oQwKQKfP7eVZV106-nCtg-1
+ us-mta-498-kuAVY4FNOM-IW-wJpHGxJg-1; Mon, 18 Dec 2023 03:08:20 -0500
+X-MC-Unique: kuAVY4FNOM-IW-wJpHGxJg-1
 Received: by mail-lf1-f70.google.com with SMTP id
- 2adb3069b0e04-50c21a1733eso1961950e87.2
- for <ltp@lists.linux.it>; Sun, 17 Dec 2023 23:47:30 -0800 (PST)
+ 2adb3069b0e04-50e30e33677so744748e87.2
+ for <ltp@lists.linux.it>; Mon, 18 Dec 2023 00:08:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1702885648; x=1703490448;
+ d=1e100.net; s=20230601; t=1702886898; x=1703491698;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=xoUqtXgNzeuKxypXoRhqQBN1uCW0Uh79uRijCbvGCjc=;
- b=R1k2WXGfvXjypRUH4+aJjt+/JfzsDMRYKZlcigDPMrxF0SUUFXANl1WSJ5tDiwm+AY
- yZyvT5gFwAur+oRfvGx6B1K5gGaggKqYgBRH6YYgQNyXr4P0bRVJHAqs8l8F44Cy3YjZ
- 8t8oOstvB8v5uW7bVHjoQ2t6tjKAmUY8KZlqikpbn8rIpCf44IdEQUee3v6YWmbPhKOo
- 9tg/aoj+7rCq8Afhh6PYMBwVW3GekWqQNOl5OA1JCqSB/AFqtlpRabzseJnNUw7dfzIz
- SVqemPeFEM/1QdgM97RQyOxw9e88e0nmeXG8Y3ljhzEUy0amXvg9bddl9eSOd9bGB/vv
- GtAA==
-X-Gm-Message-State: AOJu0YyLh7329UFF8f058ZvXm7WGkv/zhFlxFcSnTHZXA+I3lAy9wozp
- Vkn0Vrnnudl4oVQSITMz1ZcTJrermIZKLyO/MG96GWo+fXdJPcjY1XmEx4XUNGcNeqkGnoSl7VM
- Qqkjgp9+arvSvkyctSJB8hK5LfLFkjrXkHmmpB/Ua
-X-Received: by 2002:a19:ae03:0:b0:50e:3292:8d with SMTP id
- f3-20020a19ae03000000b0050e3292008dmr683641lfc.67.1702885648223; 
- Sun, 17 Dec 2023 23:47:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH7b3qReZ3peuS23jjFXb7EmYQWFeTqIj5hOIW/kRPkdZLSG729uGZD/+QA6m7XI9mxy7UKpAKY1nyqGTlpqtg=
-X-Received: by 2002:a19:ae03:0:b0:50e:3292:8d with SMTP id
- f3-20020a19ae03000000b0050e3292008dmr683639lfc.67.1702885647969; 
- Sun, 17 Dec 2023 23:47:27 -0800 (PST)
+ bh=CocnknGzy1OJr2WuguDd+Ryddu5qdvK3Xy3y7/IT6ec=;
+ b=LMVcX8O00gTpKTTnAIx5t1MszvTWwgEkdNKPb4ATND0U7UAsPfoDOF9W/tEu+vP6Wa
+ f5ju3QuCroRqywbkxKQxoW06TJusB13+X4IA8dgXwHsdeDxe2yeiB2QQfQUjb7ONj6t7
+ ix4g2JUSKnKoT1mtGPbjErsQmcBj908P0f3ihdMm/ZkTsUSQA1Ej7jXNQor0rvuT/Dnp
+ 1hYS8Q/9WDM6yLgn/6tvgiW8yw9QG0Bt0DAo/slgCSOYFbL+xnRYFAgyQlOVO8BO67+h
+ 5+cOc20BiU41733aqxANP/fPQJ1pBIiK0UHjW9cPLiE1bB9b9vd4FklSY2QNcrOO0Obc
+ meaQ==
+X-Gm-Message-State: AOJu0Yz88Zrg58aUOwfkd55QGZLFjApKO/wR6xK/2PR7lCk7RVI4C90Q
+ YgtmjoFun9dPWTAGgBv+TTBgEAWmHTfxudnPwmkAd4fw0+4cKY9QjCXcrA1WEgwwgs07um8ItIC
+ rl5nGC0fvxu+aCTU25pFFklGtfUdyC20FdLX1XQmF
+X-Received: by 2002:a05:6512:3056:b0:50e:16f4:5925 with SMTP id
+ b22-20020a056512305600b0050e16f45925mr3578609lfb.112.1702886897893; 
+ Mon, 18 Dec 2023 00:08:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEzL4RcHVim6LJKam8wtnEE+Lq0l/PCLfIOsAQsBvK0n7dVwof3B76ZKgSEs9CvWshMZc5q0oXiH8+HQWtb/xs=
+X-Received: by 2002:a05:6512:3056:b0:50e:16f4:5925 with SMTP id
+ b22-20020a056512305600b0050e16f45925mr3578605lfb.112.1702886897606; Mon, 18
+ Dec 2023 00:08:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20231215183121.57632-1-pvorel@suse.cz>
- <20231215183121.57632-2-pvorel@suse.cz>
-In-Reply-To: <20231215183121.57632-2-pvorel@suse.cz>
+References: <20231215130609.14122-1-pvorel@suse.cz>
+In-Reply-To: <20231215130609.14122-1-pvorel@suse.cz>
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 18 Dec 2023 15:47:16 +0800
-Message-ID: <CAEemH2eCGdvp1SZw-aUHpuxsRT+TyPMmAkqq_mgt1BshT5dgSg@mail.gmail.com>
+Date: Mon, 18 Dec 2023 16:08:04 +0800
+Message-ID: <CAEemH2c=nsC8rDVmQ2btqFC8P4VY8F-rfaHF6hE_bHntDs0Bpg@mail.gmail.com>
 To: Petr Vorel <pvorel@suse.cz>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
 X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH 1/3] fsx-linux: Add .max_runtime = 60
+Subject: Re: [LTP] [PATCH 1/1] runtest: Merge runtest/connectors to
+ kernel_misc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,8 +92,8 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-For patch set:
 Reviewed-by: Li Wang <liwang@redhat.com>
+
 
 
 -- 
