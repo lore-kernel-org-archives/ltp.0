@@ -4,101 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F56CC35274
-	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 04:40:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45F15C46CA2
+	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 07:21:31 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 57C263CF39C
-	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 05:40:14 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 40AE83CF331
+	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 08:21:29 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 56DAD3C81E3
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 05:40:03 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
+ by picard.linux.it (Postfix) with ESMTPS id D41063C8224
+ for <ltp@lists.linux.it>; Mon, 18 Dec 2023 08:21:18 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 434792000A7
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 05:40:02 +0100 (CET)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C9C2221EDB;
- Mon, 18 Dec 2023 04:40:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1702874401;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 1800E1000947
+ for <ltp@lists.linux.it>; Mon, 18 Dec 2023 08:21:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1702884075;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=tH25O1AwVLjk0RFYUtDaAF/tmdNHk8vuKSul+LU5v0Q=;
- b=nlq3V8Hx7EmBMb1DgtDSqQrbYVkd9fXOWdueZiu/tEvaMVbTgOtTNipq52pK/0nzirvdfk
- BE+nuf9zpwzshLyTaJFWjZaFGt2HtkXVoxIIlWaRi0Av2e2PNjnPkaXak5120e/VfWHUws
- dee6z9xhphgCcKRkFGSxcEg65GV395Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1702874401;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tH25O1AwVLjk0RFYUtDaAF/tmdNHk8vuKSul+LU5v0Q=;
- b=8OywudSOqZks6IaX42aZTvONl4lwic/S3WFLNFKh9RSBUusswlSpnHNLGicF6DoAngSU8N
- wRAXBuo+9tBzTBAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1702874401;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tH25O1AwVLjk0RFYUtDaAF/tmdNHk8vuKSul+LU5v0Q=;
- b=nlq3V8Hx7EmBMb1DgtDSqQrbYVkd9fXOWdueZiu/tEvaMVbTgOtTNipq52pK/0nzirvdfk
- BE+nuf9zpwzshLyTaJFWjZaFGt2HtkXVoxIIlWaRi0Av2e2PNjnPkaXak5120e/VfWHUws
- dee6z9xhphgCcKRkFGSxcEg65GV395Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1702874401;
- h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
- cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tH25O1AwVLjk0RFYUtDaAF/tmdNHk8vuKSul+LU5v0Q=;
- b=8OywudSOqZks6IaX42aZTvONl4lwic/S3WFLNFKh9RSBUusswlSpnHNLGicF6DoAngSU8N
- wRAXBuo+9tBzTBAg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B93D138EE;
- Mon, 18 Dec 2023 04:40:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap2.dmz-prg2.suse.org with ESMTPSA id ibAMJCHNf2VlSgAAn2gu4w
- (envelope-from <pvorel@suse.cz>); Mon, 18 Dec 2023 04:40:01 +0000
-Date: Mon, 18 Dec 2023 05:39:59 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Li Wang <liwang@redhat.com>
-Message-ID: <20231218043959.GB160518@pevik>
+ bh=WHHzd7sxA/T3P7fbygpLJ+XskEFGe5kZ51+Kvk9lymU=;
+ b=WiT7lylzQu1yJWd4fjEcSOIIrCgfUYmiTPhMuTyhS8EoCYv2+gaKafKDeDsWtDGz+DgvC4
+ YVVrMqlb4ZvHg2BZdFKnvfGu4OayFCnwD+1xycg2vQAxGC4Z1eTNn1aYgzid7TJBYZDEui
+ A2A6N1jr9HNo9rGLOOjtVSIu/IDd6t8=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-486-tzw0qE_YOaSwImOzX7iCzQ-1; Mon, 18 Dec 2023 02:21:12 -0500
+X-MC-Unique: tzw0qE_YOaSwImOzX7iCzQ-1
+Received: by mail-lf1-f72.google.com with SMTP id
+ 2adb3069b0e04-50c1c0710f6so2113829e87.1
+ for <ltp@lists.linux.it>; Sun, 17 Dec 2023 23:21:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1702884071; x=1703488871;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=WHHzd7sxA/T3P7fbygpLJ+XskEFGe5kZ51+Kvk9lymU=;
+ b=OpKAo5UIWj7zJd1plvQnRdwxiFQWfHGka8gPmIOOlNlhnM4p4BitOu4fA75Rc9J5G/
+ zmEmjAsr0Y4A8H0mvtJs4eMJPaYtqSuE4iEIUGZ6ZF1BngHb0nFo2zzdkhU/X6FFHyyy
+ OWKa0cazaDm+nO24tNO5goCVi9hoULLpg9J8QCKJTXxy9vqVABjgXBwpGwd5uIgfFe1l
+ 73sEbrWlJj57DNpq8BEujr7qtEAVMzLvEtETUyLuDLlUBQaAE7VDr0DUnuTTjFYO6GWd
+ BxviauTDe0haZcp5Gx8l2FJc22MF22GXG4j3/7XTZjBnJcfmmCWaxaBSGC1hMJ7hrhcm
+ ggCA==
+X-Gm-Message-State: AOJu0YyqTonIIyztx2tkGJwnKYwuwtzR98Qx8TXrP18tLO/jZEukAcD9
+ ZkBLRYgKnMAb6fOWnjWa67XgIOkbZBZPndq1xiQHsK9Bl5UIL1tJj0wdFpRNaoH3GrUUD7zep6r
+ KHGKM4DD3unS6C1fVilWi1c6ACxQ=
+X-Received: by 2002:ac2:4a6e:0:b0:50e:2d42:cd37 with SMTP id
+ q14-20020ac24a6e000000b0050e2d42cd37mr1410224lfp.33.1702884071321; 
+ Sun, 17 Dec 2023 23:21:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE1I1QK5SmBytDx5nmUjd8KGvJ1icugVW/wGsxqPruJtZnNHJqtru5jVMdjRN9Hp1HWqC2qUUlFSfbAs44EGPc=
+X-Received: by 2002:ac2:4a6e:0:b0:50e:2d42:cd37 with SMTP id
+ q14-20020ac24a6e000000b0050e2d42cd37mr1410221lfp.33.1702884071016; Sun, 17
+ Dec 2023 23:21:11 -0800 (PST)
+MIME-Version: 1.0
 References: <20231214063311.2325-1-wegao@suse.com>
  <20231214071321.9863-1-wegao@suse.com>
- <20231214071321.9863-2-wegao@suse.com>
- <20231215185749.GA58273@pevik>
+ <20231214071321.9863-2-wegao@suse.com> <20231215185749.GA58273@pevik>
  <CAEemH2dxjRqz4aqJR8C95fAzE4M9XeScEwa-d3bRSO6EyW-EjA@mail.gmail.com>
- <CAEemH2ehQ6CPakouwECeWQGSvSOe1rhA=HKnk1Uig81Cj7tzTg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2ehQ6CPakouwECeWQGSvSOe1rhA=HKnk1Uig81Cj7tzTg@mail.gmail.com>
-X-Spamd-Result: default: False [-3.30 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
- FROM_HAS_DN(0.00)[]; RCPT_COUNT_THREE(0.00)[4];
- TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; REPLY(-4.00)[];
- RCVD_COUNT_THREE(0.00)[3]; RCVD_VIA_SMTP_AUTH(0.00)[];
- DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.00)[21.86%]
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
+ <20231218043033.GA160518@pevik>
+In-Reply-To: <20231218043033.GA160518@pevik>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 18 Dec 2023 15:20:59 +0800
+Message-ID: <CAEemH2ehu_q4J02uPKVaCXNdfHCnCJ4X4L0rTMugpy0diFq2EQ@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 Subject: Re: [LTP] [PATCH v3 1/2] tst_memutils.c: Add tst_print_meminfo
  function
 X-BeenThere: ltp@lists.linux.it
@@ -112,74 +91,45 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Reply-To: Petr Vorel <pvorel@suse.cz>
 Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-> Li Wang <liwang@redhat.com> wrote:
-
-> >> > +++ b/lib/safe_macros.c
-
-> >> We don't want to add anything to the legacy API (otherwise it would go to
-> >> lib/safe_file_ops.c), please add this to lib/tst_safe_macros.c.
-
-> >> BTW I'm slightly confused, what would be the best place for this,
-> >> lib/tst_safe_macros.c is being used nowadays for everything. But there is
-> >> also
+Petr Vorel <pvorel@suse.cz> wrote:
 
 
+>
+> > Agreed, anything related to the dedicated ops should be put into the
+> > corresponding header files. tst_safe_file_ops.h is a generic operation
+> > for Linux (but not for specific) files. So I vote for adding *_MEMINFO()
+> > to tst_memutil.h.
+>
+> +1
+>
+> I understand that it's a good idea when we separate things according to
+> e.g.
+> libc header. But we also have separated C files in lib/.
+> It's probably easier if we have more shorter files than fewer very long
+> files,
+> but I wonder if some sourcers should not be in single files, e.g. these:
+> tst_supported_fs_types.c, tst_fs_type.c => tst_fs.c
+> or
+> tst_fill_fs.c, tst_fill_file.c => tst_fill.c
+> or
+> tst_fs_setup.c, tst_path_has_mnt_flags.c => tst_mount.c
+> (into some more generic name)
+>
 
-> >> include/tst_safe_file_ops.h, which does not have C file
-> >> (lib/tst_safe_file_ops.c) because it internally use lib/tst_safe_macros.c.
+
+Yes, I think so. Unless there is some necessary reason (I overlooked) to
+prevent mergeing them together.
 
 
-> > No, basically it does not use the lib/tst_safe_macros.c.
-
-> > From what I understand, 'tst_safe_file_ops.h' is just a header for
-> > collecting
-> > all the file operations for Linux, it doesn't touch other subcomponent ops.
-
-> > 'tst_safe_file_ops.h' defines macros for all functions in
-> > 'safe_file_ops_fn.h'
-> > and archived them in 'safe_file_ops.c' lib.
-
-> > Something like this combination:
-
-> > tst_safe_file_ops.h:
-> >     safe_file_ops_fn.h
-> >     safe_file_ops.c
-
-
-> The reason to split them into two headers is for backward compatibility.
-
-> Technically we should declare 'safe_file_ops_fn.h' functions in one header
-> 'tst_safe_file_ops.h' but you know we have 'old_safe_file_ops.h'.
-
-> tst_safe_file_ops.h:
->     safe_file_ops_fn.h
->     safe_file_ops.c
-
-> old_safe_file_ops.h:
->     safe_file_ops_fn.h
->     safe_file_ops.c
-
-> In the future, the ideal cleanup direction is just to have:
-
-> tst_safe_file_ops.h
-> tst_safe_file_ops.c
-
-Yep, the problem that Cyril originally implemented new API via legacy to
-support both APIs (good and needed solution) and now we add only into new API
-(also good solution) + that approach specific (and thus small) C sources
-initially and later more generic (and longer) makes library a bit inconsistent.
-I know, it will be solved once we get rid of the legacy API, but that will take
-time.
-
-Kind regards,
-Petr
+-- 
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
