@@ -4,113 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BAB7C35274
-	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 12:23:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C242C35274
+	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 12:23:20 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id E1D813CACE7
-	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 13:23:08 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id D8FE53CA6C2
+	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 13:23:18 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it [217.194.8.5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D663D3CF34D
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 13:22:55 +0100 (CET)
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-db3eur04on061d.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe0c::61d])
+ by picard.linux.it (Postfix) with ESMTPS id CB4D03CD836
+ for <ltp@lists.linux.it>; Mon, 18 Dec 2023 13:23:03 +0100 (CET)
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com
+ (mail-db5eur02on20600.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2608::600])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 09D3C140004F
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 13:22:55 +0100 (CET)
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id 200AD601B17
+ for <ltp@lists.linux.it>; Mon, 18 Dec 2023 13:23:03 +0100 (CET)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AY8jLaWQqKyHkyeU+hFk+sPIHB1Nn+JixKAQ8cfnDvtJkM8C4Cg7Pellhw69k55WriGZma5A7sV4S9INdSDIyqF4OPlf+SaCNqLoN1HVOQ3Jwla2XbwNtJLaJu1D22z5S30V7nnIdtp2mhiOMYpnpN8FVzmHKA7Z1uvTO+daFGV3shQXVmYzIYRUs3+QpcpRNJ9MLi4Wox/wU/2fesO2du9RPhOv2AvOMhQw4Z3I+i1hKrTV02UFw4QUfrY+058Mz5HIlci9lo3ZV2EvhWpf+r++0UOwzzzv4ambBtpjPRghbDXSVAmzelh4iadbx8uq45bhoDPXaTgBRy3hg65HuQ==
+ b=QyK13l1FlviGqdhurcd79R6kEK+cBvemInjSq95ZJocvBKDiq1uOEaBfq7plJjv3A+Fs1hwtE+eOe7Ehsb1+K/M5ValB7RENxkFeS8Ngkj1QAOoYq2kC5sbRxF48FekFI7ch0NOWQ1DAXOyuMQvmO85jQcO95ghVnT2Y2Eg4r4vbnI+DWmDNGSr39I69Pn6edqY1NbNcHw83yIXuiof4cypz6Asf1DweIM2+Mq3FZqcXr2tE45pmJE2GyeltBvKLp1EJk6hlwiH44r+g7AJjUAcbo1kirfw5F5Jz9Hga0QrUBeIiOwOdecZpLqRSE0FIc9/Yb9u8cMErkKpZ01x2Pw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GeFp+ad7TXaoNnxoJ+/c2NXUQlO3HY9k91vMVpdvkVA=;
- b=gpRdj8XrAmJo+yxyEU8ogys4Zng1hBWeDtolnOhtvmguCfFTbJ0O7lw+KlEIZbulWeI9/CRRc6BuFwgJsrDKjba2sDaoHRdMAKt9dza53UgXDR9eEvtsA3hyWSUgzRAOnz3zWhkxI00J7ycmQK9HlA4Hpobxl93jfjqPFcQv41PfIUjNNyyNcxUxp6s5EmqlewrY47+Pa0u6Uiv0dGVrC1SSV3l+nwKbd6Bsw4ur7VUxpX1DRIQWkQ8D18C0KCc5IwEopnur7YTDl3u6+JREL7KwPIzSWIgAZJWUPNTikIssjmwsXLPLtbHfMhGCh7W0gfewJqAhBbsEmR9wrehxOw==
+ bh=ZqEjssHW5XiOMv/r/Hzb1jTTywlCRVEbmzhZ4BDEGK0=;
+ b=Lke3K3HMfF/QrdQud9CynXkqmQqOTCYike62uGR7qqlEgcT0kUP35USgVnbzvN7egBM1CUnPzXhdXDu7pSXcXxBnFSB6wBU5oPRWMzFTcRhf34avtIKcMW1OB/O/H+8D3pbywYclGOCKUAKISjPpISPTcvM7m9ahDTsvPRLU+0y89nmEQDw7tp7p3LHfJjny87S20I1UOHGYriYXXABuveR0Pmhtq8RM3z5ZvbwF/Dut6NhbcvGNw0q0j+sCRhoNP7UQc048AqhGllTlFkeZsK6El87LeGzj0fXFeMmWqFkaEaTNM54ZjMRXjuLMJjgCWf+l6YzQpyH6MVQ2RRzIyA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GeFp+ad7TXaoNnxoJ+/c2NXUQlO3HY9k91vMVpdvkVA=;
- b=hiz/SwA2mIfcwHKhTtr36v9i61L578+AshP6uKry5VXShQs8vsONy9y6WYsPVtcUxAmLD2y9V+9Y/k4LY+k6a15i3JH1Iq6P9MJ2xHIvGqKZKFbbltmEUUFWTrN/LjPUvLyGa7eCQDkfcXJPtkmauxafqkh73OcAQ0vbSJVOZW6b8BT816RjAQNBePcCJdEOiPgGPjSxcxrKGXhBS5XFVbdeyBundshY1ZXYj3yBfYyheM+3gPCy0nJzJ8wKyp1jj5FxXX5Yi5KtmYgmld5qbiL1Xxo6r0BAaFOEbaR4rsGv4qaQLoHKV0QHcp9xtjDII8aMi3iCsNLnZxbQ8luTBw==
+ bh=ZqEjssHW5XiOMv/r/Hzb1jTTywlCRVEbmzhZ4BDEGK0=;
+ b=L5x8Qf9Y1hF7zIHP983WOY34pU+tkNjxZYs/ta9LM2+UJcjDKQm7zMN8q+vCAHzA7M4/QKZqntzbY6R+jKM9Y1eQwu3rqfe69/mP6vBqrzEC52QFmCH7vT3IcqW72Cvb/l9BM/CWrC+bRr5Nr4fdHrm0CrqB9+d6fNTGrzqNBc+mxpKcq8YDTkCb9jJIPIT8oBzAWuXRG71SBC6Axm61ZofChNxA00lRf5PdAmAR+UyvaLXGQvomT8fjpN5LmfB7wMYen0trCKQN8ZvyQnP1/QA3nc1tP0BZDyb/mGk6nwjQF8sA8Fq1wCzv85gUsWqZdSgeDRd5Wv/QtGzUjS94BQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from AS8PR04MB8199.eurprd04.prod.outlook.com (2603:10a6:20b:3f6::21)
  by DU2PR04MB8968.eurprd04.prod.outlook.com (2603:10a6:10:2e3::14)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.37; Mon, 18 Dec
- 2023 12:22:53 +0000
+ 2023 12:23:01 +0000
 Received: from AS8PR04MB8199.eurprd04.prod.outlook.com
  ([fe80::9d39:5718:5401:764d]) by AS8PR04MB8199.eurprd04.prod.outlook.com
  ([fe80::9d39:5718:5401:764d%5]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
- 12:22:53 +0000
+ 12:23:01 +0000
 To: ltp@lists.linux.it
-Date: Mon, 18 Dec 2023 07:22:35 -0500
-Message-Id: <20231218122236.24917-2-wegao@suse.com>
+Date: Mon, 18 Dec 2023 07:22:36 -0500
+Message-Id: <20231218122236.24917-3-wegao@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20231218122236.24917-1-wegao@suse.com>
 References: <20231214071321.9863-1-wegao@suse.com>
  <20231218122236.24917-1-wegao@suse.com>
-X-ClientProxiedBy: TYCPR01CA0165.jpnprd01.prod.outlook.com
- (2603:1096:400:2b1::18) To AS8PR04MB8199.eurprd04.prod.outlook.com
+X-ClientProxiedBy: TYCPR01CA0155.jpnprd01.prod.outlook.com
+ (2603:1096:400:2b1::17) To AS8PR04MB8199.eurprd04.prod.outlook.com
  (2603:10a6:20b:3f6::21)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AS8PR04MB8199:EE_|DU2PR04MB8968:EE_
-X-MS-Office365-Filtering-Correlation-Id: ef38d57c-24dc-4ee7-1a47-08dbffc40f06
+X-MS-Office365-Filtering-Correlation-Id: c168af50-7bcd-49c1-4933-08dbffc413e0
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RxwQ1XPLNPESrgNAAHjrZw+Am8BHv0vWoIh3+29QJanaO7cGS1GvGigxWM0MagmR55IuxFENfsj3rheXf0whbbfMiXdEENPiRe60BkpLyskryZY7OdwTESqT7Z8onl6zzLa6e2ufxs4iGCq7+FXjKKidsAca3U0SL3f2YiXvoj+iG30PVFX/zz/eU/DLjlZpfJTv6yv1ZsYIA+GkWL7eypXb3ioUClt78OrDUsy2PsVtLbOkQMPaR62nEN0TPsPn/49ZEQ4RWz3WL/WRSs9Cbh+h26eudSmR0vj5l9wIBL6W5sgxlQ1DDXO5Wtnjh6/gsUST3M7EPtRiMEjERltFgm2zN8yD40McytShZytKBqSdE25LymaI3Wuf1iv0ab17ibyVxgZTB8iAZ1Fk6UTXM3hNT884OWvROGFeMJvcFElcPByvKFzZl00tMnw9Mg4IDCrpQi6ChhtWdQe98zMcLA8nujXDWHXto3pLi7Bp2h3CFvLu9VEPw6RIucAJwRlKb5eWLlY9LNEL6agvMMlRtEYrWB3CcHe8XdbAjGv82QYlMUBWYjBkGeOu4eWNbHhl
+X-Microsoft-Antispam-Message-Info: x4C58R+ZPGpXIKEfPW22UG/lXCiKSSMSBLCi+QEdOU/3L8aGCgKR92H9DQGqJwJIJr7Mg6PfB2AbhbCeZWESub7RYiy7/NdnNpMCoui46tLWRA77vxNvdqLSSHj2OOcnzD3k4mdzXmNvX5mn9eYeyM9N4DHvijHnseBd3JAfquXHgv7slLMsKyITI+19ajlVoLT9yNcE8XDGV/ZW/G7JpvUutf8RjPTOT+ZQssThkfAw0U6+mOFXNH++TZP9b0nLFuR65Je31gAjZOqte01BkR67De7AQ517ImdS2jRmxVg6cKPwjcxBzYaQwF9d5eLaCe7B/JaNkSFy9UrdJTbAGePle3+higBZC2NbhYnXhQbnGIO6T8aiZU38qMGTFCXA/0P4gtsuLDp2WSoz85Xjw6iPyEmSk+7J+N7hsJORtgd/ZKJVPcdtudlz7f+tbq8ocV/hApe3ditfb7fO3+aL8ikUDL9aQJku+OsONZT7zOiLIe7Eg9dfK6D1oGyca4aELA2XUZ5PjDbEswktL0QEsWJ0iSLh6piL5ti7wkjAGEGxOuObkkdaNUTOqF0grmHhVaTEzka/hG2dscdzc1r1D9bBDEUZXnPd/JOhXoeOvv4=
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:AS8PR04MB8199.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(396003)(346002)(366004)(136003)(376002)(39840400004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(86362001)(36756003)(38100700002)(83380400001)(107886003)(26005)(1076003)(2616005)(478600001)(6486002)(2906002)(66556008)(66476007)(6916009)(6666004)(6512007)(6506007)(66946007)(5660300002)(4326008)(41300700001)(8936002)(8676002)(316002);
+ SFS:(13230031)(396003)(346002)(366004)(136003)(376002)(39840400004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(86362001)(36756003)(38100700002)(83380400001)(107886003)(26005)(1076003)(2616005)(478600001)(6486002)(2906002)(66556008)(66476007)(6916009)(6666004)(6512007)(6506007)(66946007)(5660300002)(4326008)(41300700001)(8936002)(8676002)(316002)(358055004);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Juk2wyQ3Jr2AyDAhYnoPrTcKHqg6/ISvDC0lEADIAOtm84YqYntJR2z2MOPQ?=
- =?us-ascii?Q?zkbGQ7AH2R/WtFHBjN7zR7momCRSQxQF4EneEswnT/414sEOATr22VoElJKr?=
- =?us-ascii?Q?a7pCfOHfFob09Zpb9rr+Zk3shua1hf6z+T+0KfIxcoXeLxxHu0apSajPVkq+?=
- =?us-ascii?Q?Lg0AV/tWZIuAl+nikrJLpI7GrKJLPCfdvFgDZG/xAGNNmOwXCO11+QuqpEo9?=
- =?us-ascii?Q?owl017NupRbdVOzk8s6Qnpt3FuaqkC8+ia2ffOp8bphBd90o0nT25pyFgglA?=
- =?us-ascii?Q?3HDPBfGm/JaK6RZKhoXRbDbTmYPYi/RXHi/8ffShmIYP/BQcvssODDfUNKru?=
- =?us-ascii?Q?6L6Z8PLQ8ztGkSNP2jC4dujn3egxCsuO8//wPO1jPNGKW1VyxR160iCMVOLq?=
- =?us-ascii?Q?T9HfxMqI58+2MCEeB3Ahe9KPZSqD/RRTkHVOhz5OksnOX848hqEtn+ZHVE2r?=
- =?us-ascii?Q?5rkvSDAuKHBYAjENgAvZVPvD+otwtvqIA2fMzOXKBD+VMbWB1lRsriTG30PZ?=
- =?us-ascii?Q?Wfuz0qFgabf2RaQXudZL8vv4lRpCzs8K5eSDJ7/tbvNXL0e0+PDkFjV82iO1?=
- =?us-ascii?Q?QopR1U4jYu1B7fisa0S473ax5Xv5bSUPhCjo+1C47nlDhn+Pyiz5ohtktQIx?=
- =?us-ascii?Q?52VsLPDj1UBO935lWSTLKqtYrKVbx6TqsSJa3htZZvfcXdmsW/Nl/3kW+LUf?=
- =?us-ascii?Q?JLxjbxUUn5qbVJ1SGB4yLENSYFRNDoeLPD7e1XW6l3WD1KUEHYP5gR5naXVg?=
- =?us-ascii?Q?2aXjkxSsCAHCTuTux0X6ZPG7kfEzFPdqJiZwJAB4cv2+dxcHyWkcLSAsPFa/?=
- =?us-ascii?Q?Ur64h8ZhaT9HKfyPOGIov0h7btrNhLxUToim/TUIBp5tC4UNbd0se/ZBtccD?=
- =?us-ascii?Q?UeY7sNvRim6306HTXUN61yxBDoXRQPxbhzNY0KlhTeD4H6e6av/mpjCZud+I?=
- =?us-ascii?Q?p/Df7tXTTKUiIYhod6YYpzxl2bD3N2iwEK3PLnbf7LatP8DqU5+mfyIFjwF9?=
- =?us-ascii?Q?ECuFU78w1evIpMzUpajGlxwe6Lu04fS3DFkw2kCZil5PKo7OKS+2RoPopm1R?=
- =?us-ascii?Q?ouR89Fx+xQpctd2WBJBlRrvEhILTk3bLUJIRBAyXp3m3eDN1vTtr/HkLa3GA?=
- =?us-ascii?Q?2s2OIl5m6SAClU0rBZ+aI/1vpAtLVL8y+Ih0I5f2CTPR3XOCm3DqsQdCKhv+?=
- =?us-ascii?Q?bNVjyZ7pjkTGsWckrjh2CUEhDnzv37jt9MIuIc0D7QCUSK1PkpW+Bxnos8wF?=
- =?us-ascii?Q?mwtYOlrpbiXzYGkz2U519vibwTUCgmTcdNFOOIYMtTeDZMD2j3GYSjGOqXsP?=
- =?us-ascii?Q?BWp4Xwe7nu4xg9ti3meo7+7ZoVTvOCWXhYYNFklyUDT5uDTWRDYxMgUYFL09?=
- =?us-ascii?Q?a7cMBvFbXK1jIyk85rP3POQ1iwWgGsiRJ8glxp+mYb2SPYQTYDfPnzRwouNL?=
- =?us-ascii?Q?PtxjfJHkjG86/k+yWa7DUXAsxNfbnewF1loSd6vuUawhKQUqj9WNdqHIs+2p?=
- =?us-ascii?Q?Mq2Eq1/fu2Lv6Neau3rVNs+N/y18uhNmGo3K3X/LYOn1R1abC9BoMz1iFK6I?=
- =?us-ascii?Q?Z9wP9y8ulyXINbyC5aM=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?01gffyBaIa7L/Whiia9sWHOlkF3dZKxtp53iuWAIET6wecieLQFF8pz1e/lU?=
+ =?us-ascii?Q?3ygiAc5J1DmIADR8nwd7L/HCUN80Qec7rvkvNUdIVXH0ZjSEuBOiZd7ekkO2?=
+ =?us-ascii?Q?jOFW39519geY/cgnsZxmfGvOQp/qBSjHK3thDM6jSjTMa95fZrAJgjvrEyCo?=
+ =?us-ascii?Q?IyOq3zmVydlrycmC9OovLwNmPffgL5pOX7+dqpCETGXS1AGlhtIbELSXUTLF?=
+ =?us-ascii?Q?hZ/RgMZQUWhjrnpOIVy4yofvPfSx/hkVlR81TfpTBMvXWvrSWYvc9xLysy/Y?=
+ =?us-ascii?Q?Y2ms7Dcsp1ZeWRPKWl25ouJafFatsir938mLnLZFZvCO5C8AnbJ9wcnLOJ2W?=
+ =?us-ascii?Q?F+w6CAdq6MrZ8zarbvXIgcagxkFIDYTfDfw6geHvqeMOMk1vLJUNFGEmXYqL?=
+ =?us-ascii?Q?tDR5bd5YnGMW+rYWNKUvvHU+kCTd0etJdKcz4Yt/Adr3eeSZ5UnMMBeaL+LT?=
+ =?us-ascii?Q?0mtuy0ShnUc4wjeoNkwvRekuDGi+nwRSixPOUT/fwptqTtYcmY9iiWiTSHiO?=
+ =?us-ascii?Q?gyRXtsCdBrml52OZP8zUZ1OGEUD8ePKFJMeigzW51i5bqHRy3rE8HZG59KTQ?=
+ =?us-ascii?Q?G2Le+HARwmFDDcXSsHzYFIflj7781W4M/ROjVMiDP8SDnXUXEn+Fz4e2gYvM?=
+ =?us-ascii?Q?o13AidfAmhpQRtF6PoF2vXZgqcKcIyuw/0SSOw+a7LxhU8VNuzuCxgBtq0g6?=
+ =?us-ascii?Q?Q4HiYnP5XZdkxDrFO8gIkLfKrfMMhRPs5DeFG2dlnK66IIQ7LT0W9QSwMLT/?=
+ =?us-ascii?Q?3yQeSwuvJdx95UOWQCQdW/QwE7qF1FXW3ID5Vz18MHm9LD3XgOuPeZSXMphM?=
+ =?us-ascii?Q?6yS/3Jbd9Y+mLe469cwOePKBx+OMcZB7NzWudiW6SQYqon35k5ADCcyDI9bh?=
+ =?us-ascii?Q?OqguUPE5414S5+/62aORXg8wzpnyyLdhKEXNcCCBT7w/1WSNoMosxGIwUq3m?=
+ =?us-ascii?Q?jVFRar39sGOGQ4TS3osx7KxmNpj7556CzSCfQsYCCiwl26d4AARiLUid+1bB?=
+ =?us-ascii?Q?qqfKeoZ5mjEM7ZqZWuswvuqZBW6+10e9Gs9DnDxbM8ZkcwwlRfVD5As4MoAK?=
+ =?us-ascii?Q?c+2CSOrmJE5E2jvsg2yWgUsgWy7V3YKPbSM4VwRWMmL6dNkL+eS1aoeeh5jl?=
+ =?us-ascii?Q?/mst7/fBttemyzcaxmMrGGfyZTr7oR7+eTv7ojpKEBchv5ijxUfujnrW62fh?=
+ =?us-ascii?Q?oNnLp905XBCcQIEuUzp8clKG133ZqmaWlIdPW8zoZgmjaLAGyxmEtxc8bIJ/?=
+ =?us-ascii?Q?GAcqh9zsXq9FcRy1IE9FnAzkQTT9Fg81EZhgZ5m0SCNCf7thiXRi6CinfDpe?=
+ =?us-ascii?Q?+CeY9W5h/JkadMwmXiAvj9ew6MoDjSsSvXxoSJFoBEUoM4qMC6zY7ITLmhjh?=
+ =?us-ascii?Q?/0MlnaJmmooXJk76Z9HRVkx+FcoKcxRdHScsRRrh+BlxOvFaikXUFgW0WLJ/?=
+ =?us-ascii?Q?vUmbnNpo0QldYXclY8V5/0Z7Yr2673hQaDgZ3AgPowZpEyzuIdvidqx5Zjmj?=
+ =?us-ascii?Q?lB3aen1y87AGIJtchGbGuk8/RAP9OZZYsn87tYPL0PywUJ6/3r5hCd5OaQDJ?=
+ =?us-ascii?Q?7E4v/UzC56eDVBhfBgI=3D?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef38d57c-24dc-4ee7-1a47-08dbffc40f06
+X-MS-Exchange-CrossTenant-Network-Message-Id: c168af50-7bcd-49c1-4933-08dbffc413e0
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8199.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 12:22:53.4936 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 12:23:01.6131 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GIzr3w0qwY8lI1N800Gb20Fxh43NUZmXNOO+2rNsHrx/Edsc64SIeoa+DBQea/lD
+X-MS-Exchange-CrossTenant-UserPrincipalName: ihoD61u4eprYgb+aGK6DvjFOnbB++uviGIHgcHEpk0lIce4TvjOLdhUu9GftPo0r
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8968
-X-Virus-Scanned: clamav-milter 1.0.1 at in-6.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.1 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v4 1/2] tst_memutils.c: Add tst_print_meminfo function
+Subject: [LTP] [PATCH v4 2/2] swapping01.c: Reporting /proc/meminfo during
+ test
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -129,64 +129,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
+Get clear overview memory status during test is good for debug, such as
+get report before the test and also at the moment of the failure.
+
 Signed-off-by: Wei Gao <wegao@suse.com>
 ---
- include/tst_memutils.h    |  2 ++
- include/tst_safe_macros.h |  3 +++
- lib/tst_safe_macros.c     | 13 +++++++++++++
- 3 files changed, 18 insertions(+)
+ testcases/kernel/mem/swapping/swapping01.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/tst_memutils.h b/include/tst_memutils.h
-index 19b593430..0dd941ced 100644
---- a/include/tst_memutils.h
-+++ b/include/tst_memutils.h
-@@ -58,4 +58,6 @@ void tst_enable_oom_protection(pid_t pid);
-  */
- void tst_disable_oom_protection(pid_t pid);
+diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
+index fc225e4a6..025f44363 100644
+--- a/testcases/kernel/mem/swapping/swapping01.c
++++ b/testcases/kernel/mem/swapping/swapping01.c
+@@ -83,7 +83,9 @@ static void test_swapping(void)
  
-+#define TST_PRINT_MEMINFO() safe_print_file(__FILE__, __LINE__, "/proc/meminfo")
+ 	switch (pid = SAFE_FORK()) {
+ 	case 0:
++		TST_PRINT_MEMINFO();
+ 		do_alloc(0);
++		TST_PRINT_MEMINFO();
+ 		do_alloc(1);
+ 		exit(0);
+ 	default:
+@@ -138,6 +140,7 @@ static void check_swapping(void)
+ 		swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
+ 		sleep(1);
+ 		long diff = labs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:"));
 +
- #endif /* TST_MEMUTILS_H__ */
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index c899c4f2c..f2ce8919b 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -21,6 +21,7 @@
- #include <dirent.h>
- #include <grp.h>
+ 		if (diff < 10)
+ 			break;
  
-+#include "safe_stdio_fn.h"
- #include "safe_macros_fn.h"
- #include "tst_cmd.h"
+@@ -146,6 +149,7 @@ static void check_swapping(void)
  
-@@ -671,4 +672,6 @@ int safe_sysinfo(const char *file, const int lineno, struct sysinfo *info);
- #define SAFE_SYSINFO(info) \
- 	safe_sysinfo(__FILE__, __LINE__, (info))
- 
-+void safe_print_file(const char *file, const int lineno, char *path);
-+
- #endif /* SAFE_MACROS_H__ */
-diff --git a/lib/tst_safe_macros.c b/lib/tst_safe_macros.c
-index 7f28d43e5..024963bab 100644
---- a/lib/tst_safe_macros.c
-+++ b/lib/tst_safe_macros.c
-@@ -610,3 +610,16 @@ int safe_msync(const char *file, const int lineno, void *addr,
- 
- 	return rval;
- }
-+
-+void safe_print_file(const char *file, const int lineno, char *path)
-+{
-+	FILE *pfile;
-+	char line[PATH_MAX];
-+
-+	pfile = safe_fopen(file, lineno, NULL, path, "r");
-+
-+	while (fgets(line, sizeof(line), pfile))
-+		tst_resm_(file, lineno, TINFO, "%s", line);
-+
-+	safe_fclose(file, lineno, NULL, pfile);
-+}
+ 	swapped = SAFE_READ_PROC_STATUS(pid, "VmSwap:");
+ 	if (swapped > mem_over_max) {
++		TST_PRINT_MEMINFO();
+ 		kill(pid, SIGCONT);
+ 		tst_brk(TFAIL, "heavy swapping detected: "
+ 				"%ld MB swapped.", swapped / 1024);
 -- 
 2.35.3
 
