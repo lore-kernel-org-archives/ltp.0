@@ -4,63 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20A22C35274
-	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 08:16:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97A21C35274
+	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 08:48:13 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id DA17A3CB299
-	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 09:16:52 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id 9FF203CB08B
+	for <ltp@archiver.kernel.org>; Mon, 18 Dec 2023 09:48:11 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8160C3CACE7
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 09:16:33 +0100 (CET)
-Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com
- [207.54.90.49])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id 710A23C83BA
+ for <ltp@lists.linux.it>; Mon, 18 Dec 2023 09:48:01 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.145.221.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id E64C060011C
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 09:16:32 +0100 (CET)
-X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="143773077"
-X-IronPort-AV: E=Sophos;i="6.04,284,1695654000"; d="scan'208";a="143773077"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
- by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Dec 2023 17:16:31 +0900
-Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com
- [192.168.83.65])
- by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id BA152E0401
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 17:16:28 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 0F497D5E91
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 17:16:28 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 884D3202CAA4E
- for <ltp@lists.linux.it>; Mon, 18 Dec 2023 17:16:27 +0900 (JST)
-Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 3F1641A006F;
- Mon, 18 Dec 2023 16:16:27 +0800 (CST)
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: ltp@lists.linux.it
-Date: Mon, 18 Dec 2023 01:21:29 -0500
-Message-Id: <20231218062129.130236-2-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231218062129.130236-1-xuyang2018.jy@fujitsu.com>
-References: <20231218062129.130236-1-xuyang2018.jy@fujitsu.com>
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 6EE852064EF
+ for <ltp@lists.linux.it>; Mon, 18 Dec 2023 09:48:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1702889278;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=MRFoP4exmEnhSQEqtXDXHgLTvjMaC7CYjjAWoQs3Z/U=;
+ b=AeYtkJwEc5BqnMR8dGz2lbKl8cUZEOQs6cMtilMUqrD114oK47/lMB6DpIL7SNkXLz8/H5
+ M/C2/hJrMPQuHa8v1NFvzBWetQbumOwMWNuSNy/kxksOp4OK22dKxeoL2VhH/hdYwexJiW
+ YYM7vbPoA1pQpYDSN6GCHVgkHMaCNTw=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-2-lbImvdRzPR2mB9w6I5Q1yw-1; Mon, 18 Dec 2023 03:47:56 -0500
+X-MC-Unique: lbImvdRzPR2mB9w6I5Q1yw-1
+Received: by mail-lj1-f199.google.com with SMTP id
+ 38308e7fff4ca-2cc61c96e08so13586841fa.0
+ for <ltp@lists.linux.it>; Mon, 18 Dec 2023 00:47:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1702889272; x=1703494072;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=MRFoP4exmEnhSQEqtXDXHgLTvjMaC7CYjjAWoQs3Z/U=;
+ b=WjxL+vrpSfKNFROVjL+bXocelwm8ZnWHi3xtYSbC+HE4Xf+Xtb9Oo6T89dXNNLDa8A
+ SNVU39/2g5SGEvuh4VFAUu4ctBQXcoGNT15uM55uG4o6N1yUhFoFXcoW8U+D/HvPhN3P
+ yZTLHDI4iP/GdkNmtF+t8U8e89c4ABjDnlnX47CBKl/J+uCTaAn8P/ICbf0hJLaSln5y
+ SScZBi7wShaLQeFWhXNXYC3A0xF7c32rmQCqFP2ekEmSkTPhXNmeBICt3WfnT67hJeSN
+ mCWJwkkM7SD5JO+YoweLB2aJgnNNL2WF0+YIFqe6l1a+8kW9ABpspy47J/2MeyqO7TrY
+ PoSA==
+X-Gm-Message-State: AOJu0Yx112YS3nrUi2Mi8N8qYZy567MHLu5rpJqFR4CFZ3lPEbC94jEA
+ kfW3SnM14eWLXXpEIBI6ToDqZqjGIhMhDcIA/GVv0/1Z4lZ1X6OKt8YaOi6rgq9PQE+uy+k+cUa
+ zWXhimWqWDJZHOIDb4TVBbNt52V3j+N8S9aDuyvvTubw=
+X-Received: by 2002:a05:651c:50c:b0:2cc:4210:57b9 with SMTP id
+ o12-20020a05651c050c00b002cc421057b9mr3847131ljp.80.1702889272560; 
+ Mon, 18 Dec 2023 00:47:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEI/NDe26nYQhcX3akXK3wGzn3fgTwGIKht6paWks3Atk++g/INx6bnCpTtI3FQgNtuG1pwiUHR2fpoRyajZ+8=
+X-Received: by 2002:a05:651c:50c:b0:2cc:4210:57b9 with SMTP id
+ o12-20020a05651c050c00b002cc421057b9mr3847126ljp.80.1702889272242; Mon, 18
+ Dec 2023 00:47:52 -0800 (PST)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28064.005
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28064.005
-X-TMASE-Result: 10--3.967800-10.000000
-X-TMASE-MatchedRID: v71phiYrRiGhhjsqgSuNbxF4zyLyne+ATJDl9FKHbrlcGuTueJkNItno
- quRwHY3Bi1QzF8xBpkXLmbje3yGzqlxxDx5qbkR9FEUknJ/kEl5q8/xv2Um1avoLR4+zsDTtB00
- /kkeBTwC5btQ5LU4P+ulH3GBMmErZEYvadqlssWK9jalmCPsPIGyXxKB0VMnPGVReE3/zNggelH
- a7KKLmnU/zrLAqSDDwHz9KYf72QduGk+xUaqdMDwHEKwHwYevbwUSxXh+jiUgkww/gwY7hMA==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-2.smtp.seeweb.it
+References: <20231218062129.130236-1-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <20231218062129.130236-1-xuyang2018.jy@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 18 Dec 2023 16:47:39 +0800
+Message-ID: <CAEemH2e-QNst=HVf3C-mEmdRiNh-Rrq-WzAc8bAcOLEAW9jjOA@mail.gmail.com>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.1 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH 2/2] gettimeofday02: Convert docs to docparse
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH 1/2] gettimeofday01: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,41 +86,15 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- testcases/kernel/syscalls/gettimeofday/gettimeofday02.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-index 7c462cc29..fcd027df5 100644
---- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-+++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-@@ -4,13 +4,12 @@
-  * Copyright (C) 2017 Cyril Hrubis <chrubis@suse.cz>
-  */
- 
--/*
-+/*\
-  * DESCRIPTION
-- *	Check if gettimeofday is monotonous
-+ * Check if gettimeofday is monotonous during 10s
-  *
-- * ALGORITHM
-- *	Call gettimeofday() to get a t1 (fist value)
-- *	call it again to get t2, see if t2 < t1, set t2 = t1, repeat for 10 sec
-+ * - Call gettimeofday() to get a t1 (fist value)
-+ * - Call it again to get t2, see if t2 < t1, set t2 = t1, repeat for 10 sec
-  */
- 
- #include <stdint.h>
--- 
-2.39.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+T24gTW9uLCBEZWMgMTgsIDIwMjMgYXQgNDoxNuKAr1BNIFlhbmcgWHUgPHh1eWFuZzIwMTguanlA
+ZnVqaXRzdS5jb20+IHdyb3RlOgoKPiBTaWduZWQtb2ZmLWJ5OiBZYW5nIFh1IDx4dXlhbmcyMDE4
+Lmp5QGZ1aml0c3UuY29tPgo+CgpSZXZpZXdlZC1ieTogTGkgV2FuZyA8bGl3YW5nQHJlZGhhdC5j
+b20+CgpCdXQgSSB3b3VsZCBzdWdnZXN0IGFkZGluZyBtb3JlIGNvdmVyYWdlIG9uIEVSUk9SUyBp
+biB0aGlzIHRlc3QuCgotLSAKUmVnYXJkcywKTGkgV2FuZwoKLS0gCk1haWxpbmcgbGlzdCBpbmZv
+OiBodHRwczovL2xpc3RzLmxpbnV4Lml0L2xpc3RpbmZvL2x0cAo=
