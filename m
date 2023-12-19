@@ -4,61 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8043AC41535
-	for <ltp@archiver.kernel.org>; Tue, 19 Dec 2023 07:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CE4BC41535
+	for <ltp@archiver.kernel.org>; Tue, 19 Dec 2023 11:00:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 040B33CF2F2
-	for <ltp@archiver.kernel.org>; Tue, 19 Dec 2023 08:43:13 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 069C03CE613
+	for <ltp@archiver.kernel.org>; Tue, 19 Dec 2023 12:00:15 +0100 (CET)
 Received: from in-3.smtp.seeweb.it (in-3.smtp.seeweb.it [217.194.8.3])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 6748B3C88DB
- for <ltp@lists.linux.it>; Tue, 19 Dec 2023 08:43:03 +0100 (CET)
-Received: from esa10.hc1455-7.c3s2.iphmx.com (esa10.hc1455-7.c3s2.iphmx.com
- [139.138.36.225])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id D875E3CF2D7
+ for <ltp@lists.linux.it>; Tue, 19 Dec 2023 12:00:05 +0100 (CET)
+Authentication-Results: in-3.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-3.smtp.seeweb.it (Postfix) with ESMTPS id 0D6BD1A02385
- for <ltp@lists.linux.it>; Tue, 19 Dec 2023 08:43:01 +0100 (CET)
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="131541093"
-X-IronPort-AV: E=Sophos;i="6.04,287,1695654000"; d="scan'208";a="131541093"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
- by esa10.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Dec 2023 16:42:59 +0900
-Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com
- [192.168.87.60])
- by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 8D99DC117A
- for <ltp@lists.linux.it>; Tue, 19 Dec 2023 16:42:57 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id C5656D9489
- for <ltp@lists.linux.it>; Tue, 19 Dec 2023 16:42:56 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 6729E200989EA
- for <ltp@lists.linux.it>; Tue, 19 Dec 2023 16:42:56 +0900 (JST)
-Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 20FA91A006F;
- Tue, 19 Dec 2023 15:42:56 +0800 (CST)
-From: Yang Xu <xuyang2018.jy@fujitsu.com>
-To: ltp@lists.linux.it
-Date: Tue, 19 Dec 2023 00:48:03 -0500
-Message-Id: <20231219054803.136732-1-xuyang2018.jy@fujitsu.com>
-X-Mailer: git-send-email 2.39.3
+ by in-3.smtp.seeweb.it (Postfix) with ESMTPS id DDB821B60EF6
+ for <ltp@lists.linux.it>; Tue, 19 Dec 2023 12:00:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1702983603;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=4SBftBgzJEsXCH8+PLk8Gigeha2SwkA+7vAoUxc7IFE=;
+ b=JE1vy4YpSprtAXi5+fAgBw4qHg1Qi6RtMMUPW//lZLxhjtPjuoiTul+UnxD3p27P+nf6Wl
+ xIbZKdf2ubp8ZU9F81agbJ+gkPZGCB1LNahpRnaaiIEBtlq9tEau2y05ExaH1CxNwHdKnV
+ nKjdkCIfFTeE8swNLfz8pGSQCgEcDUk=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-648-ks88jOp6MsWDDGJ-RivSSg-1; Tue, 19 Dec 2023 05:58:16 -0500
+X-MC-Unique: ks88jOp6MsWDDGJ-RivSSg-1
+Received: by mail-ot1-f72.google.com with SMTP id
+ 46e09a7af769-6d9feae8dfdso5990434a34.2
+ for <ltp@lists.linux.it>; Tue, 19 Dec 2023 02:58:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1702983495; x=1703588295;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=4SBftBgzJEsXCH8+PLk8Gigeha2SwkA+7vAoUxc7IFE=;
+ b=aOKCBjFbFQuGxamU6mvJReSnKNpL+Aw74vXDgSUfkvk3dvNcDLQe+GJhgaeZY4Ni9+
+ QpTsPykJO5+DEJ9Ff6+sUtlPP9/rdEoiKNWouA51YRMwMj1F34YtanMule6HR1aIeUFU
+ VpM2uwaxXeHBsl26sFGX71w4SM3OgblCtNvRHsJLEmk8iqjORnpmR9FkoCS3CQl19hb8
+ aWqo9E2X22VH1NX9rqvmVLRq96SajFQpMZZrdAMwrwgOYixQRsC1xFatiWTAPbTVV2nc
+ 1C5IMnFhNIXCXQ7ApaNgshwyfB+46S8vn5AuyqzIu28hMbI5v4pQb6WwhsiYYdDNoWPi
+ Za5w==
+X-Gm-Message-State: AOJu0YypbYCdGL4VtIcsPjKxOWFEcAYDoGv3jS9jkdVncLASE3mMUxpk
+ jX7AivBt2KNsVoqxmWwC/QCAvnoAGuFzkB3GXVXJlbLwvsLAybJyQzOu1gI39EQgIM+OioTEviX
+ r9PNaLAXrgNUFshFX2wMXLsne9d4=
+X-Received: by 2002:a05:6830:32ac:b0:6d9:f544:8098 with SMTP id
+ m44-20020a05683032ac00b006d9f5448098mr17590271ott.28.1702983495813; 
+ Tue, 19 Dec 2023 02:58:15 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGPPWXjGx1UTIV5B0vQSC8nxiawmw6MSo0TIfvgrGazyb+E4EKulqs3b4LbsxRq3nul11KI+p0R/wY1mkMrPio=
+X-Received: by 2002:a05:6830:32ac:b0:6d9:f544:8098 with SMTP id
+ m44-20020a05683032ac00b006d9f5448098mr17590260ott.28.1702983495441; Tue, 19
+ Dec 2023 02:58:15 -0800 (PST)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28066.005
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28066.005
-X-TMASE-Result: 10--8.708500-10.000000
-X-TMASE-MatchedRID: E6cLu42Bq/TLn7BI/CexuwPZZctd3P4BwTlc9CcHMZdgPgeggVwCFrKo
- UszL+Vmm4PKuGN+8yk31Z+4LIHcqPmx8N4YhLO2E30kDaWZBE1R9LQinZ4QefPcjNeVeWlqY+gt
- Hj7OwNO0UBC9BhrukgxdezuUHj3Ie8bHBbhOn9SSC2K6GWqRMsE7gv1c5vT70
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.1 at in-3.smtp.seeweb.it
+References: <20231214151954.840244-1-pvorel@suse.cz>
+In-Reply-To: <20231214151954.840244-1-pvorel@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 19 Dec 2023 18:58:02 +0800
+Message-ID: <CAEemH2dH5tgNUxZHbai6NABN8Ffw=KuoSW6j2rzy2xaeRv9V3A@mail.gmail.com>
+To: Petr Vorel <pvorel@suse.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-3.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] gettimeofday01: test EFAULT error for single bad
- address tv/tz
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [PATCH v4 00/10] Add TDEBUG tst_res() flag
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,67 +89,22 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-man-pages said that one of TV or tz pointed outside the accessible address space.
+Hi Petr,
 
-Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
----
- .../syscalls/gettimeofday/gettimeofday01.c    | 27 ++++++++++++++++---
- 1 file changed, 23 insertions(+), 4 deletions(-)
+Nice work, thanks!!
 
-diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-index 3155beec9..adf4a7466 100644
---- a/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-+++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday01.c
-@@ -9,18 +9,37 @@
-  *
-  * Test for EFAULT error.
-  *
-- * - gettimeofday fail with EFAULT when one of tv or tz pointed outside the accessible
-+ * - gettimeofday fail with EFAULT when tv pointed outside the accessible
-+ *   address space
-+ * - gettimeofday fail with EFAULT when tz pointed outside the accessible
-+ *   address space
-+ * - gettimeofday fail with EFAULT when both tv and tz pointed outside the accessible
-  *   address space
-  */
- 
- #include "tst_test.h"
- #include "lapi/syscalls.h"
- 
--static void verify_gettimeofday(void)
-+static struct timeval tv1;
-+
-+static struct tcase {
-+	void *tv;
-+	void *tz;
-+} tcases[] = {
-+	/* timezone structure is obsolete, tz should be treated as null */
-+	{(void *)-1, NULL},
-+	{&tv1, (void *)-1},
-+	{(void *)-1, (void *)-1},
-+};
-+
-+static void verify_gettimeofday(unsigned int n)
- {
--	TST_EXP_FAIL(tst_syscall(__NR_gettimeofday, (void *)-1, (void *)-1), EFAULT);
-+	struct tcase *tc = &tcases[n];
-+
-+	TST_EXP_FAIL(tst_syscall(__NR_gettimeofday, tc->tv, tc->tz), EFAULT);
- }
- 
- static struct tst_test test = {
--	.test_all  = verify_gettimeofday,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_gettimeofday,
- };
+Reviewed-by: Li Wang <liwang@redhat.com>
+
+
 -- 
-2.27.0
-
+Regards,
+Li Wang
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
