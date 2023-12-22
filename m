@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAF54C46CD4
-	for <ltp@archiver.kernel.org>; Fri, 22 Dec 2023 06:56:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83752C41535
+	for <ltp@archiver.kernel.org>; Fri, 22 Dec 2023 06:56:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 0BC173CF230
-	for <ltp@archiver.kernel.org>; Fri, 22 Dec 2023 07:56:10 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
+	by picard.linux.it (Postfix) with ESMTP id 11AE03C9AC2
+	for <ltp@archiver.kernel.org>; Fri, 22 Dec 2023 07:56:33 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4986F3CEF0D
- for <ltp@lists.linux.it>; Fri, 22 Dec 2023 07:55:49 +0100 (CET)
-Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com
- [68.232.139.130])
+ by picard.linux.it (Postfix) with ESMTPS id 05F413C9A28
+ for <ltp@lists.linux.it>; Fri, 22 Dec 2023 07:56:21 +0100 (CET)
+Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com
+ [68.232.139.117])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 471F0201DA3
- for <ltp@lists.linux.it>; Fri, 22 Dec 2023 07:55:47 +0100 (CET)
-X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="143761292"
-X-IronPort-AV: E=Sophos;i="6.04,294,1695654000"; d="scan'208";a="143761292"
-Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
- by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Dec 2023 15:55:46 +0900
-Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com
- [192.168.87.61])
- by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id D9E8A7BFC7
- for <ltp@lists.linux.it>; Fri, 22 Dec 2023 15:55:43 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
- [192.51.206.22])
- by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 17800D6024
- for <ltp@lists.linux.it>; Fri, 22 Dec 2023 15:55:43 +0900 (JST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 0F1D96024A8
+ for <ltp@lists.linux.it>; Fri, 22 Dec 2023 07:56:19 +0100 (CET)
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="144539463"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695654000"; d="scan'208";a="144539463"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+ by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Dec 2023 15:56:18 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com
+ [192.168.83.66])
+ by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 4071ED9DA5
+ for <ltp@lists.linux.it>; Fri, 22 Dec 2023 15:56:16 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 8B9F5C5CC9
+ for <ltp@lists.linux.it>; Fri, 22 Dec 2023 15:56:15 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id AE40C1EBBE6
- for <ltp@lists.linux.it>; Fri, 22 Dec 2023 15:55:42 +0900 (JST)
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 23EC3202C9741
+ for <ltp@lists.linux.it>; Fri, 22 Dec 2023 15:56:15 +0900 (JST)
 Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 5E8B51A006F;
- Fri, 22 Dec 2023 14:55:42 +0800 (CST)
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id CD7841A006F;
+ Fri, 22 Dec 2023 14:56:14 +0800 (CST)
 From: Yang Xu <xuyang2018.jy@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Fri, 22 Dec 2023 00:00:03 -0500
-Message-Id: <20231222050006.148845-4-xuyang2018.jy@fujitsu.com>
+Date: Fri, 22 Dec 2023 00:00:04 -0500
+Message-Id: <20231222050006.148845-5-xuyang2018.jy@fujitsu.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231222050006.148845-1-xuyang2018.jy@fujitsu.com>
 References: <20231205061639.68656-3-xuyang2018.jy@fujitsu.com>
@@ -53,15 +53,16 @@ X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28072.005
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28072.005
-X-TMASE-Result: 10--9.963700-10.000000
-X-TMASE-MatchedRID: uXLKq++rPJdlJTodqNqEzqzGfgakLdjalwT0XposETW+f7ap9DJaDb8F
- Hrw7frluf146W0iUu2tMCgkc3/BmTUwYXRRr2ymnfOaYwP8dcX4ogaQhRNNEvpsoi2XrUn/J8m+
- hzBStansUGm4zriL0oQtuKBGekqUpI/NGWt0UYPArDdi+0UXUjf7DjywJezFAalWSuTFeCDFc6V
- Qb0Hn5VK8e8eBqaP6r
+X-TMASE-Result: 10--10.747900-10.000000
+X-TMASE-MatchedRID: DUlKOBWbo0l+fOZykHM6uwQ6EfMOwvTm205HfQzgPdFUjspoiX02Fz13
+ GoPFA1HFIvrftAIhWmLy9zcRSkKatcOJmY4XRXkVQQp1SVSsqYAWUg/hm489yLgbJOZ434Bsi8x
+ T7YmZq8v8MuFbVBBITpu74XJZgEpKHxPMjOKY7A+Wlioo2ZbGwdmzcdRxL+xwKrauXd3MZDWhNy
+ aOMoiE/Gvjg1227U0ihNE+a+cTXuxdxTrc3AI/8gKboGwVsD9E
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2 4/7] swaponoff.h: Remove useless header
+Subject: [LTP] [PATCH v2 5/7] swapon/Makefile: Remove useless section for
+ MAX_SWAPFILES
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,29 +79,30 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Since we have use get_maxswapfiles() api in swapon03.c, so this header
-is useless and can be removed safely.
+It seems this section doesn't affect anything, btw it is useless,
+so remove it.
 
 Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- testcases/kernel/syscalls/swapon/swaponoff.h | 8 --------
- 1 file changed, 8 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/swapon/swaponoff.h
+ testcases/kernel/syscalls/swapon/Makefile | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/swapon/swaponoff.h b/testcases/kernel/syscalls/swapon/swaponoff.h
-deleted file mode 100644
-index 900761bda..000000000
---- a/testcases/kernel/syscalls/swapon/swaponoff.h
-+++ /dev/null
-@@ -1,8 +0,0 @@
+diff --git a/testcases/kernel/syscalls/swapon/Makefile b/testcases/kernel/syscalls/swapon/Makefile
+index 53c795090..6954112a8 100644
+--- a/testcases/kernel/syscalls/swapon/Makefile
++++ b/testcases/kernel/syscalls/swapon/Makefile
+@@ -1,11 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) International Business Machines Corp., 2001
+ 
+-NEEDSPECIAL	:= $(shell echo MAX_SWAPFILES | $(CC) -E -xc -include linux/swap.h 2>/dev/null - | tail -n 1 | grep 32; echo $?)
+-ifneq ($(strip $(NEEDSPECIAL)),)
+-export CFLAGS	+= -DOLDER_DISTRO_RELEASE
+-endif
 -
--#ifndef __SWAP_ON_OFF_H_
--#define __SWAP_ON_OFF_H_
--
--#include <linux/version.h>
--#define MAX_SWAPFILES 30
--
--#endif
+ top_srcdir		?= ../../../..
+ 
+ LTPLIBS = ltpswap
 -- 
 2.27.0
 
