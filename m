@@ -4,113 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FA9EC46CD4
-	for <ltp@archiver.kernel.org>; Wed, 27 Dec 2023 13:06:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA3BBC46CD2
+	for <ltp@archiver.kernel.org>; Wed, 27 Dec 2023 13:22:03 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id B91F23CEC28
-	for <ltp@archiver.kernel.org>; Wed, 27 Dec 2023 14:06:24 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 117D63CD7F6
+	for <ltp@archiver.kernel.org>; Wed, 27 Dec 2023 14:22:01 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-384))
+ key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 3DBAC3C890F
- for <ltp@lists.linux.it>; Wed, 27 Dec 2023 14:06:13 +0100 (CET)
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur05on2060e.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7d00::60e])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id F264D3C890F
+ for <ltp@lists.linux.it>; Wed, 27 Dec 2023 14:21:49 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 05C6B20025E
- for <ltp@lists.linux.it>; Wed, 27 Dec 2023 14:06:12 +0100 (CET)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S61DmNWXhEk+GLnsZSfAJZxjS9MXFfonA8hQuFm3Nz1YD8RPTSevHL+BagtK69wszM3WXswZ0Ves/mu5ofyA2Hbq45mz6AEFXHFm26tmcAVJdtf+KPaowJNU89JHSnx69CZw5wXhe0+hhqgfqKf/MbKUwilHVevmYFUNADiGeZ7EWJ6rkI8yTwa5VZkBMMlDnozUuMne3P8ssNAGCsOPfWgQnPmZVGBtDQBwYnm1SXAQY2gMMj0zH2xcmw8ZW5HRbzQT5svr7hpyMSZlQon3jgxGVUk2wDvMurTCZljU7CKUjhwonj2SfSk/+XYNkWUKOOliholZyq9eOQ0XqhBY0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xHMPm0VH1PwHv+l56HsHWeGe5FjNakhDxAYVnjMX6PU=;
- b=b8UiW1ebI4iVUwCw8L199M2v/i1YU5rMCBkeMfUlZNZZ2xcKQy7+GWoi9XexzIyvePGTryfNucZGMs3dj8WgSgPF4IMet/kH+4hf+GjBNdUMZh7OiA7b7D7yCE5akckMPJAo02+bLv2fzyA+uN9p6JX69yXmuoM0Jr21Nj2QkVNJI/gaw1/xtirZYVCl94nVi37t0J6dsLuztmWHmMUtWfaYqGu4ch7MMsC57bmQlTmqwXHxZwPDVvq6rgK8ftaN04ivRM16X6Gp3OATekJoRFrLXdGfCrfTm7Di/rNMENj+Ee3dFAn/8xoRyc4ZpbVZWdNpFGAce55YhumR9o54sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xHMPm0VH1PwHv+l56HsHWeGe5FjNakhDxAYVnjMX6PU=;
- b=QxIUoYRXC8FV012J4je6QL1XDJ8TXlWxy1tb82cJjmGe0uga11kkOd98xRr9J2rD5QHt6DqvfLk9+9ldamswfh1DuC/mOARBQVLoWaOklrPURK0QprjJfp6bHNQZTxYrpzCdPHL/DHSCtFig3XtJMHXP9MAsaFN2laVg5nyXkZ5tGPXBpD5qKK1I6eLHFCyqENAyPQIVrHv5kCy1wBRbinRu5Pu7/mWtjXK2aQHzIkKGnWiM8J8HHY7huPcUhhmWJGRiEdDl2EmkBsRcr6WFeHQL3BWx7tpEMa6sH/5Y1jgPf2phojW0vCfMSxVXF3/QmKbII9cxd4y38O0KJidVow==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8199.eurprd04.prod.outlook.com (2603:10a6:20b:3f6::21)
- by PAXPR04MB9154.eurprd04.prod.outlook.com (2603:10a6:102:22d::9)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.27; Wed, 27 Dec
- 2023 13:06:10 +0000
-Received: from AS8PR04MB8199.eurprd04.prod.outlook.com
- ([fe80::9d39:5718:5401:764d]) by AS8PR04MB8199.eurprd04.prod.outlook.com
- ([fe80::9d39:5718:5401:764d%5]) with mapi id 15.20.7135.019; Wed, 27 Dec 2023
- 13:06:10 +0000
-To: ltp@lists.linux.it
-Date: Wed, 27 Dec 2023 08:05:55 -0500
-Message-Id: <20231227130555.29035-1-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20231009112047.2359-1-wegao@suse.com>
-References: <20231009112047.2359-1-wegao@suse.com>
-X-ClientProxiedBy: TYCPR01CA0010.jpnprd01.prod.outlook.com (2603:1096:405::22)
- To AS8PR04MB8199.eurprd04.prod.outlook.com
- (2603:10a6:20b:3f6::21)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7391B140020E
+ for <ltp@lists.linux.it>; Wed, 27 Dec 2023 14:21:48 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 825AF1F8B6;
+ Wed, 27 Dec 2023 13:21:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1703683307;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+hA/KTPycy7bOL1dKwdW2A3LNQSGuEOr27ctCEi3mMw=;
+ b=F9IAuYy6eDbhmccriAvKTb6mW3LrdQfWqdU9ttGIhYxSgdvfSU/80LCkqL9cGwIAnv3ivA
+ hZvk1OGTddwoOK55vDBgeSOu1AnOghGOw7M0cXNsDb8bjEDmV7J2jPkY05WTvDNJvDAh0x
+ oa1KUxqBdSwzslo4PC4dBO7aP9tZyWY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1703683307;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+hA/KTPycy7bOL1dKwdW2A3LNQSGuEOr27ctCEi3mMw=;
+ b=RXVyWw/c+E3mJU6OY6r0HRpC79l0k16IIZ9R1OluYxpKSVgGMx8/Tb6hzfMSZzR79Esb2b
+ ARHg9RJGHFDPS6BA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1703683306;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+hA/KTPycy7bOL1dKwdW2A3LNQSGuEOr27ctCEi3mMw=;
+ b=nuiUD4FZvx5qMdW+E8YVLjyLrgjxNR3ubF59/hJOGwocux1qczLAIWVicVlaCjgRFMkB5C
+ OqViZrC2OI4Xs21zHkt+OmIfAEFDKCh+A+TUwND9TJOdhc+hI5R+CMlPqJflwrjdYS4Gqc
+ utFxMJJjWLZ/arhY9mN4w0Ann+0E5fE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1703683306;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+hA/KTPycy7bOL1dKwdW2A3LNQSGuEOr27ctCEi3mMw=;
+ b=We5Woh4Rh+n2mw1ahUtOgKn2lhXFLE/dKjwwntFS4yq9lMGswN8inj2Y5/V6V1nY7S55Zp
+ CP8Gzaa8TJOOsHDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A7EC13281;
+ Wed, 27 Dec 2023 13:21:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id xn2IFOokjGVWJQAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 27 Dec 2023 13:21:46 +0000
+Date: Wed, 27 Dec 2023 14:21:44 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Wei Gao <wegao@suse.com>
+Message-ID: <20231227132144.GA740736@pevik>
+References: <20231206105318.11832-1-wegao@suse.com>
+ <20231222100611.12661-1-wegao@suse.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8199:EE_|PAXPR04MB9154:EE_
-X-MS-Office365-Filtering-Correlation-Id: 85f39ab6-95a5-4a8f-b567-08dc06dc98a7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 20zeOOErOtov6mkVrX2Q90TrY9aMWOsnu8IecDbeQiAnPbuiIosv0txwvHfcGUh7WLRkqMXzTF1NLRioFCvE9ws3uOr3E0jKGLRZqTzS18lq2vU7CjdCEB+UeyUgs3PRchFgGdiw/9qCBxsA3/k5SeRDMBt08NydX3vzdsGIsU6l15jS40Ja9nJEturezJNH/pMTT1me1Sl9IpzkQNFSvOLA4ImcMS6oBOvrDw+UbEek0eOLgHJwMv2Y6sG5982KD8sK1sVo70LVDEl/vu8SEIGTIYQi3rTRiwWYeXoiFMPZHd+QL1KxXdPIoQmaz/Q7TVxqZWPPfuyvcGDFzyuCpBuvdwHl3CGteEZMpZb749qF69AzSIC9Edt8OTehixRkhDzJd/sP2P3P1Ha5A1vRS1+4vGW5Aoc/nPjaGy86ahmYPWpYrHJDDfG5P05pKMuNuN35okSFlP1BB4+JUjfU3eNszKYZFDgK74l1FwNctkXOO9i3lNLnW76BJk9T/ZQhjlrQ7r14FIXQMFWKwXpAnCy0EepQrk/x6/jeAo9jPKB348hJDvgfWqQ+tNH9+QXt
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:AS8PR04MB8199.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(136003)(346002)(376002)(396003)(366004)(39850400004)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(83380400001)(6512007)(6506007)(6486002)(38100700002)(66946007)(66476007)(6916009)(316002)(2616005)(66556008)(1076003)(6666004)(478600001)(86362001)(8936002)(8676002)(26005)(4326008)(2906002)(5660300002)(41300700001)(36756003);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YV0yNTx6I2/Ld2yPGGYDTaiNfCIsvCyGlR/v++NKWkXzu7hBxPyzAlSNFBhz?=
- =?us-ascii?Q?Or+X2dj6lQZj8BHv5tr9gd9SxprK2YwiCP61Rfer8VGeJcFvmt75+60B5RM6?=
- =?us-ascii?Q?jqdOK0Stk8PBY9vCprH4BfwmDJjhqA0IuVY4eL5/en1K7qHjO8Nf9Q4tqO+E?=
- =?us-ascii?Q?PIMVXKg4xzcHz7kc9BUg6MQA4zQTwDbcSWm4hFzJMYgzL0KXbo1QaV1l8Rsj?=
- =?us-ascii?Q?RjL6rCh4xX84MAb89Xb8T2dBbwqGXYotH4Zpz82ny+JQBl2AAh5/9UQPXIOl?=
- =?us-ascii?Q?8mKTAMRrKH3ETjEH6IxcYyvpoNhp4/vSnF9G/Lwkvvnv4cyXOneM7LGhwokn?=
- =?us-ascii?Q?kYdqbRJJF68ARDSs+I15WyJsh88tKXDbSy+JDNNPiSDPuOAdhLh1cEz26igP?=
- =?us-ascii?Q?XyGPKrz+ud5VMsOQM/TiUMNsWJThxl/lDKXcdm6ALbQE0knYL8HYSKuZqJhj?=
- =?us-ascii?Q?X5rkg3Q20DJj7aqvjMJkFptwpfOOZvfqPJzBVNBD4fap8mkOPD5DrJUK20r2?=
- =?us-ascii?Q?LbAfedegDqKYDxpi7WPa/Ia6f96f7Olat+BR6zFSpX6Cyo+QGx9p7CKvlXqN?=
- =?us-ascii?Q?TrrwlXdJ4eIr+xlX48YIBaoSYSgVFF9MBCzn68+eSZ3NPQJVDWLYJG52TZWG?=
- =?us-ascii?Q?eeJd3vffEE5dKot6dtnX+7GR474Fp1/P3fLvzu2enntFNRF39FJJ/0u0l/hJ?=
- =?us-ascii?Q?ddSdP6x0e6xsfHn3xh0nilN/XxZ5lKIxEOPK7dhZ8qwL9/FPengQ5M19u25S?=
- =?us-ascii?Q?NykgbTyQgIF46DyJ2VgPPSPga1y6dkOMEUFk1jkb+NifTzHOr78ixoA+KjmC?=
- =?us-ascii?Q?xLcgWlYlSHPwHedxaLt8qd2pvMuwvdgkacnVe1ydod1Vp9RaNBdS9KiTnprP?=
- =?us-ascii?Q?XAp5mVOclt1cdhetc8VaTyaSiPROTpmJ2NgraPPWznpZn+DjcoPqQvw1ebhH?=
- =?us-ascii?Q?4fNzAD/jK1ImsfPnIJK9mcj8Ojys9Ta8ZfaS8kN2nJvzrgS0Zm3o7Xy159d1?=
- =?us-ascii?Q?VzxRmnmfpr2YaFolE3s1YXzvX24IN/9aSn17oj3dCAZmuCLCPR8kfHGUWHFo?=
- =?us-ascii?Q?bvqJH1CScq+LT42gCmRhp9fhKgpFGnx8Lcl3ZhSNQyAPupcewig+y+qosx/O?=
- =?us-ascii?Q?Jys1wTy3e75Df2q/HWxWUM5rNf8kTA4bTOrKAKhF+PFieNfSwat6qeI5ilp3?=
- =?us-ascii?Q?dJn4xGKSngyuxe0rG2ComWaWxzRJtCbhX/5e4puP8wb8/txitvrdKQau6KhA?=
- =?us-ascii?Q?0b6xKcLnWojpsxdGOp4ep+dA0c/byY+4VQfvenxkcwyyCbrLxly/oTh+ZhsO?=
- =?us-ascii?Q?TfAdFmxh16jGVEEhwpgtetd7U85SKFJb7TcjV2K8fqw0NLyOvhosSJfXFU0u?=
- =?us-ascii?Q?591QcFPZVECQ/Sb35InCpTYtqCxvEciiZuVYGTqbXLSUCVXPx9oY1vLH2twT?=
- =?us-ascii?Q?F5tu6MgdpJJ2z9jGRnXnhCnuM2iAuKgOuqW6IJCE7tBSIZQa47yMa/Jyj5en?=
- =?us-ascii?Q?ZG/pziR4CpFuCJBMu3n/XSk+5Px86M6RQsaTYQegBp/cy1iAv7oUlJ6wi57k?=
- =?us-ascii?Q?vMK9YwEhMNlhVSOkeRA=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85f39ab6-95a5-4a8f-b567-08dc06dc98a7
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8199.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2023 13:06:10.4938 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Awh2Z0JWYdJjxepH3abW2feP8V4CVkW7WzEIwUJu73YFkf2j1L8BvV/AETavP9km
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9154
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <20231222100611.12661-1-wegao@suse.com>
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Bar: +++++
+X-Spamd-Result: default: False [5.59 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
+ TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
+ RCVD_COUNT_THREE(0.00)[3]; BAYES_SPAM(5.10)[100.00%];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
+ MX_GOOD(-0.01)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[testinfo.pl:url,suse.cz:dkim,suse.cz:email,suse.com:email,googlesource.com:url];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[];
+ RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nuiUD4FZ;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=We5Woh4R
+X-Rspamd-Queue-Id: 825AF1F8B6
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] open15: allow restricted O_CREAT of FIFOs and
- regular files
+Subject: Re: [LTP] [PATCH v2] getcwd01: Implement .test_variants
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,192 +117,264 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Cc: s.mesoraca16@gmail.com
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Fix: #574
+Hi Wei,
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- runtest/syscalls                          |   1 +
- testcases/kernel/syscalls/open/.gitignore |   1 +
- testcases/kernel/syscalls/open/open15.c   | 138 ++++++++++++++++++++++
- 3 files changed, 140 insertions(+)
- create mode 100644 testcases/kernel/syscalls/open/open15.c
+> Signed-off-by: Wei Gao <wegao@suse.com>
+> ---
+>  testcases/kernel/syscalls/getcwd/getcwd.h   | 80 +++++++++++++++++++++
+>  testcases/kernel/syscalls/getcwd/getcwd01.c | 35 ++++++---
+>  2 files changed, 105 insertions(+), 10 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/getcwd/getcwd.h
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 4f1ee1f34..4152e1e5f 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -935,6 +935,7 @@ open11 open11
- open12 open12
- open13 open13
- open14 open14
-+open15 open15
- 
- openat01 openat01
- openat02 openat02
-diff --git a/testcases/kernel/syscalls/open/.gitignore b/testcases/kernel/syscalls/open/.gitignore
-index 001d874d6..af5997572 100644
---- a/testcases/kernel/syscalls/open/.gitignore
-+++ b/testcases/kernel/syscalls/open/.gitignore
-@@ -12,3 +12,4 @@
- /open12_child
- /open13
- /open14
-+/open15
-diff --git a/testcases/kernel/syscalls/open/open15.c b/testcases/kernel/syscalls/open/open15.c
-new file mode 100644
-index 000000000..4feb1bb08
---- /dev/null
-+++ b/testcases/kernel/syscalls/open/open15.c
-@@ -0,0 +1,138 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2023 Wei Gao <wegao@suse.com>
-+ */
-+
-+/*\
-+ * [Description]
-+ *
-+ * Verify disallows open of FIFOs or regular files not owned by the user in world
-+ * writable sticky directories
-+ *
-+ * commit 30aba6656f61ed44cba445a3c0d38b296fa9e8f5
-+ * Author: Salvatore Mesoraca <s.mesoraca16@gmail.com>
-+ * Date:   Thu Aug 23 17:00:35 2018 -0700
-+ *     namei: allow restricted O_CREAT of FIFOs and regular files
-+ */
-+
-+#include <pwd.h>
-+#include <stdlib.h>
-+#include "tst_test.h"
-+#include "tst_safe_file_at.h"
-+
-+#define  FILENAME  "setuid04_testfile"
-+#define  DIR "ltp_tmp_check1"
-+#define  TEST_FILE "test_file_1"
-+#define  TEST_FIFO "test_fifo_1"
-+#define  LTP_USR_UID1 1000
-+#define  LTP_USR_UID2 1001
-+#define  CONCAT(dir, filename) dir "/" filename
-+#define  PROTECTED_REGULAR "/proc/sys/fs/protected_regular"
-+#define  PROTECTED_FIFOS "/proc/sys/fs/protected_fifos"
-+
-+static int dir_fd;
-+
-+static void run(void)
-+{
-+	int pid;
-+
-+	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%d", 0);
-+	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%d", 0);
-+
-+	pid = SAFE_FORK();
-+	if (pid == 0) {
-+		SAFE_SETUID(LTP_USR_UID1);
-+
-+		int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
-+
-+		SAFE_CLOSE(fd);
-+		fd = SAFE_MKFIFO(CONCAT(DIR, TEST_FIFO), 0777);
-+		SAFE_CLOSE(fd);
-+
-+		exit(0);
-+	}
-+
-+	tst_reap_children();
-+
-+	pid = SAFE_FORK();
-+
-+	if (pid == 0) {
-+		SAFE_SETUID(LTP_USR_UID2);
-+
-+		int fd = TST_EXP_FD(openat(dir_fd, TEST_FILE, O_CREAT | O_RDWR, 0777));
-+
-+		tst_res(TPASS, "check protect_regural == 0 pass");
-+		SAFE_CLOSE(fd);
-+
-+		fd = SAFE_OPEN(CONCAT(DIR, TEST_FIFO), O_RDWR | O_CREAT);
-+		tst_res(TPASS, "check protect_fifos == 0 pass");
-+		SAFE_CLOSE(fd);
-+
-+		exit(0);
-+	}
-+
-+	tst_reap_children();
-+
-+	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%d", 1);
-+	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%d", 1);
-+
-+	pid = SAFE_FORK();
-+
-+	if (pid == 0) {
-+		SAFE_SETUID(LTP_USR_UID2);
-+
-+		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
-+
-+		TST_EXP_FAIL(open(CONCAT(DIR, TEST_FIFO), O_RDWR | O_CREAT, 0777), EACCES);
-+
-+		exit(0);
-+	}
-+
-+	tst_reap_children();
-+
-+	SAFE_FILE_PRINTF(PROTECTED_REGULAR, "%d", 2);
-+	SAFE_FILE_PRINTF(PROTECTED_FIFOS, "%d", 2);
-+	SAFE_CHMOD(DIR, 0020 | S_ISVTX);
-+
-+	pid = SAFE_FORK();
-+
-+	if (pid == 0) {
-+		SAFE_SETUID(LTP_USR_UID2);
-+
-+		TST_EXP_FAIL(openat(dir_fd, TEST_FILE, O_RDWR | O_CREAT, 0777), EACCES);
-+
-+		TST_EXP_FAIL(open(CONCAT(DIR, TEST_FIFO), O_RDWR | O_CREAT, 0777), EACCES);
-+
-+		exit(0);
-+	}
-+
-+	tst_reap_children();
-+}
-+
-+static void setup(void)
-+{
-+	umask(0);
-+	SAFE_MKDIR(DIR, 0777 | S_ISVTX);
-+
-+	dir_fd = SAFE_OPEN(DIR, O_DIRECTORY);
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_CLOSE(dir_fd);
-+}
-+
-+static struct tst_test test = {
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+	.test_all = run,
-+	.needs_tmpdir = 1,
-+	.forks_child = 1,
-+	.save_restore = (const struct tst_path_val[]) {
-+		{PROTECTED_REGULAR, NULL, TST_SR_TCONF},
-+		{PROTECTED_FIFOS, NULL, TST_SR_TCONF},
-+		{}
-+	},
-+	.needs_checkpoints = 1,
-+};
--- 
-2.35.3
+> diff --git a/testcases/kernel/syscalls/getcwd/getcwd.h b/testcases/kernel/syscalls/getcwd/getcwd.h
+> new file mode 100644
+> index 000000000..91f229904
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/getcwd/getcwd.h
+First, I don't think it's a good idea to create getcwd.h, when code is used only
+in single source. It should be in getcwd01.c. And looking into other getcwd0*.c
+sources, I would use test_variants only in this source.
 
+> @@ -0,0 +1,80 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later
+> + *
+> + * Copyright (c) International Business Machines  Corp., 2001
+> + * Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>
+Why these two copyrights?
+
+> + *
+> + * This program is free software;  you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + * the GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program;  if not, write to the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+You know that SPDX is used to replaced this verbose license text, right?
+
+> + */
+> +
+> +#ifndef GETCWD_H
+> +#define GETCWD_H
+We usually add trailing __ to avoid theoretical clash with third party headers.
+(GETCWD_H__).
+
+> +#include <stdint.h>
+> +#include "config.h"
+> +#include "lapi/syscalls.h"
+> +
+> +static inline void
+> +check_getcwd(char *buf, size_t size, int exp_err)
+This should be on single line. If you copy pasted it from something, that was
+probably where signature was much longer than 80 char, this is even less than 80
+chars.
+
+> +{
+> +	char *res;
+> +
+> +	errno = 0;
+> +	res = getcwd(buf, size);
+Why so complicated code? Why not just use TST_EXP_FAIL2() as you do in
+tst_getcwd()? That would be way fewer lines of code. There is no problem to use
+TST_EXP_FAIL2() with libc syscall wrappers.
+
+> +	TST_ERR = errno;
+> +	if (res) {
+> +		tst_res(TFAIL, "getcwd() succeeded unexpectedly");
+> +		return;
+> +	}
+> +
+> +	if (TST_ERR != exp_err) {
+> +		tst_res(TFAIL | TTERRNO, "getcwd() failed unexpectedly, expected %s",
+> +				tst_strerrno(exp_err));
+> +		return;
+> +	}
+> +
+> +	tst_res(TPASS | TTERRNO, "getcwd() failed as expected");
+> +}
+> +
+> +static inline void
+> +tst_getcwd(char *buf, size_t size, int exp_err, int exp_err2)
+And here as well: this should be on single line.
+> +{
+> +	switch (tst_variant) {
+Please, do not use switch for 2 variants, if is much readable in this case.
+> +	case 0:
+> +		TST_EXP_FAIL2(tst_syscall(__NR_getcwd, buf, size), exp_err);
+> +		break;
+> +	case 1:
+> +#ifdef __GLIBC__
+
+#1084 [1] reported problem on MUSL only. Your original patch [2] to fix #1084
+skipped only 2 of tests, which used NULL buffer. Why now skip everything? Please
+skip only these two and put comment about musl and #1084 to be obvious why you
+do that. You could also add note to the git commit message. Not documenting this
+will raise questions in the future.
+
+Also, looking that into bionic [3], it's compatible with glibc and uclibc{,-ng}
+(I'll verify it with Edward Liaw from Google), thus I would check like in
+run(unsigned int n):
+
+static void run(unsigned int n)
+{
+	struct t_case *tc = &tcases[n];
+
+	/* https://github.com/linux-test-project/ltp/issues/1084 */
+#if !defined(__GLIBC__) && !defined(__ANDROID__)
+	if (tst_variant && !tc->buf) {
+		tst_res(TCONF, "NULL buffer test skipped on MUSL due different implementation");
+		return;
+	}
+#endif
+
+	tst_getcwd(tc->buf, tc->size, tc->exp_err, tc->exp_err2);
+}
+
+Or we could skip NULL buffer test on all libc.
+
+[1] https://github.com/linux-test-project/ltp/issues/1084
+[2] https://lore.kernel.org/ltp/20230928010808.15862-1-wegao@suse.com/
+[3] https://android.googlesource.com/platform/bionic.git/+/refs/tags/android-14.0.0_r18/libc/bionic/getcwd.cpp
+
+> +		check_getcwd(buf, size, exp_err2);
+> +#endif
+> +		break;
+> +	}
+> +}
+> +
+> +static inline void
+> +getcwd_info(void)
+This should be on single line.
+> +{
+> +	switch (tst_variant) {
+> +	case 0:
+> +		tst_res(TINFO, "Testing getcwd with raw syscall");
+> +		break;
+> +	case 1:
+> +		tst_res(TINFO, "Testing getcwd with wrap syscall");
+> +		break;
+> +	}
+Instead of this, I would add direct TINFO messages to the setup function in getcwd01.c.
+Again, once this is used in 2 sources, it makes sense to have custom function to
+it, otherwise not.
+And we should rethink, how to simplify using test_variants on these simple
+cases (I did some proposal in the past, I should get back to it; the problem is
+with that some tests use clock_adjtime.h, which is a bit complicate than this
+raw syscall vs. libc wrapper simple use case).
+
+> +}
+> +
+> +#define TEST_VARIANTS 2
+
+Instead of this define I would just put 2 into .test_variants =
+(again, only used in single file).
+
+> +
+> +#endif /* GETCWD_H */
+> diff --git a/testcases/kernel/syscalls/getcwd/getcwd01.c b/testcases/kernel/syscalls/getcwd/getcwd01.c
+> index 218bf4ef2..6decb961f 100644
+> --- a/testcases/kernel/syscalls/getcwd/getcwd01.c
+> +++ b/testcases/kernel/syscalls/getcwd/getcwd01.c
+> @@ -13,18 +13,26 @@
+>   * 5) getcwd(2) fails if buf points to NULL and the size is set to 1.
+>   *
+>   * Expected Result:
+> + * linux syscall
+Well, I told you several times, that list requires separating by blank line
+otherwise it breaks formatting. Could you please add it and check generated
+docparse before sending a patch:
+cd metadata && make && chromium ../docparse/*.html
+We should check for it in metaparse.c or in testinfo.pl.
+>   * 1) getcwd(2) should return NULL and set errno to EFAULT.
+>   * 2) getcwd(2) should return NULL and set errno to EFAULT.
+>   * 3) getcwd(2) should return NULL and set errno to ERANGE.
+>   * 4) getcwd(2) should return NULL and set errno to ERANGE.
+>   * 5) getcwd(2) should return NULL and set errno to ERANGE.
+> + *
+> + * glibc
+FYI #ifdef __GLIBC__ means glibc and uclibc{,-ng}.
+Also, again missing blank line before list.
+> + * 1) getcwd(2) should return NULL and set errno to EFAULT.
+> + * 2) getcwd(2) should return NULL and set errno to ENOMEM.
+> + * 3) getcwd(2) should return NULL and set errno to EINVAL.
+> + * 4) getcwd(2) should return NULL and set errno to ERANGE.
+> + * 5) getcwd(2) should return NULL and set errno to ERANGE.
+>   */
+
+>  #include <errno.h>
+>  #include <unistd.h>
+>  #include <limits.h>
+>  #include "tst_test.h"
+> -#include "lapi/syscalls.h"
+> +#include "getcwd.h"
+
+>  static char buffer[5];
+
+> @@ -32,23 +40,30 @@ static struct t_case {
+>  	char *buf;
+>  	size_t size;
+>  	int exp_err;
+> +	int exp_err2;
+Maybe exp_err_kernel and exp_err_libc would actually describe the purpose.
+
+>  } tcases[] = {
+> -	{(void *)-1, PATH_MAX, EFAULT},
+> -	{NULL, (size_t)-1, EFAULT},
+> -	{buffer, 0, ERANGE},
+> -	{buffer, 1, ERANGE},
+> -	{NULL, 1, ERANGE}
+> +	{(void *)-1, PATH_MAX, EFAULT, EFAULT},
+> +	{NULL, (size_t)-1, EFAULT, ENOMEM},
+> +	{buffer, 0, ERANGE, EINVAL},
+> +	{buffer, 1, ERANGE, ERANGE},
+> +	{NULL, 1, ERANGE, ERANGE},
+>  };
+
+> -
+> -static void verify_getcwd(unsigned int n)
+> +static void run(unsigned int n)
+nit: this can stay verify_getcwd().
+>  {
+>  	struct t_case *tc = &tcases[n];
+
+> -	TST_EXP_FAIL2(tst_syscall(__NR_getcwd, tc->buf, tc->size), tc->exp_err);
+> +	tst_getcwd(tc->buf, tc->size, tc->exp_err, tc->exp_err2);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	getcwd_info();
+There is no point to use wrappers like this (I guess I have told you on
+different patch). We would specify .setup = getcwd_info, in the struct tst_test.
+But as I wrote above, better would be to move content of getcwd_info() to setup
+function.
+
+>  }
+
+>  static struct tst_test test = {
+> +	.setup = setup,
+>  	.tcnt = ARRAY_SIZE(tcases),
+> -	.test = verify_getcwd
+> +	.test = run,
+> +	.test_variants = TEST_VARIANTS,
+	.test_variants = 2,
+>  };
+
+Kind regards,
+Petr
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
