@@ -4,108 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA3BBC46CD2
-	for <ltp@archiver.kernel.org>; Wed, 27 Dec 2023 13:22:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA49CC46CD2
+	for <ltp@archiver.kernel.org>; Wed, 27 Dec 2023 14:26:23 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 117D63CD7F6
-	for <ltp@archiver.kernel.org>; Wed, 27 Dec 2023 14:22:01 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 899533CEC2C
+	for <ltp@archiver.kernel.org>; Wed, 27 Dec 2023 15:26:20 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id F264D3C890F
- for <ltp@lists.linux.it>; Wed, 27 Dec 2023 14:21:49 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+ by picard.linux.it (Postfix) with ESMTPS id 74A343C94EA
+ for <ltp@lists.linux.it>; Wed, 27 Dec 2023 15:26:09 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 7391B140020E
- for <ltp@lists.linux.it>; Wed, 27 Dec 2023 14:21:48 +0100 (CET)
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 8749B200973
+ for <ltp@lists.linux.it>; Wed, 27 Dec 2023 15:26:07 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 825AF1F8B6;
- Wed, 27 Dec 2023 13:21:46 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 551C321EAA;
+ Wed, 27 Dec 2023 14:26:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1703683307;
+ t=1703687166;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+hA/KTPycy7bOL1dKwdW2A3LNQSGuEOr27ctCEi3mMw=;
- b=F9IAuYy6eDbhmccriAvKTb6mW3LrdQfWqdU9ttGIhYxSgdvfSU/80LCkqL9cGwIAnv3ivA
- hZvk1OGTddwoOK55vDBgeSOu1AnOghGOw7M0cXNsDb8bjEDmV7J2jPkY05WTvDNJvDAh0x
- oa1KUxqBdSwzslo4PC4dBO7aP9tZyWY=
+ bh=u4PTrHaPxOlDYApN0fu/U6KMaQvMsYhM1VuUQP5N37w=;
+ b=FGHw7BjjfMouwV0o4ki9junmkQzv8cIK6DRW3223olxoib6+Exag1J0jtvZYOEJa7CDYkR
+ goSwxzncgxT6UfDj1HKenHbws/B7ukNDyCnuwdnAiE41mQ1NhVzYTaEPjJTLnOL/yeQsmF
+ 95Jf2wsMbHXEVSSQx9alkEaX45CqeHo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1703683307;
+ s=susede2_ed25519; t=1703687166;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+hA/KTPycy7bOL1dKwdW2A3LNQSGuEOr27ctCEi3mMw=;
- b=RXVyWw/c+E3mJU6OY6r0HRpC79l0k16IIZ9R1OluYxpKSVgGMx8/Tb6hzfMSZzR79Esb2b
- ARHg9RJGHFDPS6BA==
+ bh=u4PTrHaPxOlDYApN0fu/U6KMaQvMsYhM1VuUQP5N37w=;
+ b=0V0cykELEvZF2ZLaOHNMX72e+ZhrztR5Z2gzH1rclc9Tlkh0/G/SwZw0/7AzGXUGxF5KeM
+ ifvovC2qALvmEJCg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1703683306;
+ t=1703687166;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+hA/KTPycy7bOL1dKwdW2A3LNQSGuEOr27ctCEi3mMw=;
- b=nuiUD4FZvx5qMdW+E8YVLjyLrgjxNR3ubF59/hJOGwocux1qczLAIWVicVlaCjgRFMkB5C
- OqViZrC2OI4Xs21zHkt+OmIfAEFDKCh+A+TUwND9TJOdhc+hI5R+CMlPqJflwrjdYS4Gqc
- utFxMJJjWLZ/arhY9mN4w0Ann+0E5fE=
+ bh=u4PTrHaPxOlDYApN0fu/U6KMaQvMsYhM1VuUQP5N37w=;
+ b=FGHw7BjjfMouwV0o4ki9junmkQzv8cIK6DRW3223olxoib6+Exag1J0jtvZYOEJa7CDYkR
+ goSwxzncgxT6UfDj1HKenHbws/B7ukNDyCnuwdnAiE41mQ1NhVzYTaEPjJTLnOL/yeQsmF
+ 95Jf2wsMbHXEVSSQx9alkEaX45CqeHo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1703683306;
+ s=susede2_ed25519; t=1703687166;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=+hA/KTPycy7bOL1dKwdW2A3LNQSGuEOr27ctCEi3mMw=;
- b=We5Woh4Rh+n2mw1ahUtOgKn2lhXFLE/dKjwwntFS4yq9lMGswN8inj2Y5/V6V1nY7S55Zp
- CP8Gzaa8TJOOsHDA==
+ bh=u4PTrHaPxOlDYApN0fu/U6KMaQvMsYhM1VuUQP5N37w=;
+ b=0V0cykELEvZF2ZLaOHNMX72e+ZhrztR5Z2gzH1rclc9Tlkh0/G/SwZw0/7AzGXUGxF5KeM
+ ifvovC2qALvmEJCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A7EC13281;
- Wed, 27 Dec 2023 13:21:46 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 01A0313635;
+ Wed, 27 Dec 2023 14:26:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id xn2IFOokjGVWJQAAD6G6ig
- (envelope-from <pvorel@suse.cz>); Wed, 27 Dec 2023 13:21:46 +0000
-Date: Wed, 27 Dec 2023 14:21:44 +0100
+ by imap1.dmz-prg2.suse.org with ESMTPSA id Ohk8OP0zjGXdLwAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 27 Dec 2023 14:26:05 +0000
+Date: Wed, 27 Dec 2023 15:26:00 +0100
 From: Petr Vorel <pvorel@suse.cz>
 To: Wei Gao <wegao@suse.com>
-Message-ID: <20231227132144.GA740736@pevik>
-References: <20231206105318.11832-1-wegao@suse.com>
- <20231222100611.12661-1-wegao@suse.com>
+Message-ID: <20231227142600.GA760315@pevik>
+References: <20230913101542.18550-1-wegao@suse.com>
+ <20231227000430.30224-1-wegao@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231222100611.12661-1-wegao@suse.com>
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Bar: +++++
-X-Spamd-Result: default: False [5.59 / 50.00]; ARC_NA(0.00)[];
- HAS_REPLYTO(0.30)[pvorel@suse.cz];
+In-Reply-To: <20231227000430.30224-1-wegao@suse.com>
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FGHw7Bjj;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=0V0cykEL
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.71 / 50.00];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; RCVD_VIA_SMTP_AUTH(0.00)[];
  R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
  REPLYTO_EQ_FROM(0.00)[]; FROM_HAS_DN(0.00)[];
  TO_DN_SOME(0.00)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
- MIME_GOOD(-0.10)[text/plain]; RCVD_VIA_SMTP_AUTH(0.00)[];
- RCVD_COUNT_THREE(0.00)[3]; BAYES_SPAM(5.10)[100.00%];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; MIME_GOOD(-0.10)[text/plain];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ ARC_NA(0.00)[]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ RCVD_COUNT_THREE(0.00)[3];
  DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
- DKIM_TRACE(0.00)[suse.cz:+]; RCPT_COUNT_TWO(0.00)[2];
- MX_GOOD(-0.01)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[testinfo.pl:url,suse.cz:dkim,suse.cz:email,suse.com:email,googlesource.com:url];
+ MX_GOOD(-0.01)[]; RCPT_COUNT_TWO(0.00)[2];
+ DKIM_TRACE(0.00)[suse.cz:+];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
  FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
  MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
- RCVD_TLS_ALL(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nuiUD4FZ;
- dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=We5Woh4R
-X-Rspamd-Queue-Id: 825AF1F8B6
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Queue-Id: 551C321EAA
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH v2] getcwd01: Implement .test_variants
+Subject: Re: [LTP] [PATCH v2] move_mount03: check allow to mount beneath top
+ mount
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -126,255 +125,185 @@ Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
 Hi Wei,
 
-> Signed-off-by: Wei Gao <wegao@suse.com>
-> ---
->  testcases/kernel/syscalls/getcwd/getcwd.h   | 80 +++++++++++++++++++++
->  testcases/kernel/syscalls/getcwd/getcwd01.c | 35 ++++++---
->  2 files changed, 105 insertions(+), 10 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/getcwd/getcwd.h
+I suppose there was no v1, right?
 
-> diff --git a/testcases/kernel/syscalls/getcwd/getcwd.h b/testcases/kernel/syscalls/getcwd/getcwd.h
+-i2 fails, please fix it.
+
+# move_mount03 -i2
+move_mount03.c:79: TINFO: Mounting none to /tmp/LTP_movcovMfK/LTP_DIR_A fstyp=tmpfs flags=0
+move_mount03.c:80: TINFO: Mounting none to /tmp/LTP_movcovMfK/LTP_DIR_B fstyp=tmpfs flags=0
+move_mount03.c:92: TPASS: move_mount(fda, "", fdb, "", MOVE_MOUNT_BENEATH | MOVE_MOUNT_F_EMPTY_PATH | MOVE_MOUNT_T_EMPTY_PATH) passed
+move_mount03.c:98: TPASS: access(DIRB "/B", F_OK) passed
+move_mount03.c:99: TINFO: Umounting /tmp/LTP_movcovMfK/LTP_DIR_B
+move_mount03.c:100: TPASS: access(DIRB "/A", F_OK) passed
+move_mount03.c:102: TINFO: Umounting /tmp/LTP_movcovMfK/LTP_DIR_B
+move_mount03.c:103: TINFO: Umounting /tmp/LTP_movcovMfK/LTP_DIR_A
+move_mount03.c:77: TBROK: mkdir(LTP_DIR_A, 0777) failed: EEXIST (17)
+
+NOTE: you can speed up the review process, if you check list of common errors
+before sending patch to ML 
+https://github.com/linux-test-project/ltp/wiki/Maintainer-Patch-Review-Checklist#how-to-find-clear-errors
+
+make check-move_mount03
+CHECK testcases/kernel/syscalls/move_mount/move_mount03.c
+move_mount03.c:92:9: error: undefined identifier 'MOVE_MOUNT_BENEATH'
+
+I see false positive from checkpatch.pl, it would be interesting to check if it
+can be fixed.
+
+> diff --git a/testcases/kernel/syscalls/move_mount/move_mount03.c b/testcases/kernel/syscalls/move_mount/move_mount03.c
 > new file mode 100644
-> index 000000000..91f229904
+> index 000000000..dadb19178
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/getcwd/getcwd.h
-First, I don't think it's a good idea to create getcwd.h, when code is used only
-in single source. It should be in getcwd01.c. And looking into other getcwd0*.c
-sources, I would use test_variants only in this source.
+> +++ b/testcases/kernel/syscalls/move_mount/move_mount03.c
+> @@ -0,0 +1,111 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2023 Christian Brauner <brauner@kernel.org>
+> + * Copyright (c) 2023 Wei Gao <wegao@suse.com>
+> + */
+> +
+> +/*\
+> + * [Description]
+> + *
+> + * Verify allow to mount beneath top mount base following commit:
+This will be very badly formatted in docs.
+> + * commit 6ac392815628f317fcfdca1a39df00b9cc4ebc8b
+> + * Author: Christian Brauner <brauner@kernel.org>
+> + * Date:   Wed May 3 13:18:42 2023 +0200
+> + *     fs: allow to mount beneath top mount
+> + *
+> + * Above commit has heavily commented but i found following commit
+> + * contain simple summary of this feature for easy understanding:
+> + *
+> + * commit c0a572d9d32fe1e95672f24e860776dba0750a38
+> + * Author: Linus Torvalds <torvalds@linux-foundation.org>
+> + *       TL;DR:
+> + *
 
-> @@ -0,0 +1,80 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later
-> + *
-> + * Copyright (c) International Business Machines  Corp., 2001
-> + * Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>
-Why these two copyrights?
+Please generate metadata and have look at result. The output below looks ugly.
 
+Either you find a way to preformat it as generated output (put extra space after
+* in the comment - equivalent of <pre>... </pre> HTML output) or put it into /*
+* */, so that it's not in docs (good for some info useful in C source but more
+related to the test implementation so that it does not have to be in generated docs).
+
+> + *         > mount -t ext4 /dev/sda /mnt
+> + *           |
+> + *           --/mnt    /dev/sda    ext4
 > + *
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
+> + *         > mount --beneath -t xfs /dev/sdb /mnt
+> + *           |
+> + *           --/mnt    /dev/sdb    xfs
+> + *             --/mnt  /dev/sda    ext4
 > + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
+> + *         > umount /mnt
+> + *           |
+> + *           --/mnt    /dev/sdb    xfs
 > + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program;  if not, write to the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-You know that SPDX is used to replaced this verbose license text, right?
+> + * So base above scenario design following scenario for LTP check:
+> + *
+> + *         > mount -t tmpfs /DIRA
+> + *           |
+> + *           --/DIRA(create A file within DIRA)
+> + *
+> + *         > mount -t tmpfs /DIRB
+> + *           |
+> + *           --/DIRA(create B file within DIRB)
+> + *
+> + *         > move_mount --beneath /DIRA /DIRB
+> + *           |
+> + *           --/mnt    /DIRA /DIRB
+> + *             --/mnt  /DIRB
+> + *
+> + *         If you check content of /DIRB, you can see file B
+> + *
+> + *         > umount /DIRB
+> + *           |
+> + *           --/mnt    /DIRA /DIRB
+> + *         Check content of /DIRB, you can see file A exist since
+> + *         current /DIRB mount source is already become /DIRA
+> + *
+> + * More detail can be found in following link:
+> + * Link: https://lwn.net/Articles/930591/
+> + * Link: https://github.com/brauner/move-mount-beneath
+Link is bogus (we use it only as tag in the git commit message, not in docs).
+
+ * See also:
+ * https://lwn.net/Articles/930591/
+ * https://github.com/brauner/move-mount-beneath
+ */
 
 > + */
 > +
-> +#ifndef GETCWD_H
-> +#define GETCWD_H
-We usually add trailing __ to avoid theoretical clash with third party headers.
-(GETCWD_H__).
-
-> +#include <stdint.h>
-> +#include "config.h"
-> +#include "lapi/syscalls.h"
+> +#include <stdio.h>
 > +
-> +static inline void
-> +check_getcwd(char *buf, size_t size, int exp_err)
-This should be on single line. If you copy pasted it from something, that was
-probably where signature was much longer than 80 char, this is even less than 80
-chars.
-
+> +#include "tst_test.h"
+> +#include "lapi/fsmount.h"
+> +#include "lapi/sched.h"
+> +
+> +#define DIRA "LTP_DIR_A"
+> +#define DIRB "LTP_DIR_B"
+> +
+> +static void run(void)
 > +{
-> +	char *res;
+> +	int fda, fdb;
 > +
-> +	errno = 0;
-> +	res = getcwd(buf, size);
-Why so complicated code? Why not just use TST_EXP_FAIL2() as you do in
-tst_getcwd()? That would be way fewer lines of code. There is no problem to use
-TST_EXP_FAIL2() with libc syscall wrappers.
-
-> +	TST_ERR = errno;
-> +	if (res) {
-> +		tst_res(TFAIL, "getcwd() succeeded unexpectedly");
+> +	SAFE_MKDIR(DIRA, 0777);
+> +	SAFE_MKDIR(DIRB, 0777);
+> +	SAFE_MOUNT("none", DIRA, "tmpfs", 0, 0);
+> +	SAFE_MOUNT("none", DIRB, "tmpfs", 0, 0);
+> +	SAFE_TOUCH(DIRA "/A", 0, NULL);
+> +	SAFE_TOUCH(DIRB "/B", 0, NULL);
+Maybe whole code in above could be in setup() function, it can be created only
+once even we run test more times with -iN, right? Setup function is for test
+speedup (imagine somebody run test with -i10000, why to create files all the
+time?
+> +
+> +	TEST(fda = open_tree(AT_FDCWD, DIRA, OPEN_TREE_CLOEXEC | OPEN_TREE_CLONE));
+> +
+> +	if (fda == -1) {
+> +		tst_res(TFAIL | TTERRNO, "open_tree() failed");
 > +		return;
 > +	}
-> +
-> +	if (TST_ERR != exp_err) {
-> +		tst_res(TFAIL | TTERRNO, "getcwd() failed unexpectedly, expected %s",
-> +				tst_strerrno(exp_err));
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS | TTERRNO, "getcwd() failed as expected");
-> +}
-> +
-> +static inline void
-> +tst_getcwd(char *buf, size_t size, int exp_err, int exp_err2)
-And here as well: this should be on single line.
-> +{
-> +	switch (tst_variant) {
-Please, do not use switch for 2 variants, if is much readable in this case.
-> +	case 0:
-> +		TST_EXP_FAIL2(tst_syscall(__NR_getcwd, buf, size), exp_err);
-> +		break;
-> +	case 1:
-> +#ifdef __GLIBC__
+Maybe this should also be in the setup function. also not using TEST() for it?
 
-#1084 [1] reported problem on MUSL only. Your original patch [2] to fix #1084
-skipped only 2 of tests, which used NULL buffer. Why now skip everything? Please
-skip only these two and put comment about musl and #1084 to be obvious why you
-do that. You could also add note to the git commit message. Not documenting this
-will raise questions in the future.
 
-Also, looking that into bionic [3], it's compatible with glibc and uclibc{,-ng}
-(I'll verify it with Edward Liaw from Google), thus I would check like in
-run(unsigned int n):
-
-static void run(unsigned int n)
-{
-	struct t_case *tc = &tcases[n];
-
-	/* https://github.com/linux-test-project/ltp/issues/1084 */
-#if !defined(__GLIBC__) && !defined(__ANDROID__)
-	if (tst_variant && !tc->buf) {
-		tst_res(TCONF, "NULL buffer test skipped on MUSL due different implementation");
-		return;
-	}
-#endif
-
-	tst_getcwd(tc->buf, tc->size, tc->exp_err, tc->exp_err2);
-}
-
-Or we could skip NULL buffer test on all libc.
-
-[1] https://github.com/linux-test-project/ltp/issues/1084
-[2] https://lore.kernel.org/ltp/20230928010808.15862-1-wegao@suse.com/
-[3] https://android.googlesource.com/platform/bionic.git/+/refs/tags/android-14.0.0_r18/libc/bionic/getcwd.cpp
-
-> +		check_getcwd(buf, size, exp_err2);
-> +#endif
-> +		break;
-> +	}
-> +}
-> +
-> +static inline void
-> +getcwd_info(void)
-This should be on single line.
-> +{
-> +	switch (tst_variant) {
-> +	case 0:
-> +		tst_res(TINFO, "Testing getcwd with raw syscall");
-> +		break;
-> +	case 1:
-> +		tst_res(TINFO, "Testing getcwd with wrap syscall");
-> +		break;
-> +	}
-Instead of this, I would add direct TINFO messages to the setup function in getcwd01.c.
-Again, once this is used in 2 sources, it makes sense to have custom function to
-it, otherwise not.
-And we should rethink, how to simplify using test_variants on these simple
-cases (I did some proposal in the past, I should get back to it; the problem is
-with that some tests use clock_adjtime.h, which is a bit complicate than this
-raw syscall vs. libc wrapper simple use case).
-
-> +}
-> +
-> +#define TEST_VARIANTS 2
-
-Instead of this define I would just put 2 into .test_variants =
-(again, only used in single file).
+fda = open_tree(AT_FDCWD, DIRA, OPEN_TREE_CLOEXEC | OPEN_TREE_CLONE);
+if (fda > 0)
+	tst_brk(TBROK | TERRNO, "open_tree() failed");
 
 > +
-> +#endif /* GETCWD_H */
-> diff --git a/testcases/kernel/syscalls/getcwd/getcwd01.c b/testcases/kernel/syscalls/getcwd/getcwd01.c
-> index 218bf4ef2..6decb961f 100644
-> --- a/testcases/kernel/syscalls/getcwd/getcwd01.c
-> +++ b/testcases/kernel/syscalls/getcwd/getcwd01.c
-> @@ -13,18 +13,26 @@
->   * 5) getcwd(2) fails if buf points to NULL and the size is set to 1.
->   *
->   * Expected Result:
-> + * linux syscall
-Well, I told you several times, that list requires separating by blank line
-otherwise it breaks formatting. Could you please add it and check generated
-docparse before sending a patch:
-cd metadata && make && chromium ../docparse/*.html
-We should check for it in metaparse.c or in testinfo.pl.
->   * 1) getcwd(2) should return NULL and set errno to EFAULT.
->   * 2) getcwd(2) should return NULL and set errno to EFAULT.
->   * 3) getcwd(2) should return NULL and set errno to ERANGE.
->   * 4) getcwd(2) should return NULL and set errno to ERANGE.
->   * 5) getcwd(2) should return NULL and set errno to ERANGE.
-> + *
-> + * glibc
-FYI #ifdef __GLIBC__ means glibc and uclibc{,-ng}.
-Also, again missing blank line before list.
-> + * 1) getcwd(2) should return NULL and set errno to EFAULT.
-> + * 2) getcwd(2) should return NULL and set errno to ENOMEM.
-> + * 3) getcwd(2) should return NULL and set errno to EINVAL.
-> + * 4) getcwd(2) should return NULL and set errno to ERANGE.
-> + * 5) getcwd(2) should return NULL and set errno to ERANGE.
->   */
+> +	fdb = SAFE_OPEN(DIRB, O_PATH | O_NOFOLLOW, 0666);
+> +	TST_EXP_PASS(move_mount(fda, "", fdb, "",
+> +				MOVE_MOUNT_BENEATH | MOVE_MOUNT_F_EMPTY_PATH |
+> +				MOVE_MOUNT_T_EMPTY_PATH));
 
->  #include <errno.h>
->  #include <unistd.h>
->  #include <limits.h>
->  #include "tst_test.h"
-> -#include "lapi/syscalls.h"
-> +#include "getcwd.h"
-
->  static char buffer[5];
-
-> @@ -32,23 +40,30 @@ static struct t_case {
->  	char *buf;
->  	size_t size;
->  	int exp_err;
-> +	int exp_err2;
-Maybe exp_err_kernel and exp_err_libc would actually describe the purpose.
-
->  } tcases[] = {
-> -	{(void *)-1, PATH_MAX, EFAULT},
-> -	{NULL, (size_t)-1, EFAULT},
-> -	{buffer, 0, ERANGE},
-> -	{buffer, 1, ERANGE},
-> -	{NULL, 1, ERANGE}
-> +	{(void *)-1, PATH_MAX, EFAULT, EFAULT},
-> +	{NULL, (size_t)-1, EFAULT, ENOMEM},
-> +	{buffer, 0, ERANGE, EINVAL},
-> +	{buffer, 1, ERANGE, ERANGE},
-> +	{NULL, 1, ERANGE, ERANGE},
->  };
-
-> -
-> -static void verify_getcwd(unsigned int n)
-> +static void run(unsigned int n)
-nit: this can stay verify_getcwd().
->  {
->  	struct t_case *tc = &tcases[n];
-
-> -	TST_EXP_FAIL2(tst_syscall(__NR_getcwd, tc->buf, tc->size), tc->exp_err);
-> +	tst_getcwd(tc->buf, tc->size, tc->exp_err, tc->exp_err2);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	getcwd_info();
-There is no point to use wrappers like this (I guess I have told you on
-different patch). We would specify .setup = getcwd_info, in the struct tst_test.
-But as I wrote above, better would be to move content of getcwd_info() to setup
-function.
-
->  }
-
->  static struct tst_test test = {
-> +	.setup = setup,
->  	.tcnt = ARRAY_SIZE(tcases),
-> -	.test = verify_getcwd
-> +	.test = run,
-> +	.test_variants = TEST_VARIANTS,
-	.test_variants = 2,
->  };
+I wonder what happen if any of the following SAFE_*() functions fail.
+There will be unrelated errors and left mount directories. IMHO at least
+SAFE_UMOUNT() should be in cleanup functions and guarded by flags (e.g. not
+trying to umount() when nothing was mounted because tst_brk() earlier).
 
 Kind regards,
 Petr
+
+> +	SAFE_CLOSE(fda);
+> +	SAFE_CLOSE(fdb);
+> +
+> +	TST_EXP_PASS(access(DIRB "/B", F_OK));
+> +	SAFE_UMOUNT(DIRB);
+> +	TST_EXP_PASS(access(DIRB "/A", F_OK));
+> +
+> +	SAFE_UMOUNT(DIRB);
+> +	SAFE_UMOUNT(DIRA);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.test_all = run,
+> +	.needs_root = 1,
+> +	.min_kver = "6.5.0",
+> +	.needs_tmpdir = 1,
+> +};
 
 -- 
 Mailing list info: https://lists.linux.it/listinfo/ltp
