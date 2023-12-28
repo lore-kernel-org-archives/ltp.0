@@ -4,80 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44700C3DA6E
-	for <ltp@archiver.kernel.org>; Thu, 28 Dec 2023 04:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 507EAC3DA6E
+	for <ltp@archiver.kernel.org>; Thu, 28 Dec 2023 07:21:35 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 2B6DA3CEC2D
-	for <ltp@archiver.kernel.org>; Thu, 28 Dec 2023 05:48:59 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::4])
+	by picard.linux.it (Postfix) with ESMTP id 1BC513C943B
+	for <ltp@archiver.kernel.org>; Thu, 28 Dec 2023 08:21:33 +0100 (CET)
+Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-384))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 4152A3C86E4
- for <ltp@lists.linux.it>; Thu, 28 Dec 2023 05:48:49 +0100 (CET)
+ by picard.linux.it (Postfix) with ESMTPS id B293B3C943B
+ for <ltp@lists.linux.it>; Thu, 28 Dec 2023 08:21:22 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 7F5DF1000A65
- for <ltp@lists.linux.it>; Thu, 28 Dec 2023 05:48:48 +0100 (CET)
+ by in-4.smtp.seeweb.it (Postfix) with ESMTPS id BEF541000B11
+ for <ltp@lists.linux.it>; Thu, 28 Dec 2023 08:21:20 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1703738927;
+ s=mimecast20190719; t=1703748079;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=95mxJMG9SnsrmMb8N/wIVFDwkSjDIYJ5rqZmS4/AmRQ=;
- b=SaS7qK5xkw0ec6YbBb8M0pEN8tIeWWc1ZoA/umvHjjjh6yqR8iIjwpmDUAME2WBxe+hazN
- HcqzHm19x8QGmgQJGISNH/oKLzNvHHyUiJxJy2sNqq3P2CgW5Y+z3xGtkZPxgaohalZYwo
- YhB/xoQHlw2mgQ3X3fwBkB3YXJkvv7k=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ bh=oUvz8RtoLHTScLZ6zhhebe1ETWiiyKKsAUUSZTLorfs=;
+ b=KIRFaSwhvGV+p4UXS0kp8nWRXb2hk52rZ3n4EGeTuPA6MS4RwYY7+E15WH7PSrcmWZGx46
+ O5P3F0yttRuYxebnK9Ly4aE9B+EHGhCbVKtsRegjGLTHr4Q2Tpeav2h+K5KKF3LbfYQmEQ
+ aWLdhd0sQwgOn29yj2A7bA5aiSKANg4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-182-Hl-4jbQPNHyLMO2A4UJOxQ-1; Wed, 27 Dec 2023 23:48:45 -0500
-X-MC-Unique: Hl-4jbQPNHyLMO2A4UJOxQ-1
-Received: by mail-lj1-f199.google.com with SMTP id
- 38308e7fff4ca-2cc2ddf70a1so40546541fa.1
- for <ltp@lists.linux.it>; Wed, 27 Dec 2023 20:48:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1703738924; x=1704343724;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=95mxJMG9SnsrmMb8N/wIVFDwkSjDIYJ5rqZmS4/AmRQ=;
- b=qBS6IO1y8jbugLXIGvf4wUE6Iy9TsFMoHJnf5OXXuBODpyxj60FwDgRC53JFzd79XO
- Pg3gQFjnPB2eoLO2DrTr8csgb2qnYfIS49FuAuP9j9U+5R8olRZzlAcrXU/v7BXfCh4l
- 3Hb2SZq/oqdn3/Lv7OwMAcVdHx7ZYKYMwoPDM2dV34f92wsr87II1cp0Y3vNcVm0fY2g
- 4uLzb+6Mj14GCXKwqimvNW6BNjZF369hctlhXJthMf6PXrTt95mJMvXP6oAiZ2qh6La4
- sI5LnwNGb+Q+MO9zDOyBspIl6X/Ojhjp1buXDgWNFwWCe3LatkUM+ocFxDz4ARfM6fOS
- 131w==
-X-Gm-Message-State: AOJu0YwEqe6ceVCCzSYGrj9IaKMlLLTtSvrVvKX5P1g2bP4RObsNA6xv
- rMZ5oe42qj491qok+8Vku9xCNB4j+pq6ussvsX8wod4U50RaJmVxuVVBuGwOzmRazTVjt5catix
- gv4Bqq3rEcJM8Y5HOrf+fkcbEwZAZBdOc/dQ=
-X-Received: by 2002:a2e:2d09:0:b0:2cc:6b59:d34a with SMTP id
- t9-20020a2e2d09000000b002cc6b59d34amr4235049ljt.81.1703738923814; 
- Wed, 27 Dec 2023 20:48:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGtEmEWH/s2gMq6rgBm8wJ5/KynVab3gnb/x9HHtE2qgJDLOaonDtj9hl1oU8xH/79BAZ3vhpaTr7j58ZDZ268=
-X-Received: by 2002:a2e:2d09:0:b0:2cc:6b59:d34a with SMTP id
- t9-20020a2e2d09000000b002cc6b59d34amr4235042ljt.81.1703738923477; Wed, 27 Dec
- 2023 20:48:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20231227065118.209595-1-shichen@redhat.com>
- <20231227091039.GA727588@pevik>
- <CAEemH2fm47fhXBJd_3GBopqZPMCEVhFYM7Wrw-pukOtBn_Jnow@mail.gmail.com>
- <20231227142850.GA757946@pevik>
-In-Reply-To: <20231227142850.GA757946@pevik>
+ us-mta-533-wb_6qR_aMhK1LIGesYWWmw-1; Thu, 28 Dec 2023 02:21:15 -0500
+X-MC-Unique: wb_6qR_aMhK1LIGesYWWmw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 576ED101A52A;
+ Thu, 28 Dec 2023 07:21:15 +0000 (UTC)
+Received: from loobloo.redhat.com (unknown [10.72.112.173])
+ by smtp.corp.redhat.com (Postfix) with ESMTPS id 473933C25;
+ Thu, 28 Dec 2023 07:21:12 +0000 (UTC)
 From: Shizhao Chen <shichen@redhat.com>
-Date: Thu, 28 Dec 2023 12:48:32 +0800
-Message-ID: <CADm5pWdtqGO11T=Oiggv+fOZn63BTMbaAN1EaT0yXLzRF9xrHw@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it,
+	liwang@redhat.com,
+	pvorel@suse.cz
+Date: Thu, 28 Dec 2023 15:21:09 +0800
+Message-ID: <20231228072109.349636-1-shichen@redhat.com>
+In-Reply-To: <20231227065118.209595-1-shichen@redhat.com>
+References: <20231227065118.209595-1-shichen@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 1/1] tools: Fix syntax error caused by "; ;
+Subject: [LTP] [PATCH v2 1/1] tools: Fix syntax error caused by "; ;
  " in create_dmesg_entry awk script
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
@@ -90,63 +74,57 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: shichen@redhat.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-VGhhbmtzIGZvciB0aGUgcmV2aWV3ISBJIHdpbGwgc2VuZCBhIHYyIHNob3J0bHkuCgoKT24gV2Vk
-LCBEZWMgMjcsIDIwMjMgYXQgMTA6MjnigK9QTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4g
-d3JvdGU6Cj4KPiA+IEhpIFBldHIsIFNoaXpoYW8sCj4KPiA+IE9uIFdlZCwgRGVjIDI3LCAyMDIz
-IGF0IDU6MTDigK9QTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5jej4gd3JvdGU6Cj4KPiA+ID4g
-SGkgU2hpemhhbywKPgo+ID4gPiA+IFdoZW4gcnVubmluZyBydW5sdHAgd2l0aCBib3RoIC1TIGFu
-ZCAtSyBwcm92aWRlZCwgdGVzdHMgdGhhdCBhcmUKPiA+ID4gc3VwcG9zZWQgdG8gYmUKPiA+ID4g
-PiAic2tpcHBlZCIgYW5kIHJlcG9ydCBUQ09ORiByZXN1bHRzIHdlcmUgZmFpbGluZyBkdWUgdG8g
-YW4gdW5leHBlY3RlZAo+ID4gPiBzZW1pY29sb24KPiA+ID4gPiBhdCB0aGUgZW5kIG9mIHRoZSBj
-b25zdHJ1Y3RlZCBjb21tYW5kLgo+Cj4gPiA+ID4gYC1TYCByZXBsYWNlIHRoZSB0ZXN0IGNvbW1h
-bmQgd2l0aCBgZXhpdCAzMjtgCj4gPiA+ID4gYC1LYCBhcHBlbmRzIGFub3RoZXIgc2VtaWNvbG9u
-IHRvIHRoZSBjb21tYW5kIHRoZW4gd2UgZ2V0IGBleGl0IDMyOztgCj4KPiA+ID4gPiBGb3IgZXhh
-bXBsZToKPgo+ID4gPiA+ICAgPj4+IDc4MDptYWR2aXNlMDZfX3dpdGhfZG1lc2dfZW50cnkgQlJP
-SyA8PDwKPgo+ID4gPiA+ICAgICAgICAxICAgICAgPDw8dGVzdF9zdGFydD4+Pgo+ID4gPiA+ICAg
-ICAgICAyICAgICAgdGFnPW1hZHZpc2UwNl9fd2l0aF9kbWVzZ19lbnRyeSBzdGltZT0xNzAzNTU2
-MDYxCj4gPiA+ID4gICAgICAgIDMgICAgICBjbWRsaW5lPSJkbWVzZyAtYyAxPi9kZXYvbnVsbCAy
-PiYxOyBleGl0IDMyOzsgZG1lc2cgPgo+ID4gPiAvbW50L3Rlc3RhcmVhL2x0cC9vdXRwdXQvRE1F
-U0dfRElSX1JIRUxLVDFMSVRFLkZJTFRFUkVELWRtZXNnLW91dHB1dC01MzEyNy0wODo0ODoyM1BN
-L21hZHZpc2UwNi5kbWVzZy5sb2ciCj4gPiA+ID4gICAgICAgIDQgICAgICBjb250YWN0cz0iIgo+
-ID4gPiA+ICAgICAgICA1ICAgICAgYW5hbHlzaXM9ZXhpdAo+ID4gPiA+ICAgICAgICA2ICAgICAg
-PDw8dGVzdF9vdXRwdXQ+Pj4KPiA+ID4gPiAgICAgICAgNyAgICAgIHNoOiAtYzogbGluZSAxOiBz
-eW50YXggZXJyb3IgbmVhciB1bmV4cGVjdGVkIHRva2VuIGA7OycKPiA+ID4gPiAgICAgICAgOCAg
-ICAgIHNoOiAtYzogbGluZSAxOiBgZG1lc2cgLWMgMT4vZGV2L251bGwgMj4mMTsgZXhpdCAzMjs7
-Cj4gPiA+IGRtZXNnID4KPiA+ID4gL21udC90ZXN0YXJlYS9sdHAvb3V0cHV0L0RNRVNHX0RJUl9S
-SEVMS1QxTElURS5GSUxURVJFRC1kbWVzZy1vdXRwdXQtNTMxMjctMDg6NDg6MjNQTS9tYWR2aXNl
-MDYuZG1lc2cubG9nJwo+ID4gPiA+ICAgICAgICA5ICAgICAgPDw8ZXhlY3V0aW9uX3N0YXR1cz4+
-Pgo+ID4gPiA+ICAgICAgIDEwICAgICAgaW5pdGlhdGlvbl9zdGF0dXM9Im9rIgo+ID4gPiA+ICAg
-ICAgIDExICAgICAgZHVyYXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlv
-bl9pZD0yCj4gPiA+IGNvcmVmaWxlPW5vCj4gPiA+ID4gICAgICAgMTIgICAgICBjdXRpbWU9MCBj
-c3RpbWU9MQo+ID4gPiA+ICAgICAgIDEzICAgICAgPDw8dGVzdF9lbmQ+Pj4KPgo+ID4gPiA+IFNp
-Z25lZC1vZmYtYnk6IFNoaXpoYW8gQ2hlbiA8c2hpY2hlbkByZWRoYXQuY29tPgo+ID4gPiA+IC0t
-LQo+ID4gPiA+ICB0b29scy9jcmVhdGVfZG1lc2dfZW50cmllc19mb3JfZWFjaF90ZXN0LmF3ayB8
-IDEgKwo+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPgo+ID4gPiA+IGRp
-ZmYgLS1naXQgYS90b29scy9jcmVhdGVfZG1lc2dfZW50cmllc19mb3JfZWFjaF90ZXN0LmF3awo+
-ID4gPiBiL3Rvb2xzL2NyZWF0ZV9kbWVzZ19lbnRyaWVzX2Zvcl9lYWNoX3Rlc3QuYXdrCj4gPiA+
-ID4gaW5kZXggMjVkNzUwYTU1Li43YTIyYmI0YTYgMTAwNjQ0Cj4gPiA+ID4gLS0tIGEvdG9vbHMv
-Y3JlYXRlX2RtZXNnX2VudHJpZXNfZm9yX2VhY2hfdGVzdC5hd2sKPiA+ID4gPiArKysgYi90b29s
-cy9jcmVhdGVfZG1lc2dfZW50cmllc19mb3JfZWFjaF90ZXN0LmF3awo+ID4gPiA+IEBAIC0yNyw2
-ICsyNyw3IEBAIE5GICYmICEgL14jLyB7Cj4gPiA+ID4gICAgICAgZm9yIChpID0gMjsgaSA8PSBO
-RjsgaSsrKSB7Cj4gPiA+ID4gICAgICAgICAgICAgICBzID0gcyAiICIgJGkKPiA+ID4gPiAgICAg
-ICB9Cj4gPiA+ID4gKyAgICAgc3ViKC87JC8sICIiLCBzKQo+Cj4gPiA+IEZyb20gdGhlIGFib3Zl
-IGNvbnRleHQgYXJlIHlvdSBzdXJlIHRoYXQgdGhlcmUgd2lsbCBub3QgYmUgbWlzc2luZwo+ID4g
-PiBzZW1pY29sb24/Cj4gPiA+IChlLmcuIGJldHdlZW4gZG1lc2cgYW5kIGV4aXQpCj4KPiA+ID4g
-V291bGRuJ3QgaXQgYmUgc2FmZSB0byBtYWtlIHN1cmUgdGhlcmUgaXMgb25seSBvbmx5IHNpbmds
-ZSBzZW1pY29sb24gYXQKPiA+ID4gdGhlIGVuZD8KPgo+Cj4gPiA+IHN1YigvWztdKyQvLCAiOyIp
-Cj4KPgo+ID4gSG1tLCB0aGF0IHdvdWxkIG5vdCB3b3JrIGFzIGV4cGVjdGVkIGJlY2F1c2UgaW4g
-dGhlIG5leHQgbGluZQo+ID4gZm9yY2VzIGFkZGluZyBhIHNlbWljb2xvbi4KPgo+ID4gICAgIHMg
-PSBzICI7IGRtZXNnID4gIiBETUVTR19ESVIgIi8iICQxICIuZG1lc2cubG9nIgo+Cj4gPiBVbmxl
-c3Mgd2UgbWFrZSBhIG1pbm9yIGFkanVzdG1lbnRzIHRvIHlvdXIgdmVyc2lvbjoKPgo+ID4gICAg
-IHN1YigvWztdKyQvLCAiIiwgcykKPgo+IEFoLCB0aGFua3MgTGkhCj4KPiBJJ20gb2sgdG8gbWVy
-Z2UgeW91ciBzdWdnZXN0aW9uLCBqdXN0IHdhaXQgbGl0dGxlIGxvbmdlciBmb3IgU2hpemhhbywg
-aW4gY2FzZSB3ZQo+IG92ZXJsb29rZWQgc29tZXRoaW5nLgo+Cj4gS2luZCByZWdhcmRzLAo+IFBl
-dHIKPgo+ID4gT3RoZXJ3aXNlIExHVE06Cj4gPiBSZXZpZXdlZC1ieTogTGkgV2FuZyA8bGl3YW5n
-QHJlZGhhdC5jb20+Cj4KCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGlu
-dXguaXQvbGlzdGluZm8vbHRwCg==
+When running runltp with both -S and -K provided, tests that are supposed to be
+"skipped" and report TCONF results were failing due to an unexpected semicolon
+at the end of the constructed command.
+
+`-S` replace the test command with `exit 32;`
+`-K` appends another semicolon to the command then we get `exit 32;;`
+
+For example:
+
+  >>> 780:madvise06__with_dmesg_entry BROK <<<
+
+       1        <<<test_start>>>
+       2        tag=madvise06__with_dmesg_entry stime=1703556061
+       3        cmdline="dmesg -c 1>/dev/null 2>&1; exit 32;; dmesg > /mnt/testarea/ltp/output/DMESG_DIR_RHELKT1LITE.FILTERED-dmesg-output-53127-08:48:23PM/madvise06.dmesg.log"
+       4        contacts=""
+       5        analysis=exit
+       6        <<<test_output>>>
+       7        sh: -c: line 1: syntax error near unexpected token `;;'
+       8        sh: -c: line 1: `dmesg -c 1>/dev/null 2>&1; exit 32;; dmesg > /mnt/testarea/ltp/output/DMESG_DIR_RHELKT1LITE.FILTERED-dmesg-output-53127-08:48:23PM/madvise06.dmesg.log'
+       9        <<<execution_status>>>
+      10        initiation_status="ok"
+      11        duration=0 termination_type=exited termination_id=2 corefile=no
+      12        cutime=0 cstime=1
+      13        <<<test_end>>>
+
+Signed-off-by: Shizhao Chen <shichen@redhat.com>
+---
+ tools/create_dmesg_entries_for_each_test.awk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/create_dmesg_entries_for_each_test.awk b/tools/create_dmesg_entries_for_each_test.awk
+index 25d750a55..ffd807fb4 100644
+--- a/tools/create_dmesg_entries_for_each_test.awk
++++ b/tools/create_dmesg_entries_for_each_test.awk
+@@ -27,6 +27,7 @@ NF && ! /^#/ {
+ 	for (i = 2; i <= NF; i++) {
+ 		s = s " " $i
+ 	}
++	sub(/[;]+$/, "", s)
+ 	s = s "; dmesg > " DMESG_DIR "/" $1 ".dmesg.log"
+ 	print s
+ }
+-- 
+2.43.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
