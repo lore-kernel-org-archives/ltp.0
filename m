@@ -4,68 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5C7CC3DA6E
-	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 09:47:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DC0BC3DA6E
+	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 11:20:37 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 184FB3CE780
-	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 10:47:00 +0100 (CET)
+	by picard.linux.it (Postfix) with ESMTP id 6F7BD3CE7C6
+	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 12:20:35 +0100 (CET)
 Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 1DDCA3C081B
- for <ltp@lists.linux.it>; Wed,  3 Jan 2024 10:46:50 +0100 (CET)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com
- [209.85.128.171])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id 3AA903CB297
+ for <ltp@lists.linux.it>; Wed,  3 Jan 2024 12:20:25 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 5FF94600687
- for <ltp@lists.linux.it>; Wed,  3 Jan 2024 10:46:50 +0100 (CET)
-Received: by mail-yw1-f171.google.com with SMTP id
- 00721157ae682-5ec7a5a4b34so63085937b3.0
- for <ltp@lists.linux.it>; Wed, 03 Jan 2024 01:46:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1704275209; x=1704880009;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=ihhhQFZaZR4+J27tLwPbBpD9wwAmji8BYJHqOMirIeI=;
- b=KusXusI1sLpp/YEmc82S7Bgo3BClUG9lB0roJH6QNOXGO/8Y3/zDckfMPJHAjbsrFA
- kvaywzldUYptDEHqvbXOhzLxTHhaEEsZ5Lfan25IZjZ4nf7Cge8Uzebqhh1vs/qdK7Ly
- cGSSB6AFwVti0eZaLTXaUCOscMFfbOoVodWd0NCzn5QK8RI84ifb+RUuJKJ1I9gbPVPC
- +uw3EH8qvp95pm/U+oX/BXULL2ghfbfbwrCNEbZv5BBZOKI/P9AP1+mrbm7vWCVk6IJ9
- fARkCxZsMdyGXk9DvBiG3IlCUXX1rsn7kQ5jAl9vW43PKf1zvtiLqUb+7wJB0MdB7irR
- F8gg==
-X-Gm-Message-State: AOJu0Yy6JDicSQz9wYMnXHyKWKfbhnkTgOVr9E2xC5+3P41Eco0zn2vU
- FrX1XpwnOi8RgaG8q9CqFwU5B2sAUDAw9g==
-X-Google-Smtp-Source: AGHT+IGSOZMwMHdTOUnssSjCCdDE810XHhMCW5u6hlLcymWMk4GIChTm93oN+uvW2wRyr1nalWEFuA==
-X-Received: by 2002:a81:8784:0:b0:5d9:50cc:b901 with SMTP id
- x126-20020a818784000000b005d950ccb901mr14141628ywf.95.1704275208866; 
- Wed, 03 Jan 2024 01:46:48 -0800 (PST)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com.
- [209.85.128.178]) by smtp.gmail.com with ESMTPSA id
- ew4-20020a05690c2f8400b005e8f5b53d6bsm11832157ywb.22.2024.01.03.01.46.47
- for <ltp@lists.linux.it>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 03 Jan 2024 01:46:48 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id
- 00721157ae682-5f2d4aaa2fdso17867537b3.1
- for <ltp@lists.linux.it>; Wed, 03 Jan 2024 01:46:47 -0800 (PST)
-X-Received: by 2002:a81:80c1:0:b0:5e8:6aba:9d18 with SMTP id
- q184-20020a8180c1000000b005e86aba9d18mr14346275ywf.35.1704275207623; Wed, 03
- Jan 2024 01:46:47 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 4C5F4600114
+ for <ltp@lists.linux.it>; Wed,  3 Jan 2024 12:20:24 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 5C3851FD0E
+ for <ltp@lists.linux.it>; Wed,  3 Jan 2024 11:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1704280823; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=PUUzcFesXuZBGFNNlUqbWmssJHLOuPnyKew00rP1LYg=;
+ b=zPfqeDELw6S6xYYyKUJSFKMD7v0cTIPZaMBeFPYfOkq7L/ulNJz6S2PrdCmDtL01po4nm8
+ KTVK3Bx+H2FLDpQVPG4AMluOqKDrAdAb+rAeAFdrqI647RVIlbYFv0WQoc9HdZ1eFiw5Vd
+ rCl9WJRWJL/mvrJYW63VAnJWWiDWeFg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1704280823;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=PUUzcFesXuZBGFNNlUqbWmssJHLOuPnyKew00rP1LYg=;
+ b=t4gTLJpKYjTLIgnzC4RW0/1gzfTAQDyBaNL+HyF7ZhksJTIeMEgv9Uc5Gjvl+x6Tq3yXIh
+ yGzUnmeCZUfcIaCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1704280823; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=PUUzcFesXuZBGFNNlUqbWmssJHLOuPnyKew00rP1LYg=;
+ b=zPfqeDELw6S6xYYyKUJSFKMD7v0cTIPZaMBeFPYfOkq7L/ulNJz6S2PrdCmDtL01po4nm8
+ KTVK3Bx+H2FLDpQVPG4AMluOqKDrAdAb+rAeAFdrqI647RVIlbYFv0WQoc9HdZ1eFiw5Vd
+ rCl9WJRWJL/mvrJYW63VAnJWWiDWeFg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1704280823;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=PUUzcFesXuZBGFNNlUqbWmssJHLOuPnyKew00rP1LYg=;
+ b=t4gTLJpKYjTLIgnzC4RW0/1gzfTAQDyBaNL+HyF7ZhksJTIeMEgv9Uc5Gjvl+x6Tq3yXIh
+ yGzUnmeCZUfcIaCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4F35813AA6
+ for <ltp@lists.linux.it>; Wed,  3 Jan 2024 11:20:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id K6waE/dClWU/EAAAD6G6ig
+ (envelope-from <akumar@suse.de>)
+ for <ltp@lists.linux.it>; Wed, 03 Jan 2024 11:20:23 +0000
+From: Avinesh Kumar <akumar@suse.de>
+To: ltp@lists.linux.it
+Date: Wed,  3 Jan 2024 12:20:18 +0100
+Message-ID: <20240103112023.32355-1-akumar@suse.de>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <20240103015240.1065284-1-pvorel@suse.cz>
-In-Reply-To: <20240103015240.1065284-1-pvorel@suse.cz>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 3 Jan 2024 10:46:36 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
-Message-ID: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [0.70 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; FROM_HAS_DN(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain];
+ PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
+ BROKEN_CONTENT_TYPE(1.50)[]; RCPT_COUNT_ONE(0.00)[1];
+ NEURAL_HAM_LONG(-1.00)[-1.000]; RCVD_COUNT_THREE(0.00)[3];
+ TO_DN_NONE(0.00)[];
+ DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+ NEURAL_HAM_SHORT(-0.20)[-1.000]; MID_CONTAINS_FROM(1.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; RCVD_TLS_ALL(0.00)[];
+ BAYES_HAM(-3.00)[100.00%]
 X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 00/36] Remove UCLINUX from LTP
+Subject: [LTP] [PATCH] lib: Improve doc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,40 +101,109 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: Jonathan Corbet <corbet@lwn.net>, Linux-sh list <linux-sh@vger.kernel.org>,
- Christophe Lyon <christophe.lyon@linaro.org>,
- Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- Greg Ungerer <gerg@linux-m68k.org>, ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-SGkgUGV0ciwKCkNDIG90aGVyIHVDbGludXggYXJjaCBsaXN0cwoKT24gV2VkLCBKYW4gMywgMjAy
-NCBhdCAyOjUy4oCvQU0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2UuY3o+IHdyb3RlOgo+IFVDTElO
-VVggaXMgYnJva2VuIGluIExUUCBhbmQgbm9ib2R5IHJlYWxseSBjYXJlcy4gQWN0dWFsbHkgSSBk
-YXJlIHRvCj4gc2F5IFVDTElOVVggaXMgZGVhZC4gVGhlcmVmb3JlIEkgcHJlcGFyZWQgcGF0Y2hz
-ZXQgdG8gcmVtb3ZlIFVDTElOVVgKPiBmcm9tIExUUC4gV2UgaGF2ZSBiZWVuIGFjdGl2ZWx5IHJl
-bW92aW5nIFVDTElOVVggZnJvbSBMVFAgZHVyaW5nIHJld3JpdGUKPiB0ZXN0cyB0byBuZXcgTFRQ
-IEFQSS4gVGhpcyByZW1vdmVzIHRoZSByZXN0IGZyb20gdGhlIG9sZCB0ZXN0cyAod2hpY2gKPiB3
-aWxsIGJlIHNvb25lciBvciBsYXRlciByZXdyaXR0ZW4gdG8gbmV3IEFQSSkuCj4KPiBCZWNhdXNl
-IHRoZSBwYXRjaHNldCBpcyBxdWl0ZSBiaWcsIEkgZGlkIG5vdCB3YW50IHRvIHNlbmQgaXQgdG8g
-bWFpbGluZwo+IGxpc3RzIChidXQgSSBjYW4gZG8gaXQgaWYgeW91IHdhbnQpLgo+Cj4gQ2FuIHlv
-dSBwbGVhc2UgaGF2ZSBsb29rIGF0IG15IGZvcmsgb24gZ2l0bGFiLCBicmFuY2g6IHJlbW92ZS1V
-Q0xJTlVYCj4gaHR0cHM6Ly9naXRsYWIuY29tL3BldmlrL2x0cC8tL2NvbW1pdHMvcmVtb3ZlLVVD
-TElOVVg/cmVmX3R5cGU9aGVhZHMKPgo+IEJ1aWxkIHRlc3Q6Cj4gaHR0cHM6Ly9naXRodWIuY29t
-L3BldmlrL2x0cC9hY3Rpb25zL3J1bnMvNzM5MjQ3MDIxNQoKVGhhbmtzIGZvciB5b3VyIHNlcmll
-cyEKCkkgc2VlIHlvdSBvbmx5IENDZWQgbGludXgtbTY4aywgYnV0IEFGQUlLLCB1Q2xpbnV4IGlz
-IG5vdCByZXN0cmljdGVkCnRvIG02OGsvY29sZGZpcmUsIGJ1dCBhbHNvIGF2YWlsYWJsZSBvbiBh
-cm0zMiwgcmlzY3YsIHNoLCBhbmQgeHRlbnNhLgoKR3J7b2V0amUsZWV0aW5nfXMsCgogICAgICAg
-ICAgICAgICAgICAgICAgICBHZWVydAoKLS0gCkdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdz
-IGxvdHMgb2YgTGludXggYmV5b25kIGlhMzIgLS0gZ2VlcnRAbGludXgtbTY4ay5vcmcKCkluIHBl
-cnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxm
-IGEgaGFja2VyLiBCdXQKd2hlbiBJJ20gdGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5
-ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcgbGlrZSB0aGF0LgogICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZhbGRzCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0
-dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Signed-off-by: Avinesh Kumar <akumar@suse.de>
+---
+ lib/README.md | 33 ++++++++++++++++-----------------
+ 1 file changed, 16 insertions(+), 17 deletions(-)
+
+diff --git a/lib/README.md b/lib/README.md
+index ccb1cf1da..bfc05ae07 100644
+--- a/lib/README.md
++++ b/lib/README.md
+@@ -27,16 +27,16 @@
+ 
+ When a test is executed the very first thing to happen is that we check for
+ various test prerequisites. These are described in the tst\_test structure and
+-range from simple '.require\_root' to a more complicated kernel .config boolean
++range from simple '.needs\_root' to a more complicated kernel .config boolean
+ expressions such as: "CONFIG\_X86\_INTEL\_UMIP=y | CONFIG\_X86\_UMIP=y".
+ 
+-If all checks are passed the process carries on with setting up the test
++If all checks are passed, the process continues with setting up the test
+ environment as requested in the tst\_test structure. There are many different
+ setup steps that have been put into the test library again ranging from rather
+ simple creation of a unique test temporary directory to a bit more complicated
+ ones such as preparing, formatting, and mounting a block device.
+ 
+-The test library also intializes shrared memory used for IPC at this step.
++The test library also initializes shared memory used for IPC at this step.
+ 
+ Once all the prerequisites are checked and test environment has been prepared
+ we can move on executing the testcase itself. The actual test is executed in a
+@@ -62,12 +62,11 @@ for test_variants:
+ 		fork_testrun()
+ ```
+ 
+-Before we fork() the test process the test library sets up a timeout alarm and
+-also a heartbeat signal handlers and also sets up an alarm(2) accordingly to
+-the test timeout. When a test times out the test library gets SIGALRM and the
+-alarm handler mercilessly kills all forked children by sending SIGKILL to the
+-whole process group. The heartbeat handler is used by the test process to reset
+-this timer for example when the test functions run in a loop.
++Before we fork() the test process, the test library sets up a timeout alarm and
++also a heartbeat signal handler. When a test times out, the test library gets
++SIGALRM and the alarm handler mercilessly kills all forked children by sending
++SIGKILL to the whole process group. The heartbeat handler is used by the test
++process to reset this timer for example when the test functions run in a loop.
+ 
+ With that done we finally fork() the test process. The test process firstly
+ resets signal handlers and sets its pid to be a process group leader so that we
+@@ -97,14 +96,14 @@ usually better option than exiting it in the middle.
+ The test cleanup() is also called by the tst\_brk() handler in order to cleanup
+ before exiting the test process, hence it must be able to cope even with
+ partial test setup. Usually it suffices to make sure to clean up only
+-resources that already have been set up and to do that in an inverse order that
+-we did in setup().
++resources that already have been set up and to do that in the reverse order
++that we did in setup().
+ 
+ Once the test process exits or leaves the run() or run\_all() function the test
+ library wakes up from the waitpid() call, and checks if the test process
+ exited normally.
+ 
+-Once the testrun is finished the test library does a cleanup() as well to clean
++Once the testrun is finished, the test library does a cleanup() as well to clean
+ up resources set up in the test library setup(), reports test results and
+ finally exits the process.
+ 
+@@ -126,8 +125,8 @@ This especially means that:
+ - While the test results are, by the design, propagated to the test library
+   we may still miss a child that gets killed by a signal or exits unexpectedly.
+ 
+-The test writer should, because of this, take care for reaping these proceses
+-properly, in most cases this could be simply done by calling
++The test writer should, because of this, take care fofor reaping these
++processes properly, in most cases this could be simply done by calling
+ tst\_reap\_children() to collect and dissect deceased.
+ 
+ Also note that tst\_brk() does exit only the current process, so if a child
+@@ -136,9 +135,9 @@ exits.
+ 
+ ### Test library and exec()
+ 
+-The piece of mapped memory to store the results to is not preserved over
++The piece of mapped memory to store the results is not preserved over
+ exec(2), hence to use the test library from a binary started by an exec() it
+-has to be remaped. In this case the process must to call tst\_reinit() before
++has to be remapped. In this case, the process must call tst\_reinit() before
+ calling any other library functions. In order to make this happen the program
+ environment carries LTP\_IPC\_PATH variable with a path to the backing file on
+ tmpfs. This also allows us to use the test library from shell testcases.
+@@ -148,5 +147,5 @@ tmpfs. This also allows us to use the test library from shell testcases.
+ The piece of mapped memory is also used as a base for a futex-based
+ synchronization primitives called checkpoints. And as said previously the
+ memory can be mapped to any process by calling the tst\_reinit() function. As a
+-matter of a fact there is even a tst\_checkpoint binary that allows us to use
++matter of a fact, there is even a tst\_checkpoint binary that allows us to use
+ the checkpoints from shell code as well.
+-- 
+2.43.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
