@@ -4,88 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75FCEC3DA6E
-	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 11:23:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49458C3DA6E
+	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 11:25:56 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 9574A3CE771
-	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 12:23:08 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id D83803CE77A
+	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 12:25:53 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 14C1A3CB297
- for <ltp@lists.linux.it>; Wed,  3 Jan 2024 12:22:58 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ by picard.linux.it (Postfix) with ESMTPS id B173E3CB297
+ for <ltp@lists.linux.it>; Wed,  3 Jan 2024 12:25:38 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-7.smtp.seeweb.it (Postfix) with ESMTPS id DF5B6200BD2
- for <ltp@lists.linux.it>; Wed,  3 Jan 2024 12:22:57 +0100 (CET)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7BCCB600F4C
+ for <ltp@lists.linux.it>; Wed,  3 Jan 2024 12:25:37 +0100 (CET)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [IPv6:2a07:de40:b281:104:10:150:64:97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 0CB861FD14
- for <ltp@lists.linux.it>; Wed,  3 Jan 2024 11:22:56 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id AC68D21180
+ for <ltp@lists.linux.it>; Wed,  3 Jan 2024 11:25:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1704280977; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1704281136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=PUUzcFesXuZBGFNNlUqbWmssJHLOuPnyKew00rP1LYg=;
- b=Hkw/aIymjTsSo1PNfDr1gnHTMFs58SNzsjYY8uOTMLefi1a6NZHLtY+4IF5ZdjEqXFZYwD
- v00HFdSk22D52rlkVQzZjnFjiJaylRqdTbqlnDIZgESuJZ+l2wRSmZa77NYGcSpxavoU6l
- jjtQxwK+7JEf1HNcQyRbSXUeum+86cQ=
+ bh=iFwDktI/r1xVWzOtfEKoZuWYjvfBhgPSF7Gzxd33bME=;
+ b=K6+ScwMyz/QuIfPALKPMNCek3NHvnWLIdkIG134iV4WjYoBlMSRmpTbA1dH8uouGXqv4aj
+ ZOTrX3hDL4WtcdJKdwl3jrP2ZJdDW2khB3z34c60r0KOUoX59MmYqioBIJJuKs51e3Zg5g
+ wajpcGsosY3M/p9bpY4znOWwjCA6tZ4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1704280977;
+ s=susede2_ed25519; t=1704281136;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=PUUzcFesXuZBGFNNlUqbWmssJHLOuPnyKew00rP1LYg=;
- b=xvuBvDiRqy1uLsLBoGHItv6aJBWhc5HymuSsQG0JwCc5sUA0fTV4xKyPLqVfwkuDezoAhW
- YMCJw3KDhOO6w5AA==
+ bh=iFwDktI/r1xVWzOtfEKoZuWYjvfBhgPSF7Gzxd33bME=;
+ b=ZjQgJ21N3Srob2dyGsWPbo5pALREmONObE8hYLJZpctfMPLb/nTlT3w5gH1SCicNRXHwsS
+ QnKwZpMBBD7C8IAw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1704280976; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1704281136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=PUUzcFesXuZBGFNNlUqbWmssJHLOuPnyKew00rP1LYg=;
- b=o9hVcrVpqWAcQqjmqJ41JyiDqDYk8FPu4D16YOVaDdTiEwEfeTO6oL018T3CVBgt4N0B7y
- 3v433aRp6cGN25cqRxOnDmPD2whuOB2dA8fmbBCtamJD0kjwTJmreKqjUnnhTlhEQIJoWh
- uw3IP1qlbDskO+rg4mgYlNUAOjQLvmI=
+ bh=iFwDktI/r1xVWzOtfEKoZuWYjvfBhgPSF7Gzxd33bME=;
+ b=K6+ScwMyz/QuIfPALKPMNCek3NHvnWLIdkIG134iV4WjYoBlMSRmpTbA1dH8uouGXqv4aj
+ ZOTrX3hDL4WtcdJKdwl3jrP2ZJdDW2khB3z34c60r0KOUoX59MmYqioBIJJuKs51e3Zg5g
+ wajpcGsosY3M/p9bpY4znOWwjCA6tZ4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1704280976;
+ s=susede2_ed25519; t=1704281136;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=PUUzcFesXuZBGFNNlUqbWmssJHLOuPnyKew00rP1LYg=;
- b=GsO+1WiDPNmBMuPqsmjeYifP0P4G+mVfDS0rzw0Rv0UGPr5pvHW7P4a5E1SeqpginkL0yG
- syMFYGqGWd0L+bCw==
+ bh=iFwDktI/r1xVWzOtfEKoZuWYjvfBhgPSF7Gzxd33bME=;
+ b=ZjQgJ21N3Srob2dyGsWPbo5pALREmONObE8hYLJZpctfMPLb/nTlT3w5gH1SCicNRXHwsS
+ QnKwZpMBBD7C8IAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F1A2813AA6
- for <ltp@lists.linux.it>; Wed,  3 Jan 2024 11:22:55 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0AAB13AA6
+ for <ltp@lists.linux.it>; Wed,  3 Jan 2024 11:25:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id sOOgOo9DlWXkEAAAD6G6ig
+ by imap1.dmz-prg2.suse.org with ESMTPSA id sdgzJzBElWWKEQAAD6G6ig
  (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Wed, 03 Jan 2024 11:22:55 +0000
+ for <ltp@lists.linux.it>; Wed, 03 Jan 2024 11:25:36 +0000
 From: Avinesh Kumar <akumar@suse.de>
 To: ltp@lists.linux.it
-Date: Wed,  3 Jan 2024 12:22:54 +0100
-Message-ID: <20240103112255.1021-1-akumar@suse.de>
+Date: Wed,  3 Jan 2024 12:25:35 +0100
+Message-ID: <20240103112536.1925-1-akumar@suse.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240103112023.32355-1-akumar@suse.de>
 References: <20240103112023.32355-1-akumar@suse.de>
 MIME-Version: 1.0
-Authentication-Results: smtp-out2.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=o9hVcrVp;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=GsO+1WiD
+Authentication-Results: smtp-out1.suse.de;
+ dkim=pass header.d=suse.de header.s=susede2_rsa header.b=K6+ScwMy;
+ dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ZjQgJ21N
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-1.01 / 50.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
  SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
@@ -108,10 +107,10 @@ X-Spamd-Result: default: False [-1.01 / 50.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
  RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
  RCVD_TLS_ALL(0.00)[];
  RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Queue-Id: 0CB861FD14
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-Rspamd-Queue-Id: AC68D21180
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH] lib: Improve doc
+Subject: [LTP] [PATCH v2] lib: Improve doc
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -134,7 +133,7 @@ Signed-off-by: Avinesh Kumar <akumar@suse.de>
  1 file changed, 16 insertions(+), 17 deletions(-)
 
 diff --git a/lib/README.md b/lib/README.md
-index ccb1cf1da..bfc05ae07 100644
+index ccb1cf1da..dd79e70f4 100644
 --- a/lib/README.md
 +++ b/lib/README.md
 @@ -27,16 +27,16 @@
@@ -199,7 +198,7 @@ index ccb1cf1da..bfc05ae07 100644
  
 -The test writer should, because of this, take care for reaping these proceses
 -properly, in most cases this could be simply done by calling
-+The test writer should, because of this, take care fofor reaping these
++The test writer should, because of this, take care of reaping these
 +processes properly, in most cases this could be simply done by calling
  tst\_reap\_children() to collect and dissect deceased.
  
