@@ -4,113 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49458C3DA6E
-	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 11:25:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CAB5C3DA6E
+	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 11:50:17 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id D83803CE77A
-	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 12:25:53 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it [217.194.8.2])
+	by picard.linux.it (Postfix) with ESMTP id E08583CE771
+	for <ltp@archiver.kernel.org>; Wed,  3 Jan 2024 12:50:15 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id B173E3CB297
- for <ltp@lists.linux.it>; Wed,  3 Jan 2024 12:25:38 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ by picard.linux.it (Postfix) with ESMTPS id 73F203CB5F0
+ for <ltp@lists.linux.it>; Wed,  3 Jan 2024 12:50:06 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 7BCCB600F4C
- for <ltp@lists.linux.it>; Wed,  3 Jan 2024 12:25:37 +0100 (CET)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id 65CDB200C01
+ for <ltp@lists.linux.it>; Wed,  3 Jan 2024 12:50:05 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AC68D21180
- for <ltp@lists.linux.it>; Wed,  3 Jan 2024 11:25:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1704281136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1A2631FD11;
+ Wed,  3 Jan 2024 11:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1704282603;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iFwDktI/r1xVWzOtfEKoZuWYjvfBhgPSF7Gzxd33bME=;
- b=K6+ScwMyz/QuIfPALKPMNCek3NHvnWLIdkIG134iV4WjYoBlMSRmpTbA1dH8uouGXqv4aj
- ZOTrX3hDL4WtcdJKdwl3jrP2ZJdDW2khB3z34c60r0KOUoX59MmYqioBIJJuKs51e3Zg5g
- wajpcGsosY3M/p9bpY4znOWwjCA6tZ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1704281136;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
+ bh=4Zgez0zMWtIyb5Ng80nLKb/YRtWuLRDBmlGiyWt1MzQ=;
+ b=lxh76lr9a6cbz3B6qoyE8LPDLwWWQF1FeaeqZtfPa/v5e6hKcT1b41M7ERVBjkC/xW5t+r
+ 4PtniK6PAw1bQ0db6TZzy63bS9Xy3ljX3Bv8tYmBzteLBuXl69jIDgXZrgOuDOwqbgy7g/
+ ZpeFoPPMW1U6qu9iyy8bt74Z3LIk5Ho=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1704282603;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iFwDktI/r1xVWzOtfEKoZuWYjvfBhgPSF7Gzxd33bME=;
- b=ZjQgJ21N3Srob2dyGsWPbo5pALREmONObE8hYLJZpctfMPLb/nTlT3w5gH1SCicNRXHwsS
- QnKwZpMBBD7C8IAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1704281136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
+ bh=4Zgez0zMWtIyb5Ng80nLKb/YRtWuLRDBmlGiyWt1MzQ=;
+ b=NJsmI7frp5883kcBjR9Ni4dpvu/+KpdWksbvv1Sb9NSv14BCefu6tmpAky9P06OONciofG
+ 3TywemivWGyh+vCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1704282603;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iFwDktI/r1xVWzOtfEKoZuWYjvfBhgPSF7Gzxd33bME=;
- b=K6+ScwMyz/QuIfPALKPMNCek3NHvnWLIdkIG134iV4WjYoBlMSRmpTbA1dH8uouGXqv4aj
- ZOTrX3hDL4WtcdJKdwl3jrP2ZJdDW2khB3z34c60r0KOUoX59MmYqioBIJJuKs51e3Zg5g
- wajpcGsosY3M/p9bpY4znOWwjCA6tZ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1704281136;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
+ bh=4Zgez0zMWtIyb5Ng80nLKb/YRtWuLRDBmlGiyWt1MzQ=;
+ b=lxh76lr9a6cbz3B6qoyE8LPDLwWWQF1FeaeqZtfPa/v5e6hKcT1b41M7ERVBjkC/xW5t+r
+ 4PtniK6PAw1bQ0db6TZzy63bS9Xy3ljX3Bv8tYmBzteLBuXl69jIDgXZrgOuDOwqbgy7g/
+ ZpeFoPPMW1U6qu9iyy8bt74Z3LIk5Ho=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1704282603;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iFwDktI/r1xVWzOtfEKoZuWYjvfBhgPSF7Gzxd33bME=;
- b=ZjQgJ21N3Srob2dyGsWPbo5pALREmONObE8hYLJZpctfMPLb/nTlT3w5gH1SCicNRXHwsS
- QnKwZpMBBD7C8IAw==
+ bh=4Zgez0zMWtIyb5Ng80nLKb/YRtWuLRDBmlGiyWt1MzQ=;
+ b=NJsmI7frp5883kcBjR9Ni4dpvu/+KpdWksbvv1Sb9NSv14BCefu6tmpAky9P06OONciofG
+ 3TywemivWGyh+vCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0AAB13AA6
- for <ltp@lists.linux.it>; Wed,  3 Jan 2024 11:25:36 +0000 (UTC)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C665C13AA6;
+ Wed,  3 Jan 2024 11:50:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
- by imap1.dmz-prg2.suse.org with ESMTPSA id sdgzJzBElWWKEQAAD6G6ig
- (envelope-from <akumar@suse.de>)
- for <ltp@lists.linux.it>; Wed, 03 Jan 2024 11:25:36 +0000
-From: Avinesh Kumar <akumar@suse.de>
-To: ltp@lists.linux.it
-Date: Wed,  3 Jan 2024 12:25:35 +0100
-Message-ID: <20240103112536.1925-1-akumar@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240103112023.32355-1-akumar@suse.de>
-References: <20240103112023.32355-1-akumar@suse.de>
+ by imap1.dmz-prg2.suse.org with ESMTPSA id /EQSL+pJlWU9GAAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Wed, 03 Jan 2024 11:50:02 +0000
+Date: Wed, 3 Jan 2024 12:49:57 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Message-ID: <20240103114957.GD1073466@pevik>
+References: <20240103015240.1065284-1-pvorel@suse.cz>
+ <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: smtp-out1.suse.de;
- dkim=pass header.d=suse.de header.s=susede2_rsa header.b=K6+ScwMy;
- dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ZjQgJ21N
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.01 / 50.00]; RCVD_VIA_SMTP_AUTH(0.00)[];
- SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
- R_MISSING_CHARSET(2.50)[]; TO_DN_NONE(0.00)[];
- BROKEN_CONTENT_TYPE(1.50)[]; RCVD_COUNT_THREE(0.00)[3];
- DKIM_TRACE(0.00)[suse.de:+]; MX_GOOD(-0.01)[];
- NEURAL_HAM_SHORT(-0.20)[-1.000]; FROM_EQ_ENVFROM(0.00)[];
- MIME_TRACE(0.00)[0:+]; BAYES_HAM(-3.00)[100.00%];
- ARC_NA(0.00)[];
- R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- RCVD_DKIM_ARC_DNSWL_HI(-1.00)[]; FROM_HAS_DN(0.00)[];
- TO_MATCH_ENVRCPT_ALL(0.00)[]; NEURAL_HAM_LONG(-1.00)[-1.000];
- MIME_GOOD(-0.10)[text/plain];
- PREVIOUSLY_DELIVERED(0.00)[ltp@lists.linux.it];
- RCPT_COUNT_ONE(0.00)[1];
- DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
- MID_CONTAINS_FROM(1.00)[];
- DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
- FUZZY_BLOCKED(0.00)[rspamd.com];
- RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
- RCVD_TLS_ALL(0.00)[];
- RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Queue-Id: AC68D21180
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+X-Spamd-Result: default: False [0.55 / 50.00]; ARC_NA(0.00)[];
+ HAS_REPLYTO(0.30)[pvorel@suse.cz]; REPLYTO_EQ_FROM(0.00)[];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ TO_MATCH_ENVRCPT_ALL(0.00)[]; MIME_GOOD(-0.10)[text/plain];
+ RCVD_VIA_SMTP_AUTH(0.00)[]; RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ RCPT_COUNT_TWELVE(0.00)[15];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; MID_RHS_NOT_FQDN(0.50)[];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-0.15)[68.61%]
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v2] lib: Improve doc
+Subject: Re: [LTP] [PATCH 00/36] Remove UCLINUX from LTP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -122,109 +112,40 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: Petr Vorel <pvorel@suse.cz>
+Cc: Jonathan Corbet <corbet@lwn.net>, Linux-sh list <linux-sh@vger.kernel.org>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Greg Ungerer <gerg@linux-m68k.org>, ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Avinesh Kumar <akumar@suse.de>
----
- lib/README.md | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
-
-diff --git a/lib/README.md b/lib/README.md
-index ccb1cf1da..dd79e70f4 100644
---- a/lib/README.md
-+++ b/lib/README.md
-@@ -27,16 +27,16 @@
- 
- When a test is executed the very first thing to happen is that we check for
- various test prerequisites. These are described in the tst\_test structure and
--range from simple '.require\_root' to a more complicated kernel .config boolean
-+range from simple '.needs\_root' to a more complicated kernel .config boolean
- expressions such as: "CONFIG\_X86\_INTEL\_UMIP=y | CONFIG\_X86\_UMIP=y".
- 
--If all checks are passed the process carries on with setting up the test
-+If all checks are passed, the process continues with setting up the test
- environment as requested in the tst\_test structure. There are many different
- setup steps that have been put into the test library again ranging from rather
- simple creation of a unique test temporary directory to a bit more complicated
- ones such as preparing, formatting, and mounting a block device.
- 
--The test library also intializes shrared memory used for IPC at this step.
-+The test library also initializes shared memory used for IPC at this step.
- 
- Once all the prerequisites are checked and test environment has been prepared
- we can move on executing the testcase itself. The actual test is executed in a
-@@ -62,12 +62,11 @@ for test_variants:
- 		fork_testrun()
- ```
- 
--Before we fork() the test process the test library sets up a timeout alarm and
--also a heartbeat signal handlers and also sets up an alarm(2) accordingly to
--the test timeout. When a test times out the test library gets SIGALRM and the
--alarm handler mercilessly kills all forked children by sending SIGKILL to the
--whole process group. The heartbeat handler is used by the test process to reset
--this timer for example when the test functions run in a loop.
-+Before we fork() the test process, the test library sets up a timeout alarm and
-+also a heartbeat signal handler. When a test times out, the test library gets
-+SIGALRM and the alarm handler mercilessly kills all forked children by sending
-+SIGKILL to the whole process group. The heartbeat handler is used by the test
-+process to reset this timer for example when the test functions run in a loop.
- 
- With that done we finally fork() the test process. The test process firstly
- resets signal handlers and sets its pid to be a process group leader so that we
-@@ -97,14 +96,14 @@ usually better option than exiting it in the middle.
- The test cleanup() is also called by the tst\_brk() handler in order to cleanup
- before exiting the test process, hence it must be able to cope even with
- partial test setup. Usually it suffices to make sure to clean up only
--resources that already have been set up and to do that in an inverse order that
--we did in setup().
-+resources that already have been set up and to do that in the reverse order
-+that we did in setup().
- 
- Once the test process exits or leaves the run() or run\_all() function the test
- library wakes up from the waitpid() call, and checks if the test process
- exited normally.
- 
--Once the testrun is finished the test library does a cleanup() as well to clean
-+Once the testrun is finished, the test library does a cleanup() as well to clean
- up resources set up in the test library setup(), reports test results and
- finally exits the process.
- 
-@@ -126,8 +125,8 @@ This especially means that:
- - While the test results are, by the design, propagated to the test library
-   we may still miss a child that gets killed by a signal or exits unexpectedly.
- 
--The test writer should, because of this, take care for reaping these proceses
--properly, in most cases this could be simply done by calling
-+The test writer should, because of this, take care of reaping these
-+processes properly, in most cases this could be simply done by calling
- tst\_reap\_children() to collect and dissect deceased.
- 
- Also note that tst\_brk() does exit only the current process, so if a child
-@@ -136,9 +135,9 @@ exits.
- 
- ### Test library and exec()
- 
--The piece of mapped memory to store the results to is not preserved over
-+The piece of mapped memory to store the results is not preserved over
- exec(2), hence to use the test library from a binary started by an exec() it
--has to be remaped. In this case the process must to call tst\_reinit() before
-+has to be remapped. In this case, the process must call tst\_reinit() before
- calling any other library functions. In order to make this happen the program
- environment carries LTP\_IPC\_PATH variable with a path to the backing file on
- tmpfs. This also allows us to use the test library from shell testcases.
-@@ -148,5 +147,5 @@ tmpfs. This also allows us to use the test library from shell testcases.
- The piece of mapped memory is also used as a base for a futex-based
- synchronization primitives called checkpoints. And as said previously the
- memory can be mapped to any process by calling the tst\_reinit() function. As a
--matter of a fact there is even a tst\_checkpoint binary that allows us to use
-+matter of a fact, there is even a tst\_checkpoint binary that allows us to use
- the checkpoints from shell code as well.
--- 
-2.43.0
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+SGkgR2VlcnQsCgo+IEhpIFBldHIsCgo+IENDIG90aGVyIHVDbGludXggYXJjaCBsaXN0cwoKPiBP
+biBXZWQsIEphbiAzLCAyMDI0IGF0IDI6NTLigK9BTSBQZXRyIFZvcmVsIDxwdm9yZWxAc3VzZS5j
+ej4gd3JvdGU6Cj4gPiBVQ0xJTlVYIGlzIGJyb2tlbiBpbiBMVFAgYW5kIG5vYm9keSByZWFsbHkg
+Y2FyZXMuIEFjdHVhbGx5IEkgZGFyZSB0bwo+ID4gc2F5IFVDTElOVVggaXMgZGVhZC4gVGhlcmVm
+b3JlIEkgcHJlcGFyZWQgcGF0Y2hzZXQgdG8gcmVtb3ZlIFVDTElOVVgKPiA+IGZyb20gTFRQLiBX
+ZSBoYXZlIGJlZW4gYWN0aXZlbHkgcmVtb3ZpbmcgVUNMSU5VWCBmcm9tIExUUCBkdXJpbmcgcmV3
+cml0ZQo+ID4gdGVzdHMgdG8gbmV3IExUUCBBUEkuIFRoaXMgcmVtb3ZlcyB0aGUgcmVzdCBmcm9t
+IHRoZSBvbGQgdGVzdHMgKHdoaWNoCj4gPiB3aWxsIGJlIHNvb25lciBvciBsYXRlciByZXdyaXR0
+ZW4gdG8gbmV3IEFQSSkuCgo+ID4gQmVjYXVzZSB0aGUgcGF0Y2hzZXQgaXMgcXVpdGUgYmlnLCBJ
+IGRpZCBub3Qgd2FudCB0byBzZW5kIGl0IHRvIG1haWxpbmcKPiA+IGxpc3RzIChidXQgSSBjYW4g
+ZG8gaXQgaWYgeW91IHdhbnQpLgoKPiA+IENhbiB5b3UgcGxlYXNlIGhhdmUgbG9vayBhdCBteSBm
+b3JrIG9uIGdpdGxhYiwgYnJhbmNoOiByZW1vdmUtVUNMSU5VWAo+ID4gaHR0cHM6Ly9naXRsYWIu
+Y29tL3BldmlrL2x0cC8tL2NvbW1pdHMvcmVtb3ZlLVVDTElOVVg/cmVmX3R5cGU9aGVhZHMKCj4g
+PiBCdWlsZCB0ZXN0Ogo+ID4gaHR0cHM6Ly9naXRodWIuY29tL3BldmlrL2x0cC9hY3Rpb25zL3J1
+bnMvNzM5MjQ3MDIxNQoKPiBUaGFua3MgZm9yIHlvdXIgc2VyaWVzIQoKVGhhbmsgeW91IGZvciB5
+b3VyIGZlZWRiYWNrLiAgTWF5IEkgYWRkIHlvdXIgQWNrZWQtYnk6IHRhZyB0byB0aGUgc2VyaWVz
+IHdoZW4gd2UKYWdyZWUgdG8gbWVyZ2U/Cgo+IEkgc2VlIHlvdSBvbmx5IENDZWQgbGludXgtbTY4
+aywgYnV0IEFGQUlLLCB1Q2xpbnV4IGlzIG5vdCByZXN0cmljdGVkCj4gdG8gbTY4ay9jb2xkZmly
+ZSwgYnV0IGFsc28gYXZhaWxhYmxlIG9uIGFybTMyLCByaXNjdiwgc2gsIGFuZCB4dGVuc2EuCgpH
+b29kIHBvaW50LCBJJ2xsIHJlcGx5IHRvIHRoZWlyIGxpc3RzIGFzIHdlbGwuCgpLaW5kIHJlZ2Fy
+ZHMsClBldHIKCj4gR3J7b2V0amUsZWV0aW5nfXMsCgo+ICAgICAgICAgICAgICAgICAgICAgICAg
+IEdlZXJ0CgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlz
+dGluZm8vbHRwCg==
