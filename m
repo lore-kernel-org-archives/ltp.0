@@ -4,79 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AECDBC47074
-	for <ltp@archiver.kernel.org>; Thu,  4 Jan 2024 11:56:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB80FC47073
+	for <ltp@archiver.kernel.org>; Thu,  4 Jan 2024 12:10:29 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id CB5703CE716
-	for <ltp@archiver.kernel.org>; Thu,  4 Jan 2024 12:56:19 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id B28B23CE6EC
+	for <ltp@archiver.kernel.org>; Thu,  4 Jan 2024 13:10:27 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 8B1DA3CD2B8
- for <ltp@lists.linux.it>; Thu,  4 Jan 2024 12:56:10 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ by picard.linux.it (Postfix) with ESMTPS id C4E943CD2B8
+ for <ltp@lists.linux.it>; Thu,  4 Jan 2024 13:10:17 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 4EEB1100094B
- for <ltp@lists.linux.it>; Thu,  4 Jan 2024 12:56:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1704369367;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YVHCTOOrC6nx0tZdoUnpfLKqfIORs/DoRUEsp1tgtrI=;
- b=SIy+QsUyrMoSQ7NP3aRU9bXmTFyvwOV9qwoeb529DnLt/g+9K93I+jDpeT9N46mkBFjS3B
- +5OaMbPGuFp2zXh6A7SizLedAzegJEkFANoRhzpxAbChCwWYMKfpGXaaHRV/sohwV3Lfw/
- DTyaiE+/yCjD+jftG9Gy8TqkCMystf8=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-588-10MyhMfVOLO7rrcR21HQOw-1; Thu, 04 Jan 2024 06:56:00 -0500
-X-MC-Unique: 10MyhMfVOLO7rrcR21HQOw-1
-Received: by mail-lj1-f197.google.com with SMTP id
- 38308e7fff4ca-2cce73a3b5bso3677031fa.0
- for <ltp@lists.linux.it>; Thu, 04 Jan 2024 03:56:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1704369359; x=1704974159;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=YVHCTOOrC6nx0tZdoUnpfLKqfIORs/DoRUEsp1tgtrI=;
- b=QbE7SlX5QDv+239WfpNoegn7gE7ze5uK8atqK9lKO312yVdVFiouGjUjW2hH8Z1bcS
- 2Qd5Ro1kpHritxuo5aAA7spuCPl8f7gbxOlMYDS/fc2CxIFq6QZrh2hDIKqYYbTiyuB5
- 2mcXrk3EmuJF0ruIf+hOEpL/hf+HtSqLMbSkdq/zz7WvoQU+VK3pWCzaQYddXqSA9nG/
- pAqn5WtRFDzJ49VzsXGJ5Vde1Tq1Gb1B2UPmgIXggvY8vuX8lSc6hj4PSqBJ89mpkr7n
- DB2Bu21+87i52FMLFGYwxz5Oqf8P9zpxJ69wI+8+U6CqpcmS1rEg4EZqfBlp7LyBZ8fT
- oXiQ==
-X-Gm-Message-State: AOJu0YxgnPaVTK/GZDgHaiIIuENO7Vdhfj/4wmeyB/Ks1nAxQ8j9n8GN
- MSoHrrYH2HDOstnvF4b/3laeeAdOA8ULNizg084zWi0xMaTGHoVXlGsFE82+39400McyEmqmmJA
- XnXJ/UFYnVnU4mtF7UV8QBwB63OcliOqSUAs=
-X-Received: by 2002:a2e:888a:0:b0:2cc:f41d:9304 with SMTP id
- k10-20020a2e888a000000b002ccf41d9304mr313835lji.90.1704369359194; 
- Thu, 04 Jan 2024 03:55:59 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGN9xEldut0W1ARat0HBSPPYeKMDDGXPPmYefXDDb2PNjDJCbK0fhMGAR6IZa8peGIFDPvqHLMmFJHzF9TjFGQ=
-X-Received: by 2002:a2e:888a:0:b0:2cc:f41d:9304 with SMTP id
- k10-20020a2e888a000000b002ccf41d9304mr313831lji.90.1704369358906; Thu, 04 Jan
- 2024 03:55:58 -0800 (PST)
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id 9449B60110D
+ for <ltp@lists.linux.it>; Thu,  4 Jan 2024 13:10:16 +0100 (CET)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 682511F805;
+ Thu,  4 Jan 2024 12:10:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1704370215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ktc6noVUgqt/ohF7v9LZuM/vHXXvawmFlAwfBqp+J1w=;
+ b=MV12nOf1stYUXUmLBXcOddoxResYY6rOA/39Ov+XOczQUrYjaCMiPTqBZsZv9OCU0DziWW
+ tBXuN1mRlGWLAyY272EdNGmMbTHAWqEWgG4nD1mpqfUKDLaTmc2kBBPDIaDpHm3KIrMCZ1
+ FOttT/4ujIrBaHpfXZdHQgbbmj9KvQQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1704370215;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ktc6noVUgqt/ohF7v9LZuM/vHXXvawmFlAwfBqp+J1w=;
+ b=mHM7ZlcyqxL+reDq4XEe12dFsAdUZehy193U7HNCNMb88CzvrTBVeqJcgpR9YIEKcs/f53
+ LfmBcluW6DemJwCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1704370215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ktc6noVUgqt/ohF7v9LZuM/vHXXvawmFlAwfBqp+J1w=;
+ b=MV12nOf1stYUXUmLBXcOddoxResYY6rOA/39Ov+XOczQUrYjaCMiPTqBZsZv9OCU0DziWW
+ tBXuN1mRlGWLAyY272EdNGmMbTHAWqEWgG4nD1mpqfUKDLaTmc2kBBPDIaDpHm3KIrMCZ1
+ FOttT/4ujIrBaHpfXZdHQgbbmj9KvQQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1704370215;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=ktc6noVUgqt/ohF7v9LZuM/vHXXvawmFlAwfBqp+J1w=;
+ b=mHM7ZlcyqxL+reDq4XEe12dFsAdUZehy193U7HNCNMb88CzvrTBVeqJcgpR9YIEKcs/f53
+ LfmBcluW6DemJwCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 643F9137E8;
+ Thu,  4 Jan 2024 12:10:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+ by imap1.dmz-prg2.suse.org with ESMTPSA id iC6uFSaglmUzEgAAD6G6ig
+ (envelope-from <pvorel@suse.cz>); Thu, 04 Jan 2024 12:10:14 +0000
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Date: Thu,  4 Jan 2024 13:10:01 +0100
+Message-ID: <20240104121001.1155491-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <20231214151954.840244-1-pvorel@suse.cz>
- <20231214151954.840244-10-pvorel@suse.cz>
- <20240104113642.GA1149671@pevik>
-In-Reply-To: <20240104113642.GA1149671@pevik>
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 4 Jan 2024 19:55:47 +0800
-Message-ID: <CAEemH2fwu+LSBrsQh6x6C-QsOLJ5O33xMYHG7wjbiPfN4D=fMw@mail.gmail.com>
-To: Petr Vorel <pvorel@suse.cz>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+X-Spamd-Bar: /
+Authentication-Results: smtp-out2.suse.de;
+ dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MV12nOf1;
+ dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=mHM7Zlcy
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.49 / 50.00]; ARC_NA(0.00)[];
+ RCVD_VIA_SMTP_AUTH(0.00)[];
+ R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+ FROM_HAS_DN(0.00)[]; TO_DN_SOME(0.00)[];
+ R_MISSING_CHARSET(2.50)[]; TO_MATCH_ENVRCPT_ALL(0.00)[];
+ MIME_GOOD(-0.10)[text/plain]; BROKEN_CONTENT_TYPE(1.50)[];
+ RCPT_COUNT_FIVE(0.00)[5]; NEURAL_HAM_LONG(-1.00)[-1.000];
+ RCVD_COUNT_THREE(0.00)[3];
+ DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+ DKIM_TRACE(0.00)[suse.cz:+]; MX_GOOD(-0.01)[];
+ MID_CONTAINS_FROM(1.00)[];
+ DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email];
+ FUZZY_BLOCKED(0.00)[rspamd.com]; FROM_EQ_ENVFROM(0.00)[];
+ MIME_TRACE(0.00)[0:+]; NEURAL_HAM_SHORT(-0.20)[-1.000];
+ RCVD_TLS_ALL(0.00)[]; BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Queue-Id: 682511F805
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
-Subject: Re: [LTP] [PATCH v4 09/10] lib: Add support for TDEBUG tst_res()
- flag
+Subject: [LTP] [PATCH v2 1/1] net: tst_netload_compare(): Ignore performance
+ failures
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,36 +110,102 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: ltp@lists.linux.it
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-T24gVGh1LCBKYW4gNCwgMjAyNCBhdCA3OjM34oCvUE0gUGV0ciBWb3JlbCA8cHZvcmVsQHN1c2Uu
-Y3o+IHdyb3RlOgoKPiBIaSBhbGwsCj4KPiA+IFRvIHByaW50IG1vcmUgdmVyYm9zZSBpbmZvLiBC
-eSBkZWZhdWx0IGl0J3Mgb2ZmLCBwcmludGluZyBlbmFibGVkIHdpdGgKPiA+IC1EIG9wdGlvbiBv
-ciBUU1RfRU5BQkxFX0RFQlVHPTEuCj4KPiAuLi4KPiA+IGRpZmYgLS1naXQgYS9kb2MvQy1UZXN0
-LUFQSS5hc2NpaWRvYyBiL2RvYy9DLVRlc3QtQVBJLmFzY2lpZG9jCj4gLi4uCj4gPiArfCAnVElO
-Rk8nICB8IEdlbmVyYWwgbWVzc2FnZS4KPiA+ICt8ICdUREVCVUcnIHwgRGVidWcgbWVzc2FnZSAo
-bmV3IEMgQVBJIG9ubHksIHByaW50ZWQgd2l0aCAnLUQnIG9yIHZpYQo+ICdUU1RfRU5BQkxFX0RF
-QlVHPTEnIG9yICd5Jwo+ID4gKyAgICAgICAgICAgICBlbnZpcm9ubWVudCB2YXJpYWJsZSksIG9u
-bHkgZm9yIG1lc3NhZ2VzIHdoaWNoIHdvdWxkIGJlCj4gdG9vIHZlcmJvc2UgZm9yIG5vcm1hbCBy
-dW4uCj4gLi4uCj4gPiArKysgYi9kb2MvVXNlci1HdWlkZWxpbmVzLmFzY2lpZG9jCj4gPiBAQCAt
-NDEsNiArNDEsNyBAQCBGb3IgcnVubmluZyBMVFAgbmV0d29yayB0ZXN0cyBzZWUKPiBgdGVzdGNh
-c2VzL25ldHdvcmsvUkVBRE1FLm1kYC4KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFu
-ZCBvdGhlcnMsIHdoaWNoIGltcGx5IGl0LCBzaGVsbDoKPiAnVFNUX05FRURTX1RNUERJUj0xJyku
-Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICBNdXN0IGJlIGFuIGFic29sdXRlIHBhdGgg
-KGRlZmF1bHQ6ICcvdG1wJykuCj4gPiAgfCAnVFNUX05PX0NMRUFOVVAnICAgICAgfCBEaXNhYmxl
-IHJ1bm5pbmcgdGVzdCBjbGVhbnVwIChkZWZpbmVkIGluCj4gJ1RTVF9DTEVBTlVQJykuCj4gPiAr
-fCAnVFNUX0VOQUJMRV9ERUJVRycgICAgfCBFbmFibGUgZGVidWcgaW5mbyAodmFsdWUgJ3knIG9y
-ICcxJykuCj4KPiBUaGlzIGhhcyBiZWVuIG1lcmdlZC4gQnV0IEkgbm93IHdvbmRlciwgaWYgdGhp
-cyB3b3VsZCBiZSBiZXR0ZXIgd2l0aCBMVFBfCj4gcHJlZml4LCBlLmcuIExUUF9FTkFCTEVfREVC
-VUcsIGJlY2F1c2UgaXQncyBhIHZhcmlhYmxlIHdoaWNoIGlzIGRlZmluZWQgYnkKPiBMVFAKPiB1
-c2VyLiBXRFlUPwo+CgorMSBmb3IgTFRQX0VOQUJMRV9ERUJVRwoKR29vZCBwb2ludCwgYXMgaXQg
-aXMgZGVzaWduZWQgZm9yIHRoZSB3aG9sZSBMVFAgdGVzdCwgc28gdGhlIGZpcnN0CmxldmVsIHNo
-b3VsZCBiZSBtb3JlIHByb3Blci4gU2ltaWxhcnkgd2l0aCBMVFBfUlVOVElNRV9NVUwuCgoKPiBU
-aGlzIG1pZ2h0IGJlIGFsc28gY2FzZSBmb3IgVFNUX05PX0NMRUFOVVAsIGJ1dCBpdCdzIHJhcmVs
-eSB1c2VkLCB0aHVzIG15Cj4gY29uY2VybiBpcyBtb3JlIGFib3V0IExUUF9FTkFCTEVfREVCVUcu
-Cj4KPiBLaW5kIHJlZ2FyZHMsCj4gUGV0cgo+Cj4KCi0tIApSZWdhcmRzLApMaSBXYW5nCgotLSAK
-TWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
+Performance failures in tests which use tst_netload_compare() (tests in
+runtest/net.features) can hide a real error (e.g. test fails due missing
+required kernel module). Best solution would be to have feature tests
+(likely written in C API) and performance tests (the current ones).
+
+But until it happens, allow to ignore performance failure with
+environment variable LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1.
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+changes v1->v2:
+* Ignoring performance requires setting LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1
+(previously it was ignored by default, Martin), therefore rename the variable.
+* Variable uses LTP_ prefix (user defined), thus no need to whitelist it
+in tst_net.sh.
+
+Martin also pointed out that message can be printed multiple times, but I
+don't think this is a problem (it's better that tester sees it).
+
+ testcases/lib/tst_net.sh    | 19 +++++++++++++++----
+ testcases/network/README.md |  4 ++++
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/lib/tst_net.sh b/testcases/lib/tst_net.sh
+index 2ed0e787f..6cf7f2fcb 100644
+--- a/testcases/lib/tst_net.sh
++++ b/testcases/lib/tst_net.sh
+@@ -1,7 +1,7 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ # Copyright (c) 2014-2017 Oracle and/or its affiliates. All Rights Reserved.
+-# Copyright (c) 2016-2023 Petr Vorel <pvorel@suse.cz>
++# Copyright (c) 2016-2024 Petr Vorel <pvorel@suse.cz>
+ # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+ 
+ [ -n "$TST_LIB_NET_LOADED" ] && return 0
+@@ -863,22 +863,33 @@ tst_netload()
+ # TIME: time that is compared to the base one
+ # THRESHOD_LOW: lower limit for TFAIL
+ # THRESHOD_HIGH: upper limit for TWARN
++#
++# Slow performance can be ignored with setting environment variable
++# LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1
+ tst_netload_compare()
+ {
+ 	local base_time=$1
+ 	local new_time=$2
+ 	local threshold_low=$3
+ 	local threshold_hi=$4
++	local ttype='TFAIL'
++	local msg res
+ 
+ 	if [ -z "$base_time" -o -z "$new_time" -o -z "$threshold_low" ]; then
+ 		tst_brk_ TBROK "tst_netload_compare: invalid argument(s)"
+ 	fi
+ 
+-	local res=$(((base_time - new_time) * 100 / base_time))
+-	local msg="performance result is ${res}%"
++	res=$(((base_time - new_time) * 100 / base_time))
++	msg="performance result is ${res}%"
+ 
+ 	if [ "$res" -lt "$threshold_low" ]; then
+-		tst_res_ TFAIL "$msg < threshold ${threshold_low}%"
++		if [ "$LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE" = 1 ]; then
++			ttype='TINFO';
++			tst_res_ TINFO "WARNING: slow performance is not treated as error due LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1"
++		else
++			tst_res_ TINFO "Following slow performance can be ignored with LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1"
++		fi
++		tst_res_ $ttype "$msg < threshold ${threshold_low}%"
+ 		return
+ 	fi
+ 
+diff --git a/testcases/network/README.md b/testcases/network/README.md
+index a0a1d3d95..e1b1296d6 100644
+--- a/testcases/network/README.md
++++ b/testcases/network/README.md
+@@ -84,6 +84,10 @@ Where
+ Default values for all LTP network parameters are set in `testcases/lib/tst_net.sh`.
+ Network stress parameters are documented in `testcases/network/stress/README`.
+ 
++Tests which use `tst_netload_compare()` test also performance. They can fail on
++overloaded SUT.  To ignore performance failure and test only the network functionality,
++set `LTP_NET_FEATURES_IGNORE_PERFORMANCE_FAILURE=1` environment variable.
++
+ ## Debugging
+ Both single and two host configurations support debugging via
+ `TST_NET_RHOST_RUN_DEBUG=1` environment variable.
+-- 
+2.43.0
+
+
+-- 
+Mailing list info: https://lists.linux.it/listinfo/ltp
