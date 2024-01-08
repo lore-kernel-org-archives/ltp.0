@@ -4,67 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 780EFC47073
-	for <ltp@archiver.kernel.org>; Mon,  8 Jan 2024 01:23:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DED0C3DA6E
+	for <ltp@archiver.kernel.org>; Mon,  8 Jan 2024 08:33:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
+ i=@lists.linux.it; q=dns/txt; s=picard; t=1704702836; h=message-id :
+ date : mime-version : to : references : in-reply-to : subject :
+ list-id : list-unsubscribe : list-archive : list-post : list-help :
+ list-subscribe : from : reply-to : cc : content-transfer-encoding :
+ content-type : sender : from;
+ bh=bhnwjf7317XI/nNRbaAzxUfOz3Qy+Tx7p0vpkr7ATpc=;
+ b=Y+rk78z+s/z7kPRPRh8a34lFOw67mdYC08dAJ6RaspuRpcdXJPz8bEnwvKVRinJLavI7M
+ jKK6QXc2L86o002YyYc1rpUWt7xr6sV6xUM14/hEg63mvdBZKMkglC0sxW1JtVP/AvSRo8B
+ e51kXaMtPpvG/JEe7Zbg5v3sjn9ldsk=
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id A729C3CE5B4
-	for <ltp@archiver.kernel.org>; Mon,  8 Jan 2024 02:23:44 +0100 (CET)
-Received: from in-4.smtp.seeweb.it (in-4.smtp.seeweb.it [217.194.8.4])
+	by picard.linux.it (Postfix) with ESMTP id 6EAFF3CDC0B
+	for <ltp@archiver.kernel.org>; Mon,  8 Jan 2024 09:33:56 +0100 (CET)
+Received: from in-5.smtp.seeweb.it (in-5.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::5])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 5EC013CE581
- for <ltp@lists.linux.it>; Mon,  8 Jan 2024 02:23:13 +0100 (CET)
-Authentication-Results: in-4.smtp.seeweb.it; spf=pass (sender SPF authorized)
- smtp.mailfrom=fujitsu.com (client-ip=139.138.37.100;
- helo=esa12.hc1455-7.c3s2.iphmx.com; envelope-from=lizhijian@fujitsu.com;
- receiver=lists.linux.it)
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com
- [139.138.37.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by picard.linux.it (Postfix) with ESMTPS id E48E33C8B55
+ for <ltp@lists.linux.it>; Mon,  8 Jan 2024 09:33:34 +0100 (CET)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-4.smtp.seeweb.it (Postfix) with ESMTPS id 0636D1000419
- for <ltp@lists.linux.it>; Mon,  8 Jan 2024 02:23:11 +0100 (CET)
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="124748147"
-X-IronPort-AV: E=Sophos;i="6.04,340,1695654000"; d="scan'208";a="124748147"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
- by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Jan 2024 10:23:10 +0900
-Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com
- [192.168.87.59])
- by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id C5912D64B1
- for <ltp@lists.linux.it>; Mon,  8 Jan 2024 10:23:07 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
- [192.51.206.21])
- by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id F4002BF539
- for <ltp@lists.linux.it>; Mon,  8 Jan 2024 10:23:06 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
- by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 92FA0200968CC
- for <ltp@lists.linux.it>; Mon,  8 Jan 2024 10:23:06 +0900 (JST)
-Received: from FNSTPC.g08.fujitsu.local (unknown [10.167.226.45])
- by edo.cn.fujitsu.com (Postfix) with ESMTP id 345E21A0076;
- Mon,  8 Jan 2024 09:23:06 +0800 (CST)
-From: Li Zhijian <lizhijian@fujitsu.com>
-To: ltp@lists.linux.it
-Date: Mon,  8 Jan 2024 09:22:51 +0800
-Message-ID: <20240108012252.2496776-2-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240108012252.2496776-1-lizhijian@fujitsu.com>
-References: <20240108012252.2496776-1-lizhijian@fujitsu.com>
+ by in-5.smtp.seeweb.it (Postfix) with ESMTPS id F1FC7600828
+ for <ltp@lists.linux.it>; Mon,  8 Jan 2024 09:33:33 +0100 (CET)
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-40d2376db79so14790815e9.0
+ for <ltp@lists.linux.it>; Mon, 08 Jan 2024 00:33:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=suse.com; s=google; t=1704702813; x=1705307613; darn=lists.linux.it;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=GfLQg2J+OwD4mK8aB87IakjXF3Kgfssqm9r5be44QF4=;
+ b=FA3YkRPxmNxYqL4TRzGnlVZLLd084UkSCUKp62vt85nqu7QS1yJXDOjwhxsyJpwTr3
+ jf5gLchSWnyewf8TIuSdLB0Sf6j/gDAnecBdLbDdkXuYBIfCKet46CCiHQrhGkwjSbhq
+ YanhnDlfcUY+m0D2biKfvj8bZqGPTKzb7WNkVprLUAg2nauKiYNGI/GdraiW1xw4daSt
+ gwZn8iafkOwRqR51pIt4TRv2qyRV2RAy6T+nj/kUOtpB4QgTOE/0EKVoCWDqEnwsyK0O
+ T0jjc8JyPpISeHmDlVTUG9+QXWMWKMEPXkXKkZieT4rfOvDbj1cVE1wtwqUq0yPRoK/h
+ Gy9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1704702813; x=1705307613;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=GfLQg2J+OwD4mK8aB87IakjXF3Kgfssqm9r5be44QF4=;
+ b=AwO6AzN4snPNCFF5Wd+fA2M6UXtycOEKCJ/eSgzesSEdNO6VbkafWu5RiWLkIJgbfV
+ NYD7469Sg+iuj5dCVEu7w++G5E+S3zVjfTVHkgks/dlEFvlapxDeyUV1/RSfdyOU3Fyn
+ oH+hsG9nNufyRpQ8rz3nN5VfXtHV9rWvBRQmHbkx/1ZDCV8kQnrwivOlpRsSJaOLPof6
+ KOZQb1GnFjjGGZ54apYRkTOU6qbWNkeodJqMi8SA8cYsssK0fK2HO5x53rCCs6tnEKwn
+ JOsgaCyFMXy5GHLzcIvFSQDLlNnRaQDn0rgYJZVbWCSI+32uEItVB++kxLvixWAFMte0
+ mCmw==
+X-Gm-Message-State: AOJu0Yyxpt5AgiNXh3u1z0UGpOmERo9Y+jUd4Y9x7ThbPUTK+hg9DOxH
+ 6EzAUHIG3KXiMW4aunm4ZcrS+eEcV90LYg==
+X-Google-Smtp-Source: AGHT+IFdr9+p9p3yVvUI5Yb2+RUaaTtc6lK6/0ftFespHQFyJZzml/U22xZUgZCqObC/GxElyekYhg==
+X-Received: by 2002:a05:600c:3411:b0:40d:4dce:4a2e with SMTP id
+ y17-20020a05600c341100b0040d4dce4a2emr2008525wmp.26.1704702813400; 
+ Mon, 08 Jan 2024 00:33:33 -0800 (PST)
+Received: from [172.20.10.3] ([37.161.21.69]) by smtp.gmail.com with ESMTPSA id
+ p7-20020a05600c358700b0040d3db8186fsm10246189wmq.5.2024.01.08.00.33.27
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 08 Jan 2024 00:33:32 -0800 (PST)
+Message-ID: <848d1908-b758-44c2-a7bd-f3e83da18bce@suse.com>
+Date: Mon, 8 Jan 2024 09:33:23 +0100
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28106.003
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28106.003
-X-TMASE-Result: 10--1.464700-10.000000
-X-TMASE-MatchedRID: WiDRxrFjYObFkNQYjukgj07nLUqYrlslFIuBIWrdOePfUZT83lbkEG3N
- GEaEXmnAzXNXdPmZxISAMuqetGVets1LqAsZOTL6avP8b9lJtWr6C0ePs7A07U9hWalM11Qabht
- CzQoH/K9iiwx1HSyFSHf7tEdrEkpRaxGdYpTPnCrAYLx7rnbR8rDQ8m3TqgloelpCXnG+JjvDGB
- Z1G8r1Sf2D6gx/0ozp
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Virus-Scanned: clamav-milter 1.0.3 at in-4.smtp.seeweb.it
+User-Agent: Mozilla Thunderbird
+To: Rob Landley <rob@landley.net>, Cyril Hrubis <chrubis@suse.cz>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20240103015240.1065284-1-pvorel@suse.cz>
+ <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+Content-Language: en-US
+In-Reply-To: <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+X-Virus-Scanned: clamav-milter 1.0.3 at in-5.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [RESEND PATCH 2/2] lib/newlib_tests: Add missing gitignore
+Subject: Re: [LTP] [PATCH 00/36] Remove UCLINUX from LTP
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,29 +97,54 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+From: Andrea Cervesato via ltp <ltp@lists.linux.it>
+Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Linux-sh list <linux-sh@vger.kernel.org>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Greg Ungerer <gerg@linux-m68k.org>, ltp@lists.linux.it
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-st_res_flags should be documented in .gitignore
+Hi!
 
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
- lib/newlib_tests/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
+My 2 cents. I'm working on refactoring growfiles test which uses UCLINUX 
+flag.
+During its development I had occasion to check UCLINUX support and 
+(indeed) it seems pretty
+broken for LTP, because nobody is maintaining it for a while and such 
+tests use old API that will
+be replaced in any case sooner or later. I agree with other people about 
+removing it, unless there's
+a valid reason to keep it.
+Just in case we want to keep it, someone should take care about UCLINUX 
+support, testing LTP releases for it as well, but it doesn't seem like 
+something we can do inside the LTP devs team due to the lack of resources.
 
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index 0256bef76c..a69b29e24a 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -56,3 +56,4 @@ tst_needs_cmds08
- test_runtime01
- test_runtime02
- test_children_cleanup
-+tst_res_flags
--- 
-2.41.0
+Regards,
+Andrea
+
+On 1/5/24 04:52, Rob Landley wrote:
+> On 1/3/24 06:09, Cyril Hrubis wrote:
+>> Hi!
+>>> I am not sure I agree with this series.
+>>> Removing support for UCLINUX from LTP is almost a guarantee for
+>>> not noticing when more breakage is introduced.
+>>>
+>>> How exactly is UCLINUX broken in LTP?
+>> As far as we know noone is using it and nobody is maintaing it for a
+>> decade,
+> Nobody is maintaining "uclinux" because that was a distro, but you can build
+> nommu support in buildroot and such, and people do.
+>
+> Rob
+
 
 
 -- 
