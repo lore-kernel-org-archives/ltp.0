@@ -4,88 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7D1BC3DA6E
-	for <ltp@archiver.kernel.org>; Mon,  8 Jan 2024 08:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1704702904; h=message-id :
- date : mime-version : to : references : in-reply-to : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : cc : content-transfer-encoding :
- content-type : sender : from;
- bh=bhnwjf7317XI/nNRbaAzxUfOz3Qy+Tx7p0vpkr7ATpc=;
- b=H3oOBD9mcwaINWI0I6R5m3UZEyzJ0WF6vbVOLNp7RjzxtAy+KoP0j8zv2/eRjR+KVV7F2
- Xy9lHJRR6NRB0mkgTT9YPyLacRN9PHZAPYJd4B9WhYVbKlNktNzQlVhGKDOnJpBk9G2dWkf
- Mj7v16Js8GrEcfIgxOjVMBOc5RWbOV4=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75A5EC3DA6E
+	for <ltp@archiver.kernel.org>; Mon,  8 Jan 2024 08:47:34 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C76233CE53D
-	for <ltp@archiver.kernel.org>; Mon,  8 Jan 2024 09:35:04 +0100 (CET)
-Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::6])
+	by picard.linux.it (Postfix) with ESMTP id 936063CD5B7
+	for <ltp@archiver.kernel.org>; Mon,  8 Jan 2024 09:47:32 +0100 (CET)
+Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
+ [IPv6:2001:4b78:1:20::2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+ key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id D73833CD371
- for <ltp@lists.linux.it>; Mon,  8 Jan 2024 09:34:42 +0100 (CET)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ by picard.linux.it (Postfix) with ESMTPS id F27C43C8B55
+ for <ltp@lists.linux.it>; Mon,  8 Jan 2024 09:47:17 +0100 (CET)
+Authentication-Results: in-2.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=redhat.com (client-ip=170.10.133.124;
+ helo=us-smtp-delivery-124.mimecast.com; envelope-from=liwan@redhat.com;
+ receiver=lists.linux.it)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by in-6.smtp.seeweb.it (Postfix) with ESMTPS id E9D501400FAB
- for <ltp@lists.linux.it>; Mon,  8 Jan 2024 09:34:41 +0100 (CET)
-Received: by mail-wm1-x32a.google.com with SMTP id
- 5b1f17b1804b1-40d5f40ce04so18242615e9.2
- for <ltp@lists.linux.it>; Mon, 08 Jan 2024 00:34:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=suse.com; s=google; t=1704702881; x=1705307681; darn=lists.linux.it;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=GfLQg2J+OwD4mK8aB87IakjXF3Kgfssqm9r5be44QF4=;
- b=e68cdOhKsDCT/iPKxw2BQt7pa0LqVS+B+/BzVCF8SgDSjWjnG4RwGvdhXgcVsZdHUR
- 4b247GR1XNuKiCgnPJJzO0TVXnU5v+vsCuCf7rDflsWDAlnsIaFCR5iZ+vTAPmYZujNi
- K0Llxya6V+jD/jnZ2KqGNkoSY2LFg3Hw5P4oRK3PEL7udfc8SmRshaY2rSyNH0d1QR+0
- fKVSp8JgjIYYPRvrYLM0t/5tSukpgg0ZVJPa777+tWRs50L+n3u5CBHsiDkb/ixkeQsT
- PG7+SabTAUKRaJRrEQAA1EwzP4QLK33qNuxOtNm8f3w/lU8mGRZFY9M2lLQTfrMqm03g
- qXiw==
+ by in-2.smtp.seeweb.it (Postfix) with ESMTPS id DE7EF6009D6
+ for <ltp@lists.linux.it>; Mon,  8 Jan 2024 09:47:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1704703635;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=h8/UtGVcpq1NybE/XaMuViHKT5wM/epcwmXv3SU64MU=;
+ b=akvmJ0bpuiqY75pFr6YG/g6ceEFO8NaItaGUCPZ/A1Dvt4pGFgeFEhKg6Gxk++Xk4boAcK
+ BjQD9RwqONKYBVsEQ5ZNK608/nR8XGDo056Al6YphIBMGZtnxGZr6gDP/OeJ+uepDof7C0
+ /34sRXdFlI2vzYcgHl60jGN+9Y5sUTs=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-626-x9oMDWgAOvC4xKKsPxb1ew-1; Mon, 08 Jan 2024 03:47:12 -0500
+X-MC-Unique: x9oMDWgAOvC4xKKsPxb1ew-1
+Received: by mail-lj1-f198.google.com with SMTP id
+ 38308e7fff4ca-2ccc7c01bd7so10477711fa.0
+ for <ltp@lists.linux.it>; Mon, 08 Jan 2024 00:47:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1704702881; x=1705307681;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=GfLQg2J+OwD4mK8aB87IakjXF3Kgfssqm9r5be44QF4=;
- b=HQqSw31LK/aJBQcjMNqMqhyrAudJSJpmtSIZ2cp0db9QPVthlL4OJYWTwt4zGpZWag
- B+xcDnpGyoJHqJAJ/+vnedFoNK55SqTPF7A0hUIWsikVdlbXehllERs70fboN0C14IFs
- n2PP3w9mZMK/V4sILScZzAd44SYK3oHDL5wKbwhZhIkcOGnjcnxZl7r1T0fuKuHpnF9C
- ihreRxEZ7oQ7R/J2n7eYKN948DwlB41e7E3zxT0pGgmYdMnDPExudapLmuONYZOiut35
- SIZlPfzODqS/GyvxgMwgMvfxtlkbap5sNrJOdeYZrUv/tC+V22YW+YPxlQfFiqZ2hcLb
- 5yRQ==
-X-Gm-Message-State: AOJu0YzgEizCE5db0gTxKWWj9zHR7BE4pWc/cegFbyEgc18zxrvF8FsU
- UX0nAAJyWWorB5ofTCAXsOIQTft31nItNA==
-X-Google-Smtp-Source: AGHT+IG/mp6y+0cYUrDCavig/3hnnulb4tFtsRjSF6zEM6NAi6nWZTX4f7mAdVBvGKSLQG0+ZSf0JA==
-X-Received: by 2002:a05:600c:3ac6:b0:40e:4785:276f with SMTP id
- d6-20020a05600c3ac600b0040e4785276fmr507460wms.100.1704702881399; 
- Mon, 08 Jan 2024 00:34:41 -0800 (PST)
-Received: from [172.20.10.3] ([37.161.21.69]) by smtp.gmail.com with ESMTPSA id
- fc7-20020a05600c524700b0040d7b340e07sm10122595wmb.45.2024.01.08.00.34.37
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 08 Jan 2024 00:34:40 -0800 (PST)
-Message-ID: <6fd9dcfa-b412-4573-a2c7-e4ded89bb225@suse.com>
-Date: Mon, 8 Jan 2024 09:34:35 +0100
+ d=1e100.net; s=20230601; t=1704703631; x=1705308431;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=h8/UtGVcpq1NybE/XaMuViHKT5wM/epcwmXv3SU64MU=;
+ b=hivxC8PsmyYmIrjCDaFI9XaojvjRpGoDS/lIDXPK6ENDeVIcULhjFNP6wuGBLr+wUB
+ qSjtayvCvCQwFkMdn4DdQRZxoXPHMvk4zk0MlDUzHOL7lKbU6M9hi2Uw1OToPURcqKZO
+ PnfPiKHlscKG+ny5q5JthXl9JpY/ApZLXsfwERZLYwNqKagZglG+tSRydmMNopO0OYPh
+ VsDWXVfLhKR3ml7JSkMfs6SC6VdUYc2iRFHWjByEqdT/vUeB+qNuvnebX42FUw40h9TF
+ n90tNmEE7V8xiPLIvcmADJQKmEdaGCDmE1fF6k2aYJjH6z4XEjUtPf8R5Qw/W2S1d3tp
+ AtBQ==
+X-Gm-Message-State: AOJu0Yxn5QqKQlMYnTeqlYRnQWS5iqi85e6vLVDwKfTHx669asP2mO5c
+ hb0dpzfg4q2eshlA8RL284YGHYj4uvefQj0LqH9DC57SQrf3FL/6jSXL3S/VslXiTArYuaVCSui
+ O1UNzQN1vmQ1CyaE04//agmNtk85Og7nWGFM=
+X-Received: by 2002:a2e:a553:0:b0:2cd:4f3b:d0bb with SMTP id
+ e19-20020a2ea553000000b002cd4f3bd0bbmr736201ljn.8.1704703630960; 
+ Mon, 08 Jan 2024 00:47:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEuYpFvYHzkdU86RTl2EtJ50/scWaj1JeW3xXUdPY+P7Fv16LkXPb9jLALjvaJADV6rD2Zr2DBf9OIHZMQztoU=
+X-Received: by 2002:a2e:a553:0:b0:2cd:4f3b:d0bb with SMTP id
+ e19-20020a2ea553000000b002cd4f3bd0bbmr736198ljn.8.1704703630672; Mon, 08 Jan
+ 2024 00:47:10 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Rob Landley <rob@landley.net>, Cyril Hrubis <chrubis@suse.cz>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20240103015240.1065284-1-pvorel@suse.cz>
- <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik>
- <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
-Content-Language: en-US
-In-Reply-To: <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
-X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
+References: <20240108012252.2496776-1-lizhijian@fujitsu.com>
+ <20240108012252.2496776-2-lizhijian@fujitsu.com>
+In-Reply-To: <20240108012252.2496776-2-lizhijian@fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 8 Jan 2024 16:46:58 +0800
+Message-ID: <CAEemH2eOGARwTdaQuy7O_LsgaNtt3dMH1+zvvYvNgPSmYQQ6-w@mail.gmail.com>
+To: Li Zhijian <lizhijian@fujitsu.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: Re: [LTP] [PATCH 00/36] Remove UCLINUX from LTP
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Subject: Re: [LTP] [RESEND PATCH 2/2] lib/newlib_tests: Add missing gitignore
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,55 +91,23 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Andrea Cervesato via ltp <ltp@lists.linux.it>
-Reply-To: Andrea Cervesato <andrea.cervesato@suse.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Linux-sh list <linux-sh@vger.kernel.org>,
- Christophe Lyon <christophe.lyon@linaro.org>,
- Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- Greg Ungerer <gerg@linux-m68k.org>, ltp@lists.linux.it
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Cc: ltp@lists.linux.it
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Hi!
-
-My 2 cents. I'm working on refactoring growfiles test which uses UCLINUX 
-flag.
-During its development I had occasion to check UCLINUX support and 
-(indeed) it seems pretty
-broken for LTP, because nobody is maintaining it for a while and such 
-tests use old API that will
-be replaced in any case sooner or later. I agree with other people about 
-removing it, unless there's
-a valid reason to keep it.
-Just in case we want to keep it, someone should take care about UCLINUX 
-support, testing LTP releases for it as well, but it doesn't seem like 
-something we can do inside the LTP devs team due to the lack of resources.
-
-Regards,
-Andrea
-
-On 1/5/24 04:52, Rob Landley wrote:
-> On 1/3/24 06:09, Cyril Hrubis wrote:
->> Hi!
->>> I am not sure I agree with this series.
->>> Removing support for UCLINUX from LTP is almost a guarantee for
->>> not noticing when more breakage is introduced.
->>>
->>> How exactly is UCLINUX broken in LTP?
->> As far as we know noone is using it and nobody is maintaing it for a
->> decade,
-> Nobody is maintaining "uclinux" because that was a distro, but you can build
-> nommu support in buildroot and such, and people do.
->
-> Rob
-
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+UGF0Y2ggYXBwbGllZCwgdGhhbmtzIQoKT24gTW9uLCBKYW4gOCwgMjAyNCBhdCA5OjIz4oCvQU0g
+TGkgWmhpamlhbiA8bGl6aGlqaWFuQGZ1aml0c3UuY29tPiB3cm90ZToKCj4gc3RfcmVzX2ZsYWdz
+IHNob3VsZCBiZSBkb2N1bWVudGVkIGluIC5naXRpZ25vcmUKPgo+IFNpZ25lZC1vZmYtYnk6IExp
+IFpoaWppYW4gPGxpemhpamlhbkBmdWppdHN1LmNvbT4KPiAtLS0KPiAgbGliL25ld2xpYl90ZXN0
+cy8uZ2l0aWdub3JlIHwgMSArCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQo+Cj4g
+ZGlmZiAtLWdpdCBhL2xpYi9uZXdsaWJfdGVzdHMvLmdpdGlnbm9yZSBiL2xpYi9uZXdsaWJfdGVz
+dHMvLmdpdGlnbm9yZQo+IGluZGV4IDAyNTZiZWY3NmMuLmE2OWIyOWUyNGEgMTAwNjQ0Cj4gLS0t
+IGEvbGliL25ld2xpYl90ZXN0cy8uZ2l0aWdub3JlCj4gKysrIGIvbGliL25ld2xpYl90ZXN0cy8u
+Z2l0aWdub3JlCj4gQEAgLTU2LDMgKzU2LDQgQEAgdHN0X25lZWRzX2NtZHMwOAo+ICB0ZXN0X3J1
+bnRpbWUwMQo+ICB0ZXN0X3J1bnRpbWUwMgo+ICB0ZXN0X2NoaWxkcmVuX2NsZWFudXAKPiArdHN0
+X3Jlc19mbGFncwo+IC0tCj4gMi40MS4wCj4KPgo+IC0tCj4gTWFpbGluZyBsaXN0IGluZm86IGh0
+dHBzOi8vbGlzdHMubGludXguaXQvbGlzdGluZm8vbHRwCj4KPgoKLS0gClJlZ2FyZHMsCkxpIFdh
+bmcKCi0tIApNYWlsaW5nIGxpc3QgaW5mbzogaHR0cHM6Ly9saXN0cy5saW51eC5pdC9saXN0aW5m
+by9sdHAK
