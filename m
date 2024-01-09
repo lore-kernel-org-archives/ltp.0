@@ -4,48 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DD2DC47073
-	for <ltp@archiver.kernel.org>; Tue,  9 Jan 2024 10:23:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1730C47073
+	for <ltp@archiver.kernel.org>; Tue,  9 Jan 2024 10:27:26 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id 115683CE521
-	for <ltp@archiver.kernel.org>; Tue,  9 Jan 2024 11:23:36 +0100 (CET)
-Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::7])
+	by picard.linux.it (Postfix) with ESMTP id 333823CE504
+	for <ltp@archiver.kernel.org>; Tue,  9 Jan 2024 11:27:25 +0100 (CET)
+Received: from in-6.smtp.seeweb.it (in-6.smtp.seeweb.it [217.194.8.6])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (secp384r1))
+ key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 7C0DE3CB8AB
- for <ltp@lists.linux.it>; Mon,  8 Jan 2024 14:51:01 +0100 (CET)
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.217])
- by in-7.smtp.seeweb.it (Postfix) with ESMTP id D4DCD200AD5
- for <ltp@lists.linux.it>; Mon,  8 Jan 2024 14:50:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=HcP3N
- Wj9V4wkC8qpxcwGoUijSS0s37y+btjFBVFiSwk=; b=fQ8yWkgC3MHEIYDW2RoKy
- rOnYHk5dO6FfxzZdCnKJiNBASMesGU4yT+EhhkfmTeJ2Z6j8vCFpLLvbBIxnF+wO
- TciecqNujbMHjN40CV8NDtYFAeYj8pqng3IkZSv/iMNbo1XjKKNJul5t4FyVGHnl
- urAZMGQwUAYa8KSNZ2/Cuk=
-Received: from ubuntu22.localdomain (unknown [117.176.219.50])
- by zwqz-smtp-mta-g5-1 (Coremail) with SMTP id _____wDXv2fA_ZtlD5BxAg--.912S2; 
- Mon, 08 Jan 2024 21:50:56 +0800 (CST)
-From: chenguanxi11234@163.com
+ by picard.linux.it (Postfix) with ESMTPS id 0F8833CD0F8
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 11:27:09 +0100 (CET)
+Authentication-Results: in-6.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=207.54.90.48;
+ helo=esa2.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa2.hc1455-7.c3s2.iphmx.com (esa2.hc1455-7.c3s2.iphmx.com
+ [207.54.90.48])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by in-6.smtp.seeweb.it (Postfix) with ESMTPS id 91008140111E
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 11:27:07 +0100 (CET)
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="145568551"
+X-IronPort-AV: E=Sophos;i="6.04,182,1695654000"; d="scan'208";a="145568551"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+ by esa2.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Jan 2024 19:27:07 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
+ [192.168.83.64])
+ by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id C440AD618B
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 19:27:03 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com
+ [192.51.206.21])
+ by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 0742012E97D
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 19:27:03 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 84EE82008631E
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 19:27:02 +0900 (JST)
+Received: from irides.g08.fujitsu.local (unknown [10.167.226.114])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 29D421A0070
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 18:27:02 +0800 (CST)
+From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Mon,  8 Jan 2024 21:50:54 +0800
-Message-Id: <ebf6297f90def1cac9f2d6202941b343c361c5a6.1704703396.git.chen.haonan2@zte.com.cn>
+Date: Tue,  9 Jan 2024 18:27:01 +0800
+Message-Id: <20240109102701.812960-1-ruansy.fnst@fujitsu.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240109095026.792527-1-ruansy.fnst@fujitsu.com>
+References: <20240109095026.792527-1-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-X-CM-TRANSID: _____wDXv2fA_ZtlD5BxAg--.912S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJw15Jw1xJw15Gr4kuryrCrg_yoW5CF4DpF
- Z3Aayvyr95Jr1Sgry7AFsFvF1FkrZ3JFyUJry7uw1jy3sayr1Yyr4ktry5JF4xu392gFWr
- CrWrtFyfX390qr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRvzuNUUUUU=
-X-Originating-IP: [117.176.219.50]
-X-CM-SenderInfo: xfkh0wxxdq5xirrsjki6rwjhhfrp/1tbiVAFf+mVOA6BPuQAAsO
-X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28108.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28108.006
+X-TMASE-Result: 10--14.321800-10.000000
+X-TMASE-MatchedRID: DUsWLlwCIVCH/OjJ1CEsvE7nLUqYrlslFIuBIWrdOeOU8ftiyKjZrXlb
+ NLJMhGktx8cx3E6pg15WTBAeKqaX9Spe4ofkluPsiH95tLFH8edZ+CK+BxQ9k224tW2R9/7QDui
+ v1PSTVn4QT82YoBmnzDFTm2Y2SkL+XhvAA0pOb6LNgrlT5Ajc7jEvENg7dSUMycmFNidOeD02rz
+ KWrdiyknui8opdVfyWLCfCG45dNV3iATtmJziXsxMxKDqgAFSzv1wCVBblimutuWYz9oVoL5/p6
+ 742jA2BoIP+VSYj94JX2cPw5LGAfdWKNmKtnvU1i95/KnWCU3RULRRq00o2mZsoi2XrUn/Jn6Kd
+ MrRsL14qtq5d3cxkNQ9lVMtVBr0ZS/gzYjX2Sa5yx2SSeH+2LQCN01beODRgdKdkMyLayNA=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-6.smtp.seeweb.it
 X-Virus-Status: Clean
-X-Mailman-Approved-At: Tue, 09 Jan 2024 11:23:10 +0100
-Subject: [LTP] [PATCH] posix/conformance/interfaces/sem_timedwait/2-1: Fix
- test
+Subject: [LTP] [PATCH] dup07: Convert to new API
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -57,121 +78,203 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-Cc: yang.guang5@zte.com.cn, Chen Haonan <chen.haonan2@zte.com.cn>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-From: Chen Haonan <chen.haonan2@zte.com.cn>
-
-Since the parent and child processes are not operating on the
-same semaphore, this code wasn't doing its job correctly before, 
-so we mapped the semaphore to a piece of shared memory and changed 
-some implementation details in the original code to make it work.
-
-Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
+Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 ---
- .../interfaces/sem_timedwait/2-1.c            | 41 ++++++++++++++-----
- 1 file changed, 30 insertions(+), 11 deletions(-)
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
-index 655e35108..3082140e3 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_timedwait/2-1.c
-@@ -10,13 +10,24 @@
-  * will unlock the semaphore from another process.
+ testcases/kernel/syscalls/dup/dup07.c | 160 +++++++-------------------
+ 1 file changed, 41 insertions(+), 119 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/dup/dup07.c b/testcases/kernel/syscalls/dup/dup07.c
+index a100f5d58..bccee0776 100644
+--- a/testcases/kernel/syscalls/dup/dup07.c
++++ b/testcases/kernel/syscalls/dup/dup07.c
+@@ -1,22 +1,8 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2002
+- *    ported from SPIE, section2/iosuite/dup3.c, by Airong Zhang
+- *   Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2002
++ *  ported from SPIE, section2/iosuite/dup3.c, by Airong Zhang
++ * Copyright (c) 2013 Cyril Hrubis <chrubis@suse.cz>
   */
  
-+/* Modifications by: Chen Haonan <chen.haonan2@zte.com.cn>
-+ * Date: 2024-01-08
+ /*
+@@ -27,116 +13,52 @@
+   HOW:   Creat a file with each access mode; dup each file descriptor;
+          stat each file descriptor and compare mode of each pair
+ */
++/*\
++ * [Description]
 + *
-+ * Since the parent and child processes are not operating on
-+ * the same semaphore, this code wasn't doing its job correctly
-+ * before, so we mapped the semaphore to a piece of shared
-+ * memory and changed some implementation details in the
-+ * original code to make it work.
++ * Verify that the file descriptor created by dup(2) syscall has the same
++ * access mode as the old one.
 + */
  
-+#include <stdlib.h>
- #include <stdio.h>
- #include <errno.h>
- #include <unistd.h>
- #include <semaphore.h>
- #include <sys/stat.h>
- #include <sys/wait.h>
-+#include <sys/mman.h>
- #include <fcntl.h>
- #include <signal.h>
- #include <time.h>
-@@ -28,12 +39,16 @@
+-#include <stdio.h>
+-#include <fcntl.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include "test.h"
+-
+-char *TCID = "dup07";
+-int TST_TOTAL = 3;
++#include "tst_test.h"
  
- int main(void)
+ static const char *testfile = "dup07";
+ 
+-static void setup(void);
+-static void cleanup(void);
++static struct tcase {
++	char *mode_desc;
++	int mode;
++} tcases[] = {
++	{"read only", 0444},
++	{"write only", 0222},
++	{"read/write", 0666},
++};
+ 
+-int main(int ac, char **av)
++static void run(unsigned int n)
  {
--	sem_t mysemp;
-+	sem_t *mysemp;
- 	struct timespec ts;
- 	int pid;
- 
--	/* Semaphore started out locked */
--	if (sem_init(&mysemp, 0, 0) == -1) {
-+	/* Map semaphore to shared memory */
-+	int shm_fd = shm_open("/myshm", O_CREAT | O_RDWR, 0666);
-+
-+	ftruncate(shm_fd, sizeof(sem_t));
-+	mysemp = (sem_t *)mmap(NULL, sizeof(sem_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
-+
-+	if (sem_init(mysemp, 1, 0) == -1) {
- 		perror(ERROR_PREFIX "sem_init");
- 		return PTS_UNRESOLVED;
- 	}
-@@ -43,20 +58,22 @@ int main(void)
- 	{
- 		ts.tv_sec = time(NULL) + 2;
- 		ts.tv_nsec = 0;
+-	struct stat retbuf;
+-	struct stat dupbuf;
+-	int rdoret, wroret, rdwret;
+-	int duprdo, dupwro, duprdwr;
 -
--		if (sem_timedwait(&mysemp, &ts) == -1) {
-+		if (sem_timedwait(mysemp, &ts) == -1) {
- 			puts("TEST FAILED");
-+			sem_destroy(mysemp);
-+			munmap(mysemp, sizeof(sem_t));
-+			close(shm_fd);
-+			shm_unlink("/myshm");
- 			return PTS_FAIL;
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		if ((rdoret = creat(testfile, 0444)) == -1) {
+-			tst_resm(TFAIL, "Unable to creat file '%s'", testfile);
++	int oldfd, dupfd;
++	struct stat oldbuf, dupbuf;
++	struct tcase *tc = &tcases[n];
++
++	oldfd = SAFE_CREAT(testfile, tc->mode);
++	dupfd = TST_EXP_FD_SILENT(dup(oldfd), "dup() %s file", tc->mode_desc);
++	if (TST_PASS) {
++		SAFE_FSTAT(oldfd, &oldbuf);
++		SAFE_FSTAT(dupfd, &dupbuf);
++
++		if (oldbuf.st_mode != dupbuf.st_mode) {
++			tst_res(TFAIL, "%s and dup do not match", tc->mode_desc);
  		} else {
--			puts("TEST PASSED");
--			sem_destroy(&mysemp);
-+			puts("TEST PASSED");
- 			return PTS_PASS;
- 		}
- 	} else if (pid > 0)	// parent to unlock semaphore
- 	{
- 		int i;
- 		sleep(1);
--		if (sem_post(&mysemp) == -1) {
-+		if (sem_post(mysemp) == -1) {
- 			perror(ERROR_PREFIX "sem_post");
- 			return PTS_FAIL;
- 		}
-@@ -64,12 +81,14 @@ int main(void)
- 			perror("Error waiting for child to exit");
- 			return PTS_UNRESOLVED;
+-			if ((duprdo = dup(rdoret)) == -1) {
+-				tst_resm(TFAIL, "Unable to dup '%s'", testfile);
+-			} else {
+-				fstat(rdoret, &retbuf);
+-				fstat(duprdo, &dupbuf);
+-				if (retbuf.st_mode != dupbuf.st_mode) {
+-					tst_resm(TFAIL,
+-						 "rdonly and dup do not match");
+-				} else {
+-					tst_resm(TPASS,
+-					         "Passed in read mode.");
+-				}
+-				close(duprdo);
+-			}
+-			close(rdoret);
++			tst_res(TPASS, "Passed in %s mode.", tc->mode_desc);
  		}
 -
--		if (!WEXITSTATUS(i)) {
-+		if (WEXITSTATUS(i)) {
- 			return PTS_FAIL;
- 		}
- 		puts("TEST PASSED");
--		sem_destroy(&mysemp);
-+		sem_destroy(mysemp);
-+		munmap(mysemp, sizeof(sem_t));
-+		close(shm_fd);
-+		shm_unlink("/myshm");
- 		return PTS_PASS;
+-		unlink(testfile);
+-		
+-		if ((wroret = creat(testfile, 0222)) == -1) {
+-			tst_resm(TFAIL, "Unable to creat file '%s'", testfile);
+-		} else {
+-			if ((dupwro = dup(wroret)) == -1) {
+-				tst_resm(TFAIL, "Unable to dup '%s'", testfile);
+-			} else {
+-				fstat(wroret, &retbuf);
+-				fstat(dupwro, &dupbuf);
+-				if (retbuf.st_mode != dupbuf.st_mode) {
+-					tst_resm(TFAIL,
+-						 "wronly and dup do not match");
+-				} else {
+-					tst_resm(TPASS,
+-					         "Passed in write mode.");
+-				}
+-				close(dupwro);
+-			}
+-			close(wroret);
+-
+-		}
+-
+-		unlink(testfile);
+-
+-		if ((rdwret = creat(testfile, 0666)) == -1) {
+-			tst_resm(TFAIL, "Unable to creat file '%s'", testfile);
+-		} else {
+-			if ((duprdwr = dup(rdwret)) == -1) {
+-				tst_resm(TFAIL, "Unable to dup '%s'", testfile);
+-			} else {
+-				fstat(rdwret, &retbuf);
+-				fstat(duprdwr, &dupbuf);
+-				if (retbuf.st_mode != dupbuf.st_mode) {
+-					tst_resm(TFAIL,
+-						 "rdwr and dup do not match");
+-				} else {
+-					tst_resm(TPASS,
+-					         "Passed in read/write mode.");
+-				}
+-				close(duprdwr);
+-			}
+-			close(rdwret);
+-		}
+-		
+-		unlink(testfile);
++		SAFE_CLOSE(dupfd);
  	}
- 	return PTS_UNRESOLVED;
++	SAFE_CLOSE(oldfd);
+ 
+-	cleanup();
+-	tst_exit();
+-}
+-
+-static void setup(void)
+-{
+-	tst_tmpdir();
++	SAFE_UNLINK(testfile);
+ }
+ 
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
++static struct tst_test test = {
++	.needs_tmpdir = 1,
++	.test = run,
++	.tcnt = ARRAY_SIZE(tcases),
++};
 -- 
-2.25.1
+2.34.1
 
 
 -- 
