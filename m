@@ -4,123 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from picard.linux.it (picard.linux.it [213.254.12.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79033C46CD2
-	for <ltp@archiver.kernel.org>; Tue,  9 Jan 2024 07:00:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lists.linux.it;
- i=@lists.linux.it; q=dns/txt; s=picard; t=1704783638; h=to : date :
- message-id : in-reply-to : references : mime-version : subject :
- list-id : list-unsubscribe : list-archive : list-post : list-help :
- list-subscribe : from : reply-to : content-type :
- content-transfer-encoding : sender : from;
- bh=4A5EGNKIEO629jUDWgVMTHxc6KEL+4LgDQ/rxiMOwRQ=;
- b=UHuvvNePWRGy5CQm/RqRdEQJ1LalrOdU+BdtDvG6KgFXbqZqpUeXzQmpFeLLnXH0zMg3o
- +4S7F5e8OFfgl4fNj4cko3+nt6aKomiNwWXk5A2LmUJ9XU8qA+ws/wxLgU9SwS07X8OvKPJ
- ry/sh26gXDuBWbXMKmCF0KmE7nMJWNs=
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30110C46CD2
+	for <ltp@archiver.kernel.org>; Tue,  9 Jan 2024 09:03:30 +0000 (UTC)
 Received: from picard.linux.it (localhost [IPv6:::1])
-	by picard.linux.it (Postfix) with ESMTP id C77803CD1A9
-	for <ltp@archiver.kernel.org>; Tue,  9 Jan 2024 08:00:38 +0100 (CET)
-Received: from in-2.smtp.seeweb.it (in-2.smtp.seeweb.it
- [IPv6:2001:4b78:1:20::2])
+	by picard.linux.it (Postfix) with ESMTP id 172123CE50C
+	for <ltp@archiver.kernel.org>; Tue,  9 Jan 2024 10:03:28 +0100 (CET)
+Received: from in-7.smtp.seeweb.it (in-7.smtp.seeweb.it [217.194.8.7])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (secp384r1))
  (No client certificate requested)
- by picard.linux.it (Postfix) with ESMTPS id 9EFEC3CD18C
- for <ltp@lists.linux.it>; Tue,  9 Jan 2024 07:59:30 +0100 (CET)
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur01on060d.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe1f::60d])
+ by picard.linux.it (Postfix) with ESMTPS id 9A4FF3CD18C
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 10:03:12 +0100 (CET)
+Authentication-Results: in-7.smtp.seeweb.it; spf=pass (sender SPF authorized)
+ smtp.mailfrom=fujitsu.com (client-ip=139.138.36.223;
+ helo=esa9.hc1455-7.c3s2.iphmx.com; envelope-from=ruansy.fnst@fujitsu.com;
+ receiver=lists.linux.it)
+Received: from esa9.hc1455-7.c3s2.iphmx.com (esa9.hc1455-7.c3s2.iphmx.com
+ [139.138.36.223])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by in-2.smtp.seeweb.it (Postfix) with ESMTPS id D9AEA60081A
- for <ltp@lists.linux.it>; Tue,  9 Jan 2024 07:59:29 +0100 (CET)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gakMUFoiR3CBBzQnsaBTlo+vDaq4FhofqM6ZEfmwEFSEmIFPYGdjjdp857oubAowJyFrEHabERLkRBxShwTjMehll3x37k3oGXMgHLxe2wSvboWji/wov7l9YT5yUb2shMHVDEXWm6a4/uqYX/c4ow+RaZ1WnPsGCX5ra8R/atunO/PQ7m659lt7K5IlFPslfXpBnibSwC35KbGHzBa1n+StfxgTB2Tz+or0xKrkDRCeAIgrele7nxBA4LiYhCd/mooM8HybC+NubIZ21SEioFdpUMWJHfIIUpchHSyNLGSF88x2b+IkEFft2PxRHMEFzLjFvMeSk9EqCYTNDZGXew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HDWI8Fb9T74yY8Z6qKHCfqWy5WjDHNXTClFD6+dVgEM=;
- b=ZdVl7Q5uuWIjvBvBnHrgdmf+DjavF1xVr1hOIpSnMCu8bCuEmNVbuMjjCbcskQH5pJicHNSt6DnvspZ+Rcxxkp1GqzQ83fS3LMfBimmXEudZDaFnz0j6nUcU3PxzvWepDS6bRgZZzlXxs3jlOEFLS+OezX78RGpS4YMXeUAVE9Ryfr63hPe8pXBASkXK0GNR3lwLNV/ACeS4BK3d2aI3NkXAffdkdEYnwgOEo702+K9Lvd/b9hZetHbrSJyhkcmbmAOUlIXRbyxrlR/gKqgerF7/5ELCQR7ECdv1W3O19BKwlC+s/BGcXVxIfI7s+2z6JcgmIs9h9gah8Z/b/WaxXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HDWI8Fb9T74yY8Z6qKHCfqWy5WjDHNXTClFD6+dVgEM=;
- b=rcZJSMFp0gWNnn2XdEjtkrGK3pEiyrYXOBH/SyAozfRlEzfdSzmSaL9tLrX5aYblqAomUqI0C2PtNBe9Gclr9ELWH8FvGSoiArKoiDhc8eZSx0gjprstPwW5johEP379bt9h/X53QHkUxkgAgWYdLdRY194yilnRZqhLO9tN728FqnmbQ/RPAObpYEMDOWizJtJWvNEb0Fwkt1OZ5XYvK02osN/wSbHW8TEUCFYma8pKlNe/qQj4v0UJyKzPoCpXABd1nxALS+GZ0mpDmSmuk7pgBYd+ct8O8xEuyu9X8uIQmA3Itxbg5qlk5MlsDhBR4TRYRhpgvEdlObi+d+G+Vw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8199.eurprd04.prod.outlook.com (2603:10a6:20b:3f6::21)
- by PAXPR04MB8573.eurprd04.prod.outlook.com (2603:10a6:102:214::5)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
- 2024 06:59:28 +0000
-Received: from AS8PR04MB8199.eurprd04.prod.outlook.com
- ([fe80::9d39:5718:5401:764d]) by AS8PR04MB8199.eurprd04.prod.outlook.com
- ([fe80::9d39:5718:5401:764d%5]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
- 06:59:28 +0000
+ by in-7.smtp.seeweb.it (Postfix) with ESMTPS id AE3A42009E0
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 10:03:10 +0100 (CET)
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="133948282"
+X-IronPort-AV: E=Sophos;i="6.04,182,1695654000"; d="scan'208";a="133948282"
+Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
+ by esa9.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Jan 2024 18:03:08 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com
+ [192.168.83.64])
+ by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id CAFACCF1C0
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 18:03:06 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com
+ [192.51.206.22])
+ by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 06B256CC19
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 18:03:06 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+ by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 821F76895A
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 18:03:05 +0900 (JST)
+Received: from irides.g08.fujitsu.local (unknown [10.167.226.114])
+ by edo.cn.fujitsu.com (Postfix) with ESMTP id 383251A0070
+ for <ltp@lists.linux.it>; Tue,  9 Jan 2024 17:03:05 +0800 (CST)
+From: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 To: ltp@lists.linux.it
-Date: Tue,  9 Jan 2024 01:59:04 -0500
-Message-Id: <20240109065904.18117-3-wegao@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240109065904.18117-1-wegao@suse.com>
-References: <20231025083706.13767-1-wegao@suse.com>
- <20240109065904.18117-1-wegao@suse.com>
-X-ClientProxiedBy: TYCP301CA0052.JPNP301.PROD.OUTLOOK.COM
- (2603:1096:400:384::15) To AS8PR04MB8199.eurprd04.prod.outlook.com
- (2603:10a6:20b:3f6::21)
+Date: Tue,  9 Jan 2024 17:03:04 +0800
+Message-Id: <20240109090304.766663-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8199:EE_|PAXPR04MB8573:EE_
-X-MS-Office365-Filtering-Correlation-Id: e4f97e65-70ac-46c3-1a02-08dc10e085ec
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0f7lJ7GztJ6AprGDnHC7IH0UMWgI77SWsTXx86IjwBQ/PYGMaJAYmo8YKLC3aRjbxF7crVEg/6pnHZwYJJ0WcGOJh1oHZtQBHSIPQH1ivr5KZl4ozO7mSf5tXUEw3msXSc+jOV/IwEGHEhFX2YovnyTR9j1Wh1fkR3V5sSEfW6Qv+7kL7kTQ+1AYSBogoobmEdRW0JbC5TRsswGZyfK7hFbgY/GVVN3yNJFCvryKUyot9neLDwQgWfTAkGkgXTOL5BKJkkkQ68M5iHXOhVyxBZnJfVjp9f6EMvbOnXsRDk9J2CcF/J+kduh898n1r8WKTfXJF1Y//wn6lMEANbOJhuPuzwXHygkwb3cLhGIexbALf908MT5OyEuJ/ixNQhuZ1+80Td0LAWeYdNRSaa3+qWVgXdnriH1PZgoSFWSt/1uThP8KaNG19FeDyZGIJdg5yh8qydfdeNGq0/+SBSXAwKGvedbEn9lKFzNlKu6/y+rQaxuNAaS7CWIHGngOLOujiDkLMnpNmJdK+Jdxia9A8a1jKvpb/PUa9bXPbO99J2Mpn+TZAmPuxD0DE6m1Wz5W
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:AS8PR04MB8199.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230031)(39850400004)(366004)(396003)(376002)(136003)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(4744005)(5660300002)(478600001)(6666004)(6486002)(107886003)(2616005)(86362001)(6506007)(6512007)(8676002)(8936002)(41300700001)(316002)(36756003)(66946007)(66556008)(66476007)(6916009)(38100700002)(83380400001)(1076003)(26005)(4326008)(2906002);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?konH4g6e9cKNYXWn4SziTRQQXf/2Iq9CFvEG9yfHVNj3taNvpl+fBU0PHcYK?=
- =?us-ascii?Q?rKiKUHjfNBT23op5m8wDx8sitt0f6htCd+Vm2UEZWjP8DzJApsLmuokAcPvZ?=
- =?us-ascii?Q?Mgums+MzXOD29oBHcmvmugTWkt6q5tye5Qzv0aBzt4MOJhvFCFyN0oiut1kF?=
- =?us-ascii?Q?P2qaN0Tzv7226aTIQTsMFw0Z/p9JJH9tllo4rhYhIA1cqkiUTUQoOTDe8YG0?=
- =?us-ascii?Q?yYUNt58galee1I04QQJJVbNXfvVfq1Dw1Xx/C26u3FPVV+kEsYE8FFqQgyWX?=
- =?us-ascii?Q?Z1QdxTVxe5TS8i5BM089Y6vlvp+Fn/taLWeaUmMZH4o0C2NdLcJW4dZBn7iD?=
- =?us-ascii?Q?NkzRg43x9tENu4z9qBjBreCJpZbJ2M3VeQPtCFVqaOkvo9vXV+KhTHo0Cona?=
- =?us-ascii?Q?M1IhWnfLrl3A7q4mTdWeIhFIVgYa1ShsnGzyQqP/vqNAkDIkEe5cWqIZ8pNY?=
- =?us-ascii?Q?P0hEOLO8i36m9kgu+G1VdeZxsq6KW9LrlFcCX1RlPw96nLMv6o14e8bjB+vG?=
- =?us-ascii?Q?gxf8er8WWrLZ+waDULF8oTWQg8BSGDmEq5+LbUqUsmxsqQQVn/jkTKNhvwnD?=
- =?us-ascii?Q?aU5ZJ53J8UXfS2+eldESvLsUEjQo6l6Fh/iqFlTQAVoYj8144bzehiQ0u1yh?=
- =?us-ascii?Q?nORhNQn3DDYKNr3EepTzON1TQDh9tg6lgp4wbxV8F+2FJoIbWsEhSIQRtrid?=
- =?us-ascii?Q?uegqTkXMlVbLIBrEkZSazGbmSAYsrHIa0+8Aly74YB5XrqaHvoYg1CPJbf0S?=
- =?us-ascii?Q?s3Anta0kIGFzBTGQZKhOb6+yQBjgfgARgh4WuOaB0N67roFMNlF+9aYGH3b0?=
- =?us-ascii?Q?d3ReOuRCo2+bsPw0ON+qUEE+vWcQusYvh702jSPckH9UnubcfW5RZCy9JA9E?=
- =?us-ascii?Q?kH2yR1ghNyFWjcMLYLPAOlTRNfkgg+NQtBWFL44WJwJiBcQjYlUkSnWy4rj9?=
- =?us-ascii?Q?ACYqHbVlesRWCrWIHJlPXAkW59a2nmeIHAI8nmzSYjKMHYBHwR7gzfudx+Ze?=
- =?us-ascii?Q?AzPVu6FvqB0Al2NTd6HFJuORbyFoIs1kP6xn4BYwPK1UMMnOAUaNVDgWe9/v?=
- =?us-ascii?Q?5gg2ABD8hQYMymGIl7y/DbIs+URaKKEl6agnBvNOpcwa3yNd+dB/cy9LkMV4?=
- =?us-ascii?Q?M0f6gFl/8IVKNwCQjR9ztZj2mMSQ37c0uftodKl2SuNKzzmEr5Bbotz76viK?=
- =?us-ascii?Q?gqJDimwAw0kN8xIlVE9vpZHqigyZYnPvFgXamux5O/aSA3Q6HSI4RlIkx5q4?=
- =?us-ascii?Q?0RV4bmGp6Jv3fHc+pja6WGSucBTqIDaY1WePp7+8q5SehTxGFbC3Kbr8evxx?=
- =?us-ascii?Q?99vI8bFa3nrGJHIVYYCuv8qbQTyAbOy2Rxbvbi8XDRphkDyZ7afWFlOnPyqd?=
- =?us-ascii?Q?4GUYsakgUe3CbrbHpJi2O9vpK4JmKiVzhLaE8fv/giEwsN0zTg+BrPByR+7e?=
- =?us-ascii?Q?NfhqZiglGGKdxm0k8mcnMoh3XUs4nhO60aguP0u/7VAqV8bvh6XxnLnuiPaZ?=
- =?us-ascii?Q?LWLZ6Cnay6eZSEJJukKKo+3bDmrLbGKZxDqtGgeTNFZw54VKG8WMg0HA5kn2?=
- =?us-ascii?Q?nCgbsjsm6xo99yBHdkQ=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4f97e65-70ac-46c3-1a02-08dc10e085ec
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8199.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 06:59:28.6288 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5HdhWzrcxrl/Z9w3y3N/+Ds2ycqzXjQhTjfTJ8q/ERxk3I/rSY77vPxuxTI1HywQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8573
-X-Virus-Scanned: clamav-milter 1.0.3 at in-2.smtp.seeweb.it
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28108.006
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28108.006
+X-TMASE-Result: 10-3.414200-10.000000
+X-TMASE-MatchedRID: I938M4WVR+Kbe2Qk1v1tPwXGi/7cli9jg8vk+C7vzx5YC5LPd7BvbVYM
+ JR3dIrh2W/1hh+Rku8O1QhEk8s7S2KNu8YiLlIJQxvp0tuDMx3kytf6nW43O0NNCpFsK/tYLg9x
+ e4gtUJtq1h3Ci3ttLrSglc2KPMh6DL/tBTZzO5Q2eAiCmPx4NwHJnzNw42kCxxEHRux+uk8hxKp
+ vEGAbTDn1FM46sTtJeXIzU5TEs9+FUOw5Bh6kF41xHXckpLXTmBjYicfEhAE3531f0E5pif9OCU
+ Vu53Z/uUfppuo89q+Gw2kwi4BJbuyxYQ3DdDFicmj6erosOco3TT39S4oU+hn1PSr31RCxk
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Virus-Scanned: clamav-milter 1.0.3 at in-7.smtp.seeweb.it
 X-Virus-Status: Clean
-Subject: [LTP] [PATCH v3 2/2] execl01.c: set stack to unlimited
+Subject: [LTP] [PATCH] tst_test_macros.h: fix "too many arguments"
 X-BeenThere: ltp@lists.linux.it
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -132,34 +75,58 @@ List-Post: <mailto:ltp@lists.linux.it>
 List-Help: <mailto:ltp-request@lists.linux.it?subject=help>
 List-Subscribe: <https://lists.linux.it/listinfo/ltp>,
  <mailto:ltp-request@lists.linux.it?subject=subscribe>
-From: Wei Gao via ltp <ltp@lists.linux.it>
-Reply-To: Wei Gao <wegao@suse.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-bounces+ltp=archiver.kernel.org@lists.linux.it
 Sender: "ltp" <ltp-bounces+ltp=archiver.kernel.org@lists.linux.it>
 
-Signed-off-by: Wei Gao <wegao@suse.com>
----
- testcases/kernel/syscalls/execl/execl01.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/testcases/kernel/syscalls/execl/execl01.c b/testcases/kernel/syscalls/execl/execl01.c
-index 9268d4976..dfefd1fa8 100644
---- a/testcases/kernel/syscalls/execl/execl01.c
-+++ b/testcases/kernel/syscalls/execl/execl01.c
-@@ -35,4 +35,8 @@ static struct tst_test test = {
- 	.forks_child = 1,
- 	.child_needs_reinit = 1,
- 	.test_all = verify_execl,
-+	.ulimit = (const struct tst_ulimit_val[]) {
-+		{RLIMIT_STACK, RLIM_INFINITY},
-+		{}
-+	},
- };
--- 
-2.35.3
-
-
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+V2hpbGUgY2FsbGluZyBUU1RfRVhQX0ZEX1NJTEVOVCgpIGFuZCBUU1RfRVhQX1BJRF9TSUxFTlQo
+KSwgdGhlaXIKZGVmaW5lZCBmdW5jdGlvbiBUU1RfRVhQX1BPU0lUSVZFXygpIHNob3VsZCBwYXNz
+IGl0cyBTU0NBTEwgdG8KVFNUX0VYUF9QT1NJVElWRV9fKCksIGluc3RlYWQgb2YgY3JlYXRpbmcg
+YSBuZXcgb25lLiAgVGhpcyBmaXggbWFrZXMKZXJyb3IgbWVzc2FnZSBsb29rIGNvcnJlY3QsIGFu
+ZCBhbHNvIGNhbiBlbGltaW5hdGUgYnVpbGQgd2FybmluZ3MsIHN1Y2gKYXM6CgpkdXAzXzAxLmM6
+NDM6ODM6IHdhcm5pbmc6IHRvbyBtYW55IGFyZ3VtZW50cyBmb3IgZm9ybWF0IFstV2Zvcm1hdC1l
+eHRyYS1hcmdzXQogICA0MyB8ICAgICAgICAgVFNUX0VYUF9GRF9TSUxFTlQoZHVwMygxLCA0LCB0
+Yy0+Y29lX2ZsYWcpLCAiZHVwMygxLCA0LCAlZCkiLCB0Yy0+Y29lX2ZsYWcpOwogICAgICB8ICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBeCi4uLy4uLy4uLy4uL2luY2x1ZGUvdHN0X3Rlc3RfbWFj
+cm9zLmg6NDA6MzI6IG5vdGU6IGluIGRlZmluaXRpb24gb2YgbWFjcm8g4oCYVFNUX0ZNVF/igJkK
+ICAgNDAgfCAjZGVmaW5lIFRTVF9GTVRfKEZNVCwgXzEsIC4uLikgRk1ULCAjI19fVkFfQVJHU19f
+CiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fgouLi8uLi8uLi8uLi9p
+bmNsdWRlL3RzdF90ZXN0X21hY3Jvcy5oOjQ0OjI2OiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFj
+cm8g4oCYVFNUXzJf4oCZCiAgIDQ0IHwgICAgICAgICAgICAgICAgIFRTVF9GTVRfKFRTVF8yXyhk
+dW1teSwgIyNfX1ZBX0FSR1NfXywgU0NBTEwpIEZNVCwgX19WQV9BUkdTX18pKQogICAgICB8ICAg
+ICAgICAgICAgICAgICAgICAgICAgICBefn5+fn4KLi4vLi4vLi4vLi4vaW5jbHVkZS90c3RfdGVz
+dF9tYWNyb3MuaDo2MToyNTogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmFRTVF9NU0df
+4oCZCiAgIDYxIHwgICAgICAgICAgICAgICAgICAgICAgICAgVFNUX01TR18oVEZBSUwgfCBUVEVS
+Uk5PLCAiIGZhaWxlZCIsICAgICAgICAgICAgICAgICAgIFwKICAgICAgfCAgICAgICAgICAgICAg
+ICAgICAgICAgICBefn5+fn5+fgouLi8uLi8uLi8uLi9pbmNsdWRlL3RzdF90ZXN0X21hY3Jvcy5o
+Ojc4OjE3OiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYVFNUX0VYUF9QT1NJVElWRV9f
+4oCZCiAgIDc4IHwgICAgICAgICAgICAgICAgIFRTVF9FWFBfUE9TSVRJVkVfXyhTQ0FMTCwgI1ND
+QUxMLCAjI19fVkFfQVJHU19fKTsgICAgICAgICAgICAgIFwKICAgICAgfCAgICAgICAgICAgICAg
+ICAgXn5+fn5+fn5+fn5+fn5+fn5+Ci4uLy4uLy4uLy4uL2luY2x1ZGUvdHN0X3Rlc3RfbWFjcm9z
+Lmg6OTQ6NDE6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyDigJhUU1RfRVhQX1BPU0lUSVZF
+X+KAmQogICA5NCB8ICNkZWZpbmUgVFNUX0VYUF9GRF9TSUxFTlQoU0NBTEwsIC4uLikgICBUU1Rf
+RVhQX1BPU0lUSVZFXyhTQ0FMTCwgI1NDQUxMLCAjI19fVkFfQVJHU19fKQogICAgICB8ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fgpkdXAz
+XzAxLmM6NDM6OTogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmFRTVF9FWFBfRkRfU0lM
+RU5U4oCZCiAgIDQzIHwgICAgICAgICBUU1RfRVhQX0ZEX1NJTEVOVChkdXAzKDEsIDQsIHRjLT5j
+b2VfZmxhZyksICJkdXAzKDEsIDQsICVkKSIsIHRjLT5jb2VfZmxhZyk7CiAgICAgIHwgICAgICAg
+ICBefn5+fn5+fn5+fn5+fn5+fgoKU2lnbmVkLW9mZi1ieTogU2hpeWFuZyBSdWFuIDxydWFuc3ku
+Zm5zdEBmdWppdHN1LmNvbT4KLS0tCiBpbmNsdWRlL3RzdF90ZXN0X21hY3Jvcy5oIHwgNCArKy0t
+CiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAt
+LWdpdCBhL2luY2x1ZGUvdHN0X3Rlc3RfbWFjcm9zLmggYi9pbmNsdWRlL3RzdF90ZXN0X21hY3Jv
+cy5oCmluZGV4IGJkMGM0OTFjMS4uM2Y0ZjlmMTFkIDEwMDY0NAotLS0gYS9pbmNsdWRlL3RzdF90
+ZXN0X21hY3Jvcy5oCisrKyBiL2luY2x1ZGUvdHN0X3Rlc3RfbWFjcm9zLmgKQEAgLTczLDkgKzcz
+LDkgQEAgZXh0ZXJuIHZvaWQgKlRTVF9SRVRfUFRSOwogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwK
+IAl9IHdoaWxlICgwKQogCi0jZGVmaW5lIFRTVF9FWFBfUE9TSVRJVkVfKFNDQUxMLCAuLi4pICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXAorI2RlZmluZSBUU1RfRVhQ
+X1BPU0lUSVZFXyhTQ0FMTCwgU1NDQUxMLCAuLi4pICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIFwKIAkoeyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIFwKLQkJVFNUX0VYUF9QT1NJVElWRV9fKFNDQUxMLCAj
+U0NBTEwsICMjX19WQV9BUkdTX18pOyAgICAgICAgICAgICAgXAorCQlUU1RfRVhQX1BPU0lUSVZF
+X18oU0NBTEwsIFNTQ0FMTCwgIyNfX1ZBX0FSR1NfXyk7ICAgICAgICAgICAgICBcCiAJCVRTVF9S
+RVQ7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IFwKIAl9KQogCi0tIAoyLjM0LjEKCgotLSAKTWFpbGluZyBsaXN0IGluZm86IGh0dHBzOi8vbGlz
+dHMubGludXguaXQvbGlzdGluZm8vbHRwCg==
